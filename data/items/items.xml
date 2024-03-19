@@ -1252,6 +1252,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="665" article="a" name="fiery barbarian axe">
@@ -1326,6 +1327,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="670" article="a" name="fiery clerical mace">
@@ -1384,6 +1386,7 @@
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="674" article="a" name="fiery war hammer">
@@ -1398,6 +1401,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="675" article="a" name="small enchanted sapphire">
@@ -1486,6 +1490,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="684" article="an" name="icy barbarian axe">
@@ -1560,6 +1565,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="689" article="an" name="icy clerical mace">
@@ -1618,6 +1624,7 @@
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="693" article="an" name="icy war hammer">
@@ -1632,6 +1639,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="694" article="a" name="bed">
@@ -2259,6 +2267,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="784" article="an" name="earth barbarian axe">
@@ -2333,6 +2342,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="789" article="an" name="earth clerical mace">
@@ -2391,6 +2401,7 @@
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="793" article="an" name="earth war hammer">
@@ -2405,6 +2416,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="794" article="an" name="energy spike sword">
@@ -2476,6 +2488,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="799" name="snow">
@@ -2554,6 +2567,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="806" article="an" name="energy clerical mace">
@@ -2612,6 +2626,7 @@
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="810" article="an" name="energy war hammer">
@@ -2626,6 +2641,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="811" article="a" name="terra mantle">
@@ -8250,6 +8266,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3266" article="a" name="battle axe">
@@ -8263,6 +8280,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3267" article="a" name="dagger">
@@ -8298,6 +8316,7 @@
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3270" article="a" name="club">
@@ -8378,6 +8397,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3276" article="a" name="hatchet">
@@ -8418,6 +8438,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3279" article="a" name="war hammer">
@@ -8439,6 +8460,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3280" article="a" name="fire sword">
@@ -8477,6 +8499,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3282" article="a" name="morning star">
@@ -8584,6 +8607,7 @@
 		<attribute key="weight" value="3800"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3290" article="a" name="silver dagger">
@@ -8676,6 +8700,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3297" article="a" name="serpent sword">
@@ -8746,6 +8771,7 @@
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3302" article="a" name="dragon lance">
@@ -8767,6 +8793,7 @@
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3303" article="a" name="great axe">
@@ -8789,6 +8816,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3304" article="a" name="crowbar">
@@ -8935,6 +8963,7 @@
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3314" article="a" name="naginata">
@@ -8948,6 +8977,7 @@
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3315" article="a" name="guardian halberd">
@@ -8968,6 +8998,7 @@
 			<attribute key="level" value="55"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3316" article="an" name="orcish axe">
@@ -9042,6 +9073,7 @@
 			<attribute key="level" value="90"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3320" article="a" name="fire axe">
@@ -9185,6 +9217,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3329" article="a" name="daramian axe">
@@ -9226,6 +9259,7 @@
 			<attribute key="level" value="70"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3332" article="a" name="hammer of wrath">
@@ -9247,6 +9281,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3333" article="a" name="crystal mace">
@@ -9303,6 +9338,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3336" article="a" name="studded club">
@@ -9380,6 +9416,7 @@
 			<attribute key="level" value="70"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3341" article="an" name="arcane staff">
@@ -9423,6 +9460,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3343" article="a" name="lich staff">
@@ -9482,6 +9520,7 @@
 		<attribute key="weight" value="8000"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3347" article="a" name="hunting spear">
@@ -9528,6 +9567,7 @@
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="distance"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3350" article="a" name="bow">
@@ -9539,6 +9579,7 @@
 		<attribute key="weight" value="3100"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="distance"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3351" article="a" name="steel helmet">
@@ -10785,6 +10826,7 @@
 		<attribute key="weight" value="3000"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="3454" article="a" name="broom">
@@ -15604,6 +15646,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="5804" article="a" name="nose ring">
@@ -17945,6 +17988,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="6528" article="an" name="infernal bolt">
@@ -18072,6 +18116,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item fromid="6556" toid="6557" article="a" name="tic-tac-toe token">
@@ -19323,6 +19368,7 @@
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7380" article="a" name="headchopper">
@@ -19345,6 +19391,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7381" article="a" name="mammoth whopper">
@@ -19380,6 +19427,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7383" article="a" name="relic sword">
@@ -19459,6 +19507,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7387" article="a" name="diamond sceptre">
@@ -19544,6 +19593,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7392" article="an" name="orcish maul">
@@ -19565,6 +19615,7 @@
 			<attribute key="level" value="35"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7393" article="a" name="demon trophy">
@@ -19622,6 +19673,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7403" article="a" name="berserker">
@@ -19643,6 +19695,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7404" article="an" name="assassin dagger">
@@ -19685,6 +19738,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7406" article="a" name="blacksteel sword">
@@ -19707,6 +19761,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7407" article="a" name="haunted blade">
@@ -19728,6 +19783,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7408" article="a" name="wyvern fang">
@@ -19830,6 +19886,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7414" article="an" name="abyss hammer">
@@ -19852,6 +19909,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7415" article="a" name="cranial basher">
@@ -20026,6 +20084,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7424" article="a" name="lunar staff">
@@ -20046,6 +20105,7 @@
 			<attribute key="level" value="30"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7425" article="a" name="taurus mace">
@@ -20059,6 +20119,7 @@
 			<attribute key="level" value="20"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7426" article="an" name="amber staff">
@@ -20079,6 +20140,7 @@
 			<attribute key="level" value="40"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7427" article="a" name="chaos mace">
@@ -20093,6 +20155,7 @@
 			<attribute key="level" value="45"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7428" article="a" name="bonebreaker">
@@ -20108,6 +20171,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7429" article="a" name="blessed sceptre">
@@ -20257,6 +20321,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7437" article="a" name="sapphire hammer">
@@ -20298,6 +20363,7 @@
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="distance"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7439" article="a" name="berserk potion">
@@ -20354,6 +20420,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7450" article="a" name="hammer of prophecy">
@@ -20367,6 +20434,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7451" article="a" name="shadow sceptre">
@@ -20408,6 +20476,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7453" article="an" name="executioner">
@@ -20429,6 +20498,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7454" article="a" name="glorious axe">
@@ -20443,6 +20513,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="7455" article="a" name="mythril axe">
@@ -21384,6 +21455,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8022" article="a" name="chain bolter">
@@ -21406,6 +21478,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8023" article="a" name="royal crossbow">
@@ -21429,6 +21502,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8024" article="the" name="devileye">
@@ -21451,6 +21525,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8025" article="the" name="ironworker">
@@ -21472,6 +21547,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8026" article="a" name="warsinger bow">
@@ -21495,6 +21571,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8027" article="a" name="composite hornbow">
@@ -21518,6 +21595,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8028" name="Yol's bow">
@@ -21532,6 +21610,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8029" article="a" name="silkweaver bow">
@@ -21554,6 +21633,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8030" name="Elethriel's elemental bow">
@@ -21568,6 +21648,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8031" name="spider fangs">
@@ -22291,6 +22372,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8099" article="a" name="dark trinity mace">
@@ -22346,6 +22428,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8102" article="an" name="emerald sword">
@@ -22400,6 +22483,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="8105" name="remains of an earth elemental">
@@ -25200,6 +25284,7 @@
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="distance"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="9379" article="a" name="heavy metal t-shirt">
@@ -25287,6 +25372,7 @@
 		<attribute key="weight" value="3000"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="9385" article="a" name="club of the fury">
@@ -25309,6 +25395,7 @@
 		<attribute key="weight" value="2500"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="9387" article="a" name="poet's fencing quill">
@@ -27135,6 +27222,7 @@
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="10389" article="a" name="sai">
@@ -27149,6 +27237,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="10390" article="a" name="Zaoan sword">
@@ -27184,6 +27273,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="10392" article="a" name="twin hooks">
@@ -27205,6 +27295,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="10393" article="a" name="dead wailing widow">
@@ -27284,6 +27375,7 @@
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="10407" article="a" name="shaggy tail">
@@ -28788,6 +28880,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="11658" name="draken sulphur">
@@ -30647,6 +30740,7 @@
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="12684" article="a" name="dead deepling">
@@ -30789,6 +30883,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="12734" article="a" name="shimmer ball">
@@ -31814,6 +31909,7 @@
 			<attribute key="level" value="38"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item fromid="13988" toid="13989" name="shallow water">
@@ -32203,6 +32299,7 @@
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="14044" article="a" name="deepling claw">
@@ -32559,6 +32656,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="14247" article="an" name="ornate crossbow">
@@ -32575,6 +32673,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="14248" article="a" name="deepling backpack">
@@ -32836,6 +32935,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="14769" article="a" name="spellbook of ancient arcana">
@@ -34507,6 +34607,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="16164" article="a" name="mycological bow">
@@ -34530,6 +34631,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="16165" article="a" name="pet pig">
@@ -35963,6 +36065,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="17829" article="a" name="buckle">
@@ -39318,6 +39421,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="19357" article="a" name="shrunken head necklace">
@@ -39382,6 +39486,7 @@
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="19363" article="a" name="runic ice shield">
@@ -39523,6 +39628,7 @@
 			<attribute key="level" value="75"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item fromid="19401" toid="19404" article="a" name="sand">
@@ -39852,6 +39958,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20068" article="an" name="umbral slayer">
@@ -39873,6 +39980,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20069" article="an" name="umbral master slayer">
@@ -39895,6 +40003,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20070" article="a" name="crude umbral axe">
@@ -39969,6 +40078,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20074" article="an" name="umbral chopper">
@@ -39990,6 +40100,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20075" article="an" name="umbral master chopper">
@@ -40012,6 +40123,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20076" article="a" name="crude umbral mace">
@@ -40086,6 +40198,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20080" article="an" name="umbral hammer">
@@ -40107,6 +40220,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20081" article="an" name="umbral master hammer">
@@ -40129,6 +40243,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20082" article="a" name="crude umbral bow">
@@ -40145,6 +40260,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20083" article="an" name="umbral bow">
@@ -40168,6 +40284,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20084" article="an" name="umbral master bow">
@@ -40192,6 +40309,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20085" article="a" name="crude umbral crossbow">
@@ -40208,6 +40326,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20086" article="an" name="umbral crossbow">
@@ -40231,6 +40350,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20087" article="an" name="umbral master crossbow">
@@ -40255,6 +40375,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="20088" article="a" name="crude umbral spellbook">
@@ -41837,6 +41958,7 @@
 			<attribute key="level" value="60"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="21174" article="a" name="mino lance">
@@ -41872,6 +41994,7 @@
 			<attribute key="level" value="55"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="21177" article="a" name="cowtana">
@@ -41903,6 +42026,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="21179" article="a" name="glooth blade">
@@ -41920,6 +42044,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="21180" article="a" name="glooth axe">
@@ -41937,6 +42062,7 @@
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="21181" name="RESERVED SPRITE"/>
@@ -44213,6 +44339,7 @@ Awarded by TibiaMisterios.com.br"/>
 			<attribute key="level" value="50"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="22172" article="an" name="ogre choppa">
@@ -44226,6 +44353,7 @@ Awarded by TibiaMisterios.com.br"/>
 			<attribute key="level" value="25"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="22173" name="RESERVED SPRITE"/>
@@ -45070,6 +45198,7 @@ Awarded by TibiaMisterios.com.br"/>
 			<attribute key="level" value="70"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="22728" article="a" name="vexclaw talon" plural="vexclaw talons">
@@ -45563,6 +45692,7 @@ Awarded by TibiaMisterios.com.br"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="22867" article="a" name="rift crossbow">
@@ -45586,6 +45716,7 @@ Awarded by TibiaMisterios.com.br"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="22868" article="a" name="golden goblet">
@@ -51617,6 +51748,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="27451" article="an" name="axe of destruction">
@@ -51657,6 +51789,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="27453" article="a" name="mace of destruction">
@@ -51697,6 +51830,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="27455" article="a" name="bow of destruction">
@@ -51719,6 +51853,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="27456" article="a" name="crossbow of destruction">
@@ -51741,6 +51876,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="27457" article="a" name="wand of destruction">
@@ -54069,6 +54205,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="28719" article="a" name="falcon plate">
@@ -54173,6 +54310,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="28724" article="a" name="falcon battleaxe">
@@ -54196,6 +54334,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="28725" article="a" name="falcon mace">
@@ -55115,6 +55254,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="weight" value="1989"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="axe"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="29287" article="a" name="blue crystal">
@@ -55332,6 +55472,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="29418" article="a" name="living armor">
@@ -55375,6 +55516,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="29420" article="a" name="shoulder plate">
@@ -57177,6 +57319,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="30394" name="cobra boots">
@@ -59028,6 +59171,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="31582" article="a" name="galea mortis">
@@ -59168,6 +59312,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="31615" article="a" name="pick">
@@ -61614,6 +61759,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="32617" article="a" name="fabulous legs">
@@ -63879,6 +64025,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="34084" article="a" name="soulbiter">
@@ -63930,6 +64077,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="34086" article="a" name="soulcrusher">
@@ -63981,6 +64129,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="34088" article="a" name="soulbleeder">
@@ -64008,6 +64157,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="34089" article="a" name="soulpiercer">
@@ -64035,6 +64185,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="34090" article="a" name="soultainter">
@@ -64451,6 +64602,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="34151" article="a" name="lion rod">
@@ -65775,6 +65927,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="35515" article="a" name="throwing axe">
@@ -65846,6 +65999,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="35519" name="makeshift boots">
@@ -67243,6 +67397,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="36658" article="a" name="gilded eldritch claymore">
@@ -67267,6 +67422,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="36659" article="a" name="eldritch warmace">
@@ -67290,6 +67446,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="36660" article="a" name="gilded eldritch warmace">
@@ -67338,6 +67495,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="36662" article="a" name="gilded eldritch greataxe">
@@ -67362,6 +67520,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="36663" article="a" name="eldritch cuirass">
@@ -67407,6 +67566,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="36665" article="a" name="gilded eldritch bow">
@@ -67433,6 +67593,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="36666" article="a" name="eldritch quiver">
@@ -71483,6 +71644,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="39160" article="a" name="naga quiver">
@@ -75151,6 +75313,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43871" article="a" name="grand sanguine razor">
@@ -75175,6 +75338,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="sword"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43872" article="a" name="sanguine bludgeon">
@@ -75199,6 +75363,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43873" article="a" name="grand sanguine bludgeon">
@@ -75223,6 +75388,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="club"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43874" article="a" name="sanguine battleaxe">
@@ -75247,6 +75413,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43875" article="a" name="grand sanguine battleaxe">
@@ -75271,6 +75438,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="axe"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43876" article="a" name="sanguine legs">
@@ -75313,6 +75481,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43878" article="a" name="grand sanguine bow">
@@ -75340,6 +75509,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43879" article="a" name="sanguine crossbow">
@@ -75367,6 +75537,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43880" article="a" name="grand sanguine crossbow">
@@ -75394,6 +75565,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="two-handed"/>
 		</attribute>
 	</item>
 	<item id="43881" article="a" name="sanguine greaves">

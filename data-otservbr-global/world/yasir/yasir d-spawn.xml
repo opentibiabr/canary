@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<spawns>
+	<spawn centerx="32870" centery="33039" centerz="6" radius="1">
+		<npc name="Yasir" x="0" y="0" z="6" spawntime="60" direction="2" />
+	</spawn>
+</spawns>

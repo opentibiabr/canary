@@ -357,6 +357,21 @@
 	<npc centerx="32096" centery="32219" centerz="5" radius="1">
 		<npc name="Asralius" x="0" y="0" z="5" spawntime="60" />
 	</npc>
+	<npc centerx="32193" centery="32293" centerz="5" radius="1">
+		<npc name="Nah'Bob" x="0" y="0" z="5" spawntime="60" />
+	</npc>
+	<npc centerx="32200" centery="32293" centerz="5" radius="1">
+		<npc name="Rashid" x="0" y="0" z="5" spawntime="60" />
+	</npc>
+	<npc centerx="32208" centery="32293" centerz="5" radius="1">
+		<npc name="Yaman" x="0" y="0" z="5" spawntime="60" />
+	</npc>
+	<npc centerx="32193" centery="32299" centerz="5" radius="1">
+		<npc name="Haroun" x="0" y="0" z="5" spawntime="60" />
+	</npc>
+	<npc centerx="32208" centery="32300" centerz="5" radius="1">
+		<npc name="Alesar" x="0" y="0" z="5" spawntime="60" />
+	</npc>
 	<npc centerx="33618" centery="32372" centerz="5" radius="1">
 		<npc name="Eruaran" x="0" y="0" z="5" spawntime="60" />
 	</npc>
@@ -839,6 +854,9 @@
 	</npc>
 	<npc centerx="32826" centery="32574" centerz="6" radius="1">
 		<npc name="Hairycles" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="33710" centery="32602" centerz="6" radius="1">
+		<npc name="Hawkhurst Ingol" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="33047" centery="32622" centerz="6" radius="1">
 		<npc name="Ubaid" x="0" y="0" z="6" spawntime="60" />
@@ -1551,6 +1569,9 @@
 	<npc centerx="33189" centery="31982" centerz="7" radius="1">
 		<npc name="Scrutinon" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="33356" centery="31982" centerz="7" radius="1">
+		<npc name="Hawkhurst" x="0" y="0" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="33479" centery="31986" centerz="7" radius="1">
 		<npc name="Captain Gulliver" x="0" y="0" z="7" spawntime="60" />
 	</npc>
@@ -2106,6 +2127,9 @@
 	<npc centerx="32259" centery="32881" centerz="7" radius="1">
 		<npc name="Evan" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="33181" centery="32883" centerz="7" radius="1">
+		<npc name="Tonar" x="0" y="0" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="33066" centery="32886" centerz="7" radius="1">
 		<npc name="Feizuhl" x="0" y="0" z="7" spawntime="60" />
 	</npc>
@@ -2114,6 +2138,9 @@
 	</npc>
 	<npc centerx="32131" centery="32914" centerz="7" radius="1">
 		<npc name="Captain Waverider (Island)" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="33068" centery="32917" centerz="7" radius="1">
+		<npc name="Tonar Oskayaat" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32043" centery="32931" centerz="7" radius="1">
 		<npc name="Captain Waverider" x="0" y="0" z="7" spawntime="60" />
@@ -2316,6 +2343,9 @@
 	<npc centerx="33153" centery="32984" centerz="8" radius="1">
 		<npc name="Brutus" x="0" y="0" z="8" spawntime="60" />
 	</npc>
+	<npc centerx="32205" centery="33661" centerz="8" radius="1">
+		<npc name="Runtel Blackspark" x="-1" y="0" z="8" spawntime="60" />
+	</npc>
 	<npc centerx="33221" centery="31049" centerz="9" radius="1">
 		<npc name="Rebel" x="0" y="0" z="9" spawntime="60" />
 	</npc>
@@ -2330,6 +2360,18 @@
 	</npc>
 	<npc centerx="33419" centery="31125" centerz="9" radius="1">
 		<npc name="A Strange Chalice" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33361" centery="31316" centerz="9" radius="1">
+		<npc name="Oberon'S Bile" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33367" centery="31316" centerz="9" radius="1">
+		<npc name="Oberon'S Hate" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33361" centery="31320" centerz="9" radius="1">
+		<npc name="Oberon'S Spite" x="0" y="0" z="9" spawntime="60" />
+	</npc>
+	<npc centerx="33367" centery="31320" centerz="9" radius="1">
+		<npc name="Oberon'S Ire" x="0" y="0" z="9" spawntime="60" />
 	</npc>
 	<npc centerx="33444" centery="31321" centerz="9" radius="1">
 		<npc name="Rock With A Soft Spot" x="0" y="0" z="9" spawntime="60" />
@@ -2378,18 +2420,6 @@
 	</npc>
 	<npc centerx="33007" centery="31891" centerz="9" radius="1">
 		<npc name="Gnomission" x="0" y="0" z="9" spawntime="60" />
-	</npc>
-	<npc centerx="33361" centery="31316" centerz="9" radius="1">
-		<npc name="Oberon's Bile" x="0" y="0" z="9" spawntime="60" />
-	</npc>
-	<npc centerx="33367" centery="31316" centerz="9" radius="1">
-		<npc name="Oberon's Hate" x="0" y="0" z="9" spawntime="60" />
-	</npc>
-	<npc centerx="33361" centery="31320" centerz="9" radius="1">
-		<npc name="Oberon's Spite" x="0" y="0" z="9" spawntime="60" />
-	</npc>
-	<npc centerx="33367" centery="31320" centerz="9" radius="1">
-		<npc name="Oberon's Ire" x="0" y="0" z="9" spawntime="60" />
 	</npc>
 	<npc centerx="32664" centery="31894" centerz="9" radius="1">
 		<npc name="Uzgod" x="0" y="0" z="9" spawntime="60" />
@@ -2845,6 +2875,9 @@
 	<npc centerx="32700" centery="31992" centerz="14" radius="1">
 		<npc name="Rapanaio (Boat)" x="0" y="0" z="14" spawntime="60" />
 	</npc>
+	<npc centerx="34070" centery="32009" centerz="14" radius="1">
+		<npc name="Altar" x="0" y="0" z="14" spawntime="60" />
+	</npc>
 	<npc centerx="32527" centery="32029" centerz="14" radius="1">
 		<npc name="Lunch" x="0" y="0" z="14" spawntime="60" />
 	</npc>
@@ -2980,19 +3013,4 @@
 	<npc centerx="33587" centery="32966" centerz="15" radius="1">
 		<npc name="Gnomish Operative (Raiders)" x="0" y="0" z="15" spawntime="60" />
 	</npc>
-	<npc centerx="33356" centery="31982" centerz="7" radius="1">
-		<npc name="Hawkhurst" x="0" y="0" z="15" spawntime="60" />
-	</npc>
-	<npc centerx="33710" centery="32602" centerz="6" radius="1">
-		<npc name="Hawkhurst Ingol" x="0" y="0" z="15" spawntime="60" />
-	</npc>
-	<npc centerx="34070" centery="32009" centerz="14" radius="1">
-		<npc name="Altar" x="0" y="0" z="15" spawntime="60" />
-	</npc>
-  <npc centerx="33181" centery="32883" centerz="7" radius="1">
-		<npc name="Tonar" x="0" y="0" z="7" spawntime="60" />
-	</npc>
-	<npc centerx="33068" centery="32917" centerz="7" radius="1">
-		<npc name="Tonar Oskayaat" x="0" y="0" z="7" spawntime="60" />
-</npc>
 </npcs>

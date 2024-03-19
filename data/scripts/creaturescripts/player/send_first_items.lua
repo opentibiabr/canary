@@ -59,6 +59,7 @@ local config = {
 			{ 266, 10 }, -- health potion
 			{ 3350, 1 }, -- bow
 			{ 3447, 50 }, -- 50 arrows
+			{ 35562, 1 }, -- quiver
 		},
 	},
 

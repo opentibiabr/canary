@@ -5,8 +5,7 @@ local function ServerSave()
 
 	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_CLOSE) then
 		Game.setGameState(GAME_STATE_CLOSED)
-	end
-	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_SHUTDOWN) then
+	elseif configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_SHUTDOWN) then
 		Game.setGameState(GAME_STATE_SHUTDOWN)
 	end
 

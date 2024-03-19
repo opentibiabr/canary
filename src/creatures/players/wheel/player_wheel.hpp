@@ -454,6 +454,8 @@ public:
 		}
 	}
 
+	WheelGemBasicModifier_t selectBasicModifier2(WheelGemBasicModifier_t modifier1) const;
+
 private:
 	friend class Player;
 	// Reference to the player

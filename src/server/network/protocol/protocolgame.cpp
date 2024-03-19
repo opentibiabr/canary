@@ -2334,10 +2334,10 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 				break;
 		}
 
-		newmsg.add<uint16_t>(shouldAddItem == true ? loot.id : 0);
+		newmsg.add<uint16_t>(g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY, __FUNCTION__) || shouldAddItem == true ? loot.id : 0);
 		newmsg.addByte(difficult);
 		newmsg.addByte(0); // 1 if special event - 0 if regular loot (?)
-		if (shouldAddItem == true) {
+		if (g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY, __FUNCTION__) || shouldAddItem == true) {
 			newmsg.addString(loot.name, "ProtocolGame::parseBestiarysendMonsterData - loot.name");
 			newmsg.addByte(loot.countmax > 0 ? 0x1 : 0x0);
 		}
@@ -3949,6 +3949,10 @@ void ProtocolGame::sendStats() {
 }
 
 void ProtocolGame::sendBasicData() {
+	if (!player) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x9F);
 	if (player->isPremium() || player->isVip()) {
@@ -5921,7 +5925,12 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 	msg.addByte(0xA9);
 	msg.addByte(protection); // 1 / 0
 
-	int32_t dailyStreak = static_cast<int32_t>(player->kv()->scoped("daily-reward")->get("streak")->getNumber());
+	uint8_t dailyStreak = 0;
+	auto dailyRewardKV = player->kv()->scoped("daily-reward")->get("streak");
+	if (dailyRewardKV && dailyRewardKV.has_value()) {
+		dailyStreak = static_cast<uint8_t>(dailyRewardKV->getNumber());
+	}
+
 	msg.addByte(dailyStreak < 2 ? 0 : 1);
 	if (dailyStreak < 2) {
 		msg.addString("Resting Area (no active bonus)", "ProtocolGame::sendRestingStatus - Resting Area (no active bonus)");
@@ -6105,6 +6114,10 @@ void ProtocolGame::sendPartyCreatureShowStatus(std::shared_ptr<Creature> target,
 }
 
 void ProtocolGame::sendPartyPlayerVocation(std::shared_ptr<Player> target) {
+	if (!target) {
+		return;
+	}
+
 	uint32_t cid = target->getID();
 	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
@@ -6124,7 +6137,7 @@ void ProtocolGame::sendPartyPlayerVocation(std::shared_ptr<Player> target) {
 }
 
 void ProtocolGame::sendPlayerVocation(std::shared_ptr<Player> target) {
-	if (!player || oldProtocol) {
+	if (!player || !target || oldProtocol) {
 		return;
 	}
 
@@ -8618,7 +8631,7 @@ void ProtocolGame::sendMonsterPodiumWindow(std::shared_ptr<Item> podium, const P
 }
 
 void ProtocolGame::parseSetMonsterPodium(NetworkMessage &msg) const {
-	if (oldProtocol) {
+	if (!player || oldProtocol) {
 		return;
 	}
 

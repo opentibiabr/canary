@@ -530,6 +530,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 	}
 
 	if (player->isItemAbilityEnabled(slot)) {
+		g_logger().debug("[{}] item ability is already enabled", __FUNCTION__);
 		return 1;
 	}
 

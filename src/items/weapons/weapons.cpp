@@ -221,9 +221,9 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 		} else {
 			damage.origin = ORIGIN_MELEE;
 		}
+
 		damage.primary.type = params.combatType;
 		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-		g_logger().info("[1] Weapon::internalUseWeapon - primary damage: {}", damage.primary.value);
 		damage.secondary.type = getElementType();
 
 		// Cleave damage
@@ -245,11 +245,13 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 		}
 
-		if (params.chainCallback) {
+		if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM, __FUNCTION__) && params.chainCallback) {
 			m_combat->doCombatChain(player, target, params.aggressive);
+			g_logger().debug("Weapon::internalUseWeapon - Chain callback executed.");
 		} else {
 			Combat::doCombatHealth(player, target, damage, params);
 		}
+
 		g_logger().debug("Weapon::internalUseWeapon - cpp callback executed.");
 	}
 
@@ -886,17 +888,26 @@ int32_t WeaponWand::getWeaponDamage(std::shared_ptr<Player> player, std::shared_
 	}
 
 	// If chain system is enabled, calculates magic-based damage
-	int32_t attackSkill;
-	int32_t attackValue;
-	float attackFactor;
-	[[maybe_unused]] int16_t elementAttack;
+	int32_t attackSkill = 0;
+	int32_t attackValue = 0;
+	float attackFactor = 0.0;
+	[[maybe_unused]] int16_t elementAttack = 0;
 	[[maybe_unused]] CombatDamage combatDamage;
 	calculateSkillFormula(player, attackSkill, attackValue, attackFactor, elementAttack, combatDamage);
 
 	auto magLevel = player->getMagicLevel();
 	auto level = player->getLevel();
-	double min = (level / 5.0) + (magLevel + attackValue) / 3.0;
-	double max = (level / 5.0) + (magLevel + attackValue);
+
+	// Check if level is greater than zero before performing division
+	auto levelDivision = level > 0 ? level / 5.0 : 0.0;
+
+	auto totalAttackValue = magLevel + attackValue;
+
+	// Check if magLevel is greater than zero before performing division
+	auto magicLevelDivision = totalAttackValue > 0 ? totalAttackValue / 3.0 : 0.0;
+
+	double min = levelDivision + magicLevelDivision;
+	double max = levelDivision + totalAttackValue;
 
 	// Returns the calculated maximum damage or a random value between the calculated minimum and maximum
 	return maxDamage ? -max : -normal_random(min, max);

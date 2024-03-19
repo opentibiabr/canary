@@ -53,6 +53,9 @@ end
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
+	if not player then
+		return false
+	end
 	local playerId = player:getId()
 
 	if not npcHandler:checkInteraction(npc, creature) then

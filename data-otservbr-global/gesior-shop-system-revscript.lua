@@ -3,21 +3,22 @@
 
 	Originally written by Gesior, modified by slawkens for MyAAC.
 	This script works with TFS 1.3+, otservbr-global and canary
-]]--
+]]
+--
 
 local messageType = MESSAGE_EVENT_ADVANCE
 
 -- don't edit anything below this line
-if(not messageType) then
+if not messageType then
 	messageType = MESSAGE_STATUS_CONSOLE_ORANGE
-	if(not messageType) then
+	if not messageType then
 		messageType = MESSAGE_EVENT_ADVANCE
 	end
 end
 
 function getResults()
 	local resultId = db.storeQuery("SELECT * FROM z_ots_comunication;")
-	if(resultId == false) then
+	if resultId == false then
 		return false
 	end
 
@@ -31,7 +32,7 @@ function getResults()
 		tmp.player = nil
 
 		local player = Player(tmp.name)
-		if(player) then
+		if player then
 			tmp.exist = true
 			tmp.player = player
 
@@ -63,7 +64,7 @@ function shopSystemGlobalEvent.onThink(interval)
 	local added = false
 
 	local results = getResults()
-	if(not results) then
+	if not results then
 		return true
 	end
 
@@ -73,7 +74,7 @@ function shopSystemGlobalEvent.onThink(interval)
 		local action = v.action
 		local delete = v.delete_it
 
-		if(v.exist) then
+		if v.exist then
 			local player = v.player
 			local param1, param2, param3, param4 = v.param1, v.param2, v.param3, v.param4
 			local add_item_type = v.param5
@@ -81,21 +82,21 @@ function shopSystemGlobalEvent.onThink(interval)
 			local received_item, full_weight, items_weight, item_weigth = 0, 0, 0, 0
 			local item_doesnt_exist = false
 
-			if(add_item_type == 'container' or add_item_type == 'item') then
+			if add_item_type == "container" or add_item_type == "item" then
 				local itemType = ItemType(param1)
-				if(not itemType) then -- item doesn't exist
+				if not itemType then -- item doesn't exist
 					print("[ERROR - gesior-shop-system] Invalid item id: " .. param1 .. ". Change/Fix `itemid1` in `z_shop_offers` then delete it from `z_ots_comunication`")
 					item_doesnt_exist = true
 				else
 					local item_weigth = itemType:getWeight()
-					if(add_item_type == 'container') then
+					if add_item_type == "container" then
 						local containerItemType = ItemType(param3)
-						if(not containerItemType) then -- container item doesn't exist
+						if not containerItemType then -- container item doesn't exist
 							print("[ERROR - gesior-shop-system] Invalid container id: " .. param3 .. ". Change/Fix `itemid2` in `z_shop_offers` then delete it from `z_ots_comunication`")
 							item_doesnt_exist = true
 						else
 							local container_weight = containerItemType:getWeight()
-							if(itemType:isRune()) then
+							if itemType:isRune() then
 								items_weight = param4 * item_weigth
 							else
 								items_weight = param4 * itemType:getWeight(param2)
@@ -103,18 +104,18 @@ function shopSystemGlobalEvent.onThink(interval)
 
 							full_weight = items_weight + container_weight
 						end
-					elseif(add_item_type == 'item') then
+					elseif add_item_type == "item" then
 						full_weight = itemType:getWeight(param2)
-						if(itemType:isRune()) then
+						if itemType:isRune() then
 							full_weight = itemType:getWeight()
 						end
 					end
 				end
 
-				if(not item_doesnt_exist) then
+				if not item_doesnt_exist then
 					local free_cap = player:getFreeCapacity()
-					if(full_weight <= free_cap) then
-						if(add_item_type == 'container') then
+					if full_weight <= free_cap then
+						if add_item_type == "container" then
 							local new_container = Game.createItem(param3, 1)
 							for x = 1, param4 do
 								new_container:addItem(param1, param2)
@@ -124,21 +125,21 @@ function shopSystemGlobalEvent.onThink(interval)
 							received_item = player:addItem(param1, param2)
 						end
 
-						if(received_item) then
-							player:sendTextMessage(messageType, "You received >> ".. add_item_name .." << from OTS shop.")
+						if received_item then
+							player:sendTextMessage(messageType, "You received >> " .. add_item_name .. " << from OTS shop.")
 							db.query("DELETE FROM `z_ots_comunication` WHERE `id` = " .. id .. ";")
 							db.query("UPDATE `z_shop_history` SET `trans_state`='realized', `trans_real`=" .. os.time() .. " WHERE comunication_id = " .. id .. ";")
 							player:save()
 							added = true
 						else
-							player:sendTextMessage(messageType, '>> '.. add_item_name ..' << from OTS shop is waiting for you. Please make place for this item in your backpack/hands and wait about '.. interval ..' seconds to get it.')
+							player:sendTextMessage(messageType, ">> " .. add_item_name .. " << from OTS shop is waiting for you. Please make place for this item in your backpack/hands and wait about " .. interval .. " seconds to get it.")
 						end
 					else
-						player:sendTextMessage(messageType, '>> '.. add_item_name ..' << from OTS shop is waiting for you. It weight is '.. (full_weight / 100) ..' oz., you have only '.. (free_cap / 100) ..' oz. free capacity. Put some items in depot and wait about '.. interval ..' seconds to get it.')
+						player:sendTextMessage(messageType, ">> " .. add_item_name .. " << from OTS shop is waiting for you. It weight is " .. (full_weight / 100) .. " oz., you have only " .. (free_cap / 100) .. " oz. free capacity. Put some items in depot and wait about " .. interval .. " seconds to get it.")
 					end
 				end
-			elseif(add_item_type == 'addon') then
-				player:sendTextMessage(messageType, "You received >> ".. add_item_name .." << from OTS shop.")
+			elseif add_item_type == "addon" then
+				player:sendTextMessage(messageType, "You received >> " .. add_item_name .. " << from OTS shop.")
 				player:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
 				player:addOutfitAddon(param1, param3)
 				player:addOutfitAddon(param2, param4)
@@ -146,9 +147,9 @@ function shopSystemGlobalEvent.onThink(interval)
 				db.query("UPDATE `z_shop_history` SET `trans_state`='realized', `trans_real`=" .. os.time() .. " WHERE comunication_id = " .. id .. ";")
 				player:save()
 				added = true
-			elseif(add_item_type == 'mount') then
+			elseif add_item_type == "mount" then
 				player:addMount(param1)
-				player:sendTextMessage(messageType, "You received >> ".. add_item_name .." << from OTS shop.")
+				player:sendTextMessage(messageType, "You received >> " .. add_item_name .. " << from OTS shop.")
 				player:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
 
 				db.query("DELETE FROM `z_ots_comunication` WHERE `id` = " .. id .. ";")
@@ -158,7 +159,7 @@ function shopSystemGlobalEvent.onThink(interval)
 			end
 		end
 
-		if(added) then
+		if added then
 			addedItems = addedItems + 1
 		else
 			waitingItems = waitingItems + 1

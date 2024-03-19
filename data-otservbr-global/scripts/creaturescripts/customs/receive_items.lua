@@ -3,7 +3,6 @@
 local playerLogin = CreatureEvent("ItemsToWinLogin")
 
 function playerLogin.onLogin(player)
-
 	local itemsCreated = {}
 	local items = {}
 
@@ -14,10 +13,10 @@ function playerLogin.onLogin(player)
 
 	repeat
 		items[#items + 1] = {
-			transaction_id = Result.getNumber(resultId, 'id'),
-			id = Result.getNumber(resultId, 'item_id'),
-			name = Result.getString(resultId, 'item_name'),
-			count = Result.getNumber(resultId, 'item_count'),
+			transaction_id = Result.getNumber(resultId, "id"),
+			id = Result.getNumber(resultId, "item_id"),
+			name = Result.getString(resultId, "item_name"),
+			count = Result.getNumber(resultId, "item_count"),
 		}
 	until not Result.next(resultId)
 	Result.free(resultId)

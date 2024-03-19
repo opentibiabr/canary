@@ -1,5 +1,5 @@
 local events = {
---
-"AnimationUp",
---
+	--
+	"AnimationUp",
+	--
 }

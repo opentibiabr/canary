@@ -32,6 +32,47 @@ const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot1Allowed = {
 	WheelGemBasicModifier_t::Vocation_Health_IceResistance,
 	WheelGemBasicModifier_t::Vocation_Health_EnergyResistance,
 	WheelGemBasicModifier_t::Vocation_Health_EarthResistance,
+	WheelGemBasicModifier_t::Vocation_Mana_FireResistance,
+	WheelGemBasicModifier_t::Vocation_Mana_EnergyResistance,
+	WheelGemBasicModifier_t::Vocation_Mana_Earth_Resistance,
+	WheelGemBasicModifier_t::Vocation_Mana_Ice_Resistance,
+	WheelGemBasicModifier_t::Vocation_Capacity_FireResistance,
+	WheelGemBasicModifier_t::Vocation_Capacity_EnergyResistance,
+	WheelGemBasicModifier_t::Vocation_Capacity_EarthResistance,
+	WheelGemBasicModifier_t::Vocation_Capacity_IceResistance,
+};
+
+const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot2Allowed = {
+	WheelGemBasicModifier_t::General_FireResistance,
+	WheelGemBasicModifier_t::General_IceResistance,
+	WheelGemBasicModifier_t::General_EnergyResistance,
+	WheelGemBasicModifier_t::General_EarthResistance,
+	WheelGemBasicModifier_t::General_PhysicalResistance,
+	WheelGemBasicModifier_t::General_HolyResistance,
+	WheelGemBasicModifier_t::General_HolyResistance_DeathWeakness,
+	WheelGemBasicModifier_t::General_DeathResistance_HolyWeakness,
+	WheelGemBasicModifier_t::General_FireResistance_EarthResistance,
+	WheelGemBasicModifier_t::General_FireResistance_IceResistance,
+	WheelGemBasicModifier_t::General_FireResistance_EnergyResistance,
+	WheelGemBasicModifier_t::General_EarthResistance_IceResistance,
+	WheelGemBasicModifier_t::General_EarthResistance_EnergyResistance,
+	WheelGemBasicModifier_t::General_IceResistance_EnergyResistance,
+	WheelGemBasicModifier_t::General_FireResistance_EarthWeakness,
+	WheelGemBasicModifier_t::General_FireResistance_IceWeakness,
+	WheelGemBasicModifier_t::General_FireResistance_EnergyWeakness,
+	WheelGemBasicModifier_t::General_EarthResistance_FireWeakness,
+	WheelGemBasicModifier_t::General_EarthResistance_IceWeakness,
+	WheelGemBasicModifier_t::General_EarthResistance_EnergyWeakness,
+	WheelGemBasicModifier_t::General_IceResistance_EarthWeakness,
+	WheelGemBasicModifier_t::General_IceResistance_FireWeakness,
+	WheelGemBasicModifier_t::General_IceResistance_EnergyWeakness,
+	WheelGemBasicModifier_t::General_EnergyResistance_EarthWeakness,
+	WheelGemBasicModifier_t::General_EnergyResistance_IceWeakness,
+	WheelGemBasicModifier_t::General_EnergyResistance_FireWeakness,
+	WheelGemBasicModifier_t::General_ManaDrainResistance,
+	WheelGemBasicModifier_t::General_LifeDrainResistance,
+	WheelGemBasicModifier_t::General_ManaDrainResistance_LifeDrainResistance,
+	WheelGemBasicModifier_t::General_MitigationMultiplier,
 };
 
 // To avoid conflict in other files that might use a function with the same name
@@ -835,7 +876,7 @@ void PlayerWheel::revealGem(WheelGemQuality_t quality) {
 	gem.basicModifier2 = {};
 	gem.supremeModifier = {};
 	if (quality >= WheelGemQuality_t::Regular) {
-		gem.basicModifier2 = static_cast<WheelGemBasicModifier_t>(uniform_random(0, magic_enum::enum_count<WheelGemBasicModifier_t>() - 1));
+		gem.basicModifier2 = selectBasicModifier2(gem.basicModifier1);
 	}
 	if (quality >= WheelGemQuality_t::Greater && !supremeModifiers.empty()) {
 		gem.supremeModifier = supremeModifiers[uniform_random(0, supremeModifiers.size() - 1)];
@@ -3105,4 +3146,12 @@ float PlayerWheel::calculateMitigation() const {
 	float mitigation = std::ceil(((((skill * m_player.vocation->mitigationFactor) + (shieldFactor * (float)defenseValue)) / 100.0f) * fightFactor * distanceFactor) * 100.0f) / 100.0f;
 	mitigation += (mitigation * (float)getMitigationMultiplier()) / 100.f;
 	return mitigation;
+}
+
+WheelGemBasicModifier_t PlayerWheel::selectBasicModifier2(WheelGemBasicModifier_t modifier1) const {
+	WheelGemBasicModifier_t modifier = modifier1;
+	while (modifier == modifier1) {
+		modifier = wheelGemBasicSlot2Allowed[uniform_random(0, wheelGemBasicSlot2Allowed.size() - 1)];
+	}
+	return modifier;
 }

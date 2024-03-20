@@ -846,7 +846,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		output->addString(ss.str(), "ProtocolGame::onRecvFirstMessage - ss.str()");
 		send(output);
 		g_dispatcher().scheduleEvent(
-			1000, [self = getThis()] { self->disconnect();}, "ProtocolGame::disconnect"
+			1000, [self = getThis()] { self->disconnect(); }, "ProtocolGame::disconnect"
 		);
 		return;
 	}
@@ -924,7 +924,8 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 	if (player && recvbyte != 0xD3) {
 		g_dispatcher().addEvent([playerId = player->getID(), &msg, recvbyte] {
 			g_modules().executeOnRecvbyte(playerId, msg, recvbyte);
-			}, "Modules::executeOnRecvbyte");
+		},
+								"Modules::executeOnRecvbyte");
 	}
 
 	g_dispatcher().addEvent([self = getThis(), msg, recvbyte] { self->parsePacketFromDispatcher(msg, recvbyte); }, "ProtocolGame::parsePacketFromDispatcher");
@@ -947,7 +948,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 		}
 
 		g_dispatcher().scheduleEvent(
-			100, [self = getThis()] { self->sendPing ();}, "ProtocolGame::sendPing"
+			100, [self = getThis()] { self->sendPing(); }, "ProtocolGame::sendPing"
 		);
 
 		if (!player->spawn()) {
@@ -965,7 +966,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 	if (recvbyte == 0x1D) {
 		// keep the connection alive
 		g_dispatcher().scheduleEvent(
-			100, [self = getThis()] { self->sendPingBack ();}, "ProtocolGame::sendPingBack"
+			100, [self = getThis()] { self->sendPingBack(); }, "ProtocolGame::sendPingBack"
 		);
 		return;
 	}

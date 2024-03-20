@@ -36,6 +36,7 @@ public:
 	void addPoints(uint16_t toAddPoints);
 	void removePoints(uint16_t toRemovePoints);
 	std::vector<std::pair<uint16_t, uint32_t>> getUnlockedAchievements() const;
+	void loadUnlockedAchievements();
 	void sendUnlockedSecretAchievements();
 	const std::shared_ptr<KV> &getUnlockedKV();
 

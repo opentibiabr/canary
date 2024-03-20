@@ -946,7 +946,7 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 	}
 
 	const auto &weaponType = weapon->getWeaponType();
-	if (weaponType == WEAPON_NONE || weaponType == WEAPON_SHIELD || weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
+	if (weaponType == WEAPON_NONE || weaponType == WEAPON_SHIELD || weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE) {
 		return;
 	}
 

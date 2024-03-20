@@ -906,19 +906,16 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 			m_playerDeathTime++;
 		}
 
-		g_dispatcher().addEvent([self = getThis(), recvbyte] { self->parsePacketDead(recvbyte); }, "ProtocolGame::parsePacketDead");
+		parsePacketDead(recvbyte);
 		return;
 	}
 
 	// Modules system
 	if (player && recvbyte != 0xD3) {
-		g_dispatcher().addEvent([playerId = player->getID(), &msg, recvbyte] {
-			g_modules().executeOnRecvbyte(playerId, msg, recvbyte);
-		},
-								"Modules::executeOnRecvbyte");
+		g_modules().executeOnRecvbyte(player->getID(), msg, recvbyte);
 	}
 
-	g_dispatcher().addEvent([self = getThis(), msg, recvbyte] { self->parsePacketFromDispatcher(msg, recvbyte); }, "ProtocolGame::parsePacketFromDispatcher");
+	parsePacketFromDispatcher(msg, recvbyte);
 }
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
@@ -928,7 +925,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}
 		disconnect();
-		g_dispatcher().addEvent([payerGUID = player->getGUID()] { IOLoginData::updateOnlineStatus(payerGUID, false); }, "IOLoginData::updateOnlineStatus");
+		IOLoginData::updateOnlineStatus(player->getGUID(), false);
 		return;
 	}
 
@@ -947,8 +944,8 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_dispatcher().addEvent([self = getThis(), player = player] { self->sendAddCreature(player, player->getPosition(), 0, false); }, "ProtocolGame::sendAddCreature");
-		g_dispatcher().addEvent([self = getThis()] { self->addBless(); }, "ProtocolGame::addBless");
+		sendAddCreature(player, player->getPosition(), 0, false);
+		addBless();
 		resetPlayerDeathTime();
 		return;
 	}

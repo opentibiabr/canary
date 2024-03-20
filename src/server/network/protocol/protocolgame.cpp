@@ -844,11 +844,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		output->addByte(0x14);
 		output->addString(ss.str(), "ProtocolGame::onRecvFirstMessage - ss.str()");
 		send(output);
-		g_dispatcher().scheduleEvent(1000, std::bind(&ProtocolGame::disconnect, getThis()), "ProtocolGame::disconnect");
+		g_dispatcher().scheduleEvent(
+			1000, [self = getThis()] { self->disconnect();}, "ProtocolGame::disconnect"
+		);
 		return;
 	}
 
-	g_dispatcher().addEvent(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem), "ProtocolGame::login");
+	g_dispatcher().addEvent([self = getThis(), characterName, accountId, operatingSystem] { self->login(characterName, accountId, operatingSystem); }, "ProtocolGame::login");
 }
 
 void ProtocolGame::onConnect() {
@@ -913,16 +915,18 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 			m_playerDeathTime++;
 		}
 
-		g_dispatcher().addEvent(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte), "ProtocolGame::parsePacketDead");
+		g_dispatcher().addEvent([self = getThis(), recvbyte] { self->parsePacketDead(recvbyte); }, "ProtocolGame::parsePacketDead");
 		return;
 	}
 
 	// Modules system
 	if (player && recvbyte != 0xD3) {
-		g_dispatcher().addEvent(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte), "Modules::executeOnRecvbyte");
+		g_dispatcher().addEvent([playerId = player->getID(), &msg, recvbyte] {
+			g_modules().executeOnRecvbyte(playerId, msg, recvbyte);
+			}, "Modules::executeOnRecvbyte");
 	}
 
-	g_dispatcher().addEvent(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte), "ProtocolGame::parsePacketFromDispatcher");
+	g_dispatcher().addEvent([self = getThis(), msg, recvbyte] { self->parsePacketFromDispatcher(msg, recvbyte); }, "ProtocolGame::parsePacketFromDispatcher");
 }
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
@@ -932,7 +936,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}
 		disconnect();
-		g_dispatcher().addEvent(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false), "IOLoginData::updateOnlineStatus");
+		g_dispatcher().addEvent([payerGUID = player->getGUID()] { IOLoginData::updateOnlineStatus(payerGUID, false); }, "IOLoginData::updateOnlineStatus");
 		return;
 	}
 
@@ -941,7 +945,9 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_dispatcher().scheduleEvent(100, std::bind(&ProtocolGame::sendPing, getThis()), "ProtocolGame::sendPing");
+		g_dispatcher().scheduleEvent(
+			100, [self = getThis()] { self->sendPing ();}, "ProtocolGame::sendPing"
+		);
 
 		if (!player->spawn()) {
 			disconnect();
@@ -949,15 +955,17 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_dispatcher().addEvent(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false), "ProtocolGame::sendAddCreature");
-		g_dispatcher().addEvent(std::bind(&ProtocolGame::addBless, getThis()), "ProtocolGame::addBless");
+		g_dispatcher().addEvent([self = getThis(), player = player] { self->sendAddCreature(player, player->getPosition(), 0, false); }, "ProtocolGame::sendAddCreature");
+		g_dispatcher().addEvent([self = getThis()] { self->addBless(); }, "ProtocolGame::addBless");
 		resetPlayerDeathTime();
 		return;
 	}
 
 	if (recvbyte == 0x1D) {
 		// keep the connection alive
-		g_dispatcher().scheduleEvent(100, std::bind(&ProtocolGame::sendPingBack, getThis()), "ProtocolGame::sendPingBack");
+		g_dispatcher().scheduleEvent(
+			100, [self = getThis()] { self->sendPingBack ();}, "ProtocolGame::sendPingBack"
+		);
 		return;
 	}
 }
@@ -980,7 +988,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 
 	switch (recvbyte) {
 		case 0x14:
-			g_dispatcher().addEvent(std::bind(&ProtocolGame::logout, getThis(), true, false), "ProtocolGame::logout");
+			logout(true, false);
 			break;
 		case 0x1D:
 			addGameTask(&Game::playerReceivePingBack, player->getID());

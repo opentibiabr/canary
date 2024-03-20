@@ -1237,7 +1237,7 @@ void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Cr
 		// need to walk to the creature first before moving it
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(movingCreatureOrigPos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 			const auto &task = createPlayerTask(
 				600, [this, player, movingCreature, toTile, movingCreatureOrigPos] { playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()); }, "Game::playerMoveCreatureByID"
 			);
@@ -1443,7 +1443,8 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		std::shared_ptr<Task> task = createPlayerTask(
 			delay, [this, playerId = player->getID(), fromPos, itemId, fromStackPos, toPos, count] {
 				playerMoveItemByPlayerID(playerId, fromPos, itemId, fromStackPos, toPos, count);
-			}, "Game::playerMoveItemByPlayerID"
+			},
+			"Game::playerMoveItemByPlayerID"
 		);
 		player->setNextActionTask(task);
 		return;
@@ -1539,12 +1540,13 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		// need to walk to the item first before using it
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(item->getPosition(), listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
 			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId = player->getID(), fromPos, itemId, fromStackPos, toPos, count] {
 					playerMoveItemByPlayerID(playerId, fromPos, itemId, fromStackPos, toPos, count);
-				}, "Game::playerMoveItemByPlayerID"
+				},
+				"Game::playerMoveItemByPlayerID"
 			);
 			player->setNextWalkActionTask(task);
 		} else {
@@ -1600,12 +1602,14 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(walkPos, listDir, 0, 0, true, true)) {
-				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
 				std::shared_ptr<Task> task = createPlayerTask(
 					400, [this, playerId = player->getID(), itemPos, itemId, itemStackPos, toPos, count] {
 						playerMoveItemByPlayerID(playerId, itemPos, itemId, itemStackPos, toPos, count);
-					}, "Game::playerMoveItemByPlayerID");
+					},
+					"Game::playerMoveItemByPlayerID"
+				);
 				player->setNextWalkActionTask(task);
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -3499,10 +3503,11 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
 				std::shared_ptr<Task> task = createPlayerTask(
-					400, [this, playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId] { playerUseItemEx(playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId); }, "Game::playerUseItemEx");
+					400, [this, playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId] { playerUseItemEx(playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId); }, "Game::playerUseItemEx"
+				);
 				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 					player->setNextPotionActionTask(task);
 				} else {
@@ -3612,7 +3617,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		if (ret == RETURNVALUE_TOOFARAWAY) {
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
 				std::shared_ptr<Task> task = createPlayerTask(
 					400, [this, playerId, pos, stackPos, index, itemId] { playerUseItem(playerId, pos, stackPos, index, itemId); }, "Game::playerUseItem"
@@ -3756,12 +3761,13 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
 				std::shared_ptr<Task> task = createPlayerTask(
 					400, [this, playerId, itemPos, itemStackPos, creatureId, itemId] {
 						playerUseWithCreature(playerId, itemPos, itemStackPos, creatureId, itemId);
-					}, "Game::playerUseWithCreature"
+					},
+					"Game::playerUseWithCreature"
 				);
 				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 					player->setNextPotionActionTask(task);
@@ -3789,7 +3795,8 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 			delay = player->getNextPotionActionTime();
 		}
 		std::shared_ptr<Task> task = createPlayerTask(
-			delay, [this, playerId, fromPos, fromStackPos, creatureId, itemId] { playerUseWithCreature(playerId, fromPos, fromStackPos, creatureId, itemId); }, "Game::playerUseWithCreature");
+			delay, [this, playerId, fromPos, fromStackPos, creatureId, itemId] { playerUseWithCreature(playerId, fromPos, fromStackPos, creatureId, itemId); }, "Game::playerUseWithCreature"
+		);
 
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			player->setNextPotionActionTask(task);
@@ -3915,12 +3922,13 @@ void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stac
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
 			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId, pos, stackPos, itemId] {
 					playerRotateItem(playerId, pos, stackPos, itemId);
-				}, "Game::playerRotateItem"
+				},
+				"Game::playerRotateItem"
 			);
 			player->setNextWalkActionTask(task);
 		} else {
@@ -3970,7 +3978,7 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 			std::shared_ptr<Task> task;
 			if (isPodiumOfRenown) {
 				task = createPlayerTask(
@@ -4031,7 +4039,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId, pos] { playerBrowseField(playerId, pos); }, "Game::playerBrowseField"
 			);
@@ -4172,7 +4180,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
 			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId, pos, stackPos, itemId] { playerWrapableItem(playerId, pos, stackPos, itemId); }, "Game::playerWrapableItem"
@@ -4353,7 +4361,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 	if (!Position::areInRange<1, 1>(playerPos, pos)) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId, pos] { playerBrowseField(playerId, pos); }, "Game::playerBrowseField"
 			);
@@ -4616,7 +4624,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	if (!Position::areInRange<1, 1>(tradeItemPosition, playerPosition)) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
 			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId, pos, stackPos, tradePlayerId, itemId] { playerRequestTrade(playerId, pos, stackPos, tradePlayerId, itemId); }, "Game::playerRequestTrade"
@@ -5166,7 +5174,9 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		std::shared_ptr<Task> task = createPlayerTask(
 			delay, [this, playerId = player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot] {
 				playerQuickLoot(playerId, pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot);
-			}, "Game::playerQuickLoot");
+			},
+			"Game::playerQuickLoot"
+		);
 		player->setNextActionTask(task);
 		return;
 	}
@@ -5176,11 +5186,13 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 			// need to walk to the corpse first before looting it
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir);	}, "Game::playerAutoWalk");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 				std::shared_ptr<Task> task = createPlayerTask(
 					0, [this, playerId = player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot] {
 						playerQuickLoot(playerId, pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot);
-					}, "Game::playerQuickLoot");
+					},
+					"Game::playerQuickLoot"
+				);
 				player->setNextWalkActionTask(task);
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -9482,7 +9494,8 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId, pos, stackPos, itemId] {
 					playerRotatePodium(playerId, pos, stackPos, itemId);
-				}, "Game::playerRotatePodium"
+				},
+				"Game::playerRotatePodium"
 			);
 			player->setNextWalkActionTask(task);
 		} else {
@@ -10040,7 +10053,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 
 		if (create) {
 			g_dispatcher().scheduleEvent(
-				200 * 1000, [this] { makeInfluencedMonster ();}, "Game::makeInfluencedMonster"
+				200 * 1000, [this] { makeInfluencedMonster(); }, "Game::makeInfluencedMonster"
 			);
 		}
 	} else {
@@ -10280,7 +10293,7 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 		return;
 	}
 
-	const auto& function = [this, playerId = player->getID(), pos, itemId, stackPos, maxMoveItems] {
+	const auto &function = [this, playerId = player->getID(), pos, itemId, stackPos, maxMoveItems] {
 		playerRewardChestCollect(playerId, pos, itemId, stackPos, maxMoveItems);
 	};
 

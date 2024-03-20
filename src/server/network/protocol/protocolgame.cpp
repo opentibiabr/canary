@@ -629,7 +629,9 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_dispatcher().scheduleEvent(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getName(), operatingSystem), "ProtocolGame::connect");
+			eventConnect = g_dispatcher().scheduleEvent(1000,
+				[self = getThis(), playerName = foundPlayer->getName(), operatingSystem] { self->connect(playerName, operatingSystem); }
+			, "ProtocolGame::connect");
 		} else {
 			connect(foundPlayer->getName(), operatingSystem);
 		}

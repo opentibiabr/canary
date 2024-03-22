@@ -74,7 +74,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:kv():get("golden-outfit-quest") < 1 then
-				if player:getMoney() + player:getBankBalance() >= 500000000 then
+				if player:removeMoneyBank(500000000) then
 					local inbox = player:getStoreInbox()
 					local inboxItems = inbox:getItems()
 					if inbox and #inboxItems <= inbox:getMaxCapacity() then
@@ -83,7 +83,6 @@ local function creatureSayCallback(npc, creature, type, message)
 						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a " .. decoItemName .. ".")
 						decoKit:setCustomAttribute("unWrapId", 31510)
 						npcHandler:say("Take this armor as a token of great gratitude. Let us forever remember this day, my friend!", npc, creature)
-						player:removeMoneyBank(500000000)
 						player:addOutfit(1211)
 						player:addOutfit(1210)
 						player:getPosition():sendMagicEffect(CONST_ME_EARLY_THUNDER)
@@ -101,9 +100,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if player:kv():get("golden-outfit-quest") == 1 then
 				if player:kv():get("golden-outfit-quest") < 2 then
-					if player:getMoney() + player:getBankBalance() >= 250000000 then
+					if player:removeMoneyBank(250000000) then
 						npcHandler:say("Take this helmet as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
-						player:removeMoneyBank(250000000)
 						player:addOutfitAddon(1210, 1)
 						player:addOutfitAddon(1211, 1)
 						player:getPosition():sendMagicEffect(CONST_ME_EARLY_THUNDER)
@@ -125,9 +123,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			if player:kv():get("golden-outfit-quest") == 2 then
 				if player:kv():get("golden-outfit-quest") < 3 then
-					if player:getMoney() + player:getBankBalance() >= 250000000 then
+					if player:removeMoneyBank(250000000) then
 						npcHandler:say("Take this boots as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
-						player:removeMoneyBank(250000000)
 						player:addOutfitAddon(1210, 2)
 						player:addOutfitAddon(1211, 2)
 						player:getPosition():sendMagicEffect(CONST_ME_EARLY_THUNDER)

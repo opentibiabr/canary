@@ -1,8 +1,8 @@
-local lastUpdated = 0
-local goldenOutfitCache
+local lastCacheUpdateTime = 0
+local goldenOutfitCache = {}
 
 local function updateGoldenOutfitCache()
-	if os.time() < lastUpdated + 10 * 60 then
+	if os.time() < lastCacheUpdateTime + 10 * 60 then
 		return
 	end
 
@@ -23,7 +23,7 @@ local function updateGoldenOutfitCache()
 		result.free(resultId)
 	end
 
-	lastUpdated = os.time()
+	lastCacheUpdateTime = os.time()
 end
 
 local memorial = Action()
@@ -34,8 +34,8 @@ function memorial.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	local msg = NetworkMessage()
 	msg:addByte(0xB0)
 
-	local prices = { 500000000, 750000000, 1000000000 }
-	for i, price in ipairs(prices) do
+	local goldenOutfitPrices = { 500000000, 750000000, 1000000000 }
+	for i, price in ipairs(goldenOutfitPrices) do
 		msg:addU32(price)
 	end
 
@@ -47,10 +47,11 @@ function memorial.onUse(player, item, fromPosition, target, toPosition, isHotkey
 		end
 	end
 
-	-- royal costume
+	local royalOutfitPrices = { 30000, 25000 }
 	for i = 1, 3 do
-		msg:addU16(0) -- price in silver tokens
-		msg:addU16(0) -- price in golden tokens
+		for j, price in ipairs(royalOutfitPrices) do
+			msg:addU16(price)
+		end
 	end
 
 	for i = 1, 3 do

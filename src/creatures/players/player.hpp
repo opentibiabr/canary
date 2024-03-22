@@ -718,6 +718,12 @@ public:
 	StashItemList getStashItems() const {
 		return stashItems;
 	}
+	bool hasSaveStash() {
+		return saveStash;
+	}
+	void setSaveStash(bool onOff) {
+		saveStash = onOff;
+	}
 
 	uint32_t getBaseCapacity() const {
 		if (hasFlag(PlayerFlags_t::CannotPickupItem)) {

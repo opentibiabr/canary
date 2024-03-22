@@ -2819,7 +2819,10 @@ private:
 	uint16_t storeXpBoost = 0;
 	uint16_t staminaXpBoost = 100;
 	int16_t lastDepotId = -1;
+
+	// Stash
 	StashItemList stashItems; // [ItemID] = amount
+	bool saveStash = false;
 	uint32_t movedItems = 0;
 
 	// Depot search system

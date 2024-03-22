@@ -153,13 +153,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("If you haven't made up your mind, please come back when you are ready.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 14 then
-			if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) < 1 then
+			local royalCostumeOutfitQuest = player:kv():get("royal-costume-outfit-quest") or 0
+			if royalCostumeOutfitQuest < 1 then
 				if player:removeItem(22516, 15000) and player:removeItem(22721, 12500) then
 					npcHandler:say("Take this armor as a token of great gratitude. Let us forever remember this day, my friend!", npc, creature)
 					player:addOutfit(1457)
 					player:addOutfit(1456)
-					player:getPosition():sendMagicEffect(171)
-					player:setStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit, 1)
+					player:getPosition():sendMagicEffect(CONST_ME_EARLY_THUNDER)
+					player:kv():set("royal-costume-outfit-quest", 1)
 				else
 					npcHandler:say("You do not have enough tokens to donate that amount.", npc, creature)
 				end
@@ -168,14 +169,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 13)
 		elseif npcHandler:getTopic(playerId) == 15 then
-			if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) == 1 then
-				if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) < 2 then
+			if player:kv():get("royal-costume-outfit-quest") == 1 then
+				if player:kv():get("royal-costume-outfit-quest") < 2 then
 					if player:removeItem(22516, 7500) and player:removeItem(22721, 6250) then
 						npcHandler:say("Take this sheild as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
 						player:addOutfitAddon(1457, 1)
 						player:addOutfitAddon(1456, 1)
-						player:getPosition():sendMagicEffect(171)
-						player:setStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit, 2)
+						player:getPosition():sendMagicEffect(CONST_ME_EARLY_THUNDER)
+						player:kv():set("royal-costume-outfit-quest", 2)
 						npcHandler:setTopic(playerId, 13)
 					else
 						npcHandler:say("You do not have enough tokens to donate that amount.", npc, creature)
@@ -191,14 +192,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 13)
 		elseif npcHandler:getTopic(playerId) == 16 then
-			if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) == 2 then
-				if player:getStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit) < 3 then
+			if player:kv():get("royal-costume-outfit-quest") == 2 then
+				if player:kv():get("royal-costume-outfit-quest") < 3 then
 					if player:removeItem(22516, 7500) and player:removeItem(22721, 6250) then
 						npcHandler:say("Take this crown as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
 						player:addOutfitAddon(1457, 2)
 						player:addOutfitAddon(1456, 2)
-						player:getPosition():sendMagicEffect(171)
-						player:setStorageValue(Storage.OutfitQuest.RoyalCostumeOutfit, 3)
+						player:getPosition():sendMagicEffect(CONST_ME_EARLY_THUNDER)
+						player:kv():set("royal-costume-outfit-quest", 3)
 						npcHandler:setTopic(playerId, 13)
 					else
 						npcHandler:say("You do not have enough tokens to donate that amount.", npc, creature)

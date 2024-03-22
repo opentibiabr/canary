@@ -148,7 +148,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 		end
 	elseif (MsgContains(message, "armor")) and npcHandler:getTopic(playerId) == 2 then
-		npcHandler:say("So you wold like to donate 500.000.000 gold pieces which in return will entitle you to wear a unique armor?", npc, creature)
+		npcHandler:say("So you would like to donate 500.000.000 gold pieces which in return will entitle you to wear a unique armor?", npc, creature)
 		npcHandler:setTopic(playerId, 3)
 	elseif (MsgContains(message, "helmet")) and npcHandler:getTopic(playerId) == 2 then
 		npcHandler:say("So you would like to donate 250.000.000 gold pieces which in return will entitle you to wear unique helmet?", npc, creature)

@@ -172,7 +172,7 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 		// Load task hunting class
 		IOLoginDataLoad::loadPlayerTaskHuntingClass(player, result);
 
-		// Load instant spells class
+		// Load instant spells list
 		IOLoginDataLoad::loadPlayerInstantSpellList(player, result);
 
 		if (disableIrrelevantInfo) {

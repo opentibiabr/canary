@@ -178,6 +178,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 			return false;
 		}
 	} else {
+		g_logger().debug("[SpawnMonster] Spawning {} at {}", monsterType->name, sb.pos.toString());
 		if (!g_game().placeCreature(monster, sb.pos, false, true)) {
 			return false;
 		}
@@ -258,7 +259,7 @@ void SpawnMonster::checkSpawnMonster() {
 		}
 
 		if (mType->info.isBlockable) {
-			spawnMonster(spawnMonsterId, sb, mType, true);
+			spawnMonster(spawnMonsterId, sb, mType);
 		} else {
 			scheduleSpawn(spawnMonsterId, sb, mType, 3 * NONBLOCKABLE_SPAWN_MONSTER_INTERVAL);
 		}

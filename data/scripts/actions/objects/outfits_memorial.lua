@@ -6,7 +6,7 @@ local function updateGoldenOutfitCache()
 		return
 	end
 
-	goldenOutfitCache = {[1] = {}, [2] = {}, [3] = {}}
+	goldenOutfitCache = { [1] = {}, [2] = {}, [3] = {} }
 
 	local resultId = db.storeQuery("SELECT `key_name`, `timestamp`, `value` FROM `kv_store` WHERE `key_name` = '" .. "golden-outfit-quest" .. "'")
 
@@ -34,7 +34,7 @@ function memorial.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	local msg = NetworkMessage()
 	msg:addByte(0xB0)
 
-	local prices = {500000000, 750000000, 1000000000}
+	local prices = { 500000000, 750000000, 1000000000 }
 	for i, price in ipairs(prices) do
 		msg:addU32(price)
 	end

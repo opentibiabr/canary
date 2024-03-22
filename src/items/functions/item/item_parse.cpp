@@ -1165,14 +1165,16 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 			} else {
 				g_logger().warn("[{}] - wandtype '{}' does not exist", __FUNCTION__, elementName);
 			}
+
 		} else if (stringKey == "chain" && weapon) {
-			if (auto value = subValueAttribute.as_double()) {
-				weapon->setChainSkillValue(value);
-				g_logger().trace("Found chain skill value '{}' for weapon: {}", value, itemType.name);
+			auto doubleValue = subValueAttribute.as_double();
+			if (doubleValue > 0) {
+				weapon->setChainSkillValue(doubleValue);
+				g_logger().trace("Found chain skill value '{}' for weapon: {}", doubleValue, itemType.name);
 			}
-			if (subValueAttribute.as_bool() == false) {
+			if (doubleValue < 0.1 && subValueAttribute.as_bool() == false) {
 				weapon->setDisabledChain();
-				g_logger().warn("Chain disabled for weapon: {}", itemType.name);
+				g_logger().trace("Chain disabled for weapon: {}", itemType.name);
 			}
 		}
 	}
@@ -1182,6 +1184,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 			g_logger().trace("Added weapon damage from '{}', to '{}'", fromDamage, toDamage);
 			weaponWand->setMinChange(fromDamage);
 			weaponWand->setMaxChange(toDamage);
+			weaponWand->configureWeapon(itemType);
 		}
 
 		auto combat = weapon->getCombat();

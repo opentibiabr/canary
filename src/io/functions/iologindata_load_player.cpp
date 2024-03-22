@@ -399,6 +399,7 @@ void IOLoginDataLoad::loadPlayerStashItems(std::shared_ptr<Player> player, DBRes
 			player->addItemOnStash(result->getNumber<uint16_t>("item_id"), result->getNumber<uint32_t>("item_count"));
 		} while (result->next());
 	}
+	player->setSaveStash(false);
 }
 
 void IOLoginDataLoad::loadPlayerBestiaryCharms(std::shared_ptr<Player> player, DBResult_ptr result) {

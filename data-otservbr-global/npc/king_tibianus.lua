@@ -78,7 +78,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("In that case, return to me once you made up your mind.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
-			if player:kv():get("golden-outfit-quest") < 1 then
+			local goldenOutfitQuest = player:kv():get("golden-outfit-quest") or 0
+			if goldenOutfitQuest < 1 then
 				if player:removeMoneyBank(500000000) then
 					local inbox = player:getStoreInbox()
 					local inboxItems = inbox:getItems()

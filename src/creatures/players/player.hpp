@@ -689,8 +689,7 @@ public:
 		auto it = stashItems.find(itemId);
 		if (it != stashItems.end()) {
 			stashItems[itemId] += amount;
-			setSaveStash(true)
-			return;
+			setSaveStash(true) return;
 		}
 
 		stashItems[itemId] = amount;
@@ -712,8 +711,7 @@ public:
 			} else {
 				return false;
 			}
-			setSaveStash(true)
-			return true;
+			setSaveStash(true) return true;
 		}
 		return false;
 	}

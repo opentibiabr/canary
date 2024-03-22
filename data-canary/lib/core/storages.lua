@@ -51,5 +51,10 @@ GlobalStorage = {
 		POIQuest = 6009,
 		InquisitionQuest = 6010,
 		CursedSpreadQuest = 6012,
+		BehemothQuest = 6013,
+		DemonHelmetQuest = 6014,
+		DwarvenQuest = 6015,
+		FeyristQuest = 6016,
+		FireWalkerQuest = 6017,
 	},
 }

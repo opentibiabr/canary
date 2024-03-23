@@ -1649,7 +1649,12 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 			return;
 		}
 	}
-
+	
+	if (isTryingToStow(toPos, toCylinder)) {
+		player->stowItem(item, count, false);
+		return;
+	}
+	
 	ReturnValue ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
@@ -1660,11 +1665,6 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 
 	item->checkDecayMapItemOnMove();
 	
-	if (isTryingToStow(toPos, toCylinder)) {
-		player->stowItem(item, count, false);
-		return;
-	}
-
 	g_events().eventPlayerOnItemMoved(player, item, count, fromPos, toPos, fromCylinder, toCylinder);
 	g_callbacks().executeCallback(EventCallback_t::playerOnItemMoved, &EventCallback::playerOnItemMoved, player, item, count, fromPos, toPos, fromCylinder, toCylinder);
 }

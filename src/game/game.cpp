@@ -1664,7 +1664,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 	player->cancelPush();
 
 	item->checkDecayMapItemOnMove();
-	
+
 	g_events().eventPlayerOnItemMoved(player, item, count, fromPos, toPos, fromCylinder, toCylinder);
 	g_callbacks().executeCallback(EventCallback_t::playerOnItemMoved, &EventCallback::playerOnItemMoved, player, item, count, fromPos, toPos, fromCylinder, toCylinder);
 }

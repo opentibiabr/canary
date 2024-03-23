@@ -1654,18 +1654,11 @@ struct ShopBlock {
 	int32_t itemStorageValue;
 
 	std::vector<ShopBlock> childShop;
-	ShopBlock() {
-		itemId = 0;
-		itemName = "";
-		itemSubType = 0;
-		itemBuyPrice = 0;
-		itemSellPrice = 0;
-		itemStorageKey = 0;
-		itemStorageValue = 0;
-	}
+	ShopBlock() :
+		itemId(0), itemName(""), itemSubType(0), itemBuyPrice(0), itemSellPrice(0), itemStorageKey(0), itemStorageValue(0) { }
 
-	explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "") :
-		itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) { }
+	explicit ShopBlock(uint16_t newItemId, std::string newName = "", int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0) :
+		itemId(newItemId), itemName(std::move(newName)), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue) { }
 
 	bool operator==(const ShopBlock &other) const {
 		return itemId == other.itemId && itemName == other.itemName && itemSubType == other.itemSubType && itemBuyPrice == other.itemBuyPrice && itemSellPrice == other.itemSellPrice && itemStorageKey == other.itemStorageKey && itemStorageValue == other.itemStorageValue && childShop == other.childShop;

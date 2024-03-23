@@ -1374,7 +1374,7 @@ void Combat::doCombatDispel(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 	}
 }
 
-void Combat::doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params) {
+[[maybe_unused]] void Combat::doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params) {
 	doCombatDefault(caster, target, caster ? caster->getPosition() : Position(), params);
 }
 

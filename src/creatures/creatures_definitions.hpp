@@ -124,7 +124,7 @@ enum ConditionType_t : uint8_t {
 
 // constexpr definiting suppressible conditions
 constexpr bool IsConditionSuppressible(ConditionType_t condition) {
-	constexpr ConditionType_t suppressibleConditions[] = {
+	constexpr std::array suppressibleConditions = {
 		CONDITION_POISON,
 		CONDITION_FIRE,
 		CONDITION_ENERGY,
@@ -135,13 +135,9 @@ constexpr bool IsConditionSuppressible(ConditionType_t condition) {
 		CONDITION_CURSED,
 	};
 
-	for (const auto &suppressibleCondition : suppressibleConditions) {
-		if (condition == suppressibleCondition) {
-			return true;
-		}
-	}
-
-	return false;
+	return std::ranges::any_of(suppressibleConditions, [condition](const auto &suppressibleCondition) {
+		return condition == suppressibleCondition;
+	});
 }
 
 enum ConditionParam_t {

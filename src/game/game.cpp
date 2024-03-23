@@ -1518,11 +1518,6 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		return;
 	}
 
-	if (isTryingToStow(toPos, toCylinder)) {
-		player->stowItem(item, count, false);
-		return;
-	}
-
 	if (!item->isPushable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
 		return;
@@ -1664,6 +1659,11 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 	player->cancelPush();
 
 	item->checkDecayMapItemOnMove();
+	
+	if (isTryingToStow(toPos, toCylinder)) {
+		player->stowItem(item, count, false);
+		return;
+	}
 
 	g_events().eventPlayerOnItemMoved(player, item, count, fromPos, toPos, fromCylinder, toCylinder);
 	g_callbacks().executeCallback(EventCallback_t::playerOnItemMoved, &EventCallback::playerOnItemMoved, player, item, count, fromPos, toPos, fromCylinder, toCylinder);

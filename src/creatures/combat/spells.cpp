@@ -727,7 +727,6 @@ uint32_t Spell::getManaCost(std::shared_ptr<Player> player) const {
 	if (manaPercent != 0) {
 		uint32_t maxMana = player->getMaxMana();
 		uint32_t manaCost = (maxMana * manaPercent) / 100;
-		WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 		if (manaRedution > manaCost) {
 			return 0;
 		}
@@ -750,7 +749,7 @@ bool InstantSpell::playerCastInstant(std::shared_ptr<Player> player, std::string
 		var.type = VARIANT_NUMBER;
 		var.number = player->getID();
 	} else if (needTarget || casterTargetOrDirection) {
-		std::shared_ptr<Creature> target = nullptr;
+		std::shared_ptr<Creature> target;
 		bool useDirection = false;
 
 		if (hasParam) {
@@ -1046,7 +1045,7 @@ bool RuneSpell::castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Cr
 bool RuneSpell::internalCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var, bool isHotkey) {
 	bool result;
 	if (isLoadedCallback()) {
-		result = executeCastSpell(creature, var, isHotkey);
+		result = executeCastSpell(std::move(creature), var, isHotkey);
 	} else {
 		result = false;
 	}

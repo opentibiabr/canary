@@ -3878,7 +3878,7 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 bool Player::hasItemCountById(uint16_t itemId, uint32_t itemAmount, bool checkStash) const {
 	uint32_t newCount = 0;
 	// Check items from inventory
-	for (const auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		if (!item || item->getID() != itemId) {
 			continue;
 		}
@@ -4142,14 +4142,14 @@ std::vector<std::shared_ptr<Item>> Player::getEquippedItems() const {
 }
 
 std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const {
-	for (const auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		countMap[static_cast<uint32_t>(item->getID())] += Item::countByType(item, -1);
 	}
 	return countMap;
 }
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
-	for (const auto item : getAllInventoryItems(false, true)) {
+	for (const auto &item : getAllInventoryItems(false, true)) {
 		countMap[item->getID()] += item->getItemCount();
 	}
 
@@ -4157,7 +4157,7 @@ std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t
 }
 
 void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t> &countMap) const {
-	for (const auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		uint16_t itemId = item->getID();
 		if (Item::items[itemId].isFluidContainer()) {
 			countMap[static_cast<uint32_t>(itemId) | (item->getAttribute<uint32_t>(ItemAttribute_t::FLUIDTYPE)) << 16] += item->getItemCount();
@@ -5485,7 +5485,7 @@ void Player::setTibiaCoins(int32_t v) {
 
 int32_t Player::getCleavePercent(bool useCharges) const {
 	int32_t result = cleavePercent;
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &it = Item::items[item->getID()];
 		if (!it.abilities) {
 			continue;
@@ -5511,7 +5511,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 		result = it->second;
 	}
 
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5535,7 +5535,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 
 int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
 	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)];
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5556,7 +5556,7 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 
 int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
 	int32_t result = magicShieldCapacityFlat;
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5577,7 +5577,7 @@ int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
 
 int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 	int32_t result = magicShieldCapacityPercent;
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5598,7 +5598,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 
 int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 	int32_t result = reflectPercent[combatTypeToIndex(combat)];
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5619,7 +5619,7 @@ int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 
 int32_t Player::getReflectFlat(CombatType_t combat, bool useCharges) const {
 	int32_t result = reflectFlat[combatTypeToIndex(combat)];
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5826,7 +5826,7 @@ void Player::setCurrentMount(uint8_t mount) {
 
 bool Player::hasAnyMount() const {
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (hasMount(mount)) {
 			return true;
 		}
@@ -5837,7 +5837,7 @@ bool Player::hasAnyMount() const {
 uint8_t Player::getRandomMountId() const {
 	std::vector<uint8_t> playerMounts;
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (hasMount(mount)) {
 			playerMounts.push_back(mount->id);
 		}
@@ -6241,7 +6241,7 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const {
 	uint64_t coreCount = 0;
 
 	// Check items from inventory
-	for (const auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		if (!item) {
 			continue;
 		}
@@ -7912,7 +7912,7 @@ void Player::parseAttackRecvHazardSystem(CombatDamage &damage, std::shared_ptr<M
 
 	auto points = getHazardSystemPoints();
 	if (m_party) {
-		for (const auto partyMember : m_party->getMembers()) {
+		for (const auto &partyMember : m_party->getMembers()) {
 			if (partyMember && partyMember->getHazardSystemPoints() < points) {
 				points = partyMember->getHazardSystemPoints();
 			}
@@ -7971,7 +7971,7 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, std::shared_ptr<
 
 	auto points = getHazardSystemPoints();
 	if (m_party) {
-		for (const auto partyMember : m_party->getMembers()) {
+		for (const auto &partyMember : m_party->getMembers()) {
 			if (partyMember && partyMember->getHazardSystemPoints() < points) {
 				points = partyMember->getHazardSystemPoints();
 			}

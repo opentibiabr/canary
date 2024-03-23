@@ -2247,7 +2247,7 @@ void ProtocolGame::parseBestiarysendRaces() {
 	for (uint8_t i = BESTY_RACE_FIRST; i <= BESTY_RACE_LAST; i++) {
 		std::string BestClass = "";
 		uint16_t count = 0;
-		for (auto rit : mtype_list) {
+		for (const auto &rit : mtype_list) {
 			const auto mtype = g_monsters().getMonsterType(rit.second);
 			if (!mtype) {
 				return;
@@ -2323,7 +2323,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 	std::vector<LootBlock> lootList = mtype->info.lootItems;
 	newmsg.addByte(lootList.size());
-	for (LootBlock loot : lootList) {
+	for (const LootBlock &loot : lootList) {
 		int8_t difficult = g_iobestiary().calculateDifficult(loot.chance);
 		bool shouldAddItem = false;
 
@@ -2635,7 +2635,7 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 
 	auto party = player->getParty();
 	if (teamAssemble->partyBool && party) {
-		for (std::shared_ptr<Player> member : party->getMembers()) {
+		for (const std::shared_ptr<Player> &member : party->getMembers()) {
 			if (member && member->getGUID() != player->getGUID()) {
 				teamAssemble->membersMap.insert({ member->getGUID(), 3 });
 			}
@@ -2907,7 +2907,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		std::string raceName = msg.getString();
 		race = g_iobestiary().findRaceByName(raceName);
 
-		if (race.size() == 0) {
+		if (race.empty()) {
 			g_logger().warn("[ProtocolGame::parseBestiarysendCreature] - "
 							"Race was not found: {}, search: {}",
 							raceName, search);
@@ -2921,7 +2921,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 	newmsg.add<uint16_t>(race.size());
 	std::map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
 
-	for (auto it_ : race) {
+	for (const auto &it_ : race) {
 		uint16_t raceid_ = it_.first;
 		newmsg.add<uint16_t>(raceid_);
 
@@ -4151,7 +4151,7 @@ void ProtocolGame::sendBasicData() {
 	// Send total size of spells
 	msg.add<uint16_t>(validSpells.size());
 	// Send each spell valid ids
-	for (auto spell : validSpells) {
+	for (const auto &spell : validSpells) {
 		if (!spell) {
 			continue;
 		}
@@ -4488,7 +4488,7 @@ void ProtocolGame::sendContainer(uint8_t cid, std::shared_ptr<Container> contain
 		msg.addByte(0x00);
 	} else if (container->getID() == ITEM_STORE_INBOX && !itemsStoreInboxToSend.empty()) {
 		msg.addByte(std::min<uint32_t>(maxItemsToSend, containerSize));
-		for (const auto item : itemsStoreInboxToSend) {
+		for (const auto &item : itemsStoreInboxToSend) {
 			AddItem(msg, item);
 		}
 	} else {
@@ -4616,7 +4616,7 @@ void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
 	msg.add<uint16_t>(itemsToSend);
 
 	uint16_t i = 0;
-	for (ShopBlock shopBlock : shoplist) {
+	for (const ShopBlock &shopBlock : shoplist) {
 		if (++i > itemsToSend) {
 			break;
 		}
@@ -4724,7 +4724,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	auto msgPosition = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	for (ShopBlock shopBlock : shopVector) {
+	for (const ShopBlock &shopBlock : shopVector) {
 		if (shopBlock.itemSellPrice == 0) {
 			continue;
 		}
@@ -5854,7 +5854,7 @@ void ProtocolGame::sendTradeItemRequest(const std::string &traderName, std::shar
 			std::shared_ptr<Container> container = listContainer.front();
 			listContainer.pop_front();
 
-			for (std::shared_ptr<Item> containerItem : container->getItemList()) {
+			for (const std::shared_ptr<Item> &containerItem : container->getItemList()) {
 				std::shared_ptr<Container> tmpContainer = containerItem->getContainer();
 				if (tmpContainer) {
 					listContainer.push_back(tmpContainer);
@@ -5864,7 +5864,7 @@ void ProtocolGame::sendTradeItemRequest(const std::string &traderName, std::shar
 		}
 
 		msg.addByte(itemList.size());
-		for (std::shared_ptr<Item> listItem : itemList) {
+		for (const std::shared_ptr<Item> &listItem : itemList) {
 			AddItem(msg, listItem);
 		}
 	} else {
@@ -6812,7 +6812,7 @@ void ProtocolGame::sendOutfitWindow() {
 		}
 
 		msg.addByte(mounts.size());
-		for (const auto mount : mounts) {
+		for (const auto &mount : mounts) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendOutfitWindow - mount->name");
 		}
@@ -6914,7 +6914,7 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.skipBytes(2);
 
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (player->hasMount(mount)) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendOutfitWindow - mount->name");
@@ -7034,7 +7034,7 @@ void ProtocolGame::sendPodiumWindow(std::shared_ptr<Item> podium, const Position
 	msg.skipBytes(2);
 
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (player->hasMount(mount)) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendPodiumWindow - mount->name");

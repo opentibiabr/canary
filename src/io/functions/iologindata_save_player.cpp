@@ -320,10 +320,6 @@ bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	if (!player->hasSaveStash()) {
-		return true;
-	}
-
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "DELETE FROM `player_stash` WHERE `player_id` = " << player->getGUID();

@@ -5245,11 +5245,13 @@ double Player::getLostPercent() const {
 void Player::learnInstantSpell(const std::string &spellName) {
 	if (!hasLearnedInstantSpell(spellName)) {
 		learnedInstantSpellList.push_front(spellName);
+		setSaveSpells(true);
 	}
 }
 
 void Player::forgetInstantSpell(const std::string &spellName) {
 	learnedInstantSpellList.remove(spellName);
+	setSaveSpells(true);
 }
 
 bool Player::hasLearnedInstantSpell(const std::string &spellName) const {

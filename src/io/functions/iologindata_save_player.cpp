@@ -371,6 +371,8 @@ bool IOLoginDataSave::savePlayerSpells(std::shared_ptr<Player> player) {
 	if (!spellsQuery.execute()) {
 		return false;
 	}
+
+	player->setSaveSpells(false);
 	return true;
 }
 

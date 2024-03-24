@@ -472,7 +472,7 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE then
 			GameStore.processSexChangePurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
-			GameStore.processExpBoostPuchase(player)
+			GameStore.processExpBoostPurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT then
 			GameStore.processTaskHuntingThirdSlot(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT then
@@ -1732,18 +1732,21 @@ function GameStore.processSexChangePurchase(player)
 	player:toggleSex()
 end
 
-function GameStore.processExpBoostPuchase(player)
-	local currentExpBoostTime = player:getExpBoostStamina()
-	local expBoostCount = player:getStorageValue(GameStore.Storages.expBoostCount)
-
-	player:setStoreXpBoost(50)
-	player:setExpBoostStamina(currentExpBoostTime + 3600)
-
-	if expBoostCount == -1 or expBoostCount == 6 then
-		expBoostCount = 1
-	end
-
-	player:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)
+function GameStore.processExpBoostPurchase(player)
+    local currentExpBoostTime = player:getExpBoostStamina()
+    local expBoostCount = player:getStorageValue(GameStore.Storages.expBoostCount)
+    local baseExpBoostValue = 30
+    local additionalExpBoostTime = 3600
+    
+    if expBoostCount < 0 or expBoostCount >= 6 then
+        expBoostCount = 0
+    end
+    
+    local currentExpBoostPrice = baseExpBoostValue * (2 ^ expBoostCount)
+    
+    player:setStoreXpBoost(currentExpBoostPrice)
+    player:setExpBoostStamina(currentExpBoostTime + additionalExpBoostTime)
+    player:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)
 end
 
 function GameStore.processPreyThirdSlot(player)

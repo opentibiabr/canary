@@ -452,7 +452,6 @@ void Npc::onPlayerCheckItem(std::shared_ptr<Player> player, uint16_t itemId, uin
 		return;
 	}
 
-	const ItemType &itemType = Item::items[itemId];
 	// onPlayerCheckItem(self, player, itemId, subType)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
 	if (callback.startScriptInterface(npcType->info.playerLookEvent)) {

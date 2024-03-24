@@ -727,7 +727,6 @@ uint32_t Spell::getManaCost(std::shared_ptr<Player> player) const {
 	if (manaPercent != 0) {
 		uint32_t maxMana = player->getMaxMana();
 		uint32_t manaCost = (maxMana * manaPercent) / 100;
-		WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 		if (manaRedution > manaCost) {
 			return 0;
 		}

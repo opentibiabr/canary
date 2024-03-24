@@ -283,7 +283,7 @@ bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Playe
 		return true;
 	}
 
-	if (!attacker->getVocation()->canCombat() || !target->getVocation()->canCombat() && (attacker->getVocationId() == VOCATION_NONE || target->getVocationId() == VOCATION_NONE)) {
+	if ((!attacker->getVocation()->canCombat() || !target->getVocation()->canCombat()) && (attacker->getVocationId() == VOCATION_NONE || target->getVocationId() == VOCATION_NONE)) {
 		return true;
 	}
 
@@ -699,7 +699,7 @@ bool Combat::checkFearConditionAffected(std::shared_ptr<Player> player) {
 		auto affectedCount = (party->getMemberCount() + 5) / 5;
 		g_logger().debug("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
 
-		for (const auto member : party->getMembers()) {
+		for (const auto &member : party->getMembers()) {
 			if (member->hasCondition(CONDITION_FEARED)) {
 				affectedCount -= 1;
 			}
@@ -751,7 +751,7 @@ void Combat::CombatConditionFunc(std::shared_ptr<Creature> caster, std::shared_p
 			}
 		}
 
-		if (caster == target || target && !target->isImmune(condition->getType())) {
+		if (caster == target || (target && !target->isImmune(condition->getType()))) {
 			auto conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
@@ -1025,7 +1025,7 @@ bool Combat::doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Cre
 	auto targets = pickChainTargets(caster, params, chainDistance, maxTargets, backtracking, aggressive, target);
 
 	g_logger().debug("[{}] Chain targets: {}", __FUNCTION__, targets.size());
-	if (targets.empty() || targets.size() == 1 && targets.begin()->second.empty()) {
+	if (targets.empty() || (targets.size() == 1 && targets.begin()->second.empty())) {
 		return false;
 	}
 
@@ -2068,7 +2068,7 @@ void AreaCombat::setupExtArea(const std::list<uint32_t> &list, uint32_t rows) {
 
 void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 	// remove magic walls/wild growth
-	if (!isBlocking() && g_game().getWorldType() == WORLD_TYPE_NO_PVP && id == ITEM_MAGICWALL_SAFE || id == ITEM_WILDGROWTH_SAFE) {
+	if ((!isBlocking() && g_game().getWorldType() == WORLD_TYPE_NO_PVP && id == ITEM_MAGICWALL_SAFE) || id == ITEM_WILDGROWTH_SAFE) {
 		if (!creature->isInGhostMode()) {
 			g_game().internalRemoveItem(static_self_cast<Item>(), 1);
 		}
@@ -2083,7 +2083,7 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 		if (ownerId) {
 			bool harmfulField = true;
 			auto itemTile = getTile();
-			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || itemTile && itemTile->hasFlag(TILESTATE_NOPVPZONE)) {
+			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || (itemTile && itemTile->hasFlag(TILESTATE_NOPVPZONE))) {
 				auto ownerPlayer = g_game().getPlayerByGUID(ownerId);
 				if (ownerPlayer) {
 					harmfulField = false;

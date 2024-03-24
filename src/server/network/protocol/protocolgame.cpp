@@ -6645,7 +6645,7 @@ void ProtocolGame::sendOutfitWindow() {
 		}
 
 		msg.addByte(mounts.size());
-		for (const auto mount : mounts) {
+		for (const auto &mount : mounts) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendOutfitWindow - mount->name");
 		}
@@ -6743,7 +6743,7 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.skipBytes(2);
 
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (player->hasMount(mount)) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendOutfitWindow - mount->name");
@@ -6863,7 +6863,7 @@ void ProtocolGame::sendPodiumWindow(std::shared_ptr<Item> podium, const Position
 	msg.skipBytes(2);
 
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (player->hasMount(mount)) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendPodiumWindow - mount->name");

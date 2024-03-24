@@ -720,12 +720,6 @@ public:
 	StashItemList getStashItems() const {
 		return stashItems;
 	}
-	bool hasSaveStash() {
-		return saveStash;
-	}
-	void setSaveStash(bool onOff) {
-		saveStash = onOff;
-	}
 
 	uint32_t getBaseCapacity() const {
 		if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
@@ -2605,11 +2599,23 @@ public:
 
 	bool canSpeakWithHireling(uint8_t speechbubble);
 
+	bool hasSaveStash() {
+		return saveStash;
+	}
+	void setSaveStash(bool onOff) {
+		saveStash = onOff;
+	}
 	bool hasSaveUnjustifiedKills() {
 		return saveUnjustifiedKills;
 	}
 	void setSaveUnjustifiedKills(bool onOff) {
 		saveUnjustifiedKills = onOff;
+	}
+	bool hasSaveSpells() {
+		return saveSpells;
+	}
+	void setSaveSpells(bool onOff) {
+		saveSpells = onOff;
 	}
 
 private:
@@ -2909,6 +2915,7 @@ private:
 	// Otimize Save Players
 	bool saveStash = false;
 	bool saveUnjustifiedKills = false;
+	bool saveSpells = false;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;

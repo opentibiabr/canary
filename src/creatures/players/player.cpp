@@ -5154,6 +5154,7 @@ void Player::addUnjustifiedDead(std::shared_ptr<Player> attacked) {
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, "Warning! The murder of " + attacked->getName() + " was not justified.");
 
 	unjustifiedKills.emplace_back(attacked->getGUID(), time(nullptr), true);
+	setSaveUnjustifiedKills(true);
 
 	uint8_t dayKills = 0;
 	uint8_t weekKills = 0;

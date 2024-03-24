@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -81,7 +81,9 @@ bool ChatChannel::addUser(const std::shared_ptr<Player> &player) {
 	if (id == CHANNEL_GUILD) {
 		const auto guild = player->getGuild();
 		if (guild && !guild->getMotd().empty()) {
-			g_dispatcher().scheduleEvent(150, std::bind(&Game::sendGuildMotd, &g_game(), player->getID()), "Game::sendGuildMotd");
+			g_dispatcher().scheduleEvent(
+				150, [playerId = player->getID()] { g_game().sendGuildMotd(playerId); }, "Game::sendGuildMotd"
+			);
 		}
 	}
 

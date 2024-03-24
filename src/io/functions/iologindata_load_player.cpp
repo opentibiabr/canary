@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -10,6 +10,7 @@
 #include "pch.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
 #include "enums/object_category.hpp"
@@ -886,6 +887,8 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player)
 	// Wheel loading
 	player->wheel()->loadDBPlayerSlotPointsOnLogin();
 	player->wheel()->initializePlayerData();
+
+	player->achiev()->loadUnlockedAchievements();
 
 	player->initializePrey();
 	player->initializeTaskHunting();

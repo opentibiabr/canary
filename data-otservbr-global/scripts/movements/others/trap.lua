@@ -14,11 +14,16 @@ function trap.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if Tile(position):hasFlag(TILESTATE_PROTECTIONZONE) then
+	local tile = Tile(position)
+	if not tile then
 		return true
 	end
 
-	if Tile(position):getItemCountById(3482) > 1 then
+	if tile:hasFlag(TILESTATE_PROTECTIONZONE) then
+		return true
+	end
+
+	if tile:getItemCountById(3482) > 1 then
 		return true
 	end
 
@@ -30,7 +35,7 @@ function trap.onStepIn(creature, item, position, fromPosition)
 		item:transform(trap.transformTo)
 	end
 
-	if item.itemid == 12368 and getCreatureName(creature.uid) == "Starving Wolf" then
+	if item.itemid == 12368 and creature:getName() == "Starving Wolf" then
 		position:sendMagicEffect(CONST_ME_STUN)
 		creature:remove()
 		Game.createItem(12369, 1, position)

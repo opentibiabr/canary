@@ -103,7 +103,7 @@ Storage = {
 	Factions = 30024,
 	-- unused TrainerRoom = 30027,
 	-- unused NpcSpawn = 30028,
-	ExerciseDummyExhaust = 30029,
+	-- unused ExerciseDummyExhaust = 30029,
 	SamsOldBackpack = 30030,
 	SamsOldBackpackDoor = 30031,
 	StrawberryCupcake = 30032,
@@ -131,7 +131,6 @@ Storage = {
 	-- Reserved in Global.Storage.FamiliarSummonEvent60 = 30055
 	ChayenneKeyTime = 30056,
 	FreeQuests = 30057,
-	PremiumAccount = 30058,
 	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
 	PlayerWeaponReward = 30061,
@@ -818,11 +817,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		Afflicted = {
-			Outfit = 50962,
-			AddonPlagueMask = 50963,
-			AddonPlagueBell = 50964,
-		},
 		Citizen = {
 			-- Mission storages for temporary questlog entries
 			MissionHat = 50966,
@@ -2111,12 +2105,15 @@ Storage = {
 				JumpTimer = 41841,
 			},
 			VampireHunter = {},
+			TheMutatedPumpkin = {
+				Skinned = 41860,
+			},
 		},
 		U8_4 = { -- update 8.4 - Reserved Storages 41901 - 42145
 			BloodBrothers = {
 				QuestLine = 41901,
 				Mission01 = 41902,
-				GarlicBread = 41903,
+				-- unused GarlicBread = 41903,
 				Mission02 = 41904,
 				Cookies = {
 					Serafin = 41905,
@@ -2415,7 +2412,6 @@ Storage = {
 			TheColoursOfMagic = {},
 		},
 		U9_1 = { --update 9.1 - Reserved Storages 43351 - 43550
-			AfflictedOutfits = {},
 			AwashWorldChange = {},
 			DemonWarsWorldChange = {},
 			ElementalistOutfits = {},
@@ -2921,7 +2917,6 @@ Storage = {
 	},
 
 	VipSystem = {
-		IsVip = 150001,
 		OnlineCoinsGain = 150002,
 		OnlineTokensGain = 150003,
 	},
@@ -3073,11 +3068,18 @@ GlobalStorage = {
 		AftershockStage = 60176,
 		RuptureResonanceStage = 60177,
 		RuptureResonanceActive = 60178,
-		EradicatorWeak = 60178,
-		EradicatorReleaseT = 60179,
-		OutburstStage = 60180,
-		OutburstHealth = 60181,
-		OutburstChargingKilled = 60182,
+		EradicatorWeak = 60179,
+		EradicatorReleaseT = 60180,
+		OutburstStage = 60181,
+		OutburstHealth = 60182,
+		OutburstChargingKilled = 60183,
+	},
+	WorldBoard = {
+		NightmareIsle = {
+			AnkrahmunNorth = 60191,
+			DarashiaNorth = 60192,
+			DarashiaWest = 60193,
+		},
 	},
 	FuryGates = 65000,
 	Yakchal = 65001,
@@ -3085,15 +3087,14 @@ GlobalStorage = {
 	NaginataStone = 65003,
 	ExpBoost = 65004,
 	SwordOfFury = 65005,
+	GloothFairyTimer = 65006,
 	LionsRockFields = 65007,
 	TheMummysCurse = 65008,
 	OberonEventTime = 65009,
 	PrinceDrazzakEventTime = 65010,
 	ScarlettEtzelEventTime = 65011,
-	CobraBastionFlask = 65012,
 	Inquisition = 65013,
 	Yasir = 65014,
-	NightmareIsle = 65015,
 	IceCrack = 65016,
 	UglyMonster = 65017,
 	KeysUpdate = 40000, -- Reserved storage from 40000 - 40000

@@ -150,15 +150,20 @@ local ACTION = {
 
 -- dream START --
 local function dreamFirst(npc, creature, message, keywords, parameters, node)
-	if isPremium(creature) then
-		if getPlayerStorageValue(creature, storage + 1) == -1 then
-			if getPlayerItemCount(creature, 20276) >= 1 then
-				if doPlayerRemoveItem(creature, 20276, 1) then
-					npcHandler:say(newAddon, npc, creature)
-					doSendMagicEffect(getCreaturePosition(creature), 13)
-					doPlayerAddOutfit(creature, 577, 1)
-					doPlayerAddOutfit(creature, 578, 1)
-					setPlayerStorageValue(creature, storage + 1, 1)
+	local player = Player(creature)
+	if not player then
+		return
+	end
+
+	if player:isPremium() then
+		if player:getStorageValue(storage + 1) < 1 then
+			if player:getItemCount(20276) > 0 then
+				if player:removeItem(20276, 1) then
+					npcHandler:say(newaddon, npc, creature)
+					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+					player:addOutfitAddon(577, 1)
+					player:addOutfitAddon(577, 1)
+					player:setStorageValue(storage + 1, 1)
 				end
 			else
 				npcHandler:say(noItems, npc, creature)
@@ -170,15 +175,20 @@ local function dreamFirst(npc, creature, message, keywords, parameters, node)
 end
 
 local function dreamSecond(npc, creature, message, keywords, parameters, node)
-	if isPremium(creature) then
-		if getPlayerStorageValue(creature, storage) == -1 then
-			if getPlayerItemCount(creature, 20275) >= 1 then
-				if doPlayerRemoveItem(creature, 20275, 1) then
-					npcHandler:say(newAddon, npc, creature)
-					doSendMagicEffect(getCreaturePosition(creature), 13)
-					doPlayerAddOutfit(creature, 577, 2)
-					doPlayerAddOutfit(creature, 578, 2)
-					setPlayerStorageValue(creature, storage, 1)
+	local player = Player(creature)
+	if not player then
+		return
+	end
+
+	if player:isPremium() then
+		if player:getStorageValue(storage) < 1 then
+			if player:getItemCount(20275) > 0 then
+				if player:removeItem(20275, 1) then
+					npcHandler:say(newaddon, npc, creature)
+					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+					player:addOutfitAddon(577, 2)
+					player:addOutfitAddon(577, 2)
+					player:setStorageValue(storage, 1)
 				end
 			else
 				npcHandler:say(noItems, npc, creature)
@@ -192,7 +202,9 @@ end
 
 local function greetCallback(npc, creature)
 	local player = Player(creature)
-	local playerId = player:getId()
+	if not player then
+		return true
+	end
 
 	if player:getStorageValue(Storage.EruaranGreeting) > 0 then
 		npcHandler:setMessage(MESSAGE_GREET, "Ashari Lillithy, so we meet {again}! What brings you here this time, general {information}, {transform}, {improve}, {create}, {outfit}, or {talk}?")
@@ -204,12 +216,16 @@ local function greetCallback(npc, creature)
 end
 
 local function creatureSayCallback(npc, creature, type, message)
-	local player = Player(creature)
-	local playerId = player:getId()
-
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
 	end
+
+	local player = Player(creature)
+	if not player then
+		return true
+	end
+
+	local playerId = player:getId()
 
 	if MsgContains(message, "create") then
 		npcHandler:say("You can try to create {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s and {spellbook}s.", npc, creature)

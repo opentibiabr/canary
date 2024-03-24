@@ -56,18 +56,10 @@ AUTH_TYPE = configManager.getString(configKeys.AUTH_TYPE)
 GLOBAL_CHARM_GUT = 120 -- 20% more chance to get creature products from looting
 GLOBAL_CHARM_SCAVENGE = 125 -- 25% more chance to get creature products from skinning
 
---WEATHER
-weatherConfig = {
-	groundEffect = CONST_ME_LOSEENERGY,
-	fallEffect = CONST_ANI_SMALLICE,
-	thunderEffect = configManager.getBoolean(configKeys.WEATHER_THUNDER),
-	minDMG = 1,
-	maxDMG = 5,
-}
-
 -- Event Schedule
 SCHEDULE_LOOT_RATE = 100
 SCHEDULE_EXP_RATE = 100
+SCHEDULE_BOSS_LOOT_RATE = 100
 SCHEDULE_SKILL_RATE = 100
 SCHEDULE_SPAWN_RATE = 100
 
@@ -85,6 +77,7 @@ SCARLETT_MAY_DIE = 0
 
 ropeSpots = { 386, 421, 386, 7762, 12202, 12936, 14238, 17238, 23363, 21965, 21966, 21967, 21968 }
 specialRopeSpots = { 12935 }
+swimmingTiles = { 629, 630, 631, 632, 633, 634, 4809, 4810, 4811, 4812, 4813, 4814 }
 
 -- Global tables for systems
 if not _G.GlobalBosses then
@@ -106,11 +99,6 @@ end
 
 if not _G.NextUseConcoctionTime then
 	_G.NextUseConcoctionTime = {}
-end
-
--- Delay potion
-if not _G.PlayerDelayPotion then
-	_G.PlayerDelayPotion = {}
 end
 
 table.contains = function(array, value)

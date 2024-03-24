@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '43'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '44'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -312,9 +312,12 @@ CREATE TABLE IF NOT EXISTS `guild_wars` (
     `guild2` int(11) NOT NULL DEFAULT '0',
     `name1` varchar(255) NOT NULL,
     `name2` varchar(255) NOT NULL,
-    `status` tinyint(2) NOT NULL DEFAULT '0',
+    `status` tinyint(2) UNSIGNED NOT NULL DEFAULT '0',
     `started` bigint(15) NOT NULL DEFAULT '0',
     `ended` bigint(15) NOT NULL DEFAULT '0',
+    `frags_limit` smallint(4) UNSIGNED NOT NULL DEFAULT '0',
+    `payment` bigint(13) UNSIGNED NOT NULL DEFAULT '0',
+    `duration_days` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
     INDEX `guild1` (`guild1`),
     INDEX `guild2` (`guild2`),
     CONSTRAINT `guild_wars_pk` PRIMARY KEY (`id`)
@@ -638,12 +641,6 @@ CREATE TABLE IF NOT EXISTS `player_kills` (
     `time` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `target` int(11) NOT NULL,
     `unavenged` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Table structure `player_misc`
-CREATE TABLE IF NOT EXISTS `player_misc` (
-    `player_id` int(11) NOT NULL,
-    `info` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_namelocks`

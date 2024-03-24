@@ -330,6 +330,8 @@ void IOLoginDataLoad::loadPlayerKills(std::shared_ptr<Player> player, DBResult_p
 			time_t killTime = result->getNumber<time_t>("time");
 			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME, __FUNCTION__)) {
 				player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
+			} else {
+				player->setSaveUnjustifiedKills(true);
 			}
 		} while (result->next());
 	}

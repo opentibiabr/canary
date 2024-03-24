@@ -1995,6 +1995,8 @@ bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Posi
 					futurePos.y -= wsize;
 					g_logger().debug("[{}] Trying to flee to NORTHWEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
+				case DIRECTION_NONE:
+					break;
 			}
 
 			found = creature->getPathTo(futurePos, dirList, 0, 30);

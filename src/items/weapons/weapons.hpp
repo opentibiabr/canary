@@ -200,11 +200,11 @@ public:
 		return m_isDisabledChain;
 	}
 
-	const WeaponType_t getWeaponType() const {
+	WeaponType_t getWeaponType() const {
 		return weaponType;
 	}
 
-	const std::shared_ptr<Combat> getCombat() const {
+	std::shared_ptr<Combat> getCombat() const {
 		if (!m_combat) {
 			g_logger().error("Weapon::getCombat() - m_combat is nullptr");
 			return nullptr;

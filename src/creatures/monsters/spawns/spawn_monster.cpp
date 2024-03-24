@@ -39,7 +39,6 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 	this->filemonstername = filemonstername;
 	loaded = true;
 
-	uint32_t eventschedule = g_eventsScheduler().getSpawnMonsterSchedule();
 	std::string boostedNameGet = g_game().getBoostedMonsterName();
 
 	for (auto spawnMonsterNode : doc.child("monsters").children()) {
@@ -88,12 +87,6 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 					static_cast<uint16_t>(centerPos.y + yOffset),
 					centerPos.z
 				);
-
-				int32_t boostedrate = 1;
-
-				if (nameAttribute.value() == boostedNameGet) {
-					boostedrate = 2;
-				}
 
 				pugi::xml_attribute weightAttribute = childMonsterNode.attribute("weight");
 				uint32_t weight = 1;
@@ -343,7 +336,7 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 			g_logger().error("[SpawnMonster] Monster {} already exists in spawn block at {}", name, pos.toString());
 			return false;
 		}
-		if (monsterType->isBoss() && sb->monsterTypes.size() > 0) {
+		if (monsterType->isBoss() && !sb->monsterTypes.empty()) {
 			g_logger().error("[SpawnMonster] Boss monster {} has been added to spawn block with other monsters. This is not allowed.", name);
 			return false;
 		}

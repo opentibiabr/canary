@@ -20,16 +20,18 @@ class Charm {
 public:
 	Charm() = default;
 	Charm(std::string initname, charmRune_t initcharmRune_t, std::string initdescription, charm_t inittype, uint16_t initpoints, int32_t initbinary) :
-		name(initname), id(initcharmRune_t), description(initdescription), type(inittype), points(initpoints), binary(initbinary) { }
+		name(std::move(initname)), id(initcharmRune_t), description(std::move(initdescription)), type(inittype), points(initpoints), binary(initbinary) { }
 	virtual ~Charm() = default;
 
 	std::string name;
+	charmRune_t id = CHARM_NONE;
+	std::string description;
+	charm_t type;
+	uint16_t points = 0;
+	int32_t binary = 0;
 	std::string cancelMsg;
 	std::string logMsg;
-	std::string description;
 
-	charm_t type;
-	charmRune_t id = CHARM_NONE;
 	CombatType_t dmgtype = COMBAT_NONE;
 	uint16_t effect = CONST_ME_NONE;
 
@@ -38,8 +40,6 @@ public:
 
 	uint16_t percent = 0;
 	int8_t chance = 0;
-	uint16_t points = 0;
-	int32_t binary = 0;
 };
 
 class IOBestiary {

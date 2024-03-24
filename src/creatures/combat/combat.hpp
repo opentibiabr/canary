@@ -72,8 +72,8 @@ public:
 private:
 	void onChainCombat(std::shared_ptr<Creature> creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking);
 
-	uint8_t m_chainTargets = 0;
 	uint8_t m_chainDistance = 0;
+	uint8_t m_chainTargets = 0;
 	bool m_backtracking = false;
 	bool m_fromLua = false;
 };
@@ -125,7 +125,7 @@ public:
 			data_[row] = new bool[cols];
 
 			for (uint32_t col = 0; col < cols; ++col) {
-				data_[row][col] = 0;
+				data_[row][col] = false;
 			}
 		}
 	}
@@ -324,7 +324,7 @@ public:
 	}
 	void setPlayerCombatValues(formulaType_t formulaType, double mina, double minb, double maxa, double maxb);
 	void postCombatEffects(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos) const {
-		postCombatEffects(caster, origin, pos, params);
+		postCombatEffects(std::move(caster), origin, pos, params);
 	}
 
 	void setOrigin(CombatOrigin origin) {
@@ -393,7 +393,7 @@ private:
 	 * @param damage The combat damage.
 	 * @return The calculated level formula.
 	 */
-	int32_t getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const;
+	int32_t getLevelFormula(std::shared_ptr<Player> player, std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const;
 	CombatDamage getCombatDamage(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
 
 	// configureable

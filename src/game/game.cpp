@@ -8323,12 +8323,12 @@ std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
 	const auto vocationsMap = g_vocations().getVocations();
 	for (const auto &it : vocationsMap) {
 		const auto &voc = it.second;
-		if (voc.getFromVocation() == vocation) {
+		if (voc->getFromVocation() == vocation) {
 			if (firstVocation) {
-				queryPart << " WHERE `vocation` = " << voc.getId();
+				queryPart << " WHERE `vocation` = " << voc->getId();
 				firstVocation = false;
 			} else {
-				queryPart << " OR `vocation` = " << voc.getId();
+				queryPart << " OR `vocation` = " << voc->getId();
 			}
 		}
 	}

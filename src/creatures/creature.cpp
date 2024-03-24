@@ -258,8 +258,8 @@ void Creature::addEventWalk(bool firstStep) {
 		}
 
 		self->eventWalk = g_dispatcher().scheduleEvent(
-			static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), self->getID()),
-			"Creature::checkCreatureWalk"
+			static_cast<uint32_t>(ticks),
+			[creatureId = self->getID()] { g_game().checkCreatureWalk(creatureId); }, "Creature::checkCreatureWalk"
 		);
 	});
 }
@@ -600,7 +600,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
+			g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -615,7 +615,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 		} else {
 			if (hasExtraSwing()) {
 				// our target is moving lets see if we can get in hit
-				g_dispatcher().addEvent(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+				g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
 			}
 
 			if (newTile->getZoneType() != oldTile->getZoneType()) {
@@ -814,10 +814,10 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 				}
 
 				if (player->checkAutoLoot(monster->isRewardBoss()) && corpseContainer && mostDamageCreature->getPlayer()) {
-					g_dispatcher().addEvent(
-						std::bind(&Game::playerQuickLootCorpse, &g_game(), player, corpseContainer, corpse->getPosition()),
-						"Game::playerQuickLootCorpse"
-					);
+					g_dispatcher().addEvent([player, corpseContainer, corpsePosition = corpse->getPosition()] {
+						g_game().playerQuickLootCorpse(player, corpseContainer, corpsePosition);
+					},
+											"Game::playerQuickLootCorpse");
 				}
 			}
 		}
@@ -861,7 +861,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(static_self_cast<Creature>());
 	}
 	if (health <= 0) {
-		g_dispatcher().addEvent(std::bind(&Game::executeDeath, &g_game(), getID()), "Game::executeDeath");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().executeDeath(creatureId); }, "Game::executeDeath");
 	}
 }
 
@@ -1401,9 +1401,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 			int32_t walkDelay = getWalkDelay();
 			if (walkDelay > 0) {
 				g_dispatcher().scheduleEvent(
-					walkDelay,
-					std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId),
-					"Game::forceRemoveCondition"
+					walkDelay, [creatureId = getID(), conditionType, conditionId] { g_game().forceRemoveCondition(creatureId, conditionType, conditionId); }, "Game::forceRemoveCondition"
 				);
 				return;
 			}

@@ -2605,6 +2605,13 @@ public:
 
 	bool canSpeakWithHireling(uint8_t speechbubble);
 
+	bool hasSaveUnjustifiedKills() {
+		return saveUnjustifiedKills;
+	}
+	void setSaveUnjustifiedKills(bool onOff) {
+		saveUnjustifiedKills = onOff;
+	}
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
@@ -2830,7 +2837,6 @@ private:
 
 	// Stash
 	StashItemList stashItems; // [ItemID] = amount
-	bool saveStash = false;
 	uint32_t movedItems = 0;
 
 	// Depot search system
@@ -2899,6 +2905,10 @@ private:
 	bool moved = false;
 	bool dead = false;
 	bool imbuementTrackerWindowOpen = false;
+
+	// Otimize Save Players
+	bool saveStash = false;
+	bool saveUnjustifiedKills = false;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;

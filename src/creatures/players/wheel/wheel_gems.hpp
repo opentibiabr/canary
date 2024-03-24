@@ -211,7 +211,7 @@ private:
 
 class GemModifierRevelationStrategy : public GemModifierStrategy {
 public:
-	explicit GemModifierRevelationStrategy(PlayerWheel &wheel, WheelGemAffinity_t affinity, uint16_t value) :
+	explicit GemModifierRevelationStrategy(PlayerWheel &wheel, WheelGemAffinity_t affinity, [[maybe_unused]] uint16_t value) :
 		GemModifierStrategy(wheel),
 		m_affinity(affinity) { }
 

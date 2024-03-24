@@ -448,10 +448,10 @@ public:
 	 * @deprecated -- This is here to trigger the deprecated onKill events in lua
 	 */
 	bool deprecatedOnKilledCreature(std::shared_ptr<Creature> target, bool lastHit);
-	virtual bool onKilledPlayer([[maybe_unused]] const std::shared_ptr<Player> &target, bool lastHit) {
+	virtual bool onKilledPlayer([[maybe_unused]] const std::shared_ptr<Player> &target, [[maybe_unused]] bool lastHit) {
 		return false;
 	};
-	virtual bool onKilledMonster(const std::shared_ptr<Monster> &target) {
+	virtual bool onKilledMonster([[maybe_unused]] const std::shared_ptr<Monster> &target) {
 		return false;
 	};
 	virtual void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target);

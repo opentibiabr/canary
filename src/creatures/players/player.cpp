@@ -2094,18 +2094,6 @@ void Player::setNextWalkActionTask(std::shared_ptr<Task> task) {
 	walkTask = task;
 }
 
-void Player::setNextWalkTask(std::shared_ptr<Task> task) {
-	if (nextStepEvent != 0) {
-		g_dispatcher().stopEvent(nextStepEvent);
-		nextStepEvent = 0;
-	}
-
-	if (task) {
-		nextStepEvent = g_dispatcher().scheduleEvent(task);
-		resetIdleTime();
-	}
-}
-
 void Player::setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime /*= true */) {
 	if (actionTaskEvent != 0) {
 		g_dispatcher().stopEvent(actionTaskEvent);

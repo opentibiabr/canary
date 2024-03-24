@@ -400,6 +400,8 @@ bool IOLoginDataSave::savePlayerKills(std::shared_ptr<Player> player) {
 	if (!killsQuery.execute()) {
 		return false;
 	}
+
+	player->setSaveUnjustifiedKills(false);
 	return true;
 }
 

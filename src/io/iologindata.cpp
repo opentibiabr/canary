@@ -226,8 +226,10 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerSpells] - Failed to save player spells: " + player->getName());
 	}
 
-	if (!IOLoginDataSave::savePlayerKills(player)) {
-		throw DatabaseException("IOLoginDataSave::savePlayerKills] - Failed to save player kills: " + player->getName());
+	if (player->hasSaveUnjustifiedKills()) {
+		if (!IOLoginDataSave::savePlayerKills(player)) {
+			throw DatabaseException("IOLoginDataSave::savePlayerKills] - Failed to save player kills: " + player->getName());
+		}
 	}
 
 	if (!IOLoginDataSave::savePlayerBestiarySystem(player)) {

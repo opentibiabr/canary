@@ -8778,8 +8778,11 @@ void ProtocolGame::sendHotkeyPreset() {
 		return;
 	}
 
-	NetworkMessage msg;
-	msg.addByte(0x9D);
-	msg.add<uint32_t>(static_cast<uint32_t>(player->getVocation()->getBaseId()));
-	writeToOutputBuffer(msg);
+	auto vocation = g_vocations().getVocation(player->getVocation()->getBaseId());
+	if (vocation) {
+		NetworkMessage msg;
+		msg.addByte(0x9D);
+		msg.add<uint32_t>(vocation->getClientId());
+		writeToOutputBuffer(msg);
+	}
 }

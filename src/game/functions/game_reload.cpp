@@ -52,6 +52,8 @@ bool GameReload::init(Reload_t reloadTypes) const {
 			return reloadScripts();
 		case Reload_t::RELOAD_TYPE_GROUPS:
 			return reloadGroups();
+		case Reload_t::RELOAD_TYPE_VOCATIONS:
+			return reloadVocations();
 		default:
 			return false;
 	}
@@ -198,5 +200,11 @@ bool GameReload::reloadScripts() const {
 bool GameReload::reloadGroups() const {
 	const bool result = g_game().groups.reload();
 	logReloadStatus("Groups", result);
+	return result;
+}
+
+bool GameReload::reloadVocations() const {
+	const bool result = g_vocations().reload();
+	logReloadStatus("Vocations", result);
 	return result;
 }

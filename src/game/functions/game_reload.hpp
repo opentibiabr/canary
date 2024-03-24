@@ -29,6 +29,7 @@ enum class Reload_t : uint8_t {
 	RELOAD_TYPE_RAIDS,
 	RELOAD_TYPE_SCRIPTS,
 	RELOAD_TYPE_GROUPS,
+	RELOAD_TYPE_VOCATIONS,
 
 	// Every is last
 	RELOAD_TYPE_LAST
@@ -65,6 +66,7 @@ private:
 	bool reloadRaids() const;
 	bool reloadScripts() const;
 	bool reloadGroups() const;
+	bool reloadVocations() const;
 };
 
 constexpr auto g_gameReload = GameReload::getInstance;

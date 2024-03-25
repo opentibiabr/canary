@@ -1733,20 +1733,17 @@ function GameStore.processSexChangePurchase(player)
 end
 
 function GameStore.processExpBoostPurchase(player)
-    local currentExpBoostTime = player:getExpBoostStamina()
-    local expBoostCount = player:getStorageValue(GameStore.Storages.expBoostCount)
-    local baseExpBoostValue = 30
-    local additionalExpBoostTime = 3600
-    
-    if expBoostCount < 0 or expBoostCount >= 6 then
-        expBoostCount = 0
-    end
-    
-    local currentExpBoostPrice = baseExpBoostValue * (2 ^ expBoostCount)
-    
-    player:setStoreXpBoost(currentExpBoostPrice)
-    player:setExpBoostStamina(currentExpBoostTime + additionalExpBoostTime)
-    player:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)
+	local currentExpBoostTime = player:getExpBoostStamina()
+	local expBoostCount = player:getStorageValue(GameStore.Storages.expBoostCount)
+
+	player:setStoreXpBoost(50)
+	player:setExpBoostStamina(currentExpBoostTime + 3600)
+
+	if expBoostCount == -1 or expBoostCount == 6 then
+		expBoostCount = 1
+	end
+
+	player:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)
 end
 
 function GameStore.processPreyThirdSlot(player)

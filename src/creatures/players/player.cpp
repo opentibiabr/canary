@@ -5072,7 +5072,7 @@ bool Player::canFamiliar(uint16_t lookType) const {
 		return true;
 	}
 
-	const Familiar* familiar = Familiars::getInstance().getFamiliarByLookType(getVocationId(), lookType);
+	const auto &familiar = Familiars::getInstance().getFamiliarByLookType(getVocationId(), lookType);
 	if (!familiar) {
 		return false;
 	}
@@ -5113,24 +5113,24 @@ bool Player::removeFamiliar(uint16_t lookType) {
 	return false;
 }
 
-bool Player::getFamiliar(const Familiar &familiar) const {
+bool Player::getFamiliar(const std::shared_ptr<Familiar> &familiar) const {
 	if (group->access) {
 		return true;
 	}
 
-	if (familiar.premium && !isPremium()) {
+	if (familiar->premium && !isPremium()) {
 		return false;
 	}
 
 	for (const FamiliarEntry &familiarEntry : familiars) {
-		if (familiarEntry.lookType != familiar.lookType) {
+		if (familiarEntry.lookType != familiar->lookType) {
 			continue;
 		}
 
 		return true;
 	}
 
-	if (!familiar.unlocked) {
+	if (!familiar->unlocked) {
 		return false;
 	}
 

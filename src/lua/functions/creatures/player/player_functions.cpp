@@ -1604,7 +1604,7 @@ int PlayerFunctions::luaPlayerGetGroup(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetGroup(lua_State* L) {
 	// player:setGroup(group)
-	Group* group = getUserdata<Group>(L, 2);
+	std::shared_ptr<Group> group = getUserdataShared<Group>(L, 2);
 	if (!group) {
 		pushBoolean(L, false);
 		return 1;

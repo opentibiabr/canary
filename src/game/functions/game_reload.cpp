@@ -44,6 +44,8 @@ bool GameReload::init(Reload_t reloadTypes) const {
 			return reloadMonsters();
 		case Reload_t::RELOAD_TYPE_MOUNTS:
 			return reloadMounts();
+		case Reload_t::RELOAD_TYPE_OUTFITS:
+			return reloadOutfits();
 		case Reload_t::RELOAD_TYPE_NPCS:
 			return reloadNpcs();
 		case Reload_t::RELOAD_TYPE_RAIDS:
@@ -54,12 +56,14 @@ bool GameReload::init(Reload_t reloadTypes) const {
 			return reloadGroups();
 		case Reload_t::RELOAD_TYPE_VOCATIONS:
 			return reloadVocations();
+		case Reload_t::RELOAD_TYPE_FAMILIARS:
+			return reloadFamiliars();
 		default:
 			return false;
 	}
 }
 
-uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) const {
+uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) {
 	return magic_enum::enum_integer(reloadTypes);
 }
 
@@ -93,30 +97,29 @@ bool GameReload::reloadAll() const {
 	return std::ranges::any_of(reloadResults, [](bool result) { return result; });
 }
 
-bool GameReload::reloadChat() const {
+bool GameReload::reloadChat() {
 	const bool result = g_chat().load();
 	logReloadStatus("Chat", result);
 	return result;
 }
 
-bool GameReload::reloadConfig() const {
+bool GameReload::reloadConfig() {
 	const bool result = g_configManager().reload();
 	logReloadStatus("Config", result);
 	return result;
 }
 
-bool GameReload::reloadEvents() const {
+bool GameReload::reloadEvents() {
 	const bool result = g_events().loadFromXml();
 	logReloadStatus("Events", result);
 	return result;
 }
 
-bool GameReload::reloadCore() const {
+bool GameReload::reloadCore() {
 	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 	const bool coreLoaded = g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
 
 	if (coreLoaded) {
-		const auto &datapackFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 		const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
 		if (scriptsLoaded) {
 			return true;
@@ -127,25 +130,25 @@ bool GameReload::reloadCore() const {
 	return false;
 }
 
-bool GameReload::reloadImbuements() const {
+bool GameReload::reloadImbuements() {
 	const bool result = g_imbuements().reload();
 	logReloadStatus("Imbuements", result);
 	return result;
 }
 
-bool GameReload::reloadItems() const {
+bool GameReload::reloadItems() {
 	const bool result = Item::items.reload();
 	logReloadStatus("Items", result);
 	return result;
 }
 
-bool GameReload::reloadModules() const {
+bool GameReload::reloadModules() {
 	const bool result = g_modules().reload();
 	logReloadStatus("Modules", result);
 	return result;
 }
 
-bool GameReload::reloadMonsters() const {
+bool GameReload::reloadMonsters() {
 	g_monsters().clear();
 	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
 	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
@@ -162,25 +165,31 @@ bool GameReload::reloadMonsters() const {
 	}
 }
 
-bool GameReload::reloadMounts() const {
+bool GameReload::reloadMounts() {
 	const bool result = g_game().mounts.reload();
 	logReloadStatus("Mounts", result);
 	return result;
 }
 
-bool GameReload::reloadNpcs() const {
+bool GameReload::reloadOutfits() {
+	const bool result = g_game().outfits.reload();
+	logReloadStatus("Outfits", result);
+	return result;
+}
+
+bool GameReload::reloadNpcs() {
 	const bool result = g_npcs().reload();
 	logReloadStatus("NPCs", result);
 	return result;
 }
 
-bool GameReload::reloadRaids() const {
+bool GameReload::reloadRaids() {
 	const bool result = g_game().raids.reload() && g_game().raids.startup();
 	logReloadStatus("Raids", result);
 	return result;
 }
 
-bool GameReload::reloadScripts() const {
+bool GameReload::reloadScripts() {
 	g_scripts().clearAllScripts();
 	Zone::clearZones();
 
@@ -198,9 +207,15 @@ bool GameReload::reloadScripts() const {
 	return true;
 }
 
-bool GameReload::reloadGroups() const {
+bool GameReload::reloadGroups() {
 	const bool result = g_game().groups.reload();
 	logReloadStatus("Groups", result);
+	return result;
+}
+
+bool GameReload::reloadFamiliars() {
+	const bool result = g_game().familiars.reload();
+	logReloadStatus("Familiars", result);
 	return result;
 }
 

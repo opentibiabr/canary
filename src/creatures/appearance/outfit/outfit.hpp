@@ -9,12 +9,17 @@
 
 #pragma once
 
-#include "declarations.hpp"
-#include "lib/di/container.hpp"
+struct OutfitEntry {
+	constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
+		lookType(initLookType), addons(initAddons) { }
+
+	uint16_t lookType;
+	uint8_t addons;
+};
 
 struct Outfit {
 	Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :
-		name(initName), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(initFrom) { }
+		name(std::move(initName)), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(std::move(initFrom)) { }
 
 	std::string name;
 	uint16_t lookType;
@@ -38,9 +43,10 @@ public:
 		return inject<Outfits>();
 	}
 
-	std::shared_ptr<Outfit> getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType);
+	[[maybe_unused]] std::shared_ptr<Outfit> getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
 
 	bool loadFromXml();
+	bool reload();
 
 	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
 	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const {

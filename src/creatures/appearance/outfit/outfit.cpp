@@ -14,8 +14,8 @@
 #include "utils/tools.hpp"
 #include "game/game.hpp"
 
-bool Outfits::reload(){
-	for (auto& outfitsVector : outfits) {
+bool Outfits::reload() {
+	for (auto &outfitsVector : outfits) {
 		outfitsVector.clear();
 	}
 	return loadFromXml();
@@ -75,7 +75,7 @@ bool Outfits::loadFromXml() {
 }
 
 std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
-	auto it = std::ranges::find_if(outfits[sex], [&lookType](const auto& outfit) {
+	auto it = std::ranges::find_if(outfits[sex], [&lookType](const auto &outfit) {
 		return outfit->lookType == lookType;
 	});
 

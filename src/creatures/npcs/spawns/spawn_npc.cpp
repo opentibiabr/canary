@@ -146,7 +146,7 @@ SpawnNpc::~SpawnNpc() {
 
 bool SpawnNpc::findPlayer(const Position &pos) {
 	auto spectators = Spectators().find<Player>(pos);
-	return std::ranges::any_of(spectators, [](const auto& spectator) {
+	return std::ranges::any_of(spectators, [](const auto &spectator) {
 		return !spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs);
 	});
 }

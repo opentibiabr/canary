@@ -20,7 +20,7 @@ void MonsterType::loadLoot(const std::shared_ptr<MonsterType> monsterType, LootB
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
 		if (isContainer) {
-			for (const LootBlock& child : lootBlock.childLoot) {
+			for (const LootBlock &child : lootBlock.childLoot) {
 				lootBlock.childLoot.push_back(child);
 			}
 		}

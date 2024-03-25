@@ -122,7 +122,7 @@ if (MSVC)
 
     add_compile_options(/MP /FS /Zf /EHsc)
 else()
-    add_compile_options(-Wno-unused-parameter -Wno-sign-compare)
+    add_compile_options(-Wno-unused-parameter -Wno-sign-compare -Wno-switch -Wno-implicit-fallthrough -Wno-extra)
 endif()
 
 ## Link compilation files to build/bin folder, else link to the main dir

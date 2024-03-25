@@ -214,7 +214,7 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	const auto type = g_monsters().monsters;
 	lua_createtable(L, type.size(), 0);
 
-	for (const auto [typeName, mType] : type) {
+	for (const auto &[typeName, mType] : type) {
 		pushUserdata<MonsterType>(L, mType);
 		setMetatable(L, -1, "MonsterType");
 		lua_setfield(L, -2, typeName.c_str());

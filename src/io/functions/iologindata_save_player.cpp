@@ -737,7 +737,7 @@ bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 
 	// Bosstiary tracker
 	PropWriteStream stream;
-	for (const auto monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
+	for (const auto &monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
 		if (!monsterType) {
 			continue;
 		}

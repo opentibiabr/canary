@@ -150,7 +150,7 @@ SpawnMonster::~SpawnMonster() {
 
 bool SpawnMonster::findPlayer(const Position &pos) {
 	auto spectators = Spectators().find<Player>(pos);
-	return std::ranges::any_of(spectators, [](const auto& spectator) {
+	return std::ranges::any_of(spectators, [](const auto &spectator) {
 		return !spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters);
 	});
 }
@@ -426,8 +426,8 @@ std::shared_ptr<MonsterType> spawnBlock_t::getMonsterType() const {
 }
 
 bool spawnBlock_t::hasBoss() const {
-	return std::ranges::any_of(monsterTypes, [](const auto& pair) {
-		const auto& [monsterType, weight] = pair;
+	return std::ranges::any_of(monsterTypes, [](const auto &pair) {
+		const auto &[monsterType, weight] = pair;
 		return monsterType->isBoss();
 	});
 }

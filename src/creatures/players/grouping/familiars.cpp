@@ -15,7 +15,7 @@
 #include "utils/tools.hpp"
 
 bool Familiars::reload() {
-	for (auto& familiarsVector : familiars) {
+	for (auto &familiarsVector : familiars) {
 		familiarsVector.clear();
 	}
 	return loadFromXml();

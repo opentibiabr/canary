@@ -260,7 +260,7 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 
 	uint32_t buyPrice = 0;
 	const std::vector<ShopBlock> &shopVector = getShopItemVector(player->getGUID());
-	for (const ShopBlock& shopBlock : shopVector) {
+	for (const ShopBlock &shopBlock : shopVector) {
 		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			buyPrice = shopBlock.itemBuyPrice;
 		}
@@ -373,7 +373,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	uint32_t sellPrice = 0;
 	const ItemType &itemType = Item::items[itemId];
 	const std::vector<ShopBlock> &shopVector = getShopItemVector(player->getGUID());
-	for (const ShopBlock& shopBlock : shopVector) {
+	for (const ShopBlock &shopBlock : shopVector) {
 		if (itemType.id == shopBlock.itemId && shopBlock.itemSellPrice != 0) {
 			sellPrice = shopBlock.itemSellPrice;
 		}
@@ -383,7 +383,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	}
 
 	auto toRemove = amount;
-	for (const auto& item : player->getInventoryItemsFromId(itemId, ignore)) {
+	for (const auto &item : player->getInventoryItemsFromId(itemId, ignore)) {
 		if (!item || item->getTier() > 0 || item->hasImbuements()) {
 			continue;
 		}

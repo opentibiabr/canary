@@ -709,7 +709,7 @@ void Creature::onDeath() {
 		}
 	}
 
-	bool killedByPlayer = mostDamageCreature && mostDamageCreature->getPlayer() || mostDamageCreatureMaster && mostDamageCreatureMaster->getPlayer();
+	bool killedByPlayer = (mostDamageCreature && mostDamageCreature->getPlayer()) || (mostDamageCreatureMaster && mostDamageCreatureMaster->getPlayer());
 	if (getPlayer()) {
 		g_metrics().addCounter(
 			"player_death",

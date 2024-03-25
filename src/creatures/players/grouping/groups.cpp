@@ -93,16 +93,16 @@ bool Groups::load() {
 		// Parsing group flags
 		parseGroupFlags(group, groupNode);
 
-		groups_vector.push_back(group);
+		groups_vector.emplace_back(std::make_shared<Group>(group));
 	}
 	groups_vector.shrink_to_fit();
 	return true;
 }
 
-Group* Groups::getGroup(uint16_t id) {
-	for (Group &group : groups_vector) {
-		if (group.id == id) {
-			return &group;
+std::shared_ptr<Group> Groups::getGroup(uint16_t id) {
+	for (const auto &group : groups_vector) {
+		if (group->id == id) {
+			return group;
 		}
 	}
 	return nullptr;

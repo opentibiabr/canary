@@ -7569,9 +7569,9 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 }
 
 void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const {
-	Imbuement* imbuement = g_imbuements().getImbuement(imbuementId);
-	const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
-	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+	const auto &imbuement = g_imbuements().getImbuement(imbuementId);
+	const auto &baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+	const auto &categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 
 	msg.add<uint32_t>(imbuementId);
 	msg.addString(baseImbuement->name + " " + imbuement->getName(), "ProtocolGame::addImbuementInfo - baseImbuement->name + "
@@ -7628,11 +7628,11 @@ void ProtocolGame::openImbuementWindow(std::shared_ptr<Item> item) {
 		msg.add<uint32_t>(g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
 	}
 
-	std::vector<Imbuement*> imbuements = g_imbuements().getImbuements(player, item);
+	std::vector<std::shared_ptr<Imbuement>> imbuements = g_imbuements().getImbuements(player, item);
 	phmap::flat_hash_map<uint16_t, uint16_t> needItems;
 
 	msg.add<uint16_t>(imbuements.size());
-	for (const Imbuement* imbuement : imbuements) {
+	for (const auto &imbuement : imbuements) {
 		addImbuementInfo(msg, imbuement->getID());
 
 		const auto items = imbuement->getItems();
@@ -8116,7 +8116,7 @@ void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, std::shared_p
 				continue;
 			}
 
-			const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+			const auto &baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
 			msg.addByte(0x01);
 			msg.addString(baseImbuement->name + " " + imbuement->getName(), "ProtocolGame::sendInventoryImbuements - baseImbuement->name + "
 																			" + imbuement->getName()");
@@ -8129,7 +8129,7 @@ void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, std::shared_p
 			// Check if the player is in fight mode
 			bool isInFightMode = player->hasCondition(CONDITION_INFIGHT);
 			// Get the category of the imbuement
-			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+			const auto &categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 			// Parent of the imbued item
 			auto parent = item->getParent();
 			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.

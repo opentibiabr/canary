@@ -5805,7 +5805,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t
 		return;
 	}
 
-	Imbuement* imbuement = g_imbuements().getImbuement(imbuementid);
+	const auto &imbuement = g_imbuements().getImbuement(imbuementid);
 	if (!imbuement) {
 		return;
 	}

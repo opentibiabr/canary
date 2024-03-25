@@ -609,6 +609,6 @@ enum ItemParseAttributes_t {
 };
 
 struct ImbuementInfo {
-	Imbuement* imbuement;
+	std::shared_ptr<Imbuement> imbuement;
 	uint32_t duration = 0;
 };

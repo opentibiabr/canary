@@ -3097,6 +3097,9 @@ GlobalStorage = {
 	Yasir = 65014,
 	IceCrack = 65016,
 	UglyMonster = 65017,
+	FacelessBaneStepsOn = 65018,
+	FacelessBaneDeaths = 65019,
+	FacelessBaneResetSteps = 65020,
 	KeysUpdate = 40000, -- Reserved storage from 40000 - 40000
 }
 

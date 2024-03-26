@@ -8566,7 +8566,7 @@
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
-			<attribute key="skillboost sword" value="3"/>
+			<attribute key="vibrancy" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="80"/>

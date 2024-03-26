@@ -151,7 +151,7 @@ bool Imbuements::processImbuementNode(const pugi::xml_node &imbuementNode) {
 		return false;
 	}
 
-	uint16_t category = pugi::cast<uint16_t>(categorybase.value());
+	auto category = pugi::cast<uint16_t>(categorybase.value());
 	auto category_p = getCategoryByID(category);
 	if (category_p == nullptr) {
 		g_logger().warn("Category imbuement {} not exist", category);
@@ -184,7 +184,7 @@ bool Imbuements::processImbuementChildNodes(const pugi::xml_node &imbuementNode,
 				g_logger().warn("Missing item ID for imbuement name '{}'", imbuement->name);
 				return false;
 			}
-			uint16_t sourceId = pugi::cast<uint16_t>(attr.value());
+			auto sourceId = pugi::cast<uint16_t>(attr.value());
 
 			uint16_t count = 1;
 			if ((attr = childNode.attribute("count"))) {
@@ -237,7 +237,7 @@ bool Imbuements::processImbuementChildNodes(const pugi::xml_node &imbuementNode,
 					g_logger().warn("Missing skill bonus for imbuement name {}", imbuement->name);
 					return false;
 				}
-				int32_t bonus = pugi::cast<int32_t>(attr.value());
+				auto bonus = pugi::cast<int32_t>(attr.value());
 
 				if (skillId == UseSkillMode::NormalSkill) {
 					imbuement->skills[skillId] = bonus;
@@ -306,6 +306,13 @@ bool Imbuements::processImbuementChildNodes(const pugi::xml_node &imbuementNode,
 				}
 
 				imbuement->capacity = pugi::cast<uint32_t>(attr.value());
+			} else if (strcasecmp(effecttype.c_str(), "vibrancy") == 0) {
+				if (!(attr = childNode.attribute("chance"))) {
+					g_logger().warn("Missing chance value for imbuement name {}", imbuement->name);
+					return false;
+				}
+
+				imbuement->paralyzeReduction = pugi::cast<int32_t>(attr.value());
 			}
 		}
 	}

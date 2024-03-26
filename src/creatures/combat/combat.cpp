@@ -753,21 +753,62 @@ void Combat::CombatConditionFunc(std::shared_ptr<Creature> caster, std::shared_p
 			if (condition->getType() == CONDITION_FEARED && !checkFearConditionAffected(player)) {
 				return;
 			}
-		}
 
-		if (caster == target || target && !target->isImmune(condition->getType())) {
-			auto conditionCopy = condition->clone();
-			if (caster) {
-				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
-				conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
+			if (condition->getType() == CONDITION_PARALYZE && target) {
+				if (player) {
+					if (reflectParalyzeCondition(caster, player, condition)) {
+						return;
+					}
+				}
 			}
 
-			// TODO: infight condition until all aggressive conditions has ended
-			if (target) {
-				target->addCombatCondition(conditionCopy, caster && caster->getPlayer() != nullptr);
+			if (caster == target || (target && !target->isImmune(condition->getType()))) {
+				auto conditionCopy = condition->clone();
+				if (caster) {
+					conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+					conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
+				}
+
+				// TODO: infight condition until all aggressive conditions has ended
+				if (target) {
+					target->addCombatCondition(conditionCopy, caster && caster->getPlayer() != nullptr);
+				}
 			}
 		}
 	}
+}
+
+bool Combat::reflectParalyzeCondition(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Player> &target, const std::shared_ptr<Condition> &condition) {
+	if (!target->hasCondition(CONDITION_PARALYZE)) {
+		target->addCondition(condition->clone());
+		return true;
+	}
+
+	int32_t reflectionChance = 0;
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		auto item = target->getInventoryItem(static_cast<Slots_t>(slot));
+		if (item) {
+			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); ++slotid) {
+				ImbuementInfo imbuementInfo;
+				if (item->getImbuementInfo(slotid, &imbuementInfo)) {
+					reflectionChance = std::max(reflectionChance, imbuementInfo.imbuement->paralyzeReduction);
+				}
+			}
+		}
+	}
+
+	if (uniform_random(1, 100) <= reflectionChance) {
+		if (caster && !caster->isImmune(CONDITION_PARALYZE)) {
+			caster->addCondition(condition->clone());
+		}
+
+		if (target->hasCondition(CONDITION_PARALYZE)) {
+			target->removeCondition(CONDITION_PARALYZE);
+		}
+		return true;
+	}
+
+	return false;
 }
 
 void Combat::CombatDispelFunc(std::shared_ptr<Creature>, std::shared_ptr<Creature> target, const CombatParams &params, CombatDamage*) {

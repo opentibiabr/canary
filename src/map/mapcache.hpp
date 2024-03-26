@@ -100,8 +100,15 @@ public:
 	 * Gets a map sector.
 	 * \returns A pointer to that map sector.
 	 */
-	MapSector* getMapSector(uint32_t x, uint32_t y);
-	const MapSector* getMapSector(uint32_t x, uint32_t y) const;
+	MapSector* getMapSector(const uint32_t x, const uint32_t y) {
+		const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
+		return it != mapSectors.end() ? &it->second : nullptr;
+	}
+
+	const MapSector* getMapSector(const uint32_t x, const uint32_t y) const {
+		const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
+		return it != mapSectors.end() ? &it->second : nullptr;
+	}
 
 protected:
 	std::shared_ptr<Tile> getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y);

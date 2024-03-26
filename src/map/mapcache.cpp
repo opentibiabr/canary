@@ -178,51 +178,31 @@ MapSector* MapCache::createMapSector(const uint32_t x, const uint32_t y) {
 
 MapSector* MapCache::getBestMapSector(uint32_t x, uint32_t y) {
 	MapSector::newSector = false;
-	MapSector* sector = createMapSector(x, y);
+	const auto sector = createMapSector(x, y);
 
 	if (MapSector::newSector) {
 		// update north sector
-		MapSector* northSector = getMapSector(x, y - SECTOR_SIZE);
-		if (northSector) {
+		if (const auto northSector = getMapSector(x, y - SECTOR_SIZE)) {
 			northSector->sectorS = sector;
 		}
 
 		// update west sector
-		MapSector* westSector = getMapSector(x - SECTOR_SIZE, y);
-		if (westSector) {
+		if (const auto westSector = getMapSector(x - SECTOR_SIZE, y)) {
 			westSector->sectorE = sector;
 		}
 
 		// update south sector
-		MapSector* southSector = getMapSector(x, y + SECTOR_SIZE);
-		if (southSector) {
+		if (const auto southSector = getMapSector(x, y + SECTOR_SIZE)) {
 			sector->sectorS = southSector;
 		}
 
 		// update east sector
-		MapSector* eastSector = getMapSector(x + SECTOR_SIZE, y);
-		if (eastSector) {
+		if (const auto eastSector = getMapSector(x + SECTOR_SIZE, y)) {
 			sector->sectorE = eastSector;
 		}
 	}
 
 	return sector;
-}
-
-MapSector* MapCache::getMapSector(const uint32_t x, const uint32_t y) {
-	const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
-	if (it != mapSectors.end()) {
-		return &it->second;
-	}
-	return nullptr;
-}
-
-const MapSector* MapCache::getMapSector(const uint32_t x, const uint32_t y) const {
-	const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
-	if (it != mapSectors.end()) {
-		return &it->second;
-	}
-	return nullptr;
 }
 
 void BasicTile::hash(size_t &h) const {

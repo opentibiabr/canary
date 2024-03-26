@@ -81,7 +81,9 @@ bool ChatChannel::addUser(const std::shared_ptr<Player> &player) {
 	if (id == CHANNEL_GUILD) {
 		const auto guild = player->getGuild();
 		if (guild && !guild->getMotd().empty()) {
-			g_dispatcher().scheduleEvent(150, std::bind(&Game::sendGuildMotd, &g_game(), player->getID()), "Game::sendGuildMotd");
+			g_dispatcher().scheduleEvent(
+				150, [playerId = player->getID()] { g_game().sendGuildMotd(playerId); }, "Game::sendGuildMotd"
+			);
 		}
 	}
 

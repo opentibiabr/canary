@@ -47,11 +47,15 @@ void Decay::startDecay(std::shared_ptr<Item> item) {
 
 		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
-			eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+			eventId = g_dispatcher().scheduleEvent(
+				std::max<int32_t>(SCHEDULER_MINTICKS, duration), [this] { checkDecay(); }, "Decay::checkDecay"
+			);
 		} else {
 			if (timestamp < decayMap.begin()->first) {
 				g_dispatcher().stopEvent(eventId);
-				eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+				eventId = g_dispatcher().scheduleEvent(
+					std::max<int32_t>(SCHEDULER_MINTICKS, duration), [this] { checkDecay(); }, "Decay::checkDecay"
+				);
 			}
 		}
 
@@ -138,7 +142,9 @@ void Decay::checkDecay() {
 	}
 
 	if (it != end) {
-		eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+		eventId = g_dispatcher().scheduleEvent(
+			std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), [this] { checkDecay(); }, "Decay::checkDecay"
+		);
 	}
 }
 

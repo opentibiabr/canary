@@ -1934,7 +1934,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
 	}
 
 	if (creature != getPlayer()) {
@@ -4245,7 +4245,7 @@ bool Player::updateSaleShopList(std::shared_ptr<Item> item) {
 		return true;
 	}
 
-	g_dispatcher().addEvent(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()), "updatePlayerSaleItems");
+	g_dispatcher().addEvent([creatureId = getID()] { g_game().updatePlayerSaleItems(creatureId); }, "Game::updatePlayerSaleItems");
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -4316,7 +4316,7 @@ bool Player::setAttackedCreature(std::shared_ptr<Creature> creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addEvent(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
 	}
 	return true;
 }
@@ -4376,7 +4376,11 @@ void Player::doAttacking(uint32_t) {
 			result = Weapon::useFist(static_self_cast<Player>(), attackedCreature);
 		}
 
-		std::shared_ptr<Task> task = createPlayerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+		const auto &task = createPlayerTask(
+			std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
+			[playerId = getID()] { g_game().checkCreatureAttack(playerId); }, "Game::checkCreatureAttack"
+		);
+
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
 		} else {
@@ -6448,7 +6452,7 @@ void Player::stowItem(std::shared_ptr<Item> item, uint32_t count, bool allItems)
 		// Stow locker items
 		std::shared_ptr<DepotLocker> depotLocker = getDepotLocker(getLastDepotId());
 		auto [itemVector, itemMap] = requestLockerItems(depotLocker);
-		for (auto lockerItem : itemVector) {
+		for (const auto &lockerItem : itemVector) {
 			if (lockerItem == nullptr) {
 				break;
 			}
@@ -6459,7 +6463,7 @@ void Player::stowItem(std::shared_ptr<Item> item, uint32_t count, bool allItems)
 		}
 	} else if (item->getContainer()) {
 		itemDict = item->getContainer()->getStowableItems();
-		for (std::shared_ptr<Item> containerItem : item->getContainer()->getItems(true)) {
+		for (const std::shared_ptr<Item> &containerItem : item->getContainer()->getItems(true)) {
 			uint32_t depotChest = g_configManager().getNumber(DEPOTCHEST, __FUNCTION__);
 			bool validDepot = depotChest > 0 && depotChest < 21;
 			if (g_configManager().getBoolean(STASH_MOVING, __FUNCTION__) && containerItem && !containerItem->isStackable() && validDepot) {
@@ -6469,10 +6473,10 @@ void Player::stowItem(std::shared_ptr<Item> item, uint32_t count, bool allItems)
 			}
 		}
 	} else {
-		itemDict.push_back(std::pair<std::shared_ptr<Item>, uint32_t>(item, count));
+		itemDict.emplace_back(item, count);
 	}
 
-	if (itemDict.size() == 0) {
+	if (itemDict.empty()) {
 		sendCancelMessage("There is no stowable items on this container.");
 		return;
 	}
@@ -7776,7 +7780,7 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		// Check if can walk to the toPosition and send event to use function
 		stdext::arraylist<Direction> listDir(128);
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir.data()), __FUNCTION__);
+			g_dispatcher().addEvent([creatureId = getID(), dirs = listDir.data()] { g_game().playerAutoWalk(creatureId, dirs); }, __FUNCTION__);
 
 			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);

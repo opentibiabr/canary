@@ -1379,8 +1379,8 @@ void Player::sendPing() {
 	if ((hasLostConnection || noPongTime >= 7000) && attackedCreature && attackedCreature->getPlayer()) {
 		setAttackedCreature(nullptr);
 	}
-
-	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE, __FUNCTION__);
+	if (noPongTime >= 60000 && !vipStaysOnline && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
 		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
 		if (client) {
 			client->logout(true, true);

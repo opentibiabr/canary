@@ -726,7 +726,6 @@ uint32_t Map::clean() {
 		g_game().internalRemoveItem(item, -1);
 	}
 
-	size_t count = toRemove.size();
 	g_game().clearTilesToClean();
 
 	if (g_game().getGameState() == GAME_STATE_MAINTAIN) {

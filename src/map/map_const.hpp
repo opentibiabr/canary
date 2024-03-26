@@ -18,6 +18,7 @@ static constexpr int8_t MAP_MAX_LAYERS = 16;
 static constexpr int8_t MAP_INIT_SURFACE_LAYER = 7; // (MAP_MAX_LAYERS / 2) -1
 static constexpr int8_t MAP_LAYER_VIEW_LIMIT = 2;
 
-static constexpr int32_t FLOOR_BITS = 3;
-static constexpr int32_t FLOOR_SIZE = (1 << FLOOR_BITS);
-static constexpr int32_t FLOOR_MASK = (FLOOR_SIZE - 1);
+// SECTOR_SIZE must be power of 2 value
+// The bigger the SECTOR_SIZE is the less hash map collision there should be but it'll consume more memory
+static constexpr int32_t SECTOR_SIZE = 16;
+static constexpr int32_t SECTOR_MASK = SECTOR_SIZE - 1;

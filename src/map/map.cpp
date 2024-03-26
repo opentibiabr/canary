@@ -163,7 +163,7 @@ std::shared_ptr<Tile> Map::getLoadedTile(uint16_t x, uint16_t y, uint8_t z) {
 		return nullptr;
 	}
 
-	const auto leaf = getQTNode(x, y);
+	const auto leaf = getMapSector(x, y);
 	if (!leaf) {
 		return nullptr;
 	}
@@ -182,12 +182,12 @@ std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 		return nullptr;
 	}
 
-	const auto leaf = getQTNode(x, y);
-	if (!leaf) {
+	const auto sector = getMapSector(x, y);
+	if (!sector) {
 		return nullptr;
 	}
 
-	const auto &floor = leaf->getFloor(z);
+	const auto &floor = sector->getFloor(z);
 	if (!floor) {
 		return nullptr;
 	}
@@ -215,10 +215,10 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, std::shared_ptr<Tile> newTi
 		return;
 	}
 
-	if (const auto leaf = getQTNode(x, y)) {
-		leaf->createFloor(z)->setTile(x, y, newTile);
+	if (const auto sector = getMapSector(x, y)) {
+		sector->createFloor(z)->setTile(x, y, newTile);
 	} else {
-		root.getBestLeaf(x, y, 15)->createFloor(z)->setTile(x, y, newTile);
+		getBestMapSector(x, y)->createFloor(z)->setTile(x, y, newTile);
 	}
 }
 
@@ -315,7 +315,7 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 	toCylinder->internalAddThing(creature);
 
 	const Position &dest = toCylinder->getPosition();
-	getQTNode(dest.x, dest.y)->addCreature(creature);
+	getMapSector(dest.x, dest.y)->addCreature(creature);
 	return true;
 }
 
@@ -333,9 +333,28 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 
 	bool teleport = forceTeleport || !newTile->getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
 
-	auto spectators = Spectators()
-						  .find<Creature>(oldPos, true)
-						  .find<Creature>(newPos, true);
+	Spectators spectators;
+	if (!teleport && oldPos.z == newPos.z) {
+		int32_t minRangeX = MAP_MAX_VIEW_PORT_X;
+		int32_t maxRangeX = MAP_MAX_VIEW_PORT_X;
+		int32_t minRangeY = MAP_MAX_VIEW_PORT_Y;
+		int32_t maxRangeY = MAP_MAX_VIEW_PORT_Y;
+		if (oldPos.y > newPos.y) {
+			++minRangeY;
+		} else if (oldPos.y < newPos.y) {
+			++maxRangeY;
+		}
+
+		if (oldPos.x < newPos.x) {
+			++maxRangeX;
+		} else if (oldPos.x > newPos.x) {
+			++minRangeX;
+		}
+		spectators.find<Creature>(oldPos, true, minRangeX, maxRangeX, minRangeY, maxRangeY);
+	} else {
+		spectators.find<Creature>(oldPos, true);
+		spectators.find<Creature>(newPos, true);
+	}
 
 	auto playersSpectators = spectators.filter<Player>();
 
@@ -351,13 +370,13 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	// remove the creature
 	oldTile->removeThing(creature, 0);
 
-	auto leaf = getQTNode(oldPos.x, oldPos.y);
-	auto new_leaf = getQTNode(newPos.x, newPos.y);
+	MapSector* old_sector = getMapSector(oldPos.x, oldPos.y);
+	MapSector* new_sector = getMapSector(newPos.x, newPos.y);
 
 	// Switch the node ownership
-	if (leaf != new_leaf) {
-		leaf->removeCreature(creature);
-		new_leaf->addCreature(creature);
+	if (old_sector != new_sector) {
+		old_sector->removeCreature(creature);
+		new_sector->addCreature(creature);
 	}
 
 	// add the creature
@@ -693,33 +712,45 @@ uint32_t Map::clean() {
 		g_game().setGameState(GAME_STATE_MAINTAIN);
 	}
 
-	std::vector<std::shared_ptr<Item>> toRemove;
-	for (const auto &tile : g_game().getTilesToClean()) {
-		if (!tile) {
-			continue;
-		}
-		if (const auto items = tile->getItemList()) {
-			++tiles;
-			for (const auto &item : *items) {
-				if (item->isCleanable()) {
-					toRemove.emplace_back(item);
+	ItemVector toRemove;
+	toRemove.reserve(128);
+	for (const auto &mit : mapSectors) {
+		for (uint8_t z = 0; z < MAP_MAX_LAYERS; ++z) {
+			if (const auto &floor = mit.second.getFloor(z)) {
+				for (auto &tiles : floor->getTiles()) {
+					for (const auto &[tile, cachedTile] : tiles) {
+						if (!tile || tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+							continue;
+						}
+
+						TileItemVector* itemList = tile->getItemList();
+						if (!itemList) {
+							continue;
+						}
+
+						for (auto it = ItemVector::const_reverse_iterator(itemList->getEndDownItem()), end = ItemVector::const_reverse_iterator(itemList->getBeginDownItem()); it != end; ++it) {
+							const auto &item = *it;
+							if (item->isCleanable()) {
+								toRemove.push_back(item);
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 
+	const size_t count = toRemove.size();
 	for (const auto &item : toRemove) {
 		g_game().internalRemoveItem(item, -1);
 	}
-
-	size_t count = toRemove.size();
-	g_game().clearTilesToClean();
 
 	if (g_game().getGameState() == GAME_STATE_MAINTAIN) {
 		g_game().setGameState(GAME_STATE_NORMAL);
 	}
 
-	uint64_t end = OTSYS_TIME();
-	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), tiles, (tiles != 1 ? "s" : ""), (end - start) / (1000.f));
+	std::cout << "> CLEAN: Removed " << count << " item" << (count != 1 ? "s" : "")
+			  << " from " << tiles << " tile" << (tiles != 1 ? "s" : "") << " in "
+			  << (OTSYS_TIME() - start) / (1000.) << " seconds." << std::endl;
 	return count;
 }

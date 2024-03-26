@@ -726,12 +726,14 @@ uint32_t Map::clean() {
 		g_game().internalRemoveItem(item, -1);
 	}
 
+	size_t count = toRemove.size();
+	g_game().clearTilesToClean();
+
 	if (g_game().getGameState() == GAME_STATE_MAINTAIN) {
 		g_game().setGameState(GAME_STATE_NORMAL);
 	}
 
-	std::cout << "> CLEAN: Removed " << count << " item" << (count != 1 ? "s" : "")
-			  << " from " << tiles << " tile" << (tiles != 1 ? "s" : "") << " in "
-			  << (OTSYS_TIME() - start) / (1000.) << " seconds." << std::endl;
+	uint64_t end = OTSYS_TIME();
+	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), tiles, (tiles != 1 ? "s" : ""), (end - start) / (1000.f));
 	return count;
 }

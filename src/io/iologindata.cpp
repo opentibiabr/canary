@@ -219,16 +219,22 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		throw DatabaseException("[" + std::string(__FUNCTION__) + "] - Failed to save player first: " + player->getName());
 	}
 
-	if (!IOLoginDataSave::savePlayerStash(player)) {
-		throw DatabaseException("[IOLoginDataSave::savePlayerFirst] - Failed to save player stash: " + player->getName());
+	if (player->hasSaveStash()) {
+		if (!IOLoginDataSave::savePlayerStash(player)) {
+			throw DatabaseException("[IOLoginDataSave::savePlayerFirst] - Failed to save player stash: " + player->getName());
+		}
 	}
 
-	if (!IOLoginDataSave::savePlayerSpells(player)) {
-		throw DatabaseException("[IOLoginDataSave::savePlayerSpells] - Failed to save player spells: " + player->getName());
+	if (player->hasSaveSpells()) {
+		if (!IOLoginDataSave::savePlayerSpells(player)) {
+			throw DatabaseException("[IOLoginDataSave::savePlayerSpells] - Failed to save player spells: " + player->getName());
+		}
 	}
 
-	if (!IOLoginDataSave::savePlayerKills(player)) {
-		throw DatabaseException("IOLoginDataSave::savePlayerKills] - Failed to save player kills: " + player->getName());
+	if (player->hasSaveUnjustifiedKills()) {
+		if (!IOLoginDataSave::savePlayerKills(player)) {
+			throw DatabaseException("IOLoginDataSave::savePlayerKills] - Failed to save player kills: " + player->getName());
+		}
 	}
 
 	if (!IOLoginDataSave::savePlayerBestiarySystem(player)) {

@@ -7836,9 +7836,11 @@ void Game::addBestiaryList(uint16_t raceid, std::string name) {
 }
 
 void Game::broadcastMessage(const std::string &text, MessageClasses type) const {
-	g_logger().info("Broadcasted message: {}", text);
-	for (const auto &it : players) {
-		it.second->sendTextMessage(type, text);
+	if (!text.empty()) {
+		g_logger().info("Broadcasted message: {}", text);
+		for (const auto &it : players) {
+			it.second->sendTextMessage(type, text);
+		}
 	}
 }
 

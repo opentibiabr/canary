@@ -882,8 +882,7 @@ Storage = {
 		AssassinBaseOutfit = 51012,
 		AssassinFirstAddon = 51013,
 		AssassinSecondAddon = 51014,
-		-- Golden Outfit
-		GoldenOutfit = 51015,
+		-- Nightmare Outfit
 		NightmareOutfit = 51016,
 		NightmareDoor = 51017,
 		BrotherhoodOutfit = 51018,
@@ -896,7 +895,6 @@ Storage = {
 		DeeplingAnchor = 51023,
 		FirstOrientalAddon = 51024,
 		SecondOrientalAddon = 51025,
-		RoyalCostumeOutfit = 51026,
 	},
 	TheAncientTombs = {
 		-- Reserved storage from 50940 - 51059
@@ -2775,9 +2773,6 @@ Storage = {
 			},
 			CitizenOfIssaviOutfits = {},
 			RoyalBounaceanAdvisorOutfits = {},
-		},
-		U12_80 = { -- update 12.80 - Reserved Storages 47801 - 47850
-			RoyalCostumeOutfits = {},
 		},
 		U12_90 = { -- update 12.90 - Reserved Storages 47851 - 47900
 			PrimalOrdeal = {

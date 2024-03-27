@@ -2994,5 +2994,8 @@
 	</npc>
 	<npc centerx="33068" centery="32917" centerz="7" radius="1">
 		<npc name="Tonar Oskayaat" x="0" y="0" z="7" spawntime="60" />
-</npc>
+	</npc>
+	<npc centerx="32398" centery="32509" centerz="7" radius="1">
+		<npc name="An Idol" x="0" y="0" z="15" spawntime="60" />
+	</npc>
 </npcs>

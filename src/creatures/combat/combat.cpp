@@ -797,11 +797,11 @@ bool Combat::reflectParalyzeCondition(const std::shared_ptr<Creature> &caster, c
 		}
 	}
 
-	if (uniform_random(1, 100) <= reflectionChance) {
-		if (caster && !caster->isImmune(CONDITION_PARALYZE)) {
-			caster->addCondition(condition->clone());
-		}
+	if (caster && !caster->isImmune(CONDITION_PARALYZE)) {
+		caster->addCondition(condition->clone());
+	}
 
+	if (uniform_random(1, 100) <= reflectionChance) {
 		if (target->hasCondition(CONDITION_PARALYZE)) {
 			target->removeCondition(CONDITION_PARALYZE);
 		}

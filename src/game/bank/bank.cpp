@@ -80,18 +80,18 @@ const std::set<std::string> deniedNames = {
 	"paladinsample"
 };
 
-const uint32_t minTownId = 3;
-
 bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) {
 	if (!destination) {
 		g_logger().error("Bank::transferTo: destination is nullptr");
 		return false;
 	}
+
 	auto bankable = getBankable();
 	if (!bankable) {
 		g_logger().error("Bank::transferTo: bankable is nullptr");
 		return false;
 	}
+
 	auto destinationBankable = destination->getBankable();
 	if (!destinationBankable) {
 		g_logger().error("Bank::transferTo: destinationBankable is nullptr");
@@ -106,7 +106,7 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 			g_logger().warn("Bank::transferTo: denied name: {}", name);
 			return false;
 		}
-		if (destinationPlayer->getTown()->getID() < minTownId) {
+		if (destinationPlayer->getTown()->getID() < g_configManager().getNumber(MIN_TOWN_ID_TO_BANK_TRANSFER, __FUNCTION__)) {
 			g_logger().warn("Bank::transferTo: denied town: {}", destinationPlayer->getTown()->getID());
 			return false;
 		}

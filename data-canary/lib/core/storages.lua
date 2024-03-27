@@ -32,7 +32,6 @@ Storage = {
 		},
 	},
 
-	DelayLargeSeaShell = 30002,
 	Imbuement = 30004,
 }
 

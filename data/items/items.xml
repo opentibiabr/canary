@@ -75427,7 +75427,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="level" value="250"/>
+			<attribute key="level" value="600"/>
 			<attribute key="mana" value="21"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="fromDamage" value="113"/>
@@ -75455,7 +75455,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="level" value="250"/>
+			<attribute key="level" value="600"/>
 			<attribute key="mana" value="21"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="fromDamage" value="103"/>

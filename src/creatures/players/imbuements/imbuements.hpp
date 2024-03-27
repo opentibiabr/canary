@@ -62,11 +62,11 @@ public:
 		return inject<Imbuements>();
 	}
 
-	std::shared_ptr<Imbuement> getImbuement(uint16_t id);
-	std::shared_ptr<BaseImbuement> getBaseByID(uint16_t id);
-	std::shared_ptr<CategoryImbuement> getCategoryByID(uint16_t id);
+	std::shared_ptr<Imbuement> getImbuement(uint16_t id) const;
+	std::shared_ptr<BaseImbuement> getBaseByID(uint16_t id) const;
+	std::shared_ptr<CategoryImbuement> getCategoryByID(uint16_t id) const;
 
-	std::vector<std::shared_ptr<Imbuement>> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item);
+	std::vector<std::shared_ptr<Imbuement>> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) const;
 
 protected:
 	friend class Imbuement;

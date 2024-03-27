@@ -16,7 +16,7 @@ SkillMapId skillMap = {
 	{ "sword", SKILL_SWORD }, { "axe", SKILL_AXE }, { "club", SKILL_CLUB }, { "dist", SKILL_DISTANCE }, { "distance", SKILL_DISTANCE }, { "fish", SKILL_FISHING }, { "shield", SKILL_SHIELD }, { "fist", SKILL_FIST }, { "magicpoints", STAT_MAGICPOINTS }, { "critical", SKILL_CRITICAL_HIT_DAMAGE }, { "lifeleech", SKILL_LIFE_LEECH_AMOUNT }, { "manaleech", SKILL_MANA_LEECH_AMOUNT }
 };
 
-std::shared_ptr<Imbuement> Imbuements::getImbuement(uint16_t id) {
+std::shared_ptr<Imbuement> Imbuements::getImbuement(uint16_t id) const {
 	if (id == 0) {
 		return nullptr;
 	}
@@ -105,7 +105,7 @@ bool Imbuements::processImbuementNode(const pugi::xml_node &imbuementNode) {
 	}
 
 	uint16_t baseid = pugi::cast<uint32_t>(base.value());
-	auto groupBase = getBaseByID(baseid);
+	const auto &groupBase = getBaseByID(baseid);
 	if (groupBase == nullptr) {
 		g_logger().warn("Group base '{}' not exist", baseid);
 		return false;
@@ -152,7 +152,7 @@ bool Imbuements::processImbuementNode(const pugi::xml_node &imbuementNode) {
 	}
 
 	auto category = pugi::cast<uint16_t>(categorybase.value());
-	auto category_p = getCategoryByID(category);
+	const auto &category_p = getCategoryByID(category);
 	if (category_p == nullptr) {
 		g_logger().warn("Category imbuement {} not exist", category);
 		return false;
@@ -330,7 +330,7 @@ bool Imbuements::reload() {
 	return loadFromXml(true);
 }
 
-std::shared_ptr<BaseImbuement> Imbuements::getBaseByID(uint16_t id) {
+std::shared_ptr<BaseImbuement> Imbuements::getBaseByID(uint16_t id) const {
 	auto baseImbuements = std::find_if(basesImbuement.begin(), basesImbuement.end(), [id](const auto &groupImbuement) {
 		return groupImbuement->id == id;
 	});
@@ -338,7 +338,7 @@ std::shared_ptr<BaseImbuement> Imbuements::getBaseByID(uint16_t id) {
 	return baseImbuements != basesImbuement.end() ? *baseImbuements : nullptr;
 }
 
-std::shared_ptr<CategoryImbuement> Imbuements::getCategoryByID(uint16_t id) {
+std::shared_ptr<CategoryImbuement> Imbuements::getCategoryByID(uint16_t id) const {
 	auto categoryImbuements = std::find_if(categoriesImbuement.begin(), categoriesImbuement.end(), [id](const auto &categoryImbuement) {
 		return categoryImbuement->id == id;
 	});
@@ -346,7 +346,7 @@ std::shared_ptr<CategoryImbuement> Imbuements::getCategoryByID(uint16_t id) {
 	return categoryImbuements != categoriesImbuement.end() ? *categoryImbuements : nullptr;
 }
 
-std::vector<std::shared_ptr<Imbuement>> Imbuements::getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) {
+std::vector<std::shared_ptr<Imbuement>> Imbuements::getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) const {
 	std::vector<std::shared_ptr<Imbuement>> imbuements;
 
 	for (auto &[key, value] : imbuementMap) {
@@ -364,7 +364,7 @@ std::vector<std::shared_ptr<Imbuement>> Imbuements::getImbuements(const std::sha
 		}
 
 		// Send only the imbuements registered on item (in items.xml) to the imbuement window
-		const std::shared_ptr<CategoryImbuement> categoryImbuement = getCategoryByID(imbuement->getCategory());
+		const std::shared_ptr<CategoryImbuement> &categoryImbuement = getCategoryByID(imbuement->getCategory());
 		if (!item->hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
 			continue;
 		}

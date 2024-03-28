@@ -1415,14 +1415,6 @@ struct VIPEntry {
 	bool notify;
 };
 
-struct OutfitEntry {
-	constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
-		lookType(initLookType), addons(initAddons) { }
-
-	uint16_t lookType;
-	uint8_t addons;
-};
-
 struct FamiliarEntry {
 	constexpr explicit FamiliarEntry(uint16_t initLookType) :
 		lookType(initLookType) { }
@@ -1693,6 +1685,7 @@ struct Outfit_t {
 	uint8_t lookMountBody = 0;
 	uint8_t lookMountLegs = 0;
 	uint8_t lookMountFeet = 0;
+	uint16_t currentMount = 0;
 	uint16_t lookFamiliarsType = 0;
 };
 

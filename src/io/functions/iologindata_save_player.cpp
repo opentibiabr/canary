@@ -194,6 +194,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	query << "`lookmountfeet` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountFeet) << ",";
 	query << "`lookmounthead` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountHead) << ",";
 	query << "`lookmountlegs` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountLegs) << ",";
+	query << "`currentmount` = " << static_cast<uint32_t>(player->defaultOutfit.currentMount) << ",";
 	query << "`lookfamiliarstype` = " << player->defaultOutfit.lookFamiliarsType << ",";
 	query << "`isreward` = " << static_cast<uint16_t>(player->isDailyReward) << ",";
 	query << "`maglevel` = " << player->magLevel << ",";
@@ -790,6 +791,66 @@ bool IOLoginDataSave::savePlayerStorage(std::shared_ptr<Player> player) {
 	}
 
 	if (!storageQuery.execute()) {
+		return false;
+	}
+	return true;
+}
+
+bool IOLoginDataSave::savePlayerOutfits(std::shared_ptr<Player> player) {
+	if (!player) {
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
+	Database &db = Database::getInstance();
+	std::ostringstream query;
+	query << "DELETE FROM `player_outfits` WHERE `player_id` = " << player->getGUID();
+	if (!db.executeQuery(query.str())) {
+		return false;
+	}
+
+	query.str("");
+
+	DBInsert outfitQuery("INSERT INTO `player_outfits` (`player_id`, `outfit_id`, `addons`) VALUES ");
+
+	for (const auto &it : player->outfits) {
+		query << player->getGUID() << ',' << it.first << ',' << it.second;
+		if (!outfitQuery.addRow(query)) {
+			return false;
+		}
+	}
+
+	if (!outfitQuery.execute()) {
+		return false;
+	}
+	return true;
+}
+
+bool IOLoginDataSave::savePlayerMounts(std::shared_ptr<Player> player) {
+	if (!player) {
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
+	Database &db = Database::getInstance();
+	std::ostringstream query;
+	query << "DELETE FROM `player_mounts` WHERE `player_id` = " << player->getGUID();
+	if (!db.executeQuery(query.str())) {
+		return false;
+	}
+
+	query.str("");
+
+	DBInsert mountQuery("INSERT INTO `player_mounts` (`player_id`, `mount_id`) VALUES ");
+
+	for (const auto &mountId : player->mounts) {
+		query << player->getGUID() << ',' << mountId;
+		if (!mountQuery.addRow(query)) {
+			return false;
+		}
+	}
+
+	if (!mountQuery.execute()) {
 		return false;
 	}
 	return true;

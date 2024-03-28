@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '44'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '45'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `lookmountfeet` tinyint(3) unsigned NOT NULL DEFAULT '0',
     `lookmounthead` tinyint(3) unsigned NOT NULL DEFAULT '0',
     `lookmountlegs` tinyint(3) unsigned NOT NULL DEFAULT '0',
+    `currentmount` smallint(5) unsigned NOT NULL DEFAULT '0',
     `lookfamiliarstype` int(11) unsigned NOT NULL DEFAULT '0',
     `isreward` tinyint(1) NOT NULL DEFAULT '1',
     `istutorial` tinyint(1) NOT NULL DEFAULT '0',
@@ -744,6 +745,27 @@ CREATE TABLE IF NOT EXISTS `player_storage` (
         FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `player_outfits`
+CREATE TABLE IF NOT EXISTS `player_outfits` (
+    `player_id` int(11) NOT NULL DEFAULT '0',
+    `outfit_id` smallint(4) UNSIGNED NOT NULL DEFAULT '0',
+    `addons` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+	CONSTRAINT `player_outfits_pk` PRIMARY KEY (`player_id`, `outfit_id`),
+	CONSTRAINT `player_outfits_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
+		ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+-- Table structure `player_mounts`
+CREATE TABLE IF NOT EXISTS `player_mounts` (
+    `player_id` int(11) NOT NULL DEFAULT '0',
+    `mount_id` smallint(4) UNSIGNED NOT NULL DEFAULT '0',
+	CONSTRAINT `player_mounts_pk` PRIMARY KEY (`player_id`, `mount_id`),
+	CONSTRAINT `player_mounts_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
 
 -- Table structure `store_history`
 CREATE TABLE IF NOT EXISTS `store_history` (

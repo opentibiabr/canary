@@ -215,6 +215,8 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		throw DatabaseException("Player nullptr in function: " + std::string(__FUNCTION__));
 	}
 
+	g_game().addImproveSave(1)
+	
 	if (!IOLoginDataSave::savePlayerFirst(player)) {
 		throw DatabaseException("[" + std::string(__FUNCTION__) + "] - Failed to save player first: " + player->getName());
 	}
@@ -223,18 +225,21 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		if (!IOLoginDataSave::savePlayerStash(player)) {
 			throw DatabaseException("[IOLoginDataSave::savePlayerFirst] - Failed to save player stash: " + player->getName());
 		}
+		g_game().addImproveSave(2)
 	}
 
 	if (player->hasSaveSpells()) {
 		if (!IOLoginDataSave::savePlayerSpells(player)) {
 			throw DatabaseException("[IOLoginDataSave::savePlayerSpells] - Failed to save player spells: " + player->getName());
 		}
+		g_game().addImproveSave(3)
 	}
 
 	if (player->hasSaveUnjustifiedKills()) {
 		if (!IOLoginDataSave::savePlayerKills(player)) {
 			throw DatabaseException("IOLoginDataSave::savePlayerKills] - Failed to save player kills: " + player->getName());
 		}
+		g_game().addImproveSave(4)
 	}
 
 	if (!IOLoginDataSave::savePlayerBestiarySystem(player)) {

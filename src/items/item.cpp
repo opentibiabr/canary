@@ -106,13 +106,13 @@ void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 	}
 
 	// Get imbuement by the id
-	const Imbuement* imbuement = g_imbuements().getImbuement(imbuementId);
+	const auto &imbuement = g_imbuements().getImbuement(imbuementId);
 	if (!imbuement) {
 		return;
 	}
 
 	// Get category imbuement for acess category id
-	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+	const auto &categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 	if (!hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
 		return;
 	}
@@ -131,7 +131,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
-			if (const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
+			if (const auto &categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
 				categoryImbuement->id == categoryId) {
 				return true;
 			}
@@ -1424,7 +1424,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 					continue;
 				}
 
-				const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID());
+				const auto &baseImbuement = g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID());
 				if (!baseImbuement) {
 					continue;
 				}
@@ -1914,7 +1914,7 @@ std::string Item::parseImbuementDescription(std::shared_ptr<Item> item) {
 				continue;
 			}
 
-			const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID());
+			const auto &baseImbuement = g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID());
 			if (!baseImbuement) {
 				continue;
 			}

@@ -865,7 +865,7 @@ void ItemParse::parseImbuement(const std::string &tmpStrValue, pugi::xml_node at
 				continue;
 			}
 		} else {
-			g_logger().warn("[ParseImbuement::initParseImbuement] - Unknown type: {}", valueAttribute.as_string());
+			g_logger().warn("[ParseImbuement::initParseImbuement] - Unknown type: {}, item: {}", valueAttribute.as_string(), itemType.id);
 		}
 	}
 }

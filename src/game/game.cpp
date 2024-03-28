@@ -1518,11 +1518,6 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		return;
 	}
 
-	if (!item->isPushable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
-		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
-		return;
-	}
-
 	const Position &playerPos = player->getPosition();
 	auto cylinderTile = fromCylinder->getTile();
 	const Position &mapFromPos = cylinderTile ? cylinderTile->getPosition() : item->getPosition();
@@ -1652,6 +1647,11 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 
 	if (isTryingToStow(toPos, toCylinder)) {
 		player->stowItem(item, count, false);
+		return;
+	}
+
+	if (!item->isPushable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
 		return;
 	}
 

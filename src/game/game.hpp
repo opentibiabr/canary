@@ -944,6 +944,11 @@ private:
 	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
+
+	uint32_t totalImproveSave = 0;
+	uint32_t totalImproveSaveStash = 0;
+	uint32_t totalImproveSaveSpells = 0;
+	uint32_t totalImproveSaveKills = 0;
 };
 
 constexpr auto g_game = Game::getInstance;

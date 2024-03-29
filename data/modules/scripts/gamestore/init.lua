@@ -1890,6 +1890,51 @@ function GameStore.processHirelingChangeNamePurchase(player, offer, productType,
 	end
 end
 
+local function HandleHirelingSexChange(playerId, offer)
+	local player = Player(playerId)
+	if not player then
+		return
+	end
+
+	local cb = function(playerId, data, hireling)
+		local player = Player(playerId)
+		if not player then
+			return
+		end
+
+		if not hireling then
+			return player:showInfoModal("Error", "Your must select a hireling.")
+		end
+
+		if hireling.active > 0 then
+			return player:showInfoModal("Error", "Your hireling must be inside his/her lamp.")
+		end
+
+		if not player:makeCoinTransaction(data.offer, hireling:getName()) then
+			return player:showInfoModal("Error", "Transaction error")
+		end
+
+		local changeTo, sexString, lookType
+		if hireling.sex == HIRELING_SEX.FEMALE then
+			changeTo = HIRELING_SEX.MALE
+			sexString = "male"
+			lookType = HIRELING_OUTFIT_DEFAULT.male
+		else
+			changeTo = HIRELING_SEX.FEMALE
+			sexString = "female"
+			lookType = HIRELING_OUTFIT_DEFAULT.female
+		end
+
+		hireling.sex = changeTo
+		hireling.looktype = lookType
+
+		logger.debug("{} sex was changed to {}", hireling:getName(), sexString)
+		sendUpdatedStoreBalances(playerId)
+	end
+
+	player:sendHirelingSelectionModal("Choose a Hireling", "Select a hireling below", cb, { offer = offer })
+end
+
 function GameStore.processHirelingChangeSexPurchase(player, offer)
 	if player:getClient().version < 1200 then
 		return error({
@@ -2195,49 +2240,4 @@ function Player:openStore(serviceName) --exporting the method so other scripts c
 	if category then
 		addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
 	end
-end
-
-function HandleHirelingSexChange(playerId, offer)
-	local player = Player(playerId)
-	if not player then
-		return
-	end
-
-	local cb = function(playerId, data, hireling)
-		local player = Player(playerId)
-		if not player then
-			return
-		end
-
-		if not hireling then
-			return player:showInfoModal("Error", "Your must select a hireling.")
-		end
-
-		if hireling.active > 0 then
-			return player:showInfoModal("Error", "Your hireling must be inside his/her lamp.")
-		end
-
-		if not player:makeCoinTransaction(data.offer, hireling:getName()) then
-			return player:showInfoModal("Error", "Transaction error")
-		end
-
-		local changeTo, sexString, lookType
-		if hireling.sex == HIRELING_SEX.FEMALE then
-			changeTo = HIRELING_SEX.MALE
-			sexString = "male"
-			lookType = HIRELING_OUTFIT_DEFAULT.male
-		else
-			changeTo = HIRELING_SEX.FEMALE
-			sexString = "female"
-			lookType = HIRELING_OUTFIT_DEFAULT.female
-		end
-
-		hireling.sex = changeTo
-		hireling.looktype = lookType
-
-		logger.debug("{} sex was changed to {}", hireling:getName(), sexString)
-		sendUpdatedStoreBalances(playerId)
-	end
-
-	player:sendHirelingSelectionModal("Choose a Hireling", "Select a hireling below", cb, { offer = offer })
 end

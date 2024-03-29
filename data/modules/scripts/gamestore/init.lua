@@ -402,7 +402,7 @@ function parseBuyStoreOffer(playerId, msg)
 
 	-- All guarding conditions under which the offer should not be processed must be included here
 	if
-		(not table.contains(GameStore.OfferTypes, offer.type)) -- we've got an invalid offer type
+		not table.contains(GameStore.OfferTypes, offer.type) -- we've got an invalid offer type
 		or not player
 		or (player:getVocation():getId() == 0) and (not GameStore.haveOfferRook(id)) -- we don't have such offer
 		or not offer

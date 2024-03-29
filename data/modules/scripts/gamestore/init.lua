@@ -1834,9 +1834,6 @@ local function HandleHirelingNameChange(playerId, offer, newHirelingName)
 			return
 		end
 
-		local offer = data.offer
-		local newHirelingName = data.newHirelingName
-
 		if not hireling then
 			return playerInFunction:showInfoModal("Error", "Your must select a hireling.")
 		end
@@ -1846,9 +1843,9 @@ local function HandleHirelingNameChange(playerId, offer, newHirelingName)
 		end
 
 		local oldName = hireling.name
-		hireling.name = newHirelingName
+		hireling.name = data.newHirelingName
 
-		if not playerInFunction:makeCoinTransaction(data.offer, oldName .. " to " .. newHirelingName) then
+		if not playerInFunction:makeCoinTransaction(data.offer, oldName .. " to " .. hireling.name) then
 			return playerInFunction:showInfoModal("Error", "Transaction error")
 		end
 
@@ -1856,7 +1853,7 @@ local function HandleHirelingNameChange(playerId, offer, newHirelingName)
 		if lamp then
 			lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
 		end
-		logger.debug("{} has been renamed to {}", oldName, newHirelingName)
+		logger.debug("{} has been renamed to {}", oldName, hireling.name)
 		sendUpdatedStoreBalances(playerIdInFunction)
 	end
 

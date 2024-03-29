@@ -692,8 +692,7 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "The offer is fake."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
-			local hasMount = self:hasMount(offer.id)
-			if hasMount then
+			if self:hasMount(offer.id) then
 				disabled = 1
 				disabledReason = "You already have this mount."
 			end
@@ -723,12 +722,11 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You already have 3 slots released."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
-			local remainingBoost = self:getExpBoostStamina()
 			if self:getStorageValue(GameStore.Storages.expBoostCount) == 6 then
 				disabled = 1
 				disabledReason = "You can't buy XP Boost for today."
 			end
-			if remainingBoost > 0 then
+			if self:getExpBoostStamina() > 0 then
 				disabled = 1
 				disabledReason = "You already have an active XP boost."
 			end
@@ -786,9 +784,9 @@ function Player.canReceiveStoreItems(self, offerId, offerCount)
 	local inboxItems = inbox:getItems(true)
 	local slotsOccupied = #inboxItems
 	local maxCapacity = inbox:getMaxCapacity()
-	local slotsAvailable = maxCapacity - slotsOccupied
 
 	if slotsOccupied + slotsNeeded > maxCapacity then
+		local slotsAvailable = maxCapacity - slotsOccupied
 		return false, string.format("Not enough free slots in your store inbox. You need %d more slot(s). Currently occupied: %d/%d", slotsNeeded - slotsAvailable, slotsOccupied, maxCapacity)
 	end
 
@@ -1104,13 +1102,15 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 	if not player then
 		return false
 	end
-	local oldProtocol = player:getClient().version < 1200
-	local totalEntries = GameStore.retrieveHistoryTotalPages(player:getAccountId())
-	local totalPages = math.ceil(totalEntries / entriesPerPage)
+
 	local entries = GameStore.retrieveHistoryEntries(player:getAccountId(), page, entriesPerPage) -- this makes everything easy!
 	if #entries == 0 then
 		return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_HISTORY, "You don't have any entries yet.")
 	end
+
+	local oldProtocol = player:getClient().version < 1200
+	local totalEntries = GameStore.retrieveHistoryTotalPages(player:getAccountId())
+	local totalPages = math.ceil(totalEntries / entriesPerPage)
 
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_OpenTransactionHistory)
@@ -1165,10 +1165,8 @@ function sendStoreError(playerId, errorType, message)
 
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_StoreError)
-
 	msg:addByte(errorType)
 	msg:addString(message, "sendStoreError - message")
-
 	msg:sendToPlayer(player)
 end
 
@@ -1194,7 +1192,6 @@ function sendUpdatedStoreBalances(playerId)
 		return false
 	end
 
-	local oldProtocol = player:getClient().version < 1200
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_CoinBalanceUpdating)
 	msg:addByte(0x01)
@@ -1205,6 +1202,8 @@ function sendUpdatedStoreBalances(playerId)
 	-- Send total of coins (transferable and normal coin)
 	msg:addU32(player:getTibiaCoins())
 	msg:addU32(player:getTransferableCoins()) -- How many are Transferable
+
+	local oldProtocol = player:getClient().version < 1200
 	if not oldProtocol then
 		-- How many are reserved for a Character Auction
 		-- We currently do not have this system implemented, so we will send 0
@@ -1360,7 +1359,7 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 	local offset = currentPage > 1 and entriesPerPage * (currentPage - 1) or 0
 
 	local resultId = db.storeQuery("SELECT * FROM `store_history` WHERE `account_id` = " .. accountId .. " ORDER BY `time` DESC LIMIT " .. offset .. ", " .. entriesPerPage .. ";")
-	if resultId ~= false then
+	if resultId then
 		repeat
 			local entry = {
 				mode = Result.getNumber(resultId, "mode"),
@@ -1700,8 +1699,6 @@ function GameStore.processMountPurchase(player, offerId)
 end
 
 function GameStore.processNameChangePurchase(player, offer, productType, newName)
-	local playerId = player:getId()
-
 	if productType == GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE then
 		local tile = Tile(player:getPosition())
 		if tile then
@@ -1731,11 +1728,11 @@ function GameStore.processNameChangePurchase(player, offer, productType, newName
 		else
 			message = "Your character has been renamed successfully."
 		end
-		addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
+		addPlayerEvent(sendStorePurchaseSuccessful, 500, player:getId(), message)
 
 		player:changeName(newName)
 	else
-		return addPlayerEvent(sendRequestPurchaseData, 250, playerId, offer.id, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE)
+		return addPlayerEvent(sendRequestPurchaseData, 250, player:getId(), offer.id, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE)
 	end
 end
 
@@ -1791,9 +1788,6 @@ function GameStore.processTempleTeleportPurchase(player)
 end
 
 function GameStore.processHirelingPurchase(player, offer, productType, hirelingName, chosenSex)
-	local playerId = player:getId()
-	local offerId = offer.id
-
 	if player:getClient().version < 1200 then
 		return error({ code = 1, message = "You cannot buy hirelings on client 10, please relog on client 12 and try again." })
 	end
@@ -1815,7 +1809,7 @@ function GameStore.processHirelingPurchase(player, offer, productType, hirelingN
 
 		player:makeCoinTransaction(offer, hirelingName)
 		local message = "You have successfully bought " .. hirelingName
-		return addPlayerEvent(sendStorePurchaseSuccessful, 650, playerId, message)
+		return addPlayerEvent(sendStorePurchaseSuccessful, 650, player:getId(), message)
 		-- If not, we ask him to do!
 	else
 		if player:getHirelingsCount() >= 10 then
@@ -1823,14 +1817,11 @@ function GameStore.processHirelingPurchase(player, offer, productType, hirelingN
 		end
 		-- TODO: Use the correct dialog (byte 0xDB) on client 1205+
 		-- for compatibility, request name using the change name dialog
-		return addPlayerEvent(sendRequestPurchaseData, 250, playerId, offerId, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_HIRELING)
+		return addPlayerEvent(sendRequestPurchaseData, 250, player:getId(), offer.id, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_HIRELING)
 	end
 end
 
 function GameStore.processHirelingChangeNamePurchase(player, offer, productType, newHirelingName)
-	local playerId = player:getId()
-	local offerId = offer.id
-
 	if player:getClient().version < 1200 then
 		return error({
 			code = 1,
@@ -1849,17 +1840,15 @@ function GameStore.processHirelingChangeNamePurchase(player, offer, productType,
 		end)
 
 		local message = "Close the store window to select which hireling should be renamed to " .. newHirelingName
+		local playerId = player:getId()
 		addPlayerEvent(sendStorePurchaseSuccessful, 200, playerId, message)
-
 		addPlayerEvent(HandleHirelingNameChange, 550, playerId, offer, newHirelingName)
 	else
-		return addPlayerEvent(sendRequestPurchaseData, 250, playerId, offerId, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE)
+		return addPlayerEvent(sendRequestPurchaseData, 250, playerId, offer.id, GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE)
 	end
 end
 
 function GameStore.processHirelingChangeSexPurchase(player, offer)
-	local playerId = player:getId()
-
 	if player:getClient().version < 1200 then
 		return error({
 			code = 1,
@@ -1868,8 +1857,8 @@ function GameStore.processHirelingChangeSexPurchase(player, offer)
 	end
 
 	local message = "Close the store window to select which hireling should have the sex changed."
+	local playerId = player:getId()
 	addPlayerEvent(sendStorePurchaseSuccessful, 200, playerId, message)
-
 	addPlayerEvent(HandleHirelingSexChange, 550, playerId, offer)
 end
 
@@ -2169,11 +2158,16 @@ end
 -- Hireling Helpers
 function HandleHirelingNameChange(playerId, offer, newHirelingName)
 	local player = Player(playerId)
+	if not player then
+		return
+	end
 
 	local cb = function(playerId, data, hireling)
-		local offer = data.offer
-		local newHirelingName = data.newHirelingName
 		local player = Player(playerId)
+		if not player then
+			return
+		end
+	
 		if not hireling then
 			return player:showInfoModal("Error", "Your must select a hireling.")
 		end
@@ -2183,6 +2177,7 @@ function HandleHirelingNameChange(playerId, offer, newHirelingName)
 		end
 
 		local oldName = hireling.name
+		local newHirelingName = data.newHirelingName
 		hireling.name = newHirelingName
 
 		if not player:makeCoinTransaction(data.offer, oldName .. " to " .. newHirelingName) then
@@ -2202,9 +2197,16 @@ end
 
 function HandleHirelingSexChange(playerId, offer)
 	local player = Player(playerId)
+	if not player then
+		return
+	end
 
 	local cb = function(playerId, data, hireling)
 		local player = Player(playerId)
+		if not player then
+			return
+		end
+	
 		if not hireling then
 			return player:showInfoModal("Error", "Your must select a hireling.")
 		end

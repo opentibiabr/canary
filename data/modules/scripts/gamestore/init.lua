@@ -1821,6 +1821,48 @@ function GameStore.processHirelingPurchase(player, offer, productType, hirelingN
 	end
 end
 
+-- Hireling Helpers
+local function HandleHirelingNameChange(playerId, offer, newHirelingName)
+	local player = Player(playerId)
+	if not player then
+		return
+	end
+
+	local functionCallback = function(playerId, data, hireling)
+		local player = Player(playerId)
+		if not player then
+			return
+		end
+
+		local offer = data.offer
+		local newHirelingName = data.newHirelingName
+
+		if not hireling then
+			return player:showInfoModal("Error", "Your must select a hireling.")
+		end
+
+		if hireling.active > 0 then
+			return player:showInfoModal("Error", "Your hireling must be inside his/her lamp.")
+		end
+
+		local oldName = hireling.name
+		hireling.name = newHirelingName
+
+		if not player:makeCoinTransaction(data.offer, oldName .. " to " .. newHirelingName) then
+			return player:showInfoModal("Error", "Transaction error")
+		end
+
+		local lamp = player:findHirelingLamp(hireling:getId())
+		if lamp then
+			lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
+		end
+		logger.debug("{} has been renamed to {}", oldName, newHirelingName)
+		sendUpdatedStoreBalances(playerId)
+	end
+
+	player:sendHirelingSelectionModal("Choose a Hireling", "Select a hireling below", functionCallback, { offer = offer, newHirelingName = newHirelingName })
+end
+
 function GameStore.processHirelingChangeNamePurchase(player, offer, productType, newHirelingName)
 	if player:getClient().version < 1200 then
 		return error({
@@ -2153,46 +2195,6 @@ function Player:openStore(serviceName) --exporting the method so other scripts c
 	if category then
 		addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
 	end
-end
-
--- Hireling Helpers
-function HandleHirelingNameChange(playerId, offer, newHirelingName)
-	local player = Player(playerId)
-	if not player then
-		return
-	end
-
-	local cb = function(playerId, data, hireling)
-		local player = Player(playerId)
-		if not player then
-			return
-		end
-
-		if not hireling then
-			return player:showInfoModal("Error", "Your must select a hireling.")
-		end
-
-		if hireling.active > 0 then
-			return player:showInfoModal("Error", "Your hireling must be inside his/her lamp.")
-		end
-
-		local oldName = hireling.name
-		local newHirelingName = data.newHirelingName
-		hireling.name = newHirelingName
-
-		if not player:makeCoinTransaction(data.offer, oldName .. " to " .. newHirelingName) then
-			return player:showInfoModal("Error", "Transaction error")
-		end
-
-		local lamp = player:findHirelingLamp(hireling:getId())
-		if lamp then
-			lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
-		end
-		logger.debug("{} has been renamed to {}", oldName, newHirelingName)
-		sendUpdatedStoreBalances(playerId)
-	end
-
-	player:sendHirelingSelectionModal("Choose a Hireling", "Select a hireling below", cb, { offer = offer, newHirelingName = newHirelingName })
 end
 
 function HandleHirelingSexChange(playerId, offer)

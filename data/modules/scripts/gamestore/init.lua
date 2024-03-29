@@ -2167,7 +2167,7 @@ function HandleHirelingNameChange(playerId, offer, newHirelingName)
 		if not player then
 			return
 		end
-	
+
 		if not hireling then
 			return player:showInfoModal("Error", "Your must select a hireling.")
 		end
@@ -2206,7 +2206,7 @@ function HandleHirelingSexChange(playerId, offer)
 		if not player then
 			return
 		end
-	
+
 		if not hireling then
 			return player:showInfoModal("Error", "Your must select a hireling.")
 		end

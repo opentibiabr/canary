@@ -124,16 +124,14 @@ endif()
 
 if (MSVC)
     if(BUILD_STATIC_LIBRARY)
-        target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_static)
         set(VCPKG_TARGET_TRIPLET "x64-windows-static" CACHE STRING "")
     else()
-        target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_lib)
         set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
     endif()
 
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})
 else()
-    target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_static Threads::Threads)
+    target_link_libraries(${PROJECT_NAME}_lib PUBLIC Threads::Threads)
 endif (MSVC)
 
 # === OpenMP ===

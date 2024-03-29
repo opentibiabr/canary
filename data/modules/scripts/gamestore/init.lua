@@ -402,7 +402,7 @@ function parseBuyStoreOffer(playerId, msg)
 
 	-- All guarding conditions under which the offer should not be processed must be included here
 	if
-		(table.contains(GameStore.OfferTypes, offer.type) == false) -- we've got an invalid offer type
+		(not table.contains(GameStore.OfferTypes, offer.type)) -- we've got an invalid offer type
 		or not player
 		or (player:getVocation():getId() == 0) and (not GameStore.haveOfferRook(id)) -- we don't have such offer
 		or not offer
@@ -620,7 +620,7 @@ end
 function Player.canBuyOffer(self, offer)
 	local playerId = self:getId()
 	local disabled, disabledReason = 0, ""
-	if offer.disabled == true or not offer.type then
+	if offer.disabled or not offer.type then
 		disabled = 1
 	end
 
@@ -693,7 +693,7 @@ function Player.canBuyOffer(self, offer)
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
 			local hasMount = self:hasMount(offer.id)
-			if hasMount == true then
+			if hasMount then
 				disabled = 1
 				disabledReason = "You already have this mount."
 			end
@@ -1183,7 +1183,7 @@ function sendStoreBalanceUpdating(playerId, updating)
 	msg:addByte(0x00)
 	msg:sendToPlayer(player)
 
-	if updating == true then
+	if updating then
 		sendUpdatedStoreBalances(playerId)
 	end
 end
@@ -1346,7 +1346,7 @@ end
 
 GameStore.retrieveHistoryTotalPages = function(accountId)
 	local resultId = db.storeQuery("SELECT count(id) as total FROM store_history WHERE account_id = " .. accountId)
-	if resultId == false then
+	if not resultId then
 		return 0
 	end
 
@@ -1602,7 +1602,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 			local countToAdd = math.min(remainingCount, stackSize)
 			local inboxItem = inbox:addItem(offerId, countToAdd)
 			if inboxItem then
-				if movable ~= true then
+				if not movable then
 					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 				end
 			else
@@ -1631,21 +1631,32 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 	local inbox = player:getStoreInbox()
 	if inbox then
 		for _, itemId in ipairs(itemIds) do
-			for i = 1, offer.count do
+			if isCaskItem(itemId) then
 				local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 				if decoKit then
 					decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
 					decoKit:setCustomAttribute("unWrapId", itemId)
-					if isCaskItem(itemId) then
-						decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offer.count)
-					end
+					decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offer.count)
 
-					if offer.movable ~= true then
+					if not offer.movable then
 						decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 					end
 				end
+				player:sendUpdateContainer(inbox)
+			else
+				for i = 1, offer.count do
+					local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
+					if decoKit then
+						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
+						decoKit:setCustomAttribute("unWrapId", itemId)
+
+						if not offer.movable then
+							decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+						end
+					end
+					player:sendUpdateContainer(inbox)
+				end
 			end
-			player:sendUpdateContainer(inbox)
 		end
 	end
 end

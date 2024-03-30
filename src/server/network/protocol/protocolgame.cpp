@@ -4092,7 +4092,7 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 				break;
 			}
 			case MESSAGE_MANA: {
-				internalType = MESSAGE_THANK_YOU;
+				internalType = MESSAGE_LOGIN;
 				break;
 			}
 			case MESSAGE_BEYOND_LAST: {

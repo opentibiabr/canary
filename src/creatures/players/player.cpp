@@ -4925,7 +4925,7 @@ void Player::genReservedStorageRange() {
 }
 
 void Player::addOutfit(uint16_t lookType, uint8_t addons) {
-	for (const auto &[outfitPlayer, addonPlayer] : outfits) {
+	for (auto &[outfitPlayer, addonPlayer] : outfits) {
 		if (outfitPlayer == lookType) {
 			addonPlayer |= addons;
 			return;
@@ -4945,7 +4945,7 @@ bool Player::removeOutfit(uint16_t lookType) {
 }
 
 bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
-	for (const auto &[outfitPlayer, addonPlayer] : outfits) {
+	for (auto &[outfitPlayer, addonPlayer] : outfits) {
 		if (outfitPlayer == lookType) {
 			addonPlayer &= ~addons;
 			return true;

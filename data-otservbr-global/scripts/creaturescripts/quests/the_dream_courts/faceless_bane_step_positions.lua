@@ -71,37 +71,23 @@ function facelessBaneStepPositions.onStepIn(creature, item, position, fromPositi
 	end
 
 	if Game.getStorageValue(GlobalStorage.FacelessBaneStepsOn) < 1 then
-		local positionAlreadyAdded = false
-		if #walkedPositions == 0 then
-			position:sendSingleSoundEffect(SOUND_EFFECT_TYPE_SPELL_BUZZ)
-			position:sendMagicEffect(CONST_ME_YELLOWENERGY)
-			table.insert(walkedPositions, position)
-			return true
-		end
-
-		for _, p in ipairs(walkedPositions) do
-			if p == position then
-				positionAlreadyAdded = true
-				break
+		if #walkedPositions > 0 then
+			for _, walkedPos in ipairs(walkedPositions) do
+				if walkedPos == position then
+					return true
+				end
 			end
 		end
 
-		if positionAlreadyAdded then
-			return true
-		else
-			position:sendSingleSoundEffect(SOUND_EFFECT_TYPE_SPELL_BUZZ)
-			position:sendMagicEffect(CONST_ME_YELLOWENERGY)
-			table.insert(walkedPositions, position)
+		position:sendSingleSoundEffect(SOUND_EFFECT_TYPE_SPELL_BUZZ)
+		position:sendMagicEffect(CONST_ME_YELLOWENERGY)
+		table.insert(walkedPositions, position)
 
-			if #walkedPositions == 13 then
-				Game.setStorageValue(GlobalStorage.FacelessBaneStepsOn, 1)
-				addEvent(resetWalkedPositions, 60 * 1000)
-				sendEnergyEffect()
-				return true
-			end
+		if #walkedPositions == 13 then
+			Game.setStorageValue(GlobalStorage.FacelessBaneStepsOn, 1)
+			addEvent(resetWalkedPositions, 60 * 1000)
+			sendEnergyEffect()
 		end
-
-		return true
 	end
 	return true
 end

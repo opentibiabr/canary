@@ -253,28 +253,6 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 		return;
 	}
 
-	// load outfits & addons
-	std::ostringstream queryOutfits;
-	queryOutfits << "SELECT `outfit_id`, `addons` FROM `player_outfits` WHERE `player_id` = " << player->getGUID();
-
-	DBResult_ptr result1 = Database::getInstance().storeQuery(queryOutfits.str());
-	if (result1) {
-		do {
-			player->addOutfit(result1->getNumber<uint16_t>("outfit_id"), result1->getNumber<uint8_t>("addons"));
-		} while (result1->next());
-	}
-
-	// load mounts
-	std::ostringstream queryMounts;
-	queryMounts << "SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = " << player->getGUID();
-
-	DBResult_ptr result2 = Database::getInstance().storeQuery(queryMounts.str());
-	if (result2) {
-		do {
-			player->tameMount(result2->getNumber<uint16_t>("mount_id"));
-		} while (result2->next());
-	}
-
 	player->defaultOutfit.lookHead = static_cast<uint8_t>(result->getNumber<uint16_t>("lookhead"));
 	player->defaultOutfit.lookBody = static_cast<uint8_t>(result->getNumber<uint16_t>("lookbody"));
 	player->defaultOutfit.lookLegs = static_cast<uint8_t>(result->getNumber<uint16_t>("looklegs"));
@@ -284,7 +262,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	player->defaultOutfit.lookMountBody = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountbody"));
 	player->defaultOutfit.lookMountLegs = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountlegs"));
 	player->defaultOutfit.lookMountFeet = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountfeet"));
-	player->defaultOutfit.currentMount = static_cast<uint8_t>(result->getNumber<uint16_t>("currentmount"));
+	player->defaultOutfit.currentMount = result->getNumber<uint16_t>("currentmount");
 	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
 
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
@@ -293,6 +271,26 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	}
 
 	player->currentOutfit = player->defaultOutfit;
+
+	Database &db = Database::getInstance();
+
+	// load outfits & addons
+	std::ostringstream queryOutfits;
+	queryOutfits << "SELECT `outfit_id`, `addons` FROM `player_outfits` WHERE `player_id` = " << player->getGUID();
+	if ((result = db.storeQuery(queryOutfits.str()))) {
+		do {
+			player->outfits.emplace(result->getNumber<uint16_t>("outfit_id"), result->getNumber<uint8_t>("addons"));
+		} while (result->next());
+	}
+
+	// load mounts
+	std::ostringstream queryMounts;
+	queryMounts << "SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = " << player->getGUID();
+	if ((result = db.storeQuery(queryMounts.str()))) {
+		do {
+			player->mounts.emplace(result->getNumber<uint16_t>("mount_id"));
+		} while (result->next());
+	}
 }
 
 void IOLoginDataLoad::loadPlayerSkullSystem(std::shared_ptr<Player> player, DBResult_ptr result) {

@@ -4935,7 +4935,7 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 			return;
 		}
 	}
-	outfits.insert(std::pair(lookType, addons));
+	outfits.emplace(lookType, addons);
 }
 
 bool Player::removeOutfit(uint16_t lookType) {
@@ -5844,7 +5844,7 @@ bool Player::tameMount(uint16_t mountId) {
 		return false;
 	}
 
-	mounts.insert(mountId);
+	mounts.emplace(mountId);
 	return true;
 }
 

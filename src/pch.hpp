@@ -45,6 +45,7 @@
 #include <numeric>
 #include <cmath>
 #include <mutex>
+#include <stack>
 
 // --------------------
 // System Includes
@@ -94,9 +95,6 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<
 
 // GMP
 #include <gmp.h>
-
-// JSON
-#include <json/json.h>
 
 // LUA
 #if __has_include("luajit/lua.hpp")

@@ -9,7 +9,6 @@
     "bext-ut",
     "curl",
     "eventpp",
-    "jsoncpp",
     "luajit",
     "magic-enum",
     "mio",

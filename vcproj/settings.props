@@ -21,7 +21,6 @@
       libcurl.lib;
       fmt.lib;
       spdlog.lib;
-      jsoncpp.lib;
       abseil_dll.lib;
       argon2.lib;
       opentelemetry_common.lib;
@@ -60,7 +59,6 @@
       libcurl-d.lib;
       fmtd.lib;
       spdlogd.lib;
-      jsoncpp.lib;
       abseil_dll.lib;
       argon2.lib;
       opentelemetry_common.lib;

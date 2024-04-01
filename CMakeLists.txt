@@ -48,10 +48,17 @@ include(LoggingHelper)
 option(OPTIONS_ENABLE_CCACHE "Enable ccache" OFF)
 option(OPTIONS_ENABLE_SCCACHE "Use sccache to speed up compilation process" OFF)
 option(OPTIONS_ENABLE_IPO "Check and Enable interprocedural optimization (IPO/LTO)" ON)
+option(FEATURE_METRICS "Enable metrics feature" OFF)
 
 # *****************************************************************************
 # Options Code
 # *****************************************************************************
+
+if(FEATURE_METRIC)
+    log_option_enabled("metrics")
+else ()
+    log_option_disabled("metrics")
+endif ()
 
 # === CCACHE ===
 if(OPTIONS_ENABLE_CCACHE)

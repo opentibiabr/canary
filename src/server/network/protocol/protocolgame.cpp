@@ -4092,7 +4092,7 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 				break;
 			}
 			case MESSAGE_MANA: {
-				internalType = MESSAGE_LOGIN;
+				internalType = MESSAGE_HEALED;
 				break;
 			}
 			case MESSAGE_BEYOND_LAST: {
@@ -4143,11 +4143,9 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		}
 		case MESSAGE_HEALED:
 		case MESSAGE_HEALED_OTHERS: {
-			if (!oldProtocol) {
-				msg.addPosition(message.position);
-				msg.add<uint32_t>(message.primary.value);
-				msg.addByte(message.primary.color);
-			}
+			msg.addPosition(message.position);
+			msg.add<uint32_t>(message.primary.value);
+			msg.addByte(message.primary.color);
 			break;
 		}
 		case MESSAGE_EXPERIENCE:

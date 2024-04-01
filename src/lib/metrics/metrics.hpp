@@ -9,42 +9,28 @@
 
 #pragma once
 
-#include "game/scheduling/dispatcher.hpp"
-#include <opentelemetry/exporters/ostream/metric_exporter_factory.h>
-#include <opentelemetry/sdk/metrics/export/periodic_exporting_metric_reader_factory.h>
-#include <opentelemetry/exporters/prometheus/exporter_factory.h>
-#include <opentelemetry/exporters/prometheus/exporter_options.h>
-#include <opentelemetry/metrics/provider.h>
-#include <opentelemetry/sdk/metrics/aggregation/default_aggregation.h>
-#include <opentelemetry/sdk/metrics/aggregation/histogram_aggregation.h>
-#include <opentelemetry/sdk/metrics/push_metric_exporter.h>
-#include <opentelemetry/sdk/metrics/aggregation/base2_exponential_histogram_indexer.h>
-#include <opentelemetry/sdk/metrics/meter.h>
-#include <opentelemetry/sdk/metrics/meter_provider.h>
-#include <opentelemetry/sdk/metrics/meter_provider_factory.h>
-#include <opentelemetry/sdk/metrics/view/instrument_selector_factory.h>
-#include <opentelemetry/sdk/metrics/view/meter_selector_factory.h>
-#include <opentelemetry/sdk/metrics/view/view_factory.h>
+#ifdef FEATURE_METRICS
+	#include "game/scheduling/dispatcher.hpp"
+	#include <opentelemetry/exporters/ostream/metric_exporter_factory.h>
+	#include <opentelemetry/sdk/metrics/export/periodic_exporting_metric_reader_factory.h>
+	#include <opentelemetry/exporters/prometheus/exporter_factory.h>
+	#include <opentelemetry/exporters/prometheus/exporter_options.h>
+	#include <opentelemetry/metrics/provider.h>
+	#include <opentelemetry/sdk/metrics/aggregation/default_aggregation.h>
+	#include <opentelemetry/sdk/metrics/aggregation/histogram_aggregation.h>
+	#include <opentelemetry/sdk/metrics/push_metric_exporter.h>
+	#include <opentelemetry/sdk/metrics/aggregation/base2_exponential_histogram_indexer.h>
+	#include <opentelemetry/sdk/metrics/meter.h>
+	#include <opentelemetry/sdk/metrics/meter_provider.h>
+	#include <opentelemetry/sdk/metrics/meter_provider_factory.h>
+	#include <opentelemetry/sdk/metrics/view/instrument_selector_factory.h>
+	#include <opentelemetry/sdk/metrics/view/meter_selector_factory.h>
+	#include <opentelemetry/sdk/metrics/view/view_factory.h>
 
 namespace metrics_sdk = opentelemetry::sdk::metrics;
 namespace common = opentelemetry::common;
 namespace metrics_exporter = opentelemetry::exporter::metrics;
 namespace metrics_api = opentelemetry::metrics;
-
-constexpr std::string_view methodName(const char* s) {
-	std::string_view prettyFunction(s);
-	size_t bracket = prettyFunction.rfind("(");
-	size_t space = prettyFunction.rfind(" ", bracket) + 1;
-	return prettyFunction.substr(space, bracket - space);
-}
-
-#if defined(__GNUC__) || defined(__clang__)
-	#define __METHOD_NAME__ methodName(__PRETTY_FUNCTION__)
-#elif defined(_MSC_VER)
-	#define __METHOD_NAME__ methodName(__FUNCSIG__)
-#else
-	#error "Compiler not supported"
-#endif
 
 namespace metrics {
 	using Meter = opentelemetry::nostd::shared_ptr<metrics_api::Meter>;
@@ -85,12 +71,12 @@ namespace metrics {
 		bool stopped { false };
 	};
 
-#define DEFINE_LATENCY_CLASS(class_name, histogram_name, category)       \
-	class class_name##_latency final : public ScopedLatency {            \
-	public:                                                              \
-		class_name##_latency(std::string_view name) :                    \
-			ScopedLatency(name, histogram_name "_latency", category) { } \
-	}
+	#define DEFINE_LATENCY_CLASS(class_name, histogram_name, category)       \
+		class class_name##_latency final : public ScopedLatency {            \
+		public:                                                              \
+			class_name##_latency(std::string_view name) :                    \
+				ScopedLatency(name, histogram_name "_latency", category) { } \
+		}
 
 	DEFINE_LATENCY_CLASS(method, "method", "method");
 	DEFINE_LATENCY_CLASS(lua, "lua", "scope");
@@ -170,3 +156,70 @@ namespace metrics {
 
 constexpr auto g_metrics
 	= metrics::Metrics::getInstance;
+
+#else // FEATURE_METRICS
+
+	#include "lib/di/container.hpp"
+
+struct Options {
+	bool enablePrometheusExporter;
+	bool enableOStreamExporter;
+};
+
+class ScopedLatency {
+public:
+	explicit ScopedLatency([[maybe_unused]] std::string_view name, [[maybe_unused]] const std::string &histogramName, [[maybe_unused]] const std::string &scopeKey) {};
+	explicit ScopedLatency([[maybe_unused]] std::string_view name, [[maybe_unused]] std::set<double> &histogram, [[maybe_unused]] const std::map<std::string, std::string> &attrs = {}, [[maybe_unused]] const std::string &context = std::string()) {};
+
+	void stop() {};
+
+	~ScopedLatency() = default;
+};
+
+namespace metrics {
+	#define DEFINE_LATENCY_CLASS(class_name, histogram_name, category)       \
+		class class_name##_latency final : public ScopedLatency {            \
+		public:                                                              \
+			class_name##_latency(std::string_view name) :                    \
+				ScopedLatency(name, histogram_name "_latency", category) { } \
+		}
+
+	DEFINE_LATENCY_CLASS(method, "method", "method");
+	DEFINE_LATENCY_CLASS(lua, "lua", "scope");
+	DEFINE_LATENCY_CLASS(query, "query", "truncated_query");
+	DEFINE_LATENCY_CLASS(task, "task", "task");
+	DEFINE_LATENCY_CLASS(lock, "lock", "scope");
+
+	const std::vector<std::string> latencyNames {
+		"method_latency",
+		"lua_latency",
+		"query_latency",
+		"task_latency",
+		"lock_latency",
+	};
+
+	class Metrics final {
+	public:
+		Metrics() = default;
+		~Metrics() = default;
+
+		void init([[maybe_unused]] Options opts) {};
+		void initHistograms() {};
+		void shutdown() {};
+
+		static Metrics &getInstance() {
+			return inject<Metrics>();
+		};
+
+		void addCounter([[maybe_unused]] std::string_view name, [[maybe_unused]] double value, [[maybe_unused]] const std::map<std::string, std::string> &attrs = {}) { }
+
+		void addUpDownCounter([[maybe_unused]] std::string_view name, [[maybe_unused]] int value, [[maybe_unused]] const std::map<std::string, std::string> &attrs = {}) { }
+
+		friend class ScopedLatency;
+	};
+}
+
+constexpr auto g_metrics
+	= metrics::Metrics::getInstance;
+
+#endif // FEATURE_METRICS

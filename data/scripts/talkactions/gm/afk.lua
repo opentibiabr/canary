@@ -26,6 +26,9 @@ function afk.onSay(player, words, param)
 		end
 
 		table.insert(playersAFKs, { id = id, position = position })
+		if player:isInGhostMode() then
+			player:setGhostMode(false)
+		end
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are now AFK!")
 		position:sendMagicEffect(CONST_ME_REDSMOKE)
 		local spectators = Game.getSpectators(position, false, true, 8, 8, 8, 8)

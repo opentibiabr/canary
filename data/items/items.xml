@@ -34167,7 +34167,7 @@
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="10"/>
-		<attribute key="absorbpercentenergy" value="8"/>
+		<attribute key="absorbpercentpoison" value="8"/>
 		<attribute key="transformequipto" value="16264"/>
 		<attribute key="weight" value="105"/>
 		<attribute key="script" value="moveevent">

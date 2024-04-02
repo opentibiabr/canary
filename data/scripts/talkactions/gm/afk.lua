@@ -21,7 +21,7 @@ function afk.onSay(player, words, param)
 	local isAfk = checkIsAFK(id)
 	if param == "on" then
 		if isAfk.afk then
-			player:sendCancelMessage("You already is AFK!")
+			player:sendCancelMessage("You are already AFK!")
 			return true
 		end
 
@@ -75,6 +75,7 @@ function callback.playerOnWalk(player, creature, creaturePos, toPos)
 	local isAfk = checkIsAFK(player:getId())
 	if isAfk.afk then
 		table.remove(playersAFKs, isAfk.index)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are no longer AFK!")
 	end
 	return true
 end

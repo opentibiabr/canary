@@ -105,16 +105,24 @@ target_link_libraries(${PROJECT_NAME}_lib
         unofficial::argon2::libargon2
         unofficial::libmariadb
         unofficial::mariadbclient
-        opentelemetry-cpp::common
-        opentelemetry-cpp::metrics
-        opentelemetry-cpp::api
-        opentelemetry-cpp::ext
-        opentelemetry-cpp::sdk
-        opentelemetry-cpp::logs
-        opentelemetry-cpp::ostream_metrics_exporter
-        opentelemetry-cpp::prometheus_exporter
         protobuf
 )
+
+if(FEATURE_METRICS)
+    add_definitions(-DFEATURE_METRICS)
+
+    target_link_libraries(${PROJECT_NAME}_lib
+            PUBLIC
+            opentelemetry-cpp::common
+            opentelemetry-cpp::metrics
+            opentelemetry-cpp::api
+            opentelemetry-cpp::ext
+            opentelemetry-cpp::sdk
+            opentelemetry-cpp::logs
+            opentelemetry-cpp::ostream_metrics_exporter
+            opentelemetry-cpp::prometheus_exporter
+    )
+endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${ZLIB_LIBRARY_DEBUG})
@@ -124,16 +132,14 @@ endif()
 
 if (MSVC)
     if(BUILD_STATIC_LIBRARY)
-        target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_static)
         set(VCPKG_TARGET_TRIPLET "x64-windows-static" CACHE STRING "")
     else()
-        target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_lib)
         set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
     endif()
 
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})
 else()
-    target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_static Threads::Threads)
+    target_link_libraries(${PROJECT_NAME}_lib PUBLIC Threads::Threads)
 endif (MSVC)
 
 # === OpenMP ===

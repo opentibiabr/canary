@@ -4888,7 +4888,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return true;
 	}
 
-	for (const auto &[outfitPlayer, addonPlayer] : outfits) {
+	for (const auto &[outfitPlayer, addonPlayer] : outfitsMap) {
 		if (outfitPlayer == lookType) {
 			if (addonPlayer == addons || addonPlayer == 3 || addons == 0) {
 				return true;
@@ -4929,7 +4929,7 @@ void Player::genReservedStorageRange() {
 }
 
 void Player::addOutfit(uint16_t lookType, uint8_t addons) {
-	for (auto &[outfitPlayer, addonPlayer] : outfits) {
+	for (auto &[outfitPlayer, addonPlayer] : outfitsMap) {
 		if (outfitPlayer == lookType) {
 			addonPlayer |= addons;
 			return;
@@ -4939,7 +4939,7 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 }
 
 bool Player::removeOutfit(uint16_t lookType) {
-	for (auto &[outfitPlayer, addonPlayer] : outfits) {
+	for (auto &[outfitPlayer, addonPlayer] : outfitsMap) {
 		if (outfitPlayer == lookType) {
 			outfits.erase(outfitPlayer);
 			return true;
@@ -4949,7 +4949,7 @@ bool Player::removeOutfit(uint16_t lookType) {
 }
 
 bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
-	for (auto &[outfitPlayer, addonPlayer] : outfits) {
+	for (auto &[outfitPlayer, addonPlayer] : outfitsMap) {
 		if (outfitPlayer == lookType) {
 			addonPlayer &= ~addons;
 			return true;
@@ -4968,7 +4968,7 @@ bool Player::getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addo
 		return false;
 	}
 
-	for (const auto &[lookType, addon] : outfits) {
+	for (const auto &[lookType, addon] : outfitsMap) {
 		if (lookType != outfit->lookType) {
 			continue;
 		}
@@ -5738,7 +5738,7 @@ void Player::setCurrentMount(uint16_t mountId) {
 
 bool Player::hasAnyMount() const {
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto mount : mountsMap) {
 		if (hasMount(mount)) {
 			return true;
 		}
@@ -5749,7 +5749,7 @@ bool Player::hasAnyMount() const {
 uint16_t Player::getRandomMountId() const {
 	std::vector<uint16_t> playerMounts;
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto mount : mountsMap) {
 		if (hasMount(mount)) {
 			playerMounts.push_back(mount->id);
 		}

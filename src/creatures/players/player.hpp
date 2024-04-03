@@ -2693,8 +2693,8 @@ private:
 
 	std::vector<uint16_t> quickLootListItemIds;
 
-	std::map<uint16_t, uint8_t> outfits;
-	std::unordered_set<uint16_t> mounts;
+	std::map<uint16_t, uint8_t> outfitsMap;
+	std::unordered_set<uint16_t> mountsMap;
 	std::vector<FamiliarEntry> familiars;
 
 	std::vector<std::unique_ptr<PreySlot>> preys;

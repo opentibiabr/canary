@@ -279,7 +279,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	queryOutfits << "SELECT `outfit_id`, `addons` FROM `player_outfits` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(queryOutfits.str()))) {
 		do {
-			player->outfits.emplace(result->getNumber<uint16_t>("outfit_id"), result->getNumber<uint8_t>("addons"));
+			player->outfitsMap.emplace(result->getNumber<uint16_t>("outfit_id"), result->getNumber<uint8_t>("addons"));
 		} while (result->next());
 	}
 
@@ -288,7 +288,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	queryMounts << "SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(queryMounts.str()))) {
 		do {
-			player->mounts.emplace(result->getNumber<uint16_t>("mount_id"));
+			player->mountsMap.emplace(result->getNumber<uint16_t>("mount_id"));
 		} while (result->next());
 	}
 }

@@ -4935,13 +4935,13 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 			return;
 		}
 	}
-	outfits.emplace(lookType, addons);
+	outfitsMap.emplace(lookType, addons);
 }
 
 bool Player::removeOutfit(uint16_t lookType) {
 	for (auto &[outfitPlayer, addonPlayer] : outfitsMap) {
 		if (outfitPlayer == lookType) {
-			outfits.erase(outfitPlayer);
+			outfitsMap.erase(outfitPlayer);
 			return true;
 		}
 	}
@@ -5737,8 +5737,8 @@ void Player::setCurrentMount(uint16_t mountId) {
 }
 
 bool Player::hasAnyMount() const {
-	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mountsMap) {
+	for (const auto mountId : mountsMap) {
+		const auto mount = g_game().mounts.getMountByID(mountId);
 		if (hasMount(mount)) {
 			return true;
 		}
@@ -5748,8 +5748,8 @@ bool Player::hasAnyMount() const {
 
 uint16_t Player::getRandomMountId() const {
 	std::vector<uint16_t> playerMounts;
-	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mountsMap) {
+	for (const auto mountId : mountsMap) {
+		const auto mount = g_game().mounts.getMountByID(mountId);
 		if (hasMount(mount)) {
 			playerMounts.push_back(mount->id);
 		}
@@ -5844,7 +5844,7 @@ bool Player::tameMount(uint16_t mountId) {
 		return false;
 	}
 
-	mounts.emplace(mountId);
+	mountsMap.emplace(mountId);
 	return true;
 }
 
@@ -5858,7 +5858,7 @@ bool Player::untameMount(uint16_t mountId) {
 		return false;
 	}
 
-	mounts.erase(mountId);
+	mountsMap.erase(mountId);
 
 	if (getCurrentMount() == mountId) {
 		if (isMounted()) {
@@ -5882,7 +5882,7 @@ bool Player::hasMount(const std::shared_ptr<Mount> mount) const {
 		return false;
 	}
 
-	return mounts.find(mount->id) != mounts.end();
+	return mountsMap.find(mount->id) != mountsMap.end();
 }
 
 void Player::dismount() {

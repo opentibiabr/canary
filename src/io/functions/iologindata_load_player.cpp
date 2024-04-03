@@ -273,7 +273,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	player->currentOutfit = player->defaultOutfit;
 
 	// load outfits & addons
-	auto result2 = g_database().storeQuery(fmt::format("SELECT `outfit_id`, `addons` FROM `player_outfits` WHERE `player_id` = {}", player->getGUID()));
+	auto result2 = g_database().storeQuery(fmt::format("SELECT `outfit_id`, `addons` FROM `player_outfits` WHERE `player_id` = {:d}", player->getGUID()));
 	if (result2) {
 		do {
 			player->outfitsMap.emplace(result2->getNumber<uint16_t>("outfit_id"), result2->getNumber<uint8_t>("addons"));
@@ -281,7 +281,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	}
 
 	// load mounts
-	auto result3 = g_database().storeQuery(fmt::format("SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = {}", player->getGUID()));
+	auto result3 = g_database().storeQuery(fmt::format("SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = {:d}", player->getGUID()));
 	if (result3) {
 		do {
 			player->mountsMap.emplace(result3->getNumber<uint16_t>("mount_id"));

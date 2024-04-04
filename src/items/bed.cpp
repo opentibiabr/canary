@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -165,7 +165,9 @@ bool BedItem::sleep(std::shared_ptr<Player> player) {
 	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
 	// logout player after he sees himself walk onto the bed and it change id
-	g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false), "ProtocolGame::logout");
+	g_dispatcher().scheduleEvent(
+		SCHEDULER_MINTICKS, [client = player->client] { client->logout(false, false); }, "ProtocolGame::logout"
+	);
 
 	// change self and partner's appearance
 	updateAppearance(player);

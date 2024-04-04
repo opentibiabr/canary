@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -20,9 +20,7 @@
 #include "account/account_info.hpp"
 
 AccountRepositoryDB::AccountRepositoryDB() :
-	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" },
-					   { enumToValue(CoinType::Tournament), "tournament_coins" },
-					   { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
+	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" }, { enumToValue(CoinType::Tournament), "tournament_coins" }, { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
 
 bool AccountRepositoryDB::loadByID(const uint32_t &id, AccountInfo &acc) {
 	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);

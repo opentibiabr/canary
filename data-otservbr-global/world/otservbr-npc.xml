@@ -2986,4 +2986,13 @@
 	<npc centerx="33710" centery="32602" centerz="6" radius="1">
 		<npc name="Hawkhurst Ingol" x="0" y="0" z="15" spawntime="60" />
 	</npc>
+	<npc centerx="34070" centery="32009" centerz="14" radius="1">
+		<npc name="Altar" x="0" y="0" z="15" spawntime="60" />
+	</npc>
+  <npc centerx="33181" centery="32883" centerz="7" radius="1">
+		<npc name="Tonar" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="33068" centery="32917" centerz="7" radius="1">
+		<npc name="Tonar Oskayaat" x="0" y="0" z="7" spawntime="60" />
+</npc>
 </npcs>

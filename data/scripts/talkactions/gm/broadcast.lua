@@ -5,7 +5,7 @@ function Broadcast(text, filter)
 		if filter and not filter(targetPlayer) then
 			goto continue
 		end
-		targetPlayer:sendTextMessage(MESSAGE_ADMINISTRADOR, text)
+		targetPlayer:sendTextMessage(MESSAGE_ADMINISTRATOR, text)
 		::continue::
 	end
 end

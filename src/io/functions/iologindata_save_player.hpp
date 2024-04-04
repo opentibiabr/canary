@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -26,7 +26,7 @@ public:
 	static bool savePlayerTaskHuntingClass(std::shared_ptr<Player> player);
 	static bool savePlayerForgeHistory(std::shared_ptr<Player> player);
 	static bool savePlayerBosstiary(std::shared_ptr<Player> player);
-	static bool savePlayerStorage(std::shared_ptr<Player> palyer);
+	static bool savePlayerStorage(std::shared_ptr<Player> player);
 
 protected:
 	using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;

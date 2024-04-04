@@ -4,7 +4,7 @@ local function createSpawnWave(stage)
 	Game.createMonster("Spark of Destruction", Position(32330, 31250, 14), false, true)
 	Game.createMonster("Spark of Destruction", Position(32338, 31250, 14), false, true)
 	Game.createMonster("Damage Resonance", Position(32332, 31250, 14), false, true)
-	Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage, stage)
+	Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage, stage + 1)
 	Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive, 1)
 end
 
@@ -16,20 +16,20 @@ function ruptureResonance.onThink(creature)
 	end
 
 	local ruptureResonanceStage = Game.getStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage) > 0 and Game.getStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceStage) or 0
-	local resonanceActive = Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive)
+	local resonanceActive = Game.getStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive)
 
 	local thresholds = {
-		{ limit = 80, stage = 0, wave = 1 },
-		{ limit = 60, stage = 1, wave = 2 },
-		{ limit = 40, stage = 2, wave = 3 },
-		{ limit = 25, stage = 3, wave = 4 },
-		{ limit = 10, stage = 4, wave = -1 },
+		{ limit = 80, stage = 0 },
+		{ limit = 60, stage = 1 },
+		{ limit = 40, stage = 2 },
+		{ limit = 25, stage = 3 },
+		{ limit = 10, stage = 4 },
 	}
 
 	local hpPercent = (creature:getHealth() / creature:getMaxHealth()) * 100
 	for _, threshold in ipairs(thresholds) do
 		if hpPercent <= threshold.limit and ruptureResonanceStage == threshold.stage and resonanceActive ~= 1 then
-			createSpawnWave(threshold.wave)
+			createSpawnWave(threshold.stage)
 			break
 		end
 	end

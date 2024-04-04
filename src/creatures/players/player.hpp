@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -48,10 +48,12 @@ class PreySlot;
 class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
+class PlayerAchievement;
 class Spectators;
 class Account;
 
 struct ModalWindow;
+struct Achievement;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -1623,11 +1625,7 @@ public:
 			client->sendCyclopediaCharacterRecentPvPKills(page, pages, entries);
 		}
 	}
-	void sendCyclopediaCharacterAchievements() {
-		if (client) {
-			client->sendCyclopediaCharacterAchievements();
-		}
-	}
+	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
 	void sendCyclopediaCharacterItemSummary() {
 		if (client) {
 			client->sendCyclopediaCharacterItemSummary();
@@ -2581,9 +2579,13 @@ public:
 	 */
 	std::vector<std::shared_ptr<Item>> getEquippedItems() const;
 
-	// Player wheel methods interface
+	// Player wheel interface
 	std::unique_ptr<PlayerWheel> &wheel();
 	const std::unique_ptr<PlayerWheel> &wheel() const;
+
+	// Player achievement interface
+	std::unique_ptr<PlayerAchievement> &achiev();
+	const std::unique_ptr<PlayerAchievement> &achiev() const;
 
 	void sendLootMessage(const std::string &message) const;
 
@@ -2592,6 +2594,8 @@ public:
 	bool hasPermittedConditionInPZ() const;
 
 	std::shared_ptr<Container> getStoreInbox() const;
+
+	bool canSpeakWithHireling(uint8_t speechbubble);
 
 private:
 	friend class PlayerLock;
@@ -2974,8 +2978,10 @@ private:
 	friend class PlayerWheel;
 	friend class IOLoginDataLoad;
 	friend class IOLoginDataSave;
+	friend class PlayerAchievement;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
+	std::unique_ptr<PlayerAchievement> m_playerAchievement;
 
 	std::mutex quickLootMutex;
 

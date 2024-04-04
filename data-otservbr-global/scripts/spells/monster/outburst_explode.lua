@@ -1,28 +1,10 @@
 local function outExplode()
-	local upConer = { x = 32223, y = 31273, z = 14 } -- upLeftCorner
-	local downConer = { x = 32246, y = 31297, z = 14 } -- downRightCorner
-
-	for i = upConer.x, downConer.x do
-		for j = upConer.y, downConer.y do
-			for k = upConer.z, downConer.z do
-				local room = { x = i, y = j, z = k }
-				local tile = Tile(room)
-				if tile then
-					local creatures = tile:getCreatures()
-					if creatures and #creatures > 0 then
-						for _, creatureUid in pairs(creatures) do
-							local creature = Creature(creatureUid)
-							if creature then
-								if creature:isPlayer() then
-									creature:teleportTo({ x = 32234, y = 31280, z = 14 })
-								elseif creature:isMonster() and creature:getName() == "Charging Outburst" then
-									creature:teleportTo({ x = 32234, y = 31279, z = 14 })
-								end
-							end
-						end
-					end
-				end
-			end
+	local spectators = Game.getSpectators(Position(32234, 31285, 14), false, true, 10, 10, 10, 10)
+	for _, spectator in ipairs(spectators) do
+		if spectator:isPlayer() then
+			spectator:teleportTo(Position(32234, 31280, 14))
+		elseif spectator:isMonster() and spectator:getName() == "Charging Outburst" then
+			spectator:teleportTo(Position(32234, 31279, 14))
 		end
 	end
 end
@@ -54,7 +36,7 @@ local function delayedCastSpell(creature, var)
 	if not creature then
 		return
 	end
-	return combat:execute(creature, positionToVariant(creature:getPosition()))
+	return combat:execute(creature, Variant(creature:getPosition()))
 end
 
 function removeOutburst(cid)

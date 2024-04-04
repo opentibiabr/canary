@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -28,6 +28,7 @@ class TaskHuntingSlot;
 class TaskHuntingOption;
 
 struct ModalWindow;
+struct Achievement;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
@@ -72,12 +73,6 @@ public:
 	}
 
 private:
-	// Helpers so we don't need to bind every time
-	template <typename Callable, typename... Args>
-	void addGameTask(Callable function, Args &&... args);
-	template <typename Callable, typename... Args>
-	void addGameTaskTimed(uint32_t delay, std::string_view context, Callable function, Args &&... args);
-
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());
 	}
@@ -317,7 +312,7 @@ private:
 	void sendCyclopediaCharacterCombatStats();
 	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries);
 	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries);
-	void sendCyclopediaCharacterAchievements();
+	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
 	void sendCyclopediaCharacterItemSummary();
 	void sendCyclopediaCharacterOutfitsMounts();
 	void sendCyclopediaCharacterStoreSummary();

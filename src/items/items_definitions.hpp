@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -35,6 +35,9 @@ enum Attr_ReadValue {
 
 enum ReturnValue {
 	RETURNVALUE_NOERROR,
+	RETURNVALUE_NOTBOUGHTINSTORE,
+	RETURNVALUE_ITEMCANNOTBEMOVEDTHERE,
+	RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH,
 	RETURNVALUE_NOTPOSSIBLE,
 	RETURNVALUE_NOTENOUGHROOM,
 	RETURNVALUE_PLAYERISPZLOCKED,
@@ -602,6 +605,7 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_REFLECTDAMAGE,
 	ITEM_PARSE_PRIMARYTYPE,
 	ITEM_PARSE_USEDBYGUESTS,
+	ITEM_PARSE_SCRIPT,
 };
 
 struct ImbuementInfo {

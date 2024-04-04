@@ -1,14 +1,15 @@
+#ifdef FEATURE_METRICS
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "metrics.hpp"
-#include "lib/di/container.hpp"
+	#include "metrics.hpp"
+	#include "lib/di/container.hpp"
 
 using namespace metrics;
 
@@ -41,7 +42,7 @@ void Metrics::init(Options opts) {
 	initHistograms();
 }
 
-void Metrics ::initHistograms() {
+void Metrics::initHistograms() {
 	for (auto name : latencyNames) {
 		auto instrumentSelector = metrics_sdk::InstrumentSelectorFactory::Create(metrics_sdk::InstrumentType::kHistogram, name, "us");
 		auto meterSelector = metrics_sdk::MeterSelectorFactory::Create("performance", otelVersion, otelSchema);
@@ -108,3 +109,5 @@ void ScopedLatency::stop() {
 	auto attrskv = opentelemetry::common::KeyValueIterableView<decltype(attrs)> { attrs };
 	histogram->Record(elapsed, attrskv, context);
 }
+
+#endif // FEATURE_METRICS

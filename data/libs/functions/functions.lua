@@ -588,7 +588,7 @@ function cleanAreaQuest(frompos, topos, itemtable, blockmonsters)
 	return true
 end
 
-function kickerPlayerRoomAfferMin(playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, firstCall, itemtable, blockmonsters)
+function kickerPlayerRoomAfterMin(playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, firstCall, itemtable, blockmonsters)
 	local players = false
 	if type(playername) == table then
 		players = true
@@ -658,7 +658,7 @@ function kickerPlayerRoomAfferMin(playername, fromPosition, toPosition, teleport
 	end
 	local min = 60 -- Use the 60 for 1 minute
 	if firstCall then
-		addEvent(kickerPlayerRoomAfferMin, 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, false, itemtable, blockmonsters)
+		addEvent(kickerPlayerRoomAfterMin, 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, minutes, false, itemtable, blockmonsters)
 	else
 		local subt = minutes - 1
 		if monsterName ~= "" then
@@ -666,7 +666,7 @@ function kickerPlayerRoomAfferMin(playername, fromPosition, toPosition, teleport
 				subt = 2
 			end
 		end
-		addEvent(kickerPlayerRoomAfferMin, min * 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, subt, false, itemtable, blockmonsters)
+		addEvent(kickerPlayerRoomAfterMin, min * 1000, playername, fromPosition, toPosition, teleportPos, message, monsterName, subt, false, itemtable, blockmonsters)
 	end
 end
 
@@ -848,47 +848,6 @@ function pack(t, ...)
 		t[i] = tmp
 	end
 	return t
-end
-
-if not PLAYER_STORAGE then
-	PLAYER_STORAGE = {}
-end
-
-function Player:setSpecialStorage(storage, value)
-	if not PLAYER_STORAGE[self:getGuid()] then
-		self:loadSpecialStorage()
-	end
-
-	PLAYER_STORAGE[self:getGuid()][storage] = value
-end
-
-function Player:getSpecialStorage(storage)
-	if not PLAYER_STORAGE[self:getGuid()] then
-		self:loadSpecialStorage()
-	end
-
-	return PLAYER_STORAGE[self:getGuid()][storage]
-end
-
-function Player:loadSpecialStorage()
-	if not PLAYER_STORAGE then
-		PLAYER_STORAGE = {}
-	end
-
-	PLAYER_STORAGE[self:getGuid()] = {}
-	local resultId = db.storeQuery("SELECT * FROM `player_misc` WHERE `player_id` = " .. self:getGuid())
-	if resultId then
-		local info = Result.getStream(resultId, "info") or "{}"
-		unserializeTable(info, PLAYER_STORAGE[self:getGuid()])
-	end
-end
-
-function Player:saveSpecialStorage()
-	if PLAYER_STORAGE and PLAYER_STORAGE[self:getGuid()] then
-		local tmp = serializeTable(PLAYER_STORAGE[self:getGuid()])
-		db.query("DELETE FROM `player_misc` WHERE `player_id` = " .. self:getGuid())
-		db.query(string.format("INSERT INTO `player_misc` (`player_id`, `info`) VALUES (%d, %s)", self:getGuid(), db.escapeBlob(tmp, #tmp)))
-	end
 end
 
 -- Can be used in every boss

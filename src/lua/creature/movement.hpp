@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -112,7 +112,7 @@ public:
 	bool registerLuaUniqueEvent(const std::shared_ptr<MoveEvent> moveEvent);
 	bool registerLuaPositionEvent(const std::shared_ptr<MoveEvent> moveEvent);
 	bool registerLuaEvent(const std::shared_ptr<MoveEvent> event);
-	void clear();
+	void clear(bool isFromXML = false);
 
 private:
 	void clearMap(std::map<int32_t, MoveEventList> &map) const;
@@ -179,7 +179,7 @@ public:
 		return vocEquipMap;
 	}
 	void addVocEquipMap(std::string vocName) {
-		int32_t vocationId = g_vocations().getVocationId(vocName);
+		uint16_t vocationId = g_vocations().getVocationId(vocName);
 		if (vocationId != -1) {
 			vocEquipMap[vocationId] = true;
 		}
@@ -251,6 +251,14 @@ public:
 	static uint32_t EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool boolean);
 	static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool boolean);
 
+	void setFromXML(bool newFromXML) {
+		m_fromXML = newFromXML;
+	}
+
+	bool isFromXML() const {
+		return m_fromXML;
+	}
+
 private:
 	std::string getScriptTypeName() const override;
 
@@ -290,10 +298,13 @@ private:
 	std::map<uint16_t, bool> vocEquipMap;
 	bool tileItem = false;
 
+	bool m_fromXML = false;
+
 	std::vector<uint32_t> itemIdVector;
 	std::vector<uint32_t> actionIdVector;
 	std::vector<uint32_t> uniqueIdVector;
 	std::vector<Position> positionVector;
 
 	friend class MoveEventFunctions;
+	friend class ItemParse;
 };

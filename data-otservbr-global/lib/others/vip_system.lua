@@ -3,7 +3,7 @@ local config = {
 	activationMessageType = MESSAGE_EVENT_ADVANCE,
 
 	expirationMessage = "Your VIP days ran out.",
-	expirationMessageType = MESSAGE_ADMINISTRADOR,
+	expirationMessageType = MESSAGE_ADMINISTRATOR,
 
 	outfits = {},
 	mounts = {},
@@ -31,7 +31,7 @@ function Player.onRemoveVip(self)
 		self:setOutfit(playerOutfit)
 	end
 
-	self:setStorageValue(Storage.VipSystem.IsVip, 0)
+	self:kv():scoped("account"):remove("vip-system")
 end
 
 function Player.onAddVip(self, days, silent)
@@ -47,7 +47,7 @@ function Player.onAddVip(self, days, silent)
 		self:addMount(mount)
 	end
 
-	self:setStorageValue(Storage.VipSystem.IsVip, 1)
+	self:kv():scoped("account"):set("vip-system", true)
 end
 
 function CheckPremiumAndPrint(player, msgType)

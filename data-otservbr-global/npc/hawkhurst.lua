@@ -23,6 +23,12 @@ npcConfig.flags = {
 	floorchange = false,
 }
 
+npcConfig.voices = {
+	interval = 15000,
+	chance = 50,
+	{ text = "There's a storm brewing." },
+}
+
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
@@ -52,7 +58,7 @@ end
 
 -- Travel
 local travelKeyword = keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "Ye' want a passage to the blasted isle, right? {Yes} or {no}?" })
-travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 400, destination = Position(33710, 32602, 6) })
+travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = 400, text = "All Hand Hoy!", destination = Position(33710, 32602, 6) })
 travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "We would like to serve you some time.", reset = true })
 
 npcHandler:setMessage(MESSAGE_GREET, "Ahoy, matey! Lookin' for a {passage}, eh.")

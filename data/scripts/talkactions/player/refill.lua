@@ -31,10 +31,10 @@ function refill.onSay(player, words, param)
 		end
 	end
 	if #refilledItems == 0 then
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "You do not have any items to refill or lack silver tokens.")
+		player:sendTextMessage(MESSAGE_LOOK, "You do not have any items to refill or lack silver tokens.")
 	else
 		local itemList = table.concat(refilledItems, ", ")
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "Refilled " .. itemList .. " for a total of " .. totalCost .. " silver tokens.")
+		player:sendTextMessage(MESSAGE_LOOK, "Refilled " .. itemList .. " for a total of " .. totalCost .. " silver tokens.")
 	end
 	return true
 end

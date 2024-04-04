@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -1077,6 +1077,47 @@ std::string getWeaponName(WeaponType_t weaponType) {
 	}
 }
 
+WeaponType_t getWeaponType(const std::string &name) {
+	static const std::unordered_map<std::string, WeaponType_t> type_mapping = {
+		{ "none", WeaponType_t::WEAPON_NONE },
+		{ "sword", WeaponType_t::WEAPON_SWORD },
+		{ "club", WeaponType_t::WEAPON_CLUB },
+		{ "axe", WeaponType_t::WEAPON_AXE },
+		{ "shield", WeaponType_t::WEAPON_SHIELD },
+		{ "distance", WeaponType_t::WEAPON_DISTANCE },
+		{ "wand", WeaponType_t::WEAPON_WAND },
+		{ "ammo", WeaponType_t::WEAPON_AMMO },
+		{ "missile", WeaponType_t::WEAPON_MISSILE }
+	};
+
+	auto it = type_mapping.find(name);
+	if (it != type_mapping.end()) {
+		return it->second;
+	}
+
+	return WEAPON_NONE;
+}
+
+MoveEvent_t getMoveEventType(const std::string &name) {
+	static const std::unordered_map<std::string, MoveEvent_t> move_event_type_mapping = {
+		{ "stepin", MOVE_EVENT_STEP_IN },
+		{ "stepout", MOVE_EVENT_STEP_OUT },
+		{ "equip", MOVE_EVENT_EQUIP },
+		{ "deequip", MOVE_EVENT_DEEQUIP },
+		{ "additem", MOVE_EVENT_ADD_ITEM },
+		{ "removeitem", MOVE_EVENT_REMOVE_ITEM },
+		{ "additemitemtile", MOVE_EVENT_ADD_ITEM_ITEMTILE },
+		{ "removeitemitemtile", MOVE_EVENT_REMOVE_ITEM_ITEMTILE }
+	};
+
+	auto it = move_event_type_mapping.find(name);
+	if (it != move_event_type_mapping.end()) {
+		return it->second;
+	}
+
+	return MOVE_EVENT_NONE;
+}
+
 std::string getCombatName(CombatType_t combatType) {
 	auto combatName = combatTypeNames.find(combatType);
 	if (combatName != combatTypeNames.end()) {
@@ -1202,6 +1243,15 @@ const char* getReturnMessage(ReturnValue value) {
 	switch (value) {
 		case RETURNVALUE_NOERROR:
 			return "No error.";
+
+		case RETURNVALUE_NOTBOUGHTINSTORE:
+			return "You cannot move this item into your store inbox as it was not bought in the store.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH:
+			return "This item cannot be moved there. You can only place gold, platinum and crystal coins in your gold pouch.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDTHERE:
+			return "This item cannot be moved there.";
 
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
@@ -1769,11 +1819,11 @@ std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense) {
 	return pastTense ? "was" : "is";
 }
 
-std::vector<std::string> split(const std::string &str) {
+std::vector<std::string> split(const std::string &str, char delimiter /* = ','*/) {
 	std::vector<std::string> tokens;
 	std::string token;
 	std::istringstream tokenStream(str);
-	while (std::getline(tokenStream, token, ',')) {
+	while (std::getline(tokenStream, token, delimiter)) {
 		auto trimedToken = token;
 		trimString(trimedToken);
 		tokens.push_back(trimedToken);

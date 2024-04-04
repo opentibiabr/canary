@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -2041,7 +2041,11 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addEvent(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir.data()), "ConditionFeared::executeCondition");
+			g_dispatcher().addEvent([id = creature->getID(), listDir = listDir.data()] {
+				g_game().forcePlayerAutoWalk(id, listDir);
+			},
+									"ConditionFeared::executeCondition");
+
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}
 	}

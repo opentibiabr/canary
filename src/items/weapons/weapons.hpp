@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -44,8 +44,8 @@ public:
 	static int32_t getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue);
 	static int32_t getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee);
 
-	bool registerLuaEvent(WeaponShared_ptr event);
-	void clear();
+	bool registerLuaEvent(WeaponShared_ptr event, bool fromXML = false);
+	void clear(bool isFromXML = false);
 
 private:
 	std::map<uint32_t, WeaponShared_ptr> weapons;
@@ -176,6 +176,53 @@ public:
 		vocationString = str;
 	}
 
+	void setFromXML(bool newFromXML) {
+		m_fromXML = newFromXML;
+	}
+
+	bool isFromXML() const {
+		return m_fromXML;
+	}
+
+	void setChainSkillValue(double value) {
+		m_chainSkillValue = value;
+	}
+
+	double getChainSkillValue() const {
+		return m_chainSkillValue;
+	}
+
+	void setDisabledChain() {
+		m_isDisabledChain = true;
+	}
+
+	bool isChainDisabled() const {
+		return m_isDisabledChain;
+	}
+
+	const WeaponType_t getWeaponType() const {
+		return weaponType;
+	}
+
+	const std::shared_ptr<Combat> getCombat() const {
+		if (!m_combat) {
+			g_logger().error("Weapon::getCombat() - m_combat is nullptr");
+			return nullptr;
+		}
+
+		return m_combat;
+	}
+
+	std::shared_ptr<Combat> getCombat() {
+		if (!m_combat) {
+			m_combat = std::make_shared<Combat>();
+		}
+
+		return m_combat;
+	}
+
+	bool calculateSkillFormula(const std::shared_ptr<Player> &player, int32_t &attackSkill, int32_t &attackValue, float &attackFactor, int16_t &elementAttack, CombatDamage &damage, bool useCharges = false) const;
+
 protected:
 	void internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target, int32_t damageModifier, int32_t cleavePercent = 0) const;
 	void internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Tile> tile) const;
@@ -199,10 +246,12 @@ private:
 	uint32_t healthPercent = 0;
 	uint32_t soul = 0;
 	uint32_t wieldInfo = WIELDINFO_NONE;
+	double m_chainSkillValue = 0.0;
 	uint8_t breakChance = 0;
 	bool enabled = true;
 	bool premium = false;
 	bool wieldUnproperly = false;
+	bool m_isDisabledChain = false;
 	std::string vocationString = "";
 
 	void onUsedWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Tile> destTile) const;
@@ -213,12 +262,16 @@ private:
 	CombatParams params;
 	WeaponType_t weaponType;
 	std::map<uint16_t, bool> vocWeaponMap;
+	std::shared_ptr<Combat> m_combat;
+
+	bool m_fromXML = false;
 
 	friend class Combat;
 	friend class WeaponWand;
 	friend class WeaponMelee;
 	friend class WeaponDistance;
 	friend class WeaponFunctions;
+	friend class ItemParse;
 };
 
 class WeaponMelee final : public Weapon {
@@ -290,7 +343,7 @@ public:
 		return 0;
 	}
 	CombatType_t getElementType() const override {
-		return COMBAT_NONE;
+		return params.combatType;
 	}
 	virtual int16_t getElementDamageValue() const override;
 	void setMinChange(int32_t change) {

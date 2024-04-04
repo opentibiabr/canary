@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -47,6 +47,9 @@ class ItemClassification;
 class Guild;
 class Mounts;
 class Spectators;
+
+struct Achievement;
+struct HighscoreCategory;
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
@@ -703,7 +706,24 @@ public:
 	void setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId);
 	void transferHouseItemsToDepot();
 
+	const std::unordered_map<uint8_t, std::string> &getHighscoreCategoriesName() const;
+
+	const std::vector<HighscoreCategory> &getHighscoreCategories() const;
+
+	void registerAchievement(uint16_t id, std::string name, std::string description, bool secret, uint8_t grade, uint8_t points);
+	Achievement getAchievementById(uint16_t id);
+	Achievement getAchievementByName(std::string name);
+	std::vector<Achievement> getSecretAchievements();
+	std::vector<Achievement> getPublicAchievements();
+	std::map<uint16_t, Achievement> getAchievements();
+
 private:
+	std::map<uint16_t, Achievement> m_achievements;
+	std::map<std::string, uint16_t> m_achievementsNameToId;
+
+	std::vector<HighscoreCategory> m_highscoreCategories;
+	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;
+
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
 	std::unordered_set<uint32_t> fiendishMonsters;
 	std::unordered_set<uint32_t> influencedMonsters;
@@ -820,7 +840,7 @@ private:
 	size_t lastBucket = 0;
 	size_t lastImbuedBucket = 0;
 
-	WildcardTreeNode wildcardTree { false };
+	std::shared_ptr<WildcardTreeNode> wildcardTree;
 
 	std::map<uint32_t, std::shared_ptr<Npc>> npcs;
 	std::map<uint32_t, std::shared_ptr<Monster>> monsters;

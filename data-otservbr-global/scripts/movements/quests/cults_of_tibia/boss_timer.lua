@@ -17,7 +17,7 @@ local setting = {
 	{
 		tpPos = { x = 33114, y = 31887, z = 15 },
 		tpDestination = { x = 33131, y = 31899, z = 15 },
-		boss = "The Sinister Hermit",
+		boss = "The Souldespoiler",
 	},
 	{
 		tpPos = { x = 33072, y = 31871, z = 15 },

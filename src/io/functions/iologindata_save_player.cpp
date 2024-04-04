@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -327,15 +327,18 @@ bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 		return false;
 	}
 
+	query.str("");
+
+	DBInsert stashQuery("INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES ");
 	for (const auto &[itemId, itemCount] : player->getStashItems()) {
-		query.str("");
-		query << "INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES (";
-		query << player->getGUID() << ", ";
-		query << itemId << ", ";
-		query << itemCount << ")";
-		if (!db.executeQuery(query.str())) {
+		query << player->getGUID() << ',' << itemId << ',' << itemCount;
+		if (!stashQuery.addRow(query)) {
 			return false;
 		}
+	}
+
+	if (!stashQuery.execute()) {
+		return false;
 	}
 	return true;
 }

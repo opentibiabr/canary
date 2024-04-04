@@ -1,16 +1,14 @@
 local config = {
 	monsterName = "Preceptor Lazare",
-	bossPosition = Position(33373, 31348, 3),
-	centerPosition = Position(33373, 31348, 3),
-	rangeX = 50,
-	rangeY = 50,
+	bossPosition = Position(33374, 31338, 3),
+	range = 5,
 }
 
-local preceptorLazare = GlobalEvent("preceptor lazare")
+local preceptorLazare = GlobalEvent("PreceptorLazareRespawn")
 function preceptorLazare.onThink(interval, lastExecution)
-	checkBoss(config.centerPosition, config.rangeX, config.rangeY, config.monsterName, config.bossPosition)
+	checkBoss(config.bossPosition, config.range, config.range, config.monsterName, config.bossPosition)
 	return true
 end
 
-preceptorLazare:interval(15 * 60 * 1000)
+preceptorLazare:interval(15 * 60 * 1000) -- 15 minutes
 preceptorLazare:register()

@@ -4939,11 +4939,10 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 }
 
 bool Player::removeOutfit(uint16_t lookType) {
-	for (auto &[outfitPlayer, addonPlayer] : outfitsMap) {
-		if (outfitPlayer == lookType) {
-			outfitsMap.erase(outfitPlayer);
-			return true;
-		}
+	auto outfitPlayer = outfitsMap.find(lookType);
+	if (outfitPlayer != outfitsMap.end()) {
+		outfitsMap.erase(outfitPlayer);
+		return true;
 	}
 	return false;
 }
@@ -4968,12 +4967,12 @@ bool Player::getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addo
 		return false;
 	}
 
-	for (const auto &[lookType, addon] : outfitsMap) {
-		if (lookType != outfit->lookType) {
+	for (const auto &[outfitPlayer, addonPlayer] : outfitsMap) {
+		if (outfitPlayer != outfit->lookType) {
 			continue;
 		}
 
-		addons = addon;
+		addons = addonPlayer;
 		return true;
 	}
 

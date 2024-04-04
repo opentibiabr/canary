@@ -133,8 +133,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
 end
 -- On sell npc shop message
-npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-end
+npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost) end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end
 

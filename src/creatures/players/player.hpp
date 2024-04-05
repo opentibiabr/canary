@@ -2617,6 +2617,12 @@ public:
 	void setSaveSpells(bool onOff) {
 		saveSpells = onOff;
 	}
+	bool hasSaveBosstiary() {
+		return saveBosstiary;
+	}
+	void setSaveBosstiary(bool onOff) {
+		saveBosstiary = onOff;
+	}
 
 private:
 	friend class PlayerLock;
@@ -2912,10 +2918,11 @@ private:
 	bool dead = false;
 	bool imbuementTrackerWindowOpen = false;
 
-	// Otimize Save Players
+	// Save Players
 	bool saveStash = false;
 	bool saveUnjustifiedKills = false;
 	bool saveSpells = false;
+	bool saveBosstiary = false;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;

@@ -3157,7 +3157,13 @@ void ProtocolGame::sendCreatureOutfit(std::shared_ptr<Creature> creature, const 
 	msg.addByte(0x8E);
 	msg.add<uint32_t>(creature->getID());
 	AddOutfit(msg, outfit);
-	if (!oldProtocol && outfit.lookMount != 0) {
+
+	auto isSupportOutfit = player->isSupportOutfit();
+	if (isSupportOutfit) {
+		player->setCurrentMount(0);
+	}
+
+	if (!oldProtocol && outfit.lookMount != 0 && !isSupportOutfit) {
 		msg.addByte(outfit.lookMountHead);
 		msg.addByte(outfit.lookMountBody);
 		msg.addByte(outfit.lookMountLegs);
@@ -6656,18 +6662,24 @@ void ProtocolGame::sendOutfitWindow() {
 
 	bool mounted = false;
 	Outfit_t currentOutfit = player->getDefaultOutfit();
+
+	auto isSupportOutfit = player->isSupportOutfit();
 	const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
-	if (currentMount) {
-		mounted = (currentOutfit.lookMount == currentMount->clientId);
-		currentOutfit.lookMount = currentMount->clientId;
+	if (!isSupportOutfit) {
+		if (currentMount) {
+			mounted = (currentOutfit.lookMount == currentMount->clientId);
+			currentOutfit.lookMount = currentMount->clientId;
+		}
+	} else {
+		currentOutfit.lookMount = 0;
 	}
 
-	AddOutfit(msg, currentOutfit);
+	AddOutfit(msg, currentOutfit, !isSupportOutfit);
 
-	msg.addByte(currentOutfit.lookMountHead);
-	msg.addByte(currentOutfit.lookMountBody);
-	msg.addByte(currentOutfit.lookMountLegs);
-	msg.addByte(currentOutfit.lookMountFeet);
+	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountHead);
+	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountBody);
+	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountLegs);
+	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountFeet);
 	msg.add<uint16_t>(currentOutfit.lookFamiliarsType);
 
 	auto startOutfits = msg.getBufferPosition();
@@ -6796,7 +6808,7 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.addByte(mounted ? 0x01 : 0x00);
 
 	// Version 12.81 - Random mount 'bool'
-	msg.addByte(player->isRandomMounted() ? 0x01 : 0x00);
+	msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
 
 	writeToOutputBuffer(msg);
 }
@@ -7207,7 +7219,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 		}
 	} else {
 		static Outfit_t outfit;
-		AddOutfit(msg, outfit);
+		AddOutfit(msg, outfit, false);
 	}
 
 	LightInfo lightInfo = creature->getCreatureLight();

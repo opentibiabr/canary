@@ -266,8 +266,10 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerForgeHistory] - Failed to save player forge history: " + player->getName());
 	}
 
-	if (!IOLoginDataSave::savePlayerBosstiary(player)) {
-		throw DatabaseException("[IOLoginDataSave::savePlayerBosstiary] - Failed to save player bosstiary: " + player->getName());
+	if (player->hasSaveBosstiary()) {
+		if (!IOLoginDataSave::savePlayerBosstiary(player)) {
+			throw DatabaseException("[IOLoginDataSave::savePlayerBosstiary] - Failed to save player bosstiary: " + player->getName());
+		}
 	}
 
 	if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {

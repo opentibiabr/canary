@@ -61,6 +61,7 @@ int CanaryServer::run() {
 				loadConfigLua();
 
 				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) ? " and 10x allowed!" : "");
+#ifdef FEATURE_METRICS
 				metrics::Options metricsOptions;
 				metricsOptions.enablePrometheusExporter = g_configManager().getBoolean(METRICS_ENABLE_PROMETHEUS, __FUNCTION__);
 				if (metricsOptions.enablePrometheusExporter) {
@@ -71,7 +72,7 @@ int CanaryServer::run() {
 					metricsOptions.ostreamOptions.export_interval_millis = std::chrono::milliseconds(g_configManager().getNumber(METRICS_OSTREAM_INTERVAL, __FUNCTION__));
 				}
 				g_metrics().init(metricsOptions);
-
+#endif
 				rsa.start();
 				initializeDatabase();
 				loadModules();

@@ -165,7 +165,9 @@ bool BedItem::sleep(std::shared_ptr<Player> player) {
 	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
 	// logout player after he sees himself walk onto the bed and it change id
-	g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false), "ProtocolGame::logout");
+	g_dispatcher().scheduleEvent(
+		SCHEDULER_MINTICKS, [client = player->client] { client->logout(false, false); }, "ProtocolGame::logout"
+	);
 
 	// change self and partner's appearance
 	updateAppearance(player);

@@ -11,37 +11,37 @@
 
 #include "utils/wildcardtree.hpp"
 
-WildcardTreeNode* WildcardTreeNode::getChild(char ch) {
+std::shared_ptr<WildcardTreeNode> WildcardTreeNode::getChild(char ch) {
 	auto it = children.find(ch);
 	if (it == children.end()) {
 		return nullptr;
 	}
-	return &it->second;
+	return it->second;
 }
 
-const WildcardTreeNode* WildcardTreeNode::getChild(char ch) const {
+std::shared_ptr<WildcardTreeNode> WildcardTreeNode::getChild(char ch) const {
 	auto it = children.find(ch);
 	if (it == children.end()) {
 		return nullptr;
 	}
-	return &it->second;
+	return it->second;
 }
 
-WildcardTreeNode* WildcardTreeNode::addChild(char ch, bool breakp) {
-	WildcardTreeNode* child = getChild(ch);
+std::shared_ptr<WildcardTreeNode> WildcardTreeNode::addChild(char ch, bool breakp) {
+	std::shared_ptr<WildcardTreeNode> child = getChild(ch);
 	if (child) {
 		if (breakp && !child->breakpoint) {
 			child->breakpoint = true;
 		}
 	} else {
-		auto pair = children.emplace(std::piecewise_construct, std::forward_as_tuple(ch), std::forward_as_tuple(breakp));
-		child = &pair.first->second;
+		auto pair = children.emplace(std::piecewise_construct, std::forward_as_tuple(ch), std::forward_as_tuple(std::make_shared<WildcardTreeNode>(breakp)));
+		child = pair.first->second;
 	}
 	return child;
 }
 
 void WildcardTreeNode::insert(const std::string &str) {
-	WildcardTreeNode* cur = this;
+	std::shared_ptr<WildcardTreeNode> cur = static_self_cast<WildcardTreeNode>();
 
 	size_t length = str.length() - 1;
 	for (size_t pos = 0; pos < length; ++pos) {
@@ -52,9 +52,9 @@ void WildcardTreeNode::insert(const std::string &str) {
 }
 
 void WildcardTreeNode::remove(const std::string &str) {
-	WildcardTreeNode* cur = this;
+	std::shared_ptr<WildcardTreeNode> cur = static_self_cast<WildcardTreeNode>();
 
-	std::stack<WildcardTreeNode*> path;
+	std::stack<std::shared_ptr<WildcardTreeNode>> path;
 	path.push(cur);
 	size_t len = str.length();
 	for (size_t pos = 0; pos < len; ++pos) {
@@ -85,7 +85,7 @@ void WildcardTreeNode::remove(const std::string &str) {
 }
 
 ReturnValue WildcardTreeNode::findOne(const std::string &query, std::string &result) const {
-	const WildcardTreeNode* cur = this;
+	auto cur = static_self_cast<const WildcardTreeNode>();
 	for (char pos : query) {
 		cur = cur->getChild(pos);
 		if (!cur) {
@@ -105,6 +105,6 @@ ReturnValue WildcardTreeNode::findOne(const std::string &query, std::string &res
 
 		auto it = cur->children.begin();
 		result += it->first;
-		cur = &it->second;
+		cur = it->second;
 	} while (true);
 }

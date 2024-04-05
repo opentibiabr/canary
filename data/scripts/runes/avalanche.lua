@@ -30,4 +30,5 @@ rune:level(30)
 rune:magicLevel(4)
 rune:cooldown(2 * 1000)
 rune:groupCooldown(2 * 1000)
+rune:isBlocking(false) -- True = Solid / False = Creature
 rune:register()

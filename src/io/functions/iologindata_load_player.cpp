@@ -807,6 +807,7 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 			player->setForgeHistory(history);
 		} while (result->next());
 	}
+	player->setSaveForgeHistory(false);
 }
 
 void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResult_ptr result) {

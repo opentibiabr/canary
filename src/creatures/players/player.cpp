@@ -513,6 +513,7 @@ void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType
 		}
 
 		client->refreshCyclopediaMonsterTracker(tracker, isBoss);
+		setSaveBosstiary(true);
 	}
 }
 
@@ -534,6 +535,7 @@ void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType>
 		}
 
 		client->refreshCyclopediaMonsterTracker(tracker, isBoss);
+		setSaveBosstiary(true);
 	}
 }
 

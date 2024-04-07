@@ -2617,6 +2617,12 @@ public:
 	void setSaveSpells(bool onOff) {
 		saveSpells = onOff;
 	}
+	bool hasSaveForgeHistory() {
+		return saveForgeHistory;
+	}
+	void setSaveForgeHistory(bool onOff) {
+		saveForgeHistory = onOff;
+	}
 	bool hasSaveBosstiary() {
 		return saveBosstiary;
 	}
@@ -2922,6 +2928,7 @@ private:
 	bool saveStash = false;
 	bool saveUnjustifiedKills = false;
 	bool saveSpells = false;
+	bool saveForgeHistory = false;
 	bool saveBosstiary = false;
 
 	// Hazard system

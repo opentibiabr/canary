@@ -767,6 +767,7 @@ bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 		return false;
 	}
 
+	player->setSaveBosstiary(false);
 	return true;
 }
 

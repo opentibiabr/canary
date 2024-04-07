@@ -118,10 +118,6 @@ function playerLoginGlobal.onLogin(player)
 	player:setStaminaXpBoost(player:getFinalBonusStamina() * 100)
 	player:getFinalLowLevelBonus()
 
-	-- Set Ghost Mode
-	if player:getGroup():getId() >= GROUP_TYPE_GAMEMASTER then
-		player:setGhostMode(true)
-	end
 
 	-- Resets
 	if _G.OnExerciseTraining[player:getId()] then
@@ -157,6 +153,8 @@ function playerLoginGlobal.onLogin(player)
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
+	player:registerEvent("deathBroadcast")
+	player:registerEvent("fragReward")
 	return true
 end
 

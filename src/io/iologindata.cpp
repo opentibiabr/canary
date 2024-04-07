@@ -262,8 +262,10 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerTaskHuntingClass] - Failed to save player task hunting class: " + player->getName());
 	}
 
-	if (!IOLoginDataSave::savePlayerForgeHistory(player)) {
-		throw DatabaseException("[IOLoginDataSave::savePlayerForgeHistory] - Failed to save player forge history: " + player->getName());
+	if (player->hasSaveForgeHistory()) {
+		if (!IOLoginDataSave::savePlayerForgeHistory(player)) {
+			throw DatabaseException("[IOLoginDataSave::savePlayerForgeHistory] - Failed to save player forge history: " + player->getName());
+		}
 	}
 
 	if (player->hasSaveBosstiary()) {

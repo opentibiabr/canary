@@ -723,6 +723,8 @@ bool IOLoginDataSave::savePlayerForgeHistory(std::shared_ptr<Player> player) {
 	if (!insertQuery.execute()) {
 		return false;
 	}
+
+	player->setForgeHistory(false);
 	return true;
 }
 

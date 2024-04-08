@@ -1025,8 +1025,8 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 
 		auto stringKey = asLowerCaseString(subKeyAttribute.as_string());
 		if (stringKey == "slot") {
+			auto slotName = asLowerCaseString(subValueAttribute.as_string());
 			if (moveevent && (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP)) {
-				auto slotName = asLowerCaseString(subValueAttribute.as_string());
 				if (slotName == "head") {
 					moveevent->setSlot(SLOTP_HEAD);
 				} else if (slotName == "necklace") {
@@ -1049,13 +1049,14 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 					moveevent->setSlot(SLOTP_RING);
 				} else if (slotName == "ammo") {
 					moveevent->setSlot(SLOTP_AMMO);
+				} else if (slotName == "two-handed") {
+					moveevent->setSlot(SLOTP_TWO_HAND);
 				} else {
 					g_logger().warn("[{}] unknown slot type '{}'", __FUNCTION__, slotName);
 				}
 			} else if (weapon) {
 				uint16_t id = weapon->getID();
 				ItemType &it = Item::items.getItemType(id);
-				auto slotName = asLowerCaseString(subValueAttribute.as_string());
 				if (slotName == "two-handed") {
 					it.slotPosition = SLOTP_TWO_HAND;
 				} else {
@@ -1164,14 +1165,16 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 			} else {
 				g_logger().warn("[{}] - wandtype '{}' does not exist", __FUNCTION__, elementName);
 			}
+
 		} else if (stringKey == "chain" && weapon) {
-			if (auto value = subValueAttribute.as_double()) {
-				weapon->setChainSkillValue(value);
-				g_logger().trace("Found chain skill value '{}' for weapon: {}", value, itemType.name);
+			auto doubleValue = subValueAttribute.as_double();
+			if (doubleValue > 0) {
+				weapon->setChainSkillValue(doubleValue);
+				g_logger().trace("Found chain skill value '{}' for weapon: {}", doubleValue, itemType.name);
 			}
-			if (subValueAttribute.as_bool() == false) {
+			if (doubleValue < 0.1 && subValueAttribute.as_bool() == false) {
 				weapon->setDisabledChain();
-				g_logger().warn("Chain disabled for weapon: {}", itemType.name);
+				g_logger().trace("Chain disabled for weapon: {}", itemType.name);
 			}
 		}
 	}
@@ -1181,6 +1184,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 			g_logger().trace("Added weapon damage from '{}', to '{}'", fromDamage, toDamage);
 			weaponWand->setMinChange(fromDamage);
 			weaponWand->setMaxChange(toDamage);
+			weaponWand->configureWeapon(itemType);
 		}
 
 		auto combat = weapon->getCombat();

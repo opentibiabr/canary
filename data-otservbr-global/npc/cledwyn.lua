@@ -97,6 +97,8 @@ end
 
 local charge = {}
 
+local chargePrice = {}
+
 local chargeItem = {
 	["pendulet"] = { noChargeID = 29429, ChargeID = 30344 },
 	["sleep shawl"] = { noChargeID = 29428, ChargeID = 30342 },
@@ -137,18 +139,20 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif table.contains({ "pendulet", "sleep shawl", "blister ring", "theurgic amulet", "ring of souls", "turtle amulet" }, message:lower()) and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("Should I enchant the item " .. message .. " for 2 " .. ItemType(npc:getCurrency()):getPluralName():lower() .. "?", npc, creature)
 		charge = message:lower()
+		chargePrice = 2
 		npcHandler:setTopic(playerId, 2)
 	elseif table.contains({ "spiritthorn ring", "alicorn ring", "arcanomancer sigil", "arboreal ring" }, message:lower()) and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("Should I enchant the item " .. message .. " for 5 " .. ItemType(npc:getCurrency()):getPluralName():lower() .. "?", npc, creature)
 		charge = message:lower()
+		chargePrice = 5
 		npcHandler:setTopic(playerId, 2)
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, "yes") then
 			if not chargeItem[charge] then
 				npcHandler:say("Sorry, you don't have an unenchanted " .. charge .. ".", npc, creature)
 			else
-				if (player:getItemCount(npc:getCurrency()) >= 2) and (player:getItemCount(chargeItem[charge].noChargeID) >= 1) then
-					player:removeItem(npc:getCurrency(), 2)
+				if (player:getItemCount(npc:getCurrency()) >= chargePrice) and (player:getItemCount(chargeItem[charge].noChargeID) >= 1) then
+					player:removeItem(npc:getCurrency(), chargePrice)
 					player:removeItem(chargeItem[charge].noChargeID, 1)
 					local itemAdd = player:addItem(chargeItem[charge].ChargeID, 1)
 					npcHandler:say("Ah, excellent. Here is your " .. itemAdd:getName():lower() .. ".", npc, creature)

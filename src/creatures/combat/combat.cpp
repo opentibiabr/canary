@@ -273,7 +273,7 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> caster, std::shared_pt
 	}
 	ReturnValue ret = g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
 	if (ret == RETURNVALUE_NOERROR) {
-		ret = g_callbacks().checkCallbackWithEnum(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnAreaCombat, caster, tile, aggressive);
+		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnAreaCombat, caster, tile, aggressive);
 	}
 	return ret;
 }
@@ -412,7 +412,7 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 	}
 	ReturnValue ret = g_events().eventCreatureOnTargetCombat(attacker, target);
 	if (ret == RETURNVALUE_NOERROR) {
-		ret = g_callbacks().checkCallbackWithEnum(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target);
+		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target);
 	}
 	return ret;
 }

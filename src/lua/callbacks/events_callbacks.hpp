@@ -97,7 +97,7 @@ public:
 	 * @return ReturnValue enum.
 	 */
     template <typename CallbackFunc, typename... Args>
-    ReturnValue checkCallbackWithEnum(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
+    ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
         for (const auto &callback : getCallbacksByType(eventType)) {
             auto argsCopy = std::make_tuple(args...);
             if (callback && callback->isLoadedCallback()) {
@@ -107,7 +107,7 @@ public:
                     },
                     argsCopy
                 );
-								return callbackResult;
+							return callbackResult;
             }
         }
         return RETURNVALUE_NOERROR;

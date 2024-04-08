@@ -7219,7 +7219,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 		}
 	} else {
 		static Outfit_t outfit;
-		AddOutfit(msg, outfit, false);
+		AddOutfit(msg, outfit);
 	}
 
 	LightInfo lightInfo = creature->getCreatureLight();

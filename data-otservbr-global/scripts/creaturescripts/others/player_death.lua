@@ -44,6 +44,16 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 		mostDamageName = "field item"
 	end
 
+	player:sendTakeScreenshot(byPlayer and SCREENSHOT_TYPE_DEATHPVP or SCREENSHOT_TYPE_DEATHPVE)
+
+	if byPlayer then
+		killer:sendTakeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)
+	end
+
+	if mostDamageKiller and mostDamageKiller:isPlayer() and killer ~= mostDamageKiller then
+		mostDamageKiller:sendTakeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)
+	end
+
 	local playerGuid = player:getGuid()
 	db.query(
 		"INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) VALUES ("

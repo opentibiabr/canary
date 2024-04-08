@@ -7869,7 +7869,7 @@ bool Player::setAccount(uint32_t accountId) {
 }
 
 uint8_t Player::getAccountType() const {
-	return static_cast<uint8_t>(account ? account->getAccountType() : AccountType::ACCOUNT_TYPE_NORMAL);
+	return static_cast<uint8_t>(account ? account->getAccountType() : static_cast<uint8_t>(AccountType::ACCOUNT_TYPE_NORMAL));
 }
 
 uint32_t Player::getAccountId() const {

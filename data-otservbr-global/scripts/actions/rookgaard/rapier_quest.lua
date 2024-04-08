@@ -8,7 +8,7 @@ function rapierQuest.onUse(player, item, fromPosition, target, toPosition, isHot
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a rapier.")
 	player:addItem(rewardId, 1)
 	player:questKV("rapier"):set("completed", true)
-	player:sendTakeScreenshot(SCREENSHOT_TYPE_TREASUREFOUND)
+	player:takeScreenshot(SCREENSHOT_TYPE_TREASUREFOUND)
 	return true
 end
 

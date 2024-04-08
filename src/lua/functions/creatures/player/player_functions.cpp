@@ -4281,8 +4281,8 @@ int PlayerFunctions::luaPlayerRemoveAchievementPoints(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSendTakeScreenshot(lua_State* L) {
-	// player:sendTakeScreenshot(screenshotType)
+int PlayerFunctions::luaPlayerTakeScreenshot(lua_State* L) {
+	// player:takeScreenshot(screenshotType)
 	const auto &player = getUserdataShared<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);

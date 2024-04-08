@@ -364,7 +364,7 @@ private:
 		registerMethod(L, "Player", "addAchievementPoints", PlayerFunctions::luaPlayerAddAchievementPoints);
 		registerMethod(L, "Player", "removeAchievementPoints", PlayerFunctions::luaPlayerRemoveAchievementPoints);
 
-		registerMethod(L, "Player", "sendTakeScreenshot", PlayerFunctions::luaPlayerSendTakeScreenshot);
+		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);

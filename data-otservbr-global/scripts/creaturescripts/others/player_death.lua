@@ -44,14 +44,10 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 		mostDamageName = "field item"
 	end
 
-	player:sendTakeScreenshot(byPlayer and SCREENSHOT_TYPE_DEATHPVP or SCREENSHOT_TYPE_DEATHPVE)
+	player:takeScreenshot(byPlayer and SCREENSHOT_TYPE_DEATHPVP or SCREENSHOT_TYPE_DEATHPVE)
 
-	if byPlayer then
-		killer:sendTakeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)
-	end
-
-	if mostDamageKiller and mostDamageKiller:isPlayer() and killer ~= mostDamageKiller then
-		mostDamageKiller:sendTakeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)
+	if mostDamageKiller and mostDamageKiller:isPlayer() then
+		mostDamageKiller:takeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)
 	end
 
 	local playerGuid = player:getGuid()
@@ -93,6 +89,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	end
 
 	if byPlayer == 1 then
+		killer:takeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)
 		local targetGuild = player:getGuild()
 		local targetGuildId = targetGuild and targetGuild:getId() or 0
 		if targetGuildId ~= 0 then

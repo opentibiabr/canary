@@ -21,6 +21,8 @@
 #include "items/weapons/weapons.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 
 int32_t Combat::getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -269,8 +271,11 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> caster, std::shared_pt
 			}
 		}
 	}
-
-	return g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
+	ReturnValue ret = g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
+	if (ret == RETURNVALUE_NOERROR) {
+		ret = g_callbacks().checkCallbackWithEnum(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnAreaCombat, caster, tile, aggressive);
+	}
+	return ret;
 }
 
 bool Combat::isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target) {
@@ -405,7 +410,11 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 			}
 		}
 	}
-	return g_events().eventCreatureOnTargetCombat(attacker, target);
+	ReturnValue ret = g_events().eventCreatureOnTargetCombat(attacker, target);
+	if (ret == RETURNVALUE_NOERROR) {
+		ret = g_callbacks().checkCallbackWithEnum(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target);
+	}
+	return ret;
 }
 
 void Combat::setPlayerCombatValues(formulaType_t newFormulaType, double newMina, double newMinb, double newMaxa, double newMaxb) {

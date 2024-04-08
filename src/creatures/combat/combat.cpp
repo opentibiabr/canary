@@ -405,6 +405,11 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 			}
 		}
 	}
+
+	if (!g_callbacks().checkCallback(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target)) {
+		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
+	}
+
 	return g_events().eventCreatureOnTargetCombat(attacker, target);
 }
 

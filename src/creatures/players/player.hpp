@@ -2428,6 +2428,7 @@ public:
 	}
 
 	void setForgeHistory(const ForgeHistory &history) {
+		setSaveForgeHistory(true);
 		forgeHistoryVector.push_back(history);
 	}
 

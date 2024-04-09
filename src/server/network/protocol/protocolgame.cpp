@@ -28,6 +28,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "server/network/protocol/protocolgame.hpp"
@@ -3961,7 +3962,15 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	msg.add<uint32_t>(player->getXpBoostTime()); // Remaining Store Xp Boost Time
 	msg.add<uint32_t>(0); // RemainingDailyRewardXpBoostTime
 
-	msg.addByte(0x00); // getBlessingsObtained
+	auto cyclopediaSummary = player->cyclopedia()->getSummary();
+
+	// getBlessingsObtained
+	auto blessings = player->getBlessingNames();
+	msg.addByte(static_cast<uint8_t>(blessings.size())); // getBlessingsObtained
+	for (const auto &it : blessings) {
+		msg.addString(it.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
+		msg.addByte(static_cast<uint8_t>((cyclopediaSummary.m_blessings)[it.first]));
+	}
 	msg.addByte(0x00); // getTaskHuntingSlotById
 	msg.addByte(0x00); // getPreyCardsObtained
 	msg.addByte(0x00); // getRewardCollectionObtained
@@ -4051,6 +4060,40 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 		msg.addString("Loyalty Title", "ProtocolGame::sendCyclopediaCharacterInspection - Loyalty Title");
 		msg.addString(player->getLoyaltyTitle(), "ProtocolGame::sendCyclopediaCharacterInspection - player->getLoyaltyTitle()");
 	}
+
+	// todo: Prey description
+	//    for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+	//        PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
+	//        if (slot && slot->isOccupied()) {
+	//            playerDescriptionSize++;
+	//            std::ostringstream ss;
+	//            ss << "Active Prey " << (slotId + 1);
+	//            msg.addString(ss.str(), "ProtocolGame::sendCyclopediaCharacterInspection - active prey");
+	//            ss.str("");
+	//            ss.clear();
+	//
+	//            if (auto mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
+	//                ss << mtype->name;
+	//            } else {
+	//                ss << "Unknown creature";
+	//            }
+	//
+	//            if (slot->bonus == PreyBonus_Damage) {
+	//                ss << " (Improved Damage +";
+	//            } else if (slot->bonus == PreyBonus_Defense) {
+	//                ss << " (Improved Defense +";
+	//            } else if (slot->bonus == PreyBonus_Experience) {
+	//                ss << " (Improved Experience +";
+	//            } else if (slot->bonus == PreyBonus_Loot) {
+	//                ss << " (Improved Loot +";
+	//            }
+	//            ss << slot->bonusPercentage << "%, remaining ";
+	//            uint8_t hours = slot->bonusTimeLeft / 3600;
+	//            uint8_t minutes = (slot->bonusTimeLeft - (hours * 3600)) / 60;
+	//            ss << std::to_string(hours) << ":" << (minutes < 10 ? "0" : "") << std::to_string(minutes) << "h)";
+	//            msg.addString(ss.str(), "ProtocolGame::sendCyclopediaCharacterInspection - prey description");
+	//        }
+	//    }
 
 	// Outfit description
 	playerDescriptionSize++;

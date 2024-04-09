@@ -17,6 +17,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
@@ -53,6 +54,7 @@ Player::Player(ProtocolGame_ptr p) :
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
+	m_playerCyclopedia = std::make_unique<PlayerCyclopedia>(*this);
 	m_playerTitle = std::make_unique<PlayerTitle>(*this);
 }
 
@@ -2870,6 +2872,34 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 			}
 		}
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
+
+		// Pvp and pve death registration
+		std::ostringstream description;
+		if (pvpDeath) {
+			description << "Killed " << getName() << '.';
+			CyclopediaCharacterInfo_RecentKillStatus_t status = unfairFightReduction != 100 ? CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED : CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_JUSTIFIED;
+			if (lastHitCreature && lastHitCreature->getPlayer()) {
+				lastHitCreature->getPlayer()->cyclopedia()->insertPvpKillOnHistory(std::move(description.str()), OTSYS_TIME() / 1000, status);
+			} else if (lastHitCreature && lastHitCreature->getMaster() && lastHitCreature->getMaster()->getPlayer()) {
+				lastHitCreature->getMaster()->getPlayer()->cyclopedia()->insertPvpKillOnHistory(std::move(description.str()), OTSYS_TIME() / 1000, status);
+			}
+		} else {
+			description << "Died at Level " << getLevel() << " by";
+			if (lastHitCreature) {
+				const char &character = lastHitCreature->getName().front();
+				if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u') {
+					description << " an ";
+				} else {
+					description << " a ";
+				}
+				description << lastHitCreature->getName();
+			} else {
+				description << " a field item";
+			}
+			description << '.';
+
+			getPlayer()->cyclopedia()->insertDeathOnHistory(std::move(description.str()), OTSYS_TIME() / 1000);
+		}
 
 		sendStats();
 		sendSkills();
@@ -8009,6 +8039,15 @@ std::unique_ptr<PlayerVIP> &Player::vip() {
 
 const std::unique_ptr<PlayerVIP> &Player::vip() const {
 	return m_playerVIP;
+}
+
+// Cyclopedia
+std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() {
+	return m_playerCyclopedia;
+}
+
+const std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() const {
+	return m_playerCyclopedia;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

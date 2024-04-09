@@ -913,6 +913,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player)
 	player->achiev()->loadUnlockedAchievements();
 	player->badge()->checkAndUpdateNewBadges();
 	player->title()->checkAndUpdateNewTitles();
+	player->cyclopedia()->loadSummaryData();
 
 	player->initializePrey();
 	player->initializeTaskHunting();

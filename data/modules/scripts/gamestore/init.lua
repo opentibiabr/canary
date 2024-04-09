@@ -398,6 +398,31 @@ function parseRequestStoreOffers(playerId, msg)
 	end
 end
 
+-- Used on cyclopedia store summary
+local function insertPlayerTransactionSummary(player, offer)
+	if offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
+		player:addRewardCollectionObtained(math.max(1, offer.count))
+	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BLESSINGS then
+		player:addBlessingsObtained(offer.blessid, math.max(1, offer.count))
+	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE then
+		player:addHouseItemsObtained(offer.itemtype, math.max(1, offer.count))
+	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
+		player:addXpBoostsObtained(1)
+	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS then
+		player:addPreyCardsObtained(math.max(1, offer.count))
+	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING then
+		player:addHirelingsObtained(1)
+	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL then
+		player:addHirelingJobsObtained(offer.id - HIRELING_STORAGE.SKILL)
+	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT then
+		player:addHirelingOutfitObtained(offer.id - HIRELING_STORAGE.OUTFIT)
+	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS then
+		for i = 1, 8 do
+			player:addBlessingsObtained(i, offer.count)
+		end
+	end
+end
+
 function parseBuyStoreOffer(playerId, msg)
 	local player = Player(playerId)
 	local id = msg:getU32()
@@ -522,6 +547,7 @@ function parseBuyStoreOffer(playerId, msg)
 		return queueSendStoreAlertToUser(alertMessage, 500, playerId)
 	end
 
+	insertPlayerTransactionSummary(player, offer)
 	local configure = useOfferConfigure(offer.type)
 	if configure ~= GameStore.ConfigureOffers.SHOW_CONFIGURE then
 		if not player:makeCoinTransaction(offer) then

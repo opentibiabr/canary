@@ -745,6 +745,31 @@ CREATE TABLE IF NOT EXISTS `player_storage` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Table structure `player_summary`
+CREATE TABLE IF NOT EXISTS `player_summary` (
+  `player_id` int(11) NOT NULL,
+  `title` VARCHAR(250) NOT NULL DEFAULT '0',
+  `charms` VARCHAR(250) NOT NULL DEFAULT '0',
+  `goshnar` VARCHAR(250) NOT NULL DEFAULT '0',
+  `drome` VARCHAR(250) NOT NULL DEFAULT '0',
+  `xp_boosts` VARCHAR(250) NOT NULL DEFAULT '0',
+  `rewards_collection` VARCHAR(250) NOT NULL DEFAULT '0',
+  `prey_cards` VARCHAR(250) NOT NULL DEFAULT '0',
+  `hirelings` VARCHAR(250) NOT NULL DEFAULT '0',
+  `achievements_points` VARCHAR(250) NOT NULL DEFAULT '0',
+  `login_streak` VARCHAR(250) NOT NULL DEFAULT '0',
+  `task_points` VARCHAR(250) NOT NULL DEFAULT '0',
+  `map_area` VARCHAR(250) NOT NULL DEFAULT '0',
+  `hireling_outfits` BLOB NULL,
+  `hireling_jobs` BLOB NULL,
+  `house_items` BLOB NULL,
+  `blessings` BLOB NULL,
+  `achievements_unlockeds` BLOB NULL,
+  INDEX `player_id` (`player_id`),
+  FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+  ON DELETE CASCADE
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Table structure `store_history`
 CREATE TABLE IF NOT EXISTS `store_history` (
     `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -37,6 +37,7 @@
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "server/network/protocol/protocollogin.hpp"
@@ -52,23 +53,6 @@
 #include "enums/account_coins.hpp"
 
 #include <appearances.pb.h>
-
-enum class HighscoreCategories_t : uint8_t {
-	EXPERIENCE = 0,
-	FIST_FIGHTING = 1,
-	CLUB_FIGHTING = 2,
-	SWORD_FIGHTING = 3,
-	AXE_FIGHTING = 4,
-	DISTANCE_FIGHTING = 5,
-	SHIELDING = 6,
-	FISHING = 7,
-	MAGIC_LEVEL = 8,
-	LOYALTY = 9,
-	ACHIEVEMENTS = 10,
-	CHARMS = 11,
-	DROME = 12,
-	GOSHNAR = 13,
-};
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, std::shared_ptr<Creature> source) {
@@ -208,6 +192,35 @@ Game::Game() {
 	m_IOWheel = std::make_unique<IOWheel>();
 
 	wildcardTree = std::make_shared<WildcardTreeNode>(false);
+
+	m_badges = {
+		Badge(1, CyclopediaBadgeType_t::ACCOUNT_AGE, "Fledegeling Hero", 1),
+		Badge(2, CyclopediaBadgeType_t::ACCOUNT_AGE, "Veteran Hero", 5),
+		Badge(3, CyclopediaBadgeType_t::ACCOUNT_AGE, "Senior Hero", 10),
+		Badge(4, CyclopediaBadgeType_t::ACCOUNT_AGE, "Ancient Hero", 15),
+		Badge(5, CyclopediaBadgeType_t::ACCOUNT_AGE, "Exalted Hero", 20),
+
+		Badge(6, CyclopediaBadgeType_t::LOYALTY, "Tibia Loyalist (Grade 1)", 100),
+		Badge(7, CyclopediaBadgeType_t::LOYALTY, "Tibia Loyalist (Grade 2)", 1000),
+		Badge(8, CyclopediaBadgeType_t::LOYALTY, "Tibia Loyalist (Grade 3)", 5000),
+
+		Badge(9, CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL, "Global Player (Grade 1)", 500),
+		Badge(10, CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL, "Global Player (Grade 2)", 1000),
+		Badge(11, CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL, "Global Player (Grade 3)", 2000),
+
+		Badge(12, CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS, "Master Class (Grade 1)", 100),
+		Badge(13, CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS, "Master Class (Grade 2)", 250),
+		Badge(14, CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS, "Master Class (Grade 3)", 500),
+
+		Badge(15, CyclopediaBadgeType_t::TOURNAMENT_PARTICIPATION, "Freshman of the Tournament", 1),
+		Badge(16, CyclopediaBadgeType_t::TOURNAMENT_PARTICIPATION, "Regular of the Tournament", 5),
+		Badge(17, CyclopediaBadgeType_t::TOURNAMENT_PARTICIPATION, "Hero of the Tournament", 10),
+
+		Badge(18, CyclopediaBadgeType_t::TOURNAMENT_POINTS, "Tournament Competitor", 1000),
+		Badge(19, CyclopediaBadgeType_t::TOURNAMENT_POINTS, "Tournament Challenger", 2500),
+		Badge(20, CyclopediaBadgeType_t::TOURNAMENT_POINTS, "Tournament Master", 5000),
+		Badge(21, CyclopediaBadgeType_t::TOURNAMENT_POINTS, "Tournament Champion", 10000),
+	};
 
 	m_highscoreCategoriesNames = {
 		{ static_cast<uint8_t>(HighscoreCategories_t::ACHIEVEMENTS), "Achievement Points" },
@@ -8141,6 +8154,17 @@ void Game::kickPlayer(uint32_t playerId, bool displayEffect) {
 	player->removePlayer(displayEffect);
 }
 
+void Game::playerFriendSystemAction(std::shared_ptr<Player> player, uint8_t type, uint8_t titleId) {
+	uint32_t playerGUID = player->getGUID();
+	if (type == 0x0E) {
+		// todo in titles system PR
+		// player->title()->setCurrentTitle(titleId);
+		// player->sendCyclopediaCharacterBaseInformation();
+		// player->sendCyclopediaCharacterTitles();
+		return;
+	}
+}
+
 void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page) {
 	uint32_t playerGUID = player->getGUID();
 	if (characterID != playerGUID) {
@@ -10531,4 +10555,26 @@ std::vector<Achievement> Game::getPublicAchievements() {
 
 std::map<uint16_t, Achievement> Game::getAchievements() {
 	return m_achievements;
+}
+
+void Game::getCyclopediaStatistics() {
+	g_logger().info("Loaded {} badges from Badge System", m_badges.size());
+	// todo in title system: g_logger().info("Loaded {} titles from Title system", m_titles.size());
+}
+
+Badge Game::getBadgeByIdOrName(uint8_t id, const std::string &name /*= ""*/) {
+	if (id == 0 && name.empty()) {
+		return {};
+	}
+	auto it = std::find_if(m_badges.begin(), m_badges.end(), [id, name](const Badge &b) {
+		return id != 0 ? b.m_id == id : b.m_name == name;
+	});
+	if (it != m_badges.end()) {
+		return *it;
+	}
+	return {};
+}
+
+std::unordered_set<Badge> Game::getBadges() {
+	return m_badges;
 }

@@ -16,6 +16,7 @@
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -49,6 +50,7 @@ Player::Player(ProtocolGame_ptr p) :
 	client(std::move(p)) {
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
+	m_playerBadge = std::make_unique<PlayerBadge>(*this);
 }
 
 Player::~Player() {
@@ -129,7 +131,7 @@ std::string Player::getDescription(int32_t lookDistance) {
 			s << " You have no vocation.";
 		}
 
-		if (loyaltyTitle.length() != 0) {
+		if (!loyaltyTitle.empty()) {
 			s << " You are a " << loyaltyTitle << ".";
 		}
 
@@ -141,9 +143,8 @@ std::string Player::getDescription(int32_t lookDistance) {
 		if (!group->access) {
 			s << " (Level " << level << ')';
 		}
-		s << '.';
 
-		s << " " << subjectPronoun;
+		s << ". " << subjectPronoun;
 
 		if (group->access) {
 			s << " " << getSubjectVerb() << " " << group->name << '.';
@@ -153,7 +154,7 @@ std::string Player::getDescription(int32_t lookDistance) {
 			s << " has no vocation.";
 		}
 
-		if (loyaltyTitle.length() != 0) {
+		if (!loyaltyTitle.empty()) {
 			std::string article = "a";
 			if (loyaltyTitle[0] == 'A' || loyaltyTitle[0] == 'E' || loyaltyTitle[0] == 'I' || loyaltyTitle[0] == 'O' || loyaltyTitle[0] == 'U') {
 				article = "an";
@@ -626,6 +627,19 @@ phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> Player::getAllSlotItems() c
 	}
 
 	return itemMap;
+}
+
+phmap::flat_hash_map<Blessings_t, std::string> Player::getBlessingNames() const {
+	return {
+		{ TWIST_OF_FATE, "Twist of Fate" },
+		{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
+		{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
+		{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
+		{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
+		{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
+		{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
+		{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
+	};
 }
 
 void Player::setTraining(bool value) {
@@ -1925,7 +1939,7 @@ void Player::onWalk(Direction &dir) {
 
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
-  
+
 	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, &EventCallback::playerOnWalk, getPlayer(), dir);
 }
 
@@ -6578,17 +6592,6 @@ void Player::initializeTaskHunting() {
 }
 
 std::string Player::getBlessingsName() const {
-	static const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
-		{ TWIST_OF_FATE, "Twist of Fate" },
-		{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
-		{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
-		{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
-		{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
-		{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
-		{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
-		{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
-	};
-
 	uint8_t count = 0;
 	std::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
 		if (amount != 0) {
@@ -6596,6 +6599,7 @@ std::string Player::getBlessingsName() const {
 		}
 	});
 
+	auto BlessingNames = getBlessingNames();
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
@@ -7951,6 +7955,15 @@ std::unique_ptr<PlayerAchievement> &Player::achiev() {
 
 const std::unique_ptr<PlayerAchievement> &Player::achiev() const {
 	return m_playerAchievement;
+}
+
+// Badge interface
+std::unique_ptr<PlayerBadge> &Player::badge() {
+	return m_playerBadge;
+}
+
+const std::unique_ptr<PlayerBadge> &Player::badge() const {
+	return m_playerBadge;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

@@ -840,7 +840,7 @@ private:
 	size_t lastBucket = 0;
 	size_t lastImbuedBucket = 0;
 
-	WildcardTreeNode wildcardTree { false };
+	std::shared_ptr<WildcardTreeNode> wildcardTree;
 
 	std::map<uint32_t, std::shared_ptr<Npc>> npcs;
 	std::map<uint32_t, std::shared_ptr<Monster>> monsters;

@@ -35,7 +35,9 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEve
 		auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (timerEventId == 0) {
-				timerEventId = g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::timer, this), "GlobalEvents::timer");
+				timerEventId = g_dispatcher().scheduleEvent(
+					SCHEDULER_MINTICKS, [this] { timer(); }, "GlobalEvents::timer"
+				);
 			}
 			return true;
 		}
@@ -99,7 +101,9 @@ void GlobalEvents::timer() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		timerEventId = g_dispatcher().scheduleEvent(std::max<int64_t>(1000, nextScheduledTime * 1000), std::bind(&GlobalEvents::timer, this), __FUNCTION__);
+		timerEventId = g_dispatcher().scheduleEvent(
+			std::max<int64_t>(1000, nextScheduledTime * 1000), [this] { timer(); }, __FUNCTION__
+		);
 	}
 }
 
@@ -136,7 +140,9 @@ void GlobalEvents::think() {
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
 		auto delay = static_cast<uint32_t>(nextScheduledTime);
-		thinkEventId = g_dispatcher().scheduleEvent(delay, std::bind(&GlobalEvents::think, this), "GlobalEvents::think");
+		thinkEventId = g_dispatcher().scheduleEvent(
+			delay, [this] { think(); }, "GlobalEvents::think"
+		);
 	}
 }
 

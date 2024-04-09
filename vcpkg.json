@@ -9,18 +9,9 @@
     "bext-ut",
     "curl",
     "eventpp",
-    "jsoncpp",
     "luajit",
     "magic-enum",
     "mio",
-    {
-      "name": "opentelemetry-cpp",
-      "default-features": true,
-      "features": [
-        "otlp-http",
-        "prometheus"
-      ]
-    },
     "parallel-hashmap",
     "protobuf",
     "pugixml",

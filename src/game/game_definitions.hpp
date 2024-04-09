@@ -70,6 +70,21 @@ enum CyclopediaBadge_t : uint8_t {
 	TOURNAMENT_POINTS,
 };
 
+enum CyclopediaTitle_t : uint8_t {
+	NOTHING = 0,
+	GOLD,
+	MOUNTS,
+	OUTFITS,
+	LEVEL,
+	HIGHSCORES,
+	BESTIARY,
+	LOGIN,
+	TASK,
+	MAP,
+	QUEST,
+	OTHERS,
+};
+
 enum CyclopediaCharacterInfoType_t : uint8_t {
 	CYCLOPEDIA_CHARACTERINFO_BASEINFORMATION = 0,
 	CYCLOPEDIA_CHARACTERINFO_GENERALSTATS = 1,

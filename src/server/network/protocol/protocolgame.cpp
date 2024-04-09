@@ -28,6 +28,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -2058,9 +2059,8 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, std::s
 void ProtocolGame::parseFriendSystemAction(NetworkMessage &msg) {
 	uint8_t state = msg.getByte();
 	if (state == 0x0E) {
-		// todo title system pr
-		// uint8_t titleId = msg.getByte();
-		// g_game().playerFriendSystemAction(player, state, titleId);
+		uint8_t titleId = msg.getByte();
+		g_game().playerFriendSystemAction(player, state, titleId);
 	}
 }
 
@@ -2190,7 +2190,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	for (const HighscoreCharacter &character : characters) {
 		msg.add<uint32_t>(character.rank); // Rank
 		msg.addString(character.name, "ProtocolGame::sendHighscores - character.name"); // Character Name
-		msg.addString("", "ProtocolGame::sendHighscores - empty"); // Probably Character Title(not visible in window)
+		msg.addString(character.title, "ProtocolGame::sendHighscores - character.title"); // Character Title
 		msg.addByte(character.vocation); // Vocation Id
 		msg.addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // World
 		msg.add<uint16_t>(character.level); // Level
@@ -3380,9 +3380,8 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation() {
 	msg.add<uint16_t>(player->getLevel());
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
-	msg.addByte(0x00); // Store summary & Character titles
-	msg.addString("", "ProtocolGame::sendCyclopediaCharacterBaseInformation - empty"); // character title
-	// msg.addString(player->title()->getCurrentTitleName(), "ProtocolGame::sendCyclopediaCharacterBaseInformation - player->title()->getCurrentTitleName()"); // character title
+	msg.addByte(0x01); // Store summary & Character titles
+	msg.addString(player->title()->getCurrentTitleName(), "ProtocolGame::sendCyclopediaCharacterBaseInformation - player->title()->getCurrentTitleName()"); // character title
 	writeToOutputBuffer(msg);
 }
 
@@ -3910,6 +3909,13 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	msg.addString("Vocation", "ProtocolGame::sendCyclopediaCharacterInspection - Vocation");
 	msg.addString(player->getVocation()->getVocName(), "ProtocolGame::sendCyclopediaCharacterInspection - player->getVocation()->getVocName()");
 
+	// Player title
+	if (player->title()->getCurrentTitle() != 0) {
+		playerDescriptionSize++;
+		msg.addString("Title", "ProtocolGame::sendCyclopediaCharacterInspection - Title");
+		msg.addString(player->title()->getCurrentTitleName(), "ProtocolGame::sendCyclopediaCharacterInspection - player->title()->getCurrentTitleName()");
+	}
+
 	// Loyalty title
 	if (!player->getLoyaltyTitle().empty()) {
 		playerDescriptionSize++;
@@ -3951,7 +3957,6 @@ void ProtocolGame::sendCyclopediaCharacterBadges() {
 	msg.addByte(player->isPremium() ? 0x01 : 0x00); // IsPremium (GOD has always 'Premium')
 	// Character loyalty title
 	msg.addString(player->getLoyaltyTitle(), "ProtocolGame::sendCyclopediaCharacterBadges - player->getLoyaltyTitle()");
-	// msg.addByte(0x01); // Enable badges
 
 	uint8_t badgesSize = 0;
 	auto badgesSizePosition = msg.getBufferPosition();
@@ -3975,12 +3980,27 @@ void ProtocolGame::sendCyclopediaCharacterTitles() {
 		return;
 	}
 
+	auto titles = g_game().getTitles();
+
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_TITLES);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
-	msg.addByte(0x00);
-	msg.addByte(0x00);
+	msg.addByte(player->title()->getCurrentTitle());
+	msg.addByte(static_cast<uint8_t>(titles.size()));
+
+	std::string messageTitleName = "ProtocolGame::sendCyclopediaCharacterTitles - title.name";
+	std::string messageTitleDesc = "ProtocolGame::sendCyclopediaCharacterTitles - title.description";
+	for (const auto &title : titles) {
+		msg.addByte(title.m_id);
+		auto titleName = player->getSex() == PLAYERSEX_FEMALE && !title.m_femaleName.empty() ? title.m_femaleName : title.m_maleName;
+		msg.addString(titleName, messageTitleName);
+		msg.addString(title.m_description, messageTitleDesc);
+		msg.addByte(title.m_permanent ? 0x01 : 0x00);
+		auto isUnlocked = player->title()->isTitleUnlocked(title.m_id);
+		msg.addByte(isUnlocked ? 0x01 : 0x00);
+		g_logger().debug("ProtocolGame::addByte - title: {}, unlocked: {}", title.m_id, isUnlocked);
+	}
 
 	writeToOutputBuffer(msg);
 }

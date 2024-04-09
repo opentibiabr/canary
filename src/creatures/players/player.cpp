@@ -17,6 +17,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -51,6 +52,7 @@ Player::Player(ProtocolGame_ptr p) :
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
+	m_playerTitle = std::make_unique<PlayerTitle>(*this);
 }
 
 Player::~Player() {
@@ -121,7 +123,7 @@ std::string Player::getDescription(int32_t lookDistance) {
 	capitalizeWords(subjectPronoun);
 
 	if (lookDistance == -1) {
-		s << "yourself.";
+		s << "yourself" << (title()->getCurrentTitle() == 0 ? "" : (", " + title()->getCurrentTitleName())) << ".";
 
 		if (group->access) {
 			s << " You are " << group->name << '.';
@@ -143,6 +145,8 @@ std::string Player::getDescription(int32_t lookDistance) {
 		if (!group->access) {
 			s << " (Level " << level << ')';
 		}
+
+		s << (title()->getCurrentTitle() == 0 ? "" : (", " + title()->getCurrentTitleName()));
 
 		s << ". " << subjectPronoun;
 
@@ -7966,6 +7970,15 @@ std::unique_ptr<PlayerBadge> &Player::badge() {
 
 const std::unique_ptr<PlayerBadge> &Player::badge() const {
 	return m_playerBadge;
+}
+
+// Title interface
+std::unique_ptr<PlayerTitle> &Player::title() {
+	return m_playerTitle;
+}
+
+const std::unique_ptr<PlayerTitle> &Player::title() const {
+	return m_playerTitle;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

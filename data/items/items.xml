@@ -62027,9 +62027,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	<item id="32767" article="a" name="unknown">
 		<attribute key="weight" value="500"/>
 	</item>
-	<item id="32768" article="a" name="unknown">
-		<attribute key="weight" value="500"/>
-	</item>
+	<item id="32768" article="a" name="sandtimer"/>
 	<item id="32769" article="a" name="white gem">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="showCount" value="1"/>
@@ -62471,6 +62469,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="type" value="teleport"/>
 		<attribute key="effect" value="teleport"/>
 	</item>
+	<item fromid="33018" toid="33025" name="shrine" editorsuffix="(soul war quest)"/>
 	<item fromid="33026" toid="33027" name="heart lamp">
 		<attribute key="primarytype" value="light sources"/>
 		<attribute key="wrapableto" value="23398"/>
@@ -62893,21 +62892,15 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="33785" article="a" name="broken mirror"/>
 	<item fromid="33788" toid="33789" article="a" name="wall"/>
-	<item id="33790" article="a" name="large crystal teleporter">
-		<attribute key="primarytype" value="teleporters"/>
-		<attribute key="type" value="teleport"/>
-		<attribute key="effect" value="teleport"/>
+	<item id="33790" article="a" name="inactive vortex">
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="33791"/>
 	</item>
-	<item id="33791" article="a" name="water vortex">
-		<attribute key="primarytype" value="teleporters"/>
-	</item>
-	<item id="33792" article="a" name="sulphur puddle">
-		<attribute key="primarytype" value="fields"/>
-		<attribute key="weight" value="60"/>
-	</item>
+	<item id="33791" article="a" name="active spirit vortex"/>
+	<item id="33792" article="a" name="condensed remorse"/>
 	<item id="33793" article="a" name="sorrow">
 		<attribute key="primarytype" value="quest items"/>
-		<attribute key="weight" value="60"/>
+		<attribute key="weight" value="50"/>
 	</item>
 	<item id="33794" article="a" name="dead bony sea devil">
 		<attribute key="duration" value="600"/>
@@ -63061,6 +63054,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="decayTo" value="33824"/>
 		<attribute key="containersize" value="48"/>
 	</item>
+	<item id="33854" article="the" name="blood of cloak of Terror">
+		<attribute key="duration" value="600"/>
+		<attribute key="decayTo" value="34006"/>
+	</item>
 	<item id="33856" article="a" name="dead goshnar's cruelty">
 		<attribute key="duration" value="600"/>
 		<attribute key="decayTo" value="0"/>
@@ -63156,6 +63153,11 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="decayTo" value="33874"/>
 		<attribute key="containersize" value="48"/>
 	</item>
+	<item id="33876" article="a" name="dead weeping soul">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="33877" article="a" name="searing fire"/>
 	<item id="33886" article="a" name="dead goshnars megalomania">
 		<attribute key="duration" value="600"/>
 		<attribute key="decayTo" value="0"/>
@@ -63175,6 +63177,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="decayTo" value="33888"/>
 		<attribute key="containersize" value="48"/>
 	</item>
+	<item id="33890" article="a" name="greedy maw"/>
 	<item id="33891" article="a" name="some mortal essence"/>
 	<item id="33892" name="love elixir">
 		<attribute key="primarytype" value="fansite items"/>
@@ -63374,6 +63377,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="A goblin zombie is stuffed into it"/>
 		<attribute key="weight" value="5500"/>
 	</item>
+	<item id="33949" name="dead aspect of power">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
 	<item id="33950" name="cleansed sanity">
 		<attribute key="description" value="Can be used to douse Goshnar's madness"/>
 		<attribute key="weight" value="101"/>
@@ -63519,6 +63526,19 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="33982" name="crawler's essence" plural="crawler's essences">
 		<attribute key="weight" value="45"/>
+	</item>
+	<item id="33984" article="a" name="necromantic remains">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="34005" name="pulsating energy"/>
+	<item id="34006" article="the" name="blood of cloak of Terror">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="34007"/>
+	</item>
+	<item id="34007" article="the" name="blood of cloak of Terror">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="34008" name="white silk flower">
 		<attribute key="primarytype" value="plants and herbs"/>
@@ -64257,7 +64277,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	<item id="34109" article="a" name="bag you desire">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="description" value="It contains the most powerful artifacts from the depths of Zarganash's darkest realms"/>
-		<attribute key="weight" value="30"/>
+		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="34110" article="a" name="sandstone statue">
 		<attribute key="primarytype" value="statues"/>

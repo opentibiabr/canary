@@ -14,7 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"SoulwarsBossDeath",
+	"SoulWarBossesDeath",
 }
 
 monster.health = 300000
@@ -68,10 +68,9 @@ monster.light = {
 }
 
 monster.summon = {
-	maxSummons = 4,
+	maxSummons = 1,
 	summons = {
-		{ name = "dreadful harvester", chance = 10, interval = 1000, count = 2 },
-		{ name = "hateful soul", chance = 10, interval = 1000, count = 2 },
+		{ name = "dreadful harvester", chance = 10, interval = 1000, count = 1 },
 	},
 }
 
@@ -139,12 +138,41 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval) end
+local immuneTimeCount = 0
+local isImmune = nil
+local createdSoulSphere = nil
+mType.onThink = function(monsterCallback, interval)
+	if GreedbeastKills == 5 and isImmune == nil then
+		isImmune = monsterCallback:immune(false)
+		monsterCallback:teleportTo(Position(33741, 31659, 14))
+		monsterCallback:setSpeed(0)
+		createdSoulSphere = Game.createMonster("Soul Sphere", Position(33752, 31659, 14), true, true)
+	end
+	if isImmune ~= nil then
+		immuneTimeCount = immuneTimeCount + interval
+		logger.info("Immune time count {}", immuneTimeCount)
+		if immuneTimeCount >= 45000 then
+			monsterCallback:immune(true)
+			monsterCallback:setSpeed(monster.speed)
+			monsterCallback:teleportTo(Position(33746, 31666, 14))
+			immuneTimeCount = 0
+			GreedbeastKills = 0
+			isImmune = nil
+			if createdSoulSphere then
+				createdSoulSphere:remove()
+			end
+		end
+	end
+end
 
-mType.onAppear = function(monster, creature)
+mType.onSpawn = function(monster)
 	if monster:getType():isRewardBoss() then
 		monster:setReward(true)
 	end
+
+	monster:immune(true)
+	immuneTimeCount = 0
+	GreedbeastKills = 0
 end
 
 mType.onDisappear = function(monster, creature) end

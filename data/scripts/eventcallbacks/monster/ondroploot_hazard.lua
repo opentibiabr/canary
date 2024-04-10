@@ -1,4 +1,4 @@
-local callback = EventCallback()
+local callback = EventCallback("MonsterOnDropLootHazard")
 
 function callback.monsterOnDropLoot(monster, corpse)
 	if not monster:hazard() then

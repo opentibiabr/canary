@@ -12,6 +12,8 @@
 #include "map.hpp"
 #include "utils/astarnodes.hpp"
 
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "game/game.hpp"
 #include "game/zones/zone.hpp"
@@ -96,6 +98,10 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		monsterfile.clear();
 		housefile.clear();
 		npcfile.clear();
+	}
+
+	if (!mainMap) {
+		g_callbacks().executeCallback(EventCallback_t::mapOnLoad, &EventCallback::mapOnLoad, path.string());
 	}
 }
 
@@ -192,8 +198,7 @@ std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 		return nullptr;
 	}
 
-	const auto tile = floor->getTile(x, y);
-	return tile ? tile : getOrCreateTileFromCache(floor, x, y);
+	return getOrCreateTileFromCache(floor, x, y);
 }
 
 void Map::refreshZones(uint16_t x, uint16_t y, uint8_t z) {

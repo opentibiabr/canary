@@ -144,6 +144,7 @@ end
 ---@param player Player
 ---@return boolean
 function BossLever:onUse(player)
+	local monsterName = MonsterType(self.name):getName()
 	local isParticipant = false
 	for _, v in ipairs(self.playerPositions) do
 		if Position(v.pos) == player:getPosition() then
@@ -161,7 +162,7 @@ function BossLever:onUse(player)
 
 	local zone = self:getZone()
 	if zone:countPlayers(IgnoredByMonsters) > 0 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's already someone fighting with " .. self.name .. ".")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's already someone fighting with " .. monsterName .. ".")
 		return true
 	end
 
@@ -178,13 +179,13 @@ function BossLever:onUse(player)
 			return false
 		end
 
-		if self:lastEncounterTime(creature) > os.time() then
+		if creature:getGroup():getId() < GROUP_TYPE_GOD and self:lastEncounterTime(creature) > os.time() then
 			local info = lever:getInfoPositions()
 			for _, v in pairs(info) do
 				local newPlayer = v.creature
 				if newPlayer then
 					local timeLeft = self:lastEncounterTime(newPlayer) - os.time()
-					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. getTimeInWords(timeLeft) .. " to face " .. self.name .. " again!")
+					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. getTimeInWords(timeLeft) .. " to face " .. monsterName .. " again!")
 					if self:lastEncounterTime(newPlayer) > os.time() then
 						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
 					end

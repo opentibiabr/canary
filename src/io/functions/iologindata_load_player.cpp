@@ -807,7 +807,12 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 }
 
 void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResult_ptr result) {
-	if (!result || !player) {
+	if (!result) {
+		g_logger().warn("[IOLoginData::loadPlayer] - Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
+	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
 	}

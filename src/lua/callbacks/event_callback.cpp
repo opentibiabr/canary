@@ -25,8 +25,16 @@
  *
  * @see Script
  */
-EventCallback::EventCallback(LuaScriptInterface* scriptInterface) :
-	Script(scriptInterface) {
+EventCallback::EventCallback(LuaScriptInterface* scriptInterface, const std::string &callbackName, bool skipDuplicationCheck) :
+	Script(scriptInterface), m_callbackName(callbackName), m_skipDuplicationCheck(skipDuplicationCheck) {
+}
+
+std::string EventCallback::getName() const {
+	return m_callbackName;
+}
+
+bool EventCallback::skipDuplicationCheck() const {
+	return m_skipDuplicationCheck;
 }
 
 std::string EventCallback::getScriptTypeName() const {
@@ -220,6 +228,58 @@ void EventCallback::creatureOnDrainHealth(std::shared_ptr<Creature> creature, st
 		colorPrimary = LuaScriptInterface::getNumber<TextColor_t>(L, -2);
 		colorSecondary = LuaScriptInterface::getNumber<TextColor_t>(L, -1);
 		lua_pop(L, 6);
+	}
+
+	getScriptInterface()->resetScriptEnv();
+}
+
+void EventCallback::creatureOnCombat(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, CombatDamage &damage) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[{} - "
+						 "Creature {} target {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 __FUNCTION__, attacker->getName(), target->getName());
+		return;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Creature>(L, attacker);
+	LuaScriptInterface::setCreatureMetatable(L, -1, attacker);
+
+	LuaScriptInterface::pushUserdata<Creature>(L, target);
+	LuaScriptInterface::setCreatureMetatable(L, -1, target);
+
+	LuaScriptInterface::pushCombatDamage(L, damage);
+
+	if (getScriptInterface()->protectedCall(L, 7, 4) != 0) {
+		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
+	} else {
+		damage.primary.value = std::abs(LuaScriptInterface::getNumber<int32_t>(L, -4));
+		damage.primary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -3);
+		damage.secondary.value = std::abs(LuaScriptInterface::getNumber<int32_t>(L, -2));
+		damage.secondary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -1);
+
+		lua_pop(L, 4);
+		if (damage.primary.type != COMBAT_HEALING) {
+			damage.primary.value = -damage.primary.value;
+			damage.secondary.value = -damage.secondary.value;
+		}
+		/*
+			Only EK with dealing physical damage will get elemental damage on skill
+		*/
+		if (damage.origin == ORIGIN_SPELL && attacker) {
+			const auto &player = attacker->getPlayer();
+			if (player && player->getVocationId() != 4 && player->getVocationId() != 8) {
+				damage.primary.value = damage.primary.value + damage.secondary.value;
+				damage.secondary.type = COMBAT_NONE;
+				damage.secondary.value = 0;
+			}
+		}
 	}
 
 	getScriptInterface()->resetScriptEnv();
@@ -852,7 +912,7 @@ void EventCallback::playerOnCombat(std::shared_ptr<Player> player, std::shared_p
 
 	if (target) {
 		LuaScriptInterface::pushUserdata<Creature>(L, target);
-		LuaScriptInterface::setMetatable(L, -1, "Creature");
+		LuaScriptInterface::setCreatureMetatable(L, -1, target);
 	} else {
 		lua_pushnil(L);
 	}
@@ -1009,6 +1069,26 @@ void EventCallback::playerOnStorageUpdate(std::shared_ptr<Player> player, const 
 	lua_pushnumber(L, currentTime);
 
 	getScriptInterface()->callVoidFunction(5);
+}
+
+void EventCallback::playerOnThink(std::shared_ptr<Player> player, uint32_t interval) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[{}] player {}. Call stack overflow. Too many lua script calls being nested.", __FUNCTION__, player->getName());
+		return;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Player>(L, player);
+	LuaScriptInterface::setMetatable(L, -1, "Player");
+
+	lua_pushnumber(L, interval);
+
+	getScriptInterface()->callVoidFunction(2);
 }
 
 // Monster
@@ -1211,4 +1291,23 @@ void EventCallback::zoneAfterCreatureLeave(std::shared_ptr<Zone> zone, std::shar
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
 	getScriptInterface()->callVoidFunction(2);
+}
+
+void EventCallback::mapOnLoad(const std::string &mapFullPath) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[{} - "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 __FUNCTION__);
+		return;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushString(L, mapFullPath);
+
+	getScriptInterface()->callVoidFunction(1);
 }

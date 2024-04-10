@@ -14,7 +14,8 @@ monster.outfit = {
 }
 
 monster.events = {
-	"SoulwarsBossDeath",
+	"SoulWarBossesDeath",
+	"Goshnar's-Malice",
 }
 
 monster.health = 300000
@@ -141,7 +142,19 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval) end
+local zone = Zone.getByName("boss.goshnar's-malice")
+local zonePositions = zone:getPositions()
+
+local accumulatedTime = 0
+local desiredInterval = 40000
+mType.onThink = function(monster, interval)
+	accumulatedTime = accumulatedTime + interval
+	-- Execute only after 40 seconds
+	if accumulatedTime >= desiredInterval then
+		monster:createSoulWarWhiteTiles(SoulWarQuest.levers.goshnarsMalice.boss.position, zonePositions)
+		accumulatedTime = 0
+	end
+end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then

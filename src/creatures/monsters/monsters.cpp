@@ -278,17 +278,34 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	}
 
 	info.scriptInterface = scriptInterface;
-	if (info.eventType == MONSTERS_EVENT_THINK) {
-		info.thinkEvent = id;
-	} else if (info.eventType == MONSTERS_EVENT_APPEAR) {
-		info.creatureAppearEvent = id;
-	} else if (info.eventType == MONSTERS_EVENT_DISAPPEAR) {
-		info.creatureDisappearEvent = id;
-	} else if (info.eventType == MONSTERS_EVENT_MOVE) {
-		info.creatureMoveEvent = id;
-	} else if (info.eventType == MONSTERS_EVENT_SAY) {
-		info.creatureSayEvent = id;
+
+	switch (info.eventType) {
+		case MONSTERS_EVENT_THINK:
+			info.thinkEvent = id;
+			break;
+		case MONSTERS_EVENT_APPEAR:
+			info.creatureAppearEvent = id;
+			break;
+		case MONSTERS_EVENT_DISAPPEAR:
+			info.creatureDisappearEvent = id;
+			break;
+		case MONSTERS_EVENT_MOVE:
+			info.creatureMoveEvent = id;
+			break;
+		case MONSTERS_EVENT_SAY:
+			info.creatureSayEvent = id;
+			break;
+		case MONSTERS_EVENT_ATTACKED_BY_PLAYER:
+			info.monsterAttackedByPlayerEvent = id;
+			break;
+		case MONSTERS_EVENT_ON_SPAWN:
+			info.spawnEvent = id;
+			break;
+		default:
+			g_logger().error("[MonsterType::loadCallback] - Unknown event type");
+			return false;
 	}
+
 	return true;
 }
 

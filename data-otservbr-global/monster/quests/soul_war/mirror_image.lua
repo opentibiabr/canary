@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"FourthTaintBossesPrepareDeath",
+}
+
 monster.health = 35000
 monster.maxHealth = 35000
 monster.race = "blood"
@@ -105,5 +109,41 @@ monster.immunities = {
 monster.events = {
 	"MirrorImageTransform",
 }
+
+mType.onPlayerAttack = function(monster, attackerPlayer)
+	logger.info("Player {}, attacking monster {}", attackerPlayer:getName(), monster:getName())
+
+	local apparitionType = ""
+	local apparitionTypes = {
+		"Druid's Apparition",
+		"Knight's Apparition",
+		"Paladin's Apparition",
+		"Sorcerer's Apparition",
+	}
+
+	local sameVocationProbability = 70 -- 70% chance for create monster of first player attack vocation
+	if attackerPlayer:isDruid() then
+		apparitionType = "Druid's Apparition"
+	elseif attackerPlayer:isKnight() then
+		apparitionType = "Knight's Apparition"
+	elseif attackerPlayer:isPaladin() then
+		apparitionType = "Paladin's Apparition"
+	elseif attackerPlayer:isSorcerer() then
+		apparitionType = "Sorcerer's Apparition"
+	end
+
+	if math.random(100) > sameVocationProbability then
+		repeat
+			local randomIndex = math.random(#apparitionTypes)
+			if apparitionTypes[randomIndex] ~= apparitionType then
+				apparitionType = apparitionTypes[randomIndex]
+				break
+			end
+		until false
+	end
+
+	Game.createMonster(apparitionType, monster:getPosition(), true, true)
+	monster:remove()
+end
 
 mType:register(monster)

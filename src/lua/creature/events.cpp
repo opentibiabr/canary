@@ -1159,7 +1159,7 @@ void Events::eventPlayerOnCombat(std::shared_ptr<Player> player, std::shared_ptr
 
 	if (target) {
 		LuaScriptInterface::pushUserdata<Creature>(L, target);
-		LuaScriptInterface::setMetatable(L, -1, "Creature");
+		LuaScriptInterface::setCreatureMetatable(L, -1, target);
 	} else {
 		lua_pushnil(L);
 	}

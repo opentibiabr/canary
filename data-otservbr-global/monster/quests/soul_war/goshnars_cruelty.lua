@@ -14,7 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"SoulwarsBossDeath",
+	"SoulWarBossesDeath",
 }
 
 monster.health = 300000
@@ -67,14 +67,6 @@ monster.light = {
 	color = 0,
 }
 
-monster.summon = {
-	maxSummons = 4,
-	summons = {
-		{ name = "dreadful harvester", chance = 40, interval = 1000, count = 2 },
-		{ name = "mean maw", chance = 30, interval = 1000, count = 2 },
-	},
-}
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,
@@ -112,6 +104,7 @@ monster.attacks = {
 	{ name = "singlecloudchain", interval = 6000, chance = 40, minDamage = -1700, maxDamage = -2500, range = 6, effect = CONST_ME_ENERGYHIT, target = true },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = -1000, maxDamage = -2500, range = 7, radius = 4, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_DRAWBLOOD, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -1500, maxDamage = -3000, radius = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
+	{ name = "cruelty transform elemental", interval = SoulWarQuest.goshnarsCrueltyWaveInterval * 1000, chance = 50 },
 }
 
 monster.defenses = {
@@ -142,9 +135,13 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval) end
+mType.onThink = function(monster)
+	monster:goshnarsDefenseIncrease("greedy-maw-action")
+end
 
-mType.onAppear = function(monster, creature)
+mType.onAppear = function(monster, creature) end
+
+mType.onSpawn = function(monster)
 	if monster:getType():isRewardBoss() then
 		monster:setReward(true)
 	end

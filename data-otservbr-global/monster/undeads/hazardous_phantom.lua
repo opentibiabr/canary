@@ -20,6 +20,10 @@ monster.corpse = 34125
 monster.speed = 100
 monster.manaCost = 0
 
+monster.events = {
+	"HazardousPhantomDeath",
+}
+
 monster.changeTarget = {
 	interval = 4000,
 	chance = 0,

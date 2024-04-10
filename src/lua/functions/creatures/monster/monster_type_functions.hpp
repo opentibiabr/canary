@@ -96,6 +96,8 @@ public:
 		registerMethod(L, "MonsterType", "onDisappear", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
 		registerMethod(L, "MonsterType", "onMove", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
 		registerMethod(L, "MonsterType", "onSay", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+		registerMethod(L, "MonsterType", "onPlayerAttack", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+		registerMethod(L, "MonsterType", "onSpawn", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
 
 		registerMethod(L, "MonsterType", "getSummonList", MonsterTypeFunctions::luaMonsterTypeGetSummonList);
 		registerMethod(L, "MonsterType", "addSummon", MonsterTypeFunctions::luaMonsterTypeAddSummon);

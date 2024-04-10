@@ -255,6 +255,10 @@ public:
 		return creatureIcons.at(key);
 	}
 
+	bool hasIcon(const std::string &key) const {
+		return creatureIcons.contains(key);
+	}
+
 	void setIcon(const std::string &key, CreatureIcon icon) {
 		creatureIcons[key] = icon;
 		iconChanged();
@@ -605,7 +609,7 @@ public:
 	 * @param useCharges Indicates whether charges should be considered.
 	 * @return The reflection percentage for the specified combat type.
 	 */
-	virtual int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
+	virtual double_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
 
 	/**
 	 * @brief Retrieves the flat reflection value for a given combat type.
@@ -700,6 +704,10 @@ public:
 
 protected:
 	virtual bool useCacheMap() const {
+		return false;
+	}
+
+	virtual bool isDead() const {
 		return false;
 	}
 

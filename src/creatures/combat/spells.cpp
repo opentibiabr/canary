@@ -184,15 +184,15 @@ std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) {
 
 std::shared_ptr<RuneSpell> Spells::getRuneSpell(uint16_t id) {
 	auto it = runes.find(id);
-	if (it == runes.end()) {
-		for (auto &rune : runes) {
-			if (rune.second->getRuneItemId() == id) {
-				return rune.second;
-			}
-		}
-		return nullptr;
+	if (it != runes.end()) {
+		return it->second;
 	}
-	return it->second;
+	for (auto &rune : runes) {
+		if (rune.second->getSpellId() == id) {
+			return rune.second;
+		}
+	}
+	return nullptr;
 }
 
 std::shared_ptr<RuneSpell> Spells::getRuneSpellByName(const std::string &name) {

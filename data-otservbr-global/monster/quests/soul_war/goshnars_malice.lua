@@ -68,14 +68,6 @@ monster.light = {
 	color = 0,
 }
 
-monster.summon = {
-	maxSummons = 4,
-	summons = {
-		{ name = "dreadful harvester", chance = 40, interval = 1000, count = 2 },
-		{ name = "malicious soul", chance = 30, interval = 1000, count = 2 },
-	},
-}
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,

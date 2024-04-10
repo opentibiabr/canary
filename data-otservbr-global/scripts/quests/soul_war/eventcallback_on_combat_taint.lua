@@ -110,14 +110,13 @@ function callback.playerOnThink(player, interval)
 	accumulatedTime[playerId] = accumulatedTime[playerId] + interval
 
 	if accumulatedTime[playerId] >= 10000 then
-		logger.debug("Checking soul war fifth taint, interval {}", interval)
 		local soulWarQuest = player:soulWarQuestKV()
 		if player:getSoulWarZoneMonster() ~= nil and player:getTaintNameByNumber(5) ~= nil then
 			local hpLoss = math.ceil(player:getHealth() * 0.1)
 			local manaLoss = math.ceil(player:getMana() * 0.1)
 			player:addHealth(-hpLoss)
 			player:addMana(-manaLoss)
-			logger.debug("Removing '{}' mana and '{}' health from player {}", manaLoss, hpLoss, player:getName())
+			logger.debug("Fifth taint removing '{}' mana and '{}' health from player {}", manaLoss, hpLoss, player:getName())
 		end
 
 		accumulatedTime[playerId] = 0

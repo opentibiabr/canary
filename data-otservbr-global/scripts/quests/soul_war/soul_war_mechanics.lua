@@ -117,9 +117,10 @@ local bossesDeath = CreatureEvent("SoulWarBossesDeath")
 
 function bossesDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
 	local bossName = creature:getName()
-	if SoulWarBosses[bossName] then
+	if SoulWarQuest.miniBosses[bossName] then
 		local killers = creature:getKillers(true)
 		for i, killerPlayer in ipairs(killers) do
+			logger.debug("Player {} killed the boss.", killerPlayer:getName())
 			local soulWarQuest = killerPlayer:soulWarQuestKV()
 			-- Checks if the boss has already been defeated
 			if not soulWarQuest:get(bossName) then

@@ -113,19 +113,19 @@ void Monster::addReflectElement(CombatType_t combatType, int32_t percent) {
 int32_t Monster::getDefense() const {
 	auto mtypeDefense = mType->info.defense;
 	if (mtypeDefense != 0) {
-		g_logger().debug("[{}] old defense {}", __FUNCTION__, mtypeDefense);
+		g_logger().trace("[{}] old defense {}", __FUNCTION__, mtypeDefense);
 	}
 	mtypeDefense += m_defense;
 	if (mtypeDefense != 0) {
-		g_logger().debug("[{}] new defense {}", __FUNCTION__, mtypeDefense);
+		g_logger().trace("[{}] new defense {}", __FUNCTION__, mtypeDefense);
 	}
 	return mtypeDefense * getDefenseMultiplier();
 }
 
 void Monster::addDefense(int32_t defense) {
-	g_logger().debug("[{}] adding defense {}", __FUNCTION__, defense);
+	g_logger().trace("[{}] adding defense {}", __FUNCTION__, defense);
 	m_defense += defense;
-	g_logger().debug("[{}] new defense {}", __FUNCTION__, m_defense);
+	g_logger().trace("[{}] new defense {}", __FUNCTION__, m_defense);
 }
 
 uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {

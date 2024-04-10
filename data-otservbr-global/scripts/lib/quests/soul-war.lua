@@ -67,6 +67,14 @@ SoulWarQuest = {
 		"Courage Leech",
 	},
 
+	miniBosses = {
+		["Goshnar's Malice"] = true,
+		["Goshnar's Hatred"] = true,
+		["Goshnar's Spite"] = true,
+		["Goshnar's Cruelty"] = true,
+		["Goshnar's Greed"] = true,
+	},
+
 	finalRewards = {
 		{ id = 34082, name = "soulcutter" },
 		{ id = 34083, name = "soulshredder" },
@@ -107,6 +115,28 @@ SoulWarQuest = {
 		{ from = Position(33889, 31873, 3), to = Position(33830, 31881, 4), access = "first-floor-access", count = 40 },
 		{ from = Position(33829, 31880, 4), to = Position(33856, 31889, 5), access = "second-floor-access", count = 55 },
 		{ from = Position(33856, 31884, 5), to = Position(33857, 31865, 6), access = "third-floor-access", count = 70 },
+	},
+
+	areaZones = {
+		monsters = {
+			["zone.claustrophobic-inferno"] = "Brachiodemon",
+			["zone.mirrored-nightmare"] = "Many Faces",
+			["zone.ebb-and-flow"] = "Bony Sea Devil",
+			["zone.furious-crater"] = "Cloak of Terror",
+			["zone.rotten-wasteland"] = "Branchy Crawler",
+			["boss.goshnar's-malice"] = "Dreadful Harvester",
+			["boss.goshnar's-spite"] = "Dreadful Harvester",
+			["boss.goshnar's-greed"] = "Dreadful Harvester",
+			["boss.goshnar's-hatred"] = "Dreadful Harvester",
+			["boss.goshnar's-cruelty"] = "Dreadful Harvester",
+			["boss.goshnar's-megalomania-purple"] = "Dreadful Harvester",
+		},
+
+		caustrophobicInferno = Zone("zone.claustrophobic-inferno"),
+		mirroredNightmare = Zone("zone.mirrored-nightmare"),
+		ebbAndFlow = Zone("zone.ebb-and-flow"),
+		furiousCrater = Zone("zone.furious-crater"),
+		rottenWasteland = Zone("zone.rotten-wasteland"),
 	},
 
 	-- Levers configuration
@@ -652,6 +682,17 @@ SoulWarQuest = {
 -- Initialize ebb and flow zone area
 SoulWarQuest.ebbAndFlow.zone:addArea({ x = 33869, y = 30991, z = 8 }, { x = 33964, y = 31147, z = 9 })
 
+-- Initialize bosses access for taint check
+SoulWarQuest.areaZones.caustrophobicInferno:addArea({ x = 33982, y = 30981, z = 9 }, { x = 34051, y = 31110, z = 11 })
+
+SoulWarQuest.areaZones.ebbAndFlow:addArea({ x = 33873, y = 30994, z = 8 }, { x = 33968, y = 31150, z = 9 })
+
+SoulWarQuest.areaZones.furiousCrater:addArea({ x = 33814, y = 31819, z = 3 }, { x = 33907, y = 31920, z = 7 })
+
+SoulWarQuest.areaZones.rottenWasteland:addArea({ x = 33980, y = 30986, z = 11 }, { x = 33901, y = 31105, z = 12 })
+
+SoulWarQuest.areaZones.mirroredNightmare:addArea({ x = 33877, y = 31164, z = 9 }, { x = 33991, y = 31241, z = 13 })
+
 SoulCagePosition = Position(33709, 31596, 14)
 TaintDurationSeconds = 14 * 24 * 60 * 60 -- 14 days
 GreedbeastKills = 0
@@ -672,14 +713,6 @@ local soulWarTaints = {
 	"taints-damage", -- Taint 3
 	"taints-heal", -- Taint 4
 	"taints-loss", -- Taint 5
-}
-
-SoulWarBosses = {
-	["Goshnar's Malice"] = true,
-	["Goshnar's Hatred"] = true,
-	["Goshnar's Spite"] = true,
-	["Goshnar's Cruelty"] = true,
-	["Goshnar's Greed"] = true,
 }
 
 GreedMonsters = {
@@ -706,15 +739,6 @@ function CreateGoshnarsGreedMonster(name, position)
 
 	addEvent(spawnMonster, 10000)
 end
-
-local soulWarSpawnMonsters = {
-	["soulwars.claustrophobic-inferno"] = "Brachiodemon",
-	["soulwars.mirrored-nightmare"] = "Many Faces",
-	["soulwars.ebb-and-flow"] = "Bony Sea Devil",
-	["soulwars.furious-crater"] = "Cloak of Terror",
-	["soulwars.rotten-wasteland"] = "Branchy Crawler",
-	["boss-rooms"] = "Dreadful Harvester",
-}
 
 function RemoveSoulCageAndBuffMalice()
 	local tile = Tile(SoulCagePosition)
@@ -832,17 +856,40 @@ end
 
 local toRevertPositions = {}
 
+local tileItemIds = {
+	32906,
+	33066,
+	33067,
+	33068,
+	33069,
+	33070,
+}
+
 local function revertTilesAndApplyDamage(zonePositions)
 	for _, pos in ipairs(zonePositions) do
 		local tile = Tile(pos)
-		if tile and tile:getGround() and tile:getGround():getId() ~= 409 then
-			local creature = tile:getTopCreature()
-			if creature then
-				local player = creature:getPlayer()
-				if player then
-					pos:sendMagicEffect(CONST_ME_REDSMOKE)
-					player:addHealth(-8000, COMBAT_DEATHDAMAGE)
+		if tile and tile:getGround() then
+			if tile:getGround():getId() ~= 409 then
+				local creature = tile:getTopCreature()
+				if creature then
+					local player = creature:getPlayer()
+					if player then
+						player:addHealth(-8000, COMBAT_DEATHDAMAGE)
+					end
 				end
+			end
+
+			local itemFound = false
+			for i = 1, #tileItemIds do
+				local item = tile:getItemById(tileItemIds[i])
+				if item then
+					itemFound = true
+					break
+				end
+			end
+
+			if tile:getGround():getId() == 410 and not itemFound and not tile:getItemByTopOrder(1) and not tile:getItemByTopOrder(3) then
+				pos:sendMagicEffect(CONST_ME_REDSMOKE)
 			end
 		end
 	end
@@ -1010,7 +1057,6 @@ function Monster:tryTeleportToPlayer(sayMessage)
 	local spectators = Game.getSpectators(self:getPosition(), false, false, range, range, range, range)
 	local maxDistance = 0
 	local farthestPlayer = nil
-	logger.debug("Checking teleport monster for monster {}", self:getName())
 	for i, spectator in ipairs(spectators) do
 		if spectator:isPlayer() then
 			local player = spectator:getPlayer()
@@ -1200,7 +1246,7 @@ end
 
 function Player:getSoulWarZoneMonster()
 	local zoneMonsterName = nil
-	for zoneName, monsterName in pairs(soulWarSpawnMonsters) do
+	for zoneName, monsterName in pairs(SoulWarQuest.areaZones.monsters) do
 		local zone = Zone.getByName(zoneName)
 		if zone and zone:isInZone(self:getPosition()) then
 			zoneMonsterName = monsterName

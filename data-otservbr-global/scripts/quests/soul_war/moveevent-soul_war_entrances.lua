@@ -5,8 +5,6 @@ local positionsTable = {
 	[Position(33621, 31422, 10)] = Position(33894, 31019, 8), -- hunt bony sea devil
 	[Position(33624, 31422, 10)] = Position(33858, 31831, 3), -- hunt cloak
 	[Position(33627, 31422, 10)] = Position(33887, 31188, 10), -- hunt many faces
-
-	[Position(34022, 31091, 11)] = Position(33685, 31599, 14), -- goshnar's malice entrance
 }
 
 local soul_war_entrances = MoveEvent()
@@ -89,22 +87,23 @@ end
 soul_war_megalomania_entrance:position({ x = 33611, y = 31430, z = 10 })
 soul_war_megalomania_entrance:register()
 
-local areasConfig = {
+local claustrophobicInfernoTeleportPositions = {
 	[Position(34013, 31049, 9)] = Position(34014, 31058, 9),
 	[Position(34010, 31073, 10)] = Position(34012, 31063, 10),
 	[Position(34009, 31038, 11)] = Position(34012, 31047, 11),
+	[Position(34022, 31091, 11)] = Position(33685, 31599, 14),
 }
 
-local soul_war_areas_timer = MoveEvent()
+local claustrophobicInfernoTeleports = MoveEvent()
 
-function soul_war_areas_timer.onStepIn(creature, item, position, fromPosition)
+function claustrophobicInfernoTeleports.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
 	if not player then
 		return false
 	end
 
 	local soulWarQuest = player:soulWarQuestKV()
-	for tablePosition, toPosition in pairs(areasConfig) do
+	for tablePosition, toPosition in pairs(claustrophobicInfernoTeleportPositions) do
 		if tablePosition == position then
 			player:teleportTo(toPosition)
 			toPosition:sendMagicEffect(CONST_ME_TELEPORT)
@@ -115,11 +114,11 @@ function soul_war_areas_timer.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-for key, value in pairs(areasConfig) do
-	soul_war_areas_timer:position(key)
+for key, value in pairs(claustrophobicInfernoTeleportPositions) do
+	claustrophobicInfernoTeleports:position(key)
 end
 
-soul_war_areas_timer:register()
+claustrophobicInfernoTeleports:register()
 
 local goshnarSpiteEntrance = MoveEvent()
 

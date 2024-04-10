@@ -720,7 +720,7 @@ private:
 	static int luaPlayerAddAchievementPoints(lua_State* L);
 	static int luaPlayerRemoveAchievementPoints(lua_State* L);
 
-	static int luaPlayerSendTakeScreenshot(lua_State* L);
+	static int luaPlayerTakeScreenshot(lua_State* L);
 
 	friend class CreatureFunctions;
 };

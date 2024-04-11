@@ -322,21 +322,21 @@ setTaint:separator(" ")
 setTaint:groupType("god")
 setTaint:register()
 
-local setTaint = TalkAction("/changeflowmap")
+local changeMap = TalkAction("/changeflowmap")
 
-function setTaint.onSay(player, words, param)
+function changeMap.onSay(player, words, param)
 	if param == "empty" then
-		Game.loadMap("data-otservbr-global/world/quest/soul_war/ebb_and_flow/empty.otbm")
+		Game.loadMap(SoulWarQuest.mapsPath.empty)
 	elseif param == "inundate" then
-		Game.loadMap("data-otservbr-global/world/quest/soul_war/ebb_and_flow/inundate.otbm")
+		Game.loadMap(SoulWarQuest.mapsPath.inundate)
 	elseif param == "ebb" then
-		Game.loadMap("data-otservbr-global/world/quest/soul_war/ebb_and_flow/ebb_and_flow.otbm")
+		Game.loadMap(SoulWarQuest.mapsPath.ebbFlow)
 	end
 end
 
-setTaint:separator(" ")
-setTaint:groupType("god")
-setTaint:register()
+changeMap:separator(" ")
+changeMap:groupType("god")
+changeMap:register()
 
 local hazardousPhantomDeath = CreatureEvent("HazardousPhantomDeath")
 

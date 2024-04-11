@@ -168,7 +168,7 @@ local function playerSayCallback(npc, player, type, message)
 		npcHandler:say("I despised my followers for their petty agendas and for their limited vision of my own goals and personality.", npc, player)
 	elseif MsgContains(message, "shards") then
 		local bossesYetToDefeat = {}
-		for bossName, _ in pairs(SoulWarBosses) do
+		for bossName, _ in pairs(SoulWarQuest.miniBosses) do
 			if not soulWarQuest:get(bossName) then
 				table.insert(bossesYetToDefeat, bossName)
 			end

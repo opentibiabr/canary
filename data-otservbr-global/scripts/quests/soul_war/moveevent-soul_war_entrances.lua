@@ -67,7 +67,7 @@ function soul_war_megalomania_entrance.onStepIn(creature, item, position, fromPo
 
 	local text = ""
 	local soulWarCount = 0
-	for bossName, completed in pairs(SoulWarBosses) do
+	for bossName, completed in pairs(SoulWarQuest.miniBosses) do
 		if soulWarQuest:get(bossName) == completed then
 			soulWarCount = soulWarCount + 1
 		else

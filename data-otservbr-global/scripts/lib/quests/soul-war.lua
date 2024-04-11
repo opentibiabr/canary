@@ -344,6 +344,7 @@ SoulWarQuest = {
 		mapsPath = {
 			empty = "data-otservbr-global/world/quest/soul_war/ebb_and_flow/ebb-flow-empty.otbm",
 			inundate = "data-otservbr-global/world/quest/soul_war/ebb_and_flow/ebb-flow-inundate.otbm",
+			ebbFlow = "data-otservbr-global/world/quest/soul_war/ebb_and_flow/ebb-flow.otbm",
 		},
 
 		-- In Minutes
@@ -1060,12 +1061,12 @@ function Monster:tryTeleportToPlayer(sayMessage)
 	for i, spectator in ipairs(spectators) do
 		if spectator:isPlayer() then
 			local player = spectator:getPlayer()
-			if player:getTaintNameByNumber(1) ~= nil then
+			if player:getTaintNameByNumber(1) then
 				local distance = self:getPosition():getDistance(player:getPosition())
 				if distance > maxDistance then
 					maxDistance = distance
 					farthestPlayer = player
-					logger.debug("Found player {} to teleport", player:getName())
+					logger.trace("Found player {} to teleport", player:getName())
 				end
 			end
 		end

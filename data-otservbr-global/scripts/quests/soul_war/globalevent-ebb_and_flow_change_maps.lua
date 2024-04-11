@@ -108,7 +108,9 @@ local function loadMapInundate()
 end
 
 local loadEmptyMap = GlobalEvent("SoulWarQuest.ebbAndFlow")
+
 function loadEmptyMap.onStartup()
+	Game.loadMap(SoulWarQuest.ebbAndFlow.mapsPath.ebbFlow)
 	loadMapEmpty()
 	SoulWarQuest.ebbAndFlow.updateZonePlayers()
 end
@@ -116,6 +118,7 @@ end
 loadEmptyMap:register()
 
 local eddAndFlowInundate = GlobalEvent("eddAndFlowInundate")
+
 function eddAndFlowInundate.onThink(interval, lastExecution)
 	if SoulWarQuest.ebbAndFlow.isLoadedEmptyMap() then
 		logger.debug("Map change to empty in {} minutes.", SoulWarQuest.ebbAndFlow.intervalChangeMap)

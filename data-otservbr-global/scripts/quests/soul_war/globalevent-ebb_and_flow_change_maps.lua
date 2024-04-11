@@ -26,7 +26,7 @@ local function loadMapEmpty()
 					local teleportPosition = player:getPosition()
 					teleportPosition.z = 9
 					player:teleportTo(teleportPosition)
-					logger.debug("Teleporting player to down.")
+					logger.trace("Teleporting player to down.")
 				end
 				player:sendCreatureAppear()
 			end
@@ -80,10 +80,10 @@ local function loadMapInundate()
 				if player:isInBoatSpot() then
 					local nearestCenterPosition = findNearestRoomPosition(playerPosition)
 					player:teleportTo(nearestCenterPosition)
-					logger.debug("Teleporting player to the near center position room and updating tile.")
+					logger.trace("Teleporting player to the near center position room and updating tile.")
 				else
 					player:teleportTo(SoulWarQuest.ebbAndFlow.waitPosition)
-					logger.debug("Teleporting player to wait position and updating tile.")
+					logger.trace("Teleporting player to wait position and updating tile.")
 				end
 				playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
 			end
@@ -121,10 +121,10 @@ local eddAndFlowInundate = GlobalEvent("eddAndFlowInundate")
 
 function eddAndFlowInundate.onThink(interval, lastExecution)
 	if SoulWarQuest.ebbAndFlow.isLoadedEmptyMap() then
-		logger.debug("Map change to empty in {} minutes.", SoulWarQuest.ebbAndFlow.intervalChangeMap)
+		logger.trace("Map change to empty in {} minutes.", SoulWarQuest.ebbAndFlow.intervalChangeMap)
 		loadMapInundate()
 	elseif SoulWarQuest.ebbAndFlow.isActive() then
-		logger.debug("Map change to inundate in {} minutes.", SoulWarQuest.ebbAndFlow.intervalChangeMap)
+		logger.trace("Map change to inundate in {} minutes.", SoulWarQuest.ebbAndFlow.intervalChangeMap)
 		loadMapEmpty()
 	end
 

@@ -242,7 +242,7 @@ SoulWarQuest = {
 			timeToFightAgain = 20 * 60 * 60, -- 20 hours
 			onUseExtra = function(player)
 				SoulWarQuest.kvBurning:set("time", 180)
-				logger.debug("Goshnar's Hatred burning change form time set to: {}", 180)
+				logger.trace("Goshnar's Hatred burning change form time set to: {}", 180)
 				player:resetGoshnarSymbolTormentCounter()
 			end,
 		},
@@ -378,7 +378,7 @@ SoulWarQuest = {
 				SoulWarQuest.ebbAndFlow.reloadZone()
 				local players = SoulWarQuest.ebbAndFlow.getZone():getPlayers()
 				for _, player in ipairs(players) do
-					logger.debug("Updating player: {}", player:getName())
+					logger.trace("Updating player: {}", player:getName())
 					player:sendCreatureAppear()
 				end
 			end
@@ -731,7 +731,7 @@ function CreateGoshnarsGreedMonster(name, position)
 
 	local function spawnMonster()
 		Game.createMonster(name, position, true, false)
-		logger.debug("Spawning {} in position {}", name, position:toString())
+		logger.trace("Spawning {} in position {}", name, position:toString())
 	end
 
 	for i = 7, 9 do
@@ -742,39 +742,13 @@ function CreateGoshnarsGreedMonster(name, position)
 end
 
 function RemoveSoulCageAndBuffMalice()
-	local tile = Tile(SoulCagePosition)
-	local creatures = tile:getCreatures() or {}
-	local soulCage
-	for i, creature in ipairs(creatures) do
-		if creature:getName() == "Soul Cage" then
-			soulCage = creature
-			logger.debug("Removing Soul Cage, the players not be able to kill him")
-			break
-		end
-	end
-
-	local rangeX = 20
-	local rangeY = 20
-	local spectators = Game.getSpectators(Position(33709, 31599, 14), false, false, rangeX, rangeX, rangeY, rangeY)
+	local soulCage = Creature("Soul Cage")
 	if soulCage then
-		local malice
-		for i = 1, #spectators do
-			logger.debug("Specs found {}", i)
-			if spectators[i]:isMonster() then
-				logger.debug("Malice Spectators {}", spectators[i]:getName())
-				if spectators[i]:getName() == "Goshnar's Malice" then
-					logger.debug("Found malice")
-					malice = Monster(spectators[i])
-					break
-				end
-			end
-		end
-
 		soulCage:remove()
 		addEvent(SpawnSoulCage, 23000)
-
+		local malice = Creature("Goshnar's Malice")
 		if malice then
-			logger.debug("Found malice, try adding reflect and defense")
+			logger.trace("Found malice, try adding reflect and defense")
 			for elementType, reflectPercent in pairs(SoulWarReflectDamageMap) do
 				malice:addReflectElement(elementType, reflectPercent)
 			end
@@ -786,17 +760,10 @@ end
 function SpawnSoulCage()
 	local tile = Tile(SoulCagePosition)
 	local creatures = tile:getCreatures() or {}
-	local soulCage
-	for i, creature in ipairs(creatures) do
-		if creature:getName() == "Soul Cage" then
-			soulCage = true
-			break
-		end
-	end
-
+	local soulCage = Creature("Soul Cage")
 	if not soulCage then
 		Game.createMonster("Soul Cage", SoulCagePosition, true, true)
-		logger.debug("Spawning Soul Cage in position {}", SoulCagePosition:toString())
+		logger.trace("Spawning Soul Cage in position {}", SoulCagePosition:toString())
 		addEvent(RemoveSoulCageAndBuffMalice, 40000)
 	end
 end
@@ -966,7 +933,7 @@ function Monster:generateBagYouDesireLoot(player)
 
 	-- Calculates the chances based on the number of taints
 	local totalChance = SoulWarQuest.baseBagYouDesireChance + (playerTaintLevel * SoulWarQuest.bagYouDesireChancePerTaint)
-	logger.debug("Player {} killed {} and has {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, totalChance)
+	logger.trace("Player {} killed {} and has {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, totalChance)
 	-- Generate loot
 	local loot = {}
 	if math.random(1, 100) <= totalChance then
@@ -1075,14 +1042,14 @@ function Monster:tryTeleportToPlayer(sayMessage)
 	if farthestPlayer and math.random(100) <= 10 then
 		local playerPosition = farthestPlayer:getPosition()
 		if TaintTeleportCooldown[farthestPlayer:getId()] then
-			logger.debug("Cooldown is active to player {}", farthestPlayer:getName())
+			logger.trace("Cooldown is active to player {}", farthestPlayer:getName())
 			return
 		end
 
 		if not TaintTeleportCooldown[farthestPlayer:getId()] then
 			TaintTeleportCooldown[farthestPlayer:getId()] = true
 
-			logger.debug("Scheduling player {} to teleport", farthestPlayer:getName())
+			logger.trace("Scheduling player {} to teleport", farthestPlayer:getName())
 			self:getPosition():sendMagicEffect(CONST_ME_MORTAREA)
 			farthestPlayer:getPosition():sendMagicEffect(CONST_ME_MORTAREA)
 			addEvent(function(playerId, monsterId)
@@ -1105,7 +1072,7 @@ function Monster:tryTeleportToPlayer(sayMessage)
 					return
 				end
 
-				logger.debug("Cleaning player cooldown")
+				logger.trace("Cleaning player cooldown")
 				TaintTeleportCooldown[playerEvent:getId()] = nil
 			end, 10000, farthestPlayer:getId())
 		end
@@ -1138,7 +1105,7 @@ function Position:increaseNecromaticMegalomaniaStrength()
 			if boss then
 				boss:increaseHatredDamageMultiplier(5)
 				item:remove()
-				logger.debug("Necromantic remains strength increased")
+				logger.trace("Necromantic remains strength increased")
 			end
 		end
 	end
@@ -1170,14 +1137,14 @@ function Monster:onThinkGoshnarTormentCounter(interval, maxLimit, intervalBetwee
 	end
 
 	lastExecutionTime = interval
-	logger.debug("Icon time count {}", interval)
+	logger.trace("Icon time count {}", interval)
 	local spectators = Game.getSpectators(bossPosition, false, true, 15, 15, 15, 15)
 	for i = 1, #spectators do
 		local player = spectators[i]
 		local tormentCounter = player:getGoshnarSymbolTormentCounter()
 		if tormentCounter <= maxLimit then
 			player:increaseGoshnarSymbolTormentCounter(maxLimit)
-			logger.debug("Player {} has {} damage counter", player:getName(), tormentCounter)
+			logger.trace("Player {} has {} damage counter", player:getName(), tormentCounter)
 
 			if tormentCounter > 0 then
 				local damage = tormentCounter * 35
@@ -1185,7 +1152,7 @@ function Monster:onThinkGoshnarTormentCounter(interval, maxLimit, intervalBetwee
 					damage = damageTable[tormentCounter - 23]
 				end
 
-				logger.debug("Final damage {}", damage)
+				logger.trace("Final damage {}", damage)
 				player:addHealth(-damage, COMBAT_DEATHDAMAGE)
 				player:getPosition():sendMagicEffect(CONST_ME_PINK_ENERGY_SPARK)
 			end
@@ -1209,19 +1176,19 @@ function Monster:increaseAspectOfPowerDeathCount()
 	local bossKV = self:getSoulWarKV()
 	local aspectDeathCount = bossKV:get("aspect-of-power-death-count") or 0
 	local newCount = aspectDeathCount + 1
-	logger.debug("Aspect of Power death count {}", newCount)
+	logger.trace("Aspect of Power death count {}", newCount)
 	bossKV:set("aspect-of-power-death-count", newCount)
 	if newCount == 4 then
 		self:setType("Goshnar's Megalomania Green")
 		self:say("THE DEATH OF ASPECTS DIMINISHES GOSHNAR'S POWER AND HE TURNS VULNERABLE!")
 		bossKV:set("aspect-of-power-death-count", 0)
-		logger.debug("Aspect of Power defeated all and Megalomania is now vulnerable, reseting death count.")
+		logger.trace("Aspect of Power defeated all and Megalomania is now vulnerable, reseting death count.")
 		SoulWarQuest.changePurpleEvent = addEvent(function()
 			local boss = Creature("Goshnar's Megalomania")
 			if boss and boss:getTypeName() == "Goshnar's Megalomania Green" then
 				boss:setType("Goshnar's Megalomania Purple")
 				boss:say("GOSHNAR REGAINED ENOUGH POWER TO TURN INVULNERABLE AGAIN!")
-				logger.debug("Megalomania is now immune again")
+				logger.trace("Megalomania is now immune again")
 			end
 		end, SoulWarQuest.timeToReturnImmuneMegalomania * 1000)
 	end
@@ -1233,15 +1200,15 @@ function Monster:goshnarsDefenseIncrease(kvName)
 	local lastItemUseTime = SoulWarQuest.kvSoulWar:get(kvName) or 0
 	-- Checks if more than config time have passed since the item was last used.
 	if currentTime >= lastItemUseTime + SoulWarQuest.timeToIncreaseCrueltyDefense then
-		logger.debug("{} old defense {}", self:getName(), self:getDefense())
+		logger.trace("{} old defense {}", self:getName(), self:getDefense())
 		self:addDefense(SoulWarQuest.goshnarsCrueltyDefenseChange)
-		logger.debug("{} new defense {}", self:getName(), self:getDefense())
+		logger.trace("{} new defense {}", self:getName(), self:getDefense())
 
 		--- Updates the KV to reflect the timing of the increase to maintain control.
 		SoulWarQuest.kvSoulWar:set(kvName, currentTime)
 	else
 		-- If config time have not passed, logs the increase has been skipped.
-		logger.debug("{} skips increase cooldown due to recent item use.", self:getName())
+		logger.trace("{} skips increase cooldown due to recent item use.", self:getName())
 	end
 end
 
@@ -1267,11 +1234,11 @@ function Player:isInBoatSpot()
 		groundId = tile:getGround():getId()
 	end
 	if zone and zone:isInZone(self:getPosition()) and tile and groundId == SoulWarQuest.ebbAndFlow.boatId then
-		logger.debug("Player {} is in boat spot", self:getName())
+		logger.trace("Player {} is in boat spot", self:getName())
 		return true
 	end
 
-	logger.debug("Player {} is not in boat spot", self:getName())
+	logger.trace("Player {} is not in boat spot", self:getName())
 	return false
 end
 

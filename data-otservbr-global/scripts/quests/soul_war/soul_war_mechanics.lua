@@ -358,23 +358,14 @@ function weepingSoulCorpse.onStepIn(creature, item, position, fromPosition)
 		return
 	end
 
-	local zone = Zone.getByName("boss.goshnar's-spite")
-	if not zone then
-		logger.error("Goshnar's Spite zone not found. Check the lever boss register.")
-		return
-	end
-
-	local monsters = zone:getMonsters()
-	for _, monster in ipairs(monsters) do
-		if monster:getName() == "Goshnar's Spite" then
-			local chance = math.random(100)
-			if chance <= SoulWarQuest.goshnarsSpiteHealChance then
-				local healAmount = math.floor(monster:getMaxHealth() * (SoulWarQuest.goshnarsSpiteHealPercentage / 100))
-				-- Heal percentage of the maximum health
-				monster:addHealth(healAmount)
-				logger.debug("Goshnar's Spite was healed to 10% of its maximum health.")
-			end
-			break
+	local monster = Creature("Goshnar's Spite")
+	if monster then
+		local chance = math.random(100)
+		if chance <= SoulWarQuest.goshnarsSpiteHealChance then
+			local healAmount = math.floor(monster:getMaxHealth() * (SoulWarQuest.goshnarsSpiteHealPercentage / 100))
+			-- Heal percentage of the maximum health
+			monster:addHealth(healAmount)
+			logger.debug("Goshnar's Spite was healed to 10% of its maximum health.")
 		end
 	end
 
@@ -392,19 +383,10 @@ local function removeSearingFire(position)
 	if tile then
 		local fire = tile:getItemById(SoulWarQuest.searingFireId)
 		if fire then
-			local zone = Zone.getByName("boss.goshnar's-spite")
-			if not zone then
-				logger.error("Goshnar's Spite zone not found. Check the lever boss register.")
-				return
-			end
-
-			local monsters = zone:getMonsters()
-			for _, monster in ipairs(monsters) do
-				if monster:getName() == "Goshnar's Spite" then
-					monster:addDefense(SoulWarQuest.goshnarsSpiteIncreaseDefense)
-					logger.debug("Found Goshnar's Spite on boss zone, adding defense.")
-					break
-				end
+			local monster = Creature("Goshnar's Spite")
+			if monster then
+				monster:addDefense(SoulWarQuest.goshnarsSpiteIncreaseDefense)
+				logger.debug("Found Goshnar's Spite on boss zone, adding defense.")
 			end
 			fire:remove()
 		end
@@ -583,7 +565,6 @@ local burningHatredMonsters = {
 local goshnarsHatredSorrow = Action()
 
 function goshnarsHatredSorrow.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	logger.debug("Player {} used the item {} on target {}.", player:getName(), item:getId(), target:getName())
 	if not target then
 		return
 	end

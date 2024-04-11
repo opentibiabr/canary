@@ -62885,7 +62885,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="950"/>
 	</item>
-	<item id="33783" article="a" name="broken mirror"/>
+	<item id="33783" article="a" name="broken mirror">
+		<attribute key="duration" value="30"/>
+		<attribute key="decayTo" value="33782"/>
+	</item>
 	<item id="33784" article="a" name="mirror">
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="950"/>

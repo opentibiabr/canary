@@ -142,6 +142,28 @@ bossesDeath:register()
 
 fourthTaintBossesDeath:register()
 
+local lastUse = 0
+local cooldown = 30
+
+local mirrorImageCreation = Action()
+function mirrorImageCreation.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	local currentTime = os.time()
+	local timePassed = currentTime - lastUse
+	if timePassed >= cooldown or lastUse == 0 then
+		Game.createMonster("Mirror Image", player:getPosition())
+		lastUse = currentTime
+		item:transform(33783)
+	else
+		local timeLeft = cooldown - timePassed
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to wait " .. timeLeft .. " second(s) to use this item again.")
+	end
+
+	return true
+end
+
+mirrorImageCreation:id(33782)
+mirrorImageCreation:register()
+
 local mirroredNightmareApparitionDeath = CreatureEvent("MirroredNightmareBossAccess")
 
 function mirroredNightmareApparitionDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)

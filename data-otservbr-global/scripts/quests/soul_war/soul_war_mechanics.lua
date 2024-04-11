@@ -727,26 +727,26 @@ function pulsatingEnergy.onStepIn(creature, item, position, fromPosition)
 	local secondFloorAccess = kv:get("second-floor-access") or false
 	local thirdFloorAccess = kv:get("third-floor-access") or false
 	if thirdFloorAccess then
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "You've already gained access to fight with the Goshnar's Cruelty.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've already gained access to fight with the Goshnar's Cruelty.")
 		return true
 	end
 
 	if energyCount >= 40 and not firstFloorAccess then
 		kv:set("access-counter", 0)
 		kv:set("first-floor-access", true)
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "You've gained access to the first floor. Continue collecting Pulsating Energies to gain further access.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've gained access to the first floor. Continue collecting Pulsating Energies to gain further access.")
 	end
 
 	if energyCount >= 55 and not secondFloorAccess then
 		kv:set("access-counter", 0)
 		kv:set("second-floor-access", true)
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "You've gained access to the second floor. Continue collecting Pulsating Energies to gain further access.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've gained access to the second floor. Continue collecting Pulsating Energies to gain further access.")
 	end
 
 	if energyCount >= 70 and not thirdFloorAccess then
 		kv:set("access-counter", 0)
 		kv:set("third-floor-access", true)
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "You've gained access to the third floor. You can now fight with the Goshnar's Cruelty.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've gained access to the third floor. You can now fight with the Goshnar's Cruelty.")
 	end
 
 	item:remove()
@@ -771,7 +771,7 @@ function pulsatingEnergyTeleportAccess.onStepIn(creature, item, position, fromPo
 			local energyCount = kv:get("access-counter") or 0
 			local energiesNeeded = posData.count - energyCount
 			if not hasAccess then
-				player:sendTextMessage(MESSAGE_INFO_DESCR, "You don't have access to this floor yet. You have collected " .. energyCount .. "/" .. posData.count .. ", and need " .. energiesNeeded .. " more pulsating energies to gain access.")
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You don't have access to this floor yet. You have collected " .. energyCount .. "/" .. posData.count .. ", and need " .. energiesNeeded .. " more pulsating energies to gain access.")
 				player:teleportTo(fromPosition, true)
 				fromPosition:sendMagicEffect(CONST_ME_TELEPORT)
 			else
@@ -860,7 +860,7 @@ function greedyMaw.onUse(player, item, fromPosition, target, toPosition, isHotke
 		SoulWarQuest.kvSoulWar:set("greedy-maw-action", currentTime + timeToIncreaseDefense)
 		target:getPosition():sendMagicEffect(CONST_ME_DRAWBLOOD)
 		item:remove()
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "Use the item again within " .. timeToIncreaseDefense .. " seconds, or the monster's defense will increase by 2 every " .. timeToIncreaseDefense .. " seconds.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Use the item again within " .. timeToIncreaseDefense .. " seconds, or the monster's defense will increase by 2 every " .. timeToIncreaseDefense .. " seconds.")
 		local goshnarsCruelty = Creature("Goshnar's Cruelty")
 		if goshnarsCruelty then
 			local mtype = goshnarsCruelty:getType()
@@ -962,7 +962,7 @@ function cleansedSanity.onUse(player, item, fromPosition, target, toPosition, is
 		SoulWarQuest.kvSoulWar:set("cleansed-sanity-action", currentTime + timeToIncreaseDefense)
 		target:getPosition():sendMagicEffect(CONST_ME_DRAWBLOOD)
 		item:remove()
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "Use the item again within " .. timeToIncreaseDefense .. " seconds, or the monster's defense will increase by 2 every " .. timeToIncreaseDefense .. " seconds.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Use the item again within " .. timeToIncreaseDefense .. " seconds, or the monster's defense will increase by 2 every " .. timeToIncreaseDefense .. " seconds.")
 		local boss = Creature("Goshnar's Megalomania")
 		if boss then
 			local mtype = boss:getType()

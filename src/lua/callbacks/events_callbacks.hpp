@@ -104,12 +104,12 @@ public:
 			if (callback && callback->isLoadedCallback()) {
 				ReturnValue callbackResult = std::apply(
 					[&callback, &callbackFunc](auto &&... args) {
-						return ((callback).callbackFunc)(std::forward<decltype(args)>(args)...);
+						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
 					},
 					argsCopy
 				);
 				if (callbackResult != RETURNVALUE_NOERROR) {
-					res = callbackResult;
+					return callbackResult;
 				}
 			}
 		}

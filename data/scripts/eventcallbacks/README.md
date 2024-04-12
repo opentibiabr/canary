@@ -14,8 +14,8 @@ Event callbacks are available for several categories of game entities, such as `
 ### These are the functions available to use
 
 - `(bool)` `creatureOnChangeOutfit`
-- `(bool)` `creatureOnAreaCombat`
-- `(bool)` `creatureOnTargetCombat`
+- `(ReturnValue)` `creatureOnAreaCombat`
+- `(ReturnValue)` `creatureOnTargetCombat`
 - `(void)` `creatureOnHear`
 - `(void)` `creatureOnDrainHealth`
 - `(bool)` `partyOnJoin`
@@ -144,6 +144,31 @@ callback:register()
 ```
 
 ### In this example, when a non-aggressive creature enters a combat area, the creatureOnAreaCombat function returns false, stopping the associated function on the C++ side.
+
+## ReturnValue Event Callbacks
+
+Some event callbacks are expected to return a enum value, in this case, the enum ReturnValue. If the return is different of RETURNVALUE_NOERROR, it will stop the execution of the next callbacks.
+
+Here is an example of a ReturnValue event callback:
+
+```lua
+local callback = EventCallback()
+
+function callback.creatureOnAreaCombat(creature, tile, isAggressive)
+	-- if the creature is not aggressive, stop the execution of the C++ function
+	if not isAggressive then
+		return RETURNVALUE_NOTPOSSIBLE
+	end
+
+	-- custom behavior when an aggressive creature enters a combat area
+	return RETURNVALUE_NOERROR
+end
+
+callback:register()
+```
+
+### In this example, when a non-aggressive creature enters a combat area, the creatureOnAreaCombat function returns false, stopping the associated function on the C++ side.
+
 
 ## Multiple Callbacks for the Same Event
 

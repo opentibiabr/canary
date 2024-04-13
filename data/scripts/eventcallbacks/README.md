@@ -65,7 +65,7 @@ local callback = EventCallback()
 
 function callback.creatureOnAreaCombat(creature, tile, isAggressive)
 	-- custom behavior when a creature enters combat area
-	return true
+	return RETURNVALUE_NOERROR
 end
 
 callback:register()
@@ -130,20 +130,18 @@ Here is an example of a boolean event callback:
 ```lua
 local callback = EventCallback()
 
-function callback.creatureOnAreaCombat(creature, tile, isAggressive)
-	-- if the creature is not aggressive, stop the execution of the C++ function
-	if not isAggressive then
+function callback.playerOnMoveItem(player, item, count, fromPos, toPos, fromCylinder, toCylinder)
+	if item:getId() == ITEM_PARCEL then
+		--Custom behavior when the player moves a parcel.
 		return false
 	end
-
-	-- custom behavior when an aggressive creature enters a combat area
 	return true
 end
 
 callback:register()
 ```
 
-### In this example, when a non-aggressive creature enters a combat area, the creatureOnAreaCombat function returns false, stopping the associated function on the C++ side.
+### In this example, when a player moves an item, the function checks if the item is a parcel and apply a custom behaviour, returning false making it impossible to move, stopping the associated function on the C++ side.
 
 ## ReturnValue Event Callbacks
 

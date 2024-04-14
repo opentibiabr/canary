@@ -90,8 +90,8 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		if not deactivatedFlasks then
 			local container = Container(item:getParent().uid)
 			if container then
-				local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-				if fromPosition.x == CONTAINER_POSITION and container ~= inbox and container:getEmptySlots() ~= 0 then
+				local storeInbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
+				if fromPosition.x == CONTAINER_POSITION and container ~= storeInbox and container:getEmptySlots() ~= 0 then
 					container:addItem(potion.flask, 1)
 				else
 					player:addItem(potion.flask, 1)

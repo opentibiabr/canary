@@ -44,6 +44,10 @@ login:register()
 local goshnarsMaliceReflection = CreatureEvent("Goshnar's-Malice")
 
 function goshnarsMaliceReflection.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
+	if not attacker then
+		return primaryDamage, primaryType, secondaryDamage, secondaryType
+	end
+
 	local player = attacker:getPlayer()
 	if player then
 		if primaryDamage > 0 and (primaryType == COMBAT_PHYSICALDAMAGE or primaryType == COMBAT_DEATHDAMAGE) then
@@ -261,11 +265,13 @@ function setTaint.onSay(player, words, param)
 	end
 
 	local taintLevel = split[2]:trim():lower()
-	local taintName = player:getTaintNameByNumber(tonumber(taintLevel))
+	local taintName = player:getTaintNameByNumber(tonumber(taintLevel), true)
 	if taintName ~= nil then
+		target:resetTaints(true)
 		target:soulWarQuestKV():set(taintName, true)
 		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You new taint level is: " .. taintLevel .. ", name: " .. taintName)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Added taint level: " .. taintLevel .. ", name: " .. taintName .. " to player: " .. target:getName())
+		target:setTaintIcon()
 	end
 end
 

@@ -970,11 +970,11 @@ end
 
 TaintTeleportCooldown = {}
 
-function Player:getTaintNameByNumber(taintNumber)
+function Player:getTaintNameByNumber(taintNumber, skipKvCheck)
 	local haveTaintName = nil
 	local soulWarQuest = self:soulWarQuestKV()
 	local taintName = soulWarTaints[taintNumber]
-	if taintName and soulWarQuest:get(taintName) then
+	if skipKvCheck or taintName and soulWarQuest:get(taintName) then
 		haveTaintName = taintName
 	end
 
@@ -983,12 +983,26 @@ end
 
 function Player:addNextTaint()
 	local soulWarQuest = self:soulWarQuestKV()
-	for _, taint in ipairs(soulWarTaints) do
-		if not soulWarQuest:get(taint) then
-			soulWarQuest:set(taint, true)
-			self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have gained the " .. taint .. ".")
+	for _, taintName in ipairs(soulWarTaints) do
+		if not soulWarQuest:get(taintName) then
+			soulWarQuest:set(taintName, true)
+			self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have gained the " .. taintName .. ".")
+			self:setTaintIcon()
 			break
 		end
+	end
+end
+
+function Player:setTaintIcon(taintId)
+	self:resetTaintConditions()
+	local condition = Condition(CONDITION_GOSHNARTAINT, CONDITIONID_DEFAULT, taintId or self:getTaintLevel())
+	condition:setTicks(14 * 24 * 60 * 60 * 1000)
+	self:addCondition(condition)
+end
+
+function Player:resetTaintConditions()
+	for i = 1, 5 do
+		self:removeCondition(CONDITION_GOSHNARTAINT, CONDITIONID_DEFAULT, i)
 	end
 end
 
@@ -1004,17 +1018,17 @@ function Player:getTaintLevel()
 	return taintLevel
 end
 
-function Player:resetTaints()
+function Player:resetTaints(skipCheckTime)
 	local soulWarQuest = self:soulWarQuestKV()
 	local firstTaintTime = soulWarQuest:get("firstTaintTime")
-	if firstTaintTime and os.time() >= (firstTaintTime + TaintDurationSeconds) then
-		-- Reset all taints
-		for _, taint in ipairs(soulWarTaints) do
-			if soulWarQuest:get(taint) then
-				soulWarQuest:remove(taint)
+	if skipCheckTime or firstTaintTime and os.time() >= (firstTaintTime + TaintDurationSeconds) then
+		-- Reset all taints and remove condition
+		for _, taintName in ipairs(soulWarTaints) do
+			if soulWarQuest:get(taintName) then
+				soulWarQuest:remove(taintName)
 			end
 		end
-
+		self:resetTaintConditions()
 		soulWarQuest:remove("firstTaintTime")
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your goshnar's taints have been reset. You didn't finish the quest in 14 days")
 	end
@@ -1028,7 +1042,7 @@ function Monster:tryTeleportToPlayer(sayMessage)
 	for i, spectator in ipairs(spectators) do
 		if spectator:isPlayer() then
 			local player = spectator:getPlayer()
-			if player:getTaintNameByNumber(1) then
+			if player:getTaintNameByNumber(1, true) then
 				local distance = self:getPosition():getDistance(player:getPosition())
 				if distance > maxDistance then
 					maxDistance = distance

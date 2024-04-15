@@ -242,6 +242,8 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_YELLTICKS:
 		case CONDITION_PACIFIED:
 			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
+		case CONDITION_GOSHNARTAINT:
+			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
 
 		default:
 			return nullptr;
@@ -390,7 +392,26 @@ uint32_t ConditionGeneric::getIcons() const {
 		case CONDITION_ROOTED:
 			icons |= ICON_ROOTED;
 			break;
-
+		case CONDITION_GOSHNARTAINT:
+			switch (subId) {
+				case 1:
+					icons = ICON_GOSHNARTAINT_1;
+					break;
+				case 2:
+					icons = ICON_GOSHNARTAINT_2;
+					break;
+				case 3:
+					icons = ICON_GOSHNARTAINT_3;
+					break;
+				case 4:
+					icons = ICON_GOSHNARTAINT_4;
+					break;
+				case 5:
+					icons = ICON_GOSHNARTAINT_5;
+					break;
+				default:
+					break;
+			}
 		default:
 			break;
 	}

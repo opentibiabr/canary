@@ -828,7 +828,13 @@ function cloakOfTerrorHealthLoss.onHealthChange(creature, attacker, primaryDamag
 	end
 
 	if attacker:getPlayer() and primaryDamage > 0 or secondaryDamage > 0 then
-		Game.createItem(SoulWarQuest.theBloodOfCloakTerrorIds[1], 1, creature:getPosition())
+		local position = creature:getPosition()
+		local tile = Tile(position)
+		if tile then
+			if not tile:getItemById(SoulWarQuest.theBloodOfCloakTerrorIds[1]) then
+				Game.createItem(SoulWarQuest.theBloodOfCloakTerrorIds[1], 1, position)
+			end
+		end
 	end
 
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
@@ -855,6 +861,8 @@ function theBloodOfCloakStep.onStepIn(creature, item, position, fromPosition)
 		local healAmount = math.random(1500, 2000)
 		monster:addHealth(healAmount)
 	end
+
+	item:remove()
 
 	return true
 end

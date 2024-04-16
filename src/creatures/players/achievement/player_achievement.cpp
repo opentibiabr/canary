@@ -129,7 +129,9 @@ void PlayerAchievement::sendUnlockedSecretAchievements() {
 		m_achievementsUnlocked.push_back({ achievement, achievCreatedTime });
 	}
 
+	#if CLIENT_VERSION > 1100
 	m_player.sendCyclopediaCharacterAchievements(unlockedSecret, m_achievementsUnlocked);
+	#endif
 }
 
 const std::shared_ptr<KV> &PlayerAchievement::getUnlockedKV() {

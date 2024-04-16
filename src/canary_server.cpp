@@ -351,7 +351,6 @@ void CanaryServer::loadModules() {
 #else
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 #endif
-	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
 	// Load XML folder dependencies (order matters)
 	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");

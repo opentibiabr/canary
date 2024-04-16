@@ -7355,7 +7355,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 	msg.add<uint16_t>(0x32); // beat duration (50)
 
 #if CLIENT_VERSION < 1310
-	if (player->getAccountType() >= account::ACCOUNT_TYPE_NORMAL) {
+	if (player->getAccountType() >= ACCOUNT_TYPE_NORMAL) {
 		msg.addByte(0x01);
 	} else {
 		msg.addByte(0x00);

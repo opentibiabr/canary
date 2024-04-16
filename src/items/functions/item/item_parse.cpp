@@ -1029,28 +1029,39 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 			if (moveevent && (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP)) {
 				if (slotName == "head") {
 					moveevent->setSlot(SLOTP_HEAD);
+					itemType.slotPosition |= SLOTP_HEAD;
 				} else if (slotName == "necklace") {
 					moveevent->setSlot(SLOTP_NECKLACE);
+					itemType.slotPosition |= SLOTP_NECKLACE;
 				} else if (slotName == "backpack") {
 					moveevent->setSlot(SLOTP_BACKPACK);
+					itemType.slotPosition |= SLOTP_BACKPACK;
 				} else if (slotName == "armor" || slotName == "body") {
 					moveevent->setSlot(SLOTP_ARMOR);
+					itemType.slotPosition |= SLOTP_ARMOR;
 				} else if (slotName == "right-hand") {
 					moveevent->setSlot(SLOTP_RIGHT);
+					itemType.slotPosition &= ~SLOTP_LEFT;
 				} else if (slotName == "left-hand") {
 					moveevent->setSlot(SLOTP_LEFT);
+					itemType.slotPosition &= ~SLOTP_RIGHT;
 				} else if (slotName == "hand" || slotName == "shield") {
 					moveevent->setSlot(SLOTP_RIGHT | SLOTP_LEFT);
 				} else if (slotName == "legs") {
 					moveevent->setSlot(SLOTP_LEGS);
+					itemType.slotPosition |= SLOTP_LEGS;
 				} else if (slotName == "feet") {
 					moveevent->setSlot(SLOTP_FEET);
+					itemType.slotPosition |= SLOTP_FEET;
 				} else if (slotName == "ring") {
 					moveevent->setSlot(SLOTP_RING);
+					itemType.slotPosition |= SLOTP_RING;
 				} else if (slotName == "ammo") {
 					moveevent->setSlot(SLOTP_AMMO);
+					itemType.slotPosition |= SLOTP_AMMO;
 				} else if (slotName == "two-handed") {
 					moveevent->setSlot(SLOTP_TWO_HAND);
+					itemType.slotPosition |= SLOTP_TWO_HAND;
 				} else {
 					g_logger().warn("[{}] unknown slot type '{}'", __FUNCTION__, slotName);
 				}
@@ -1058,9 +1069,9 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 				uint16_t id = weapon->getID();
 				ItemType &it = Item::items.getItemType(id);
 				if (slotName == "two-handed") {
-					it.slotPosition = SLOTP_TWO_HAND;
+					itemType.slotPosition |= SLOTP_TWO_HAND;
 				} else {
-					it.slotPosition = SLOTP_HAND;
+					itemType.slotPosition |= SLOTP_HAND;
 				}
 			}
 		} else if (stringKey == "level") {

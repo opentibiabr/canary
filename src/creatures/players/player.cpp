@@ -2682,10 +2682,12 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 }
 
 void Player::death(std::shared_ptr<Creature> lastHitCreature) {
+#if CLIENT_VERSION >= 870
 	if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && isMounted()) {
 		dismount();
 		g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
 	}
+	#endif
 
 	loginPosition = town->getTemplePosition();
 
@@ -6147,11 +6149,13 @@ void Player::sendClosePrivate(uint16_t channelId) {
 	}
 }
 
+#if CLIENT_VERSION > 1100
 void Player::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
 	if (client) {
 		client->sendCyclopediaCharacterAchievements(secretsUnlocked, achievementsUnlocked);
 	}
 }
+#endif
 
 uint64_t Player::getMoney() const {
 	std::vector<std::shared_ptr<Container>> containers;

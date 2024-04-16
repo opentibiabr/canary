@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include "account/account.hpp"
 #include "items/containers/container.hpp"
 #include "creatures/creature.hpp"
 #include "items/cylinder.hpp"
@@ -33,6 +32,7 @@
 #include "vocations/vocation.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
+#include "enums/object_category.hpp"
 
 class House;
 class NetworkMessage;
@@ -47,7 +47,13 @@ class PreySlot;
 class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
+class PlayerAchievement;
 class Spectators;
+class Account;
+
+struct ModalWindow;
+struct Achievement;
+
 #if CLIENT_VERSION >= 870
 struct Mount;
 #endif
@@ -599,22 +605,14 @@ public:
 	uint8_t getSoul() const {
 		return soul;
 	}
-	bool isAccessPlayer() const {
-		return group->access;
-	}
-	bool isPlayerGroup() const {
-		return group->id <= account::GROUP_TYPE_SENIORTUTOR;
-	}
+	bool isAccessPlayer() const;
+	bool isPlayerGroup() const;
 	bool isPremium() const;
-	uint32_t getPremiumDays() const {
-		return account->getPremiumRemainingDays();
-	}
-	time_t getPremiumLastDay() const {
-		return account->getPremiumLastDay();
-	}
+	uint32_t getPremiumDays() const;
+	time_t getPremiumLastDay() const;
 
 	bool isVip() const {
-		return g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && getPremiumDays() > 0;
+		return g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && (getPremiumDays() > 0 || getPremiumLastDay() > getTimeNow());
 	}
 
 	void setTibiaCoins(int32_t v);
@@ -906,6 +904,25 @@ public:
 		return lastAttackBlockType;
 	}
 
+	uint64_t getLastConditionTime(ConditionType_t type) const {
+		if (!lastConditionTime.contains(static_cast<uint8_t>(type))) {
+			return 0;
+		}
+		return lastConditionTime.at(static_cast<uint8_t>(type));
+	}
+
+	void updateLastConditionTime(ConditionType_t type) {
+		lastConditionTime[static_cast<uint8_t>(type)] = OTSYS_TIME();
+	}
+
+	bool checkLastConditionTimeWithin(ConditionType_t type, uint32_t interval) const {
+		if (!lastConditionTime.contains(static_cast<uint8_t>(type))) {
+			return false;
+		}
+		auto last = lastConditionTime.at(static_cast<uint8_t>(type));
+		return last > 0 && ((OTSYS_TIME() - last) < interval);
+	}
+
 	uint64_t getLastAttack() const {
 		return lastAttack;
 	}
@@ -932,13 +949,6 @@ public:
 
 	void updateLastAggressiveAction() {
 		lastAggressiveAction = OTSYS_TIME();
-	}
-
-	uint64_t getLastFocusLost() const {
-		return lastFocusLost;
-	}
-	void setLastFocusLost(uint64_t time) {
-		lastFocusLost = time;
 	}
 
 	std::unordered_set<std::string> getNPCSkips();
@@ -1629,11 +1639,7 @@ public:
 			client->sendCyclopediaCharacterRecentPvPKills(page, pages, entries);
 		}
 	}
-	void sendCyclopediaCharacterAchievements() {
-		if (client) {
-			client->sendCyclopediaCharacterAchievements();
-		}
-	}
+	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
 	void sendCyclopediaCharacterItemSummary() {
 		if (client) {
 			client->sendCyclopediaCharacterItemSummary();
@@ -2102,27 +2108,10 @@ public:
 	}
 
 	// Account
-	bool setAccount(uint32_t accountId) {
-		if (account) {
-			g_logger().warn("Account was already set!");
-			return true;
-		}
-
-		account = std::make_shared<account::Account>(accountId);
-		return account::ERROR_NO == account->load();
-	}
-
-	account::AccountType getAccountType() const {
-		return account ? account->getAccountType() : account::AccountType::ACCOUNT_TYPE_NORMAL;
-	}
-
-	uint32_t getAccountId() const {
-		return account ? account->getID() : 0;
-	}
-
-	std::shared_ptr<account::Account> getAccount() const {
-		return account;
-	}
+	bool setAccount(uint32_t accountId);
+	uint8_t getAccountType() const;
+	uint32_t getAccountId() const;
+	std::shared_ptr<Account> getAccount() const;
 
 	// Prey system
 	void initializePrey();
@@ -2606,9 +2595,13 @@ public:
 	 */
 	std::vector<std::shared_ptr<Item>> getEquippedItems() const;
 
-	// Player wheel methods interface
+	// Player wheel interface
 	std::unique_ptr<PlayerWheel> &wheel();
 	const std::unique_ptr<PlayerWheel> &wheel() const;
+
+	// Player achievement interface
+	std::unique_ptr<PlayerAchievement> &achiev();
+	const std::unique_ptr<PlayerAchievement> &achiev() const;
 
 	void sendLootMessage(const std::string &message) const;
 
@@ -2617,6 +2610,8 @@ public:
 	bool hasPermittedConditionInPZ() const;
 
 	std::shared_ptr<Container> getStoreInbox() const;
+
+	bool canSpeakWithHireling(uint8_t speechbubble);
 
 private:
 	friend class PlayerLock;
@@ -2746,8 +2741,8 @@ private:
 	uint64_t experience = 0;
 	uint64_t manaSpent = 0;
 	uint64_t lastAttack = 0;
+	std::unordered_map<uint8_t, uint64_t> lastConditionTime;
 	uint64_t lastAggressiveAction = 0;
-	uint64_t lastFocusLost = 0;
 	uint64_t bankBalance = 0;
 	uint64_t lastQuestlogUpdate = 0;
 	uint64_t preyCards = 0;
@@ -2968,7 +2963,7 @@ private:
 		return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
 	}
 
-	bool isSuppress(ConditionType_t conditionType) const override;
+	bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const override;
 	void addConditionSuppression(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions);
 
 	uint16_t getLookCorpse() const override;
@@ -2999,12 +2994,14 @@ private:
 	friend class PlayerWheel;
 	friend class IOLoginDataLoad;
 	friend class IOLoginDataSave;
+	friend class PlayerAchievement;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
+	std::unique_ptr<PlayerAchievement> m_playerAchievement;
 
 	std::mutex quickLootMutex;
 
-	std::shared_ptr<account::Account> account;
+	std::shared_ptr<Account> account;
 	bool online = true;
 
 	bool hasQuiverEquipped() const;

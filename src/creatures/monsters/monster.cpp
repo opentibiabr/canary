@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -285,7 +285,12 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 }
 
 void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
-	assert(creature.get() != this);
+	if (creature == getMonster()) {
+		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
+		return;
+	}
+
+	assert(creature != getMonster());
 	friendList.try_emplace(creature->getID(), creature);
 }
 
@@ -297,7 +302,12 @@ void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
-	assert(creature.get() != this);
+	if (creature == getMonster()) {
+		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
+		return false;
+	}
+
+	assert(creature != getMonster());
 
 	const auto &it = getTargetIterator(creature);
 	if (it != targetList.end()) {
@@ -658,7 +668,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addEvent(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+			g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
 		}
 	}
 	return setFollowCreature(creature);
@@ -685,7 +695,11 @@ void Monster::updateIdleStatus() {
 	bool idle = false;
 	if (conditions.empty()) {
 		if (!isSummon() && targetList.empty()) {
-			idle = true;
+			if (isInSpawnLocation()) {
+				idle = true;
+			} else {
+				isWalkingBack = true;
+			}
 		} else if (const auto &master = getMaster()) {
 			if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != FACTION_DEFAULT) {
 				idle = true;
@@ -694,6 +708,13 @@ void Monster::updateIdleStatus() {
 	}
 
 	setIdle(idle);
+}
+
+bool Monster::isInSpawnLocation() const {
+	if (!spawnMonster) {
+		return true;
+	}
+	return position == masterPos || masterPos == Position();
 }
 
 void Monster::onAddCondition(ConditionType_t type) {
@@ -1159,6 +1180,8 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 
 	if (getFollowCreature() && hasFollowPath) {
 		doFollowCreature(flags, nextDirection, result);
+	} else if (isWalkingBack) {
+		doWalkBack(flags, nextDirection, result);
 	} else {
 		doRandomStep(nextDirection, result);
 	}
@@ -1184,6 +1207,31 @@ void Monster::doRandomStep(Direction &nextDirection, bool &result) {
 	if (getTimeSinceLastMove() >= 1000) {
 		randomStepping = true;
 		result = getRandomStep(getPosition(), nextDirection);
+	}
+}
+
+void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result) {
+	result = Creature::getNextStep(nextDirection, flags);
+	if (result) {
+		flags |= FLAG_PATHFINDING;
+	} else {
+		if (ignoreFieldDamage) {
+			ignoreFieldDamage = false;
+			updateMapCache();
+		}
+
+		int32_t distance = std::max<int32_t>(Position::getDistanceX(position, masterPos), Position::getDistanceY(position, masterPos));
+		if (distance == 0) {
+			isWalkingBack = false;
+			return;
+		}
+
+		stdext::arraylist<Direction> listDir(128);
+		if (!getPathTo(masterPos, listDir, 0, std::max<int32_t>(0, distance - 5), true, true, distance)) {
+			isWalkingBack = false;
+			return;
+		}
+		startAutoWalk(listDir.data());
 	}
 }
 

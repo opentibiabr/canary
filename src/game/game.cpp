@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -9,6 +9,8 @@
 
 #include "pch.hpp"
 
+#include "game/game.hpp"
+
 #include "lua/creature/actions.hpp"
 #include "items/bed.hpp"
 #include "creatures/creature.hpp"
@@ -16,7 +18,7 @@
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "game/game.hpp"
+#include "creatures/players/highscore_category.hpp"
 #include "game/zones/zone.hpp"
 #include "lua/global/globalevent.hpp"
 #include "io/iologindata.hpp"
@@ -34,18 +36,43 @@
 #include "items/weapons/weapons.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "server/network/webhook/webhook.hpp"
-#include "protobuf/appearances.pb.h"
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "map/spectators.hpp"
-
+#include "utils/tools.hpp"
 #include "kv/kv.hpp"
+
+#include "enums/object_category.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/account_coins.hpp"
 
 #if CLIENT_VERSION >= 870
 	#include "creatures/appearance/mounts/mounts.hpp"
 #endif
+
+#include <appearances.pb.h>
+
+enum class HighscoreCategories_t : uint8_t {
+	EXPERIENCE = 0,
+	FIST_FIGHTING = 1,
+	CLUB_FIGHTING = 2,
+	SWORD_FIGHTING = 3,
+	AXE_FIGHTING = 4,
+	DISTANCE_FIGHTING = 5,
+	SHIELDING = 6,
+	FISHING = 7,
+	MAGIC_LEVEL = 8,
+	LOYALTY = 9,
+	ACHIEVEMENTS = 10,
+	CHARMS = 11,
+	DROME = 12,
+	GOSHNAR = 13,
+};
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, std::shared_ptr<Creature> source) {
@@ -183,9 +210,41 @@ Game::Game() {
 
 	// Create instance of IOWheel to Game class
 	m_IOWheel = std::make_unique<IOWheel>();
+
+	wildcardTree = std::make_shared<WildcardTreeNode>(false);
+
 #if CLIENT_VERSION >= 870
 	m_mountsPtr = std::make_unique<Mounts>();
 #endif
+
+	m_highscoreCategoriesNames = {
+		{ static_cast<uint8_t>(HighscoreCategories_t::ACHIEVEMENTS), "Achievement Points" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING), "Axe Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::CHARMS), "Charm Points" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::CLUB_FIGHTING), "Club Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE), "Experience Points" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::DISTANCE_FIGHTING), "Distance Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::DROME), "Drome Score" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::FISHING), "Fishing" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::FIST_FIGHTING), "Fist Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::GOSHNAR), "Goshnar's Taint" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::LOYALTY), "Loyalty Points" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::MAGIC_LEVEL), "Magic Level" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::SHIELDING), "Shielding" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::SWORD_FIGHTING), "Sword Fighting" },
+	};
+
+	m_highscoreCategories = {
+		HighscoreCategory("Experience Points", static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE)),
+		HighscoreCategory("Fist Fighting", static_cast<uint8_t>(HighscoreCategories_t::FIST_FIGHTING)),
+		HighscoreCategory("Club Fighting", static_cast<uint8_t>(HighscoreCategories_t::CLUB_FIGHTING)),
+		HighscoreCategory("Sword Fighting", static_cast<uint8_t>(HighscoreCategories_t::SWORD_FIGHTING)),
+		HighscoreCategory("Axe Fighting", static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING)),
+		HighscoreCategory("Distance Fighting", static_cast<uint8_t>(HighscoreCategories_t::DISTANCE_FIGHTING)),
+		HighscoreCategory("Shielding", static_cast<uint8_t>(HighscoreCategories_t::SHIELDING)),
+		HighscoreCategory("Fishing", static_cast<uint8_t>(HighscoreCategories_t::FISHING)),
+		HighscoreCategory("Magic Level", static_cast<uint8_t>(HighscoreCategories_t::MAGIC_LEVEL))
+	};
 }
 
 Game::~Game() = default;
@@ -254,8 +313,8 @@ void Game::loadBoostedCreature() {
 	const auto monsterType = g_monsters().getMonsterType(selectedMonster.name);
 	if (!monsterType) {
 		g_logger().warn("[Game::loadBoostedCreature] - "
-						"It was not possible to generate a new boosted creature-> Monster '"
-						+ selectedMonster.name + "' not found.");
+						"It was not possible to generate a new boosted creature-> Monster '{}' not found.",
+						selectedMonster.name);
 		return;
 	}
 
@@ -293,17 +352,30 @@ void Game::start(ServiceManager* manager) {
 	int minutes = tms->tm_min;
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
 
-	g_dispatcher().scheduleEvent(EVENT_MS + 1000, std::bind_front(&Game::createFiendishMonsters, this), "Game::createFiendishMonsters");
-	g_dispatcher().scheduleEvent(EVENT_MS + 1000, std::bind_front(&Game::createInfluencedMonsters, this), "Game::createInfluencedMonsters");
-
-	g_dispatcher().cycleEvent(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this), "Game::updateForgeableMonsters");
-	g_dispatcher().cycleEvent(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this), "Game::checkLight");
-	g_dispatcher().cycleEvent(EVENT_CHECK_CREATURE_INTERVAL, std::bind(&Game::checkCreatures, this), "Game::checkCreatures");
-	g_dispatcher().cycleEvent(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this), "Game::checkImbuements");
+	g_dispatcher().scheduleEvent(
+		EVENT_MS + 1000, [this] { createFiendishMonsters(); }, "Game::createFiendishMonsters"
+	);
+	g_dispatcher().scheduleEvent(
+		EVENT_MS + 1000, [this] { createInfluencedMonsters(); }, "Game::createInfluencedMonsters"
+	);
+	g_dispatcher().cycleEvent(
+		EVENT_MS, [this] { updateForgeableMonsters(); }, "Game::updateForgeableMonsters"
+	);
+	g_dispatcher().cycleEvent(
+		EVENT_LIGHTINTERVAL_MS, [this] { checkLight(); }, "Game::checkLight"
+	);
+	g_dispatcher().cycleEvent(
+		EVENT_CHECK_CREATURE_INTERVAL, [this] { checkCreatures(); }, "Game::checkCreatures"
+	);
+	g_dispatcher().cycleEvent(
+		EVENT_IMBUEMENT_INTERVAL, [this] { checkImbuements(); }, "Game::checkImbuements"
+	);
 	g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
-	g_dispatcher().cycleEvent(EVENT_REFRESH_MARKET_PRICES, std::bind_front(&Game::loadItemsPrice, this), "Game::loadItemsPrice");
+	g_dispatcher().cycleEvent(
+		EVENT_REFRESH_MARKET_PRICES, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
+	);
 }
 
 GameState_t Game::getGameState() const {
@@ -371,7 +443,7 @@ void Game::setGameState(GameState_t newState) {
 			saveMotdNum();
 			g_saveManager().saveAll();
 
-			g_dispatcher().addEvent(std::bind(&Game::shutdown, this), "Game::shutdown");
+			g_dispatcher().addEvent([this] { shutdown(); }, "Game::shutdown");
 
 			break;
 		}
@@ -829,7 +901,7 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<
 	if (s.back() == '~') {
 		const std::string &query = asLowerCaseString(s.substr(0, strlen - 1));
 		std::string result;
-		ReturnValue ret = wildcardTree.findOne(query, result);
+		ReturnValue ret = wildcardTree->findOne(query, result);
 		if (ret != RETURNVALUE_NOERROR) {
 			return ret;
 		}
@@ -846,9 +918,9 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<
 	return RETURNVALUE_NOERROR;
 }
 
-std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline /* = false */) {
+std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(std::shared_ptr<Account> acc, bool allowOffline /* = false */) {
 	auto [accountPlayers, error] = acc->getAccountPlayers();
-	if (error != account::ERROR_NO) {
+	if (error != enumToValue(AccountErrors_t::Ok)) {
 		return {};
 	}
 	std::vector<std::shared_ptr<Player>> ret;
@@ -1042,8 +1114,8 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	// Verify that the version of the library that we linked against is
 	// compatible with the version of the headers we compiled against.
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
-	appearances = Appearances();
-	if (!appearances.ParseFromIstream(&fileStream)) {
+	m_appearancesPtr = std::make_unique<Appearances>();
+	if (!m_appearancesPtr->ParseFromIstream(&fileStream)) {
 		g_logger().error("[Game::loadAppearanceProtobuf] - Failed to parse binary file {}, file is invalid", file);
 		fileStream.close();
 		return ERROR_NOT_OPEN;
@@ -1052,19 +1124,22 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	// Parsing all items into ItemType
 	Item::items.loadFromProtobuf();
 
-	// Registering distance effects
-	for (uint32_t it = 0; it < appearances.effect_size(); it++) {
-		registeredMagicEffects.push_back(static_cast<uint16_t>(appearances.effect(it).id()));
-	}
+	// Only iterate other objects if necessary
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__)) {
+		// Registering distance effects
+		for (uint32_t it = 0; it < m_appearancesPtr->effect_size(); it++) {
+			registeredMagicEffects.push_back(static_cast<uint16_t>(m_appearancesPtr->effect(it).id()));
+		}
 
-	// Registering missile effects
-	for (uint32_t it = 0; it < appearances.missile_size(); it++) {
-		registeredDistanceEffects.push_back(static_cast<uint16_t>(appearances.missile(it).id()));
-	}
+		// Registering missile effects
+		for (uint32_t it = 0; it < m_appearancesPtr->missile_size(); it++) {
+			registeredDistanceEffects.push_back(static_cast<uint16_t>(m_appearancesPtr->missile(it).id()));
+		}
 
-	// Registering outfits
-	for (uint32_t it = 0; it < appearances.outfit_size(); it++) {
-		registeredLookTypes.push_back(static_cast<uint16_t>(appearances.outfit(it).id()));
+		// Registering outfits
+		for (uint32_t it = 0; it < m_appearancesPtr->outfit_size(); it++) {
+			registeredLookTypes.push_back(static_cast<uint16_t>(m_appearancesPtr->outfit(it).id()));
+		}
 	}
 
 	fileStream.close();
@@ -1118,9 +1193,11 @@ void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t 
 		}
 
 		if (Position::areInRange<1, 1, 0>(movingCreature->getPosition(), player->getPosition())) {
-			std::shared_ptr<Task> task = createPlayerTask(
+			const auto &task = createPlayerTask(
 				g_configManager().getNumber(PUSH_DELAY, __FUNCTION__),
-				std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreature->getPosition(), tile->getPosition()),
+				[this, player, movingCreature, tile] {
+					playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreature->getPosition(), tile->getPosition());
+				},
 				"Game::playerMoveCreatureByID"
 			);
 			player->setNextActionPushTask(task);
@@ -1161,8 +1238,9 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> movingCreature, const Position &movingCreatureOrigPos, std::shared_ptr<Tile> toTile) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (!player->canDoAction()) {
-		uint32_t delay = 600;
-		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()), "Game::playerMoveCreatureByID");
+		const auto &task = createPlayerTask(
+			600, [this, player, movingCreature, toTile, movingCreatureOrigPos] { playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()); }, "Game::playerMoveCreatureByID"
+		);
 
 		player->setNextActionPushTask(task);
 		return;
@@ -1174,10 +1252,10 @@ void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Cr
 		// need to walk to the creature first before moving it
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(movingCreatureOrigPos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
-
-			std::shared_ptr<Task> task = createPlayerTask(600, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()), "Game::playerMoveCreatureByID");
-
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
+			const auto &task = createPlayerTask(
+				600, [this, player, movingCreature, toTile, movingCreatureOrigPos] { playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()); }, "Game::playerMoveCreatureByID"
+			);
 			player->pushEvent(true);
 			player->setNextActionPushTask(task);
 		} else {
@@ -1377,7 +1455,12 @@ void Game::playerMoveItemByPlayerID(uint32_t playerId, const Position &fromPos, 
 void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, std::shared_ptr<Item> item, std::shared_ptr<Cylinder> toCylinder) {
 	if (!player->canDoAction()) {
 		uint32_t delay = player->getNextActionTime();
-		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), fromPos, itemId, fromStackPos, toPos, count), "Game::playerMoveItemByPlayerID");
+		std::shared_ptr<Task> task = createPlayerTask(
+			delay, [this, playerId = player->getID(), fromPos, itemId, fromStackPos, toPos, count] {
+				playerMoveItemByPlayerID(playerId, fromPos, itemId, fromStackPos, toPos, count);
+			},
+			"Game::playerMoveItemByPlayerID"
+		);
 		player->setNextActionTask(task);
 		return;
 	}
@@ -1450,16 +1533,6 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		return;
 	}
 
-	if (isTryingToStow(toPos, toCylinder)) {
-		player->stowItem(item, count, false);
-		return;
-	}
-
-	if (!item->isPushable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
-		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
-		return;
-	}
-
 	const Position &playerPos = player->getPosition();
 	auto cylinderTile = fromCylinder->getTile();
 	const Position &mapFromPos = cylinderTile ? cylinderTile->getPosition() : item->getPosition();
@@ -1472,9 +1545,14 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		// need to walk to the item first before using it
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(item->getPosition(), listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
-			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), fromPos, itemId, fromStackPos, toPos, count), "Game::playerMoveItemByPlayerID");
+			std::shared_ptr<Task> task = createPlayerTask(
+				400, [this, playerId = player->getID(), fromPos, itemId, fromStackPos, toPos, count] {
+					playerMoveItemByPlayerID(playerId, fromPos, itemId, fromStackPos, toPos, count);
+				},
+				"Game::playerMoveItemByPlayerID"
+			);
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -1536,9 +1614,14 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(walkPos, listDir, 0, 0, true, true)) {
-				g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
-				std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), itemPos, itemId, itemStackPos, toPos, count), "Game::playerMoveItemByPlayerID");
+				std::shared_ptr<Task> task = createPlayerTask(
+					400, [this, playerId = player->getID(), itemPos, itemId, itemStackPos, toPos, count] {
+						playerMoveItemByPlayerID(playerId, itemPos, itemId, itemStackPos, toPos, count);
+					},
+					"Game::playerMoveItemByPlayerID"
+				);
 				player->setNextWalkActionTask(task);
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -1579,9 +1662,19 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
 		auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
 		if (fromHouseTile && (!toHouseTile || toHouseTile->getHouse()->getId() != fromHouseTile->getHouse()->getId())) {
-			player->sendCancelMessage("You can't move this item outside a house.");
+			player->sendCancelMessage("You cannot move this item out of this house.");
 			return;
 		}
+	}
+
+	if (isTryingToStow(toPos, toCylinder)) {
+		player->stowItem(item, count, false);
+		return;
+	}
+
+	if (!item->isPushable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
+		return;
 	}
 
 	ReturnValue ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
@@ -1626,12 +1719,12 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__);
 
 			if (!allowAnything && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
-				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+				return RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH;
 			}
 
-			// prevent move up
+			// prevent move up from ponch to store inbox.
 			if (!item->canBeMovedToStore() && fromCylinder->getContainer() && fromCylinder->getContainer()->getID() == ITEM_GOLD_POUCH) {
-				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+				return RETURNVALUE_NOTBOUGHTINSTORE;
 			}
 
 			return RETURNVALUE_NOERROR;
@@ -1641,7 +1734,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 		const auto parentContainer = topParentContainer->getParent() ? topParentContainer->getParent()->getContainer() : nullptr;
 		auto isStoreInbox = parentContainer && parentContainer->isStoreInbox();
 		if (!item->canBeMovedToStore() && (containerID == ITEM_STORE_INBOX || isStoreInbox)) {
-			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+			return RETURNVALUE_NOTBOUGHTINSTORE;
 		}
 
 		if (item->isStoreItem()) {
@@ -1665,7 +1758,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			}
 
 			if (!isValidMoveItem) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
 			}
 
 			if (item->hasOwner() && !item->isOwner(player)) {
@@ -1698,7 +1791,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 			}
 
 			if (item->isStoreItem() && !house) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
 			}
 		}
 	}
@@ -2167,11 +2260,23 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 		}
 		if (!dropping) {
 			uint32_t remainderCount = 0;
-			ret = internalCollectManagedItems(player, item, g_game().getObjectCategory(item), false);
-			// If cannot place it in the obtain containers, will add it normally
-			if (ret != RETURNVALUE_NOERROR) {
+			bool addedToAutoContainer = false;
+			// First, try adding to the autoContainer, if it is set
+			if (autoContainerId != 0) {
 				ret = internalAddItem(destination, item, CONST_SLOT_WHEREEVER, flags, false, remainderCount);
+				if (ret == RETURNVALUE_NOERROR) {
+					addedToAutoContainer = true;
+				}
 			}
+			// If it failed to add to the autoContainer, or it's not set, use the current logic
+			if (!addedToAutoContainer) {
+				ret = internalCollectManagedItems(player, item, g_game().getObjectCategory(item), false);
+				// If it can't place in the player's backpacks, add normally
+				if (ret != RETURNVALUE_NOERROR) {
+					ret = internalAddItem(destination, item, CONST_SLOT_WHEREEVER, flags, false, remainderCount);
+				}
+			}
+
 			if (remainderCount != 0) {
 				std::shared_ptr<Item> remainderItem = Item::CreateItem(item->getID(), remainderCount);
 				ReturnValue remaindRet = internalAddItem(destination->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
@@ -2181,7 +2286,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 			}
 		}
 
-		if (dropping || ret != RETURNVALUE_NOERROR && dropOnMap) {
+		if (dropping || (ret != RETURNVALUE_NOERROR && dropOnMap)) {
 			dropping = true;
 			ret = internalAddItem(destination->getTile(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 		}
@@ -2529,7 +2634,13 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 			uint16_t itemId = item->getID();
 			int32_t count = item->getSubType();
 
-			if (curType.id != newType.id) {
+			auto decaying = item->getDecaying();
+			// If the item is decaying, we need to transform it to the new item
+			if (decaying > DECAYING_FALSE && item->getDuration() <= 1 && newType.decayTo) {
+				g_logger().debug("Decay duration old type {}, transformEquipTo {}, transformDeEquipTo {}", curType.decayTo, curType.transformEquipTo, curType.transformDeEquipTo);
+				g_logger().debug("Decay duration new type decayTo {}, transformEquipTo {}, transformDeEquipTo {}", newType.decayTo, newType.transformEquipTo, newType.transformDeEquipTo);
+				itemId = newType.decayTo;
+			} else if (curType.id != newType.id) {
 				if (newType.group != curType.group) {
 					item->setDefaultSubtype();
 				}
@@ -3083,23 +3194,49 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 		return;
 	}
 
+	if (player->getFreeBackpackSlots() == 0) {
+		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
 	const ItemType &it = Item::items[itemId];
 	Slots_t slot = getSlotType(it);
 
 	auto slotItem = player->getInventoryItem(slot);
 	auto equipItem = searchForItem(backpack, it.id, hasTier, tier);
+	ReturnValue ret = RETURNVALUE_NOERROR;
 	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == slotItem->getStackSize() || !equipItem)) {
-		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
+		ret = internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
+		g_logger().debug("Item {} was unequipped", slotItem->getName());
 	} else if (equipItem) {
+		// Shield slot item
+		const auto &rightItem = player->getInventoryItem(CONST_SLOT_RIGHT);
+		// Check Ammo item
 		if (it.weaponType == WEAPON_AMMO) {
-			auto quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
-			if (quiver && quiver->isQuiver()) {
-				internalMoveItem(equipItem->getParent(), quiver->getContainer(), 0, equipItem, equipItem->getItemCount(), nullptr);
-				return;
+			if (rightItem && rightItem->isQuiver()) {
+				ret = internalMoveItem(equipItem->getParent(), rightItem->getContainer(), 0, equipItem, equipItem->getItemCount(), nullptr);
+			}
+		} else {
+			const int32_t &slotPosition = equipItem->getSlotPosition();
+			// Checks if a two-handed item is being equipped in the left slot when the right slot is already occupied and move to backpack
+			if (slotPosition & SLOTP_LEFT && rightItem && (slotPosition & SLOTP_TWO_HAND)) {
+				ret = internalCollectManagedItems(player, rightItem, getObjectCategory(rightItem), false);
+			}
+
+			if (slotItem) {
+				ret = internalMoveItem(slotItem->getParent(), player, INDEX_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
+				g_logger().debug("Item {} was moved back to player", slotItem->getName());
+			}
+
+			ret = internalMoveItem(equipItem->getParent(), player, slot, equipItem, equipItem->getItemCount(), nullptr);
+			if (ret == RETURNVALUE_NOERROR) {
+				g_logger().debug("Item {} was equipped", equipItem->getName());
 			}
 		}
+	}
 
-		internalMoveItem(equipItem->getParent(), player, slot, equipItem, equipItem->getItemCount(), nullptr);
+	if (ret != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(ret);
 	}
 }
 
@@ -3398,9 +3535,11 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
-				std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerUseItemEx, this, playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId), "Game::playerUseItemEx");
+				std::shared_ptr<Task> task = createPlayerTask(
+					400, [this, playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId] { playerUseItemEx(playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId); }, "Game::playerUseItemEx"
+				);
 				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 					player->setNextPotionActionTask(task);
 				} else {
@@ -3426,7 +3565,9 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			delay = player->getNextPotionActionTime();
 		}
-		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerUseItemEx, this, playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId), "Game::playerUseItemEx");
+		std::shared_ptr<Task> task = createPlayerTask(
+			delay, [this, playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId] { playerUseItemEx(playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId); }, "Game::playerUseItemEx"
+		);
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			player->setNextPotionActionTask(task);
 		} else {
@@ -3510,9 +3651,11 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		if (ret == RETURNVALUE_TOOFARAWAY) {
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
-				std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerUseItem, this, playerId, pos, stackPos, index, itemId), "Game::playerUseItem");
+				std::shared_ptr<Task> task = createPlayerTask(
+					400, [this, playerId, pos, stackPos, index, itemId] { playerUseItem(playerId, pos, stackPos, index, itemId); }, "Game::playerUseItem"
+				);
 				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 					player->setNextPotionActionTask(task);
 				} else {
@@ -3538,7 +3681,9 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			delay = player->getNextPotionActionTime();
 		}
-		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerUseItem, this, playerId, pos, stackPos, index, itemId), "Game::playerUseItem");
+		std::shared_ptr<Task> task = createPlayerTask(
+			delay, [this, playerId, pos, stackPos, index, itemId] { playerUseItem(playerId, pos, stackPos, index, itemId); }, "Game::playerUseItem"
+		);
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			player->setNextPotionActionTask(task);
 		} else {
@@ -3650,9 +3795,14 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
-				std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerUseWithCreature, this, playerId, itemPos, itemStackPos, creatureId, itemId), "Game::playerUseWithCreature");
+				std::shared_ptr<Task> task = createPlayerTask(
+					400, [this, playerId, itemPos, itemStackPos, creatureId, itemId] {
+						playerUseWithCreature(playerId, itemPos, itemStackPos, creatureId, itemId);
+					},
+					"Game::playerUseWithCreature"
+				);
 				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 					player->setNextPotionActionTask(task);
 				} else {
@@ -3678,7 +3828,9 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			delay = player->getNextPotionActionTime();
 		}
-		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerUseWithCreature, this, playerId, fromPos, fromStackPos, creatureId, itemId), "Game::playerUseWithCreature");
+		std::shared_ptr<Task> task = createPlayerTask(
+			delay, [this, playerId, fromPos, fromStackPos, creatureId, itemId] { playerUseWithCreature(playerId, fromPos, fromStackPos, creatureId, itemId); }, "Game::playerUseWithCreature"
+		);
 
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			player->setNextPotionActionTask(task);
@@ -3804,9 +3956,14 @@ void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stac
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
-			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerRotateItem, this, playerId, pos, stackPos, itemId), "Game::playerRotateItem");
+			std::shared_ptr<Task> task = createPlayerTask(
+				400, [this, playerId, pos, stackPos, itemId] {
+					playerRotateItem(playerId, pos, stackPos, itemId);
+				},
+				"Game::playerRotateItem"
+			);
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -3856,12 +4013,16 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 			std::shared_ptr<Task> task;
 			if (isPodiumOfRenown) {
-				task = createPlayerTask(400, std::bind_front(&Player::sendPodiumWindow, player, item, pos, itemId, stackPos), "Game::playerConfigureShowOffSocket");
+				task = createPlayerTask(
+					400, [player, item, pos, itemId, stackPos] { player->sendPodiumWindow(item, pos, itemId, stackPos); }, "Game::playerConfigureShowOffSocket"
+				);
 			} else {
-				task = createPlayerTask(400, std::bind_front(&Player::sendMonsterPodiumWindow, player, item, pos, itemId, stackPos), "Game::playerConfigureShowOffSocket");
+				task = createPlayerTask(
+					400, [player, item, pos, itemId, stackPos] { player->sendMonsterPodiumWindow(item, pos, itemId, stackPos); }, "Game::playerConfigureShowOffSocket"
+				);
 			}
 			player->setNextWalkActionTask(task);
 		} else {
@@ -3913,8 +4074,10 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
-			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos), "Game::playerBrowseField");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
+			std::shared_ptr<Task> task = createPlayerTask(
+				400, [this, playerId, pos] { playerBrowseField(playerId, pos); }, "Game::playerBrowseField"
+			);
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -4054,9 +4217,11 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
-			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerWrapableItem, this, playerId, pos, stackPos, itemId), "Game::playerWrapableItem");
+			std::shared_ptr<Task> task = createPlayerTask(
+				400, [this, playerId, pos, stackPos, itemId] { playerWrapableItem(playerId, pos, stackPos, itemId); }, "Game::playerWrapableItem"
+			);
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -4233,8 +4398,10 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 	if (!Position::areInRange<1, 1>(playerPos, pos)) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
-			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos), "Game::playerBrowseField");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
+			std::shared_ptr<Task> task = createPlayerTask(
+				400, [this, playerId, pos] { playerBrowseField(playerId, pos); }, "Game::playerBrowseField"
+			);
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -4494,9 +4661,11 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	if (!Position::areInRange<1, 1>(tradeItemPosition, playerPosition)) {
 		stdext::arraylist<Direction> listDir(128);
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
-			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerRequestTrade, this, playerId, pos, stackPos, tradePlayerId, itemId), "Game::playerRequestTrade");
+			std::shared_ptr<Task> task = createPlayerTask(
+				400, [this, playerId, pos, stackPos, tradePlayerId, itemId] { playerRequestTrade(playerId, pos, stackPos, tradePlayerId, itemId); }, "Game::playerRequestTrade"
+			);
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -5039,7 +5208,12 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 
 	if (!autoLoot && !player->canDoAction()) {
 		uint32_t delay = player->getNextActionTime();
-		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerQuickLoot, this, player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot), "Game::playerQuickLoot");
+		std::shared_ptr<Task> task = createPlayerTask(
+			delay, [this, playerId = player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot] {
+				playerQuickLoot(playerId, pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot);
+			},
+			"Game::playerQuickLoot"
+		);
 		player->setNextActionTask(task);
 		return;
 	}
@@ -5049,8 +5223,13 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 			// need to walk to the corpse first before looting it
 			stdext::arraylist<Direction> listDir(128);
 			if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
-				std::shared_ptr<Task> task = createPlayerTask(0, std::bind(&Game::playerQuickLoot, this, player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot), "Game::playerQuickLoot");
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
+				std::shared_ptr<Task> task = createPlayerTask(
+					0, [this, playerId = player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot] {
+						playerQuickLoot(playerId, pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot);
+					},
+					"Game::playerQuickLoot"
+				);
 				player->setNextWalkActionTask(task);
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -5224,7 +5403,8 @@ void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t categor
 	}
 
 	std::shared_ptr<Container> container = thing->getContainer();
-	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD && !g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__))) {
+	auto allowConfig = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__) || g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY, __FUNCTION__);
+	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD) && !allowConfig) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -5412,7 +5592,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(attackCreature);
-	g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, this, player->getID()), "Game::updateCreatureWalk");
+	g_dispatcher().addEvent([this, plyerId = player->getID()] { updateCreatureWalk(plyerId); }, "Game::updateCreatureWalk");
 }
 
 void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
@@ -5422,7 +5602,7 @@ void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(nullptr);
-	g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, this, player->getID()), "Game::updateCreatureWalk");
+	g_dispatcher().addEvent([this, plyerId = player->getID()] { updateCreatureWalk(plyerId); }, "Game::updateCreatureWalk");
 	player->setFollowCreature(getCreatureByID(creatureId));
 }
 
@@ -5632,7 +5812,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			return;
 		}
 
-		if (playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			outfit.lookMount = 0;
 		}
 
@@ -5808,7 +5988,7 @@ bool Game::playerYell(std::shared_ptr<Player> player, const std::string &text) {
 		return false;
 	}
 
-	if (player->getAccountType() < account::AccountType::ACCOUNT_TYPE_GAMEMASTER) {
+	if (player->getAccountType() < AccountType::ACCOUNT_TYPE_GAMEMASTER) {
 		auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_YELLTICKS, 30000, 0);
 		player->addCondition(condition);
 	}
@@ -5824,7 +6004,7 @@ bool Game::playerSpeakTo(std::shared_ptr<Player> player, SpeakClasses type, cons
 		return false;
 	}
 
-	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlags_t::CanTalkRedPrivate) || player->getAccountType() >= account::AccountType::ACCOUNT_TYPE_GAMEMASTER)) {
+	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlags_t::CanTalkRedPrivate) || player->getAccountType() >= AccountType::ACCOUNT_TYPE_GAMEMASTER)) {
 		type = TALKTYPE_PRIVATE_RED_FROM;
 	} else {
 #if CLIENT_VERSION <= 860
@@ -5862,6 +6042,10 @@ void Game::playerSpeakToNpc(std::shared_ptr<Player> player, const std::string &t
 	}
 
 	for (const auto &spectator : Spectators().find<Creature>(player->getPosition()).filter<Npc>()) {
+		if (!player->canSpeakWithHireling(spectator->getNpc()->getSpeechBubble())) {
+			continue;
+		}
+
 		spectator->getNpc()->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
 	}
 
@@ -6182,7 +6366,6 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	std::shared_ptr<Player> targetPlayer = target->getPlayer();
 
 	if (damage.primary.type != COMBAT_NONE) {
-
 		damage.primary.value = -damage.primary.value;
 		// Damage healing primary
 		if (attacker) {
@@ -7648,7 +7831,7 @@ bool Game::gameIsDay() {
 	return isDay;
 }
 
-void Game::dieSafely(std::string errorMsg /* = "" */) {
+void Game::dieSafely(const std::string &errorMsg /* = "" */) {
 	g_logger().error(errorMsg);
 	shutdown();
 }
@@ -8114,7 +8297,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 			break;
 		}
 		case CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS:
-			player->sendCyclopediaCharacterAchievements();
+			player->achiev()->sendUnlockedSecretAchievements();
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY:
 			player->sendCyclopediaCharacterItemSummary();
@@ -8149,7 +8332,7 @@ std::string Game::generateHighscoreQueryForEntries(const std::string &categoryNa
 	query << "SELECT *, @row AS `entries`, " << page << " AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `id`, `name`, `level`, `vocation`, `"
 		  << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName
 		  << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < "
-		  << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
+		  << static_cast<int>(GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
 
 	if (vocation != 0xFFFFFFFF) {
 		query << generateVocationConditionHighscore(vocation);
@@ -8166,7 +8349,7 @@ std::string Game::generateHighscoreQueryForOurRank(const std::string &categoryNa
 	query << "SELECT *, @row AS `entries`, (@ourRow DIV " << entriesStr << ") + 1 AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn`, @ourRow := IF(`id` = "
 		  << playerGUID << ", @row - 1, @ourRow) AS `rw` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `"
 		  << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` WHERE `group_id` < "
-		  << static_cast<int>(account::GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
+		  << static_cast<int>(GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
 
 	if (vocation != 0xFFFFFFFF) {
 		query << generateVocationConditionHighscore(vocation);
@@ -8295,33 +8478,34 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 	}
 
 	std::string categoryName;
-	switch (category) {
-		case HIGHSCORE_CATEGORY_FIST_FIGHTING:
+	const auto &categoryType = static_cast<HighscoreCategories_t>(category);
+	switch (categoryType) {
+		case HighscoreCategories_t::FIST_FIGHTING:
 			categoryName = "skill_fist";
 			break;
-		case HIGHSCORE_CATEGORY_CLUB_FIGHTING:
+		case HighscoreCategories_t::CLUB_FIGHTING:
 			categoryName = "skill_club";
 			break;
-		case HIGHSCORE_CATEGORY_SWORD_FIGHTING:
+		case HighscoreCategories_t::SWORD_FIGHTING:
 			categoryName = "skill_sword";
 			break;
-		case HIGHSCORE_CATEGORY_AXE_FIGHTING:
+		case HighscoreCategories_t::AXE_FIGHTING:
 			categoryName = "skill_axe";
 			break;
-		case HIGHSCORE_CATEGORY_DISTANCE_FIGHTING:
+		case HighscoreCategories_t::DISTANCE_FIGHTING:
 			categoryName = "skill_dist";
 			break;
-		case HIGHSCORE_CATEGORY_SHIELDING:
+		case HighscoreCategories_t::SHIELDING:
 			categoryName = "skill_shielding";
 			break;
-		case HIGHSCORE_CATEGORY_FISHING:
+		case HighscoreCategories_t::FISHING:
 			categoryName = "skill_fishing";
 			break;
-		case HIGHSCORE_CATEGORY_MAGIC_LEVEL:
+		case HighscoreCategories_t::MAGIC_LEVEL:
 			categoryName = "maglevel";
 			break;
 		default: {
-			category = HIGHSCORE_CATEGORY_EXPERIENCE;
+			category = static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE);
 			categoryName = "experience";
 			break;
 		}
@@ -8407,6 +8591,16 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 		return;
 	}
 
+	// Check npc say exhausted
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	if (!player->canSpeakWithHireling(npc->getSpeechBubble())) {
+		return;
+	}
+
 	auto spectators = Spectators().find<Player>(player->getPosition(), true);
 	spectators.insert(npc);
 	internalCreatureSay(player, TALKTYPE_SAY, "hi", false, &spectators);
@@ -8418,6 +8612,8 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 	} else {
 		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &npcsSpectators);
 	}
+
+	player->updateUIExhausted();
 }
 
 void Game::playerLeaveMarket(uint32_t playerId) {
@@ -8648,7 +8844,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			auto [transferableCoins, result] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+			auto [transferableCoins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
 			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins for player " << player->getName();
@@ -8656,7 +8852,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			}
 
 			// Do not register a transaction for coins creating an offer
-			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, static_cast<uint32_t>(amount), "");
+			player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(amount), "");
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8737,7 +8933,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			// Do not register a transaction for coins upon cancellation
-			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, offer.amount, "");
+			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), offer.amount, "");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
@@ -8849,9 +9045,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			auto [transferableCoins, error] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+			auto [transferableCoins, error] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
-			if (error != account::ERROR_NO) {
+			if (error != enumToValue(AccountErrors_t::Ok)) {
 				offerStatus << "Failed to load transferable coins for player " << player->getName();
 				return;
 			}
@@ -8862,7 +9058,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			player->getAccount()->removeCoins(
-				account::CoinType::TRANSFERABLE,
+				enumToValue(CoinType::Transferable),
 				amount,
 				"Sold on Market"
 			);
@@ -8890,7 +9086,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		g_metrics().addCounter("balance_increase", totalPrice, { { "player", player->getName() }, { "context", "market_sale" } });
 
 		if (it.id == ITEM_STORE_COIN) {
-			buyerPlayer->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
+			buyerPlayer->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -8961,7 +9157,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		g_metrics().addCounter("balance_decrease", totalPrice, { { "player", player->getName() }, { "context", "market_purchase" } });
 
 		if (it.id == ITEM_STORE_COIN) {
-			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
+			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9015,7 +9211,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 		g_metrics().addCounter("balance_increase", totalPrice, { { "player", sellerPlayer->getName() }, { "context", "market_sale" } });
 		if (it.id == ITEM_STORE_COIN) {
-			sellerPlayer->getAccount()->registerCoinTransaction(account::CoinTransactionType::REMOVE, account::CoinType::TRANSFERABLE, amount, "Sold on Market");
+			const auto &tranferable = enumToValue(CoinType::Transferable);
+			const auto &removeCoin = enumToValue(CoinTransactionType::Remove);
+			sellerPlayer->getAccount()->registerCoinTransaction(removeCoin, tranferable, amount, "Sold on Market");
 		}
 
 		if (it.id != ITEM_STORE_COIN) {
@@ -9247,8 +9445,10 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		if (stdext::arraylist<Direction> listDir(128);
 			player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher().addEvent(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
-			std::shared_ptr<Task> task = createPlayerTask(400, std::bind_front(&Game::playerBrowseField, this, playerId, pos), "Game::playerBrowseField");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
+			std::shared_ptr<Task> task = createPlayerTask(
+				400, [this, playerId, pos] { playerBrowseField(playerId, pos); }, "Game::playerBrowseField"
+			);
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -9346,9 +9546,13 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		if (stdext::arraylist<Direction> listDir(128);
 			player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir.data()), "Game::playerAutoWalk");
-
-			std::shared_ptr<Task> task = createPlayerTask(400, std::bind_front(&Game::playerRotatePodium, this, playerId, pos, stackPos, itemId), "Game::playerRotatePodium");
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
+			std::shared_ptr<Task> task = createPlayerTask(
+				400, [this, playerId, pos, stackPos, itemId] {
+					playerRotatePodium(playerId, pos, stackPos, itemId);
+				},
+				"Game::playerRotatePodium"
+			);
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -9530,14 +9734,14 @@ void Game::updatePlayerSaleItems(uint32_t playerId) {
 void Game::addPlayer(std::shared_ptr<Player> player) {
 	const std::string &lowercase_name = asLowerCaseString(player->getName());
 	mappedPlayerNames[lowercase_name] = player;
-	wildcardTree.insert(lowercase_name);
+	wildcardTree->insert(lowercase_name);
 	players[player->getID()] = player;
 }
 
 void Game::removePlayer(std::shared_ptr<Player> player) {
 	const std::string &lowercase_name = asLowerCaseString(player->getName());
 	mappedPlayerNames.erase(lowercase_name);
-	wildcardTree.remove(lowercase_name);
+	wildcardTree->remove(lowercase_name);
 	players.erase(player->getID());
 }
 
@@ -9866,7 +10070,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 
 		auto schedulerTask = createPlayerTask(
 			finalTime,
-			std::bind_front(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName()),
+			[this, monster] { updateFiendishMonsterStatus(monster->getID(), monster->getName()); },
 			"Game::updateFiendishMonsterStatus"
 		);
 		forgeMonsterEventIds[monster->getID()] = g_dispatcher().scheduleEvent(schedulerTask);
@@ -9905,7 +10109,9 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 		influencedMonsters.erase(find);
 
 		if (create) {
-			g_dispatcher().scheduleEvent(200 * 1000, std::bind_front(&Game::makeInfluencedMonster, this), "Game::makeInfluencedMonster");
+			g_dispatcher().scheduleEvent(
+				200 * 1000, [this] { makeInfluencedMonster(); }, "Game::makeInfluencedMonster"
+			);
 		}
 	} else {
 		g_logger().warn("[Game::removeInfluencedMonster] - Failed to remove a Influenced Monster, error code: monster id not exist in the influenced monsters map");
@@ -9921,7 +10127,9 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 		checkForgeEventId(id);
 
 		if (create) {
-			g_dispatcher().scheduleEvent(300 * 1000, std::bind_front(&Game::makeFiendishMonster, this, 0, false), "Game::makeFiendishMonster");
+			g_dispatcher().scheduleEvent(
+				300 * 1000, [this] { makeFiendishMonster(0, false); }, "Game::makeFiendishMonster"
+			);
 		}
 	} else {
 		g_logger().warn("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster, error code: monster id not exist in the fiendish monsters map");
@@ -10119,7 +10327,9 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		}
 	}
 
-	g_dispatcher().scheduleEvent(1000, std::bind(&Game::playerCheckActivity, this, playerName, interval), "Game::playerCheckActivity");
+	g_dispatcher().scheduleEvent(
+		1000, [this, playerName, interval] { playerCheckActivity(playerName, interval); }, "Game::playerCheckActivity"
+	);
 }
 
 void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems /* = 0*/) {
@@ -10140,8 +10350,11 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 		return;
 	}
 
-	if (auto function = std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos, maxMoveItems);
-		player->canAutoWalk(item->getPosition(), function)) {
+	const auto &function = [this, playerId = player->getID(), pos, itemId, stackPos, maxMoveItems] {
+		playerRewardChestCollect(playerId, pos, itemId, stackPos, maxMoveItems);
+	};
+
+	if (player->canAutoWalk(item->getPosition(), function)) {
 		return;
 	}
 
@@ -10285,4 +10498,62 @@ void Game::afterCreatureZoneChange(std::shared_ptr<Creature> creature, const std
 	for (const auto &zone : zonesEntering) {
 		g_callbacks().executeCallback(EventCallback_t::zoneAfterCreatureEnter, &EventCallback::zoneAfterCreatureEnter, zone, creature);
 	}
+}
+
+const std::unordered_map<uint8_t, std::string> &Game::getHighscoreCategoriesName() const {
+	return m_highscoreCategoriesNames;
+}
+
+const std::vector<HighscoreCategory> &Game::getHighscoreCategories() const {
+	return m_highscoreCategories;
+}
+
+void Game::registerAchievement(uint16_t id, std::string name, std::string description, bool secret, uint8_t grade, uint8_t points) {
+	m_achievements[id] = Achievement();
+	m_achievements[id].id = id;
+	m_achievements[id].name = name;
+	m_achievements[id].description = description;
+	m_achievements[id].secret = secret;
+	m_achievements[id].grade = grade;
+	m_achievements[id].points = points;
+
+	m_achievementsNameToId.emplace(name, id);
+}
+
+Achievement Game::getAchievementById(uint16_t id) {
+	return m_achievements[id];
+}
+
+Achievement Game::getAchievementByName(std::string name) {
+	auto it = m_achievementsNameToId.find(name);
+	if (it != m_achievementsNameToId.end()) {
+		return getAchievementById(it->second);
+	}
+	return {};
+}
+
+std::vector<Achievement> Game::getSecretAchievements() {
+	std::vector<Achievement> secrets;
+	for (const auto &achievement : m_achievements) {
+		if (achievement.second.secret) {
+			secrets.emplace_back(achievement.second);
+		}
+	}
+
+	return secrets;
+}
+
+std::vector<Achievement> Game::getPublicAchievements() {
+	std::vector<Achievement> publics;
+	for (const auto &achievement : m_achievements) {
+		if (!achievement.second.secret) {
+			publics.emplace_back(achievement.second);
+		}
+	}
+
+	return publics;
+}
+
+std::map<uint16_t, Achievement> Game::getAchievements() {
+	return m_achievements;
 }

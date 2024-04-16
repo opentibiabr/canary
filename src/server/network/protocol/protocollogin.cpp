@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -17,6 +17,7 @@
 #include "creatures/players/management/ban.hpp"
 #include "game/game.hpp"
 #include "core.hpp"
+#include "enums/account_errors.hpp"
 
 void ProtocolLogin::disconnectClient(const std::string &message) {
 	auto output = OutputMessagePool::getOutputMessage();
@@ -45,7 +46,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	}
 #endif
 
-	account::Account account(accountDescriptor);
+	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
 	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__)) {
@@ -56,7 +57,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		return;
 	}
 
-	if (account.load() != account::ERROR_NO || !account.authenticate(password)) {
+	if (account.load() != enumToValue(AccountErrors_t::Ok) || !account.authenticate(password)) {
 		std::ostringstream ss;
 		ss << (oldProtocol ? "Username" : "Email") << " or password is not correct.";
 		disconnectClient(ss.str());
@@ -83,7 +84,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	// Add char list
 	auto [players, result] = account.getAccountPlayers();
-	if (account::ERROR_NO != result) {
+	if (enumToValue(AccountErrors_t::Ok) != result) {
 		g_logger().warn("Account[{}] failed to load players!", account.getID());
 	}
 
@@ -117,17 +118,12 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	auto freePremiumEnabled = g_configManager().getBoolean(FREE_PREMIUM, "ProtocolLogin::getCharacterList - FreePremium");
 #if CLIENT_VERSION >= 1080
+	// Get premium days, check is premium and get lastday
 	#if CLIENT_VERSION >= 1082
-	// Add premium days
-	output->addByte(0);
+	output->addByte(account.getPremiumRemainingDays());
 	#endif
-	if (freePremiumEnabled) {
-		output->addByte(1);
-		output->add<uint32_t>(0);
-	} else {
-		output->addByte(account.getPremiumRemainingDays() > 0);
-		output->add<uint32_t>(account.getPremiumLastDay());
-	}
+	output->addByte(account.getPremiumLastDay() > getTimeNow());
+	output->add<uint32_t>(account.getPremiumLastDay());
 #else
 	if (freePremiumEnabled) {
 		output->add<uint16_t>(0xFFFF); // client displays free premium
@@ -236,6 +232,8 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
-	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher().addEvent(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountDescriptor, password), "ProtocolLogin::getCharacterList");
+	g_dispatcher().addEvent([self = std::static_pointer_cast<ProtocolLogin>(shared_from_this()), accountDescriptor, password] {
+		self->getCharacterList(accountDescriptor, password);
+	},
+							"ProtocolLogin::getCharacterList");
 }

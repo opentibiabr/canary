@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -18,6 +18,8 @@
 #include "creatures/creature.hpp"
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
 
 #define registerMagicEnum(luaState, enumClassType)               \
 	{                                                            \
@@ -216,18 +218,18 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {
-	registerEnum(L, account::ACCOUNT_TYPE_NORMAL);
-	registerEnum(L, account::ACCOUNT_TYPE_TUTOR);
-	registerEnum(L, account::ACCOUNT_TYPE_SENIORTUTOR);
-	registerEnum(L, account::ACCOUNT_TYPE_GAMEMASTER);
-	registerEnum(L, account::ACCOUNT_TYPE_GOD);
+	registerEnum(L, ACCOUNT_TYPE_NORMAL);
+	registerEnum(L, ACCOUNT_TYPE_TUTOR);
+	registerEnum(L, ACCOUNT_TYPE_SENIORTUTOR);
+	registerEnum(L, ACCOUNT_TYPE_GAMEMASTER);
+	registerEnum(L, ACCOUNT_TYPE_GOD);
 
-	registerEnum(L, account::GROUP_TYPE_NORMAL);
-	registerEnum(L, account::GROUP_TYPE_TUTOR);
-	registerEnum(L, account::GROUP_TYPE_SENIORTUTOR);
-	registerEnum(L, account::GROUP_TYPE_GAMEMASTER);
-	registerEnum(L, account::GROUP_TYPE_COMMUNITYMANAGER);
-	registerEnum(L, account::GROUP_TYPE_GOD);
+	registerEnum(L, GROUP_TYPE_NORMAL);
+	registerEnum(L, GROUP_TYPE_TUTOR);
+	registerEnum(L, GROUP_TYPE_SENIORTUTOR);
+	registerEnum(L, GROUP_TYPE_GAMEMASTER);
+	registerEnum(L, GROUP_TYPE_COMMUNITYMANAGER);
+	registerEnum(L, GROUP_TYPE_GOD);
 }
 
 void LuaEnums::initDailyRewardEnums(lua_State* L) {
@@ -869,6 +871,7 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_REWARD_CONTAINER);
 	registerEnum(L, ITEM_AMULETOFLOSS);
 	registerEnum(L, ITEM_PARCEL);
+	registerEnum(L, ITEM_PARCEL_STAMPED);
 	registerEnum(L, ITEM_LABEL);
 	registerEnum(L, ITEM_FIREFIELD_PVP_FULL);
 	registerEnum(L, ITEM_FIREFIELD_PVP_MEDIUM);
@@ -1127,6 +1130,9 @@ void LuaEnums::initMapMarkEnums(lua_State* L) {
 // Use with Game.getReturnMessage
 void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOERROR);
+	registerEnum(L, RETURNVALUE_NOTBOUGHTINSTORE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDTHERE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH);
 	registerEnum(L, RETURNVALUE_NOTPOSSIBLE);
 	registerEnum(L, RETURNVALUE_NOTENOUGHROOM);
 	registerEnum(L, RETURNVALUE_PLAYERISPZLOCKED);

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,6 +12,9 @@
 #include "account/account.hpp"
 #include "lua/creature/talkaction.hpp"
 #include "lua/functions/events/talk_action_functions.hpp"
+#include "utils/tools.hpp"
+
+#include "enums/account_group_type.hpp"
 
 int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
 	// TalkAction(words) or TalkAction(word1, word2, word3)
@@ -53,25 +56,24 @@ int TalkActionFunctions::luaTalkActionGroupType(lua_State* L) {
 		return 1;
 	}
 
-	account::GroupType groupType;
-
+	GroupType groupType;
 	int type = lua_type(L, 2);
 	if (type == LUA_TNUMBER) {
-		groupType = static_cast<account::GroupType>(getNumber<uint8_t>(L, 2));
+		groupType = enumFromValue<GroupType>(getNumber<uint8_t>(L, 2));
 	} else if (type == LUA_TSTRING) {
 		std::string strValue = getString(L, 2);
 		if (strValue == "normal") {
-			groupType = account::GROUP_TYPE_NORMAL;
+			groupType = GROUP_TYPE_NORMAL;
 		} else if (strValue == "tutor") {
-			groupType = account::GROUP_TYPE_TUTOR;
+			groupType = GROUP_TYPE_TUTOR;
 		} else if (strValue == "seniortutor" || strValue == "senior tutor") {
-			groupType = account::GROUP_TYPE_SENIORTUTOR;
+			groupType = GROUP_TYPE_SENIORTUTOR;
 		} else if (strValue == "gamemaster" || strValue == "gm") {
-			groupType = account::GROUP_TYPE_GAMEMASTER;
+			groupType = GROUP_TYPE_GAMEMASTER;
 		} else if (strValue == "communitymanager" || strValue == "cm" || strValue == "community manager") {
-			groupType = account::GROUP_TYPE_COMMUNITYMANAGER;
+			groupType = GROUP_TYPE_COMMUNITYMANAGER;
 		} else if (strValue == "god") {
-			groupType = account::GROUP_TYPE_GOD;
+			groupType = GROUP_TYPE_GOD;
 		} else {
 			auto string = fmt::format("Invalid group type string value {} for group type for script: {}", strValue, getScriptEnv()->getScriptInterface()->getLoadingScriptName());
 			reportErrorFunc(string);
@@ -104,7 +106,7 @@ int TalkActionFunctions::luaTalkActionRegister(lua_State* L) {
 		return 1;
 	}
 
-	if (talkactionSharedPtr->getGroupType() == account::GROUP_TYPE_NONE) {
+	if (talkactionSharedPtr->getGroupType() == GROUP_TYPE_NONE) {
 		auto string = fmt::format("TalkAction with name {} does't have groupType", talkactionSharedPtr->getWords());
 		reportErrorFunc(string);
 		pushBoolean(L, false);

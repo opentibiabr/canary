@@ -8,7 +8,7 @@ function heartMinionDeath.onDeath(creature)
 		rageSummon = rageSummon - 1
 		devourerSummon = devourerSummon - 1
 	elseif monster == "damage resonance" then
-		resonanceActive = false
+		Game.setStorageValue(GlobalStorage.HeartOfDestruction.RuptureResonanceActive, 0)
 	elseif monster == "disruption" or monster == "charged disruption" or monster == "overcharged disruption" then
 		destructionSummon = destructionSummon - 1
 		devourerSummon = devourerSummon - 1

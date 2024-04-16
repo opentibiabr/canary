@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -389,6 +389,7 @@ private:
 
 	Position masterPos;
 
+	bool isWalkingBack = false;
 	bool isIdle = true;
 	bool extraMeleeAttack = false;
 	bool randomStepping = false;
@@ -427,6 +428,7 @@ private:
 	bool canUseSpell(const Position &pos, const Position &targetPos, const spellBlock_t &sb, uint32_t interval, bool &inRange, bool &resetTicks);
 	bool getRandomStep(const Position &creaturePos, Direction &direction);
 	bool getDanceStep(const Position &creaturePos, Direction &direction, bool keepAttack = true, bool keepDistance = true);
+	bool isInSpawnLocation() const;
 	bool isInSpawnRange(const Position &pos) const;
 	bool canWalkTo(Position pos, Direction direction);
 
@@ -460,6 +462,7 @@ private:
 
 	static std::vector<std::pair<int8_t, int8_t>> getPushItemLocationOptions(const Direction &direction);
 
+	void doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result);
 	void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
 	void doRandomStep(Direction &nextDirection, bool &result);
 

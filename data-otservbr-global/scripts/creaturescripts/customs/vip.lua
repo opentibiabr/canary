@@ -2,7 +2,7 @@ local playerLogin = CreatureEvent("VipLogin")
 
 function playerLogin.onLogin(player)
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
-		local wasVip = player:getStorageValue(Storage.VipSystem.IsVip) == 1
+		local wasVip = player:kv():scoped("account"):get("vip-system") or false
 		if wasVip and not player:isVip() then
 			player:onRemoveVip()
 		end

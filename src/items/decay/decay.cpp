@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -10,8 +10,14 @@
 #include "pch.hpp"
 
 #include "items/decay/decay.hpp"
+
+#include "lib/di/container.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+
+Decay &Decay::getInstance() {
+	return inject<Decay>();
+}
 
 void Decay::startDecay(std::shared_ptr<Item> item) {
 	if (!item) {
@@ -41,11 +47,15 @@ void Decay::startDecay(std::shared_ptr<Item> item) {
 
 		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
-			eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+			eventId = g_dispatcher().scheduleEvent(
+				std::max<int32_t>(SCHEDULER_MINTICKS, duration), [this] { checkDecay(); }, "Decay::checkDecay"
+			);
 		} else {
 			if (timestamp < decayMap.begin()->first) {
 				g_dispatcher().stopEvent(eventId);
-				eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+				eventId = g_dispatcher().scheduleEvent(
+					std::max<int32_t>(SCHEDULER_MINTICKS, duration), [this] { checkDecay(); }, "Decay::checkDecay"
+				);
 			}
 		}
 
@@ -132,7 +142,9 @@ void Decay::checkDecay() {
 	}
 
 	if (it != end) {
-		eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+		eventId = g_dispatcher().scheduleEvent(
+			std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), [this] { checkDecay(); }, "Decay::checkDecay"
+		);
 	}
 }
 

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -26,6 +26,7 @@
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "map/spectators.hpp"
 
 // Game
@@ -791,5 +792,115 @@ int GameFunctions::luaGameGetEventCallbacks(lua_State* L) {
 	}
 	// Pop the function
 	lua_pop(L, 1);
+	return 1;
+}
+
+int GameFunctions::luaGameRegisterAchievement(lua_State* L) {
+	// Game.registerAchievement(id, name, description, secret, grade, points)
+	if (lua_gettop(L) < 6) {
+		reportErrorFunc("Achievement can only be registered with all params.");
+		return 1;
+	}
+
+	uint16_t id = getNumber<uint16_t>(L, 1);
+	std::string name = getString(L, 2);
+	std::string description = getString(L, 3);
+	bool secret = getBoolean(L, 4);
+	uint8_t grade = getNumber<uint8_t>(L, 5);
+	uint8_t points = getNumber<uint8_t>(L, 6);
+	g_game().registerAchievement(id, name, description, secret, grade, points);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int GameFunctions::luaGameGetAchievementInfoById(lua_State* L) {
+	// Game.getAchievementInfoById(id)
+	uint16_t id = getNumber<uint16_t>(L, 1);
+	Achievement achievement = g_game().getAchievementById(id);
+	if (achievement.id == 0) {
+		reportErrorFunc("Achievement id is wrong");
+		return 1;
+	}
+
+	lua_createtable(L, 0, 6);
+	setField(L, "id", achievement.id);
+	setField(L, "name", achievement.name);
+	setField(L, "description", achievement.description);
+	setField(L, "points", achievement.points);
+	setField(L, "grade", achievement.grade);
+	setField(L, "secret", achievement.secret);
+	return 1;
+}
+
+int GameFunctions::luaGameGetAchievementInfoByName(lua_State* L) {
+	// Game.getAchievementInfoByName(name)
+	std::string name = getString(L, 1);
+	Achievement achievement = g_game().getAchievementByName(name);
+	if (achievement.id == 0) {
+		reportErrorFunc("Achievement name is wrong");
+		return 1;
+	}
+
+	lua_createtable(L, 0, 6);
+	setField(L, "id", achievement.id);
+	setField(L, "name", achievement.name);
+	setField(L, "description", achievement.description);
+	setField(L, "points", achievement.points);
+	setField(L, "grade", achievement.grade);
+	setField(L, "secret", achievement.secret);
+	return 1;
+}
+
+int GameFunctions::luaGameGetSecretAchievements(lua_State* L) {
+	// Game.getSecretAchievements()
+	const std::vector<Achievement> &achievements = g_game().getSecretAchievements();
+	int index = 0;
+	lua_createtable(L, achievements.size(), 0);
+	for (const auto &achievement : achievements) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement.id);
+		setField(L, "name", achievement.name);
+		setField(L, "description", achievement.description);
+		setField(L, "points", achievement.points);
+		setField(L, "grade", achievement.grade);
+		setField(L, "secret", achievement.secret);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetPublicAchievements(lua_State* L) {
+	// Game.getPublicAchievements()
+	const std::vector<Achievement> &achievements = g_game().getPublicAchievements();
+	int index = 0;
+	lua_createtable(L, achievements.size(), 0);
+	for (const auto &achievement : achievements) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement.id);
+		setField(L, "name", achievement.name);
+		setField(L, "description", achievement.description);
+		setField(L, "points", achievement.points);
+		setField(L, "grade", achievement.grade);
+		setField(L, "secret", achievement.secret);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetAchievements(lua_State* L) {
+	// Game.getAchievements()
+	const std::map<uint16_t, Achievement> &achievements = g_game().getAchievements();
+	int index = 0;
+	lua_createtable(L, achievements.size(), 0);
+	for (const auto &achievement_it : achievements) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement_it.first);
+		setField(L, "name", achievement_it.second.name);
+		setField(L, "description", achievement_it.second.description);
+		setField(L, "points", achievement_it.second.points);
+		setField(L, "grade", achievement_it.second.grade);
+		setField(L, "secret", achievement_it.second.secret);
+		lua_rawseti(L, -2, ++index);
+	}
 	return 1;
 }

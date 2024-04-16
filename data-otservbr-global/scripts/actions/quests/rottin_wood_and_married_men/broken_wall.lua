@@ -5,9 +5,9 @@ function rottinWoodBroken.onUse(player, item, fromPosition, itemEx, toPosition, 
 		player:setStorageValue(Storage.RottinWoodAndMaried.RottinStart, 6)
 		player:teleportTo(position)
 		position:sendMagicEffect(CONST_ME_TELEPORT)
-		player:say("There we go.", TALKTYPE_ORANGE_1)
+		player:say("There we go.", TALKTYPE_MONSTER_SAY)
 	else
-		player:say("You already done this mission, go and talk with Rottin Wood to others missions.", TALKTYPE_ORANGE_1)
+		player:say("You already done this mission, go and talk with Rottin Wood to others missions.", TALKTYPE_MONSTER_SAY)
 		return true
 	end
 	return true

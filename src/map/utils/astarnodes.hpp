@@ -9,7 +9,7 @@
 
 #pragma once
 
-class Position;
+struct Position;
 class Creature;
 class Tile;
 

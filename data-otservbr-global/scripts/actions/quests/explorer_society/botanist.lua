@@ -20,10 +20,10 @@ function explorerSocietyBotanist.onUse(player, item, fromPosition, target, toPos
 			toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)
 			item:transform(5937)
 			player:setStorageValue(53051, 1)
-			player:say("You successfully took a sample of the rare griffinclaw flower.", TALKTYPE_ORANGE_1)
+			player:say("You successfully took a sample of the rare griffinclaw flower.", TALKTYPE_MONSTER_SAY)
 		else
 			toPosition:sendMagicEffect(CONST_ME_POFF)
-			player:say("You already took a sample of the rare griffinclaw flower.", TALKTYPE_ORANGE_1)
+			player:say("You already took a sample of the rare griffinclaw flower.", TALKTYPE_MONSTER_SAY)
 		end
 	end
 	return true

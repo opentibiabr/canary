@@ -48,7 +48,7 @@ local maxsummons = 25
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	creature:say("RISE MY SERVANTS! RISE!!", TALKTYPE_ORANGE_2)
+	creature:say("RISE MY SERVANTS! RISE!!", TALKTYPE_MONSTER_YELL)
 
 	local summoncount = creature:getSummons()
 	local creaturePos = creature:getPosition()

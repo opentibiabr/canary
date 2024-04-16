@@ -38,7 +38,7 @@ function cupCakes.onUse(player, item, fromPos, itemEx, toPos)
 			player:addCondition(lemon)
 			player:sendTextMessage(MESSAGE_FAILURE, "You feel more focused.")
 		end
-		player:say("Mmmm.", TALKTYPE_ORANGE_1)
+		player:say("Mmmm.", TALKTYPE_MONSTER_SAY)
 		item:remove(1)
 		player:setStorageValue(foundItem.ExhaustStor, os.time() + (foundItem.timestamp * 60))
 	else

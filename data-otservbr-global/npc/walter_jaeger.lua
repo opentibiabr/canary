@@ -291,7 +291,7 @@ local function processItemInboxPurchase(player, name, id)
 			return true
 		end
 	else
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "Please make sure you have free slots in your store inbox.")
+		player:sendTextMessage(MESSAGE_LOOK, "Please make sure you have free slots in your store inbox.")
 	end
 
 	return false

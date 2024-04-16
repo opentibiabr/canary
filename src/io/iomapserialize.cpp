@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -47,8 +47,9 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 
 		while (item_count--) {
 			if (auto houseTile = std::dynamic_pointer_cast<HouseTile>(tile)) {
-				const auto house = houseTile->getHouse();
-				if (house->getOwner() == 0) {
+				const auto &house = houseTile->getHouse();
+				auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+				if (!isTransferOnRestart && house->getOwner() == 0) {
 					g_logger().trace("Skipping load item from house id: {}, position: {}, house does not have owner", house->getId(), house->getEntryPosition().toString());
 					house->clearHouseInfo(false);
 					continue;

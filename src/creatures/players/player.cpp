@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,8 +15,10 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
+#include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/task.hpp"
 #include "game/scheduling/save_manager.hpp"
@@ -32,6 +34,10 @@
 #include "core.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "enums/object_category.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
 
 #if CLIENT_VERSION >= 870
 	#include "creatures/appearance/mounts/mounts.hpp"
@@ -46,6 +52,7 @@ Player::Player(ProtocolGame_ptr p) :
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)) {
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
+	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 }
 
 Player::~Player() {
@@ -219,7 +226,12 @@ std::shared_ptr<Item> Player::getInventoryItem(Slots_t slot) const {
 	return inventory[slot];
 }
 
-bool Player::isSuppress(ConditionType_t conditionType) const {
+bool Player::isSuppress(ConditionType_t conditionType, bool attackerPlayer) const {
+	auto minDelay = g_configManager().getNumber(MIN_DELAY_BETWEEN_CONDITIONS, __FUNCTION__);
+	if (IsConditionSuppressible(conditionType) && checkLastConditionTimeWithin(conditionType, minDelay)) {
+		return true;
+	}
+
 	return m_conditionSuppressions[static_cast<size_t>(conditionType)];
 }
 
@@ -454,7 +466,7 @@ float Player::getDefenseFactor() const {
 uint32_t Player::getClientIcons() {
 	uint32_t icons = 0;
 	for (const auto &condition : conditions) {
-		if (!isSuppress(condition->getType())) {
+		if (!isSuppress(condition->getType(), false)) {
 			icons |= condition->getIcons();
 		}
 	}
@@ -1936,7 +1948,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addEvent(std::bind(&Game::updateCreatureWalk, &g_game(), getID()), "Game::updateCreatureWalk");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
 	}
 
 	if (creature != getPlayer()) {
@@ -2192,7 +2204,7 @@ void Player::onThink(uint32_t interval) {
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
 			std::ostringstream ss;
 			ss << "There was no variation in your behaviour for " << kickAfterMinutes << " minutes. You will be disconnected in one minute if there is no change in your actions until then.";
-			client->sendTextMessage(TextMessage(MESSAGE_STATUS_WARNING, ss.str()));
+			client->sendTextMessage(TextMessage(MESSAGE_ADMINISTRATOR, ss.str()));
 		}
 	}
 
@@ -2671,6 +2683,11 @@ BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t co
 }
 
 void Player::death(std::shared_ptr<Creature> lastHitCreature) {
+	if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && isMounted()) {
+		dismount();
+		g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
+	}
+
 	loginPosition = town->getTemplePosition();
 
 	g_game().sendSingleSoundEffect(static_self_cast<Player>()->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, getPlayer());
@@ -3179,12 +3196,18 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 	ReturnValue ret = RETURNVALUE_NOERROR;
 
 	const int32_t &slotPosition = item->getSlotPosition();
-	if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING)) {
-		ret = RETURNVALUE_CANNOTBEDRESSED;
-	} else if (slotPosition & SLOTP_TWO_HAND) {
-		ret = RETURNVALUE_PUTTHISOBJECTINBOTHHANDS;
-	} else if ((slotPosition & SLOTP_RIGHT) || (slotPosition & SLOTP_LEFT)) {
-		ret = RETURNVALUE_CANNOTBEDRESSED;
+
+	bool allowPutItemsOnAmmoSlot = g_configManager().getBoolean(ENABLE_PLAYER_PUT_ITEM_IN_AMMO_SLOT, __FUNCTION__);
+	if (allowPutItemsOnAmmoSlot && index == CONST_SLOT_AMMO) {
+		ret = RETURNVALUE_NOERROR;
+	} else {
+		if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING)) {
+			ret = RETURNVALUE_CANNOTBEDRESSED;
+		} else if (slotPosition & SLOTP_TWO_HAND) {
+			ret = RETURNVALUE_PUTTHISOBJECTINBOTHHANDS;
+		} else if ((slotPosition & SLOTP_RIGHT) || (slotPosition & SLOTP_LEFT)) {
+			ret = RETURNVALUE_CANNOTBEDRESSED;
+		}
 	}
 
 	switch (index) {
@@ -3237,11 +3260,7 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 					}
 				}
 			} else if (slotPosition & SLOTP_TWO_HAND) {
-				if (inventory[CONST_SLOT_LEFT] && inventory[CONST_SLOT_LEFT] != item) {
-					ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
-				} else {
-					ret = RETURNVALUE_NOERROR;
-				}
+				ret = RETURNVALUE_CANNOTBEDRESSED;
 			} else if (inventory[CONST_SLOT_LEFT]) {
 				std::shared_ptr<Item> leftItem = inventory[CONST_SLOT_LEFT];
 				WeaponType_t type = item->getWeaponType(), leftType = leftItem->getWeaponType();
@@ -3264,22 +3283,24 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		}
 
 		case CONST_SLOT_LEFT: {
-			if (slotPosition & SLOTP_LEFT) {
+			if (item->isQuiver()) {
+				ret = RETURNVALUE_CANNOTBEDRESSED;
+			} else if (slotPosition & SLOTP_LEFT) {
 				WeaponType_t type = item->getWeaponType();
 				if (type == WEAPON_NONE || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
 					ret = RETURNVALUE_CANNOTBEDRESSED;
-				} else if (inventory[CONST_SLOT_RIGHT] && (slotPosition & SLOTP_TWO_HAND)) {
+				} else {
+					ret = RETURNVALUE_NOERROR;
+				}
+			} else if (slotPosition & SLOTP_TWO_HAND) {
+				if (inventory[CONST_SLOT_RIGHT]) {
+					WeaponType_t type = item->getWeaponType();
+					// Allow equip bow when quiver is in SLOT_RIGHT
 					if (type == WEAPON_DISTANCE && inventory[CONST_SLOT_RIGHT]->isQuiver()) {
 						ret = RETURNVALUE_NOERROR;
 					} else {
 						ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
 					}
-				} else {
-					ret = RETURNVALUE_NOERROR;
-				}
-			} else if (slotPosition & SLOTP_TWO_HAND) {
-				if (inventory[CONST_SLOT_RIGHT] && inventory[CONST_SLOT_RIGHT] != item) {
-					ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
 				} else {
 					ret = RETURNVALUE_NOERROR;
 				}
@@ -3326,8 +3347,12 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		}
 
 		case CONST_SLOT_AMMO: {
-			if ((slotPosition & SLOTP_AMMO)) {
+			if (allowPutItemsOnAmmoSlot) {
 				ret = RETURNVALUE_NOERROR;
+			} else {
+				if ((slotPosition & SLOTP_AMMO)) {
+					ret = RETURNVALUE_NOERROR;
+				}
 			}
 			break;
 		}
@@ -4116,16 +4141,11 @@ void Player::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<C
 	}
 
 	bool requireListUpdate = true;
-
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
 		std::shared_ptr<Item> i = (oldParent ? oldParent->getItem() : nullptr);
-
-		// Check if we owned the old container too, so we don't need to do anything,
-		// as the list was updated in postRemoveNotification
-		assert(i ? i->getContainer() != nullptr : true);
-
-		if (i) {
-			requireListUpdate = i->getContainer()->getHoldingPlayer() != getPlayer();
+		const auto &container = i ? i->getContainer() : nullptr;
+		if (container) {
+			requireListUpdate = container->getHoldingPlayer() != getPlayer();
 		} else {
 			requireListUpdate = oldParent != getPlayer();
 		}
@@ -4177,15 +4197,9 @@ void Player::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_pt
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
 		std::shared_ptr<Item> i = (newParent ? newParent->getItem() : nullptr);
-
-		// Check if we owned the old container too, so we don't need to do anything,
-		// as the list was updated in postRemoveNotification
-		assert(i ? i->getContainer() != nullptr : true);
-
-		if (i) {
-			if (auto container = i->getContainer()) {
-				requireListUpdate = container->getHoldingPlayer() != getPlayer();
-			}
+		const auto &container = i ? i->getContainer() : nullptr;
+		if (container) {
+			requireListUpdate = container->getHoldingPlayer() != getPlayer();
 		} else {
 			requireListUpdate = newParent != getPlayer();
 		}
@@ -4245,7 +4259,7 @@ bool Player::updateSaleShopList(std::shared_ptr<Item> item) {
 		return true;
 	}
 
-	g_dispatcher().addEvent(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()), "updatePlayerSaleItems");
+	g_dispatcher().addEvent([creatureId = getID()] { g_game().updatePlayerSaleItems(creatureId); }, "Game::updatePlayerSaleItems");
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -4316,7 +4330,7 @@ bool Player::setAttackedCreature(std::shared_ptr<Creature> creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addEvent(std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
 	}
 	return true;
 }
@@ -4376,7 +4390,11 @@ void Player::doAttacking(uint32_t) {
 			result = Weapon::useFist(static_self_cast<Player>(), attackedCreature);
 		}
 
-		std::shared_ptr<Task> task = createPlayerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()), "Game::checkCreatureAttack");
+		const auto &task = createPlayerTask(
+			std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
+			[playerId = getID()] { g_game().checkCreatureAttack(playerId); }, "Game::checkCreatureAttack"
+		);
+
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
 		} else {
@@ -4497,6 +4515,9 @@ void Player::onAddCondition(ConditionType_t type) {
 }
 
 void Player::onAddCombatCondition(ConditionType_t type) {
+	if (IsConditionSuppressible(type)) {
+		updateLastConditionTime(type);
+	}
 	switch (type) {
 		case CONDITION_POISON:
 			sendTextMessage(MESSAGE_FAILURE, "You are poisoned.");
@@ -5379,6 +5400,14 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
 }
 
+bool Player::isAccessPlayer() const {
+	return group->access;
+}
+
+bool Player::isPlayerGroup() const {
+	return group->id <= GROUP_TYPE_SENIORTUTOR;
+}
+
 bool Player::isPremium() const {
 	if (g_configManager().getBoolean(FREE_PREMIUM, __FUNCTION__) || hasFlag(PlayerFlags_t::IsAlwaysPremium)) {
 		return true;
@@ -5389,6 +5418,14 @@ bool Player::isPremium() const {
 	}
 
 	return account->getPremiumRemainingDays() > 0 || account->getPremiumLastDay() > getTimeNow();
+}
+
+uint32_t Player::getPremiumDays() const {
+	return account->getPremiumRemainingDays();
+}
+
+time_t Player::getPremiumLastDay() const {
+	return account->getPremiumLastDay();
 }
 
 void Player::setTibiaCoins(int32_t v) {
@@ -5909,7 +5946,6 @@ void Player::dismount() {
 	}
 
 	defaultOutfit.lookMount = 0;
-	setCurrentMount(0);
 }
 #endif
 
@@ -6109,6 +6145,12 @@ void Player::sendClosePrivate(uint16_t channelId) {
 
 	if (client) {
 		client->sendClosePrivate(channelId);
+	}
+}
+
+void Player::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
+	if (client) {
+		client->sendCyclopediaCharacterAchievements(secretsUnlocked, achievementsUnlocked);
 	}
 }
 
@@ -6432,7 +6474,7 @@ void Player::stowItem(std::shared_ptr<Item> item, uint32_t count, bool allItems)
 		// Stow locker items
 		std::shared_ptr<DepotLocker> depotLocker = getDepotLocker(getLastDepotId());
 		auto [itemVector, itemMap] = requestLockerItems(depotLocker);
-		for (auto lockerItem : itemVector) {
+		for (const auto &lockerItem : itemVector) {
 			if (lockerItem == nullptr) {
 				break;
 			}
@@ -6443,7 +6485,7 @@ void Player::stowItem(std::shared_ptr<Item> item, uint32_t count, bool allItems)
 		}
 	} else if (item->getContainer()) {
 		itemDict = item->getContainer()->getStowableItems();
-		for (std::shared_ptr<Item> containerItem : item->getContainer()->getItems(true)) {
+		for (const std::shared_ptr<Item> &containerItem : item->getContainer()->getItems(true)) {
 			uint32_t depotChest = g_configManager().getNumber(DEPOTCHEST, __FUNCTION__);
 			bool validDepot = depotChest > 0 && depotChest < 21;
 			if (g_configManager().getBoolean(STASH_MOVING, __FUNCTION__) && containerItem && !containerItem->isStackable() && validDepot) {
@@ -6453,10 +6495,10 @@ void Player::stowItem(std::shared_ptr<Item> item, uint32_t count, bool allItems)
 			}
 		}
 	} else {
-		itemDict.push_back(std::pair<std::shared_ptr<Item>, uint32_t>(item, count));
+		itemDict.emplace_back(item, count);
 	}
 
-	if (itemDict.size() == 0) {
+	if (itemDict.empty()) {
 		sendCancelMessage("There is no stowable items on this container.");
 		return;
 	}
@@ -6554,6 +6596,17 @@ void Player::initializeTaskHunting() {
 }
 
 std::string Player::getBlessingsName() const {
+	static const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
+		{ TWIST_OF_FATE, "Twist of Fate" },
+		{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
+		{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
+		{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
+		{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
+		{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
+		{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
+		{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
+	};
+
 	uint8_t count = 0;
 	std::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
 		if (amount != 0) {
@@ -7029,6 +7082,11 @@ bool Player::saySpell(
 
 // Forge system
 void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint8_t tier, uint16_t secondItemId, bool success, bool reduceTierLoss, bool convergence, uint8_t bonus, uint8_t coreCount) {
+	if (getFreeBackpackSlots() == 0) {
+		sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
 	ForgeHistory history;
 	history.actionType = actionType;
 	history.tier = tier;
@@ -7267,6 +7325,11 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 }
 
 void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId, bool convergence) {
+	if (getFreeBackpackSlots() == 0) {
+		sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
 	ForgeHistory history;
 	history.actionType = actionType;
 	history.tier = tier;
@@ -7743,7 +7806,7 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		// Check if can walk to the toPosition and send event to use function
 		stdext::arraylist<Direction> listDir(128);
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir.data()), __FUNCTION__);
+			g_dispatcher().addEvent([creatureId = getID(), dirs = listDir.data()] { g_game().playerAutoWalk(creatureId, dirs); }, __FUNCTION__);
 
 			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);
@@ -7753,6 +7816,29 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		}
 	}
 	return false;
+}
+
+// Account
+bool Player::setAccount(uint32_t accountId) {
+	if (account) {
+		g_logger().warn("Account was already set!");
+		return true;
+	}
+
+	account = std::make_shared<Account>(accountId);
+	return AccountErrors_t::Ok == enumFromValue<AccountErrors_t>(account->load());
+}
+
+uint8_t Player::getAccountType() const {
+	return account ? account->getAccountType() : AccountType::ACCOUNT_TYPE_NORMAL;
+}
+
+uint32_t Player::getAccountId() const {
+	return account ? account->getID() : 0;
+}
+
+std::shared_ptr<Account> Player::getAccount() const {
+	return account;
 }
 
 /*******************************************************************************
@@ -7898,6 +7984,15 @@ const std::unique_ptr<PlayerWheel> &Player::wheel() const {
 	return m_wheelPlayer;
 }
 
+// Achievement interface
+std::unique_ptr<PlayerAchievement> &Player::achiev() {
+	return m_playerAchievement;
+}
+
+const std::unique_ptr<PlayerAchievement> &Player::achiev() const {
+	return m_playerAchievement;
+}
+
 void Player::sendLootMessage(const std::string &message) const {
 	auto party = getParty();
 	if (!party) {
@@ -8006,4 +8101,14 @@ void Player::checkAndShowBlessingMessage() {
 	if (!blessOutput.str().empty()) {
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
 	}
+}
+
+bool Player::canSpeakWithHireling(uint8_t speechbubble) {
+	const auto &playerTile = getTile();
+	const auto &house = playerTile ? playerTile->getHouse() : nullptr;
+	if (speechbubble == SPEECHBUBBLE_HIRELING && (!house || house->getHouseAccessLevel(static_self_cast<Player>()) == HOUSE_NOT_INVITED)) {
+		return false;
+	}
+
+	return true;
 }

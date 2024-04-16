@@ -9,7 +9,7 @@ function boom(cid)
 	if not creature then
 		return
 	end
-	creature:say("OMRAFIR EXPLODES INTO FLAMES!", TALKTYPE_ORANGE_2)
+	creature:say("OMRAFIR EXPLODES INTO FLAMES!", TALKTYPE_MONSTER_YELL)
 	Game.setStorageValue(112416, Game.getStorageValue(112416) + 1)
 	creature:getPosition():sendMagicEffect(CONST_ME_FIREATTACK)
 	for i = 1, 9 do
@@ -32,7 +32,7 @@ function omrafirExplode.onThink(creature)
 		addEvent(boom, 10, creature:getId())
 		addEvent(function(cid)
 			local summon = Game.createMonster("Omrafir2", Position(33586, 32379, 12), false, true)
-			summon:say("OMRAFIR REFORMS HIMSELF WITH NEW STRENGTH!", TALKTYPE_ORANGE_2)
+			summon:say("OMRAFIR REFORMS HIMSELF WITH NEW STRENGTH!", TALKTYPE_MONSTER_YELL)
 		end, 26764, creature:getId())
 	end
 	return true

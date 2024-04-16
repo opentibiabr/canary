@@ -19,7 +19,7 @@ class QTreeNode {
 public:
 	constexpr QTreeNode() = default;
 
-	virtual ~QTreeNode() {};
+	virtual ~QTreeNode() { }
 
 	// non-copyable
 	QTreeNode(const QTreeNode &) = delete;

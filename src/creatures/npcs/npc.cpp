@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -351,7 +351,9 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 			return;
 		}
 		if (hasMore) {
-			g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, totalPrice), __FUNCTION__);
+			g_dispatcher().scheduleEvent(
+				SCHEDULER_MINTICKS, [this, playerId = player->getID(), itemId, ignore, totalPrice] { onPlayerSellAllLoot(playerId, itemId, ignore, totalPrice); }, __FUNCTION__
+			);
 			return;
 		}
 		ss << "You sold all of the items from your loot pouch for ";
@@ -366,7 +368,9 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 		return;
 	}
 	if (itemId == ITEM_GOLD_POUCH) {
-		g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, 0), __FUNCTION__);
+		g_dispatcher().scheduleEvent(
+			SCHEDULER_MINTICKS, [this, playerId = player->getID(), itemId, ignore] { onPlayerSellAllLoot(playerId, itemId, ignore, 0); }, __FUNCTION__
+		);
 		return;
 	}
 
@@ -405,24 +409,23 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 		}
 	}
 
-	if (toRemove != 0) {
-		g_logger().error("[Npc::onPlayerSellItem] - Problem while removing items from player {} amount {} of items with id {} on shop for npc {}, the payment will be made based on amount of removed items.", player->getName(), toRemove, itemId, getName());
-	}
-
 	auto totalRemoved = amount - toRemove;
 	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
-	if (getCurrency() == ITEM_GOLD_COIN) {
-		totalPrice += totalCost;
-		if (g_configManager().getBoolean(AUTOBANK, __FUNCTION__)) {
-			player->setBankBalance(player->getBankBalance() + totalCost);
+	g_logger().debug("[Npc::onPlayerSellItem] - Removing items from player {} amount {} of items with id {} on shop for npc {}", player->getName(), toRemove, itemId, getName());
+	if (totalRemoved > 0 && totalCost > 0) {
+		if (getCurrency() == ITEM_GOLD_COIN) {
+			totalPrice += totalCost;
+			if (g_configManager().getBoolean(AUTOBANK, __FUNCTION__)) {
+				player->setBankBalance(player->getBankBalance() + totalCost);
+			} else {
+				g_game().addMoney(player, totalCost);
+			}
+			g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
 		} else {
-			g_game().addMoney(player, totalCost);
-		}
-		g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
-	} else {
-		std::shared_ptr<Item> newItem = Item::CreateItem(getCurrency(), totalCost);
-		if (newItem) {
-			g_game().internalPlayerAddItem(player, newItem, true);
+			std::shared_ptr<Item> newItem = Item::CreateItem(getCurrency(), totalCost);
+			if (newItem) {
+				g_game().internalPlayerAddItem(player, newItem, true);
+			}
 		}
 	}
 

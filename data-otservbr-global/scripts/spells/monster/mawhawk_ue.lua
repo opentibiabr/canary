@@ -83,7 +83,7 @@ function spell.onCastSpell(creature, var)
 	if creature:getHealth() < creature:getMaxHealth() * 0.1 and not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) then
 		creature:addCondition(condition)
 		addEvent(delayedCastSpell, 5000, creature:getId(), var)
-		creature:say("Better flee now.", TALKTYPE_ORANGE_1)
+		creature:say("Better flee now.", TALKTYPE_MONSTER_SAY)
 	else
 		return
 	end

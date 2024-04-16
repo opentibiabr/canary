@@ -69,9 +69,10 @@ local function changeArea()
 						local creatures = tile:getCreatures()
 						if creatures and #creatures > 0 then
 							if theHungerKilled == false then
-								for _, c in pairs(creatures) do
-									if isMonster(c) then
-										c:teleportTo({ x = 32244, y = 31369, z = 14 })
+								for _, creature in pairs(creatures) do
+									local monster = Monster(creature)
+									if monster then
+										monster:teleportTo({ x = 32244, y = 31369, z = 14 })
 									end
 								end
 							else
@@ -97,9 +98,10 @@ local function changeArea()
 						local creatures = tile:getCreatures()
 						if creatures and #creatures > 0 then
 							if theDestructionKilled == false then
-								for _, c in pairs(creatures) do
-									if isMonster(c) then
-										c:teleportTo({ x = 32271, y = 31313, z = 14 })
+								for _, creature in pairs(creatures) do
+									local monster = Monster(creature)
+									if monster then
+										monster:teleportTo({ x = 32271, y = 31313, z = 14 })
 									end
 								end
 							else
@@ -125,9 +127,10 @@ local function changeArea()
 						local creatures = tile:getCreatures()
 						if creatures and #creatures > 0 then
 							if theRageKilled == false then
-								for _, c in pairs(creatures) do
-									if isMonster(c) then
-										c:teleportTo({ x = 32299, y = 31369, z = 14 })
+								for _, creature in pairs(creatures) do
+									local monster = Monster(creature)
+									if monster then
+										monster:teleportTo({ x = 32299, y = 31369, z = 14 })
 									end
 								end
 							else

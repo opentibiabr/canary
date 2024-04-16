@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
+
 # *****************************************************************************
 # CMake Features
 # *****************************************************************************
@@ -29,10 +31,11 @@ find_package(ZLIB REQUIRED)
 find_package(absl CONFIG REQUIRED)
 find_package(asio CONFIG REQUIRED)
 find_package(eventpp CONFIG REQUIRED)
-find_package(jsoncpp CONFIG REQUIRED)
 find_package(magic_enum CONFIG REQUIRED)
-find_package(opentelemetry-cpp CONFIG REQUIRED)
-find_package(prometheus-cpp CONFIG REQUIRED)
+if(FEATURE_METRICS)
+    find_package(opentelemetry-cpp CONFIG REQUIRED)
+    find_package(prometheus-cpp CONFIG REQUIRED)
+endif()
 find_package(mio REQUIRED)
 find_package(pugixml CONFIG REQUIRED)
 find_package(spdlog REQUIRED)
@@ -69,6 +72,7 @@ option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
 option(BUILD_STATIC_LIBRARY "Build using static libraries" OFF)
 option(SPEED_UP_BUILD_UNITY "Compile using build unity for speed up build" ON)
+option(USE_PRECOMPILED_HEADER "Compile using precompiled header" ON)
 
 # === ASAN ===
 if(ASAN_ENABLED)

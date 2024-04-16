@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -10,8 +10,13 @@
 #include "pch.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
+#include "enums/object_category.hpp"
+#include "enums/account_coins.hpp"
+#include "enums/account_errors.hpp"
+#include "utils/tools.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const std::shared_ptr<Player> &player) {
 	try {
@@ -74,16 +79,16 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 		return false;
 	}
 
-	auto [coins, error] = player->account->getCoins(account::CoinType::COIN);
-	if (error != account::ERROR_NO) {
+	auto [coins, error] = player->account->getCoins(enumToValue(CoinType::Normal));
+	if (error != enumToValue(AccountErrors_t::Ok)) {
 		g_logger().error("Failed to get coins for player {}, error {}", player->name, static_cast<uint8_t>(error));
 		return false;
 	}
 
 	player->coinBalance = coins;
 
-	auto [transferableCoins, errorT] = player->account->getCoins(account::CoinType::TRANSFERABLE);
-	if (errorT != account::ERROR_NO) {
+	auto [transferableCoins, errorT] = player->account->getCoins(enumToValue(CoinType::Transferable));
+	if (errorT != enumToValue(AccountErrors_t::Ok)) {
 		g_logger().error("Failed to get transferable coins for player {}, error {}", player->name, static_cast<uint8_t>(errorT));
 		return false;
 	}
@@ -891,6 +896,8 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player)
 	// Wheel loading
 	player->wheel()->loadDBPlayerSlotPointsOnLogin();
 	player->wheel()->initializePlayerData();
+
+	player->achiev()->loadUnlockedAchievements();
 
 	player->initializePrey();
 	player->initializeTaskHunting();

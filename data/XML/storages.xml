@@ -29,6 +29,5 @@ When adding a new range or storage, make sure that the ranges do not overlap, an
 		<storage name="wheel.scroll.revised" key="3" />
 		<storage name="wheel.scroll.extended" key="4" />
 		<storage name="wheel.scroll.advanced" key="5" />
-		<storage name="talkaction.potions.flask" key="6" />
 	</range>
 </storages>

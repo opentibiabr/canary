@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -19,6 +19,8 @@
 class InstantSpell;
 class RuneSpell;
 class Spell;
+
+struct LuaVariant;
 
 using VocSpellMap = std::map<uint16_t, bool>;
 
@@ -189,8 +191,14 @@ public:
 	[[nodiscard]] const VocSpellMap &getVocMap() const {
 		return vocSpellMap;
 	}
-	void addVocMap(uint16_t n, bool b) {
-		vocSpellMap[n] = b;
+	void addVocMap(uint16_t vocationId, bool b) {
+		if (vocationId == 0XFFFF) {
+			g_logger().error("Vocation overflow for spell: {}", getName());
+			return;
+		}
+
+		g_logger().trace("Adding spell: {} to voc id: {}", getName(), vocationId);
+		vocSpellMap[vocationId] = b;
 	}
 
 	SpellGroup_t getGroup() {

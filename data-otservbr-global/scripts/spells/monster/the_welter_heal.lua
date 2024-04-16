@@ -10,14 +10,14 @@ function spell.onCastSpell(creature, var)
 		if spectator:isMonster() and spectator:getName() == "Egg" then
 			spectator:getPosition():sendMagicEffect(CONST_ME_HITBYPOISON)
 			spectator:remove()
-			creature:say("<the welter devours his spawn and heals himself>", TALKTYPE_ORANGE_1)
+			creature:say("<the welter devours his spawn and heals himself>", TALKTYPE_MONSTER_SAY)
 			creature:addHealth(25000)
 			creature:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			return true
 		elseif spectator:isMonster() and spectator:getName() == "Spawn of the Welter" then
 			spectator:getPosition():sendMagicEffect(CONST_ME_DRAWBLOOD)
 			spectator:remove()
-			creature:say("<the welter devours his spawn and heals himself>", TALKTYPE_ORANGE_1)
+			creature:say("<the welter devours his spawn and heals himself>", TALKTYPE_MONSTER_SAY)
 			creature:addHealth(25000)
 			creature:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			return true

@@ -251,7 +251,5 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell, |PLAYERNAME|!")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 
-npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
-
 -- npcType registering the npcConfig table
 npcType:register(npcConfig)

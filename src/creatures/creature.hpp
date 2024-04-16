@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -388,8 +388,8 @@ public:
 		return SPEECHBUBBLE_NONE;
 	}
 
-	bool addCondition(std::shared_ptr<Condition> condition);
-	bool addCombatCondition(std::shared_ptr<Condition> condition);
+	bool addCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
+	bool addCombatCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
 	void removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force = false);
 	void removeCondition(ConditionType_t type);
 	void removeCondition(std::shared_ptr<Condition> condition);
@@ -406,7 +406,7 @@ public:
 	virtual bool isImmune(ConditionType_t type) const {
 		return false;
 	}
-	virtual bool isSuppress(ConditionType_t type) const {
+	virtual bool isSuppress(ConditionType_t type, bool attackerPlayer) const {
 		return false;
 	};
 

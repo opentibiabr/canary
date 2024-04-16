@@ -83,7 +83,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		elseif player:getStorageValue(BloodBrothers.Mission01) == 3 then
 			npcHandler:say("Let me check - yes indeed, there's garlic in it. Now eat one, in front of my eyes. Right now! Say '{aaah}' when you've chewed it all down so that I can see you're not hiding it!", npc, creature)
-			player:setStorageValue(BloodBrothers.GarlicBread, 0)
 			npcHandler:setTopic(playerId, 4)
 		elseif player:getStorageValue(BloodBrothers.Mission01) == 4 and player:getStorageValue(BloodBrothers.Mission02) < 0 then
 			npcHandler:say("So, are you ready for your first real task?", npc, creature)
@@ -164,7 +163,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif MsgContains(message, "aaah") then
-		if npcHandler:getTopic(playerId) == 4 and player:getStorageValue(BloodBrothers.GarlicBread) == 1 then
+		if npcHandler:getTopic(playerId) == 4 and player:removeItem(8194, 1) then
 			npcHandler:say("Very well. I think I can trust you now. Sorry that I had to put you through this embarassing procedure, but I'm sure you understand. So, are you ready for your first real task?", npc, creature)
 			player:setStorageValue(BloodBrothers.Mission01, 4)
 			npcHandler:setTopic(playerId, 5)
@@ -262,7 +261,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

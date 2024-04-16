@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,8 +11,6 @@
 
 #include "io/io_wheel.hpp"
 #include "utils/utils_definitions.hpp"
-#include "config/config_definitions.hpp"
-#include "config/configmanager.hpp"
 #include "kv/kv.hpp"
 #include "wheel_gems.hpp"
 
@@ -214,41 +212,9 @@ private:
 	std::vector<PlayerWheelGem> getRevealedGems() const;
 	std::vector<PlayerWheelGem> getActiveGems() const;
 
-	static uint64_t getGemRotateCost(WheelGemQuality_t quality) {
-		ConfigKey_t key;
-		switch (quality) {
-			case WheelGemQuality_t::Lesser:
-				key = WHEEL_ATELIER_ROTATE_LESSER_COST;
-				break;
-			case WheelGemQuality_t::Regular:
-				key = WHEEL_ATELIER_ROTATE_REGULAR_COST;
-				break;
-			case WheelGemQuality_t::Greater:
-				key = WHEEL_ATELIER_ROTATE_GREATER_COST;
-				break;
-			default:
-				return 0;
-		}
-		return static_cast<uint64_t>(g_configManager().getNumber(key, __FUNCTION__));
-	}
+	static uint64_t getGemRotateCost(WheelGemQuality_t quality);
 
-	static uint64_t getGemRevealCost(WheelGemQuality_t quality) {
-		ConfigKey_t key;
-		switch (quality) {
-			case WheelGemQuality_t::Lesser:
-				key = WHEEL_ATELIER_REVEAL_LESSER_COST;
-				break;
-			case WheelGemQuality_t::Regular:
-				key = WHEEL_ATELIER_REVEAL_REGULAR_COST;
-				break;
-			case WheelGemQuality_t::Greater:
-				key = WHEEL_ATELIER_REVEAL_GREATER_COST;
-				break;
-			default:
-				return 0;
-		}
-		return static_cast<uint64_t>(g_configManager().getNumber(key, __FUNCTION__));
-	}
+	static uint64_t getGemRevealCost(WheelGemQuality_t quality);
 
 	// Members variables
 	const uint16_t m_minLevelToStartCountPoints = 50;
@@ -487,6 +453,8 @@ public:
 				return 0;
 		}
 	}
+
+	WheelGemBasicModifier_t selectBasicModifier2(WheelGemBasicModifier_t modifier1) const;
 
 private:
 	friend class Player;

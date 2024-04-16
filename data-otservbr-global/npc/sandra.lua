@@ -67,7 +67,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if table.contains({ "vial", "ticket", "bonus", "deposit" }, message) then
 		if player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt) < 1 then
-			npcHandler:say("You have " .. player:getStorageValue(38412) .. " credits. We have a special offer right now for depositing vials. Are you interested in hearing it?", npc, creature)
+			npcHandler:say("We have a special offer right now for depositing vials. Are you interested in hearing it?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt) >= 1 then
 			npcHandler:say("Would you like to get a lottery ticket instead of the deposit for your vials?", npc, creature)
@@ -119,14 +119,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
-			if player:getStorageValue(38412) >= 100 or player:removeItem(283, 100) or player:removeItem(284, 100) or player:removeItem(285, 100) then
-				npcHandler:say(
-					"Alright, thank you very much! Here is your lottery ticket, good luck. \
-					Would you like to deposit more vials that way?",
-					npc,
-					creature
-				)
-				player:setStorageValue(38412, player:getStorageValue(38412) - 100)
+			if player:removeItem(283, 100) or player:removeItem(284, 100) or player:removeItem(285, 100) then
+				npcHandler:say("Alright, thank you very much! Here is your lottery ticket, good luck. Would you like to deposit more vials that way?", npc, creature)
 				player:addItem(5957, 1)
 				npcHandler:setTopic(playerId, 0)
 			else
@@ -209,7 +203,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

@@ -351,7 +351,7 @@ local function checarSala(qnt)
 							for _, boss in pairs(spectators) do
 								if boss:isMonster() then
 									if boss:getName():lower() == "the count of the core" then
-										boss:say("The count absorbs he power of the beast and becomes stronger.", TALKTYPE_ORANGE_2)
+										boss:say("The count absorbs he power of the beast and becomes stronger.", TALKTYPE_MONSTER_YELL)
 										boss:addHealth(math.random(0, 15000))
 									end
 								end

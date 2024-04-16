@@ -5,7 +5,7 @@ function dwarvenLadder.onUse(player, item, fromPosition, itemEx, toPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		return true
 	else
-		player:say("Zzz Dont working.", TALKTYPE_ORANGE_1)
+		player:say("Zzz Dont working.", TALKTYPE_MONSTER_SAY)
 		return true
 	end
 	return false

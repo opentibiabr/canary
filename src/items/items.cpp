@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,9 +11,13 @@
 
 #include "items/functions/item/item_parse.hpp"
 #include "items/items.hpp"
+#include "items/weapons/weapons.hpp"
+#include "lua/creature/movement.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"
 #include "core.hpp"
+
+#include <appearances.pb.h>
 
 Items::Items() = default;
 
@@ -22,6 +26,8 @@ void Items::clear() {
 	ladders.clear();
 	dummys.clear();
 	nameToItems.clear();
+	g_moveEvents().clear(true);
+	g_weapons().clear(true);
 }
 
 using LootTypeNames = phmap::flat_hash_map<std::string, ItemTypes_t>;
@@ -81,8 +87,8 @@ void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
 	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__);
-	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
-		Appearance object = g_game().appearances.object(it);
+	for (uint32_t it = 0; it < g_game().m_appearancesPtr->object_size(); ++it) {
+		Appearance object = g_game().m_appearancesPtr->object(it);
 
 		// This scenario should never happen but on custom assets this can break the loader.
 		if (!object.has_flags()) {
@@ -187,8 +193,7 @@ void Items::loadFromProtobuf() {
 		iType.isWrapKit = object.flags().wrapkit();
 
 		if (!iType.name.empty()) {
-			nameToItems.insert({ asLowerCaseString(iType.name),
-								 iType.id });
+			nameToItems.insert({ asLowerCaseString(iType.name), iType.id });
 		}
 	}
 
@@ -648,8 +653,7 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		}
 
 		itemType.name = xmlName;
-		nameToItems.insert({ asLowerCaseString(itemType.name),
-							 id });
+		nameToItems.insert({ asLowerCaseString(itemType.name), id });
 	}
 
 	itemType.loaded = true;

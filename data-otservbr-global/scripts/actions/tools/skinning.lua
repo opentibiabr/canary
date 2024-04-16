@@ -1,4 +1,3 @@
----- if you want protected corpses (10 second protection after monster being killed) to be skinned/dusted, delete '--#' in the appropriate lines; be careful, it may cause abuses ----
 local CREATURE_SKINNING_CHANCE = 25000 -- 25% probability
 local config = {
 	[5908] = {
@@ -70,10 +69,28 @@ local config = {
 		[22742] = { value = CREATURE_SKINNING_CHANCE, newItem = 22186, after = 22744 }, -- after being killed
 
 		-- The Mutated Pumpkin
-		[12816] = { { value = 5000, newItem = 123 }, { value = 10000, newItem = 653 }, { value = 20000, 6491 }, { value = 26764, newItem = 8032 }, { value = 45000, newItem = 3594 }, { value = 60000, newItem = 2977 }, { value = 90000, newItem = 8177, amount = 50 } },
+		[12816] = {
+			{ value = 5000, newItem = 8032 }, -- spiderwebs
+			{ value = 5000, newItem = 8178 }, -- toy spider
+			{ value = 5000, newItem = 6491 }, -- bat decoration
+			{ value = 20000, newItem = 6525 }, -- skeleton decoration
+			{ value = 90000, newItem = 8177, amount = 20 }, -- yummy gummy worm
+			{ value = 10000, newItem = 6571 }, -- surprise bag (red)
+			{ value = 10000, newItem = 6570 }, -- surprise bag (blue)
+			{ value = 50000, newItem = 6574 }, -- bar of chocolate
+			{ value = 60000, newItem = 2977 }, -- pumpkinhead
+			{ value = 45000, newItem = 3594 }, -- pumpkin
+			{ value = 90000, newItem = 3599, amount = 50 }, -- candy cane
+			{ value = 90000, newItem = 6569, amount = 50 }, -- candy
+			{ value = 2000, newItem = 6574, amount = 50 }, -- bar of chocolate
+		},
 
 		-- Marble
-		[10426] = { { value = 10000, newItem = 10429, desc = "This little figurine of Tibiasula was masterfully sculpted by |PLAYERNAME|." }, { value = 26764, newItem = 10428, desc = "This little figurine made by |PLAYERNAME| has some room for improvement." }, { value = 60000, newItem = 10427, desc = "This shoddy work was made by |PLAYERNAME|." } },
+		[10426] = {
+			{ value = 10000, newItem = 10429, desc = "This little figurine of Tibiasula was masterfully sculpted by |PLAYERNAME|." },
+			{ value = 26764, newItem = 10428, desc = "This little figurine made by |PLAYERNAME| has some room for improvement." },
+			{ value = 60000, newItem = 10427, desc = "This shoddy work was made by |PLAYERNAME|." },
+		},
 
 		-- Ice Cube
 		[7441] = { value = 22344, newItem = 7442 },
@@ -101,7 +118,15 @@ local config = {
 local skinning = Action()
 
 function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	local topItem = false
 	local skin = config[item.itemid][target.itemid]
+	local tile = Tile(toPosition)
+	if tile then
+		topItem = tile:getTopDownItem()
+		if topItem then
+			skin = config[item.itemid][topItem.itemid]
+		end
+	end
 
 	if item.itemid == 5908 then
 		if target:getId() == CONST_FIREWORK_ITEMID_DISASSEMBLE then
@@ -146,6 +171,22 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 		end
 	end
 
+	if target:getId() == 12816 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheMutatedPumpkin.Skinned) > os.time() then
+			player:sendCancelMessage("You already used your knife on the corpse.")
+			return true
+		end
+
+		player:setStorageValue(Storage.Quest.U8_2.TheMutatedPumpkin.Skinned, os.time() + 4 * 60 * 60)
+		player:say("Happy Halloween!", TALKTYPE_MONSTER_SAY)
+		player:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
+		player:addAchievement("Mutated Presents")
+		local reward = math.random(1, #skin)
+		player:addItem(skin[reward].newItem, skin[reward].amount or 1)
+		effect = CONST_ME_HITAREA
+		return true
+	end
+
 	if not skin then
 		player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return true
@@ -167,10 +208,14 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			_skin = skin[i]
 			if random <= _skin.value then
 				if target.itemid == 10426 then
-					target:getPosition():sendMagicEffect(CONST_ME_ICEAREA)
+					target:getPosition():sendMagicEffect(CONST_ME_HITAREA)
 					local gobletItem = player:addItem(_skin.newItem, _skin.amount or 1)
 					if gobletItem then
 						gobletItem:setDescription(_skin.desc:gsub("|PLAYERNAME|", player:getName()))
+					end
+					if _skin.newItem == 10429 then
+						player:addAchievement("Marblelous")
+						player:addAchievementProgress("Marble Madness", 5)
 					end
 					target:remove()
 					added = true
@@ -182,11 +227,9 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			end
 		end
 
-		if not added and target.itemid == 12816 then
-			effect = CONST_ME_POFF
-			transform = false
-		elseif not added and target.itemid == 10426 then
-			effect = CONST_ME_POFF
+		if not added and target.itemid == 10426 then
+			effect = CONST_ME_HITAREA
+			player:say("Your attempt at shaping that marble rock failed miserably.", TALKTYPE_MONSTER_SAY)
 			transform = false
 			target:remove()
 		end
@@ -194,11 +237,23 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 		if isInArray({ 7441, 7442, 7444, 7445 }, target.itemid) then
 			if skin.newItem == 7446 then
 				player:addAchievement("Ice Sculptor")
+				player:addAchievementProgress("Cold as Ice", 10)
 			end
 			target:transform(skin.newItem, 1)
 			effect = CONST_ME_HITAREA
+			return true
 		else
-			player:addItem(skin.newItem, skin.amount or 1)
+			if table.contains({ 5906, 5905 }, skin.newItem) then
+				player:addAchievementProgress("Ashes to Dust", 500)
+			else
+				player:addAchievementProgress("Skin-Deep", 500)
+			end
+			local container = Container(item:getParent().uid)
+			if fromPosition.x == CONTAINER_POSITION and container:getEmptySlots() ~= 0 then
+				container:addItem(skin.newItem, skin.amount or 1)
+			else
+				player:addItem(skin.newItem, skin.amount or 1)
+			end
 		end
 	else
 		if isInArray({ 7441, 7442, 7444, 7445 }, target.itemid) then
@@ -206,16 +261,20 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			effect = CONST_ME_HITAREA
 			target:remove()
 		else
-			effect = CONST_ME_POFF
+			effect = CONST_ME_BLOCKHIT
 		end
 	end
-	-- SE BUGAR, PEGAR SCRIPT ANTIGO
-	toPosition:sendMagicEffect(effect)
+
 	if transform then
-		target:transform(skin.after or target:getType():getDecayId() or target.itemid + 1)
+		topItem:transform(skin.after or topItem:getType():getDecayId() or topItem.itemid + 1)
 	else
 		target:remove()
 	end
+
+	if toPosition.x == CONTAINER_POSITION then
+		toPosition = player:getPosition()
+	end
+	toPosition:sendMagicEffect(effect)
 
 	return true
 end

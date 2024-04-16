@@ -118,16 +118,20 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			local rareChance = math.random(100)
 			if rareChance == 1 then
 				player:addItem(7158, 1)
+				player:addAchievementProgress("Exquisite Taste", 250)
 				return true
 			elseif rareChance <= 4 then
 				player:addItem(3580, 1)
+				player:addAchievementProgress("Exquisite Taste", 250)
 				return true
 			elseif rareChance <= 10 then
 				player:addItem(7159, 1)
+				player:addAchievementProgress("Exquisite Taste", 250)
 				return true
 			end
 		end
 		player:addItem(3578, 1)
+		player:addAchievementProgress("Here, Fishy Fishy!", 250)
 	end
 	return true
 end

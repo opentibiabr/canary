@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -221,6 +221,18 @@ public:
 			abilities = std::make_unique<Abilities>();
 		}
 		return *abilities;
+	}
+
+	int32_t getSpeed() const {
+		return abilities ? abilities->speed : 0;
+	}
+
+	int32_t getSkill(skills_t skill) const {
+		return abilities ? abilities->skills[skill] : 0;
+	}
+
+	int32_t getStat(stats_t stat) const {
+		return abilities ? abilities->stats[stat] : 0;
 	}
 
 	std::string getPluralName() const {

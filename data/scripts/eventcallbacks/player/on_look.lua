@@ -10,7 +10,7 @@ function callback.playerOnLook(player, thing, position, distance)
 		elseif thing.itemid >= ITEM_HEALTH_CASK_START and thing.itemid <= ITEM_HEALTH_CASK_END or thing.itemid >= ITEM_MANA_CASK_START and thing.itemid <= ITEM_MANA_CASK_END or thing.itemid >= ITEM_SPIRIT_CASK_START and thing.itemid <= ITEM_SPIRIT_CASK_END or thing.itemid >= ITEM_KEG_START and thing.itemid <= ITEM_KEG_END then
 			description = description .. thing:getDescription(distance)
 			local charges = thing:getCharges()
-			if charges then
+			if charges > 0 then
 				description = string.format("%s\nIt has %d refillings left.", description, charges)
 			end
 		else

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,6 +15,7 @@
 #include "game/game.hpp"
 #include "creatures/combat/spells.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "enums/account_group_type.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;
@@ -345,7 +346,7 @@ ReturnValue Actions::internalUseItem(std::shared_ptr<Player> player, const Posit
 		uint32_t corpseOwner = container->getCorpseOwner();
 		if (container->isRewardCorpse()) {
 			// only players who participated in the fight can open the corpse
-			if (player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER) {
+			if (player->getGroup()->id >= GROUP_TYPE_GAMEMASTER) {
 				return RETURNVALUE_YOUCANTOPENCORPSEADM;
 			}
 			auto reward = player->getReward(rewardId, false);

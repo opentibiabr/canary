@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,6 +11,12 @@
 
 #include "game/movement/position.hpp"
 #include "utils/tools.hpp"
+
+double Position::getEuclideanDistance(const Position &p1, const Position &p2) {
+	int32_t dx = Position::getDistanceX(p1, p2);
+	int32_t dy = Position::getDistanceY(p1, p2);
+	return std::sqrt(dx * dx + dy * dy);
+}
 
 Direction Position::getRandomDirection() {
 	static std::vector<Direction> dirList {

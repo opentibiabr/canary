@@ -201,7 +201,7 @@
 		<attribute key="item" value="17823" count="25" />
 		<attribute key="item" value="9694" count="20" />
 	</imbuement>
-	<imbuement name="Snake Skin" base="3" category="5" iconid="30" premium="1" storage="50492">
+	<imbuement name="Snake Skin" base="3" category="5" iconid="28" premium="1" storage="50492">
 		<attribute key="description" value="Reduces earth damage by 15%." />
 		<attribute key="effect" type="reduction" combat="earth" value="15" />
 		<attribute key="item" value="17823" count="25" />

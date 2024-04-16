@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -39,12 +39,16 @@
 #include <queue>
 #include <random>
 #include <ranges>
+#include <algorithm>
 #include <regex>
 #include <set>
 #include <thread>
 #include <vector>
 #include <variant>
 #include <numeric>
+#include <cmath>
+#include <mutex>
+#include <stack>
 
 // --------------------
 // System Includes
@@ -69,9 +73,6 @@
 // ABSL
 #include <absl/numeric/int128.h>
 
-// ARGON2
-#include <argon2.h>
-
 // ASIO
 #include <asio.hpp>
 
@@ -84,11 +85,19 @@
 #include <fmt/format.h>
 #include <fmt/args.h>
 
+// FMT Custom Formatter for Enums
+template <typename E>
+struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<std::underlying_type_t<E>> {
+	template <typename FormatContext>
+	auto format(E e, FormatContext &ctx) {
+		return formatter<std::underlying_type_t<E>>::format(
+			static_cast<std::underlying_type_t<E>>(e), ctx
+		);
+	}
+};
+
 // GMP
 #include <gmp.h>
-
-// JSON
-#include <json/json.h>
 
 // LUA
 #if __has_include("luajit/lua.hpp")
@@ -158,8 +167,24 @@
 #include "lib/messaging/message.hpp"
 #include "lib/messaging/command.hpp"
 #include "lib/messaging/event.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
 #include <eventpp/utilities/scopedremover.h>
 #include <eventpp/eventdispatcher.h>
 
 #include "lua/global/shared_object.hpp"
+
+constexpr std::string_view methodName(const char* s) {
+	std::string_view prettyFunction(s);
+	size_t bracket = prettyFunction.rfind('(');
+	size_t space = prettyFunction.rfind(' ', bracket) + 1;
+	return prettyFunction.substr(space, bracket - space);
+}
+
+#if defined(__GNUC__) || defined(__clang__)
+	#define __METHOD_NAME__ methodName(__PRETTY_FUNCTION__)
+#elif defined(_MSC_VER)
+	#define __METHOD_NAME__ methodName(__FUNCSIG__)
+#else
+	#error "Compiler not supported"
+#endif

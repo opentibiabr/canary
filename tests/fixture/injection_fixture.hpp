@@ -11,7 +11,6 @@
 #include "test_injection.hpp"
 #include "lib/logging/in_memory_logger.hpp"
 
-using namespace account;
 using namespace boost::ut;
 
 struct InjectionFixture {

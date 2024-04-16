@@ -22,7 +22,7 @@ function chargedAnomalyDeath.onDeath(creature)
 		return true
 	end
 
-	local boss = Game.createMonster(config.bossName, bossPosition, false, true)
+	local boss = Game.createMonster(config.bossName, config.bossPosition, false, true)
 	if boss then
 		boss:addHealth(-healthRemove)
 	end

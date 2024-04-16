@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -23,7 +23,17 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.hpp"
 #include "items/items_classification.hpp"
-#include "protobuf/appearances.pb.h"
+#include "modal_window/modal_window.hpp"
+#include "enums/object_category.hpp"
+
+// Forward declaration for protobuf class
+namespace Canary {
+	namespace protobuf {
+		namespace appearances {
+			class Appearances;
+		} // namespace appearances
+	} // namespace protobuf
+} // namespace Canary
 
 class ServiceManager;
 class Creature;
@@ -39,6 +49,9 @@ class Spectators;
 #if CLIENT_VERSION >= 870
 class Mounts;
 #endif
+
+struct Achievement;
+struct HighscoreCategory;
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
@@ -163,7 +176,7 @@ public:
 
 	ReturnValue getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player);
 
-	std::vector<std::shared_ptr<Player>> getPlayersByAccount(std::shared_ptr<account::Account> acc, bool allowOffline = false);
+	std::vector<std::shared_ptr<Player>> getPlayersByAccount(std::shared_ptr<Account> acc, bool allowOffline = false);
 
 	bool internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
 
@@ -363,7 +376,6 @@ public:
 	void playerLootAllCorpses(std::shared_ptr<Player> player, const Position &pos, bool lootAllCorpses);
 	void playerSetManagedContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos, bool isLootContainer);
 	void playerClearManagedContainer(uint32_t playerId, ObjectCategory_t category, bool isLootContainer);
-	;
 	void playerOpenManagedContainer(uint32_t playerId, ObjectCategory_t category, bool isLootContainer);
 	void playerSetQuickLootFallback(uint32_t playerId, bool fallback);
 	void playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t filter, const std::vector<uint16_t> itemIds);
@@ -412,7 +424,7 @@ public:
 
 	void cleanup();
 	void shutdown();
-	void dieSafely(std::string errorMsg);
+	void dieSafely(const std::string &errorMsg);
 	void addBestiaryList(uint16_t raceid, std::string name);
 	const std::map<uint16_t, std::string> &getBestiaryList() const {
 		return BestiaryList;
@@ -571,7 +583,7 @@ public:
 	std::unique_ptr<Mounts> m_mountsPtr;
 #endif
 	Raids raids;
-	Canary::protobuf::appearances::Appearances appearances;
+	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 
 	auto getTilesToClean() const {
 		return tilesToClean;
@@ -698,7 +710,24 @@ public:
 	void setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId);
 	void transferHouseItemsToDepot();
 
+	const std::unordered_map<uint8_t, std::string> &getHighscoreCategoriesName() const;
+
+	const std::vector<HighscoreCategory> &getHighscoreCategories() const;
+
+	void registerAchievement(uint16_t id, std::string name, std::string description, bool secret, uint8_t grade, uint8_t points);
+	Achievement getAchievementById(uint16_t id);
+	Achievement getAchievementByName(std::string name);
+	std::vector<Achievement> getSecretAchievements();
+	std::vector<Achievement> getPublicAchievements();
+	std::map<uint16_t, Achievement> getAchievements();
+
 private:
+	std::map<uint16_t, Achievement> m_achievements;
+	std::map<std::string, uint16_t> m_achievementsNameToId;
+
+	std::vector<HighscoreCategory> m_highscoreCategories;
+	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;
+
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
 	std::unordered_set<uint32_t> fiendishMonsters;
 	std::unordered_set<uint32_t> influencedMonsters;
@@ -795,7 +824,6 @@ private:
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
 	phmap::flat_hash_map<uint16_t, std::shared_ptr<Item>> uniqueItems;
 	phmap::parallel_flat_hash_map<uint32_t, std::string> m_playerNameCache;
-	std::map<uint32_t, uint32_t> stages;
 
 	/* Items stored from the lua scripts positions
 	 * For example: ActionFunctions::luaActionPosition
@@ -816,7 +844,7 @@ private:
 	size_t lastBucket = 0;
 	size_t lastImbuedBucket = 0;
 
-	WildcardTreeNode wildcardTree { false };
+	std::shared_ptr<WildcardTreeNode> wildcardTree;
 
 	std::map<uint32_t, std::shared_ptr<Npc>> npcs;
 	std::map<uint32_t, std::shared_ptr<Monster>> monsters;

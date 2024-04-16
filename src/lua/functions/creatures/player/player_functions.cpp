@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,6 +14,7 @@
 #include "creatures/interactions/chat.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
@@ -22,6 +23,10 @@
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "map/spectators.hpp"
+
+#include "enums/account_errors.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_coins.hpp"
 
 #if CLIENT_VERSION >= 870
 	#include "creatures/appearance/mounts/mounts.hpp"
@@ -286,12 +291,12 @@ int PlayerFunctions::luaPlayerSetAccountType(lua_State* L) {
 		return 1;
 	}
 
-	if (player->getAccount()->setAccountType(getNumber<account::AccountType>(L, 2)) != account::ERROR_NO) {
+	if (player->getAccount()->setAccountType(getNumber<uint8_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnil(L);
 		return 1;
 	}
@@ -2523,7 +2528,7 @@ int PlayerFunctions::luaPlayerAddPremiumDays(lua_State* L) {
 
 	player->getAccount()->addPremiumDays(addDays);
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		return 1;
 	}
 
@@ -2552,7 +2557,7 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 
 	player->getAccount()->addPremiumDays(-removeDays);
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		return 1;
 	}
 
@@ -2569,9 +2574,9 @@ int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	auto [coins, result] = player->getAccount()->getCoins(account::CoinType::COIN);
+	auto [coins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Normal));
 
-	if (result == account::ERROR_NO) {
+	if (result == enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnumber(L, coins);
 	}
 
@@ -2587,13 +2592,13 @@ int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->addCoins(account::CoinType::COIN, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->addCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to add coins");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2613,12 +2618,12 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->removeCoins(account::CoinType::COIN, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->removeCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to remove coins");
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2638,9 +2643,9 @@ int PlayerFunctions::luaPlayerGetTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	auto [coins, result] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+	auto [coins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
-	if (result == account::ERROR_NO) {
+	if (result == enumToValue(AccountErrors_t::Ok)) {
 		lua_pushnumber(L, coins);
 	}
 
@@ -2656,13 +2661,13 @@ int PlayerFunctions::luaPlayerAddTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->addCoins(account::CoinType::TRANSFERABLE, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->addCoins(enumToValue(CoinType::Transferable), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to add transferable coins");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -2682,13 +2687,13 @@ int PlayerFunctions::luaPlayerRemoveTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->removeCoins(account::CoinType::TRANSFERABLE, getNumber<uint32_t>(L, 2)) != account::ERROR_NO) {
+	if (player->account->removeCoins(enumToValue(CoinType::Transferable), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to remove transferable coins");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->getAccount()->save() != account::ERROR_NO) {
+	if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to save account");
 		lua_pushnil(L);
 		return 1;
@@ -4203,5 +4208,106 @@ int PlayerFunctions::luaPlayerGetStoreInbox(lua_State* L) {
 	} else {
 		pushBoolean(L, false);
 	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerHasAchievement(lua_State* L) {
+	// player:hasAchievement(id or name)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->achiev()->isUnlocked(achievementId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddAchievement(lua_State* L) {
+	// player:addAchievement(id or name[, sendMessage = true])
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->achiev()->add(achievementId, getBoolean(L, 3, true)));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveAchievement(lua_State* L) {
+	// player:removeAchievement(id or name)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->achiev()->remove(achievementId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetAchievementPoints(lua_State* L) {
+	// player:getAchievementPoints()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	lua_pushnumber(L, player->achiev()->getPoints());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddAchievementPoints(lua_State* L) {
+	// player:addAchievementPoints(amount)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto points = getNumber<uint16_t>(L, 2);
+	if (points > 0) {
+		player->achiev()->addPoints(points);
+	}
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveAchievementPoints(lua_State* L) {
+	// player:removeAchievementPoints(amount)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto points = getNumber<uint16_t>(L, 2);
+	if (points > 0) {
+		player->achiev()->removePoints(points);
+	}
+	pushBoolean(L, true);
 	return 1;
 }

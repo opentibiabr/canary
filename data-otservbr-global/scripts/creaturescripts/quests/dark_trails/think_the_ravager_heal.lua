@@ -9,7 +9,7 @@ function theRavagerHeal.onThink(creature)
 			return true
 		end
 		creature:addHealth(health)
-		creature:say("The Ravager is healed by the strange floor rune!", TALKTYPE_ORANGE_1)
+		creature:say("The Ravager is healed by the strange floor rune!", TALKTYPE_MONSTER_SAY)
 	end
 	return true
 end

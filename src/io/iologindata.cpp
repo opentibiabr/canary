@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -16,12 +16,14 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_errors.hpp"
 
 bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol) {
-	account::Account account(accountDescriptor);
+	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
-	if (account::ERROR_NO != account.load()) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
 		g_logger().error("Couldn't load account [{}].", account.getDescriptor());
 		return false;
 	}
@@ -36,13 +38,13 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		}
 	}
 
-	if (account::ERROR_NO != account.load()) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
 		g_logger().error("Failed to load account [{}]", accountDescriptor);
 		return false;
 	}
 
 	auto [players, result] = account.getAccountPlayers();
-	if (account::ERROR_NO != result) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
 		g_logger().error("Failed to load account [{}] players", accountDescriptor);
 		return false;
 	}
@@ -57,14 +59,15 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 	return true;
 }
 
-account::AccountType IOLoginData::getAccountType(uint32_t accountId) {
+uint8_t IOLoginData::getAccountType(uint32_t accountId) {
 	std::ostringstream query;
 	query << "SELECT `type` FROM `accounts` WHERE `id` = " << accountId;
 	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
 	if (!result) {
-		return account::ACCOUNT_TYPE_NORMAL;
+		return ACCOUNT_TYPE_NORMAL;
 	}
-	return static_cast<account::AccountType>(result->getNumber<uint16_t>("type"));
+
+	return result->getNumber<uint8_t>("type");
 }
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
@@ -169,6 +172,9 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 
 		// Load task hunting class
 		IOLoginDataLoad::loadPlayerTaskHuntingClass(player, result);
+
+		// Load instant spells list
+		IOLoginDataLoad::loadPlayerInstantSpellList(player, result);
 
 		if (disableIrrelevantInfo) {
 			return true;

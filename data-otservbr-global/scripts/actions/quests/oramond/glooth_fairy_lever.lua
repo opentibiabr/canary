@@ -1,69 +1,73 @@
-local function removeBosst(fromArea1, fromArea2, bossName)
-	for x = fromArea1.x, fromArea2.x do
-		for y = fromArea1.y, fromArea2.y do
-			for z = fromArea1.z, fromArea2.z do
-				if getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid > 0 then
-					if isMonster(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid) then
-						if string.lower(getCreatureName(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid)) == bossName then
-							doRemoveCreature(getTopCreature({ x = x, y = y, z = z, stackpos = 255 }).uid)
-						end
+local function clearMonstersAndTeleportPlayers()
+	local leverRoomFromPos = Position(33658, 31934, 9)
+	local leverRoomToPos = Position(33670, 31940, 9)
+	local bossRoomFromPos = Position(33678, 31922, 9)
+	local bossRoomToPos = Position(33699, 31943, 9)
+	local exitPos = Position(33657, 31943, 9)
+	local destinationPos = Position(33684, 31932, 9)
+
+	for x = leverRoomFromPos.x, leverRoomToPos.x do
+		for y = leverRoomFromPos.y, leverRoomToPos.y do
+			for z = leverRoomFromPos.z, leverRoomToPos.z do
+				local currentTile = Tile(Position({ x = x, y = y, z = z }))
+				if currentTile then
+					local topCreature = currentTile:getTopCreature()
+					if topCreature and topCreature:isPlayer() then
+						topCreature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+						topCreature:teleportTo(exitPos)
+						topCreature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 					end
 				end
 			end
 		end
 	end
-	return true
-end
 
-local function teleportAllPlayersFromAreat(fromArea1, fromArea2, toPos)
-	for x = fromArea1.x, fromArea2.x do
-		for y = fromArea1.y, fromArea2.y do
-			for z = fromArea1.z, fromArea2.z do
-				local tile = Tile(Position({ x = x, y = y, z = z }))
-				if tile then
-					local player = tile:getTopCreature()
-					if player and player:isPlayer() then
-						player:teleportTo(toPos)
-						player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+	for x = bossRoomFromPos.x, bossRoomToPos.x do
+		for y = bossRoomFromPos.y, bossRoomToPos.y do
+			for z = bossRoomFromPos.z, bossRoomToPos.z do
+				local currentTile = Tile(Position({ x = x, y = y, z = z }))
+				if currentTile then
+					local topCreature = currentTile:getTopCreature()
+					if topCreature and topCreature:isMonster() then
+						topCreature:remove()
 					end
 				end
 			end
 		end
 	end
-	return true
-end
 
-local function PrepareEnter()
-	removeBosst({ x = 33679, y = 31919, z = 9 }, { x = 33701, y = 31941, z = 9 }, "glooth fairy")
-	teleportAllPlayersFromAreat({ x = 33659, y = 31935, z = 9 }, { x = 33668, y = 31939, z = 9 }, { x = 33684, y = 31935, z = 9 })
-	Game.createMonster("Glooth Fairy", { x = 33688, y = 31937, z = 9 })
-end
-
-local oramondGloothLever = Action()
-function oramondGloothLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if item.itemid == 8913 then
-		if getGlobalStorageValue(15560) >= os.time() then
-			doPlayerSendTextMessage(player, 19, "You need to wait 15 minutes to use again.")
-			return true
-		end
-
-		local specs, spec = Game.getSpectators({ x = 33688, y = 31932, z = 9 }, false, false, 13, 13, 13, 13)
-		for i = 1, #specs do
-			spec = specs[i]
-			if spec:isPlayer() then
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "A team is already inside the quest room.")
-				return true
+	for x = bossRoomFromPos.x, bossRoomToPos.x do
+		for y = bossRoomFromPos.y, bossRoomToPos.y do
+			for z = bossRoomFromPos.z, bossRoomToPos.z do
+				local currentTile = Tile(Position({ x = x, y = y, z = z }))
+				if currentTile then
+					local topCreature = currentTile:getTopCreature()
+					if topCreature and topCreature:isPlayer() then
+						topCreature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+						topCreature:teleportTo(destinationPos)
+						topCreature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+					end
+				end
 			end
-			spec:remove()
 		end
-		setGlobalStorageValue(18081, os.time() + 15 * 60)
-		player:say("Everyone in this place will be teleported into Glooth Fairy's hideout in one minute. No way back!!!", TALKTYPE_MONSTER_SAY)
-		addEvent(PrepareEnter, 60 * 1000)
 	end
 
-	item:transform(item.itemid == 8913 and 8914 or 8913)
+	Game.createMonster("Glooth Fairy", Position(33688, 31937, 9), false, true)
+end
+
+local gloothFairyLever = Action()
+
+function gloothFairyLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if Game.getStorageValue(GlobalStorage.GloothFairyTimer) >= os.time() then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to wait 15 minutes to use again.")
+		return true
+	end
+
+	player:say("Everyone in this place will be teleported into Glooth Fairy's hideout in one minute. No way back!!!", TALKTYPE_MONSTER_SAY)
+	Game.setStorageValue(GlobalStorage.GloothFairyTimer, os.time() + 15 * 60)
+	addEvent(clearMonstersAndTeleportPlayers, 60 * 1000)
 	return true
 end
 
-oramondGloothLever:uid(1020)
-oramondGloothLever:register()
+gloothFairyLever:uid(1020)
+gloothFairyLever:register()

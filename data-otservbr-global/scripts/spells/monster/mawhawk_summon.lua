@@ -10,7 +10,7 @@ local maxsummons = 4
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	creature:say("Watch my maws!", TALKTYPE_ORANGE_1)
+	creature:say("Watch my maws!", TALKTYPE_MONSTER_SAY)
 	local summoncount = creature:getSummons()
 	if #summoncount < 4 then
 		for i = 1, maxsummons - #summoncount do

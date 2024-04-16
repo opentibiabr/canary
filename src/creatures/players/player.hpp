@@ -657,6 +657,10 @@ public:
 		return loginPosition;
 	}
 	const Position &getTemplePosition() const {
+		if (!town) {
+			return Position();
+		}
+
 		return town->getTemplePosition();
 	}
 	std::shared_ptr<Town> getTown() const {

@@ -82,7 +82,7 @@ monster.loot = {
 	{ name = "platinum coin", chance = 100000, maxCount = 6 },
 	{ name = "great spirit potion", chance = 26010, maxCount = 5 },
 	{ name = "great mana potion", chance = 25210, maxCount = 5 },
-	{ name = "vexclaw talon", chance = 21500, version = 1100 },
+	{ name = "vexclaw talon", chance = 21500 },
 	{ name = "demonic essence", chance = 20730 },
 	{ name = "ultimate health potion", chance = 19960, maxCount = 5 },
 	{ name = "fire mushroom", chance = 19940, maxCount = 6 },
@@ -102,13 +102,13 @@ monster.loot = {
 	{ name = "giant sword", chance = 1880 },
 	{ id = 3049, chance = 1790 }, -- stealth ring
 	{ id = 3051, chance = 1790 }, -- energy ring
-	{ name = "rift lance", chance = 1360, version = 1100 },
+	{ name = "rift lance", chance = 1360 },
 	{ id = 3098, chance = 1320 }, -- ring of healing
 	{ name = "platinum amulet", chance = 940 },
 	{ name = "devil helmet", chance = 520 },
-	{ name = "rift crossbow", chance = 370, version = 1100 },
-	{ name = "rift bow", chance = 370, version = 1100 },
-	{ name = "rift shield", chance = 370, version = 1100 },
+	{ name = "rift crossbow", chance = 370 },
+	{ name = "rift bow", chance = 370 },
+	{ name = "rift shield", chance = 370 },
 	{ name = "demon shield", chance = 370 },
 	{ name = "magic plate armor", chance = 70 },
 	{ name = "golden legs", chance = 50 },

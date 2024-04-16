@@ -88,7 +88,7 @@ monster.loot = {
 	{ name = "warrior helmet", chance = 1460 },
 	{ name = "crown armor", chance = 280 },
 	{ name = "glacier robe", chance = 120 },
-	{ name = "giant shrimp", chance = 40, version = 1100 },
+	{ name = "giant shrimp", chance = 40 },
 }
 
 monster.attacks = {

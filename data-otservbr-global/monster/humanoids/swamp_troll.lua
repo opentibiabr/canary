@@ -87,7 +87,7 @@ monster.loot = {
 	{ name = "troll green", chance = 1200 },
 	{ id = 5901, chance = 2140 }, -- wood
 	{ name = "swamp grass", chance = 3100 },
-	{ name = "medicine pouch", chance = 2160, version = 1100 },
+	{ name = "medicine pouch", chance = 2160 },
 }
 
 monster.attacks = {

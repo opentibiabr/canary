@@ -81,7 +81,7 @@ monster.voices = {
 monster.loot = {
 	{ name = "crystal coin", chance = 76710 },
 	{ name = "ultimate health potion", chance = 14920, maxCount = 7 },
-	{ name = "apron", chance = 7990, version = 1100 },
+	{ name = "apron", chance = 7990 },
 	{ name = "hailstorm rod", chance = 7610 },
 	{ name = "stone skin amulet", chance = 5780 },
 	{ name = "green gem", chance = 5710 },
@@ -93,8 +93,8 @@ monster.loot = {
 	{ id = 33932, chance = 3500 }, -- head many faces
 	{ name = "glacier shoes", chance = 2510 },
 	{ name = "glacier robe", chance = 2130 },
-	{ name = "gruesome fan", chance = 610, version = 1100 },
-	{ name = "glacial rod", chance = 610, version = 1100 },
+	{ name = "gruesome fan", chance = 610 },
+	{ name = "glacial rod", chance = 610 },
 	{ id = 34109, chance = 20 }, -- bag you desire
 }
 

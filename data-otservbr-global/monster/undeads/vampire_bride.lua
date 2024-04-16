@@ -96,7 +96,7 @@ monster.loot = {
 	{ id = 8923, chance = 970 }, -- velvet tapestry
 	{ name = "vampire teeth", chance = 10000 },
 	{ name = "blood preservation", chance = 4950 },
-	{ name = "leather whip", chance = 20, version = 1100 },
+	{ name = "leather whip", chance = 20 },
 }
 
 monster.attacks = {

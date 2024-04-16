@@ -83,7 +83,7 @@ monster.loot = {
 	{ name = "small enchanted ruby", chance = 9440, maxCount = 3 },
 	{ id = 3030, chance = 11890, maxCount = 2 }, -- small ruby
 	{ id = 9057, chance = 8560, maxCount = 2 }, -- small topaz
-	{ name = "royal star", chance = 4050, maxCount = 3, version = 1100 },
+	{ name = "royal star", chance = 4050, maxCount = 3 },
 	{ id = 3041, chance = 1300 }, -- blue gem
 	{ id = 3039, chance = 3800 }, -- red gem
 	{ id = 6299, chance = 1100 }, -- death ring

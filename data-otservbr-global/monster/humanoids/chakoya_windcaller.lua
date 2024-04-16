@@ -84,7 +84,7 @@ monster.loot = {
 	{ name = "northern pike", chance = 40 },
 	{ name = "rainbow trout", chance = 40 },
 	{ name = "green perch", chance = 110 },
-	{ name = "fireproof horn", chance = 410, version = 1100 },
+	{ name = "fireproof horn", chance = 410 },
 }
 
 monster.attacks = {

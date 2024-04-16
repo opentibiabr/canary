@@ -85,7 +85,7 @@ monster.loot = {
 	{ name = "bone shield", chance = 5300 },
 	{ name = "worm", chance = 25325, maxCount = 12 },
 	{ name = "half-digested piece of meat", chance = 1000 },
-	{ name = "fist on a stick", chance = 230, version = 1100 },
+	{ name = "fist on a stick", chance = 230 },
 }
 
 monster.attacks = {

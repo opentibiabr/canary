@@ -85,9 +85,9 @@ monster.loot = {
 	{ name = "twin hooks", chance = 1170 },
 	{ name = "springsprout rod", chance = 1210 },
 	{ id = 30083, chance = 1890 }, -- green ectoplasm
-	{ name = "coral brooch", chance = 1330, version = 1100 },
+	{ name = "coral brooch", chance = 1330 },
 	{ name = "serpent sword", chance = 1950 },
-	{ name = "hexagonal ruby", chance = 800, version = 1100 },
+	{ name = "hexagonal ruby", chance = 800 },
 	{ name = "assassin dagger", chance = 970 },
 	{ name = "spike sword", chance = 530 },
 	{ name = "wyvern fang", chance = 120 },

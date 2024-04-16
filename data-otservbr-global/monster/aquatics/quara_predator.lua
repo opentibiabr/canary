@@ -91,7 +91,7 @@ monster.loot = {
 	{ name = "assassin star", chance = 530 },
 	{ name = "glacier robe", chance = 440 },
 	{ name = "skull helmet", chance = 390 },
-	{ name = "giant shrimp", chance = 10, version = 1100 },
+	{ name = "giant shrimp", chance = 10 },
 }
 
 monster.attacks = {

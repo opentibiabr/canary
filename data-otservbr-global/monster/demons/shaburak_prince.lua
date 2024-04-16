@@ -95,7 +95,7 @@ monster.loot = {
 	{ name = "strong health potion", chance = 14285 },
 	{ name = "strong mana potion", chance = 14285 },
 	{ name = "magma coat", chance = 714 },
-	{ name = "demonic finger", chance = 178, version = 1100 },
+	{ name = "demonic finger", chance = 178 },
 }
 
 monster.attacks = {

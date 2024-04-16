@@ -93,7 +93,7 @@ monster.loot = {
 	{ id = 3053, chance = 410 }, -- time ring
 	{ name = "talon", chance = 310 },
 	{ name = "glacier robe", chance = 200 },
-	{ name = "giant shrimp", chance = 100, version = 1100 },
+	{ name = "giant shrimp", chance = 100 },
 	{ name = "twiceslicer", chance = 100 },
 }
 

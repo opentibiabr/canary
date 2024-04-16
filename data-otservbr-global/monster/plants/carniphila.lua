@@ -82,7 +82,7 @@ monster.loot = {
 	{ name = "shadow herb", chance = 880 },
 	{ name = "seeds", chance = 490 },
 	{ name = "carniphila seeds", chance = 4166 },
-	{ name = "carrot on a stick", chance = 170, version = 1100 },
+	{ name = "carrot on a stick", chance = 170 },
 }
 
 monster.attacks = {

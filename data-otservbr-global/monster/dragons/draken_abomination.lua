@@ -103,7 +103,7 @@ monster.loot = {
 	{ name = "shield of corruption", chance = 10 },
 	{ name = "draken boots", chance = 540 },
 	{ name = "snake god's wristguard", chance = 10 },
-	{ name = "bamboo leaves", chance = 360, version = 1100 },
+	{ name = "bamboo leaves", chance = 360 },
 }
 
 monster.attacks = {

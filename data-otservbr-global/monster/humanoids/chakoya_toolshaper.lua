@@ -87,7 +87,7 @@ monster.loot = {
 	{ name = "green perch", chance = 70 },
 	{ name = "mammoth whopper", chance = 160 },
 	{ id = 7441, chance = 450 }, -- ice cube
-	{ name = "fireproof horn", chance = 390, version = 1100 },
+	{ name = "fireproof horn", chance = 390 },
 }
 
 monster.attacks = {

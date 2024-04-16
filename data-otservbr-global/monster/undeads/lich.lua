@@ -109,7 +109,7 @@ monster.loot = {
 	{ name = "strong mana potion", chance = 7500 },
 	{ name = "lightning boots", chance = 200 },
 	{ name = "small topaz", chance = 2430, maxCount = 3 },
-	{ name = "maxilla maximus", chance = 100, version = 1100 },
+	{ name = "maxilla maximus", chance = 100 },
 }
 
 monster.attacks = {

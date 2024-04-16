@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1100 then
-	return
-end
-
 local function cleanMMap(frompos, topos)
 	for _x = frompos.x, topos.x, 1 do
 		for _y = frompos.y, topos.y, 1 do

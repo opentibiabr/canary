@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1100 then
-	return
-end
-
 local function killCheck(player, targetName, taskName, taskStage, taskInfo, taskAltKillCount, taskkillCount)
 	if player:getStorageValue(taskName) == taskStage then
 		if table.contains(taskInfo, targetName) then

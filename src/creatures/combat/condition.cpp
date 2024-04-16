@@ -324,7 +324,14 @@ bool Condition::isRemovableOnDeath() const {
 		return false;
 	}
 
-	if (conditionType == CONDITION_SPELLCOOLDOWN || conditionType == CONDITION_SPELLGROUPCOOLDOWN || conditionType == CONDITION_MUTED) {
+	static const std::unordered_set<ConditionType_t> nonRemovableConditions = {
+		CONDITION_SPELLCOOLDOWN,
+		CONDITION_SPELLGROUPCOOLDOWN,
+		CONDITION_MUTED,
+		CONDITION_GOSHNARTAINT
+	};
+
+	if (nonRemovableConditions.find(conditionType) != nonRemovableConditions.end()) {
 		return false;
 	}
 

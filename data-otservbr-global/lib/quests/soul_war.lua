@@ -680,6 +680,39 @@ SoulWarQuest = {
 	},
 }
 
+function RegisterSoulWarBossesLevers()
+	-- Register levers
+	local goshnarsMaliceLever = BossLever(SoulWarQuest.levers.goshnarsMalice)
+	goshnarsMaliceLever:position(SoulWarQuest.levers.goshnarsMalicePosition)
+	goshnarsMaliceLever:register()
+	logger.debug("Registering soul war boss lever zone: {}", goshnarsMaliceLever:getZone():getName())
+
+	local goshnarsSpiteLever = BossLever(SoulWarQuest.levers.goshnarsSpite)
+	goshnarsSpiteLever:position(SoulWarQuest.levers.goshnarsSpitePosition)
+	goshnarsSpiteLever:register()
+	logger.debug("Registering soul war boss lever zone: {}", goshnarsSpiteLever:getZone():getName())
+
+	local goshnarsGreedLever = BossLever(SoulWarQuest.levers.goshnarsGreed)
+	goshnarsGreedLever:position(SoulWarQuest.levers.goshnarsGreedPosition)
+	goshnarsGreedLever:register()
+	logger.debug("Registering soul war boss lever zone: {}", goshnarsGreedLever:getZone():getName())
+
+	local goshnarsHatredLever = BossLever(SoulWarQuest.levers.goshnarsHatred)
+	goshnarsHatredLever:position(SoulWarQuest.levers.goshnarsHatredPosition)
+	goshnarsHatredLever:register()
+	logger.debug("Registering soul war boss lever zone: {}", goshnarsHatredLever:getZone():getName())
+
+	local goshnarsCrueltyLever = BossLever(SoulWarQuest.levers.goshnarsCruelty)
+	goshnarsCrueltyLever:position(SoulWarQuest.levers.goshnarsCrueltyPosition)
+	goshnarsCrueltyLever:register()
+	logger.debug("Registering soul war boss lever zone: {}", goshnarsCrueltyLever:getZone():getName())
+
+	local goshnarsMegalomaniaLever = BossLever(SoulWarQuest.levers.goshnarsMegalomania)
+	goshnarsMegalomaniaLever:position(SoulWarQuest.levers.goshnarsMegalomaniaPosition)
+	goshnarsMegalomaniaLever:register()
+	logger.debug("Registering soul war boss lever zone: {}", goshnarsMegalomaniaLever:getZone():getName())
+end
+
 -- Initialize ebb and flow zone area
 SoulWarQuest.ebbAndFlow.zone:addArea({ x = 33869, y = 30991, z = 8 }, { x = 33964, y = 31147, z = 9 })
 

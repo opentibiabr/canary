@@ -2687,7 +2687,7 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		dismount();
 		g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
 	}
-	#endif
+#endif
 
 	loginPosition = town->getTemplePosition();
 

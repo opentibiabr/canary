@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 854 then
-	return
-end
-
 local internalNpcName = "Zurak"
 local npcType = Game.createNpcType("Zurak (Arena)")
 local npcConfig = {}

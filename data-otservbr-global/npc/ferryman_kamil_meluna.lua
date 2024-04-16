@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 850 then
-	return
-end
-
 local internalNpcName = "Ferryman Kamil"
 local npcType = Game.createNpcType("Ferryman Kamil (Meluna)")
 local npcConfig = {}

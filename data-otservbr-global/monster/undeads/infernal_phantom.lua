@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1240 then
-	return
-end
-
 local mType = Game.createMonsterType("Infernal Phantom")
 local monster = {}
 

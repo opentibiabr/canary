@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 840 then
-	return
-end
-
 local internalNpcName = "Dorbin"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

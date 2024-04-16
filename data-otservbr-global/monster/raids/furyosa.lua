@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1020 then
-	return
-end
-
 local mType = Game.createMonsterType("Furyosa")
 local monster = {}
 

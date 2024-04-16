@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 854 then
-	return
-end
-
 local internalNpcName = "Hemor, the guard"
 local npcType = Game.createNpcType("Heavenly Messenger")
 local npcConfig = {}

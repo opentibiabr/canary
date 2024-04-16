@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 780 then
-	return
-end
-
 local internalNpcName = "Captain Waverider"
 local npcType = Game.createNpcType("Captain Waverider (Island)")
 local npcConfig = {}

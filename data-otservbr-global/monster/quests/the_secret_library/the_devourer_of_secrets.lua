@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1180 then
-	return
-end
-
 local mType = Game.createMonsterType("The Devourer of Secrets")
 local monster = {}
 

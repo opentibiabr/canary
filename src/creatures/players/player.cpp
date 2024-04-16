@@ -1241,12 +1241,11 @@ std::shared_ptr<DepotChest> Player::getDepotChest(uint32_t depotId, bool autoCre
 	return depotChest;
 }
 
+
 std::shared_ptr<DepotLocker> Player::getDepotLocker(uint32_t depotId) {
 	auto it = depotLockerMap.find(depotId);
 	if (it != depotLockerMap.end()) {
-#if CLIENT_VERSION >= 940
 		inbox->setParent(it->second);
-#endif
 		for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES, __FUNCTION__); i > 0; i--) {
 			if (std::shared_ptr<DepotChest> depotBox = getDepotChest(i, false)) {
 				depotBox->setParent(it->second->getItemByIndex(0)->getContainer());
@@ -1255,28 +1254,24 @@ std::shared_ptr<DepotLocker> Player::getDepotLocker(uint32_t depotId) {
 		return it->second;
 	}
 
-	uint8_t boxCount = 1;
-#if CLIENT_VERSION >= 1180
-	boxCount = client->oldProtocol ? boxCount : 4;
-#endif
-	std::shared_ptr<DepotLocker> playerDepotLocker = std::make_shared<DepotLocker>(ITEM_LOCKER, boxCount);
-	playerDepotLocker->setDepotId(depotId);
-#if CLIENT_VERSION >= 940
-	playerDepotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
-	playerDepotLocker->internalAddThing(inbox);
-#endif
-#if CLIENT_VERSION >= 1180
-	playerDepotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
-#endif
+	// We need to make room for supply stash on 11+ protocol versions and remove it for others versions.
+	bool createSupplyStash = !client->oldProtocol;
+	std::shared_ptr<DepotLocker> depotLocker = std::make_shared<DepotLocker>(ITEM_LOCKER, createSupplyStash ? 4 : 3);
+	depotLocker->setDepotId(depotId);
+	depotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
+	depotLocker->internalAddThing(inbox);
+	if (createSupplyStash) {
+		depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
+	}
 	std::shared_ptr<Container> depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, static_cast<uint16_t>(g_configManager().getNumber(DEPOT_BOXES, __FUNCTION__)));
 	for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES, __FUNCTION__); i > 0; i--) {
 		std::shared_ptr<DepotChest> depotBox = getDepotChest(i, true);
 		depotChest->internalAddThing(depotBox);
 		depotBox->setParent(depotChest);
 	}
-	playerDepotLocker->internalAddThing(depotChest);
-	depotLockerMap[depotId] = playerDepotLocker;
-	return playerDepotLocker;
+	depotLocker->internalAddThing(depotChest);
+	depotLockerMap[depotId] = depotLocker;
+	return depotLocker;
 }
 
 std::shared_ptr<RewardChest> Player::getRewardChest() {

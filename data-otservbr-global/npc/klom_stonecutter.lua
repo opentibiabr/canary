@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1150 then
-	return
-end
-
 local internalNpcName = "Klom Stonecutter"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

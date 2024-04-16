@@ -386,7 +386,6 @@ void IOLoginDataLoad::loadPlayerGuild(std::shared_ptr<Player> player, DBResult_p
 	}
 }
 
-#if CLIENT_VERSION > 1100
 void IOLoginDataLoad::loadPlayerStashItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
@@ -455,7 +454,7 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(std::shared_ptr<Player> player, D
 		Database::getInstance().executeQuery(query.str());
 	}
 }
-#endif
+
 void IOLoginDataLoad::loadPlayerInstantSpellList(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
@@ -554,7 +553,6 @@ void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, D
 	}
 }
 
-#if CLIENT_VERSION > 1100
 void IOLoginDataLoad::loadPlayerStoreInbox(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
@@ -586,7 +584,6 @@ void IOLoginDataLoad::loadRewardItems(std::shared_ptr<Player> player) {
 		insertItemsIntoRewardBag(rewardItems);
 	}
 }
-#endif
 
 void IOLoginDataLoad::loadPlayerDepotItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
@@ -694,7 +691,7 @@ void IOLoginDataLoad::loadPlayerVip(std::shared_ptr<Player> player, DBResult_ptr
 		} while (result->next());
 	}
 }
-#if CLIENT_VERSION >= 1100
+
 void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
@@ -898,7 +895,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player)
 	player->initializePrey();
 	player->initializeTaskHunting();
 }
-#endif
+
 void IOLoginDataLoad::loadPlayerUpdateSystem(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);

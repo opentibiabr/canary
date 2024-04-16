@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1094 then
-	return
-end
-
 local mType = Game.createMonsterType("Reality Reaver")
 local monster = {}
 

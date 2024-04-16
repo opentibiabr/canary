@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1030 then
-	return
-end
-
 local mType = Game.createMonsterType("Sight of Surrender")
 local monster = {}
 

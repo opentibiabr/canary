@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 740 then
-	return
-end
-
 dofile(DATA_DIRECTORY .. "/npc/alesar_functions.lua")
 
 local internalNpcName = "Alesar"

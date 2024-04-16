@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1180 then
-	return
-end
-
 local internalNpcName = "Crowned Tree"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

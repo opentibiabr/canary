@@ -65,7 +65,7 @@ ItemTypes_t Items::getLootType(const std::string &strValue) {
 bool Items::reload() {
 	clear();
 #if CLIENT_VERSION < 1100
-	loadFromOtb("data/items/" + std::to_string(CLIENT_VERSION) + "/items.otb");
+	loadFromOtb("data/items/items.otb");
 #else
 	loadFromProtobuf();
 #endif
@@ -572,12 +572,7 @@ bool Items::loadFromOtb(const std::string &file) {
 
 bool Items::loadFromXml() {
 	pugi::xml_document doc;
-	std::string xmlLocation;
-#if CLIENT_VERSION > 1100
-	xmlLocation = "/items/items.xml";
-#else
-	xmlLocation = "/items/" + std::to_string(CLIENT_VERSION) + "/items.xml";
-#endif
+	std::string xmlLocation = "/items/items.xml";
 	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + xmlLocation;
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {

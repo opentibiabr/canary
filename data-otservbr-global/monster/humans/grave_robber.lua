@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 950 then
-	return
-end
-
 local mType = Game.createMonsterType("Grave Robber")
 local monster = {}
 

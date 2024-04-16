@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1103 then
-	return
-end
-
 local internalNpcName = "Gelidrazah'S Thirst"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

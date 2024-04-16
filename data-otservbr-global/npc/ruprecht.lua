@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 790 then
-	return
-end
-
 local internalNpcName = "Ruprecht"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

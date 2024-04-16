@@ -152,7 +152,6 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 		// load vip
 		IOLoginDataLoad::loadPlayerVip(player, result);
 
-#if CLIENT_VERSION >= 1100
 		// load reward items
 		IOLoginDataLoad::loadRewardItems(player);
 
@@ -182,7 +181,6 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 		IOLoginDataLoad::loadPlayerBosstiary(player, result);
 
 		IOLoginDataLoad::loadPlayerInitializeSystem(player);
-#endif
 		IOLoginDataLoad::loadPlayerUpdateSystem(player);
 		return true;
 	} catch (const std::system_error &error) {

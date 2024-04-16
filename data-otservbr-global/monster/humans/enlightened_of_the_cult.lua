@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 780 then
-	return
-end
-
 local mType = Game.createMonsterType("Enlightened of the Cult")
 local monster = {}
 

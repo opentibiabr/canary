@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 820 then
-	return
-end
-
 local mType = Game.createMonsterType("Yaga the Crone")
 local monster = {}
 

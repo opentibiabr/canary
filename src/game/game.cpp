@@ -428,20 +428,8 @@ bool Game::loadItemsPrice() {
 void Game::loadMainMap(const std::string &filename) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE, __FUNCTION__);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS, __FUNCTION__);
-#if CLIENT_VERSION < 1100
-	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER, __FUNCTION__);
-	auto datapackName = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	std::string mapName;
-	if (useAnyDatapack || (datapackName == "data-canary")) {
-		mapName = fmt::format("/world/{}.otbm", filename);
-	} else {
-		mapName = fmt::format("/world/{}/{}.otbm", CLIENT_VERSION, filename);
-	}
-	auto string = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + mapName;
-	map.loadMap(string, true, true, true, true, true);
-#else
+
 	map.loadMap(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/world/" + filename + ".otbm", true, true, true, true, true);
-#endif
 }
 
 void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {

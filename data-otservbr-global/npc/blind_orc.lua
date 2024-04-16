@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 520 then
-	return
-end
-
 local internalNpcName = "Blind Orc"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

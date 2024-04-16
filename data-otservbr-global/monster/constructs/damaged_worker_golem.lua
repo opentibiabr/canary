@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 840 then
-	return
-end
-
 local mType = Game.createMonsterType("Damaged Worker Golem")
 local monster = {}
 

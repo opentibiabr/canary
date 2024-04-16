@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 840 then
-	return
-end
-
 local mType = Game.createMonsterType("Tormented Ghost")
 local monster = {}
 

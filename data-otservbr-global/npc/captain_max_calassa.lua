@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 780 then
-	return
-end
-
 local internalNpcName = "Captain Max"
 local npcType = Game.createNpcType("Captain Max (Calassa)")
 local npcConfig = {}

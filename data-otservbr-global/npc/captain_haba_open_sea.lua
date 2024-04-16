@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 820 then
-	return
-end
-
 local internalNpcName = "Captain Haba"
 local npcType = Game.createNpcType("Captain Haba (Open Sea)")
 local npcConfig = {}

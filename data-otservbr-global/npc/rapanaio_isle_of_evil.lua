@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 850 then
-	return
-end
-
 local internalNpcName = "Rapanaio"
 local npcType = Game.createNpcType("Rapanaio (Isle of Evil)")
 local npcConfig = {}

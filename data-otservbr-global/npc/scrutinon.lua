@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 940 then
-	return
-end
-
 local internalNpcName = "Scrutinon"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

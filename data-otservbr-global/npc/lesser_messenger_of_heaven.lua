@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1094 then
-	return
-end
-
 local internalNpcName = "Messenger of Heaven"
 local npcType = Game.createNpcType("Lesser Messenger of Heaven")
 local npcConfig = {}

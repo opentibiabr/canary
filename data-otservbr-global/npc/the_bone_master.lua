@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 790 then
-	return
-end
-
 local internalNpcName = "The Bone Master"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

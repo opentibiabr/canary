@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1102 then
-	return
-end
-
 local mType = Game.createMonsterType("Melting Frozen Horror")
 local monster = {}
 

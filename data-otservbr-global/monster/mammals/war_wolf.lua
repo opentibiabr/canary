@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 700 then
-	return
-end
-
 local mType = Game.createMonsterType("War Wolf")
 local monster = {}
 

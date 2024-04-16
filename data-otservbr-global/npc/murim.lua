@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 854 then
-	return
-end
-
 local internalNpcName = "Murim"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

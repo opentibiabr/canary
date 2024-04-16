@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1070 then
-	return
-end
-
 local internalNpcName = "Guardian of the Deep Seas"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

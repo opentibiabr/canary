@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 800 then
-	return
-end
-
 local internalNpcName = "A Restless Soul"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

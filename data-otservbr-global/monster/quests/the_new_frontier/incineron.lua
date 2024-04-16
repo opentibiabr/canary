@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 854 then
-	return
-end
-
 local mType = Game.createMonsterType("Incineron")
 local monster = {}
 

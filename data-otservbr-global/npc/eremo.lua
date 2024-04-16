@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 650 then
-	return
-end
-
 local internalNpcName = "Eremo"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

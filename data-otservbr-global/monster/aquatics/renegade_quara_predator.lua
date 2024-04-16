@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1070 then
-	return
-end
-
 local mType = Game.createMonsterType("Renegade Quara Predator")
 local monster = {}
 

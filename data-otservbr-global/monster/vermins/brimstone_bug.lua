@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 860 then
-	return
-end
-
 local mType = Game.createMonsterType("Brimstone Bug")
 local monster = {}
 

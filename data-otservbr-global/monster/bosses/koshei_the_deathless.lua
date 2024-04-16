@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 810 then
-	return
-end
-
 local mType = Game.createMonsterType("Koshei the Deathless")
 local monster = {}
 

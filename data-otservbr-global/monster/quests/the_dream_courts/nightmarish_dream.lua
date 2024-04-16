@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1200 then
-	return
-end
-
 local mType = Game.createMonsterType("Nightmarish Dream")
 local monster = {}
 

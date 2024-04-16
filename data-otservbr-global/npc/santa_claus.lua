@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 510 then
-	return
-end
-
 local internalNpcName = "Santa Claus"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

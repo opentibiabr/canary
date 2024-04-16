@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1150 then
-	return
-end
-
 local mType = Game.createMonsterType("Organic Matter")
 local monster = {}
 

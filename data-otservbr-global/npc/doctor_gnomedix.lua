@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 960 then
-	return
-end
-
 local internalNpcName = "Doctor Gnomedix"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

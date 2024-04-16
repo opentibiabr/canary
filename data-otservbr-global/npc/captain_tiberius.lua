@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 853 then
-	return
-end
-
 local internalNpcName = "Captain Tiberius"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

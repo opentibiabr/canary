@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1140 then
-	return
-end
-
 local mType = Game.createMonsterType("Vermin Swarm")
 local monster = {}
 

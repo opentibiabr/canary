@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 600 then
-	return
-end
-
 local internalNpcName = "Kulag, The Guard"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

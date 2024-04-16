@@ -1,12 +1,10 @@
 math.randomseed(os.time())
 
 dofile(DATA_DIRECTORY .. "/lib/lib.lua")
-if CLIENT_VERSION >= 1100 then
-	local startupFile = io.open(DATA_DIRECTORY .. "/startup/startup.lua", "r")
-	if startupFile ~= nil then
-		io.close(startupFile)
-		dofile(DATA_DIRECTORY .. "/startup/startup.lua")
-	end
+local startupFile = io.open(DATA_DIRECTORY .. "/startup/startup.lua", "r")
+if startupFile ~= nil then
+	io.close(startupFile)
+	dofile(DATA_DIRECTORY .. "/startup/startup.lua")
 end
 
 function IsRunningGlobalDatapack()

@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 910 then
-	return
-end
-
 local mType = Game.createMonsterType("Firestarter")
 local monster = {}
 

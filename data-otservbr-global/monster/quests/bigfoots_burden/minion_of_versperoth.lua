@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 961 then
-	return
-end
-
 local mType = Game.createMonsterType("Minion of Versperoth")
 local monster = {}
 

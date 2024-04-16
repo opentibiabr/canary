@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 840 then
-	return
-end
-
 local internalNpcName = "Xorlosh"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

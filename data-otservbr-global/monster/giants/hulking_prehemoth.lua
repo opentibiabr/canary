@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1290 then
-	return
-end
-
 local mType = Game.createMonsterType("Hulking Prehemoth")
 local monster = {}
 

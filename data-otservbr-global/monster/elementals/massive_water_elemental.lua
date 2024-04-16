@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 780 then
-	return
-end
-
 local mType = Game.createMonsterType("Massive Water Elemental")
 local monster = {}
 

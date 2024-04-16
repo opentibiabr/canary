@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1010 then
-	return
-end
-
 local mType = Game.createMonsterType("Shadow Pupil")
 local monster = {}
 

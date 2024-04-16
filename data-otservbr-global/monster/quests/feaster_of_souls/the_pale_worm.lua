@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1230 then
-	return
-end
-
 local mType = Game.createMonsterType("The Pale Worm")
 local monster = {}
 

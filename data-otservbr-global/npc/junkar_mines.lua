@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 910 then
-	return
-end
-
 local internalNpcName = "Junkar"
 local npcType = Game.createNpcType("Junkar (Mines)")
 local npcConfig = {}

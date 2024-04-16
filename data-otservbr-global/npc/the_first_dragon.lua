@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1102 then
-	return
-end
-
 local internalNpcName = "The First Dragon"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}

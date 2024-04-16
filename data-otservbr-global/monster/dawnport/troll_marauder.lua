@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1055 then
-	return
-end
-
 local mType = Game.createMonsterType("Troll Marauder")
 local monster = {}
 

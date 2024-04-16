@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 1220 then
-	return
-end
-
 local mType = Game.createMonsterType("Cart Packed with Gold")
 local monster = {}
 

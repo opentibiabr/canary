@@ -1,7 +1,3 @@
-if CLIENT_VERSION < 940 then
-	return
-end
-
 local internalNpcName = "Rock in a Hard Place"
 local npcType = Game.createNpcType("Rock With A Soft Spot")
 local npcConfig = {}

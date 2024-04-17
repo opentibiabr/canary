@@ -658,7 +658,8 @@ public:
 	}
 	const Position &getTemplePosition() const {
 		if (!town) {
-			return Position();
+			static auto emptyPosition = Position();
+			return emptyPosition;
 		}
 
 		return town->getTemplePosition();

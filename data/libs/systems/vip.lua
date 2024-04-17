@@ -1,16 +1,16 @@
 local config = {
 	activationMessage = "You have received %s VIP days.",
-	activationMessageType = MESSAGE_EVENT_ADVANCE,
-
-	expirationMessage = "Your VIP days ran out.",
-	expirationMessageType = MESSAGE_ADMINISTRATOR,
+	expirationMessage = "Your VIP days have expired.",
+	vipDaysInfiniteMessage = "You have an infinite amount of VIP days remaining.",
+	noVipStatusMessage = "You do not have VIP status on your account.",
+	vipTimeRemainingMessage = "You have %s of VIP time remaining.",
 
 	outfits = {},
 	mounts = {},
 }
 
 function Player.onRemoveVip(self)
-	self:sendTextMessage(config.expirationMessageType, config.expirationMessage)
+	self:sendTextMessage(MESSAGE_ADMINISTRATOR, config.expirationMessage)
 
 	for _, outfit in ipairs(config.outfits) do
 		self:removeOutfit(outfit)
@@ -28,6 +28,7 @@ function Player.onRemoveVip(self)
 			playerOutfit.lookType = 128
 		end
 		playerOutfit.lookAddons = 0
+
 		self:setOutfit(playerOutfit)
 	end
 
@@ -36,7 +37,7 @@ end
 
 function Player.onAddVip(self, days, silent)
 	if not silent then
-		self:sendTextMessage(config.activationMessageType, string.format(config.activationMessage, days))
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format(config.activationMessage, days))
 	end
 
 	for _, outfit in ipairs(config.outfits) do
@@ -52,16 +53,15 @@ end
 
 function CheckPremiumAndPrint(player, msgType)
 	if player:getVipDays() == 0xFFFF then
-		player:sendTextMessage(msgType, "You have infinite amount of VIP days left.")
+		player:sendTextMessage(msgType, config.vipDaysInfiniteMessage)
 		return true
 	end
 
 	local playerVipTime = player:getVipTime()
 	if playerVipTime < os.time() then
-		local msg = "You do not have VIP on your account."
-		player:sendTextMessage(msgType, msg)
+		player:sendTextMessage(msgType, config.noVipStatusMessage)
 		return true
 	end
 
-	player:sendTextMessage(msgType, string.format("You have %s of VIP time left.", getFormattedTimeRemaining(playerVipTime)))
+	player:sendTextMessage(msgType, string.format(config.vipTimeRemainingMessage, getFormattedTimeRemaining(playerVipTime)))
 end

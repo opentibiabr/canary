@@ -50,9 +50,9 @@ function playerLoginGlobal.onLogin(player)
 
 	-- Boosted
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted creature: " .. Game.getBoostedCreature() .. " \
-	Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.")
+Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.")
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted boss: " .. Game.getBoostedBoss() .. " \
-	Boosted bosses contain more loot and count more kills for your Bosstiary.")
+Boosted bosses contain more loot and count more kills for your Bosstiary.")
 
 	-- Rewards
 	local rewards = #player:getRewardList()
@@ -117,6 +117,24 @@ function playerLoginGlobal.onLogin(player)
 
 	player:setStaminaXpBoost(player:getFinalBonusStamina() * 100)
 	player:getFinalLowLevelBonus()
+
+	-- Updates the player's VIP status and executes corresponding actions if applicable.
+	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+		local isVipNow = player:isVip()
+		local wasVip = player:kv():scoped("account"):get("vip-system") or false
+
+		if wasVip ~= isVipNow then
+			if wasVip then
+				player:onRemoveVip()
+			else
+				player:onAddVip(player:getVipDays())
+			end
+		end
+
+		if isVipNow then
+			CheckPremiumAndPrint(player, MESSAGE_LOGIN)
+		end
+	end
 
 	-- Set Ghost Mode
 	if player:getGroup():getId() >= GROUP_TYPE_GAMEMASTER then

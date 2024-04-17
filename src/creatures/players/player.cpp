@@ -1234,7 +1234,6 @@ std::shared_ptr<DepotChest> Player::getDepotChest(uint32_t depotId, bool autoCre
 	}
 
 	std::shared_ptr<DepotChest> depotChest;
-#if CLIENT_VERSION >= 1100
 	if (depotId > 0 && depotId < 18) {
 		depotChest = std::make_shared<DepotChest>(ITEM_DEPOT_NULL + depotId);
 	} else if (depotId == 18) {
@@ -1244,11 +1243,6 @@ std::shared_ptr<DepotChest> Player::getDepotChest(uint32_t depotId, bool autoCre
 	} else {
 		depotChest = std::make_shared<DepotChest>(ITEM_DEPOT_XX);
 	}
-#else
-	if (depotId > 0 && depotId <= 20) {
-		depotChest = std::make_shared<DepotChest>(ITEM_DEPOT_NULL + depotId);
-	}
-#endif
 	depotChests[depotId] = depotChest;
 	return depotChest;
 }

@@ -212,6 +212,8 @@ wheelAtelierRevealGreaterCost = 6000000
 familiarTime = 30
 
 partyAutoShareExperience = true
+-- partyShareRangeMultiplier: the range of the party share experience, default 3/2 (1.5)
+partyShareRangeMultiplier = 1.5
 partyShareLootBoosts = false
 partyShareLootBoostsDimishingFactor = 0.7
 

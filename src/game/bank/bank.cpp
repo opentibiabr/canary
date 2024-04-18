@@ -102,10 +102,12 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 	if (destinationPlayer != nullptr) {
 		auto name = asLowerCaseString(destinationPlayer->getName());
 		replaceString(name, " ", "");
+
 		if (deniedNames.contains(name)) {
 			g_logger().warn("Bank::transferTo: denied name: {}", name);
 			return false;
 		}
+    
 		if (destinationPlayer->getTown()->getID() < g_configManager().getNumber(MIN_TOWN_ID_TO_BANK_TRANSFER, __FUNCTION__)) {
 			g_logger().warn("Bank::transferTo: denied town: {}", destinationPlayer->getTown()->getID());
 			return false;

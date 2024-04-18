@@ -318,6 +318,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, STAMINA_PZ_GAIN, "staminaPzGain", 1);
 	loadIntConfig(L, STAMINA_TRAINER_DELAY, "staminaTrainerDelay", 5);
 	loadIntConfig(L, STAMINA_TRAINER_GAIN, "staminaTrainerGain", 1);
+	loadFloatConfig(L, PARTY_SHARE_RANGE_MULTIPLIER, "partyShareRangeMultiplier", 1.5f);
 	loadIntConfig(L, START_STREAK_LEVEL, "startStreakLevel", 0);
 	loadIntConfig(L, STATUSQUERY_TIMEOUT, "statusTimeout", 5000);
 	loadIntConfig(L, STORE_COIN_PACKET, "coinPacketSize", 25);

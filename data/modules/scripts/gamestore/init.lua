@@ -408,28 +408,25 @@ function parseBuyStoreOffer(playerId, msg)
 	end
 
 	-- All guarding conditions under which the offer should not be processed must be included here
-	if
-		not table.contains(GameStore.OfferTypes, offer.type) -- we've got an invalid offer type
+	if not table.contains(GameStore.OfferTypes, offer.type) -- we've got an invalid offer type
 		or not player
 		or (player:getVocation():getId() == 0) and (not GameStore.haveOfferRook(id)) -- we don't have such offer
 		or not offer
 		or (offer.type == GameStore.OfferTypes.OFFER_TYPE_NONE) -- offer is disabled
-		or (
-			offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_NAMECHANGE
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT
-			and not offer.id
-		)
+		or (offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_NAMECHANGE
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT
+		and not offer.id)
 	then
 		return queueSendStoreAlertToUser("This offer is unavailable [1]", 350, playerId, GameStore.StoreErrors.STORE_ERROR_INFORMATION)
 	end
@@ -514,7 +511,8 @@ function parseBuyStoreOffer(playerId, msg)
 	if not pcallOk then
 		local alertMessage = pcallError.code and pcallError.message or "Something went wrong. Your purchase has been cancelled."
 
-		if not pcallError.code then -- unhandled error
+		if not pcallError.code then
+			-- unhandled error
 			-- log some debugging info
 			logger.warn("[parseBuyStoreOffer] - Purchase failed due to an unhandled script error. Stacktrace: {}", pcallError)
 		end
@@ -625,14 +623,12 @@ function sendOfferDescription(player, offerId, description)
 end
 
 function Player.canBuyOffer(self, offer)
-	local playerId = self:getId()
 	local disabled, disabledReason = 0, ""
 	if offer.disabled or not offer.type then
 		disabled = 1
 	end
 
-	if
-		offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
+	if offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
@@ -1649,7 +1645,6 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 						decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 					end
 				end
-				player:sendUpdateContainer(inbox)
 			else
 				for i = 1, offer.count do
 					local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
@@ -1661,10 +1656,10 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 							decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 						end
 					end
-					player:sendUpdateContainer(inbox)
 				end
 			end
 		end
+		player:sendUpdateContainer(inbox)
 	end
 end
 
@@ -1685,10 +1680,9 @@ function GameStore.processOutfitPurchase(player, offerSexIdTable, addon)
 	elseif player:hasOutfit(looktype, _addon) then
 		return error({ code = 0, message = "You already own this outfit." })
 	else
-		if
-			not (player:addOutfitAddon(looktype, _addon)) -- TFS call failed
-			or (not player:hasOutfit(looktype, _addon)) -- Additional check; if the looktype doesn't match player sex for example,
-			--   then the TFS check will still pass... bug? (TODO)
+		-- TFS call failed and Additional check; if the looktype doesn't match player sex for example,
+		if not player:addOutfitAddon(looktype, _addon) or not player:hasOutfit(looktype, _addon)
+		--   then the TFS check will still pass... bug? (TODO)
 		then
 			error({ code = 0, message = "There has been an issue with your outfit purchase. Your purchase has been cancelled." })
 		else
@@ -2228,7 +2222,8 @@ function sendHomePage(playerId)
 	msg:sendToPlayer(player)
 end
 
-function Player:openStore(serviceName) --exporting the method so other scripts can use to open store
+--exporting the method so other scripts can use to open store
+function Player:openStore(serviceName)
 	local playerId = self:getId()
 	openStore(playerId)
 

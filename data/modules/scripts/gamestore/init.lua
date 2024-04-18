@@ -408,25 +408,28 @@ function parseBuyStoreOffer(playerId, msg)
 	end
 
 	-- All guarding conditions under which the offer should not be processed must be included here
-	if not table.contains(GameStore.OfferTypes, offer.type) -- we've got an invalid offer type
+	if
+		not table.contains(GameStore.OfferTypes, offer.type) -- we've got an invalid offer type
 		or not player
 		or (player:getVocation():getId() == 0) and (not GameStore.haveOfferRook(id)) -- we don't have such offer
 		or not offer
 		or (offer.type == GameStore.OfferTypes.OFFER_TYPE_NONE) -- offer is disabled
-		or (offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_NAMECHANGE
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT
-		and not offer.id)
+		or (
+			offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_NAMECHANGE
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT
+			and not offer.id
+		)
 	then
 		return queueSendStoreAlertToUser("This offer is unavailable [1]", 350, playerId, GameStore.StoreErrors.STORE_ERROR_INFORMATION)
 	end
@@ -628,7 +631,8 @@ function Player.canBuyOffer(self, offer)
 		disabled = 1
 	end
 
-	if offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
+	if
+		offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
@@ -1681,8 +1685,9 @@ function GameStore.processOutfitPurchase(player, offerSexIdTable, addon)
 		return error({ code = 0, message = "You already own this outfit." })
 	else
 		-- TFS call failed and Additional check; if the looktype doesn't match player sex for example,
-		if not player:addOutfitAddon(looktype, _addon) or not player:hasOutfit(looktype, _addon)
-		--   then the TFS check will still pass... bug? (TODO)
+		if
+			not player:addOutfitAddon(looktype, _addon) or not player:hasOutfit(looktype, _addon)
+			--   then the TFS check will still pass... bug? (TODO)
 		then
 			error({ code = 0, message = "There has been an issue with your outfit purchase. Your purchase has been cancelled." })
 		else

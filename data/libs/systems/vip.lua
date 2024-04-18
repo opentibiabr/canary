@@ -45,7 +45,7 @@ function Player.onAddVip(self, days, silent)
 end
 
 function CheckPremiumAndPrint(player, msgType)
-	local msg = ""
+	local msg
 
 	if player:getVipDays() == 0xFFFF then
 		msg = "You have infinite amount of VIP days left."

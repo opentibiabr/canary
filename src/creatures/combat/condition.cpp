@@ -2041,7 +2041,11 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addEvent(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir.data()), "ConditionFeared::executeCondition");
+			g_dispatcher().addEvent([id = creature->getID(), listDir = listDir.data()] {
+				g_game().forcePlayerAutoWalk(id, listDir);
+			},
+									"ConditionFeared::executeCondition");
+
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}
 	}

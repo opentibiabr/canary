@@ -53,6 +53,7 @@ end
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
+	local goldenOutfitQuest = player:kv():get("golden-outfit-quest") or 0
 
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
@@ -73,7 +74,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("In that case, return to me once you made up your mind.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
-			local goldenOutfitQuest = player:kv():get("golden-outfit-quest") or 0
 			if goldenOutfitQuest < 1 then
 				if player:removeMoneyBank(500000000) then
 					local inbox = player:getStoreInbox()
@@ -99,8 +99,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 4 then
-			if player:kv():get("golden-outfit-quest") == 1 then
-				if player:kv():get("golden-outfit-quest") < 2 then
+			if goldenOutfitQuest == 1 then
+				if goldenOutfitQuest < 2 then
 					if player:removeMoneyBank(250000000) then
 						npcHandler:say("Take this helmet as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
 						player:addOutfitAddon(1210, 1)
@@ -122,8 +122,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 5 then
-			if player:kv():get("golden-outfit-quest") == 2 then
-				if player:kv():get("golden-outfit-quest") < 3 then
+			if goldenOutfitQuest == 2 then
+				if goldenOutfitQuest < 3 then
 					if player:removeMoneyBank(250000000) then
 						npcHandler:say("Take this boots as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
 						player:addOutfitAddon(1210, 2)

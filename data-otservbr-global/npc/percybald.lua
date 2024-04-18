@@ -53,6 +53,7 @@ end
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
+	local royalCostumeOutfitQuest = player:kv():get("royal-costume-outfit-quest") or 0
 
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
@@ -153,7 +154,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("If you haven't made up your mind, please come back when you are ready.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 14 then
-			local royalCostumeOutfitQuest = player:kv():get("royal-costume-outfit-quest") or 0
 			if royalCostumeOutfitQuest < 1 then
 				if player:removeItem(22516, 15000) and player:removeItem(22721, 12500) then
 					npcHandler:say("Take this armor as a token of great gratitude. Let us forever remember this day, my friend!", npc, creature)
@@ -169,8 +169,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 13)
 		elseif npcHandler:getTopic(playerId) == 15 then
-			if player:kv():get("royal-costume-outfit-quest") == 1 then
-				if player:kv():get("royal-costume-outfit-quest") < 2 then
+			if royalCostumeOutfitQuest == 1 then
+				if royalCostumeOutfitQuest < 2 then
 					if player:removeItem(22516, 7500) and player:removeItem(22721, 6250) then
 						npcHandler:say("Take this sheild as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
 						player:addOutfitAddon(1457, 1)
@@ -192,8 +192,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 13)
 		elseif npcHandler:getTopic(playerId) == 16 then
-			if player:kv():get("royal-costume-outfit-quest") == 2 then
-				if player:kv():get("royal-costume-outfit-quest") < 3 then
+			if royalCostumeOutfitQuest == 2 then
+				if royalCostumeOutfitQuest < 3 then
 					if player:removeItem(22516, 7500) and player:removeItem(22721, 6250) then
 						npcHandler:say("Take this crown as a token of great gratitude. Let us forever remember this day, my friend. ", npc, creature)
 						player:addOutfitAddon(1457, 2)

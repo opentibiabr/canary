@@ -4673,7 +4673,7 @@ void Player::onPlacedCreature() {
 	if (!g_creatureEvents().playerLogin(static_self_cast<Player>())) {
 		removePlayer(true);
 	}
-	
+
 	this->onChangeZone(this->getZoneType());
 
 	sendUnjustifiedPoints();

@@ -5,11 +5,11 @@ local rune = Spell("rune")
 
 function rune.onCastSpell(creature, variant, isHotkey)
 	local inPz = creature:getTile():hasFlag(TILESTATE_PROTECTIONZONE)
-    if inPz then
-        creature:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-        creature:getPosition():sendMagicEffect(CONST_ME_POFF)
-        return false
-    end
+	if inPz then
+		creature:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
 
 	local position = Variant.getPosition(variant)
 	local tile = Tile(position)

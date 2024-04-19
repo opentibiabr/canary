@@ -665,7 +665,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	auto &lastTimerEventId = g_luaEnvironment().lastEventTimerId;
 	eventDesc.eventId = g_dispatcher().scheduleEvent(
 		delay,
-		std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment(), lastTimerEventId),
+		[lastTimerEventId] { g_luaEnvironment().executeTimerEvent(lastTimerEventId); },
 		"LuaEnvironment::executeTimerEvent"
 	);
 

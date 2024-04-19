@@ -11,19 +11,19 @@
 
 #include "declarations.hpp"
 
-class WildcardTreeNode {
+class WildcardTreeNode : public SharedObject {
 public:
 	explicit WildcardTreeNode(bool initBreakpoint) :
 		breakpoint(initBreakpoint) { }
-	WildcardTreeNode(WildcardTreeNode &&other) = default;
+	WildcardTreeNode(WildcardTreeNode &&other) noexcept = default;
 
 	// non-copyable
 	WildcardTreeNode(const WildcardTreeNode &) = delete;
 	WildcardTreeNode &operator=(const WildcardTreeNode &) = delete;
 
-	WildcardTreeNode* getChild(char ch);
-	const WildcardTreeNode* getChild(char ch) const;
-	WildcardTreeNode* addChild(char ch, bool breakpoint);
+	std::shared_ptr<WildcardTreeNode> getChild(char ch);
+	std::shared_ptr<WildcardTreeNode> getChild(char ch) const;
+	std::shared_ptr<WildcardTreeNode> addChild(char ch, bool breakpoint);
 
 	void insert(const std::string &str);
 	void remove(const std::string &str);
@@ -31,6 +31,6 @@ public:
 	ReturnValue findOne(const std::string &query, std::string &result) const;
 
 private:
-	std::map<char, WildcardTreeNode> children;
+	std::map<char, std::shared_ptr<WildcardTreeNode>> children;
 	bool breakpoint;
 };

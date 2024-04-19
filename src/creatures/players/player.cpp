@@ -2918,6 +2918,7 @@ bool Player::spawn() {
 	getParent()->postAddNotification(static_self_cast<Player>(), nullptr, 0);
 	g_game().addCreatureCheck(static_self_cast<Player>());
 	g_game().addPlayer(static_self_cast<Player>());
+	static_self_cast<Player>()->onChangeZone(static_self_cast<Player>()->getZoneType());
 	return true;
 }
 
@@ -4672,6 +4673,8 @@ void Player::onPlacedCreature() {
 	if (!g_creatureEvents().playerLogin(static_self_cast<Player>())) {
 		removePlayer(true);
 	}
+	
+	this->onChangeZone(this->getZoneType());
 
 	sendUnjustifiedPoints();
 }

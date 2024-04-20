@@ -22,10 +22,19 @@ add_subdirectory(server)
 add_subdirectory(utils)
 
 # === ModulesLib ===
-add_library(ModulesLib)
-# === OpenMP for ModulesLib ===
-setup_open_mp(ModulesLib STATIC)
-target_include_directories(ModulesLib PUBLIC ..)
+add_library(ModulesLib STATIC)
+
+# Set C++ standard to use C++20
+target_compile_features(ModulesLib PUBLIC cxx_std_20)
+
+# Enable module scanning specifically for this library
+target_compile_options(ModulesLib PRIVATE
+    $<$<CXX_COMPILER_ID:GNU>:-fmodules-ts>
+    $<$<CXX_COMPILER_ID:Clang>:-fmodules>
+    $<$<CXX_COMPILER_ID:MSVC>:/experimental:module>
+)
+
+# Add module files to ModulesLib
 target_sources(ModulesLib PUBLIC
     FILE_SET cxx_modules TYPE CXX_MODULES FILES
     enums/enum_modules.ixx
@@ -33,6 +42,9 @@ target_sources(ModulesLib PUBLIC
     creatures/appearance/outfit/outfit_type.ixx
     game/movement/position.ixx
 )
+
+# Configure include directories
+target_include_directories(ModulesLib PUBLIC ${CMAKE_SOURCE_DIR}/..)
 
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
 target_sources(${PROJECT_NAME}_lib PRIVATE

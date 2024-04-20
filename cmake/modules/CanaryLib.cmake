@@ -24,7 +24,7 @@ add_subdirectory(utils)
 # === ModulesLib ===
 add_library(ModulesLib)
 # === OpenMP for ModulesLib ===
-setup_open_mp(ModulesLib)
+setup_open_mp(ModulesLib STATIC)
 target_include_directories(ModulesLib PUBLIC ..)
 target_sources(ModulesLib PUBLIC
     FILE_SET cxx_modules TYPE CXX_MODULES FILES

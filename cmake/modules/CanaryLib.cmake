@@ -53,10 +53,7 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     canary_server.cpp
 )
 
-target_compile_options(${PROJECT_NAME}_lib PRIVATE
-    $<$<CXX_COMPILER_ID:GNU>:-fmodules-ts>
-    $<$<CXX_COMPILER_ID:Clang>:-fmodules>
-)
+set_property(TARGET ${PROJECT_NAME}_lib PROPERTY CMAKE_CXX_SCAN_FOR_MODULES TRUE)
 
 # Add public pre compiler header to lib, to pass down to related targets
 if (NOT SPEED_UP_BUILD_UNITY)

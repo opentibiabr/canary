@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
-set(CMAKE_CXX_SCAN_FOR_MODULES TRUE)
-
 # Base configurations and settings for the project
 include(BaseConfig)
 include(GNUInstallDirs)

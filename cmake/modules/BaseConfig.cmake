@@ -18,6 +18,22 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # Generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if (CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+
+    # Check if the compiler supports C++ modules
+    include(CheckCXXCompilerFlag)
+    CHECK_CXX_COMPILER_FLAG("-fmodules-ts" _compiler_supports_modules)
+
+    if(_compiler_supports_modules)
+        # Set necessary flags to enable modules
+        add_compile_options(-fmodules-ts)
+        
+        # Ensure that all C++ files are treated as C++ (this might be optional depending on context)
+        add_compile_options(-x c++)
+    endif()
+endif()
+
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
@@ -127,17 +143,7 @@ if(MSVC)
         "/EHsc"
     )
 else()
-    # Enable modules on gcc
-    include(CheckCXXCompilerFlag)
-    CHECK_CXX_COMPILER_FLAG("-fmodules-ts" _compiler_supports_modules)
-    if(_compiler_supports_modules)
-        set(CMAKE_REQUIRED_FLAGS "-fmodules-ts")
-    endif()
-
     add_compile_options(
-        # Compile ixx on gcc
-        "-x" "c++"
-
         "-Wno-deprecated-declarations"
     )
 endif()

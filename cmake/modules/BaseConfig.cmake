@@ -127,9 +127,14 @@ if(MSVC)
         "/EHsc"
     )
 else()
+    # Enable modules on gcc
+    include(CheckCXXCompilerFlag)
+    CHECK_CXX_COMPILER_FLAG("-fmodules-ts" _compiler_supports_modules)
+    if(_compiler_supports_modules)
+        set(CMAKE_REQUIRED_FLAGS "-fmodules-ts")
+    endif()
+
     add_compile_options(
-        # Enable modules on gcc
-        "-fmodules-ts"
         # Compile ixx on gcc
         "-x" "c++"
 

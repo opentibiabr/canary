@@ -12,7 +12,7 @@ function spell.onCastSpell(player, variant)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		return true
 	end
-	
+
 	if not owner:canEditAccessList(GUEST_LIST, player) then
 		player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)

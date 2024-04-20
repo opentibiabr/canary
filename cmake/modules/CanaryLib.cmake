@@ -34,6 +34,8 @@ target_compile_options(ModulesLib PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/experimental:module>
 )
 
+set_property(TARGET ModulesLib PROPERTY CMAKE_CXX_SCAN_FOR_MODULES TRUE)
+
 # Add module files to ModulesLib
 target_sources(ModulesLib PUBLIC
     FILE_SET cxx_modules TYPE CXX_MODULES FILES

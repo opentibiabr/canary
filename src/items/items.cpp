@@ -11,6 +11,8 @@
 
 #include "items/functions/item/item_parse.hpp"
 #include "items/items.hpp"
+#include "items/weapons/weapons.hpp"
+#include "lua/creature/movement.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"
 
@@ -25,6 +27,8 @@ void Items::clear() {
 	ladders.clear();
 	dummys.clear();
 	nameToItems.clear();
+	g_moveEvents().clear(true);
+	g_weapons().clear(true);
 }
 
 using LootTypeNames = phmap::flat_hash_map<std::string, ItemTypes_t>;
@@ -186,8 +190,7 @@ void Items::loadFromProtobuf() {
 		iType.isWrapKit = object.flags().wrapkit();
 
 		if (!iType.name.empty()) {
-			nameToItems.insert({ asLowerCaseString(iType.name),
-								 iType.id });
+			nameToItems.insert({ asLowerCaseString(iType.name), iType.id });
 		}
 	}
 
@@ -271,8 +274,7 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		}
 
 		itemType.name = xmlName;
-		nameToItems.insert({ asLowerCaseString(itemType.name),
-							 id });
+		nameToItems.insert({ asLowerCaseString(itemType.name), id });
 	}
 
 	itemType.loaded = true;

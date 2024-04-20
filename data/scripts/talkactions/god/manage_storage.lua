@@ -26,13 +26,13 @@ function Player.getStorageValueTalkaction(self, param)
 	if storageKey == nil then
 		-- Get the key for this storage name
 		local storageName = tostring(split[2])
-		local storageValue = self:getStorageValueByName(storageName)
+		local storageValue = target:getStorageValueByName(storageName)
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. storageName .. " from player " .. split[1] .. " is: " .. storageValue .. ".")
-		return true
+	else
+		local storageValue = target:getStorageValue(storageKey)
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. storageKey .. " from player " .. split[1] .. " is: " .. storageValue .. ".")
 	end
 
-	local storageValue = self:getStorageValue(storageKey)
-	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. storageKey .. " from player " .. split[1] .. " is: " .. storageValue .. ".")
 	return true
 end
 

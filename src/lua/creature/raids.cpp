@@ -104,7 +104,9 @@ bool Raids::startup() {
 
 	setLastRaidEnd(OTSYS_TIME());
 
-	checkRaidsEvent = g_dispatcher().scheduleEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this), "Raids::checkRaids");
+	checkRaidsEvent = g_dispatcher().scheduleEvent(
+		CHECK_RAIDS_INTERVAL * 1000, [this] { checkRaids(); }, "Raids::checkRaids"
+	);
 
 	started = true;
 	return started;
@@ -136,7 +138,9 @@ void Raids::checkRaids() {
 		}
 	}
 
-	checkRaidsEvent = g_dispatcher().scheduleEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this), "Raids::checkRaids");
+	checkRaidsEvent = g_dispatcher().scheduleEvent(
+		CHECK_RAIDS_INTERVAL * 1000, [this] { checkRaids(); }, "Raids::checkRaids"
+	);
 }
 
 void Raids::clear() {
@@ -218,7 +222,9 @@ void Raid::startRaid() {
 	const auto raidEvent = getNextRaidEvent();
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
-		nextEventEvent = g_dispatcher().scheduleEvent(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent), "Raid::executeRaidEvent");
+		nextEventEvent = g_dispatcher().scheduleEvent(
+			raidEvent->getDelay(), [this, raidEvent] { executeRaidEvent(raidEvent); }, "Raid::executeRaidEvent"
+		);
 	} else {
 		g_logger().warn("[raids] Raid {} has no events", name);
 		resetRaid();
@@ -232,7 +238,9 @@ void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent) {
 
 		if (newRaidEvent) {
 			uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
-			nextEventEvent = g_dispatcher().scheduleEvent(ticks, std::bind(&Raid::executeRaidEvent, this, newRaidEvent), __FUNCTION__);
+			nextEventEvent = g_dispatcher().scheduleEvent(
+				ticks, [this, newRaidEvent] { executeRaidEvent(newRaidEvent); }, __FUNCTION__
+			);
 		} else {
 			resetRaid();
 		}

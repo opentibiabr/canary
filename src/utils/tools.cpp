@@ -1080,6 +1080,48 @@ std::string getWeaponName(WeaponType_t weaponType) {
 	}
 }
 
+WeaponType_t getWeaponType(const std::string &name) {
+	static const std::unordered_map<std::string, WeaponType_t> type_mapping = {
+		{ "none", WeaponType_t::WEAPON_NONE },
+		{ "sword", WeaponType_t::WEAPON_SWORD },
+		{ "club", WeaponType_t::WEAPON_CLUB },
+		{ "axe", WeaponType_t::WEAPON_AXE },
+		{ "shield", WeaponType_t::WEAPON_SHIELD },
+		{ "distance", WeaponType_t::WEAPON_DISTANCE },
+		{ "wand", WeaponType_t::WEAPON_WAND },
+		{ "ammo", WeaponType_t::WEAPON_AMMO },
+		{ "missile", WeaponType_t::WEAPON_MISSILE }
+	};
+
+	auto it = type_mapping.find(name);
+	if (it != type_mapping.end()) {
+		return it->second;
+	}
+
+	return WEAPON_NONE;
+}
+
+MoveEvent_t getMoveEventType(const std::string &name) {
+	static const std::unordered_map<std::string, MoveEvent_t> move_event_type_mapping = {
+		{ "stepin", MOVE_EVENT_STEP_IN },
+		{ "stepout", MOVE_EVENT_STEP_OUT },
+		{ "equip", MOVE_EVENT_EQUIP },
+		{ "deequip", MOVE_EVENT_DEEQUIP },
+		{ "additem", MOVE_EVENT_ADD_ITEM },
+		{ "removeitem", MOVE_EVENT_REMOVE_ITEM },
+		{ "additemitemtile", MOVE_EVENT_ADD_ITEM_ITEMTILE },
+		{ "removeitemitemtile", MOVE_EVENT_REMOVE_ITEM_ITEMTILE }
+	};
+
+	auto it = move_event_type_mapping.find(name);
+	if (it != move_event_type_mapping.end()) {
+		return it->second;
+	}
+
+	return MOVE_EVENT_NONE;
+}
+
+
 std::string getCombatName(CombatType combatType) {
 	auto combatName = combatTypeNames.find(combatType);
 	if (combatName != combatTypeNames.end()) {
@@ -1764,11 +1806,11 @@ std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense) {
 	return pastTense ? "was" : "is";
 }
 
-std::vector<std::string> split(const std::string &str) {
+std::vector<std::string> split(const std::string &str, char delimiter /* = ','*/) {
 	std::vector<std::string> tokens;
 	std::string token;
 	std::istringstream tokenStream(str);
-	while (std::getline(tokenStream, token, ',')) {
+	while (std::getline(tokenStream, token, delimiter)) {
 		auto trimedToken = token;
 		trimString(trimedToken);
 		tokens.push_back(trimedToken);

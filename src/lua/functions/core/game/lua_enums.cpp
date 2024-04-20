@@ -681,7 +681,7 @@ void LuaEnums::initGameStateEnums(lua_State* L) {
 void LuaEnums::initMessageEnums(lua_State* L) {
 	registerEnum(L, MESSAGE_GAMEMASTER_CONSOLE);
 	registerEnum(L, MESSAGE_LOGIN);
-	registerEnum(L, MESSAGE_ADMINISTRADOR);
+	registerEnum(L, MESSAGE_ADMINISTRATOR);
 	registerEnum(L, MESSAGE_EVENT_ADVANCE);
 	registerEnum(L, MESSAGE_GAME_HIGHLIGHT);
 	registerEnum(L, MESSAGE_FAILURE);

@@ -526,6 +526,7 @@ ACHIEVEMENTS = {
 	[531] = { name = "First Achievement", grade = 1, points = 1, secret = true, description = "Congratulations to your very first achievement! ... Well, not really. But imagine, it is. Because at this point during your journey into Tibia's past, achievements have been introduced." },
 	[532] = { name = "Sharp Dressed", grade = 1, points = 2, description = "Just everyone will be crazy about you if you are wearing this formal dress. They will come running, promise!" },
 	[533] = { name = "Engine Driver", grade = 1, points = 3, description = "This glooth-driven locomotive will bring you to any party in the blink of an eye." },
+	[540] = { name = "Ripp-Ripp Hooray!", grade = 1, points = 3, description = "Don't get carried away by your success. Get carried away by your Ripptor." },
 }
 
 --[[
@@ -551,7 +552,7 @@ Functions:
 ACHIEVEMENT_FIRST = 1
 ACHIEVEMENT_LAST = #ACHIEVEMENTS
 
-for id, achievTable in ipairs(ACHIEVEMENTS) do
+for id, achievTable in pairs(ACHIEVEMENTS) do
 	if achievTable.name == nil then
 		logger.error(string.format("[Achievements registration] - Invalid achievement with no name, id: '%s'", id))
 		goto continue -- Skips to the next iteration using the 'continue' label
@@ -567,7 +568,7 @@ for id, achievTable in ipairs(ACHIEVEMENTS) do
 	local grade = achievTable.grade or 0
 	local points = achievTable.points or 0
 
-	logger.debug("[Achievements registration] - Registering achievement '{}' with id '{}'", achievTable.name, id)
+	logger.trace("[Achievements registration] - Registering achievement '{}' with id '{}'", achievTable.name, id)
 	Game.registerAchievement(id, achievTable.name, achievTable.description, secret, grade, points)
 
 	::continue:: -- Label used by 'goto' to continue the loop

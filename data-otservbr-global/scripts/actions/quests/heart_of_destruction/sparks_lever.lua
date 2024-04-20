@@ -120,11 +120,11 @@ function renewSparks()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, c in pairs(creatures) do
-							local cPos = c:getPosition()
-							if isMonster(c) and c:getName() == "Unstable Spark" then
-								cPos:sendMagicEffect(3)
-								c:remove()
+						for _, creature in pairs(creatures) do
+							local monster = Monster(creature)
+							if monster and monster:getName() == "Unstable Spark" then
+								monster:getPosition():sendMagicEffect(3)
+								monster:remove()
 							end
 						end
 					end

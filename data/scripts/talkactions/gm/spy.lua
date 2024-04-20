@@ -1,4 +1,4 @@
-local function getItemsInContainer(cont, sep)
+local function getItemsInContainer(container, sep)
 	local text = ""
 	local tsep = ""
 	local count
@@ -6,9 +6,9 @@ local function getItemsInContainer(cont, sep)
 		tsep = tsep .. "-"
 	end
 	tsep = tsep .. ">"
-	for i = 0, getContainerSize(cont.uid) - 1 do
-		local item = getContainerItem(cont.uid, i)
-		if not isContainer(item.uid) then
+	for slot = 0, container:getSize() - 1 do
+		local item = container:getItem(slot)
+		if not item:isContainer() then
 			if item.type > 0 then
 				count = "(" .. item.type .. "x)"
 			else
@@ -16,7 +16,7 @@ local function getItemsInContainer(cont, sep)
 			end
 			text = text .. "\n" .. tsep .. ItemType(item.itemid):getName() .. " " .. count
 		else
-			if getContainerSize(item.uid) > 0 then
+			if item:getSize() > 0 then
 				text = text .. "\n" .. tsep .. ItemType(item.itemd):getName()
 				text = text .. getItemsInContainer(item, sep + 2)
 			else
@@ -42,12 +42,12 @@ function spy.onSay(player, words, param)
 
 	if target and target:isPlayer() then
 		local slotName = { "Helmet", "Amulet", "Backpack", "Armor", "Right Hand", "Left Hand", "Legs", "Boots", "Ring", "Arrow" }
-		local text = "Equipments of " .. Creature(target):getName()
+		local text = "Equipments of " .. target:getName()
 		for i = 1, 10 do
 			text = text .. "\n\n"
 			local item = target:getSlotItem(i)
 			if item and item.itemid > 0 then
-				if isContainer(item.uid) then
+				if item:isContainer() then
 					text = text .. slotName[i] .. ": " .. ItemType(item.itemid):getName() .. getItemsInContainer(item, 1)
 				else
 					local count

@@ -20,9 +20,7 @@
 #include "account/account_info.hpp"
 
 AccountRepositoryDB::AccountRepositoryDB() :
-	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" },
-					   { enumToValue(CoinType::Tournament), "tournament_coins" },
-					   { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
+	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" }, { enumToValue(CoinType::Tournament), "tournament_coins" }, { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
 
 bool AccountRepositoryDB::loadByID(const uint32_t &id, AccountInfo &acc) {
 	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);

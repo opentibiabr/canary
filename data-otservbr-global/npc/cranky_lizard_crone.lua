@@ -48,16 +48,20 @@ local already = "It seems you already have this addon, don't you try to mock me 
 
 --WAYFARER START --
 function WayfarerFirst(npc, creature, message, keywords, parameters, node)
-	if isPremium(creature) then
-		local addon = getPlayerStorageValue(creature, Storage.WayfarerOutfit)
-		if addon == -1 then
-			if getPlayerItemCount(creature, 11701) >= 1 then
-				if doPlayerRemoveItem(creature, 11701, 1) then
+	local player = Player(creature)
+	if not player then
+		return
+	end
+
+	if player:isPremium() then
+		if player:getStorageValue(Storage.WayfarerOutfit) < 1 then
+			if player:getItemCount(11701) > 0 then
+				if player:removeItem(11701, 1) then
 					npcHandler:say(newaddon, npc, creature)
-					doSendMagicEffect(getCreaturePosition(creature), 13)
-					doPlayerAddOutfit(creature, 366, 1)
-					doPlayerAddOutfit(creature, 367, 1)
-					setPlayerStorageValue(creature, Storage.WayfarerOutfit, 1)
+					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+					player:addOutfitAddon(366, 1)
+					player:addOutfitAddon(367, 1)
+					player:setStorageValue(Storage.WayfarerOutfit, 1)
 				end
 			else
 				npcHandler:say(noItems, npc, creature)
@@ -69,15 +73,20 @@ function WayfarerFirst(npc, creature, message, keywords, parameters, node)
 end
 
 function WayfarerSecond(npc, creature, message, keywords, parameters, node)
-	if isPremium(creature) then
-		if getPlayerStorageValue(creature, Storage.WayfarerOutfit + 1) == -1 then
-			if getPlayerItemCount(creature, 11700) >= 1 then
-				if doPlayerRemoveItem(creature, 11700, 1) then
+	local player = Player(creature)
+	if not player then
+		return
+	end
+
+	if player:isPremium() then
+		if player:getStorageValue(Storage.WayfarerOutfit + 1) < 1 then
+			if player:getItemCount(11700) > 0 then
+				if player:removeItem(11700, 1) then
 					npcHandler:say(newaddon, npc, creature)
-					doSendMagicEffect(getCreaturePosition(creature), 13)
-					doPlayerAddOutfit(creature, 366, 2)
-					doPlayerAddOutfit(creature, 367, 2)
-					setPlayerStorageValue(creature, Storage.WayfarerOutfit + 1, 1)
+					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+					player:addOutfitAddon(366, 2)
+					player:addOutfitAddon(367, 2)
+					player:setStorageValue(Storage.WayfarerOutfit + 1, 1)
 				end
 			else
 				npcHandler:say(noItems, npc, creature)

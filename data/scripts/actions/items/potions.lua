@@ -1,19 +1,19 @@
 local berserk = Condition(CONDITION_ATTRIBUTES)
 berserk:setParameter(CONDITION_PARAM_TICKS, 10 * 60 * 1000)
-berserk:setParameter(CONDITION_PARAM_SUBID, AttrSubId_JeanPierreMelee)
+berserk:setParameter(CONDITION_PARAM_SUBID, JeanPierreMelee)
 berserk:setParameter(CONDITION_PARAM_SKILL_MELEE, 5)
 berserk:setParameter(CONDITION_PARAM_SKILL_SHIELD, -10)
 berserk:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
 
 local mastermind = Condition(CONDITION_ATTRIBUTES)
 mastermind:setParameter(CONDITION_PARAM_TICKS, 10 * 60 * 1000)
-mastermind:setParameter(CONDITION_PARAM_SUBID, AttrSubId_JeanPierreMagic)
+mastermind:setParameter(CONDITION_PARAM_SUBID, JeanPierreMagicLevel)
 mastermind:setParameter(CONDITION_PARAM_STAT_MAGICPOINTS, 3)
 mastermind:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
 
 local bullseye = Condition(CONDITION_ATTRIBUTES)
 bullseye:setParameter(CONDITION_PARAM_TICKS, 10 * 60 * 1000)
-bullseye:setParameter(CONDITION_PARAM_SUBID, AttrSubId_JeanPierreDistance)
+bullseye:setParameter(CONDITION_PARAM_SUBID, JeanPierreDistance)
 bullseye:setParameter(CONDITION_PARAM_SKILL_DISTANCE, 5)
 bullseye:setParameter(CONDITION_PARAM_SKILL_SHIELD, -10)
 bullseye:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
@@ -89,10 +89,13 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or false
 		if not deactivatedFlasks then
 			local container = Container(item:getParent().uid)
-			local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-
-			if fromPosition.x == CONTAINER_POSITION and container ~= inbox and container:getEmptySlots() ~= 0 then
-				container:addItem(potion.flask, 1)
+			if container then
+				local storeInbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
+				if fromPosition.x == CONTAINER_POSITION and container ~= storeInbox and container:getEmptySlots() ~= 0 then
+					container:addItem(potion.flask, 1)
+				else
+					player:addItem(potion.flask, 1)
+				end
 			else
 				Game.createItem(potion.flask, 1, fromPosition)
 			end

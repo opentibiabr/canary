@@ -6013,11 +6013,11 @@ void Game::playerSpeakToNpc(std::shared_ptr<Player> player, const std::string &t
 	}
 
 	for (const auto &spectator : Spectators().find<Creature>(player->getPosition()).filter<Npc>()) {
-		if (!player->canSpeakWithHireling(spectator->getNpc()->getSpeechBubble())) {
+		if (!player->canSpeakWithHireling(static_cast<uint8_t>(spectator->getNpc()->getSpeechBubble()))) {
 			continue;
 		}
 
-		spectator->getNpc()->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
+		spectator->getNpc()->onCreatureSay(player, TalkType::PrivatePlayerToNpc, text);
 	}
 
 	player->updateUIExhausted();
@@ -8567,7 +8567,7 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 		return;
 	}
 
-	if (!player->canSpeakWithHireling(npc->getSpeechBubble())) {
+	if (!player->canSpeakWithHireling(static_cast<uint8_t>(npc->getSpeechBubble()))) {
 		return;
 	}
 

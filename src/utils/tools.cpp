@@ -1121,7 +1121,6 @@ MoveEvent_t getMoveEventType(const std::string &name) {
 	return MOVE_EVENT_NONE;
 }
 
-
 std::string getCombatName(CombatType combatType) {
 	auto combatName = combatTypeNames.find(combatType);
 	if (combatName != combatTypeNames.end()) {

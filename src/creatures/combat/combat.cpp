@@ -968,7 +968,7 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 	area->setupArea(areaList, 7);
 	setArea(area);
 	g_logger().trace("Weapon: {}, element type: {}", Item::items[weapon->getID()].name, weapon->params.combatType);
-	setParam(COMBAT_PARAM_TYPE, weapon->params.combatType);
+	setParam(COMBAT_PARAM_TYPE, static_cast<uint32_t>(weapon->params.combatType));
 	if (weaponType != WEAPON_WAND) {
 		setParam(COMBAT_PARAM_BLOCKARMOR, true);
 	}
@@ -998,12 +998,12 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 	}
 
 	if (weaponType == WEAPON_WAND) {
-		static const std::map<CombatType_t, std::pair<MagicEffectClasses, MagicEffectClasses>> elementEffects = {
-			{ COMBAT_DEATHDAMAGE, { CONST_ME_MORTAREA, CONST_ME_BLACK_BLOOD } },
-			{ COMBAT_ENERGYDAMAGE, { CONST_ME_ENERGYAREA, CONST_ME_PINK_ENERGY_SPARK } },
-			{ COMBAT_FIREDAMAGE, { CONST_ME_FIREATTACK, CONST_ME_FIREATTACK } },
-			{ COMBAT_ICEDAMAGE, { CONST_ME_ICEATTACK, CONST_ME_ICEATTACK } },
-			{ COMBAT_EARTHDAMAGE, { CONST_ME_STONES, CONST_ME_POISONAREA } },
+		static const std::map<CombatType, std::pair<MagicEffectClasses, MagicEffectClasses>> elementEffects = {
+			{ CombatType::DeathDamage, { CONST_ME_MORTAREA, CONST_ME_BLACK_BLOOD } },
+			{ CombatType::EnergyDamage, { CONST_ME_ENERGYAREA, CONST_ME_PINK_ENERGY_SPARK } },
+			{ CombatType::FireDamage, { CONST_ME_FIREATTACK, CONST_ME_FIREATTACK } },
+			{ CombatType::IceDamage, { CONST_ME_ICEATTACK, CONST_ME_ICEATTACK } },
+			{ CombatType::EarthDamage, { CONST_ME_STONES, CONST_ME_POISONAREA } },
 		};
 
 		auto it = elementEffects.find(weapon->getElementType());

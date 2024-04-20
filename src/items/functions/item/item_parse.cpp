@@ -1151,17 +1151,17 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 		} else if (stringKey == "wandtype" && weapon) {
 			std::string elementName = asLowerCaseString(subValueAttribute.as_string());
 			if (elementName == "earth") {
-				weapon->params.combatType = COMBAT_EARTHDAMAGE;
+				weapon->params.combatType = CombatType::EarthDamage;
 			} else if (elementName == "ice") {
-				weapon->params.combatType = COMBAT_ICEDAMAGE;
+				weapon->params.combatType = CombatType::IceDamage;
 			} else if (elementName == "energy") {
-				weapon->params.combatType = COMBAT_ENERGYDAMAGE;
+				weapon->params.combatType = CombatType::EnergyDamage;
 			} else if (elementName == "fire") {
-				weapon->params.combatType = COMBAT_FIREDAMAGE;
+				weapon->params.combatType = CombatType::FireDamage;
 			} else if (elementName == "death") {
-				weapon->params.combatType = COMBAT_DEATHDAMAGE;
+				weapon->params.combatType = CombatType::DeathDamage;
 			} else if (elementName == "holy") {
-				weapon->params.combatType = COMBAT_HOLYDAMAGE;
+				weapon->params.combatType = CombatType::HolyDamage;
 			} else {
 				g_logger().warn("[{}] - wandtype '{}' does not exist", __FUNCTION__, elementName);
 			}

@@ -402,11 +402,11 @@ bool Weapon::calculateSkillFormula(const std::shared_ptr<Player> &player, int32_
 		}
 	}
 
-	CombatType_t elementType = getElementType();
+	CombatType elementType = getElementType();
 	damage.secondary.type = elementType;
 
 	bool shouldCalculateSecondaryDamage = false;
-	if (elementType != COMBAT_NONE) {
+	if (elementType != CombatType::None) {
 		elementAttack = getElementDamageValue();
 		shouldCalculateSecondaryDamage = true;
 		attackValue += elementAttack;

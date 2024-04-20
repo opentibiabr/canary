@@ -1062,7 +1062,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			g_game().playerMove(player->getID(), Direction::NorthWest);
 			break;
 		case 0x6F:
-			g_game().playerTurn(player->getID(), Direction::Noth);
+			g_game().playerTurn(player->getID(), Direction::North);
 			break;
 		case 0x70:
 			g_game().playerTurn(player->getID(), Direction::East);

@@ -39,6 +39,11 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     canary_server.cpp
 )
 
+target_compile_options(${PROJECT_NAME}_lib PRIVATE
+    $<$<CXX_COMPILER_ID:GNU>:-fmodules-ts>
+    $<$<CXX_COMPILER_ID:Clang>:-fmodules>
+)
+
 # Add public pre compiler header to lib, to pass down to related targets
 if (NOT SPEED_UP_BUILD_UNITY)
     target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)

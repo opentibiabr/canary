@@ -11,29 +11,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(Boost_NO_WARN_NEW_VERSIONS ON)
-set(CMAKE_CXX_SCAN_FOR_MODULES TRUE)
-
-# Make will print more details
-set(CMAKE_VERBOSE_MAKEFILE OFF)
-
-# Generate compile_commands.json
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-if (CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_EXTENSIONS OFF)
-
-    # Check if the compiler supports C++ modules
-    include(CheckCXXCompilerFlag)
-    CHECK_CXX_COMPILER_FLAG("-fmodules-ts" _compiler_supports_modules)
-
-    if(_compiler_supports_modules)
-        # Set necessary flags to enable modules
-        add_compile_options(-fmodules-ts)
-        
-        # Ensure that all C++ files are treated as C++ (this might be optional depending on context)
-        add_compile_options(-x c++)
-    endif()
-endif()
 
 # *****************************************************************************
 # Packages / Libs
@@ -174,16 +151,13 @@ endfunction()
 # === OpenMP ===
 function(setup_open_mp target_name)
     if(OPTIONS_ENABLE_OPENMP)
-        message(STATUS "Configuring OpenMP support for ${target_name}...")
+        log_option_enabled("openmp")
         find_package(OpenMP)
         if(OpenMP_CXX_FOUND)
             target_link_libraries(${target_name} PUBLIC OpenMP::OpenMP_CXX)
-            message(STATUS "OpenMP found and linked with ${target_name}.")
-        else()
-            message(STATUS "OpenMP not found for ${target_name}.")
         endif()
     else()
-        message(STATUS "OpenMP support not enabled for ${target_name}.")
+        log_option_disabled("openmp")
     endif()
 endfunction()
 

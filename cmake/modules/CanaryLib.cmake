@@ -1,5 +1,7 @@
 SET(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 
+set(CMAKE_CXX_SCAN_FOR_MODULES TRUE)
+
 # === Define and setup CanaryLib main library target ===
 add_library(${PROJECT_NAME}_lib)
 setup_target(${PROJECT_NAME}_lib)

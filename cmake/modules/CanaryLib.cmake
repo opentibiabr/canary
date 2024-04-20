@@ -1,19 +1,5 @@
 SET(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 
-set(MODULE_FILES
-    ${SOURCE_DIR}/enums/enum_modules.ixx
-    ${SOURCE_DIR}/game/info/light_info.ixx
-    ${SOURCE_DIR}/creatures/appearance/outfit/outfit_type.ixx
-    ${SOURCE_DIR}/game/movement/position.ixx
-)
-
-# Sets the module library to compile before source
-add_library(ModulesLib OBJECT ${MODULE_FILES})
-setup_target(ModulesLib)
-
-# === OpenMP ===
-setup_open_mp(ModulesLib)
-
 # === Define and setup CanaryLib main library target ===
 add_library(${PROJECT_NAME}_lib)
 setup_target(${PROJECT_NAME}_lib)
@@ -35,8 +21,23 @@ add_subdirectory(security)
 add_subdirectory(server)
 add_subdirectory(utils)
 
+# === ModulesLib ===
+add_library(ModulesLib)
+# === OpenMP for ModulesLib ===
+setup_open_mp(ModulesLib)
+target_include_directories(ModulesLib PUBLIC ..)
+target_sources(ModulesLib PUBLIC
+    FILE_SET cxx_modules TYPE CXX_MODULES FILES
+    enums/enum_modules.ixx
+    game/info/light_info.ixx
+    creatures/appearance/outfit/outfit_type.ixx
+    game/movement/position.ixx
+)
+
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
-target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
+target_sources(${PROJECT_NAME}_lib PRIVATE
+    canary_server.cpp
+)
 
 # Add public pre compiler header to lib, to pass down to related targets
 if (NOT SPEED_UP_BUILD_UNITY)

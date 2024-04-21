@@ -514,9 +514,8 @@ function parseBuyStoreOffer(playerId, msg)
 	if not pcallOk then
 		local alertMessage = pcallError.code and pcallError.message or "Something went wrong. Your purchase has been cancelled."
 
+		-- unhandled error
 		if not pcallError.code then
-			-- unhandled error
-			-- log some debugging info
 			logger.warn("[parseBuyStoreOffer] - Purchase failed due to an unhandled script error. Stacktrace: {}", pcallError)
 		end
 
@@ -1684,11 +1683,7 @@ function GameStore.processOutfitPurchase(player, offerSexIdTable, addon)
 	elseif player:hasOutfit(looktype, _addon) then
 		return error({ code = 0, message = "You already own this outfit." })
 	else
-		-- TFS call failed and Additional check; if the looktype doesn't match player sex for example,
-		if
-			not player:addOutfitAddon(looktype, _addon) or not player:hasOutfit(looktype, _addon)
-			--   then the TFS check will still pass... bug? (TODO)
-		then
+		if not player:addOutfitAddon(looktype, _addon) or not player:hasOutfit(looktype, _addon) then
 			error({ code = 0, message = "There has been an issue with your outfit purchase. Your purchase has been cancelled." })
 		else
 			player:addOutfitAddon(offerSexIdTable.male, _addon)

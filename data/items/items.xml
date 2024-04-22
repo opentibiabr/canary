@@ -34797,7 +34797,7 @@
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="10"/>
-		<attribute key="absorbpercentpoison" value="8"/>
+		<attribute key="absorbpercentenergy" value="8"/>
 		<attribute key="duration" value="3600"/>
 		<attribute key="transformdeequipto" value="16114"/>
 		<attribute key="decayTo" value="0"/>

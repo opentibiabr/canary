@@ -462,14 +462,12 @@ function Player.selectDailyReward(self, msg)
 		local description = ""
 		for k, v in ipairs(items) do
 			if dailyTable.itemCharges then
-				for i = 1, rewardCount do
-					local inboxItem = inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
-					if inboxItem then
-						inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-					end
+				local inboxItem = inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
+				if inboxItem then
+					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 				end
 			else
-				local inboxItem = inbox:addItem(v.itemId, rewardCount) -- adding single item w/o charges
+				local inboxItem = inbox:addItem(v.itemId, v.count) -- adding single item w/o charges
 				if inboxItem then
 					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 				end

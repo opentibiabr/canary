@@ -965,9 +965,9 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 		0, 0, 0, 1, 0, 0, 0,
 	};
 	// clang-format on
-	auto m_area = std::make_unique<AreaCombat>();
-	m_area->setupArea(areaList, 7);
-	setArea(m_area);
+	auto area = std::make_unique<AreaCombat>();
+	area->setupArea(areaList, 7);
+	setArea(area);
 	g_logger().trace("Weapon: {}, element type: {}", Item::items[weapon->getID()].name, weapon->params.combatType);
 	setParam(COMBAT_PARAM_TYPE, weapon->params.combatType);
 	if (weaponType != WEAPON_WAND) {

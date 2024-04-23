@@ -6612,15 +6612,23 @@ void ProtocolGame::sendOutfitWindow() {
 	NetworkMessage msg;
 	msg.addByte(0xC8);
 
-	if (oldProtocol) {
-		Outfit_t currentOutfit = player->getDefaultOutfit();
+	Outfit_t currentOutfit = player->getDefaultOutfit();
+	auto isSupportOutfit = player->isSupportOutfit();
+	bool mounted = false;
+
+	if (!isSupportOutfit) {
 		const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
 		if (currentMount) {
+			mounted = (currentOutfit.lookMount == currentMount->clientId);
 			currentOutfit.lookMount = currentMount->clientId;
 		}
+	} else {
+		currentOutfit.lookMount = 0;
+	}
 
-		AddOutfit(msg, currentOutfit);
+	AddOutfit(msg, currentOutfit);
 
+	if (oldProtocol) {
 		std::vector<ProtocolOutfit> protocolOutfits;
 		const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
 		protocolOutfits.reserve(outfits.size());
@@ -6660,22 +6668,6 @@ void ProtocolGame::sendOutfitWindow() {
 		writeToOutputBuffer(msg);
 		return;
 	}
-
-	bool mounted = false;
-	Outfit_t currentOutfit = player->getDefaultOutfit();
-
-	auto isSupportOutfit = player->isSupportOutfit();
-	const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
-	if (!isSupportOutfit) {
-		if (currentMount) {
-			mounted = (currentOutfit.lookMount == currentMount->clientId);
-			currentOutfit.lookMount = currentMount->clientId;
-		}
-	} else {
-		currentOutfit.lookMount = 0;
-	}
-
-	AddOutfit(msg, currentOutfit, !isSupportOutfit);
 
 	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountHead);
 	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountBody);

@@ -37,14 +37,6 @@ function playerLogin.onLogin(player)
 			player:openChannel(0x00) -- guild
 		end
 	end
-
-	local playerOutfit = player:getOutfit()
-	if table.contains({ 75, 266, 302 }, playerOutfit.lookType) then
-		playerOutfit.lookType = 136
-		playerOutfit.lookAddons = 0
-		player:setOutfit(playerOutfit)
-	end
-
 	return true
 end
 

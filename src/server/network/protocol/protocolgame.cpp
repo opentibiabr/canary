@@ -3153,21 +3153,22 @@ void ProtocolGame::sendCreatureOutfit(std::shared_ptr<Creature> creature, const 
 		return;
 	}
 
+	Outfit_t newOutfit = outfit;
+	if (player->isSupportOutfit()) {
+		player->setCurrentMount(0);
+		newOutfit.lookMount = 0;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x8E);
 	msg.add<uint32_t>(creature->getID());
-	AddOutfit(msg, outfit);
+	AddOutfit(msg, newOutfit);
 
-	auto isSupportOutfit = player->isSupportOutfit();
-	if (isSupportOutfit) {
-		player->setCurrentMount(0);
-	}
-
-	if (!oldProtocol && outfit.lookMount != 0 && !isSupportOutfit) {
-		msg.addByte(outfit.lookMountHead);
-		msg.addByte(outfit.lookMountBody);
-		msg.addByte(outfit.lookMountLegs);
-		msg.addByte(outfit.lookMountFeet);
+	if (!oldProtocol && newOutfit.lookMount != 0) {
+		msg.addByte(newOutfit.lookMountHead);
+		msg.addByte(newOutfit.lookMountBody);
+		msg.addByte(newOutfit.lookMountLegs);
+		msg.addByte(newOutfit.lookMountFeet);
 	}
 	writeToOutputBuffer(msg);
 }
@@ -6688,7 +6689,7 @@ void ProtocolGame::sendOutfitWindow() {
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
 
-	if (player->isAccessPlayer()) {
+	if (player->isAccessPlayer() && g_configManager().getBoolean(ENABLE_SUPPORT_OUTFIT, __FUNCTION__)) {
 		msg.add<uint16_t>(75);
 		msg.addString("Gamemaster", "ProtocolGame::sendOutfitWindow - Gamemaster");
 		msg.addByte(0);

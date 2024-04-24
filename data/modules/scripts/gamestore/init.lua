@@ -206,6 +206,13 @@ GameStore.DefaultDescriptions = {
 	TEMPLE = { "Need a quick way home? Buy this transportation service to get instantly teleported to your home temple. \n\nNote, you cannot use this service while having a battle sign or a protection zone block. Further, the service will not work in no-logout zones or close to your home temple." },
 }
 
+GameStore.ItemLimit = {
+	PREY_WILDCARD = 50,
+	INSTANT_REWARD_ACCESS = 90,
+	EXPBOOST = 6,
+	HIRELING = 10,
+}
+
 --==Parsing==--
 GameStore.isItsPacket = function(byte)
 	for k, v in pairs(GameStore.RecivedPackets) do
@@ -507,8 +514,8 @@ function parseBuyStoreOffer(playerId, msg)
 	if not pcallOk then
 		local alertMessage = pcallError.code and pcallError.message or "Something went wrong. Your purchase has been cancelled."
 
-		if not pcallError.code then -- unhandled error
-			-- log some debugging info
+		-- unhandled error
+		if not pcallError.code then
 			logger.warn("[parseBuyStoreOffer] - Purchase failed due to an unhandled script error. Stacktrace: {}", pcallError)
 		end
 
@@ -618,7 +625,6 @@ function sendOfferDescription(player, offerId, description)
 end
 
 function Player.canBuyOffer(self, offer)
-	local playerId = self:getId()
 	local disabled, disabledReason = 0, ""
 	if offer.disabled or not offer.type then
 		disabled = 1
@@ -697,12 +703,12 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You already have this mount."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
-			if self:getCollectionTokens() >= 90 then
+			if self:getCollectionTokens() >= GameStore.ItemLimit.INSTANT_REWARD_ACCESS then
 				disabled = 1
 				disabledReason = "You already have maximum of reward tokens."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS then
-			if self:getPreyCards() >= 50 then
+			if self:getPreyCards() >= GameStore.ItemLimit.PREY_WILDCARD then
 				disabled = 1
 				disabledReason = "You already have maximum of prey wildcards."
 			end
@@ -722,7 +728,7 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You already have 3 slots released."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
-			if self:getStorageValue(GameStore.Storages.expBoostCount) == 6 then
+			if self:getStorageValue(GameStore.Storages.expBoostCount) == GameStore.ItemLimit.EXPBOOST then
 				disabled = 1
 				disabledReason = "You can't buy XP Boost for today."
 			end
@@ -731,7 +737,7 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You already have an active XP boost."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING then
-			if self:getHirelingsCount() >= 10 then
+			if self:getHirelingsCount() >= GameStore.ItemLimit.HIRELING then
 				disabled = 1
 				disabledReason = "You already have bought the maximum number of allowed hirelings."
 			end
@@ -1565,8 +1571,9 @@ function GameStore.processAllBlessingsPurchase(player, count)
 end
 
 function GameStore.processInstantRewardAccess(player, offerCount)
-	if player:getCollectionTokens() + offerCount >= 91 then
-		return error({ code = 1, message = "You cannot own more than 90 reward tokens." })
+	local limit = GameStore.ItemLimit.INSTANT_REWARD_ACCESS
+	if player:getCollectionTokens() + offerCount >= limit + 1 then
+		return error({ code = 1, message = "You cannot own more than " .. limit .. " reward tokens." })
 	end
 	player:setCollectionTokens(player:getCollectionTokens() + offerCount)
 end
@@ -1641,7 +1648,6 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 						decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 					end
 				end
-				player:sendUpdateContainer(inbox)
 			else
 				for i = 1, offer.count do
 					local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
@@ -1653,10 +1659,10 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 							decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 						end
 					end
-					player:sendUpdateContainer(inbox)
 				end
 			end
 		end
+		player:sendUpdateContainer(inbox)
 	end
 end
 
@@ -1677,11 +1683,7 @@ function GameStore.processOutfitPurchase(player, offerSexIdTable, addon)
 	elseif player:hasOutfit(looktype, _addon) then
 		return error({ code = 0, message = "You already own this outfit." })
 	else
-		if
-			not (player:addOutfitAddon(looktype, _addon)) -- TFS call failed
-			or (not player:hasOutfit(looktype, _addon)) -- Additional check; if the looktype doesn't match player sex for example,
-			--   then the TFS check will still pass... bug? (TODO)
-		then
+		if not player:addOutfitAddon(looktype, _addon) or not player:hasOutfit(looktype, _addon) then
 			error({ code = 0, message = "There has been an issue with your outfit purchase. Your purchase has been cancelled." })
 		else
 			player:addOutfitAddon(offerSexIdTable.male, _addon)
@@ -1769,8 +1771,9 @@ function GameStore.processTaskHuntingThirdSlot(player)
 end
 
 function GameStore.processPreyBonusReroll(player, offerCount)
-	if player:getPreyCards() + offerCount >= 51 then
-		return error({ code = 1, message = "You cannot own more than 50 prey wildcards." })
+	local limit = GameStore.ItemLimit.PREY_WILDCARD
+	if player:getPreyCards() + offerCount >= limit + 1 then
+		return error({ code = 1, message = "You cannot own more than " .. limit .. " prey wildcards." })
 	end
 	player:addPreyCards(offerCount)
 end
@@ -1812,8 +1815,8 @@ function GameStore.processHirelingPurchase(player, offer, productType, hirelingN
 		return addPlayerEvent(sendStorePurchaseSuccessful, 650, player:getId(), message)
 		-- If not, we ask him to do!
 	else
-		if player:getHirelingsCount() >= 10 then
-			return error({ code = 1, message = "You cannot have more than 10 hirelings." })
+		if player:getHirelingsCount() >= GameStore.ItemLimit.HIRELING then
+			return error({ code = 1, message = "You cannot have more than " .. GameStore.ItemLimit.HIRELING .. " hirelings." })
 		end
 		-- TODO: Use the correct dialog (byte 0xDB) on client 1205+
 		-- for compatibility, request name using the change name dialog
@@ -2219,7 +2222,8 @@ function sendHomePage(playerId)
 	msg:sendToPlayer(player)
 end
 
-function Player:openStore(serviceName) --exporting the method so other scripts can use to open store
+--exporting the method so other scripts can use to open store
+function Player:openStore(serviceName)
 	local playerId = self:getId()
 	openStore(playerId)
 

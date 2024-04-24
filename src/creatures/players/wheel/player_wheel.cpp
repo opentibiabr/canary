@@ -2410,21 +2410,25 @@ int32_t PlayerWheel::checkBattleHealingAmount() const {
 }
 
 int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
-	if (skill == WheelAvatarSkill_t::NONE || getOnThinkTimer(WheelOnThink_t::AVATAR) <= OTSYS_TIME()) {
+	if (skill == WheelAvatarSkill_t::NONE || (getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL) <= OTSYS_TIME() && getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) <= OTSYS_TIME())) {
 		return 0;
 	}
 
 	uint8_t stage = 0;
-	if (getInstant("Avatar of Light")) {
-		stage = getStage(WheelStage_t::AVATAR_OF_LIGHT);
-	} else if (getInstant("Avatar of Steel")) {
-		stage = getStage(WheelStage_t::AVATAR_OF_STEEL);
-	} else if (getInstant("Avatar of Nature")) {
-		stage = getStage(WheelStage_t::AVATAR_OF_NATURE);
-	} else if (getInstant("Avatar of Storm")) {
-		stage = getStage(WheelStage_t::AVATAR_OF_STORM);
+	if (getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL) > OTSYS_TIME()) {
+		if (getInstant("Avatar of Light")) {
+			stage = getStage(WheelStage_t::AVATAR_OF_LIGHT);
+		} else if (getInstant("Avatar of Steel")) {
+			stage = getStage(WheelStage_t::AVATAR_OF_STEEL);
+		} else if (getInstant("Avatar of Nature")) {
+			stage = getStage(WheelStage_t::AVATAR_OF_NATURE);
+		} else if (getInstant("Avatar of Storm")) {
+			stage = getStage(WheelStage_t::AVATAR_OF_STORM);
+		} else {
+			return 0;
+		}
 	} else {
-		return 0;
+		stage = 3;
 	}
 
 	if (skill == WheelAvatarSkill_t::DAMAGE_REDUCTION) {

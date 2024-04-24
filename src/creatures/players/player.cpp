@@ -3271,13 +3271,6 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		case CONST_SLOT_LEFT: {
 			if (item->isQuiver()) {
 				ret = RETURNVALUE_CANNOTBEDRESSED;
-			} else if (slotPosition & SLOTP_LEFT) {
-				WeaponType_t type = item->getWeaponType();
-				if (type == WEAPON_NONE || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
-					ret = RETURNVALUE_CANNOTBEDRESSED;
-				} else {
-					ret = RETURNVALUE_NOERROR;
-				}
 			} else if (slotPosition & SLOTP_TWO_HAND) {
 				if (inventory[CONST_SLOT_RIGHT]) {
 					WeaponType_t type = item->getWeaponType();
@@ -3287,6 +3280,13 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 					} else {
 						ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
 					}
+				} else {
+					ret = RETURNVALUE_NOERROR;
+				}
+			} else if (slotPosition & SLOTP_LEFT) {
+				WeaponType_t type = item->getWeaponType();
+				if (type == WEAPON_NONE || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
+					ret = RETURNVALUE_CANNOTBEDRESSED;
 				} else {
 					ret = RETURNVALUE_NOERROR;
 				}
@@ -6688,7 +6688,7 @@ void Player::triggerTranscendance() {
 		outfit.lookType = getVocation()->getAvatarLookType();
 		outfitCondition->setOutfit(outfit);
 		addCondition(outfitCondition);
-		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR, OTSYS_TIME() + duration);
+		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_FORGE, OTSYS_TIME() + duration);
 		g_game().addMagicEffect(getPosition(), CONST_ME_AVATAR_APPEAR);
 		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
 		sendSkills();

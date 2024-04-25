@@ -7841,9 +7841,11 @@ void Game::addBestiaryList(uint16_t raceid, std::string name) {
 }
 
 void Game::broadcastMessage(const std::string &text, MessageClasses type) const {
-	g_logger().info("Broadcasted message: {}", text);
-	for (const auto &it : players) {
-		it.second->sendTextMessage(type, text);
+	if (!text.empty()) {
+		g_logger().info("Broadcasted message: {}", text);
+		for (const auto &it : players) {
+			it.second->sendTextMessage(type, text);
+		}
 	}
 }
 
@@ -8328,12 +8330,12 @@ std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
 	const auto vocationsMap = g_vocations().getVocations();
 	for (const auto &it : vocationsMap) {
 		const auto &voc = it.second;
-		if (voc.getFromVocation() == vocation) {
+		if (voc->getFromVocation() == vocation) {
 			if (firstVocation) {
-				queryPart << " WHERE `vocation` = " << voc.getId();
+				queryPart << " WHERE `vocation` = " << voc->getId();
 				firstVocation = false;
 			} else {
-				queryPart << " OR `vocation` = " << voc.getId();
+				queryPart << " OR `vocation` = " << voc->getId();
 			}
 		}
 	}

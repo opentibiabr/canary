@@ -1926,6 +1926,8 @@ void Player::onWalk(Direction &dir) {
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
 	setNextAction(OTSYS_TIME() + getStepDuration(dir));
+
+	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, &EventCallback::playerOnWalk, getPlayer(), dir);
 }
 
 void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
@@ -2918,6 +2920,7 @@ bool Player::spawn() {
 	getParent()->postAddNotification(static_self_cast<Player>(), nullptr, 0);
 	g_game().addCreatureCheck(static_self_cast<Player>());
 	g_game().addPlayer(static_self_cast<Player>());
+	static_self_cast<Player>()->onChangeZone(static_self_cast<Player>()->getZoneType());
 	return true;
 }
 
@@ -4672,6 +4675,8 @@ void Player::onPlacedCreature() {
 	if (!g_creatureEvents().playerLogin(static_self_cast<Player>())) {
 		removePlayer(true);
 	}
+
+	this->onChangeZone(this->getZoneType());
 
 	sendUnjustifiedPoints();
 }
@@ -6688,7 +6693,7 @@ void Player::triggerTranscendance() {
 		outfit.lookType = getVocation()->getAvatarLookType();
 		outfitCondition->setOutfit(outfit);
 		addCondition(outfitCondition);
-		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR, OTSYS_TIME() + duration);
+		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_FORGE, OTSYS_TIME() + duration);
 		g_game().addMagicEffect(getPosition(), CONST_ME_AVATAR_APPEAR);
 		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
 		sendSkills();

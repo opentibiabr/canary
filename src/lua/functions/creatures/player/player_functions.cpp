@@ -3997,9 +3997,9 @@ int PlayerFunctions::luaPlayerAvatarTimer(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, (lua_Number)player->wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR));
+		lua_pushnumber(L, (lua_Number)player->wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL));
 	} else {
-		player->wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR, getNumber<int64_t>(L, 2));
+		player->wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_SPELL, getNumber<int64_t>(L, 2));
 		pushBoolean(L, true);
 	}
 	return 1;

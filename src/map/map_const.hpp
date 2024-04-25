@@ -9,8 +9,8 @@
 
 #pragma once
 
-static constexpr int32_t MAP_MAX_CLIENT_VIEW_PORT_X = 8;
-static constexpr int32_t MAP_MAX_CLIENT_VIEW_PORT_Y = 6;
+static constexpr int32_t MAP_MAX_CLIENT_VIEW_PORT_X = 12;
+static constexpr int32_t MAP_MAX_CLIENT_VIEW_PORT_Y = 12;
 static constexpr int32_t MAP_MAX_VIEW_PORT_X = MAP_MAX_CLIENT_VIEW_PORT_X + 3; // min value: maxClientViewportX + 1
 static constexpr int32_t MAP_MAX_VIEW_PORT_Y = MAP_MAX_CLIENT_VIEW_PORT_Y + 5; // min value: maxClientViewportY + 1
 

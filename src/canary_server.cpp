@@ -389,4 +389,5 @@ void CanaryServer::shutdown() {
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();
 	inject<ThreadPool>().shutdown();
+	std::exit(0);
 }

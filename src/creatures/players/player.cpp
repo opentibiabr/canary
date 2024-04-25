@@ -1926,6 +1926,8 @@ void Player::onWalk(Direction &dir) {
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
 	setNextAction(OTSYS_TIME() + getStepDuration(dir));
+
+	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, &EventCallback::playerOnWalk, getPlayer(), dir);
 }
 
 void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {

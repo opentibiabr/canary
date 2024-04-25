@@ -116,6 +116,7 @@ public:
 	void playerOnCombat(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, CombatDamage &damage) const;
 	void playerOnInventoryUpdate(std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool equip) const;
 	bool playerOnRotateItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &position) const;
+	void playerOnWalk(std::shared_ptr<Player> player, Direction &dir) const;
 
 	// Monster
 	void monsterOnDropLoot(std::shared_ptr<Monster> monster, std::shared_ptr<Container> corpse) const;

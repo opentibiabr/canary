@@ -2616,12 +2616,10 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 
 			auto decaying = item->getDecaying();
 			// If the item is decaying, we need to transform it to the new item
-			if (decaying > DECAYING_FALSE && item->getDuration() <= 1) {
+			if (decaying > DECAYING_FALSE && item->getDuration() <= 1 && newType.decayTo) {
 				g_logger().debug("Decay duration old type {}, transformEquipTo {}, transformDeEquipTo {}", curType.decayTo, curType.transformEquipTo, curType.transformDeEquipTo);
-				g_logger().debug("Decay duration new type, decayTo {}, transformEquipTo {}, transformDeEquipTo {}", newType.decayTo, newType.transformEquipTo, newType.transformDeEquipTo);
-				if (newType.decayTo) {
-					itemId = newType.decayTo;
-				}
+				g_logger().debug("Decay duration new type decayTo {}, transformEquipTo {}, transformDeEquipTo {}", newType.decayTo, newType.transformEquipTo, newType.transformDeEquipTo);
+				itemId = newType.decayTo;
 			} else if (curType.id != newType.id) {
 				if (newType.group != curType.group) {
 					item->setDefaultSubtype();
@@ -5386,6 +5384,11 @@ void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t categor
 		return;
 	}
 
+	if (container->getID() == ITEM_GOLD_POUCH && !isLootContainer) {
+		player->sendTextMessage(MESSAGE_FAILURE, "You can only set the gold pouch as a loot container.");
+		return;
+	}
+
 	if (container->getHoldingPlayer() != player) {
 		player->sendCancelMessage("You must be holding the container to set it as a loot container.");
 		return;
@@ -7838,9 +7841,11 @@ void Game::addBestiaryList(uint16_t raceid, std::string name) {
 }
 
 void Game::broadcastMessage(const std::string &text, MessageClasses type) const {
-	g_logger().info("Broadcasted message: {}", text);
-	for (const auto &it : players) {
-		it.second->sendTextMessage(type, text);
+	if (!text.empty()) {
+		g_logger().info("Broadcasted message: {}", text);
+		for (const auto &it : players) {
+			it.second->sendTextMessage(type, text);
+		}
 	}
 }
 

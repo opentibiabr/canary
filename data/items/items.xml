@@ -34797,7 +34797,7 @@
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="10"/>
-		<attribute key="absorbpercentpoison" value="8"/>
+		<attribute key="absorbpercentenergy" value="8"/>
 		<attribute key="duration" value="3600"/>
 		<attribute key="transformdeequipto" value="16114"/>
 		<attribute key="decayTo" value="0"/>
@@ -53105,6 +53105,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentlifedrain" value="5"/>
 		<attribute key="weight" value="3800"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
 	<item id="28494" article="a" name="silver chimes">
 		<attribute key="primarytype" value="shields"/>
@@ -75427,7 +75430,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="level" value="250"/>
+			<attribute key="level" value="600"/>
 			<attribute key="mana" value="21"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="fromDamage" value="113"/>
@@ -75455,7 +75458,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="level" value="250"/>
+			<attribute key="level" value="600"/>
 			<attribute key="mana" value="21"/>
 			<attribute key="unproperly" value="true"/>
 			<attribute key="fromDamage" value="103"/>

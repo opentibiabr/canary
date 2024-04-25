@@ -5019,7 +5019,7 @@ void ProtocolGame::sendOpenForge() {
 				getForgeInfoMap(item, receiveTierItemMap);
 			}
 			if (itemClassification == 4) {
-				getForgeInfoMap(item, convergenceItemsMap[item->getSlotPosition()]);
+				getForgeInfoMap(item, convergenceItemsMap[item->getClassification()]);
 			}
 		}
 	}

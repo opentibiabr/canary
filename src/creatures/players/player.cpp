@@ -72,7 +72,7 @@ Player::~Player() {
 }
 
 bool Player::setVocation(uint16_t vocId) {
-	Vocation* voc = g_vocations().getVocation(vocId);
+	const auto &voc = g_vocations().getVocation(vocId);
 	if (!voc) {
 		return false;
 	}
@@ -1926,6 +1926,8 @@ void Player::onWalk(Direction &dir) {
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
 	setNextAction(OTSYS_TIME() + getStepDuration(dir));
+
+	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, &EventCallback::playerOnWalk, getPlayer(), dir);
 }
 
 void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
@@ -2393,7 +2395,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		++level;
 		// Player stats gain for vocations level <= 8
 		if (vocation->getId() != VOCATION_NONE && level <= 8) {
-			const Vocation* noneVocation = g_vocations().getVocation(VOCATION_NONE);
+			const auto &noneVocation = g_vocations().getVocation(VOCATION_NONE);
 			healthMax += noneVocation->getHPGain();
 			health += noneVocation->getHPGain();
 			manaMax += noneVocation->getManaGain();
@@ -2488,7 +2490,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		--level;
 		// Player stats loss for vocations level <= 8
 		if (vocation->getId() != VOCATION_NONE && level <= 8) {
-			const Vocation* noneVocation = g_vocations().getVocation(VOCATION_NONE);
+			const auto &noneVocation = g_vocations().getVocation(VOCATION_NONE);
 			healthMax = std::max<int32_t>(0, healthMax - noneVocation->getHPGain());
 			manaMax = std::max<int32_t>(0, manaMax - noneVocation->getManaGain());
 			capacity = std::max<int32_t>(0, capacity - noneVocation->getCapGain());
@@ -2918,6 +2920,7 @@ bool Player::spawn() {
 	getParent()->postAddNotification(static_self_cast<Player>(), nullptr, 0);
 	g_game().addCreatureCheck(static_self_cast<Player>());
 	g_game().addPlayer(static_self_cast<Player>());
+	static_self_cast<Player>()->onChangeZone(static_self_cast<Player>()->getZoneType());
 	return true;
 }
 
@@ -3271,13 +3274,6 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		case CONST_SLOT_LEFT: {
 			if (item->isQuiver()) {
 				ret = RETURNVALUE_CANNOTBEDRESSED;
-			} else if (slotPosition & SLOTP_LEFT) {
-				WeaponType_t type = item->getWeaponType();
-				if (type == WEAPON_NONE || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
-					ret = RETURNVALUE_CANNOTBEDRESSED;
-				} else {
-					ret = RETURNVALUE_NOERROR;
-				}
 			} else if (slotPosition & SLOTP_TWO_HAND) {
 				if (inventory[CONST_SLOT_RIGHT]) {
 					WeaponType_t type = item->getWeaponType();
@@ -3287,6 +3283,13 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 					} else {
 						ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
 					}
+				} else {
+					ret = RETURNVALUE_NOERROR;
+				}
+			} else if (slotPosition & SLOTP_LEFT) {
+				WeaponType_t type = item->getWeaponType();
+				if (type == WEAPON_NONE || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
+					ret = RETURNVALUE_CANNOTBEDRESSED;
 				} else {
 					ret = RETURNVALUE_NOERROR;
 				}
@@ -4672,6 +4675,8 @@ void Player::onPlacedCreature() {
 	if (!g_creatureEvents().playerLogin(static_self_cast<Player>())) {
 		removePlayer(true);
 	}
+
+	this->onChangeZone(this->getZoneType());
 
 	sendUnjustifiedPoints();
 }
@@ -6688,7 +6693,7 @@ void Player::triggerTranscendance() {
 		outfit.lookType = getVocation()->getAvatarLookType();
 		outfitCondition->setOutfit(outfit);
 		addCondition(outfitCondition);
-		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR, OTSYS_TIME() + duration);
+		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_FORGE, OTSYS_TIME() + duration);
 		g_game().addMagicEffect(getPosition(), CONST_ME_AVATAR_APPEAR);
 		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
 		sendSkills();

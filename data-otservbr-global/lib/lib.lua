@@ -11,4 +11,4 @@ dofile(DATA_DIRECTORY .. "/lib/quests/quest.lua")
 dofile(DATA_DIRECTORY .. "/lib/tables/load.lua")
 
 -- Task Custom
-dofile(DATA_DIRECTORY.. '/scripts/custom/load.lua')
+dofile(DATA_DIRECTORY .. "/scripts/custom/load.lua")

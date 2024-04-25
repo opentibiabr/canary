@@ -5,7 +5,6 @@ MESSAGE_COLOR_BLUE = 3043
 MESSAGE_COLOR_PURPLE = 36792
 MESSAGE_COLOR_YELLOW = 34021
 
-
 local function sendBoostMessage(player, category, isIncreased)
 	return player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Event! %s is %screased. Happy Hunting!", category, isIncreased and "in" or "de"))
 end
@@ -57,10 +56,24 @@ function playerLoginGlobal.onLogin(player)
 	end
 
 	-- Boosted
-	player:sendTextMessage(MESSAGE_LOOT, string.format("Today's boosted creature: {%d|%s}. \
-	Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.", MESSAGE_COLOR_GREEN, Game.getBoostedCreature()))
-	player:sendTextMessage(MESSAGE_LOOT, string.format("Today's boosted boss: {%d|%s}. \
-	Boosted bosses contain more loot and count more kills for your Bosstiary.", MESSAGE_COLOR_PURPLE, Game.getBoostedBoss()))
+	player:sendTextMessage(
+		MESSAGE_LOOT,
+		string.format(
+			"Today's boosted creature: {%d|%s}. \
+	Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.",
+			MESSAGE_COLOR_GREEN,
+			Game.getBoostedCreature()
+		)
+	)
+	player:sendTextMessage(
+		MESSAGE_LOOT,
+		string.format(
+			"Today's boosted boss: {%d|%s}. \
+	Boosted bosses contain more loot and count more kills for your Bosstiary.",
+			MESSAGE_COLOR_PURPLE,
+			Game.getBoostedBoss()
+		)
+	)
 
 	-- Rewards
 	local rewards = #player:getRewardList()
@@ -128,7 +141,7 @@ function playerLoginGlobal.onLogin(player)
 
 	-- Set Ghost Mode
 	--if player:getGroup():getId() >= GROUP_TYPE_GAMEMASTER then
-		--player:setGhostMode(true)
+	--player:setGhostMode(true)
 	--end
 
 	-- Resets

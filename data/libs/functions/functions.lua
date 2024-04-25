@@ -67,17 +67,28 @@ end
 
 function getTimeInWords(secsParam)
 	local secs = tonumber(secsParam)
+	local days = math.floor(secs / (24 * 3600))
+	secs = secs - (days * 24 * 3600)
 	local hours, minutes, seconds = getHours(secs), getMinutes(secs), getSeconds(secs)
 	local timeStr = ""
 
+	if days > 0 then
+		timeStr = days .. (days > 1 and " days" or " day")
+	end
+
 	if hours > 0 then
-		timeStr = hours .. (hours > 1 and " hours" or " hour")
+		if timeStr ~= "" then
+			timeStr = timeStr .. ", "
+		end
+
+		timeStr = timeStr .. hours .. (hours > 1 and " hours" or " hour")
 	end
 
 	if minutes > 0 then
 		if timeStr ~= "" then
 			timeStr = timeStr .. ", "
 		end
+
 		timeStr = timeStr .. minutes .. (minutes > 1 and " minutes" or " minute")
 	end
 
@@ -85,9 +96,9 @@ function getTimeInWords(secsParam)
 		if timeStr ~= "" then
 			timeStr = timeStr .. " and "
 		end
+
 		timeStr = timeStr .. seconds .. (seconds > 1 and " seconds" or " second")
 	end
-
 	return timeStr
 end
 

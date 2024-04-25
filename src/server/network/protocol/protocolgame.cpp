@@ -2144,12 +2144,12 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	uint32_t selectedVocation = 0xFFFFFFFF;
 	const auto vocationsMap = g_vocations().getVocations();
 	for (const auto &it : vocationsMap) {
-		const Vocation &vocation = it.second;
-		if (vocation.getFromVocation() == static_cast<uint32_t>(vocation.getId())) {
-			msg.add<uint32_t>(vocation.getFromVocation()); // Vocation Id
-			msg.addString(vocation.getVocName(), "ProtocolGame::sendHighscores - vocation.getVocName()"); // Vocation Name
+		const auto &vocation = it.second;
+		if (vocation->getFromVocation() == static_cast<uint32_t>(vocation->getId())) {
+			msg.add<uint32_t>(vocation->getFromVocation()); // Vocation Id
+			msg.addString(vocation->getVocName(), "ProtocolGame::sendHighscores - vocation.getVocName()"); // Vocation Name
 			++vocations;
-			if (vocation.getFromVocation() == vocationId) {
+			if (vocation->getFromVocation() == vocationId) {
 				selectedVocation = vocationId;
 			}
 		}

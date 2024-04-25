@@ -53105,6 +53105,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentlifedrain" value="5"/>
 		<attribute key="weight" value="3800"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
 	<item id="28494" article="a" name="silver chimes">
 		<attribute key="primarytype" value="shields"/>

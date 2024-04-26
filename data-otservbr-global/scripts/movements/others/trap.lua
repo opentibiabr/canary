@@ -1,15 +1,17 @@
-local traps = {
-	[2145] = { transformTo = 2146, damage = { -50, -100 } },
-	[2148] = { damage = { -50, -100 } },
+local trapsOnStepIn = {
+	[2145] = { transformTo = 2146, damage = nil },
+	[2146] = { transformTo = nil, damage = { -50, -100 } },
+	[2147] = { transformTo = 2148, damage = nil },
+	[2148] = { transformTo = nil, damage = { -50, -100 } },
 	[3482] = { transformTo = 3481, damage = { -15, -30 }, ignorePlayer = (Game.getWorldType() == WORLD_TYPE_NO_PVP) },
 	[3944] = { transformTo = 3945, damage = { -15, -30 }, type = COMBAT_EARTHDAMAGE },
-	[12368] = { ignorePlayer = true },
+	[12368] = { transformTo = nil, damage = nil, ignorePlayer = true },
 }
 
-local trap = MoveEvent()
+local trapEvent = MoveEvent()
 
-function trap.onStepIn(creature, item, position, fromPosition)
-	local trap = traps[item.itemid]
+function trapEvent.onStepIn(creature, item, position, fromPosition)
+	local trap = trapsOnStepIn[item.itemid]
 	if not trap then
 		return true
 	end
@@ -39,24 +41,59 @@ function trap.onStepIn(creature, item, position, fromPosition)
 		position:sendMagicEffect(CONST_ME_STUN)
 		creature:remove()
 		Game.createItem(12369, 1, position)
-	else
-		doTargetCombatHealth(0, creature, trap.type or COMBAT_PHYSICALDAMAGE, trap.damage[1], trap.damage[2], CONST_ME_NONE)
+		return true
 	end
 
+	-- A trap can deal damage or the transformed item can deal damage
+	if trap.damage then
+		doTargetCombatHealth(0, creature, trap.type or COMBAT_PHYSICALDAMAGE, trap.damage[1], trap.damage[2], CONST_ME_NONE)
+		return true
+	end
+
+	trap = trapsOnStepIn[item.itemid]
+	if trap and trap.damage then
+		doTargetCombatHealth(0, creature, trap.type or COMBAT_PHYSICALDAMAGE, trap.damage[1], trap.damage[2], CONST_ME_NONE)
+	end
 	return true
 end
 
-trap:type("stepin")
-for itemId, info in pairs(traps) do
-	trap:id(itemId)
+trapEvent:type("stepin")
+for itemId, _ in pairs(trapsOnStepIn) do
+	trapEvent:id(itemId)
 end
+trapEvent:register()
 
-trap:register()
+local trapsOnStepOut = {
+	[2146] = {},
+	[2148] = {},
+	[3945] = { secondsInterval = 20, positions = {} }
+}
 
-trap = MoveEvent()
+trapEvent = MoveEvent()
 
-function trap.onStepOut(creature, item, position, fromPosition)
-	if Tile(position):hasFlag(TILESTATE_PROTECTIONZONE) then
+function trapEvent.onStepOut(creature, item, position, fromPosition)
+	local tile = Tile(position)
+	if not tile then
+		return true
+	end
+
+	if tile:hasFlag(TILESTATE_PROTECTIONZONE) then
+		return true
+	end
+
+	local trap = trapsOnStepOut[item.itemid]
+	if trap and trap.secondsInterval then
+		-- trap.secondsInterval determines how long after
+		-- the trap re-arms
+		if not trap.positions[position:toString()] then
+			trap.positions[position:toString()] = true
+			addEvent(function ()
+				trap.positions[position:toString()] = nil
+				if item then
+					item:transform(item:getId() - 1)
+				end
+			end, trap.secondsInterval * 1000)
+		end
 		return true
 	end
 
@@ -64,13 +101,15 @@ function trap.onStepOut(creature, item, position, fromPosition)
 	return true
 end
 
-trap:type("stepout")
-trap:id(2146, 3945)
-trap:register()
+trapEvent:type("stepout")
+for itemId, _ in pairs(trapsOnStepOut) do
+	trapEvent:id(itemId)
+end
+trapEvent:register()
 
-trap = MoveEvent()
+trapEvent = MoveEvent()
 
-function trap.onRemoveItem(item, position)
+function trapEvent.onRemoveItem(item, position)
 	local itemPosition = item:getPosition()
 	if itemPosition:getDistance(position) > 0 then
 		item:transform(item.itemid - 1)
@@ -79,6 +118,6 @@ function trap.onRemoveItem(item, position)
 	return true
 end
 
-trap:type("removeitem")
-trap:id(3482)
-trap:register()
+trapEvent:type("removeitem")
+trapEvent:id(3482)
+trapEvent:register()

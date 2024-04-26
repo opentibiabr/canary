@@ -341,7 +341,7 @@ public:
 
 	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
-	Vocation* getVocation() const {
+	std::shared_ptr<Vocation> getVocation() const {
 		return vocation;
 	}
 
@@ -2534,7 +2534,7 @@ public:
 
 	// Concoction system
 	void updateConcoction(uint16_t itemId, uint16_t timeLeft) {
-		if (timeLeft < 0) {
+		if (timeLeft == 0) {
 			activeConcoctions.erase(itemId);
 		} else {
 			activeConcoctions[itemId] = timeLeft;
@@ -2785,7 +2785,7 @@ private:
 	ProtocolGame_ptr client;
 	std::shared_ptr<Task> walkTask;
 	std::shared_ptr<Town> town;
-	Vocation* vocation = nullptr;
+	std::shared_ptr<Vocation> vocation = nullptr;
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
 
 	uint32_t inventoryWeight = 0;

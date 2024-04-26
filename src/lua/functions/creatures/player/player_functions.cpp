@@ -1410,13 +1410,13 @@ int PlayerFunctions::luaPlayerSetVocation(lua_State* L) {
 		return 1;
 	}
 
-	Vocation* vocation;
+	std::shared_ptr<Vocation> vocation;
 	if (isNumber(L, 2)) {
 		vocation = g_vocations().getVocation(getNumber<uint16_t>(L, 2));
 	} else if (isString(L, 2)) {
 		vocation = g_vocations().getVocation(g_vocations().getVocationId(getString(L, 2)));
 	} else if (isUserdata(L, 2)) {
-		vocation = getUserdata<Vocation>(L, 2);
+		vocation = getUserdataShared<Vocation>(L, 2);
 	} else {
 		vocation = nullptr;
 	}
@@ -4029,9 +4029,9 @@ int PlayerFunctions::luaPlayerAvatarTimer(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, (lua_Number)player->wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR));
+		lua_pushnumber(L, (lua_Number)player->wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL));
 	} else {
-		player->wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR, getNumber<int64_t>(L, 2));
+		player->wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_SPELL, getNumber<int64_t>(L, 2));
 		pushBoolean(L, true);
 	}
 	return 1;

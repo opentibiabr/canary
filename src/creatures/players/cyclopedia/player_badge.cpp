@@ -54,6 +54,38 @@ std::vector<std::pair<Badge, uint32_t>> PlayerBadge::getUnlockedBadges() const {
 	return m_badgesUnlocked;
 }
 
+void PlayerBadge::checkAndUpdateNewBadges() {
+	// CyclopediaBadgeType_t::ACCOUNT_AGE
+	for (const auto &badge : g_game().getBadgesByType(CyclopediaBadgeType_t::ACCOUNT_AGE)) {
+		if (accountAge(badge.m_amount)) {
+			add(badge.m_id);
+		}
+	}
+
+	// CyclopediaBadgeType_t::LOYALTY
+	for (const auto &badge : g_game().getBadgesByType(CyclopediaBadgeType_t::LOYALTY)) {
+		if (loyalty(badge.m_amount)) {
+			add(badge.m_id);
+		}
+	}
+
+	// CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL
+	for (const auto &badge : g_game().getBadgesByType(CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL)) {
+		if (accountAllLevel(badge.m_amount)) {
+			add(badge.m_id);
+		}
+	}
+
+	// CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS
+	for (const auto &badge : g_game().getBadgesByType(CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS)) {
+		if (accountAllVocations(badge.m_amount)) {
+			add(badge.m_id);
+		}
+	}
+
+	loadUnlockedBadges();
+}
+
 void PlayerBadge::loadUnlockedBadges() {
 	const auto &unlockedBadges = getUnlockedKV()->keys();
 	g_logger().debug("[{}] - Loading unlocked badges: {}", __FUNCTION__, unlockedBadges.size());
@@ -76,4 +108,53 @@ const std::shared_ptr<KV> &PlayerBadge::getUnlockedKV() {
 	}
 
 	return m_badgeUnlockedKV;
+}
+
+// Badge Calculate Functions
+bool PlayerBadge::accountAge(uint8_t amount) {
+	return std::floor(m_player.getLoyaltyPoints() / 365) >= amount;
+}
+
+bool PlayerBadge::loyalty(uint8_t amount) {
+	return m_player.getLoyaltyPoints() >= amount;
+}
+
+bool PlayerBadge::accountAllLevel(uint8_t amount) {
+	uint8_t total = 0;
+	for (const auto &player : g_game().getPlayersByAccount(m_player.getAccount(), true)) {
+		total = total + player->getLevel();
+	}
+	return total >= amount;
+}
+
+bool PlayerBadge::accountAllVocations(uint8_t amount) {
+	auto knight = false;
+	auto paladin = false;
+	auto druid = false;
+	auto sorcerer = false;
+	for (const auto &player : g_game().getPlayersByAccount(m_player.getAccount(), true)) {
+		if (player->getLevel() >= amount) {
+			auto vocationEnum = player->getPlayerVocationEnum();
+			if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
+				knight = true;
+			} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+				sorcerer = true;
+			} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+				paladin = true;
+			} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+				druid = true;
+			}
+		}
+	}
+	return knight && paladin && druid && sorcerer;
+}
+
+bool PlayerBadge::tournamentParticipation(uint8_t skill) {
+	// todo check if is used
+	return false;
+}
+
+bool PlayerBadge::tournamentPoints(uint8_t race) {
+	// todo check if is used
+	return false;
 }

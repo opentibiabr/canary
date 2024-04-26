@@ -8085,3 +8085,18 @@ bool Player::canSpeakWithHireling(uint8_t speechbubble) {
 
 	return true;
 }
+
+uint16_t Player::getPlayerVocationEnum() const {
+	int cipTibiaId = getVocation()->getClientId();
+	if (cipTibiaId == 1 || cipTibiaId == 11) {
+		return Vocation_t::VOCATION_KNIGHT_CIP; // Knight
+	} else if (cipTibiaId == 2 || cipTibiaId == 12) {
+		return Vocation_t::VOCATION_PALADIN_CIP; // Paladin
+	} else if (cipTibiaId == 3 || cipTibiaId == 13) {
+		return Vocation_t::VOCATION_SORCERER_CIP; // Sorcerer
+	} else if (cipTibiaId == 4 || cipTibiaId == 14) {
+		return Vocation_t::VOCATION_DRUID_CIP; // Druid
+	}
+
+	return Vocation_t::VOCATION_NONE;
+}

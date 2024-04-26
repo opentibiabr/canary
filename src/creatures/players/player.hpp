@@ -2619,6 +2619,8 @@ public:
 
 	bool canSpeakWithHireling(uint8_t speechbubble);
 
+	uint16_t getPlayerVocationEnum() const;
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;

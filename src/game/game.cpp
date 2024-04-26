@@ -10562,6 +10562,10 @@ void Game::getCyclopediaStatistics() {
 	// todo in title system: g_logger().info("Loaded {} titles from Title system", m_titles.size());
 }
 
+std::unordered_set<Badge> Game::getBadges() {
+	return m_badges;
+}
+
 Badge Game::getBadgeByIdOrName(uint8_t id, const std::string &name /*= ""*/) {
 	if (id == 0 && name.empty()) {
 		return {};
@@ -10575,6 +10579,12 @@ Badge Game::getBadgeByIdOrName(uint8_t id, const std::string &name /*= ""*/) {
 	return {};
 }
 
-std::unordered_set<Badge> Game::getBadges() {
-	return m_badges;
+std::vector<Badge> Game::getBadgesByType(CyclopediaBadgeType_t type) {
+	std::vector<Badge> badgesFound;
+	for (const auto &badge : getBadges()) {
+		if (badge.m_type == type) {
+			badgesFound.push_back(badge);
+		}
+	}
+	return badgesFound;
 }

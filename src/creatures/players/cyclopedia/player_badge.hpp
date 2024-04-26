@@ -44,8 +44,17 @@ public:
 	[[nodiscard]] bool hasBadge(uint8_t id) const;
 	bool add(uint8_t id, uint32_t timestamp = 0);
 	[[nodiscard]] std::vector<std::pair<Badge, uint32_t>> getUnlockedBadges() const;
+	void checkAndUpdateNewBadges();
 	void loadUnlockedBadges();
 	const std::shared_ptr<KV> &getUnlockedKV();
+
+	// Badge Calculate Functions
+	bool accountAge(uint8_t amount);
+	bool loyalty(uint8_t amount);
+	bool accountAllLevel(uint8_t amount);
+	bool accountAllVocations(uint8_t amount);
+	bool tournamentParticipation(uint8_t skill);
+	bool tournamentPoints(uint8_t race);
 
 private:
 	// {badge ID, time when it was unlocked}

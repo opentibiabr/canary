@@ -3380,8 +3380,7 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation() {
 	msg.add<uint16_t>(player->getLevel());
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
-	msg.addByte(g_configManager().getBoolean(STAMINA_SYSTEM, __FUNCTION__) ? 0x01 : 0x00); // hide stamina
-	//	msg.addByte(0x00); // Store summary & Character titles (will be 0x01)
+	msg.addByte(0x00); // Store summary & Character titles
 	msg.addString("", "ProtocolGame::sendCyclopediaCharacterBaseInformation - empty"); // character title
 	// msg.addString(player->title()->getCurrentTitleName(), "ProtocolGame::sendCyclopediaCharacterBaseInformation - player->title()->getCurrentTitleName()"); // character title
 	writeToOutputBuffer(msg);

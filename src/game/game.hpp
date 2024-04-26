@@ -724,6 +724,7 @@ public:
 
 	std::unordered_set<Badge> getBadges();
 	Badge getBadgeByIdOrName(uint8_t id, const std::string &name = "");
+	std::vector<Badge> getBadgesByType(CyclopediaBadgeType_t type);
 
 private:
 	std::map<uint16_t, Achievement> m_achievements;

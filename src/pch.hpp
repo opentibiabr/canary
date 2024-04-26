@@ -45,6 +45,7 @@
 #include <numeric>
 #include <cmath>
 #include <mutex>
+#include <stack>
 
 // --------------------
 // System Includes
@@ -94,9 +95,6 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<
 
 // GMP
 #include <gmp.h>
-
-// JSON
-#include <json/json.h>
 
 // LUA
 #if __has_include("luajit/lua.hpp")
@@ -172,3 +170,18 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<
 #include <eventpp/eventdispatcher.h>
 
 #include "lua/global/shared_object.hpp"
+
+constexpr std::string_view methodName(const char* s) {
+	std::string_view prettyFunction(s);
+	size_t bracket = prettyFunction.rfind('(');
+	size_t space = prettyFunction.rfind(' ', bracket) + 1;
+	return prettyFunction.substr(space, bracket - space);
+}
+
+#if defined(__GNUC__) || defined(__clang__)
+	#define __METHOD_NAME__ methodName(__PRETTY_FUNCTION__)
+#elif defined(_MSC_VER)
+	#define __METHOD_NAME__ methodName(__FUNCSIG__)
+#else
+	#error "Compiler not supported"
+#endif

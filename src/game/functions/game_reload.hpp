@@ -50,7 +50,7 @@ public:
 		return inject<GameReload>();
 	}
 
-	bool init(Reload_t reloadType) const;
+	static bool init(Reload_t reloadType);
 	static uint8_t getReloadNumber(Reload_t reloadTypes);
 
 private:

@@ -22,7 +22,7 @@
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
 
-bool GameReload::init(Reload_t reloadTypes) const {
+bool GameReload::init(Reload_t reloadTypes) {
 	switch (reloadTypes) {
 		case Reload_t::RELOAD_TYPE_ALL:
 			return reloadAll();

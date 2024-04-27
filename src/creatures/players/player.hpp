@@ -1820,17 +1820,17 @@ public:
 		staminaXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
 
-	void setExpBoostStamina(uint16_t stamina) {
-		// only allow stamina boosts of 12 hours or less
-		if (stamina > 12 * 3600) {
-			expBoostStamina = 12 * 3600;
+	void setExpBoostTime(uint16_t timeLeft) {
+		// only allow time boosts of 12 hours or less
+		if (timeLeft > 12 * 3600) {
+			expBoostTime = 12 * 3600;
 			return;
 		}
-		expBoostStamina = stamina;
+		expBoostTime = timeLeft;
 	}
 
-	uint16_t getExpBoostStamina() {
-		return expBoostStamina;
+	uint16_t getExpBoostTime() {
+		return expBoostTime;
 	}
 
 	int32_t getIdleTime() const {
@@ -2811,7 +2811,7 @@ private:
 	int32_t m_deathTime = 0;
 	uint32_t coinBalance = 0;
 	uint32_t coinTransferableBalance = 0;
-	uint16_t expBoostStamina = 0;
+	uint16_t expBoostTime = 0;
 	uint8_t randomMount = 0;
 
 	uint16_t lastStatsTrainingTime = 0;

@@ -3744,6 +3744,19 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 			return;
 		}
 	}
+
+	const std::shared_ptr<Monster> monster = creature->getMonster();
+	if (monster && monster->isFamiliar() && creature->getMaster()->getPlayer() == player && (it.isRune() || it.type == ITEM_TYPE_POTION)) {
+		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+
+		if (it.isMultiUse()) {
+			player->sendUseItemCooldown(g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+		}
+
+		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+		return;
+	}
+
 	Position toPos = creature->getPosition();
 	Position walkToPos = fromPos;
 	ReturnValue ret = g_actions().canUse(player, fromPos);
@@ -8330,12 +8343,12 @@ std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
 	const auto vocationsMap = g_vocations().getVocations();
 	for (const auto &it : vocationsMap) {
 		const auto &voc = it.second;
-		if (voc.getFromVocation() == vocation) {
+		if (voc->getFromVocation() == vocation) {
 			if (firstVocation) {
-				queryPart << " WHERE `vocation` = " << voc.getId();
+				queryPart << " WHERE `vocation` = " << voc->getId();
 				firstVocation = false;
 			} else {
-				queryPart << " OR `vocation` = " << voc.getId();
+				queryPart << " OR `vocation` = " << voc->getId();
 			}
 		}
 	}

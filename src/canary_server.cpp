@@ -60,7 +60,8 @@ int CanaryServer::run() {
 			try {
 				loadConfigLua();
 
-				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) ? " and 10x allowed!" : "");
+				auto allowedOutdated1100 = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) && CLIENT_VERSION >= 1100;
+				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, allowedOutdated1100 ? " and 10x allowed!" : "");
 #ifdef FEATURE_METRICS
 				metrics::Options metricsOptions;
 				metricsOptions.enablePrometheusExporter = g_configManager().getBoolean(METRICS_ENABLE_PROMETHEUS, __FUNCTION__);
@@ -166,10 +167,12 @@ void CanaryServer::loadMaps() const {
 	try {
 		g_game().loadMainMap(g_configManager().getString(MAP_NAME, __FUNCTION__));
 
+#if CLIENT_VERSION >= 1100
 		// If "mapCustomEnabled" is true on config.lua, then load the custom map
 		if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM, __FUNCTION__)) {
 			g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/world/custom/");
 		}
+#endif
 		Zone::refreshAll();
 	} catch (const std::exception &err) {
 		throw FailedToInitializeCanary(err.what());
@@ -342,8 +345,12 @@ void CanaryServer::loadModules() {
 	}
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
-	// Load appearances.dat first
+// Load items dependencies
+#if CLIENT_VERSION < 1100
+	modulesLoadHelper(Item::items.loadFromOtb("data/items/items.otb"), "items.otb");
+#else
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
+#endif
 
 	// Load XML folder dependencies (order matters)
 	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");

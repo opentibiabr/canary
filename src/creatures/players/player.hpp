@@ -23,7 +23,6 @@
 #include "items/containers/inbox/inbox.hpp"
 #include "io/ioguild.hpp"
 #include "io/ioprey.hpp"
-#include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/appearance/outfit/outfit.hpp"
 #include "grouping/party.hpp"
 #include "server/network/protocol/protocolgame.hpp"
@@ -54,6 +53,10 @@ class Account;
 
 struct ModalWindow;
 struct Achievement;
+
+#if CLIENT_VERSION >= 870
+struct Mount;
+#endif
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -164,6 +167,8 @@ public:
 	bool isMounted() const {
 		return defaultOutfit.lookMount != 0;
 	}
+
+#if CLIENT_VERSION >= 870
 	bool toggleMount(bool mount);
 	bool tameMount(uint8_t mountId);
 	bool untameMount(uint8_t mountId);
@@ -171,6 +176,8 @@ public:
 	bool hasAnyMount() const;
 	uint8_t getRandomMountId() const;
 	void dismount();
+#endif
+
 	uint16_t getDodgeChance() const;
 
 	uint8_t isRandomMounted() const {
@@ -1200,6 +1207,7 @@ public:
 			client->sendCreatureType(creature, creatureType);
 		}
 	}
+#if CLIENT_VERSION >= 870
 	void sendSpellCooldown(uint16_t spellId, uint32_t time) {
 		if (client) {
 			client->sendSpellCooldown(spellId, time);
@@ -1210,6 +1218,7 @@ public:
 			client->sendSpellGroupCooldown(groupId, time);
 		}
 	}
+#endif
 	void sendUseItemCooldown(uint32_t time) const {
 		if (client) {
 			client->sendUseItemCooldown(time);
@@ -1596,6 +1605,7 @@ public:
 			client->sendItemInspection(itemId, itemCount, item, cyclopedia);
 		}
 	}
+#if CLIENT_VERSION > 1100
 	void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode) {
 		if (client) {
 			client->sendCyclopediaCharacterNoData(characterInfoType, errorCode);
@@ -1661,6 +1671,8 @@ public:
 			client->sendCyclopediaCharacterTitles();
 		}
 	}
+#endif
+
 	void sendHighscoresNoData() {
 		if (client) {
 			client->sendHighscoresNoData();

@@ -51,6 +51,10 @@
 #include "enums/account_errors.hpp"
 #include "enums/account_coins.hpp"
 
+#if CLIENT_VERSION >= 870
+	#include "creatures/appearance/mounts/mounts.hpp"
+#endif
+
 #include <appearances.pb.h>
 
 enum class HighscoreCategories_t : uint8_t {
@@ -208,6 +212,10 @@ Game::Game() {
 	m_IOWheel = std::make_unique<IOWheel>();
 
 	wildcardTree = std::make_shared<WildcardTreeNode>(false);
+
+#if CLIENT_VERSION >= 870
+	m_mountsPtr = std::make_unique<Mounts>();
+#endif
 
 	m_highscoreCategoriesNames = {
 		{ static_cast<uint8_t>(HighscoreCategories_t::ACHIEVEMENTS), "Achievement Points" },
@@ -408,7 +416,9 @@ void Game::setGameState(GameState_t newState) {
 			raids.loadFromXml();
 			raids.startup();
 
-			mounts.loadFromXml();
+#if CLIENT_VERSION >= 870
+			m_mountsPtr->loadFromXml();
+#endif
 
 			loadMotdNum();
 			loadPlayersRecord();
@@ -490,10 +500,12 @@ bool Game::loadItemsPrice() {
 void Game::loadMainMap(const std::string &filename) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE, __FUNCTION__);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS, __FUNCTION__);
+
 	map.loadMap(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/world/" + filename + ".otbm", true, true, true, true, true);
 }
 
 void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
+#if CLIENT_VERSION > 1100
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE, __FUNCTION__);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS, __FUNCTION__);
 
@@ -538,6 +550,7 @@ void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
 
 	// Must be done after all maps have been loaded
 	map.loadHouseInfo();
+#endif
 }
 
 void Game::loadMap(const std::string &path, const Position &pos) {
@@ -1548,8 +1561,15 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 	}
 
 	std::shared_ptr<Tile> toCylinderTile = toCylinder->getTile();
-	const Position &mapToPos = toCylinderTile->getPosition();
+	if (!toCylinderTile) {
+		toCylinderTile = toCylinder->getRealParent() ? toCylinder->getRealParent()->getTile() : nullptr;
+		if (!toCylinderTile) {
+			g_logger().error("[{}] player {} can't move item {}, to position {}, to move item tile is nullptr", __FUNCTION__, player->getName(), Item::items[itemId].name, toPos);
+			return;
+		}
+	}
 
+	const Position &mapToPos = toCylinderTile->getPosition();
 	// hangable item specific code
 	if (item->isHangable() && toCylinderTile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
 		// destination supports hangable objects so need to move there first
@@ -3607,6 +3627,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
+#if CLIENT_VERSION >= 1100
 	bool canUseHouseItem = !g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS, __FUNCTION__) || InternalGame::playerCanUseItemOnHouseTile(player, item);
 	if (!canUseHouseItem && item->hasOwner() && !item->isOwner(player)) {
 		player->sendCancelMessage(RETURNVALUE_ITEMISNOTYOURS);
@@ -3615,6 +3636,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 		return;
 	}
+#endif
 
 	const ItemType &it = Item::items[item->getID()];
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
@@ -3972,6 +3994,7 @@ void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stac
 	}
 }
 
+#if CLIENT_VERSION >= 1100
 void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player || pos.x == 0xFFFF) {
@@ -4093,9 +4116,21 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		outfit.lookAddons = 0;
 	}
 
-	const auto mount = mounts.getMountByClientID(outfit.lookMount);
+	const auto &mount = m_mountsPtr->getMountByClientID(outfit.lookMount);
 	if (!mount || !player->hasMount(mount)) {
 		outfit.lookMount = 0;
+	}
+
+	if (outfit.lookMount != 0) {
+		item->setCustomAttribute("LookMount", static_cast<int64_t>(outfit.lookMount));
+		item->setCustomAttribute("LookMountHead", static_cast<int64_t>(outfit.lookMountHead));
+		item->setCustomAttribute("LookMountBody", static_cast<int64_t>(outfit.lookMountBody));
+		item->setCustomAttribute("LookMountLegs", static_cast<int64_t>(outfit.lookMountLegs));
+		item->setCustomAttribute("LookMountFeet", static_cast<int64_t>(outfit.lookMountFeet));
+	} else if (auto pastLookMount = item->getCustomAttribute("PastLookMount");
+			   pastLookMount && pastLookMount->getInteger() > 0) {
+		item->removeCustomAttribute("LookMount");
+		item->removeCustomAttribute("PastLookMount");
 	}
 
 	if (outfit.lookType != 0) {
@@ -4111,22 +4146,11 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->removeCustomAttribute("PastLookType");
 	}
 
-	if (outfit.lookMount != 0) {
-		item->setCustomAttribute("LookMount", static_cast<int64_t>(outfit.lookMount));
-		item->setCustomAttribute("LookMountHead", static_cast<int64_t>(outfit.lookMountHead));
-		item->setCustomAttribute("LookMountBody", static_cast<int64_t>(outfit.lookMountBody));
-		item->setCustomAttribute("LookMountLegs", static_cast<int64_t>(outfit.lookMountLegs));
-		item->setCustomAttribute("LookMountFeet", static_cast<int64_t>(outfit.lookMountFeet));
-	} else if (auto pastLookMount = item->getCustomAttribute("PastLookMount");
-			   pastLookMount && pastLookMount->getInteger() > 0) {
-		item->removeCustomAttribute("LookMount");
-		item->removeCustomAttribute("PastLookMount");
-	}
-
 	item->setCustomAttribute("PodiumVisible", static_cast<int64_t>(podiumVisible));
 	item->setCustomAttribute("LookDirection", static_cast<int64_t>(direction));
 
 	// Change Podium name
+
 	if (outfit.lookType != 0 || outfit.lookMount != 0) {
 		std::ostringstream name;
 		name << item->getName() << " displaying the ";
@@ -4157,6 +4181,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		spectator->getPlayer()->sendUpdateTileItem(tile, pos, item);
 	}
 }
+#endif
 
 void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
@@ -5757,12 +5782,14 @@ void Game::playerRequestOutfit(uint32_t playerId) {
 }
 
 void Game::playerToggleMount(uint32_t playerId, bool mount) {
+#if CLIENT_VERSION >= 870
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
 	player->toggleMount(mount);
+#endif
 }
 
 void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMountRandomized /* = 0*/) {
@@ -5775,10 +5802,11 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		return;
 	}
 
+#if CLIENT_VERSION > 870
 	player->setRandomMount(isMountRandomized);
 
 	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
-		auto randomMount = mounts.getMountByID(player->getRandomMountId());
+		auto randomMount = m_mountsPtr->getMountByID(player->getRandomMountId());
 		outfit.lookMount = randomMount->clientId;
 	}
 
@@ -5788,7 +5816,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 	}
 
 	if (outfit.lookMount != 0) {
-		const auto mount = mounts.getMountByClientID(outfit.lookMount);
+		const auto mount = m_mountsPtr->getMountByClientID(outfit.lookMount);
 		if (!mount) {
 			return;
 		}
@@ -5808,7 +5836,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 
 		auto deltaSpeedChange = mount->speed;
 		if (player->isMounted()) {
-			const auto prevMount = mounts.getMountByID(player->getLastMount());
+			const auto prevMount = m_mountsPtr->getMountByID(player->getLastMount());
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;
 			}
@@ -5819,6 +5847,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 	} else if (player->isMounted()) {
 		player->dismount();
 	}
+#endif
 
 	if (player->canWear(outfit.lookType, outfit.lookAddons)) {
 		player->defaultOutfit = outfit;
@@ -5894,6 +5923,9 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 
 		case TALKTYPE_PRIVATE_TO:
 		case TALKTYPE_PRIVATE_RED_TO:
+#if CLIENT_VERSION <= 860
+		case TALKTYPE_RVR_ANSWER:
+#endif
 			playerSpeakTo(player, type, receiver, text);
 			break;
 
@@ -5904,6 +5936,9 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 			break;
 
 		case TALKTYPE_PRIVATE_PN:
+#if CLIENT_VERSION <= 860
+		case TALKTYPE_PRIVATE_FROM:
+#endif
 			playerSpeakToNpc(player, text);
 			break;
 
@@ -5990,7 +6025,13 @@ bool Game::playerSpeakTo(std::shared_ptr<Player> player, SpeakClasses type, cons
 	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlags_t::CanTalkRedPrivate) || player->getAccountType() >= AccountType::ACCOUNT_TYPE_GAMEMASTER)) {
 		type = TALKTYPE_PRIVATE_RED_FROM;
 	} else {
+#if CLIENT_VERSION <= 860
+		if (type != TALKTYPE_RVR_ANSWER) {
+			type = TALKTYPE_PRIVATE_FROM;
+		}
+#else
 		type = TALKTYPE_PRIVATE_FROM;
+#endif
 	}
 
 	toPlayer->sendPrivateMessage(player, type, text);
@@ -8141,6 +8182,7 @@ void Game::kickPlayer(uint32_t playerId, bool displayEffect) {
 	player->removePlayer(displayEffect);
 }
 
+#if CLIENT_VERSION > 1100
 void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page) {
 	uint32_t playerGUID = player->getGUID();
 	if (characterID != playerGUID) {
@@ -8300,6 +8342,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 			break;
 	}
 }
+#endif
 
 std::string Game::generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation) {
 	std::ostringstream query;
@@ -9502,6 +9545,7 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	player->updateUIExhausted();
 }
 
+#if CLIENT_VERSION >= 1100
 void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
@@ -9590,6 +9634,7 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 
 	playerSetShowOffSocket(player->getID(), newOutfit, pos, stackPos, itemId, isPodiumVisible, directionValue);
 }
+#endif
 
 void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen) {
 	std::shared_ptr<Player> player = getPlayerByID(playerId);

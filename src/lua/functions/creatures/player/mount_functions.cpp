@@ -9,18 +9,20 @@
 
 #include "pch.hpp"
 
-#include "creatures/appearance/mounts/mounts.hpp"
-#include "game/game.hpp"
-#include "lua/functions/creatures/player/mount_functions.hpp"
+#if CLIENT_VERSION >= 870
+
+	#include "creatures/appearance/mounts/mounts.hpp"
+	#include "game/game.hpp"
+	#include "lua/functions/creatures/player/mount_functions.hpp"
 
 int MountFunctions::luaCreateMount(lua_State* L) {
 	// Mount(id or name)
 	std::shared_ptr<Mount> mount;
 	if (isNumber(L, 2)) {
-		mount = g_game().mounts.getMountByID(getNumber<uint8_t>(L, 2));
+		mount = g_game().m_mountsPtr->getMountByID(getNumber<uint8_t>(L, 2));
 	} else if (isString(L, 2)) {
 		std::string mountName = getString(L, 2);
-		mount = g_game().mounts.getMountByName(mountName);
+		mount = g_game().m_mountsPtr->getMountByName(mountName);
 	} else {
 		mount = nullptr;
 	}
@@ -82,3 +84,5 @@ int MountFunctions::luaMountGetSpeed(lua_State* L) {
 
 	return 1;
 }
+
+#endif // CLIENT_VERSION >= 870

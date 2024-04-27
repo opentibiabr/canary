@@ -160,11 +160,12 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	}
 
 	MagicEffectClasses magicEffect = getNumber<MagicEffectClasses>(L, 2);
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && !g_game().isMagicEffectRegistered(magicEffect)) {
-		g_logger().warn("[PositionFunctions::luaPositionSendMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect));
-		pushBoolean(L, false);
+#if CLIENT_VERSION > 1100
+	if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && !g_game().isMagicEffectRegistered(magicEffect)) {
+		reportErrorFunc(fmt::format("An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect)));
 		return 1;
 	}
+#endif
 
 	const Position &position = getPosition(L, 1);
 	if (!spectators.empty()) {
@@ -191,11 +192,12 @@ int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 	}
 
 	MagicEffectClasses magicEffect = getNumber<MagicEffectClasses>(L, 2);
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && !g_game().isMagicEffectRegistered(magicEffect)) {
-		g_logger().warn("[PositionFunctions::luaPositionRemoveMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect));
-		pushBoolean(L, false);
+#if CLIENT_VERSION > 1100
+	if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && !g_game().isMagicEffectRegistered(magicEffect)) {
+		reportErrorFunc(fmt::format("An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect)));
 		return 1;
 	}
+#endif
 
 	const Position &position = getPosition(L, 1);
 	if (!spectators.empty()) {
@@ -224,10 +226,12 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	ShootType_t distanceEffect = getNumber<ShootType_t>(L, 3);
 	const Position &positionEx = getPosition(L, 2);
 	const Position &position = getPosition(L, 1);
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && !g_game().isDistanceEffectRegistered(distanceEffect)) {
-		g_logger().warn("[PositionFunctions::luaPositionSendDistanceEffect] An unregistered distance effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(distanceEffect));
+#if CLIENT_VERSION > 1100
+	if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && !g_game().isDistanceEffectRegistered(distanceEffect)) {
+		reportErrorFunc(fmt::format("An unregistered distance effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(distanceEffect)));
 		return 1;
 	}
+#endif
 
 	if (!spectators.empty()) {
 		Game::addDistanceEffect(spectators, position, positionEx, distanceEffect);

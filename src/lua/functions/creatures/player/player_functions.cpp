@@ -28,6 +28,10 @@
 #include "enums/account_type.hpp"
 #include "enums/account_coins.hpp"
 
+#if CLIENT_VERSION >= 870
+	#include "creatures/appearance/mounts/mounts.hpp"
+#endif
+
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
@@ -798,6 +802,26 @@ int PlayerFunctions::luaPlayerGetInbox(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerStoreGetInbox(lua_State* L) {
+	// player:getStoreInbox()
+	// In 8.6, is created item in arrow slot
+	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
+	auto item = thing->getItem();
+	if (item) {
+		pushUserdata<Item>(L, item);
+		setItemMetatable(L, -1, item);
+	} else {
+		pushBoolean(L, false);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetSkullTime(lua_State* L) {
 	// player:getSkullTime()
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
@@ -904,6 +928,7 @@ int PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent(lua_State* L) {
 	return 1;
 }
 
+#if CLIENT_VERSION >= 870
 int PlayerFunctions::luaPlayerSendSpellCooldown(lua_State* L) {
 	// player:sendSpellCooldown(spellId, time)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
@@ -935,6 +960,7 @@ int PlayerFunctions::luaPlayerSendSpellGroupCooldown(lua_State* L) {
 
 	return 1;
 }
+#endif
 
 int PlayerFunctions::luaPlayerGetMagicLevel(lua_State* L) {
 	// player:getMagicLevel()
@@ -2337,6 +2363,7 @@ int PlayerFunctions::luaPlayerSendOutfitWindow(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddMount(lua_State* L) {
+#if CLIENT_VERSION >= 870
 	// player:addMount(mountId or mountName)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (!player) {
@@ -2348,7 +2375,7 @@ int PlayerFunctions::luaPlayerAddMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		const std::shared_ptr<Mount> mount = g_game().mounts.getMountByName(getString(L, 2));
+		const std::shared_ptr<Mount> mount = g_game().m_mountsPtr->getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2356,10 +2383,12 @@ int PlayerFunctions::luaPlayerAddMount(lua_State* L) {
 		mountId = mount->id;
 	}
 	pushBoolean(L, player->tameMount(mountId));
+#endif
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerRemoveMount(lua_State* L) {
+#if CLIENT_VERSION >= 870
 	// player:removeMount(mountId or mountName)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (!player) {
@@ -2371,7 +2400,7 @@ int PlayerFunctions::luaPlayerRemoveMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		const std::shared_ptr<Mount> mount = g_game().mounts.getMountByName(getString(L, 2));
+		const std::shared_ptr<Mount> mount = g_game().m_mountsPtr->getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2379,10 +2408,12 @@ int PlayerFunctions::luaPlayerRemoveMount(lua_State* L) {
 		mountId = mount->id;
 	}
 	pushBoolean(L, player->untameMount(mountId));
+#endif
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
+#if CLIENT_VERSION >= 870
 	// player:hasMount(mountId or mountName)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (!player) {
@@ -2392,9 +2423,9 @@ int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
 
 	std::shared_ptr<Mount> mount = nullptr;
 	if (isNumber(L, 2)) {
-		mount = g_game().mounts.getMountByID(getNumber<uint8_t>(L, 2));
+		mount = g_game().m_mountsPtr->getMountByID(getNumber<uint8_t>(L, 2));
 	} else {
-		mount = g_game().mounts.getMountByName(getString(L, 2));
+		mount = g_game().m_mountsPtr->getMountByName(getString(L, 2));
 	}
 
 	if (mount) {
@@ -2402,6 +2433,7 @@ int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+#endif
 	return 1;
 }
 

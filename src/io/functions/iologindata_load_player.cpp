@@ -248,10 +248,13 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	}
 
 	player->defaultOutfit.lookType = result->getNumber<uint16_t>("looktype");
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
-		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
+#if CLIENT_VERSION > 1100
+	const auto &lookType = player->defaultOutfit.lookType;
+	if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
+		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
 		return;
 	}
+#endif
 
 	player->defaultOutfit.lookHead = static_cast<uint8_t>(result->getNumber<uint16_t>("lookhead"));
 	player->defaultOutfit.lookBody = static_cast<uint8_t>(result->getNumber<uint16_t>("lookbody"));
@@ -263,11 +266,13 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	player->defaultOutfit.lookMountLegs = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountlegs"));
 	player->defaultOutfit.lookMountFeet = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountfeet"));
 	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
-
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
-		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookFamiliarsType);
+	const auto &familiarType = player->defaultOutfit.lookFamiliarsType;
+#if CLIENT_VERSION > 1100
+	if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && familiarType != 0 && !g_game().isLookTypeRegistered(familiarType)) {
+		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", familiarType);
 		return;
 	}
+#endif
 
 	player->currentOutfit = player->defaultOutfit;
 }
@@ -302,7 +307,8 @@ void IOLoginDataLoad::loadPlayerSkill(std::shared_ptr<Player> player, DBResult_p
 
 	static const std::array<std::string, 13> skillNames = { "skill_fist", "skill_club", "skill_sword", "skill_axe", "skill_dist", "skill_shielding", "skill_fishing", "skill_critical_hit_chance", "skill_critical_hit_damage", "skill_life_leech_chance", "skill_life_leech_amount", "skill_mana_leech_chance", "skill_mana_leech_amount" };
 	static const std::array<std::string, 13> skillNameTries = { "skill_fist_tries", "skill_club_tries", "skill_sword_tries", "skill_axe_tries", "skill_dist_tries", "skill_shielding_tries", "skill_fishing_tries", "skill_critical_hit_chance_tries", "skill_critical_hit_damage_tries", "skill_life_leech_chance_tries", "skill_life_leech_amount_tries", "skill_mana_leech_chance_tries", "skill_mana_leech_amount_tries" };
-	for (size_t i = 0; i < skillNames.size(); ++i) {
+
+	for (size_t i = 0; i <= SKILL_LAST; ++i) {
 		uint16_t skillLevel = result->getNumber<uint16_t>(skillNames[i]);
 		uint64_t skillTries = result->getNumber<uint64_t>(skillNameTries[i]);
 		uint64_t nextSkillTries = player->vocation->getReqSkillTries(static_cast<uint8_t>(i), skillLevel + 1);
@@ -558,8 +564,11 @@ void IOLoginDataLoad::loadPlayerStoreInbox(std::shared_ptr<Player> player) {
 		return;
 	}
 
-	if (!player->inventory[CONST_SLOT_STORE_INBOX]) {
-		player->internalAddThing(CONST_SLOT_STORE_INBOX, Item::CreateItem(ITEM_STORE_INBOX));
+	Slots_t slot = CONST_SLOT_STORE_INBOX;
+	if (!player->inventory[slot]) {
+		auto item = Item::CreateItem(ITEM_STORE_INBOX);
+		item->setAttribute(ItemAttribute_t::NAME, "your store inbox");
+		player->internalAddThing(slot, item);
 	}
 }
 

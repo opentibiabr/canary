@@ -95,14 +95,7 @@ struct Position {
 	}
 
 	std::string toString() const {
-		std::string str;
-		return str.append("( ")
-			.append(std::to_string(getX()))
-			.append(", ")
-			.append(std::to_string(getY()))
-			.append(", ")
-			.append(std::to_string(getZ()))
-			.append(" )");
+		return fmt::format("( {}, {}, {} )", x, y, z);
 	}
 
 	int_fast32_t getX() const {
@@ -124,6 +117,18 @@ namespace std {
 		}
 	};
 }
+
+template <>
+struct fmt::formatter<Position> {
+	constexpr auto parse(format_parse_context &ctx) {
+		return ctx.begin();
+	}
+
+	template <typename FormatContext>
+	auto format(const Position &pos, FormatContext &ctx) {
+		return fmt::format_to(ctx.out(), "{}", pos.toString());
+	}
+};
 
 std::ostream &operator<<(std::ostream &, const Position &);
 std::ostream &operator<<(std::ostream &, const Direction &);

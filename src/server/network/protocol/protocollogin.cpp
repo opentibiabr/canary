@@ -30,6 +30,22 @@ void ProtocolLogin::disconnectClient(const std::string &message) {
 }
 
 void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const std::string &password) {
+#if CLIENT_VERSION < 1012
+	static uint32_t serverIp = INADDR_NONE;
+	if (serverIp == INADDR_NONE) {
+		std::string cfgIp = g_configManager().getString(IP, "ProtocolLogin::getCharacterList - getIP");
+		serverIp = inet_addr(cfgIp.c_str());
+		if (serverIp == INADDR_NONE) {
+			struct hostent* he = gethostbyname(cfgIp.c_str());
+			if (!he || he->h_addrtype != AF_INET) { // Only ipv4
+				disconnectClient("ERROR: Cannot resolve hostname.");
+				return;
+			}
+			memcpy(&serverIp, he->h_addr, sizeof(serverIp));
+		}
+	}
+#endif
+
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
@@ -60,9 +76,11 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		output->addString(ss.str(), "ProtocolLogin::getCharacterList - ss.str()");
 	}
 
+#if CLIENT_VERSION >= 1074
 	// Add session key
 	output->addByte(0x28);
 	output->addString(accountDescriptor + "\n" + password, "ProtocolLogin::getCharacterList - accountDescriptor + password");
+#endif
 
 	// Add char list
 	auto [players, result] = account.getAccountPlayers();
@@ -72,6 +90,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	output->addByte(0x64);
 
+#if CLIENT_VERSION >= 1012
 	output->addByte(1); // number of worlds
 
 	output->addByte(0); // world id
@@ -81,18 +100,37 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__));
 
 	output->addByte(0);
-
+#else
 	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
 	output->addByte(size);
 	for (const auto &[name, deletion] : players) {
+		output->addString(name, "ProtocolLogin::getCharacterList - name");
+		auto stringName = "ProtocolLogin::getCharacterList - ServerName";
+		output->addString(g_configManager().getString(SERVER_NAME, stringName), stringName);
+		output->add<uint32_t>(serverIp);
+		output->add<uint16_t>(g_configManager().getNumber(GAME_PORT, "ProtocolLogin::getCharacterList - GamePort"));
+	#if CLIENT_VERSION >= 971
 		output->addByte(0);
 		output->addString(name, "ProtocolLogin::getCharacterList - name");
+	#endif
 	}
+#endif
 
+	auto freePremiumEnabled = g_configManager().getBoolean(FREE_PREMIUM, "ProtocolLogin::getCharacterList - FreePremium");
+#if CLIENT_VERSION >= 1080
 	// Get premium days, check is premium and get lastday
+	#if CLIENT_VERSION >= 1082
 	output->addByte(account.getPremiumRemainingDays());
+	#endif
 	output->addByte(account.getPremiumLastDay() > getTimeNow());
 	output->add<uint32_t>(account.getPremiumLastDay());
+#else
+	if (freePremiumEnabled) {
+		output->add<uint16_t>(0xFFFF); // client displays free premium
+	} else {
+		output->add<uint16_t>(account.getPremiumRemainingDays());
+	}
+#endif
 
 	send(output);
 
@@ -108,11 +146,19 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	msg.skipBytes(2); // client OS
 
 	uint16_t version = msg.get<uint16_t>();
-
-	// Old protocol support
-	oldProtocol = version == 1100;
-
+#if CLIENT_VERSION >= 971
+	version = msg.get<uint32_t>();
 	msg.skipBytes(17);
+	/*
+	- Skipped bytes:
+	- 4 bytes: client version (971+)
+	- 12 bytes: dat, spr, pic signatures (4 bytes each)
+	- 1 byte: preview world(971+)
+	*/
+	msg.skipBytes(17);
+#else
+	msg.skipBytes(12);
+#endif
 	/*
 	 - Skipped bytes:
 	 - 4 bytes: client version (971+)
@@ -120,9 +166,14 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	 - 1 byte: preview world(971+)
 	 */
 
+	// Old protocol support
+	oldProtocol = version <= 1100;
+
+#if CLIENT_VERSION >= 770
 	if (!Protocol::RSA_decrypt(msg)) {
-		g_logger().warn("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
-		disconnect();
+		auto message = "[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed";
+		g_logger().warn(message);
+		disconnectClient(message);
 		return;
 	}
 
@@ -130,7 +181,10 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	enableXTEAEncryption();
 	setXTEAKey(key.data());
 
+	#if CLIENT_VERSION >= 830
 	setChecksumMethod(CHECKSUM_METHOD_ADLER32);
+	#endif
+#endif
 
 	if (g_game().getGameState() == GAME_STATE_STARTUP) {
 		disconnectClient("Gameworld is starting up. Please wait.");
@@ -160,7 +214,11 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
+#if CLIENT_VERSION >= 830
 	std::string accountDescriptor = msg.getString();
+#else
+	std::string accountDescriptor = std::to_string(msg.get<uint32_t>());
+#endif
 	if (accountDescriptor.empty()) {
 		std::ostringstream ss;
 		ss << "Invalid " << (oldProtocol ? "username" : "email") << ".";

@@ -9,7 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
+#if CLIENT_VERSION >= 870
+
+	#include "lua/scripts/luascript.hpp"
 
 class MountFunctions final : LuaScriptInterface {
 public:
@@ -30,3 +32,5 @@ private:
 	static int luaMountGetClientId(lua_State* L);
 	static int luaMountGetSpeed(lua_State* L);
 };
+
+#endif

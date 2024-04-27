@@ -306,9 +306,9 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 			break;
 		}
 	}
-	const auto monsterType = g_monsters().getMonsterType(variant + name);
+	const auto monsterType = g_monsters().getMonsterType(variant + name, true);
 	if (!monsterType) {
-		g_logger().error("Can not find {}", name);
+		g_logger().error("Cannot find monster '{}'. Position: {}", name, pos.toString());
 		return false;
 	}
 

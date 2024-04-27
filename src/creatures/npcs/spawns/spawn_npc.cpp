@@ -253,7 +253,7 @@ void SpawnNpc::cleanup() {
 bool SpawnNpc::addNpc(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval) {
 	const auto &npcType = g_npcs().getNpcType(name);
 	if (!npcType) {
-		g_logger().error("Can not find {}", name);
+		g_logger().error("Cannot find npc '{}'. Position: {}", name, pos.toString());
 		return false;
 	}
 

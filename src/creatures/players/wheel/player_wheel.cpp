@@ -2526,6 +2526,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 }
 
 void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) {
+#if CLIENT_VERSION >= 870
 	for (const auto &condition : m_player.getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
 		if (condition->getTicks() <= value) {
 			m_player.sendSpellCooldown(condition->getSubId(), 0);
@@ -2535,6 +2536,7 @@ void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) {
 			m_player.sendSpellCooldown(condition->getSubId(), condition->getTicks());
 		}
 	}
+#endif
 }
 
 void PlayerWheel::resetUpgradedSpells() {

@@ -32,7 +32,7 @@ public:
 		if (map->monsterfile.empty()) {
 			// OTBM file doesn't tell us about the monsterfile,
 			// Lets guess it is mapname-monster.xml.
-			map->monsterfile = g_configManager().getString(MAP_NAME, __FUNCTION__);
+			map->monsterfile = getMapFilePath("monster", __FUNCTION__);
 			map->monsterfile += "-monster.xml";
 		}
 
@@ -48,7 +48,7 @@ public:
 		if (map->zonesfile.empty()) {
 			// OTBM file doesn't tell us about the zonesfile,
 			// Lets guess it is mapname-zone.xml.
-			map->zonesfile = g_configManager().getString(MAP_NAME, __FUNCTION__);
+			map->zonesfile = getMapFilePath("zones", __FUNCTION__);
 			map->zonesfile += "-zones.xml";
 		}
 
@@ -64,7 +64,7 @@ public:
 		if (map->npcfile.empty()) {
 			// OTBM file doesn't tell us about the npcfile,
 			// Lets guess it is mapname-npc.xml.
-			map->npcfile = g_configManager().getString(MAP_NAME, __FUNCTION__);
+			map->npcfile = getMapFilePath("npc", __FUNCTION__);
 			map->npcfile += "-npc.xml";
 		}
 
@@ -80,7 +80,7 @@ public:
 		if (map->housefile.empty()) {
 			// OTBM file doesn't tell us about the housefile,
 			// Lets guess it is mapname-house.xml.
-			map->housefile = g_configManager().getString(MAP_NAME, __FUNCTION__);
+			map->housefile = getMapFilePath("house", __FUNCTION__);
 			map->housefile += "-house.xml";
 		}
 
@@ -93,6 +93,7 @@ public:
 	 * \returns true if the monsters spawn map custom was loaded successfully
 	 */
 	static bool loadMonstersCustom(Map* map, const std::string &mapName, int customMapIndex) {
+#if CLIENT_VERSION >= 1100
 		if (map->monsterfile.empty()) {
 			// OTBM file doesn't tell us about the monsterfile,
 			// Lets guess it is mapname-monster.xml.
@@ -100,6 +101,9 @@ public:
 			map->monsterfile += "-monster.xml";
 		}
 		return map->spawnsMonsterCustomMaps[customMapIndex].loadFromXML(map->monsterfile);
+#else
+		return true;
+#endif
 	}
 
 	/**
@@ -108,6 +112,7 @@ public:
 	 * \returns true if the zones spawn map custom was loaded successfully
 	 */
 	static bool loadZonesCustom(Map* map, const std::string &mapName, int customMapIndex) {
+#if CLIENT_VERSION >= 1100
 		if (map->zonesfile.empty()) {
 			// OTBM file doesn't tell us about the zonesfile,
 			// Lets guess it is mapname-zones.xml.
@@ -115,6 +120,9 @@ public:
 			map->zonesfile += "-zones.xml";
 		}
 		return Zone::loadFromXML(map->zonesfile, customMapIndex);
+#else
+		return true;
+#endif
 	}
 
 	/**
@@ -123,6 +131,7 @@ public:
 	 * \returns true if the npcs spawn map custom was loaded successfully
 	 */
 	static bool loadNpcsCustom(Map* map, const std::string &mapName, int customMapIndex) {
+#if CLIENT_VERSION >= 1100
 		if (map->npcfile.empty()) {
 			// OTBM file doesn't tell us about the npcfile,
 			// Lets guess it is mapname-npc.xml.
@@ -131,6 +140,9 @@ public:
 		}
 
 		return map->spawnsNpcCustomMaps[customMapIndex].loadFromXml(map->npcfile);
+#else
+		return true;
+#endif
 	}
 
 	/**
@@ -139,6 +151,7 @@ public:
 	 * \returns true if the map custom houses was loaded successfully
 	 */
 	static bool loadHousesCustom(Map* map, const std::string &mapName, int customMapIndex) {
+#if CLIENT_VERSION >= 1100
 		if (map->housefile.empty()) {
 			// OTBM file doesn't tell us about the housefile,
 			// Lets guess it is mapname-house.xml.
@@ -146,9 +159,19 @@ public:
 			map->housefile += "-house.xml";
 		}
 		return map->housesCustomMaps[customMapIndex].loadHousesXML(map->housefile);
+#else
+		return true;
+#endif
 	}
 
 private:
+	static const std::string &getMapFilePath(const std::string &fileName, const std::string &functionCallName) {
+		static std::string mapNameFilePack;
+		static std::string prefix = CLIENT_VERSION < 1100 ? fmt::format("{}/", CLIENT_VERSION) : "";
+		mapNameFilePack = fmt::format("{}{}-{}.xml", prefix, g_configManager().getString(MAP_NAME, functionCallName), fileName);
+		return mapNameFilePack;
+	}
+
 	static void parseMapDataAttributes(FileStream &stream, Map* map);
 	static void parseWaypoints(FileStream &stream, Map &map);
 	static void parseTowns(FileStream &stream, Map &map);

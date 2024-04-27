@@ -308,13 +308,14 @@ int NpcTypeFunctions::luaNpcTypeOutfit(lua_State* L) {
 			pushOutfit(L, npcType->info.outfit);
 		} else {
 			Outfit_t outfit = getOutfit(L, 2);
-			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
-				g_logger().warn("[NpcTypeFunctions::luaNpcTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
-				lua_pushnil(L);
-			} else {
-				npcType->info.outfit = getOutfit(L, 2);
-				pushBoolean(L, true);
+#if CLIENT_VERSION > 1100
+			if (g_configManager().getBoolean(WARN_UNREGISTERED_DAT_INFO, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+				reportErrorFunc(fmt::format("An unregistered npc looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType));
+				return 1;
 			}
+#endif
+			npcType->info.outfit = getOutfit(L, 2);
+			pushBoolean(L, true);
 		}
 	} else {
 		lua_pushnil(L);

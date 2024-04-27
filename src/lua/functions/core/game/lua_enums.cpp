@@ -214,6 +214,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, WEAPON_WAND);
 	registerEnum(L, WEAPON_AMMO);
 	registerEnum(L, WEAPON_MISSILE);
+	registerEnum(L, CLIENT_VERSION);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {
@@ -709,7 +710,9 @@ void LuaEnums::initConstSlotEnums(lua_State* L) {
 	registerEnum(L, CONST_SLOT_FEET);
 	registerEnum(L, CONST_SLOT_RING);
 	registerEnum(L, CONST_SLOT_AMMO);
+#if CLIENT_VERSION >= 1092
 	registerEnum(L, CONST_SLOT_STORE_INBOX);
+#endif
 	registerEnum(L, CONST_SLOT_LAST);
 }
 
@@ -740,7 +743,7 @@ void LuaEnums::initGameStateEnums(lua_State* L) {
 }
 
 void LuaEnums::initMessageEnums(lua_State* L) {
-	registerEnum(L, MESSAGE_GAMEMASTER_CONSOLE);
+	registerEnum(L, MESSAGE_STATUS_CONSOLE_ORANGE);
 	registerEnum(L, MESSAGE_LOGIN);
 	registerEnum(L, MESSAGE_ADMINISTRATOR);
 	registerEnum(L, MESSAGE_EVENT_ADVANCE);
@@ -763,7 +766,7 @@ void LuaEnums::initMessageEnums(lua_State* L) {
 	registerEnum(L, MESSAGE_REPORT);
 	registerEnum(L, MESSAGE_HOTKEY_PRESSED);
 	registerEnum(L, MESSAGE_TUTORIAL_HINT);
-	registerEnum(L, MESSAGE_THANK_YOU);
+	registerEnum(L, MESSAGE_THANKYOU);
 	registerEnum(L, MESSAGE_MARKET);
 	registerEnum(L, MESSAGE_MANA);
 	registerEnum(L, MESSAGE_BEYOND_LAST);
@@ -862,6 +865,8 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_PLATINUM_COIN);
 	registerEnum(L, ITEM_CRYSTAL_COIN);
 	registerEnum(L, ITEM_STORE_COIN);
+	registerEnum(L, ITEM_ADVENTURERS_STONE);
+	registerEnum(L, ITEM_WORLD_BOARD);
 	registerEnum(L, ITEM_REWARD_CHEST);
 	registerEnum(L, ITEM_REWARD_CONTAINER);
 	registerEnum(L, ITEM_AMULETOFLOSS);
@@ -999,8 +1004,8 @@ void LuaEnums::initTalkTypeEnums(lua_State* L) {
 	registerEnum(L, TALKTYPE_SAY);
 	registerEnum(L, TALKTYPE_WHISPER);
 	registerEnum(L, TALKTYPE_YELL);
-	registerEnum(L, TALKTYPE_PRIVATE_FROM);
-	registerEnum(L, TALKTYPE_PRIVATE_TO);
+	registerEnum(L, TALKTYPE_PRIVATE_PN);
+	registerEnum(L, TALKTYPE_PRIVATE_NP);
 	registerEnum(L, TALKTYPE_CHANNEL_Y);
 	registerEnum(L, TALKTYPE_CHANNEL_O);
 	registerEnum(L, TALKTYPE_PRIVATE_NP);

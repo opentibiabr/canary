@@ -308,7 +308,7 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 		} else if (tmpStrValue == "smallstatus") {
 			messageType = MESSAGE_FAILURE;
 		} else if (tmpStrValue == "redconsole") {
-			messageType = MESSAGE_GAMEMASTER_CONSOLE;
+			messageType = MESSAGE_STATUS_CONSOLE_RED;
 		} else {
 			g_logger().warn("{} - "
 							"Unknown type tag missing for announce event, "

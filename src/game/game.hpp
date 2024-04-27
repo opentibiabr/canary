@@ -45,8 +45,10 @@ class IOPrey;
 class IOWheel;
 class ItemClassification;
 class Guild;
-class Mounts;
 class Spectators;
+#if CLIENT_VERSION >= 870
+class Mounts;
+#endif
 
 struct Achievement;
 struct HighscoreCategory;
@@ -577,7 +579,9 @@ public:
 
 	Groups groups;
 	Map map;
-	Mounts mounts;
+#if CLIENT_VERSION >= 870
+	std::unique_ptr<Mounts> m_mountsPtr;
+#endif
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 

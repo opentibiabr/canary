@@ -171,6 +171,7 @@ ReturnValue Actions::canUse(std::shared_ptr<Player> player, const Position &pos)
 	if (pos.x != 0xFFFF) {
 		const Position &playerPos = player->getPosition();
 		if (playerPos.z != pos.z) {
+			g_logger().info("Return pos different");
 			return playerPos.z > pos.z ? RETURNVALUE_FIRSTGOUPSTAIRS : RETURNVALUE_FIRSTGODOWNSTAIRS;
 		}
 
@@ -300,11 +301,11 @@ ReturnValue Actions::internalUseItem(std::shared_ptr<Player> player, const Posit
 		std::shared_ptr<Container> openContainer;
 
 		// depot container
-		if (std::shared_ptr<DepotLocker> depot = container->getDepotLocker()) {
-			std::shared_ptr<DepotLocker> myDepotLocker = player->getDepotLocker(depot->getDepotId());
-			myDepotLocker->setParent(depot->getParent()->getTile());
-			openContainer = myDepotLocker;
-			player->setLastDepotId(depot->getDepotId());
+		if (std::shared_ptr<DepotLocker> mapDepotLocker = container->getDepotLocker()) {
+			auto playerDepotLocker = player->getDepotLocker(mapDepotLocker->getDepotId());
+			playerDepotLocker->setParent(mapDepotLocker->getParent()->getTile());
+			openContainer = playerDepotLocker;
+			player->setLastDepotId(mapDepotLocker->getDepotId());
 		} else {
 			openContainer = container;
 		}

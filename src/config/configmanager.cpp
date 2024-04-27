@@ -83,6 +83,7 @@ bool ConfigManager::load() {
 		loadStringConfig(L, MYSQL_USER, "mysqlUser", "root");
 	}
 
+	loadBoolConfig(L, WARN_UNREGISTERED_DAT_INFO, "warnUnregisteredDatInfo", false);
 	loadBoolConfig(L, AIMBOT_HOTKEY_ENABLED, "hotkeyAimbotEnabled", true);
 	loadBoolConfig(L, ALLOW_BLOCK_SPAWN, "allowBlockSpawn", true);
 	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);

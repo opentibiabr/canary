@@ -78,9 +78,9 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 		}
 	} else if (type > 0 && itemPosition) {
 		auto position = *itemPosition;
-		g_logger().warn("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
+		g_logger().debug("[Item::CreateItem] Item with id '{}', in position '{}' not exists and cannot be created.", type, position.toString());
 	} else {
-		g_logger().warn("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
+		g_logger().debug("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
 	}
 
 	return newItem;

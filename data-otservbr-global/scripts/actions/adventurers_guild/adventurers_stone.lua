@@ -99,5 +99,5 @@ function adventurersStone.onUse(player, item, fromPosition, target, toPosition, 
 	return true
 end
 
-adventurersStone:id(16277)
+adventurersStone:id(ITEM_ADVENTURERS_STONE)
 adventurersStone:register()

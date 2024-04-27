@@ -29,14 +29,12 @@ combat:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature")
 
 local function createBarrel()
 	local template = Game.createItem(barrelId, 1)
-
-	template:setDuration(3)
-	template:stopDecay()
-
+	if template then
+		template:setDuration(3)
+		template:stopDecay()
+	end
 	return template
 end
-
-createBarrel()
 
 local function explodeBomb(position, creatureId)
 	local var = {}
@@ -66,6 +64,9 @@ function onTargetCreature(creature, target)
 
 	local position = target:getPosition()
 	local template = createBarrel()
+	if not template then
+		return false
+	end
 	template:setOwner(creature:getId())
 
 	local tile = Tile(position)

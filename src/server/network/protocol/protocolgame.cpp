@@ -8829,7 +8829,7 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendDisableLoginMusic() {
-	if (oldProtocol) {
+	if (oldProtocol || !player || player->getOperatingSystem() >= CLIENTOS_OTCLIENT_LINUX) {
 		return;
 	}
 

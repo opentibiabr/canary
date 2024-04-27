@@ -14,14 +14,14 @@ class KV;
 
 struct Badge {
 	uint8_t m_id = 0;
-	CyclopediaBadgeType_t m_type;
+	CyclopediaBadge_t m_type;
 	std::string m_name;
 	uint16_t m_amount = 0;
 
 	Badge() = default;
 
-	Badge(uint8_t id, CyclopediaBadgeType_t type, const std::string &name, uint16_t amount) :
-		m_id(id), m_type(type), m_name(name), m_amount(amount) { }
+	Badge(uint8_t id, CyclopediaBadge_t type, std::string name, uint16_t amount) :
+		m_id(id), m_type(type), m_name(std::move(name)), m_amount(amount) { }
 
 	bool operator==(const Badge &other) const {
 		return m_id == other.m_id;
@@ -32,7 +32,7 @@ namespace std {
 	template <>
 	struct hash<Badge> {
 		std::size_t operator()(const Badge &b) const {
-			return hash<uint8_t>()(b.m_id); // Use o ID como base para o hash
+			return hash<uint8_t>()(b.m_id);
 		}
 	};
 }
@@ -43,7 +43,6 @@ public:
 
 	[[nodiscard]] bool hasBadge(uint8_t id) const;
 	bool add(uint8_t id, uint32_t timestamp = 0);
-	[[nodiscard]] std::vector<std::pair<Badge, uint32_t>> getUnlockedBadges() const;
 	void checkAndUpdateNewBadges();
 	void loadUnlockedBadges();
 	const std::shared_ptr<KV> &getUnlockedKV();
@@ -53,8 +52,8 @@ public:
 	bool loyalty(uint8_t amount);
 	bool accountAllLevel(uint8_t amount);
 	bool accountAllVocations(uint8_t amount);
-	bool tournamentParticipation(uint8_t skill);
-	bool tournamentPoints(uint8_t race);
+	[[nodiscard]] bool tournamentParticipation(uint8_t skill);
+	[[nodiscard]] bool tournamentPoints(uint8_t race);
 
 private:
 	// {badge ID, time when it was unlocked}

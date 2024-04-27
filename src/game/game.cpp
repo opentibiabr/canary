@@ -194,32 +194,32 @@ Game::Game() {
 	wildcardTree = std::make_shared<WildcardTreeNode>(false);
 
 	m_badges = {
-		Badge(1, CyclopediaBadgeType_t::ACCOUNT_AGE, "Fledegeling Hero", 1),
-		Badge(2, CyclopediaBadgeType_t::ACCOUNT_AGE, "Veteran Hero", 5),
-		Badge(3, CyclopediaBadgeType_t::ACCOUNT_AGE, "Senior Hero", 10),
-		Badge(4, CyclopediaBadgeType_t::ACCOUNT_AGE, "Ancient Hero", 15),
-		Badge(5, CyclopediaBadgeType_t::ACCOUNT_AGE, "Exalted Hero", 20),
+		Badge(1, CyclopediaBadge_t::ACCOUNT_AGE, "Fledegeling Hero", 1),
+		Badge(2, CyclopediaBadge_t::ACCOUNT_AGE, "Veteran Hero", 5),
+		Badge(3, CyclopediaBadge_t::ACCOUNT_AGE, "Senior Hero", 10),
+		Badge(4, CyclopediaBadge_t::ACCOUNT_AGE, "Ancient Hero", 15),
+		Badge(5, CyclopediaBadge_t::ACCOUNT_AGE, "Exalted Hero", 20),
 
-		Badge(6, CyclopediaBadgeType_t::LOYALTY, "Tibia Loyalist (Grade 1)", 100),
-		Badge(7, CyclopediaBadgeType_t::LOYALTY, "Tibia Loyalist (Grade 2)", 1000),
-		Badge(8, CyclopediaBadgeType_t::LOYALTY, "Tibia Loyalist (Grade 3)", 5000),
+		Badge(6, CyclopediaBadge_t::LOYALTY, "Tibia Loyalist (Grade 1)", 100),
+		Badge(7, CyclopediaBadge_t::LOYALTY, "Tibia Loyalist (Grade 2)", 1000),
+		Badge(8, CyclopediaBadge_t::LOYALTY, "Tibia Loyalist (Grade 3)", 5000),
 
-		Badge(9, CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL, "Global Player (Grade 1)", 500),
-		Badge(10, CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL, "Global Player (Grade 2)", 1000),
-		Badge(11, CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL, "Global Player (Grade 3)", 2000),
+		Badge(9, CyclopediaBadge_t::ACCOUNT_ALL_LEVEL, "Global Player (Grade 1)", 500),
+		Badge(10, CyclopediaBadge_t::ACCOUNT_ALL_LEVEL, "Global Player (Grade 2)", 1000),
+		Badge(11, CyclopediaBadge_t::ACCOUNT_ALL_LEVEL, "Global Player (Grade 3)", 2000),
 
-		Badge(12, CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS, "Master Class (Grade 1)", 100),
-		Badge(13, CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS, "Master Class (Grade 2)", 250),
-		Badge(14, CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS, "Master Class (Grade 3)", 500),
+		Badge(12, CyclopediaBadge_t::ACCOUNT_ALL_VOCATIONS, "Master Class (Grade 1)", 100),
+		Badge(13, CyclopediaBadge_t::ACCOUNT_ALL_VOCATIONS, "Master Class (Grade 2)", 250),
+		Badge(14, CyclopediaBadge_t::ACCOUNT_ALL_VOCATIONS, "Master Class (Grade 3)", 500),
 
-		Badge(15, CyclopediaBadgeType_t::TOURNAMENT_PARTICIPATION, "Freshman of the Tournament", 1),
-		Badge(16, CyclopediaBadgeType_t::TOURNAMENT_PARTICIPATION, "Regular of the Tournament", 5),
-		Badge(17, CyclopediaBadgeType_t::TOURNAMENT_PARTICIPATION, "Hero of the Tournament", 10),
+		Badge(15, CyclopediaBadge_t::TOURNAMENT_PARTICIPATION, "Freshman of the Tournament", 1),
+		Badge(16, CyclopediaBadge_t::TOURNAMENT_PARTICIPATION, "Regular of the Tournament", 5),
+		Badge(17, CyclopediaBadge_t::TOURNAMENT_PARTICIPATION, "Hero of the Tournament", 10),
 
-		Badge(18, CyclopediaBadgeType_t::TOURNAMENT_POINTS, "Tournament Competitor", 1000),
-		Badge(19, CyclopediaBadgeType_t::TOURNAMENT_POINTS, "Tournament Challenger", 2500),
-		Badge(20, CyclopediaBadgeType_t::TOURNAMENT_POINTS, "Tournament Master", 5000),
-		Badge(21, CyclopediaBadgeType_t::TOURNAMENT_POINTS, "Tournament Champion", 10000),
+		Badge(18, CyclopediaBadge_t::TOURNAMENT_POINTS, "Tournament Competitor", 1000),
+		Badge(19, CyclopediaBadge_t::TOURNAMENT_POINTS, "Tournament Challenger", 2500),
+		Badge(20, CyclopediaBadge_t::TOURNAMENT_POINTS, "Tournament Master", 5000),
+		Badge(21, CyclopediaBadge_t::TOURNAMENT_POINTS, "Tournament Champion", 10000),
 	};
 
 	m_highscoreCategoriesNames = {
@@ -10577,14 +10577,4 @@ Badge Game::getBadgeByIdOrName(uint8_t id, const std::string &name /*= ""*/) {
 		return *it;
 	}
 	return {};
-}
-
-std::vector<Badge> Game::getBadgesByType(CyclopediaBadgeType_t type) {
-	std::vector<Badge> badgesFound;
-	for (const auto &badge : getBadges()) {
-		if (badge.m_type == type) {
-			badgesFound.push_back(badge);
-		}
-	}
-	return badgesFound;
 }

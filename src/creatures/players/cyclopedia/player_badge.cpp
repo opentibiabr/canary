@@ -50,36 +50,32 @@ bool PlayerBadge::add(uint8_t id, uint32_t timestamp /* = 0*/) {
 	return true;
 }
 
-std::vector<std::pair<Badge, uint32_t>> PlayerBadge::getUnlockedBadges() const {
-	return m_badgesUnlocked;
-}
-
 void PlayerBadge::checkAndUpdateNewBadges() {
-	// CyclopediaBadgeType_t::ACCOUNT_AGE
-	for (const auto &badge : g_game().getBadgesByType(CyclopediaBadgeType_t::ACCOUNT_AGE)) {
-		if (accountAge(badge.m_amount)) {
-			add(badge.m_id);
-		}
-	}
-
-	// CyclopediaBadgeType_t::LOYALTY
-	for (const auto &badge : g_game().getBadgesByType(CyclopediaBadgeType_t::LOYALTY)) {
-		if (loyalty(badge.m_amount)) {
-			add(badge.m_id);
-		}
-	}
-
-	// CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL
-	for (const auto &badge : g_game().getBadgesByType(CyclopediaBadgeType_t::ACCOUNT_ALL_LEVEL)) {
-		if (accountAllLevel(badge.m_amount)) {
-			add(badge.m_id);
-		}
-	}
-
-	// CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS
-	for (const auto &badge : g_game().getBadgesByType(CyclopediaBadgeType_t::ACCOUNT_ALL_VOCATIONS)) {
-		if (accountAllVocations(badge.m_amount)) {
-			add(badge.m_id);
+	for (const auto &badge : g_game().getBadges()) {
+		switch (badge.m_type) {
+			case CyclopediaBadge_t::ACCOUNT_AGE:
+				if (accountAge(badge.m_amount)) {
+					add(badge.m_id);
+				}
+				break;
+			case CyclopediaBadge_t::LOYALTY:
+				if (loyalty(badge.m_amount)) {
+					add(badge.m_id);
+				}
+				break;
+			case CyclopediaBadge_t::ACCOUNT_ALL_LEVEL:
+				if (accountAllLevel(badge.m_amount)) {
+					add(badge.m_id);
+				}
+				break;
+			case CyclopediaBadge_t::ACCOUNT_ALL_VOCATIONS:
+				if (accountAllVocations(badge.m_amount)) {
+					add(badge.m_id);
+				}
+				break;
+			case CyclopediaBadge_t::TOURNAMENT_PARTICIPATION:
+			case CyclopediaBadge_t::TOURNAMENT_POINTS:
+				break;
 		}
 	}
 
@@ -120,10 +116,10 @@ bool PlayerBadge::loyalty(uint8_t amount) {
 }
 
 bool PlayerBadge::accountAllLevel(uint8_t amount) {
-	uint8_t total = 0;
-	for (const auto &player : g_game().getPlayersByAccount(m_player.getAccount(), true)) {
-		total = total + player->getLevel();
-	}
+	const auto &players = g_game().getPlayersByAccount(m_player.getAccount(), true);
+	uint16_t total = std::accumulate(players.begin(), players.end(), 0, [](uint16_t sum, const std::shared_ptr<Player> &player) {
+		return sum + player->getLevel();
+	});
 	return total >= amount;
 }
 

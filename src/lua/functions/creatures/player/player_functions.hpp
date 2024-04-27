@@ -273,12 +273,12 @@ private:
 		registerMethod(L, "Player", "setVoucherXpBoost", PlayerFunctions::luaPlayerSetVoucherXpBoost);
 		registerMethod(L, "Player", "getGrindingXpBoost", PlayerFunctions::luaPlayerGetGrindingXpBoost);
 		registerMethod(L, "Player", "setGrindingXpBoost", PlayerFunctions::luaPlayerSetGrindingXpBoost);
-		registerMethod(L, "Player", "getStoreXpBoost", PlayerFunctions::luaPlayerGetStoreXpBoost);
-		registerMethod(L, "Player", "setStoreXpBoost", PlayerFunctions::luaPlayerSetStoreXpBoost);
+		registerMethod(L, "Player", "getXpBoostPercent", PlayerFunctions::luaPlayerGetXpBoostPercent);
+		registerMethod(L, "Player", "setXpBoostPercent", PlayerFunctions::luaPlayerSetXpBoostPercent);
 		registerMethod(L, "Player", "getStaminaXpBoost", PlayerFunctions::luaPlayerGetStaminaXpBoost);
 		registerMethod(L, "Player", "setStaminaXpBoost", PlayerFunctions::luaPlayerSetStaminaXpBoost);
-		registerMethod(L, "Player", "getExpBoostTime", PlayerFunctions::luaPlayerGetExpBoostTime);
-		registerMethod(L, "Player", "setExpBoostTime", PlayerFunctions::luaPlayerSetExpBoostTime);
+		registerMethod(L, "Player", "getXpBoostTime", PlayerFunctions::luaPlayerGetXpBoostTime);
+		registerMethod(L, "Player", "setXpBoostTime", PlayerFunctions::luaPlayerSetXpBoostTime);
 
 		registerMethod(L, "Player", "getIdleTime", PlayerFunctions::luaPlayerGetIdleTime);
 		registerMethod(L, "Player", "getFreeBackpackSlots", PlayerFunctions::luaPlayerGetFreeBackpackSlots);
@@ -627,12 +627,12 @@ private:
 	static int luaPlayerSetVoucherXpBoost(lua_State* L);
 	static int luaPlayerGetGrindingXpBoost(lua_State* L);
 	static int luaPlayerSetGrindingXpBoost(lua_State* L);
-	static int luaPlayerGetStoreXpBoost(lua_State* L);
-	static int luaPlayerSetStoreXpBoost(lua_State* L);
+	static int luaPlayerGetXpBoostPercent(lua_State* L);
+	static int luaPlayerSetXpBoostPercent(lua_State* L);
 	static int luaPlayerGetStaminaXpBoost(lua_State* L);
 	static int luaPlayerSetStaminaXpBoost(lua_State* L);
-	static int luaPlayerGetExpBoostTime(lua_State* L);
-	static int luaPlayerSetExpBoostTime(lua_State* L);
+	static int luaPlayerGetXpBoostTime(lua_State* L);
+	static int luaPlayerSetXpBoostTime(lua_State* L);
 
 	static int luaPlayerGetIdleTime(lua_State* L);
 	static int luaPlayerGetFreeBackpackSlots(lua_State* L);

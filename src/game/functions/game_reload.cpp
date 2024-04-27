@@ -82,7 +82,7 @@ void logReloadStatus(const std::string &name, bool result) {
  * If it is necessary to call elsewhere, seriously think about creating a function that calls this
  * Changing this to public may cause some unexpected behavior or bug
  */
-bool GameReload::reloadAll() const {
+bool GameReload::reloadAll() {
 	std::vector<bool> reloadResults;
 	reloadResults.reserve(magic_enum::enum_count<Reload_t>());
 
@@ -219,7 +219,7 @@ bool GameReload::reloadFamiliars() {
 	return result;
 }
 
-bool GameReload::reloadVocations() const {
+bool GameReload::reloadVocations() {
 	const bool result = g_vocations().reload();
 	logReloadStatus("Vocations", result);
 	return result;

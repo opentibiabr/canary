@@ -54,7 +54,7 @@ public:
 	static uint8_t getReloadNumber(Reload_t reloadTypes);
 
 private:
-	bool reloadAll() const;
+	static bool reloadAll();
 	static bool reloadChat();
 	static bool reloadConfig();
 	static bool reloadEvents();
@@ -70,7 +70,7 @@ private:
 	static bool reloadGroups();
 	static bool reloadFamiliars();
 	static bool reloadOutfits();
-	bool reloadVocations() const;
+	static bool reloadVocations();
 };
 
 constexpr auto g_gameReload = GameReload::getInstance;

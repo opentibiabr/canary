@@ -10,7 +10,7 @@ monster.outfit = {
 	lookLegs = 0,
 	lookFeet = 0,
 	lookAddons = 0,
-	lookMount = 0
+	lookMount = 0,
 }
 
 monster.health = 5690
@@ -30,12 +30,12 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Bulltaurs Lair."
-	}
+	Locations = "Bulltaurs Lair.",
+}
 
 monster.changeTarget = {
 	interval = 2000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -61,16 +61,16 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
-    interval = 5000,
+	interval = 5000,
 	chance = 10,
 	{ text = "Your misfortune is setteled!", yell = false },
 	{ text = "Soon I will harvest you for ingredients!", yell = false },
@@ -78,21 +78,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3035, chance = 51528, maxCount = 30},
-	{id = 44736, chance = 15234},
-	{id = 44739, chance = 9169},
-	{id = 44740, chance = 6256},
-	{id = 239, chance = 5540},
-	{id = 9058, chance = 3534},
-	{id = 7643, chance = 2722},
-	{id = 238, chance = 2006},
-	{id = 3036, chance = 1862},
-	{id = 23373, chance = 1385},
-	{id = 3041, chance = 1003},
-	{id = 3063, chance = 1003},
-	{id = 21168, chance = 1003},
-	{id = 32769, chance = 669},
-	{id = 10438, chance = 621}
+	{ id = 3035, chance = 51528, maxCount = 30 },
+	{ id = 44736, chance = 15234 },
+	{ id = 44739, chance = 9169 },
+	{ id = 44740, chance = 6256 },
+	{ id = 239, chance = 5540 },
+	{ id = 9058, chance = 3534 },
+	{ id = 7643, chance = 2722 },
+	{ id = 238, chance = 2006 },
+	{ id = 3036, chance = 1862 },
+	{ id = 23373, chance = 1385 },
+	{ id = 3041, chance = 1003 },
+	{ id = 3063, chance = 1003 },
+	{ id = 21168, chance = 1003 },
+	{ id = 32769, chance = 669 },
+	{ id = 10438, chance = 621 },
 }
 
 monster.attacks = {
@@ -100,14 +100,13 @@ monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -420, radius = 3, effect = CONST_ME_REDSMOKE, target = true },
 	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -280, maxDamage = -400, range = 4, radius = 4, effect = CONST_ME_PURPLESMOKE, shootEffect = CONST_ANI_ENERGYBALL, target = true },
 	{ name = "speed", interval = 2000, chance = 20, speedChange = -700, duration = 5000, range = 4, radius = 4, effect = CONST_ME_YELLOWSMOKE, target = true },
-	{ name = "bulltaur avalanche", interval = 2000, chance = 30, minDamage = -350, maxDamage = -450 }
+	{ name = "bulltaur avalanche", interval = 2000, chance = 30, minDamage = -350, maxDamage = -450 },
 }
-
 
 monster.defenses = {
 	defense = 67,
 	armor = 67,
-    mitigation = 2.11,
+	mitigation = 2.11,
 }
 
 monster.elements = {
@@ -119,17 +118,16 @@ monster.elements = {
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -15 },
-	{ type = COMBAT_HOLYDAMAGE , percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE , percent = -5 }
+	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "drunk", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "drunk", condition = true },
+	{ type = "bleed", condition = false },
 }
-
 
 mType:register(monster)

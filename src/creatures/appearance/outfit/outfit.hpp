@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "declarations.hpp"
+
 struct OutfitEntry {
 	constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
 		lookType(initLookType), addons(initAddons) { }
@@ -39,11 +41,9 @@ struct ProtocolOutfit {
 
 class Outfits {
 public:
-	static Outfits &getInstance() {
-		return inject<Outfits>();
-	}
+	static Outfits &getInstance();
 
-	[[maybe_unused]] std::shared_ptr<Outfit> getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
+	[[maybe_unused]] [[nodiscard]] std::shared_ptr<Outfit> getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
 
 	bool loadFromXml();
 	bool reload();

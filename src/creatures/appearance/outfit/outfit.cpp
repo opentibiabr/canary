@@ -14,6 +14,10 @@
 #include "utils/tools.hpp"
 #include "game/game.hpp"
 
+Outfits &Outfits::getInstance() {
+	return inject<Outfits>();
+}
+
 bool Outfits::reload() {
 	for (auto &outfitsVector : outfits) {
 		outfitsVector.clear();

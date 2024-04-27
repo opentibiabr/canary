@@ -1925,8 +1925,7 @@ void Player::onWalk(Direction &dir) {
 
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
-	setNextAction(OTSYS_TIME() + getStepDuration(dir));
-
+  
 	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, &EventCallback::playerOnWalk, getPlayer(), dir);
 }
 

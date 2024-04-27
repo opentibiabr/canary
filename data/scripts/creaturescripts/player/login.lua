@@ -118,7 +118,6 @@ function playerLoginGlobal.onLogin(player)
 	player:setStaminaXpBoost(player:getFinalBonusStamina() * 100)
 	player:getFinalLowLevelBonus()
 
-
 	-- Resets
 	if _G.OnExerciseTraining[player:getId()] then
 		stopEvent(_G.OnExerciseTraining[player:getId()].event)

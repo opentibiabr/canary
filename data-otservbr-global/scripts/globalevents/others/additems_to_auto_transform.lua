@@ -48,7 +48,7 @@ local holesSpikes = {
 		{ position = Position(32838, 32253, 10), intervalSeconds = 2, creatureOnTopDelaySecs = 0, onTransform = onTransformIntoSpikes },
 		{ position = Position(32838, 32254, 10), intervalSeconds = 1, creatureOnTopDelaySecs = 0, onTransform = onTransformIntoSpikes },
 		--
-	}
+	},
 }
 
 local function addItemsToAutoTransform(data)

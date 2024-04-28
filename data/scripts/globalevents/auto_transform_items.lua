@@ -36,7 +36,7 @@ function autoTransformItems(itemIds, position, intervalSeconds, creatureOnTopDel
 	if not creatureOnTopDelaySecs then
 		creatureOnTopDelaySecs = 0
 	end
-	itemsToTransform[#itemsToTransform+1] = {
+	itemsToTransform[#itemsToTransform + 1] = {
 		ids = itemIds,
 		position = position,
 		defaultIntervalMs = intervalSeconds * 1000,
@@ -44,7 +44,7 @@ function autoTransformItems(itemIds, position, intervalSeconds, creatureOnTopDel
 		index = index,
 		interval = 0,
 		creatureOnTopInterval = 0,
-		onTransform = onTransform
+		onTransform = onTransform,
 	}
 end
 

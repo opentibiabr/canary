@@ -66,7 +66,7 @@ trapEvent:register()
 local trapsOnStepOut = {
 	[2146] = {},
 	[2148] = {},
-	[3945] = { secondsInterval = 20, positions = {} }
+	[3945] = { secondsInterval = 20, positions = {} },
 }
 
 trapEvent = MoveEvent()

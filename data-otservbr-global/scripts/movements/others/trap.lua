@@ -87,7 +87,7 @@ function trapEvent.onStepOut(creature, item, position, fromPosition)
 		-- the trap re-arms
 		if not trap.positions[position:toString()] then
 			trap.positions[position:toString()] = true
-			addEvent(function ()
+			addEvent(function()
 				trap.positions[position:toString()] = nil
 				if item then
 					item:transform(item:getId() - 1)

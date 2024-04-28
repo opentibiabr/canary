@@ -54,7 +54,7 @@ function autoTransformItemsEvent.onThink(interval, lastExecution)
 	for _, items in ipairs(itemsToTransform) do
 		local tile = Tile(items.position)
 		if tile then
-      -- If a creature above creates a transform delay, the indices must be updated so that the items
+			-- If a creature above creates a transform delay, the indices must be updated so that the items
 			-- remain synchronized with the time of other items on the map that have the same interval.
 			-- This does not imply that he will be transformed now.
 			local prevId = items.ids[items.index]

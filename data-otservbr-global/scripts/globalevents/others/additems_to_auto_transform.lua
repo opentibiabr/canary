@@ -8,15 +8,15 @@ function onTransformIntoBlades(tile, item)
 end
 
 local slitsBlades = {
-  ids = {2145, 2146},
-  params = {
+	ids = { 2145, 2146 },
+	params = {
 		-- poi end
 		-- some slits from poi is not here since these are traps exclusively
 		-- triggered by the player's walking, not by autoTransformItems
 		{ position = Position(32839, 32251, 10), intervalSeconds = 1, creatureOnTopDelaySecs = 0, onTransform = onTransformIntoBlades },
 		{ position = Position(32839, 32253, 10), intervalSeconds = 1, creatureOnTopDelaySecs = 0, onTransform = onTransformIntoBlades },
 		--
-  },
+	},
 }
 
 -- Automated transform items are sent through this callback as soon as they transform, just like your Tile
@@ -29,7 +29,7 @@ function onTransformIntoSpikes(tile, item)
 end
 
 local holesSpikes = {
-	ids = {2147, 2148},
+	ids = { 2147, 2148 },
 	params = {
 		-- poi end
 		{ position = Position(32833, 32250, 10), intervalSeconds = 6, creatureOnTopDelaySecs = 0, onTransform = onTransformIntoSpikes },
@@ -62,4 +62,5 @@ function addItemsToAutoTransformEvent.onStartup()
 	addItemsToAutoTransform(slitsBlades)
 	addItemsToAutoTransform(holesSpikes)
 end
+
 addItemsToAutoTransformEvent:register()

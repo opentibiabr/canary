@@ -56,7 +56,7 @@ npcConfig.shop = {
 	{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
 	{ itemName = "arrow", clientId = 3447, buy = 2 },
 	{ itemName = "blue quiver", clientId = 35848, buy = 400 },
-	{ itemName = "bolt", clientId = 3483, buy = 4 },
+	{ itemName = "bolt", clientId = 3446, buy = 4 },
 	{ itemName = "bow", clientId = 3350, buy = 400, sell = 100 },
 	{ itemName = "bowl of terror sweat", clientId = 20204, sell = 500 },
 	{ itemName = "broken visor", clientId = 20184, sell = 1900 },

@@ -58,7 +58,7 @@ GameStore.SubActions = {
 
 GameStore.ActionType = {
 	OPEN_HOME = 0,
-	OPEN_PREMIUM_ = 1,
+	OPEN_PREMIUM_BOOST = 1,
 	OPEN_CATEGORY = 2,
 	OPEN_USEFUL_THINGS = 3,
 	OPEN_OFFER = 4,
@@ -71,7 +71,7 @@ GameStore.CoinType = {
 }
 
 GameStore.Storages = {
-	expCount = 51052,
+	expBoostCount = 51052,
 }
 
 GameStore.ConverType = {
@@ -179,7 +179,7 @@ GameStore.RecivedPackets = {
 	C_RequestTransactionHistory = 0xFE, -- 254
 }
 
-GameStore.ExpValues = {
+GameStore.ExpBoostValues = {
 	[1] = 30,
 	[2] = 45,
 	[3] = 90,

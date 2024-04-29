@@ -111,31 +111,22 @@ local function useStamina(player, isStaminaEnabled)
 		return false
 	end
 
-	local xpBoostLeftMinutesByDailyReward = self:kv():get("daily-reward-xp-boost") or 0
 	local currentTime = os.time()
 	local timePassed = currentTime - _G.NextUseStaminaTime[playerId]
 	if timePassed <= 0 then
 		return
 	end
 
-	local xpBoostLeftMinutesByDailyReward = player:kv():get("daily-reward-xp-boost") or 0
 	if timePassed > 60 then
 		if staminaMinutes > 2 then
 			staminaMinutes = staminaMinutes - 2
-			if xpBoostLeftMinutesByDailyReward > 2 then
-				player:kv():set("daily-reward-xp-boost", xpBoostLeftMinutesByDailyReward - 2)
-			end
 		else
 			staminaMinutes = 0
-			player:kv():remove("daily-reward-xp-boost")
 		end
 		_G.NextUseStaminaTime[playerId] = currentTime + 120
 		player:removePreyStamina(120)
 	else
 		staminaMinutes = staminaMinutes - 1
-		if xpBoostLeftMinutesByDailyReward > 0 then
-			player:kv():set("daily-reward-xp-boost", xpBoostLeftMinutesByDailyReward - 1)
-		end
 		_G.NextUseStaminaTime[playerId] = currentTime + 60
 		player:removePreyStamina(60)
 	end
@@ -165,15 +156,23 @@ local function useStaminaXpBoost(player)
 		return
 	end
 
+	local xpBoostLeftMinutesByDailyReward = player:kv():get("daily-reward-xp-boost") or 0
 	if timePassed > 60 then
 		if xpBoostMinutes > 2 then
 			xpBoostMinutes = xpBoostMinutes - 2
+			if xpBoostLeftMinutesByDailyReward > 2 then
+				player:kv():set("daily-reward-xp-boost", xpBoostLeftMinutesByDailyReward - 2)
+			end
 		else
 			xpBoostMinutes = 0
+			player:kv():remove("daily-reward-xp-boost")
 		end
 		_G.NextUseXpStamina[playerId] = currentTime + 120
 	else
 		xpBoostMinutes = xpBoostMinutes - 1
+		if xpBoostLeftMinutesByDailyReward > 0 then
+			player:kv():set("daily-reward-xp-boost", xpBoostLeftMinutesByDailyReward - 1)
+		end
 		_G.NextUseXpStamina[playerId] = currentTime + 60
 	end
 	player:setXpBoostTime(xpBoostMinutes * 60)

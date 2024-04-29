@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "game/game_definitions.hpp"
+
 class Player;
 class KV;
 

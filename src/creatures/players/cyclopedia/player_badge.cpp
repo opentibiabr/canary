@@ -45,7 +45,7 @@ bool PlayerBadge::add(uint8_t id, uint32_t timestamp /* = 0*/) {
 
 	int toSaveTimeStamp = timestamp != 0 ? timestamp : (OTSYS_TIME() / 1000);
 	getUnlockedKV()->set(badge.m_name, toSaveTimeStamp);
-	m_badgesUnlocked.push_back({ badge, toSaveTimeStamp });
+	m_badgesUnlocked.emplace_back(badge, toSaveTimeStamp);
 	m_badgesUnlocked.shrink_to_fit();
 	return true;
 }
@@ -94,7 +94,7 @@ void PlayerBadge::loadUnlockedBadges() {
 
 		g_logger().debug("[{}] - Badge {} found for player {}.", __FUNCTION__, badge.m_name, m_player.getName());
 
-		m_badgesUnlocked.push_back({ badge, getUnlockedKV()->get(badgeName)->getNumber() });
+		m_badgesUnlocked.emplace_back(badge, getUnlockedKV()->get(badgeName)->getNumber());
 	}
 }
 

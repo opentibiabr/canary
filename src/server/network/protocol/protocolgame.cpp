@@ -2144,12 +2144,12 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	uint32_t selectedVocation = 0xFFFFFFFF;
 	const auto vocationsMap = g_vocations().getVocations();
 	for (const auto &it : vocationsMap) {
-		const Vocation &vocation = it.second;
-		if (vocation.getFromVocation() == static_cast<uint32_t>(vocation.getId())) {
-			msg.add<uint32_t>(vocation.getFromVocation()); // Vocation Id
-			msg.addString(vocation.getVocName(), "ProtocolGame::sendHighscores - vocation.getVocName()"); // Vocation Name
+		const auto &vocation = it.second;
+		if (vocation->getFromVocation() == static_cast<uint32_t>(vocation->getId())) {
+			msg.add<uint32_t>(vocation->getFromVocation()); // Vocation Id
+			msg.addString(vocation->getVocName(), "ProtocolGame::sendHighscores - vocation.getVocName()"); // Vocation Name
 			++vocations;
-			if (vocation.getFromVocation() == vocationId) {
+			if (vocation->getFromVocation() == vocationId) {
 				selectedVocation = vocationId;
 			}
 		}
@@ -6705,17 +6705,21 @@ void ProtocolGame::sendOutfitWindow() {
 			msg.addByte(0x00);
 			++outfitSize;
 		} else if (outfit->lookType == 1210 || outfit->lookType == 1211) {
-			msg.add<uint16_t>(outfit->lookType);
-			msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
-			msg.addByte(3);
-			msg.addByte(0x02);
-			++outfitSize;
+			if (player->canWear(1210, 0) || player->canWear(1211, 0)) {
+				msg.add<uint16_t>(outfit->lookType);
+				msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
+				msg.addByte(3);
+				msg.addByte(0x02);
+				++outfitSize;
+			}
 		} else if (outfit->lookType == 1456 || outfit->lookType == 1457) {
-			msg.add<uint16_t>(outfit->lookType);
-			msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
-			msg.addByte(3);
-			msg.addByte(0x03);
-			++outfitSize;
+			if (player->canWear(1456, 0) || player->canWear(1457, 0)) {
+				msg.add<uint16_t>(outfit->lookType);
+				msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
+				msg.addByte(3);
+				msg.addByte(0x03);
+				++outfitSize;
+			}
 		} else if (outfit->from == "store") {
 			msg.add<uint16_t>(outfit->lookType);
 			msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
@@ -8766,7 +8770,7 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendDisableLoginMusic() {
-	if (oldProtocol) {
+	if (oldProtocol || !player || player->getOperatingSystem() >= CLIENTOS_OTCLIENT_LINUX) {
 		return;
 	}
 

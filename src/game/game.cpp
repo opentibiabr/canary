@@ -207,6 +207,8 @@ Game::Game() {
 	// Create instance of IOWheel to Game class
 	m_IOWheel = std::make_unique<IOWheel>();
 
+	wildcardTree = std::make_shared<WildcardTreeNode>(false);
+
 	m_highscoreCategoriesNames = {
 		{ static_cast<uint8_t>(HighscoreCategories_t::ACHIEVEMENTS), "Achievement Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING), "Axe Fighting" },
@@ -886,7 +888,7 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<
 	if (s.back() == '~') {
 		const std::string &query = asLowerCaseString(s.substr(0, strlen - 1));
 		std::string result;
-		ReturnValue ret = wildcardTree.findOne(query, result);
+		ReturnValue ret = wildcardTree->findOne(query, result);
 		if (ret != RETURNVALUE_NOERROR) {
 			return ret;
 		}
@@ -2614,12 +2616,10 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 
 			auto decaying = item->getDecaying();
 			// If the item is decaying, we need to transform it to the new item
-			if (decaying > DECAYING_FALSE && item->getDuration() <= 1) {
+			if (decaying > DECAYING_FALSE && item->getDuration() <= 1 && newType.decayTo) {
 				g_logger().debug("Decay duration old type {}, transformEquipTo {}, transformDeEquipTo {}", curType.decayTo, curType.transformEquipTo, curType.transformDeEquipTo);
-				g_logger().debug("Decay duration new type, decayTo {}, transformEquipTo {}, transformDeEquipTo {}", newType.decayTo, newType.transformEquipTo, newType.transformDeEquipTo);
-				if (newType.decayTo) {
-					itemId = newType.decayTo;
-				}
+				g_logger().debug("Decay duration new type decayTo {}, transformEquipTo {}, transformDeEquipTo {}", newType.decayTo, newType.transformEquipTo, newType.transformDeEquipTo);
+				itemId = newType.decayTo;
 			} else if (curType.id != newType.id) {
 				if (newType.group != curType.group) {
 					item->setDefaultSubtype();
@@ -3744,6 +3744,19 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 			return;
 		}
 	}
+
+	const std::shared_ptr<Monster> monster = creature->getMonster();
+	if (monster && monster->isFamiliar() && creature->getMaster()->getPlayer() == player && (it.isRune() || it.type == ITEM_TYPE_POTION)) {
+		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+
+		if (it.isMultiUse()) {
+			player->sendUseItemCooldown(g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+		}
+
+		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+		return;
+	}
+
 	Position toPos = creature->getPosition();
 	Position walkToPos = fromPos;
 	ReturnValue ret = g_actions().canUse(player, fromPos);
@@ -5381,6 +5394,11 @@ void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t categor
 	auto allowConfig = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING, __FUNCTION__) || g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY, __FUNCTION__);
 	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD) && !allowConfig) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	if (container->getID() == ITEM_GOLD_POUCH && !isLootContainer) {
+		player->sendTextMessage(MESSAGE_FAILURE, "You can only set the gold pouch as a loot container.");
 		return;
 	}
 
@@ -7836,9 +7854,11 @@ void Game::addBestiaryList(uint16_t raceid, std::string name) {
 }
 
 void Game::broadcastMessage(const std::string &text, MessageClasses type) const {
-	g_logger().info("Broadcasted message: {}", text);
-	for (const auto &it : players) {
-		it.second->sendTextMessage(type, text);
+	if (!text.empty()) {
+		g_logger().info("Broadcasted message: {}", text);
+		for (const auto &it : players) {
+			it.second->sendTextMessage(type, text);
+		}
 	}
 }
 
@@ -8323,12 +8343,12 @@ std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
 	const auto vocationsMap = g_vocations().getVocations();
 	for (const auto &it : vocationsMap) {
 		const auto &voc = it.second;
-		if (voc.getFromVocation() == vocation) {
+		if (voc->getFromVocation() == vocation) {
 			if (firstVocation) {
-				queryPart << " WHERE `vocation` = " << voc.getId();
+				queryPart << " WHERE `vocation` = " << voc->getId();
 				firstVocation = false;
 			} else {
-				queryPart << " OR `vocation` = " << voc.getId();
+				queryPart << " OR `vocation` = " << voc->getId();
 			}
 		}
 	}
@@ -9689,14 +9709,14 @@ void Game::updatePlayerSaleItems(uint32_t playerId) {
 void Game::addPlayer(std::shared_ptr<Player> player) {
 	const std::string &lowercase_name = asLowerCaseString(player->getName());
 	mappedPlayerNames[lowercase_name] = player;
-	wildcardTree.insert(lowercase_name);
+	wildcardTree->insert(lowercase_name);
 	players[player->getID()] = player;
 }
 
 void Game::removePlayer(std::shared_ptr<Player> player) {
 	const std::string &lowercase_name = asLowerCaseString(player->getName());
 	mappedPlayerNames.erase(lowercase_name);
-	wildcardTree.remove(lowercase_name);
+	wildcardTree->remove(lowercase_name);
 	players.erase(player->getID());
 }
 

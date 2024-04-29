@@ -72,7 +72,7 @@ Player::~Player() {
 }
 
 bool Player::setVocation(uint16_t vocId) {
-	Vocation* voc = g_vocations().getVocation(vocId);
+	const auto &voc = g_vocations().getVocation(vocId);
 	if (!voc) {
 		return false;
 	}
@@ -1925,7 +1925,8 @@ void Player::onWalk(Direction &dir) {
 
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
-	setNextAction(OTSYS_TIME() + getStepDuration(dir));
+
+	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, &EventCallback::playerOnWalk, getPlayer(), dir);
 }
 
 void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
@@ -2395,7 +2396,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		++level;
 		// Player stats gain for vocations level <= 8
 		if (vocation->getId() != VOCATION_NONE && level <= 8) {
-			const Vocation* noneVocation = g_vocations().getVocation(VOCATION_NONE);
+			const auto &noneVocation = g_vocations().getVocation(VOCATION_NONE);
 			healthMax += noneVocation->getHPGain();
 			health += noneVocation->getHPGain();
 			manaMax += noneVocation->getManaGain();
@@ -2490,7 +2491,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		--level;
 		// Player stats loss for vocations level <= 8
 		if (vocation->getId() != VOCATION_NONE && level <= 8) {
-			const Vocation* noneVocation = g_vocations().getVocation(VOCATION_NONE);
+			const auto &noneVocation = g_vocations().getVocation(VOCATION_NONE);
 			healthMax = std::max<int32_t>(0, healthMax - noneVocation->getHPGain());
 			manaMax = std::max<int32_t>(0, manaMax - noneVocation->getManaGain());
 			capacity = std::max<int32_t>(0, capacity - noneVocation->getCapGain());
@@ -2920,6 +2921,7 @@ bool Player::spawn() {
 	getParent()->postAddNotification(static_self_cast<Player>(), nullptr, 0);
 	g_game().addCreatureCheck(static_self_cast<Player>());
 	g_game().addPlayer(static_self_cast<Player>());
+	static_self_cast<Player>()->onChangeZone(static_self_cast<Player>()->getZoneType());
 	return true;
 }
 
@@ -3273,13 +3275,6 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		case CONST_SLOT_LEFT: {
 			if (item->isQuiver()) {
 				ret = RETURNVALUE_CANNOTBEDRESSED;
-			} else if (slotPosition & SLOTP_LEFT) {
-				WeaponType_t type = item->getWeaponType();
-				if (type == WEAPON_NONE || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
-					ret = RETURNVALUE_CANNOTBEDRESSED;
-				} else {
-					ret = RETURNVALUE_NOERROR;
-				}
 			} else if (slotPosition & SLOTP_TWO_HAND) {
 				if (inventory[CONST_SLOT_RIGHT]) {
 					WeaponType_t type = item->getWeaponType();
@@ -3289,6 +3284,13 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 					} else {
 						ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
 					}
+				} else {
+					ret = RETURNVALUE_NOERROR;
+				}
+			} else if (slotPosition & SLOTP_LEFT) {
+				WeaponType_t type = item->getWeaponType();
+				if (type == WEAPON_NONE || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
+					ret = RETURNVALUE_CANNOTBEDRESSED;
 				} else {
 					ret = RETURNVALUE_NOERROR;
 				}
@@ -4675,6 +4677,8 @@ void Player::onPlacedCreature() {
 		removePlayer(true);
 	}
 
+	this->onChangeZone(this->getZoneType());
+
 	sendUnjustifiedPoints();
 }
 
@@ -5369,6 +5373,7 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 	} else if (skill == SKILL_MANA_LEECH_AMOUNT) {
 		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MANA_LEECH);
 	} else if (skill == SKILL_CRITICAL_HIT_DAMAGE) {
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::CRITICAL_DAMAGE);
 		skillLevel += m_wheelPlayer->getMajorStatConditional("Combat Mastery", WheelMajor_t::CRITICAL_DMG_2);
 		skillLevel += m_wheelPlayer->getMajorStatConditional("Ballistic Mastery", WheelMajor_t::CRITICAL_DMG);
 		skillLevel += m_wheelPlayer->checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_DAMAGE);
@@ -6690,7 +6695,7 @@ void Player::triggerTranscendance() {
 		outfit.lookType = getVocation()->getAvatarLookType();
 		outfitCondition->setOutfit(outfit);
 		addCondition(outfitCondition);
-		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR, OTSYS_TIME() + duration);
+		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_FORGE, OTSYS_TIME() + duration);
 		g_game().addMagicEffect(getPosition(), CONST_ME_AVATAR_APPEAR);
 		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
 		sendSkills();
@@ -6907,8 +6912,9 @@ std::shared_ptr<Item> Player::getItemFromDepotSearch(uint16_t itemId, const Posi
 	return nullptr;
 }
 
-std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> Player::requestLockerItems(std::shared_ptr<DepotLocker> depotLocker, bool sendToClient /*= false*/, uint8_t tier /*= 0*/) const {
-	if (depotLocker == nullptr) {
+std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_t, uint32_t>>>
+Player::requestLockerItems(std::shared_ptr<DepotLocker> depotLocker, bool sendToClient /*= false*/, uint8_t tier /*= 0*/) const {
+	if (!depotLocker) {
 		g_logger().error("{} - Depot locker is nullptr", __FUNCTION__);
 		return {};
 	}
@@ -6917,24 +6923,18 @@ std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_
 	std::vector<std::shared_ptr<Item>> itemVector;
 	std::vector<std::shared_ptr<Container>> containers { depotLocker };
 
-	size_t size = 0;
-	do {
-		std::shared_ptr<Container> container = containers[size];
-		size++;
+	for (size_t i = 0; i < containers.size(); ++i) {
+		std::shared_ptr<Container> container = containers[i];
 
-		for (std::shared_ptr<Item> item : container->getItemList()) {
+		for (const auto &item : container->getItemList()) {
 			std::shared_ptr<Container> lockerContainers = item->getContainer();
 			if (lockerContainers && !lockerContainers->empty()) {
 				containers.push_back(lockerContainers);
 				continue;
 			}
 
-			if (item->isStoreItem()) {
-				continue;
-			}
-
 			const ItemType &itemType = Item::items[item->getID()];
-			if (itemType.wareId == 0) {
+			if (item->isStoreItem() || itemType.wareId == 0) {
 				continue;
 			}
 
@@ -6942,37 +6942,24 @@ std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_
 				continue;
 			}
 
-			if (!item->hasMarketAttributes()) {
+			if (!item->hasMarketAttributes() || (!sendToClient && item->getTier() != tier)) {
 				continue;
 			}
 
-			if (!sendToClient && item->getTier() != tier) {
-				continue;
-			}
-
-			(lockerItems[itemType.wareId])[item->getTier()] += Item::countByType(item, -1);
+			lockerItems[itemType.wareId][item->getTier()] += Item::countByType(item, -1);
 			itemVector.push_back(item);
 		}
-	} while (size < containers.size());
-	StashItemList stashToSend = getStashItems();
-	uint32_t countSize = 0;
-	for (auto [itemId, itemCount] : stashToSend) {
-		countSize += itemCount;
 	}
 
-	do {
-		for (auto [itemId, itemCount] : stashToSend) {
-			const ItemType &itemType = Item::items[itemId];
-			if (itemType.wareId == 0) {
-				continue;
-			}
-
-			countSize = countSize - itemCount;
-			(lockerItems[itemType.wareId])[0] += itemCount;
+	StashItemList stashToSend = getStashItems();
+	for (const auto &[itemId, itemCount] : stashToSend) {
+		const ItemType &itemType = Item::items[itemId];
+		if (itemType.wareId != 0) {
+			lockerItems[itemType.wareId][0] += itemCount;
 		}
-	} while (countSize > 0);
+	}
 
-	return std::make_pair(itemVector, lockerItems);
+	return { itemVector, lockerItems };
 }
 
 std::pair<std::vector<std::shared_ptr<Item>>, uint16_t> Player::getLockerItemsAndCountById(const std::shared_ptr<DepotLocker> &depotLocker, uint8_t tier, uint16_t itemId) {

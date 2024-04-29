@@ -48,6 +48,7 @@ Event callbacks are available for several categories of game entities, such as `
 - `(void)` `playerOnCombat`
 - `(void)` `playerOnInventoryUpdate`
 - `(bool)` `playerOnRotateItem`
+- `(void)` `playerOnWalk`
 - `(void)` `monsterOnDropLoot`
 - `(void)` `monsterPostDropLoot`
 - `(void)` `monsterOnSpawn`

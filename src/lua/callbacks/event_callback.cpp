@@ -1045,6 +1045,29 @@ bool EventCallback::playerOnRotateItem(std::shared_ptr<Player> player, std::shar
 	return getScriptInterface()->callFunction(3);
 }
 
+void EventCallback::playerOnWalk(std::shared_ptr<Player> player, Direction &dir) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[EventCallback::eventOnWalk - "
+						 "Player {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 player->getName());
+		return;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Player>(L, player);
+	LuaScriptInterface::setMetatable(L, -1, "Player");
+
+	lua_pushnumber(L, dir);
+
+	getScriptInterface()->callVoidFunction(2);
+}
+
 void EventCallback::playerOnStorageUpdate(std::shared_ptr<Player> player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[EventCallback::eventOnStorageUpdate - "

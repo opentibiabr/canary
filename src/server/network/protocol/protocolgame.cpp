@@ -3397,9 +3397,9 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.addByte(player->getLevelPercent());
 	msg.add<uint16_t>(player->getBaseXpGain()); // BaseXPGainRate
 	msg.add<uint16_t>(player->getGrindingXpBoost()); // LowLevelBonus
-	msg.add<uint16_t>(player->getStoreXpBoost()); // XPBoost
+	msg.add<uint16_t>(player->getXpBoostPercent()); // XPBoost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // StaminaMultiplier(100=x1.0)
-	msg.add<uint16_t>(player->getExpBoostStamina()); // xpBoostRemainingTime
+	msg.add<uint16_t>(player->getXpBoostTime()); // xpBoostRemainingTime
 	msg.addByte(0x01); // canBuyXpBoost
 	msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
@@ -3809,7 +3809,7 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
 	msg.addByte(0x00);
 	// Remaining Store Xp Boost Time
-	msg.add<uint32_t>(player->getExpBoostStamina());
+	msg.add<uint32_t>(player->getXpBoostTime());
 	// RemainingDailyRewardXpBoostTime
 	msg.add<uint32_t>(0);
 	msg.addByte(0x00);
@@ -7308,7 +7308,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	}
 
 	msg.add<uint16_t>(player->getGrindingXpBoost()); // low level bonus
-	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
+	msg.add<uint16_t>(player->getXpBoostPercent()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
 	if (!oldProtocol) {
@@ -7334,7 +7334,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
 
-	msg.add<uint16_t>(player->getExpBoostStamina()); // xp boost time (seconds)
+	msg.add<uint16_t>(player->getXpBoostTime()); // xp boost time (seconds)
 	msg.addByte(1); // enables exp boost in the store
 
 	if (!oldProtocol) {
@@ -8777,7 +8777,7 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendDisableLoginMusic() {
-	if (oldProtocol) {
+	if (oldProtocol || !player || player->getOperatingSystem() >= CLIENTOS_OTCLIENT_LINUX) {
 		return;
 	}
 

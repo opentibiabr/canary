@@ -1925,7 +1925,6 @@ void Player::onWalk(Direction &dir) {
 
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
-	setNextAction(OTSYS_TIME() + getStepDuration(dir));
 
 	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, &EventCallback::playerOnWalk, getPlayer(), dir);
 }
@@ -5372,6 +5371,7 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 	} else if (skill == SKILL_MANA_LEECH_AMOUNT) {
 		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MANA_LEECH);
 	} else if (skill == SKILL_CRITICAL_HIT_DAMAGE) {
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::CRITICAL_DAMAGE);
 		skillLevel += m_wheelPlayer->getMajorStatConditional("Combat Mastery", WheelMajor_t::CRITICAL_DMG_2);
 		skillLevel += m_wheelPlayer->getMajorStatConditional("Ballistic Mastery", WheelMajor_t::CRITICAL_DMG);
 		skillLevel += m_wheelPlayer->checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_DAMAGE);

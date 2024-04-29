@@ -476,7 +476,14 @@ function Player.selectDailyReward(self, msg)
 		end
 		dailyRewardMessage = "Picked items: " .. description
 	elseif dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST then
-		self:setXpBoostTime(rewardCount * 60)
+		local xpBoostLeftTime = self:kv():get("daily-reward-xp-boost") or 0
+		if xpBoostLeftTime > os.time() then
+			self:sendError("You still have remaining xp boost time granted by the daily reward.")
+			return false
+		end
+
+		self:setXpBoostTime(self:getXpBoostTime() + (rewardCount * 60))
+		self:kv():set("daily-reward-xp-boost", os.time() + (rewardCount * 60))
 		self:setXpBoostPercent(50)
 		dailyRewardMessage = "Picked reward: XP Bonus for " .. rewardCount .. " minutes."
 	elseif dailyTable.type == DAILY_REWARD_TYPE_PREY_REROLL then

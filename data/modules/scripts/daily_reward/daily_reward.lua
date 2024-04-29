@@ -482,7 +482,7 @@ function Player.selectDailyReward(self, msg)
 			rewardCountReviewed = rewardCountReviewed - xpBoostLeftMinutes
 		end
 
-		self:setXpBoostTime(self:getXpBoostTime() + (rewardCountReviewed * 60))
+		self:setXpBoostTime(self:getXpBoostTime() + (rewardCount * 60))
 		self:kv():set("daily-reward-xp-boost", rewardCountReviewed)
 		self:setXpBoostPercent(50)
 		dailyRewardMessage = "Picked reward: XP Bonus for " .. rewardCount .. " minutes."

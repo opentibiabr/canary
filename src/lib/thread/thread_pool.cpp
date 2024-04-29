@@ -8,7 +8,10 @@
  */
 
 #include "pch.hpp"
+
 #include "lib/thread/thread_pool.hpp"
+
+#include "game/game.hpp"
 #include "utils/tools.hpp"
 
 #ifndef DEFAULT_NUMBER_OF_THREADS
@@ -65,7 +68,6 @@ void ThreadPool::shutdown() {
 	while (status == std::future_status::timeout && std::chrono::steady_clock::now() - start < timeout) {
 		tries++;
 		if (tries > 5) {
-			logger.error("Thread pool shutdown timed out.");
 			break;
 		}
 		for (auto &future : futures) {
@@ -84,7 +86,9 @@ asio::io_context &ThreadPool::getIoContext() {
 void ThreadPool::addLoad(const std::function<void(void)> &load) {
 	asio::post(ioService, [this, load]() {
 		if (ioService.stopped()) {
-			logger.error("Shutting down, cannot execute task.");
+			if (g_game().getGameState() != GAME_STATE_SHUTDOWN) {
+				logger.error("Shutting down, cannot execute task.");
+			}
 			return;
 		}
 

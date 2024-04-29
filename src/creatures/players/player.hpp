@@ -1807,11 +1807,11 @@ public:
 	void setGrindingXpBoost(uint16_t value) {
 		grindingXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
-	uint16_t getStoreXpBoost() const {
-		return storeXpBoost;
+	uint16_t getXpBoostPercent() const {
+		return xpBoostPercent;
 	}
-	void setStoreXpBoost(uint16_t exp) {
-		storeXpBoost = exp;
+	void setXpBoostPercent(uint16_t percent) {
+		xpBoostPercent = percent;
 	}
 	uint16_t getStaminaXpBoost() const {
 		return staminaXpBoost;
@@ -1820,17 +1820,17 @@ public:
 		staminaXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
 
-	void setExpBoostStamina(uint16_t stamina) {
-		// only allow stamina boosts of 12 hours or less
-		if (stamina > 12 * 3600) {
-			expBoostStamina = 12 * 3600;
+	void setXpBoostTime(uint16_t timeLeft) {
+		// only allow time boosts of 12 hours or less
+		if (timeLeft > 12 * 3600) {
+			xpBoostTime = 12 * 3600;
 			return;
 		}
-		expBoostStamina = stamina;
+		xpBoostTime = timeLeft;
 	}
 
-	uint16_t getExpBoostStamina() {
-		return expBoostStamina;
+	uint16_t getXpBoostTime() {
+		return xpBoostTime;
 	}
 
 	int32_t getIdleTime() const {
@@ -2811,7 +2811,7 @@ private:
 	int32_t m_deathTime = 0;
 	uint32_t coinBalance = 0;
 	uint32_t coinTransferableBalance = 0;
-	uint16_t expBoostStamina = 0;
+	uint16_t xpBoostTime = 0;
 	uint8_t randomMount = 0;
 
 	uint16_t lastStatsTrainingTime = 0;
@@ -2821,7 +2821,7 @@ private:
 	uint16_t baseXpGain = 100;
 	uint16_t voucherXpBoost = 0;
 	uint16_t grindingXpBoost = 0;
-	uint16_t storeXpBoost = 0;
+	uint16_t xpBoostPercent = 0;
 	uint16_t staminaXpBoost = 100;
 	int16_t lastDepotId = -1;
 	StashItemList stashItems; // [ItemID] = amount

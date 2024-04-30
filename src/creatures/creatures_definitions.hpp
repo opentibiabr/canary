@@ -1664,7 +1664,7 @@ struct ShopBlock {
 		itemName = "";
 	}
 
-	explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "") :
+	explicit ShopBlock(uint16_t newItemId, int32_t newSubType, uint32_t newBuyPrice, uint32_t newSellPrice, int32_t newStorageKey, int32_t newStorageValue, std::string newName) :
 		itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) { }
 
 	bool operator==(const ShopBlock &other) const {

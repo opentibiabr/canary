@@ -72,8 +72,8 @@ public:
 private:
 	void onChainCombat(std::shared_ptr<Creature> creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking);
 
-	uint8_t m_chainTargets = 0;
 	uint8_t m_chainDistance = 0;
+	uint8_t m_chainTargets = 0;
 	bool m_backtracking = false;
 	bool m_fromLua = false;
 };

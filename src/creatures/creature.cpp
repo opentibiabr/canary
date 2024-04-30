@@ -917,7 +917,6 @@ void Creature::mitigateDamage(const CombatType_t &combatType, BlockType_t &block
 
 		if (damage <= 0) {
 			damage = 0;
-			blockType = BLOCK_ARMOR;
 		}
 	}
 }

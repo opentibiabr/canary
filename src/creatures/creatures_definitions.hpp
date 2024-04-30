@@ -1646,22 +1646,22 @@ struct LootBlock {
 
 struct ShopBlock {
 	uint16_t itemId;
-	std::string itemName;
 	int32_t itemSubType;
 	uint32_t itemBuyPrice;
 	uint32_t itemSellPrice;
 	int32_t itemStorageKey;
 	int32_t itemStorageValue;
-
+	std::string itemName;
 	std::vector<ShopBlock> childShop;
+
 	ShopBlock() {
 		itemId = 0;
-		itemName = "";
 		itemSubType = 0;
 		itemBuyPrice = 0;
 		itemSellPrice = 0;
 		itemStorageKey = 0;
 		itemStorageValue = 0;
+		itemName = "";
 	}
 
 	explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "") :

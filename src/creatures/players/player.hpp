@@ -334,7 +334,7 @@ public:
 
 	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
-	Vocation* getVocation() const {
+	std::shared_ptr<Vocation> getVocation() const {
 		return vocation;
 	}
 
@@ -657,6 +657,11 @@ public:
 		return loginPosition;
 	}
 	const Position &getTemplePosition() const {
+		if (!town) {
+			static auto emptyPosition = Position();
+			return emptyPosition;
+		}
+
 		return town->getTemplePosition();
 	}
 	std::shared_ptr<Town> getTown() const {
@@ -1802,11 +1807,11 @@ public:
 	void setGrindingXpBoost(uint16_t value) {
 		grindingXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
-	uint16_t getStoreXpBoost() const {
-		return storeXpBoost;
+	uint16_t getXpBoostPercent() const {
+		return xpBoostPercent;
 	}
-	void setStoreXpBoost(uint16_t exp) {
-		storeXpBoost = exp;
+	void setXpBoostPercent(uint16_t percent) {
+		xpBoostPercent = percent;
 	}
 	uint16_t getStaminaXpBoost() const {
 		return staminaXpBoost;
@@ -1815,17 +1820,17 @@ public:
 		staminaXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
 
-	void setExpBoostStamina(uint16_t stamina) {
-		// only allow stamina boosts of 12 hours or less
-		if (stamina > 12 * 3600) {
-			expBoostStamina = 12 * 3600;
+	void setXpBoostTime(uint16_t timeLeft) {
+		// only allow time boosts of 12 hours or less
+		if (timeLeft > 12 * 3600) {
+			xpBoostTime = 12 * 3600;
 			return;
 		}
-		expBoostStamina = stamina;
+		xpBoostTime = timeLeft;
 	}
 
-	uint16_t getExpBoostStamina() {
-		return expBoostStamina;
+	uint16_t getXpBoostTime() {
+		return xpBoostTime;
 	}
 
 	int32_t getIdleTime() const {
@@ -2517,7 +2522,7 @@ public:
 
 	// Concoction system
 	void updateConcoction(uint16_t itemId, uint16_t timeLeft) {
-		if (timeLeft < 0) {
+		if (timeLeft == 0) {
 			activeConcoctions.erase(itemId);
 		} else {
 			activeConcoctions[itemId] = timeLeft;
@@ -2768,7 +2773,7 @@ private:
 	ProtocolGame_ptr client;
 	std::shared_ptr<Task> walkTask;
 	std::shared_ptr<Town> town;
-	Vocation* vocation = nullptr;
+	std::shared_ptr<Vocation> vocation = nullptr;
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
 
 	uint32_t inventoryWeight = 0;
@@ -2806,7 +2811,7 @@ private:
 	int32_t m_deathTime = 0;
 	uint32_t coinBalance = 0;
 	uint32_t coinTransferableBalance = 0;
-	uint16_t expBoostStamina = 0;
+	uint16_t xpBoostTime = 0;
 	uint8_t randomMount = 0;
 
 	uint16_t lastStatsTrainingTime = 0;
@@ -2816,7 +2821,7 @@ private:
 	uint16_t baseXpGain = 100;
 	uint16_t voucherXpBoost = 0;
 	uint16_t grindingXpBoost = 0;
-	uint16_t storeXpBoost = 0;
+	uint16_t xpBoostPercent = 0;
 	uint16_t staminaXpBoost = 100;
 	int16_t lastDepotId = -1;
 	StashItemList stashItems; // [ItemID] = amount

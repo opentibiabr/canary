@@ -10,6 +10,7 @@
 #include "pch.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
 #include "enums/object_category.hpp"
@@ -176,8 +177,8 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 	}
 
 	player->staminaMinutes = result->getNumber<uint16_t>("stamina");
-	player->setStoreXpBoost(result->getNumber<uint16_t>("xpboost_value"));
-	player->setExpBoostStamina(result->getNumber<uint16_t>("xpboost_stamina"));
+	player->setXpBoostPercent(result->getNumber<uint16_t>("xpboost_value"));
+	player->setXpBoostTime(result->getNumber<uint16_t>("xpboost_stamina"));
 
 	player->setManaShield(result->getNumber<uint16_t>("manashield"));
 	player->setMaxManaShield(result->getNumber<uint16_t>("max_manashield"));
@@ -886,6 +887,8 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player)
 	// Wheel loading
 	player->wheel()->loadDBPlayerSlotPointsOnLogin();
 	player->wheel()->initializePlayerData();
+
+	player->achiev()->loadUnlockedAchievements();
 
 	player->initializePrey();
 	player->initializeTaskHunting();

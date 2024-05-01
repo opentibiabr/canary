@@ -526,6 +526,7 @@ ACHIEVEMENTS = {
 	[531] = { name = "First Achievement", grade = 1, points = 1, secret = true, description = "Congratulations to your very first achievement! ... Well, not really. But imagine, it is. Because at this point during your journey into Tibia's past, achievements have been introduced." },
 	[532] = { name = "Sharp Dressed", grade = 1, points = 2, description = "Just everyone will be crazy about you if you are wearing this formal dress. They will come running, promise!" },
 	[533] = { name = "Engine Driver", grade = 1, points = 3, description = "This glooth-driven locomotive will bring you to any party in the blink of an eye." },
+	[540] = { name = "Ripp-Ripp Hooray!", grade = 1, points = 3, description = "Don't get carried away by your success. Get carried away by your Ripptor." },
 }
 
 --[[

@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 # VCPKG
 # cmake -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 # Needed libs is in file vcpkg.json
-# Windows required libs: .\vcpkg install --triplet x64-windows asio pugixml spdlog curl jsoncpp protobuf parallel-hashmap magic-enum mio luajit libmariadb mpir abseil
+# Windows required libs: .\vcpkg install --triplet x64-windows asio pugixml spdlog curl protobuf parallel-hashmap magic-enum mio luajit libmariadb mpir abseil
 if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       CACHE STRING "")
@@ -48,10 +48,17 @@ include(LoggingHelper)
 option(OPTIONS_ENABLE_CCACHE "Enable ccache" OFF)
 option(OPTIONS_ENABLE_SCCACHE "Use sccache to speed up compilation process" OFF)
 option(OPTIONS_ENABLE_IPO "Check and Enable interprocedural optimization (IPO/LTO)" ON)
+option(FEATURE_METRICS "Enable metrics feature" OFF)
 
 # *****************************************************************************
 # Options Code
 # *****************************************************************************
+
+if(FEATURE_METRIC)
+    log_option_enabled("metrics")
+else ()
+    log_option_disabled("metrics")
+endif ()
 
 # === CCACHE ===
 if(OPTIONS_ENABLE_CCACHE)

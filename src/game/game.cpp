@@ -10557,7 +10557,7 @@ std::map<uint16_t, Achievement> Game::getAchievements() {
 	return m_achievements;
 }
 
-void Game::getCyclopediaStatistics() {
+void Game::logCyclopediaStats() {
 	g_logger().info("Loaded {} badges from Badge System", m_badges.size());
 	// todo in title system: g_logger().info("Loaded {} titles from Title system", m_titles.size());
 }
@@ -10566,12 +10566,25 @@ std::unordered_set<Badge> Game::getBadges() {
 	return m_badges;
 }
 
-Badge Game::getBadgeByIdOrName(uint8_t id, const std::string &name /*= ""*/) {
-	if (id == 0 && name.empty()) {
+Badge Game::getBadgeById(uint8_t id) {
+	if (id == 0) {
 		return {};
 	}
-	auto it = std::find_if(m_badges.begin(), m_badges.end(), [id, name](const Badge &b) {
-		return id != 0 ? b.m_id == id : b.m_name == name;
+	auto it = std::find_if(m_badges.begin(), m_badges.end(), [id](const Badge &b) {
+		return b.m_id == id;
+	});
+	if (it != m_badges.end()) {
+		return *it;
+	}
+	return {};
+}
+
+Badge Game::getBadgeByName(const std::string &name) {
+	if (name.empty()) {
+		return {};
+	}
+	auto it = std::find_if(m_badges.begin(), m_badges.end(), [name](const Badge &b) {
+		return b.m_name == name;
 	});
 	if (it != m_badges.end()) {
 		return *it;

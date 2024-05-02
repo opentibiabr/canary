@@ -38,7 +38,7 @@ bool PlayerBadge::add(uint8_t id, uint32_t timestamp /* = 0*/) {
 		return false;
 	}
 
-	const Badge &badge = g_game().getBadgeByIdOrName(id);
+	const Badge &badge = g_game().getBadgeById(id);
 	if (badge.m_id == 0) {
 		return false;
 	}
@@ -86,7 +86,7 @@ void PlayerBadge::loadUnlockedBadges() {
 	const auto &unlockedBadges = getUnlockedKV()->keys();
 	g_logger().debug("[{}] - Loading unlocked badges: {}", __FUNCTION__, unlockedBadges.size());
 	for (const auto &badgeName : unlockedBadges) {
-		const Badge &badge = g_game().getBadgeByIdOrName(0, badgeName);
+		const Badge &badge = g_game().getBadgeByName(badgeName);
 		if (badge.m_id == 0) {
 			g_logger().error("[{}] - Badge {} not found.", __FUNCTION__, badgeName);
 			continue;

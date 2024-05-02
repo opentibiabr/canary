@@ -99,7 +99,7 @@ public:
 
 	void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
 
-	void getCyclopediaStatistics();
+	void logCyclopediaStats();
 
 	/**
 	 * Load the main map
@@ -723,7 +723,8 @@ public:
 	std::map<uint16_t, Achievement> getAchievements();
 
 	std::unordered_set<Badge> getBadges();
-	Badge getBadgeByIdOrName(uint8_t id, const std::string &name = "");
+	Badge getBadgeById(uint8_t id);
+	Badge getBadgeByName(const std::string &name);
 
 private:
 	std::map<uint16_t, Achievement> m_achievements;

@@ -3212,7 +3212,13 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 		} else {
 			const int32_t &slotPosition = equipItem->getSlotPosition();
 			// Checks if a two-handed item is being equipped in the left slot when the right slot is already occupied and move to backpack
-			if (slotPosition & SLOTP_LEFT && rightItem && (slotPosition & SLOTP_TWO_HAND)) {
+			if (
+				(slotPosition & SLOTP_LEFT)
+				&& (slotPosition & SLOTP_TWO_HAND)
+				&& rightItem
+				&& !(it.weaponType == WEAPON_DISTANCE)
+				&& !rightItem->isQuiver()
+			) {
 				ret = internalCollectManagedItems(player, rightItem, getObjectCategory(rightItem), false);
 			}
 

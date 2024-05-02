@@ -6701,6 +6701,14 @@ void Player::triggerTranscendance() {
 		sendBasicData();
 		wheel()->sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());
+		updateStatsAfterTranscendance = true;
+	}
+
+	if (updateStatsAfterTranscendance && wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) <= OTSYS_TIME()) {
+		updateStatsAfterTranscendance = false;
+		sendSkills();
+		sendStats();
+		sendBasicData();
 	}
 }
 

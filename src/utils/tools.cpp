@@ -607,6 +607,7 @@ using AmmoTypeNames = phmap::flat_hash_map<std::string, Ammo_t>;
 using WeaponActionNames = phmap::flat_hash_map<std::string, WeaponAction_t>;
 using SkullNames = phmap::flat_hash_map<std::string, Skulls_t>;
 using ImbuementTypeNames = phmap::flat_hash_map<std::string, ImbuementTypes_t>;
+using AugmentTypeNames = phmap::flat_hash_map<std::string, AugmentTypes_t>;
 
 /**
  * @Deprecated
@@ -870,6 +871,16 @@ const ImbuementTypeNames imbuementTypeNames = {
 	{ "skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE },
 	{ "skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL },
 	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY }
+};
+
+const AugmentTypeNames augmentTypeNames = {
+	{ "powerful impact", AUGMENT_VALUE_POWERFUL_IMPACT },
+	{ "strong impact", AUGMENT_VALUE_STRONG_IMPACT },
+	{ "increased damage", AUGMENT_VALUE_INCREASED_DAMAGE },
+	{ "cooldown", AUGMENT_VALUE_COOLDOWN },
+	{ "critical extra damage", AUGMENT_VALUE_CRITICALHITDAMAGE },
+	{ "life leech", AUGMENT_VALUE_LIFELEECHAMOUNT },
+	{ "mana leech", AUGMENT_VALUE_MANALEECHAMOUNT },
 };
 
 /**

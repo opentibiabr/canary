@@ -270,6 +270,16 @@ enum ImbuementTypes_t : int64_t {
 	IMBUEMENT_INCREASE_CAPACITY = 17
 };
 
+enum AugmentTypes_t : uint8_t {
+	AUGMENT_VALUE_POWERFUL_IMPACT,
+	AUGMENT_VALUE_STRONG_IMPACT,
+	AUGMENT_VALUE_INCREASED_DAMAGE,
+	AUGMENT_VALUE_COOLDOWN,
+	AUGMENT_VALUE_CRITICALHITDAMAGE,
+	AUGMENT_VALUE_LIFELEECHAMOUNT,
+	AUGMENT_VALUE_MANALEECHAMOUNT
+};
+
 enum class ContainerCategory_t : uint8_t {
 	All,
 	Ammunition,
@@ -612,3 +622,15 @@ struct ImbuementInfo {
 	Imbuement* imbuement;
 	uint32_t duration = 0;
 };
+
+
+// SHOULD LIMIT value to 255 (1 byte) or 65,535 (2 bytes)?
+using Augments = std::map<std::string, std::map<AugmentTypes_t, uint8_t>>;
+/*
+	> Augments structure:
+	|- [spellName]
+		|- [AugmentType]
+			|- Value
+		| ...
+	| ...
+*/

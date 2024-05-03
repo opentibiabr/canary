@@ -331,6 +331,8 @@ public:
 
 	int8_t hitChance = 0;
 
+	Augments augments;
+
 	// 12.90
 	bool wearOut = false;
 	bool clockExpire = false;

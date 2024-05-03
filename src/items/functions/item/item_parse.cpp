@@ -870,6 +870,47 @@ void ItemParse::parseImbuement(const std::string &tmpStrValue, pugi::xml_node at
 	}
 }
 
+void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	// TODO: ANALYSE IF THE BEST WAY TO ADD THE AUGMENT IS:
+	/*
+	<attribute key="augments" value="1"> -- 1 = ENABLED AND 0 = DISABLE
+		<attribute key="fierce berserk" value="powerful impact" /> -- WHEN NOT PROVIDING VALUE COULD BE A DEFAULT VALUE ?
+		<attribute key="strong ethereal spear" value="life leech">
+			<attribute key="value" value="5" /> -- WHEN NESTING AND ADDING VALUE COULD BE CUSTOMIZED ?
+		</attribute>
+	</attribute>
+	*/
+	if (tmpStrValue != "augments") {
+		return;
+	}
+
+	// Check if the augments value is 1 or 0 (1 = enable - 0 = disable)
+	if (pugi::cast<bool>(valueAttribute.value())) {
+		for (auto subAttributeNode : attributeNode.children()) {
+			pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+			if (!subKeyAttribute) {
+				continue;
+			}
+
+			pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+			if (!subValueAttribute) {
+				continue;
+			}
+
+			auto itemMap = ImbuementsTypeMap.find(asLowerCaseString(subKeyAttribute.as_string()));
+			if (itemMap != ImbuementsTypeMap.end()) {
+				ImbuementTypes_t imbuementType = getImbuementType(asLowerCaseString(subKeyAttribute.as_string()));
+				if (imbuementType != IMBUEMENT_NONE) {
+					itemType.setImbuementType(imbuementType, pugi::cast<uint16_t>(subValueAttribute.value()));
+					continue;
+				}
+			} else {
+				g_logger().warn("[ParseImbuement::initParseImbuement] - Unknown type: {}", valueAttribute.as_string());
+			}
+		}
+	}
+}
+
 void ItemParse::parseStackSize(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "stacksize") {

@@ -1897,6 +1897,53 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 	return descriptions;
 }
 
+std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
+	std::ostringstream s;
+	if (item) {
+		Augments augments = item->getAugments();
+
+		if (augments.size() < 1) {
+			return s.str();
+		}
+
+		s << std::endl
+		  << "Augments: (";
+
+		uint8_t count = 0;
+		for (const AugmentInfo &augment : augments) {
+			if (count >= 1) {
+				s << ", ";
+			}
+
+			phmap::flat_hash_map<AugmentTypes_t, std::string> reverseAugmentTypeNames = Items::getAugmentsNamesByType();
+
+			std::string augmentSpellNameCapitalized = augment.spellName;
+			capitalizeWords(augmentSpellNameCapitalized);
+			std::string augmentTypeStr = "unknown type";
+
+			const auto it = reverseAugmentTypeNames.find(augment.type);
+			if (it != reverseAugmentTypeNames.end()) {
+				augmentTypeStr = it->second;
+			}
+
+			std::vector<AugmentTypes_t> augmentsWithoutValueDescription = Items::getAugmentsWithoutValueDescription();
+
+			if (std::find(augmentsWithoutValueDescription.begin(), augmentsWithoutValueDescription.end(), augment.type) != augmentsWithoutValueDescription.end()) {
+				s << fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentTypeStr);
+			} else if (augment.type == AUGMENT_COOLDOWN) {
+				s << fmt::format("{} -> -{}s {}", augmentSpellNameCapitalized, augment.value, augmentTypeStr);
+			} else {
+				s << fmt::format("{} -> +{}% {}", augmentSpellNameCapitalized, augment.value, augmentTypeStr);
+			}
+			++count;
+		}
+		
+		s << ").";
+	}
+
+	return s.str();
+}
+
 std::string Item::parseImbuementDescription(std::shared_ptr<Item> item) {
 	std::ostringstream s;
 	if (item && item->getImbuementSlot() >= 1) {
@@ -3009,6 +3056,8 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 
 		s << '.';
 	}
+
+	s << parseAugmentDescription(item);
 
 	s << parseImbuementDescription(item);
 

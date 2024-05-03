@@ -902,17 +902,17 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 			if (itemMap != AugmentTypeNames.end()) {
 				AugmentTypes_t augmentType = getAugmentType(asLowerCaseString(subValueAttribute.as_string()));
 
-				uint8_t augmentValue = 10; // WILL BE A DEFAULT VALUE FROM CONFIG LUA
+				uint16_t augmentValue = 10; // WILL BE A DEFAULT VALUE FROM CONFIG LUA
 
 				pugi::xml_object_range<pugi::xml_node_iterator> augmentValueAttributeNode = subAttributeNode.children();
 				if (!augmentValueAttributeNode.empty()) {
 					pugi::xml_node augmentValueNode = *augmentValueAttributeNode.begin();
 					pugi::xml_attribute augmentValueAttribute = augmentValueNode.attribute("value");
-					augmentValue = augmentValueAttribute ? pugi::cast<uint8_t>(augmentValueAttribute.value()) : augmentValue;
+					augmentValue = augmentValueAttribute ? pugi::cast<uint16_t>(augmentValueAttribute.value()) : augmentValue;
 				}
 
 				if (augmentType != AUGMENT_NONE) {
-					itemType.setAugmentType(asLowerCaseString(subKeyAttribute.as_string()), augmentType, augmentValue);
+					itemType.addAugments(asLowerCaseString(subKeyAttribute.as_string()), augmentType, augmentValue);
 					continue;
 				}
 			} else {

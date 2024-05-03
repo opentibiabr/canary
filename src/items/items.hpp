@@ -252,8 +252,8 @@ public:
 		return str;
 	}
 
-	void setAugmentType(std::string spellName, AugmentTypes_t augmentType, uint8_t value) {
-		(augments[spellName])[augmentType] = value;
+	void addAugments(std::string spellName, AugmentTypes_t augmentType, uint16_t value) {
+		augments.emplace_back(spellName, augmentType, value);
 	}
 
 	void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {
@@ -439,6 +439,24 @@ public:
 	}
 	const std::unordered_map<uint16_t, uint16_t> &getDummys() const {
 		return dummys;
+	}
+
+	static const phmap::flat_hash_map<AugmentTypes_t, std::string> getAugmentsNamesByType() {
+		return {
+			{ AUGMENT_POWERFUL_IMPACT, "Powerful Impact" },
+			{ AUGMENT_STRONG_IMPACT, "Strong Impact" },
+			{ AUGMENT_INCREASED_DAMAGE, "Increased Damage" },
+			{ AUGMENT_COOLDOWN, "cooldown" },
+			{ AUGMENT_CRITICALHITDAMAGE, "critical extra damage" },
+			{ AUGMENT_LIFELEECHAMOUNT, "life leech" },
+			{ AUGMENT_MANALEECHAMOUNT, "mana leech" },
+		};
+	}
+
+	static const std::vector<AugmentTypes_t> getAugmentsWithoutValueDescription() {
+		return {
+			AUGMENT_POWERFUL_IMPACT, AUGMENT_STRONG_IMPACT, AUGMENT_INCREASED_DAMAGE
+		};
 	}
 
 private:

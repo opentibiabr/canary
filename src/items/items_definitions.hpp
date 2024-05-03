@@ -625,14 +625,13 @@ struct ImbuementInfo {
 	uint32_t duration = 0;
 };
 
+struct AugmentInfo {
+	AugmentInfo(std::string spellName, AugmentTypes_t type, uint16_t value) :
+		spellName(std::move(spellName)), type(type), value(value) { }
 
-// SHOULD LIMIT value to 255 (1 byte) or 65,535 (2 bytes)?
-using Augments = std::map<std::string, std::map<AugmentTypes_t, uint8_t>>;
-/*
-	> Augments structure:
-	|- [spellName]
-		|- [AugmentType]
-			|- Value
-		| ...
-	| ...
-*/
+	std::string spellName;
+	AugmentTypes_t type;
+	uint16_t value;
+};
+
+using Augments = std::list<AugmentInfo>;

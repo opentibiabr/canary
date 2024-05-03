@@ -291,6 +291,7 @@ public:
 		return isStoreItem() || hasOwner();
 	}
 
+	static std::string parseAugmentDescription(std::shared_ptr<Item> item);
 	static std::string parseImbuementDescription(std::shared_ptr<Item> item);
 	static std::string parseShowDurationSpeed(int32_t speed, bool &begin);
 	static std::string parseShowDuration(std::shared_ptr<Item> item);
@@ -418,6 +419,9 @@ public:
 			return getAttribute<int32_t>(ItemAttribute_t::EXTRADEFENSE);
 		}
 		return items[id].extraDefense;
+	}
+	Augments getAugments() const {
+		return items[id].augments;
 	}
 	uint8_t getImbuementSlot() const {
 		if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {

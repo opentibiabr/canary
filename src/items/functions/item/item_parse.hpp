@@ -158,6 +158,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "primarytype", ITEM_PARSE_PRIMARYTYPE },
 	{ "usedbyhouseguests", ITEM_PARSE_USEDBYGUESTS },
 	{ "script", ITEM_PARSE_SCRIPT },
+	{ "augments", ITEM_PARSE_AUGMENT }
 };
 
 const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {
@@ -245,6 +246,16 @@ const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
 	{ "skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE },
 	{ "skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL },
 	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY }
+};
+
+const phmap::flat_hash_map<std::string, AugmentTypes_t> AugmentTypeNames = {
+	{ "powerful impact", AUGMENT_POWERFUL_IMPACT },
+	{ "strong impact", AUGMENT_STRONG_IMPACT },
+	{ "increased damage", AUGMENT_INCREASED_DAMAGE },
+	{ "cooldown", AUGMENT_COOLDOWN },
+	{ "critical extra damage", AUGMENT_CRITICALHITDAMAGE },
+	{ "life leech", AUGMENT_LIFELEECHAMOUNT },
+	{ "mana leech", AUGMENT_MANALEECHAMOUNT }
 };
 
 class ItemParse : public Items {

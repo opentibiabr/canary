@@ -68,6 +68,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseImbuement(tmpStrValue, attributeNode, valueAttribute, itemType);
+	ItemParse::parseAugment(tmpStrValue, attributeNode, valueAttribute, itemType);
 	ItemParse::parseStackSize(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseSpecializedMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseMagicShieldCapacity(tmpStrValue, valueAttribute, itemType);
@@ -885,7 +886,7 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 	}
 
 	// Check if the augments value is 1 or 0 (1 = enable - 0 = disable)
-	if (pugi::cast<bool>(valueAttribute.value())) {
+	if (valueAttribute.as_bool()) {
 		for (auto subAttributeNode : attributeNode.children()) {
 			pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
 			if (!subKeyAttribute) {
@@ -897,15 +898,25 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 				continue;
 			}
 
-			auto itemMap = ImbuementsTypeMap.find(asLowerCaseString(subKeyAttribute.as_string()));
-			if (itemMap != ImbuementsTypeMap.end()) {
-				ImbuementTypes_t imbuementType = getImbuementType(asLowerCaseString(subKeyAttribute.as_string()));
-				if (imbuementType != IMBUEMENT_NONE) {
-					itemType.setImbuementType(imbuementType, pugi::cast<uint16_t>(subValueAttribute.value()));
+			auto itemMap = AugmentTypeNames.find(asLowerCaseString(subValueAttribute.as_string()));
+			if (itemMap != AugmentTypeNames.end()) {
+				AugmentTypes_t augmentType = getAugmentType(asLowerCaseString(subValueAttribute.as_string()));
+
+				uint8_t augmentValue = 10; // WILL BE A DEFAULT VALUE FROM CONFIG LUA
+
+				pugi::xml_object_range<pugi::xml_node_iterator> augmentValueAttributeNode = subAttributeNode.children();
+				if (!augmentValueAttributeNode.empty()) {
+					pugi::xml_node augmentValueNode = *augmentValueAttributeNode.begin();
+					pugi::xml_attribute augmentValueAttribute = augmentValueNode.attribute("value");
+					augmentValue = augmentValueAttribute ? pugi::cast<uint8_t>(augmentValueAttribute.value()) : augmentValue;
+				}
+
+				if (augmentType != AUGMENT_NONE) {
+					itemType.setAugmentType(asLowerCaseString(subKeyAttribute.as_string()), augmentType, augmentValue);
 					continue;
 				}
 			} else {
-				g_logger().warn("[ParseImbuement::initParseImbuement] - Unknown type: {}", valueAttribute.as_string());
+				g_logger().warn("[ParseAugment::initParseAugment] - Unknown type: {}", valueAttribute.as_string());
 			}
 		}
 	}

@@ -252,6 +252,10 @@ public:
 		return str;
 	}
 
+	void setAugmentType(std::string spellName, AugmentTypes_t augmentType, uint8_t value) {
+		(augments[spellName])[augmentType] = value;
+	}
+
 	void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {
 		imbuementTypes[imbuementType] = std::min<uint16_t>(IMBUEMENT_MAX_TIER, slotMaxTier);
 	}

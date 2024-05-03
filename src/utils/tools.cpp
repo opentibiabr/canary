@@ -874,13 +874,13 @@ const ImbuementTypeNames imbuementTypeNames = {
 };
 
 const AugmentTypeNames augmentTypeNames = {
-	{ "powerful impact", AUGMENT_VALUE_POWERFUL_IMPACT },
-	{ "strong impact", AUGMENT_VALUE_STRONG_IMPACT },
-	{ "increased damage", AUGMENT_VALUE_INCREASED_DAMAGE },
-	{ "cooldown", AUGMENT_VALUE_COOLDOWN },
-	{ "critical extra damage", AUGMENT_VALUE_CRITICALHITDAMAGE },
-	{ "life leech", AUGMENT_VALUE_LIFELEECHAMOUNT },
-	{ "mana leech", AUGMENT_VALUE_MANALEECHAMOUNT },
+	{ "powerful impact", AUGMENT_POWERFUL_IMPACT },
+	{ "strong impact", AUGMENT_STRONG_IMPACT },
+	{ "increased damage", AUGMENT_INCREASED_DAMAGE },
+	{ "cooldown", AUGMENT_COOLDOWN },
+	{ "critical extra damage", AUGMENT_CRITICALHITDAMAGE },
+	{ "life leech", AUGMENT_LIFELEECHAMOUNT },
+	{ "mana leech", AUGMENT_MANALEECHAMOUNT }
 };
 
 /**
@@ -933,6 +933,14 @@ Skulls_t getSkullType(const std::string &strValue) {
 		return skullType->second;
 	}
 	return SKULL_NONE;
+}
+
+AugmentTypes_t getAugmentType(const std::string& strValue) {
+	auto augmentType = augmentTypeNames.find(strValue);
+	if (augmentType != augmentTypeNames.end()) {
+		return augmentType->second;
+	}
+	return AUGMENT_NONE;
 }
 
 ImbuementTypes_t getImbuementType(const std::string &strValue) {

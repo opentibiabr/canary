@@ -3708,7 +3708,6 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary(const ItemsTierCountList &
 	const auto startStoreInbox = msg.getBufferPosition();
 	msg.skipBytes(2);
 
-
 	for (const auto &storeInboxItems_it : storeInboxItems) {
 		for (const auto &[itemTier, itemCount] : storeInboxItems_it.second) {
 			const ItemType &it = Item::items[storeInboxItems_it.first];

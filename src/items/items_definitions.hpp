@@ -625,7 +625,6 @@ struct ImbuementInfo {
 	uint32_t duration = 0;
 };
 
-
 // SHOULD LIMIT value to 255 (1 byte) or 65,535 (2 bytes)?
 using Augments = std::map<std::string, std::map<AugmentTypes_t, uint8_t>>;
 /*

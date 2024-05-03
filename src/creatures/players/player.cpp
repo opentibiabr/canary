@@ -3915,7 +3915,7 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 	return false;
 }
 
-ItemsTierCountList Player::getInventoryItemsId() const {
+ItemsTierCountList Player::getInventoryItemsId(bool ignoreStoreInbox /* false */) const {
 	ItemsTierCountList itemMap;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		std::shared_ptr<Item> item = inventory[i];
@@ -3923,8 +3923,14 @@ ItemsTierCountList Player::getInventoryItemsId() const {
 			continue;
 		}
 
-		(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
-		if (std::shared_ptr<Container> container = item->getContainer()) {
+		const bool isStoreInbox = item->getID() == ITEM_STORE_INBOX;
+
+		if (!isStoreInbox) {
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+
+		std::shared_ptr<Container> container = item->getContainer();
+		if (container && (!isStoreInbox || !ignoreStoreInbox)) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 				auto containerItem = *it;
 				(itemMap[containerItem->getID()])[containerItem->getTier()] += Item::countByType(containerItem, -1);
@@ -4021,6 +4027,48 @@ void Player::updateDamageReductionFromItemAbility(
 
 double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resistance) const {
 	return (100 - currentTotal) / 100.0 * resistance + currentTotal;
+}
+
+ItemsTierCountList Player::getStoreInboxItemsId() const {
+	ItemsTierCountList itemMap;
+	std::shared_ptr<Container> container = getStoreInbox();
+	if (container) {
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			std::shared_ptr<Item> item = *it;
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+	}
+
+	return itemMap;
+}
+
+ItemsTierCountList Player::getDepotChestItemsId() const {
+	ItemsTierCountList itemMap;
+
+	for (const auto &[index, depot] : depotChests) {
+		const std::shared_ptr<Container> &container = depot->getContainer();
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			std::shared_ptr<Item> item = *it;
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+	}
+
+	return itemMap;
+}
+
+ItemsTierCountList Player::getDepotInboxItemsId() const {
+	ItemsTierCountList itemMap;
+
+	const std::shared_ptr<Inbox> &inbox = getInbox();
+	const std::shared_ptr<Container> &container = inbox->getContainer();
+	if (container) {
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			std::shared_ptr<Item> item = *it;
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+	}
+
+	return itemMap;
 }
 
 std::vector<std::shared_ptr<Item>> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/, bool ignoreItemWithTier /* false*/) const {

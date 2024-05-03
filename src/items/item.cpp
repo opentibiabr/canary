@@ -1937,7 +1937,7 @@ std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
 			}
 			++count;
 		}
-		
+
 		s << ").";
 	}
 

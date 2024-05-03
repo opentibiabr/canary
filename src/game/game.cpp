@@ -8283,9 +8283,18 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 		case CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS:
 			player->achiev()->sendUnlockedSecretAchievements();
 			break;
-		case CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY:
-			player->sendCyclopediaCharacterItemSummary();
+		case CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY: {
+			const std::shared_ptr<DepotLocker> &depotLocker = player->getDepotLocker(player->getLastDepotId());
+
+			const ItemsTierCountList &inventoryItems = player->getInventoryItemsId(true);
+			const ItemsTierCountList &storeInboxItems = player->getStoreInboxItemsId();
+			const StashItemList &supplyStashItems = player->getStashItems();
+			const ItemsTierCountList &depotBoxItems = player->getDepotChestItemsId();
+			const ItemsTierCountList &inboxItems = player->getDepotInboxItemsId();
+
+			player->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 			break;
+		}
 		case CYCLOPEDIA_CHARACTERINFO_OUTFITSMOUNTS:
 			player->sendCyclopediaCharacterOutfitsMounts();
 			break;

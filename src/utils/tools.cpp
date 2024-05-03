@@ -935,7 +935,7 @@ Skulls_t getSkullType(const std::string &strValue) {
 	return SKULL_NONE;
 }
 
-AugmentTypes_t getAugmentType(const std::string& strValue) {
+AugmentTypes_t getAugmentType(const std::string &strValue) {
 	auto augmentType = augmentTypeNames.find(strValue);
 	if (augmentType != augmentTypeNames.end()) {
 		return augmentType->second;

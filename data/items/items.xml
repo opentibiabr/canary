@@ -75009,6 +75009,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="strong impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="unproperly" value="true"/>
@@ -75031,6 +75034,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost sword" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="powerful impact" />
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75055,6 +75061,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="strong impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="unproperly" value="true"/>
@@ -75077,6 +75086,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost club" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="powerful impact" />
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75101,6 +75113,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="strong impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="unproperly" value="true"/>
@@ -75123,6 +75138,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="powerful impact" />
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75149,6 +75167,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="strong impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="unproperly" value="true"/>
@@ -75172,6 +75193,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost sword" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="powerful impact" />
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75197,6 +75221,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="strong impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="unproperly" value="true"/>
@@ -75220,6 +75247,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost club" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="powerful impact" />
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75245,6 +75275,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="strong impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="unproperly" value="true"/>
@@ -75269,6 +75302,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="powerful impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="unproperly" value="true"/>
@@ -75285,6 +75321,14 @@ Granted by TibiaGoals.com"/>
 		<attribute key="skillsword" value="4"/>
 		<attribute key="armor" value="12"/>
 		<attribute key="weight" value="3800"/>
+		<attribute key="augments" value="1">
+			<attribute key="avatar of steel" value="cooldown">
+				<attribute key="value" value="-900" />
+			</attribute>
+			<attribute key="fierce beserk" value="critical extra damage">
+				<attribute key="value" value="800" />
+			</attribute>
+		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="500"/>
 			<attribute key="slot" value="legs"/>
@@ -75310,6 +75354,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost distance" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="divine caldera" value="strong impact" />
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75338,6 +75385,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="divine caldera" value="powerful impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="unproperly" value="true"/>
@@ -75364,6 +75414,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost distance" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="divine caldera" value="strong impact" />
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75392,6 +75445,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="divine caldera" value="powerful impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="unproperly" value="true"/>
@@ -75407,6 +75463,14 @@ Granted by TibiaGoals.com"/>
 		<attribute key="holymagiclevelpoints" value="1"/>
 		<attribute key="armor" value="11"/>
 		<attribute key="weight" value="3200"/>
+		<attribute key="augments" value="1">
+			<attribute key="avatar of light" value="cooldown">
+				<attribute key="value" value="-900" />
+			</attribute>
+			<attribute key="divine caldera" value="critical extra damage">
+				<attribute key="value" value="800" />
+			</attribute>
+		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="500"/>
 			<attribute key="slot" value="legs"/>
@@ -75428,6 +75492,10 @@ Granted by TibiaGoals.com"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost magic level" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="hell's core" value="strong impact" />
+			<attribute key="energy wave" value="strong impact" />
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75457,6 +75525,10 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="hell's core" value="powerful impact" />
+			<attribute key="energy wave" value="powerful impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="mana" value="21"/>
@@ -75481,6 +75553,17 @@ Granted by TibiaGoals.com"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase speed" value="10"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="avatar of storm" value="cooldown">
+				<attribute key="value" value="-900" />
+			</attribute>
+			<attribute key="hell's core" value="critical extra damage">
+				<attribute key="value" value="800" />
+			</attribute>
+			<attribute key="energy wave" value="critical extra damage">
+				<attribute key="value" value="800" />
+			</attribute>
+		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="500"/>
 			<attribute key="slot" value="feet"/>
@@ -75502,6 +75585,10 @@ Granted by TibiaGoals.com"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost magic level" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="eternal winter" value="strong impact" />
+			<attribute key="terra wave" value="strong impact" />
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75531,6 +75618,10 @@ Granted by TibiaGoals.com"/>
 			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="eternal winter" value="powerful impact" />
+			<attribute key="terra wave" value="powerful impact" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
 			<attribute key="mana" value="20"/>
@@ -75554,6 +75645,17 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weight" value="1700"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase speed" value="10"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="avatar of nature" value="cooldown">
+				<attribute key="value" value="-900" />
+			</attribute>
+			<attribute key="eternal winter" value="critical extra damage">
+				<attribute key="value" value="800" />
+			</attribute>
+			<attribute key="terra wave" value="critical extra damage">
+				<attribute key="value" value="800" />
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="500"/>

@@ -22,6 +22,7 @@
 	<category id="15" name="Skillboost (Distance Fighting)" agressive="1" />
 	<category id="16" name="Skillboost (Magic Level)" agressive="1" />
 	<category id="17" name="Increase Capacity" agressive="0" />
+	<category id="18" name="Paralysis Removal" agressive="0" />
 
 	<!-- Damage Imbuement -->
 	<imbuement name="Scorch" base="1" subgroup=" (Fire)" category="0" iconid="13" premium="0" storage="0" sound="2002">
@@ -426,5 +427,24 @@
 		<attribute key="item" value="25694" count="20" />
 		<attribute key="item" value="25702" count="10" />
 		<attribute key="item" value="20205" count="5" />
+	</imbuement>
+	<!-- Deflect condition imbuement -->
+	<imbuement name="Vibrancy" base="1" category="18" iconid="79" premium="0" storage="0">
+		<attribute key="description" value="Removes paralysis with a chance of 15%." />
+		<attribute key="effect" type="deflect" chance="15" conditionid="6" />
+		<attribute key="item" value="22053" count="20" />
+	</imbuement>
+	<imbuement name="Vibrancy" base="2" category="18" iconid="79" premium="1" storage="0">
+		<attribute key="description" value="Removes paralysis with a chance of 25%." />
+		<attribute key="effect" type="deflect" chance="25" conditionid="6" />
+		<attribute key="item" value="22053" count="20" />
+		<attribute key="item" value="23507" count="15" />
+	</imbuement>
+	<imbuement name="Vibrancy" base="3" category="18" iconid="79" premium="1" storage="46317">
+		<attribute key="description" value="Removes paralysis with a chance of 50%." />
+		<attribute key="effect" type="deflect" chance="50" conditionid="6" />
+		<attribute key="item" value="22053" count="20" />
+		<attribute key="item" value="23507" count="15" />
+		<attribute key="item" value="28567" count="5" />
 	</imbuement>
 </imbuements>

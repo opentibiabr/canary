@@ -300,6 +300,26 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						}
 
 						imbuement.capacity = pugi::cast<uint32_t>(attr.value());
+					} else if (strcasecmp(effecttype.c_str(), "deflect") == 0) {
+						if (!(attr = childNode.attribute("chance"))) {
+							g_logger().warn("Missing deflect chance for imbuement name {}", imbuement.name);
+							continue;
+						}
+						auto deflectChance = pugi::cast<uint8_t>(attr.value());
+						if (deflectChance <= 0 || deflectChance > 100) {
+							g_logger().warn("Invalid deflect chance for imbuement name {}", imbuement.name);
+							continue;
+						}
+						if (!(attr = childNode.attribute("conditionid"))) {
+							g_logger().warn("Missing deflect condition id for imbuement name {}", imbuement.name);
+							continue;
+						}
+						auto conditionId = pugi::cast<uint8_t>(attr.value());
+						if (conditionId <= 0 || conditionId >= CONDITION_COUNT) {
+							g_logger().warn("Invalid deflect condition id for imbuement name {}", imbuement.name);
+							continue;
+						}
+						imbuement.deflectConditions[static_cast<ConditionType_t>(conditionId)] = deflectChance;
 					}
 				}
 			}

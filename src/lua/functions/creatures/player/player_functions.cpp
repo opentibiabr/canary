@@ -4279,3 +4279,33 @@ int PlayerFunctions::luaPlayerRemoveAchievementPoints(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerAddDeflectCondition(lua_State* L) {
+	// player:addDeflectCondition(source, conditionType, deflectChance)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+	auto source = getString(L, 2);
+	auto conditionType = getNumber<ConditionType_t>(L, 3);
+	auto deflectChance = getNumber<uint8_t>(L, 4);
+	player->addDeflectCondition(source, conditionType, deflectChance);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveDeflectCondition(lua_State* L) {
+	// player:removeDeflectCondition(source, conditionType, deflectChance)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+	auto source = getString(L, 2);
+	auto conditionType = getNumber<ConditionType_t>(L, 3);
+	auto deflectChance = getNumber<uint8_t>(L, 4);
+	player->removeDeflectCondition(source, conditionType, deflectChance);
+	pushBoolean(L, true);
+	return 1;
+}

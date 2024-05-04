@@ -6346,6 +6346,11 @@ void Player::addItemImbuementStats(const Imbuement* imbuement) {
 		bonusCapacity = (capacity * imbuement->capacity) / 100;
 	}
 
+	// Add imbuement deflect conditions
+	for (const auto &[condition, chance] : imbuement->deflectConditions) {
+		addDeflectCondition("imbuement", condition, chance);
+	}
+
 	if (requestUpdate) {
 		sendStats();
 		sendSkills();
@@ -6383,6 +6388,13 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	if (imbuement->capacity != 0) {
 		requestUpdate = true;
 		bonusCapacity = 0;
+	}
+
+	// Remove imbuement deflect conditions
+	if (getDeflectConditions().size() > 0) {
+		for (const auto &[condition, chance] : imbuement->deflectConditions) {
+			removeDeflectCondition("imbuement", condition, chance);
+		}
 	}
 
 	if (requestUpdate) {

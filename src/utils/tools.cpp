@@ -1959,4 +1959,3 @@ std::string toolsParseAugmentDescription(const AugmentInfo* augmentInfo) {
 	}
 	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value / 100, augmentName);
 }
-

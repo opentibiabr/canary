@@ -75037,6 +75037,9 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="intense wound cleansing" value="cooldown">
+				<attribute key="value" value="120000" />
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75323,7 +75326,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weight" value="3800"/>
 		<attribute key="augments" value="1">
 			<attribute key="avatar of steel" value="cooldown">
-				<attribute key="value" value="-900" />
+				<attribute key="value" value="900000" />
 			</attribute>
 			<attribute key="fierce beserk" value="critical extra damage">
 				<attribute key="value" value="800" />
@@ -75465,7 +75468,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weight" value="3200"/>
 		<attribute key="augments" value="1">
 			<attribute key="avatar of light" value="cooldown">
-				<attribute key="value" value="-900" />
+				<attribute key="value" value="900000" />
 			</attribute>
 			<attribute key="divine caldera" value="critical extra damage">
 				<attribute key="value" value="800" />
@@ -75555,7 +75558,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="avatar of storm" value="cooldown">
-				<attribute key="value" value="-900" />
+				<attribute key="value" value="900000" />
 			</attribute>
 			<attribute key="hell's core" value="critical extra damage">
 				<attribute key="value" value="800" />
@@ -75648,7 +75651,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="avatar of nature" value="cooldown">
-				<attribute key="value" value="-900" />
+				<attribute key="value" value="900000" />
 			</attribute>
 			<attribute key="eternal winter" value="critical extra damage">
 				<attribute key="value" value="800" />

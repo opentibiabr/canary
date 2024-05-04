@@ -1952,10 +1952,12 @@ std::string toolsParseAugmentDescription(const AugmentInfo* augmentInfo) {
 	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
 	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");
 
+	char signal = augmentInfo->value > 0 ? '-' : '+';
+
 	if (Items::isAugmentWithoutValueDescription(augmentInfo->type)) {
 		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
 	} else if (augmentInfo->type == AUGMENT_COOLDOWN) {
-		return fmt::format("{} -> {:+}s {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
+		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
 	}
 	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value / 100, augmentName);
 }

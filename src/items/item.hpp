@@ -423,6 +423,26 @@ public:
 	Augments getAugments() const {
 		return items[id].augments;
 	}
+	Augments getAugmentsBySpellNameAndType(std::string spellName, AugmentTypes_t augmentType) const {
+		Augments augments;
+		for (AugmentInfo augment : items[id].augments) {
+			if (strcasecmp(augment.spellName.c_str(), spellName.c_str()) == 0 && augment.type == augmentType) {
+				augments.push_back(augment);
+			}
+		}
+
+		return augments;
+	}
+	Augments getAugmentsBySpellName(std::string spellName) const {
+		Augments augments;
+		for (AugmentInfo augment : items[id].augments) {
+			if (strcasecmp(spellName.c_str(), spellName.c_str()) == 0) {
+				augments.push_back(augment);
+			}
+		}
+
+		return augments;
+	}
 	uint8_t getImbuementSlot() const {
 		if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
 			return getAttribute<uint8_t>(ItemAttribute_t::IMBUEMENT_SLOT);

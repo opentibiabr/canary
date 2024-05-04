@@ -252,7 +252,7 @@ public:
 		return str;
 	}
 
-	void addAugment(std::string spellName, AugmentTypes_t augmentType, int16_t value) {
+	void addAugment(std::string spellName, AugmentTypes_t augmentType, int32_t value) {
 		augments.emplace_back(spellName, augmentType, value);
 	}
 

@@ -346,6 +346,7 @@ public:
 	}
 
 protected:
+	int32_t getAugmentSpellCooldownReduction(std::shared_ptr<Player> player) const;
 	void applyCooldownConditions(std::shared_ptr<Player> player) const;
 	bool playerSpellCheck(std::shared_ptr<Player> player) const;
 	bool playerInstantSpellCheck(std::shared_ptr<Player> player, const Position &toPos) const;

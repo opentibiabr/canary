@@ -626,12 +626,12 @@ struct ImbuementInfo {
 };
 
 struct AugmentInfo {
-	AugmentInfo(std::string spellName, AugmentTypes_t type, uint16_t value) :
+	AugmentInfo(std::string spellName, AugmentTypes_t type, int32_t value) :
 		spellName(std::move(spellName)), type(type), value(value) { }
 
 	std::string spellName;
 	AugmentTypes_t type;
-	int16_t value;
+	int32_t value;
 };
 
 using Augments = std::list<AugmentInfo>;

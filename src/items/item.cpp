@@ -1915,25 +1915,17 @@ std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
 				s << ", ";
 			}
 
-			phmap::flat_hash_map<AugmentTypes_t, std::string> reverseAugmentTypeNames = Items::getAugmentsNamesByType();
+			const std::string augmentTypeStr = Items::getAugmentNameByType(augment.type);
 
 			std::string augmentSpellNameCapitalized = augment.spellName;
 			capitalizeWords(augmentSpellNameCapitalized);
-			std::string augmentTypeStr = "unknown type";
 
-			const auto it = reverseAugmentTypeNames.find(augment.type);
-			if (it != reverseAugmentTypeNames.end()) {
-				augmentTypeStr = it->second;
-			}
-
-			std::vector<AugmentTypes_t> augmentsWithoutValueDescription = Items::getAugmentsWithoutValueDescription();
-
-			if (std::find(augmentsWithoutValueDescription.begin(), augmentsWithoutValueDescription.end(), augment.type) != augmentsWithoutValueDescription.end()) {
+			if (Items::isAugmentWithoutValueDescription(augment.type)) {
 				s << fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentTypeStr);
 			} else if (augment.type == AUGMENT_COOLDOWN) {
-				s << fmt::format("{} -> -{}s {}", augmentSpellNameCapitalized, augment.value, augmentTypeStr);
+				s << fmt::format("{} -> {:+}s {}", augmentSpellNameCapitalized, augment.value, augmentTypeStr);
 			} else {
-				s << fmt::format("{} -> +{}% {}", augmentSpellNameCapitalized, augment.value, augmentTypeStr);
+				s << fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, (augment.value / 100), augmentTypeStr);
 			}
 			++count;
 		}

@@ -252,7 +252,7 @@ public:
 		return str;
 	}
 
-	void addAugments(std::string spellName, AugmentTypes_t augmentType, uint16_t value) {
+	void addAugments(std::string spellName, AugmentTypes_t augmentType, int16_t value) {
 		augments.emplace_back(spellName, augmentType, value);
 	}
 
@@ -441,22 +441,35 @@ public:
 		return dummys;
 	}
 
-	static const phmap::flat_hash_map<AugmentTypes_t, std::string> getAugmentsNamesByType() {
-		return {
-			{ AUGMENT_POWERFUL_IMPACT, "Powerful Impact" },
-			{ AUGMENT_STRONG_IMPACT, "Strong Impact" },
-			{ AUGMENT_INCREASED_DAMAGE, "Increased Damage" },
+	static const std::string getAugmentNameByType(AugmentTypes_t augmentType) {
+		phmap::flat_hash_map<AugmentTypes_t, std::string> map = {
 			{ AUGMENT_COOLDOWN, "cooldown" },
 			{ AUGMENT_CRITICALHITDAMAGE, "critical extra damage" },
+			{ AUGMENT_INCREASED_DAMAGE, "Increased Damage" },
 			{ AUGMENT_LIFELEECHAMOUNT, "life leech" },
 			{ AUGMENT_MANALEECHAMOUNT, "mana leech" },
+			{ AUGMENT_POWERFUL_IMPACT, "Powerful Impact" },
+			{ AUGMENT_STRONG_IMPACT, "Strong Impact" },
 		};
+
+		const auto it = map.find(augmentType);
+		if (it != map.end()) {
+			return it->second;
+		}
+
+		return "unknown type";
 	}
 
-	static const std::vector<AugmentTypes_t> getAugmentsWithoutValueDescription() {
-		return {
-			AUGMENT_POWERFUL_IMPACT, AUGMENT_STRONG_IMPACT, AUGMENT_INCREASED_DAMAGE
+	static const bool isAugmentWithoutValueDescription(AugmentTypes_t augmentType) {
+		std::vector<AugmentTypes_t> vector = {
+			AUGMENT_INCREASED_DAMAGE, AUGMENT_POWERFUL_IMPACT, AUGMENT_STRONG_IMPACT,
 		};
+
+		return std::find(vector.begin(), vector.end(), augmentType) != vector.end();
+	}
+
+	static const phmap::flat_hash_map<AugmentTypes_t, ConfigKey_t> getConfigKeyByAugmentType() {
+
 	}
 
 private:

@@ -249,13 +249,19 @@ const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
 };
 
 const phmap::flat_hash_map<std::string, AugmentTypes_t> AugmentTypeNames = {
-	{ "powerful impact", AUGMENT_POWERFUL_IMPACT },
-	{ "strong impact", AUGMENT_STRONG_IMPACT },
-	{ "increased damage", AUGMENT_INCREASED_DAMAGE },
 	{ "cooldown", AUGMENT_COOLDOWN },
 	{ "critical extra damage", AUGMENT_CRITICALHITDAMAGE },
+	{ "increased damage", AUGMENT_INCREASED_DAMAGE },
 	{ "life leech", AUGMENT_LIFELEECHAMOUNT },
-	{ "mana leech", AUGMENT_MANALEECHAMOUNT }
+	{ "mana leech", AUGMENT_MANALEECHAMOUNT },
+	{ "powerful impact", AUGMENT_POWERFUL_IMPACT },
+	{ "strong impact", AUGMENT_STRONG_IMPACT },
+};
+
+const phmap::flat_hash_map<AugmentTypes_t, ConfigKey_t> AugmentWithoutValueDescriptionDefaultKeys = {
+	{ AUGMENT_INCREASED_DAMAGE, AUGMENT_INCREASED_DAMAGE_DEFAULT },
+	{ AUGMENT_POWERFUL_IMPACT, AUGMENT_POWERFUL_IMPACT_DEFAULT },
+	{ AUGMENT_STRONG_IMPACT, AUGMENT_STRONG_IMPACT_DEFAULT },
 };
 
 class ItemParse : public Items {

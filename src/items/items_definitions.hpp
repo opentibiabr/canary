@@ -631,7 +631,7 @@ struct AugmentInfo {
 
 	std::string spellName;
 	AugmentTypes_t type;
-	uint16_t value;
+	int16_t value;
 };
 
 using Augments = std::list<AugmentInfo>;

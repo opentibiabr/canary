@@ -80,6 +80,13 @@ freeDepotLimit = 2000
 premiumDepotLimit = 10000
 depotBoxes = 20
 
+-- Augment system
+-- NOTE: the following values are for all weapons and equipments that have type of "increase damage", "powerful impact" and "strong impact".
+-- To customize the percentage of a particular item, please add to the item "augments" section on items.xml
+augmentIncreasedDamageDefault = 5 * 100 -- 5%
+augmentPowerfulImpactDefault = 7 * 100 -- 7%
+augmentStrongImpactDefault = 10 * 100 -- 10%
+
 -- Prey system
 -- NOTE: preyRerollPricePerLevel: Price multiplier in gold coin for rerolling prey list.
 -- NOTE: preySelectListPrice: Price to manually select creature on list and to lock prey slot.

@@ -252,7 +252,7 @@ public:
 		return str;
 	}
 
-	void addAugments(std::string spellName, AugmentTypes_t augmentType, int16_t value) {
+	void addAugment(std::string spellName, AugmentTypes_t augmentType, int16_t value) {
 		augments.emplace_back(spellName, augmentType, value);
 	}
 
@@ -462,14 +462,12 @@ public:
 
 	static const bool isAugmentWithoutValueDescription(AugmentTypes_t augmentType) {
 		std::vector<AugmentTypes_t> vector = {
-			AUGMENT_INCREASED_DAMAGE, AUGMENT_POWERFUL_IMPACT, AUGMENT_STRONG_IMPACT,
+			AUGMENT_INCREASED_DAMAGE,
+			AUGMENT_POWERFUL_IMPACT,
+			AUGMENT_STRONG_IMPACT,
 		};
 
 		return std::find(vector.begin(), vector.end(), augmentType) != vector.end();
-	}
-
-	static const phmap::flat_hash_map<AugmentTypes_t, ConfigKey_t> getConfigKeyByAugmentType() {
-
 	}
 
 private:

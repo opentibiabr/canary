@@ -139,6 +139,7 @@ const char* getReturnMessage(ReturnValue value);
 
 void sleep_for(uint64_t ms);
 void capitalizeWords(std::string &source);
+void capitalizeWordsIgnoringString(std::string &source, std::string stringToIgnore);
 void consoleHandlerExit();
 NameEval_t validateName(const std::string &name);
 
@@ -208,6 +209,8 @@ static inline double quadraticPoly(double a, double b, double c, double x) {
 }
 
 uint8_t convertWheelGemAffinityToDomain(uint8_t affinity);
+
+std::string toolsParseAugmentDescription(const AugmentInfo* augmentInfo);
 
 template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
 UnderlyingType enumToValue(EnumType value) {

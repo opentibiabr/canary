@@ -903,8 +903,9 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 				AugmentTypes_t augmentType = getAugmentType(asLowerCaseString(subValueAttribute.as_string()));
 
 				int16_t augmentValue = 0;
+				bool hasValueDescrition = isAugmentWithoutValueDescription(augmentType);
 
-				if (isAugmentWithoutValueDescription(augmentType)) {
+				if (hasValueDescrition) {
 					const auto it = AugmentWithoutValueDescriptionDefaultKeys.find(augmentType);
 					if (it != AugmentWithoutValueDescriptionDefaultKeys.end()) {
 						augmentValue = g_configManager().getNumber(it->second, __FUNCTION__);
@@ -916,12 +917,12 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 					pugi::xml_node augmentValueNode = *augmentValueAttributeNode.begin();
 					pugi::xml_attribute augmentValueAttribute = augmentValueNode.attribute("value");
 					augmentValue = augmentValueAttribute ? pugi::cast<int16_t>(augmentValueAttribute.value()) : augmentValue;
-				} else if (isAugmentWithoutValueDescription(augmentType)) {
-					g_logger().warn("[ParseAugment::initParseAugment] - Item '{}' has an augment '{}' without a value", subValueAttribute.as_string(), itemType.name);
+				} else if (!hasValueDescrition) {
+					g_logger().warn("[ParseAugment::initParseAugment] - Item '{}' has an augment '{}' without a value", itemType.name, subValueAttribute.as_string());
 				}
 
 				if (augmentType != AUGMENT_NONE) {
-					itemType.addAugments(asLowerCaseString(subKeyAttribute.as_string()), augmentType, augmentValue);
+					itemType.addAugment(asLowerCaseString(subKeyAttribute.as_string()), augmentType, augmentValue);
 					continue;
 				}
 			} else {

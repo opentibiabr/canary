@@ -1577,6 +1577,22 @@ void capitalizeWords(std::string &source) {
 	}
 }
 
+void capitalizeWordsIgnoringString(std::string &source, std::string stringToIgnore) {
+	toLowerCaseString(source);
+	uint8_t size = (uint8_t)source.size();
+	uint8_t indexFound = source.find(stringToIgnore);
+	for (uint8_t i = 0; i < size; i++) {
+		if (indexFound != std::string::npos && (i > indexFound - 1) && i < (indexFound + stringToIgnore.size())) {
+			continue;
+		}
+		if (i == 0) {
+			source[i] = (char)toupper(source[i]);
+		} else if (source[i - 1] == ' ' || source[i - 1] == '\'') {
+			source[i] = (char)toupper(source[i]);
+		}
+	}
+}
+
 /**
  * @details
  * Prevents the console from closing so there is time to read the error information
@@ -1930,3 +1946,17 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 			return 0;
 	}
 }
+
+std::string toolsParseAugmentDescription(const AugmentInfo* augmentInfo) {
+	std::string augmentName = Items::getAugmentNameByType(augmentInfo->type);
+	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
+	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");
+
+	if (Items::isAugmentWithoutValueDescription(augmentInfo->type)) {
+		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
+	} else if (augmentInfo->type == AUGMENT_COOLDOWN) {
+		return fmt::format("{} -> {:+}s {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
+	}
+	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value / 100, augmentName);
+}
+

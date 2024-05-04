@@ -1900,7 +1900,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
 	std::ostringstream s;
 	if (item) {
-		Augments augments = item->getAugments();
+		const Augments augments = item->getAugments();
 
 		if (augments.size() < 1) {
 			return s.str();
@@ -1910,23 +1910,13 @@ std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
 		  << "Augments: (";
 
 		uint8_t count = 0;
-		for (const AugmentInfo &augment : augments) {
+		for (const AugmentInfo augment : augments) {
 			if (count >= 1) {
 				s << ", ";
 			}
 
-			const std::string augmentTypeStr = Items::getAugmentNameByType(augment.type);
+			s << toolsParseAugmentDescription(&augment);
 
-			std::string augmentSpellNameCapitalized = augment.spellName;
-			capitalizeWords(augmentSpellNameCapitalized);
-
-			if (Items::isAugmentWithoutValueDescription(augment.type)) {
-				s << fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentTypeStr);
-			} else if (augment.type == AUGMENT_COOLDOWN) {
-				s << fmt::format("{} -> {:+}s {}", augmentSpellNameCapitalized, augment.value, augmentTypeStr);
-			} else {
-				s << fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, (augment.value / 100), augmentTypeStr);
-			}
 			++count;
 		}
 

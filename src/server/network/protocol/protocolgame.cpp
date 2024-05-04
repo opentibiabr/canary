@@ -1359,10 +1359,7 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg) {
 	if (!player) {
 		return;
 	}
-
-	uint16_t itemId = msg.get<uint16_t>();
-	uint8_t tier = msg.get<uint8_t>();
-	g_game().playerEquipItem(player->getID(), itemId, Item::items[itemId].upgradeClassification > 0, tier);
+	player->sendCancelMessage("You cannot equip items by using a hotkey.");
 }
 
 void ProtocolGame::GetTileDescription(std::shared_ptr<Tile> tile, NetworkMessage &msg) {

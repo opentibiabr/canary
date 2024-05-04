@@ -63,7 +63,7 @@ public:
 	bool isPersistent() const;
 	bool isRemovableOnDeath() const;
 
-	bool creatureCanDeflect(std::shared_ptr<Creature> creature) const; 
+	bool creatureCanDeflect(std::shared_ptr<Creature> creature) const;
 
 protected:
 	uint8_t drainBodyStage = 0;

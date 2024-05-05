@@ -425,8 +425,8 @@ public:
 	}
 	Augments getAugmentsBySpellNameAndType(std::string spellName, AugmentTypes_t augmentType) const {
 		Augments augments;
-		for (AugmentInfo augment : items[id].augments) {
-			if (strcasecmp(augment.spellName.c_str(), spellName.c_str()) == 0 && augment.type == augmentType) {
+		for (auto &augment : items[id].augments) {
+			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0 && augment->type == augmentType) {
 				augments.push_back(augment);
 			}
 		}
@@ -435,8 +435,8 @@ public:
 	}
 	Augments getAugmentsBySpellName(std::string spellName) const {
 		Augments augments;
-		for (AugmentInfo augment : items[id].augments) {
-			if (strcasecmp(spellName.c_str(), spellName.c_str()) == 0) {
+		for (auto &augment : items[id].augments) {
+			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0) {
 				augments.push_back(augment);
 			}
 		}

@@ -1910,12 +1910,12 @@ std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
 		  << "Augments: (";
 
 		uint8_t count = 0;
-		for (const AugmentInfo augment : augments) {
+		for (auto &augment : augments) {
 			if (count >= 1) {
 				s << ", ";
 			}
 
-			s << toolsParseAugmentDescription(&augment);
+			s << toolsParseAugmentDescription(augment);
 
 			++count;
 		}

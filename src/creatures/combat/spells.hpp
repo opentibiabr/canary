@@ -345,8 +345,10 @@ public:
 		m_separator = newSeparator.data();
 	}
 
-protected:
+	void getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &damage);
 	int32_t calculateAugmentSpellCooldownReduction(std::shared_ptr<Player> player) const;
+
+protected:
 	void applyCooldownConditions(std::shared_ptr<Player> player) const;
 	bool playerSpellCheck(std::shared_ptr<Player> player) const;
 	bool playerInstantSpellCheck(std::shared_ptr<Player> player, const Position &toPos) const;

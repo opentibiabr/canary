@@ -210,7 +210,7 @@ static inline double quadraticPoly(double a, double b, double c, double x) {
 
 uint8_t convertWheelGemAffinityToDomain(uint8_t affinity);
 
-std::string toolsParseAugmentDescription(const AugmentInfo* augmentInfo);
+std::string toolsParseAugmentDescription(std::shared_ptr<AugmentInfo> augmentInfo);
 
 template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
 UnderlyingType enumToValue(EnumType value) {

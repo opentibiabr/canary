@@ -346,8 +346,8 @@ bool ConfigManager::load() {
 	loadIntConfig(L, WHEEL_POINTS_PER_LEVEL, "wheelPointsPerLevel", 1);
 	loadIntConfig(L, WHITE_SKULL_TIME, "whiteSkullTime", 15 * 60 * 1000);
 	loadIntConfig(L, AUGMENT_INCREASED_DAMAGE_DEFAULT, "augmentIncreasedDamageDefault", 5 * 100);
-	loadIntConfig(L, AUGMENT_POWERFUL_IMPACT_DEFAULT, "augmentPowerfulImpactDefault", 7 * 100);
-	loadIntConfig(L, AUGMENT_STRONG_IMPACT_DEFAULT, "augmentStrongImpactDefault", 10 * 100);
+	loadIntConfig(L, AUGMENT_POWERFUL_IMPACT_DEFAULT, "augmentPowerfulImpactDefault", 10 * 100);
+	loadIntConfig(L, AUGMENT_STRONG_IMPACT_DEFAULT, "augmentStrongImpactDefault", 7 * 100);
 
 	loadStringConfig(L, CORE_DIRECTORY, "coreDirectory", "data");
 	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");

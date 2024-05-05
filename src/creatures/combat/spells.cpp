@@ -630,13 +630,32 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 	}
 }
 
+void Spell::getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &damage) {
+	if (!(damage.instantSpellName).empty()) {
+		std::vector<std::shared_ptr<Item>> equippedAugmentItems = player->getEquippedAugmentItems();
+		for (std::shared_ptr<Item> item : equippedAugmentItems) {
+			Augments augments = item->getAugmentsBySpellName(damage.instantSpellName);
+			for (auto &augment : augments) {
+				damage.lifeLeech += augment->type == AUGMENT_LIFELEECHAMOUNT ? augment->value : 0;
+				damage.manaLeech += augment->type == AUGMENT_MANALEECHAMOUNT ? augment->value : 0;
+				damage.criticalDamage += augment->type == AUGMENT_CRITICALHITDAMAGE ? augment->value : 0;
+				if (augment->type == AUGMENT_INCREASED_DAMAGE || augment->type == AUGMENT_POWERFUL_IMPACT || augment->type == AUGMENT_STRONG_IMPACT) {
+					const float augmentPercent = augment->value / 10000.0;
+					damage.primary.value += static_cast<int32_t>(damage.primary.value * augmentPercent);
+					damage.secondary.value += static_cast<int32_t>(damage.secondary.value * augmentPercent);
+				}
+			}
+		}
+	}
+};
+
 int32_t Spell::calculateAugmentSpellCooldownReduction(std::shared_ptr<Player> player) const {
 	int32_t spellCooldown = 0;
 	std::vector<std::shared_ptr<Item>> equippedAugmentItems = player->getEquippedAugmentItemsByType(AUGMENT_COOLDOWN);
 	for (std::shared_ptr<Item> item : equippedAugmentItems) {
 		Augments augments = item->getAugmentsBySpellNameAndType(getName(), AUGMENT_COOLDOWN);
-		for (AugmentInfo augment : augments) {
-			spellCooldown += augment.value;
+		for (auto &augment : augments) {
+			spellCooldown += augment->value;
 		}
 	}
 

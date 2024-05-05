@@ -1947,7 +1947,7 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 	}
 }
 
-std::string toolsParseAugmentDescription(const AugmentInfo* augmentInfo) {
+std::string toolsParseAugmentDescription(const std::shared_ptr<AugmentInfo> augmentInfo) {
 	std::string augmentName = Items::getAugmentNameByType(augmentInfo->type);
 	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
 	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");

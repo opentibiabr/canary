@@ -4069,8 +4069,8 @@ std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItemsByType(Augment
 	std::vector<std::shared_ptr<Item>> equippedAugmentItems = getEquippedItems();
 
 	for (std::shared_ptr<Item> item : equippedAugmentItems) {
-		for (AugmentInfo augment : item->getAugments()) {
-			if (augment.type == augmentType) {
+		for (auto &augment : item->getAugments()) {
+			if (augment->type == augmentType) {
 				equippedAugmentItemsByType.push_back(item);
 			}
 		}

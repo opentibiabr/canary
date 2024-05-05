@@ -634,4 +634,4 @@ struct AugmentInfo {
 	int32_t value;
 };
 
-using Augments = std::list<AugmentInfo>;
+using Augments = std::vector<std::shared_ptr<AugmentInfo>>;

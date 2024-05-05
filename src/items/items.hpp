@@ -253,7 +253,8 @@ public:
 	}
 
 	void addAugment(std::string spellName, AugmentTypes_t augmentType, int32_t value) {
-		augments.emplace_back(spellName, augmentType, value);
+		auto augmentInfo = std::make_shared<AugmentInfo>(spellName, augmentType, value);
+		augments.emplace_back(augmentInfo);
 	}
 
 	void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {

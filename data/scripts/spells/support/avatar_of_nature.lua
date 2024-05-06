@@ -14,7 +14,7 @@ function spell.onCastSpell(creature, variant)
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
-	
+
 	local duration = 15000
 	condition:setTicks(duration)
 	creature:getPosition():sendMagicEffect(CONST_ME_AVATAR_APPEAR)

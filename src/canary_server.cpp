@@ -376,6 +376,7 @@ void CanaryServer::loadModules() {
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();
 	g_ioprey().initializeTaskHuntOptions();
+	g_game().logCyclopediaStats();
 }
 
 void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {

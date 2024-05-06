@@ -1437,6 +1437,22 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 		}
 
+		Augments augments = item->getAugments();
+		if (augments.size() > 0) {
+			ss.str("");
+			uint8_t count = 0;
+			for (auto augment : augments) {
+				if (count >= 1) {
+					ss << ", ";
+				}
+
+				ss << toolsParseAugmentDescription(augment);
+
+				++count;
+			}
+			descriptions.emplace_back("Augments", ss.str());
+		}
+
 		if (it.isKey()) {
 			ss.str("");
 			ss << fmt::format("{:04}", item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
@@ -1787,6 +1803,21 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 
 		if (it.imbuementSlot > 0) {
 			descriptions.emplace_back("Imbuement Slots", std::to_string(it.imbuementSlot));
+		}
+
+		if (it.augments.size() > 0) {
+			ss.str("");
+			uint8_t count = 0;
+			for (auto augment : it.augments) {
+				if (count >= 1) {
+					ss << ", ";
+				}
+
+				ss << toolsParseAugmentDescription(augment);
+
+				++count;
+			}
+			descriptions.emplace_back("Augments", ss.str());
 		}
 
 		if (it.isKey()) {

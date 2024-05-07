@@ -94,12 +94,7 @@ bool BedItem::canUse(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	auto partName = itemType.name;
-	auto nextPartname = nextBedItem->getName();
-	auto firstPart = keepFirstWordOnly(partName);
-	auto nextPartOf = keepFirstWordOnly(nextPartname);
-	g_logger().debug("First bed part name {}, second part name {}", firstPart, nextPartOf);
-	if (!isMovable() || !nextBedItem->isMovable() || firstPart != nextPartOf) {
+	if (!isMovable() || !nextBedItem->isMovable() || !isBedComplete(nextBedItem)) {
 		return false;
 	}
 
@@ -120,6 +115,18 @@ bool BedItem::canUse(std::shared_ptr<Player> player) {
 		return false;
 	}
 	return true;
+}
+
+bool BedItem::isBedComplete(std::shared_ptr<BedItem> nextBedItem) {
+	const ItemType& it = Item::items[id];
+
+	if (nextBedItem == nullptr) {
+		return false;
+	}
+
+	g_logger().debug("First bed part id {}, second part id {}", it.id, nextBedItem->getID());
+
+	return it.bedPartOf == nextBedItem->getID();
 }
 
 bool BedItem::trySleep(std::shared_ptr<Player> player) {

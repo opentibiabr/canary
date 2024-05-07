@@ -209,19 +209,19 @@ public:
 		return mana;
 	}
 
-	uint16_t getManaShield() const {
+	uint32_t getManaShield() const {
 		return manaShield;
 	}
 
-	void setManaShield(uint16_t value) {
+	void setManaShield(uint32_t value) {
 		manaShield = value;
 	}
 
-	uint16_t getMaxManaShield() const {
+	uint32_t getMaxManaShield() const {
 		return maxManaShield;
 	}
 
-	void setMaxManaShield(uint16_t value) {
+	void setMaxManaShield(uint32_t value) {
 		maxManaShield = value;
 	}
 

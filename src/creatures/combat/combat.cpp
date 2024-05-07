@@ -649,7 +649,7 @@ CombatDamage Combat::applyImbuementElementalDamage(std::shared_ptr<Player> attac
 			continue;
 		}
 
-		if(damage.primary.type != COMBAT_PHYSICALDAMAGE){
+		if (damage.primary.type != COMBAT_PHYSICALDAMAGE) {
 			break;
 		}
 

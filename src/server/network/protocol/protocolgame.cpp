@@ -3999,7 +3999,6 @@ void ProtocolGame::sendCyclopediaCharacterTitles() {
 		msg.addByte(title.m_permanent ? 0x01 : 0x00);
 		auto isUnlocked = player->title()->isTitleUnlocked(title.m_id);
 		msg.addByte(isUnlocked ? 0x01 : 0x00);
-		g_logger().debug("ProtocolGame::addByte - title: {}, unlocked: {}", title.m_id, isUnlocked);
 	}
 
 	writeToOutputBuffer(msg);

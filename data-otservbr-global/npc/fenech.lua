@@ -71,6 +71,20 @@ local itemsTable = {
 		{ itemName = "sudden death rune", clientId = 3155, buy = 135 },
 		{ itemName = "ultimate healing rune", clientId = 3160, buy = 175 },
 	},
+	["exercise weapons"] = {
+		{ itemName = "enhanced exercise rod", clientId = 35283, buy = 2340000 },
+		{ itemName = "enhanced exercise wand", clientId = 35284, buy = 2340000 },
+		{ itemName = "exercise rod", clientId = 28556, buy = 1800000 },
+		{ itemName = "exercise wand", clientId = 28557, buy = 1800000 },
+		{ itemName = "masterful exercise rod", clientId = 35289, buy = 2700000 },
+		{ itemName = "masterful exercise wand", clientId = 35290, buy = 2700000 },
+	},
+	["creature products"] = {
+		{ itemName = "spellwand", clientId = 651, sell = 299 },
+	},
+	["spellbook"] = {
+		{ itemName = "spellbook", clientId = 3059, buy = 150 },
+	},
 }
 
 npcConfig.shop = {}

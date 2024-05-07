@@ -78,7 +78,7 @@ local itemsTable = {
 		{ itemName = "stalagmite rune", clientId = 3179, buy = 12 },
 		{ itemName = "ultimate healing rune", clientId = 3160, buy = 175 },
 	},
-		["wands"] = {
+	["wands"] = {
 		{ itemName = "hailstorm rod", clientId = 3067, buy = 15000 },
 		{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
 		{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },

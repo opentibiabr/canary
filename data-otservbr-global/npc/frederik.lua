@@ -82,7 +82,7 @@ local itemsTable = {
 		{ itemName = "ultimate spirit potion", clientId = 23374, buy = 438 },
 		{ itemName = "vial", clientId = 2874, sell = 5 },
 	},
-		["exercise weapons"] = {
+	["exercise weapons"] = {
 		{ itemName = "enhanced exercise rod", clientId = 35283, buy = 2340000 },
 		{ itemName = "enhanced exercise wand", clientId = 35284, buy = 2340000 },
 		{ itemName = "exercise rod", clientId = 28556, buy = 1800000 },

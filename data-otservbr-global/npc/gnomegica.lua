@@ -78,7 +78,7 @@ local itemsTable = {
 		{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
 		{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
 	},
-		["exercise weapons"] = {
+	["exercise weapons"] = {
 		{ itemName = "enhanced exercise rod", clientId = 35283, buy = 2340000 },
 		{ itemName = "enhanced exercise wand", clientId = 35284, buy = 2340000 },
 		{ itemName = "exercise rod", clientId = 28556, buy = 1800000 },

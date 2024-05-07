@@ -124,7 +124,12 @@ bool BedItem::isBedComplete(std::shared_ptr<BedItem> nextBedItem) {
 		return false;
 	}
 
-	g_logger().debug("First bed part id {}, second part id {}", it.id, nextBedItem->getID());
+	auto partName = it.name;
+	auto nextPartname = nextBedItem->getName();
+	auto firstPart = keepFirstWordOnly(partName);
+	auto nextPartOf = keepFirstWordOnly(nextPartname);
+
+	g_logger().debug("First bed part id {} name {}, second part id {} name {}", it.id, firstPart, nextBedItem->getID(), nextPartOf);
 
 	return it.bedPartOf == nextBedItem->getID();
 }

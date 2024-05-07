@@ -118,7 +118,7 @@ bool BedItem::canUse(std::shared_ptr<Player> player) {
 }
 
 bool BedItem::isBedComplete(std::shared_ptr<BedItem> nextBedItem) {
-	const ItemType& it = Item::items[id];
+	const ItemType &it = Item::items[id];
 
 	if (nextBedItem == nullptr) {
 		return false;

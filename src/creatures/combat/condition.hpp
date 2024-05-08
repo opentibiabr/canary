@@ -219,7 +219,7 @@ public:
 	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
 private:
-	uint16_t manaShield = 0;
+	uint32_t manaShield = 0;
 };
 
 class ConditionSoul final : public ConditionGeneric {

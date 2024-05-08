@@ -399,7 +399,6 @@ resetSessionsOnStartup = false
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
 -- NOTE: disableLegacyRaids: set to true to disable legacy XML raids
--- NOTE: combatChainDelay: set to minimum 50 miliseconds
 allowChangeOutfit = true
 toggleMountInProtectionZone = false
 freePremium = false
@@ -432,7 +431,8 @@ maxElementalResistance = 200
 maxDamageReflection = 200
 
 -- Chain system
-toggleChainSystem = true
+-- NOTE: combatChainDelay: set to minimum 50 miliseconds
+toggleChainSystem = false
 combatChainDelay = 50
 combatChainTargets = 5
 combatChainSkillFormulaAxe = 0.9

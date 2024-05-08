@@ -3944,7 +3944,7 @@ ItemsTierCountList Player::getInventoryItemsId(bool ignoreStoreInbox /* false */
 			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
 		}
 
-		std::shared_ptr<Container> container = item->getContainer();
+		const auto &container = item->getContainer();
 		if (container && (!isStoreInbox || !ignoreStoreInbox)) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 				auto containerItem = *it;
@@ -4046,7 +4046,7 @@ double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resista
 
 ItemsTierCountList Player::getStoreInboxItemsId() const {
 	ItemsTierCountList itemMap;
-	std::shared_ptr<Container> container = getStoreInbox();
+	const auto &container = getStoreInbox();
 	if (container) {
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 			std::shared_ptr<Item> item = *it;
@@ -4078,7 +4078,7 @@ ItemsTierCountList Player::getDepotInboxItemsId() const {
 	const std::shared_ptr<Container> &container = inbox->getContainer();
 	if (container) {
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-			std::shared_ptr<Item> item = *it;
+			const auto &item = *it;
 			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
 		}
 	}

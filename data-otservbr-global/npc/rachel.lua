@@ -84,7 +84,7 @@ local itemsTable = {
 	},
 	["valuables"] = {
 		{ itemName = "talon", clientId = 3034, sell = 320 },
-	},		
+	},
 	["shields"] = {
 		{ itemName = "spellbook", clientId = 3059, buy = 150 },
 	},

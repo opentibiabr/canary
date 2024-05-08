@@ -5643,7 +5643,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 
 			if (it.abilities->perfectShotDamage > 0) {
 				string.clear();
-				string << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at " << it.abilities->perfectShotRange << "%";
+				string << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
 				msg.addString(string.str(), "ProtocolGame::sendMarketDetail - string.str()");
 			} else {
 				msg.add<uint16_t>(0x00);

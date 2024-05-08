@@ -79,11 +79,13 @@ local itemsTable = {
 		{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000, count = 14400 },
 		{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000, count = 14400 },
 	},
-	["creature products"] = {
+	["others"] = {
 		{ itemName = "spellwand", clientId = 651, sell = 299 },
-		{ itemName = "talon", clientId = 3034, sell = 320 },
 	},
-	["spellbook"] = {
+	["valuables"] = {
+		{ itemName = "talon", clientId = 3034, sell = 320 },
+	},		
+	["shields"] = {
 		{ itemName = "spellbook", clientId = 3059, buy = 150 },
 	},
 }

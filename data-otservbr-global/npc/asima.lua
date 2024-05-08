@@ -49,10 +49,10 @@ local itemsTable = {
 		{ itemName = "ultimate spirit potion", clientId = 23374, buy = 438 },
 		{ itemName = "vial", clientId = 2874, sell = 5 },
 	},
-	["creature products"] = {
+	["others"] = {
 		{ itemName = "spellwand", clientId = 651, sell = 299 },
 	},
-	["spellbook"] = {
+	["shields"] = {
 		{ itemName = "spellbook", clientId = 3059, buy = 150 },
 	},
 	["runes"] = {

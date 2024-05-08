@@ -111,17 +111,19 @@ local itemsTable = {
 		{ itemName = "old girtablilu carapace", clientId = 36972, sell = 570 },
 		{ itemName = "red goanna scale", clientId = 31558, sell = 270 },
 		{ itemName = "scorpion charm", clientId = 36822, sell = 620 },
-		{ itemName = "spellbook of enlightenment", clientId = 8072, sell = 4000 },
-		{ itemName = "spellbook of lost souls", clientId = 8075, sell = 19000 },
-		{ itemName = "spellbook of mind control", clientId = 8074, sell = 13000 },
-		{ itemName = "spellbook of warding", clientId = 8074, sell = 8000 },
-		{ itemName = "spellwand", clientId = 651, sell = 299 },
 		{ itemName = "sphinx feather", clientId = 31437, sell = 470 },
 		{ itemName = "sphinx tiara", clientId = 31438, sell = 360 },
 	},
-	["spellbook"] = {
+	["shields"] = {
 		{ itemName = "spellbook", clientId = 3059, buy = 150 },
+		{ itemName = "spellbook of enlightenment", clientId = 8072, sell = 4000 },
+		{ itemName = "spellbook of lost souls", clientId = 8075, sell = 19000 },
+		{ itemName = "spellbook of mind control", clientId = 8074, sell = 13000 },
+		{ itemName = "spellbook of warding", clientId = 8074, sell = 8000 },		
 	},
+	["others"] = {
+		{ itemName = "spellwand", clientId = 651, sell = 299 },
+	},	
 }
 
 npcConfig.shop = {}

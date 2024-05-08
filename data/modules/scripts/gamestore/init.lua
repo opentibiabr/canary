@@ -479,7 +479,7 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE then
 			GameStore.processSexChangePurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
-			GameStore.processExpBoostPuchase(player)
+			GameStore.processExpBoostPurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT then
 			GameStore.processTaskHuntingThirdSlot(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT then
@@ -732,7 +732,7 @@ function Player.canBuyOffer(self, offer)
 				disabled = 1
 				disabledReason = "You can't buy XP Boost for today."
 			end
-			if self:getExpBoostStamina() > 0 then
+			if self:getXpBoostTime() > 0 then
 				disabled = 1
 				disabledReason = "You already have an active XP boost."
 			end
@@ -1742,12 +1742,12 @@ function GameStore.processSexChangePurchase(player)
 	player:toggleSex()
 end
 
-function GameStore.processExpBoostPuchase(player)
-	local currentExpBoostTime = player:getExpBoostStamina()
+function GameStore.processExpBoostPurchase(player)
+	local currentXpBoostTime = player:getXpBoostTime()
 	local expBoostCount = player:getStorageValue(GameStore.Storages.expBoostCount)
 
-	player:setStoreXpBoost(50)
-	player:setExpBoostStamina(currentExpBoostTime + 3600)
+	player:setXpBoostPercent(50)
+	player:setXpBoostTime(currentXpBoostTime + 3600)
 
 	if expBoostCount == -1 or expBoostCount == 6 then
 		expBoostCount = 1

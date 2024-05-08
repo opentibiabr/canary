@@ -636,13 +636,15 @@ void Spell::getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &d
 		for (std::shared_ptr<Item> item : equippedAugmentItems) {
 			Augments augments = item->getAugmentsBySpellName(damage.instantSpellName);
 			for (auto &augment : augments) {
-				damage.lifeLeech += augment->type == AUGMENT_LIFELEECHAMOUNT ? augment->value : 0;
-				damage.manaLeech += augment->type == AUGMENT_MANALEECHAMOUNT ? augment->value : 0;
-				damage.criticalDamage += augment->type == AUGMENT_CRITICALHITDAMAGE ? augment->value : 0;
 				if (augment->type == AUGMENT_INCREASED_DAMAGE || augment->type == AUGMENT_POWERFUL_IMPACT || augment->type == AUGMENT_STRONG_IMPACT) {
-					const float augmentPercent = augment->value / 10000.0;
+					const float augmentPercent = augment->value / 100.0;
 					damage.primary.value += static_cast<int32_t>(damage.primary.value * augmentPercent);
 					damage.secondary.value += static_cast<int32_t>(damage.secondary.value * augmentPercent);
+				} else if (augment->type != AUGMENT_COOLDOWN) {
+					const int32_t augmentValue = augment->value * 100;
+					damage.lifeLeech += augment->type == AUGMENT_LIFELEECHAMOUNT ? augmentValue : 0;
+					damage.manaLeech += augment->type == AUGMENT_MANALEECHAMOUNT ? augmentValue : 0;
+					damage.criticalDamage += augment->type == AUGMENT_CRITICALHITDAMAGE ? augmentValue : 0;
 				}
 			}
 		}

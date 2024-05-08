@@ -75329,7 +75329,7 @@ Granted by TibiaGoals.com"/>
 				<attribute key="value" value="900000" />
 			</attribute>
 			<attribute key="fierce beserk" value="critical extra damage">
-				<attribute key="value" value="800" />
+				<attribute key="value" value="8" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -75471,7 +75471,7 @@ Granted by TibiaGoals.com"/>
 				<attribute key="value" value="900000" />
 			</attribute>
 			<attribute key="divine caldera" value="critical extra damage">
-				<attribute key="value" value="800" />
+				<attribute key="value" value="8" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -75561,10 +75561,10 @@ Granted by TibiaGoals.com"/>
 				<attribute key="value" value="900000" />
 			</attribute>
 			<attribute key="hell's core" value="critical extra damage">
-				<attribute key="value" value="800" />
+				<attribute key="value" value="8" />
 			</attribute>
 			<attribute key="energy wave" value="critical extra damage">
-				<attribute key="value" value="800" />
+				<attribute key="value" value="8" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -75654,10 +75654,10 @@ Granted by TibiaGoals.com"/>
 				<attribute key="value" value="900000" />
 			</attribute>
 			<attribute key="eternal winter" value="critical extra damage">
-				<attribute key="value" value="800" />
+				<attribute key="value" value="8" />
 			</attribute>
 			<attribute key="terra wave" value="critical extra damage">
-				<attribute key="value" value="800" />
+				<attribute key="value" value="8" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">

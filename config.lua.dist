@@ -80,10 +80,44 @@ freeDepotLimit = 2000
 premiumDepotLimit = 10000
 depotBoxes = 20
 
--- Augment system
+-- Augments System (Get more info in: https://github.com/opentibiabr/canary/pull/2602)
+--
+-- the key value of the key "augments" is to enable (1) and disable (0) the augments of the item.
+-- The augments should be structered in this way on items.xml:
+--
+-- <attribute key="augments" value="1">
+--   <attribute key="spell name" value="augment type" />
+-- </attribute>
+--
+-- Example of augment that have default value:
+--
+-- <attribute key="augments" value="1">
+--   <attribute key="energy wave" value="strong impact" />
+-- </attribute>
+--
+-- Example of augment that don't have default value, the value must be set:
+--
+-- <attribute key="augments" value="1">
+--   <attribute key="energy wave" value="life leech">
+--     <attribute key="value" value="5" />
+--   </attribute>
+-- </attribute>
+--
+-- NOTE: augments type available:
+-- * "critical extra damage",
+-- * "life leech", 
+-- * "mana leech",
+-- * "cooldown",
+-- * "increased damage", (don't need to set value)
+-- * "strong impact", (don't need to set value)
+-- * "powerful impact" (don't need to set value)
+--
 -- NOTE: the following values are for all weapons and equipments that have type of "increase damage", "powerful impact" and "strong impact".
--- To customize the percentage of a particular item, please add to the item "augments" section on items.xml
+-- To customize the percentage of a particular item with these augment types, please add to the item "augments" section on items.xml as the example above.
 -- NOTE: The values represent percentage.
+-- NOTE: augmentIncreasedDamagePercent = value between 1 and 100 (damage percent to increase. ex: 5 = 5%, 50 = 50%)
+-- NOTE: augmentPowerfulImpactPercent = value between 1 and 100 (damage percent to increase. ex: 10 = 10%, 100 = 100%)
+-- NOTE: augmentStrongImpactPercent = value between 1 and 100 (damage percent to increase. ex: 7 = 7%, 70 = 70%)
 augmentIncreasedDamagePercent = 5
 augmentPowerfulImpactPercent = 7
 augmentStrongImpactPercent = 10

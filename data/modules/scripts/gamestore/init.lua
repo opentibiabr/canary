@@ -732,7 +732,7 @@ function Player.canBuyOffer(self, offer)
 				disabled = 1
 				disabledReason = "You can't buy XP Boost for today."
 			end
-			if self:getExpBoostStamina() > 0 then
+			if self:getXpBoostTime() > 0 then
 				disabled = 1
 				disabledReason = "You already have an active XP boost."
 			end
@@ -1743,11 +1743,11 @@ function GameStore.processSexChangePurchase(player)
 end
 
 function GameStore.processExpBoostPurchase(player)
-	local currentExpBoostTime = player:getExpBoostStamina()
+	local currentXpBoostTime = player:getXpBoostTime()
 	local expBoostCount = player:getStorageValue(GameStore.Storages.expBoostCount)
 
-	player:setStoreXpBoost(50)
-	player:setExpBoostStamina(currentExpBoostTime + 3600)
+	player:setXpBoostPercent(50)
+	player:setXpBoostTime(currentXpBoostTime + 3600)
 
 	if expBoostCount == -1 or expBoostCount == 6 then
 		expBoostCount = 1

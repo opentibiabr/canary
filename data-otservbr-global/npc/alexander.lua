@@ -42,16 +42,16 @@ local itemsTable = {
 		{ itemName = "crystal ball", clientId = 3076, buy = 530, sell = 190 },
 		{ itemName = "life crystal", clientId = 3061, sell = 83 },
 		{ itemName = "mind stone", clientId = 3062, sell = 170 },
-		},
-	["shields"] = {	
+	},
+	["shields"] = {
 		{ itemName = "spellbook of enlightenment", clientId = 8072, sell = 4000 },
 		{ itemName = "spellbook of warding", clientId = 8073, sell = 8000 },
 		{ itemName = "spellbook of mind control", clientId = 8074, sell = 13000 },
 		{ itemName = "spellbook of lost souls", clientId = 8075, sell = 19000 },
 	},
-	["others"] = {		
+	["others"] = {
 		{ itemName = "spellwand", clientId = 651, sell = 299 },
-	},		
+	},
 	["runes"] = {
 		{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
 		{ itemName = "blank rune", clientId = 3147, buy = 10 },

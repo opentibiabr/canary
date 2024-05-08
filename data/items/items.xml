@@ -74873,7 +74873,6 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weight" value="280"/>
 	</item>
 	<item id="43740" article="a" name="scarab ocarina">
-		<attribute key="primarytype" value="quest items"/>
 		<attribute key="primarytype" value="light sources"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="description" value="It has a turquoise shimmer and was made from a real scarab shell."/>

@@ -108,7 +108,7 @@ local facelessBaneSteps = {
 }
 
 for _, pos in ipairs(facelessBaneSteps) do
-    facelessBaneStepPositions:position(pos)
+	facelessBaneStepPositions:position(pos)
 end
 
 facelessBaneStepPositions:register()

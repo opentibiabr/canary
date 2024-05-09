@@ -75489,6 +75489,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
 		<attribute key="criticalhitdamage" value="1200"/>
+		<attribute key="range" value="6"/>
 		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="weight" value="2200"/>
 		<attribute key="imbuementslot" value="2">
@@ -75520,6 +75521,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
+		<attribute key="range" value="6"/>
 		<attribute key="criticalhitdamage" value="1200"/>
 		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="weight" value="2100"/>
@@ -75578,6 +75580,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="earth"/>
 		<attribute key="absorbpercentdeath" value="7"/>
+		<attribute key="range" value="6"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="earthmagiclevelpoints" value="1"/>
 		<attribute key="icemagiclevelpoints" value="1"/>
@@ -75612,6 +75615,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="absorbpercentdeath" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="earthmagiclevelpoints" value="1"/>
+		<attribute key="range" value="6"/>
 		<attribute key="icemagiclevelpoints" value="1"/>
 		<attribute key="criticalhitdamage" value="500"/>
 		<attribute key="criticalhitchance" value="1000"/>

@@ -653,6 +653,10 @@ CombatDamage Combat::applyImbuementElementalDamage(std::shared_ptr<Player> attac
 			continue;
 		}
 
+		if (damage.primary.type != COMBAT_PHYSICALDAMAGE) {
+			break;
+		}
+
 		float damagePercent = imbuementInfo.imbuement->elementDamage / 100.0;
 
 		damage.secondary.type = imbuementInfo.imbuement->combatType;

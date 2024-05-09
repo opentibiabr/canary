@@ -452,7 +452,7 @@ public:
 			{ AUGMENT_POWERFUL_IMPACT, "Powerful Impact" },
 			{ AUGMENT_STRONG_IMPACT, "Strong Impact" },
 		};
-		
+
 		const auto it = map.find(augmentType);
 		if (it != map.end()) {
 			return it->second;

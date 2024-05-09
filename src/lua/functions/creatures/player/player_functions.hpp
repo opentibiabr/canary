@@ -366,8 +366,8 @@ private:
 
 		// Badge Functions
 		registerMethod(L, "Player", "addBadge", PlayerFunctions::luaPlayerAddBadge);
-    
-    registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
+
+		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
@@ -724,8 +724,8 @@ private:
 	static int luaPlayerRemoveAchievementPoints(lua_State* L);
 
 	static int luaPlayerAddBadge(lua_State* L);
-  
-  static int luaPlayerTakeScreenshot(lua_State* L);
+
+	static int luaPlayerTakeScreenshot(lua_State* L);
 
 	friend class CreatureFunctions;
 };

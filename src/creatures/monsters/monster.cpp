@@ -64,14 +64,14 @@ void Monster::removeList() {
 	g_game().removeMonster(static_self_cast<Monster>());
 }
 
-const std::string& Monster::getName() const {
+const std::string &Monster::getName() const {
 	if (name.empty()) {
 		return mType->name;
 	}
 	return name;
 }
 
-void Monster::setName(const std::string& name) {
+void Monster::setName(const std::string &name) {
 	if (getName() == name) {
 		return;
 	}
@@ -89,7 +89,7 @@ void Monster::setName(const std::string& name) {
 	}
 }
 
-const std::string& Monster::getNameDescription() const {
+const std::string &Monster::getNameDescription() const {
 	if (nameDescription.empty()) {
 		return mType->nameDescription;
 	}

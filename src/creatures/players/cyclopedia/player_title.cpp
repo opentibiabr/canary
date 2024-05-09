@@ -112,11 +112,12 @@ void PlayerTitle::checkAndUpdateNewTitles() {
 				// }
 				break;
 			case CyclopediaTitle_t::BESTIARY:
-				if (checkBestiary(title.m_race)) {
+			case CyclopediaTitle_t::BOSSTIARY:
+				if (checkBestiary(title.m_maleName, title.m_race, title.m_type == CyclopediaTitle_t::BOSSTIARY, title.m_amount)) {
 					add(title.m_id);
 				}
 				break;
-			case CyclopediaTitle_t::LOGIN:
+			case CyclopediaTitle_t::DAILY_REWARD:
 				if (checkLoginStreak(title.m_amount)) {
 					add(title.m_id);
 				}
@@ -130,11 +131,6 @@ void PlayerTitle::checkAndUpdateNewTitles() {
 				// if (checkMap(title.m_amount)) {
 				// 	add(title.m_id);
 				// }
-				break;
-			case CyclopediaTitle_t::QUEST:
-				if (checkQuest(title.m_storage)) {
-					add(title.m_id);
-				}
 				break;
 			case CyclopediaTitle_t::OTHERS:
 				if (checkOther(title.m_maleName)) {
@@ -199,8 +195,18 @@ bool PlayerTitle::checkHighscore(uint8_t skill) {
 	return false;
 }
 
-bool PlayerTitle::checkBestiary(uint16_t race) {
-	return m_player.isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterTypeByRaceId(race));
+bool PlayerTitle::checkBestiary(const std::string &name, uint16_t race, bool isBoss /* = false*/, uint32_t amount) {
+	if (race == 0) {
+		// todo another checks
+		if (name == "Executioner") {
+		} else if (name == "Boss Executioner") {
+		}
+		return false;
+	}
+	if (isBoss && amount > 0) {
+		return m_player.getBestiaryKillCount(race) >= amount;
+	}
+	return m_player.isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterTypeByRaceId(race, isBoss));
 }
 
 bool PlayerTitle::checkLoginStreak(uint32_t amount) {
@@ -217,27 +223,48 @@ bool PlayerTitle::checkMap(uint32_t amount) {
 	return false;
 }
 
-bool PlayerTitle::checkQuest(TitleStorage storage) {
-	return !storage.kvKey.empty()
-		? m_player.kv()->get(storage.kvKey)->getNumber() == storage.value
-		: m_player.getStorageValue(storage.key) == storage.value;
-}
-
 bool PlayerTitle::checkOther(const std::string &name) {
-	if (name == "Admirer of the Crown") {
-		// todo
-		return false;
-	} else if (name == "Big Spender" && m_player.canWear(1211, 3) && m_player.canWear(1210, 3)) {
-		return true;
-	} else if (name == "Guild Leader") {
+	if (name == "Guild Leader") {
 		auto rank = m_player.getGuildRank();
 		return rank && rank->level == 3;
-	} else if (name == "Jack of all Taints") {
-		// todo
-		return false;
-	} else if (name == "Reigning Drome Champion") {
-		// todo
-		return false;
+	} else if (name == "Proconsul of Iksupan") {
+		// Win Ancient Aucar Outfits complete so fight with Atab and be teleported to the arena.
+	} else if (name == "Admirer of the Crown" && m_player.canWear(1457, 3) && m_player.canWear(1456, 3)) {
+		return true;
+	} else if (name == "Big Spender" && m_player.canWear(1211, 3) && m_player.canWear(1210, 3)) {
+		return true;
+	} else if (name == "Challenger of the Iks") {
+		// Defeat Ahau while equipping a Broken Iks Headpiece, a Broken Iks Cuirass, some Broken Iks Faulds and Broken Iks Sandals
+	} else if (name == "Royal Bounacean Advisor") {
+		// Complete the Galthen and the Lost Queen quest line
+		// Win Royal Bounacean Outfit
+	} else if (name == "Aeternal") {
+		// Unlocked by 10-year-old characters.
+	} else if (name == "Robinson Crusoe") {
+		// Visit Schrödinger's Island.
+	} else if (name == "Chompmeister") {
+		// Complete all Jean Pierre's dishes in Hot Cuisine Quest.
+	} else if (name == "Bringer of Rain") {
+		// Clear wave 100 in the Tibiadrome.
+	} else if (name == "Beastly") {
+		// Reached 2000 charm points
+	} else if (name == "Midnight Hunter") {
+		// Kill a certain amount of Midnight Panthers.
+		//(The exact number is yet to be confirmed but is at least 21 and at most 28 panthers.)
+	} else if (name == "Ratinator") {
+		// Kill 10,000 Cave Rats.
+	} else if (name == "Doomsday Nemesis") {
+		// Kill Gaz'haragoth one time.
+	} else if (name == "Hero of Bounac") {
+		// Complete The Order of the Lion Quest.
+	} else if (name == "King of Demon") {
+		// Defeat Morshabaal 5 times.
+	} else if (name == "Planegazer") {
+		// Kill Planestrider in Opticording Sphere Quest.
+	} else if (name == "Time Traveller") {
+		// Complete 25 Years of Tibia Quest.
+	} else if (name == "Truly Boss") {
+		return m_player.getBossPoints() >= 15000;
 	}
 	return false;
 }

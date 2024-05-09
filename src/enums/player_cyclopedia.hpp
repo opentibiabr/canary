@@ -30,9 +30,9 @@ enum CyclopediaTitle_t : uint8_t {
 	LEVEL,
 	HIGHSCORES,
 	BESTIARY,
-	LOGIN,
+	BOSSTIARY,
+	DAILY_REWARD,
 	TASK,
 	MAP,
-	QUEST,
 	OTHERS,
 };

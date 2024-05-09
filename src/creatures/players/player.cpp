@@ -6716,7 +6716,8 @@ void Player::triggerTranscendance() {
 					player->sendStats();
 					player->sendBasicData();
 				}
-			}, "Player::triggerTranscendance"
+			},
+			"Player::triggerTranscendance"
 		);
 		g_dispatcher().scheduleEvent(task);
 

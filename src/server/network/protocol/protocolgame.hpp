@@ -388,6 +388,7 @@ private:
 	void sendAddTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
 	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
 	void sendRemoveTileThing(const Position &pos, uint32_t stackpos);
+	void sendUpdateTileCreature(const Position& pos, uint32_t stackpos, const std::shared_ptr<Creature> creature);
 	void sendUpdateTile(std::shared_ptr<Tile> tile, const Position &pos);
 
 	void sendAddCreature(std::shared_ptr<Creature> creature, const Position &pos, int32_t stackpos, bool isLogin);

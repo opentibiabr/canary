@@ -529,6 +529,24 @@ int MonsterFunctions::luaMonsterGetName(lua_State* L) {
 	return 1;
 }
 
+int MonsterFunctions::luaMonsterRename(lua_State* L) {
+	// monster:rename(name[, nameDescription])
+	auto monster = getUserdataShared<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->setName(getString(L, 2));
+	if (lua_gettop(L) >= 3) {
+		monster->setNameDescription(getString(L, 3));
+	}
+
+	pushBoolean(L, true);
+	return 1;
+}
+
 int MonsterFunctions::luaMonsterHazard(lua_State* L) {
 	// get: monster:hazard() ; set: monster:hazard(hazard)
 	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);

@@ -249,7 +249,7 @@ Game::Game() {
 		Title(20, CyclopediaTitle_t::LEVEL, "Exalted", "Reached level 1000.", 1000, false),
 
 		Title(21, CyclopediaTitle_t::HIGHSCORES, "Apex Predator", "", "Highest Level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE)),
-		Title(22, CyclopediaTitle_t::OTHERS, "Big Boss", "Obter a pontuação mais alta de boss points no seu mundo.", false),
+		Title(22, CyclopediaTitle_t::OTHERS, "Big Boss", "Highest score of accumulated boss points on character's world.", false),
 		Title(23, CyclopediaTitle_t::HIGHSCORES, "Jack of all Taints", "", "Highest score for killing Goshnar and his aspects on character's world.", static_cast<uint8_t>(HighscoreCategories_t::GOSHNAR)),
 		Title(24, CyclopediaTitle_t::HIGHSCORES, "Legend of Fishing", "", "Highest fishing level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::FISHING)),
 		Title(25, CyclopediaTitle_t::HIGHSCORES, "Legend of Magic", "", "Highest magic level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::MAGIC_LEVEL)),

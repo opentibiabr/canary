@@ -197,13 +197,15 @@ bool PlayerTitle::checkHighscore(uint8_t skill) {
 
 bool PlayerTitle::checkBestiary(const std::string &name, uint16_t race, bool isBoss /* = false*/, uint32_t amount) {
 	if (race == 0) {
-		// todo another checks
 		if (name == "Executioner") {
+			// todo check if player has unlocked all bestiary
 		} else if (name == "Boss Executioner") {
+			// todo check if player has unlocked all bosses
 		}
 		return false;
 	}
 	if (isBoss && amount > 0) {
+		// todo check if this way, is calculating by boss race
 		return m_player.getBestiaryKillCount(race) >= amount;
 	}
 	return m_player.isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterTypeByRaceId(race, isBoss));
@@ -224,7 +226,9 @@ bool PlayerTitle::checkMap(uint32_t amount) {
 }
 
 bool PlayerTitle::checkOther(const std::string &name) {
-	if (name == "Guild Leader") {
+	if (name == "Big Boss") {
+		// The Highest boss point on character's world.
+	} else if (name == "Guild Leader") {
 		auto rank = m_player.getGuildRank();
 		return rank && rank->level == 3;
 	} else if (name == "Proconsul of Iksupan") {

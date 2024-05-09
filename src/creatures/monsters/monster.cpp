@@ -83,7 +83,7 @@ void Monster::setName(const std::string &name) {
 	auto spectators = Spectators().find<Player>(position, true);
 	for (const auto spectator : spectators) {
 		if (const auto tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendUpdateTileCreature(this);
+			tmpPlayer->sendUpdateTileCreature(static_self_cast<Monster>());
 		}
 	}
 }

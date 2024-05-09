@@ -1308,7 +1308,7 @@ void ConditionManaShield::addCondition(std::shared_ptr<Creature> creature, const
 
 bool ConditionManaShield::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_MANASHIELD) {
-		return propStream.read<uint16_t>(manaShield);
+		return propStream.read<uint32_t>(manaShield);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -1317,7 +1317,7 @@ void ConditionManaShield::serialize(PropWriteStream &propWriteStream) {
 	Condition::serialize(propWriteStream);
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_MANASHIELD);
-	propWriteStream.write<uint16_t>(manaShield);
+	propWriteStream.write<uint32_t>(manaShield);
 }
 
 bool ConditionManaShield::setParam(ConditionParam_t param, int32_t value) {

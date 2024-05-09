@@ -15,6 +15,7 @@
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
@@ -4276,6 +4277,19 @@ int PlayerFunctions::luaPlayerRemoveAchievementPoints(lua_State* L) {
 	if (points > 0) {
 		player->achiev()->removePoints(points);
 	}
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddBadge(lua_State* L) {
+	// player:addBadge(id)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	player->badge()->add(getNumber<uint8_t>(L, 2, 0));
 	pushBoolean(L, true);
 	return 1;
 }

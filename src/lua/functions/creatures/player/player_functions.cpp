@@ -15,6 +15,7 @@
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
@@ -3219,23 +3220,23 @@ int PlayerFunctions::luaPlayerSetGrindingXpBoost(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetStoreXpBoost(lua_State* L) {
-	// player:getStoreXpBoost()
+int PlayerFunctions::luaPlayerGetXpBoostPercent(lua_State* L) {
+	// player:getXpBoostPercent()
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (player) {
-		lua_pushnumber(L, player->getStoreXpBoost());
+		lua_pushnumber(L, player->getXpBoostPercent());
 	} else {
 		lua_pushnil(L);
 	}
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSetStoreXpBoost(lua_State* L) {
-	// player:setStoreXpBoost(value)
+int PlayerFunctions::luaPlayerSetXpBoostPercent(lua_State* L) {
+	// player:setXpBoostPercent(value)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (player) {
-		uint16_t experience = getNumber<uint16_t>(L, 2);
-		player->setStoreXpBoost(experience);
+		uint16_t percent = getNumber<uint16_t>(L, 2);
+		player->setXpBoostPercent(percent);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -3267,12 +3268,12 @@ int PlayerFunctions::luaPlayerSetStaminaXpBoost(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSetExpBoostStamina(lua_State* L) {
-	// player:setExpBoostStamina(percent)
+int PlayerFunctions::luaPlayerSetXpBoostTime(lua_State* L) {
+	// player:setXpBoostTime(timeLeft)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (player) {
-		uint16_t stamina = getNumber<uint16_t>(L, 2);
-		player->setExpBoostStamina(stamina);
+		uint16_t timeLeft = getNumber<uint16_t>(L, 2);
+		player->setXpBoostTime(timeLeft);
 		player->sendStats();
 		pushBoolean(L, true);
 	} else {
@@ -3281,11 +3282,11 @@ int PlayerFunctions::luaPlayerSetExpBoostStamina(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetExpBoostStamina(lua_State* L) {
-	// player:getExpBoostStamina()
+int PlayerFunctions::luaPlayerGetXpBoostTime(lua_State* L) {
+	// player:getXpBoostTime()
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (player) {
-		lua_pushnumber(L, player->getExpBoostStamina());
+		lua_pushnumber(L, player->getXpBoostTime());
 	} else {
 		lua_pushnil(L);
 	}
@@ -4281,6 +4282,19 @@ int PlayerFunctions::luaPlayerRemoveAchievementPoints(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerAddBadge(lua_State* L) {
+	// player:addBadge(id)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	player->badge()->add(getNumber<uint8_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerTakeScreenshot(lua_State* L) {
 	// player:takeScreenshot(screenshotType)
 	const auto &player = getUserdataShared<Player>(L, 1);
@@ -4291,6 +4305,6 @@ int PlayerFunctions::luaPlayerTakeScreenshot(lua_State* L) {
 
 	auto screenshotType = getNumber<Screenshot_t>(L, 2);
 	player->sendTakeScreenshot(screenshotType);
-	pushBoolean(L, true);
+  pushBoolean(L, true);
 	return 1;
 }

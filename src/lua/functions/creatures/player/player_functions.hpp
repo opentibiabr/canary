@@ -273,12 +273,12 @@ private:
 		registerMethod(L, "Player", "setVoucherXpBoost", PlayerFunctions::luaPlayerSetVoucherXpBoost);
 		registerMethod(L, "Player", "getGrindingXpBoost", PlayerFunctions::luaPlayerGetGrindingXpBoost);
 		registerMethod(L, "Player", "setGrindingXpBoost", PlayerFunctions::luaPlayerSetGrindingXpBoost);
-		registerMethod(L, "Player", "getStoreXpBoost", PlayerFunctions::luaPlayerGetStoreXpBoost);
-		registerMethod(L, "Player", "setStoreXpBoost", PlayerFunctions::luaPlayerSetStoreXpBoost);
+		registerMethod(L, "Player", "getXpBoostPercent", PlayerFunctions::luaPlayerGetXpBoostPercent);
+		registerMethod(L, "Player", "setXpBoostPercent", PlayerFunctions::luaPlayerSetXpBoostPercent);
 		registerMethod(L, "Player", "getStaminaXpBoost", PlayerFunctions::luaPlayerGetStaminaXpBoost);
 		registerMethod(L, "Player", "setStaminaXpBoost", PlayerFunctions::luaPlayerSetStaminaXpBoost);
-		registerMethod(L, "Player", "getExpBoostStamina", PlayerFunctions::luaPlayerGetExpBoostStamina);
-		registerMethod(L, "Player", "setExpBoostStamina", PlayerFunctions::luaPlayerSetExpBoostStamina);
+		registerMethod(L, "Player", "getXpBoostTime", PlayerFunctions::luaPlayerGetXpBoostTime);
+		registerMethod(L, "Player", "setXpBoostTime", PlayerFunctions::luaPlayerSetXpBoostTime);
 
 		registerMethod(L, "Player", "getIdleTime", PlayerFunctions::luaPlayerGetIdleTime);
 		registerMethod(L, "Player", "getFreeBackpackSlots", PlayerFunctions::luaPlayerGetFreeBackpackSlots);
@@ -364,7 +364,10 @@ private:
 		registerMethod(L, "Player", "addAchievementPoints", PlayerFunctions::luaPlayerAddAchievementPoints);
 		registerMethod(L, "Player", "removeAchievementPoints", PlayerFunctions::luaPlayerRemoveAchievementPoints);
 
-		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
+		// Badge Functions
+		registerMethod(L, "Player", "addBadge", PlayerFunctions::luaPlayerAddBadge);
+    
+    registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
@@ -629,12 +632,12 @@ private:
 	static int luaPlayerSetVoucherXpBoost(lua_State* L);
 	static int luaPlayerGetGrindingXpBoost(lua_State* L);
 	static int luaPlayerSetGrindingXpBoost(lua_State* L);
-	static int luaPlayerGetStoreXpBoost(lua_State* L);
-	static int luaPlayerSetStoreXpBoost(lua_State* L);
+	static int luaPlayerGetXpBoostPercent(lua_State* L);
+	static int luaPlayerSetXpBoostPercent(lua_State* L);
 	static int luaPlayerGetStaminaXpBoost(lua_State* L);
 	static int luaPlayerSetStaminaXpBoost(lua_State* L);
-	static int luaPlayerGetExpBoostStamina(lua_State* L);
-	static int luaPlayerSetExpBoostStamina(lua_State* L);
+	static int luaPlayerGetXpBoostTime(lua_State* L);
+	static int luaPlayerSetXpBoostTime(lua_State* L);
 
 	static int luaPlayerGetIdleTime(lua_State* L);
 	static int luaPlayerGetFreeBackpackSlots(lua_State* L);
@@ -720,7 +723,9 @@ private:
 	static int luaPlayerAddAchievementPoints(lua_State* L);
 	static int luaPlayerRemoveAchievementPoints(lua_State* L);
 
-	static int luaPlayerTakeScreenshot(lua_State* L);
+	static int luaPlayerAddBadge(lua_State* L);
+  
+  static int luaPlayerTakeScreenshot(lua_State* L);
 
 	friend class CreatureFunctions;
 };

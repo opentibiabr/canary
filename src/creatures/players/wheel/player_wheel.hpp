@@ -205,7 +205,6 @@ private:
 	 * indicating that the player can increase points but cannot decrease the ID.
 	 */
 	uint8_t getOptions(uint32_t ownerId) const;
-	uint8_t getPlayerVocationEnum() const;
 
 	std::shared_ptr<KV> gemsKV() const;
 

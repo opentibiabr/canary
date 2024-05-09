@@ -476,8 +476,15 @@ function Player.selectDailyReward(self, msg)
 		end
 		dailyRewardMessage = "Picked items: " .. description
 	elseif dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST then
-		self:setExpBoostStamina(self:getExpBoostStamina() + (rewardCount * 60))
-		self:setStoreXpBoost(50)
+		local rewardCountReviewed = rewardCount
+		local xpBoostLeftMinutes = self:kv():get("daily-reward-xp-boost") or 0
+		if xpBoostLeftMinutes > 0 then
+			rewardCountReviewed = rewardCountReviewed - xpBoostLeftMinutes
+		end
+
+		self:setXpBoostTime(self:getXpBoostTime() + (rewardCountReviewed * 60))
+		self:kv():set("daily-reward-xp-boost", rewardCount)
+		self:setXpBoostPercent(50)
 		dailyRewardMessage = "Picked reward: XP Bonus for " .. rewardCount .. " minutes."
 	elseif dailyTable.type == DAILY_REWARD_TYPE_PREY_REROLL then
 		self:addPreyCards(rewardCount)

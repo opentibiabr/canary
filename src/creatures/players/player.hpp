@@ -1074,7 +1074,7 @@ public:
 	}
 	void sendUpdateTileCreature(const std::shared_ptr<Creature> creature) {
 		if (client) {
-			client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(this, creature), creature);
+			client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(static_self_cast<Player>(), creature), creature);
 		}
 	}
 	void sendUpdateTile(std::shared_ptr<Tile> updateTile, const Position &pos) {

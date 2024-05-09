@@ -35,14 +35,12 @@ function facelessBaneImmunity.onHealthChange(creature, attacker, primaryDamage, 
 
 		if creatureHealthPercent <= 20 and facelessBaneDeathsStorage < 1 then
 			resetBoss(creature, facelessBaneDeathsStorage)
-			return primaryDamage, primaryType, secondaryDamage, secondaryType
-		end
-
-		if Game.getStorageValue(GlobalStorage.TheDreamCourts.FacelessBane.StepsOn) < 1 then
-			return 0, 0, 0, 0
+			return true
+		elseif Game.getStorageValue(GlobalStorage.TheDreamCourts.FacelessBane.StepsOn) < 1 then
+			healBoss(creature)
+			return true
 		end
 	end
-
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end
 

@@ -2893,7 +2893,6 @@ private:
 	bool moved = false;
 	bool dead = false;
 	bool imbuementTrackerWindowOpen = false;
-	bool updateStatsAfterTranscendance = false;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;

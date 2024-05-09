@@ -1645,9 +1645,9 @@ public:
 		}
 	}
 	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
-	void sendCyclopediaCharacterItemSummary() {
+	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) {
 		if (client) {
-			client->sendCyclopediaCharacterItemSummary();
+			client->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 		}
 	}
 	void sendCyclopediaCharacterOutfitsMounts() {
@@ -2585,6 +2585,13 @@ public:
 	// Get specific inventory item from itemid
 	std::vector<std::shared_ptr<Item>> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 
+	// this get all player store inbox items and return as ItemsTierCountList
+	ItemsTierCountList getStoreInboxItemsId() const;
+	// this get all player depot chest items and return as ItemsTierCountList
+	ItemsTierCountList getDepotChestItemsId() const;
+	// this get all player depot inbox items and return as ItemsTierCountList
+	ItemsTierCountList getDepotInboxItemsId() const;
+
 	// This get all player inventory items
 	std::vector<std::shared_ptr<Item>> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
 
@@ -2685,8 +2692,7 @@ private:
 	size_t getLastIndex() const override;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 	void stashContainer(StashContainerList itemDict);
-	ItemsTierCountList getInventoryItemsId() const;
-	// todo   ItemsTierCountList getStoreInboxItemsId() const;
+	ItemsTierCountList getInventoryItemsId(bool ignoreStoreInbox = false) const;
 
 	// This function is a override function of base class
 	std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override;

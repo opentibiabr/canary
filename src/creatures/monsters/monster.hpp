@@ -45,15 +45,15 @@ public:
 	void addList() override;
 	void removeList() override;
 
-	const std::string& getName() const override;
-	void setName(const std::string& name);
+	const std::string &getName() const override;
+	void setName(const std::string &name);
 
 	// Real monster name, set on monster creation "createMonsterType(typeName)"
 	const std::string &getTypeName() const override {
 		return mType->typeName;
 	}
-	const std::string& getNameDescription() const override;
-	void setNameDescription(const std::string& nameDescription) {
+	const std::string &getNameDescription() const override;
+	void setNameDescription(const std::string &nameDescription) {
 		this->nameDescription = nameDescription;
 	};
 	std::string getDescription(int32_t) override {

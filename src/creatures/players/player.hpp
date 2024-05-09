@@ -146,8 +146,8 @@ public:
 	const std::string &getName() const override {
 		return name;
 	}
-	void setName(std::string newName) {
-		this->name = std::move(newName);
+	void setName(const std::string& name) {
+		this->name = name;
 	}
 	const std::string &getTypeName() const override {
 		return name;
@@ -1070,6 +1070,11 @@ public:
 	void sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 		if (stackpos != -1 && client) {
 			client->sendRemoveTileThing(pos, stackpos);
+		}
+	}
+	void sendUpdateTileCreature(const std::shared_ptr<Creature> creature) {
+		if (client) {
+			client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(this, creature), creature);
 		}
 	}
 	void sendUpdateTile(std::shared_ptr<Tile> updateTile, const Position &pos) {

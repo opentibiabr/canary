@@ -23,7 +23,10 @@ function addBadge.onSay(player, words, param)
 
 	split[2] = split[2]:trimSpace()
 	local id = tonumber(split[2])
-	target:addBadge(id)
+	if target:addBadge(id) then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format('You added a badge with ID "%i" to player "%s".', id, target:getName()))
+		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s added a badge to you.", player:getName()))
+	end
 	return true
 end
 

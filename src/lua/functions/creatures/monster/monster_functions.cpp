@@ -77,7 +77,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		}
 		// Assign new MonsterType
 		monster->mType = mType;
-		monster->strDescription = asLowerCaseString(mType->nameDescription);
+		monster->nameDescription = asLowerCaseString(mType->nameDescription);
 		monster->defaultOutfit = mType->info.outfit;
 		monster->currentOutfit = mType->info.outfit;
 		monster->skull = mType->info.skull;

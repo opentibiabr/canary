@@ -21,8 +21,7 @@ function addTitle.onSay(player, words, param)
 		return true
 	end
 
-	-- Trim left
-	split[2] = split[2]:gsub("^%s*(.-)$", "%1")
+	split[2] = split[2]:trimSpace() -- Trim left
 	local id = tonumber(split[2])
 	target:addTitle(id)
 	return true
@@ -56,8 +55,7 @@ function setTitle.onSay(player, words, param)
 		return true
 	end
 
-	-- Trim left
-	split[2] = split[2]:gsub("^%s*(.-)$", "%1")
+	split[2] = split[2]:trimSpace() -- Trim left
 	local id = tonumber(split[2])
 	target:setCurrentTitle(id)
 	return true

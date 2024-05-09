@@ -4320,7 +4320,7 @@ int PlayerFunctions::luaPlayerGetTitles(lua_State* L) {
 	lua_createtable(L, static_cast<int>(playerTitles.size()), 0);
 
 	int index = 0;
-	for (auto title : playerTitles) {
+	for (const auto &title : playerTitles) {
 		lua_pushnumber(L, title.first.m_id);
 		lua_rawseti(L, -2, ++index);
 	}

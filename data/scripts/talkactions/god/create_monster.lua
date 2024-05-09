@@ -73,20 +73,20 @@ function createMonster.onSay(player, words, param)
 	local monsterName = split[1]
 	local monsterCount = 0
 	if split[2] then
-		split[2] = split[2]:gsub("^%s*(.-)$", "%1") --Trim left
+		split[2] = split[2]:trimSpace() -- Trim left
 		monsterCount = tonumber(split[2])
 	end
 
 	local monsterForge = nil
 	if split[3] then
-		split[3] = split[3]:gsub("^%s*(.-)$", "%1") --Trim left
+		split[3] = split[3]:trimSpace() -- Trim left
 		monsterForge = split[3]
 	end
 
 	if monsterCount > 1 then
 		local spawnRadius = 5
 		if split[4] then
-			split[4] = split[4]:gsub("^%s*(.-)$", "%1") --Trim left
+			split[4] = split[4]:trimSpace() -- Trim left
 			spawnRadius = split[4]
 			print(spawnRadius)
 		end

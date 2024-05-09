@@ -11,7 +11,7 @@
 
 #include <utility>
 
-#include "game/game_definitions.hpp"
+#include "enums/player_cyclopedia.hpp"
 
 class Player;
 class KV;
@@ -83,7 +83,7 @@ public:
 
 	[[nodiscard]] bool isTitleUnlocked(uint8_t id) const;
 	bool add(uint8_t id, uint32_t timestamp = 0);
-	[[nodiscard]] std::vector<std::pair<Title, uint32_t>> getUnlockedTitles() const;
+	const std::vector<std::pair<Title, uint32_t>> &getUnlockedTitles();
 	[[nodiscard]] uint8_t getCurrentTitle() const;
 	void setCurrentTitle(uint8_t id);
 	[[nodiscard]] std::string getCurrentTitleName() const;
@@ -102,7 +102,7 @@ public:
 	bool checkTask(uint32_t amount);
 	bool checkMap(uint32_t amount);
 	bool checkQuest(TitleStorage storage);
-	bool checkOther(std::string name);
+	bool checkOther(const std::string &name);
 
 private:
 	// {title ID, time when it was unlocked}

@@ -34,6 +34,7 @@
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
 #include "enums/object_category.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 

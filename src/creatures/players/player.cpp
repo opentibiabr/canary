@@ -121,9 +121,10 @@ std::string Player::getDescription(int32_t lookDistance) {
 	std::ostringstream s;
 	std::string subjectPronoun = getSubjectPronoun();
 	capitalizeWords(subjectPronoun);
+	auto playerTitle = title()->getCurrentTitle() == 0 ? "" : (", " + title()->getCurrentTitleName());
 
 	if (lookDistance == -1) {
-		s << "yourself" << (title()->getCurrentTitle() == 0 ? "" : (", " + title()->getCurrentTitleName())) << ".";
+		s << "yourself" << playerTitle << ".";
 
 		if (group->access) {
 			s << " You are " << group->name << '.';
@@ -146,9 +147,7 @@ std::string Player::getDescription(int32_t lookDistance) {
 			s << " (Level " << level << ')';
 		}
 
-		s << (title()->getCurrentTitle() == 0 ? "" : (", " + title()->getCurrentTitleName()));
-
-		s << ". " << subjectPronoun;
+		s << playerTitle << ". " << subjectPronoun;
 
 		if (group->access) {
 			s << " " << getSubjectVerb() << " " << group->name << '.';

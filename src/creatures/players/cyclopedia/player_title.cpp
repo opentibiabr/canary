@@ -51,7 +51,7 @@ bool PlayerTitle::add(uint8_t id, uint32_t timestamp /* = 0*/) {
 	return true;
 }
 
-std::vector<std::pair<Title, uint32_t>> PlayerTitle::getUnlockedTitles() const {
+const std::vector<std::pair<Title, uint32_t>> &PlayerTitle::getUnlockedTitles() {
 	return m_titlesUnlocked;
 }
 
@@ -196,7 +196,6 @@ bool PlayerTitle::checkLevel(uint32_t amount) {
 bool PlayerTitle::checkHighscore(uint8_t skill) {
 	// todo cyclopledia
 	return false;
-	//	return g_game().getH() m_player.getLevel() >= amount;
 }
 
 bool PlayerTitle::checkBestiary(uint16_t race) {
@@ -223,7 +222,7 @@ bool PlayerTitle::checkQuest(TitleStorage storage) {
 		: m_player.getStorageValue(storage.key) == storage.value;
 }
 
-bool PlayerTitle::checkOther(std::string name) {
+bool PlayerTitle::checkOther(const std::string &name) {
 	if (name == "Admirer of the Crown") {
 		// todo
 		return false;
@@ -241,30 +240,3 @@ bool PlayerTitle::checkOther(std::string name) {
 	}
 	return false;
 }
-
-/*int GameFunctions::luaGameGetHighscoresLeaderId(lua_State* L) {
-// Game.getHighscoresLeaderId(skill)
-const auto highscoreVector = g_game().getHighscoreByCategory(static_cast<HighscoreCategories_t>(getNumber<uint16_t>(L, 1, 0)));
-if (highscoreVector.size() != 0) {
-	lua_pushnumber(L, highscoreVector.front().id);
-} else {
-	lua_pushnumber(L, 0);
-}
-
-return 1;
-}
-
-int GameFunctions::luaGameGetBestiaryRaceAmount(lua_State* L) {
-// Game.getBestiaryRaceAmount(race)
-uint16_t entries = 0;
-BestiaryType_t race = static_cast<BestiaryType_t>(getNumber<uint16_t>(L, 1, 0));
-for (const auto mType_it : g_game().getBestiaryList()) {
-	if (const MonsterType *mType = g_monsters().getMonsterType(mType_it.second);
-		mType && mType->info.bestiaryRace == race) {
-		entries++;
-	}
-}
-
-lua_pushnumber(L, entries);
-return 1;
-}*/

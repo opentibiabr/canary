@@ -633,5 +633,3 @@ struct AugmentInfo {
 	AugmentTypes_t type;
 	int32_t value;
 };
-
-using Augments = std::vector<std::shared_ptr<AugmentInfo>>;

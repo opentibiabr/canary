@@ -420,11 +420,11 @@ public:
 		}
 		return items[id].extraDefense;
 	}
-	Augments getAugments() const {
+	std::vector<std::shared_ptr<AugmentInfo>> getAugments() const {
 		return items[id].augments;
 	}
-	Augments getAugmentsBySpellNameAndType(std::string spellName, AugmentTypes_t augmentType) const {
-		Augments augments;
+	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellNameAndType(std::string spellName, AugmentTypes_t augmentType) const {
+		std::vector<std::shared_ptr<AugmentInfo>> augments;
 		for (auto &augment : items[id].augments) {
 			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0 && augment->type == augmentType) {
 				augments.push_back(augment);
@@ -433,8 +433,8 @@ public:
 
 		return augments;
 	}
-	Augments getAugmentsBySpellName(std::string spellName) const {
-		Augments augments;
+	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellName(std::string spellName) const {
+		std::vector<std::shared_ptr<AugmentInfo>> augments;
 		for (auto &augment : items[id].augments) {
 			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0) {
 				augments.push_back(augment);

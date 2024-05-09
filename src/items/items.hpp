@@ -336,7 +336,7 @@ public:
 
 	int8_t hitChance = 0;
 
-	Augments augments;
+	std::vector<std::shared_ptr<AugmentInfo>> augments;
 
 	// 12.90
 	bool wearOut = false;
@@ -442,8 +442,8 @@ public:
 		return dummys;
 	}
 
-	static const std::string getAugmentNameByType(AugmentTypes_t augmentType) {
-		phmap::flat_hash_map<AugmentTypes_t, std::string> map = {
+	static const std::string &getAugmentNameByType(AugmentTypes_t augmentType) {
+		static phmap::flat_hash_map<AugmentTypes_t, std::string> map = {
 			{ AUGMENT_COOLDOWN, "cooldown" },
 			{ AUGMENT_CRITICALHITDAMAGE, "critical extra damage" },
 			{ AUGMENT_INCREASED_DAMAGE, "Increased Damage" },
@@ -453,16 +453,11 @@ public:
 			{ AUGMENT_STRONG_IMPACT, "Strong Impact" },
 		};
 
-		const auto it = map.find(augmentType);
-		if (it != map.end()) {
-			return it->second;
-		}
-
-		return "unknown type";
+		return map.at(augmentType);
 	}
 
 	static const bool isAugmentWithoutValueDescription(AugmentTypes_t augmentType) {
-		std::vector<AugmentTypes_t> vector = {
+		static std::vector<AugmentTypes_t> vector = {
 			AUGMENT_INCREASED_DAMAGE,
 			AUGMENT_POWERFUL_IMPACT,
 			AUGMENT_STRONG_IMPACT,

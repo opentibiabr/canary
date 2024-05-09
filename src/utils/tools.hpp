@@ -139,7 +139,7 @@ const char* getReturnMessage(ReturnValue value);
 
 void sleep_for(uint64_t ms);
 void capitalizeWords(std::string &source);
-void capitalizeWordsIgnoringString(std::string &source, std::string stringToIgnore);
+void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore);
 void consoleHandlerExit();
 NameEval_t validateName(const std::string &name);
 

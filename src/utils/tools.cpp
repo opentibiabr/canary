@@ -1577,7 +1577,7 @@ void capitalizeWords(std::string &source) {
 	}
 }
 
-void capitalizeWordsIgnoringString(std::string &source, std::string stringToIgnore) {
+void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore) {
 	toLowerCaseString(source);
 	uint8_t size = (uint8_t)source.size();
 	uint8_t indexFound = source.find(stringToIgnore);
@@ -1948,7 +1948,7 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 }
 
 std::string toolsParseAugmentDescription(const std::shared_ptr<AugmentInfo> augmentInfo) {
-	std::string augmentName = Items::getAugmentNameByType(augmentInfo->type);
+	const std::string &augmentName = Items::getAugmentNameByType(augmentInfo->type);
 	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
 	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");
 

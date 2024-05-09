@@ -6679,6 +6679,10 @@ void Player::clearCooldowns() {
 }
 
 void Player::triggerTranscendance() {
+	if (wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) > OTSYS_TIME()) {
+		return;
+	}
+
 	auto item = getInventoryItem(CONST_SLOT_LEGS);
 	if (item == nullptr) {
 		return;
@@ -6695,20 +6699,29 @@ void Player::triggerTranscendance() {
 		addCondition(outfitCondition);
 		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_FORGE, OTSYS_TIME() + duration);
 		g_game().addMagicEffect(getPosition(), CONST_ME_AVATAR_APPEAR);
-		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
+
 		sendSkills();
 		sendStats();
 		sendBasicData();
+
+		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
+
+		// Send player data after transcendance timer expire
+		const auto &task = createPlayerTask(
+			std::max<uint32_t>(SCHEDULER_MINTICKS, duration),
+			[playerId = getID()] {
+				auto player = g_game().getPlayerByID(playerId);
+				if (player) {
+					player->sendSkills();
+					player->sendStats();
+					player->sendBasicData();
+				}
+			}, "Player::triggerTranscendance"
+		);
+		g_dispatcher().scheduleEvent(task);
+
 		wheel()->sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());
-		updateStatsAfterTranscendance = true;
-	}
-
-	if (updateStatsAfterTranscendance && wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) <= OTSYS_TIME()) {
-		updateStatsAfterTranscendance = false;
-		sendSkills();
-		sendStats();
-		sendBasicData();
 	}
 }
 

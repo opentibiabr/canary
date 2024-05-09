@@ -634,7 +634,7 @@ void Spell::getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &d
 	if (!(damage.instantSpellName).empty()) {
 		const auto &equippedAugmentItems = player->getEquippedAugmentItems();
 		for (const auto &item : equippedAugmentItems) {
-			auto augments = item->getAugmentsBySpellName(damage.instantSpellName);
+			const auto &augments = item->getAugmentsBySpellName(damage.instantSpellName);
 			for (auto &augment : augments) {
 				if (augment->value == 0) {
 					continue;
@@ -658,7 +658,7 @@ int32_t Spell::calculateAugmentSpellCooldownReduction(std::shared_ptr<Player> pl
 	int32_t spellCooldown = 0;
 	const auto &equippedAugmentItems = player->getEquippedAugmentItemsByType(AUGMENT_COOLDOWN);
 	for (const auto &item : equippedAugmentItems) {
-		auto augments = item->getAugmentsBySpellNameAndType(getName(), AUGMENT_COOLDOWN);
+		const auto &augments = item->getAugmentsBySpellNameAndType(getName(), AUGMENT_COOLDOWN);
 		for (auto &augment : augments) {
 			spellCooldown += augment->value;
 		}

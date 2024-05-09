@@ -1437,7 +1437,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 		}
 
-		auto augments = item->getAugments();
+		const auto &augments = item->getAugments();
 		if (augments.size() > 0) {
 			ss.str("");
 			uint8_t count = 0;
@@ -1931,7 +1931,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
 	std::ostringstream s;
 	if (item) {
-		const auto augments = item->getAugments();
+		const auto &augments = item->getAugments();
 
 		if (augments.size() < 1) {
 			return s.str();

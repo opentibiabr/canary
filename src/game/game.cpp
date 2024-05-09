@@ -8262,7 +8262,6 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 		return;
 	}
 
-	g_logger().debug("Selected characterInfoType: {}", characterInfoType);
 	switch (characterInfoType) {
 		case CYCLOPEDIA_CHARACTERINFO_BASEINFORMATION:
 			player->sendCyclopediaCharacterBaseInformation();

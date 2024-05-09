@@ -21,7 +21,7 @@ function addBadge.onSay(player, words, param)
 		return true
 	end
 
-	split[2] = split[2]:trimSpace() -- Trim left
+	split[2] = split[2]:trimSpace()
 	local id = tonumber(split[2])
 	target:addBadge(id)
 	return true

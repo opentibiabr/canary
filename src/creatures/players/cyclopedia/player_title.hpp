@@ -11,6 +11,7 @@
 
 #include <utility>
 
+#include "creatures/creatures_definitions.hpp"
 #include "enums/player_cyclopedia.hpp"
 
 class Player;

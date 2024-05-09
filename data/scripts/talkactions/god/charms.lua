@@ -20,7 +20,7 @@ function addCharm.onSay(player, words, param)
 		return true
 	end
 
-	split[2] = split[2]:trimSpace() -- Trim left
+	split[2] = split[2]:trimSpace()
 
 	player:sendCancelMessage("Added " .. split[2] .. " charm points to character '" .. target:getName() .. "'.")
 	target:sendCancelMessage("Received " .. split[2] .. " charm points!")
@@ -133,8 +133,8 @@ function setBestiary.onSay(player, words, param)
 		return true
 	end
 
-	split[2] = split[2]:trimSpace() --Trim left
-	split[3] = split[3]:trimSpace() --Trim left
+	split[2] = split[2]:trimSpace()
+	split[3] = split[3]:trimSpace()
 
 	local monsterName = split[2]
 	local mType = MonsterType(monsterName)

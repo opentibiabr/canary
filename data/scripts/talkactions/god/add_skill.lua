@@ -44,7 +44,7 @@ function addSkill.onSay(player, words, param)
 		return true
 	end
 
-	split[2] = split[2]:trimSpace() -- Trim left
+	split[2] = split[2]:trimSpace()
 
 	local count = 1
 	if split[3] then

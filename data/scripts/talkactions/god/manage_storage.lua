@@ -18,7 +18,7 @@ function Player.getStorageValueTalkaction(self, param)
 		return true
 	end
 
-	split[2] = split[2]:trimSpace() -- Trim left
+	split[2] = split[2]:trimSpace()
 
 	-- Try to convert the second parameter to a number. If it's not a number, treat it as a storage name
 	local storageKey = tonumber(split[2])

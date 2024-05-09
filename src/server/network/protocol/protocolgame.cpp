@@ -3993,7 +3993,7 @@ void ProtocolGame::sendCyclopediaCharacterTitles() {
 	std::string messageTitleDesc = "ProtocolGame::sendCyclopediaCharacterTitles - title.description";
 	for (const auto &title : titles) {
 		msg.addByte(title.m_id);
-		auto titleName = player->getSex() == PLAYERSEX_FEMALE && !title.m_femaleName.empty() ? title.m_femaleName : title.m_maleName;
+		auto titleName = player->title()->getNameBySex(player->getSex(), title.m_maleName, title.m_femaleName);
 		msg.addString(titleName, messageTitleName);
 		msg.addString(title.m_description, messageTitleDesc);
 		msg.addByte(title.m_permanent ? 0x01 : 0x00);

@@ -4321,7 +4321,10 @@ int PlayerFunctions::luaPlayerGetTitles(lua_State* L) {
 
 	int index = 0;
 	for (const auto &title : playerTitles) {
-		lua_pushnumber(L, title.first.m_id);
+		lua_createtable(L, 0, 3);
+		setField(L, "id", title.first.m_id);
+		setField(L, "name", player->title()->getNameBySex(player->getSex(), title.first.m_maleName, title.first.m_femaleName));
+		setField(L, "description", title.first.m_description);
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;

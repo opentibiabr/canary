@@ -86,7 +86,8 @@ public:
 	const std::vector<std::pair<Title, uint32_t>> &getUnlockedTitles();
 	[[nodiscard]] uint8_t getCurrentTitle() const;
 	void setCurrentTitle(uint8_t id);
-	[[nodiscard]] std::string getCurrentTitleName() const;
+	std::string getCurrentTitleName();
+	static const std::string &getNameBySex(PlayerSex_t sex, const std::string &male, const std::string &female);
 	void checkAndUpdateNewTitles();
 	void loadUnlockedTitles();
 	const std::shared_ptr<KV> &getUnlockedKV();

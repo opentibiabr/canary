@@ -63,7 +63,7 @@ void PlayerTitle::setCurrentTitle(uint8_t id) {
 	m_player.kv()->scoped("titles")->set("current-title", id != 0 && isTitleUnlocked(id) ? id : 0);
 }
 
-std::string PlayerTitle::getCurrentTitleName() const {
+std::string PlayerTitle::getCurrentTitleName() {
 	auto currentTitle = getCurrentTitle();
 	if (currentTitle == 0) {
 		return "";
@@ -73,7 +73,11 @@ std::string PlayerTitle::getCurrentTitleName() const {
 	if (title.m_id == 0) {
 		return "";
 	}
-	return (m_player.getSex() == PLAYERSEX_FEMALE && !title.m_femaleName.empty()) ? title.m_femaleName : title.m_maleName;
+	return getNameBySex(m_player.getSex(), title.m_maleName, title.m_femaleName);
+}
+
+const std::string &PlayerTitle::getNameBySex(PlayerSex_t sex, const std::string &male, const std::string &female) {
+	return sex == PLAYERSEX_FEMALE && !female.empty() ? female : male;
 }
 
 void PlayerTitle::checkAndUpdateNewTitles() {
@@ -154,9 +158,6 @@ void PlayerTitle::loadUnlockedTitles() {
 			g_logger().error("[{}] - Title {} not found.", __FUNCTION__, titleName);
 			continue;
 		}
-
-		auto femaleLog = !title.m_femaleName.empty() ? ("/" + title.m_femaleName) : "";
-		// g_logger().debug("[{}] - Title {}{} found for player {}.", __FUNCTION__, title.m_maleName, femaleLog, m_player.getName());
 
 		m_titlesUnlocked.emplace_back(title, getUnlockedKV()->get(titleName)->getNumber());
 	}

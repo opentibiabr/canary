@@ -34,6 +34,7 @@
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
 #include "enums/object_category.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
 
 class House;
 class NetworkMessage;
@@ -49,11 +50,13 @@ class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
 class PlayerAchievement;
+class PlayerBadge;
 class Spectators;
 class Account;
 
 struct ModalWindow;
 struct Achievement;
+struct Badge;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -734,6 +737,13 @@ public:
 	}
 
 	uint32_t getCapacity() const;
+
+	uint32_t getBonusCapacity() const {
+		if (hasFlag(PlayerFlags_t::CannotPickupItem) || hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
+			return std::numeric_limits<uint32_t>::max();
+		}
+		return bonusCapacity;
+	}
 
 	uint32_t getFreeCapacity() const {
 		if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
@@ -1631,9 +1641,9 @@ public:
 		}
 	}
 	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
-	void sendCyclopediaCharacterItemSummary() {
+	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) {
 		if (client) {
-			client->sendCyclopediaCharacterItemSummary();
+			client->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 		}
 	}
 	void sendCyclopediaCharacterOutfitsMounts() {
@@ -1807,11 +1817,11 @@ public:
 	void setGrindingXpBoost(uint16_t value) {
 		grindingXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
-	uint16_t getStoreXpBoost() const {
-		return storeXpBoost;
+	uint16_t getXpBoostPercent() const {
+		return xpBoostPercent;
 	}
-	void setStoreXpBoost(uint16_t exp) {
-		storeXpBoost = exp;
+	void setXpBoostPercent(uint16_t percent) {
+		xpBoostPercent = percent;
 	}
 	uint16_t getStaminaXpBoost() const {
 		return staminaXpBoost;
@@ -1820,17 +1830,17 @@ public:
 		staminaXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
 
-	void setExpBoostStamina(uint16_t stamina) {
-		// only allow stamina boosts of 12 hours or less
-		if (stamina > 12 * 3600) {
-			expBoostStamina = 12 * 3600;
+	void setXpBoostTime(uint16_t timeLeft) {
+		// only allow time boosts of 12 hours or less
+		if (timeLeft > 12 * 3600) {
+			xpBoostTime = 12 * 3600;
 			return;
 		}
-		expBoostStamina = stamina;
+		xpBoostTime = timeLeft;
 	}
 
-	uint16_t getExpBoostStamina() {
-		return expBoostStamina;
+	uint16_t getXpBoostTime() {
+		return xpBoostTime;
 	}
 
 	int32_t getIdleTime() const {
@@ -2571,11 +2581,21 @@ public:
 	// Get specific inventory item from itemid
 	std::vector<std::shared_ptr<Item>> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 
+	// this get all player store inbox items and return as ItemsTierCountList
+	ItemsTierCountList getStoreInboxItemsId() const;
+	// this get all player depot chest items and return as ItemsTierCountList
+	ItemsTierCountList getDepotChestItemsId() const;
+	// this get all player depot inbox items and return as ItemsTierCountList
+	ItemsTierCountList getDepotInboxItemsId() const;
+
 	// This get all player inventory items
 	std::vector<std::shared_ptr<Item>> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
 
 	// This get all players slot items
 	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> getAllSlotItems() const;
+
+	// This get all blessings
+	phmap::flat_hash_map<Blessings_t, std::string> getBlessingNames() const;
 
 	/**
 	 * @brief Get the equipped items of the player->
@@ -2592,6 +2612,10 @@ public:
 	std::unique_ptr<PlayerAchievement> &achiev();
 	const std::unique_ptr<PlayerAchievement> &achiev() const;
 
+	// Player badge interface
+	std::unique_ptr<PlayerBadge> &badge();
+	const std::unique_ptr<PlayerBadge> &badge() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -2601,6 +2625,8 @@ public:
 	std::shared_ptr<Container> getStoreInbox() const;
 
 	bool canSpeakWithHireling(uint8_t speechbubble);
+
+	uint16_t getPlayerVocationEnum() const;
 
 private:
 	friend class PlayerLock;
@@ -2658,7 +2684,7 @@ private:
 	size_t getLastIndex() const override;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 	void stashContainer(StashContainerList itemDict);
-	ItemsTierCountList getInventoryItemsId() const;
+	ItemsTierCountList getInventoryItemsId(bool ignoreStoreInbox = false) const;
 
 	// This function is a override function of base class
 	std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override;
@@ -2811,7 +2837,7 @@ private:
 	int32_t m_deathTime = 0;
 	uint32_t coinBalance = 0;
 	uint32_t coinTransferableBalance = 0;
-	uint16_t expBoostStamina = 0;
+	uint16_t xpBoostTime = 0;
 	uint8_t randomMount = 0;
 
 	uint16_t lastStatsTrainingTime = 0;
@@ -2821,7 +2847,7 @@ private:
 	uint16_t baseXpGain = 100;
 	uint16_t voucherXpBoost = 0;
 	uint16_t grindingXpBoost = 0;
-	uint16_t storeXpBoost = 0;
+	uint16_t xpBoostPercent = 0;
 	uint16_t staminaXpBoost = 100;
 	int16_t lastDepotId = -1;
 	StashItemList stashItems; // [ItemID] = amount
@@ -2984,9 +3010,11 @@ private:
 	friend class IOLoginDataLoad;
 	friend class IOLoginDataSave;
 	friend class PlayerAchievement;
+	friend class PlayerBadge;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;
+	std::unique_ptr<PlayerBadge> m_playerBadge;
 
 	std::mutex quickLootMutex;
 

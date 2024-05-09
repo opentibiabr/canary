@@ -1437,11 +1437,11 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 		}
 
-		Augments augments = item->getAugments();
+		auto augments = item->getAugments();
 		if (augments.size() > 0) {
 			ss.str("");
 			uint8_t count = 0;
-			for (auto augment : augments) {
+			for (const auto &augment : augments) {
 				if (count >= 1) {
 					ss << ", ";
 				}
@@ -1808,7 +1808,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 		if (it.augments.size() > 0) {
 			ss.str("");
 			uint8_t count = 0;
-			for (auto augment : it.augments) {
+			for (const auto &augment : it.augments) {
 				if (count >= 1) {
 					ss << ", ";
 				}
@@ -1931,7 +1931,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
 	std::ostringstream s;
 	if (item) {
-		const Augments augments = item->getAugments();
+		const auto augments = item->getAugments();
 
 		if (augments.size() < 1) {
 			return s.str();
@@ -1941,7 +1941,7 @@ std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
 		  << "Augments: (";
 
 		uint8_t count = 0;
-		for (auto &augment : augments) {
+		for (const auto &augment : augments) {
 			if (count >= 1) {
 				s << ", ";
 			}

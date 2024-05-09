@@ -4068,7 +4068,7 @@ std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItemsByType(Augment
 	std::vector<std::shared_ptr<Item>> equippedAugmentItemsByType;
 	std::vector<std::shared_ptr<Item>> equippedAugmentItems = getEquippedItems();
 
-	for (std::shared_ptr<Item> item : equippedAugmentItems) {
+	for (const auto &item : equippedAugmentItems) {
 		for (auto &augment : item->getAugments()) {
 			if (augment->type == augmentType) {
 				equippedAugmentItemsByType.push_back(item);
@@ -4083,7 +4083,7 @@ std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItems() const {
 	std::vector<std::shared_ptr<Item>> equippedAugmentItems;
 	std::vector<std::shared_ptr<Item>> equippedItems = getEquippedItems();
 
-	for (std::shared_ptr<Item> item : equippedItems) {
+	for (const auto &item : equippedItems) {
 		if (item->getAugments().size() < 1) {
 			continue;
 		}

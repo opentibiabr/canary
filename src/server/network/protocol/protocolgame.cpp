@@ -5607,7 +5607,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		if (it.augments.size() > 0) {
 			std::ostringstream augmentsString;
 			uint8_t count = 0;
-			for (auto &augment : it.augments) {
+			for (const auto &augment : it.augments) {
 				if (count > 0) {
 					augmentsString << ", ";
 				}

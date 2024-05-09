@@ -1577,7 +1577,7 @@ void capitalizeWords(std::string &source) {
 	}
 }
 
-void capitalizeWordsIgnoringString(std::string &source, std::string stringToIgnore) {
+void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore) {
 	toLowerCaseString(source);
 	uint8_t size = (uint8_t)source.size();
 	uint8_t indexFound = source.find(stringToIgnore);

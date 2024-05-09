@@ -106,7 +106,7 @@ CreatureEvent::CreatureEvent(LuaScriptInterface* interface) :
 
 void CreatureEvents::removeInvalidEvents() {
 	for (auto it = creatureEvents.begin(); it != creatureEvents.end();) {
-		if (it->second.getScriptId() == 0) {
+		if (it->second->getScriptId() == 0) {
 			it = creatureEvents.erase(it);
 		} else {
 			++it;

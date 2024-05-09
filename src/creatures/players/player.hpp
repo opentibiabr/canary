@@ -146,7 +146,7 @@ public:
 	const std::string &getName() const override {
 		return name;
 	}
-	void setName(const std::string& name) {
+	void setName(const std::string &name) {
 		this->name = name;
 	}
 	const std::string &getTypeName() const override {

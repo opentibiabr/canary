@@ -80,7 +80,7 @@ void Monster::setName(const std::string &name) {
 
 	// NOTE: Due to how client caches known creatures,
 	// it is not feasible to send creature update to everyone that has ever met it
-	auto spectators = Spectators().find<Player>(position, true);
+	const auto spectators = Spectators().find<Player>(position, true);
 	for (const auto spectator : spectators) {
 		if (const auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendUpdateTileCreature(static_self_cast<Monster>());

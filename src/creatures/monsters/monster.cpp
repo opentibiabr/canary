@@ -82,7 +82,7 @@ void Monster::setName(const std::string &name) {
 	// it is not feasible to send creature update to everyone that has ever met it
 	const auto spectators = Spectators().find<Player>(position, true);
 	for (const auto &spectator : spectators) {
-		if (const auto tmpPlayer = spectator->getPlayer()) {
+		if (const auto &tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendUpdateTileCreature(static_self_cast<Monster>());
 		}
 	}

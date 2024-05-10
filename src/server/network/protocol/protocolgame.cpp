@@ -2141,8 +2141,9 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0x00); // All data available
 
 	msg.addByte(1); // Worlds
-	msg.addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // First World
-	msg.addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // Selected World
+	auto serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__);
+	msg.addString(serverName, "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // First World
+	msg.addString(serverName, "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // Selected World
 
 	msg.addByte(0); // Game World Category: 0xFF(-1) - Selected World
 	msg.addByte(0); // BattlEye World Type
@@ -2190,9 +2191,9 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	for (const HighscoreCharacter &character : characters) {
 		msg.add<uint32_t>(character.rank); // Rank
 		msg.addString(character.name, "ProtocolGame::sendHighscores - character.name"); // Character Name
-		msg.addString(character.title, "ProtocolGame::sendHighscores - character.title"); // Character Title
+		msg.addString(character.loyaltyTitle, "ProtocolGame::sendHighscores - character.loyaltyTitle"); // Character Loyalty Title
 		msg.addByte(character.vocation); // Vocation Id
-		msg.addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // World
+		msg.addString(serverName, "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // World
 		msg.add<uint16_t>(character.level); // Level
 		msg.addByte((player->getGUID() == character.id)); // Player Indicator Boolean
 		msg.add<uint64_t>(character.points); // Points

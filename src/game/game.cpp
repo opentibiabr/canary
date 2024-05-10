@@ -8537,8 +8537,8 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 			do {
 				const auto &voc = g_vocations().getVocation(result->getNumber<uint16_t>("vocation"));
 				uint8_t characterVocation = voc ? voc->getClientId() : 0;
-				std::string characterTitle = "";
-				characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation, characterTitle);
+				std::string loyaltyTitle = ""; // todo get loyalty title from player
+				characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation, loyaltyTitle);
 			} while (result->next());
 		}
 

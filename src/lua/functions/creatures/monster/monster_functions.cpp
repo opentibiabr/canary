@@ -529,8 +529,8 @@ int MonsterFunctions::luaMonsterGetName(lua_State* L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterRename(lua_State* L) {
-	// monster:rename(name[, nameDescription])
+int MonsterFunctions::luaMonsterSetName(lua_State* L) {
+	// monster:setName(name[, nameDescription])
 	auto monster = getUserdataShared<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));

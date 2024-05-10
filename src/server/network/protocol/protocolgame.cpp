@@ -5697,18 +5697,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 	}
 
 	if (!oldProtocol) {
-		if (it.augments.size() > 0) {
-			std::ostringstream augmentsString;
-			uint8_t count = 0;
-			for (const auto &augment : it.augments) {
-				if (count > 0) {
-					augmentsString << ", ";
-				}
-				augmentsString << toolsParseAugmentDescription(augment);
-				++count;
-			}
-
-			msg.addString(augmentsString.str(), "ProtocolGame::sendMarketDetail - augmentsString.str()");
+		std::string augmentsDescription = it.parseAugmentDescription();
+		if (!augmentsDescription.empty()) {
+			msg.addString(augmentsDescription, "ProtocolGame::sendMarketDetail - augmentsDescription");
 		} else {
 			msg.add<uint16_t>(0x00); // no augments
 		}

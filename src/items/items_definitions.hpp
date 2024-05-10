@@ -270,15 +270,15 @@ enum ImbuementTypes_t : int64_t {
 	IMBUEMENT_INCREASE_CAPACITY = 17
 };
 
-enum AugmentTypes_t : uint8_t {
-	AUGMENT_NONE,
-	AUGMENT_POWERFUL_IMPACT,
-	AUGMENT_STRONG_IMPACT,
-	AUGMENT_INCREASED_DAMAGE,
-	AUGMENT_COOLDOWN,
-	AUGMENT_CRITICALHITDAMAGE,
-	AUGMENT_LIFELEECHAMOUNT,
-	AUGMENT_MANALEECHAMOUNT
+enum class Augment_t : uint8_t {
+	None,
+	Powerful_Impact,
+	Strong_Impact,
+	Increased_Damage,
+	Cooldown,
+	Critical_Extra_Damage,
+	Life_Leech,
+	Mana_Leech
 };
 
 enum class ContainerCategory_t : uint8_t {
@@ -626,10 +626,10 @@ struct ImbuementInfo {
 };
 
 struct AugmentInfo {
-	AugmentInfo(std::string spellName, AugmentTypes_t type, int32_t value) :
+	AugmentInfo(std::string spellName, Augment_t type, int32_t value) :
 		spellName(std::move(spellName)), type(type), value(value) { }
 
 	std::string spellName;
-	AugmentTypes_t type;
+	Augment_t type;
 	int32_t value;
 };

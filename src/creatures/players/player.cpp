@@ -4112,7 +4112,7 @@ std::vector<std::shared_ptr<Item>> Player::getAllInventoryItems(bool ignoreEquip
 	return itemVector;
 }
 
-std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItemsByType(AugmentTypes_t augmentType) const {
+std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItemsByType(Augment_t augmentType) const {
 	std::vector<std::shared_ptr<Item>> equippedAugmentItemsByType;
 	std::vector<std::shared_ptr<Item>> equippedAugmentItems = getEquippedItems();
 

@@ -607,7 +607,6 @@ using AmmoTypeNames = phmap::flat_hash_map<std::string, Ammo_t>;
 using WeaponActionNames = phmap::flat_hash_map<std::string, WeaponAction_t>;
 using SkullNames = phmap::flat_hash_map<std::string, Skulls_t>;
 using ImbuementTypeNames = phmap::flat_hash_map<std::string, ImbuementTypes_t>;
-using AugmentTypeNames = phmap::flat_hash_map<std::string, AugmentTypes_t>;
 
 /**
  * @Deprecated
@@ -873,14 +872,14 @@ const ImbuementTypeNames imbuementTypeNames = {
 	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY }
 };
 
-const AugmentTypeNames augmentTypeNames = {
-	{ "powerful impact", AUGMENT_POWERFUL_IMPACT },
-	{ "strong impact", AUGMENT_STRONG_IMPACT },
-	{ "increased damage", AUGMENT_INCREASED_DAMAGE },
-	{ "cooldown", AUGMENT_COOLDOWN },
-	{ "critical extra damage", AUGMENT_CRITICALHITDAMAGE },
-	{ "life leech", AUGMENT_LIFELEECHAMOUNT },
-	{ "mana leech", AUGMENT_MANALEECHAMOUNT }
+const phmap::flat_hash_map<std::string, Augment_t> augmentTypeNames = {
+	{ "powerful impact", Augment_t::Powerful_Impact },
+	{ "strong impact", Augment_t::Strong_Impact },
+	{ "increased damage", Augment_t::Increased_Damage },
+	{ "cooldown", Augment_t::Cooldown },
+	{ "critical extra damage", Augment_t::Critical_Extra_Damage },
+	{ "life leech", Augment_t::Life_Leech },
+	{ "mana leech", Augment_t::Mana_Leech }
 };
 
 /**
@@ -935,12 +934,12 @@ Skulls_t getSkullType(const std::string &strValue) {
 	return SKULL_NONE;
 }
 
-AugmentTypes_t getAugmentType(const std::string &strValue) {
+Augment_t getAugmentType(const std::string &strValue) {
 	auto augmentType = augmentTypeNames.find(strValue);
 	if (augmentType != augmentTypeNames.end()) {
 		return augmentType->second;
 	}
-	return AUGMENT_NONE;
+	return Augment_t::None;
 }
 
 ImbuementTypes_t getImbuementType(const std::string &strValue) {
@@ -1945,19 +1944,4 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 			g_logger().error("Failed to get gem affinity {}", affinity);
 			return 0;
 	}
-}
-
-std::string toolsParseAugmentDescription(const std::shared_ptr<AugmentInfo> augmentInfo) {
-	const std::string &augmentName = Items::getAugmentNameByType(augmentInfo->type);
-	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
-	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");
-
-	char signal = augmentInfo->value > 0 ? '-' : '+';
-
-	if (Items::isAugmentWithoutValueDescription(augmentInfo->type)) {
-		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
-	} else if (augmentInfo->type == AUGMENT_COOLDOWN) {
-		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
-	}
-	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value / 100, augmentName);
 }

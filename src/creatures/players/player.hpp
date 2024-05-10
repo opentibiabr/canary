@@ -2598,7 +2598,7 @@ public:
 	phmap::flat_hash_map<Blessings_t, std::string> getBlessingNames() const;
 
 	// Gets the equipped items with augment by type
-	std::vector<std::shared_ptr<Item>> getEquippedAugmentItemsByType(AugmentTypes_t augmentType) const;
+	std::vector<std::shared_ptr<Item>> getEquippedAugmentItemsByType(Augment_t augmentType) const;
 
 	// Gets the equipped items with augment
 	std::vector<std::shared_ptr<Item>> getEquippedAugmentItems() const;

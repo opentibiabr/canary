@@ -878,23 +878,23 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 
 	// Check if the augments value is 1 or 0 (1 = enable - 0 = disable)
 	if (valueAttribute.as_bool()) {
-		for (auto subAttributeNode : attributeNode.children()) {
-			pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+		for (const auto subAttributeNode : attributeNode.children()) {
+			const pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
 			if (!subKeyAttribute) {
 				continue;
 			}
 
-			pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+			const pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
 			if (!subValueAttribute) {
 				continue;
 			}
 
-			auto itemMap = AugmentTypeNames.find(asLowerCaseString(subValueAttribute.as_string()));
+			const auto itemMap = AugmentTypeNames.find(asLowerCaseString(subValueAttribute.as_string()));
 			if (itemMap != AugmentTypeNames.end()) {
-				AugmentTypes_t augmentType = getAugmentType(asLowerCaseString(subValueAttribute.as_string()));
+				const Augment_t augmentType = getAugmentType(asLowerCaseString(subValueAttribute.as_string()));
 
 				int32_t augmentValue = 0;
-				bool hasValueDescrition = isAugmentWithoutValueDescription(augmentType);
+				const bool hasValueDescrition = isAugmentWithoutValueDescription(augmentType);
 
 				if (hasValueDescrition) {
 					const auto it = AugmentWithoutValueDescriptionDefaultKeys.find(augmentType);
@@ -903,16 +903,16 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 					}
 				}
 
-				pugi::xml_object_range<pugi::xml_node_iterator> augmentValueAttributeNode = subAttributeNode.children();
+				const pugi::xml_object_range<pugi::xml_node_iterator> augmentValueAttributeNode = subAttributeNode.children();
 				if (!augmentValueAttributeNode.empty()) {
-					pugi::xml_node augmentValueNode = *augmentValueAttributeNode.begin();
-					pugi::xml_attribute augmentValueAttribute = augmentValueNode.attribute("value");
+					const pugi::xml_node augmentValueNode = *augmentValueAttributeNode.begin();
+					const pugi::xml_attribute augmentValueAttribute = augmentValueNode.attribute("value");
 					augmentValue = augmentValueAttribute ? pugi::cast<int32_t>(augmentValueAttribute.value()) : augmentValue;
 				} else if (!hasValueDescrition) {
 					g_logger().warn("[ParseAugment::initParseAugment] - Item '{}' has an augment '{}' without a value", itemType.name, subValueAttribute.as_string());
 				}
 
-				if (augmentType != AUGMENT_NONE) {
+				if (augmentType != Augment_t::None) {
 					itemType.addAugment(asLowerCaseString(subKeyAttribute.as_string()), augmentType, augmentValue);
 					continue;
 				}

@@ -92,7 +92,7 @@ ShootType_t getShootType(const std::string &strValue);
 Ammo_t getAmmoType(const std::string &strValue);
 WeaponAction_t getWeaponAction(const std::string &strValue);
 Skulls_t getSkullType(const std::string &strValue);
-AugmentTypes_t getAugmentType(const std::string &strValue);
+Augment_t getAugmentType(const std::string &strValue);
 ImbuementTypes_t getImbuementType(const std::string &strValue);
 /**
  * @Deprecated
@@ -209,8 +209,6 @@ static inline double quadraticPoly(double a, double b, double c, double x) {
 }
 
 uint8_t convertWheelGemAffinityToDomain(uint8_t affinity);
-
-std::string toolsParseAugmentDescription(const std::shared_ptr<AugmentInfo> augmentInfo);
 
 template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
 UnderlyingType enumToValue(EnumType value) {

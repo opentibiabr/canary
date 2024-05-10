@@ -89,7 +89,7 @@ std::string ItemType::parseAugmentDescription() const {
 	return fmt::format("{}", fmt::join(descriptions.begin(), descriptions.end(), ", "));
 }
 
-	std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const {
+std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const {
 	const std::string augmentName = Items::getAugmentNameByType(augmentInfo->type);
 	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
 	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");

@@ -90,7 +90,7 @@ depotBoxes = 20
 -- NOTE: augmentStrongImpactPercent = value between 1 and 100 (damage percent to increase. ex: 7 = 7%, 70 = 70%)
 augmentIncreasedDamagePercent = 5
 augmentPowerfulImpactPercent = 7
-augmentStrongImpactPercent = 100
+augmentStrongImpactPercent = 10
 
 -- Prey system
 -- NOTE: preyRerollPricePerLevel: Price multiplier in gold coin for rerolling prey list.

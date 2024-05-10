@@ -4303,7 +4303,7 @@ int PlayerFunctions::luaPlayerAddTitle(lua_State* L) {
 		return 1;
 	}
 
-	player->title()->add(getNumber<uint8_t>(L, 2, 0));
+	player->title()->manage(true, getNumber<uint8_t>(L, 2, 0));
 	pushBoolean(L, true);
 	return 1;
 }

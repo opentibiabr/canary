@@ -249,7 +249,7 @@ Game::Game() {
 		Title(20, CyclopediaTitle_t::LEVEL, "Exalted", "Reached level 1000.", 1000, false),
 
 		Title(21, CyclopediaTitle_t::HIGHSCORES, "Apex Predator", "", "Highest Level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE)),
-		Title(22, CyclopediaTitle_t::OTHERS, "Big Boss", "Highest score of accumulated boss points on character's world.", false),
+		Title(22, CyclopediaTitle_t::HIGHSCORES, "Big Boss", "", "Highest score of accumulated boss points on character's world.", static_cast<uint8_t>(HighscoreCategories_t::BOSS_POINTS)),
 		Title(23, CyclopediaTitle_t::HIGHSCORES, "Jack of all Taints", "", "Highest score for killing Goshnar and his aspects on character's world.", static_cast<uint8_t>(HighscoreCategories_t::GOSHNAR)),
 		Title(24, CyclopediaTitle_t::HIGHSCORES, "Legend of Fishing", "", "Highest fishing level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::FISHING)),
 		Title(25, CyclopediaTitle_t::HIGHSCORES, "Legend of Magic", "", "Highest magic level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::MAGIC_LEVEL)),
@@ -332,11 +332,12 @@ Game::Game() {
 	m_highscoreCategoriesNames = {
 		{ static_cast<uint8_t>(HighscoreCategories_t::ACHIEVEMENTS), "Achievement Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING), "Axe Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::BOSS_POINTS), "Boss Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::CHARMS), "Charm Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::CLUB_FIGHTING), "Club Fighting" },
-		{ static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE), "Experience Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::DISTANCE_FIGHTING), "Distance Fighting" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::DROME), "Drome Score" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE), "Experience Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::FISHING), "Fishing" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::FIST_FIGHTING), "Fist Fighting" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::GOSHNAR), "Goshnar's Taint" },
@@ -8593,39 +8594,7 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 		return;
 	}
 
-	std::string categoryName;
-	const auto &categoryType = static_cast<HighscoreCategories_t>(category);
-	switch (categoryType) {
-		case HighscoreCategories_t::FIST_FIGHTING:
-			categoryName = "skill_fist";
-			break;
-		case HighscoreCategories_t::CLUB_FIGHTING:
-			categoryName = "skill_club";
-			break;
-		case HighscoreCategories_t::SWORD_FIGHTING:
-			categoryName = "skill_sword";
-			break;
-		case HighscoreCategories_t::AXE_FIGHTING:
-			categoryName = "skill_axe";
-			break;
-		case HighscoreCategories_t::DISTANCE_FIGHTING:
-			categoryName = "skill_dist";
-			break;
-		case HighscoreCategories_t::SHIELDING:
-			categoryName = "skill_shielding";
-			break;
-		case HighscoreCategories_t::FISHING:
-			categoryName = "skill_fishing";
-			break;
-		case HighscoreCategories_t::MAGIC_LEVEL:
-			categoryName = "maglevel";
-			break;
-		default: {
-			category = static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE);
-			categoryName = "experience";
-			break;
-		}
-	}
+	std::string categoryName = getSkillNameById(category);
 
 	std::string query;
 	if (type == HIGHSCORE_GETENTRIES) {
@@ -8641,6 +8610,32 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 
 	g_databaseTasks().store(query, callback);
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);
+}
+
+std::string Game::getSkillNameById(uint8_t &skill) {
+	switch (static_cast<HighscoreCategories_t>(skill)) {
+		case HighscoreCategories_t::FIST_FIGHTING:
+			return "skill_fist";
+		case HighscoreCategories_t::CLUB_FIGHTING:
+			return "skill_club";
+		case HighscoreCategories_t::SWORD_FIGHTING:
+			return "skill_sword";
+		case HighscoreCategories_t::AXE_FIGHTING:
+			return "skill_axe";
+		case HighscoreCategories_t::DISTANCE_FIGHTING:
+			return "skill_dist";
+		case HighscoreCategories_t::SHIELDING:
+			return "skill_shielding";
+		case HighscoreCategories_t::FISHING:
+			return "skill_fishing";
+		case HighscoreCategories_t::MAGIC_LEVEL:
+			return "maglevel";
+		case HighscoreCategories_t::BOSS_POINTS:
+			return "boss_points";
+		default:
+			skill = static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE);
+			return "experience";
+	}
 }
 
 void Game::playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) {

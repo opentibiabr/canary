@@ -99,6 +99,7 @@ enum class HighscoreCategories_t : uint8_t {
 	CHARMS = 11,
 	DROME = 12,
 	GOSHNAR = 13,
+	BOSS_POINTS = 14,
 };
 
 enum HighscoreType_t : uint8_t {

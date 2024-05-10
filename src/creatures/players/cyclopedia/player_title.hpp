@@ -72,7 +72,8 @@ public:
 	explicit PlayerTitle(Player &player);
 
 	[[nodiscard]] bool isTitleUnlocked(uint8_t id) const;
-	bool add(uint8_t id, uint32_t timestamp = 0);
+	bool manage(bool canAdd, uint8_t id, uint32_t timestamp = 0);
+	void remove(const Title &title);
 	const std::vector<std::pair<Title, uint32_t>> &getUnlockedTitles();
 	[[nodiscard]] uint8_t getCurrentTitle() const;
 	void setCurrentTitle(uint8_t id);

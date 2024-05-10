@@ -33,13 +33,20 @@ bool PlayerTitle::isTitleUnlocked(uint8_t id) const {
 	return false;
 }
 
-bool PlayerTitle::add(uint8_t id, uint32_t timestamp /* = 0*/) {
-	if (isTitleUnlocked(id)) {
+bool PlayerTitle::manage(bool canAdd, uint8_t id, uint32_t timestamp /* = 0*/) {
+	const Title &title = g_game().getTitleById(id);
+	if (title.m_id == 0) {
 		return false;
 	}
 
-	const Title &title = g_game().getTitleById(id);
-	if (title.m_id == 0) {
+	if (!canAdd) {
+		if (!title.m_permanent) {
+			remove(title);
+		}
+		return false;
+	}
+
+	if (isTitleUnlocked(id)) {
 		return false;
 	}
 
@@ -48,7 +55,28 @@ bool PlayerTitle::add(uint8_t id, uint32_t timestamp /* = 0*/) {
 	m_titlesUnlocked.emplace_back(title, toSaveTimeStamp);
 	m_titlesUnlocked.shrink_to_fit();
 	g_logger().debug("[{}] - Added title: {}", __FUNCTION__, title.m_maleName);
+
 	return true;
+}
+
+void PlayerTitle::remove(const Title &title) {
+	auto id = title.m_id;
+	if (!isTitleUnlocked(id)) {
+		return;
+	}
+
+	auto it = std::find_if(m_titlesUnlocked.begin(), m_titlesUnlocked.end(), [id](auto title_it) {
+		return title_it.first.m_id == id;
+	});
+
+	if (it == m_titlesUnlocked.end()) {
+		return;
+	}
+
+	getUnlockedKV()->remove(title.m_maleName);
+	m_titlesUnlocked.erase(it);
+	m_titlesUnlocked.shrink_to_fit();
+	g_logger().debug("[{}] - Removed title: {}", __FUNCTION__, title.m_maleName);
 }
 
 const std::vector<std::pair<Title, uint32_t>> &PlayerTitle::getUnlockedTitles() {
@@ -73,6 +101,7 @@ std::string PlayerTitle::getCurrentTitleName() {
 	if (title.m_id == 0) {
 		return "";
 	}
+
 	return getNameBySex(m_player.getSex(), title.m_maleName, title.m_femaleName);
 }
 
@@ -87,55 +116,35 @@ void PlayerTitle::checkAndUpdateNewTitles() {
 			case CyclopediaTitle_t::NOTHING:
 				break;
 			case CyclopediaTitle_t::GOLD:
-				if (checkGold(title.m_amount)) {
-					add(title.m_id);
-				}
+				manage(checkGold(title.m_amount), title.m_id);
 				break;
 			case CyclopediaTitle_t::MOUNTS:
-				if (checkMount(title.m_amount)) {
-					add(title.m_id);
-				}
+				manage(checkMount(title.m_amount), title.m_id);
 				break;
 			case CyclopediaTitle_t::OUTFITS:
-				if (checkOutfit(title.m_amount)) {
-					add(title.m_id);
-				}
+				manage(checkOutfit(title.m_amount), title.m_id);
 				break;
 			case CyclopediaTitle_t::LEVEL:
-				if (checkLevel(title.m_amount)) {
-					add(title.m_id);
-				}
+				manage(checkLevel(title.m_amount), title.m_id);
 				break;
 			case CyclopediaTitle_t::HIGHSCORES:
-				// if (checkHighscore(title.m_skill)) {
-				// 	add(title.m_id);
-				// }
+				manage(checkHighscore(title.m_skill), title.m_id);
 				break;
 			case CyclopediaTitle_t::BESTIARY:
 			case CyclopediaTitle_t::BOSSTIARY:
-				if (checkBestiary(title.m_maleName, title.m_race, title.m_type == CyclopediaTitle_t::BOSSTIARY, title.m_amount)) {
-					add(title.m_id);
-				}
+				manage(checkBestiary(title.m_maleName, title.m_race, title.m_type == CyclopediaTitle_t::BOSSTIARY, title.m_amount), title.m_id);
 				break;
 			case CyclopediaTitle_t::DAILY_REWARD:
-				if (checkLoginStreak(title.m_amount)) {
-					add(title.m_id);
-				}
+				manage(checkLoginStreak(title.m_amount), title.m_id);
 				break;
 			case CyclopediaTitle_t::TASK:
-				if (checkTask(title.m_amount)) {
-					add(title.m_id);
-				}
+				manage(checkTask(title.m_amount), title.m_id);
 				break;
 			case CyclopediaTitle_t::MAP:
-				// if (checkMap(title.m_amount)) {
-				// 	add(title.m_id);
-				// }
+				// manage(checkMap(title.m_amount), title.m_id);
 				break;
 			case CyclopediaTitle_t::OTHERS:
-				if (checkOther(title.m_maleName)) {
-					add(title.m_id);
-				}
+				manage(checkOther(title.m_maleName), title.m_id);
 				break;
 		}
 	}
@@ -191,8 +200,42 @@ bool PlayerTitle::checkLevel(uint32_t amount) {
 }
 
 bool PlayerTitle::checkHighscore(uint8_t skill) {
-	// todo cyclopledia
-	return false;
+	Database &db = Database::getInstance();
+	std::string query;
+	std::string fieldCheck = "id";
+
+	switch (static_cast<HighscoreCategories_t>(skill)) {
+		case HighscoreCategories_t::CHARMS:
+			query = fmt::format(
+				"SELECT `pc`.`player_guid`, `pc`.`charm_points`, `p`.`group_id` FROM `player_charms` pc JOIN `players` p ON `pc`.`player_guid` = `p`.`id` WHERE `p`.`group_id` < {} ORDER BY `pc`.`charm_points` DESC LIMIT 1",
+				static_cast<int>(GROUP_TYPE_GAMEMASTER)
+			);
+			fieldCheck = "player_guid";
+			break;
+		case HighscoreCategories_t::DROME:
+			// todo check if player is in the top 5 for the previous rota of the Tibiadrome.
+			return false;
+		case HighscoreCategories_t::GOSHNAR:
+			// todo check if player is the most killer of Goshnar and his aspects.
+			return false;
+		default:
+			std::string skillName = g_game().getSkillNameById(skill);
+			query = fmt::format(
+				"SELECT * FROM `players` WHERE `group_id` < {} AND `{}` > 10 ORDER BY `{}` DESC LIMIT 1",
+				static_cast<int>(GROUP_TYPE_GAMEMASTER), skillName, skillName
+			);
+			break;
+	}
+
+	DBResult_ptr result = db.storeQuery(query);
+	if (!result) {
+		return false;
+	}
+
+	auto resultValue = result->getNumber<uint32_t>(fieldCheck);
+	g_logger().debug("top id: {}, player id: {}", resultValue, m_player.getGUID());
+
+	return resultValue == m_player.getGUID();
 }
 
 bool PlayerTitle::checkBestiary(const std::string &name, uint16_t race, bool isBoss /* = false*/, uint32_t amount) {
@@ -226,9 +269,7 @@ bool PlayerTitle::checkMap(uint32_t amount) {
 }
 
 bool PlayerTitle::checkOther(const std::string &name) {
-	if (name == "Big Boss") {
-		// The Highest boss point on character's world.
-	} else if (name == "Guild Leader") {
+	if (name == "Guild Leader") {
 		auto rank = m_player.getGuildRank();
 		return rank && rank->level == 3;
 	} else if (name == "Proconsul of Iksupan") {

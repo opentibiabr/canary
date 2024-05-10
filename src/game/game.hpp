@@ -314,6 +314,7 @@ public:
 	void playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
 	void playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
+	static std::string getSkillNameById(uint8_t &skill);
 
 	void updatePlayerSaleItems(uint32_t playerId);
 

@@ -67,6 +67,47 @@ ItemTypes_t Items::getLootType(const std::string &strValue) {
 	return ITEM_TYPE_NONE;
 }
 
+const std::string Items::getAugmentNameByType(Augment_t augmentType) {
+	std::string augmentTypeName = magic_enum::enum_name(augmentType).data();
+	std::replace(augmentTypeName.begin(), augmentTypeName.end(), '_', ' ');
+	if (!isAugmentWithoutValueDescription(augmentType)) {
+		toLowerCaseString(augmentTypeName);
+	}
+	return augmentTypeName;
+}
+
+std::string ItemType::parseAugmentDescription(bool inspect /*= false*/) const {
+	if (augments.empty()) {
+		return "";
+	}
+
+	std::vector<std::string> descriptions;
+	for (const auto &augment : augments) {
+		descriptions.push_back(getFormattedAugmentDescription(augment));
+	}
+
+	if (inspect) {
+		return fmt::format("{}.", fmt::join(descriptions.begin(), descriptions.end(), ", "));
+	} else {
+		return fmt::format("\nAugments: ({}).", fmt::join(descriptions.begin(), descriptions.end(), ", "));
+	}
+}
+
+	std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const {
+	const std::string augmentName = Items::getAugmentNameByType(augmentInfo->type);
+	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
+	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");
+
+	char signal = augmentInfo->value > 0 ? '-' : '+';
+
+	if (Items::isAugmentWithoutValueDescription(augmentInfo->type)) {
+		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
+	} else if (augmentInfo->type == Augment_t::Cooldown) {
+		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
+	}
+	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
+}
+
 bool Items::reload() {
 	clear();
 	loadFromProtobuf();

@@ -291,7 +291,12 @@ public:
 		return isStoreItem() || hasOwner();
 	}
 
-	static std::string parseAugmentDescription(std::shared_ptr<Item> item);
+	static std::string parseAugmentDescription(std::shared_ptr<Item> item, bool inspect = false) {
+		if (!item) {
+			return "";
+		}
+		return items[item->getID()].parseAugmentDescription(inspect);
+	}
 	static std::string parseImbuementDescription(std::shared_ptr<Item> item);
 	static std::string parseShowDurationSpeed(int32_t speed, bool &begin);
 	static std::string parseShowDuration(std::shared_ptr<Item> item);
@@ -423,7 +428,7 @@ public:
 	std::vector<std::shared_ptr<AugmentInfo>> getAugments() const {
 		return items[id].augments;
 	}
-	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellNameAndType(std::string spellName, AugmentTypes_t augmentType) const {
+	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellNameAndType(std::string spellName, Augment_t augmentType) const {
 		std::vector<std::shared_ptr<AugmentInfo>> augments;
 		for (auto &augment : items[id].augments) {
 			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0 && augment->type == augmentType) {

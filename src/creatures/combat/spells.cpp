@@ -632,22 +632,22 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 
 void Spell::getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &damage) {
 	if (!(damage.instantSpellName).empty()) {
-		const auto &equippedAugmentItems = player->getEquippedAugmentItems();
+		const auto equippedAugmentItems = player->getEquippedAugmentItems();
 		for (const auto &item : equippedAugmentItems) {
-			const auto &augments = item->getAugmentsBySpellName(damage.instantSpellName);
+			const auto augments = item->getAugmentsBySpellName(damage.instantSpellName);
 			for (auto &augment : augments) {
 				if (augment->value == 0) {
 					continue;
 				}
-				if (augment->type == AUGMENT_INCREASED_DAMAGE || augment->type == AUGMENT_POWERFUL_IMPACT || augment->type == AUGMENT_STRONG_IMPACT) {
+				if (augment->type == Augment_t::Increased_Damage || augment->type == Augment_t::Powerful_Impact || augment->type == Augment_t::Strong_Impact) {
 					const float augmentPercent = augment->value / 100.0;
 					damage.primary.value += static_cast<int32_t>(damage.primary.value * augmentPercent);
 					damage.secondary.value += static_cast<int32_t>(damage.secondary.value * augmentPercent);
-				} else if (augment->type != AUGMENT_COOLDOWN) {
+				} else if (augment->type != Augment_t::Cooldown) {
 					const int32_t augmentValue = augment->value * 100;
-					damage.lifeLeech += augment->type == AUGMENT_LIFELEECHAMOUNT ? augmentValue : 0;
-					damage.manaLeech += augment->type == AUGMENT_MANALEECHAMOUNT ? augmentValue : 0;
-					damage.criticalDamage += augment->type == AUGMENT_CRITICALHITDAMAGE ? augmentValue : 0;
+					damage.lifeLeech += augment->type == Augment_t::Life_Leech ? augmentValue : 0;
+					damage.manaLeech += augment->type == Augment_t::Mana_Leech ? augmentValue : 0;
+					damage.criticalDamage += augment->type == Augment_t::Critical_Extra_Damage ? augmentValue : 0;
 				}
 			}
 		}
@@ -656,9 +656,9 @@ void Spell::getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &d
 
 int32_t Spell::calculateAugmentSpellCooldownReduction(std::shared_ptr<Player> player) const {
 	int32_t spellCooldown = 0;
-	const auto &equippedAugmentItems = player->getEquippedAugmentItemsByType(AUGMENT_COOLDOWN);
+	const auto equippedAugmentItems = player->getEquippedAugmentItemsByType(Augment_t::Cooldown);
 	for (const auto &item : equippedAugmentItems) {
-		const auto &augments = item->getAugmentsBySpellNameAndType(getName(), AUGMENT_COOLDOWN);
+		const auto augments = item->getAugmentsBySpellNameAndType(getName(), Augment_t::Cooldown);
 		for (auto &augment : augments) {
 			spellCooldown += augment->value;
 		}

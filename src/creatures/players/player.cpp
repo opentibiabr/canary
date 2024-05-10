@@ -4112,9 +4112,9 @@ std::vector<std::shared_ptr<Item>> Player::getAllInventoryItems(bool ignoreEquip
 	return itemVector;
 }
 
-std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItemsByType(AugmentTypes_t augmentType) const {
+std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItemsByType(Augment_t augmentType) const {
 	std::vector<std::shared_ptr<Item>> equippedAugmentItemsByType;
-	std::vector<std::shared_ptr<Item>> equippedAugmentItems = getEquippedItems();
+	const auto equippedAugmentItems = getEquippedItems();
 
 	for (const auto &item : equippedAugmentItems) {
 		for (auto &augment : item->getAugments()) {
@@ -4129,7 +4129,7 @@ std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItemsByType(Augment
 
 std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItems() const {
 	std::vector<std::shared_ptr<Item>> equippedAugmentItems;
-	std::vector<std::shared_ptr<Item>> equippedItems = getEquippedItems();
+	const auto equippedItems = getEquippedItems();
 
 	for (const auto &item : equippedItems) {
 		if (item->getAugments().size() < 1) {

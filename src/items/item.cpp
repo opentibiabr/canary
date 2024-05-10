@@ -1437,20 +1437,9 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 		}
 
-		const auto &augments = item->getAugments();
-		if (augments.size() > 0) {
-			ss.str("");
-			uint8_t count = 0;
-			for (const auto &augment : augments) {
-				if (count >= 1) {
-					ss << ", ";
-				}
-
-				ss << toolsParseAugmentDescription(augment);
-
-				++count;
-			}
-			descriptions.emplace_back("Augments", ss.str());
+		std::string augmentsDescription = parseAugmentDescription(item, true);
+		if (!augmentsDescription.empty()) {
+			descriptions.emplace_back("Augments", augmentsDescription);
 		}
 
 		if (it.isKey()) {
@@ -1805,19 +1794,9 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			descriptions.emplace_back("Imbuement Slots", std::to_string(it.imbuementSlot));
 		}
 
-		if (it.augments.size() > 0) {
-			ss.str("");
-			uint8_t count = 0;
-			for (const auto &augment : it.augments) {
-				if (count >= 1) {
-					ss << ", ";
-				}
-
-				ss << toolsParseAugmentDescription(augment);
-
-				++count;
-			}
-			descriptions.emplace_back("Augments", ss.str());
+		std::string augmentsDescription = it.parseAugmentDescription(true);
+		if (!augmentsDescription.empty()) {
+			descriptions.emplace_back("Augments", augmentsDescription);
 		}
 
 		if (it.isKey()) {
@@ -1926,35 +1905,6 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 	}
 	descriptions.shrink_to_fit();
 	return descriptions;
-}
-
-std::string Item::parseAugmentDescription(std::shared_ptr<Item> item) {
-	std::ostringstream s;
-	if (item) {
-		const auto &augments = item->getAugments();
-
-		if (augments.size() < 1) {
-			return s.str();
-		}
-
-		s << std::endl
-		  << "Augments: (";
-
-		uint8_t count = 0;
-		for (const auto &augment : augments) {
-			if (count >= 1) {
-				s << ", ";
-			}
-
-			s << toolsParseAugmentDescription(augment);
-
-			++count;
-		}
-
-		s << ").";
-	}
-
-	return s.str();
 }
 
 std::string Item::parseImbuementDescription(std::shared_ptr<Item> item) {

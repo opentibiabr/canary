@@ -248,20 +248,20 @@ const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
 	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY }
 };
 
-const phmap::flat_hash_map<std::string, AugmentTypes_t> AugmentTypeNames = {
-	{ "cooldown", AUGMENT_COOLDOWN },
-	{ "critical extra damage", AUGMENT_CRITICALHITDAMAGE },
-	{ "increased damage", AUGMENT_INCREASED_DAMAGE },
-	{ "life leech", AUGMENT_LIFELEECHAMOUNT },
-	{ "mana leech", AUGMENT_MANALEECHAMOUNT },
-	{ "powerful impact", AUGMENT_POWERFUL_IMPACT },
-	{ "strong impact", AUGMENT_STRONG_IMPACT },
+const phmap::flat_hash_map<std::string, Augment_t> AugmentTypeNames = {
+	{ "cooldown", Augment_t::Cooldown },
+	{ "critical extra damage", Augment_t::Critical_Extra_Damage },
+	{ "increased damage", Augment_t::Increased_Damage },
+	{ "life leech", Augment_t::Life_Leech },
+	{ "mana leech", Augment_t::Mana_Leech },
+	{ "powerful impact", Augment_t::Powerful_Impact },
+	{ "strong impact", Augment_t::Strong_Impact },
 };
 
-const phmap::flat_hash_map<AugmentTypes_t, ConfigKey_t> AugmentWithoutValueDescriptionDefaultKeys = {
-	{ AUGMENT_INCREASED_DAMAGE, AUGMENT_INCREASED_DAMAGE_PERCENT },
-	{ AUGMENT_POWERFUL_IMPACT, AUGMENT_POWERFUL_IMPACT_PERCENT },
-	{ AUGMENT_STRONG_IMPACT, AUGMENT_STRONG_IMPACT_PERCENT },
+const phmap::flat_hash_map<Augment_t, ConfigKey_t> AugmentWithoutValueDescriptionDefaultKeys = {
+	{ Augment_t::Increased_Damage, AUGMENT_INCREASED_DAMAGE_PERCENT },
+	{ Augment_t::Powerful_Impact, AUGMENT_POWERFUL_IMPACT_PERCENT },
+	{ Augment_t::Strong_Impact, AUGMENT_STRONG_IMPACT_PERCENT },
 };
 
 class ItemParse : public Items {

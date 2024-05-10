@@ -252,7 +252,10 @@ public:
 		return str;
 	}
 
-	void addAugment(std::string spellName, AugmentTypes_t augmentType, int32_t value) {
+	std::string parseAugmentDescription(bool inspect = false) const;
+	std::string getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const;
+
+	void addAugment(std::string spellName, Augment_t augmentType, int32_t value) {
 		auto augmentInfo = std::make_shared<AugmentInfo>(spellName, augmentType, value);
 		augments.emplace_back(augmentInfo);
 	}
@@ -442,25 +445,13 @@ public:
 		return dummys;
 	}
 
-	static const std::string &getAugmentNameByType(AugmentTypes_t augmentType) {
-		static phmap::flat_hash_map<AugmentTypes_t, std::string> map = {
-			{ AUGMENT_COOLDOWN, "cooldown" },
-			{ AUGMENT_CRITICALHITDAMAGE, "critical extra damage" },
-			{ AUGMENT_INCREASED_DAMAGE, "Increased Damage" },
-			{ AUGMENT_LIFELEECHAMOUNT, "life leech" },
-			{ AUGMENT_MANALEECHAMOUNT, "mana leech" },
-			{ AUGMENT_POWERFUL_IMPACT, "Powerful Impact" },
-			{ AUGMENT_STRONG_IMPACT, "Strong Impact" },
-		};
+	static const std::string getAugmentNameByType(Augment_t augmentType);
 
-		return map.at(augmentType);
-	}
-
-	static const bool isAugmentWithoutValueDescription(AugmentTypes_t augmentType) {
-		static std::vector<AugmentTypes_t> vector = {
-			AUGMENT_INCREASED_DAMAGE,
-			AUGMENT_POWERFUL_IMPACT,
-			AUGMENT_STRONG_IMPACT,
+	static const bool isAugmentWithoutValueDescription(Augment_t augmentType) {
+		static std::vector<Augment_t> vector = {
+			Augment_t::Increased_Damage,
+			Augment_t::Powerful_Impact,
+			Augment_t::Strong_Impact,
 		};
 
 		return std::find(vector.begin(), vector.end(), augmentType) != vector.end();

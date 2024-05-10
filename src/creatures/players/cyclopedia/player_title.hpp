@@ -25,8 +25,8 @@ struct Title {
 	std::string m_description;
 	uint32_t m_amount = 0;
 	bool m_permanent = false;
-	[[maybe_unused]] uint8_t m_skill = 0;
-	[[maybe_unused]] uint16_t m_race = 0;
+	uint8_t m_skill = 0;
+	uint16_t m_race = 0;
 
 	Title() = default;
 

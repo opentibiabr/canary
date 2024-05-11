@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 43 (feat frags_limit, payment and duration_days in guild wars)")
+	logger.info("Updating database to version 44 (feat frags_limit, payment and duration_days in guild wars)")
 
 	db.query([[
 			ALTER TABLE `guild_wars`

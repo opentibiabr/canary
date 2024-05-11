@@ -6313,7 +6313,7 @@ void ProtocolGame::sendAddTileItem(const Position &pos, uint32_t stackpos, std::
 	NetworkMessage msg;
 	msg.addByte(0x6A);
 	msg.addPosition(pos);
-	msg.addByte(static_cast<uint8_t>(stackPos));
+	msg.addByte(static_cast<uint8_t>(stackpos));
 	AddItem(msg, item);
 	writeToOutputBuffer(msg);
 }
@@ -6326,7 +6326,7 @@ void ProtocolGame::sendUpdateTileItem(const Position &pos, uint32_t stackpos, st
 	NetworkMessage msg;
 	msg.addByte(0x6B);
 	msg.addPosition(pos);
-	msg.addByte(static_cast<uint8_t>(stackPos));
+	msg.addByte(static_cast<uint8_t>(stackpos));
 	AddItem(msg, item);
 	writeToOutputBuffer(msg);
 }
@@ -6349,7 +6349,7 @@ void ProtocolGame::sendUpdateTileCreature(const Position &pos, uint32_t stackpos
 	NetworkMessage msg;
 	msg.addByte(0x6B);
 	msg.addPosition(pos);
-	msg.addByte(static_cast<uint8_t>(stackPos));
+	msg.addByte(static_cast<uint8_t>(stackpos));
 
 	bool known;
 	uint32_t removedKnown;
@@ -6429,7 +6429,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 		NetworkMessage msg;
 		msg.addByte(0x6A);
 		msg.addPosition(pos);
-		msg.addByte(static_cast<uint8_t>(stackPos));
+		msg.addByte(static_cast<uint8_t>(stackpos));
 
 		bool known;
 		uint32_t removedKnown;

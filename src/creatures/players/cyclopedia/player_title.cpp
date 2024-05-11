@@ -274,15 +274,19 @@ bool PlayerTitle::checkOther(const std::string &name) {
 		return rank && rank->level == 3;
 	} else if (name == "Proconsul of Iksupan") {
 		// Win Ancient Aucar Outfits complete so fight with Atab and be teleported to the arena.
-	} else if (name == "Admirer of the Crown" && m_player.canWear(1457, 3) && m_player.canWear(1456, 3)) {
-		return true;
-	} else if (name == "Big Spender" && m_player.canWear(1211, 3) && m_player.canWear(1210, 3)) {
-		return true;
+	} else if (name == "Admirer of the Crown") {
+		// Complete the Royal Costume Outfits.
+		return m_player.canWear(1457, 3) && m_player.canWear(1456, 3);
+	} else if (name == "Big Spender") {
+		// Unlocked the full Golden Outfit.
+		return m_player.canWear(1211, 3) && m_player.canWear(1210, 3);
 	} else if (name == "Challenger of the Iks") {
 		// Defeat Ahau while equipping a Broken Iks Headpiece, a Broken Iks Cuirass, some Broken Iks Faulds and Broken Iks Sandals
+		return m_player.getBestiaryKillCount(2346) >= 1;
 	} else if (name == "Royal Bounacean Advisor") {
 		// Complete the Galthen and the Lost Queen quest line
 		// Win Royal Bounacean Outfit
+		return m_player.canWear(1437, 3) && m_player.canWear(1436, 3);
 	} else if (name == "Aeternal") {
 		// Unlocked by 10-year-old characters.
 	} else if (name == "Robinson Crusoe") {
@@ -293,17 +297,22 @@ bool PlayerTitle::checkOther(const std::string &name) {
 		// Clear wave 100 in the Tibiadrome.
 	} else if (name == "Beastly") {
 		// Reached 2000 charm points
+		return m_player.getCharmPoints() >= 2000;
 	} else if (name == "Midnight Hunter") {
 		// Kill a certain amount of Midnight Panthers.
-		//(The exact number is yet to be confirmed but is at least 21 and at most 28 panthers.)
+		// (The exact number is yet to be confirmed but is at least 21 and at most 28 panthers.)
+		return m_player.getBestiaryKillCount(698) >= 25;
 	} else if (name == "Ratinator") {
 		// Kill 10,000 Cave Rats.
+		return m_player.getBestiaryKillCount(56) >= 10000;
 	} else if (name == "Doomsday Nemesis") {
 		// Kill Gaz'haragoth one time.
+		return m_player.getBestiaryKillCount(1003) >= 1;
 	} else if (name == "Hero of Bounac") {
 		// Complete The Order of the Lion Quest.
 	} else if (name == "King of Demon") {
 		// Defeat Morshabaal 5 times.
+		return m_player.getBestiaryKillCount(2118) >= 5;
 	} else if (name == "Planegazer") {
 		// Kill Planestrider in Opticording Sphere Quest.
 	} else if (name == "Time Traveller") {

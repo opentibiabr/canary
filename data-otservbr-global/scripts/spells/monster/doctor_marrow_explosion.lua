@@ -65,8 +65,10 @@ function spell.onCastSpell(creature, var)
 
 	addEvent(function(cid)
 		local creature = Creature(cid)
-		creature:getPosition():sendMagicEffect(CONST_ME_ORANGE_ENERGY_SPARK)
-		targetPos:sendMagicEffect(CONST_ME_ORANGETELEPORT)
+		if creature then
+			creature:getPosition():sendMagicEffect(CONST_ME_ORANGE_ENERGY_SPARK)
+			targetPos:sendMagicEffect(CONST_ME_ORANGETELEPORT)
+		end
 	end, 2000, creature:getId())
 
 	addEvent(function(cid, pos)

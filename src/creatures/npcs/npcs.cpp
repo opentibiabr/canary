@@ -84,10 +84,10 @@ void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBl
 	}
 
 	// Check if the item already exists in the shop vector and ignore it
-	for (auto &shopIterator : npcType->info.shopItemVector) {
-		if (shopIterator == shopBlock) {
-			return;
-		}
+	if (std::any_of(npcType->info.shopItemVector.begin(), npcType->info.shopItemVector.end(), [&shopBlock](const auto &shopIterator) {
+			return shopIterator == shopBlock;
+		})) {
+		return;
 	}
 
 	if (shopBlock.childShop.empty()) {

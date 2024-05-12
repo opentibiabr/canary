@@ -38,6 +38,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "server/network/protocol/protocollogin.hpp"
@@ -222,14 +223,121 @@ Game::Game() {
 		Badge(21, CyclopediaBadge_t::TOURNAMENT_POINTS, "Tournament Champion", 10000),
 	};
 
+	m_titles = {
+		Title(1, CyclopediaTitle_t::GOLD, "Gold Hoarder", "Earned at least 1,000,000 gold.", 1000000, false),
+		Title(2, CyclopediaTitle_t::GOLD, "Platinum Hoarder", "Earned at least 10,000,000 gold.", 10000000, false),
+		Title(3, CyclopediaTitle_t::GOLD, "Crystal Hoarder", "Earned at least 100,000,000 gold.", 100000000, false),
+
+		Title(4, CyclopediaTitle_t::MOUNTS, "Beaststrider (Grade 1)", "Unlocked 10 or more Mounts.", 10, true),
+		Title(5, CyclopediaTitle_t::MOUNTS, "Beaststrider (Grade 2)", "Unlocked 20 or more Mounts.", 20, true),
+		Title(6, CyclopediaTitle_t::MOUNTS, "Beaststrider (Grade 3)", "Unlocked 30 or more Mounts.", 30, true),
+		Title(7, CyclopediaTitle_t::MOUNTS, "Beaststrider (Grade 4)", "Unlocked 40 or more Mounts.", 40, true),
+		Title(8, CyclopediaTitle_t::MOUNTS, "Beaststrider (Grade 5)", "Unlocked 50 or more Mounts.", 50, true),
+
+		Title(9, CyclopediaTitle_t::OUTFITS, "Tibia's Topmodel (Grade 1)", "Unlocked 10 or more Outfits.", 10, true),
+		Title(10, CyclopediaTitle_t::OUTFITS, "Tibia's Topmodel (Grade 2)", "Unlocked 20 or more Outfits.", 20, true),
+		Title(11, CyclopediaTitle_t::OUTFITS, "Tibia's Topmodel (Grade 3)", "Unlocked 30 or more Outfits.", 30, true),
+		Title(12, CyclopediaTitle_t::OUTFITS, "Tibia's Topmodel (Grade 4)", "Unlocked 40 or more Outfits.", 40, true),
+		Title(13, CyclopediaTitle_t::OUTFITS, "Tibia's Topmodel (Grade 5)", "Unlocked 50 or more Outfits.", 50, true),
+
+		Title(14, CyclopediaTitle_t::LEVEL, "Trolltrasher", "Reached level 50.", 50, false),
+		Title(15, CyclopediaTitle_t::LEVEL, "Cyclopscamper", "Reached level 100.", 100, false),
+		Title(16, CyclopediaTitle_t::LEVEL, "Dragondouser", "Reached level 200.", 200, false),
+		Title(17, CyclopediaTitle_t::LEVEL, "Demondoom", "Reached level 300.", 300, false),
+		Title(18, CyclopediaTitle_t::LEVEL, "Drakenbane", "Reached level 400.", 400, false),
+		Title(19, CyclopediaTitle_t::LEVEL, "Silencer", "Reached level 500.", 500, false),
+		Title(20, CyclopediaTitle_t::LEVEL, "Exalted", "Reached level 1000.", 1000, false),
+
+		Title(21, CyclopediaTitle_t::HIGHSCORES, "Apex Predator", "", "Highest Level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE)),
+		Title(22, CyclopediaTitle_t::HIGHSCORES, "Big Boss", "", "Highest score of accumulated boss points on character's world.", static_cast<uint8_t>(HighscoreCategories_t::BOSS_POINTS)),
+		Title(23, CyclopediaTitle_t::HIGHSCORES, "Jack of all Taints", "", "Highest score for killing Goshnar and his aspects on character's world.", static_cast<uint8_t>(HighscoreCategories_t::GOSHNAR)),
+		Title(24, CyclopediaTitle_t::HIGHSCORES, "Legend of Fishing", "", "Highest fishing level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::FISHING)),
+		Title(25, CyclopediaTitle_t::HIGHSCORES, "Legend of Magic", "", "Highest magic level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::MAGIC_LEVEL)),
+		Title(26, CyclopediaTitle_t::HIGHSCORES, "Legend of Marksmanship", "", "Highest distance level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::DISTANCE_FIGHTING)),
+		Title(27, CyclopediaTitle_t::HIGHSCORES, "Legend of the Axe", "", "Highest axe level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING)),
+		Title(28, CyclopediaTitle_t::HIGHSCORES, "Legend of the Club", "", "Highest club level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::CLUB_FIGHTING)),
+		Title(29, CyclopediaTitle_t::HIGHSCORES, "Legend of the Fist", "", "Highest fist level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::FIST_FIGHTING)),
+		Title(30, CyclopediaTitle_t::HIGHSCORES, "Legend of the Shield", "", "Highest shielding level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::SHIELDING)),
+		Title(31, CyclopediaTitle_t::HIGHSCORES, "Legend of the Sword", "", "Highest sword level on character's world.", static_cast<uint8_t>(HighscoreCategories_t::SWORD_FIGHTING)),
+		Title(32, CyclopediaTitle_t::HIGHSCORES, "Prince Charming", "Princess Charming", "Highest score of accumulated charm points on character's world.", static_cast<uint8_t>(HighscoreCategories_t::CHARMS)),
+		Title(33, CyclopediaTitle_t::HIGHSCORES, "Reigning Drome Champion", "", "Finished most recent Tibiadrome rota ranked in the top 5.", static_cast<uint8_t>(HighscoreCategories_t::DROME)),
+
+		Title(34, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_HUMANOID), "Bipedantic", "", "Unlocked All Humanoid Bestiary entries."),
+		Title(35, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_LYCANTHROPE), "Blood Moon Hunter", "Blood Moon Huntress", "Unlocked All Lycanthrope Bestiary entries."),
+		Title(36, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_AMPHIBIC), "Coldblooded", "", "Unlocked All Amphibic Bestiary entries."),
+		Title(37, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_BIRD), "Death from Below", "", "Unlocked all Bird Bestiary entries."),
+		Title(38, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_DEMON), "Demonator", "", "Unlocked all Demon Bestiary entries."),
+		Title(39, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_DRAGON), "Dragonslayer", "", "Unlocked all Dragon Bestiary entries."),
+		Title(40, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_ELEMENTAL), "Elementalist", "", "Unlocked all Elemental Bestiary entries."),
+		Title(41, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_VERMIN), "Exterminator", "", "Unlocked all Vermin Bestiary entries."),
+		Title(42, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_FEY), "Fey Swatter", "", "Unlocked all Fey Bestiary entries."),
+		Title(43, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_UNDEAD), "Ghosthunter", "Ghosthuntress", "Unlocked all Undead Bestiary entries."),
+		Title(44, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_CONSTRUCT), "Handyman", "Handywoman", "Unlocked all Construct Bestiary entries."),
+		Title(45, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_MAMMAL), "Huntsman", "Huntress", "Unlocked all Mammal Bestiary entries."),
+		Title(46, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_EXTRA_DIMENSIONAL), "Interdimensional Destroyer", "", "Unlocked all Extra Dimensional Bestiary entries."),
+		Title(47, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_HUMAN), "Manhunter", "Manhuntress", "Unlocked all Human Bestiary entries."),
+		Title(48, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_MAGICAL), "Master of Illusion", "Mistress of Illusion", "Unlocked all Magical Bestiary entries."),
+		Title(49, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_SLIME), "Ooze Blues", "", "Unlocked all Slime Bestiary entries."),
+		Title(50, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_AQUATIC), "Sea Bane", "", "Unlocked all Aquatic Bestiary entries."),
+		Title(51, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_REPTILE), "Snake Charmer", "", "Unlocked all Reptile Bestiary entries."),
+		Title(52, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_GIANT), "Tumbler", "", "Unlocked all Giant Bestiary entries."),
+		Title(53, CyclopediaTitle_t::BESTIARY, static_cast<uint16_t>(BestiaryType_t::BESTY_RACE_PLANT), "Weedkiller", "", "Unlocked all Plant Bestiary entries."),
+		Title(54, CyclopediaTitle_t::BESTIARY, 0, "Executioner", "", "Unlocked all Bestiary entries."),
+
+		Title(55, CyclopediaTitle_t::BOSSTIARY, static_cast<uint16_t>(BosstiaryRarity_t::RARITY_NEMESIS), "Boss Annihilator", "", "Unlocked all Nemesis bosses.", 0, false),
+		Title(56, CyclopediaTitle_t::BOSSTIARY, static_cast<uint16_t>(BosstiaryRarity_t::RARITY_ARCHFOE), "Boss Destroyer", "", "Unlocked 10 or more Archfoe bosses.", 10, true),
+		Title(57, CyclopediaTitle_t::BOSSTIARY, static_cast<uint16_t>(BosstiaryRarity_t::RARITY_NEMESIS), "Boss Devastator", "", "Unlocked 10 or more Nemesis bosses.", 10, true),
+		Title(58, CyclopediaTitle_t::BOSSTIARY, static_cast<uint16_t>(BosstiaryRarity_t::RARITY_ARCHFOE), "Boss Eraser", "", "Unlocked all Archfoe bosses.", 0, false),
+		Title(59, CyclopediaTitle_t::BOSSTIARY, 0, "Boss Executioner", "", "Unlocked all bosses.", 0, false),
+		Title(60, CyclopediaTitle_t::BOSSTIARY, static_cast<uint16_t>(BosstiaryRarity_t::RARITY_BANE), "Boss Hunter", "", "Unlocked 10 or more Bane bosses.", 10, true),
+		Title(61, CyclopediaTitle_t::BOSSTIARY, static_cast<uint16_t>(BosstiaryRarity_t::RARITY_NEMESIS), "Boss Obliterator", "", "Unlocked 40 or more Nemesis bosses.", 40, true),
+		Title(62, CyclopediaTitle_t::BOSSTIARY, static_cast<uint16_t>(BosstiaryRarity_t::RARITY_BANE), "Boss Slayer", "", "Unlocked all Bane bosses.", 0, false),
+		Title(63, CyclopediaTitle_t::BOSSTIARY, static_cast<uint16_t>(BosstiaryRarity_t::RARITY_ARCHFOE), "Boss Smiter", "", "Unlocked 40 or more Archfoe bosses.", 40, true),
+		Title(64, CyclopediaTitle_t::BOSSTIARY, static_cast<uint16_t>(BosstiaryRarity_t::RARITY_BANE), "Boss Veteran", "", "Unlocked 40 or more Bane bosses.", 40, true),
+
+		Title(65, CyclopediaTitle_t::DAILY_REWARD, "Creature of Habit (Grade 1)", "Reward Streak of at least 7 days of consecutive logins.", 7, true),
+		Title(66, CyclopediaTitle_t::DAILY_REWARD, "Creature of Habit (Grade 2)", "Reward Streak of at least 30 days of consecutive logins.", 30, true),
+		Title(67, CyclopediaTitle_t::DAILY_REWARD, "Creature of Habit (Grade 3)", "Reward Streak of at least 90 days of consecutive logins.", 90, true),
+		Title(68, CyclopediaTitle_t::DAILY_REWARD, "Creature of Habit (Grade 4)", "Reward Streak of at least 180 days of consecutive logins.", 180, true),
+		Title(69, CyclopediaTitle_t::DAILY_REWARD, "Creature of Habit (Grade 5)", "Reward Streak of at least 365 days of consecutive logins.", 365, true),
+
+		Title(70, CyclopediaTitle_t::TASK, "Aspiring Huntsman", "Invested 160,000 tasks points.", 160000, true, "Aspiring Huntswoman"),
+		Title(71, CyclopediaTitle_t::TASK, "Competent Beastslayer", "Invested 320,000 tasks points.", 320000, true),
+		Title(72, CyclopediaTitle_t::TASK, "Feared Bountyhunter", "Invested 430,000 tasks points.", 430000, true),
+
+		Title(73, CyclopediaTitle_t::MAP, "Dedicated Entrepreneur", "Explored 50% of all the map areas.", 50, false),
+		Title(74, CyclopediaTitle_t::MAP, "Globetrotter", "Explored all map areas.", 100, false),
+
+		Title(75, CyclopediaTitle_t::OTHERS, "Guild Leader", "Leading a Guild.", false),
+		Title(76, CyclopediaTitle_t::OTHERS, "Proconsul of Iksupan", "Only a true devotee to the cause of the ancient Iks and their lost legacy may step up to the rank of proconsul.", true),
+		Title(77, CyclopediaTitle_t::OTHERS, "Admirer of the Crown", "Adjust your crown and handle it.", true),
+		Title(78, CyclopediaTitle_t::OTHERS, "Big Spender", "Unlocked the full Golden Outfit.", true),
+		Title(79, CyclopediaTitle_t::OTHERS, "Challenger of the Iks", "Challenged Ahau, guardian of Iksupan, in traditional Iks warrior attire.", true),
+		Title(80, CyclopediaTitle_t::OTHERS, "Royal Bounacean Advisor", "Called to the court of Bounac by Kesar the Younger himself.", true),
+		Title(81, CyclopediaTitle_t::OTHERS, "Aeternal", "Awarded exclusively to stalwart heroes keeping the faith under all circumstances.", true),
+		Title(82, CyclopediaTitle_t::OTHERS, "Robinson Crusoe", "Some discoveries are reserved to only the most experienced adventurers. Until the next frontier opens on the horizon.", true),
+		Title(83, CyclopediaTitle_t::OTHERS, "Chompmeister", "Awarded only to true connoisseurs undertaking even the most exotic culinary escapades.", true),
+		Title(84, CyclopediaTitle_t::OTHERS, "Bringer of Rain", "Forging through battle after battle like a true gladiator.", true),
+		Title(85, CyclopediaTitle_t::OTHERS, "Beastly", "Reached 2000 charm points. Quite beastly!", true),
+		Title(86, CyclopediaTitle_t::OTHERS, "Midnight Hunter", "When the hunter becomes the hunted, perseverance decides the game.", true),
+		Title(87, CyclopediaTitle_t::OTHERS, "Ratinator", "Killing some snarky cave rats is helpful, killing over ten thousand of them is a statement.", true),
+		Title(88, CyclopediaTitle_t::OTHERS, "Doomsday Nemesis", "Awarded for great help in the battle against Gaz'haragoth.", true),
+		Title(89, CyclopediaTitle_t::OTHERS, "Hero of Bounac", "You prevailed during the battle of Bounac and broke the siege that held Bounac's people in its firm grasp.", true), // Derrotar o boss Drume.
+		Title(90, CyclopediaTitle_t::OTHERS, "King of Demon", "Defeat Morshabaal 5 times.", 0, true, "Queen of Demon"),
+		Title(91, CyclopediaTitle_t::OTHERS, "Planegazer", "Followed the trail of the Planestrider to the end.", true), // Derrotar o boss Planestrider
+		Title(92, CyclopediaTitle_t::OTHERS, "Time Traveller", "Anywhere in time or space.", true), // Derrotar o boss Lord Retro
+		Title(93, CyclopediaTitle_t::OTHERS, "Truly Boss", "Reach 15,000 boss points.", true),
+	};
+
 	m_highscoreCategoriesNames = {
 		{ static_cast<uint8_t>(HighscoreCategories_t::ACHIEVEMENTS), "Achievement Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::AXE_FIGHTING), "Axe Fighting" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::BOSS_POINTS), "Boss Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::CHARMS), "Charm Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::CLUB_FIGHTING), "Club Fighting" },
-		{ static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE), "Experience Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::DISTANCE_FIGHTING), "Distance Fighting" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::DROME), "Drome Score" },
+		{ static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE), "Experience Points" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::FISHING), "Fishing" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::FIST_FIGHTING), "Fist Fighting" },
 		{ static_cast<uint8_t>(HighscoreCategories_t::GOSHNAR), "Goshnar's Taint" },
@@ -8168,10 +8276,9 @@ void Game::kickPlayer(uint32_t playerId, bool displayEffect) {
 void Game::playerFriendSystemAction(std::shared_ptr<Player> player, uint8_t type, uint8_t titleId) {
 	uint32_t playerGUID = player->getGUID();
 	if (type == 0x0E) {
-		// todo in titles system PR
-		// player->title()->setCurrentTitle(titleId);
-		// player->sendCyclopediaCharacterBaseInformation();
-		// player->sendCyclopediaCharacterTitles();
+		player->title()->setCurrentTitle(titleId);
+		player->sendCyclopediaCharacterBaseInformation();
+		player->sendCyclopediaCharacterTitles();
 		return;
 	}
 }
@@ -8312,9 +8419,16 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 		case CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS:
 			player->achiev()->sendUnlockedSecretAchievements();
 			break;
-		case CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY:
-			player->sendCyclopediaCharacterItemSummary();
+		case CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY: {
+			const ItemsTierCountList &inventoryItems = player->getInventoryItemsId(true);
+			const ItemsTierCountList &storeInboxItems = player->getStoreInboxItemsId();
+			const StashItemList &supplyStashItems = player->getStashItems();
+			const ItemsTierCountList &depotBoxItems = player->getDepotChestItemsId();
+			const ItemsTierCountList &inboxItems = player->getDepotInboxItemsId();
+
+			player->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 			break;
+		}
 		case CYCLOPEDIA_CHARACTERINFO_OUTFITSMOUNTS:
 			player->sendCyclopediaCharacterOutfitsMounts();
 			break;
@@ -8427,14 +8541,10 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 		characters.reserve(result->countResults());
 		if (result) {
 			do {
-				uint8_t characterVocation;
 				const auto &voc = g_vocations().getVocation(result->getNumber<uint16_t>("vocation"));
-				if (voc) {
-					characterVocation = voc->getClientId();
-				} else {
-					characterVocation = 0;
-				}
-				characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation);
+				uint8_t characterVocation = voc ? voc->getClientId() : 0;
+				std::string loyaltyTitle = ""; // todo get loyalty title from player
+				characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation, loyaltyTitle);
 			} while (result->next());
 		}
 
@@ -8489,39 +8599,7 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 		return;
 	}
 
-	std::string categoryName;
-	const auto &categoryType = static_cast<HighscoreCategories_t>(category);
-	switch (categoryType) {
-		case HighscoreCategories_t::FIST_FIGHTING:
-			categoryName = "skill_fist";
-			break;
-		case HighscoreCategories_t::CLUB_FIGHTING:
-			categoryName = "skill_club";
-			break;
-		case HighscoreCategories_t::SWORD_FIGHTING:
-			categoryName = "skill_sword";
-			break;
-		case HighscoreCategories_t::AXE_FIGHTING:
-			categoryName = "skill_axe";
-			break;
-		case HighscoreCategories_t::DISTANCE_FIGHTING:
-			categoryName = "skill_dist";
-			break;
-		case HighscoreCategories_t::SHIELDING:
-			categoryName = "skill_shielding";
-			break;
-		case HighscoreCategories_t::FISHING:
-			categoryName = "skill_fishing";
-			break;
-		case HighscoreCategories_t::MAGIC_LEVEL:
-			categoryName = "maglevel";
-			break;
-		default: {
-			category = static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE);
-			categoryName = "experience";
-			break;
-		}
-	}
+	std::string categoryName = getSkillNameById(category);
 
 	std::string query;
 	if (type == HIGHSCORE_GETENTRIES) {
@@ -8537,6 +8615,32 @@ void Game::playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type
 
 	g_databaseTasks().store(query, callback);
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);
+}
+
+std::string Game::getSkillNameById(uint8_t &skill) {
+	switch (static_cast<HighscoreCategories_t>(skill)) {
+		case HighscoreCategories_t::FIST_FIGHTING:
+			return "skill_fist";
+		case HighscoreCategories_t::CLUB_FIGHTING:
+			return "skill_club";
+		case HighscoreCategories_t::SWORD_FIGHTING:
+			return "skill_sword";
+		case HighscoreCategories_t::AXE_FIGHTING:
+			return "skill_axe";
+		case HighscoreCategories_t::DISTANCE_FIGHTING:
+			return "skill_dist";
+		case HighscoreCategories_t::SHIELDING:
+			return "skill_shielding";
+		case HighscoreCategories_t::FISHING:
+			return "skill_fishing";
+		case HighscoreCategories_t::MAGIC_LEVEL:
+			return "maglevel";
+		case HighscoreCategories_t::BOSS_POINTS:
+			return "boss_points";
+		default:
+			skill = static_cast<uint8_t>(HighscoreCategories_t::EXPERIENCE);
+			return "experience";
+	}
 }
 
 void Game::playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) {
@@ -10570,7 +10674,7 @@ std::map<uint16_t, Achievement> Game::getAchievements() {
 
 void Game::logCyclopediaStats() {
 	g_logger().info("Loaded {} badges from Badge System", m_badges.size());
-	// todo in title system: g_logger().info("Loaded {} titles from Title system", m_titles.size());
+	g_logger().info("Loaded {} titles from Title system", m_titles.size());
 }
 
 std::unordered_set<Badge> Game::getBadges() {
@@ -10598,6 +10702,36 @@ Badge Game::getBadgeByName(const std::string &name) {
 		return b.m_name == name;
 	});
 	if (it != m_badges.end()) {
+		return *it;
+	}
+	return {};
+}
+
+std::unordered_set<Title> Game::getTitles() {
+	return m_titles;
+}
+
+Title Game::getTitleById(uint8_t id) {
+	if (id == 0) {
+		return {};
+	}
+	auto it = std::find_if(m_titles.begin(), m_titles.end(), [id](const Title &t) {
+		return t.m_id == id;
+	});
+	if (it != m_titles.end()) {
+		return *it;
+	}
+	return {};
+}
+
+Title Game::getTitleByName(const std::string &name) {
+	if (name.empty()) {
+		return {};
+	}
+	auto it = std::find_if(m_titles.begin(), m_titles.end(), [name](const Title &t) {
+		return t.m_maleName == name;
+	});
+	if (it != m_titles.end()) {
 		return *it;
 	}
 	return {};

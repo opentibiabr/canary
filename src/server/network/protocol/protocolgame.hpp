@@ -14,6 +14,7 @@
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 
 class NetworkMessage;
 class Player;
@@ -31,6 +32,7 @@ class TaskHuntingOption;
 struct ModalWindow;
 struct Achievement;
 struct Badge;
+struct Title;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 

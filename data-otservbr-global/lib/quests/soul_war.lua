@@ -136,9 +136,18 @@ SoulWarQuest = {
 			},
 			zone = Zone("raid.first-claustrophobic-inferno"),
 			spawns = {
-				Position(33991, 31064, 9), Position(34034, 31060, 9), Position(34028, 31067, 9), Position(34020, 31067, 9),
-				Position(34008, 31067, 9), Position(34001, 31059, 9), Position(33992, 31069, 9), Position(34002, 31072, 9), 
-				Position(34013, 31074, 9), Position(33998, 31060, 9), Position(34039, 31065, 9), Position(34032, 31072, 9), 
+				Position(33991, 31064, 9),
+				Position(34034, 31060, 9),
+				Position(34028, 31067, 9),
+				Position(34020, 31067, 9),
+				Position(34008, 31067, 9),
+				Position(34001, 31059, 9),
+				Position(33992, 31069, 9),
+				Position(34002, 31072, 9),
+				Position(34013, 31074, 9),
+				Position(33998, 31060, 9),
+				Position(34039, 31065, 9),
+				Position(34032, 31072, 9),
 			},
 			exitPosition = Position(34009, 31083, 9),
 			endEvent = nil,
@@ -160,9 +169,18 @@ SoulWarQuest = {
 			},
 			zone = Zone("raid.second-claustrophobic-inferno"),
 			spawns = {
-				Position(33999, 31046, 10), Position(34011, 31047, 10), Position(34005, 31052, 10), Position(34015, 31052, 10),
-				Position(34021, 31044, 10), Position(34029, 31054, 10), Position(34037, 31052, 10), Position(34037, 31060, 10),
-				Position(34023, 31062, 10), Position(34012, 31061, 10), Position(33998, 31061, 10), Position(34005, 31052, 10),
+				Position(33999, 31046, 10),
+				Position(34011, 31047, 10),
+				Position(34005, 31052, 10),
+				Position(34015, 31052, 10),
+				Position(34021, 31044, 10),
+				Position(34029, 31054, 10),
+				Position(34037, 31052, 10),
+				Position(34037, 31060, 10),
+				Position(34023, 31062, 10),
+				Position(34012, 31061, 10),
+				Position(33998, 31061, 10),
+				Position(34005, 31052, 10),
 			},
 			exitPosition = Position(34011, 31028, 10),
 			endEvent = nil,
@@ -187,11 +205,25 @@ SoulWarQuest = {
 			},
 			zone = Zone("raid.third-claustrophobic-inferno"),
 			spawns = {
-				Position(34005, 31049, 11), Position(33999, 31051, 11), Position(33995, 31055, 11), Position(33995, 31055, 11),
-				Position(34001, 31069, 11), Position(33999, 31068, 11), Position(34016, 31068, 11), Position(34029, 31071, 11),
-				Position(34030, 31070, 11), Position(34038, 31066, 11), Position(34038, 31051, 11), Position(34033, 31051, 11),
-				Position(34025, 31048, 11), Position(34025, 31049, 11), Position(34013, 31058, 11), Position(34021, 31059, 11),
-				Position(34027, 31063, 11), Position(34007, 31063, 11), Position(34004, 31059, 11),
+				Position(34005, 31049, 11),
+				Position(33999, 31051, 11),
+				Position(33995, 31055, 11),
+				Position(33995, 31055, 11),
+				Position(34001, 31069, 11),
+				Position(33999, 31068, 11),
+				Position(34016, 31068, 11),
+				Position(34029, 31071, 11),
+				Position(34030, 31070, 11),
+				Position(34038, 31066, 11),
+				Position(34038, 31051, 11),
+				Position(34033, 31051, 11),
+				Position(34025, 31048, 11),
+				Position(34025, 31049, 11),
+				Position(34013, 31058, 11),
+				Position(34021, 31059, 11),
+				Position(34027, 31063, 11),
+				Position(34007, 31063, 11),
+				Position(34004, 31059, 11),
 			},
 			exitPosition = Position(34014, 31085, 11),
 			endEvent = nil,
@@ -810,9 +842,9 @@ SoulWarQuest.ebbAndFlow.zone:addArea({ x = 33869, y = 30991, z = 8 }, { x = 3396
 
 -- Initialize claustrophobic inferno raid zones
 
-SoulWarQuest.raids[1].zone:addArea({ x = 33985, y = 31053, z = 9}, { x = 34045, y = 31077, z = 9})
-SoulWarQuest.raids[2].zone:addArea({ x = 33988, y = 31042, z = 10}, { x = 34043, y = 31068, z = 10})
-SoulWarQuest.raids[3].zone:addArea({ x = 33987, y = 31043, z = 11}, { x = 34044, y = 31076, z = 11})
+SoulWarQuest.raids[1].zone:addArea({ x = 33985, y = 31053, z = 9 }, { x = 34045, y = 31077, z = 9 })
+SoulWarQuest.raids[2].zone:addArea({ x = 33988, y = 31042, z = 10 }, { x = 34043, y = 31068, z = 10 })
+SoulWarQuest.raids[3].zone:addArea({ x = 33987, y = 31043, z = 11 }, { x = 34044, y = 31076, z = 11 })
 
 -- Initialize safe areas (should not spawn monster, teleport, take damage from taint, etc)
 SoulWarQuest.safeZones.ebbAndFlow:addArea({ x = 33887, y = 31015, z = 8 }, { x = 33920, y = 31024, z = 8 })

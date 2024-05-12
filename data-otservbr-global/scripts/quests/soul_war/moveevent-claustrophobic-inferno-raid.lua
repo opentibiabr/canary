@@ -13,7 +13,9 @@ local function createTeleportEffect(position)
 end
 
 local function spawnMonsters(raidNumber)
-	if not SoulWarQuest.raids[raidNumber].timerStarted then return end
+	if not SoulWarQuest.raids[raidNumber].timerStarted then
+		return
+	end
 	for _, spawnPosition in pairs(SoulWarQuest.raids[raidNumber].spawns) do
 		addEvent(createTeleportEffect, 1000, spawnPosition)
 		addEvent(createTeleportEffect, 2000, spawnPosition)
@@ -31,7 +33,9 @@ local function kickPlayers(zone, raidNumber)
 end
 
 local function endRaid(zone, raidNumber)
-	if SoulWarQuest.raids[raidNumber].spawnEvent then stopEvent(SoulWarQuest.raids[raidNumber].spawnEvent) end
+	if SoulWarQuest.raids[raidNumber].spawnEvent then
+		stopEvent(SoulWarQuest.raids[raidNumber].spawnEvent)
+	end
 	for _, monster in pairs(zone:getMonsters()) do
 		if not monster:getMaster() then
 			monster:getPosition():sendMagicEffect(CONST_ME_POFF)
@@ -43,7 +47,9 @@ local function endRaid(zone, raidNumber)
 end
 
 local function raid(zone, raidNumber)
-	if SoulWarQuest.raids[raidNumber].timerStarted then return end
+	if SoulWarQuest.raids[raidNumber].timerStarted then
+		return
+	end
 	logger.debug("Claustrophobic Inferno Raid #{} started", raidNumber)
 	SoulWarQuest.raids[raidNumber].toggleTimer()
 	SoulWarQuest.raids[raidNumber].spawnEvent = addEvent(spawnMonsters, SoulWarQuest.raids.spawnTime * 1000, raidNumber)
@@ -51,19 +57,25 @@ local function raid(zone, raidNumber)
 end
 
 function firstRaid.onStepIn(creature, item, position, fromPosition)
-	if not creature:getPlayer() then return true end
+	if not creature:getPlayer() then
+		return true
+	end
 	raid(SoulWarQuest.raids[firstRaidNumber].getZone(), firstRaidNumber)
 	return true
 end
 
 function secondRaid.onStepIn(creature, item, position, fromPosition)
-	if not creature:getPlayer() then return true end
+	if not creature:getPlayer() then
+		return true
+	end
 	raid(SoulWarQuest.raids[secondRaidNumber].getZone(), secondRaidNumber)
 	return true
 end
 
 function thirdRaid.onStepIn(creature, item, position, fromPosition)
-	if not creature:getPlayer() then return true end
+	if not creature:getPlayer() then
+		return true
+	end
 	raid(SoulWarQuest.raids[thirdRaidNumber].getZone(), thirdRaidNumber)
 	return true
 end

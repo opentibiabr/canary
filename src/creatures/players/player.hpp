@@ -34,7 +34,9 @@
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
 #include "enums/object_category.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 
 class House;
 class NetworkMessage;
@@ -51,12 +53,14 @@ class Spell;
 class PlayerWheel;
 class PlayerAchievement;
 class PlayerBadge;
+class PlayerTitle;
 class Spectators;
 class Account;
 
 struct ModalWindow;
 struct Achievement;
 struct Badge;
+struct Title;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -2622,6 +2626,10 @@ public:
 	std::unique_ptr<PlayerBadge> &badge();
 	const std::unique_ptr<PlayerBadge> &badge() const;
 
+	// Player title interface
+	std::unique_ptr<PlayerTitle> &title();
+	const std::unique_ptr<PlayerTitle> &title() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -3017,10 +3025,12 @@ private:
 	friend class IOLoginDataSave;
 	friend class PlayerAchievement;
 	friend class PlayerBadge;
+	friend class PlayerTitle;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;
 	std::unique_ptr<PlayerBadge> m_playerBadge;
+	std::unique_ptr<PlayerTitle> m_playerTitle;
 
 	std::mutex quickLootMutex;
 

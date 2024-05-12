@@ -1861,6 +1861,13 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 	Creature::onRemoveCreature(creature, isLogout);
 
 	if (auto player = getPlayer(); player == creature) {
+		for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+			const auto item = inventory[slot];
+			if (item) {
+				g_moveEvents->onPlayerDeEquip(this, item, static_cast<Slots_t>(slot));
+			}
+		}
+
 		if (isLogout) {
 			if (m_party) {
 				m_party->leaveParty(player);

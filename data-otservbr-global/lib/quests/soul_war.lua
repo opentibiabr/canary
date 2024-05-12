@@ -117,6 +117,98 @@ SoulWarQuest = {
 		{ from = Position(33856, 31884, 5), to = Position(33857, 31865, 6), access = "third-floor-access", count = 70 },
 	},
 
+	safeZones = {
+		claustrophobicInferno = Zone("safe.claustrophobic-inferno"),
+		mirroredNightmare = Zone("safe.mirrored-nightmare"),
+		ebbAndFlow = Zone("safe.ebb-and-flow"),
+		furiousCrater = Zone("safe.furious-crater"),
+		rottenWasteland = Zone("safe.rotten-wasteland"),
+	},
+
+	raids = {
+		[1] = {
+			timerStarted = false,
+			sandTimerPositions = {
+				{ x = 34012, y = 31049, z = 9 },
+				{ x = 34013, y = 31049, z = 9 },
+				{ x = 34014, y = 31049, z = 9 },
+				{ x = 34015, y = 31049, z = 9 },
+			},
+			zone = Zone("raid.first-claustrophobic-inferno"),
+			spawns = {
+				Position(33991, 31064, 9), Position(34034, 31060, 9), Position(34028, 31067, 9), Position(34020, 31067, 9),
+				Position(34008, 31067, 9), Position(34001, 31059, 9), Position(33992, 31069, 9), Position(34002, 31072, 9), 
+				Position(34013, 31074, 9), Position(33998, 31060, 9), Position(34039, 31065, 9), Position(34032, 31072, 9), 
+			},
+			exitPosition = Position(34009, 31083, 9),
+			endEvent = nil,
+			kickEvent = nil,
+			spawnEvent = nil,
+			getZone = function()
+				return SoulWarQuest.raids[1].zone
+			end,
+			toggleTimer = function()
+				SoulWarQuest.raids[1].timerStarted = not SoulWarQuest.raids[1].timerStarted
+			end,
+		},
+		[2] = {
+			timerStarted = false,
+			sandTimerPositions = {
+				{ x = 34012, y = 31075, z = 10 },
+				{ x = 34011, y = 31075, z = 10 },
+				{ x = 34010, y = 31075, z = 10 },
+			},
+			zone = Zone("raid.second-claustrophobic-inferno"),
+			spawns = {
+				Position(33999, 31046, 10), Position(34011, 31047, 10), Position(34005, 31052, 10), Position(34015, 31052, 10),
+				Position(34021, 31044, 10), Position(34029, 31054, 10), Position(34037, 31052, 10), Position(34037, 31060, 10),
+				Position(34023, 31062, 10), Position(34012, 31061, 10), Position(33998, 31061, 10), Position(34005, 31052, 10),
+			},
+			exitPosition = Position(34011, 31028, 10),
+			endEvent = nil,
+			kickEvent = nil,
+			spawnEvent = nil,
+			getZone = function()
+				return SoulWarQuest.raids[2].zone
+			end,
+			toggleTimer = function()
+				SoulWarQuest.raids[2].timerStarted = not SoulWarQuest.raids[2].timerStarted
+			end,
+		},
+		[3] = {
+			timerStarted = false,
+			sandTimerPositions = {
+				{ x = 34009, y = 31036, z = 11 },
+				{ x = 34010, y = 31036, z = 11 },
+				{ x = 34011, y = 31036, z = 11 },
+				{ x = 34012, y = 31036, z = 11 },
+				{ x = 34013, y = 31036, z = 11 },
+				{ x = 34014, y = 31036, z = 11 },
+			},
+			zone = Zone("raid.third-claustrophobic-inferno"),
+			spawns = {
+				Position(34005, 31049, 11), Position(33999, 31051, 11), Position(33995, 31055, 11), Position(33995, 31055, 11),
+				Position(34001, 31069, 11), Position(33999, 31068, 11), Position(34016, 31068, 11), Position(34029, 31071, 11),
+				Position(34030, 31070, 11), Position(34038, 31066, 11), Position(34038, 31051, 11), Position(34033, 31051, 11),
+				Position(34025, 31048, 11), Position(34025, 31049, 11), Position(34013, 31058, 11), Position(34021, 31059, 11),
+				Position(34027, 31063, 11), Position(34007, 31063, 11), Position(34004, 31059, 11),
+			},
+			exitPosition = Position(34014, 31085, 11),
+			endEvent = nil,
+			kickEvent = nil,
+			spawnEvent = nil,
+			getZone = function()
+				return SoulWarQuest.raids[3].zone
+			end,
+			toggleTimer = function()
+				SoulWarQuest.raids[3].timerStarted = not SoulWarQuest.raids[3].timerStarted
+			end,
+		},
+		spawnTime = 10, -- seconds
+		suriviveTime = 2 * 60, -- 2 minutes
+		timeToKick = 5, -- seconds
+	},
+
 	areaZones = {
 		monsters = {
 			["zone.claustrophobic-inferno"] = "Brachiodemon",
@@ -130,14 +222,6 @@ SoulWarQuest = {
 			["boss.goshnar's-hatred"] = "Dreadful Harvester",
 			["boss.goshnar's-cruelty"] = "Dreadful Harvester",
 			["boss.goshnar's-megalomania-purple"] = "Dreadful Harvester",
-		},
-
-		safe = {
-			claustrophobicInferno = Zone("safezone.claustrophobic-inferno"),
-			mirroredNightmare = Zone("safezone.mirrored-nightmare"),
-			ebbAndFlow = Zone("safezone.ebb-and-flow"),
-			furiousCrater = Zone("safezone.furious-crater"),
-			rottenWasteland = Zone("safezone.rotten-wasteland"),
 		},
 
 		claustrophobicInferno = Zone("zone.claustrophobic-inferno"),
@@ -724,16 +808,22 @@ end
 -- Initialize ebb and flow zone area
 SoulWarQuest.ebbAndFlow.zone:addArea({ x = 33869, y = 30991, z = 8 }, { x = 33964, y = 31147, z = 9 })
 
+-- Initialize claustrophobic inferno raid zones
+
+SoulWarQuest.raids[1].zone:addArea({ x = 33985, y = 31053, z = 9}, { x = 34045, y = 31077, z = 9})
+SoulWarQuest.raids[2].zone:addArea({ x = 33988, y = 31042, z = 10}, { x = 34043, y = 31068, z = 10})
+SoulWarQuest.raids[3].zone:addArea({ x = 33987, y = 31043, z = 11}, { x = 34044, y = 31076, z = 11})
+
 -- Initialize safe areas (should not spawn monster, teleport, take damage from taint, etc)
-SoulWarQuest.areaZones.safe.ebbAndFlow:addArea({ x = 33887, y = 31015, z = 8 }, { x = 33920, y = 31024, z = 8 })
+SoulWarQuest.safeZones.ebbAndFlow:addArea({ x = 33887, y = 31015, z = 8 }, { x = 33920, y = 31024, z = 8 })
 
-SoulWarQuest.areaZones.safe.claustrophobicInferno:addArea({ x = 34002, y = 31008, z = 9 }, { x = 34019, y = 31019, z = 9 })
+SoulWarQuest.safeZones.claustrophobicInferno:addArea({ x = 34002, y = 31008, z = 9 }, { x = 34019, y = 31019, z = 9 })
 
-SoulWarQuest.areaZones.safe.furiousCrater:addArea({ x = 33854, y = 31828, z = 3 }, { x = 33869, y = 31834, z = 3 })
+SoulWarQuest.safeZones.furiousCrater:addArea({ x = 33854, y = 31828, z = 3 }, { x = 33869, y = 31834, z = 3 })
 
-SoulWarQuest.areaZones.safe.rottenWasteland:addArea({ x = 33967, y = 31037, z = 11 }, { x = 33977, y = 31051, z = 11 })
+SoulWarQuest.safeZones.rottenWasteland:addArea({ x = 33967, y = 31037, z = 11 }, { x = 33977, y = 31051, z = 11 })
 
-SoulWarQuest.areaZones.safe.mirroredNightmare:addArea({ x = 33884, y = 31181, z = 10 }, { x = 33892, y = 31198, z = 10 })
+SoulWarQuest.safeZones.mirroredNightmare:addArea({ x = 33884, y = 31181, z = 10 }, { x = 33892, y = 31198, z = 10 })
 
 -- Initialize bosses access for taint check
 SoulWarQuest.areaZones.claustrophobicInferno:addArea({ x = 33982, y = 30981, z = 9 }, { x = 34051, y = 31110, z = 11 })
@@ -1279,7 +1369,7 @@ function Monster:goshnarsDefenseIncrease(kvName)
 end
 
 function Player:isInSafeZone()
-	for zoneName, zone in pairs(SoulWarQuest.areaZones.safe) do
+	for zoneName, zone in pairs(SoulWarQuest.safeZones) do
 		if zone and zone:isInZone(self:getPosition()) then
 			return true
 		end

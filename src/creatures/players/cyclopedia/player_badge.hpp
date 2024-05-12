@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "game/game_definitions.hpp"
+#include "enums/player_cyclopedia.hpp"
 
 class Player;
 class KV;

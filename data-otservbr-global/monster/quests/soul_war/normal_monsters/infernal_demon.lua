@@ -98,7 +98,6 @@ monster.loot = {
 	{ name = "giant sword", chance = 2860 },
 	{ name = "magma boots", chance = 2290 },
 	{ name = "stone skin amulet", chance = 570 },
-	{ id = 34109, chance = 20 }, -- bag you desire
 }
 
 monster.attacks = {

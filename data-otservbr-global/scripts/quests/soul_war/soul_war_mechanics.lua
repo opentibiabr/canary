@@ -301,11 +301,11 @@ local changeMap = TalkAction("/changeflowmap")
 
 function changeMap.onSay(player, words, param)
 	if param == "empty" then
-		Game.loadMap(SoulWarQuest.mapsPath.empty)
+		Game.loadMap(SoulWarQuest.ebbAndFlow.mapsPath.empty)
 	elseif param == "inundate" then
-		Game.loadMap(SoulWarQuest.mapsPath.inundate)
+		Game.loadMap(SoulWarQuest.ebbAndFlow.mapsPath.inundate)
 	elseif param == "ebb" then
-		Game.loadMap(SoulWarQuest.mapsPath.ebbFlow)
+		Game.loadMap(SoulWarQuest.ebbAndFlowmapsPath.ebbFlow)
 	end
 end
 

@@ -111,7 +111,7 @@ function callback.playerOnThink(player, interval)
 
 	if accumulatedTime[playerId] >= 10000 then
 		local soulWarQuest = player:soulWarQuestKV()
-		if player:getSoulWarZoneMonster() ~= nil and player:getTaintNameByNumber(5) ~= nil then
+		if player:getSoulWarZoneMonster() ~= nil and not player:isInSafeZone() and player:getTaintNameByNumber(5) ~= nil then
 			local hpLoss = math.ceil(player:getHealth() * 0.1)
 			local manaLoss = math.ceil(player:getMana() * 0.1)
 			player:addHealth(-hpLoss)

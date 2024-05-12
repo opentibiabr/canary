@@ -181,6 +181,10 @@ local function playerSayCallback(npc, player, type, message)
 			message = "You have defeated all the Goshnar's Bosses. Your soul shines brighter with each victory."
 		end
 		npcHandler:say(message, npc, player)
+	elseif MsgContains(message, "taints") or MsgContains(message, "penalties") then
+		if player:getTaintLevel() == nil then
+			player:resetTaints()
+		end
 	end
 	return true
 end

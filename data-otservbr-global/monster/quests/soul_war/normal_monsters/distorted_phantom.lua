@@ -96,7 +96,6 @@ monster.loot = {
 	{ name = "spellbook of warding", chance = 2890 },
 	{ id = 23531, chance = 1930 }, -- ring of green plasma
 	{ name = "glacial rod", chance = 1290 },
-	{ id = 34109, chance = 20 }, -- bag you desire
 }
 
 monster.attacks = {

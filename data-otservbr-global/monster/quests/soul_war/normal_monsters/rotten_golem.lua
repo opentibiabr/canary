@@ -95,7 +95,6 @@ monster.loot = {
 	{ name = "stone skin amulet", chance = 740 },
 	{ name = "terra mantle", chance = 510 },
 	{ name = "rubber cap", chance = 430 },
-	{ id = 34109, chance = 20 }, -- bag you desire
 }
 
 monster.attacks = {

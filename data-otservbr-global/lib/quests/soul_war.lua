@@ -132,7 +132,15 @@ SoulWarQuest = {
 			["boss.goshnar's-megalomania-purple"] = "Dreadful Harvester",
 		},
 
-		caustrophobicInferno = Zone("zone.claustrophobic-inferno"),
+		safe = {
+			claustrophobicInferno = Zone("safezone.claustrophobic-inferno"),
+			mirroredNightmare = Zone("safezone.mirrored-nightmare"),
+			ebbAndFlow = Zone("safezone.ebb-and-flow"),
+			furiousCrater = Zone("safezone.furious-crater"),
+			rottenWasteland = Zone("safezone.rotten-wasteland"),
+		},
+
+		claustrophobicInferno = Zone("zone.claustrophobic-inferno"),
 		mirroredNightmare = Zone("zone.mirrored-nightmare"),
 		ebbAndFlow = Zone("zone.ebb-and-flow"),
 		furiousCrater = Zone("zone.furious-crater"),
@@ -716,8 +724,19 @@ end
 -- Initialize ebb and flow zone area
 SoulWarQuest.ebbAndFlow.zone:addArea({ x = 33869, y = 30991, z = 8 }, { x = 33964, y = 31147, z = 9 })
 
+-- Initialize safe areas (should not spawn monster, teleport, take damage from taint, etc)
+SoulWarQuest.areaZones.safe.ebbAndFlow:addArea({ x = 33887, y = 31015, z = 8 }, { x = 33920, y = 31024, z = 8 })
+
+SoulWarQuest.areaZones.safe.claustrophobicInferno:addArea({ x = 34002, y = 31008, z = 9 }, { x = 34019, y = 31019, z = 9 })
+
+SoulWarQuest.areaZones.safe.furiousCrater:addArea({ x = 33854, y = 31828, z = 3 }, { x = 33869, y = 31834, z = 3 })
+
+SoulWarQuest.areaZones.safe.rottenWasteland:addArea({ x = 33967, y = 31037, z = 11 }, { x = 33977, y = 31051, z = 11 })
+
+SoulWarQuest.areaZones.safe.mirroredNightmare:addArea({ x = 33884, y = 31181, z = 10 }, { x = 33892, y = 31198, z = 10 })
+
 -- Initialize bosses access for taint check
-SoulWarQuest.areaZones.caustrophobicInferno:addArea({ x = 33982, y = 30981, z = 9 }, { x = 34051, y = 31110, z = 11 })
+SoulWarQuest.areaZones.claustrophobicInferno:addArea({ x = 33982, y = 30981, z = 9 }, { x = 34051, y = 31110, z = 11 })
 
 SoulWarQuest.areaZones.ebbAndFlow:addArea({ x = 33873, y = 30994, z = 8 }, { x = 33968, y = 31150, z = 9 })
 
@@ -1075,7 +1094,7 @@ function Monster:tryTeleportToPlayer(sayMessage)
 	for i, spectator in ipairs(spectators) do
 		if spectator:isPlayer() then
 			local player = spectator:getPlayer()
-			if player:getTaintNameByNumber(1, true) then
+			if player:getTaintNameByNumber(1, true) and not player:isInSafeZone() then
 				local distance = self:getPosition():getDistance(player:getPosition())
 				if distance > maxDistance then
 					maxDistance = distance
@@ -1257,6 +1276,16 @@ function Monster:goshnarsDefenseIncrease(kvName)
 		-- If config time have not passed, logs the increase has been skipped.
 		logger.trace("{} skips increase cooldown due to recent item use.", self:getName())
 	end
+end
+
+function Player:isInSafeZone()
+	for zoneName, zone in pairs(SoulWarQuest.areaZones.safe) do
+		if zone and zone:isInZone(self:getPosition()) then
+			return true
+		end
+	end
+
+	return false
 end
 
 function Player:getSoulWarZoneMonster()

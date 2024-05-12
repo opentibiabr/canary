@@ -96,7 +96,6 @@ monster.loot = {
 	{ name = "wand of starstorm", chance = 1310 },
 	{ name = "stone skin amulet", chance = 1310 },
 	{ name = "alloy legs", chance = 440 },
-	{ id = 34109, chance = 20 }, -- bag you desire
 }
 
 monster.attacks = {

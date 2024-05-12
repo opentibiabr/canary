@@ -50,6 +50,8 @@ class Spectators;
 
 struct Achievement;
 struct HighscoreCategory;
+struct Badge;
+struct Title;
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
@@ -97,6 +99,8 @@ public:
 	void start(ServiceManager* manager);
 
 	void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
+
+	void logCyclopediaStats();
 
 	/**
 	 * Load the main map
@@ -305,9 +309,12 @@ public:
 
 	void playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
 
+	void playerFriendSystemAction(std::shared_ptr<Player> player, uint8_t type, uint8_t titleId);
+
 	void playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
 	void playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
+	static std::string getSkillNameById(uint8_t &skill);
 
 	void updatePlayerSaleItems(uint32_t playerId);
 
@@ -717,9 +724,20 @@ public:
 	std::vector<Achievement> getPublicAchievements();
 	std::map<uint16_t, Achievement> getAchievements();
 
+	std::unordered_set<Badge> getBadges();
+	Badge getBadgeById(uint8_t id);
+	Badge getBadgeByName(const std::string &name);
+
+	std::unordered_set<Title> getTitles();
+	Title getTitleById(uint8_t id);
+	Title getTitleByName(const std::string &name);
+
 private:
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
+
+	std::unordered_set<Badge> m_badges;
+	std::unordered_set<Title> m_titles;
 
 	std::vector<HighscoreCategory> m_highscoreCategories;
 	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;

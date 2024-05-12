@@ -17,6 +17,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -51,6 +52,7 @@ Player::Player(ProtocolGame_ptr p) :
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
+	m_playerTitle = std::make_unique<PlayerTitle>(*this);
 }
 
 Player::~Player() {
@@ -119,9 +121,10 @@ std::string Player::getDescription(int32_t lookDistance) {
 	std::ostringstream s;
 	std::string subjectPronoun = getSubjectPronoun();
 	capitalizeWords(subjectPronoun);
+	auto playerTitle = title()->getCurrentTitle() == 0 ? "" : (", " + title()->getCurrentTitleName());
 
 	if (lookDistance == -1) {
-		s << "yourself.";
+		s << "yourself" << playerTitle << ".";
 
 		if (group->access) {
 			s << " You are " << group->name << '.';
@@ -144,7 +147,7 @@ std::string Player::getDescription(int32_t lookDistance) {
 			s << " (Level " << level << ')';
 		}
 
-		s << ". " << subjectPronoun;
+		s << playerTitle << ". " << subjectPronoun;
 
 		if (group->access) {
 			s << " " << getSubjectVerb() << " " << group->name << '.';
@@ -3930,7 +3933,7 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 	return false;
 }
 
-ItemsTierCountList Player::getInventoryItemsId() const {
+ItemsTierCountList Player::getInventoryItemsId(bool ignoreStoreInbox /* false */) const {
 	ItemsTierCountList itemMap;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		std::shared_ptr<Item> item = inventory[i];
@@ -3938,8 +3941,14 @@ ItemsTierCountList Player::getInventoryItemsId() const {
 			continue;
 		}
 
-		(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
-		if (std::shared_ptr<Container> container = item->getContainer()) {
+		const bool isStoreInbox = item->getID() == ITEM_STORE_INBOX;
+
+		if (!isStoreInbox) {
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+
+		const auto &container = item->getContainer();
+		if (container && (!isStoreInbox || !ignoreStoreInbox)) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 				auto containerItem = *it;
 				(itemMap[containerItem->getID()])[containerItem->getTier()] += Item::countByType(containerItem, -1);
@@ -4036,6 +4045,48 @@ void Player::updateDamageReductionFromItemAbility(
 
 double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resistance) const {
 	return (100 - currentTotal) / 100.0 * resistance + currentTotal;
+}
+
+ItemsTierCountList Player::getStoreInboxItemsId() const {
+	ItemsTierCountList itemMap;
+	const auto &container = getStoreInbox();
+	if (container) {
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			std::shared_ptr<Item> item = *it;
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+	}
+
+	return itemMap;
+}
+
+ItemsTierCountList Player::getDepotChestItemsId() const {
+	ItemsTierCountList itemMap;
+
+	for (const auto &[index, depot] : depotChests) {
+		const std::shared_ptr<Container> &container = depot->getContainer();
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			std::shared_ptr<Item> item = *it;
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+	}
+
+	return itemMap;
+}
+
+ItemsTierCountList Player::getDepotInboxItemsId() const {
+	ItemsTierCountList itemMap;
+
+	const std::shared_ptr<Inbox> &inbox = getInbox();
+	const std::shared_ptr<Container> &container = inbox->getContainer();
+	if (container) {
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			const auto &item = *it;
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+	}
+
+	return itemMap;
 }
 
 std::vector<std::shared_ptr<Item>> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/, bool ignoreItemWithTier /* false*/) const {
@@ -7988,6 +8039,15 @@ std::unique_ptr<PlayerBadge> &Player::badge() {
 
 const std::unique_ptr<PlayerBadge> &Player::badge() const {
 	return m_playerBadge;
+}
+
+// Title interface
+std::unique_ptr<PlayerTitle> &Player::title() {
+	return m_playerTitle;
+}
+
+const std::unique_ptr<PlayerTitle> &Player::title() const {
+	return m_playerTitle;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

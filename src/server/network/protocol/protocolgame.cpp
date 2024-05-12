@@ -40,6 +40,7 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_coins.hpp"
+#include "enums/container_type.hpp"
 
 #include "creatures/players/highscore_category.hpp"
 
@@ -340,48 +341,26 @@ void ProtocolGame::AddItem(NetworkMessage &msg, std::shared_ptr<Item> item) {
 		return;
 	}
 
-	if (it.isContainer()) {
-		uint8_t containerType = 0;
-
-		std::shared_ptr<Container> container = item->getContainer();
-		if (container && containerType == 0 && container->getHoldingPlayer() == player) {
-			uint32_t lootFlags = 0;
-			uint32_t obtainFlags = 0;
-			for (auto [category, containerMap] : player->m_managedContainers) {
-				if (!isValidObjectCategory(category)) {
-					continue;
-				}
-				if (containerMap.first == container) {
-					lootFlags |= 1 << category;
-				}
-				if (containerMap.second == container) {
-					obtainFlags |= 1 << category;
-				}
-			}
-
-			if (lootFlags != 0 || obtainFlags != 0) {
-				containerType = 9;
-				msg.addByte(containerType);
+	const auto &container = item->getContainer();
+	if (it.isContainer() && container) {
+		ContainerSpecial_t containerType = container->getSpecialCategory(player);
+		msg.addByte(enumToValue(containerType));
+		switch (containerType) {
+			case ContainerSpecial_t::LootHighlight:
+				break;
+			case ContainerSpecial_t::Manager: {
+				auto [lootFlags, obtainFlags] = container->getObjectCategoryFlags(player);
 				msg.add<uint32_t>(lootFlags);
 				msg.add<uint32_t>(obtainFlags);
+				break;
 			}
-		}
-
-		// Quiver ammo count
-		if (container && containerType == 0 && item->isQuiver() && player->getThing(CONST_SLOT_RIGHT) == item) {
-			uint16_t ammoTotal = 0;
-			for (std::shared_ptr<Item> listItem : container->getItemList()) {
-				if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
-					ammoTotal += listItem->getItemCount();
-				}
+			case ContainerSpecial_t::ContentCounter: {
+				uint16_t ammoTotal = container->getAmmoCount(player);
+				msg.add<uint32_t>(ammoTotal);
+				break;
 			}
-			containerType = 2;
-			msg.addByte(containerType);
-			msg.add<uint32_t>(ammoTotal);
-		}
-
-		if (containerType == 0) {
-			msg.addByte(0x00);
+			default:
+				break;
 		}
 	}
 
@@ -4770,9 +4749,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId) {
 	// Only use here locker items, itemVector is for use of Game::createMarketOffer
 	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker, true);
 	auto totalItemsCountPosition = msg.getBufferPosition();
-	msg.skipBytes(2); // Total items count
-
-	uint16_t totalItemsCount = 0;
+	msg.add<uint16_t>(lockerItems.size());
 	for (const auto &[itemId, tierAndCountMap] : lockerItems) {
 		for (const auto &[tier, count] : tierAndCountMap) {
 			msg.add<uint16_t>(itemId);
@@ -4780,12 +4757,9 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId) {
 				msg.addByte(tier);
 			}
 			msg.add<uint16_t>(static_cast<uint16_t>(count));
-			totalItemsCount++;
 		}
 	}
 
-	msg.setBufferPosition(totalItemsCountPosition);
-	msg.add<uint16_t>(totalItemsCount);
 	writeToOutputBuffer(msg);
 
 	updateCoinBalance();

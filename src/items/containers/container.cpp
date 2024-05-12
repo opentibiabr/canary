@@ -986,3 +986,58 @@ uint32_t Container::getOwnerId() const {
 	}
 	return 0;
 }
+
+ContainerSpecial_t Container::getSpecialCategory(const std::shared_ptr<Player> &player) {
+	if (isCorpse() && !empty() && getHoldingPlayer() != player) {
+		return ContainerSpecial_t::LootHighlight;
+	}
+
+	if (getHoldingPlayer() == player) {
+		if (isQuiver()) {
+			return ContainerSpecial_t::ContentCounter;
+		}
+
+		auto [lootFlags, obtainFlags] = getObjectCategoryFlags(player);
+		if (lootFlags != 0 || obtainFlags != 0) {
+			return ContainerSpecial_t::Manager;
+		}
+	}
+
+	return ContainerSpecial_t::None;
+}
+
+std::pair<uint32_t, uint32_t> Container::getObjectCategoryFlags(const std::shared_ptr<Player> &player) const {
+	uint32_t lootFlags = 0, obtainFlags = 0;
+	// Cycle through all containers managed by the player
+	for (auto [category, containerPair] : player->getManagedContainers()) {
+		// Check if the category is valid before continuing
+		if (!isValidObjectCategory(category)) {
+			continue;
+		}
+
+		// containerPair.first refers to loot containers
+		if (containerPair.first == static_self_cast<Container>()) {
+			lootFlags |= 1 << category;
+		}
+
+		// containerPair.second refers to the obtain containers
+		if (containerPair.second == static_self_cast<Container>()) {
+			obtainFlags |= 1 << category;
+		}
+	}
+
+	return { lootFlags, obtainFlags };
+}
+
+uint16_t Container::getAmmoCount(const std::shared_ptr<Player> &player) const {
+	uint16_t ammoTotal = 0;
+	if (isQuiver()) {
+		for (std::shared_ptr<Item> listItem : getItemList()) {
+			if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
+				ammoTotal += listItem->getItemCount();
+			}
+		}
+	}
+
+	return ammoTotal;
+}

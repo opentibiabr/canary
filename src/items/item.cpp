@@ -22,6 +22,7 @@
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/creature/actions.hpp"
 #include "creatures/combat/spells.hpp"
+#include "map/spectators.hpp"
 
 #define ITEM_IMBUEMENT_SLOT 500
 
@@ -3298,5 +3299,21 @@ bool Item::isInsideDepot(bool includeInbox /* = false*/) {
 void Item::updateTileFlags() {
 	if (auto tile = getTile()) {
 		tile->updateTileFlags(static_self_cast<Item>());
+	}
+}
+
+void Item::sendUpdateToClient(const std::shared_ptr<Player> &player /* = nullptr*/) {
+	if (!player) {
+		auto spectators = Spectators().find<Creature>(getPosition(), true);
+		for (const auto &spectator : spectators) {
+			spectator->getPlayer()->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
+		}
+
+		return;
+	}
+
+	auto participants = player->getParty() ? player->getParty()->getPlayers() : std::vector<std::shared_ptr<Player>> { player };
+	for (const auto &participant : participants) {
+		participant->sendUpdateTileItem(getTile(), participant->getPosition(), static_self_cast<Item>());
 	}
 }

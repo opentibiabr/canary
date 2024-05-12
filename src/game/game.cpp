@@ -2953,6 +2953,8 @@ void Game::playerQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
 	}
 
+	corpse->sendUpdateToClient(player);
+
 	player->lastQuickLootNotification = OTSYS_TIME();
 }
 
@@ -5454,6 +5456,8 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 			}
 		}
 	}
+
+	corpse->sendUpdateToClient(player);
 }
 
 void Game::playerLootAllCorpses(std::shared_ptr<Player> player, const Position &pos, bool lootAllCorpses) {

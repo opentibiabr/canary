@@ -830,6 +830,8 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 					},
 											"Game::playerQuickLootCorpse");
 				}
+
+				corpse->sendUpdateToClient(player);
 			}
 		}
 

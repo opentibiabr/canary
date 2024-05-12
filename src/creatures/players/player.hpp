@@ -34,6 +34,9 @@
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
 #include "enums/object_category.hpp"
+#include "enums/player_cyclopedia.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 
 class House;
 class NetworkMessage;
@@ -49,11 +52,15 @@ class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
 class PlayerAchievement;
+class PlayerBadge;
+class PlayerTitle;
 class Spectators;
 class Account;
 
 struct ModalWindow;
 struct Achievement;
+struct Badge;
+struct Title;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -734,6 +741,13 @@ public:
 	}
 
 	uint32_t getCapacity() const;
+
+	uint32_t getBonusCapacity() const {
+		if (hasFlag(PlayerFlags_t::CannotPickupItem) || hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
+			return std::numeric_limits<uint32_t>::max();
+		}
+		return bonusCapacity;
+	}
 
 	uint32_t getFreeCapacity() const {
 		if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
@@ -1631,9 +1645,9 @@ public:
 		}
 	}
 	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
-	void sendCyclopediaCharacterItemSummary() {
+	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) {
 		if (client) {
-			client->sendCyclopediaCharacterItemSummary();
+			client->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 		}
 	}
 	void sendCyclopediaCharacterOutfitsMounts() {
@@ -2571,11 +2585,21 @@ public:
 	// Get specific inventory item from itemid
 	std::vector<std::shared_ptr<Item>> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 
+	// this get all player store inbox items and return as ItemsTierCountList
+	ItemsTierCountList getStoreInboxItemsId() const;
+	// this get all player depot chest items and return as ItemsTierCountList
+	ItemsTierCountList getDepotChestItemsId() const;
+	// this get all player depot inbox items and return as ItemsTierCountList
+	ItemsTierCountList getDepotInboxItemsId() const;
+
 	// This get all player inventory items
 	std::vector<std::shared_ptr<Item>> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
 
 	// This get all players slot items
 	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> getAllSlotItems() const;
+
+	// This get all blessings
+	phmap::flat_hash_map<Blessings_t, std::string> getBlessingNames() const;
 
 	/**
 	 * @brief Get the equipped items of the player->
@@ -2592,6 +2616,14 @@ public:
 	std::unique_ptr<PlayerAchievement> &achiev();
 	const std::unique_ptr<PlayerAchievement> &achiev() const;
 
+	// Player badge interface
+	std::unique_ptr<PlayerBadge> &badge();
+	const std::unique_ptr<PlayerBadge> &badge() const;
+
+	// Player title interface
+	std::unique_ptr<PlayerTitle> &title();
+	const std::unique_ptr<PlayerTitle> &title() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -2601,6 +2633,8 @@ public:
 	std::shared_ptr<Container> getStoreInbox() const;
 
 	bool canSpeakWithHireling(uint8_t speechbubble);
+
+	uint16_t getPlayerVocationEnum() const;
 
 private:
 	friend class PlayerLock;
@@ -2658,7 +2692,7 @@ private:
 	size_t getLastIndex() const override;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 	void stashContainer(StashContainerList itemDict);
-	ItemsTierCountList getInventoryItemsId() const;
+	ItemsTierCountList getInventoryItemsId(bool ignoreStoreInbox = false) const;
 
 	// This function is a override function of base class
 	std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override;
@@ -2984,9 +3018,13 @@ private:
 	friend class IOLoginDataLoad;
 	friend class IOLoginDataSave;
 	friend class PlayerAchievement;
+	friend class PlayerBadge;
+	friend class PlayerTitle;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;
+	std::unique_ptr<PlayerBadge> m_playerBadge;
+	std::unique_ptr<PlayerTitle> m_playerTitle;
 
 	std::mutex quickLootMutex;
 

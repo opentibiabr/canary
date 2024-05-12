@@ -39,6 +39,8 @@ public:
 
 	bool canUse(std::shared_ptr<Player> player);
 
+	bool isBedComplete(std::shared_ptr<BedItem> nextBedItem);
+
 	bool trySleep(std::shared_ptr<Player> player);
 	bool sleep(std::shared_ptr<Player> player);
 	void wakeUp(std::shared_ptr<Player> player);

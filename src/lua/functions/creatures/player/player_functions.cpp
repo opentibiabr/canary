@@ -4302,8 +4302,8 @@ int PlayerFunctions::luaPlayerAddBadge(lua_State* L) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
 	}
-  
-  player->badge()->add(getNumber<uint8_t>(L, 2, 0));
+
+	player->badge()->add(getNumber<uint8_t>(L, 2, 0));
 	pushBoolean(L, true);
 	return 1;
 }

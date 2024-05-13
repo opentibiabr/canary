@@ -46,11 +46,14 @@ local function endRaid(zone, raidNumber)
 	logger.debug("Claustrophobic Inferno Raid #{} ended", raidNumber)
 end
 
-local function raid(zone, raidNumber)
+local function raid(zone, raidNumber, position, fromPosition)
+	if fromPosition.y == position.y - (raidNumber % 2 ~= 0 and -1 or 1) then -- if player comes from the raid zone don't start the raid
+		return
+	end
 	if SoulWarQuest.raids[raidNumber].timerStarted then
 		return
 	end
-	logger.debug("Claustrophobic Inferno Raid #{} started", raidNumber)
+	logger.warn("Claustrophobic Inferno Raid #{} started", raidNumber)
 	SoulWarQuest.raids[raidNumber].toggleTimer()
 	SoulWarQuest.raids[raidNumber].spawnEvent = addEvent(spawnMonsters, SoulWarQuest.raids.spawnTime * 1000, raidNumber)
 	SoulWarQuest.raids[raidNumber].endEvent = addEvent(endRaid, SoulWarQuest.raids.suriviveTime * 1000, zone, raidNumber)
@@ -60,7 +63,7 @@ function firstRaid.onStepIn(creature, item, position, fromPosition)
 	if not creature:getPlayer() then
 		return true
 	end
-	raid(SoulWarQuest.raids[firstRaidNumber].getZone(), firstRaidNumber)
+	raid(SoulWarQuest.raids[firstRaidNumber].getZone(), firstRaidNumber, position, fromPosition)
 	return true
 end
 
@@ -68,7 +71,7 @@ function secondRaid.onStepIn(creature, item, position, fromPosition)
 	if not creature:getPlayer() then
 		return true
 	end
-	raid(SoulWarQuest.raids[secondRaidNumber].getZone(), secondRaidNumber)
+	raid(SoulWarQuest.raids[secondRaidNumber].getZone(), secondRaidNumber, position, fromPosition)
 	return true
 end
 
@@ -76,7 +79,7 @@ function thirdRaid.onStepIn(creature, item, position, fromPosition)
 	if not creature:getPlayer() then
 		return true
 	end
-	raid(SoulWarQuest.raids[thirdRaidNumber].getZone(), thirdRaidNumber)
+	raid(SoulWarQuest.raids[thirdRaidNumber].getZone(), thirdRaidNumber, position, fromPosition)
 	return true
 end
 

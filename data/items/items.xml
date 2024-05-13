@@ -75710,7 +75710,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="divine missile" value="critical extra damage">
-				<attribute key="value" value="500" />
+				<attribute key="value" value="5" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -75845,7 +75845,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="wrath of nature" value="critical extra damage">
-				<attribute key="value" value="500" />
+				<attribute key="value" value="5" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -75865,10 +75865,10 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="great energy beam" value="critical extra damage">
-				<attribute key="value" value="500" />
+				<attribute key="value" value="5" />
 			</attribute>
 			<attribute key="great death beam" value="critical extra damage">
-				<attribute key="value" value="500" />
+				<attribute key="value" value="5" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -75896,7 +75896,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="strong ethereal spear" value="life leech">
-				<attribute key="value" value="400" />
+				<attribute key="value" value="4" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -75923,7 +75923,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="energy wave" value="life leech">
-				<attribute key="value" value="500" />
+				<attribute key="value" value="5" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -75951,7 +75951,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="front sweep" value="life leech">
-				<attribute key="value" value="400" />
+				<attribute key="value" value="4" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -75979,7 +75979,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="terra wave" value="life leech">
-				<attribute key="value" value="300" />
+				<attribute key="value" value="3" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">

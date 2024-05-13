@@ -1834,6 +1834,15 @@ std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense) {
 	return pastTense ? "was" : "is";
 }
 
+std::string getArticle(const std::string &value, bool withSpace) {
+	if (value.empty()) {
+		return "";
+	}
+	const char &character = value.front();
+	auto result = character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u' ? "an" : "a";
+	return withSpace ? fmt::format(" {} ", result) : result;
+}
+
 std::vector<std::string> split(const std::string &str, char delimiter /* = ','*/) {
 	std::vector<std::string> tokens;
 	std::string token;

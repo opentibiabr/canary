@@ -2886,19 +2886,13 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		} else {
 			description << "Died at Level " << getLevel() << " by";
 			if (lastHitCreature) {
-				const char &character = lastHitCreature->getName().front();
-				if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u') {
-					description << " an ";
-				} else {
-					description << " a ";
-				}
-				description << lastHitCreature->getName();
+				description << getArticle(lastHitCreature->getName()) << lastHitCreature->getName();
 			} else {
 				description << " a field item";
 			}
 			description << '.';
 
-			getPlayer()->cyclopedia()->insertDeathOnHistory(std::move(description.str()), OTSYS_TIME() / 1000);
+			cyclopedia()->insertDeathOnHistory(std::move(description.str()), OTSYS_TIME() / 1000);
 		}
 
 		sendStats();

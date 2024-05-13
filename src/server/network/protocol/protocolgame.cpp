@@ -3653,7 +3653,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries) {
+void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t entriesPerPage) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -3661,10 +3661,14 @@ void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t p
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS);
-	msg.addByte(0x00);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
 
-	uint16_t totalPages = static_cast<uint16_t>(std::ceil(static_cast<double>(entries.size()) / pages));
+	auto entries = player->cyclopedia()->getDeathHistory();
+	uint16_t pages = std::min<uint16_t>(entriesPerPage, entries.size());
+
+	auto totalPages = static_cast<uint16_t>(std::ceil(static_cast<double>(entries.size()) / pages));
 	uint16_t currentPage = std::min<uint16_t>(page, totalPages);
+
 	uint16_t firstObject = (currentPage - 1) * pages;
 	uint16_t finalObject = firstObject + pages;
 
@@ -3672,14 +3676,15 @@ void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t p
 	msg.add<uint16_t>(totalPages);
 	msg.add<uint16_t>(pages);
 	for (uint16_t i = firstObject; i < finalObject; i++) {
-		RecentDeathEntry entry = entries[i];
+		const RecentDeathEntry &entry = entries[i];
 		msg.add<uint32_t>(entry.timestamp);
 		msg.addString(entry.cause, "ProtocolGame::sendCyclopediaCharacterRecentDeaths - entry.cause");
 	}
+
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries) {
+void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t entriesPerPage) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -3687,10 +3692,14 @@ void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS);
-	msg.addByte(0x00);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
 
-	uint16_t totalPages = static_cast<uint16_t>(std::ceil(static_cast<double>(entries.size()) / pages));
+	auto entries = player->cyclopedia()->getPvpKillsHistory();
+	uint16_t pages = std::min<uint16_t>(entriesPerPage, entries.size());
+
+	auto totalPages = static_cast<uint16_t>(std::ceil(static_cast<double>(entries.size()) / pages));
 	uint16_t currentPage = std::min<uint16_t>(page, totalPages);
+
 	uint16_t firstObject = (currentPage - 1) * pages;
 	uint16_t finalObject = firstObject + pages;
 
@@ -3698,11 +3707,12 @@ void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t
 	msg.add<uint16_t>(totalPages);
 	msg.add<uint16_t>(pages);
 	for (uint16_t i = firstObject; i < finalObject; i++) {
-		RecentPvPKillEntry entry = entries[i];
+		const RecentPvPKillEntry &entry = entries[i];
 		msg.add<uint32_t>(entry.timestamp);
 		msg.addString(entry.description, "ProtocolGame::sendCyclopediaCharacterRecentPvPKills - entry.description");
 		msg.addByte(entry.status);
 	}
+
 	writeToOutputBuffer(msg);
 }
 

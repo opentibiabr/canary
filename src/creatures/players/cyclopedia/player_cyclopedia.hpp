@@ -40,6 +40,13 @@ public:
 		return Summary(m_storeXpBoosts, m_dailyRewardCollections, m_hirelings, m_preyCards, m_charms, m_goshnar, m_drome, m_loginStreak, m_taskHuntingPoints, m_mapAreaDiscoveredPercentage, m_hirelingOutfits, m_hirelingJobs, m_blessings);
 	}
 	void loadSummaryData();
+	void loadRecentKills();
+	void loadDeathHistory();
+
+	[[nodiscard]] std::vector<RecentDeathEntry> getDeathHistory() const;
+	void insertDeathOnHistory(std::string cause, uint32_t timestamp);
+	[[nodiscard]] std::vector<RecentPvPKillEntry> getPvpKillsHistory() const;
+	void insertPvpKillOnHistory(std::string cause, uint32_t timestamp, uint8_t status);
 
 	void addXpBoostsObtained(uint16_t amount);
 	void addRewardCollectionObtained(uint16_t amount);
@@ -56,11 +63,6 @@ public:
 	void addHirelingJobsObtained(uint8_t jobId);
 	void addBlessingsObtained(Blessings_t id, uint16_t amount);
 	//	void addHouseItemsObtained(uint16_t itemId, uint32_t amount);
-
-	[[nodiscard]] std::vector<RecentDeathEntry> getDeathHistory() const;
-	void insertDeathOnHistory(std::string cause, uint32_t timestamp);
-	[[nodiscard]] std::vector<RecentPvPKillEntry> getPvpKillsHistory() const;
-	void insertPvpKillOnHistory(std::string cause, uint32_t timestamp, uint8_t status);
 
 private:
 	uint16_t m_storeXpBoosts = 0;

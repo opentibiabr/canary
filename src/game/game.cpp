@@ -8311,121 +8311,12 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 		case CYCLOPEDIA_CHARACTERINFO_COMBATSTATS:
 			player->sendCyclopediaCharacterCombatStats();
 			break;
-		case CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS: {
-			std::ostringstream query;
-			uint32_t offset = static_cast<uint32_t>(page - 1) * entriesPerPage;
-			query << "SELECT `time`, `level`, `killed_by`, `mostdamage_by`, (select count(*) FROM `player_deaths` WHERE `player_id` = " << playerGUID << ") as `entries` FROM `player_deaths` WHERE `player_id` = " << playerGUID << " ORDER BY `time` DESC LIMIT " << offset << ", " << entriesPerPage;
-
-			uint32_t playerID = player->getID();
-			std::function<void(DBResult_ptr, bool)> callback = [playerID, page, entriesPerPage](const DBResult_ptr &result, bool) {
-				std::shared_ptr<Player> player = g_game().getPlayerByID(playerID);
-				if (!player) {
-					return;
-				}
-
-				player->resetAsyncOngoingTask(PlayerAsyncTask_RecentDeaths);
-				if (!result) {
-					player->sendCyclopediaCharacterRecentDeaths(0, 0, {});
-					return;
-				}
-
-				uint32_t pages = result->getNumber<uint32_t>("entries");
-				pages += entriesPerPage - 1;
-				pages /= entriesPerPage;
-
-				std::vector<RecentDeathEntry> entries;
-				entries.reserve(result->countResults());
-				do {
-					std::string cause1 = result->getString("killed_by");
-					std::string cause2 = result->getString("mostdamage_by");
-
-					std::ostringstream cause;
-					cause << "Died at Level " << result->getNumber<uint32_t>("level") << " by";
-					if (!cause1.empty()) {
-						const char &character = cause1.front();
-						if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u') {
-							cause << " an ";
-						} else {
-							cause << " a ";
-						}
-						cause << cause1;
-					}
-
-					if (!cause2.empty()) {
-						if (!cause1.empty()) {
-							cause << " and ";
-						}
-
-						const char &character = cause2.front();
-						if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u') {
-							cause << " an ";
-						} else {
-							cause << " a ";
-						}
-						cause << cause2;
-					}
-					cause << '.';
-					entries.emplace_back(std::move(cause.str()), result->getNumber<uint32_t>("time"));
-				} while (result->next());
-				player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
-			};
-			g_databaseTasks().store(query.str(), callback);
-			player->addAsyncOngoingTask(PlayerAsyncTask_RecentDeaths);
+		case CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS:
+			player->sendCyclopediaCharacterRecentDeaths(page, entriesPerPage);
 			break;
-		}
-		case CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS: {
-			// TODO: add guildwar, assists and arena kills
-			Database &db = Database::getInstance();
-			const std::string &escapedName = db.escapeString(player->getName());
-			std::ostringstream query;
-			uint32_t offset = static_cast<uint32_t>(page - 1) * entriesPerPage;
-			query << "SELECT `d`.`time`, `d`.`killed_by`, `d`.`mostdamage_by`, `d`.`unjustified`, `d`.`mostdamage_unjustified`, `p`.`name`, (select count(*) FROM `player_deaths` WHERE ((`killed_by` = " << escapedName << " AND `is_player` = 1) OR (`mostdamage_by` = " << escapedName << " AND `mostdamage_is_player` = 1))) as `entries` FROM `player_deaths` AS `d` INNER JOIN `players` AS `p` ON `d`.`player_id` = `p`.`id` WHERE ((`d`.`killed_by` = " << escapedName << " AND `d`.`is_player` = 1) OR (`d`.`mostdamage_by` = " << escapedName << " AND `d`.`mostdamage_is_player` = 1)) ORDER BY `time` DESC LIMIT " << offset << ", " << entriesPerPage;
-
-			uint32_t playerID = player->getID();
-			std::function<void(DBResult_ptr, bool)> callback = [playerID, page, entriesPerPage](const DBResult_ptr &result, bool) {
-				std::shared_ptr<Player> player = g_game().getPlayerByID(playerID);
-				if (!player) {
-					return;
-				}
-
-				player->resetAsyncOngoingTask(PlayerAsyncTask_RecentPvPKills);
-				if (!result) {
-					player->sendCyclopediaCharacterRecentPvPKills(0, 0, {});
-					return;
-				}
-
-				uint32_t pages = result->getNumber<uint32_t>("entries");
-				pages += entriesPerPage - 1;
-				pages /= entriesPerPage;
-
-				std::vector<RecentPvPKillEntry> entries;
-				entries.reserve(result->countResults());
-				do {
-					std::string cause1 = result->getString("killed_by");
-					std::string cause2 = result->getString("mostdamage_by");
-					std::string name = result->getString("name");
-
-					uint8_t status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_JUSTIFIED;
-					if (player->getName() == cause1) {
-						if (result->getNumber<uint32_t>("unjustified") == 1) {
-							status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
-						}
-					} else if (player->getName() == cause2) {
-						if (result->getNumber<uint32_t>("mostdamage_unjustified") == 1) {
-							status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
-						}
-					}
-
-					std::ostringstream description;
-					description << "Killed " << name << '.';
-					entries.emplace_back(std::move(description.str()), result->getNumber<uint32_t>("time"), status);
-				} while (result->next());
-				player->sendCyclopediaCharacterRecentPvPKills(page, static_cast<uint16_t>(pages), entries);
-			};
-			g_databaseTasks().store(query.str(), callback);
-			player->addAsyncOngoingTask(PlayerAsyncTask_RecentPvPKills);
+		case CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS:
+			player->sendCyclopediaCharacterRecentPvPKills(page, entriesPerPage);
 			break;
-		}
 		case CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS:
 			player->achiev()->sendUnlockedSecretAchievements();
 			break;

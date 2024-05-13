@@ -48,7 +48,7 @@ public:
 	bool loadFromXml();
 	bool reload();
 
-	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
+	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(PlayerSex_t sex, uint16_t lookType, const std::shared_ptr<const Player> &player = nullptr) const;
 	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const {
 		return outfits[sex];
 	}

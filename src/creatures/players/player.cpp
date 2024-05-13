@@ -4953,7 +4953,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return true;
 	}
 
-	const auto &outfit = Outfits::getInstance().getOutfitByLookType(sex, lookType);
+	const auto &outfit = Outfits::getInstance().getOutfitByLookType(sex, lookType, getPlayer());
 	if (!outfit) {
 		return false;
 	}
@@ -5865,7 +5865,7 @@ bool Player::toggleMount(bool mount) {
 			return false;
 		}
 
-		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getSex(), defaultOutfit.lookType);
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getSex(), defaultOutfit.lookType, getPlayer());
 		if (!playerOutfit) {
 			return false;
 		}

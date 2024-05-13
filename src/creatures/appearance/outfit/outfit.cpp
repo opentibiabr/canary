@@ -78,7 +78,12 @@ bool Outfits::loadFromXml() {
 	return true;
 }
 
-std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
+std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType, const std::shared_ptr<const Player> &player) const {
+	if (sex != PLAYERSEX_FEMALE && sex != PLAYERSEX_MALE) {
+		g_logger().error("[{}] - Sex invalid or player: {}", __FUNCTION__, player->getName());
+		return nullptr;
+	}
+
 	auto it = std::ranges::find_if(outfits[sex], [&lookType](const auto &outfit) {
 		return outfit->lookType == lookType;
 	});

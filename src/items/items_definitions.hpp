@@ -267,7 +267,8 @@ enum ImbuementTypes_t : int64_t {
 	IMBUEMENT_SKILLBOOST_SHIELDING = 14,
 	IMBUEMENT_SKILLBOOST_DISTANCE = 15,
 	IMBUEMENT_SKILLBOOST_MAGIC_LEVEL = 16,
-	IMBUEMENT_INCREASE_CAPACITY = 17
+	IMBUEMENT_INCREASE_CAPACITY = 17,
+	IMBUEMENT_VIBRANCY_PARALYZE = 18
 };
 
 enum class Augment_t : uint8_t {
@@ -621,7 +622,7 @@ enum ItemParseAttributes_t {
 };
 
 struct ImbuementInfo {
-	Imbuement* imbuement;
+	std::shared_ptr<Imbuement> imbuement;
 	uint32_t duration = 0;
 };
 

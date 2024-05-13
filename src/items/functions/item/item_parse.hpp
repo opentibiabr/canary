@@ -245,7 +245,8 @@ const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
 	{ "skillboost shielding", IMBUEMENT_SKILLBOOST_SHIELDING },
 	{ "skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE },
 	{ "skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL },
-	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY }
+	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY },
+	{ "vibrancy", IMBUEMENT_VIBRANCY_PARALYZE }
 };
 
 const phmap::flat_hash_map<Augment_t, ConfigKey_t> AugmentWithoutValueDescriptionDefaultKeys = {

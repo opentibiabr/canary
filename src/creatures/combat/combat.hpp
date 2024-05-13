@@ -385,6 +385,8 @@ private:
 
 	static void combatTileEffects(const CreatureVector &spectators, std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, const CombatParams &params);
 
+	static bool reflectParalyzeCondition(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Player> &target, const std::shared_ptr<Condition> &condition);
+
 	/**
 	 * @brief Calculate the level formula for combat.
 	 *

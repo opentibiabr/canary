@@ -1566,7 +1566,7 @@ public:
 		}
 	}
 	// Imbuements
-	void onApplyImbuement(Imbuement* imbuement, std::shared_ptr<Item> item, uint8_t slot, bool protectionCharm);
+	void onApplyImbuement(std::shared_ptr<Imbuement> imbuement, std::shared_ptr<Item> item, uint8_t slot, bool protectionCharm);
 	void onClearImbuement(std::shared_ptr<Item> item, uint8_t slot);
 	void openImbuementWindow(std::shared_ptr<Item> item);
 	void sendImbuementResult(const std::string message) {
@@ -1853,8 +1853,8 @@ public:
 
 	void setTraining(bool value);
 
-	void addItemImbuementStats(const Imbuement* imbuement);
-	void removeItemImbuementStats(const Imbuement* imbuement);
+	void addItemImbuementStats(const std::shared_ptr<Imbuement> imbuement);
+	void removeItemImbuementStats(const std::shared_ptr<Imbuement> imbuement);
 	void updateImbuementTrackerStats() const;
 
 	bool isUIExhausted(uint32_t exhaustionTime = 250) const;

@@ -17,7 +17,11 @@
 class Player;
 class Item;
 
-class Imbuement;
+enum UseSkillMode : uint8_t {
+	NormalSkill = 1,
+	MagicLevel = 2,
+	SpecialSkill = 3
+};
 
 struct BaseImbuement {
 	BaseImbuement(uint16_t initId, std::string initName, uint32_t initPrice, uint32_t initProtectionPrice, uint32_t initRemoveCost, uint32_t initDuration, uint8_t initPercent) :
@@ -56,23 +60,27 @@ public:
 		return inject<Imbuements>();
 	}
 
-	Imbuement* getImbuement(uint16_t id);
+	std::shared_ptr<Imbuement> getImbuement(uint16_t id) const;
+	std::shared_ptr<BaseImbuement> getBaseByID(uint16_t id) const;
+	std::shared_ptr<CategoryImbuement> getCategoryByID(uint16_t id) const;
 
-	BaseImbuement* getBaseByID(uint16_t id);
-	CategoryImbuement* getCategoryByID(uint16_t id);
-	std::vector<Imbuement*> getImbuements(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
+	std::vector<std::shared_ptr<Imbuement>> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) const;
 
 protected:
 	friend class Imbuement;
 	bool loaded = false;
 
 private:
-	std::map<uint32_t, Imbuement> imbuementMap;
-
-	std::vector<BaseImbuement> basesImbuement;
-	std::vector<CategoryImbuement> categoriesImbuement;
-
 	uint32_t runningid = 0;
+
+	std::map<uint32_t, std::shared_ptr<Imbuement>> imbuementMap;
+	std::vector<std::shared_ptr<BaseImbuement>> basesImbuement;
+	std::vector<std::shared_ptr<CategoryImbuement>> categoriesImbuement;
+
+	bool processBaseNode(const pugi::xml_node &baseNode);
+	bool processCategoryNode(const pugi::xml_node &categoryNode);
+	bool processImbuementNode(const pugi::xml_node &imbuementNode);
+	bool processImbuementChildNodes(const pugi::xml_node &imbuementNode, const std::shared_ptr<Imbuement> &imbuement);
 };
 
 constexpr auto g_imbuements = Imbuements::getInstance;
@@ -94,7 +102,7 @@ public:
 		return storage;
 	}
 
-	bool isPremium() {
+	bool isPremium() const {
 		return premium;
 	}
 	std::string getName() const {
@@ -116,7 +124,7 @@ public:
 		return items;
 	}
 
-	uint16_t getIconID() {
+	uint16_t getIconID() const {
 		return icon + (baseid - 1);
 	}
 
@@ -124,11 +132,11 @@ public:
 	int32_t stats[STAT_LAST + 1] = {};
 	int32_t skills[SKILL_LAST + 1] = {};
 	int32_t speed = 0;
+	int32_t paralyzeReduction = 0;
 	uint32_t capacity = 0;
 	int16_t absorbPercent[COMBAT_COUNT] = {};
 	int16_t elementDamage = 0;
 	SoundEffect_t soundEffect = SoundEffect_t::SILENCE;
-
 	CombatType_t combatType = COMBAT_NONE;
 
 protected:
@@ -139,7 +147,7 @@ private:
 	bool premium = false;
 	uint32_t storage = 0;
 	uint16_t id, baseid, category = 0;
-	std::string name, description, subgroup = "";
+	std::string name, description, subgroup;
 
 	std::vector<std::pair<uint16_t, uint16_t>> items;
 };

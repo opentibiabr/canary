@@ -44,8 +44,7 @@ function addSkill.onSay(player, words, param)
 		return true
 	end
 
-	-- Trim left
-	split[2] = split[2]:gsub("^%s*(.-)$", "%1")
+	split[2] = split[2]:trimSpace()
 
 	local count = 1
 	if split[3] then

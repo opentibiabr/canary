@@ -46,6 +46,7 @@
     <ClInclude Include="..\src\creatures\players\wheel\wheel_gems.hpp" />
     <ClInclude Include="..\src\creatures\players\achievement\player_achievement.hpp" />
     <ClInclude Include="..\src\creatures\players\cyclopedia\player_badge.hpp" />
+    <ClInclude Include="..\src\creatures\players\cyclopedia\player_title.hpp" />
     <ClInclude Include="..\src\creatures\players\wheel\player_wheel.hpp" />
     <ClInclude Include="..\src\creatures\players\wheel\wheel_definitions.hpp" />
     <ClInclude Include="..\src\database\database.hpp" />
@@ -259,6 +260,7 @@
     <ClCompile Include="..\src\creatures\players\wheel\wheel_gems.cpp" />
     <ClCompile Include="..\src\creatures\players\achievement\player_achievement.cpp" />
     <ClCompile Include="..\src\creatures\players\cyclopedia\player_badge.cpp" />
+    <ClCompile Include="..\src\creatures\players\cyclopedia\player_title.cpp" />
     <ClCompile Include="..\src\creatures\players\wheel\player_wheel.cpp" />
     <ClCompile Include="..\src\database\database.cpp" />
     <ClCompile Include="..\src\database\databasemanager.cpp" />
@@ -598,3 +600,4 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>
+

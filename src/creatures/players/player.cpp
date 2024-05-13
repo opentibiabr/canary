@@ -17,6 +17,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -51,6 +52,7 @@ Player::Player(ProtocolGame_ptr p) :
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
+	m_playerTitle = std::make_unique<PlayerTitle>(*this);
 }
 
 Player::~Player() {
@@ -119,9 +121,10 @@ std::string Player::getDescription(int32_t lookDistance) {
 	std::ostringstream s;
 	std::string subjectPronoun = getSubjectPronoun();
 	capitalizeWords(subjectPronoun);
+	auto playerTitle = title()->getCurrentTitle() == 0 ? "" : (", " + title()->getCurrentTitleName());
 
 	if (lookDistance == -1) {
-		s << "yourself.";
+		s << "yourself" << playerTitle << ".";
 
 		if (group->access) {
 			s << " You are " << group->name << '.';
@@ -144,7 +147,7 @@ std::string Player::getDescription(int32_t lookDistance) {
 			s << " (Level " << level << ')';
 		}
 
-		s << ". " << subjectPronoun;
+		s << playerTitle << ". " << subjectPronoun;
 
 		if (group->access) {
 			s << " " << getSubjectVerb() << " " << group->name << '.';
@@ -6732,6 +6735,10 @@ void Player::clearCooldowns() {
 }
 
 void Player::triggerTranscendance() {
+	if (wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) > OTSYS_TIME()) {
+		return;
+	}
+
 	auto item = getInventoryItem(CONST_SLOT_LEGS);
 	if (item == nullptr) {
 		return;
@@ -6748,10 +6755,28 @@ void Player::triggerTranscendance() {
 		addCondition(outfitCondition);
 		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_FORGE, OTSYS_TIME() + duration);
 		g_game().addMagicEffect(getPosition(), CONST_ME_AVATAR_APPEAR);
-		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
+
 		sendSkills();
 		sendStats();
 		sendBasicData();
+
+		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
+
+		// Send player data after transcendance timer expire
+		const auto &task = createPlayerTask(
+			std::max<uint32_t>(SCHEDULER_MINTICKS, duration),
+			[playerId = getID()] {
+				auto player = g_game().getPlayerByID(playerId);
+				if (player) {
+					player->sendSkills();
+					player->sendStats();
+					player->sendBasicData();
+				}
+			},
+			"Player::triggerTranscendance"
+		);
+		g_dispatcher().scheduleEvent(task);
+
 		wheel()->sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());
 	}
@@ -8014,6 +8039,15 @@ std::unique_ptr<PlayerBadge> &Player::badge() {
 
 const std::unique_ptr<PlayerBadge> &Player::badge() const {
 	return m_playerBadge;
+}
+
+// Title interface
+std::unique_ptr<PlayerTitle> &Player::title() {
+	return m_playerTitle;
+}
+
+const std::unique_ptr<PlayerTitle> &Player::title() const {
+	return m_playerTitle;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

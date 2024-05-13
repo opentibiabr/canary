@@ -731,6 +731,10 @@ public:
 	Title getTitleById(uint8_t id);
 	Title getTitleByName(const std::string &name);
 
+	const std::string &getSummaryKeyByType(uint8_t type) {
+		return m_summaryCategories[type];
+	}
+
 private:
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
@@ -740,6 +744,8 @@ private:
 
 	std::vector<HighscoreCategory> m_highscoreCategories;
 	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;
+
+	std::unordered_map<uint8_t, std::string> m_summaryCategories;
 
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
 	std::unordered_set<uint32_t> fiendishMonsters;

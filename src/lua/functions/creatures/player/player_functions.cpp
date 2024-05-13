@@ -4356,3 +4356,27 @@ int PlayerFunctions::luaPlayerSetCurrentTitle(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerCreateTransactionSummary(lua_State* L) {
+	// player:createTransactionSummary(type, count[, itemType = 0[, offerId = 0[, blessId = 0]]])
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto type = getNumber<uint8_t>(L, 2, 0);
+	if (type == 0) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_VARIANT_NOT_FOUND));
+		return 1;
+	}
+
+	auto count = getNumber<uint8_t>(L, 3, 1);
+	auto itemType = getNumber<uint8_t>(L, 4, 0);
+	auto offerId = getNumber<uint8_t>(L, 5, 0);
+	auto blessId = getNumber<uint8_t>(L, 6, 0);
+
+	player->cyclopedia()->updateStoreSummary(type, count, itemType, offerId, blessId);
+	pushBoolean(L, true);
+	return 1;
+}

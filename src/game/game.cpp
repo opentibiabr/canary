@@ -359,6 +359,18 @@ Game::Game() {
 		HighscoreCategory("Fishing", static_cast<uint8_t>(HighscoreCategories_t::FISHING)),
 		HighscoreCategory("Magic Level", static_cast<uint8_t>(HighscoreCategories_t::MAGIC_LEVEL))
 	};
+
+	m_summaryCategories = {
+		{ static_cast<uint8_t>(Summary_t::BOOSTS), "xp-boosts" },
+		{ static_cast<uint8_t>(Summary_t::PREY_SLOTS), "prey-slots" },
+		{ static_cast<uint8_t>(Summary_t::PREY_WILDCARDS), "prey-wildcards" },
+		{ static_cast<uint8_t>(Summary_t::INSTANT_REWARDS), "instant-rewards" },
+		{ static_cast<uint8_t>(Summary_t::CHARM_EXPANSIONS), "charm-expansions" },
+		{ static_cast<uint8_t>(Summary_t::HIRELINGS), "hirelings" },
+		{ static_cast<uint8_t>(Summary_t::HIRELING_JOBS), "hirelings-jobs" },
+		{ static_cast<uint8_t>(Summary_t::HIRELING_OUTFITS), "hireling-outfits" },
+		{ static_cast<uint8_t>(Summary_t::HOUSE_ITEMS), "house-items" },
+	};
 }
 
 Game::~Game() = default;

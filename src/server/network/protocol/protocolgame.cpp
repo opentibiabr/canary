@@ -3976,19 +3976,51 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 
 	// getBlessingsObtained
 	auto blessings = player->getBlessingNames();
-	msg.addByte(static_cast<uint8_t>(blessings.size())); // getBlessingsObtained
+	msg.addByte(static_cast<uint8_t>(blessings.size()));
 	for (const auto &it : blessings) {
 		msg.addString(it.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
-		msg.addByte(static_cast<uint8_t>((cyclopediaSummary.m_blessings)[it.first]));
+		msg.addByte(static_cast<uint8_t>((player->cyclopedia()->getBlessings())[it.first]));
 	}
-	msg.addByte(0x00); // getTaskHuntingSlotById
-	msg.addByte(0x00); // getPreyCardsObtained
-	msg.addByte(0x00); // getRewardCollectionObtained
-	msg.addByte(0x00); // player->hasCharmExpansion() ? 0x01 : 0x00
-	msg.addByte(0x00); // getHirelingsObtained
-	msg.addByte(0x00); // getHirelinsJobsObtained
-	msg.addByte(0x00); // getHirelinsOutfitsObtained
-	msg.add<uint16_t>(0); // getHouseItemsObtained
+
+	uint8_t preySlotsUnlocked = 0;
+	// Prey third slot unlocked
+	if (const auto &slotP = player->getPreySlotById(PreySlot_Three);
+		slotP && slotP->state != PreyDataState_Locked) {
+		preySlotsUnlocked++;
+	}
+	// Task hunting third slot unlocked
+	if (const auto &slotH = player->getTaskHuntingSlotById(PreySlot_Three);
+		slotH && slotH->state != PreyTaskDataState_Locked) {
+		preySlotsUnlocked++;
+	}
+	msg.addByte(preySlotsUnlocked); // getPreySlotById + getTaskHuntingSlotById
+	
+	msg.addByte(cyclopediaSummary.m_preyWildcards); // getPreyCardsObtained
+	msg.addByte(cyclopediaSummary.m_instantRewards); // getRewardCollectionObtained
+	msg.addByte(player->hasCharmExpansion() ? 0x01 : 0x00);
+	msg.addByte(cyclopediaSummary.m_hirelings); // getHirelingsObtained
+
+	auto jobs = player->cyclopedia()->getHirelingJobs();
+	msg.addByte(jobs.size());
+	for (const auto job_it : jobs) {
+		msg.addByte(job_it);
+	}
+
+	auto outfits = player->cyclopedia()->getHirelingOutfits();
+	msg.addByte(outfits.size());
+	for (const auto outfit_it : outfits) {
+		msg.addByte(outfit_it);
+	}
+
+	auto houseItems = player->cyclopedia()->getHouseItems();
+	msg.add<uint16_t>(houseItems.size());
+	for (const auto &hItem_it : houseItems) {
+		const ItemType &it = Item::items[hItem_it.first];
+		msg.add<uint16_t>(hItem_it.first); // Item ID
+		msg.addString(it.name, "ProtocolGame::sendCyclopediaCharacterStoreSummary - houseItem.name");
+		msg.addByte(hItem_it.second);
+	}
+
 	writeToOutputBuffer(msg);
 }
 

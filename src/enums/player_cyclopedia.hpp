@@ -36,3 +36,15 @@ enum CyclopediaTitle_t : uint8_t {
 	MAP,
 	OTHERS,
 };
+
+enum Summary_t : uint8_t {
+	BOOSTS = 1,
+	PREY_SLOTS,
+	PREY_WILDCARDS,
+	INSTANT_REWARDS,
+	CHARM_EXPANSIONS,
+	HIRELINGS,
+	HIRELING_JOBS,
+	HIRELING_OUTFITS,
+	HOUSE_ITEMS,
+};

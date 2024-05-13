@@ -400,27 +400,13 @@ end
 
 -- Used on cyclopedia store summary
 local function insertPlayerTransactionSummary(player, offer)
-	if offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
-		player:addRewardCollectionObtained(math.max(1, offer.count))
-	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BLESSINGS then
-		player:addBlessingsObtained(offer.blessid, math.max(1, offer.count))
-	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE then
-		player:addHouseItemsObtained(offer.itemtype, math.max(1, offer.count))
-	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
-		player:addXpBoostsObtained(1)
-	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS then
-		player:addPreyCardsObtained(math.max(1, offer.count))
-	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING then
-		player:addHirelingsObtained(1)
-	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL then
-		player:addHirelingJobsObtained(offer.id - HIRELING_STORAGE.SKILL)
+	local offerId = offer.id
+	if offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL then
+		offerId = offerId - HIRELING_STORAGE.SKILL
 	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT then
-		player:addHirelingOutfitObtained(offer.id - HIRELING_STORAGE.OUTFIT)
-	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS then
-		for i = 1, 8 do
-			player:addBlessingsObtained(i, offer.count)
-		end
+		offerId = offerId - HIRELING_STORAGE.OUTFIT
 	end
+	player:createTransactionSummary(offer.type, math.max(1, offer.count), offer.itemtype or 0, offerId, offer.blessid or 0)
 end
 
 function parseBuyStoreOffer(playerId, msg)

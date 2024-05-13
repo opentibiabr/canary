@@ -19,15 +19,18 @@ PlayerCyclopedia::PlayerCyclopedia(Player &player) :
 	m_player(player) { }
 
 void PlayerCyclopedia::loadSummaryData() {
-
+	loadSummary();
 	loadRecentKills();
 	loadDeathHistory();
+}
+
+void PlayerCyclopedia::loadSummary() {
 }
 
 void PlayerCyclopedia::loadRecentKills() {
 	Benchmark bm_check;
 
-	Database &db = Database::getInstance();
+	Database &db = g_database();
 	const std::string &escapedName = db.escapeString(m_player.getName());
 	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `d`.`time`, `d`.`killed_by`, `d`.`mostdamage_by`, `d`.`unjustified`, `d`.`mostdamage_unjustified`, `p`.`name` FROM `player_deaths` AS `d` INNER JOIN `players` AS `p` ON `d`.`player_id` = `p`.`id` WHERE ((`d`.`killed_by` = {} AND `d`.`is_player` = 1) OR (`d`.`mostdamage_by` = {} AND `d`.`mostdamage_is_player` = 1))", escapedName, escapedName));
 	if (result) {
@@ -47,9 +50,7 @@ void PlayerCyclopedia::loadRecentKills() {
 				}
 			}
 
-			std::ostringstream description;
-			description << "Killed " << name << '.';
-			insertPvpKillOnHistory(std::move(description.str()), result->getNumber<uint32_t>("time"), status);
+			insertPvpKillOnHistory(fmt::format("Killed {}.", name), result->getNumber<uint32_t>("time"), status);
 		} while (result->next());
 	}
 
@@ -59,8 +60,7 @@ void PlayerCyclopedia::loadRecentKills() {
 void PlayerCyclopedia::loadDeathHistory() {
 	Benchmark bm_check;
 
-	Database &db = Database::getInstance();
-	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `time`, `level`, `killed_by`, `mostdamage_by` FROM `player_deaths` WHERE `player_id` = {} ORDER BY `time` DESC", m_player.getGUID()));
+	DBResult_ptr result = g_database().storeQuery(fmt::format("SELECT `time`, `level`, `killed_by`, `mostdamage_by` FROM `player_deaths` WHERE `player_id` = {} ORDER BY `time` DESC", m_player.getGUID()));
 	if (result) {
 		do {
 			std::string cause1 = result->getString("killed_by");
@@ -86,66 +86,19 @@ void PlayerCyclopedia::loadDeathHistory() {
 	g_logger().debug("Checking and updating death history of player {} took {} milliseconds.", m_player.getName(), bm_check.duration());
 }
 
-// Other Functions
-void PlayerCyclopedia::addXpBoostsObtained(uint16_t amount) {
-	m_storeXpBoosts += amount;
+void PlayerCyclopedia::updateStoreSummary(uint8_t type, uint16_t count, uint8_t itemType, uint8_t offerId, uint8_t blessId) {
+	updateAmount(type, count);
 }
 
-void PlayerCyclopedia::addRewardCollectionObtained(uint16_t amount) {
-	m_dailyRewardCollections += amount;
+uint16_t PlayerCyclopedia::getAmount(uint8_t type) {
+	auto kv = m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->get("amount");
+	return static_cast<uint16_t>(kv ? kv->getNumber() : 0);
 }
 
-void PlayerCyclopedia::addHirelingsObtained(uint16_t amount) {
-	m_hirelings += amount;
+void PlayerCyclopedia::updateAmount(uint8_t type, uint16_t toAddPoints) {
+	auto oldPoints = getAmount(type);
+	m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->set("amount", oldPoints + toAddPoints);
 }
-
-void PlayerCyclopedia::addPreyCardsObtained(uint16_t amount) {
-	m_preyCards += amount;
-}
-
-void PlayerCyclopedia::addCharmsPointsObtained(uint16_t amount) {
-	m_charms += amount;
-}
-
-void PlayerCyclopedia::addGoshnarTaintsObtained(uint16_t amount) {
-	m_goshnar += amount;
-}
-
-void PlayerCyclopedia::addDromePointsObtained(uint16_t amount) {
-	m_drome += amount;
-}
-
-void PlayerCyclopedia::addLoginStreak(uint16_t amount) {
-	m_loginStreak += amount;
-}
-
-void PlayerCyclopedia::addTaskHuntingPointsObtained(uint16_t amount) {
-	m_taskHuntingPoints += amount;
-}
-
-void PlayerCyclopedia::addMapAreaDiscoveredPercentage(uint16_t amount) {
-	m_mapAreaDiscoveredPercentage += amount;
-}
-
-void PlayerCyclopedia::addHirelingOutfitObtained(uint16_t lookType) {
-	m_hirelingOutfits.push_back(lookType);
-}
-
-void PlayerCyclopedia::addHirelingJobsObtained(uint8_t jobId) {
-	m_hirelingJobs.push_back(jobId);
-}
-
-void PlayerCyclopedia::addBlessingsObtained(Blessings_t id, uint16_t amount) {
-	m_blessings[id] += amount;
-}
-
-// void PlayerCyclopedia::addHouseItemsObtained(uint16_t itemId, uint32_t amount) {
-//	m_houseItems[itemId] += amount;
-// }
-
-// std::map<uint8_t, std::vector<uint16_t>> PlayerCyclopedia::getAccountLevelVocation() const {
-//     return accountLevelSummary;
-// }
 
 std::vector<RecentDeathEntry> PlayerCyclopedia::getDeathHistory() const {
 	return m_deathHistory;
@@ -163,15 +116,37 @@ void PlayerCyclopedia::insertPvpKillOnHistory(std::string cause, uint32_t timest
 	m_pvpKillsHistory.emplace_back(std::move(cause), timestamp, status);
 }
 
-// const std::shared_ptr<KV> &PlayerTitle::getSummary(std::string &key) {
-//	return m_player.kv()->scoped("titles")->scoped("summary")->get(key);
-// }
-//
-// uint16_t PlayerAchievement::getPoints() const {
-//	return m_player.kv()->scoped("achievements")->get("points")->getNumber();
-// }
-//
-// void PlayerAchievement::addPoints(uint16_t toAddPoints) {
-//	auto oldPoints = getPoints();
-//	m_player.kv()->scoped("achievements")->set("points", oldPoints + toAddPoints);
-// }
+std::map<Blessings_t, uint16_t> PlayerCyclopedia::getBlessings() const {
+}
+void insertBlessings(uint8_t bless, uint32_t timestamp) {
+}
+
+std::vector<uint8_t> PlayerCyclopedia::getHirelingJobs() const {
+}
+void insertHirelingJobs(uint8_t job, uint32_t timestamp) {
+}
+
+std::vector<uint16_t> PlayerCyclopedia::getHirelingOutfits() const {
+}
+void insertHirelingOutfits(uint8_t outfit, uint32_t timestamp) {
+}
+
+std::map<uint32_t, uint16_t> PlayerCyclopedia::getHouseItems() const {
+	auto type = static_cast<uint8_t>(Summary_t::HOUSE_ITEMS);
+	auto kvItem = m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type));
+
+	std::map<uint32_t, uint16_t> items = {};
+	for (const auto &itemId : kvItem->keys()) {
+		auto kv = kvItem->scoped(itemId)->get("amount");
+		auto amount = static_cast<uint16_t>(kv ? kv->getNumber() : 0);
+		items[std::stoull(itemId)] += amount;
+	}
+
+	return items;
+}
+
+void PlayerCyclopedia::insertHouseItems(uint32_t itemId, uint16_t amount) {
+	auto type = static_cast<uint8_t>(Summary_t::HOUSE_ITEMS);
+	auto oldAmount = static_cast<uint16_t>(m_houseItems[itemId]);
+	m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->scoped(fmt::format("{}", itemId))->set("amount", oldAmount + amount);
+}

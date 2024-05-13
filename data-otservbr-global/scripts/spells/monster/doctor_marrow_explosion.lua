@@ -21,7 +21,7 @@ end
 
 local spell = Spell("instant")
 function onTargetCreature(creature, target)
-	if not targetPos then
+	if not target then
 		return true
 	end
 	local master = target:getMaster()
@@ -29,7 +29,7 @@ function onTargetCreature(creature, target)
 		return true
 	end
 
-	local distance = math.floor(targetPos:getDistance(target:getPosition()))
+	local distance = math.floor(creature:getPosition():getDistance(target:getPosition()))
 	local actualDamage = damage / (2 ^ distance)
 	doTargetCombatHealth(0, target, COMBAT_EARTHDAMAGE, actualDamage, actualDamage, CONST_ME_NONE)
 	if crit then
@@ -63,13 +63,13 @@ function spell.onCastSpell(creature, var)
 		end, i * 100, targetPos)
 	end
 
-	addEvent(function(cid)
+	addEvent(function(cid, pos)
 		local creature = Creature(cid)
 		if creature then
 			creature:getPosition():sendMagicEffect(CONST_ME_ORANGE_ENERGY_SPARK)
-			targetPos:sendMagicEffect(CONST_ME_ORANGETELEPORT)
+			pos:sendMagicEffect(CONST_ME_ORANGETELEPORT)
 		end
-	end, 2000, creature:getId())
+	end, 2000, creature:getId(), targetPos)
 
 	addEvent(function(cid, pos)
 		damage = -math.random(3500, 7000)

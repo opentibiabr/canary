@@ -261,7 +261,7 @@ bool Imbuements::processImbuementChildNodes(const pugi::xml_node &imbuementNode,
 				}
 				auto bonus = pugi::cast<int32_t>(attr.value());
 
-				auto itSkillMode = effectTypeToSkillMode.find(effecttype);
+				auto itSkillMode = effectTypeToSkillMode.find(skillName);
 				UseSkillMode useSkillMode = (itSkillMode != effectTypeToSkillMode.end()) ? itSkillMode->second : NormalSkill;
 
 				if (useSkillMode == NormalSkill) {

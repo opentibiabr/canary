@@ -433,13 +433,13 @@
 		<attribute key="effect" type="vibrancy" chance="15" />
 		<attribute key="item" value="22053" count="20" />
 	</imbuement>
-	<imbuement name="Vibrancy" base="2" category="18" iconid="80" premium="0" storage="0">
+	<imbuement name="Vibrancy" base="2" category="18" iconid="80" premium="1" storage="0">
 		<attribute key="description" value="deflects PvP paralysis, removes paralysis with a chance of 25%." />
 		<attribute key="effect" type="vibrancy" chance="25" />
 		<attribute key="item" value="22053" count="20" />
 		<attribute key="item" value="23507" count="15" />
 	</imbuement>
-	<imbuement name="Vibrancy" base="3" category="18" iconid="81" premium="0" storage="46317">
+	<imbuement name="Vibrancy" base="3" category="18" iconid="81" premium="1" storage="46317">
 		<attribute key="description" value="deflects PvP paralysis, removes paralysis with a chance of 50%." />
 		<attribute key="effect" type="vibrancy" chance="50" />
 		<attribute key="item" value="22053" count="20" />

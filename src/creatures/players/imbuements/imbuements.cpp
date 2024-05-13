@@ -13,26 +13,26 @@
 #include "utils/pugicast.hpp"
 
 static const std::unordered_map<std::string, uint8_t> skillMap = {
-	{"sword", SKILL_SWORD},
-	{"axe", SKILL_AXE},
-	{"club", SKILL_CLUB},
-	{"dist", SKILL_DISTANCE},
-	{"distance", SKILL_DISTANCE},
-	{"fish", SKILL_FISHING},
-	{"shield", SKILL_SHIELD},
-	{"fist", SKILL_FIST},
-	{"magicpoints", STAT_MAGICPOINTS},
-	{"critical", SKILL_CRITICAL_HIT_DAMAGE},
-	{"lifeleech", SKILL_LIFE_LEECH_AMOUNT},
-	{"manaleech", SKILL_MANA_LEECH_AMOUNT}
+	{ "sword", SKILL_SWORD },
+	{ "axe", SKILL_AXE },
+	{ "club", SKILL_CLUB },
+	{ "dist", SKILL_DISTANCE },
+	{ "distance", SKILL_DISTANCE },
+	{ "fish", SKILL_FISHING },
+	{ "shield", SKILL_SHIELD },
+	{ "fist", SKILL_FIST },
+	{ "magicpoints", STAT_MAGICPOINTS },
+	{ "critical", SKILL_CRITICAL_HIT_DAMAGE },
+	{ "lifeleech", SKILL_LIFE_LEECH_AMOUNT },
+	{ "manaleech", SKILL_MANA_LEECH_AMOUNT }
 };
 
 static const std::unordered_map<std::string, UseSkillMode> effectTypeToSkillMode = {
-	{"skill", NormalSkill},
-	{"magicpoints", MagicLevel},
-	{"critical", SpecialSkill},
-	{"lifeleech", SpecialSkill},
-	{"manaleech", SpecialSkill}
+	{ "skill", NormalSkill },
+	{ "magicpoints", MagicLevel },
+	{ "critical", SpecialSkill },
+	{ "lifeleech", SpecialSkill },
+	{ "manaleech", SpecialSkill }
 };
 
 std::shared_ptr<Imbuement> Imbuements::getImbuement(uint16_t id) const {
@@ -58,7 +58,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 	}
 
 	loaded = true;
-	if (!std::ranges::all_of(doc.child("imbuements").children(), [&](const auto& baseNode) {
+	if (!std::ranges::all_of(doc.child("imbuements").children(), [&](const auto &baseNode) {
 			++runningid;
 			if (strcasecmp(baseNode.name(), "base") == 0) {
 				if (!processBaseNode(baseNode)) {

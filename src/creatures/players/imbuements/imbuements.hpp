@@ -17,7 +17,6 @@
 class Player;
 class Item;
 
-
 enum UseSkillMode : uint8_t {
 	NormalSkill = 1,
 	MagicLevel = 2,

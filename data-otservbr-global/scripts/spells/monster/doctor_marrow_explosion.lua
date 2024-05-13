@@ -72,14 +72,17 @@ function spell.onCastSpell(creature, var)
 	end, 2000, creature:getId(), targetPos)
 
 	addEvent(function(cid, pos)
-		damage = -math.random(3500, 7000)
-		if math.random(1, 100) <= 10 then
-			crit = true
-			damage = damage * 1.5
-		else
-			crit = false
+		local creature = Creature(cid)
+		if creature then
+			damage = -math.random(3500, 7000)
+			if math.random(1, 100) <= 10 then
+				crit = true
+				damage = damage * 1.5
+			else
+				crit = false
+			end
+			spellCombat:execute(creature, Variant(pos))
 		end
-		spellCombat:execute(creature, Variant(pos))
 	end, totalDelay, creature:getId(), targetPos)
 	return true
 end

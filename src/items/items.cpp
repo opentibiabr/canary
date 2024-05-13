@@ -69,7 +69,7 @@ ItemTypes_t Items::getLootType(const std::string &strValue) {
 
 const std::string Items::getAugmentNameByType(Augment_t augmentType) {
 	std::string augmentTypeName = magic_enum::enum_name(augmentType).data();
-	std::replace(augmentTypeName.begin(), augmentTypeName.end(), '_', ' ');
+	augmentTypeName = toStartCaseWithSpace(augmentTypeName);
 	if (!isAugmentWithoutValueDescription(augmentType)) {
 		toLowerCaseString(augmentTypeName);
 	}

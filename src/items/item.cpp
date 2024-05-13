@@ -3314,6 +3314,6 @@ void Item::sendUpdateToClient(const std::shared_ptr<Player> &player /* = nullptr
 
 	auto participants = player->getParty() ? player->getParty()->getPlayers() : std::vector<std::shared_ptr<Player>> { player };
 	for (const auto &participant : participants) {
-		participant->sendUpdateTileItem(getTile(), participant->getPosition(), static_self_cast<Item>());
+		participant->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
 	}
 }

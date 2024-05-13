@@ -1864,7 +1864,7 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 		for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 			const auto item = inventory[slot];
 			if (item) {
-				g_moveEvents->onPlayerDeEquip(this, item, static_cast<Slots_t>(slot));
+				g_moveEvents().onPlayerDeEquip(this, item, static_cast<Slots_t>(slot));
 			}
 		}
 

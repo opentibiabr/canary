@@ -12,8 +12,27 @@
 #include "lua/creature/events.hpp"
 #include "utils/pugicast.hpp"
 
-SkillMapId skillMap = {
-	{ "sword", SKILL_SWORD }, { "axe", SKILL_AXE }, { "club", SKILL_CLUB }, { "dist", SKILL_DISTANCE }, { "distance", SKILL_DISTANCE }, { "fish", SKILL_FISHING }, { "shield", SKILL_SHIELD }, { "fist", SKILL_FIST }, { "magicpoints", STAT_MAGICPOINTS }, { "critical", SKILL_CRITICAL_HIT_DAMAGE }, { "lifeleech", SKILL_LIFE_LEECH_AMOUNT }, { "manaleech", SKILL_MANA_LEECH_AMOUNT }
+static const std::unordered_map<std::string, uint8_t> skillMap = {
+	{"sword", SKILL_SWORD},
+	{"axe", SKILL_AXE},
+	{"club", SKILL_CLUB},
+	{"dist", SKILL_DISTANCE},
+	{"distance", SKILL_DISTANCE},
+	{"fish", SKILL_FISHING},
+	{"shield", SKILL_SHIELD},
+	{"fist", SKILL_FIST},
+	{"magicpoints", STAT_MAGICPOINTS},
+	{"critical", SKILL_CRITICAL_HIT_DAMAGE},
+	{"lifeleech", SKILL_LIFE_LEECH_AMOUNT},
+	{"manaleech", SKILL_MANA_LEECH_AMOUNT}
+};
+
+static const std::unordered_map<std::string, UseSkillMode> effectTypeToSkillMode = {
+	{"skill", NormalSkill},
+	{"magicpoints", MagicLevel},
+	{"critical", SpecialSkill},
+	{"lifeleech", SpecialSkill},
+	{"manaleech", SpecialSkill}
 };
 
 std::shared_ptr<Imbuement> Imbuements::getImbuement(uint16_t id) const {
@@ -39,24 +58,27 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 	}
 
 	loaded = true;
-	for (auto baseNode : doc.child("imbuements").children()) {
-		++runningid;
-		if (strcasecmp(baseNode.name(), "base") == 0) {
-			if (!processBaseNode(baseNode)) {
-				g_logger().error("Falha ao processar o nó base");
-				return false;
+	if (!std::ranges::all_of(doc.child("imbuements").children(), [&](const auto& baseNode) {
+			++runningid;
+			if (strcasecmp(baseNode.name(), "base") == 0) {
+				if (!processBaseNode(baseNode)) {
+					g_logger().error("Falha ao processar o nó base");
+					return false;
+				}
+			} else if (strcasecmp(baseNode.name(), "category") == 0) {
+				if (!processCategoryNode(baseNode)) {
+					g_logger().error("Falha ao processar o nó category");
+					return false;
+				}
+			} else if (strcasecmp(baseNode.name(), "imbuement") == 0) {
+				if (!processImbuementNode(baseNode)) {
+					g_logger().error("Falha ao processar o nó imbuement");
+					return false;
+				}
 			}
-		} else if (strcasecmp(baseNode.name(), "category") == 0) {
-			if (!processCategoryNode(baseNode)) {
-				g_logger().error("Falha ao processar o nó category");
-				return false;
-			}
-		} else if (strcasecmp(baseNode.name(), "imbuement") == 0) {
-			if (!processImbuementNode(baseNode)) {
-				g_logger().error("Falha ao processar o nó imbuement");
-				return false;
-			}
-		}
+			return true;
+		})) {
+		return false;
 	}
 	return true;
 }
@@ -188,7 +210,7 @@ bool Imbuements::processImbuementChildNodes(const pugi::xml_node &imbuementNode,
 
 			uint16_t count = 1;
 			if ((attr = childNode.attribute("count"))) {
-				count = pugi::cast<uint16_t>(childNode.attribute("count").value());
+				count = pugi::cast<uint16_t>(attr.value());
 			}
 
 			auto it2 = std::find_if(imbuement->items.begin(), imbuement->items.end(), [sourceId](const std::pair<uint16_t, uint16_t> &source) -> bool {
@@ -239,15 +261,18 @@ bool Imbuements::processImbuementChildNodes(const pugi::xml_node &imbuementNode,
 				}
 				auto bonus = pugi::cast<int32_t>(attr.value());
 
-				if (skillId == UseSkillMode::NormalSkill) {
+				auto itSkillMode = effectTypeToSkillMode.find(effecttype);
+				UseSkillMode useSkillMode = (itSkillMode != effectTypeToSkillMode.end()) ? itSkillMode->second : NormalSkill;
+
+				if (useSkillMode == NormalSkill) {
 					imbuement->skills[skillId] = bonus;
-				} else if (skillId == MagicLevel) {
+				} else if (useSkillMode == MagicLevel) {
 					imbuement->stats[skillId] = bonus;
-				} else if (skillId == SpecialSkill) {
+				} else if (useSkillMode == SpecialSkill) {
 					imbuement->skills[skillId] = bonus;
 					int32_t chance = 100;
 					if ((attr = childNode.attribute("chance"))) {
-						chance = static_cast<int32_t>(std::min<uint32_t>(10000, pugi::cast<int32_t>(attr.value())));
+						chance = std::min<int32_t>(10000, pugi::cast<int32_t>(attr.value()));
 					}
 					imbuement->skills[skillId - 1] = chance;
 				}

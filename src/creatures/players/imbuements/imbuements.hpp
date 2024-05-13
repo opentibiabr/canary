@@ -17,7 +17,6 @@
 class Player;
 class Item;
 
-using SkillMapId = std::unordered_map<std::string, uint8_t>;
 
 enum UseSkillMode : uint8_t {
 	NormalSkill = 1,

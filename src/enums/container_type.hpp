@@ -20,5 +20,6 @@ enum class ContainerSpecial_t : uint8_t {
 	ManagerUnknown = 3, // Maybe was used on a few test servers and removed later? Original value was not being used
 	LootHighlight = 4,
 	Obtain = 8,
-	Manager = 9
+	Manager = 9,
+	QuiverLoot = 11,
 };

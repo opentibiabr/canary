@@ -993,8 +993,8 @@ ContainerSpecial_t Container::getSpecialCategory(const std::shared_ptr<Player> &
 	}
 
 	if (getHoldingPlayer() == player) {
-		if (isQuiver()) {
-			return ContainerSpecial_t::ContentCounter;
+		if (isQuiver() && getSlotPosition() & SLOTP_RIGHT) {
+			return ContainerSpecial_t::QuiverLoot;
 		}
 
 		auto [lootFlags, obtainFlags] = getObjectCategoryFlags(player);

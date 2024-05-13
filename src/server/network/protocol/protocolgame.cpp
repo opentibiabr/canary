@@ -359,6 +359,14 @@ void ProtocolGame::AddItem(NetworkMessage &msg, std::shared_ptr<Item> item) {
 				msg.add<uint32_t>(ammoTotal);
 				break;
 			}
+			case ContainerSpecial_t::QuiverLoot: {
+				uint16_t ammoTotal = container->getAmmoCount(player);
+				auto [lootFlags, obtainFlags] = container->getObjectCategoryFlags(player);
+				msg.add<uint32_t>(lootFlags);
+				msg.add<uint32_t>(ammoTotal);
+				msg.add<uint32_t>(obtainFlags);
+				break;
+			}
 			default:
 				break;
 		}

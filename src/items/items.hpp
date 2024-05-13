@@ -449,9 +449,9 @@ public:
 
 	static const bool isAugmentWithoutValueDescription(Augment_t augmentType) {
 		static std::vector<Augment_t> vector = {
-			Augment_t::Increased_Damage,
-			Augment_t::Powerful_Impact,
-			Augment_t::Strong_Impact,
+			Augment_t::IncreasedDamage,
+			Augment_t::PowerfulImpact,
+			Augment_t::StrongImpact,
 		};
 
 		return std::find(vector.begin(), vector.end(), augmentType) != vector.end();

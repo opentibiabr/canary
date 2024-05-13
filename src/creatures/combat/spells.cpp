@@ -639,15 +639,15 @@ void Spell::getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &d
 				if (augment->value == 0) {
 					continue;
 				}
-				if (augment->type == Augment_t::Increased_Damage || augment->type == Augment_t::Powerful_Impact || augment->type == Augment_t::Strong_Impact) {
+				if (augment->type == Augment_t::IncreasedDamage || augment->type == Augment_t::PowerfulImpact || augment->type == Augment_t::StrongImpact) {
 					const float augmentPercent = augment->value / 100.0;
 					damage.primary.value += static_cast<int32_t>(damage.primary.value * augmentPercent);
 					damage.secondary.value += static_cast<int32_t>(damage.secondary.value * augmentPercent);
 				} else if (augment->type != Augment_t::Cooldown) {
 					const int32_t augmentValue = augment->value * 100;
-					damage.lifeLeech += augment->type == Augment_t::Life_Leech ? augmentValue : 0;
-					damage.manaLeech += augment->type == Augment_t::Mana_Leech ? augmentValue : 0;
-					damage.criticalDamage += augment->type == Augment_t::Critical_Extra_Damage ? augmentValue : 0;
+					damage.lifeLeech += augment->type == Augment_t::LifeLeech ? augmentValue : 0;
+					damage.manaLeech += augment->type == Augment_t::ManaLeech ? augmentValue : 0;
+					damage.criticalDamage += augment->type == Augment_t::CriticalExtraDamage ? augmentValue : 0;
 				}
 			}
 		}

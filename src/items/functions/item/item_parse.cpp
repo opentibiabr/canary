@@ -889,10 +889,10 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 				continue;
 			}
 
-			const auto itemMap = AugmentTypeNames.find(asLowerCaseString(subValueAttribute.as_string()));
-			if (itemMap != AugmentTypeNames.end()) {
-				const Augment_t augmentType = getAugmentType(asLowerCaseString(subValueAttribute.as_string()));
-
+			const auto &augmentEnum = magic_enum::enum_cast<Augment_t>(toPascalCase(subValueAttribute.as_string()));
+			if (augmentEnum.has_value()) {
+				const Augment_t augmentType = augmentEnum.value();
+				g_logger().trace("[ParseAugment::initParseAugment] - Item '{}' has an augment '{}'", itemType.name, subValueAttribute.as_string());
 				int32_t augmentValue = 0;
 				const bool hasValueDescrition = isAugmentWithoutValueDescription(augmentType);
 
@@ -903,21 +903,21 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 					}
 				}
 
+				const auto augmentName = asLowerCaseString(subKeyAttribute.as_string());
 				const pugi::xml_object_range<pugi::xml_node_iterator> augmentValueAttributeNode = subAttributeNode.children();
 				if (!augmentValueAttributeNode.empty()) {
 					const pugi::xml_node augmentValueNode = *augmentValueAttributeNode.begin();
 					const pugi::xml_attribute augmentValueAttribute = augmentValueNode.attribute("value");
 					augmentValue = augmentValueAttribute ? pugi::cast<int32_t>(augmentValueAttribute.value()) : augmentValue;
 				} else if (!hasValueDescrition) {
-					g_logger().warn("[ParseAugment::initParseAugment] - Item '{}' has an augment '{}' without a value", itemType.name, subValueAttribute.as_string());
+					g_logger().warn("[{}] - Item '{}' has an augment '{}' without a value", __FUNCTION__, itemType.name, augmentName);
 				}
 
 				if (augmentType != Augment_t::None) {
-					itemType.addAugment(asLowerCaseString(subKeyAttribute.as_string()), augmentType, augmentValue);
-					continue;
+					itemType.addAugment(augmentName, augmentType, augmentValue);
 				}
 			} else {
-				g_logger().warn("[ParseAugment::initParseAugment] - Unknown type: {}", valueAttribute.as_string());
+				g_logger().warn("[{}] - Unknown type '{}'", __FUNCTION__, subValueAttribute.as_string());
 			}
 		}
 	}

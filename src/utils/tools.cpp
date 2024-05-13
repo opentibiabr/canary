@@ -872,16 +872,6 @@ const ImbuementTypeNames imbuementTypeNames = {
 	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY }
 };
 
-const phmap::flat_hash_map<std::string, Augment_t> augmentTypeNames = {
-	{ "powerful impact", Augment_t::Powerful_Impact },
-	{ "strong impact", Augment_t::Strong_Impact },
-	{ "increased damage", Augment_t::Increased_Damage },
-	{ "cooldown", Augment_t::Cooldown },
-	{ "critical extra damage", Augment_t::Critical_Extra_Damage },
-	{ "life leech", Augment_t::Life_Leech },
-	{ "mana leech", Augment_t::Mana_Leech }
-};
-
 /**
  * @Deprecated
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
@@ -932,14 +922,6 @@ Skulls_t getSkullType(const std::string &strValue) {
 		return skullType->second;
 	}
 	return SKULL_NONE;
-}
-
-Augment_t getAugmentType(const std::string &strValue) {
-	auto augmentType = augmentTypeNames.find(strValue);
-	if (augmentType != augmentTypeNames.end()) {
-		return augmentType->second;
-	}
-	return Augment_t::None;
 }
 
 ImbuementTypes_t getImbuementType(const std::string &strValue) {

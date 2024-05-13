@@ -272,13 +272,13 @@ enum ImbuementTypes_t : int64_t {
 
 enum class Augment_t : uint8_t {
 	None,
-	Powerful_Impact,
-	Strong_Impact,
-	Increased_Damage,
+	PowerfulImpact,
+	StrongImpact,
+	IncreasedDamage,
 	Cooldown,
-	Critical_Extra_Damage,
-	Life_Leech,
-	Mana_Leech
+	CriticalExtraDamage,
+	LifeLeech,
+	ManaLeech
 };
 
 enum class ContainerCategory_t : uint8_t {

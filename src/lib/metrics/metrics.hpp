@@ -54,9 +54,9 @@ namespace metrics {
 
 	class ScopedLatency {
 	public:
-		explicit ScopedLatency(std::string_view name, const std::string &histogramName, const std::string &scopeKey);
-		explicit ScopedLatency(std::string_view name, Histogram<double> &histogram, std::map<std::string, std::string> attrs = {}, opentelemetry::context::Context context = opentelemetry::context::Context()) :
-			begin(std::chrono::steady_clock::now()), histogram(histogram), attrs(attrs), context(context) {
+		explicit ScopedLatency(const std::string_view &name, const std::string &histogramName, const std::string &scopeKey);
+		explicit ScopedLatency([[maybe_unused]] const std::string_view &name, Histogram<double> &histogram, std::map<std::string, std::string> attrs = {}, opentelemetry::context::Context context = opentelemetry::context::Context()) :
+			begin(std::chrono::steady_clock::now()), histogram(histogram), attrs(std::move(attrs)), context(std::move(context)) {
 		}
 
 		void stop();
@@ -64,10 +64,10 @@ namespace metrics {
 		~ScopedLatency();
 
 	private:
-		opentelemetry::context::Context context;
-		Histogram<double> &histogram;
 		std::chrono::steady_clock::time_point begin;
+		Histogram<double> &histogram;
 		std::map<std::string, std::string> attrs;
+		opentelemetry::context::Context context;
 		bool stopped { false };
 	};
 
@@ -94,7 +94,7 @@ namespace metrics {
 
 	class Metrics final {
 	public:
-		Metrics() { }
+		Metrics() = default;
 		~Metrics() = default;
 
 		void init(Options opts);

@@ -4115,6 +4115,35 @@ std::vector<std::shared_ptr<Item>> Player::getAllInventoryItems(bool ignoreEquip
 	return itemVector;
 }
 
+std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItemsByType(Augment_t augmentType) const {
+	std::vector<std::shared_ptr<Item>> equippedAugmentItemsByType;
+	const auto equippedAugmentItems = getEquippedItems();
+
+	for (const auto &item : equippedAugmentItems) {
+		for (auto &augment : item->getAugments()) {
+			if (augment->type == augmentType) {
+				equippedAugmentItemsByType.push_back(item);
+			}
+		}
+	}
+
+	return equippedAugmentItemsByType;
+}
+
+std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItems() const {
+	std::vector<std::shared_ptr<Item>> equippedAugmentItems;
+	const auto equippedItems = getEquippedItems();
+
+	for (const auto &item : equippedItems) {
+		if (item->getAugments().size() < 1) {
+			continue;
+		}
+		equippedAugmentItems.push_back(item);
+	}
+
+	return equippedAugmentItems;
+}
+
 std::vector<std::shared_ptr<Item>> Player::getEquippedItems() const {
 	std::vector<Slots_t> valid_slots {
 		CONST_SLOT_HEAD,

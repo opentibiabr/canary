@@ -630,6 +630,43 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 	}
 }
 
+void Spell::getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &damage) {
+	if (!(damage.instantSpellName).empty()) {
+		const auto equippedAugmentItems = player->getEquippedAugmentItems();
+		for (const auto &item : equippedAugmentItems) {
+			const auto augments = item->getAugmentsBySpellName(damage.instantSpellName);
+			for (auto &augment : augments) {
+				if (augment->value == 0) {
+					continue;
+				}
+				if (augment->type == Augment_t::IncreasedDamage || augment->type == Augment_t::PowerfulImpact || augment->type == Augment_t::StrongImpact) {
+					const float augmentPercent = augment->value / 100.0;
+					damage.primary.value += static_cast<int32_t>(damage.primary.value * augmentPercent);
+					damage.secondary.value += static_cast<int32_t>(damage.secondary.value * augmentPercent);
+				} else if (augment->type != Augment_t::Cooldown) {
+					const int32_t augmentValue = augment->value * 100;
+					damage.lifeLeech += augment->type == Augment_t::LifeLeech ? augmentValue : 0;
+					damage.manaLeech += augment->type == Augment_t::ManaLeech ? augmentValue : 0;
+					damage.criticalDamage += augment->type == Augment_t::CriticalExtraDamage ? augmentValue : 0;
+				}
+			}
+		}
+	}
+};
+
+int32_t Spell::calculateAugmentSpellCooldownReduction(std::shared_ptr<Player> player) const {
+	int32_t spellCooldown = 0;
+	const auto equippedAugmentItems = player->getEquippedAugmentItemsByType(Augment_t::Cooldown);
+	for (const auto &item : equippedAugmentItems) {
+		const auto augments = item->getAugmentsBySpellNameAndType(getName(), Augment_t::Cooldown);
+		for (auto &augment : augments) {
+			spellCooldown += augment->value;
+		}
+	}
+
+	return spellCooldown;
+}
+
 void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
@@ -644,8 +681,10 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 		if (isUpgraded) {
 			spellCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, spellGrade);
 		}
-		g_logger().debug("[{}] spell name: {}, spellCooldown: {}, bonus: {}", __FUNCTION__, name, spellCooldown, player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN));
+		int32_t augmentCooldownReduction = calculateAugmentSpellCooldownReduction(player);
+		g_logger().debug("[{}] spell name: {}, spellCooldown: {}, bonus: {}, augment {}", __FUNCTION__, name, spellCooldown, player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN), augmentCooldownReduction);
 		spellCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
+		spellCooldown -= augmentCooldownReduction;
 		if (spellCooldown > 0) {
 			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
 			player->addCondition(condition);

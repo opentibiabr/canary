@@ -2601,6 +2601,12 @@ public:
 	// This get all blessings
 	phmap::flat_hash_map<Blessings_t, std::string> getBlessingNames() const;
 
+	// Gets the equipped items with augment by type
+	std::vector<std::shared_ptr<Item>> getEquippedAugmentItemsByType(Augment_t augmentType) const;
+
+	// Gets the equipped items with augment
+	std::vector<std::shared_ptr<Item>> getEquippedAugmentItems() const;
+
 	/**
 	 * @brief Get the equipped items of the player->
 	 * @details This function returns a vector containing the items currently equipped by the player

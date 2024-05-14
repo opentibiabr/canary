@@ -7,7 +7,7 @@ local function removeTeleport(position)
 end
 
 local theRavager = CreatureEvent("TheRavagerDeath")
-function theRavager.onDeath(player, creature)
+function theRavager.onDeath(creature)
 	local position = creature:getPosition()
 	position:sendMagicEffect(CONST_ME_TELEPORT)
 	local item = Game.createItem(1949, 1, { x = 33496, y = 32070, z = 8 })

@@ -1437,6 +1437,11 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 		}
 
+		std::string augmentsDescription = parseAugmentDescription(item, true);
+		if (!augmentsDescription.empty()) {
+			descriptions.emplace_back("Augments", augmentsDescription);
+		}
+
 		if (it.isKey()) {
 			ss.str("");
 			ss << fmt::format("{:04}", item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
@@ -1787,6 +1792,11 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 
 		if (it.imbuementSlot > 0) {
 			descriptions.emplace_back("Imbuement Slots", std::to_string(it.imbuementSlot));
+		}
+
+		std::string augmentsDescription = it.parseAugmentDescription(true);
+		if (!augmentsDescription.empty()) {
+			descriptions.emplace_back("Augments", augmentsDescription);
 		}
 
 		if (it.isKey()) {
@@ -3016,6 +3026,8 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 
 		s << '.';
 	}
+
+	s << parseAugmentDescription(item);
 
 	s << parseImbuementDescription(item);
 

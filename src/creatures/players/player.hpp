@@ -2643,7 +2643,7 @@ public:
 
 	bool canSpeakWithHireling(uint8_t speechbubble);
 
-  uint16_t getPlayerVocationEnum() const;
+	uint16_t getPlayerVocationEnum() const;
 
 	bool hasSaveStash() {
 		return saveStash;

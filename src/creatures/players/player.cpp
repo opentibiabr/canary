@@ -3125,7 +3125,7 @@ bool Player::addVIPInternal(uint32_t vipGuid) {
 	return VIPList.insert(vipGuid).second;
 }
 
-bool Player::existsVIPGroupWithName(const std::string& name) {
+bool Player::existsVIPGroupWithName(const std::string &name) {
 	auto it = std::find_if(VIPGroups.begin(), VIPGroups.end(), [name](const VIPGroup vipGroup) {
 		return vipGroup.getName() == name;
 	});
@@ -3133,7 +3133,7 @@ bool Player::existsVIPGroupWithName(const std::string& name) {
 	return it != VIPGroups.end();
 }
 
-VIPGroup *Player::getVIPGroupByID(uint8_t groupID) {
+VIPGroup* Player::getVIPGroupByID(uint8_t groupID) {
 	const auto it = std::find_if(VIPGroups.begin(), VIPGroups.end(), [groupID](const VIPGroup vipGroup) {
 		return vipGroup.getID() == groupID;
 	});

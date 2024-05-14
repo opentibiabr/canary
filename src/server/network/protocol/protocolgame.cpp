@@ -1982,7 +1982,7 @@ void ProtocolGame::parseEditVip(NetworkMessage &msg) {
 	g_game().playerRequestEditVip(player->getID(), guid, description, icon, notify);
 }
 
-void ProtocolGame::parseGroupVipActions(NetworkMessage& msg) {
+void ProtocolGame::parseGroupVipActions(NetworkMessage &msg) {
 	uint8_t action = msg.getByte();
 
 	switch (action) {

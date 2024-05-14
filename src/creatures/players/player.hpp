@@ -878,7 +878,7 @@ public:
 	std::vector<VIPGroup> getVIPGroups() const {
 		return VIPGroups;
 	}
-	VIPGroup *getVIPGroupByID(uint8_t groupId);
+	VIPGroup* getVIPGroupByID(uint8_t groupId);
 	bool existsVIPGroupWithName(const std::string &name);
 	void removeVIPGroup(uint8_t groupId);
 	void addVIPGroup(const std::string &name, bool customizable = true);

@@ -1537,12 +1537,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.avatar.light >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 3 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Light", bonus);
 		}
 		if (m_playerBonusData.avatar.light >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 2 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Light", bonus);
 		}
 	} else {
@@ -1555,12 +1555,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.avatar.nature >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 3 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Nature", bonus);
 		}
 		if (m_playerBonusData.avatar.nature >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 2 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Nature", bonus);
 		}
 	} else {
@@ -1573,12 +1573,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.avatar.steel >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 3 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Steel", bonus);
 		}
 		if (m_playerBonusData.avatar.steel >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 2 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Steel", bonus);
 		}
 	} else {
@@ -1591,12 +1591,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.avatar.storm >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 3 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Storm", bonus);
 		}
 		if (m_playerBonusData.avatar.storm >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 2 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Storm", bonus);
 		}
 	} else {

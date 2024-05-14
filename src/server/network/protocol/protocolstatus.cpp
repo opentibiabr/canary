@@ -31,7 +31,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 		std::string ipStr = convertIPToString(ip);
 		if (ipStr != g_configManager().getString(IP, __FUNCTION__)) {
 			auto it = ipConnectMap.find(ip);
-			if (it != ipConnectMap.end() && OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT, __FUNCTION__))) {
+			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT, __FUNCTION__)))) {
 				disconnect();
 				return;
 			}

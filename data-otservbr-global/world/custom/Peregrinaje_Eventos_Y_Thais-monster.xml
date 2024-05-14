@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<monsters>
+	<monster centerx="33865" centery="31533" centerz="7" radius="1">
+		<monster name="Magicthrower" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+</monsters>

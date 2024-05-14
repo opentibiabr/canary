@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<monsters>
+	<monster centerx="1366" centery="1282" centerz="4" radius="3">
+		<monster name="Guard Castle" x="1" y="-2" z="4" spawntime="3600" />
+		<monster name="Guard Castle" x="1" y="-1" z="4" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="1" y="0" z="4" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="1" y="1" z="4" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="1" y="2" z="4" spawntime="3600" />
+	</monster>
+	<monster centerx="1386" centery="1282" centerz="4" radius="10">
+		<monster name="Guard Castle" x="5" y="-5" z="4" spawntime="3600" direction="1" />
+		<monster name="Guard Castle" x="-4" y="-4" z="4" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="5" y="-4" z="4" spawntime="3600" direction="1" />
+		<monster name="Guard Castle" x="-4" y="-3" z="4" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="5" y="-3" z="4" spawntime="3600" direction="1" />
+		<monster name="Guard Castle" x="-4" y="-2" z="4" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="5" y="-2" z="4" spawntime="3600" direction="1" />
+		<monster name="Guard Castle" x="-4" y="-1" z="4" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="5" y="-1" z="4" spawntime="3600" direction="1" />
+		<monster name="Guard Castle" x="-1" y="1" z="4" spawntime="3600" direction="2" />
+		<monster name="Guard Castle" x="0" y="1" z="4" spawntime="3600" direction="2" />
+		<monster name="Guard Castle" x="1" y="1" z="4" spawntime="3600" direction="2" />
+		<monster name="Guard Castle" x="2" y="1" z="4" spawntime="3600" direction="2" />
+		<monster name="Guard Castle" x="3" y="1" z="4" spawntime="3600" direction="2" />
+		<monster name="Guard Castle" x="-8" y="7" z="4" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="-8" y="8" z="4" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="-8" y="9" z="4" spawntime="3600" direction="3" />
+	</monster>
+	<monster centerx="1370" centery="1288" centerz="4" radius="1">
+		<monster name="Guard Castle" x="-1" y="-1" z="4" spawntime="3600" />
+		<monster name="Guard Castle" x="0" y="-1" z="4" spawntime="3600" />
+		<monster name="Guard Castle" x="1" y="-1" z="4" spawntime="3600" />
+	</monster>
+	<monster centerx="1364" centery="1278" centerz="5" radius="5">
+		<monster name="Guard Castle" x="-3" y="-1" z="5" spawntime="3600" />
+		<monster name="Guard Castle" x="-2" y="-1" z="5" spawntime="3600" />
+		<monster name="Guard Castle" x="-1" y="-1" z="5" spawntime="3600" />
+		<monster name="Guard Castle" x="0" y="-1" z="5" spawntime="3600" />
+		<monster name="Guard Castle" x="1" y="-1" z="5" spawntime="3600" />
+	</monster>
+	<monster centerx="1368" centery="1292" centerz="5" radius="1">
+		<monster name="Guard Castle" x="-1" y="-1" z="5" spawntime="3600" direction="1" />
+		<monster name="Guard Castle" x="-1" y="0" z="5" spawntime="3600" direction="1" />
+		<monster name="Guard Castle" x="-1" y="1" z="5" spawntime="3600" direction="1" />
+	</monster>
+	<monster centerx="1368" centery="1294" centerz="5" radius="1">
+		<monster name="Guard Castle" x="-1" y="0" z="5" spawntime="3600" direction="1" />
+		<monster name="Guard Castle" x="-1" y="1" z="5" spawntime="3600" direction="1" />
+	</monster>
+	<monster centerx="1368" centery="1296" centerz="5" radius="1">
+		<monster name="Guard Castle" x="-1" y="0" z="5" spawntime="3600" direction="1" />
+		<monster name="Guard Castle" x="-1" y="1" z="5" spawntime="3600" direction="1" />
+	</monster>
+	<monster centerx="1383" centery="1273" centerz="6" radius="1">
+		<monster name="Guard Castle" x="0" y="-1" z="6" spawntime="3600" />
+		<monster name="Guard Castle" x="1" y="-1" z="6" spawntime="3600" />
+	</monster>
+	<monster centerx="1385" centery="1273" centerz="6" radius="1">
+		<monster name="Guard Castle" x="0" y="-1" z="6" spawntime="3600" />
+		<monster name="Guard Castle" x="1" y="-1" z="6" spawntime="3600" />
+	</monster>
+	<monster centerx="1387" centery="1273" centerz="6" radius="1">
+		<monster name="Guard Castle" x="0" y="-1" z="6" spawntime="3600" />
+		<monster name="Guard Castle" x="1" y="-1" z="6" spawntime="3600" />
+	</monster>
+	<monster centerx="1368" centery="1295" centerz="6" radius="1">
+		<monster name="Guard Castle" x="-1" y="0" z="6" spawntime="3600" />
+		<monster name="Guard Castle" x="-1" y="1" z="6" spawntime="3600" direction="3" />
+	</monster>
+	<monster centerx="1368" centery="1297" centerz="6" radius="1">
+		<monster name="Guard Castle" x="-1" y="0" z="6" spawntime="3600" direction="3" />
+	</monster>
+	<monster centerx="1354" centery="1280" centerz="7" radius="1">
+		<monster name="Guard Castle" x="-1" y="-1" z="7" spawntime="3600" />
+		<monster name="Guard Castle" x="-1" y="0" z="7" spawntime="3600" />
+		<monster name="Guard Castle" x="-1" y="1" z="7" spawntime="3600" direction="3" />
+	</monster>
+	<monster centerx="1354" centery="1282" centerz="7" radius="1">
+		<monster name="Guard Castle" x="-1" y="0" z="7" spawntime="3600" direction="3" />
+		<monster name="Guard Castle" x="-1" y="1" z="7" spawntime="3600" />
+	</monster>
+	<monster centerx="1354" centery="1283" centerz="7" radius="1">
+		<monster name="Guard Castle" x="-1" y="1" z="7" spawntime="3600" />
+	</monster>
+</monsters>

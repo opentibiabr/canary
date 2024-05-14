@@ -55,6 +55,18 @@ local potions = {
 
 local flaskPotion = Action()
 
+local exhaustHealGroup = Condition(CONDITION_SPELLGROUPCOOLDOWN)
+exhaustHealGroup:setParameter(CONDITION_PARAM_SUBID, 2)
+exhaustHealGroup:setParameter(CONDITION_PARAM_TICKS, 1000)
+
+local exhaustSupportGroup = Condition(CONDITION_SPELLGROUPCOOLDOWN)
+exhaustSupportGroup:setParameter(CONDITION_PARAM_SUBID, 3)
+exhaustSupportGroup:setParameter(CONDITION_PARAM_TICKS, 1000)
+
+local PeregrinajePotionGroup = Condition(CONDITION_SPELLGROUPCOOLDOWN)
+PeregrinajePotionGroup:setParameter(CONDITION_PARAM_SUBID, "pere_pot")
+PeregrinajePotionGroup:setParameter(CONDITION_PARAM_TICKS, 1000)
+
 function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if not target or type(target) == "userdata" and not target:isPlayer() then
 		return false
@@ -67,12 +79,46 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 	end
 
 	if potion.health or potion.mana or potion.combat then
-		if potion.health then
-			doTargetCombatHealth(player, target, COMBAT_HEALING, potion.health[1], potion.health[2], CONST_ME_MAGIC_BLUE)
-		end
-
-		if potion.mana then
-			doTargetCombatMana(0, target, potion.mana[1], potion.mana[2], CONST_ME_MAGIC_BLUE)
+		
+		if potion.health and potion.mana then
+			--check potion cooldown
+			local has_cooldown = player:hasCondition(CONDITION_SPELLGROUPCOOLDOWN, 3) or player:hasCondition(CONDITION_SPELLGROUPCOOLDOWN, "pere_pot")
+			if has_cooldown then
+				return false
+			else
+				doTargetCombatHealth(player, target, COMBAT_HEALING, potion.health[1], potion.health[2], CONST_ME_MAGIC_BLUE)
+				doTargetCombatMana(0, target, potion.mana[1], potion.mana[2], CONST_ME_MAGIC_BLUE)
+				
+				--add healing and potion cooldown
+				player:addCondition(exhaustSupportGroup)
+				player:addCondition(PeregrinajePotionGroup)
+				
+			end
+		elseif potion.health then
+			--check potion cooldown
+			local has_cooldown = player:hasCondition(CONDITION_SPELLGROUPCOOLDOWN, 2) or player:hasCondition(CONDITION_SPELLGROUPCOOLDOWN, "pere_pot")
+			if has_cooldown then
+				return false
+			else
+				doTargetCombatHealth(player, target, COMBAT_HEALING, potion.health[1], potion.health[2], CONST_ME_MAGIC_BLUE)
+				
+				--add healing and potion cooldown
+				player:addCondition(exhaustHealGroup)
+				player:addCondition(PeregrinajePotionGroup)
+				
+			end
+		elseif potion.mana then
+			local has_cooldown = player:hasCondition(CONDITION_SPELLGROUPCOOLDOWN, 3) or player:hasCondition(CONDITION_SPELLGROUPCOOLDOWN, "pere_pot")
+			if has_cooldown then
+				return false
+			else
+				doTargetCombatMana(0, target, potion.mana[1], potion.mana[2], CONST_ME_MAGIC_BLUE)
+				
+				--add attack and potion cooldown
+				player:addCondition(exhaustSupportGroup)
+				player:addCondition(PeregrinajePotionGroup)
+				
+			end
 		end
 
 		if potion.combat then
@@ -84,22 +130,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		end
 
 		player:addAchievementProgress("Potion Addict", 100000)
-		target:say("Aaaah...", MESSAGE_POTION)
-
-		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or false
-		if not deactivatedFlasks then
-			local container = Container(item:getParent().uid)
-			if container then
-				local storeInbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-				if fromPosition.x == CONTAINER_POSITION and container ~= storeInbox and container:getEmptySlots() ~= 0 then
-					container:addItem(potion.flask, 1)
-				else
-					player:addItem(potion.flask, 1)
-				end
-			else
-				Game.createItem(potion.flask, 1, fromPosition)
-			end
-		end
+		target:say("Glurp.", MESSAGE_POTION)
 	end
 
 	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ITEM_USE_POTION, player:isInGhostMode() and nil or player)

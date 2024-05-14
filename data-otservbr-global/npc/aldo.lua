@@ -11,7 +11,7 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 128,
+	lookType = 132,
 	lookHead = 40,
 	lookBody = 37,
 	lookLegs = 116,
@@ -89,7 +89,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if table.contains({ "soft boots", "repair", "soft", "boots" }, message) then
-		npcHandler:say("Do you want to repair your worn soft boots for 10000 gold coins?", npc, creature)
+		npcHandler:say("Do you want to repair your worn soft boots for 150000 gold coins?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:setTopic(playerId, 0)
@@ -98,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 
-		if not player:removeMoneyBank(10000) then
+		if not player:removeMoneyBank(150000) then
 			npcHandler:say("Sorry, you don't have enough gold.", npc, creature)
 			return true
 		end

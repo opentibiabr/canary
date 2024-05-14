@@ -1,0 +1,27 @@
+65535 - 65528
+
+pocion bug 35563
+
+AddToDataEventsScriptsPlayerLua
+AddToModulesScriptsGamestoreInitLua
+
+--Cambios al C++--
+mitigateDamage / src / creatures / creature.cpp
+parseHotkeyEquip src/server/network/protocol/protocolgame.cpp  player->sendCancelMessage("You cannot equip items by using a hotkey.");
+src/game/game.cpp 3726 player->sendCancelMessage(RETURNVALUE_DIRECTPLAYERSHOOT);
+
+
+Borrar otserv custom map
+
+
+
+
+
+
+
+
+token en dp puedes robar
+Gray island señal brasil
+electricidad suelo bug?
+serverinfo exp
+warzone 3+

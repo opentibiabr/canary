@@ -22,8 +22,11 @@ function theAncientOasisLever.onUse(player, item, fromPosition, target, toPositi
 	if item.itemid ~= 2772 then
 		return true
 	end
-
-	if math.random(3) == 1 then
+	
+	if player:getStorageValue(12107) == 1 then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already found the carrot! You can access the door!")
+		return true
+	elseif math.random(50) == 1 then
 		local hatPosition = Position(toPosition.x - 1, toPosition.y, toPosition.z)
 		hatPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		doorPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
@@ -32,7 +35,9 @@ function theAncientOasisLever.onUse(player, item, fromPosition, target, toPositi
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found the carrot! The door is open!")
 		item:transform(2773)
 		addEvent(revertCarrotAndLever, 4 * 1000, toPosition, hatPosition)
-
+		
+		player:setStorageValue(12107, 1)
+		
 		local doorItem = Tile(doorPosition):getItemById(1662)
 		if doorItem then
 			doorItem:transform(1663)

@@ -1,7 +1,14 @@
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_HOLYDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HOLYAREA)
-combat:setArea(createCombatArea(AREA_CIRCLE3X3))
+local AREA = {
+	{ 0, 0, 1, 0, 0 },
+	{ 0, 1, 1, 1, 0 },
+	{ 1, 1, 3, 1, 1 },
+	{ 0, 1, 1, 1, 0 },
+	{ 0, 0, 1, 0, 0 },
+}
+combat:setArea(createCombatArea(AREA))
 
 function onGetFormulaValues(player, level, maglevel)
 	local min = (level / 5) + (maglevel * 4)

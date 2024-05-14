@@ -3,6 +3,7 @@ local buyHouse = TalkAction("!buyhouse")
 function buyHouse.onSay(player, words, param)
 	local housePrice = configManager.getNumber(configKeys.HOUSE_PRICE_PER_SQM)
 	if housePrice == -1 then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Use the Peregrinaje website if you want to bid for a house.")
 		return true
 	end
 

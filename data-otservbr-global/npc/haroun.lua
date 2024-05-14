@@ -112,6 +112,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
+	{ itemName = "life ring", clientId = 3052, buy = 9000 },
 	{ itemName = "axe ring", clientId = 3092, buy = 500, sell = 100 },
 	{ itemName = "bronze amulet", clientId = 3056, buy = 100, sell = 50, count = 200 },
 	{ itemName = "club ring", clientId = 3093, buy = 500, sell = 100 },
@@ -121,7 +122,7 @@ npcConfig.shop = {
 	{ itemName = "magic light wand", clientId = 3046, buy = 120, sell = 35 },
 	{ itemName = "mind stone", clientId = 3062, sell = 100 },
 	{ itemName = "orb", clientId = 3060, sell = 750 },
-	{ itemName = "power ring", clientId = 3050, buy = 100, sell = 50 },
+	{ itemName = "power ring", clientId = 3050, buy = 5000, sell = 500 },
 	{ itemName = "stealth ring", clientId = 3049, buy = 5000, sell = 200 },
 	{ itemName = "stone skin amulet", clientId = 3081, buy = 5000, sell = 500, count = 5 },
 	{ itemName = "sword ring", clientId = 3091, buy = 500, sell = 100 },

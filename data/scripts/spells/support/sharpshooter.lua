@@ -29,9 +29,9 @@ function spell.onCastSpell(creature, variant)
 			creature:addCondition(exhaustSupportGroup)
 		end
 		if grade == WHEEL_GRADE_UPGRADED then
-			skill:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, 145)
+			skill:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, 155)
 		else
-			skill:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, 140)
+			skill:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, 150)
 		end
 		skill:setParameter(CONDITION_PARAM_DISABLE_DEFENSE, true)
 		skill:setParameter(CONDITION_PARAM_BUFF_SPELL, true)

@@ -10,7 +10,7 @@ dofile(CORE_DIRECTORY .. "/modules/scripts/gamestore/init.lua")
 -- Config
 
 HomeBanners = {
-	images = { "home/banner_armouredarcher.png", "home/banner_podiumoftenacity.png" },
+	images = { "home/B_Peregrinaje.png" },
 	delay = 10,
 }
 
@@ -48,16 +48,290 @@ end
 -- GameStore.SearchCategory = {
 -- 	icons = {},
 -- 	name = "Search Results",
--- 	rookgaard = true,
+-- 	rookgaard = false,
 -- 	state = GameStore.States.STATE_NONE,
 -- }
 
 GameStore.Categories = {
+	--offers
+	{
+		icons = { "Category_ExclusiveOffers.png" },
+		name = "Exclusive Offers",
+		rookgaard = false,
+		state = GameStore.States.STATE_NONE,
+		offers = {
+			{
+				icons = { "Baby_Brain_Squid.png" },
+				name = "Baby Brain Squid",
+				price = 800,
+				itemtype = 32909,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Baby_Vulcongra.png" },
+				name = "Baby Vulcongra",
+				price = 800,
+				itemtype = 32908,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Carved_Table.png" },
+				name = "Carved Table",
+				price = 100,
+				itemtype = 32972,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Carved_Table_Centre.png" },
+				name = "Carved Table Centre",
+				price = 100,
+				itemtype = 32974,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Carved_Table_Corner.png" },
+				name = "Carved Table Corner",
+				price = 100,
+				itemtype = 32969,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Cerberus_Champion.png" },
+				name = "Cerberus Champion",
+				price = 1250,
+				id = 146,
+				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>A fierce and grim guardian of the underworld has risen to fight side by side with the bravest warriors in order to send evil creatures into the realm of the dead. The three headed Cerberus Champion is constantly baying for blood and using its sharp fangs it easily rips apart even the strongest armour and shield.",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
+				icons = { "Cerberus_Champion_Puppy.png" },
+				name = "Cerberus Champion Puppy",
+				price = 800,
+				itemtype = 31464,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Cozy_Couch.png" },
+				name = "Cozy Couch",
+				price = 100,
+				itemtype = 32948,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Cozy_Couch_Left_End.png" },
+				name = "Cozy Couch Left End",
+				price = 100,
+				itemtype = 32952,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Cozy_Couch_Right_End.png" },
+				name = "Cozy Couch Right End",
+				price = 100,
+				itemtype = 32956,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Cozy_Couch_Corner.png" },
+				name = "Cozy Couch Corner",
+				price = 100,
+				itemtype = 32964,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Demon_Doll.png" },
+				name = "Demon Doll",
+				price = 400,
+				itemtype = 32918,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Outfit_Dragon_Slayer_Male_Addon_3.png", "Outfit_Dragon_Slayer_Female_Addon_3.png" },
+				name = "Full Dragon Slayer Outfit",
+				price = 5000,
+				sexId = { female = 1289, male = 1288 },
+				addon = 3,
+				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The souls of countless slain dragons have been fused over the years with this armour, wrought from the impervious scales of the ancestors of those very same beings, wicked and wise, winged and wild. The Dragon Slayer Outfit has seen an unfathomable amount of bloodshed, but it pales in comparison to the untold lives lost in the strife over the armour itself. Only the mightiest warriors can even begin to dream of ever owning this exceedingly rare token of power.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+			{
+				icons = { "Gilded_Blessed_Shield.png" },
+				name = "Gilded Blessed Shield",
+				price = 1500,
+				itemtype = 37165,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+				home = true,
+			},
+			{
+				icons = { "Gilded_Crown.png" },
+				name = "Gilded Crown",
+				price = 1500,
+				itemtype = 34332,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+				home = true,
+			},
+			{
+				icons = { "Gilded_Horned_Helmet.png" },
+				name = "Gilded Horned Helmet",
+				price = 1500,
+				itemtype = 38640,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+				home = true,
+			},
+			{
+				icons = { "Gilded_Magic_Longsword.png" },
+				name = "Gilded Magic Longsword",
+				price = 1500,
+				itemtype = 36995,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+				home = true,
+			},
+			{
+				icons = { "Gilded_Warlord_Sword.png" },
+				name = "Gilded Warlord Sword",
+				price = 1500,
+				itemtype = 39767,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+				home = true,
+			},
+			{
+				icons = { "Guzzlemaw_Grub.png" },
+				name = "Guzzlemaw Grub",
+				price = 800,
+				itemtype = 32907,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Jousting_Eagle.png" },
+				name = "Jousting Eagle",
+				price = 1250,
+				id = 145,
+				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>High above the clouds far away from dry land, the training of giant eagles takes place. Only the cream of the crop is able to survive in such harsh environment long enough to call themselves Jousting Eagles while the weaklings find themselves at the bottom of the sea. The tough ones become noble and graceful mounts that are well known for their agility and endurance.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
+				icons = { "Jousting_Eagle_Baby.png" },
+				name = "Jousting Eagle Baby",
+				price = 800,
+				itemtype = 31462,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Outfit_Lion_of_War_Male_Addon_3.png", "Outfit_Lion_of_War_Female_Addon_3.png" },
+				name = "Full Lion of War Outfit",
+				price = 1750,
+				sexId = { female = 1207, male = 1206 },
+				addon = 3,
+				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The Lion of War has fought on countless battlefields and never lost once. Enemies tremble with fear when he batters his sword against his almighty shield. Realising that a Lion of War knows no mercy, his opponents often surrender before the battle even begins.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+			{
+				icons = { "Ogre_Rowdy_Doll.png" },
+				name = "Ogre Rowdy Doll",
+				price = 400,
+				itemtype = 32944,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Retching_Horror_Doll.png" },
+				name = "Retching Horror Doll",
+				price = 400,
+				itemtype = 32945,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Sublime_Tournament_Accolade.png" },
+				name = "Sublime Tournament Accolade",
+				price = 500,
+				itemtype = 31472,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Sublime_Tournament_Carpet.png" },
+				name = "Sublime Tournament Carpet",
+				price = 70,
+				itemtype = 31467,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{useicon} use an unwrapped carpet to roll it out or up\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Tournament_Accolade.png" },
+				name = "Tournament Accolade",
+				price = 500,
+				itemtype = 31470,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Tournament_Carpet.png" },
+				name = "Tournament Carpet",
+				price = 70,
+				itemtype = 31466,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{useicon} use an unwrapped carpet to roll it out or up\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Vexclaw_Doll.png" },
+				name = "Vexclaw Doll",
+				price = 400,
+				itemtype = 32943,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+		},
+	},
+	--[[
 	-- Premium Time
 	{
 		icons = { "Category_PremiumTime.png" },
 		name = premiumCategoryName,
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -98,11 +372,12 @@ GameStore.Categories = {
 			},
 		},
 	},
+	]]--
 	-- Consumables
 	{
 		icons = { "Category_Consumables.png" },
 		name = "Consumables",
-		rookgaard = true,
+		rookgaard = false,
 		subclasses = { "Blessings", "Casks", "Exercise Weapons", "Kegs", "Potions", "Runes" },
 	},
 	-- Consumables ~ Blessings
@@ -110,7 +385,7 @@ GameStore.Categories = {
 		icons = { "Category_Blessings.png" },
 		name = "Blessings",
 		parent = "Consumables",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -236,7 +511,7 @@ GameStore.Categories = {
 		icons = { "Category_Casks.png" },
 		name = "Casks",
 		parent = "Consumables",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -345,7 +620,7 @@ GameStore.Categories = {
 		icons = { "Category_ExerciseWeapons.png" },
 		name = "Exercise Weapons",
 		parent = "Consumables",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -354,7 +629,7 @@ GameStore.Categories = {
 				price = 90,
 				itemtype = 35280,
 				charges = 1800,
-				description = "<i>Use it to train your axe fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your axe fighting skill\n{info} usable 1800 times a piece",
+				description = "<i>Use it to train your axe fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your axe fighting skill\n{info} usable 1800 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -363,7 +638,7 @@ GameStore.Categories = {
 				price = 90,
 				itemtype = 35282,
 				charges = 1800,
-				description = "<i>Use it to train your distance fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your distance fighting skill\n{info} usable 1800 times a piece",
+				description = "<i>Use it to train your distance fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your distance fighting skill\n{info} usable 1800 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -372,7 +647,7 @@ GameStore.Categories = {
 				price = 90,
 				itemtype = 35281,
 				charges = 1800,
-				description = "<i>Use it to train your club fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your club fighting skill\n{info} usable 1800 times a piece",
+				description = "<i>Use it to train your club fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your club fighting skill\n{info} usable 1800 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -381,7 +656,7 @@ GameStore.Categories = {
 				price = 90,
 				itemtype = 35283,
 				charges = 1800,
-				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 1800 times a piece",
+				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your magic level\n{info} usable 1800 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -390,7 +665,7 @@ GameStore.Categories = {
 				price = 90,
 				itemtype = 35279,
 				charges = 1800,
-				description = "<i>Use it to train your sword fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your sword fighting skill\n{info} usable 1800 times a piece",
+				description = "<i>Use it to train your sword fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your sword fighting skill\n{info} usable 1800 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -399,7 +674,7 @@ GameStore.Categories = {
 				price = 90,
 				itemtype = 35284,
 				charges = 1800,
-				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 1800 times a piece",
+				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your magic level\n{info} usable 1800 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -408,7 +683,7 @@ GameStore.Categories = {
 				price = 90,
 				itemtype = 44066,
 				charges = 1800,
-				description = "<i>Use it to train your shielding skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your shielding skill\n{info} usable 1800 times a piece",
+				description = "<i>Use it to train your shielding skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your shielding skill\n{info} usable 1800 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -417,7 +692,7 @@ GameStore.Categories = {
 				price = 25,
 				itemtype = 28553,
 				charges = 500,
-				description = "<i>Use it to train your axe fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your axe fighting skill\n{info} usable 500 times a piece",
+				description = "<i>Use it to train your axe fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your axe fighting skill\n{info} usable 500 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -426,7 +701,7 @@ GameStore.Categories = {
 				price = 25,
 				itemtype = 28555,
 				charges = 500,
-				description = "<i>Use it to train your distance fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your distance fighting skill\n{info} usable 500 times a piece",
+				description = "<i>Use it to train your distance fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your distance fighting skill\n{info} usable 500 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -435,7 +710,7 @@ GameStore.Categories = {
 				price = 25,
 				itemtype = 28554,
 				charges = 500,
-				description = "<i>Use it to train your club fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your club fighting skill\n{info} usable 500 times a piece",
+				description = "<i>Use it to train your club fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your club fighting skill\n{info} usable 500 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -444,7 +719,7 @@ GameStore.Categories = {
 				price = 25,
 				itemtype = 28556,
 				charges = 500,
-				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 500 times a piece",
+				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your magic level\n{info} usable 500 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -453,7 +728,7 @@ GameStore.Categories = {
 				price = 25,
 				itemtype = 28552,
 				charges = 500,
-				description = "<i>Use it to train your sword fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your sword fighting skill\n{info} usable 500 times a piece",
+				description = "<i>Use it to train your sword fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your sword fighting skill\n{info} usable 500 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -462,7 +737,7 @@ GameStore.Categories = {
 				price = 25,
 				itemtype = 28557,
 				charges = 500,
-				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 500 times a piece",
+				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your magic level\n{info} usable 500 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -471,7 +746,7 @@ GameStore.Categories = {
 				price = 25,
 				itemtype = 44065,
 				charges = 500,
-				description = "<i>Use it to train your shielding skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your shielding skill\n{info} usable 500 times a piece",
+				description = "<i>Use it to train your shielding skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your shielding skill\n{info} usable 500 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -480,7 +755,7 @@ GameStore.Categories = {
 				price = 720,
 				itemtype = 35286,
 				charges = 14400,
-				description = "<i>Use it to train your axe fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your axe fighting skill\n{info} usable 14400 times a piece",
+				description = "<i>Use it to train your axe fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your axe fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -489,7 +764,7 @@ GameStore.Categories = {
 				price = 720,
 				itemtype = 35288,
 				charges = 14400,
-				description = "<i>Use it to train your distance fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your distance fighting skill\n{info} usable 14400 times a piece",
+				description = "<i>Use it to train your distance fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your distance fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -498,7 +773,7 @@ GameStore.Categories = {
 				price = 720,
 				itemtype = 35287,
 				charges = 14400,
-				description = "<i>Use it to train your club fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your club fighting skill\n{info} usable 14400 times a piece",
+				description = "<i>Use it to train your club fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your club fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -507,7 +782,7 @@ GameStore.Categories = {
 				price = 720,
 				itemtype = 35289,
 				charges = 14400,
-				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 14400 times a piece",
+				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your magic level\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -516,7 +791,7 @@ GameStore.Categories = {
 				price = 720,
 				itemtype = 35285,
 				charges = 14400,
-				description = "<i>Use it to train your sword fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your sword fighting skill\n{info} usable 14400 times a piece",
+				description = "<i>Use it to train your sword fighting skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your sword fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -525,7 +800,7 @@ GameStore.Categories = {
 				price = 720,
 				itemtype = 35290,
 				charges = 14400,
-				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 14400 times a piece",
+				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your magic level\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
@@ -534,17 +809,18 @@ GameStore.Categories = {
 				price = 720,
 				itemtype = 44067,
 				charges = 14400,
-				description = "<i>Use it to train your shielding skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your shielding skill\n{info} usable 14400 times a piece",
+				description = "<i>Use it to train your shielding skill on an exercise dummy!</i>\n\n\n\n{info} use it on an exercise dummy to train your shielding skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 		},
 	},
+	--[[
 	-- Consumables ~ Kegs
 	{
 		icons = { "Category_Kegs.png" },
 		name = "Kegs",
 		parent = "Consumables",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -647,12 +923,13 @@ GameStore.Categories = {
 			},
 		},
 	},
+	]]--
 	-- Consumables ~ Potions
 	{
 		icons = { "Category_Potions.png" },
 		name = "Potions",
 		parent = "Consumables",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -661,7 +938,7 @@ GameStore.Categories = {
 				price = 18,
 				itemtype = 239,
 				count = 100,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -670,7 +947,7 @@ GameStore.Categories = {
 				price = 41,
 				itemtype = 239,
 				count = 250,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -679,7 +956,7 @@ GameStore.Categories = {
 				price = 11,
 				itemtype = 238,
 				count = 100,
-				description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Refills your character's mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -688,7 +965,7 @@ GameStore.Categories = {
 				price = 26,
 				itemtype = 238,
 				count = 250,
-				description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n-{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Refills your character's mana.</i>\n\n\n{vocationlevelcheck}\n-\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -697,7 +974,7 @@ GameStore.Categories = {
 				price = 18,
 				itemtype = 7642,
 				count = 100,
-				description = "<i>Restores your character's hit points and mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points and mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -706,7 +983,7 @@ GameStore.Categories = {
 				price = 41,
 				itemtype = 7642,
 				count = 250,
-				description = "<i>Restores your character's hit points and mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points and mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -715,7 +992,7 @@ GameStore.Categories = {
 				price = 6,
 				itemtype = 266,
 				count = 125,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -724,7 +1001,7 @@ GameStore.Categories = {
 				price = 11,
 				itemtype = 266,
 				count = 300,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -733,7 +1010,7 @@ GameStore.Categories = {
 				price = 6,
 				itemtype = 268,
 				count = 125,
-				description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Refills your character's mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -742,7 +1019,7 @@ GameStore.Categories = {
 				price = 12,
 				itemtype = 268,
 				count = 300,
-				description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Refills your character's mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -751,7 +1028,7 @@ GameStore.Categories = {
 				price = 10,
 				itemtype = 236,
 				count = 100,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -760,7 +1037,7 @@ GameStore.Categories = {
 				price = 21,
 				itemtype = 236,
 				count = 250,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -769,7 +1046,7 @@ GameStore.Categories = {
 				price = 7,
 				itemtype = 237,
 				count = 100,
-				description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Refills your character's mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -778,7 +1055,7 @@ GameStore.Categories = {
 				price = 17,
 				itemtype = 237,
 				count = 250,
-				description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Refills your character's mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -787,7 +1064,7 @@ GameStore.Categories = {
 				price = 47,
 				itemtype = 23375,
 				count = 100,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -796,7 +1073,7 @@ GameStore.Categories = {
 				price = 113,
 				itemtype = 23375,
 				count = 250,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -805,7 +1082,7 @@ GameStore.Categories = {
 				price = 29,
 				itemtype = 7643,
 				count = 100,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -814,7 +1091,7 @@ GameStore.Categories = {
 				price = 68,
 				itemtype = 7643,
 				count = 250,
-				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -823,7 +1100,7 @@ GameStore.Categories = {
 				price = 33,
 				itemtype = 23373,
 				count = 100,
-				description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Refills your character's mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -832,7 +1109,7 @@ GameStore.Categories = {
 				price = 79,
 				itemtype = 23373,
 				count = 250,
-				description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Refills your character's mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -841,7 +1118,7 @@ GameStore.Categories = {
 				price = 33,
 				itemtype = 23374,
 				count = 100,
-				description = "<i>Restores your character's hit points and mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points and mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -850,7 +1127,7 @@ GameStore.Categories = {
 				price = 79,
 				itemtype = 23374,
 				count = 250,
-				description = "<i>Restores your character's hit points and mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
+				description = "<i>Restores your character's hit points and mana.</i>\n\n\n{vocationlevelcheck}\n\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 		},
@@ -860,7 +1137,7 @@ GameStore.Categories = {
 		icons = { "Category_Runes.png" },
 		name = "Runes",
 		parent = "Consumables",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -869,7 +1146,7 @@ GameStore.Categories = {
 				price = 75,
 				itemtype = 3203,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck} only buyable if fitting vocation and level of purchasing character\n{battlesign}\n{capacity}\n\n<i>After a long time of research, the magicians of Edron succeeded in storing some life energy in a rune. When this energy was unleashed onto a body it was found that an undead creature arose that could be mentally controlled by the user of the rune. This rune is useful to create allies in combat.</i>",
+				description = "\n\n{vocationlevelcheck} only buyable if fitting vocation and level of purchasing character\n{battlesign}\n{capacity}\n\n<i>After a long time of research, the magicians of Edron succeeded in storing some life energy in a rune. When this energy was unleashed onto a body it was found that an undead creature arose that could be mentally controlled by the user of the rune. This rune is useful to create allies in combat.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -878,7 +1155,7 @@ GameStore.Categories = {
 				price = 12,
 				itemtype = 3161,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>The ice damage which arises from this rune is a useful weapon in every battle but it comes in particularly handy if you fight against a horde of creatures dominated by the element fire.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>The ice damage which arises from this rune is a useful weapon in every battle but it comes in particularly handy if you fight against a horde of creatures dominated by the element fire.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -887,7 +1164,7 @@ GameStore.Categories = {
 				price = 42,
 				itemtype = 3178,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>The metamorphosis caused by this rune is only superficial, and while casters who are using the rune can take on the exterior form of nearly any inanimate object, they will always retain their original smell and mental abilities. So there is no real practical use for this rune, making this largely a fun rune.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>The metamorphosis caused by this rune is only superficial, and while casters who are using the rune can take on the exterior form of nearly any inanimate object, they will always retain their original smell and mental abilities. So there is no real practical use for this rune, making this largely a fun rune.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -896,7 +1173,7 @@ GameStore.Categories = {
 				price = 16,
 				itemtype = 3177,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Using this rune together with some mana, you can convince certain creatures. The needed amount of mana is determined by the power of the creature one wishes to convince, so the amount of mana to convince a rat is lower than that which is needed for an orc.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Using this rune together with some mana, you can convince certain creatures. The needed amount of mana is determined by the power of the creature one wishes to convince, so the amount of mana to convince a rat is lower than that which is needed for an orc.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -905,7 +1182,7 @@ GameStore.Categories = {
 				price = 13,
 				itemtype = 3153,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>In the old days, many adventurers fell prey to poisonous creatures that were roaming the caves and forests. After many years of research druids finally succeeded in altering the cure poison spell so it could be bound to a rune. By using this rune it is possible to stop the effect of any known poison.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>In the old days, many adventurers fell prey to poisonous creatures that were roaming the caves and forests. After many years of research druids finally succeeded in altering the cure poison spell so it could be bound to a rune. By using this rune it is possible to stop the effect of any known poison.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -914,7 +1191,7 @@ GameStore.Categories = {
 				price = 5,
 				itemtype = 3197,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Nothing is worse than being cornered when fleeing from an enemy you just cannot beat, especially if the obstacles in your way are items you could easily remove if only you had the time! However, there is one reliable remedy: The Disintegrate rune will instantly destroy up to 500 movable items that are in your way, making room for a quick escape.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Nothing is worse than being cornered when fleeing from an enemy you just cannot beat, especially if the obstacles in your way are items you could easily remove if only you had the time! However, there is one reliable remedy: The Disintegrate rune will instantly destroy up to 500 movable items that are in your way, making room for a quick escape.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -923,7 +1200,7 @@ GameStore.Categories = {
 				price = 40,
 				itemtype = 3149,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Using the Energy Bomb rune will create a field of deadly energy that deals damage to all who carelessly step into it. Its area of effect is covering a full 9 square metres! Creatures that are caught in the middle of an Energy Bomb are frequently confused by the unexpected effect, and some may even stay in the field of deadly sparks for a while.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Using the Energy Bomb rune will create a field of deadly energy that deals damage to all who carelessly step into it. Its area of effect is covering a full 9 square metres! Creatures that are caught in the middle of an Energy Bomb are frequently confused by the unexpected effect, and some may even stay in the field of deadly sparks for a while.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -932,7 +1209,7 @@ GameStore.Categories = {
 				price = 8,
 				itemtype = 3164,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This spell creates a limited barrier made up of crackling energy that will cause electrical damage to all those passing through. Since there are few creatures that are immune to the harmful effects of energy this spell is not to be underestimated.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This spell creates a limited barrier made up of crackling energy that will cause electrical damage to all those passing through. Since there are few creatures that are immune to the harmful effects of energy this spell is not to be underestimated.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -941,7 +1218,7 @@ GameStore.Categories = {
 				price = 17,
 				itemtype = 3166,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Casting this spell generates a solid wall made up of magical energy. Walls made this way surpass any other magically created obstacle in width, so it is always a good idea to have an Energy Wall rune or two in one's pocket when travelling through the wilderness.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Casting this spell generates a solid wall made up of magical energy. Walls made this way surpass any other magically created obstacle in width, so it is always a good idea to have an Energy Wall rune or two in one's pocket when travelling through the wilderness.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -950,7 +1227,7 @@ GameStore.Categories = {
 				price = 6,
 				itemtype = 3200,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune must be aimed at areas rather than at specific creatures, so it is possible for explosions to be unleashed even if no targets are close at all. These explosions cause a considerable physical damage within a substantial blast radius.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune must be aimed at areas rather than at specific creatures, so it is possible for explosions to be unleashed even if no targets are close at all. These explosions cause a considerable physical damage within a substantial blast radius.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -959,7 +1236,7 @@ GameStore.Categories = {
 				price = 6,
 				itemtype = 3189,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>When this rune is used a massive fiery ball is released which hits the aimed foe with immense power. It is especially effective against opponents of the element earth.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>When this rune is used a massive fiery ball is released which hits the aimed foe with immense power. It is especially effective against opponents of the element earth.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -968,7 +1245,7 @@ GameStore.Categories = {
 				price = 29,
 				itemtype = 3192,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune is a deadly weapon in the hands of the skilled user. On releasing it an area of 9 square metres is covered by searing flames that will scorch all those that are unfortunate enough to be caught in them. Worse, many monsters are confused by the unexpected blaze, and with a bit of luck a caster will even manage to trap his opponents by using the spell.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune is a deadly weapon in the hands of the skilled user. On releasing it an area of 9 square metres is covered by searing flames that will scorch all those that are unfortunate enough to be caught in them. Worse, many monsters are confused by the unexpected blaze, and with a bit of luck a caster will even manage to trap his opponents by using the spell.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -977,7 +1254,7 @@ GameStore.Categories = {
 				price = 6,
 				itemtype = 3188,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>When this rune is used a field of one square metre is covered by searing fire that will last for some minutes, gradually diminishing as the blaze wears down. As with all field spells, Fire Field is quite useful to block narrow passageways or to create large, connected barriers.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>When this rune is used a field of one square metre is covered by searing fire that will last for some minutes, gradually diminishing as the blaze wears down. As with all field spells, Fire Field is quite useful to block narrow passageways or to create large, connected barriers.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -986,7 +1263,7 @@ GameStore.Categories = {
 				price = 12,
 				itemtype = 3190,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune offers reliable protection against all creatures that are afraid of fire. The exceptionally long duration of the spell as well as the possibility to form massive barriers or even protective circles out of fire walls make this a versatile, practical spell.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune offers reliable protection against all creatures that are afraid of fire. The exceptionally long duration of the spell as well as the possibility to form massive barriers or even protective circles out of fire walls make this a versatile, practical spell.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -995,7 +1272,7 @@ GameStore.Categories = {
 				price = 12,
 				itemtype = 3191,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>A shot of this rune affects a huge area - up to 37 square metres! It stands to reason that the Great Fireball is a favourite of most Tibians, as it is well suited both to hit whole crowds of monsters and individual targets that are difficult to hit because they are fast or hard to spot.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>A shot of this rune affects a huge area - up to 37 square metres! It stands to reason that the Great Fireball is a favourite of most Tibians, as it is well suited both to hit whole crowds of monsters and individual targets that are difficult to hit because they are fast or hard to spot.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1004,7 +1281,7 @@ GameStore.Categories = {
 				price = 6,
 				itemtype = 3158,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Particularly creatures determined by the element fire are vulnerable against this ice-cold rune. Being hit by the magic stored in this rune, an ice arrow seems to pierce the heart of the struck victim. The damage done by this rune is quite impressive which makes this a quite popular rune among Tibian mages.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Particularly creatures determined by the element fire are vulnerable against this ice-cold rune. Being hit by the magic stored in this rune, an ice arrow seems to pierce the heart of the struck victim. The damage done by this rune is quite impressive which makes this a quite popular rune among Tibian mages.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1013,7 +1290,7 @@ GameStore.Categories = {
 				price = 19,
 				itemtype = 3152,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune is commonly used by young adventurers who are not skilled enough to use the rune's stronger version. Also, since the rune's effectiveness is determined by the user's magic skill, it is still popular among experienced spell casters who use it to get effective healing magic at a cheap price.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune is commonly used by young adventurers who are not skilled enough to use the rune's stronger version. Also, since the rune's effectiveness is determined by the user's magic skill, it is still popular among experienced spell casters who use it to get effective healing magic at a cheap price.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1022,7 +1299,7 @@ GameStore.Categories = {
 				price = 23,
 				itemtype = 3180,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This spell causes all particles that are contained in the surrounding air to quickly gather and contract until a solid wall is formed that covers one full square metre. The wall that is formed that way is impenetrable to any missiles or to light and no creature or character can walk through it. However, the wall will only last for a couple of seconds.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This spell causes all particles that are contained in the surrounding air to quickly gather and contract until a solid wall is formed that covers one full square metre. The wall that is formed that way is impenetrable to any missiles or to light and no creature or character can walk through it. However, the wall will only last for a couple of seconds.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1031,7 +1308,7 @@ GameStore.Categories = {
 				price = 17,
 				itemtype = 3173,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune causes an area of 9 square metres to be contaminated with toxic gas that will poison anybody who is caught within it. Conceivable applications include the blocking of areas or the combat against fast-moving or invisible targets. Keep in mind, however, that there are a number of creatures that are immune to poison.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune causes an area of 9 square metres to be contaminated with toxic gas that will poison anybody who is caught within it. Conceivable applications include the blocking of areas or the combat against fast-moving or invisible targets. Keep in mind, however, that there are a number of creatures that are immune to poison.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1040,7 +1317,7 @@ GameStore.Categories = {
 				price = 10,
 				itemtype = 3176,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>When this rune is used a wall of concentrated toxic fumes is created which inflicts a moderate poison on all those who are foolish enough to enter it. The effect is usually impressive enough to discourage monsters from doing so, although few of the stronger ones will hesitate if there is nothing but a poison wall between them and their dinner.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>When this rune is used a wall of concentrated toxic fumes is created which inflicts a moderate poison on all those who are foolish enough to enter it. The effect is usually impressive enough to discourage monsters from doing so, although few of the stronger ones will hesitate if there is nothing but a poison wall between them and their dinner.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1049,7 +1326,7 @@ GameStore.Categories = {
 				price = 9,
 				itemtype = 3195,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Soulfire is an immensely evil spell as it directly targets a creature's very life essence. When the rune is used on a victim, its soul is temporarily moved out of its body, casting it down into the blazing fires of hell itself! Note that the experience and the mental strength of the caster influence the damage that is caused.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Soulfire is an immensely evil spell as it directly targets a creature's very life essence. When the rune is used on a victim, its soul is temporarily moved out of its body, casting it down into the blazing fires of hell itself! Note that the experience and the mental strength of the caster influence the damage that is caused.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1058,7 +1335,7 @@ GameStore.Categories = {
 				price = 7,
 				itemtype = 3175,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Particularly creatures with an affection to energy will suffer greatly from this rune filled with powerful earth damage. As the name already says, a shower of stones drums on the opponents of the rune user in an area up to 37 squares.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Particularly creatures with an affection to energy will suffer greatly from this rune filled with powerful earth damage. As the name already says, a shower of stones drums on the opponents of the rune user in an area up to 37 squares.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1067,7 +1344,7 @@ GameStore.Categories = {
 				price = 28,
 				itemtype = 3155,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Nearly no other spell can compare to Sudden Death when it comes to sheer damage. For this reason it is immensely popular despite the fact that only a single target is affected. However, since the damage caused by the rune is of deadly nature, it is less useful against most undead creatures.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Nearly no other spell can compare to Sudden Death when it comes to sheer damage. For this reason it is immensely popular despite the fact that only a single target is affected. However, since the damage caused by the rune is of deadly nature, it is less useful against most undead creatures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1076,7 +1353,7 @@ GameStore.Categories = {
 				price = 9,
 				itemtype = 3202,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Flashes filled with dangerous energy hit the rune user's opponent when this rune is being used. It is especially effective against ice dominated creatures. Covering up an area up to 37 squares, this rune is particularly useful when you meet a whole mob of opponents.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Flashes filled with dangerous energy hit the rune user's opponent when this rune is being used. It is especially effective against ice dominated creatures. Covering up an area up to 37 squares, this rune is particularly useful when you meet a whole mob of opponents.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1085,7 +1362,7 @@ GameStore.Categories = {
 				price = 35,
 				itemtype = 3160,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>The coveted Ultimate Healing rune is an all-time favourite among all vocations. No other healing enchantments that are bound into runes can compare to its salutary effect.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>The coveted Ultimate Healing rune is an all-time favourite among all vocations. No other healing enchantments that are bound into runes can compare to its salutary effect.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
@@ -1094,7 +1371,7 @@ GameStore.Categories = {
 				price = 32,
 				itemtype = 3156,
 				count = 250,
-				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>By unleashing this spell, all seeds that are lying dormant in the surrounding quickly sprout and grow into full-sized plants, thus forming an impenetrable thicket. Unfortunately, plant life created this way is short-lived and will collapse within minutes, so the magically created obstacle will not last long.</i>",
+				description = "\n\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>By unleashing this spell, all seeds that are lying dormant in the surrounding quickly sprout and grow into full-sized plants, thus forming an impenetrable thicket. Unfortunately, plant life created this way is short-lived and will collapse within minutes, so the magically created obstacle will not last long.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 		},
@@ -1103,7 +1380,7 @@ GameStore.Categories = {
 	{
 		icons = { "Category_Cosmetics.png" },
 		name = "Cosmetics",
-		rookgaard = true,
+		rookgaard = false,
 		subclasses = { "Mounts", "Outfits" },
 	},
 	-- Cosmetics ~ Mounts
@@ -1111,7 +1388,7 @@ GameStore.Categories = {
 		icons = { "Category_Mounts.png" },
 		name = "Mounts",
 		parent = "Cosmetics",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -2263,7 +2540,7 @@ GameStore.Categories = {
 		icons = { "Category_Outfits.png" },
 		name = "Outfits",
 		parent = "Cosmetics",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -2761,7 +3038,7 @@ GameStore.Categories = {
 	{
 		icons = { "Category_HouseTools.png" },
 		name = "Houses",
-		rookgaard = true,
+		rookgaard = false,
 		subclasses = { "Decorations", "Furniture", "Upgrades", "Hirelings", "Hirelings Dresses" },
 	},
 	-- House ~ Decorations
@@ -2769,7 +3046,7 @@ GameStore.Categories = {
 		icons = { "Category_HouseDecorations.png" },
 		name = "Decorations",
 		parent = "Houses",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -4823,7 +5100,7 @@ GameStore.Categories = {
 		icons = { "Category_HouseFurniture.png" },
 		name = "Furniture",
 		parent = "Houses",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -5904,7 +6181,7 @@ GameStore.Categories = {
 		icons = { "Category_Beds.png" },
 		name = "Beds",
 		parent = "Houses",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -6040,7 +6317,7 @@ GameStore.Categories = {
 		icons = { "Category_HouseUpgrades.png" },
 		name = "Upgrades",
 		parent = "Houses",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -6126,12 +6403,13 @@ GameStore.Categories = {
 			},
 		},
 	},
+	--[[
 	-- House ~ Hirelings
 	{
 		icons = { "Category_HouseTools_NPCApprenticeships.png" },
 		name = "Hirelings",
 		parent = "Houses",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -6212,7 +6490,7 @@ GameStore.Categories = {
 		icons = { "Category_HouseTools_NPCDresses.png" },
 		name = "Hireling Dresses",
 		parent = "Houses",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -6307,20 +6585,32 @@ GameStore.Categories = {
 			},
 		},
 	},
+	]]--
 	-- Boost
 	{
 		icons = { "Category_Boosts.png" },
 		name = "Boosts",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
 				icons = { "XP_Boost.png" },
-				name = "XP Boost",
-				price = 30,
+				name = "Premium EXP",
+				price = 250,
 				id = 65010,
-				description = "<i>Purchase a boost that increases the experience points your character gains from hunting by 50%!</i>\n\n{character}\n{info} lasts for 1 hour hunting time\n{info} paused if stamina falls under 14 hours\n{info} can be purchased up to 5 times between 2 server saves\n{info} price increases with every purchase\n{info} cannot be purchased if an XP boost is already active",
+				description = "<i>Purchase a boost that increases the experience points your character gains from hunting by 20%!</i>\n\n{info} lasts for 10 hours of HUNTING TIME\n{info} paused if stamina falls under 14 hours\n{info} cannot be purchased if an XP boost is already active",
 				type = GameStore.OfferTypes.OFFER_TYPE_EXPBOOST,
+			},
+			{
+				icons = { "Premium_Scroll.png" },
+				name = "Premium EXP scroll",
+				price = 250,
+				itemtype = 14758,
+				count = 1,
+				description = "<i>Item that increases the experience points your character gains from hunting by 20% when used!</i>\n\n{info} lasts for 10 hours of HUNTING TIME\n{battlesign}\n{capacity}",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+				setOwner = true,
+				movable = true,
 			},
 		},
 	},
@@ -6328,7 +6618,7 @@ GameStore.Categories = {
 	{
 		icons = { "Category_Extras.png" },
 		name = "Extras",
-		rookgaard = true,
+		rookgaard = false,
 		subclasses = { "Extra Services", "Useful Things" },
 	},
 	-- Extras ~ Extras Services
@@ -6336,7 +6626,7 @@ GameStore.Categories = {
 		icons = { "Category_ExtraServices.png" },
 		name = "Extra Services",
 		parent = "Extras",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -6363,7 +6653,7 @@ GameStore.Categories = {
 		icons = { "Category_UsefulThings.png" },
 		name = "Useful Things",
 		parent = "Extras",
-		rookgaard = true,
+		rookgaard = false,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
@@ -6452,11 +6742,12 @@ GameStore.Categories = {
 			},
 		},
 	},
+	--[[
 	-- Tournament
 	{
 		icons = { "Category_Tournament.png" },
 		name = "Tournament",
-		rookgaard = true,
+		rookgaard = false,
 		subclasses = { "Tickets", "Exclusive Offers" },
 	},
 	-- Tournament ~ Tickets
@@ -6464,7 +6755,7 @@ GameStore.Categories = {
 		icons = { "Category_Tickets.png" },
 		parent = "Tournament",
 		name = "Tickets",
-		rookgaard = true,
+		rookgaard = false,
 		offers = {
 			{
 				icons = { "Tournament_Restricted.png" },
@@ -6473,280 +6764,8 @@ GameStore.Categories = {
 			},
 		},
 	},
+	]]--
 	-- Tournament ~ Exclusive Offers
-	{
-		icons = { "Category_ExclusiveOffers.png" },
-		name = "Exclusive Offers",
-		parent = "Tournament",
-		rookgaard = true,
-		state = GameStore.States.STATE_NONE,
-		offers = {
-			{
-				icons = { "Baby_Brain_Squid.png" },
-				name = "Baby Brain Squid",
-				price = 800,
-				itemtype = 32909,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Baby_Vulcongra.png" },
-				name = "Baby Vulcongra",
-				price = 800,
-				itemtype = 32908,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Carved_Table.png" },
-				name = "Carved Table",
-				price = 100,
-				itemtype = 32972,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Carved_Table_Centre.png" },
-				name = "Carved Table Centre",
-				price = 100,
-				itemtype = 32974,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Carved_Table_Corner.png" },
-				name = "Carved Table Corner",
-				price = 100,
-				itemtype = 32969,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Cerberus_Champion.png" },
-				name = "Cerberus Champion",
-				price = 1250,
-				id = 146,
-				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>A fierce and grim guardian of the underworld has risen to fight side by side with the bravest warriors in order to send evil creatures into the realm of the dead. The three headed Cerberus Champion is constantly baying for blood and using its sharp fangs it easily rips apart even the strongest armour and shield.",
-				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
-			},
-			{
-				icons = { "Cerberus_Champion_Puppy.png" },
-				name = "Cerberus Champion Puppy",
-				price = 800,
-				itemtype = 31464,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Cozy_Couch.png" },
-				name = "Cozy Couch",
-				price = 100,
-				itemtype = 32948,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Cozy_Couch_Left_End.png" },
-				name = "Cozy Couch Left End",
-				price = 100,
-				itemtype = 32952,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Cozy_Couch_Right_End.png" },
-				name = "Cozy Couch Right End",
-				price = 100,
-				itemtype = 32956,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Cozy_Couch_Corner.png" },
-				name = "Cozy Couch Corner",
-				price = 100,
-				itemtype = 32964,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Demon_Doll.png" },
-				name = "Demon Doll",
-				price = 400,
-				itemtype = 32918,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Outfit_Dragon_Slayer_Male_Addon_3.png", "Outfit_Dragon_Slayer_Female_Addon_3.png" },
-				name = "Full Dragon Slayer Outfit",
-				price = 5000,
-				sexId = { female = 1289, male = 1288 },
-				addon = 3,
-				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The souls of countless slain dragons have been fused over the years with this armour, wrought from the impervious scales of the ancestors of those very same beings, wicked and wise, winged and wild. The Dragon Slayer Outfit has seen an unfathomable amount of bloodshed, but it pales in comparison to the untold lives lost in the strife over the armour itself. Only the mightiest warriors can even begin to dream of ever owning this exceedingly rare token of power.</i>",
-				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
-			},
-			{
-				icons = { "Gilded_Blessed_Shield.png" },
-				name = "Gilded Blessed Shield",
-				price = 1500,
-				itemtype = 37165,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
-			},
-			{
-				icons = { "Gilded_Crown.png" },
-				name = "Gilded Crown",
-				price = 1500,
-				itemtype = 34332,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
-			},
-			{
-				icons = { "Gilded_Horned_Helmet.png" },
-				name = "Gilded Horned Helmet",
-				price = 1500,
-				itemtype = 38640,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
-			},
-			{
-				icons = { "Gilded_Magic_Longsword.png" },
-				name = "Gilded Magic Longsword",
-				price = 1500,
-				itemtype = 36995,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
-			},
-			{
-				icons = { "Gilded_Warlord_Sword.png" },
-				name = "Gilded Warlord Sword",
-				price = 1500,
-				itemtype = 39767,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
-			},
-			{
-				icons = { "Guzzlemaw_Grub.png" },
-				name = "Guzzlemaw Grub",
-				price = 800,
-				itemtype = 32907,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Jousting_Eagle.png" },
-				name = "Jousting Eagle",
-				price = 1250,
-				id = 145,
-				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>High above the clouds far away from dry land, the training of giant eagles takes place. Only the cream of the crop is able to survive in such harsh environment long enough to call themselves Jousting Eagles while the weaklings find themselves at the bottom of the sea. The tough ones become noble and graceful mounts that are well known for their agility and endurance.</i>",
-				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
-			},
-			{
-				icons = { "Jousting_Eagle_Baby.png" },
-				name = "Jousting Eagle Baby",
-				price = 800,
-				itemtype = 31462,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Outfit_Lion_of_War_Male_Addon_3.png", "Outfit_Lion_of_War_Female_Addon_3.png" },
-				name = "Full Lion of War Outfit",
-				price = 1750,
-				sexId = { female = 1207, male = 1206 },
-				addon = 3,
-				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The Lion of War has fought on countless battlefields and never lost once. Enemies tremble with fear when he batters his sword against his almighty shield. Realising that a Lion of War knows no mercy, his opponents often surrender before the battle even begins.</i>",
-				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
-			},
-			{
-				icons = { "Ogre_Rowdy_Doll.png" },
-				name = "Ogre Rowdy Doll",
-				price = 400,
-				itemtype = 32944,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Retching_Horror_Doll.png" },
-				name = "Retching Horror Doll",
-				price = 400,
-				itemtype = 32945,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Sublime_Tournament_Accolade.png" },
-				name = "Sublime Tournament Accolade",
-				price = 500,
-				itemtype = 31472,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Sublime_Tournament_Carpet.png" },
-				name = "Sublime Tournament Carpet",
-				price = 70,
-				itemtype = 31467,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{useicon} use an unwrapped carpet to roll it out or up\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Tournament_Accolade.png" },
-				name = "Tournament Accolade",
-				price = 500,
-				itemtype = 31470,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Tournament_Carpet.png" },
-				name = "Tournament Carpet",
-				price = 70,
-				itemtype = 31466,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{useicon} use an unwrapped carpet to roll it out or up\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Vexclaw_Doll.png" },
-				name = "Vexclaw Doll",
-				price = 400,
-				itemtype = 32943,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-		},
-	},
 }
 
 -- Each outfit must be uniquely identified to distinguish between addons.
@@ -6770,7 +6789,10 @@ for k, category in ipairs(GameStore.Categories) do
 				offer.type = GameStore.OfferTypes.OFFER_TYPE_NONE
 			end
 			if not offer.coinType then
-				offer.coinType = GameStore.CoinType.Transferable
+				offer.coinType = GameStore.CoinType.Coin
+			end
+			if offer.type == GameStore.OfferTypes.OFFER_TYPE_STACKABLE or offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARGES then
+				offer.movable = true
 			end
 		end
 	end

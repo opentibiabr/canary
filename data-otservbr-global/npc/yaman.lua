@@ -145,7 +145,7 @@ npcConfig.shop = {
 	{ itemName = "energy ring", clientId = 3051, buy = 2000, sell = 100 },
 	{ itemName = "glacial rod", clientId = 16118, sell = 6500 },
 	{ itemName = "hailstorm rod", clientId = 3067, sell = 3000 },
-	{ itemName = "life ring", clientId = 3052, buy = 900, sell = 50 },
+	{ itemName = "life ring", clientId = 3052, buy = 9000, sell = 50 },
 	{ itemName = "might ring", clientId = 3048, buy = 5000, sell = 250, count = 20 },
 	{ itemName = "moonlight rod", clientId = 3070, sell = 200 },
 	{ itemName = "muck rod", clientId = 16117, sell = 6000 },

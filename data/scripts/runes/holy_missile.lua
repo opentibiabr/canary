@@ -5,8 +5,9 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HOLYAREA)
 combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_HOLY)
 
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 1.79) + 11
-	local max = (level / 5) + (maglevel * 3.75) + 24
+	maglevel = maglevel * 1.3
+	local min = (level / 5) + (maglevel * 1.81) + 10
+	local max = (level / 5) + (maglevel * 3) + 18
 	return -min, -max
 end
 
@@ -32,5 +33,4 @@ rune:cooldown(2 * 1000)
 rune:groupCooldown(2 * 1000)
 rune:needTarget(true)
 rune:isBlocking(true) -- True = Solid / False = Creature
-rune:vocation("paladin;true", "royal paladin;true")
 rune:register()

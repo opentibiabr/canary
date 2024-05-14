@@ -1,7 +1,7 @@
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, variant)
-	return creature:conjureItem(3147, 3179, 10)
+	return creature:conjureItem(3147, 3179, 5)
 end
 
 spell:name("Stalagmite Rune")

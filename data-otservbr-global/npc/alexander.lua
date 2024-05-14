@@ -12,7 +12,7 @@ npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
 	lookType = 130,
-	lookHead = 96,
+	lookHead = 97,
 	lookBody = 71,
 	lookLegs = 63,
 	lookFeet = 97,
@@ -47,6 +47,7 @@ local itemsTable = {
 		{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
 	},
 	["wands"] = {
+		{ itemName = "life ring", clientId = 3052, buy = 9000 },
 		{ itemName = "hailstorm rod", clientId = 3067, buy = 15000 },
 		{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
 		{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },

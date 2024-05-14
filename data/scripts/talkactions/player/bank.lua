@@ -1,5 +1,5 @@
 local config = {
-	enabled = true,
+	enabled = false,
 	messageStyle = MESSAGE_LOOK,
 }
 

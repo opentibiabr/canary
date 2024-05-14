@@ -4,7 +4,7 @@ end
 
 local barbarianHorn = Action()
 function barbarianHorn.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if target.uid == 3110 and item.itemid == 7140 then
+	if target.itemid == 7142 and item.itemid == 7140 then
 		player:say("You fill your horn with ale.", TALKTYPE_MONSTER_SAY)
 		item:transform(7141)
 		toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)

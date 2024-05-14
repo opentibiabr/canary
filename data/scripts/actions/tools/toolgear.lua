@@ -1,7 +1,7 @@
 local toolGear = Action()
 
 function toolGear.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if math.random(100) > 5 then
+	if math.random(100) > 95 then
 		return onUseRope(player, item, fromPosition, target, toPosition, isHotkey)
 			or onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
 			or onUsePick(player, item, fromPosition, target, toPosition, isHotkey)

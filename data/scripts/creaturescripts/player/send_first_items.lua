@@ -2,7 +2,8 @@ local config = {
 	[VOCATION.ID.NONE] = {
 		container = {
 			{ 3003, 1 }, -- rope
-			{ 3457, 1 }, -- shovel
+			{ 5710, 1 }, -- light shovel
+			{ 3035, 5 }, -- 0.5K
 		},
 	},
 

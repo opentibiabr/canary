@@ -5,7 +5,7 @@ function offlineTraining.onLogin(player)
 	local offlineTime = lastLogout ~= 0 and math.min(os.time() - lastLogout, 86400 * 21) or 0
 	local offlineTrainingSkill = player:getOfflineTrainingSkill()
 	if offlineTrainingSkill == SKILL_NONE then
-		player:addOfflineTrainingTime(offlineTime * 1000)
+		player:addOfflineTrainingTime(offlineTime * 250)
 		return true
 	end
 
@@ -55,22 +55,32 @@ function offlineTraining.onLogin(player)
 	local vocation = player:getVocation()
 	local promotion = vocation:getPromotion()
 	local topVocation = not promotion and vocation or promotion
-	local updateSkills = false
 
+	--Check Stamina
+	local isStaminaEnabled = configManager.getBoolean(configKeys.STAMINA_SYSTEM)
+	local isStaminaActive = false
+	if isStaminaEnabled then
+		local staminaMinutes = player:getStamina()
+		if staminaMinutes > 2340 and player:isPremium() then
+			isStaminaActive = true
+		end
+	end
+	
+	local updateSkills = false
 	if table.contains({ SKILL_CLUB, SKILL_SWORD, SKILL_AXE, SKILL_DISTANCE }, offlineTrainingSkill) then
-		local modifier = topVocation:getBaseAttackSpeed() / 1000 / configManager.getFloat(configKeys.RATE_OFFLINE_TRAINING_SPEED)
-		updateSkills = player:addOfflineTrainingTries(offlineTrainingSkill, (trainingTime / modifier) / (offlineTrainingSkill == SKILL_DISTANCE and 4 or 2))
+		updateSkills = player:addOfflineTrainingTries(offlineTrainingSkill, (trainingTime / 12) / (isStaminaActive and 1.5 or 1))
 	elseif offlineTrainingSkill == SKILL_MAGLEVEL then
-		local gainTicks = topVocation:getManaGainTicks() * 2
-		if gainTicks == 0 then
+		local gainTicks = (topVocation:getManaGainTicks() / 1000) * 2
+		if gainTicks < 1 then
 			gainTicks = 1
 		end
 
-		updateSkills = player:addOfflineTrainingTries(SKILL_MAGLEVEL, trainingTime * (vocation:getManaGainAmount() / gainTicks))
+		updateSkills = player:addOfflineTrainingTries(SKILL_MAGLEVEL, (trainingTime * ((vocation:getManaGainAmount()/2) / gainTicks)) / (isStaminaActive and 1.25 or 1))
 	end
 
 	if updateSkills then
-		player:addOfflineTrainingTries(SKILL_SHIELD, trainingTime / 4)
+		local shield_tries = (trainingTime / 12) / (isStaminaActive and 1.5 or 1)
+		player:addOfflineTrainingTries(SKILL_SHIELD, shield_tries)
 	end
 	return true
 end

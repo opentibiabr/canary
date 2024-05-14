@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<npcs>
+	<npc centerx="1562" centery="1350" centerz="6" radius="15">
+		<npc name="Croupier" x="-9" y="-9" z="6" spawntime="60" direction="2" />
+		<npc name="Dealer" x="9" y="-9" z="6" spawntime="60" direction="2" />
+		<npc name="Alfredo" x="-5" y="-7" z="6" spawntime="60" direction="2" />
+		<npc name="Eighty" x="4" y="-3" z="6" spawntime="60" direction="1" />
+	</npc>
+	<npc centerx="1561" centery="1355" centerz="7" radius="1">
+		<npc name="A Sleeping Dragon" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+</npcs>

@@ -1,3 +1,60 @@
+local function SendXPtoClient(player)
+
+	-- Send Client Exp Display
+	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) then
+		local baseRate = player:getFinalBaseRateExperience() * 100
+		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+			local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
+			if vipBonusExp > 0 and player:isVip() then
+				vipBonusExp = (vipBonusExp > 100 and 100) or vipBonusExp
+				baseRate = baseRate * (1 + (vipBonusExp / 100))
+				player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Normal base xp is: " .. baseRate .. "%, because you are VIP, bonus of " .. vipBonusExp .. "%")
+			end
+		end
+
+		player:setBaseXpGain(baseRate)
+	end
+
+end
+
+local function useStamina(player, isStaminaEnabled)
+	if not player then
+		return false
+	end
+
+	local staminaMinutes = player:getStamina()
+	if staminaMinutes == 0 then
+		return
+	end
+
+	local playerId = player:getId()
+	if not playerId or not _G.NextUseStaminaTime[playerId] then
+		return false
+	end
+
+	local currentTime = os.time()
+	local timePassed = currentTime - _G.NextUseStaminaTime[playerId]
+	if timePassed <= 0 then
+		return
+	end
+
+	if timePassed > 60 then
+		if staminaMinutes > 1 then
+			staminaMinutes = staminaMinutes - 1
+		else
+			staminaMinutes = 0
+		end
+		_G.NextUseStaminaTime[playerId] = currentTime + 120
+	else
+		staminaMinutes = staminaMinutes - 1
+		_G.NextUseStaminaTime[playerId] = currentTime + 60
+	end
+	SendXPtoClient(player)
+	if isStaminaEnabled then
+		player:setStamina(staminaMinutes)
+	end
+end
+
 local exhaustionTime = 10
 
 local exerciseWeaponsTable = {
@@ -102,13 +159,31 @@ local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 	local rate = dummies[dummyId] / 100
 	local isMagic = exerciseWeaponsTable[weaponId].skill == SKILL_MAGLEVEL
 	if isMagic then
-		player:addManaSpent(500 * rate)
+		local vocation = player:getVocation()
+		local promotion = vocation:getPromotion()
+		local topVocation = not promotion and vocation or promotion
+		local gainTicks = (750 / (topVocation:getManaGainTicks() / 10)) * 100
+		player:addManaSpent(gainTicks * rate)
 	else
 		player:addSkillTries(exerciseWeaponsTable[weaponId].skill, 7 * rate)
 	end
 
 	weapon:setAttribute(ITEM_ATTRIBUTE_CHARGES, (weaponCharges - 1))
 	tilePosition:sendMagicEffect(CONST_ME_HITAREA)
+	
+	--Check Stamina
+	local isStaminaEnabled = configManager.getBoolean(configKeys.STAMINA_SYSTEM)
+	local isStaminaActive = false
+	if isStaminaEnabled then
+		local staminaMinutes = player:getStamina()
+		if staminaMinutes > 2340 and player:isPremium() then		
+			-- Stamina Bonus
+			local staminaBonusXp = 1
+			useStamina(player, isStaminaEnabled)
+			staminaBonusXp = player:getFinalBonusStamina()
+			player:setStaminaXpBoost(staminaBonusXp * 100)
+		end
+	end
 
 	if exerciseWeaponsTable[weaponId].effect then
 		playerPosition:sendDistanceEffect(tilePosition, exerciseWeaponsTable[weaponId].effect)

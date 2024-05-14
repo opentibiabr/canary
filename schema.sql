@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '45'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '44'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -127,8 +127,8 @@ CREATE TABLE IF NOT EXISTS `players` (
     `skill_lifeleech_amount` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `skill_manaleech_chance` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `skill_manaleech_amount` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
-    `manashield` INT UNSIGNED NOT NULL DEFAULT '0',
-    `max_manashield` INT UNSIGNED NOT NULL DEFAULT '0',
+    `manashield` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
+    `max_manashield` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
     `xpboost_stamina` smallint(5) UNSIGNED DEFAULT NULL,
     `xpboost_value` tinyint(4) UNSIGNED DEFAULT NULL,
     `marriage_status` bigint(20) UNSIGNED NOT NULL DEFAULT '0',

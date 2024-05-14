@@ -78,7 +78,7 @@ bool Outfits::loadFromXml() {
 	return true;
 }
 
-std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType, const std::shared_ptr<const Player> &player) const {
+std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
 	if (sex != PLAYERSEX_FEMALE && sex != PLAYERSEX_MALE) {
 		g_logger().error("[{}] - Sex invalid or player: {}", __FUNCTION__, player->getName());
 		return nullptr;
@@ -100,7 +100,8 @@ std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t l
  * @param lookType current looktype
  * @return <b>const</b> pointer to the outfit or <b>nullptr</b> if it could not be found.
  */
-[[maybe_unused]] std::shared_ptr<Outfit> Outfits::getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
+
+std::shared_ptr<Outfit> Outfits::getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
 	PlayerSex_t searchSex = (sex == PLAYERSEX_MALE) ? PLAYERSEX_FEMALE : PLAYERSEX_MALE;
 	return getOutfitByLookType(searchSex, lookType);
 }

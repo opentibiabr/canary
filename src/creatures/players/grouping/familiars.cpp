@@ -74,12 +74,10 @@ bool Familiars::loadFromXml() {
 }
 
 std::shared_ptr<Familiar> Familiars::getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const {
-	const auto &familiarList = familiars[vocation];
-	auto it = std::find_if(familiarList.begin(), familiarList.end(), [lookType](const auto &familiar) {
-		return familiar->lookType == lookType;
-	});
-
-	if (it != familiarList.end()) {
+	if (auto it = std::find_if(familiars[vocation].begin(), familiars[vocation].end(), [lookType](auto familiar_it) {
+			return familiar_it->lookType == lookType;
+		});
+		it != familiars[vocation].end()) {
 		return *it;
 	}
 	return nullptr;

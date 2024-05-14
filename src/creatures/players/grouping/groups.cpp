@@ -99,12 +99,11 @@ bool Groups::load() {
 	return true;
 }
 
-std::shared_ptr<Group> Groups::getGroup(uint16_t id) const {
-	auto it = std::find_if(groups_vector.begin(), groups_vector.end(), [id](const auto &group) {
-		return group->id == id;
-	});
-
-	if (it != groups_vector.end()) {
+std::shared_ptr<Group> Groups::getGroup(uint16_t id) {
+	if (auto it = std::find_if(groups_vector.begin(), groups_vector.end(), [id](auto group_it) {
+			return group_it->id == id;
+		});
+		it != groups_vector.end()) {
 		return *it;
 	}
 	return nullptr;

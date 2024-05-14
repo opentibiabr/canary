@@ -10,6 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 struct OutfitEntry {
 	constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) :

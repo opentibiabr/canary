@@ -98,7 +98,11 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 				}
 			}
 		}
+		if (attackerPlayer && wheelSpell && wheelSpell->isInstant()) {
+			wheelSpell->getCombatDataAugment(attackerPlayer, damage);
+		}
 	}
+
 	return damage;
 }
 
@@ -647,6 +651,10 @@ CombatDamage Combat::applyImbuementElementalDamage(std::shared_ptr<Player> attac
 			|| damage.primary.type == COMBAT_HEALING
 			|| damage.secondary.type == COMBAT_HEALING) {
 			continue;
+		}
+
+		if (damage.primary.type != COMBAT_PHYSICALDAMAGE) {
+			break;
 		}
 
 		float damagePercent = imbuementInfo.imbuement->elementDamage / 100.0;

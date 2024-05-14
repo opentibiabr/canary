@@ -218,7 +218,7 @@ std::string Container::getContentDescription(bool oldProtocol) {
 	return getContentDescription(os, oldProtocol).str();
 }
 
-std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool oldProtocol) {
+std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool sendColoredMessage) {
 	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		std::shared_ptr<Item> item = *it;
@@ -234,10 +234,10 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 			os << ", ";
 		}
 
-		if (oldProtocol) {
-			os << item->getNameDescription();
-		} else {
+		if (sendColoredMessage) {
 			os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
+		} else {
+			os << item->getNameDescription();
 		}
 	}
 

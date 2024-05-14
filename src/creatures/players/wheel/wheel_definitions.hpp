@@ -105,9 +105,10 @@ enum class WheelOnThink_t : uint8_t {
 	FOCUS_MASTERY = 4,
 	GIFT_OF_LIFE = 5,
 	DIVINE_EMPOWERMENT = 6,
-	AVATAR = 7,
+	AVATAR_SPELL = 7,
+	AVATAR_FORGE = 8,
 
-	TOTAL_COUNT = 8
+	TOTAL_COUNT = 9
 };
 
 enum class WheelStat_t : uint8_t {

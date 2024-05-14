@@ -15,8 +15,6 @@
 #include "utils/tools.hpp"
 
 bool Ban::acceptConnection(uint32_t clientIP) {
-	std::scoped_lock<std::recursive_mutex> lockClass(lock);
-
 	uint64_t currentTime = OTSYS_TIME();
 
 	auto it = ipConnectMap.find(clientIP);

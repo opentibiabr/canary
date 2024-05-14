@@ -37,5 +37,5 @@ public:
 	static std::string SERVER_DEVELOPERS;
 
 private:
-	static std::map<uint32_t, int64_t> ipConnectMap;
+	static phmap::parallel_flat_hash_map<uint32_t, int64_t> ipConnectMap;
 };

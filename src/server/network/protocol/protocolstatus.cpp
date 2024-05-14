@@ -22,7 +22,7 @@ std::string ProtocolStatus::SERVER_NAME = "Canary";
 std::string ProtocolStatus::SERVER_VERSION = "3.0";
 std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
-std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
+phmap::parallel_flat_hash_map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME();
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
@@ -30,8 +30,8 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 	if (ip != 0x0100007F) {
 		std::string ipStr = convertIPToString(ip);
 		if (ipStr != g_configManager().getString(IP, __FUNCTION__)) {
-			std::map<uint32_t, int64_t>::const_iterator it = ipConnectMap.find(ip);
-			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT, __FUNCTION__)))) {
+			auto it = ipConnectMap.find(ip);
+			if (it != ipConnectMap.end() && OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT, __FUNCTION__))) {
 				disconnect();
 				return;
 			}

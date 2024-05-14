@@ -283,7 +283,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_GREEN_50) {
-		return recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot)) || true;
+		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
 	}
 
 	// Red quadrant
@@ -410,7 +410,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_RED_50) {
-		return recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot)) || true;
+		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
 	}
 
 	// Purple quadrant
@@ -537,7 +537,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_PURPLE_50) {
-		return recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot)) || true;
+		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
 	}
 
 	// Blue quadrant
@@ -664,7 +664,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_BLUE_50) {
-		return recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot)) || true;
+		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
 	}
 
 	return false;
@@ -1603,7 +1603,7 @@ void PlayerWheel::registerPlayerBonusData() {
 		setSpellInstant("Avatar of Storm", false);
 	}
 
-	for (const auto spell : m_playerBonusData.spells) {
+	for (const auto &spell : m_playerBonusData.spells) {
 		upgradeSpell(spell);
 	}
 
@@ -1759,7 +1759,7 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	auto &spellsVector = bonusData.spells;
 	if (!spellsVector.empty()) {
 		g_logger().debug("Spells:");
-		for (const auto spell : bonusData.spells) {
+		for (const auto &spell : bonusData.spells) {
 			g_logger().debug("  {}", spell);
 		}
 	}
@@ -2523,7 +2523,7 @@ void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) {
 }
 
 void PlayerWheel::resetUpgradedSpells() {
-	for (const auto spell : m_learnedSpellsSelected) {
+	for (const auto &spell : m_learnedSpellsSelected) {
 		if (m_player.hasLearnedInstantSpell(spell)) {
 			m_player.forgetInstantSpell(spell);
 		}

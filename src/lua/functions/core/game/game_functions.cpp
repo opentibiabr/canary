@@ -214,7 +214,7 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	const auto type = g_monsters().monsters;
 	lua_createtable(L, type.size(), 0);
 
-	for (const auto [typeName, mType] : type) {
+	for (const auto &[typeName, mType] : type) {
 		pushUserdata<MonsterType>(L, mType);
 		setMetatable(L, -1, "MonsterType");
 		lua_setfield(L, -2, typeName.c_str());
@@ -517,7 +517,7 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 	lua_createtable(L, c_list.size(), 0);
 
 	int index = 0;
-	for (const auto charmPtr : c_list) {
+	for (const auto &charmPtr : c_list) {
 		pushUserdata<Charm>(L, charmPtr);
 		setMetatable(L, -1, "Charm");
 		lua_rawseti(L, -2, ++index);
@@ -699,7 +699,7 @@ int GameFunctions::luaGameGetInfluencedMonsters(lua_State* L) {
 
 int GameFunctions::luaGameGetLadderIds(lua_State* L) {
 	// Game.getLadderIds()
-	const auto ladders = Item::items.getLadders();
+	const auto &ladders = Item::items.getLadders();
 	lua_createtable(L, static_cast<int>(ladders.size()), 0);
 	int index = 0;
 	for (const auto ladderId : ladders) {
@@ -721,7 +721,7 @@ int GameFunctions::luaGameGetDummies(lua_State* L) {
 		local rate = dummies[1] -- Retrieve dummy rate
 	*/
 
-	const auto dummies = Item::items.getDummys();
+	const auto &dummies = Item::items.getDummys();
 	lua_createtable(L, dummies.size(), 0);
 	for (const auto &[dummyId, rate] : dummies) {
 		lua_pushnumber(L, static_cast<lua_Number>(rate));

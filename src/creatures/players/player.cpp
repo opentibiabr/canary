@@ -41,6 +41,8 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 
+uint8_t VIPGroup::vipGroupAutoID = 0;
+
 MuteCountMap Player::muteCountMap;
 
 Player::Player(ProtocolGame_ptr p) :
@@ -3121,6 +3123,84 @@ bool Player::addVIPInternal(uint32_t vipGuid) {
 	}
 
 	return VIPList.insert(vipGuid).second;
+}
+
+bool Player::existsVIPGroupWithName(const std::string& name) {
+	auto it = std::find_if(VIPGroups.begin(), VIPGroups.end(), [name](const VIPGroup vipGroup) {
+		return vipGroup.getName() == name;
+	});
+
+	return it != VIPGroups.end();
+}
+
+VIPGroup *Player::getVIPGroupByID(uint8_t groupID) {
+	const auto it = std::find_if(VIPGroups.begin(), VIPGroups.end(), [groupID](const VIPGroup vipGroup) {
+		return vipGroup.getID() == groupID;
+	});
+
+	return it != VIPGroups.end() ? &(*it) : nullptr;
+}
+
+void Player::removeVIPGroup(uint8_t groupId) {
+	auto it = std::find_if(VIPGroups.begin(), VIPGroups.end(), [groupId](const VIPGroup vipGroup) {
+		return vipGroup.getID() == groupId;
+	});
+
+	if (it == VIPGroups.end()) {
+		return;
+	}
+
+	VIPGroups.erase(it);
+
+	/* TODO: Remove the VIPGroupEntry of Database
+	if (account) {
+		IOLoginData::removeVIPGroupEntry(account->getID(), vipGuid, "", 0, false);
+	}
+	*/
+
+	if (client) {
+		client->sendVIPGroups(VIPGroups, getMaxVIPGroupEntries());
+	}
+}
+
+void Player::addVIPGroup(const std::string &name, bool customizable /*= true */) {
+	if (existsVIPGroupWithName(name)) {
+		sendCancelMessage("A group with this name already exists. Please choose another name.");
+		return;
+	}
+
+	VIPGroups.emplace_back(name, customizable);
+
+	/* TODO: Add the VIPGroupEntry to Database
+	if (account) {
+		IOLoginData::addVIPGroupEntry(account->getID(), vipGuid, "", 0, false);
+	}
+	*/
+
+	if (client) {
+		client->sendVIPGroups(VIPGroups, getMaxVIPGroupEntries());
+	}
+}
+
+void Player::editVIPGroup(uint8_t groupId, const std::string &newName, bool customizable /*= true */) {
+	if (existsVIPGroupWithName(newName)) {
+		sendCancelMessage("A group with this name already exists. Please choose another name.");
+		return;
+	}
+
+	auto groupVip = getVIPGroupByID(groupId);
+
+	groupVip->setName(newName);
+
+	/* TODO: Update the VIPGroupEntry on Database
+	if (account) {
+		IOLoginData::updateVIPGroupEntry(account->getID(), vipGuid, "", 0, false);
+	}
+	*/
+
+	if (client) {
+		client->sendVIPGroups(VIPGroups, getMaxVIPGroupEntries());
+	}
 }
 
 bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const {
@@ -6291,6 +6371,13 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const {
 	}
 
 	return std::make_pair(sliverCount, coreCount);
+}
+
+uint8_t Player::getMaxVIPGroupEntries() const {
+	if (isPremium()) {
+		return 8;
+	}
+	return 0;
 }
 
 size_t Player::getMaxVIPEntries() const {

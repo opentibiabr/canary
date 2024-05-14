@@ -1276,6 +1276,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xDE:
 			parseEditVip(msg);
 			break;
+		case 0xDF:
+			parseGroupVipActions(msg);
+			break;
 		case 0xE1:
 			parseBestiarysendRaces();
 			break;
@@ -1977,6 +1980,32 @@ void ProtocolGame::parseEditVip(NetworkMessage &msg) {
 	uint32_t icon = std::min<uint32_t>(10, msg.get<uint32_t>()); // 10 is max icon in 9.63
 	bool notify = msg.getByte() != 0;
 	g_game().playerRequestEditVip(player->getID(), guid, description, icon, notify);
+}
+
+void ProtocolGame::parseGroupVipActions(NetworkMessage& msg) {
+	uint8_t action = msg.getByte();
+
+	switch (action) {
+		case 0x01: {
+			const std::string groupName = msg.getString();
+			player->addVIPGroup(groupName);
+			break;
+		}
+		case 0x02: {
+			const uint8_t groupId = msg.getByte();
+			const std::string newGroupName = msg.getString();
+			player->editVIPGroup(groupId, newGroupName);
+			break;
+		}
+		case 0x03: {
+			const uint8_t groupId = msg.getByte();
+			player->removeVIPGroup(groupId);
+			break;
+		}
+		default: {
+			break;
+		}
+	}
 }
 
 void ProtocolGame::parseRotateItem(NetworkMessage &msg) {
@@ -6523,6 +6552,8 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 	// player light level
 	sendCreatureLight(creature);
 
+	sendVIPGroups(player->getVIPGroups(), player->getMaxVIPGroupEntries());
+
 	const std::forward_list<VIPEntry> &vipEntries = IOLoginData::getVIPEntries(player->getAccountId());
 
 	if (player->isAccessPlayer()) {
@@ -7097,9 +7128,33 @@ void ProtocolGame::sendVIP(uint32_t guid, const std::string &name, const std::st
 	msg.add<uint32_t>(std::min<uint32_t>(10, icon));
 	msg.addByte(notify ? 0x01 : 0x00);
 	msg.addByte(status);
+	msg.addByte(0x00);
+	/*
 	if (!oldProtocol) {
-		msg.addByte(0x00); // vipGroups
+		msg.addByte(vipGroups.size()); // vipGroups
+		for (const auto &vipGroup : vipGroups) {
+			msg.addByte(vipGroup.getID());
+		}
 	}
+	*/
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendVIPGroups(const std::vector<VIPGroup> &vipGroups, uint8_t maxGroups) {
+	if (oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xD4);
+	msg.addByte(vipGroups.size()); // vipGroups.size()
+	for (const auto &vipGroup : vipGroups) {
+		msg.addByte(vipGroup.getID());
+		msg.addString(vipGroup.getName(), "ProtocolGame::sendVIP - vipGroup.name");
+		msg.addByte(vipGroup.getCustomizable() ? 0x01 : 0x00); // 0x00 = not Customizable, 0x01 = Customizable
+	}
+	msg.addByte(maxGroups - vipGroups.size()); // max vip grous
+
 	writeToOutputBuffer(msg);
 }
 

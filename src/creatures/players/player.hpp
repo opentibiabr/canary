@@ -92,6 +92,45 @@ struct OpenContainer {
 	uint16_t index;
 };
 
+class VIPGroup {
+public:
+	VIPGroup(std::string name, bool customizable) :
+		id(vipGroupAutoID++), name(std::move(name)), customizable(customizable) { }
+
+	static uint8_t vipGroupAutoID;
+
+	uint8_t getID() const {
+		return id;
+	}
+
+	void setName(std::string newName) {
+		name = newName;
+	}
+
+	std::string getName() const {
+		return name;
+	}
+
+	void setCustomizable(bool newCustomizable) {
+		customizable = newCustomizable;
+	}
+
+	bool getCustomizable() const {
+		return customizable;
+	}
+
+	void addGUID(uint32_t guid) {
+		guids.emplace_back(guid);
+	}
+
+private:
+	uint8_t id;
+	std::string name;
+	bool customizable;
+
+	std::vector<uint32_t> guids;
+};
+
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr uint16_t PLAYER_MAX_SPEED = std::numeric_limits<uint16_t>::max();
@@ -836,6 +875,14 @@ public:
 	bool addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t status);
 	bool addVIPInternal(uint32_t vipGuid);
 	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const;
+	std::vector<VIPGroup> getVIPGroups() const {
+		return VIPGroups;
+	}
+	VIPGroup *getVIPGroupByID(uint8_t groupId);
+	bool existsVIPGroupWithName(const std::string &name);
+	void removeVIPGroup(uint8_t groupId);
+	void addVIPGroup(const std::string &name, bool customizable = true);
+	void editVIPGroup(uint8_t groupId, const std::string &newName, bool customizable = true);
 
 	// follow functions
 	bool setFollowCreature(std::shared_ptr<Creature> creature) override;
@@ -1050,6 +1097,7 @@ public:
 
 	bool hasKilled(std::shared_ptr<Player> player) const;
 
+	uint8_t getMaxVIPGroupEntries() const;
 	size_t getMaxVIPEntries() const;
 	size_t getMaxDepotItems() const;
 
@@ -2717,6 +2765,12 @@ private:
 
 	phmap::flat_hash_set<uint32_t> attackedSet;
 	phmap::flat_hash_set<uint32_t> VIPList;
+	std::vector<VIPGroup> VIPGroups = {
+		VIPGroup("Friends", false),
+		VIPGroup("Enemies", false),
+		VIPGroup("Trading Partners", false)
+	};
+	std::map<uint32_t, uint8_t> guidVIPGroupList;
 
 	std::map<uint8_t, OpenContainer> openContainers;
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;

@@ -695,8 +695,8 @@ void Combat::CombatManaFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 	if (damage.primary.value < 0) {
 		if (caster && target && caster->getPlayer() && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
 			damage.primary.value /= 2;
-			auto attacker_party = caster->getParty();
-			auto attacked_party = target->getParty();
+			auto attacker_party = caster->getPlayer()->getParty();
+			auto attacked_party = target->getPlayer()->getParty();
 			if (attacker_party == attacked_party) {
 				damage.primary.value /= 2;
 			}

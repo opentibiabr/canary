@@ -222,5 +222,5 @@ bool GameReload::reloadFamiliars() {
 bool GameReload::reloadVocations() {
 	const bool result = g_vocations().reload();
 	logReloadStatus("Vocations", result);
-	return result;
+	return result && reloadScripts();
 }

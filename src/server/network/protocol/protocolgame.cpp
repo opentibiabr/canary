@@ -4020,7 +4020,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	// Outfit description
 	playerDescriptionSize++;
 	msg.addString("Outfit", "ProtocolGame::sendCyclopediaCharacterInspection - Outfit");
-	if (const auto outfit = Outfits::getInstance().getOutfitByLookType(player->getDefaultOutfit().lookType, player)) {
+	if (const auto outfit = Outfits::getInstance().getOutfitByLookType(player, player->getDefaultOutfit().lookType)) {
 		msg.addString(outfit->name, "ProtocolGame::sendCyclopediaCharacterInspection - outfit->name");
 	} else {
 		msg.addString("unknown", "ProtocolGame::sendCyclopediaCharacterInspection - unknown");

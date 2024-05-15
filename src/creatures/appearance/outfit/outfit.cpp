@@ -78,7 +78,7 @@ bool Outfits::loadFromXml() {
 	return true;
 }
 
-std::shared_ptr<Outfit> Outfits::getOutfitByLookType(uint16_t lookType, const std::shared_ptr<const Player> &player) const {
+std::shared_ptr<Outfit> Outfits::getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit) const {
 	if (!player) {
 		g_logger().error("[{}] - Player not found", __FUNCTION__);
 		return nullptr;
@@ -88,6 +88,10 @@ std::shared_ptr<Outfit> Outfits::getOutfitByLookType(uint16_t lookType, const st
 	if (sex != PLAYERSEX_FEMALE && sex != PLAYERSEX_MALE) {
 		g_logger().error("[{}] - Sex invalid or player: {}", __FUNCTION__, player->getName());
 		return nullptr;
+	}
+
+	if (isOppositeOutfit) {
+		sex = (sex == PLAYERSEX_MALE) ? PLAYERSEX_FEMALE : PLAYERSEX_MALE;
 	}
 
 	auto it = std::ranges::find_if(outfits[sex], [&lookType](const auto &outfit) {

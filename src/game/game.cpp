@@ -8266,7 +8266,6 @@ void Game::kickPlayer(uint32_t playerId, bool displayEffect) {
 }
 
 void Game::playerFriendSystemAction(std::shared_ptr<Player> player, uint8_t type, uint8_t titleId) {
-	uint32_t playerGUID = player->getGUID();
 	if (type == 0x0E) {
 		player->title()->setCurrentTitle(titleId);
 		player->sendCyclopediaCharacterBaseInformation();

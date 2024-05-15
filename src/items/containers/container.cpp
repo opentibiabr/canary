@@ -383,7 +383,7 @@ bool Container::isInsideContainerWithId(const uint16_t id) {
 }
 
 bool Container::isAnyKindOfRewardChest() {
-	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER && getParent() && getParent()->getContainer() && getParent()->getContainer()->getID() == ITEM_REWARD_CHEST || isBrowseFieldAndHoldsRewardChest();
+	return getID() == ITEM_REWARD_CHEST || (getID() == ITEM_REWARD_CONTAINER && getParent() && getParent()->getContainer() && getParent()->getContainer()->getID() == ITEM_REWARD_CHEST) || isBrowseFieldAndHoldsRewardChest();
 }
 
 bool Container::isAnyKindOfRewardContainer() {

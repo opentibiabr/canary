@@ -3237,7 +3237,7 @@ std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1
 	}
 
 	std::shared_ptr<Item> newItem;
-	if (itemCount == -1) {
+	if (itemCount == 0) {
 		newItem = Item::CreateItem(itemId, 1);
 	} else {
 		newItem = Item::CreateItem(itemId, itemCount);

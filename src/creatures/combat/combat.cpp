@@ -596,7 +596,7 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 				damage.primary.value /= 2;
 				auto attacker_party = attackerPlayer->getParty();
 				auto attacked_party = targetPlayer->getParty();
-				if (attacker_party == attacked_party) {
+				if (attacker_party && attacker_party == attacked_party) {
 					damage.primary.value /= 2;
 				}
 			}
@@ -604,7 +604,7 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 				damage.secondary.value /= 2;
 				auto attacker_party = attackerPlayer->getParty();
 				auto attacked_party = targetPlayer->getParty();
-				if (attacker_party == attacked_party) {
+				if (attacker_party && attacker_party == attacked_party) {
 					damage.secondary.value /= 2;
 				}
 			}
@@ -697,7 +697,7 @@ void Combat::CombatManaFunc(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 			damage.primary.value /= 2;
 			auto attacker_party = caster->getPlayer()->getParty();
 			auto attacked_party = target->getPlayer()->getParty();
-			if (attacker_party == attacked_party) {
+			if (attacker_party && attacker_party == attacked_party) {
 				damage.primary.value /= 2;
 			}
 		}

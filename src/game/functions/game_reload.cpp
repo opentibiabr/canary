@@ -32,32 +32,32 @@ bool GameReload::init(Reload_t reloadTypes) {
 			return reloadConfig();
 		case Reload_t::RELOAD_TYPE_EVENTS:
 			return reloadEvents();
-		case Reload_t::RELOAD_TYPE_CORE:
-			return reloadCore();
-		case Reload_t::RELOAD_TYPE_IMBUEMENTS:
-			return reloadImbuements();
-		case Reload_t::RELOAD_TYPE_ITEMS:
-			return reloadItems();
 		case Reload_t::RELOAD_TYPE_MODULES:
 			return reloadModules();
-		case Reload_t::RELOAD_TYPE_MONSTERS:
-			return reloadMonsters();
-		case Reload_t::RELOAD_TYPE_MOUNTS:
-			return reloadMounts();
 		case Reload_t::RELOAD_TYPE_OUTFITS:
 			return reloadOutfits();
+		case Reload_t::RELOAD_TYPE_MOUNTS:
+			return reloadMounts();
+		case Reload_t::RELOAD_TYPE_FAMILIARS:
+			return reloadFamiliars();
+		case Reload_t::RELOAD_TYPE_IMBUEMENTS:
+			return reloadImbuements();
+		case Reload_t::RELOAD_TYPE_VOCATIONS:
+			return reloadVocations() && reloadItems() && reloadScripts();
+		case Reload_t::RELOAD_TYPE_ITEMS:
+			return reloadItems();
+		case Reload_t::RELOAD_TYPE_CORE:
+			return reloadCore();
+		case Reload_t::RELOAD_TYPE_GROUPS:
+			return reloadGroups();
+		case Reload_t::RELOAD_TYPE_SCRIPTS:
+			return reloadScripts();
+		case Reload_t::RELOAD_TYPE_MONSTERS:
+			return reloadMonsters();
 		case Reload_t::RELOAD_TYPE_NPCS:
 			return reloadNpcs();
 		case Reload_t::RELOAD_TYPE_RAIDS:
 			return reloadRaids();
-		case Reload_t::RELOAD_TYPE_SCRIPTS:
-			return reloadScripts();
-		case Reload_t::RELOAD_TYPE_GROUPS:
-			return reloadGroups();
-		case Reload_t::RELOAD_TYPE_VOCATIONS:
-			return reloadVocations();
-		case Reload_t::RELOAD_TYPE_FAMILIARS:
-			return reloadFamiliars();
 		default:
 			return false;
 	}
@@ -115,6 +115,48 @@ bool GameReload::reloadEvents() {
 	return result;
 }
 
+bool GameReload::reloadModules() {
+	const bool result = g_modules().reload();
+	logReloadStatus("Modules", result);
+	return result;
+}
+
+bool GameReload::reloadOutfits() {
+	const bool result = g_game().outfits.reload();
+	logReloadStatus("Outfits", result);
+	return result;
+}
+
+bool GameReload::reloadMounts() {
+	const bool result = g_game().mounts.reload();
+	logReloadStatus("Mounts", result);
+	return result;
+}
+
+bool GameReload::reloadFamiliars() {
+	const bool result = g_game().familiars.reload();
+	logReloadStatus("Familiars", result);
+	return result;
+}
+
+bool GameReload::reloadImbuements() {
+	const bool result = g_imbuements().reload();
+	logReloadStatus("Imbuements", result);
+	return result;
+}
+
+bool GameReload::reloadVocations() {
+	const bool result = g_vocations().reload();
+	logReloadStatus("Vocations", result);
+	return result;
+}
+
+bool GameReload::reloadItems() {
+	const bool result = Item::items.reload();
+	logReloadStatus("Items", result);
+	return result;
+}
+
 bool GameReload::reloadCore() {
 	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 	const bool coreLoaded = g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
@@ -130,62 +172,9 @@ bool GameReload::reloadCore() {
 	return false;
 }
 
-bool GameReload::reloadImbuements() {
-	const bool result = g_imbuements().reload();
-	logReloadStatus("Imbuements", result);
-	return result;
-}
-
-bool GameReload::reloadItems() {
-	const bool result = Item::items.reload();
-	logReloadStatus("Items", result);
-	return result;
-}
-
-bool GameReload::reloadModules() {
-	const bool result = g_modules().reload();
-	logReloadStatus("Modules", result);
-	return result;
-}
-
-bool GameReload::reloadMonsters() {
-	g_monsters().clear();
-	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
-
-	const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
-	const bool monsterScriptsLoaded = g_scripts().loadScripts(datapackFolder + "/monster", false, true);
-
-	if (scriptsLoaded && monsterScriptsLoaded) {
-		logReloadStatus("Monsters", true);
-		return true;
-	} else {
-		logReloadStatus("Monsters", false);
-		return false;
-	}
-}
-
-bool GameReload::reloadMounts() {
-	const bool result = g_game().mounts.reload();
-	logReloadStatus("Mounts", result);
-	return result;
-}
-
-bool GameReload::reloadOutfits() {
-	const bool result = g_game().outfits.reload();
-	logReloadStatus("Outfits", result);
-	return result;
-}
-
-bool GameReload::reloadNpcs() {
-	const bool result = g_npcs().reload();
-	logReloadStatus("NPCs", result);
-	return result;
-}
-
-bool GameReload::reloadRaids() {
-	const bool result = g_game().raids.reload() && g_game().raids.startup();
-	logReloadStatus("Raids", result);
+bool GameReload::reloadGroups() {
+	const bool result = g_game().groups.reload();
+	logReloadStatus("Groups", result);
 	return result;
 }
 
@@ -207,20 +196,31 @@ bool GameReload::reloadScripts() {
 	return true;
 }
 
-bool GameReload::reloadGroups() {
-	const bool result = g_game().groups.reload();
-	logReloadStatus("Groups", result);
+bool GameReload::reloadMonsters() {
+	g_monsters().clear();
+	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+
+	const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
+	const bool monsterScriptsLoaded = g_scripts().loadScripts(datapackFolder + "/monster", false, true);
+
+	if (scriptsLoaded && monsterScriptsLoaded) {
+		logReloadStatus("Monsters", true);
+		return true;
+	} else {
+		logReloadStatus("Monsters", false);
+		return false;
+	}
+}
+
+bool GameReload::reloadNpcs() {
+	const bool result = g_npcs().reload();
+	logReloadStatus("NPCs", result);
 	return result;
 }
 
-bool GameReload::reloadFamiliars() {
-	const bool result = g_game().familiars.reload();
-	logReloadStatus("Familiars", result);
+bool GameReload::reloadRaids() {
+	const bool result = g_game().raids.reload() && g_game().raids.startup();
+	logReloadStatus("Raids", result);
 	return result;
-}
-
-bool GameReload::reloadVocations() {
-	const bool result = g_vocations().reload();
-	logReloadStatus("Vocations", result);
-	return result && reloadScripts();
 }

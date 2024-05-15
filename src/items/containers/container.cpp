@@ -1029,12 +1029,12 @@ std::pair<uint32_t, uint32_t> Container::getObjectCategoryFlags(const std::share
 	return { lootFlags, obtainFlags };
 }
 
-uint16_t Container::getAmmoCount(const std::shared_ptr<Player> &player) const {
-	uint16_t ammoTotal = 0;
+uint32_t Container::getAmmoAmount(const std::shared_ptr<Player> &player) const {
+	uint32_t ammoTotal = 0;
 	if (isQuiver()) {
 		for (std::shared_ptr<Item> listItem : getItemList()) {
 			if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
-				ammoTotal += listItem->getItemCount();
+				ammoTotal += listItem->getItemAmount();
 			}
 		}
 	}

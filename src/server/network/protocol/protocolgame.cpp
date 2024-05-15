@@ -355,12 +355,12 @@ void ProtocolGame::AddItem(NetworkMessage &msg, std::shared_ptr<Item> item) {
 				break;
 			}
 			case ContainerSpecial_t::ContentCounter: {
-				uint16_t ammoTotal = container->getAmmoCount(player);
+				auto ammoTotal = container->getAmmoAmount(player);
 				msg.add<uint32_t>(ammoTotal);
 				break;
 			}
 			case ContainerSpecial_t::QuiverLoot: {
-				uint16_t ammoTotal = container->getAmmoCount(player);
+				auto ammoTotal = container->getAmmoAmount(player);
 				auto [lootFlags, obtainFlags] = container->getObjectCategoryFlags(player);
 				msg.add<uint32_t>(lootFlags);
 				msg.add<uint32_t>(ammoTotal);

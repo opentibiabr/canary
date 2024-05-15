@@ -182,7 +182,7 @@ public:
 
 	ContainerSpecial_t getSpecialCategory(const std::shared_ptr<Player> &player);
 	std::pair<uint32_t, uint32_t> getObjectCategoryFlags(const std::shared_ptr<Player> &player) const;
-	uint16_t getAmmoCount(const std::shared_ptr<Player> &player) const;
+	uint32_t getAmmoAmount(const std::shared_ptr<Player> &player) const;
 
 protected:
 	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol);

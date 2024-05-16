@@ -416,7 +416,7 @@ void Monster::onCreatureFound(std::shared_ptr<Creature> creature, bool pushFront
 }
 
 void Monster::onCreatureEnter(std::shared_ptr<Creature> creature) {
-	onCreatureFound(creature, true);
+	onCreatureFound(std::move(creature), true);
 }
 
 bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
@@ -732,7 +732,7 @@ void Monster::updateIdleStatus() {
 				isWalkingBack = true;
 			}
 		} else if (const auto &master = getMaster()) {
-			if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != FACTION_DEFAULT) {
+			if (((!isSummon() && totalPlayersOnScreen == 0) || (isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0)) && getFaction() != FACTION_DEFAULT) {
 				idle = true;
 			}
 		}
@@ -869,7 +869,7 @@ void Monster::doAttacking(uint32_t interval) {
 	for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
 		bool inRange = false;
 
-		if (spellBlock.spell == nullptr || spellBlock.isMelee && isFleeing()) {
+		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
 			continue;
 		}
 

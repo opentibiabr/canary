@@ -194,11 +194,7 @@ int GameFunctions::luaGameloadMapChunk(lua_State* L) {
 int GameFunctions::luaGameGetExperienceForLevel(lua_State* L) {
 	// Game.getExperienceForLevel(level)
 	const uint32_t level = getNumber<uint32_t>(L, 1);
-	if (level == 0) {
-		lua_pushnumber(L, 0);
-	} else {
-		lua_pushnumber(L, Player::getExpForLevel(level));
-	}
+	lua_pushnumber(L, level > 0 ? Player::getExpForLevel(level) : 0);
 	return 1;
 }
 

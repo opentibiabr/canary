@@ -191,6 +191,17 @@ int GameFunctions::luaGameloadMapChunk(lua_State* L) {
 	return 0;
 }
 
+int GameFunctions::luaGameGetExperienceForLevel(lua_State* L) {
+	// Game.getExperienceForLevel(level)
+	const uint32_t level = getNumber<uint32_t>(L, 1);
+	if (level == 0) {
+		lua_pushnumber(L, 0);
+	} else {
+		lua_pushnumber(L, Player::getExpForLevel(level));
+	}
+	return 1;
+}
+
 int GameFunctions::luaGameGetMonsterCount(lua_State* L) {
 	// Game.getMonsterCount()
 	lua_pushnumber(L, g_game().getMonstersOnline());

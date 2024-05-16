@@ -227,7 +227,7 @@ public:
 	void addList() override;
 	void removePlayer(bool displayEffect, bool forced = true);
 
-	static uint64_t getExpForLevel(uint64_t lv) {
+	static uint64_t getExpForLevel(const uint64_t lv) {
 		return (((lv - 6ULL) * lv + 17ULL) * lv - 12ULL) / 6ULL * 100ULL;
 	}
 

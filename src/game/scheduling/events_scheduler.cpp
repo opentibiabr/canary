@@ -27,7 +27,6 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
 
 	// Keep track of loaded scripts to check for duplicates
-	int count = 0;
 	phmap::flat_hash_set<std::string_view> loadedScripts;
 	std::map<std::string, EventRates> eventsOnSameDay;
 	for (const auto &eventNode : doc.child("events").children()) {

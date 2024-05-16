@@ -327,7 +327,7 @@ void CanaryServer::loadModules() {
 	// If "USE_ANY_DATAPACK_FOLDER" is set to true then you can choose any datapack folder for your server
 	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER, __FUNCTION__);
 	auto datapackName = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	if (!useAnyDatapack && (datapackName != "data-canary" && datapackName != "data-otservbr-global" || datapackName != "data-otservbr-global" && datapackName != "data-canary")) {
+	if (!useAnyDatapack && datapackName != "data-canary" && datapackName != "data-otservbr-global") {
 		throw FailedToInitializeCanary(fmt::format(
 			"The datapack folder name '{}' is wrong, please select valid "
 			"datapack name 'data-canary' or 'data-otservbr-global "

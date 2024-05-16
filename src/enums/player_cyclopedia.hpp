@@ -9,11 +9,30 @@
 
 #pragma once
 
-struct HighscoreCategory {
-	HighscoreCategory(std::string name, uint8_t id) :
-		m_name(std::move(name)),
-		m_id(id) { }
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <cstdint>
+#endif
 
-	std::string m_name;
-	uint8_t m_id;
+enum CyclopediaBadge_t : uint8_t {
+	ACCOUNT_AGE = 1,
+	LOYALTY,
+	ACCOUNT_ALL_LEVEL,
+	ACCOUNT_ALL_VOCATIONS,
+	TOURNAMENT_PARTICIPATION,
+	TOURNAMENT_POINTS,
+};
+
+enum CyclopediaTitle_t : uint8_t {
+	NOTHING = 0,
+	GOLD,
+	MOUNTS,
+	OUTFITS,
+	LEVEL,
+	HIGHSCORES,
+	BESTIARY,
+	BOSSTIARY,
+	DAILY_REWARD,
+	TASK,
+	MAP,
+	OTHERS,
 };

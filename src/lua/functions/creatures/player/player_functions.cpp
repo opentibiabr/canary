@@ -16,6 +16,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
@@ -1603,7 +1604,7 @@ int PlayerFunctions::luaPlayerGetGroup(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetGroup(lua_State* L) {
 	// player:setGroup(group)
-	Group* group = getUserdata<Group>(L, 2);
+	std::shared_ptr<Group> group = getUserdataShared<Group>(L, 2);
 	if (!group) {
 		pushBoolean(L, false);
 		return 1;
@@ -4290,6 +4291,60 @@ int PlayerFunctions::luaPlayerAddBadge(lua_State* L) {
 	}
 
 	player->badge()->add(getNumber<uint8_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddTitle(lua_State* L) {
+	// player:addTitle(id)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	player->title()->manage(true, getNumber<uint8_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetTitles(lua_State* L) {
+	// player:getTitles()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto playerTitles = player->title()->getUnlockedTitles();
+	lua_createtable(L, static_cast<int>(playerTitles.size()), 0);
+
+	int index = 0;
+	for (const auto &title : playerTitles) {
+		lua_createtable(L, 0, 3);
+		setField(L, "id", title.first.m_id);
+		setField(L, "name", player->title()->getNameBySex(player->getSex(), title.first.m_maleName, title.first.m_femaleName));
+		setField(L, "description", title.first.m_description);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetCurrentTitle(lua_State* L) {
+	// player:setCurrentTitle(id)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	const auto &title = g_game().getTitleById(getNumber<uint8_t>(L, 2, 0));
+	if (title.m_id == 0) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_VARIANT_NOT_FOUND));
+		return 1;
+	}
+
+	player->title()->setCurrentTitle(title.m_id);
 	pushBoolean(L, true);
 	return 1;
 }

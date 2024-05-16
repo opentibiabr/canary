@@ -28,6 +28,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -2058,9 +2059,8 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, std::s
 void ProtocolGame::parseFriendSystemAction(NetworkMessage &msg) {
 	uint8_t state = msg.getByte();
 	if (state == 0x0E) {
-		// todo title system pr
-		// uint8_t titleId = msg.getByte();
-		// g_game().playerFriendSystemAction(player, state, titleId);
+		uint8_t titleId = msg.getByte();
+		g_game().playerFriendSystemAction(player, state, titleId);
 	}
 }
 
@@ -2141,8 +2141,9 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0x00); // All data available
 
 	msg.addByte(1); // Worlds
-	msg.addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // First World
-	msg.addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // Selected World
+	auto serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__);
+	msg.addString(serverName, "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // First World
+	msg.addString(serverName, "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // Selected World
 
 	msg.addByte(0); // Game World Category: 0xFF(-1) - Selected World
 	msg.addByte(0); // BattlEye World Type
@@ -2190,9 +2191,9 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	for (const HighscoreCharacter &character : characters) {
 		msg.add<uint32_t>(character.rank); // Rank
 		msg.addString(character.name, "ProtocolGame::sendHighscores - character.name"); // Character Name
-		msg.addString("", "ProtocolGame::sendHighscores - empty"); // Probably Character Title(not visible in window)
+		msg.addString(character.loyaltyTitle, "ProtocolGame::sendHighscores - character.loyaltyTitle"); // Character Loyalty Title
 		msg.addByte(character.vocation); // Vocation Id
-		msg.addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // World
+		msg.addString(serverName, "ProtocolGame::sendHighscores - g_configManager().getString(SERVER_NAME)"); // World
 		msg.add<uint16_t>(character.level); // Level
 		msg.addByte((player->getGUID() == character.id)); // Player Indicator Boolean
 		msg.add<uint64_t>(character.points); // Points
@@ -2246,7 +2247,7 @@ void ProtocolGame::parseBestiarysendRaces() {
 	for (uint8_t i = BESTY_RACE_FIRST; i <= BESTY_RACE_LAST; i++) {
 		std::string BestClass = "";
 		uint16_t count = 0;
-		for (auto rit : mtype_list) {
+		for (const auto &rit : mtype_list) {
 			const auto mtype = g_monsters().getMonsterType(rit.second);
 			if (!mtype) {
 				return;
@@ -2322,7 +2323,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 	std::vector<LootBlock> lootList = mtype->info.lootItems;
 	newmsg.addByte(lootList.size());
-	for (LootBlock loot : lootList) {
+	for (const LootBlock &loot : lootList) {
 		int8_t difficult = g_iobestiary().calculateDifficult(loot.chance);
 		bool shouldAddItem = false;
 
@@ -2634,7 +2635,7 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 
 	auto party = player->getParty();
 	if (teamAssemble->partyBool && party) {
-		for (std::shared_ptr<Player> member : party->getMembers()) {
+		for (const std::shared_ptr<Player> &member : party->getMembers()) {
 			if (member && member->getGUID() != player->getGUID()) {
 				teamAssemble->membersMap.insert({ member->getGUID(), 3 });
 			}
@@ -2906,7 +2907,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		std::string raceName = msg.getString();
 		race = g_iobestiary().findRaceByName(raceName);
 
-		if (race.size() == 0) {
+		if (race.empty()) {
 			g_logger().warn("[ProtocolGame::parseBestiarysendCreature] - "
 							"Race was not found: {}, search: {}",
 							raceName, search);
@@ -2920,7 +2921,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 	newmsg.add<uint16_t>(race.size());
 	std::map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
 
-	for (auto it_ : race) {
+	for (const auto &it_ : race) {
 		uint16_t raceid_ = it_.first;
 		newmsg.add<uint16_t>(raceid_);
 
@@ -3380,9 +3381,8 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation() {
 	msg.add<uint16_t>(player->getLevel());
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
-	msg.addByte(0x00); // Store summary & Character titles
-	msg.addString("", "ProtocolGame::sendCyclopediaCharacterBaseInformation - empty"); // character title
-	// msg.addString(player->title()->getCurrentTitleName(), "ProtocolGame::sendCyclopediaCharacterBaseInformation - player->title()->getCurrentTitleName()"); // character title
+	msg.addByte(0x01); // Store summary & Character titles
+	msg.addString(player->title()->getCurrentTitleName(), "ProtocolGame::sendCyclopediaCharacterBaseInformation - player->title()->getCurrentTitleName()"); // character title
 	writeToOutputBuffer(msg);
 }
 
@@ -3699,7 +3699,7 @@ void ProtocolGame::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked,
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterItemSummary() {
+void ProtocolGame::sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -3709,11 +3709,104 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
 
-	msg.add<uint16_t>(0); // inventoryItems.size()
-	msg.add<uint16_t>(0); // storeInboxItems.size()
-	msg.add<uint16_t>(0); // supplyStashItems.size()
-	msg.add<uint16_t>(0); // depotBoxItems.size()
-	msg.add<uint16_t>(0); // inboxItems.size()
+	uint16_t inventoryItemsCount = 0;
+	const auto startInventory = msg.getBufferPosition();
+	msg.skipBytes(2);
+
+	for (const auto &inventoryItems_it : inventoryItems) {
+		for (const auto &[itemTier, itemCount] : inventoryItems_it.second) {
+			const ItemType &it = Item::items[inventoryItems_it.first];
+			msg.add<uint16_t>(inventoryItems_it.first); // Item ID
+			if (it.upgradeClassification > 0) {
+				msg.addByte(itemTier);
+			}
+			msg.add<uint32_t>(itemCount);
+
+			++inventoryItemsCount;
+		}
+	}
+
+	const auto endInventory = msg.getBufferPosition();
+
+	msg.setBufferPosition(startInventory);
+	msg.add<uint16_t>(inventoryItemsCount);
+
+	msg.setBufferPosition(endInventory);
+
+	uint16_t storeInboxItemsCount = 0;
+	const auto startStoreInbox = msg.getBufferPosition();
+	msg.skipBytes(2);
+
+	for (const auto &storeInboxItems_it : storeInboxItems) {
+		for (const auto &[itemTier, itemCount] : storeInboxItems_it.second) {
+			const ItemType &it = Item::items[storeInboxItems_it.first];
+			msg.add<uint16_t>(storeInboxItems_it.first); // Item ID
+			if (it.upgradeClassification > 0) {
+				msg.addByte(itemTier);
+			}
+			msg.add<uint32_t>(itemCount);
+
+			++storeInboxItemsCount;
+		}
+	}
+
+	const auto endStoreInbox = msg.getBufferPosition();
+
+	msg.setBufferPosition(startStoreInbox);
+	msg.add<uint16_t>(storeInboxItemsCount);
+
+	msg.setBufferPosition(endStoreInbox);
+
+	msg.add<uint16_t>(supplyStashItems.size());
+
+	for (const auto &[itemId, itemCount] : supplyStashItems) {
+		msg.add<uint16_t>(itemId);
+		msg.add<uint32_t>(itemCount);
+	}
+
+	uint16_t depotBoxItemsCount = 0;
+	const auto startDepotBox = msg.getBufferPosition();
+	msg.skipBytes(2);
+
+	for (const auto &depotBoxItems_it : depotBoxItems) {
+		for (const auto &[itemTier, itemCount] : depotBoxItems_it.second) {
+			const ItemType &it = Item::items[depotBoxItems_it.first];
+			msg.add<uint16_t>(depotBoxItems_it.first); // Item ID
+			if (it.upgradeClassification > 0) {
+				msg.addByte(itemTier);
+			}
+			msg.add<uint32_t>(itemCount);
+
+			++depotBoxItemsCount;
+		}
+	}
+
+	const auto endDepotBox = msg.getBufferPosition();
+
+	msg.setBufferPosition(startDepotBox);
+	msg.add<uint16_t>(depotBoxItemsCount);
+
+	msg.setBufferPosition(endDepotBox);
+
+	uint16_t inboxItemsCount = 0;
+	const auto startInbox = msg.getBufferPosition();
+	msg.skipBytes(2);
+
+	for (const auto &inboxItems_it : inboxItems) {
+		for (const auto &[itemTier, itemCount] : inboxItems_it.second) {
+			const ItemType &it = Item::items[inboxItems_it.first];
+			msg.add<uint16_t>(inboxItems_it.first); // Item ID
+			if (it.upgradeClassification > 0) {
+				msg.addByte(itemTier);
+			}
+			msg.add<uint32_t>(itemCount);
+
+			++inboxItemsCount;
+		}
+	}
+
+	msg.setBufferPosition(startInbox);
+	msg.add<uint16_t>(inboxItemsCount);
 
 	writeToOutputBuffer(msg);
 }
@@ -3796,14 +3889,14 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	auto startFamiliars = msg.getBufferPosition();
 	msg.skipBytes(2);
 	const auto familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
-	for (const Familiar &familiar : familiars) {
-		const std::string type = familiar.type;
+	for (const auto &familiar : familiars) {
+		const std::string type = familiar->type;
 		if (!player->getFamiliar(familiar)) {
 			continue;
 		}
 		++familiarsSize;
-		msg.add<uint16_t>(familiar.lookType);
-		msg.addString(familiar.name, "ProtocolGame::sendCyclopediaCharacterOutfitsMounts - familiar.name");
+		msg.add<uint16_t>(familiar->lookType);
+		msg.addString(familiar->name, "ProtocolGame::sendCyclopediaCharacterOutfitsMounts - familiar.name");
 		if (type == "quest") {
 			msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_QUEST);
 		} else {
@@ -3910,6 +4003,13 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	msg.addString("Vocation", "ProtocolGame::sendCyclopediaCharacterInspection - Vocation");
 	msg.addString(player->getVocation()->getVocName(), "ProtocolGame::sendCyclopediaCharacterInspection - player->getVocation()->getVocName()");
 
+	// Player title
+	if (player->title()->getCurrentTitle() != 0) {
+		playerDescriptionSize++;
+		msg.addString("Title", "ProtocolGame::sendCyclopediaCharacterInspection - Title");
+		msg.addString(player->title()->getCurrentTitleName(), "ProtocolGame::sendCyclopediaCharacterInspection - player->title()->getCurrentTitleName()");
+	}
+
 	// Loyalty title
 	if (!player->getLoyaltyTitle().empty()) {
 		playerDescriptionSize++;
@@ -3951,7 +4051,6 @@ void ProtocolGame::sendCyclopediaCharacterBadges() {
 	msg.addByte(player->isPremium() ? 0x01 : 0x00); // IsPremium (GOD has always 'Premium')
 	// Character loyalty title
 	msg.addString(player->getLoyaltyTitle(), "ProtocolGame::sendCyclopediaCharacterBadges - player->getLoyaltyTitle()");
-	// msg.addByte(0x01); // Enable badges
 
 	uint8_t badgesSize = 0;
 	auto badgesSizePosition = msg.getBufferPosition();
@@ -3975,12 +4074,26 @@ void ProtocolGame::sendCyclopediaCharacterTitles() {
 		return;
 	}
 
+	auto titles = g_game().getTitles();
+
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_TITLES);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
-	msg.addByte(0x00);
-	msg.addByte(0x00);
+	msg.addByte(player->title()->getCurrentTitle());
+	msg.addByte(static_cast<uint8_t>(titles.size()));
+
+	std::string messageTitleName = "ProtocolGame::sendCyclopediaCharacterTitles - title.name";
+	std::string messageTitleDesc = "ProtocolGame::sendCyclopediaCharacterTitles - title.description";
+	for (const auto &title : titles) {
+		msg.addByte(title.m_id);
+		auto titleName = player->title()->getNameBySex(player->getSex(), title.m_maleName, title.m_femaleName);
+		msg.addString(titleName, messageTitleName);
+		msg.addString(title.m_description, messageTitleDesc);
+		msg.addByte(title.m_permanent ? 0x01 : 0x00);
+		auto isUnlocked = player->title()->isTitleUnlocked(title.m_id);
+		msg.addByte(isUnlocked ? 0x01 : 0x00);
+	}
 
 	writeToOutputBuffer(msg);
 }
@@ -4038,7 +4151,7 @@ void ProtocolGame::sendBasicData() {
 	// Send total size of spells
 	msg.add<uint16_t>(validSpells.size());
 	// Send each spell valid ids
-	for (auto spell : validSpells) {
+	for (const auto &spell : validSpells) {
 		if (!spell) {
 			continue;
 		}
@@ -4375,7 +4488,7 @@ void ProtocolGame::sendContainer(uint8_t cid, std::shared_ptr<Container> contain
 		msg.addByte(0x00);
 	} else if (container->getID() == ITEM_STORE_INBOX && !itemsStoreInboxToSend.empty()) {
 		msg.addByte(std::min<uint32_t>(maxItemsToSend, containerSize));
-		for (const auto item : itemsStoreInboxToSend) {
+		for (const auto &item : itemsStoreInboxToSend) {
 			AddItem(msg, item);
 		}
 	} else {
@@ -4503,7 +4616,7 @@ void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
 	msg.add<uint16_t>(itemsToSend);
 
 	uint16_t i = 0;
-	for (ShopBlock shopBlock : shoplist) {
+	for (const ShopBlock &shopBlock : shoplist) {
 		if (++i > itemsToSend) {
 			break;
 		}
@@ -4586,7 +4699,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	msg.addByte(0xEE);
 	msg.addByte(0x00);
 	msg.add<uint64_t>(player->getBankBalance());
-	uint16_t currency = player->getShopOwner() ? player->getShopOwner()->getCurrency() : ITEM_GOLD_COIN;
+	uint16_t currency = player->getShopOwner() ? player->getShopOwner()->getCurrency() : static_cast<uint16_t>(ITEM_GOLD_COIN);
 	msg.addByte(0xEE);
 	if (currency == ITEM_GOLD_COIN) {
 		msg.addByte(0x01);
@@ -4611,7 +4724,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	auto msgPosition = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	for (ShopBlock shopBlock : shopVector) {
+	for (const ShopBlock &shopBlock : shopVector) {
 		if (shopBlock.itemSellPrice == 0) {
 			continue;
 		}
@@ -5604,7 +5717,12 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 	}
 
 	if (!oldProtocol) {
-		msg.add<uint16_t>(0x00); // Augment
+		std::string augmentsDescription = it.parseAugmentDescription(true);
+		if (!augmentsDescription.empty()) {
+			msg.addString(augmentsDescription, "ProtocolGame::sendMarketDetail - augmentsDescription");
+		} else {
+			msg.add<uint16_t>(0x00); // no augments
+		}
 	}
 
 	if (it.imbuementSlot > 0) {
@@ -5741,7 +5859,7 @@ void ProtocolGame::sendTradeItemRequest(const std::string &traderName, std::shar
 			std::shared_ptr<Container> container = listContainer.front();
 			listContainer.pop_front();
 
-			for (std::shared_ptr<Item> containerItem : container->getItemList()) {
+			for (const std::shared_ptr<Item> &containerItem : container->getItemList()) {
 				std::shared_ptr<Container> tmpContainer = containerItem->getContainer();
 				if (tmpContainer) {
 					listContainer.push_back(tmpContainer);
@@ -5751,7 +5869,7 @@ void ProtocolGame::sendTradeItemRequest(const std::string &traderName, std::shar
 		}
 
 		msg.addByte(itemList.size());
-		for (std::shared_ptr<Item> listItem : itemList) {
+		for (const std::shared_ptr<Item> &listItem : itemList) {
 			AddItem(msg, listItem);
 		}
 	} else {
@@ -6692,14 +6810,14 @@ void ProtocolGame::sendOutfitWindow() {
 		}
 
 		std::vector<std::shared_ptr<Mount>> mounts;
-		for (const auto mount : g_game().mounts.getMounts()) {
+		for (const auto &mount : g_game().mounts.getMounts()) {
 			if (player->hasMount(mount)) {
 				mounts.push_back(mount);
 			}
 		}
 
 		msg.addByte(mounts.size());
-		for (const auto mount : mounts) {
+		for (const auto &mount : mounts) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendOutfitWindow - mount->name");
 		}
@@ -6801,7 +6919,7 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.skipBytes(2);
 
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (player->hasMount(mount)) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendOutfitWindow - mount->name");
@@ -6832,13 +6950,13 @@ void ProtocolGame::sendOutfitWindow() {
 
 	const auto familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
 
-	for (const Familiar &familiar : familiars) {
+	for (const auto &familiar : familiars) {
 		if (!player->getFamiliar(familiar)) {
 			continue;
 		}
 
-		msg.add<uint16_t>(familiar.lookType);
-		msg.addString(familiar.name, "ProtocolGame::sendOutfitWindow - familiar.name");
+		msg.add<uint16_t>(familiar->lookType);
+		msg.addString(familiar->name, "ProtocolGame::sendOutfitWindow - familiar.name");
 		msg.addByte(0x00);
 		if (++familiarSize == limitFamiliars) {
 			break;
@@ -6921,7 +7039,7 @@ void ProtocolGame::sendPodiumWindow(std::shared_ptr<Item> podium, const Position
 	msg.skipBytes(2);
 
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (player->hasMount(mount)) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendPodiumWindow - mount->name");
@@ -7314,7 +7432,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 	}
 
 	auto bubble = creature->getSpeechBubble();
-	msg.addByte(oldProtocol && bubble == SPEECHBUBBLE_HIRELING ? SPEECHBUBBLE_NONE : bubble);
+	msg.addByte(oldProtocol && bubble == SPEECHBUBBLE_HIRELING ? static_cast<uint8_t>(SPEECHBUBBLE_NONE) : bubble);
 	msg.addByte(0xFF); // MARK_UNMARKED
 	if (!oldProtocol) {
 		msg.addByte(0x00); // inspection type
@@ -7597,7 +7715,7 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> party
 	msg.addByte(static_cast<uint8_t>(party->priceType));
 
 	msg.addByte(static_cast<uint8_t>(party->membersData.size()));
-	for (const std::shared_ptr<PartyAnalyzer> analyzer : party->membersData) {
+	for (const std::shared_ptr<PartyAnalyzer> &analyzer : party->membersData) {
 		msg.add<uint32_t>(analyzer->id);
 		if (std::shared_ptr<Player> member = g_game().getPlayerByID(analyzer->id);
 			!member || !member->getParty() || member->getParty() != party) {
@@ -7616,7 +7734,7 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> party
 	msg.addByte(showNames ? 0x01 : 0x00);
 	if (showNames) {
 		msg.addByte(static_cast<uint8_t>(party->membersData.size()));
-		for (const std::shared_ptr<PartyAnalyzer> analyzer : party->membersData) {
+		for (const std::shared_ptr<PartyAnalyzer> &analyzer : party->membersData) {
 			msg.add<uint32_t>(analyzer->id);
 			msg.addString(analyzer->name, "ProtocolGame::updatePartyTrackerAnalyzer - analyzer->name");
 		}
@@ -8455,7 +8573,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
 	const auto mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
 	auto boostedBossRace = mTypeBoosted ? mTypeBoosted->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
-	auto isValidBoostedBoss = boostedBossId == 0 || boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS;
+	auto isValidBoostedBoss = boostedBossId == 0 || (boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS);
 	if (!isValidBoostedBoss) {
 		g_logger().error("[{}] The boosted boss '{}' has an invalid race", __FUNCTION__, boostedBossName);
 		return;
@@ -8463,7 +8581,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 
 	const auto mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
 	auto bossRaceSlotOne = mTypeSlotOne ? mTypeSlotOne->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
-	auto isValidBossSlotOne = bossIdSlotOne == 0 || bossRaceSlotOne >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotOne <= BosstiaryRarity_t::RARITY_NEMESIS;
+	auto isValidBossSlotOne = bossIdSlotOne == 0 || (bossRaceSlotOne >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotOne <= BosstiaryRarity_t::RARITY_NEMESIS);
 	if (!isValidBossSlotOne) {
 		g_logger().error("[{}] boss slot1 with race id '{}' has an invalid race", __FUNCTION__, bossIdSlotOne);
 		return;
@@ -8471,7 +8589,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 
 	const auto mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
 	auto bossRaceSlotTwo = mTypeSlotTwo ? mTypeSlotTwo->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
-	auto isValidBossSlotTwo = bossIdSlotTwo == 0 || bossRaceSlotTwo >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotTwo <= BosstiaryRarity_t::RARITY_NEMESIS;
+	auto isValidBossSlotTwo = bossIdSlotTwo == 0 || (bossRaceSlotTwo >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotTwo <= BosstiaryRarity_t::RARITY_NEMESIS);
 	if (!isValidBossSlotTwo) {
 		g_logger().error("[{}] boss slot1 with race id '{}' has an invalid race", __FUNCTION__, bossIdSlotTwo);
 		return;

@@ -17,6 +17,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -51,10 +52,11 @@ Player::Player(ProtocolGame_ptr p) :
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
+	m_playerTitle = std::make_unique<PlayerTitle>(*this);
 }
 
 Player::~Player() {
-	for (std::shared_ptr<Item> item : inventory) {
+	for (const std::shared_ptr<Item> &item : inventory) {
 		if (item) {
 			item->resetParent();
 			item->stopDecaying();
@@ -119,9 +121,10 @@ std::string Player::getDescription(int32_t lookDistance) {
 	std::ostringstream s;
 	std::string subjectPronoun = getSubjectPronoun();
 	capitalizeWords(subjectPronoun);
+	auto playerTitle = title()->getCurrentTitle() == 0 ? "" : (", " + title()->getCurrentTitleName());
 
 	if (lookDistance == -1) {
-		s << "yourself.";
+		s << "yourself" << playerTitle << ".";
 
 		if (group->access) {
 			s << " You are " << group->name << '.';
@@ -144,7 +147,7 @@ std::string Player::getDescription(int32_t lookDistance) {
 			s << " (Level " << level << ')';
 		}
 
-		s << ". " << subjectPronoun;
+		s << playerTitle << ". " << subjectPronoun;
 
 		if (group->access) {
 			s << " " << getSubjectVerb() << " " << group->name << '.';
@@ -1332,7 +1335,7 @@ void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 std::vector<std::shared_ptr<Item>> Player::getRewardsFromContainer(std::shared_ptr<Container> container) const {
 	std::vector<std::shared_ptr<Item>> rewardItemsVector;
 	if (container) {
-		for (auto item : container->getItems(false)) {
+		for (const auto &item : container->getItems(false)) {
 			if (item->getID() == ITEM_REWARD_CONTAINER) {
 				auto items = getRewardsFromContainer(item->getContainer());
 				rewardItemsVector.insert(rewardItemsVector.end(), items.begin(), items.end());
@@ -1751,7 +1754,7 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 			offlineTime = 0;
 		}
 
-		for (std::shared_ptr<Condition> condition : getMuteConditions()) {
+		for (const std::shared_ptr<Condition> &condition : getMuteConditions()) {
 			condition->setTicks(condition->getTicks() - (offlineTime * 1000));
 			if (condition->getTicks() <= 0) {
 				removeCondition(condition);
@@ -2229,7 +2232,7 @@ uint32_t Player::isMuted() const {
 	}
 
 	int32_t muteTicks = 0;
-	for (std::shared_ptr<Condition> condition : conditions) {
+	for (const std::shared_ptr<Condition> &condition : conditions) {
 		if (condition->getType() == CONDITION_MUTED && condition->getTicks() > muteTicks) {
 			muteTicks = condition->getTicks();
 		}
@@ -2398,7 +2401,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		if (!spectators.empty()) {
 			message.type = MESSAGE_EXPERIENCE_OTHERS;
 			message.text = getName() + " gained " + expString;
-			for (std::shared_ptr<Creature> spectator : spectators) {
+			for (const std::shared_ptr<Creature> &spectator : spectators) {
 				spectator->getPlayer()->sendTextMessage(message);
 			}
 		}
@@ -2491,7 +2494,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		if (!spectators.empty()) {
 			message.type = MESSAGE_EXPERIENCE_OTHERS;
 			message.text = getName() + " lost " + expString;
-			for (std::shared_ptr<Creature> spectator : spectators) {
+			for (const std::shared_ptr<Creature> &spectator : spectators) {
 				spectator->getPlayer()->sendTextMessage(message);
 			}
 		}
@@ -3550,7 +3553,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 					n--;
 				}
 
-				for (std::shared_ptr<Item> tmpContainerItem : tmpContainer->getItemList()) {
+				for (const std::shared_ptr<Item> &tmpContainerItem : tmpContainer->getItemList()) {
 					if (std::shared_ptr<Container> subContainer = tmpContainerItem->getContainer()) {
 						containers.push_back(subContainer);
 					}
@@ -3561,7 +3564,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 
 			uint32_t n = 0;
 
-			for (std::shared_ptr<Item> tmpItem : tmpContainer->getItemList()) {
+			for (const std::shared_ptr<Item> &tmpItem : tmpContainer->getItemList()) {
 				if (tmpItem == tradeItem) {
 					continue;
 				}
@@ -3769,7 +3772,7 @@ uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) con
 
 void Player::stashContainer(StashContainerList itemDict) {
 	StashItemList stashItemDict; // ItemID - Count
-	for (auto it_dict : itemDict) {
+	for (const auto &it_dict : itemDict) {
 		stashItemDict[(it_dict.first)->getID()] = it_dict.second;
 	}
 
@@ -3789,7 +3792,7 @@ void Player::stashContainer(StashContainerList itemDict) {
 	uint32_t totalStowed = 0;
 	std::ostringstream retString;
 	uint16_t refreshDepotSearchOnItem = 0;
-	for (auto stashIterator : itemDict) {
+	for (const auto &stashIterator : itemDict) {
 		uint16_t iteratorCID = (stashIterator.first)->getID();
 		if (g_game().internalRemoveItem(stashIterator.first, stashIterator.second) == RETURNVALUE_NOERROR) {
 			addItemOnStash(iteratorCID, stashIterator.second);
@@ -3875,7 +3878,7 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 bool Player::hasItemCountById(uint16_t itemId, uint32_t itemAmount, bool checkStash) const {
 	uint32_t newCount = 0;
 	// Check items from inventory
-	for (const auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		if (!item || item->getID() != itemId) {
 			continue;
 		}
@@ -3906,7 +3909,7 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 
 	uint32_t amountToRemove = itemAmount;
 	// Check items from inventory
-	for (auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		if (!item || item->getID() != itemId) {
 			continue;
 		}
@@ -3930,7 +3933,7 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 	return false;
 }
 
-ItemsTierCountList Player::getInventoryItemsId() const {
+ItemsTierCountList Player::getInventoryItemsId(bool ignoreStoreInbox /* false */) const {
 	ItemsTierCountList itemMap;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		std::shared_ptr<Item> item = inventory[i];
@@ -3938,8 +3941,14 @@ ItemsTierCountList Player::getInventoryItemsId() const {
 			continue;
 		}
 
-		(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
-		if (std::shared_ptr<Container> container = item->getContainer()) {
+		const bool isStoreInbox = item->getID() == ITEM_STORE_INBOX;
+
+		if (!isStoreInbox) {
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+
+		const auto &container = item->getContainer();
+		if (container && (!isStoreInbox || !ignoreStoreInbox)) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 				auto containerItem = *it;
 				(itemMap[containerItem->getID()])[containerItem->getTier()] += Item::countByType(containerItem, -1);
@@ -4038,6 +4047,48 @@ double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resista
 	return (100 - currentTotal) / 100.0 * resistance + currentTotal;
 }
 
+ItemsTierCountList Player::getStoreInboxItemsId() const {
+	ItemsTierCountList itemMap;
+	const auto &container = getStoreInbox();
+	if (container) {
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			std::shared_ptr<Item> item = *it;
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+	}
+
+	return itemMap;
+}
+
+ItemsTierCountList Player::getDepotChestItemsId() const {
+	ItemsTierCountList itemMap;
+
+	for (const auto &[index, depot] : depotChests) {
+		const std::shared_ptr<Container> &container = depot->getContainer();
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			std::shared_ptr<Item> item = *it;
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+	}
+
+	return itemMap;
+}
+
+ItemsTierCountList Player::getDepotInboxItemsId() const {
+	ItemsTierCountList itemMap;
+
+	const std::shared_ptr<Inbox> &inbox = getInbox();
+	const std::shared_ptr<Container> &container = inbox->getContainer();
+	if (container) {
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			const auto &item = *it;
+			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+		}
+	}
+
+	return itemMap;
+}
+
 std::vector<std::shared_ptr<Item>> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/, bool ignoreItemWithTier /* false*/) const {
 	std::vector<std::shared_ptr<Item>> itemVector;
 	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
@@ -4062,6 +4113,35 @@ std::vector<std::shared_ptr<Item>> Player::getAllInventoryItems(bool ignoreEquip
 	}
 
 	return itemVector;
+}
+
+std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItemsByType(Augment_t augmentType) const {
+	std::vector<std::shared_ptr<Item>> equippedAugmentItemsByType;
+	const auto equippedAugmentItems = getEquippedItems();
+
+	for (const auto &item : equippedAugmentItems) {
+		for (auto &augment : item->getAugments()) {
+			if (augment->type == augmentType) {
+				equippedAugmentItemsByType.push_back(item);
+			}
+		}
+	}
+
+	return equippedAugmentItemsByType;
+}
+
+std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItems() const {
+	std::vector<std::shared_ptr<Item>> equippedAugmentItems;
+	const auto equippedItems = getEquippedItems();
+
+	for (const auto &item : equippedItems) {
+		if (item->getAugments().size() < 1) {
+			continue;
+		}
+		equippedAugmentItems.push_back(item);
+	}
+
+	return equippedAugmentItems;
 }
 
 std::vector<std::shared_ptr<Item>> Player::getEquippedItems() const {
@@ -4091,14 +4171,14 @@ std::vector<std::shared_ptr<Item>> Player::getEquippedItems() const {
 }
 
 std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const {
-	for (const auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		countMap[static_cast<uint32_t>(item->getID())] += Item::countByType(item, -1);
 	}
 	return countMap;
 }
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
-	for (const auto item : getAllInventoryItems(false, true)) {
+	for (const auto &item : getAllInventoryItems(false, true)) {
 		countMap[item->getID()] += item->getItemCount();
 	}
 
@@ -4106,7 +4186,7 @@ std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t
 }
 
 void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t> &countMap) const {
-	for (const auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		uint16_t itemId = item->getID();
 		if (Item::items[itemId].isFluidContainer()) {
 			countMap[static_cast<uint32_t>(itemId) | (item->getAttribute<uint32_t>(ItemAttribute_t::FLUIDTYPE)) << 16] += item->getItemCount();
@@ -4183,7 +4263,7 @@ void Player::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<C
 				}
 			}
 
-			for (std::shared_ptr<Container> container : containers) {
+			for (const std::shared_ptr<Container> &container : containers) {
 				autoCloseContainers(container);
 			}
 		}
@@ -4490,7 +4570,7 @@ void Player::updateItemsLight(bool internal /*=false*/) {
 			LightInfo curLight = item->getLightInfo();
 
 			if (curLight.level > maxLight.level) {
-				maxLight = std::move(curLight);
+				maxLight = curLight;
 			}
 		}
 	}
@@ -5021,7 +5101,7 @@ bool Player::canFamiliar(uint16_t lookType) const {
 		return true;
 	}
 
-	const Familiar* familiar = Familiars::getInstance().getFamiliarByLookType(getVocationId(), lookType);
+	const auto &familiar = Familiars::getInstance().getFamiliarByLookType(getVocationId(), lookType);
 	if (!familiar) {
 		return false;
 	}
@@ -5062,24 +5142,24 @@ bool Player::removeFamiliar(uint16_t lookType) {
 	return false;
 }
 
-bool Player::getFamiliar(const Familiar &familiar) const {
+bool Player::getFamiliar(const std::shared_ptr<Familiar> &familiar) const {
 	if (group->access) {
 		return true;
 	}
 
-	if (familiar.premium && !isPremium()) {
+	if (familiar->premium && !isPremium()) {
 		return false;
 	}
 
 	for (const FamiliarEntry &familiarEntry : familiars) {
-		if (familiarEntry.lookType != familiar.lookType) {
+		if (familiarEntry.lookType != familiar->lookType) {
 			continue;
 		}
 
 		return true;
 	}
 
-	if (!familiar.unlocked) {
+	if (!familiar->unlocked) {
 		return false;
 	}
 
@@ -5434,7 +5514,7 @@ void Player::setTibiaCoins(int32_t v) {
 
 int32_t Player::getCleavePercent(bool useCharges) const {
 	int32_t result = cleavePercent;
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &it = Item::items[item->getID()];
 		if (!it.abilities) {
 			continue;
@@ -5460,7 +5540,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 		result = it->second;
 	}
 
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5484,7 +5564,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 
 int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
 	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)];
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5505,7 +5585,7 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 
 int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
 	int32_t result = magicShieldCapacityFlat;
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5526,7 +5606,7 @@ int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
 
 int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 	int32_t result = magicShieldCapacityPercent;
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5547,7 +5627,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 
 int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 	int32_t result = reflectPercent[combatTypeToIndex(combat)];
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5568,7 +5648,7 @@ int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 
 int32_t Player::getReflectFlat(CombatType_t combat, bool useCharges) const {
 	int32_t result = reflectFlat[combatTypeToIndex(combat)];
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -5775,7 +5855,7 @@ void Player::setCurrentMount(uint8_t mount) {
 
 bool Player::hasAnyMount() const {
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (hasMount(mount)) {
 			return true;
 		}
@@ -5786,7 +5866,7 @@ bool Player::hasAnyMount() const {
 uint8_t Player::getRandomMountId() const {
 	std::vector<uint8_t> playerMounts;
 	const auto mounts = g_game().mounts.getMounts();
-	for (const auto mount : mounts) {
+	for (const auto &mount : mounts) {
 		if (hasMount(mount)) {
 			playerMounts.push_back(mount->id);
 		}
@@ -6173,7 +6253,7 @@ uint64_t Player::getMoney() const {
 	size_t i = 0;
 	while (i < containers.size()) {
 		std::shared_ptr<Container> container = containers[i++];
-		for (std::shared_ptr<Item> item : container->getItemList()) {
+		for (const std::shared_ptr<Item> &item : container->getItemList()) {
 			std::shared_ptr<Container> tmpContainer = item->getContainer();
 			if (tmpContainer) {
 				containers.push_back(tmpContainer);
@@ -6190,7 +6270,7 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const {
 	uint64_t coreCount = 0;
 
 	// Check items from inventory
-	for (const auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		if (!item) {
 			continue;
 		}
@@ -6233,7 +6313,7 @@ size_t Player::getMaxDepotItems() const {
 
 std::forward_list<std::shared_ptr<Condition>> Player::getMuteConditions() const {
 	std::forward_list<std::shared_ptr<Condition>> muteConditions;
-	for (std::shared_ptr<Condition> condition : conditions) {
+	for (const std::shared_ptr<Condition> &condition : conditions) {
 		if (condition->getTicks() <= 0) {
 			continue;
 		}
@@ -6439,7 +6519,7 @@ void sendStowItems(const std::shared_ptr<Item> &item, const std::shared_ptr<Item
 	}
 
 	if (auto container = stowItem->getContainer()) {
-		for (auto stowable_it : container->getStowableItems()) {
+		for (const auto &stowable_it : container->getStowableItems()) {
 			if ((stowable_it.first)->getID() == item->getID()) {
 				itemDict.push_back(stowable_it);
 			}
@@ -6517,14 +6597,14 @@ void Player::openPlayerContainers() {
 		if (itemContainer) {
 			auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
 			if (cid > 0) {
-				openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+				openContainersList.emplace_back(cid, itemContainer);
 			}
 			for (ContainerIterator it = itemContainer->iterator(); it.hasNext(); it.advance()) {
 				std::shared_ptr<Container> subContainer = (*it)->getContainer();
 				if (subContainer) {
 					auto subcid = (*it)->getAttribute<uint8_t>(ItemAttribute_t::OPENCONTAINER);
 					if (subcid > 0) {
-						openContainersList.emplace_back(std::make_pair(subcid, subContainer));
+						openContainersList.emplace_back(subcid, subContainer);
 					}
 				}
 			}
@@ -6684,6 +6764,10 @@ void Player::clearCooldowns() {
 }
 
 void Player::triggerTranscendance() {
+	if (wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) > OTSYS_TIME()) {
+		return;
+	}
+
 	auto item = getInventoryItem(CONST_SLOT_LEGS);
 	if (item == nullptr) {
 		return;
@@ -6700,10 +6784,28 @@ void Player::triggerTranscendance() {
 		addCondition(outfitCondition);
 		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_FORGE, OTSYS_TIME() + duration);
 		g_game().addMagicEffect(getPosition(), CONST_ME_AVATAR_APPEAR);
-		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
+
 		sendSkills();
 		sendStats();
 		sendBasicData();
+
+		sendTextMessage(MESSAGE_ATTENTION, "Transcendance was triggered.");
+
+		// Send player data after transcendance timer expire
+		const auto &task = createPlayerTask(
+			std::max<uint32_t>(SCHEDULER_MINTICKS, duration),
+			[playerId = getID()] {
+				auto player = g_game().getPlayerByID(playerId);
+				if (player) {
+					player->sendSkills();
+					player->sendStats();
+					player->sendBasicData();
+				}
+			},
+			"Player::triggerTranscendance"
+		);
+		g_dispatcher().scheduleEvent(task);
+
 		wheel()->sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());
 	}
@@ -6720,7 +6822,7 @@ void Player::requestDepotItems() {
 		return;
 	}
 
-	for (std::shared_ptr<Item> locker : depotLocker->getItemList()) {
+	for (const std::shared_ptr<Item> &locker : depotLocker->getItemList()) {
 		std::shared_ptr<Container> c = locker->getContainer();
 		if (!c || c->empty()) {
 			continue;
@@ -6786,7 +6888,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier) {
 		return;
 	}
 
-	for (std::shared_ptr<Item> locker : depotLocker->getItemList()) {
+	for (const std::shared_ptr<Item> &locker : depotLocker->getItemList()) {
 		std::shared_ptr<Container> c = locker->getContainer();
 		if (!c || c->empty()) {
 			continue;
@@ -6823,7 +6925,7 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	}
 
 	std::vector<std::shared_ptr<Item>> itemsVector;
-	for (std::shared_ptr<Item> locker : depotLocker->getItemList()) {
+	for (const std::shared_ptr<Item> &locker : depotLocker->getItemList()) {
 		std::shared_ptr<Container> c = locker->getContainer();
 		if (!c || c->empty() ||
 			// Retrieve from inbox.
@@ -6846,7 +6948,7 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	}
 
 	ReturnValue ret = RETURNVALUE_NOERROR;
-	for (std::shared_ptr<Item> item : itemsVector) {
+	for (const std::shared_ptr<Item> &item : itemsVector) {
 		// First lets try to retrieve the item to the stash retrieve container.
 		if (g_game().tryRetrieveStashItems(static_self_cast<Player>(), item)) {
 			continue;
@@ -6892,7 +6994,7 @@ std::shared_ptr<Item> Player::getItemFromDepotSearch(uint16_t itemId, const Posi
 	}
 
 	uint8_t index = 0;
-	for (std::shared_ptr<Item> locker : depotLocker->getItemList()) {
+	for (const std::shared_ptr<Item> &locker : depotLocker->getItemList()) {
 		std::shared_ptr<Container> c = locker->getContainer();
 		if (!c || c->empty() || (c->isInbox() && pos.y != 0x21) || // From inbox.
 			(!c->isInbox() && pos.y != 0x20)) { // From depot.
@@ -6969,7 +7071,7 @@ std::pair<std::vector<std::shared_ptr<Item>>, uint16_t> Player::getLockerItemsAn
 	std::vector<std::shared_ptr<Item>> lockerItems;
 	auto [itemVector, itemMap] = requestLockerItems(depotLocker, false, tier);
 	uint16_t totalCount = 0;
-	for (auto item : itemVector) {
+	for (const auto &item : itemVector) {
 		if (!item || item->getID() != itemId) {
 			continue;
 		}
@@ -7015,7 +7117,7 @@ bool Player::saySpell(
 
 	int32_t valueEmote = 0;
 	// Send to client
-	for (std::shared_ptr<Creature> spectator : spectators) {
+	for (const std::shared_ptr<Creature> &spectator : spectators) {
 		if (std::shared_ptr<Player> tmpPlayer = spectator->getPlayer()) {
 			if (g_configManager().getBoolean(EMOTE_SPELLS, __FUNCTION__)) {
 				valueEmote = tmpPlayer->getStorageValue(STORAGEVALUE_EMOTE);
@@ -7031,7 +7133,7 @@ bool Player::saySpell(
 	}
 
 	// Execute lua event method
-	for (std::shared_ptr<Creature> spectator : spectators) {
+	for (const std::shared_ptr<Creature> &spectator : spectators) {
 		auto tmpPlayer = spectator->getPlayer();
 		if (!tmpPlayer) {
 			continue;
@@ -7675,7 +7777,7 @@ void Player::closeAllExternalContainers() {
 		}
 	}
 
-	for (std::shared_ptr<Container> container : containerToClose) {
+	for (const std::shared_ptr<Container> &container : containerToClose) {
 		autoCloseContainers(container);
 	}
 }
@@ -7796,7 +7898,7 @@ bool Player::setAccount(uint32_t accountId) {
 }
 
 uint8_t Player::getAccountType() const {
-	return account ? account->getAccountType() : AccountType::ACCOUNT_TYPE_NORMAL;
+	return static_cast<uint8_t>(account ? account->getAccountType() : static_cast<uint8_t>(AccountType::ACCOUNT_TYPE_NORMAL));
 }
 
 uint32_t Player::getAccountId() const {
@@ -7839,7 +7941,7 @@ void Player::parseAttackRecvHazardSystem(CombatDamage &damage, std::shared_ptr<M
 
 	auto points = getHazardSystemPoints();
 	if (m_party) {
-		for (const auto partyMember : m_party->getMembers()) {
+		for (const auto &partyMember : m_party->getMembers()) {
 			if (partyMember && partyMember->getHazardSystemPoints() < points) {
 				points = partyMember->getHazardSystemPoints();
 			}
@@ -7898,7 +8000,7 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, std::shared_ptr<
 
 	auto points = getHazardSystemPoints();
 	if (m_party) {
-		for (const auto partyMember : m_party->getMembers()) {
+		for (const auto &partyMember : m_party->getMembers()) {
 			if (partyMember && partyMember->getHazardSystemPoints() < points) {
 				points = partyMember->getHazardSystemPoints();
 			}
@@ -7968,6 +8070,15 @@ const std::unique_ptr<PlayerBadge> &Player::badge() const {
 	return m_playerBadge;
 }
 
+// Title interface
+std::unique_ptr<PlayerTitle> &Player::title() {
+	return m_playerTitle;
+}
+
+const std::unique_ptr<PlayerTitle> &Player::title() const {
+	return m_playerTitle;
+}
+
 void Player::sendLootMessage(const std::string &message) const {
 	auto party = getParty();
 	if (!party) {
@@ -7978,7 +8089,7 @@ void Player::sendLootMessage(const std::string &message) const {
 	if (auto partyLeader = party->getLeader()) {
 		partyLeader->sendTextMessage(MESSAGE_LOOT, message);
 	}
-	for (const auto partyMember : party->getMembers()) {
+	for (const auto &partyMember : party->getMembers()) {
 		if (partyMember) {
 			partyMember->sendTextMessage(MESSAGE_LOOT, message);
 		}

@@ -68,6 +68,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseImbuement(tmpStrValue, attributeNode, valueAttribute, itemType);
+	ItemParse::parseAugment(tmpStrValue, attributeNode, valueAttribute, itemType);
 	ItemParse::parseStackSize(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseSpecializedMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseMagicShieldCapacity(tmpStrValue, valueAttribute, itemType);
@@ -866,6 +867,58 @@ void ItemParse::parseImbuement(const std::string &tmpStrValue, pugi::xml_node at
 			}
 		} else {
 			g_logger().warn("[ParseImbuement::initParseImbuement] - Unknown type: {}", valueAttribute.as_string());
+		}
+	}
+}
+
+void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (tmpStrValue != "augments") {
+		return;
+	}
+
+	// Check if the augments value is 1 or 0 (1 = enable - 0 = disable)
+	if (valueAttribute.as_bool()) {
+		for (const auto subAttributeNode : attributeNode.children()) {
+			const pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+			if (!subKeyAttribute) {
+				continue;
+			}
+
+			const pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+			if (!subValueAttribute) {
+				continue;
+			}
+
+			const auto &augmentEnum = magic_enum::enum_cast<Augment_t>(toPascalCase(subValueAttribute.as_string()));
+			if (augmentEnum.has_value()) {
+				const Augment_t augmentType = augmentEnum.value();
+				g_logger().trace("[ParseAugment::initParseAugment] - Item '{}' has an augment '{}'", itemType.name, subValueAttribute.as_string());
+				int32_t augmentValue = 0;
+				const bool hasValueDescrition = isAugmentWithoutValueDescription(augmentType);
+
+				if (hasValueDescrition) {
+					const auto it = AugmentWithoutValueDescriptionDefaultKeys.find(augmentType);
+					if (it != AugmentWithoutValueDescriptionDefaultKeys.end()) {
+						augmentValue = g_configManager().getNumber(it->second, __FUNCTION__);
+					}
+				}
+
+				const auto augmentName = asLowerCaseString(subKeyAttribute.as_string());
+				const pugi::xml_object_range<pugi::xml_node_iterator> augmentValueAttributeNode = subAttributeNode.children();
+				if (!augmentValueAttributeNode.empty()) {
+					const pugi::xml_node augmentValueNode = *augmentValueAttributeNode.begin();
+					const pugi::xml_attribute augmentValueAttribute = augmentValueNode.attribute("value");
+					augmentValue = augmentValueAttribute ? pugi::cast<int32_t>(augmentValueAttribute.value()) : augmentValue;
+				} else if (!hasValueDescrition) {
+					g_logger().warn("[{}] - Item '{}' has an augment '{}' without a value", __FUNCTION__, itemType.name, augmentName);
+				}
+
+				if (augmentType != Augment_t::None) {
+					itemType.addAugment(augmentName, augmentType, augmentValue);
+				}
+			} else {
+				g_logger().warn("[{}] - Unknown type '{}'", __FUNCTION__, subValueAttribute.as_string());
+			}
 		}
 	}
 }

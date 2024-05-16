@@ -71,7 +71,7 @@ protected:
 	int32_t onLeaveEvent = -1;
 	int32_t onSpeakEvent = -1;
 
-	uint16_t id;
+	uint16_t id {};
 	bool publicChannel = false;
 
 	friend class Chat;
@@ -79,8 +79,8 @@ protected:
 
 class PrivateChatChannel final : public ChatChannel {
 public:
-	PrivateChatChannel(uint16_t channelId, std::string channelName) :
-		ChatChannel(channelId, channelName) { }
+	PrivateChatChannel(uint16_t channelId, [[maybe_unused]] std::string channelName) :
+		ChatChannel(channelId, std::move(channelName)) { }
 
 	uint32_t getOwner() const override {
 		return owner;

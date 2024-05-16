@@ -404,13 +404,13 @@ public:
 	void executeConditions(uint32_t interval);
 	bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
 
-	virtual bool isImmune(CombatType_t type) const {
+	virtual bool isImmune([[maybe_unused]] CombatType_t type) const {
 		return false;
 	}
-	virtual bool isImmune(ConditionType_t type) const {
+	virtual bool isImmune([[maybe_unused]] ConditionType_t type) const {
 		return false;
 	}
-	virtual bool isSuppress(ConditionType_t type, bool attackerPlayer) const {
+	virtual bool isSuppress([[maybe_unused]] ConditionType_t type, [[maybe_unused]] bool attackerPlayer) const {
 		return false;
 	};
 
@@ -428,7 +428,7 @@ public:
 	virtual void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage);
 	virtual void drainMana(std::shared_ptr<Creature> attacker, int32_t manaLoss);
 
-	virtual bool challengeCreature(std::shared_ptr<Creature>, int targetChangeCooldown) {
+	virtual bool challengeCreature(std::shared_ptr<Creature>, [[maybe_unused]] int targetChangeCooldown) {
 		return false;
 	}
 
@@ -452,10 +452,10 @@ public:
 	 * @deprecated -- This is here to trigger the deprecated onKill events in lua
 	 */
 	bool deprecatedOnKilledCreature(std::shared_ptr<Creature> target, bool lastHit);
-	virtual bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit) {
+	virtual bool onKilledPlayer([[maybe_unused]] const std::shared_ptr<Player> &target, [[maybe_unused]] bool lastHit) {
 		return false;
 	};
-	virtual bool onKilledMonster(const std::shared_ptr<Monster> &target) {
+	virtual bool onKilledMonster([[maybe_unused]] const std::shared_ptr<Monster> &target) {
 		return false;
 	};
 	virtual void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target);

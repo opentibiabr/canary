@@ -146,12 +146,9 @@ SpawnNpc::~SpawnNpc() {
 
 bool SpawnNpc::findPlayer(const Position &pos) {
 	auto spectators = Spectators().find<Player>(pos);
-	for (const auto &spectator : spectators) {
-		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
-			return true;
-		}
-	}
-	return false;
+	return std::ranges::any_of(spectators, [](const auto &spectator) {
+		return !spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs);
+	});
 }
 
 bool SpawnNpc::isInSpawnNpcZone(const Position &pos) {

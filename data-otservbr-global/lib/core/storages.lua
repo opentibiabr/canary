@@ -1568,6 +1568,8 @@ Storage = {
 			WarriorSkeleton = 52146,
 			DragonCounter = 52147,
 		},
+		QuestLine = 52148,
+		TheLostBrother = 52149,
 	},
 	DreamersChallenge = {
 		-- Reserved storage from 52160 - 52199
@@ -2532,7 +2534,6 @@ Storage = {
 			NightmareTeddy = {},
 			PoacherCavesMiniWorldChange = {},
 			TheGreatDragonHunt = {},
-			TheLostBrother = {},
 			TheTaintedSouls = {},
 		},
 		U10_90 = { -- update 10.90 - Reserved Storages 45201 - 45350

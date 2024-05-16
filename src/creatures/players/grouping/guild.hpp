@@ -32,9 +32,10 @@ public:
 	void addMember(const std::shared_ptr<Player> &player);
 	void removeMember(const std::shared_ptr<Player> &player);
 
-	bool isGuild() {
+	bool isGuild() override {
 		return true;
 	}
+
 	void setOnline(bool value) override {
 		online = value;
 	}

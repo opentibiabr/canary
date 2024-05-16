@@ -22,7 +22,6 @@ void ConfigFunctions::init(lua_State* L) {
 
 #define registerMagicEnumIn(L, tableName, enumValue)         \
 	do {                                                     \
-		auto number = magic_enum::enum_integer(enumValue);   \
 		auto name = magic_enum::enum_name(enumValue).data(); \
 		registerVariable(L, tableName, name, value);         \
 	} while (0)

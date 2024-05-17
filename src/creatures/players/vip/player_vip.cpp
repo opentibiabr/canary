@@ -142,7 +142,7 @@ std::shared_ptr<VIPGroup> PlayerVIP::getGroupByName(const std::string &name) con
 }
 
 void PlayerVIP::addGroupInternal(uint8_t groupId, const std::string &name, bool customizable) {
-	if (getGroupByName(name)) {
+	if (getGroupByName(name) != nullptr) {
 		g_logger().warn("{} - Group name already exists.", __FUNCTION__);
 		return;
 	}
@@ -177,7 +177,7 @@ void PlayerVIP::removeGroup(uint8_t groupId) {
 }
 
 void PlayerVIP::addGroup(const std::string &name, bool customizable /*= true */) {
-	if (getGroupByName(name)) {
+	if (getGroupByName(name) != nullptr) {
 		m_player.sendCancelMessage("A group with this name already exists. Please choose another name.");
 		return;
 	}
@@ -201,7 +201,7 @@ void PlayerVIP::addGroup(const std::string &name, bool customizable /*= true */)
 }
 
 void PlayerVIP::editGroup(uint8_t groupId, const std::string &newName, bool customizable /*= true*/) {
-	if (getGroupByName(newName)) {
+	if (getGroupByName(newName) != nullptr) {
 		m_player.sendCancelMessage("A group with this name already exists. Please choose another name.");
 		return;
 	}

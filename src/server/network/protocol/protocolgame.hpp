@@ -214,7 +214,7 @@ private:
 	void parseAddVip(NetworkMessage &msg);
 	void parseRemoveVip(NetworkMessage &msg);
 	void parseEditVip(NetworkMessage &msg);
-	void parseGroupVipActions(NetworkMessage &msg);
+	void parseVipGroupActions(NetworkMessage &msg);
 
 	void parseRotateItem(NetworkMessage &msg);
 	void parseConfigureShowOffSocket(NetworkMessage &msg);
@@ -362,7 +362,7 @@ private:
 
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 	void sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status);
-	void sendVIPGroups(const std::vector<VIPGroup> &vipGroups, uint8_t maxGroups);
+	void sendVIPGroups(const std::vector<std::shared_ptr<VIPGroup>> &vipGroups);
 
 	void sendPendingStateEntered();
 	void sendEnterWorld();
@@ -480,6 +480,7 @@ private:
 
 	friend class Player;
 	friend class PlayerWheel;
+	friend class PlayerVIP;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;

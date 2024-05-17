@@ -718,11 +718,11 @@ enum ChannelEvent_t : uint8_t {
 	CHANNELEVENT_EXCLUDE = 3,
 };
 
-enum VipStatus_t : uint8_t {
-	VIPSTATUS_OFFLINE = 0,
-	VIPSTATUS_ONLINE = 1,
-	VIPSTATUS_PENDING = 2,
-	VIPSTATUS_TRAINING = 3
+enum class VipStatus_t : uint8_t {
+	OFFLINE = 0,
+	ONLINE = 1,
+	PENDING = 2,
+	TRAINING = 3
 };
 
 enum Vocation_t : uint16_t {
@@ -1413,6 +1413,17 @@ struct VIPEntry {
 	std::string description;
 	uint32_t icon;
 	bool notify;
+};
+
+struct VIPGroupEntry {
+	VIPGroupEntry(uint8_t initId, std::string initName, bool initCustomizable) :
+		id(initId),
+		name(std::move(initName)),
+		customizable(initCustomizable) { }
+
+	uint8_t id;
+	std::string name;
+	bool customizable;
 };
 
 struct OutfitEntry {

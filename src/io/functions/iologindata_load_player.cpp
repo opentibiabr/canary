@@ -678,12 +678,34 @@ void IOLoginDataLoad::loadPlayerVip(std::shared_ptr<Player> player, DBResult_ptr
 		return;
 	}
 
+	uint32_t accountId = player->getAccountId();
+
 	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccountId();
-	if ((result = db.storeQuery(query.str()))) {
+	std::string query = fmt::format("SELECT `player_id` FROM `account_viplist` WHERE `account_id` = {}", accountId);
+	if ((result = db.storeQuery(query))) {
 		do {
-			player->addVIPInternal(result->getNumber<uint32_t>("player_id"));
+			player->vip()->addInternal(result->getNumber<uint32_t>("player_id"));
+		} while (result->next());
+	}
+
+	query = fmt::format("SELECT `id`, `name`, `customizable` FROM `account_vipgroups` WHERE `account_id` = {}", accountId);
+	if ((result = db.storeQuery(query))) {
+		do {
+			player->vip()->addGroupInternal(
+				result->getNumber<uint8_t>("id"),
+				result->getString("name"),
+				result->getNumber<uint8_t>("customizable") == 0 ? false : true
+			);
+		} while (result->next());
+	}
+
+	query = fmt::format("SELECT `player_id`, `vipgroup_id` FROM `account_vipgrouplist` WHERE `account_id` = {}", accountId);
+	if ((result = db.storeQuery(query))) {
+		do {
+			player->vip()->addGuidToGroupInternal(
+				result->getNumber<uint8_t>("vipgroup_id"),
+				result->getNumber<uint32_t>("player_id")
+			);
 		} while (result->next());
 	}
 }

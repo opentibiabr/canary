@@ -41,8 +41,6 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 
-uint8_t VIPGroup::vipGroupAutoID = 0;
-
 MuteCountMap Player::muteCountMap;
 
 Player::Player(ProtocolGame_ptr p) :
@@ -51,6 +49,7 @@ Player::Player(ProtocolGame_ptr p) :
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)) {
+	m_playerVIP = std::make_unique<PlayerVIP>(*this);
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
@@ -651,10 +650,10 @@ phmap::flat_hash_map<Blessings_t, std::string> Player::getBlessingNames() const 
 void Player::setTraining(bool value) {
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		if (!this->isInGhostMode() || player->isAccessPlayer()) {
-			player->notifyStatusChange(static_self_cast<Player>(), value ? VIPSTATUS_TRAINING : VIPSTATUS_ONLINE, false);
+			player->vip()->notifyStatusChange(static_self_cast<Player>(), value ? VipStatus_t::TRAINING : VipStatus_t::ONLINE, false);
 		}
 	}
-	this->statusVipList = VIPSTATUS_TRAINING;
+	vip()->setStatus(VipStatus_t::TRAINING);
 	setExerciseTraining(value);
 }
 
@@ -2987,7 +2986,7 @@ void Player::despawn() {
 
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		player->notifyStatusChange(static_self_cast<Player>(), VIPSTATUS_PENDING, false);
+		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::PENDING, false);
 	}
 
 	setDead(true);
@@ -3041,13 +3040,13 @@ void Player::removeList() {
 	g_game().removePlayer(static_self_cast<Player>());
 
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		player->notifyStatusChange(static_self_cast<Player>(), VIPSTATUS_OFFLINE);
+		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::OFFLINE);
 	}
 }
 
 void Player::addList() {
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		player->notifyStatusChange(static_self_cast<Player>(), this->statusVipList);
+		player->vip()->notifyStatusChange(static_self_cast<Player>(), vip()->getStatus());
 	}
 
 	g_game().addPlayer(static_self_cast<Player>());
@@ -3060,160 +3059,6 @@ void Player::removePlayer(bool displayEffect, bool forced /*= true*/) {
 	} else {
 		g_game().removeCreature(static_self_cast<Player>());
 	}
-}
-
-void Player::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) const {
-	if (!client) {
-		return;
-	}
-
-	if (!VIPList.contains(loginPlayer->guid)) {
-		return;
-	}
-
-	client->sendUpdatedVIPStatus(loginPlayer->guid, status);
-
-	if (message) {
-		if (status == VIPSTATUS_ONLINE) {
-			client->sendTextMessage(TextMessage(MESSAGE_FAILURE, loginPlayer->getName() + " has logged in."));
-		} else if (status == VIPSTATUS_OFFLINE) {
-			client->sendTextMessage(TextMessage(MESSAGE_FAILURE, loginPlayer->getName() + " has logged out."));
-		}
-	}
-}
-
-bool Player::removeVIP(uint32_t vipGuid) {
-	if (!VIPList.erase(vipGuid)) {
-		return false;
-	}
-
-	VIPList.erase(vipGuid);
-	if (account) {
-		IOLoginData::removeVIPEntry(account->getID(), vipGuid);
-	}
-
-	return true;
-}
-
-bool Player::addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t status) {
-	if (VIPList.size() >= getMaxVIPEntries() || VIPList.size() == 200) { // max number of buddies is 200 in 9.53
-		sendTextMessage(MESSAGE_FAILURE, "You cannot add more buddies.");
-		return false;
-	}
-
-	if (!VIPList.insert(vipGuid).second) {
-		sendTextMessage(MESSAGE_FAILURE, "This player is already in your list.");
-		return false;
-	}
-
-	if (account) {
-		IOLoginData::addVIPEntry(account->getID(), vipGuid, "", 0, false);
-	}
-
-	if (client) {
-		client->sendVIP(vipGuid, vipName, "", 0, false, status);
-	}
-
-	return true;
-}
-
-bool Player::addVIPInternal(uint32_t vipGuid) {
-	if (VIPList.size() >= getMaxVIPEntries() || VIPList.size() == 200) { // max number of buddies is 200 in 9.53
-		return false;
-	}
-
-	return VIPList.insert(vipGuid).second;
-}
-
-bool Player::existsVIPGroupWithName(const std::string &name) {
-	auto it = std::find_if(VIPGroups.begin(), VIPGroups.end(), [name](const VIPGroup vipGroup) {
-		return vipGroup.getName() == name;
-	});
-
-	return it != VIPGroups.end();
-}
-
-VIPGroup* Player::getVIPGroupByID(uint8_t groupID) {
-	const auto it = std::find_if(VIPGroups.begin(), VIPGroups.end(), [groupID](const VIPGroup vipGroup) {
-		return vipGroup.getID() == groupID;
-	});
-
-	return it != VIPGroups.end() ? &(*it) : nullptr;
-}
-
-void Player::removeVIPGroup(uint8_t groupId) {
-	auto it = std::find_if(VIPGroups.begin(), VIPGroups.end(), [groupId](const VIPGroup vipGroup) {
-		return vipGroup.getID() == groupId;
-	});
-
-	if (it == VIPGroups.end()) {
-		return;
-	}
-
-	VIPGroups.erase(it);
-
-	/* TODO: Remove the VIPGroupEntry of Database
-	if (account) {
-		IOLoginData::removeVIPGroupEntry(account->getID(), vipGuid, "", 0, false);
-	}
-	*/
-
-	if (client) {
-		client->sendVIPGroups(VIPGroups, getMaxVIPGroupEntries());
-	}
-}
-
-void Player::addVIPGroup(const std::string &name, bool customizable /*= true */) {
-	if (existsVIPGroupWithName(name)) {
-		sendCancelMessage("A group with this name already exists. Please choose another name.");
-		return;
-	}
-
-	VIPGroups.emplace_back(name, customizable);
-
-	/* TODO: Add the VIPGroupEntry to Database
-	if (account) {
-		IOLoginData::addVIPGroupEntry(account->getID(), vipGuid, "", 0, false);
-	}
-	*/
-
-	if (client) {
-		client->sendVIPGroups(VIPGroups, getMaxVIPGroupEntries());
-	}
-}
-
-void Player::editVIPGroup(uint8_t groupId, const std::string &newName, bool customizable /*= true */) {
-	if (existsVIPGroupWithName(newName)) {
-		sendCancelMessage("A group with this name already exists. Please choose another name.");
-		return;
-	}
-
-	auto groupVip = getVIPGroupByID(groupId);
-
-	groupVip->setName(newName);
-
-	/* TODO: Update the VIPGroupEntry on Database
-	if (account) {
-		IOLoginData::updateVIPGroupEntry(account->getID(), vipGuid, "", 0, false);
-	}
-	*/
-
-	if (client) {
-		client->sendVIPGroups(VIPGroups, getMaxVIPGroupEntries());
-	}
-}
-
-bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const {
-	auto it = VIPList.find(vipGuid);
-	if (it == VIPList.end()) {
-		return false; // player is not in VIP
-	}
-
-	if (account) {
-		IOLoginData::editVIPEntry(account->getID(), vipGuid, description, icon, notify);
-	}
-
-	return true;
 }
 
 // close container and its child containers
@@ -6373,22 +6218,6 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const {
 	return std::make_pair(sliverCount, coreCount);
 }
 
-uint8_t Player::getMaxVIPGroupEntries() const {
-	if (isPremium()) {
-		return 8;
-	}
-	return 0;
-}
-
-size_t Player::getMaxVIPEntries() const {
-	if (group->maxVipEntries != 0) {
-		return group->maxVipEntries;
-	} else if (isPremium()) {
-		return 100;
-	}
-	return 20;
-}
-
 size_t Player::getMaxDepotItems() const {
 	if (group->maxDepotItems != 0) {
 		return group->maxDepotItems;
@@ -8164,6 +7993,15 @@ std::unique_ptr<PlayerTitle> &Player::title() {
 
 const std::unique_ptr<PlayerTitle> &Player::title() const {
 	return m_playerTitle;
+}
+
+// VIP interface
+std::unique_ptr<PlayerVIP> &Player::vip() {
+	return m_playerVIP;
+}
+
+const std::unique_ptr<PlayerVIP> &Player::vip() const {
+	return m_playerVIP;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

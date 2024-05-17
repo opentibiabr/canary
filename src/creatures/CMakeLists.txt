@@ -27,4 +27,5 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     players/wheel/player_wheel.cpp
     players/wheel/wheel_gems.cpp
     players/vocations/vocation.cpp
+    players/vip/player_vip.cpp
 )

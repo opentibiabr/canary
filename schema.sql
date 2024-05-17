@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '45'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '46'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -215,6 +215,44 @@ CREATE TABLE IF NOT EXISTS `account_viplist` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Table structure `account_vipgroup`
+CREATE TABLE IF NOT EXISTS `account_vipgroups` (
+    `id` tinyint(3) UNSIGNED NOT NULL,
+    `account_id` int(11) UNSIGNED NOT NULL COMMENT 'id of account whose vip group entry it is',
+    `name` varchar(128) NOT NULL,
+    `customizable` BOOLEAN NOT NULL DEFAULT '1',
+    CONSTRAINT `account_vipgroups_pk` PRIMARY KEY (`id`, `account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Trigger
+--
+DELIMITER //
+CREATE TRIGGER `oncreate_accounts` AFTER INSERT ON `accounts` FOR EACH ROW BEGIN
+    INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (1, NEW.`id`, 'Enemies', 0);
+    INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (2, NEW.`id`, 'Friends', 0);
+    INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (3, NEW.`id`, 'Trading Partner', 0);
+END
+//
+DELIMITER ;
+
+-- Table structure `account_vipgrouplist`
+CREATE TABLE IF NOT EXISTS `account_vipgrouplist` (
+    `account_id` int(11) UNSIGNED NOT NULL COMMENT 'id of account whose viplist entry it is',
+    `player_id` int(11) NOT NULL COMMENT 'id of target player of viplist entry',
+    `vipgroup_id` tinyint(3) UNSIGNED NOT NULL COMMENT 'id of vip group that player belongs',
+    INDEX `account_id` (`account_id`),
+    INDEX `player_id` (`player_id`),
+    INDEX `vipgroup_id` (`vipgroup_id`),
+    CONSTRAINT `account_vipgrouplist_unique` UNIQUE (`account_id`, `player_id`, `vipgroup_id`),
+    CONSTRAINT `account_vipgrouplist_player_fk`
+    FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+    ON DELETE CASCADE,
+    CONSTRAINT `account_vipgrouplist_vipgroup_fk`
+    FOREIGN KEY (`vipgroup_id`, `account_id`) REFERENCES `account_vipgroups` (`id`, `account_id`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Table structure `boosted_boss`
 CREATE TABLE IF NOT EXISTS `boosted_boss` (
     `boostname` TEXT,
@@ -372,9 +410,9 @@ CREATE TABLE IF NOT EXISTS `guild_ranks` (
 --
 DELIMITER //
 CREATE TRIGGER `oncreate_guilds` AFTER INSERT ON `guilds` FOR EACH ROW BEGIN
-        INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('The Leader', 3, NEW.`id`);
-        INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('Vice-Leader', 2, NEW.`id`);
-        INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('Member', 1, NEW.`id`);
+    INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('The Leader', 3, NEW.`id`);
+    INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('Vice-Leader', 2, NEW.`id`);
+    INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('Member', 1, NEW.`id`);
 END
 //
 DELIMITER ;
@@ -428,9 +466,8 @@ CREATE TABLE IF NOT EXISTS `houses` (
 -- trigger
 --
 DELIMITER //
-CREATE TRIGGER `ondelete_players` BEFORE DELETE ON `players`
- FOR EACH ROW BEGIN
-        UPDATE `houses` SET `owner` = 0 WHERE `owner` = OLD.`id`;
+CREATE TRIGGER `ondelete_players` BEFORE DELETE ON `players` FOR EACH ROW BEGIN
+    UPDATE `houses` SET `owner` = 0 WHERE `owner` = OLD.`id`;
 END
 //
 DELIMITER ;
@@ -815,3 +852,9 @@ INSERT INTO `players`
 (4, 'Paladin Sample', 1, 1, 8, 3, 185, 185, 4200, 113, 115, 95, 39, 129, 0, 90, 90, 0, 8, '', 470, 1, 10, 0, 10, 0, 10, 0, 10, 0),
 (5, 'Knight Sample', 1, 1, 8, 4, 185, 185, 4200, 113, 115, 95, 39, 129, 0, 90, 90, 0, 8, '', 470, 1, 10, 0, 10, 0, 10, 0, 10, 0),
 (6, 'GOD', 6, 1, 2, 0, 155, 155, 100, 113, 115, 95, 39, 75, 0, 60, 60, 0, 8, '', 410, 1, 10, 0, 10, 0, 10, 0, 10, 0);
+
+-- Create vip groups for GOD account
+INSERT INTO `account_vipgroups` (`id`, `name`, `account_id`. `customizable`) VALUES
+(1, 'Friends', 1, 0),
+(2, 'Enemies', 1, 0),
+(3, 'Trading Partners', 1, 0);

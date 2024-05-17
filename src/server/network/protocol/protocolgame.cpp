@@ -6558,7 +6558,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 	// player light level
 	sendCreatureLight(creature);
 
-	sendVIPGroups(player->vip()->getGroups());
+	sendVIPGroups();
 
 	const std::forward_list<VIPEntry> &vipEntries = IOLoginData::getVIPEntries(player->getAccountId());
 
@@ -7147,10 +7147,12 @@ void ProtocolGame::sendVIP(uint32_t guid, const std::string &name, const std::st
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendVIPGroups(const std::vector<std::shared_ptr<VIPGroup>> &vipGroups) {
+void ProtocolGame::sendVIPGroups() {
 	if (oldProtocol) {
 		return;
 	}
+
+	const auto &vipGroups = player->vip()->getGroups();
 
 	NetworkMessage msg;
 	msg.addByte(0xD4);

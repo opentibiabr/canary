@@ -172,7 +172,7 @@ void PlayerVIP::removeGroup(uint8_t groupId) {
 	}
 
 	if (m_player.client) {
-		m_player.client->sendVIPGroups(vipGroups);
+		m_player.client->sendVIPGroups();
 	}
 }
 
@@ -196,7 +196,7 @@ void PlayerVIP::addGroup(const std::string &name, bool customizable /*= true */)
 	}
 
 	if (m_player.client) {
-		m_player.client->sendVIPGroups(vipGroups);
+		m_player.client->sendVIPGroups();
 	}
 }
 
@@ -215,7 +215,7 @@ void PlayerVIP::editGroup(uint8_t groupId, const std::string &newName, bool cust
 	}
 
 	if (m_player.client) {
-		m_player.client->sendVIPGroups(vipGroups);
+		m_player.client->sendVIPGroups();
 	}
 }
 

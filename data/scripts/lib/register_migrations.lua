@@ -45,7 +45,7 @@ function Migration:register()
 		return
 	end
 	if not self:_validateName() then
-		error("Invalid migration name: " .. self.name .. ". Migration names must be in the format: <timestamp>_<description>. Example: 20231128213149_add_new_monsters")
+		logger.error("Invalid migration name: " .. self.name .. ". Migration names must be in the format: <timestamp>_<description>. Example: 20231128213149_add_new_monsters")
 	end
 
 	table.insert(Migration.registry, self)

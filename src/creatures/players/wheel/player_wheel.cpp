@@ -130,16 +130,16 @@ namespace {
 
 	struct PromotionScroll {
 		uint16_t itemId;
-		std::string storageKey;
+		std::string name;
 		uint8_t extraPoints;
 	};
 
 	std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
-		{ 43946, "wheel.scroll.abridged", 3 },
-		{ 43947, "wheel.scroll.basic", 5 },
-		{ 43948, "wheel.scroll.revised", 9 },
-		{ 43949, "wheel.scroll.extended", 13 },
-		{ 43950, "wheel.scroll.advanced", 20 },
+		{ 43946, "abridged", 3 },
+		{ 43947, "basic", 5 },
+		{ 43948, "revised", 9 },
+		{ 43949, "extended", 13 },
+		{ 43950, "advanced", 20 },
 	};
 } // namespace
 
@@ -744,18 +744,21 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 }
 
 void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
-	uint16_t count = 0;
 	std::vector<uint16_t> unlockedScrolls;
 
 	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
-		auto storageValue = m_player.getStorageValueByName(scroll.storageKey);
-		if (storageValue > 0) {
-			count++;
+		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
+		if (!scrollKv) {
+			continue;
+		}
+
+		auto scrollKV = scrollKv->get(scroll.name);
+		if (scrollKV && scrollKV->get<bool>()) {
 			unlockedScrolls.push_back(scroll.itemId);
 		}
 	}
 
-	msg.add<uint16_t>(count);
+	msg.add<uint16_t>(unlockedScrolls.size());
 	for (const auto &itemId : unlockedScrolls) {
 		msg.add<uint16_t>(itemId);
 	}
@@ -1239,8 +1242,13 @@ uint16_t PlayerWheel::getExtraPoints() const {
 
 	uint16_t totalBonus = 0;
 	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
-		auto storageValue = m_player.getStorageValueByName(scroll.storageKey);
-		if (storageValue > 0) {
+		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
+		if (!scrollKv) {
+			continue;
+		}
+
+		auto scrollKV = scrollKv->get(scroll.name);
+		if (scrollKV && scrollKV->get<bool>()) {
 			totalBonus += scroll.extraPoints;
 		}
 	}

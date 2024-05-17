@@ -1762,6 +1762,7 @@ int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
 		return 0;
 	}
 
+	g_logger().warn("The function 'player:getStorageValueByName' is deprecated and will be removed in future versions, please use KV system");
 	auto name = getString(L, 2);
 	lua_pushnumber(L, player->getStorageValueByName(name));
 	return 1;
@@ -1776,6 +1777,7 @@ int PlayerFunctions::luaPlayerSetStorageValueByName(lua_State* L) {
 		return 0;
 	}
 
+	g_logger().warn("The function 'player:setStorageValueByName' is deprecated and will be removed in future versions, please use KV system");
 	auto storageName = getString(L, 2);
 	int32_t value = getNumber<int32_t>(L, 3);
 

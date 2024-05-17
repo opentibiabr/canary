@@ -1,16 +1,10 @@
 local config = {
-	activationMessage = "You have received %s VIP days.",
-	expirationMessage = "Your VIP days have expired.",
-	vipDaysInfiniteMessage = "You have an infinite amount of VIP days remaining.",
-	noVipStatusMessage = "You do not have VIP status on your account.",
-	vipTimeRemainingMessage = "You have %s of VIP time remaining.",
-
 	outfits = {},
 	mounts = {},
 }
 
 function Player.onRemoveVip(self)
-	self:sendTextMessage(MESSAGE_ADMINISTRATOR, config.expirationMessage)
+	self:sendTextMessage(MESSAGE_ADMINISTRATOR, "Your VIP status has expired. All VIP benefits have been removed.")
 
 	for _, outfit in ipairs(config.outfits) do
 		self:removeOutfit(outfit)
@@ -21,7 +15,7 @@ function Player.onRemoveVip(self)
 	end
 
 	local playerOutfit = self:getOutfit()
-	if table.contains(config.outfits, self:getOutfit().lookType) then
+	if table.contains(config.outfits, playerOutfit.lookType) then
 		if self:getSex() == PLAYERSEX_FEMALE then
 			playerOutfit.lookType = 136
 		else
@@ -37,7 +31,7 @@ end
 
 function Player.onAddVip(self, days, silent)
 	if not silent then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format(config.activationMessage, days))
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have been granted %s days of VIP status.", days))
 	end
 
 	for _, outfit in ipairs(config.outfits) do
@@ -53,15 +47,15 @@ end
 
 function CheckPremiumAndPrint(player, msgType)
 	if player:getVipDays() == 0xFFFF then
-		player:sendTextMessage(msgType, config.vipDaysInfiniteMessage)
+		player:sendTextMessage(msgType, "You have an unlimited VIP status.")
 		return true
 	end
 
 	local playerVipTime = player:getVipTime()
 	if playerVipTime < os.time() then
-		player:sendTextMessage(msgType, config.noVipStatusMessage)
+		player:sendTextMessage(msgType, "Your VIP status is currently inactive.")
 		return true
 	end
 
-	player:sendTextMessage(msgType, string.format(config.vipTimeRemainingMessage, getFormattedTimeRemaining(playerVipTime)))
+	player:sendTextMessage(msgType, string.format("You have %s of VIP time remaining.", getFormattedTimeRemaining(playerVipTime)))
 end

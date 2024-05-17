@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "creatures/creatures_definitions.hpp"
+
 class Player;
 
 struct VIPGroup {

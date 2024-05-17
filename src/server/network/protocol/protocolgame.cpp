@@ -7117,7 +7117,7 @@ void ProtocolGame::sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus) {
 	NetworkMessage msg;
 	msg.addByte(0xD3);
 	msg.add<uint32_t>(guid);
-	msg.addByte(magic_enum::enum_integer(newStatus));
+	msg.addByte(enumToValue(newStatus));
 	writeToOutputBuffer(msg);
 }
 
@@ -7133,7 +7133,7 @@ void ProtocolGame::sendVIP(uint32_t guid, const std::string &name, const std::st
 	msg.addString(description, "ProtocolGame::sendVIP - description");
 	msg.add<uint32_t>(std::min<uint32_t>(10, icon));
 	msg.addByte(notify ? 0x01 : 0x00);
-	msg.addByte(magic_enum::enum_integer(status));
+	msg.addByte(enumToValue(status));
 
 	const auto &vipGuidGroups = player->vip()->getGroupsIdGuidBelongs(guid);
 

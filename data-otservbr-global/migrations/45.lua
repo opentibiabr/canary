@@ -18,7 +18,7 @@ function onUpdateDatabase()
 			INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (3, NEW.`id`, 'Trading Partner', 0);
 		END;
 	]])
-	
+
 	db.query([[
 		CREATE TABLE IF NOT EXISTS `account_vipgrouplist` (
 			`account_id` int(11) UNSIGNED NOT NULL COMMENT 'id of account whose viplist entry it is',
@@ -51,7 +51,6 @@ function onUpdateDatabase()
 		INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`)
 		SELECT 3, id, 'Trading Partners', 0 FROM `accounts`;
 	]])
-
 
 	return true
 end

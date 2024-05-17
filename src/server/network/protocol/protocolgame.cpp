@@ -6574,7 +6574,6 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 			}
 
 			sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
-			
 		}
 	} else {
 		for (const VIPEntry &entry : vipEntries) {

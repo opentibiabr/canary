@@ -2625,7 +2625,7 @@ public:
 	std::unique_ptr<PlayerTitle> &title();
 	const std::unique_ptr<PlayerTitle> &title() const;
 
-		// Player vip interface
+	// Player vip interface
 	std::unique_ptr<PlayerVIP> &vip();
 	const std::unique_ptr<PlayerVIP> &vip() const;
 

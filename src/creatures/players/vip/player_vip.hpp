@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "io/iologindata.hpp"
-
 class Player;
 
 struct VIPGroup {

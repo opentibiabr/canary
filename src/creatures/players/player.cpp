@@ -650,10 +650,10 @@ phmap::flat_hash_map<Blessings_t, std::string> Player::getBlessingNames() const 
 void Player::setTraining(bool value) {
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		if (!this->isInGhostMode() || player->isAccessPlayer()) {
-			player->vip()->notifyStatusChange(static_self_cast<Player>(), value ? VipStatus_t::TRAINING : VipStatus_t::ONLINE, false);
+			player->vip()->notifyStatusChange(static_self_cast<Player>(), value ? VipStatus_t::Training : VipStatus_t::Online, false);
 		}
 	}
-	vip()->setStatus(VipStatus_t::TRAINING);
+	vip()->setStatus(VipStatus_t::Training);
 	setExerciseTraining(value);
 }
 
@@ -2986,7 +2986,7 @@ void Player::despawn() {
 
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::PENDING, false);
+		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::Pending, false);
 	}
 
 	setDead(true);
@@ -3040,7 +3040,7 @@ void Player::removeList() {
 	g_game().removePlayer(static_self_cast<Player>());
 
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::OFFLINE);
+		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::Offline);
 	}
 }
 

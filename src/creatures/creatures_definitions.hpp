@@ -715,10 +715,10 @@ enum ChannelEvent_t : uint8_t {
 };
 
 enum class VipStatus_t : uint8_t {
-	OFFLINE = 0,
-	ONLINE = 1,
-	PENDING = 2,
-	TRAINING = 3
+	Offline = 0,
+	Online = 1,
+	Pending = 2,
+	Training = 3
 };
 
 enum Vocation_t : uint16_t {

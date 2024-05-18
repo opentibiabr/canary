@@ -23,7 +23,7 @@ PlayerVIP::PlayerVIP(Player &player) :
 	m_player(player) { }
 
 size_t PlayerVIP::getMaxEntries() const {
-	if (m_player.group->maxVipEntries != 0) {
+	if (m_player.group && m_player.group->maxVipEntries != 0) {
 		return m_player.group->maxVipEntries;
 	} else if (m_player.isPremium()) {
 		return 100;
@@ -50,9 +50,9 @@ void PlayerVIP::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatu
 	m_player.client->sendUpdatedVIPStatus(loginPlayer->getGUID(), status);
 
 	if (message) {
-		if (status == VipStatus_t::ONLINE) {
+		if (status == VipStatus_t::Online) {
 			m_player.sendTextMessage(TextMessage(MESSAGE_FAILURE, fmt::format("{} has logged in.", loginPlayer->getName())));
-		} else if (status == VipStatus_t::OFFLINE) {
+		} else if (status == VipStatus_t::Offline) {
 			m_player.sendTextMessage(TextMessage(MESSAGE_FAILURE, fmt::format("{} has logged out.", loginPlayer->getName())));
 		}
 	}
@@ -219,7 +219,7 @@ void PlayerVIP::editGroup(uint8_t groupId, const std::string &newName, bool cust
 	}
 }
 
-const uint8_t PlayerVIP::getFreeId() {
+const uint8_t PlayerVIP::getFreeId() const {
 	for (uint8_t i = firstID; i <= lastID; ++i) {
 		if (getGroupByID(i) == nullptr) {
 			return i;

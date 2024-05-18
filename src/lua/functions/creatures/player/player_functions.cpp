@@ -3017,7 +3017,7 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	if (player->isInGhostMode()) {
 		for (const auto &it : g_game().getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
-				it.second->vip()->notifyStatusChange(player, VipStatus_t::OFFLINE);
+				it.second->vip()->notifyStatusChange(player, VipStatus_t::Offline);
 			}
 		}
 		IOLoginData::updateOnlineStatus(player->getGUID(), false);

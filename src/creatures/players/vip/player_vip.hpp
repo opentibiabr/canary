@@ -58,7 +58,7 @@ public:
 
 	void addGuidToGroupInternal(uint8_t groupId, uint32_t guid);
 
-	const uint8_t getFreeId();
+	const uint8_t getFreeId() const;
 	const std::vector<uint8_t> getGroupsIdGuidBelongs(uint32_t guid);
 
 	[[nodiscard]] const std::vector<std::shared_ptr<VIPGroup>> &getGroups() const {
@@ -68,7 +68,7 @@ public:
 private:
 	Player &m_player;
 
-	VipStatus_t status = VipStatus_t::ONLINE;
+	VipStatus_t status = VipStatus_t::Online;
 	std::vector<std::shared_ptr<VIPGroup>> vipGroups;
 	phmap::flat_hash_set<uint32_t> vipGuids;
 };

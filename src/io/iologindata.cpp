@@ -370,26 +370,22 @@ std::forward_list<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 }
 
 void IOLoginData::addVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
-	Database &db = Database::getInstance();
-
-	std::string query = fmt::format("INSERT INTO `account_viplist` (`account_id`, `player_id`, `description`, `icon`, `notify`) VALUES ({}, {}, {}, {}, {})", accountId, guid, db.escapeString(description), icon, notify);
-	if (!db.executeQuery(query)) {
+	std::string query = fmt::format("INSERT INTO `account_viplist` (`account_id`, `player_id`, `description`, `icon`, `notify`) VALUES ({}, {}, {}, {}, {})", accountId, guid, g_database().escapeString(description), icon, notify);
+	if (!g_database().executeQuery(query)) {
 		g_logger().error("Failed to add VIP entry for account {}. QUERY: {}", accountId, query.c_str());
 	}
 }
 
 void IOLoginData::editVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
-	Database &db = Database::getInstance();
-
-	std::string query = fmt::format("UPDATE `account_viplist` SET `description` = {}, `icon` = {}, `notify` = {} WHERE `account_id` = {} AND `player_id` = {}", db.escapeString(description), icon, notify, accountId, guid);
-	if (!db.executeQuery(query)) {
+	std::string query = fmt::format("UPDATE `account_viplist` SET `description` = {}, `icon` = {}, `notify` = {} WHERE `account_id` = {} AND `player_id` = {}", g_database().escapeString(description), icon, notify, accountId, guid);
+	if (!g_database().executeQuery(query)) {
 		g_logger().error("Failed to edit VIP entry for account {}. QUERY: {}", accountId, query.c_str());
 	}
 }
 
 void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
 	std::string query = fmt::format("DELETE FROM `account_viplist` WHERE `account_id` = {} AND `player_id` = {}", accountId, guid);
-	Database::getInstance().executeQuery(query);
+	g_database().executeQuery(query);
 }
 
 std::forward_list<VIPGroupEntry> IOLoginData::getVIPGroupEntries(uint32_t accountId, uint32_t guid) {
@@ -397,7 +393,7 @@ std::forward_list<VIPGroupEntry> IOLoginData::getVIPGroupEntries(uint32_t accoun
 
 	std::string query = fmt::format("SELECT `id`, `name`, `customizable` FROM `account_vipgroups` WHERE `account_id` = {}", accountId);
 
-	DBResult_ptr result = Database::getInstance().storeQuery(query);
+	DBResult_ptr result = g_database().storeQuery(query);
 	if (result) {
 		do {
 			entries.emplace_front(
@@ -411,38 +407,32 @@ std::forward_list<VIPGroupEntry> IOLoginData::getVIPGroupEntries(uint32_t accoun
 }
 
 void IOLoginData::addVIPGroupEntry(uint8_t groupId, uint32_t accountId, const std::string &groupName, bool customizable) {
-	Database &db = Database::getInstance();
-
-	std::string query = fmt::format("INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES ({}, {}, {}, {})", groupId, accountId, db.escapeString(groupName), customizable);
-	if (!db.executeQuery(query)) {
+	std::string query = fmt::format("INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES ({}, {}, {}, {})", groupId, accountId, g_database().escapeString(groupName), customizable);
+	if (!g_database().executeQuery(query)) {
 		g_logger().error("Failed to add VIP Group entry for account {} and group {}. QUERY: {}", accountId, groupId, query.c_str());
 	}
 }
 
 void IOLoginData::editVIPGroupEntry(uint8_t groupId, uint32_t accountId, const std::string &groupName, bool customizable) {
-	Database &db = Database::getInstance();
-
-	std::string query = fmt::format("UPDATE `account_vipgroups` SET `name` = {}, `customizable` = {} WHERE `id` = {} AND `account_id` = {}", db.escapeString(groupName), customizable, groupId, accountId);
-	if (!db.executeQuery(query)) {
+	std::string query = fmt::format("UPDATE `account_vipgroups` SET `name` = {}, `customizable` = {} WHERE `id` = {} AND `account_id` = {}", g_database().escapeString(groupName), customizable, groupId, accountId);
+	if (!g_database().executeQuery(query)) {
 		g_logger().error("Failed to update VIP Group entry for account {} and group {}. QUERY: {}", accountId, groupId, query.c_str());
 	}
 }
 
 void IOLoginData::removeVIPGroupEntry(uint8_t groupId, uint32_t accountId) {
 	std::string query = fmt::format("DELETE FROM `account_vipgroups` WHERE `id` = {} AND `account_id` = {}", groupId, accountId);
-	Database::getInstance().executeQuery(query);
+	g_database().executeQuery(query);
 }
 
 void IOLoginData::addGuidVIPGroupEntry(uint8_t groupId, uint32_t accountId, uint32_t guid) {
-	Database &db = Database::getInstance();
-
 	std::string query = fmt::format("INSERT INTO `account_vipgrouplist` (`account_id`, `player_id`, `vipgroup_id`) VALUES ({}, {}, {})", accountId, guid, groupId);
-	if (!db.executeQuery(query)) {
+	if (!g_database().executeQuery(query)) {
 		g_logger().error("Failed to add guid VIP Group entry for account {}, player {} and group {}. QUERY: {}", accountId, guid, groupId, query.c_str());
 	}
 }
 
 void IOLoginData::removeGuidVIPGroupEntry(uint32_t accountId, uint32_t guid) {
 	std::string query = fmt::format("DELETE FROM `account_vipgrouplist` WHERE `account_id` = {} AND `player_id` = {}", accountId, guid);
-	Database::getInstance().executeQuery(query);
+	g_database().executeQuery(query);
 }

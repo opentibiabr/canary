@@ -219,7 +219,7 @@ void PlayerVIP::editGroup(uint8_t groupId, const std::string &newName, bool cust
 	}
 }
 
-const uint8_t PlayerVIP::getFreeId() const {
+uint8_t PlayerVIP::getFreeId() const {
 	for (uint8_t i = firstID; i <= lastID; ++i) {
 		if (getGroupByID(i) == nullptr) {
 			return i;

@@ -26,36 +26,40 @@ local targetIdList = {
 local flasks = Action()
 
 function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or not target:getItem() then
-		return false
-	end
+    if not target or type(target.getCharges) ~= "function" or type(target.getId) ~= "function" then
+        return false
+    end
 
-	local charges = target:getCharges()
-	local itemCount = item:getCount()
-	if itemCount > charges then
-		itemCount = charges
-	end
+    local charges = target:getCharges()
+    local itemCount = item:getCount()
 
-	local targetId = targetIdList[target:getId()]
-	if targetId and item:getId() == targetId.itemId and charges > 0 then
-		local potMath = item:getCount() - itemCount
-		local parent = item:getParent()
-		if not (parent:isContainer() and parent:addItem(item:getId(), potMath)) then
-			player:addItem(item:getId(), potMath, true)
-		end
+    if itemCount > charges then
+        itemCount = charges
+    end
 
-		item:transform(targetId.transform, itemCount)
-		charges = charges - itemCount
-		target:transform(target:getId(), charges)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %s charges.", charges))
+    local targetId = targetIdList and targetIdList[target:getId()]
+    if targetId and item:getId() == targetId.itemId and charges > 0 then
+        local potMath = item:getCount() - itemCount
+        local parent = item:getParent()
 
-		if charges == 0 then
-			target:remove()
-		end
-		return true
-	end
-	return false
+        if not (parent and type(parent.isContainer) == "function" and parent:isContainer() and parent:addItem(item:getId(), potMath)) then
+            player:addItem(item:getId(), potMath, true)
+        end
+
+        item:transform(targetId.transform, itemCount)
+        charges = charges - itemCount
+        target:transform(target:getId(), charges)
+        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %s charges.", charges))
+
+        if charges == 0 then
+            target:remove()
+        end
+        return true
+    end
+
+    return false
 end
+
 
 flasks:id(283, 284, 285)
 flasks:register()

@@ -26,7 +26,7 @@ local targetIdList = {
 local flasks = Action()
 
 function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-    if not target or type(target.getCharges) ~= "function" or type(target.getId) ~= "function" then
+    if not target or not target:isItem() then
         return false
     end
 
@@ -40,11 +40,6 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
     local targetId = targetIdList and targetIdList[target:getId()]
     if targetId and item:getId() == targetId.itemId and charges > 0 then
         local potMath = item:getCount() - itemCount
-        local parent = item:getParent()
-
-        if not (parent and type(parent.isContainer) == "function" and parent:isContainer() and parent:addItem(item:getId(), potMath)) then
-            player:addItem(item:getId(), potMath, true)
-        end
 
         item:transform(targetId.transform, itemCount)
         charges = charges - itemCount
@@ -54,7 +49,16 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
         if charges == 0 then
             target:remove()
         end
-        return true
+
+        local inbox = player:getStoreInbox()
+        if inbox and inbox:addItem(targetId.transform, itemCount) then
+            item:remove(itemCount)
+            return true
+        else
+            item:transform(item:getId(), itemCount)
+            target:transform(target:getId(), charges + itemCount)
+            return false
+        end
     end
 
     return false

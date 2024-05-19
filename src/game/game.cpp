@@ -486,9 +486,16 @@ void Game::start(ServiceManager* manager) {
 	g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
-	g_dispatcher().cycleEvent(
-		EVENT_REFRESH_MARKET_PRICES, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
-	);
+	auto marketItemsPriceIntervalMinutes = g_configManager().getNumber(MARKET_REFRESH_PRICES, __FUNCTION__);
+	if (marketItemsPriceIntervalMinutes > 0) {
+		auto marketItemsPriceIntervalMS = marketItemsPriceIntervalMinutes * 60000;
+		if (marketItemsPriceIntervalMS < 60000) {
+			marketItemsPriceIntervalMS = 60000;
+		}
+		g_dispatcher().cycleEvent(
+			marketItemsPriceIntervalMS, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
+		);
+	}
 }
 
 GameState_t Game::getGameState() const {

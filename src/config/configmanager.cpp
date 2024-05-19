@@ -61,6 +61,7 @@ bool ConfigManager::load() {
 		loadIntConfig(L, GAME_PORT, "gameProtocolPort", 7172);
 		loadIntConfig(L, LOGIN_PORT, "loginProtocolPort", 7171);
 		loadIntConfig(L, MARKET_OFFER_DURATION, "marketOfferDuration", 30 * 24 * 60 * 60);
+		loadIntConfig(L, MARKET_REFRESH_PRICES, "marketRefreshPricesInterval", 0);
 		loadIntConfig(L, PREMIUM_DEPOT_LIMIT, "premiumDepotLimit", 8000);
 		loadIntConfig(L, SQL_PORT, "mysqlPort", 3306);
 		loadIntConfig(L, STASH_ITEMS, "stashItemCount", 5000);

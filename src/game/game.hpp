@@ -60,7 +60,6 @@ static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 static constexpr int32_t EVENT_FORGEABLEMONSTERCHECKINTERVAL = 300000;
 static constexpr int32_t EVENT_LUA_GARBAGE_COLLECTION = 60000 * 10; // 10min
-static constexpr int32_t EVENT_REFRESH_MARKET_PRICES = 60000; // 1min
 
 static constexpr std::chrono::minutes CACHE_EXPIRATION_TIME { 10 }; // 10min
 static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; // 10min

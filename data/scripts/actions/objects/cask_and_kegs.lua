@@ -60,6 +60,5 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
     return false
 end
 
-
 flasks:id(283, 284, 285)
 flasks:register()

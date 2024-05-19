@@ -580,18 +580,10 @@ void Game::setGameState(GameState_t newState) {
 	}
 }
 
-bool Game::loadItemsPrice() {
+void Game::loadItemsPrice() {
 	IOMarket::getInstance().updateStatistics();
-	std::ostringstream query, marketQuery;
-	query << "SELECT DISTINCT `itemtype` FROM `market_offers`;";
 
-	Database &db = Database::getInstance();
-	DBResult_ptr result = db.storeQuery(query.str());
-	if (!result) {
-		return false;
-	}
-
-	auto stats = IOMarket::getInstance().getPurchaseStatistics();
+	const auto &stats = IOMarket::getInstance().getPurchaseStatistics();
 	for (const auto &[itemId, itemStats] : stats) {
 		std::map<uint8_t, uint64_t> tierToPrice;
 		for (const auto &[tier, tierStats] : itemStats) {
@@ -600,12 +592,18 @@ bool Game::loadItemsPrice() {
 		}
 		itemsPriceMap[itemId] = tierToPrice;
 	}
+
+	Database &db = Database::getInstance();
+	auto query = fmt::format("SELECT DISTINCT `itemtype` FROM `market_offers`;");
+	DBResult_ptr result = db.storeQuery(query);
+	if (!result) {
+		return;
+	}
+
 	auto offers = IOMarket::getInstance().getActiveOffers(MARKETACTION_BUY);
 	for (const auto &offer : offers) {
 		itemsPriceMap[offer.itemId][offer.tier] = std::max(itemsPriceMap[offer.itemId][offer.tier], offer.price);
 	}
-
-	return true;
 }
 
 void Game::loadMainMap(const std::string &filename) {

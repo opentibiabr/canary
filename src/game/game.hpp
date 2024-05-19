@@ -517,7 +517,7 @@ public:
 		return lightHour;
 	}
 
-	bool loadItemsPrice();
+	void loadItemsPrice();
 
 	void loadMotdNum();
 	void saveMotdNum() const;

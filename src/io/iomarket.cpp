@@ -333,9 +333,14 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state) {
 }
 
 void IOMarket::updateStatistics() {
-	std::ostringstream query;
-	query << "SELECT `sale` AS `sale`, `itemtype` AS `itemtype`, COUNT(`price`) AS `num`, MIN(`price`) AS `min`, MAX(`price`) AS `max`, SUM(`price`) AS `sum`, `tier` AS `tier` FROM `market_history` WHERE `state` = " << OFFERSTATE_ACCEPTED << " GROUP BY `itemtype`, `sale`, `tier`";
-	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+	auto query = fmt::format(
+		"SELECT sale, itemtype, COUNT(price) AS num, MIN(price) AS min, MAX(price) AS max, SUM(price) AS sum, tier "
+		"FROM market_history "
+		"WHERE state = '{}' "
+		"GROUP BY itemtype, sale, tier",
+		OFFERSTATE_ACCEPTED
+	);
+	DBResult_ptr result = Database::getInstance().storeQuery(query);
 	if (!result) {
 		return;
 	}

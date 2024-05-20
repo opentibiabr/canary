@@ -38,30 +38,32 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
     end
 
     local targetId = targetIdList and targetIdList[target:getId()]
-    if targetId and item:getId() == targetId.itemId and charges > 0 then
-        local potMath = item:getCount() - itemCount
-
-        item:transform(targetId.transform, itemCount)
-        charges = charges - itemCount
-        target:transform(target:getId(), charges)
-        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %s charges.", charges))
-
-        if charges == 0 then
-            target:remove()
-        end
-
-        local inbox = player:getStoreInbox()
-        if inbox and inbox:addItem(targetId.transform, itemCount) then
-            item:remove(itemCount)
-            return true
-        else
-            item:transform(item:getId(), itemCount)
-            target:transform(target:getId(), charges + itemCount)
-            return false
-        end
+    if not targetId or item:getId() ~= targetId.itemId or charges <= 0 then
+        return false
     end
 
-    return false
+    local inbox = player:getStoreInbox()
+    if not inbox then
+        return false
+    end
+
+    item:transform(targetId.transform, itemCount)
+    charges = charges - itemCount
+    target:transform(target:getId(), charges)
+    player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %s charges.", charges))
+
+    if charges == 0 then
+        target:remove()
+    end
+
+    if inbox:addItem(targetId.transform, itemCount) then
+        item:remove(itemCount)
+        return true
+    else
+        item:transform(item:getId(), itemCount)
+        target:transform(target:getId(), charges + itemCount)
+        return false
+    end
 end
 
 flasks:id(283, 284, 285)

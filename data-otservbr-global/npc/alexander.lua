@@ -30,6 +30,28 @@ npcConfig.voices = {
 }
 
 local itemsTable = {
+	["exercise weapons"] = {
+		{ itemName = "durable exercise rod", clientId = 35283, buy = 945000, count = 1800 },
+		{ itemName = "durable exercise wand", clientId = 35284, buy = 945000, count = 1800 },
+		{ itemName = "exercise rod", clientId = 28556, buy = 262500, count = 500 },
+		{ itemName = "exercise wand", clientId = 28557, buy = 262500, count = 500 },
+		{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000, count = 14400 },
+		{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000, count = 14400 },
+	},
+	["creature products"] = {
+		{ itemName = "crystal ball", clientId = 3076, buy = 530, sell = 190 },
+		{ itemName = "life crystal", clientId = 3061, sell = 83 },
+		{ itemName = "mind stone", clientId = 3062, sell = 170 },
+	},
+	["shields"] = {
+		{ itemName = "spellbook of enlightenment", clientId = 8072, sell = 4000 },
+		{ itemName = "spellbook of warding", clientId = 8073, sell = 8000 },
+		{ itemName = "spellbook of mind control", clientId = 8074, sell = 13000 },
+		{ itemName = "spellbook of lost souls", clientId = 8075, sell = 19000 },
+	},
+	["others"] = {
+		{ itemName = "spellwand", clientId = 651, sell = 299 },
+	},
 	["runes"] = {
 		{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
 		{ itemName = "blank rune", clientId = 3147, buy = 10 },

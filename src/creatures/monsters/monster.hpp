@@ -15,7 +15,6 @@
 
 class Creature;
 class Game;
-class Spawn;
 
 class Monster final : public Creature {
 public:
@@ -23,7 +22,7 @@ public:
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
-	explicit Monster(const std::shared_ptr<MonsterType> mType);
+	explicit Monster(std::shared_ptr<MonsterType> mType);
 
 	// non-copyable
 	Monster(const Monster &) = delete;
@@ -164,7 +163,7 @@ public:
 	}
 
 	std::vector<CreatureIcon> getIcons() const override {
-		const auto creatureIcons = Creature::getIcons();
+		auto creatureIcons = Creature::getIcons();
 		if (!creatureIcons.empty()) {
 			return creatureIcons;
 		}
@@ -328,7 +327,7 @@ public:
 		return timeToChangeFiendish;
 	}
 
-	const std::shared_ptr<MonsterType> getMonsterType() const {
+	std::shared_ptr<MonsterType> getMonsterType() const {
 		return mType;
 	}
 

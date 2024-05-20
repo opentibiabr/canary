@@ -39,7 +39,6 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 	this->filemonstername = filemonstername;
 	loaded = true;
 
-	uint32_t eventschedule = g_eventsScheduler().getSpawnMonsterSchedule();
 	std::string boostedNameGet = g_game().getBoostedMonsterName();
 
 	for (auto spawnMonsterNode : doc.child("monsters").children()) {
@@ -88,12 +87,6 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 					static_cast<uint16_t>(centerPos.y + yOffset),
 					centerPos.z
 				);
-
-				int32_t boostedrate = 1;
-
-				if (nameAttribute.value() == boostedNameGet) {
-					boostedrate = 2;
-				}
 
 				pugi::xml_attribute weightAttribute = childMonsterNode.attribute("weight");
 				uint32_t weight = 1;
@@ -157,12 +150,9 @@ SpawnMonster::~SpawnMonster() {
 
 bool SpawnMonster::findPlayer(const Position &pos) {
 	auto spectators = Spectators().find<Player>(pos);
-	for (const auto &spectator : spectators) {
-		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
-			return true;
-		}
-	}
-	return false;
+	return std::ranges::any_of(spectators, [](const auto &spectator) {
+		return !spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters);
+	});
 }
 
 bool SpawnMonster::isInSpawnMonsterZone(const Position &pos) {
@@ -300,7 +290,7 @@ void SpawnMonster::cleanup() {
 }
 
 bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval, uint32_t weight /*= 1*/) {
-	std::string variant = "";
+	std::string variant;
 	for (const auto &zone : Zone::getZones(pos)) {
 		if (!zone->getMonsterVariant().empty()) {
 			variant = zone->getMonsterVariant() + "|";
@@ -344,7 +334,7 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 			g_logger().error("[SpawnMonster] Monster {} already exists in spawn block at {}", name, pos.toString());
 			return false;
 		}
-		if (monsterType->isBoss() && sb->monsterTypes.size() > 0) {
+		if (monsterType->isBoss() && !sb->monsterTypes.empty()) {
 			g_logger().error("[SpawnMonster] Boss monster {} has been added to spawn block with other monsters. This is not allowed.", name);
 			return false;
 		}
@@ -437,10 +427,8 @@ std::shared_ptr<MonsterType> spawnBlock_t::getMonsterType() const {
 }
 
 bool spawnBlock_t::hasBoss() const {
-	for (const auto &[monsterType, weight] : monsterTypes) {
-		if (monsterType->isBoss()) {
-			return true;
-		}
-	}
-	return false;
+	return std::ranges::any_of(monsterTypes, [](const auto &pair) {
+		const auto &[monsterType, weight] = pair;
+		return monsterType->isBoss();
+	});
 }

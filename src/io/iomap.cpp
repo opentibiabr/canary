@@ -122,8 +122,6 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 		const uint16_t base_y = stream.getU16();
 		const uint8_t base_z = stream.getU8();
 
-		bool tileIsStatic = false;
-
 		while (stream.startNode()) {
 			const uint8_t tileType = stream.getU8();
 			if (tileType != OTBM_HOUSETILE && tileType != OTBM_TILE) {
@@ -166,9 +164,6 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				const auto &iType = Item::items[id];
 
 				if (!tile->isHouse() || (!iType.isBed() && !iType.isTrashHolder())) {
-					if (iType.blockSolid) {
-						tileIsStatic = true;
-					}
 
 					const auto item = std::make_shared<BasicItem>();
 					item->id = id;
@@ -193,10 +188,6 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 						const uint16_t id = stream.getU16();
 
 						const auto &iType = Item::items[id];
-
-						if (iType.blockSolid) {
-							tileIsStatic = true;
-						}
 
 						const auto item = std::make_shared<BasicItem>();
 						item->id = id;

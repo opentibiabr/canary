@@ -14,7 +14,7 @@
 
 void Guild::addMember(const std::shared_ptr<Player> &player) {
 	membersOnline.push_back(player);
-	for (auto member : getMembersOnline()) {
+	for (const auto &member : getMembersOnline()) {
 		g_game().updatePlayerHelpers(member);
 	}
 }

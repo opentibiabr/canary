@@ -63,8 +63,8 @@ public:
 	}
 
 	void clear();
-	bool registerInstantLuaEvent(const std::shared_ptr<InstantSpell> instant);
-	bool registerRuneLuaEvent(const std::shared_ptr<RuneSpell> rune);
+	bool registerInstantLuaEvent(std::shared_ptr<InstantSpell> instant);
+	bool registerRuneLuaEvent(std::shared_ptr<RuneSpell> rune);
 
 private:
 	std::map<uint16_t, std::shared_ptr<RuneSpell>> runes;
@@ -92,7 +92,7 @@ public:
 class CombatSpell final : public Script, public BaseSpell, public std::enable_shared_from_this<CombatSpell> {
 public:
 	// Constructor
-	CombatSpell(const std::shared_ptr<Combat> newCombat, bool newNeedTarget, bool newNeedDirection);
+	CombatSpell(std::shared_ptr<Combat> newCombat, bool newNeedTarget, bool newNeedDirection);
 
 	// The copy constructor and the assignment operator have been deleted to prevent accidental copying.
 	CombatSpell(const CombatSpell &) = delete;
@@ -344,6 +344,9 @@ public:
 	void setSeparator(const std::string_view &newSeparator) {
 		m_separator = newSeparator.data();
 	}
+
+	void getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &damage);
+	int32_t calculateAugmentSpellCooldownReduction(std::shared_ptr<Player> player) const;
 
 protected:
 	void applyCooldownConditions(std::shared_ptr<Player> player) const;

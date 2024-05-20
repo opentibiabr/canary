@@ -66,7 +66,7 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 	}
 
 	player->setGUID(result->getNumber<uint32_t>("id"));
-	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
+	std::shared_ptr<Group> group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
 		g_logger().error("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
 		return false;
@@ -118,7 +118,7 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 		player->setAccount(result->getNumber<uint32_t>("account_id"));
 	}
 
-	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
+	std::shared_ptr<Group> group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
 		g_logger().error("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
 		return false;

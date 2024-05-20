@@ -612,7 +612,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			const bool withoutCreature = creature == nullptr;
 			const auto &tile = neighborNode || withoutCreature ? getTile(pos.x, pos.y, pos.z) : canWalkTo(creature, pos);
 
-			if (!tile || !neighborNode && withoutCreature && tile->hasFlag(TILESTATE_BLOCKSOLID)) {
+			if (!tile || (!neighborNode && withoutCreature && tile->hasFlag(TILESTATE_BLOCKSOLID))) {
 				continue;
 			}
 

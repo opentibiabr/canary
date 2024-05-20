@@ -20,7 +20,7 @@ void MonsterType::loadLoot(const std::shared_ptr<MonsterType> monsterType, LootB
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
 		if (isContainer) {
-			for (LootBlock child : lootBlock.childLoot) {
+			for (const LootBlock &child : lootBlock.childLoot) {
 				lootBlock.childLoot.push_back(child);
 			}
 		}
@@ -74,7 +74,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 		return true;
 	}
 
-	std::shared_ptr<CombatSpell> combatSpell = nullptr;
+	std::shared_ptr<CombatSpell> combatSpell;
 
 	auto combatPtr = std::make_shared<Combat>();
 
@@ -156,7 +156,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 
 		std::shared_ptr<ConditionOutfit> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_OUTFIT, duration, 0)->static_self_cast<ConditionOutfit>();
 
-		if (spell->outfitMonster != "") {
+		if (!spell->outfitMonster.empty()) {
 			condition->setLazyMonsterOutfit(spell->outfitMonster);
 		} else if (spell->outfitItem > 0) {
 			Outfit_t outfit;
@@ -324,7 +324,7 @@ std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name, b
 }
 
 std::shared_ptr<MonsterType> Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = false*/) const {
-	const auto bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
+	auto bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
 	if (isBoss && bossType) {
 		return bossType;
 	}

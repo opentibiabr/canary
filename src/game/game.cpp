@@ -590,6 +590,7 @@ void Game::setGameState(GameState_t newState) {
 void Game::loadItemsPrice() {
 	IOMarket::getInstance().updateStatistics();
 
+	// Update purchased offers (market_history)
 	const auto &stats = IOMarket::getInstance().getPurchaseStatistics();
 	for (const auto &[itemId, itemStats] : stats) {
 		std::map<uint8_t, uint64_t> tierToPrice;
@@ -600,13 +601,7 @@ void Game::loadItemsPrice() {
 		itemsPriceMap[itemId] = tierToPrice;
 	}
 
-	Database &db = Database::getInstance();
-	auto query = fmt::format("SELECT DISTINCT `itemtype` FROM `market_offers`;");
-	DBResult_ptr result = db.storeQuery(query);
-	if (!result) {
-		return;
-	}
-
+	// Update active buy offers (market_offers)
 	auto offers = IOMarket::getInstance().getActiveOffers(MARKETACTION_BUY);
 	for (const auto &offer : offers) {
 		itemsPriceMap[offer.itemId][offer.tier] = std::max(itemsPriceMap[offer.itemId][offer.tier], offer.price);

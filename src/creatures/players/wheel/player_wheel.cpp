@@ -752,8 +752,8 @@ void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
 			continue;
 		}
 
-		auto scrollKV = scrollKv->get(scroll.name);
-		if (scrollKV && scrollKV->get<bool>()) {
+		auto scrollOpt = scrollKv->get(scroll.name);
+		if (scrollOpt && scrollOpt->get<bool>()) {
 			unlockedScrolls.push_back(scroll.itemId);
 		}
 	}

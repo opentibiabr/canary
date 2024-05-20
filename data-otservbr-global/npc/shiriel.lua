@@ -70,6 +70,20 @@ local itemsTable = {
 		{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
 		{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
 	},
+	["exercise weapons"] = {
+		{ itemName = "durable exercise rod", clientId = 35283, buy = 945000, count = 1800 },
+		{ itemName = "durable exercise wand", clientId = 35284, buy = 945000, count = 1800 },
+		{ itemName = "exercise rod", clientId = 28556, buy = 262500, count = 500 },
+		{ itemName = "exercise wand", clientId = 28557, buy = 262500, count = 500 },
+		{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000, count = 14400 },
+		{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000, count = 14400 },
+	},
+	["others"] = {
+		{ itemName = "spellwand", clientId = 651, sell = 299 },
+	},
+	["shields"] = {
+		{ itemName = "spellbook", clientId = 3059, buy = 150 },
+	},
 }
 
 npcConfig.shop = {}

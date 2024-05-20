@@ -64466,8 +64466,8 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2600"/>
 		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
-			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
@@ -74873,11 +74873,14 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weight" value="280"/>
 	</item>
 	<item id="43740" article="a" name="scarab ocarina">
-		<attribute key="primarytype" value="light sources"/>
+		<attribute key="primarytype" value="quest items"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="description" value="It has a turquoise shimmer and was made from a real scarab shell."/>
 		<attribute key="absorbpercentearth" value="2"/>
 		<attribute key="weight" value="120"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
 	<item id="43665" article="a" name="dead elder bloodjaw">
 		<attribute key="decayTo" value="0"/>
@@ -74993,6 +74996,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="decayTo" value="43815"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43863" article="a" name="conch shell horn">
+		<attribute key="primarytype" value="quest items"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="absorbpercentice" value="5"/>
+		<attribute key="weight" value="150"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
 	<item id="43864" article="a" name="sanguine blade">
 		<attribute key="primarytype" value="sword weapons"/>

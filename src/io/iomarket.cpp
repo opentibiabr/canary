@@ -29,10 +29,14 @@ uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
 	MarketOfferList offerList;
 
-	std::ostringstream query;
-	query << "SELECT `id`, `itemtype`, `amount`, `price`, `tier`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `sale` = " << action;
+	std::string query = fmt::format(
+		"SELECT `id`, `itemtype`, `amount`, `price`, `tier`, `created`, `anonymous`, "
+		"(SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` "
+		"FROM `market_offers` WHERE `sale` = {}",
+		action
+	);
 
-	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+	DBResult_ptr result = g_database().storeQuery(query);
 	if (!result) {
 		return offerList;
 	}
@@ -342,7 +346,8 @@ void IOMarket::updateStatistics() {
 		"GROUP BY itemtype, sale, tier",
 		OFFERSTATE_ACCEPTED
 	);
-	DBResult_ptr result = Database::getInstance().storeQuery(query);
+
+	DBResult_ptr result = g_database().storeQuery(query);
 	if (!result) {
 		return;
 	}

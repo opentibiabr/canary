@@ -58,12 +58,13 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
     if inbox:addItem(targetId.transform, itemCount) then
         item:remove(itemCount)
-        return true
     else
         item:transform(item:getId(), itemCount)
         target:transform(target:getId(), charges + itemCount)
         return false
     end
+    
+    return true
 end
 
 flasks:id(283, 284, 285)

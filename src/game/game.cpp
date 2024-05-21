@@ -486,9 +486,16 @@ void Game::start(ServiceManager* manager) {
 	g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
-	g_dispatcher().cycleEvent(
-		EVENT_REFRESH_MARKET_PRICES, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
-	);
+	auto marketItemsPriceIntervalMinutes = g_configManager().getNumber(MARKET_REFRESH_PRICES, __FUNCTION__);
+	if (marketItemsPriceIntervalMinutes > 0) {
+		auto marketItemsPriceIntervalMS = marketItemsPriceIntervalMinutes * 60000;
+		if (marketItemsPriceIntervalMS < 60000) {
+			marketItemsPriceIntervalMS = 60000;
+		}
+		g_dispatcher().cycleEvent(
+			marketItemsPriceIntervalMS, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
+		);
+	}
 }
 
 GameState_t Game::getGameState() const {
@@ -580,18 +587,11 @@ void Game::setGameState(GameState_t newState) {
 	}
 }
 
-bool Game::loadItemsPrice() {
+void Game::loadItemsPrice() {
 	IOMarket::getInstance().updateStatistics();
-	std::ostringstream query, marketQuery;
-	query << "SELECT DISTINCT `itemtype` FROM `market_offers`;";
 
-	Database &db = Database::getInstance();
-	DBResult_ptr result = db.storeQuery(query.str());
-	if (!result) {
-		return false;
-	}
-
-	auto stats = IOMarket::getInstance().getPurchaseStatistics();
+	// Update purchased offers (market_history)
+	const auto &stats = IOMarket::getInstance().getPurchaseStatistics();
 	for (const auto &[itemId, itemStats] : stats) {
 		std::map<uint8_t, uint64_t> tierToPrice;
 		for (const auto &[tier, tierStats] : itemStats) {
@@ -600,12 +600,12 @@ bool Game::loadItemsPrice() {
 		}
 		itemsPriceMap[itemId] = tierToPrice;
 	}
+
+	// Update active buy offers (market_offers)
 	auto offers = IOMarket::getInstance().getActiveOffers(MARKETACTION_BUY);
 	for (const auto &offer : offers) {
 		itemsPriceMap[offer.itemId][offer.tier] = std::max(itemsPriceMap[offer.itemId][offer.tier], offer.price);
 	}
-
-	return true;
 }
 
 void Game::loadMainMap(const std::string &filename) {

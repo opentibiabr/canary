@@ -30,6 +30,7 @@ local reloadTypes = {
 	["scripts"] = RELOAD_TYPE_SCRIPTS,
 	["stage"] = RELOAD_TYPE_CORE,
 	["stages"] = RELOAD_TYPE_CORE,
+	["vocations"] = RELOAD_TYPE_VOCATIONS,
 }
 
 local reload = TalkAction("/reload")

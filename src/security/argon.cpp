@@ -15,7 +15,6 @@
 
 #include <argon2.h>
 
-const std::regex Argon2::re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
 const std::string Argon2::base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 Argon2::Argon2() {
@@ -29,7 +28,7 @@ void Argon2::updateConstants() {
 	parallelism = g_configManager().getNumber(PARALLELISM, __FUNCTION__);
 }
 
-uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
+uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) {
 	std::stringstream ss(bitShiftStr);
 	int base;
 	int shift;
@@ -43,28 +42,39 @@ uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
 	return base << shift;
 }
 
+const std::regex &Argon2::getRegex() {
+	static const std::regex re(R"(\$([A-Za-z0-9+/]+)\$([A-Za-z0-9+/]+))");
+	return re;
+}
+
 bool Argon2::verifyPassword(const std::string &password, const std::string &phash) const {
 	std::smatch match;
+	const std::regex &re = getRegex();
 	if (!std::regex_search(phash, match, re)) {
 		g_logger().debug("No argon2 hash found in string");
 		return false;
 	}
 
-	std::vector<uint8_t> salt = base64_decode(match[1]);
-	std::vector<uint8_t> hash = base64_decode(match[2]);
+	try {
+		std::vector<uint8_t> salt = base64_decode(match[1]);
+		std::vector<uint8_t> hash = base64_decode(match[2]);
 
-	// Hash the password
-	std::vector<uint8_t> computed_hash(hash.size());
-	if (argon2id_hash_raw(t_cost, m_cost, parallelism, password.c_str(), password.length(), salt.data(), salt.size(), computed_hash.data(), computed_hash.size()) != ARGON2_OK) {
-		g_logger().warn("Error hashing password");
+		// Hash the password
+		std::vector<uint8_t> computed_hash(hash.size());
+		if (argon2id_hash_raw(t_cost, m_cost, parallelism, password.c_str(), password.length(), salt.data(), salt.size(), computed_hash.data(), computed_hash.size()) != ARGON2_OK) {
+			g_logger().warn("Error hashing password");
+			return false;
+		}
+
+		// Use constant-time comparison to avoid timing attacks
+		return std::equal(computed_hash.begin(), computed_hash.end(), hash.begin());
+	} catch (const std::exception &e) {
+		g_logger().warn("Exception during password verification: {}", e.what());
 		return false;
 	}
-
-	// Compare
-	return computed_hash == hash;
 }
 
-std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
+std::vector<uint8_t> Argon2::base64_decode(const std::string &input) {
 	std::vector<uint8_t> ret;
 	int i = 0;
 	uint32_t val = 0;

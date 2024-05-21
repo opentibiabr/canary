@@ -34,6 +34,9 @@
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
 #include "enums/object_category.hpp"
+#include "enums/player_cyclopedia.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 
 class House;
 class NetworkMessage;
@@ -49,11 +52,15 @@ class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
 class PlayerAchievement;
+class PlayerBadge;
+class PlayerTitle;
 class Spectators;
 class Account;
 
 struct ModalWindow;
 struct Achievement;
+struct Badge;
+struct Title;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -334,7 +341,7 @@ public:
 
 	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
-	Vocation* getVocation() const {
+	std::shared_ptr<Vocation> getVocation() const {
 		return vocation;
 	}
 
@@ -510,10 +517,10 @@ public:
 
 	void genReservedStorageRange();
 
-	void setGroup(Group* newGroup) {
+	void setGroup(std::shared_ptr<Group> newGroup) {
 		group = newGroup;
 	}
-	Group* getGroup() const {
+	std::shared_ptr<Group> getGroup() const {
 		return group;
 	}
 
@@ -657,6 +664,11 @@ public:
 		return loginPosition;
 	}
 	const Position &getTemplePosition() const {
+		if (!town) {
+			static auto emptyPosition = Position();
+			return emptyPosition;
+		}
+
 		return town->getTemplePosition();
 	}
 	std::shared_ptr<Town> getTown() const {
@@ -729,6 +741,13 @@ public:
 	}
 
 	uint32_t getCapacity() const;
+
+	uint32_t getBonusCapacity() const {
+		if (hasFlag(PlayerFlags_t::CannotPickupItem) || hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
+			return std::numeric_limits<uint32_t>::max();
+		}
+		return bonusCapacity;
+	}
 
 	uint32_t getFreeCapacity() const {
 		if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
@@ -1022,7 +1041,7 @@ public:
 	bool canFamiliar(uint16_t lookType) const;
 	void addFamiliar(uint16_t lookType);
 	bool removeFamiliar(uint16_t lookType);
-	bool getFamiliar(const Familiar &familiar) const;
+	bool getFamiliar(const std::shared_ptr<Familiar> &familiar) const;
 	void setFamiliarLooktype(uint16_t familiarLooktype) {
 		this->defaultOutfit.lookFamiliarsType = familiarLooktype;
 	}
@@ -1626,9 +1645,9 @@ public:
 		}
 	}
 	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
-	void sendCyclopediaCharacterItemSummary() {
+	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) {
 		if (client) {
-			client->sendCyclopediaCharacterItemSummary();
+			client->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 		}
 	}
 	void sendCyclopediaCharacterOutfitsMounts() {
@@ -1802,11 +1821,11 @@ public:
 	void setGrindingXpBoost(uint16_t value) {
 		grindingXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
-	uint16_t getStoreXpBoost() const {
-		return storeXpBoost;
+	uint16_t getXpBoostPercent() const {
+		return xpBoostPercent;
 	}
-	void setStoreXpBoost(uint16_t exp) {
-		storeXpBoost = exp;
+	void setXpBoostPercent(uint16_t percent) {
+		xpBoostPercent = percent;
 	}
 	uint16_t getStaminaXpBoost() const {
 		return staminaXpBoost;
@@ -1815,17 +1834,17 @@ public:
 		staminaXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
 
-	void setExpBoostStamina(uint16_t stamina) {
-		// only allow stamina boosts of 12 hours or less
-		if (stamina > 12 * 3600) {
-			expBoostStamina = 12 * 3600;
+	void setXpBoostTime(uint16_t timeLeft) {
+		// only allow time boosts of 12 hours or less
+		if (timeLeft > 12 * 3600) {
+			xpBoostTime = 12 * 3600;
 			return;
 		}
-		expBoostStamina = stamina;
+		xpBoostTime = timeLeft;
 	}
 
-	uint16_t getExpBoostStamina() {
-		return expBoostStamina;
+	uint16_t getXpBoostTime() {
+		return xpBoostTime;
 	}
 
 	int32_t getIdleTime() const {
@@ -2517,7 +2536,7 @@ public:
 
 	// Concoction system
 	void updateConcoction(uint16_t itemId, uint16_t timeLeft) {
-		if (timeLeft < 0) {
+		if (timeLeft == 0) {
 			activeConcoctions.erase(itemId);
 		} else {
 			activeConcoctions[itemId] = timeLeft;
@@ -2566,11 +2585,27 @@ public:
 	// Get specific inventory item from itemid
 	std::vector<std::shared_ptr<Item>> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 
+	// this get all player store inbox items and return as ItemsTierCountList
+	ItemsTierCountList getStoreInboxItemsId() const;
+	// this get all player depot chest items and return as ItemsTierCountList
+	ItemsTierCountList getDepotChestItemsId() const;
+	// this get all player depot inbox items and return as ItemsTierCountList
+	ItemsTierCountList getDepotInboxItemsId() const;
+
 	// This get all player inventory items
 	std::vector<std::shared_ptr<Item>> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
 
 	// This get all players slot items
 	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> getAllSlotItems() const;
+
+	// This get all blessings
+	phmap::flat_hash_map<Blessings_t, std::string> getBlessingNames() const;
+
+	// Gets the equipped items with augment by type
+	std::vector<std::shared_ptr<Item>> getEquippedAugmentItemsByType(Augment_t augmentType) const;
+
+	// Gets the equipped items with augment
+	std::vector<std::shared_ptr<Item>> getEquippedAugmentItems() const;
 
 	/**
 	 * @brief Get the equipped items of the player->
@@ -2587,6 +2622,14 @@ public:
 	std::unique_ptr<PlayerAchievement> &achiev();
 	const std::unique_ptr<PlayerAchievement> &achiev() const;
 
+	// Player badge interface
+	std::unique_ptr<PlayerBadge> &badge();
+	const std::unique_ptr<PlayerBadge> &badge() const;
+
+	// Player title interface
+	std::unique_ptr<PlayerTitle> &title();
+	const std::unique_ptr<PlayerTitle> &title() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -2596,6 +2639,8 @@ public:
 	std::shared_ptr<Container> getStoreInbox() const;
 
 	bool canSpeakWithHireling(uint8_t speechbubble);
+
+	uint16_t getPlayerVocationEnum() const;
 
 private:
 	friend class PlayerLock;
@@ -2653,7 +2698,7 @@ private:
 	size_t getLastIndex() const override;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 	void stashContainer(StashContainerList itemDict);
-	ItemsTierCountList getInventoryItemsId() const;
+	ItemsTierCountList getInventoryItemsId(bool ignoreStoreInbox = false) const;
 
 	// This function is a override function of base class
 	std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override;
@@ -2755,7 +2800,7 @@ private:
 	std::shared_ptr<BedItem> bedItem = nullptr;
 	std::shared_ptr<Guild> guild = nullptr;
 	GuildRank_ptr guildRank;
-	Group* group = nullptr;
+	std::shared_ptr<Group> group = nullptr;
 	std::shared_ptr<Inbox> inbox;
 	std::shared_ptr<Item> imbuingItem = nullptr;
 	std::shared_ptr<Item> tradeItem = nullptr;
@@ -2768,7 +2813,7 @@ private:
 	ProtocolGame_ptr client;
 	std::shared_ptr<Task> walkTask;
 	std::shared_ptr<Town> town;
-	Vocation* vocation = nullptr;
+	std::shared_ptr<Vocation> vocation = nullptr;
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
 
 	uint32_t inventoryWeight = 0;
@@ -2806,7 +2851,7 @@ private:
 	int32_t m_deathTime = 0;
 	uint32_t coinBalance = 0;
 	uint32_t coinTransferableBalance = 0;
-	uint16_t expBoostStamina = 0;
+	uint16_t xpBoostTime = 0;
 	uint8_t randomMount = 0;
 
 	uint16_t lastStatsTrainingTime = 0;
@@ -2816,7 +2861,7 @@ private:
 	uint16_t baseXpGain = 100;
 	uint16_t voucherXpBoost = 0;
 	uint16_t grindingXpBoost = 0;
-	uint16_t storeXpBoost = 0;
+	uint16_t xpBoostPercent = 0;
 	uint16_t staminaXpBoost = 100;
 	int16_t lastDepotId = -1;
 	StashItemList stashItems; // [ItemID] = amount
@@ -2979,9 +3024,13 @@ private:
 	friend class IOLoginDataLoad;
 	friend class IOLoginDataSave;
 	friend class PlayerAchievement;
+	friend class PlayerBadge;
+	friend class PlayerTitle;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;
+	std::unique_ptr<PlayerBadge> m_playerBadge;
+	std::unique_ptr<PlayerTitle> m_playerTitle;
 
 	std::mutex quickLootMutex;
 

@@ -270,6 +270,17 @@ enum ImbuementTypes_t : int64_t {
 	IMBUEMENT_INCREASE_CAPACITY = 17
 };
 
+enum class Augment_t : uint8_t {
+	None,
+	PowerfulImpact,
+	StrongImpact,
+	IncreasedDamage,
+	Cooldown,
+	CriticalExtraDamage,
+	LifeLeech,
+	ManaLeech
+};
+
 enum class ContainerCategory_t : uint8_t {
 	All,
 	Ammunition,
@@ -606,9 +617,19 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_PRIMARYTYPE,
 	ITEM_PARSE_USEDBYGUESTS,
 	ITEM_PARSE_SCRIPT,
+	ITEM_PARSE_AUGMENT,
 };
 
 struct ImbuementInfo {
 	Imbuement* imbuement;
 	uint32_t duration = 0;
+};
+
+struct AugmentInfo {
+	AugmentInfo(std::string spellName, Augment_t type, int32_t value) :
+		spellName(std::move(spellName)), type(type), value(value) { }
+
+	std::string spellName;
+	Augment_t type;
+	int32_t value;
 };

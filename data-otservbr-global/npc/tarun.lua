@@ -51,6 +51,74 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function creatureSayCallback(npc, creature, type, message)
+	local player = Player(creature)
+	if not player then
+		return false
+	end
+	local playerId = player:getId()
+
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
+
+	local theLostBrotherStorage = player:getStorageValue(Storage.AdventurersGuild.TheLostBrother)
+	if MsgContains(message, "mission") then
+		if theLostBrotherStorage < 1 then
+			npcHandler:say({
+				"My brother is missing. I fear, he went to this evil palace north of here. A place of great beauty, certainly filled with riches and luxury. But in truth it is a threshold to hell and demonesses are after his blood. ...",
+				"He is my brother, and I am deeply ashamed to admit but I don't dare to go there. Perhaps your heart is more courageous than mine. Would you go to see this place and search for my brother?",
+			}, npc, creature)
+			npcHandler:setTopic(playerId, 1)
+		elseif theLostBrotherStorage == 1 then
+			npcHandler:say("I hope you will find my brother.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
+		elseif theLostBrotherStorage == 2 then
+			npcHandler:say({
+				"So, he is dead as I feared. I warned him not to go with this woman, but he gave in to temptation. My heart darkens and moans. But you have my sincere thanks. ...",
+				"Without your help I would have stayed in the dark about his fate. Please, take this as a little recompense.",
+			}, npc, creature)
+			player:addItem(3039, 1)
+			player:addExperience(3000, true)
+			player:setStorageValue(Storage.AdventurersGuild.TheLostBrother, 3)
+			npcHandler:setTopic(playerId, 0)
+		end
+	elseif npcHandler:getTopic(playerId) == 1 then
+		if MsgContains(message, "yes") then
+			npcHandler:say("I thank you! This is more than I could hope!", npc, creature)
+			if theLostBrotherStorage < 1 then
+				player:setStorageValue(Storage.AdventurersGuild.QuestLine, 1)
+			end
+			player:setStorageValue(Storage.AdventurersGuild.TheLostBrother, 1)
+		elseif MsgContains(message, "no") then
+			npcHandler:say("As you wish.", npc, creature)
+		end
+		npcHandler:setTopic(playerId, 0)
+	end
+
+	return true
+end
+
+local function onTradeRequest(npc, creature)
+	local player = Player(creature)
+	if not player then
+		return false
+	end
+	local playerId = player:getId()
+
+	if player:getStorageValue(Storage.AdventurersGuild.TheLostBrother) ~= 3 then
+		return false
+	end
+
+	return true
+end
+
+npcHandler:setMessage(MESSAGE_GREET, "Greetings!")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell.")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just have a look.")
+npcHandler:setCallback(CALLBACK_ON_TRADE_REQUEST, onTradeRequest)
+npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell.")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

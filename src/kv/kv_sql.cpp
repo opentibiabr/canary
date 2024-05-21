@@ -97,3 +97,29 @@ bool KVSQL::saveAll() {
 
 	return success;
 }
+
+bool KVSQL::savePlayer(uint32_t playerId) {
+	auto store = getStore();
+	bool success = DBTransaction::executeWithinTransaction([this, &store, playerId]() {
+		auto update = dbUpdate();
+		if (!std::ranges::all_of(store, [this, &update, playerId](const auto &kv) {
+				const auto &[key, value] = kv;
+				std::string playerPrefix = "player." + std::to_string(playerId);
+				std::string keyStr = key;
+
+				if (keyStr.compare(0, playerPrefix.size(), playerPrefix) == 0) {
+					return prepareSave(key, value.first, update);
+				}
+				return true;
+			})) {
+			return false;
+		}
+		return update.execute();
+	});
+
+	if (!success) {
+		g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
+	}
+
+	return success;
+}

@@ -97,6 +97,7 @@ bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {
 	}
 
 	bool saveSuccess = IOLoginData::savePlayer(player);
+	g_kv().savePlayer(player->getGUID());
 	if (!saveSuccess) {
 		logger.error("Failed to save player {}.", player->getName());
 	}

@@ -76018,6 +76018,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="armors"/>
 		<attribute key="armor" value="15"/>
 		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="energymagiclevelpoints" value="1"/>
 		<attribute key="absorbpercentfire" value="-6"/>
 		<attribute key="absorbpercentice" value="12"/>
 		<attribute key="weight" value="4300"/>
@@ -76069,7 +76070,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
 		</attribute>
 	</item>
-	<item id="44624" article="an" name="arcane dragon robe">
+	<item id="44624" article="an" name="mystical dragon robe">
 		<attribute key="primarytype" value="armors"/>
 		<attribute key="armor" value="15"/>
 		<attribute key="magiclevelpoints" value="3"/>

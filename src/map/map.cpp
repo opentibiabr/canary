@@ -687,7 +687,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 
 uint32_t Map::clean() {
 	uint64_t start = OTSYS_TIME();
-	size_t tiles = 0;
+	size_t qntTiles = 0;
 
 	if (g_game().getGameState() == GAME_STATE_NORMAL) {
 		g_game().setGameState(GAME_STATE_MAINTAIN);
@@ -708,6 +708,8 @@ uint32_t Map::clean() {
 						if (!itemList) {
 							continue;
 						}
+
+						++qntTiles;
 
 						for (auto it = ItemVector::const_reverse_iterator(itemList->getEndDownItem()), end = ItemVector::const_reverse_iterator(itemList->getBeginDownItem()); it != end; ++it) {
 							const auto &item = *it;
@@ -733,6 +735,6 @@ uint32_t Map::clean() {
 	}
 
 	uint64_t end = OTSYS_TIME();
-	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), tiles, (tiles != 1 ? "s" : ""), (end - start) / (1000.f));
+	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), qntTiles, (qntTiles != 1 ? "s" : ""), (end - start) / (1000.f));
 	return count;
 }

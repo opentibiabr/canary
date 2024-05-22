@@ -12,7 +12,7 @@ function onUpdateDatabase()
 	]])
 
 	db.query([[
-		CREATE TRIGGER IF NOT EXISTS `oncreate_accounts` AFTER INSERT ON `accounts` FOR EACH ROW BEGIN
+		CREATE TRIGGER `oncreate_accounts` AFTER INSERT ON `accounts` FOR EACH ROW BEGIN
 			INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (1, NEW.`id`, 'Enemies', 0);
 			INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (2, NEW.`id`, 'Friends', 0);
 			INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (3, NEW.`id`, 'Trading Partner', 0);

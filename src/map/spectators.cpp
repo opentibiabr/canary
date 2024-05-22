@@ -79,7 +79,7 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 	if (checkDistance) {
 		SpectatorList spectators;
 		spectators.reserve(creatures.size());
-		for (const auto creature : *list) {
+		for (const auto &creature : *list) {
 			const auto &specPos = creature->getPosition();
 			if (centerPos.x - specPos.x >= minRangeX
 				&& centerPos.y - specPos.y >= minRangeY
@@ -185,9 +185,9 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 		const MapSector* sectorE = sectorS;
 		for (int32_t nx = startx1; nx <= endx2; nx += SECTOR_SIZE) {
 			if (sectorE) {
-				const CreatureVector &node_list = onlyPlayers ? sectorE->player_list : sectorE->creature_list;
-				for (const auto creature : node_list) {
-					const Position &cpos = creature->getPosition();
+				const auto &node_list = onlyPlayers ? sectorE->player_list : sectorE->creature_list;
+				for (const auto & creature : node_list) {
+					const auto &cpos = creature->getPosition();
 					if (static_cast<uint32_t>(static_cast<int32_t>(cpos.z) - minRangeZ) <= depth) {
 						const int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);
 						if (static_cast<uint32_t>(cpos.x - offsetZ - min_x) <= width && static_cast<uint32_t>(cpos.y - offsetZ - min_y) <= height) {
@@ -209,7 +209,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	}
 
 	// It is necessary to create the cache even if no spectators is found, so that there is no future query.
-	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY }).first->second;
+	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY, .creatures = {}, .players = {} }).first->second;
 	auto &creaturesCache = onlyPlayers ? cache.players : cache.creatures;
 	auto &creatureList = (multifloor ? creaturesCache.multiFloor : creaturesCache.floor);
 	if (creatureList) {

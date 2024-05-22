@@ -186,7 +186,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 		for (int32_t nx = startx1; nx <= endx2; nx += SECTOR_SIZE) {
 			if (sectorE) {
 				const auto &node_list = onlyPlayers ? sectorE->player_list : sectorE->creature_list;
-				for (const auto & creature : node_list) {
+				for (const auto &creature : node_list) {
 					const auto &cpos = creature->getPosition();
 					if (static_cast<uint32_t>(static_cast<int32_t>(cpos.z) - minRangeZ) <= depth) {
 						const int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);

@@ -361,15 +361,33 @@ Game::Game() {
 	};
 
 	m_summaryCategories = {
+		{ static_cast<uint8_t>(Summary_t::HOUSE_ITEMS), "house-items" },
 		{ static_cast<uint8_t>(Summary_t::BOOSTS), "xp-boosts" },
-		{ static_cast<uint8_t>(Summary_t::PREY_SLOTS), "prey-slots" },
-		{ static_cast<uint8_t>(Summary_t::PREY_WILDCARDS), "prey-wildcards" },
+		{ static_cast<uint8_t>(Summary_t::PREY_CARDS), "prey-cards" },
+		{ static_cast<uint8_t>(Summary_t::BLESSINGS), "blessings" },
 		{ static_cast<uint8_t>(Summary_t::INSTANT_REWARDS), "instant-rewards" },
-		{ static_cast<uint8_t>(Summary_t::CHARM_EXPANSIONS), "charm-expansions" },
 		{ static_cast<uint8_t>(Summary_t::HIRELINGS), "hirelings" },
 		{ static_cast<uint8_t>(Summary_t::HIRELING_JOBS), "hirelings-jobs" },
 		{ static_cast<uint8_t>(Summary_t::HIRELING_OUTFITS), "hireling-outfits" },
-		{ static_cast<uint8_t>(Summary_t::HOUSE_ITEMS), "house-items" },
+	};
+
+	m_hirelingSkills = {
+		{ 1001, "banker" },
+		{ 1002, "cooker" },
+		{ 1003, "steward" },
+		{ 1004, "trader" }
+	};
+
+	m_hirelingOutfits = {
+		{ 2001, "banker" },
+		{ 2002, "cooker" },
+		{ 2003, "steward" },
+		{ 2004, "trader" },
+		{ 2005, "servant" },
+		{ 2006, "hydra" },
+		{ 2007, "ferumbras" },
+		{ 2008, "bonelord" },
+		{ 2009, "dragon" },
 	};
 }
 
@@ -10648,4 +10666,12 @@ Title Game::getTitleByName(const std::string &name) {
 		return *it;
 	}
 	return {};
+}
+
+std::unordered_map<uint16_t, std::string> Game::getHirelingSkills() {
+	return m_hirelingSkills;
+}
+
+std::unordered_map<uint16_t, std::string> Game::getHirelingOutfits() {
+	return m_hirelingOutfits;
 }

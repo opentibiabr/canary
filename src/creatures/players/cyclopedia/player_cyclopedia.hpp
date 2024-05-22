@@ -20,11 +20,10 @@ struct Summary {
 	uint16_t m_xpBoosts = 0;
 	uint16_t m_preyWildcards = 0;
 	uint16_t m_instantRewards = 0;
-	uint16_t m_charmsExpansions = 0;
 	uint16_t m_hirelings = 0;
 
-	Summary(uint16_t mXpBoosts, uint16_t mPreyWildcards, uint16_t mInstantRewards, uint16_t mCharmsExpansions, uint16_t mHirelings) :
-		m_xpBoosts(mXpBoosts), m_preyWildcards(mPreyWildcards), m_instantRewards(mInstantRewards), m_charmsExpansions(mCharmsExpansions), m_hirelings(mHirelings) { }
+	Summary(uint16_t mXpBoosts, uint16_t mPreyWildcards, uint16_t mInstantRewards, uint16_t mHirelings) :
+		m_xpBoosts(mXpBoosts), m_preyWildcards(mPreyWildcards), m_instantRewards(mInstantRewards), m_hirelings(mHirelings) { }
 };
 
 class PlayerCyclopedia {
@@ -36,9 +35,9 @@ public:
 	void loadRecentKills();
 	void loadDeathHistory();
 
-	void updateStoreSummary(uint8_t type, uint16_t count = 1, uint8_t itemType = 0, uint8_t offerId = 0, uint8_t blessId = 0);
+	void updateStoreSummary(uint8_t type, uint16_t amount = 1, const std::string &id = "");
 	uint16_t getAmount(uint8_t type);
-	void updateAmount(uint8_t type, uint16_t toAddPoints);
+	void updateAmount(uint8_t type, uint16_t amount = 1);
 
 	[[nodiscard]] std::vector<RecentDeathEntry> getDeathHistory() const;
 	void insertDeathOnHistory(std::string cause, uint32_t timestamp);
@@ -46,27 +45,13 @@ public:
 	[[nodiscard]] std::vector<RecentPvPKillEntry> getPvpKillsHistory() const;
 	void insertPvpKillOnHistory(std::string cause, uint32_t timestamp, uint8_t status);
 
-	const Summary &getSummary() {
-		return Summary(getAmount(Summary_t::BOOSTS), getAmount(Summary_t::PREY_WILDCARDS), getAmount(Summary_t::INSTANT_REWARDS), getAmount(Summary_t::CHARM_EXPANSIONS), getAmount(Summary_t::HIRELINGS));
-	}
-	[[nodiscard]] std::map<Blessings_t, uint16_t> getBlessings() const;
-	void insertBlessings(uint8_t bless, uint32_t timestamp);
+	Summary getSummary();
 
-	[[nodiscard]] std::vector<uint8_t> getHirelingJobs() const;
-	void insertHirelingJobs(uint8_t job, uint32_t timestamp);
-
-	[[nodiscard]] std::vector<uint16_t> getHirelingOutfits() const;
-	void insertHirelingOutfits(uint8_t outfit, uint32_t timestamp);
-
-	[[nodiscard]] std::map<uint32_t, uint16_t> getHouseItems() const;
-	void insertHouseItems(uint32_t itemId, uint16_t amount);
+	[[nodiscard]] std::map<uint16_t, uint16_t> getResult(uint8_t type) const;
+	void insertValue(uint8_t type, uint16_t amount = 1, const std::string &id = "");
 
 private:
 	std::vector<RecentDeathEntry> m_deathHistory;
 	std::vector<RecentPvPKillEntry> m_pvpKillsHistory;
-	std::map<Blessings_t, uint16_t> m_blessings;
-	std::vector<uint8_t> m_hirelingJobs;
-	std::vector<uint16_t> m_hirelingOutfits;
-	std::map<uint32_t, uint16_t> m_houseItems;
 	Player &m_player;
 };

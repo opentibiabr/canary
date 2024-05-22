@@ -86,18 +86,31 @@ void PlayerCyclopedia::loadDeathHistory() {
 	g_logger().debug("Checking and updating death history of player {} took {} milliseconds.", m_player.getName(), bm_check.duration());
 }
 
-void PlayerCyclopedia::updateStoreSummary(uint8_t type, uint16_t count, uint8_t itemType, uint8_t offerId, uint8_t blessId) {
-	updateAmount(type, count);
+void PlayerCyclopedia::updateStoreSummary(uint8_t type, uint16_t amount, const std::string &id) {
+	switch (type) {
+		case Summary_t::HOUSE_ITEMS:
+		case Summary_t::BLESSINGS:
+			insertValue(type, amount, id);
+			break;
+		case Summary_t::ALL_BLESSINGS:
+			for (int i = 1; i < 8; ++i) {
+				insertValue(static_cast<uint8_t>(Summary_t::BLESSINGS), amount, fmt::format("{}", i));
+			}
+			break;
+		default:
+			updateAmount(type, amount);
+			break;
+	}
 }
 
 uint16_t PlayerCyclopedia::getAmount(uint8_t type) {
-	auto kv = m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->get("amount");
-	return static_cast<uint16_t>(kv ? kv->getNumber() : 0);
+	auto kvScope = m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->get("amount");
+	return static_cast<uint16_t>(kvScope ? kvScope->getNumber() : 0);
 }
 
-void PlayerCyclopedia::updateAmount(uint8_t type, uint16_t toAddPoints) {
-	auto oldPoints = getAmount(type);
-	m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->set("amount", oldPoints + toAddPoints);
+void PlayerCyclopedia::updateAmount(uint8_t type, uint16_t amount) {
+	auto oldAmount = getAmount(type);
+	m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->set("amount", oldAmount + amount);
 }
 
 std::vector<RecentDeathEntry> PlayerCyclopedia::getDeathHistory() const {
@@ -116,37 +129,31 @@ void PlayerCyclopedia::insertPvpKillOnHistory(std::string cause, uint32_t timest
 	m_pvpKillsHistory.emplace_back(std::move(cause), timestamp, status);
 }
 
-std::map<Blessings_t, uint16_t> PlayerCyclopedia::getBlessings() const {
-}
-void insertBlessings(uint8_t bless, uint32_t timestamp) {
-}
-
-std::vector<uint8_t> PlayerCyclopedia::getHirelingJobs() const {
-}
-void insertHirelingJobs(uint8_t job, uint32_t timestamp) {
+Summary PlayerCyclopedia::getSummary() {
+	return { getAmount(Summary_t::BOOSTS), getAmount(Summary_t::PREY_CARDS), getAmount(Summary_t::INSTANT_REWARDS), getAmount(Summary_t::HIRELINGS) };
 }
 
-std::vector<uint16_t> PlayerCyclopedia::getHirelingOutfits() const {
-}
-void insertHirelingOutfits(uint8_t outfit, uint32_t timestamp) {
-}
-
-std::map<uint32_t, uint16_t> PlayerCyclopedia::getHouseItems() const {
-	auto type = static_cast<uint8_t>(Summary_t::HOUSE_ITEMS);
-	auto kvItem = m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type));
-
-	std::map<uint32_t, uint16_t> items = {};
-	for (const auto &itemId : kvItem->keys()) {
-		auto kv = kvItem->scoped(itemId)->get("amount");
-		auto amount = static_cast<uint16_t>(kv ? kv->getNumber() : 0);
-		items[std::stoull(itemId)] += amount;
+std::map<uint16_t, uint16_t> PlayerCyclopedia::getResult(uint8_t type) const {
+	auto kvScope = m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type));
+	std::map<uint16_t, uint16_t> result; // ID, amount
+	for (const auto &scope : kvScope->keys()) {
+		size_t pos = scope.find('.');
+		if (pos == std::string::npos) {
+			g_logger().error("[{}] Invalid key format: {}", __FUNCTION__, scope);
+			continue;
+		}
+		std::string id = scope.substr(0, pos);
+		auto amount = kvScope->scoped(id)->get("amount");
+		result.emplace(std::stoll(id), static_cast<uint16_t>(amount ? amount->getNumber() : 0));
 	}
-
-	return items;
+	return result;
 }
 
-void PlayerCyclopedia::insertHouseItems(uint32_t itemId, uint16_t amount) {
-	auto type = static_cast<uint8_t>(Summary_t::HOUSE_ITEMS);
-	auto oldAmount = static_cast<uint16_t>(m_houseItems[itemId]);
-	m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->scoped(fmt::format("{}", itemId))->set("amount", oldAmount + amount);
+void PlayerCyclopedia::insertValue(uint8_t type, uint16_t amount, const std::string &id) {
+	auto result = getResult(type);
+	auto it = result.find(std::stoll(id));
+	auto oldAmount = (it != result.end() ? it->second : 0);
+	auto newAmount = oldAmount + amount;
+	m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->scoped(id)->set("amount", newAmount);
+	g_logger().debug("type: {}, id: {}, old amount: {}, added amount: {}, new amount: {}", type, id, oldAmount, amount, newAmount);
 }

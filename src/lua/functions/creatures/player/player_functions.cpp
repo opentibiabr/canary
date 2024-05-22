@@ -4358,7 +4358,7 @@ int PlayerFunctions::luaPlayerSetCurrentTitle(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerCreateTransactionSummary(lua_State* L) {
-	// player:createTransactionSummary(type, count[, itemType = 0[, offerId = 0[, blessId = 0]]])
+	// player:createTransactionSummary(type, amount[, id = 0])
 	const auto &player = getUserdataShared<Player>(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4371,12 +4371,11 @@ int PlayerFunctions::luaPlayerCreateTransactionSummary(lua_State* L) {
 		return 1;
 	}
 
-	auto count = getNumber<uint8_t>(L, 3, 1);
-	auto itemType = getNumber<uint8_t>(L, 4, 0);
-	auto offerId = getNumber<uint8_t>(L, 5, 0);
-	auto blessId = getNumber<uint8_t>(L, 6, 0);
+	auto amount = getNumber<uint16_t>(L, 3, 1);
+	auto id = getString(L, 4, "");
 
-	player->cyclopedia()->updateStoreSummary(type, count, itemType, offerId, blessId);
+	g_logger().info("type: {}, amount: {}, id: {}", type, amount, id);
+	player->cyclopedia()->updateStoreSummary(type, amount, id);
 	pushBoolean(L, true);
 	return 1;
 }

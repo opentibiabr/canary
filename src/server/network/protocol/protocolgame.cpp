@@ -3970,16 +3970,22 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
 	msg.add<uint32_t>(player->getXpBoostTime()); // Remaining Store Xp Boost Time
-	msg.add<uint32_t>(0); // RemainingDailyRewardXpBoostTime
+	auto remaining = player->kv()->get("daily-reward-xp-boost");
+	msg.add<uint32_t>(remaining ? static_cast<uint32_t>(remaining->getNumber()) : 0x00); // Remaining Daily Reward Xp Boost Time
 
 	auto cyclopediaSummary = player->cyclopedia()->getSummary();
 
 	// getBlessingsObtained
-	auto blessings = player->getBlessingNames();
-	msg.addByte(static_cast<uint8_t>(blessings.size()));
-	for (const auto &it : blessings) {
-		msg.addString(it.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
-		msg.addByte(static_cast<uint8_t>((player->cyclopedia()->getBlessings())[it.first]));
+	auto blessingNames = player->getBlessingNames();
+	msg.addByte(static_cast<uint8_t>(blessingNames.size()));
+	auto blessingsObtained = player->cyclopedia()->getResult(static_cast<uint8_t>(Summary_t::BLESSINGS));
+	for (const auto &bName_it : blessingNames) {
+		msg.addString(bName_it.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
+		uint16_t blessAmount = 0;
+		auto it = std::find_if(blessingsObtained.begin(), blessingsObtained.end(), [&bName_it](const auto &b_it) {
+			return b_it.first == bName_it.first;
+		});
+		msg.addByte((it != blessingsObtained.end()) ? static_cast<uint16_t>(it->second) : 0x00);
 	}
 
 	uint8_t preySlotsUnlocked = 0;
@@ -3994,29 +4000,43 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 		preySlotsUnlocked++;
 	}
 	msg.addByte(preySlotsUnlocked); // getPreySlotById + getTaskHuntingSlotById
-	
+
 	msg.addByte(cyclopediaSummary.m_preyWildcards); // getPreyCardsObtained
 	msg.addByte(cyclopediaSummary.m_instantRewards); // getRewardCollectionObtained
 	msg.addByte(player->hasCharmExpansion() ? 0x01 : 0x00);
 	msg.addByte(cyclopediaSummary.m_hirelings); // getHirelingsObtained
 
-	auto jobs = player->cyclopedia()->getHirelingJobs();
-	msg.addByte(jobs.size());
-	for (const auto job_it : jobs) {
-		msg.addByte(job_it);
+	std::vector<uint16_t> m_hSkills;
+	for (const auto &it : g_game().getHirelingSkills()) {
+		if (player->kv()->scoped("hireling-skills")->get(it.second)) {
+			m_hSkills.emplace_back(it.first);
+			g_logger().info("skill id: {}, name: {}", it.first, it.second);
+		}
+	}
+	msg.addByte(m_hSkills.size());
+	for (const auto &id : m_hSkills) {
+		msg.addByte(id);
 	}
 
-	auto outfits = player->cyclopedia()->getHirelingOutfits();
-	msg.addByte(outfits.size());
-	for (const auto outfit_it : outfits) {
-		msg.addByte(outfit_it);
-	}
+	//	std::vector<uint16_t> m_hOutfits;
+	//	for (const auto &it : g_game().getHirelingOutfits()) {
+	//		if (player->kv()->scoped("hireling-outfits")->get(it.second)) {
+	//			m_hOutfits.emplace_back(it.first);
+	//			g_logger().info("outfit id: {}, name: {}", it.first, it.second);
+	//		}
+	//	}
+	//	msg.addByte(m_hOutfits.size());
+	//	for (const auto &id : m_hOutfits) {
+	//		msg.add<uint16_t>(id);
+	//		//		msg.addByte(id);
+	//	}
+	msg.addByte(0x00);
 
-	auto houseItems = player->cyclopedia()->getHouseItems();
+	auto houseItems = player->cyclopedia()->getResult(static_cast<uint8_t>(Summary_t::HOUSE_ITEMS));
 	msg.add<uint16_t>(houseItems.size());
 	for (const auto &hItem_it : houseItems) {
 		const ItemType &it = Item::items[hItem_it.first];
-		msg.add<uint16_t>(hItem_it.first); // Item ID
+		msg.add<uint16_t>(it.id); // Item ID
 		msg.addString(it.name, "ProtocolGame::sendCyclopediaCharacterStoreSummary - houseItem.name");
 		msg.addByte(hItem_it.second);
 	}

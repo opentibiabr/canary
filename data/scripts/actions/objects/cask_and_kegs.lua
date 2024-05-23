@@ -26,35 +26,45 @@ local targetIdList = {
 local flasks = Action()
 
 function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or not target:getItem() then
+	if not target or not target:isItem() then
 		return false
 	end
 
 	local charges = target:getCharges()
 	local itemCount = item:getCount()
+
 	if itemCount > charges then
 		itemCount = charges
 	end
 
-	local targetId = targetIdList[target:getId()]
-	if targetId and item:getId() == targetId.itemId and charges > 0 then
-		local potMath = item:getCount() - itemCount
-		local parent = item:getParent()
-		if not (parent:isContainer() and parent:addItem(item:getId(), potMath)) then
-			player:addItem(item:getId(), potMath, true)
-		end
-
-		item:transform(targetId.transform, itemCount)
-		charges = charges - itemCount
-		target:transform(target:getId(), charges)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %s charges.", charges))
-
-		if charges == 0 then
-			target:remove()
-		end
-		return true
+	local targetId = targetIdList and targetIdList[target:getId()]
+	if not targetId or item:getId() ~= targetId.itemId or charges <= 0 then
+		return false
 	end
-	return false
+
+	local inbox = player:getStoreInbox()
+	if not inbox then
+		return false
+	end
+
+	item:transform(targetId.transform, itemCount)
+	charges = charges - itemCount
+	target:transform(target:getId(), charges)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %s charges.", charges))
+
+	if charges == 0 then
+		target:remove()
+	end
+
+	if inbox:addItem(targetId.transform, itemCount) then
+		item:remove(itemCount)
+	else
+		item:transform(item:getId(), itemCount)
+		target:transform(target:getId(), charges + itemCount)
+		return false
+	end
+
+	return true
 end
 
 flasks:id(283, 284, 285)

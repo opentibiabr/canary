@@ -5839,35 +5839,47 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		}
 	}
 
-	auto purchase = IOMarket::getInstance().getPurchaseStatistics()[itemId][tier];
-	if (const MarketStatistics* purchaseStatistics = &purchase; purchaseStatistics) {
-		msg.addByte(0x01);
-		msg.add<uint32_t>(purchaseStatistics->numTransactions);
-		if (oldProtocol) {
-			msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), purchaseStatistics->totalPrice));
-			msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), purchaseStatistics->highestPrice));
-			msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), purchaseStatistics->lowestPrice));
-		} else {
-			msg.add<uint64_t>(purchaseStatistics->totalPrice);
-			msg.add<uint64_t>(purchaseStatistics->highestPrice);
-			msg.add<uint64_t>(purchaseStatistics->lowestPrice);
+	const auto &purchaseStatsMap = IOMarket::getInstance().getPurchaseStatistics();
+	auto purchaseIterator = purchaseStatsMap.find(itemId);
+	if (purchaseIterator != purchaseStatsMap.end()) {
+		const auto &tierStatsMap = purchaseIterator->second;
+		auto tierStatsIter = tierStatsMap.find(tier);
+		if (tierStatsIter != tierStatsMap.end()) {
+			const auto &purchaseStatistics = tierStatsIter->second;
+			msg.addByte(0x01);
+			msg.add<uint32_t>(purchaseStatistics.numTransactions);
+			if (oldProtocol) {
+				msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), purchaseStatistics.totalPrice));
+				msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), purchaseStatistics.highestPrice));
+				msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), purchaseStatistics.lowestPrice));
+			} else {
+				msg.add<uint64_t>(purchaseStatistics.totalPrice);
+				msg.add<uint64_t>(purchaseStatistics.highestPrice);
+				msg.add<uint64_t>(purchaseStatistics.lowestPrice);
+			}
 		}
 	} else {
 		msg.addByte(0x00); // send to old protocol ?
 	}
 
-	auto sale = IOMarket::getInstance().getSaleStatistics()[itemId][tier];
-	if (const MarketStatistics* saleStatistics = &sale; saleStatistics) {
-		msg.addByte(0x01);
-		msg.add<uint32_t>(saleStatistics->numTransactions);
-		if (oldProtocol) {
-			msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), saleStatistics->totalPrice));
-			msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), saleStatistics->highestPrice));
-			msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), saleStatistics->lowestPrice));
-		} else {
-			msg.add<uint64_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), saleStatistics->totalPrice));
-			msg.add<uint64_t>(saleStatistics->highestPrice);
-			msg.add<uint64_t>(saleStatistics->lowestPrice);
+	const auto &saleStatsMap = IOMarket::getInstance().getSaleStatistics();
+	auto saleIterator = saleStatsMap.find(itemId);
+	if (saleIterator != saleStatsMap.end()) {
+		const auto &tierStatsMap = saleIterator->second;
+		auto tierStatsIter = tierStatsMap.find(tier);
+		if (tierStatsIter != tierStatsMap.end()) {
+			const auto &saleStatistics = tierStatsIter->second;
+			msg.addByte(0x01);
+			msg.add<uint32_t>(saleStatistics.numTransactions);
+			if (oldProtocol) {
+				msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), saleStatistics.totalPrice));
+				msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), saleStatistics.highestPrice));
+				msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), saleStatistics.lowestPrice));
+			} else {
+				msg.add<uint64_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), saleStatistics.totalPrice));
+				msg.add<uint64_t>(saleStatistics.highestPrice);
+				msg.add<uint64_t>(saleStatistics.lowestPrice);
+			}
 		}
 	} else {
 		msg.addByte(0x00); // send to old protocol ?

@@ -29,10 +29,14 @@ uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
 	MarketOfferList offerList;
 
-	std::ostringstream query;
-	query << "SELECT `id`, `amount`, `price`, `tier`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `sale` = " << action;
+	std::string query = fmt::format(
+		"SELECT `id`, `itemtype`, `amount`, `price`, `tier`, `created`, `anonymous`, "
+		"(SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` "
+		"FROM `market_offers` WHERE `sale` = {}",
+		action
+	);
 
-	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+	DBResult_ptr result = g_database().storeQuery(query);
 	if (!result) {
 		return offerList;
 	}
@@ -41,6 +45,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
 
 	do {
 		MarketOffer offer;
+		offer.itemId = result->getNumber<uint16_t>("itemtype");
 		offer.amount = result->getNumber<uint16_t>("amount");
 		offer.price = result->getNumber<uint64_t>("price");
 		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
@@ -71,6 +76,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 
 	do {
 		MarketOffer offer;
+		offer.itemId = itemId;
 		offer.amount = result->getNumber<uint16_t>("amount");
 		offer.price = result->getNumber<uint64_t>("price");
 		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
@@ -333,9 +339,15 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state) {
 }
 
 void IOMarket::updateStatistics() {
-	std::ostringstream query;
-	query << "SELECT `sale` AS `sale`, `itemtype` AS `itemtype`, COUNT(`price`) AS `num`, MIN(`price`) AS `min`, MAX(`price`) AS `max`, SUM(`price`) AS `sum`, `tier` AS `tier` FROM `market_history` WHERE `state` = " << OFFERSTATE_ACCEPTED << " GROUP BY `itemtype`, `sale`, `tier`";
-	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+	auto query = fmt::format(
+		"SELECT sale, itemtype, COUNT(price) AS num, MIN(price) AS min, MAX(price) AS max, SUM(price) AS sum, tier "
+		"FROM market_history "
+		"WHERE state = '{}' "
+		"GROUP BY itemtype, sale, tier",
+		OFFERSTATE_ACCEPTED
+	);
+
+	DBResult_ptr result = g_database().storeQuery(query);
 	if (!result) {
 		return;
 	}

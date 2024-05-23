@@ -1604,7 +1604,7 @@ int PlayerFunctions::luaPlayerGetGroup(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetGroup(lua_State* L) {
 	// player:setGroup(group)
-	Group* group = getUserdata<Group>(L, 2);
+	std::shared_ptr<Group> group = getUserdataShared<Group>(L, 2);
 	if (!group) {
 		pushBoolean(L, false);
 		return 1;
@@ -1741,6 +1741,11 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 		ss << "Accessing reserved range: " << key;
 		reportErrorFunc(ss.str());
 		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (key == 0) {
+		reportErrorFunc("Storage key is nil");
 		return 1;
 	}
 

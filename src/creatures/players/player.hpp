@@ -517,10 +517,10 @@ public:
 
 	void genReservedStorageRange();
 
-	void setGroup(Group* newGroup) {
+	void setGroup(std::shared_ptr<Group> newGroup) {
 		group = newGroup;
 	}
-	Group* getGroup() const {
+	std::shared_ptr<Group> getGroup() const {
 		return group;
 	}
 
@@ -1043,7 +1043,7 @@ public:
 	bool canFamiliar(uint16_t lookType) const;
 	void addFamiliar(uint16_t lookType);
 	bool removeFamiliar(uint16_t lookType);
-	bool getFamiliar(const Familiar &familiar) const;
+	bool getFamiliar(const std::shared_ptr<Familiar> &familiar) const;
 	void setFamiliarLooktype(uint16_t familiarLooktype) {
 		this->defaultOutfit.lookFamiliarsType = familiarLooktype;
 	}
@@ -2834,7 +2834,7 @@ private:
 	std::shared_ptr<BedItem> bedItem = nullptr;
 	std::shared_ptr<Guild> guild = nullptr;
 	GuildRank_ptr guildRank;
-	Group* group = nullptr;
+	std::shared_ptr<Group> group = nullptr;
 	std::shared_ptr<Inbox> inbox;
 	std::shared_ptr<Item> imbuingItem = nullptr;
 	std::shared_ptr<Item> tradeItem = nullptr;

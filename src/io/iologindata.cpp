@@ -72,7 +72,7 @@ uint8_t IOLoginData::getAccountType(uint32_t accountId) {
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 	static phmap::flat_hash_map<uint32_t, bool> updateOnline;
-	if (login && updateOnline.find(guid) != updateOnline.end() || guid <= 0) {
+	if ((login && updateOnline.find(guid) != updateOnline.end()) || guid <= 0) {
 		return;
 	}
 

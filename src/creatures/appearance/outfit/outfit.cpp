@@ -14,6 +14,13 @@
 #include "utils/tools.hpp"
 #include "game/game.hpp"
 
+bool Outfits::reload() {
+	for (auto &outfitsVector : outfits) {
+		outfitsVector.clear();
+	}
+	return loadFromXml();
+}
+
 bool Outfits::loadFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/outfits.xml";
@@ -68,10 +75,12 @@ bool Outfits::loadFromXml() {
 }
 
 std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
-	for (const auto &outfit : outfits[sex]) {
-		if (outfit->lookType == lookType) {
-			return outfit;
-		}
+	auto it = std::ranges::find_if(outfits[sex], [&lookType](const auto &outfit) {
+		return outfit->lookType == lookType;
+	});
+
+	if (it != outfits[sex].end()) {
+		return *it;
 	}
 	return nullptr;
 }
@@ -83,17 +92,7 @@ std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t l
  * @return <b>const</b> pointer to the outfit or <b>nullptr</b> if it could not be found.
  */
 
-std::shared_ptr<Outfit> Outfits::getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) {
+std::shared_ptr<Outfit> Outfits::getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
 	PlayerSex_t searchSex = (sex == PLAYERSEX_MALE) ? PLAYERSEX_FEMALE : PLAYERSEX_MALE;
-
-	for (uint16_t i = 0; i < outfits[sex].size(); i++) {
-		if (outfits[sex].at(i)->lookType == lookType) {
-			if (outfits[searchSex].size() > i) {
-				return outfits[searchSex].at(i);
-			} else { // looktype found but the oposite sex array doesn't have this index.
-				return nullptr;
-			}
-		}
-	}
-	return nullptr;
+	return getOutfitByLookType(searchSex, lookType);
 }

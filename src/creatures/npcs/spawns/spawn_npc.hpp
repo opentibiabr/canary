@@ -26,7 +26,7 @@ struct spawnBlockNpc_t {
 class SpawnNpc : public SharedObject {
 public:
 	SpawnNpc(Position initPos, int32_t initRadius) :
-		centerPos(std::move(initPos)), radius(initRadius) { }
+		centerPos(initPos), radius(initRadius) { }
 	~SpawnNpc();
 
 	// non-copyable
@@ -91,7 +91,7 @@ public:
 	}
 
 	std::string setFileName(std::string setName) {
-		return fileName = setName;
+		return fileName = std::move(setName);
 	}
 
 	std::forward_list<std::shared_ptr<SpawnNpc>> &getSpawnNpcList() {

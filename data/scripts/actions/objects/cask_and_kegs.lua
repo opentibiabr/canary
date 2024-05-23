@@ -52,19 +52,18 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	target:transform(target:getId(), charges)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %d charges.", charges))
 
-	if not charges then
+	if charges <= 0 then
 		target:remove()
 	end
 
 	local addedItem = storeInbox:addItem(transformation.transformId, flaskCount)
 	if addedItem then
-		addedItem:setActionId(IMMOVABLE_ACTION_ID)
 		addedItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-		item:remove(flaskCount)
 	else
-		item:transform(item:getId(), flaskCount)
-		target:transform(target:getId(), charges + flaskCount)
+		player:addItem(transformation.transformId, flaskCount)
 	end
+
+	item:remove(flaskCount)
 	return true
 end
 

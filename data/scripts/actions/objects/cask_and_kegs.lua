@@ -56,7 +56,10 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		target:remove()
 	end
 
-	if storeInbox:addItem(transformation.transformId, flaskCount) then
+	local addedItem = storeInbox:addItem(transformation.transformId, flaskCount)
+	if addedItem then
+		addedItem:setActionId(IMMOVABLE_ACTION_ID)
+		addedItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 		item:remove(flaskCount)
 	else
 		item:transform(item:getId(), flaskCount)

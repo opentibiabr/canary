@@ -1,60 +1,68 @@
-local targetIdList = {
-	[25879] = { itemId = 285, transform = 266 },
-	[25880] = { itemId = 283, transform = 236 },
-	[25881] = { itemId = 284, transform = 239 },
-	[25882] = { itemId = 284, transform = 7643 },
-	[25883] = { itemId = 284, transform = 23375 },
-	[25889] = { itemId = 285, transform = 268 },
-	[25890] = { itemId = 283, transform = 237 },
-	[25891] = { itemId = 284, transform = 238 },
-	[25892] = { itemId = 284, transform = 23373 },
-	[25899] = { itemId = 284, transform = 7642 },
-	[25900] = { itemId = 284, transform = 23374 },
-	[25903] = { itemId = 285, transform = 266 },
-	[25904] = { itemId = 283, transform = 236 },
-	[25905] = { itemId = 284, transform = 239 },
-	[25906] = { itemId = 284, transform = 7643 },
-	[25907] = { itemId = 284, transform = 23375 },
-	[25908] = { itemId = 285, transform = 268 },
-	[25909] = { itemId = 283, transform = 237 },
-	[25910] = { itemId = 284, transform = 238 },
-	[25911] = { itemId = 284, transform = 23373 },
-	[25913] = { itemId = 284, transform = 7642 },
-	[25914] = { itemId = 284, transform = 23374 },
+local targetTransformationList = {
+	[25879] = { flaskId = 285, transformId = 266 },
+	[25880] = { flaskId = 283, transformId = 236 },
+	[25881] = { flaskId = 284, transformId = 239 },
+	[25882] = { flaskId = 284, transformId = 7643 },
+	[25883] = { flaskId = 284, transformId = 23375 },
+	[25889] = { flaskId = 285, transformId = 268 },
+	[25890] = { flaskId = 283, transformId = 237 },
+	[25891] = { flaskId = 284, transformId = 238 },
+	[25892] = { flaskId = 284, transformId = 23373 },
+	[25899] = { flaskId = 284, transformId = 7642 },
+	[25900] = { flaskId = 284, transformId = 23374 },
+	[25903] = { flaskId = 285, transformId = 266 },
+	[25904] = { flaskId = 283, transformId = 236 },
+	[25905] = { flaskId = 284, transformId = 239 },
+	[25906] = { flaskId = 284, transformId = 7643 },
+	[25907] = { flaskId = 284, transformId = 23375 },
+	[25908] = { flaskId = 285, transformId = 268 },
+	[25909] = { flaskId = 283, transformId = 237 },
+	[25910] = { flaskId = 284, transformId = 238 },
+	[25911] = { flaskId = 284, transformId = 23373 },
+	[25913] = { flaskId = 284, transformId = 7642 },
+	[25914] = { flaskId = 284, transformId = 23374 },
 }
 
 local flasks = Action()
 
 function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or not target:getItem() then
-		return false
+	if not target or not target:isItem() then
+		return true
 	end
 
 	local charges = target:getCharges()
-	local itemCount = item:getCount()
-	if itemCount > charges then
-		itemCount = charges
+	local flaskCount = item:getCount()
+
+	if flaskCount > charges then
+		flaskCount = charges
 	end
 
-	local targetId = targetIdList[target:getId()]
-	if targetId and item:getId() == targetId.itemId and charges > 0 then
-		local potMath = item:getCount() - itemCount
-		local parent = item:getParent()
-		if not (parent:isContainer() and parent:addItem(item:getId(), potMath)) then
-			player:addItem(item:getId(), potMath, true)
-		end
-
-		item:transform(targetId.transform, itemCount)
-		charges = charges - itemCount
-		target:transform(target:getId(), charges)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %s charges.", charges))
-
-		if charges == 0 then
-			target:remove()
-		end
+	local transformation = targetTransformationList[target:getId()]
+	if not transformation or item:getId() ~= transformation.flaskId or charges <= 0 then
 		return true
 	end
-	return false
+
+	local storeInbox = player:getStoreInbox()
+	if not storeInbox then
+		return true
+	end
+
+	item:transform(transformation.transformId, flaskCount)
+	charges = charges - flaskCount
+	target:transform(target:getId(), charges)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %d charges.", charges))
+
+	if not charges then
+		target:remove()
+	end
+
+	if storeInbox:addItem(transformation.transformId, flaskCount) then
+		item:remove(flaskCount)
+	else
+		item:transform(item:getId(), flaskCount)
+		target:transform(target:getId(), charges + flaskCount)
+	end
+	return true
 end
 
 flasks:id(283, 284, 285)

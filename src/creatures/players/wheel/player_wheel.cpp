@@ -130,16 +130,16 @@ namespace {
 
 	struct PromotionScroll {
 		uint16_t itemId;
-		std::string storageKey;
+		std::string name;
 		uint8_t extraPoints;
 	};
 
 	std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
-		{ 43946, "wheel.scroll.abridged", 3 },
-		{ 43947, "wheel.scroll.basic", 5 },
-		{ 43948, "wheel.scroll.revised", 9 },
-		{ 43949, "wheel.scroll.extended", 13 },
-		{ 43950, "wheel.scroll.advanced", 20 },
+		{ 43946, "abridged", 3 },
+		{ 43947, "basic", 5 },
+		{ 43948, "revised", 9 },
+		{ 43949, "extended", 13 },
+		{ 43950, "advanced", 20 },
 	};
 } // namespace
 
@@ -283,7 +283,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_GREEN_50) {
-		return recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot)) || true;
+		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
 	}
 
 	// Red quadrant
@@ -410,7 +410,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_RED_50) {
-		return recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot)) || true;
+		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
 	}
 
 	// Purple quadrant
@@ -537,7 +537,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_PURPLE_50) {
-		return recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot)) || true;
+		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
 	}
 
 	// Blue quadrant
@@ -664,7 +664,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_BLUE_50) {
-		return recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot)) || true;
+		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
 	}
 
 	return false;
@@ -689,7 +689,7 @@ bool PlayerWheel::getSpellAdditionalArea(const std::string &spellName) const {
 		return false;
 	}
 
-	auto vocationEnum = getPlayerVocationEnum();
+	auto vocationEnum = m_player.getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
 	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
@@ -709,7 +709,7 @@ int PlayerWheel::getSpellAdditionalTarget(const std::string &spellName) const {
 		return 0;
 	}
 
-	auto vocationEnum = getPlayerVocationEnum();
+	auto vocationEnum = m_player.getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
 	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
@@ -729,7 +729,7 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 		return 0;
 	}
 
-	auto vocationEnum = getPlayerVocationEnum();
+	auto vocationEnum = m_player.getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
 	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
@@ -744,18 +744,21 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 }
 
 void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
-	uint16_t count = 0;
 	std::vector<uint16_t> unlockedScrolls;
 
 	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
-		auto storageValue = m_player.getStorageValueByName(scroll.storageKey);
-		if (storageValue > 0) {
-			count++;
+		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
+		if (!scrollKv) {
+			continue;
+		}
+
+		auto scrollOpt = scrollKv->get(scroll.name);
+		if (scrollOpt && scrollOpt->get<bool>()) {
 			unlockedScrolls.push_back(scroll.itemId);
 		}
 	}
 
-	msg.add<uint16_t>(count);
+	msg.add<uint16_t>(unlockedScrolls.size());
 	for (const auto &itemId : unlockedScrolls) {
 		msg.add<uint16_t>(itemId);
 	}
@@ -1016,7 +1019,7 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	}
 
 	msg.addByte(getOptions(ownerId)); // Options
-	msg.addByte(getPlayerVocationEnum()); // Vocation id
+	msg.addByte(m_player.getPlayerVocationEnum()); // Vocation id
 
 	msg.add<uint16_t>(getWheelPoints(false)); // Points (false param for not send extra points)
 	msg.add<uint16_t>(getExtraPoints()); // Extra points
@@ -1239,8 +1242,13 @@ uint16_t PlayerWheel::getExtraPoints() const {
 
 	uint16_t totalBonus = 0;
 	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
-		auto storageValue = m_player.getStorageValueByName(scroll.storageKey);
-		if (storageValue > 0) {
+		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
+		if (!scrollKv) {
+			continue;
+		}
+
+		auto scrollKV = scrollKv->get(scroll.name);
+		if (scrollKV && scrollKV->get<bool>()) {
 			totalBonus += scroll.extraPoints;
 		}
 	}
@@ -1262,7 +1270,7 @@ uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const 
 
 bool PlayerWheel::canOpenWheel() const {
 	// Vocation check
-	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+	if (m_player.getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
 		return false;
 	}
 
@@ -1302,21 +1310,6 @@ uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {
 	}
 
 	return 2;
-}
-
-uint8_t PlayerWheel::getPlayerVocationEnum() const {
-	int cipTibiaId = m_player.getVocation()->getClientId();
-	if (cipTibiaId == 1 || cipTibiaId == 11) {
-		return Vocation_t::VOCATION_KNIGHT_CIP; // Knight
-	} else if (cipTibiaId == 2 || cipTibiaId == 12) {
-		return Vocation_t::VOCATION_PALADIN_CIP; // Paladin
-	} else if (cipTibiaId == 3 || cipTibiaId == 13) {
-		return Vocation_t::VOCATION_SORCERER_CIP; // Sorcerer
-	} else if (cipTibiaId == 4 || cipTibiaId == 14) {
-		return Vocation_t::VOCATION_DRUID_CIP; // Druid
-	}
-
-	return Vocation_t::VOCATION_NONE;
 }
 
 bool PlayerWheel::canSelectSlotFullOrPartial(WheelSlots_t slot) const {
@@ -1552,12 +1545,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.avatar.light >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 3 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Light", bonus);
 		}
 		if (m_playerBonusData.avatar.light >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 2 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Light", bonus);
 		}
 	} else {
@@ -1570,12 +1563,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.avatar.nature >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 3 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Nature", bonus);
 		}
 		if (m_playerBonusData.avatar.nature >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 2 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Nature", bonus);
 		}
 	} else {
@@ -1588,12 +1581,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.avatar.steel >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 3 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Steel", bonus);
 		}
 		if (m_playerBonusData.avatar.steel >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 2 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Steel", bonus);
 		}
 	} else {
@@ -1606,19 +1599,19 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.avatar.storm >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 3 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Storm", bonus);
 		}
 		if (m_playerBonusData.avatar.storm >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 2 * 60 * 1000;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Storm", bonus);
 		}
 	} else {
 		setSpellInstant("Avatar of Storm", false);
 	}
 
-	for (const auto spell : m_playerBonusData.spells) {
+	for (const auto &spell : m_playerBonusData.spells) {
 		upgradeSpell(spell);
 	}
 
@@ -1774,7 +1767,7 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	auto &spellsVector = bonusData.spells;
 	if (!spellsVector.empty()) {
 		g_logger().debug("Spells:");
-		for (const auto spell : bonusData.spells) {
+		for (const auto &spell : bonusData.spells) {
 			g_logger().debug("  {}", spell);
 		}
 	}
@@ -1785,7 +1778,7 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 void PlayerWheel::loadDedicationAndConvictionPerks() {
 	using VocationBonusFunction = std::function<void(const std::shared_ptr<Player> &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
 	auto wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
-	auto vocationCipId = getPlayerVocationEnum();
+	auto vocationCipId = m_player.getPlayerVocationEnum();
 	if (vocationCipId < VOCATION_KNIGHT_CIP || vocationCipId > VOCATION_DRUID_CIP) {
 		return;
 	}
@@ -1826,7 +1819,7 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.healing += statsHealing;
 
 		auto redStageValue = static_cast<uint8_t>(redStageEnum);
-		auto vocationEnum = getPlayerVocationEnum();
+		auto vocationEnum = m_player.getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 			m_playerBonusData.stages.blessingOfTheGrove = redStageValue;
 		} else if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
@@ -1854,7 +1847,7 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.healing += statsHealing;
 
 		auto purpleStage = static_cast<uint8_t>(purpleStageEnum);
-		auto vocationEnum = getPlayerVocationEnum();
+		auto vocationEnum = m_player.getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 			m_playerBonusData.avatar.steel = purpleStage;
 			for (uint8_t i = 0; i < purpleStage; ++i) {
@@ -1885,7 +1878,7 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.healing += statsHealing;
 
 		auto blueStage = static_cast<uint8_t>(blueStageEnum);
-		auto vocationEnum = getPlayerVocationEnum();
+		auto vocationEnum = m_player.getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 			m_playerBonusData.stages.combatMastery = blueStage;
 		} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
@@ -2410,21 +2403,25 @@ int32_t PlayerWheel::checkBattleHealingAmount() const {
 }
 
 int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
-	if (skill == WheelAvatarSkill_t::NONE || getOnThinkTimer(WheelOnThink_t::AVATAR) <= OTSYS_TIME()) {
+	if (skill == WheelAvatarSkill_t::NONE || (getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL) <= OTSYS_TIME() && getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) <= OTSYS_TIME())) {
 		return 0;
 	}
 
 	uint8_t stage = 0;
-	if (getInstant("Avatar of Light")) {
-		stage = getStage(WheelStage_t::AVATAR_OF_LIGHT);
-	} else if (getInstant("Avatar of Steel")) {
-		stage = getStage(WheelStage_t::AVATAR_OF_STEEL);
-	} else if (getInstant("Avatar of Nature")) {
-		stage = getStage(WheelStage_t::AVATAR_OF_NATURE);
-	} else if (getInstant("Avatar of Storm")) {
-		stage = getStage(WheelStage_t::AVATAR_OF_STORM);
+	if (getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL) > OTSYS_TIME()) {
+		if (getInstant("Avatar of Light")) {
+			stage = getStage(WheelStage_t::AVATAR_OF_LIGHT);
+		} else if (getInstant("Avatar of Steel")) {
+			stage = getStage(WheelStage_t::AVATAR_OF_STEEL);
+		} else if (getInstant("Avatar of Nature")) {
+			stage = getStage(WheelStage_t::AVATAR_OF_NATURE);
+		} else if (getInstant("Avatar of Storm")) {
+			stage = getStage(WheelStage_t::AVATAR_OF_STORM);
+		} else {
+			return 0;
+		}
 	} else {
-		return 0;
+		stage = 3;
 	}
 
 	if (skill == WheelAvatarSkill_t::DAMAGE_REDUCTION) {
@@ -2534,7 +2531,7 @@ void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) {
 }
 
 void PlayerWheel::resetUpgradedSpells() {
-	for (const auto spell : m_learnedSpellsSelected) {
+	for (const auto &spell : m_learnedSpellsSelected) {
 		if (m_player.hasLearnedInstantSpell(spell)) {
 			m_player.forgetInstantSpell(spell);
 		}

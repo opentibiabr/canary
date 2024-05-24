@@ -6483,7 +6483,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	CombatParams damageReflectedParams;
 
 	BlockType_t primaryBlockType, secondaryBlockType;
-	std::shared_ptr<Player> targetPlayer = target && target->getPlayer() : nullptr;
+	std::shared_ptr<Player> targetPlayer = target ? target->getPlayer() : nullptr;
 
 	if (damage.primary.type != COMBAT_NONE) {
 		damage.primary.value = -damage.primary.value;
@@ -6532,8 +6532,8 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 				}
 			}
 			
-			double_t primaryReflectPercent = target && target->getReflectPercent(damage.primary.type, true) : 0;
-			int32_t primaryReflectFlat = target && target->getReflectFlat(damage.primary.type, true) : 0;
+			double_t primaryReflectPercent = target ? target->getReflectPercent(damage.primary.type, true) : 0;
+			int32_t primaryReflectFlat = target ? target->getReflectFlat(damage.primary.type, true) : 0;
 			if (primaryReflectPercent > 0 || primaryReflectFlat > 0) {
 				int32_t distanceX = Position::getDistanceX(target->getPosition(), attacker->getPosition());
 				int32_t distanceY = Position::getDistanceY(target->getPosition(), attacker->getPosition());

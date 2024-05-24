@@ -6460,7 +6460,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	}
 
 	// Skill dodge (ruse)
-	if(target){
+	if (target) {
 		if (std::shared_ptr<Player> targetPlayer = target->getPlayer()) {
 			auto chance = targetPlayer->getDodgeChance();
 			if (chance > 0 && uniform_random(0, 10000) < chance) {
@@ -6483,7 +6483,8 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	CombatParams damageReflectedParams;
 
 	BlockType_t primaryBlockType, secondaryBlockType;
-	std::shared_ptr<Player> targetPlayer = target && target->getPlayer() : nullptr;
+	std::shared_ptr<Player> targetPlayer = target && target->getPlayer() :
+		nullptr;
 
 	if (damage.primary.type != COMBAT_NONE) {
 		damage.primary.value = -damage.primary.value;
@@ -6505,15 +6506,17 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}
 
-		if(target)
+		if (target) {
 			damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
+		}
 
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
 		damage.primary.value = -damage.primary.value;
 
-		if(target)
+		if (target) {
 			InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
+		}
 
 		// Damage reflection primary
 		if (!damage.extension && attacker) {
@@ -6531,7 +6534,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 					}
 				}
 			}
-			
+
 			double_t primaryReflectPercent = target && target->getReflectPercent(damage.primary.type, true) : 0;
 			int32_t primaryReflectFlat = target && target->getReflectFlat(damage.primary.type, true) : 0;
 			if (primaryReflectPercent > 0 || primaryReflectFlat > 0) {
@@ -6580,15 +6583,16 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}
 
-		if(target){
+		if (target) {
 			damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 			secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
 		}
 
 		damage.secondary.value = -damage.secondary.value;
 
-		if(target)
+		if (target) {
 			InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
+		}
 
 		if (!damage.extension && attacker && target && target->getMonster()) {
 			int32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type, true);

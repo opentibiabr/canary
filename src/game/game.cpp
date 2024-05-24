@@ -5165,6 +5165,23 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
+	if (inBackpacks) {
+		uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
+		auto backpack = player->getInventoryItem(CONST_SLOT_BACKPACK);
+		auto mainBackpack = backpack ? backpack->getContainer() : nullptr;
+
+		if (mainBackpack && mainBackpack->getContainerHoldingCount() >= maxContainer) {
+			player->sendCancelMessage(RETURNVALUE_CONTAINERISFULL);
+			return;
+		}
+
+		std::shared_ptr<Tile> tile = player->getTile();
+		if (tile && tile->getItemCount() >= 20) {
+			player->sendCancelMessage(RETURNVALUE_CONTAINERISFULL);
+			return;
+		}
+	}
+
 	merchant->onPlayerBuyItem(player, it.id, count, amount, ignoreCap, inBackpacks);
 	player->updateUIExhausted();
 }

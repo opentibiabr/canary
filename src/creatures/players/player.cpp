@@ -635,20 +635,6 @@ phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> Player::getAllSlotItems() c
 	return itemMap;
 }
 
-phmap::flat_hash_map<Blessings_t, std::string> Player::getBlessingNames() const {
-	static phmap::flat_hash_map<Blessings_t, std::string> blessingNames = {
-		{ TWIST_OF_FATE, "Twist of Fate" },
-		{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
-		{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
-		{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
-		{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
-		{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
-		{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
-		{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
-	};
-	return blessingNames;
-}
-
 void Player::setTraining(bool value) {
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		if (!this->isInGhostMode() || player->isAccessPlayer()) {
@@ -6628,7 +6614,7 @@ std::string Player::getBlessingsName() const {
 		}
 	});
 
-	auto BlessingNames = getBlessingNames();
+	auto BlessingNames = g_game().getBlessingNames();
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {

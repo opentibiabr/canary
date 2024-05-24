@@ -25,6 +25,11 @@ void PlayerCyclopedia::loadSummaryData() {
 }
 
 void PlayerCyclopedia::loadSummary() {
+	DBResult_ptr result = g_database().storeQuery(fmt::format("SELECT COUNT(*) as `count` FROM `player_hirelings` WHERE `player_id` = {}", m_player.getGUID()));
+	auto kvScoped = m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(static_cast<uint8_t>(Summary_t::HIRELINGS)));
+	if (result && !kvScoped->get("amount").has_value()) {
+		kvScoped->set("amount", result->getNumber<int16_t>("count"));
+	}
 }
 
 void PlayerCyclopedia::loadRecentKills() {
@@ -155,5 +160,5 @@ void PlayerCyclopedia::insertValue(uint8_t type, uint16_t amount, const std::str
 	auto oldAmount = (it != result.end() ? it->second : 0);
 	auto newAmount = oldAmount + amount;
 	m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(type))->scoped(id)->set("amount", newAmount);
-	g_logger().debug("type: {}, id: {}, old amount: {}, added amount: {}, new amount: {}", type, id, oldAmount, amount, newAmount);
+	g_logger().debug("[{}] type: {}, id: {}, old amount: {}, added amount: {}, new amount: {}", __FUNCTION__, type, id, oldAmount, amount, newAmount);
 }

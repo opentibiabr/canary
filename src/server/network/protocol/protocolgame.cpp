@@ -3976,30 +3976,14 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	auto cyclopediaSummary = player->cyclopedia()->getSummary();
 
 	// getBlessingsObtained
-	auto blessingNames = player->getBlessingNames();
+	auto blessingNames = g_game().getBlessingNames();
 	std::vector<std::pair<Blessings_t, std::string>> orderedBlessings;
-	for (const auto &bless : blessingNames) {
-		orderedBlessings.emplace_back(bless.first, bless.second);
-	}
-	std::sort(orderedBlessings.begin(), orderedBlessings.end(), [](const std::pair<Blessings_t, std::string> &a, const std::pair<Blessings_t, std::string> &b) {
-		return a.first < b.first;
-	});
-
 	msg.addByte(static_cast<uint8_t>(blessingNames.size()));
-	// auto blessingsObtained = player->cyclopedia()->getResult(static_cast<uint8_t>(Summary_t::BLESSINGS));
-	for (const auto &bless : orderedBlessings) {
-		g_logger().info("bless: {} - {}", bless.first, bless.second);
+	for (const auto &bless : blessingNames) {
+		g_logger().debug("bless: {} - {}", bless.first, bless.second);
 		msg.addString(bless.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
 		uint8_t blessingIndex = bless.first - 1;
 		msg.addByte((blessingIndex < player->blessings.size()) ? static_cast<uint16_t>(player->blessings[blessingIndex]) : 0);
-
-		//		msg.addByte(static_cast<uint16_t>(player->blessings[bless.first - 1]));
-		//		msg.addByte(std::find(player->blessings.begin(), player->blessings.end(), )//player->getBlessingCount(bless.first));
-		//		uint16_t blessAmount = 0;
-		//		auto it = std::find_if(blessingsObtained.begin(), blessingsObtained.end(), [&bName_it](const auto &b_it) {
-		//			return b_it.first == bName_it.first;
-		//		});
-		//		msg.addByte((it != blessingsObtained.end()) ? static_cast<uint16_t>(it->second) : 0x00);
 	}
 
 	uint8_t preySlotsUnlocked = 0;
@@ -4024,28 +4008,26 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	for (const auto &it : g_game().getHirelingSkills()) {
 		if (player->kv()->scoped("hireling-skills")->get(it.second)) {
 			m_hSkills.emplace_back(it.first);
-			g_logger().info("skill id: {}, name: {}", it.first, it.second);
+			g_logger().debug("skill id: {}, name: {}", it.first, it.second);
 		}
 	}
 	msg.addByte(m_hSkills.size());
 	for (const auto &id : m_hSkills) {
-		msg.add<uint16_t>(id - 1000);
-		//		msg.addByte(id);
+		msg.addByte(id - 1000);
 	}
 
-	//	std::vector<uint16_t> m_hOutfits;
-	//	for (const auto &it : g_game().getHirelingOutfits()) {
-	//		if (player->kv()->scoped("hireling-outfits")->get(it.second)) {
-	//			m_hOutfits.emplace_back(it.first);
-	//			g_logger().info("outfit id: {}, name: {}", it.first, it.second);
-	//		}
-	//	}
-	//	msg.addByte(m_hOutfits.size());
-	//	for (const auto &id : m_hOutfits) {
-	//		msg.add<uint16_t>(id);
-	//		//		msg.addByte(id);
-	//	}
-	msg.addByte(0x00);
+	/*std::vector<uint16_t> m_hOutfits;
+	for (const auto &it : g_game().getHirelingOutfits()) {
+		if (player->kv()->scoped("hireling-outfits")->get(it.second)) {
+			m_hOutfits.emplace_back(it.first);
+			g_logger().debug("outfit id: {}, name: {}", it.first, it.second);
+		}
+	}
+	msg.addByte(m_hOutfits.size());
+	for (const auto &id : m_hOutfits) {
+		msg.addByte(0x01); // TODO need to get the correct id from hireling outfit
+	}*/
+	msg.addByte(0x00); // hireling outfit size
 
 	auto houseItems = player->cyclopedia()->getResult(static_cast<uint8_t>(Summary_t::HOUSE_ITEMS));
 	msg.add<uint16_t>(houseItems.size());

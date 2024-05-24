@@ -47,8 +47,8 @@ GameStore.SubActions = {
 	BLESSING_SUNS = 6,
 	BLESSING_SPIRITUAL = 7,
 	BLESSING_EMBRACE = 8,
-	BLESSING_HEART = 9,
-	BLESSING_BLOOD = 10,
+	BLESSING_BLOOD = 9,
+	BLESSING_HEART = 10,
 	BLESSING_ALL_PVE = 11,
 	BLESSING_ALL_PVP = 12,
 	CHARM_EXPANSION = 13,
@@ -1820,6 +1820,7 @@ function GameStore.processHirelingPurchase(player, offer, productType, hirelingN
 
 		player:makeCoinTransaction(offer, hirelingName)
 		local message = "You have successfully bought " .. hirelingName
+		player:createTransactionSummary(offer.type, 1)
 		return addPlayerEvent(sendStorePurchaseSuccessful, 650, player:getId(), message)
 		-- If not, we ask him to do!
 	else

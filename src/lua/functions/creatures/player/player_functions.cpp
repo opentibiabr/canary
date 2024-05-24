@@ -4374,7 +4374,6 @@ int PlayerFunctions::luaPlayerCreateTransactionSummary(lua_State* L) {
 	auto amount = getNumber<uint16_t>(L, 3, 1);
 	auto id = getString(L, 4, "");
 
-	g_logger().info("type: {}, amount: {}, id: {}", type, amount, id);
 	player->cyclopedia()->updateStoreSummary(type, amount, id);
 	pushBoolean(L, true);
 	return 1;

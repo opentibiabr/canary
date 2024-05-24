@@ -45,6 +45,4 @@ enum Summary_t : uint8_t {
 	ALL_BLESSINGS = 17,
 	INSTANT_REWARDS = 18,
 	HIRELINGS = 20,
-	HIRELING_JOBS = 23,
-	HIRELING_OUTFITS = 24,
 };

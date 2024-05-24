@@ -2595,9 +2595,6 @@ public:
 	// This get all players slot items
 	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> getAllSlotItems() const;
 
-	// This get all blessings
-	phmap::flat_hash_map<Blessings_t, std::string> getBlessingNames() const;
-
 	// Gets the equipped items with augment by type
 	std::vector<std::shared_ptr<Item>> getEquippedAugmentItemsByType(Augment_t augmentType) const;
 

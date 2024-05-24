@@ -1397,29 +1397,29 @@ struct CreatureIcon {
 struct Position;
 
 struct VIPEntry {
-	VIPEntry(uint32_t initGuid, std::string initName, std::string initDescription, uint32_t initIcon, bool initNotify) :
+	VIPEntry(uint32_t initGuid, const std::string &initName, const std::string &initDescription, uint32_t initIcon, bool initNotify) :
 		guid(initGuid),
 		name(std::move(initName)),
 		description(std::move(initDescription)),
 		icon(initIcon),
 		notify(initNotify) { }
 
-	uint32_t guid;
-	std::string name;
-	std::string description;
-	uint32_t icon;
-	bool notify;
+	uint32_t guid = 0;
+	std::string name = "";
+	std::string description = "";
+	uint32_t icon = 0;
+	bool notify = false;
 };
 
 struct VIPGroupEntry {
-	VIPGroupEntry(uint8_t initId, std::string initName, bool initCustomizable) :
+	VIPGroupEntry(uint8_t initId, const std::string &initName, bool initCustomizable) :
 		id(initId),
 		name(std::move(initName)),
 		customizable(initCustomizable) { }
 
-	uint8_t id;
-	std::string name;
-	bool customizable;
+	uint8_t id = 0;
+	std::string name = "";
+	bool customizable = false;
 };
 
 struct Skill {

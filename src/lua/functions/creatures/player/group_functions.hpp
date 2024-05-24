@@ -14,7 +14,7 @@
 class GroupFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Group", "", GroupFunctions::luaGroupCreate);
+		registerSharedClass(L, "Group", "", GroupFunctions::luaGroupCreate);
 		registerMetaMethod(L, "Group", "__eq", GroupFunctions::luaUserdataCompare);
 
 		registerMethod(L, "Group", "getId", GroupFunctions::luaGroupGetId);

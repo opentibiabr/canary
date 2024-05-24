@@ -84,6 +84,24 @@ enum CyclopediaCharacterInfo_RecentKillStatus_t : uint8_t {
 	CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_ARENA = 4
 };
 
+enum class HighscoreCategories_t : uint8_t {
+	EXPERIENCE = 0,
+	FIST_FIGHTING = 1,
+	CLUB_FIGHTING = 2,
+	SWORD_FIGHTING = 3,
+	AXE_FIGHTING = 4,
+	DISTANCE_FIGHTING = 5,
+	SHIELDING = 6,
+	FISHING = 7,
+	MAGIC_LEVEL = 8,
+	LOYALTY = 9,
+	ACHIEVEMENTS = 10,
+	CHARMS = 11,
+	DROME = 12,
+	GOSHNAR = 13,
+	BOSS_POINTS = 14,
+};
+
 enum HighscoreType_t : uint8_t {
 	HIGHSCORE_GETENTRIES = 0,
 	HIGHSCORE_OURRANK = 1

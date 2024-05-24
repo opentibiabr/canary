@@ -399,9 +399,9 @@ void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::err
 
 	if (auto connection = connectionWeak.lock()) {
 		if (!error) {
-			g_logger().warn("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
 		} else {
-			g_logger().warn("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
 		}
 		connection->close(FORCE_CLOSE);
 	}

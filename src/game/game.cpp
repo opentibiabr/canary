@@ -6451,7 +6451,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 		return true;
 	}
 
-	if (target->getPlayer() && target->isInGhostMode()) {
+	if (target && target->getPlayer() && target->isInGhostMode()) {
 		return true;
 	}
 
@@ -6460,12 +6460,14 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	}
 
 	// Skill dodge (ruse)
-	if (std::shared_ptr<Player> targetPlayer = target->getPlayer()) {
-		auto chance = targetPlayer->getDodgeChance();
-		if (chance > 0 && uniform_random(0, 10000) < chance) {
-			InternalGame::sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition(), attacker);
-			targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack.");
-			return true;
+	if(target){
+		if (std::shared_ptr<Player> targetPlayer = target->getPlayer()) {
+			auto chance = targetPlayer->getDodgeChance();
+			if (chance > 0 && uniform_random(0, 10000) < chance) {
+				InternalGame::sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition(), attacker);
+				targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack.");
+				return true;
+			}
 		}
 	}
 
@@ -6481,13 +6483,13 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	CombatParams damageReflectedParams;
 
 	BlockType_t primaryBlockType, secondaryBlockType;
-	std::shared_ptr<Player> targetPlayer = target->getPlayer();
+	std::shared_ptr<Player> targetPlayer = target && target->getPlayer() : nullptr;
 
 	if (damage.primary.type != COMBAT_NONE) {
 		damage.primary.value = -damage.primary.value;
 		// Damage healing primary
 		if (attacker) {
-			if (target->getMonster()) {
+			if (target && target->getMonster()) {
 				uint32_t primaryHealing = target->getMonster()->getHealingCombatValue(damage.primary.type);
 				if (primaryHealing > 0) {
 					damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
@@ -6502,12 +6504,17 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 			}
 			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}
-		damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
+
+		if(target)
+			damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
 		damage.primary.value = -damage.primary.value;
-		InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
+
+		if(target)
+			InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
+
 		// Damage reflection primary
 		if (!damage.extension && attacker) {
 			std::shared_ptr<Monster> attackerMonster = attacker->getMonster();
@@ -6524,8 +6531,9 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 					}
 				}
 			}
-			double_t primaryReflectPercent = target->getReflectPercent(damage.primary.type, true);
-			int32_t primaryReflectFlat = target->getReflectFlat(damage.primary.type, true);
+			
+			double_t primaryReflectPercent = target && target->getReflectPercent(damage.primary.type, true) : 0;
+			int32_t primaryReflectFlat = target && target->getReflectFlat(damage.primary.type, true) : 0;
 			if (primaryReflectPercent > 0 || primaryReflectFlat > 0) {
 				int32_t distanceX = Position::getDistanceX(target->getPosition(), attacker->getPosition());
 				int32_t distanceY = Position::getDistanceY(target->getPosition(), attacker->getPosition());
@@ -6557,7 +6565,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	if (damage.secondary.type != COMBAT_NONE) {
 		damage.secondary.value = -damage.secondary.value;
 		// Damage healing secondary
-		if (attacker && target->getMonster()) {
+		if (attacker && target && target->getMonster()) {
 			uint32_t secondaryHealing = target->getMonster()->getHealingCombatValue(damage.secondary.type);
 			if (secondaryHealing > 0) {
 				damageHeal.primary.value += std::ceil((damage.secondary.value) * (secondaryHealing / 100.));
@@ -6571,14 +6579,18 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 			}
 			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}
-		damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 
-		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
+		if(target){
+			damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
+			secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
+		}
 
 		damage.secondary.value = -damage.secondary.value;
-		InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
 
-		if (!damage.extension && attacker && target->getMonster()) {
+		if(target)
+			InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
+
+		if (!damage.extension && attacker && target && target->getMonster()) {
 			int32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type, true);
 			int32_t secondaryReflectFlat = target->getReflectFlat(damage.secondary.type, true);
 			if (secondaryReflectPercent > 0 || secondaryReflectFlat > 0) {
@@ -6607,7 +6619,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 	}
 	// Damage reflection secondary
 
-	if (damage.primary.type == COMBAT_HEALING) {
+	if (target && damage.primary.type == COMBAT_HEALING) {
 		damage.primary.value *= target->getBuff(BUFF_HEALINGRECEIVED) / 100.;
 	}
 
@@ -6625,10 +6637,10 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 		damage.exString += "active elemental amplification";
 	}
 
-	if (canReflect) {
+	if (canReflect && target) {
 		Combat::doCombatHealth(target, attacker, damageReflected, damageReflectedParams);
 	}
-	if (canHeal) {
+	if (canHeal && target) {
 		combatChangeHealth(nullptr, target, damageHeal);
 	}
 	return (primaryBlockType != BLOCK_NONE) && (secondaryBlockType != BLOCK_NONE);

@@ -6533,7 +6533,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 					}
 				}
 			}
-			
+
 			double_t primaryReflectPercent = target ? target->getReflectPercent(damage.primary.type, true) : 0;
 			int32_t primaryReflectFlat = target ? target->getReflectFlat(damage.primary.type, true) : 0;
 			if (primaryReflectPercent > 0 || primaryReflectFlat > 0) {

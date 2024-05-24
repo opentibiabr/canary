@@ -52,6 +52,8 @@ bool GameReload::init(Reload_t reloadTypes) const {
 			return reloadScripts();
 		case Reload_t::RELOAD_TYPE_GROUPS:
 			return reloadGroups();
+		case Reload_t::RELOAD_TYPE_VOCATIONS:
+			return reloadVocations();
 		default:
 			return false;
 	}
@@ -114,7 +116,6 @@ bool GameReload::reloadCore() const {
 	const bool coreLoaded = g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
 
 	if (coreLoaded) {
-		const auto &datapackFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 		const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
 		if (scriptsLoaded) {
 			return true;
@@ -199,5 +200,11 @@ bool GameReload::reloadScripts() const {
 bool GameReload::reloadGroups() const {
 	const bool result = g_game().groups.reload();
 	logReloadStatus("Groups", result);
+	return result;
+}
+
+bool GameReload::reloadVocations() const {
+	const bool result = g_vocations().reload();
+	logReloadStatus("Vocations", result);
 	return result;
 }

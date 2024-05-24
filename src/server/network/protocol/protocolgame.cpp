@@ -3977,15 +3977,29 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 
 	// getBlessingsObtained
 	auto blessingNames = player->getBlessingNames();
+	std::vector<std::pair<Blessings_t, std::string>> orderedBlessings;
+	for (const auto &bless : blessingNames) {
+		orderedBlessings.emplace_back(bless.first, bless.second);
+	}
+	std::sort(orderedBlessings.begin(), orderedBlessings.end(), [](const std::pair<Blessings_t, std::string> &a, const std::pair<Blessings_t, std::string> &b) {
+		return a.first < b.first;
+	});
+
 	msg.addByte(static_cast<uint8_t>(blessingNames.size()));
-	auto blessingsObtained = player->cyclopedia()->getResult(static_cast<uint8_t>(Summary_t::BLESSINGS));
-	for (const auto &bName_it : blessingNames) {
-		msg.addString(bName_it.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
-		uint16_t blessAmount = 0;
-		auto it = std::find_if(blessingsObtained.begin(), blessingsObtained.end(), [&bName_it](const auto &b_it) {
-			return b_it.first == bName_it.first;
-		});
-		msg.addByte((it != blessingsObtained.end()) ? static_cast<uint16_t>(it->second) : 0x00);
+	// auto blessingsObtained = player->cyclopedia()->getResult(static_cast<uint8_t>(Summary_t::BLESSINGS));
+	for (const auto &bless : orderedBlessings) {
+		g_logger().info("bless: {} - {}", bless.first, bless.second);
+		msg.addString(bless.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
+		uint8_t blessingIndex = bless.first - 1;
+		msg.addByte((blessingIndex < player->blessings.size()) ? static_cast<uint16_t>(player->blessings[blessingIndex]) : 0);
+
+		//		msg.addByte(static_cast<uint16_t>(player->blessings[bless.first - 1]));
+		//		msg.addByte(std::find(player->blessings.begin(), player->blessings.end(), )//player->getBlessingCount(bless.first));
+		//		uint16_t blessAmount = 0;
+		//		auto it = std::find_if(blessingsObtained.begin(), blessingsObtained.end(), [&bName_it](const auto &b_it) {
+		//			return b_it.first == bName_it.first;
+		//		});
+		//		msg.addByte((it != blessingsObtained.end()) ? static_cast<uint16_t>(it->second) : 0x00);
 	}
 
 	uint8_t preySlotsUnlocked = 0;
@@ -4015,7 +4029,8 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	}
 	msg.addByte(m_hSkills.size());
 	for (const auto &id : m_hSkills) {
-		msg.addByte(id);
+		msg.add<uint16_t>(id - 1000);
+		//		msg.addByte(id);
 	}
 
 	//	std::vector<uint16_t> m_hOutfits;

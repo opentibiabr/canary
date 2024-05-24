@@ -478,8 +478,12 @@ public:
 	bool hasBlessing(uint8_t index) const {
 		return blessings[index - 1] != 0;
 	}
-	uint8_t getBlessingCount(uint8_t index) const {
-		return blessings[index - 1];
+	uint8_t getBlessingCount(uint8_t index, bool storeCount = false) const {
+		if (!storeCount) {
+			return blessings[index - 1];
+		}
+		auto amount = kv()->scoped("summary")->scoped("blessings")->scoped(fmt::format("{}", index))->get("amount");
+		return amount ? static_cast<uint8_t>(amount->getNumber()) : 0;
 	}
 	std::string getBlessingsName() const;
 

@@ -142,7 +142,7 @@ Blessings.sendBlessDialog = function(player)
 			msg:addU16(Blessings.BitWiseTable[v.id])
 			msg:addByte(player:getBlessingCount(v.id))
 			if player:getClient().version > 1200 then
-				msg:addByte(0) -- Store Blessings Count
+				msg:addByte(player:getBlessingCount(v.id, true)) -- Store Blessings Count
 			end
 		end
 	end

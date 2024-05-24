@@ -2733,7 +2733,7 @@ int PlayerFunctions::luaPlayerRemoveBlessing(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerGetBlessingCount(lua_State* L) {
-	// player:getBlessingCount(index)
+	// player:getBlessingCount(index[, storeCount = false])
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	uint8_t index = getNumber<uint8_t>(L, 2);
 	if (index == 0) {
@@ -2741,7 +2741,7 @@ int PlayerFunctions::luaPlayerGetBlessingCount(lua_State* L) {
 	}
 
 	if (player) {
-		lua_pushnumber(L, player->getBlessingCount(index));
+		lua_pushnumber(L, player->getBlessingCount(index, getBoolean(L, 3, false)));
 	} else {
 		lua_pushnil(L);
 	}

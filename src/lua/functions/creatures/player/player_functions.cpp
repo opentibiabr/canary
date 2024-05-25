@@ -30,6 +30,8 @@
 #include "enums/account_type.hpp"
 #include "enums/account_coins.hpp"
 
+#include "creatures/players/cast/cast_viewer.hpp"
+
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
@@ -110,7 +112,7 @@ int PlayerFunctions::luaPlayerUpdateKillTracker(lua_State* L) {
 		return 1;
 	}
 
-	player->updateKillTracker(corpse, monster->getName(), monster->getCurrentOutfit());
+	player->sendKillTrackerUpdate(corpse, monster->getName(), monster->getCurrentOutfit());
 	pushBoolean(L, true);
 
 	return 1;
@@ -4353,5 +4355,144 @@ int PlayerFunctions::luaPlayerSetCurrentTitle(lua_State* L) {
 
 	player->title()->setCurrentTitle(title.m_id);
 	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetCastViewersCount(lua_State* L) {
+	// player:getCastViewersCount()
+	auto player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	lua_pushnumber(L, player->client->getCastViewerCount());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetCastViewers(lua_State* L) {
+	// player:getCastViewers()
+	auto player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_newtable(L);
+	setField(L, "description", player->client->getCastDescription());
+	setCastFieldBool(L, "broadcast", player->client->isCastBroadcasting());
+	setField(L, "password", player->client->getCastPassword());
+
+	createCastTable(L, "names");
+	auto viwers = player->client->getViewers();
+
+	StringVector::const_iterator it = viwers.begin();
+	for (uint32_t i = 1; it != viwers.end(); ++it, ++i) {
+		lua_pushnumber(L, i);
+		lua_pushstring(L, (*it).c_str());
+		lua_settable(L, -3);
+	}
+
+	lua_settable(L, -3);
+	createCastTable(L, "mutes");
+	const auto &mute = player->client->getMuteCastList();
+
+	it = mute.begin();
+	for (uint32_t i = 1; it != mute.end(); ++it, ++i) {
+		lua_pushnumber(L, i);
+		lua_pushstring(L, (*it).c_str());
+		lua_settable(L, -3);
+	}
+
+	lua_settable(L, -3);
+	createCastTable(L, "bans");
+	const auto &banList = player->client->getBanCastList();
+
+	std::map<std::string, uint32_t>::const_iterator _it = banList.begin();
+	for (uint32_t i = 1; _it != banList.end(); ++_it, ++i) {
+		lua_pushnumber(L, i);
+		lua_pushstring(L, _it->first.c_str());
+		lua_settable(L, -3);
+	}
+
+	lua_settable(L, -3);
+	createCastTable(L, "kick");
+	lua_settable(L, -3);
+
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetCastViewers(lua_State* L) {
+	// player:setCastViewers()
+	std::string description = getCastFieldString(L, "description");
+	std::string password = getCastFieldString(L, "password");
+	bool broadcast = getCastFieldBool(L, "broadcast");
+
+	StringVector kickedVector, mutedVector, banedVector;
+	lua_pushstring(L, "mutes");
+	lua_gettable(L, -2);
+
+	lua_pushnil(L);
+	while (lua_next(L, -2)) {
+		mutedVector.push_back(asLowerCaseString(lua_tostring(L, -1)));
+		lua_pop(L, 1);
+	}
+
+	lua_pop(L, 1);
+	lua_pushstring(L, "bans");
+	lua_gettable(L, -2);
+
+	lua_pushnil(L);
+	while (lua_next(L, -2)) {
+		banedVector.push_back(asLowerCaseString(lua_tostring(L, -1)));
+		lua_pop(L, 1);
+	}
+
+	lua_pop(L, 1);
+	lua_pushstring(L, "kick");
+	lua_gettable(L, -2);
+
+	lua_pushnil(L);
+	while (lua_next(L, -2)) {
+		kickedVector.push_back(asLowerCaseString(lua_tostring(L, -1)));
+		lua_pop(L, 1);
+	}
+
+	lua_pop(L, 2);
+	auto player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (player->client->getCastPassword() != password && !password.empty()) {
+		player->client->clear(false);
+	}
+
+	player->client->setCastPassword(password);
+	if (!broadcast && player->client->isCastBroadcasting()) {
+		player->client->clear(false);
+	}
+
+	player->client->setKickViewer(kickedVector);
+	player->client->setMuteViewer(mutedVector);
+	player->client->setBanViewer(banedVector);
+
+	if (!player->client->isCastBroadcasting()) {
+		player->client->setCastBroadcastTime(OTSYS_TIME());
+	}
+
+	player->client->setCastBroadcast(broadcast);
+
+	if (broadcast) {
+		player->client->insertCaster();
+		player->sendChannel(CHANNEL_CAST, "Tibia Cast", nullptr, nullptr);
+	}
+
+	player->client->setCastDescription(description);
+	pushBoolean(L, true);
+
 	return 1;
 }

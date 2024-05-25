@@ -285,6 +285,8 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MAX_PLAYERS_PER_ACCOUNT, "maxPlayersOnlinePerAccount", 1);
 	loadIntConfig(L, MAX_PLAYERS, "maxPlayers", 0);
 	loadIntConfig(L, MAX_SPEED_ATTACKONFIST, "maxSpeedOnFist", 500);
+	loadIntConfig(L, CAST_EXPERIENCE_MULTIPLIER, "castExperienceMultiplier", 15);
+	loadIntConfig(L, CAST_MAXIMUM_VIEWERS, "maximumViewersPerCast", 50);
 	loadIntConfig(L, METRICS_OSTREAM_INTERVAL, "metricsOstreamInterval", 1000);
 	loadIntConfig(L, MIN_DELAY_BETWEEN_CONDITIONS, "minDelayBetweenConditions", 0);
 	loadIntConfig(L, MIN_ELEMENTAL_RESISTANCE, "minElementalResistance", -200);

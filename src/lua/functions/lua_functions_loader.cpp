@@ -796,3 +796,47 @@ int LuaFunctionsLoader::validateDispatcherContext(std::string_view fncName) {
 
 	return 0;
 }
+
+void LuaFunctionsLoader::createCastTable(lua_State* L, const char* index) {
+	lua_pushstring(L, index);
+	lua_newtable(L);
+}
+
+void LuaFunctionsLoader::createCastTable(lua_State* L, const char* index, int32_t narr, int32_t nrec) {
+	lua_pushstring(L, index);
+	lua_createtable(L, narr, nrec);
+}
+
+void LuaFunctionsLoader::createCastTable(lua_State* L, int32_t index) {
+	lua_pushnumber(L, index);
+	lua_newtable(L);
+}
+
+void LuaFunctionsLoader::createCastTable(lua_State* L, int32_t index, int32_t narr, int32_t nrec) {
+	lua_pushnumber(L, index);
+	lua_createtable(L, narr, nrec);
+}
+
+void LuaFunctionsLoader::setCastFieldBool(lua_State* L, const char* index, bool val) {
+	lua_pushstring(L, index);
+	lua_pushboolean(L, val);
+	lua_settable(L, -3);
+}
+
+bool LuaFunctionsLoader::getCastFieldBool(lua_State* L, const char* key) {
+	lua_pushstring(L, key);
+	lua_gettable(L, -2); // get table[key]
+
+	bool result = (lua_toboolean(L, -1) != 0);
+	lua_pop(L, 1); // remove number and key
+	return result;
+}
+
+std::string LuaFunctionsLoader::getCastFieldString(lua_State* L, const char* key) {
+	lua_pushstring(L, key);
+	lua_gettable(L, -2); // get table[key]
+
+	std::string result = lua_tostring(L, -1);
+	lua_pop(L, 1); // remove number and key
+	return result;
+}

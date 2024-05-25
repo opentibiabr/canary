@@ -34,5 +34,7 @@ private:
 
 	void getCharacterList(const std::string &accountDescriptor, const std::string &password);
 
+	void getCastViewersList(const std::string &password);
+
 	bool oldProtocol = false;
 };

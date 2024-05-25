@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '46'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '47'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -251,6 +251,14 @@ CREATE TABLE IF NOT EXISTS `account_vipgrouplist` (
     CONSTRAINT `account_vipgrouplist_vipgroup_fk`
     FOREIGN KEY (`vipgroup_id`, `account_id`) REFERENCES `account_vipgroups` (`id`, `account_id`)
     ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `active_casters`
+CREATE TABLE IF NOT EXISTS `active_casters` (
+    `caster_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `cast_viewers` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
+    `cast_status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+    PRIMARY KEY (`caster_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `boosted_boss`

@@ -1560,16 +1560,15 @@ void capitalizeWords(std::string &source) {
 
 void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore) {
 	toLowerCaseString(source);
-	uint8_t size = (uint8_t)source.size();
-	uint8_t indexFound = source.find(stringToIgnore);
+	auto size = static_cast<uint8_t>(source.size());
+	auto indexFound = source.find(stringToIgnore);
+
 	for (uint8_t i = 0; i < size; i++) {
-		if (indexFound != std::string::npos && (i > indexFound - 1) && i < (indexFound + stringToIgnore.size())) {
+		if (indexFound != std::string::npos && indexFound > 0 && std::cmp_greater(i, static_cast<uint8_t>(indexFound - 1)) && i < (indexFound + stringToIgnore.size())) {
 			continue;
 		}
-		if (i == 0) {
-			source[i] = (char)toupper(source[i]);
-		} else if (source[i - 1] == ' ' || source[i - 1] == '\'') {
-			source[i] = (char)toupper(source[i]);
+		if (i == 0 || source[i - 1] == ' ' || source[i - 1] == '\'') {
+			source[i] = static_cast<char>(std::toupper(source[i]));
 		}
 	}
 }

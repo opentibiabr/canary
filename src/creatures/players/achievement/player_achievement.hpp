@@ -13,7 +13,7 @@ class Player;
 class KV;
 
 struct Achievement {
-	Achievement() { }
+	Achievement() = default;
 
 	std::string name;
 	std::string description;

@@ -25,7 +25,7 @@ public:
 
 class NpcType : public SharedObject {
 	struct NpcInfo {
-		LuaScriptInterface* scriptInterface;
+		LuaScriptInterface* scriptInterface {};
 
 		Outfit_t outfit = {};
 		RespawnType respawnType = {};

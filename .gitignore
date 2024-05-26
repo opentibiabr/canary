@@ -397,3 +397,8 @@ vcpkg_installed
 
 # CLION
 cmake-build-*
+data-naruto/world/ShinobiAscension-house.xml
+data-naruto/world/ShinobiAscension-npc.xml
+data-naruto/world/ShinobiAscension-monster.xml
+data-naruto/world/ShinobiAscension-zones.xml
+data-naruto/world/ShinobiAscension.otbm

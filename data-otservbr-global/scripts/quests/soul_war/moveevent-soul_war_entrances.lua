@@ -88,9 +88,6 @@ soul_war_megalomania_entrance:position({ x = 33611, y = 31430, z = 10 })
 soul_war_megalomania_entrance:register()
 
 local claustrophobicInfernoTeleportPositions = {
-	[Position(34013, 31049, 9)] = Position(34014, 31058, 9),
-	[Position(34010, 31073, 10)] = Position(34012, 31063, 10),
-	[Position(34009, 31038, 11)] = Position(34012, 31047, 11),
 	[Position(34022, 31091, 11)] = Position(33685, 31599, 14),
 }
 

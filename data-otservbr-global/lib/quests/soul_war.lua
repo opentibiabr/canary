@@ -117,15 +117,7 @@ SoulWarQuest = {
 		{ from = Position(33856, 31884, 5), to = Position(33857, 31865, 6), access = "third-floor-access", count = 70 },
 	},
 
-	safeZones = {
-		claustrophobicInferno = Zone("safe.claustrophobic-inferno"),
-		mirroredNightmare = Zone("safe.mirrored-nightmare"),
-		ebbAndFlow = Zone("safe.ebb-and-flow"),
-		furiousCrater = Zone("safe.furious-crater"),
-		rottenWasteland = Zone("safe.rotten-wasteland"),
-	},
-
-	raids = {
+	claustrophobicInfernoRaids = {
 		[1] = {
 			timerStarted = false,
 			sandTimerPositions = {
@@ -149,15 +141,12 @@ SoulWarQuest = {
 				Position(34039, 31065, 9),
 				Position(34032, 31072, 9),
 			},
-			exitPosition = Position(34009, 31083, 9),
-			endEvent = nil,
-			kickEvent = nil,
-			spawnEvent = nil,
+			exitPosition = { x = 34009, y = 31083, z = 9 },
 			getZone = function()
-				return SoulWarQuest.raids[1].zone
+				return SoulWarQuest.claustrophobicInfernoRaids[1].zone
 			end,
 			toggleTimer = function()
-				SoulWarQuest.raids[1].timerStarted = not SoulWarQuest.raids[1].timerStarted
+				SoulWarQuest.claustrophobicInfernoRaids[1].timerStarted = not SoulWarQuest.claustrophobicInfernoRaids[1].timerStarted
 			end,
 		},
 		[2] = {
@@ -182,15 +171,12 @@ SoulWarQuest = {
 				Position(33998, 31061, 10),
 				Position(34005, 31052, 10),
 			},
-			exitPosition = Position(34011, 31028, 10),
-			endEvent = nil,
-			kickEvent = nil,
-			spawnEvent = nil,
+			exitPosition = { x = 34011, y = 31028, z = 10 },
 			getZone = function()
-				return SoulWarQuest.raids[2].zone
+				return SoulWarQuest.claustrophobicInfernoRaids[2].zone
 			end,
 			toggleTimer = function()
-				SoulWarQuest.raids[2].timerStarted = not SoulWarQuest.raids[2].timerStarted
+				SoulWarQuest.claustrophobicInfernoRaids[2].timerStarted = not SoulWarQuest.claustrophobicInfernoRaids[2].timerStarted
 			end,
 		},
 		[3] = {
@@ -225,15 +211,12 @@ SoulWarQuest = {
 				Position(34007, 31063, 11),
 				Position(34004, 31059, 11),
 			},
-			exitPosition = Position(34014, 31085, 11),
-			endEvent = nil,
-			kickEvent = nil,
-			spawnEvent = nil,
+			exitPosition = { x = 34014, y = 31085, z = 11 },
 			getZone = function()
-				return SoulWarQuest.raids[3].zone
+				return SoulWarQuest.claustrophobicInfernoRaids[3].zone
 			end,
 			toggleTimer = function()
-				SoulWarQuest.raids[3].timerStarted = not SoulWarQuest.raids[3].timerStarted
+				SoulWarQuest.claustrophobicInfernoRaids[3].timerStarted = not SoulWarQuest.claustrophobicInfernoRaids[3].timerStarted
 			end,
 		},
 		spawnTime = 10, -- seconds
@@ -842,20 +825,15 @@ SoulWarQuest.ebbAndFlow.zone:addArea({ x = 33869, y = 30991, z = 8 }, { x = 3396
 
 -- Initialize claustrophobic inferno raid zones
 
-SoulWarQuest.raids[1].zone:addArea({ x = 33985, y = 31053, z = 9 }, { x = 34045, y = 31077, z = 9 })
-SoulWarQuest.raids[2].zone:addArea({ x = 33988, y = 31042, z = 10 }, { x = 34043, y = 31068, z = 10 })
-SoulWarQuest.raids[3].zone:addArea({ x = 33987, y = 31043, z = 11 }, { x = 34044, y = 31076, z = 11 })
+SoulWarQuest.claustrophobicInfernoRaids[1].zone:addArea({ x = 33985, y = 31053, z = 9 }, { x = 34045, y = 31077, z = 9 })
+SoulWarQuest.claustrophobicInfernoRaids[2].zone:addArea({ x = 33988, y = 31042, z = 10 }, { x = 34043, y = 31068, z = 10 })
+SoulWarQuest.claustrophobicInfernoRaids[3].zone:addArea({ x = 33987, y = 31043, z = 11 }, { x = 34044, y = 31076, z = 11 })
 
--- Initialize safe areas (should not spawn monster, teleport, take damage from taint, etc)
-SoulWarQuest.safeZones.ebbAndFlow:addArea({ x = 33887, y = 31015, z = 8 }, { x = 33920, y = 31024, z = 8 })
+-- Add remove destination
 
-SoulWarQuest.safeZones.claustrophobicInferno:addArea({ x = 34002, y = 31008, z = 9 }, { x = 34019, y = 31019, z = 9 })
-
-SoulWarQuest.safeZones.furiousCrater:addArea({ x = 33854, y = 31828, z = 3 }, { x = 33869, y = 31834, z = 3 })
-
-SoulWarQuest.safeZones.rottenWasteland:addArea({ x = 33967, y = 31037, z = 11 }, { x = 33977, y = 31051, z = 11 })
-
-SoulWarQuest.safeZones.mirroredNightmare:addArea({ x = 33884, y = 31181, z = 10 }, { x = 33892, y = 31198, z = 10 })
+SoulWarQuest.claustrophobicInfernoRaids[1].zone:setRemoveDestination(SoulWarQuest.claustrophobicInfernoRaids[1].exitPosition)
+SoulWarQuest.claustrophobicInfernoRaids[2].zone:setRemoveDestination(SoulWarQuest.claustrophobicInfernoRaids[2].exitPosition)
+SoulWarQuest.claustrophobicInfernoRaids[3].zone:setRemoveDestination(SoulWarQuest.claustrophobicInfernoRaids[3].exitPosition)
 
 -- Initialize bosses access for taint check
 SoulWarQuest.areaZones.claustrophobicInferno:addArea({ x = 33982, y = 30981, z = 9 }, { x = 34051, y = 31110, z = 11 })
@@ -867,6 +845,17 @@ SoulWarQuest.areaZones.furiousCrater:addArea({ x = 33814, y = 31819, z = 3 }, { 
 SoulWarQuest.areaZones.rottenWasteland:addArea({ x = 33980, y = 30986, z = 11 }, { x = 33901, y = 31105, z = 12 })
 
 SoulWarQuest.areaZones.mirroredNightmare:addArea({ x = 33877, y = 31164, z = 9 }, { x = 33991, y = 31241, z = 13 })
+
+-- Initialize safe areas (should not spawn monster, teleport, take damage from taint, etc)
+SoulWarQuest.areaZones.claustrophobicInferno:subtractArea({ x = 34002, y = 31008, z = 9 }, { x = 34019, y = 31019, z = 9 })
+
+SoulWarQuest.areaZones.ebbAndFlow:subtractArea({ x = 33887, y = 31015, z = 8 }, { x = 33920, y = 31024, z = 8 })
+
+SoulWarQuest.areaZones.furiousCrater:subtractArea({ x = 33854, y = 31828, z = 3 }, { x = 33869, y = 31834, z = 3 })
+
+SoulWarQuest.areaZones.rottenWasteland:subtractArea({ x = 33967, y = 31037, z = 11 }, { x = 33977, y = 31051, z = 11 })
+
+SoulWarQuest.areaZones.mirroredNightmare:subtractArea({ x = 33884, y = 31181, z = 10 }, { x = 33892, y = 31198, z = 10 })
 
 SoulCagePosition = Position(33709, 31596, 14)
 TaintDurationSeconds = 14 * 24 * 60 * 60 -- 14 days
@@ -1216,7 +1205,7 @@ function Monster:tryTeleportToPlayer(sayMessage)
 	for i, spectator in ipairs(spectators) do
 		if spectator:isPlayer() then
 			local player = spectator:getPlayer()
-			if player:getTaintNameByNumber(1, true) and not player:isInSafeZone() then
+			if player:getTaintNameByNumber(1, true) and player:getSoulWarZoneMonster() ~= nil then
 				local distance = self:getPosition():getDistance(player:getPosition())
 				if distance > maxDistance then
 					maxDistance = distance
@@ -1398,16 +1387,6 @@ function Monster:goshnarsDefenseIncrease(kvName)
 		-- If config time have not passed, logs the increase has been skipped.
 		logger.trace("{} skips increase cooldown due to recent item use.", self:getName())
 	end
-end
-
-function Player:isInSafeZone()
-	for zoneName, zone in pairs(SoulWarQuest.safeZones) do
-		if zone and zone:isInZone(self:getPosition()) then
-			return true
-		end
-	end
-
-	return false
 end
 
 function Player:getSoulWarZoneMonster()

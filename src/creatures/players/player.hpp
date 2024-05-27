@@ -37,6 +37,7 @@
 #include "enums/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/vip/player_vip.hpp"
 
 class House;
 class NetworkMessage;
@@ -54,6 +55,7 @@ class PlayerWheel;
 class PlayerAchievement;
 class PlayerBadge;
 class PlayerTitle;
+class PlayerVIP;
 class Spectators;
 class Account;
 
@@ -61,6 +63,7 @@ struct ModalWindow;
 struct Achievement;
 struct Badge;
 struct Title;
+struct VIPGroup;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -835,13 +838,6 @@ public:
 		return shopOwner;
 	}
 
-	// V.I.P. functions
-	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true) const;
-	bool removeVIP(uint32_t vipGuid);
-	bool addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t status);
-	bool addVIPInternal(uint32_t vipGuid);
-	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const;
-
 	// follow functions
 	bool setFollowCreature(std::shared_ptr<Creature> creature) override;
 	void goToFollowCreature() override;
@@ -1055,7 +1051,6 @@ public:
 
 	bool hasKilled(std::shared_ptr<Player> player) const;
 
-	size_t getMaxVIPEntries() const;
 	size_t getMaxDepotItems() const;
 
 	// tile
@@ -2635,6 +2630,10 @@ public:
 	std::unique_ptr<PlayerTitle> &title();
 	const std::unique_ptr<PlayerTitle> &title() const;
 
+	// Player vip interface
+	std::unique_ptr<PlayerVIP> &vip();
+	const std::unique_ptr<PlayerVIP> &vip() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -2721,7 +2720,6 @@ private:
 	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
 
 	phmap::flat_hash_set<uint32_t> attackedSet;
-	phmap::flat_hash_set<uint32_t> VIPList;
 
 	std::map<uint8_t, OpenContainer> openContainers;
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
@@ -2916,7 +2914,6 @@ private:
 	FightMode_t fightMode = FIGHTMODE_ATTACK;
 	Faction_t faction = FACTION_PLAYER;
 	QuickLootFilter_t quickLootFilter;
-	VipStatus_t statusVipList = VIPSTATUS_ONLINE;
 	PlayerPronoun_t pronoun = PLAYERPRONOUN_THEY;
 
 	bool chaseMode = false;
@@ -3031,11 +3028,13 @@ private:
 	friend class PlayerAchievement;
 	friend class PlayerBadge;
 	friend class PlayerTitle;
+	friend class PlayerVIP;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;
 	std::unique_ptr<PlayerBadge> m_playerBadge;
 	std::unique_ptr<PlayerTitle> m_playerTitle;
+	std::unique_ptr<PlayerVIP> m_playerVIP;
 
 	std::mutex quickLootMutex;
 

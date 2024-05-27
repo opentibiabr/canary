@@ -379,7 +379,10 @@ partyListMaxDistance = 30
 toggleMapCustom = true
 
 -- Market
+-- NOTE: marketRefreshPricesInterval (in minutes, minimum is 1 minute)
+-- NOTE: set it to 0 for disable, is the time in which the task will run updating the prices of the items that will be sent to the client
 marketOfferDuration = 30 * 24 * 60 * 60
+marketRefreshPricesInterval = 30
 premiumToCreateMarketOffer = true
 checkExpiredMarketOffersEachMinutes = 60
 maxMarketOffersAtATimePerPlayer = 100

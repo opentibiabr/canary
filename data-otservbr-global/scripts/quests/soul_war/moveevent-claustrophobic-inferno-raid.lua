@@ -10,19 +10,21 @@ for raidNumber, raid in ipairs(SoulWarQuest.claustrophobicInfernoRaids) do
 	local raidName = string.format("Claustrophobic Inferno Raid %d", raidNumber)
 	local encounter = Encounter(raidName, {
 		zone = raid.getZone(),
-		timeToSpawnMonsters = "3s"
+		timeToSpawnMonsters = "3s",
 	})
 
-	local spawnTimes = (SoulWarQuest.claustrophobicInfernoRaids.suriviveTime) / SoulWarQuest.claustrophobicInfernoRaids.spawnTime
+	local spawnTimes = SoulWarQuest.claustrophobicInfernoRaids.suriviveTime / SoulWarQuest.claustrophobicInfernoRaids.spawnTime
 
 	-- Registering encounter stages
 	for i = 1, spawnTimes do
-		encounter:addSpawnMonsters({
-			{
-				name = spawnMonsterName,
-				positions = raid.spawns
-			},
-		}):autoAdvance(SoulWarQuest.claustrophobicInfernoRaids.spawnTime * 1000)
+		encounter
+			:addSpawnMonsters({
+				{
+					name = spawnMonsterName,
+					positions = raid.spawns,
+				},
+			})
+			:autoAdvance(SoulWarQuest.claustrophobicInfernoRaids.spawnTime * 1000)
 	end
 
 	function encounter:onReset(position)

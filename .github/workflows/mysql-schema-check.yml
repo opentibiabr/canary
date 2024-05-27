@@ -1,3 +1,4 @@
+---
 name: MySQL Schema Check
 on:
   workflow_dispatch:

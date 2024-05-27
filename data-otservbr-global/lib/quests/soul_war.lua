@@ -119,7 +119,10 @@ SoulWarQuest = {
 
 	claustrophobicInfernoRaids = {
 		[1] = {
-			timerStarted = false,
+			zoneArea = {
+				{ x = 33985, y = 31053, z = 9 },
+				{ x = 34045, y = 31077, z = 9 },
+			},
 			sandTimerPositions = {
 				{ x = 34012, y = 31049, z = 9 },
 				{ x = 34013, y = 31049, z = 9 },
@@ -145,12 +148,12 @@ SoulWarQuest = {
 			getZone = function()
 				return SoulWarQuest.claustrophobicInfernoRaids[1].zone
 			end,
-			toggleTimer = function()
-				SoulWarQuest.claustrophobicInfernoRaids[1].timerStarted = not SoulWarQuest.claustrophobicInfernoRaids[1].timerStarted
-			end,
 		},
 		[2] = {
-			timerStarted = false,
+			zoneArea = {
+				{ x = 33988, y = 31042, z = 10 },
+				{ x = 34043, y = 31068, z = 10 },
+			},
 			sandTimerPositions = {
 				{ x = 34012, y = 31075, z = 10 },
 				{ x = 34011, y = 31075, z = 10 },
@@ -160,7 +163,6 @@ SoulWarQuest = {
 			spawns = {
 				Position(33999, 31046, 10),
 				Position(34011, 31047, 10),
-				Position(34005, 31052, 10),
 				Position(34015, 31052, 10),
 				Position(34021, 31044, 10),
 				Position(34029, 31054, 10),
@@ -175,12 +177,12 @@ SoulWarQuest = {
 			getZone = function()
 				return SoulWarQuest.claustrophobicInfernoRaids[2].zone
 			end,
-			toggleTimer = function()
-				SoulWarQuest.claustrophobicInfernoRaids[2].timerStarted = not SoulWarQuest.claustrophobicInfernoRaids[2].timerStarted
-			end,
 		},
 		[3] = {
-			timerStarted = false,
+			zoneArea = {
+				{ x = 33987, y = 31043, z = 11 },
+				{ x = 34044, y = 31076, z = 11 },
+			},
 			sandTimerPositions = {
 				{ x = 34009, y = 31036, z = 11 },
 				{ x = 34010, y = 31036, z = 11 },
@@ -194,16 +196,12 @@ SoulWarQuest = {
 				Position(34005, 31049, 11),
 				Position(33999, 31051, 11),
 				Position(33995, 31055, 11),
-				Position(33995, 31055, 11),
-				Position(34001, 31069, 11),
 				Position(33999, 31068, 11),
 				Position(34016, 31068, 11),
-				Position(34029, 31071, 11),
 				Position(34030, 31070, 11),
 				Position(34038, 31066, 11),
 				Position(34038, 31051, 11),
 				Position(34033, 31051, 11),
-				Position(34025, 31048, 11),
 				Position(34025, 31049, 11),
 				Position(34013, 31058, 11),
 				Position(34021, 31059, 11),
@@ -214,9 +212,6 @@ SoulWarQuest = {
 			exitPosition = { x = 34014, y = 31085, z = 11 },
 			getZone = function()
 				return SoulWarQuest.claustrophobicInfernoRaids[3].zone
-			end,
-			toggleTimer = function()
-				SoulWarQuest.claustrophobicInfernoRaids[3].timerStarted = not SoulWarQuest.claustrophobicInfernoRaids[3].timerStarted
 			end,
 		},
 		spawnTime = 10, -- seconds
@@ -823,17 +818,13 @@ end
 -- Initialize ebb and flow zone area
 SoulWarQuest.ebbAndFlow.zone:addArea({ x = 33869, y = 30991, z = 8 }, { x = 33964, y = 31147, z = 9 })
 
--- Initialize claustrophobic inferno raid zones
+-- Initialize claustrophobic inferno raid zones and add remove destination
 
-SoulWarQuest.claustrophobicInfernoRaids[1].zone:addArea({ x = 33985, y = 31053, z = 9 }, { x = 34045, y = 31077, z = 9 })
-SoulWarQuest.claustrophobicInfernoRaids[2].zone:addArea({ x = 33988, y = 31042, z = 10 }, { x = 34043, y = 31068, z = 10 })
-SoulWarQuest.claustrophobicInfernoRaids[3].zone:addArea({ x = 33987, y = 31043, z = 11 }, { x = 34044, y = 31076, z = 11 })
-
--- Add remove destination
-
-SoulWarQuest.claustrophobicInfernoRaids[1].zone:setRemoveDestination(SoulWarQuest.claustrophobicInfernoRaids[1].exitPosition)
-SoulWarQuest.claustrophobicInfernoRaids[2].zone:setRemoveDestination(SoulWarQuest.claustrophobicInfernoRaids[2].exitPosition)
-SoulWarQuest.claustrophobicInfernoRaids[3].zone:setRemoveDestination(SoulWarQuest.claustrophobicInfernoRaids[3].exitPosition)
+for _, raid in ipairs(SoulWarQuest.claustrophobicInfernoRaids) do
+	local zone = raid.getZone()
+	zone:addArea(raid.zoneArea[1], raid.zoneArea[2])
+	zone:setRemoveDestination(raid.exitPosition)
+end
 
 -- Initialize bosses access for taint check
 SoulWarQuest.areaZones.claustrophobicInferno:addArea({ x = 33982, y = 30981, z = 9 }, { x = 34051, y = 31110, z = 11 })

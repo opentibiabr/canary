@@ -8351,10 +8351,10 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 			player->sendCyclopediaCharacterCombatStats();
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS:
-			player->sendCyclopediaCharacterRecentDeaths(page, entriesPerPage);
+			player->cyclopedia()->loadDeathHistory(page, entriesPerPage);
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS:
-			player->sendCyclopediaCharacterRecentPvPKills(page, entriesPerPage);
+			player->cyclopedia()->loadRecentKills(page, entriesPerPage);
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS:
 			player->achiev()->sendUnlockedSecretAchievements();
@@ -10677,7 +10677,7 @@ Title Game::getTitleByName(const std::string &name) {
 	return {};
 }
 
-std::unordered_map<uint8_t, std::string> Game::getBlessingNames() {
+std::map<uint8_t, std::string> Game::getBlessingNames() {
 	return m_blessingNames;
 }
 

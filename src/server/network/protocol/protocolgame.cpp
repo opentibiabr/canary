@@ -3653,7 +3653,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t entriesPerPage) {
+void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -3662,21 +3662,10 @@ void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t e
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
-
-	auto entries = player->cyclopedia()->getDeathHistory();
-	uint16_t pages = std::min<uint16_t>(entriesPerPage, entries.size());
-
-	auto totalPages = static_cast<uint16_t>(std::ceil(static_cast<double>(entries.size()) / pages));
-	uint16_t currentPage = std::min<uint16_t>(page, totalPages);
-
-	uint16_t firstObject = (currentPage - 1) * pages;
-	uint16_t finalObject = firstObject + pages;
-
-	msg.add<uint16_t>(currentPage);
-	msg.add<uint16_t>(totalPages);
+	msg.add<uint16_t>(page);
 	msg.add<uint16_t>(pages);
-	for (uint16_t i = firstObject; i < finalObject; i++) {
-		const RecentDeathEntry &entry = entries[i];
+	msg.add<uint16_t>(entries.size());
+	for (const RecentDeathEntry &entry : entries) {
 		msg.add<uint32_t>(entry.timestamp);
 		msg.addString(entry.cause, "ProtocolGame::sendCyclopediaCharacterRecentDeaths - entry.cause");
 	}
@@ -3684,7 +3673,7 @@ void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t e
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t entriesPerPage) {
+void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -3693,21 +3682,10 @@ void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
-
-	auto entries = player->cyclopedia()->getPvpKillsHistory();
-	uint16_t pages = std::min<uint16_t>(entriesPerPage, entries.size());
-
-	auto totalPages = static_cast<uint16_t>(std::ceil(static_cast<double>(entries.size()) / pages));
-	uint16_t currentPage = std::min<uint16_t>(page, totalPages);
-
-	uint16_t firstObject = (currentPage - 1) * pages;
-	uint16_t finalObject = firstObject + pages;
-
-	msg.add<uint16_t>(currentPage);
-	msg.add<uint16_t>(totalPages);
+	msg.add<uint16_t>(page);
 	msg.add<uint16_t>(pages);
-	for (uint16_t i = firstObject; i < finalObject; i++) {
-		const RecentPvPKillEntry &entry = entries[i];
+	msg.add<uint16_t>(entries.size());
+	for (const RecentPvPKillEntry &entry : entries) {
 		msg.add<uint32_t>(entry.timestamp);
 		msg.addString(entry.description, "ProtocolGame::sendCyclopediaCharacterRecentPvPKills - entry.description");
 		msg.addByte(entry.status);
@@ -3971,16 +3949,14 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	msg.addByte(0x00); // 0x00 Here means 'no error'
 	msg.add<uint32_t>(player->getXpBoostTime()); // Remaining Store Xp Boost Time
 	auto remaining = player->kv()->get("daily-reward-xp-boost");
-	msg.add<uint32_t>(remaining ? static_cast<uint32_t>(remaining->getNumber()) : 0x00); // Remaining Daily Reward Xp Boost Time
+	msg.add<uint32_t>(remaining ? static_cast<uint32_t>(remaining->getNumber()) : 0); // Remaining Daily Reward Xp Boost Time
 
 	auto cyclopediaSummary = player->cyclopedia()->getSummary();
 
 	// getBlessingsObtained
 	auto blessingNames = g_game().getBlessingNames();
-	std::vector<std::pair<Blessings_t, std::string>> orderedBlessings;
 	msg.addByte(static_cast<uint8_t>(blessingNames.size()));
 	for (const auto &bless : blessingNames) {
-		g_logger().debug("bless: {} - {}", bless.first, bless.second);
 		msg.addString(bless.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
 		uint8_t blessingIndex = bless.first - 1;
 		msg.addByte((blessingIndex < player->blessings.size()) ? static_cast<uint16_t>(player->blessings[blessingIndex]) : 0);

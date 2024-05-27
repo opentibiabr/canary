@@ -319,8 +319,8 @@ private:
 	void sendCyclopediaCharacterBaseInformation();
 	void sendCyclopediaCharacterGeneralStats();
 	void sendCyclopediaCharacterCombatStats();
-	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t entriesPerPage);
-	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t entriesPerPage);
+	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries);
+	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries);
 	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
 	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems);
 	void sendCyclopediaCharacterOutfitsMounts();

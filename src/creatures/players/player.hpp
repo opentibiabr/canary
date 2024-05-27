@@ -1631,14 +1631,14 @@ public:
 			client->sendCyclopediaCharacterCombatStats();
 		}
 	}
-	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t entriesPerPage) {
+	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries) {
 		if (client) {
-			client->sendCyclopediaCharacterRecentDeaths(page, entriesPerPage);
+			client->sendCyclopediaCharacterRecentDeaths(page, pages, entries);
 		}
 	}
-	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t entriesPerPage) {
+	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries) {
 		if (client) {
-			client->sendCyclopediaCharacterRecentPvPKills(page, entriesPerPage);
+			client->sendCyclopediaCharacterRecentPvPKills(page, pages, entries);
 		}
 	}
 	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);

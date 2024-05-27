@@ -735,7 +735,7 @@ public:
 		return m_summaryCategories[type];
 	}
 
-	std::unordered_map<uint8_t, std::string> getBlessingNames();
+	std::map<uint8_t, std::string> getBlessingNames();
 	std::unordered_map<uint16_t, std::string> getHirelingSkills();
 	std::unordered_map<uint16_t, std::string> getHirelingOutfits();
 
@@ -749,7 +749,7 @@ private:
 	std::vector<HighscoreCategory> m_highscoreCategories;
 	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;
 
-	std::unordered_map<uint8_t, std::string> m_blessingNames;
+	std::map<uint8_t, std::string> m_blessingNames;
 
 	std::unordered_map<uint8_t, std::string> m_summaryCategories;
 	std::unordered_map<uint16_t, std::string> m_hirelingSkills;

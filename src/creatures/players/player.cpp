@@ -2859,28 +2859,6 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		}
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, blessOutput.str());
 
-		// Pvp and pve death registration
-		std::ostringstream description;
-		if (pvpDeath) {
-			description << "Killed " << getName() << '.';
-			CyclopediaCharacterInfo_RecentKillStatus_t status = unfairFightReduction != 100 ? CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED : CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_JUSTIFIED;
-			if (lastHitCreature && lastHitCreature->getPlayer()) {
-				lastHitCreature->getPlayer()->cyclopedia()->insertPvpKillOnHistory(std::move(description.str()), OTSYS_TIME() / 1000, status);
-			} else if (lastHitCreature && lastHitCreature->getMaster() && lastHitCreature->getMaster()->getPlayer()) {
-				lastHitCreature->getMaster()->getPlayer()->cyclopedia()->insertPvpKillOnHistory(std::move(description.str()), OTSYS_TIME() / 1000, status);
-			}
-		} else {
-			description << "Died at Level " << getLevel() << " by";
-			if (lastHitCreature) {
-				description << getArticle(lastHitCreature->getName()) << lastHitCreature->getName();
-			} else {
-				description << " a field item";
-			}
-			description << '.';
-
-			cyclopedia()->insertDeathOnHistory(std::move(description.str()), OTSYS_TIME() / 1000);
-		}
-
 		sendStats();
 		sendSkills();
 		sendReLoginWindow(unfairFightReduction);

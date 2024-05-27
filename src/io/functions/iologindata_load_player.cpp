@@ -182,6 +182,8 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 
 	player->setManaShield(result->getNumber<uint32_t>("manashield"));
 	player->setMaxManaShield(result->getNumber<uint32_t>("max_manashield"));
+
+	player->setMarriageSpouse(result->getNumber<int32_t>("marriage_spouse"));
 	return true;
 }
 

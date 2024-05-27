@@ -3457,7 +3457,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
 	msg.add<uint16_t>(player->getSpeed());
 	msg.add<uint16_t>(player->getBaseSpeed());
-	msg.add<uint32_t>(player->getBonusCapacity());
+	msg.add<uint32_t>(player->getCapacity());
 	msg.add<uint32_t>(player->getBaseCapacity());
 	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 	msg.addByte(8);
@@ -4072,22 +4072,22 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	auto playerDescriptionPosition = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	// Level description
-	playerDescriptionSize++;
-	msg.addString("Level", "ProtocolGame::sendCyclopediaCharacterInspection - Level");
-
-	// Vocation description
-	playerDescriptionSize++;
-	msg.addString(std::to_string(player->getLevel()), "ProtocolGame::sendCyclopediaCharacterInspection - std::to_string(player->getLevel())");
-	msg.addString("Vocation", "ProtocolGame::sendCyclopediaCharacterInspection - Vocation");
-	msg.addString(player->getVocation()->getVocName(), "ProtocolGame::sendCyclopediaCharacterInspection - player->getVocation()->getVocName()");
-
 	// Player title
 	if (player->title()->getCurrentTitle() != 0) {
 		playerDescriptionSize++;
-		msg.addString("Title", "ProtocolGame::sendCyclopediaCharacterInspection - Title");
+		msg.addString("Character Title", "ProtocolGame::sendCyclopediaCharacterInspection - Title");
 		msg.addString(player->title()->getCurrentTitleName(), "ProtocolGame::sendCyclopediaCharacterInspection - player->title()->getCurrentTitleName()");
 	}
+
+	// Level description
+	playerDescriptionSize++;
+	msg.addString("Level", "ProtocolGame::sendCyclopediaCharacterInspection - Level");
+	msg.addString(std::to_string(player->getLevel()), "ProtocolGame::sendCyclopediaCharacterInspection - std::to_string(player->getLevel())");
+
+	// Vocation description
+	playerDescriptionSize++;
+	msg.addString("Vocation", "ProtocolGame::sendCyclopediaCharacterInspection - Vocation");
+	msg.addString(player->getVocation()->getVocName(), "ProtocolGame::sendCyclopediaCharacterInspection - player->getVocation()->getVocName()");
 
 	// Loyalty title
 	if (!player->getLoyaltyTitle().empty()) {
@@ -4096,39 +4096,46 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 		msg.addString(player->getLoyaltyTitle(), "ProtocolGame::sendCyclopediaCharacterInspection - player->getLoyaltyTitle()");
 	}
 
-	// todo: Prey description
-	//    for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-	//        PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
-	//        if (slot && slot->isOccupied()) {
-	//            playerDescriptionSize++;
-	//            std::ostringstream ss;
-	//            ss << "Active Prey " << (slotId + 1);
-	//            msg.addString(ss.str(), "ProtocolGame::sendCyclopediaCharacterInspection - active prey");
-	//            ss.str("");
-	//            ss.clear();
-	//
-	//            if (auto mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
-	//                ss << mtype->name;
-	//            } else {
-	//                ss << "Unknown creature";
-	//            }
-	//
-	//            if (slot->bonus == PreyBonus_Damage) {
-	//                ss << " (Improved Damage +";
-	//            } else if (slot->bonus == PreyBonus_Defense) {
-	//                ss << " (Improved Defense +";
-	//            } else if (slot->bonus == PreyBonus_Experience) {
-	//                ss << " (Improved Experience +";
-	//            } else if (slot->bonus == PreyBonus_Loot) {
-	//                ss << " (Improved Loot +";
-	//            }
-	//            ss << slot->bonusPercentage << "%, remaining ";
-	//            uint8_t hours = slot->bonusTimeLeft / 3600;
-	//            uint8_t minutes = (slot->bonusTimeLeft - (hours * 3600)) / 60;
-	//            ss << std::to_string(hours) << ":" << (minutes < 10 ? "0" : "") << std::to_string(minutes) << "h)";
-	//            msg.addString(ss.str(), "ProtocolGame::sendCyclopediaCharacterInspection - prey description");
-	//        }
-	//    }
+	// Marriage description
+	if (const auto spouseId = player->getMarriageSpouse(); spouseId > 0) {
+		if (const auto &spouse = g_game().getPlayerByID(spouseId, true); spouse) {
+			playerDescriptionSize++;
+			msg.addString("Married to", "ProtocolGame::sendCyclopediaCharacterInspection - Married to");
+			msg.addString(spouse->getName(), "ProtocolGame::sendCyclopediaCharacterInspection - spouse->getName()");
+		}
+	}
+
+	// Prey description
+	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+		if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
+			slot && slot->isOccupied()) {
+			playerDescriptionSize++;
+			std::string desc = fmt::format("Active Prey {}", slotId + 1);
+			msg.addString(desc, "ProtocolGame::sendCyclopediaCharacterInspection - active prey");
+
+			std::ostringstream ss;
+			if (auto mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
+				ss << mtype->name;
+			} else {
+				ss << "Unknown creature";
+			}
+
+			if (slot->bonus == PreyBonus_Damage) {
+				ss << " (Improved Damage +";
+			} else if (slot->bonus == PreyBonus_Defense) {
+				ss << " (Improved Defense +";
+			} else if (slot->bonus == PreyBonus_Experience) {
+				ss << " (Improved Experience +";
+			} else if (slot->bonus == PreyBonus_Loot) {
+				ss << " (Improved Loot +";
+			}
+			ss << slot->bonusPercentage << "%, remaining ";
+			uint8_t hours = slot->bonusTimeLeft / 3600;
+			uint8_t minutes = (slot->bonusTimeLeft - (hours * 3600)) / 60;
+			ss << std::to_string(hours) << ":" << (minutes < 10 ? "0" : "") << std::to_string(minutes) << "h)";
+			msg.addString(ss.str(), "ProtocolGame::sendCyclopediaCharacterInspection - prey description");
+		}
+	}
 
 	// Outfit description
 	playerDescriptionSize++;

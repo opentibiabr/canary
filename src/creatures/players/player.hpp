@@ -2949,6 +2949,8 @@ private:
 	int32_t magicShieldCapacityFlat = 0;
 	int32_t magicShieldCapacityPercent = 0;
 
+	int32_t marriageSpouse = -1;
+
 	void updateItemsLight(bool internal = false);
 	uint16_t getStepSpeed() const override {
 		return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
@@ -3058,4 +3060,11 @@ private:
 	bool hasOtherRewardContainerOpen(const std::shared_ptr<Container> container) const;
 
 	void checkAndShowBlessingMessage();
+
+	void setMarriageSpouse(const int32_t spouseId) {
+		marriageSpouse = spouseId;
+	}
+	int32_t getMarriageSpouse() const {
+		return marriageSpouse;
+	}
 };

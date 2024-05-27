@@ -2797,6 +2797,12 @@ Storage = {
 				},
 			},
 		},
+		U13_30 = { -- update 13.30 - Reserved Storages 47952 - 48002
+			TwentyYearsACook = {
+				QuestLine = 47952,
+				DraccoonOutfits = {},
+			},
+		},
 	},
 	-- Reserved storage from 63951 - 63999
 	ThaisExhibition = {

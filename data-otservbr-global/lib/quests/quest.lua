@@ -1,3 +1,4 @@
+dofile(DATA_DIRECTORY .. "/lib/quests/20_years_a_cook_quest.lua")
 dofile(DATA_DIRECTORY .. "/lib/quests/bigfoot_burden.lua")
 dofile(DATA_DIRECTORY .. "/lib/quests/demon_oak.lua")
 dofile(DATA_DIRECTORY .. "/lib/quests/grimvale.lua")

@@ -6510,5 +6510,44 @@ if not Quests then
 				},
 			},
 		},
+		[49] = {
+			name = "20 Years a Cook",
+			startStorageId = Storage.Quest.U13_30.TwentyYearsACook.QuestLine,
+			startStorageValue = 1,
+			missions = {
+				[1] = {
+					name = "The lair of the Draccoon",
+					storageId = Storage.Quest.U13_30.TwentyYearsACook.QuestLine,
+					missionId = 10451,
+					startValue = 1,
+					endValue = 2,
+					description = "Find the Draccoon in his lair. The secret entrance is supposed to be found somewhere in the Venorean dumpster area.",
+				},
+				[2] = {
+					name = "An old friend",
+					storageId = Storage.Quest.U13_30.TwentyYearsACook.QuestLine,
+					missionId = 10452,
+					startValue = 2,
+					endValue = 3,
+					description = "Look for an old friend of the Draccoon. The Draccoon assumes his friend still lives in an appartment in the upper levels of Kazordoon.",
+				},
+				[3] = {
+					name = "Sad news",
+					storageId = Storage.Quest.U13_30.TwentyYearsACook.QuestLine,
+					missionId = 10453,
+					startValue = 3,
+					endValue = 4,
+					description = "Ratha, the Draccoon's old friend has met his ultimely demise. Travel to the Draccoon's lair to inform about Ratha's fate",
+				},
+				[4] = {
+					name = "Ghost hunt",
+					storageId = Storage.Quest.U13_30.TwentyYearsACook.QuestLine,
+					missionId = 10454,
+					startValue = 4,
+					endValue = 5,
+					description = "Meet the ally of the Draccoon in Ratha's quarters in Kazordoon and extract Ratha's spirit.",
+				},
+			},
+		},
 	}
 end

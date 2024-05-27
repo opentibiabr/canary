@@ -165,6 +165,9 @@ registerMonsterType.flags = function(mtype, mask)
 		if mask.flags.attackable ~= nil then
 			mtype:isAttackable(mask.flags.attackable)
 		end
+		if mask.flags.canTarget ~= nil then
+			mtype:canTarget(mask.flags.canTarget)
+		end
 		if mask.flags.convinceable ~= nil then
 			mtype:isConvinceable(mask.flags.convinceable)
 		end

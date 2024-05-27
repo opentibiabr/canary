@@ -660,6 +660,10 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
+	if (!canTarget()) {
+		return false;
+	}
+
 	const auto &it = getTargetIterator(creature);
 	if (it == targetList.end()) {
 		// Target not found in our target list.

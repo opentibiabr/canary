@@ -15,11 +15,11 @@
 #include "utils/tools.hpp"
 
 /**
-* Regardless of how many cores your computer have, we want at least
-* 4 threads because, even though they won't improve processing they
-* will make processing non-blocking in some way and that would allow
-* single core computers to process things concurrently, but not in parallel.
-*/
+ * Regardless of how many cores your computer have, we want at least
+ * 4 threads because, even though they won't improve processing they
+ * will make processing non-blocking in some way and that would allow
+ * single core computers to process things concurrently, but not in parallel.
+ */
 
 #ifndef DEFAULT_NUMBER_OF_THREADS
 	#define DEFAULT_NUMBER_OF_THREADS 4

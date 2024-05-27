@@ -486,9 +486,16 @@ void Game::start(ServiceManager* manager) {
 	g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
-	g_dispatcher().cycleEvent(
-		EVENT_REFRESH_MARKET_PRICES, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
-	);
+	auto marketItemsPriceIntervalMinutes = g_configManager().getNumber(MARKET_REFRESH_PRICES, __FUNCTION__);
+	if (marketItemsPriceIntervalMinutes > 0) {
+		auto marketItemsPriceIntervalMS = marketItemsPriceIntervalMinutes * 60000;
+		if (marketItemsPriceIntervalMS < 60000) {
+			marketItemsPriceIntervalMS = 60000;
+		}
+		g_dispatcher().cycleEvent(
+			marketItemsPriceIntervalMS, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
+		);
+	}
 }
 
 GameState_t Game::getGameState() const {
@@ -580,18 +587,11 @@ void Game::setGameState(GameState_t newState) {
 	}
 }
 
-bool Game::loadItemsPrice() {
+void Game::loadItemsPrice() {
 	IOMarket::getInstance().updateStatistics();
-	std::ostringstream query, marketQuery;
-	query << "SELECT DISTINCT `itemtype` FROM `market_offers`;";
 
-	Database &db = Database::getInstance();
-	DBResult_ptr result = db.storeQuery(query.str());
-	if (!result) {
-		return false;
-	}
-
-	auto stats = IOMarket::getInstance().getPurchaseStatistics();
+	// Update purchased offers (market_history)
+	const auto &stats = IOMarket::getInstance().getPurchaseStatistics();
 	for (const auto &[itemId, itemStats] : stats) {
 		std::map<uint8_t, uint64_t> tierToPrice;
 		for (const auto &[tier, tierStats] : itemStats) {
@@ -600,12 +600,12 @@ bool Game::loadItemsPrice() {
 		}
 		itemsPriceMap[itemId] = tierToPrice;
 	}
+
+	// Update active buy offers (market_offers)
 	auto offers = IOMarket::getInstance().getActiveOffers(MARKETACTION_BUY);
 	for (const auto &offer : offers) {
 		itemsPriceMap[offer.itemId][offer.tier] = std::max(itemsPriceMap[offer.itemId][offer.tier], offer.price);
 	}
-
-	return true;
 }
 
 void Game::loadMainMap(const std::string &filename) {
@@ -5170,6 +5170,23 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
+	if (inBackpacks) {
+		uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
+		auto backpack = player->getInventoryItem(CONST_SLOT_BACKPACK);
+		auto mainBackpack = backpack ? backpack->getContainer() : nullptr;
+
+		if (mainBackpack && mainBackpack->getContainerHoldingCount() >= maxContainer) {
+			player->sendCancelMessage(RETURNVALUE_CONTAINERISFULL);
+			return;
+		}
+
+		std::shared_ptr<Tile> tile = player->getTile();
+		if (tile && tile->getItemCount() >= 20) {
+			player->sendCancelMessage(RETURNVALUE_CONTAINERISFULL);
+			return;
+		}
+	}
+
 	merchant->onPlayerBuyItem(player, it.id, count, amount, ignoreCap, inBackpacks);
 	player->updateUIExhausted();
 }
@@ -5761,21 +5778,21 @@ void Game::playerRequestAddVip(uint32_t playerId, const std::string &name) {
 		}
 
 		if (specialVip && !player->hasFlag(PlayerFlags_t::SpecialVIP)) {
-			player->sendTextMessage(MESSAGE_FAILURE, "You can not add this player->");
+			player->sendTextMessage(MESSAGE_FAILURE, "You can not add this player");
 			return;
 		}
 
-		player->addVIP(guid, formattedName, VIPSTATUS_OFFLINE);
+		player->vip()->add(guid, formattedName, VipStatus_t::Offline);
 	} else {
 		if (vipPlayer->hasFlag(PlayerFlags_t::SpecialVIP) && !player->hasFlag(PlayerFlags_t::SpecialVIP)) {
-			player->sendTextMessage(MESSAGE_FAILURE, "You can not add this player->");
+			player->sendTextMessage(MESSAGE_FAILURE, "You can not add this player");
 			return;
 		}
 
 		if (!vipPlayer->isInGhostMode() || player->isAccessPlayer()) {
-			player->addVIP(vipPlayer->getGUID(), vipPlayer->getName(), vipPlayer->statusVipList);
+			player->vip()->add(vipPlayer->getGUID(), vipPlayer->getName(), vipPlayer->vip()->getStatus());
 		} else {
-			player->addVIP(vipPlayer->getGUID(), vipPlayer->getName(), VIPSTATUS_OFFLINE);
+			player->vip()->add(vipPlayer->getGUID(), vipPlayer->getName(), VipStatus_t::Offline);
 		}
 	}
 }
@@ -5786,16 +5803,16 @@ void Game::playerRequestRemoveVip(uint32_t playerId, uint32_t guid) {
 		return;
 	}
 
-	player->removeVIP(guid);
+	player->vip()->remove(guid);
 }
 
-void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
+void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify, std::vector<uint8_t> vipGroupsId) {
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	player->editVIP(guid, description, icon, notify);
+	player->vip()->edit(guid, description, icon, notify, vipGroupsId);
 }
 
 void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm) {

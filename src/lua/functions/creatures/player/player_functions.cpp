@@ -1767,6 +1767,7 @@ int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
 		return 0;
 	}
 
+	g_logger().warn("The function 'player:getStorageValueByName' is deprecated and will be removed in future versions, please use KV system");
 	auto name = getString(L, 2);
 	lua_pushnumber(L, player->getStorageValueByName(name));
 	return 1;
@@ -1781,6 +1782,7 @@ int PlayerFunctions::luaPlayerSetStorageValueByName(lua_State* L) {
 		return 0;
 	}
 
+	g_logger().warn("The function 'player:setStorageValueByName' is deprecated and will be removed in future versions, please use KV system");
 	auto storageName = getString(L, 2);
 	int32_t value = getNumber<int32_t>(L, 3);
 
@@ -3035,14 +3037,14 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	if (player->isInGhostMode()) {
 		for (const auto &it : g_game().getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
-				it.second->notifyStatusChange(player, VIPSTATUS_OFFLINE);
+				it.second->vip()->notifyStatusChange(player, VipStatus_t::Offline);
 			}
 		}
 		IOLoginData::updateOnlineStatus(player->getGUID(), false);
 	} else {
 		for (const auto &it : g_game().getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
-				it.second->notifyStatusChange(player, player->statusVipList);
+				it.second->vip()->notifyStatusChange(player, player->vip()->getStatus());
 			}
 		}
 		IOLoginData::updateOnlineStatus(player->getGUID(), true);

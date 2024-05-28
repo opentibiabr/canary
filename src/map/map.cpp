@@ -324,7 +324,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		return;
 	}
 
-	const auto& oldTile = creature->getTile();
+	const auto &oldTile = creature->getTile();
 
 	if (!oldTile) {
 		return;

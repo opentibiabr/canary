@@ -320,13 +320,22 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 }
 
 void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport /* = false*/) {
-	auto oldTile = creature->getTile();
+	if (!creature || !newTile) {
+		return;
+	}
 
-	Position oldPos = oldTile->getPosition();
-	Position newPos = newTile->getPosition();
+	const auto& oldTile = creature->getTile();
+
+	if (!oldTile) {
+		return;
+	}
+
+	const auto &oldPos = oldTile->getPosition();
+	const auto &newPos = newTile->getPosition();
 
 	const auto &fromZones = oldTile->getZones();
 	const auto &toZones = newTile->getZones();
+
 	if (auto ret = g_game().beforeCreatureZoneChange(creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
 		return;
 	}

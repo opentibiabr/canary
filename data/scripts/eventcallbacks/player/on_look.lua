@@ -60,11 +60,11 @@ function callback.playerOnLook(player, thing, position, distance)
 				description = string.format("%s\nDecays to: %d", description, decayId)
 			end
 		elseif thing:isCreature() then
-			local str = "%s\n%s\nHealth: %d / %d"
+			local str, pId = "%s\n%s\nHealth: %d / %d"
 			if thing:isPlayer() and thing:getMaxMana() > 0 then
+				pId = string.format("Player ID: %i", thing:getGuid())
 				str = string.format("%s, Mana: %d / %d", str, thing:getMana(), thing:getMaxMana())
 			end
-			local pId = string.format("Player ID: %i", thing:getGuid())
 			description = string.format(str, description, pId, thing:getHealth(), thing:getMaxHealth())
 		end
 

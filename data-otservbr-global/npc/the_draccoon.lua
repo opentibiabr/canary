@@ -113,7 +113,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 2)
 		elseif mission == 2 then
-			
 		end
 	end
 	return true

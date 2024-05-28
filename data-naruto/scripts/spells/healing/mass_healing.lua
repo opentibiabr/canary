@@ -19,7 +19,6 @@ function spell.onCastSpell(creature, var)
 	return combat:execute(creature, var)
 end
 
-
 spell:name("Mass Healing")
 spell:words("kaifuku area")
 spell:group("healing")

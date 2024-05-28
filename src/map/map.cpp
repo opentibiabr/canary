@@ -700,7 +700,7 @@ uint32_t Map::clean() {
 			if (const auto &floor = mit.second.getFloor(z)) {
 				for (auto &tiles : floor->getTiles()) {
 					for (const auto &[tile, cachedTile] : tiles) {
-						if (!tile || tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+						if (!tile) {
 							continue;
 						}
 

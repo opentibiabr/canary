@@ -74,8 +74,9 @@ void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f
 
 	// This prevents an async call from running inside another async call.
 	if (asyncWaitDisabled) {
-		for (uint_fast64_t i = 0; i < requestSize; ++i) 
+		for (uint_fast64_t i = 0; i < requestSize; ++i) {
 			f(i);
+		}
 		return;
 	}
 
@@ -92,8 +93,9 @@ void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f
 	}
 
 	const auto &[min, max] = partitions[0];
-	for (uint_fast64_t i = min; i < max; ++i) 
+	for (uint_fast64_t i = min; i < max; ++i) {
 		f(i);
+	}
 
 	if (pSize > 1) {
 		retFuture.wait();

@@ -177,7 +177,7 @@ private:
 	std::vector<std::pair<uint64_t, uint64_t>> generatePartition(size_t size) const {
 		if (size == 0) {
 			return {};
-		}																															
+		}
 
 		std::vector<std::pair<uint64_t, uint64_t>> list;
 		list.reserve(threadPool.get_thread_count());

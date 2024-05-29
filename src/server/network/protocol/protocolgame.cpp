@@ -4743,6 +4743,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		sendResourceBalance(RESOURCE_INVENTORY_CUSTOM, customCurrencyValue);
 	}
 
+	NetworkMessage msg;
 	msg.addByte(0x7B);
 
 	if (oldProtocol) {

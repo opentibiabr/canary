@@ -4744,7 +4744,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		msg.addByte(0xEE);
 		msg.addByte(oldProtocol ? 0x01 : 0x02);
 		msg.add<uint64_t>(currencyValue);
-		//sendResourceBalance(0x02, currencyValue);
+		// sendResourceBalance(0x02, currencyValue);
 	}
 
 	msg.addByte(0x7B);

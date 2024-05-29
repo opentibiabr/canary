@@ -3,7 +3,7 @@ function onUpdateDatabase()
 
 	db.query([[
 		CREATE TABLE IF NOT EXISTS `account_vipgroups` (
-			`id` tinyint(3) UNSIGNED NOT NULL,
+			`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			`account_id` int(11) UNSIGNED NOT NULL COMMENT 'id of account whose vip group entry it is',
 			`name` varchar(128) NOT NULL,
 			`customizable` BOOLEAN NOT NULL DEFAULT '1',
@@ -13,9 +13,9 @@ function onUpdateDatabase()
 
 	db.query([[
 		CREATE TRIGGER `oncreate_accounts` AFTER INSERT ON `accounts` FOR EACH ROW BEGIN
-			INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (1, NEW.`id`, 'Enemies', 0);
-			INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (2, NEW.`id`, 'Friends', 0);
-			INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES (3, NEW.`id`, 'Trading Partner', 0);
+			INSERT INTO `account_vipgroups` (`account_id`, `name`, `customizable`) VALUES (NEW.`id`, 'Enemies', 0);
+			INSERT INTO `account_vipgroups` (`account_id`, `name`, `customizable`) VALUES (NEW.`id`, 'Friends', 0);
+			INSERT INTO `account_vipgroups` (`account_id`, `name`, `customizable`) VALUES (NEW.`id`, 'Trading Partner', 0);
 		END;
 	]])
 
@@ -23,7 +23,7 @@ function onUpdateDatabase()
 		CREATE TABLE IF NOT EXISTS `account_vipgrouplist` (
 			`account_id` int(11) UNSIGNED NOT NULL COMMENT 'id of account whose viplist entry it is',
 			`player_id` int(11) NOT NULL COMMENT 'id of target player of viplist entry',
-			`vipgroup_id` tinyint(3) UNSIGNED NOT NULL COMMENT 'id of vip group that player belongs',
+			`vipgroup_id` int(11) UNSIGNED NOT NULL COMMENT 'id of vip group that player belongs',
 			INDEX `account_id` (`account_id`),
 			INDEX `player_id` (`player_id`),
 			INDEX `vipgroup_id` (`vipgroup_id`),

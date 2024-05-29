@@ -695,29 +695,17 @@ uint32_t Map::clean() {
 
 	ItemVector toRemove;
 	toRemove.reserve(128);
-	for (const auto &mit : mapSectors) {
-		for (uint8_t z = 0; z < MAP_MAX_LAYERS; ++z) {
-			if (const auto &floor = mit.second.getFloor(z)) {
-				for (auto &tiles : floor->getTiles()) {
-					for (const auto &[tile, cachedTile] : tiles) {
-						if (!tile || tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-							continue;
-						}
 
-						TileItemVector* itemList = tile->getItemList();
-						if (!itemList) {
-							continue;
-						}
+	for (const auto &tile : g_game().getTilesToClean()) {
+		if (!tile) {
+			continue;
+		}
 
-						++qntTiles;
-
-						for (auto it = ItemVector::const_reverse_iterator(itemList->getEndDownItem()), end = ItemVector::const_reverse_iterator(itemList->getBeginDownItem()); it != end; ++it) {
-							const auto &item = *it;
-							if (item->isCleanable()) {
-								toRemove.push_back(item);
-							}
-						}
-					}
+		if (const auto items = tile->getItemList()) {
+			++qntTiles;
+			for (const auto &item : *items) {
+				if (item->isCleanable()) {
+					toRemove.emplace_back(item);
 				}
 			}
 		}

@@ -4741,7 +4741,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		if (search != inventoryMap.end()) {
 			currencyValue += static_cast<uint64_t>(search->second);
 		}
-		sendResourceBalance(oldProtocol ? RESOURCE_INVENTORY : 0x02, currencyValue);
+		sendResourceBalance(0x02, currencyValue);
 	}
 
 	msg.addByte(0x7B);

@@ -4733,18 +4733,14 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		if (it != inventoryMap.end()) {
 			playerMoney += static_cast<uint64_t>(it->second);
 		}
-
 		sendResourceBalance(RESOURCE_INVENTORY, playerMoney);
 	} else {
-		uint64_t currencyValue = 0;
+		uint64_t customCurrencyValue = 0;
 		auto search = inventoryMap.find(currency);
 		if (search != inventoryMap.end()) {
-			currencyValue += static_cast<uint64_t>(search->second);
+			customCurrencyValue += static_cast<uint64_t>(search->second);
 		}
-		msg.addByte(0xEE);
-		msg.addByte(oldProtocol ? 0x01 : 0x02);
-		msg.add<uint64_t>(currencyValue);
-		// sendResourceBalance(0x02, currencyValue);
+		sendResourceBalance(RESOURCE_INVENTORY_CUSTOM, customCurrencyValue);
 	}
 
 	msg.addByte(0x7B);

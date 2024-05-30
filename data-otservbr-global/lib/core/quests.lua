@@ -6554,7 +6554,7 @@ if not Quests then
 					startValue = 5,
 					endValue = 6,
 					description = "Travel to the Draccoon's lair to learn how to proceed.",
-				}
+				},
 			},
 		},
 	}

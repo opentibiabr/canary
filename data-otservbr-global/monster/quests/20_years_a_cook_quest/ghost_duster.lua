@@ -9,7 +9,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"GhostDusterAttack"
+	"GhostDusterAttack",
 }
 
 monster.health = 100000000

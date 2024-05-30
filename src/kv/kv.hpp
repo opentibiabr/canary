@@ -34,7 +34,7 @@ public:
 	virtual bool saveAll() {
 		return true;
 	}
-	
+
 	virtual bool savePlayer(uint32_t playerId) {
 		return true;
 	}

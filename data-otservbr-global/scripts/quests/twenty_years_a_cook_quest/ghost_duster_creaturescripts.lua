@@ -42,17 +42,17 @@ function ghostDusterAttack.onHealthChange(creature, attacker, primaryDamage, pri
 			return primaryDamage, primaryType, secondaryDamage, secondaryType
 		end
 
-        local accumulatedDamage = creature:getStorageValue(1)
+		local accumulatedDamage = creature:getStorageValue(1)
 
-        accumulatedDamage = accumulatedDamage + math.abs(primaryDamage + secondaryDamage)
+		accumulatedDamage = accumulatedDamage + math.abs(primaryDamage + secondaryDamage)
 
-        if accumulatedDamage >= 300 then
-            accumulatedDamage = 0
-            local var = { type = 1, number = creature:getId() }
-            combat:execute(creature, var)
-        end
+		if accumulatedDamage >= 300 then
+			accumulatedDamage = 0
+			local var = { type = 1, number = creature:getId() }
+			combat:execute(creature, var)
+		end
 
-        creature:setStorageValue(1, accumulatedDamage)
+		creature:setStorageValue(1, accumulatedDamage)
 	end
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end

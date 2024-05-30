@@ -2,18 +2,16 @@ local ghostDusterAttack = CreatureEvent("GhostDusterAttack")
 
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_BLUE_ENERGY_SPARK)
-combat:setArea(createCombatArea(
-    {
-        { 0, 0, 2, 0, 0 },
-        { 0, 0, 1, 0, 0 },
-        { 0, 0, 1, 0, 0 },
-        { 0, 0, 1, 0, 0 },
-        { 0, 0, 1, 0, 0 },
-        { 0, 0, 1, 0, 0 },
-        { 0, 0, 1, 0, 0 },
-        { 0, 0, 1, 0, 0 },
-    }
-))
+combat:setArea(createCombatArea({
+	{ 0, 0, 2, 0, 0 },
+	{ 0, 0, 1, 0, 0 },
+	{ 0, 0, 1, 0, 0 },
+	{ 0, 0, 1, 0, 0 },
+	{ 0, 0, 1, 0, 0 },
+	{ 0, 0, 1, 0, 0 },
+	{ 0, 0, 1, 0, 0 },
+	{ 0, 0, 1, 0, 0 },
+}))
 
 local condition = Condition(CONDITION_PARALYZE)
 condition:setParameter(CONDITION_PARAM_TICKS, 8000)
@@ -26,10 +24,10 @@ function onTargetTile(cid, pos)
 		if target and target ~= cid then
 			if target:getName():lower() == "the rest of ratha" then
 				target:addHealth(-100, COMBAT_AGONYDAMAGE)
-                local appliedCondition = target:getCondition(CONDITION_PARALYZE)
-                if not appliedCondition then
-                    target:addCondition(condition)
-                end
+				local appliedCondition = target:getCondition(CONDITION_PARALYZE)
+				if not appliedCondition then
+					target:addCondition(condition)
+				end
 			end
 		end
 	end
@@ -40,9 +38,9 @@ combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
 
 function ghostDusterAttack.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
 	if creature and creature:isMonster() then
-        if primaryType == COMBAT_HEALING then
-            return primaryDamage, primaryType, secondaryDamage, secondaryType
-        end
+		if primaryType == COMBAT_HEALING then
+			return primaryDamage, primaryType, secondaryDamage, secondaryType
+		end
 
         local accumulatedDamage = creature:getStorageValue(1)
 

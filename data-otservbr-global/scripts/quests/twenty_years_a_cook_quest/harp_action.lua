@@ -14,9 +14,8 @@ function harp.onUse(player, item, fromPosition, target, toPosition, isHotkey)
     local monsters = TwentyYearsACookQuest.TheRestOfRatha.BossZone:getMonsters()
     for i, monster in pairs(monsters) do
         if monster:getName():lower() == "the rest of ratha" then
-            -- local position = 
-            monster:walkTo(player:getPosition())
-            -- monster:setFollowCreature(player)
+            local position = player:getPosition()
+            monster:walkTo(position)
         end
     end
     addEvent(function(position)
@@ -35,8 +34,8 @@ harp:register()
 local harpCooldown = Action()
 
 function harpCooldown.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-    fromPosition:sendMagicEffect(CONST_ME_SOUND_RED)
-    return true
+	fromPosition:sendMagicEffect(CONST_ME_SOUND_RED)
+	return true
 end
 
 harpCooldown:id(TwentyYearsACookQuest.TheRestOfRatha.Items.HarpCooldown)

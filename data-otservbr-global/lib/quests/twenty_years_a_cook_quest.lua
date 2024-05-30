@@ -1,17 +1,17 @@
 TwentyYearsACookQuest = {
-    TheRestOfRatha = {
-        MissionZone = Zone("mission.the-rest-of-ratha"),
-        BossZone = Zone("boss.the-rest-of-ratha"),
-        Items = {
-            GhostItem = 44598,
-            EmptySpiritFlask = 44527,
-            FullSpiritFlask = 44528,
-            Harp = 44599,
-            HarpCooldown = 44600,
-        },
-        FlaskBoxUID = 62134,
-        SpiritContainerPoints = 0,
-    },
+	TheRestOfRatha = {
+		MissionZone = Zone("mission.the-rest-of-ratha"),
+		BossZone = Zone("boss.the-rest-of-ratha"),
+		Items = {
+			GhostItem = 44598,
+			EmptySpiritFlask = 44527,
+			FullSpiritFlask = 44528,
+			Harp = 44599,
+			HarpCooldown = 44600,
+		},
+		FlaskBoxUID = 62134,
+		SpiritContainerPoints = 0,
+	},
 }
 
 -- Initializing zones

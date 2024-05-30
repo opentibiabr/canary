@@ -35,6 +35,10 @@ public:
 		return true;
 	}
 
+	virtual bool savePlayer(uint32_t playerId) {
+		return true;
+	}
+
 	virtual std::shared_ptr<KV> scoped(const std::string &scope) = 0;
 
 	virtual std::unordered_set<std::string> keys(const std::string &prefix = "") = 0;

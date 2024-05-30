@@ -23,6 +23,7 @@ public:
 		db(db) { }
 
 	bool saveAll() override;
+	bool savePlayer(uint32_t playerId) override;
 
 private:
 	std::vector<std::string> loadPrefix(const std::string &prefix = "") override;

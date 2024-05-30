@@ -10,6 +10,15 @@ function harp.onUse(player, item, fromPosition, target, toPosition, isHotkey)
     item:transform(TwentyYearsACookQuest.TheRestOfRatha.Items.HarpCooldown)
     fromPosition:sendMagicEffect(CONST_ME_SOUND_GREEN)
     player:setIcon("the-rest-of-ratha", CreatureIconCategory_Quests, CreatureIconQuests_Dove, icon.count - 1)
+
+    local monsters = TwentyYearsACookQuest.TheRestOfRatha.BossZone:getMonsters()
+    for i, monster in pairs(monsters) do
+        if monster:getName():lower() == "the rest of ratha" then
+            -- local position = 
+            monster:walkTo(player:getPosition())
+            -- monster:setFollowCreature(player)
+        end
+    end
     addEvent(function(position)
         local tile = Tile(position)
         local harpCooldown = tile and tile:getItemById(TwentyYearsACookQuest.TheRestOfRatha.Items.HarpCooldown) or nil

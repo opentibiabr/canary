@@ -1,10 +1,14 @@
 local flaskBox = Action()
 
 function flaskBox.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-    if player:getStorageValue(Storage.Quest.U13_30.FlaskBox) < 1 then
-        player:setStorageValue(Storage.Quest.U13_30.FlaskBox, 1)
-        player:addItem(TwentyYearsACookQuest.TheRestOfRatha.Items.EmptySpiritFlask, 1)
+    if player:getStorageValue(Storage.Quest.U13_30.TwentyYearsACook.FlaskBox) >= 1 then
+        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already got the flask.")
+        return true
     end
+
+    player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.FlaskBox, 1)
+    player:addItem(TwentyYearsACookQuest.TheRestOfRatha.Items.EmptySpiritFlask, 1)
+    return true
 end
 
 flaskBox:uid(TwentyYearsACookQuest.TheRestOfRatha.FlaskBoxUID)

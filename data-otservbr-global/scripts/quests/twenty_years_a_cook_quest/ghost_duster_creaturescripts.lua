@@ -38,21 +38,23 @@ end
 
 combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
 
-local accumulatedDamage = 0
-
 function ghostDusterAttack.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
 	if creature and creature:isMonster() then
         if primaryType == COMBAT_HEALING then
             return primaryDamage, primaryType, secondaryDamage, secondaryType
         end
 
-        if accumulatedDamage >= 5 then
+        local accumulatedDamage = creature:getStorageValue(1)
+
+        accumulatedDamage = accumulatedDamage + math.abs(primaryDamage + secondaryDamage)
+
+        if accumulatedDamage >= 300 then
             accumulatedDamage = 0
             local var = { type = 1, number = creature:getId() }
             combat:execute(creature, var)
-        else
-            accumulatedDamage = accumulatedDamage + math.abs(primaryDamage + secondaryDamage)
         end
+
+        creature:setStorageValue(1, accumulatedDamage)
 	end
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end

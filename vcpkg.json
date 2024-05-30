@@ -17,6 +17,7 @@
     "pugixml",
     "spdlog",
     "zlib",
+    "bshoshany-thread-pool",
     {
       "name": "libmariadb",
       "features": [

@@ -1174,7 +1174,7 @@ void Monster::pushCreatures(std::shared_ptr<Tile> tile) {
 }
 
 bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
-	if (isIdle || getHealth() <= 0) {
+	if (isIdle || getHealth() <= 0 || !canWalk()) {
 		// we dont have anyone watching might aswell stop walking
 		eventWalk = 0;
 		return false;

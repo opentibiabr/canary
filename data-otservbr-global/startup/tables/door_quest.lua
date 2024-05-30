@@ -519,6 +519,7 @@ QuestDoorAction = {
 			{ x = 33271, y = 31657, z = 8 },
 			{ x = 33284, y = 31791, z = 13 },
 			{ x = 33307, y = 32291, z = 7 },
+			{ x = 32964, y = 32084, z = 8},
 		},
 	},
 	-- The thieves guild door
@@ -913,6 +914,10 @@ QuestDoorAction = {
 		itemPos = {
 			{ x = 33782, y = 32576, z = 12 },
 		},
+	},
+	[Storage.Quest.U13_30.TwentyYearsACook.TheRestOfRathaDoor] = {
+		itemId = false,
+		itemPos = { { x = 32595, y = 31938, z = 5 } },
 	},
 }
 

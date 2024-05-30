@@ -102,6 +102,9 @@ public:
 	bool isAttackable() const override {
 		return mType->info.isAttackable;
 	}
+	bool canWalk() const {
+		return mType->info.canWalk;
+	}
 	bool canTarget() const {
 		return mType->info.canTarget;
 	}

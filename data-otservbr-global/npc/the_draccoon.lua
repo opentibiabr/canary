@@ -112,7 +112,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Just pay him a visit and tell him, his good old pal, the Draccoon is back!", npc, creature, 2000)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 2)
-		elseif mission == 2 then
+			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.TheRestOfRathaDoor, 1)
+		elseif mission == 3 then
+			npcHandler:say("<sigh> Ratha's demise is most unfortunate, indeed! ...", npc, creature)
+			npcHandler:say("But well, as he is still around... to some capacity at least, I am sure we are able to communicate with him. Just travel to his apartment again, I'll send one of my buddies to your assistance. ...", npc, creature, 2000)
+			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 4)
 		end
 	end
 	return true

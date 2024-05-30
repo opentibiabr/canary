@@ -6547,6 +6547,14 @@ if not Quests then
 					endValue = 5,
 					description = "Meet the ally of the Draccoon in Ratha's quarters in Kazordoon and extract Ratha's spirit.",
 				},
+				[5] = {
+					name = "Ghost hunt",
+					storageId = Storage.Quest.U13_30.TwentyYearsACook.QuestLine,
+					missionId = 10455,
+					startValue = 5,
+					endValue = 6,
+					description = "Travel to the Draccoon's lair to learn how to proceed.",
+				}
 			},
 		},
 	}

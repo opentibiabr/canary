@@ -84,7 +84,7 @@ class Dispatcher {
 public:
 	explicit Dispatcher(ThreadPool &threadPool) :
 		threadPool(threadPool) {
-		threads.reserve(threadPool.getNumberOfThreads() + 1);
+		threads.reserve(threadPool.get_thread_count() + 1);
 		for (uint_fast16_t i = 0; i < threads.capacity(); ++i) {
 			threads.emplace_back(std::make_unique<ThreadTask>());
 		}

@@ -41,7 +41,7 @@ void SaveManager::scheduleAll() {
 		return;
 	}
 
-	threadPool.addLoad([this, scheduledAt]() {
+	threadPool.detach_task([this, scheduledAt]() {
 		if (m_scheduledAt.load() != scheduledAt) {
 			logger.warn("Skipping save for server because another save has been scheduled.");
 			return;
@@ -69,7 +69,7 @@ void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
 	logger.debug("Scheduling player {} for saving.", playerToSave->getName());
 	auto scheduledAt = std::chrono::steady_clock::now();
 	m_playerMap[playerToSave->getGUID()] = scheduledAt;
-	threadPool.addLoad([this, playerPtr, scheduledAt]() {
+	threadPool.detach_task([this, playerPtr, scheduledAt]() {
 		auto player = playerPtr.lock();
 		if (!player) {
 			logger.debug("Skipping save for player because player is no longer online.");

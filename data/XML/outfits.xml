@@ -116,6 +116,7 @@
 	<outfit type="0" looktype="1663" name="Decaying Defender" premium="yes" unlocked="no" enabled="yes" from="quest" />
 	<outfit type="0" looktype="1676" name="Darklight Evoker" premium="no" unlocked="no" enabled="yes" from="store" />
 	<outfit type="0" looktype="1681" name="Flamefury Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+	<outfit type="0" looktype="1723" name="Draccoon Herald" premium="no" unlocked="no" enabled="yes" from="quest" />
 
 	<!-- Male -->
 	<outfit type="1" looktype="128" name="Citizen" premium="no" unlocked="yes" enabled="yes" />
@@ -233,4 +234,5 @@
 	<outfit type="1" looktype="1662" name="Decaying Defender" premium="yes" unlocked="no" enabled="yes" from="quest" />
 	<outfit type="1" looktype="1675" name="Darklight Evoker" premium="no" unlocked="no" enabled="yes" from="store" />
 	<outfit type="1" looktype="1680" name="Flamefury Mage" premium="no" unlocked="no" enabled="yes" from="store" />
+	<outfit type="1" looktype="1722" name="Draccoon Herald" premium="no" unlocked="no" enabled="yes" from="quest" />
 </outfits>

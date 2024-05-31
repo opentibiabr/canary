@@ -75825,5 +75825,23 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="valuables" />
 		<attribute key="weight" value="120" />
 	</item>
+	<item id="44753" article="a" name="heralds insignia">
+        <attribute key="description" value="The insignia of the Draccoons herald!" />
+        <attribute key="loottype" value="valuable" />
+        <attribute key="primarytype" value="valuables" />
+        <attribute key="weight" value="1250" />
+    </item>
+    <item id="44754" article="a" name="heralds wings">
+        <attribute key="description" value="The wings of the Draccoons herald!" />
+        <attribute key="loottype" value="valuable" />
+        <attribute key="primarytype" value="valuables" />
+        <attribute key="weight" value="1250" />
+    </item>
+    <item id="44750" article="a" name="exalted seal">
+        <attribute key="description" value="The exhalted seal of Nimmersatt." />
+        <attribute key="loottype" value="valuable" />
+        <attribute key="primarytype" value="valuables" />
+        <attribute key="weight" value="20" />
+    </item>
 </items>
 

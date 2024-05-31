@@ -1216,7 +1216,7 @@ void Monster::doRandomStep(Direction &nextDirection, bool &result) {
 	}
 }
 
-void Monster::walkTo(const Position& walkToPosition) {
+void Monster::walkTo(const Position &walkToPosition) {
 	randomStepping = false;
 	isWalkingTo = true;
 	stdext::arraylist<Direction> listDir(128);

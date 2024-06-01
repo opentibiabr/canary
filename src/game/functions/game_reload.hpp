@@ -25,10 +25,10 @@ enum class Reload_t : uint8_t {
 	RELOAD_TYPE_FAMILIARS,
 	RELOAD_TYPE_IMBUEMENTS,
 	RELOAD_TYPE_VOCATIONS,
-	RELOAD_TYPE_ITEMS,
 	RELOAD_TYPE_CORE,
 	RELOAD_TYPE_GROUPS,
 	RELOAD_TYPE_SCRIPTS,
+	RELOAD_TYPE_ITEMS,
 	RELOAD_TYPE_MONSTERS,
 	RELOAD_TYPE_NPCS,
 	RELOAD_TYPE_RAIDS,
@@ -64,10 +64,10 @@ private:
 	static bool reloadFamiliars();
 	static bool reloadImbuements();
 	static bool reloadVocations();
-	static bool reloadItems();
 	static bool reloadCore();
 	static bool reloadGroups();
 	static bool reloadScripts();
+	static bool reloadItems();
 	static bool reloadMonsters();
 	static bool reloadNpcs();
 	static bool reloadRaids();

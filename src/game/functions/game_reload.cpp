@@ -43,15 +43,15 @@ bool GameReload::init(Reload_t reloadTypes) {
 		case Reload_t::RELOAD_TYPE_IMBUEMENTS:
 			return reloadImbuements();
 		case Reload_t::RELOAD_TYPE_VOCATIONS:
-			return reloadVocations() && reloadItems() && reloadScripts();
-		case Reload_t::RELOAD_TYPE_ITEMS:
-			return reloadItems();
+			return reloadVocations() && reloadScripts() && reloadItems();
 		case Reload_t::RELOAD_TYPE_CORE:
 			return reloadCore();
 		case Reload_t::RELOAD_TYPE_GROUPS:
 			return reloadGroups();
 		case Reload_t::RELOAD_TYPE_SCRIPTS:
 			return reloadScripts();
+		case Reload_t::RELOAD_TYPE_ITEMS:
+			return reloadItems();
 		case Reload_t::RELOAD_TYPE_MONSTERS:
 			return reloadMonsters();
 		case Reload_t::RELOAD_TYPE_NPCS:
@@ -151,12 +151,6 @@ bool GameReload::reloadVocations() {
 	return result;
 }
 
-bool GameReload::reloadItems() {
-	const bool result = Item::items.reload();
-	logReloadStatus("Items", result);
-	return result;
-}
-
 bool GameReload::reloadCore() {
 	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 	const bool coreLoaded = g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
@@ -194,6 +188,12 @@ bool GameReload::reloadScripts() {
 	reloadNpcs();
 	logReloadStatus("Scripts", true);
 	return true;
+}
+
+bool GameReload::reloadItems() {
+	const bool result = Item::items.reload();
+	logReloadStatus("Items", result);
+	return result;
 }
 
 bool GameReload::reloadMonsters() {

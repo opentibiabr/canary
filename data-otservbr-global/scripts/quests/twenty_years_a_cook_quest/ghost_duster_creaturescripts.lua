@@ -26,6 +26,8 @@ function onTargetTile(cid, pos)
 				target:addHealth(-100, COMBAT_AGONYDAMAGE)
 				local appliedCondition = target:getCondition(CONDITION_PARALYZE)
 				if not appliedCondition then
+					local amountConditionsApplied = target:getStorageValue(Storage.Quest.U13_30.TwentyYearsACook.RathaConditionsApplied)
+					target:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.RathaConditionsApplied, amountConditionsApplied > 2 and 1 or amountConditionsApplied + 1)
 					target:addCondition(condition)
 				end
 			end
@@ -42,7 +44,7 @@ function ghostDusterAttack.onHealthChange(creature, attacker, primaryDamage, pri
 			return primaryDamage, primaryType, secondaryDamage, secondaryType
 		end
 
-		local accumulatedDamage = creature:getStorageValue(1)
+		local accumulatedDamage = creature:getStorageValue(Storage.Quest.U13_30.TwentyYearsACook.GhostDusterDamage)
 
 		accumulatedDamage = accumulatedDamage + math.abs(primaryDamage + secondaryDamage)
 
@@ -52,7 +54,7 @@ function ghostDusterAttack.onHealthChange(creature, attacker, primaryDamage, pri
 			combat:execute(creature, var)
 		end
 
-		creature:setStorageValue(1, accumulatedDamage)
+		creature:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.GhostDusterDamage, accumulatedDamage)
 	end
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end

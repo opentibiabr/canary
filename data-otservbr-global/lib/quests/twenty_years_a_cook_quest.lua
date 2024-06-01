@@ -2,6 +2,13 @@ TwentyYearsACookQuest = {
 	TheRestOfRatha = {
 		MissionZone = Zone("mission.the-rest-of-ratha"),
 		BossZone = Zone("boss.the-rest-of-ratha"),
+		PositionsToTeleport = {
+			Position(33309, 31393, 15),
+			Position(33324, 31396, 15),
+			Position(33323, 31405, 15),
+			Position(33312, 31402, 15),
+			Position(33317, 31393, 15),
+		},
 		Items = {
 			GhostItem = 44598,
 			EmptySpiritFlask = 44527,

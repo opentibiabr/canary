@@ -5165,7 +5165,7 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
-	if (inBackpacks) {
+	if (inBackpacks || it.isContainer()) {
 		uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
 		auto backpack = player->getInventoryItem(CONST_SLOT_BACKPACK);
 		auto mainBackpack = backpack ? backpack->getContainer() : nullptr;

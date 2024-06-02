@@ -23,7 +23,7 @@ function fryclopsZoneEvent.afterLeave(zone, creature)
 	player:removeIcon("fryclops")
 
 	if #zone:getPlayers() == 0 then
-		TwentyYearsACookQuest.Fryclops.Catapult.UpdateCatapultItems(false)
+		TwentyYearsACookQuest.Fryclops.Catapult.UpdateCatapult(false)
 	end
 
 	return true

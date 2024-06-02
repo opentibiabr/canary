@@ -51,7 +51,7 @@ function fryclopsAxe.onUse(player, item, fromPosition, target, toPosition, isHot
 	local creature = tile:getTopCreature()
 
 	sendMagicEffectAroundFryclops()
-	TwentyYearsACookQuest.Fryclops.Catapult.UpdateCatapultItems(true)
+	TwentyYearsACookQuest.Fryclops.Catapult.UpdateCatapult(true)
 
 	if creature and creature:getName():lower() == "fryclops" then
 		creature:say("WAAAAAaaaaaaaaa...a...a...a...a...a............!", TALKTYPE_MONSTER_SAY)

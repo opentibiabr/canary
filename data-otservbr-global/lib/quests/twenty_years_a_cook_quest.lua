@@ -43,7 +43,7 @@ TwentyYearsACookQuest = {
 				[Position(32351, 31595, 5)] = { on = 44426, off = 0 },
 				[Position(32351, 31595, 6)] = { on = 44421, off = 44413 },
 			},
-			UpdateCatapultItems = function(on)
+			UpdateCatapult = function(on)
 				for position, status in pairs(TwentyYearsACookQuest.Fryclops.Catapult.CatapultUpdateMap) do
 					local tile = Tile(position)
 					local updated = false

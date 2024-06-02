@@ -620,7 +620,13 @@ void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_DIVINE_GRENADE);
 	registerEnum(L, CONST_ME_DIVINE_EMPOWERMENT);
 	registerEnum(L, CONST_ME_WATER_FLOATING_THRASH);
-	registerEnum(L, CONST_ME_AGONY);
+	registerEnum(L, CONST_ME_LOOT_HIGHLIGHT);
+	registerEnum(L, CONST_ME_STRANGE_SYMBOLS_1);
+	registerEnum(L, CONST_ME_STRANGE_SYMBOLS_2);
+	registerEnum(L, CONST_ME_STRANGE_SYMBOLS_3);
+	registerEnum(L, CONST_ME_BLUE_LINES);
+	registerEnum(L, CONST_ME_GHOST_CLAW);
+	registerEnum(L, CONST_ME_FOG);
 }
 
 void LuaEnums::initConstAniEnums(lua_State* L) {

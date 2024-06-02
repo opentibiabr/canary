@@ -63,6 +63,8 @@ private:
 		registerMethod(L, "Monster", "hazardDamageBoost", MonsterFunctions::luaMonsterHazardDamageBoost);
 		registerMethod(L, "Monster", "hazardDefenseBoost", MonsterFunctions::luaMonsterHazardDefenseBoost);
 
+		registerMethod(L, "Monster", "walkTo", MonsterFunctions::luaMonsterWalkTo);
+
 		CharmFunctions::init(L);
 		LootFunctions::init(L);
 		MonsterSpellFunctions::init(L);
@@ -122,6 +124,8 @@ private:
 	static int luaMonsterHazardDodge(lua_State* L);
 	static int luaMonsterHazardDamageBoost(lua_State* L);
 	static int luaMonsterHazardDefenseBoost(lua_State* L);
+
+	static int luaMonsterWalkTo(lua_State* L);
 
 	friend class CreatureFunctions;
 };

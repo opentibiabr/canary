@@ -1,4 +1,16 @@
 local positions = {
+	[Position(32367, 31596, 7)] = {
+		toPosition = Position(32301, 31697, 8),
+		storageValue = 8,
+	},
+	[Position(32301, 31697, 8)] = {
+		toPosition = Position(32368, 31598, 7),
+		storageValue = 8,
+	},
+	[Position(32246, 31832, 7)] = {
+		toPosition = Position(32298, 31704, 8),
+		storageValue = 8,
+	},
 	[Position(32591, 31936, 5)] = {
 		toPosition = Position(32587, 31937, 5),
 		storageValue = 4,

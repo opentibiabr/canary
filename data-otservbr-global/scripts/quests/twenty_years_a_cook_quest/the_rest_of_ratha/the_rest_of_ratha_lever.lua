@@ -3,7 +3,7 @@ local config = {
 		name = "The Rest of Ratha",
 		position = Position(33309, 31391, 15),
 	},
-	timeToDefeat = 10 * 60, -- 10 minutes
+	timeToDefeat = TwentyYearsACookQuest.TheRestOfRatha.TimeToDefeat,
 	requiredLevel = 250,
 	playerPositions = {
 		{ pos = Position(32585, 31939, 5), teleport = Position(33319, 31406, 15), effect = CONST_ME_TELEPORT },
@@ -24,5 +24,5 @@ local config = {
 }
 
 local lever = BossLever(config)
-lever:uid(62133)
+lever:uid(TwentyYearsACookQuest.TheRestOfRatha.LeverUID)
 lever:register()

@@ -117,6 +117,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("<sigh> Ratha's demise is most unfortunate, indeed! ...", npc, creature)
 			npcHandler:say("But well, as he is still around... to some capacity at least, I am sure we are able to communicate with him. Just travel to his apartment again, I'll send one of my buddies to your assistance. ...", npc, creature, 2000)
 			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 4)
+		elseif mission == 5 then
+
+		elseif mission == 7 then
+			
 		end
 	end
 	return true

@@ -75748,6 +75748,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="charges" value="14400"/>
 		<attribute key="weight" value="1000"/>
 	</item>
+	<item id="44410" article="a" name="catapult rope" />
+	<item fromid="44411" toid="44428" name="catapult"/>
+	<item id="44525" article="a" name="fryclops axe" />
 	<item id="44563" article="an" name="ominous trashcan">
 		<attribute key="primarytype" value="teleporters"/>
 		<attribute key="type" value="teleport"/>

@@ -116,7 +116,7 @@ local function onConditionClear(ratha)
 	local rathaPosition = ratha:getPosition()
 	if ratha:getStorageValue(Storage.Quest.U13_30.TwentyYearsACook.RathaConditionsApplied) >= 2 then
 		local positionIndex = math.random(1, #TwentyYearsACookQuest.TheRestOfRatha.PositionsToTeleport)
-		rathaPosition:sendMagicEffect(CONST_ME_GHOST_CLAW)
+		rathaPosition:sendMagicEffect(CONST_ME_GHOST_SMOKE)
 		ratha:teleportTo(TwentyYearsACookQuest.TheRestOfRatha.PositionsToTeleport[positionIndex])
 	else
 		rathaPosition:sendMagicEffect(CONST_ME_MORTAREA)

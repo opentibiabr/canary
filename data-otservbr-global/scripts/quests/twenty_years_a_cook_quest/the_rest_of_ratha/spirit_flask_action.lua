@@ -1,12 +1,12 @@
 local flaskBox = Action()
 
 function flaskBox.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(Storage.Quest.U13_30.TwentyYearsACook.FlaskBox) >= 1 then
+	if player:getStorageValue(Storage.Quest.U13_30.TwentyYearsACook.FlaskBox) > os.time() then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already got the flask.")
 		return true
 	end
 
-	player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.FlaskBox, 1)
+	player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.FlaskBox, os.time() + (TwentyYearsACookQuest.TheRestOfRatha.TimeToDefeat * 1000))
 	player:addItem(TwentyYearsACookQuest.TheRestOfRatha.Items.EmptySpiritFlask, 1)
 	return true
 end
@@ -45,11 +45,11 @@ function fullSpiritFlask.onUse(player, item, fromPosition, target, toPosition, i
 	end
 
 	if monster:getName():lower() == "spirit container" then
-		local icon = monster:getIcon("spirit-container")
-		monster:setIcon("spirit-container", CreatureIconCategory_Quests, CreatureIconQuests_WhiteCross, icon and icon.count + 1 or 1)
+		local addIconCount = monster:getIcon("spirit-container") and icon.count + 1 or 1
+		monster:setIcon("spirit-container", CreatureIconCategory_Quests, CreatureIconQuests_WhiteCross, addIconCount)
 		monster:getPosition():sendMagicEffect(CONST_ME_PIXIE_EXPLOSION)
 		item:transform(TwentyYearsACookQuest.TheRestOfRatha.Items.EmptySpiritFlask)
-		if TwentyYearsACookQuest.TheRestOfRatha.SpiritContainerPoints > 50 then
+		if addIconCount >= 50 and player:getStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine) < 5 then
 			local players = TwentyYearsACookQuest.TheRestOfRatha.BossZone:getPlayers()
 			for i, player in ipairs(players) do
 				player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 5)

@@ -59,7 +59,7 @@ TwentyYearsACookQuest = {
 						Game.createItem(on and status.on or status.off, 1, position)
 					end
 				end
-			end
+			end,
 		},
 	},
 }

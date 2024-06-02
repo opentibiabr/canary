@@ -44,7 +44,7 @@ function fryclopsAxe.onUse(player, item, fromPosition, target, toPosition, isHot
 	end
 
 	local tile = Tile(TwentyYearsACookQuest.Fryclops.Catapult.FryclopsPosition)
-	if not tile then 
+	if not tile then
 		return true
 	end
 

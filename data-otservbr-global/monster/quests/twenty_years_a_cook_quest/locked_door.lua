@@ -84,7 +84,6 @@ monster.immunities = {
 	{ type = "bleed", condition = true },
 }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType:register(monster)

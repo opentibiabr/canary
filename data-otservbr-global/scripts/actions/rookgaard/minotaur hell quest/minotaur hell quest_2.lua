@@ -4,8 +4,8 @@ local minohellQuest2 = Action()
 function minohellQuest2.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local bagId = 2853
 	local rewardIds = {
-		{3447, 10},
-		{3448, 4}
+		{ 3447, 10 },
+		{ 3448, 4 },
 	}
 
 	for _, reward in ipairs(rewardIds) do

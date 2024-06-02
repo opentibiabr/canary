@@ -3,7 +3,7 @@ local dragoncorpseQuest = Action()
 
 function dragoncorpseQuest.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local backpackId = 2853
-	local rewardIds = {3374, 3430}
+	local rewardIds = { 3374, 3430 }
 
 	for _, rewardId in ipairs(rewardIds) do
 		if not player:canGetReward(rewardId, "dragoncorpse") then
@@ -13,8 +13,8 @@ function dragoncorpseQuest.onUse(player, item, fromPosition, target, toPosition,
 	local backpack = player:addItem(backpackId, 1)
 	if backpack then
 		for _, rewardId in ipairs(rewardIds) do
-		  backpack:addItem(rewardId, 1)
-    end
+			backpack:addItem(rewardId, 1)
+		end
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a bag.")
 		player:questKV("dragoncorpse"):set("completed", true)
 	end

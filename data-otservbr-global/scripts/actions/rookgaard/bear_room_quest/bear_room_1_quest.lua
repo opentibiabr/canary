@@ -4,8 +4,8 @@ local bearChest1 = Action()
 function bearChest1.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local bagId = 2853
 	local rewardIds = {
-		{3447, 12},
-		{3031, 40}
+		{ 3447, 12 },
+		{ 3031, 40 },
 	}
 
 	for _, reward in ipairs(rewardIds) do

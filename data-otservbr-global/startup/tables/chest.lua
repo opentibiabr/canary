@@ -170,7 +170,7 @@ ChestUnique = {
 		time = 24, -- hour
 	},
 	-- Bear Room Quest (rookgaard) key 4601
-		[5013] = {
+	[5013] = {
 		isKey = true,
 		itemId = 2472,
 		itemPos = { x = 32150, y = 32112, z = 12 },
@@ -178,7 +178,7 @@ ChestUnique = {
 		storage = Storage.Quest.Key.ID4601,
 	},
 	-- Katana Quest (rookgaard) key 4603
-		[5014] = {
+	[5014] = {
 		isKey = true,
 		itemId = 4240,
 		itemPos = { x = 32176, y = 32132, z = 9 },
@@ -1235,33 +1235,33 @@ ChestUnique = {
 	-- Combat Knife Quest
 	[14048] = {
 		itemId = 2473,
-		itemPos = { x = 32102, y = 32235, z = 8	 },
+		itemPos = { x = 32102, y = 32235, z = 8 },
 	},
 	-- Goblin Temple Quest
 	-- Bau 1
 	[14049] = {
 		itemId = 2472,
-		itemPos = { x = 31973, y = 32209, z = 12	 },
+		itemPos = { x = 31973, y = 32209, z = 12 },
 	},
-	-- Bau 2 
+	-- Bau 2
 	[14050] = {
 		itemId = 2472,
-		itemPos = { x = 31977, y = 32209, z = 12	 },
+		itemPos = { x = 31977, y = 32209, z = 12 },
 	},
 	-- Minotaur Hell Quest
 	--Bau 1
 	[14051] = {
 		itemId = 2473,
-		itemPos = { x = 32130, y = 32066, z = 12	 },
+		itemPos = { x = 32130, y = 32066, z = 12 },
 	},
 	--Bau 2
 	[14052] = {
 		itemId = 2473,
-		itemPos = { x = 32127, y = 32065, z = 12	 },
+		itemPos = { x = 32127, y = 32065, z = 12 },
 	},
 	--Bau 3
 	[14053] = {
 		itemId = 2473,
-		itemPos = { x = 32124, y = 32064, z = 12	 },
+		itemPos = { x = 32124, y = 32064, z = 12 },
 	},
 }

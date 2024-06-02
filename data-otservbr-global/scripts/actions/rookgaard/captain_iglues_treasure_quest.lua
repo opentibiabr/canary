@@ -4,7 +4,7 @@ local captainIglues = Action()
 function captainIglues.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local bagId = 2853
 	local rewardIds = {
-		{3579, 2},
+		{ 3579, 2 },
 	}
 
 	for _, reward in ipairs(rewardIds) do

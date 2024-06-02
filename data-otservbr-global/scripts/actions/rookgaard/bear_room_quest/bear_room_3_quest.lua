@@ -10,7 +10,7 @@ function bearChest3.onUse(player, item, fromPosition, target, toPosition, isHotk
 	player:addItem(rewardId, 1)
 	player:questKV("bearChest3"):set("completed", true)
 	return true
-	end
+end
 
 bearChest3:uid(14046)
 bearChest3:register()

@@ -9,9 +9,9 @@ function bearStone.onUse(player, item, fromPosition, target, toPosition, isHotke
 		Position(stonePosition):hasCreature({ x = 32145, y = 32102, z = 11 })
 		Game.createItem(1791, 1, stonePosition)
 		item:transform(2772)
-		end
-		return true
 	end
+	return true
+end
 
 bearStone:aid(30006)
 bearStone:register()

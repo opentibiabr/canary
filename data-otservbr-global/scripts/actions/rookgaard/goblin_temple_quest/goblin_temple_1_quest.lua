@@ -4,9 +4,9 @@ local goblintemple1Quest = Action()
 function goblintemple1Quest.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local bagId = 2853
 	local rewardIds = {
-		{3551, 1},
-		{1781, 5},
-		{3031, 50}
+		{ 3551, 1 },
+		{ 1781, 5 },
+		{ 3031, 50 },
 	}
 
 	for _, reward in ipairs(rewardIds) do

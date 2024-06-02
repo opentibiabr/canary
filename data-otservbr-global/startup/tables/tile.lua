@@ -1194,7 +1194,7 @@ TileUnique = {
 	-- Doublet Quest
 	[25029] = {
 		itemId = 408,
-		itemPos = { x = 32084, y = 32181, z = 8	 }
+		itemPos = { x = 32084, y = 32181, z = 8 },
 	},
 	-- Remove/create item on stepIn
 	-- Reserved uniques range from 29001/30000

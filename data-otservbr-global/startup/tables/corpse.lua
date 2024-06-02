@@ -41,7 +41,7 @@ CorpseUnique = {
 	-- Dragon Corpse Quest
 	[20005] = {
 		itemId = 4025,
-		itemPos = { x = 32179, y = 32224, z = 9	 },
+		itemPos = { x = 32179, y = 32224, z = 9 },
 	},
 	-- Katana Quest (rookgaard)
 	-- Path: data\scripts\actions\rookgaard\katana_quest\katana_corpse_1.lua

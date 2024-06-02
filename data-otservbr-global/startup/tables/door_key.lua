@@ -130,6 +130,16 @@ KeyDoorAction = {
 		itemId = false,
 		itemPos = { { x = 33363, y = 31360, z = 3 } },
 	},
+	-- Door of the key 4601 (bear room quest)
+	[Storage.Quest.Key.ID4601] = {
+		itemId = false,
+		itemPos = { { x = 32145, y = 32100, z = 11 } },
+	},
+	-- Door of the key 4693 (kata quest)
+	[Storage.Quest.Key.ID4603] = {
+		itemId = false,
+		itemPos = { { x = 32179, y = 32149, z = 10 } },
+	},
 	[Storage.Quest.Key.ID0909] = {
 		itemId = false,
 		itemPos = {

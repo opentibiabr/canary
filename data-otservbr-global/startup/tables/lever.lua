@@ -51,6 +51,12 @@ LeverAction = {
 			{ x = 32601, y = 31421, z = 9 },
 		},
 	},
+	[30006] = { -- bear room quest stone
+		itemId = false,
+		itemPos = {
+			{ x = 32148, y = 32105, z = 11 },
+		},
+	},
 }
 
 LeverUnique = {
@@ -297,5 +303,10 @@ LeverUnique = {
 	[Storage.ThaisExhibition.TibiorasBox] = {
 		itemId = 2772,
 		itemPos = { x = 32440, y = 32191, z = 10 },
+	},
+	-- Path: data\scripts\rookgaard\katana_quest\katana_quest_lever.lua
+	[30029] = {
+		itemId = 2772,
+		itemPos = { x = 32182, y = 32145, z = 11 },
 	},
 }

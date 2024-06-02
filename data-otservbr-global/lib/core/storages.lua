@@ -66,8 +66,6 @@ Reserved player action storage key ranges (const.h)
 	[4502] = key 4502
 	[4503] = key 4503
 	[4600] = key 4600
-	[4601] = key 4601
-	[4603] = key 4603
 	[5000] = key 5000
 	[5002] = key 5002
 	[5010] = key 5010
@@ -1723,6 +1721,8 @@ Storage = {
 			ID3980 = 3980,
 			ID4055 = 4055,
 			ID4502 = 4502,
+			ID4601 = 4601,
+			ID4603 = 4603,
 			ID5010 = 5010,
 			ID6010 = 6010,
 		},

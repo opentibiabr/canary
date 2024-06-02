@@ -169,6 +169,22 @@ ChestUnique = {
 		timerStorage = Storage.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
 		time = 24, -- hour
 	},
+	-- Bear Room Quest (rookgaard) key 4601
+		[5013] = {
+		isKey = true,
+		itemId = 2472,
+		itemPos = { x = 32150, y = 32112, z = 12 },
+		reward = { { 2970, 1 } },
+		storage = Storage.Quest.Key.ID4601,
+	},
+	-- Katana Quest (rookgaard) key 4603
+		[5014] = {
+		isKey = true,
+		itemId = 4240,
+		itemPos = { x = 32176, y = 32132, z = 9 },
+		reward = { { 2969, 1 } },
+		storage = Storage.Quest.Key.ID4603,
+	},
 	-- To add a reward inside a bag, you need to add the variable "container = bagId" before "reward"
 	-- Just duplicate the table and configure correctly, the scripts already register the entire table automatically
 	-- Path: data\scripts\actions\system\quest_reward_common.lua
@@ -1189,5 +1205,63 @@ ChestUnique = {
 	[14042] = {
 		itemId = 2473,
 		itemPos = { x = 32099, y = 32198, z = 9 },
+	},
+	-- Present Quest
+	[14043] = {
+		itemId = 2472,
+		itemPos = { x = 32149, y = 32105, z = 11 },
+	},
+	-- Bear Room quest
+	-- Bau 1 - Bag
+	[14044] = {
+		itemId = 2472,
+		itemPos = { x = 32146, y = 32097, z = 11 },
+	},
+	-- Bau 2 - Brass Helmet
+	[14045] = {
+		itemId = 2472,
+		itemPos = { x = 32144, y = 32096, z = 11 },
+	},
+	-- Bau 3 - Chain Armor
+	[14046] = {
+		itemId = 2472,
+		itemPos = { x = 32141, y = 32097, z = 11 },
+	},
+	-- Captain Iglues Treasure Quest
+	[14047] = {
+		itemId = 2472,
+		itemPos = { x = 32039, y = 32121, z = 13 },
+	},
+	-- Combat Knife Quest
+	[14048] = {
+		itemId = 2473,
+		itemPos = { x = 32102, y = 32235, z = 8	 },
+	},
+	-- Goblin Temple Quest
+	-- Bau 1
+	[14049] = {
+		itemId = 2472,
+		itemPos = { x = 31973, y = 32209, z = 12	 },
+	},
+	-- Bau 2 
+	[14050] = {
+		itemId = 2472,
+		itemPos = { x = 31977, y = 32209, z = 12	 },
+	},
+	-- Minotaur Hell Quest
+	--Bau 1
+	[14051] = {
+		itemId = 2473,
+		itemPos = { x = 32130, y = 32066, z = 12	 },
+	},
+	--Bau 2
+	[14052] = {
+		itemId = 2473,
+		itemPos = { x = 32127, y = 32065, z = 12	 },
+	},
+	--Bau 3
+	[14053] = {
+		itemId = 2473,
+		itemPos = { x = 32124, y = 32064, z = 12	 },
 	},
 }

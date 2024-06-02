@@ -5641,9 +5641,9 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Mr Morris tasked you to find an ancient amulet that was lost somewhare on Dawnport - probably next to a corpse somewhare.",
-						[2] = "Come back to Mr Morris",
-						[3] = "Mr Morris thanks for the help",
+						[1] = "Mr Morris tasked you to find an ancient amulet that was lost somewhere on Dawnport - probably next to a corpse somewhere.",
+						[2] = "Come back to Mr Morris.",
+						[3] = "Mr Morris thanks for you the help.",
 					},
 				},
 				[3] = {
@@ -5653,8 +5653,8 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Mr Morris urged you fo find a log book that was stolen by trolls.",
-						[2] = "Mr Morris thanks for the help",
+						[1] = "Mr Morris urged you to find a log book that was stolen by trolls.",
+						[2] = "Mr Morris thanks you for the help.",
 					},
 				},
 				[4] = {
@@ -5664,9 +5664,9 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Mr Morris needs the rae Dawnfire herb harvested and brought to hin. It grows on grey sand only, he said.",
-						[2] = "Come back to Mr Morris",
-						[3] = "Mr Morris thanks for the help",
+						[1] = "Mr Morris needs the rare Dawnfire herb harvested and brought to him. It grows on gray sand only, he said.",
+						[2] = "Come back to Mr Morri.s",
+						[3] = "Mr Morris thanks you for the help.",
 					},
 				},
 				[5] = {
@@ -5677,40 +5677,40 @@ if not Quests then
 					endValue = 5,
 					states = {
 						[1] = "The key to the adventurer's dormitory has disappeared. Maybe you can find it. Ask around to find out who was the last to have seen it.",
-						[2] = "use the fishing rod in the nearby lake to fish old nasty",
+						[2] = "Use the fishing rod in the nearby lake to fish Old Nasty.",
 						[3] = "Come back to Woblin with Old Nasty",
-						[4] = "Come back to Mr Morris with key 0010",
+						[4] = "Come back to Mr Morris with Key 0010",
 						[5] = "Mr Morris thanks for the help",
 					},
 				},
 				[6] = {
-					name = "Task: Mountain Trolls",
-					storageId = 65062,
+					name = "Task: A Toll on Trolls",
+					storageId = Storage.Quest.U10_55.Dawnport.MorrisTrollCount,
 					missionId = 10394,
 					startValue = 0,
 					endValue = 20,
 					description = function(player)
-						return string.format("You already hunted %d/20 Mountain Trolls.", (math.max(player:getStorageValue(65062), 0)))
+						return string.format("You already hunted %d/20 Mountain Trolls.", (math.max(player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisTrollCount), 0)))
 					end,
 				},
 				[7] = {
-					name = "Task: Muglex Clan Footman",
-					storageId = 65061,
+					name = "Task: The Goblin Slayer",
+					storageId = Storage.Quest.U10_55.Dawnport.MorrisGoblinCount,
 					missionId = 10395,
 					startValue = 0,
 					endValue = 20,
 					description = function(player)
-						return string.format("You already hunted %d/20 Muglex Clan Footman.", (math.max(player:getStorageValue(65061), 0)))
+						return string.format("You already hunted %d/20 Muglex Clan Footman.", (math.max(player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisGoblinCount), 0)))
 					end,
 				},
 				[8] = {
-					name = "Task: Minotaur Bruisers",
-					storageId = 65060,
+					name = "Task: Plus Minos a Few",
+					storageId = Storage.Quest.U10_55.Dawnport.MorrisMinosCount,
 					missionId = 10396,
 					startValue = 0,
 					endValue = 20,
 					description = function(player)
-						return string.format("You already hunted %d/20 Minotaurs Bruisers.", (math.max(player:getStorageValue(65060), 0)))
+						return string.format("You already hunted %d/20 Minotaurs Bruisers.", (math.max(player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisMinosCount), 0)))
 					end,
 				},
 			},

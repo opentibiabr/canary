@@ -26,7 +26,7 @@
 #endif
 
 ThreadPool::ThreadPool(Logger &logger) :
-	logger(logger), BS::thread_pool(std::max<int>(getNumberOfCores(), DEFAULT_NUMBER_OF_THREADS)) {
+	BS::thread_pool(std::max<int>(getNumberOfCores(), DEFAULT_NUMBER_OF_THREADS)), logger(logger) {
 	start();
 }
 

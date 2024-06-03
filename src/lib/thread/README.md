@@ -20,7 +20,7 @@ int main() {
     ThreadPool &pool = inject<ThreadPool>(); // preferrably uses constructor injection or setter injection.
 
     // Post a task to the thread pool
-    pool.addLoad([]() {
+    pool.detach_task([]() {
         std::cout << "Hello from thread " << std::this_thread::get_id() << std::endl;
     });
 }

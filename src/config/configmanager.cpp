@@ -225,6 +225,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, CRITICALCHANCE, "criticalChance", 10);
 	loadIntConfig(L, DAY_KILLS_TO_RED, "dayKillsToRedSkull", 3);
 	loadIntConfig(L, DEATH_LOSE_PERCENT, "deathLosePercent", -1);
+	loadIntConfig(L, DEFAULT_RESPAWN_TIME, "defaultRespawnTime", 60);
 	loadIntConfig(L, DEFAULT_DESPAWNRADIUS, "deSpawnRadius", 50);
 	loadIntConfig(L, DEFAULT_DESPAWNRANGE, "deSpawnRange", 2);
 	loadIntConfig(L, DEPOTCHEST, "depotChest", 4);

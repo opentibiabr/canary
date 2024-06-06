@@ -513,6 +513,7 @@ bossDefaultTimeToFightAgain = 20 * 60 * 60 -- 20 hours
 bossDefaultTimeToDefeat = 20 * 60 -- 20 minutes
 
 -- Monsters
+defaultRespawnTime = 60
 deSpawnRange = 2
 deSpawnRadius = 50
 

@@ -118,7 +118,29 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("But well, as he is still around... to some capacity at least, I am sure we are able to communicate with him. Just travel to his apartment again, I'll send one of my buddies to your assistance. ...", npc, creature, 2000)
 			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 4)
 		elseif mission == 5 then
+			npcHandler:say("Execellent, the vial with Ratha's essence arrived just minutes ago via our friends from the postman guild...", npc, creature)
+			npcHandler:say("Even better, I managed to get my paws on a potion of spirit talking, it's just over there in the potion rack. Sadly it only allows humans to talk with human spirits...", npc, creature, 2000)
+			npcHandler:say("But luckily for us, you ARE a human after all! So grab that potion and just drink it! Then we will start to have a conversation with Ratha!", npc, creature, 2000)
+			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 6)
 		elseif mission == 7 then
+			npcHandler:say("Well I hope you and Ratha get along well. Fret net! I will find a way to extract Ratha From you... sooner or later that is! ...", npc, creature)
+			npcHandler:say("Now we have other things to care for, though! The master cook of Nimmersatt and cruel taskmaster for all to us cooks in Nimmersatt's service was a cyclops of immense power and immensely bad taste. ...", npc, creature, 2000)
+			npcHandler:say("His answer to anything cooking related was 'fry it!'. So he became known only as ...", npc, creature, 2000)
+			npcHandler:say("THE FRYCLOPS! ...", npc, creature, 2000)
+			npcHandler:say("His skin became nearly impenetrable by constantly being burnt by frying oil. I learned he got a special reward for his service to Nimmersatt. ...", npc, creature, 2000)
+			npcHandler:say("A strange machine that is able to retrieve items from places anywhere in the world! We will conquer this item and also punish the evil fryclops! ...", npc, creature, 2000)
+			npcHandler:say("According to my pal and guild mate in the fools guild, Bozo, the despicable Fryclops now resides on a small island north of Carlin where he tries to sink ships at his leisure. ...", npc, creature, 2000)
+			npcHandler:say("I arranged for you a secret passage to his isle from the Ghostlands! Look there for an innocent looking trash can <winks>. A friend of mine will be waiting there with further directions.", npc, creature, 2000)
+			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 8)
+		elseif mission == 9 then
+			npcHandler:say("We got hand on the machine in his cellar. ...", npc, creature)
+			npcHandler:say("My mates are stil trying to figure it out, yet one thing is clear, the stupid Fryclops used up all available charges and we need to refuel that thing! ...", npc, creature, 2000)
+			npcHandler:say("And I happen to know how to refuel this machine with ease! All we need is some infernal power crystals! ...", npc, creature, 2000)
+			npcHandler:say("I'm sure its just a name, don't worry! My informants told me where to find some of those! ...", npc, creature, 2000)
+			npcHandler:say("All we have to do is to steal them from some unsuspecting demons, a piece of cake for you, I am sure! ...", npc, creature, 2000)
+			npcHandler:say("To make things even easier Cheaty will assist you with her magic and provid you with a disguise! So absolutely nothing could possibly go wrong! ...", npc, creature, 2000)
+			npcHandler:say("You will find the entrance at an abandoned tower in Edron, it's close to a stone circle.", npc, creature, 2000)
+			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 10)
 		end
 	end
 	return true

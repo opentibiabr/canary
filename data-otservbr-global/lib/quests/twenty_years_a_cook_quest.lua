@@ -67,4 +67,4 @@ TwentyYearsACookQuest = {
 -- Initializing zones
 TwentyYearsACookQuest.TheRestOfRatha.MissionZone:addArea({ x = 33303, y = 31425, z = 15 }, { x = 33327, y = 31445, z = 15 })
 TwentyYearsACookQuest.TheRestOfRatha.BossZone:addArea({ x = 33303, y = 31388, z = 15 }, { x = 33327, y = 31408, z = 15 })
-TwentyYearsACookQuest.Fryclops.BossZone:addArea({ x = 32342, y = 31589, z = 6 }, { x = 32368, y = 31611, z = 6 })
+TwentyYearsACookQuest.Fryclops.BossZone:addArea({ x = 32340, y = 31587, z = 6 }, { x = 32368, y = 31611, z = 6 })

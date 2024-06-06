@@ -1,6 +1,11 @@
 local harp = Action()
 
 function harp.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+
+	if not TwentyYearsACookQuest.TheRestOfRatha.BossZone:isInZone(fromPosition) then
+		return true
+	end
+
 	local icon = player:getIcon("the-rest-of-ratha")
 	if icon.count <= 0 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are out of inspiration to play.")

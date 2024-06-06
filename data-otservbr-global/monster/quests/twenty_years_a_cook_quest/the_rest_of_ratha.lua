@@ -132,8 +132,9 @@ local function onConditionApplied(ratha, conditionsTicks)
 end
 
 local function updateQuestLogOnRathaFound(rathaPosition)
-	for i, player in pairs(Game.getSpectators(rathaPosition, false, true, 0, 1, 0, 1)) do
-		if player:getStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine) == 2 then
+	for i, player in pairs(Game.getSpectators(rathaPosition, false, true, 1, 1, 1, 1)) do
+		local playerStorage = player:getStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine)
+		if playerStorage == 2 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found the friend of the Draccoon or what's left of him, You should tell the Draccoon about it!")
 			player:setStorageValue(Storage.Quest.U13_30.TwentyYearsACook.QuestLine, 3)
 		end

@@ -10,7 +10,7 @@ local positions = {
 	[Position(32301, 31697, 8)] = {
 		toPosition = Position(32368, 31598, 7),
 		storageValue = 8,
-		boss = "Fryclops"
+		boss = "Fryclops",
 	},
 	[Position(32297, 31706, 8)] = {
 		toPosition = Position(32246, 31834, 7),
@@ -27,7 +27,7 @@ local positions = {
 	[Position(32591, 31936, 5)] = {
 		toPosition = Position(32587, 31937, 5),
 		storageValue = 4,
-		boss = "The Rest of Ratha"
+		boss = "The Rest of Ratha",
 	},
 	[Position(32974, 32110, 7)] = {
 		toPosition = Position(32973, 32087, 8),

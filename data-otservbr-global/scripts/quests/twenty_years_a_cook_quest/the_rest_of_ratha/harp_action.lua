@@ -1,7 +1,6 @@
 local harp = Action()
 
 function harp.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-
 	if not TwentyYearsACookQuest.TheRestOfRatha.BossZone:isInZone(fromPosition) then
 		return true
 	end

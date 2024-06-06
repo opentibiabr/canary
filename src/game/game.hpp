@@ -95,7 +95,7 @@ public:
 	void resetNpcs() const;
 
 	void loadBoostedCreature();
-	void start(ServiceManager* manager);
+	void start();
 
 	void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
 
@@ -896,8 +896,6 @@ private:
 	// (1440 total light of tibian day)/(3600 real seconds each tibian day) * 10 seconds event interval
 	int32_t lightHourDelta = (LIGHT_DAY_LENGTH * (EVENT_LIGHTINTERVAL_MS / 1000)) / DAY_LENGTH_SECONDS;
 
-	ServiceManager* serviceManager = nullptr;
-
 	void updatePlayersRecord() const;
 	uint32_t playersRecord = 0;
 
@@ -961,6 +959,7 @@ private:
 	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
+	void updatePlayersOnline();
 };
 
 constexpr auto g_game = Game::getInstance;

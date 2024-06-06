@@ -17,6 +17,7 @@
 	#include <mutex>
 #endif
 
+class Game;
 class DBResult;
 using DBResult_ptr = std::shared_ptr<DBResult>;
 
@@ -199,16 +200,20 @@ public:
 
 	template <typename Func>
 	static bool executeWithinTransaction(const Func &toBeExecuted) {
-		DBTransaction transaction;
-		try {
-			transaction.begin();
-			bool result = toBeExecuted();
-			transaction.commit();
-			return result;
-		} catch (const std::exception &exception) {
-			transaction.rollback();
-			g_logger().error("[{}] Error occurred committing transaction, error: {}", __FUNCTION__, exception.what());
-			return false;
+		bool changesExpected = toBeExecuted();  // Primeiro, execute a função para verificar se há mudanças esperadas.
+		if (changesExpected) {
+			DBTransaction transaction;
+			try {
+				transaction.begin();
+				transaction.commit();
+				return changesExpected;
+			} catch (const std::exception &exception) {
+				transaction.rollback();
+				g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
+				return false;
+			}
+		} else {
+			return true;  // Não há mudanças, então retornar true sem iniciar a transação.
 		}
 	}
 
@@ -276,6 +281,8 @@ private:
 	}
 
 	TransactionStates_t state = STATE_NO_START;
+
+	friend class Game;
 };
 
 class DatabaseException : public std::exception {

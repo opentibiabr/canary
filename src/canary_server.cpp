@@ -21,6 +21,7 @@
 #include "game/scheduling/events_scheduler.hpp"
 #include "io/iomarket.hpp"
 #include "lib/thread/thread_pool.hpp"
+#include "lib/metrics/metrics.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -35,12 +36,11 @@
 
 CanaryServer::CanaryServer(
 	Logger &logger,
-	RSA &rsa,
-	ServiceManager &serviceManager
+	RSA &rsa
 ) :
 	logger(logger),
 	rsa(rsa),
-	serviceManager(serviceManager) {
+	serviceManager(g_ServiceManager()) {
 	logInfos();
 	toggleForceCloseButton();
 	g_game().setGameState(GAME_STATE_STARTUP);
@@ -98,7 +98,7 @@ int CanaryServer::run() {
 				}
 #endif
 
-				g_game().start(&serviceManager);
+				g_game().start();
 				g_game().setGameState(GAME_STATE_NORMAL);
 				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE, __FUNCTION__)) {
 					g_game().setGameState(GAME_STATE_CLOSED);
@@ -136,7 +136,7 @@ int CanaryServer::run() {
 
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME, __FUNCTION__), "server online!");
 
-	serviceManager.run();
+	g_ServiceManager().run();
 
 	shutdown();
 	return EXIT_SUCCESS;

@@ -33,8 +33,7 @@ class CanaryServer {
 public:
 	explicit CanaryServer(
 		Logger &logger,
-		RSA &rsa,
-		ServiceManager &serviceManager
+		RSA &rsa
 	);
 
 	int run();

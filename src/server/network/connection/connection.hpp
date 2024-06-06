@@ -10,7 +10,6 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "lib/di/container.hpp"
 #include "server/network/message/networkmessage.hpp"
 
 static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;
@@ -33,9 +32,7 @@ class ConnectionManager {
 public:
 	ConnectionManager() = default;
 
-	static ConnectionManager &getInstance() {
-		return inject<ConnectionManager>();
-	}
+	static ConnectionManager &getInstance();
 
 	Connection_ptr createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort);
 	void releaseConnection(const Connection_ptr &connection);
@@ -43,6 +40,7 @@ public:
 
 private:
 	phmap::parallel_flat_hash_set_m<Connection_ptr> connections;
+	std::mutex connectionManagerLock;
 };
 
 class Connection : public std::enable_shared_from_this<Connection> {
@@ -52,7 +50,7 @@ public:
 	// Constructor end
 
 	// Destructor
-	~Connection() = default;
+	~Connection();
 
 	// Singleton - ensures we don't accidentally copy it
 	Connection(const Connection &) = delete;
@@ -61,7 +59,7 @@ public:
 	void close(bool force = false);
 	// Used by protocols that require server to send first
 	void accept(Protocol_ptr protocolPtr);
-	void acceptInternal(bool toggleParseHeader = true);
+	void accept();
 
 	void resumeWork();
 

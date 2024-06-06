@@ -79,9 +79,7 @@ public:
 	OutputMessagePool(const OutputMessagePool &) = delete;
 	OutputMessagePool &operator=(const OutputMessagePool &) = delete;
 
-	static OutputMessagePool &getInstance() {
-		return inject<OutputMessagePool>();
-	}
+	static OutputMessagePool &getInstance();
 
 	void sendAll();
 	void scheduleSendAll();

@@ -451,14 +451,14 @@ void Game::loadBoostedCreature() {
 	}
 }
 
-void Game::start(ServiceManager* manager) {
+void Game::start() {
+	ServiceManager& manager = g_ServiceManager();
 	// Game client protocols
-	manager->add<ProtocolGame>(static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__)));
-	manager->add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)));
+	manager.add<ProtocolGame>(static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__)));
+	manager.add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)));
 	// OT protocols
-	manager->add<ProtocolStatus>(static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT, __FUNCTION__)));
+	manager.add<ProtocolStatus>(static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT, __FUNCTION__)));
 
-	serviceManager = manager;
 
 	time_t now = time(0);
 	const tm* tms = localtime(&now);
@@ -496,6 +496,10 @@ void Game::start(ServiceManager* manager) {
 			marketItemsPriceIntervalMS, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
 		);
 	}
+
+	g_dispatcher().cycleEvent(
+		60 * 1000, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline"
+	);
 }
 
 GameState_t Game::getGameState() const {
@@ -7965,9 +7969,7 @@ void Game::shutdown() {
 
 	cleanup();
 
-	if (serviceManager) {
-		serviceManager->stop();
-	}
+	g_ServiceManager().stop();
 
 	ConnectionManager::getInstance().closeAll();
 
@@ -10428,7 +10430,6 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 
 	if (player->getIP() == 0) {
 		g_game().removePlayerUniqueLogin(playerName);
-		IOLoginData::updateOnlineStatus(player->guid, false);
 		g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
 		player->disconnect();
 		return;
@@ -10444,7 +10445,6 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		if (player->m_deathTime > (kickAfterMinutes * 60000) + 60000) {
 			g_logger().info("Player with name '{}' has logged out due to inactivity after death", player->getName());
 			g_game().removePlayerUniqueLogin(playerName);
-			IOLoginData::updateOnlineStatus(player->guid, false);
 			player->disconnect();
 			return;
 		}
@@ -10744,4 +10744,51 @@ Title Game::getTitleByName(const std::string &name) {
 		return *it;
 	}
 	return {};
+}
+
+void Game::updatePlayersOnline() {
+	// Função a ser executada dentro da transação
+	auto updateOperation = [this]() -> bool {
+		const auto &m_players = getPlayers();
+		Database &db = Database::getInstance();
+		bool changesMade = false;
+
+		if (m_players.empty()) {
+			std::string query = "SELECT COUNT(*) AS count FROM players_online;";
+			auto result = g_database().storeQuery(query);
+			int count = result->getNumber<int>("count");
+			if (count > 0) {
+				db.executeQuery("DELETE FROM `players_online`;");
+				changesMade = true;
+			}
+		} else {
+			// Insere os jogadores atuais
+			DBInsert stmt("INSERT IGNORE INTO `players_online` (player_id) VALUES ");
+			for (const auto &[key, player] : m_players) {
+				std::ostringstream playerQuery;
+				playerQuery << "(" << player->getGUID() << ")";
+				stmt.addRow(playerQuery.str());
+			}
+			stmt.execute();
+			changesMade = true;
+
+			// Remove os jogadores que não estão mais online
+			std::ostringstream cleanupQuery;
+			cleanupQuery << "DELETE FROM `players_online` WHERE `player_id` NOT IN (";
+			for (const auto &[key, player] : m_players) {
+				cleanupQuery << player->getGUID() << ",";
+			}
+			cleanupQuery.seekp(-1, cleanupQuery.cur); // Remove a última vírgula
+			cleanupQuery << ");";
+			db.executeQuery(cleanupQuery.str());
+		}
+
+		return changesMade;
+	};
+
+	// Executar a operação dentro de uma transação
+	bool success = DBTransaction::executeWithinTransaction(updateOperation);
+	if (!success) {
+		g_logger().error("[updatePlayersOnline] Failed to update players online.");
+	}
 }

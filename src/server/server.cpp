@@ -14,6 +14,11 @@
 #include "config/configmanager.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"
+#include "lib/di/container.hpp"
+
+ServiceManager &ServiceManager::getInstance() {
+	return inject<ServiceManager>();
+}
 
 ServiceManager::~ServiceManager() {
 	try {
@@ -71,7 +76,7 @@ bool ServicePort::is_single_socket() const {
 
 std::string ServicePort::get_protocol_names() const {
 	if (services.empty()) {
-		return std::string();
+		return {};
 	}
 
 	std::string str = services.front()->get_protocol_name();
@@ -92,7 +97,7 @@ void ServicePort::accept() {
 	acceptor->async_accept(connection->getSocket(), [self = shared_from_this(), connection](const std::error_code &error) { self->onAccept(connection, error); });
 }
 
-void ServicePort::onAccept(Connection_ptr connection, const std::error_code &error) {
+void ServicePort::onAccept(const Connection_ptr& connection, const std::error_code &error) {
 	if (!error) {
 		if (services.empty()) {
 			return;
@@ -104,7 +109,7 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 			if (service->is_single_socket()) {
 				connection->accept(service->make_protocol(connection));
 			} else {
-				connection->acceptInternal();
+				connection->accept();
 			}
 		} else {
 			connection->close(FORCE_CLOSE);
@@ -115,8 +120,13 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 		if (!pendingStart) {
 			close();
 			pendingStart = true;
-			g_dispatcher().scheduleEvent(
-				15000, [self = shared_from_this(), serverPort = serverPort] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), serverPort); }, "ServicePort::openAcceptor"
+			deadline_timer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
+			deadline_timer.async_wait(
+				[self = shared_from_this(), serverPort = serverPort](const std::error_code &error) {
+					if (!error) {
+						openAcceptor(std::weak_ptr<ServicePort>(self), serverPort);
+					}
+				}
 			);
 		}
 	}
@@ -140,7 +150,7 @@ void ServicePort::onStopServer() {
 	close();
 }
 
-void ServicePort::openAcceptor(std::weak_ptr<ServicePort> weak_service, uint16_t port) {
+void ServicePort::openAcceptor(const std::weak_ptr<ServicePort>& weak_service, uint16_t port) {
 	if (auto service = weak_service.lock()) {
 		service->open(port);
 	}
@@ -154,9 +164,9 @@ void ServicePort::open(uint16_t port) {
 
 	try {
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS, __FUNCTION__)) {
-			acceptor.reset(new asio::ip::tcp::acceptor(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP, __FUNCTION__))), serverPort)));
+			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP, __FUNCTION__))), serverPort));
 		} else {
-			acceptor.reset(new asio::ip::tcp::acceptor(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort)));
+			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
 		}
 
 		acceptor->set_option(asio::ip::tcp::no_delay(true));
@@ -166,9 +176,14 @@ void ServicePort::open(uint16_t port) {
 		g_logger().warn("[ServicePort::open] - Error code: {}", e.what());
 
 		pendingStart = true;
-		g_dispatcher().scheduleEvent(
-			15000,
-			[self = shared_from_this(), port] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port); }, "ServicePort::openAcceptor"
+
+		deadline_timer.expires_from_now(std::chrono::seconds(15));
+		deadline_timer.async_wait(
+			[self_weak = std::weak_ptr<ServicePort>(shared_from_this()), port](const std::error_code &error) {
+				if (!error) {
+					openAcceptor(self_weak, port);
+				}
+			}
 		);
 	}
 }

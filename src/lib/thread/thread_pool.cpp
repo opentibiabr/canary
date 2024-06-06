@@ -35,6 +35,7 @@ void ThreadPool::start() {
 }
 
 void ThreadPool::shutdown() {
-	stopped = true;
 	logger.info("Shutting down thread pool...");
+	stopped = true;
+	wait();
 }

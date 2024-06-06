@@ -10,7 +10,6 @@
 #pragma once
 
 #include "lib/logging/logger.hpp"
-#include "lib/metrics/metrics.hpp"
 #include "server/network/connection/connection.hpp"
 #include "server/signals.hpp"
 
@@ -50,14 +49,14 @@ public:
 class ServicePort : public std::enable_shared_from_this<ServicePort> {
 public:
 	explicit ServicePort(asio::io_service &init_io_service) :
-		io_service(init_io_service) { }
+		io_service(init_io_service), deadline_timer(init_io_service) { }
 	~ServicePort();
 
 	// non-copyable
 	ServicePort(const ServicePort &) = delete;
 	ServicePort &operator=(const ServicePort &) = delete;
 
-	static void openAcceptor(std::weak_ptr<ServicePort> weak_service, uint16_t port);
+	static void openAcceptor(const std::weak_ptr<ServicePort>& weak_service, uint16_t port);
 	void open(uint16_t port);
 	void close();
 	bool is_single_socket() const;
@@ -67,7 +66,7 @@ public:
 	Protocol_ptr make_protocol(bool checksummed, NetworkMessage &msg, const Connection_ptr &connection) const;
 
 	void onStopServer();
-	void onAccept(Connection_ptr connection, const std::error_code &error);
+	void onAccept(const Connection_ptr& connection, const std::error_code &error);
 
 private:
 	void accept();
@@ -78,6 +77,8 @@ private:
 
 	uint16_t serverPort = 0;
 	bool pendingStart = false;
+
+	asio::high_resolution_timer deadline_timer;
 };
 
 class ServiceManager {
@@ -88,6 +89,8 @@ public:
 	// non-copyable
 	ServiceManager(const ServiceManager &) = delete;
 	ServiceManager &operator=(const ServiceManager &) = delete;
+
+	static ServiceManager &getInstance();
 
 	void run();
 	void stop();
@@ -109,6 +112,8 @@ private:
 	asio::high_resolution_timer death_timer { io_service };
 	bool running = false;
 };
+
+constexpr auto g_ServiceManager = ServiceManager::getInstance;
 
 template <typename ProtocolType>
 bool ServiceManager::add(uint16_t port) {

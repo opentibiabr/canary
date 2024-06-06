@@ -15,6 +15,10 @@
 
 const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 
+OutputMessagePool &OutputMessagePool::getInstance() {
+	return inject<OutputMessagePool>();
+}
+
 void OutputMessagePool::scheduleSendAll() {
 	g_dispatcher().scheduleEvent(
 		OUTPUTMESSAGE_AUTOSEND_DELAY.count(), [this] { sendAll(); }, "OutputMessagePool::sendAll"

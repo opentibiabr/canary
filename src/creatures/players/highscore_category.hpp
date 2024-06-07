@@ -10,8 +10,8 @@
 #pragma once
 
 struct HighscoreCategory {
-	HighscoreCategory(const std::string &name, uint8_t id) :
-		m_name(name),
+	HighscoreCategory(std::string name, uint8_t id) :
+		m_name(std::move(name)),
 		m_id(id) { }
 
 	std::string m_name;

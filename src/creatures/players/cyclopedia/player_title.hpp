@@ -32,27 +32,28 @@ struct Title {
 	Title() = default;
 
 	Title(uint8_t id, CyclopediaTitle_t type, std::string maleName, std::string description, uint32_t amount, bool permanent) :
-		m_id(id), m_type(type), m_maleName(std::move(maleName)), m_description(std::move(description)), m_amount(amount),
-		m_permanent(permanent) { }
+		m_id(id), m_type(type), m_maleName(std::move(maleName)), m_femaleName(), m_description(std::move(description)),
+		m_amount(amount), m_permanent(permanent), m_skill(0), m_race(0) { }
 
 	Title(uint8_t id, CyclopediaTitle_t type, std::string maleName, std::string description, uint32_t amount, bool permanent, std::string femaleName) :
-		m_id(id), m_type(type), m_maleName(std::move(maleName)), m_description(std::move(description)), m_amount(amount),
-		m_permanent(permanent), m_femaleName(std::move(femaleName)) { }
+		m_id(id), m_type(type), m_maleName(std::move(maleName)), m_femaleName(std::move(femaleName)), m_description(std::move(description)),
+		m_amount(amount), m_permanent(permanent), m_skill(0), m_race(0) { }
 
 	Title(uint8_t id, CyclopediaTitle_t type, std::string maleName, std::string femaleName, std::string description, uint8_t skill) :
 		m_id(id), m_type(type), m_maleName(std::move(maleName)), m_femaleName(std::move(femaleName)), m_description(std::move(description)),
-		m_skill(skill) { }
+		m_amount(0), m_permanent(false), m_skill(skill), m_race(0) { }
 
 	Title(uint8_t id, CyclopediaTitle_t type, uint16_t race, std::string maleName, std::string femaleName, std::string description) :
-		m_id(id), m_type(type), m_race(race), m_maleName(std::move(maleName)), m_femaleName(std::move(femaleName)),
-		m_description(std::move(description)) { }
+		m_id(id), m_type(type), m_maleName(std::move(maleName)), m_femaleName(std::move(femaleName)), m_description(std::move(description)),
+		m_amount(0), m_permanent(false), m_skill(0), m_race(race) { }
 
 	Title(uint8_t id, CyclopediaTitle_t type, uint16_t race, std::string maleName, std::string femaleName, std::string description, uint32_t amount, bool permanent) :
-		m_id(id), m_type(type), m_race(race), m_maleName(std::move(maleName)), m_femaleName(std::move(femaleName)),
-		m_description(std::move(description)), m_amount(amount), m_permanent(permanent) { }
+		m_id(id), m_type(type), m_maleName(std::move(maleName)), m_femaleName(std::move(femaleName)), m_description(std::move(description)),
+		m_amount(amount), m_permanent(permanent), m_skill(0), m_race(race) { }
 
 	Title(uint8_t id, CyclopediaTitle_t type, std::string maleName, std::string description, bool permanent) :
-		m_id(id), m_type(type), m_maleName(std::move(maleName)), m_description(std::move(description)), m_permanent(permanent) { }
+		m_id(id), m_type(type), m_maleName(std::move(maleName)), m_femaleName(), m_description(std::move(description)),
+		m_amount(0), m_permanent(permanent), m_skill(0), m_race(0) { }
 
 	bool operator==(const Title &other) const {
 		return m_id == other.m_id;

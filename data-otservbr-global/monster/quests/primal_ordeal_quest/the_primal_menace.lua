@@ -24,7 +24,6 @@ local thePrimalMenaceConfig = {
 		CountGrowthPerHazard = 1.05,
 		CountMax = 6,
 
-		HpRateOnSpawn = 0.7,
 		MonsterPool = {
 			"Emerald Tortoise (Primal)",
 			"Gore Horn (Primal)",
@@ -291,8 +290,6 @@ local function spawnMonster(monsterId, spawnPosition)
 		MonsterId = primalMonster:getId(),
 		Created = os.time(),
 	}
-	local monsterMaxHealth = primalMonster:getMaxHealth()
-	primalMonster:setHealth(monsterMaxHealth * thePrimalMenaceConfig.MonsterConfig.HpRateOnSpawn)
 
 	local primalBeasts = monster:getStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts)
 	table.insert(primalBeasts, primalBeastEntry)

@@ -1,0 +1,43 @@
+---
+name: MySQL Schema Check
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "schema.sql"
+  merge_group:
+  push:
+    paths:
+      - "schema.sql"
+    branches:
+      - main
+
+jobs:
+  mysql-schema-check:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: canary
+          MYSQL_USER: canary
+          MYSQL_PASSWORD: canary
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    strategy:
+      fail-fast: false
+    name: Check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+      - name: 📌 MySQL Start & init & show db
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE canary;' -uroot -proot
+          mysql -e "SHOW DATABASES" -uroot -proot
+      - name: Import Canary Schema
+        run: |
+          mysql -uroot -proot canary < schema.sql

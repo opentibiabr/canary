@@ -230,9 +230,8 @@ public:
 	void addList() override;
 	void removePlayer(bool displayEffect, bool forced = true);
 
-	static uint64_t getExpForLevel(int32_t lv) {
-		lv--;
-		return ((50ULL * lv * lv * lv) - (150ULL * lv * lv) + (400ULL * lv)) / 3ULL;
+	static uint64_t getExpForLevel(const uint32_t level) {
+		return (((level - 6ULL) * level + 17ULL) * level - 12ULL) / 6ULL * 100ULL;
 	}
 
 	uint16_t getStaminaMinutes() const {

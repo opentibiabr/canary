@@ -16,11 +16,6 @@ local function getSkillId(skillName)
 	end
 end
 
-local function getExpForLevel(level)
-	level = level - 1
-	return ((50 * level * level * level) - (150 * level * level) + (400 * level)) / 3
-end
-
 local addSkill = TalkAction("/addskill")
 
 function addSkill.onSay(player, words, param)
@@ -54,7 +49,7 @@ function addSkill.onSay(player, words, param)
 	local ch = split[2]:sub(1, 1)
 	if ch == "l" or ch == "e" then
 		targetLevel = target:getLevel() + count
-		targetExp = getExpForLevel(targetLevel)
+		targetExp = Game.getExperienceForLevel(targetLevel)
 		addExp = targetExp - target:getExperience()
 		target:addExperience(addExp, false)
 	elseif ch == "m" then

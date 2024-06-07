@@ -23,10 +23,10 @@ Dispatcher &Dispatcher::getInstance() {
 void Dispatcher::init() {
 	UPDATE_OTSYS_TIME();
 
-	threadPool.addLoad([this] {
+	threadPool.detach_task([this] {
 		std::unique_lock asyncLock(dummyMutex);
 
-		while (!threadPool.getIoContext().stopped()) {
+		while (!threadPool.isStopped()) {
 			UPDATE_OTSYS_TIME();
 
 			executeEvents();
@@ -60,7 +60,7 @@ void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t g
 	std::atomic_bool isTasksCompleted = false;
 
 	for (const auto &task : tasks) {
-		threadPool.addLoad([groupId, &task, &isTasksCompleted, &totalTaskSize] {
+		threadPool.detach_task([groupId, &task, &isTasksCompleted, &totalTaskSize] {
 			dispacherContext.type = DispatcherType::AsyncEvent;
 			dispacherContext.group = static_cast<TaskGroup>(groupId);
 			dispacherContext.taskName = task.getContext();

@@ -126,6 +126,10 @@ namespace InternalGame {
 			if (isGuest && !isItemInGuestInventory && !item->isLadder() && !item->canBeUsedByGuests()) {
 				return false;
 			}
+			
+			if(isGuest && item->isDummy()){
+				return false;
+			}
 		}
 
 		return true;

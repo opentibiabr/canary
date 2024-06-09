@@ -17,7 +17,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "server/signals.hpp"
 
-Signals::Signals(asio::io_service &service) :
+Signals::Signals(asio::io_context &service) :
 	set(service) {
 	set.add(SIGINT);
 	set.add(SIGTERM);

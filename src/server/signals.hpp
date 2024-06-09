@@ -13,7 +13,7 @@ class Signals {
 	asio::signal_set set;
 
 public:
-	explicit Signals(asio::io_service &service);
+	explicit Signals(asio::io_context &service);
 
 private:
 	void asyncWait();

@@ -18,9 +18,9 @@ ConnectionManager &ConnectionManager::getInstance() {
 	return inject<ConnectionManager>();
 }
 
-Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
+Connection_ptr ConnectionManager::createConnection(asio::io_context &io_context, const ConstServicePort_ptr& servicePort) {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-	auto connection = std::make_shared<Connection>(io_service, servicePort);
+	auto connection = std::make_shared<Connection>(io_context, servicePort);
 	connections.emplace(connection);
 	g_logger().error("connection: {}", connections.size());
 	return connection;
@@ -50,7 +50,7 @@ void ConnectionManager::closeAll() {
 	connections.clear();
 }
 
-Connection::Connection(asio::io_service &initIoService, ConstServicePort_ptr initservicePort) :
+Connection::Connection(asio::io_context &initIoService, ConstServicePort_ptr initservicePort) :
 	readTimer(initIoService),
 	writeTimer(initIoService),
 	service_port(std::move(initservicePort)),
@@ -271,7 +271,7 @@ void Connection::parsePacket(const std::error_code &error) {
 				checksum = 0;
 			}
 
-			uint32_t recvChecksum = msg.get<uint32_t>();
+			auto recvChecksum = msg.get<uint32_t>();
 			if (recvChecksum != checksum) {
 				// it might not have been the checksum, step back
 				msg.skipBytes(-CHECKSUM_LENGTH);
@@ -415,7 +415,7 @@ void Connection::onWriteOperation(const std::error_code &error) {
 	}
 }
 
-void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::error_code &error) {
+void Connection::handleTimeout(const ConnectionWeak_ptr& connectionWeak, const std::error_code &error) {
 	if (error == asio::error::operation_aborted) {
 		return;
 	}

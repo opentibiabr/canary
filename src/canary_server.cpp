@@ -34,6 +34,8 @@
 
 #include "core.hpp"
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnusedValue"
 CanaryServer::CanaryServer(
 	Logger &logger,
 	RSA &rsa
@@ -225,8 +227,8 @@ void CanaryServer::logInfos() {
  */
 void CanaryServer::toggleForceCloseButton() {
 #ifdef OS_WINDOWS
-	const HWND hwnd = GetConsoleWindow();
-	const HMENU hmenu = GetSystemMenu(hwnd, FALSE);
+	HWND hwnd = GetConsoleWindow();  // Sem const, ponteiro mutável
+	HMENU hmenu = GetSystemMenu(hwnd, FALSE);  // Correto, conforme esperado pela API
 	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
 #endif
 }
@@ -392,3 +394,5 @@ void CanaryServer::shutdown() {
 	inject<ThreadPool>().shutdown();
 	std::exit(0);
 }
+
+#pragma clang diagnostic pop

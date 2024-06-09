@@ -48,8 +48,8 @@ public:
 
 class ServicePort : public std::enable_shared_from_this<ServicePort> {
 public:
-	explicit ServicePort(asio::io_service &init_io_service) :
-		io_service(init_io_service), deadline_timer(init_io_service) { }
+	explicit ServicePort(asio::io_context &init_io_service) :
+		io_context(init_io_service), deadline_timer(init_io_service) { }
 	~ServicePort();
 
 	// non-copyable
@@ -71,7 +71,7 @@ public:
 private:
 	void accept();
 
-	asio::io_service &io_service;
+	asio::io_context &io_context;
 	std::unique_ptr<asio::ip::tcp::acceptor> acceptor;
 	std::vector<Service_ptr> services;
 
@@ -79,11 +79,19 @@ private:
 	bool pendingStart = false;
 
 	asio::high_resolution_timer deadline_timer;
+
+	std::mutex mutex;
 };
 
 class ServiceManager {
 public:
-	ServiceManager() = default;
+	ServiceManager() : io_context(), work(asio::make_work_guard(io_context)) {
+		unsigned int num_threads = 4;
+		for (unsigned int i = 0; i < num_threads; ++i) {
+			threads.emplace_back([this] { io_context.run(); });
+		}
+	}
+
 	~ServiceManager();
 
 	// non-copyable
@@ -99,17 +107,20 @@ public:
 	bool add(uint16_t port);
 
 	bool is_running() const {
-		return acceptors.empty() == false;
+		return !acceptors.empty();
 	}
 
 private:
 	void die();
 
-	phmap::flat_hash_map<uint16_t, ServicePort_ptr> acceptors;
+	std::unordered_map<uint16_t, ServicePort_ptr> acceptors;
 
-	asio::io_service io_service;
-	Signals signals { io_service };
-	asio::high_resolution_timer death_timer { io_service };
+	asio::io_context io_context;
+	std::vector<std::thread> threads;
+	std::optional<asio::executor_work_guard<asio::io_context::executor_type>> work; // Usando executor_work_guard
+
+	Signals signals { io_context };
+	asio::high_resolution_timer death_timer { io_context };
 	bool running = false;
 };
 
@@ -129,7 +140,7 @@ bool ServiceManager::add(uint16_t port) {
 	auto foundServicePort = acceptors.find(port);
 
 	if (foundServicePort == acceptors.end()) {
-		service_port = std::make_shared<ServicePort>(io_service);
+		service_port = std::make_shared<ServicePort>(io_context);
 		service_port->open(port);
 		acceptors[port] = service_port;
 	} else {

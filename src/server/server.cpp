@@ -29,7 +29,13 @@ ServiceManager::~ServiceManager() {
 }
 
 void ServiceManager::die() {
-	io_service.stop();
+	work.reset();  // Permite que io_context.run() retorne quando não houver mais trabalho
+	for (auto& thread : threads) {
+		if (thread.joinable()) {
+			thread.join();
+		}
+	}
+	io_context.stop();
 }
 
 void ServiceManager::run() {
@@ -40,7 +46,7 @@ void ServiceManager::run() {
 
 	assert(!running);
 	running = true;
-	io_service.run();
+	io_context.run();
 }
 
 void ServiceManager::stop() {
@@ -52,7 +58,7 @@ void ServiceManager::stop() {
 
 	for (auto &servicePortIt : acceptors) {
 		try {
-			io_service.post([servicePort = servicePortIt.second] { servicePort->onStopServer(); });
+			io_context.post([servicePort = servicePortIt.second] { servicePort->onStopServer(); });
 		} catch (const std::system_error &e) {
 			g_logger().warn("[ServiceManager::stop] - Network error: {}", e.what());
 		}
@@ -93,7 +99,7 @@ void ServicePort::accept() {
 		return;
 	}
 
-	auto connection = ConnectionManager::getInstance().createConnection(io_service, shared_from_this());
+	auto connection = ConnectionManager::getInstance().createConnection(io_context, shared_from_this());
 	acceptor->async_accept(connection->getSocket(), [self = shared_from_this(), connection](const std::error_code &error) { self->onAccept(connection, error); });
 }
 
@@ -164,9 +170,9 @@ void ServicePort::open(uint16_t port) {
 
 	try {
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS, __FUNCTION__)) {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP, __FUNCTION__))), serverPort));
+			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_context, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP, __FUNCTION__))), serverPort));
 		} else {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
+			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_context, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
 		}
 
 		acceptor->set_option(asio::ip::tcp::no_delay(true));

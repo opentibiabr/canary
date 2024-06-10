@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Echo Of Vemiath")
 local monster = {}
 
-monster.description = "Echo Of Vemiath"
+monster.description = "an echo of Vemiath"
 monster.experience = 0
 monster.outfit = {
 	lookType = 1670,

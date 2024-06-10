@@ -2797,6 +2797,11 @@ Storage = {
 				},
 			},
 		},
+		U13_20 = { -- update 13.20 - Reserved Storages 47952 - 47970
+			RottenBlood = {
+				AccessDoor = 47952,
+			},
+		},
 	},
 	-- Reserved storage from 63951 - 63999
 	ThaisExhibition = {

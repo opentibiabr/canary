@@ -74788,6 +74788,13 @@ Granted by TibiaGoals.com"/>
 	<item id="42632" name="stairs">
 		<attribute key="floorchange" value="east"/>
 	</item>
+	<item id="42744" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="42745" article="a" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
 	<item id="43952" article="a" name="closed door">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>

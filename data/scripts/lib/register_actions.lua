@@ -762,7 +762,7 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 			end
 			target:transform(3141)
 			toPosition:sendMagicEffect(CONST_ME_SMOKE)
-		elseif target.actionid == 50058 then
+		elseif target.actionid == 40031 then
 			-- naginata quest
 			local stoneStorage = Game.getStorageValue(GlobalStorage.NaginataStone)
 			if stoneStorage ~= 5 then

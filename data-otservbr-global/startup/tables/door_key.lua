@@ -53,6 +53,14 @@ KeyDoorAction = {
 			{ x = 32676, y = 31671, z = 10 },
 		},
 	},
+	-- Door of the key 3610 (devil helmet quest)
+	[Storage.Quest.Key.ID3610] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32462, y = 32153, z = 14 },
+			{ x = 32462, y = 32151, z = 15 },
+		},
+	},
 	-- Door of the key 1864 (mad mage room quest)
 	[Storage.Quest.Key.ID3620] = {
 		itemId = false,
@@ -67,6 +75,20 @@ KeyDoorAction = {
 	[Storage.Quest.Key.ID3666] = {
 		itemId = 1631,
 		itemPos = { { x = 32578, y = 32197, z = 15 } },
+	},
+	-- Door of the key 3667 (mintwallin cyclops quest)
+	[Storage.Quest.Key.ID3667] = {
+		itemId = 5106,
+		itemPos = { { x = 32592, y = 32102, z = 14 } },
+	},
+	-- Door of the key 3520 (carlin cemetery)
+	[Storage.Quest.Key.ID3520] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32400, y = 31788, z = 8 },
+			{ x = 32400, y = 31789, z = 8 },
+			{ x = 32398, y = 31804, z = 8 },
+		},
 	},
 	-- Door of the key 2297 (emperor's cookies quest)
 	[Storage.Quest.Key.ID3800] = {
@@ -101,7 +123,7 @@ KeyDoorAction = {
 		itemId = false,
 		itemPos = { { x = 32190, y = 32432, z = 8 } },
 	},
-	-- Door of the key 3496
+	-- Door of the key 3980
 	[Storage.Quest.Key.ID3980] = {
 		itemId = false,
 		itemPos = { { x = 32277, y = 32420, z = 10 } },
@@ -150,5 +172,25 @@ KeyDoorAction = {
 	[Storage.Quest.Key.ID3600] = {
 		itemId = false,
 		itemPos = { { x = 32506, y = 32175, z = 14 } },
+	},
+	[Storage.Quest.Key.ID3142] = { -- noble armor (thais quest)
+		itemId = false,
+		itemPos = { { x = 32450, y = 32044, z = 8 } },
+	},
+	[Storage.Quest.Key.ID3301] = {
+		itemId = false,
+		itemPos = { { x = 32619, y = 32241, z = 8 } },
+	},
+	[Storage.Quest.Key.ID3302] = {
+		itemId = false,
+		itemPos = { { x = 32619, y = 32240, z = 8 } },
+	},
+	[Storage.Quest.Key.ID3303] = {
+		itemId = false,
+		itemPos = { { x = 32614, y = 32175, z = 9 } },
+	},
+	[Storage.Quest.Key.ID3304] = {
+		itemId = false,
+		itemPos = { { x = 32620, y = 32199, z = 10 } },
 	},
 }

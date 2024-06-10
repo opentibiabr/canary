@@ -2157,6 +2157,7 @@ if not Quests then
 					states = {
 						[1] = "Collect a legion helmet, 100 chicken feathers and 50 honeycombs and bring them to either \z
 							Hanna or Norma to have them make a feather hat addon for you.",
+						[2] = "You got the Citizen Hat Addon!"
 					},
 				},
 				[4] = {
@@ -5746,16 +5747,17 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03: A Rational Request",
-					storageId = Storage.TheRookieGuard.Mission03,
+					storageId = Storage.TheRookieGuard.RatKills,
 					missionId = 10399,
-					startValue = 1,
-					endValue = 2,
-					states = {
-						[1] = function(player)
-							return string.format("Vascalir sent you to the Rookgaard sewers to kill 5 rats. You have already killed %d/5. Return to Vascalir once you're done.", player:getStorageValue(Storage.TheRookieGuard.RatKills))
+					startValue = 0,
+					endValue = 5,
+					description = function(player)
+						return string.format(
+							"Vascalir sent you to the Rookgaard sewers to kill 5 rats. You have already killed %d/5. \z
+						Return to Vascalir once you're done.",
+							(math.max(player:getStorageValue(Storage.TheRookieGuard.RatKills), 0))
+						)
 						end,
-						[2] = "Vascalir was pleased with your hunting efforts. You've proven that you are a skilled hunter, ready for the task at hand.",
-					},
 				},
 				[4] = {
 					name = "Mission 04: Home-Brewed",
@@ -6507,6 +6509,21 @@ if not Quests then
 						[1] = "", --
 						[2] = "Scarlett Etzel once stood proud and righteous. The assassins she rallied around her under the Order of the Cobra, however, where of ill repute and had to be vanquished. And so did she, you prevailed.",
 					},
+				},
+			},
+		},
+		[49] = {
+			name = "The Outlaw Camp",
+			startStorageId = Storage.QuestChests.OutlawCamp,
+			startStorageValue = 1,
+			missions = {
+				[1] = {
+					name = "Outlaw Treasure",
+					storageId = Storage.QuestChests.OutlawCamp,
+					missionId = 10451,
+					startValue = 1,
+					endValue = 1,
+					description = "You made your way through the Outlaw Camp and found the hidden treasure of the bandits.",
 				},
 			},
 		},

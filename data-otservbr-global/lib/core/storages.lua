@@ -79,13 +79,11 @@ Storage = {
 	-- General storages
 	Dragonfetish = 30003,
 	EdronRopeQuest = 30004,
-	GhostShipQuest = 30005,
 	OrcKingGreeting = 30006,
 	MarkwinGreeting = 30007,
 	-- EmoteSpells Storage cannot be changed, it is set in source code
 	EmoteSpells = 30008,
 	WagonTicket = 30009,
-	BloodHerbQuest = 30010,
 	FirstMageWeapon = 30011,
 	ToOutfoxAFoxQuest = 30012,
 	KawillBlessing = 30014,
@@ -126,7 +124,6 @@ Storage = {
 	-- Reserved in Global.Storage.FamiliarSummonEvent60 = 30055
 	ChayenneKeyTime = 30056,
 	FreeQuests = 30057,
-	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
 	PlayerWeaponReward = 30061,
 	--[[
@@ -1397,17 +1394,12 @@ Storage = {
 		FormorgarMinesHoistSkeleton = 51737,
 		FormorgarMinesHoistChest = 51738,
 		-- Custom Quests, currently not using system.lua (aid 2000)
-		BlackKnightTreeCrownShield = 51739,
-		BlackKnightTreeCrownArmor = 51740,
-		BlackKnightTreeKey = 51741,
 		KosheiAmulet1 = 51742,
 		KosheiAmulet2 = 51743,
-		SilverBrooch = 51744,
 		FamilyBrooch = 51745,
 		DCQGhoul = 51746,
 		FirewalkerBoots = 51747,
 		DeeperFibulaKey = 51748,
-		SixRubiesQuest = 51749,
 		ParchmentRoomQuest = 51750,
 		WarzoneReward1 = 51751,
 		WarzoneReward2 = 51752,
@@ -1418,16 +1410,11 @@ Storage = {
 		FathersBurdenCrystal = 51757,
 		FathersBurdenSilk = 51758,
 		FathersBurdenCloth = 51759,
-		OutlawCampKey1 = 51760,
-		OutlawCampKey2 = 51761,
-		OutlawCampKey3 = 51762,
-		DoubletQuest = 51763,
-		HoneyFlower = 51764,
-		BananaPalm = 51765,
 		WhisperMoss = 51766,
 		OldParchment = 51767,
 		DragahsSpellbook = 51768,
 		StealFromThieves = 51769,
+		OutlawCamp = 51770, -- quest log to The Outlaw Camp
 	},
 	PitsOfInferno = {
 		-- Reserved storage from 52000 - 52019
@@ -1709,9 +1696,17 @@ Storage = {
 			ID3007 = 3007,
 			ID3008 = 3008,
 			ID3012 = 3012,
+			ID3142 = 3142,
+			ID3301 = 3301,
+			ID3302 = 3302,
+			ID3303 = 3303,
+			ID3304 = 3304,
+			ID3520 = 3520,
 			ID3600 = 3600,
+			ID3610 = 3610,
 			ID3620 = 3620,
 			ID3666 = 3666,
+			ID3667 = 3667,
 			ID3702 = 3702,
 			ID3800 = 3800,
 			ID3801 = 3801,
@@ -1730,38 +1725,9 @@ Storage = {
 		-- Use the reserved storage keys accordingly
 		KeysUpdate = 40000,
 		PreU6_0 = { -- update pre-6.0 - Reserved Storages 40001 - 40020
-			DeeperFibula = {
-				Rewards = {
-					TowerShield = 40001,
-					WarriorHelmet = 40002,
-					DwarvenRing = 40003,
-					ElvenAmulet = 40004,
-					KnightAxe = 40005,
-				},
-			},
 			OrnamentedShield = {
 				Rewards = {
 					OrnamentedShield = 40006,
-					TimeRing = 40007,
-				},
-			},
-			ShortSword = {
-				Rewards = {
-					Book = 40008,
-				},
-			},
-			ThaisLighthouse = {
-				Rewards = {
-					BattleHammer = 40009,
-					DarkShield = 40010,
-				},
-			},
-		},
-		U6_0 = { -- update 6.0 - Reserved Storages 40021 - 40030
-			StuddedShield = {
-				Rewards = {
-					BananaFree = 40021,
-					BananaPremium = 40022,
 				},
 			},
 		},
@@ -1771,50 +1737,11 @@ Storage = {
 					Cookies = 40031,
 				},
 			},
-			ExplorerBrooch = {
-				Brooch = 40032,
-			},
-			OrcFortress = {
-				Rewards = {
-					KnightAxe = 40033,
-					KnightArmor = 40034,
-					FireSword = 40035,
-				},
-			},
-			Panpipe = {
-				Rewards = {
-					Panpipe = 40036,
-				},
-			},
-		},
-		U6_2 = { -- update 6.2 - Reserved Storages 40051 - 40070
-			Draconia = {
-				Rewards = {
-					BagWithWeapons = 40051,
-					BagWithAmulets = 40052,
-				},
-			},
 		},
 		U6_4 = { -- update 6.4 - Reserved Storages 40071 - 40110
-			AdornedUHRune = {
-				Rewards = {
-					SilverRuneEmblem = 40071,
-				},
-			},
-			BarbarianAxe = {
-				Rewards = {
-					BarbarianAxe = 40072,
-					Scimitar = 40073,
-				},
-			},
 			BerserkerTreasure = {
 				Rewards = {
 					WhitePearls = 40074,
-				},
-			},
-			DarkArmor = {
-				Rewards = {
-					Armor = 40075,
 				},
 			},
 			DemonHelmet = {
@@ -1824,86 +1751,12 @@ Storage = {
 					DemonShield = 40078,
 				},
 			},
-			DoubleHero = {
-				Rewards = {
-					RedGem = 40079,
-					ClubRing = 40080,
-				},
-			},
-			EdronGoblin = {
-				Rewards = {
-					SilverAmulet = 40081,
-					SteelShield = 40082,
-				},
-			},
-			FireAxe = {
-				Rewards = {
-					Bag = 40083,
-					FireAxe = 40084,
-				},
-			},
-			PoisonDaggers = {
-				Rewards = {
-					BackpackReward = 40085,
-				},
-			},
-			ShamanTreasure = {
-				Rewards = {
-					BlankRunes = 40086,
-				},
-			},
-			TrollCave = {
-				Rewards = {
-					GarlicNecklace = 40087,
-					BrassLegs = 40088,
-				},
-			},
-			VampireShield = {
-				Rewards = {
-					StrangeSymbol = 40089,
-					DragonLance = 40090,
-					VampireShield = 40091,
-				},
-			},
-			WeddingRing = {
-				Rewards = {
-					DragonNecklace = 40092,
-					WeedingRing = 40093,
-				},
-			},
-		},
-		U6_5 = { -- update 6.5 - Reserved Storages 40111 - 40120
-			AlawarsVault = {
-				Rewards = {
-					WhitePearl = 40111,
-					Broadsword = 40112,
-				},
-			},
 		},
 		U7_1 = { -- update 7.1 - Reserved Storages 40121 - 40140
-			BlackKnight = {
-				Rewards = {
-					CrownArmor = 40121,
-					CrownShield = 40122,
-				},
-			},
 			DragonTower = {
 				Rewards = {
 					Backpack1 = 40123,
 					Backpack2 = 40124,
-				},
-			},
-			Ring = {
-				Rewards = {
-					TimeRing = 40125,
-					SwordRing = 40126,
-				},
-			},
-			TimeRing = {
-				Rewards = {
-					CrystallBall = 40127,
-					TimeRing = 40128,
-					ElvenAmulet = 40129,
 				},
 			},
 		},
@@ -1960,9 +1813,6 @@ Storage = {
 			MadMageRoom = {
 				QuestLine = 10095,
 				APrisoner = 10096,
-				StarAmulet = 10097,
-				Hat = 10098,
-				StoneSkinAmulet = 10099,
 			},
 			SkullOfRatha = {
 				Bag1 = 10100,
@@ -2508,10 +2358,6 @@ Storage = {
 				MorrisGoblinCount = 20013,
 				MorrisMinos = 20014,
 				MorrisMinosCount = 20015,
-			},
-			SanctuaryOfTheLizardGod = {
-				LizardGodTeleport = 20020,
-				LegionHelmet = 20021,
 			},
 		},
 		U10_70 = { -- update 10.70 - Reserved Storages 44801 - 44950

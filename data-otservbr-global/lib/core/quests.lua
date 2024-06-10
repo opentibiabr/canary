@@ -2157,7 +2157,7 @@ if not Quests then
 					states = {
 						[1] = "Collect a legion helmet, 100 chicken feathers and 50 honeycombs and bring them to either \z
 							Hanna or Norma to have them make a feather hat addon for you.",
-						[2] = "You got the Citizen Hat Addon!"
+						[2] = "You got the Citizen Hat Addon!",
 					},
 				},
 				[4] = {
@@ -5757,7 +5757,7 @@ if not Quests then
 						Return to Vascalir once you're done.",
 							(math.max(player:getStorageValue(Storage.TheRookieGuard.RatKills), 0))
 						)
-						end,
+					end,
 				},
 				[4] = {
 					name = "Mission 04: Home-Brewed",

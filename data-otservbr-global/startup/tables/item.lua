@@ -8,8 +8,8 @@ ItemAction = {
 		itemPos = {
 			{ x = 32171, y = 32439, z = 7 }, -- fibula acess
 			{ x = 32172, y = 32439, z = 7 }, -- fibula acess
-			{ x = 32507, y = 32176, z = 13 }, 
-			{ x = 32508, y = 32176, z = 13 }, 
+			{ x = 32507, y = 32176, z = 13 },
+			{ x = 32508, y = 32176, z = 13 },
 			{ x = 32353, y = 32131, z = 8 }, -- scale armor quest
 			{ x = 32354, y = 32131, z = 8 }, -- scale armor quest
 		},

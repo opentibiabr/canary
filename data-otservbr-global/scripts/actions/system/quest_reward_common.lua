@@ -43,7 +43,7 @@ Looks like the fox is out!
 More luck next time!
 Signed:
 the horned fox
-]]
+]],
 	},
 }
 
@@ -69,8 +69,8 @@ local function playerAddItem(params, item)
 		-- Because it generate bug in the item description
 		if itemType:isKey() or itemType:getId(21392) then
 			-- If is key not in container, uses the "isKey = true" variab
-			keyItem  = player:addItem(params.itemid, params.count)
-			keyItem :setActionId(params.storage)
+			keyItem = player:addItem(params.itemid, params.count)
+			keyItem:setActionId(params.storage)
 		end
 	else
 		addItem = player:addItem(params.itemid, params.count)
@@ -106,9 +106,9 @@ local function playerAddContainerItem(params, item)
 	local reward = params.containerReward
 	local itemType = ItemType(params.itemid)
 	if itemType:isKey() then
-		keyItem  = reward:addItem(params.itemid, params.count)
+		keyItem = reward:addItem(params.itemid, params.count)
 		if params.storage then
-			keyItem :setActionId(params.action)
+			keyItem:setActionId(params.action)
 		end
 	else
 		reward:addItem(params.itemid, params.count)
@@ -207,7 +207,7 @@ function questReward.onUse(player, item, fromPosition, itemEx, toPosition)
 				timer = setting.timerStorage,
 				time = setting.time,
 				questName = setting.questName,
-				useKV = setting.useKV
+				useKV = setting.useKV,
 			}
 
 			if count > 1 and ItemType(itemid):isStackable() then
@@ -247,7 +247,7 @@ function questReward.onUse(player, item, fromPosition, itemEx, toPosition)
 			end
 		end
 	end
-		
+
 	return true
 end
 

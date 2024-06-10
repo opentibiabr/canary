@@ -15,7 +15,7 @@ TilePickAction = {
 			{ x = 32165, y = 31890, z = 14 },
 			{ x = 32162, y = 31921, z = 13 },
 			{ x = 32149, y = 32110, z = 11 },
-			{ x = 32302, y = 32257, z = 8 },  -- Battle Axe Quest
+			{ x = 32302, y = 32257, z = 8 }, -- Battle Axe Quest
 			{ x = 32437, y = 32239, z = 10 }, -- Life Ring Quest
 			{ x = 32775, y = 32012, z = 10 },
 			{ x = 32595, y = 32068, z = 9 },

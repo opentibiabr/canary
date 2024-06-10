@@ -334,35 +334,35 @@ ChestUnique = {
 		useKV = true,
 		itemId = 4024,
 		itemPos = { x = 32239, y = 32471, z = 10 },
-		reward = { { 3428, 1 } },	-- Tower shield
+		reward = { { 3428, 1 } }, -- Tower shield
 		questName = "deeperfibula1",
 	},
 	[6009] = {
 		useKV = true,
 		itemId = 4024,
 		itemPos = { x = 32239, y = 32478, z = 10 },
-		reward = { { 3369, 1 } },	-- Warrior helmet
+		reward = { { 3369, 1 } }, -- Warrior helmet
 		questName = "deeperfibula2",
 	},
 	[6010] = {
 		useKV = true,
 		itemId = 4240,
 		itemPos = { x = 32233, y = 32491, z = 10 },
-		reward = { { 3097, 1 } },	-- Dwarven ring
+		reward = { { 3097, 1 } }, -- Dwarven ring
 		questName = "deeperfibula3",
 	},
 	[6011] = {
 		useKV = true,
 		itemId = 4025,
 		itemPos = { x = 32245, y = 32492, z = 10 },
-		reward = { { 3082, 1 } },	-- Elven aulet
+		reward = { { 3082, 1 } }, -- Elven aulet
 		questName = "deeperfibula4",
 	},
 	[6012] = {
 		useKV = true,
 		itemId = 4240,
 		itemPos = { x = 32256, y = 32500, z = 10 },
-		reward = { { 3318, 1 } },	-- Knight axe
+		reward = { { 3318, 1 } }, -- Knight axe
 		questName = "deeperfibula5",
 	},
 	-- Short sword quest
@@ -421,21 +421,21 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 32980, y = 31727, z = 9 },
-		reward = { { 3318, 1 } },	-- Knight axe
+		reward = { { 3318, 1 } }, -- Knight axe
 		questName = "orcfortress1",
 	},
 	[6021] = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 32981, y = 31727, z = 9 },
-		reward = { { 3370, 1 } },	-- Knight armor
+		reward = { { 3370, 1 } }, -- Knight armor
 		questName = "orcfortress2",
 	},
 	[6022] = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 32985, y = 31727, z = 9 },
-		reward = { { 3280, 1 } },	-- Fire sword
+		reward = { { 3280, 1 } }, -- Fire sword
 		questName = "orcfortress3",
 	},
 	-- Draconia quest
@@ -470,14 +470,14 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33184, y = 31945, z = 11 },
-		reward = { { 3317, 1 } },	-- Barbarian axe
+		reward = { { 3317, 1 } }, -- Barbarian axe
 		questName = "barbarianaxe1",
 	},
 	[6027] = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33185, y = 31945, z = 11 },
-		reward = { { 3307, 1 } },	-- Scimitar
+		reward = { { 3307, 1 } }, -- Scimitar
 		questName = "barbarianaxe1",
 	},
 	-- Dark armor quest
@@ -515,14 +515,14 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33109, y = 31679, z = 13 },
-		reward = { { 3039, 1 } },	-- Red gem
+		reward = { { 3039, 1 } }, -- Red gem
 		questName = "doublehero1",
 	},
 	[6033] = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33110, y = 31679, z = 13 },
-		reward = { { 3093, 1 } },	-- Club ring
+		reward = { { 3093, 1 } }, -- Club ring
 		questName = "doublehero2",
 	},
 	-- Edron goblin quest
@@ -530,14 +530,14 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33095, y = 31800, z = 10 },
-		reward = { { 3054, 200 } },	-- Silver amulet
+		reward = { { 3054, 200 } }, -- Silver amulet
 		questName = "edrongoblin1",
 	},
 	[6035] = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33095, y = 31801, z = 10 },
-		reward = { { 3409, 1 } },	-- Steel shield
+		reward = { { 3409, 1 } }, -- Steel shield
 		questName = "edrongoblin2",
 	},
 	-- Fire axe quest
@@ -545,7 +545,7 @@ ChestUnique = {
 		useKV = true,
 		itemId = 4024,
 		itemPos = { x = 33084, y = 31650, z = 12 },
-		reward = { { 3320, 1 } },	-- Fire axe
+		reward = { { 3320, 1 } }, -- Fire axe
 		questName = "fireaxe2",
 	},
 	-- Ring Quest
@@ -568,14 +568,14 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2473,
 		itemPos = { x = 33143, y = 31719, z = 10 },
-		reward = { { 3083, 150 } },	-- Garlic necklace
+		reward = { { 3083, 150 } }, -- Garlic necklace
 		questName = "trollcave1",
 	},
 	[6040] = {
 		useKV = true,
 		itemId = 2473,
 		itemPos = { x = 33143, y = 31721, z = 10 },
-		reward = { { 3372, 1 } },	-- Brass legs
+		reward = { { 3372, 1 } }, -- Brass legs
 		questName = "trollcave1",
 	},
 	-- Vampire shield quest
@@ -583,14 +583,14 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33189, y = 31688, z = 14 },
-		reward = { { 3302, 1 } },	-- Dragon lance
+		reward = { { 3302, 1 } }, -- Dragon lance
 		questName = "vampireshield2",
 	},
 	[6042] = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33195, y = 31688, z = 14 },
-		reward = { { 3434, 1 } },	-- Vampire shield
+		reward = { { 3434, 1 } }, -- Vampire shield
 		questName = "vampireshield3",
 	},
 	-- Wedding Ring Quest
@@ -598,14 +598,14 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33158, y = 31621, z = 15 },
-		reward = { { 3085, 200 } },	-- Dragon necklace
+		reward = { { 3085, 200 } }, -- Dragon necklace
 		questName = "weddingring1",
 	},
 	[6044] = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33158, y = 31622, z = 15 },
-		reward = { { 3004, 1 } },	-- Weeding ring
+		reward = { { 3004, 1 } }, -- Weeding ring
 		questName = "weddingring2",
 	},
 	-- Alawars vault quest
@@ -613,7 +613,7 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32105, y = 31567, z = 9 },
-		reward = { { 3026, 3 } }, 	-- White pearl
+		reward = { { 3026, 3 } }, -- White pearl
 		questName = "AlawarsVault1",
 	},
 	[6046] = {
@@ -643,21 +643,21 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33038, y = 32171, z = 9 },
-		reward = { { 3076, 1 } },	-- Crystal ball
+		reward = { { 3076, 1 } }, -- Crystal ball
 		questName = "timering1",
 	},
 	[6050] = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33039, y = 32171, z = 9 },
-		reward = { { 3053, 1 } },	-- Time ring
+		reward = { { 3053, 1 } }, -- Time ring
 		questName = "timering2",
 	},
 	[6051] = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33040, y = 32171, z = 9 },
-		reward = { { 3082, 50 } },	-- Elven amulet
+		reward = { { 3082, 50 } }, -- Elven amulet
 		questName = "timering3",
 	},
 	-- Behemoth quest
@@ -672,14 +672,14 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33297, y = 31658, z = 13 },
-		reward = { { 3420, 1 } },	-- Demon shield
+		reward = { { 3420, 1 } }, -- Demon shield
 		questName = "behemothquest3",
 	},
 	[6054] = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33298, y = 31658, z = 13 },
-		reward = { { 3360, 1 } },	-- Golden armor
+		reward = { { 3360, 1 } }, -- Golden armor
 		questName = "behemothquest4",
 	},
 	-- Family brooch quest
@@ -775,7 +775,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 33078, y = 31656, z = 11 },
 		container = 2853,
-		reward = { { 3098, 1 }, { 3085, 200 }, { 3028, 7 }, { 3320, 1 } },	-- Bag (Ring of Healing, Dragon Necklace, 7 Small Diamonds)
+		reward = { { 3098, 1 }, { 3085, 200 }, { 3028, 7 }, { 3320, 1 } }, -- Bag (Ring of Healing, Dragon Necklace, 7 Small Diamonds)
 		weight = 27,
 		questName = "fireaxe1",
 	},
@@ -785,7 +785,7 @@ ChestUnique = {
 		itemId = 2473,
 		itemPos = { x = 33155, y = 31880, z = 11 },
 		container = 2854,
-		reward = { { 3448, 30 }, { 3299, 1 }, { 3299, 1 } },	-- Backpack (2 Poison Daggers, 30 Poison Arrows)
+		reward = { { 3448, 30 }, { 3299, 1 }, { 3299, 1 } }, -- Backpack (2 Poison Daggers, 30 Poison Arrows)
 		weight = 60,
 		questName = "poisondaggers",
 	},
@@ -795,7 +795,7 @@ ChestUnique = {
 		itemId = 4024,
 		itemPos = { x = 33127, y = 31885, z = 9 },
 		container = 2853,
-		reward = { { 3147, 3 } },	-- Bag with 3 blank runes
+		reward = { { 3147, 3 } }, -- Bag with 3 blank runes
 		weight = 15,
 		questName = "shamantreasure",
 	},
@@ -815,7 +815,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 33188, y = 31682, z = 14 },
 		container = 2853,
-		reward = { { 3058, 1 }, { 3027, 1 }, { 3078, 1 } }, 	-- Bag (Strange Symbol, Black Pearl and Mysterious Fetish)
+		reward = { { 3058, 1 }, { 3027, 1 }, { 3078, 1 } }, -- Bag (Strange Symbol, Black Pearl and Mysterious Fetish)
 		weight = 16,
 		questName = "vampireshield1",
 	},
@@ -888,21 +888,21 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32578, y = 32195, z = 14 },
-		reward = { { 3014, 1 } },	-- Star amulet
+		reward = { { 3014, 1 } }, -- Star amulet
 		questName = "madmageroom1",
 	},
 	[6081] = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32575, y = 32195, z = 14 },
-		reward = { { 3210, 1 } },	-- Hat of the mad
+		reward = { { 3210, 1 } }, -- Hat of the mad
 		questName = "madmageroom2",
 	},
 	[6082] = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32572, y = 32195, z = 14 },
-		reward = { { 3081, 5 } },	-- Stone skin amulet
+		reward = { { 3081, 5 } }, -- Stone skin amulet
 		questName = "madmageroom3",
 	},
 	-- Skull of ratha quest
@@ -1142,7 +1142,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32149, y = 32105, z = 11 },
 		container = 2854, -- backpack
-		reward = { { 2882, 1 }, { 2856, 1}, { 2881, 1 }, { 2905, 1 } }, -- Jug, Present Box, Cup and Plate
+		reward = { { 2882, 1 }, { 2856, 1 }, { 2881, 1 }, { 2905, 1 } }, -- Jug, Present Box, Cup and Plate
 		questName = "presentBox",
 	},
 	-- Bear Room quest
@@ -1498,14 +1498,14 @@ ChestUnique = {
 		reward = { { 3030, 6 } }, -- 6 small rubies
 		questName = "sixrubies",
 	},
-	-- Desert Quest 
+	-- Desert Quest
 	[6157] = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32668, y = 32069, z = 8 },
 		reward = { { 3035, 100 } }, -- 100 platinum coins
 		questName = "desert1",
-	},	
+	},
 	[6158] = {
 		useKV = true,
 		itemId = 2472,
@@ -1521,7 +1521,7 @@ ChestUnique = {
 		itemPos = { x = 32522, y = 32111, z = 15 },
 		reward = { { 3287, 10 } }, -- throwing star
 		questName = "throwingstar",
-	},	
+	},
 	-- Triangle Tower Quest
 	[6160] = {
 		useKV = true,
@@ -1640,14 +1640,14 @@ ChestUnique = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32590, y = 31647, z = 3 },
-		reward = { { 3282, 1 } }, -- 
+		reward = { { 3282, 1 } }, --
 		questName = "elvebanequest3",
 	},
 	[6175] = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32591, y = 31647, z = 3 },
-		reward = { { 3425, 1 } }, -- 
+		reward = { { 3425, 1 } }, --
 		questName = "elvebanequest4",
 	},
 	-- Iron Hammer Quest
@@ -1926,7 +1926,7 @@ ChestUnique = {
 		itemId = 2473,
 		itemPos = { x = 32099, y = 32198, z = 9 },
 	},
-		-- The Outlaw Camp Quest (Bright Sword Quest)
+	-- The Outlaw Camp Quest (Bright Sword Quest)
 	[14091] = {
 		itemId = 2472,
 		itemPos = { x = 32620, y = 32198, z = 10 },

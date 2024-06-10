@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Rotten Man-Maggot")
 local monster = {}
 
-monster.description = "a Rotten Man-Maggot"
-monster.experience = 20380
+monster.description = "a rotten man-maggot"
+monster.experience = 22625
 monster.outfit = {
 	lookType = 1655,
 	lookHead = 0,
@@ -13,53 +13,54 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 31100
-monster.maxHealth = 31100
-monster.race = "undead"
-monster.corpse = 43820
-monster.speed = 150
-monster.manaCost = 0
-
 monster.raceId = 2393
 monster.Bestiary = {
 	class = "Vermin",
 	race = BESTY_RACE_VERMIN,
 	toKill = 5000,
-	FirstUnlock = 25,
-	SecondUnlock = 3394,
+	FirstUnlock = 200,
+	SecondUnlock = 2000,
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
-	Locations = "Sanctuary.",
+	Locations = "Putrefactory.",
 }
 
+monster.health = 31100
+monster.maxHealth = 31100
+monster.race = "undead"
+monster.corpse = 43820
+monster.speed = 195
+monster.manaCost = 0
+
 monster.changeTarget = {
-	interval = 4000,
+	interval = 5000,
 	chance = 10,
 }
 
 monster.strategiesTarget = {
-	nearest = 80,
+	nearest = 70,
 	health = 10,
 	damage = 10,
+	random = 10,
 }
 
 monster.flags = {
 	summonable = false,
 	attackable = true,
 	hostile = true,
-	convinceable = false,
+	convinceable = true,
 	pushable = false,
 	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
 	staticAttackChance = 90,
-	targetDistance = 1,
-	runHealth = 800,
+	targetDistance = 0,
+	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
 }
@@ -69,7 +70,10 @@ monster.light = {
 	color = 0,
 }
 
-monster.voices = {}
+monster.voices = {
+	interval = 5000,
+	chance = 10,
+}
 
 monster.loot = {
 	{ name = "crystal coin", chance = 10340, maxCount = 1 },
@@ -84,16 +88,17 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -700 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -450, maxDamage = -850, length = 6, spread = 0, effect = CONST_ME_PURPLEENERGY, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -350, maxDamage = -950, length = 8, spread = 0, effect = CONST_ME_YELLOWENERGY, target = true },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -1100, radius = 3, effect = CONST_ME_ENERGYHIT, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -280, maxDamage = -650, radius = 4, effect = CONST_ME_MAGIC_GREEN, target = false },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -1100, maxDamage = -1400, radius = 5, effect = CONST_ME_MORTAREA, target = true },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -1300, maxDamage = -1800, radius = 5, effect = CONST_ME_GHOSTLY_BITE, target = true },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -1200, maxDamage = -1700, length = 8, spread = 5, effect = CONST_ME_ICEAREA, target = false },
+	{ name = "largeicering", interval = 2000, chance = 15, minDamage = -800, maxDamage = -1200, target = false },
 }
 
 monster.defenses = {
 	defense = 110,
 	armor = 110,
+	mitigation = 2.75,
 }
 
 monster.elements = {
@@ -110,7 +115,7 @@ monster.elements = {
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },

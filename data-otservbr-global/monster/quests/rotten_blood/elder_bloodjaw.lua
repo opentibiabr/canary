@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Elder Bloodjaw")
 local monster = {}
 
-monster.description = "a Elder Bloodjaw"
+monster.description = "an elder bloodjaw"
 monster.experience = 0
 monster.outfit = {
 	lookType = 1628,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 35000
-monster.maxHealth = 35000
+monster.health = 86000
+monster.maxHealth = 86000
 monster.race = "undead"
 monster.corpse = 43669
 monster.speed = 210
@@ -43,10 +43,10 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 800,
+	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
 }
@@ -56,7 +56,12 @@ monster.light = {
 	color = 0,
 }
 
-monster.voices = {}
+monster.voices = {
+	interval = 5000,
+	chance = 10,
+	{ text = "SHWAARR!", yell = false },
+	{ text = "SHWAARP!", yell = false },
+}
 
 monster.loot = {}
 

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Bakragore")
 local monster = {}
 
 monster.description = "Bakragore"
-monster.experience = 550000
+monster.experience = 15000000
 monster.outfit = {
 	lookType = 1671,
 	lookHead = 0,
@@ -11,6 +11,15 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0,
+}
+
+monster.events = {
+	"RottenBloodBakragoreDeath",
+}
+
+monster.bosstiary = {
+	bossRaceId = 2367,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 660000
@@ -23,11 +32,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 10000,
 	chance = 20,
-}
-
-monster.bosstiary = {
-	bossRaceId = 2367,
-	bossRace = RARITY_NEMESIS,
 }
 
 monster.strategiesTarget = {
@@ -57,26 +61,48 @@ monster.flags = {
 	canWalkOnPoison = true,
 }
 
-monster.events = {
-	"RottenBloodBakragoreDeath",
-}
-
 monster.light = {
 	level = 0,
 	color = 0,
 }
 
-monster.summon = {}
+monster.summon = {
+	maxSummons = 2,
+	summons = {
+		{ name = "Elder Bloodjaw", chance = 20, interval = 2000, count = 2 },
+	},
+}
 
-monster.voices = {}
+monster.voices = {
+	interval = 5000,
+	chance = 10,
+	{ text = "Light ... darkens!", yell = false },
+	{ text = "Light .. the ... darkness!", yell = false },
+	{ text = "Darkness ... is ... light!", yell = false },
+	{ text = "WILL ... PUNISH ... YOU!", yell = false },
+	{ text = "RAAAR!", yell = false },
+}
 
 monster.loot = {
-	{ name = "crystal coin", chance = 7480, maxCount = 165 },
-	{ name = "giant amethyst", chance = 10970, maxCount = 1 },
-	{ name = "giant topaz", chance = 5395, maxCount = 6 },
-	{ name = "mastermind potion", chance = 8938, maxCount = 23 },
-	{ name = "ultimate mana potion", chance = 11433, maxCount = 198 },
-	{ name = "yellow gem", chance = 9985, maxCount = 9 },
+	{ name = "crystal coin", chance = 8938, maxCount = 200 },
+	{ name = "supreme health potion", chance = 8938, maxCount = 300 },
+	{ name = "ultimate mana potion", chance = 11433, maxCount = 300 },
+	{ name = "ultimate spirit potion", chance = 11433, maxCount = 300 },
+	{ name = "berserk potion", chance = 10938, maxCount = 90 },
+	{ name = "bullseye potion", chance = 10938, maxCount = 90 },
+	{ name = "mastermind potion", chance = 10938, maxCount = 30 },
+	{ name = "blue gem", chance = 10570, maxCount = 10 },
+	{ name = "giant amethyst", chance = 10570, maxCount = 10 },
+	{ name = "giant emerald", chance = 10570, maxCount = 10 },
+	{ name = "giant ruby", chance = 10570, maxCount = 10 },
+	{ name = "red gem", chance = 10570, maxCount = 10 },
+	{ name = "giant sapphire", chance = 10570, maxCount = 10 },
+	{ name = "giant topaz", chance = 10570, maxCount = 10 },
+	{ name = "violet gem", chance = 10970, maxCount = 10 },
+	{ name = "yellow gem", chance = 10970, maxCount = 10 },
+	{ name = "figurine of bakragore", chance = 10970 },
+	{ name = "bakragore's amalgamation", chance = 570 },
+	{ name = "spiritual horseshoe", chance = 470 },
 	{ id = 43895, chance = 360 }, -- Bag you covet
 }
 

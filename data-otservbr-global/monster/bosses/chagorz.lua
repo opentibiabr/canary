@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Chagorz")
 local monster = {}
 
 monster.description = "Chagorz"
-monster.experience = 180000
+monster.experience = 3250000
 monster.outfit = {
 	lookType = 1665,
 	lookHead = 0,
@@ -11,6 +11,15 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0,
+}
+
+monster.events = {
+	"RottenBloodBossDeath",
+}
+
+monster.bosstiary = {
+	bossRaceId = 2366,
+	bossRace = RARITY_ARCHFOE,
 }
 
 monster.health = 350000
@@ -23,11 +32,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 10000,
 	chance = 20,
-}
-
-monster.bosstiary = {
-	bossRaceId = 2366,
-	bossRace = RARITY_NEMESIS,
 }
 
 monster.strategiesTarget = {
@@ -57,10 +61,6 @@ monster.flags = {
 	canWalkOnPoison = true,
 }
 
-monster.events = {
-	"RottenBloodBossDeath",
-}
-
 monster.light = {
 	level = 0,
 	color = 0,
@@ -68,7 +68,14 @@ monster.light = {
 
 monster.summon = {}
 
-monster.voices = {}
+monster.voices = {
+	interval = 5000,
+	chance = 10,
+	{ text = "The light... that... drains!", yell = false },
+	{ text = "RAAAR!", yell = false },
+	{ text = "WILL ... PUNISH ... YOU!", yell = false },
+	{ text = "Darkness ... devours!", yell = false },
+}
 
 monster.loot = {
 	{ name = "crystal coin", chance = 5441, maxCount = 108 },

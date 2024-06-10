@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Murcion")
 local monster = {}
 
 monster.description = "Murcion"
-monster.experience = 180000
+monster.experience = 3250000
 monster.outfit = {
 	lookType = 1664,
 	lookHead = 0,
@@ -11,6 +11,15 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0,
+}
+
+monster.events = {
+	"RottenBloodBossDeath",
+}
+
+monster.bosstiary = {
+	bossRaceId = 2362,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 350000
@@ -23,11 +32,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 10000,
 	chance = 20,
-}
-
-monster.bosstiary = {
-	bossRaceId = 2362,
-	bossRace = RARITY_NEMESIS,
 }
 
 monster.strategiesTarget = {
@@ -57,16 +61,17 @@ monster.flags = {
 	canWalkOnPoison = true,
 }
 
-monster.events = {
-	"RottenBloodBossDeath",
-}
-
 monster.light = {
 	level = 0,
 	color = 0,
 }
 
-monster.summon = {}
+monster.summon = {
+	maxSummons = 8,
+	summons = {
+		{ name = "Mushroom", chance = 30, interval = 5000, count = 8 },
+	},
+}
 
 monster.voices = {}
 

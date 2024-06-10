@@ -87,7 +87,7 @@ monster.attacks = {
 	{ name = "combat", interval = 2500, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -1400, maxDamage = -1650, length = 8, spread = 3, effect = CONST_ME_ELECTRICALSPARK, target = false },
 	{ name = "combat", interval = 2500, chance = 15, type = COMBAT_HOLYDAMAGE, minDamage = -1100, maxDamage = -1600, radius = 5, effect = CONST_ME_GHOSTLY_BITE, target = false },
 	{ name = "combat", interval = 2500, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -1300, maxDamage = -1500, radius = 5, effect = CONST_ME_ELECTRICALSPARK, target = false },
-	{ name = "extended holy chain", interval = 2000, chance = 15, minDamage = -800, maxDamage = - 1200 },
+	{ name = "extended holy chain", interval = 2000, chance = 15, minDamage = -800, maxDamage = -1200 },
 	{ name = "largepinkring", interval = 2500, chance = 10, minDamage = -1500, maxDamage = -1900, target = false },
 }
 

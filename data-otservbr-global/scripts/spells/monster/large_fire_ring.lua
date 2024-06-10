@@ -21,7 +21,6 @@ combatLargeRing:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combatLargeRing:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREATTACK)
 combatLargeRing:setArea(createCombatArea(aLarge))
 
-
 local combats = { combatLargeRing }
 
 function spell.onCastSpell(creature, var)

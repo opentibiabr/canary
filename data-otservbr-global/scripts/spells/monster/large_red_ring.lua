@@ -21,7 +21,6 @@ combatLargeRing:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
 combatLargeRing:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_REDSMOKE)
 combatLargeRing:setArea(createCombatArea(aLarge))
 
-
 local combats = { combatLargeRing }
 
 function spell.onCastSpell(creature, var)

@@ -75,7 +75,7 @@ monster.loot = {}
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1100 },
 	{ name = "combat", interval = 2000, chance = 24, type = COMBAT_DEATHDAMAGE, minDamage = -1400, maxDamage = -1500, radius = 5, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2500, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -1200, maxDamage = -1400,  radius = 5, effect = CONST_ME_GHOSTLY_BITE, target = false },
+	{ name = "combat", interval = 2500, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -1200, maxDamage = -1400, radius = 5, effect = CONST_ME_GHOSTLY_BITE, target = false },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_EARTHDAMAGE, minDamage = -900, maxDamage = -1400, radius = 5, effect = CONST_ME_BIGPLANTS, target = false },
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -1100, maxDamage = -1550, length = 8, spread = 5, effect = CONST_ME_BLACKSMOKE, target = false },
 	{ name = "ice chain", interval = 3000, chance = 15, minDamage = -1200, maxDamage = -1500, target = false },

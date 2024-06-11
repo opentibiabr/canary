@@ -26,11 +26,11 @@ public:
 	static PlayerFlags_t getFlagFromNumber(uint8_t value);
 	bool reload() const;
 	bool load();
-	Group* getGroup(uint16_t id);
-	std::vector<Group> &getGroups() {
+	std::shared_ptr<Group> getGroup(uint16_t id);
+	std::vector<std::shared_ptr<Group>> &getGroups() {
 		return groups_vector;
 	}
 
 private:
-	std::vector<Group> groups_vector;
+	std::vector<std::shared_ptr<Group>> groups_vector;
 };

@@ -111,7 +111,7 @@ npcConfig.shop = {
 	{ itemName = "fire wall rune", clientId = 3190, buy = 61 },
 	{ itemName = "fireball rune", clientId = 3189, buy = 30 },
 	{ itemName = "gemmed figurine", clientId = 24392, sell = 3500 },
-	{ itemName = "giant amethyst", clientId = 30061, sell = 60000 },
+	{ itemName = "giant amethyst", clientId = 32622, sell = 60000 },
 	{ itemName = "giant emerald", clientId = 30060, sell = 90000 },
 	{ itemName = "giant ruby", clientId = 30059, sell = 70000 },
 	{ itemName = "giant sapphire", clientId = 30061, sell = 50000 },

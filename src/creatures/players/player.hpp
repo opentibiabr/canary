@@ -34,6 +34,10 @@
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
 #include "enums/object_category.hpp"
+#include "enums/player_cyclopedia.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/vip/player_vip.hpp"
 
 class House;
 class NetworkMessage;
@@ -49,11 +53,17 @@ class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
 class PlayerAchievement;
+class PlayerBadge;
+class PlayerTitle;
+class PlayerVIP;
 class Spectators;
 class Account;
 
 struct ModalWindow;
 struct Achievement;
+struct Badge;
+struct Title;
+struct VIPGroup;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -220,9 +230,8 @@ public:
 	void addList() override;
 	void removePlayer(bool displayEffect, bool forced = true);
 
-	static uint64_t getExpForLevel(int32_t lv) {
-		lv--;
-		return ((50ULL * lv * lv * lv) - (150ULL * lv * lv) + (400ULL * lv)) / 3ULL;
+	static uint64_t getExpForLevel(const uint32_t level) {
+		return (((level - 6ULL) * level + 17ULL) * level - 12ULL) / 6ULL * 100ULL;
 	}
 
 	uint16_t getStaminaMinutes() const {
@@ -510,10 +519,10 @@ public:
 
 	void genReservedStorageRange();
 
-	void setGroup(Group* newGroup) {
+	void setGroup(std::shared_ptr<Group> newGroup) {
 		group = newGroup;
 	}
-	Group* getGroup() const {
+	std::shared_ptr<Group> getGroup() const {
 		return group;
 	}
 
@@ -735,6 +744,13 @@ public:
 
 	uint32_t getCapacity() const;
 
+	uint32_t getBonusCapacity() const {
+		if (hasFlag(PlayerFlags_t::CannotPickupItem) || hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
+			return std::numeric_limits<uint32_t>::max();
+		}
+		return bonusCapacity;
+	}
+
 	uint32_t getFreeCapacity() const {
 		if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 			return 0;
@@ -815,13 +831,6 @@ public:
 	std::shared_ptr<Npc> getShopOwner() const {
 		return shopOwner;
 	}
-
-	// V.I.P. functions
-	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true) const;
-	bool removeVIP(uint32_t vipGuid);
-	bool addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t status);
-	bool addVIPInternal(uint32_t vipGuid);
-	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const;
 
 	// follow functions
 	bool setFollowCreature(std::shared_ptr<Creature> creature) override;
@@ -1027,7 +1036,7 @@ public:
 	bool canFamiliar(uint16_t lookType) const;
 	void addFamiliar(uint16_t lookType);
 	bool removeFamiliar(uint16_t lookType);
-	bool getFamiliar(const Familiar &familiar) const;
+	bool getFamiliar(const std::shared_ptr<Familiar> &familiar) const;
 	void setFamiliarLooktype(uint16_t familiarLooktype) {
 		this->defaultOutfit.lookFamiliarsType = familiarLooktype;
 	}
@@ -1036,7 +1045,6 @@ public:
 
 	bool hasKilled(std::shared_ptr<Player> player) const;
 
-	size_t getMaxVIPEntries() const;
 	size_t getMaxDepotItems() const;
 
 	// tile
@@ -1631,9 +1639,9 @@ public:
 		}
 	}
 	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
-	void sendCyclopediaCharacterItemSummary() {
+	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) {
 		if (client) {
-			client->sendCyclopediaCharacterItemSummary();
+			client->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 		}
 	}
 	void sendCyclopediaCharacterOutfitsMounts() {
@@ -2571,11 +2579,27 @@ public:
 	// Get specific inventory item from itemid
 	std::vector<std::shared_ptr<Item>> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 
+	// this get all player store inbox items and return as ItemsTierCountList
+	ItemsTierCountList getStoreInboxItemsId() const;
+	// this get all player depot chest items and return as ItemsTierCountList
+	ItemsTierCountList getDepotChestItemsId() const;
+	// this get all player depot inbox items and return as ItemsTierCountList
+	ItemsTierCountList getDepotInboxItemsId() const;
+
 	// This get all player inventory items
 	std::vector<std::shared_ptr<Item>> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
 
 	// This get all players slot items
 	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> getAllSlotItems() const;
+
+	// This get all blessings
+	phmap::flat_hash_map<Blessings_t, std::string> getBlessingNames() const;
+
+	// Gets the equipped items with augment by type
+	std::vector<std::shared_ptr<Item>> getEquippedAugmentItemsByType(Augment_t augmentType) const;
+
+	// Gets the equipped items with augment
+	std::vector<std::shared_ptr<Item>> getEquippedAugmentItems() const;
 
 	/**
 	 * @brief Get the equipped items of the player->
@@ -2592,6 +2616,18 @@ public:
 	std::unique_ptr<PlayerAchievement> &achiev();
 	const std::unique_ptr<PlayerAchievement> &achiev() const;
 
+	// Player badge interface
+	std::unique_ptr<PlayerBadge> &badge();
+	const std::unique_ptr<PlayerBadge> &badge() const;
+
+	// Player title interface
+	std::unique_ptr<PlayerTitle> &title();
+	const std::unique_ptr<PlayerTitle> &title() const;
+
+	// Player vip interface
+	std::unique_ptr<PlayerVIP> &vip();
+	const std::unique_ptr<PlayerVIP> &vip() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -2601,6 +2637,8 @@ public:
 	std::shared_ptr<Container> getStoreInbox() const;
 
 	bool canSpeakWithHireling(uint8_t speechbubble);
+
+	uint16_t getPlayerVocationEnum() const;
 
 private:
 	friend class PlayerLock;
@@ -2658,7 +2696,7 @@ private:
 	size_t getLastIndex() const override;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 	void stashContainer(StashContainerList itemDict);
-	ItemsTierCountList getInventoryItemsId() const;
+	ItemsTierCountList getInventoryItemsId(bool ignoreStoreInbox = false) const;
 
 	// This function is a override function of base class
 	std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override;
@@ -2676,7 +2714,6 @@ private:
 	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
 
 	phmap::flat_hash_set<uint32_t> attackedSet;
-	phmap::flat_hash_set<uint32_t> VIPList;
 
 	std::map<uint8_t, OpenContainer> openContainers;
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
@@ -2760,7 +2797,7 @@ private:
 	std::shared_ptr<BedItem> bedItem = nullptr;
 	std::shared_ptr<Guild> guild = nullptr;
 	GuildRank_ptr guildRank;
-	Group* group = nullptr;
+	std::shared_ptr<Group> group = nullptr;
 	std::shared_ptr<Inbox> inbox;
 	std::shared_ptr<Item> imbuingItem = nullptr;
 	std::shared_ptr<Item> tradeItem = nullptr;
@@ -2871,7 +2908,6 @@ private:
 	FightMode_t fightMode = FIGHTMODE_ATTACK;
 	Faction_t faction = FACTION_PLAYER;
 	QuickLootFilter_t quickLootFilter;
-	VipStatus_t statusVipList = VIPSTATUS_ONLINE;
 	PlayerPronoun_t pronoun = PLAYERPRONOUN_THEY;
 
 	bool chaseMode = false;
@@ -2984,9 +3020,15 @@ private:
 	friend class IOLoginDataLoad;
 	friend class IOLoginDataSave;
 	friend class PlayerAchievement;
+	friend class PlayerBadge;
+	friend class PlayerTitle;
+	friend class PlayerVIP;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;
+	std::unique_ptr<PlayerBadge> m_playerBadge;
+	std::unique_ptr<PlayerTitle> m_playerTitle;
+	std::unique_ptr<PlayerVIP> m_playerVIP;
 
 	std::mutex quickLootMutex;
 

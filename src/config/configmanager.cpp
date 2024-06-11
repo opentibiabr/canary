@@ -11,7 +11,6 @@
 
 #include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
-#include "declarations.hpp"
 #include "game/game.hpp"
 #include "server/network/webhook/webhook.hpp"
 
@@ -62,6 +61,7 @@ bool ConfigManager::load() {
 		loadIntConfig(L, GAME_PORT, "gameProtocolPort", 7172);
 		loadIntConfig(L, LOGIN_PORT, "loginProtocolPort", 7171);
 		loadIntConfig(L, MARKET_OFFER_DURATION, "marketOfferDuration", 30 * 24 * 60 * 60);
+		loadIntConfig(L, MARKET_REFRESH_PRICES, "marketRefreshPricesInterval", 30);
 		loadIntConfig(L, PREMIUM_DEPOT_LIMIT, "premiumDepotLimit", 8000);
 		loadIntConfig(L, SQL_PORT, "mysqlPort", 3306);
 		loadIntConfig(L, STASH_ITEMS, "stashItemCount", 5000);
@@ -225,6 +225,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, CRITICALCHANCE, "criticalChance", 10);
 	loadIntConfig(L, DAY_KILLS_TO_RED, "dayKillsToRedSkull", 3);
 	loadIntConfig(L, DEATH_LOSE_PERCENT, "deathLosePercent", -1);
+	loadIntConfig(L, DEFAULT_RESPAWN_TIME, "defaultRespawnTime", 60);
 	loadIntConfig(L, DEFAULT_DESPAWNRADIUS, "deSpawnRadius", 50);
 	loadIntConfig(L, DEFAULT_DESPAWNRANGE, "deSpawnRange", 2);
 	loadIntConfig(L, DEPOTCHEST, "depotChest", 4);
@@ -345,6 +346,9 @@ bool ConfigManager::load() {
 	loadIntConfig(L, WHEEL_ATELIER_ROTATE_REGULAR_COST, "wheelAtelierRotateRegularCost", 250000);
 	loadIntConfig(L, WHEEL_POINTS_PER_LEVEL, "wheelPointsPerLevel", 1);
 	loadIntConfig(L, WHITE_SKULL_TIME, "whiteSkullTime", 15 * 60 * 1000);
+	loadIntConfig(L, AUGMENT_INCREASED_DAMAGE_PERCENT, "augmentIncreasedDamagePercent", 5);
+	loadIntConfig(L, AUGMENT_POWERFUL_IMPACT_PERCENT, "augmentPowerfulImpactPercent", 10);
+	loadIntConfig(L, AUGMENT_STRONG_IMPACT_PERCENT, "augmentStrongImpactPercent", 7);
 
 	loadStringConfig(L, CORE_DIRECTORY, "coreDirectory", "data");
 	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");

@@ -1147,6 +1147,10 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			descriptions.emplace_back("Description", it.description);
 		}
 
+		if (item->getContainer()) {
+			descriptions.emplace_back("Capacity", std::to_string(item->getContainer()->capacity()));
+		}
+
 		if (it.showCharges) {
 			auto charges = item->getAttribute<int32_t>(ItemAttribute_t::CHARGES);
 			if (charges != 0) {
@@ -1403,10 +1407,6 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			descriptions.emplace_back("Tier", std::to_string(item->getTier()));
 		}
 
-		if (item->getContainer()) {
-			descriptions.emplace_back("Capacity", std::to_string(item->getContainer()->capacity()));
-		}
-
 		std::string slotName;
 		if (item->getImbuementSlot() > 0) {
 			for (uint8_t i = 0; i < item->getImbuementSlot(); ++i) {
@@ -1435,6 +1435,11 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				isTradeable = false;
 				descriptions.emplace_back(slotName, ss.str());
 			}
+		}
+
+		std::string augmentsDescription = parseAugmentDescription(item, true);
+		if (!augmentsDescription.empty()) {
+			descriptions.emplace_back("Augments", augmentsDescription);
 		}
 
 		if (it.isKey()) {
@@ -1560,6 +1565,10 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 	} else {
 		if (!it.description.empty()) {
 			descriptions.emplace_back("Description", it.description);
+		}
+
+		if (it.isContainer()) {
+			descriptions.emplace_back("Capacity", std::to_string(it.maxItems));
 		}
 
 		int32_t attack = it.attack;
@@ -1781,12 +1790,13 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 		}
 
-		if (it.isContainer()) {
-			descriptions.emplace_back("Capacity", std::to_string(it.maxItems));
-		}
-
 		if (it.imbuementSlot > 0) {
 			descriptions.emplace_back("Imbuement Slots", std::to_string(it.imbuementSlot));
+		}
+
+		std::string augmentsDescription = it.parseAugmentDescription(true);
+		if (!augmentsDescription.empty()) {
+			descriptions.emplace_back("Augments", augmentsDescription);
 		}
 
 		if (it.isKey()) {
@@ -2075,13 +2085,18 @@ std::string Item::parseShowDuration(std::shared_ptr<Item> item) {
 std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, const uint16_t itemId) {
 	std::ostringstream itemDescription;
 	const ItemType &itemType = Item::items[itemId];
+
 	if (itemType.armor != 0 || (item && item->getArmor() != 0) || itemType.showAttributes) {
-		bool begin = true;
+		bool begin = itemType.isQuiver() ? false : true;
 
 		int32_t armor = (item ? item->getArmor() : itemType.armor);
 		if (armor != 0) {
-			itemDescription << " (Arm:" << armor;
-			begin = false;
+			if (begin) {
+				itemDescription << " (Arm:" << armor;
+				begin = false;
+			} else {
+				itemDescription << ", Arm:" << armor;
+			}
 		}
 
 		if (itemType.abilities) {
@@ -2167,7 +2182,7 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 					itemDescription << ", ";
 				}
 
-				itemDescription << "Perfect Shot " << std::showpos << itemType.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(itemType.abilities->perfectShotRange);
+				itemDescription << "perfect shot " << std::showpos << itemType.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(itemType.abilities->perfectShotRange);
 			}
 
 			if (itemType.abilities->reflectFlat[0] != 0) {
@@ -2869,8 +2884,10 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 			}
 		}
 
-		if (volume != 0) {
+		if (volume != 0 && !it.isQuiver()) {
 			s << " (Vol:" << volume << ')';
+		} else if (volume != 0 && it.isQuiver()) {
+			s << " (Vol:" << volume;
 		}
 	} else {
 		bool found = true;
@@ -3009,6 +3026,8 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 
 		s << '.';
 	}
+
+	s << parseAugmentDescription(item);
 
 	s << parseImbuementDescription(item);
 
@@ -3218,7 +3237,7 @@ std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1
 	}
 
 	std::shared_ptr<Item> newItem;
-	if (itemCount == -1) {
+	if (itemCount == 0) {
 		newItem = Item::CreateItem(itemId, 1);
 	} else {
 		newItem = Item::CreateItem(itemId, itemCount);

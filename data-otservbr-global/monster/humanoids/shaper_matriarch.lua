@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Shaper Matriarch")
 local monster = {}
 
 monster.description = "a shaper matriarch"
-monster.experience = 1650
+monster.experience = 3300
 monster.outfit = {
 	lookType = 933,
 	lookHead = 0,

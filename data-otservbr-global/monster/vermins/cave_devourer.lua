@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Cave Devourer")
 local monster = {}
 
 monster.description = "a cave devourer"
-monster.experience = 2380
+monster.experience = 3380
 monster.outfit = {
 	lookType = 1036,
 	lookHead = 0,
@@ -88,7 +88,7 @@ monster.loot = {
 	{ name = "slime heart", chance = 13770, maxCount = 4 },
 	{ name = "cave devourer legs", chance = 17160 },
 	{ id = 3049, chance = 2540 }, -- stealth ring
-	{ name = "suspicious device", chance = 420 },
+	{ name = "suspicious device", chance = 850 },
 }
 
 monster.attacks = {

@@ -135,7 +135,6 @@ local setMonsterName = TalkAction("/setmonstername")
 -- @desc TalkAction to rename nearby monsters within a radius of 4 sqm.
 -- Format: "/setmonstername newName"
 function setMonsterName.onSay(player, words, param)
-
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return true

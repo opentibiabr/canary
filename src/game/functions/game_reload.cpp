@@ -43,7 +43,7 @@ bool GameReload::init(Reload_t reloadTypes) {
 		case Reload_t::RELOAD_TYPE_IMBUEMENTS:
 			return reloadImbuements();
 		case Reload_t::RELOAD_TYPE_VOCATIONS:
-			return reloadVocations() && reloadScripts() && reloadItems();
+			return reloadVocations();
 		case Reload_t::RELOAD_TYPE_CORE:
 			return reloadCore();
 		case Reload_t::RELOAD_TYPE_GROUPS:
@@ -147,6 +147,7 @@ bool GameReload::reloadImbuements() {
 
 bool GameReload::reloadVocations() {
 	const bool result = g_vocations().reload();
+	reloadScripts();
 	logReloadStatus("Vocations", result);
 	return result;
 }
@@ -186,6 +187,7 @@ bool GameReload::reloadScripts() {
 	// It should come last, after everything else has been cleaned up.
 	reloadMonsters();
 	reloadNpcs();
+	reloadItems();
 	logReloadStatus("Scripts", true);
 	return true;
 }

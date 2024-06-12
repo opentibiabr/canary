@@ -2567,17 +2567,12 @@ public:
 		}
 
 		auto featureKV = kv()->scoped("features")->get("autoloot");
-		if (featureKV.has_value()) {
-			auto value = featureKV->getNumber();
-			if (value == 2) {
-				return true;
-			} else if (value == 1) {
-				return !isBoss;
-			} else if (value == 0) {
-				return false;
-			}
+		auto value = featureKV.has_value() ? featureKV->getNumber() : 0;
+		if (value == 2) {
+			return true;
+		} else if (value == 1) {
+			return !isBoss;
 		}
-
 		return false;
 	}
 

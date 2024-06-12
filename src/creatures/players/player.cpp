@@ -48,7 +48,7 @@ Player::Player(ProtocolGame_ptr p) :
 	lastPing(OTSYS_TIME()),
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
-	client(std::move(p)) {
+	client(std::make_unique<CastViewer>(p)) {
 	m_playerVIP = std::make_unique<PlayerVIP>(*this);
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
@@ -779,6 +779,24 @@ int32_t Player::getDefaultStats(stats_t stat) const {
 		default:
 			return 0;
 	}
+}
+
+bool Player::hasClientOwner() const {
+	if (client) {
+		return client->getCastOwner() != nullptr;
+	}
+	return false;
+}
+
+ProtocolGame_ptr Player::getClient() const {
+	if (client) {
+		return client->getCastOwner();
+	}
+	return nullptr;
+}
+
+bool Player::sortByCastViewerCount(std::shared_ptr<Player> lhs, std::shared_ptr<Player> rhs) {
+	return lhs->client->getCastViewerCount() > rhs->client->getCastViewerCount();
 }
 
 void Player::addContainer(uint8_t cid, std::shared_ptr<Container> container) {
@@ -1715,6 +1733,10 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 	Creature::onCreatureAppear(creature, isLogin);
 
 	if (isLogin && creature == getPlayer()) {
+		if (!client) {
+			return;
+		}
+
 		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 			std::shared_ptr<Item> item = inventory[slot];
 			if (item) {
@@ -1742,6 +1764,16 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 
 		auto version = client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
 		g_logger().info("{} has logged in. (Protocol: {})", name, version);
+		// Update cast password
+		auto castPassword = kv()->scoped("cast-system")->get("password");
+		if (castPassword) {
+			client->setCastPassword(castPassword->get<std::string>());
+		}
+		// Update cast description
+		auto castDescription = kv()->scoped("cast-system")->get("description");
+		if (castDescription) {
+			client->setCastDescription(castDescription->get<std::string>());
+		}
 
 		if (guild) {
 			guild->addMember(static_self_cast<Player>());

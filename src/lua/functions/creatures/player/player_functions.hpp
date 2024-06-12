@@ -364,6 +364,11 @@ private:
 		registerMethod(L, "Player", "addAchievementPoints", PlayerFunctions::luaPlayerAddAchievementPoints);
 		registerMethod(L, "Player", "removeAchievementPoints", PlayerFunctions::luaPlayerRemoveAchievementPoints);
 
+		// Cast Functions
+		registerMethod(L, "Player", "getCastViewersCount", PlayerFunctions::luaPlayerGetCastViewersCount);
+		registerMethod(L, "Player", "getCastViewers", PlayerFunctions::luaPlayerGetCastViewers);
+		registerMethod(L, "Player", "setCastViewers", PlayerFunctions::luaPlayerSetCastViewers);
+
 		// Badge Functions
 		registerMethod(L, "Player", "addBadge", PlayerFunctions::luaPlayerAddBadge);
 
@@ -731,6 +736,10 @@ private:
 	static int luaPlayerAddTitle(lua_State* L);
 	static int luaPlayerGetTitles(lua_State* L);
 	static int luaPlayerSetCurrentTitle(lua_State* L);
+
+	static int luaPlayerGetCastViewersCount(lua_State* L);
+	static int luaPlayerGetCastViewers(lua_State* L);
+	static int luaPlayerSetCastViewers(lua_State* L);
 
 	friend class CreatureFunctions;
 };

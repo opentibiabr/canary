@@ -127,6 +127,10 @@ namespace InternalGame {
 			if (isGuest && !isItemInGuestInventory && !item->isLadder() && !item->canBeUsedByGuests()) {
 				return false;
 			}
+
+			if (isGuest && item->isDummy()) {
+				return false;
+			}
 		}
 
 		return true;
@@ -4297,7 +4301,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		name << item->getName() << " displaying the ";
 		bool outfited = false;
 		if (outfit.lookType != 0) {
-			const auto &outfitInfo = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
+			const auto &outfitInfo = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
 			if (!outfitInfo) {
 				return;
 			}
@@ -5205,7 +5209,7 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
-	if (inBackpacks) {
+	if (inBackpacks || it.isContainer()) {
 		uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
 		auto backpack = player->getInventoryItem(CONST_SLOT_BACKPACK);
 		auto mainBackpack = backpack ? backpack->getContainer() : nullptr;
@@ -5963,7 +5967,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		outfit.lookMount = randomMount->clientId;
 	}
 
-	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
+	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
 	if (!playerOutfit) {
 		outfit.lookMount = 0;
 	}

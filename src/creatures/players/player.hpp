@@ -155,8 +155,8 @@ public:
 	const std::string &getName() const override {
 		return name;
 	}
-	void setName(std::string newName) {
-		this->name = std::move(newName);
+	void setName(const std::string &name) {
+		this->name = name;
 	}
 	const std::string &getTypeName() const override {
 		return name;
@@ -232,9 +232,8 @@ public:
 	void addList() override;
 	void removePlayer(bool displayEffect, bool forced = true);
 
-	static uint64_t getExpForLevel(int32_t lv) {
-		lv--;
-		return ((50ULL * lv * lv * lv) - (150ULL * lv * lv) + (400ULL * lv)) / 3ULL;
+	static uint64_t getExpForLevel(const uint32_t level) {
+		return (((level - 6ULL) * level + 17ULL) * level - 12ULL) / 6ULL * 100ULL;
 	}
 
 	uint16_t getStaminaMinutes() const {
@@ -478,9 +477,15 @@ public:
 	bool hasBlessing(uint8_t index) const {
 		return blessings[index - 1] != 0;
 	}
+  
 	uint8_t getBlessingCount(uint8_t index, bool storeCount = false) const {
 		if (!storeCount) {
-			return blessings[index - 1];
+			if (index > 0 && index <= blessings.size()) {
+        return blessings[index - 1];
+      } else {
+        g_logger().error("[{}] - index outside range 0-10.", __FUNCTION__);
+        return 0;
+      }
 		}
 		auto amount = kv()->scoped("summary")->scoped("blessings")->scoped(fmt::format("{}", index))->get("amount");
 		return amount ? static_cast<uint8_t>(amount->getNumber()) : 0;
@@ -1038,7 +1043,7 @@ public:
 	void addOutfit(uint16_t lookType, uint8_t addons);
 	bool removeOutfit(uint16_t lookType);
 	bool removeOutfitAddon(uint16_t lookType, uint8_t addons);
-	bool getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addons) const;
+	bool getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const;
 
 	bool canFamiliar(uint16_t lookType) const;
 	void addFamiliar(uint16_t lookType);
@@ -1075,6 +1080,11 @@ public:
 	void sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 		if (stackpos != -1 && client) {
 			client->sendRemoveTileThing(pos, stackpos);
+		}
+	}
+	void sendUpdateTileCreature(const std::shared_ptr<Creature> creature) {
+		if (client) {
+			client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(static_self_cast<Player>(), creature), creature);
 		}
 	}
 	void sendUpdateTile(std::shared_ptr<Tile> updateTile, const Position &pos) {
@@ -2857,7 +2867,7 @@ private:
 
 	uint16_t lastStatsTrainingTime = 0;
 	uint16_t staminaMinutes = 2520;
-	std::vector<uint8_t> blessings = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	std::vector<uint8_t> blessings = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	uint16_t maxWriteLen = 0;
 	uint16_t baseXpGain = 100;
 	uint16_t voucherXpBoost = 0;

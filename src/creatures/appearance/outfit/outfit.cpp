@@ -14,6 +14,10 @@
 #include "utils/tools.hpp"
 #include "game/game.hpp"
 
+Outfits &Outfits::getInstance() {
+	return inject<Outfits>();
+}
+
 bool Outfits::reload() {
 	for (auto &outfitsVector : outfits) {
 		outfitsVector.clear();
@@ -41,7 +45,7 @@ bool Outfits::loadFromXml() {
 			continue;
 		}
 
-		uint16_t type = pugi::cast<uint16_t>(attr.value());
+		auto type = pugi::cast<uint16_t>(attr.value());
 		if (type > PLAYERSEX_LAST) {
 			g_logger().warn("[Outfits::loadFromXml] - Invalid outfit type {}", type);
 			continue;
@@ -53,7 +57,7 @@ bool Outfits::loadFromXml() {
 			continue;
 		}
 
-		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
+		if (auto lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
 			g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && lookType != 0
 			&& !g_game().isLookTypeRegistered(lookType)) {
 			g_logger().warn("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was ignored to prevent client crash.", lookType);
@@ -74,7 +78,22 @@ bool Outfits::loadFromXml() {
 	return true;
 }
 
-std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
+std::shared_ptr<Outfit> Outfits::getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit) const {
+	if (!player) {
+		g_logger().error("[{}] - Player not found", __FUNCTION__);
+		return nullptr;
+	}
+
+	auto sex = player->getSex();
+	if (sex != PLAYERSEX_FEMALE && sex != PLAYERSEX_MALE) {
+		g_logger().error("[{}] - Sex invalid or player: {}", __FUNCTION__, player->getName());
+		return nullptr;
+	}
+
+	if (isOppositeOutfit) {
+		sex = (sex == PLAYERSEX_MALE) ? PLAYERSEX_FEMALE : PLAYERSEX_MALE;
+	}
+
 	auto it = std::ranges::find_if(outfits[sex], [&lookType](const auto &outfit) {
 		return outfit->lookType == lookType;
 	});
@@ -83,16 +102,4 @@ std::shared_ptr<Outfit> Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t l
 		return *it;
 	}
 	return nullptr;
-}
-
-/**
- * Get the oposite sex equivalent outfit
- * @param sex current sex
- * @param lookType current looktype
- * @return <b>const</b> pointer to the outfit or <b>nullptr</b> if it could not be found.
- */
-
-std::shared_ptr<Outfit> Outfits::getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
-	PlayerSex_t searchSex = (sex == PLAYERSEX_MALE) ? PLAYERSEX_FEMALE : PLAYERSEX_MALE;
-	return getOutfitByLookType(searchSex, lookType);
 }

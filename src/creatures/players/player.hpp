@@ -2559,8 +2559,7 @@ public:
 	}
 
 	bool checkAutoLoot(bool isBoss) const {
-		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__);
-		if (!autoLoot) {
+		if (!g_configManager().getBoolean(AUTOLOOT, __FUNCTION__)) {
 			return false;
 		}
 		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY, __FUNCTION__) && !isVip()) {
@@ -2579,7 +2578,7 @@ public:
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	QuickLootFilter_t getQuickLootFilter() const {

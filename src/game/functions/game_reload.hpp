@@ -19,17 +19,19 @@ enum class Reload_t : uint8_t {
 	RELOAD_TYPE_CHAT,
 	RELOAD_TYPE_CONFIG,
 	RELOAD_TYPE_EVENTS,
-	RELOAD_TYPE_CORE,
-	RELOAD_TYPE_IMBUEMENTS,
-	RELOAD_TYPE_ITEMS,
 	RELOAD_TYPE_MODULES,
-	RELOAD_TYPE_MONSTERS,
+	RELOAD_TYPE_OUTFITS,
 	RELOAD_TYPE_MOUNTS,
+	RELOAD_TYPE_FAMILIARS,
+	RELOAD_TYPE_IMBUEMENTS,
+	RELOAD_TYPE_VOCATIONS,
+	RELOAD_TYPE_CORE,
+	RELOAD_TYPE_GROUPS,
+	RELOAD_TYPE_SCRIPTS,
+	RELOAD_TYPE_ITEMS,
+	RELOAD_TYPE_MONSTERS,
 	RELOAD_TYPE_NPCS,
 	RELOAD_TYPE_RAIDS,
-	RELOAD_TYPE_SCRIPTS,
-	RELOAD_TYPE_GROUPS,
-	RELOAD_TYPE_VOCATIONS,
 
 	// Every is last
 	RELOAD_TYPE_LAST
@@ -48,25 +50,27 @@ public:
 		return inject<GameReload>();
 	}
 
-	bool init(Reload_t reloadType) const;
-	uint8_t getReloadNumber(Reload_t reloadTypes) const;
+	static bool init(Reload_t reloadType);
+	static uint8_t getReloadNumber(Reload_t reloadTypes);
 
 private:
-	bool reloadAll() const;
-	bool reloadChat() const;
-	bool reloadConfig() const;
-	bool reloadEvents() const;
-	bool reloadCore() const;
-	bool reloadImbuements() const;
-	bool reloadItems() const;
-	bool reloadModules() const;
-	bool reloadMonsters() const;
-	bool reloadMounts() const;
-	bool reloadNpcs() const;
-	bool reloadRaids() const;
-	bool reloadScripts() const;
-	bool reloadGroups() const;
-	bool reloadVocations() const;
+	static bool reloadAll();
+	static bool reloadChat();
+	static bool reloadConfig();
+	static bool reloadEvents();
+	static bool reloadModules();
+	static bool reloadOutfits();
+	static bool reloadMounts();
+	static bool reloadFamiliars();
+	static bool reloadImbuements();
+	static bool reloadVocations();
+	static bool reloadCore();
+	static bool reloadGroups();
+	static bool reloadScripts();
+	static bool reloadItems();
+	static bool reloadMonsters();
+	static bool reloadNpcs();
+	static bool reloadRaids();
 };
 
 constexpr auto g_gameReload = GameReload::getInstance;

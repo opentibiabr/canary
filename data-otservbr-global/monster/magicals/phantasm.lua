@@ -70,7 +70,7 @@ monster.light = {
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{ name = "Phantasm Summon", chance = 20, interval = 2000, count = 4 },
+		{ name = "Phantasm Summon", chance = 35, interval = 2000, count = 4 },
 	},
 }
 

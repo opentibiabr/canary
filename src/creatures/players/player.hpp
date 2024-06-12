@@ -477,15 +477,15 @@ public:
 	bool hasBlessing(uint8_t index) const {
 		return blessings[index - 1] != 0;
 	}
-  
+
 	uint8_t getBlessingCount(uint8_t index, bool storeCount = false) const {
 		if (!storeCount) {
 			if (index > 0 && index <= blessings.size()) {
-        return blessings[index - 1];
-      } else {
-        g_logger().error("[{}] - index outside range 0-10.", __FUNCTION__);
-        return 0;
-      }
+				return blessings[index - 1];
+			} else {
+				g_logger().error("[{}] - index outside range 0-10.", __FUNCTION__);
+				return 0;
+			}
 		}
 		auto amount = kv()->scoped("summary")->scoped("blessings")->scoped(fmt::format("{}", index))->get("amount");
 		return amount ? static_cast<uint8_t>(amount->getNumber()) : 0;

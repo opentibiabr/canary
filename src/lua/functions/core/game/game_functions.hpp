@@ -28,6 +28,7 @@ public:
 		registerMethod(L, "Game", "loadMap", GameFunctions::luaGameLoadMap);
 		registerMethod(L, "Game", "loadMapChunk", GameFunctions::luaGameloadMapChunk);
 
+		registerMethod(L, "Game", "getExperienceForLevel", GameFunctions::luaGameGetExperienceForLevel);
 		registerMethod(L, "Game", "getMonsterCount", GameFunctions::luaGameGetMonsterCount);
 		registerMethod(L, "Game", "getPlayerCount", GameFunctions::luaGameGetPlayerCount);
 		registerMethod(L, "Game", "getNpcCount", GameFunctions::luaGameGetNpcCount);
@@ -103,6 +104,7 @@ private:
 	static int luaGameLoadMap(lua_State* L);
 	static int luaGameloadMapChunk(lua_State* L);
 
+	static int luaGameGetExperienceForLevel(lua_State* L);
 	static int luaGameGetMonsterCount(lua_State* L);
 	static int luaGameGetPlayerCount(lua_State* L);
 	static int luaGameGetNpcCount(lua_State* L);

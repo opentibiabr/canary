@@ -19,8 +19,8 @@ function addCharm.onSay(player, words, param)
 		player:sendCancelMessage("A player with that name is not online.")
 		return true
 	end
-	--trim left
-	split[2] = split[2]:gsub("^%s*(.-)$", "%1")
+
+	split[2] = split[2]:trimSpace()
 
 	player:sendCancelMessage("Added " .. split[2] .. " charm points to character '" .. target:getName() .. "'.")
 	target:sendCancelMessage("Received " .. split[2] .. " charm points!")
@@ -133,8 +133,8 @@ function setBestiary.onSay(player, words, param)
 		return true
 	end
 
-	split[2] = split[2]:gsub("^%s*(.-)$", "%1") --Trim left
-	split[3] = split[3]:gsub("^%s*(.-)$", "%1") --Trim left
+	split[2] = split[2]:trimSpace()
+	split[3] = split[3]:trimSpace()
 
 	local monsterName = split[2]
 	local mType = MonsterType(monsterName)

@@ -60,7 +60,6 @@ static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 static constexpr int32_t EVENT_FORGEABLEMONSTERCHECKINTERVAL = 300000;
 static constexpr int32_t EVENT_LUA_GARBAGE_COLLECTION = 60000 * 10; // 10min
-static constexpr int32_t EVENT_REFRESH_MARKET_PRICES = 60000; // 1min
 
 static constexpr std::chrono::minutes CACHE_EXPIRATION_TIME { 10 }; // 10min
 static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; // 10min
@@ -394,7 +393,7 @@ public:
 
 	void playerRequestAddVip(uint32_t playerId, const std::string &name);
 	void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
-	void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);
+	void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify, std::vector<uint8_t> vipGroupsId);
 	void playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm);
 	void playerClearImbuement(uint32_t playerid, uint8_t slot);
 	void playerCloseImbuementWindow(uint32_t playerid);
@@ -517,7 +516,7 @@ public:
 		return lightHour;
 	}
 
-	bool loadItemsPrice();
+	void loadItemsPrice();
 
 	void loadMotdNum();
 	void saveMotdNum() const;
@@ -583,8 +582,10 @@ public:
 	bool hasDistanceEffect(uint16_t effectId);
 
 	Groups groups;
+	Familiars familiars;
 	Map map;
 	Mounts mounts;
+	Outfits outfits;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 

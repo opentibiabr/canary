@@ -185,7 +185,7 @@ bool PlayerTitle::checkMount(uint32_t amount) {
 	uint8_t total = 0;
 	for (const auto &mount : g_game().mounts.getMounts()) {
 		if (m_player.hasMount(mount)) {
-			total = total++;
+			total++;
 		}
 	}
 	return total >= amount;

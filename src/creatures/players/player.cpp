@@ -4916,7 +4916,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return true;
 	}
 
-	const auto &outfit = Outfits::getInstance().getOutfitByLookType(sex, lookType);
+	const auto &outfit = Outfits::getInstance().getOutfitByLookType(getPlayer(), lookType);
 	if (!outfit) {
 		return false;
 	}
@@ -5003,7 +5003,7 @@ bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
 	return false;
 }
 
-bool Player::getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addons) const {
+bool Player::getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const {
 	if (group->access) {
 		addons = 3;
 		return true;
@@ -5831,7 +5831,7 @@ bool Player::toggleMount(bool mount) {
 			return false;
 		}
 
-		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getSex(), defaultOutfit.lookType);
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getPlayer(), defaultOutfit.lookType);
 		if (!playerOutfit) {
 			return false;
 		}

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Quara Hydromancer")
 local monster = {}
 
 monster.description = "a quara hydromancer"
-monster.experience = 800
+monster.experience = 950
 monster.outfit = {
 	lookType = 47,
 	lookHead = 0,

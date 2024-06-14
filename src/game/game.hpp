@@ -581,8 +581,10 @@ public:
 	bool hasDistanceEffect(uint16_t effectId);
 
 	Groups groups;
+	Familiars familiars;
 	Map map;
 	Mounts mounts;
+	Outfits outfits;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 

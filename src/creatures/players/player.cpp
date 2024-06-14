@@ -4919,9 +4919,9 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return true;
 	}
 
-	for (const auto &[outfitPlayer, addonPlayer] : outfitsMap) {
-		if (outfitPlayer == lookType) {
-			if (addonPlayer == addons || addonPlayer == 3 || addons == 0) {
+	for (const auto &outfitEntry : outfitsMap) {
+		if (outfitEntry.lookType == lookType) {
+			if (outfitEntry.addons == addons || outfitEntry.addons == 3 || addons == 0) {
 				return true;
 			}
 			return false; // have lookType on list and addons don't match
@@ -4960,9 +4960,9 @@ void Player::genReservedStorageRange() {
 }
 
 void Player::addOutfit(uint16_t lookType, uint8_t addons) {
-	for (auto &[outfitPlayer, addonPlayer] : outfitsMap) {
-		if (outfitPlayer == lookType) {
-			addonPlayer |= addons;
+	for (auto &outfitEntry : outfitsMap) {
+		if (outfitEntry.lookType == lookType) {
+			outfitEntry.addons |= addons;
 			return;
 		}
 	}
@@ -4979,9 +4979,9 @@ bool Player::removeOutfit(uint16_t lookType) {
 }
 
 bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
-	for (auto &[outfitPlayer, addonPlayer] : outfitsMap) {
-		if (outfitPlayer == lookType) {
-			addonPlayer &= ~addons;
+	for (auto &outfitEntry : outfitsMap) {
+		if (outfitEntry.lookType == lookType) {
+			outfitEntry.addons &= ~addons;
 			return true;
 		}
 	}
@@ -4998,12 +4998,12 @@ bool Player::getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &add
 		return false;
 	}
 
-	for (const auto &[outfitPlayer, addonPlayer] : outfitsMap) {
-		if (outfitPlayer != outfit->lookType) {
+	for (const auto &outfitEntry : outfitsMap) {
+		if (outfitEntry.lookType != outfit->lookType) {
 			continue;
 		}
 
-		addons = addonPlayer;
+		addons = outfitEntry.addons;
 		return true;
 	}
 

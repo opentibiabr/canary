@@ -2745,7 +2745,7 @@ private:
 
 	std::vector<uint16_t> quickLootListItemIds;
 
-	phmap::flat_hash_map<uint16_t, uint8_t> outfitsMap;
+	phmap::parallel_flat_hash_map<OutfitEntry> outfitsMap;
 	std::unordered_set<uint16_t> mountsMap;
 	std::vector<FamiliarEntry> familiars;
 

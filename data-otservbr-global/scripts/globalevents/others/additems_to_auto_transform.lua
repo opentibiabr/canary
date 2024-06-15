@@ -57,10 +57,36 @@ local function addItemsToAutoTransform(data)
 	end
 end
 
+local function addSpikesTest()
+	local load = 25
+	local centerX = 32636
+	local centerY = 31996
+	local centerZ = 7
+	local tiles = {}
+	for x = -load, load do
+		for y = -load, load do
+			local position = Position(centerX + x, centerY + y, centerZ)
+			local tile = position:getTile()
+			if tile and tile:getGround() then
+				tiles[#tiles+1] = tile
+			end
+		end
+	end
+	local count = 0
+	for _, tile in ipairs(tiles) do
+		if tile:addItem(2147) then
+			autoTransformItems({ 2147, 2148 }, tile:getPosition(), math.random(3), onTransformIntoSpikes)
+			count = count + 1
+		end
+	end
+	logger.info("[addSpikesTest]: added {} items to auto transform", count)
+end
+
 local addItemsToAutoTransformEvent = GlobalEvent("addItemsToAutoTransform.onStartup")
 function addItemsToAutoTransformEvent.onStartup()
 	addItemsToAutoTransform(slitsBlades)
 	addItemsToAutoTransform(holesSpikes)
+	addSpikesTest()
 end
 
 addItemsToAutoTransformEvent:register()

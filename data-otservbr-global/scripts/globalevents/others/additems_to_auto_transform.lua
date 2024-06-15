@@ -68,7 +68,7 @@ local function addSpikesTest()
 			local position = Position(centerX + x, centerY + y, centerZ)
 			local tile = position:getTile()
 			if tile and tile:getGround() then
-				tiles[#tiles+1] = tile
+				tiles[#tiles + 1] = tile
 			end
 		end
 	end

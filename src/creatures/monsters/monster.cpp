@@ -33,7 +33,7 @@ std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
 
 Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	Creature(),
-	strDescription(asLowerCaseString(mType->nameDescription)),
+	nameDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
 	defaultOutfit = mType->info.outfit;
 	currentOutfit = mType->info.outfit;
@@ -62,6 +62,37 @@ void Monster::addList() {
 
 void Monster::removeList() {
 	g_game().removeMonster(static_self_cast<Monster>());
+}
+
+const std::string &Monster::getName() const {
+	if (name.empty()) {
+		return mType->name;
+	}
+	return name;
+}
+
+void Monster::setName(const std::string &name) {
+	if (getName() == name) {
+		return;
+	}
+
+	this->name = name;
+
+	// NOTE: Due to how client caches known creatures,
+	// it is not feasible to send creature update to everyone that has ever met it
+	auto spectators = Spectators().find<Player>(position, true);
+	for (const auto &spectator : spectators) {
+		if (const auto &tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->sendUpdateTileCreature(static_self_cast<Monster>());
+		}
+	}
+}
+
+const std::string &Monster::getNameDescription() const {
+	if (nameDescription.empty()) {
+		return mType->nameDescription;
+	}
+	return nameDescription;
 }
 
 bool Monster::canWalkOnFieldType(CombatType_t combatType) const {

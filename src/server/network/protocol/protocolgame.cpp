@@ -5857,6 +5857,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				msg.add<uint64_t>(purchaseStatistics.highestPrice);
 				msg.add<uint64_t>(purchaseStatistics.lowestPrice);
 			}
+		} else {
+			msg.addByte(0x00);
 		}
 	} else {
 		msg.addByte(0x00); // send to old protocol ?
@@ -5880,6 +5882,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				msg.add<uint64_t>(saleStatistics.highestPrice);
 				msg.add<uint64_t>(saleStatistics.lowestPrice);
 			}
+		} else {
+			msg.addByte(0x00);
 		}
 	} else {
 		msg.addByte(0x00); // send to old protocol ?

@@ -24,13 +24,13 @@ class Groups {
 public:
 	static uint8_t getFlagNumber(PlayerFlags_t playerFlags);
 	static PlayerFlags_t getFlagFromNumber(uint8_t value);
-	bool reload() const;
+	static bool reload();
 	bool load();
-	Group* getGroup(uint16_t id);
-	std::vector<Group> &getGroups() {
+	[[nodiscard]] std::shared_ptr<Group> getGroup(uint16_t id) const;
+	std::vector<std::shared_ptr<Group>> &getGroups() {
 		return groups_vector;
 	}
 
 private:
-	std::vector<Group> groups_vector;
+	std::vector<std::shared_ptr<Group>> groups_vector;
 };

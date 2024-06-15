@@ -14,9 +14,11 @@
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 
 class NetworkMessage;
 class Player;
+class VIPGroup;
 class Game;
 class House;
 class Container;
@@ -31,6 +33,7 @@ class TaskHuntingOption;
 struct ModalWindow;
 struct Achievement;
 struct Badge;
+struct Title;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
@@ -211,6 +214,7 @@ private:
 	void parseAddVip(NetworkMessage &msg);
 	void parseRemoveVip(NetworkMessage &msg);
 	void parseEditVip(NetworkMessage &msg);
+	void parseVipGroupActions(NetworkMessage &msg);
 
 	void parseRotateItem(NetworkMessage &msg);
 	void parseConfigureShowOffSocket(NetworkMessage &msg);
@@ -358,6 +362,7 @@ private:
 
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 	void sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status);
+	void sendVIPGroups();
 
 	void sendPendingStateEntered();
 	void sendEnterWorld();
@@ -388,6 +393,7 @@ private:
 	void sendAddTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
 	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
 	void sendRemoveTileThing(const Position &pos, uint32_t stackpos);
+	void sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> creature);
 	void sendUpdateTile(std::shared_ptr<Tile> tile, const Position &pos);
 
 	void sendAddCreature(std::shared_ptr<Creature> creature, const Position &pos, int32_t stackpos, bool isLogin);
@@ -475,6 +481,7 @@ private:
 
 	friend class Player;
 	friend class PlayerWheel;
+	friend class PlayerVIP;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;

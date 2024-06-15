@@ -61,15 +61,6 @@ enum LightState_t {
 	LIGHT_STATE_SUNRISE,
 };
 
-enum CyclopediaBadge_t : uint8_t {
-	ACCOUNT_AGE = 1,
-	LOYALTY,
-	ACCOUNT_ALL_LEVEL,
-	ACCOUNT_ALL_VOCATIONS,
-	TOURNAMENT_PARTICIPATION,
-	TOURNAMENT_POINTS,
-};
-
 enum CyclopediaCharacterInfoType_t : uint8_t {
 	CYCLOPEDIA_CHARACTERINFO_BASEINFORMATION = 0,
 	CYCLOPEDIA_CHARACTERINFO_GENERALSTATS = 1,
@@ -108,6 +99,7 @@ enum class HighscoreCategories_t : uint8_t {
 	CHARMS = 11,
 	DROME = 12,
 	GOSHNAR = 13,
+	BOSS_POINTS = 14,
 };
 
 enum HighscoreType_t : uint8_t {

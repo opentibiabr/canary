@@ -34,7 +34,10 @@
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
 #include "enums/object_category.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/vip/player_vip.hpp"
 
 class House;
 class NetworkMessage;
@@ -51,12 +54,16 @@ class Spell;
 class PlayerWheel;
 class PlayerAchievement;
 class PlayerBadge;
+class PlayerTitle;
+class PlayerVIP;
 class Spectators;
 class Account;
 
 struct ModalWindow;
 struct Achievement;
 struct Badge;
+struct Title;
+struct VIPGroup;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -146,8 +153,8 @@ public:
 	const std::string &getName() const override {
 		return name;
 	}
-	void setName(std::string newName) {
-		this->name = std::move(newName);
+	void setName(const std::string &name) {
+		this->name = name;
 	}
 	const std::string &getTypeName() const override {
 		return name;
@@ -223,9 +230,8 @@ public:
 	void addList() override;
 	void removePlayer(bool displayEffect, bool forced = true);
 
-	static uint64_t getExpForLevel(int32_t lv) {
-		lv--;
-		return ((50ULL * lv * lv * lv) - (150ULL * lv * lv) + (400ULL * lv)) / 3ULL;
+	static uint64_t getExpForLevel(const uint32_t level) {
+		return (((level - 6ULL) * level + 17ULL) * level - 12ULL) / 6ULL * 100ULL;
 	}
 
 	uint16_t getStaminaMinutes() const {
@@ -470,7 +476,12 @@ public:
 		return blessings[index - 1] != 0;
 	}
 	uint8_t getBlessingCount(uint8_t index) const {
-		return blessings[index - 1];
+		if (index > 0 && index <= blessings.size()) {
+			return blessings[index - 1];
+		} else {
+			g_logger().error("[{}] - index outside range 0-10.", __FUNCTION__);
+			return 0;
+		}
 	}
 	std::string getBlessingsName() const;
 
@@ -513,10 +524,10 @@ public:
 
 	void genReservedStorageRange();
 
-	void setGroup(Group* newGroup) {
+	void setGroup(std::shared_ptr<Group> newGroup) {
 		group = newGroup;
 	}
-	Group* getGroup() const {
+	std::shared_ptr<Group> getGroup() const {
 		return group;
 	}
 
@@ -826,13 +837,6 @@ public:
 		return shopOwner;
 	}
 
-	// V.I.P. functions
-	void notifyStatusChange(std::shared_ptr<Player> player, VipStatus_t status, bool message = true) const;
-	bool removeVIP(uint32_t vipGuid);
-	bool addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t status);
-	bool addVIPInternal(uint32_t vipGuid);
-	bool editVIP(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify) const;
-
 	// follow functions
 	bool setFollowCreature(std::shared_ptr<Creature> creature) override;
 	void goToFollowCreature() override;
@@ -1032,12 +1036,12 @@ public:
 	void addOutfit(uint16_t lookType, uint8_t addons);
 	bool removeOutfit(uint16_t lookType);
 	bool removeOutfitAddon(uint16_t lookType, uint8_t addons);
-	bool getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addons) const;
+	bool getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const;
 
 	bool canFamiliar(uint16_t lookType) const;
 	void addFamiliar(uint16_t lookType);
 	bool removeFamiliar(uint16_t lookType);
-	bool getFamiliar(const Familiar &familiar) const;
+	bool getFamiliar(const std::shared_ptr<Familiar> &familiar) const;
 	void setFamiliarLooktype(uint16_t familiarLooktype) {
 		this->defaultOutfit.lookFamiliarsType = familiarLooktype;
 	}
@@ -1046,7 +1050,6 @@ public:
 
 	bool hasKilled(std::shared_ptr<Player> player) const;
 
-	size_t getMaxVIPEntries() const;
 	size_t getMaxDepotItems() const;
 
 	// tile
@@ -1070,6 +1073,11 @@ public:
 	void sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 		if (stackpos != -1 && client) {
 			client->sendRemoveTileThing(pos, stackpos);
+		}
+	}
+	void sendUpdateTileCreature(const std::shared_ptr<Creature> creature) {
+		if (client) {
+			client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(static_self_cast<Player>(), creature), creature);
 		}
 	}
 	void sendUpdateTile(std::shared_ptr<Tile> updateTile, const Position &pos) {
@@ -1306,6 +1314,9 @@ public:
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
 	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
+
+	void onEquipInventory();
+	void onDeEquipInventory();
 
 	void onAttackedCreatureDisappear(bool isLogout) override;
 	void onFollowCreatureDisappear(bool isLogout) override;
@@ -2551,8 +2562,7 @@ public:
 	}
 
 	bool checkAutoLoot(bool isBoss) const {
-		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__);
-		if (!autoLoot) {
+		if (!g_configManager().getBoolean(AUTOLOOT, __FUNCTION__)) {
 			return false;
 		}
 		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY, __FUNCTION__) && !isVip()) {
@@ -2560,18 +2570,13 @@ public:
 		}
 
 		auto featureKV = kv()->scoped("features")->get("autoloot");
-		if (featureKV.has_value()) {
-			auto value = featureKV->getNumber();
-			if (value == 2) {
-				return true;
-			} else if (value == 1) {
-				return !isBoss;
-			} else if (value == 0) {
-				return false;
-			}
+		auto value = featureKV.has_value() ? featureKV->getNumber() : 0;
+		if (value == 2) {
+			return true;
+		} else if (value == 1) {
+			return !isBoss;
 		}
-
-		return true;
+		return false;
 	}
 
 	QuickLootFilter_t getQuickLootFilter() const {
@@ -2597,6 +2602,12 @@ public:
 	// This get all blessings
 	phmap::flat_hash_map<Blessings_t, std::string> getBlessingNames() const;
 
+	// Gets the equipped items with augment by type
+	std::vector<std::shared_ptr<Item>> getEquippedAugmentItemsByType(Augment_t augmentType) const;
+
+	// Gets the equipped items with augment
+	std::vector<std::shared_ptr<Item>> getEquippedAugmentItems() const;
+
 	/**
 	 * @brief Get the equipped items of the player->
 	 * @details This function returns a vector containing the items currently equipped by the player
@@ -2615,6 +2626,14 @@ public:
 	// Player badge interface
 	std::unique_ptr<PlayerBadge> &badge();
 	const std::unique_ptr<PlayerBadge> &badge() const;
+
+	// Player title interface
+	std::unique_ptr<PlayerTitle> &title();
+	const std::unique_ptr<PlayerTitle> &title() const;
+
+	// Player vip interface
+	std::unique_ptr<PlayerVIP> &vip();
+	const std::unique_ptr<PlayerVIP> &vip() const;
 
 	void sendLootMessage(const std::string &message) const;
 
@@ -2702,7 +2721,6 @@ private:
 	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
 
 	phmap::flat_hash_set<uint32_t> attackedSet;
-	phmap::flat_hash_set<uint32_t> VIPList;
 
 	std::map<uint8_t, OpenContainer> openContainers;
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
@@ -2786,7 +2804,7 @@ private:
 	std::shared_ptr<BedItem> bedItem = nullptr;
 	std::shared_ptr<Guild> guild = nullptr;
 	GuildRank_ptr guildRank;
-	Group* group = nullptr;
+	std::shared_ptr<Group> group = nullptr;
 	std::shared_ptr<Inbox> inbox;
 	std::shared_ptr<Item> imbuingItem = nullptr;
 	std::shared_ptr<Item> tradeItem = nullptr;
@@ -2842,7 +2860,7 @@ private:
 
 	uint16_t lastStatsTrainingTime = 0;
 	uint16_t staminaMinutes = 2520;
-	std::vector<uint8_t> blessings = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	std::vector<uint8_t> blessings = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	uint16_t maxWriteLen = 0;
 	uint16_t baseXpGain = 100;
 	uint16_t voucherXpBoost = 0;
@@ -2897,7 +2915,6 @@ private:
 	FightMode_t fightMode = FIGHTMODE_ATTACK;
 	Faction_t faction = FACTION_PLAYER;
 	QuickLootFilter_t quickLootFilter;
-	VipStatus_t statusVipList = VIPSTATUS_ONLINE;
 	PlayerPronoun_t pronoun = PLAYERPRONOUN_THEY;
 
 	bool chaseMode = false;
@@ -3011,10 +3028,14 @@ private:
 	friend class IOLoginDataSave;
 	friend class PlayerAchievement;
 	friend class PlayerBadge;
+	friend class PlayerTitle;
+	friend class PlayerVIP;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;
 	std::unique_ptr<PlayerBadge> m_playerBadge;
+	std::unique_ptr<PlayerTitle> m_playerTitle;
+	std::unique_ptr<PlayerVIP> m_playerVIP;
 
 	std::mutex quickLootMutex;
 

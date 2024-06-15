@@ -51,6 +51,7 @@ class Spectators;
 struct Achievement;
 struct HighscoreCategory;
 struct Badge;
+struct Title;
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
@@ -59,7 +60,6 @@ static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 static constexpr int32_t EVENT_FORGEABLEMONSTERCHECKINTERVAL = 300000;
 static constexpr int32_t EVENT_LUA_GARBAGE_COLLECTION = 60000 * 10; // 10min
-static constexpr int32_t EVENT_REFRESH_MARKET_PRICES = 60000; // 1min
 
 static constexpr std::chrono::minutes CACHE_EXPIRATION_TIME { 10 }; // 10min
 static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; // 10min
@@ -313,6 +313,7 @@ public:
 	void playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
 	void playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
+	static std::string getSkillNameById(uint8_t &skill);
 
 	void updatePlayerSaleItems(uint32_t playerId);
 
@@ -392,7 +393,7 @@ public:
 
 	void playerRequestAddVip(uint32_t playerId, const std::string &name);
 	void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
-	void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);
+	void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify, std::vector<uint8_t> vipGroupsId);
 	void playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm);
 	void playerClearImbuement(uint32_t playerid, uint8_t slot);
 	void playerCloseImbuementWindow(uint32_t playerid);
@@ -425,7 +426,6 @@ public:
 
 	void updatePlayerHelpers(std::shared_ptr<Player> player);
 
-	void cleanup();
 	void shutdown();
 	void dieSafely(const std::string &errorMsg);
 	void addBestiaryList(uint16_t raceid, std::string name);
@@ -515,7 +515,7 @@ public:
 		return lightHour;
 	}
 
-	bool loadItemsPrice();
+	void loadItemsPrice();
 
 	void loadMotdNum();
 	void saveMotdNum() const;
@@ -581,8 +581,10 @@ public:
 	bool hasDistanceEffect(uint16_t effectId);
 
 	Groups groups;
+	Familiars familiars;
 	Map map;
 	Mounts mounts;
+	Outfits outfits;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 
@@ -726,11 +728,16 @@ public:
 	Badge getBadgeById(uint8_t id);
 	Badge getBadgeByName(const std::string &name);
 
+	std::unordered_set<Title> getTitles();
+	Title getTitleById(uint8_t id);
+	Title getTitleByName(const std::string &name);
+
 private:
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
 
 	std::unordered_set<Badge> m_badges;
+	std::unordered_set<Title> m_titles;
 
 	std::vector<HighscoreCategory> m_highscoreCategories;
 	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;

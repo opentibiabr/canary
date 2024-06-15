@@ -56,7 +56,7 @@ local createMonster = TalkAction("/m")
 -- @param param: String containing the command parameters.
 -- Format: "/m monstername, monstercount, [fiendish/influenced level], spawnRadius, [forceCreate]"
 -- Example: "/m rat, 10, fiendish, 5, true"
--- @param: the last param is by default "false", if add "," or any value i'ts set to true
+-- @param: the last param is by default "false", if add "," or any value it's set to true
 -- @return true if the command is executed successfully, false otherwise.
 function createMonster.onSay(player, words, param)
 	-- create log
@@ -73,20 +73,20 @@ function createMonster.onSay(player, words, param)
 	local monsterName = split[1]
 	local monsterCount = 0
 	if split[2] then
-		split[2] = split[2]:gsub("^%s*(.-)$", "%1") --Trim left
+		split[2] = split[2]:trimSpace()
 		monsterCount = tonumber(split[2])
 	end
 
 	local monsterForge = nil
 	if split[3] then
-		split[3] = split[3]:gsub("^%s*(.-)$", "%1") --Trim left
+		split[3] = split[3]:trimSpace()
 		monsterForge = split[3]
 	end
 
 	if monsterCount > 1 then
 		local spawnRadius = 5
 		if split[4] then
-			split[4] = split[4]:gsub("^%s*(.-)$", "%1") --Trim left
+			split[4] = split[4]:trimSpace()
 			spawnRadius = split[4]
 			print(spawnRadius)
 		end
@@ -127,3 +127,33 @@ end
 createMonster:separator(" ")
 createMonster:groupType("god")
 createMonster:register()
+
+----------------- Rename monster name -----------------
+local setMonsterName = TalkAction("/setmonstername")
+
+-- @function setMonsterName.onSay
+-- @desc TalkAction to rename nearby monsters within a radius of 4 sqm.
+-- Format: "/setmonstername newName"
+function setMonsterName.onSay(player, words, param)
+	if param == "" then
+		player:sendCancelMessage("Command param required.")
+		return true
+	end
+
+	local split = param:split(",")
+	local monsterNewName = split[1]
+
+	local spectators, spectator = Game.getSpectators(player:getPosition(), false, false, 4, 4, 4, 4)
+	for i = 1, #spectators do
+		spectator = spectators[i]
+		if spectator:isMonster() then
+			spectator:setName(monsterNewName)
+		end
+	end
+
+	return true
+end
+
+setMonsterName:separator(" ")
+setMonsterName:groupType("god")
+setMonsterName:register()

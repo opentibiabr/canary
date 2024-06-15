@@ -16,6 +16,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
@@ -1603,7 +1604,7 @@ int PlayerFunctions::luaPlayerGetGroup(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetGroup(lua_State* L) {
 	// player:setGroup(group)
-	Group* group = getUserdata<Group>(L, 2);
+	std::shared_ptr<Group> group = getUserdataShared<Group>(L, 2);
 	if (!group) {
 		pushBoolean(L, false);
 		return 1;
@@ -1743,6 +1744,11 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 		return 1;
 	}
 
+	if (key == 0) {
+		reportErrorFunc("Storage key is nil");
+		return 1;
+	}
+
 	if (player) {
 		player->addStorageValue(key, value);
 		pushBoolean(L, true);
@@ -1761,6 +1767,7 @@ int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
 		return 0;
 	}
 
+	g_logger().warn("The function 'player:getStorageValueByName' is deprecated and will be removed in future versions, please use KV system");
 	auto name = getString(L, 2);
 	lua_pushnumber(L, player->getStorageValueByName(name));
 	return 1;
@@ -1775,6 +1782,7 @@ int PlayerFunctions::luaPlayerSetStorageValueByName(lua_State* L) {
 		return 0;
 	}
 
+	g_logger().warn("The function 'player:setStorageValueByName' is deprecated and will be removed in future versions, please use KV system");
 	auto storageName = getString(L, 2);
 	int32_t value = getNumber<int32_t>(L, 3);
 
@@ -3016,14 +3024,14 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	if (player->isInGhostMode()) {
 		for (const auto &it : g_game().getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
-				it.second->notifyStatusChange(player, VIPSTATUS_OFFLINE);
+				it.second->vip()->notifyStatusChange(player, VipStatus_t::Offline);
 			}
 		}
 		IOLoginData::updateOnlineStatus(player->getGUID(), false);
 	} else {
 		for (const auto &it : g_game().getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
-				it.second->notifyStatusChange(player, player->statusVipList);
+				it.second->vip()->notifyStatusChange(player, player->vip()->getStatus());
 			}
 		}
 		IOLoginData::updateOnlineStatus(player->getGUID(), true);
@@ -4290,6 +4298,60 @@ int PlayerFunctions::luaPlayerAddBadge(lua_State* L) {
 	}
 
 	player->badge()->add(getNumber<uint8_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddTitle(lua_State* L) {
+	// player:addTitle(id)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	player->title()->manage(true, getNumber<uint8_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetTitles(lua_State* L) {
+	// player:getTitles()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto playerTitles = player->title()->getUnlockedTitles();
+	lua_createtable(L, static_cast<int>(playerTitles.size()), 0);
+
+	int index = 0;
+	for (const auto &title : playerTitles) {
+		lua_createtable(L, 0, 3);
+		setField(L, "id", title.first.m_id);
+		setField(L, "name", player->title()->getNameBySex(player->getSex(), title.first.m_maleName, title.first.m_femaleName));
+		setField(L, "description", title.first.m_description);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetCurrentTitle(lua_State* L) {
+	// player:setCurrentTitle(id)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	const auto &title = g_game().getTitleById(getNumber<uint8_t>(L, 2, 0));
+	if (title.m_id == 0) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_VARIANT_NOT_FOUND));
+		return 1;
+	}
+
+	player->title()->setCurrentTitle(title.m_id);
 	pushBoolean(L, true);
 	return 1;
 }

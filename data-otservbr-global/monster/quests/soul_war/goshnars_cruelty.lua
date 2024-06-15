@@ -95,7 +95,6 @@ monster.loot = {
 	{ name = "figurine of cruelty", chance = 400 },
 	{ name = "spectral saddle", chance = 400 },
 	{ name = "spectral horse tack", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {

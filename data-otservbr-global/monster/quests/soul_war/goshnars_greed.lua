@@ -100,7 +100,6 @@ monster.loot = {
 	{ name = "greed's arm", chance = 25000, maxCount = 1 },
 	{ name = "figurine of greed", chance = 400 },
 	{ name = "the skull of a beast", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {

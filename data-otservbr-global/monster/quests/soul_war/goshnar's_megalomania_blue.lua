@@ -94,7 +94,6 @@ monster.loot = {
 	{ name = "figurine of megalomania", chance = 400 },
 	{ name = "megalomania's skull", chance = 400 },
 	{ name = "megalomania's essence", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {

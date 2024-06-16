@@ -4974,7 +4974,7 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 			return;
 		}
 	}
-	outfitsMap.emplace(lookType, addons);
+	outfitsMap.emplace_back(lookType, addons);
 }
 
 bool Player::removeOutfit(uint16_t lookType) {

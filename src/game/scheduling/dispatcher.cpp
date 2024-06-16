@@ -190,7 +190,7 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	const auto &thread = getThreadTask();
-	std::scoped_lock lock(thread->mutex);
+	// std::scoped_lock lock(thread->mutex);
 
 	auto eventId = scheduledTasksRef
 					   .emplace(task->getId(), thread->scheduledTasks.emplace_back(task))

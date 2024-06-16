@@ -379,7 +379,7 @@ void SpawnMonster::removeMonsters() {
 
 void SpawnMonster::setMonsterVariant(const std::string &variant) {
 	for (auto &it : spawnMonsterMap) {
-		std::unordered_map<std::shared_ptr<MonsterType>, uint32_t> monsterTypes;
+		std::map<std::shared_ptr<MonsterType>, uint32_t> monsterTypes;
 		for (const auto &[monsterType, weight] : it.second.monsterTypes) {
 			if (!monsterType || monsterType->typeName.empty()) {
 				continue;

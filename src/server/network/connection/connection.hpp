@@ -100,9 +100,9 @@ private:
 
 	std::time_t timeConnected = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	uint32_t packetsSent = 0;
-	uint32_t ip = 1;
+	std::atomic<uint32_t> ip{1};
 
-	std::underlying_type_t<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
+	std::atomic<std::underlying_type_t<ConnectionState_t>> connectionState{CONNECTION_STATE_OPEN};
 	bool receivedFirst = false;
 
 	friend class ServicePort;

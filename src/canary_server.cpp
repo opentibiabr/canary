@@ -34,8 +34,6 @@
 
 #include "core.hpp"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnusedValue"
 CanaryServer::CanaryServer(
 	Logger &logger,
 	RSA &rsa
@@ -394,5 +392,3 @@ void CanaryServer::shutdown() {
 	inject<ThreadPool>().shutdown();
 	std::exit(0);
 }
-
-#pragma clang diagnostic pop

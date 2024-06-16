@@ -72,15 +72,12 @@ private:
 	void accept();
 
 	asio::io_context &io_context;
+	asio::high_resolution_timer deadline_timer;
 	std::unique_ptr<asio::ip::tcp::acceptor> acceptor;
 	std::vector<Service_ptr> services;
 
 	uint16_t serverPort = 0;
 	bool pendingStart = false;
-
-	asio::high_resolution_timer deadline_timer;
-
-	std::mutex mutex;
 };
 
 class ServiceManager {
@@ -113,7 +110,7 @@ public:
 private:
 	void die();
 
-	std::unordered_map<uint16_t, ServicePort_ptr> acceptors;
+	std::map<uint16_t, ServicePort_ptr> acceptors;
 
 	asio::io_context io_context;
 	std::vector<std::thread> threads;

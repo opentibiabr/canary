@@ -17,7 +17,7 @@ class MonsterType;
 
 struct spawnBlock_t {
 	Position pos;
-	std::unordered_map<std::shared_ptr<MonsterType>, uint32_t> monsterTypes;
+	std::map<std::shared_ptr<MonsterType>, uint32_t> monsterTypes;
 	int64_t lastSpawn;
 	uint32_t interval;
 	Direction direction;

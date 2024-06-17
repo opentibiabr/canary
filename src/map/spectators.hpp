@@ -16,12 +16,10 @@ class Monster;
 class Npc;
 struct Position;
 
-using SpectatorList = std::vector<std::shared_ptr<Creature>>;
-
 struct SpectatorsCache {
 	struct FloorData {
-		std::optional<SpectatorList> floor;
-		std::optional<SpectatorList> multiFloor;
+		std::optional<CreatureVector> floor;
+		std::optional<CreatureVector> multiFloor;
 	};
 
 	int32_t minRangeX { 0 };
@@ -48,16 +46,39 @@ public:
 		requires std::is_base_of_v<Creature, T>
 	Spectators filter();
 
-	bool contains(const std::shared_ptr<Creature> &creature);
-	bool erase(const std::shared_ptr<Creature> &creature);
 	Spectators insert(const std::shared_ptr<Creature> &creature);
-	Spectators insertAll(const SpectatorList &list);
-	Spectators join(Spectators &anotherSpectators);
-	bool empty() const noexcept;
-	size_t size() noexcept;
-	CreatureVector::iterator begin() noexcept;
-	CreatureVector::iterator end() noexcept;
-	const CreatureVector &data() noexcept;
+	Spectators insertAll(const CreatureVector &list);
+	Spectators join(const Spectators &anotherSpectators) {
+		return insertAll(anotherSpectators.creatures);
+	}
+
+	bool contains(const std::shared_ptr<Creature> &creature) const {
+		return std::ranges::find(creatures, creature) != creatures.end();
+	}
+
+	bool erase(const std::shared_ptr<Creature> &creature) {
+		return std::erase(creatures, creature) > 0;
+	}
+
+	bool empty() const noexcept {
+		return creatures.empty();
+	}
+
+	size_t size() const noexcept {
+		return creatures.size();
+	}
+
+	auto begin() const noexcept {
+		return creatures.begin();
+	}
+
+	auto end() const noexcept {
+		return creatures.end();
+	}
+
+	const auto &data() const noexcept {
+		return creatures;
+	}
 
 private:
 	static phmap::flat_hash_map<Position, SpectatorsCache> spectatorsCache;
@@ -65,7 +86,7 @@ private:
 	Spectators find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
 	bool checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY);
 
-	stdext::vector_set<std::shared_ptr<Creature>> creatures;
+	CreatureVector creatures;
 };
 
 template <typename T>

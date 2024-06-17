@@ -6253,7 +6253,6 @@ void Game::checkCreatureWalk(uint32_t creatureId) {
 	const auto &creature = getCreatureByID(creatureId);
 	if (creature && creature->getHealth() > 0) {
 		creature->onCreatureWalk();
-		cleanup();
 	}
 }
 
@@ -6316,7 +6315,6 @@ void Game::checkCreatures() {
 			--end;
 		}
 	}
-	cleanup();
 
 	index = (index + 1) % EVENT_CREATURECOUNT;
 }
@@ -7965,8 +7963,6 @@ void Game::shutdown() {
 	map.spawnsNpc.clear();
 	raids.clear();
 
-	cleanup();
-
 	if (serviceManager) {
 		serviceManager->stop();
 	}
@@ -7976,16 +7972,6 @@ void Game::shutdown() {
 	g_luaEnvironment().collectGarbage();
 
 	g_logger().info("Done!");
-}
-
-void Game::cleanup() {
-	for (auto it = browseFields.begin(); it != browseFields.end();) {
-		if (it->second.expired()) {
-			it = browseFields.erase(it);
-		} else {
-			++it;
-		}
-	}
 }
 
 void Game::addBestiaryList(uint16_t raceid, std::string name) {

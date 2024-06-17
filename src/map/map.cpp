@@ -342,13 +342,35 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 
 	bool teleport = forceTeleport || !newTile->getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
 
-	auto spectators = Spectators()
-						  .find<Creature>(oldPos, true)
-						  .find<Creature>(newPos, true);
+	Spectators spectators;
+	if (!teleport && oldPos.z == newPos.z) {
+		int32_t minRangeX = MAP_MAX_VIEW_PORT_X;
+		int32_t maxRangeX = MAP_MAX_VIEW_PORT_X;
+		int32_t minRangeY = MAP_MAX_VIEW_PORT_Y;
+		int32_t maxRangeY = MAP_MAX_VIEW_PORT_Y;
+
+		if (oldPos.y > newPos.y) {
+			++minRangeY;
+		} else if (oldPos.y < newPos.y) {
+			++maxRangeY;
+		}
+
+		if (oldPos.x < newPos.x) {
+			++maxRangeX;
+		} else if (oldPos.x > newPos.x) {
+			++minRangeX;
+		}
+
+		spectators.find<Creature>(oldPos, true, minRangeX, maxRangeX, minRangeY, maxRangeY);
+	} else {
+		spectators.find<Creature>(oldPos, true);
+		spectators.find<Creature>(newPos, true);
+	}
 
 	auto playersSpectators = spectators.filter<Player>();
 
 	std::vector<int32_t> oldStackPosVector;
+	oldStackPosVector.reserve(playersSpectators.size());
 	for (const auto &spec : playersSpectators) {
 		if (spec->canSeeCreature(creature)) {
 			oldStackPosVector.push_back(oldTile->getClientIndexOfCreature(spec->getPlayer(), creature));

@@ -426,7 +426,6 @@ public:
 
 	void updatePlayerHelpers(std::shared_ptr<Player> player);
 
-	void cleanup();
 	void shutdown();
 	void dieSafely(const std::string &errorMsg);
 	void addBestiaryList(uint16_t raceid, std::string name);

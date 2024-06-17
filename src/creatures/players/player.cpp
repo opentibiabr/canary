@@ -1715,13 +1715,7 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 	Creature::onCreatureAppear(creature, isLogin);
 
 	if (isLogin && creature == getPlayer()) {
-		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-			std::shared_ptr<Item> item = inventory[slot];
-			if (item) {
-				item->startDecaying();
-				g_moveEvents().onPlayerEquip(getPlayer(), item, static_cast<Slots_t>(slot), false);
-			}
-		}
+		onEquipInventory();
 
 		// Refresh bosstiary tracker onLogin
 		refreshCyclopediaMonsterTracker(true);
@@ -1862,14 +1856,9 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 	Creature::onRemoveCreature(creature, isLogout);
 
 	if (auto player = getPlayer(); player == creature) {
-		for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-			const auto item = inventory[slot];
-			if (item) {
-				g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(slot));
-			}
-		}
-
 		if (isLogout) {
+			onDeEquipInventory();
+
 			if (m_party) {
 				m_party->leaveParty(player);
 			}
@@ -2007,6 +1996,25 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 			if (const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_PACIFIED, ticks, 0)) {
 				addCondition(condition);
 			}
+		}
+	}
+}
+
+void Player::onEquipInventory() {
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		std::shared_ptr<Item> item = inventory[slot];
+		if (item) {
+			item->startDecaying();
+			g_moveEvents().onPlayerEquip(getPlayer(), item, static_cast<Slots_t>(slot), false);
+		}
+	}
+}
+
+void Player::onDeEquipInventory() {
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		std::shared_ptr<Item> item = inventory[slot];
+		if (item) {
+			g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(slot));
 		}
 	}
 }

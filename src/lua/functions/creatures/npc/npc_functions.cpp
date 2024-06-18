@@ -354,7 +354,6 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 		return 1;
 	}
 
-	npc->addShopPlayer(player);
 	pushBoolean(L, player->openShopWindow(npc));
 	return 1;
 }
@@ -405,9 +404,6 @@ int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
 	}
 	lua_pop(L, 3);
 
-	// Close any eventual other shop window currently open.
-	player->closeShopWindow(true);
-	npc->addShopPlayer(player, items);
 	pushBoolean(L, player->openShopWindow(npc));
 	return 1;
 }

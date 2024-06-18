@@ -165,6 +165,8 @@ public:
 		internalLight = npcType->info.light;
 	}
 
+	bool isShopPlayer(const std::shared_ptr<Player> &player) const;
+
 	void addShopPlayer(const std::shared_ptr<Player> &player, const std::vector<ShopBlock> &shopItems = {});
 	void removeShopPlayer(const std::shared_ptr<Player> &player);
 	void closeAllShopWindows();

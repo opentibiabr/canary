@@ -643,6 +643,14 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	return false;
 }
 
+bool Npc::isShopPlayer(const std::shared_ptr<Player> &player) const {
+	if (!player) {
+		return false;
+	}
+
+	return shopPlayerMap.contains(player->getGUID());
+}
+
 void Npc::addShopPlayer(const std::shared_ptr<Player> &player, const std::vector<ShopBlock> &shopItems /* = {}*/) {
 	if (!player) {
 		return;

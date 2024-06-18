@@ -1900,6 +1900,13 @@ bool Player::openShopWindow(std::shared_ptr<Npc> npc) {
 		return false;
 	}
 
+	if (npc->isShopPlayer(static_self_cast<Player>())) {
+		g_logger().debug("[Player::openShopWindow] - Player {} is already in shop window", getName());
+		return false;
+	}
+
+	npc->addShopPlayer(static_self_cast<Player>());
+
 	setShopOwner(npc);
 
 	sendShop(npc);

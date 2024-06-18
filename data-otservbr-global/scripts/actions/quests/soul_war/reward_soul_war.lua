@@ -66,7 +66,7 @@ function phantasmalJadeMount.onUse(player, item, fromPosition, target, toPositio
 
 	if table.contains({ 34072, 34073, 34074 }, item.itemid) then
 		-- check items
-		if player:getItemCount(34072) >= 4 and player:getItemCount(34073) == 1 and player:getItemCount(34074) == 1 then
+		if player:getItemCount(34072) >= 4 and player:getItemCount(34073) >= 1 and player:getItemCount(34074) >= 1 then
 			player:removeItem(34072, 4)
 			player:removeItem(34073, 1)
 			player:removeItem(34074, 1)

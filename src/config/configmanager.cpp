@@ -383,11 +383,17 @@ bool ConfigManager::reload() {
 	return result;
 }
 
+void ConfigManager::missingConfigWarning(const char* identifier) {
+	g_logger().warn("[ConfigManager::missingConfigWarning] Warning: Missing configuration for identifier: " + std::string(identifier));
+}
+
 std::string ConfigManager::loadStringConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const std::string &defaultValue) {
 	std::string value = defaultValue;
 	lua_getglobal(L, identifier);
 	if (lua_isstring(L, -1)) {
 		value = lua_tostring(L, -1);
+	} else {
+		missingConfigWarning(identifier);
 	}
 	configs[key] = value;
 	lua_pop(L, 1);
@@ -399,6 +405,8 @@ int32_t ConfigManager::loadIntConfig(lua_State* L, const ConfigKey_t &key, const
 	lua_getglobal(L, identifier);
 	if (lua_isnumber(L, -1)) {
 		value = static_cast<int32_t>(lua_tointeger(L, -1));
+	} else {
+		missingConfigWarning(identifier);
 	}
 	configs[key] = value;
 	lua_pop(L, 1);
@@ -410,6 +418,8 @@ bool ConfigManager::loadBoolConfig(lua_State* L, const ConfigKey_t &key, const c
 	lua_getglobal(L, identifier);
 	if (lua_isboolean(L, -1)) {
 		value = static_cast<bool>(lua_toboolean(L, -1));
+	} else {
+		missingConfigWarning(identifier);
 	}
 	configs[key] = value;
 	lua_pop(L, 1);
@@ -421,6 +431,8 @@ float ConfigManager::loadFloatConfig(lua_State* L, const ConfigKey_t &key, const
 	lua_getglobal(L, identifier);
 	if (lua_isnumber(L, -1)) {
 		value = static_cast<float>(lua_tonumber(L, -1));
+	} else {
+		missingConfigWarning(identifier);
 	}
 	configs[key] = value;
 	lua_pop(L, 1);

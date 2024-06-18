@@ -4055,7 +4055,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	// Outfit description
 	playerDescriptionSize++;
 	msg.addString("Outfit", "ProtocolGame::sendCyclopediaCharacterInspection - Outfit");
-	if (const auto outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
+	if (const auto outfit = Outfits::getInstance().getOutfitByLookType(player, player->getDefaultOutfit().lookType)) {
 		msg.addString(outfit->name, "ProtocolGame::sendCyclopediaCharacterInspection - outfit->name");
 	} else {
 		msg.addString("unknown", "ProtocolGame::sendCyclopediaCharacterInspection - unknown");
@@ -5857,6 +5857,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				msg.add<uint64_t>(purchaseStatistics.highestPrice);
 				msg.add<uint64_t>(purchaseStatistics.lowestPrice);
 			}
+		} else {
+			msg.addByte(0x00);
 		}
 	} else {
 		msg.addByte(0x00); // send to old protocol ?
@@ -5880,6 +5882,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				msg.add<uint64_t>(saleStatistics.highestPrice);
 				msg.add<uint64_t>(saleStatistics.lowestPrice);
 			}
+		} else {
+			msg.addByte(0x00);
 		}
 	} else {
 		msg.addByte(0x00); // send to old protocol ?
@@ -5947,7 +5951,7 @@ void ProtocolGame::sendCreatureTurn(std::shared_ptr<Creature> creature, uint32_t
 	NetworkMessage msg;
 	msg.addByte(0x6B);
 	msg.addPosition(creature->getPosition());
-	msg.addByte(stackPos);
+	msg.addByte(static_cast<uint8_t>(stackPos));
 	msg.add<uint16_t>(0x63);
 	msg.add<uint32_t>(creature->getID());
 	msg.addByte(creature->getDirection());
@@ -6385,7 +6389,7 @@ void ProtocolGame::sendAddTileItem(const Position &pos, uint32_t stackpos, std::
 	NetworkMessage msg;
 	msg.addByte(0x6A);
 	msg.addPosition(pos);
-	msg.addByte(stackpos);
+	msg.addByte(static_cast<uint8_t>(stackpos));
 	AddItem(msg, item);
 	writeToOutputBuffer(msg);
 }
@@ -6398,7 +6402,7 @@ void ProtocolGame::sendUpdateTileItem(const Position &pos, uint32_t stackpos, st
 	NetworkMessage msg;
 	msg.addByte(0x6B);
 	msg.addPosition(pos);
-	msg.addByte(stackpos);
+	msg.addByte(static_cast<uint8_t>(stackpos));
 	AddItem(msg, item);
 	writeToOutputBuffer(msg);
 }
@@ -6410,6 +6414,23 @@ void ProtocolGame::sendRemoveTileThing(const Position &pos, uint32_t stackpos) {
 
 	NetworkMessage msg;
 	RemoveTileThing(msg, pos, stackpos);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> creature) {
+	if (!canSee(pos)) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x6B);
+	msg.addPosition(pos);
+	msg.addByte(static_cast<uint8_t>(stackpos));
+
+	bool known;
+	uint32_t removedKnown;
+	checkCreatureAsKnown(creature->getID(), known, removedKnown);
+	AddCreature(msg, creature, false, removedKnown);
 	writeToOutputBuffer(msg);
 }
 
@@ -6484,7 +6505,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 		NetworkMessage msg;
 		msg.addByte(0x6A);
 		msg.addPosition(pos);
-		msg.addByte(stackpos);
+		msg.addByte(static_cast<uint8_t>(stackpos));
 
 		bool known;
 		uint32_t removedKnown;
@@ -6641,7 +6662,7 @@ void ProtocolGame::sendMoveCreature(std::shared_ptr<Creature> creature, const Po
 			} else {
 				msg.addByte(0x6D);
 				msg.addPosition(oldPos);
-				msg.addByte(oldStackPos);
+				msg.addByte(static_cast<uint8_t>(oldStackPos));
 				msg.addPosition(newPos);
 			}
 
@@ -6676,7 +6697,7 @@ void ProtocolGame::sendMoveCreature(std::shared_ptr<Creature> creature, const Po
 			NetworkMessage msg;
 			msg.addByte(0x6D);
 			msg.addPosition(oldPos);
-			msg.addByte(oldStackPos);
+			msg.addByte(static_cast<uint8_t>(oldStackPos));
 			msg.addPosition(newPos);
 			writeToOutputBuffer(msg);
 		}
@@ -7836,7 +7857,7 @@ void ProtocolGame::RemoveTileThing(NetworkMessage &msg, const Position &pos, uin
 
 	msg.addByte(0x6C);
 	msg.addPosition(pos);
-	msg.addByte(stackpos);
+	msg.addByte(static_cast<uint8_t>(stackpos));
 }
 
 void ProtocolGame::sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &name, const Outfit_t creatureOutfit) {
@@ -8279,7 +8300,7 @@ void ProtocolGame::reloadCreature(std::shared_ptr<Creature> creature) {
 	if (knownCreatureSet.contains(creature->getID())) {
 		msg.addByte(0x6B);
 		msg.addPosition(creature->getPosition());
-		msg.addByte(stackpos);
+		msg.addByte(static_cast<uint8_t>(stackpos));
 		AddCreature(msg, creature, false, 0);
 	} else {
 		sendAddCreature(creature, creature->getPosition(), stackpos, false);

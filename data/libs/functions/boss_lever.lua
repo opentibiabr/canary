@@ -174,24 +174,36 @@ function BossLever:onUse(player)
 		end
 
 		if creature:getLevel() < self.requiredLevel then
-			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All the players need to be level " .. self.requiredLevel .. " or higher.")
+			local message = "All players need to be level " .. self.requiredLevel .. " or higher."
+			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
 			return false
 		end
 
-		if self:lastEncounterTime(creature) > os.time() then
-			local info = lever:getInfoPositions()
-			for _, v in pairs(info) do
-				local newPlayer = v.creature
-				if newPlayer then
-					local timeLeft = self:lastEncounterTime(newPlayer) - os.time()
-					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. getTimeInWords(timeLeft) .. " to face " .. self.name .. " again!")
-					if self:lastEncounterTime(newPlayer) > os.time() then
-						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
+		if creature:getGroup():getId() < GROUP_TYPE_GOD and self:lastEncounterTime(creature) > os.time() then
+			local infoPositions = lever:getInfoPositions()
+			for _, posInfo in pairs(infoPositions) do
+				local currentPlayer = posInfo.creature
+				if currentPlayer then
+					local lastEncounter = self:lastEncounterTime(currentPlayer)
+					local currentTime = os.time()
+					if lastEncounter and currentTime < lastEncounter then
+						local timeLeft = lastEncounter - currentTime
+						local timeMessage = getTimeInWords(timeLeft) .. " to face " .. self.name .. " again!"
+						local message = "You have to wait " .. timeMessage
+
+						if currentPlayer ~= player then
+							player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "A member in your team has to wait " .. timeMessage)
+						end
+
+						currentPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+						currentPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
 					end
 				end
 			end
 			return false
 		end
+
 		self.onUseExtra(creature)
 		return true
 	end)

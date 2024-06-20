@@ -851,7 +851,7 @@ public:
 
 	void stopWalk();
 	bool openShopWindow(std::shared_ptr<Npc> npc);
-	bool closeShopWindow(bool sendCloseShopWindow = true);
+	bool closeShopWindow();
 	bool updateSaleShopList(std::shared_ptr<Item> item);
 	bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 

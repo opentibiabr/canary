@@ -13,28 +13,34 @@
 #include "kv/value_wrapper_proto.hpp"
 #include "utils/tools.hpp"
 
+#include "database/database.hpp"
+
 #include <kv.pb.h>
 
 std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	auto query = fmt::format("SELECT `key_name`, `timestamp`, `value` FROM `kv_store` WHERE `key_name` = {}", db.escapeString(key));
-	auto result = db.storeQuery(query);
+	auto result = db.prepareAndExecute(query, key);
 	if (result == nullptr) {
+		g_logger().error("Failed to load result for key {}", key);
 		return std::nullopt;
 	}
 
-	unsigned long size;
+	size_t size = 0;
 	auto data = result->getStream("value", size);
 	if (data == nullptr) {
+		g_logger().error("Failed to load column 'value' for key {}", key);
 		return std::nullopt;
 	}
 
-	ValueWrapper valueWrapper;
 	auto timestamp = result->getNumber<uint64_t>("timestamp");
 	Canary::protobuf::kv::ValueWrapper protoValue;
 	if (protoValue.ParseFromArray(data, static_cast<int>(size))) {
+		ValueWrapper valueWrapper;
 		valueWrapper = ProtoSerializable::fromProto(protoValue, timestamp);
+		g_logger().info("Loaded value for key {}, valueSize {}, timeStamp {}", key, size, timestamp);
 		return valueWrapper;
 	}
+
 	logger.error("Failed to deserialize value for key {}", key);
 	return std::nullopt;
 }

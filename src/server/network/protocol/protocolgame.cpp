@@ -4644,7 +4644,7 @@ void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
 
 	if (!oldProtocol) {
 		msg.add<uint16_t>(npc->getCurrency());
-		msg.addString(std::string(), "ProtocolGame::sendShop - std::string()"); // Currency name
+		msg.addString(std::string()); // Currency name
 	}
 
 	const auto &shoplist = npc->getShopItemVector(player->getGUID());
@@ -7471,7 +7471,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> cr
 		}
 
 		if (!oldProtocol && creature->isHealthHidden()) {
-			msg.addString("", "ProtocolGame::AddCreature - empty");
+			msg.addString(std::string());
 		} else {
 			msg.addString(creature->getName(), "ProtocolGame::AddCreature - creature->getName()");
 		}

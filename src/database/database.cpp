@@ -14,6 +14,128 @@
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
 
+PreparedStatement::PreparedStatement(MYSQL* db, const std::string &query) {
+	stmt = mysql_stmt_init(db);
+	if (!stmt) {
+		g_logger().error("Failed to initialize statement handle.");
+		return;
+	}
+
+	if (mysql_stmt_prepare(stmt, query.c_str(), query.length())) {
+		mysql_stmt_close(stmt);
+		stmt = nullptr;
+		g_logger().error("Failed to prepare statement: " + std::string(mysql_stmt_error(stmt)));
+	}
+}
+
+PreparedStatement::~PreparedStatement() {
+	if (stmt) {
+		mysql_stmt_close(stmt);
+		stmt = nullptr;
+	}
+}
+
+const char* PreparedStatement::getStream(const std::string &columnName, size_t &size) {
+	auto it = columnMap.find(columnName);
+	if (it == columnMap.end()) {
+		g_logger().error("Column '{}' not found in result set.", columnName);
+		size = 0;
+		return nullptr;
+	}
+
+	if (it->second >= resultBuffers.size()) {
+		g_logger().error("Index for column '{}' is out of range. Index: {}, Buffer Size: {}", columnName, it->second, resultBuffers.size());
+		size = 0;
+		return nullptr;
+	}
+
+	size = lengths[it->second];
+	g_logger().info("Retrieved stream for column '{}'. Size: {}", columnName, size);
+	return resultBuffers[it->second].data();
+}
+
+std::string PreparedStatement::getString(const std::string &columnName) {
+	auto it = columnMap.find(columnName);
+	if (it == columnMap.end() || it->second >= resultBuffers.size()) {
+		g_logger().error("Column name not found or index out of range.");
+		return {};
+	}
+	return std::string(resultBuffers[it->second].begin(), resultBuffers[it->second].begin() + lengths[it->second]);
+}
+
+void PreparedStatement::initializeColumnMap() {
+}
+
+void PreparedStatement::fetchResults() {
+	g_logger().info("Fetching results...");
+
+	MYSQL_RES* meta = mysql_stmt_result_metadata(stmt);
+	if (!meta) {
+		g_logger().error("Failed to retrieve result metadata.");
+		return;
+	}
+
+	MYSQL_FIELD* fields = mysql_fetch_fields(meta);
+	auto columnCount = mysql_num_fields(meta);
+	for (unsigned int i = 0; i < columnCount; ++i) {
+		g_logger().info("Mapping column '{}' to index {}", fields[i].name, i);
+		columnMap[fields[i].name] = i;
+	}
+
+	resultBuffers.resize(columnCount);
+	lengths.resize(columnCount);
+	m_columnCount = columnCount;
+
+	g_logger().info("Total columns in SELECT statement: {}", m_columnCount);
+
+	std::vector<MYSQL_BIND> result(m_columnCount);
+	std::vector<std::unique_ptr<char[]>> buffers(columnCount);
+	std::vector<unsigned long> real_lengths(m_columnCount, 0);
+	std::vector<my_bool> is_null(m_columnCount, 0);
+	std::vector<my_bool> error(m_columnCount, 0);
+	for (unsigned int i = 0; i < m_columnCount; ++i) {
+		buffers[i] = std::make_unique<char[]>(fields[i].length);
+		memset(buffers[i].get(), 0, fields[i].length);
+
+		result[i].buffer_length = fields[i].length;
+		// The long needs to be interpreted as a string, there is some problem with this data reading that I was unable to identify
+		if (fields[i].type >= MYSQL_TYPE_DECIMAL && fields[i].type <= MYSQL_TYPE_BIT) {
+			result[i].buffer_type = MYSQL_TYPE_STRING;
+		} else {
+			result[i].buffer_type = fields[i].type;
+		}
+		result[i].buffer = buffers[i].get();
+		result[i].length = &real_lengths[i];
+		result[i].is_null = &is_null[i];
+		result[i].error = &error[i];
+		g_logger().info("Configuring column {}: Type = {}, Buffer Length = {}", fields[i].name, result[i].buffer_type, result[i].buffer_length);
+	}
+
+	if (mysql_stmt_bind_result(stmt, result.data())) {
+		g_logger().error("Failed to bind result buffers: {}", mysql_stmt_error(stmt));
+		return;
+	}
+
+	int row_count = 0;
+	while (mysql_stmt_fetch(stmt) == 0) {
+		row_count++;
+		g_logger().info("Row {}", row_count);
+		for (unsigned int i = 0; i < m_columnCount; ++i) {
+			if (!is_null[i]) {
+				g_logger().info("Column {}: Value: {}, Length: {}", fields[i].name, std::string(buffers[i].get(), real_lengths[i]), real_lengths[i]);
+				resultBuffers[i].assign(buffers[i].get(), buffers[i].get() + real_lengths[i]);
+				lengths[i] = real_lengths[i];
+			} else {
+				g_logger().info("Column {}: Value is NULL.", i);
+				resultBuffers[i].clear();
+			}
+		}
+	}
+
+	mysql_free_result(meta);
+	g_logger().info("Total rows fetched: {}", row_count);
+}
+
 Database::~Database() {
 	if (handle != nullptr) {
 		mysql_close(handle);

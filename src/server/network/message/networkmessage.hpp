@@ -96,7 +96,7 @@ public:
 	 * @param value The string value to be added to the message buffer.
 	 * @param function * @param function An optional parameter that specifies the function name from which `addString` is invoked.
 	 * Including this enhances logging by adding the function name to the debug and error log messages.
-	 * This helps in debugging by indicating the context when issues occur, such as attempting to add an 
+	 * This helps in debugging by indicating the context when issues occur, such as attempting to add an
 	 * empty string or when there are message size errors.
 	 *
 	 * When the function parameter is used, it aids in identifying the context in log messages,

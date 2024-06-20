@@ -425,7 +425,7 @@ int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 	}
 
 	if (player->getShopOwner() == npc) {
-		player->closeShopWindow(true);
+		player->closeShopWindow();
 	}
 
 	pushBoolean(L, true);
@@ -573,7 +573,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	}
 
 	uint64_t pricePerUnit = 0;
-	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector(player->getGUID());
+	const auto &shopVector = npc->getShopItemVector(player->getGUID());
 	for (ShopBlock shopBlock : shopVector) {
 		if (itemId == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			pricePerUnit = shopBlock.itemBuyPrice;

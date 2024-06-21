@@ -4722,6 +4722,7 @@ void ProtocolGame::sendLootStats(std::shared_ptr<Item> item, uint8_t count) {
 }
 
 void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
+	Benchmark brenchmark;
 	NetworkMessage msg;
 	msg.addByte(0x7A);
 	msg.addString(npc->getName(), "ProtocolGame::sendShop - npc->getName()");
@@ -4731,20 +4732,35 @@ void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
 		msg.addString(std::string(), "ProtocolGame::sendShop - std::string()"); // Currency name
 	}
 
-	std::vector<ShopBlock> shoplist = npc->getShopItemVector(player->getGUID());
+	const auto &shoplist = npc->getShopItemVector(player->getGUID());
 	uint16_t itemsToSend = std::min<size_t>(shoplist.size(), std::numeric_limits<uint16_t>::max());
 	msg.add<uint16_t>(itemsToSend);
 
+	// Initialize before the loop to avoid database overload on each iteration
+	auto talkactionHidden = player->kv()->get("npc-shop-hidden-sell-item");
+	// Initialize the inventoryMap outside the loop to avoid creation on each iteration
+	std::map<uint16_t, uint16_t> inventoryMap;
+	player->getAllSaleItemIdAndCount(inventoryMap);
 	uint16_t i = 0;
 	for (const ShopBlock &shopBlock : shoplist) {
 		if (++i > itemsToSend) {
 			break;
 		}
 
+		// Hidden sell items from the shop if they are not in the player's inventory
+		if (talkactionHidden && talkactionHidden->get<bool>()) {
+			const auto &foundItem = inventoryMap.find(shopBlock.itemId);
+			if (foundItem == inventoryMap.end() && shopBlock.itemSellPrice > 0 && shopBlock.itemBuyPrice == 0) {
+				AddHiddenShopItem(msg);
+				continue;
+			}
+		}
+
 		AddShopItem(msg, shopBlock);
 	}
 
 	writeToOutputBuffer(msg);
+	g_logger().debug("ProtocolGame::sendShop - Time: {} ms, shop items: {}", brenchmark.duration(), shoplist.size());
 }
 
 void ProtocolGame::sendCloseShop() {
@@ -5942,6 +5958,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				msg.add<uint64_t>(purchaseStatistics.highestPrice);
 				msg.add<uint64_t>(purchaseStatistics.lowestPrice);
 			}
+		} else {
+			msg.addByte(0x00);
 		}
 	} else {
 		msg.addByte(0x00); // send to old protocol ?
@@ -5965,6 +5983,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				msg.add<uint64_t>(saleStatistics.highestPrice);
 				msg.add<uint64_t>(saleStatistics.lowestPrice);
 			}
+		} else {
+			msg.addByte(0x00);
 		}
 	} else {
 		msg.addByte(0x00); // send to old protocol ?
@@ -8182,7 +8202,7 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg) {
 	// Empty bytes from AddShopItem
 	msg.add<uint16_t>(0);
 	msg.addByte(0);
-	msg.addString(std::string(), "ProtocolGame::AddHiddenShopItem - std::string()");
+	msg.addString(std::string());
 	msg.add<uint32_t>(0);
 	msg.add<uint32_t>(0);
 	msg.add<uint32_t>(0);
@@ -8193,18 +8213,6 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock) 
 	if (shopBlock.itemStorageKey != 0 && player->getStorageValue(shopBlock.itemStorageKey) < shopBlock.itemStorageValue) {
 		AddHiddenShopItem(msg);
 		return;
-	}
-
-	// Hidden sell items from the shop if they are not in the player's inventory
-	auto talkactionHidden = player->kv()->get("npc-shop-hidden-sell-item");
-	if (talkactionHidden && talkactionHidden->get<BooleanType>() == true) {
-		std::map<uint16_t, uint16_t> inventoryMap;
-		player->getAllSaleItemIdAndCount(inventoryMap);
-		auto inventoryItems = inventoryMap.find(shopBlock.itemId);
-		if (inventoryItems == inventoryMap.end() && shopBlock.itemSellPrice > 0 && shopBlock.itemBuyPrice == 0) {
-			AddHiddenShopItem(msg);
-			return;
-		}
 	}
 
 	const ItemType &it = Item::items[shopBlock.itemId];

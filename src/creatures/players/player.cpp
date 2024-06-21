@@ -1703,13 +1703,7 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 	Creature::onCreatureAppear(creature, isLogin);
 
 	if (isLogin && creature == getPlayer()) {
-		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-			std::shared_ptr<Item> item = inventory[slot];
-			if (item) {
-				item->startDecaying();
-				g_moveEvents().onPlayerEquip(getPlayer(), item, static_cast<Slots_t>(slot), false);
-			}
-		}
+		onEquipInventory();
 
 		// Refresh bosstiary tracker onLogin
 		refreshCyclopediaMonsterTracker(true);
@@ -1850,14 +1844,9 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 	Creature::onRemoveCreature(creature, isLogout);
 
 	if (auto player = getPlayer(); player == creature) {
-		for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-			const auto item = inventory[slot];
-			if (item) {
-				g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(slot));
-			}
-		}
-
 		if (isLogout) {
+			onDeEquipInventory();
+
 			if (m_party) {
 				m_party->leaveParty(player);
 			}
@@ -1894,31 +1883,38 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 }
 
 bool Player::openShopWindow(std::shared_ptr<Npc> npc) {
+	Benchmark brenchmark;
 	if (!npc) {
 		g_logger().error("[Player::openShopWindow] - Npc is wrong or nullptr");
 		return false;
 	}
+
+	if (npc->isShopPlayer(getGUID())) {
+		g_logger().debug("[Player::openShopWindow] - Player {} is already in shop window", getName());
+		return false;
+	}
+
+	npc->addShopPlayer(getGUID());
 
 	setShopOwner(npc);
 
 	sendShop(npc);
 	std::map<uint16_t, uint16_t> inventoryMap;
 	sendSaleItemList(getAllSaleItemIdAndCount(inventoryMap));
+
+	g_logger().debug("[Player::openShopWindow] - Player {} has opened shop window in {} ms", getName(), brenchmark.duration());
 	return true;
 }
 
-bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/) {
+bool Player::closeShopWindow() {
 	if (!shopOwner) {
 		return false;
 	}
 
-	shopOwner->removeShopPlayer(static_self_cast<Player>());
+	shopOwner->removeShopPlayer(getGUID());
 	setShopOwner(nullptr);
 
-	if (sendCloseShopWindow) {
-		sendCloseShop();
-	}
-
+	sendCloseShop();
 	return true;
 }
 
@@ -1995,6 +1991,25 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 			if (const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_PACIFIED, ticks, 0)) {
 				addCondition(condition);
 			}
+		}
+	}
+}
+
+void Player::onEquipInventory() {
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		std::shared_ptr<Item> item = inventory[slot];
+		if (item) {
+			item->startDecaying();
+			g_moveEvents().onPlayerEquip(getPlayer(), item, static_cast<Slots_t>(slot), false);
+		}
+	}
+}
+
+void Player::onDeEquipInventory() {
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		std::shared_ptr<Item> item = inventory[slot];
+		if (item) {
+			g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(slot));
 		}
 	}
 }
@@ -4273,7 +4288,7 @@ bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const {
 	}
 
 	const ItemType &itemType = Item::items[itemId];
-	std::vector<ShopBlock> shoplist = shopOwner->getShopItemVector(getGUID());
+	const auto &shoplist = shopOwner->getShopItemVector(getGUID());
 	return std::any_of(shoplist.begin(), shoplist.end(), [&](const ShopBlock &shopBlock) {
 		return shopBlock.itemId == itemId && shopBlock.itemBuyPrice != 0 && (!itemType.isFluidContainer() || shopBlock.itemSubType == subType);
 	});

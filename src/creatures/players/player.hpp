@@ -858,7 +858,7 @@ public:
 
 	void stopWalk();
 	bool openShopWindow(std::shared_ptr<Npc> npc);
-	bool closeShopWindow(bool sendCloseShopWindow = true);
+	bool closeShopWindow();
 	bool updateSaleShopList(std::shared_ptr<Item> item);
 	bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
@@ -1321,6 +1321,9 @@ public:
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
 	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
+
+	void onEquipInventory();
+	void onDeEquipInventory();
 
 	void onAttackedCreatureDisappear(bool isLogout) override;
 	void onFollowCreatureDisappear(bool isLogout) override;
@@ -2562,8 +2565,7 @@ public:
 	}
 
 	bool checkAutoLoot(bool isBoss) const {
-		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__);
-		if (!autoLoot) {
+		if (!g_configManager().getBoolean(AUTOLOOT, __FUNCTION__)) {
 			return false;
 		}
 		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY, __FUNCTION__) && !isVip()) {
@@ -2571,18 +2573,13 @@ public:
 		}
 
 		auto featureKV = kv()->scoped("features")->get("autoloot");
-		if (featureKV.has_value()) {
-			auto value = featureKV->getNumber();
-			if (value == 2) {
-				return true;
-			} else if (value == 1) {
-				return !isBoss;
-			} else if (value == 0) {
-				return false;
-			}
+		auto value = featureKV.has_value() ? featureKV->getNumber() : 0;
+		if (value == 2) {
+			return true;
+		} else if (value == 1) {
+			return !isBoss;
 		}
-
-		return true;
+		return false;
 	}
 
 	QuickLootFilter_t getQuickLootFilter() const {

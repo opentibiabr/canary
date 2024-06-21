@@ -41,21 +41,22 @@ public:
 		}
 	}
 
-	void removeList() override;
 	void addList() override;
+	void removeList() override;
 
-	const std::string &getName() const override {
-		return mType->name;
-	}
+	const std::string &getName() const override;
+	void setName(const std::string &name);
+
 	// Real monster name, set on monster creation "createMonsterType(typeName)"
 	const std::string &getTypeName() const override {
 		return mType->typeName;
 	}
-	const std::string &getNameDescription() const override {
-		return mType->nameDescription;
-	}
+	const std::string &getNameDescription() const override;
+	void setNameDescription(const std::string &nameDescription) {
+		this->nameDescription = nameDescription;
+	};
 	std::string getDescription(int32_t) override {
-		return strDescription + '.';
+		return nameDescription + '.';
 	}
 
 	CreatureType_t getType() const override {
@@ -363,7 +364,8 @@ private:
 	uint16_t forgeStack = 0;
 	ForgeClassifications_t monsterForgeClassification = ForgeClassifications_t::FORGE_NORMAL_MONSTER;
 
-	std::string strDescription;
+	std::string name;
+	std::string nameDescription;
 
 	std::shared_ptr<MonsterType> mType;
 	SpawnMonster* spawnMonster = nullptr;
@@ -453,7 +455,11 @@ private:
 	void dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creature> lastHitCreature) override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 	bool useCacheMap() const override {
-		return !randomStepping;
+		// return !randomStepping;
+		//  As the map cache is done synchronously for each movement that a monster makes, it is better to disable it,
+		//  as the pathfinder, which is one of the resources that uses this cache the most,
+		//  is multithreding and thus the processing cost is divided between the threads.
+		return false;
 	}
 
 	friend class MonsterFunctions;

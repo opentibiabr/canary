@@ -43,7 +43,7 @@ function onlineCoinsEvent.onThink(interval)
 			player:setStorageValue(config.storage, coins * 10000000)
 			if coins >= config.awardOn then
 				local coinsMath = math.floor(coins)
-				player:addTibiaCoins(coinsMath, false)
+				player:addTibiaCoins(coinsMath)
 				player:sendTextMessage(MESSAGE_STATUS_SMALL, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), coinsMath, "tibia coins"))
 				player:setStorageValue(config.storage, (coins - coinsMath) * 10000000)
 			end

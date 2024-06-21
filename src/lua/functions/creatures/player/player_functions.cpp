@@ -2561,7 +2561,7 @@ int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
-	// player:addTibiaCoins(coins)
+	// player:addTibiaCoins(coins[, detail = ""])
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (!player || !player->getAccount()) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2569,7 +2569,7 @@ int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->addCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2), "") != enumToValue(AccountErrors_t::Ok)) {
+	if (player->account->addCoins(enumToValue(CoinType::Normal), getNumber<uint32_t>(L, 2), getString(L, 3, "")) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("Failed to add coins");
 		lua_pushnil(L);
 		return 1;
@@ -2630,7 +2630,7 @@ int PlayerFunctions::luaPlayerGetTransferableCoins(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddTransferableCoins(lua_State* L) {
-	// player:addTransferableCoins(coins)
+	// player:addTransferableCoins(coins[, detail = ""])
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (!player || !player->getAccount()) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2638,7 +2638,7 @@ int PlayerFunctions::luaPlayerAddTransferableCoins(lua_State* L) {
 		return 1;
 	}
 
-	if (player->account->addCoins(enumToValue(CoinType::Transferable), getNumber<uint32_t>(L, 2)) != enumToValue(AccountErrors_t::Ok)) {
+	if (player->account->addCoins(enumToValue(CoinType::Transferable), getNumber<uint32_t>(L, 2), getString(L, 3, "")) != enumToValue(AccountErrors_t::Ok)) {
 		reportErrorFunc("failed to add transferable coins");
 		lua_pushnil(L);
 		return 1;

@@ -96,6 +96,13 @@ public:
 	}
 
 	const std::vector<ShopBlock> &getShopItemVector(uint32_t playerGUID) const {
+		if (playerGUID != 0) {
+			auto it = shopPlayers.find(playerGUID);
+			if (it != shopPlayers.end() && !it->second.empty()) {
+				return it->second;
+			}
+		}
+
 		return npcType->info.shopItemVector;
 	}
 

@@ -160,7 +160,7 @@ public:
 
 	bool isShopPlayer(uint32_t playerGUID) const;
 
-	void addShopPlayer(uint32_t playerGUID);
+	void addShopPlayer(uint32_t playerGUID, const std::vector<ShopBlock> &shopItems);
 	void removeShopPlayer(uint32_t playerGUID);
 	void closeAllShopWindows();
 
@@ -179,7 +179,7 @@ private:
 
 	std::map<uint32_t, uint16_t> playerInteractions;
 
-	std::unordered_set<uint32_t> shopPlayers;
+	std::unordered_map<uint32_t, std::vector<ShopBlock>> shopPlayers;
 
 	std::shared_ptr<NpcType> npcType;
 	std::shared_ptr<SpawnNpc> spawnNpc;

@@ -101,14 +101,13 @@ void Npc::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 	}
 
 	if (auto player = creature->getPlayer()) {
+		removeShopPlayer(player->getGUID());
 		onPlayerDisappear(player);
 	}
 
 	if (spawnNpc) {
 		spawnNpc->startSpawnNpcCheck();
 	}
-
-	shopPlayers.clear();
 }
 
 void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
@@ -647,8 +646,8 @@ bool Npc::isShopPlayer(uint32_t playerGUID) const {
 	return shopPlayers.find(playerGUID) != shopPlayers.end();
 }
 
-void Npc::addShopPlayer(uint32_t playerGUID) {
-	shopPlayers.insert(playerGUID);
+void Npc::addShopPlayer(uint32_t playerGUID, const std::vector<ShopBlock> &shopItems) {
+	shopPlayers.try_emplace(playerGUID, shopItems);
 }
 
 void Npc::removeShopPlayer(uint32_t playerGUID) {
@@ -656,7 +655,7 @@ void Npc::removeShopPlayer(uint32_t playerGUID) {
 }
 
 void Npc::closeAllShopWindows() {
-	for (const auto playerGUID : shopPlayers) {
+	for (const auto &[playerGUID, shopBlock] : shopPlayers) {
 		const auto &player = g_game().getPlayerByGUID(playerGUID);
 		if (player) {
 			player->closeShopWindow();

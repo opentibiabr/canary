@@ -404,7 +404,7 @@ int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
 	}
 	lua_pop(L, 3);
 
-	pushBoolean(L, player->openShopWindow(npc));
+	pushBoolean(L, player->openShopWindow(npc, items));
 	return 1;
 }
 

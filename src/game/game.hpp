@@ -426,7 +426,6 @@ public:
 
 	void updatePlayerHelpers(std::shared_ptr<Player> player);
 
-	void cleanup();
 	void shutdown();
 	void dieSafely(const std::string &errorMsg);
 	void addBestiaryList(uint16_t raceid, std::string name);
@@ -582,8 +581,10 @@ public:
 	bool hasDistanceEffect(uint16_t effectId);
 
 	Groups groups;
+	Familiars familiars;
 	Map map;
 	Mounts mounts;
+	Outfits outfits;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 

@@ -108,7 +108,7 @@ void Npc::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 		spawnNpc->startSpawnNpcCheck();
 	}
 
-	shopPlayerMap.clear();
+	shopPlayers.clear();
 }
 
 void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
@@ -259,7 +259,7 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	}
 
 	uint32_t buyPrice = 0;
-	const std::vector<ShopBlock> &shopVector = getShopItemVector(player->getGUID());
+	const auto &shopVector = getShopItemVector(player->getGUID());
 	for (const ShopBlock &shopBlock : shopVector) {
 		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			buyPrice = shopBlock.itemBuyPrice;
@@ -372,7 +372,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 
 	uint32_t sellPrice = 0;
 	const ItemType &itemType = Item::items[itemId];
-	const std::vector<ShopBlock> &shopVector = getShopItemVector(player->getGUID());
+	const auto &shopVector = getShopItemVector(player->getGUID());
 	for (const ShopBlock &shopBlock : shopVector) {
 		if (itemType.id == shopBlock.itemId && shopBlock.itemSellPrice != 0) {
 			sellPrice = shopBlock.itemSellPrice;
@@ -586,7 +586,7 @@ void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 void Npc::removePlayerInteraction(std::shared_ptr<Player> player) {
 	if (playerInteractions.contains(player->getID())) {
 		playerInteractions.erase(player->getID());
-		player->closeShopWindow(true);
+		player->closeShopWindow();
 	}
 }
 
@@ -643,30 +643,26 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	return false;
 }
 
-void Npc::addShopPlayer(const std::shared_ptr<Player> &player, const std::vector<ShopBlock> &shopItems /* = {}*/) {
-	if (!player) {
-		return;
-	}
-
-	shopPlayerMap.try_emplace(player->getGUID(), shopItems);
+bool Npc::isShopPlayer(uint32_t playerGUID) const {
+	return shopPlayers.find(playerGUID) != shopPlayers.end();
 }
 
-void Npc::removeShopPlayer(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		return;
-	}
+void Npc::addShopPlayer(uint32_t playerGUID) {
+	shopPlayers.insert(playerGUID);
+}
 
-	shopPlayerMap.erase(player->getGUID());
+void Npc::removeShopPlayer(uint32_t playerGUID) {
+	shopPlayers.erase(playerGUID);
 }
 
 void Npc::closeAllShopWindows() {
-	for (const auto &[playerGUID, playerPtr] : shopPlayerMap) {
-		auto shopPlayer = g_game().getPlayerByGUID(playerGUID);
-		if (shopPlayer) {
-			shopPlayer->closeShopWindow();
+	for (const auto playerGUID : shopPlayers) {
+		const auto &player = g_game().getPlayerByGUID(playerGUID);
+		if (player) {
+			player->closeShopWindow();
 		}
 	}
-	shopPlayerMap.clear();
+	shopPlayers.clear();
 }
 
 void Npc::handlePlayerMove(std::shared_ptr<Player> player, const Position &newPos) {

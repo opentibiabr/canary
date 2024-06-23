@@ -4261,7 +4261,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		name << item->getName() << " displaying the ";
 		bool outfited = false;
 		if (outfit.lookType != 0) {
-			const auto &outfitInfo = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
+			const auto &outfitInfo = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
 			if (!outfitInfo) {
 				return;
 			}
@@ -5932,7 +5932,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		outfit.lookMount = randomMount->clientId;
 	}
 
-	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
+	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
 	if (!playerOutfit) {
 		outfit.lookMount = 0;
 	}
@@ -6260,7 +6260,6 @@ void Game::checkCreatureWalk(uint32_t creatureId) {
 	const auto &creature = getCreatureByID(creatureId);
 	if (creature && creature->getHealth() > 0) {
 		creature->onCreatureWalk();
-		cleanup();
 	}
 }
 
@@ -6323,7 +6322,6 @@ void Game::checkCreatures() {
 			--end;
 		}
 	}
-	cleanup();
 
 	index = (index + 1) % EVENT_CREATURECOUNT;
 }
@@ -7972,8 +7970,6 @@ void Game::shutdown() {
 	map.spawnsNpc.clear();
 	raids.clear();
 
-	cleanup();
-
 	if (serviceManager) {
 		serviceManager->stop();
 	}
@@ -7983,16 +7979,6 @@ void Game::shutdown() {
 	g_luaEnvironment().collectGarbage();
 
 	g_logger().info("Done!");
-}
-
-void Game::cleanup() {
-	for (auto it = browseFields.begin(); it != browseFields.end();) {
-		if (it->second.expired()) {
-			it = browseFields.erase(it);
-		} else {
-			++it;
-		}
-	}
 }
 
 void Game::addBestiaryList(uint16_t raceid, std::string name) {

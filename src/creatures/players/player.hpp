@@ -153,8 +153,8 @@ public:
 	const std::string &getName() const override {
 		return name;
 	}
-	void setName(std::string newName) {
-		this->name = std::move(newName);
+	void setName(const std::string &name) {
+		this->name = name;
 	}
 	const std::string &getTypeName() const override {
 		return name;
@@ -476,7 +476,12 @@ public:
 		return blessings[index - 1] != 0;
 	}
 	uint8_t getBlessingCount(uint8_t index) const {
-		return blessings[index - 1];
+		if (index > 0 && index <= blessings.size()) {
+			return blessings[index - 1];
+		} else {
+			g_logger().error("[{}] - index outside range 0-10.", __FUNCTION__);
+			return 0;
+		}
 	}
 	std::string getBlessingsName() const;
 
@@ -845,8 +850,8 @@ public:
 	void onWalkComplete() override;
 
 	void stopWalk();
-	bool openShopWindow(std::shared_ptr<Npc> npc);
-	bool closeShopWindow(bool sendCloseShopWindow = true);
+	bool openShopWindow(std::shared_ptr<Npc> npc, const std::vector<ShopBlock> &shopItems = {});
+	bool closeShopWindow();
 	bool updateSaleShopList(std::shared_ptr<Item> item);
 	bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
@@ -1031,7 +1036,7 @@ public:
 	void addOutfit(uint16_t lookType, uint8_t addons);
 	bool removeOutfit(uint16_t lookType);
 	bool removeOutfitAddon(uint16_t lookType, uint8_t addons);
-	bool getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addons) const;
+	bool getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const;
 
 	bool canFamiliar(uint16_t lookType) const;
 	void addFamiliar(uint16_t lookType);
@@ -1068,6 +1073,11 @@ public:
 	void sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 		if (stackpos != -1 && client) {
 			client->sendRemoveTileThing(pos, stackpos);
+		}
+	}
+	void sendUpdateTileCreature(const std::shared_ptr<Creature> creature) {
+		if (client) {
+			client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(static_self_cast<Player>(), creature), creature);
 		}
 	}
 	void sendUpdateTile(std::shared_ptr<Tile> updateTile, const Position &pos) {
@@ -1304,6 +1314,9 @@ public:
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
 	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
+
+	void onEquipInventory();
+	void onDeEquipInventory();
 
 	void onAttackedCreatureDisappear(bool isLogout) override;
 	void onFollowCreatureDisappear(bool isLogout) override;
@@ -2549,8 +2562,7 @@ public:
 	}
 
 	bool checkAutoLoot(bool isBoss) const {
-		const bool autoLoot = g_configManager().getBoolean(AUTOLOOT, __FUNCTION__);
-		if (!autoLoot) {
+		if (!g_configManager().getBoolean(AUTOLOOT, __FUNCTION__)) {
 			return false;
 		}
 		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY, __FUNCTION__) && !isVip()) {
@@ -2558,18 +2570,13 @@ public:
 		}
 
 		auto featureKV = kv()->scoped("features")->get("autoloot");
-		if (featureKV.has_value()) {
-			auto value = featureKV->getNumber();
-			if (value == 2) {
-				return true;
-			} else if (value == 1) {
-				return !isBoss;
-			} else if (value == 0) {
-				return false;
-			}
+		auto value = featureKV.has_value() ? featureKV->getNumber() : 0;
+		if (value == 2) {
+			return true;
+		} else if (value == 1) {
+			return !isBoss;
 		}
-
-		return true;
+		return false;
 	}
 
 	QuickLootFilter_t getQuickLootFilter() const {
@@ -2853,7 +2860,7 @@ private:
 
 	uint16_t lastStatsTrainingTime = 0;
 	uint16_t staminaMinutes = 2520;
-	std::vector<uint8_t> blessings = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	std::vector<uint8_t> blessings = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	uint16_t maxWriteLen = 0;
 	uint16_t baseXpGain = 100;
 	uint16_t voucherXpBoost = 0;

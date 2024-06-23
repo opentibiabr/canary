@@ -46,3 +46,17 @@ enum Summary_t : uint8_t {
 	INSTANT_REWARDS = 18,
 	HIRELINGS = 20,
 };
+
+enum class CyclopediaMapData_t : uint8_t {
+	MinimapMarker = 0,
+	DiscoveryData = 1,
+	ActiveRaid = 2,
+	ImminentRaidMainArea = 3,
+	ImminentRaidSubArea = 4,
+	SetDiscoveryArea = 5,
+	Passage = 6,
+	SubAreaMonsters = 7,
+	MonsterBestiary = 8,
+	Donations = 9,
+	SetCurrentArea = 10,
+};

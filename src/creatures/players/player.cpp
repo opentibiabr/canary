@@ -1882,7 +1882,7 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 	}
 }
 
-bool Player::openShopWindow(std::shared_ptr<Npc> npc) {
+bool Player::openShopWindow(std::shared_ptr<Npc> npc, const std::vector<ShopBlock> &shopItems) {
 	Benchmark brenchmark;
 	if (!npc) {
 		g_logger().error("[Player::openShopWindow] - Npc is wrong or nullptr");
@@ -1894,7 +1894,7 @@ bool Player::openShopWindow(std::shared_ptr<Npc> npc) {
 		return false;
 	}
 
-	npc->addShopPlayer(getGUID());
+	npc->addShopPlayer(getGUID(), shopItems);
 
 	setShopOwner(npc);
 

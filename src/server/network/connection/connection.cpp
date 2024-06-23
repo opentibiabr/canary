@@ -18,7 +18,7 @@ ConnectionManager &ConnectionManager::getInstance() {
 	return inject<ConnectionManager>();
 }
 
-Connection_ptr ConnectionManager::createConnection(asio::io_context &io_context, const ConstServicePort_ptr& servicePort) {
+Connection_ptr ConnectionManager::createConnection(asio::io_context &io_context, const ConstServicePort_ptr &servicePort) {
 	auto connection = std::make_shared<Connection>(io_context, servicePort);
 	connections.emplace(connection);
 	g_logger().error("connection: {}", connections.size());
@@ -406,7 +406,7 @@ void Connection::onWriteOperation(const std::error_code &error) {
 	}
 }
 
-void Connection::handleTimeout(const ConnectionWeak_ptr& connectionWeak, const std::error_code &error) {
+void Connection::handleTimeout(const ConnectionWeak_ptr &connectionWeak, const std::error_code &error) {
 	if (error == asio::error::operation_aborted) {
 		return;
 	}

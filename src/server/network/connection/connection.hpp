@@ -34,7 +34,7 @@ public:
 
 	static ConnectionManager &getInstance();
 
-	Connection_ptr createConnection(asio::io_context &io_context, const ConstServicePort_ptr& servicePort);
+	Connection_ptr createConnection(asio::io_context &io_context, const ConstServicePort_ptr &servicePort);
 	void releaseConnection(const Connection_ptr &connection);
 	void closeAll();
 
@@ -74,7 +74,7 @@ private:
 
 	void onWriteOperation(const std::error_code &error);
 
-	static void handleTimeout(const ConnectionWeak_ptr& connectionWeak, const std::error_code &error);
+	static void handleTimeout(const ConnectionWeak_ptr &connectionWeak, const std::error_code &error);
 
 	void closeSocket();
 	void internalWorker();
@@ -100,9 +100,9 @@ private:
 
 	std::time_t timeConnected = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	uint32_t packetsSent = 0;
-	std::atomic<uint32_t> ip{1};
+	std::atomic<uint32_t> ip { 1 };
 
-	std::atomic<std::underlying_type_t<ConnectionState_t>> connectionState{CONNECTION_STATE_OPEN};
+	std::atomic<std::underlying_type_t<ConnectionState_t>> connectionState { CONNECTION_STATE_OPEN };
 	bool receivedFirst = false;
 
 	friend class ServicePort;

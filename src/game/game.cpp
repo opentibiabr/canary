@@ -452,13 +452,12 @@ void Game::loadBoostedCreature() {
 }
 
 void Game::start() {
-	ServiceManager& manager = g_ServiceManager();
+	ServiceManager &manager = g_ServiceManager();
 	// Game client protocols
 	manager.add<ProtocolGame>(static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__)));
 	manager.add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)));
 	// OT protocols
 	manager.add<ProtocolStatus>(static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT, __FUNCTION__)));
-
 
 	time_t now = time(0);
 	const tm* tms = localtime(&now);

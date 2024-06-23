@@ -29,8 +29,8 @@ ServiceManager::~ServiceManager() {
 }
 
 void ServiceManager::die() {
-	work.reset();  // Permite que io_context.run() retorne quando não houver mais trabalho
-	for (auto& thread : threads) {
+	work.reset(); // Permite que io_context.run() retorne quando não houver mais trabalho
+	for (auto &thread : threads) {
 		if (thread.joinable()) {
 			thread.join();
 		}
@@ -103,7 +103,7 @@ void ServicePort::accept() {
 	acceptor->async_accept(connection->getSocket(), [self = shared_from_this(), connection](const std::error_code &error) { self->onAccept(connection, error); });
 }
 
-void ServicePort::onAccept(const Connection_ptr& connection, const std::error_code &error) {
+void ServicePort::onAccept(const Connection_ptr &connection, const std::error_code &error) {
 	if (!error) {
 		if (services.empty()) {
 			return;
@@ -156,7 +156,7 @@ void ServicePort::onStopServer() {
 	close();
 }
 
-void ServicePort::openAcceptor(const std::weak_ptr<ServicePort>& weak_service, uint16_t port) {
+void ServicePort::openAcceptor(const std::weak_ptr<ServicePort> &weak_service, uint16_t port) {
 	if (auto service = weak_service.lock()) {
 		service->open(port);
 	}

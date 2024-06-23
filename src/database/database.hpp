@@ -200,7 +200,7 @@ public:
 
 	template <typename Func>
 	static bool executeWithinTransaction(const Func &toBeExecuted) {
-		bool changesExpected = toBeExecuted();  // Primeiro, execute a função para verificar se há mudanças esperadas.
+		bool changesExpected = toBeExecuted(); // Primeiro, execute a função para verificar se há mudanças esperadas.
 		if (changesExpected) {
 			DBTransaction transaction;
 			try {
@@ -213,7 +213,7 @@ public:
 				return false;
 			}
 		} else {
-			return true;  // Não há mudanças, então retornar true sem iniciar a transação.
+			return true; // Não há mudanças, então retornar true sem iniciar a transação.
 		}
 	}
 

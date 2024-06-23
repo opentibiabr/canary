@@ -225,8 +225,8 @@ void CanaryServer::logInfos() {
  */
 void CanaryServer::toggleForceCloseButton() {
 #ifdef OS_WINDOWS
-	HWND hwnd = GetConsoleWindow();  // Sem const, ponteiro mutável
-	HMENU hmenu = GetSystemMenu(hwnd, FALSE);  // Correto, conforme esperado pela API
+	HWND hwnd = GetConsoleWindow(); // Sem const, ponteiro mutável
+	HMENU hmenu = GetSystemMenu(hwnd, FALSE); // Correto, conforme esperado pela API
 	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
 #endif
 }

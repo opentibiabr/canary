@@ -354,7 +354,6 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 		return 1;
 	}
 
-	npc->addShopPlayer(player);
 	pushBoolean(L, player->openShopWindow(npc));
 	return 1;
 }
@@ -405,10 +404,7 @@ int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
 	}
 	lua_pop(L, 3);
 
-	// Close any eventual other shop window currently open.
-	player->closeShopWindow(true);
-	npc->addShopPlayer(player, items);
-	pushBoolean(L, player->openShopWindow(npc));
+	pushBoolean(L, player->openShopWindow(npc, items));
 	return 1;
 }
 
@@ -429,7 +425,7 @@ int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 	}
 
 	if (player->getShopOwner() == npc) {
-		player->closeShopWindow(true);
+		player->closeShopWindow();
 	}
 
 	pushBoolean(L, true);
@@ -577,7 +573,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	}
 
 	uint64_t pricePerUnit = 0;
-	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector(player->getGUID());
+	const auto &shopVector = npc->getShopItemVector(player->getGUID());
 	for (ShopBlock shopBlock : shopVector) {
 		if (itemId == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			pricePerUnit = shopBlock.itemBuyPrice;

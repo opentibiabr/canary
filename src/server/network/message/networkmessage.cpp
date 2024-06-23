@@ -40,9 +40,9 @@ Position NetworkMessage::getPosition() {
 	return pos;
 }
 
-void NetworkMessage::addString(const std::string &value, const std::string &function) {
+void NetworkMessage::addString(const std::string &value, const std::string &function /* = ""*/) {
 	size_t stringLen = value.length();
-	if (value.empty()) {
+	if (value.empty() && !function.empty()) {
 		g_logger().debug("[NetworkMessage::addString] - Value string is empty, function '{}'", function);
 	}
 	if (!canAdd(stringLen + 2)) {

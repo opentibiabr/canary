@@ -850,7 +850,7 @@ public:
 	void onWalkComplete() override;
 
 	void stopWalk();
-	bool openShopWindow(std::shared_ptr<Npc> npc);
+	bool openShopWindow(std::shared_ptr<Npc> npc, const std::vector<ShopBlock> &shopItems = {});
 	bool closeShopWindow();
 	bool updateSaleShopList(std::shared_ptr<Item> item);
 	bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;

@@ -6584,6 +6584,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 
 	if (isLogin) {
 		sendMagicEffect(pos, CONST_ME_TELEPORT);
+		sendHotkeyPreset();
 		sendDisableLoginMusic();
 	}
 
@@ -9055,4 +9056,18 @@ void ProtocolGame::sendDisableLoginMusic() {
 	msg.addByte(0x00);
 	msg.addByte(0x00);
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendHotkeyPreset() {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	auto vocation = g_vocations().getVocation(player->getVocation()->getBaseId());
+	if (vocation) {
+		NetworkMessage msg;
+		msg.addByte(0x9D);
+		msg.add<uint32_t>(vocation->getClientId());
+		writeToOutputBuffer(msg);
+	}
 }

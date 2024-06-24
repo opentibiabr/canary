@@ -25,7 +25,7 @@ ConfigManager &ConfigManager::getInstance() {
 
 bool ConfigManager::load() {
 	lua_State* L = luaL_newstate();
-	if (!L) {
+					if (!L) {
 		throw std::ios_base::failure("Failed to allocate memory");
 	}
 

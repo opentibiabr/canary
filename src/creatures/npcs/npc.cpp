@@ -521,7 +521,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 	}
 
 	if (Direction newDirection;
-		getRandomStep(newDirection)) {
+	    getRandomStep(newDirection)) {
 		listWalkDir.push_front(newDirection);
 		addEventWalk();
 	}
@@ -633,7 +633,7 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	std::ranges::shuffle(directionvector, getRandomGenerator());
 
 	for (const Position &creaturePos = getPosition();
-		 Direction direction : directionvector) {
+	     Direction direction : directionvector) {
 		if (canWalkTo(creaturePos, direction)) {
 			moveDirection = direction;
 			return true;

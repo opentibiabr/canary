@@ -521,7 +521,7 @@ function createHirelingType(HirelingName)
 		local inboxItems = inbox:getItems()
 		if player:getFreeCapacity() < itType:getWeight(1) then
 			npcHandler:say("Sorry, but you don't have enough capacity.", npc, creature)
-		elseif not inbox or #inboxItems > inbox:getMaxCapacity() then
+		elseif not inbox or #inboxItems >= inbox:getMaxCapacity() then
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 			npcHandler:say("Sorry, you don't have enough room on your inbox", npc, creature)
 		elseif not player:removeMoneyBank(15000) then

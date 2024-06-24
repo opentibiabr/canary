@@ -44,7 +44,7 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 			global->setEventType(GLOBALEVENT_SAVE);
 		} else {
 			g_logger().error("[GlobalEventFunctions::luaGlobalEventType] - "
-							 "Invalid type for global event: {}");
+			                 "Invalid type for global event: {}");
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -99,8 +99,8 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 		int32_t hour = params.front();
 		if (hour < 0 || hour > 23) {
 			g_logger().error("[GlobalEventFunctions::luaGlobalEventTime] - "
-							 "Invalid hour {} for globalevent with name: {}",
-							 timer, globalevent->getName());
+			                 "Invalid hour {} for globalevent with name: {}",
+			                 timer, globalevent->getName());
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -113,8 +113,8 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 			min = params[1];
 			if (min < 0 || min > 59) {
 				g_logger().error("[GlobalEventFunctions::luaGlobalEventTime] - "
-								 "Invalid minute: {} for globalevent with name: {}",
-								 timer, globalevent->getName());
+				                 "Invalid minute: {} for globalevent with name: {}",
+				                 timer, globalevent->getName());
 				pushBoolean(L, false);
 				return 1;
 			}
@@ -123,8 +123,8 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 				sec = params[2];
 				if (sec < 0 || sec > 59) {
 					g_logger().error("[GlobalEventFunctions::luaGlobalEventTime] - "
-									 "Invalid minute: {} for globalevent with name: {}",
-									 timer, globalevent->getName());
+					                 "Invalid minute: {} for globalevent with name: {}",
+					                 timer, globalevent->getName());
 					pushBoolean(L, false);
 					return 1;
 				}

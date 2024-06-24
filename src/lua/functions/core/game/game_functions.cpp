@@ -728,8 +728,8 @@ int GameFunctions::luaGameGetDummies(lua_State* L) {
 	 * @details This function provides a table containing two sub-tables: one for free dummies and one for house (or premium) dummies.
 
 	* @note usage on lua:
-		local dummies = Game.getDummies()
-		local rate = dummies[1] -- Retrieve dummy rate
+	    local dummies = Game.getDummies()
+	    local rate = dummies[1] -- Retrieve dummy rate
 	*/
 
 	const auto &dummies = Item::items.getDummys();

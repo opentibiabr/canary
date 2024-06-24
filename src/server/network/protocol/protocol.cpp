@@ -78,7 +78,7 @@ bool Protocol::onRecvMessage(NetworkMessage &msg) {
 		} else {
 			uint32_t checksum;
 			if (int32_t len = msg.getLength() - msg.getBufferPosition();
-				len > 0) {
+			    len > 0) {
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition(), len);
 			} else {
 				checksum = 0;

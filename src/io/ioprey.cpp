@@ -73,7 +73,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 	uint8_t stageThree;
 	uint8_t stageFour;
 	if (auto levelStage = static_cast<uint32_t>(std::floor(level / 100));
-		levelStage == 0) { // From level 0 to 99
+	    levelStage == 0) { // From level 0 to 99
 		stageOne = 3;
 		stageTwo = 3;
 		stageThree = 2;
@@ -154,7 +154,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	uint8_t stageThree;
 	uint8_t stageFour;
 	if (auto levelStage = static_cast<uint32_t>(std::floor(level / 100));
-		levelStage == 0) { // From level 0 to 99
+	    levelStage == 0) { // From level 0 to 99
 		stageOne = 3;
 		stageTwo = 3;
 		stageThree = 2;
@@ -253,7 +253,7 @@ void IOPrey::checkPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) co
 
 	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 		if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
-			slot && slot->isOccupied()) {
+		    slot && slot->isOccupied()) {
 			if (slot->bonusTimeLeft <= amount) {
 				if (slot->option == PreyOption_AutomaticReroll) {
 					if (player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE, __FUNCTION__)))) {

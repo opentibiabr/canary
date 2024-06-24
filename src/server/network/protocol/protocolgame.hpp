@@ -56,7 +56,7 @@ struct TextMessage {
 class ProtocolGame final : public Protocol {
 public:
 	// Static protocol information.
-	     enum { SERVER_SENDS_FIRST = true };
+	enum { SERVER_SENDS_FIRST = true };
 	// Not required as we send first.
 	enum { PROTOCOL_IDENTIFIER = 0 };
 	enum { USE_CHECKSUM = true };

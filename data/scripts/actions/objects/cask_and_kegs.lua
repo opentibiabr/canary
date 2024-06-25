@@ -1,26 +1,26 @@
 local targetTransformationList = {
-	[25879] = { flaskId = 285, transformId = 266 },
-	[25880] = { flaskId = 283, transformId = 236 },
-	[25881] = { flaskId = 284, transformId = 239 },
-	[25882] = { flaskId = 284, transformId = 7643 },
-	[25883] = { flaskId = 284, transformId = 23375 },
-	[25889] = { flaskId = 285, transformId = 268 },
-	[25890] = { flaskId = 283, transformId = 237 },
-	[25891] = { flaskId = 284, transformId = 238 },
-	[25892] = { flaskId = 284, transformId = 23373 },
-	[25899] = { flaskId = 284, transformId = 7642 },
-	[25900] = { flaskId = 284, transformId = 23374 },
-	[25903] = { flaskId = 285, transformId = 266 },
-	[25904] = { flaskId = 283, transformId = 236 },
-	[25905] = { flaskId = 284, transformId = 239 },
-	[25906] = { flaskId = 284, transformId = 7643 },
-	[25907] = { flaskId = 284, transformId = 23375 },
-	[25908] = { flaskId = 285, transformId = 268 },
-	[25909] = { flaskId = 283, transformId = 237 },
-	[25910] = { flaskId = 284, transformId = 238 },
-	[25911] = { flaskId = 284, transformId = 23373 },
-	[25913] = { flaskId = 284, transformId = 7642 },
-	[25914] = { flaskId = 284, transformId = 23374 },
+	[25879] = 266,
+	[25880] = 236,
+	[25881] = 239,
+	[25882] = 7643,
+	[25883] = 23375,
+	[25889] = 268,
+	[25890] = 237,
+	[25891] = 238,
+	[25892] = 23373,
+	[25899] = 7642,
+	[25900] = 23374,
+	[25903] = 266,
+	[25904] = 236,
+	[25905] = 239,
+	[25906] = 7643,
+	[25907] = 23375,
+	[25908] = 268,
+	[25909] = 237,
+	[25910] = 238,
+	[25911] = 23373,
+	[25913] = 7642,
+	[25914] = 23374,
 }
 
 local flasks = Action()
@@ -37,8 +37,8 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		flaskCount = charges
 	end
 
-	local transformation = targetTransformationList[target:getId()]
-	if not transformation or item:getId() ~= transformation.flaskId or charges <= 0 then
+	local transformId = targetTransformationList[target:getId()]
+	if not transformId or charges <= 0 then
 		return true
 	end
 
@@ -47,7 +47,7 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return true
 	end
 
-	item:transform(transformation.transformId, flaskCount)
+	item:transform(transformId, flaskCount)
 	charges = charges - flaskCount
 	target:transform(target:getId(), charges)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %d charges.", charges))
@@ -56,11 +56,11 @@ function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		target:remove()
 	end
 
-	local addedItem = storeInbox:addItem(transformation.transformId, flaskCount)
+	local addedItem = storeInbox:addItem(transformId, flaskCount)
 	if addedItem then
 		addedItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 	else
-		player:addItem(transformation.transformId, flaskCount)
+		player:addItem(transformId, flaskCount)
 	end
 
 	item:remove(flaskCount)

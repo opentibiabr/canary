@@ -30,8 +30,8 @@ public:
 
 	Summary getSummary() {
 		return { getAmount(Summary_t::PREY_CARDS),
-				 getAmount(Summary_t::INSTANT_REWARDS),
-				 getAmount(Summary_t::HIRELINGS) };
+			     getAmount(Summary_t::INSTANT_REWARDS),
+			     getAmount(Summary_t::HIRELINGS) };
 	}
 
 	void loadSummaryData();

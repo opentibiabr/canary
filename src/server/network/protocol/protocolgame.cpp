@@ -3965,12 +3965,12 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	uint8_t preySlotsUnlocked = 0;
 	// Prey third slot unlocked
 	if (const auto &slotP = player->getPreySlotById(PreySlot_Three);
-		slotP && slotP->state != PreyDataState_Locked) {
+	    slotP && slotP->state != PreyDataState_Locked) {
 		preySlotsUnlocked++;
 	}
 	// Task hunting third slot unlocked
 	if (const auto &slotH = player->getTaskHuntingSlotById(PreySlot_Three);
-		slotH && slotH->state != PreyTaskDataState_Locked) {
+	    slotH && slotH->state != PreyTaskDataState_Locked) {
 		preySlotsUnlocked++;
 	}
 	msg.addByte(preySlotsUnlocked); // getPreySlotById + getTaskHuntingSlotById
@@ -3994,14 +3994,14 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 
 	/*std::vector<uint16_t> m_hOutfits;
 	for (const auto &it : g_game().getHirelingOutfits()) {
-		if (player->kv()->scoped("hireling-outfits")->get(it.second)) {
-			m_hOutfits.emplace_back(it.first);
-			g_logger().debug("outfit id: {}, name: {}", it.first, it.second);
-		}
+	    if (player->kv()->scoped("hireling-outfits")->get(it.second)) {
+	        m_hOutfits.emplace_back(it.first);
+	        g_logger().debug("outfit id: {}, name: {}", it.first, it.second);
+	    }
 	}
 	msg.addByte(m_hOutfits.size());
 	for (const auto &id : m_hOutfits) {
-		msg.addByte(0x01); // TODO need to get the correct id from hireling outfit
+	    msg.addByte(0x01); // TODO need to get the correct id from hireling outfit
 	}*/
 	msg.addByte(0x00); // hireling outfit size
 
@@ -4108,7 +4108,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	// Prey description
 	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 		if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
-			slot && slot->isOccupied()) {
+		    slot && slot->isOccupied()) {
 			playerDescriptionSize++;
 			std::string desc = fmt::format("Active Prey {}", slotId + 1);
 			msg.addString(desc, "ProtocolGame::sendCyclopediaCharacterInspection - active prey");

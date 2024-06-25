@@ -10667,14 +10667,14 @@ Title Game::getTitleByName(const std::string &name) {
 	return {};
 }
 
-const std::map<uint8_t, std::string> &Game::getBlessingNames() const {
+const std::map<uint8_t, std::string> &Game::getBlessingNames() {
 	return m_blessingNames;
 }
 
-const std::unordered_map<uint16_t, std::string> &Game::getHirelingSkills() const {
+const std::unordered_map<uint16_t, std::string> &Game::getHirelingSkills() {
 	return m_hirelingSkills;
 }
 
-const std::unordered_map<uint16_t, std::string> &Game::getHirelingOutfits() const {
+const std::unordered_map<uint16_t, std::string> &Game::getHirelingOutfits() {
 	return m_hirelingOutfits;
 }

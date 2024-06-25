@@ -736,9 +736,9 @@ public:
 		return m_summaryCategories[type];
 	}
 
-	std::map<uint8_t, std::string> getBlessingNames();
-	std::unordered_map<uint16_t, std::string> getHirelingSkills();
-	std::unordered_map<uint16_t, std::string> getHirelingOutfits();
+	const std::map<uint8_t, std::string> &getBlessingNames();
+	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();
+	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
 
 private:
 	std::map<uint16_t, Achievement> m_achievements;

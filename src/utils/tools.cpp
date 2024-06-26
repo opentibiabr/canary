@@ -1834,7 +1834,7 @@ std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense) {
 	return pastTense ? "was" : "is";
 }
 
-std::string getArticle(const std::string &value, bool withSpace) {
+std::string formatWithArticle(const std::string &value, bool withSpace) {
 	if (value.empty()) {
 		return "";
 	}

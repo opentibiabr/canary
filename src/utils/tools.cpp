@@ -1838,9 +1838,25 @@ std::string getArticle(const std::string &value, bool withSpace) {
 	if (value.empty()) {
 		return "";
 	}
-	const char &character = value.front();
-	auto result = character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u' ? "an" : "a";
-	return withSpace ? fmt::format(" {} ", result) : result;
+
+	auto removeArticle = [](const std::string &str) -> std::string {
+		const std::string articles[] = { "a ", "an " };
+		for (const auto &article : articles) {
+			if (str.size() > article.size() && std::equal(article.begin(), article.end(), str.begin(), [](char a, char b) { return std::tolower(a) == std::tolower(b); })) {
+				return str.substr(article.size());
+			}
+		}
+		return str;
+	};
+	
+	std::string modifiedValue = removeArticle(value);
+	if (modifiedValue.empty()) {
+		return "";
+	}
+
+	const char &character = std::tolower(modifiedValue.front());
+	auto article = character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u' ? "an" : "a";
+	return fmt::format("{}{} {}.", withSpace ? " " : "", article, modifiedValue);
 }
 
 std::vector<std::string> split(const std::string &str, char delimiter /* = ','*/) {

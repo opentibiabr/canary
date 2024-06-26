@@ -51,24 +51,20 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 		std::vector<RecentDeathEntry> entries;
 		entries.reserve(result->countResults());
 		do {
-			std::string cause1 = result->getString("killed_by");
-			std::string cause2 = result->getString("mostdamage_by");
+			std::string killed_by = result->getString("killed_by");
+			std::string mostdamage_by = result->getString("mostdamage_by");
 
-			std::ostringstream cause;
-			cause << "Died at Level " << result->getNumber<uint32_t>("level") << " by";
-			if (!cause1.empty()) {
-				cause << getArticle(cause1) << cause1;
+			std::string cause = fmt::format("Died at Level {}", result->getNumber<uint32_t>("level"));
+
+			if (!killed_by.empty()) {
+				cause.append(fmt::format(" by{}", getArticle(killed_by)));
 			}
 
-			if (!cause2.empty()) {
-				if (!cause1.empty()) {
-					cause << " and";
-				}
-				cause << getArticle(cause2) << cause2;
+			if (!mostdamage_by.empty()) {
+				cause.append(fmt::format("{}{}", !killed_by.empty() ? " and" : "", getArticle(mostdamage_by)));
 			}
-			cause << '.';
 
-			entries.emplace_back(std::move(cause.str()), result->getNumber<uint32_t>("time"));
+			entries.emplace_back(cause, result->getNumber<uint32_t>("time"));
 		} while (result->next());
 		player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
 	};

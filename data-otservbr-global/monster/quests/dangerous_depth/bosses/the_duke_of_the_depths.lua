@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("The Duke of the Depths")
 local monster = {}
 
 monster.description = "The Duke Of The Depths"
-monster.experience = 40000
+monster.experience = 300000
 monster.outfit = {
 	lookType = 1047,
 	lookHead = 0,

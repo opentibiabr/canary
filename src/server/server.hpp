@@ -114,8 +114,8 @@ template <typename ProtocolType>
 bool ServiceManager::add(uint16_t port) {
 	if (port == 0) {
 		g_logger().error("[ServiceManager::add] - "
-						 "No port provided for service {}, service disabled",
-						 ProtocolType::protocol_name());
+		                 "No port provided for service {}, service disabled",
+		                 ProtocolType::protocol_name());
 		return false;
 	}
 
@@ -132,8 +132,8 @@ bool ServiceManager::add(uint16_t port) {
 
 		if (service_port->is_single_socket() || ProtocolType::SERVER_SENDS_FIRST) {
 			g_logger().error("[ServiceManager::add] - "
-							 "{} and {} cannot use the same port {}",
-							 ProtocolType::protocol_name(), service_port->get_protocol_names(), port);
+			                 "{} and {} cannot use the same port {}",
+			                 ProtocolType::protocol_name(), service_port->get_protocol_names(), port);
 			return false;
 		}
 	}

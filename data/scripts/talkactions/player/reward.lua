@@ -26,7 +26,7 @@ local function sendExerciseRewardModal(player)
 
 				local inbox = player:getStoreInbox()
 				local inboxItems = inbox:getItems()
-				if inbox and #inboxItems <= inbox:getMaxCapacity() and player:getFreeCapacity() >= iType:getWeight() then
+				if inbox and #inboxItems < inbox:getMaxCapacity() and player:getFreeCapacity() >= iType:getWeight() then
 					local item = inbox:addItem(it.id, it.charges)
 					if item then
 						item:setActionId(IMMOVABLE_ACTION_ID)

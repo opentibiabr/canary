@@ -18,50 +18,27 @@ void Spectators::clearCache() {
 	spectatorsCache.clear();
 }
 
-bool Spectators::contains(const std::shared_ptr<Creature> &creature) {
-	return creatures.contains(creature);
-}
-
-bool Spectators::erase(const std::shared_ptr<Creature> &creature) {
-	return creatures.erase(creature);
-}
-
 Spectators Spectators::insert(const std::shared_ptr<Creature> &creature) {
 	if (creature) {
-		creatures.emplace(creature);
+		creatures.emplace_back(creature);
 	}
 	return *this;
 }
 
-Spectators Spectators::insertAll(const SpectatorList &list) {
+Spectators Spectators::insertAll(const CreatureVector &list) {
 	if (!list.empty()) {
-		creatures.insertAll(list);
+		const bool hasValue = !creatures.empty();
+
+		creatures.insert(creatures.end(), list.begin(), list.end());
+
+		// Remove duplicate
+		if (hasValue) {
+			std::unordered_set uset(creatures.begin(), creatures.end());
+			creatures.clear();
+			creatures.insert(creatures.end(), uset.begin(), uset.end());
+		}
 	}
 	return *this;
-}
-
-Spectators Spectators::join(Spectators &anotherSpectators) {
-	return insertAll(anotherSpectators.creatures.data());
-}
-
-bool Spectators::empty() const noexcept {
-	return creatures.empty();
-}
-
-size_t Spectators::size() noexcept {
-	return creatures.size();
-}
-
-CreatureVector::iterator Spectators::begin() noexcept {
-	return creatures.begin();
-}
-
-CreatureVector::iterator Spectators::end() noexcept {
-	return creatures.end();
-}
-
-const CreatureVector &Spectators::data() noexcept {
-	return creatures.data();
 }
 
 bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {
@@ -77,16 +54,16 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 	}
 
 	if (checkDistance) {
-		SpectatorList spectators;
+		CreatureVector spectators;
 		spectators.reserve(creatures.size());
 		for (const auto &creature : *list) {
 			const auto &specPos = creature->getPosition();
 			if (centerPos.x - specPos.x >= minRangeX
-				&& centerPos.y - specPos.y >= minRangeY
-				&& centerPos.x - specPos.x <= maxRangeX
-				&& centerPos.y - specPos.y <= maxRangeY
-				&& (multifloor || specPos.z == centerPos.z)
-				&& (!onlyPlayers || creature->getPlayer())) {
+			    && centerPos.y - specPos.y >= minRangeY
+			    && centerPos.x - specPos.x <= maxRangeX
+			    && centerPos.y - specPos.y <= maxRangeY
+			    && (multifloor || specPos.z == centerPos.z)
+			    && (!onlyPlayers || creature->getPlayer())) {
 				spectators.emplace_back(creature);
 			}
 		}
@@ -176,7 +153,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	const int32_t endx2 = x2 - (x2 & SECTOR_MASK);
 	const int32_t endy2 = y2 - (y2 & SECTOR_MASK);
 
-	SpectatorList spectators;
+	CreatureVector spectators;
 	spectators.reserve(std::max<uint8_t>(MAP_MAX_VIEW_PORT_X, MAP_MAX_VIEW_PORT_Y) * 2);
 
 	const MapSector* startSector = g_game().map.getMapSector(startx1, starty1);

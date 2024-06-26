@@ -59,11 +59,11 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 		for (const auto &creature : *list) {
 			const auto &specPos = creature->getPosition();
 			if (centerPos.x - specPos.x >= minRangeX
-				&& centerPos.y - specPos.y >= minRangeY
-				&& centerPos.x - specPos.x <= maxRangeX
-				&& centerPos.y - specPos.y <= maxRangeY
-				&& (multifloor || specPos.z == centerPos.z)
-				&& (!onlyPlayers || creature->getPlayer())) {
+			    && centerPos.y - specPos.y >= minRangeY
+			    && centerPos.x - specPos.x <= maxRangeX
+			    && centerPos.y - specPos.y <= maxRangeY
+			    && (multifloor || specPos.z == centerPos.z)
+			    && (!onlyPlayers || creature->getPlayer())) {
 				spectators.emplace_back(creature);
 			}
 		}

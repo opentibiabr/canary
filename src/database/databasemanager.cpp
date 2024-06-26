@@ -89,8 +89,8 @@ void DatabaseManager::updateDatabase() {
 		ss << g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/migrations/" << version << ".lua";
 		if (luaL_dofile(L, ss.str().c_str()) != 0) {
 			g_logger().error("DatabaseManager::updateDatabase - Version: {}"
-							 "] {}",
-							 version, lua_tostring(L, -1));
+			                 "] {}",
+			                 version, lua_tostring(L, -1));
 			break;
 		}
 

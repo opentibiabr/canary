@@ -50,7 +50,7 @@ public:
 
 	void send(OutputMessage_ptr msg) const {
 		if (auto connection = getConnection();
-			connection != nullptr) {
+		    connection != nullptr) {
 			connection->send(msg);
 		}
 	}

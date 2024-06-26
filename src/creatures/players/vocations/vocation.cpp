@@ -129,13 +129,13 @@ bool Vocations::loadFromXml() {
 						voc->skillMultipliers[skill_id] = pugi::cast<float>(childNode.attribute("multiplier").value());
 					} else {
 						g_logger().warn("[Vocations::loadFromXml] - "
-										"No valid skill id: {} for vocation: {}",
-										skill_id, voc->id);
+						                "No valid skill id: {} for vocation: {}",
+						                skill_id, voc->id);
 					}
 				} else {
 					g_logger().warn("[Vocations::loadFromXml] - "
-									"Missing skill id for vocation: {}",
-									voc->id);
+					                "Missing skill id for vocation: {}",
+					                voc->id);
 				}
 			} else if (strcasecmp(childNode.name(), "mitigation") == 0) {
 				pugi::xml_attribute factorAttribute = childNode.attribute("multiplier");
@@ -198,8 +198,8 @@ std::shared_ptr<Vocation> Vocations::getVocation(uint16_t id) {
 	auto it = vocationsMap.find(id);
 	if (it == vocationsMap.end()) {
 		g_logger().warn("[Vocations::getVocation] - "
-						"Vocation {} not found",
-						id);
+		                "Vocation {} not found",
+		                id);
 		return nullptr;
 	}
 	return it->second;

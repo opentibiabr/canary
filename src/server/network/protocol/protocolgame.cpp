@@ -4110,30 +4110,30 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 		if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
 		    slot && slot->isOccupied()) {
 			playerDescriptionSize++;
-			std::string desc = fmt::format("Active Prey {}", slotId + 1);
-			msg.addString(desc, "ProtocolGame::sendCyclopediaCharacterInspection - active prey");
+			std::string activePrey = fmt::format("Active Prey {}", slotId + 1);
+			msg.addString(activePrey, "ProtocolGame::sendCyclopediaCharacterInspection - active prey");
 
-			std::ostringstream ss;
+			std::string desc;
 			if (auto mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
-				ss << mtype->name;
+				desc.append(mtype->name);
 			} else {
-				ss << "Unknown creature";
+				desc.append("Unknown creature");
 			}
 
 			if (slot->bonus == PreyBonus_Damage) {
-				ss << " (Improved Damage +";
+				desc.append(" (Improved Damage +");
 			} else if (slot->bonus == PreyBonus_Defense) {
-				ss << " (Improved Defense +";
+				desc.append(" (Improved Defense +");
 			} else if (slot->bonus == PreyBonus_Experience) {
-				ss << " (Improved Experience +";
+				desc.append(" (Improved Experience +");
 			} else if (slot->bonus == PreyBonus_Loot) {
-				ss << " (Improved Loot +";
+				desc.append(" (Improved Loot +");
 			}
-			ss << slot->bonusPercentage << "%, remaining ";
+			desc.append(fmt::format("{}%, remaining", slot->bonusPercentage));
 			uint8_t hours = slot->bonusTimeLeft / 3600;
 			uint8_t minutes = (slot->bonusTimeLeft - (hours * 3600)) / 60;
-			ss << std::to_string(hours) << ":" << (minutes < 10 ? "0" : "") << std::to_string(minutes) << "h)";
-			msg.addString(ss.str(), "ProtocolGame::sendCyclopediaCharacterInspection - prey description");
+			desc.append(fmt::format("{}:{}{}h", hours, (minutes < 10 ? "0" : ""), minutes));
+			msg.addString(desc, "ProtocolGame::sendCyclopediaCharacterInspection - prey description");
 		}
 	}
 

@@ -393,7 +393,7 @@ void Tile::onAddTileItem(std::shared_ptr<Item> item) {
 	}
 
 	if ((!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES, __FUNCTION__))
-		&& item->isCleanable()) {
+	    && item->isCleanable()) {
 		if (!this->getHouse()) {
 			g_game().addTileToClean(static_self_cast<Tile>());
 		}
@@ -791,7 +791,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			if (ground) {
 				const ItemType &iiType = Item::items[ground->getID()];
 				if (iiType.blockSolid) {
-					if (!iiType.pickupable && iiType.type != ITEM_TYPE_TRASHHOLDER || item->isMagicField() || item->isBlocking()) {
+					if ((!iiType.pickupable && iiType.type != ITEM_TYPE_TRASHHOLDER) || item->isMagicField() || item->isBlocking()) {
 						if (!item->isPickupable() && !item->isCarpet()) {
 							return RETURNVALUE_NOTENOUGHROOM;
 						}
@@ -1272,7 +1272,7 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 }
 
 void Tile::removeCreature(std::shared_ptr<Creature> creature) {
-	g_game().map.getQTNode(tilePos.x, tilePos.y)->removeCreature(creature);
+	g_game().map.getMapSector(tilePos.x, tilePos.y)->removeCreature(creature);
 	removeThing(creature, 0);
 }
 
@@ -1575,7 +1575,7 @@ void Tile::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
 	if (!thing) {
 		return;
 	}
-	for (const auto zone : getZones()) {
+	for (const auto &zone : getZones()) {
 		zone->thingAdded(thing);
 	}
 

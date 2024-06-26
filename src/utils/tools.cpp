@@ -1558,6 +1558,21 @@ void capitalizeWords(std::string &source) {
 	}
 }
 
+void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore) {
+	toLowerCaseString(source);
+	auto size = static_cast<uint8_t>(source.size());
+	auto indexFound = source.find(stringToIgnore);
+
+	for (uint8_t i = 0; i < size; i++) {
+		if (indexFound != std::string::npos && indexFound > 0 && std::cmp_greater(i, static_cast<uint8_t>(indexFound - 1)) && i < (indexFound + stringToIgnore.size())) {
+			continue;
+		}
+		if (i == 0 || source[i - 1] == ' ' || source[i - 1] == '\'') {
+			source[i] = static_cast<char>(std::toupper(source[i]));
+		}
+	}
+}
+
 /**
  * @details
  * Prevents the console from closing so there is time to read the error information

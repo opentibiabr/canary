@@ -94,12 +94,7 @@ bool BedItem::canUse(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	auto partName = itemType.name;
-	auto nextPartname = nextBedItem->getName();
-	auto firstPart = keepFirstWordOnly(partName);
-	auto nextPartOf = keepFirstWordOnly(nextPartname);
-	g_logger().debug("First bed part name {}, second part name {}", firstPart, nextPartOf);
-	if (!isMovable() || !nextBedItem->isMovable() || firstPart != nextPartOf) {
+	if (!isMovable() || !nextBedItem->isMovable() || !isBedComplete(nextBedItem)) {
 		return false;
 	}
 
@@ -120,6 +115,23 @@ bool BedItem::canUse(std::shared_ptr<Player> player) {
 		return false;
 	}
 	return true;
+}
+
+bool BedItem::isBedComplete(std::shared_ptr<BedItem> nextBedItem) {
+	const ItemType &it = Item::items[id];
+
+	if (nextBedItem == nullptr) {
+		return false;
+	}
+
+	auto partName = it.name;
+	auto nextPartname = nextBedItem->getName();
+	auto firstPart = keepFirstWordOnly(partName);
+	auto nextPartOf = keepFirstWordOnly(nextPartname);
+
+	g_logger().debug("First bed part id {} name {}, second part id {} name {}", it.id, firstPart, nextBedItem->getID(), nextPartOf);
+
+	return it.bedPartOf == nextBedItem->getID();
 }
 
 bool BedItem::trySleep(std::shared_ptr<Player> player) {
@@ -165,7 +177,9 @@ bool BedItem::sleep(std::shared_ptr<Player> player) {
 	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
 	// logout player after he sees himself walk onto the bed and it change id
-	g_dispatcher().scheduleEvent(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false), "ProtocolGame::logout");
+	g_dispatcher().scheduleEvent(
+		SCHEDULER_MINTICKS, [client = player->client] { client->logout(false, false); }, "ProtocolGame::logout"
+	);
 
 	// change self and partner's appearance
 	updateAppearance(player);

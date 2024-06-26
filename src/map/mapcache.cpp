@@ -70,7 +70,7 @@ void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, std::s
 	}
 
 	/* if (BasicItem.description != 0)
-		item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
+	    item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
 }
 
 std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position) {
@@ -154,15 +154,55 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared
 	}
 
 	const auto tile = static_tryGetTileFromCache(newTile);
-	if (const auto leaf = QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y)) {
-		leaf->createFloor(z)->setTileCache(x, y, tile);
+	if (const auto sector = getMapSector(x, y)) {
+		sector->createFloor(z)->setTileCache(x, y, tile);
 	} else {
-		root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, tile);
+		getBestMapSector(x, y)->createFloor(z)->setTileCache(x, y, tile);
 	}
 }
 
 std::shared_ptr<BasicItem> MapCache::tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref) {
 	return static_tryGetItemFromCache(ref);
+}
+
+MapSector* MapCache::createMapSector(const uint32_t x, const uint32_t y) {
+	const uint32_t index = x / SECTOR_SIZE | y / SECTOR_SIZE << 16;
+	const auto it = mapSectors.find(index);
+	if (it != mapSectors.end()) {
+		return &it->second;
+	}
+
+	MapSector::newSector = true;
+	return &mapSectors[index];
+}
+
+MapSector* MapCache::getBestMapSector(uint32_t x, uint32_t y) {
+	MapSector::newSector = false;
+	const auto sector = createMapSector(x, y);
+
+	if (MapSector::newSector) {
+		// update north sector
+		if (const auto northSector = getMapSector(x, y - SECTOR_SIZE)) {
+			northSector->sectorS = sector;
+		}
+
+		// update west sector
+		if (const auto westSector = getMapSector(x - SECTOR_SIZE, y)) {
+			westSector->sectorE = sector;
+		}
+
+		// update south sector
+		if (const auto southSector = getMapSector(x, y + SECTOR_SIZE)) {
+			sector->sectorS = southSector;
+		}
+
+		// update east sector
+		if (const auto eastSector = getMapSector(x + SECTOR_SIZE, y)) {
+			sector->sectorE = eastSector;
+		}
+	}
+
+	return sector;
 }
 
 void BasicTile::hash(size_t &h) const {

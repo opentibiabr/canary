@@ -54,7 +54,7 @@ int CreatureFunctions::luaCreatureGetEvents(lua_State* L) {
 	lua_createtable(L, static_cast<int>(eventList.size()), 0);
 
 	int index = 0;
-	for (const auto eventPtr : eventList) {
+	for (const auto &eventPtr : eventList) {
 		pushString(L, eventPtr->getName());
 		lua_rawseti(L, -2, ++index);
 	}
@@ -793,7 +793,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 
 	const Position oldPosition = creature->getPosition();
 	if (auto ret = g_game().internalTeleport(creature, position, pushMovement);
-		ret != RETURNVALUE_NOERROR) {
+	    ret != RETURNVALUE_NOERROR) {
 		g_logger().debug("[{}] Failed to teleport creature {}, on position {}, error code: {}", __FUNCTION__, creature->getName(), oldPosition.toString(), getReturnMessage(ret));
 		pushBoolean(L, false);
 		return 1;

@@ -664,7 +664,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	auto &lastTimerEventId = g_luaEnvironment().lastEventTimerId;
 	eventDesc.eventId = g_dispatcher().scheduleEvent(
 		delay,
-		std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment(), lastTimerEventId),
+		[lastTimerEventId] { g_luaEnvironment().executeTimerEvent(lastTimerEventId); },
 		"LuaEnvironment::executeTimerEvent"
 	);
 
@@ -712,7 +712,7 @@ int GlobalFunctions::luaSaveServer(lua_State* L) {
 }
 
 int GlobalFunctions::luaCleanMap(lua_State* L) {
-	lua_pushnumber(L, Map::clean());
+	lua_pushnumber(L, g_game().map.clean());
 	return 1;
 }
 

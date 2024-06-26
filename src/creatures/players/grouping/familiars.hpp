@@ -12,17 +12,38 @@
 #include "declarations.hpp"
 #include "lib/di/container.hpp"
 
+struct FamiliarEntry {
+	constexpr explicit FamiliarEntry(uint16_t initLookType) :
+		lookType(initLookType) { }
+	uint16_t lookType;
+};
+
+struct Familiar {
+	Familiar(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initType) :
+		name(std::move(initName)), lookType(initLookType),
+		premium(initPremium), unlocked(initUnlocked),
+		type(std::move(initType)) { }
+
+	std::string name;
+	uint16_t lookType;
+	bool premium;
+	bool unlocked;
+	std::string type;
+};
+
 class Familiars {
 public:
-	static Familiars &getInstance() {
-		return inject<Familiars>();
-	}
+	static Familiars &getInstance();
+
 	bool loadFromXml();
-	const std::vector<Familiar> &getFamiliars(uint16_t vocation) const {
+	bool reload();
+
+	std::vector<std::shared_ptr<Familiar>> &getFamiliars(uint16_t vocation) {
 		return familiars[vocation];
 	}
-	const Familiar* getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const;
+
+	[[nodiscard]] std::shared_ptr<Familiar> getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const;
 
 private:
-	std::vector<Familiar> familiars[VOCATION_LAST + 1];
+	std::vector<std::shared_ptr<Familiar>> familiars[VOCATION_LAST + 1];
 };

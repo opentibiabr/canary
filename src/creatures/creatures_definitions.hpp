@@ -124,7 +124,7 @@ enum ConditionType_t : uint8_t {
 
 // constexpr definiting suppressible conditions
 constexpr bool IsConditionSuppressible(ConditionType_t condition) {
-	constexpr ConditionType_t suppressibleConditions[] = {
+	constexpr std::array suppressibleConditions = {
 		CONDITION_POISON,
 		CONDITION_FIRE,
 		CONDITION_ENERGY,
@@ -135,13 +135,9 @@ constexpr bool IsConditionSuppressible(ConditionType_t condition) {
 		CONDITION_CURSED,
 	};
 
-	for (const auto &suppressibleCondition : suppressibleConditions) {
-		if (condition == suppressibleCondition) {
-			return true;
-		}
-	}
-
-	return false;
+	return std::ranges::any_of(suppressibleConditions, [condition](const auto &suppressibleCondition) {
+		return condition == suppressibleCondition;
+	});
 }
 
 enum ConditionParam_t {
@@ -718,11 +714,11 @@ enum ChannelEvent_t : uint8_t {
 	CHANNELEVENT_EXCLUDE = 3,
 };
 
-enum VipStatus_t : uint8_t {
-	VIPSTATUS_OFFLINE = 0,
-	VIPSTATUS_ONLINE = 1,
-	VIPSTATUS_PENDING = 2,
-	VIPSTATUS_TRAINING = 3
+enum class VipStatus_t : uint8_t {
+	Offline = 0,
+	Online = 1,
+	Pending = 2,
+	Training = 3
 };
 
 enum Vocation_t : uint16_t {
@@ -1401,32 +1397,29 @@ struct CreatureIcon {
 struct Position;
 
 struct VIPEntry {
-	VIPEntry(uint32_t initGuid, std::string initName, std::string initDescription, uint32_t initIcon, bool initNotify) :
+	VIPEntry(uint32_t initGuid, const std::string &initName, const std::string &initDescription, uint32_t initIcon, bool initNotify) :
 		guid(initGuid),
 		name(std::move(initName)),
 		description(std::move(initDescription)),
 		icon(initIcon),
 		notify(initNotify) { }
 
-	uint32_t guid;
-	std::string name;
-	std::string description;
-	uint32_t icon;
-	bool notify;
+	uint32_t guid = 0;
+	std::string name = "";
+	std::string description = "";
+	uint32_t icon = 0;
+	bool notify = false;
 };
 
-struct OutfitEntry {
-	constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
-		lookType(initLookType), addons(initAddons) { }
+struct VIPGroupEntry {
+	VIPGroupEntry(uint8_t initId, const std::string &initName, bool initCustomizable) :
+		id(initId),
+		name(std::move(initName)),
+		customizable(initCustomizable) { }
 
-	uint16_t lookType;
-	uint8_t addons;
-};
-
-struct FamiliarEntry {
-	constexpr explicit FamiliarEntry(uint16_t initLookType) :
-		lookType(initLookType) { }
-	uint16_t lookType;
+	uint8_t id = 0;
+	std::string name = "";
+	bool customizable = false;
 };
 
 struct Skill {
@@ -1531,26 +1524,13 @@ using StashItemList = std::map<uint16_t, uint32_t>;
 
 using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
 /*
-	> ItemsTierCountList structure:
-	|- [itemID]
-		|- [itemTier]
-			|- Count
-		| ...
-	| ...
+    > ItemsTierCountList structure:
+    |- [itemID]
+        |- [itemTier]
+            |- Count
+        | ...
+    | ...
 */
-
-struct Familiar {
-	Familiar(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initType) :
-		name(initName), lookType(initLookType),
-		premium(initPremium), unlocked(initUnlocked),
-		type(initType) { }
-
-	std::string name;
-	uint16_t lookType;
-	bool premium;
-	bool unlocked;
-	std::string type;
-};
 
 struct ProtocolFamiliars {
 	ProtocolFamiliars(const std::string &initName, uint16_t initLookType) :
@@ -1654,18 +1634,11 @@ struct ShopBlock {
 	int32_t itemStorageValue;
 
 	std::vector<ShopBlock> childShop;
-	ShopBlock() {
-		itemId = 0;
-		itemName = "";
-		itemSubType = 0;
-		itemBuyPrice = 0;
-		itemSellPrice = 0;
-		itemStorageKey = 0;
-		itemStorageValue = 0;
-	}
+	ShopBlock() :
+		itemId(0), itemName(""), itemSubType(0), itemBuyPrice(0), itemSellPrice(0), itemStorageKey(0), itemStorageValue(0) { }
 
-	explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "") :
-		itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) { }
+	explicit ShopBlock(uint16_t newItemId, std::string newName = "", int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0) :
+		itemId(newItemId), itemName(std::move(newName)), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue) { }
 
 	bool operator==(const ShopBlock &other) const {
 		return itemId == other.itemId && itemName == other.itemName && itemSubType == other.itemSubType && itemBuyPrice == other.itemBuyPrice && itemSellPrice == other.itemSellPrice && itemStorageKey == other.itemStorageKey && itemStorageValue == other.itemStorageValue && childShop == other.childShop;

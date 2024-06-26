@@ -14,7 +14,7 @@
 class VocationFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Vocation", "", VocationFunctions::luaVocationCreate);
+		registerSharedClass(L, "Vocation", "", VocationFunctions::luaVocationCreate);
 		registerMetaMethod(L, "Vocation", "__eq", VocationFunctions::luaUserdataCompare);
 
 		registerMethod(L, "Vocation", "getId", VocationFunctions::luaVocationGetId);

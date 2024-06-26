@@ -72,8 +72,6 @@ bool ConfigManager::load() {
 		loadStringConfig(L, IP, "ip", "127.0.0.1");
 		loadStringConfig(L, MAINTAIN_MODE_MESSAGE, "maintainModeMessage", "");
 		loadStringConfig(L, MAP_AUTHOR, "mapAuthor", "Eduardo Dantas");
-		loadStringConfig(L, MAP_CUSTOM_AUTHOR, "mapCustomAuthor", "OTServBR");
-		loadStringConfig(L, MAP_CUSTOM_NAME, "mapCustomName", "");
 		loadStringConfig(L, MAP_DOWNLOAD_URL, "mapDownloadUrl", "");
 		loadStringConfig(L, MAP_NAME, "mapName", "canary");
 		loadStringConfig(L, MYSQL_DB, "mysqlDatabase", "canary");
@@ -84,7 +82,6 @@ bool ConfigManager::load() {
 	}
 
 	loadBoolConfig(L, AIMBOT_HOTKEY_ENABLED, "hotkeyAimbotEnabled", true);
-	loadBoolConfig(L, ALLOW_BLOCK_SPAWN, "allowBlockSpawn", true);
 	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);
 	loadBoolConfig(L, ALLOW_RELOAD, "allowReload", false);
 	loadBoolConfig(L, AUTOBANK, "autoBank", false);
@@ -98,7 +95,6 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, EMOTE_SPELLS, "emoteSpells", false);
 	loadBoolConfig(L, ENABLE_PLAYER_PUT_ITEM_IN_AMMO_SLOT, "enablePlayerPutItemInAmmoSlot", false);
 	loadBoolConfig(L, EXPERIENCE_FROM_PLAYERS, "experienceByKillingPlayers", false);
-	loadBoolConfig(L, FORCE_MONSTERTYPE_LOAD, "forceMonsterTypesOnLoad", true);
 	loadBoolConfig(L, FREE_PREMIUM, "freePremium", false);
 	loadBoolConfig(L, GLOBAL_SERVER_SAVE_CLEAN_MAP, "globalServerSaveCleanMap", false);
 	loadBoolConfig(L, GLOBAL_SERVER_SAVE_CLOSE, "globalServerSaveClose", false);
@@ -193,8 +189,6 @@ bool ConfigManager::load() {
 	loadFloatConfig(L, RATE_MONSTER_ATTACK, "rateMonsterAttack", 1.0);
 	loadFloatConfig(L, RATE_MONSTER_DEFENSE, "rateMonsterDefense", 1.0);
 	loadFloatConfig(L, RATE_MONSTER_HEALTH, "rateMonsterHealth", 1.0);
-	loadFloatConfig(L, RATE_NPC_ATTACK, "rateNpcAttack", 1.0);
-	loadFloatConfig(L, RATE_NPC_DEFENSE, "rateNpcDefense", 1.0);
 	loadFloatConfig(L, RATE_NPC_HEALTH, "rateNpcHealth", 1.0);
 	loadFloatConfig(L, RATE_OFFLINE_TRAINING_SPEED, "rateOfflineTrainingSpeed", 1.0);
 	loadFloatConfig(L, RATE_SOUL_REGEN_SPEED, "rateSoulRegenSpeed", 1.0);

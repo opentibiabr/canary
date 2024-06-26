@@ -1848,7 +1848,7 @@ std::string getArticle(const std::string &value, bool withSpace) {
 		}
 		return str;
 	};
-	
+
 	std::string modifiedValue = removeArticle(value);
 	if (modifiedValue.empty()) {
 		return "";

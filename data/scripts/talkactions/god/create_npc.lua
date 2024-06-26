@@ -1,3 +1,6 @@
+-- To summon a temporary npc use /n npcname
+-- To summon a permanent npc use /n npcname,true
+
 local createNpc = TalkAction("/n")
 
 function createNpc.onSay(player, words, param)

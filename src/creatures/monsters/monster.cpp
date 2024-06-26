@@ -363,8 +363,8 @@ void Monster::onAttackedByPlayer(std::shared_ptr<Player> attackerPlayer) {
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
-							 "script calls being nested.",
-							 getName(), this->getName());
+			                 "script calls being nested.",
+			                 getName(), this->getName());
 			return;
 		}
 
@@ -390,8 +390,8 @@ void Monster::onSpawn() {
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
-							 "script calls being nested.",
-							 getName(), this->getName());
+			                 "script calls being nested.",
+			                 getName(), this->getName());
 			return;
 		}
 

@@ -236,9 +236,9 @@ void EventCallback::creatureOnDrainHealth(std::shared_ptr<Creature> creature, st
 void EventCallback::creatureOnCombat(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, CombatDamage &damage) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[{} - "
-						 "Creature {} target {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 __FUNCTION__, attacker->getName(), target->getName());
+		                 "Creature {} target {}] "
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 __FUNCTION__, attacker->getName(), target->getName());
 		return;
 	}
 
@@ -270,7 +270,7 @@ void EventCallback::creatureOnCombat(std::shared_ptr<Creature> attacker, std::sh
 			damage.secondary.value = -damage.secondary.value;
 		}
 		/*
-			Only EK with dealing physical damage will get elemental damage on skill
+		    Only EK with dealing physical damage will get elemental damage on skill
 		*/
 		if (damage.origin == ORIGIN_SPELL && attacker) {
 			const auto &player = attacker->getPlayer();
@@ -1319,8 +1319,8 @@ void EventCallback::zoneAfterCreatureLeave(std::shared_ptr<Zone> zone, std::shar
 void EventCallback::mapOnLoad(const std::string &mapFullPath) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[{} - "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 __FUNCTION__);
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 __FUNCTION__);
 		return;
 	}
 

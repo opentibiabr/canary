@@ -147,7 +147,7 @@ bool isCaskItem(uint16_t itemId);
 std::string getObjectCategoryName(ObjectCategory_t category);
 bool isValidObjectCategory(ObjectCategory_t category);
 
-int64_t OTSYS_TIME();
+int64_t OTSYS_TIME(bool useTime = false);
 void UPDATE_OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);

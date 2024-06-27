@@ -451,7 +451,7 @@ function onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
 					player:addItem(21395, 1)
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You dig up sand and sea shells.")
 				elseif rand > 95 then
-					player:addItem(3976, math.random(1, 10))
+					player:addItem(3492, math.random(1, 10))
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You dig up some worms. But you are confident that you'll find the amulet here, somewhere.")
 				end
 				toPosition:sendMagicEffect(CONST_ME_POFF)
@@ -762,7 +762,7 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 			end
 			target:transform(3141)
 			toPosition:sendMagicEffect(CONST_ME_SMOKE)
-		elseif target.actionid == 50058 then
+		elseif target.actionid == 40031 then
 			-- naginata quest
 			local stoneStorage = Game.getStorageValue(GlobalStorage.NaginataStone)
 			if stoneStorage ~= 5 then

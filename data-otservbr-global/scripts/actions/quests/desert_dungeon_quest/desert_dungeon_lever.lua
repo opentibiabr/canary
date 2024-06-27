@@ -78,5 +78,5 @@ function othersDesert.onUse(player, item, fromPosition, target, toPosition, isHo
 	return true
 end
 
-othersDesert:uid(1912)
+othersDesert:uid(30030)
 othersDesert:register()

@@ -15,5 +15,5 @@ function devilHelmetLever.onUse(player, item, fromPosition, target, toPosition, 
 	return true
 end
 
-devilHelmetLever:aid(20594)
+devilHelmetLever:aid(30008)
 devilHelmetLever:register()

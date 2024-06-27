@@ -17,8 +17,11 @@ local function hasTouchedOneThrone(player)
 	return false
 end
 
-local entrance = MoveEvent()
+local config = {
+	{ position = { x = 33192, y = 31691, z = 14 }, destination = { x = 33168, y = 31683, z = 15 } },
+}
 
+local entrance = MoveEvent()
 function entrance.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
 	if not player then
@@ -26,11 +29,16 @@ function entrance.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if hasTouchedOneThrone(player) and player:getLevel() >= 100 and player:getStorageValue(Storage.TheInquisition.Questline) >= 20 then
-		local destination = Position(33168, 31683, 15)
-		player:teleportTo(destination)
-		position:sendMagicEffect(CONST_ME_TELEPORT)
-		destination:sendMagicEffect(CONST_ME_TELEPORT)
-		return true
+		for i = 1, #config do
+			local cfg = config[i]
+			if Position(cfg.position.x, cfg.position.y, cfg.position.z) == player:getPosition() then
+				local destination = Position(cfg.destination.x, cfg.destination.y, cfg.destination.z)
+				player:teleportTo(destination)
+				position:sendMagicEffect(CONST_ME_TELEPORT)
+				destination:sendMagicEffect(CONST_ME_TELEPORT)
+				return true
+			end
+		end
 	end
 
 	player:teleportTo(fromPosition, true)
@@ -40,5 +48,8 @@ function entrance.onStepIn(creature, item, position, fromPosition)
 end
 
 entrance:type("stepin")
-entrance:uid(9014)
+for i = 1, #config do
+	entrance:position(Position(config[i].position.x, config[i].position.y, config[i].position.z))
+end
+
 entrance:register()

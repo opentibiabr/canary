@@ -118,9 +118,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "herbs") then
 		if player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheRareHerb) < 1 then
 			npcHandler:say(
-				"One of our ...less fortunate members lost an ancient amulet somewhere on the island, \z
-				along with his life. If you could retrieve the amulet at least, there's a little reward. \z
-				Would you go on that errand?",
+				"Some of those salamanders have crawled into Oressa's herb garden and munched all her Dawnfire herbs. \z
+				Would you get some fresh herbs?",
 				npc,
 				creature
 			)
@@ -139,7 +138,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "key") then
 		if player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheDormKey) < 1 then
 			npcHandler:say(
-				"his is an undercover thing - the key to the dormitory has disappeared. \z
+				"This is an undercover thing - the key to the dormitory has disappeared. \z
 				No one wants to own up who has lost it, at least not to me. Maybe they'll talk to you. \z
 				I'll reward you if you find it. You in?",
 				npc,
@@ -147,7 +146,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			)
 			npcHandler:setTopic(playerId, 4)
 		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheDormKey) == 4 then
-			npcHandler:say("Ah, you're here to report about the key - any progress?", npc, creature)
+			npcHandler:say("Ah, you're here to report about the {key} - any progress?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
 	elseif MsgContains(message, "yes") then

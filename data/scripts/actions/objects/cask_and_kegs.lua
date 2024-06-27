@@ -1,60 +1,70 @@
-local targetIdList = {
-	[25879] = { itemId = 285, transform = 266 },
-	[25880] = { itemId = 283, transform = 236 },
-	[25881] = { itemId = 284, transform = 239 },
-	[25882] = { itemId = 284, transform = 7643 },
-	[25883] = { itemId = 284, transform = 23375 },
-	[25889] = { itemId = 285, transform = 268 },
-	[25890] = { itemId = 283, transform = 237 },
-	[25891] = { itemId = 284, transform = 238 },
-	[25892] = { itemId = 284, transform = 23373 },
-	[25899] = { itemId = 284, transform = 7642 },
-	[25900] = { itemId = 284, transform = 23374 },
-	[25903] = { itemId = 285, transform = 266 },
-	[25904] = { itemId = 283, transform = 236 },
-	[25905] = { itemId = 284, transform = 239 },
-	[25906] = { itemId = 284, transform = 7643 },
-	[25907] = { itemId = 284, transform = 23375 },
-	[25908] = { itemId = 285, transform = 268 },
-	[25909] = { itemId = 283, transform = 237 },
-	[25910] = { itemId = 284, transform = 238 },
-	[25911] = { itemId = 284, transform = 23373 },
-	[25913] = { itemId = 284, transform = 7642 },
-	[25914] = { itemId = 284, transform = 23374 },
+local targetTransformationList = {
+	[25879] = 266,
+	[25880] = 236,
+	[25881] = 239,
+	[25882] = 7643,
+	[25883] = 23375,
+	[25889] = 268,
+	[25890] = 237,
+	[25891] = 238,
+	[25892] = 23373,
+	[25899] = 7642,
+	[25900] = 23374,
+	[25903] = 266,
+	[25904] = 236,
+	[25905] = 239,
+	[25906] = 7643,
+	[25907] = 23375,
+	[25908] = 268,
+	[25909] = 237,
+	[25910] = 238,
+	[25911] = 23373,
+	[25913] = 7642,
+	[25914] = 23374,
 }
 
 local flasks = Action()
 
 function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or not target:getItem() then
-		return false
+	if not target or not target:isItem() then
+		return true
 	end
 
 	local charges = target:getCharges()
-	local itemCount = item:getCount()
-	if itemCount > charges then
-		itemCount = charges
+	local flaskCount = item:getCount()
+
+	if flaskCount > charges then
+		flaskCount = charges
 	end
 
-	local targetId = targetIdList[target:getId()]
-	if targetId and item:getId() == targetId.itemId and charges > 0 then
-		local potMath = item:getCount() - itemCount
-		local parent = item:getParent()
-		if not (parent:isContainer() and parent:addItem(item:getId(), potMath)) then
-			player:addItem(item:getId(), potMath, true)
-		end
-
-		item:transform(targetId.transform, itemCount)
-		charges = charges - itemCount
-		target:transform(target:getId(), charges)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %s charges.", charges))
-
-		if charges == 0 then
-			target:remove()
-		end
+	local transformId = targetTransformationList[target:getId()]
+	if not transformId or charges <= 0 then
 		return true
 	end
-	return false
+
+	local storeInbox = player:getStoreInbox()
+	if not storeInbox then
+		return true
+	end
+
+	item:transform(transformId, flaskCount)
+	charges = charges - flaskCount
+	target:transform(target:getId(), charges)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Remaining %d charges.", charges))
+
+	if charges <= 0 then
+		target:remove()
+	end
+
+	local addedItem = storeInbox:addItem(transformId, flaskCount)
+	if addedItem then
+		addedItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+	else
+		player:addItem(transformId, flaskCount)
+	end
+
+	item:remove(flaskCount)
+	return true
 end
 
 flasks:id(283, 284, 285)

@@ -227,6 +227,9 @@ private:
 		registerMethod(L, "Player", "addTransferableCoins", PlayerFunctions::luaPlayerAddTransferableCoins);
 		registerMethod(L, "Player", "removeTransferableCoins", PlayerFunctions::luaPlayerRemoveTransferableCoins);
 
+		registerMethod(L, "Player", "getTournamentCoins", PlayerFunctions::luaPlayerGetTournamentCoins);
+		registerMethod(L, "Player", "updateTournamentCoins", PlayerFunctions::luaPlayerUpdateTournamentCoins);
+
 		registerMethod(L, "Player", "hasBlessing", PlayerFunctions::luaPlayerHasBlessing);
 		registerMethod(L, "Player", "addBlessing", PlayerFunctions::luaPlayerAddBlessing);
 		registerMethod(L, "Player", "removeBlessing", PlayerFunctions::luaPlayerRemoveBlessing);
@@ -586,6 +589,9 @@ private:
 	static int luaPlayerGetTransferableCoins(lua_State* L);
 	static int luaPlayerAddTransferableCoins(lua_State* L);
 	static int luaPlayerRemoveTransferableCoins(lua_State* L);
+
+	static int luaPlayerGetTournamentCoins(lua_State* L);
+	static int luaPlayerUpdateTournamentCoins(lua_State* L);
 
 	static int luaPlayerHasBlessing(lua_State* L);
 	static int luaPlayerAddBlessing(lua_State* L);

@@ -110,7 +110,9 @@ uint8_t Account::addCoins(const uint8_t &type, const uint32_t &amount, const std
 		return enumToValue(AccountErrors_t::Storage);
 	}
 
-	registerCoinTransaction(enumToValue(CoinTransactionType::Add), type, amount, detail);
+	if (!detail.empty()) {
+		registerCoinTransaction(enumToValue(CoinTransactionType::Add), type, amount, detail);
+	}
 
 	return enumToValue(AccountErrors_t::Ok);
 }

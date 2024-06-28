@@ -367,6 +367,7 @@ bool ConfigManager::load() {
 	loadStringConfig(L, SERVER_NAME, "serverName", "");
 	loadStringConfig(L, STORE_IMAGES_URL, "coinImagesURL", "");
 	loadStringConfig(L, TIBIADROME_CONCOCTION_TICK_TYPE, "tibiadromeConcoctionTickType", "online");
+	loadStringConfig(L, TOURNAMENT_COINS_NAME, "tournamentCoinsName", "Tournament Coins");
 	loadStringConfig(L, URL, "url", "");
 	loadStringConfig(L, WORLD_TYPE, "worldType", "pvp");
 

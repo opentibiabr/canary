@@ -10,6 +10,8 @@
 #include "pch.hpp"
 
 #include "io/functions/iologindata_save_player.hpp"
+
+#include "database/database.hpp"
 #include "game/game.hpp"
 
 bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
@@ -19,7 +21,8 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 	}
 
 	const Database &db = Database::getInstance();
-	std::ostringstream ss;
+	static std::vector<std::string> columns = { "player_id", "pid", "sid", "itemtype", "count", "attributes" };
+	static std::vector<std::string> primaryColumns = { "player_id", "pid", "sid" };
 
 	// Initialize variables
 	using ContainerBlock = std::pair<std::shared_ptr<Container>, int32_t>;
@@ -35,10 +38,6 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 
 		// Update container attributes if necessary
 		if (std::shared_ptr<Container> container = item->getContainer()) {
-			if (!container) {
-				continue; // Check for null container
-			}
-
 			if (container->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
 				container->setAttribute(ItemAttribute_t::OPENCONTAINER, 0);
 			}
@@ -70,11 +69,23 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 
 		size_t attributesSize;
 		const char* attributes = propWriteStream.getStream(attributesSize);
+		std::vector<mysqlx::Value> values = {
+			player->getGUID(),
+			it.first,
+			runningId,
+			item->getID(),
+			item->getSubType(),
+			mysqlx::Value(mysqlx::bytes(reinterpret_cast<const uint8_t*>(attributes), attributesSize))
+		};
 
-		// Build query string and add row
-		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
-		if (!query_insert.addRow(ss)) {
-			g_logger().error("Error adding row to query.");
+		std::vector<mysqlx::Value> primaryValues = {
+			player->getGUID(),
+			it.first,
+			runningId
+		};
+
+		if (!g_database().updateTable("player_items", columns, values, primaryColumns, primaryValues)) {
+			g_logger().error("Failed to update table 'player_items', for player: '{}', and item: '{}'", player->getName(), item->getID());
 			return false;
 		}
 	}
@@ -93,7 +104,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 		// Loop through items in container
 		for (std::shared_ptr<Item> item : container->getItemList()) {
 			if (!item) {
-				continue; // Check for null item
+				continue;
 			}
 
 			++runningId;
@@ -130,11 +141,22 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 
 			size_t attributesSize;
 			const char* attributes = propWriteStream.getStream(attributesSize);
+			std::vector<mysqlx::Value> values = {
+				player->getGUID(),
+				parentId,
+				runningId,
+				item->getID(),
+				item->getSubType(),
+				mysqlx::Value(mysqlx::bytes(reinterpret_cast<const uint8_t*>(attributes), attributesSize))
+			};
 
-			// Build query string and add row
-			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
-			if (!query_insert.addRow(ss)) {
-				g_logger().error("Error adding row to query for container item.");
+			std::vector<mysqlx::Value> primaryValues = {
+				player->getGUID(),
+				parentId,
+				runningId
+			};
+
+			if (!g_database().updateTable("player_items", columns, values, primaryColumns, primaryValues)) {
 				return false;
 			}
 		}
@@ -229,6 +251,8 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	// serialize conditions
 	PropWriteStream propWriteStream;
 	for (const auto &condition : player->conditions) {
+		const std::string typeName = std::string(magic_enum::enum_name(condition->getType()));
+		g_logger().debug("Saving condition: {}", typeName);
 		if (condition->isPersistent()) {
 			condition->serialize(propWriteStream);
 			propWriteStream.write<uint8_t>(CONDITIONATTR_END);
@@ -238,7 +262,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	size_t attributesSize;
 	const char* attributes = propWriteStream.getStream(attributesSize);
 
-	query << "`conditions` = " << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize)) << ",";
+	g_database().updateBlobData("players", "conditions", player->getGUID(), attributes, attributesSize, "id");
 
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
 		int64_t skullTime = 0;
@@ -324,6 +348,7 @@ bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 	std::ostringstream query;
 	query << "DELETE FROM `player_stash` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
+		g_logger().error("Failed to executeQuery, query: {}", query.str());
 		return false;
 	}
 
@@ -333,11 +358,13 @@ bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 	for (const auto &[itemId, itemCount] : player->getStashItems()) {
 		query << player->getGUID() << ',' << itemId << ',' << itemCount;
 		if (!stashQuery.addRow(query)) {
+			g_logger().error("Failed to add row to query {}", query.str());
 			return false;
 		}
 	}
 
 	if (!stashQuery.execute()) {
+		g_logger().error("Failed to execute, query: {}", query.str());
 		return false;
 	}
 	return true;
@@ -407,47 +434,81 @@ bool IOLoginDataSave::savePlayerBestiarySystem(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-
-	std::ostringstream query;
-	query << "UPDATE `player_charms` SET ";
-	query << "`charm_points` = " << player->charmPoints << ",";
-	query << "`charm_expansion` = " << ((player->charmExpansion) ? 1 : 0) << ",";
-	query << "`rune_wound` = " << player->charmRuneWound << ",";
-	query << "`rune_enflame` = " << player->charmRuneEnflame << ",";
-	query << "`rune_poison` = " << player->charmRunePoison << ",";
-	query << "`rune_freeze` = " << player->charmRuneFreeze << ",";
-	query << "`rune_zap` = " << player->charmRuneZap << ",";
-	query << "`rune_curse` = " << player->charmRuneCurse << ",";
-	query << "`rune_cripple` = " << player->charmRuneCripple << ",";
-	query << "`rune_parry` = " << player->charmRuneParry << ",";
-	query << "`rune_dodge` = " << player->charmRuneDodge << ",";
-	query << "`rune_adrenaline` = " << player->charmRuneAdrenaline << ",";
-	query << "`rune_numb` = " << player->charmRuneNumb << ",";
-	query << "`rune_cleanse` = " << player->charmRuneCleanse << ",";
-	query << "`rune_bless` = " << player->charmRuneBless << ",";
-	query << "`rune_scavenge` = " << player->charmRuneScavenge << ",";
-	query << "`rune_gut` = " << player->charmRuneGut << ",";
-	query << "`rune_low_blow` = " << player->charmRuneLowBlow << ",";
-	query << "`rune_divine` = " << player->charmRuneDivine << ",";
-	query << "`rune_vamp` = " << player->charmRuneVamp << ",";
-	query << "`rune_void` = " << player->charmRuneVoid << ",";
-	query << "`UsedRunesBit` = " << player->UsedRunesBit << ",";
-	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
-
+	// Create a stream to serialize monster tracker information
 	PropWriteStream propBestiaryStream;
 	for (const auto &trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
-		propBestiaryStream.write<uint16_t>(trackedType->info.raceid);
+		if (trackedType) {
+			propBestiaryStream.write<uint16_t>(trackedType->info.raceid);
+		}
 	}
+
 	size_t trackerSize;
 	const char* trackerList = propBestiaryStream.getStream(trackerSize);
-	query << " `tracker list` = " << db.escapeBlob(trackerList, static_cast<uint32_t>(trackerSize));
-	query << " WHERE `player_guid` = " << player->getGUID();
 
-	if (!db.executeQuery(query.str())) {
-		g_logger().warn("[IOLoginData::savePlayer] - Error saving bestiary data from player: {}", player->getName());
+	// Define the columns and their corresponding values for the database update
+	static std::vector<std::string> columns = {
+		"player_guid",
+		"charm_points",
+		"charm_expansion",
+		"rune_wound",
+		"rune_enflame",
+		"rune_poison",
+		"rune_freeze",
+		"rune_zap",
+		"rune_curse",
+		"rune_cripple",
+		"rune_parry",
+		"rune_dodge",
+		"rune_adrenaline",
+		"rune_numb",
+		"rune_cleanse",
+		"rune_bless",
+		"rune_scavenge",
+		"rune_gut",
+		"rune_low_blow",
+		"rune_divine",
+		"rune_vamp",
+		"rune_void",
+		"UsedRunesBit",
+		"UnlockedRunesBit",
+		"tracker_list"
+	};
+
+	std::vector<mysqlx::Value> values = {
+		player->getGUID(),
+		player->charmPoints,
+		player->charmExpansion ? 1 : 0,
+		player->charmRuneWound,
+		player->charmRuneEnflame,
+		player->charmRunePoison,
+		player->charmRuneFreeze,
+		player->charmRuneZap,
+		player->charmRuneCurse,
+		player->charmRuneCripple,
+		player->charmRuneParry,
+		player->charmRuneDodge,
+		player->charmRuneAdrenaline,
+		player->charmRuneNumb,
+		player->charmRuneCleanse,
+		player->charmRuneBless,
+		player->charmRuneScavenge,
+		player->charmRuneGut,
+		player->charmRuneLowBlow,
+		player->charmRuneDivine,
+		player->charmRuneVamp,
+		player->charmRuneVoid,
+		player->UsedRunesBit,
+		player->UnlockedRunesBit,
+		mysqlx::bytes(reinterpret_cast<const uint8_t*>(trackerList), trackerSize)
+	};
+
+	mysqlx::Value whereValue(player->getGUID());
+	// Attempt to insert or update the blob data in the database
+	if (!g_database().updateTable("player_charms", columns, values, "player_guid", whereValue)) {
+		g_logger().warn("[IOLoginData::savePlayer] - Error saving bestiary data for player: {}", player->getName());
 		return false;
 	}
+
 	return true;
 }
 
@@ -586,24 +647,18 @@ bool IOLoginDataSave::savePlayerPreyClass(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	Database &db = Database::getInstance();
 	if (g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__)) {
-		std::ostringstream query;
+		static std::vector<std::string> columns = {
+			"player_id", "slot", "state", "raceid", "option", "bonus_type",
+			"bonus_rarity", "bonus_percentage", "bonus_time", "free_reroll", "monster_list"
+		};
+
+		static std::vector<std::string> primaryColumns = {
+			"player_id", "slot"
+		};
+
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId))) {
-				query.str(std::string());
-				query << "INSERT INTO player_prey (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) "
-					  << "VALUES (" << player->getGUID() << ", "
-					  << static_cast<uint16_t>(slot->id) << ", "
-					  << static_cast<uint16_t>(slot->state) << ", "
-					  << slot->selectedRaceId << ", "
-					  << static_cast<uint16_t>(slot->option) << ", "
-					  << static_cast<uint16_t>(slot->bonus) << ", "
-					  << static_cast<uint16_t>(slot->bonusRarity) << ", "
-					  << slot->bonusPercentage << ", "
-					  << slot->bonusTimeLeft << ", "
-					  << slot->freeRerollTimeStamp << ", ";
-
 				PropWriteStream propPreyStream;
 				std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propPreyStream](uint16_t raceId) {
 					propPreyStream.write<uint16_t>(raceId);
@@ -611,20 +666,26 @@ bool IOLoginDataSave::savePlayerPreyClass(std::shared_ptr<Player> player) {
 
 				size_t preySize;
 				const char* preyList = propPreyStream.getStream(preySize);
-				query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
+				std::vector<mysqlx::Value> values = {
+					player->getGUID(),
+					static_cast<uint16_t>(slot->id),
+					static_cast<uint16_t>(slot->state),
+					slot->selectedRaceId,
+					static_cast<uint16_t>(slot->option),
+					static_cast<uint16_t>(slot->bonus),
+					static_cast<uint16_t>(slot->bonusRarity),
+					slot->bonusPercentage,
+					slot->bonusTimeLeft,
+					slot->freeRerollTimeStamp,
+					mysqlx::Value(mysqlx::bytes(reinterpret_cast<const uint8_t*>(preyList), preySize))
+				};
 
-				query << " ON DUPLICATE KEY UPDATE "
-					  << "`state` = VALUES(`state`), "
-					  << "`raceid` = VALUES(`raceid`), "
-					  << "`option` = VALUES(`option`), "
-					  << "`bonus_type` = VALUES(`bonus_type`), "
-					  << "`bonus_rarity` = VALUES(`bonus_rarity`), "
-					  << "`bonus_percentage` = VALUES(`bonus_percentage`), "
-					  << "`bonus_time` = VALUES(`bonus_time`), "
-					  << "`free_reroll` = VALUES(`free_reroll`), "
-					  << "`monster_list` = VALUES(`monster_list`)";
+				std::vector<mysqlx::Value> primaryValues = {
+					player->getGUID(),
+					static_cast<uint16_t>(slot->id)
+				};
 
-				if (!db.executeQuery(query.str())) {
+				if (!g_database().updateTable("player_prey", columns, values, primaryColumns, primaryValues)) {
 					g_logger().warn("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
 					return false;
 				}
@@ -726,42 +787,30 @@ bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	std::ostringstream query;
-	query << "DELETE FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
-	if (!Database::getInstance().executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
-	DBInsert insertQuery("INSERT INTO `player_bosstiary` (`player_id`, `bossIdSlotOne`, `bossIdSlotTwo`, `removeTimes`, `tracker`) VALUES");
-
-	// Bosstiary tracker
+	// Bosstiary tracker serialization
 	PropWriteStream stream;
 	for (const auto &monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
 		if (!monsterType) {
 			continue;
 		}
-
 		stream.write<uint16_t>(monsterType->info.raceid);
 	}
+
 	size_t size;
 	const char* chars = stream.getStream(size);
-	// Append query informations
-	query << player->getGUID() << ','
-		  << player->getSlotBossId(1) << ','
-		  << player->getSlotBossId(2) << ','
-		  << std::to_string(player->getRemoveTimes()) << ','
-		  << Database::getInstance().escapeBlob(chars, static_cast<uint32_t>(size));
+	std::vector<uint8_t> data(chars, chars + size);
 
-	if (!insertQuery.addRow(query)) {
-		return false;
-	}
+	std::vector<std::string> columns = { "player_id", "bossIdSlotOne", "bossIdSlotTwo", "removeTimes", "tracker" };
+	std::vector<mysqlx::Value> values = {
+		player->getGUID(),
+		player->getSlotBossId(1),
+		player->getSlotBossId(2),
+		static_cast<uint32_t>(player->getRemoveTimes()),
+		mysqlx::Value(mysqlx::bytes(data.data(), data.size()))
+	};
 
-	if (!insertQuery.execute()) {
-		return false;
-	}
-
-	return true;
+	// Upsert data
+	return g_database().updateTable("player_bosstiary", columns, values, "player_id", player->getGUID());
 }
 
 bool IOLoginDataSave::savePlayerStorage(std::shared_ptr<Player> player) {

@@ -143,7 +143,7 @@ std::shared_ptr<VIPGroup> PlayerVIP::getGroupByName(const std::string &name) con
 
 void PlayerVIP::addGroupInternal(uint8_t groupId, const std::string &name, bool customizable) {
 	if (getGroupByName(name) != nullptr) {
-		g_logger().warn("{} - Group name already exists.", __FUNCTION__);
+		g_logger().debug("{} - Group name already exists.", __FUNCTION__);
 		return;
 	}
 

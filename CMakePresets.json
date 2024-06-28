@@ -25,6 +25,19 @@
       "displayName": "Windows - Release",
       "description": "Windows Release Build",
       "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      },
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "windows-release-static",
+      "inherits": "base",
+      "displayName": "Windows - Release Static",
+      "description": "Windows Release Static Build",
+      "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x64-windows-static"
       },
       "architecture": {

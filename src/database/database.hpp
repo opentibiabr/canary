@@ -13,14 +13,15 @@
 #include "lib/logging/log_with_spd_log.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
-	#include <mysql/mysql.h>
 	#include <mutex>
 #endif
+
+#include <mysqlx/xdevapi.h>
 
 class DBResult;
 
 using DBResult_ptr = std::shared_ptr<DBResult>;
-
+/*
 class PreparedStatement {
 public:
 	PreparedStatement(MYSQL* db, const std::string &query);
@@ -150,8 +151,11 @@ private:
 
 	void fetchResults();
 };
-
+*/
 class Database {
+private:
+	std::unique_ptr<mysqlx::Session> m_databaseSession;
+
 public:
 	static const size_t MAX_QUERY_SIZE = 8 * 1024 * 1024; // 8 Mb -- half the default MySQL max_allowed_packet size
 
@@ -173,132 +177,142 @@ public:
 
 	DBResult_ptr storeQuery(const std::string_view &query);
 
-	template <typename... Args>
+	/*template <typename... Args>
 	std::shared_ptr<PreparedStatement> prepareAndExecute(const std::string &query, Args &&... args) {
 		auto preparedStatement = std::make_shared<PreparedStatement>(handle, query);
 		preparedStatement->execute(std::forward<Args>(args)...);
 		return preparedStatement;
-	}
+	}*/
 
 	std::string escapeString(const std::string &s) const;
 
 	std::string escapeBlob(const char* s, uint32_t length) const;
 
-	uint64_t getLastInsertId() const {
-		return static_cast<uint64_t>(mysql_insert_id(handle));
-	}
+	bool updateBlobData(const std::string &tableName, const std::string &columnName, uint32_t recordId, const char* blobData, size_t size, const std::string &idColumnName = "id");
+	bool insertTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values);
 
-	static const char* getClientVersion() {
-		return mysql_get_client_info();
-	}
+	bool updateTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values, const std::vector<std::string> &whereColumnNames, const std::vector<mysqlx::Value> &whereValues);
+	bool updateTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values, const std::string &whereColumnName, const mysqlx::Value &whereValue);
 
 	uint64_t getMaxPacketSize() const {
 		return maxPacketSize;
 	}
+
+	mysqlx::Schema getDatabaseSchema();
+
+	mysqlx::Table getTable(const std::string &tableName);
 
 private:
 	bool beginTransaction();
 	bool rollback();
 	bool commit();
 
-	bool isRecoverableError(unsigned int error) const;
-
-	MYSQL* handle = nullptr;
 	std::recursive_mutex databaseLock;
 	uint64_t maxPacketSize = 1048576;
 
 	friend class DBTransaction;
 };
 
+#include <boost/lexical_cast.hpp>
+
 constexpr auto g_database = Database::getInstance;
 
 class DBResult {
 public:
-	explicit DBResult(MYSQL_RES* res);
+	explicit DBResult(mysqlx::SqlResult &&result, const std::string_view &query);
 	~DBResult();
 
 	// Non copyable
 	DBResult(const DBResult &) = delete;
 	DBResult &operator=(const DBResult &) = delete;
 
-	template <typename T>
-	T getNumber(const std::string &s) const {
-		auto it = listNames.find(s);
-		if (it == listNames.end()) {
-			g_logger().error("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
-			return T();
-		}
+	uint8_t getU8(const std::string &columnName) const;
+	uint16_t getU16(const std::string &columnName) const;
+	uint32_t getU32(const std::string &columnName) const;
+	uint64_t getU64(const std::string &columnName) const;
 
-		if (row[it->second] == nullptr) {
-			return T();
-		}
+	int8_t getI8(const std::string &columnName) const;
+	int16_t getI16(const std::string &columnName) const;
+	int32_t getI32(const std::string &columnName) const;
+	int64_t getI64(const std::string &columnName) const;
 
-		T data = 0;
-		try {
-			// Check if the type T is signed or unsigned
-			if constexpr (std::is_signed_v<T>) {
-				// Check if the type T is int8_t or int16_t
-				if constexpr (std::is_same_v<T, int8_t> || std::is_same_v<T, int16_t>) {
-					// Use std::stoi to convert string to int8_t
-					data = static_cast<T>(std::stoi(row[it->second]));
-				}
-				// Check if the type T is int32_t
-				else if constexpr (std::is_same_v<T, int32_t>) {
-					// Use std::stol to convert string to int32_t
-					data = static_cast<T>(std::stol(row[it->second]));
-				}
-				// Check if the type T is int64_t
-				else if constexpr (std::is_same_v<T, int64_t>) {
-					// Use std::stoll to convert string to int64_t
-					data = static_cast<T>(std::stoll(row[it->second]));
-				} else {
-					// Throws exception indicating that type T is invalid
-					g_logger().error("Invalid signed type T");
-				}
-			} else if (std::is_same<T, bool>::value) {
-				data = static_cast<T>(std::stoi(row[it->second]));
-			} else {
-				// Check if the type T is uint8_t or uint16_t or uint32_t
-				if constexpr (std::is_same_v<T, uint8_t> || std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>) {
-					// Use std::stoul to convert string to uint8_t
-					data = static_cast<T>(std::stoul(row[it->second]));
-				}
-				// Check if the type T is uint64_t
-				else if constexpr (std::is_same_v<T, uint64_t>) {
-					// Use std::stoull to convert string to uint64_t
-					data = static_cast<T>(std::stoull(row[it->second]));
-				} else {
-					// Send log indicating that type T is invalid
-					g_logger().error("Column '{}' has an invalid unsigned T is invalid", s);
-				}
-			}
-		} catch (std::invalid_argument &e) {
-			// Value of string is invalid
-			g_logger().error("Column '{}' has an invalid value set, error code: {}", s, e.what());
-			data = T();
-		} catch (std::out_of_range &e) {
-			// Value of string is too large to fit the range allowed by type T
-			g_logger().error("Column '{}' has a value out of range, error code: {}", s, e.what());
-			data = T();
-		}
-
-		return data;
-	}
+	float getFloat(const std::string &columnName) const;
+	double getDouble(const std::string &columnName) const;
+	bool getBool(const std::string &columnName) const;
 
 	std::string getString(const std::string &s) const;
 	const char* getStream(const std::string &s, unsigned long &size) const;
-	uint8_t getU8FromString(const std::string &string, const std::string &function) const;
-	int8_t getInt8FromString(const std::string &string, const std::string &function) const;
 
-	size_t countResults() const;
+	size_t countResults();
 	bool hasNext() const;
 	bool next();
 
-private:
-	MYSQL_RES* handle;
-	MYSQL_ROW row;
+	template <typename T>
+	T getNumber(const std::string_view s) const {
+		auto it = listNames.find(s.data());
+		if (it == listNames.end()) {
+			g_logger().error("[DBResult::getNumber] query: {}", m_query);
+			g_logger().error("Column '{}' doesn't exist in the result set", s);
+			return T();
+		}
 
-	std::map<std::string_view, size_t> listNames;
+		if (!m_hasMoreRows) {
+			g_logger().debug("[DBResult::getNumber] query: {}", m_query);
+			g_logger().debug("Initial row fetch resulted in a null row, no data available.");
+			return {};
+		}
+
+		const auto &columnData = m_currentRow[it->second];
+		auto type = columnData.getType();
+		T data = 0;
+		try {
+			switch (type) {
+				case mysqlx::Value::Type::INT64:
+					data = static_cast<T>(columnData.get<int64_t>());
+					break;
+				case mysqlx::Value::Type::UINT64:
+					data = static_cast<T>(columnData.get<uint64_t>());
+					break;
+				case mysqlx::Value::Type::FLOAT:
+				case mysqlx::Value::Type::DOUBLE:
+					data = static_cast<T>(columnData.get<double>());
+					break;
+				case mysqlx::Value::Type::BOOL:
+					data = static_cast<T>(columnData.get<bool>());
+					break;
+				case mysqlx::Value::Type::STRING:
+					data = boost::lexical_cast<T>(columnData.get<std::string>());
+					break;
+				case mysqlx::Value::Type::VNULL:
+					// Tratamento para valores nulos, se necessário
+					break;
+				default:
+					g_logger().error("[DBResult::getNumber] query: {}", m_query);
+					g_logger().error("Unsupported conversion for data type: {}", type);
+					break;
+			}
+
+			g_logger().trace("[DBResult::getNumber] query: {}", m_query);
+			g_logger().trace("Converted data '{}', type '{}'", data, type);
+			return data;
+		} catch (std::exception &e) {
+			g_logger().error("[DBResult::getNumber] query: {}", m_query);
+			g_logger().error("Error converting column '{}', error: {}", s, e.what());
+			return T();
+		}
+	}
+
+private:
+	mysqlx::SqlResult m_result;
+	mysqlx::Row m_currentRow;
+	mysqlx::col_count_t m_columnCount;
+	bool m_hasMoreRows;
+
+	mutable char* m_bufferStream = nullptr;
+
+	std::string m_query;
+
+	std::unordered_map<std::string, size_t> listNames;
 
 	friend class Database;
 };
@@ -360,7 +374,7 @@ private:
 		try {
 			// Start the transaction
 			state = STATE_START;
-			return Database::getInstance().beginTransaction();
+			return g_database().beginTransaction();
 		} catch (const std::exception &exception) {
 			// An error occurred while starting the transaction
 			state = STATE_NO_START;
@@ -378,7 +392,7 @@ private:
 		try {
 			// Rollback the transaction
 			state = STATE_NO_START;
-			Database::getInstance().rollback();
+			g_database().rollback();
 		} catch (const std::exception &exception) {
 			// An error occurred while rolling back the transaction
 			g_logger().error("[{}] An error occurred while rolling back the transaction, error: {}", __FUNCTION__, exception.what());
@@ -395,7 +409,7 @@ private:
 		try {
 			// Commit the transaction
 			state = STATE_COMMIT;
-			Database::getInstance().commit();
+			g_database().commit();
 		} catch (const std::exception &exception) {
 			// An error occurred while committing the transaction
 			state = STATE_NO_START;

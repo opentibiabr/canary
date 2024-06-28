@@ -599,6 +599,10 @@ void Game::loadItemsPrice() {
 	for (const auto &[itemId, itemStats] : stats) {
 		std::map<uint8_t, uint64_t> tierToPrice;
 		for (const auto &[tier, tierStats] : itemStats) {
+			if (tierStats.numTransactions == 0) {
+				continue;
+			}
+
 			auto averagePrice = tierStats.totalPrice / tierStats.numTransactions;
 			tierToPrice[tier] = averagePrice;
 		}

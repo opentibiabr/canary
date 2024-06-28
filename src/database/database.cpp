@@ -9,11 +9,14 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.hpp"
 #include "database/database.hpp"
+
+#include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "utils/tools.hpp"
 
+/*
 PreparedStatement::PreparedStatement(MYSQL* db, const std::string &query) {
 	stmt = mysql_stmt_init(db);
 	if (!stmt) {
@@ -135,10 +138,106 @@ void PreparedStatement::fetchResults() {
 	mysql_free_result(meta);
 	g_logger().info("Total rows fetched: {}", row_count);
 }
+*/
+
+namespace InternalDatabase {
+	template <typename T>
+	T getNumber(const std::string_view columnName, const std::string_view query, const std::unordered_map<std::string, size_t> &listNames, const mysqlx::Row &currentRow, bool hasMoreRows) {
+		auto it = listNames.find(columnName.data());
+		if (it == listNames.end()) {
+			g_logger().error("[DBResult::getNumber] Column '{}' doesn't exist in the result set", columnName.data());
+			return T();
+		}
+
+		if (!hasMoreRows) {
+			g_logger().debug("[DBResult::getNumber] Initial row fetch resulted in a null row, no data available.");
+			return T();
+		}
+
+		const auto &columnData = currentRow[it->second];
+		try {
+			auto type = columnData.getType();
+			T data = 0;
+			switch (type) {
+				case mysqlx::Value::Type::INT64:
+					data = boost::lexical_cast<T>(columnData.get<int64_t>());
+					break;
+				case mysqlx::Value::Type::UINT64:
+					data = boost::lexical_cast<T>(columnData.get<uint64_t>());
+					break;
+				case mysqlx::Value::Type::FLOAT:
+				case mysqlx::Value::Type::DOUBLE:
+					data = boost::lexical_cast<T>(columnData.get<double>());
+					break;
+				case mysqlx::Value::Type::BOOL:
+					data = boost::lexical_cast<T>(columnData.get<bool>());
+					break;
+				case mysqlx::Value::Type::STRING:
+					data = boost::lexical_cast<T>(columnData.get<std::string>());
+					break;
+				case mysqlx::Value::Type::VNULL:
+					break;
+				default:
+					g_logger().error("[DBResult::getNumber] query: {}", query.data());
+					g_logger().error("Unsupported conversion for data type: {}", type);
+					break;
+			}
+
+			return data;
+		} catch (const std::exception &e) {
+			g_logger().error("[DBResult::getNumber] Error converting column '{}': {}", columnName, e.what());
+			return T();
+		}
+	}
+}
+
+uint8_t DBResult::getU8(const std::string &columnName) const {
+	return InternalDatabase::getNumber<uint8_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+uint16_t DBResult::getU16(const std::string &columnName) const {
+	return InternalDatabase::getNumber<uint16_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+uint32_t DBResult::getU32(const std::string &columnName) const {
+	return InternalDatabase::getNumber<uint32_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+uint64_t DBResult::getU64(const std::string &columnName) const {
+	return InternalDatabase::getNumber<uint64_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+int8_t DBResult::getI8(const std::string &columnName) const {
+	return InternalDatabase::getNumber<int8_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+int16_t DBResult::getI16(const std::string &columnName) const {
+	return InternalDatabase::getNumber<int16_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+int32_t DBResult::getI32(const std::string &columnName) const {
+	return InternalDatabase::getNumber<int32_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+int64_t DBResult::getI64(const std::string &columnName) const {
+	return InternalDatabase::getNumber<int64_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+float DBResult::getFloat(const std::string &columnName) const {
+	return InternalDatabase::getNumber<float>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+double DBResult::getDouble(const std::string &columnName) const {
+	return InternalDatabase::getNumber<double>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+bool DBResult::getBool(const std::string &columnName) const {
+	return InternalDatabase::getNumber<bool>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
 
 Database::~Database() {
-	if (handle != nullptr) {
-		mysql_close(handle);
+	if (m_databaseSession) {
+		m_databaseSession->close();
 	}
 }
 
@@ -151,24 +250,26 @@ bool Database::connect() {
 }
 
 bool Database::connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock) {
-	// connection handle initialization
-	handle = mysql_init(nullptr);
-	if (!handle) {
-		g_logger().error("Failed to initialize MySQL connection handle.");
+	g_logger().info("Attempting to connect to the database...");
+	if (!host || !user || !password || !database) {
+		g_logger().error("Database connection parameters cannot be null.");
 		return false;
 	}
 
-	if (host->empty() || user->empty() || password->empty() || database->empty() || port <= 0) {
-		g_logger().warn("MySQL host, user, password, database or port not provided");
+	g_logger().debug("Host: {}, Port: {}, User: {}, Password: {}, Database: {}", *host, port, *user, *password, *database);
+	if (sock && !sock->empty()) {
+		g_logger().debug("Using socket: {}", *sock);
 	}
 
-	// automatic reconnect
-	bool reconnect = true;
-	mysql_options(handle, MYSQL_OPT_RECONNECT, &reconnect);
-
-	// connects to database
-	if (!mysql_real_connect(handle, host->c_str(), user->c_str(), password->c_str(), database->c_str(), port, sock->c_str(), 0)) {
-		g_logger().error("MySQL Error Message: {}", mysql_error(handle));
+	try {
+		mysqlx::SessionSettings settings = mysqlx::SessionSettings(createMySQLXConnectionURL(*user, *password, *host, port, *database));
+		m_databaseSession = std::make_unique<mysqlx::Session>(settings);
+		g_logger().info("Database connection established successfully.");
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("Error connecting with MySQL X DevAPI: {}", err.what());
+		return false;
+	} catch (const std::exception &ex) {
+		g_logger().error("Connection with MySQL x DevAPI, standard exception: {} ", ex.what());
 		return false;
 	}
 
@@ -176,6 +277,7 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	if (result) {
 		maxPacketSize = result->getNumber<uint64_t>("Value");
 	}
+
 	return true;
 }
 
@@ -191,60 +293,75 @@ bool Database::beginTransaction() {
 }
 
 bool Database::rollback() {
-	if (!handle) {
+	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return false;
 	}
 
-	if (mysql_rollback(handle) != 0) {
-		g_logger().error("Message: {}", mysql_error(handle));
-		databaseLock.unlock();
+	databaseLock.unlock();
+	try {
+		m_databaseSession->rollback();
+		g_logger().error("Transaction rollback occurred, please check logs for more details.");
+		return true;
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("Failed to rollback transaction: {}", err.what());
+		return false;
+	} catch (const std::exception &ex) {
+		g_logger().error("Exception during transaction rollback: {}", ex.what());
 		return false;
 	}
-
-	databaseLock.unlock();
-	return true;
 }
 
 bool Database::commit() {
-	if (!handle) {
+	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
-		return false;
-	}
-	if (mysql_commit(handle) != 0) {
-		g_logger().error("Message: {}", mysql_error(handle));
-		databaseLock.unlock();
 		return false;
 	}
 
 	databaseLock.unlock();
-	return true;
-}
-
-bool Database::isRecoverableError(unsigned int error) const {
-	return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
+	try {
+		m_databaseSession->commit();
+		g_logger().debug("Transaction commit was successful");
+		return true;
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("Failed to commit transaction, error: {}", err.what());
+		return false;
+	} catch (const std::exception &ex) {
+		g_logger().error("Exception during transaction commit, error: {}", ex.what());
+		return false;
+	}
 }
 
 bool Database::retryQuery(const std::string_view &query, int retries) {
-	while (retries > 0 && mysql_query(handle, query.data()) != 0) {
-		g_logger().error("Query: {}", query.substr(0, 256));
-		g_logger().error("MySQL error [{}]: {}", mysql_errno(handle), mysql_error(handle));
-		if (!isRecoverableError(mysql_errno(handle))) {
-			return false;
-		}
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		retries--;
-	}
-	if (retries == 0) {
-		g_logger().error("Query {} failed after {} retries.", query, 10);
+	if (!m_databaseSession) {
+		g_logger().error("Database not initialized!");
 		return false;
 	}
 
-	return true;
+	while (retries > 0) {
+		try {
+			mysqlx::SqlResult result = m_databaseSession->sql(std::string(query)).execute();
+			g_logger().debug("Successfully executed query: '{}'", query);
+			return true;
+		} catch (const mysqlx::Error &err) {
+			g_logger().error("[Database::retryQuery] query: {}", query);
+			g_logger().error("[MySQL X DevAPI error: {}", err.what());
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+			retries--;
+			return false;
+		} catch (const std::exception &ex) {
+			g_logger().error("[Database::retryQuery] query: {}", query);
+			g_logger().error("Standard exception during query execution: {}", ex.what());
+			return false;
+		}
+	}
+
+	g_logger().error("[Database::retryQuery] retries is zero, query: {}", query);
+	return false;
 }
 
 bool Database::executeQuery(const std::string_view &query) {
-	if (!handle) {
+	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return false;
 	}
@@ -256,17 +373,33 @@ bool Database::executeQuery(const std::string_view &query) {
 	measureLock.stop();
 
 	metrics::query_latency measure(query.substr(0, 50));
-	bool success = retryQuery(query, 10);
-	mysql_free_result(mysql_store_result(handle));
 
-	return success;
+	try {
+		mysqlx::SqlResult result = m_databaseSession->sql(std::string(query)).execute();
+		if (result.getWarningsCount() > 0) {
+			auto warnings = result.getWarnings();
+			for (const auto &warning : warnings) {
+				g_logger().debug("[{}] MySQL X DevAPI Warning: {}", __METHOD_NAME__, std::string(warning.getMessage()));
+			}
+		}
+
+		return true;
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("[{}] failed to execute query: {}", __METHOD_NAME__, query);
+		g_logger().error("Message: {}", err.what());
+	} catch (const std::exception &ex) {
+		g_logger().error("[{}] failed to execute query: {}", __METHOD_NAME__, query);
+		g_logger().error("Standard exception: {}", ex.what());
+	}
+	return false;
 }
 
 DBResult_ptr Database::storeQuery(const std::string_view &query) {
-	if (!handle) {
+	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return nullptr;
 	}
+
 	g_logger().trace("Storing Query: {}", query);
 
 	metrics::lock_latency measureLock("database");
@@ -274,27 +407,176 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 	measureLock.stop();
 
 	metrics::query_latency measure(query.substr(0, 50));
-retry:
-	if (mysql_query(handle, query.data()) != 0) {
-		g_logger().error("Query: {}", query);
-		g_logger().error("Message: {}", mysql_error(handle));
-		if (!isRecoverableError(mysql_errno(handle))) {
+	try {
+		mysqlx::SqlResult result = m_databaseSession->sql(std::string(query)).execute();
+		if (!result.hasData()) {
+			g_logger().error("[{}] no data returned from query: {}", __METHOD_NAME__, query);
 			return nullptr;
 		}
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		goto retry;
-	}
 
-	// Retrieving results of query
-	MYSQL_RES* res = mysql_store_result(handle);
-	if (res != nullptr) {
-		DBResult_ptr result = std::make_shared<DBResult>(res);
-		if (!result->hasNext()) {
+		auto dbResult = std::make_shared<DBResult>(std::move(result), std::move(query));
+		if (!dbResult->hasNext()) {
 			return nullptr;
 		}
-		return result;
+
+		return dbResult;
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("[{}] query: {}", __METHOD_NAME__, query);
+		g_logger().error("Message: {}", err.what());
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		return nullptr;
+	} catch (const std::exception &ex) {
+		g_logger().error("[{}] query: {}", __METHOD_NAME__, query);
+		g_logger().error("Standard exception: {}", ex.what());
+		return nullptr;
 	}
 	return nullptr;
+}
+
+bool Database::updateBlobData(const std::string &tableName, const std::string &columnName, uint32_t recordId, const char* blobData, size_t size, const std::string &idColumnName) {
+	try {
+		mysqlx::Table table = getTable(tableName);
+		mysqlx::Result result = table.update()
+									.set(columnName, mysqlx::bytes(reinterpret_cast<const uint8_t*>(blobData), size))
+									.where(idColumnName + " = :id")
+									.bind("id", recordId)
+									.execute();
+
+		g_logger().debug("Updated {} in {}. Affected rows: {}", columnName, tableName, result.getAffectedItemsCount());
+		return true;
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("[{}] error updating {}: {} ", __METHOD_NAME__, tableName, err.what());
+		return false;
+	} catch (const std::exception &ex) {
+		g_logger().error("[{}] exception while updating {}: {}", __METHOD_NAME__, tableName, ex.what());
+		return false;
+	}
+}
+
+bool Database::insertTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values) {
+	try {
+		mysqlx::Table table = getTable(tableName);
+		mysqlx::Result result = table.insert(columns.begin(), columns.end())
+									.values(values.begin(), values.end())
+									.execute();
+
+		if (result.getAffectedItemsCount() == 0) {
+			g_logger().error("No rows affected in the insert operation for table: {}", tableName);
+			return false;
+		}
+		return true;
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("[{}] error inserting into {}", __METHOD_NAME__, tableName);
+		g_logger().error("Message: {}", err.what());
+		return false;
+	} catch (const std::exception &ex) {
+		g_logger().error("[{}] error inserting into {}", __METHOD_NAME__, tableName);
+		g_logger().error("Exception: {}", ex.what());
+		return false;
+	}
+}
+
+bool Database::updateTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values, const std::string &whereColumnName, const mysqlx::Value &whereValue) {
+	try {
+		mysqlx::Table table = getTable(tableName);
+		mysqlx::TableSelect select = table.select("*").where("`" + whereColumnName + "` = :whereValue");
+		select.bind("whereValue", whereValue);
+
+		mysqlx::RowResult result = select.execute();
+		if (result.fetchOne()) {
+			g_logger().trace("Updated existing record in {}", tableName);
+			mysqlx::TableUpdate update = table.update();
+			for (size_t i = 0; i < columns.size(); ++i) {
+				update.set(columns[i], values[i]);
+			}
+			update.where("`" + whereColumnName + "` = :whereValue").bind("whereValue", whereValue);
+			mysqlx::Result updateResult = update.execute();
+			// Record does not exist, insert it
+		} else {
+			g_logger().trace("Inserted new record into {}", tableName);
+			mysqlx::TableInsert insert = table.insert(columns.begin(), columns.end()).values(values.begin(), values.end());
+			mysqlx::Result insertResult = insert.execute();
+		}
+
+		return true;
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("[{}] error updating into {}", __METHOD_NAME__, tableName);
+		g_logger().error("Message: {}", err.what());
+		return false;
+	} catch (const std::exception &ex) {
+		g_logger().error("[{}] error updating into {}", __METHOD_NAME__, tableName);
+		g_logger().error("Exception: {}", ex.what());
+		return false;
+	}
+}
+
+bool Database::updateTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values, const std::vector<std::string> &whereColumnNames, const std::vector<mysqlx::Value> &whereValues) {
+	try {
+		mysqlx::Table table = getTable(tableName);
+
+		// Construct the WHERE condition with multiple clauses
+		std::string whereClause;
+		for (size_t i = 0; i < whereColumnNames.size(); ++i) {
+			if (i > 0) {
+				whereClause += " AND ";
+			}
+			whereClause += "`" + whereColumnNames[i] + "` = :whereValue" + std::to_string(i);
+		}
+
+		mysqlx::TableSelect select = table.select("*").where(whereClause);
+		for (size_t i = 0; i < whereValues.size(); ++i) {
+			select.bind("whereValue" + std::to_string(i), whereValues[i]);
+		}
+
+		mysqlx::RowResult result = select.execute();
+		if (result.fetchOne()) {
+			g_logger().trace("Updated existing record in {}", tableName);
+			mysqlx::TableUpdate update = table.update();
+			for (size_t i = 0; i < columns.size(); ++i) {
+				update.set(columns[i], values[i]);
+			}
+			update.where(whereClause);
+			for (size_t i = 0; i < whereValues.size(); ++i) {
+				update.bind("whereValue" + std::to_string(i), whereValues[i]);
+			}
+			update.execute();
+			// Record does not exist, insert it
+		} else {
+			g_logger().trace("Inserted new record into {}", tableName);
+			mysqlx::TableInsert insert = table.insert(columns.begin(), columns.end()).values(values.begin(), values.end());
+			insert.execute();
+		}
+
+		return true;
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("[{}] error updating into {}", __METHOD_NAME__, tableName);
+		g_logger().error("Message: {}", err.what());
+		return false;
+	} catch (const std::exception &ex) {
+		g_logger().error("[{}] error updating into {}", __METHOD_NAME__, tableName);
+		g_logger().error("Exception: {}", ex.what());
+		return false;
+	}
+}
+
+mysqlx::Schema Database::getDatabaseSchema() {
+	if (!m_databaseSession) {
+		throw std::exception("Database session is not initialized.");
+	}
+
+	return m_databaseSession->getSchema(g_configManager().getString(MYSQL_DB, __FUNCTION__));
+}
+
+mysqlx::Table Database::getTable(const std::string &tableName) {
+	try {
+		return getDatabaseSchema().getTable(tableName);
+	} catch (const mysqlx::Error &err) {
+		g_logger().error("[{}] failed to get table '{}': {}", __METHOD_NAME__, tableName, err.what());
+		throw;
+	} catch (const std::exception &ex) {
+		g_logger().error("[{}] an error occurred while getting table '{}': {}", __METHOD_NAME__, tableName, ex.what());
+		throw;
+	}
 }
 
 std::string Database::escapeString(const std::string &s) const {
@@ -302,109 +584,184 @@ std::string Database::escapeString(const std::string &s) const {
 	auto length = static_cast<uint32_t>(len);
 	std::string escaped = escapeBlob(s.c_str(), length);
 	if (escaped.empty()) {
-		g_logger().warn("Error escaping string");
+		g_logger().warn("Error escaping string: {}", s);
 	}
 	return escaped;
 }
 
 std::string Database::escapeBlob(const char* s, uint32_t length) const {
-	size_t maxLength = (length * 2) + 1;
+	std::ostringstream oss;
+	oss << '\'';
 
-	std::string escaped;
-	escaped.reserve(maxLength + 2);
-	escaped.push_back('\'');
-
-	if (length != 0) {
-		std::string output(maxLength, '\0');
-		size_t escapedLength = mysql_real_escape_string(handle, &output[0], s, length);
-		output.resize(escapedLength);
-		escaped.append(output);
+	for (uint32_t i = 0; i < length; ++i) {
+		char c = s[i];
+		switch (c) {
+			case '\0':
+				oss << "\\0";
+				break;
+			case '\n':
+				oss << "\\n";
+				break;
+			case '\r':
+				oss << "\\r";
+				break;
+			case '\\':
+				oss << "\\\\";
+				break;
+			case '\'':
+				oss << "\\'";
+				break;
+			case '\"':
+				oss << "\\\"";
+				break;
+			case '\032':
+				oss << "\\Z";
+				break; // Control-Z
+			default:
+				if (c < ' ') {
+					oss << "\\x" << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(c);
+				} else {
+					oss << c;
+				}
+		}
 	}
 
-	escaped.push_back('\'');
-	return escaped;
+	oss << '\'';
+	return oss.str();
 }
 
-DBResult::DBResult(MYSQL_RES* res) {
-	handle = res;
-
-	int num_fields = mysql_num_fields(handle);
-
-	const MYSQL_FIELD* fields = mysql_fetch_fields(handle);
-	for (size_t i = 0; i < num_fields; i++) {
-		listNames[fields[i].name] = i;
+DBResult::DBResult(mysqlx::SqlResult &&result, const std::string_view &query) :
+	m_result(std::move(result)), m_hasMoreRows(result.hasData()), m_query(std::move(query)) {
+	// Fetch the first row to start processing
+	m_currentRow = m_result.fetchOne();
+	if (m_currentRow.isNull()) {
+		g_logger().trace("[DBResult::DBResult] query: {}", m_query);
+		g_logger().trace("Initial row fetch resulted in a null row, no data available.");
+		m_hasMoreRows = false;
+		return;
 	}
-	row = mysql_fetch_row(handle);
+
+	// Retrieve column metadata
+	const auto &columns = m_result.getColumns();
+	m_columnCount = m_result.getColumnCount();
+	// Iterate through each column, storing their names and indices
+	g_logger().trace("[DBResult::DBResult] query: {}", m_query);
+	g_logger().trace("Loading columns... Total count: {}", m_result.getColumnCount());
+	for (size_t i = 0; i < m_columnCount; ++i) {
+		const auto &columnData = columns[i];
+		const auto &name = std::string(columnData.getColumnName());
+		listNames[name] = i;
+		g_logger().trace("Loaded column: {}", name);
+	}
 }
 
-DBResult::~DBResult() {
-	mysql_free_result(handle);
-}
+DBResult::~DBResult() = default;
 
 std::string DBResult::getString(const std::string &s) const {
 	auto it = listNames.find(s);
 	if (it == listNames.end()) {
-		g_logger().error("Column '{}' does not exist in result set", s);
-		return std::string();
+		g_logger().error("[DBResult::getString] query: {}", m_query);
+		g_logger().error("Column '{}' doesn't exist in the result set", s);
+		return {};
 	}
-	if (row[it->second] == nullptr) {
-		return std::string();
+
+	if (!m_hasMoreRows) {
+		g_logger().debug("[DBResult::getString] query: {}", m_query);
+		g_logger().debug("Initial row fetch resulted in a null row, no data available.");
+		return {};
 	}
-	return std::string(row[it->second]);
+
+	const auto &columnData = m_currentRow[it->second];
+	if (columnData.isNull()) {
+		g_logger().debug("[DBResult::getString] query: {}", m_query);
+		g_logger().debug("Column '{}' is null", s);
+		return nullptr;
+	}
+
+	g_logger().trace("[DBResult::getString] query: {}", m_query);
+	g_logger().trace("Column '{}' type: {}", s, magic_enum::enum_name(columnData.getType()));
+	try {
+		auto string = columnData.get<std::string>();
+		if (string.empty()) {
+			g_logger().error("[DBResult::getString] query: {}", m_query);
+			g_logger().error("Column '{}' is empty", s);
+			return {};
+		}
+
+		return string;
+	} catch (std::exception &e) {
+		g_logger().error("[DBResult::getString] query: {}", m_query);
+		g_logger().error("[DBResult::getString] error converting column '{}' to string: {}", s, e.what());
+	}
+	return {};
 }
 
 const char* DBResult::getStream(const std::string &s, unsigned long &size) const {
 	auto it = listNames.find(s);
 	if (it == listNames.end()) {
+		g_logger().error("[DBResult::getStream] query: {}", m_query);
 		g_logger().error("Column '{}' doesn't exist in the result set", s);
 		size = 0;
 		return nullptr;
 	}
 
-	if (row[it->second] == nullptr) {
+	if (!m_hasMoreRows) {
+		g_logger().debug("[DBResult::getStream] query: {}", m_query);
+		g_logger().debug("Initial row fetch resulted in a null row, no data available.");
+		return nullptr;
+	}
+
+	const auto &columnData = m_currentRow[it->second];
+	if (columnData.isNull()) {
+		g_logger().debug("[DBResult::getStream] query: {}", m_query);
+		g_logger().debug("Column '{}' is null", s);
 		size = 0;
 		return nullptr;
 	}
 
-	size = mysql_fetch_lengths(handle)[it->second];
-	return row[it->second];
-}
+	g_logger().trace("[DBResult::getStream] query: {}", m_query);
+	g_logger().trace("Column '{}' type: {}", s, magic_enum::enum_name(columnData.getType()));
 
-uint8_t DBResult::getU8FromString(const std::string &string, const std::string &function) const {
-	auto result = static_cast<uint8_t>(std::atoi(string.c_str()));
-	if (result > std::numeric_limits<uint8_t>::max()) {
-		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
-		return 0;
+	try {
+		// Get the binary data using mysqlx::bytes
+		mysqlx::bytes blobData = columnData.get<mysqlx::bytes>();
+		size = blobData.size();
+
+		if (m_bufferStream != nullptr) {
+			delete[] m_bufferStream; // Clear previous buffer
+		}
+
+		m_bufferStream = new char[size + 1];
+		std::memcpy(m_bufferStream, blobData.begin(), size); // Copy binary data to the buffer
+
+		g_logger().trace("[DBResult::getStream] Column '{}' type: {}", s, magic_enum::enum_name(columnData.getType()));
+		g_logger().trace("[DBResult::getStream] Successfully retrieved blob data.");
+
+		return m_bufferStream;
+	} catch (const std::exception &e) {
+		g_logger().error("[DBResult::getStream] query: {}", m_query);
+		g_logger().error("Error getting stream data for column '{}': {}", s, e.what());
+		size = 0;
+		return nullptr;
 	}
-
-	return result;
 }
 
-int8_t DBResult::getInt8FromString(const std::string &string, const std::string &function) const {
-	auto result = static_cast<int8_t>(std::atoi(string.c_str()));
-	if (result > std::numeric_limits<int8_t>::max()) {
-		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
-		return 0;
-	}
-
-	return result;
-}
-
-size_t DBResult::countResults() const {
-	return static_cast<size_t>(mysql_num_rows(handle));
+size_t DBResult::countResults() {
+	return m_result.count();
 }
 
 bool DBResult::hasNext() const {
-	return row != nullptr;
+	return m_hasMoreRows;
 }
 
 bool DBResult::next() {
-	if (!handle) {
-		g_logger().error("Database not initialized!");
+	if (!m_hasMoreRows) {
 		return false;
 	}
-	row = mysql_fetch_row(handle);
-	return row != nullptr;
+
+	m_currentRow = m_result.fetchOne();
+	m_hasMoreRows = !m_currentRow.isNull();
+	return m_hasMoreRows;
 }
 
 DBInsert::DBInsert(std::string insertQuery) :
@@ -415,7 +772,7 @@ DBInsert::DBInsert(std::string insertQuery) :
 bool DBInsert::addRow(std::string_view row) {
 	const size_t rowLength = row.length();
 	length += rowLength;
-	auto max_packet_size = Database::getInstance().getMaxPacketSize();
+	auto max_packet_size = g_database().getMaxPacketSize();
 
 	if (length > max_packet_size && !execute()) {
 		return false;
@@ -487,7 +844,7 @@ bool DBInsert::execute() {
 
 		std::ostringstream query;
 		query << baseQuery << " " << batchValues << upsertQuery;
-		if (!Database::getInstance().executeQuery(query.str())) {
+		if (!g_database().executeQuery(query.str())) {
 			return false;
 		}
 	}

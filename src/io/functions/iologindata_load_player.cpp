@@ -26,7 +26,7 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const s
 			uint16_t type = result->getNumber<uint16_t>("itemtype");
 			uint16_t count = result->getNumber<uint16_t>("count");
 			unsigned long attrSize;
-			const char* attr = result->getStream("attributes", attrSize);
+			auto attr = result->getStream("attributes", attrSize);
 			PropStream propStream;
 			propStream.init(attr, attrSize);
 
@@ -162,7 +162,7 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 	player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
 	player->lastLogout = result->getNumber<time_t>("lastlogout");
 	player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
-	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
+	auto skill = result->getNumber<int8_t>("offlinetraining_skill");
 	player->setOfflineTrainingSkill(skill);
 	const auto &town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
@@ -228,12 +228,14 @@ void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBRes
 	}
 
 	unsigned long attrSize;
-	const char* attr = result->getStream("conditions", attrSize);
+	auto attr = result->getStream("conditions", attrSize);
 	PropStream propStream;
 	propStream.init(attr, attrSize);
 
 	auto condition = Condition::createCondition(propStream);
 	while (condition) {
+		const std::string typeName = std::string(magic_enum::enum_name(condition->getType()));
+		g_logger().debug("[{}] loading condition: {}", __METHOD_NAME__, typeName);
 		if (condition->unserialize(propStream)) {
 			player->storedConditionList.push_front(condition);
 		}
@@ -436,7 +438,7 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(std::shared_ptr<Player> player, D
 		player->UnlockedRunesBit = result->getNumber<int32_t>("UnlockedRunesBit");
 
 		unsigned long attrBestSize;
-		const char* Bestattr = result->getStream("tracker list", attrBestSize);
+		auto Bestattr = result->getStream("tracker_list", attrBestSize);
 		PropStream propBestStream;
 		propBestStream.init(Bestattr, attrBestSize);
 
@@ -742,7 +744,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 				slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");
 
 				unsigned long preySize;
-				const char* preyStream = result->getStream("monster_list", preySize);
+				auto preyStream = result->getStream("monster_list", preySize);
 				PropStream propPreyStream;
 				propPreyStream.init(preyStream, preySize);
 
@@ -788,7 +790,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 				slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");
 
 				unsigned long taskHuntSize;
-				const char* taskHuntStream = result->getStream("monster_list", taskHuntSize);
+				auto taskHuntStream = result->getStream("monster_list", taskHuntSize);
 				PropStream propTaskHuntStream;
 				propTaskHuntStream.init(taskHuntStream, taskHuntSize);
 
@@ -840,11 +842,11 @@ void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResu
 		do {
 			player->setSlotBossId(1, result->getNumber<uint16_t>("bossIdSlotOne"));
 			player->setSlotBossId(2, result->getNumber<uint16_t>("bossIdSlotTwo"));
-			player->setRemoveBossTime(result->getU8FromString(result->getString("removeTimes"), __FUNCTION__));
+			player->setRemoveBossTime(result->getNumber<uint8_t>("removeTimes"));
 
 			// Tracker
 			unsigned long size;
-			const char* chars = result->getStream("tracker", size);
+			auto chars = result->getStream("tracker", size);
 			PropStream stream;
 			stream.init(chars, size);
 			uint16_t bossid;

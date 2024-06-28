@@ -19,15 +19,14 @@
 
 std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	auto query = fmt::format("SELECT `key_name`, `timestamp`, `value` FROM `kv_store` WHERE `key_name` = {}", db.escapeString(key));
-	auto result = db.prepareAndExecute(query, key);
+	auto result = db.storeQuery(query);
 	if (result == nullptr) {
-		g_logger().error("Failed to load result for key {}", key);
 		return std::nullopt;
 	}
 
-	size_t size = 0;
+	unsigned long size = 0;
 	auto data = result->getStream("value", size);
-	if (data == nullptr) {
+	if (!data) {
 		g_logger().error("Failed to load column 'value' for key {}", key);
 		return std::nullopt;
 	}
@@ -37,7 +36,7 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	if (protoValue.ParseFromArray(data, static_cast<int>(size))) {
 		ValueWrapper valueWrapper;
 		valueWrapper = ProtoSerializable::fromProto(protoValue, timestamp);
-		g_logger().info("Loaded value for key {}, valueSize {}, timeStamp {}", key, size, timestamp);
+		g_logger().trace("[{}] loaded value for key {}, valueSize {}, timeStamp {}", __METHOD_NAME__, key, size, timestamp);
 		return valueWrapper;
 	}
 
@@ -71,16 +70,43 @@ bool KVSQL::save(const std::string &key, const ValueWrapper &value) {
 
 bool KVSQL::prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update) {
 	auto protoValue = ProtoSerializable::toProto(value);
-	std::string data;
-	if (!protoValue.SerializeToString(&data)) {
+	std::vector<uint8_t> data(protoValue.ByteSizeLong());
+	if (!protoValue.SerializeToArray(data.data(), data.size())) {
+		g_logger().error("Failed to serialize protoValue for key: {}", key);
 		return false;
 	}
+
 	if (value.isDeleted()) {
-		auto query = fmt::format("DELETE FROM `kv_store` WHERE `key_name` = {}", db.escapeString(key));
-		return db.executeQuery(query);
+		try {
+			mysqlx::Table tbl = g_database().getTable("kv_store");
+			mysqlx::Result result = tbl.remove().where("key_name = :key").bind("key", key).execute();
+			return true;
+		} catch (const mysqlx::Error &err) {
+			g_logger().error("KVStore remove, database error: {}", err.what());
+			return false;
+		} catch (const std::exception &ex) {
+			g_logger().error("KVStore remove, standard exception: {}", ex.what());
+			return false;
+		}
 	}
 
-	update.addRow(fmt::format("{}, {}, {}", db.escapeString(key), value.getTimestamp(), db.escapeString(data)));
+	static std::vector<std::string> columns = {
+		"key_name",
+		"timestamp",
+		"value"
+	};
+
+	std::vector<mysqlx::Value> values = {
+		key,
+		value.getTimestamp(),
+		mysqlx::Value(mysqlx::bytes(data.data(), data.size()))
+	};
+
+	if (!g_database().updateTable("kv_store", columns, values, "key_name", key)) {
+		g_logger().error("Failed to update key {}", key);
+		return false;
+	}
+
 	return true;
 }
 

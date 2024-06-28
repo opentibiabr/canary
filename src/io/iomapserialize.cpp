@@ -24,7 +24,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 
 	do {
 		unsigned long attrSize;
-		const char* attr = result->getStream("data", attrSize);
+		auto attr = result->getStream("data", attrSize);
 
 		PropStream propStream;
 		propStream.init(attr, attrSize);
@@ -83,31 +83,31 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 		return false;
 	}
 
-	DBInsert stmt("INSERT INTO `tile_store` (`house_id`, `data`) VALUES ");
+	bool updateSuccess = true;
 
-	PropWriteStream stream;
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
-		// save house items
-		for (const auto &tile : house->getTiles()) {
-			saveTile(stream, tile);
+		// Check if the house has valid data to update
+		if (!house->getTiles().empty()) {
+			PropWriteStream stream;
+			for (const auto &tile : house->getTiles()) {
+				saveTile(stream, tile);
+			}
 
 			size_t attributesSize;
 			const char* attributes = stream.getStream(attributesSize);
+
 			if (attributesSize > 0) {
-				query << house->getId() << ',' << db.escapeBlob(attributes, attributesSize);
-				if (!stmt.addRow(query)) {
-					return false;
+				// Update blob data in the database for each house
+				if (!db.updateBlobData("tile_store", "data", house->getId(), attributes, attributesSize, "house_id")) {
+					g_logger().error("Failed to update tile data for house ID {}", house->getId());
+					updateSuccess = false;
+					break;
 				}
-				stream.clear();
 			}
 		}
 	}
 
-	if (!stmt.execute()) {
-		return false;
-	}
-
-	return true;
+	return updateSuccess;
 }
 
 bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Container> container) {

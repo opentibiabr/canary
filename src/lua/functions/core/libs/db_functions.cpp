@@ -95,17 +95,6 @@ int DBFunctions::luaDatabaseEscapeString(lua_State* L) {
 	return 1;
 }
 
-int DBFunctions::luaDatabaseEscapeBlob(lua_State* L) {
-	uint32_t length = getNumber<uint32_t>(L, 2);
-	pushString(L, Database::getInstance().escapeBlob(getString(L, 1).c_str(), length));
-	return 1;
-}
-
-int DBFunctions::luaDatabaseLastInsertId(lua_State* L) {
-	lua_pushnumber(L, Database::getInstance().getLastInsertId());
-	return 1;
-}
-
 int DBFunctions::luaDatabaseTableExists(lua_State* L) {
 	pushBoolean(L, DatabaseManager::tableExists(getString(L, -1)));
 	return 1;

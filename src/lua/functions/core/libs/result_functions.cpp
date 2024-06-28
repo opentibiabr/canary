@@ -43,7 +43,7 @@ int ResultFunctions::luaResultGetStream(lua_State* L) {
 	}
 
 	unsigned long length;
-	const char* stream = res->getStream(getString(L, 2), length);
+	auto stream = res->getStream(getString(L, 2), length);
 	lua_pushlstring(L, stream, length);
 	lua_pushnumber(L, length);
 	return 2;

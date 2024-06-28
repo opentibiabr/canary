@@ -304,7 +304,6 @@ void CanaryServer::initializeDatabase() {
 	if (!Database::getInstance().connect()) {
 		throw FailedToInitializeCanary("Failed to connect to database!");
 	}
-	logger.debug("MySQL Version: {}", Database::getClientVersion());
 
 	logger.debug("Running database manager...");
 	if (!DatabaseManager::isDatabaseSetup()) {

@@ -122,15 +122,6 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<
 // Memory Mapped File
 #include <mio/mmap.hpp>
 
-// MySQL
-#if __has_include("<mysql.h>")
-	#include <mysql.h>
-#else
-	#include <mysql/mysql.h>
-#endif
-
-#include <mysql/errmsg.h>
-
 // Parallel Hash Map
 #include <parallel_hashmap/phmap.h>
 #include <parallel_hashmap/btree.h>

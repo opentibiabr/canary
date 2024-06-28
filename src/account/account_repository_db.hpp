@@ -34,7 +34,7 @@ public:
 
 private:
 	const std::map<uint8_t, std::string> coinTypeToColumn;
-	bool load(const std::string &query, AccountInfo &acc);
+	bool load(const std::string &query, AccountInfo &acc, bool checkExpires = false);
 	bool loadAccountPlayers(AccountInfo &acc);
 	void setupLoyaltyInfo(AccountInfo &acc);
 };

@@ -218,3 +218,5 @@ template <typename EnumType, typename UnderlyingType = std::underlying_type_t<En
 EnumType enumFromValue(UnderlyingType value) {
 	return static_cast<EnumType>(value);
 }
+
+std::string createMySQLXConnectionURL(const std::string &user, const std::string &password, const std::string &host, int port, const std::string &database, const std::string &sslMode = "disabled");

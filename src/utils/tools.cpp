@@ -1926,3 +1926,7 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 			return 0;
 	}
 }
+
+std::string createMySQLXConnectionURL(const std::string &user, const std::string &password, const std::string &host, int port, const std::string &database, const std::string &sslMode /* = "disabled"*/) {
+	return fmt::format("mysqlx://{}:{}@{}:{}/{}?ssl-mode={}", user, password, host, port, database, sslMode);
+}

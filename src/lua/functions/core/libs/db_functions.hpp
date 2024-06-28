@@ -20,18 +20,14 @@ public:
 		registerMethod(L, "db", "storeQuery", DBFunctions::luaDatabaseStoreQuery);
 		registerMethod(L, "db", "asyncStoreQuery", DBFunctions::luaDatabaseAsyncStoreQuery);
 		registerMethod(L, "db", "escapeString", DBFunctions::luaDatabaseEscapeString);
-		registerMethod(L, "db", "escapeBlob", DBFunctions::luaDatabaseEscapeBlob);
-		registerMethod(L, "db", "lastInsertId", DBFunctions::luaDatabaseLastInsertId);
 		registerMethod(L, "db", "tableExists", DBFunctions::luaDatabaseTableExists);
 	}
 
 private:
 	static int luaDatabaseAsyncExecute(lua_State* L);
 	static int luaDatabaseAsyncStoreQuery(lua_State* L);
-	static int luaDatabaseEscapeBlob(lua_State* L);
 	static int luaDatabaseEscapeString(lua_State* L);
 	static int luaDatabaseExecute(lua_State* L);
-	static int luaDatabaseLastInsertId(lua_State* L);
 	static int luaDatabaseStoreQuery(lua_State* L);
 	static int luaDatabaseTableExists(lua_State* L);
 };

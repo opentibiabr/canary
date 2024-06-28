@@ -17,17 +17,13 @@
     "pugixml",
     "spdlog",
     "zlib",
+    "mysql-connector-cpp",
     "bshoshany-thread-pool",
+    "boost-lexical-cast",
     {
       "name": "opentelemetry-cpp",
       "default-features": true,
       "features": ["otlp-http", "prometheus"]
-    },
-    {
-      "name": "libmariadb",
-      "features": [
-        "mariadbclient"
-      ]
     },
     {
       "name": "gmp",

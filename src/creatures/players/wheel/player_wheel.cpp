@@ -1200,9 +1200,6 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 
 bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	Database &db = Database::getInstance();
-	std::ostringstream query;
-	DBInsert insertWheelData("INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES ");
-	insertWheelData.upsert({ "slot" });
 	PropWriteStream stream;
 	const auto wheelSlots = getSlots();
 	for (uint8_t i = 1; i < wheelSlots.size(); ++i) {
@@ -1219,16 +1216,16 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	size_t attributesSize;
 	const char* attributes = stream.getStream(attributesSize);
 	if (attributesSize > 0) {
-		query << m_player.getGUID() << ',' << db.escapeBlob(attributes, (uint32_t)attributesSize);
-		if (!insertWheelData.addRow(query)) {
-			g_logger().debug("[{}] failed to insert row data", __FUNCTION__);
+		static std::vector<std::string> columns = { "player_id", "slot" };
+		std::vector<mysqlx::Value> values = {
+			m_player.getGUID(),
+			mysqlx::Value(mysqlx::bytes(reinterpret_cast<const uint8_t*>(attributes), attributesSize))
+		};
+
+		if (!g_database().updateTable("player_wheeldata", columns, values, "player_id", m_player.getGUID())) {
+			g_logger().debug("[{}] failed to insert or update row data", __FUNCTION__);
 			return false;
 		}
-	}
-
-	if (!insertWheelData.execute()) {
-		g_logger().debug("[{}] failed to execute database insert", __FUNCTION__);
-		return false;
 	}
 
 	return true;

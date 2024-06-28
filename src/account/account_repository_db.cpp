@@ -23,13 +23,13 @@ AccountRepositoryDB::AccountRepositoryDB() :
 	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" }, { enumToValue(CoinType::Tournament), "tournament_coins" }, { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
 
 bool AccountRepositoryDB::loadByID(const uint32_t &id, AccountInfo &acc) {
-	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);
+	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased` FROM `accounts` WHERE `id` = {}", id);
 	return load(query, acc);
 };
 
 bool AccountRepositoryDB::loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) {
 	auto identifier = oldProtocol ? "name" : "email";
-	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `{}` = {}", identifier, g_database().escapeString(emailOrName));
+	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased` FROM `accounts` WHERE `{}` = {}", identifier, g_database().escapeString(emailOrName));
 	return load(query, acc);
 };
 
@@ -41,7 +41,7 @@ bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, AccountIn
 		"WHERE `account_sessions`.`id` = {}",
 		g_database().escapeString(transformToSHA1(sessionKey))
 	);
-	return load(query, acc);
+	return load(query, acc, true);
 };
 
 bool AccountRepositoryDB::save(const AccountInfo &accInfo) {
@@ -169,7 +169,7 @@ bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 	return true;
 }
 
-bool AccountRepositoryDB::load(const std::string &query, AccountInfo &acc) {
+bool AccountRepositoryDB::load(const std::string &query, AccountInfo &acc, bool checkExpires /* = false */) {
 	auto result = g_database().storeQuery(query);
 
 	if (result == nullptr) {
@@ -179,7 +179,9 @@ bool AccountRepositoryDB::load(const std::string &query, AccountInfo &acc) {
 	acc.id = result->getNumber<uint32_t>("id");
 	acc.accountType = result->getNumber<uint16_t>("type");
 	acc.premiumLastDay = result->getNumber<time_t>("lastday");
-	acc.sessionExpires = result->getNumber<time_t>("expires");
+	if (checkExpires) {
+		acc.sessionExpires = result->getNumber<time_t>("expires");
+	}
 	acc.premiumDaysPurchased = result->getNumber<uint32_t>("premdays_purchased");
 	acc.creationTime = result->getNumber<uint32_t>("creation");
 	acc.premiumRemainingDays = acc.premiumLastDay > getTimeNow() ? (acc.premiumLastDay - getTimeNow()) / 86400 : 0;

@@ -1,3 +1,9 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	logger.info("Updating database to version 47 (fix: rename column `tracker list` to `tracker_list`)")
+
+	db.query([[
+		ALTER TABLE `player_charms`
+			CHANGE COLUMN `tracker list` tracker_list BLOB NULL;
+	]])
+	return true
 end

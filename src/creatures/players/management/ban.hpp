@@ -24,15 +24,12 @@ struct ConnectBlock {
 	uint32_t count;
 };
 
-using IpConnectMap = std::map<uint32_t, ConnectBlock>;
-
 class Ban {
 public:
 	bool acceptConnection(uint32_t clientIP);
 
 private:
-	IpConnectMap ipConnectMap;
-	std::recursive_mutex lock;
+	phmap::parallel_flat_hash_map<uint32_t, ConnectBlock> ipConnectMap;
 };
 
 class IOBan {

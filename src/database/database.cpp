@@ -223,6 +223,10 @@ int64_t DBResult::getI64(const std::string &columnName) const {
 	return InternalDatabase::getNumber<int64_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
+time_t DBResult::getTime(const std::string &columnName) const {
+	return InternalDatabase::getNumber<time_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
 float DBResult::getFloat(const std::string &columnName) const {
 	return InternalDatabase::getNumber<float>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }

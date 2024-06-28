@@ -176,16 +176,17 @@ bool AccountRepositoryDB::load(const std::string &query, AccountInfo &acc, bool 
 		return false;
 	}
 
-	acc.id = result->getNumber<uint32_t>("id");
-	acc.accountType = result->getNumber<uint16_t>("type");
-	acc.premiumLastDay = result->getNumber<time_t>("lastday");
+	acc.id = result->getU32("id");
+	acc.accountType = result->getU16("type");
+	acc.premiumLastDay = result->getTime("lastday");
 	if (checkExpires) {
-		acc.sessionExpires = result->getNumber<time_t>("expires");
+		acc.sessionExpires = result->getTime("expires");
 	}
-	acc.premiumDaysPurchased = result->getNumber<uint32_t>("premdays_purchased");
-	acc.creationTime = result->getNumber<uint32_t>("creation");
+	acc.premiumDaysPurchased = result->getU32("premdays_purchased");
+	acc.creationTime = result->getU32("creation");
 	acc.premiumRemainingDays = acc.premiumLastDay > getTimeNow() ? (acc.premiumLastDay - getTimeNow()) / 86400 : 0;
 
+	g_logger().debug("Loaded account:[{}] type:[{}] premiumDays:[{}] lastDay:[{}] creation:[{}] premiumDaysPurchased:[{}]", acc.id, acc.accountType, acc.premiumRemainingDays, acc.premiumLastDay, acc.creationTime, acc.premiumDaysPurchased);
 	setupLoyaltyInfo(acc);
 
 	return loadAccountPlayers(acc);

@@ -842,7 +842,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResu
 		do {
 			player->setSlotBossId(1, result->getNumber<uint16_t>("bossIdSlotOne"));
 			player->setSlotBossId(2, result->getNumber<uint16_t>("bossIdSlotTwo"));
-			player->setRemoveBossTime(result->getNumber<uint8_t>("removeTimes"));
+			player->setRemoveBossTime(result->getU8("removeTimes"));
 
 			// Tracker
 			unsigned long size;

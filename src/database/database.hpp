@@ -17,6 +17,7 @@
 #endif
 
 #include <mysqlx/xdevapi.h>
+#include <boost/lexical_cast.hpp>
 
 class DBResult;
 
@@ -188,10 +189,63 @@ public:
 
 	std::string escapeBlob(const char* s, uint32_t length) const;
 
+	/**
+	 * @brief Updates blob data in a specified column and table.
+	 *
+	 * This method updates a BLOB column in a specified table using a provided blob of data. It logs
+	 * the number of affected rows or any errors encountered during the update.
+	 *
+	 * @param tableName Name of the table to update.
+	 * @param columnName Name of the BLOB column to update.
+	 * @param recordId ID of the record to update.
+	 * @param blobData Pointer to the blob data to be updated.
+	 * @param size Size of the blob data.
+	 * @param idColumnName Name of the column used as the identifier.
+	 * @return true if the update is successful, false otherwise.
+	 */
 	bool updateBlobData(const std::string &tableName, const std::string &columnName, uint32_t recordId, const char* blobData, size_t size, const std::string &idColumnName = "id");
+
+	/**
+	 * @brief Inserts data into a specified table.
+	 *
+	 * This method inserts a new row into a table with specified columns and values. It checks and logs
+	 * the number of affected rows to ensure that the insert operation was successful.
+	 *
+	 * @param tableName Name of the table where data will be inserted.
+	 * @param columns Vector of strings containing the names of the columns to insert data into.
+	 * @param values Vector of mysqlx::Value containing the data to be inserted.
+	 * @return true if the insert is successful, false otherwise.
+	 */
 	bool insertTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values);
 
+	/**
+	 * @brief Updates or inserts data into a table based on the existence of a record.
+	 *
+	 * This method checks if a record exists and updates it. If the record does not exist, it inserts a new record.
+	 * The method logs actions taken (update or insert) and any errors encountered.
+	 *
+	 * @param tableName Name of the table to update.
+	 * @param columns Names of the columns to update.
+	 * @param values Values corresponding to the columns.
+	 * @param whereColumnName The column name used in the WHERE clause to locate the record.
+	 * @param whereValue The value used in the WHERE clause to locate the record.
+	 * @return true if the operation was successful, false otherwise.
+	 */
 	bool updateTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values, const std::vector<std::string> &whereColumnNames, const std::vector<mysqlx::Value> &whereValues);
+
+	/**
+	 * @brief Updates or inserts data into a table based on complex WHERE conditions.
+	 *
+	 * This method performs an update or insert operation based on complex WHERE conditions specified by multiple columns.
+	 * It handles both single and multiple records and logs detailed information about the operations and any exceptions.
+	 *
+	 * @param tableName Name of the table to update or insert into.
+	 * @param columns Vector of column names to be updated or inserted.
+	 * @param values Vector of values corresponding to the columns.
+	 * @param whereColumnNames Vector of column names used for the WHERE clause to locate the record.
+	 * @param whereValues Vector of values used for the WHERE clause to locate the record.
+	 * @return true if the update or insert is successful, false otherwise.
+	 */
 	bool updateTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values, const std::string &whereColumnName, const mysqlx::Value &whereValue);
 
 	uint64_t getMaxPacketSize() const {
@@ -212,8 +266,6 @@ private:
 
 	friend class DBTransaction;
 };
-
-#include <boost/lexical_cast.hpp>
 
 constexpr auto g_database = Database::getInstance;
 
@@ -236,6 +288,7 @@ public:
 	int32_t getI32(const std::string &columnName) const;
 	int64_t getI64(const std::string &columnName) const;
 
+	time_t getTime(const std::string &columnName) const;
 	float getFloat(const std::string &columnName) const;
 	double getDouble(const std::string &columnName) const;
 	bool getBool(const std::string &columnName) const;

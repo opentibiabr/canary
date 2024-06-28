@@ -18,7 +18,7 @@ function teleportTileBack.onStepIn(creature, item, position, fromPosition)
 	}
 
 	-- Posição de teletransporte
-	local teleportPosition = { x = 32566, y = 31957, z = 1 }
+	local teleportPosition = { x = 32566, y = 31959, z = 1 }
 
 	-- Verifica se a posição, o UID e o itemID coincidem
 	for _, pos in ipairs(specificPositions) do

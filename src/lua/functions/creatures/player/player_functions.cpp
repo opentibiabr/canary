@@ -4222,6 +4222,7 @@ int PlayerFunctions::luaPlayerAddAchievement(lua_State* L) {
 		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
 	}
 
+	player->sendTakeScreenshot(SCREENSHOT_TYPE_ACHIEVEMENT);
 	pushBoolean(L, player->achiev()->add(achievementId, getBoolean(L, 3, true)));
 	return 1;
 }
@@ -4352,6 +4353,20 @@ int PlayerFunctions::luaPlayerSetCurrentTitle(lua_State* L) {
 	}
 
 	player->title()->setCurrentTitle(title.m_id);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerTakeScreenshot(lua_State* L) {
+	// player:takeScreenshot(screenshotType)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto screenshotType = getNumber<Screenshot_t>(L, 2);
+	player->sendTakeScreenshot(screenshotType);
 	pushBoolean(L, true);
 	return 1;
 }

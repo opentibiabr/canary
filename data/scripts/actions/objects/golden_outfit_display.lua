@@ -25,7 +25,7 @@ function goldenOutfitDisplay.onUse(player, item, fromPosition, target, toPositio
 		return true
 	end
 
-	if player:getStorageValue(Storage.OutfitQuest.GoldenOutfit) == 3 then
+	if player:kv():get("golden-outfit-quest") == 3 then
 		item:transform(newItemID)
 		item:getPosition():sendMagicEffect(CONST_ME_EARLY_THUNDER)
 	else

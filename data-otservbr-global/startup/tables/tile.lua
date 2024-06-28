@@ -1099,8 +1099,8 @@ TileUnique = {
 	},
 	-- The paradox tower quest
 	[25011] = {
-		itemId = 354,
-		itemPos = { x = 32497, y = 31889, z = 7 },
+		itemId = 353,
+		itemPos = { x = 32497, y = 31888, z = 7 },
 	},
 	[25012] = {
 		itemId = 10145,
@@ -1190,6 +1190,32 @@ TileUnique = {
 	[25028] = {
 		itemId = 12728,
 		itemPos = { x = 32059, y = 32135, z = 9 },
+	},
+
+	-- The Paradox Tower Quest
+	[25031] = {
+		itemId = 599,
+		itemPos = { x = 32477, y = 31905, z = 7 },
+	},
+	[25032] = {
+		itemId = 599,
+		itemPos = { x = 32476, y = 31906, z = 7 },
+	},
+	[25034] = {
+		itemId = 599,
+		itemPos = { x = 32486, y = 31927, z = 7 },
+	},
+	[25035] = {
+		itemId = 599,
+		itemPos = { x = 32487, y = 31927, z = 7 },
+	},
+	[25036] = {
+		itemId = 599,
+		itemPos = { x = 32486, y = 31928, z = 7 },
+	},
+	[25037] = {
+		itemId = 599,
+		itemPos = { x = 32487, y = 31928, z = 7 },
 	},
 	-- Remove/create item on stepIn
 	-- Reserved uniques range from 29001/30000

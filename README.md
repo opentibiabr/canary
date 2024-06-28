@@ -77,7 +77,7 @@ Before [creating a pull request](https://github.com/opentibiabr/canary/pulls) pl
 * our crew (majesty, gpedro, eduardo dantas, foot)
 * [our contributors](https://github.com/opentibiabr/canary/graphs/contributors)
 * [fear lucien](https://github.com/FearLucien)
-* [cjaker](https://github.com/Eternal-Scripts)
+* [cjaker](https://github.com/Cjaker)
 * [slavidodo](https://github.com/slavidodo)
 * [mignari and our awesome tools](https://github.com/ottools)
 * [mattyx14/otxserver](https://github.com/mattyx14/otxserver) and contributors

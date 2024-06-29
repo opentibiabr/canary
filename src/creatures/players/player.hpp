@@ -2673,7 +2673,6 @@ private:
 	void updateInventoryImbuement();
 
 	void setNextWalkActionTask(std::shared_ptr<Task> task);
-	void setNextWalkTask(std::shared_ptr<Task> task);
 	void setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime = true);
 	void setNextActionPushTask(std::shared_ptr<Task> task);
 	void setNextPotionActionTask(std::shared_ptr<Task> task);
@@ -2833,7 +2832,6 @@ private:
 	uint32_t actionTaskEvent = 0;
 	uint32_t actionTaskEventPush = 0;
 	uint32_t actionPotionTaskEvent = 0;
-	uint32_t nextStepEvent = 0;
 	uint32_t walkTaskEvent = 0;
 	uint32_t MessageBufferTicks = 0;
 	uint32_t lastIP = 0;

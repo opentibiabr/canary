@@ -1989,7 +1989,7 @@ Storage = {
 			VoodooDoll = {},
 		},
 		U7_3 = { -- update 7.3 - Reserved Storages 40351 - 40400
-			MedusaShield = {},
+			TheMedusaQuest = 40351,
 			SerpentineTower = {},
 			WhitePearl = {},
 		},

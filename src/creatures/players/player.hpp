@@ -708,6 +708,7 @@ public:
 		auto it = stashItems.find(itemId);
 		if (it != stashItems.end()) {
 			stashItems[itemId] += amount;
+			setSaveStash(true);
 			return;
 		}
 
@@ -730,6 +731,7 @@ public:
 			} else {
 				return false;
 			}
+			setSaveStash(true);
 			return true;
 		}
 		return false;
@@ -2452,6 +2454,7 @@ public:
 	}
 
 	void setForgeHistory(const ForgeHistory &history) {
+		setSaveForgeHistory(true);
 		forgeHistoryVector.push_back(history);
 	}
 
@@ -2646,6 +2649,37 @@ public:
 	bool canSpeakWithHireling(uint8_t speechbubble);
 
 	uint16_t getPlayerVocationEnum() const;
+
+	bool hasSaveStash() {
+		return saveStash;
+	}
+	void setSaveStash(bool onOff) {
+		saveStash = onOff;
+	}
+	bool hasSaveUnjustifiedKills() {
+		return saveUnjustifiedKills;
+	}
+	void setSaveUnjustifiedKills(bool onOff) {
+		saveUnjustifiedKills = onOff;
+	}
+	bool hasSaveSpells() {
+		return saveSpells;
+	}
+	void setSaveSpells(bool onOff) {
+		saveSpells = onOff;
+	}
+	bool hasSaveForgeHistory() {
+		return saveForgeHistory;
+	}
+	void setSaveForgeHistory(bool onOff) {
+		saveForgeHistory = onOff;
+	}
+	bool hasSaveBosstiary() {
+		return saveBosstiary;
+	}
+	void setSaveBosstiary(bool onOff) {
+		saveBosstiary = onOff;
+	}
 
 private:
 	friend class PlayerLock;
@@ -2868,6 +2902,8 @@ private:
 	uint16_t xpBoostPercent = 0;
 	uint16_t staminaXpBoost = 100;
 	int16_t lastDepotId = -1;
+
+	// Stash
 	StashItemList stashItems; // [ItemID] = amount
 	uint32_t movedItems = 0;
 
@@ -2936,6 +2972,13 @@ private:
 	bool moved = false;
 	bool dead = false;
 	bool imbuementTrackerWindowOpen = false;
+
+	// Save Players
+	bool saveStash = false;
+	bool saveUnjustifiedKills = false;
+	bool saveSpells = false;
+	bool saveForgeHistory = false;
+	bool saveBosstiary = false;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;

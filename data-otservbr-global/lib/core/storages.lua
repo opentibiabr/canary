@@ -1990,8 +1990,9 @@ Storage = {
 		},
 		U7_3 = { -- update 7.3 - Reserved Storages 40351 - 40400
 			TheMedusaQuest = 40351,
-			SerpentineTower = {},
-			WhitePearl = {},
+			SerpentineTower = {
+				WhitePearl = 40352,
+			},
 		},
 		U7_4 = { -- update 7.4 - Reserved Storages 40401 - 40600
 			TheAncientTombs = {},

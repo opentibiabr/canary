@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("CHESS? I DONT PLAY CHESS!", npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			elseif npcHandler:getTopic(playerId) == 3 then
-				npcHandler:say("A PATTERN IN THIS MESS?? HEY DON'T INSULT MY MACHINEHALL!", npc, creature)
+				npcHandler:say("A PATTERN IN THIS MESS?? HEY DON'T INSULT MY MACHINE HALL!", npc, creature)
 				npcHandler:setTopic(playerId, 4)
 			elseif npcHandler:getTopic(playerId) == 4 then
 				npcHandler:say("AH YES! I WORKED ON THE DRESS PATTERN FOR THOSE UNIFORMS. STAINLESS TROUSERES, STEAM DRIVEN BOOTS! ANOTHERMARVEL TO BEHOLD! I'LL SENT A COPY TO KEVIN IMEDIATELY!", npc, creature)

@@ -88,7 +88,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.Postman.Mission05) == 3 then
 			npcHandler:say("Splendid, I knew we could trust you. I would like to ask for your help in another matter. Are you interested?", npc, creature)
 			npcHandler:setTopic(playerId, 16)
-		elseif player:getStorageValue(Storage.Postman.Mission07) == 7 then
+		elseif player:getStorageValue(Storage.Postman.Mission07) == 8 then
 			npcHandler:say("Once more you have impressed me! Are you willing to do another job?", npc, creature)
 			npcHandler:setTopic(playerId, 21)
 		elseif player:getStorageValue(Storage.Postman.Mission06) >= 1 and player:getStorageValue(Storage.Postman.Mission06) < 10 then
@@ -127,10 +127,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.Postman.Rank) == 4 or player:getStorageValue(Storage.Postman.Rank) == 3 and player:getStorageValue(Storage.Postman.Mission09) == 0 then
 			npcHandler:say("So are you ready for another mission?", npc, creature)
 			npcHandler:setTopic(playerId, 25)
-		elseif player:getStorageValue(Storage.Postman.Mission06) == 13 and player:getStorageValue(Storage.Postman.Rank) == 3 then
+		elseif player:getStorageValue(Storage.Postman.Mission07) < 1 and player:getStorageValue(Storage.Postman.Mission06) == 13 and player:getStorageValue(Storage.Postman.Rank) == 3 then
 			npcHandler:say("Excellent! Another job well done! Would you accept another mission?", npc, creature)
 			npcHandler:setTopic(playerId, 19)
-		elseif player:getStorageValue(Storage.Postman.Mission06) == 13 and player:getStorageValue(Storage.Postman.Rank) == 2 then
+		elseif player:getStorageValue(Storage.Postman.Mission07) >= 1 and player:getStorageValue(Storage.Postman.Mission06) == 13 and player:getStorageValue(Storage.Postman.Rank) == 2 then
 			npcHandler:say("Excellent! Another job well done! Would you accept another mission?", npc, creature)
 			npcHandler:setTopic(playerId, 28)
 		elseif player:getStorageValue(Storage.Postman.Mission04) == 2 and player:getStorageValue(Storage.Postman.Rank) == 2 then
@@ -263,7 +263,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 22)
 		elseif npcHandler:getTopic(playerId) == 22 then
 			npcHandler:say("Find out about his whereabouts and retrieve him or at least his posthorn. He was looking for a new underground passage that is rumoured to be found underneath the troll-infested Mountain east of Thais.", npc, creature)
-			player:setStorageValue(Storage.Postman.Mission07, 8)
+			player:setStorageValue(Storage.Postman.Mission07, 9)
 			player:setStorageValue(Storage.Postman.Mission08, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 23 then

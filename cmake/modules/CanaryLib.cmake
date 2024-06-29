@@ -47,23 +47,31 @@ target_compile_definitions(${PROJECT_NAME}_lib PUBLIC
 )
 
 # === IPO ===
-if(MSVC)
-    target_compile_options(${PROJECT_NAME}_lib PRIVATE "/GL")
-    set_target_properties(${PROJECT_NAME}_lib PROPERTIES
-            STATIC_LINKER_FLAGS "/LTCG"
-            SHARED_LINKER_FLAGS "/LTCG"
-            MODULE_LINKER_FLAGS "/LTCG"
-            EXE_LINKER_FLAGS "/LTCG")
-else()
-    include(CheckIPOSupported)
-    check_ipo_supported(RESULT result)
-    if(result)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto=auto")
-        message(STATUS "IPO/LTO enabled with -flto=auto for non-MSVC compiler.")
-        set_property(TARGET ${PROJECT_NAME}_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+if(OPTIONS_ENABLE_IPO)
+    if(MSVC)
+        target_compile_options(${PROJECT_NAME}_lib PRIVATE "/GL")
+        set_target_properties(${PROJECT_NAME}_lib PROPERTIES
+                STATIC_LINKER_FLAGS "/LTCG"
+                SHARED_LINKER_FLAGS "/LTCG"
+                MODULE_LINKER_FLAGS "/LTCG"
+                EXE_LINKER_FLAGS "/LTCG")
     else()
-        message(WARNING "IPO/LTO is not supported: ${output}")
+        if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "14.0" AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+            message(STATUS "GCC 14 detected and Debug build. Disabling IPO/LTO.")
+        else()
+            include(CheckIPOSupported)
+            check_ipo_supported(RESULT result)
+            if(result)
+                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto=auto")
+                message(STATUS "IPO/LTO enabled with -flto=auto for non-MSVC compiler.")
+                set_property(TARGET ${PROJECT_NAME}_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+            else()
+                message(WARNING "IPO/LTO is not supported: ${output}")
+            endif()
+        endif()
     endif()
+else()
+    log_option_disabled("IPO/LTO")
 endif()
 
 # === UNITY BUILD (compile time reducer) ===

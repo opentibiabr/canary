@@ -40,6 +40,9 @@ function stepMorguthisBlueFlames.onStepIn(creature, item, position, fromPosition
 
 		player:teleportTo(Position(33163, 32694, 14))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.MorguthisTreasure) <= 1 then
+			player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.MorguthisTreasure, 2)
+		end
 	end
 	return true
 end

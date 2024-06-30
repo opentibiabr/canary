@@ -7,7 +7,36 @@ ItemAction = {
 		itemId = 2819,
 		itemPos = { { x = 33063, y = 31624, z = 15 } },
 	},
-	[40001] = { -- The cursed crystal skeletons
+	-- The Ancient Tombs Quest
+	[12105] = {
+		itemId = false,
+		itemPos = {
+			{ x = 33188, y = 32660, z = 15 },
+			{ x = 33189, y = 32660, z = 15 },
+			{ x = 33190, y = 32660, z = 15 },
+			{ x = 33191, y = 32660, z = 15 },
+			{ x = 33188, y = 32669, z = 15 },
+			{ x = 33189, y = 32669, z = 15 },
+			{ x = 33190, y = 32669, z = 15 },
+			{ x = 33191, y = 32669, z = 15 },
+		},
+	},
+	[12107] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 33118, y = 32761, z = 14 },
+			{ x = 33118, y = 32762, z = 14 },
+			{ x = 33118, y = 32763, z = 14 },
+		},
+	},
+	[12107] = {
+		itemId = 1662,
+		itemPos = {
+			{ x = 33122, y = 32765, z = 14 },
+		},
+	},
+	-- The cursed crystal skeletons
+	[40001] = {
 		itemId = 27490,
 		itemPos = {
 			{ x = 31974, y = 32907, z = 8 },
@@ -327,6 +356,34 @@ ItemAction = {
 
 ItemUnique = {
 	-- The Ancient Tombs Quest
+	[3950] = {
+		itemId = 1949,
+		itemPos = { x = 33174, y = 32694, z = 14 },
+	},
+	[3951] = {
+		itemId = 1949,
+		itemPos = { x = 33396, y = 32852, z = 14 },
+	},
+	[3952] = {
+		itemId = 1949,
+		itemPos = { x = 33191, y = 32959, z = 15 },
+	},
+	[3953] = {
+		itemId = 1949,
+		itemPos = { x = 33195, y = 33002, z = 14 },
+	},
+	[3954] = {
+		itemId = 1949,
+		itemPos = { x = 33073, y = 32781, z = 14 },
+	},
+	[3955] = {
+		itemId = 1949,
+		itemPos = { x = 33103, y = 32590, z = 15 },
+	},
+	[3956] = {
+		itemId = 1949,
+		itemPos = { x = 33116, y = 32656, z = 15 },
+	},
 	[9033] = {
 		itemId = 2114,
 		itemPos = { x = 33098, y = 32816, z = 13 },
@@ -732,12 +789,84 @@ ItemUnique = {
 		itemPos = { x = 31978, y = 32184, z = 10 },
 	},
 	-- The Ancient Tombs Quest
-	[40082] = {
+	[40083] = {
 		itemId = 1949,
 		itemPos = { x = 33073, y = 32603, z = 15 },
+	},
+	[40084] = {
+		itemId = 1949,
+		itemPos = { x = 33183, y = 32757, z = 15 },
+	},
+	[40085] = {
+		itemId = 1949,
+		itemPos = { x = 33238, y = 32644, z = 14 },
+	},
+	[40086] = {
+		itemId = 1949,
+		itemPos = { x = 33109, y = 33009, z = 14 },
+	},
+	[40087] = {
+		itemId = 1949,
+		itemPos = { x = 33206, y = 32982, z = 14 },
+	},
+	[40088] = {
+		itemId = 1949,
+		itemPos = { x = 33130, y = 32736, z = 14 },
+	},
+	[40089] = {
+		itemId = 1949,
+		itemPos = { x = 33120, y = 32811, z = 15 },
+	},
+	[40090] = {
+		itemId = 1949,
+		itemPos = { x = 33117, y = 32627, z = 15 },
+	},
+	[40091] = {
+		itemId = 1949,
+		itemPos = { x = 33178, y = 32664, z = 15 },
+	},
+	[50135] = {
+		itemId = 1949,
+		itemPos = { x = 33393, y = 32802, z = 14 },
+	},
+	[50136] = {
+		itemId = 419,
+		itemPos = { x = 33362, y = 32811, z = 14 },
 	},
 	[50137] = {
 		itemId = 1949,
 		itemPos = { x = 33083, y = 32569, z = 13 },
+	},
+	[50139] = {
+		itemId = 1959,
+		itemPos = { x = 33252, y = 32703, z = 15 },
+	},
+	[50140] = {
+		itemId = 1959,
+		itemPos = { x = 33270, y = 32667, z = 15 },
+	},
+	[50141] = {
+		itemId = 1959,
+		itemPos = { x = 33245, y = 32686, z = 15 },
+	},
+	[50142] = {
+		itemId = 1959,
+		itemPos = { x = 33275, y = 32685, z = 14 },
+	},
+	[50143] = {
+		itemId = 1959,
+		itemPos = { x = 33279, y = 32682, z = 14 },
+	},
+	[50144] = {
+		itemId = 1959,
+		itemPos = { x = 33263, y = 32681, z = 14 },
+	},
+	[50145] = {
+		itemId = 1959,
+		itemPos = { x = 33269, y = 32698, z = 14 },
+	},
+	[50146] = {
+		itemId = 1949,
+		itemPos = { x = 33263, y = 32668, z = 13 },
 	},
 }

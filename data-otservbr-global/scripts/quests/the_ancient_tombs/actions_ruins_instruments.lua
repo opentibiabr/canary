@@ -10,20 +10,33 @@ local storage = Storage.Quest.U7_4.TheAncientTombs.VashresamunInstruments
 
 local theAncientRuinsInstru = Action()
 function theAncientRuinsInstru.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local targetTable = config[item.itemid]
-	if not targetTable then
+	local targetValue = config[item.itemid]
+	if not targetValue then
 		player:setStorageValue(storage, 0)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You played them wrong, now you must begin with first again!")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You played it wrong, now you must begin with the first again!")
 		doTargetCombatHealth(0, player, COMBAT_PHYSICALDAMAGE, -20, -20, CONST_ME_GROUNDSHAKER)
 		return true
 	end
 
-	if player:getStorageValue(storage) == targetTable and targetTable < 4 then
-		player:setStorageValue(storage, math.max(1, player:getPlayerStorageValue(storage)) + 1)
+	local currentValue = player:getStorageValue(storage)
+	if currentValue == -1 then
+		currentValue = 0
+	end
+
+	if currentValue + 1 == targetValue then
+		player:setStorageValue(storage, targetValue)
 		fromPosition:sendMagicEffect(CONST_ME_SOUND_BLUE)
+		if targetValue == 5 then
+			player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.VashresamunsDoor, 1)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You played them in the correct order and got access through the door!")
+			if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.VashresamunsTreasure) <= 1 then
+				player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.VashresamunsTreasure, 2)
+			end
+		end
 	else
-		player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.VashresamunsDoor, 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You played them in correct order and got the access through door!")
+		player:setStorageValue(storage, 0)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You played it wrong, now you must begin with the first again!")
+		doTargetCombatHealth(0, player, COMBAT_PHYSICALDAMAGE, -20, -20, CONST_ME_GROUNDSHAKER)
 	end
 	return true
 end

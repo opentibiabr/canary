@@ -176,8 +176,8 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	end
 
 	if table.contains(hotaQuest, item.uid) then
-		if player:getStorageValue(Storage.TheAncientTombs.DefaultStart) ~= 1 then
-			player:setStorageValue(Storage.TheAncientTombs.DefaultStart, 1)
+		if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.DefaultStart) ~= 1 then
+			player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.DefaultStart, 1)
 		end
 	end
 

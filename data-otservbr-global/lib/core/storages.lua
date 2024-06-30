@@ -895,27 +895,6 @@ Storage = {
 		SecondOrientalAddon = 51025,
 		RoyalCostumeOutfit = 51026,
 	},
-	TheAncientTombs = {
-		-- Reserved storage from 50940 - 51059
-		DefaultStart = 50940,
-		VashresamunInstruments = 50941,
-		VashresamunsDoor = 50942,
-		MorguthisBlueFlameStorage1 = 50943,
-		MorguthisBlueFlameStorage2 = 50944,
-		MorguthisBlueFlameStorage3 = 50945,
-		MorguthisBlueFlameStorage4 = 50946,
-		MorguthisBlueFlameStorage5 = 50947,
-		MorguthisBlueFlameStorage6 = 50948,
-		MorguthisBlueFlameStorage7 = 50949,
-
-		OmrucsTreasure = 50950,
-		ThalasTreasure = 50951,
-		DiphtrahsTreasure = 50952,
-		MahrdisTreasure = 50953,
-		VashresamunsTreasure = 50954,
-		MorguthisTreasure = 50955,
-		RahemosTreasure = 50956,
-	},
 	TheApeCity = {
 		-- Reserved storage from 51060 - 51079
 		Started = 51060,
@@ -1995,7 +1974,36 @@ Storage = {
 			},
 		},
 		U7_4 = { -- update 7.4 - Reserved Storages 40401 - 40600
-			TheAncientTombs = {},
+			TheAncientTombs = {
+				DefaultStart = 40401,
+				VashresamunInstruments = 40402,
+				VashresamunsDoor = 40403,
+				MorguthisBlueFlameStorage1 = 40404,
+				MorguthisBlueFlameStorage2 = 40405,
+				MorguthisBlueFlameStorage3 = 40406,
+				MorguthisBlueFlameStorage4 = 40407,
+				MorguthisBlueFlameStorage5 = 40408,
+				MorguthisBlueFlameStorage6 = 40409,
+				MorguthisBlueFlameStorage7 = 40410,
+				OmrucsTreasure = 40411,
+				ThalasTreasure = 40412,
+				DiphtrahsTreasure = 40413,
+				MahrdisTreasure = 40414,
+				VashresamunsTreasure = 40415,
+				MorguthisTreasure = 40416,
+				RahemosTreasure = 40417,
+				ThalasSwitchesGlobalStorage = 40418,
+				DiprathSwitchesGlobalStorage = 40419,
+				AshmunrahSwitchesGlobalStorage = 40420,
+				Diprath_sign1 = 40421,
+				Diprath_sign2 = 40422,
+				Diprath_sign3 = 40423,
+				Diprath_sign4 = 40424,
+				Diprath_sign5 = 40425,
+				Diprath_sign6 = 40426,
+				Diprath_sign7 = 40427,
+				Diprath_sign8 = 40428,
+			},
 			TheDjinnWarEfreetFaction = {},
 			TheDjinnWarMaridFaction = {},
 		},
@@ -3045,12 +3053,6 @@ GlobalStorage = {
 		Machine3 = 60147,
 		Machine4 = 60148,
 	},
-	TheAncientTombs = {
-		-- Reserved storage from 60160 - 60169
-		ThalasSwitchesGlobalStorage = 60160,
-		DiprathSwitchesGlobalStorage = 60161,
-		AshmunrahSwitchesGlobalStorage = 60162,
-	},
 	TheOrderOfTheLion = {
 		-- Reserved storage from 60170 - 60171
 		Drume = {
@@ -3109,9 +3111,9 @@ GlobalStorage = {
 }
 
 startupGlobalStorages = {
-	GlobalStorage.TheAncientTombs.AshmunrahSwitchesGlobalStorage,
-	GlobalStorage.TheAncientTombs.DiprathSwitchesGlobalStorage,
-	GlobalStorage.TheAncientTombs.ThalasSwitchesGlobalStorage,
+	Storage.Quest.U7_4.TheAncientTombs.AshmunrahSwitchesGlobalStorage,
+	Storage.Quest.U7_4.TheAncientTombs.DiprathSwitchesGlobalStorage,
+	Storage.Quest.U7_4.TheAncientTombs.ThalasSwitchesGlobalStorage,
 	GlobalStorage.HeroRathleton.FirstMachines,
 	GlobalStorage.HeroRathleton.SecondMachines,
 	GlobalStorage.HeroRathleton.ThirdMachines,

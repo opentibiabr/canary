@@ -6,7 +6,7 @@ function enterAshmunrahTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if Game.getStorageValue(GlobalStorage.TheAncientTombs.AshmunrahSwitchesGlobalStorage) < 6 then
+	if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.AshmunrahSwitchesGlobalStorage) < 6 then
 		player:teleportTo(fromPosition, true)
 		fromPosition:sendMagicEffect(CONST_ME_TELEPORT)
 		return true

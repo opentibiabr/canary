@@ -2751,12 +2751,12 @@ if not Quests then
 		},
 		[16] = {
 			name = "The Ancient Tombs",
-			startStorageId = Storage.TheAncientTombs.DefaultStart,
+			startStorageId = Storage.Quest.U7_4.TheAncientTombs.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Omruc's Treasure",
-					storageId = Storage.TheAncientTombs.OmrucsTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.OmrucsTreasure,
 					missionId = 10210,
 					startValue = 1,
 					endValue = 1,
@@ -2764,7 +2764,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Thalas' Treasure",
-					storageId = Storage.TheAncientTombs.ThalasTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.ThalasTreasure,
 					missionId = 10211,
 					startValue = 1,
 					endValue = 1,
@@ -2772,15 +2772,19 @@ if not Quests then
 				},
 				[3] = {
 					name = "Diphtrah's Treasure",
-					storageId = Storage.TheAncientTombs.DiphtrahsTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.DiphtrahsTreasure,
 					missionId = 10212,
 					startValue = 1,
-					endValue = 1,
-					description = "You defeated Dipthrah and received a Damaged Helmet",
+					endValue = 3,
+					states = {
+						[1] = "Now you need to pull all 11 levers to be able to continue.",
+						[2] = "Now you need to use all the plaques before accessing Diphtrah's room.",
+						[3] = "Congratulations, this step has been completed.",
+					},
 				},
 				[4] = {
 					name = "Mahrdis' Treasure",
-					storageId = Storage.TheAncientTombs.MahrdisTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.MahrdisTreasure,
 					missionId = 10213,
 					startValue = 1,
 					endValue = 1,
@@ -2788,7 +2792,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Vashresamun's Treasure",
-					storageId = Storage.TheAncientTombs.VashresamunsTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.VashresamunsTreasure,
 					missionId = 10214,
 					startValue = 1,
 					endValue = 1,
@@ -2796,7 +2800,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Morguthis' Treasure",
-					storageId = Storage.TheAncientTombs.MorguthisTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.MorguthisTreasure,
 					missionId = 10215,
 					startValue = 1,
 					endValue = 1,
@@ -2804,7 +2808,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Rahemos' Treasure",
-					storageId = Storage.TheAncientTombs.RahemosTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.RahemosTreasure,
 					missionId = 10216,
 					startValue = 1,
 					endValue = 1,

@@ -273,9 +273,92 @@ ItemAction = {
 			{ x = 33155, y = 31297, z = 3 },
 		},
 	},
+
+	-- The Ancient Tombs Quest
+	[40031] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33071, y = 32637, z = 15 },
+		},
+	},
+	[40032] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33074, y = 32633, z = 15 },
+		},
+	},
+	[40033] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33071, y = 32629, z = 15 },
+		},
+	},
+	[40034] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33077, y = 32625, z = 15 },
+		},
+	},
+	[40035] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33077, y = 32621, z = 15 },
+		},
+	},
+	[40036] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33071, y = 32617, z = 15 },
+		},
+	},
+	[40037] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33077, y = 32613, z = 15 },
+		},
+	},
+	[40038] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33071, y = 32609, z = 15 },
+		},
+	},
 }
 
 ItemUnique = {
+	-- The Ancient Tombs Quest
+	[9033] = {
+		itemId = 2114,
+		itemPos = { x = 33098, y = 32816, z = 13 },
+	},
+	[9034] = {
+		itemId = 2114,
+		itemPos = { x = 33293, y = 32741, z = 13 },
+	},
+	[9035] = {
+		itemId = 2114,
+		itemPos = { x = 33073, y = 32589, z = 13 },
+	},
+	[9036] = {
+		itemId = 2114,
+		itemPos = { x = 33240, y = 32855, z = 13 },
+	},
+	[9037] = {
+		itemId = 2114,
+		itemPos = { x = 33276, y = 32552, z = 14 },
+	},
+	[9038] = {
+		itemId = 2114,
+		itemPos = { x = 33233, y = 32692, z = 13 },
+	},
+	[9039] = {
+		itemId = 2114,
+		itemPos = { x = 33135, y = 32682, z = 12 },
+	},
+	[9040] = {
+		itemId = 2114,
+		itemPos = { x = 33161, y = 32831, z = 10 },
+	},
 	-- Issavi town teleport
 	[9515] = {
 		itemId = 1949,
@@ -647,5 +730,14 @@ ItemUnique = {
 	[40081] = {
 		itemId = 4077,
 		itemPos = { x = 31978, y = 32184, z = 10 },
+	},
+	-- The Ancient Tombs Quest
+	[40082] = {
+		itemId = 1949,
+		itemPos = { x = 33073, y = 32603, z = 15 },
+	},
+	[50137] = {
+		itemId = 1949,
+		itemPos = { x = 33083, y = 32569, z = 13 },
 	},
 }

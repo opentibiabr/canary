@@ -6,7 +6,7 @@ local config = {
 	[3257] = 5,
 }
 
-local storage = Storage.TheAncientTombs.VashresamunInstruments
+local storage = Storage.Quest.U7_4.TheAncientTombs.VashresamunInstruments
 
 local theAncientRuinsInstru = Action()
 function theAncientRuinsInstru.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -22,7 +22,7 @@ function theAncientRuinsInstru.onUse(player, item, fromPosition, target, toPosit
 		player:setStorageValue(storage, math.max(1, player:getPlayerStorageValue(storage)) + 1)
 		fromPosition:sendMagicEffect(CONST_ME_SOUND_BLUE)
 	else
-		player:setStorageValue(Storage.TheAncientTombs.VashresamunsDoor, 1)
+		player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.VashresamunsDoor, 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You played them in correct order and got the access through door!")
 	end
 	return true

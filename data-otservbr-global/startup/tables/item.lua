@@ -358,7 +358,6 @@ ItemAction = {
 			{ x = 33198, y = 32876, z = 11 },
 		},
 	},
-
 }
 
 ItemUnique = {

@@ -8,7 +8,7 @@ local config = {
 			if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.DiphtrahsTreasure) <= 0 then
 				player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.DiphtrahsTreasure, 1)
 			end
-		end
+		end,
 	},
 	[9036] = {
 		flamePosition = Position(33240, 32856, 13),

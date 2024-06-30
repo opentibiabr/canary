@@ -998,6 +998,23 @@ ChestUnique = {
 		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.UndergroundBastion,
 		time = 24, -- hour
 	},
+	-- The Medusa Quest
+	[6111] = {
+		itemId = 1983,
+		itemPos = { x = 33049, y = 32399, z = 10 },
+		container = 2853,
+		weight = 105,
+		reward = { { 3436, 1 }, { 3567, 1 }, { 3324, 1 } },
+		storage = Storage.Quest.U7_3.TheMedusaQuest,
+	},
+	-- Serpentine Tower Quest
+	[6112] = {
+		itemId = 2472,
+		itemPos = { x = 33150, y = 32862, z = 7 },
+		weight = 0.20,
+		reward = { { 3026, 1 } },
+		storage = Storage.Quest.U7_3.SerpentineTower.WhitePearl,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

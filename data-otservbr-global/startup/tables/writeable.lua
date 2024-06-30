@@ -860,4 +860,45 @@ Not mine!
 		itemPos = { x = 32205, y = 32883, z = 7 },
 		text = "DANGER. Quara sighted below. Experienced adventurers only! Do not swim into a water channel unless you are prepared to meet your death!",
 	},
+	-- The Ancient Tombs Quest
+	[17] = {
+		itemId = 2023,
+		itemPos = { x = 33071, y = 32637, z = 15 },
+		text = "endless",
+	},
+	[18] = {
+		itemId = 2023,
+		itemPos = { x = 33074, y = 32633, z = 15 },
+		text = "pale-faced",
+	},
+	[19] = {
+		itemId = 2023,
+		itemPos = { x = 33071, y = 32629, z = 15 },
+		text = "deceased",
+	},
+	[20] = {
+		itemId = 2023,
+		itemPos = { x = 33077, y = 32625, z = 15 },
+		text = "unholy",
+	},
+	[21] = {
+		itemId = 2023,
+		itemPos = { x = 33077, y = 32621, z = 15 },
+		text = "doomed",
+	},
+	[22] = {
+		itemId = 2023,
+		itemPos = { x = 33071, y = 32617, z = 15 },
+		text = "righteous",
+	},
+	[23] = {
+		itemId = 2023,
+		itemPos = { x = 33077, y = 32613, z = 15 },
+		text = "sharpened",
+	},
+	[24] = {
+		itemId = 2023,
+		itemPos = { x = 33071, y = 32609, z = 15 },
+		text = "mortal",
+	},
 }

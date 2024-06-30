@@ -310,8 +310,8 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 32369, y = 32796, z = 10 } },
 	},
-	-- Ancient tombs door
-	[Storage.TheAncientTombs.VashresamunsDoor] = {
+	-- The Ancient Tombs Quest - door Vashresamuns
+	[Storage.Quest.U7_4.TheAncientTombs.VashresamunsDoor] = {
 		itemId = false,
 		itemPos = { { x = 33184, y = 32665, z = 15 } },
 	},

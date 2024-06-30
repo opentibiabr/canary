@@ -1,4 +1,4 @@
-local helmetIds = { 3222, 3223, 3224, 3225, 3226, 3227, 3228 }
+local helmetIds = { 3236, 3241, 3235, 3239, 3240, 3238, 3237 }
 
 local craftHelmet = MoveEvent()
 
@@ -41,5 +41,5 @@ function craftHelmet.onAddItem(moveitem, tileitem, position)
 end
 
 craftHelmet:type("additem")
-craftHelmet:aid(60626)
+craftHelmet:aid(40039)
 craftHelmet:register()

@@ -29,7 +29,7 @@ local config = {
 		destination = Position(33041, 32774, 14),
 		exitDestination = Position(33133, 32642, 8),
 	},
-	-- from  Dipthrah Boss
+	-- from Dipthrah Boss
 	[3955] = {
 		removeId = 3241,
 		destination = Position(33349, 32827, 14),
@@ -73,5 +73,4 @@ for index, value in pairs(config) do
 	tombTeleport:uid(index)
 end
 
-tombTeleport:aid(12108)
 tombTeleport:register()

@@ -21,7 +21,6 @@ function movements_enter_omruc_room.onStepIn(creature, item, position, fromPosit
 	return true
 end
 
-
 movements_enter_omruc_room:type("stepin")
 movements_enter_omruc_room:uid(40087)
 movements_enter_omruc_room:register()

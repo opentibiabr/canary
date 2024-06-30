@@ -17,7 +17,7 @@ local config = {
 			if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.MahrdisTreasure) <= 0 then
 				player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.MahrdisTreasure, 1)
 			end
-		end
+		end,
 	},
 	[9037] = { flamePosition = Position(33276, 32553, 14), toPosition = Position(33271, 32553, 14) },
 	[9038] = { flamePosition = Position(33234, 32692, 13), toPosition = Position(33234, 32687, 13) },

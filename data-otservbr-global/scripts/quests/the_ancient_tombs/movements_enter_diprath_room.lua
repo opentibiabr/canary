@@ -22,7 +22,6 @@ function movements_enter_diprath_room.onStepIn(creature, item, position, fromPos
 	return true
 end
 
-
 movements_enter_diprath_room:type("stepin")
 movements_enter_diprath_room:uid(40082)
 movements_enter_diprath_room:register()

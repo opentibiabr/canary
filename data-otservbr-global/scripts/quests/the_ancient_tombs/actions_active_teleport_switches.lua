@@ -6,7 +6,7 @@ local config = {
 			if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.DiphtrahsTreasure) <= 1 then
 				player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.DiphtrahsTreasure, 2)
 			end
-		end
+		end,
 	},
 	[12123] = Storage.Quest.U7_4.TheAncientTombs.AshmunrahSwitchesGlobalStorage,
 }
@@ -47,5 +47,3 @@ for actionId, info in pairs(config) do
 end
 
 theAncientActiveTeleport:register()
-
-

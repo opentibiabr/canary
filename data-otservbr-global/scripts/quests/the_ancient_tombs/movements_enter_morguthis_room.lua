@@ -21,7 +21,6 @@ function movements_enter_morguthis_room.onStepIn(creature, item, position, fromP
 	return true
 end
 
-
 movements_enter_morguthis_room:type("stepin")
 movements_enter_morguthis_room:uid(40085)
 movements_enter_morguthis_room:register()

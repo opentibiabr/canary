@@ -5,7 +5,7 @@ local config = {
 			if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.ThalasTreasure) <= 0 then
 				player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.ThalasTreasure, 1)
 			end
-		end
+		end,
 	},
 	[12122] = {
 		storage = Storage.Quest.U7_4.TheAncientTombs.DiprathSwitchesGlobalStorage,
@@ -17,8 +17,7 @@ local config = {
 	},
 	[12123] = {
 		storage = Storage.Quest.U7_4.TheAncientTombs.AshmunrahSwitchesGlobalStorage,
-		specificCheck = function(player)
-		end
+		specificCheck = function(player) end,
 	},
 }
 

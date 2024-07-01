@@ -58,11 +58,11 @@ bool IOBan::isAccountBanned(uint32_t accountId, BanInfo &banInfo) {
 		return false;
 	}
 
-	int64_t expiresAt = result->getNumber<int64_t>("expires_at");
+	int64_t expiresAt = result->getI64("expires_at");
 	if (expiresAt != 0 && time(nullptr) > expiresAt) {
 		// Move the ban to history if it has expired
 		query.str(std::string());
-		query << "INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" << accountId << ',' << db.escapeString(result->getString("reason")) << ',' << result->getNumber<time_t>("banned_at") << ',' << expiresAt << ',' << result->getNumber<uint32_t>("banned_by") << ')';
+		query << "INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" << accountId << ',' << db.escapeString(result->getString("reason")) << ',' << result->getTime("banned_at") << ',' << expiresAt << ',' << result->getU32("banned_by") << ')';
 		g_databaseTasks().execute(query.str());
 
 		query.str(std::string());
@@ -92,7 +92,7 @@ bool IOBan::isIpBanned(uint32_t clientIP, BanInfo &banInfo) {
 		return false;
 	}
 
-	int64_t expiresAt = result->getNumber<int64_t>("expires_at");
+	int64_t expiresAt = result->getI64("expires_at");
 	if (expiresAt != 0 && time(nullptr) > expiresAt) {
 		query.str(std::string());
 		query << "DELETE FROM `ip_bans` WHERE `ip` = " << clientIP;

@@ -190,62 +190,10 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	if (result->getNumber<uint16_t>("save") == 0) {
+	if (result->getU16("save") == 0) {
 		query.str("");
 		query << "UPDATE `players` SET `lastlogin` = " << player->lastLoginSaved << ", `lastip` = " << player->lastIP << " WHERE `id` = " << player->getGUID();
 		return db.executeQuery(query.str());
-	}
-
-	// First, an UPDATE query to write the player itself
-	query.str("");
-	query << "UPDATE `players` SET ";
-	query << "`name` = " << db.escapeString(player->name) << ",";
-	query << "`level` = " << player->level << ",";
-	query << "`group_id` = " << player->group->id << ",";
-	query << "`vocation` = " << player->getVocationId() << ",";
-	query << "`health` = " << player->health << ",";
-	query << "`healthmax` = " << player->healthMax << ",";
-	query << "`experience` = " << player->experience << ",";
-	query << "`lookbody` = " << static_cast<uint32_t>(player->defaultOutfit.lookBody) << ",";
-	query << "`lookfeet` = " << static_cast<uint32_t>(player->defaultOutfit.lookFeet) << ",";
-	query << "`lookhead` = " << static_cast<uint32_t>(player->defaultOutfit.lookHead) << ",";
-	query << "`looklegs` = " << static_cast<uint32_t>(player->defaultOutfit.lookLegs) << ",";
-	query << "`looktype` = " << player->defaultOutfit.lookType << ",";
-	query << "`lookaddons` = " << static_cast<uint32_t>(player->defaultOutfit.lookAddons) << ",";
-	query << "`lookmountbody` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountBody) << ",";
-	query << "`lookmountfeet` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountFeet) << ",";
-	query << "`lookmounthead` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountHead) << ",";
-	query << "`lookmountlegs` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountLegs) << ",";
-	query << "`lookfamiliarstype` = " << player->defaultOutfit.lookFamiliarsType << ",";
-	query << "`isreward` = " << static_cast<uint16_t>(player->isDailyReward) << ",";
-	query << "`maglevel` = " << player->magLevel << ",";
-	query << "`mana` = " << player->mana << ",";
-	query << "`manamax` = " << player->manaMax << ",";
-	query << "`manaspent` = " << player->manaSpent << ",";
-	query << "`soul` = " << static_cast<uint16_t>(player->soul) << ",";
-	query << "`town_id` = " << player->town->getID() << ",";
-
-	const Position &loginPosition = player->getLoginPosition();
-	query << "`posx` = " << loginPosition.getX() << ",";
-	query << "`posy` = " << loginPosition.getY() << ",";
-	query << "`posz` = " << loginPosition.getZ() << ",";
-
-	query << "`prey_wildcard` = " << player->getPreyCards() << ",";
-	query << "`task_points` = " << player->getTaskHuntingPoints() << ",";
-	query << "`boss_points` = " << player->getBossPoints() << ",";
-	query << "`forge_dusts` = " << player->getForgeDusts() << ",";
-	query << "`forge_dust_level` = " << player->getForgeDustLevel() << ",";
-	query << "`randomize_mount` = " << static_cast<uint16_t>(player->isRandomMounted()) << ",";
-
-	query << "`cap` = " << (player->capacity / 100) << ",";
-	query << "`sex` = " << static_cast<uint16_t>(player->sex) << ",";
-
-	if (player->lastLoginSaved != 0) {
-		query << "`lastlogin` = " << player->lastLoginSaved << ",";
-	}
-
-	if (player->lastIP != 0) {
-		query << "`lastip` = " << player->lastIP << ",";
 	}
 
 	// serialize conditions
@@ -259,82 +207,140 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 		}
 	}
 
-	size_t attributesSize;
-	const char* attributes = propWriteStream.getStream(attributesSize);
-
-	g_database().updateBlobData("players", "conditions", player->getGUID(), attributes, attributesSize, "id");
-
+	int64_t skullTime = 0;
+	Skulls_t skull = SKULL_NONE;
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
-		int64_t skullTime = 0;
-
 		if (player->skullTicks > 0) {
 			auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 			skullTime = now + player->skullTicks;
 		}
 
-		query << "`skulltime` = " << skullTime << ",";
-
-		Skulls_t skull = SKULL_NONE;
 		if (player->skull == SKULL_RED) {
 			skull = SKULL_RED;
 		} else if (player->skull == SKULL_BLACK) {
 			skull = SKULL_BLACK;
 		}
-		query << "`skull` = " << static_cast<int64_t>(skull) << ",";
 	}
 
-	query << "`lastlogout` = " << player->getLastLogout() << ",";
-	query << "`balance` = " << player->bankBalance << ",";
-	query << "`offlinetraining_time` = " << player->getOfflineTrainingTime() / 1000 << ",";
-	query << "`offlinetraining_skill` = " << std::to_string(player->getOfflineTrainingSkill()) << ",";
-	query << "`stamina` = " << player->getStaminaMinutes() << ",";
-	query << "`skill_fist` = " << player->skills[SKILL_FIST].level << ",";
-	query << "`skill_fist_tries` = " << player->skills[SKILL_FIST].tries << ",";
-	query << "`skill_club` = " << player->skills[SKILL_CLUB].level << ",";
-	query << "`skill_club_tries` = " << player->skills[SKILL_CLUB].tries << ",";
-	query << "`skill_sword` = " << player->skills[SKILL_SWORD].level << ",";
-	query << "`skill_sword_tries` = " << player->skills[SKILL_SWORD].tries << ",";
-	query << "`skill_axe` = " << player->skills[SKILL_AXE].level << ",";
-	query << "`skill_axe_tries` = " << player->skills[SKILL_AXE].tries << ",";
-	query << "`skill_dist` = " << player->skills[SKILL_DISTANCE].level << ",";
-	query << "`skill_dist_tries` = " << player->skills[SKILL_DISTANCE].tries << ",";
-	query << "`skill_shielding` = " << player->skills[SKILL_SHIELD].level << ",";
-	query << "`skill_shielding_tries` = " << player->skills[SKILL_SHIELD].tries << ",";
-	query << "`skill_fishing` = " << player->skills[SKILL_FISHING].level << ",";
-	query << "`skill_fishing_tries` = " << player->skills[SKILL_FISHING].tries << ",";
-	query << "`skill_critical_hit_chance` = " << player->skills[SKILL_CRITICAL_HIT_CHANCE].level << ",";
-	query << "`skill_critical_hit_chance_tries` = " << player->skills[SKILL_CRITICAL_HIT_CHANCE].tries << ",";
-	query << "`skill_critical_hit_damage` = " << player->skills[SKILL_CRITICAL_HIT_DAMAGE].level << ",";
-	query << "`skill_critical_hit_damage_tries` = " << player->skills[SKILL_CRITICAL_HIT_DAMAGE].tries << ",";
-	query << "`skill_life_leech_chance` = " << player->skills[SKILL_LIFE_LEECH_CHANCE].level << ",";
-	query << "`skill_life_leech_chance_tries` = " << player->skills[SKILL_LIFE_LEECH_CHANCE].tries << ",";
-	query << "`skill_life_leech_amount` = " << player->skills[SKILL_LIFE_LEECH_AMOUNT].level << ",";
-	query << "`skill_life_leech_amount_tries` = " << player->skills[SKILL_LIFE_LEECH_AMOUNT].tries << ",";
-	query << "`skill_mana_leech_chance` = " << player->skills[SKILL_MANA_LEECH_CHANCE].level << ",";
-	query << "`skill_mana_leech_chance_tries` = " << player->skills[SKILL_MANA_LEECH_CHANCE].tries << ",";
-	query << "`skill_mana_leech_amount` = " << player->skills[SKILL_MANA_LEECH_AMOUNT].level << ",";
-	query << "`skill_mana_leech_amount_tries` = " << player->skills[SKILL_MANA_LEECH_AMOUNT].tries << ",";
-	query << "`manashield` = " << player->getManaShield() << ",";
-	query << "`max_manashield` = " << player->getMaxManaShield() << ",";
-	query << "`xpboost_value` = " << player->getXpBoostPercent() << ",";
-	query << "`xpboost_stamina` = " << player->getXpBoostTime() << ",";
-	query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ",";
+	static std::vector<std::string> columns = {
+		"name", "level", "group_id", "vocation", "health", "healthmax", "experience",
+		"lookbody", "lookfeet", "lookhead", "looklegs", "looktype", "lookaddons",
+		"lookmountbody", "lookmountfeet", "lookmounthead", "lookmountlegs", "lookfamiliarsType",
+		"isreward", "maglevel", "mana", "manamax", "manaspent", "soul", "town_id",
+		"posx", "posy", "posz", "prey_wildcard", "task_points", "boss_points", "forge_dusts",
+		"forge_dust_level", "randomize_mount", "cap", "sex", "lastlogin", "lastip",
+		"conditions", "skulltime", "skull", "lastlogout", "balance", "offlinetraining_time",
+		"offlinetraining_skill", "stamina", "skill_fist", "skill_fist_tries", "skill_club",
+		"skill_club_tries", "skill_sword", "skill_sword_tries", "skill_axe", "skill_axe_tries",
+		"skill_dist", "skill_dist_tries", "skill_shielding", "skill_shielding_tries",
+		"skill_fishing", "skill_fishing_tries", "skill_critical_hit_chance",
+		"skill_critical_hit_chance_tries", "skill_critical_hit_damage",
+		"skill_critical_hit_damage_tries", "skill_life_leech_chance",
+		"skill_life_leech_chance_tries", "skill_life_leech_amount",
+		"skill_life_leech_amount_tries", "skill_mana_leech_chance",
+		"skill_mana_leech_chance_tries", "skill_mana_leech_amount",
+		"skill_mana_leech_amount_tries", "manashield", "max_manashield", "xpboost_value",
+		"xpboost_stamina", "quickloot_fallback", "onlinetime"
+	};
+
+	const auto [attributes, attributesSize] = propWriteStream.getStream();
+	std::vector<mysqlx::Value> values = {
+		mysqlx::Value(player->name),
+		mysqlx::Value(player->level),
+		mysqlx::Value(player->group->id),
+		mysqlx::Value(player->getVocationId()),
+		mysqlx::Value(player->health),
+		mysqlx::Value(player->healthMax),
+		mysqlx::Value(player->experience),
+		mysqlx::Value(player->defaultOutfit.lookBody),
+		mysqlx::Value(player->defaultOutfit.lookFeet),
+		mysqlx::Value(player->defaultOutfit.lookHead),
+		mysqlx::Value(player->defaultOutfit.lookLegs),
+		mysqlx::Value(player->defaultOutfit.lookType),
+		mysqlx::Value(player->defaultOutfit.lookAddons),
+		mysqlx::Value(player->defaultOutfit.lookMountBody),
+		mysqlx::Value(player->defaultOutfit.lookMountFeet),
+		mysqlx::Value(player->defaultOutfit.lookMountHead),
+		mysqlx::Value(player->defaultOutfit.lookMountLegs),
+		mysqlx::Value(player->defaultOutfit.lookFamiliarsType),
+		mysqlx::Value(player->isDailyReward),
+		mysqlx::Value(player->magLevel),
+		mysqlx::Value(player->mana),
+		mysqlx::Value(player->manaMax),
+		mysqlx::Value(player->manaSpent),
+		mysqlx::Value(player->soul),
+		mysqlx::Value(player->town->getID()),
+		mysqlx::Value(player->loginPosition.getX()),
+		mysqlx::Value(player->loginPosition.getY()),
+		mysqlx::Value(player->loginPosition.getZ()),
+		mysqlx::Value(player->getPreyCards()),
+		mysqlx::Value(player->getTaskHuntingPoints()),
+		mysqlx::Value(player->getBossPoints()),
+		mysqlx::Value(player->getForgeDusts()),
+		mysqlx::Value(player->getForgeDustLevel()),
+		mysqlx::Value(player->isRandomMounted()),
+		mysqlx::Value(player->capacity / 100),
+		mysqlx::Value(enumToValue(player->sex)),
+		mysqlx::Value(player->lastLoginSaved),
+		mysqlx::Value(player->lastIP),
+		mysqlx::Value(mysqlx::bytes(reinterpret_cast<const uint8_t*>(attributes), attributesSize)),
+		mysqlx::Value(skullTime),
+		mysqlx::Value(enumToValue(skull)),
+		mysqlx::Value(player->getLastLogout()),
+		mysqlx::Value(player->bankBalance),
+		mysqlx::Value(player->getOfflineTrainingTime() / 1000),
+		mysqlx::Value(player->getOfflineTrainingSkill()),
+		mysqlx::Value(player->getStaminaMinutes()),
+		mysqlx::Value(player->skills[SKILL_FIST].level),
+		mysqlx::Value(player->skills[SKILL_FIST].tries),
+		mysqlx::Value(player->skills[SKILL_CLUB].level),
+		mysqlx::Value(player->skills[SKILL_CLUB].tries),
+		mysqlx::Value(player->skills[SKILL_SWORD].level),
+		mysqlx::Value(player->skills[SKILL_SWORD].tries),
+		mysqlx::Value(player->skills[SKILL_AXE].level),
+		mysqlx::Value(player->skills[SKILL_AXE].tries),
+		mysqlx::Value(player->skills[SKILL_DISTANCE].level),
+		mysqlx::Value(player->skills[SKILL_DISTANCE].tries),
+		mysqlx::Value(player->skills[SKILL_SHIELD].level),
+		mysqlx::Value(player->skills[SKILL_SHIELD].tries),
+		mysqlx::Value(player->skills[SKILL_FISHING].level),
+		mysqlx::Value(player->skills[SKILL_FISHING].tries),
+		mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_CHANCE].level),
+		mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_CHANCE].tries),
+		mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_DAMAGE].level),
+		mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_DAMAGE].tries),
+		mysqlx::Value(player->skills[SKILL_LIFE_LEECH_CHANCE].level),
+		mysqlx::Value(player->skills[SKILL_LIFE_LEECH_CHANCE].tries),
+		mysqlx::Value(player->skills[SKILL_LIFE_LEECH_AMOUNT].level),
+		mysqlx::Value(player->skills[SKILL_LIFE_LEECH_AMOUNT].tries),
+		mysqlx::Value(player->skills[SKILL_MANA_LEECH_CHANCE].level),
+		mysqlx::Value(player->skills[SKILL_MANA_LEECH_CHANCE].tries),
+		mysqlx::Value(player->skills[SKILL_MANA_LEECH_AMOUNT].level),
+		mysqlx::Value(player->skills[SKILL_MANA_LEECH_AMOUNT].tries),
+		mysqlx::Value(player->getManaShield()),
+		mysqlx::Value(player->getMaxManaShield()),
+		mysqlx::Value(player->getXpBoostPercent()),
+		mysqlx::Value(player->getXpBoostTime()),
+		mysqlx::Value(player->quickLootFallbackToMainContainer ? 1 : 0),
+	};
 
 	if (!player->isOffline()) {
 		auto now = std::chrono::system_clock::now();
 		auto lastLoginSaved = std::chrono::system_clock::from_time_t(player->lastLoginSaved);
-		query << "`onlinetime` = `onlinetime` + " << std::chrono::duration_cast<std::chrono::seconds>(now - lastLoginSaved).count() << ",";
+		auto onlineTimeSecs = std::chrono::duration_cast<std::chrono::seconds>(now - lastLoginSaved).count();
+		values.push_back(mysqlx::Value(onlineTimeSecs));
 	}
 
-	for (int i = 1; i <= 8; i++) {
-		query << "`blessings" << i << "`"
-			  << " = " << static_cast<uint32_t>(player->getBlessingCount(static_cast<uint8_t>(i))) << ((i == 8) ? " " : ",");
+	// Blessings
+	for (uint8_t i = 1; i <= 8; i++) {
+		values.push_back(mysqlx::Value(player->getBlessingCount(i)));
 	}
-	query << " WHERE `id` = " << player->getGUID();
 
-	if (!db.executeQuery(query.str())) {
+	if (!g_database().updateTable("players", columns, values, "id", player->getGUID())) {
+		g_logger().debug("[{}] failed to insert or update row data", __FUNCTION__);
 		return false;
 	}
+
 	return true;
 }
 
@@ -796,17 +802,14 @@ bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 		stream.write<uint16_t>(monsterType->info.raceid);
 	}
 
-	size_t size;
-	const char* chars = stream.getStream(size);
-	std::vector<uint8_t> data(chars, chars + size);
-
+	auto [attributeData, attributeSize] = stream.getStream();
 	std::vector<std::string> columns = { "player_id", "bossIdSlotOne", "bossIdSlotTwo", "removeTimes", "tracker" };
 	std::vector<mysqlx::Value> values = {
 		player->getGUID(),
 		player->getSlotBossId(1),
 		player->getSlotBossId(2),
-		static_cast<uint32_t>(player->getRemoveTimes()),
-		mysqlx::Value(mysqlx::bytes(data.data(), data.size()))
+		player->getRemoveTimes(),
+		mysqlx::Value(mysqlx::bytes(reinterpret_cast<const uint8_t*>(attributeData), attributeSize))
 	};
 
 	// Upsert data

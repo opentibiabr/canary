@@ -91,7 +91,7 @@ bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint
 		return false;
 	}
 
-	coins = result->getNumber<uint32_t>(coinTypeToColumn.at(type));
+	coins = result->getU32(coinTypeToColumn.at(type));
 
 	return true;
 };
@@ -159,11 +159,11 @@ bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 	}
 
 	do {
-		if (result->getNumber<uint64_t>("deletion") != 0) {
+		if (result->getU64("deletion") != 0) {
 			continue;
 		}
 
-		acc.players.try_emplace({ result->getString("name"), result->getNumber<uint64_t>("deletion") });
+		acc.players.try_emplace({ result->getString("name"), result->getU64("deletion") });
 	} while (result->next());
 
 	return true;

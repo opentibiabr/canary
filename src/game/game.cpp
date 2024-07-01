@@ -390,7 +390,7 @@ void Game::loadBoostedCreature() {
 		return;
 	}
 
-	const uint16_t date = result->getNumber<uint16_t>("date");
+	const uint16_t date = result->getU16("date");
 	const time_t now = time(0);
 	tm* ltm = localtime(&now);
 
@@ -399,7 +399,7 @@ void Game::loadBoostedCreature() {
 		return;
 	}
 
-	const uint16_t oldRace = result->getNumber<uint16_t>("raceid");
+	const uint16_t oldRace = result->getU16("raceid");
 	const auto monsterlist = getBestiaryList();
 
 	struct MonsterRace {
@@ -8060,7 +8060,7 @@ void Game::loadMotdNum() {
 
 	DBResult_ptr result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num'");
 	if (result) {
-		motdNum = result->getNumber<uint32_t>("value");
+		motdNum = result->getU32("value");
 	} else {
 		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('motd_num', '0')");
 	}
@@ -8114,7 +8114,7 @@ void Game::loadPlayersRecord() {
 
 	DBResult_ptr result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'players_record'");
 	if (result) {
-		playersRecord = result->getNumber<uint32_t>("value");
+		playersRecord = result->getU32("value");
 	} else {
 		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('players_record', '0')");
 	}
@@ -8322,7 +8322,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 					return;
 				}
 
-				uint32_t pages = result->getNumber<uint32_t>("entries");
+				uint32_t pages = result->getU32("entries");
 				pages += entriesPerPage - 1;
 				pages /= entriesPerPage;
 
@@ -8333,7 +8333,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 					std::string cause2 = result->getString("mostdamage_by");
 
 					std::ostringstream cause;
-					cause << "Died at Level " << result->getNumber<uint32_t>("level") << " by";
+					cause << "Died at Level " << result->getU32("level") << " by";
 					if (!cause1.empty()) {
 						const char &character = cause1.front();
 						if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u') {
@@ -8358,7 +8358,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 						cause << cause2;
 					}
 					cause << '.';
-					entries.emplace_back(std::move(cause.str()), result->getNumber<uint32_t>("time"));
+					entries.emplace_back(std::move(cause.str()), result->getU32("time"));
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
 			};
@@ -8387,7 +8387,7 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 					return;
 				}
 
-				uint32_t pages = result->getNumber<uint32_t>("entries");
+				uint32_t pages = result->getU32("entries");
 				pages += entriesPerPage - 1;
 				pages /= entriesPerPage;
 
@@ -8400,18 +8400,18 @@ void Game::playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_
 
 					uint8_t status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_JUSTIFIED;
 					if (player->getName() == cause1) {
-						if (result->getNumber<uint32_t>("unjustified") == 1) {
+						if (result->getU32("unjustified") == 1) {
 							status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
 						}
 					} else if (player->getName() == cause2) {
-						if (result->getNumber<uint32_t>("mostdamage_unjustified") == 1) {
+						if (result->getU32("mostdamage_unjustified") == 1) {
 							status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
 						}
 					}
 
 					std::ostringstream description;
 					description << "Killed " << name << '.';
-					entries.emplace_back(std::move(description.str()), result->getNumber<uint32_t>("time"), status);
+					entries.emplace_back(std::move(description.str()), result->getU32("time"), status);
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentPvPKills(page, static_cast<uint16_t>(pages), entries);
 			};
@@ -8521,8 +8521,8 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 		return;
 	}
 
-	uint16_t page = result->getNumber<uint16_t>("page");
-	uint32_t pages = result->getNumber<uint32_t>("entries");
+	uint16_t page = result->getU16("page");
+	uint32_t pages = result->getU32("entries");
 	pages += entriesPerPage - 1;
 	pages /= entriesPerPage;
 
@@ -8544,10 +8544,10 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 		characters.reserve(result->countResults());
 		if (result) {
 			do {
-				const auto &voc = g_vocations().getVocation(result->getNumber<uint16_t>("vocation"));
+				const auto &voc = g_vocations().getVocation(result->getU16("vocation"));
 				uint8_t characterVocation = voc ? voc->getClientId() : 0;
 				std::string loyaltyTitle = ""; // todo get loyalty title from player
-				characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation, loyaltyTitle);
+				characters.emplace_back(std::move(result->getString("name")), result->getU64("points"), result->getU32("id"), result->getU32("rank"), result->getU16("level"), characterVocation, loyaltyTitle);
 			} while (result->next());
 		}
 

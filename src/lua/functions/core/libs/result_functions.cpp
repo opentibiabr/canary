@@ -19,7 +19,7 @@ int ResultFunctions::luaResultGetNumber(lua_State* L) {
 	}
 
 	const std::string &s = getString(L, 2);
-	lua_pushnumber(L, res->getNumber<int64_t>(s));
+	lua_pushnumber(L, res->getI64(s));
 	return 1;
 }
 
@@ -42,10 +42,9 @@ int ResultFunctions::luaResultGetStream(lua_State* L) {
 		return 1;
 	}
 
-	unsigned long length;
-	auto stream = res->getStream(getString(L, 2), length);
-	lua_pushlstring(L, stream, length);
-	lua_pushnumber(L, length);
+	auto stream = res->getStream(getString(L, 2));
+	lua_pushlstring(L, reinterpret_cast<const char*>(stream.data()), stream.size());
+	lua_pushnumber(L, stream.size());
 	return 2;
 }
 

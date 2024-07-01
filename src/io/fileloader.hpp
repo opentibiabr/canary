@@ -56,9 +56,24 @@ namespace OTB {
 
 class PropStream {
 public:
+	PropStream() = default;
+	PropStream(const std::vector<uint8_t> &attributes) {
+		init(attributes);
+	}
+
 	void init(const char* a, size_t size) {
 		p = a;
 		end = a + size;
+	}
+
+	void init(const std::vector<uint8_t> &attributes) {
+		if (attributes.empty()) {
+			g_logger().debug("Failed to initialize PropStream, attributes are empty");
+			return;
+		}
+
+		p = reinterpret_cast<const char*>(attributes.data());
+		end = p + attributes.size();
 	}
 
 	size_t size() const {
@@ -120,6 +135,10 @@ public:
 	const char* getStream(size_t &size) const {
 		size = buffer.size();
 		return buffer.data();
+	}
+
+	std::pair<const char*, size_t> getStream() const {
+		return { buffer.data(), buffer.size() };
 	}
 
 	void clear() {

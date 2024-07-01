@@ -19,13 +19,13 @@ std::shared_ptr<Guild> IOGuild::loadGuild(uint32_t guildId) {
 	query << "SELECT `name`, `balance` FROM `guilds` WHERE `id` = " << guildId;
 	if (DBResult_ptr result = db.storeQuery(query.str())) {
 		const auto guild = std::make_shared<Guild>(guildId, result->getString("name"));
-		guild->setBankBalance(result->getNumber<uint64_t>("balance"));
+		guild->setBankBalance(result->getU64("balance"));
 		query.str(std::string());
 		query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `guild_id` = " << guildId;
 
 		if ((result = db.storeQuery(query.str()))) {
 			do {
-				guild->addRank(result->getNumber<uint32_t>("id"), result->getString("name"), result->getNumber<uint16_t>("level"));
+				guild->addRank(result->getU32("id"), result->getString("name"), result->getU16("level"));
 			} while (result->next());
 		}
 		return guild;
@@ -55,7 +55,7 @@ uint32_t IOGuild::getGuildIdByName(const std::string &name) {
 	if (!result) {
 		return 0;
 	}
-	return result->getNumber<uint32_t>("id");
+	return result->getU32("id");
 }
 
 void IOGuild::getWarList(uint32_t guildId, GuildWarVector &guildWarVector) {
@@ -68,11 +68,11 @@ void IOGuild::getWarList(uint32_t guildId, GuildWarVector &guildWarVector) {
 	}
 
 	do {
-		uint32_t guild1 = result->getNumber<uint32_t>("guild1");
+		uint32_t guild1 = result->getU32("guild1");
 		if (guildId != guild1) {
 			guildWarVector.push_back(guild1);
 		} else {
-			guildWarVector.push_back(result->getNumber<uint32_t>("guild2"));
+			guildWarVector.push_back(result->getU32("guild2"));
 		}
 	} while (result->next());
 }

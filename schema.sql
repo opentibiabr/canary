@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `istutorial` tinyint(1) NOT NULL DEFAULT '0',
     `forge_dusts` bigint(21) NOT NULL DEFAULT '0',
     `forge_dust_level` bigint(21) NOT NULL DEFAULT '100',
-    `randomize_mount` tinyint(1) NOT NULL DEFAULT '0',
+    `randomize_mount` tinyint(1) unsigned NOT NULL DEFAULT '0',
     `boss_points` int NOT NULL DEFAULT '0',
     INDEX `account_id` (`account_id`),
     INDEX `vocation` (`vocation`),
@@ -731,7 +731,7 @@ CREATE TABLE IF NOT EXISTS `player_bosstiary` (
     `player_id` int NOT NULL,
     `bossIdSlotOne` int NOT NULL DEFAULT 0,
     `bossIdSlotTwo` int NOT NULL DEFAULT 0,
-    `removeTimes` int NOT NULL DEFAULT 1,
+    `removeTimes` tinyint unsigned NOT NULL DEFAULT 1,
     `tracker` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

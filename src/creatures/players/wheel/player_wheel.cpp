@@ -1184,11 +1184,9 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 		return;
 	}
 
-	unsigned long size;
-	auto attribute = result->getStream("slot", size);
-	PropStream propStream;
-	propStream.init(attribute, size);
-	for (size_t i = 0; i < size; i++) {
+	auto attributeVector = result->getStream("slot");
+	PropStream propStream(attributeVector);
+	for (size_t i = 0; i < attributeVector.size(); i++) {
 		uint8_t slot;
 		uint16_t points;
 		if (propStream.read<uint8_t>(slot) && propStream.read<uint16_t>(points)) {

@@ -23,12 +23,8 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 	}
 
 	do {
-		unsigned long attrSize;
-		auto attr = result->getStream("data", attrSize);
-
-		PropStream propStream;
-		propStream.init(attr, attrSize);
-
+		auto attributes = result->getStream("data");
+		PropStream propStream(attributes);
 		uint16_t x, y;
 		uint8_t z;
 		if (!propStream.read<uint16_t>(x) || !propStream.read<uint16_t>(y) || !propStream.read<uint8_t>(z)) {
@@ -279,11 +275,11 @@ bool IOMapSerialize::loadHouseInfo() {
 	}
 
 	do {
-		auto houseId = result->getNumber<uint32_t>("id");
+		auto houseId = result->getU32("id");
 		const auto house = g_game().map.houses.getHouse(houseId);
 		if (house) {
-			uint32_t owner = result->getNumber<uint32_t>("owner");
-			int32_t newOwner = result->getNumber<int32_t>("new_owner");
+			uint32_t owner = result->getU32("owner");
+			int32_t newOwner = result->getI64("new_owner");
 			// Transfer house owner
 			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
 			if (isTransferOnRestart && newOwner >= 0) {
@@ -298,17 +294,17 @@ bool IOMapSerialize::loadHouseInfo() {
 			} else {
 				house->setOwner(owner, false);
 			}
-			house->setPaidUntil(result->getNumber<time_t>("paid"));
-			house->setPayRentWarnings(result->getNumber<uint32_t>("warnings"));
+			house->setPaidUntil(result->getTime("paid"));
+			house->setPayRentWarnings(result->getU32("warnings"));
 		}
 	} while (result->next());
 
 	result = db.storeQuery("SELECT `house_id`, `listid`, `list` FROM `house_lists`");
 	if (result) {
 		do {
-			const auto &house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("house_id"));
+			const auto &house = g_game().map.houses.getHouse(result->getU32("house_id"));
 			if (house) {
-				house->setAccessList(result->getNumber<uint32_t>("listid"), result->getString("list"));
+				house->setAccessList(result->getU32("listid"), result->getString("list"));
 			}
 		} while (result->next());
 	}

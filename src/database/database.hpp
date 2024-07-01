@@ -293,75 +293,18 @@ public:
 	double getDouble(const std::string &columnName) const;
 	bool getBool(const std::string &columnName) const;
 
-	std::string getString(const std::string &s) const;
-	const char* getStream(const std::string &s, unsigned long &size) const;
+	std::string getString(const std::string_view columnName) const;
+	const std::vector<uint8_t> getStream(const std::string_view columnName) const;
 
 	size_t countResults();
 	bool hasNext() const;
 	bool next();
-
-	template <typename T>
-	T getNumber(const std::string_view s) const {
-		auto it = listNames.find(s.data());
-		if (it == listNames.end()) {
-			g_logger().error("[DBResult::getNumber] query: {}", m_query);
-			g_logger().error("Column '{}' doesn't exist in the result set", s);
-			return T();
-		}
-
-		if (!m_hasMoreRows) {
-			g_logger().debug("[DBResult::getNumber] query: {}", m_query);
-			g_logger().debug("Initial row fetch resulted in a null row, no data available.");
-			return {};
-		}
-
-		const auto &columnData = m_currentRow[it->second];
-		auto type = columnData.getType();
-		T data = 0;
-		try {
-			switch (type) {
-				case mysqlx::Value::Type::INT64:
-					data = static_cast<T>(columnData.get<int64_t>());
-					break;
-				case mysqlx::Value::Type::UINT64:
-					data = static_cast<T>(columnData.get<uint64_t>());
-					break;
-				case mysqlx::Value::Type::FLOAT:
-				case mysqlx::Value::Type::DOUBLE:
-					data = static_cast<T>(columnData.get<double>());
-					break;
-				case mysqlx::Value::Type::BOOL:
-					data = static_cast<T>(columnData.get<bool>());
-					break;
-				case mysqlx::Value::Type::STRING:
-					data = boost::lexical_cast<T>(columnData.get<std::string>());
-					break;
-				case mysqlx::Value::Type::VNULL:
-					// Tratamento para valores nulos, se necessário
-					break;
-				default:
-					g_logger().error("[DBResult::getNumber] query: {}", m_query);
-					g_logger().error("Unsupported conversion for data type: {}", type);
-					break;
-			}
-
-			g_logger().trace("[DBResult::getNumber] query: {}", m_query);
-			g_logger().trace("Converted data '{}', type '{}'", data, type);
-			return data;
-		} catch (std::exception &e) {
-			g_logger().error("[DBResult::getNumber] query: {}", m_query);
-			g_logger().error("Error converting column '{}', error: {}", s, e.what());
-			return T();
-		}
-	}
 
 private:
 	mysqlx::SqlResult m_result;
 	mysqlx::Row m_currentRow;
 	mysqlx::col_count_t m_columnCount;
 	bool m_hasMoreRows;
-
-	mutable char* m_bufferStream = nullptr;
 
 	std::string m_query;
 

@@ -140,10 +140,35 @@ void PreparedStatement::fetchResults() {
 }
 */
 
+/**
+ * @brief Retrieves a number from a database result set based on the column name.
+ *
+ * This template function fetches and converts a numeric value from a specified column in a MySQL X DevAPI Row object.
+ * It handles type safety and range checking specifically for small numeric types such as int8_t and uint8_t
+ * to prevent overflow issues. It uses lexical casting for other types.
+ *
+ * @tparam T The numeric type to which the database value will be converted.
+ * @param columnName The name of the column in the database result set.
+ * @param query The SQL query string used for logging purposes, especially in error messages.
+ * @param listNames A mapping from column names to their respective indices in the result set.
+ * @param currentRow The current row of the result set from which data will be fetched.
+ * @param hasMoreRows Boolean indicating if the currentRow contains valid data.
+ *
+ * @return The value of the column converted to type T. Returns default-constructed T on any error or if the column does not exist.
+ *
+ * @note The specific handling for int8_t and uint8_t types is necessary due to their limited range:
+ *	   - int8_t: Valid range from -128 to 127. Any value outside this range causes overflow.
+ *	   - uint8_t: Valid range from 0 to 255. Any value outside this range causes overflow.
+ *	   This function checks if the values are within these ranges before attempting a conversion to prevent data corruption.
+ *	   For other types, boost::lexical_cast is used which provides safe conversions but does not inherently check for overflow.
+ *
+ * @details If the fetched data type does not match the expected template type T or if the data is out of range for the specified type T,
+ *		  the function logs an error and returns a default value of type T. This function throws no exceptions but catches and logs them.
+ */
 namespace InternalDatabase {
 	template <typename T>
 	T getNumber(const std::string_view columnName, const std::string_view query, const std::unordered_map<std::string, size_t> &listNames, const mysqlx::Row &currentRow, bool hasMoreRows) {
-		auto it = listNames.find(columnName.data());
+		const auto it = listNames.find(columnName.data());
 		if (it == listNames.end()) {
 			g_logger().error("[DBResult::getNumber] Column '{}' doesn't exist in the result set", columnName.data());
 			return T();
@@ -158,13 +183,35 @@ namespace InternalDatabase {
 		try {
 			auto type = columnData.getType();
 			T data = 0;
+			g_logger().trace("[DBResult::getNumber] Column '{}' type: {}", columnName, type);
 			switch (type) {
-				case mysqlx::Value::Type::INT64:
-					data = boost::lexical_cast<T>(columnData.get<int64_t>());
+				case mysqlx::Value::Type::INT64: {
+					//
+					auto valueI64 = columnData.get<int64_t>();
+					if constexpr (std::is_same_v<T, int8_t>) {
+						if (valueI64 < std::numeric_limits<int8_t>::min() || valueI64 > std::numeric_limits<int8_t>::max()) {
+							g_logger().error("[DBResult::getNumber] Column '{}', value out of range for int8_t: {}", columnName.data(), valueI64);
+							return T();
+						}
+						return static_cast<int8_t>(valueI64);
+					}
+
+					data = boost::lexical_cast<T>(valueI64);
 					break;
-				case mysqlx::Value::Type::UINT64:
-					data = boost::lexical_cast<T>(columnData.get<uint64_t>());
+				}
+				case mysqlx::Value::Type::UINT64: {
+					auto valueU64 = columnData.get<uint64_t>();
+					if constexpr (std::is_same_v<T, uint8_t>) {
+						if (valueU64 > std::numeric_limits<uint8_t>::max()) {
+							g_logger().error("[DBResult::getNumber] Column '{}', value out of range for uint8_t: {}", columnName.data(), valueU64);
+							return T();
+						}
+						return static_cast<uint8_t>(valueU64);
+					}
+
+					data = boost::lexical_cast<T>(valueU64);
 					break;
+				}
 				case mysqlx::Value::Type::FLOAT:
 				case mysqlx::Value::Type::DOUBLE:
 					data = boost::lexical_cast<T>(columnData.get<double>());
@@ -279,7 +326,7 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 
 	DBResult_ptr result = storeQuery("SHOW VARIABLES LIKE 'max_allowed_packet'");
 	if (result) {
-		maxPacketSize = result->getNumber<uint64_t>("Value");
+		maxPacketSize = result->getU64("Value");
 	}
 
 	return true;
@@ -661,11 +708,12 @@ DBResult::DBResult(mysqlx::SqlResult &&result, const std::string_view &query) :
 
 DBResult::~DBResult() = default;
 
-std::string DBResult::getString(const std::string &s) const {
-	auto it = listNames.find(s);
+std::string DBResult::getString(const std::string_view columnName) const {
+	const auto &stringData = columnName.data();
+	auto it = listNames.find(stringData);
 	if (it == listNames.end()) {
 		g_logger().error("[DBResult::getString] query: {}", m_query);
-		g_logger().error("Column '{}' doesn't exist in the result set", s);
+		g_logger().error("Column '{}' doesn't exist in the result set", stringData);
 		return {};
 	}
 
@@ -678,75 +726,61 @@ std::string DBResult::getString(const std::string &s) const {
 	const auto &columnData = m_currentRow[it->second];
 	if (columnData.isNull()) {
 		g_logger().debug("[DBResult::getString] query: {}", m_query);
-		g_logger().debug("Column '{}' is null", s);
+		g_logger().debug("Column '{}' is null", stringData);
 		return nullptr;
 	}
 
 	g_logger().trace("[DBResult::getString] query: {}", m_query);
-	g_logger().trace("Column '{}' type: {}", s, magic_enum::enum_name(columnData.getType()));
+	g_logger().trace("Column '{}' type: {}", stringData, magic_enum::enum_name(columnData.getType()));
 	try {
 		auto string = columnData.get<std::string>();
 		if (string.empty()) {
 			g_logger().error("[DBResult::getString] query: {}", m_query);
-			g_logger().error("Column '{}' is empty", s);
+			g_logger().error("Column '{}' is empty", stringData);
 			return {};
 		}
 
 		return string;
 	} catch (std::exception &e) {
 		g_logger().error("[DBResult::getString] query: {}", m_query);
-		g_logger().error("[DBResult::getString] error converting column '{}' to string: {}", s, e.what());
+		g_logger().error("[DBResult::getString] error converting column '{}' to string: {}", stringData, e.what());
 	}
 	return {};
 }
 
-const char* DBResult::getStream(const std::string &s, unsigned long &size) const {
-	auto it = listNames.find(s);
+const std::vector<uint8_t> DBResult::getStream(const std::string_view columnName) const {
+	const auto &stringData = columnName.data();
+	auto it = listNames.find(stringData);
 	if (it == listNames.end()) {
 		g_logger().error("[DBResult::getStream] query: {}", m_query);
-		g_logger().error("Column '{}' doesn't exist in the result set", s);
-		size = 0;
-		return nullptr;
+		g_logger().error("Column '{}' doesn't exist in the result set", stringData);
+		return {};
 	}
 
 	if (!m_hasMoreRows) {
 		g_logger().debug("[DBResult::getStream] query: {}", m_query);
 		g_logger().debug("Initial row fetch resulted in a null row, no data available.");
-		return nullptr;
+		return {};
 	}
 
 	const auto &columnData = m_currentRow[it->second];
 	if (columnData.isNull()) {
 		g_logger().debug("[DBResult::getStream] query: {}", m_query);
-		g_logger().debug("Column '{}' is null", s);
-		size = 0;
-		return nullptr;
+		g_logger().debug("Column '{}' is null", stringData);
+		return {};
 	}
 
-	g_logger().trace("[DBResult::getStream] query: {}", m_query);
-	g_logger().trace("Column '{}' type: {}", s, magic_enum::enum_name(columnData.getType()));
-
 	try {
-		// Get the binary data using mysqlx::bytes
 		mysqlx::bytes blobData = columnData.get<mysqlx::bytes>();
-		size = blobData.size();
+		std::vector<uint8_t> data(blobData.begin(), blobData.end());
 
-		if (m_bufferStream != nullptr) {
-			delete[] m_bufferStream; // Clear previous buffer
-		}
-
-		m_bufferStream = new char[size + 1];
-		std::memcpy(m_bufferStream, blobData.begin(), size); // Copy binary data to the buffer
-
-		g_logger().trace("[DBResult::getStream] Column '{}' type: {}", s, magic_enum::enum_name(columnData.getType()));
+		g_logger().trace("[DBResult::getStream] Column '{}' type: {}", stringData, magic_enum::enum_name(columnData.getType()));
 		g_logger().trace("[DBResult::getStream] Successfully retrieved blob data.");
-
-		return m_bufferStream;
+		return data;
 	} catch (const std::exception &e) {
 		g_logger().error("[DBResult::getStream] query: {}", m_query);
-		g_logger().error("Error getting stream data for column '{}': {}", s, e.what());
-		size = 0;
-		return nullptr;
+		g_logger().error("Error getting stream data for column '{}': {}", stringData, e.what());
+		return {};
 	}
 }
 

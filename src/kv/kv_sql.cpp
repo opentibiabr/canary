@@ -24,19 +24,18 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 		return std::nullopt;
 	}
 
-	unsigned long size = 0;
-	auto data = result->getStream("value", size);
-	if (!data) {
+	auto attributes = result->getStream("value");
+	if (attributes.empty()) {
 		g_logger().error("Failed to load column 'value' for key {}", key);
 		return std::nullopt;
 	}
 
-	auto timestamp = result->getNumber<uint64_t>("timestamp");
+	auto timestamp = result->getU64("timestamp");
 	Canary::protobuf::kv::ValueWrapper protoValue;
-	if (protoValue.ParseFromArray(data, static_cast<int>(size))) {
+	if (protoValue.ParseFromArray(attributes.data(), static_cast<int>(attributes.size()))) {
 		ValueWrapper valueWrapper;
 		valueWrapper = ProtoSerializable::fromProto(protoValue, timestamp);
-		g_logger().trace("[{}] loaded value for key {}, valueSize {}, timeStamp {}", __METHOD_NAME__, key, size, timestamp);
+		g_logger().trace("[{}] loaded value for key {}, valueSize {}, timeStamp {}", __METHOD_NAME__, key, attributes.size(), timestamp);
 		return valueWrapper;
 	}
 

@@ -433,7 +433,7 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(std::shared_ptr<Player> player, D
 		auto bestiaryAttributes = result->getStream("tracker_list");
 		PropStream propBestStream(bestiaryAttributes);
 		uint16_t monsterRaceId;
-		while (propBestStream.read<uint16_t>(monsterRaceId)) {
+		while (propBestStream.readU16(monsterRaceId)) {
 			const auto monsterType = g_monsters().getMonsterTypeByRaceId(monsterRaceId);
 			if (monsterType) {
 				player->addMonsterToCyclopediaTrackerList(monsterType, false, false);
@@ -736,7 +736,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 				auto preyStream = result->getStream("monster_list");
 				PropStream propPreyStream(preyStream);
 				uint16_t raceId;
-				while (propPreyStream.read<uint16_t>(raceId)) {
+				while (propPreyStream.readU16(raceId)) {
 					slot->raceIdList.push_back(raceId);
 				}
 
@@ -780,7 +780,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 				auto taskHuntStream = result->getStream("monster_list");
 				PropStream propTaskHuntStream(taskHuntStream);
 				uint16_t raceId;
-				while (propTaskHuntStream.read<uint16_t>(raceId)) {
+				while (propTaskHuntStream.readU16(raceId)) {
 					slot->raceIdList.push_back(raceId);
 				}
 
@@ -833,7 +833,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResu
 			auto attributesTracker = result->getStream("tracker");
 			PropStream stream(attributesTracker);
 			uint16_t bossid;
-			while (stream.read<uint16_t>(bossid)) {
+			while (stream.readU16(bossid)) {
 				const auto monsterType = g_monsters().getMonsterTypeByRaceId(bossid, true);
 				if (!monsterType) {
 					continue;

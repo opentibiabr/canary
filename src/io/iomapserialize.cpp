@@ -27,7 +27,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		PropStream propStream(attributes);
 		uint16_t x, y;
 		uint8_t z;
-		if (!propStream.read<uint16_t>(x) || !propStream.read<uint16_t>(y) || !propStream.read<uint8_t>(z)) {
+		if (!propStream.readU16(x) || !propStream.readU16(y) || !propStream.readU8(z)) {
 			continue;
 		}
 
@@ -37,7 +37,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		}
 
 		uint32_t item_count;
-		if (!propStream.read<uint32_t>(item_count)) {
+		if (!propStream.readU32(item_count)) {
 			continue;
 		}
 
@@ -116,7 +116,7 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Conta
 	}
 
 	uint8_t endAttr;
-	if (!propStream.read<uint8_t>(endAttr) || endAttr != 0) {
+	if (!propStream.readU8(endAttr) || endAttr != 0) {
 		g_logger().warn("Deserialization error for container item: {}", container->getID());
 		return false;
 	}
@@ -125,7 +125,7 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Conta
 
 bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> parent, bool isHouseItem /*= false*/) {
 	uint16_t id;
-	if (!propStream.read<uint16_t>(id)) {
+	if (!propStream.readU16(id)) {
 		return false;
 	}
 

@@ -16,7 +16,7 @@ DepotLocker::DepotLocker(uint16_t type, uint16_t size) :
 
 Attr_ReadValue DepotLocker::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_DEPOT_ID) {
-		if (!propStream.read<uint16_t>(depotId)) {
+		if (!propStream.readU16(depotId)) {
 			return ATTR_READ_ERROR;
 		}
 		return ATTR_READ_CONTINUE;

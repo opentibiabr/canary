@@ -147,7 +147,7 @@ StashContainerList Container::getStowableItems() const {
 
 Attr_ReadValue Container::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_CONTAINER_ITEMS) {
-		if (!propStream.read<uint32_t>(serializationCount)) {
+		if (!propStream.readU32(serializationCount)) {
 			return ATTR_READ_ERROR;
 		}
 		return ATTR_READ_END;
@@ -174,7 +174,7 @@ bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 		}
 
 		uint16_t id;
-		if (!itemPropStream.read<uint16_t>(id)) {
+		if (!itemPropStream.readU16(id)) {
 			return false;
 		}
 

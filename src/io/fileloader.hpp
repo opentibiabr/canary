@@ -11,6 +11,17 @@
 
 class PropStream;
 
+struct IntervalInfo;
+struct Outfit_t;
+
+#ifndef PRECOMPILED_HEADERS
+	#include <array>
+	#include <list>
+	#include <string>
+	#include <vector>
+	#include <mio/mmap.hpp>
+#endif
+
 namespace OTB {
 	using Identifier = std::array<char, 4>;
 
@@ -57,71 +68,33 @@ namespace OTB {
 class PropStream {
 public:
 	PropStream() = default;
-	PropStream(const std::vector<uint8_t> &attributes) {
-		init(attributes);
-	}
+	explicit PropStream(const std::vector<uint8_t> &attributes);
 
-	void init(const char* a, size_t size) {
-		p = a;
-		end = a + size;
-	}
+	void init(const std::vector<uint8_t> &attributes);
 
-	void init(const std::vector<uint8_t> &attributes) {
-		if (attributes.empty()) {
-			g_logger().debug("Failed to initialize PropStream, attributes are empty");
-			return;
-		}
+	size_t size() const;
 
-		p = reinterpret_cast<const char*>(attributes.data());
-		end = p + attributes.size();
-	}
+	bool readU8(uint8_t &value);
+	bool readU16(uint16_t &value);
+	bool readU32(uint32_t &value);
+	bool readU64(uint64_t &value);
+	bool readI8(int8_t &value);
+	bool readI16(int16_t &value);
+	bool readI32(int32_t &value);
+	bool readI64(int64_t &value);
+	bool readDouble(double &value);
+	bool readFloat(float &value);
+	bool readBool(bool &value);
+	bool readIntervalInfo(IntervalInfo &info);
+	bool readOutfit(Outfit_t &outfit);
 
-	size_t size() const {
-		return end - p;
-	}
+	bool readString(std::string &ret);
 
-	template <typename T>
-	bool read(T &ret) {
-		if (size() < sizeof(T)) {
-			return false;
-		}
-
-		memcpy(&ret, p, sizeof(T));
-		p += sizeof(T);
-		return true;
-	}
-
-	bool readString(std::string &ret) {
-		uint16_t strLen;
-		if (!read<uint16_t>(strLen)) {
-			return false;
-		}
-
-		if (size() < strLen) {
-			return false;
-		}
-
-		char* str = new char[strLen + 1];
-		memcpy(str, p, strLen);
-		str[strLen] = 0;
-		ret.assign(str, strLen);
-		delete[] str;
-		p += strLen;
-		return true;
-	}
-
-	bool skip(size_t n) {
-		if (size() < n) {
-			return false;
-		}
-
-		p += n;
-		return true;
-	}
+	bool skip(size_t n);
 
 private:
-	const char* p = nullptr;
-	const char* end = nullptr;
+	std::vector<uint8_t> buffer;
+	size_t pos = 0;
 };
 
 class PropWriteStream {

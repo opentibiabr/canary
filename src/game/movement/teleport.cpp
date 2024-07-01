@@ -14,7 +14,7 @@
 
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_TELE_DEST) {
-		if (!propStream.read<uint16_t>(destPos.x) || !propStream.read<uint16_t>(destPos.y) || !propStream.read<uint8_t>(destPos.z)) {
+		if (!propStream.readU16(destPos.x) || !propStream.readU16(destPos.y) || !propStream.readU8(destPos.z)) {
 			return ATTR_READ_ERROR;
 		}
 		return ATTR_READ_CONTINUE;

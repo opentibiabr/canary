@@ -1189,7 +1189,7 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 	for (size_t i = 0; i < attributeVector.size(); i++) {
 		uint8_t slot;
 		uint16_t points;
-		if (propStream.read<uint8_t>(slot) && propStream.read<uint16_t>(points)) {
+		if (propStream.readU8(slot) && propStream.readU16(points)) {
 			setPointsBySlotType(slot, points);
 			g_logger().debug("Player: {}, loaded points {} to slot {}", m_player.getName(), points, slot);
 		}

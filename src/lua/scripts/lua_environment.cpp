@@ -174,8 +174,8 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
 		callFunction(timerEventDesc.parameters.size());
 	} else {
 		g_logger().error("[LuaEnvironment::executeTimerEvent - Lua file {}] "
-						 "Call stack overflow. Too many lua script calls being nested",
-						 getLoadingFile());
+		                 "Call stack overflow. Too many lua script calls being nested",
+		                 getLoadingFile());
 	}
 
 	// free resources

@@ -850,9 +850,3 @@ INSERT INTO `players`
 (4, 'Paladin Sample', 1, 1, 8, 3, 185, 185, 4200, 113, 115, 95, 39, 129, 0, 90, 90, 0, 8, '', 470, 1, 10, 0, 10, 0, 10, 0, 10, 0),
 (5, 'Knight Sample', 1, 1, 8, 4, 185, 185, 4200, 113, 115, 95, 39, 129, 0, 90, 90, 0, 8, '', 470, 1, 10, 0, 10, 0, 10, 0, 10, 0),
 (6, 'GOD', 6, 1, 2, 0, 155, 155, 100, 113, 115, 95, 39, 75, 0, 60, 60, 0, 8, '', 410, 1, 10, 0, 10, 0, 10, 0, 10, 0);
-
--- Create vip groups for GOD account
-INSERT INTO `account_vipgroups` (`name`, `account_id`, `customizable`) VALUES
-('Friends', 1, 0),
-('Enemies', 1, 0),
-('Trading Partners', 1, 0);

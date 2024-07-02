@@ -400,7 +400,7 @@ void ItemParse::parseTransform(const std::string &tmpStrValue, pugi::xml_attribu
 			itemType.decayTo = 0;
 		}
 		if (ItemType &transform = Item::items.getItemType(itemType.transformEquipTo);
-			transform.type == ITEM_TYPE_NONE) {
+		    transform.type == ITEM_TYPE_NONE) {
 			transform.type = itemType.type;
 		}
 	} else if (stringValue == "transformdeequipto") {
@@ -1140,7 +1140,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 				token.erase(std::find_if(token.rbegin(), token.rend(), [](unsigned char ch) {
 								return !std::isspace(ch);
 							}).base(),
-							token.end());
+				            token.end());
 
 				std::string v1;
 				bool showInDescription = false;

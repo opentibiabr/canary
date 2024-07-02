@@ -24,7 +24,7 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 		return std::nullopt;
 	}
 
-	if (stmt && stmt->executeWithParams(key)) {
+	if (stmt->executeWithParams(key)) {
 		auto attributes = stmt->getStream("value");
 		if (attributes.empty()) {
 			logger.error("Failed to load value for key {}", key);

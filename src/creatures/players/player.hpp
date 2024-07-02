@@ -36,6 +36,7 @@
 #include "enums/object_category.hpp"
 #include "enums/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/vip/player_vip.hpp"
 
@@ -54,6 +55,7 @@ class Spell;
 class PlayerWheel;
 class PlayerAchievement;
 class PlayerBadge;
+class PlayerCyclopedia;
 class PlayerTitle;
 class PlayerVIP;
 class Spectators;
@@ -475,13 +477,18 @@ public:
 	bool hasBlessing(uint8_t index) const {
 		return blessings[index - 1] != 0;
 	}
-	uint8_t getBlessingCount(uint8_t index) const {
-		if (index > 0 && index <= blessings.size()) {
-			return blessings[index - 1];
-		} else {
-			g_logger().error("[{}] - index outside range 0-10.", __FUNCTION__);
-			return 0;
+
+	uint8_t getBlessingCount(uint8_t index, bool storeCount = false) const {
+		if (!storeCount) {
+			if (index > 0 && index <= blessings.size()) {
+				return blessings[index - 1];
+			} else {
+				g_logger().error("[{}] - index outside range 0-10.", __FUNCTION__);
+				return 0;
+			}
 		}
+		auto amount = kv()->scoped("summary")->scoped("blessings")->scoped(fmt::format("{}", index))->get("amount");
+		return amount ? static_cast<uint8_t>(amount->getNumber()) : 0;
 	}
 	std::string getBlessingsName() const;
 
@@ -1642,11 +1649,7 @@ public:
 			client->sendCyclopediaCharacterRecentDeaths(page, pages, entries);
 		}
 	}
-	void sendCyclopediaCharacterRecentPvPKills(
-		uint16_t page, uint16_t pages,
-		const std::vector<
-			RecentPvPKillEntry> &entries
-	) {
+	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries) {
 		if (client) {
 			client->sendCyclopediaCharacterRecentPvPKills(page, pages, entries);
 		}
@@ -2599,9 +2602,6 @@ public:
 	// This get all players slot items
 	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> getAllSlotItems() const;
 
-	// This get all blessings
-	phmap::flat_hash_map<Blessings_t, std::string> getBlessingNames() const;
-
 	// Gets the equipped items with augment by type
 	std::vector<std::shared_ptr<Item>> getEquippedAugmentItemsByType(Augment_t augmentType) const;
 
@@ -2630,6 +2630,10 @@ public:
 	// Player title interface
 	std::unique_ptr<PlayerTitle> &title();
 	const std::unique_ptr<PlayerTitle> &title() const;
+
+	// Player summary interface
+	std::unique_ptr<PlayerCyclopedia> &cyclopedia();
+	const std::unique_ptr<PlayerCyclopedia> &cyclopedia() const;
 
 	// Player vip interface
 	std::unique_ptr<PlayerVIP> &vip();
@@ -2952,6 +2956,8 @@ private:
 	int32_t magicShieldCapacityFlat = 0;
 	int32_t magicShieldCapacityPercent = 0;
 
+	int32_t marriageSpouse = -1;
+
 	void updateItemsLight(bool internal = false);
 	uint16_t getStepSpeed() const override {
 		return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
@@ -3028,12 +3034,14 @@ private:
 	friend class IOLoginDataSave;
 	friend class PlayerAchievement;
 	friend class PlayerBadge;
+	friend class PlayerCyclopedia;
 	friend class PlayerTitle;
 	friend class PlayerVIP;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;
 	std::unique_ptr<PlayerBadge> m_playerBadge;
+	std::unique_ptr<PlayerCyclopedia> m_playerCyclopedia;
 	std::unique_ptr<PlayerTitle> m_playerTitle;
 	std::unique_ptr<PlayerVIP> m_playerVIP;
 
@@ -3059,4 +3067,11 @@ private:
 	bool hasOtherRewardContainerOpen(const std::shared_ptr<Container> container) const;
 
 	void checkAndShowBlessingMessage();
+
+	void setMarriageSpouse(const int32_t spouseId) {
+		marriageSpouse = spouseId;
+	}
+	int32_t getMarriageSpouse() const {
+		return marriageSpouse;
+	}
 };

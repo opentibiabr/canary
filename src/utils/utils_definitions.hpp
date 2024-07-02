@@ -709,17 +709,6 @@ enum class PlayerFlags_t : uint8_t {
 	FlagLast
 };
 
-enum Blessings_t : uint8_t {
-	TWIST_OF_FATE = 1,
-	WISDOM_OF_SOLITUDE = 2,
-	SPARK_OF_THE_PHOENIX = 3,
-	FIRE_OF_THE_SUNS = 4,
-	SPIRITUAL_SHIELDING = 5,
-	EMBRACE_OF_TIBIA = 6,
-	BLOOD_OF_THE_MOUNTAIN = 7,
-	HEARTH_OF_THE_MOUNTAIN = 8,
-};
-
 enum BedItemPart_t : uint8_t {
 	BED_NONE_PART,
 	BED_PILLOW_PART,

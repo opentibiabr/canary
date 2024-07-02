@@ -201,6 +201,8 @@ std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex,
 std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
 std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense = false);
 
+std::string formatWithArticle(const std::string &value, bool withSpace = true);
+
 std::string toKey(const std::string &str);
 
 static inline double quadraticPoly(double a, double b, double c, double x) {

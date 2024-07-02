@@ -16,6 +16,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
@@ -2732,7 +2733,7 @@ int PlayerFunctions::luaPlayerRemoveBlessing(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerGetBlessingCount(lua_State* L) {
-	// player:getBlessingCount(index)
+	// player:getBlessingCount(index[, storeCount = false])
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	uint8_t index = getNumber<uint8_t>(L, 2);
 	if (index == 0) {
@@ -2740,7 +2741,7 @@ int PlayerFunctions::luaPlayerGetBlessingCount(lua_State* L) {
 	}
 
 	if (player) {
-		lua_pushnumber(L, player->getBlessingCount(index));
+		lua_pushnumber(L, player->getBlessingCount(index, getBoolean(L, 3, false)));
 	} else {
 		lua_pushnil(L);
 	}
@@ -4352,6 +4353,28 @@ int PlayerFunctions::luaPlayerSetCurrentTitle(lua_State* L) {
 	}
 
 	player->title()->setCurrentTitle(title.m_id);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerCreateTransactionSummary(lua_State* L) {
+	// player:createTransactionSummary(type, amount[, id = 0])
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	auto type = getNumber<uint8_t>(L, 2, 0);
+	if (type == 0) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_VARIANT_NOT_FOUND));
+		return 1;
+	}
+
+	auto amount = getNumber<uint16_t>(L, 3, 1);
+	auto id = getString(L, 4, "");
+
+	player->cyclopedia()->updateStoreSummary(type, amount, id);
 	pushBoolean(L, true);
 	return 1;
 }

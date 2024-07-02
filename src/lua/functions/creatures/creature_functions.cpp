@@ -968,7 +968,7 @@ int CreatureFunctions::luaCreatureMove(lua_State* L) {
 			lua_pushnil(L);
 			return 1;
 		}
-		lua_pushnumber(L, g_game().internalMoveCreature(creature, direction, FLAG_NOLIMIT));
+		lua_pushnumber(L, g_game().internalMoveCreature(creature, direction, FLAG_IGNORENOTMOVABLE));
 	} else {
 		std::shared_ptr<Tile> tile = getUserdataShared<Tile>(L, 2);
 		if (!tile) {

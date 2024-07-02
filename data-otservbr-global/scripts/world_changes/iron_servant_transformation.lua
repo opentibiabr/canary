@@ -1,4 +1,4 @@
-local ironServantTransformation = EventCallback()
+local ironServantTransformation = EventCallback("IronServantTransformationOnSpawn")
 
 ironServantTransformation.monsterOnSpawn = function(monster, position)
 	if monster:getName():lower() ~= "iron servant replica" then

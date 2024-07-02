@@ -12,6 +12,8 @@
 #include "lua/callbacks/events_callbacks.hpp"
 
 #include "lua/callbacks/event_callback.hpp"
+#include "game/game.hpp"
+#include "lib/di/container.hpp"
 
 /**
  * @class EventsCallbacks
@@ -28,22 +30,34 @@ EventsCallbacks &EventsCallbacks::getInstance() {
 	return inject<EventsCallbacks>();
 }
 
-void EventsCallbacks::addCallback(const std::shared_ptr<EventCallback> callback) {
-	m_callbacks.push_back(callback);
+bool EventsCallbacks::isCallbackRegistered(const std::shared_ptr<EventCallback> &callback) {
+	if (g_game().getGameState() == GAME_STATE_STARTUP && !callback->skipDuplicationCheck() && m_callbacks.find(callback->getName()) != m_callbacks.end()) {
+		return true;
+	}
+
+	return false;
 }
 
-std::vector<std::shared_ptr<EventCallback>> EventsCallbacks::getCallbacks() const {
+void EventsCallbacks::addCallback(const std::shared_ptr<EventCallback> &callback) {
+	if (m_callbacks.find(callback->getName()) != m_callbacks.end()) {
+		return;
+	}
+
+	m_callbacks[callback->getName()] = callback;
+}
+
+std::unordered_map<std::string, std::shared_ptr<EventCallback>> EventsCallbacks::getCallbacks() const {
 	return m_callbacks;
 }
 
-std::vector<std::shared_ptr<EventCallback>> EventsCallbacks::getCallbacksByType(EventCallback_t type) const {
-	std::vector<std::shared_ptr<EventCallback>> eventCallbacks;
-	for (auto callback : getCallbacks()) {
+std::unordered_map<std::string, std::shared_ptr<EventCallback>> EventsCallbacks::getCallbacksByType(EventCallback_t type) const {
+	std::unordered_map<std::string, std::shared_ptr<EventCallback>> eventCallbacks;
+	for (auto [name, callback] : getCallbacks()) {
 		if (callback->getType() != type) {
 			continue;
 		}
 
-		eventCallbacks.push_back(callback);
+		eventCallbacks[name] = callback;
 	}
 
 	return eventCallbacks;

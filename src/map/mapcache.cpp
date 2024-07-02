@@ -103,8 +103,9 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 
 std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
 	const auto cachedTile = floor->getTileCache(x, y);
+	const auto oldTile = floor->getTile(x, y);
 	if (!cachedTile) {
-		return floor->getTile(x, y);
+		return oldTile;
 	}
 
 	std::unique_lock l(floor->getMutex());
@@ -112,6 +113,15 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	const uint8_t z = floor->getZ();
 
 	auto map = static_cast<Map*>(this);
+
+	std::vector<std::shared_ptr<Creature>> oldCreatureList;
+	if (oldTile) {
+		if (CreatureVector* creatures = oldTile->getCreatures()) {
+			for (const auto &creature : *creatures) {
+				oldCreatureList.emplace_back(creature);
+			}
+		}
+	}
 
 	std::shared_ptr<Tile> tile = nullptr;
 	if (cachedTile->isHouse()) {
@@ -125,6 +135,10 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	}
 
 	auto pos = Position(x, y, z);
+
+	for (const auto &creature : oldCreatureList) {
+		tile->internalAddThing(creature);
+	}
 
 	if (cachedTile->ground != nullptr) {
 		tile->internalAddThing(createItem(cachedTile->ground, pos));

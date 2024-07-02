@@ -81,6 +81,7 @@ int BankFunctions::luaBankTransferToGuild(lua_State* L) {
 		reportErrorFunc("Source is nullptr");
 		return 1;
 	}
+
 	std::shared_ptr<Bank> destination = getBank(L, 2, true /* isGuild */);
 	if (destination == nullptr) {
 		reportErrorFunc("Destination is nullptr");

@@ -14,7 +14,8 @@ monster.outfit = {
 }
 
 monster.events = {
-	"SoulwarsBossDeath",
+	"SoulWarBossesDeath",
+	"Goshnar's-Malice",
 }
 
 monster.health = 300000
@@ -67,14 +68,6 @@ monster.light = {
 	color = 0,
 }
 
-monster.summon = {
-	maxSummons = 4,
-	summons = {
-		{ name = "dreadful harvester", chance = 40, interval = 1000, count = 2 },
-		{ name = "malicious soul", chance = 30, interval = 1000, count = 2 },
-	},
-}
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,
@@ -104,7 +97,6 @@ monster.loot = {
 	{ name = "spectral horseshoe", chance = 400 },
 	{ name = "the skull of a beast", chance = 400 },
 	{ name = "figurine of malice", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {
@@ -141,7 +133,19 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster, interval) end
+local zone = Zone.getByName("boss.goshnar's-malice")
+local zonePositions = zone:getPositions()
+
+local accumulatedTime = 0
+local desiredInterval = 40000
+mType.onThink = function(monster, interval)
+	accumulatedTime = accumulatedTime + interval
+	-- Execute only after 40 seconds
+	if accumulatedTime >= desiredInterval then
+		monster:createSoulWarWhiteTiles(SoulWarQuest.levers.goshnarsMalice.boss.position, zonePositions)
+		accumulatedTime = 0
+	end
+end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then

@@ -144,6 +144,7 @@ end
 ---@param player Player
 ---@return boolean
 function BossLever:onUse(player)
+	local monsterName = MonsterType(self.name):getName()
 	local isParticipant = false
 	for _, v in ipairs(self.playerPositions) do
 		if Position(v.pos) == player:getPosition() then
@@ -161,7 +162,7 @@ function BossLever:onUse(player)
 
 	local zone = self:getZone()
 	if zone:countPlayers(IgnoredByMonsters) > 0 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's already someone fighting with " .. self.name .. ".")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's already someone fighting with " .. monsterName .. ".")
 		return true
 	end
 

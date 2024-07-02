@@ -14,7 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"SoulwarsBossDeath",
+	"SoulWarBossesDeath",
 }
 
 monster.health = 300000
@@ -67,14 +67,6 @@ monster.light = {
 	color = 0,
 }
 
-monster.summon = {
-	maxSummons = 4,
-	summons = {
-		{ name = "dreadful harvester", chance = 40, interval = 1000, count = 2 },
-		{ name = "spiteful spitter", chance = 30, interval = 1000, count = 2 },
-	},
-}
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,
@@ -101,7 +93,6 @@ monster.loot = {
 	{ name = "the skull of a beast", chance = 400 },
 	{ name = "figurine of spite", chance = 400 },
 	{ name = "spite's spirit", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {
@@ -111,6 +102,7 @@ monster.attacks = {
 	{ name = "singlecloudchain", interval = 6000, chance = 40, minDamage = -1700, maxDamage = -1900, range = 6, effect = CONST_ME_ENERGYHIT, target = true },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_EARTHDAMAGE, minDamage = -1200, maxDamage = -3500, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -1400, maxDamage = -2200, length = 8, spread = 0, effect = CONST_ME_GREEN_RINGS, target = false },
+	{ name = "soulwars fear", interval = 2000, chance = 10, target = true },
 }
 
 monster.defenses = {

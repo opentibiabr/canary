@@ -55,9 +55,9 @@ local function releasePlayer(npc, creature)
 end
 
 local function endConversationWithDelay(npcHandler, npc, creature)
-    addEvent(function()
-        npcHandler:unGreet(npc, creature)
-    end, 1000)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
 end
 
 local function greetCallback(npc, creature, message)
@@ -65,10 +65,10 @@ local function greetCallback(npc, creature, message)
 	local playerId = player:getId()
 
 	if not MsgContains(message, "djanni'hah") then
-        npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
-        endConversationWithDelay(npcHandler, npc, creature)
-        return false
-    end
+		npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
 
 	npcHandler:say("Greetings, human |PLAYERNAME|. My patience with your kind is limited, so speak quickly and choose your words well.", npc, creature)
 	npcHandler:setInteraction(npc, creature)

@@ -46,9 +46,9 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local function endConversationWithDelay(npcHandler, npc, creature)
-    addEvent(function()
-        npcHandler:unGreet(npc, creature)
-    end, 1000)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
 end
 
 local function greetCallback(npc, creature, message)
@@ -56,10 +56,10 @@ local function greetCallback(npc, creature, message)
 	local playerId = player:getId()
 
 	if not MsgContains(message, "djanni'hah") then
-        npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
-        endConversationWithDelay(npcHandler, npc, creature)
-        return false
-    end
+		npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
 
 	npcHandler:say("Be greeted, human |PLAYERNAME|. How can a humble djinn be of service?", npc, creature)
 	npcHandler:setInteraction(npc, creature)

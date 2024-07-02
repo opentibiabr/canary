@@ -46,9 +46,9 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local function endConversationWithDelay(npcHandler, npc, creature)
-    addEvent(function()
-        npcHandler:unGreet(npc, creature)
-    end, 1000)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
 end
 
 local condition = Condition(CONDITION_FIRE)
@@ -60,10 +60,10 @@ local function greetCallback(npc, creature, message)
 	local playerId = player:getId()
 
 	if not MsgContains(message, "djanni'hah") then
-        npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
-        endConversationWithDelay(npcHandler, npc, creature)
-        return false
-    end
+		npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
 
 	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01) < 1 then
 		npcHandler:say("You know the code human! Very well then... What do you want, |PLAYERNAME|?", npc, creature)

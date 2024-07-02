@@ -497,7 +497,7 @@ bool Database::updateTable(const std::string &tableName, const std::vector<std::
 
 mysqlx::Schema Database::getDatabaseSchema() {
 	if (!m_databaseSession) {
-		throw std::exception("Database session is not initialized.");
+		throw std::runtime_error("Database session is not initialized.");
 	}
 
 	return m_databaseSession->getSchema(g_configManager().getString(MYSQL_DB, __FUNCTION__));
@@ -509,7 +509,7 @@ mysqlx::Table Database::getTable(const std::string &tableName) {
 	} catch (const mysqlx::Error &err) {
 		g_logger().error("[{}] failed to get table '{}': {}", __METHOD_NAME__, tableName, err.what());
 		throw;
-	} catch (const std::exception &ex) {
+	} catch (const std::runtime_error &ex) {
 		g_logger().error("[{}] an error occurred while getting table '{}': {}", __METHOD_NAME__, tableName, ex.what());
 		throw;
 	}

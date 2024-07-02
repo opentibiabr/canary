@@ -20,139 +20,10 @@
 #include <boost/lexical_cast.hpp>
 
 class DBResult;
+class PreparedStatement;
 
 using DBResult_ptr = std::shared_ptr<DBResult>;
-/*
-class PreparedStatement {
-public:
-	PreparedStatement(MYSQL* db, const std::string &query);
-	~PreparedStatement();
 
-	template <typename... Args>
-	void execute(Args &&... args) {
-		MYSQL_BIND bind[sizeof...(Args)];
-		std::memset(bind, 0, sizeof(bind));
-		std::vector<std::unique_ptr<void, std::function<void(void*)>>> buffers;
-		bindParams(bind, buffers, std::forward<Args>(args)...);
-
-		if (mysql_stmt_bind_param(stmt, bind)) {
-			g_logger().error("Failed to bind parameters: {}", std::string(mysql_stmt_error(stmt)));
-			return;
-		}
-		if (mysql_stmt_execute(stmt)) {
-			g_logger().error("Execution failed: {}", std::string(mysql_stmt_error(stmt)));
-			return;
-		}
-
-		fetchResults();
-	}
-
-	bool next();
-
-	template <typename T>
-	void setBindParam(MYSQL_BIND &bind, T value, std::vector<std::unique_ptr<void, std::function<void(void*)>>> &buffers) {
-		std::memset(&bind, 0, sizeof(bind));
-
-		g_logger().info("Setting bind param for value: {}", value);
-		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool>) {
-			bind.buffer_type = MYSQL_TYPE_LONGLONG;
-			auto buffer = std::make_unique<long long>(value);
-			bind.buffer = buffer.get();
-			bind.is_unsigned = true;
-			buffers.push_back({ buffer.release(), [](void* ptr) { delete static_cast<long long*>(ptr); } });
-			g_logger().info("Integer value: {}", value);
-		} else if constexpr (std::is_same_v<T, std::string>) {
-			bind.buffer_type = MYSQL_TYPE_STRING;
-			auto buffer = std::make_unique<char[]>(value.size() + 1);
-			std::strcpy(buffer.get(), value.c_str());
-			bind.buffer = buffer.get();
-			bind.buffer_length = value.size();
-			buffers.push_back({ buffer.release(), [](void* ptr) { delete[] static_cast<char*>(ptr); } });
-			g_logger().info("String value: {}", value);
-		} else if constexpr (std::is_floating_point_v<T>) {
-			bind.buffer_type = MYSQL_TYPE_DOUBLE;
-			auto buffer = std::make_unique<double>(value);
-			bind.buffer = buffer.get();
-			buffers.push_back({ buffer.release(), [](void* ptr) { delete static_cast<double*>(ptr); } });
-			g_logger().info("Floating-point value: {}", value);
-		} else if constexpr (std::is_same_v<T, bool>) {
-			bind.buffer_type = MYSQL_TYPE_TINY;
-			auto buffer = std::make_unique<bool>(value);
-			bind.buffer = buffer.get();
-			buffers.push_back({ buffer.release(), [](void* ptr) { delete static_cast<bool*>(ptr); } });
-			g_logger().info("Boolean value: {}", value);
-		} else if constexpr (std::is_same_v<T, std::vector<char>>) {
-			bind.buffer_type = MYSQL_TYPE_BLOB;
-			auto buffer = std::make_unique<char[]>(value.size());
-			std::memcpy(buffer.get(), value.data(), value.size());
-			bind.buffer = buffer.get();
-			bind.buffer_length = value.size();
-			buffers.push_back({ buffer.release(), [](void* ptr) { delete[] static_cast<char*>(ptr); } });
-			g_logger().info("Blob value: {}", value.size());
-		} else {
-			g_logger().error("[Database::setBindParam] Unsupported type");
-		}
-	}
-
-	template <typename... Args>
-	void bindParams(MYSQL_BIND* binds, std::vector<std::unique_ptr<void, std::function<void(void*)>>> &buffers, Args... args) {
-		int i = 0;
-		(setBindParam(binds[i++], std::forward<Args>(args), buffers), ...);
-	}
-
-	const char* getStream(const std::string &columnName, size_t &size);
-
-	std::string getString(const std::string &columnName);
-
-	template <typename T>
-	T getNumber(const std::string &columnName) {
-		auto it = columnMap.find(columnName);
-		if (it == columnMap.end() || it->second >= resultBuffers.size()) {
-			g_logger().error("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", columnName);
-			return {};
-		}
-
-		const auto &columnData = resultBuffers[it->second];
-		if (columnData.empty()) {
-			g_logger().error("Data for column '{}' is NULL or empty.", columnName);
-			return {};
-		}
-
-		std::string valueStr(columnData.begin(), columnData.end());
-		T data = 0;
-		try {
-			if constexpr (std::is_signed_v<T>) {
-				data = static_cast<T>(std::stoll(valueStr));
-			} else if constexpr (std::is_floating_point_v<T>) {
-				data = static_cast<T>(std::stod(valueStr));
-			} else if constexpr (std::is_same_v<T, bool>) {
-				data = static_cast<T>(std::stoi(valueStr) != 0);
-			} else if constexpr (std::is_unsigned_v<T>) {
-				data = static_cast<T>(std::stoull(valueStr));
-			} else {
-				g_logger().error("Unsupported number type for getNumber");
-			}
-		} catch (const std::invalid_argument &e) {
-			g_logger().error("Column '{}' has an invalid value set, error code: {}", columnName, e.what());
-		} catch (const std::out_of_range &e) {
-			g_logger().error("Column '{}' has a value out of range, error code: {}", columnName, e.what());
-		}
-		return data;
-	}
-
-private:
-	MYSQL_STMT* stmt;
-	std::vector<std::vector<char>> resultBuffers;
-	std::vector<unsigned long> lengths;
-	std::map<std::string, size_t> columnMap;
-
-	uint16_t m_columnCount = 0;
-
-	void initializeColumnMap();
-
-	void fetchResults();
-};
-*/
 class Database {
 private:
 	std::unique_ptr<mysqlx::Session> m_databaseSession;
@@ -177,6 +48,7 @@ public:
 	bool executeQuery(const std::string_view query);
 
 	DBResult_ptr storeQuery(const std::string_view query);
+	std::shared_ptr<DBResult> prepare(const std::string_view query);
 
 	std::string escapeString(const std::string &s) const;
 
@@ -264,7 +136,34 @@ constexpr auto g_database = Database::getInstance;
 
 class DBResult {
 public:
-	explicit DBResult(mysqlx::SqlResult &&result, const std::string_view query);
+	explicit DBResult(mysqlx::SqlResult &&result, const std::string_view query, mysqlx::Session &session);
+	explicit DBResult(mysqlx::Session &session, const std::string_view query) :
+		m_session(session), m_query(query.data()) { }
+
+	template <typename... Args>
+	bool executeWithParams(Args &&... args) {
+		try {
+			mysqlx::SqlStatement stmt = m_session.sql(m_query);
+			(stmt.bind(std::forward<Args>(args)), ...);
+			m_result = stmt.execute();
+			m_currentRow = m_result.fetchOne();
+			if (m_currentRow.isNull()) {
+				g_logger().error("No data returned for the query: {}", m_query);
+				return false;
+			}
+			m_hasMoreRows = m_result.hasData();
+			initializeColumnMap();
+			return true;
+		} catch (const mysqlx::Error &err) {
+			g_logger().error("PreparedStatement error with MySQL X DevAPI: {}", err.what());
+			return false;
+		} catch (const std::exception &e) {
+			g_logger().error("PreparedStatement execute error: {}", e.what());
+			;
+			return false;
+		}
+	}
+
 	~DBResult();
 
 	// Non copyable
@@ -294,10 +193,19 @@ public:
 	bool next();
 
 private:
+	void initializeColumnMap() {
+		listNames.clear();
+		for (unsigned int i = 0; i < m_result.getColumnCount(); ++i) {
+			listNames[m_result.getColumn(i).getColumnName()] = i;
+			g_logger().debug("Column '{}' mapped to index {}", std::string(m_result.getColumn(i).getColumnName()), i);
+		}
+	}
+
+	mysqlx::Session &m_session;
 	mysqlx::SqlResult m_result;
 	mysqlx::Row m_currentRow;
 	mysqlx::col_count_t m_columnCount;
-	bool m_hasMoreRows;
+	bool m_hasMoreRows = false;
 
 	std::string m_query;
 

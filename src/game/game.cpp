@@ -4223,7 +4223,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	}
 
 	const auto mount = mounts.getMountByClientID(outfit.lookMount);
-	if (!mount || !player->hasMount(mount) || player->isSupportOutfit()) {
+	if (!mount || !player->hasMount(mount) || player->isWearingSupportOutfit()) {
 		outfit.lookMount = 0;
 	}
 
@@ -5920,7 +5920,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		return;
 	}
 
-	if (player->isSupportOutfit()) {
+	if (player->isWearingSupportOutfit()) {
 		outfit.lookMount = 0;
 		isMountRandomized = 0;
 	}

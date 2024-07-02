@@ -3203,7 +3203,7 @@ void ProtocolGame::sendCreatureOutfit(std::shared_ptr<Creature> creature, const 
 	}
 
 	Outfit_t newOutfit = outfit;
-	if (player->isSupportOutfit()) {
+	if (player->isWearingSupportOutfit()) {
 		player->setCurrentMount(0);
 		newOutfit.lookMount = 0;
 	}
@@ -6872,7 +6872,7 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.addByte(0xC8);
 
 	Outfit_t currentOutfit = player->getDefaultOutfit();
-	auto isSupportOutfit = player->isSupportOutfit();
+	auto isSupportOutfit = player->isWearingSupportOutfit();
 	bool mounted = false;
 
 	if (!isSupportOutfit) {

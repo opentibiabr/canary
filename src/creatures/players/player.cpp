@@ -5830,7 +5830,7 @@ bool Player::toggleMount(bool mount) {
 		return false;
 	}
 
-	if (isSupportOutfit()) {
+	if (isWearingSupportOutfit()) {
 		return false;
 	}
 

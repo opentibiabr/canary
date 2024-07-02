@@ -383,7 +383,7 @@ bool Database::commit() {
 	}
 }
 
-bool Database::retryQuery(const std::string_view &query, int retries) {
+bool Database::retryQuery(const std::string_view query, int retries) {
 	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return false;
@@ -411,7 +411,7 @@ bool Database::retryQuery(const std::string_view &query, int retries) {
 	return false;
 }
 
-bool Database::executeQuery(const std::string_view &query) {
+bool Database::executeQuery(const std::string_view query) {
 	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return false;
@@ -445,7 +445,7 @@ bool Database::executeQuery(const std::string_view &query) {
 	return false;
 }
 
-DBResult_ptr Database::storeQuery(const std::string_view &query) {
+DBResult_ptr Database::storeQuery(const std::string_view query) {
 	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return nullptr;
@@ -681,10 +681,13 @@ std::string Database::escapeBlob(const char* s, uint32_t length) const {
 	return oss.str();
 }
 
-DBResult::DBResult(mysqlx::SqlResult &&result, const std::string_view &query) :
-	m_result(std::move(result)), m_hasMoreRows(result.hasData()), m_query(std::move(query)) {
+DBResult::DBResult(mysqlx::SqlResult &&result, const std::string_view query) :
+	m_result(std::move(result)), m_hasMoreRows(result.hasData()), m_query(std::move(query.data())) {
 	// Fetch the first row to start processing
-	m_currentRow = m_result.fetchOne();
+	if (m_hasMoreRows) {
+		m_currentRow = m_result.fetchOne();
+	}
+
 	if (m_currentRow.isNull()) {
 		g_logger().trace("[DBResult::DBResult] query: {}", m_query);
 		g_logger().trace("Initial row fetch resulted in a null row, no data available.");

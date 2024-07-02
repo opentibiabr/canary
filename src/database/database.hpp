@@ -173,17 +173,10 @@ public:
 
 	bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
 
-	bool retryQuery(const std::string_view &query, int retries);
-	bool executeQuery(const std::string_view &query);
+	bool retryQuery(const std::string_view query, int retries);
+	bool executeQuery(const std::string_view query);
 
-	DBResult_ptr storeQuery(const std::string_view &query);
-
-	/*template <typename... Args>
-	std::shared_ptr<PreparedStatement> prepareAndExecute(const std::string &query, Args &&... args) {
-		auto preparedStatement = std::make_shared<PreparedStatement>(handle, query);
-		preparedStatement->execute(std::forward<Args>(args)...);
-		return preparedStatement;
-	}*/
+	DBResult_ptr storeQuery(const std::string_view query);
 
 	std::string escapeString(const std::string &s) const;
 
@@ -271,7 +264,7 @@ constexpr auto g_database = Database::getInstance;
 
 class DBResult {
 public:
-	explicit DBResult(mysqlx::SqlResult &&result, const std::string_view &query);
+	explicit DBResult(mysqlx::SqlResult &&result, const std::string_view query);
 	~DBResult();
 
 	// Non copyable

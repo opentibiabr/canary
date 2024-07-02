@@ -94,7 +94,7 @@ end
 local function onTradeRequest(npc, creature)
 	local player = Player(creature)
 
-	if player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission03) ~= 3 then
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03) ~= 3 then
 		npcHandler:say("I'm sorry, human. But you need Gabel's permission to trade with me.", npc, creature)
 		return false
 	end

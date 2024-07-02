@@ -7,6 +7,13 @@ ItemAction = {
 		itemId = 2819,
 		itemPos = { { x = 33063, y = 31624, z = 15 } },
 	},
+	-- The Djinn War Quest - Green - Water fountain
+	[12105] = {
+		itemId = 1928,
+		itemPos = {
+			{ x = 33109, y = 32530, z = 3 },
+		},
+	},
 	-- The Ancient Tombs Quest
 	[12105] = {
 		itemId = false,

@@ -100,7 +100,6 @@ Storage = {
 	RookgaardDestiny = 30020,
 	EruaranGreeting = 30021,
 	MaryzaCookbook = 30022,
-	Factions = 30024,
 	-- unused TrainerRoom = 30027,
 	-- unused NpcSpawn = 30028,
 	-- unused ExerciseDummyExhaust = 30029,
@@ -571,34 +570,6 @@ Storage = {
 		Mission06 = 50605,
 		Mission07 = 50606,
 		-- unused packageDoor = 50607
-	},
-	DjinnWar = {
-		-- Reserved storage from 50620 - 50649
-		Faction = {
-			Greeting = 50620,
-			MaridDoor = 50621,
-			EfreetDoor = 50622,
-		},
-		RecievedLamp = 50625,
-		-- Blue djinn
-		MaridFaction = {
-			Start = 50630,
-			Mission01 = 50631,
-			Mission02 = 50632,
-			RataMari = 50633,
-			Mission03 = 50634,
-			DoorToLamp = 50635,
-			DoorToEfreetTerritory = 50636,
-		},
-		-- Green djinn
-		EfreetFaction = {
-			Start = 50640,
-			Mission01 = 50641,
-			Mission02 = 50642,
-			Mission03 = 50643,
-			DoorToLamp = 50644,
-			DoorToMaridTerritory = 50645,
-		},
 	},
 	VampireHunter = {
 		-- Reserved storage from 50650 - 50659
@@ -2004,8 +1975,35 @@ Storage = {
 				Diprath_sign7 = 40427,
 				Diprath_sign8 = 40428,
 			},
-			TheDjinnWarEfreetFaction = {},
-			TheDjinnWarMaridFaction = {},
+			DjinnWar = {
+				Factions = 40429,
+				-- Reserved storage from 50620 - 50649
+				Faction = {
+					Greeting = 40430,
+					MaridDoor = 40431,
+					EfreetDoor = 40432,
+				},
+				RecievedLamp = 40433,
+				-- Blue djinn
+				MaridFaction = {
+					Start = 40434,
+					Mission01 = 40435,
+					Mission02 = 40436,
+					RataMari = 40437,
+					Mission03 = 40438,
+					DoorToLamp = 40439,
+					DoorToEfreetTerritory = 40440,
+				},
+				-- Green djinn
+				EfreetFaction = {
+					Start = 40441,
+					Mission01 = 40442,
+					Mission02 = 40443,
+					Mission03 = 40444,
+					DoorToLamp = 40445,
+					DoorToMaridTerritory = 40446,
+				},
+			},
 		},
 		U7_5 = { -- update 7.5 - Reserved Storages 40601 - 40610
 			ElephantTusk = {},

@@ -159,19 +159,19 @@ QuestDoorAction = {
 	},
 	-- The war djin quest
 	-- Marid faction
-	[Storage.DjinnWar.Faction.MaridDoor] = {
+	[Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor] = {
 		itemId = false,
 		itemPos = { { x = 33106, y = 32532, z = 6 } },
 	},
-	[Storage.DjinnWar.Faction.EfreetDoor] = {
+	[Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor] = {
 		itemId = false,
 		itemPos = { { x = 33047, y = 32626, z = 6 } },
 	},
-	[Storage.DjinnWar.MaridFaction.DoorToLamp] = {
+	[Storage.Quest.U7_4.DjinnWar.MaridFaction.DoorToLamp] = {
 		itemId = false,
 		itemPos = { { x = 33038, y = 32632, z = 1 } },
 	},
-	[Storage.DjinnWar.MaridFaction.DoorToEfreetTerritory] = {
+	[Storage.Quest.U7_4.DjinnWar.MaridFaction.DoorToEfreetTerritory] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33034, y = 32620, z = 6 },
@@ -180,11 +180,11 @@ QuestDoorAction = {
 		},
 	},
 	-- Efreet faction
-	[Storage.DjinnWar.EfreetFaction.DoorToLamp] = {
+	[Storage.Quest.U7_4.DjinnWar.EfreetFaction.DoorToLamp] = {
 		itemId = false,
 		itemPos = { { x = 33097, y = 32531, z = 1 } },
 	},
-	[Storage.DjinnWar.EfreetFaction.DoorToMaridTerritory] = {
+	[Storage.Quest.U7_4.DjinnWar.EfreetFaction.DoorToMaridTerritory] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33100, y = 32518, z = 7 },

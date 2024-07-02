@@ -54,6 +54,28 @@ local function releasePlayer(npc, creature)
 	npcHandler:resetNpc(creature)
 end
 
+local function endConversationWithDelay(npcHandler, npc, creature)
+    addEvent(function()
+        npcHandler:unGreet(npc, creature)
+    end, 1000)
+end
+
+local function greetCallback(npc, creature, message)
+	local player = Player(creature)
+	local playerId = player:getId()
+
+	if not MsgContains(message, "djanni'hah") then
+        npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
+        endConversationWithDelay(npcHandler, npc, creature)
+        return false
+    end
+
+	npcHandler:say("Greetings, human |PLAYERNAME|. My patience with your kind is limited, so speak quickly and choose your words well.", npc, creature)
+	npcHandler:setInteraction(npc, creature)
+
+	return true
+end
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -62,9 +84,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local missionProgress = player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission03)
+	local missionProgress = player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03)
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission02) == 3 then
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission02) == 3 then
 			if missionProgress < 1 then
 				npcHandler:say({
 					"I guess this is the first time I entrust a human with a mission. And such an important mission, too. But well, we live in hard times, and I am a bit short of adequate staff. ...",
@@ -96,7 +118,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Once you have found the lamp you must enter Ashta'daramai again. Sneak into Gabel's personal chambers and exchange his sleeping lamp with Fa'hradin's lamp! ...",
 				"If you succeed, the war could be over one night later!",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission03, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03, 1)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Your choice.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
@@ -111,8 +133,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"But that's in the future. For now, I will confine myself to give you the permission to trade with my people whenever you want to. ...",
 				"Farewell, human!",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission03, 3)
-			player:setStorageValue(Storage.DjinnWar.EfreetFaction.DoorToMaridTerritory, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03, 3)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.DoorToMaridTerritory, 1)
 			player:addAchievement("Efreet Ally")
 			addEvent(function()
 				releasePlayer(npc, creature)
@@ -121,7 +143,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Just do it!", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, "task") and player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission03) == 3 then
+	elseif MsgContains(message, "task") and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03) == 3 then
 		if player:getStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask) < 0 or player:getStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask) == 3 then
 			npcHandler:say("There are still blue djinns everywhere! We can't let a single one of them live. I guess a start would be for you to kill 500 blue djinns and Marid. Will you assist us?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
@@ -157,8 +179,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
--- Greeting
-keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "Greetings, human |PLAYERNAME|. My patience with your kind is limited, so speak quickly and choose your words well." })
+keywordHandler:addCustomGreetKeyword({ "djanni'hah" }, greetCallback, { npcHandler = npcHandler })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, human. When I have taken my rightful place I shall remember those who served me well. Even if they are only humans.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell, human.")

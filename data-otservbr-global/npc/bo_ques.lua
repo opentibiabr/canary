@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local missionProgress = player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission01)
+	local missionProgress = player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission01)
 	if MsgContains(message, "recipe") or MsgContains(message, "mission") then
 		if missionProgress < 1 then
 			npcHandler:say({
@@ -88,8 +88,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Fine! Even though I know so many recipes, I'm looking for the description of some dwarven meals. ...",
 				"So, if you could bring me a cookbook of the dwarven kitchen, I'll reward you well.",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.MaridFaction.Start, 1)
-			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission01, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Start, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission01, 1)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Well, too bad.", npc, creature)
 		end
@@ -106,7 +106,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Dragon Egg Omelette, Dwarven beer sauce... it's all there. This is great! Here is your well-deserved reward. ...",
 				"Incidentally, I have talked to Fa'hradin about you during dinner. I think he might have some work for you. Why don't you talk to him about it?",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission01, 2)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission01, 2)
 			player:addItem(3029, 3)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Too bad. I must have this book.", npc, creature)

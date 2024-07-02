@@ -53,9 +53,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local missionProgress = player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission03)
+	local missionProgress = player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03)
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission02) ~= 2 then
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission02) ~= 2 then
 			npcHandler:say({
 				"So you would like to fight for us, would you. Hmm. ...",
 				"That is a noble resolution you have made there, human, but I'm afraid I cannot accept your generous offer at this point of time. ...",
@@ -88,7 +88,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Once you have acquired the lamp you must enter Mal'ouquah again. Sneak into Malor's personal chambersand exchange his sleeping lamp with Fa'hradin's lamp! ...",
 				"If you succeed, the war could be over one night later! I and all djinn will be in your debt forever! May Daraman watch over you!",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission03, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03, 1)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("As you wish.", npc, creature)
 		end
@@ -99,14 +99,14 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Daraman shall bless you and all humans! You have done us all a huge service! Soon, this awful war will be over! ...",
 				"Know, that from now on you are considered one of us and are welcome to trade with Haroun and Nah'bob whenever you want to!",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission03, 3)
-			player:setStorageValue(Storage.DjinnWar.MaridFaction.DoorToEfreetTerritory, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03, 3)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.DoorToEfreetTerritory, 1)
 			player:addAchievement("Marid Ally")
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Don't give up! May Daraman watch over you!", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, "task") and player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission03) == 3 then
+	elseif MsgContains(message, "task") and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03) == 3 then
 		if player:getStorageValue(Storage.KillingInTheNameOf.GreenDjinnTask) < 0 or player:getStorageValue(Storage.KillingInTheNameOf.GreenDjinnTask) == 3 then
 			npcHandler:say({
 				"You've proven to be an experienced soldier, human. Though I still hope the war to be over soon, the Efreet are still threatening our tower. ...",

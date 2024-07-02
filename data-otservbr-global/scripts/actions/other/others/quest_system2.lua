@@ -1,9 +1,9 @@
 local config = {
-	[2285] = {
+	[2285] = { -- The Djinn War Quest - lamp
 		items = {
 			{ itemId = 3243 },
 		},
-		storage = Storage.DjinnWar.EfreetFaction.Mission03,
+		storage = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03,
 		formerValue = 1,
 		newValue = 2,
 		needItem = { itemId = 3231 },
@@ -41,7 +41,7 @@ local config = {
 		items = {
 			{ itemId = 3243 },
 		},
-		storage = Storage.DjinnWar.MaridFaction.Mission03,
+		storage = Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03,
 		formerValue = 1,
 		newValue = 2,
 		needItem = { itemId = 3231 },

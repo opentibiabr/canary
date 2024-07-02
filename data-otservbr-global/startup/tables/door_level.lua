@@ -27,6 +27,9 @@ LevelDoorAction = {
 		itemId = false,
 		itemPos = {
 			{ x = 32981, y = 31760, z = 9 },
+			-- The Djinn War - The Efreet
+			{ x = 33050, y = 32622, z = 6 },
+			{ x = 33050, y = 32623, z = 6 },
 		},
 	},
 	-- Doors for level 50

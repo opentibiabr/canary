@@ -59,12 +59,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "supplies") then
-		if player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission01) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01) == 1 then
 			npcHandler:say({
 				"What!? I bet, Baa'leal sent you! ...",
 				"I won't tell you anything! Shove off!",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission01, 2)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01, 2)
 		else
 			npcHandler:say("I won't talk about that.", npc, creature)
 		end

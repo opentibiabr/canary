@@ -608,12 +608,12 @@ if not Quests then
 		},
 		[7] = {
 			name = "Factions",
-			startStorageId = Storage.Factions,
+			startStorageId = Storage.Quest.U7_4.DjinnWar.Factions,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Marid and the Efreet - Djinn Greeting",
-					storageId = Storage.DjinnWar.Faction.Greeting,
+					storageId = Storage.Quest.U7_4.DjinnWar.Faction.Greeting,
 					missionId = 1064,
 					startValue = 1,
 					endValue = 2,
@@ -625,7 +625,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Marid and the Efreet - Marid Faction",
-					storageId = Storage.DjinnWar.Faction.MaridDoor,
+					storageId = Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor,
 					missionId = 1065,
 					startValue = 1,
 					endValue = 2,
@@ -637,7 +637,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Efreet and the Efreet - Efreet Faction",
-					storageId = Storage.DjinnWar.Faction.EfreetDoor,
+					storageId = Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor,
 					missionId = 1066,
 					startValue = 1,
 					endValue = 2,
@@ -2970,12 +2970,12 @@ if not Quests then
 		},
 		[19] = {
 			name = "The Djinn War - Efreet Faction",
-			startStorageId = Storage.DjinnWar.EfreetFaction.Start,
+			startStorageId = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Start,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Efreet Mission 1: The Supply Thief",
-					storageId = Storage.DjinnWar.EfreetFaction.Mission01,
+					storageId = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01,
 					missionId = 10221,
 					startValue = 1,
 					endValue = 3,
@@ -2989,7 +2989,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Efreet Mission 2: The Tear of Daraman",
-					storageId = Storage.DjinnWar.EfreetFaction.Mission02,
+					storageId = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission02,
 					missionId = 10222,
 					startValue = 1,
 					endValue = 3,
@@ -3003,7 +3003,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Efreet Mission 3: The Sleeping Lamp",
-					storageId = Storage.DjinnWar.EfreetFaction.Mission03,
+					storageId = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03,
 					missionId = 10223,
 					startValue = 1,
 					endValue = 3,
@@ -3018,12 +3018,12 @@ if not Quests then
 		},
 		[20] = {
 			name = "The Djinn War - Marid Faction",
-			startStorageId = Storage.DjinnWar.MaridFaction.Start,
+			startStorageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.Start,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Marid Mission 1: The Dwarven Kitchen",
-					storageId = Storage.DjinnWar.MaridFaction.Mission01,
+					storageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission01,
 					missionId = 10224,
 					startValue = 1,
 					endValue = 2,
@@ -3035,7 +3035,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Marid Mission 2: The Spyreport",
-					storageId = Storage.DjinnWar.MaridFaction.Mission02,
+					storageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission02,
 					missionId = 10225,
 					startValue = 1,
 					endValue = 2,
@@ -3048,7 +3048,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Rata'Mari and the Cheese",
-					storageId = Storage.DjinnWar.MaridFaction.RataMari,
+					storageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.RataMari,
 					missionId = 10226,
 					startValue = 1,
 					endValue = 2,
@@ -3059,7 +3059,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Marid Mission 3: The Sleeping Lamp",
-					storageId = Storage.DjinnWar.MaridFaction.Mission03,
+					storageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03,
 					missionId = 10227,
 					startValue = 1,
 					endValue = 3,

@@ -45,6 +45,12 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function endConversationWithDelay(npcHandler, npc, creature)
+    addEvent(function()
+        npcHandler:unGreet(npc, creature)
+    end, 1000)
+end
+
 local condition = Condition(CONDITION_FIRE)
 condition:setParameter(CONDITION_PARAM_DELAYED, 1)
 condition:addDamage(150, 2000, -10)
@@ -53,18 +59,20 @@ local function greetCallback(npc, creature, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if not player:getCondition(CONDITION_FIRE) and not MsgContains(message, "djanni'hah") then
-		player:getPosition():sendMagicEffect(CONST_ME_EXPLOSIONAREA)
-		player:addCondition(condition)
-		npcHandler:say("Take this!", npc, creature)
-		return false
+	if not MsgContains(message, "djanni'hah") then
+        npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
+        endConversationWithDelay(npcHandler, npc, creature)
+        return false
+    end
+
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01) < 1 then
+		npcHandler:say("You know the code human! Very well then... What do you want, |PLAYERNAME|?", npc, creature)
+	else
+		npcHandler:say("You are still alive, |PLAYERNAME|? Well, what do you want?", npc, creature)
 	end
 
-	if player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission01) < 1 then
-		npcHandler:setMessage(MESSAGE_GREET, "You know the code human! Very well then... What do you want, |PLAYERNAME|?")
-	else
-		npcHandler:setMessage(MESSAGE_GREET, "You are still alive, |PLAYERNAME|? Well, what do you want?")
-	end
+	npcHandler:setInteraction(npc, creature)
+
 	return true
 end
 
@@ -76,7 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local missionProgress = player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission01)
+	local missionProgress = player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01)
 	if MsgContains(message, "mission") then
 		if missionProgress < 1 then
 			npcHandler:say({
@@ -101,8 +109,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"His identity is still unknown but we have been told that the thief fled to the human settlement called Carlin. I want you to find him and report back to me. Nobody messes with the Efreet and lives to tell the tale! ...",
 				"Now go! Travel to the northern city Carlin! Keep your eyes open and look around for something that might give you a clue!",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Start, 1)
-			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission01, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Start, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01, 1)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("After all, you're just a human.", npc, creature)
 		end
@@ -126,7 +134,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"If you are interested go to Alesar and ask him about it.",
 				}, npc, creature)
 				player:addMoney(600)
-				player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission01, 3)
+				player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01, 3)
 			end
 		else
 			npcHandler:say("Hmmm... I don't think so. Return to Thais and continue your search!", npc, creature)
@@ -136,8 +144,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
--- Greeting message
-keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "What do you want from me, |PLAYERNAME|?" })
+keywordHandler:addCustomGreetKeyword({ "djanni'hah" }, greetCallback, { npcHandler = npcHandler })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Stand down, soldier!")
 

@@ -137,7 +137,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared
 		if (!name.empty()) {
 			owner = guid;
 			ownerName = name;
-			ownerAccountId = result->getNumber<uint32_t>("account_id");
+			ownerAccountId = result->getU32("account_id");
 		}
 	}
 
@@ -654,7 +654,7 @@ Door::Door(uint16_t type) :
 Attr_ReadValue Door::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_HOUSEDOORID) {
 		uint8_t doorId;
-		if (!propStream.read<uint8_t>(doorId)) {
+		if (!propStream.readU8(doorId)) {
 			return ATTR_READ_ERROR;
 		}
 

@@ -417,7 +417,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	switch (attr) {
 		case ATTR_STORE: {
 			int64_t timeStamp;
-			if (!propStream.read<int64_t>(timeStamp)) {
+			if (!propStream.readI64(timeStamp)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -427,7 +427,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		case ATTR_COUNT:
 		case ATTR_RUNE_CHARGES: {
 			uint8_t charges;
-			if (!propStream.read<uint8_t>(charges)) {
+			if (!propStream.readU8(charges)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -437,7 +437,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_ACTION_ID: {
 			uint16_t actionId;
-			if (!propStream.read<uint16_t>(actionId)) {
+			if (!propStream.readU16(actionId)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -447,7 +447,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_UNIQUE_ID: {
 			uint16_t uniqueId;
-			if (!propStream.read<uint16_t>(uniqueId)) {
+			if (!propStream.readU16(uniqueId)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -467,7 +467,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_WRITTENDATE: {
 			uint64_t writtenDate;
-			if (!propStream.read<uint64_t>(writtenDate)) {
+			if (!propStream.readU64(writtenDate)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -497,7 +497,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_CHARGES: {
 			uint16_t charges;
-			if (!propStream.read<uint16_t>(charges)) {
+			if (!propStream.readU16(charges)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -507,7 +507,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_DURATION: {
 			int32_t duration;
-			if (!propStream.read<int32_t>(duration)) {
+			if (!propStream.readI32(duration)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -517,7 +517,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_DECAYING_STATE: {
 			uint8_t state;
-			if (!propStream.read<uint8_t>(state)) {
+			if (!propStream.readU8(state)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -559,7 +559,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_WEIGHT: {
 			uint32_t weight;
-			if (!propStream.read<uint32_t>(weight)) {
+			if (!propStream.readU32(weight)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -569,7 +569,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_ATTACK: {
 			int32_t attack;
-			if (!propStream.read<int32_t>(attack)) {
+			if (!propStream.readI32(attack)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -579,7 +579,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_DEFENSE: {
 			int32_t defense;
-			if (!propStream.read<int32_t>(defense)) {
+			if (!propStream.readI32(defense)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -589,7 +589,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_EXTRADEFENSE: {
 			int32_t extraDefense;
-			if (!propStream.read<int32_t>(extraDefense)) {
+			if (!propStream.readI32(extraDefense)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -599,7 +599,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_IMBUEMENT_SLOT: {
 			int32_t imbuementSlot;
-			if (!propStream.read<int32_t>(imbuementSlot)) {
+			if (!propStream.readI32(imbuementSlot)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -609,7 +609,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_OPENCONTAINER: {
 			uint8_t openContainer;
-			if (!propStream.read<uint8_t>(openContainer)) {
+			if (!propStream.readU8(openContainer)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -619,7 +619,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_ARMOR: {
 			int32_t armor;
-			if (!propStream.read<int32_t>(armor)) {
+			if (!propStream.readI32(armor)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -629,7 +629,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_HITCHANCE: {
 			int8_t hitChance;
-			if (!propStream.read<int8_t>(hitChance)) {
+			if (!propStream.readI8(hitChance)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -639,7 +639,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_SHOOTRANGE: {
 			uint8_t shootRange;
-			if (!propStream.read<uint8_t>(shootRange)) {
+			if (!propStream.readU8(shootRange)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -667,7 +667,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_QUICKLOOTCONTAINER: {
 			uint32_t flags;
-			if (!propStream.read<uint32_t>(flags)) {
+			if (!propStream.readU32(flags)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -726,7 +726,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		// Deprecated, all items that still exist with this attribute will work normally, but new items will be created with the new system, using ATTR_CUSTOM
 		case ATTR_CUSTOM_ATTRIBUTES: {
 			uint64_t size;
-			if (!propStream.read<uint64_t>(size)) {
+			if (!propStream.readU64(size)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -757,7 +757,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_TIER: {
 			uint8_t tier;
-			if (!propStream.read<uint8_t>(tier)) {
+			if (!propStream.readU8(tier)) {
 				g_logger().error("[{}] failed to read tier", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
@@ -768,7 +768,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_AMOUNT: {
 			uint16_t amount;
-			if (!propStream.read<uint16_t>(amount)) {
+			if (!propStream.readU16(amount)) {
 				g_logger().error("[{}] failed to read amount", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
@@ -779,7 +779,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_CUSTOM: {
 			uint64_t size;
-			if (!propStream.read<uint64_t>(size)) {
+			if (!propStream.readU64(size)) {
 				g_logger().error("[{}] failed to read size", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
@@ -816,7 +816,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_OWNER: {
 			uint32_t ownerId;
-			if (!propStream.read<uint32_t>(ownerId)) {
+			if (!propStream.readU32(ownerId)) {
 				g_logger().error("[{}] failed to read amount", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
@@ -827,7 +827,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_OBTAINCONTAINER: {
 			uint32_t flags;
-			if (!propStream.read<uint32_t>(flags)) {
+			if (!propStream.readU32(flags)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -844,7 +844,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 bool Item::unserializeAttr(PropStream &propStream) {
 	uint8_t attr_type;
-	while (propStream.read<uint8_t>(attr_type) && attr_type != 0) {
+	while (propStream.readU8(attr_type) && attr_type != 0) {
 		Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attr_type), propStream);
 		if (ret == ATTR_READ_ERROR) {
 			return false;

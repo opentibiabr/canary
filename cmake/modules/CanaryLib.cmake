@@ -78,6 +78,7 @@ endif()
 target_include_directories(${PROJECT_NAME}_lib
         PUBLIC
         ${BOOST_DI_INCLUDE_DIRS}
+        ${Boost_INCLUDE_DIRS}
         ${CMAKE_SOURCE_DIR}/src
         ${GMP_INCLUDE_DIRS}
         ${LUAJIT_INCLUDE_DIRS}
@@ -87,6 +88,18 @@ target_include_directories(${PROJECT_NAME}_lib
 # *****************************************************************************
 # Target links to external dependencies
 # *****************************************************************************
+
+# Print default CMake directories
+#message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+#message(STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+#message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
+#message(STATUS "CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+#message(STATUS "PROJECT_SOURCE_DIR: ${PROJECT_SOURCE_DIR}")
+#message(STATUS "PROJECT_BINARY_DIR: ${PROJECT_BINARY_DIR}")
+#message(STATUS "CMAKE_CURRENT_LIST_DIR: ${CMAKE_CURRENT_LIST_DIR}")
+#message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+#message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
+
 target_link_libraries(${PROJECT_NAME}_lib
     PUBLIC
         ${GMP_LIBRARIES}
@@ -103,8 +116,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         pugixml::pugixml
         spdlog::spdlog
         unofficial::argon2::libargon2
-        unofficial::libmariadb
-        unofficial::mariadbclient
+        unofficial::mysql-connector-cpp::connector
         protobuf
 )
 
@@ -137,7 +149,7 @@ if (MSVC)
         set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
     endif()
 
-    target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})
+    target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 else()
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC Threads::Threads)
 endif (MSVC)

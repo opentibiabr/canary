@@ -232,7 +232,7 @@ bool PlayerTitle::checkHighscore(uint8_t skill) {
 		return false;
 	}
 
-	auto resultValue = result->getNumber<uint32_t>(fieldCheck);
+	auto resultValue = result->getU32(fieldCheck);
 	g_logger().debug("top id: {}, player id: {}", resultValue, m_player.getGUID());
 
 	return resultValue == m_player.getGUID();

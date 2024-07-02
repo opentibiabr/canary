@@ -24,7 +24,7 @@ Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	switch (attr) {
 		case ATTR_SLEEPERGUID: {
 			uint32_t guid;
-			if (!propStream.read<uint32_t>(guid)) {
+			if (!propStream.readU32(guid)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -41,7 +41,7 @@ Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		case ATTR_SLEEPSTART: {
 			uint32_t sleep_start;
-			if (!propStream.read<uint32_t>(sleep_start)) {
+			if (!propStream.readU32(sleep_start)) {
 				return ATTR_READ_ERROR;
 			}
 

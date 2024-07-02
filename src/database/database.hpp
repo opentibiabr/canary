@@ -13,14 +13,21 @@
 #include "lib/logging/log_with_spd_log.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
-	#include <mysql/mysql.h>
 	#include <mutex>
 #endif
 
+#include <mysqlx/xdevapi.h>
+#include <boost/lexical_cast.hpp>
+
 class DBResult;
+class PreparedStatement;
+
 using DBResult_ptr = std::shared_ptr<DBResult>;
 
 class Database {
+private:
+	std::unique_ptr<mysqlx::Session> m_databaseSession;
+
 public:
 	static const size_t MAX_QUERY_SIZE = 8 * 1024 * 1024; // 8 Mb -- half the default MySQL max_allowed_packet size
 
@@ -37,35 +44,88 @@ public:
 
 	bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
 
-	bool retryQuery(const std::string_view &query, int retries);
-	bool executeQuery(const std::string_view &query);
+	bool retryQuery(const std::string_view query, int retries);
+	bool executeQuery(const std::string_view query);
 
-	DBResult_ptr storeQuery(const std::string_view &query);
+	DBResult_ptr storeQuery(const std::string_view query);
+	std::shared_ptr<DBResult> prepare(const std::string_view query);
 
 	std::string escapeString(const std::string &s) const;
 
 	std::string escapeBlob(const char* s, uint32_t length) const;
 
-	uint64_t getLastInsertId() const {
-		return static_cast<uint64_t>(mysql_insert_id(handle));
-	}
+	/**
+	 * @brief Updates blob data in a specified column and table.
+	 *
+	 * This method updates a BLOB column in a specified table using a provided blob of data. It logs
+	 * the number of affected rows or any errors encountered during the update.
+	 *
+	 * @param tableName Name of the table to update.
+	 * @param columnName Name of the BLOB column to update.
+	 * @param recordId ID of the record to update.
+	 * @param blobData Pointer to the blob data to be updated.
+	 * @param size Size of the blob data.
+	 * @param idColumnName Name of the column used as the identifier.
+	 * @return true if the update is successful, false otherwise.
+	 */
+	bool updateBlobData(const std::string &tableName, const std::string &columnName, uint32_t recordId, const char* blobData, size_t size, const std::string &idColumnName = "id");
 
-	static const char* getClientVersion() {
-		return mysql_get_client_info();
-	}
+	/**
+	 * @brief Inserts data into a specified table.
+	 *
+	 * This method inserts a new row into a table with specified columns and values. It checks and logs
+	 * the number of affected rows to ensure that the insert operation was successful.
+	 *
+	 * @param tableName Name of the table where data will be inserted.
+	 * @param columns Vector of strings containing the names of the columns to insert data into.
+	 * @param values Vector of mysqlx::Value containing the data to be inserted.
+	 * @return true if the insert is successful, false otherwise.
+	 */
+	bool insertTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values);
+
+	/**
+	 * @brief Updates or inserts data into a table based on the existence of a record.
+	 *
+	 * This method checks if a record exists and updates it. If the record does not exist, it inserts a new record.
+	 * The method logs actions taken (update or insert) and any errors encountered.
+	 *
+	 * @param tableName Name of the table to update.
+	 * @param columns Names of the columns to update.
+	 * @param values Values corresponding to the columns.
+	 * @param whereColumnName The column name used in the WHERE clause to locate the record.
+	 * @param whereValue The value used in the WHERE clause to locate the record.
+	 * @return true if the operation was successful, false otherwise.
+	 */
+	bool updateTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values, const std::vector<std::string> &whereColumnNames, const std::vector<mysqlx::Value> &whereValues);
+
+	/**
+	 * @brief Updates or inserts data into a table based on complex WHERE conditions.
+	 *
+	 * This method performs an update or insert operation based on complex WHERE conditions specified by multiple columns.
+	 * It handles both single and multiple records and logs detailed information about the operations and any exceptions.
+	 *
+	 * @param tableName Name of the table to update or insert into.
+	 * @param columns Vector of column names to be updated or inserted.
+	 * @param values Vector of values corresponding to the columns.
+	 * @param whereColumnNames Vector of column names used for the WHERE clause to locate the record.
+	 * @param whereValues Vector of values used for the WHERE clause to locate the record.
+	 * @return true if the update or insert is successful, false otherwise.
+	 */
+	bool updateTable(const std::string &tableName, const std::vector<std::string> &columns, const std::vector<mysqlx::Value> &values, const std::string &whereColumnName, const mysqlx::Value &whereValue);
 
 	uint64_t getMaxPacketSize() const {
 		return maxPacketSize;
 	}
+
+	mysqlx::Schema getDatabaseSchema();
+
+	mysqlx::Table getTable(const std::string &tableName);
 
 private:
 	bool beginTransaction();
 	bool rollback();
 	bool commit();
 
-	bool isRecoverableError(unsigned int error) const;
-
-	MYSQL* handle = nullptr;
 	std::recursive_mutex databaseLock;
 	uint64_t maxPacketSize = 1048576;
 
@@ -76,91 +136,80 @@ constexpr auto g_database = Database::getInstance;
 
 class DBResult {
 public:
-	explicit DBResult(MYSQL_RES* res);
+	explicit DBResult(mysqlx::SqlResult &&result, const std::string_view query, mysqlx::Session &session);
+	explicit DBResult(mysqlx::Session &session, const std::string_view query) :
+		m_session(session), m_query(query.data()) { }
+
+	template <typename... Args>
+	bool executeWithParams(Args &&... args) {
+		try {
+			mysqlx::SqlStatement stmt = m_session.sql(m_query);
+			(stmt.bind(std::forward<Args>(args)), ...);
+			m_result = stmt.execute();
+			m_currentRow = m_result.fetchOne();
+			if (m_currentRow.isNull()) {
+				g_logger().error("No data returned for the query: {}", m_query);
+				return false;
+			}
+			m_hasMoreRows = m_result.hasData();
+			initializeColumnMap();
+			return true;
+		} catch (const mysqlx::Error &err) {
+			g_logger().error("PreparedStatement error with MySQL X DevAPI: {}", err.what());
+			return false;
+		} catch (const std::exception &e) {
+			g_logger().error("PreparedStatement execute error: {}", e.what());
+			;
+			return false;
+		}
+	}
+
 	~DBResult();
 
 	// Non copyable
 	DBResult(const DBResult &) = delete;
 	DBResult &operator=(const DBResult &) = delete;
 
-	template <typename T>
-	T getNumber(const std::string &s) const {
-		auto it = listNames.find(s);
-		if (it == listNames.end()) {
-			g_logger().error("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
-			return T();
-		}
+	uint8_t getU8(const std::string &columnName) const;
+	uint16_t getU16(const std::string &columnName) const;
+	uint32_t getU32(const std::string &columnName) const;
+	uint64_t getU64(const std::string &columnName) const;
 
-		if (row[it->second] == nullptr) {
-			return T();
-		}
+	int8_t getI8(const std::string &columnName) const;
+	int16_t getI16(const std::string &columnName) const;
+	int32_t getI32(const std::string &columnName) const;
+	int64_t getI64(const std::string &columnName) const;
 
-		T data = 0;
-		try {
-			// Check if the type T is signed or unsigned
-			if constexpr (std::is_signed_v<T>) {
-				// Check if the type T is int8_t or int16_t
-				if constexpr (std::is_same_v<T, int8_t> || std::is_same_v<T, int16_t>) {
-					// Use std::stoi to convert string to int8_t
-					data = static_cast<T>(std::stoi(row[it->second]));
-				}
-				// Check if the type T is int32_t
-				else if constexpr (std::is_same_v<T, int32_t>) {
-					// Use std::stol to convert string to int32_t
-					data = static_cast<T>(std::stol(row[it->second]));
-				}
-				// Check if the type T is int64_t
-				else if constexpr (std::is_same_v<T, int64_t>) {
-					// Use std::stoll to convert string to int64_t
-					data = static_cast<T>(std::stoll(row[it->second]));
-				} else {
-					// Throws exception indicating that type T is invalid
-					g_logger().error("Invalid signed type T");
-				}
-			} else if (std::is_same<T, bool>::value) {
-				data = static_cast<T>(std::stoi(row[it->second]));
-			} else {
-				// Check if the type T is uint8_t or uint16_t or uint32_t
-				if constexpr (std::is_same_v<T, uint8_t> || std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>) {
-					// Use std::stoul to convert string to uint8_t
-					data = static_cast<T>(std::stoul(row[it->second]));
-				}
-				// Check if the type T is uint64_t
-				else if constexpr (std::is_same_v<T, uint64_t>) {
-					// Use std::stoull to convert string to uint64_t
-					data = static_cast<T>(std::stoull(row[it->second]));
-				} else {
-					// Send log indicating that type T is invalid
-					g_logger().error("Column '{}' has an invalid unsigned T is invalid", s);
-				}
-			}
-		} catch (std::invalid_argument &e) {
-			// Value of string is invalid
-			g_logger().error("Column '{}' has an invalid value set, error code: {}", s, e.what());
-			data = T();
-		} catch (std::out_of_range &e) {
-			// Value of string is too large to fit the range allowed by type T
-			g_logger().error("Column '{}' has a value out of range, error code: {}", s, e.what());
-			data = T();
-		}
+	time_t getTime(const std::string &columnName) const;
+	float getFloat(const std::string &columnName) const;
+	double getDouble(const std::string &columnName) const;
+	bool getBool(const std::string &columnName) const;
 
-		return data;
-	}
+	std::string getString(const std::string_view columnName) const;
+	const std::vector<uint8_t> getStream(const std::string_view columnName) const;
 
-	std::string getString(const std::string &s) const;
-	const char* getStream(const std::string &s, unsigned long &size) const;
-	uint8_t getU8FromString(const std::string &string, const std::string &function) const;
-	int8_t getInt8FromString(const std::string &string, const std::string &function) const;
-
-	size_t countResults() const;
+	size_t countResults();
 	bool hasNext() const;
 	bool next();
 
 private:
-	MYSQL_RES* handle;
-	MYSQL_ROW row;
+	void initializeColumnMap() {
+		listNames.clear();
+		for (unsigned int i = 0; i < m_result.getColumnCount(); ++i) {
+			listNames[m_result.getColumn(i).getColumnName()] = i;
+			g_logger().debug("Column '{}' mapped to index {}", std::string(m_result.getColumn(i).getColumnName()), i);
+		}
+	}
 
-	std::map<std::string_view, size_t> listNames;
+	mysqlx::Session &m_session;
+	mysqlx::SqlResult m_result;
+	mysqlx::Row m_currentRow;
+	mysqlx::col_count_t m_columnCount;
+	bool m_hasMoreRows = false;
+
+	std::string m_query;
+
+	std::unordered_map<std::string, size_t> listNames;
 
 	friend class Database;
 };
@@ -222,7 +271,7 @@ private:
 		try {
 			// Start the transaction
 			state = STATE_START;
-			return Database::getInstance().beginTransaction();
+			return g_database().beginTransaction();
 		} catch (const std::exception &exception) {
 			// An error occurred while starting the transaction
 			state = STATE_NO_START;
@@ -240,7 +289,7 @@ private:
 		try {
 			// Rollback the transaction
 			state = STATE_NO_START;
-			Database::getInstance().rollback();
+			g_database().rollback();
 		} catch (const std::exception &exception) {
 			// An error occurred while rolling back the transaction
 			g_logger().error("[{}] An error occurred while rolling back the transaction, error: {}", __FUNCTION__, exception.what());
@@ -257,7 +306,7 @@ private:
 		try {
 			// Commit the transaction
 			state = STATE_COMMIT;
-			Database::getInstance().commit();
+			g_database().commit();
 		} catch (const std::exception &exception) {
 			// An error occurred while committing the transaction
 			state = STATE_NO_START;

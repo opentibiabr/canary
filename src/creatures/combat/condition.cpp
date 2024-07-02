@@ -63,7 +63,7 @@ bool Condition::setPositionParam(ConditionParam_t param, const Position &pos) {
 
 bool Condition::unserialize(PropStream &propStream) {
 	uint8_t attr_type;
-	while (propStream.read<uint8_t>(attr_type) && attr_type != CONDITIONATTR_END) {
+	while (propStream.readU8(attr_type) && attr_type != CONDITIONATTR_END) {
 		if (!unserializeProp(static_cast<ConditionAttr_t>(attr_type), propStream)) {
 			return false;
 		}
@@ -75,7 +75,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	switch (attr) {
 		case CONDITIONATTR_TYPE: {
 			int32_t value;
-			if (!propStream.read<int32_t>(value)) {
+			if (!propStream.readI32(value)) {
 				return false;
 			}
 
@@ -85,7 +85,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 
 		case CONDITIONATTR_ID: {
 			int32_t value;
-			if (!propStream.read<int32_t>(value)) {
+			if (!propStream.readI32(value)) {
 				return false;
 			}
 
@@ -94,12 +94,12 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 		}
 
 		case CONDITIONATTR_TICKS: {
-			return propStream.read<int32_t>(ticks);
+			return propStream.readI32(ticks);
 		}
 
 		case CONDITIONATTR_ISBUFF: {
 			uint8_t value;
-			if (!propStream.read<uint8_t>(value)) {
+			if (!propStream.readU8(value)) {
 				return false;
 			}
 
@@ -108,12 +108,12 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 		}
 
 		case CONDITIONATTR_SUBID: {
-			return propStream.read<uint32_t>(subId);
+			return propStream.readU32(subId);
 		}
 
 		case CONDITIONATTR_TICKSOUND: {
 			uint16_t value;
-			if (!propStream.read<uint16_t>(value)) {
+			if (!propStream.readU16(value)) {
 				return false;
 			}
 
@@ -123,7 +123,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 
 		case CONDITIONATTR_ADDSOUND: {
 			uint16_t value;
-			if (!propStream.read<uint16_t>(value)) {
+			if (!propStream.readU16(value)) {
 				return false;
 			}
 
@@ -250,48 +250,48 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 
 std::shared_ptr<Condition> Condition::createCondition(PropStream &propStream) {
 	uint8_t attr;
-	if (!propStream.read<uint8_t>(attr) || attr != CONDITIONATTR_TYPE) {
+	if (!propStream.readU8(attr) || attr != CONDITIONATTR_TYPE) {
 		return nullptr;
 	}
 
 	int8_t type;
-	if (!propStream.read<int8_t>(type)) {
+	if (!propStream.readI8(type)) {
 		return nullptr;
 	}
 
-	if (!propStream.read<uint8_t>(attr) || attr != CONDITIONATTR_ID) {
+	if (!propStream.readU8(attr) || attr != CONDITIONATTR_ID) {
 		return nullptr;
 	}
 
 	uint32_t id;
-	if (!propStream.read<uint32_t>(id)) {
+	if (!propStream.readU32(id)) {
 		return nullptr;
 	}
 
-	if (!propStream.read<uint8_t>(attr) || attr != CONDITIONATTR_TICKS) {
+	if (!propStream.readU8(attr) || attr != CONDITIONATTR_TICKS) {
 		return nullptr;
 	}
 
 	uint32_t ticks;
-	if (!propStream.read<uint32_t>(ticks)) {
+	if (!propStream.readU32(ticks)) {
 		return nullptr;
 	}
 
-	if (!propStream.read<uint8_t>(attr) || attr != CONDITIONATTR_ISBUFF) {
+	if (!propStream.readU8(attr) || attr != CONDITIONATTR_ISBUFF) {
 		return nullptr;
 	}
 
 	uint8_t buff;
-	if (!propStream.read<uint8_t>(buff)) {
+	if (!propStream.readU8(buff)) {
 		return nullptr;
 	}
 
-	if (!propStream.read<uint8_t>(attr) || attr != CONDITIONATTR_SUBID) {
+	if (!propStream.readU8(attr) || attr != CONDITIONATTR_SUBID) {
 		return nullptr;
 	}
 
 	uint32_t subId;
-	if (!propStream.read<uint32_t>(subId)) {
+	if (!propStream.readU32(subId)) {
 		return nullptr;
 	}
 
@@ -452,16 +452,16 @@ void ConditionAttributes::addCondition(std::shared_ptr<Creature> creature, const
 
 bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_SKILLS) {
-		return propStream.read<int32_t>(skills[currentSkill++]);
+		return propStream.readI32(skills[currentSkill++]);
 	} else if (attr == CONDITIONATTR_STATS) {
-		return propStream.read<int32_t>(stats[currentStat++]);
+		return propStream.readI32(stats[currentStat++]);
 	} else if (attr == CONDITIONATTR_BUFFS) {
-		return propStream.read<int32_t>(buffs[currentBuff++]);
+		return propStream.readI32(buffs[currentBuff++]);
 	} else if (attr == CONDITIONATTR_ABSORBS) {
 		for (int32_t i = 0; i < CombatType_t::COMBAT_COUNT; ++i) {
 			uint8_t index;
 			int32_t value;
-			if (!propStream.read<uint8_t>(index) || !propStream.read<int32_t>(value)) {
+			if (!propStream.readU8(index) || !propStream.readI32(value)) {
 				return false;
 			}
 
@@ -473,7 +473,7 @@ bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream &prop
 		for (int32_t i = 0; i < CombatType_t::COMBAT_COUNT; ++i) {
 			uint8_t index;
 			int32_t value;
-			if (!propStream.read<uint8_t>(index) || !propStream.read<int32_t>(value)) {
+			if (!propStream.readU8(index) || !propStream.readI32(value)) {
 				return false;
 			}
 
@@ -482,7 +482,7 @@ bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream &prop
 
 		return true;
 	} else if (attr == CONDITIONATTR_CHARM_CHANCE_MODIFIER) {
-		return propStream.read<int8_t>(charmChanceModifier);
+		return propStream.readI8(charmChanceModifier);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -1134,13 +1134,13 @@ void ConditionRegeneration::addCondition(std::shared_ptr<Creature> creature, con
 
 bool ConditionRegeneration::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_HEALTHTICKS) {
-		return propStream.read<uint32_t>(healthTicks);
+		return propStream.readU32(healthTicks);
 	} else if (attr == CONDITIONATTR_HEALTHGAIN) {
-		return propStream.read<uint32_t>(healthGain);
+		return propStream.readU32(healthGain);
 	} else if (attr == CONDITIONATTR_MANATICKS) {
-		return propStream.read<uint32_t>(manaTicks);
+		return propStream.readU32(manaTicks);
 	} else if (attr == CONDITIONATTR_MANAGAIN) {
-		return propStream.read<uint32_t>(manaGain);
+		return propStream.readU32(manaGain);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -1308,7 +1308,7 @@ void ConditionManaShield::addCondition(std::shared_ptr<Creature> creature, const
 
 bool ConditionManaShield::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_MANASHIELD) {
-		return propStream.read<uint32_t>(manaShield);
+		return propStream.readU32(manaShield);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -1359,9 +1359,9 @@ void ConditionSoul::addCondition(std::shared_ptr<Creature>, const std::shared_pt
 
 bool ConditionSoul::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_SOULGAIN) {
-		return propStream.read<uint32_t>(soulGain);
+		return propStream.readU32(soulGain);
 	} else if (attr == CONDITIONATTR_SOULTICKS) {
-		return propStream.read<uint32_t>(soulTicks);
+		return propStream.readU32(soulTicks);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -1461,19 +1461,19 @@ bool ConditionDamage::setParam(ConditionParam_t param, int32_t value) {
 bool ConditionDamage::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_DELAYED) {
 		uint8_t value;
-		if (!propStream.read<uint8_t>(value)) {
+		if (!propStream.readU8(value)) {
 			return false;
 		}
 
 		delayed = (value != 0);
 		return true;
 	} else if (attr == CONDITIONATTR_PERIODDAMAGE) {
-		return propStream.read<int32_t>(periodDamage);
+		return propStream.readI32(periodDamage);
 	} else if (attr == CONDITIONATTR_OWNER) {
 		return propStream.skip(4);
 	} else if (attr == CONDITIONATTR_INTERVALDATA) {
 		IntervalInfo damageInfo {};
-		if (!propStream.read<IntervalInfo>(damageInfo)) {
+		if (!propStream.readIntervalInfo(damageInfo)) {
 			return false;
 		}
 
@@ -2111,15 +2111,15 @@ bool ConditionSpeed::setParam(ConditionParam_t param, int32_t value) {
 
 bool ConditionSpeed::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_SPEEDDELTA) {
-		return propStream.read<int32_t>(speedDelta);
+		return propStream.readI32(speedDelta);
 	} else if (attr == CONDITIONATTR_FORMULA_MINA) {
-		return propStream.read<float>(mina);
+		return propStream.readFloat(mina);
 	} else if (attr == CONDITIONATTR_FORMULA_MINB) {
-		return propStream.read<float>(minb);
+		return propStream.readFloat(minb);
 	} else if (attr == CONDITIONATTR_FORMULA_MAXA) {
-		return propStream.read<float>(maxa);
+		return propStream.readFloat(maxa);
 	} else if (attr == CONDITIONATTR_FORMULA_MAXB) {
-		return propStream.read<float>(maxb);
+		return propStream.readFloat(maxb);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -2258,7 +2258,7 @@ void ConditionOutfit::setLazyMonsterOutfit(const std::string &monsterName) {
 
 bool ConditionOutfit::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_OUTFIT) {
-		return propStream.read<Outfit_t>(outfit);
+		return propStream.readOutfit(outfit);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -2403,7 +2403,7 @@ bool ConditionLight::setParam(ConditionParam_t param, int32_t value) {
 bool ConditionLight::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_LIGHTCOLOR) {
 		uint32_t value;
-		if (!propStream.read<uint32_t>(value)) {
+		if (!propStream.readU32(value)) {
 			return false;
 		}
 
@@ -2411,16 +2411,16 @@ bool ConditionLight::unserializeProp(ConditionAttr_t attr, PropStream &propStrea
 		return true;
 	} else if (attr == CONDITIONATTR_LIGHTLEVEL) {
 		uint32_t value;
-		if (!propStream.read<uint32_t>(value)) {
+		if (!propStream.readU32(value)) {
 			return false;
 		}
 
 		lightInfo.level = value;
 		return true;
 	} else if (attr == CONDITIONATTR_LIGHTTICKS) {
-		return propStream.read<uint32_t>(internalLightTicks);
+		return propStream.readU32(internalLightTicks);
 	} else if (attr == CONDITIONATTR_LIGHTINTERVAL) {
-		return propStream.read<uint32_t>(lightChangeInterval);
+		return propStream.readU32(lightChangeInterval);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }

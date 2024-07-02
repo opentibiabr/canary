@@ -94,14 +94,119 @@ namespace OTB {
 		if (size == 0) {
 			return false;
 		}
-		propBuffer.resize(size);
+
+		std::vector<uint8_t> propBuffer;
+		propBuffer.reserve(size);
 		bool lastEscaped = false;
 
-		auto escapedPropEnd = std::copy_if(node.propsBegin, node.propsEnd, propBuffer.begin(), [&lastEscaped](const char &byte) {
-			lastEscaped = byte == static_cast<char>(Node::ESCAPE) && !lastEscaped;
-			return !lastEscaped;
+		std::for_each(node.propsBegin, node.propsEnd, [&propBuffer, &lastEscaped](const char &byte) {
+			if (lastEscaped) {
+				lastEscaped = false;
+			} else if (byte == Node::ESCAPE) {
+				lastEscaped = true;
+				return;
+			}
+			propBuffer.push_back(static_cast<uint8_t>(byte));
 		});
-		props.init(&propBuffer[0], std::distance(propBuffer.begin(), escapedPropEnd));
+
+		props.init(propBuffer);
 		return true;
 	}
 } // namespace OTB
+
+namespace InternalPropStream {
+	template <typename T>
+	bool read(T &ret, std::vector<uint8_t> &buffer, size_t &pos, size_t size) {
+		size_t bytesNeeded = sizeof(T);
+		if (size < bytesNeeded) {
+			return false;
+		}
+
+		memcpy(&ret, buffer.data() + pos, bytesNeeded);
+		pos += bytesNeeded;
+		return true;
+	}
+} // namespace InternalPropStream
+
+PropStream::PropStream(const std::vector<uint8_t> &attributes) :
+	buffer(attributes), pos(0) { }
+
+void PropStream::init(const std::vector<uint8_t> &attributes) {
+	if (attributes.empty()) {
+		g_logger().error("PropStream::init: attributes is empty.");
+		return;
+	}
+
+	buffer = attributes;
+	pos = 0;
+}
+
+size_t PropStream::size() const {
+	return buffer.size() - pos;
+}
+
+bool PropStream::readU8(uint8_t &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readU16(uint16_t &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readU32(uint32_t &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readU64(uint64_t &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readI8(int8_t &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readI16(int16_t &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readI32(int32_t &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readI64(int64_t &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readDouble(double &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readFloat(float &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+bool PropStream::readBool(bool &value) {
+	return InternalPropStream::read(value, buffer, pos, size());
+}
+
+bool PropStream::readIntervalInfo(IntervalInfo &info) {
+	return InternalPropStream::read(info, buffer, pos, size());
+}
+
+bool PropStream::readOutfit(Outfit_t &outfit) {
+	return InternalPropStream::read(outfit, buffer, pos, size());
+}
+
+bool PropStream::readString(std::string &ret) {
+	uint16_t strLen;
+	if (!readU16(strLen)) {
+		return false;
+	}
+
+	if (size() < strLen) {
+		return false;
+	}
+
+	ret.assign(reinterpret_cast<char*>(buffer.data() + pos), strLen);
+	pos += strLen;
+	return true;
+}
+
+bool PropStream::skip(size_t n) {
+	if (size() < n) {
+		return false;
+	}
+
+	pos += n;
+	return true;
+}

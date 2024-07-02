@@ -23,13 +23,13 @@ AccountRepositoryDB::AccountRepositoryDB() :
 	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" }, { enumToValue(CoinType::Tournament), "tournament_coins" }, { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
 
 bool AccountRepositoryDB::loadByID(const uint32_t &id, AccountInfo &acc) {
-	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);
+	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased` FROM `accounts` WHERE `id` = {}", id);
 	return load(query, acc);
 };
 
 bool AccountRepositoryDB::loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) {
 	auto identifier = oldProtocol ? "name" : "email";
-	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `{}` = {}", identifier, g_database().escapeString(emailOrName));
+	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased` FROM `accounts` WHERE `{}` = {}", identifier, g_database().escapeString(emailOrName));
 	return load(query, acc);
 };
 
@@ -41,7 +41,7 @@ bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, AccountIn
 		"WHERE `account_sessions`.`id` = {}",
 		g_database().escapeString(transformToSHA1(sessionKey))
 	);
-	return load(query, acc);
+	return load(query, acc, true);
 };
 
 bool AccountRepositoryDB::save(const AccountInfo &accInfo) {
@@ -91,7 +91,7 @@ bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint
 		return false;
 	}
 
-	coins = result->getNumber<uint32_t>(coinTypeToColumn.at(type));
+	coins = result->getU32(coinTypeToColumn.at(type));
 
 	return true;
 };
@@ -159,31 +159,34 @@ bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 	}
 
 	do {
-		if (result->getNumber<uint64_t>("deletion") != 0) {
+		if (result->getU64("deletion") != 0) {
 			continue;
 		}
 
-		acc.players.try_emplace({ result->getString("name"), result->getNumber<uint64_t>("deletion") });
+		acc.players.try_emplace({ result->getString("name"), result->getU64("deletion") });
 	} while (result->next());
 
 	return true;
 }
 
-bool AccountRepositoryDB::load(const std::string &query, AccountInfo &acc) {
+bool AccountRepositoryDB::load(const std::string &query, AccountInfo &acc, bool checkExpires /* = false */) {
 	auto result = g_database().storeQuery(query);
 
 	if (result == nullptr) {
 		return false;
 	}
 
-	acc.id = result->getNumber<uint32_t>("id");
-	acc.accountType = result->getNumber<uint16_t>("type");
-	acc.premiumLastDay = result->getNumber<time_t>("lastday");
-	acc.sessionExpires = result->getNumber<time_t>("expires");
-	acc.premiumDaysPurchased = result->getNumber<uint32_t>("premdays_purchased");
-	acc.creationTime = result->getNumber<uint32_t>("creation");
+	acc.id = result->getU32("id");
+	acc.accountType = result->getU16("type");
+	acc.premiumLastDay = result->getTime("lastday");
+	if (checkExpires) {
+		acc.sessionExpires = result->getTime("expires");
+	}
+	acc.premiumDaysPurchased = result->getU32("premdays_purchased");
+	acc.creationTime = result->getU32("creation");
 	acc.premiumRemainingDays = acc.premiumLastDay > getTimeNow() ? (acc.premiumLastDay - getTimeNow()) / 86400 : 0;
 
+	g_logger().debug("Loaded account:[{}] type:[{}] premiumDays:[{}] lastDay:[{}] creation:[{}] premiumDaysPurchased:[{}]", acc.id, acc.accountType, acc.premiumRemainingDays, acc.premiumLastDay, acc.creationTime, acc.premiumDaysPurchased);
 	setupLoyaltyInfo(acc);
 
 	return loadAccountPlayers(acc);

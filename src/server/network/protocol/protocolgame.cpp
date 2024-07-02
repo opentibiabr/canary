@@ -4651,16 +4651,15 @@ void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
 	uint16_t itemsToSend = std::min<size_t>(shoplist.size(), std::numeric_limits<uint16_t>::max());
 	msg.add<uint16_t>(itemsToSend);
 
-	// Initialize before the loop to avoid database overload on each iteration
-	auto talkactionHidden = player->kv()->get("npc-shop-hidden-sell-item");
-	// Initialize the inventoryMap outside the loop to avoid creation on each iteration
-	std::map<uint16_t, uint16_t> inventoryMap;
-	player->getAllSaleItemIdAndCount(inventoryMap);
 	uint16_t i = 0;
 	for (const ShopBlock &shopBlock : shoplist) {
 		if (++i > itemsToSend) {
 			break;
 		}
+
+		auto talkactionHidden = player->kv()->get("npc-shop-hidden-sell-item");
+		std::map<uint16_t, uint16_t> inventoryMap;
+		player->getAllSaleItemIdAndCount(inventoryMap);
 
 		// Hidden sell items from the shop if they are not in the player's inventory
 		if (talkactionHidden && talkactionHidden->get<bool>()) {
@@ -4675,7 +4674,43 @@ void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
 	}
 
 	writeToOutputBuffer(msg);
-	g_logger().debug("ProtocolGame::sendShop - Time: {} ms, shop items: {}", brenchmark.duration(), shoplist.size());
+
+	g_logger().info("ProtocolGame::sendShop 1 - Time: {} ms, shop items: {}", brenchmark.duration(), shoplist.size());
+
+	Benchmark brenchmark2;
+	NetworkMessage msg2;
+	msg2.addByte(0x7A);
+	msg2.addString(npc->getName(), "ProtocolGame::sendShop - npc->getName()");
+
+	if (!oldProtocol) {
+		msg2.add<uint16_t>(npc->getCurrency());
+		msg2.addString(std::string()); // Currency name
+	}
+
+	i = 0;
+	// Initialize before the loop to avoid database overload on each iteration
+	auto talkactionHidden2 = player->kv()->get("npc-shop-hidden-sell-item");
+	// Initialize the inventoryMap outside the loop to avoid creation on each iteration
+	std::map<uint16_t, uint16_t> inventoryMap2;
+	player->getAllSaleItemIdAndCount(inventoryMap2);
+	for (const ShopBlock &shopBlock : shoplist) {
+		if (++i > itemsToSend) {
+			break;
+		}
+
+		// Hidden sell items from the shop if they are not in the player's inventory
+		if (talkactionHidden2 && talkactionHidden2->get<bool>()) {
+			const auto &foundItem = inventoryMap2.find(shopBlock.itemId);
+			if (foundItem == inventoryMap2.end() && shopBlock.itemSellPrice > 0 && shopBlock.itemBuyPrice == 0) {
+				AddHiddenShopItem(msg2);
+				continue;
+			}
+		}
+
+		AddShopItem(msg2, shopBlock);
+	}
+
+	g_logger().info("ProtocolGame::sendShop 2 - Time: {} ms, shop items: {}", brenchmark2.duration(), shoplist.size());
 }
 
 void ProtocolGame::sendCloseShop() {

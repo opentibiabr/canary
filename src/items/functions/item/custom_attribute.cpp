@@ -106,7 +106,7 @@ void CustomAttribute::serialize(PropWriteStream &propWriteStream) const {
 
 bool CustomAttribute::unserialize(PropStream &propStream, const std::string &function) {
 	uint8_t type;
-	if (!propStream.read<uint8_t>(type)) {
+	if (!propStream.readU8(type)) {
 		g_logger().error("[{}] Failed to read type", function);
 		return false;
 	}
@@ -123,7 +123,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 		}
 		case 2: {
 			int64_t readInt;
-			if (!propStream.read<int64_t>(readInt)) {
+			if (!propStream.readI64(readInt)) {
 				g_logger().error("[{}] failed to read int64, call function: {}", __FUNCTION__, function);
 				return false;
 			}
@@ -132,7 +132,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 		}
 		case 3: {
 			double readDouble;
-			if (!propStream.read<double>(readDouble)) {
+			if (!propStream.readDouble(readDouble)) {
 				g_logger().error("[{}] failed to read double, call function: {}", __FUNCTION__, function);
 				return false;
 			}
@@ -141,7 +141,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 		}
 		case 4: {
 			bool readBoolean;
-			if (!propStream.read<bool>(readBoolean)) {
+			if (!propStream.readBool(readBoolean)) {
 				g_logger().error("[{}] failed to read boolean, call function: {}", __FUNCTION__, function);
 				return false;
 			}

@@ -110,7 +110,7 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		ReturnValue res = RETURNVALUE_NOERROR;
-		for (const auto &callback : getCallbacksByType(eventType)) {
+		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
 			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
 				ReturnValue callbackResult = std::apply(

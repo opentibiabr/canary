@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Ah, I see you killed a lot of dangerous creatures. Here's your podium of vigour!", npc, creature)
 				local inbox = player:getStoreInbox()
 				local inboxItems = inbox:getItems()
-				if inbox and #inboxItems <= inbox:getMaxCapacity() then
+				if inbox and #inboxItems < inbox:getMaxCapacity() then
 					local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 					if decoKit then
 						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "Unwrap it in your own house to create a <" .. ItemType(38707):getName() .. ">.")

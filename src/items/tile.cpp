@@ -393,7 +393,7 @@ void Tile::onAddTileItem(std::shared_ptr<Item> item) {
 	}
 
 	if ((!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES, __FUNCTION__))
-		&& item->isCleanable()) {
+	    && item->isCleanable()) {
 		if (!this->getHouse()) {
 			g_game().addTileToClean(static_self_cast<Tile>());
 		}

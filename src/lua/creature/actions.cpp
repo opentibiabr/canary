@@ -231,11 +231,11 @@ std::shared_ptr<Action> Actions::getAction(std::shared_ptr<Item> item) {
 	}
 
 	if (auto iteratePositions = actionPositionMap.find(item->getPosition());
-		iteratePositions != actionPositionMap.end()) {
+	    iteratePositions != actionPositionMap.end()) {
 		if (std::shared_ptr<Tile> tile = item->getTile();
-			tile) {
+		    tile) {
 			if (std::shared_ptr<Player> player = item->getHoldingPlayer();
-				player && item->getTopParent() == player) {
+			    player && item->getTopParent() == player) {
 				g_logger().debug("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
 				return nullptr;
 			}
@@ -515,8 +515,8 @@ bool Action::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> it
 	// onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[Action::executeUse - Player {}, on item {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName(), item->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 player->getName(), item->getName());
 		return false;
 	}
 

@@ -202,14 +202,12 @@ private:
 	}
 
 	mysqlx::Session &m_session;
+	std::string m_query;
 	mysqlx::SqlResult m_result;
 	mysqlx::Row m_currentRow;
 	mysqlx::col_count_t m_columnCount;
-	bool m_hasMoreRows = false;
-
-	std::string m_query;
-
 	std::unordered_map<std::string, size_t> listNames;
+	bool m_hasMoreRows = false;
 
 	friend class Database;
 };

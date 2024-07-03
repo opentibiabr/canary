@@ -1197,7 +1197,6 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 }
 
 bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
-	Database &db = Database::getInstance();
 	PropWriteStream stream;
 	const auto wheelSlots = getSlots();
 	for (uint8_t i = 1; i < wheelSlots.size(); ++i) {

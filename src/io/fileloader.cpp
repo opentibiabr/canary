@@ -11,6 +11,8 @@
 
 #include "io/fileloader.hpp"
 
+#include "creatures/creatures_definitions.hpp"
+
 namespace OTB {
 	constexpr Identifier wildcard = { { '\0', '\0', '\0', '\0' } };
 

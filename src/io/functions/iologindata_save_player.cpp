@@ -20,7 +20,6 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 		return false;
 	}
 
-	const Database &db = Database::getInstance();
 	static std::vector<std::string> columns = { "player_id", "pid", "sid", "itemtype", "count", "attributes" };
 	static std::vector<std::string> primaryColumns = { "player_id", "pid", "sid" };
 
@@ -32,7 +31,6 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 	// Loop through each item in itemList
 	const auto openContainers = player->getOpenContainers();
 	for (const auto &it : itemList) {
-		int32_t pid = it.first;
 		std::shared_ptr<Item> item = it.second;
 		++runningId;
 

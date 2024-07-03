@@ -778,7 +778,6 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 				slot->disabledUntilTimeStamp = result->getI64("disabled_time");
 				slot->freeRerollTimeStamp = result->getI64("free_reroll");
 
-				unsigned long taskHuntSize;
 				auto taskHuntStream = result->getStream("monster_list");
 				PropStream propTaskHuntStream(taskHuntStream);
 				uint16_t raceId;

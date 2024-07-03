@@ -9,9 +9,11 @@
 
 #include "pch.hpp"
 
+#include "lua/functions/core/libs/db_functions.hpp"
+
+#include "database/database.hpp"
 #include "database/databasemanager.hpp"
 #include "database/databasetasks.hpp"
-#include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 
 int DBFunctions::luaDatabaseExecute(lua_State* L) {

@@ -9,8 +9,9 @@
 
 #include "pch.hpp"
 
-#include "utils/pugicast.hpp"
 #include "map/house/house.hpp"
+#include "database/database.hpp"
+#include "utils/pugicast.hpp"
 #include "io/iologindata.hpp"
 #include "game/game.hpp"
 #include "items/bed.hpp"

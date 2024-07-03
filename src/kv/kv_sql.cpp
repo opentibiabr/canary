@@ -10,6 +10,8 @@
 #include "pch.hpp"
 
 #include "kv/kv_sql.hpp"
+
+#include "lib/logging/logger.hpp"
 #include "kv/value_wrapper_proto.hpp"
 #include "utils/tools.hpp"
 
@@ -17,9 +19,12 @@
 
 #include <kv.pb.h>
 
+KVSQL::KVSQL(Logger &logger) :
+	KVStore(logger) { }
+
 std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	auto query = "SELECT `key_name`, `timestamp`, `value` FROM `kv_store` WHERE `key_name` = ?";
-	auto stmt = db.prepare(query);
+	auto stmt = g_database().prepare(query);
 	if (!stmt) {
 		return std::nullopt;
 	}
@@ -27,7 +32,7 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	if (stmt->executeWithParams(key)) {
 		auto attributes = stmt->getStream("value");
 		if (attributes.empty()) {
-			logger.error("Failed to load value for key {}", key);
+			g_logger().error("Failed to load value for key {}", key);
 			return std::nullopt;
 		}
 
@@ -41,15 +46,15 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 		}
 	}
 
-	logger.error("Failed to deserialize value for key {}", key);
+	g_logger().error("Failed to deserialize value for key {}", key);
 	return std::nullopt;
 }
 
 std::vector<std::string> KVSQL::loadPrefix(const std::string &prefix /* = ""*/) {
 	std::vector<std::string> keys;
-	std::string keySearch = db.escapeString(prefix + "%");
+	std::string keySearch = g_database().escapeString(prefix + "%");
 	auto query = fmt::format("SELECT `key_name` FROM `kv_store` WHERE `key_name` LIKE {}", keySearch);
-	auto result = db.storeQuery(query);
+	auto result = g_database().storeQuery(query);
 	if (result == nullptr) {
 		return keys;
 	}
@@ -129,4 +134,10 @@ bool KVSQL::saveAll() {
 	}
 
 	return success;
+}
+
+DBInsert KVSQL::dbUpdate() {
+	auto insert = DBInsert("INSERT INTO `kv_store` (`key_name`, `timestamp`, `value`) VALUES");
+	insert.upsert({ "key_name", "timestamp", "value" });
+	return insert;
 }

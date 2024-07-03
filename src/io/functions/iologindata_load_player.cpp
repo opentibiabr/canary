@@ -9,9 +9,11 @@
 
 #include "pch.hpp"
 
+#include "io/functions/iologindata_load_player.hpp"
+
+#include "database/database.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
-#include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
 #include "enums/object_category.hpp"
 #include "enums/account_coins.hpp"

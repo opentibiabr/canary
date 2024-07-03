@@ -10,6 +10,9 @@
 #include "pch.hpp"
 
 #include "kv/kv.hpp"
+
+#include "database/database.hpp"
+
 #include "lib/di/container.hpp"
 
 int64_t KV::lastTimestamp_ = 0;

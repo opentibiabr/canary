@@ -11,6 +11,8 @@
 
 #include "game/game.hpp"
 
+#include "database/database.hpp"
+
 #include "lua/creature/actions.hpp"
 #include "items/bed.hpp"
 #include "creatures/creature.hpp"

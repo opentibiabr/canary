@@ -11,6 +11,7 @@
 
 #include "canary_server.hpp"
 
+#include "database/database.hpp"
 #include "declarations.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/storages/storages.hpp"

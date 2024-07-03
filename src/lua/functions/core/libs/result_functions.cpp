@@ -11,6 +11,8 @@
 
 #include "lua/functions/core/libs/result_functions.hpp"
 
+#include "database/database.hpp"
+
 int ResultFunctions::luaResultGetNumber(lua_State* L) {
 	DBResult_ptr res = ScriptEnvironment::getResultByID(getNumber<uint32_t>(L, 1));
 	if (!res) {

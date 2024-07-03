@@ -9,8 +9,10 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.hpp"
 #include "database/databasemanager.hpp"
+
+#include "config/configmanager.hpp"
+#include "database/database.hpp"
 #include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.hpp"
 

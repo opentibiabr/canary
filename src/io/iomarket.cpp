@@ -10,6 +10,8 @@
 #include "pch.hpp"
 
 #include "io/iomarket.hpp"
+
+#include "database/database.hpp"
 #include "database/databasetasks.hpp"
 #include "io/iologindata.hpp"
 #include "game/game.hpp"

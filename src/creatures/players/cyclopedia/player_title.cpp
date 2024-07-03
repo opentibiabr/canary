@@ -11,6 +11,7 @@
 
 #include "player_title.hpp"
 
+#include "database/database.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"

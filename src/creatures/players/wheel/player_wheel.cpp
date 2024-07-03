@@ -11,6 +11,7 @@
 
 #include "creatures/players/wheel/player_wheel.hpp"
 
+#include "database/database.hpp"
 #include "io/io_wheel.hpp"
 
 #include "game/game.hpp"

@@ -11,6 +11,7 @@
 
 #include "io/io_bosstiary.hpp"
 
+#include "database/database.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"

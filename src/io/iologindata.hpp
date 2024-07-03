@@ -11,8 +11,9 @@
 
 #include "account/account.hpp"
 #include "creatures/players/player.hpp"
-#include "database/database.hpp"
 
+class DBResult;
+using DBResult_ptr = std::shared_ptr<DBResult>;
 using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 
 class IOLoginData {

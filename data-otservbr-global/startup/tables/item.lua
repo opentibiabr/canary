@@ -429,6 +429,11 @@ ItemUnique = {
 		itemId = 2114,
 		itemPos = { x = 33161, y = 32831, z = 10 },
 	},
+	-- Hydra Egg Quest
+	[9255] = {
+		itemId = 5676,
+		itemPos = { x = 32954, y = 32695, z = 8 },
+	},
 	-- Issavi town teleport
 	[9515] = {
 		itemId = 1949,

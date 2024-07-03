@@ -158,11 +158,12 @@ local config = {
 		formerValue = 2,
 		newValue = 3,
 	},
+	-- Hydra Egg Quest
 	[9255] = {
 		items = {
 			{ itemId = 4839 },
 		},
-		storage = Storage.HydraEggQuest,
+		storage = Storage.Quest.U7_6.HydraEggQuest,
 	},
 	[9256] = {
 		items = {

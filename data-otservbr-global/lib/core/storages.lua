@@ -105,7 +105,6 @@ Storage = {
 	-- unused ExerciseDummyExhaust = 30029,
 	ChayenneReward = 30033,
 	SwampDiggingTimeout = 30034,
-	HydraEggQuest = 30035,
 	Atrad = 30036,
 	ElementalistQuest1 = 30037,
 	ElementalistQuest2 = 30038,
@@ -2011,7 +2010,7 @@ Storage = {
 			},
 		},
 		U7_6 = { -- update 7.6 - Reserved Storages 40611 - 40760
-			HydraEgg = {},
+			HydraEggQuest = 40611,
 			TheApeCity = {},
 			TheExplorerSociety = {},
 		},

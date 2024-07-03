@@ -260,8 +260,8 @@ bool Items::loadFromXml() {
 		auto toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
 			g_logger().warn("[Items::loadFromXml] - "
-							"tag fromid: {} without toid",
-							fromIdAttribute.value());
+			                "tag fromid: {} without toid",
+			                fromIdAttribute.value());
 			continue;
 		}
 
@@ -302,12 +302,12 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 	}
 
 	if (std::string xmlName = itemNode.attribute("name").as_string();
-		!xmlName.empty() && itemType.name != xmlName) {
+	    !xmlName.empty() && itemType.name != xmlName) {
 		if (!itemType.name.empty()) {
 			if (auto it = std::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
 					return nameMapIt.second == id;
 				});
-				it != nameToItems.end()) {
+			    it != nameToItems.end()) {
 				nameToItems.erase(it);
 			}
 		}

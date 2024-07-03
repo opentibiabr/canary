@@ -2008,7 +2008,7 @@ Storage = {
 			SamsOldBackpack = {
 				SamsOldBackpackNpc = 30030,
 				SamsOldBackpackDoor = 30031,
-		},
+			},
 		},
 		U7_6 = { -- update 7.6 - Reserved Storages 40611 - 40760
 			HydraEgg = {},

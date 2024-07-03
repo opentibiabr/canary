@@ -79,7 +79,8 @@
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": {
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-          "type": "FILEPATH"
+          "type": "FILEPATH",
+          "VCPKG_TARGET_TRIPLET": "x64-linux"
         },
         "RUN_TESTS_AFTER_BUILD": "OFF",
         "BUILD_STATIC_LIBRARY": "OFF"

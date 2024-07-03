@@ -238,7 +238,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 		"skill_life_leech_amount_tries", "skill_mana_leech_chance",
 		"skill_mana_leech_chance_tries", "skill_mana_leech_amount",
 		"skill_mana_leech_amount_tries", "manashield", "max_manashield", "xpboost_value",
-		"xpboost_stamina", "quickloot_fallback", "onlinetime"
+		"xpboost_stamina", "quickloot_fallback", "onlinetime", "blessings"
 	};
 
 	std::vector<mysqlx::Value> values;

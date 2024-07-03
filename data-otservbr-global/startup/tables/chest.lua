@@ -1015,6 +1015,14 @@ ChestUnique = {
 		reward = { { 3026, 1 } },
 		storage = Storage.Quest.U7_3.SerpentineTower.WhitePearl,
 	},
+	-- Elephant Tusk Quest
+	[6113] = {
+		itemId = 2472,
+		itemPos = { x = 32922, y = 32755, z = 7 },
+		weight = 0.20,
+		reward = { { 3044, 2 } },
+		storage = Storage.Quest.U7_5.ElephantTusk,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

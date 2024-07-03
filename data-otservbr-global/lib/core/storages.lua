@@ -2006,7 +2006,7 @@ Storage = {
 			},
 		},
 		U7_5 = { -- update 7.5 - Reserved Storages 40601 - 40610
-			ElephantTusk = {},
+			ElephantTusk = 40601,
 			SamsOldBackpack = {},
 		},
 		U7_6 = { -- update 7.6 - Reserved Storages 40611 - 40760

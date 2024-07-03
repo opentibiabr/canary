@@ -541,14 +541,14 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 	return tile;
 }
 
-bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
-	return getPathMatching(creature, creature->getPosition(), dirList, pathCondition, fpp);
-}
 
-bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
-	static int_fast32_t allNeighbors[8][2] = {
-		{ -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 }, { -1, 1 }
-	};
+bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp)  {
+	Position pos = creature->getPosition();
+	Position endPos;
+
+	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
+
+	int32_t bestMatch = 0;
 
 	static int_fast32_t dirNeighbors[8][5][2] = {
 		{ { -1, 0 }, { 0, 1 }, { 1, 0 }, { 1, 1 }, { -1, 1 } },
@@ -560,16 +560,17 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 		{ { 0, 1 }, { 1, 0 }, { 1, -1 }, { 1, 1 }, { -1, 1 } },
 		{ { -1, 0 }, { 0, 1 }, { -1, -1 }, { 1, 1 }, { -1, 1 } }
 	};
+	static int_fast32_t allNeighbors[8][2] = {
+		{ -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 }, { -1, 1 }
+	};
 
-	Position pos = startPos;
-	Position endPos;
+	const Position startPos = pos;
 
-	AStarNodes nodes(pos.x, pos.y);
-
-	int32_t bestMatch = 0;
+	const int_fast32_t sX = std::abs(targetPos.getX() - pos.getX());
+	const int_fast32_t sY = std::abs(targetPos.getY() - pos.getY());
 
 	AStarNode* found = nullptr;
-	while (fpp.maxSearchDist != 0 || nodes.getClosedNodes() < 100) {
+	do {
 		AStarNode* n = nodes.getBestNode();
 		if (!n) {
 			if (found) {
@@ -601,7 +602,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 				} else {
 					neighbors = *dirNeighbors[DIRECTION_EAST];
 				}
-			} else if (!fpp.allowDiagonal || offset_x == 0) {
+			} else if (offset_x == 0) {
 				if (offset_y == -1) {
 					neighbors = *dirNeighbors[DIRECTION_NORTH];
 				} else {
@@ -618,7 +619,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			} else {
 				neighbors = *dirNeighbors[DIRECTION_SOUTHEAST];
 			}
-			dirCount = fpp.allowDiagonal ? 5 : 3;
+			dirCount = 5;
 		} else {
 			dirCount = 8;
 			neighbors = *allNeighbors;
@@ -629,6 +630,180 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			pos.x = x + *neighbors++;
 			pos.y = y + *neighbors++;
 
+			int_fast32_t extraCost;
+			AStarNode* neighborNode = nodes.getNodeByPosition(pos.x, pos.y);
+			if (neighborNode) {
+				extraCost = neighborNode->c;
+			} else {
+				const auto& tile = canWalkTo(creature, pos);
+				if (!tile) {
+					continue;
+				}
+				extraCost = AStarNodes::getTileWalkCost(creature, tile);
+			}
+
+			// The cost (g) for this neighbor
+			const int_fast32_t cost = AStarNodes::getMapWalkCost(n, pos);
+			const int_fast32_t newf = f + cost + extraCost;
+			if (neighborNode) {
+				if (neighborNode->f <= newf) {
+					// The node on the closed/open list is cheaper than this one
+					continue;
+				}
+				neighborNode->f = newf;
+				neighborNode->parent = n;
+				nodes.openNode(neighborNode);
+			} else {
+				// Does not exist in the open/closed list, create a new node
+				const int_fast32_t dX = std::abs(targetPos.getX() - pos.getX());
+				const int_fast32_t dY = std::abs(targetPos.getY() - pos.getY());
+				if (!nodes.createOpenNode(n, pos.x, pos.y, newf, ((dX - sX) << 3) + ((dY - sY) << 3) + (std::max(dX, dY) << 3), extraCost)) {
+					if (found) {
+						break;
+					}
+					return false;
+				}
+			}
+		}
+		nodes.closeNode(n);
+	} while (nodes.getClosedNodes() < 100);
+	if (!found) {
+		return false;
+	}
+
+	int_fast32_t prevx = endPos.x;
+	int_fast32_t prevy = endPos.y;
+
+	dirList.reserve(128);
+
+	found = found->parent;
+	while (found) {
+		pos.x = found->x;
+		pos.y = found->y;
+
+		int_fast32_t dx = pos.getX() - prevx;
+		int_fast32_t dy = pos.getY() - prevy;
+
+		prevx = pos.x;
+		prevy = pos.y;
+		if (dx == 1) {
+			if (dy == 1) {
+				dirList.emplace_back(DIRECTION_NORTHWEST);
+			} else if (dy == -1) {
+				dirList.emplace_back(DIRECTION_SOUTHWEST);
+			} else {
+				dirList.emplace_back(DIRECTION_WEST);
+			}
+		} else if (dx == -1) {
+			if (dy == 1) {
+				dirList.emplace_back(DIRECTION_NORTHEAST);
+			} else if (dy == -1) {
+				dirList.emplace_back(DIRECTION_SOUTHEAST);
+			} else {
+				dirList.emplace_back(DIRECTION_EAST);
+			}
+		} else if (dy == 1) {
+			dirList.emplace_back(DIRECTION_NORTH);
+		} else if (dy == -1) {
+			dirList.emplace_back(DIRECTION_SOUTH);
+		}
+		found = found->parent;
+	}
+	return true;
+}
+
+	bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	return getPathMatching(creature, creature->getPosition(), dirList, pathCondition, fpp);
+}
+
+bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	Position pos = creature->getPosition();
+	Position endPos;
+
+	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
+
+	int32_t bestMatch = 0;
+
+	static int_fast32_t dirNeighbors[8][5][2] = {
+		{ { -1, 0 }, { 0, 1 }, { 1, 0 }, { 1, 1 }, { -1, 1 } },
+		{ { -1, 0 }, { 0, 1 }, { 0, -1 }, { -1, -1 }, { -1, 1 } },
+		{ { -1, 0 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 } },
+		{ { 0, 1 }, { 1, 0 }, { 0, -1 }, { 1, -1 }, { 1, 1 } },
+		{ { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 } },
+		{ { -1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { -1, 1 } },
+		{ { 0, 1 }, { 1, 0 }, { 1, -1 }, { 1, 1 }, { -1, 1 } },
+		{ { -1, 0 }, { 0, 1 }, { -1, -1 }, { 1, 1 }, { -1, 1 } }
+	};
+
+	static int_fast32_t allNeighbors[8][2] = {
+		{ -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 }, { -1, 1 }
+	};
+
+	const Position startPos = pos;
+
+	const int_fast32_t sX = std::abs(targetPos.getX() - pos.getX());
+	const int_fast32_t sY = std::abs(targetPos.getY() - pos.getY());
+
+	AStarNode* found = nullptr;
+	do {
+		AStarNode* n = nodes.getBestNode();
+		if (!n) {
+			if (found) {
+				break;
+			}
+			return false;
+		}
+
+		const int_fast32_t x = n->x;
+		const int_fast32_t y = n->y;
+		pos.x = x;
+		pos.y = y;
+		if (pathCondition(startPos, pos, fpp, bestMatch)) {
+			found = n;
+			endPos = pos;
+			if (bestMatch == 0) {
+				break;
+			}
+		}
+
+		uint_fast32_t dirCount;
+		int_fast32_t* neighbors;
+		if (n->parent) {
+			const int_fast32_t offset_x = n->parent->x - x;
+			const int_fast32_t offset_y = n->parent->y - y;
+			if (offset_y == 0) {
+				if (offset_x == -1) {
+					neighbors = *dirNeighbors[DIRECTION_WEST];
+				} else {
+					neighbors = *dirNeighbors[DIRECTION_EAST];
+				}
+			} else if (offset_x == 0) {
+				if (offset_y == -1) {
+					neighbors = *dirNeighbors[DIRECTION_NORTH];
+				} else {
+					neighbors = *dirNeighbors[DIRECTION_SOUTH];
+				}
+			} else if (offset_y == -1) {
+				if (offset_x == -1) {
+					neighbors = *dirNeighbors[DIRECTION_NORTHWEST];
+				} else {
+					neighbors = *dirNeighbors[DIRECTION_NORTHEAST];
+				}
+			} else if (offset_x == -1) {
+				neighbors = *dirNeighbors[DIRECTION_SOUTHWEST];
+			} else {
+				neighbors = *dirNeighbors[DIRECTION_SOUTHEAST];
+			}
+			dirCount = 5;
+		} else {
+			dirCount = 8;
+			neighbors = *allNeighbors;
+		}
+
+		const int_fast32_t f = n->f;
+		for (uint_fast32_t i = 0; i < dirCount; ++i) {
+			pos.x = x + *neighbors++;
+			pos.y = y + *neighbors++;
 			if (fpp.maxSearchDist != 0 && (Position::getDistanceX(startPos, pos) > fpp.maxSearchDist || Position::getDistanceY(startPos, pos) > fpp.maxSearchDist)) {
 				continue;
 			}
@@ -637,33 +812,34 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 				continue;
 			}
 
+			int_fast32_t extraCost;
 			AStarNode* neighborNode = nodes.getNodeByPosition(pos.x, pos.y);
-
-			const bool withoutCreature = creature == nullptr;
-			const auto &tile = neighborNode || withoutCreature ? getTile(pos.x, pos.y, pos.z) : canWalkTo(creature, pos);
-
-			if (!tile || (!neighborNode && withoutCreature && tile->hasFlag(TILESTATE_BLOCKSOLID))) {
-				continue;
+			if (neighborNode) {
+				extraCost = neighborNode->c;
+			} else {
+				const auto &tile = Map::canWalkTo(creature, pos);
+				if (!tile) {
+					continue;
+				}
+				extraCost = AStarNodes::getTileWalkCost(creature, tile);
 			}
 
 			// The cost (g) for this neighbor
-			const int_fast32_t cost = AStarNodes::getMapWalkCost(n, pos, withoutCreature);
-			const int_fast32_t extraCost = AStarNodes::getTileWalkCost(creature, tile);
+			const int_fast32_t cost = AStarNodes::getMapWalkCost(n, pos);
 			const int_fast32_t newf = f + cost + extraCost;
-
 			if (neighborNode) {
 				if (neighborNode->f <= newf) {
 					// The node on the closed/open list is cheaper than this one
 					continue;
 				}
-
 				neighborNode->f = newf;
 				neighborNode->parent = n;
 				nodes.openNode(neighborNode);
 			} else {
-				// Does not exist in the open/closed list, create a std::make_shared<node>
-				neighborNode = nodes.createOpenNode(n, pos.x, pos.y, newf);
-				if (!neighborNode) {
+				// Does not exist in the open/closed list, create a new node
+				const int_fast32_t dX = std::abs(targetPos.getX() - pos.getX());
+				const int_fast32_t dY = std::abs(targetPos.getY() - pos.getY());
+				if (!nodes.createOpenNode(n, pos.x, pos.y, newf, ((dX - sX) << 3) + ((dY - sY) << 3) + (std::max(dX, dY) << 3), extraCost)) {
 					if (found) {
 						break;
 					}
@@ -671,9 +847,8 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 				}
 			}
 		}
-
 		nodes.closeNode(n);
-	}
+	} while (fpp.maxSearchDist != 0 || nodes.getClosedNodes() < 100);
 
 	if (!found) {
 		return false;
@@ -682,39 +857,44 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 	int_fast32_t prevx = endPos.x;
 	int_fast32_t prevy = endPos.y;
 
+	dirList.reserve(128);
+
 	found = found->parent;
 	while (found) {
 		pos.x = found->x;
 		pos.y = found->y;
 
-		const int_fast32_t dx = pos.getX() - prevx;
-		const int_fast32_t dy = pos.getY() - prevy;
+		int_fast32_t dx = pos.getX() - prevx;
+		int_fast32_t dy = pos.getY() - prevy;
 
 		prevx = pos.x;
 		prevy = pos.y;
-
-		if (dx == 1 && dy == 1) {
-			dirList.push_front(DIRECTION_NORTHWEST);
-		} else if (dx == -1 && dy == 1) {
-			dirList.push_front(DIRECTION_NORTHEAST);
-		} else if (dx == 1 && dy == -1) {
-			dirList.push_front(DIRECTION_SOUTHWEST);
-		} else if (dx == -1 && dy == -1) {
-			dirList.push_front(DIRECTION_SOUTHEAST);
-		} else if (dx == 1) {
-			dirList.push_front(DIRECTION_WEST);
+		if (dx == 1) {
+			if (dy == 1) {
+				dirList.emplace_back(DIRECTION_NORTHWEST);
+			} else if (dy == -1) {
+				dirList.emplace_back(DIRECTION_SOUTHWEST);
+			} else {
+				dirList.emplace_back(DIRECTION_WEST);
+			}
 		} else if (dx == -1) {
-			dirList.push_front(DIRECTION_EAST);
+			if (dy == 1) {
+				dirList.emplace_back(DIRECTION_NORTHEAST);
+			} else if (dy == -1) {
+				dirList.emplace_back(DIRECTION_SOUTHEAST);
+			} else {
+				dirList.emplace_back(DIRECTION_EAST);
+			}
 		} else if (dy == 1) {
-			dirList.push_front(DIRECTION_NORTH);
+			dirList.emplace_back(DIRECTION_NORTH);
 		} else if (dy == -1) {
-			dirList.push_front(DIRECTION_SOUTH);
+			dirList.emplace_back(DIRECTION_SOUTH);
 		}
-
 		found = found->parent;
 	}
 	return true;
 }
+
 
 uint32_t Map::clean() {
 	uint64_t start = OTSYS_TIME();

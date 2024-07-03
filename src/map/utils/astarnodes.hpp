@@ -15,23 +15,23 @@ class Tile;
 
 struct AStarNode {
 	AStarNode* parent;
-	int_fast32_t f;
+	int_fast32_t f, g, c;
 	uint16_t x, y;
 };
 
 class AStarNodes {
 public:
-	AStarNodes(uint32_t x, uint32_t y);
+	AStarNodes(uint32_t x, uint32_t y, int_fast32_t extraCost);
 
-	AStarNode* createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_fast32_t f);
+	bool createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_fast32_t f, int_fast32_t heuristic, int_fast32_t extraCost);
 	AStarNode* getBestNode();
-	void closeNode(const AStarNode* node);
-	void openNode(const AStarNode* node);
-	int_fast32_t getClosedNodes() const;
+	void closeNode(AStarNode* node);
+	void openNode(AStarNode* node);
+	int32_t getClosedNodes() const;
 	AStarNode* getNodeByPosition(uint32_t x, uint32_t y);
 
-	static int_fast32_t getMapWalkCost(AStarNode* node, const Position &neighborPos, bool preferDiagonal = false);
-	static int_fast32_t getTileWalkCost(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile);
+	static int_fast32_t getMapWalkCost(AStarNode* node, const Position &neighborPos);
+	static int_fast32_t getTileWalkCost(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile>& tile);
 
 private:
 	static constexpr int32_t MAX_NODES = 512;
@@ -39,9 +39,15 @@ private:
 	static constexpr int32_t MAP_PREFERDIAGONALWALKCOST = 14;
 	static constexpr int32_t MAP_DIAGONALWALKCOST = 25;
 
+#if defined(__SSE2__)
+	alignas(16) uint32_t nodesTable[MAX_NODES];
+	alignas(64) int32_t calculatedNodes[MAX_NODES];
 	AStarNode nodes[MAX_NODES];
+#else
+	AStarNode nodes[MAX_NODES];
+	uint32_t nodesTable[MAX_NODES];
+#endif
+	int32_t closedNodes;
+	int32_t curNode;
 	bool openNodes[MAX_NODES];
-	phmap::flat_hash_map<uint32_t, AStarNode*> nodeTable;
-	size_t curNode;
-	int_fast32_t closedNodes;
 };

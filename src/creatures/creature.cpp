@@ -814,7 +814,9 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 					player->sendLootMessage(lootMessage.str());
 				}
 
-				stdext::arraylist<Direction> dirList(128);
+				std::vector<Direction> dirList;
+				dirList.reserve(128);
+
 				FindPathParams fpp;
 				fpp.minTargetDist = 0;
 				fpp.maxTargetDist = 1;
@@ -1074,7 +1076,8 @@ void Creature::goToFollowCreature() {
 	}
 
 	bool executeOnFollow = true;
-	stdext::arraylist<Direction> listDir(128);
+	std::vector<Direction> listDir;
+	listDir.reserve(128);
 
 	FindPathParams fpp;
 	getPathSearchParams(followCreature, fpp);
@@ -1097,7 +1100,7 @@ void Creature::goToFollowCreature() {
 		hasFollowPath = getPathTo(followCreature->getPosition(), listDir, fpp);
 	}
 
-	startAutoWalk(listDir.data());
+	startAutoWalk(listDir);
 
 	if (executeOnFollow) {
 		onFollowCreatureComplete(followCreature);
@@ -1733,12 +1736,15 @@ bool Creature::isInvisible() const {
 		!= conditions.end();
 }
 
-bool Creature::getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, const FindPathParams &fpp) {
+bool Creature::getPathTo(const Position &targetPos, std::vector<Direction> &dirList, const FindPathParams &fpp) {
 	metrics::method_latency measure(__METHOD_NAME__);
-	return g_game().map.getPathMatching(getCreature(), dirList, FrozenPathingConditionCall(targetPos), fpp);
+	if (fpp.maxSearchDist != 0 || fpp.keepDistance) {
+		return g_game().map.getPathMatchingCond(getCreature(), targetPos, dirList, FrozenPathingConditionCall(targetPos), fpp);
+	}
+	return g_game().map.getPathMatching(getCreature(), targetPos, dirList, FrozenPathingConditionCall(targetPos), fpp);
 }
 
-bool Creature::getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 7*/) {
+bool Creature::getPathTo(const Position &targetPos, std::vector<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 7*/) {
 	FindPathParams fpp;
 	fpp.fullPathSearch = fullPathSearch;
 	fpp.maxSearchDist = maxSearchDist;

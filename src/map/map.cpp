@@ -541,13 +541,10 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 	return tile;
 }
 
-bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
-	Position pos = creature->getPosition();
-	Position endPos;
-
-	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
-
-	int32_t bestMatch = 0;
+bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &__targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	static int_fast32_t allNeighbors[8][2] = {
+		{ -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 }, { -1, 1 }
+	};
 
 	static int_fast32_t dirNeighbors[8][5][2] = {
 		{ { -1, 0 }, { 0, 1 }, { 1, 0 }, { 1, 1 }, { -1, 1 } },
@@ -559,11 +556,18 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 		{ { 0, 1 }, { 1, 0 }, { 1, -1 }, { 1, 1 }, { -1, 1 } },
 		{ { -1, 0 }, { 0, 1 }, { -1, -1 }, { 1, 1 }, { -1, 1 } }
 	};
-	static int_fast32_t allNeighbors[8][2] = {
-		{ -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 }, { -1, 1 }
-	};
 
-	const Position startPos = pos;
+	const bool withoutCreature = creature == nullptr;
+
+	Position pos = withoutCreature ? __targetPos : creature->getPosition();
+	Position endPos;
+
+	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
+
+	int32_t bestMatch = 0;
+
+	const auto &startPos = pos;
+	const auto &targetPos = withoutCreature ? pathCondition.getTargetPos() : __targetPos;
 
 	const int_fast32_t sX = std::abs(targetPos.getX() - pos.getX());
 	const int_fast32_t sY = std::abs(targetPos.getY() - pos.getY());
@@ -634,7 +638,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			if (neighborNode) {
 				extraCost = neighborNode->c;
 			} else {
-				const auto &tile = canWalkTo(creature, pos);
+				const auto &tile = withoutCreature ? getTile(pos.x, pos.y, pos.z) : canWalkTo(creature, pos);
 				if (!tile) {
 					continue;
 				}

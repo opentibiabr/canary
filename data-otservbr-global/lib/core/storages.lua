@@ -2006,8 +2006,8 @@ Storage = {
 		U7_5 = { -- update 7.5 - Reserved Storages 40601 - 40610
 			ElephantTusk = 40601,
 			SamsOldBackpack = {
-				SamsOldBackpackNpc = 30030,
-				SamsOldBackpackDoor = 30031,
+				SamsOldBackpackNpc = 40602,
+				SamsOldBackpackDoor = 40603,
 		},
 		},
 		U7_6 = { -- update 7.6 - Reserved Storages 40611 - 40760

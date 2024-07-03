@@ -153,7 +153,7 @@ public:
 			m_result = stmt.execute();
 			m_currentRow = m_result.fetchOne();
 			if (m_currentRow.isNull()) {
-				g_logger().debug("[{}] no results for query: {}", __METHOD_NAME__, m_query);
+				g_logger().debug("[{}] no results for query: {}", __FUNCTION__, m_query);
 				return false;
 			}
 			m_hasMoreRows = !m_currentRow.isNull();

@@ -241,86 +241,90 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 		"xpboost_stamina", "quickloot_fallback", "onlinetime"
 	};
 
+	std::vector<mysqlx::Value> values;
+	values.reserve(columns.size());
+
+	values.push_back(mysqlx::Value(player->name));
+	values.push_back(mysqlx::Value(player->level));
+	values.push_back(mysqlx::Value(player->group->id));
+	values.push_back(mysqlx::Value(player->getVocationId()));
+	values.push_back(mysqlx::Value(player->health));
+	values.push_back(mysqlx::Value(player->healthMax));
+	values.push_back(mysqlx::Value(player->experience));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookBody));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookFeet));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookHead));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookLegs));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookType));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookAddons));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookMountBody));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookMountFeet));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookMountHead));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookMountLegs));
+	values.push_back(mysqlx::Value(player->defaultOutfit.lookFamiliarsType));
+	values.push_back(mysqlx::Value(player->isDailyReward));
+	values.push_back(mysqlx::Value(player->magLevel));
+	values.push_back(mysqlx::Value(player->mana));
+	values.push_back(mysqlx::Value(player->manaMax));
+	values.push_back(mysqlx::Value(player->manaSpent));
+	values.push_back(mysqlx::Value(player->soul));
+	values.push_back(mysqlx::Value(player->town->getID()));
+	values.push_back(mysqlx::Value(player->loginPosition.getX()));
+	values.push_back(mysqlx::Value(player->loginPosition.getY()));
+	values.push_back(mysqlx::Value(player->loginPosition.getZ()));
+	values.push_back(mysqlx::Value(player->getPreyCards()));
+	values.push_back(mysqlx::Value(player->getTaskHuntingPoints()));
+	values.push_back(mysqlx::Value(player->getBossPoints()));
+	values.push_back(mysqlx::Value(player->getForgeDusts()));
+	values.push_back(mysqlx::Value(player->getForgeDustLevel()));
+	values.push_back(mysqlx::Value(player->isRandomMounted()));
+	values.push_back(mysqlx::Value(player->capacity / 100));
+	values.push_back(mysqlx::Value(enumToValue(player->sex)));
+	values.push_back(mysqlx::Value(player->lastLoginSaved));
+	values.push_back(mysqlx::Value(player->lastIP));
+	// Serializing and pushing attributes stream
 	const auto [attributes, attributesSize] = propWriteStream.getStream();
-	std::vector<mysqlx::Value> values = {
-		mysqlx::Value(player->name),
-		mysqlx::Value(player->level),
-		mysqlx::Value(player->group->id),
-		mysqlx::Value(player->getVocationId()),
-		mysqlx::Value(player->health),
-		mysqlx::Value(player->healthMax),
-		mysqlx::Value(player->experience),
-		mysqlx::Value(player->defaultOutfit.lookBody),
-		mysqlx::Value(player->defaultOutfit.lookFeet),
-		mysqlx::Value(player->defaultOutfit.lookHead),
-		mysqlx::Value(player->defaultOutfit.lookLegs),
-		mysqlx::Value(player->defaultOutfit.lookType),
-		mysqlx::Value(player->defaultOutfit.lookAddons),
-		mysqlx::Value(player->defaultOutfit.lookMountBody),
-		mysqlx::Value(player->defaultOutfit.lookMountFeet),
-		mysqlx::Value(player->defaultOutfit.lookMountHead),
-		mysqlx::Value(player->defaultOutfit.lookMountLegs),
-		mysqlx::Value(player->defaultOutfit.lookFamiliarsType),
-		mysqlx::Value(player->isDailyReward),
-		mysqlx::Value(player->magLevel),
-		mysqlx::Value(player->mana),
-		mysqlx::Value(player->manaMax),
-		mysqlx::Value(player->manaSpent),
-		mysqlx::Value(player->soul),
-		mysqlx::Value(player->town->getID()),
-		mysqlx::Value(player->loginPosition.getX()),
-		mysqlx::Value(player->loginPosition.getY()),
-		mysqlx::Value(player->loginPosition.getZ()),
-		mysqlx::Value(player->getPreyCards()),
-		mysqlx::Value(player->getTaskHuntingPoints()),
-		mysqlx::Value(player->getBossPoints()),
-		mysqlx::Value(player->getForgeDusts()),
-		mysqlx::Value(player->getForgeDustLevel()),
-		mysqlx::Value(player->isRandomMounted()),
-		mysqlx::Value(player->capacity / 100),
-		mysqlx::Value(enumToValue(player->sex)),
-		mysqlx::Value(player->lastLoginSaved),
-		mysqlx::Value(player->lastIP),
-		mysqlx::Value(mysqlx::bytes(reinterpret_cast<const uint8_t*>(attributes), attributesSize)),
-		mysqlx::Value(skullTime),
-		mysqlx::Value(enumToValue(skull)),
-		mysqlx::Value(player->getLastLogout()),
-		mysqlx::Value(player->bankBalance),
-		mysqlx::Value(player->getOfflineTrainingTime() / 1000),
-		mysqlx::Value(player->getOfflineTrainingSkill()),
-		mysqlx::Value(player->getStaminaMinutes()),
-		mysqlx::Value(player->skills[SKILL_FIST].level),
-		mysqlx::Value(player->skills[SKILL_FIST].tries),
-		mysqlx::Value(player->skills[SKILL_CLUB].level),
-		mysqlx::Value(player->skills[SKILL_CLUB].tries),
-		mysqlx::Value(player->skills[SKILL_SWORD].level),
-		mysqlx::Value(player->skills[SKILL_SWORD].tries),
-		mysqlx::Value(player->skills[SKILL_AXE].level),
-		mysqlx::Value(player->skills[SKILL_AXE].tries),
-		mysqlx::Value(player->skills[SKILL_DISTANCE].level),
-		mysqlx::Value(player->skills[SKILL_DISTANCE].tries),
-		mysqlx::Value(player->skills[SKILL_SHIELD].level),
-		mysqlx::Value(player->skills[SKILL_SHIELD].tries),
-		mysqlx::Value(player->skills[SKILL_FISHING].level),
-		mysqlx::Value(player->skills[SKILL_FISHING].tries),
-		mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_CHANCE].level),
-		mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_CHANCE].tries),
-		mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_DAMAGE].level),
-		mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_DAMAGE].tries),
-		mysqlx::Value(player->skills[SKILL_LIFE_LEECH_CHANCE].level),
-		mysqlx::Value(player->skills[SKILL_LIFE_LEECH_CHANCE].tries),
-		mysqlx::Value(player->skills[SKILL_LIFE_LEECH_AMOUNT].level),
-		mysqlx::Value(player->skills[SKILL_LIFE_LEECH_AMOUNT].tries),
-		mysqlx::Value(player->skills[SKILL_MANA_LEECH_CHANCE].level),
-		mysqlx::Value(player->skills[SKILL_MANA_LEECH_CHANCE].tries),
-		mysqlx::Value(player->skills[SKILL_MANA_LEECH_AMOUNT].level),
-		mysqlx::Value(player->skills[SKILL_MANA_LEECH_AMOUNT].tries),
-		mysqlx::Value(player->getManaShield()),
-		mysqlx::Value(player->getMaxManaShield()),
-		mysqlx::Value(player->getXpBoostPercent()),
-		mysqlx::Value(player->getXpBoostTime()),
-		mysqlx::Value(player->quickLootFallbackToMainContainer ? 1 : 0),
-	};
+	values.push_back(mysqlx::Value(mysqlx::bytes(reinterpret_cast<const uint8_t*>(attributes), attributesSize)));
+
+	values.push_back(mysqlx::Value(skullTime));
+	values.push_back(mysqlx::Value(enumToValue(skull)));
+	values.push_back(mysqlx::Value(player->getLastLogout()));
+	values.push_back(mysqlx::Value(player->bankBalance));
+	values.push_back(mysqlx::Value(player->getOfflineTrainingTime() / 1000));
+	values.push_back(mysqlx::Value(player->getOfflineTrainingSkill()));
+	values.push_back(mysqlx::Value(player->getStaminaMinutes()));
+	// Adding player skills
+	values.push_back(mysqlx::Value(player->skills[SKILL_FIST].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_FIST].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_CLUB].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_CLUB].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_SWORD].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_SWORD].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_AXE].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_AXE].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_DISTANCE].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_DISTANCE].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_SHIELD].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_SHIELD].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_FISHING].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_FISHING].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_CHANCE].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_CHANCE].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_DAMAGE].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_CRITICAL_HIT_DAMAGE].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_LIFE_LEECH_CHANCE].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_LIFE_LEECH_CHANCE].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_LIFE_LEECH_AMOUNT].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_LIFE_LEECH_AMOUNT].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_MANA_LEECH_CHANCE].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_MANA_LEECH_CHANCE].tries));
+	values.push_back(mysqlx::Value(player->skills[SKILL_MANA_LEECH_AMOUNT].level));
+	values.push_back(mysqlx::Value(player->skills[SKILL_MANA_LEECH_AMOUNT].tries));
+	values.push_back(mysqlx::Value(player->getManaShield()));
+	values.push_back(mysqlx::Value(player->getMaxManaShield()));
+	values.push_back(mysqlx::Value(player->getXpBoostPercent()));
+	values.push_back(mysqlx::Value(player->getXpBoostTime()));
+	values.push_back(mysqlx::Value(player->quickLootFallbackToMainContainer ? 1 : 0));
 
 	if (!player->isOffline()) {
 		auto now = std::chrono::system_clock::now();

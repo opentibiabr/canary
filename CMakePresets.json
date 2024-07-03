@@ -81,7 +81,8 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "RUN_TESTS_AFTER_BUILD": "OFF"
+        "RUN_TESTS_AFTER_BUILD": "OFF",
+        "BUILD_STATIC_LIBRARY": "OFF"
       },
       "condition": {
         "type": "equals",
@@ -98,6 +99,7 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_LOG": "ON",
         "SPEED_UP_BUILD_UNITY": "OFF",
+        "BUILD_STATIC_LIBRARY": "OFF",
         "ASAN_ENABLED": "ON"
       }
     },

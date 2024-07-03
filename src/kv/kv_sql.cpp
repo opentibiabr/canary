@@ -26,27 +26,30 @@ std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	auto query = "SELECT `key_name`, `timestamp`, `value` FROM `kv_store` WHERE `key_name` = ?";
 	auto stmt = g_database().prepare(query);
 	if (!stmt) {
+		g_logger().error("Failed to prepare statement for key: '{}'", key);
 		return std::nullopt;
 	}
 
 	if (stmt->executeWithParams(key)) {
 		auto attributes = stmt->getStream("value");
 		if (attributes.empty()) {
-			g_logger().error("Failed to load value for key {}", key);
+			g_logger().error("Failed to load value for key: '{}'", key);
 			return std::nullopt;
 		}
 
 		auto timestamp = stmt->getU64("timestamp");
 		Canary::protobuf::kv::ValueWrapper protoValue;
-		if (protoValue.ParseFromArray(attributes.data(), static_cast<int>(attributes.size()))) {
-			ValueWrapper valueWrapper;
-			valueWrapper = ProtoSerializable::fromProto(protoValue, timestamp);
-			g_logger().trace("[{}] loaded value for key {}, valueSize {}, timeStamp {}", __METHOD_NAME__, key, attributes.size(), timestamp);
-			return valueWrapper;
+		if (!protoValue.ParseFromArray(attributes.data(), static_cast<int>(attributes.size()))) {
+			g_logger().error("Failed to deserialize value for key {}", key);
+			return std::nullopt;
 		}
+
+		ValueWrapper valueWrapper;
+		valueWrapper = ProtoSerializable::fromProto(protoValue, timestamp);
+		g_logger().trace("[{}] loaded data for key: '{}', valueSize: '{}', timeStamp: '{}'", __METHOD_NAME__, key, attributes.size(), timestamp);
+		return valueWrapper;
 	}
 
-	g_logger().error("Failed to deserialize value for key {}", key);
 	return std::nullopt;
 }
 

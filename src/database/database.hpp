@@ -153,10 +153,10 @@ public:
 			m_result = stmt.execute();
 			m_currentRow = m_result.fetchOne();
 			if (m_currentRow.isNull()) {
-				g_logger().error("No data returned for the query: {}", m_query);
+				g_logger().debug("[{}] no results for query: {}", __METHOD_NAME__, m_query);
 				return false;
 			}
-			m_hasMoreRows = m_result.hasData();
+			m_hasMoreRows = !m_currentRow.isNull();
 			initializeColumnMap();
 			return true;
 		} catch (const mysqlx::Error &err) {

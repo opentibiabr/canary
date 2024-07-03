@@ -116,10 +116,6 @@ namespace InternalDatabase {
 
 std::shared_ptr<DBResult> Database::prepare(const std::string &query) {
 	auto prepared = std::make_shared<DBResult>(*m_databaseSession, query);
-	if (!prepared->hasNext()) {
-		return nullptr;
-	}
-
 	return prepared;
 }
 

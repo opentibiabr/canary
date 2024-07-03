@@ -111,7 +111,7 @@ QualifierAlignment: Left
 ReferenceAlignment: Right
 ReflowComments:  true
 RemoveBracesLLVM: false
-SortIncludes:    false
+SortIncludes: Never
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
@@ -138,4 +138,4 @@ StatementMacros:
   - QT_REQUIRE_VERSION
 TabWidth: 4
 UseCRLF: false
-UseTab: true
+UseTab: AlignWithSpaces

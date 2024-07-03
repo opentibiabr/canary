@@ -133,7 +133,7 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 	// The parameter "- 1" because self is a parameter aswell, which we want to skip L 1 (UserData)
 	// isNumber(L, 2) is for skip the itemId
 	if (int parameters = lua_gettop(L) - 1;
-		parameters > 1 && isNumber(L, 2)) {
+	    parameters > 1 && isNumber(L, 2)) {
 		for (int i = 0; i < parameters; ++i) {
 			action->setPositionsVector(getPosition(L, 2 + i));
 		}

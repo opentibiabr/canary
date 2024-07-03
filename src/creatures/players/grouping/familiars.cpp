@@ -77,7 +77,7 @@ std::shared_ptr<Familiar> Familiars::getFamiliarByLookType(uint16_t vocation, ui
 	if (auto it = std::find_if(familiars[vocation].begin(), familiars[vocation].end(), [lookType](auto familiar_it) {
 			return familiar_it->lookType == lookType;
 		});
-		it != familiars[vocation].end()) {
+	    it != familiars[vocation].end()) {
 		return *it;
 	}
 	return nullptr;

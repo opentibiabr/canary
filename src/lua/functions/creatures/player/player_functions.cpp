@@ -407,7 +407,7 @@ int PlayerFunctions::luaPlayerGetPreyExperiencePercentage(lua_State* L) {
 	// player:getPreyExperiencePercentage(raceId)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
 		if (const std::unique_ptr<PreySlot> &slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
-			slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
+		    slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
 			lua_pushnumber(L, static_cast<lua_Number>(100 + slot->bonusPercentage));
 		} else {
 			lua_pushnumber(L, 100);
@@ -457,7 +457,7 @@ int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	// player:getPreyLootPercentage(raceid)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
 		if (const std::unique_ptr<PreySlot> &slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
-			slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
+		    slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
 			lua_pushnumber(L, slot->bonusPercentage);
 		} else {
 			lua_pushnumber(L, 0);
@@ -472,7 +472,7 @@ int PlayerFunctions::luaPlayerisMonsterPrey(lua_State* L) {
 	// player:isMonsterPrey(raceid)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1)) {
 		if (const std::unique_ptr<PreySlot> &slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
-			slot && slot->isOccupied()) {
+		    slot && slot->isOccupied()) {
 			pushBoolean(L, true);
 		} else {
 			pushBoolean(L, false);
@@ -486,7 +486,7 @@ int PlayerFunctions::luaPlayerisMonsterPrey(lua_State* L) {
 int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
 	// get: player:preyThirdSlot() set: player:preyThirdSlot(bool)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
-		const auto &slot = player->getPreySlotById(PreySlot_Three)) {
+	    const auto &slot = player->getPreySlotById(PreySlot_Three)) {
 		if (!slot) {
 			lua_pushnil(L);
 		} else if (lua_gettop(L) == 1) {
@@ -513,7 +513,7 @@ int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
 int PlayerFunctions::luaPlayerTaskThirdSlot(lua_State* L) {
 	// get: player:taskHuntingThirdSlot() set: player:taskHuntingThirdSlot(bool)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
-		const auto &slot = player->getTaskHuntingSlotById(PreySlot_Three)) {
+	    const auto &slot = player->getTaskHuntingSlotById(PreySlot_Three)) {
 		if (lua_gettop(L) == 1) {
 			pushBoolean(L, slot->state != PreyTaskDataState_Locked);
 		} else {
@@ -3574,7 +3574,7 @@ int PlayerFunctions::luaPlayerBosstiaryCooldownTimer(lua_State* L) {
 int PlayerFunctions::luaPlayerGetBosstiaryLevel(lua_State* L) {
 	// player:getBosstiaryLevel(name)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
-		player) {
+	    player) {
 		const auto mtype = g_monsters().getMonsterType(getString(L, 2));
 		if (mtype) {
 			uint32_t bossId = mtype->info.raceid;
@@ -3596,7 +3596,7 @@ int PlayerFunctions::luaPlayerGetBosstiaryLevel(lua_State* L) {
 int PlayerFunctions::luaPlayerGetBosstiaryKills(lua_State* L) {
 	// player:getBosstiaryKills(name)
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
-		player) {
+	    player) {
 		const auto mtype = g_monsters().getMonsterType(getString(L, 2));
 		if (mtype) {
 			uint32_t bossId = mtype->info.raceid;
@@ -3618,7 +3618,7 @@ int PlayerFunctions::luaPlayerGetBosstiaryKills(lua_State* L) {
 int PlayerFunctions::luaPlayerAddBosstiaryKill(lua_State* L) {
 	// player:addBosstiaryKill(name[, amount = 1])
 	if (std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
-		player) {
+	    player) {
 		const auto mtype = g_monsters().getMonsterType(getString(L, 2));
 		if (mtype) {
 			g_ioBosstiary().addBosstiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));

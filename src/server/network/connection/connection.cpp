@@ -241,7 +241,7 @@ void Connection::parsePacket(const std::error_code &error) {
 			// Check packet checksum
 			uint32_t checksum;
 			if (int32_t len = msg.getLength() - msg.getBufferPosition() - CHECKSUM_LENGTH;
-				len > 0) {
+			    len > 0) {
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition() + CHECKSUM_LENGTH, len);
 			} else {
 				checksum = 0;

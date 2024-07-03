@@ -83,8 +83,8 @@ bool TalkAction::executeSay(std::shared_ptr<Player> player, const std::string &w
 	// onSay(player, words, param, type)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[TalkAction::executeSay - Player {} words {}] "
-						 "Call stack overflow. Too many lua script calls being nested. Script name {}",
-						 player->getName(), getWords(), getScriptInterface()->getLoadingScriptName());
+		                 "Call stack overflow. Too many lua script calls being nested. Script name {}",
+		                 player->getName(), getWords(), getScriptInterface()->getLoadingScriptName());
 		return false;
 	}
 

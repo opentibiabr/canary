@@ -283,7 +283,7 @@ local function processItemInboxPurchase(player, name, id)
 
 	local inbox = player:getStoreInbox()
 	local inboxItems = inbox:getItems()
-	if inbox and #inboxItems <= inbox:getMaxCapacity() then
+	if inbox and #inboxItems < inbox:getMaxCapacity() then
 		local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 		if decoKit then
 			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item with the Walter Jaeger.\nUnwrap it in your own house to create a <" .. name .. ">.")

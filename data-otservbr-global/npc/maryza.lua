@@ -49,6 +49,27 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function endConversationWithDelay(npcHandler, npc, creature)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
+end
+
+local function greetCallback(npc, creature, message)
+	local player = Player(creature)
+	local playerId = player:getId()
+
+	if not MsgContains(message, "hi maryza") then
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
+
+	npcHandler:say("Welcome to the Jolly Axeman, |PLAYERNAME|. Have a good time and eat some food!", npc, creature)
+	npcHandler:setInteraction(npc, creature)
+
+	return true
+end
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -81,13 +102,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
--- Greeting message
-keywordHandler:addGreetKeyword({ "maryza" }, { npcHandler = npcHandler, text = "Welcome to the Jolly Axeman, |PLAYERNAME|. Have a good time and eat some food!" })
+-- Greeting
+keywordHandler:addCustomGreetKeyword({ "hi maryza" }, greetCallback, { npcHandler = npcHandler })
 
-npcHandler:setMessage(MESSAGE_GREET, "Welcome to the Jolly Axeman, |PLAYERNAME|. Have a good time and eat some food!")
+
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 npcConfig.shop = {

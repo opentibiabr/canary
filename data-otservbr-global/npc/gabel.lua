@@ -45,6 +45,37 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function endConversationWithDelay(npcHandler, npc, creature)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
+end
+
+local function greetCallback(npc, creature, message)
+	local player = Player(creature)
+	local playerId = player:getId()
+
+	if not MsgContains(message, "djanni'hah") then
+		npcHandler:say("Whoa! A human! This is no place for you, |PLAYERNAME|. Go and play somewhere else.", npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
+
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Start) == 1 then
+		npcHandler:say({
+			"Hahahaha! ...",
+			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
+		}, npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
+
+	npcHandler:say("Welcome, human |PLAYERNAME|, to our humble abode.", npc, creature)
+	npcHandler:setInteraction(npc, creature)
+
+	return true
+end
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -98,6 +129,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Daraman shall bless you and all humans! You have done us all a huge service! Soon, this awful war will be over! ...",
 				"Know, that from now on you are considered one of us and are welcome to trade with Haroun and Nah'bob whenever you want to!",
+				"Farewell, stranger. May Uman open your minds and your hearts to Daraman's wisdom!",
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03, 3)
 			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.DoorToEfreetTerritory, 1)
@@ -145,7 +177,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting
-keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "Welcome, human |PLAYERNAME|, to our humble abode." })
+keywordHandler:addCustomGreetKeyword({ "djanni'hah" }, greetCallback, { npcHandler = npcHandler })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, stranger. May Uman open your minds and your hearts to Daraman's wisdom!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell, stranger. May Uman open your minds and your hearts to Daraman's wisdom!")

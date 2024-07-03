@@ -30,6 +30,8 @@ LevelDoorAction = {
 			-- The Djinn War - The Efreet
 			{ x = 33050, y = 32622, z = 6 },
 			{ x = 33050, y = 32623, z = 6 },
+			{ x = 33102, y = 32537, z = 6 },
+			{ x = 33103, y = 32537, z = 6 },
 		},
 	},
 	-- Doors for level 50

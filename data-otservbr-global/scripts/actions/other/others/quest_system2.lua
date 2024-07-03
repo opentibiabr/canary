@@ -154,7 +154,7 @@ local config = {
 		items = {
 			{ itemId = 3397 },
 		},
-		storage = Storage.SamsOldBackpack,
+		storage = Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc,
 		formerValue = 2,
 		newValue = 3,
 	},

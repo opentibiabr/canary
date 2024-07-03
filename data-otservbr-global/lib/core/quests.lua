@@ -2437,12 +2437,12 @@ if not Quests then
 		},
 		[13] = {
 			name = "Sam's Old Backpack",
-			startStorageId = Storage.SamsOldBackpack,
+			startStorageId = Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Dwarven Armor Quest",
-					storageId = Storage.SamsOldBackpack,
+					storageId = Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc,
 					missionId = 10187,
 					startValue = 1,
 					endValue = 3,

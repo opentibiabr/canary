@@ -103,8 +103,6 @@ Storage = {
 	-- unused TrainerRoom = 30027,
 	-- unused NpcSpawn = 30028,
 	-- unused ExerciseDummyExhaust = 30029,
-	SamsOldBackpack = 30030,
-	SamsOldBackpackDoor = 30031,
 	ChayenneReward = 30033,
 	SwampDiggingTimeout = 30034,
 	HydraEggQuest = 30035,
@@ -2007,7 +2005,10 @@ Storage = {
 		},
 		U7_5 = { -- update 7.5 - Reserved Storages 40601 - 40610
 			ElephantTusk = 40601,
-			SamsOldBackpack = {},
+			SamsOldBackpack = {
+				SamsOldBackpackNpc = 30030,
+				SamsOldBackpackDoor = 30031,
+		},
 		},
 		U7_6 = { -- update 7.6 - Reserved Storages 40611 - 40760
 			HydraEgg = {},

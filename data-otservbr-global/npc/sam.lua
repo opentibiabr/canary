@@ -89,7 +89,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Sorry, but without the permission of Gregor I cannot help you with this matter.", npc, creature)
 		end
 	elseif MsgContains(message, "old backpack") or MsgContains(message, "backpack") then
-		if player:getStorageValue(Storage.SamsOldBackpack) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc) < 1 then
 			npcHandler:say("What? Are you telling me you found my old adventurer's backpack that I lost years ago??", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -113,7 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"Thank you very much! This brings back good old memories! Please, as a reward, travel to Kazordoon and ask my old friend Kroox to provide you a special dwarven armor. ...",
 					"I will mail him about you immediately. Just tell him, his old buddy Sam is sending you.",
 				}, npc, creature)
-				player:setStorageValue(Storage.SamsOldBackpack, 1)
+				player:setStorageValue(Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc, 1)
 				player:addAchievement("Backpack Tourist")
 			else
 				npcHandler:say("You don't have it...", npc, creature)

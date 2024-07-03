@@ -41,7 +41,7 @@ QuestDoorAction = {
 		itemPos = { { x = 32223, y = 31890, z = 14 } },
 	},
 	-- Sams old backpack door
-	[Storage.SamsOldBackpackDoor] = {
+	[Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackDoor] = {
 		itemId = false,
 		itemPos = { { x = 32455, y = 31967, z = 14 } },
 	},

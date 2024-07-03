@@ -44,11 +44,11 @@ public:
 
 	bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
 
-	bool retryQuery(const std::string_view query, int retries);
-	bool executeQuery(const std::string_view query);
+	bool retryQuery(const std::string &query, int retries);
+	bool executeQuery(const std::string &query);
 
-	DBResult_ptr storeQuery(const std::string_view query);
-	std::shared_ptr<DBResult> prepare(const std::string_view query);
+	DBResult_ptr storeQuery(const std::string &query);
+	std::shared_ptr<DBResult> prepare(const std::string &query);
 
 	std::string escapeString(const std::string &s) const;
 
@@ -136,9 +136,14 @@ constexpr auto g_database = Database::getInstance;
 
 class DBResult {
 public:
-	explicit DBResult(mysqlx::SqlResult &&result, const std::string_view query, mysqlx::Session &session);
-	explicit DBResult(mysqlx::Session &session, const std::string_view query) :
-		m_session(session), m_query(query.data()) { }
+	explicit DBResult(mysqlx::SqlResult &&result, const std::string &query, mysqlx::Session &session);
+	explicit DBResult(mysqlx::Session &session, const std::string &query);
+
+	~DBResult();
+
+	// Non copyable
+	DBResult(const DBResult &) = delete;
+	DBResult &operator=(const DBResult &) = delete;
 
 	template <typename... Args>
 	bool executeWithParams(Args &&... args) {
@@ -164,12 +169,6 @@ public:
 		}
 	}
 
-	~DBResult();
-
-	// Non copyable
-	DBResult(const DBResult &) = delete;
-	DBResult &operator=(const DBResult &) = delete;
-
 	uint8_t getU8(const std::string &columnName) const;
 	uint16_t getU16(const std::string &columnName) const;
 	uint32_t getU32(const std::string &columnName) const;
@@ -185,8 +184,8 @@ public:
 	double getDouble(const std::string &columnName) const;
 	bool getBool(const std::string &columnName) const;
 
-	std::string getString(const std::string_view columnName) const;
-	const std::vector<uint8_t> getStream(const std::string_view columnName) const;
+	std::string getString(const std::string &columnName) const;
+	const std::vector<uint8_t> getStream(const std::string &columnName) const;
 
 	size_t countResults();
 	bool hasNext() const;
@@ -217,7 +216,7 @@ private:
  */
 class DBInsert {
 public:
-	explicit DBInsert(std::string query);
+	explicit DBInsert(const std::string &query);
 	void upsert(const std::vector<std::string> &columns);
 	bool addRow(const std::string_view row);
 	bool addRow(std::ostringstream &row);

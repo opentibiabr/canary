@@ -43,7 +43,7 @@
  */
 namespace InternalDatabase {
 	template <typename T>
-	T getNumber(const std::string_view columnName, const std::string_view query, const std::unordered_map<std::string, size_t> &listNames, const mysqlx::Row &currentRow, bool hasMoreRows) {
+	T getNumber(const std::string &columnName, const std::string &query, const std::unordered_map<std::string, size_t> &listNames, const mysqlx::Row &currentRow, bool hasMoreRows) {
 		const auto it = listNames.find(columnName.data());
 		if (it == listNames.end()) {
 			g_logger().error("[DBResult::getNumber] Column '{}' doesn't exist in the result set", columnName.data());
@@ -114,61 +114,13 @@ namespace InternalDatabase {
 	}
 }
 
-std::shared_ptr<DBResult> Database::prepare(const std::string_view query) {
+std::shared_ptr<DBResult> Database::prepare(const std::string &query) {
 	auto prepared = std::make_shared<DBResult>(*m_databaseSession, query);
 	if (!prepared->hasNext()) {
 		return nullptr;
 	}
 
 	return prepared;
-}
-
-uint8_t DBResult::getU8(const std::string &columnName) const {
-	return InternalDatabase::getNumber<uint8_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-uint16_t DBResult::getU16(const std::string &columnName) const {
-	return InternalDatabase::getNumber<uint16_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-uint32_t DBResult::getU32(const std::string &columnName) const {
-	return InternalDatabase::getNumber<uint32_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-uint64_t DBResult::getU64(const std::string &columnName) const {
-	return InternalDatabase::getNumber<uint64_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-int8_t DBResult::getI8(const std::string &columnName) const {
-	return InternalDatabase::getNumber<int8_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-int16_t DBResult::getI16(const std::string &columnName) const {
-	return InternalDatabase::getNumber<int16_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-int32_t DBResult::getI32(const std::string &columnName) const {
-	return InternalDatabase::getNumber<int32_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-int64_t DBResult::getI64(const std::string &columnName) const {
-	return InternalDatabase::getNumber<int64_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-time_t DBResult::getTime(const std::string &columnName) const {
-	return InternalDatabase::getNumber<time_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-float DBResult::getFloat(const std::string &columnName) const {
-	return InternalDatabase::getNumber<float>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-double DBResult::getDouble(const std::string &columnName) const {
-	return InternalDatabase::getNumber<double>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
-}
-
-bool DBResult::getBool(const std::string &columnName) const {
-	return InternalDatabase::getNumber<bool>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
 Database::~Database() {
@@ -268,7 +220,7 @@ bool Database::commit() {
 	}
 }
 
-bool Database::retryQuery(const std::string_view query, int retries) {
+bool Database::retryQuery(const std::string &query, int retries) {
 	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return false;
@@ -296,7 +248,7 @@ bool Database::retryQuery(const std::string_view query, int retries) {
 	return false;
 }
 
-bool Database::executeQuery(const std::string_view query) {
+bool Database::executeQuery(const std::string &query) {
 	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return false;
@@ -330,7 +282,7 @@ bool Database::executeQuery(const std::string_view query) {
 	return false;
 }
 
-DBResult_ptr Database::storeQuery(const std::string_view query) {
+DBResult_ptr Database::storeQuery(const std::string &query) {
 	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return nullptr;
@@ -566,7 +518,7 @@ std::string Database::escapeBlob(const char* s, uint32_t length) const {
 	return oss.str();
 }
 
-DBResult::DBResult(mysqlx::SqlResult &&result, const std::string_view query, mysqlx::Session &session) :
+DBResult::DBResult(mysqlx::SqlResult &&result, const std::string &query, mysqlx::Session &session) :
 	m_result(std::move(result)), m_hasMoreRows(result.hasData()), m_query(std::move(query.data())), m_session(session) {
 	// Fetch the first row to start processing
 	if (m_hasMoreRows) {
@@ -583,14 +535,64 @@ DBResult::DBResult(mysqlx::SqlResult &&result, const std::string_view query, mys
 	initializeColumnMap();
 }
 
+DBResult::DBResult(mysqlx::Session &session, const std::string &query) :
+	m_session(session), m_query(query) { }
+
 DBResult::~DBResult() = default;
 
-std::string DBResult::getString(const std::string_view columnName) const {
-	const auto &stringData = columnName.data();
-	auto it = listNames.find(stringData);
+uint8_t DBResult::getU8(const std::string &columnName) const {
+	return InternalDatabase::getNumber<uint8_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+uint16_t DBResult::getU16(const std::string &columnName) const {
+	return InternalDatabase::getNumber<uint16_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+uint32_t DBResult::getU32(const std::string &columnName) const {
+	return InternalDatabase::getNumber<uint32_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+uint64_t DBResult::getU64(const std::string &columnName) const {
+	return InternalDatabase::getNumber<uint64_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+int8_t DBResult::getI8(const std::string &columnName) const {
+	return InternalDatabase::getNumber<int8_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+int16_t DBResult::getI16(const std::string &columnName) const {
+	return InternalDatabase::getNumber<int16_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+int32_t DBResult::getI32(const std::string &columnName) const {
+	return InternalDatabase::getNumber<int32_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+int64_t DBResult::getI64(const std::string &columnName) const {
+	return InternalDatabase::getNumber<int64_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+time_t DBResult::getTime(const std::string &columnName) const {
+	return InternalDatabase::getNumber<time_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+float DBResult::getFloat(const std::string &columnName) const {
+	return InternalDatabase::getNumber<float>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+double DBResult::getDouble(const std::string &columnName) const {
+	return InternalDatabase::getNumber<double>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+bool DBResult::getBool(const std::string &columnName) const {
+	return InternalDatabase::getNumber<bool>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
+}
+
+std::string DBResult::getString(const std::string &columnName) const {
+	auto it = listNames.find(columnName);
 	if (it == listNames.end()) {
 		g_logger().error("[DBResult::getString] query: {}", m_query);
-		g_logger().error("Column '{}' doesn't exist in the result set", stringData);
+		g_logger().error("Column '{}' doesn't exist in the result set", columnName);
 		return {};
 	}
 
@@ -603,34 +605,33 @@ std::string DBResult::getString(const std::string_view columnName) const {
 	const auto &columnData = m_currentRow[it->second];
 	if (columnData.isNull()) {
 		g_logger().debug("[DBResult::getString] query: {}", m_query);
-		g_logger().debug("Column '{}' is null", stringData);
+		g_logger().debug("Column '{}' is null", columnName);
 		return nullptr;
 	}
 
 	g_logger().trace("[DBResult::getString] query: {}", m_query);
-	g_logger().trace("Column '{}' type: {}", stringData, magic_enum::enum_name(columnData.getType()));
+	g_logger().trace("Column '{}' type: {}", columnName, magic_enum::enum_name(columnData.getType()));
 	try {
 		auto string = columnData.get<std::string>();
 		if (string.empty()) {
 			g_logger().error("[DBResult::getString] query: {}", m_query);
-			g_logger().error("Column '{}' is empty", stringData);
+			g_logger().error("Column '{}' is empty", columnName);
 			return {};
 		}
 
 		return string;
 	} catch (std::exception &e) {
 		g_logger().error("[DBResult::getString] query: {}", m_query);
-		g_logger().error("[DBResult::getString] error converting column '{}' to string: {}", stringData, e.what());
+		g_logger().error("[DBResult::getString] error converting column '{}' to string: {}", columnName, e.what());
 	}
 	return {};
 }
 
-const std::vector<uint8_t> DBResult::getStream(const std::string_view columnName) const {
-	const auto &stringData = columnName.data();
-	auto it = listNames.find(stringData);
+const std::vector<uint8_t> DBResult::getStream(const std::string &columnName) const {
+	auto it = listNames.find(columnName);
 	if (it == listNames.end()) {
 		g_logger().error("[DBResult::getStream] query: {}", m_query);
-		g_logger().error("Column '{}' doesn't exist in the result set", stringData);
+		g_logger().error("Column '{}' doesn't exist in the result set", columnName);
 		return {};
 	}
 
@@ -643,7 +644,7 @@ const std::vector<uint8_t> DBResult::getStream(const std::string_view columnName
 	const auto &columnData = m_currentRow[it->second];
 	if (columnData.isNull()) {
 		g_logger().debug("[DBResult::getStream] query: {}", m_query);
-		g_logger().debug("Column '{}' is null", stringData);
+		g_logger().debug("Column '{}' is null", columnName);
 		return {};
 	}
 
@@ -651,12 +652,12 @@ const std::vector<uint8_t> DBResult::getStream(const std::string_view columnName
 		mysqlx::bytes blobData = columnData.get<mysqlx::bytes>();
 		std::vector<uint8_t> data(blobData.begin(), blobData.end());
 
-		g_logger().trace("[DBResult::getStream] Column '{}' type: {}", stringData, magic_enum::enum_name(columnData.getType()));
+		g_logger().trace("[DBResult::getStream] Column '{}' type: {}", columnName, magic_enum::enum_name(columnData.getType()));
 		g_logger().trace("[DBResult::getStream] Successfully retrieved blob data.");
 		return data;
 	} catch (const std::exception &e) {
 		g_logger().error("[DBResult::getStream] query: {}", m_query);
-		g_logger().error("Error getting stream data for column '{}': {}", stringData, e.what());
+		g_logger().error("Error getting stream data for column '{}': {}", columnName, e.what());
 		return {};
 	}
 }
@@ -679,12 +680,12 @@ bool DBResult::next() {
 	return m_hasMoreRows;
 }
 
-DBInsert::DBInsert(std::string insertQuery) :
+DBInsert::DBInsert(const std::string &insertQuery) :
 	query(std::move(insertQuery)) {
 	this->length = this->query.length();
 }
 
-bool DBInsert::addRow(std::string_view row) {
+bool DBInsert::addRow(const std::string_view row) {
 	const size_t rowLength = row.length();
 	length += rowLength;
 	auto max_packet_size = g_database().getMaxPacketSize();

@@ -26,7 +26,7 @@ class Zone;
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;
 
-class TileItemVector : private ItemVector {
+class TileItemVector : public ItemVector {
 public:
 	using ItemVector::at;
 	using ItemVector::begin;

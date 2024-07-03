@@ -45,7 +45,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-
 local function endConversationWithDelay(npcHandler, npc, creature)
 	addEvent(function()
 		npcHandler:unGreet(npc, creature)

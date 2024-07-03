@@ -103,7 +103,7 @@ std::shared_ptr<Group> Groups::getGroup(uint16_t id) const {
 	if (auto it = std::find_if(groups_vector.begin(), groups_vector.end(), [id](auto group_it) {
 			return group_it->id == id;
 		});
-		it != groups_vector.end()) {
+	    it != groups_vector.end()) {
 		return *it;
 	}
 	return nullptr;

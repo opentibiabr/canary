@@ -386,7 +386,7 @@ void Game::loadBoostedCreature() {
 	const auto result = db.storeQuery("SELECT * FROM `boosted_creature`");
 	if (!result) {
 		g_logger().warn("[Game::loadBoostedCreature] - "
-						"Failed to detect boosted creature database. (CODE 01)");
+		                "Failed to detect boosted creature database. (CODE 01)");
 		return;
 	}
 
@@ -423,15 +423,15 @@ void Game::loadBoostedCreature() {
 
 	if (selectedMonster.raceId == 0) {
 		g_logger().warn("[Game::loadBoostedCreature] - "
-						"It was not possible to generate a new boosted creature->");
+		                "It was not possible to generate a new boosted creature->");
 		return;
 	}
 
 	const auto monsterType = g_monsters().getMonsterType(selectedMonster.name);
 	if (!monsterType) {
 		g_logger().warn("[Game::loadBoostedCreature] - "
-						"It was not possible to generate a new boosted creature-> Monster '{}' not found.",
-						selectedMonster.name);
+		                "It was not possible to generate a new boosted creature-> Monster '{}' not found.",
+		                selectedMonster.name);
 		return;
 	}
 
@@ -451,7 +451,7 @@ void Game::loadBoostedCreature() {
 
 	if (!db.executeQuery(query)) {
 		g_logger().warn("[Game::loadBoostedCreature] - "
-						"Failed to detect boosted creature database. (CODE 02)");
+		                "Failed to detect boosted creature database. (CODE 02)");
 	}
 }
 
@@ -1703,7 +1703,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 			uint8_t itemStackPos = fromStackPos;
 
 			if (fromPos.x != 0xFFFF && Position::areInRange<1, 1>(mapFromPos, playerPos)
-				&& !Position::areInRange<1, 1, 0>(mapFromPos, walkPos)) {
+			    && !Position::areInRange<1, 1, 0>(mapFromPos, walkPos)) {
 				// need to pickup the item first
 				std::shared_ptr<Item> moveItem = nullptr;
 
@@ -2093,20 +2093,20 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 
 	std::shared_ptr<Item> quiver = toCylinder->getItem();
 	if (quiver && quiver->isQuiver()
-		&& quiver->getHoldingPlayer()
-		&& quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+	    && quiver->getHoldingPlayer()
+	    && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
 	} else {
 		quiver = fromCylinder->getItem();
 		if (quiver && quiver->isQuiver()
-			&& quiver->getHoldingPlayer()
-			&& quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+		    && quiver->getHoldingPlayer()
+		    && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 			quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
 		}
 	}
 
 	if (SoundEffect_t soundEffect = item->getMovementSound(toCylinder);
-		toCylinder && soundEffect != SoundEffect_t::SILENCE) {
+	    toCylinder && soundEffect != SoundEffect_t::SILENCE) {
 		if (toCylinder->getContainer() && actor && actor->getPlayer() && (toCylinder->getContainer()->isInsideDepot(true) || toCylinder->getContainer()->getHoldingPlayer())) {
 			actor->getPlayer()->sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, SourceEffect_t::OWN);
 		} else {
@@ -2239,8 +2239,8 @@ ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, std::sha
 	}
 
 	if (addedItem && addedItem->isQuiver()
-		&& addedItem->getHoldingPlayer()
-		&& addedItem->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == addedItem) {
+	    && addedItem->getHoldingPlayer()
+	    && addedItem->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == addedItem) {
 		addedItem->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, addedItem);
 	}
 
@@ -2300,8 +2300,8 @@ ReturnValue Game::internalRemoveItem(std::shared_ptr<Item> item, int32_t count /
 
 	std::shared_ptr<Item> quiver = cylinder->getItem();
 	if (quiver && quiver->isQuiver()
-		&& quiver->getHoldingPlayer()
-		&& quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+	    && quiver->getHoldingPlayer()
+	    && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
 	}
 
@@ -2760,8 +2760,8 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 
 			std::shared_ptr<Item> quiver = cylinder->getItem();
 			if (quiver && quiver->isQuiver()
-				&& quiver->getHoldingPlayer()
-				&& quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+			    && quiver->getHoldingPlayer()
+			    && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 				quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
 			}
 			item->startDecaying();
@@ -2772,8 +2772,8 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 
 	std::shared_ptr<Item> quiver = cylinder->getItem();
 	if (quiver && quiver->isQuiver()
-		&& quiver->getHoldingPlayer()
-		&& quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+	    && quiver->getHoldingPlayer()
+	    && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
 	}
 
@@ -3699,7 +3699,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 			mustReloadDepotSearch = true;
 		} else {
 			if (auto targetThing = internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
-				targetThing && targetThing->getItem() && targetThing->getItem()->isInsideDepot(true)) {
+			    targetThing && targetThing->getItem() && targetThing->getItem()->isInsideDepot(true)) {
 				mustReloadDepotSearch = true;
 			}
 		}
@@ -4235,7 +4235,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->setCustomAttribute("LookFeet", static_cast<int64_t>(outfit.lookFeet));
 		item->setCustomAttribute("LookAddons", static_cast<int64_t>(outfit.lookAddons));
 	} else if (auto pastLookType = item->getCustomAttribute("PastLookType");
-			   pastLookType && pastLookType->getInteger() > 0) {
+	           pastLookType && pastLookType->getInteger() > 0) {
 		item->removeCustomAttribute("LookType");
 		item->removeCustomAttribute("PastLookType");
 	}
@@ -4247,7 +4247,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->setCustomAttribute("LookMountLegs", static_cast<int64_t>(outfit.lookMountLegs));
 		item->setCustomAttribute("LookMountFeet", static_cast<int64_t>(outfit.lookMountFeet));
 	} else if (auto pastLookMount = item->getCustomAttribute("PastLookMount");
-			   pastLookMount && pastLookMount->getInteger() > 0) {
+	           pastLookMount && pastLookMount->getInteger() > 0) {
 		item->removeCustomAttribute("LookMount");
 		item->removeCustomAttribute("PastLookMount");
 	}
@@ -5496,8 +5496,8 @@ void Game::playerLootAllCorpses(std::shared_ptr<Player> player, const Position &
 			}
 
 			if (!tileCorpse->isRewardCorpse()
-				&& tileCorpse->getCorpseOwner() != 0
-				&& !player->canOpenCorpse(tileCorpse->getCorpseOwner())) {
+			    && tileCorpse->getCorpseOwner() != 0
+			    && !player->canOpenCorpse(tileCorpse->getCorpseOwner())) {
 				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 				g_logger().debug("Player {} cannot loot corpse from id {} in position {}", player->getName(), tileItem->getID(), tileItem->getPosition().toString());
 				continue;
@@ -7120,9 +7120,9 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 		if (!damage.extension && attackerMonster && targetPlayer) {
 			// Charm rune (target as player)
 			if (charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(targetPlayer, g_monsters().getMonsterTypeByRaceId(attackerMonster->getRaceId()));
-				activeCharm != CHARM_NONE && activeCharm != CHARM_CLEANSE) {
+			    activeCharm != CHARM_NONE && activeCharm != CHARM_CLEANSE) {
 				if (const auto charm = g_iobestiary().getBestiaryCharm(activeCharm);
-					charm->type == CHARM_DEFENSIVE && charm->chance > normal_random(0, 100) && g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value))) {
+				    charm->type == CHARM_DEFENSIVE && charm->chance > normal_random(0, 100) && g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value))) {
 					return false; // Dodge charm
 				}
 			}
@@ -7508,7 +7508,7 @@ void Game::applyCharmRune(
 		return;
 	}
 	if (charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(attackerPlayer, g_monsters().getMonsterTypeByRaceId(targetMonster->getRaceId()));
-		activeCharm != CHARM_NONE) {
+	    activeCharm != CHARM_NONE) {
 		const auto charm = g_iobestiary().getBestiaryCharm(activeCharm);
 		int8_t chance = charm->id == CHARM_CRIPPLE ? charm->chance : charm->chance + attackerPlayer->getCharmChanceModifier();
 		g_logger().debug("charm chance: {}, base: {}, bonus: {}", chance, charm->chance, attackerPlayer->getCharmChanceModifier());
@@ -7534,7 +7534,7 @@ void Game::applyManaLeech(
 	// Void charm rune
 	if (targetMonster) {
 		if (uint16_t playerCharmRaceidVoid = attackerPlayer->parseRacebyCharm(CHARM_VOID, false, 0);
-			playerCharmRaceidVoid != 0 && playerCharmRaceidVoid == targetMonster->getRace()) {
+		    playerCharmRaceidVoid != 0 && playerCharmRaceidVoid == targetMonster->getRace()) {
 			if (const auto charm = g_iobestiary().getBestiaryCharm(CHARM_VOID)) {
 				manaSkill += charm->percent;
 			}
@@ -7565,7 +7565,7 @@ void Game::applyLifeLeech(
 	}
 	if (targetMonster) {
 		if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0);
-			playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
+		    playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
 			if (const auto lifec = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 				lifeSkill += lifec->percent;
 			}
@@ -9523,7 +9523,7 @@ void Game::playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selec
 	uint32_t bossIdSlot = player->getSlotBossId(slotId);
 
 	if (uint32_t boostedBossId = g_ioBosstiary().getBoostedBossId();
-		selectedBossId == 0 && bossIdSlot != boostedBossId) {
+	    selectedBossId == 0 && bossIdSlot != boostedBossId) {
 		uint8_t removeTimes = player->getRemoveTimes();
 		uint32_t removePrice = g_ioBosstiary().calculteRemoveBoss(removeTimes);
 		g_game().removeMoney(player, removePrice, 0, true);
@@ -9559,7 +9559,7 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		if (stdext::arraylist<Direction> listDir(128);
-			player->getPathTo(pos, listDir, 0, 1, true, false)) {
+		    player->getPathTo(pos, listDir, 0, 1, true, false)) {
 			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId, pos] { playerBrowseField(playerId, pos); }, "Game::playerBrowseField"
@@ -9597,7 +9597,7 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	const auto [podiumVisible, monsterVisible] = podiumAndMonsterVisible;
 	bool changeTentuglyName = false;
 	if (auto monsterOutfit = mType->info.outfit;
-		(monsterOutfit.lookType != 0 || monsterOutfit.lookTypeEx != 0) && monsterVisible) {
+	    (monsterOutfit.lookType != 0 || monsterOutfit.lookTypeEx != 0) && monsterVisible) {
 		// "Tantugly's Head" boss have to send other looktype to the podium
 		if (monsterOutfit.lookTypeEx == 35105) {
 			monsterOutfit.lookTypeEx = 39003;
@@ -9659,7 +9659,7 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		if (stdext::arraylist<Direction> listDir(128);
-			player->getPathTo(pos, listDir, 0, 1, true, true)) {
+		    player->getPathTo(pos, listDir, 0, 1, true, true)) {
 			g_dispatcher().addEvent([this, playerId = player->getID(), listDir = listDir.data()] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId, pos, stackPos, itemId] {
@@ -10031,8 +10031,8 @@ void Game::sendUpdateCreature(std::shared_ptr<Creature> creature) {
 
 uint32_t Game::makeInfluencedMonster() {
 	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT, __FUNCTION__);
-		// Condition
-		forgeableMonsters.empty() || influencedMonsters.size() >= influencedLimit) {
+	    // Condition
+	    forgeableMonsters.empty() || influencedMonsters.size() >= influencedLimit) {
 		return 0;
 	}
 
@@ -10112,8 +10112,8 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 	}
 
 	if (auto fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT, __FUNCTION__);
-		// Condition
-		forgeableMonsters.empty() || fiendishMonsters.size() >= fiendishLimit) {
+	    // Condition
+	    forgeableMonsters.empty() || fiendishMonsters.size() >= fiendishLimit) {
 		return 0;
 	}
 
@@ -10217,8 +10217,8 @@ bool Game::removeForgeMonster(uint32_t id, ForgeClassifications_t monsterForgeCl
 
 bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 	if (auto find = influencedMonsters.find(id);
-		// Condition
-		find != influencedMonsters.end()) {
+	    // Condition
+	    find != influencedMonsters.end()) {
 		influencedMonsters.erase(find);
 
 		if (create) {
@@ -10234,8 +10234,8 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 
 bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 	if (auto find = fiendishMonsters.find(id);
-		// Condition
-		find != fiendishMonsters.end()) {
+	    // Condition
+	    find != fiendishMonsters.end()) {
 		fiendishMonsters.erase(find);
 		checkForgeEventId(id);
 
@@ -10286,8 +10286,8 @@ void Game::createFiendishMonsters() {
 		}
 
 		if (auto ret = makeFiendishMonster();
-			// Condition
-			ret == 0) {
+		    // Condition
+		    ret == 0) {
 			return;
 		}
 
@@ -10305,8 +10305,8 @@ void Game::createInfluencedMonsters() {
 		}
 
 		if (auto ret = makeInfluencedMonster();
-			// If condition
-			ret == 0) {
+		    // If condition
+		    ret == 0) {
 			return;
 		}
 
@@ -10325,8 +10325,8 @@ void Game::checkForgeEventId(uint32_t monsterId) {
 bool Game::addInfluencedMonster(std::shared_ptr<Monster> monster) {
 	if (monster && monster->canBeForgeMonster()) {
 		if (auto maxInfluencedMonsters = static_cast<uint32_t>(g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT, __FUNCTION__));
-			// If condition
-			(influencedMonsters.size() + 1) > maxInfluencedMonsters) {
+		    // If condition
+		    (influencedMonsters.size() + 1) > maxInfluencedMonsters) {
 			return false;
 		}
 

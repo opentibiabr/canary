@@ -284,7 +284,7 @@ std::shared_ptr<Item> Player::getQuiverAmmoOfType(const ItemType &it) const {
 
 	std::shared_ptr<Item> quiver = inventory[CONST_SLOT_RIGHT];
 	for (std::shared_ptr<Container> container = quiver->getContainer();
-		 auto ammoItem : container->getItemList()) {
+	     auto ammoItem : container->getItemList()) {
 		if (ammoItem->getAmmoType() == it.ammoType) {
 			if (level >= Item::items[ammoItem->getID()].minReqLevel) {
 				return ammoItem;
@@ -1896,32 +1896,39 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 	}
 }
 
-bool Player::openShopWindow(std::shared_ptr<Npc> npc) {
+bool Player::openShopWindow(std::shared_ptr<Npc> npc, const std::vector<ShopBlock> &shopItems) {
+	Benchmark brenchmark;
 	if (!npc) {
 		g_logger().error("[Player::openShopWindow] - Npc is wrong or nullptr");
 		return false;
 	}
+
+	if (npc->isShopPlayer(getGUID())) {
+		g_logger().debug("[Player::openShopWindow] - Player {} is already in shop window", getName());
+		return false;
+	}
+
+	npc->addShopPlayer(getGUID(), shopItems);
 
 	setShopOwner(npc);
 
 	sendShop(npc);
 	std::map<uint16_t, uint16_t> inventoryMap;
 	sendSaleItemList(getAllSaleItemIdAndCount(inventoryMap));
+
+	g_logger().debug("[Player::openShopWindow] - Player {} has opened shop window in {} ms", getName(), brenchmark.duration());
 	return true;
 }
 
-bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/) {
+bool Player::closeShopWindow() {
 	if (!shopOwner) {
 		return false;
 	}
 
-	shopOwner->removeShopPlayer(static_self_cast<Player>());
+	shopOwner->removeShopPlayer(getGUID());
 	setShopOwner(nullptr);
 
-	if (sendCloseShopWindow) {
-		sendCloseShop();
-	}
-
+	sendCloseShop();
 	return true;
 }
 
@@ -3830,7 +3837,7 @@ bool Player::hasItemCountById(uint16_t itemId, uint32_t itemAmount, bool checkSt
 
 	// Check items from stash
 	for (StashItemList stashToSend = getStashItems();
-		 auto [stashItemId, itemCount] : stashToSend) {
+	     auto [stashItemId, itemCount] : stashToSend) {
 		if (!checkStash) {
 			break;
 		}
@@ -4295,7 +4302,7 @@ bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const {
 	}
 
 	const ItemType &itemType = Item::items[itemId];
-	std::vector<ShopBlock> shoplist = shopOwner->getShopItemVector(getGUID());
+	const auto &shoplist = shopOwner->getShopItemVector(getGUID());
 	return std::any_of(shoplist.begin(), shoplist.end(), [&](const ShopBlock &shopBlock) {
 		return shopBlock.itemId == itemId && shopBlock.itemBuyPrice != 0 && (!itemType.isFluidContainer() || shopBlock.itemSubType == subType);
 	});
@@ -5390,7 +5397,7 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 	skillLevel = std::max<int32_t>(0, skillLevel + varSkills[skill]);
 
 	if (auto it = maxValuePerSkill.find(skill);
-		it != maxValuePerSkill.end()) {
+	    it != maxValuePerSkill.end()) {
 		skillLevel = std::min<int32_t>(it->second, skillLevel);
 	}
 
@@ -6226,7 +6233,7 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const {
 
 	// Check items from stash
 	for (StashItemList stashToSend = getStashItems();
-		 auto [itemId, itemCount] : stashToSend) {
+	     auto [itemId, itemCount] : stashToSend) {
 		if (itemId == ITEM_FORGE_SLIVER) {
 			sliverCount += itemCount;
 		}
@@ -6622,7 +6629,7 @@ std::string Player::getBlessingsName() const {
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
 			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i));
-				blessName != BlessingNames.end()) {
+			    blessName != BlessingNames.end()) {
 				os << (*blessName).second;
 			} else {
 				continue;
@@ -6815,7 +6822,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier) {
 	uint32_t stashCount = 0;
 
 	if (const ItemType &iType = Item::items[itemId];
-		iType.stackable && iType.wareId > 0) {
+	    iType.stackable && iType.wareId > 0) {
 		stashCount = getStashItemCount(itemId);
 	}
 
@@ -6864,10 +6871,10 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	for (const std::shared_ptr<Item> &locker : depotLocker->getItemList()) {
 		std::shared_ptr<Container> c = locker->getContainer();
 		if (!c || c->empty() ||
-			// Retrieve from inbox.
-			(c->isInbox() && isDepot) ||
-			// Retrieve from depot.
-			(!c->isInbox() && !isDepot)) {
+		    // Retrieve from inbox.
+		    (c->isInbox() && isDepot) ||
+		    // Retrieve from depot.
+		    (!c->isInbox() && !isDepot)) {
 			continue;
 		}
 
@@ -6933,7 +6940,7 @@ std::shared_ptr<Item> Player::getItemFromDepotSearch(uint16_t itemId, const Posi
 	for (const std::shared_ptr<Item> &locker : depotLocker->getItemList()) {
 		std::shared_ptr<Container> c = locker->getContainer();
 		if (!c || c->empty() || (c->isInbox() && pos.y != 0x21) || // From inbox.
-			(!c->isInbox() && pos.y != 0x20)) { // From depot.
+		    (!c->isInbox() && pos.y != 0x20)) { // From depot.
 			continue;
 		}
 
@@ -7117,7 +7124,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 		return;
 	}
 	if (returnValue = g_game().internalRemoveItem(secondForgingItem, 1);
-		returnValue != RETURNVALUE_NOERROR) {
+	    returnValue != RETURNVALUE_NOERROR) {
 		g_logger().error("[Log 2] Failed to remove forge item {} from player with name {}", secondItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
@@ -7360,7 +7367,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 	if (returnValue = g_game().internalRemoveItem(receiveItem, 1);
-		returnValue != RETURNVALUE_NOERROR) {
+	    returnValue != RETURNVALUE_NOERROR) {
 		g_logger().error("[Log 2] Failed to remove transfer item {} from player with name {}", receiveItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
@@ -7500,7 +7507,7 @@ void Player::forgeResourceConversion(ForgeAction_t actionType) {
 		}
 
 		if (std::shared_ptr<Item> item = Item::CreateItem(ITEM_FORGE_CORE, 1);
-			item) {
+		    item) {
 			returnValue = g_game().internalPlayerAddItem(static_self_cast<Player>(), item);
 		}
 		if (returnValue != RETURNVALUE_NOERROR) {
@@ -7522,7 +7529,7 @@ void Player::forgeResourceConversion(ForgeAction_t actionType) {
 
 		auto upgradeCost = dustLevel - 75;
 		if (auto dusts = getForgeDusts();
-			upgradeCost > dusts) {
+		    upgradeCost > dusts) {
 			g_logger().error("[{}] Not enough dust", __FUNCTION__);
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
@@ -8098,7 +8105,7 @@ bool Player::hasPermittedConditionInPZ() const {
 uint16_t Player::getDodgeChance() const {
 	uint16_t chance = 0;
 	if (auto playerArmor = getInventoryItem(CONST_SLOT_ARMOR);
-		playerArmor != nullptr && playerArmor->getTier()) {
+	    playerArmor != nullptr && playerArmor->getTier()) {
 		chance += static_cast<uint16_t>(playerArmor->getDodgeChance() * 100);
 	}
 

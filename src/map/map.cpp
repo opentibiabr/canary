@@ -541,8 +541,7 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 	return tile;
 }
 
-
-bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp)  {
+bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 	Position pos = creature->getPosition();
 	Position endPos;
 
@@ -635,7 +634,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			if (neighborNode) {
 				extraCost = neighborNode->c;
 			} else {
-				const auto& tile = canWalkTo(creature, pos);
+				const auto &tile = canWalkTo(creature, pos);
 				if (!tile) {
 					continue;
 				}
@@ -712,7 +711,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 	return true;
 }
 
-	bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 	return getPathMatching(creature, creature->getPosition(), dirList, pathCondition, fpp);
 }
 
@@ -894,7 +893,6 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 	}
 	return true;
 }
-
 
 uint32_t Map::clean() {
 	uint64_t start = OTSYS_TIME();

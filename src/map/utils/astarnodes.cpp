@@ -257,18 +257,18 @@ AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
 #endif
 }
 
- int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position &neighborPos) {
+int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position &neighborPos) {
 	// diagonal movement extra cost
 	return (((std::abs(node->x - neighborPos.x) + std::abs(node->y - neighborPos.y)) - 1) * MAP_DIAGONALWALKCOST) + MAP_NORMALWALKCOST;
 }
 
- int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile>& tile) {
+int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile) {
 	int_fast32_t cost = 0;
 	if (tile->getTopVisibleCreature(creature) != nullptr) {
 		// destroy creature cost
 		cost += MAP_NORMALWALKCOST * 4;
 	}
-	if (const auto& field = tile->getFieldItem()) {
+	if (const auto &field = tile->getFieldItem()) {
 		CombatType_t combatType = field->getCombatType();
 		if (!creature->isImmune(combatType) && !creature->hasCondition(Combat::DamageToConditionType(combatType)) && (creature->getMonster() && !creature->getMonster()->canWalkOnFieldType(combatType))) {
 			cost += MAP_NORMALWALKCOST * 18;

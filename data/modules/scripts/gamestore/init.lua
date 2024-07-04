@@ -247,6 +247,11 @@ function onRecvbyte(player, msg, byte)
 		return player:sendCancelMessage("Store don't have offers for rookgaard citizen.")
 	end
 
+	if player:isUIExhausted(250) then
+		player:sendCancelMessage("You are exhausted.")
+		return
+	end
+
 	if byte == GameStore.RecivedPackets.C_StoreEvent then
 	elseif byte == GameStore.RecivedPackets.C_TransferCoins then
 		parseTransferableCoins(player:getId(), msg)
@@ -262,12 +267,6 @@ function onRecvbyte(player, msg, byte)
 		parseRequestTransactionHistory(player:getId(), msg)
 	end
 
-	if player:isUIExhausted(250) then
-		player:sendCancelMessage("You are exhausted.")
-		return false
-	end
-
-	player:updateUIExhausted()
 	return true
 end
 
@@ -306,6 +305,7 @@ function parseTransferableCoins(playerId, msg)
 	GameStore.insertHistory(accountId, GameStore.HistoryTypes.HISTORY_TYPE_NONE, player:getName() .. " transferred you this amount.", amount, GameStore.CoinType.Transferable)
 	GameStore.insertHistory(player:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, "You transferred this amount to " .. reciver, -1 * amount, GameStore.CoinType.Transferable)
 	openStore(playerId)
+	player:updateUIExhausted()
 end
 
 function parseOpenStore(playerId, msg)
@@ -396,6 +396,7 @@ function parseRequestStoreOffers(playerId, msg)
 
 		addPlayerEvent(sendShowStoreOffers, 250, playerId, searchResultsCategory)
 	end
+	player:updateUIExhausted()
 end
 
 function parseBuyStoreOffer(playerId, msg)
@@ -532,19 +533,33 @@ function parseBuyStoreOffer(playerId, msg)
 		sendUpdatedStoreBalances(playerId)
 		return addPlayerEvent(sendStorePurchaseSuccessful, 650, playerId, message)
 	end
+
+	player:updateUIExhausted()
 	return true
 end
 
 -- Both functions use same formula!
 function parseOpenTransactionHistory(playerId, msg)
+	local player = Player(playerId)
+	if not player then
+		return
+	end
+
 	local page = 1
 	GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE = msg:getByte()
 	sendStoreTransactionHistory(playerId, page, GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE)
+	player:updateUIExhausted()
 end
 
 function parseRequestTransactionHistory(playerId, msg)
+	local player = Player(playerId)
+	if not player then
+		return
+	end
+
 	local page = msg:getU32()
 	sendStoreTransactionHistory(playerId, page + 1, GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE)
+	player:updateUIExhausted()
 end
 
 local function getCategoriesRook()

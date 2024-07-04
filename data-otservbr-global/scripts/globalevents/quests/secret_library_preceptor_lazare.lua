@@ -1,7 +1,7 @@
 local config = {
 	monsterName = "Preceptor Lazare",
 	bossPosition = Position(33374, 31338, 3),
-	range = 5,
+	range = 50,
 }
 
 local preceptorLazare = GlobalEvent("PreceptorLazareRespawn")

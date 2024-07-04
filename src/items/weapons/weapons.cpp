@@ -360,8 +360,8 @@ bool Weapon::executeUseWeapon(std::shared_ptr<Player> player, const LuaVariant &
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		std::string playerName = player ? player->getName() : "Player nullptr";
 		g_logger().error("[Weapon::executeUseWeapon - Player {} weaponId {}]"
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 playerName, getID());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 playerName, getID());
 		return false;
 	}
 

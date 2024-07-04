@@ -26,7 +26,7 @@ bool PlayerBadge::hasBadge(uint8_t id) const {
 	if (auto it = std::find_if(m_badgesUnlocked.begin(), m_badgesUnlocked.end(), [id](auto badge_it) {
 			return badge_it.first.m_id == id;
 		});
-		it != m_badgesUnlocked.end()) {
+	    it != m_badgesUnlocked.end()) {
 		return true;
 	}
 

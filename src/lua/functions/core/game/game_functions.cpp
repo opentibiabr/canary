@@ -191,6 +191,17 @@ int GameFunctions::luaGameloadMapChunk(lua_State* L) {
 	return 0;
 }
 
+int GameFunctions::luaGameGetExperienceForLevel(lua_State* L) {
+	// Game.getExperienceForLevel(level)
+	const uint32_t level = getNumber<uint32_t>(L, 1);
+	if (level == 0) {
+		reportErrorFunc("Level must be greater than 0.");
+	} else {
+		lua_pushnumber(L, Player::getExpForLevel(level));
+	}
+	return 1;
+}
+
 int GameFunctions::luaGameGetMonsterCount(lua_State* L) {
 	// Game.getMonsterCount()
 	lua_pushnumber(L, g_game().getMonstersOnline());
@@ -717,8 +728,8 @@ int GameFunctions::luaGameGetDummies(lua_State* L) {
 	 * @details This function provides a table containing two sub-tables: one for free dummies and one for house (or premium) dummies.
 
 	* @note usage on lua:
-		local dummies = Game.getDummies()
-		local rate = dummies[1] -- Retrieve dummy rate
+	    local dummies = Game.getDummies()
+	    local rate = dummies[1] -- Retrieve dummy rate
 	*/
 
 	const auto &dummies = Item::items.getDummys();

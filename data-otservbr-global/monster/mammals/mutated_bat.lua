@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Mutated Bat")
 local monster = {}
 
 monster.description = "a mutated bat"
-monster.experience = 615
+monster.experience = 750
 monster.outfit = {
 	lookType = 307,
 	lookHead = 0,

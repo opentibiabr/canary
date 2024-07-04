@@ -70,10 +70,10 @@ private:
 
 	bool hasTraceableContext() const {
 		const static auto tasksContext = std::unordered_set<std::string_view>({
-			"Creature::checkCreatureWalk",
 			"Decay::checkDecay",
 			"Dispatcher::asyncEvent",
 			"Game::checkCreatureAttack",
+			"Game::checkCreatureWalk",
 			"Game::checkCreatures",
 			"Game::checkImbuements",
 			"Game::checkLight",
@@ -94,7 +94,6 @@ private:
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
 			"Protocol::sendRecvMessageCallback",
-			"sendRecvMessageCallback",
 		});
 
 		return tasksContext.contains(context);

@@ -21,6 +21,8 @@
 #include "items/weapons/weapons.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 
 int32_t Combat::getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -273,8 +275,11 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> caster, std::shared_pt
 			}
 		}
 	}
-
-	return g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
+	ReturnValue ret = g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
+	if (ret == RETURNVALUE_NOERROR) {
+		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnAreaCombat, caster, tile, aggressive);
+	}
+	return ret;
 }
 
 bool Combat::isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target) {
@@ -409,7 +414,11 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 			}
 		}
 	}
-	return g_events().eventCreatureOnTargetCombat(attacker, target);
+	ReturnValue ret = g_events().eventCreatureOnTargetCombat(attacker, target);
+	if (ret == RETURNVALUE_NOERROR) {
+		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target);
+	}
+	return ret;
 }
 
 void Combat::setPlayerCombatValues(formulaType_t newFormulaType, double newMina, double newMinb, double newMaxa, double newMaxb) {
@@ -648,8 +657,8 @@ CombatDamage Combat::applyImbuementElementalDamage(std::shared_ptr<Player> attac
 		}
 
 		if (imbuementInfo.imbuement->combatType == COMBAT_NONE
-			|| damage.primary.type == COMBAT_HEALING
-			|| damage.secondary.type == COMBAT_HEALING) {
+		    || damage.primary.type == COMBAT_HEALING
+		    || damage.secondary.type == COMBAT_HEALING) {
 			continue;
 		}
 
@@ -1247,8 +1256,8 @@ void Combat::doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 void Combat::doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, CombatDamage &damage, const CombatParams &params) {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
 	if ((caster && target)
-		&& (caster == target || canCombat)
-		&& (params.impactEffect != CONST_ME_NONE)) {
+	    && (caster == target || canCombat)
+	    && (params.impactEffect != CONST_ME_NONE)) {
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
@@ -1291,8 +1300,8 @@ void Combat::doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Crea
 void Combat::doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, CombatDamage &damage, const CombatParams &params) {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
 	if ((caster && target)
-		&& (caster == target || canCombat)
-		&& (params.impactEffect != CONST_ME_NONE)) {
+	    && (caster == target || canCombat)
+	    && (params.impactEffect != CONST_ME_NONE)) {
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
@@ -1359,8 +1368,8 @@ void Combat::doCombatDispel(std::shared_ptr<Creature> caster, const Position &po
 void Combat::doCombatDispel(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params) {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
 	if ((caster && target)
-		&& (caster == target || canCombat)
-		&& (params.impactEffect != CONST_ME_NONE)) {
+	    && (caster == target || canCombat)
+	    && (params.impactEffect != CONST_ME_NONE)) {
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
@@ -1399,7 +1408,7 @@ void Combat::doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<C
 
 		/*
 		if (params.impactEffect != CONST_ME_NONE) {
-			g_game().addMagicEffect(target->getPosition(), params.impactEffect);
+		    g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 		}
 		*/
 
@@ -1531,8 +1540,8 @@ void ValueCallback::getMinMaxValues(std::shared_ptr<Player> player, CombatDamage
 	// onGetPlayerMinMaxValues(...)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[ValueCallback::getMinMaxValues - Player {} formula {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName(), fmt::underlying(type));
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 player->getName(), fmt::underlying(type));
 		return;
 	}
 
@@ -1624,8 +1633,8 @@ void TileCallback::onTileCombat(std::shared_ptr<Creature> creature, std::shared_
 	// onTileCombat(creature, pos)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[TileCallback::onTileCombat - Creature {} type {} on tile x: {} y: {} z: {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName(), fmt::underlying(type), (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName(), fmt::underlying(type), (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
 		return;
 	}
 
@@ -1655,8 +1664,8 @@ void TargetCallback::onTargetCombat(std::shared_ptr<Creature> creature, std::sha
 	// onTargetCombat(creature, target)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[TargetCallback::onTargetCombat - Creature {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName());
 		return;
 	}
 
@@ -1715,8 +1724,8 @@ void ChainCallback::onChainCombat(std::shared_ptr<Creature> creature, uint8_t &m
 	// onChainCombat(creature)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[ChainCallback::onTargetCombat - Creature {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName());
 		return;
 	}
 
@@ -1757,8 +1766,8 @@ bool ChainPickerCallback::onChainCombat(std::shared_ptr<Creature> creature, std:
 	// onChainCombat(creature, target)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[ChainPickerCallback::onTargetCombat - Creature {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName());
 		return true;
 	}
 
@@ -2169,7 +2178,7 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 	if (player) {
 		// Fatal hit (onslaught)
 		if (auto playerWeapon = player->getInventoryItem(CONST_SLOT_LEFT);
-			playerWeapon != nullptr && playerWeapon->getTier() > 0) {
+		    playerWeapon != nullptr && playerWeapon->getTier() > 0) {
 			double_t fatalChance = playerWeapon->getFatalChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;
 			if (fatalChance > 0 && randomChance < fatalChance) {

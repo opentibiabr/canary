@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 2500
-monster.maxHealth = 2500
+monster.health = 1600
+monster.maxHealth = 1600
 monster.race = "venom"
 monster.corpse = 16083
 monster.speed = 115
@@ -70,17 +70,14 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -475 },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -40, maxDamage = -197, range = 7, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_SMALLPLANTS, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = 0, maxDamage = -525, range = 7, shootEffect = CONST_ANI_SNOWBALL, effect = CONST_ME_ICEAREA, target = true },
-	-- poison
 	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -400, maxDamage = -640, range = 7, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
-	{ name = "drunk", interval = 2000, chance = 10, range = 7, radius = 4, effect = CONST_ME_STUN, target = true, duration = 4000 },
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 0,
-	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_HEALING, minDamage = 0, maxDamage = 230, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE },
+	{ name = "invisible", interval = 2000, chance = 5, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {

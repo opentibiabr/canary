@@ -12,8 +12,10 @@
 #include "declarations.hpp"
 #include "lib/di/container.hpp"
 
+class Player;
+
 struct OutfitEntry {
-	constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
+	constexpr explicit OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
 		lookType(initLookType), addons(initAddons) { }
 
 	uint16_t lookType;
@@ -42,16 +44,12 @@ struct ProtocolOutfit {
 
 class Outfits {
 public:
-	static Outfits &getInstance() {
-		return inject<Outfits>();
-	}
+	static Outfits &getInstance();
 
-	std::shared_ptr<Outfit> getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
-
-	bool loadFromXml();
 	bool reload();
+	bool loadFromXml();
 
-	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
+	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit = false) const;
 	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const {
 		return outfits[sex];
 	}

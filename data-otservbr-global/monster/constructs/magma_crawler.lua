@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Magma Crawler")
 local monster = {}
 
 monster.description = "a magma crawler"
-monster.experience = 2700
+monster.experience = 3900
 monster.outfit = {
 	lookType = 492,
 	lookHead = 0,
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10,
+	chance = 5,
 }
 
 monster.strategiesTarget = {
@@ -118,7 +118,7 @@ monster.defenses = {
 	defense = 45,
 	armor = 84,
 	mitigation = 2.51,
-	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE },
+	{ name = "invisible", interval = 2000, chance = 5, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
@@ -129,7 +129,7 @@ monster.elements = {
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
 	{ type = COMBAT_DEATHDAMAGE, percent = 25 },
 }

@@ -36,6 +36,13 @@ public:
 	static void editVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);
 	static void removeVIPEntry(uint32_t accountId, uint32_t guid);
 
+	static std::forward_list<VIPGroupEntry> getVIPGroupEntries(uint32_t accountId, uint32_t guid);
+	static void addVIPGroupEntry(uint8_t groupId, uint32_t accountId, const std::string &groupName, bool customizable);
+	static void editVIPGroupEntry(uint8_t groupId, uint32_t accountId, const std::string &groupName, bool customizable);
+	static void removeVIPGroupEntry(uint8_t groupId, uint32_t accountId);
+	static void addGuidVIPGroupEntry(uint8_t groupId, uint32_t accountId, uint32_t guid);
+	static void removeGuidVIPGroupEntry(uint32_t accountId, uint32_t guid);
+
 private:
 	static bool savePlayerGuard(std::shared_ptr<Player> player);
 };

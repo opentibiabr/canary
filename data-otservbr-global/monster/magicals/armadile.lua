@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Armadile")
 local monster = {}
 
 monster.description = "an armadile"
-monster.experience = 2900
+monster.experience = 3200
 monster.outfit = {
 	lookType = 487,
 	lookHead = 0,
@@ -56,8 +56,8 @@ monster.flags = {
 	canPushItems = false,
 	canPushCreatures = true,
 	staticAttackChance = 90,
-	targetDistance = 4,
-	runHealth = 300,
+	targetDistance = 1,
+	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -102,9 +102,7 @@ monster.loot = {
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150 },
-	{ name = "drunk", interval = 2000, chance = 15, radius = 4, effect = CONST_ME_FIREAREA, target = true, duration = 5000 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -430, maxDamage = -550, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false },
-	-- poison
+	{ name = "drunk", interval = 2000, chance = 10, radius = 4, effect = CONST_ME_FIREAREA, target = true, duration = 5000 },
 	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -200, maxDamage = -400, radius = 4, effect = CONST_ME_POISONAREA, target = false },
 }
 
@@ -112,14 +110,13 @@ monster.defenses = {
 	defense = 25,
 	armor = 66,
 	mitigation = 1.96,
-	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_RED },
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 5 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 15 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
-	{ type = COMBAT_FIREDAMAGE, percent = 20 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Lava Golem")
 local monster = {}
 
 monster.description = "a lava golem"
-monster.experience = 6200
+monster.experience = 7900
 monster.outfit = {
 	lookType = 491,
 	lookHead = 0,
@@ -109,7 +109,6 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -350, maxDamage = -700, length = 8, spread = 0, effect = CONST_ME_FIREATTACK, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -600, maxDamage = -1300, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
 	{ name = "lava golem soulfire", interval = 2000, chance = 15, target = false },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -220, maxDamage = -350, radius = 4, effect = CONST_ME_FIREAREA, target = true },
 	{ name = "speed", interval = 2000, chance = 10, speedChange = -800, length = 5, spread = 3, effect = CONST_ME_BLOCKHIT, target = false, duration = 30000 },

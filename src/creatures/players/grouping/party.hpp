@@ -108,7 +108,7 @@ public:
 		if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const std::shared_ptr<PartyAnalyzer> &preyIt) {
 				return preyIt->id == playerId;
 			});
-			it != membersData.end()) {
+		    it != membersData.end()) {
 			return *it;
 		}
 

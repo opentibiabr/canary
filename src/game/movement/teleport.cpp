@@ -80,8 +80,8 @@ void Teleport::addThing(int32_t, std::shared_ptr<Thing> thing) {
 	if (checkInfinityLoop(destTile)) {
 		const Position &pos = getPosition();
 		g_logger().warn("[Teleport:addThing] - "
-						"Infinity loop teleport at position: {}",
-						pos.toString());
+		                "Infinity loop teleport at position: {}",
+		                pos.toString());
 		return;
 	}
 

@@ -18,7 +18,7 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 	// Spell(type) ex: Spell(SPELL_INSTANT) or Spell(SPELL_RUNE) to create a new spell
 	if (lua_gettop(L) == 1) {
 		g_logger().error("[SpellFunctions::luaSpellCreate] - "
-						 "There is no parameter set!");
+		                 "There is no parameter set!");
 		lua_pushnil(L);
 		return 1;
 	}
@@ -209,16 +209,16 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setGroup(group);
 				} else {
 					g_logger().warn("[SpellFunctions::luaSpellGroup] - "
-									"Unknown group: {}",
-									getString(L, 2));
+					                "Unknown group: {}",
+					                getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
 				pushBoolean(L, true);
 			} else {
 				g_logger().warn("[SpellFunctions::luaSpellGroup] - "
-								"Unknown group: {}",
-								getString(L, 2));
+				                "Unknown group: {}",
+				                getString(L, 2));
 				pushBoolean(L, false);
 				return 1;
 			}
@@ -235,8 +235,8 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setGroup(primaryGroup);
 				} else {
 					g_logger().warn("[SpellFunctions::luaSpellGroup] - "
-									"Unknown primaryGroup: {}",
-									getString(L, 2));
+					                "Unknown primaryGroup: {}",
+					                getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
@@ -245,16 +245,16 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setSecondaryGroup(secondaryGroup);
 				} else {
 					g_logger().warn("[SpellFunctions::luaSpellGroup] - "
-									"Unknown secondaryGroup: {}",
-									getString(L, 3));
+					                "Unknown secondaryGroup: {}",
+					                getString(L, 3));
 					pushBoolean(L, false);
 					return 1;
 				}
 				pushBoolean(L, true);
 			} else {
 				g_logger().warn("[SpellFunctions::luaSpellGroup] - "
-								"Unknown primaryGroup: {} or secondaryGroup: {}",
-								getString(L, 2), getString(L, 3));
+				                "Unknown primaryGroup: {} or secondaryGroup: {}",
+				                getString(L, 2), getString(L, 3));
 				pushBoolean(L, false);
 				return 1;
 			}

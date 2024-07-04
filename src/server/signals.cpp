@@ -38,8 +38,8 @@ void Signals::asyncWait() {
 	set.async_wait([this](std::error_code err, int signal) {
 		if (err) {
 			g_logger().error("[Signals::asyncWait] - "
-							 "Signal handling error: {}",
-							 err.message());
+			                 "Signal handling error: {}",
+			                 err.message());
 			return;
 		}
 		dispatchSignalHandler(signal);

@@ -37,17 +37,17 @@ jobs:
 
       - name: Run clang format lint
         if: ${{ github.ref != 'refs/heads/main' }}
-        uses: DoozyX/clang-format-lint-action@v0.16.2
+        uses: DoozyX/clang-format-lint-action@v0.17
         with:
           source: "src"
           exclude: "src/protobuf"
           extensions: "cpp,hpp,h"
-          clangFormatVersion: 16
+          clangFormatVersion: 17
           inplace: true
 
       - name: Run add and commit
         if: ${{ github.ref != 'refs/heads/main' }}
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v9.1.4
         with:
           author_name: GitHub Actions
           author_email: github-actions[bot]@users.noreply.github.com

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Weeper")
 local monster = {}
 
 monster.description = "a weeper"
-monster.experience = 4800
+monster.experience = 5800
 monster.outfit = {
 	lookType = 489,
 	lookHead = 0,
@@ -55,7 +55,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 70,
 	targetDistance = 1,
-	runHealth = 570,
+	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
@@ -101,7 +101,7 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -450 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -400, maxDamage = -1000, length = 8, spread = 0, effect = CONST_ME_FIREATTACK, target = false },
 	{ name = "combat", interval = 3000, chance = 100, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -250, radius = 3, effect = CONST_ME_HITBYFIRE, target = false },
-	{ name = "speed", interval = 2000, chance = 10, speedChange = -800, length = 5, spread = 0, effect = CONST_ME_BLOCKHIT, target = false, duration = 30000 },
+	{ name = "speed", interval = 2000, chance = 10, speedChange = -600, length = 5, spread = 0, effect = CONST_ME_BLOCKHIT, target = false, duration = 30000 },
 }
 
 monster.defenses = {

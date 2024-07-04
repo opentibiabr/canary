@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Lost Basher")
 local monster = {}
 
 monster.description = "a lost basher"
-monster.experience = 1800
+monster.experience = 2300
 monster.outfit = {
 	lookType = 538,
 	lookHead = 0,
@@ -61,7 +61,7 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
+	canWalkOnFire = true,
 	canWalkOnPoison = true,
 }
 
@@ -126,7 +126,7 @@ monster.elements = {
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 20 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
 	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }

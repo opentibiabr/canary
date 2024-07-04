@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Quara Pincher")
 local monster = {}
 
 monster.description = "a quara pincher"
-monster.experience = 1200
+monster.experience = 1500
 monster.outfit = {
 	lookType = 77,
 	lookHead = 0,

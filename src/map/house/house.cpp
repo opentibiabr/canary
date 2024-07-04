@@ -753,8 +753,8 @@ bool Houses::loadHousesXML(const std::string &filename) {
 		);
 		if (entryPos.x == 0 && entryPos.y == 0 && entryPos.z == 0) {
 			g_logger().warn("[Houses::loadHousesXML] - Entry not set for house "
-							"name: {} with id: {}",
-							house->getName(), houseId);
+			                "name: {} with id: {}",
+			                house->getName(), houseId);
 		}
 		house->setEntryPos(entryPos);
 

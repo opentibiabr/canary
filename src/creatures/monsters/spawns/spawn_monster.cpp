@@ -94,7 +94,15 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 					weight = pugi::cast<uint32_t>(weightAttribute.value());
 				}
 
-				spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, pugi::cast<uint32_t>(childMonsterNode.attribute("spawntime").value()) * 1000, weight);
+				uint32_t scheduleInterval = g_configManager().getNumber(DEFAULT_RESPAWN_TIME, __FUNCTION__);
+
+				try {
+					scheduleInterval = pugi::cast<uint32_t>(childMonsterNode.attribute("spawntime").value());
+				} catch (...) {
+					g_logger().warn("Failed to add schedule interval to monster: {}, interval: {}. Setting to default respawn time: {}", nameAttribute.value(), childMonsterNode.attribute("spawntime").value(), scheduleInterval);
+				}
+
+				spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, scheduleInterval * 1000, weight);
 			}
 		}
 	}

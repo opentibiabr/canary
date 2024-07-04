@@ -1,9 +1,9 @@
 local promotionScrolls = {
-	[43946] = { storageName = "wheel.scroll.abridged", points = 3, name = "abridged promotion scroll" },
-	[43947] = { storageName = "wheel.scroll.basic", points = 5, name = "basic promotion scroll" },
-	[43948] = { storageName = "wheel.scroll.revised", points = 9, name = "revised promotion scroll" },
-	[43949] = { storageName = "wheel.scroll.extended", points = 13, name = "extended promotion scroll" },
-	[43950] = { storageName = "wheel.scroll.advanced", points = 20, name = "advanced promotion scroll" },
+	[43946] = { name = "abridged", points = 3, itemName = "abridged promotion scroll" },
+	[43947] = { name = "basic", points = 5, itemName = "basic promotion scroll" },
+	[43948] = { name = "revised", points = 9, itemName = "revised promotion scroll" },
+	[43949] = { name = "extended", points = 13, itemName = "extended promotion scroll" },
+	[43950] = { name = "advanced", points = 20, itemName = "advanced promotion scroll" },
 }
 
 local scroll = Action()
@@ -15,13 +15,14 @@ function scroll.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	end
 
 	local scrollData = promotionScrolls[item:getId()]
-	if player:getStorageValueByName(scrollData.storageName) == 1 then
+	local scrollKV = player:kv():scoped("wheel-of-destiny"):scoped("scrolls")
+	if scrollKV:get(scrollData.name) then
 		player:sendTextMessage(MESSAGE_LOOK, "You have already deciphered this scroll.")
 		return true
 	end
 
-	player:setStorageValueByName(scrollData.storageName, 1)
-	player:sendTextMessage(MESSAGE_LOOK, "You have gained " .. scrollData.points .. " promotion points for the Wheel of Destiny by deciphering the " .. scrollData.name .. ".")
+	scrollKV:set(scrollData.name, true)
+	player:sendTextMessage(MESSAGE_LOOK, "You have gained " .. scrollData.points .. " promotion points for the Wheel of Destiny by deciphering the " .. scrollData.itemName .. ".")
 	item:remove(1)
 	return true
 end

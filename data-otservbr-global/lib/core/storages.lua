@@ -3079,6 +3079,15 @@ GlobalStorage = {
 			DarashiaWest = 60193,
 		},
 	},
+	TheDreamCourts = {
+		-- Reserved storage from 60194 - 60196
+		FacelessBane = {
+			-- Global
+			StepsOn = 60194,
+			Deaths = 60195,
+			ResetSteps = 60196,
+		},
+	},
 	FuryGates = 65000,
 	Yakchal = 65001,
 	PitsOfInfernoLevers = 65002,

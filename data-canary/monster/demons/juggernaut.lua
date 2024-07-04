@@ -27,8 +27,8 @@ monster.Bestiary = {
 		The Blood Halls, The Vats, The Hive, The Shadow Nexus, a room deep in Formorgar Mines, Roshamuul Prison, Oramond Dungeon, Grounds of Destruction.",
 }
 
-monster.health = 20000
-monster.maxHealth = 20000
+monster.health = 18000
+monster.maxHealth = 18000
 monster.race = "blood"
 monster.corpse = 6335
 monster.speed = 170

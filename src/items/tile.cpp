@@ -393,7 +393,7 @@ void Tile::onAddTileItem(std::shared_ptr<Item> item) {
 	}
 
 	if ((!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES, __FUNCTION__))
-		&& item->isCleanable()) {
+	    && item->isCleanable()) {
 		if (!this->getHouse()) {
 			g_game().addTileToClean(static_self_cast<Tile>());
 		}
@@ -1272,7 +1272,7 @@ void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 }
 
 void Tile::removeCreature(std::shared_ptr<Creature> creature) {
-	g_game().map.getQTNode(tilePos.x, tilePos.y)->removeCreature(creature);
+	g_game().map.getMapSector(tilePos.x, tilePos.y)->removeCreature(creature);
 	removeThing(creature, 0);
 }
 

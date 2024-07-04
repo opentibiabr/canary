@@ -53,7 +53,7 @@ bool PlayerAchievement::remove(uint16_t id) {
 	if (auto it = std::find_if(m_achievementsUnlocked.begin(), m_achievementsUnlocked.end(), [id](auto achievement_it) {
 			return achievement_it.first == id;
 		});
-		it != m_achievementsUnlocked.end()) {
+	    it != m_achievementsUnlocked.end()) {
 		getUnlockedKV()->remove(achievement.name);
 		m_achievementsUnlocked.erase(it);
 		removePoints(achievement.points);
@@ -72,7 +72,7 @@ bool PlayerAchievement::isUnlocked(uint16_t id) const {
 	if (auto it = std::find_if(m_achievementsUnlocked.begin(), m_achievementsUnlocked.end(), [id](auto achievement_it) {
 			return achievement_it.first == id;
 		});
-		it != m_achievementsUnlocked.end()) {
+	    it != m_achievementsUnlocked.end()) {
 		return true;
 	}
 

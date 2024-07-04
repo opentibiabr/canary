@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Tunnel Tyrant")
 local monster = {}
 
 monster.description = "a tunnel tyrant"
-monster.experience = 3400
+monster.experience = 4420
 monster.outfit = {
 	lookType = 1035,
 	lookHead = 0,
@@ -87,7 +87,7 @@ monster.loot = {
 	{ name = "crystal mace", chance = 1580 },
 	{ id = 23508, chance = 3010 }, -- energy vein
 	{ name = "crystalline armor", chance = 860 },
-	{ name = "suspicious device", chance = 1290 },
+	{ name = "suspicious device", chance = 1850 },
 }
 
 monster.attacks = {

@@ -480,7 +480,6 @@ if NpcHandler == nil then
 
 				-- If is npc shop, send shop window and parse default message (if not have callback on the npc)
 				if npc:isMerchant() then
-					npc:closeShopWindow(player)
 					npc:openShopWindow(player)
 					self:say(msg, npc, player)
 				end

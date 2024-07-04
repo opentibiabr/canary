@@ -90,7 +90,20 @@ public:
 	void addBytes(const char* bytes, size_t size);
 	void addPaddingBytes(size_t n);
 
-	void addString(const std::string &value, const std::string &function);
+	/**
+	 * Adds a string to the network message buffer.
+	 *
+	 * @param value The string value to be added to the message buffer.
+	 * @param function * @param function An optional parameter that specifies the function name from which `addString` is invoked.
+	 * Including this enhances logging by adding the function name to the debug and error log messages.
+	 * This helps in debugging by indicating the context when issues occur, such as attempting to add an
+	 * empty string or when there are message size errors.
+	 *
+	 * When the function parameter is used, it aids in identifying the context in log messages,
+	 * making it easier to diagnose issues related to network message construction,
+	 * especially in complex systems where the same method might be called from multiple places.
+	 */
+	void addString(const std::string &value, const std::string &function = "");
 
 	void addDouble(double value, uint8_t precision = 2);
 

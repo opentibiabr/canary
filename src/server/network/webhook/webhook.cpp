@@ -38,7 +38,7 @@ Webhook &Webhook::getInstance() {
 }
 
 void Webhook::run() {
-	threadPool.addLoad([this] { sendWebhook(); });
+	threadPool.detach_task([this] { sendWebhook(); });
 	g_dispatcher().scheduleEvent(
 		g_configManager().getNumber(DISCORD_WEBHOOK_DELAY_MS, __FUNCTION__), [this] { run(); }, "Webhook::run"
 	);

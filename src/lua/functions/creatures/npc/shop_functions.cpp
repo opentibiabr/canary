@@ -28,7 +28,7 @@ int ShopFunctions::luaShopSetId(lua_State* L) {
 			pushBoolean(L, true);
 		} else {
 			g_logger().warn("[ShopFunctions::luaShopSetId] - "
-							"Unknown shop item shop, int value expected");
+			                "Unknown shop item shop, int value expected");
 			lua_pushnil(L);
 		}
 	} else {
@@ -46,16 +46,16 @@ int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 
 		if (ids.first == Item::items.nameToItems.cend()) {
 			g_logger().warn("[ShopFunctions::luaShopSetIdFromName] - "
-							"Unknown shop item {}",
-							name);
+			                "Unknown shop item {}",
+			                name);
 			lua_pushnil(L);
 			return 1;
 		}
 
 		if (std::next(ids.first) != ids.second) {
 			g_logger().warn("[ShopFunctions::luaShopSetIdFromName] - "
-							"Non-unique shop item {}",
-							name);
+			                "Non-unique shop item {}",
+			                name);
 			lua_pushnil(L);
 			return 1;
 		}
@@ -64,7 +64,7 @@ int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 		pushBoolean(L, true);
 	} else {
 		g_logger().warn("[ShopFunctions::luaShopSetIdFromName] - "
-						"Unknown shop item shop, string value expected");
+		                "Unknown shop item shop, string value expected");
 		lua_pushnil(L);
 	}
 	return 1;

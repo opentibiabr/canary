@@ -145,8 +145,8 @@ bool ChatChannel::executeCanJoinEvent(const std::shared_ptr<Player> &player) {
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[CanJoinChannelEvent::execute - Player {}, on channel {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName(), getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 player->getName(), getName());
 		return false;
 	}
 
@@ -171,8 +171,8 @@ bool ChatChannel::executeOnJoinEvent(const std::shared_ptr<Player> &player) {
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[OnJoinChannelEvent::execute - Player {}, on channel {}] "
-						 "Call stack overflow. Too many lua script calls being nested",
-						 player->getName(), getName());
+		                 "Call stack overflow. Too many lua script calls being nested",
+		                 player->getName(), getName());
 		return false;
 	}
 
@@ -197,8 +197,8 @@ bool ChatChannel::executeOnLeaveEvent(const std::shared_ptr<Player> &player) {
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[OnLeaveChannelEvent::execute - Player {}, on channel {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName(), getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 player->getName(), getName());
 		return false;
 	}
 
@@ -223,8 +223,8 @@ bool ChatChannel::executeOnSpeakEvent(const std::shared_ptr<Player> &player, Spe
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[OnSpeakChannelEvent::execute - Player {}, type {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName(), fmt::underlying(type));
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 player->getName(), fmt::underlying(type));
 		return false;
 	}
 

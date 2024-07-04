@@ -77,7 +77,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		}
 		// Assign new MonsterType
 		monster->mType = mType;
-		monster->strDescription = asLowerCaseString(mType->nameDescription);
+		monster->nameDescription = asLowerCaseString(mType->nameDescription);
 		monster->defaultOutfit = mType->info.outfit;
 		monster->currentOutfit = mType->info.outfit;
 		monster->skull = mType->info.skull;
@@ -526,6 +526,24 @@ int MonsterFunctions::luaMonsterGetName(lua_State* L) {
 	}
 
 	pushString(L, monster->getName());
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterSetName(lua_State* L) {
+	// monster:setName(name[, nameDescription])
+	auto monster = getUserdataShared<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->setName(getString(L, 2));
+	if (lua_gettop(L) >= 3) {
+		monster->setNameDescription(getString(L, 3));
+	}
+
+	pushBoolean(L, true);
 	return 1;
 }
 

@@ -23,10 +23,10 @@ Dispatcher &Dispatcher::getInstance() {
 void Dispatcher::init() {
 	UPDATE_OTSYS_TIME();
 
-	threadPool.addLoad([this] {
+	threadPool.detach_task([this] {
 		std::unique_lock asyncLock(dummyMutex);
 
-		while (!threadPool.getIoContext().stopped()) {
+		while (!threadPool.isStopped()) {
 			UPDATE_OTSYS_TIME();
 
 			executeEvents();
@@ -56,30 +56,51 @@ void Dispatcher::executeSerialEvents(std::vector<Task> &tasks) {
 }
 
 void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId) {
-	std::atomic_uint_fast64_t totalTaskSize = tasks.size();
-	std::atomic_bool isTasksCompleted = false;
+	asyncWait(tasks.size(), [groupId, &tasks](size_t i) {
+		dispacherContext.type = DispatcherType::AsyncEvent;
+		dispacherContext.group = static_cast<TaskGroup>(groupId);
+		tasks[i].execute();
 
-	for (const auto &task : tasks) {
-		threadPool.addLoad([groupId, &task, &isTasksCompleted, &totalTaskSize] {
-			dispacherContext.type = DispatcherType::AsyncEvent;
-			dispacherContext.group = static_cast<TaskGroup>(groupId);
-			dispacherContext.taskName = task.getContext();
-
-			task.execute();
-
-			dispacherContext.reset();
-
-			totalTaskSize.fetch_sub(1);
-			if (totalTaskSize.load() == 0) {
-				isTasksCompleted.store(true);
-				isTasksCompleted.notify_one();
-			}
-		});
-	}
-
-	isTasksCompleted.wait(false);
+		dispacherContext.reset();
+	});
 
 	tasks.clear();
+}
+
+void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f) {
+	if (requestSize == 0) {
+		return;
+	}
+
+	// This prevents an async call from running inside another async call.
+	if (asyncWaitDisabled) {
+		for (uint_fast64_t i = 0; i < requestSize; ++i) {
+			f(i);
+		}
+		return;
+	}
+
+	const auto &partitions = generatePartition(requestSize);
+	const auto pSize = partitions.size();
+
+	BS::multi_future<void> retFuture;
+
+	if (pSize > 1) {
+		asyncWaitDisabled = true;
+		const auto min = partitions[1].first;
+		const auto max = partitions[partitions.size() - 1].second;
+		retFuture = threadPool.submit_loop(min, max, [&f](const unsigned int i) { f(i); });
+	}
+
+	const auto &[min, max] = partitions[0];
+	for (uint_fast64_t i = min; i < max; ++i) {
+		f(i);
+	}
+
+	if (pSize > 1) {
+		retFuture.wait();
+		asyncWaitDisabled = false;
+	}
 }
 
 void Dispatcher::executeEvents(const TaskGroup startGroup) {

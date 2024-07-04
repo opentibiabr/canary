@@ -89,7 +89,7 @@ void IOBosstiary::loadBoostedBoss() {
 	query << "`date` = '" << today << "',";
 	query << "`boostname` = " << database.escapeString(bossName) << ",";
 	if (const auto bossType = getMonsterTypeByBossRaceId(bossId);
-		bossType) {
+	    bossType) {
 		query << "`looktypeEx` = " << static_cast<int>(bossType->info.outfit.lookTypeEx) << ",";
 		query << "`looktype` = " << static_cast<int>(bossType->info.outfit.lookType) << ",";
 		query << "`lookfeet` = " << static_cast<int>(bossType->info.outfit.lookFeet) << ",";
@@ -124,7 +124,7 @@ void IOBosstiary::loadBoostedBoss() {
 
 void IOBosstiary::addBosstiaryMonster(uint16_t raceId, const std::string &name) {
 	if (auto it = bosstiaryMap.find(raceId);
-		it != bosstiaryMap.end()) {
+	    it != bosstiaryMap.end()) {
 		return;
 	}
 
@@ -282,7 +282,7 @@ uint8_t IOBosstiary::getBossCurrentLevel(std::shared_ptr<Player> player, uint16_
 	auto bossRace = mType->info.bosstiaryRace;
 	uint8_t level = 0;
 	if (auto it = levelInfos.find(bossRace);
-		it != levelInfos.end()) {
+	    it != levelInfos.end()) {
 		const std::vector<LevelInfo> &infoForCurrentRace = it->second;
 		for (const auto &raceInfo : infoForCurrentRace) {
 			if (currentKills >= raceInfo.kills) {

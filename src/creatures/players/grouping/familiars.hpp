@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "declarations.hpp"
 #include "lib/di/container.hpp"
 
 struct FamiliarEntry {
@@ -32,9 +33,7 @@ struct Familiar {
 
 class Familiars {
 public:
-	static Familiars &getInstance() {
-		return inject<Familiars>();
-	}
+	static Familiars &getInstance();
 
 	bool loadFromXml();
 	bool reload();

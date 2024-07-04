@@ -26,7 +26,7 @@ bool PlayerTitle::isTitleUnlocked(uint8_t id) const {
 	if (auto it = std::find_if(m_titlesUnlocked.begin(), m_titlesUnlocked.end(), [id](auto title_it) {
 			return title_it.first.m_id == id;
 		});
-		it != m_titlesUnlocked.end()) {
+	    it != m_titlesUnlocked.end()) {
 		return true;
 	}
 

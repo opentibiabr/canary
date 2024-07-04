@@ -241,7 +241,7 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 		return;
 	}
 
-  std::vector<std::shared_ptr<Item>> items;
+	std::vector<std::shared_ptr<Item>> items;
 	items.reserve(32);
 
 	uint16_t count = 0;

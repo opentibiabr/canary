@@ -471,7 +471,7 @@ bool Map::checkSightLine(Position start, Position destination) {
 		while (--distanceX > 0) {
 			start.x += delta;
 
-			const auto& tile = getTile(start.x, start.y, start.z);
+			const auto &tile = getTile(start.x, start.y, start.z);
 			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
 				return false;
 			}
@@ -546,7 +546,7 @@ bool Map::checkSightLine(Position start, Position destination) {
 					yIncrease = deltaY;
 				}
 
-				const auto& tile = getTile(start.x + deltaX, start.y + yIncrease, start.z);
+				const auto &tile = getTile(start.x + deltaX, start.y + yIncrease, start.z);
 				if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
 					if (Position::areInRange<1, 1>(start, destination)) {
 						return true;
@@ -589,7 +589,7 @@ bool Map::isSightClear(const Position &fromPos, const Position &toPos, bool floo
 		startZ = fromPos.z;
 	} else {
 		// Check if we can throw above obstacle
-		const auto& tile = getTile(fromPos.x, fromPos.y, fromPos.z - 1);
+		const auto &tile = getTile(fromPos.x, fromPos.y, fromPos.z - 1);
 		if ((tile && (tile->getGround() || tile->hasFlag(TILESTATE_BLOCKPROJECTILE))) || !checkSightLine(Position(fromPos.x, fromPos.y, fromPos.z - 1), Position(toPos.x, toPos.y, toPos.z - 1))) {
 			return false;
 		}

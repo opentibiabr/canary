@@ -814,8 +814,6 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 					player->sendLootMessage(lootMessage.str());
 				}
 
-				
-
 				FindPathParams fpp;
 				fpp.minTargetDist = 0;
 				fpp.maxTargetDist = 1;

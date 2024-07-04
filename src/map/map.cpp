@@ -596,7 +596,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			}
 		}
 
-				++cntDirs;
+		++cntDirs;
 
 		uint_fast32_t dirCount;
 		int_fast32_t* neighbors;
@@ -752,8 +752,7 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 	const int_fast32_t sX = std::abs(targetPos.getX() - pos.getX());
 	const int_fast32_t sY = std::abs(targetPos.getY() - pos.getY());
 
-		uint_fast16_t cntDirs = 0;
-
+	uint_fast16_t cntDirs = 0;
 
 	AStarNode* found = nullptr;
 	do {

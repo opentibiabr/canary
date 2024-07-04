@@ -71,33 +71,33 @@ local function greetCallback(npc, creature)
 end
 
 local function creatureSayCallback(npc, creature, type, message)
-    local player = Player(creature)
-    local playerId = player:getId()
+	local player = Player(creature)
+	local playerId = player:getId()
 
-    if not npcHandler:checkInteraction(npc, creature) then
-        return false
-    end
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
 
-    if MsgContains(message, "transport") or MsgContains(message, "passage") then
-        npcHandler:say("You want me to transport you to forbidden land?", npc, creature)
-        npcHandler:setTopic(playerId, 1)
-    elseif npcHandler:getTopic(playerId) == 1 then
-        if MsgContains(message, "yes") then
-            local questlineValue = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Questline)
-            if questlineValue >= 15 then
-                npcHandler:say("Take care!", npc, creature)
-                local destination = Position(33025, 32580, 6)
-                player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-                player:teleportTo(destination)
-                destination:sendMagicEffect(CONST_ME_TELEPORT)
-            else
-                npcHandler:say("You are not worthy to be transported there yet.", npc, creature)
-            end
-        elseif MsgContains(message, "no") then
-            npcHandler:say("Wise decision maybe.", npc, creature)
-        end
-    end
-    return true
+	if MsgContains(message, "transport") or MsgContains(message, "passage") then
+		npcHandler:say("You want me to transport you to forbidden land?", npc, creature)
+		npcHandler:setTopic(playerId, 1)
+	elseif npcHandler:getTopic(playerId) == 1 then
+		if MsgContains(message, "yes") then
+			local questlineValue = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Questline)
+			if questlineValue >= 15 then
+				npcHandler:say("Take care!", npc, creature)
+				local destination = Position(33025, 32580, 6)
+				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+				player:teleportTo(destination)
+				destination:sendMagicEffect(CONST_ME_TELEPORT)
+			else
+				npcHandler:say("You are not worthy to be transported there yet.", npc, creature)
+			end
+		elseif MsgContains(message, "no") then
+			npcHandler:say("Wise decision maybe.", npc, creature)
+		end
+	end
+	return true
 end
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)

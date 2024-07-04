@@ -309,7 +309,6 @@ ItemAction = {
 			{ x = 33155, y = 31297, z = 3 },
 		},
 	},
-
 	-- The Ancient Tombs Quest
 	[40031] = {
 		itemId = 2023,
@@ -365,6 +364,19 @@ ItemAction = {
 			{ x = 33198, y = 32876, z = 11 },
 		},
 	},
+	-- The Ape City Quest - Casks
+	[40040] = {
+		itemId = 4848,
+		itemPos = {
+			{ x = 32862, y = 32507, z = 9 },
+			{ x = 32862, y = 32505, z = 9 },
+			{ x = 32862, y = 32503, z = 9 },
+			{ x = 32862, y = 32501, z = 9 },
+			{ x = 32862, y = 32499, z = 9 },
+			{ x = 32862, y = 32497, z = 9 },
+			{ x = 32862, y = 32495, z = 9 },
+		},
+	},
 }
 
 ItemUnique = {
@@ -396,6 +408,11 @@ ItemUnique = {
 	[3956] = {
 		itemId = 1949,
 		itemPos = { x = 33116, y = 32656, z = 15 },
+	},
+	-- The Ape City - HolyApeHair
+	[4010] = {
+		itemId = 2753,
+		itemPos = { x = 32933, y = 32495, z = 7 },
 	},
 	[9033] = {
 		itemId = 2114,
@@ -433,6 +450,15 @@ ItemUnique = {
 	[9255] = {
 		itemId = 5676,
 		itemPos = { x = 32954, y = 32695, z = 8 },
+	},
+	-- The Ape City Quest
+	[9256] = {
+		itemId = 3919,
+		itemPos = { x = 32181, y = 32468, z = 10 },
+	},
+	[9257] = {
+		itemId = 1949,
+		itemPos = { x = 32839, y = 32533, z = 9 },
 	},
 	-- Issavi town teleport
 	[9515] = {
@@ -843,6 +869,24 @@ ItemUnique = {
 		itemId = 1949,
 		itemPos = { x = 33178, y = 32664, z = 15 },
 	},
+	-- The Ape City Quest - The Large Amphoras
+	[40092] = {
+		itemId = 4995,
+		itemPos = { x = 32792, y = 32527, z = 10 },
+	},
+	[40093] = {
+		itemId = 4995,
+		itemPos = { x = 32823, y = 32525, z = 10 },
+	},
+	[40094] = {
+		itemId = 4995,
+		itemPos = { x = 32876, y = 32584, z = 10 },
+	},
+	[40095] = {
+		itemId = 4995,
+		itemPos = { x = 32744, y = 32586, z = 10 },
+	},
+	-- The Ancient Tombs Quest
 	[50135] = {
 		itemId = 1949,
 		itemPos = { x = 33393, y = 32802, z = 14 },

@@ -316,15 +316,15 @@ QuestDoorAction = {
 		itemPos = { { x = 33184, y = 32665, z = 15 } },
 	},
 	-- The ape city door
-	[Storage.TheApeCity.ChorDoor] = {
+	[Storage.Quest.U7_6.TheApeCity.ChorDoor] = {
 		itemId = false,
 		itemPos = { { x = 32934, y = 32886, z = 7 } },
 	},
-	[Storage.TheApeCity.FibulaDoor] = {
+	[Storage.Quest.U7_6.TheApeCity.FibulaDoor] = {
 		itemId = false,
 		itemPos = { { x = 32182, y = 32468, z = 10 } },
 	},
-	[Storage.TheApeCity.CasksDoor] = {
+	[Storage.Quest.U7_6.TheApeCity.CasksDoor] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32861, y = 32495, z = 9 },
@@ -336,7 +336,7 @@ QuestDoorAction = {
 			{ x = 32861, y = 32507, z = 9 },
 		},
 	},
-	[Storage.TheApeCity.DworcDoor] = {
+	[Storage.Quest.U7_6.TheApeCity.DworcDoor] = {
 		itemId = false,
 		itemPos = { { x = 32781, y = 32910, z = 8 } },
 	},

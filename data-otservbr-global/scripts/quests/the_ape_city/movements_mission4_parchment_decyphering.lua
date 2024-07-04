@@ -6,8 +6,8 @@ function mission4ParchmentDecyphering.onStepIn(creature, item, position, fromPos
 		return true
 	end
 
-	if player:getStorageValue(Storage.TheApeCity.Questline) == 7 and player:getStorageValue(Storage.TheApeCity.ParchmentDecyphering) ~= 1 then
-		player:setStorageValue(Storage.TheApeCity.ParchmentDecyphering, 1)
+	if player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Questline) == 6 and player:getStorageValue(Storage.Quest.U7_6.TheApeCity.ParchmentDecyphering) ~= 1 then
+		player:setStorageValue(Storage.Quest.U7_6.TheApeCity.ParchmentDecyphering, 1)
 	end
 
 	player:say("!-! -O- I_I (/( --I Morgathla", TALKTYPE_MONSTER_SAY)

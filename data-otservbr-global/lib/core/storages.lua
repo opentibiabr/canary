@@ -863,21 +863,6 @@ Storage = {
 		SecondOrientalAddon = 51025,
 		RoyalCostumeOutfit = 51026,
 	},
-	TheApeCity = {
-		-- Reserved storage from 51060 - 51079
-		Started = 51060,
-		Questline = 51061,
-		DworcDoor = 51062,
-		ChorDoor = 51063,
-		ParchmentDecyphering = 51064,
-		FibulaDoor = 51065,
-		WitchesCapSpot = 51066,
-		CasksDoor = 51067,
-		Casks = 51068,
-		HolyApeHair = 51069,
-		SnakeDestroyer = 51070,
-		ShamanOufit = 51071,
-	},
 	TheInquisition = {
 		-- Reserved storage from 51110 - 51139
 		Questline = 51110,
@@ -2011,7 +1996,25 @@ Storage = {
 		},
 		U7_6 = { -- update 7.6 - Reserved Storages 40611 - 40760
 			HydraEggQuest = 40611,
-			TheApeCity = {},
+			TheApeCity = {
+				Started = 40612,
+				Questline = 40613,
+				DworcDoor = 40614,
+				ChorDoor = 40615,
+				ParchmentDecyphering = 40616,
+				FibulaDoor = 40617,
+				WitchesCapSpot = 40618,
+				CasksDoor = 40619,
+				Casks = 40620,
+				HolyApeHair = 40621,
+				SnakeDestroyer = 40622,
+				ShamanOufit = 40623,
+				TheLargeAmphoras1 = 40624,
+				TheLargeAmphoras2 = 40625,
+				TheLargeAmphoras3 = 40626,
+				TheLargeAmphoras4 = 40627,
+				TheLargeAmphorasCooldown = 40628,
+			},
 			TheExplorerSociety = {},
 		},
 		U7_8 = { -- update 7.8 - Reserved Storages 40761 - 41000

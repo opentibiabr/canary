@@ -42,6 +42,18 @@ LeverAction = {
 			{ x = 33176, y = 32889, z = 11 },
 		},
 	},
+	-- The Ape City Quest - levers
+	[12129] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 32891, y = 32590, z = 11 },
+			{ x = 32843, y = 32649, z = 11 },
+			{ x = 32808, y = 32613, z = 11 },
+			{ x = 32775, y = 32583, z = 11 },
+			{ x = 32756, y = 32494, z = 11 },
+			{ x = 32799, y = 32556, z = 11 },
+		},
+	},
 	-- Dawnport bridge lever
 	-- Path: data\scripts\actions\dawnport\lever.lua
 	[30001] = {
@@ -95,6 +107,15 @@ LeverAction = {
 }
 
 LeverUnique = {
+	-- The Ape City Quest - levers
+	[1040] = {
+		itemId = 2773,
+		itemPos = { x = 32862, y = 32557, z = 11 },
+	},
+	[1041] = {
+		itemId = 2773,
+		itemPos = { x = 32862, y = 32555, z = 11 },
+	},
 	-- Dark trails quest (The Ravager lever)
 	-- Path: data\scripts\actions\quests\dark_trails\lever_the_ravager.lua
 	[30001] = {

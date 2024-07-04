@@ -2837,12 +2837,12 @@ if not Quests then
 		},
 		[17] = {
 			name = "The Ape City",
-			startStorageId = Storage.TheApeCity.Started,
+			startStorageId = Storage.Quest.U7_6.TheApeCity.Started,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Hairycles' Missions",
-					storageId = Storage.TheApeCity.Questline,
+					storageId = Storage.Quest.U7_6.TheApeCity.Questline,
 					missionId = 10217,
 					startValue = 1,
 					endValue = 18,

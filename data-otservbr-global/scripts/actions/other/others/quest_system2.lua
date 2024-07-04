@@ -128,7 +128,7 @@ local config = {
 		items = {
 			{ itemId = 4832 },
 		},
-		storage = Storage.TheApeCity.HolyApeHair,
+		storage = Storage.Quest.U7_6.TheApeCity.HolyApeHair,
 	},
 	[5556] = {
 		items = {
@@ -169,7 +169,7 @@ local config = {
 		items = {
 			{ itemId = 4829, decay = true },
 		},
-		storage = Storage.TheApeCity.WitchesCapSpot,
+		storage = Storage.Quest.U7_6.TheApeCity.WitchesCapSpot,
 		time = true,
 	},
 	[9259] = {

@@ -292,8 +292,8 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	query << "`skill_mana_leech_amount_tries` = " << player->skills[SKILL_MANA_LEECH_AMOUNT].tries << ",";
 	query << "`manashield` = " << player->getManaShield() << ",";
 	query << "`max_manashield` = " << player->getMaxManaShield() << ",";
-	query << "`xpboost_value` = " << player->getStoreXpBoost() << ",";
-	query << "`xpboost_stamina` = " << player->getExpBoostStamina() << ",";
+	query << "`xpboost_value` = " << player->getXpBoostPercent() << ",";
+	query << "`xpboost_stamina` = " << player->getXpBoostTime() << ",";
 	query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ",";
 
 	if (!player->isOffline()) {
@@ -436,7 +436,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(std::shared_ptr<Player> player) {
 	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
 
 	PropWriteStream propBestiaryStream;
-	for (const auto trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
+	for (const auto &trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
 		propBestiaryStream.write<uint16_t>(trackedType->info.raceid);
 	}
 	size_t trackerSize;
@@ -737,7 +737,7 @@ bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 
 	// Bosstiary tracker
 	PropWriteStream stream;
-	for (const auto monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
+	for (const auto &monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
 		if (!monsterType) {
 			continue;
 		}

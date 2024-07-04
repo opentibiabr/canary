@@ -93,8 +93,8 @@ int CanaryServer::run() {
 #ifndef _WIN32
 				if (getuid() == 0 || geteuid() == 0) {
 					logger.warn("{} has been executed as root user, "
-								"please consider running it as a normal user",
-								ProtocolStatus::SERVER_NAME);
+				                "please consider running it as a normal user",
+				                ProtocolStatus::SERVER_NAME);
 				}
 #endif
 
@@ -213,7 +213,7 @@ void CanaryServer::logInfos() {
 
 	logger.info("A server developed by: {}", ProtocolStatus::SERVER_DEVELOPERS);
 	logger.info("Visit our website for updates, support, and resources: "
-				"https://docs.opentibiabr.com/");
+	            "https://docs.opentibiabr.com/");
 }
 
 /**
@@ -234,7 +234,7 @@ void CanaryServer::toggleForceCloseButton() {
 void CanaryServer::badAllocationHandler() {
 	// Use functions that only use stack allocation
 	g_logger().error("Allocation failed, server out of memory, "
-					 "decrease the size of your map or compile in 64 bits mode");
+	                 "decrease the size of your map or compile in 64 bits mode");
 
 	if (isatty(STDIN_FILENO)) {
 		getchar();
@@ -318,7 +318,7 @@ void CanaryServer::initializeDatabase() {
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE, __FUNCTION__)
-		&& !DatabaseManager::optimizeTables()) {
+	    && !DatabaseManager::optimizeTables()) {
 		logger.debug("No tables were optimized");
 	}
 }
@@ -327,7 +327,7 @@ void CanaryServer::loadModules() {
 	// If "USE_ANY_DATAPACK_FOLDER" is set to true then you can choose any datapack folder for your server
 	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER, __FUNCTION__);
 	auto datapackName = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	if (!useAnyDatapack && (datapackName != "data-canary" && datapackName != "data-otservbr-global" || datapackName != "data-otservbr-global" && datapackName != "data-canary")) {
+	if (!useAnyDatapack && datapackName != "data-canary" && datapackName != "data-otservbr-global") {
 		throw FailedToInitializeCanary(fmt::format(
 			"The datapack folder name '{}' is wrong, please select valid "
 			"datapack name 'data-canary' or 'data-otservbr-global "
@@ -376,6 +376,7 @@ void CanaryServer::loadModules() {
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();
 	g_ioprey().initializeTaskHuntOptions();
+	g_game().logCyclopediaStats();
 }
 
 void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
@@ -389,4 +390,5 @@ void CanaryServer::shutdown() {
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();
 	inject<ThreadPool>().shutdown();
+	std::exit(0);
 }

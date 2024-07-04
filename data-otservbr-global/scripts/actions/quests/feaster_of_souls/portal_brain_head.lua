@@ -103,26 +103,26 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 	end
 	local player = creature
 	if player:getLevel() < config.requiredLevel then
-		player:teleportTo(fromPosition, true)
+		player:teleportTo(config.exitPosition, true)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to be level " .. config.requiredLevel .. " or higher.")
 		return true
 	end
 	if locked then
-		player:teleportTo(fromPosition, true)
+		player:teleportTo(config.exitPosition, true)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's already someone fighting with " .. config.bossName .. ".")
 		return false
 	end
 	if zone:countPlayers(IgnoredByMonsters) >= 5 then
-		player:teleportTo(fromPosition, true)
+		player:teleportTo(config.exitPosition, true)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The boss room is full.")
 		return false
 	end
 	local timeLeft = player:getBossCooldown(config.bossName) - os.time()
 	if timeLeft > 0 then
-		player:teleportTo(fromPosition, true)
+		player:teleportTo(config.exitPosition, true)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. getTimeInWords(timeLeft) .. " to face " .. config.bossName .. " again!")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)

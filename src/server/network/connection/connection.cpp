@@ -105,7 +105,7 @@ void Connection::accept(Protocol_ptr protocolPtr) {
 
 void Connection::acceptInternal(bool toggleParseHeader) {
 	readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-	readTimer.async_wait([self = shared_from_this()](const std::error_code &error) { Connection::handleTimeout(std::weak_ptr<Connection>(self), error); });
+	readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 	try {
 		asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this(), toggleParseHeader](const std::error_code &error, std::size_t N) {
@@ -147,7 +147,7 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 				connectionState = CONNECTION_STATE_READINGS;
 				try {
 					readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-					readTimer.async_wait([self = shared_from_this()](const std::error_code &error) { Connection::handleTimeout(std::weak_ptr<Connection>(self), error); });
+					readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 					// Read the remainder of proxy identification
 					asio::async_read(socket, asio::buffer(msg.getBuffer(), remainder), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parseProxyIdentification(error); });
@@ -208,7 +208,7 @@ void Connection::parseHeader(const std::error_code &error) {
 
 	try {
 		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait([self = shared_from_this()](const std::error_code &error) { Connection::handleTimeout(std::weak_ptr<Connection>(self), error); });
+		readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 		// Read packet content
 		msg.setLength(size + HEADER_LENGTH);
@@ -241,7 +241,7 @@ void Connection::parsePacket(const std::error_code &error) {
 			// Check packet checksum
 			uint32_t checksum;
 			if (int32_t len = msg.getLength() - msg.getBufferPosition() - CHECKSUM_LENGTH;
-				len > 0) {
+			    len > 0) {
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition() + CHECKSUM_LENGTH, len);
 			} else {
 				checksum = 0;
@@ -275,7 +275,7 @@ void Connection::parsePacket(const std::error_code &error) {
 
 	try {
 		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait([self = shared_from_this()](const std::error_code &error) { Connection::handleTimeout(std::weak_ptr<Connection>(self), error); });
+		readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 		if (!skipReadingNextPacket) {
 			// Wait to the next packet
@@ -289,7 +289,7 @@ void Connection::parsePacket(const std::error_code &error) {
 
 void Connection::resumeWork() {
 	readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-	readTimer.async_wait([self = shared_from_this()](const std::error_code &error) { Connection::handleTimeout(std::weak_ptr<Connection>(self), error); });
+	readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 	try {
 		asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parseHeader(error); });
@@ -358,7 +358,7 @@ uint32_t Connection::getIP() {
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
 	writeTimer.expires_from_now(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));
-	readTimer.async_wait([self = shared_from_this()](const std::error_code &error) { Connection::handleTimeout(std::weak_ptr<Connection>(self), error); });
+	writeTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 	try {
 		asio::async_write(socket, asio::buffer(outputMessage->getOutputBuffer(), outputMessage->getLength()), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->onWriteOperation(error); });
@@ -399,9 +399,9 @@ void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::err
 
 	if (auto connection = connectionWeak.lock()) {
 		if (!error) {
-			g_logger().warn("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
 		} else {
-			g_logger().warn("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
 		}
 		connection->close(FORCE_CLOSE);
 	}

@@ -14,6 +14,11 @@
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
 
+bool Vocations::reload() {
+	vocationsMap.clear();
+	return loadFromXml();
+}
+
 bool Vocations::loadFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/vocations.xml";
@@ -32,87 +37,87 @@ bool Vocations::loadFromXml() {
 
 		uint16_t id = pugi::cast<uint16_t>(attr.value());
 
-		auto res = vocationsMap.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(id));
-		Vocation &voc = res.first->second;
+		auto res = vocationsMap.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(std::make_shared<Vocation>(id)));
+		auto voc = res.first->second;
 
 		if ((attr = vocationNode.attribute("name"))) {
-			voc.name = attr.as_string();
+			voc->name = attr.as_string();
 		}
 
 		if ((attr = vocationNode.attribute("clientid"))) {
-			voc.clientId = pugi::cast<uint16_t>(attr.value());
+			voc->clientId = pugi::cast<uint16_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("baseid"))) {
-			voc.baseId = pugi::cast<uint16_t>(attr.value());
+			voc->baseId = pugi::cast<uint16_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("description"))) {
-			voc.description = attr.as_string();
+			voc->description = attr.as_string();
 		}
 
 		if ((attr = vocationNode.attribute("magicshield"))) {
-			voc.magicShield = attr.as_bool();
+			voc->magicShield = attr.as_bool();
 		}
 
 		if ((attr = vocationNode.attribute("gaincap"))) {
-			voc.gainCap = pugi::cast<uint32_t>(attr.value()) * 100;
+			voc->gainCap = pugi::cast<uint32_t>(attr.value()) * 100;
 		}
 
 		if ((attr = vocationNode.attribute("gainhp"))) {
-			voc.gainHP = pugi::cast<uint32_t>(attr.value());
+			voc->gainHP = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("gainmana"))) {
-			voc.gainMana = pugi::cast<uint32_t>(attr.value());
+			voc->gainMana = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("gainhpticks"))) {
-			voc.gainHealthTicks = pugi::cast<uint32_t>(attr.value());
+			voc->gainHealthTicks = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("gainhpamount"))) {
-			voc.gainHealthAmount = pugi::cast<uint32_t>(attr.value());
+			voc->gainHealthAmount = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("gainmanaticks"))) {
-			voc.gainManaTicks = pugi::cast<uint32_t>(attr.value());
+			voc->gainManaTicks = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("gainmanaamount"))) {
-			voc.gainManaAmount = pugi::cast<uint32_t>(attr.value());
+			voc->gainManaAmount = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("manamultiplier"))) {
-			voc.manaMultiplier = pugi::cast<float>(attr.value());
+			voc->manaMultiplier = pugi::cast<float>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("attackspeed"))) {
-			voc.attackSpeed = pugi::cast<uint32_t>(attr.value());
+			voc->attackSpeed = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("basespeed"))) {
-			voc.baseSpeed = pugi::cast<uint32_t>(attr.value());
+			voc->baseSpeed = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("soulmax"))) {
-			voc.soulMax = pugi::cast<uint16_t>(attr.value());
+			voc->soulMax = pugi::cast<uint16_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("gainsoulticks"))) {
-			voc.gainSoulTicks = pugi::cast<uint32_t>(attr.value());
+			voc->gainSoulTicks = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("fromvoc"))) {
-			voc.fromVocation = pugi::cast<uint32_t>(attr.value());
+			voc->fromVocation = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("canCombat"))) {
-			voc.combat = attr.as_bool();
+			voc->combat = attr.as_bool();
 		}
 
 		if ((attr = vocationNode.attribute("avatarlooktype"))) {
-			voc.avatarLookType = pugi::cast<uint16_t>(attr.value());
+			voc->avatarLookType = pugi::cast<uint16_t>(attr.value());
 		}
 
 		for (auto childNode : vocationNode.children()) {
@@ -121,88 +126,88 @@ bool Vocations::loadFromXml() {
 				if (skillIdAttribute) {
 					uint16_t skill_id = pugi::cast<uint16_t>(skillIdAttribute.value());
 					if (skill_id <= SKILL_LAST) {
-						voc.skillMultipliers[skill_id] = pugi::cast<float>(childNode.attribute("multiplier").value());
+						voc->skillMultipliers[skill_id] = pugi::cast<float>(childNode.attribute("multiplier").value());
 					} else {
 						g_logger().warn("[Vocations::loadFromXml] - "
-										"No valid skill id: {} for vocation: {}",
-										skill_id, voc.id);
+						                "No valid skill id: {} for vocation: {}",
+						                skill_id, voc->id);
 					}
 				} else {
 					g_logger().warn("[Vocations::loadFromXml] - "
-									"Missing skill id for vocation: {}",
-									voc.id);
+					                "Missing skill id for vocation: {}",
+					                voc->id);
 				}
 			} else if (strcasecmp(childNode.name(), "mitigation") == 0) {
 				pugi::xml_attribute factorAttribute = childNode.attribute("multiplier");
 				if (factorAttribute) {
-					voc.mitigationFactor = pugi::cast<float>(factorAttribute.value());
+					voc->mitigationFactor = pugi::cast<float>(factorAttribute.value());
 				}
 
 				pugi::xml_attribute primaryShieldAttribute = childNode.attribute("primaryShield");
 				if (primaryShieldAttribute) {
-					voc.mitigationPrimaryShield = pugi::cast<float>(primaryShieldAttribute.value());
+					voc->mitigationPrimaryShield = pugi::cast<float>(primaryShieldAttribute.value());
 				}
 
 				pugi::xml_attribute secondaryShieldAttribute = childNode.attribute("secondaryShield");
 				if (secondaryShieldAttribute) {
-					voc.mitigationSecondaryShield = pugi::cast<float>(secondaryShieldAttribute.value());
+					voc->mitigationSecondaryShield = pugi::cast<float>(secondaryShieldAttribute.value());
 				}
 			} else if (strcasecmp(childNode.name(), "formula") == 0) {
 				pugi::xml_attribute meleeDamageAttribute = childNode.attribute("meleeDamage");
 				if (meleeDamageAttribute) {
-					voc.meleeDamageMultiplier = pugi::cast<float>(meleeDamageAttribute.value());
+					voc->meleeDamageMultiplier = pugi::cast<float>(meleeDamageAttribute.value());
 				}
 
 				pugi::xml_attribute distDamageAttribute = childNode.attribute("distDamage");
 				if (distDamageAttribute) {
-					voc.distDamageMultiplier = pugi::cast<float>(distDamageAttribute.value());
+					voc->distDamageMultiplier = pugi::cast<float>(distDamageAttribute.value());
 				}
 
 				pugi::xml_attribute defenseAttribute = childNode.attribute("defense");
 				if (defenseAttribute) {
-					voc.defenseMultiplier = pugi::cast<float>(defenseAttribute.value());
+					voc->defenseMultiplier = pugi::cast<float>(defenseAttribute.value());
 				}
 
 				pugi::xml_attribute armorAttribute = childNode.attribute("armor");
 				if (armorAttribute) {
-					voc.armorMultiplier = pugi::cast<float>(armorAttribute.value());
+					voc->armorMultiplier = pugi::cast<float>(armorAttribute.value());
 				}
 			} else if (strcasecmp(childNode.name(), "pvp") == 0) {
 				pugi::xml_attribute pvpDamageReceivedMultiplier = childNode.attribute("damageReceivedMultiplier");
 				if (pvpDamageReceivedMultiplier) {
-					voc.pvpDamageReceivedMultiplier = pugi::cast<float>(pvpDamageReceivedMultiplier.value());
+					voc->pvpDamageReceivedMultiplier = pugi::cast<float>(pvpDamageReceivedMultiplier.value());
 				}
 
 				pugi::xml_attribute pvpDamageDealtMultiplier = childNode.attribute("damageDealtMultiplier");
 				if (pvpDamageDealtMultiplier) {
-					voc.pvpDamageDealtMultiplier = pugi::cast<float>(pvpDamageDealtMultiplier.value());
+					voc->pvpDamageDealtMultiplier = pugi::cast<float>(pvpDamageDealtMultiplier.value());
 				}
 			} else if (strcasecmp(childNode.name(), "gem") == 0) {
 				pugi::xml_attribute qualityAttr = childNode.attribute("quality");
 				pugi::xml_attribute nameAttr = childNode.attribute("name");
 				auto quality = pugi::cast<uint8_t>(qualityAttr.value());
 				auto name = nameAttr.as_string();
-				voc.wheelGems[static_cast<WheelGemQuality_t>(quality)] = name;
+				voc->wheelGems[static_cast<WheelGemQuality_t>(quality)] = name;
 			}
 		}
 	}
 	return true;
 }
 
-Vocation* Vocations::getVocation(uint16_t id) {
+std::shared_ptr<Vocation> Vocations::getVocation(uint16_t id) {
 	auto it = vocationsMap.find(id);
 	if (it == vocationsMap.end()) {
 		g_logger().warn("[Vocations::getVocation] - "
-						"Vocation {} not found",
-						id);
+		                "Vocation {} not found",
+		                id);
 		return nullptr;
 	}
-	return &it->second;
+	return it->second;
 }
 
 uint16_t Vocations::getVocationId(const std::string &name) const {
 	for (const auto &it : vocationsMap) {
-		if (strcasecmp(it.second.name.c_str(), name.c_str()) == 0) {
+		if (strcasecmp(it.second->name.c_str(), name.c_str()) == 0) {
 			return it.first;
 		}
 	}
@@ -211,7 +216,7 @@ uint16_t Vocations::getVocationId(const std::string &name) const {
 
 uint16_t Vocations::getPromotedVocation(uint16_t vocationId) const {
 	for (const auto &it : vocationsMap) {
-		if (it.second.fromVocation == vocationId && it.first != vocationId) {
+		if (it.second->fromVocation == vocationId && it.first != vocationId) {
 			return it.first;
 		}
 	}
@@ -292,7 +297,7 @@ std::vector<WheelGemSupremeModifier_t> Vocation::getSupremeGemModifiers() {
 	auto allModifiers = magic_enum::enum_entries<WheelGemSupremeModifier_t>();
 	g_logger().debug("Loading supreme gem modifiers for vocation: {}", vocationName);
 	for (const auto &[value, modifierName] : allModifiers) {
-		std::string targetVocation(modifierName.substr(0, modifierName.find("_")));
+		std::string targetVocation(modifierName.substr(0, modifierName.find('_')));
 		toLowerCaseString(targetVocation);
 		g_logger().debug("Checking supreme gem modifier: {}, targetVocation: {}", modifierName, targetVocation);
 		if (targetVocation == "general" || targetVocation.find(vocationName) != std::string::npos) {

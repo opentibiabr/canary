@@ -10,9 +10,21 @@
 #include "pch.hpp"
 
 #include "creatures/players/grouping/familiars.hpp"
+#include "lib/di/container.hpp"
 #include "config/configmanager.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
+
+Familiars &Familiars::getInstance() {
+	return inject<Familiars>();
+}
+
+bool Familiars::reload() {
+	for (auto &familiarsVector : familiars) {
+		familiarsVector.clear();
+	}
+	return loadFromXml();
+}
 
 bool Familiars::loadFromXml() {
 	pugi::xml_document doc;
@@ -35,7 +47,7 @@ bool Familiars::loadFromXml() {
 			continue;
 		}
 
-		uint16_t vocation = pugi::cast<uint16_t>(attr.value());
+		auto vocation = pugi::cast<uint16_t>(attr.value());
 		if (vocation > VOCATION_LAST) {
 			g_logger().warn("[Familiars::loadFromXml] - Invalid familiar vocation {}", vocation);
 			continue;
@@ -47,13 +59,13 @@ bool Familiars::loadFromXml() {
 			continue;
 		}
 
-		familiars[vocation].emplace_back(
+		familiars[vocation].emplace_back(std::make_shared<Familiar>(
 			familiarsNode.attribute("name").as_string(),
 			pugi::cast<uint16_t>(lookTypeAttribute.value()),
 			familiarsNode.attribute("premium").as_bool(),
 			familiarsNode.attribute("unlocked").as_bool(true),
 			familiarsNode.attribute("type").as_string()
-		);
+		));
 	}
 	for (uint16_t vocation = VOCATION_NONE; vocation <= VOCATION_LAST; ++vocation) {
 		familiars[vocation].shrink_to_fit();
@@ -61,11 +73,12 @@ bool Familiars::loadFromXml() {
 	return true;
 }
 
-const Familiar* Familiars::getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const {
-	for (const Familiar &familiar : familiars[vocation]) {
-		if (familiar.lookType == lookType) {
-			return &familiar;
-		}
+std::shared_ptr<Familiar> Familiars::getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const {
+	if (auto it = std::find_if(familiars[vocation].begin(), familiars[vocation].end(), [lookType](auto familiar_it) {
+			return familiar_it->lookType == lookType;
+		});
+	    it != familiars[vocation].end()) {
+		return *it;
 	}
 	return nullptr;
 }

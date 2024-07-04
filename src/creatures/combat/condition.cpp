@@ -1308,7 +1308,7 @@ void ConditionManaShield::addCondition(std::shared_ptr<Creature> creature, const
 
 bool ConditionManaShield::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_MANASHIELD) {
-		return propStream.read<uint16_t>(manaShield);
+		return propStream.read<uint32_t>(manaShield);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -1317,7 +1317,7 @@ void ConditionManaShield::serialize(PropWriteStream &propWriteStream) {
 	Condition::serialize(propWriteStream);
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_MANASHIELD);
-	propWriteStream.write<uint16_t>(manaShield);
+	propWriteStream.write<uint32_t>(manaShield);
 }
 
 bool ConditionManaShield::setParam(ConditionParam_t param, int32_t value) {
@@ -1472,7 +1472,7 @@ bool ConditionDamage::unserializeProp(ConditionAttr_t attr, PropStream &propStre
 	} else if (attr == CONDITIONATTR_OWNER) {
 		return propStream.skip(4);
 	} else if (attr == CONDITIONATTR_INTERVALDATA) {
-		IntervalInfo damageInfo;
+		IntervalInfo damageInfo {};
 		if (!propStream.read<IntervalInfo>(damageInfo)) {
 			return false;
 		}
@@ -1530,7 +1530,7 @@ bool ConditionDamage::addDamage(int32_t rounds, int32_t time, int32_t value) {
 
 	// rounds, time, damage
 	for (int32_t i = 0; i < rounds; ++i) {
-		IntervalInfo damageInfo;
+		IntervalInfo damageInfo {};
 		damageInfo.interval = time;
 		damageInfo.timeLeft = time;
 		damageInfo.value = value;
@@ -1803,13 +1803,9 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
  *  ConditionFeared
  */
 bool ConditionFeared::isStuck(std::shared_ptr<Creature> creature, Position pos) const {
-	for (Direction dir : m_directionsVector) {
-		if (canWalkTo(creature, pos, dir)) {
-			return false;
-		}
-	}
-
-	return true;
+	return std::ranges::all_of(m_directionsVector, [&](Direction dir) {
+		return !canWalkTo(creature, pos, dir);
+	});
 }
 
 bool ConditionFeared::getRandomDirection(std::shared_ptr<Creature> creature, Position pos) {
@@ -1995,6 +1991,8 @@ bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Posi
 					futurePos.y -= wsize;
 					g_logger().debug("[{}] Trying to flee to NORTHWEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
+				case DIRECTION_NONE:
+					break;
 			}
 
 			found = creature->getPathTo(futurePos, dirList, 0, 30);
@@ -2044,7 +2042,7 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 			g_dispatcher().addEvent([id = creature->getID(), listDir = listDir.data()] {
 				g_game().forcePlayerAutoWalk(id, listDir);
 			},
-									"ConditionFeared::executeCondition");
+			                        "ConditionFeared::executeCondition");
 
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}

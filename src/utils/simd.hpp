@@ -13,7 +13,7 @@
 
 #if defined(__DISABLE_VECTORIZATION__)
 	// You might want to disable vectorization on some compilers
-	// it can just get buggy and the engine will crashes
+    // it can just get buggy and the engine will crashes
 	#undef __NEON__
 	#undef __ARM_NEON__
 	#undef __ARM_FEATURE_SIMD32

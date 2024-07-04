@@ -27,7 +27,6 @@ public:
 
 	explicit Npc(const std::shared_ptr<NpcType> &npcType);
 	Npc() = default;
-	~Npc();
 
 	// Singleton - ensures we don't accidentally copy it
 	Npc(const Npc &) = delete;
@@ -68,7 +67,7 @@ public:
 	}
 
 	void setName(std::string newName) {
-		npcType->name = newName;
+		npcType->name = std::move(newName);
 	}
 
 	CreatureType_t getType() const override {
@@ -96,10 +95,10 @@ public:
 		npcType->info.currencyId = currency;
 	}
 
-	std::vector<ShopBlock> getShopItemVector(uint32_t playerGUID) {
+	const std::vector<ShopBlock> &getShopItemVector(uint32_t playerGUID) const {
 		if (playerGUID != 0) {
-			auto it = shopPlayerMap.find(playerGUID);
-			if (it != shopPlayerMap.end() && !it->second.empty()) {
+			auto it = shopPlayers.find(playerGUID);
+			if (it != shopPlayers.end() && !it->second.empty()) {
 				return it->second;
 			}
 		}
@@ -166,8 +165,10 @@ public:
 		internalLight = npcType->info.light;
 	}
 
-	void addShopPlayer(const std::shared_ptr<Player> &player, const std::vector<ShopBlock> &shopItems = {});
-	void removeShopPlayer(const std::shared_ptr<Player> &player);
+	bool isShopPlayer(uint32_t playerGUID) const;
+
+	void addShopPlayer(uint32_t playerGUID, const std::vector<ShopBlock> &shopItems);
+	void removeShopPlayer(uint32_t playerGUID);
 	void closeAllShopWindows();
 
 	static uint32_t npcAutoID;
@@ -185,18 +186,18 @@ private:
 
 	std::map<uint32_t, uint16_t> playerInteractions;
 
-	phmap::flat_hash_map<uint32_t, std::vector<ShopBlock>> shopPlayerMap;
+	std::unordered_map<uint32_t, std::vector<ShopBlock>> shopPlayers;
 
 	std::shared_ptr<NpcType> npcType;
 	std::shared_ptr<SpawnNpc> spawnNpc;
 
-	uint8_t speechBubble;
+	uint8_t speechBubble {};
 
 	uint32_t yellTicks = 0;
 	uint32_t walkTicks = 0;
 	uint32_t soundTicks = 0;
 
-	bool ignoreHeight;
+	bool ignoreHeight {};
 
 	phmap::flat_hash_set<std::shared_ptr<Player>> playerSpectators;
 	Position masterPos;

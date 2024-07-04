@@ -1570,6 +1570,8 @@ Storage = {
 			WarriorSkeleton = 52146,
 			DragonCounter = 52147,
 		},
+		QuestLine = 52148,
+		TheLostBrother = 52149,
 	},
 	DreamersChallenge = {
 		-- Reserved storage from 52160 - 52199
@@ -2534,7 +2536,6 @@ Storage = {
 			NightmareTeddy = {},
 			PoacherCavesMiniWorldChange = {},
 			TheGreatDragonHunt = {},
-			TheLostBrother = {},
 			TheTaintedSouls = {},
 		},
 		U10_90 = { -- update 10.90 - Reserved Storages 45201 - 45350
@@ -3076,6 +3077,15 @@ GlobalStorage = {
 			AnkrahmunNorth = 60191,
 			DarashiaNorth = 60192,
 			DarashiaWest = 60193,
+		},
+	},
+	TheDreamCourts = {
+		-- Reserved storage from 60194 - 60196
+		FacelessBane = {
+			-- Global
+			StepsOn = 60194,
+			Deaths = 60195,
+			ResetSteps = 60196,
 		},
 	},
 	FuryGates = 65000,

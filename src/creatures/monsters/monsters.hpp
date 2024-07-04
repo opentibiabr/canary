@@ -30,7 +30,7 @@ struct spellBlock_t {
 	~spellBlock_t() = default;
 	spellBlock_t(const spellBlock_t &other) = delete;
 	spellBlock_t &operator=(const spellBlock_t &other) = delete;
-	spellBlock_t(spellBlock_t &&other) :
+	spellBlock_t(spellBlock_t &&other) noexcept :
 		spell(other.spell),
 		chance(other.chance),
 		speed(other.speed),
@@ -57,7 +57,7 @@ struct spellBlock_t {
 
 class MonsterType {
 	struct MonsterInfo {
-		LuaScriptInterface* scriptInterface;
+		LuaScriptInterface* scriptInterface {};
 
 		std::map<CombatType_t, int32_t> elementMap;
 		std::map<CombatType_t, int32_t> reflectMap;
@@ -201,7 +201,7 @@ public:
 		return !info.bosstiaryClass.empty();
 	}
 
-	void loadLoot(const std::shared_ptr<MonsterType> monsterType, LootBlock lootblock);
+	void loadLoot(std::shared_ptr<MonsterType> monsterType, LootBlock lootblock);
 
 	bool canSpawn(const Position &pos);
 };
@@ -271,8 +271,8 @@ public:
 
 	std::shared_ptr<MonsterType> getMonsterType(const std::string &name, bool silent = false) const;
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
-	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> mType);
-	bool deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description = "");
+	bool tryAddMonsterType(const std::string &name, std::shared_ptr<MonsterType> mType);
+	bool deserializeSpell(std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description = "");
 
 	std::unique_ptr<LuaScriptInterface> scriptInterface;
 	std::map<std::string, std::shared_ptr<MonsterType>> monsters;

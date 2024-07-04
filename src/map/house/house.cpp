@@ -45,7 +45,7 @@ void House::setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup) {
 
 void House::clearHouseInfo(bool preventOwnerDeletion) {
 	// Remove players from beds
-	for (auto bed : bedsList) {
+	for (const auto &bed : bedsList) {
 		if (bed->getSleeper() != 0) {
 			bed->wakeUp(nullptr);
 		}
@@ -60,7 +60,7 @@ void House::clearHouseInfo(bool preventOwnerDeletion) {
 	setAccessList(SUBOWNER_LIST, "");
 	setAccessList(GUEST_LIST, "");
 
-	for (auto door : doorList) {
+	for (const auto &door : doorList) {
 		door->setAccessList("");
 	}
 }
@@ -73,7 +73,7 @@ bool House::tryTransferOwnership(std::shared_ptr<Player> player, bool serverStar
 		transferSuccess = transferToDepot();
 	}
 
-	for (auto tile : houseTiles) {
+	for (const auto &tile : houseTiles) {
 		if (const CreatureVector* creatures = tile->getCreatures()) {
 			for (int32_t i = creatures->size(); --i >= 0;) {
 				const auto creature = (*creatures)[i];
@@ -103,7 +103,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared
 	isLoaded = true;
 
 	if (owner != 0) {
-		tryTransferOwnership(player, false);
+		tryTransferOwnership(std::move(player), false);
 	} else {
 		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD, __FUNCTION__));
 		time_t currentTime = time(nullptr);
@@ -237,7 +237,7 @@ void House::setAccessList(uint32_t listId, const std::string &textlist) {
 	}
 
 	// kick uninvited players
-	for (std::shared_ptr<HouseTile> tile : houseTiles) {
+	for (const std::shared_ptr<HouseTile> &tile : houseTiles) {
 		if (CreatureVector* creatures = tile->getCreatures()) {
 			for (int32_t i = creatures->size(); --i >= 0;) {
 				std::shared_ptr<Player> player = (*creatures)[i]->getPlayer();
@@ -272,7 +272,7 @@ bool House::transferToDepot(std::shared_ptr<Player> player) const {
 	if (townId == 0 || !player) {
 		return false;
 	}
-	for (std::shared_ptr<HouseTile> tile : houseTiles) {
+	for (const std::shared_ptr<HouseTile> &tile : houseTiles) {
 		if (!transferToDepot(player, tile)) {
 			return false;
 		}
@@ -304,7 +304,7 @@ bool House::transferToDepot(std::shared_ptr<Player> player, std::shared_ptr<Hous
 
 	std::unordered_set<std::shared_ptr<Player>> playersToSave = { player };
 
-	for (std::shared_ptr<Item> item : moveItemList) {
+	for (const std::shared_ptr<Item> &item : moveItemList) {
 		g_logger().debug("[{}] moving item '{}' to depot", __FUNCTION__, item->getName());
 		auto targetPlayer = player;
 		if (item->hasOwner() && !item->isOwner(targetPlayer)) {
@@ -317,7 +317,7 @@ bool House::transferToDepot(std::shared_ptr<Player> player, std::shared_ptr<Hous
 		}
 		g_game().internalMoveItem(item->getParent(), targetPlayer->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
 	}
-	for (auto playerToSave : playersToSave) {
+	for (const auto &playerToSave : playersToSave) {
 		g_saveManager().savePlayer(playerToSave);
 	}
 	return true;
@@ -379,7 +379,7 @@ void House::handleWrapableItem(ItemList &moveItemList, std::shared_ptr<Item> ite
 
 void House::handleContainer(ItemList &moveItemList, std::shared_ptr<Item> item) const {
 	if (const auto container = item->getContainer()) {
-		for (std::shared_ptr<Item> containerItem : container->getItemList()) {
+		for (const std::shared_ptr<Item> &containerItem : container->getItemList()) {
 			moveItemList.push_back(containerItem);
 		}
 	}
@@ -554,32 +554,32 @@ void AccessList::parseList(const std::string &list) {
 	}
 
 	auto lines = explodeString(validList, "\n", 100);
-	for (auto &line : lines) {
-		trimString(line);
-		trim_left(line, '\t');
-		trim_right(line, '\t');
-		trimString(line);
+	for (auto &m_line : lines) {
+		trimString(m_line);
+		trim_left(m_line, '\t');
+		trim_right(m_line, '\t');
+		trimString(m_line);
 
-		if (line.empty() || line.front() == '#' || line.length() > 100) {
+		if (m_line.empty() || m_line.front() == '#' || m_line.length() > 100) {
 			continue;
 		}
 
-		toLowerCaseString(line);
+		toLowerCaseString(m_line);
 
-		std::string::size_type at_pos = line.find("@");
+		std::string::size_type at_pos = m_line.find('@');
 		if (at_pos != std::string::npos) {
 			if (at_pos == 0) {
-				addGuild(line.substr(1));
+				addGuild(m_line.substr(1));
 			} else {
-				addGuildRank(line.substr(0, at_pos - 1), line.substr(at_pos + 1));
+				addGuildRank(m_line.substr(0, at_pos - 1), m_line.substr(at_pos + 1));
 			}
-		} else if (line == "*") {
+		} else if (m_line == "*") {
 			allowEveryone = true;
-		} else if (line.find_first_of("!*?") != std::string::npos) {
+		} else if (m_line.find_first_of("!*?") != std::string::npos) {
 			// Remove regular expressions since they don't make much sense in houses
 			continue;
-		} else if (line.length() <= NETWORKMESSAGE_PLAYERNAME_MAXLENGTH) {
-			addPlayer(line);
+		} else if (m_line.length() <= NETWORKMESSAGE_PLAYERNAME_MAXLENGTH) {
+			addPlayer(m_line);
 		}
 	}
 }
@@ -603,7 +603,7 @@ namespace {
 			return nullptr;
 		}
 
-		const auto guild = g_game().getGuild(guildId);
+		auto guild = g_game().getGuild(guildId);
 		if (guild) {
 			return guild;
 		}
@@ -615,7 +615,7 @@ namespace {
 void AccessList::addGuild(const std::string &name) {
 	const auto guild = getGuildByName(name);
 	if (guild) {
-		for (const auto rank : guild->getRanks()) {
+		for (const auto &rank : guild->getRanks()) {
 			guildRankList.insert(rank->id);
 		}
 	}
@@ -669,7 +669,7 @@ void Door::setHouse(std::shared_ptr<House> newHouse) {
 		return;
 	}
 
-	this->house = newHouse;
+	this->house = std::move(newHouse);
 
 	if (!accessList) {
 		accessList = std::make_unique<AccessList>();
@@ -753,8 +753,8 @@ bool Houses::loadHousesXML(const std::string &filename) {
 		);
 		if (entryPos.x == 0 && entryPos.y == 0 && entryPos.z == 0) {
 			g_logger().warn("[Houses::loadHousesXML] - Entry not set for house "
-							"name: {} with id: {}",
-							house->getName(), houseId);
+			                "name: {} with id: {}",
+			                house->getName(), houseId);
 		}
 		house->setEntryPos(entryPos);
 

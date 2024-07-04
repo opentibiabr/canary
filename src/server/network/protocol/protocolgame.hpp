@@ -13,9 +13,12 @@
 #include "creatures/interactions/chat.hpp"
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 
 class NetworkMessage;
 class Player;
+class VIPGroup;
 class Game;
 class House;
 class Container;
@@ -29,6 +32,8 @@ class TaskHuntingOption;
 
 struct ModalWindow;
 struct Achievement;
+struct Badge;
+struct Title;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
@@ -126,6 +131,8 @@ private:
 	void sendItemInspection(uint16_t itemId, uint8_t itemCount, std::shared_ptr<Item> item, bool cyclopedia);
 	void parseInspectionObject(NetworkMessage &msg);
 
+	void parseFriendSystemAction(NetworkMessage &msg);
+
 	void parseCyclopediaCharacterInfo(NetworkMessage &msg);
 
 	void parseHighscores(NetworkMessage &msg);
@@ -207,6 +214,7 @@ private:
 	void parseAddVip(NetworkMessage &msg);
 	void parseRemoveVip(NetworkMessage &msg);
 	void parseEditVip(NetworkMessage &msg);
+	void parseVipGroupActions(NetworkMessage &msg);
 
 	void parseRotateItem(NetworkMessage &msg);
 	void parseConfigureShowOffSocket(NetworkMessage &msg);
@@ -313,7 +321,7 @@ private:
 	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries);
 	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries);
 	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
-	void sendCyclopediaCharacterItemSummary();
+	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems);
 	void sendCyclopediaCharacterOutfitsMounts();
 	void sendCyclopediaCharacterStoreSummary();
 	void sendCyclopediaCharacterInspection();
@@ -354,6 +362,7 @@ private:
 
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 	void sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status);
+	void sendVIPGroups();
 
 	void sendPendingStateEntered();
 	void sendEnterWorld();
@@ -384,6 +393,7 @@ private:
 	void sendAddTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
 	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
 	void sendRemoveTileThing(const Position &pos, uint32_t stackpos);
+	void sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> creature);
 	void sendUpdateTile(std::shared_ptr<Tile> tile, const Position &pos);
 
 	void sendAddCreature(std::shared_ptr<Creature> creature, const Position &pos, int32_t stackpos, bool isLogin);
@@ -471,6 +481,7 @@ private:
 
 	friend class Player;
 	friend class PlayerWheel;
+	friend class PlayerVIP;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
@@ -503,6 +514,7 @@ private:
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 
+	void sendHotkeyPreset();
 	void sendDisableLoginMusic();
 
 	uint8_t m_playerDeathTime = 0;

@@ -18,50 +18,27 @@ void Spectators::clearCache() {
 	spectatorsCache.clear();
 }
 
-bool Spectators::contains(const std::shared_ptr<Creature> &creature) {
-	return creatures.contains(creature);
-}
-
-bool Spectators::erase(const std::shared_ptr<Creature> &creature) {
-	return creatures.erase(creature);
-}
-
 Spectators Spectators::insert(const std::shared_ptr<Creature> &creature) {
 	if (creature) {
-		creatures.emplace(creature);
+		creatures.emplace_back(creature);
 	}
 	return *this;
 }
 
-Spectators Spectators::insertAll(const SpectatorList &list) {
+Spectators Spectators::insertAll(const CreatureVector &list) {
 	if (!list.empty()) {
-		creatures.insertAll(list);
+		const bool hasValue = !creatures.empty();
+
+		creatures.insert(creatures.end(), list.begin(), list.end());
+
+		// Remove duplicate
+		if (hasValue) {
+			std::unordered_set uset(creatures.begin(), creatures.end());
+			creatures.clear();
+			creatures.insert(creatures.end(), uset.begin(), uset.end());
+		}
 	}
 	return *this;
-}
-
-Spectators Spectators::join(Spectators &anotherSpectators) {
-	return insertAll(anotherSpectators.creatures.data());
-}
-
-bool Spectators::empty() const noexcept {
-	return creatures.empty();
-}
-
-size_t Spectators::size() noexcept {
-	return creatures.size();
-}
-
-CreatureVector::iterator Spectators::begin() noexcept {
-	return creatures.begin();
-}
-
-CreatureVector::iterator Spectators::end() noexcept {
-	return creatures.end();
-}
-
-const CreatureVector &Spectators::data() noexcept {
-	return creatures.data();
 }
 
 bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {
@@ -77,16 +54,16 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 	}
 
 	if (checkDistance) {
-		SpectatorList spectators;
+		CreatureVector spectators;
 		spectators.reserve(creatures.size());
-		for (const auto creature : *list) {
+		for (const auto &creature : *list) {
 			const auto &specPos = creature->getPosition();
 			if (centerPos.x - specPos.x >= minRangeX
-				&& centerPos.y - specPos.y >= minRangeY
-				&& centerPos.x - specPos.x <= maxRangeX
-				&& centerPos.y - specPos.y <= maxRangeY
-				&& (multifloor || specPos.z == centerPos.z)
-				&& (!onlyPlayers || creature->getPlayer())) {
+			    && centerPos.y - specPos.y >= minRangeY
+			    && centerPos.x - specPos.x <= maxRangeX
+			    && centerPos.y - specPos.y <= maxRangeY
+			    && (multifloor || specPos.z == centerPos.z)
+			    && (!onlyPlayers || creature->getPlayer())) {
 				spectators.emplace_back(creature);
 			}
 		}
@@ -154,64 +131,62 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 		}
 	}
 
-	const int_fast32_t min_y = centerPos.y + minRangeY;
-	const int_fast32_t min_x = centerPos.x + minRangeX;
-	const int_fast32_t max_y = centerPos.y + maxRangeY;
-	const int_fast32_t max_x = centerPos.x + maxRangeX;
+	const int32_t min_y = centerPos.y + minRangeY;
+	const int32_t min_x = centerPos.x + minRangeX;
+	const int32_t max_y = centerPos.y + maxRangeY;
+	const int32_t max_x = centerPos.x + maxRangeX;
 
-	const int_fast16_t minoffset = centerPos.getZ() - maxRangeZ;
-	const int_fast32_t x1 = std::min<int_fast32_t>(0xFFFF, std::max<int_fast32_t>(0, (min_x + minoffset)));
-	const int_fast32_t y1 = std::min<int_fast32_t>(0xFFFF, std::max<int_fast32_t>(0, (min_y + minoffset)));
+	const auto width = static_cast<uint32_t>(max_x - min_x);
+	const auto height = static_cast<uint32_t>(max_y - min_y);
+	const auto depth = static_cast<uint32_t>(maxRangeZ - minRangeZ);
 
-	const int_fast16_t maxoffset = centerPos.getZ() - minRangeZ;
-	const int_fast32_t x2 = std::min<int_fast32_t>(0xFFFF, std::max<int_fast32_t>(0, (max_x + maxoffset)));
-	const int_fast32_t y2 = std::min<int_fast32_t>(0xFFFF, std::max<int_fast32_t>(0, (max_y + maxoffset)));
+	const int32_t minoffset = centerPos.getZ() - maxRangeZ;
+	const int32_t x1 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, min_x + minoffset));
+	const int32_t y1 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, min_y + minoffset));
 
-	const uint_fast16_t startx1 = x1 - (x1 % FLOOR_SIZE);
-	const uint_fast16_t starty1 = y1 - (y1 % FLOOR_SIZE);
-	const uint_fast16_t endx2 = x2 - (x2 % FLOOR_SIZE);
-	const uint_fast16_t endy2 = y2 - (y2 % FLOOR_SIZE);
+	const int32_t maxoffset = centerPos.getZ() - minRangeZ;
+	const int32_t x2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, max_x + maxoffset));
+	const int32_t y2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, max_y + maxoffset));
 
-	const auto startLeaf = g_game().map.getQTNode(static_cast<uint16_t>(startx1), static_cast<uint16_t>(starty1));
-	const QTreeLeafNode* leafS = startLeaf;
-	const QTreeLeafNode* leafE;
+	const int32_t startx1 = x1 - (x1 & SECTOR_MASK);
+	const int32_t starty1 = y1 - (y1 & SECTOR_MASK);
+	const int32_t endx2 = x2 - (x2 & SECTOR_MASK);
+	const int32_t endy2 = y2 - (y2 & SECTOR_MASK);
 
-	SpectatorList spectators;
+	CreatureVector spectators;
 	spectators.reserve(std::max<uint8_t>(MAP_MAX_VIEW_PORT_X, MAP_MAX_VIEW_PORT_Y) * 2);
 
-	for (uint_fast16_t ny = starty1; ny <= endy2; ny += FLOOR_SIZE) {
-		leafE = leafS;
-		for (uint_fast16_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
-			if (leafE) {
-				const auto &node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
-				for (const auto creature : node_list) {
+	const MapSector* startSector = g_game().map.getMapSector(startx1, starty1);
+	const MapSector* sectorS = startSector;
+	for (int32_t ny = starty1; ny <= endy2; ny += SECTOR_SIZE) {
+		const MapSector* sectorE = sectorS;
+		for (int32_t nx = startx1; nx <= endx2; nx += SECTOR_SIZE) {
+			if (sectorE) {
+				const auto &node_list = onlyPlayers ? sectorE->player_list : sectorE->creature_list;
+				for (const auto &creature : node_list) {
 					const auto &cpos = creature->getPosition();
-					if (minRangeZ > cpos.z || maxRangeZ < cpos.z) {
-						continue;
+					if (static_cast<uint32_t>(static_cast<int32_t>(cpos.z) - minRangeZ) <= depth) {
+						const int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);
+						if (static_cast<uint32_t>(cpos.x - offsetZ - min_x) <= width && static_cast<uint32_t>(cpos.y - offsetZ - min_y) <= height) {
+							spectators.emplace_back(creature);
+						}
 					}
-
-					const int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);
-					if ((min_y + offsetZ) > cpos.y || (max_y + offsetZ) < cpos.y || (min_x + offsetZ) > cpos.x || (max_x + offsetZ) < cpos.x) {
-						continue;
-					}
-
-					spectators.emplace_back(creature);
 				}
-				leafE = leafE->leafE;
+				sectorE = sectorE->sectorE;
 			} else {
-				leafE = g_game().map.getQTNode(static_cast<uint16_t>(nx + FLOOR_SIZE), static_cast<uint16_t>(ny));
+				sectorE = g_game().map.getMapSector(nx + SECTOR_SIZE, ny);
 			}
 		}
 
-		if (leafS) {
-			leafS = leafS->leafS;
+		if (sectorS) {
+			sectorS = sectorS->sectorS;
 		} else {
-			leafS = g_game().map.getQTNode(static_cast<uint16_t>(startx1), static_cast<uint16_t>(ny + FLOOR_SIZE));
+			sectorS = g_game().map.getMapSector(startx1, ny + SECTOR_SIZE);
 		}
 	}
 
 	// It is necessary to create the cache even if no spectators is found, so that there is no future query.
-	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY }).first->second;
+	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY, .creatures = {}, .players = {} }).first->second;
 	auto &creaturesCache = onlyPlayers ? cache.players : cache.creatures;
 	auto &creatureList = (multifloor ? creaturesCache.multiFloor : creaturesCache.floor);
 	if (creatureList) {

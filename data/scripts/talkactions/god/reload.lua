@@ -7,6 +7,7 @@ local reloadTypes = {
 	["configuration"] = RELOAD_TYPE_CONFIG,
 	["core"] = RELOAD_TYPE_CORE,
 	["events"] = RELOAD_TYPE_EVENTS,
+	["familiar"] = RELOAD_TYPE_FAMILIARS,
 	["global"] = RELOAD_TYPE_CORE,
 	["group"] = RELOAD_TYPE_GROUPS,
 	["groups"] = RELOAD_TYPE_GROUPS,
@@ -20,6 +21,8 @@ local reloadTypes = {
 	["monsters"] = RELOAD_TYPE_MONSTERS,
 	["mount"] = RELOAD_TYPE_MOUNTS,
 	["mounts"] = RELOAD_TYPE_MOUNTS,
+	["outfit"] = RELOAD_TYPE_OUTFITS,
+	["outfits"] = RELOAD_TYPE_OUTFITS,
 	["npc"] = RELOAD_TYPE_NPCS,
 	["npcs"] = RELOAD_TYPE_NPCS,
 	["raid"] = RELOAD_TYPE_RAIDS,
@@ -30,6 +33,7 @@ local reloadTypes = {
 	["scripts"] = RELOAD_TYPE_SCRIPTS,
 	["stage"] = RELOAD_TYPE_CORE,
 	["stages"] = RELOAD_TYPE_CORE,
+	["vocations"] = RELOAD_TYPE_VOCATIONS,
 }
 
 local reload = TalkAction("/reload")

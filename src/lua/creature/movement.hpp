@@ -47,7 +47,7 @@ public:
 
 	bool hasPosition(Position position) const {
 		if (auto it = positionsMap.find(position);
-			it != positionsMap.end()) {
+		    it != positionsMap.end()) {
 			return true;
 		}
 		return false;
@@ -63,7 +63,7 @@ public:
 
 	bool hasItemId(int32_t itemId) const {
 		if (auto it = itemIdMap.find(itemId);
-			it != itemIdMap.end()) {
+		    it != itemIdMap.end()) {
 			return true;
 		}
 		return false;
@@ -79,7 +79,7 @@ public:
 
 	bool hasUniqueId(int32_t uniqueId) const {
 		if (auto it = uniqueIdMap.find(uniqueId);
-			it != uniqueIdMap.end()) {
+		    it != uniqueIdMap.end()) {
 			return true;
 		}
 		return false;
@@ -95,7 +95,7 @@ public:
 
 	bool hasActionId(int32_t actionId) const {
 		if (auto it = actionIdMap.find(actionId);
-			it != actionIdMap.end()) {
+		    it != actionIdMap.end()) {
 			return true;
 		}
 		return false;
@@ -180,7 +180,7 @@ public:
 	}
 	void addVocEquipMap(std::string vocName) {
 		uint16_t vocationId = g_vocations().getVocationId(vocName);
-		if (vocationId != -1) {
+		if (vocationId != 65535) {
 			vocEquipMap[vocationId] = true;
 		}
 	}

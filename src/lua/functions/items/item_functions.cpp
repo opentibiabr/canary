@@ -398,7 +398,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		switch (attribute) {
 			case ItemAttribute_t::DECAYSTATE: {
 				if (ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
-					decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
+				    decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
 					g_decay().stopDecay(item);
 				} else {
 					g_decay().startDecay(item);

@@ -21,6 +21,8 @@
 #include "items/weapons/weapons.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 
 int32_t Combat::getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -98,7 +100,11 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 				}
 			}
 		}
+		if (attackerPlayer && wheelSpell && wheelSpell->isInstant()) {
+			wheelSpell->getCombatDataAugment(attackerPlayer, damage);
+		}
 	}
+
 	return damage;
 }
 
@@ -269,8 +275,11 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> caster, std::shared_pt
 			}
 		}
 	}
-
-	return g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
+	ReturnValue ret = g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
+	if (ret == RETURNVALUE_NOERROR) {
+		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnAreaCombat, caster, tile, aggressive);
+	}
+	return ret;
 }
 
 bool Combat::isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target) {
@@ -283,7 +292,7 @@ bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Playe
 		return true;
 	}
 
-	if (!attacker->getVocation()->canCombat() || !target->getVocation()->canCombat() && (attacker->getVocationId() == VOCATION_NONE || target->getVocationId() == VOCATION_NONE)) {
+	if ((!attacker->getVocation()->canCombat() || !target->getVocation()->canCombat()) && (attacker->getVocationId() == VOCATION_NONE || target->getVocationId() == VOCATION_NONE)) {
 		return true;
 	}
 
@@ -405,7 +414,11 @@ ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> attacker, std::shared_
 			}
 		}
 	}
-	return g_events().eventCreatureOnTargetCombat(attacker, target);
+	ReturnValue ret = g_events().eventCreatureOnTargetCombat(attacker, target);
+	if (ret == RETURNVALUE_NOERROR) {
+		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target);
+	}
+	return ret;
 }
 
 void Combat::setPlayerCombatValues(formulaType_t newFormulaType, double newMina, double newMinb, double newMaxa, double newMaxb) {
@@ -644,9 +657,13 @@ CombatDamage Combat::applyImbuementElementalDamage(std::shared_ptr<Player> attac
 		}
 
 		if (imbuementInfo.imbuement->combatType == COMBAT_NONE
-			|| damage.primary.type == COMBAT_HEALING
-			|| damage.secondary.type == COMBAT_HEALING) {
+		    || damage.primary.type == COMBAT_HEALING
+		    || damage.secondary.type == COMBAT_HEALING) {
 			continue;
+		}
+
+		if (damage.primary.type != COMBAT_PHYSICALDAMAGE) {
+			break;
 		}
 
 		float damagePercent = imbuementInfo.imbuement->elementDamage / 100.0;
@@ -699,7 +716,7 @@ bool Combat::checkFearConditionAffected(std::shared_ptr<Player> player) {
 		auto affectedCount = (party->getMemberCount() + 5) / 5;
 		g_logger().debug("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
 
-		for (const auto member : party->getMembers()) {
+		for (const auto &member : party->getMembers()) {
 			if (member->hasCondition(CONDITION_FEARED)) {
 				affectedCount -= 1;
 			}
@@ -751,7 +768,7 @@ void Combat::CombatConditionFunc(std::shared_ptr<Creature> caster, std::shared_p
 			}
 		}
 
-		if (caster == target || target && !target->isImmune(condition->getType())) {
+		if (caster == target || (target && !target->isImmune(condition->getType()))) {
 			auto conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
@@ -1022,10 +1039,10 @@ bool Combat::doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Cre
 	uint8_t chainDistance;
 	bool backtracking = false;
 	params.chainCallback->getChainValues(caster, maxTargets, chainDistance, backtracking);
-	auto targets = pickChainTargets(caster, params, chainDistance, maxTargets, backtracking, aggressive, target);
+	auto targets = pickChainTargets(caster, params, chainDistance, maxTargets, aggressive, backtracking, std::move(target));
 
 	g_logger().debug("[{}] Chain targets: {}", __FUNCTION__, targets.size());
-	if (targets.empty() || targets.size() == 1 && targets.begin()->second.empty()) {
+	if (targets.empty() || (targets.size() == 1 && targets.begin()->second.empty())) {
 		return false;
 	}
 
@@ -1114,7 +1131,7 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 	uint32_t maxY = 0;
 
 	// calculate the max viewable range
-	for (std::shared_ptr<Tile> tile : tileList) {
+	for (const std::shared_ptr<Tile> &tile : tileList) {
 		const Position &tilePos = tile->getPosition();
 
 		uint32_t diff = Position::getDistanceX(tilePos, pos);
@@ -1132,7 +1149,7 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
 
 	int affected = 0;
-	for (std::shared_ptr<Tile> tile : tileList) {
+	for (const std::shared_ptr<Tile> &tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
 			continue;
 		}
@@ -1187,7 +1204,7 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 	uint8_t beamAffectedCurrent = 0;
 
 	tmpDamage.affected = affected;
-	for (std::shared_ptr<Tile> tile : tileList) {
+	for (const std::shared_ptr<Tile> &tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
 			continue;
 		}
@@ -1233,14 +1250,14 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 }
 
 void Combat::doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage, const CombatParams &params) {
-	doCombatHealth(caster, target, caster ? caster->getPosition() : Position(), damage, params);
+	doCombatHealth(caster, std::move(target), caster ? caster->getPosition() : Position(), damage, params);
 }
 
 void Combat::doCombatHealth(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, CombatDamage &damage, const CombatParams &params) {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
 	if ((caster && target)
-		&& (caster == target || canCombat)
-		&& (params.impactEffect != CONST_ME_NONE)) {
+	    && (caster == target || canCombat)
+	    && (params.impactEffect != CONST_ME_NONE)) {
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
@@ -1283,8 +1300,8 @@ void Combat::doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Crea
 void Combat::doCombatMana(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const Position &origin, CombatDamage &damage, const CombatParams &params) {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
 	if ((caster && target)
-		&& (caster == target || canCombat)
-		&& (params.impactEffect != CONST_ME_NONE)) {
+	    && (caster == target || canCombat)
+	    && (params.impactEffect != CONST_ME_NONE)) {
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
@@ -1351,8 +1368,8 @@ void Combat::doCombatDispel(std::shared_ptr<Creature> caster, const Position &po
 void Combat::doCombatDispel(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params) {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
 	if ((caster && target)
-		&& (caster == target || canCombat)
-		&& (params.impactEffect != CONST_ME_NONE)) {
+	    && (caster == target || canCombat)
+	    && (params.impactEffect != CONST_ME_NONE)) {
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
@@ -1374,7 +1391,7 @@ void Combat::doCombatDispel(std::shared_ptr<Creature> caster, std::shared_ptr<Cr
 	}
 }
 
-void Combat::doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params) {
+[[maybe_unused]] void Combat::doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, const CombatParams &params) {
 	doCombatDefault(caster, target, caster ? caster->getPosition() : Position(), params);
 }
 
@@ -1391,7 +1408,7 @@ void Combat::doCombatDefault(std::shared_ptr<Creature> caster, std::shared_ptr<C
 
 		/*
 		if (params.impactEffect != CONST_ME_NONE) {
-			g_game().addMagicEffect(target->getPosition(), params.impactEffect);
+		    g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 		}
 		*/
 
@@ -1523,8 +1540,8 @@ void ValueCallback::getMinMaxValues(std::shared_ptr<Player> player, CombatDamage
 	// onGetPlayerMinMaxValues(...)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[ValueCallback::getMinMaxValues - Player {} formula {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName(), fmt::underlying(type));
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 player->getName(), fmt::underlying(type));
 		return;
 	}
 
@@ -1616,8 +1633,8 @@ void TileCallback::onTileCombat(std::shared_ptr<Creature> creature, std::shared_
 	// onTileCombat(creature, pos)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[TileCallback::onTileCombat - Creature {} type {} on tile x: {} y: {} z: {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName(), fmt::underlying(type), (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName(), fmt::underlying(type), (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
 		return;
 	}
 
@@ -1647,8 +1664,8 @@ void TargetCallback::onTargetCombat(std::shared_ptr<Creature> creature, std::sha
 	// onTargetCombat(creature, target)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[TargetCallback::onTargetCombat - Creature {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName());
 		return;
 	}
 
@@ -1707,8 +1724,8 @@ void ChainCallback::onChainCombat(std::shared_ptr<Creature> creature, uint8_t &m
 	// onChainCombat(creature)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[ChainCallback::onTargetCombat - Creature {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName());
 		return;
 	}
 
@@ -1749,8 +1766,8 @@ bool ChainPickerCallback::onChainCombat(std::shared_ptr<Creature> creature, std:
 	// onChainCombat(creature, target)
 	if (!scriptInterface->reserveScriptEnv()) {
 		g_logger().error("[ChainPickerCallback::onTargetCombat - Creature {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName());
 		return true;
 	}
 
@@ -2068,7 +2085,7 @@ void AreaCombat::setupExtArea(const std::list<uint32_t> &list, uint32_t rows) {
 
 void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 	// remove magic walls/wild growth
-	if (!isBlocking() && g_game().getWorldType() == WORLD_TYPE_NO_PVP && id == ITEM_MAGICWALL_SAFE || id == ITEM_WILDGROWTH_SAFE) {
+	if ((!isBlocking() && g_game().getWorldType() == WORLD_TYPE_NO_PVP && id == ITEM_MAGICWALL_SAFE) || id == ITEM_WILDGROWTH_SAFE) {
 		if (!creature->isInGhostMode()) {
 			g_game().internalRemoveItem(static_self_cast<Item>(), 1);
 		}
@@ -2083,7 +2100,7 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 		if (ownerId) {
 			bool harmfulField = true;
 			auto itemTile = getTile();
-			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || itemTile && itemTile->hasFlag(TILESTATE_NOPVPZONE)) {
+			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || (itemTile && itemTile->hasFlag(TILESTATE_NOPVPZONE))) {
 				auto ownerPlayer = g_game().getPlayerByGUID(ownerId);
 				if (ownerPlayer) {
 					harmfulField = false;
@@ -2161,7 +2178,7 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 	if (player) {
 		// Fatal hit (onslaught)
 		if (auto playerWeapon = player->getInventoryItem(CONST_SLOT_LEFT);
-			playerWeapon != nullptr && playerWeapon->getTier() > 0) {
+		    playerWeapon != nullptr && playerWeapon->getTier() > 0) {
 			double_t fatalChance = playerWeapon->getFatalChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;
 			if (fatalChance > 0 && randomChance < fatalChance) {

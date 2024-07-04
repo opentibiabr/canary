@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '44'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '46'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -127,8 +127,8 @@ CREATE TABLE IF NOT EXISTS `players` (
     `skill_lifeleech_amount` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `skill_manaleech_chance` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `skill_manaleech_amount` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
-    `manashield` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
-    `max_manashield` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
+    `manashield` INT UNSIGNED NOT NULL DEFAULT '0',
+    `max_manashield` INT UNSIGNED NOT NULL DEFAULT '0',
     `xpboost_stamina` smallint(5) UNSIGNED DEFAULT NULL,
     `xpboost_value` tinyint(4) UNSIGNED DEFAULT NULL,
     `marriage_status` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
@@ -215,40 +215,79 @@ CREATE TABLE IF NOT EXISTS `account_viplist` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Table structure `account_vipgroup`
+CREATE TABLE IF NOT EXISTS `account_vipgroups` (
+    `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `account_id` int(11) UNSIGNED NOT NULL COMMENT 'id of account whose vip group entry it is',
+    `name` varchar(128) NOT NULL,
+    `customizable` BOOLEAN NOT NULL DEFAULT '1',
+    CONSTRAINT `account_vipgroups_pk` PRIMARY KEY (`id`, `account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Trigger
+--
+DELIMITER //
+CREATE TRIGGER `oncreate_accounts` AFTER INSERT ON `accounts` FOR EACH ROW BEGIN
+    INSERT INTO `account_vipgroups` (`account_id`, `name`, `customizable`) VALUES (NEW.`id`, 'Enemies', 0);
+    INSERT INTO `account_vipgroups` (`account_id`, `name`, `customizable`) VALUES (NEW.`id`, 'Friends', 0);
+    INSERT INTO `account_vipgroups` (`account_id`, `name`, `customizable`) VALUES (NEW.`id`, 'Trading Partner', 0);
+END
+//
+DELIMITER ;
+
+-- Table structure `account_vipgrouplist`
+CREATE TABLE IF NOT EXISTS `account_vipgrouplist` (
+    `account_id` int(11) UNSIGNED NOT NULL COMMENT 'id of account whose viplist entry it is',
+    `player_id` int(11) NOT NULL COMMENT 'id of target player of viplist entry',
+    `vipgroup_id` int(11) UNSIGNED NOT NULL COMMENT 'id of vip group that player belongs',
+    INDEX `account_id` (`account_id`),
+    INDEX `player_id` (`player_id`),
+    INDEX `vipgroup_id` (`vipgroup_id`),
+    CONSTRAINT `account_vipgrouplist_unique` UNIQUE (`account_id`, `player_id`, `vipgroup_id`),
+    CONSTRAINT `account_vipgrouplist_player_fk`
+    FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+    ON DELETE CASCADE,
+    CONSTRAINT `account_vipgrouplist_vipgroup_fk`
+    FOREIGN KEY (`vipgroup_id`, `account_id`) REFERENCES `account_vipgroups` (`id`, `account_id`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Table structure `boosted_boss`
 CREATE TABLE IF NOT EXISTS `boosted_boss` (
     `boostname` TEXT,
     `date` varchar(250) NOT NULL DEFAULT '',
     `raceid` varchar(250) NOT NULL DEFAULT '',
-    `looktypeEx` int(11) NOT NULL DEFAULT "0",
-    `looktype` int(11) NOT NULL DEFAULT "136",
-    `lookfeet` int(11) NOT NULL DEFAULT "0",
-    `looklegs` int(11) NOT NULL DEFAULT "0",
-    `lookhead` int(11) NOT NULL DEFAULT "0",
-    `lookbody` int(11) NOT NULL DEFAULT "0",
-    `lookaddons` int(11) NOT NULL DEFAULT "0",
-    `lookmount` int(11) DEFAULT "0",
+    `looktypeEx` int(11) NOT NULL DEFAULT 0,
+    `looktype` int(11) NOT NULL DEFAULT 136,
+    `lookfeet` int(11) NOT NULL DEFAULT 0,
+    `looklegs` int(11) NOT NULL DEFAULT 0,
+    `lookhead` int(11) NOT NULL DEFAULT 0,
+    `lookbody` int(11) NOT NULL DEFAULT 0,
+    `lookaddons` int(11) NOT NULL DEFAULT 0,
+    `lookmount` int(11) DEFAULT 0,
     PRIMARY KEY (`date`)
-) AS SELECT 0 AS date, "default" AS boostname, 0 AS raceid;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `boosted_boss` (`boostname`, `date`, `raceid`) VALUES ('default', 0, 0);
 
 -- Table structure `boosted_creature`
 CREATE TABLE IF NOT EXISTS `boosted_creature` (
     `boostname` TEXT,
     `date` varchar(250) NOT NULL DEFAULT '',
     `raceid` varchar(250) NOT NULL DEFAULT '',
-    `looktype` int(11) NOT NULL DEFAULT "136",
-    `lookfeet` int(11) NOT NULL DEFAULT "0",
-    `looklegs` int(11) NOT NULL DEFAULT "0",
-    `lookhead` int(11) NOT NULL DEFAULT "0",
-    `lookbody` int(11) NOT NULL DEFAULT "0",
-    `lookaddons` int(11) NOT NULL DEFAULT "0",
-    `lookmount` int(11) DEFAULT "0",
+    `looktype` int(11) NOT NULL DEFAULT 136,
+    `lookfeet` int(11) NOT NULL DEFAULT 0,
+    `looklegs` int(11) NOT NULL DEFAULT 0,
+    `lookhead` int(11) NOT NULL DEFAULT 0,
+    `lookbody` int(11) NOT NULL DEFAULT 0,
+    `lookaddons` int(11) NOT NULL DEFAULT 0,
+    `lookmount` int(11) DEFAULT 0,
     PRIMARY KEY (`date`)
-) AS SELECT 0 AS date, "default" AS boostname, 0 AS raceid;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
+INSERT INTO `boosted_creature` (`boostname`, `date`, `raceid`) VALUES ('default', 0, 0);
 
---
 -- Tabble Structure `daily_reward_history`
 CREATE TABLE IF NOT EXISTS `daily_reward_history` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -372,9 +411,9 @@ CREATE TABLE IF NOT EXISTS `guild_ranks` (
 --
 DELIMITER //
 CREATE TRIGGER `oncreate_guilds` AFTER INSERT ON `guilds` FOR EACH ROW BEGIN
-        INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('The Leader', 3, NEW.`id`);
-        INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('Vice-Leader', 2, NEW.`id`);
-        INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('Member', 1, NEW.`id`);
+    INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('The Leader', 3, NEW.`id`);
+    INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('Vice-Leader', 2, NEW.`id`);
+    INSERT INTO `guild_ranks` (`name`, `level`, `guild_id`) VALUES ('Member', 1, NEW.`id`);
 END
 //
 DELIMITER ;
@@ -428,15 +467,13 @@ CREATE TABLE IF NOT EXISTS `houses` (
 -- trigger
 --
 DELIMITER //
-CREATE TRIGGER `ondelete_players` BEFORE DELETE ON `players`
- FOR EACH ROW BEGIN
-        UPDATE `houses` SET `owner` = 0 WHERE `owner` = OLD.`id`;
+CREATE TRIGGER `ondelete_players` BEFORE DELETE ON `players` FOR EACH ROW BEGIN
+    UPDATE `houses` SET `owner` = 0 WHERE `owner` = OLD.`id`;
 END
 //
 DELIMITER ;
 
 -- Table structure `house_lists`
-
 CREATE TABLE IF NOT EXISTS `house_lists` (
   `house_id` int NOT NULL,
   `listid` int NOT NULL,
@@ -447,7 +484,6 @@ CREATE TABLE IF NOT EXISTS `house_lists` (
   KEY `version` (`version`),
   CONSTRAINT `houses_list_house_fk` FOREIGN KEY (`house_id`) REFERENCES `houses` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
 
 -- Table structure `ip_bans`
 CREATE TABLE IF NOT EXISTS `ip_bans` (
@@ -502,7 +538,6 @@ CREATE TABLE IF NOT EXISTS `market_offers` (
         FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 -- Table structure `players_online`
 CREATE TABLE IF NOT EXISTS `players_online` (
@@ -633,7 +668,6 @@ CREATE TABLE IF NOT EXISTS `player_wheeldata` (
   CONSTRAINT `player_wheeldata_pk`
       PRIMARY KEY (`player_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 -- Table structure `player_kills`
 CREATE TABLE IF NOT EXISTS `player_kills` (
@@ -793,6 +827,7 @@ CREATE TABLE IF NOT EXISTS `account_sessions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Table structure `kv_store`
 CREATE TABLE IF NOT EXISTS `kv_store` (
   `key_name` varchar(191) NOT NULL,
   `timestamp` bigint NOT NULL,

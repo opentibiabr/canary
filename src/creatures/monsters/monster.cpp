@@ -33,7 +33,7 @@ std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
 
 Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	Creature(),
-	strDescription(asLowerCaseString(mType->nameDescription)),
+	nameDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
 	defaultOutfit = mType->info.outfit;
 	currentOutfit = mType->info.outfit;
@@ -50,8 +50,8 @@ Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	for (const std::string &scriptName : mType->info.scripts) {
 		if (!registerCreatureEvent(scriptName)) {
 			g_logger().warn("[Monster::Monster] - "
-							"Unknown event name: {}",
-							scriptName);
+			                "Unknown event name: {}",
+			                scriptName);
 		}
 	}
 }
@@ -62,6 +62,37 @@ void Monster::addList() {
 
 void Monster::removeList() {
 	g_game().removeMonster(static_self_cast<Monster>());
+}
+
+const std::string &Monster::getName() const {
+	if (name.empty()) {
+		return mType->name;
+	}
+	return name;
+}
+
+void Monster::setName(const std::string &name) {
+	if (getName() == name) {
+		return;
+	}
+
+	this->name = name;
+
+	// NOTE: Due to how client caches known creatures,
+	// it is not feasible to send creature update to everyone that has ever met it
+	auto spectators = Spectators().find<Player>(position, true);
+	for (const auto &spectator : spectators) {
+		if (const auto &tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->sendUpdateTileCreature(static_self_cast<Monster>());
+		}
+	}
+}
+
+const std::string &Monster::getNameDescription() const {
+	if (nameDescription.empty()) {
+		return mType->nameDescription;
+	}
+	return nameDescription;
 }
 
 bool Monster::canWalkOnFieldType(CombatType_t combatType) const {
@@ -107,8 +138,8 @@ void Monster::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin)
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("[Monster::onCreatureAppear - Monster {} creature {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 getName(), creature->getName());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -145,8 +176,8 @@ void Monster::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("[Monster::onCreatureDisappear - Monster {} creature {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 getName(), creature->getName());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -186,8 +217,8 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("[Monster::onCreatureMove - Monster {} creature {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 getName(), creature->getName());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -260,8 +291,8 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
-							 "script calls being nested.",
-							 getName(), creature->getName());
+			                 "script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -385,7 +416,7 @@ void Monster::onCreatureFound(std::shared_ptr<Creature> creature, bool pushFront
 }
 
 void Monster::onCreatureEnter(std::shared_ptr<Creature> creature) {
-	onCreatureFound(creature, true);
+	onCreatureFound(std::move(creature), true);
 }
 
 bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
@@ -701,7 +732,7 @@ void Monster::updateIdleStatus() {
 				isWalkingBack = true;
 			}
 		} else if (const auto &master = getMaster()) {
-			if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != FACTION_DEFAULT) {
+			if (((!isSummon() && totalPlayersOnScreen == 0) || (isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0)) && getFaction() != FACTION_DEFAULT) {
 				idle = true;
 			}
 		}
@@ -740,8 +771,8 @@ void Monster::onThink(uint32_t interval) {
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} Call stack overflow. Too many lua script calls "
-							 "being nested.",
-							 getName());
+			                 "being nested.",
+			                 getName());
 			return;
 		}
 
@@ -838,7 +869,7 @@ void Monster::doAttacking(uint32_t interval) {
 	for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
 		bool inRange = false;
 
-		if (spellBlock.spell == nullptr || spellBlock.isMelee && isFleeing()) {
+		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
 			continue;
 		}
 
@@ -2010,8 +2041,8 @@ void Monster::dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creatu
 	if (corpse && lootDrop) {
 		// Only fiendish drops sliver
 		if (ForgeClassifications_t classification = getMonsterForgeClassification();
-			// Condition
-			classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
+		    // Condition
+		    classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
 			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS, __FUNCTION__);
 			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS, __FUNCTION__);
 

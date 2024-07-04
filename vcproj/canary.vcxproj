@@ -45,6 +45,9 @@
     <ClInclude Include="..\src\creatures\players\vocations\vocation.hpp" />
     <ClInclude Include="..\src\creatures\players\wheel\wheel_gems.hpp" />
     <ClInclude Include="..\src\creatures\players\achievement\player_achievement.hpp" />
+    <ClInclude Include="..\src\creatures\players\cyclopedia\player_badge.hpp" />
+    <ClInclude Include="..\src\creatures\players\cyclopedia\player_title.hpp" />
+    <ClInclude Include="..\src\creatures\players\vip\player_vip.hpp" />
     <ClInclude Include="..\src\creatures\players\wheel\player_wheel.hpp" />
     <ClInclude Include="..\src\creatures\players\wheel\wheel_definitions.hpp" />
     <ClInclude Include="..\src\database\database.hpp" />
@@ -201,7 +204,7 @@
     <ClInclude Include="..\src\map\spectators.hpp" />
     <ClInclude Include="..\src\map\town.hpp" />
     <ClInclude Include="..\src\map\utils\astarnodes.hpp" />
-    <ClInclude Include="..\src\map\utils\qtreenode.hpp" />
+    <ClInclude Include="..\src\map\utils\mapsector.hpp" />
     <ClInclude Include="..\src\security\rsa.hpp" />
     <ClInclude Include="..\src\server\network\connection\connection.hpp" />
     <ClInclude Include="..\src\server\network\message\networkmessage.hpp" />
@@ -257,6 +260,9 @@
     <ClCompile Include="..\src\creatures\players\vocations\vocation.cpp" />
     <ClCompile Include="..\src\creatures\players\wheel\wheel_gems.cpp" />
     <ClCompile Include="..\src\creatures\players\achievement\player_achievement.cpp" />
+    <ClCompile Include="..\src\creatures\players\cyclopedia\player_badge.cpp" />
+    <ClCompile Include="..\src\creatures\players\cyclopedia\player_title.cpp" />
+    <ClCompile Include="..\src\creatures\players\vip\player_vip.cpp" />
     <ClCompile Include="..\src\creatures\players\wheel\player_wheel.cpp" />
     <ClCompile Include="..\src\database\database.cpp" />
     <ClCompile Include="..\src\database\databasemanager.cpp" />
@@ -384,7 +390,7 @@
     <ClCompile Include="..\src\map\house\housetile.cpp" />
     <ClCompile Include="..\src\map\spectators.cpp" />
     <ClCompile Include="..\src\map\utils\astarnodes.cpp" />
-    <ClCompile Include="..\src\map\utils\qtreenode.cpp" />
+    <ClCompile Include="..\src\map\utils\mapsector.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
     <ClCompile Include="..\src\map\mapcache.cpp" />
     <ClCompile Include="..\src\main.cpp" />
@@ -596,3 +602,4 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>
+

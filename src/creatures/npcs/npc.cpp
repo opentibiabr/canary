@@ -52,9 +52,6 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 	}
 }
 
-Npc::~Npc() {
-}
-
 void Npc::addList() {
 	g_game().addNpc(static_self_cast<Npc>());
 }
@@ -104,14 +101,13 @@ void Npc::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 	}
 
 	if (auto player = creature->getPlayer()) {
+		removeShopPlayer(player->getGUID());
 		onPlayerDisappear(player);
 	}
 
 	if (spawnNpc) {
 		spawnNpc->startSpawnNpcCheck();
 	}
-
-	shopPlayerMap.clear();
 }
 
 void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
@@ -248,7 +244,7 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	uint32_t shoppingBagSlots = 20;
 	const ItemType &itemType = Item::items[itemId];
 	if (std::shared_ptr<Tile> tile = ignore ? player->getTile() : nullptr; tile) {
-		double slotsNedeed = 0;
+		double slotsNedeed;
 		if (itemType.stackable) {
 			slotsNedeed = inBackpacks ? std::ceil(std::ceil(static_cast<double>(amount) / itemType.stackSize) / shoppingBagSlots) : std::ceil(static_cast<double>(amount) / itemType.stackSize);
 		} else {
@@ -262,8 +258,8 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	}
 
 	uint32_t buyPrice = 0;
-	const std::vector<ShopBlock> &shopVector = getShopItemVector(player->getGUID());
-	for (ShopBlock shopBlock : shopVector) {
+	const auto &shopVector = getShopItemVector(player->getGUID());
+	for (const ShopBlock &shopBlock : shopVector) {
 		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			buyPrice = shopBlock.itemBuyPrice;
 		}
@@ -308,7 +304,7 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 
 void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore) {
 	uint64_t totalPrice = 0;
-	onPlayerSellItem(player, itemId, subType, amount, ignore, totalPrice);
+	onPlayerSellItem(std::move(player), itemId, subType, amount, ignore, totalPrice);
 }
 
 void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, uint64_t totalPrice) {
@@ -324,7 +320,6 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 		bool hasMore = false;
 		uint64_t toSellCount = 0;
 		phmap::flat_hash_map<uint16_t, uint16_t> toSell;
-		int64_t start = OTSYS_TIME();
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 			if (toSellCount >= 500) {
 				hasMore = true;
@@ -341,8 +336,8 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 				toSellCount += item->getItemAmount();
 			}
 		}
-		for (auto &[itemId, amount] : toSell) {
-			onPlayerSellItem(player, itemId, 0, amount, ignore, totalPrice, container);
+		for (auto &[m_itemId, amount] : toSell) {
+			onPlayerSellItem(player, m_itemId, 0, amount, ignore, totalPrice, container);
 		}
 		auto ss = std::stringstream();
 		if (totalPrice == 0) {
@@ -376,8 +371,8 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 
 	uint32_t sellPrice = 0;
 	const ItemType &itemType = Item::items[itemId];
-	const std::vector<ShopBlock> &shopVector = getShopItemVector(player->getGUID());
-	for (ShopBlock shopBlock : shopVector) {
+	const auto &shopVector = getShopItemVector(player->getGUID());
+	for (const ShopBlock &shopBlock : shopVector) {
 		if (itemType.id == shopBlock.itemId && shopBlock.itemSellPrice != 0) {
 			sellPrice = shopBlock.itemSellPrice;
 		}
@@ -387,7 +382,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	}
 
 	auto toRemove = amount;
-	for (auto item : player->getInventoryItemsFromId(itemId, ignore)) {
+	for (const auto &item : player->getInventoryItemsFromId(itemId, ignore)) {
 		if (!item || item->getTier() > 0 || item->hasImbuements()) {
 			continue;
 		}
@@ -452,7 +447,6 @@ void Npc::onPlayerCheckItem(std::shared_ptr<Player> player, uint16_t itemId, uin
 		return;
 	}
 
-	const ItemType &itemType = Item::items[itemId];
 	// onPlayerCheckItem(self, player, itemId, subType)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
 	if (callback.startScriptInterface(npcType->info.playerLookEvent)) {
@@ -515,7 +509,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 	}
 
 	// If talking, no walking
-	if (playerInteractions.size() > 0) {
+	if (!playerInteractions.empty()) {
 		walkTicks = 0;
 		eventWalk = 0;
 		return;
@@ -527,7 +521,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 	}
 
 	if (Direction newDirection;
-		getRandomStep(newDirection)) {
+	    getRandomStep(newDirection)) {
 		listWalkDir.push_front(newDirection);
 		addEventWalk();
 	}
@@ -591,7 +585,7 @@ void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 void Npc::removePlayerInteraction(std::shared_ptr<Player> player) {
 	if (playerInteractions.contains(player->getID())) {
 		playerInteractions.erase(player->getID());
-		player->closeShopWindow(true);
+		player->closeShopWindow();
 	}
 }
 
@@ -639,7 +633,7 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	std::ranges::shuffle(directionvector, getRandomGenerator());
 
 	for (const Position &creaturePos = getPosition();
-		 Direction direction : directionvector) {
+	     Direction direction : directionvector) {
 		if (canWalkTo(creaturePos, direction)) {
 			moveDirection = direction;
 			return true;
@@ -648,30 +642,26 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	return false;
 }
 
-void Npc::addShopPlayer(const std::shared_ptr<Player> &player, const std::vector<ShopBlock> &shopItems /* = {}*/) {
-	if (!player) {
-		return;
-	}
-
-	shopPlayerMap.try_emplace(player->getGUID(), shopItems);
+bool Npc::isShopPlayer(uint32_t playerGUID) const {
+	return shopPlayers.find(playerGUID) != shopPlayers.end();
 }
 
-void Npc::removeShopPlayer(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		return;
-	}
+void Npc::addShopPlayer(uint32_t playerGUID, const std::vector<ShopBlock> &shopItems) {
+	shopPlayers.try_emplace(playerGUID, shopItems);
+}
 
-	shopPlayerMap.erase(player->getGUID());
+void Npc::removeShopPlayer(uint32_t playerGUID) {
+	shopPlayers.erase(playerGUID);
 }
 
 void Npc::closeAllShopWindows() {
-	for (const auto &[playerGUID, playerPtr] : shopPlayerMap) {
-		auto shopPlayer = g_game().getPlayerByGUID(playerGUID);
-		if (shopPlayer) {
-			shopPlayer->closeShopWindow();
+	for (const auto &[playerGUID, shopBlock] : shopPlayers) {
+		const auto &player = g_game().getPlayerByGUID(playerGUID);
+		if (player) {
+			player->closeShopWindow();
 		}
 	}
-	shopPlayerMap.clear();
+	shopPlayers.clear();
 }
 
 void Npc::handlePlayerMove(std::shared_ptr<Player> player, const Position &newPos) {

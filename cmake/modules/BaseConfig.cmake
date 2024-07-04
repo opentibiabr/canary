@@ -121,7 +121,9 @@ if (MSVC)
     endforeach(type)
 
     add_compile_options(/MP /FS /Zf /EHsc)
-endif (MSVC)
+else()
+    add_compile_options(-Wno-unused-parameter -Wno-sign-compare -Wno-switch -Wno-implicit-fallthrough -Wno-extra)
+endif()
 
 ## Link compilation files to build/bin folder, else link to the main dir
 function(set_output_directory target_name)

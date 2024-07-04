@@ -572,6 +572,8 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 	const int_fast32_t sX = std::abs(targetPos.getX() - pos.getX());
 	const int_fast32_t sY = std::abs(targetPos.getY() - pos.getY());
 
+	uint_fast16_t cntDirs = 0;
+
 	AStarNode* found = nullptr;
 	do {
 		AStarNode* n = nodes.getBestNode();
@@ -593,6 +595,8 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 				break;
 			}
 		}
+
+				++cntDirs;
 
 		uint_fast32_t dirCount;
 		int_fast32_t* neighbors;
@@ -677,7 +681,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 	int_fast32_t prevx = endPos.x;
 	int_fast32_t prevy = endPos.y;
 
-	dirList.reserve(128);
+	dirList.reserve(cntDirs);
 
 	found = found->parent;
 	while (found) {
@@ -712,6 +716,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 		}
 		found = found->parent;
 	}
+
 	return true;
 }
 
@@ -747,6 +752,9 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 	const int_fast32_t sX = std::abs(targetPos.getX() - pos.getX());
 	const int_fast32_t sY = std::abs(targetPos.getY() - pos.getY());
 
+		uint_fast16_t cntDirs = 0;
+
+
 	AStarNode* found = nullptr;
 	do {
 		AStarNode* n = nodes.getBestNode();
@@ -768,6 +776,8 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 				break;
 			}
 		}
+
+		++cntDirs;
 
 		uint_fast32_t dirCount;
 		int_fast32_t* neighbors;
@@ -860,7 +870,7 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 	int_fast32_t prevx = endPos.x;
 	int_fast32_t prevy = endPos.y;
 
-	dirList.reserve(128);
+	dirList.reserve(cntDirs);
 
 	found = found->parent;
 	while (found) {
@@ -895,6 +905,7 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 		}
 		found = found->parent;
 	}
+
 	return true;
 }
 

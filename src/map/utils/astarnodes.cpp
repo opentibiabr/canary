@@ -189,7 +189,7 @@ AStarNode* AStarNodes::getBestNode() {
 }
 
 void AStarNodes::closeNode(AStarNode* node) {
-	size_t index = node - nodes;
+	const size_t index = node - nodes;
 	assert(index < MAX_NODES);
 #if defined(__SSE2__)
 	calculatedNodes[index] = std::numeric_limits<int32_t>::max();
@@ -199,7 +199,7 @@ void AStarNodes::closeNode(AStarNode* node) {
 }
 
 void AStarNodes::openNode(AStarNode* node) {
-	size_t index = node - nodes;
+	const size_t index = node - nodes;
 	assert(index < MAX_NODES);
 #if defined(__SSE2__)
 	calculatedNodes[index] = nodes[index].f + nodes[index].g;

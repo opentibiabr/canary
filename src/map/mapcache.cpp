@@ -138,12 +138,11 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
 	// add zone synchronously
-	g_dispatcher().addEvent([tile, pos] {
+	g_dispatcher().context().tryAddEvent([tile, pos] {
 		for (const auto &zone : Zone::getZones(pos)) {
 			tile->addZone(zone);
 		}
-	},
-	                        "MapCache::getOrCreateTileFromCache");
+	});
 
 	floor->setTile(x, y, tile);
 

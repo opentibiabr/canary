@@ -44,7 +44,7 @@ private:
 	alignas(64) int32_t calculatedNodes[MAX_NODES];
 	AStarNode nodes[MAX_NODES];
 #else
-	AStarNode nodes[MAX_NODES];
+	AStarNode nodes[MAX_NODES] {};
 	uint32_t nodesTable[MAX_NODES];
 #endif
 	int32_t closedNodes;

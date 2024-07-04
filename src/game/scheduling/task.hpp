@@ -92,8 +92,7 @@ private:
 		                                                                        "SpawnMonster::startup",
 		                                                                        "SpawnNpc::checkSpawnNpc",
 		                                                                        "Webhook::run",
-		                                                                        "Protocol::sendRecvMessageCallback",
-		                                                                        "MapCache::getOrCreateTileFromCache" });
+		                                                                        "Protocol::sendRecvMessageCallback" });
 
 		return tasksContext.contains(context);
 	}

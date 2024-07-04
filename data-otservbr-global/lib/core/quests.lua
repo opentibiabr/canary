@@ -4099,12 +4099,12 @@ if not Quests then
 		},
 		[28] = {
 			name = "The Explorer Society",
-			startStorageId = Storage.ExplorerSociety.QuestLine,
+			startStorageId = Storage.Quest.U7_6.ExplorerSociety.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Joining the Explorers",
-					storageId = Storage.ExplorerSociety.JoiningTheExplorers,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers,
 					missionId = 10295,
 					startValue = 1,
 					endValue = 5,
@@ -4119,7 +4119,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Ice Delivery",
-					storageId = Storage.ExplorerSociety.TheIceDelivery,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheIceDelivery,
 					missionId = 10296,
 					startValue = 6,
 					endValue = 8,
@@ -4133,7 +4133,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Butterfly Hunt",
-					storageId = Storage.ExplorerSociety.TheButterflyHunt,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheButterflyHunt,
 					missionId = 10297,
 					startValue = 9,
 					endValue = 17,
@@ -4154,7 +4154,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "The Plant Collection",
-					storageId = Storage.ExplorerSociety.ThePlantCollection,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.ThePlantCollection,
 					missionId = 10298,
 					startValue = 18,
 					endValue = 26,
@@ -4172,7 +4172,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "The Lizard Urn",
-					storageId = Storage.ExplorerSociety.TheLizardUrn,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheLizardUrn,
 					missionId = 10299,
 					startValue = 27,
 					endValue = 29,
@@ -4186,7 +4186,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "The Bonelord Secret",
-					storageId = Storage.ExplorerSociety.TheBonelordSecret,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheBonelordSecret,
 					missionId = 10300,
 					startValue = 30,
 					endValue = 32,
@@ -4199,7 +4199,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "The Orc Powder",
-					storageId = Storage.ExplorerSociety.TheOrcPowder,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheOrcPowder,
 					missionId = 10301,
 					startValue = 33,
 					endValue = 35,
@@ -4213,7 +4213,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "The Elven Poetry",
-					storageId = Storage.ExplorerSociety.TheElvenPoetry,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheElvenPoetry,
 					missionId = 10302,
 					startValue = 36,
 					endValue = 38,
@@ -4225,7 +4225,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "The Memory Stone",
-					storageId = Storage.ExplorerSociety.TheMemoryStone,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheMemoryStone,
 					missionId = 10303,
 					startValue = 39,
 					endValue = 41,
@@ -4237,7 +4237,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "The Rune Writings",
-					storageId = Storage.ExplorerSociety.TheRuneWritings,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheRuneWritings,
 					missionId = 10304,
 					startValue = 42,
 					endValue = 44,
@@ -4251,7 +4251,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "The Ectoplasm",
-					storageId = Storage.ExplorerSociety.TheEctoplasm,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheEctoplasm,
 					missionId = 10305,
 					startValue = 45,
 					endValue = 47,
@@ -4262,7 +4262,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "The Spectral Dress",
-					storageId = Storage.ExplorerSociety.TheSpectralDress,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheSpectralDress,
 					missionId = 10306,
 					startValue = 48,
 					endValue = 50,
@@ -4274,7 +4274,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "The Spectral Stone",
-					storageId = Storage.ExplorerSociety.TheSpectralStone,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheSpectralStone,
 					missionId = 10307,
 					startValue = 51,
 					endValue = 55,
@@ -4289,7 +4289,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "The Astral Portals",
-					storageId = Storage.ExplorerSociety.TheAstralPortals,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheAstralPortals,
 					missionId = 10308,
 					startValue = 56,
 					endValue = 56,
@@ -4300,7 +4300,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "The Island of Dragons",
-					storageId = Storage.ExplorerSociety.TheIslandofDragons,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheIslandofDragons,
 					missionId = 10309,
 					startValue = 57,
 					endValue = 59,
@@ -4312,7 +4312,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "The Ice Music",
-					storageId = Storage.ExplorerSociety.TheIceMusic,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheIceMusic,
 					missionId = 10310,
 					startValue = 60,
 					endValue = 62,
@@ -4326,7 +4326,7 @@ if not Quests then
 				},
 				[17] = {
 					name = "The Undersea Kingdom",
-					storageId = Storage.ExplorerSociety.CalassaQuest,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.CalassaQuest,
 					missionId = 10311,
 					startValue = 1,
 					endValue = 3,

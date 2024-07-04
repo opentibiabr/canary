@@ -102,42 +102,42 @@ QuestDoorAction = {
 	},
 	-- The explorer society quest doors
 	-- Mission in Dwacatra
-	[Storage.ExplorerSociety.DwacatraDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.DwacatraDoor] = {
 		itemId = false,
 		itemPos = { { x = 32598, y = 31933, z = 15 } },
 	},
 	-- Mission in Chor
-	[Storage.ExplorerSociety.ChorurnDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.ChorurnDoor] = {
 		itemId = false,
 		itemPos = { { x = 32957, y = 32835, z = 8 } },
 	},
 	-- Mission in Dark Pyramid
-	[Storage.ExplorerSociety.BonelordsDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.BonelordsDoor] = {
 		itemId = false,
 		itemPos = { { x = 33308, y = 32280, z = 12 } },
 	},
 	-- Mission in Orc Fortress
-	[Storage.ExplorerSociety.OrcDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.OrcDoor] = {
 		itemId = false,
 		itemPos = { { x = 32967, y = 31720, z = 2 } },
 	},
 	-- Mission in Hell Gate
-	[Storage.ExplorerSociety.ElvenDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.ElvenDoor] = {
 		itemId = false,
 		itemPos = { { x = 32703, y = 31605, z = 14 } },
 	},
 	-- Mission in Endron
-	[Storage.ExplorerSociety.MemoryStoneDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.MemoryStoneDoor] = {
 		itemId = false,
 		itemPos = { { x = 33151, y = 31640, z = 11 } },
 	},
 	-- Mission in Isle of Kings
-	[Storage.ExplorerSociety.BansheeDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.BansheeDoor] = {
 		itemId = false,
 		itemPos = { { x = 32259, y = 31948, z = 14 } },
 	},
 	-- Astral Bridge from Port Hope to Northport
-	[Storage.ExplorerSociety.SpectralStoneDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.SpectralStoneDoor] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32665, y = 32734, z = 6 },
@@ -145,7 +145,7 @@ QuestDoorAction = {
 		},
 	},
 	-- Astral Bridge from Svargrond to Liberty Bay
-	[Storage.ExplorerSociety.IceMusicDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.IceMusicDoor] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32318, y = 31137, z = 6 },
@@ -153,7 +153,7 @@ QuestDoorAction = {
 		},
 	},
 	-- Mission in Calassa
-	[Storage.ExplorerSociety.CalassaDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.CalassaDoor] = {
 		itemId = false,
 		itemPos = { { x = 31939, y = 32771, z = 13 } },
 	},

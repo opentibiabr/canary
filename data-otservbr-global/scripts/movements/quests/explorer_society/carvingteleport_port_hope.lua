@@ -16,7 +16,7 @@ function carvingTeleportPortHope.onStepIn(creature, item, position, fromPosition
 		return
 	end
 
-	if player:getStorageValue(Storage.ExplorerSociety.TheAstralPortals) >= 56 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) >= 56 and player:removeItem(5021, 1) then
+	if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheAstralPortals) >= 56 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) >= 56 and player:removeItem(5021, 1) then
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(carvingTP.position)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

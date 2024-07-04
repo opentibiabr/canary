@@ -1,18 +1,18 @@
 local explorerSocietyBotanist = Action()
 function explorerSocietyBotanist.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if target.itemid == 3874 and player:getStorageValue(Storage.ExplorerSociety.ThePlantCollection) == 18 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 18 then
-		player:setStorageValue(Storage.ExplorerSociety.ThePlantCollection, 19)
-		player:setStorageValue(Storage.ExplorerSociety.QuestLine, 19)
+	if target.itemid == 3874 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.ThePlantCollection) == 18 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 18 then
+		player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.ThePlantCollection, 19)
+		player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 19)
 		toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 		item:transform(4868)
-	elseif target.itemid == 3885 and player:getStorageValue(Storage.ExplorerSociety.ThePlantCollection) == 21 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 21 then
-		player:setStorageValue(Storage.ExplorerSociety.ThePlantCollection, 22)
-		player:setStorageValue(Storage.ExplorerSociety.QuestLine, 22)
+	elseif target.itemid == 3885 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.ThePlantCollection) == 21 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 21 then
+		player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.ThePlantCollection, 22)
+		player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 22)
 		toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 		item:transform(4869)
-	elseif target.itemid == 3878 and player:getStorageValue(Storage.ExplorerSociety.ThePlantCollection) == 24 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 24 then
-		player:setStorageValue(Storage.ExplorerSociety.ThePlantCollection, 25)
-		player:setStorageValue(Storage.ExplorerSociety.QuestLine, 25)
+	elseif target.itemid == 3878 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.ThePlantCollection) == 24 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 24 then
+		player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.ThePlantCollection, 25)
+		player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 25)
 		toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 		item:transform(4870)
 	elseif target.itemid == 5658 and target.uid == 3152 then

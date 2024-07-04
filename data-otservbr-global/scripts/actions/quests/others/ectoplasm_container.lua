@@ -10,9 +10,9 @@ function othersEctoplasm.onUse(player, item, fromPosition, target, toPosition, i
 		target:remove()
 		toPosition:sendMagicEffect(CONST_ME_POFF)
 	elseif target.itemid == 4290 then
-		if player:getStorageValue(Storage.ExplorerSociety.TheEctoplasm) == 45 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 45 then
-			player:setStorageValue(Storage.ExplorerSociety.TheEctoplasm, 46)
-			player:setStorageValue(Storage.ExplorerSociety.QuestLine, 46)
+		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheEctoplasm) == 45 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 45 then
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheEctoplasm, 46)
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 46)
 			toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			item:transform(4853)
 			target:remove()

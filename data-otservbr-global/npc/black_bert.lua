@@ -128,7 +128,7 @@ npcConfig.shop = {
 	{ itemname = "spectral dress", clientid = 4836, buy = 15000 },
 	{ itemname = "stabilizer", clientid = 9248, buy = 12500 },
 	{ itemname = "stone tablet with ley lines", clientid = 27464, buy = 8000 },
-	{ itemname = "strange powder", clientid = 4838, buy = 5000 },
+	{ itemname = "strange powder", clientid = 13974, buy = 5000 },
 	{ itemname = "striker's favourite pillow", clientid = 6105, buy = 16000 },
 	{ itemname = "strong sinew", clientid = 11548, buy = 4000 },
 	{ itemname = "suspicious documents", clientid = 400, buy = 2000 },

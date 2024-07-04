@@ -82,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "spectral dress") then
-		if player:getStorageValue(Storage.ExplorerSociety.TheSpectralDress) == 48 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 48 and player:getStorageValue(Storage.ExplorerSociety.BansheeDoor) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheSpectralDress) == 48 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 48 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.BansheeDoor) < 1 then
 			npcHandler:say(
 				"Your wish for a spectral dress is silly. \z
 					Although I will grant you the permission to take one. \z
@@ -90,7 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npc,
 				creature
 			)
-			player:setStorageValue(Storage.ExplorerSociety.BansheeDoor, 1)
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.BansheeDoor, 1)
 		end
 	elseif MsgContains(message, "addon") then
 		if player:getStorageValue(Storage.OutfitQuest.WizardAddon) == 5 then

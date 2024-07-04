@@ -4331,9 +4331,9 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Captain Max will bring you to Calassa whenever you are ready. \z
-							Please try to retrieve the missing logbook which must be in one of the sunken shipwrecks.",
+						[1] = "Captain Max will bring you to Calassa whenever you are ready. Please try to retrieve the missing logbook which must be in one of the sunken shipwrecks.",
 						[2] = "Report about your Calassa mission to Berenice in Liberty Bay.",
+						[3] = "Congratulations, you completed the remaining part of this mission!",
 					},
 				},
 			},

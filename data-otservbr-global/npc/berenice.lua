@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.CalassaQuest) == 2 then
 			npcHandler:say("OH! So you have safely returned from Calassa! Congratulations, were you able to retrieve the logbook?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
-		elseif player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheOrcPowder) > 34 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) > 34 then
+		elseif player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheOrcPowder) > 34 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) > 44 then
 			npcHandler:say("The most important mission we currently have is an expedition to {Calassa}.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -72,8 +72,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say("Captain Max will bring you to Calassa whenever you are ready. Please try to retrieve the missing logbook which must be in one of the sunken shipwrecks.", npc, creature)
-			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.CalassaDoor, 1)
-			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.CalassaQuest, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.CalassaQuest) == 2 then
 			npcHandler:say("OH! So you have safely returned from Calassa! Congratulations, were you able to retrieve the logbook?", npc, creature)
@@ -94,6 +92,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say("Excellent! I will immediately inform Captain Max to bring you to {Calassa} whenever you are ready. Don't forget to make thorough preparations!", npc, creature)
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.CalassaQuest, 1)
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.CalassaDoor, 1)
 			npcHandler:setTopic(playerId, 4)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			if player:removeItem(21378, 1) then

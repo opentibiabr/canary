@@ -235,7 +235,7 @@ void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBRes
 	auto condition = Condition::createCondition(propStream);
 	while (condition) {
 		if (condition->unserialize(propStream)) {
-			player->storedConditionList.push_front(condition);
+			player->storedConditionList.emplace_back(condition);
 		}
 		condition = Condition::createCondition(propStream);
 	}
@@ -465,7 +465,7 @@ void IOLoginDataLoad::loadPlayerInstantSpellList(std::shared_ptr<Player> player,
 	query << "SELECT `player_id`, `name` FROM `player_spells` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
-			player->learnedInstantSpellList.emplace_front(result->getString("name"));
+			player->learnedInstantSpellList.emplace_back(result->getString("name"));
 		} while (result->next());
 	}
 }

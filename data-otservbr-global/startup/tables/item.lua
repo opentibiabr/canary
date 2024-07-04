@@ -380,6 +380,11 @@ ItemAction = {
 }
 
 ItemUnique = {
+	-- The Explorer Society - The Rune Writings
+	[3010] = {
+		itemId = 2199,
+		itemPos = { x = 32754, y = 32559, z = 9 },
+	},
 	-- The Ancient Tombs Quest
 	[3950] = {
 		itemId = 1949,

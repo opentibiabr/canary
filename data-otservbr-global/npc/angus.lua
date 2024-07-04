@@ -130,7 +130,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({ "The research on ectoplasm makes good progress. Now we need some spectral article. Our scientists think a spectral dress would be a perfect object for their studies ...", "The bad news is that the only source to got such a dress is the queen of the banshees. Do you dare to seek her out?" }, npc, creature)
 			npcHandler:setTopic(playerId, 30)
 		elseif player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheSpectralDress) == 49 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 48 then
-			npcHandler:say("Did you bring the dress?", npc, creature)
+			npcHandler:say("Have you acquired the spectral dress we need?", npc, creature)
 			npcHandler:setTopic(playerId, 31)
 			-- Spectral stone
 		elseif player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheSpectralDress) == 50 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 50 then
@@ -159,6 +159,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 56)
 			player:addItem(5021, 6) -- Orichalcum pearl
 			player:addItem(9605, 1) -- Crown backpack
+			player:addItem(3035, 50) -- 50 Platinum coins
 			-- Astral portals
 		end
 		-- Mission check
@@ -283,7 +284,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Did you acquire a copy of 'Songs of the Forest' for us?", npc, creature)
 				npcHandler:setTopic(player:getId(), 22)
 			end
-		end
 
 		-- Elven Poetry
 		-- Memory Stone
@@ -527,11 +527,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			-- Ectoplasm
 			-- Spectral Dress
 		elseif npcHandler:getTopic(playerId) == 30 then
-			npcHandler:say(
-				{ "That is quite courageous. We know, it's much we are asking for. The queen of the banshees lives in the so called Ghostlands, south west of Carlin. It is rumoured that her lair is located in the deepest dungeons beneath that cursed place ...", "Any violence will probably be futile, you will have to negotiate with her. Try to get a spectral dress from her. Good luck." },
-				npc,
-				creature
-			)
+			npcHandler:say("That is quite courageous. We know, it's much we are asking for. The queen of the banshees lives in the so called Ghostlands, south west of Carlin. It is rumoured that her lair is located in the deepest dungeons beneath that cursed place ...", "Any violence will probably be futile, you will have to negotiate with her. Try to get a spectral dress from her. Good luck.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheSpectralDress, 48)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 48)
@@ -539,7 +535,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(4836, 1) then
 				player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheSpectralDress, 50)
 				player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 50)
-				npcHandler:say("Good! Ask me for another mission.", npc, creature)
+				npcHandler:say("Just in time! With this spectral article we can start the final phase of our research.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 			-- Spectral Dress

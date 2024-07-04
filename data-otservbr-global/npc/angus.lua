@@ -271,19 +271,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 		-- Orc Powder
 		-- Elven Poetry
-		elseif MsgContains(message, "elven poetry") then
-			if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheOrcPowder) == 35 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 35 then
-				npcHandler:say({
-					"Some high ranking members would like to study elven poetry. They want the rare book 'Songs of the Forest' ...",
-					"For sure someone in Ab'Dendriel will own a copy. So you would just have to ask around there. Are you willing to accept this mission?"
-				}, npc, creature)
-				npcHandler:setTopic(player:getId(), 21)
-			end
-		elseif MsgContains(message, "elven book") then
-			if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheElvenPoetry) == 37 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 36 then
-				npcHandler:say("Did you acquire a copy of 'Songs of the Forest' for us?", npc, creature)
-				npcHandler:setTopic(player:getId(), 22)
-			end
+	elseif MsgContains(message, "elven poetry") then
+		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheOrcPowder) == 35 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 35 then
+			npcHandler:say({
+				"Some high ranking members would like to study elven poetry. They want the rare book 'Songs of the Forest' ...",
+				"For sure someone in Ab'Dendriel will own a copy. So you would just have to ask around there. Are you willing to accept this mission?",
+			}, npc, creature)
+			npcHandler:setTopic(player:getId(), 21)
+		end
+	elseif MsgContains(message, "elven book") then
+		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheElvenPoetry) == 37 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 36 then
+			npcHandler:say("Did you acquire a copy of 'Songs of the Forest' for us?", npc, creature)
+			npcHandler:setTopic(player:getId(), 22)
+		end
 
 		-- Elven Poetry
 		-- Memory Stone
@@ -527,7 +527,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			-- Ectoplasm
 			-- Spectral Dress
 		elseif npcHandler:getTopic(playerId) == 30 then
-			npcHandler:say("That is quite courageous. We know, it's much we are asking for. The queen of the banshees lives in the so called Ghostlands, south west of Carlin. It is rumoured that her lair is located in the deepest dungeons beneath that cursed place ...", "Any violence will probably be futile, you will have to negotiate with her. Try to get a spectral dress from her. Good luck.", npc, creature)
+			npcHandler:say(
+				"That is quite courageous. We know, it's much we are asking for. The queen of the banshees lives in the so called Ghostlands, south west of Carlin. It is rumoured that her lair is located in the deepest dungeons beneath that cursed place ...",
+				"Any violence will probably be futile, you will have to negotiate with her. Try to get a spectral dress from her. Good luck.",
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheSpectralDress, 48)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 48)

@@ -109,11 +109,11 @@ LeverAction = {
 LeverUnique = {
 	-- The Ape City Quest - levers
 	[1040] = {
-		itemId = 2773,
+		itemId = 2772,
 		itemPos = { x = 32862, y = 32557, z = 11 },
 	},
 	[1041] = {
-		itemId = 2773,
+		itemId = 2772,
 		itemPos = { x = 32862, y = 32555, z = 11 },
 	},
 	-- Dark trails quest (The Ravager lever)

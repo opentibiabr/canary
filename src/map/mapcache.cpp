@@ -20,6 +20,7 @@
 #include "map/map.hpp"
 #include "utils/hash.hpp"
 #include "io/filestream.hpp"
+#include "game/scheduling/dispatcher.hpp"
 
 #include "io/iomap.hpp"
 
@@ -135,9 +136,13 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	}
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
-	for (const auto &zone : Zone::getZones(pos)) {
-		tile->addZone(zone);
-	}
+
+	// add zone synchronously
+	g_dispatcher().context().tryAddEvent([tile, pos] {
+		for (const auto &zone : Zone::getZones(pos)) {
+			tile->addZone(zone);
+		}
+	});
 
 	floor->setTile(x, y, tile);
 

@@ -20,7 +20,7 @@ struct Summary {
 	uint16_t m_instantRewards = 0;
 	uint16_t m_hirelings = 0;
 
-	Summary(uint16_t mPreyWildcards, uint16_t mInstantRewards, uint16_t mHirelings) :
+	[[maybe_unused]] Summary(uint16_t mPreyWildcards, uint16_t mInstantRewards, uint16_t mHirelings) :
 		m_preyWildcards(mPreyWildcards), m_instantRewards(mInstantRewards), m_hirelings(mHirelings) { }
 };
 
@@ -28,11 +28,7 @@ class PlayerCyclopedia {
 public:
 	explicit PlayerCyclopedia(Player &player);
 
-	Summary getSummary() {
-		return { getAmount(Summary_t::PREY_CARDS),
-			     getAmount(Summary_t::INSTANT_REWARDS),
-			     getAmount(Summary_t::HIRELINGS) };
-	}
+	Summary getSummary();
 
 	void loadSummaryData();
 	void loadDeathHistory(uint16_t page, uint16_t entriesPerPage);

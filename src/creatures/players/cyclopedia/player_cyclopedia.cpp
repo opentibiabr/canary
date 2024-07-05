@@ -18,6 +18,12 @@
 PlayerCyclopedia::PlayerCyclopedia(Player &player) :
 	m_player(player) { }
 
+Summary PlayerCyclopedia::getSummary() {
+	return { getAmount(Summary_t::PREY_CARDS),
+		     getAmount(Summary_t::INSTANT_REWARDS),
+		     getAmount(Summary_t::HIRELINGS) };
+}
+
 void PlayerCyclopedia::loadSummaryData() {
 	DBResult_ptr result = g_database().storeQuery(fmt::format("SELECT COUNT(*) as `count` FROM `player_hirelings` WHERE `player_id` = {}", m_player.getGUID()));
 	auto kvScoped = m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(static_cast<uint8_t>(Summary_t::HIRELINGS)));

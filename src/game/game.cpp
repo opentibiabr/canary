@@ -10667,6 +10667,10 @@ Title Game::getTitleByName(const std::string &name) {
 	return {};
 }
 
+const std::string &Game::getSummaryKeyByType(uint8_t type) {
+	return m_summaryCategories[type];
+}
+
 const std::map<uint8_t, std::string> &Game::getBlessingNames() {
 	return m_blessingNames;
 }

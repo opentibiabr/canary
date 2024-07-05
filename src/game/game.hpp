@@ -732,9 +732,7 @@ public:
 	Title getTitleById(uint8_t id);
 	Title getTitleByName(const std::string &name);
 
-	const std::string &getSummaryKeyByType(uint8_t type) {
-		return m_summaryCategories[type];
-	}
+	const std::string &getSummaryKeyByType(uint8_t type);
 
 	const std::map<uint8_t, std::string> &getBlessingNames();
 	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();

@@ -808,10 +808,6 @@ Storage = {
 		PirateBaseOutfit = 51009,
 		PirateSabreAddon = 51010,
 		PirateHatAddon = 51011,
-		-- Assassin Outfit
-		AssassinBaseOutfit = 51012,
-		AssassinFirstAddon = 51013,
-		AssassinSecondAddon = 51014,
 		-- Golden Outfit
 		GoldenOutfit = 51015,
 		NightmareOutfit = 51016,
@@ -2016,7 +2012,11 @@ Storage = {
 			},
 		},
 		U7_8 = { -- update 7.8 - Reserved Storages 40761 - 41000
-			AssassinOutfits = {},
+			AssassinOutfits = {
+				AssassinBaseOutfit = 40761,
+				AssassinFirstAddon = 40762,
+				AssassinSecondAddon = 40763,
+			},
 			BarbarianOutfits = {},
 			BeggarOutfits = {},
 			CitizenOutfits = {},

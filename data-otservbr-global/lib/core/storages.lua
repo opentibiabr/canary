@@ -760,9 +760,7 @@ Storage = {
 		DruidHatAddon = 50977,
 		DruidBodyAddon = 50978,
 		DruidAmuletDoor = 50979,
-		-- Barbarian-outfit Quest
-		BarbarianAddon = 50980,
-		BarbarianAddonWaitTimer = 50981,
+
 		-- Hunter-outfit Quest
 		HunterMusicSheet01 = 50984,
 		HunterMusicSheet02 = 50985,
@@ -2013,14 +2011,17 @@ Storage = {
 				AssassinFirstAddon = 40762,
 				AssassinSecondAddon = 40763,
 			},
-			BeggarOutfits = {
-				BeggarOutfit = 40764,
-				BeggarOutfitTimer = 40765,
-				BeggarFirstAddonDoor = 40766,
-				BeggarSecondAddon = 40767,
-				BeggarOutfitTimerAddon = 40768,
+			BarbarianOutfits = {
+				BarbarianAddon = 40764,
+				BarbarianAddonWaitTimer = 40765,
 			},
-			BarbarianOutfits = {},
+			BeggarOutfits = {
+				BeggarOutfit = 40766,
+				BeggarOutfitTimer = 40767,
+				BeggarFirstAddonDoor = 40768,
+				BeggarSecondAddon = 40769,
+				BeggarOutfitTimerAddon = 40770,
+			},
 			CitizenOutfits = {},
 			CitizenOutfitsRook = {},
 			DruidOutfits = {},

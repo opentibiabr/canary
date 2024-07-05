@@ -1047,6 +1047,14 @@ ChestUnique = {
 		reward = { { 3027, 2 }, { 3008, 1 }, { 3031, 100 } },
 		storage = Storage.QuestChests.WitchHouseQuest,
 	},
+	-- Simon The Beggar's Favorite Staff
+	[6117] = {
+		itemId = 2482,
+		itemPos = { x = 33167, y = 31600, z = 15 },
+		weight = 38.00,
+		reward = { { 6107, 1 } },
+		storage = Storage.QuestChests.SimonTheBeggarsFavoriteStaff,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

@@ -755,9 +755,7 @@ Storage = {
 			AddonBackpack = 50969,
 			AddonBackpackTimer = 50970,
 		},
-		-- Begger Outfit Quest
-		BeggarFirstAddonDoor = 50975, -- Staff quest
-		BeggarSecondAddon = 50976,
+
 		-- Druid-outfit Quest
 		DruidHatAddon = 50977,
 		DruidBodyAddon = 50978,
@@ -765,9 +763,6 @@ Storage = {
 		-- Barbarian-outfit Quest
 		BarbarianAddon = 50980,
 		BarbarianAddonWaitTimer = 50981,
-		-- Beggar
-		BeggarOutfit = 50982,
-		BeggarOutfitTimer = 50983,
 		-- Hunter-outfit Quest
 		HunterMusicSheet01 = 50984,
 		HunterMusicSheet02 = 50985,
@@ -1324,6 +1319,7 @@ Storage = {
 		DragahsSpellbook = 51768,
 		StealFromThieves = 51769,
 		WitchHouseQuest = 51770,
+		SimonTheBeggarsFavoriteStaff = 51771,
 	},
 	PitsOfInferno = {
 		-- Reserved storage from 52000 - 52019
@@ -2017,8 +2013,14 @@ Storage = {
 				AssassinFirstAddon = 40762,
 				AssassinSecondAddon = 40763,
 			},
+			BeggarOutfits = {
+				BeggarOutfit = 40764,
+				BeggarOutfitTimer = 40765,
+				BeggarFirstAddonDoor = 40766,
+				BeggarSecondAddon = 40767,
+				BeggarOutfitTimerAddon = 40768,
+			},
 			BarbarianOutfits = {},
-			BeggarOutfits = {},
 			CitizenOutfits = {},
 			CitizenOutfitsRook = {},
 			DruidOutfits = {},

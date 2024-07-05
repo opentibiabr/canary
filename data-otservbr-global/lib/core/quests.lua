@@ -2193,10 +2193,10 @@ if not Quests then
 				},
 				[5] = {
 					name = "Beggar Outfit: The Newest Fashion",
-					storageId = Storage.OutfitQuest.BeggarOutfit,
+					storageId = Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit,
 					missionId = 10172,
 					startValue = 1,
-					endValue = 6,
+					endValue = 8,
 					states = {
 						[1] = "Your current task is to bring Hugo 20 pieces of brown cloth, like the worn and ragged ghoul clothing.",
 						[2] = "Your current task is to bring 50 pieces of minotaur leather to Hugo. \z
@@ -2206,6 +2206,8 @@ if not Quests then
 						[5] = "You brought all items required for the &quot;poor man's look&quot; to Hugo. \z
 							He told you to come back to him after a whole day has passed, then the outfit should be finished.",
 						[6] = "You got the outfit!",
+						[7] = "Now you need to go after the items to get the first addon.",
+						[8] = "Congratulations, you delivered the items for the first addon.",
 					},
 				},
 				[6] = {

@@ -96,7 +96,7 @@ QuestDoorAction = {
 		itemPos = { { x = 33269, y = 32446, z = 12 } },
 	},
 	-- Beggar outfit quest door
-	[Storage.OutfitQuest.BeggarFirstAddonDoor] = {
+	[Storage.Quest.U7_8.BeggarOutfits.BeggarFirstAddonDoor] = {
 		itemId = false,
 		itemPos = { { x = 33165, y = 31600, z = 15 } },
 	},

@@ -507,10 +507,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"Fine. The society is looking for new means to travel. Some of our most brilliant minds have some theories about astral travel that they want to research further ...",
 				"Therefore we need you to collect some ectoplasm from the corpse of a ghost. We will supply you with a collector that you can use on the body of a slain ghost ...",
-				"Do you think you are ready for that mission?",
-				npc,
-				creature
-			)
+				"Do you think you are ready for that mission?",	npc, creature)
 			npcHandler:setTopic(playerId, 28)
 		elseif npcHandler:getTopic(playerId) == 28 then
 			npcHandler:say("Good! Take this container and use it on a ghost that was recently slain. Return with the collected ectoplasm and hand me that container ...", npc, creature)
@@ -531,10 +528,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 30 then
 			npcHandler:say(
 				"That is quite courageous. We know, it's much we are asking for. The queen of the banshees lives in the so called Ghostlands, south west of Carlin. It is rumoured that her lair is located in the deepest dungeons beneath that cursed place ...",
-				"Any violence will probably be futile, you will have to negotiate with her. Try to get a spectral dress from her. Good luck.",
-				npc,
-				creature
-			)
+				"Any violence will probably be futile, you will have to negotiate with her. Try to get a spectral dress from her. Good luck.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheSpectralDress, 48)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 48)

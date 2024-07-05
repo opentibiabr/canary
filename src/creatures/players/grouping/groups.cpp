@@ -43,7 +43,7 @@ PlayerFlags_t Groups::getFlagFromNumber(uint8_t value) {
 	return magic_enum::enum_value<PlayerFlags_t>(value);
 }
 
-bool Groups::reload() const {
+bool Groups::reload() {
 	// Clear groups
 	g_game().groups.getGroups().clear();
 	return g_game().groups.load();
@@ -99,11 +99,11 @@ bool Groups::load() {
 	return true;
 }
 
-std::shared_ptr<Group> Groups::getGroup(uint16_t id) {
+std::shared_ptr<Group> Groups::getGroup(uint16_t id) const {
 	if (auto it = std::find_if(groups_vector.begin(), groups_vector.end(), [id](auto group_it) {
 			return group_it->id == id;
 		});
-		it != groups_vector.end()) {
+	    it != groups_vector.end()) {
 		return *it;
 	}
 	return nullptr;

@@ -89,6 +89,32 @@ public:
 			}
 		}
 	}
+	/**
+	 * @brief Checks if all registered callbacks of the specified event type succeed.
+	 * @param eventType The type of event to check.
+	 * @param callbackFunc Function pointer to the callback method.
+	 * @param args Variadic arguments to pass to the callback function.
+	 * @return ReturnValue enum.
+	 */
+	template <typename CallbackFunc, typename... Args>
+	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
+		ReturnValue res = RETURNVALUE_NOERROR;
+		for (const auto &callback : getCallbacksByType(eventType)) {
+			auto argsCopy = std::make_tuple(args...);
+			if (callback && callback->isLoadedCallback()) {
+				ReturnValue callbackResult = std::apply(
+					[&callback, &callbackFunc](auto &&... args) {
+						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
+					},
+					argsCopy
+				);
+				if (callbackResult != RETURNVALUE_NOERROR) {
+					return callbackResult;
+				}
+			}
+		}
+		return res;
+	}
 
 	/**
 	 * @brief Checks if all registered callbacks of the specified event type succeed.

@@ -14,6 +14,14 @@ ItemAction = {
 			{ x = 33109, y = 32530, z = 3 },
 		},
 	},
+	-- The Explorer Society - Jump - Calassa
+	[2070] = {
+		itemId = 470,
+		itemPos = {
+			{ x = 31914, y = 32716, z = 6 },
+			{ x = 31915, y = 32716, z = 6 },
+		},
+	},
 	-- The Ancient Tombs Quest
 	[12105] = {
 		itemId = false,
@@ -619,20 +627,17 @@ ItemUnique = {
 		itemPos = { x = 33874, y = 31433, z = 9 },
 	},
 	-- Explorer Society Quest
-	-- Path: data\scripts\actions\quests\explorer_society\findings.lua
 	-- Lizard Urn (Chor)
 	[40041] = {
 		itemId = 2904,
 		itemPos = { x = 32957, y = 32834, z = 8 },
 	},
 	-- Frozen Dragon (Okolnir)
-	-- Path: data\scripts\actions\quests\explorer_society\dragon.lua
 	[40042] = {
 		itemId = 7295,
 		itemPos = { x = 32321, y = 31455, z = 9 },
 	},
 	-- Icicles for Ice Music (Camp / Hrodmir)
-	-- Path: data\scripts\actions\quests\explorer_society\resonance.lua
 	[40043] = {
 		itemId = 6966,
 		itemPos = { x = 32078, y = 31217, z = 7 },

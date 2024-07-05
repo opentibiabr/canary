@@ -293,12 +293,12 @@ ChestUnique = {
 		reward = { { 3587, 1 } },
 		storage = Storage.Quest.U6_0.StuddedShield.Rewards.BananaPremium,
 	},
-	-- Explorer brooch quest (kazordoon)
+	-- The Explorer Society - Explorer brooch (kazordoon)
 	[6019] = {
 		itemId = 4240,
 		itemPos = { x = 32636, y = 31873, z = 10 },
 		reward = { { 4871, 1 } },
-		storage = Storage.Quest.U6_1.ExplorerBrooch.Brooch,
+		storage = Storage.Quest.U7_6.ExplorerSociety.ExplorerBrooch,
 	},
 	-- Orc fortress quest
 	-- Knight axe
@@ -745,21 +745,21 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32774, y = 32253, z = 8 },
 		reward = { { 3034, 1 } },
-		storage = Storage.Quest.U7_24.GiantSmithhammer.Talon,
+		storage = Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.Talon,
 	},
 	-- Giant smithhammer
 	[6078] = {
 		itemId = 2472,
 		itemPos = { x = 32776, y = 32253, z = 8 },
 		reward = { { 12510, 1 } },
-		storage = Storage.Quest.U7_24.GiantSmithhammer.Hammer,
+		storage = Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.Hammer,
 	},
 	-- 100 gold coin
 	[6079] = {
 		itemId = 2472,
 		itemPos = { x = 32778, y = 32253, z = 8 },
 		reward = { { 3031, 100 } },
-		storage = Storage.Quest.U7_24.GiantSmithhammer.GoldCoin,
+		storage = Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.GoldCoin,
 	},
 	-- Mad Mage room quest
 	-- Star amulet
@@ -791,7 +791,7 @@ ChestUnique = {
 		container = 2853,
 		weight = 42,
 		reward = { { 3026, 1 }, { 3207, 1 } },
-		storage = Storage.Quest.U7_24.SkullOfRatha.Bag1,
+		storage = Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag1,
 	},
 	-- Bag (wolf tooth chain/dwarven ring)
 	[6084] = {
@@ -800,7 +800,7 @@ ChestUnique = {
 		container = 2853,
 		weight = 42,
 		reward = { { 3012, 1 }, { 3097, 1 } },
-		storage = Storage.Quest.U7_24.SkullOfRatha.Bag2,
+		storage = Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag2,
 	},
 	-- The annihilator quest
 	-- Demon armor
@@ -1022,6 +1022,30 @@ ChestUnique = {
 		weight = 0.20,
 		reward = { { 3044, 2 } },
 		storage = Storage.Quest.U7_5.ElephantTusk,
+	},
+	-- The Explorer Society - Books
+	[6114] = {
+		itemId = 2434,
+		itemPos = { x = 32770, y = 32245, z = 8 },
+		weight = 13,
+		reward = { { 2821, 1 } },
+		storage = Storage.Quest.U7_6.ExplorerSociety.Books.Cyclops,
+	},
+	[6115] = {
+		itemId = 2523,
+		itemPos = { x = 32786, y = 32254, z = 8 },
+		weight = 13.00,
+		reward = { { 2821, 1 } },
+		storage = Storage.Quest.U7_6.ExplorerSociety.Books.Hengis,
+	},
+	-- Witch House Quest
+	[6116] = {
+		itemId = 2472,
+		itemPos = { x = 32867, y = 31909, z = 8 },
+		weight = 23.30,
+		container = 2853,
+		reward = { { 3027, 2 }, { 3008, 1 }, { 3031, 100 } },
+		storage = Storage.QuestChests.WitchHouseQuest,
 	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest

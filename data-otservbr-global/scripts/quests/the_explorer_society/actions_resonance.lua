@@ -6,6 +6,7 @@ function explorerSocietyResonance.onUse(player, item, fromPosition, target, toPo
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 61)
 			toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			item:transform(7315)
+			player:say("You recorded the ice music.", TALKTYPE_MONSTER_SAY)
 		end
 	end
 	return true

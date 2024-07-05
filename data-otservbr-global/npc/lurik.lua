@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheAstralPortals) == 56 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 56 then
+		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheAstralPortals) == 56 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 56 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheIslandofDragons) == 57 then --will need review in the future
 			npcHandler:say("Ah, you've just come in time. An experienced explorer is just what we need here! Would you like to go on a mission for us?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheIslandofDragons) == 58 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 58 then

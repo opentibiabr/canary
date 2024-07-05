@@ -153,8 +153,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheAstralPortals, 56)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 56)
-			player:addItem(5021, 6) -- orichalcum pearl
-			player:addItem(9605, 1) -- crown backpack
+			player:addItem(5021, 6) -- Orichalcum pearl
+			player:addItem(9605, 1) -- Crown backpack
+			player:addItem(3035, 50) -- 50 Platinum coins
 			-- ASTRAL PORTALS
 		end
 		-- MISSION CHECK
@@ -605,9 +606,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 33 then
 			if player:removeItem(3207, 1) then
 				npcHandler:say("Poor Ratha. Thank you for returning this skull to the society. We will see to a honourable burial of Ratha.", npc, creature)
-				player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha, 1)
-				player:addItem(3035, 2)
-				player:addItem(3031, 50)
+				player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag1, 2)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("Come back when you find any information.", npc, creature)
@@ -616,15 +615,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 34 then
 			if player:removeItem(12510, 1) then
 				npcHandler:say("Marvellous! You brought a giant smith hammer for the explorer society!", npc, creature)
-				player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer, 1)
-				player:addItem(3035, 2)
-				player:addItem(3031, 50)
+				player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.Hamer, 2)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("No you don't.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 			-- SKULL OF RATHA / GIANT SMITHHAMMER
+		elseif npcHandler:getTopic(playerId) == 35 then
+			if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.ExplorerBrooch) == 1 and player:removeItem(4871, 1) then
+				npcHandler:say("It's always a sad day when we learn about the death of a member. But at least we learnt about his fate. Thank you, here is your reward.", npc, creature)
+				player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.ExplorerBrooch, 2)
+				npcHandler:setTopic(playerId, 0)
+			end
 		end
 		-- ANSWER YES
 
@@ -643,17 +646,25 @@ local function creatureSayCallback(npc, creature, type, message)
 		-- ANSWER NO
 
 		-- SKULL OF RATHA / GIANT SMITHHAMMER
-	elseif MsgContains(message, "skull of ratha") and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha) < 1 then
+	elseif MsgContains(message, "skull of ratha") and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag1) == 1 then
 		npcHandler:say({
 			"Ratha was a great explorer and even greater ladies' man. Sadly he never returned from a visit to the amazons. Probably he is dead ...",
 			"The society offers a substantial reward for the retrieval of Ratha or his remains. Do you have any news about Ratha?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 33)
-	elseif MsgContains(message, "giant smithhammer") and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer) < 1 then
+	elseif MsgContains(message, "giant smith hammer") and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.Hammer) == 1 then
 		npcHandler:say("The explorer society is looking for a genuine giant smith hammer for our collection. It is rumoured the cyclopses of the Plains of Havoc might be using one. Did you by chance obtain such a hammer?", npc, creature)
 		npcHandler:setTopic(playerId, 34)
-		-- SKULL OF RATHA / GIANT SMITHHAMMER
+		-- Explorer Brooch
+	elseif MsgContains(message, "brooch") and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.ExplorerBrooch) == 1 then
+		npcHandler:say({
+			"Our members travel to far away places and cross dangerous areas, many fall prey to enemies or the land ...",
+			"Sometimes the personal explorer brooches can be recovered. That way we learn about the fate of our members ...",
+			"We offer a reward for each brooch returned to us. Have you found an explorer brooch?",
+		}, npc, creature)
+		npcHandler:setTopic(playerId, 35)
 	end
+
 	return true
 end
 

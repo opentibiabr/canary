@@ -229,6 +229,67 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	end
 
+	if MsgContains(message, "cookie") then
+		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar) ~= 1 then
+			npcHandler:say("Have you brought a cookie for the poor?", npc, creature)
+			npcHandler:setTopic(playerId, 8)
+		end
+	elseif MsgContains(message, "help") then
+		npcHandler:say("I need gold. Can you spare 100 gold pieces for me?", npc, creature)
+		npcHandler:setTopic(playerId, 9)
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 8 then
+			if not player:removeItem(130, 8) then
+				npcHandler:say("You have no cookie that I'd like.", npc, creature)
+				npcHandler:setTopic(playerId, 0)
+				return true
+			end
+			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar, 1)
+			if player:getCookiesDelivered() == 10 then
+				player:addAchievement("Allow Cookies?")
+			end
+			npc:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
+			npcHandler:say({
+				"Well, it's the least you can do for those who live in dire poverty.",
+				"A single cookie is a bit less than I'd expected, but better than ... WHA ... WHAT??",
+				"MY BEARD! MY PRECIOUS BEARD! IT WILL TAKE AGES TO CLEAR IT OF THIS CONFETTI!",
+				} npc, creature)
+			npcHandler:removeInteraction(npc, creature)
+			npcHandler:resetNpc(creature)
+		elseif npcHandler:getTopic(playerId) == 9 then
+			if not player:removeMoneyBank(100) then
+				npcHandler:say("You haven't got enough money for me.", npc, creature)
+				npcHandler:setTopic(playerId, 0)
+				return true
+			end
+			npcHandler:say("Thank you very much. Can you spare 500 more gold pieces for me? I will give you a nice hint.", npc, creature)
+			npcHandler:setTopic(playerId, 10)
+		elseif npcHandler:getTopic(playerId) == 10 then
+			if not player:removeMoneyBank(500) then
+				npcHandler:say("Sorry, that's not enough.", npc, creature)
+				npcHandler:setTopic(playerId, 0)
+				return true
+			end
+			npcHandler:say({
+				"That's great! I have stolen something from Dermot.",
+				"You can buy it for 200 gold. Do you want to buy it?",
+				}, npc, creature)
+			npcHandler:setTopic(playerId, 11)
+		elseif npcHandler:getTopic(playerId) == 11 then
+			if not player:removeMoneyBank(200) then
+				npcHandler:say("Pah! I said 200 gold. You don't have that much.", npc, creature)
+				npcHandler:setTopic(playerId, 0)
+				return true
+			end
+			local key = player:addItem(2968, 1)
+			if key then
+				key:setActionId(3940)
+			end
+			npcHandler:say("Now you own the hot key.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
+		end
+	end
+
 	if MsgContains(message, "no") and npcHandler:getTopic(playerId) ~= 0 then
 		local noResponse = {
 			[1] = "I see.",
@@ -238,6 +299,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			[5] = "Hmm, maybe next time.",
 			[6] = "It was your decision.",
 			[7] = "Ok. No problem",
+			[8] = "Ok. No problem",
+			[9] = "Ok. No problem",
+			[10] = "Ok. No problem",
+			[11] = "Ok. No problem",
 		}
 		npcHandler:say(noResponse[npcHandler:getTopic(playerId)], npc, creature)
 		npcHandler:setTopic(playerId, 0)

@@ -1,7 +1,6 @@
 local loginEvents = CreatureEvent("LoginEvents")
 function loginEvents.onLogin(player)
 	local events = {
-		"AdvanceSave",
 		"RookgaardAdvance",
 		"FamiliarLogin",
 		"FamiliarAdvance",

@@ -1515,7 +1515,10 @@ void UPDATE_OTSYS_TIME() {
 	OTSYSTIME = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-int64_t OTSYS_TIME() {
+int64_t OTSYS_TIME(bool useTime) {
+	if (useTime) {
+		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	}
 	return OTSYSTIME;
 }
 

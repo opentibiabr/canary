@@ -253,7 +253,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Well, it's the least you can do for those who live in dire poverty.",
 				"A single cookie is a bit less than I'd expected, but better than ... WHA ... WHAT??",
 				"MY BEARD! MY PRECIOUS BEARD! IT WILL TAKE AGES TO CLEAR IT OF THIS CONFETTI!",
-				} npc, creature)
+				}, npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif npcHandler:getTopic(playerId) == 9 then

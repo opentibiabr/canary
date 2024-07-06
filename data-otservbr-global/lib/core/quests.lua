@@ -2125,7 +2125,7 @@ if not Quests then
 			missions = {
 				[1] = {
 					name = "Assassin Addon: The Red Death",
-					storageId = Storage.Quest.U7_8.AssassinOutfits.AssassinSecondAddon,
+					storageId = Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit,
 					missionId = 10168,
 					startValue = 1,
 					endValue = 2,

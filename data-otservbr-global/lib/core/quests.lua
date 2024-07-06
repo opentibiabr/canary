@@ -2161,7 +2161,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Barbarian Outfit Quest",
-					storageId = Storage.OutfitQuest.BarbarianAddon,
+					storageId = Storage.Quest.U7_8.BarbarianOutfits.BarbarianAddon,
 					missionId = 10171,
 					startValue = 1,
 					endValue = 17,

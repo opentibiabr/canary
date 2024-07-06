@@ -2023,14 +2023,12 @@ Storage = {
 				AddonBackpackTimer = 40780,
 			},
 			DruidOutfitsRook = {
-				DruidHatAddonRook = 40781,
-				DruidBodyAddonRook = 40782,
-				DruidAmuletDoorRook = 40783,
+				DruidBodyAddonRook = 40781,
 			},
 			DruidOutfits = {
-				DruidHatAddon = 40784,
-				DruidBodyAddon = 40785,
-				DruidAmuletDoor = 40786,
+				DruidHatAddon = 40782,
+				DruidBodyAddon = 40783,
+				DruidAmuletDoor = 40784,
 			},
 			HunterOutfits = {},
 			KnightOutfits = {},

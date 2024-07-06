@@ -747,11 +747,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		-- Druid-outfit Quest
-		DruidHatAddon = 50977,
-		DruidBodyAddon = 50978,
-		DruidAmuletDoor = 50979,
-
 		-- Hunter-outfit Quest
 		HunterMusicSheet01 = 50984,
 		HunterMusicSheet02 = 50985,
@@ -2027,8 +2022,16 @@ Storage = {
 				AddonBackpack = 40779,
 				AddonBackpackTimer = 40780,
 			},
-			DruidOutfits = {},
-			DruidOutfitsRook = {},
+			DruidOutfitsRook = {
+				DruidHatAddonRook = 40781,
+				DruidBodyAddonRook = 40782,
+				DruidAmuletDoorRook = 40783,
+			},
+			DruidOutfits = {
+				DruidHatAddon = 40784,
+				DruidBodyAddon = 40785,
+				DruidAmuletDoor = 40786,
+			},
 			HunterOutfits = {},
 			KnightOutfits = {},
 			MageOutfits = {},

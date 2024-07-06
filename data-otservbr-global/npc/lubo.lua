@@ -79,7 +79,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.MissionBackpack, 0)
 				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.AddonBackpack, 3)
-
 				player:addOutfitAddon(136, 1)
 				player:addOutfitAddon(128, 1)
 			else

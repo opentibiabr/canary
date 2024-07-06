@@ -2212,7 +2212,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Druid Outfit Quest",
-					storageId = Storage.Quest.U7_8.DruidOutfits.DruidHatAddon,
+					storageId = Storage.OutfitQuest.DruidHatAddon,
 					missionId = 10173,
 					startValue = 1,
 					endValue = 10,

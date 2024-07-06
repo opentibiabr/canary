@@ -61,13 +61,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "cough syrup") then
 		npcHandler:say("I had some cough syrup a while ago. It was stolen in an ape raid. I fear if you want more cough syrup you will have to buy it in the druids guild in carlin.", npc, creature)
 	elseif MsgContains(message, "addon") then
-		if player:getStorageValue(Storage.Quest.U7_8.DruidOutfits.DruidBodyAddon) < 1 then
+		if player:getStorageValue(Storage.OutfitQuest.DruidBodyAddon) < 1 then
 			npcHandler:say("Would you like to wear bear paws like I do? No problem, just bring me 50 bear paws and 50 wolf paws and I'll fit them on.", npc, creature)
-			player:setStorageValue(Storage.Quest.U7_8.DruidOutfits.DruidBodyAddon, 1)
+			player:setStorageValue(Storage.OutfitQuest.DruidBodyAddon, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "paws") or MsgContains(message, "bear paws") then
-		if player:getStorageValue(Storage.Quest.U7_8.DruidOutfits.DruidBodyAddon) == 1 then
+		if player:getStorageValue(Storage.OutfitQuest.DruidBodyAddon) == 1 then
 			npcHandler:say("Have you brought 50 bear paws and 50 wolf paws?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -77,8 +77,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Excellent! Like promised, here are your bear paws. ", npc, creature)
 				player:removeItem(5896, 50)
 				player:removeItem(5897, 50)
-				player:setStorageValue(Storage.Quest.U7_8.DruidOutfits.DruidBodyAddon, 2)
-				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+				player:setStorageValue(Storage.OutfitQuest.DruidBodyAddon, 2)
 				player:addOutfitAddon(148, 1)
 				player:addOutfitAddon(144, 1)
 				npcHandler:setTopic(playerId, 0)
@@ -88,7 +87,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, "Crunor's blessing, traveller.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

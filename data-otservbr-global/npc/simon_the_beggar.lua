@@ -253,7 +253,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Well, it's the least you can do for those who live in dire poverty.",
 				"A single cookie is a bit less than I'd expected, but better than ... WHA ... WHAT??",
 				"MY BEARD! MY PRECIOUS BEARD! IT WILL TAKE AGES TO CLEAR IT OF THIS CONFETTI!",
-				}, npc, creature)
+			}, npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif npcHandler:getTopic(playerId) == 9 then
@@ -273,7 +273,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"That's great! I have stolen something from Dermot.",
 				"You can buy it for 200 gold. Do you want to buy it?",
-				}, npc, creature)
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 11)
 		elseif npcHandler:getTopic(playerId) == 11 then
 			if not player:removeMoneyBank(200) then

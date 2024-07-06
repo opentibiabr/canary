@@ -33,7 +33,7 @@ local taskBoss = {
 	[31] = "the horned fox",
 }
 
-local bossKillCount = Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.SnapperCount
+local bossKillCount = Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount
 
 local deathEvent = CreatureEvent("KillingInTheNameOfBossDeath")
 function deathEvent.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)

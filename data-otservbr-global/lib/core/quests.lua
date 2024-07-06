@@ -2137,7 +2137,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Citizen Addon: Backpack",
-					storageId = Storage.OutfitQuest.Citizen.MissionBackpack,
+					storageId = Storage.Quest.U7_8.CitizenOutfits.MissionBackpack,
 					missionId = 10169,
 					startValue = 1,
 					endValue = 2,
@@ -2150,7 +2150,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Citizen Addon: Feather Hat",
-					storageId = Storage.OutfitQuest.Citizen.MissionHat,
+					storageId = Storage.Quest.U7_8.CitizenOutfits.MissionHat,
 					missionId = 10170,
 					startValue = 1,
 					endValue = 2,

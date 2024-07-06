@@ -747,15 +747,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		Citizen = {
-			-- Mission storages for temporary questlog entries
-			MissionHat = 50966,
-			AddonHat = 50967,
-			MissionBackpack = 50968,
-			AddonBackpack = 50969,
-			AddonBackpackTimer = 50970,
-		},
-
 		-- Druid-outfit Quest
 		DruidHatAddon = 50977,
 		DruidBodyAddon = 50978,
@@ -2029,7 +2020,13 @@ Storage = {
 				AddonBackpackRook = 40774,
 				AddonBackpackRookTimer = 40775,
 			},
-			CitizenOutfits = {},
+			CitizenOutfits = {
+				MissionHat = 40776,
+				AddonHat = 40777,
+				MissionBackpack = 40778,
+				AddonBackpack = 40779,
+				AddonBackpackTimer = 40780,
+			},
 			DruidOutfits = {},
 			DruidOutfitsRook = {},
 			HunterOutfits = {},

@@ -1055,6 +1055,14 @@ ChestUnique = {
 		reward = { { 6107, 1 } },
 		storage = Storage.QuestChests.SimonTheBeggarsFavoriteStaff,
 	},
+	-- Druid Outfit Quest - Wolf Tooth Chain
+	[6118] = {
+		itemId = 2480,
+		itemPos = { x = 32939, y = 31776, z = 9 },
+		weight = 3.30,
+		reward = { { 5940, 1 } },
+		storage = Storage.Quest.U7_8.DruidOutfits.WolfToothChain,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

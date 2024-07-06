@@ -393,6 +393,11 @@ ItemUnique = {
 		itemId = 2199,
 		itemPos = { x = 32754, y = 32559, z = 9 },
 	},
+	-- Griffinclaw flower
+	[3152] = {
+		itemId = 5658,
+		itemPos = { x = 32024, y = 32830, z = 4 },
+	},
 	-- The Ancient Tombs Quest
 	[3950] = {
 		itemId = 1949,
@@ -895,6 +900,11 @@ ItemUnique = {
 	[40095] = {
 		itemId = 4995,
 		itemPos = { x = 32744, y = 32586, z = 10 },
+	},
+	-- Druid Outfits Quest - Ceirons Waterskin
+	[40096] = {
+		itemId = 5662,
+		itemPos = { x = 33024, y = 32672, z = 6 },
 	},
 	-- The Ancient Tombs Quest
 	[50135] = {

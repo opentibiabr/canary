@@ -914,6 +914,12 @@ QuestDoorAction = {
 			{ x = 33782, y = 32576, z = 12 },
 		},
 	},
+	[Storage.Quest.U7_8.DruidOutfits.DruidAmuletDoor] = {
+		itemId = 6260,
+		itemPos = {
+			{ x = 32939, y = 31775, z = 9 },
+		},
+	},
 }
 
 QuestDoorUnique = {

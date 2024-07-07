@@ -64,7 +64,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	-- Verifica se o jogador completou a missão "The Ape City"
 	if player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Questline) <= 15 then
 		npcHandler:say("Sorry but I don't have anything for you at the moment.", npc, creature)
 		return true

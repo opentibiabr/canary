@@ -2233,7 +2233,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Hunter Outfit Quest",
-					storageId = Storage.OutfitQuest.HunterHatAddon,
+					storageId = Storage.Quest.U7_8.HunterOutfits.HunterHatAddon,
 					missionId = 10174,
 					startValue = 1,
 					endValue = 5,

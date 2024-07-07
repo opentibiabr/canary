@@ -364,10 +364,10 @@ local questTable = {
 	{ storage = Storage.ToOutfoxAFoxQuest, storageValue = 2 },
 
 	-- Hunter Outfit quests
-	{ storage = Storage.OutfitQuest.HunterMusicSheet01, storageValue = 1 },
-	{ storage = Storage.OutfitQuest.HunterMusicSheet02, storageValue = 1 },
-	{ storage = Storage.OutfitQuest.HunterMusicSheet03, storageValue = 1 },
-	{ storage = Storage.OutfitQuest.HunterMusicSheet04, storageValue = 1 },
+	{ storage = Storage.Quest.U7_8.HunterOutfits.HunterMusicSheet01, storageValue = 1 },
+	{ storage = Storage.Quest.U7_8.HunterOutfits.HunterMusicSheet02, storageValue = 1 },
+	{ storage = Storage.Quest.U7_8.HunterOutfits.HunterMusicSheet03, storageValue = 1 },
+	{ storage = Storage.Quest.U7_8.HunterOutfits.HunterMusicSheet04, storageValue = 1 },
 
 	-- Norseman
 	{ storage = Storage.OutfitQuest.NorsemanAddon, storageValue = 1 },

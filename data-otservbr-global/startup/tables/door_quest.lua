@@ -306,7 +306,7 @@ QuestDoorAction = {
 		itemPos = { { x = 33666, y = 31924, z = 7 } },
 	},
 	-- Outfit quest door
-	[Storage.OutfitQuest.HunterHatAddon] = {
+	[Storage.Quest.U7_8.HunterOutfits.HunterHatAddon] = {
 		itemId = false,
 		itemPos = { { x = 32369, y = 32796, z = 10 } },
 	},

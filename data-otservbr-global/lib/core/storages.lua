@@ -747,17 +747,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		-- Hunter-outfit Quest
-		HunterMusicSheet01 = 50984,
-		HunterMusicSheet02 = 50985,
-		HunterMusicSheet03 = 50986,
-		HunterMusicSheet04 = 50987,
-		HunterBodyAddon = 50988,
-		HunterHatAddon = 50989,
-		Hunter = {
-			AddonGlove = 50990,
-			AddonHat = 50991,
-		},
 		Knight = {
 			AddonSword = 50992,
 			MissionHelmet = 50993,
@@ -2033,7 +2022,19 @@ Storage = {
 				CeironsWaterskin = 40786,
 				WolfToothChain = 40787,
 			},
-			HunterOutfits = {},
+			HunterOutfits = {
+				HunterMusicSheet01 = 40788,
+				HunterMusicSheet02 = 40789,
+				HunterMusicSheet03 = 40790,
+				HunterMusicSheet04 = 40791,
+				HunterBodyAddon = 40792,
+				HunterHatAddon = 40793,
+				Hunter = {
+					AddonGlove = 40794,
+					AddonHat = 40795,
+				},
+				ElaneCrossbow = 40796,
+			},
 			KnightOutfits = {},
 			MageOutfits = {},
 			MarlinTrophy = {},

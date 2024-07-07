@@ -55,6 +55,13 @@ ItemAction = {
 			{ x = 33122, y = 32765, z = 14 },
 		},
 	},
+	-- Hunter Outfits Quest - piano
+	[33216] = {
+		itemId = 6123,
+		itemPos = {
+			{ x = 32406, y = 32794, z = 9 },
+		},
+	},
 	-- The cursed crystal skeletons
 	[40001] = {
 		itemId = 27490,

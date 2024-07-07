@@ -1063,6 +1063,14 @@ ChestUnique = {
 		reward = { { 5940, 1 } },
 		storage = Storage.Quest.U7_8.DruidOutfits.WolfToothChain,
 	},
+	-- Hunter Outfits Quest - Elane Crossbow
+	[6118] = {
+		itemId = 2472,
+		itemPos = { x = 32369, y = 32795, z = 10 },
+		weight = 40.00,
+		reward = { { 5947, 1 } },
+		storage = Storage.Quest.U7_8.HunterOutfits.ElaneCrossbow,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

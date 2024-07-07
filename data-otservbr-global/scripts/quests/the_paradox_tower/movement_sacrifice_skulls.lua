@@ -13,15 +13,13 @@ function sacrificeSkulls.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	-- Verifica se há crânios em todas as posições
 	for i = 1, #positions do
 		local tile = Tile(positions[i])
 		if not tile or not tile:getItemById(3114) then
-			return true -- Se alguma posição não tiver um crânio, sai da função
+			return true
 		end
 	end
 
-	-- Se todos os crânios estiverem presentes, executa as ações
 	if player:getStorageValue(FirstParadoxAcess) < 1 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "One of the toxic salt seas in Krailos carries fresh and clean water again. The ogres' water supply is ensured for now")
 		player:setStorageValue(FirstParadoxAcess, 1)

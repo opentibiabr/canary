@@ -103,6 +103,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:removeItem(5880, 100)
 				player:addOutfitAddon(134, 2)
 				player:addOutfitAddon(142, 2)
+				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.OutfitQuest.WarriorSwordAddon, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:addAchievementProgress("Wild Warrior", 2)
@@ -118,16 +119,16 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 
-		if player:getStorageValue(Storage.OutfitQuest.Knight.AddonSword) < 1 then
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonSword, 1)
+		if player:getStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonSword) < 1 then
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonSword, 1)
 			npcHandler:say("Great! Simply bring me 100 Iron Ore and one Crude Iron and I will happily {forge} it for you.", npc, creature)
-		elseif player:getStorageValue(Storage.OutfitQuest.Knight.AddonSword) == 1 and npcHandler:getTopic(playerId) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonSword) == 1 and npcHandler:getTopic(playerId) == 1 then
 			if player:getItemCount(5892) > 0 and player:getItemCount(5880) > 99 then
 				player:removeItem(5892, 1)
 				player:removeItem(5880, 100)
 				player:addOutfitAddon(131, 1)
 				player:addOutfitAddon(139, 1)
-				player:setStorageValue(Storage.OutfitQuest.Knight.AddonSword, 2)
+				player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonSword, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				npcHandler:say("Alright! As a matter of fact, I have one in store. Here you go!", npc, creature)
 			else

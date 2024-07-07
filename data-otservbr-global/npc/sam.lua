@@ -65,16 +65,16 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "adorn") or MsgContains(message, "outfit") or MsgContains(message, "addon") then
-		local addonProgress = player:getStorageValue(Storage.OutfitQuest.Knight.AddonHelmet)
+		local addonProgress = player:getStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet)
 		if addonProgress == 5 then
-			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 6)
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 6)
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmetTimer, os.time() + 7200)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 6)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 6)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmetTimer, os.time() + 7200) -- 2 hours
 			npcHandler:say("Oh, Gregor sent you? I see. It will be my pleasure to adorn your helmet. Please give me some time to finish it.", npc, creature)
 		elseif addonProgress == 6 then
-			if player:getStorageValue(Storage.OutfitQuest.Knight.AddonHelmetTimer) < os.time() then
-				player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 0)
-				player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 7)
+			if player:getStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmetTimer) < os.time() then
+				player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 0)
+				player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 7)
 				player:setStorageValue(Storage.OutfitQuest.Ref, math.min(0, player:getStorageValue(Storage.OutfitQuest.Ref) - 1))
 				player:addOutfitAddon(131, 2)
 				player:addOutfitAddon(139, 2)

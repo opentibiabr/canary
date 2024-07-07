@@ -1071,6 +1071,14 @@ ChestUnique = {
 		reward = { { 5947, 1 } },
 		storage = Storage.Quest.U7_8.HunterOutfits.ElaneCrossbow,
 	},
+	-- Knight Outfits Quest - Ramsay the Reckless Helmet
+	[6119] = {
+		itemId = 2472,
+		itemPos = { x = 32860, y = 32516, z = 11 },
+		weight = 46.00,
+		reward = { { 5924, 1 } },
+		storage = Storage.Quest.U7_8.KnightOutfits.RamsaysHelmetChest,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

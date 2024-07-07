@@ -64,7 +64,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local addonProgress = player:getStorageValue(Storage.OutfitQuest.Knight.AddonHelmet)
+	-- Verifica se o jogador completou a missão "The Ape City"
+	if player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Questline) <= 15 then
+		npcHandler:say("Sorry but I don't have anything for you at the moment.", npc, creature)
+		return true
+	end
+
+	local addonProgress = player:getStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet)
 	if MsgContains(message, "task") then
 		if not player:isPremium() then
 			npcHandler:say("Sorry, but our tasks are only for premium warriors.", npc, creature)
@@ -83,12 +89,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif addonProgress == 4 then
 			npcHandler:say("Your current task is to bring me royal steel, |PLAYERNAME|.", npc, creature)
 		elseif addonProgress == 5 then
-			npcHandler:say(
-				"Please talk to Sam and tell him I sent you. \z
-				I'm sure he will be glad to refine your helmet, |PLAYERNAME|.",
-				npc,
-				creature
-			)
+			npcHandler:say("Please talk to Sam and tell him I sent you. I'm sure he will be glad to refine your helmet, |PLAYERNAME|.", npc, creature)
 		else
 			npcHandler:say("You've already completed the task and can consider yourself a mighty warrior, |PLAYERNAME|.", npc, creature)
 		end
@@ -97,14 +98,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Have you really managed to fulfil the task and brought me 100 perfect behemoth fangs?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		else
-			npcHandler:say(
-				"You're not serious asking that, are you? They come from behemoths, of course. \z
-				Unless there are behemoth rabbits. Duh.",
-				npc,
-				creature
-			)
+			npcHandler:say("You're not serious asking that, are you? They come from behemoths, of course. Unless there are behemoth rabbits. Duh.", npc, creature)
 		end
-	elseif MsgContains(message, "ramsay") then
+	elseif MsgContains(message, "ramsay the reckless helmet") then
 		if addonProgress == 2 then
 			npcHandler:say("Did you recover the helmet of Ramsay the Reckless?", npc, creature)
 			npcHandler:setTopic(playerId, 4)
@@ -116,12 +112,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Were you able to get hold of a flask with pure warrior's sweat?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		else
-			npcHandler:say(
-				"Warrior's sweat can be magically extracted from headgear worn by a true warrior, \z
-				but only in small amounts. Djinns are said to be good at magical extractions.",
-				npc,
-				creature
-			)
+			npcHandler:say("Warrior's sweat can be magically extracted from headgear worn by a true warrior, but only in small amounts. Djinns are said to be good at magical extractions.", npc, creature)
 		end
 	elseif MsgContains(message, "royal steel") then
 		if addonProgress == 4 then
@@ -133,30 +124,22 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, "yes") then
 			npcHandler:say({
-				"Well then, listen closely. First, you will have to prove that you are a fierce and \z
-						restless warrior by bringing me 100 perfect behemoth fangs. ...",
-				"Secondly, please retrieve a helmet for us which has been lost a long time ago. \z
-						The famous Ramsay the Reckless wore it when exploring an ape settlement. ...",
-				"Third, we need a new flask of warrior's sweat. We've run out of it recently, \z
-						but we need a small amount for the show battles in our arena. ...",
+				"Well then, listen closely. First, you will have to prove that you are a fierce and restless warrior by bringing me 100 perfect behemoth fangs. ...",
+				"Secondly, please retrieve a helmet for us which has been lost a long time ago. The famous Ramsay the Reckless wore it when exploring an ape settlement. ...",
+				"Third, we need a new flask of warrior's sweat. We've run out of it recently, but we need a small amount for the show battles in our arena. ...",
 				"Lastly, I will have our smith refine your helmet if you bring me royal steel, an especially noble metal. ...",
 				"Did you understand everything I told you and are willing to handle this task?",
 			}, npc, creature, 100)
 			npcHandler:setTopic(playerId, 2)
 		elseif MsgContains(message, "no") then
-			npcHandler:say(
-				"Bah. Then you will have to wait for the day these helmets are sold in shops, \z
-				but that will not happen before hell freezes over.",
-				npc,
-				creature
-			)
+			npcHandler:say("Bah. Then you will have to wait for the day these helmets are sold in shops, but that will not happen before hell freezes over.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, "yes") then
 			player:setStorageValue(Storage.OutfitQuest.Ref, math.max(0, player:getStorageValue(Storage.OutfitQuest.Ref)) + 1)
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 1)
-			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 1)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 1)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 1)
 			npcHandler:say("Alright then. Come back to me once you have collected 100 perfect behemoth fangs.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif MsgContains(message, "no") then
@@ -170,15 +153,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 2)
-			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 2)
-			player:setStorageValue(Storage.OutfitQuest.Knight.RamsaysHelmetDoor, 1)
-			npcHandler:say(
-				"I'm deeply impressed, brave Knight |PLAYERNAME|. I expected nothing less from you. \z
-				Now, please retrieve Ramsay's helmet.",
-				npc,
-				creature
-			)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 2)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 2)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.RamsaysHelmetDoor, 1)
+			npcHandler:say("I'm deeply impressed, brave Knight |PLAYERNAME|. I expected nothing less from you. Now, please retrieve Ramsay's helmet.", npc, creature)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("There is no need to rush anyway.", npc, creature)
 		end
@@ -190,14 +168,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 3)
-			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 3)
-			npcHandler:say(
-				"Good work, brave Knight |PLAYERNAME|! Even though it is damaged, \z
-				it has a lot of sentimental value. Now, please bring me warrior's sweat.",
-				npc,
-				creature
-			)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 3)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 3)
+			npcHandler:say("Good work, brave Knight |PLAYERNAME|! Even though it is damaged, it has a lot of sentimental value. Now, please bring me warrior's sweat.", npc, creature)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("There is no need to rush anyway.", npc, creature)
 		end
@@ -209,14 +182,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 4)
-			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 4)
-			npcHandler:say(
-				"Now that is a pleasant surprise, brave Knight |PLAYERNAME|! \z
-				There is only one task left now: Obtain royal steel to have your helmet refined.",
-				npc,
-				creature
-			)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 4)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 4)
+			npcHandler:say("Now that is a pleasant surprise, brave Knight |PLAYERNAME|! There is only one task left now: Obtain royal steel to have your helmet refined.", npc, creature)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("There is no need to rush anyway.", npc, creature)
 		end
@@ -228,14 +196,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 5)
-			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 5)
-			npcHandler:say(
-				"You truly deserve to wear an adorned helmet, brave Knight |PLAYERNAME|. \z
-				Please talk to Sam and tell him I sent you. I'm sure he will be glad to refine your helmet.",
-				npc,
-				creature
-			)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 5)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 5)
+			npcHandler:say("You truly deserve to wear an adorned helmet, brave Knight |PLAYERNAME|. Please talk to Sam and tell him I sent you. I'm sure he will be glad to refine your helmet.", npc, creature)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("There is no need to rush anyway.", npc, creature)
 		end
@@ -290,9 +253,7 @@ keywordHandler:addKeyword({ "support", "spells" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "spells" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I can teach you {healing spells} and {support spells}. \z
-		What kind of spell do you wish to learn? You can also tell me for which level \z
-		you would like to learn a spell, if you prefer that.",
+	text = "I can teach you {healing spells} and {support spells}. What kind of spell do you wish to learn? You can also tell me for which level you would like to learn a spell, if you prefer that.",
 })
 
 keywordHandler:addKeyword({ "job" }, StdModule.say, {
@@ -325,8 +286,7 @@ keywordHandler:addKeyword({ "time" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "knights" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "Knights are the warriors of Tibia. Without us, no one would be safe. \z
-		Every brave and strong man or woman can join us.",
+	text = "Knights are the warriors of Tibia. Without us, no one would be safe. Every brave and strong man or woman can join us.",
 })
 keywordHandler:addKeyword({ "bozo" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -382,13 +342,7 @@ keywordHandler:addKeyword({ "tibianus" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "outfit" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "Only the bravest warriors may wear adorned helmets. \z
-		They are traditionally awarded after having completed a difficult task for our guild.",
-})
-keywordHandler:addKeyword({ "helmet" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Only the bravest warriors may wear adorned helmets. \z
-		They are traditionally awarded after having completed a difficult task for our guild.",
+	text = "Only the bravest warriors may wear adorned helmets. They are traditionally awarded after having completed a difficult task for our guild.",
 })
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|. What do you want?")

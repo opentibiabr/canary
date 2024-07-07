@@ -2247,7 +2247,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Knight Addon: Helmet",
-					storageId = Storage.OutfitQuest.Knight.MissionHelmet,
+					storageId = Storage.Quest.U7_8.KnightOutfits.MissionHelmet,
 					missionId = 10175,
 					startValue = 1,
 					endValue = 6,

@@ -747,13 +747,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		Knight = {
-			AddonSword = 50992,
-			MissionHelmet = 50993,
-			AddonHelmet = 50994,
-			AddonHelmetTimer = 50995,
-			RamsaysHelmetDoor = 50996,
-		},
 		MageSummoner = {
 			AddonWand = 50997,
 			AddonBelt = 50998,
@@ -2035,7 +2028,14 @@ Storage = {
 				},
 				ElaneCrossbow = 40796,
 			},
-			KnightOutfits = {},
+			KnightOutfits = {
+				AddonSword = 40797,
+				MissionHelmet = 40798,
+				AddonHelmet = 40799,
+				AddonHelmetTimer = 40800,
+				RamsaysHelmetDoor = 40801,
+				RamsaysHelmetChest = 40802,
+			},
 			MageOutfits = {},
 			MarlinTrophy = {},
 			Meriana = {},

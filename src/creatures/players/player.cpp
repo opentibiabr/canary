@@ -17,6 +17,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.hpp"
@@ -53,6 +54,7 @@ Player::Player(ProtocolGame_ptr p) :
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
+	m_playerCyclopedia = std::make_unique<PlayerCyclopedia>(*this);
 	m_playerTitle = std::make_unique<PlayerTitle>(*this);
 }
 
@@ -635,20 +637,6 @@ phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> Player::getAllSlotItems() c
 	return itemMap;
 }
 
-phmap::flat_hash_map<Blessings_t, std::string> Player::getBlessingNames() const {
-	static phmap::flat_hash_map<Blessings_t, std::string> blessingNames = {
-		{ TWIST_OF_FATE, "Twist of Fate" },
-		{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
-		{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
-		{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
-		{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
-		{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
-		{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
-		{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
-	};
-	return blessingNames;
-}
-
 void Player::setTraining(bool value) {
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		if (!this->isInGhostMode() || player->isAccessPlayer()) {
@@ -710,6 +698,11 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 		std::ostringstream ss;
 		ss << "You advanced to " << getSkillName(skill) << " level " << skills[skill].level << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+		if (skill == SKILL_LEVEL) {
+			sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
+		} else {
+			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+		}
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), skill, (skills[skill].level - 1), skills[skill].level);
 
@@ -2339,8 +2332,10 @@ void Player::addManaSpent(uint64_t amount) {
 		std::ostringstream ss;
 		ss << "You advanced to magic level " << magLevel << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), SKILL_MAGLEVEL, magLevel - 1, magLevel);
+		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
 
 		sendUpdateStats = true;
 		currReqMana = nextReqMana;
@@ -2478,6 +2473,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		std::ostringstream ss;
 		ss << "You advanced from Level " << prevLevel << " to Level " << level << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+		sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
 	}
 
 	if (nextLevelExp > currLevelExp) {
@@ -6027,6 +6023,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			std::ostringstream ss;
 			ss << "You advanced to magic level " << magLevel << '.';
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
 		}
 
 		uint8_t newPercent;
@@ -6083,6 +6080,11 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			std::ostringstream ss;
 			ss << "You advanced to " << getSkillName(skill) << " level " << skills[skill].level << '.';
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+			if (skill == SKILL_LEVEL) {
+				sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
+			} else {
+				sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+			}
 		}
 
 		uint8_t newPercent;
@@ -6624,7 +6626,7 @@ std::string Player::getBlessingsName() const {
 		}
 	});
 
-	auto BlessingNames = getBlessingNames();
+	auto BlessingNames = g_game().getBlessingNames();
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
@@ -8029,6 +8031,15 @@ std::unique_ptr<PlayerVIP> &Player::vip() {
 
 const std::unique_ptr<PlayerVIP> &Player::vip() const {
 	return m_playerVIP;
+}
+
+// Cyclopedia
+std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() {
+	return m_playerCyclopedia;
+}
+
+const std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() const {
+	return m_playerCyclopedia;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

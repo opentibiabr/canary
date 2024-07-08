@@ -4981,10 +4981,10 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 }
 
 bool Player::removeOutfit(uint16_t lookType) {
-	for (auto it = outfits.begin(), end = outfits.end(); it != end; ++it) {
+	for (auto it = outfitsMap.begin(), end = outfitsMap.end(); it != end; ++it) {
 		auto &outfitEntry = *it;
 		if (outfitEntry.lookType == lookType) {
-			outfits.erase(it);
+			outfitsMap.erase(it);
 			return true;
 		}
 	}

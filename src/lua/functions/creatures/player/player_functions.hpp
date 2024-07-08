@@ -375,6 +375,8 @@ private:
 		// Store Summary
 		registerMethod(L, "Player", "createTransactionSummary", PlayerFunctions::luaPlayerCreateTransactionSummary);
 
+		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
+
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
 		MountFunctions::init(L);
@@ -736,6 +738,8 @@ private:
 	static int luaPlayerSetCurrentTitle(lua_State* L);
 
 	static int luaPlayerCreateTransactionSummary(lua_State* L);
+
+	static int luaPlayerTakeScreenshot(lua_State* L);
 
 	friend class CreatureFunctions;
 };

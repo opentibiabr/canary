@@ -516,6 +516,7 @@ private:
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 
 	void sendHotkeyPreset();
+	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendDisableLoginMusic();
 
 	uint8_t m_playerDeathTime = 0;

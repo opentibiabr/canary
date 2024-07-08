@@ -3,7 +3,6 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     network/message/networkmessage.cpp
     network/message/outputmessage.cpp
     network/protocol/protocol.cpp
-    network/protocol/protocolcodes.cpp
     network/protocol/protocolgame.cpp
     network/protocol/protocollogin.cpp
     network/protocol/protocolstatus.cpp

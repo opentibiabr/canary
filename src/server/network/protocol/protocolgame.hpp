@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "server/network/protocol/protocolcodes.hpp"
 #include "server/network/protocol/protocol.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/creature.hpp"

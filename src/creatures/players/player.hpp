@@ -1730,6 +1730,12 @@ public:
 		}
 	}
 
+	void sendTakeScreenshot(Screenshot_t screenshotType) {
+		if (client) {
+			client->sendTakeScreenshot(screenshotType);
+		}
+	}
+
 	void onThink(uint32_t interval) override;
 
 	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;

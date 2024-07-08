@@ -696,6 +696,11 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 		std::ostringstream ss;
 		ss << "You advanced to " << getSkillName(skill) << " level " << skills[skill].level << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+		if (skill == SKILL_LEVEL) {
+			sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
+		} else {
+			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+		}
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), skill, (skills[skill].level - 1), skills[skill].level);
 
@@ -2317,8 +2322,10 @@ void Player::addManaSpent(uint64_t amount) {
 		std::ostringstream ss;
 		ss << "You advanced to magic level " << magLevel << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), SKILL_MAGLEVEL, magLevel - 1, magLevel);
+		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
 
 		sendUpdateStats = true;
 		currReqMana = nextReqMana;
@@ -2456,6 +2463,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		std::ostringstream ss;
 		ss << "You advanced from Level " << prevLevel << " to Level " << level << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+		sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
 	}
 
 	if (nextLevelExp > currLevelExp) {
@@ -5976,6 +5984,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			std::ostringstream ss;
 			ss << "You advanced to magic level " << magLevel << '.';
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
 		}
 
 		uint8_t newPercent;
@@ -6032,6 +6041,11 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			std::ostringstream ss;
 			ss << "You advanced to " << getSkillName(skill) << " level " << skills[skill].level << '.';
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+			if (skill == SKILL_LEVEL) {
+				sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
+			} else {
+				sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+			}
 		}
 
 		uint8_t newPercent;

@@ -474,9 +474,9 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	// Extended opcodes
 	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		NetworkMessage opcodeMessage;
-		opcodeMessage.addByte(0x32);
-		opcodeMessage.addByte(0x00);
-		opcodeMessage.add<uint16_t>(0x00);
+		opcodeMessage.addByte(GAME_SERVER_EXTENDED_OPCODE);
+		opcodeMessage.addByte(0x00); // opcode
+		opcodeMessage.add<uint16_t>(0x00); // buffer
 		writeToOutputBuffer(opcodeMessage);
 	}
 
@@ -565,7 +565,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			   << currentSlot << " on the waiting list.";
 
 			auto output = OutputMessagePool::getOutputMessage();
-			output->addByte(0x16);
+			output->addByte(GAME_SERVER_LOGIN_WAIT);
 			output->addString(ss.str(), "ProtocolGame::login - ss.str()");
 			output->addByte(retryTime);
 			send(output);
@@ -835,7 +835,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		}
 
 		auto output = OutputMessagePool::getOutputMessage();
-		output->addByte(0x14);
+		output->addByte(CLIENT_LEAVE_GAME);
 		output->addString(ss.str(), "ProtocolGame::onRecvFirstMessage - ss.str()");
 		send(output);
 		g_dispatcher().scheduleEvent(
@@ -858,7 +858,7 @@ void ProtocolGame::onConnect() {
 
 	// Packet length & type
 	output->add<uint16_t>(0x0006);
-	output->addByte(0x1F);
+	output->addByte(GAME_SERVER_CHALLENGE);
 
 	// Add timestamp & random number
 	challengeTimestamp = static_cast<uint32_t>(time(nullptr));
@@ -877,7 +877,7 @@ void ProtocolGame::onConnect() {
 
 void ProtocolGame::disconnectClient(const std::string &message) const {
 	auto output = OutputMessagePool::getOutputMessage();
-	output->addByte(0x14);
+	output->addByte(GAME_SERVER_LOGIN_ERROR);
 	output->addString(message, "ProtocolGame::disconnectClient - message");
 	send(output);
 	disconnect();
@@ -896,7 +896,7 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 	uint8_t recvbyte = msg.getByte();
 
 	if (!player || player->isRemoved()) {
-		if (recvbyte == 0x0F) {
+		if (recvbyte == CLIENT_ENTER_GAME) {
 			disconnect();
 		}
 		return;
@@ -922,7 +922,7 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
-	if (recvbyte == 0x14) {
+	if (recvbyte == CLIENT_LEAVE_GAME) {
 		// Remove player from game if click "ok" using otcv8
 		if (player && otclientV8 > 0) {
 			g_game().removePlayerUniqueLogin(player->getName());
@@ -932,7 +932,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 		return;
 	}
 
-	if (recvbyte == 0x0F) {
+	if (recvbyte == CLIENT_ENTER_GAME) {
 		if (!player) {
 			return;
 		}
@@ -979,13 +979,13 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 	}
 
 	switch (recvbyte) {
-		case 0x14:
+		case CLIENT_LEAVE_GAME:
 			logout(true, false);
 			break;
-		case 0x1D:
+		case CLIENT_PING_BACK:
 			g_game().playerReceivePingBack(player->getID());
 			break;
-		case 0x1E:
+		case CLIENT_PING:
 			g_game().playerReceivePing(player->getID());
 			break;
 		case 0x2a:
@@ -1006,9 +1006,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x29:
 			parseRetrieveDepotSearch(msg);
 			break;
-		case 0x32:
+		case CLIENT_FIRST_GAME_OPCODE:
 			parseExtendedOpcode(msg);
-			break; // otclient extended opcode
+			break;
 		case 0x60:
 			parseInventoryImbuements(msg);
 			break;
@@ -1018,118 +1018,118 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x62:
 			parseSaveWheel(msg);
 			break;
-		case 0x64:
+		case CLIENT_AUTO_WALK:
 			parseAutoWalk(msg);
 			break;
-		case 0x65:
+		case CLIENT_WALK_NORTH:
 			g_game().playerMove(player->getID(), DIRECTION_NORTH);
 			break;
-		case 0x66:
+		case CLIENT_WALK_EAST:
 			g_game().playerMove(player->getID(), DIRECTION_EAST);
 			break;
-		case 0x67:
+		case CLIENT_WALK_SOUTH:
 			g_game().playerMove(player->getID(), DIRECTION_SOUTH);
 			break;
-		case 0x68:
+		case CLIENT_WALK_WEST:
 			g_game().playerMove(player->getID(), DIRECTION_WEST);
 			break;
-		case 0x69:
+		case CLIENT_STOP_AUTO_WALK:
 			g_game().playerStopAutoWalk(player->getID());
 			break;
-		case 0x6A:
+		case CLIENT_WALK_NORTH_EAST:
 			g_game().playerMove(player->getID(), DIRECTION_NORTHEAST);
 			break;
-		case 0x6B:
+		case CLIENT_WALK_SOUTH_EAST:
 			g_game().playerMove(player->getID(), DIRECTION_SOUTHEAST);
 			break;
-		case 0x6C:
+		case CLIENT_WALK_SOUTH_WEST:
 			g_game().playerMove(player->getID(), DIRECTION_SOUTHWEST);
 			break;
-		case 0x6D:
+		case CLIENT_WALK_NORTH_WEST:
 			g_game().playerMove(player->getID(), DIRECTION_NORTHWEST);
 			break;
-		case 0x6F:
+		case CLIENT_TURN_NORTH:
 			g_game().playerTurn(player->getID(), DIRECTION_NORTH);
 			break;
-		case 0x70:
+		case CLIENT_TURN_EAST:
 			g_game().playerTurn(player->getID(), DIRECTION_EAST);
 			break;
-		case 0x71:
+		case CLIENT_TURN_SOUTH:
 			g_game().playerTurn(player->getID(), DIRECTION_SOUTH);
 			break;
-		case 0x72:
+		case CLIENT_TURN_WEST:
 			g_game().playerTurn(player->getID(), DIRECTION_WEST);
 			break;
 		case 0x73:
 			parseTeleport(msg);
 			break;
-		case 0x77:
+		case CLIENT_EQUIP_ITEM: // ??????
 			parseHotkeyEquip(msg);
 			break;
-		case 0x78:
+		case CLIENT_MOVE:
 			parseThrow(msg);
 			break;
-		case 0x79:
+		case CLIENT_INSPECT_NPC_TRADE:
 			parseLookInShop(msg);
 			break;
-		case 0x7A:
+		case CLIENT_BUY_ITEM:
 			parsePlayerBuyOnShop(msg);
 			break;
-		case 0x7B:
+		case CLIENT_SELL_ITEM:
 			parsePlayerSellOnShop(msg);
 			break;
-		case 0x7C:
+		case CLIENT_CLOSE_NPC_TRADE:
 			g_game().playerCloseShop(player->getID());
 			break;
-		case 0x7D:
+		case CLIENT_REQUEST_TRADE:
 			parseRequestTrade(msg);
 			break;
-		case 0x7E:
+		case CLIENT_INSPECT_TRADE:
 			parseLookInTrade(msg);
 			break;
-		case 0x7F:
+		case CLIENT_ACCEPT_TRADE:
 			g_game().playerAcceptTrade(player->getID());
 			break;
-		case 0x80:
+		case CLIENT_REJECT_TRADE:
 			g_game().playerCloseTrade(player->getID());
 			break;
 		case 0x81:
 			parseFriendSystemAction(msg);
 			break;
-		case 0x82:
+		case CLIENT_USE_ITEM:
 			parseUseItem(msg);
 			break;
-		case 0x83:
+		case CLIENT_USE_ITEM_WITH:
 			parseUseItemEx(msg);
 			break;
-		case 0x84:
+		case CLIENT_USE_ON_CREATURE:
 			parseUseWithCreature(msg);
 			break;
-		case 0x85:
+		case CLIENT_ROTATE_ITEM:
 			parseRotateItem(msg);
 			break;
-		case 0x86:
+		case CLIENT_EDIT_PODIUM:
 			parseConfigureShowOffSocket(msg);
 			break;
-		case 0x87:
+		case CLIENT_CLOSE_CONTAINER:
 			parseCloseContainer(msg);
 			break;
-		case 0x88:
+		case CLIENT_UP_CONTAINER:
 			parseUpArrowContainer(msg);
 			break;
-		case 0x89:
+		case CLIENT_EDIT_TEXT:
 			parseTextWindow(msg);
 			break;
-		case 0x8A:
+		case CLIENT_EDIT_LIST:
 			parseHouseWindow(msg);
 			break;
-		case 0x8B:
+		case CLIENT_ON_WRAP_ITEM:
 			parseWrapableItem(msg);
 			break;
-		case 0x8C:
+		case CLIENT_LOOK:
 			parseLookAt(msg);
 			break;
-		case 0x8D:
+		case CLIENT_LOOK_CREATURE:
 			parseLookInBattleList(msg);
 			break;
 		case 0x8E: /* join aggression */
@@ -1155,61 +1155,61 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x95:
 			parseOpenParentContainer(msg);
 			break;
-		case 0x96:
+		case CLIENT_TALK:
 			parseSay(msg);
 			break;
-		case 0x97:
+		case CLIENT_REQUEST_CHANNELS:
 			g_game().playerRequestChannels(player->getID());
 			break;
-		case 0x98:
+		case CLIENT_JOIN_CHANNEL:
 			parseOpenChannel(msg);
 			break;
-		case 0x99:
+		case CLIENT_LEAVE_CHANNEL:
 			parseCloseChannel(msg);
 			break;
-		case 0x9A:
+		case CLIENT_OPEN_PRIVATE_CHANNEL:
 			parseOpenPrivateChannel(msg);
 			break;
-		case 0x9E:
+		case CLIENT_CLOSE_NPC_CHANNEL:
 			g_game().playerCloseNpcChannel(player->getID());
 			break;
 		case 0x9F:
 			parseSetMonsterPodium(msg);
 			break;
-		case 0xA0:
+		case CLIENT_CHANGE_FIGHT_MODES:
 			parseFightModes(msg);
 			break;
-		case 0xA1:
+		case CLIENT_ATTACK:
 			parseAttack(msg);
 			break;
-		case 0xA2:
+		case CLIENT_FOLLOW:
 			parseFollow(msg);
 			break;
-		case 0xA3:
+		case CLIENT_INVITE_TO_PARTY:
 			parseInviteToParty(msg);
 			break;
-		case 0xA4:
+		case CLIENT_JOIN_PARTY:
 			parseJoinParty(msg);
 			break;
-		case 0xA5:
+		case CLIENT_REVOKE_INVITATION:
 			parseRevokePartyInvite(msg);
 			break;
-		case 0xA6:
+		case CLIENT_PASS_LEADERSHIP:
 			parsePassPartyLeadership(msg);
 			break;
-		case 0xA7:
+		case CLIENT_LEAVE_PARTY:
 			g_game().playerLeaveParty(player->getID());
 			break;
-		case 0xA8:
+		case CLIENT_SHARE_EXPERIENCE:
 			parseEnableSharedPartyExperience(msg);
 			break;
-		case 0xAA:
+		case CLIENT_OPEN_OWN_CHANNEL:
 			g_game().playerCreatePrivateChannel(player->getID());
 			break;
-		case 0xAB:
+		case CLIENT_INVITE_TO_OWN_CHANNEL:
 			parseChannelInvite(msg);
 			break;
-		case 0xAC:
+		case CLIENT_EXCLUDE_FROM_OWN_CHANNEL:
 			parseChannelExclude(msg);
 			break;
 		case 0xAE:

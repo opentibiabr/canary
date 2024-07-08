@@ -9151,3 +9151,14 @@ void ProtocolGame::sendHotkeyPreset() {
 		writeToOutputBuffer(msg);
 	}
 }
+
+void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
+	if (screenshotType == SCREENSHOT_TYPE_NONE || oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(screenshotType);
+	writeToOutputBuffer(msg);
+}

@@ -284,7 +284,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	auto result3 = g_database().storeQuery(fmt::format("SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = {:d}", player->getGUID()));
 	if (result3) {
 		do {
-			player->mountsMap.emplace_back(result3->getNumber<uint16_t>("mount_id"));
+			player->mountsMap.emplace(result3->getNumber<uint16_t>("mount_id"));
 		} while (result3->next());
 	}
 }

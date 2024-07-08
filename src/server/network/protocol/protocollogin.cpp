@@ -22,7 +22,7 @@
 void ProtocolLogin::disconnectClient(const std::string &message) {
 	auto output = OutputMessagePool::getOutputMessage();
 
-	output->addByte(0x0B);
+	output->addByte(LOGIN_SERVER_ERROR_NEW);
 	output->addString(message, "ProtocolLogin::disconnectClient - message");
 	send(output);
 
@@ -52,7 +52,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	const std::string &motd = g_configManager().getString(SERVER_MOTD, __FUNCTION__);
 	if (!motd.empty()) {
 		// Add MOTD
-		output->addByte(0x14);
+		output->addByte(LOGIN_SERVER_MOTD);
 
 		std::ostringstream ss;
 		ss << g_game().getMotdNum() << "\n"
@@ -61,7 +61,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	}
 
 	// Add session key
-	output->addByte(0x28);
+	output->addByte(LOGIN_SERVER_SESSION_KEY);
 	output->addString(accountDescriptor + "\n" + password, "ProtocolLogin::getCharacterList - accountDescriptor + password");
 
 	// Add char list
@@ -70,7 +70,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		g_logger().warn("Account[{}] failed to load players!", account.getID());
 	}
 
-	output->addByte(0x64);
+	output->addByte(LOGIN_SERVER_CHARACTER_LIST);
 
 	output->addByte(1); // number of worlds
 

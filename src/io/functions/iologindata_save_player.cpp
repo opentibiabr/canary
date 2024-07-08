@@ -809,7 +809,7 @@ bool IOLoginDataSave::savePlayerOutfits(std::shared_ptr<Player> player) {
 	DBInsert outfitQuery("INSERT INTO `player_outfits` (`player_id`, `outfit_id`, `addons`) VALUES ");
 
 	for (const auto &outfit : player->outfitsMap) {
-		if (!outfitQuery.addRow(fmt::format("{:d}, {:d}, {:d}", player->getGUID(), outfit.first, outfit.second))) {
+		if (!outfitQuery.addRow(fmt::format("{:d}, {:d}, {:d}", player->getGUID(), outfit.lookType, outfit.addons))) {
 			return false;
 		}
 	}

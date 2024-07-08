@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "server/network/protocol/protocolcodes.hpp"
 #include "server/network/protocol/protocol.hpp"
 
 class NetworkMessage;

@@ -2036,7 +2036,7 @@ Storage = {
 				AddonHatCloak = 40806,
 				AddonWandTimer = 40807,
 			},
-			MarlinTrophy = {},
+			MarlinTrophy = 40808,
 			Meriana = {},
 			NoblemanOutfits = {},
 			ObsidianKnife = {},

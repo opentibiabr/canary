@@ -116,7 +116,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			[8] = "Your current task is to bring me 15 ounces of magic sulphur, |PLAYERNAME|.",
 			[9] = "Your current task is to bring me 30 ounces of vampire dust, |PLAYERNAME|.",
 			[10] = "Go to the academy in Edron and tell Zoltan that I sent you, |PLAYERNAME|.",
-			[11] = "I don't have any tasks for you right now, |PLAYERNAME|. You were of great help."
+			[11] = "I don't have any tasks for you right now, |PLAYERNAME|. You were of great help.",
 		}
 		local taskMessage = tasks[player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonHatCloak)]
 		if taskMessage then

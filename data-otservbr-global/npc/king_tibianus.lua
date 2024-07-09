@@ -84,7 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				if player:removeMoneyBank(500000000) then
 					local inbox = player:getStoreInbox()
 					local inboxItems = inbox:getItems()
-					if inbox and #inboxItems <= inbox:getMaxCapacity() then
+					if inbox and #inboxItems < inbox:getMaxCapacity() then
 						local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
 						local decoItemName = ItemType(31510):getName()
 						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "Unwrap it in your own house to create a " .. decoItemName .. ".")

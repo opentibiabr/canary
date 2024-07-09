@@ -2038,7 +2038,7 @@ Storage = {
 				NoblemanFirstAddon = 40809,
 				NoblemanSecondAddon = 40810,
 			},
-			ObsidianKnife = {},
+			ObsidianKnife = 40811,
 			OrientalOutfits = {},
 			PirateOutfits = {},
 			ShamanOutfits = {},

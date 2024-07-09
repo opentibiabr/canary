@@ -57,7 +57,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "piece of draconian steel") then
+	if MsgContains(message, "piece of draconian steel") and player:getStorageValue(Storage.Quest.U7_8.ObsidianKnife) < 1 then
 		npcHandler:say("You bringing me draconian steel and obsidian lance in exchange for obsidian knife?", npc, creature)
 		npcHandler:setTopic(playerId, 15)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 15 then
@@ -65,6 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(5889, 1) and player:removeItem(3313, 1) then
 				npcHandler:say("Here you have it.", npc, creature)
 				player:addItem(5908, 1)
+				player:setStorageValue(Storage.Quest.U7_8.ObsidianKnife, 1)
 				npcHandler:setTopic(playerId, 0)
 			end
 		else
@@ -141,6 +142,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Hiho |PLAYERNAME|! Wanna weapon, eh?")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Guut bye. Coming back soon.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Guut bye. Coming back soon.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

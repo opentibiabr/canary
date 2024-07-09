@@ -97,7 +97,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 	}
 
 	if (std::string spellName = asLowerCaseString(spell->name);
-		spellName == "melee") {
+	    spellName == "melee") {
 		sb.isMelee = true;
 
 		if (spell->attack > 0 && spell->skill > 0) {
@@ -164,8 +164,8 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 			condition->setOutfit(outfit);
 		} else {
 			g_logger().error("[Monsters::deserializeSpell] - "
-							 "Missing outfit monster or item in outfit spell for: {}",
-							 description);
+			                 "Missing outfit monster or item in outfit spell for: {}",
+			                 description);
 			return false;
 		}
 
@@ -208,8 +208,8 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 	} else if (spellName == "condition") {
 		if (spell->conditionType == CONDITION_NONE) {
 			g_logger().error("[Monsters::deserializeSpell] - "
-							 "{} condition is not set for: {}",
-							 description, spell->name);
+			                 "{} condition is not set for: {}",
+			                 description, spell->name);
 		}
 	} else if (spellName == "strength") {
 		//
@@ -217,8 +217,8 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spell
 		//
 	} else {
 		g_logger().error("[Monsters::deserializeSpell] - "
-						 "{} unknown or missing parameter on spell with name: {}",
-						 description, spell->name);
+		                 "{} unknown or missing parameter on spell with name: {}",
+		                 description, spell->name);
 	}
 
 	if (spell->shoot != CONST_ANI_NONE) {
@@ -295,9 +295,9 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name, bool silent /* = false*/) const {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
-		it != monsters.end()
-		// We will only return the MonsterType if it match the exact name of the monster
-		&& it->first.find(lowerCaseName) != it->first.npos) {
+	    it != monsters.end()
+	    // We will only return the MonsterType if it match the exact name of the monster
+	    && it->first.find(lowerCaseName) != it->first.npos) {
 		return it->second;
 	}
 	if (!silent) {

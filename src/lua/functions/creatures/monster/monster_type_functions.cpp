@@ -681,8 +681,8 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 		combatType = COMBAT_NEUTRALDAMAGE;
 	} else {
 		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
-						"Unknown immunity name {} for monster: {}",
-						immunity, monsterType->name);
+		                "Unknown immunity name {} for monster: {}",
+		                immunity, monsterType->name);
 		lua_pushnil(L);
 	}
 
@@ -739,8 +739,8 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 		conditionType = CONDITION_BLEEDING;
 	} else {
 		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeConditionImmunities] - "
-						"Unknown immunity name: {} for monster: {}",
-						immunity, monsterType->name);
+		                "Unknown immunity name: {} for monster: {}",
+		                immunity, monsterType->name);
 		lua_pushnil(L);
 	}
 
@@ -1195,8 +1195,8 @@ int MonsterTypeFunctions::luaMonsterTypeRace(lua_State* L) {
 				monsterType->info.race = RACE_INK;
 			} else {
 				g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeRace] - "
-								"Unknown race type {}",
-								race);
+				                "Unknown race type {}",
+				                race);
 				lua_pushnil(L);
 				return 1;
 			}

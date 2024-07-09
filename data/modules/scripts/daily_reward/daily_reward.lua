@@ -454,7 +454,7 @@ function Player.selectDailyReward(self, msg)
 		-- Adding items to store inbox
 		local inbox = self:getStoreInbox()
 		local inboxItems = inbox:getItems()
-		if not inbox or #inboxItems > inbox:getMaxCapacity() then
+		if not inbox or #inboxItems >= inbox:getMaxCapacity() then
 			self:sendError("You do not have enough space in your store inbox.")
 			return false
 		end

@@ -26,7 +26,7 @@ bool PlayerTitle::isTitleUnlocked(uint8_t id) const {
 	if (auto it = std::find_if(m_titlesUnlocked.begin(), m_titlesUnlocked.end(), [id](auto title_it) {
 			return title_it.first.m_id == id;
 		});
-		it != m_titlesUnlocked.end()) {
+	    it != m_titlesUnlocked.end()) {
 		return true;
 	}
 
@@ -84,7 +84,8 @@ const std::vector<std::pair<Title, uint32_t>> &PlayerTitle::getUnlockedTitles() 
 }
 
 uint8_t PlayerTitle::getCurrentTitle() const {
-	return static_cast<uint8_t>(m_player.kv()->scoped("titles")->get("current-title")->getNumber());
+	auto title = m_player.kv()->scoped("titles")->get("current-title");
+	return title ? static_cast<uint8_t>(title->getNumber()) : 0;
 }
 
 void PlayerTitle::setCurrentTitle(uint8_t id) {

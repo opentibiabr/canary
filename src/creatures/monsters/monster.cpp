@@ -50,8 +50,8 @@ Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	for (const std::string &scriptName : mType->info.scripts) {
 		if (!registerCreatureEvent(scriptName)) {
 			g_logger().warn("[Monster::Monster] - "
-							"Unknown event name: {}",
-							scriptName);
+			                "Unknown event name: {}",
+			                scriptName);
 		}
 	}
 }
@@ -138,8 +138,8 @@ void Monster::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin)
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("[Monster::onCreatureAppear - Monster {} creature {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 getName(), creature->getName());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -176,8 +176,8 @@ void Monster::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("[Monster::onCreatureDisappear - Monster {} creature {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 getName(), creature->getName());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -217,8 +217,8 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("[Monster::onCreatureMove - Monster {} creature {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 getName(), creature->getName());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -291,8 +291,8 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
-							 "script calls being nested.",
-							 getName(), creature->getName());
+			                 "script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -771,8 +771,8 @@ void Monster::onThink(uint32_t interval) {
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} Call stack overflow. Too many lua script calls "
-							 "being nested.",
-							 getName());
+			                 "being nested.",
+			                 getName());
 			return;
 		}
 
@@ -2041,8 +2041,8 @@ void Monster::dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creatu
 	if (corpse && lootDrop) {
 		// Only fiendish drops sliver
 		if (ForgeClassifications_t classification = getMonsterForgeClassification();
-			// Condition
-			classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
+		    // Condition
+		    classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
 			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS, __FUNCTION__);
 			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS, __FUNCTION__);
 

@@ -747,9 +747,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		-- Nobleman Outfit
-		NoblemanFirstAddon = 51002,
-		NoblemanSecondAddon = 51003,
 		-- Norseman-outfit Quest
 		NorsemanAddon = 51004,
 		-- Warrior-outfit Quest
@@ -2037,8 +2034,10 @@ Storage = {
 				AddonWandTimer = 40807,
 			},
 			MarlinTrophy = 40808,
-			Meriana = {},
-			NoblemanOutfits = {},
+			NoblemanOutfits = {
+				NoblemanFirstAddon = 40809,
+				NoblemanSecondAddon = 40810,
+			},
 			ObsidianKnife = {},
 			OrientalOutfits = {},
 			PirateOutfits = {},

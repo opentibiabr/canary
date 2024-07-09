@@ -747,13 +747,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		MageSummoner = {
-			AddonWand = 50997,
-			AddonBelt = 50998,
-			MissionHatCloak = 50999,
-			AddonHatCloak = 51000,
-			AddonWandTimer = 51001,
-		},
 		-- Nobleman Outfit
 		NoblemanFirstAddon = 51002,
 		NoblemanSecondAddon = 51003,
@@ -2036,7 +2029,13 @@ Storage = {
 				RamsaysHelmetDoor = 40801,
 				RamsaysHelmetChest = 40802,
 			},
-			MageOutfits = {},
+			MageOutfits = {
+				AddonWand = 40803,
+				AddonBelt = 40804,
+				MissionHatCloak = 40805,
+				AddonHatCloak = 40806,
+				AddonWandTimer = 40807,
+			},
 			MarlinTrophy = {},
 			Meriana = {},
 			NoblemanOutfits = {},

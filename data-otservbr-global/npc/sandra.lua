@@ -66,10 +66,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if table.contains({ "vial", "ticket", "bonus", "deposit" }, message) then
-		if player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonBelt) < 1 then
 			npcHandler:say("We have a special offer right now for depositing vials. Are you interested in hearing it?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt) >= 1 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonBelt) >= 1 then
 			npcHandler:say("Would you like to get a lottery ticket instead of the deposit for your vials?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
@@ -115,7 +115,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npc,
 				creature
 			)
-			player:setStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt, 1)
+			player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonBelt, 1)
 			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
@@ -133,11 +133,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
-			if player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt) == 1 and player:removeItem(5958, 1) then
+			if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonBelt) == 1 and player:removeItem(5958, 1) then
 				npcHandler:say("Congratulations! Here, from now on you can wear our lovely potion belt as accessory.", npc, creature)
-				player:setStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt, 2)
-				player:addOutfitAddon(138, 1)
-				player:addOutfitAddon(133, 1)
+				player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonBelt, 2)
+				player:addOutfitAddon(138, 1) --female addon
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			else
 				npcHandler:say("Sorry, but you don't have your lottery ticket with you.", npc, creature)

@@ -59,28 +59,19 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "firebird") then
-		if player:getStorageValue(Storage.OutfitQuest.PirateSabreAddon) == 4 then
-			player:setStorageValue(Storage.OutfitQuest.PirateSabreAddon, 5)
+		if player:getStorageValue(Storage.Quest.U7_8.PirateOutfits.PirateSabreAddon) == 4 then
+			player:setStorageValue(Storage.Quest.U7_8.PirateOutfits.PirateSabreAddon, 5)
 			player:addOutfitAddon(151, 1)
 			player:addOutfitAddon(155, 1)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			npcHandler:say(
-				"Ahh. So Duncan sent you, eh? You must have done something really impressive. \
-				Okay, take this fine sabre from me, mate.",
-				npc,
-				creature
-			)
+			npcHandler:say("Ahh. So Duncan sent you, eh? You must have done something really impressive. Okay, take this fine sabre from me, mate.", npc, creature)
 		end
 	elseif MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 3 then
 			npcHandler:say({
-				"Hm, if you are that eager to work I have an idea how you could help me out. \z
-					A distant relative of mine, the old sage Eremo lives on the isle Cormaya, near Edron. ...",
-				"He has not heard from me since ages. He might assume that I am dead. \z
-					Since I don't want him to get into trouble for receiving a letter from a \z
-					pirate I ask you to deliver it personally. ...",
-				"Of course it's a long journey but you asked for it. \z
-					You will have to prove us your worth. Are you up to that?",
+				"Hm, if you are that eager to work I have an idea how you could help me out. A distant relative of mine, the old sage Eremo lives on the isle Cormaya, near Edron. ...",
+				"He has not heard from me since ages. He might assume that I am dead. Since I don't want him to get into trouble for receiving a letter from a pirate I ask you to deliver it personally. ...",
+				"Of course it's a long journey but you asked for it. You will have to prove us your worth. Are you up to that?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 5 then

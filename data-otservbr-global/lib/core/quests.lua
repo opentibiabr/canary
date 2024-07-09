@@ -2371,7 +2371,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "Pirate Outfit Quest (Sabre)",
-					storageId = Storage.OutfitQuest.PirateSabreAddon,
+					storageId = Storage.Quest.U7_8.PirateOutfits.PirateSabreAddon,
 					missionId = 10182,
 					startValue = 1,
 					endValue = 5,

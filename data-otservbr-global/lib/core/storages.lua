@@ -755,10 +755,6 @@ Storage = {
 		WarriorShoulderTimer = 51007,
 		-- Wizard-outfit Quest
 		WizardAddon = 51008,
-		-- Pirate-outfit Quest
-		PirateBaseOutfit = 51009,
-		PirateSabreAddon = 51010,
-		PirateHatAddon = 51011,
 		-- Golden Outfit
 		GoldenOutfit = 51015,
 		NightmareOutfit = 51016,
@@ -2043,7 +2039,11 @@ Storage = {
 				OrientalDoor = 40814,
 				CoralComb = 40815,
 			},
-			PirateOutfits = {},
+			PirateOutfits = {
+				PirateBaseOutfit = 40816,
+				PirateSabreAddon = 40817,
+				PirateHatAddon = 40818,
+			},
 			ShamanOutfits = {},
 			SummonerOutfits = {},
 			TheBlessedStake = {},

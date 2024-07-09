@@ -142,12 +142,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "pirate outfit") then
-		if player:getStorageValue(Storage.TheShatteredIsles.AccessToLagunaIsland) == 1 and player:getStorageValue(Storage.OutfitQuest.PirateBaseOutfit) < 1 and player:getStorageValue(Storage.TheShatteredIsles.RaysMission4) == 5 then
+		if player:getStorageValue(Storage.TheShatteredIsles.AccessToLagunaIsland) == 1 and player:getStorageValue(Storage.Quest.U7_8.PirateOutfits.PirateBaseOutfit) < 1 and player:getStorageValue(Storage.TheShatteredIsles.RaysMission4) == 5 then
 			npcHandler:say("Ah, right! The pirate outfit! Here you go, now you are truly one of us.", npc, creature)
 			player:addOutfit(151)
 			player:addOutfit(155)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
-			player:setStorageValue(Storage.OutfitQuest.PirateBaseOutfit, 1)
+			player:setStorageValue(Storage.Quest.U7_8.PirateOutfits.PirateBaseOutfit, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "task") and player:getStorageValue(Storage.TheShatteredIsles.RaysMission4) == 5 then

@@ -70,25 +70,25 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("A quite undruidic order of druids they were, as far as we know. I have no more enlightening knowledge about them though.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "proof") then
-			npcHandler:say("... I cannot believe my eyes. You retrieved this hat from Ferumbras' remains? That is incredible. If you give it to me, I will grant you the right to wear this hat as addon. What do you say?", npc, creature)
-			npcHandler:setTopic(playerId, 1)
-		elseif npcHandler:getTopic(playerId) == 1 then
-			if player:getSex() == PLAYERSEX_MALE and not player:hasOutfit(130, 2) then
-				if MsgContains(message, "yes") then
-					if player:getItemCount(5903) == 1 then
-						npcHandler:say("Sorry you don't have the Ferumbras' hat.", npc, creature)
-					else
-						npcHandler:say("I bow to you, player, and hereby grant you the right to wear Ferumbras' hat as accessory. Congratulations!", npc, creature)
-						player:removeItem(5903, 1)
-						player:addOutfitAddon(130, 2)
-						player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
-					end
+		npcHandler:say("... I cannot believe my eyes. You retrieved this hat from Ferumbras' remains? That is incredible. If you give it to me, I will grant you the right to wear this hat as addon. What do you say?", npc, creature)
+		npcHandler:setTopic(playerId, 1)
+	elseif npcHandler:getTopic(playerId) == 1 then
+		if player:getSex() == PLAYERSEX_MALE and not player:hasOutfit(130, 2) then
+			if MsgContains(message, "yes") then
+				if player:getItemCount(5903) == 1 then
+					npcHandler:say("Sorry you don't have the Ferumbras' hat.", npc, creature)
+				else
+					npcHandler:say("I bow to you, player, and hereby grant you the right to wear Ferumbras' hat as accessory. Congratulations!", npc, creature)
+					player:removeItem(5903, 1)
+					player:addOutfitAddon(130, 2)
+					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
+				end
 			else
 				npcHandler:say("This task is only available for male players who don't already have the addon.", npc, creature)
 			end
 		end
 	elseif MsgContains(message, "myra") then
-		if player:getSex() == PLAYERSEX_FEMALE and player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonHatCloak) == 10 and not player:hasOutfit(138, 2)  then
+		if player:getSex() == PLAYERSEX_FEMALE and player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonHatCloak) == 10 and not player:hasOutfit(138, 2) then
 			npcHandler:say({
 				"Bah, I know. I received some sort of 'nomination' from our outpost in Port Hope. ...",
 				"Usually it takes a little more than that for an award though. However, I honour Myra's word. ...",

@@ -1079,6 +1079,14 @@ ChestUnique = {
 		reward = { { 5924, 1 } },
 		storage = Storage.Quest.U7_8.KnightOutfits.RamsaysHelmetChest,
 	},
+	-- Oriental Outfits Quest - Chest
+	[6120] = {
+		itemId = 2472,
+		itemPos = { x = 32088, y = 32780, z = 11 },
+		weight = 4.50,
+		reward = { { 5945, 1 } },
+		storage = Storage.Quest.U7_8.OrientalOutfits.CoralComb,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

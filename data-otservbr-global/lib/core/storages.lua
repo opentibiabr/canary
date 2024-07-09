@@ -771,8 +771,6 @@ Storage = {
 			MissionMask = 51022,
 		},
 		DeeplingAnchor = 51023,
-		FirstOrientalAddon = 51024,
-		SecondOrientalAddon = 51025,
 		RoyalCostumeOutfit = 51026,
 	},
 	TheInquisition = {
@@ -2039,7 +2037,12 @@ Storage = {
 				NoblemanSecondAddon = 40810,
 			},
 			ObsidianKnife = 40811,
-			OrientalOutfits = {},
+			OrientalOutfits = {
+				FirstOrientalAddon = 40812,
+				SecondOrientalAddon = 40813,
+				OrientalDoor = 40814,
+				CoralComb = 40815,
+			},
 			PirateOutfits = {},
 			ShamanOutfits = {},
 			SummonerOutfits = {},

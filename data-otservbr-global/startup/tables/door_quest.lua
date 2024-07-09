@@ -920,6 +920,12 @@ QuestDoorAction = {
 			{ x = 32939, y = 31775, z = 9 },
 		},
 	},
+	[Storage.Quest.U7_8.OrientalOutfits.OrientalDoor] = {
+		itemId = 1644,
+		itemPos = {
+			{ x = 32084, y = 32776, z = 11 },
+		},
+	},
 }
 
 QuestDoorUnique = {

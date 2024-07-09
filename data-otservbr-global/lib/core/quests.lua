@@ -2385,7 +2385,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "Oriental Addon: Hipwear",
-					storageId = Storage.OutfitQuest.FirstOrientalAddon,
+					storageId = Storage.Quest.U7_8.OrientalOutfits.FirstOrientalAddon,
 					missionId = 10183,
 					startValue = 1,
 					endValue = 2,
@@ -2398,7 +2398,7 @@ if not Quests then
 				},
 				[17] = {
 					name = "Oriental Addon: Headgear",
-					storageId = Storage.OutfitQuest.SecondOrientalAddon,
+					storageId = Storage.Quest.U7_8.OrientalOutfits.SecondOrientalAddon,
 					missionId = 10184,
 					startValue = 1,
 					endValue = 5,

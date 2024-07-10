@@ -28,6 +28,7 @@
 #include "lua/callbacks/events_callbacks.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "map/spectators.hpp"
 
@@ -189,6 +190,17 @@ int GameFunctions::luaGameloadMapChunk(lua_State* L) {
 	const Position &position = getPosition(L, 2);
 	g_dispatcher().addEvent([path, position]() { g_game().loadMap(path, position); }, "GameFunctions::luaGameloadMapChunk");
 	return 0;
+}
+
+int GameFunctions::luaGameGetExperienceForLevel(lua_State* L) {
+	// Game.getExperienceForLevel(level)
+	const uint32_t level = getNumber<uint32_t>(L, 1);
+	if (level == 0) {
+		reportErrorFunc("Level must be greater than 0.");
+	} else {
+		lua_pushnumber(L, Player::getExpForLevel(level));
+	}
+	return 1;
 }
 
 int GameFunctions::luaGameGetMonsterCount(lua_State* L) {
@@ -717,8 +729,8 @@ int GameFunctions::luaGameGetDummies(lua_State* L) {
 	 * @details This function provides a table containing two sub-tables: one for free dummies and one for house (or premium) dummies.
 
 	* @note usage on lua:
-		local dummies = Game.getDummies()
-		local rate = dummies[1] -- Retrieve dummy rate
+	    local dummies = Game.getDummies()
+	    local rate = dummies[1] -- Retrieve dummy rate
 	*/
 
 	const auto &dummies = Item::items.getDummys();

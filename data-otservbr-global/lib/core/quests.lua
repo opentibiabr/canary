@@ -2415,7 +2415,7 @@ if not Quests then
 				},
 				[18] = {
 					name = "Shaman Addon: Staff",
-					storageId = Storage.OutfitQuest.Shaman.MissionStaff,
+					storageId = Storage.Quest.U7_8.ShamanOutfits.MissionStaff,
 					missionId = 10185,
 					startValue = 1,
 					endValue = 2,
@@ -2426,7 +2426,7 @@ if not Quests then
 				},
 				[19] = {
 					name = "Shaman Addon: Mask",
-					storageId = Storage.OutfitQuest.Shaman.MissionMask,
+					storageId = Storage.Quest.U7_8.ShamanOutfits.MissionMask,
 					missionId = 10186,
 					startValue = 1,
 					endValue = 2,

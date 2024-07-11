@@ -32,14 +32,28 @@ public:
 		centerPos(initPos), radius(initRadius) { }
 	~SpawnMonster();
 
-	SpawnMonster(SpawnMonster &&) { }
-	SpawnMonster &operator=(SpawnMonster &&) {
-		return *this;
-	}
-
 	// non-copyable
 	SpawnMonster(const SpawnMonster &) = delete;
 	SpawnMonster &operator=(const SpawnMonster &) = delete;
+
+	// moveable
+	SpawnMonster(SpawnMonster &&rhs) noexcept :
+		spawnMonsterMap(std::move(rhs.spawnMonsterMap)),
+		spawnedMonsterMap(std::move(rhs.spawnedMonsterMap)),
+		checkSpawnMonsterEvent(rhs.checkSpawnMonsterEvent), centerPos(rhs.centerPos), radius(rhs.radius), interval(rhs.interval) { }
+
+	SpawnMonster &operator=(SpawnMonster &&rhs) noexcept {
+		if (this != &rhs) {
+			spawnMonsterMap = std::move(rhs.spawnMonsterMap);
+			spawnedMonsterMap = std::move(rhs.spawnedMonsterMap);
+
+			checkSpawnMonsterEvent = rhs.checkSpawnMonsterEvent;
+			centerPos = rhs.centerPos;
+			radius = rhs.radius;
+			interval = rhs.interval;
+		}
+		return *this;
+	}
 
 	bool addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t interval, uint32_t weight = 1);
 	void removeMonster(std::shared_ptr<Monster> monster);

@@ -25,8 +25,8 @@ public:
 
 	bool createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_fast32_t f, int_fast32_t heuristic, int_fast32_t extraCost);
 	AStarNode* getBestNode();
-	void closeNode(AStarNode* node);
-	void openNode(AStarNode* node);
+	void closeNode(const AStarNode* node);
+	void openNode(const AStarNode* node);
 	int32_t getClosedNodes() const;
 	AStarNode* getNodeByPosition(uint32_t x, uint32_t y);
 
@@ -44,7 +44,7 @@ private:
 	alignas(64) int32_t calculatedNodes[MAX_NODES];
 	AStarNode nodes[MAX_NODES];
 #else
-	AStarNode nodes[MAX_NODES] {};
+	AStarNode nodes[MAX_NODES];
 	uint32_t nodesTable[MAX_NODES];
 #endif
 	int32_t closedNodes;

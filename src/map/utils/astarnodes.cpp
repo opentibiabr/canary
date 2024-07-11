@@ -14,7 +14,7 @@
 #include "creatures/combat/combat.hpp"
 
 AStarNodes::AStarNodes(uint32_t x, uint32_t y, int_fast32_t extraCost) :
-	openNodes() {
+	openNodes(), nodes() {
 #if defined(__AVX2__)
 	__m256i defaultCost = _mm256_set1_epi32(std::numeric_limits<int32_t>::max());
 	for (int32_t i = 0; i < MAX_NODES; i += 32) {
@@ -188,7 +188,7 @@ AStarNode* AStarNodes::getBestNode() {
 #endif
 }
 
-void AStarNodes::closeNode(AStarNode* node) {
+void AStarNodes::closeNode(const AStarNode* node) {
 	const size_t index = node - nodes;
 	assert(index < MAX_NODES);
 #if defined(__SSE2__)
@@ -198,7 +198,7 @@ void AStarNodes::closeNode(AStarNode* node) {
 	++closedNodes;
 }
 
-void AStarNodes::openNode(AStarNode* node) {
+void AStarNodes::openNode(const AStarNode* node) {
 	const size_t index = node - nodes;
 	assert(index < MAX_NODES);
 #if defined(__SSE2__)

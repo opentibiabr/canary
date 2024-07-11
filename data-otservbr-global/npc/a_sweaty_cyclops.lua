@@ -53,13 +53,44 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local function creatureSayCallback(npc, creature, type, message)
-    local player = Player(creature)
-    local playerId = player:getId()
+	local player = Player(creature)
+	local playerId = player:getId()
 
-    if not npcHandler:checkInteraction(npc, creature) then
-        return false
-    end
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
 
+	-- uth'lokr (Bast Skirts)
+	if MsgContains(message, "uth'lokr") and player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops) < 1 then
+		npcHandler:say("Firy steel it is. Need green ones' breath to melt. Or red even better. Me can make from shield. Lil' one want to trade?", npc, creature)
+		npcHandler:setTopic(playerId, 1)
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 1 then
+			npcHandler:say("Wait. Me work no cheap is. Do favour for me first, yes?", npc, creature)
+			npcHandler:setTopic(playerId, 2)
+		elseif npcHandler:getTopic(playerId) == 2 then
+			npcHandler:say("Me need gift for woman. We dance, so me want to give her bast skirt. But she big is. So I need many to make big one. Bring three okay? Me wait.", npc, creature)
+			if player:getStorageValue(Storage.OutfitQuest.FriendsandTraders.DefaultStart) ~= 1 then
+				player:setStorageValue(Storage.OutfitQuest.FriendsandTraders.DefaultStart, 1)
+			end
+			player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops, 1)
+			npcHandler:setTopic(playerId, 3)
+		elseif npcHandler:getTopic(playerId) == 4 then
+			if player:removeItem(3560, 3) then
+				npcHandler:say("Good good! Woman happy will be. Now me happy too and help you.", npc, creature)
+				player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops, 2)
+				npcHandler:setTopic(playerId, 0)
+			else
+				npcHandler:say("Lil' one bring three bast skirts.", npc, creature)
+				npcHandler:setTopic(playerId, 3)
+			end
+		end
+	elseif MsgContains(message, "bast skirt") and player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops) == 1 then
+		if npcHandler:getTopic(playerId) == 3 then
+			npcHandler:say("Lil' one bring three bast skirts?", npc, creature)
+			npcHandler:setTopic(playerId, 4)
+		end
+	end
     -- uth'lokr (Bast Skirts)
     if MsgContains(message, "uth'lokr") and player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops) < 1 then
         npcHandler:say("Firy steel it is. Need green ones' breath to melt. Or red even better. Me can make from shield. Lil' one want to trade?", npc, creature)
@@ -93,7 +124,7 @@ local function creatureSayCallback(npc, creature, type, message)
     end
 
     -- Uth'kean (Crown Armor - Piece of Royal Steel)
-    if MsgContains(message, "uth'kean") and player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops) == 2 then
+    if MsgContains(message, "uth'kean") and player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops) == 2 then
         npcHandler:say("Very noble. Shiny. Me like. But breaks so fast. Me can make from shiny armour. Lil' one want to trade?", npc, creature)
         npcHandler:setTopic(playerId, 5)
     elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 5 then
@@ -105,7 +136,7 @@ local function creatureSayCallback(npc, creature, type, message)
     end
 
     -- uth'lokr (Dragon Shield - Piece of Draconian Steel)
-    if MsgContains(message, "uth'lokr") and player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops) == 2 then
+    if MsgContains(message, "uth'lokr") and player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops) == 2 then
         npcHandler:say("Firy steel it is. Need green ones' breath to melt. Or red even better. Me can make from shield. Lil' one want to trade?", npc, creature)
         npcHandler:setTopic(playerId, 6)
     elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 6 then
@@ -117,7 +148,7 @@ local function creatureSayCallback(npc, creature, type, message)
     end
 
     -- za'ralator (Devil Helmet - Piece of Hell Steel)
-    if MsgContains(message, "za'ralator") and player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops) == 2 then
+    if MsgContains(message, "za'ralator") and player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops) == 2 then
         npcHandler:say("Hellsteel is. Cursed and evil. Dangerous to work with. Me can make from evil helmet. Lil' one want to trade?", npc, creature)
         npcHandler:setTopic(playerId, 7)
     elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 7 then
@@ -129,7 +160,7 @@ local function creatureSayCallback(npc, creature, type, message)
     end
 
     -- uth'prta (Giant Sword - Huge Chunk of Crude Iron)
-    if MsgContains(message, "uth'prta") and player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops) == 2 then
+    if MsgContains(message, "uth'prta") and player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops) == 2 then
         npcHandler:say("Good iron is. Me friends use it much for fight. Me can make from weapon. Lil' one want to trade?", npc, creature)
         npcHandler:setTopic(playerId, 8)
     elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 8 then
@@ -141,7 +172,7 @@ local function creatureSayCallback(npc, creature, type, message)
     end
 
     -- soul orb (soul orb - Infernal Bolts)
-    if MsgContains(message, "soul orb") and player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops) == 2 then
+    if MsgContains(message, "soul orb") and player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops) == 2 then
         npcHandler:say("Uh. Me can make some nasty lil' bolt from soul orbs. Lil' one want to trade all?", npc, creature)
         npcHandler:setTopic(playerId, 9)
     elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 9 then
@@ -162,9 +193,8 @@ local function creatureSayCallback(npc, creature, type, message)
         end
     end
 
-    return true
+	return true
 end
-
 
 keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am smith." })
 keywordHandler:addKeyword({ "smith" }, StdModule.say, { npcHandler = npcHandler, text = "Working steel is my profession." })

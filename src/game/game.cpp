@@ -593,7 +593,8 @@ void Game::setGameState(GameState_t newState) {
 		}
 
 		case GAME_STATE_SHUTDOWN: {
-			g_globalEvents().execute(GLOBALEVENT_SHUTDOWN);
+			g_globalEvents().save();
+			g_globalEvents().shutdown();
 
 			// kick all players that are still online
 			auto it = players.begin();
@@ -611,6 +612,8 @@ void Game::setGameState(GameState_t newState) {
 		}
 
 		case GAME_STATE_CLOSED: {
+			g_globalEvents().save();
+
 			/* kick all players without the CanAlwaysLogin flag */
 			auto it = players.begin();
 			while (it != players.end()) {

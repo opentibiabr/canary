@@ -16,6 +16,7 @@
 #include "lua/functions/core/game/global_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
+#include "lua/global/globalevent.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "lua/global/lua_timer_event_descr.hpp"
@@ -706,6 +707,7 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 }
 
 int GlobalFunctions::luaSaveServer(lua_State* L) {
+	g_globalEvents().save();
 	g_saveManager().scheduleAll();
 	pushBoolean(L, true);
 	return 1;

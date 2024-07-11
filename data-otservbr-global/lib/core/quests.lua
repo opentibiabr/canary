@@ -651,12 +651,12 @@ if not Quests then
 		},
 		[8] = {
 			name = "Friends and Traders",
-			startStorageId = Storage.FriendsandTraders.DefaultStart,
+			startStorageId = Storage.Quest.U7_8.FriendsandTraders.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Sweaty Cyclops",
-					storageId = Storage.FriendsandTraders.TheSweatyCyclops,
+					storageId = Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops,
 					missionId = 1067,
 					startValue = 1,
 					endValue = 2,
@@ -669,7 +669,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Mermaid Marina",
-					storageId = Storage.FriendsandTraders.TheMermaidMarina,
+					storageId = Storage.Quest.U7_8.FriendsandTraders.TheMermaidMarina,
 					missionId = 1068,
 					startValue = 1,
 					endValue = 2,
@@ -682,7 +682,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Blessed Stake",
-					storageId = Storage.FriendsandTraders.TheBlessedStake,
+					storageId = Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake,
 					missionId = 1069,
 					startValue = 1,
 					endValue = 12,

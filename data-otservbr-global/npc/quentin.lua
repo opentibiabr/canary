@@ -55,29 +55,29 @@ local stakeKeyword = keywordHandler:addKeyword({ "stake" }, StdModule.say, {
 		"Is this stake really important enough to you so that you are willing to take this burden?",
 	},
 }, function(player)
-	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == -1
+	return player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake) == -1
 end)
 stakeKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Alright, I guess you need a stake first. Maybe Gamon can help you, the leg of a chair or something could just do. Try asking him for a stake, and if you have one, bring it back to me.", reset = true, ungreet = true }, nil, function(player)
-	player:setStorageValue(Storage.FriendsandTraders.DefaultStart, 1)
-	player:setStorageValue(Storage.FriendsandTraders.TheBlessedStake, 1)
+	player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.DefaultStart, 1)
+	player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake, 1)
 end)
 
 -- First prayer
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "I guess you couldn't convince Gamon to give you a stake, eh?" }, function(player)
-	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 1 and player:getItemCount(5941) == 0
+	return player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake) == 1 and player:getItemCount(5941) == 0
 end)
 
-local stakeKeyword = keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, I was informed what to do. Are you prepared to receive my line of the prayer?" }, function(player)
-	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 1
+local stakeKeyword = keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, I see you brought a stake with you. Are you ready to receive my line of the prayer then?" }, function(player)
+	return player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake) == 1
 end)
 stakeKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "So receive my prayer: 'Light shall be near - and darkness afar'. Now, bring your stake to Tibra in the Carlin church for the next line of the prayer. I will inform her what to do.", reset = true }, nil, function(player)
-	player:setStorageValue(Storage.FriendsandTraders.TheBlessedStake, 2)
+	player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake, 2)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 end)
 stakeKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "I will wait for you.", reset = true })
 
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "You should visit Tibra in the Carlin church now." }, function(player)
-	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 2
+	return player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake) == 2
 end)
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "You already received my line of the prayer." })
 

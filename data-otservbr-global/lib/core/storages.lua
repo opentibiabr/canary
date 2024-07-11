@@ -936,14 +936,6 @@ Storage = {
 			BossRoom = 51332,
 		},
 	},
-	FriendsandTraders = {
-		-- Reserved storage from 51340 - 51359
-		DefaultStart = 51340,
-		TheSweatyCyclops = 51341,
-		TheMermaidMarina = 51342,
-		TheBlessedStake = 51343,
-		TheBlessedStakeWaitTime = 51344,
-	},
 	Postman = {
 		-- Reserved storage from 51360 - 51389
 		Mission01 = 51360,
@@ -2044,10 +2036,15 @@ Storage = {
 				MissionStaff = 40820,
 				MissionMask = 40821,
 			},
-			TheBlessedStake = {},
+			FriendsandTraders = {
+				DefaultStart = 40822,
+				TheSweatyCyclops = 40823,
+				TheMermaidMarina = 40824,
+				TheBlessedStake = 40825,
+				TheBlessedStakeWaitTime = 40826,
+			},
 			TheMermaidMarina = {},
 			TheShatteredIsles = {},
-			TheSweatyCyclops = {},
 			TreasureIsland = {},
 			WarriorOutfits = {},
 			WizardOutfits = {},

@@ -69,32 +69,30 @@ private:
 	}
 
 	bool hasTraceableContext() const {
-		const static auto tasksContext = std::unordered_set<std::string_view>({
-			"Decay::checkDecay",
-			"Dispatcher::asyncEvent",
-			"Game::checkCreatureAttack",
-			"Game::checkCreatureWalk",
-			"Game::checkCreatures",
-			"Game::checkImbuements",
-			"Game::checkLight",
-			"Game::createFiendishMonsters",
-			"Game::createInfluencedMonsters",
-			"Game::updateCreatureWalk",
-			"Game::updateForgeableMonsters",
-			"GlobalEvents::think",
-			"LuaEnvironment::executeTimerEvent",
-			"Modules::executeOnRecvbyte",
-			"OutputMessagePool::sendAll",
-			"ProtocolGame::addGameTask",
-			"ProtocolGame::parsePacketFromDispatcher",
-			"Raids::checkRaids",
-			"SpawnMonster::checkSpawnMonster",
-			"SpawnMonster::scheduleSpawn",
-			"SpawnMonster::startup",
-			"SpawnNpc::checkSpawnNpc",
-			"Webhook::run",
-			"Protocol::sendRecvMessageCallback"
-		});
+		const static auto tasksContext = std::unordered_set<std::string_view>({ "Decay::checkDecay",
+		                                                                        "Dispatcher::asyncEvent",
+		                                                                        "Game::checkCreatureAttack",
+		                                                                        "Game::checkCreatureWalk",
+		                                                                        "Game::checkCreatures",
+		                                                                        "Game::checkImbuements",
+		                                                                        "Game::checkLight",
+		                                                                        "Game::createFiendishMonsters",
+		                                                                        "Game::createInfluencedMonsters",
+		                                                                        "Game::updateCreatureWalk",
+		                                                                        "Game::updateForgeableMonsters",
+		                                                                        "GlobalEvents::think",
+		                                                                        "LuaEnvironment::executeTimerEvent",
+		                                                                        "Modules::executeOnRecvbyte",
+		                                                                        "OutputMessagePool::sendAll",
+		                                                                        "ProtocolGame::addGameTask",
+		                                                                        "ProtocolGame::parsePacketFromDispatcher",
+		                                                                        "Raids::checkRaids",
+		                                                                        "SpawnMonster::checkSpawnMonster",
+		                                                                        "SpawnMonster::scheduleSpawn",
+		                                                                        "SpawnMonster::startup",
+		                                                                        "SpawnNpc::checkSpawnNpc",
+		                                                                        "Webhook::run",
+		                                                                        "Protocol::sendRecvMessageCallback" });
 
 		return tasksContext.contains(context);
 	}

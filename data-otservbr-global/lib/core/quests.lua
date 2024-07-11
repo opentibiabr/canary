@@ -2266,7 +2266,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mage &amp; Summoner Outfit Quest (Wand)",
-					storageId = Storage.Quest.U7_8.MageOutfits.AddonWand,
+					storageId = Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand,
 					missionId = 10176,
 					startValue = 1,
 					endValue = 7,
@@ -2284,7 +2284,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mage &amp; Summoner Outfit Quest (Fluid Belt)",
-					storageId = Storage.Quest.U7_8.MageOutfits.AddonBelt,
+					storageId = Storage.Quest.U7_8.MageAndSummonerOutfits.AddonBelt,
 					missionId = 10177,
 					startValue = 1,
 					endValue = 2,
@@ -2295,7 +2295,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Female Mage and Male Summoner Addon: Headgear",
-					storageId = Storage.Quest.U7_8.MageOutfits.MissionHatCloak,
+					storageId = Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak,
 					missionId = 10178,
 					startValue = 1,
 					endValue = 11,

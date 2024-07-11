@@ -32,6 +32,11 @@ public:
 		centerPos(initPos), radius(initRadius) { }
 	~SpawnMonster();
 
+	SpawnMonster(SpawnMonster &&) { }
+	SpawnMonster &operator=(SpawnMonster &&) {
+		return *this;
+	}
+
 	// non-copyable
 	SpawnMonster(const SpawnMonster &) = delete;
 	SpawnMonster &operator=(const SpawnMonster &) = delete;
@@ -83,10 +88,6 @@ public:
 	bool loadFromXML(const std::string &filemonstername);
 	void startup();
 	void clear();
-	SpawnMonster &addSpawnMonster(const Position &pos, int32_t radius) {
-		spawnMonsterList.emplace_front(pos, radius);
-		return spawnMonsterList.front();
-	}
 
 	bool isStarted() const {
 		return started;
@@ -94,12 +95,12 @@ public:
 	bool isLoaded() const {
 		return loaded;
 	}
-	std::forward_list<SpawnMonster> &getspawnMonsterList() {
+	std::vector<SpawnMonster> &getspawnMonsterList() {
 		return spawnMonsterList;
 	}
 
 private:
-	std::forward_list<SpawnMonster> spawnMonsterList;
+	std::vector<SpawnMonster> spawnMonsterList;
 	std::string filemonstername;
 	bool loaded = false;
 	bool started = false;

@@ -1730,6 +1730,12 @@ public:
 		}
 	}
 
+	void sendTakeScreenshot(Screenshot_t screenshotType) {
+		if (client) {
+			client->sendTakeScreenshot(screenshotType);
+		}
+	}
+
 	void onThink(uint32_t interval) override;
 
 	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
@@ -2658,7 +2664,7 @@ private:
 	static uint32_t playerFirstID;
 	static uint32_t playerLastID;
 
-	std::forward_list<std::shared_ptr<Condition>> getMuteConditions() const;
+	std::vector<std::shared_ptr<Condition>> getMuteConditions() const;
 
 	void checkTradeState(std::shared_ptr<Item> item);
 	bool hasCapacity(std::shared_ptr<Item> item, uint32_t count) const;
@@ -2754,11 +2760,11 @@ private:
 
 	GuildWarVector guildWarVector;
 
-	std::forward_list<std::shared_ptr<Party>> invitePartyList;
-	std::forward_list<uint32_t> modalWindows;
-	std::forward_list<std::string> learnedInstantSpellList;
+	std::vector<std::shared_ptr<Party>> invitePartyList;
+	std::vector<uint32_t> modalWindows;
+	std::vector<std::string> learnedInstantSpellList;
 	// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
-	std::forward_list<std::shared_ptr<Condition>> storedConditionList;
+	std::vector<std::shared_ptr<Condition>> storedConditionList;
 
 	std::unordered_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
 	std::unordered_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;

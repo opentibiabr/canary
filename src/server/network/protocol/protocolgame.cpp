@@ -4795,7 +4795,7 @@ void ProtocolGame::sendGameNews() {
 
 void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/, uint64_t forgeDust /*= 0*/, uint64_t forgeSliver /*= 0*/, uint64_t forgeCores /*= 0*/) {
 	sendResourceBalance(RESOURCE_BANK, bank);
-	sendResourceBalance(RESOURCE_INVENTORY, money);
+	sendResourceBalance(RESOURCE_INVENTORY_MONEY, money);
 	sendResourceBalance(RESOURCE_PREY_CARDS, preyCards);
 	sendResourceBalance(RESOURCE_TASK_HUNTING, taskHunting);
 	sendResourceBalance(RESOURCE_FORGE_DUST, forgeDust);
@@ -4834,14 +4834,14 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		if (it != inventoryMap.end()) {
 			playerMoney += static_cast<uint64_t>(it->second);
 		}
-		sendResourceBalance(RESOURCE_INVENTORY, playerMoney);
+		sendResourceBalance(RESOURCE_INVENTORY_MONEY, playerMoney);
 	} else {
 		uint64_t customCurrencyValue = 0;
 		auto search = inventoryMap.find(currency);
 		if (search != inventoryMap.end()) {
 			customCurrencyValue += static_cast<uint64_t>(search->second);
 		}
-		sendResourceBalance(RESOURCE_INVENTORY_CUSTOM, customCurrencyValue);
+		sendResourceBalance(oldProtocol ? RESOURCE_INVENTORY_MONEY : RESOURCE_INVENTORY_CURRENCY_CUSTOM, customCurrencyValue);
 	}
 
 	NetworkMessage msg;

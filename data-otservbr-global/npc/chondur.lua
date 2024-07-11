@@ -197,7 +197,7 @@ local function handleOtherMessages(npcHandler, npc, creature, message, playerId)
 		elseif npcHandler:getTopic(playerId) == 10 then
 			npcHandler:say({
 				"I guess I cannot stop you then. Since you told me about my apprentice, it is my turn to help you. I will perform a ritual for you, but I need a few ingredients. ...",
-				"Bring me one fresh dead chicken, one fresh dead rat and one fresh dead black sheep, in that order."
+				"Bring me one fresh dead chicken, one fresh dead rat and one fresh dead black sheep, in that order.",
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell, 1)
 			npcHandler:setTopic(playerId, 0)

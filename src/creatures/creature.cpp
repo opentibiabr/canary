@@ -213,8 +213,8 @@ bool Creature::getNextStep(Direction &dir, uint32_t &) {
 		return false;
 	}
 
-	dir = listWalkDir.front();
-	listWalkDir.pop_front();
+	dir = listWalkDir.back();
+	listWalkDir.pop_back();
 	onWalk(dir);
 	return true;
 }

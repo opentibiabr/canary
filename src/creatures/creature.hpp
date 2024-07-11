@@ -716,7 +716,7 @@ protected:
 	CreatureEventList eventsList;
 	ConditionList conditions;
 
-	std::deque<Direction> listWalkDir;
+	std::vector<Direction> listWalkDir;
 
 	std::weak_ptr<Tile> m_tile;
 	std::weak_ptr<Creature> m_attackedCreature;

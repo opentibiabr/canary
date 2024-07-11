@@ -1599,8 +1599,6 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		return;
 	}
 
-	msg.skipBytes(numdirs);
-
 	std::vector<Direction> path;
 	path.resize(numdirs, DIRECTION_NORTH);
 	for (size_t i = numdirs; --i < numdirs;) {

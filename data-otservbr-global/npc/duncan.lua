@@ -63,17 +63,17 @@ local function creatureSayCallback(npc, creature, type, message)
 	if table.contains({ "outfit", "addon" }, message) and player:getStorageValue(Storage.Quest.U7_8.PirateOutfits.PirateBaseOutfit) == 1 then
 		npcHandler:say("You're talking about my sabre? Well, even though you earned our trust, you'd have to fulfill a task first before you are granted to wear such a sabre.", npc, creature)
 	elseif MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 6 then
+		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 9 then
 			npcHandler:say("I need a new quality atlas for our captains. Only one of the best will do it. I heard the explorers society sells the best, but only to members of a certain rank. You will have to get this rank or ask a high ranking member to buy it for you.", npc, creature)
-			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 7)
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 10)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 7 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 10 then
 			npcHandler:say("Did you get an atlas of the explorers society as I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 6)
-		elseif player:getStorageValue(Storage.TheShatteredIsles.RaysMission2) > 0 and player:getStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor) < 0 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.RaysMission2) > 0 and player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor) < 0 then
 			npcHandler:say("You did some impressive things. I think people here start considering you as one of us. But these are dire times and everyone of us is expected to give his best and even exceed himself. Do you think you can handle that?", npc, creature)
 			npcHandler:setTopic(playerId, 7)
-		elseif player:getStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor) == 1 then
 			npcHandler:say("Did you rescue one of those poor soon-to-be baby tortoises from Nargor?", npc, creature)
 			npcHandler:setTopic(playerId, 8)
 		end
@@ -135,10 +135,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You don't have it...", npc, creature)
 			end
 		elseif npcHandler:getTopic(playerId) == 6 then
-			if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 7 then
+			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 10 then
 				if player:removeItem(6108, 1) then
 					npcHandler:say("Indeed, what a fine work... the book I mean. Your work was acceptable all in all.", npc, creature)
-					player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 8)
+					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 11)
 					npcHandler:setTopic(playerId, 0)
 				else
 					npcHandler:say("You don't have it...", npc, creature)
@@ -146,22 +146,22 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		elseif npcHandler:getTopic(playerId) == 7 then
-			if player:getStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor) < 0 then
+			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor) < 0 then
 				npcHandler:say({
 					"I am glad to hear this. Please listen. The pirates on Nargor are breeding tortoises. They think eating tortoises makes a hard man even harder. ...",
 					"However I am quite fond of tortoises and can't stand the thought of them being eaten. So I convinced Captain Striker that I can train them to help us. As a substitute for rafts and such ...",
 					"All I need is one tortoise egg from Nargor. This is the opportunity to save a tortoise from a gruesome fate! ...",
 					"I will ask Sebastian to bring you there. Travel to Nargor, find their tortoise eggs and bring me at least one of them.",
 				}, npc, creature)
-				player:setStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor, 1)
+				player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor, 1)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 8 then
-			if player:getStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor) == 1 then
+			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor) == 1 then
 				if player:removeItem(6125, 1) then
 					npcHandler:say("A real tortoise egg ... I guess you are more accustomed to rescue some noblewoman in distress but you did something goodtoday.", npc, creature)
-					player:setStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor, 2)
-					player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 16)
+					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor, 2)
+					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 16)
 					if player:getStorageValue(Storage.TheIceIslands.Questline) >= 9 then
 						player:addAchievement("Animal Activist")
 					end
@@ -180,6 +180,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Hi, come closer. Have a look at my wares.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

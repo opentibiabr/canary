@@ -76,19 +76,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("Your task is to bring me the shirt of the Lethal Lissy, the sabre of Ron the Ripper, the hat of Brutus Bloodbeard and the eye patch of Deadeye Devious. Did you succeed?", npc, creature)
 		npcHandler:setTopic(playerId, 5)
 	elseif MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 1 then
 			npcHandler:say("You know, we have plenty of rum here but we lack some basic food. Especially food that easily becomes mouldy is a problem. Bring me 100 breads and you will help me a lot.", npc, creature)
-			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 2)
-		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 2 then
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 2)
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 2 then
 			npcHandler:say("Are you here to bring me the 100 pieces of bread that I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
-		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 10 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 3 then
 			npcHandler:say({
 				"The sailors always tell tales about the famous beer of Carlin. You must know, alcohol is forbidden in that city. ...",
 				"The beer is served in a secret whisper bar anyway. Bring me a sample of the whisper beer, NOT the usual beer but whisper beer. I hope you are listening.",
 			}, npc, creature)
-			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 11)
-		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 12 or player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 11 then
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 4)
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 5 then
 			npcHandler:say("Did you get a sample of the whisper beer from Carlin?", npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		end
@@ -110,10 +110,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif npcHandler:getTopic(playerId) == 3 then
-			if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 2 then
+			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 2 then
 				if player:removeItem(3600, 100) then
 					npcHandler:say("What a joy. At least for a few days adequate supply is ensured.", npc, creature)
-					player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 3)
+					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 3)
 					npcHandler:setTopic(playerId, 0)
 				else
 					npcHandler:say("Come back when you got all neccessary items.", npc, creature)
@@ -121,10 +121,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
-			if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 12 then
+			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 5 then
 				if player:removeItem(6106, 1) then
 					npcHandler:say("Thank you very much. I will test this beauty in privacy.", npc, creature)
-					player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 14)
+					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 6)
 					npcHandler:setTopic(playerId, 0)
 				else
 					npcHandler:say("Come back when you got the neccessary item.", npc, creature)

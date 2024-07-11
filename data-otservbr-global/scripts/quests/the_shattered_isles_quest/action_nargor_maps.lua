@@ -1,14 +1,14 @@
 local UniqueTable = {
 	[40001] = {
-		storage = Storage.TheShatteredIsles.TavernMap1,
+		storage = Storage.Quest.U7_8.TheShatteredIsles.TavernMap1,
 		message = "You have sucessfully read plan A.",
 	},
 	[40002] = {
-		storage = Storage.TheShatteredIsles.TavernMap2,
+		storage = Storage.Quest.U7_8.TheShatteredIsles.TavernMap2,
 		message = "You have sucessfully read plan B.",
 	},
 	[40003] = {
-		storage = Storage.TheShatteredIsles.TavernMap3,
+		storage = Storage.Quest.U7_8.TheShatteredIsles.TavernMap3,
 		message = "You have sucessfully read plan C.",
 	},
 }
@@ -21,7 +21,7 @@ function nargorMaps.onUse(player, item, fromPosition, target, toPosition, isHotk
 		return true
 	end
 
-	if player:getStorageValue(Storage.TheShatteredIsles.RaysMission3) ~= 1 then
+	if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.RaysMission3) ~= 1 then
 		return false
 	end
 

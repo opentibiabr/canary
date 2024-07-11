@@ -67,24 +67,24 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 4)
 		end
 	elseif MsgContains(message, "raymond striker") then
-		if player:getStorageValue(Storage.TheShatteredIsles.APoemForTheMermaid) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.APoemForTheMermaid) == 1 then
 			npcHandler:say("<giggles> I think he has a crush on me. Well, silly man, it is only for his own good. This way he can get accustomed to TRUE beauty. And I won't give him up anymore now that he is mine.", npc, creature)
-			player:setStorageValue(Storage.TheShatteredIsles.APoemForTheMermaid, 2)
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.APoemForTheMermaid, 2)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "date") then
-		if player:getStorageValue(Storage.TheShatteredIsles.ADjinnInLove) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ADjinnInLove) == 1 then
 			npcHandler:say("Is that the best you can do? A true Djinn would have done something more poetic.", npc, creature)
-			player:setStorageValue(Storage.TheShatteredIsles.ADjinnInLove, 2)
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ADjinnInLove, 2)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheShatteredIsles.ADjinnInLove) == 4 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ADjinnInLove) == 4 then
 			npcHandler:say({
 				"This lovely, exotic Djinn is a true poet. And he is asking me for a date? Excellent. Now I can finaly dump this human pirate. He was growing to be boring more and more with each day ...",
 				"As a little reward for your efforts I allow you to ride my sea turtles. Just look around at the shores and you will find them.",
 			}, npc, creature)
 			player:addAchievement("Matchmaker")
-			player:setStorageValue(Storage.TheShatteredIsles.ADjinnInLove, 5)
-			player:setStorageValue(Storage.TheShatteredIsles.AccessToLagunaIsland, 1)
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ADjinnInLove, 5)
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.AccessToLagunaIsland, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "yes") then

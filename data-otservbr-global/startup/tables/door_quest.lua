@@ -601,11 +601,11 @@ QuestDoorAction = {
 		itemPos = { { x = 33247, y = 32534, z = 8 } },
 	},
 	-- THe shattered isles door
-	[Storage.TheShatteredIsles.TortoiseEggNargorDoor] = {
+	[Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor] = {
 		itemId = false,
 		itemPos = { { x = 31934, y = 32838, z = 7 } },
 	},
-	[Storage.TheShatteredIsles.YavernDoor] = {
+	[Storage.Quest.U7_8.TheShatteredIsles.YavernDoor] = {
 		itemId = false,
 		itemPos = { { x = 31978, y = 32856, z = 3 } },
 	},

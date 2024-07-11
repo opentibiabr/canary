@@ -55,6 +55,13 @@ ItemAction = {
 			{ x = 33122, y = 32765, z = 14 },
 		},
 	},
+	-- The Shattered Isles Quest
+	[12585] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 31919, y = 32600, z = 10 },
+		},
+	},
 	-- Hunter Outfits Quest - piano
 	[33216] = {
 		itemId = 6123,
@@ -400,6 +407,11 @@ ItemAction = {
 }
 
 ItemUnique = {
+	-- The Shattered Isles Quest - Catapult
+	[2273] = {
+		itemId = 5601,
+		itemPos = { x = 31978, y = 32887, z = 6 },
+	},
 	-- The Explorer Society - The Rune Writings
 	[3010] = {
 		itemId = 2199,
@@ -491,7 +503,6 @@ ItemUnique = {
 		itemPos = { x = 33926, y = 31477, z = 5 },
 	},
 	-- The shattered isles
-	-- data\scripts\actions\quests\the_shattered_isles\nargor_maps.lua
 	[40001] = {
 		itemId = 6118,
 		itemPos = { x = 31978, y = 32828, z = 2 },

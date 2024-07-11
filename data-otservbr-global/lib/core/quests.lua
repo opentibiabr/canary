@@ -3652,12 +3652,12 @@ if not Quests then
 		},
 		[25] = {
 			name = "The Shattered Isles",
-			startStorageId = Storage.TheShatteredIsles.DefaultStart,
+			startStorageId = Storage.Quest.U7_8.TheShatteredIsles.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "A Djinn in Love",
-					storageId = Storage.TheShatteredIsles.ADjinnInLove,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ADjinnInLove,
 					missionId = 10263,
 					startValue = 1,
 					endValue = 5,
@@ -3673,7 +3673,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "A Poem for the Mermaid",
-					storageId = Storage.TheShatteredIsles.APoemForTheMermaid,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.APoemForTheMermaid,
 					missionId = 10264,
 					startValue = 1,
 					endValue = 3,
@@ -3688,7 +3688,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Access to Goroma",
-					storageId = Storage.TheShatteredIsles.AccessToGoroma,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.AccessToGoroma,
 					missionId = 10265,
 					startValue = 1,
 					endValue = 1,
@@ -3697,7 +3697,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Access to Laguna Island",
-					storageId = Storage.TheShatteredIsles.AccessToLagunaIsland,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.AccessToLagunaIsland,
 					missionId = 10266,
 					startValue = 1,
 					endValue = 1,
@@ -3706,7 +3706,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Access to Meriana",
-					storageId = Storage.TheShatteredIsles.AccessToMeriana,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.AccessToMeriana,
 					missionId = 10267,
 					startValue = 1,
 					endValue = 1,
@@ -3715,7 +3715,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Access to Nargor",
-					storageId = Storage.TheShatteredIsles.AccessToNargor,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.AccessToNargor,
 					missionId = 10268,
 					startValue = 1,
 					endValue = 1,
@@ -3724,7 +3724,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Ray's Mission 1: Fafnar's Fire",
-					storageId = Storage.TheShatteredIsles.RaysMission1,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.RaysMission1,
 					missionId = 10269,
 					startValue = 1,
 					endValue = 3,
@@ -3739,7 +3739,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Ray's Mission 2: Sabotage",
-					storageId = Storage.TheShatteredIsles.RaysMission2,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.RaysMission2,
 					missionId = 10270,
 					startValue = 1,
 					endValue = 3,
@@ -3754,7 +3754,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Ray's Mission 3: Spy Mission",
-					storageId = Storage.TheShatteredIsles.RaysMission3,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.RaysMission3,
 					missionId = 10271,
 					startValue = 1,
 					endValue = 2,
@@ -3767,7 +3767,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Ray's Mission 4: Proof of Death",
-					storageId = Storage.TheShatteredIsles.RaysMission4,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.RaysMission4,
 					missionId = 10272,
 					startValue = 1,
 					endValue = 5,
@@ -3786,7 +3786,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Reputation in Sabrehaven: Suspicious",
-					storageId = Storage.TheShatteredIsles.ReputationInSabrehaven,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven,
 					missionId = 10273,
 					startValue = 2,
 					endValue = 13,
@@ -3815,7 +3815,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Reputation in Sabrehaven: Friendly",
-					storageId = Storage.TheShatteredIsles.ReputationInSabrehaven,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven,
 					missionId = 10274,
 					startValue = 14,
 					endValue = 17,
@@ -3830,7 +3830,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "Reputation in Sabrehaven: Cordial",
-					storageId = Storage.TheShatteredIsles.ReputationInSabrehaven,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven,
 					missionId = 10275,
 					startValue = 18,
 					endValue = 19,
@@ -3839,7 +3839,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "Reputation in Sabrehaven: Loyal",
-					storageId = Storage.TheShatteredIsles.ReputationInSabrehaven,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven,
 					missionId = 10276,
 					startValue = 20,
 					endValue = 22,
@@ -3851,7 +3851,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "The Counterspell",
-					storageId = Storage.TheShatteredIsles.TheCounterspell,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell,
 					missionId = 10277,
 					startValue = 1,
 					endValue = 4,
@@ -3868,7 +3868,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "The Errand",
-					storageId = Storage.TheShatteredIsles.TheErrand,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.TheErrand,
 					missionId = 10278,
 					startValue = 1,
 					endValue = 2,
@@ -3880,7 +3880,7 @@ if not Quests then
 				},
 				[17] = {
 					name = "The Governor's Daughter",
-					storageId = Storage.TheShatteredIsles.TheGovernorDaughter,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.TheGovernorDaughter,
 					missionId = 10279,
 					startValue = 1,
 					endValue = 3,

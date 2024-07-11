@@ -1087,6 +1087,14 @@ ChestUnique = {
 		reward = { { 5945, 1 } },
 		storage = Storage.Quest.U7_8.OrientalOutfits.CoralComb,
 	},
+	-- The Shattered Isles Quest - Dragahs Spellbook
+	[6121] = {
+		itemId = 4240,
+		itemPos = { x = 32093, y = 32574, z = 8 },
+		weight = 58.00,
+		reward = { { 6120, 1 } },
+		storage = Storage.Quest.U7_8.TheShatteredIsles.DragahsSpellbook,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

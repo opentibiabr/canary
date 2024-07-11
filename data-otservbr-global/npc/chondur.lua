@@ -55,7 +55,7 @@ local function handleAddonMessages(npcHandler, npc, creature, message, playerId)
 
 	if MsgContains(message, "addon") then
 		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 158 or 154) then
-			if player:getStorageValue(Storage.TheShatteredIsles.TheCounterspell) >= 4 and player:getStorageValue(Storage.TheShatteredIsles.ADjinnInLove) >= 5 and player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) >= 10 and player:getStorageValue(Storage.Quest.U7_8.ShamanOutfits.AddonStaffMask) < 1 then
+			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell) >= 4 and player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ADjinnInLove) >= 5 and player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) >= 10 and player:getStorageValue(Storage.Quest.U7_8.ShamanOutfits.AddonStaffMask) < 1 then
 				npcHandler:say("The time has come, my child. I sense great spiritual wisdom in you and I shall grant you a sign of your progress, if you can fulfil my task.", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			elseif player:hasOutfit(158, 2) or player:hasOutfit(154, 2) and not (player:hasOutfit(158, 1) or player:hasOutfit(154, 1)) then
@@ -151,22 +151,22 @@ local function handleOtherMessages(npcHandler, npc, creature, message, playerId)
 	if MsgContains(message, "stampor") or MsgContains(message, "mount") then
 		if not player:hasMount(11) then
 			npcHandler:say("You did bring all the items I requested, child. Good. Shall I travel to the spirit realm and try finding a stampor companion for you?", npc, creature)
-			npcHandler:setTopic(playerId, 1)
+			npcHandler:setTopic(playerId, 7)
 		else
 			npcHandler:say("You already have stampor mount.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 8 then
+		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 11 then
 			npcHandler:say("The evil cult has placed a curse on one of the captains here. I need at least five of their pirate voodoo dolls to lift that curse.", npc, creature)
-			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 9)
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 12)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 9 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 12 then
 			npcHandler:say("Did you bring five pirate voodoo dolls?", npc, creature)
-			npcHandler:setTopic(playerId, 2)
+			npcHandler:setTopic(playerId, 8)
 		end
 	elseif MsgContains(message, "yes") then
-		if npcHandler:getTopic(playerId) == 1 then
+		if npcHandler:getTopic(playerId) == 7 then
 			if player:removeItem(12312, 50) and player:removeItem(12314, 30) and player:removeItem(12313, 100) then
 				npcHandler:say({
 					"Ohhhhh Mmmmmmmmmmmm Ammmmmgggggggaaaaaaa ...",
@@ -180,17 +180,60 @@ local function handleOtherMessages(npcHandler, npc, creature, message, playerId)
 				npcHandler:say("Sorry you don't have the necessary items.", npc, creature)
 			end
 			npcHandler:setTopic(playerId, 0)
-		elseif npcHandler:getTopic(playerId) == 2 then
-			if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 9 then
+		elseif npcHandler:getTopic(playerId) == 8 then
+			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 12 then
 				if player:removeItem(5810, 5) then
 					npcHandler:say("Finally I can put an end to that curse. I thank you so much.", npc, creature)
-					player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 10)
+					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 13)
 					npcHandler:setTopic(playerId, 0)
 				else
 					npcHandler:say("You don't have it...", npc, creature)
 					npcHandler:setTopic(playerId, 0)
 				end
 			end
+		elseif npcHandler:getTopic(playerId) == 9 then
+			npcHandler:say("This is really not advisable. Behind this barrier, strong forces are raging violently. Are you sure that you want to go there?", npc, creature)
+			npcHandler:setTopic(playerId, 10)
+		elseif npcHandler:getTopic(playerId) == 10 then
+			npcHandler:say({
+				"I guess I cannot stop you then. Since you told me about my apprentice, it is my turn to help you. I will perform a ritual for you, but I need a few ingredients. ...",
+				"Bring me one fresh dead chicken, one fresh dead rat and one fresh dead black sheep, in that order."
+			}, npc, creature)
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell, 1)
+			npcHandler:setTopic(playerId, 0)
+		elseif npcHandler:getTopic(playerId) == 11 then
+			if player:getItemCount(4330) > 0 then
+				player:removeItem(4330, 1)
+				player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell, 2)
+				npcHandler:say("Very good! <mumble> 'Your soul shall be protected!' Now, I need a fresh dead rat.", npc, creature)
+				return true
+			else
+				npcHandler:say("You don't have the necessary items.", npc, creature)
+				return true
+			end
+			npcHandler:setTopic(playerId, 0)
+		elseif npcHandler:getTopic(playerId) == 12 then
+			if player:getItemCount(3994) > 0 then
+				player:removeItem(3994, 1)
+				player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell, 3)
+				npcHandler:say("Very good! <chants and dances> 'You shall face black magic without fear!' Now, I need a fresh dead black sheep.", npc, creature)
+				return true
+			else
+				npcHandler:say("You don't have the necessary items.", npc, creature)
+				return true
+			end
+			npcHandler:setTopic(playerId, 0)
+		elseif npcHandler:getTopic(playerId) == 13 then
+			if player:getItemCount(4095) > 0 then
+				player:removeItem(4095, 1)
+				player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell, 4)
+				npcHandler:say("Very good! <stomps staff on ground> 'EVIL POWERS SHALL NOT KEEP YOU ANYMORE! SO BE IT!'", npc, creature)
+				return true
+			else
+				npcHandler:say("You don't have the necessary items.", npc, creature)
+				return true
+			end
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "stake") then
 		if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 11 then
@@ -216,47 +259,23 @@ local function handleOtherMessages(npcHandler, npc, creature, message, playerId)
 			end
 		end
 	elseif MsgContains(message, "counterspell") then
-		if player:getStorageValue(Storage.TheShatteredIsles.DragahsSpellbook) == -1 then
+		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.DragahsSpellbook) == -1 then
 			npcHandler:say("You should not talk about things you don't know anything about.", npc, creature)
 			return true
-		elseif player:getStorageValue(Storage.TheShatteredIsles.TheCounterspell) == -1 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell) == -1 then
 			npcHandler:say("You mean, you are interested in a counterspell to cross the energy barrier on Goroma?", npc, creature)
-			player:setStorageValue(Storage.TheShatteredIsles.TheCounterspell, 1)
-			return true
-		elseif player:getStorageValue(Storage.TheShatteredIsles.TheCounterspell) == 1 then
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell, 0)
+			npcHandler:setTopic(playerId, 9)
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell) == 1 then
 			npcHandler:say("Did you bring the fresh dead chicken?", npc, creature)
-			if player:getItemCount(4330) > 0 then
-				player:removeItem(4330, 1)
-				player:setStorageValue(Storage.TheShatteredIsles.TheCounterspell, 2)
-				npcHandler:say("Very good! <mumblemumble> 'Your soul shall be protected!' Now, I need a fresh dead rat.", npc, creature)
-				return true
-			else
-				npcHandler:say("You don't have the necessary items.", npc, creature)
-				return true
-			end
-		elseif player:getStorageValue(Storage.TheShatteredIsles.TheCounterspell) == 2 then
+			npcHandler:setTopic(playerId, 11)
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell) == 2 then
 			npcHandler:say("Did you bring the fresh dead rat?", npc, creature)
-			if player:getItemCount(3994) > 0 then
-				player:removeItem(3994, 1)
-				player:setStorageValue(Storage.TheShatteredIsles.TheCounterspell, 3)
-				npcHandler:say("Very good! <chants and dances> 'You shall face black magic without fear!' Now, I need a fresh dead black sheep.", npc, creature)
-				return true
-			else
-				npcHandler:say("You don't have the necessary items.", npc, creature)
-				return true
-			end
-		elseif player:getStorageValue(Storage.TheShatteredIsles.TheCounterspell) == 3 then
+			npcHandler:setTopic(playerId, 12)
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell) == 3 then
 			npcHandler:say("Did you bring the fresh dead black sheep?", npc, creature)
-			if player:getItemCount(4095) > 0 then
-				player:removeItem(4095, 1)
-				player:setStorageValue(Storage.TheShatteredIsles.TheCounterspell, 4)
-				npcHandler:say("Very good! <stomps staff on ground> 'EVIL POWERS SHALL NOT KEEP YOU ANYMORE! SO BE IT!'", npc, creature)
-				return true
-			else
-				npcHandler:say("You don't have the necessary items.", npc, creature)
-				return true
-			end
-		elseif player:getStorageValue(Storage.TheShatteredIsles.TheCounterspell) == 4 then
+			npcHandler:setTopic(playerId, 13)
+		elseif player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell) == 4 then
 			npcHandler:say("Hm. I don't think you need another one of my counterspells to cross the barrier on Goroma.", npc, creature)
 			return true
 		end
@@ -264,7 +283,10 @@ local function handleOtherMessages(npcHandler, npc, creature, message, playerId)
 		if player:getItemCount(6120) > 0 then
 			npcHandler:say("Ah, thank you very much! I'll honour his memory.", npc, creature)
 			player:removeItem(6120, 1)
-			player:setStorageValue(Storage.TheShatteredIsles.DragahsSpellbook, 1)
+			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.DragahsSpellbook, 1)
+			return true
+		else
+			npcHandler:say("You don't have the necessary items.", npc, creature)
 			return true
 		end
 	elseif MsgContains(message, "energy field") then

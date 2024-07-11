@@ -84,13 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "your continued existence is payment enough") then
 		if npcHandler:getTopic(playerId) == 6 then
 			if player:getStorageValue(Storage.TheShatteredIsles.RaysMission1) == 1 then
-				npcHandler:say(
-					"What?? How dare you?! I am a sorcerer of the most reknown academy on the face of this world. \
-					Do you think some lousy pirates could scare me? Get lost! Now! \
-					I will have no further dealings with the likes of you!",
-					npc,
-					creature
-				)
+				npcHandler:say("What?? How dare you?! I am a sorcerer of the most reknown academy on the face of this world. Do you think some lousy pirates could scare me? Get lost! Now! I will have no further dealings with the likes of you!", npc, creature)
 				player:setStorageValue(Storage.TheShatteredIsles.RaysMission1, 2)
 				npcHandler:setTopic(playerId, 0)
 			end
@@ -98,23 +92,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
-				"The Edron academy has introduced a bonus system. Each time you deposit 100 vials without \
-					claiming the money for it, you will receive a lottery ticket. ...",
-				"Some of these lottery tickets will grant you a special potion belt accessory, \
-					if you bring the ticket to me. ...",
-				"If you join the bonus system now, I will ask you each time you are bringing back 100 or \
-					more vials to me whether you claim your deposit or rather want a lottery ticket. ...",
+				"The Edron academy has introduced a bonus system. Each time you deposit 100 vials without claiming the money for it, you will receive a lottery ticket. ...",
+				"Some of these lottery tickets will grant you a special potion belt accessory, if you bring the ticket to me. ...",
+				"If you join the bonus system now, I will ask you each time you are bringing back 100 or more vials to me whether you claim your deposit or rather want a lottery ticket. ...",
 				"Of course, you can leave or join the bonus system at any time by just asking me for the 'bonus'. ...",
 				"Would you like to join the bonus system now?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say(
-				"Great! I've signed you up for our bonus system. From now on, \
-				you will have the chance to win the potion belt addon!",
-				npc,
-				creature
-			)
+			npcHandler:say("Great! I've signed you up for our bonus system. From now on, you will have the chance to win the potion belt addon!", npc, creature)
 			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonBelt, 1)
 			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
 			npcHandler:setTopic(playerId, 0)
@@ -124,19 +110,15 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addItem(5957, 1)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say(
-					"Sorry, but you don't have 100 empty flasks or vials of the SAME kind and thus don't qualify for the lottery. \
-					Would you like to deposit the vials you have as usual and receive 5 gold per vial?",
-					npc,
-					creature
-				)
+				npcHandler:say("Sorry, but you don't have 100 empty flasks or vials of the SAME kind and thus don't qualify for the lottery. Would you like to deposit the vials you have as usual and receive 5 gold per vial?", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonBelt) == 1 and player:removeItem(5958, 1) then
 				npcHandler:say("Congratulations! Here, from now on you can wear our lovely potion belt as accessory.", npc, creature)
 				player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonBelt, 2)
-				player:addOutfitAddon(138, 1) --female addon
+				player:addOutfitAddon(130, 1) --male mage addon
+				player:addOutfitAddon(133, 1) --male summoner addon
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			else
 				npcHandler:say("Sorry, but you don't have your lottery ticket with you.", npc, creature)
@@ -144,12 +126,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			if player:getStorageValue(Storage.TheShatteredIsles.RaysMission1) == 1 then
-				npcHandler:say(
-					"Finally. You have no idea how difficult it is to keep something secret here. \
-					And you brought me all the crystal coins I demanded?",
-					npc,
-					creature
-				)
+				npcHandler:say("Finally. You have no idea how difficult it is to keep something secret here. And you brought me all the crystal coins I demanded?", npc, creature)
 				npcHandler:setTopic(playerId, 6)
 			end
 		end
@@ -165,11 +142,7 @@ keywordHandler:addKeyword({ "shop" }, StdModule.say, {
 npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, welcome to the fluid and potion {shop} of Edron.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|, please come back soon.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye, |PLAYERNAME|, please come back soon.")
-npcHandler:setMessage(
-	MESSAGE_SENDTRADE,
-	"Of course, just browse through my wares. By the way, if you'd like to join our bonus \
-	system for depositing flasks and vial, you have to tell me about that {deposit}."
-)
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. By the way, if you'd like to join our bonus system for depositing flasks and vial, you have to tell me about that {deposit}.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

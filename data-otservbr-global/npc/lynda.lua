@@ -91,7 +91,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) == 6 then
 			if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWandTimer) < os.time() then
 				player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand, 7)
-				player:addOutfitAddon(130, 1) --male addon
+				player:addOutfitAddon(138, 1) --female mage addon
+				player:addOutfitAddon(141, 1) --female summoner addon
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				npcHandler:say("I'm glad to tell you that I have finished the ritual, player. Here is your new wand. I hope you carry it proudly for everyone to see..", npc, creature)
 				npcHandler:setTopic(playerId, 0)

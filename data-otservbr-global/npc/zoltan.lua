@@ -80,8 +80,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				else
 					npcHandler:say("I bow to you, player, and hereby grant you the right to wear Ferumbras' hat as accessory. Congratulations!", npc, creature)
 					player:removeItem(5903, 1)
-					player:addOutfitAddon(130, 2) -- mage addon
-					player:addOutfitAddon(133, 2) -- summoner addon
+					player:addOutfitAddon(130, 2) -- male mage addon
+					player:addOutfitAddon(133, 2) -- male summoner addon
 					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 				end
 			else
@@ -95,8 +95,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Usually it takes a little more than that for an award though. However, I honour Myra's word. ...",
 				"I hereby grant you the right to wear a special sign of honour, acknowledged by the academy of Edron. Since you are a woman, I guess you don't want manly stuff. There you go.",
 			}, npc, creature, 100)
-			player:addOutfitAddon(138, 2) -- mage addon
-			player:addOutfitAddon(141, 2) -- summoner addon
+			player:addOutfitAddon(138, 2) -- female mage addon
+			player:addOutfitAddon(141, 2) -- female summoner addon
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak, 11)
 			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak, 0)

@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "angelina") then
-		if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) == 1 then
 			npcHandler:say({
 				"Angelina had been imprisoned? My, these are horrible news, but I am so glad to hear that she is safe now. ...",
 				"I will happily carry out her wish and reward you, but I fear I need some important ingredients for my blessing spell first. ...",
@@ -68,29 +68,29 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "wand") or MsgContains(message, "rod") then
-		if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand) == 2 then
+		if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) == 2 then
 			npcHandler:say("Did you bring a sample of each wand and each rod with you?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
 	elseif MsgContains(message, "sulphur") then
-		if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand) == 3 then
+		if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) == 3 then
 			npcHandler:say("Did you obtain 10 ounces of magic sulphur?", npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		end
 	elseif MsgContains(message, "soul stone") then
-		if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand) == 4 then
+		if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) == 4 then
 			npcHandler:say("Were you actually able to retrieve the Necromancer's soul stone?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
 	elseif MsgContains(message, "ankh") then
-		if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand) == 5 then
+		if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) == 5 then
 			npcHandler:say("Am I sensing enough holy energy from ankhs here?", npc, creature)
 			npcHandler:setTopic(playerId, 6)
 		end
 	elseif MsgContains(message, "ritual") then
-		if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand) == 6 then
-			if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWandTimer) < os.time() then
-				player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand, 7)
+		if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) == 6 then
+			if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWandTimer) < os.time() then
+				player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand, 7)
 				player:addOutfitAddon(130, 1) --male addon
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				npcHandler:say("I'm glad to tell you that I have finished the ritual, player. Here is your new wand. I hope you carry it proudly for everyone to see..", npc, creature)
@@ -113,7 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Alright then. Come back to with a sample of all five wands and five rods, please.", npc, creature)
-			player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand, 2)
+			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand, 2)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:getItemCount(3065) > 0 and player:getItemCount(3066) > 0 and player:getItemCount(3067) > 0 and player:getItemCount(3069) > 0 and player:getItemCount(3070) > 0 and player:getItemCount(3071) > 0 and player:getItemCount(3072) > 0 and player:getItemCount(3073) > 0 and player:getItemCount(3074) > 0 and player:getItemCount(3075) > 0 then
@@ -128,26 +128,26 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:removeItem(3073, 1)
 				player:removeItem(3074, 1)
 				player:removeItem(3075, 1)
-				player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand, 3)
+				player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand, 3)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if player:removeItem(5904, 10) then
 				npcHandler:say("Very good. I will immediately start to prepare the ritual and extract the elemental energy from the wands and rods. Please bring me the Necromancer's soul stone now.", npc, creature)
-				player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand, 4)
+				player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand, 4)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 5 then
 			if player:removeItem(5809, 1) then
 				npcHandler:say("You have found a rarity there, |PLAYERNAME|. This will become the tip of your blessed wand. Please bring me 20 ankhs now to complete the ritual.", npc, creature)
-				player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand, 5)
+				player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand, 5)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 6 then
 			if player:removeItem(3077, 20) then
 				npcHandler:say("The ingredients for the ritual are complete! I will start to prepare your blessed wand, but I have to medidate first. Please come back later to hear how the ritual went.", npc, creature)
-				player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand, 6)
-				player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWandTimer, os.time() + 10800)
+				player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand, 6)
+				player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWandTimer, os.time() + 10800)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end

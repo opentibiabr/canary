@@ -80,7 +80,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				else
 					npcHandler:say("I bow to you, player, and hereby grant you the right to wear Ferumbras' hat as accessory. Congratulations!", npc, creature)
 					player:removeItem(5903, 1)
-					player:addOutfitAddon(130, 2)
+					player:addOutfitAddon(130, 2) -- mage addon
+					player:addOutfitAddon(133, 2) -- summoner addon
 					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 				end
 			else
@@ -88,17 +89,18 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif MsgContains(message, "myra") then
-		if player:getSex() == PLAYERSEX_FEMALE and player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonHatCloak) == 10 and not player:hasOutfit(138, 2) then
+		if player:getSex() == PLAYERSEX_FEMALE and player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak) == 10 and not player:hasOutfit(138, 2) then
 			npcHandler:say({
 				"Bah, I know. I received some sort of 'nomination' from our outpost in Port Hope. ...",
 				"Usually it takes a little more than that for an award though. However, I honour Myra's word. ...",
 				"I hereby grant you the right to wear a special sign of honour, acknowledged by the academy of Edron. Since you are a woman, I guess you don't want manly stuff. There you go.",
 			}, npc, creature, 100)
-			player:addOutfitAddon(138, 2)
+			player:addOutfitAddon(138, 2) -- mage addon
+			player:addOutfitAddon(141, 2) -- summoner addon
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonHatCloak, 11)
-			player:setStorageValue(Storage.Quest.U7_8.MageOutfits.MissionHatCloak, 0)
-		elseif player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonHatCloak) == 11 then
+			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak, 11)
+			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak, 0)
+		elseif player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak) == 11 then
 			npcHandler:say("Stop bothering me. I am a far too busy man to be constantly giving out awards.", npc, creature)
 		else
 			npcHandler:say("What the hell are you talking about?", npc, creature)

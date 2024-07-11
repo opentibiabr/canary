@@ -2015,7 +2015,7 @@ Storage = {
 				RamsaysHelmetDoor = 40801,
 				RamsaysHelmetChest = 40802,
 			},
-			MageOutfits = {
+			MageAndSummonerOutfits = {
 				AddonWand = 40803,
 				AddonBelt = 40804,
 				MissionHatCloak = 40805,
@@ -2044,7 +2044,6 @@ Storage = {
 				MissionStaff = 40820,
 				MissionMask = 40821,
 			},
-			SummonerOutfits = {},
 			TheBlessedStake = {},
 			TheMermaidMarina = {},
 			TheShatteredIsles = {},

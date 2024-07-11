@@ -54,9 +54,9 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand) < 1 then
+	if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "The gods must be praised that I am finally saved. I do not have many worldly possessions, but please accept a small reward, do you?")
-	elseif player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand) >= 1 then
+	elseif player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) >= 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Thanks for saving my life! Should I teleport you out of the Dark Cathedral?")
 	end
 	return true
@@ -71,9 +71,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "yes") then
-		if player:getStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand) < 1 then
 			npcHandler:say("I will tell you a small secret now. My friend Lynda in Thais can create a blessed wand. Greet her from me, maybe she will aid you.", npc, creature)
-			player:setStorageValue(Storage.Quest.U7_8.MageOutfits.AddonWand, 1)
+			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand, 1)
 			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
 		end
 	end

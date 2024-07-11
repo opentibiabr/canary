@@ -58,7 +58,7 @@ end
 
 -- Wooden Stake
 local stakeKeyword = keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "Making a stake from a chair? Are you insane??! I won't waste my chairs on you for free! You will have to pay for it, but since I consider your plan a blasphemy, it will cost 5000 gold pieces. Okay?" }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake) ~= -1
+	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) ~= -1
 end)
 
 stakeKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Argh... my heart aches! Alright... a promise is a promise. Here - take this wooden stake, and now get lost.", ungreet = true }, function(player)

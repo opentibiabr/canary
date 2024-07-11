@@ -2036,14 +2036,13 @@ Storage = {
 				MissionStaff = 40820,
 				MissionMask = 40821,
 			},
-			FriendsandTraders = {
+			FriendsAndTraders = {
 				DefaultStart = 40822,
 				TheSweatyCyclops = 40823,
 				TheMermaidMarina = 40824,
 				TheBlessedStake = 40825,
 				TheBlessedStakeWaitTime = 40826,
 			},
-			TheMermaidMarina = {},
 			TheShatteredIsles = {},
 			TreasureIsland = {},
 			WarriorOutfits = {},

@@ -54,15 +54,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "silk") or MsgContains(message, "yarn") or MsgContains(message, "silk yarn") or MsgContains(message, "spool of yarn") then
-		if player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheMermaidMarina) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheMermaidMarina) < 1 then
 			npcHandler:say("Um. You mean, you really want me to touch that gooey spider silk just because you need yarn? Well... do you think that I'm pretty?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheMermaidMarina) == 2 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheMermaidMarina) == 2 then
 			npcHandler:say("Okay... a deal is a deal, would you like me to create a {spool of yarn} from {10 pieces of spider silk}?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
 	elseif MsgContains(message, "honey") or MsgContains(message, "honeycomb") or MsgContains(message, "50 honeycombs") then
-		if player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheMermaidMarina) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheMermaidMarina) == 1 then
 			npcHandler:say("Did you bring me the 50 honeycombs I requested and do you absolutely admire my beauty?", npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		end
@@ -97,13 +97,16 @@ local function creatureSayCallback(npc, creature, type, message)
 				"You want me to touch something gooey, so you have to touch something gooey for me too. <giggles> ...",
 				"I love honey and I haven't eaten it in a while, so bring me 50 honeycombs and worship my beauty a little more, then we will see.",
 			}, npc, creature)
-			player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheMermaidMarina, 1)
-			player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.DefaultStart) ~= 1 then
+                player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.DefaultStart, 1)
+            end
+			player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheMermaidMarina, 1)
+			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if player:removeItem(5902, 50) then
 				npcHandler:say("Oh goodie! Thank you! Okay... I guess since my fingers are sticky now anyway, I will help you. From now on, if you bring me {10 pieces of spider silk}, I will create one {spool of yarn}.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
-				player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheMermaidMarina, 2)
+				player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheMermaidMarina, 2)
 			else
 				npcHandler:say("You don't have enough honey.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
@@ -122,7 +125,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({ "comb" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, I don't have a spare comb. I lost my favourite one when diving around in Calassa." })
+npcHandler:setMessage(MESSAGE_GREET, "Oh, hello |PLAYERNAME|. A visitor, how nice!")
+
 keywordHandler:addKeyword({ "mermaid comb" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, I don't have a spare comb. I lost my favourite one when diving around in Calassa." })
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

@@ -193,21 +193,21 @@ local function handleOtherMessages(npcHandler, npc, creature, message, playerId)
 			end
 		end
 	elseif MsgContains(message, "stake") then
-		if player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake) == 11 then
+		if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 11 then
 			npcHandler:say("Ten prayers for a blessed stake? Don't tell me they made you travel whole Tibia for it! Listen, child, if you bring me a wooden stake, I'll bless it for you. <chuckles>", npc, creature)
-			player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake, 12)
+			player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake, 12)
 			player:addAchievement("Blessed!")
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			return true
-		elseif player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStake) == 12 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 12 then
 			if player:getItemCount(5941) == 0 then
 				npcHandler:say("You don't have a wooden stake.", npc, creature)
 				return true
-			elseif player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStakeWaitTime) >= os.time() then
+			elseif player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStakeWaitTime) >= os.time() then
 				npcHandler:say("Sorry, but I'm still exhausted from the last ritual. Please come back later.", npc, creature)
 				return true
 			else
-				player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheBlessedStakeWaitTime, os.time() + 7 * 86400)
+				player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStakeWaitTime, os.time() + 7 * 86400)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:removeItem(5941, 1)
 				player:addItem(5942, 1)

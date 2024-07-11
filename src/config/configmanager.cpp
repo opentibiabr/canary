@@ -229,7 +229,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, FAMILIAR_TIME, "familiarTime", 30);
 	loadIntConfig(L, FORGE_BASE_SUCCESS_RATE, "forgeBaseSuccessRate", 50);
 	loadIntConfig(L, FORGE_BONUS_SUCCESS_RATE, "forgeBonusSuccessRate", 15);
-	loadIntConfig(L, FORGE_CONVERGENCE_FUSION_DUST_COST, "forgeConvergenceFusionCost", 130);
+	loadIntConfig(L, FORGE_CONVERGENCE_FUSION_DUST_COST, "forgeConvergenceFusionDustCost", 130);
 	loadIntConfig(L, FORGE_CONVERGENCE_TRANSFER_DUST_COST, "forgeConvergenceTransferCost", 160);
 	loadIntConfig(L, FORGE_CORE_COST, "forgeCoreCost", 50);
 	loadIntConfig(L, FORGE_COST_ONE_SLIVER, "forgeCostOneSliver", 20);

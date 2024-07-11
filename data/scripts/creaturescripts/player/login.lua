@@ -173,6 +173,7 @@ function playerLoginGlobal.onLogin(player)
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
+	player:registerEvent("UpdatePlayerOnAdvancedLevel")
 	return true
 end
 

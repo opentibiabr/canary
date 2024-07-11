@@ -98,8 +98,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"I love honey and I haven't eaten it in a while, so bring me 50 honeycombs and worship my beauty a little more, then we will see.",
 			}, npc, creature)
 			if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.DefaultStart) ~= 1 then
-                player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.DefaultStart, 1)
-            end
+				player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.DefaultStart, 1)
+			end
 			player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheMermaidMarina, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 then

@@ -4819,7 +4819,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
 
 	uint16_t currency = player->getShopOwner() ? player->getShopOwner()->getCurrency() : static_cast<uint16_t>(ITEM_GOLD_COIN);
-	if (currency == ITEM_GOLD_COIN || oldProtocol) {
+	if (currency == ITEM_GOLD_COIN) {
 		// Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
 		uint64_t playerMoney = 0;
 		auto it = inventoryMap.find(ITEM_CRYSTAL_COIN);
@@ -4841,7 +4841,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		if (search != inventoryMap.end()) {
 			customCurrencyValue += static_cast<uint64_t>(search->second);
 		}
-		sendResourceBalance(RESOURCE_INVENTORY_CURRENCY_CUSTOM, customCurrencyValue);
+		sendResourceBalance(oldProtocol ? RESOURCE_INVENTORY_MONEY : RESOURCE_INVENTORY_CURRENCY_CUSTOM, customCurrencyValue);
 	}
 
 	NetworkMessage msg;

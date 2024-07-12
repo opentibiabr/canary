@@ -6695,7 +6695,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 
 	sendVIPGroups();
 
-	const std::forward_list<VIPEntry> &vipEntries = IOLoginData::getVIPEntries(player->getAccountId());
+	const auto &vipEntries = IOLoginData::getVIPEntries(player->getAccountId());
 
 	if (player->isAccessPlayer()) {
 		for (const VIPEntry &entry : vipEntries) {

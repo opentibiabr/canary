@@ -749,12 +749,6 @@ Storage = {
 		Ref = 50961,
 		-- Norseman-outfit Quest
 		NorsemanAddon = 51004,
-		-- Warrior-outfit Quest
-		WarriorShoulderAddon = 51005,
-		WarriorSwordAddon = 51006,
-		WarriorShoulderTimer = 51007,
-		-- Wizard-outfit Quest
-		WizardAddon = 51008,
 		-- Golden Outfit
 		GoldenOutfit = 51015,
 		NightmareOutfit = 51016,
@@ -2042,9 +2036,12 @@ Storage = {
 				TavernMap2 = 40848,
 				TavernMap3 = 40849,
 			},
-			TreasureIsland = {},
-			WarriorOutfits = {},
-			WizardOutfits = {},
+			WarriorOutfits = {
+				WarriorShoulderAddon = 40850,
+				WarriorSwordAddon = 40851,
+				WarriorShoulderTimer = 40852,
+			},
+			WizardOutfits = 40853,
 		},
 		U7_9 = { -- update 7.9 - Reserved Storages 41001 - 41150
 			DreamersChallenge = {},

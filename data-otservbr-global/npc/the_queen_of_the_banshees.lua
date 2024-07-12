@@ -76,12 +76,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.BansheeDoor, 1)
 		end
 	elseif MsgContains(message, "addon") then
-		if player:getStorageValue(Storage.OutfitQuest.WizardAddon) == 5 then
+		if player:getStorageValue(Storage.Quest.U7_8.WizardOutfits) == 5 then
 			npcHandler:say("Say... I have been longing for something for an eternity now... if you help me retrieve it, I will reward you. Do you consent to this arrangement?", npc, creature)
 			npcHandler:setTopic(playerId, 9)
 		end
 	elseif MsgContains(message, "orchid") or MsgContains(message, "holy orchid") then
-		if player:getStorageValue(Storage.OutfitQuest.WizardAddon) == 6 then
+		if player:getStorageValue(Storage.Quest.U7_8.WizardOutfits) == 6 then
 			npcHandler:say("Have you really brought me 50 holy orchids?", npc, creature)
 			npcHandler:setTopic(playerId, 11)
 		end
@@ -152,12 +152,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 10)
 		elseif npcHandler:getTopic(playerId) == 10 then
 			npcHandler:say("Thank you. I will wait for your return.", npc, creature)
-			player:setStorageValue(Storage.OutfitQuest.WizardAddon, 6)
+			player:setStorageValue(Storage.Quest.U7_8.WizardOutfits, 6)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 11 then
 			if player:removeItem(5922, 50) then
 				npcHandler:say("Thank you! You have no idea what that means to me. As promised, here is your reward... as a follower of Zathroth, I hope that you will like this accessory.", npc, creature)
-				player:setStorageValue(Storage.OutfitQuest.WizardAddon, 7)
+				player:setStorageValue(Storage.Quest.U7_8.WizardOutfits, 7)
 				player:addOutfitAddon(145, 1)
 				player:addOutfitAddon(149, 1)
 				player:addAchievement("Warlock")

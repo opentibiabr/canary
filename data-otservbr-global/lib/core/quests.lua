@@ -2332,7 +2332,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "Warrior Addon: Shoulder Spike",
-					storageId = Storage.OutfitQuest.WarriorShoulderAddon,
+					storageId = Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderAddon,
 					missionId = 10180,
 					startValue = 1,
 					endValue = 7,
@@ -2355,7 +2355,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "Wizard Outfits Quest",
-					storageId = Storage.OutfitQuest.WizardAddon,
+					storageId = Storage.Quest.U7_8.WizardOutfits,
 					missionId = 10181,
 					startValue = 1,
 					endValue = 7,

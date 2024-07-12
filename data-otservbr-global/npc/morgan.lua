@@ -85,17 +85,17 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 
-		if player:getStorageValue(Storage.OutfitQuest.WarriorSwordAddon) < 1 then
-			player:setStorageValue(Storage.OutfitQuest.WarriorSwordAddon, 1)
+		if player:getStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorSwordAddon) < 1 then
+			player:setStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorSwordAddon, 1)
 			npcHandler:say("Great! Simply bring me 100 iron ore and one royal steel and I will happily {forge} it for you.", npc, creature)
-		elseif player:getStorageValue(Storage.OutfitQuest.WarriorSwordAddon) == 1 and npcHandler:getTopic(playerId) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorSwordAddon) == 1 and npcHandler:getTopic(playerId) == 1 then
 			if player:getItemCount(5887) > 0 and player:getItemCount(5880) > 99 then
 				player:removeItem(5887, 1)
 				player:removeItem(5880, 100)
 				player:addOutfitAddon(134, 2)
 				player:addOutfitAddon(142, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				player:setStorageValue(Storage.OutfitQuest.WarriorSwordAddon, 2)
+				player:setStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorSwordAddon, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:addAchievementProgress("Wild Warrior", 2)
 				npcHandler:say("Alright! As a matter of fact, I have one in store. Here you go!", npc, creature)
@@ -145,8 +145,7 @@ end
 
 keywordHandler:addKeyword({ "addon" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I can forge the finest {weapons} for knights and warriors. \
-		They may wear them proudly and visible to everyone.",
+	text = "I can forge the finest {weapons} for knights and warriors. They may wear them proudly and visible to everyone.",
 })
 keywordHandler:addKeyword({ "weapons" }, StdModule.say, {
 	npcHandler = npcHandler,

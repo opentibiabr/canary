@@ -926,6 +926,13 @@ QuestDoorAction = {
 			{ x = 32084, y = 32776, z = 11 },
 		},
 	},
+	[Storage.Quest.U7_9.NightmareOutfits.KnightwatchTowerDoor] = {
+		itemId = 1644,
+		itemPos = {
+			{ x = 32815, y = 32328, z = 8 },
+			{ x = 32817, y = 32328, z = 8 },
+		},
+	},
 }
 
 QuestDoorUnique = {

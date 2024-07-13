@@ -7,13 +7,6 @@ ItemAction = {
 		itemId = 2819,
 		itemPos = { { x = 33063, y = 31624, z = 15 } },
 	},
-	-- The Djinn War Quest - Green - Water fountain
-	[12105] = {
-		itemId = 1928,
-		itemPos = {
-			{ x = 33109, y = 32530, z = 3 },
-		},
-	},
 	-- The Explorer Society - Jump - Calassa
 	[2070] = {
 		itemId = 470,
@@ -22,10 +15,70 @@ ItemAction = {
 			{ x = 31915, y = 32716, z = 6 },
 		},
 	},
+	-- Dreamers Challenge Quest
+	[2245] = {
+		itemId = 431,
+		itemPos = {
+			{ x = 32816, y = 32334, z = 9 },
+			{ x = 32816, y = 32335, z = 9 },
+			{ x = 32816, y = 32336, z = 9 },
+			{ x = 32816, y = 32337, z = 9 },
+			{ x = 32816, y = 32339, z = 9 },
+		},
+	},
+	[2246] = {
+		itemId = 431,
+		itemPos = {
+			{ x = 32818, y = 32332, z = 9 },
+			{ x = 32819, y = 32332, z = 9 },
+			{ x = 32820, y = 32332, z = 9 },
+			{ x = 32821, y = 32332, z = 9 },
+			{ x = 32822, y = 32332, z = 9 },
+		},
+	},
 	-- Griffinclaw flower
 	[3152] = {
 		itemId = 5658,
 		itemPos = { x = 32024, y = 32830, z = 4 },
+	},
+	-- Dreamers Challenge Quest
+	[9049] = {
+		itemId = 2576,
+		itemPos = {
+			{ x = 32934, y = 32282, z = 13 },
+			{ x = 32934, y = 32281, z = 13 },
+			{ x = 32933, y = 32281, z = 13 },
+			{ x = 32934, y = 32280, z = 13 },
+			{ x = 32933, y = 32280, z = 13 },
+			{ x = 32934, y = 32279, z = 13 },
+			{ x = 32933, y = 32279, z = 13 },
+			{ x = 32934, y = 32278, z = 13 },
+			{ x = 32933, y = 32278, z = 13 },
+			{ x = 32934, y = 32277, z = 13 },
+			{ x = 32933, y = 32277, z = 13 },
+			{ x = 32934, y = 32277, z = 13 },
+			{ x = 32934, y = 32276, z = 13 },
+			{ x = 32933, y = 32276, z = 13 },
+			{ x = 32934, y = 32275, z = 13 },
+			{ x = 32933, y = 32275, z = 13 },
+			{ x = 32934, y = 32274, z = 13 },
+			{ x = 32933, y = 32274, z = 13 },
+			{ x = 32934, y = 32273, z = 13 },
+			{ x = 32933, y = 32273, z = 13 },
+			{ x = 32934, y = 32272, z = 13 },
+			{ x = 32933, y = 32272, z = 13 },
+			{ x = 32934, y = 32271, z = 13 },
+			{ x = 32933, y = 32271, z = 13 },
+			{ x = 32934, y = 32270, z = 13 },
+			{ x = 32933, y = 32270, z = 13 },
+		},
+	},
+	-- The Djinn War Quest - Green - Water fountain
+	[12105] = {
+		itemId = 1928,
+		itemPos = {
+			{ x = 33109, y = 32530, z = 3 },
+		},
 	},
 	-- The Ancient Tombs Quest
 	[12105] = {
@@ -404,9 +457,99 @@ ItemAction = {
 			{ x = 32862, y = 32495, z = 9 },
 		},
 	},
+	-- Dreamers Challenge Quest
+	[50149] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32840, y = 32226, z = 14 },
+		},
+	},
+	[50150] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32788, y = 32227, z = 14 },
+		},
+	},
 }
 
 ItemUnique = {
+	-- Dreamers Challenge Quest
+	[2241] = {
+		itemId = 353,
+		itemPos = { x = 32861, y = 32239, z = 9 },
+	},
+	[2242] = {
+		itemId = 351,
+		itemPos = { x = 32861, y = 32236, z = 9 },
+	},
+	[2243] = {
+		itemId = 3134,
+		itemPos = { x = 32849, y = 32233, z = 9 },
+	},
+	[2244] = {
+		itemId = 563,
+		itemPos = { x = 32857, y = 32225, z = 11 },
+	},
+	[2250] = {
+		itemId = 5572,
+		itemPos = { x = 32915, y = 32278, z = 14 },
+	},
+	[2251] = {
+		itemId = 5590,
+		itemPos = { x = 32916, y = 32263, z = 14 },
+	},
+	[2252] = {
+		itemId = 5484,
+		itemPos = { x = 32953, y = 32277, z = 13 },
+	},
+	[2253] = {
+		itemId = 452,
+		itemPos = { x = 32976, y = 32271, z = 14 },
+	},
+	[2254] = {
+		itemId = 2576,
+		itemPos = {x = 32933, y = 32269, z = 13},
+	},
+	[2255] = {
+		itemId = 2576,
+		itemPos = {x = 32934, y = 32269, z = 13},
+	},
+	[3048] = {
+		itemId = 1949,
+		itemPos = {x = 32822, y = 32344, z = 6},
+	},
+	[3049] = {
+		itemId = 1949,
+		itemPos = {x = 32815, y = 32344, z = 6},
+	},
+	[3050] = {
+		itemId = 1949,
+		itemPos = {x = 32818, y = 32347, z = 6},
+	},
+	[3051] = {
+		itemId = 1949,
+		itemPos = {x = 32818, y = 32347, z = 5},
+	},
+	[3052] = {
+		itemId = 1949,
+		itemPos = {x = 32815, y = 32344, z = 5},
+	},
+	[3053] = {
+		itemId = 1949,
+		itemPos = {x = 32822, y = 32344, z = 5},
+	},
+	[3054] = {
+		itemId = 1949,
+		itemPos = {x = 32815, y = 32344, z = 4},
+	},
+	[3055] = {
+		itemId = 1949,
+		itemPos = {x = 32822, y = 32344, z = 4},
+	},
+	[3056] = {
+		itemId = 1949,
+		itemPos = {x = 32819, y = 32347, z = 4},
+	},
 	-- The Shattered Isles Quest - Catapult
 	[2273] = {
 		itemId = 5601,
@@ -451,6 +594,12 @@ ItemUnique = {
 		itemId = 2753,
 		itemPos = { x = 32933, y = 32495, z = 7 },
 	},
+	-- Dreamers Challenge Quest
+	[9030] = {
+		itemId = 1949,
+		itemPos = { x = 32762, y = 32290, z = 14 },
+	},
+	-- The Ape City - HolyApeHair
 	[9033] = {
 		itemId = 2114,
 		itemPos = { x = 33098, y = 32816, z = 13 },
@@ -482,6 +631,11 @@ ItemUnique = {
 	[9040] = {
 		itemId = 2114,
 		itemPos = { x = 33161, y = 32831, z = 10 },
+	},
+	-- Dreamers Challenge Quest
+	[9234] = {
+		itemId = 1949,
+		itemPos = { x = 32857, y = 32230, z = 11 },
 	},
 	-- Hydra Egg Quest
 	[9255] = {
@@ -972,5 +1126,10 @@ ItemUnique = {
 	[50146] = {
 		itemId = 1949,
 		itemPos = { x = 33263, y = 32668, z = 13 },
+	},
+	-- Dreamers Challenge Quest
+	[50147] = {
+		itemId = 1949,
+		itemPos = { x = 32826, y = 32347, z = 9 },
 	},
 }

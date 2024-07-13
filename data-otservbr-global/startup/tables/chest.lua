@@ -1095,6 +1095,61 @@ ChestUnique = {
 		reward = { { 6120, 1 } },
 		storage = Storage.Quest.U7_8.TheShatteredIsles.DragahsSpellbook,
 	},
+	-- Dreamer's Challenge Quest
+	[6122] = {
+		itemId = 4240,
+		itemPos = { x = 32860, y = 32249, z = 9 },
+		weight = 150.00,
+		container = 2854,
+		reward = { { 2816, 1 }, { 3285, 1 }, { 3352, 1 }, { 3558, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.BPLongSword,
+	},
+	[6123] = {
+		itemId = 2472,
+		itemPos = { x = 32850, y = 32285, z = 14 },
+		weight = 13.00,
+		reward = { { 2821, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestBook,
+	},
+	[6124] = {
+		itemId = 2469,
+		itemPos = { x = 32749, y = 32341, z = 14 },
+		weight = 15.30,
+		container = 2853,
+		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
+	},
+	[6125] = {
+		itemId = 2469,
+		itemPos = { x = 32751, y = 32341, z = 14 },
+		weight = 15.30,
+		container = 2853,
+		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
+	},
+	[6126] = {
+		itemId = 2469,
+		itemPos = { x = 32753, y = 32341, z = 14 },
+		weight = 15.30,
+		container = 2853,
+		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
+	},
+	[6127] = {
+		itemId = 2469,
+		itemPos = { x = 32755, y = 32341, z = 14 },
+		weight = 15.30,
+		container = 2853,
+		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
+	},
+	[6128] = {
+		itemId = 2469,
+		itemPos = { x = 32835, y = 32223, z = 14 },
+		weight = 0.30,
+		reward = { { 3028, 3 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.Chests3SmallDiamond,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

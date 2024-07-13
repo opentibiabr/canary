@@ -1,6 +1,13 @@
 -- Look README.md for see the reserved action/unique numbers
 
 LeverAction = {
+	-- Dreamer's Challenge Quest
+	[8033] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 32836, y = 32278, z = 14 },
+		},
+	},
 	-- The Ancient Tombs Quest
 	[12121] = {
 		itemId = 2772,
@@ -115,6 +122,43 @@ LeverUnique = {
 	[1041] = {
 		itemId = 2772,
 		itemPos = { x = 32862, y = 32555, z = 11 },
+	},
+	-- Dreamers Challenge Quest
+	[2004] = {
+		itemId = 2772,
+		itemPos = { x = 32873, y = 32263, z = 14 },
+	},
+	[2246] = {
+		itemId = 2772,
+		itemPos = { x = 32763, y = 32291, z = 14 },
+	},
+	[2247] = {
+		itemId = 2772,
+		itemPos = { x = 32761, y = 32291, z = 14 },
+	},
+	[2248] = {
+		itemId = 2772,
+		itemPos = { x = 32763, y = 32289, z = 14 },
+	},
+	[2249] = {
+		itemId = 2772,
+		itemPos = { x = 32761, y = 32289, z = 14 },
+	},
+	[2272] = {
+		itemId = 2772,
+		itemPos = { x = 32838, y = 32263, z = 14 },
+	},
+	[3041] = {
+		itemId = 2772,
+		itemPos = { x = 32837, y = 32221, z = 14 },
+	},
+	[3042] = {
+		itemId = 2772,
+		itemPos = { x = 32836, y = 32229, z = 14 },
+	},
+	[3043] = {
+		itemId = 2772,
+		itemPos = { x = 32833, y = 32224, z = 14 },
 	},
 	-- Dark trails quest (The Ravager lever)
 	-- Path: data\scripts\actions\quests\dark_trails\lever_the_ravager.lua

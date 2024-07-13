@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "join") then
-		if player:getStorageValue(Storage.OutfitQuest.NightmareOutfit) < 1 and player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_9.NightmareOutfits.Outfits) < 1 and player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) < 1 then
 			npcHandler:say({
 				"The Brotherhood of Bones has suffered greatly in the past, but we did survive as we always will ...",
 				"You have proven resourceful by beating the silly riddles the Nightmare Knights set up to test their candidates ...",
@@ -123,7 +123,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.OutfitQuest.BrotherhoodOutfit, 4)
 				player:setStorageValue(Storage.OutfitQuest.BrotherhoodDoor, 1)
-				player:setStorageValue(Storage.KnightwatchTowerDoor, 1)
+				player:setStorageValue(Storage.Quest.U7_9.NightmareOutfits.KnightwatchTowerDoor, 1)
 				player:addAchievement("Dread Lord")
 				npcHandler:say("You advanced to {Dread Lord} rank! You are now able to use teleports of fourth floor of Knightwatch Tower and to create addon scrolls.", npc, creature)
 			else
@@ -134,6 +134,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Welcome to my little realm.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "We will meet again.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

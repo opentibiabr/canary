@@ -901,4 +901,10 @@ Not mine!
 		itemPos = { x = 33071, y = 32609, z = 15 },
 		text = "mortal",
 	},
+	-- Dreamers Challenge Quest
+	[25] = {
+		itemId = 1982,
+		itemPos = { x = 32761, y = 32290, z = 14 },
+		text = "Pull us and let the fun begin!",
+	},
 }

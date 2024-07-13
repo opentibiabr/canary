@@ -4,7 +4,7 @@ local config = {
 			{ position = Position(32878, 32270, 14), itemId = 2886 },
 			{ position = Position(32881, 32267, 14), itemId = 3052 },
 			{ position = Position(32881, 32273, 14), itemId = 6299 },
-			{ position = Position(32884, 32270, 14), itemId = 21465 }, -- or itemID = 2118 for PVP servers
+			{ position = Position(32884, 32270, 14), itemId = 2118 }, -- or itemID = 2118 for PVP servers
 		},
 		wells = {
 			{ position = Position(32874, 32263, 14), wellId = 2094, transformId = 2098 },

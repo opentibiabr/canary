@@ -93,7 +93,6 @@ Storage = {
 	KawillBlessing = 30014,
 	RentedHorseTimer = 30015,
 	FountainOfLife = 30016,
-	KnightwatchTowerDoor = 30017,
 	-- Promotion Storage cannot be changed, it is set in source code
 	Promotion = 30018,
 	RookgaardHints = 30019,
@@ -751,8 +750,6 @@ Storage = {
 		NorsemanAddon = 51004,
 		-- Golden Outfit
 		GoldenOutfit = 51015,
-		NightmareOutfit = 51016,
-		NightmareDoor = 51017,
 		BrotherhoodOutfit = 51018,
 		BrotherhoodDoor = 51019,
 		DeeplingAnchor = 51023,
@@ -1367,17 +1364,6 @@ Storage = {
 		},
 		QuestLine = 52148,
 		TheLostBrother = 52149,
-	},
-	DreamersChallenge = {
-		-- Reserved storage from 52160 - 52199
-		LeverNightmare1 = 52160,
-		LeverNightmare2 = 52161,
-		LeverNightmare3 = 52162,
-		LeverBrotherhood1 = 52163,
-		LeverBrotherhood2 = 52164,
-		LeverBrotherhood3 = 52165,
-		TicTac = 52166,
-		Reward = 52167,
 	},
 	HallsOfHope = {
 		-- Reserved storage from 52200 - 52219
@@ -2044,7 +2030,25 @@ Storage = {
 			WizardOutfits = 40853,
 		},
 		U7_9 = { -- update 7.9 - Reserved Storages 41001 - 41150
-			DreamersChallenge = {},
+			DreamersChallenge = {
+				LeverNightmare1 = 41001,
+				LeverNightmare2 = 41002,
+				LeverNightmare3 = 41003,
+				LeverBrotherhood1 = 41004,
+				LeverBrotherhood2 = 41005,
+				LeverBrotherhood3 = 41006,
+				TicTac = 41007,
+				Reward = 41008,
+				BPLongSword = 41009,
+				ChestBook = 41010,
+				ChestsWine = 41011,
+				Chests3SmallDiamond = 41012,
+			},
+			NightmareOutfits = {
+				Outfits = 41013,
+				Door = 41014,
+				KnightwatchTowerDoor = 41015,
+			},
 			ThePitsOfInferno = {},
 		},
 		U8_0 = { -- update 8.0 - Reserved Storages 41151 - 41350
@@ -2072,7 +2076,6 @@ Storage = {
 			IntoTheBonePit = {},
 			KissingAPig = {},
 			KosheiTheDeathless = {},
-			NightmareOutfits = {},
 			OutfitNightmareMaleAddon = {},
 			NomadsLand = {},
 			RestInHallowedGround = {},

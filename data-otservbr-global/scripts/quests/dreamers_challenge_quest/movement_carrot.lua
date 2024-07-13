@@ -8,8 +8,14 @@ function carrot.onStepIn(creature, item, position, fromPosition)
 
 	if item.uid == 2241 then
 		if player:getItemCount(3595) > 0 then
-			player:teleportTo(Position(32861, 32235, 9))
-			player:removeItem(3595, 1)
+			if player:isPremium() then
+				player:teleportTo(Position(32861, 32235, 9))
+				player:removeItem(3595, 1)
+			else
+				player:say("It seems that Hugo doesn't like free accounts", TALKTYPE_MONSTER_SAY)
+				player:teleportTo(fromPosition)
+				doAreaCombatHealth(player, COMBAT_FIREDAMAGE, fromPosition, 0, -10, -20, CONST_ME_HITBYFIRE)
+			end
 		else
 			player:teleportTo(fromPosition)
 			doAreaCombatHealth(player, COMBAT_FIREDAMAGE, fromPosition, 0, -10, -20, CONST_ME_HITBYFIRE)

@@ -5,7 +5,7 @@ function sacrificeTeleport.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	if item.actionid == 50149 and player:getStorageValue(Storage.OutfitQuest.NightmareOutfit) >= 2 then
+	if item.actionid == 50149 and player:getStorageValue(Storage.Quest.U7_9.NightmareOutfits.Outfits) >= 2 then
 		player:teleportTo(Position(32835, 32225, 14)) --Sacrifice 2
 		doSendMagicEffect(Position(32835, 32225, 14), CONST_ME_POFF) --Sacrifice 2
 	elseif item.actionid == 50149 then

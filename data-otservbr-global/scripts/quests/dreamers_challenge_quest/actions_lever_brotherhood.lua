@@ -18,7 +18,7 @@ function dreamerBrotherhoodLever.onUse(player, item, fromPosition, target, toPos
 	end
 	if item.uid == config[1].uid then
 		local diamondItem = Tile(config[1].position):getItemById(3028)
-		if player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) >= config[1].storageOutfit then
+		if player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) >= config[1].storageOutfit then
 			if diamondItem and player:getStorageValue(Storage.Quest.U7_9.DreamersChallenge.LeverBrotherhood1) < 1 then
 				diamondItem:remove(1)
 				player:setStorageValue(Storage.Quest.U7_9.DreamersChallenge.LeverBrotherhood1, 1)
@@ -35,7 +35,7 @@ function dreamerBrotherhoodLever.onUse(player, item, fromPosition, target, toPos
 			player:sendCancelMessage("You still don't have permission.")
 		end
 	elseif item.uid == config[2].uid then
-		if player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) >= config[2].storageOutfit then
+		if player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) >= config[2].storageOutfit then
 			local diamondItem = Tile(config[2].position):getItemById(3028)
 			if diamondItem and player:getStorageValue(Storage.Quest.U7_9.DreamersChallenge.LeverBrotherhood2) < 1 then
 				diamondItem:remove(1)
@@ -53,7 +53,7 @@ function dreamerBrotherhoodLever.onUse(player, item, fromPosition, target, toPos
 			player:sendCancelMessage("You still don't have permission.")
 		end
 	elseif item.uid == config[3].uid then
-		if player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) >= config[3].storageOutfit then
+		if player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) >= config[3].storageOutfit then
 			local diamondItem = Tile(config[3].position):getItemById(3028)
 			if diamondItem and player:getStorageValue(Storage.Quest.U7_9.DreamersChallenge.LeverBrotherhood3) < 1 then
 				diamondItem:remove(1)

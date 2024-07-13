@@ -23,14 +23,14 @@ function dreamerDocuments.onUse(player, item, fromPosition, target, toPosition, 
 	end
 
 	local choice = useItem[1]
-	if player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) > player:getStorageValue(Storage.Quest.U7_9.NightmareOutfits.Outfits) then
+	if player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) > player:getStorageValue(Storage.Quest.U7_9.NightmareOutfits.Outfits) then
 		choice = useItem[2]
 	end
 
 	if choice.addon then
 		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and choice.female or choice.male) then
 			if not player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and choice.female or choice.male, choice.addon) then
-				if player:getStorageValue(Storage.Quest.U7_9.NightmareOutfits.Outfits) >= useItem.storageValue or player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) >= useItem.storageValue then
+				if player:getStorageValue(Storage.Quest.U7_9.NightmareOutfits.Outfits) >= useItem.storageValue or player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) >= useItem.storageValue then
 					player:addOutfitAddon(choice.female, choice.addon)
 					player:addOutfitAddon(choice.male, choice.addon)
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have received the " .. choice.msg .. " addon!")
@@ -47,7 +47,7 @@ function dreamerDocuments.onUse(player, item, fromPosition, target, toPosition, 
 		end
 	else
 		if not player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and choice.female or choice.male) then
-			if player:getStorageValue(Storage.Quest.U7_9.NightmareOutfits.Outfits) >= 1 or player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) >= 1 then
+			if player:getStorageValue(Storage.Quest.U7_9.NightmareOutfits.Outfits) >= 1 or player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) >= 1 then
 				player:addOutfit(choice.female)
 				player:addOutfit(choice.male)
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have received the " .. choice.msg .. " outfit!")

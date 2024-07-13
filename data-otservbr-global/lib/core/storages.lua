@@ -750,8 +750,6 @@ Storage = {
 		NorsemanAddon = 51004,
 		-- Golden Outfit
 		GoldenOutfit = 51015,
-		BrotherhoodOutfit = 51018,
-		BrotherhoodDoor = 51019,
 		DeeplingAnchor = 51023,
 		RoyalCostumeOutfit = 51026,
 	},
@@ -2049,6 +2047,10 @@ Storage = {
 				Door = 41014,
 				KnightwatchTowerDoor = 41015,
 			},
+			BrotherhoodOutfits = {
+				Outfits = 41016,
+				Door = 41017,
+			},
 			ThePitsOfInferno = {},
 		},
 		U8_0 = { -- update 8.0 - Reserved Storages 41151 - 41350
@@ -2071,7 +2073,6 @@ Storage = {
 		U8_1 = { -- update 8.1 - Reserved Storages 41351 - 41650
 			AgainstTheSpiderCult = {},
 			AritosTask = {},
-			BrotherhoodOutfits = {},
 			OutfitBrotherhoodMaleAddon = {},
 			IntoTheBonePit = {},
 			KissingAPig = {},

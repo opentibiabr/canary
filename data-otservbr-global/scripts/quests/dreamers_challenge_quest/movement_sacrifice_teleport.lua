@@ -13,7 +13,7 @@ function sacrificeTeleport.onStepIn(creature, item, position, fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 	else
 		player:teleportTo(Position(32844, 32228, 14)) --Sacrifice
-		if item.actionid == 50150 and player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) >= 2 then
+		if item.actionid == 50150 and player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) >= 2 then
 			player:teleportTo(Position(32784, 32226, 14)) --Sacrifice 4
 			doSendMagicEffect(Position(32835, 32225, 14), CONST_ME_POFF) --Sacrifice 2
 		else

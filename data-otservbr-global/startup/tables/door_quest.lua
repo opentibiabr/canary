@@ -915,19 +915,19 @@ QuestDoorAction = {
 		},
 	},
 	[Storage.Quest.U7_8.DruidOutfits.DruidAmuletDoor] = {
-		itemId = 6260,
+		itemId = false,
 		itemPos = {
 			{ x = 32939, y = 31775, z = 9 },
 		},
 	},
 	[Storage.Quest.U7_8.OrientalOutfits.OrientalDoor] = {
-		itemId = 1644,
+		itemId = false,
 		itemPos = {
 			{ x = 32084, y = 32776, z = 11 },
 		},
 	},
 	[Storage.Quest.U7_9.NightmareOutfits.KnightwatchTowerDoor] = {
-		itemId = 1644,
+		itemId = false,
 		itemPos = {
 			{ x = 32815, y = 32328, z = 8 },
 			{ x = 32817, y = 32328, z = 8 },

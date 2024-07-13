@@ -508,47 +508,47 @@ ItemUnique = {
 	},
 	[2254] = {
 		itemId = 2576,
-		itemPos = {x = 32933, y = 32269, z = 13},
+		itemPos = { x = 32933, y = 32269, z = 13 },
 	},
 	[2255] = {
 		itemId = 2576,
-		itemPos = {x = 32934, y = 32269, z = 13},
+		itemPos = { x = 32934, y = 32269, z = 13 },
 	},
 	[3048] = {
 		itemId = 1949,
-		itemPos = {x = 32822, y = 32344, z = 6},
+		itemPos = { x = 32822, y = 32344, z = 6 },
 	},
 	[3049] = {
 		itemId = 1949,
-		itemPos = {x = 32815, y = 32344, z = 6},
+		itemPos = { x = 32815, y = 32344, z = 6 },
 	},
 	[3050] = {
 		itemId = 1949,
-		itemPos = {x = 32818, y = 32347, z = 6},
+		itemPos = { x = 32818, y = 32347, z = 6 },
 	},
 	[3051] = {
 		itemId = 1949,
-		itemPos = {x = 32818, y = 32347, z = 5},
+		itemPos = { x = 32818, y = 32347, z = 5 },
 	},
 	[3052] = {
 		itemId = 1949,
-		itemPos = {x = 32815, y = 32344, z = 5},
+		itemPos = { x = 32815, y = 32344, z = 5 },
 	},
 	[3053] = {
 		itemId = 1949,
-		itemPos = {x = 32822, y = 32344, z = 5},
+		itemPos = { x = 32822, y = 32344, z = 5 },
 	},
 	[3054] = {
 		itemId = 1949,
-		itemPos = {x = 32815, y = 32344, z = 4},
+		itemPos = { x = 32815, y = 32344, z = 4 },
 	},
 	[3055] = {
 		itemId = 1949,
-		itemPos = {x = 32822, y = 32344, z = 4},
+		itemPos = { x = 32822, y = 32344, z = 4 },
 	},
 	[3056] = {
 		itemId = 1949,
-		itemPos = {x = 32819, y = 32347, z = 4},
+		itemPos = { x = 32819, y = 32347, z = 4 },
 	},
 	-- The Shattered Isles Quest - Catapult
 	[2273] = {

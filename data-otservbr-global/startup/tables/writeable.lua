@@ -907,4 +907,13 @@ Not mine!
 		itemPos = { x = 32761, y = 32290, z = 14 },
 		text = "Pull us and let the fun begin!",
 	},
+	-- The Pits of Inferno Quest
+	[26] = {
+		itemId = 2015,
+		itemPos = { x = 32855, y = 32334, z = 12 },
+		text = [[
+Emergency Exit
+
+Will only work if the way is blocked]],
+	},
 }

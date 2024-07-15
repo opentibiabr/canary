@@ -1,6 +1,6 @@
 local setting = {
-	[8816] = Storage.PitsOfInferno.ShortcutHubDoor,
-	[8817] = Storage.PitsOfInferno.ShortcutLeverDoor,
+	[8816] = Storage.Quest.U7_9.ThePitsOfInferno.ShortcutHubDoor,
+	[8817] = Storage.Quest.U7_9.ThePitsOfInferno.ShortcutLeverDoor,
 }
 
 local shortcuts = MoveEvent()

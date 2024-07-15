@@ -1,6 +1,21 @@
 -- Look README.md for see the reserved action/unique numbers
 
 LeverAction = {
+	-- The Pits of Inferno Quest
+	[4001] = {
+		itemId = 431,
+		itemPos = {
+			{ x = 32848, y = 32277, z = 9 },
+		},
+	},
+	[7799] = {
+		itemId = 431,
+		itemPos = {
+			{ x = 32842, y = 32274, z = 9 },
+			{ x = 32842, y = 32275, z = 9 },
+			{ x = 32842, y = 32276, z = 9 },
+		},
+	},
 	-- Dreamer's Challenge Quest
 	[8033] = {
 		itemId = 2772,
@@ -111,9 +126,21 @@ LeverAction = {
 			{ x = 32601, y = 31421, z = 9 },
 		},
 	},
+	-- The Pits of Inferno Quest
+	[50160] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 32853, y = 32318, z = 9 },
+		},
+	},
 }
 
 LeverUnique = {
+	-- The Pits of Inferno
+	[1037] = {
+		itemId = 2772,
+		itemPos = { x = 32800, y = 32339, z = 11 },
+	},
 	-- The Ape City Quest - levers
 	[1040] = {
 		itemId = 2772,
@@ -128,6 +155,88 @@ LeverUnique = {
 		itemId = 2772,
 		itemPos = { x = 32873, y = 32263, z = 14 },
 	},
+	-- The Pits of Inferno Quest
+	[2025] = {
+		itemId = 2772,
+		itemPos = {x = 32820, y = 32321, z = 10},
+	},
+	[2026] = {
+		itemId = 2772,
+		itemPos = {x = 32820, y = 32345, z = 10},
+	},
+	[2027] = {
+		itemId = 2772,
+		itemPos = {x = 32847, y = 32339, z = 10},
+	},
+	[2028] = {
+		itemId = 2772,
+		itemPos = {x = 32847, y = 32327, z = 10},
+	},
+	[2050] = {
+		itemId = 2772,
+		itemPos = {x = 32874, y = 32334, z = 12},
+	},
+	[2051] = {
+		itemId = 2772,
+		itemPos = {x = 32891, y = 32328, z = 14},
+	},
+	[2052] = {
+		itemId = 2772,
+		itemPos = {x = 32843, y = 32352, z = 14},
+	},
+	[2053] = {
+		itemId = 2772,
+		itemPos = {x = 32889, y = 32349, z = 15},
+	},
+	[2054] = {
+		itemId = 2772,
+		itemPos = {x = 32887, y = 32330, z = 12},
+	},
+	[2055] = {
+		itemId = 2772,
+		itemPos = {x = 32846, y = 32318, z = 12},
+	},
+	[2056] = {
+		itemId = 2772,
+		itemPos = {x = 32887, y = 32355, z = 13},
+	},
+	[2057] = {
+		itemId = 2772,
+		itemPos = {x = 32853, y = 32359, z = 14},
+	},
+	[2058] = {
+		itemId = 2772,
+		itemPos = {x = 32843, y = 32359, z = 12},
+	},
+	[2059] = {
+		itemId = 2772,
+		itemPos = {x = 32847, y = 32332, z = 13},
+	},
+	[2060] = {
+		itemId = 2772,
+		itemPos = {x = 32886, y = 32337, z = 13},
+	},
+	[2061] = {
+		itemId = 2772,
+		itemPos = {x = 32874, y = 32365, z = 13},
+	},
+	[2062] = {
+		itemId = 2772,
+		itemPos = {x = 32850, y = 32366, z = 13},
+	},
+	[2063] = {
+		itemId = 2772,
+		itemPos = {x = 32859, y = 32364, z = 13},
+	},
+	[2064] = {
+		itemId = 2772,
+		itemPos = {x = 32874, y = 32354, z = 14},
+	},
+	[2065] = {
+		itemId = 2772,
+		itemPos = {x = 32848, y = 32335, z = 12},
+	},
+	-- Dreamers Challenge Quest
 	[2246] = {
 		itemId = 2772,
 		itemPos = { x = 32763, y = 32291, z = 14 },
@@ -148,6 +257,7 @@ LeverUnique = {
 		itemId = 2772,
 		itemPos = { x = 32838, y = 32263, z = 14 },
 	},
+	-- Dreamers Challenge Quest
 	[3041] = {
 		itemId = 2772,
 		itemPos = { x = 32837, y = 32221, z = 14 },
@@ -159,6 +269,23 @@ LeverUnique = {
 	[3043] = {
 		itemId = 2772,
 		itemPos = { x = 32833, y = 32224, z = 14 },
+	},
+	-- The Pits of Inferno Quest
+	[3300] = {
+		itemId = 2772,
+		itemPos = {x = 32850, y = 32268, z = 10},
+	},
+	[3301] = {
+		itemId = 2772,
+		itemPos = {x = 32862, y = 32312, z = 11},
+	},
+	[3302] = {
+		itemId = 2772,
+		itemPos = {x = 32851, y = 32308, z = 11},
+	},
+	[3304] = {
+		itemId = 2772,
+		itemPos = {x = 32826, y = 32263, z = 11},
 	},
 	-- Dark trails quest (The Ravager lever)
 	-- Path: data\scripts\actions\quests\dark_trails\lever_the_ravager.lua
@@ -295,6 +422,31 @@ LeverUnique = {
 	[30028] = {
 		itemId = 2772,
 		itemPos = { x = 32478, y = 31904, z = 3 },
+	},
+	-- The Pits of Inferno Quest
+	[50095] = {
+		itemId = 2772,
+		itemPos = { x = 32815, y = 32333, z = 15 },
+	},
+	[50097] = {
+		itemId = 2772,
+		itemPos = { x = 32811, y = 32357, z = 15 },
+	},
+	[50098] = {
+		itemId = 2772,
+		itemPos = { x = 32803, y = 32353, z = 15 },
+	},
+	[50104] = {
+		itemId = 2772,
+		itemPos = { x = 32821, y = 32341, z = 13 },
+	},
+	[50105] = {
+		itemId = 2772,
+		itemPos = { x = 32821, y = 32346, z = 13 },
+	},
+	[50106] = {
+		itemId = 2772,
+		itemPos = { x = 32915, y = 32215, z = 15 },
 	},
 	[Storage.ThaisExhibition.FriendshipAmulet] = {
 		itemId = 2772,

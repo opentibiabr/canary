@@ -6,7 +6,7 @@ function puminTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.PitsOfInferno.ThronePumin) < 50 then
+	if player:getStorageValue(Storage.Quest.U7_9.ThePitsOfInferno.ThronePumin) >= 9 then
 		player:teleportTo(Position(32786, 32308, 15))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	else

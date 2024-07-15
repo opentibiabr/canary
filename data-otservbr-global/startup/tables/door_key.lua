@@ -68,6 +68,11 @@ KeyDoorAction = {
 		itemId = 1631,
 		itemPos = { { x = 32578, y = 32197, z = 15 } },
 	},
+	-- Door of the key 3700 (The Pits of Inferno)
+	[Storage.Quest.Key.ID3700] = {
+		itemId = 1628,
+		itemPos = { { x = 32827, y = 32246, z = 10 } },
+	},
 	-- Door of the key 2297 (emperor's cookies quest)
 	[Storage.Quest.Key.ID3800] = {
 		itemId = false,

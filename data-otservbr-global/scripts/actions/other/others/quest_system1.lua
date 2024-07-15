@@ -1,8 +1,4 @@
 local specialQuests = {
-	-- {x = 32752, y = 32343, z = 14}
-	[52167] = Storage.Quest.U7_9.DreamersChallenge.Reward,
-	-- {x = 32806, y = 32230, z = 11}
-	[52003] = Storage.PitsOfInferno.WeaponReward,
 	-- {x = 32311, y = 32211, z = 8}
 	[51400] = Storage.ThievesGuild.Reward,
 	[51324] = Storage.WrathoftheEmperor.MainReward,

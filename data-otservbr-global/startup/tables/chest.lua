@@ -169,6 +169,14 @@ ChestUnique = {
 		timerStorage = Storage.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
 		time = 24, -- hour
 	},
+	-- The Pits of Inferno - Key 3700
+	[5013] = {
+		isKey = true,
+		itemId = 2472,
+		itemPos = { x = 32842, y = 32225, z = 8 },
+		reward = { { 2971, 1 } },
+		storage = Storage.Quest.Key.ID3700,
+	},
 	-- To add a reward inside a bag, you need to add the variable "container = bagId" before "reward"
 	-- Just duplicate the table and configure correctly, the scripts already register the entire table automatically
 	-- Path: data\scripts\actions\system\quest_reward_common.lua
@@ -1149,6 +1157,86 @@ ChestUnique = {
 		weight = 0.30,
 		reward = { { 3028, 3 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.Chests3SmallDiamond,
+	},
+	-- The Pits of Inferno
+	[6129] = {
+		itemId = 2472,
+		itemPos = { x = 32828, y = 32340, z = 7 },
+		weight = 13.00,
+		reward = { { 2836, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.ChestTible,
+	},
+	[6130] = {
+		itemId = 5972,
+		itemPos = { x = 32854, y = 32325, z = 11 },
+		weight = 13.00,
+		reward = { { 2816, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.CorpseBook,
+	},
+	[6131] = {
+		itemId = 5972,
+		itemPos = { x = 32832, y = 32277, z = 10 },
+		weight = 40.90,
+		container = 5926,
+		reward = { { 6561, 1 }, { 6299, 1 }, { 3052, 1 }, { 5021, 3 }, { 3026, 5 }, { 3035, 11 }, { 5944, 2 }, { 3160, 3 }, { 3155, 2 }, { 3147, 1 }, { 238, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.CorpsePirateBP,
+	},
+	[6132] = {
+		itemId = 2472,
+		itemPos = { x = 32826, y = 32232, z = 11 },
+		weight = 20.70,
+		container = 3253,
+		reward = { { 11605, 1 }, { 11607, 1 }, { 11609, 1 }, { 11603, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestBP,
+	},
+	[6133] = {
+		itemId = 2472,
+		itemPos = { x = 32824, y = 32232, z = 11 },
+		weight = 10.00,
+		reward = { { 3035, 100 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestPlatinumCoins,
+	},
+	[6134] = {
+		itemId = 2472,
+		itemPos = { x = 32819, y = 32232, z = 11 },
+		weight = 10.00,
+		reward = { { 3249, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestFrozenStarlight,
+	},
+	[6135] = {
+		itemId = 2472,
+		itemPos = { x = 32814, y = 32232, z = 11 },
+		weight = 8.50,
+		reward = { { 5791, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStuffed,
+	},
+	[6136] = {
+		itemId = 2472,
+		itemPos = { x = 32812, y = 32232, z = 11 },
+		weight = 8.00,
+		reward = { { 6529, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestSoftBoots,
+	},
+	[6137] = {
+		itemId = 2472,
+		itemPos = { x = 32804, y = 32229, z = 11 },
+		weight = 40.00,
+		reward = { { 3341, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
+	},
+	[6138] = {
+		itemId = 2472,
+		itemPos = { x = 32806, y = 32229, z = 11 },
+		weight = 64.00,
+		reward = { { 6527, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
+	},
+	[6139] = {
+		itemId = 2472,
+		itemPos = { x = 32808, y = 32229, z = 11 },
+		weight = 95.00,
+		reward = { { 5803, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
 	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest

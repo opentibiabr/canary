@@ -23,7 +23,7 @@ std::string ProtocolStatus::SERVER_VERSION = "3.0";
 std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
-const uint64_t ProtocolStatus::start = OTSYS_TIME();
+const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 	uint32_t ip = getIP();
@@ -47,7 +47,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 				g_dispatcher().addEvent([self = std::static_pointer_cast<ProtocolStatus>(shared_from_this())] {
 					self->sendStatusString();
 				},
-										"ProtocolStatus::sendStatusString");
+				                        "ProtocolStatus::sendStatusString");
 				return;
 			}
 			break;
@@ -63,7 +63,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 			g_dispatcher().addEvent([self = std::static_pointer_cast<ProtocolStatus>(shared_from_this()), requestedInfo, characterName] {
 				self->sendInfo(requestedInfo, characterName);
 			},
-									"ProtocolStatus::sendInfo");
+			                        "ProtocolStatus::sendInfo");
 
 			return;
 		}

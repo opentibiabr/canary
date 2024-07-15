@@ -104,7 +104,7 @@ namespace OTB {
 		std::for_each(node.propsBegin, node.propsEnd, [&propBuffer, &lastEscaped](const char &byte) {
 			if (lastEscaped) {
 				lastEscaped = false;
-			} else if (byte == Node::ESCAPE) {
+			} else if (static_cast<uint8_t>(byte) == Node::ESCAPE) {
 				lastEscaped = true;
 				return;
 			}

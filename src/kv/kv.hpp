@@ -78,6 +78,7 @@ public:
 
 	explicit KVStore(Logger &logger) :
 		logger(logger) { }
+	virtual ~KVStore() = default;
 
 	void set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) override;
 	void set(const std::string &key, const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list) override;
@@ -92,7 +93,7 @@ public:
 	}
 
 	std::shared_ptr<KV> scoped(const std::string &scope) override final;
-	std::unordered_set<std::string> keys(const std::string &prefix = "");
+	std::unordered_set<std::string> keys(const std::string &prefix = "") override final;
 
 protected:
 	phmap::parallel_flat_hash_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> getStore() {

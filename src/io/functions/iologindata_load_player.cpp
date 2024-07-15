@@ -714,7 +714,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
-		if (result = db.storeQuery(query.str())) {
+		if ((result = db.storeQuery(query.str()))) {
 			do {
 				auto slot = std::make_unique<PreySlot>(static_cast<PreySlot_t>(result->getU16("slot")));
 				auto state = static_cast<PreyDataState_t>(result->getU16("state"));
@@ -758,7 +758,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
-		if (result = db.storeQuery(query.str())) {
+		if ((result = db.storeQuery(query.str()))) {
 			do {
 				auto slot = std::make_unique<TaskHuntingSlot>(static_cast<PreySlot_t>(result->getU16("slot")));
 				auto state = static_cast<PreyTaskDataState_t>(result->getU16("state"));
@@ -803,7 +803,7 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 
 	std::ostringstream query;
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if (result = Database::getInstance().storeQuery(query.str())) {
+	if ((result = Database::getInstance().storeQuery(query.str()))) {
 		do {
 			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getU16("action_type"));
 			ForgeHistory history;
@@ -824,7 +824,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResu
 
 	std::ostringstream query;
 	query << "SELECT * FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
-	if (result = Database::getInstance().storeQuery(query.str())) {
+	if ((result = Database::getInstance().storeQuery(query.str()))) {
 		do {
 			player->setSlotBossId(1, result->getU16("bossIdSlotOne"));
 			player->setSlotBossId(2, result->getU16("bossIdSlotTwo"));

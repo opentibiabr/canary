@@ -457,62 +457,159 @@ bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool 
 	return isSightClear(fromPos, toPos, false);
 }
 
-bool Map::checkSightLine(const Position &fromPos, const Position &toPos) {
-	if (fromPos == toPos) {
+bool Map::checkSightLine(Position start, Position destination) {
+	if (start.x == destination.x && start.y == destination.y) {
 		return true;
 	}
 
-	Position start(fromPos.z > toPos.z ? toPos : fromPos);
-	Position destination(fromPos.z > toPos.z ? fromPos : toPos);
+	int32_t distanceX = Position::getDistanceX(start, destination);
+	int32_t distanceY = Position::getDistanceY(start, destination);
 
-	const int8_t mx = start.x < destination.x ? 1 : start.x == destination.x ? 0
-																			 : -1;
-	const int8_t my = start.y < destination.y ? 1 : start.y == destination.y ? 0
-																			 : -1;
+	if (start.y == destination.y) {
+		// Horizontal line
+		const uint16_t delta = start.x < destination.x ? 0x0001 : 0xFFFF;
+		while (--distanceX > 0) {
+			start.x += delta;
 
-	int32_t A = Position::getOffsetY(destination, start);
-	int32_t B = Position::getOffsetX(start, destination);
-	int32_t C = -(A * destination.x + B * destination.y);
-
-	while (start.x != destination.x || start.y != destination.y) {
-		int32_t move_hor = std::abs(A * (start.x + mx) + B * (start.y) + C);
-		int32_t move_ver = std::abs(A * (start.x) + B * (start.y + my) + C);
-		int32_t move_cross = std::abs(A * (start.x + mx) + B * (start.y + my) + C);
-
-		if (start.y != destination.y && (start.x == destination.x || move_hor > move_ver || move_hor > move_cross)) {
-			start.y += my;
+			const auto &tile = getTile(start.x, start.y, start.z);
+			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+				return false;
+			}
 		}
+	} else if (start.x == destination.x) {
+		// Vertical line
+		const uint16_t delta = start.y < destination.y ? 0x0001 : 0xFFFF;
+		while (--distanceY > 0) {
+			start.y += delta;
 
-		if (start.x != destination.x && (start.y == destination.y || move_ver > move_hor || move_ver > move_cross)) {
-			start.x += mx;
+			const auto &tile = getTile(start.x, start.y, start.z);
+			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+				return false;
+			}
 		}
+	} else {
+		// Xiaolin Wu's line algorithm - https://en.wikipedia.org/wiki/Xiaolin_Wu%27s_line_algorithm
+		// based on Michael Abrash's implementation - https://www.amazon.com/gp/product/1576101746/102-5103244-8168911
+		uint16_t eAdj;
+		uint16_t eAcc = 0;
+		uint16_t deltaX = 0x0001;
+		uint16_t deltaY = 0x0001;
 
-		const std::shared_ptr<Tile> tile = getTile(start.x, start.y, start.z);
-		if (tile && tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
-			return false;
+		if (distanceY > distanceX) {
+			eAdj = (static_cast<uint32_t>(distanceX) << 16) / static_cast<uint32_t>(distanceY);
+
+			if (start.y > destination.y) {
+				std::swap(start.x, destination.x);
+				std::swap(start.y, destination.y);
+			}
+			if (start.x > destination.x) {
+				deltaX = 0xFFFF;
+				eAcc -= eAdj;
+			}
+
+			while (--distanceY > 0) {
+				uint16_t xIncrease = 0;
+				const uint16_t eAccTemp = eAcc;
+				eAcc += eAdj;
+				if (eAcc <= eAccTemp) {
+					xIncrease = deltaX;
+				}
+
+				const auto &tile = getTile(start.x + xIncrease, start.y + deltaY, start.z);
+				if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+					if (Position::areInRange<1, 1>(start, destination)) {
+						return true;
+					}
+					return false;
+				}
+
+				start.x += xIncrease;
+				start.y += deltaY;
+			}
+		} else {
+			eAdj = (static_cast<uint32_t>(distanceY) << 16) / static_cast<uint32_t>(distanceX);
+
+			if (start.x > destination.x) {
+				std::swap(start.x, destination.x);
+				std::swap(start.y, destination.y);
+			}
+			if (start.y > destination.y) {
+				deltaY = 0xFFFF;
+				eAcc -= eAdj;
+			}
+
+			while (--distanceX > 0) {
+				uint16_t yIncrease = 0;
+				const uint16_t eAccTemp = eAcc;
+				eAcc += eAdj;
+				if (eAcc <= eAccTemp) {
+					yIncrease = deltaY;
+				}
+
+				const auto &tile = getTile(start.x + deltaX, start.y + yIncrease, start.z);
+				if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+					if (Position::areInRange<1, 1>(start, destination)) {
+						return true;
+					}
+					return false;
+				}
+
+				start.x += deltaX;
+				start.y += yIncrease;
+			}
 		}
 	}
-
-	// now we need to perform a jump between floors to see if everything is clear (literally)
-	while (start.z != destination.z) {
-		const std::shared_ptr<Tile> tile = getTile(start.x, start.y, start.z);
-		if (tile && tile->getThingCount() > 0) {
-			return false;
-		}
-
-		start.z++;
-	}
-
 	return true;
 }
 
 bool Map::isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck) {
+	// Check if this sight line should be even possible
 	if (floorCheck && fromPos.z != toPos.z) {
 		return false;
 	}
 
-	// Cast two converging rays and see if either yields a result.
-	return checkSightLine(fromPos, toPos) || checkSightLine(toPos, fromPos);
+	// Check if we even need to perform line checking
+	if (fromPos.z == toPos.z && (Position::areInRange<1, 1>(fromPos, toPos) || (!floorCheck && fromPos.z == 0))) {
+		return true;
+	}
+
+	// We can only throw one floor up
+	if (fromPos.z > toPos.z && Position::getDistanceZ(fromPos, toPos) > 1) {
+		return false;
+	}
+
+	// Perform check for current floor
+	const bool sightClear = checkSightLine(fromPos, toPos);
+	if (floorCheck || (fromPos.z == toPos.z && sightClear)) {
+		return sightClear;
+	}
+
+	uint8_t startZ;
+	if (sightClear && (fromPos.z < toPos.z || fromPos.z == toPos.z)) {
+		startZ = fromPos.z;
+	} else {
+		// Check if we can throw above obstacle
+		const auto &tile = getTile(fromPos.x, fromPos.y, fromPos.z - 1);
+		if ((tile && (tile->getGround() || tile->hasFlag(TILESTATE_BLOCKPROJECTILE))) || !checkSightLine(Position(fromPos.x, fromPos.y, fromPos.z - 1), Position(toPos.x, toPos.y, toPos.z - 1))) {
+			return false;
+		}
+
+		// We can throw above obstacle
+		if (fromPos.z > toPos.z) {
+			return true;
+		}
+
+		startZ = fromPos.z - 1;
+	}
+
+	// now we need to perform a jump between floors to see if everything is clear (literally)
+	for (; startZ != toPos.z; ++startZ) {
+		const auto &tile = getTile(toPos.x, toPos.y, startZ);
+		if (tile && (tile->getGround() || tile->hasFlag(TILESTATE_BLOCKPROJECTILE))) {
+			return false;
+		}
+	}
+	return true;
 }
 
 std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos) {

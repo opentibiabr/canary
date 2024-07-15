@@ -13,6 +13,7 @@
 #include "creatures/players/player.hpp"
 #include "player_cyclopedia.hpp"
 #include "game/game.hpp"
+#include "database/database.hpp"
 #include "kv/kv.hpp"
 
 PlayerCyclopedia::PlayerCyclopedia(Player &player) :

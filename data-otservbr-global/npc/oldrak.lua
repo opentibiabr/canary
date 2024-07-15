@@ -174,7 +174,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 0)
 	end
 
-	if (MsgContains(message, "holy") or MsgContains(message, "tible")) then
+	if MsgContains(message, "holy") or MsgContains(message, "tible") then
 		if player:getStorageValue(Storage.Quest.U7_9.ThePitsOfInferno.ChestTible) == 1 then
 			npcHandler:say("Would you like to buy a The Holy Tible for 1000 gold?", npc, creature)
 			npcHandler:setTopic(playerId, 3)

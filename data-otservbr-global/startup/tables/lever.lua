@@ -158,83 +158,83 @@ LeverUnique = {
 	-- The Pits of Inferno Quest
 	[2025] = {
 		itemId = 2772,
-		itemPos = {x = 32820, y = 32321, z = 10},
+		itemPos = { x = 32820, y = 32321, z = 10 },
 	},
 	[2026] = {
 		itemId = 2772,
-		itemPos = {x = 32820, y = 32345, z = 10},
+		itemPos = { x = 32820, y = 32345, z = 10 },
 	},
 	[2027] = {
 		itemId = 2772,
-		itemPos = {x = 32847, y = 32339, z = 10},
+		itemPos = { x = 32847, y = 32339, z = 10 },
 	},
 	[2028] = {
 		itemId = 2772,
-		itemPos = {x = 32847, y = 32327, z = 10},
+		itemPos = { x = 32847, y = 32327, z = 10 },
 	},
 	[2050] = {
 		itemId = 2772,
-		itemPos = {x = 32874, y = 32334, z = 12},
+		itemPos = { x = 32874, y = 32334, z = 12 },
 	},
 	[2051] = {
 		itemId = 2772,
-		itemPos = {x = 32891, y = 32328, z = 14},
+		itemPos = { x = 32891, y = 32328, z = 14 },
 	},
 	[2052] = {
 		itemId = 2772,
-		itemPos = {x = 32843, y = 32352, z = 14},
+		itemPos = { x = 32843, y = 32352, z = 14 },
 	},
 	[2053] = {
 		itemId = 2772,
-		itemPos = {x = 32889, y = 32349, z = 15},
+		itemPos = { x = 32889, y = 32349, z = 15 },
 	},
 	[2054] = {
 		itemId = 2772,
-		itemPos = {x = 32887, y = 32330, z = 12},
+		itemPos = { x = 32887, y = 32330, z = 12 },
 	},
 	[2055] = {
 		itemId = 2772,
-		itemPos = {x = 32846, y = 32318, z = 12},
+		itemPos = { x = 32846, y = 32318, z = 12 },
 	},
 	[2056] = {
 		itemId = 2772,
-		itemPos = {x = 32887, y = 32355, z = 13},
+		itemPos = { x = 32887, y = 32355, z = 13 },
 	},
 	[2057] = {
 		itemId = 2772,
-		itemPos = {x = 32853, y = 32359, z = 14},
+		itemPos = { x = 32853, y = 32359, z = 14 },
 	},
 	[2058] = {
 		itemId = 2772,
-		itemPos = {x = 32843, y = 32359, z = 12},
+		itemPos = { x = 32843, y = 32359, z = 12 },
 	},
 	[2059] = {
 		itemId = 2772,
-		itemPos = {x = 32847, y = 32332, z = 13},
+		itemPos = { x = 32847, y = 32332, z = 13 },
 	},
 	[2060] = {
 		itemId = 2772,
-		itemPos = {x = 32886, y = 32337, z = 13},
+		itemPos = { x = 32886, y = 32337, z = 13 },
 	},
 	[2061] = {
 		itemId = 2772,
-		itemPos = {x = 32874, y = 32365, z = 13},
+		itemPos = { x = 32874, y = 32365, z = 13 },
 	},
 	[2062] = {
 		itemId = 2772,
-		itemPos = {x = 32850, y = 32366, z = 13},
+		itemPos = { x = 32850, y = 32366, z = 13 },
 	},
 	[2063] = {
 		itemId = 2772,
-		itemPos = {x = 32859, y = 32364, z = 13},
+		itemPos = { x = 32859, y = 32364, z = 13 },
 	},
 	[2064] = {
 		itemId = 2772,
-		itemPos = {x = 32874, y = 32354, z = 14},
+		itemPos = { x = 32874, y = 32354, z = 14 },
 	},
 	[2065] = {
 		itemId = 2772,
-		itemPos = {x = 32848, y = 32335, z = 12},
+		itemPos = { x = 32848, y = 32335, z = 12 },
 	},
 	-- Dreamers Challenge Quest
 	[2246] = {
@@ -273,19 +273,19 @@ LeverUnique = {
 	-- The Pits of Inferno Quest
 	[3300] = {
 		itemId = 2772,
-		itemPos = {x = 32850, y = 32268, z = 10},
+		itemPos = { x = 32850, y = 32268, z = 10 },
 	},
 	[3301] = {
 		itemId = 2772,
-		itemPos = {x = 32862, y = 32312, z = 11},
+		itemPos = { x = 32862, y = 32312, z = 11 },
 	},
 	[3302] = {
 		itemId = 2772,
-		itemPos = {x = 32851, y = 32308, z = 11},
+		itemPos = { x = 32851, y = 32308, z = 11 },
 	},
 	[3304] = {
 		itemId = 2772,
-		itemPos = {x = 32826, y = 32263, z = 11},
+		itemPos = { x = 32826, y = 32263, z = 11 },
 	},
 	-- Dark trails quest (The Ravager lever)
 	-- Path: data\scripts\actions\quests\dark_trails\lever_the_ravager.lua

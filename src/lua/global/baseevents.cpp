@@ -25,7 +25,7 @@ bool BaseEvents::loadFromXml() {
 			basePath + "lib/" + scriptsName + ".lua",
 			scriptsName + ".lua"
 		)
-		== -1) {
+	    == -1) {
 		g_logger().warn(__FUNCTION__, scriptsName, scriptsName);
 	}
 
@@ -107,8 +107,8 @@ bool Event::checkScript(const std::string &basePath, const std::string &scriptsN
 	int32_t id = testInterface->getEvent(getScriptEventName());
 	if (id == -1) {
 		g_logger().warn("[Event::checkScript] - Event "
-						"{} not found {}",
-						getScriptEventName(), scriptFile);
+		                "{} not found {}",
+		                getScriptEventName(), scriptFile);
 		return false;
 	}
 	return true;

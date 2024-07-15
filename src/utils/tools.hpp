@@ -147,7 +147,7 @@ bool isCaskItem(uint16_t itemId);
 std::string getObjectCategoryName(ObjectCategory_t category);
 bool isValidObjectCategory(ObjectCategory_t category);
 
-int64_t OTSYS_TIME();
+int64_t OTSYS_TIME(bool useTime = false);
 void UPDATE_OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);
@@ -200,6 +200,8 @@ std::string getPlayerObjectPronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, con
 std::string getPlayerPossessivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
 std::string getPlayerReflexivePronoun(PlayerPronoun_t pronoun, PlayerSex_t sex, const std::string &name);
 std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense = false);
+
+std::string formatWithArticle(const std::string &value, bool withSpace = true);
 
 std::string toKey(const std::string &str);
 

@@ -15,6 +15,7 @@
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "lua/global/globalevent.hpp"
 #include "server/signals.hpp"
 
 Signals::Signals(asio::io_service &service) :
@@ -38,8 +39,8 @@ void Signals::asyncWait() {
 	set.async_wait([this](std::error_code err, int signal) {
 		if (err) {
 			g_logger().error("[Signals::asyncWait] - "
-							 "Signal handling error: {}",
-							 err.message());
+			                 "Signal handling error: {}",
+			                 err.message());
 			return;
 		}
 		dispatchSignalHandler(signal);
@@ -92,6 +93,7 @@ void Signals::sigtermHandler() {
 void Signals::sigusr1Handler() {
 	// Dispatcher thread
 	g_logger().info("SIGUSR1 received, saving the game state...");
+	g_globalEvents().save();
 	g_saveManager().scheduleAll();
 }
 

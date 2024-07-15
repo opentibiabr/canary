@@ -149,7 +149,7 @@ void PlayerVIP::addGroupInternal(uint8_t groupId, const std::string &name, bool 
 
 	const auto freeId = getFreeId();
 	if (freeId == 0) {
-		g_logger().warn("{} - No id available.", __FUNCTION__);
+		g_logger().debug("{} - No id available.", __FUNCTION__);
 		return;
 	}
 

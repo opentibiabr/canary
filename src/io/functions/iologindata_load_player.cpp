@@ -180,6 +180,8 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 
 	player->setManaShield(result->getU32("manashield"));
 	player->setMaxManaShield(result->getU32("max_manashield"));
+
+	player->setMarriageSpouse(result->getNumber<int32_t>("marriage_spouse"));
 	return true;
 }
 
@@ -213,9 +215,7 @@ void IOLoginDataLoad::loadPlayerBlessings(std::shared_ptr<Player> player, DBResu
 	}
 
 	for (int i = 1; i <= 8; i++) {
-		std::ostringstream ss;
-		ss << "blessings" << i;
-		player->addBlessing(static_cast<uint8_t>(i), static_cast<uint8_t>(result->getU16(ss.str())));
+		player->addBlessing(static_cast<uint8_t>(i), static_cast<uint8_t>(result->getU16(fmt::format("blessings{}", i))));
 	}
 }
 
@@ -232,7 +232,7 @@ void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBRes
 		const std::string typeName = std::string(magic_enum::enum_name(condition->getType()));
 		g_logger().debug("[{}] loading condition: {}", __METHOD_NAME__, typeName);
 		if (condition->unserialize(propStream)) {
-			player->storedConditionList.push_front(condition);
+			player->storedConditionList.emplace_back(condition);
 		}
 		condition = Condition::createCondition(propStream);
 	}
@@ -459,7 +459,7 @@ void IOLoginDataLoad::loadPlayerInstantSpellList(std::shared_ptr<Player> player,
 	query << "SELECT `player_id`, `name` FROM `player_spells` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
-			player->learnedInstantSpellList.emplace_front(result->getString("name"));
+			player->learnedInstantSpellList.emplace_back(result->getString("name"));
 		} while (result->next());
 	}
 }
@@ -899,6 +899,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player)
 	player->achiev()->loadUnlockedAchievements();
 	player->badge()->checkAndUpdateNewBadges();
 	player->title()->checkAndUpdateNewTitles();
+	player->cyclopedia()->loadSummaryData();
 
 	player->initializePrey();
 	player->initializeTaskHunting();

@@ -132,7 +132,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
 			if (const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
-				categoryImbuement->id == categoryId) {
+			    categoryImbuement->id == categoryId) {
 				return true;
 			}
 		}
@@ -142,14 +142,14 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 
 std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint16_t size) {
 	if (const ItemType &it = Item::items[type];
-		it.id == 0
-		|| it.stackable
-		|| it.multiUse
-		|| it.movable
-		|| it.pickupable
-		|| it.isDepot()
-		|| it.isSplash()
-		|| it.isDoor()) {
+	    it.id == 0
+	    || it.stackable
+	    || it.multiUse
+	    || it.movable
+	    || it.pickupable
+	    || it.isDepot()
+	    || it.isSplash()
+	    || it.isDoor()) {
 		return nullptr;
 	}
 
@@ -883,7 +883,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 	}
 
 	if (const std::string &text = getString(ItemAttribute_t::TEXT);
-		!text.empty()) {
+	    !text.empty()) {
 		propWriteStream.write<uint8_t>(ATTR_TEXT);
 		propWriteStream.writeString(text);
 	}
@@ -911,7 +911,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 	}
 
 	if (auto decayState = getDecaying();
-		decayState == DECAYING_TRUE || decayState == DECAYING_PENDING) {
+	    decayState == DECAYING_TRUE || decayState == DECAYING_PENDING) {
 		propWriteStream.write<uint8_t>(ATTR_DECAYING_STATE);
 		propWriteStream.write<uint8_t>(decayState);
 	}
@@ -1166,7 +1166,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				separator = true;
 			}
 			if (int32_t hitChance = item->getHitChance();
-				hitChance != 0) {
+			    hitChance != 0) {
 				if (separator) {
 					ss << ", ";
 				}
@@ -1174,7 +1174,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				separator = true;
 			}
 			if (int32_t shootRange = item->getShootRange();
-				shootRange != 0) {
+			    shootRange != 0) {
 				if (separator) {
 					ss << ", ";
 				}
@@ -1579,7 +1579,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				separator = true;
 			}
 			if (int32_t hitChance = it.hitChance;
-				hitChance != 0) {
+			    hitChance != 0) {
 				if (separator) {
 					ss << ", ";
 				}
@@ -1587,7 +1587,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				separator = true;
 			}
 			if (int32_t shootRange = it.shootRange;
-				shootRange != 0) {
+			    shootRange != 0) {
 				if (separator) {
 					ss << ", ";
 				}
@@ -1950,7 +1950,7 @@ SoundEffect_t Item::getMovementSound(std::shared_ptr<Cylinder> toCylinder) const
 	}
 
 	if (std::shared_ptr<Container> toContainer = toCylinder->getContainer();
-		toContainer && toContainer->getHoldingPlayer()) {
+	    toContainer && toContainer->getHoldingPlayer()) {
 		return SoundEffect_t::ITEM_MOVE_BACKPACK;
 	}
 

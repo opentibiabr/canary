@@ -70,7 +70,7 @@ void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, std::s
 	}
 
 	/* if (BasicItem.description != 0)
-		item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
+	    item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
 }
 
 std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position) {

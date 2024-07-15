@@ -152,6 +152,7 @@ if (MSVC)
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 else()
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC Threads::Threads)
+	target_link_libraries(${PROJECT_NAME}_lib PRIVATE -lresolv)
 endif (MSVC)
 
 # === OpenMP ===

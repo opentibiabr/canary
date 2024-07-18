@@ -254,6 +254,7 @@ onlyPremiumAccount = false
 -- NOTE: startStreakLevel will make a reward streak level for new players who never logged in
 -- NOTE: if showLootsInBestiary is true, will cause all loots to be shown in the bestiary even if the player has not reached the required number of kills
 -- NOTE: minTownIdToBankTransfer blocks towns less than defined from receiving money transfers
+-- NOTE: enableSupportOutfit enable GODS and GMS to select support outfit (gamemaster, customer support or community manager)
 stashMoving = false
 depotChest = 4
 autoLoot = false
@@ -273,6 +274,7 @@ enablePlayerPutItemInAmmoSlot = false
 startStreakLevel = 0
 showLootsInBestiary = false
 minTownIdToBankTransfer = 3
+enableSupportOutfit = true
 
 -- Teleport summon
 -- Set to true will never remove the summon

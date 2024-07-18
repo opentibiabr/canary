@@ -214,6 +214,20 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, WEAPON_WAND);
 	registerEnum(L, WEAPON_AMMO);
 	registerEnum(L, WEAPON_MISSILE);
+
+	registerEnum(L, SCREENSHOT_TYPE_NONE);
+	registerEnum(L, SCREENSHOT_TYPE_ACHIEVEMENT);
+	registerEnum(L, SCREENSHOT_TYPE_BESTIARYENTRYCOMPLETED);
+	registerEnum(L, SCREENSHOT_TYPE_BESTIARYENTRYUNLOCKED);
+	registerEnum(L, SCREENSHOT_TYPE_BOSSDEFEATED);
+	registerEnum(L, SCREENSHOT_TYPE_DEATHPVE);
+	registerEnum(L, SCREENSHOT_TYPE_DEATHPVP);
+	registerEnum(L, SCREENSHOT_TYPE_LEVELUP);
+	registerEnum(L, SCREENSHOT_TYPE_PLAYERKILLASSIST);
+	registerEnum(L, SCREENSHOT_TYPE_PLAYERKILL);
+	registerEnum(L, SCREENSHOT_TYPE_PLAYERATTACKING);
+	registerEnum(L, SCREENSHOT_TYPE_TREASUREFOUND);
+	registerEnum(L, SCREENSHOT_TYPE_SKILLUP);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {

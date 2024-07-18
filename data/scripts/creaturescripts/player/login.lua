@@ -169,10 +169,19 @@ function playerLoginGlobal.onLogin(player)
 		onMovementRemoveProtection(playerId, player:getPosition(), 10)
 	end
 
+	-- Change support outfit to a normal outfit to open customize character without crashes
+	local playerOutfit = player:getOutfit()
+	if table.contains({ 75, 266, 302 }, playerOutfit.lookType) then
+		playerOutfit.lookType = 136
+		playerOutfit.lookAddons = 0
+		player:setOutfit(playerOutfit)
+	end
+
 	player:initializeLoyaltySystem()
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
+	player:registerEvent("UpdatePlayerOnAdvancedLevel")
 	return true
 end
 

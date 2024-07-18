@@ -110,7 +110,7 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 	return damage;
 }
 
-void Combat::getCombatArea(const Position &centerPos, const Position &targetPos, const std::unique_ptr<AreaCombat> &area, std::forward_list<std::shared_ptr<Tile>> &list) {
+void Combat::getCombatArea(const Position &centerPos, const Position &targetPos, const std::unique_ptr<AreaCombat> &area, std::vector<std::shared_ptr<Tile>> &list) {
 	if (targetPos.z >= MAP_MAX_LAYERS) {
 		return;
 	}
@@ -118,7 +118,7 @@ void Combat::getCombatArea(const Position &centerPos, const Position &targetPos,
 	if (area) {
 		area->getList(centerPos, targetPos, list);
 	} else {
-		list.push_front(g_game().map.getOrCreateTile(targetPos));
+		list.emplace_back(g_game().map.getOrCreateTile(targetPos));
 	}
 }
 
@@ -1129,7 +1129,7 @@ bool Combat::doCombat(std::shared_ptr<Creature> caster, const Position &position
 }
 
 void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, CombatFunction func, CombatDamage* data) {
-	std::forward_list<std::shared_ptr<Tile>> tileList;
+	std::vector<std::shared_ptr<Tile>> tileList;
 
 	if (caster) {
 		getCombatArea(caster->getPosition(), pos, area, tileList);
@@ -1837,26 +1837,29 @@ AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	}
 }
 
-void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::forward_list<std::shared_ptr<Tile>> &list) const {
+void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list) const {
 	const std::unique_ptr<MatrixArea> &area = getArea(centerPos, targetPos);
 	if (!area) {
 		return;
 	}
 
-	uint32_t centerY, centerX;
+	uint32_t centerY;
+	uint32_t centerX;
 	area->getCenter(centerY, centerX);
 
+	const uint32_t rows = area->getRows();
+	const uint32_t cols = area->getCols();
+	list.reserve(rows * cols);
+
 	Position tmpPos(targetPos.x - centerX, targetPos.y - centerY, targetPos.z);
-	uint32_t cols = area->getCols();
-	for (uint32_t y = 0, rows = area->getRows(); y < rows; ++y) {
-		for (uint32_t x = 0; x < cols; ++x) {
-			if (area->getValue(y, x) != 0 && g_game().isSightClear(targetPos, tmpPos, true)) {
-				list.push_front(g_game().map.getOrCreateTile(tmpPos));
+	for (uint32_t y = 0; y < rows; ++y, ++tmpPos.y, tmpPos.x -= cols) {
+		for (uint32_t x = 0; x < cols; ++x, ++tmpPos.x) {
+			if (area->getValue(y, x) != 0) {
+				if (g_game().isSightClear(targetPos, tmpPos, true)) {
+					list.emplace_back(g_game().map.getOrCreateTile(tmpPos));
+				}
 			}
-			tmpPos.x++;
 		}
-		tmpPos.x -= cols;
-		tmpPos.y++;
 	}
 }
 

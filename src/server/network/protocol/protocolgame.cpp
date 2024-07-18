@@ -4804,7 +4804,7 @@ void ProtocolGame::sendGameNews() {
 
 void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/, uint64_t forgeDust /*= 0*/, uint64_t forgeSliver /*= 0*/, uint64_t forgeCores /*= 0*/) {
 	sendResourceBalance(RESOURCE_BANK, bank);
-	sendResourceBalance(RESOURCE_INVENTORY, money);
+	sendResourceBalance(RESOURCE_INVENTORY_MONEY, money);
 	sendResourceBalance(RESOURCE_PREY_CARDS, preyCards);
 	sendResourceBalance(RESOURCE_TASK_HUNTING, taskHunting);
 	sendResourceBalance(RESOURCE_FORGE_DUST, forgeDust);
@@ -4825,40 +4825,35 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value) 
 }
 
 void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap) {
-	// Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
-	uint64_t playerMoney = 0;
-	auto it = inventoryMap.find(ITEM_CRYSTAL_COIN);
-	if (it != inventoryMap.end()) {
-		playerMoney += static_cast<uint64_t>(it->second) * 10000;
-	}
-	it = inventoryMap.find(ITEM_PLATINUM_COIN);
-	if (it != inventoryMap.end()) {
-		playerMoney += static_cast<uint64_t>(it->second) * 100;
-	}
-	it = inventoryMap.find(ITEM_GOLD_COIN);
-	if (it != inventoryMap.end()) {
-		playerMoney += static_cast<uint64_t>(it->second);
+	sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
+
+	uint16_t currency = player->getShopOwner() ? player->getShopOwner()->getCurrency() : static_cast<uint16_t>(ITEM_GOLD_COIN);
+	if (currency == ITEM_GOLD_COIN) {
+		// Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
+		uint64_t playerMoney = 0;
+		auto it = inventoryMap.find(ITEM_CRYSTAL_COIN);
+		if (it != inventoryMap.end()) {
+			playerMoney += static_cast<uint64_t>(it->second) * 10000;
+		}
+		it = inventoryMap.find(ITEM_PLATINUM_COIN);
+		if (it != inventoryMap.end()) {
+			playerMoney += static_cast<uint64_t>(it->second) * 100;
+		}
+		it = inventoryMap.find(ITEM_GOLD_COIN);
+		if (it != inventoryMap.end()) {
+			playerMoney += static_cast<uint64_t>(it->second);
+		}
+		sendResourceBalance(RESOURCE_INVENTORY_MONEY, playerMoney);
+	} else {
+		uint64_t customCurrencyValue = 0;
+		auto search = inventoryMap.find(currency);
+		if (search != inventoryMap.end()) {
+			customCurrencyValue += static_cast<uint64_t>(search->second);
+		}
+		sendResourceBalance(oldProtocol ? RESOURCE_INVENTORY_MONEY : RESOURCE_INVENTORY_CURRENCY_CUSTOM, customCurrencyValue);
 	}
 
 	NetworkMessage msg;
-	msg.addByte(0xEE);
-	msg.addByte(0x00);
-	msg.add<uint64_t>(player->getBankBalance());
-	uint16_t currency = player->getShopOwner() ? player->getShopOwner()->getCurrency() : static_cast<uint16_t>(ITEM_GOLD_COIN);
-	msg.addByte(0xEE);
-	if (currency == ITEM_GOLD_COIN) {
-		msg.addByte(0x01);
-		msg.add<uint64_t>(playerMoney);
-	} else {
-		msg.addByte(oldProtocol ? 0x01 : 0x02);
-		uint64_t newCurrency = 0;
-		auto search = inventoryMap.find(currency);
-		if (search != inventoryMap.end()) {
-			newCurrency += static_cast<uint64_t>(search->second);
-		}
-		msg.add<uint64_t>(newCurrency);
-	}
-
 	msg.addByte(0x7B);
 
 	if (oldProtocol) {
@@ -4874,7 +4869,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 			continue;
 		}
 
-		it = inventoryMap.find(shopBlock.itemId);
+		auto it = inventoryMap.find(shopBlock.itemId);
 		if (it != inventoryMap.end()) {
 			msg.add<uint16_t>(shopBlock.itemId);
 			if (oldProtocol) {

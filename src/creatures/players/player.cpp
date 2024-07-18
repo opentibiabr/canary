@@ -5289,12 +5289,12 @@ double Player::getLostPercent() const {
 
 void Player::learnInstantSpell(const std::string &spellName) {
 	if (!hasLearnedInstantSpell(spellName)) {
-		learnedInstantSpellList.push_front(spellName);
+		learnedInstantSpellList.emplace_back(spellName);
 	}
 }
 
 void Player::forgetInstantSpell(const std::string &spellName) {
-	learnedInstantSpellList.remove(spellName);
+	std::erase(learnedInstantSpellList, spellName);
 }
 
 bool Player::hasLearnedInstantSpell(const std::string &spellName) const {
@@ -5700,12 +5700,12 @@ bool Player::addPartyInvitation(std::shared_ptr<Party> newParty) {
 		return false;
 	}
 
-	invitePartyList.push_front(newParty);
+	invitePartyList.emplace_back(newParty);
 	return true;
 }
 
 void Player::removePartyInvitation(std::shared_ptr<Party> remParty) {
-	invitePartyList.remove(remParty);
+	std::erase(invitePartyList, remParty);
 }
 
 void Player::clearPartyInvitations() {
@@ -6124,7 +6124,7 @@ bool Player::hasModalWindowOpen(uint32_t modalWindowId) const {
 }
 
 void Player::onModalWindowHandled(uint32_t modalWindowId) {
-	modalWindows.remove(modalWindowId);
+	std::erase(modalWindows, modalWindowId);
 }
 
 void Player::sendModalWindow(const ModalWindow &modalWindow) {
@@ -6132,7 +6132,7 @@ void Player::sendModalWindow(const ModalWindow &modalWindow) {
 		return;
 	}
 
-	modalWindows.push_front(modalWindow.id);
+	modalWindows.emplace_back(modalWindow.id);
 	client->sendModalWindow(modalWindow);
 }
 
@@ -6251,8 +6251,10 @@ size_t Player::getMaxDepotItems() const {
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT, __FUNCTION__);
 }
 
-std::forward_list<std::shared_ptr<Condition>> Player::getMuteConditions() const {
-	std::forward_list<std::shared_ptr<Condition>> muteConditions;
+std::vector<std::shared_ptr<Condition>> Player::getMuteConditions() const {
+	std::vector<std::shared_ptr<Condition>> muteConditions;
+	muteConditions.reserve(conditions.size());
+
 	for (const std::shared_ptr<Condition> &condition : conditions) {
 		if (condition->getTicks() <= 0) {
 			continue;
@@ -6263,7 +6265,7 @@ std::forward_list<std::shared_ptr<Condition>> Player::getMuteConditions() const 
 			continue;
 		}
 
-		muteConditions.push_front(condition);
+		muteConditions.emplace_back(condition);
 	}
 	return muteConditions;
 }

@@ -57,7 +57,7 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 			continue;
 		}
 
-		const auto &spawnNpc = spawnNpcList.emplace_front(std::make_shared<SpawnNpc>(centerPos, radius));
+		const auto &spawnNpc = spawnNpcList.emplace_back(std::make_shared<SpawnNpc>(centerPos, radius));
 
 		for (auto childNode : spawnNode.children()) {
 			if (strcasecmp(childNode.name(), "npc") == 0) {

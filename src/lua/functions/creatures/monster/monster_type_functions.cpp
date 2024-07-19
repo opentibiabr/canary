@@ -249,6 +249,38 @@ int MonsterTypeFunctions::luaMonsterTypeCanSpawn(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeCanWalk(lua_State* L) {
+	// get: monsterType:canWalk() set: monsterType:canWalk(bool)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.canWalk);
+		} else {
+			monsterType->info.canWalk = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeCanTarget(lua_State* L) {
+	// get: monsterType:canTarget() set: monsterType:canTarget(bool)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.canTarget);
+		} else {
+			monsterType->info.canTarget = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeCanPushItems(lua_State* L) {
 	// get: monsterType:canPushItems() set: monsterType:canPushItems(bool)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);

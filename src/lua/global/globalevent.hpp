@@ -29,6 +29,8 @@ public:
 	}
 
 	void startup() const;
+	void shutdown() const;
+	void save() const;
 
 	void timer();
 	void think();

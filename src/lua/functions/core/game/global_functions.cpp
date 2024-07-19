@@ -16,6 +16,7 @@
 #include "lua/functions/core/game/global_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
+#include "lua/global/globalevent.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "lua/global/lua_timer_event_descr.hpp"
@@ -443,7 +444,7 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 	if (area || areaId == 0) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint16_t>(L, 5);
-		params.conditionList.emplace_front(condition);
+		params.conditionList.emplace_back(condition);
 		Combat::doCombatCondition(creature, getPosition(L, 2), area, params);
 		pushBoolean(L, true);
 	} else {
@@ -478,7 +479,7 @@ int GlobalFunctions::luaDoTargetCombatCondition(lua_State* L) {
 
 	CombatParams params;
 	params.impactEffect = getNumber<uint16_t>(L, 4);
-	params.conditionList.emplace_front(condition->clone());
+	params.conditionList.emplace_back(condition->clone());
 	Combat::doCombatCondition(creature, target, params);
 	pushBoolean(L, true);
 	return 1;
@@ -706,6 +707,7 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 }
 
 int GlobalFunctions::luaSaveServer(lua_State* L) {
+	g_globalEvents().save();
 	g_saveManager().scheduleAll();
 	pushBoolean(L, true);
 	return 1;

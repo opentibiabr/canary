@@ -40,6 +40,8 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 			global->setEventType(GLOBALEVENT_PERIODCHANGE);
 		} else if (tmpStr == "onthink") {
 			global->setEventType(GLOBALEVENT_ON_THINK);
+		} else if (tmpStr == "save") {
+			global->setEventType(GLOBALEVENT_SAVE);
 		} else {
 			g_logger().error("[GlobalEventFunctions::luaGlobalEventType] - "
 			                 "Invalid type for global event: {}");

@@ -12,7 +12,7 @@ function commands.onSay(player, words, param)
 				text = text .. talkaction:getName()
 
 				description = talkaction:getDescription()
-				
+
 				if description ~= "" then
 					text = text .. " " .. talkaction:getDescription()
 				end

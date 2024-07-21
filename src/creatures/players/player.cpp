@@ -5299,7 +5299,7 @@ void Player::learnInstantSpell(const std::string &spellName) {
 
 void Player::forgetInstantSpell(const std::string &spellName) {
 	std::erase(learnedInstantSpellList, spellName);
-  setSaveSpells(true);
+	setSaveSpells(true);
 }
 
 bool Player::hasLearnedInstantSpell(const std::string &spellName) const {

@@ -593,7 +593,8 @@ void Game::setGameState(GameState_t newState) {
 		}
 
 		case GAME_STATE_SHUTDOWN: {
-			g_globalEvents().execute(GLOBALEVENT_SHUTDOWN);
+			g_globalEvents().save();
+			g_globalEvents().shutdown();
 
 			// kick all players that are still online
 			auto it = players.begin();
@@ -611,6 +612,8 @@ void Game::setGameState(GameState_t newState) {
 		}
 
 		case GAME_STATE_CLOSED: {
+			g_globalEvents().save();
+
 			/* kick all players without the CanAlwaysLogin flag */
 			auto it = players.begin();
 			while (it != players.end()) {
@@ -2359,7 +2362,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 				if (item->getContainer()) {
 					containersCreated++;
 				}
-				totalAdded++;
+				totalAdded += item->getItemCount();
 			}
 
 			ret = returnError;
@@ -4263,7 +4266,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	}
 
 	const auto mount = mounts.getMountByClientID(outfit.lookMount);
-	if (!mount || !player->hasMount(mount)) {
+	if (!mount || !player->hasMount(mount) || player->isWearingSupportOutfit()) {
 		outfit.lookMount = 0;
 	}
 
@@ -5960,6 +5963,11 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		return;
 	}
 
+	if (player->isWearingSupportOutfit()) {
+		outfit.lookMount = 0;
+		isMountRandomized = 0;
+	}
+
 	player->setRandomMount(isMountRandomized);
 
 	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
@@ -6935,14 +6943,6 @@ int32_t Game::applyHealthChange(CombatDamage &damage, std::shared_ptr<Creature> 
 			}
 		}
 	}
-
-	if (damage.primary.value >= targetHealth) {
-		damage.primary.value = targetHealth;
-		damage.secondary.value = 0;
-	} else if (damage.secondary.value) {
-		damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
-	}
-
 	return targetHealth;
 }
 
@@ -7300,19 +7300,12 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 			}
 		}
 
-		auto targetHealth = applyHealthChange(damage, target);
-		if (damage.primary.value >= targetHealth) {
-			damage.primary.value = targetHealth;
-			damage.secondary.value = 0;
-		} else if (damage.secondary.value) {
-			damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
-		}
-
 		// Apply Custom PvP Damage (must be placed here to avoid recursive calls)
 		if (attackerPlayer && targetPlayer) {
 			applyPvPDamage(damage, attackerPlayer, targetPlayer);
 		}
 
+		auto targetHealth = target->getHealth();
 		realDamage = damage.primary.value + damage.secondary.value;
 		if (realDamage == 0) {
 			return true;
@@ -7322,6 +7315,14 @@ bool Game::combatChangeHealth(std::shared_ptr<Creature> attacker, std::shared_pt
 					return false;
 				}
 			}
+		}
+
+		targetHealth = applyHealthChange(damage, target);
+		if (damage.primary.value >= targetHealth) {
+			damage.primary.value = targetHealth;
+			damage.secondary.value = 0;
+		} else if (damage.secondary.value) {
+			damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
 		}
 
 		target->drainHealth(attacker, realDamage);

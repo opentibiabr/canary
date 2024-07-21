@@ -3203,15 +3203,22 @@ void ProtocolGame::sendCreatureOutfit(std::shared_ptr<Creature> creature, const 
 		return;
 	}
 
+	Outfit_t newOutfit = outfit;
+	if (player->isWearingSupportOutfit()) {
+		player->setCurrentMount(0);
+		newOutfit.lookMount = 0;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x8E);
 	msg.add<uint32_t>(creature->getID());
-	AddOutfit(msg, outfit);
-	if (!oldProtocol && outfit.lookMount != 0) {
-		msg.addByte(outfit.lookMountHead);
-		msg.addByte(outfit.lookMountBody);
-		msg.addByte(outfit.lookMountLegs);
-		msg.addByte(outfit.lookMountFeet);
+	AddOutfit(msg, newOutfit);
+
+	if (!oldProtocol && newOutfit.lookMount != 0) {
+		msg.addByte(newOutfit.lookMountHead);
+		msg.addByte(newOutfit.lookMountBody);
+		msg.addByte(newOutfit.lookMountLegs);
+		msg.addByte(newOutfit.lookMountFeet);
 	}
 	writeToOutputBuffer(msg);
 }
@@ -4252,10 +4259,12 @@ void ProtocolGame::sendBasicData() {
 	msg.addByte(player->getVocation()->getClientId());
 
 	// Prey window
-	if (player->getVocation()->getId() == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
-		msg.addByte(0);
-	} else {
-		msg.addByte(1); // has reached Main (allow player to open Prey window)
+	if (!oldProtocol) {
+		if (player->getVocation()->getId() == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
+			msg.addByte(0);
+		} else {
+			msg.addByte(1); // has reached Main (allow player to open Prey window)
+		}
 	}
 
 	// Filter only valid ids
@@ -4795,7 +4804,7 @@ void ProtocolGame::sendGameNews() {
 
 void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/, uint64_t forgeDust /*= 0*/, uint64_t forgeSliver /*= 0*/, uint64_t forgeCores /*= 0*/) {
 	sendResourceBalance(RESOURCE_BANK, bank);
-	sendResourceBalance(RESOURCE_INVENTORY, money);
+	sendResourceBalance(RESOURCE_INVENTORY_MONEY, money);
 	sendResourceBalance(RESOURCE_PREY_CARDS, preyCards);
 	sendResourceBalance(RESOURCE_TASK_HUNTING, taskHunting);
 	sendResourceBalance(RESOURCE_FORGE_DUST, forgeDust);
@@ -4816,40 +4825,35 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value) 
 }
 
 void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap) {
-	// Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
-	uint64_t playerMoney = 0;
-	auto it = inventoryMap.find(ITEM_CRYSTAL_COIN);
-	if (it != inventoryMap.end()) {
-		playerMoney += static_cast<uint64_t>(it->second) * 10000;
-	}
-	it = inventoryMap.find(ITEM_PLATINUM_COIN);
-	if (it != inventoryMap.end()) {
-		playerMoney += static_cast<uint64_t>(it->second) * 100;
-	}
-	it = inventoryMap.find(ITEM_GOLD_COIN);
-	if (it != inventoryMap.end()) {
-		playerMoney += static_cast<uint64_t>(it->second);
+	sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
+
+	uint16_t currency = player->getShopOwner() ? player->getShopOwner()->getCurrency() : static_cast<uint16_t>(ITEM_GOLD_COIN);
+	if (currency == ITEM_GOLD_COIN) {
+		// Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
+		uint64_t playerMoney = 0;
+		auto it = inventoryMap.find(ITEM_CRYSTAL_COIN);
+		if (it != inventoryMap.end()) {
+			playerMoney += static_cast<uint64_t>(it->second) * 10000;
+		}
+		it = inventoryMap.find(ITEM_PLATINUM_COIN);
+		if (it != inventoryMap.end()) {
+			playerMoney += static_cast<uint64_t>(it->second) * 100;
+		}
+		it = inventoryMap.find(ITEM_GOLD_COIN);
+		if (it != inventoryMap.end()) {
+			playerMoney += static_cast<uint64_t>(it->second);
+		}
+		sendResourceBalance(RESOURCE_INVENTORY_MONEY, playerMoney);
+	} else {
+		uint64_t customCurrencyValue = 0;
+		auto search = inventoryMap.find(currency);
+		if (search != inventoryMap.end()) {
+			customCurrencyValue += static_cast<uint64_t>(search->second);
+		}
+		sendResourceBalance(oldProtocol ? RESOURCE_INVENTORY_MONEY : RESOURCE_INVENTORY_CURRENCY_CUSTOM, customCurrencyValue);
 	}
 
 	NetworkMessage msg;
-	msg.addByte(0xEE);
-	msg.addByte(0x00);
-	msg.add<uint64_t>(player->getBankBalance());
-	uint16_t currency = player->getShopOwner() ? player->getShopOwner()->getCurrency() : static_cast<uint16_t>(ITEM_GOLD_COIN);
-	msg.addByte(0xEE);
-	if (currency == ITEM_GOLD_COIN) {
-		msg.addByte(0x01);
-		msg.add<uint64_t>(playerMoney);
-	} else {
-		msg.addByte(oldProtocol ? 0x01 : 0x02);
-		uint64_t newCurrency = 0;
-		auto search = inventoryMap.find(currency);
-		if (search != inventoryMap.end()) {
-			newCurrency += static_cast<uint64_t>(search->second);
-		}
-		msg.add<uint64_t>(newCurrency);
-	}
-
 	msg.addByte(0x7B);
 
 	if (oldProtocol) {
@@ -4865,7 +4869,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 			continue;
 		}
 
-		it = inventoryMap.find(shopBlock.itemId);
+		auto it = inventoryMap.find(shopBlock.itemId);
 		if (it != inventoryMap.end()) {
 			msg.add<uint16_t>(shopBlock.itemId);
 			if (oldProtocol) {
@@ -6695,7 +6699,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 
 	sendVIPGroups();
 
-	const std::forward_list<VIPEntry> &vipEntries = IOLoginData::getVIPEntries(player->getAccountId());
+	const auto &vipEntries = IOLoginData::getVIPEntries(player->getAccountId());
 
 	if (player->isAccessPlayer()) {
 		for (const VIPEntry &entry : vipEntries) {
@@ -6949,15 +6953,23 @@ void ProtocolGame::sendOutfitWindow() {
 	NetworkMessage msg;
 	msg.addByte(0xC8);
 
-	if (oldProtocol) {
-		Outfit_t currentOutfit = player->getDefaultOutfit();
+	Outfit_t currentOutfit = player->getDefaultOutfit();
+	auto isSupportOutfit = player->isWearingSupportOutfit();
+	bool mounted = false;
+
+	if (!isSupportOutfit) {
 		const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
 		if (currentMount) {
+			mounted = (currentOutfit.lookMount == currentMount->clientId);
 			currentOutfit.lookMount = currentMount->clientId;
 		}
+	} else {
+		currentOutfit.lookMount = 0;
+	}
 
-		AddOutfit(msg, currentOutfit);
+	AddOutfit(msg, currentOutfit);
 
+	if (oldProtocol) {
 		std::vector<ProtocolOutfit> protocolOutfits;
 		const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
 		protocolOutfits.reserve(outfits.size());
@@ -6998,20 +7010,10 @@ void ProtocolGame::sendOutfitWindow() {
 		return;
 	}
 
-	bool mounted = false;
-	Outfit_t currentOutfit = player->getDefaultOutfit();
-	const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
-	if (currentMount) {
-		mounted = (currentOutfit.lookMount == currentMount->clientId);
-		currentOutfit.lookMount = currentMount->clientId;
-	}
-
-	AddOutfit(msg, currentOutfit);
-
-	msg.addByte(currentOutfit.lookMountHead);
-	msg.addByte(currentOutfit.lookMountBody);
-	msg.addByte(currentOutfit.lookMountLegs);
-	msg.addByte(currentOutfit.lookMountFeet);
+	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountHead);
+	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountBody);
+	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountLegs);
+	msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountFeet);
 	msg.add<uint16_t>(currentOutfit.lookFamiliarsType);
 
 	auto startOutfits = msg.getBufferPosition();
@@ -7020,7 +7022,7 @@ void ProtocolGame::sendOutfitWindow() {
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
 
-	if (player->isAccessPlayer()) {
+	if (player->isAccessPlayer() && g_configManager().getBoolean(ENABLE_SUPPORT_OUTFIT, __FUNCTION__)) {
 		msg.add<uint16_t>(75);
 		msg.addString("Gamemaster", "ProtocolGame::sendOutfitWindow - Gamemaster");
 		msg.addByte(0);
@@ -7144,7 +7146,7 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.addByte(mounted ? 0x01 : 0x00);
 
 	// Version 12.81 - Random mount 'bool'
-	msg.addByte(player->isRandomMounted() ? 0x01 : 0x00);
+	msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
 
 	writeToOutputBuffer(msg);
 }

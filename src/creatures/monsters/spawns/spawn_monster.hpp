@@ -36,6 +36,25 @@ public:
 	SpawnMonster(const SpawnMonster &) = delete;
 	SpawnMonster &operator=(const SpawnMonster &) = delete;
 
+	// moveable
+	SpawnMonster(SpawnMonster &&rhs) noexcept :
+		spawnMonsterMap(std::move(rhs.spawnMonsterMap)),
+		spawnedMonsterMap(std::move(rhs.spawnedMonsterMap)),
+		checkSpawnMonsterEvent(rhs.checkSpawnMonsterEvent), centerPos(rhs.centerPos), radius(rhs.radius), interval(rhs.interval) { }
+
+	SpawnMonster &operator=(SpawnMonster &&rhs) noexcept {
+		if (this != &rhs) {
+			spawnMonsterMap = std::move(rhs.spawnMonsterMap);
+			spawnedMonsterMap = std::move(rhs.spawnedMonsterMap);
+
+			checkSpawnMonsterEvent = rhs.checkSpawnMonsterEvent;
+			centerPos = rhs.centerPos;
+			radius = rhs.radius;
+			interval = rhs.interval;
+		}
+		return *this;
+	}
+
 	bool addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t interval, uint32_t weight = 1);
 	void removeMonster(std::shared_ptr<Monster> monster);
 	void removeMonsters();
@@ -83,10 +102,6 @@ public:
 	bool loadFromXML(const std::string &filemonstername);
 	void startup();
 	void clear();
-	SpawnMonster &addSpawnMonster(const Position &pos, int32_t radius) {
-		spawnMonsterList.emplace_front(pos, radius);
-		return spawnMonsterList.front();
-	}
 
 	bool isStarted() const {
 		return started;
@@ -94,12 +109,12 @@ public:
 	bool isLoaded() const {
 		return loaded;
 	}
-	std::forward_list<SpawnMonster> &getspawnMonsterList() {
+	std::vector<SpawnMonster> &getspawnMonsterList() {
 		return spawnMonsterList;
 	}
 
 private:
-	std::forward_list<SpawnMonster> spawnMonsterList;
+	std::vector<SpawnMonster> spawnMonsterList;
 	std::string filemonstername;
 	bool loaded = false;
 	bool started = false;

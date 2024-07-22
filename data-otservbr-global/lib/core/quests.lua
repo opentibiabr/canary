@@ -2318,7 +2318,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Norseman Outfit Quest",
-					storageId = Storage.OutfitQuest.NorsemanAddon,
+					storageId = Storage.Quest.U8_0.TheIceIslands.NorsemanOutfit,
 					missionId = 10179,
 					startValue = 1,
 					endValue = 3,

@@ -370,7 +370,7 @@ local questTable = {
 	{ storage = Storage.OutfitQuest.HunterMusicSheet04, storageValue = 1 },
 
 	-- Norseman
-	{ storage = Storage.OutfitQuest.NorsemanAddon, storageValue = 1 },
+	{ storage = Storage.Quest.U8_0.TheIceIslands.NorsemanOutfit, storageValue = 1 },
 	{ storage = Storage.OutfitQuest.DefaultStart, storageValue = 1 },
 
 	{ storage = Storage.HeroRathleton.AccessDoor, storageValue = 1 },

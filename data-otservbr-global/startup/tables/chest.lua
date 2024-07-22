@@ -998,6 +998,63 @@ ChestUnique = {
 		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.UndergroundBastion,
 		time = 24, -- hour
 	},
+	-- The Ice Island Quest - Skeleton - Formorgar Glacier
+	[6140] = {
+		itemId = 4024,
+		itemPos = { x = 32121, y = 31106, z = 12 },
+		container = 2853,
+		reward = { { 3450, 20 }, { 3349, 1 },  { 7443, 1 },  { 3031, 100 },  { 7290, 1 } },
+		weight = 97.00,
+		storage = Storage.Quest.U8_0.TheIceIslands.FormorgarGlacierSkeleton,
+	},
+	[6141] = {
+		itemId = 2472,
+		itemPos = { x = 32027, y = 31104, z = 11 },
+		reward = { { 2820, 1 } },
+		weight = 0.50,
+		storage = Storage.Quest.U8_0.TheIceIslands.FormorgarGlacierChest,
+	},
+	-- Shards of Ancient Winters Quest
+	[6142] = {
+		itemId = 2523,
+		itemPos = { x = 32483, y = 31110, z = 8 },
+		container = 7343,
+		reward = { { 7158, 3 }, { 3031, 48 }, { 7290, 1 }, },
+		weight = 67.80,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Inukaya,
+	},
+	[6143] = {
+		itemId = 2523,
+		itemPos = { x = 32431, y = 31235, z = 8 },
+		container = 2853,
+		reward = { { 6525, 1 }, { 3031, 89 }, { 7290, 1 }, },
+		weight = 45.90,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Tyrsung,
+	},
+	[6144] = {
+		itemId = 2473,
+		itemPos = { x = 32146, y = 31430, z = 8 },
+		container = 2853,
+		reward = { { 7443, 1 }, { 3035, 10 }, { 7290, 1 }, },
+		weight = 45.90,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Okolnir,
+	},
+	[6145] = {
+		itemId = 4024,
+		itemPos = { x = 32490, y = 31192, z = 10 },
+		container = 2853,
+		reward = { { 7439, 1 }, { 3031, 200 }, { 6499, 3 }, { 7290, 1 }, },
+		weight = 52.00,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Helheim,
+	},
+	[6146] = {
+		itemId = 2472,
+		itemPos = { x = 32154, y = 31116, z = 9 },
+		container = 2853,
+		reward = { { 7400, 1 }, { 3035, 2 }, { 7290, 1 }, },
+		weight = 32.20,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.FormorgarMines,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

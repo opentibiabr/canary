@@ -860,11 +860,6 @@ Storage = {
 			AddonHatCloak = 51000,
 			AddonWandTimer = 51001,
 		},
-		-- Nobleman Outfit
-		NoblemanFirstAddon = 51002,
-		NoblemanSecondAddon = 51003,
-		-- Norseman-outfit Quest
-		NorsemanAddon = 51004,
 		-- Warrior-outfit Quest
 		WarriorShoulderAddon = 51005,
 		WarriorSwordAddon = 51006,
@@ -2017,6 +2012,13 @@ Storage = {
 			LionTrophy = {},
 			MastermindPotion = {},
 			NorsemanOutfits = {},
+			ShardsofAncientWinters = {
+				Inukaya = 41152,
+				Tyrsung = 41153,
+				Okolnir = 41154,
+				Helheim = 41155,
+				FormorgarMines = 41156,
+			},
 			Sinatuki = {},
 			SkeletonDecoration = {},
 			TheIceIslands = {
@@ -2048,6 +2050,11 @@ Storage = {
 				HuskyKill = 51186,
 				HuskyKillStatus = 51187,
 				FormorgarMinesDoor = 51188,
+				FormorgarGlacierSkeleton = 51189,
+				FormorgarGlacierChest = 51190,
+				NorsemanOutfit = 51191,
+				NoblemanFirstAddon = 51192,
+				NoblemanSecondAddon = 51193,
 			},
 			WaterskinOfMead = {},
 		},

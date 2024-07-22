@@ -109,7 +109,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 40)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.yakchalDoor, 1)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission12, 6) -- Questlog The Ice Islands Quest, Formorgar Mines 4: Retaliation
-				player:setStorageValue(Storage.OutfitQuest.NorsemanAddon, 1) -- Questlog Norseman Outfit Quest
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.NorsemanOutfit, 1) -- Questlog Norseman Outfit Quest
 				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
 				player:addOutfit(251, 0)
 				player:addOutfit(252, 0)
@@ -144,7 +144,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addOutfitAddon(251, 1)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 42)
-			player:setStorageValue(Storage.OutfitQuest.NorsemanAddon, 2) -- Questlog Norseman Outfit Quest
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.NorsemanOutfit, 2) -- Questlog Norseman Outfit Quest
 			npcHandler:setTopic(playerId, 3)
 		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 43 then
 			player:addOutfitAddon(252, 2)
@@ -152,7 +152,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			npcHandler:say("Take this. It might suit your Nordic outfit fine. From now on we only can give you 2000 gold pieces for each shard. ", npc, creature)
 			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 44)
-			player:setStorageValue(Storage.OutfitQuest.NorsemanAddon, 3) -- Questlog Norseman Outfit Quest
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.NorsemanOutfit, 3) -- Questlog Norseman Outfit Quest
 			npcHandler:setTopic(playerId, 4)
 		end
 	elseif MsgContains(message, "tylaf") then

@@ -80,7 +80,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
 			end
 			player:setStorageValue(Storage.Quest.U7_8.OrientalOutfits.FirstOrientalAddon, 1)
-			layer:setStorageValue(Storage.Quest.U7_8.OrientalOutfits.OrientalDoor, 1)
+			player:setStorageValue(Storage.Quest.U7_8.OrientalOutfits.OrientalDoor, 1)
 			npcHandler:say("Yay! I will wait for you to return with a mermaid's comb then.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then

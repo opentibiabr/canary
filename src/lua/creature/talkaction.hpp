@@ -36,7 +36,7 @@ public:
 		}
 	}
 
-	const std::string& getDescription() const {
+	const std::string &getDescription() const {
 		return m_description;
 	}
 

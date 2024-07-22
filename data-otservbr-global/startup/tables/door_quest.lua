@@ -923,8 +923,8 @@ QuestDoorAction = {
 	[Storage.Quest.U8_0.TheIceIslands.yakchalDoor] = {
 		itemId = false,
 		itemPos = {
-			{x = 32203, y = 31022, z = 14},
-			{x = 32204, y = 31022, z = 14},
+			{ x = 32203, y = 31022, z = 14 },
+			{ x = 32204, y = 31022, z = 14 },
 		},
 	},
 }

@@ -273,9 +273,23 @@ ItemAction = {
 			{ x = 33155, y = 31297, z = 3 },
 		},
 	},
+	-- The Ice Islands Quest, Nibelor 1: Breaking the Ice
+	[60000] = {
+		itemId = 7185,
+		itemPos = {
+			{ x = 32399, y = 31051, z = 7 },
+			{ x = 32394, y = 31062, z = 7 },
+			{ x = 32393, y = 31072, z = 7 },
+		},
+	},
 }
 
 ItemUnique = {
+	-- The Ice Islands Quest
+	[1061] = {
+		itemId = 2576,
+		itemPos = { x = 32455, y = 31166, z = 12 },
+	},
 	-- Issavi town teleport
 	[9515] = {
 		itemId = 1949,

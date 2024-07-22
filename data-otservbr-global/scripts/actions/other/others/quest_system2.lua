@@ -75,10 +75,10 @@ local config = {
 		items = {
 			{ itemId = 2820, text = "<the paper is old and tattered, you can only make out a signature:> Tylaf, apprentice of Hjaern" },
 		},
-		storage = Storage.TheIceIslands.Questline,
+		storage = Storage.Quest.U8_0.TheIceIslands.Questline,
 		formerValue = 35,
 		newValue = 36,
-		missionStorage = { key = Storage.TheIceIslands.Mission09, value = 2 },
+		missionStorage = { key = Storage.Quest.U8_0.TheIceIslands.Mission09, value = 2 },
 	},
 	[3116] = {
 		items = {

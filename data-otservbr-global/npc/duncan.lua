@@ -189,7 +189,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					)
 					player:setStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor, 2)
 					player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 16)
-					if player:getStorageValue(Storage.TheIceIslands.Questline) >= 9 then
+					if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) >= 9 then
 						player:addAchievement("Animal Activist")
 					end
 					npcHandler:setTopic(playerId, 0)

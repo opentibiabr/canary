@@ -3123,12 +3123,12 @@ if not Quests then
 		},
 		[22] = {
 			name = "The Ice Islands Quest",
-			startStorageId = Storage.TheIceIslands.Questline,
+			startStorageId = Storage.Quest.U8_0.TheIceIslands.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Befriending the Musher",
-					storageId = Storage.TheIceIslands.Mission01,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission01,
 					missionId = 10233,
 					startValue = 1,
 					endValue = 3,
@@ -3143,7 +3143,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Nibelor 1: Breaking the Ice",
-					storageId = Storage.TheIceIslands.Mission02,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission02,
 					missionId = 10234,
 					startValue = 1,
 					endValue = 5,
@@ -3158,7 +3158,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Nibelor 2: Ecological Terrorism",
-					storageId = Storage.TheIceIslands.Mission03,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission03,
 					missionId = 10235,
 					startValue = 1,
 					endValue = 3,
@@ -3173,7 +3173,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Nibelor 3: Artful Sabotage",
-					storageId = Storage.TheIceIslands.Mission04,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission04,
 					missionId = 10236,
 					startValue = 1,
 					endValue = 2,
@@ -3185,7 +3185,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Nibelor 4: Berserk Brewery",
-					storageId = Storage.TheIceIslands.Mission05,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission05,
 					missionId = 10237,
 					startValue = 1,
 					endValue = 6,
@@ -3200,7 +3200,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Nibelor 5: Cure the Dogs",
-					storageId = Storage.TheIceIslands.Mission06,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission06,
 					missionId = 10238,
 					startValue = 1,
 					endValue = 8,
@@ -3227,20 +3227,19 @@ if not Quests then
 				},
 				[7] = {
 					name = "The Secret of Helheim",
-					storageId = Storage.TheIceIslands.Mission07,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission07,
 					missionId = 10239,
 					startValue = 1,
 					endValue = 3,
 					states = {
 						[1] = "Hjaern might have a mission for you. So maybe you go and talk to him.",
-						[2] = "Hjaern send you to find someone in Svargrond who can give you a passage to \z
-						Helheim and seek the reason for the unrest there.",
+						[2] = "Hjaern send you to find someone in Svargrond who can give you a passage to Helheim and seek the reason for the unrest there.",
 						[3] = "You discovered the necromantic altar and should report Hjaern about it.",
 					},
 				},
 				[8] = {
 					name = "The Contact",
-					storageId = Storage.TheIceIslands.Mission08,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission08,
 					missionId = 10240,
 					startValue = 1,
 					endValue = 4,
@@ -3255,7 +3254,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Formorgar Mines 1: The Mission",
-					storageId = Storage.TheIceIslands.Mission09,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission09,
 					missionId = 10241,
 					startValue = 1,
 					endValue = 2,
@@ -3268,7 +3267,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Formorgar Mines 2: Ghostwhisperer",
-					storageId = Storage.TheIceIslands.Mission10,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission10,
 					missionId = 10242,
 					startValue = 1,
 					endValue = 2,
@@ -3279,7 +3278,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Formorgar Mines 3: The Secret",
-					storageId = Storage.TheIceIslands.Mission11,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission11,
 					missionId = 10243,
 					startValue = 1,
 					endValue = 2,
@@ -3292,7 +3291,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Formorgar Mines 4: Retaliation",
-					storageId = Storage.TheIceIslands.Mission12,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission12,
 					missionId = 10244,
 					startValue = 1,
 					endValue = 6,

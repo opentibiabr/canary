@@ -914,6 +914,12 @@ QuestDoorAction = {
 			{ x = 33782, y = 32576, z = 12 },
 		},
 	},
+	[Storage.Quest.U8_0.TheIceIslands.FormorgarMinesDoor] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32134, y = 31095, z = 6 },
+		},
+	},
 }
 
 QuestDoorUnique = {

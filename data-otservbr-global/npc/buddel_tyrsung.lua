@@ -110,7 +110,7 @@ end, function(player)
 end, function(player)
 	return player:removeItem(3097, 1)
 end, function(player)
-	return player:getStorageValue(Storage.TheIceIslands.Questline) < 30
+	return player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) < 30
 end)
 addTravelKeyword("camp", "Both of you look like you could defend yourself! If you want to go there, ask me for a passage.", Position(32021, 31294, 7), function()
 	return randomDestination[math.random(#randomDestination)]

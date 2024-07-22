@@ -952,46 +952,6 @@ Storage = {
 		Reward = 51127,
 		RewardRoomText = 51128,
 	},
-	BarbarianTest = {
-		-- Reserved storage from 51140 - 51159
-		Questline = 51140,
-		Mission01 = 51141,
-		Mission02 = 51142,
-		Mission03 = 51143,
-		MeadTotalSips = 51144,
-		MeadSuccessSips = 51145,
-	},
-	TheIceIslands = {
-		-- Reserved storage from 51160 - 51199
-		Questline = 51160,
-		Mission01 = 51161, -- Befriending the Musher
-		Mission02 = 51162, -- Nibelor 1: Breaking the Ice
-		Mission03 = 51163, -- Nibelor 2: Ecological Terrorism
-		Mission04 = 51164, -- Nibelor 3: Artful Sabotage
-		Mission05 = 51165, -- Nibelor 4: Berserk Brewery
-		Mission06 = 51166, -- Nibelor 5: Cure the Dogs
-		Mission07 = 51167, -- The Secret of Helheim
-		Mission08 = 51168, -- The Contact
-		Mission09 = 51169, -- Formorgar Mines 1: The Mission
-		Mission10 = 51170, -- Formorgar Mines 2: Ghostwhisperer
-		Mission11 = 51171, -- Formorgar Mines 3: The Secret
-		Mission12 = 51172, -- Formorgar Mines 4: Retaliation
-		PickAmount = 51173,
-		PaintSeal = 51174,
-		SulphurLava = 51175,
-		SporesMushroom = 51176,
-		FrostbiteHerb = 51177,
-		FlowerCactus = 51178,
-		FlowerBush = 51179,
-		MemoryCrystal = 51180,
-		Obelisk01 = 51181,
-		Obelisk02 = 51182,
-		Obelisk03 = 51183,
-		Obelisk04 = 51184,
-		yakchalDoor = 51185,
-		HuskyKill = 51186,
-		HuskyKillStatus = 51187,
-	},
 	TheWayToYalahar = {
 		-- Reserved storage from 51200 - 51209
 		QuestLine = 51200,
@@ -2040,7 +2000,14 @@ Storage = {
 		},
 		U8_0 = { -- update 8.0 - Reserved Storages 41151 - 41350
 			BarbarianArena = {},
-			BarbarianTest = {},
+			BarbarianTest = {
+				Questline = 51140,
+				Mission01 = 51141,
+				Mission02 = 51142,
+				Mission03 = 51143,
+				MeadTotalSips = 51144,
+				MeadSuccessSips = 51145,
+			},
 			BerserkPotion = {},
 			FishingBox = {},
 			FormorgarMinesHoist = {},
@@ -2052,7 +2019,36 @@ Storage = {
 			NorsemanOutfits = {},
 			Sinatuki = {},
 			SkeletonDecoration = {},
-			TheIceIslands = {},
+			TheIceIslands = {
+				Questline = 51160,
+				Mission01 = 51161, -- Befriending the Musher
+				Mission02 = 51162, -- Nibelor 1: Breaking the Ice
+				Mission03 = 51163, -- Nibelor 2: Ecological Terrorism
+				Mission04 = 51164, -- Nibelor 3: Artful Sabotage
+				Mission05 = 51165, -- Nibelor 4: Berserk Brewery
+				Mission06 = 51166, -- Nibelor 5: Cure the Dogs
+				Mission07 = 51167, -- The Secret of Helheim
+				Mission08 = 51168, -- The Contact
+				Mission09 = 51169, -- Formorgar Mines 1: The Mission
+				Mission10 = 51170, -- Formorgar Mines 2: Ghostwhisperer
+				Mission11 = 51171, -- Formorgar Mines 3: The Secret
+				Mission12 = 51172, -- Formorgar Mines 4: Retaliation
+				PaintSeal = 51174,
+				SulphurLava = 51175,
+				SporesMushroom = 51176,
+				FrostbiteHerb = 51177,
+				FlowerCactus = 51178,
+				FlowerBush = 51179,
+				MemoryCrystal = 51180,
+				Obelisk01 = 51181,
+				Obelisk02 = 51182,
+				Obelisk03 = 51183,
+				Obelisk04 = 51184,
+				yakchalDoor = 51185,
+				HuskyKill = 51186,
+				HuskyKillStatus = 51187,
+				FormorgarMinesDoor = 51188,
+			},
 			WaterskinOfMead = {},
 		},
 		U8_1 = { -- update 8.1 - Reserved Storages 41351 - 41650

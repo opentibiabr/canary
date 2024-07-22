@@ -3307,7 +3307,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "Barbarian Test 1: Barbarian Booze",
-					storageId = Storage.BarbarianTest.Mission01,
+					storageId = Storage.Quest.U8_0.BarbarianTest.Mission01,
 					missionId = 1055,
 					startValue = 1,
 					endValue = 3,
@@ -3319,7 +3319,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "Barbarian Test 2: The Bear Hugging",
-					storageId = Storage.BarbarianTest.Mission02,
+					storageId = Storage.Quest.U8_0.BarbarianTest.Mission02,
 					missionId = 1056,
 					startValue = 1,
 					endValue = 2,
@@ -3330,7 +3330,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "Barbarian Test 3: The Mammoth Pushing",
-					storageId = Storage.BarbarianTest.Mission03,
+					storageId = Storage.Quest.U8_0.BarbarianTest.Mission03,
 					missionId = 1057,
 					startValue = 1,
 					endValue = 2,
@@ -3341,7 +3341,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "The Honorary Barbarian",
-					storageId = Storage.BarbarianTest.Questline,
+					storageId = Storage.Quest.U8_0.BarbarianTest.Questline,
 					missionId = 10099,
 					startValue = 8,
 					endValue = 8,

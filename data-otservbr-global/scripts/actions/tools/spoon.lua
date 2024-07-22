@@ -6,7 +6,7 @@ function spoon.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	end
 
 	-- Obtenha o ID do item alvo
-    local targetId = target:getId()
+	local targetId = target:getId()
 
 	--The Ice Islands Quest - Cure the Dogs
 	if targetId == 390 then
@@ -15,7 +15,7 @@ function spoon.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				player:addItem(7247, 1) -- fine sulphur
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.SulphurLava, 1)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)
-				player:say('You retrive a fine sulphur from a lava hole.', TALKTYPE_MONSTER_SAY)
+				player:say("You retrive a fine sulphur from a lava hole.", TALKTYPE_MONSTER_SAY)
 			end
 		end
 	elseif targetId == 3920 then
@@ -24,7 +24,7 @@ function spoon.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				player:addItem(7251, 1)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.SporesMushroom, 1)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)
-				player:say('You retrive spores from a mushroom.', TALKTYPE_MONSTER_SAY)
+				player:say("You retrive spores from a mushroom.", TALKTYPE_MONSTER_SAY)
 			end
 		end
 	end

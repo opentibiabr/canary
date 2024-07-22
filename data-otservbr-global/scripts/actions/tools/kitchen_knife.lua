@@ -21,7 +21,7 @@ function kitchenKnife.onUse(player, item, fromPosition, target, toPosition, isHo
 				player:addItem(7248, 1)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.FrostbiteHerb, 1)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				player:say('You cut a leaf from a frostbite herb.', TALKTYPE_MONSTER_SAY)
+				player:say("You cut a leaf from a frostbite herb.", TALKTYPE_MONSTER_SAY)
 			end
 		end
 	elseif targetId == 3647 then
@@ -32,7 +32,7 @@ function kitchenKnife.onUse(player, item, fromPosition, target, toPosition, isHo
 				target:transform(3646)
 				addEvent(revertItem, 60 * 1000, toPosition, 3646, 3647)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
-				player:say('You cut a flower from a cactus.', TALKTYPE_MONSTER_SAY)
+				player:say("You cut a flower from a cactus.", TALKTYPE_MONSTER_SAY)
 			end
 		end
 	elseif targetId == 3753 then
@@ -43,7 +43,7 @@ function kitchenKnife.onUse(player, item, fromPosition, target, toPosition, isHo
 				target:transform(3750)
 				addEvent(revertItem, 60 * 1000, toPosition, 3750, 3753)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
-				player:say('You cut a flower from a bush.', TALKTYPE_MONSTER_SAY)
+				player:say("You cut a flower from a bush.", TALKTYPE_MONSTER_SAY)
 			end
 		end
 	end

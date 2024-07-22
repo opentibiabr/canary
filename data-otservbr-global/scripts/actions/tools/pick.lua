@@ -8,7 +8,7 @@ local function revertItem(position, itemId, transformId)
 end
 
 function pick.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-    -- Ice Islands Quest, Nibelor 1: Breaking the Ice
+	-- Ice Islands Quest, Nibelor 1: Breaking the Ice
 	if target:getActionId() == 60000 then
 		local missionProgress, pickAmount = player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline), player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission02)
 		if missionProgress < 1 or pickAmount >= 4 then
@@ -27,7 +27,7 @@ function pick.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			addEvent(revertItem, 60 * 1000, toPosition, 7186, 7185)
 		end
 
-		local chakoyas = {"Chakoya Toolshaper", "Chakoya Tribewarden", "Chakoya Windcaller"}
+		local chakoyas = { "Chakoya Toolshaper", "Chakoya Tribewarden", "Chakoya Windcaller" }
 		Game.createMonster(chakoyas[math.random(#chakoyas)], toPosition)
 		toPosition:sendMagicEffect(CONST_ME_TELEPORT)
 		return true

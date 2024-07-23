@@ -5826,6 +5826,10 @@ bool Player::toggleMount(bool mount) {
 		return false;
 	}
 
+	if (isWearingSupportOutfit()) {
+		return false;
+	}
+
 	if (mount) {
 		if (isMounted()) {
 			return false;

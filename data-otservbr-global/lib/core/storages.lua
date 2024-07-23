@@ -2055,8 +2055,6 @@ Storage = {
 			},
 		},
 		U8_1 = { -- update 8.1 - Reserved Storages 41351 - 41650
-			BrotherhoodOutfits = {},
-			OutfitBrotherhoodMaleAddon = {},
 			IntoTheBonePit = {},
 			KissingAPig = {},
 			KosheiTheDeathless = {},

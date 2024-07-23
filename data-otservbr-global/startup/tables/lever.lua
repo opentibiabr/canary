@@ -54,6 +54,11 @@ LeverAction = {
 }
 
 LeverUnique = {
+	-- Against the Spider Cult Quest
+	[1017] = {
+		itemId = 2772,
+		itemPos = { x = 33172, y = 31896, z = 8 },
+	},
 	-- Dark trails quest (The Ravager lever)
 	-- Path: data\scripts\actions\quests\dark_trails\lever_the_ravager.lua
 	[30001] = {

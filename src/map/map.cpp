@@ -429,7 +429,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	g_game().afterCreatureZoneChange(creature, fromZones, toZones);
 }
 
-bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight /*= true*/, int32_t rangex /*= MAP_MAX_CLIENT_VIEW_PORT_X*/, int32_t rangey /*= MAP_MAX_CLIENT_VIEW_PORT_Y*/) {
+bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, const SightLines_t lineOfSight /*= SightLine_CheckSightLine*/, const int32_t rangex /*= Map::maxClientViewportX*/, const int32_t rangey /*= Map::maxClientViewportY*/) {
 	// z checks
 	// underground 8->15
 	// ground level and above 7->0
@@ -451,10 +451,11 @@ bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool 
 		return false;
 	}
 
-	if (!checkLineOfSight) {
+	if (!(lineOfSight & SightLine_CheckSightLine)) {
 		return true;
 	}
-	return isSightClear(fromPos, toPos, false);
+
+	return isSightClear(fromPos, toPos, lineOfSight & SightLine_FloorCheck);
 }
 
 bool Map::checkSightLine(Position start, Position destination) {
@@ -472,7 +473,7 @@ bool Map::checkSightLine(Position start, Position destination) {
 			start.x += delta;
 
 			const auto &tile = getTile(start.x, start.y, start.z);
-			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+			if (tile && tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 				return false;
 			}
 		}
@@ -483,7 +484,7 @@ bool Map::checkSightLine(Position start, Position destination) {
 			start.y += delta;
 
 			const auto &tile = getTile(start.x, start.y, start.z);
-			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+			if (tile && tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 				return false;
 			}
 		}
@@ -516,7 +517,7 @@ bool Map::checkSightLine(Position start, Position destination) {
 				}
 
 				const auto &tile = getTile(start.x + xIncrease, start.y + deltaY, start.z);
-				if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+				if (tile && tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 					if (Position::areInRange<1, 1>(start, destination)) {
 						return true;
 					}
@@ -547,7 +548,7 @@ bool Map::checkSightLine(Position start, Position destination) {
 				}
 
 				const auto &tile = getTile(start.x + deltaX, start.y + yIncrease, start.z);
-				if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+				if (tile && tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 					if (Position::areInRange<1, 1>(start, destination)) {
 						return true;
 					}
@@ -590,7 +591,7 @@ bool Map::isSightClear(const Position &fromPos, const Position &toPos, bool floo
 	} else {
 		// Check if we can throw above obstacle
 		const auto &tile = getTile(fromPos.x, fromPos.y, fromPos.z - 1);
-		if ((tile && (tile->getGround() || tile->hasFlag(TILESTATE_BLOCKPROJECTILE))) || !checkSightLine(Position(fromPos.x, fromPos.y, fromPos.z - 1), Position(toPos.x, toPos.y, toPos.z - 1))) {
+		if ((tile && (tile->getGround() || tile->hasProperty(CONST_PROP_BLOCKPROJECTILE))) || !checkSightLine(Position(fromPos.x, fromPos.y, fromPos.z - 1), Position(toPos.x, toPos.y, toPos.z - 1))) {
 			return false;
 		}
 
@@ -605,7 +606,7 @@ bool Map::isSightClear(const Position &fromPos, const Position &toPos, bool floo
 	// now we need to perform a jump between floors to see if everything is clear (literally)
 	for (; startZ != toPos.z; ++startZ) {
 		const auto &tile = getTile(toPos.x, toPos.y, startZ);
-		if (tile && (tile->getGround() || tile->hasFlag(TILESTATE_BLOCKPROJECTILE))) {
+		if (tile && (tile->getGround() || tile->hasProperty(CONST_PROP_BLOCKPROJECTILE))) {
 			return false;
 		}
 	}

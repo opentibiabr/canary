@@ -108,8 +108,7 @@ public:
 	 *	\param checkLineOfSight checks if there is any blocking objects in the way
 	 *	\returns The result if you can throw there or not
 	 */
-	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
-
+	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight = SightLine_CheckSightLine, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 	/**
 	 * Checks if path is clear from fromPos to toPos
 	 * Notice: This only checks a straight line if the path is clear, for path finding use getPathTo.

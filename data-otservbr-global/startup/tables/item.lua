@@ -7,6 +7,11 @@ ItemAction = {
 		itemId = 2819,
 		itemPos = { { x = 33063, y = 31624, z = 15 } },
 	},
+	-- Into The Bone Pit Quest - ectoplasm container
+	[4205] = {
+		itemId = 103,
+		itemPos = { { x = 32408, y = 32107, z = 10 } },
+	},
 	[40001] = { -- The cursed crystal skeletons
 		itemId = 27490,
 		itemPos = {

@@ -1174,7 +1174,7 @@ ChestUnique = {
 		itemId = 2473,
 		itemPos = { x = 32015, y = 31409, z = 7 },
 		container = 2853,
-		reward = { { 3035, 5 }, { 7158, 3 }, { 7159, 3 }, },
+		reward = { { 3035, 5 }, { 7158, 3 }, { 7159, 3 } },
 		weight = 68.50,
 		storage = Storage.Quest.U8_0.FishingBox,
 	},

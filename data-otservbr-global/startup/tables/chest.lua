@@ -1169,6 +1169,15 @@ ChestUnique = {
 		weight = 50.00,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordWeapons,
 	},
+	-- Fishing Box Quest
+	[6162] = {
+		itemId = 2473,
+		itemPos = { x = 32015, y = 31409, z = 7 },
+		container = 2853,
+		reward = { { 3035, 5 }, { 7158, 3 }, { 7159, 3 }, },
+		weight = 68.50,
+		storage = Storage.Quest.U8_0.FishingBox,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

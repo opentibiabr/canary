@@ -290,6 +290,19 @@ ItemUnique = {
 		itemId = 2576,
 		itemPos = { x = 32455, y = 31166, z = 12 },
 	},
+	-- Barbarian Arena Quest
+	[3264] = {
+		itemId = 10145,
+		itemPos = { x = 32229, y = 31065, z = 7 },
+	},
+	[3265] = {
+		itemId = 10145,
+		itemPos = { x = 32229, y = 31058, z = 7 },
+	},
+	[3266] = {
+		itemId = 10145,
+		itemPos = { x = 32229, y = 31051, z = 7 },
+	},
 	-- Issavi town teleport
 	[9515] = {
 		itemId = 1949,

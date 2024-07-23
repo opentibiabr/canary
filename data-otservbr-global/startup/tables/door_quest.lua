@@ -623,7 +623,7 @@ QuestDoorAction = {
 		itemPos = { { x = 33216, y = 31671, z = 13 } },
 	},
 	-- Svargrond arena door
-	[Storage.SvargrondArena.PitDoor] = {
+	[Storage.Quest.U8_0.BarbarianArena.PitDoor] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32233, y = 31098, z = 7 },
@@ -631,15 +631,15 @@ QuestDoorAction = {
 			{ x = 32233, y = 31100, z = 7 },
 		},
 	},
-	[Storage.SvargrondArena.GreenhornDoor] = {
+	[Storage.Quest.U8_0.BarbarianArena.GreenhornDoor] = {
 		itemId = false,
 		itemPos = { { x = 32227, y = 31066, z = 7 } },
 	},
-	[Storage.SvargrondArena.ScrapperDoor] = {
+	[Storage.Quest.U8_0.BarbarianArena.ScrapperDoor] = {
 		itemId = false,
 		itemPos = { { x = 32227, y = 31059, z = 7 } },
 	},
-	[Storage.SvargrondArena.WarlordDoor] = {
+	[Storage.Quest.U8_0.BarbarianArena.WarlordDoor] = {
 		itemId = false,
 		itemPos = { { x = 32227, y = 31052, z = 7 } },
 	},

@@ -4316,12 +4316,12 @@ if not Quests then
 		},
 		[29] = {
 			name = "The Ultimate Challenges",
-			startStorageId = Storage.SvargrondArena.QuestLogGreenhorn,
+			startStorageId = Storage.Quest.U8_0.BarbarianArena.QuestLogGreenhorn,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Barbarian Arena - Greenhorn Mode",
-					storageId = Storage.SvargrondArena.QuestLogGreenhorn,
+					storageId = Storage.Quest.U8_0.BarbarianArena.QuestLogGreenhorn,
 					missionId = 10312,
 					startValue = 1,
 					endValue = 2,
@@ -4332,7 +4332,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Barbarian Arena - Scrapper Mode",
-					storageId = Storage.SvargrondArena.QuestLogScrapper,
+					storageId = Storage.Quest.U8_0.BarbarianArena.QuestLogScrapper,
 					missionId = 10313,
 					startValue = 1,
 					endValue = 2,
@@ -4343,7 +4343,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Barbarian Arena - Warlord Mode",
-					storageId = Storage.SvargrondArena.QuestLogWarlord,
+					storageId = Storage.Quest.U8_0.BarbarianArena.QuestLogWarlord,
 					missionId = 10314,
 					startValue = 1,
 					endValue = 2,

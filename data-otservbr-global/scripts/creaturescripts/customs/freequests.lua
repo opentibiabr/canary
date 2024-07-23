@@ -237,7 +237,7 @@ local questTable = {
 	{ storage = Storage.TravellingTrader.Mission05, storageValue = 3 },
 	{ storage = Storage.TravellingTrader.Mission06, storageValue = 2 },
 	{ storage = Storage.TravellingTrader.Mission07, storageValue = 1 },
-	{ storage = Storage.SvargrondArena.QuestLogGreenhorn, storageValue = 1 },
+	{ storage = Storage.Quest.U8_0.BarbarianArena.QuestLogGreenhorn, storageValue = 1 },
 	{ storage = Storage.TibiaTales.DefaultStart, storageValue = 1 },
 	{ storage = Storage.TibiaTales.ToAppeaseTheMightyQuest, storageValue = 1 },
 	{ storage = 12450, storageValue = 6 },

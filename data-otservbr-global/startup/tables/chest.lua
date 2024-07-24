@@ -1318,7 +1318,7 @@ ChestUnique = {
 		itemId = 2434,
 		itemPos = { x = 32588, y = 31645, z = 3 },
 		container = 2853,
-		reward = { { 237, 1 }, { 3147, 1 }, { 3059, 1 }, },
+		reward = { { 237, 1 }, { 3147, 1 }, { 3059, 1 } },
 		weight = 31.00,
 		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP1,
 	},

@@ -12,7 +12,73 @@ ItemAction = {
 		itemId = 103,
 		itemPos = { { x = 32408, y = 32107, z = 10 } },
 	},
-	[40001] = { -- The cursed crystal skeletons
+	-- Rest in Hallowed Ground Quest
+	[4208] = {
+		itemId = 1979,
+		itemPos = { { x = 33188, y = 31688, z = 6 } },
+	},
+	[4209] = {
+		itemId = 1979,
+		itemPos = { {x = 33190, y = 31691, z = 6} },
+	},
+	[4210] = {
+		itemId = 1979,
+		itemPos = { {x = 33192, y = 31688, z = 6} },
+	},
+	[4211] = {
+		itemId = 1979,
+		itemPos = { {x = 33196, y = 31691, z = 6} },
+	},
+	[4212] = {
+		itemId = 1979,
+		itemPos = { {x = 33197, y = 31687, z = 6} },
+	},
+	[4213] = {
+		itemId = 1979,
+		itemPos = { {x = 33202, y = 31689, z = 6} },
+	},
+	[4214] = {
+		itemId = 1979,
+		itemPos = { {x = 33203, y = 31687, z = 6} },
+	},
+	[4215] = {
+		itemId = 1979,
+		itemPos = { {x = 33204, y = 31688, z = 6} },
+	},
+	[4216] = {
+		itemId = 1979,
+		itemPos = { {x = 33203, y = 31682, z = 6} },
+	},
+	[4217] = {
+		itemId = 1979,
+		itemPos = { {x = 33205, y = 31680, z = 6} },
+	},
+	[4218] = {
+		itemId = 1979,
+		itemPos = { {x = 33203, y = 31677, z = 6} },
+	},
+	[4219] = {
+		itemId = 1979,
+		itemPos = { {x = 33210, y = 31670, z = 7} },
+	},
+	[4220] = {
+		itemId = 1979,
+		itemPos = { {x = 33215, y = 31667, z = 7} },
+	},
+	[4221] = {
+		itemId = 1979,
+		itemPos = { {x = 33219, y = 31671, z = 7} },
+	},
+	[4222] = {
+		itemId = 1979,
+		itemPos = { {x = 33223, y = 31665, z = 7} },
+	},
+	[4223] = {
+		itemId = 1979,
+		itemPos = { {x = 33217, y = 31661, z = 7} },
+	},
+	-- The cursed crystal skeletons
+	[40001] = {
 		itemId = 27490,
 		itemPos = {
 			{ x = 31974, y = 32907, z = 8 },

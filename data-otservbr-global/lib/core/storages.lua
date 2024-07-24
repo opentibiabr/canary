@@ -1164,6 +1164,13 @@ Storage = {
 			MedusaOil = 51531,
 			Questline = 51532,
 		},
+		ToBlindTheEnemy = {
+			Questline = 41398,
+			DwarvenShield = 41399,
+			MorningStar = 41400,
+			BP1 = 41401,
+			BP2 = 41402,
+		},
 	},
 	TheShatteredIsles = {
 		-- Reserved storage from 51540 - 51589
@@ -2070,13 +2077,6 @@ Storage = {
 				Mission05 = 41395,
 				Mission06 = 41396,
 				Mission07 = 41397,
-			},
-			ToBlindTheEnemy = {
-				Questline = 41398,
-				DwarvenShield = 41399,
-				MorningStar = 41400,
-				BP1 = 41401,
-				BP2 = 41402,
 			},
 			ToOutfoxAFox = {},
 			TowerDefence = {},

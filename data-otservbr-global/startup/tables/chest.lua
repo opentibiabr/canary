@@ -1305,14 +1305,14 @@ ChestUnique = {
 		itemPos = { x = 32591, y = 31647, z = 3 },
 		reward = { { 3425, 1 } },
 		weight = 55.00,
-		storage = Storage.Quest.U8_1.ToBlindTheEnemy.DwarvenShield,
+		storage = Storage.TibiaTales.ToBlindTheEnemy.DwarvenShield,
 	},
 	[6181] = {
 		itemId = 2472,
 		itemPos = { x = 32590, y = 31647, z = 3 },
 		reward = { { 3282, 1 } },
 		weight = 54.00,
-		storage = Storage.Quest.U8_1.ToBlindTheEnemy.MorningStar,
+		storage = Storage.TibiaTales.ToBlindTheEnemy.MorningStar,
 	},
 	[6182] = {
 		itemId = 2434,
@@ -1320,7 +1320,7 @@ ChestUnique = {
 		container = 2853,
 		reward = { { 237, 1 }, { 3147, 1 }, { 3059, 1 } },
 		weight = 31.00,
-		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP1,
+		storage = Storage.TibiaTales.ToBlindTheEnemy.BP1,
 	},
 	[6183] = {
 		itemId = 2434,
@@ -1328,7 +1328,7 @@ ChestUnique = {
 		container = 2853,
 		reward = { { 3028, 2 }, { 3031, 100 } },
 		weight = 18.20,
-		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP2,
+		storage = Storage.TibiaTales.ToBlindTheEnemy.BP2,
 	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest

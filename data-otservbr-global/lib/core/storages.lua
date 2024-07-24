@@ -2061,8 +2061,6 @@ Storage = {
 				KosheiAmuletPart3 = 41357,
 				KosheiAmuletPart4 = 41358,
 			},
-			NightmareOutfits = {},
-			OutfitNightmareMaleAddon = {},
 			NomadsLand = {},
 			RestInHallowedGround = {},
 			SecretService = {},

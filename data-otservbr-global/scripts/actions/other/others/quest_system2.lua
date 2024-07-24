@@ -33,7 +33,7 @@ local config = {
 		items = {
 			{ itemId = 145 },
 		},
-		storage = Storage.TravellingTrader.Mission02,
+		storage = Storage.Quest.U8_1.TheTravellingTrader.Mission02,
 		formerValue = 3,
 		newValue = 4,
 	},

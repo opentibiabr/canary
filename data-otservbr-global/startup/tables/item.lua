@@ -7,6 +7,11 @@ ItemAction = {
 		itemId = 2819,
 		itemPos = { { x = 33063, y = 31624, z = 15 } },
 	},
+	-- The Travelling Trader Quest
+	[1108] = {
+		itemId = 1642,
+		itemPos = { { x = 32660, y = 32192, z = 8 } },
+	},
 	-- Into The Bone Pit Quest - ectoplasm container
 	[4205] = {
 		itemId = 103,

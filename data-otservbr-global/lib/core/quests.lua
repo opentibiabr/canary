@@ -3979,12 +3979,12 @@ if not Quests then
 		},
 		[27] = {
 			name = "The Travelling Trader Quest",
-			startStorageId = Storage.TravellingTrader.Mission01,
+			startStorageId = Storage.Quest.U8_1.TheTravellingTrader.Mission01,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: Trophy",
-					storageId = Storage.TravellingTrader.Mission01,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission01,
 					missionId = 10288,
 					startValue = 1,
 					endValue = 2,
@@ -3996,7 +3996,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: Delivery",
-					storageId = Storage.TravellingTrader.Mission02,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission02,
 					missionId = 10289,
 					startValue = 1,
 					endValue = 5,
@@ -4011,7 +4011,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: Cheese",
-					storageId = Storage.TravellingTrader.Mission03,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission03,
 					missionId = 10290,
 					startValue = 1,
 					endValue = 3,
@@ -4024,7 +4024,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 4: Vase",
-					storageId = Storage.TravellingTrader.Mission04,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission04,
 					missionId = 10291,
 					startValue = 1,
 					endValue = 3,
@@ -4038,7 +4038,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 5: Make a deal",
-					storageId = Storage.TravellingTrader.Mission05,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission05,
 					missionId = 10292,
 					startValue = 1,
 					endValue = 3,
@@ -4051,7 +4051,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 6: Goldfish",
-					storageId = Storage.TravellingTrader.Mission06,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission06,
 					missionId = 10293,
 					startValue = 1,
 					endValue = 2,
@@ -4062,7 +4062,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 7: Declare",
-					storageId = Storage.TravellingTrader.Mission07,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission07,
 					missionId = 10294,
 					startValue = 1,
 					endValue = 1,

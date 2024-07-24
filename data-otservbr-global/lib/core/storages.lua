@@ -561,17 +561,6 @@ Storage = {
 		SpectralStoneDoor = 50560,
 		IceMusicDoor = 50561,
 	},
-	TravellingTrader = {
-		-- Reserved storage from 50600 - 50619
-		Mission01 = 50600,
-		Mission02 = 50601,
-		Mission03 = 50602,
-		Mission04 = 50603,
-		Mission05 = 50604,
-		Mission06 = 50605,
-		Mission07 = 50606,
-		-- unused packageDoor = 50607
-	},
 	DjinnWar = {
 		-- Reserved storage from 50620 - 50649
 		Faction = {
@@ -2073,8 +2062,15 @@ Storage = {
 			StrongPotions = {
 				Reward = 41390,
 			},
-			TheExterminator = {},
-			TheTravellingTrader = {},
+			TheTravellingTrader = {
+				Mission01 = 41391,
+				Mission02 = 41392,
+				Mission03 = 41393,
+				Mission04 = 41394,
+				Mission05 = 41395,
+				Mission06 = 41396,
+				Mission07 = 41397,
+			},
 			TheUltimateBooze = {},
 			ToAppeaseTheMighty = {},
 			ToBlindTheEnemy = {},

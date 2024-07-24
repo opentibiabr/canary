@@ -2071,12 +2071,7 @@ Storage = {
 				Mission06 = 41396,
 				Mission07 = 41397,
 			},
-			ToBlindTheEnemy = {
-				DwarvenShield = 41398,
-				MorningStar = 41399,
-				BP1 = 41400,
-				BP2 = 41401,
-			},
+			ToBlindTheEnemy = {},
 			ToOutfoxAFox = {},
 			TowerDefence = {},
 			Waterfall = {},

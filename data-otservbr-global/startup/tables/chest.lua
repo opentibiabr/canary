@@ -1299,37 +1299,6 @@ ChestUnique = {
 		weight = 1.20,
 		storage = Storage.Quest.U8_1.SecretService.IntelligenceReports,
 	},
-	-- To Blind the Enemy Quest
-	[6180] = {
-		itemId = 2472,
-		itemPos = { x = 32591, y = 31647, z = 3 },
-		reward = { { 3425, 1 } },
-		weight = 55.00,
-		storage = Storage.Quest.U8_1.ToBlindTheEnemy.DwarvenShield,
-	},
-	[6181] = {
-		itemId = 2472,
-		itemPos = { x = 32590, y = 31647, z = 3 },
-		reward = { { 3282, 1 } },
-		weight = 54.00,
-		storage = Storage.Quest.U8_1.ToBlindTheEnemy.MorningStar,
-	},
-	[6182] = {
-		itemId = 2434,
-		itemPos = { x = 32588, y = 31645, z = 3 },
-		container = 2853,
-		reward = { { 237, 1 }, { 3147, 1 }, { 3059, 1 }, },
-		weight = 31.00,
-		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP1,
-	},
-	[6183] = {
-		itemId = 2434,
-		itemPos = { x = 32588, y = 31644, z = 3 },
-		container = 2853,
-		reward = { { 3028, 2 }, { 3031, 100 } },
-		weight = 18.20,
-		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP2,
-	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

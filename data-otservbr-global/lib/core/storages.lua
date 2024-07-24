@@ -2071,7 +2071,6 @@ Storage = {
 				Mission06 = 41396,
 				Mission07 = 41397,
 			},
-			TheUltimateBooze = {},
 			ToAppeaseTheMighty = {},
 			ToBlindTheEnemy = {},
 			ToOutfoxAFox = {},

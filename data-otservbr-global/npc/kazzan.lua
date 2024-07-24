@@ -50,11 +50,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local function greetCallback(npc, creature)
-	local playerId = creature:getId()
-	npcHandler:setTopic(playerId, 0)
-	return true
-end
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -66,9 +61,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	-- Pegando a quest
 	if MsgContains(message, "mission") and player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) < 1 then
 		if player:getStorageValue(Storage.DjinnWar.Faction.MaridDoor) < 1 and player:getStorageValue(Storage.DjinnWar.Faction.EfreetDoor) < 1 then
-			npcHandler:say({
-				"Do you know the location of the djinn fortresses in the mountains south of here?",
-			}, npc, creature)
+			npcHandler:say("Do you know the location of the djinn fortresses in the mountains south of here?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif npcHandler:getTopic(playerId) == 1 and MsgContains(message, "yes") then
@@ -88,9 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:setStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest, 1)
 		-- Entregando
 	elseif player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) == 3 then
-		npcHandler:say({
-			"Well, I don't blame you for that. I am sure you did your best. Now we can just hope that peace remains. Here, take this small gratification for your effort to help and Daraman may bless you!",
-		}, npc, creature)
+		npcHandler:say("Well, I don't blame you for that. I am sure you did your best. Now we can just hope that peace remains. Here, take this small gratification for your effort to help and Daraman may bless you!", npc, creature)
 		player:setStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) + 1)
 		player:addItem(3035, 20)
 	end
@@ -106,7 +97,7 @@ end
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)
 
-npcHandler:setCallback(CALLBACK_GREET, greetCallback)
+npcHandler:setMessage(MESSAGE_GREET, "Feel welcome in the lands of the children of the enlightened Daraman, |PLAYERNAME|.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

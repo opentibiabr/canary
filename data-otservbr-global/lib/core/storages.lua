@@ -2061,7 +2061,6 @@ Storage = {
 				KosheiAmuletPart3 = 41357,
 				KosheiAmuletPart4 = 41358,
 			},
-			NomadsLand = {},
 			RestInHallowedGround = {},
 			SecretService = {},
 			StealFromThieves = {},

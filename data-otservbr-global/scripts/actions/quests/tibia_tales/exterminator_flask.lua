@@ -1,4 +1,5 @@
 local exterminatorFlask = Action()
+
 function exterminatorFlask.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if target.actionid ~= 4207 then
 		return false

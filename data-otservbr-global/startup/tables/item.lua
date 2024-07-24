@@ -16,8 +16,8 @@ ItemAction = {
 	[4207] = {
 		itemId = 622,
 		itemPos = {
-			{ x = 32306, y = 31821, z = 9 }
-			{ x = 32306, y = 31822, z = 9 }
+			{ x = 32306, y = 31821, z = 9 },
+			{ x = 32306, y = 31822, z = 9 },
 		},
 	},
 	-- Rest in Hallowed Ground Quest

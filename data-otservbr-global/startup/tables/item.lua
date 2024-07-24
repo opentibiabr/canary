@@ -77,6 +77,23 @@ ItemAction = {
 		itemId = 1979,
 		itemPos = { { x = 33217, y = 31661, z = 7 } },
 	},
+	-- Secret Service
+	[12550] = {
+		itemId = 16622,
+		itemPos = { { x = 32893, y = 32013, z = 6 } },
+	},
+	[12551] = {
+		itemId = 16485,
+		itemPos = { { x = 32894, y = 32013, z = 6 } },
+	},
+	[12563] = {
+		itemId = 6967,
+		itemPos = { { x = 32020, y = 31439, z = 1 } },
+	},
+	[12566] = {
+		itemId = 2525,
+		itemPos = { { x = 32205, y = 31153, z = 8 } },
+	},
 	-- The cursed crystal skeletons
 	[40001] = {
 		itemId = 27490,

@@ -539,43 +539,43 @@ QuestDoorAction = {
 		itemPos = { { x = 32367, y = 31782, z = 8 } },
 	},
 	-- Secret service door
-	[Storage.SecretService.CGBMission01] = {
+	[Storage.Quest.U8_1.SecretService.CGBMission01] = {
 		itemId = false,
 		itemPos = { { x = 33270, y = 31839, z = 3 } },
 	},
-	[Storage.SecretService.TBIMission02] = {
+	[Storage.Quest.U8_1.SecretService.TBIMission02] = {
 		itemId = false,
 		itemPos = { { x = 32872, y = 31957, z = 11 } },
 	},
-	[Storage.SecretService.AVINMission02] = {
+	[Storage.Quest.U8_1.SecretService.AVINMission02] = {
 		itemId = false,
 		itemPos = { { x = 32310, y = 32178, z = 5 } },
 	},
-	[Storage.SecretService.CGBMission02] = {
+	[Storage.Quest.U8_1.SecretService.CGBMission02] = {
 		itemId = false,
 		itemPos = { { x = 32876, y = 31957, z = 11 } },
 	},
-	[Storage.SecretService.TBIMission03] = {
+	[Storage.Quest.U8_1.SecretService.TBIMission03] = {
 		itemId = false,
 		itemPos = { { x = 32639, y = 32735, z = 7 } },
 	},
-	[Storage.SecretService.TBIMission04] = {
+	[Storage.Quest.U8_1.SecretService.TBIMission04] = {
 		itemId = false,
 		itemPos = { { x = 32772, y = 31582, z = 11 } },
 	},
-	[Storage.SecretService.CGBMission04] = {
+	[Storage.Quest.U8_1.SecretService.CGBMission04] = {
 		itemId = false,
 		itemPos = { { x = 32906, y = 32013, z = 6 } },
 	},
-	[Storage.SecretService.AVINMission05] = {
+	[Storage.Quest.U8_1.SecretService.AVINMission05] = {
 		itemId = false,
 		itemPos = { { x = 32156, y = 31951, z = 13 } },
 	},
-	[Storage.SecretService.CGBMission05] = {
+	[Storage.Quest.U8_1.SecretService.CGBMission05] = {
 		itemId = false,
 		itemPos = { { x = 32599, y = 32380, z = 10 } },
 	},
-	[Storage.SecretService.Mission07] = {
+	[Storage.Quest.U8_1.SecretService.Mission07] = {
 		itemId = false,
 		itemPos = { { x = 32537, y = 31897, z = 13 } },
 	},
@@ -739,7 +739,7 @@ QuestDoorAction = {
 		itemId = 1644,
 		itemPos = { { x = 33001, y = 32047, z = 12 } },
 	},
-	[Storage.SecretService.CGBMission06] = {
+	[Storage.Quest.U8_1.SecretService.CGBMission06] = {
 		itemId = 6260,
 		itemPos = { { x = 32180, y = 31933, z = 11 } },
 	},

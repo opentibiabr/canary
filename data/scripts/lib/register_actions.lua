@@ -955,12 +955,12 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 				addEvent(revertCask, 3 * 60 * 1000, toPosition)
 			end
 		end
-	elseif target.actionid == 12566 and player:getStorageValue(Storage.SecretService.TBIMission06) == 1 then
+	elseif target.actionid == 12566 and player:getStorageValue(Storage.Quest.U8_1.SecretService.TBIMission06) == 1 then
 		-- Secret service quest
 		local yellPosition = Position(32204, 31157, 8)
 		-- Amazon lookType
 		if player:getOutfit().lookType == 137 then
-			player:setStorageValue(Storage.SecretService.TBIMission06, 2)
+			player:setStorageValue(Storage.Quest.U8_1.SecretService.TBIMission06, 2)
 			Game.createMonster("barbarian skullhunter", yellPosition)
 			player:say("Nooooo! What have you done??", TALKTYPE_MONSTER_SAY, false, 0, yellPosition)
 			yellPosition.y = yellPosition.y - 1

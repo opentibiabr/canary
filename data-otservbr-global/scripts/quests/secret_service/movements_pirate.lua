@@ -6,8 +6,8 @@ function pirate.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.SecretService.TBIMission03) == 1 then
-		player:setStorageValue(Storage.SecretService.TBIMission03, 2)
+	if player:getStorageValue(Storage.Quest.U8_1.SecretService.TBIMission03) == 1 then
+		player:setStorageValue(Storage.Quest.U8_1.SecretService.TBIMission03, 2)
 		Game.createMonster("pirate buccaneer", Position(32641, 32733, 7))
 		Game.createMonster("pirate buccaneer", Position(32642, 32733, 7))
 	end

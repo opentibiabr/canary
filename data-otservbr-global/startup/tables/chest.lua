@@ -1228,6 +1228,77 @@ ChestUnique = {
 		weight = 10.00,
 		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessGold,
 	},
+	-- Secret Service Quest
+	[6170] = {
+		itemId = 2433,
+		itemPos = { x = 32311, y = 32177, z = 5 },
+		reward = { { 403, 1 } },
+		weight = 13.00,
+		storage = Storage.Quest.U8_1.SecretService.AHX17L89,
+	},
+	[6171] = {
+		itemId = 1983,
+		itemPos = { x = 32156, y = 31954, z = 13 },
+		reward = { { 406, 1 } },
+		weight = 0.80,
+		storage = Storage.Quest.U8_1.SecretService.FamilySignetRing,
+	},
+	[6172] = {
+		itemId = 2433,
+		itemPos = { x = 33271, y = 31839, z = 3 },
+		reward = { { 648, 1 } },
+		weight = 58.00,
+		storage = Storage.Quest.U8_1.SecretService.MagicSpellbook,
+	},
+	[6173] = {
+		itemId = 2473,
+		itemPos = { x = 32907, y = 32012, z = 6 },
+		reward = { { 399, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.SecretService.BuildingPlans,
+	},
+	[6174] = {
+		itemId = 2433,
+		itemPos = { x = 32598, y = 32380, z = 10 },
+		reward = { { 400, 1 } },
+		weight = 1.50,
+		storage = Storage.Quest.U8_1.SecretService.SuspiciousDocuments,
+	},
+	[6175] = {
+		itemId = 2473,
+		itemPos = { x = 32180, y = 31930, z = 11 },
+		reward = { { 401, 1 } },
+		weight = 13.00,
+		storage = Storage.Quest.U8_1.SecretService.Book,
+	},
+	[6176] = {
+		itemId = 3634,
+		itemPos = { x = 32876, y = 31958, z = 11 },
+		reward = { { 652, 1 } },
+		weight = 45.00,
+		storage = Storage.Quest.U8_1.SecretService.RottenHeartOfTree,
+	},
+	[6177] = {
+		itemId = 2469,
+		itemPos = { x = 32872, y = 31958, z = 11 },
+		reward = { { 5956, 1 } },
+		weight = 1.20,
+		storage = Storage.Quest.U8_1.SecretService.LotteryTicket,
+	},
+	[6178] = {
+		itemId = 2472,
+		itemPos = { x = 32643, y = 32733, z = 7 },
+		reward = { { 5952, 1 } },
+		weight = 1.20,
+		storage = Storage.Quest.U8_1.SecretService.PoemScroll,
+	},
+	[6179] = {
+		itemId = 4240,
+		itemPos = { x = 32773, y = 31582, z = 11 },
+		reward = { { 348, 1 } },
+		weight = 1.20,
+		storage = Storage.Quest.U8_1.SecretService.IntelligenceReports,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

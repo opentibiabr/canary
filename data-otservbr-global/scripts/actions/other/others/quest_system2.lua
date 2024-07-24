@@ -181,7 +181,7 @@ local config = {
 		items = {
 			{ itemId = 652 },
 		},
-		storage = Storage.SecretService.RottenTree,
+		storage = Storage.Quest.U8_1.SecretService.RottenTree,
 	},
 	[50032] = {
 		items = {

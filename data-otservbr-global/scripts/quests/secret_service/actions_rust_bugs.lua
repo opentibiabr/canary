@@ -4,8 +4,8 @@ function secretServiceBugs.onUse(player, item, fromPosition, target, toPosition,
 		return false
 	end
 
-	if player:getStorageValue(Storage.SecretService.CGBMission03) == 1 then
-		player:setStorageValue(Storage.SecretService.CGBMission03, 2)
+	if player:getStorageValue(Storage.Quest.U8_1.SecretService.CGBMission03) == 1 then
+		player:setStorageValue(Storage.Quest.U8_1.SecretService.CGBMission03, 2)
 		item:remove()
 		for i = 32909, 32912 do
 			Game.createItem(1069, 1, Position(i, 32112, 7))

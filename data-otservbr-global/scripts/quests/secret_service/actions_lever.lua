@@ -21,6 +21,7 @@ local monsters = {
 }
 
 local secretServiceLever = Action()
+
 function secretServiceLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 2772 then
 		for i = 1, #monsters do

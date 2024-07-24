@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "barrel") then
-		if player:getStorageValue(Storage.SecretService.AVINMission03) == 2 then
+		if player:getStorageValue(Storage.Quest.U8_1.SecretService.AVINMission03) == 2 then
 			npcHandler:say("Do you bring me a barrel of beer??", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -71,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:removeItem(404, 1) then
-				player:setStorageValue(Storage.SecretService.AVINMission03, 3)
+				player:setStorageValue(Storage.Quest.U8_1.SecretService.AVINMission03, 3)
 				npcHandler:say("Three cheers for the noble |PLAYERNAME|.", npc, creature)
 			else
 				npcHandler:say("You don't have any barrel of beer!", npc, creature)

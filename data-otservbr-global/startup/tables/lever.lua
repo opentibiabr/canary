@@ -1,6 +1,13 @@
 -- Look README.md for see the reserved action/unique numbers
 
 LeverAction = {
+	-- Secret Service
+	[12574] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 32576, y = 31862, z = 14 },
+		},
+	},
 	-- Dawnport bridge lever
 	-- Path: data\scripts\actions\dawnport\lever.lua
 	[30001] = {

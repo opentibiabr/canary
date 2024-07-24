@@ -2516,12 +2516,12 @@ if not Quests then
 		},
 		[15] = {
 			name = "Secret Service",
-			startStorageId = Storage.SecretService.Quest,
+			startStorageId = Storage.Quest.U8_1.SecretService.Quest,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: From Thais with Love",
-					storageId = Storage.SecretService.TBIMission01,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission01,
 					missionId = 10191,
 					startValue = 1,
 					endValue = 3,
@@ -2534,7 +2534,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 1: For Your Eyes Only",
-					storageId = Storage.SecretService.AVINMission01,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission01,
 					missionId = 10192,
 					startValue = 1,
 					endValue = 4,
@@ -2548,7 +2548,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 1: Borrowed Knowledge",
-					storageId = Storage.SecretService.CGBMission01,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission01,
 					missionId = 10193,
 					startValue = 1,
 					endValue = 2,
@@ -2559,7 +2559,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 2: Operation Green Claw",
-					storageId = Storage.SecretService.TBIMission02,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission02,
 					missionId = 10194,
 					startValue = 1,
 					endValue = 2,
@@ -2571,7 +2571,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 2: A File Between Friends",
-					storageId = Storage.SecretService.AVINMission02,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission02,
 					missionId = 10195,
 					startValue = 1,
 					endValue = 2,
@@ -2582,7 +2582,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 2: Codename:Lumberjack",
-					storageId = Storage.SecretService.CGBMission02,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission02,
 					missionId = 10196,
 					startValue = 1,
 					endValue = 2,
@@ -2594,7 +2594,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 3: Treachery in Port Hope",
-					storageId = Storage.SecretService.TBIMission03,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission03,
 					missionId = 10197,
 					startValue = 1,
 					endValue = 3,
@@ -2606,7 +2606,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 3: What Men are Made of",
-					storageId = Storage.SecretService.AVINMission03,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission03,
 					missionId = 10198,
 					startValue = 1,
 					endValue = 4,
@@ -2620,7 +2620,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 3: Rust in Peace",
-					storageId = Storage.SecretService.CGBMission03,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission03,
 					missionId = 10199,
 					startValue = 1,
 					endValue = 3,
@@ -2633,7 +2633,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 4: Objective Hellgate",
-					storageId = Storage.SecretService.TBIMission04,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission04,
 					missionId = 10200,
 					startValue = 1,
 					endValue = 2,
@@ -2644,7 +2644,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Mission 4: Pawn Captures Knight",
-					storageId = Storage.SecretService.AVINMission04,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission04,
 					missionId = 10201,
 					startValue = 1,
 					endValue = 3,
@@ -2656,7 +2656,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Mission 4: Plot for A Plan",
-					storageId = Storage.SecretService.CGBMission04,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission04,
 					missionId = 10202,
 					startValue = 1,
 					endValue = 2,
@@ -2667,7 +2667,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "Mission 5: Coldfinger",
-					storageId = Storage.SecretService.TBIMission05,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission05,
 					missionId = 10203,
 					startValue = 1,
 					endValue = 3,
@@ -2679,7 +2679,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "Mission 5: A Cryptic Mission",
-					storageId = Storage.SecretService.AVINMission05,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission05,
 					missionId = 10204,
 					startValue = 1,
 					endValue = 2,
@@ -2690,7 +2690,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "Mission 5: No Admittance",
-					storageId = Storage.SecretService.CGBMission05,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission05,
 					missionId = 10205,
 					startValue = 1,
 					endValue = 2,
@@ -2701,7 +2701,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "Mission 6: The Weakest Spot",
-					storageId = Storage.SecretService.TBIMission06,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission06,
 					missionId = 10206,
 					startValue = 1,
 					endValue = 3,
@@ -2714,7 +2714,7 @@ if not Quests then
 				},
 				[17] = {
 					name = "Mission 6: A Little Bribe Won't Hurt",
-					storageId = Storage.SecretService.AVINMission06,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission06,
 					missionId = 10207,
 					startValue = 1,
 					endValue = 3,
@@ -2726,7 +2726,7 @@ if not Quests then
 				},
 				[18] = {
 					name = "Mission 6: News From the Past",
-					storageId = Storage.SecretService.CGBMission06,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission06,
 					missionId = 10208,
 					startValue = 1,
 					endValue = 2,
@@ -2737,7 +2737,7 @@ if not Quests then
 				},
 				[19] = {
 					name = "Mission 7: Licence to Kill",
-					storageId = Storage.SecretService.Mission07,
+					storageId = Storage.Quest.U8_1.SecretService.Mission07,
 					missionId = 10209,
 					startValue = 1,
 					endValue = 2,

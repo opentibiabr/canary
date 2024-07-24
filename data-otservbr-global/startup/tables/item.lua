@@ -295,6 +295,11 @@ ItemUnique = {
 		itemId = 2576,
 		itemPos = { x = 32455, y = 31166, z = 12 },
 	},
+	-- Koshei the Deathless Quest
+	[3070] = {
+		itemId = 7534,
+		itemPos = { x = 33281, y = 32447, z = 8 },
+	},
 	-- Barbarian Arena Quest
 	[3264] = {
 		itemId = 10145,

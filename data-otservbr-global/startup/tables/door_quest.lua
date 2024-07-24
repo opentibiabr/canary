@@ -91,7 +91,7 @@ QuestDoorAction = {
 		itemPos = { { x = 33344, y = 32120, z = 10 } },
 	},
 	-- Koshei the deathless quest door
-	[Storage.KosheiTheDeathless.RewardDoor] = {
+	[Storage.Quest.U8_1.KosheiTheDeathless.RewardDoor] = {
 		itemId = false,
 		itemPos = { { x = 33269, y = 32446, z = 12 } },
 	},

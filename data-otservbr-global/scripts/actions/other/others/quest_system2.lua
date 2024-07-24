@@ -47,18 +47,6 @@ local config = {
 		needItem = { itemId = 3231 },
 		effect = CONST_ME_MAGIC_RED,
 	},
-	[3062] = {
-		items = {
-			{ itemId = 7528 },
-		},
-		storage = Storage.QuestChests.KosheiAmulet1,
-	},
-	[3064] = {
-		items = {
-			{ itemId = 7530 },
-		},
-		storage = Storage.QuestChests.KosheiAmulet2,
-	},
 	[3084] = {
 		items = {
 			{ itemId = 8829 },

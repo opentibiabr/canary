@@ -660,10 +660,7 @@ Storage = {
 		SlimeGobblerTimeout = 50720,
 		SlimeGobblerReceived = 50721,
 	},
-	KosheiTheDeathless = {
-		-- Reserved storage from 50740 - 50749
-		RewardDoor = 50740,
-	},
+
 	ElementalSphere = {
 		-- Reserved storage from 50750 - 50759
 		QuestLine = 50750,
@@ -1330,8 +1327,7 @@ Storage = {
 	},
 	QuestChests = {
 		-- Reserved storage from 51730 - 51999
-		KosheiTheDeathlessLegs = 51730,
-		KosheiTheDeathlessGold = 51731,
+
 		TutorialShovel = 51732,
 		TutorialRope = 51733,
 		FormorgarMinesHoistSkeleton = 51737,
@@ -1340,8 +1336,7 @@ Storage = {
 		BlackKnightTreeCrownShield = 51739,
 		BlackKnightTreeCrownArmor = 51740,
 		BlackKnightTreeKey = 51741,
-		KosheiAmulet1 = 51742,
-		KosheiAmulet2 = 51743,
+
 		SilverBrooch = 51744,
 		FamilyBrooch = 51745,
 		DCQGhoul = 51746,
@@ -2056,7 +2051,16 @@ Storage = {
 		},
 		U8_1 = { -- update 8.1 - Reserved Storages 41351 - 41650
 			KissingAPig = {},
-			KosheiTheDeathless = {},
+			KosheiTheDeathless = {
+				RewardDoor = 41351,
+				KosheiTheDeathlessLegs = 41352,
+				KosheiTheDeathlessGold = 41353,
+				KosheiTheDeathlessPlatinum = 41354,
+				KosheiAmuletPart1 = 41355,
+				KosheiAmuletPart2 = 41356,
+				KosheiAmuletPart3 = 41357,
+				KosheiAmuletPart4 = 41358,
+			},
 			NightmareOutfits = {},
 			OutfitNightmareMaleAddon = {},
 			NomadsLand = {},

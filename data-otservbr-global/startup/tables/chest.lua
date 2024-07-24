@@ -1178,6 +1178,56 @@ ChestUnique = {
 		weight = 68.50,
 		storage = Storage.Quest.U8_0.FishingBox,
 	},
+	-- Koshei The Deathless Quest
+	[6163] = {
+		itemId = 2908,
+		itemPos = { x = 33193, y = 32459, z = 7 },
+		reward = { { 7530, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart1,
+	},
+	[6164] = {
+		itemId = 1983,
+		itemPos = { x = 33305, y = 32277, z = 10 },
+		reward = { { 7528, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart2,
+	},
+	[6165] = {
+		itemId = 231,
+		itemPos = { x = 33212, y = 32593, z = 7 },
+		reward = { { 7531, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart3,
+	},
+	[6166] = {
+		itemId = 1983,
+		itemPos = { x = 33053, y = 32468, z = 11 },
+		reward = { { 7529, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart4,
+	},
+	[6167] = {
+		itemId = 2472,
+		itemPos = { x = 33261, y = 32444, z = 12 },
+		reward = { { 645, 1 } },
+		weight = 18.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessLegs,
+	},
+	[6168] = {
+		itemId = 2480,
+		itemPos = { x = 33261, y = 32448, z = 12 },
+		reward = { { 3035, 100 } },
+		weight = 5.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessPlatinum,
+	},
+	[6169] = {
+		itemId = 2469,
+		itemPos = { x = 33273, y = 32470, z = 11 },
+		reward = { { 3031, 100 } },
+		weight = 10.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessGold,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

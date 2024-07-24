@@ -16,6 +16,7 @@ local function revertCoffin()
 end
 
 local kosheiSwitch = Action()
+
 function kosheiSwitch.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local statuesInOrder, statueItem = true, true
 	for i = 1, #config do

@@ -12,6 +12,11 @@ ItemAction = {
 		itemId = 1642,
 		itemPos = { { x = 32660, y = 32192, z = 8 } },
 	},
+	-- To Blind the Enemy Quest
+	[4001] = {
+		itemId = 132,
+		itemPos = { { x = 32592, y = 31645, z = 2 } },
+	},
 	-- Into The Bone Pit Quest - ectoplasm container
 	[4205] = {
 		itemId = 103,

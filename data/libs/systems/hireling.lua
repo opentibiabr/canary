@@ -312,8 +312,7 @@ function Hireling:save()
 
 	sql = sql .. " WHERE `id`=" .. tostring(self.id)
 
-	db.query(sql)
-	return true
+	return db.query(sql)
 end
 
 function Hireling:spawn()

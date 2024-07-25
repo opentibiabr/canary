@@ -89,7 +89,6 @@ Storage = {
 	WagonTicket = 30009,
 	BloodHerbQuest = 30010,
 	FirstMageWeapon = 30011,
-	ToOutfoxAFoxQuest = 30012,
 	KawillBlessing = 30014,
 	RentedHorseTimer = 30015,
 	FountainOfLife = 30016,
@@ -1165,11 +1164,15 @@ Storage = {
 			Questline = 51532,
 		},
 		ToBlindTheEnemy = {
-			Questline = 41398,
-			DwarvenShield = 41399,
-			MorningStar = 41400,
-			BP1 = 41401,
-			BP2 = 41402,
+			Questline = 51533,
+			DwarvenShield = 51534,
+			MorningStar = 51535,
+			BP1 = 51536,
+			BP2 = 51537,
+		},
+		ToOutfoxAFoxQuest = {
+			Questline = 51538,
+			MiningHelmet = 51539,
 		},
 	},
 	TheShatteredIsles = {

@@ -361,7 +361,7 @@ local questTable = {
 
 	-- Assassin Outfit quests
 	{ storage = Storage.KillingInTheNameOf.BudrikMinos, storageValue = 0 },
-	{ storage = Storage.ToOutfoxAFoxQuest, storageValue = 2 },
+	{ storage = Storage.TibiaTales.ToOutfoxAFoxQuest.Questline, storageValue = 2 },
 
 	-- Hunter Outfit quests
 	{ storage = Storage.OutfitQuest.HunterMusicSheet01, storageValue = 1 },

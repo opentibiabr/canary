@@ -1330,6 +1330,14 @@ ChestUnique = {
 		weight = 18.20,
 		storage = Storage.TibiaTales.ToBlindTheEnemy.BP2,
 	},
+	-- To Outfox a Fox Quest
+	[6260] = {
+		itemId = 2469,
+		itemPos = { x = 32467, y = 31970, z = 5 },
+		reward = { { 139, 1 } },
+		weight = 7.00,
+		storage = Storage.TibiaTales.ToOutfoxAFoxQuest.MiningHelmet,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

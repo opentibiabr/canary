@@ -4649,7 +4649,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "To Outfox a Fox",
-					storageId = Storage.ToOutfoxAFoxQuest,
+					storageId = Storage.TibiaTales.ToOutfoxAFoxQuest,
 					missionId = 10432,
 					startValue = 1,
 					endValue = 2,

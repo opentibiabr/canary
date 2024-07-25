@@ -1338,6 +1338,15 @@ ChestUnique = {
 		weight = 7.00,
 		storage = Storage.TibiaTales.ToOutfoxAFoxQuest.MiningHelmet,
 	},
+	-- Waterfall Quest
+	[6261] = {
+		itemId = 2472,
+		itemPos = { x = 32970, y = 32646, z = 8 },
+		container = 5926,
+		reward = { { 6096, 1 }, { 3097, 1 } },
+		weight = 7.00,
+		storage = Storage.Quest.U8_1.WaterfallQuest,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

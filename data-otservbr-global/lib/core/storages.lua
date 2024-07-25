@@ -2086,7 +2086,7 @@ Storage = {
 				Questline = 41398,
 				Door = 41399,
 			},
-			Waterfall = {},
+			WaterfallQuest = 41400,
 			WhatAFoolish = {},
 		},
 		U8_2 = { -- update 8.2 - Reserved Storages 41651 - 41900

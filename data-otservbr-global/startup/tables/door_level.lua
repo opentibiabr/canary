@@ -6,6 +6,13 @@ Just add new positions and it go work in the game
 
 ]]
 LevelDoorAction = {
+	-- Doors for level 20
+	[1020] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32673, y = 32100, z = 8 },
+		},
+	},
 	-- Doors for level 25
 	[1025] = {
 		itemId = false,
@@ -20,6 +27,14 @@ LevelDoorAction = {
 			{ x = 33302, y = 31691, z = 11 },
 			{ x = 33302, y = 31692, z = 11 },
 			{ x = 32567, y = 31969, z = 3 },
+			{ x = 32479, y = 32174, z = 15 },
+		},
+	},
+	-- Doors for level 35
+	[1035] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32448, y = 32042, z = 8 },
 		},
 	},
 	-- Doors for level 40
@@ -27,6 +42,16 @@ LevelDoorAction = {
 		itemId = false,
 		itemPos = {
 			{ x = 32981, y = 31760, z = 9 },
+			{ x = 32353, y = 32073, z = 11 },
+			{ x = 32544, y = 32179, z = 14 },
+		},
+	},
+	-- Doors for level 45
+	[1045] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32612, y = 32253, z = 7 },
+			{ x = 32602, y = 32207, z = 10 },
 		},
 	},
 	-- Doors for level 50
@@ -44,6 +69,7 @@ LevelDoorAction = {
 		itemPos = {
 			{ x = 33085, y = 31650, z = 10 },
 			{ x = 32223, y = 31869, z = 14 },
+			{ x = 32483, y = 31722, z = 15 },
 		},
 	},
 	-- Doors for level 70

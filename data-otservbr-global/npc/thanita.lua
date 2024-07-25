@@ -51,34 +51,34 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local function creatureSayCallback(npc, creature, type, message)
-    local player = Player(creature)
-    local playerId = player:getId()
+	local player = Player(creature)
+	local playerId = player:getId()
 
-    -- Check if NPC can interact with the creature
-    if not npcHandler:checkInteraction(npc, creature) then
-        return false
-    end
+	-- Check if NPC can interact with the creature
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
 
-    -- Check if the message contains "mission"
-    if MsgContains(message, "mission") then
-        if player:getStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Questline) == 1 and player:removeItem(140, 1) then
-            npcHandler:say({
-                "Oh great! Supplies from Carlin! Let me see ...<she digs into the parcel>...ahh, nothing meaningful at all, like always. Well, before I give you the password for the delivery, you have to help me! ...",
-                "I have massive problems with the goblin tribe that lives here. You look strong enough to face their leader but you need to be smart to lure him out. ...",
-                "I heard they don't like fire very much, maybe that's worth a try. Their beds are mostly made of straw which is known as easily inflammable. ...",
-                "The entrance to their cave is at the pond south east of here.",
-            }, npc, creature)
-            player:setStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Questline, 2)
-            player:setStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Door, 2)
-            npcHandler:setTopic(playerId, 0)
-        elseif player:getStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Questline) == 3 then
-            npcHandler:say("Impressive!! I could need someone like you here at the watchtower! Okay, the password you need to tell Bunny is ' password* '. Come back and visit me if you like to!", npc, creature)
-            player:setStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Questline, 4)
-            npcHandler:setTopic(playerId, 0)
-        end
-    end
+	-- Check if the message contains "mission"
+	if MsgContains(message, "mission") then
+		if player:getStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Questline) == 1 and player:removeItem(140, 1) then
+			npcHandler:say({
+				"Oh great! Supplies from Carlin! Let me see ...<she digs into the parcel>...ahh, nothing meaningful at all, like always. Well, before I give you the password for the delivery, you have to help me! ...",
+				"I have massive problems with the goblin tribe that lives here. You look strong enough to face their leader but you need to be smart to lure him out. ...",
+				"I heard they don't like fire very much, maybe that's worth a try. Their beds are mostly made of straw which is known as easily inflammable. ...",
+				"The entrance to their cave is at the pond south east of here.",
+			}, npc, creature)
+			player:setStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Questline, 2)
+			player:setStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Door, 2)
+			npcHandler:setTopic(playerId, 0)
+		elseif player:getStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Questline) == 3 then
+			npcHandler:say("Impressive!! I could need someone like you here at the watchtower! Okay, the password you need to tell Bunny is ' password* '. Come back and visit me if you like to!", npc, creature)
+			player:setStorageValue(Storage.Quest.U8_1.TowerDefenceQuest.Questline, 4)
+			npcHandler:setTopic(playerId, 0)
+		end
+	end
 
-    return true
+	return true
 end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

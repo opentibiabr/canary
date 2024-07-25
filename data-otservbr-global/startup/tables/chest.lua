@@ -21,6 +21,16 @@
 		storage = xxxxx
 	},
 
+		Example using KV:
+		[xxxx] = {
+			useKV = true,
+			itemId = xxxx,
+			itemPos = {x = xxxxx, y = xxxxx, z = x},
+			container = xxxx, (it's for use reward in a container, only put the id of the container here)
+			reward = {{xxxx, x}},
+			questName = "testkv",
+		}
+
 	Note:
 	The "for use of the map" variables are only used to create the action or unique on the map during startup
 	If the reward is an key, do not need to use "keyAction", only set the storage as same action id
@@ -57,6 +67,17 @@ ChestAction = {
 		itemPos = {
 			{ x = 33053, y = 31020, z = 7 },
 		},
+	},
+	-- Key  5010 (dead tree black knight quest)
+	[5002] = {
+		isKey = true,
+		itemId = 3634,
+		itemPos = {
+			{ x = 32813, y = 31964, z = 7 },
+			{ x = 32800, y = 31959, z = 7 },
+		},
+		reward = { { 2969, 1 } },
+		storage = Storage.Quest.Key.ID5010,
 	},
 }
 
@@ -169,6 +190,94 @@ ChestUnique = {
 		timerStorage = Storage.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
 		time = 24, -- hour
 	},
+	-- Bear Room Quest (rookgaard) key 4601
+	[5013] = {
+		isKey = true,
+		itemId = 2472,
+		itemPos = { x = 32150, y = 32112, z = 12 },
+		reward = { { 2970, 1 } },
+		storage = Storage.Quest.Key.ID4601,
+	},
+	-- Katana Quest (rookgaard) key 4603
+	[5014] = {
+		isKey = true,
+		itemId = 4240,
+		itemPos = { x = 32176, y = 32132, z = 9 },
+		reward = { { 2969, 1 } },
+		storage = Storage.Quest.Key.ID4603,
+	},
+	-- Key 3600
+	[5015] = {
+		isKey = true,
+		itemId = 4285,
+		itemPos = { x = 32509, y = 32181, z = 13 },
+		reward = { { 2969, 1 } },
+		storage = Storage.Quest.Key.ID3600,
+	},
+	-- Key 3667
+	[5016] = {
+		isKey = true,
+		itemId = 3204,
+		itemPos = { x = 32576, y = 32216, z = 15 },
+		reward = { { 2969, 1 } },
+		storage = Storage.Quest.Key.ID3667,
+	},
+	-- Key 3610
+	[5017] = {
+		isKey = true,
+		itemId = 387,
+		itemPos = { x = 32589, y = 32100, z = 14 },
+		reward = { { 2969, 1 } },
+		storage = Storage.Quest.Key.ID3610,
+	},
+	-- Key 3520
+	[5018] = {
+		isKey = true,
+		itemId = 2473,
+		itemPos = { x = 32376, y = 31802, z = 7 },
+		reward = { { 2973, 1 } },
+		storage = Storage.Quest.Key.ID3520,
+	},
+	-- Key 3301 (outlaw camp key 1)
+	[5019] = {
+		isKey = true,
+		itemId = 3634,
+		itemPos = { x = 32617, y = 32250, z = 7 },
+		reward = { { 2970, 1 } },
+		storage = Storage.Quest.Key.ID3301,
+	},
+	-- Key 3302 (outlaw camp key 2)
+	[5020] = {
+		isKey = true,
+		itemId = 3634,
+		itemPos = { x = 32609, y = 32244, z = 7 },
+		reward = { { 2969, 1 } },
+		storage = Storage.Quest.Key.ID3302,
+	},
+	-- Key 3303 (outlaw camp key 3)
+	[5021] = {
+		isKey = true,
+		itemId = 3634,
+		itemPos = { x = 32651, y = 32244, z = 7 },
+		reward = { { 2970, 1 } },
+		storage = Storage.Quest.Key.ID3303,
+	},
+	-- Key 3304 (outlaw camp key 4)
+	[5022] = {
+		isKey = true,
+		itemId = 2472,
+		itemPos = { x = 32623, y = 32187, z = 9 },
+		reward = { { 2972, 1 } },
+		storage = Storage.Quest.Key.ID3304,
+	},
+	-- Key 3008 (Draconia Quest)
+	[5023] = {
+		isKey = true,
+		itemId = 2435,
+		itemPos = { x = 32800, y = 31582, z = 2 },
+		reward = { { 2969, 1 } },
+		storage = Storage.Quest.Key.ID3008,
+	},
 	-- To add a reward inside a bag, you need to add the variable "container = bagId" before "reward"
 	-- Just duplicate the table and configure correctly, the scripts already register the entire table automatically
 	-- Path: data\scripts\actions\system\quest_reward_common.lua
@@ -206,10 +315,11 @@ ChestUnique = {
 	-- Dawnport
 	-- Legion helmet quest (dawnport)
 	[6006] = {
+		useKV = true,
 		itemId = 4240,
 		itemPos = { x = 32143, y = 31910, z = 8 },
 		reward = { { 3374, 1 } },
-		storage = Storage.Quest.U10_55.SanctuaryOfTheLizardGod.LegionHelmet,
+		questName = "legiondawnport",
 	},
 	-- Dawnport quest
 	-- Torn log book
@@ -220,153 +330,163 @@ ChestUnique = {
 		storage = Storage.Quest.U10_55.Dawnport.TornLogBook,
 	},
 	-- Deeper fibula quest
-	-- Tower shield
 	[6008] = {
+		useKV = true,
 		itemId = 4024,
 		itemPos = { x = 32239, y = 32471, z = 10 },
-		reward = { { 3428, 1 } },
-		storage = Storage.Quest.PreU6_0.DeeperFibula.Rewards.TowerShield,
+		reward = { { 3428, 1 } }, -- Tower shield
+		questName = "deeperfibula1",
 	},
-	-- Warrior helmet
 	[6009] = {
+		useKV = true,
 		itemId = 4024,
 		itemPos = { x = 32239, y = 32478, z = 10 },
-		reward = { { 3369, 1 } },
-		storage = Storage.Quest.PreU6_0.DeeperFibula.Rewards.WarriorHelmet,
+		reward = { { 3369, 1 } }, -- Warrior helmet
+		questName = "deeperfibula2",
 	},
-	-- Dwarven ring
 	[6010] = {
+		useKV = true,
 		itemId = 4240,
 		itemPos = { x = 32233, y = 32491, z = 10 },
-		reward = { { 3097, 1 } },
-		storage = Storage.Quest.PreU6_0.DeeperFibula.Rewards.DwarvenRing,
+		reward = { { 3097, 1 } }, -- Dwarven ring
+		questName = "deeperfibula3",
 	},
-	-- Elven aulet
 	[6011] = {
+		useKV = true,
 		itemId = 4025,
 		itemPos = { x = 32245, y = 32492, z = 10 },
-		reward = { { 3082, 1 } },
-		storage = Storage.Quest.PreU6_0.DeeperFibula.Rewards.ElvenAmulet,
+		reward = { { 3082, 1 } }, -- Elven aulet
+		questName = "deeperfibula4",
 	},
-	-- Knight axe
 	[6012] = {
+		useKV = true,
 		itemId = 4240,
 		itemPos = { x = 32256, y = 32500, z = 10 },
-		reward = { { 3318, 1 } },
-		storage = Storage.Quest.PreU6_0.DeeperFibula.Rewards.KnightAxe,
+		reward = { { 3318, 1 } }, -- Knight axe
+		questName = "deeperfibula5",
 	},
 	-- Short sword quest
 	-- Book
 	[6013] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32171, y = 32197, z = 7 },
 		reward = { { 2821, 1 } },
-		storage = Storage.Quest.PreU6_0.ShortSword.Rewards.Book,
+		questName = "shortswordbook",
 	},
 	-- Thais lighthouse quest
 	-- Battle hammer
 	[6014] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32225, y = 32265, z = 10 },
 		reward = { { 3305, 1 } },
-		storage = Storage.Quest.PreU6_0.ThaisLighthouse.Rewards.BattleHammer,
+		questName = "lighthouse1",
 	},
 	-- Dark shield
 	[6015] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32226, y = 32265, z = 10 },
 		reward = { { 3421, 1 } },
-		storage = Storage.Quest.PreU6_0.ThaisLighthouse.DarkShield,
+		questName = "lighthouse2",
 	},
 	-- Studded shield quest (rookgaard)
 	-- Banana free account area
 	[6016] = {
+		useKV = true,
 		itemId = 3639,
 		itemPos = { x = 32172, y = 32169, z = 7 },
 		reward = { { 3587, 1 } },
-		storage = Storage.Quest.U6_0.StuddedShield.Rewards.BananaFree,
+		questName = "bananafree",
 	},
 	-- Banana premium account area
 	[6017] = {
+		useKV = true,
 		itemId = 3639,
 		itemPos = { x = 31983, y = 32193, z = 5 },
 		reward = { { 3587, 1 } },
-		storage = Storage.Quest.U6_0.StuddedShield.Rewards.BananaPremium,
+		questName = "bananapremium",
 	},
 	-- Explorer brooch quest (kazordoon)
 	[6019] = {
+		useKV = true,
 		itemId = 4240,
 		itemPos = { x = 32636, y = 31873, z = 10 },
 		reward = { { 4871, 1 } },
-		storage = Storage.Quest.U6_1.ExplorerBrooch.Brooch,
+		questName = "explorerbrooch",
 	},
 	-- Orc fortress quest
-	-- Knight axe
 	[6020] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 32980, y = 31727, z = 9 },
-		reward = { { 3318, 1 } },
-		storage = Storage.Quest.U6_1.OrcFortress.Rewards.KnightAxe,
+		reward = { { 3318, 1 } }, -- Knight axe
+		questName = "orcfortress1",
 	},
-	-- Knight armor
 	[6021] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 32981, y = 31727, z = 9 },
-		reward = { { 3370, 1 } },
-		storage = Storage.Quest.U6_1.OrcFortress.Rewards.KnightArmor,
+		reward = { { 3370, 1 } }, -- Knight armor
+		questName = "orcfortress2",
 	},
-	-- Fire sword
 	[6022] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 32985, y = 31727, z = 9 },
-		reward = { { 3280, 1 } },
-		storage = Storage.Quest.U6_1.OrcFortress.Rewards.FireSword,
+		reward = { { 3280, 1 } }, -- Fire sword
+		questName = "orcfortress3",
 	},
 	-- Draconia quest
 	[6023] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32803, y = 31582, z = 2 },
 		container = 2853,
-		reward = { { 3284, 1 }, { 3297, 1 } },
+		reward = { { 3284, 1 }, { 3297, 1 } }, -- bag with weapons
 		weight = 64,
-		storage = Storage.Quest.U6_2.Draconia.Rewards.BagWithWeapons,
+		questName = "draconia1",
 	},
 	[6024] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32804, y = 31582, z = 2 },
 		container = 2853,
-		reward = { { 3081, 5 }, { 3051, 1 } },
+		reward = { { 3081, 5 }, { 3051, 1 } }, -- bag with amulets
 		weight = 15.80,
-		storage = Storage.Quest.U6_2.Draconia.Rewards.BagWithAmulets,
+		questName = "draconia2",
 	},
 	-- Adorned UH rune quest
 	[6025] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33136, y = 31601, z = 15 },
 		reward = { { 11603, 1 } },
-		storage = Storage.Quest.U6_4.AdornedUHRune.Rewards.SilverRuneEmblem,
+		questName = "adoreduh",
 	},
 	-- Barbarian axe quest
-	-- Barbarian axe
 	[6026] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33184, y = 31945, z = 11 },
-		reward = { { 3317, 1 } },
-		storage = Storage.Quest.U6_4.BarbarianAxe.Rewards.BarbarianAxe,
+		reward = { { 3317, 1 } }, -- Barbarian axe
+		questName = "barbarianaxe1",
 	},
-	-- Scimitar
 	[6027] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33185, y = 31945, z = 11 },
-		reward = { { 3307, 1 } },
-		storage = Storage.Quest.U6_4.BarbarianAxe.Rewards.Scimitar,
+		reward = { { 3307, 1 } }, -- Scimitar
+		questName = "barbarianaxe1",
 	},
 	-- Dark armor quest
 	[6028] = {
+		useKV = true,
 		itemId = 4311,
 		itemPos = { x = 33178, y = 31870, z = 12 },
 		reward = { { 3383, 1 } },
-		storage = Storage.Quest.U6_4.DarkArmor.Rewards.Armor,
+		questName = "darkarmor",
 	},
 	-- Demon helmet quest
 	-- Steel boots
@@ -391,176 +511,176 @@ ChestUnique = {
 		storage = Storage.Quest.U6_4.DemonHelmet.Rewards.DemonShield,
 	},
 	-- Double hero quest
-	-- Red gem
 	[6032] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33109, y = 31679, z = 13 },
-		reward = { { 3039, 1 } },
-		storage = Storage.Quest.U6_4.DoubleHero.Rewards.RedGem,
+		reward = { { 3039, 1 } }, -- Red gem
+		questName = "doublehero1",
 	},
-	-- Club ring
 	[6033] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33110, y = 31679, z = 13 },
-		reward = { { 3093, 1 } },
-		storage = Storage.Quest.U6_4.DoubleHero.Rewards.ClubRing,
+		reward = { { 3093, 1 } }, -- Club ring
+		questName = "doublehero2",
 	},
 	-- Edron goblin quest
-	-- Silver amulet
 	[6034] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33095, y = 31800, z = 10 },
-		reward = { { 3054, 200 } },
-		storage = Storage.Quest.U6_4.EdronGoblin.Rewards.SilverAmulet,
+		reward = { { 3054, 200 } }, -- Silver amulet
+		questName = "edrongoblin1",
 	},
-	-- Steel shield
 	[6035] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33095, y = 31801, z = 10 },
-		reward = { { 3409, 1 } },
-		storage = Storage.Quest.U6_4.EdronGoblin.Rewards.SteelShield,
+		reward = { { 3409, 1 } }, -- Steel shield
+		questName = "edrongoblin2",
 	},
 	-- Fire axe quest
-	-- Fire axe
 	[6036] = {
+		useKV = true,
 		itemId = 4024,
 		itemPos = { x = 33084, y = 31650, z = 12 },
-		reward = { { 3320, 1 } },
-		storage = Storage.Quest.U6_4.FireAxe.Rewards.FireAxe,
+		reward = { { 3320, 1 } }, -- Fire axe
+		questName = "fireaxe2",
 	},
-	-- Ring quest
-	-- Time ring
+	-- Ring Quest
 	[6037] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33131, y = 31624, z = 15 },
-		reward = { { 3053, 1 } },
-		storage = Storage.Quest.U7_1.Ring.Rewards.TimeRing,
+		reward = { { 3053, 1 } }, -- Time ring
+		questName = "ringquest1",
 	},
-	-- Sword ring
 	[6038] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33134, y = 31624, z = 15 },
-		reward = { { 3091, 1 } },
-		storage = Storage.Quest.U7_1.Ring.Rewards.SwordRing,
+		reward = { { 3091, 1 } }, -- Sword ring
+		questName = "ringquest2",
 	},
 	-- Troll cave quest
-	-- Garlic necklace
 	[6039] = {
+		useKV = true,
 		itemId = 2473,
 		itemPos = { x = 33143, y = 31719, z = 10 },
-		reward = { { 3083, 150 } },
-		storage = Storage.Quest.U6_4.TrollCave.Rewards.GarlicNecklace,
+		reward = { { 3083, 150 } }, -- Garlic necklace
+		questName = "trollcave1",
 	},
-	-- Brass legs
 	[6040] = {
+		useKV = true,
 		itemId = 2473,
 		itemPos = { x = 33143, y = 31721, z = 10 },
-		reward = { { 3372, 1 } },
-		storage = Storage.Quest.U6_4.TrollCave.Rewards.BrassLegs,
+		reward = { { 3372, 1 } }, -- Brass legs
+		questName = "trollcave1",
 	},
 	-- Vampire shield quest
-	-- Dragon lance
 	[6041] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33189, y = 31688, z = 14 },
-		reward = { { 3302, 1 } },
-		storage = Storage.Quest.U6_4.VampireShield.Rewards.DragonLance,
+		reward = { { 3302, 1 } }, -- Dragon lance
+		questName = "vampireshield2",
 	},
-	-- Vampire shield
 	[6042] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33195, y = 31688, z = 14 },
-		reward = { { 3434, 1 } },
-		storage = Storage.Quest.U6_4.VampireShield.Rewards.VampireShield,
+		reward = { { 3434, 1 } }, -- Vampire shield
+		questName = "vampireshield3",
 	},
-	-- Weeding ring quest
-	-- Dragon necklace
+	-- Wedding Ring Quest
 	[6043] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33158, y = 31621, z = 15 },
-		reward = { { 3085, 200 } },
-		storage = Storage.Quest.U6_4.WeddingRing.Rewards.DragonNecklace,
+		reward = { { 3085, 200 } }, -- Dragon necklace
+		questName = "weddingring1",
 	},
-	-- Weeding ring
 	[6044] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33158, y = 31622, z = 15 },
-		reward = { { 3004, 1 } },
-		storage = Storage.Quest.U6_4.WeddingRing.Rewards.WeedingRing,
+		reward = { { 3004, 1 } }, -- Weeding ring
+		questName = "weddingring2",
 	},
 	-- Alawars vault quest
-	-- White pearl
 	[6045] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32105, y = 31567, z = 9 },
-		reward = { { 3026, 3 } },
-		storage = Storage.Quest.U6_5.AlawarsVault.Rewards.WhitePearl,
+		reward = { { 3026, 3 } }, -- White pearl
+		questName = "AlawarsVault1",
 	},
-	-- Broadsword
 	[6046] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32109, y = 31567, z = 9 },
-		reward = { { 3301, 1 } },
-		storage = Storage.Quest.U6_5.AlawarsVault.Rewards.Broadsword,
+		reward = { { 3301, 1 } }, -- Broadsword
+		questName = "AlawarsVault2",
 	},
 	-- Black knight quest
-	-- Crown armor
 	[6047] = {
+		useKV = true,
 		itemId = 3634,
 		itemPos = { x = 32868, y = 31955, z = 11 },
-		reward = { { 3381, 1 } },
-		storage = Storage.Quest.U7_1.BlackKnight.Rewards.CrownArmor,
+		reward = { { 3381, 1 } }, -- Crown armor
+		questName = "Blackknight1",
 	},
-	-- Crown shield
 	[6048] = {
+		useKV = true,
 		itemId = 3634,
 		itemPos = { x = 32880, y = 31955, z = 11 },
-		reward = { { 3419, 1 } },
-		storage = Storage.Quest.U7_1.BlackKnight.Rewards.CrownShield,
+		reward = { { 3419, 1 } }, -- Crown shield
+		questName = "Blackknight2",
 	},
-	-- TIme ring quest
-	-- Crystal ball
+	-- Time Ring Quest
 	[6049] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33038, y = 32171, z = 9 },
-		reward = { { 3076, 1 } },
-		storage = Storage.Quest.U7_1.TimeRing.Rewards.CrystallBall,
+		reward = { { 3076, 1 } }, -- Crystal ball
+		questName = "timering1",
 	},
-	-- Time ring
 	[6050] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33039, y = 32171, z = 9 },
-		reward = { { 3053, 1 } },
-		storage = Storage.Quest.U7_1.TimeRing.Rewards.TimeRing,
+		reward = { { 3053, 1 } }, -- Time ring
+		questName = "timering2",
 	},
-	-- Elven amulet
 	[6051] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33040, y = 32171, z = 9 },
-		reward = { { 3082, 1 } },
-		storage = Storage.Quest.U7_1.TimeRing.Rewards.ElvenAmulet,
+		reward = { { 3082, 50 } }, -- Elven amulet
+		questName = "timering3",
 	},
 	-- Behemoth quest
-	-- Guardian halberd
 	[6052] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33295, y = 31658, z = 13 },
-		reward = { { 3315, 1 } },
-		storage = Storage.Quest.U7_2.Behemoth.GuardianHalberd,
+		reward = { { 3315, 1 } }, -- Guardian halberd
+		questName = "behemothquest2",
 	},
-	-- Demon shield
 	[6053] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33297, y = 31658, z = 13 },
-		reward = { { 3420, 1 } },
-		storage = Storage.Quest.U7_2.Behemoth.DemonShield,
+		reward = { { 3420, 1 } }, -- Demon shield
+		questName = "behemothquest3",
 	},
-	-- Golden armor
 	[6054] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33298, y = 31658, z = 13 },
-		reward = { { 3360, 1 } },
-		storage = Storage.Quest.U7_2.Behemoth.GoldenArmor,
+		reward = { { 3360, 1 } }, -- Golden armor
+		questName = "behemothquest4",
 	},
 	-- Family brooch quest
 	[6055] = {
@@ -623,21 +743,23 @@ ChestUnique = {
 		storage = Storage.Quest.PreU6_0.OrnamentedShield.Rewards.OrnamentedShield,
 	},
 	[6063] = {
+		useKV = true,
 		itemId = 2480,
 		itemPos = { x = 32769, y = 32302, z = 10 },
 		container = 2859,
 		reward = { { 2949, 1 }, { 3059, 1 }, { 3083, 1 }, { 3035, 5 }, { 3053, 1 } },
 		weight = 44,
-		storage = Storage.Quest.PreU6_0.OrnamentedShield.Rewards.TimeRing,
+		questName = "ornamentedshield",
 	},
 	--[6064] EMPTY
 	[6065] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32644, y = 32131, z = 8 },
 		container = 2853,
 		reward = { { 3033, 2 }, { 3050, 1 }, { 2953, 1 } },
 		weight = 44,
-		storage = Storage.Quest.U6_1.Panpipe.Rewards.Panpipe,
+		questName = "panpipe",
 	},
 	[6066] = {
 		itemId = 2469,
@@ -648,34 +770,34 @@ ChestUnique = {
 		storage = Storage.Quest.U6_4.BerserkerTreasure.Rewards.WhitePearls,
 	},
 	-- Fire axe quest
-	-- Bag
 	[6067] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33078, y = 31656, z = 11 },
 		container = 2853,
-		reward = { { 3098, 1 }, { 3085, 200 }, { 3028, 7 }, { 3320, 1 } },
+		reward = { { 3098, 1 }, { 3085, 200 }, { 3028, 7 }, { 3320, 1 } }, -- Bag (Ring of Healing, Dragon Necklace, 7 Small Diamonds)
 		weight = 27,
-		storage = Storage.Quest.U6_4.FireAxe.Rewards.Bag,
+		questName = "fireaxe1",
 	},
 	-- Poison daggers quest
-	-- Backpack reward
 	[6068] = {
+		useKV = true,
 		itemId = 2473,
 		itemPos = { x = 33155, y = 31880, z = 11 },
 		container = 2854,
-		reward = { { 3448, 30 }, { 3299, 1 }, { 3299, 1 } },
+		reward = { { 3448, 30 }, { 3299, 1 }, { 3299, 1 } }, -- Backpack (2 Poison Daggers, 30 Poison Arrows)
 		weight = 60,
-		storage = Storage.Quest.U6_4.PoisonDaggers.Rewards.BackpackReward,
+		questName = "poisondaggers",
 	},
 	-- Shaman treasure quest
-	-- Bag with 3 blank runes
 	[6069] = {
+		useKV = true,
 		itemId = 4024,
 		itemPos = { x = 33127, y = 31885, z = 9 },
 		container = 2853,
-		reward = { { 3147, 3 } },
+		reward = { { 3147, 3 } }, -- Bag with 3 blank runes
 		weight = 15,
-		storage = Storage.Quest.U6_4.ShamanTreasure.Rewards.BlankRunes,
+		questName = "shamantreasure",
 	},
 	-- Strong potions quest
 	-- Green bag with 5 strong mana potions
@@ -688,17 +810,16 @@ ChestUnique = {
 		storage = Storage.Quest.U8_1.StrongPotions.Reward,
 	},
 	-- Vampire shield quest
-	-- Bag
 	[6071] = {
+		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 33188, y = 31682, z = 14 },
 		container = 2853,
-		reward = { { 3058, 1 }, { 3027, 1 }, { 3078, 1 } },
+		reward = { { 3058, 1 }, { 3027, 1 }, { 3078, 1 } }, -- Bag (Strange Symbol, Black Pearl and Mysterious Fetish)
 		weight = 16,
-		storage = Storage.Quest.U6_4.VampireShield.Rewards.StrangeSymbol,
+		questName = "vampireshield1",
 	},
 	-- [6072] empty
-
 	-- Dragon tower quest
 	-- Backpack 1
 	[6073] = {
@@ -721,12 +842,13 @@ ChestUnique = {
 	-- Behemoth quest
 	-- Bag
 	[6075] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 33294, y = 31658, z = 13 },
 		container = 2853,
 		reward = { { 3028, 3 }, { 3029, 4 }, { 3007, 1 }, { 3052, 1 }, { 3055, 1 } },
 		weight = 50,
-		storage = Storage.Quest.U7_2.Behemoth.Bag,
+		questName = "behemothquest1",
 	},
 	-- Parchment room quest
 	-- Bag
@@ -762,26 +884,26 @@ ChestUnique = {
 		storage = Storage.Quest.U7_24.GiantSmithhammer.GoldCoin,
 	},
 	-- Mad Mage room quest
-	-- Star amulet
 	[6080] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32578, y = 32195, z = 14 },
-		reward = { { 3014, 1 } },
-		storage = Storage.Quest.U7_24.MadMageRoom.StarAmulet,
+		reward = { { 3014, 1 } }, -- Star amulet
+		questName = "madmageroom1",
 	},
-	-- Hat of the mad
 	[6081] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32575, y = 32195, z = 14 },
-		reward = { { 3210, 1 } },
-		storage = Storage.Quest.U7_24.MadMageRoom.Hat,
+		reward = { { 3210, 1 } }, -- Hat of the mad
+		questName = "madmageroom2",
 	},
-	-- Stone skin amulet
 	[6082] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32572, y = 32195, z = 14 },
-		reward = { { 3081, 5 } },
-		storage = Storage.Quest.U7_24.MadMageRoom.StoneSkinAmulet,
+		reward = { { 3081, 5 } }, -- Stone skin amulet
+		questName = "madmageroom3",
 	},
 	-- Skull of ratha quest
 	-- Bag (white pearl, skull)
@@ -997,6 +1119,620 @@ ChestUnique = {
 		reward = { { nil, nil } },
 		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.UndergroundBastion,
 		time = 24, -- hour
+	},
+	-- Blood Herb Quest
+	[6111] = {
+		useKV = true,
+		itemId = 3634,
+		itemPos = { x = 32769, y = 31968, z = 7 },
+		reward = { { 3734, 1 } },
+		questName = "bloodherb",
+	},
+	-- Power Bolts Quest (book)
+	[6112] = {
+		useKV = true,
+		itemId = 4240,
+		itemPos = { x = 32814, y = 32281, z = 8 },
+		reward = { { 2821, 1 } },
+		questName = "powerbolt2",
+	},
+	-- Present Quest (rookgaard)
+	[6113] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32149, y = 32105, z = 11 },
+		container = 2854, -- backpack
+		reward = { { 2882, 1 }, { 2856, 1 }, { 2881, 1 }, { 2905, 1 } }, -- Jug, Present Box, Cup and Plate
+		questName = "presentBox",
+	},
+	-- Bear Room quest
+	[6114] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32146, y = 32097, z = 11 },
+		container = 2853, -- bag
+		reward = { { 3447, 12 }, { 3031, 40 } }, -- bag: 12 arrows, 40 gold coin
+		questName = "bearChest1",
+	},
+	[6115] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32144, y = 32096, z = 11 },
+		reward = { { 3354, 1 } }, -- Brass Helmet
+		questName = "bearChest2",
+	},
+	[6116] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32141, y = 32097, z = 11 },
+		reward = { { 3358, 1 } }, -- Chain Armor
+		questName = "bearChest3",
+	},
+	-- Captain Iglues Treasure Quest
+	[6117] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32039, y = 32121, z = 13 },
+		reward = { { 3579, 1 } }, -- 2x Salmon
+		questName = "captainIglues",
+	},
+	-- Combat Knife Quest
+	[6117] = {
+		useKV = true,
+		itemId = 2473,
+		itemPos = { x = 32102, y = 32235, z = 8 },
+		reward = { { 3292, 1 } }, -- Combat Knife
+		questName = "combatknife",
+	},
+	-- Goblin Temple Quest
+	[6118] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 31973, y = 32209, z = 12 },
+		container = 2853, -- bag
+		reward = { { 3551, 1 }, { 1781, 5 }, { 3031, 50 } }, -- sandals, 5 small stones, 50 gold coins
+		questName = "goblintemple",
+	},
+	[6119] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 31977, y = 32209, z = 12 },
+		container = 2853, -- bag
+		reward = { { 3466, 1 }, { 2992, 4 }, { 2874, 1 } }, -- pan, 4 snowballs, vial of milk
+		questName = "goblintemple2",
+	},
+	-- Minotaur Hell Quest
+	[6120] = {
+		useKV = true,
+		itemId = 2473,
+		itemPos = { x = 32130, y = 32066, z = 12 },
+		reward = { { 3483, 1 } }, -- fishing rod
+		questName = "minohell1",
+	},
+	[6121] = {
+		useKV = true,
+		itemId = 2473,
+		itemPos = { x = 32127, y = 32065, z = 12 },
+		container = 2853, -- bag
+		reward = { { 3447, 10 }, { 3448, 4 } }, -- 10 arrows, 4 poison arrow
+		questName = "minohell2",
+	},
+	[6121] = {
+		useKV = true,
+		itemId = 2473,
+		itemPos = { x = 32124, y = 32064, z = 12 },
+		reward = { { 3283, 1 } }, -- carlin sword
+		questName = "minohell3",
+	},
+	-- Circle Room Quest
+	[6122] = {
+		useKV = true,
+		itemId = 2469,
+		itemPos = { x = 32495, y = 31992, z = 14 },
+		reward = { { 3279, 1 } }, -- war hammer
+		questName = "circleroom1",
+	},
+	[6123] = {
+		useKV = true,
+		itemId = 2469,
+		itemPos = { x = 32497, y = 31992, z = 14 },
+		reward = { { 3323, 1 } }, -- dwarven axe
+		questName = "circleroom2",
+	},
+	-- Crystal Wand Quest
+	[6124] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32479, y = 31611, z = 15 },
+		reward = { { 3068, 1 } }, -- crystal wand
+		questName = "crystalwand1",
+	},
+	[6125] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32481, y = 31611, z = 15 },
+		reward = { { 11609, 1 } }, -- crystal wand
+		questName = "crystalwand2",
+	},
+	-- Demona Ring Quest
+	[6126] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32504, y = 31596, z = 14 },
+		reward = { { 3049, 1 } }, -- steath ring
+		questName = "demonaring1",
+	},
+	[6127] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32515, y = 31596, z = 14 },
+		reward = { { 3051, 1 } }, -- energy ring
+		questName = "demonaring2",
+	},
+	-- Purple Tome Quest
+	[6128] = {
+		useKV = true,
+		itemId = 2436,
+		itemPos = { x = 32424, y = 31591, z = 15 },
+		reward = { { 2822, 1 } }, -- map
+		questName = "purpletome1",
+	},
+	[6129] = {
+		useKV = true,
+		itemId = 2436,
+		itemPos = { x = 32427, y = 31591, z = 15 },
+		reward = { { 2823, 1 } }, -- map
+		questName = "purpletome2",
+	},
+	[6130] = {
+		useKV = true,
+		itemId = 2438,
+		itemPos = { x = 32421, y = 31594, z = 15 },
+		reward = { { 2848, 1 } }, -- purple tome
+		questName = "purpletome3",
+	},
+	-- Life Ring Quest
+	[6131] = {
+		useKV = true,
+		itemId = 2469,
+		itemPos = { x = 32443, y = 32238, z = 11 },
+		container = 2853, -- bag
+		reward = { { 3052, 1 }, { 3085, 200 } }, -- life ring , dragon necklace
+		questName = "lifering",
+	},
+	-- Noble Armor Quest
+	[6132] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32451, y = 32048, z = 8 },
+		reward = { { 3380, 1 } }, -- noble armor
+		questName = "noblearmor1",
+	},
+	[6133] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32455, y = 32048, z = 8 },
+		reward = { { 3385, 1 } }, -- crown helmet
+		questName = "noblearmor2",
+	},
+	-- Geomancer Quest
+	[6134] = {
+		useKV = true,
+		itemId = 2469,
+		itemPos = { x = 32456, y = 32008, z = 13 },
+		container = 2853, -- bag
+		reward = { { 3029, 1 }, { 3028, 1 }, { 3097, 1 } }, -- small sapphire, small diamond, dwarven ring
+		questName = "geomancer",
+	},
+	-- Naginata Quest
+	[6135] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32346, y = 32063, z = 12 },
+		reward = { { 3314, 1 } }, -- naginata
+		questName = "naginata",
+	},
+	-- Ghoul Room Quest
+	[6136] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32500, y = 32175, z = 14 },
+		reward = { { 3083, 150 } }, -- garlic necklac
+		questName = "ghoulroom1",
+	},
+	-- Mintwallin Cyclops Quest
+	[6137] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32500, y = 32177, z = 14 },
+		reward = { { 3093, 1 } }, -- club ring
+		questName = "ghoulroom2",
+	},
+	[6138] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32591, y = 32097, z = 14 },
+		reward = { { 3028, 1 } }, -- small diamond
+		questName = "mintwallincyclops",
+	},
+	-- Devil helmet Quest
+	[6139] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32459, y = 32144, z = 15 },
+		reward = { { 3029, 4 } }, -- small sapphire
+		questName = "devilhemet1",
+	},
+	[6140] = {
+		useKV = true,
+		itemId = 2480,
+		itemPos = { x = 32465, y = 32148, z = 15 },
+		reward = { { 3356, 1 } }, -- devil helmet
+		questName = "devilhemet2",
+	},
+	[6141] = {
+		useKV = true,
+		itemId = 2480,
+		itemPos = { x = 32466, y = 32148, z = 15 },
+		reward = { { 3269, 1 } }, -- halberd
+		questName = "devilhemet3",
+	},
+	-- Fanfare Quest
+	[6142] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32390, y = 31769, z = 9 },
+		reward = { { 2955, 1 } }, -- fanfare
+		questName = "fanfare",
+	},
+	-- Heaven Blossom Quest
+	[6143] = {
+		useKV = true,
+		itemId = 2523,
+		itemPos = { x = 33104, y = 32154, z = 8 },
+		reward = { { 5921, 1 } }, -- heaven blossom
+		questName = "heavenblossom",
+	},
+	-- Iron Ore Quest
+	[6144] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32532, y = 31873, z = 8 },
+		reward = { { 5880, 1 } }, -- iron ore
+		questName = "ironore",
+	},
+	-- Isle of the Mists Quest
+	[6145] = {
+		useKV = true,
+		itemId = 2469,
+		itemPos = { x = 32852, y = 32332, z = 7 },
+		reward = { { 3032, 1 } }, -- small emerald
+		questName = "isleofthemists",
+	},
+	-- Longsword Quest
+	[6146] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32649, y = 31969, z = 9 },
+		reward = { { 3285, 1 } }, -- longsword
+		questName = "longsword1",
+	},
+	[6147] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32650, y = 31969, z = 9 },
+		reward = { { 3004, 1 } }, -- weeding ring
+		questName = "longsword2",
+	},
+	[6148] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32651, y = 31969, z = 9 },
+		container = 2853, -- bag
+		reward = { { 3147, 3 }, { 2989, 1 }, { 3031, 76 }, { 3463, 1 } }, -- 3 blank rune, wooden doll, 76 gold coin, mirror
+		questName = "longsword3",
+	},
+	-- Minotaur Leather Quest
+	[6149] = {
+		useKV = true,
+		itemId = 2469,
+		itemPos = { x = 32302, y = 32415, z = 7 },
+		reward = { { 5878, 1 } }, -- minotaur leather
+		questName = "minotaurleatherquest",
+	},
+	-- Orc Shaman Quest
+	[6150] = {
+		useKV = true,
+		itemId = 2469,
+		itemPos = { x = 33089, y = 32030, z = 9 },
+		container = 2853, -- bag
+		reward = { { 3046, 1 }, { 3092, 1 }, { 3147, 1 } }, -- magic light wand, axe ring, blank rune
+		questName = "orcshaman",
+	},
+	-- Power Ring Quest
+	[6151] = {
+		useKV = true,
+		itemId = 2473,
+		itemPos = { x = 32599, y = 31776, z = 9 },
+		reward = { { 3031, 1 } }, -- power ring
+		questName = "powerring1",
+	},
+	[6152] = {
+		useKV = true,
+		itemId = 2473,
+		itemPos = { x = 32601, y = 31776, z = 9 },
+		reward = { { 3056, 200 } }, -- bronze amulet
+		questName = "powerring2",
+	},
+	-- Scale Armor Quest
+	[6153] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32357, y = 32130, z = 9 },
+		container = 2853, -- bag
+		reward = { { 3377, 1 } }, -- scale armor
+		questName = "scalearmor",
+	},
+	-- Silver Amulet Quest
+	[6154] = {
+		useKV = true,
+		itemId = 2469,
+		itemPos = { x = 32506, y = 32269, z = 9 },
+		reward = { { 3054, 200 } }, -- silver amulet
+		questName = "silveramulet",
+	},
+	-- Silver Brooch Quest
+	[6155] = {
+		useKV = true,
+		itemId = 2476,
+		itemPos = { x = 32775, y = 32006, z = 11 },
+		container = 2853, -- bag
+		reward = { { 3017, 1 }, { 3030, 2 }, { 3028, 3 } }, -- Silver Brooch, 2 Small Rubies, 3 Small Diamonds
+		questName = "silverbrooch",
+	},
+	-- Six Rubies Quest
+	[6156] = {
+		useKV = true,
+		itemId = 387,
+		itemPos = { x = 32371, y = 32262, z = 12 },
+		reward = { { 3030, 6 } }, -- 6 small rubies
+		questName = "sixrubies",
+	},
+	-- Desert Quest
+	[6157] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32668, y = 32069, z = 8 },
+		reward = { { 3035, 100 } }, -- 100 platinum coins
+		questName = "desert1",
+	},
+	[6158] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32675, y = 32069, z = 8 },
+		container = 2857, -- green bag
+		reward = { { 3084, 250 }, { 3098, 1 }, { 3046, 1 }, { 3077, 1 } }, -- protection amulet, ring of healing, magic light wand and anhk
+		questName = "desert2",
+	},
+	-- Throwing Star Quest
+	[6159] = {
+		useKV = true,
+		itemId = 2473,
+		itemPos = { x = 32522, y = 32111, z = 15 },
+		reward = { { 3287, 10 } }, -- throwing star
+		questName = "throwingstar",
+	},
+	-- Triangle Tower Quest
+	[6160] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32565, y = 32119, z = 3 },
+		container = 2853, -- bag
+		reward = { { 3083, 150 }, { 3029, 2 }, { 3097, 1 } }, -- garlick necklace, small sapphire, dwarven ring
+		questName = "triangletower",
+	},
+	-- Dragon Corpse Quest
+	[6161] = {
+		useKV = true,
+		itemId = 4025,
+		itemPos = { x = 32179, y = 32224, z = 9 },
+		container = 2853, -- bag
+		reward = { { 3374, 1 }, { 3430, 1 } }, -- Copper Shield and Legion Helmet
+		questName = "dragoncorpse",
+	},
+	-- Katana Quest (rookgaard)
+	[6162] = {
+		useKV = true,
+		itemId = 4240,
+		itemPos = { x = 32175, y = 32145, z = 11 },
+		reward = { { 3367, 1 } }, -- katana
+		questName = "katanacorpse1",
+	},
+	[6163] = {
+		useKV = true,
+		itemId = 4240,
+		itemPos = { x = 32174, y = 32149, z = 11 },
+		reward = { { 3300, 1 } }, -- katana
+		questName = "katanacorpse2",
+	},
+	-- Crusader Helmet Quest
+	[6164] = {
+		useKV = true,
+		itemId = 3990,
+		itemPos = { x = 32427, y = 31943, z = 14 },
+		reward = { { 3391, 1 } }, -- crusader helmet
+		questName = "crusaderhelmet",
+	},
+	[6165] = {
+		useKV = true,
+		itemId = 4240,
+		itemPos = { x = 32498, y = 31721, z = 15 },
+		reward = { { 3433, 1 } }, -- griffing shield (Griffin Shield Quest)
+		questName = "griffinshield1",
+	},
+	[6166] = {
+		useKV = true,
+		itemId = 4024,
+		itemPos = { x = 32500, y = 31721, z = 15 },
+		reward = { { 3313, 1 } }, -- obsidian lance (Griffin Shield Quest)
+		questName = "griffinshield2",
+	},
+	[6167] = {
+		useKV = true,
+		itemId = 4024,
+		itemPos = { x = 32503, y = 31724, z = 15 },
+		reward = { { 3323, 1 } }, -- dwarven axe (Griffin Shield Quest)
+		questName = "griffinshield3",
+	},
+	-- Iron Helmet Quest
+	[6168] = {
+		useKV = true,
+		itemId = 4240,
+		itemPos = { x = 32769, y = 32225, z = 7 },
+		container = 2854,
+		reward = { { 3123, 1 }, { 3155, 3 }, { 3361, 1 }, { 3353, 1 }, { 3285, 1 }, { 3506, 1 } }, -- worn leather boots, sudden death rune, leather armor, iron helmet, longsword, stamped letter
+		questName = "ironhelmet",
+	},
+	-- Dead Archer Quest
+	[6169] = {
+		useKV = true,
+		itemId = 4240,
+		itemPos = { x = 32514, y = 32303, z = 10 },
+		container = 2853,
+		reward = { { 3350, 1 }, { 3448, 5 }, { 268, 1 }, { 266, 1 } }, -- bow, 5 poison arrows, mana potion, health potion
+		questName = "deadarcher",
+	},
+	-- Power Bolt Quest
+	[6170] = {
+		useKV = true,
+		itemId = 4240,
+		itemPos = { x = 32816, y = 32279, z = 8 },
+		container = 2853,
+		reward = { { 3450, 5 }, { 3449, 12 } }, -- 5 power bolt, 12 burst arrow
+		questName = "powerbolt1",
+	},
+	-- Spike Sword Quest
+	[6171] = {
+		useKV = true,
+		itemId = 3990,
+		itemPos = { x = 32568, y = 32085, z = 12 },
+		reward = { { 3271, 1 } }, -- 5 power bolt, 12 burst arrow
+		questName = "spikesword",
+	},
+	-- Elvenbane Quest
+	[6172] = {
+		useKV = true,
+		itemId = 2434,
+		itemPos = { x = 32588, y = 31644, z = 3 },
+		container = 2853,
+		reward = { { 3031, 100 }, { 3028, 2 } }, -- 100 gold coin, 2 small diamond
+		questName = "elvebanequest1",
+	},
+	[6173] = {
+		useKV = true,
+		itemId = 2434,
+		itemPos = { x = 32588, y = 31645, z = 3 },
+		container = 2853,
+		reward = { { 3059, 1 }, { 3147, 1 }, { 237, 1 } }, -- spellbook, blank rune, strong mana potion
+		questName = "elvebanequest2",
+	},
+	[6174] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32590, y = 31647, z = 3 },
+		reward = { { 3282, 1 } }, --
+		questName = "elvebanequest3",
+	},
+	[6175] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32591, y = 31647, z = 3 },
+		reward = { { 3425, 1 } }, --
+		questName = "elvebanequest4",
+	},
+	-- Iron Hammer Quest
+	[6176] = {
+		useKV = true,
+		itemId = 2473,
+		itemPos = { x = 32434, y = 31938, z = 8 },
+		reward = { { 3310, 1 } }, -- iron hammer
+		questName = "ironhamer",
+	},
+	-- Plate Armor quest
+	[6177] = {
+		useKV = true,
+		itemId = 2474,
+		itemPos = { x = 33327, y = 32182, z = 7 },
+		reward = { { 3357, 1 } }, -- plate armor
+		questName = "platearmor",
+	},
+	-- Stealth Ring Quest
+	[6178] = {
+		useKV = true,
+		itemId = 1983,
+		itemPos = { x = 33315, y = 32277, z = 11 },
+		reward = { { 3084, 250 } }, -- protection amulet
+		questName = "stealhring1",
+	},
+	[6179] = {
+		useKV = true,
+		itemId = 1983,
+		itemPos = { x = 33315, y = 32282, z = 11 },
+		reward = { { 3049, 1 } }, -- stealth ring
+		questName = "stealhring2",
+	},
+	-- Steel Helmet Quest
+	[6180] = {
+		useKV = true,
+		itemId = 2434,
+		itemPos = { x = 32460, y = 31951, z = 5 },
+		reward = { { 3031, 56 } }, -- 56 gold coin
+		questName = "steelhelmet1",
+	},
+	[6181] = {
+		useKV = true,
+		itemId = 2469,
+		itemPos = { x = 32464, y = 31957, z = 5 },
+		reward = { { 3031, 47 } }, -- 47 gold coin
+		questName = "steelhelmet2",
+	},
+	[6182] = {
+		useKV = true,
+		itemId = 2473,
+		itemPos = { x = 32462, y = 31947, z = 4 },
+		reward = { { 3351, 1 } }, -- steel helmet
+		questName = "steelhelmet3",
+	},
+	[6183] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32467, y = 31962, z = 4 },
+		reward = { { 2815, 1 } }, -- scroll
+		questName = "steelhelmet4",
+	},
+	-- Battle Axe Quest
+	[6184] = {
+		useKV = true,
+		itemId = 4285,
+		itemPos = { x = 32305, y = 32254, z = 9 },
+		reward = { { 3266, 1 } }, -- battle axe
+		questName = "battleaxe",
+	},
+	-- Doublet Quest
+	[6185] = {
+		useKV = true,
+		itemId = 408,
+		itemPos = { x = 32084, y = 32181, z = 8 },
+		reward = { { 3379, 1 } }, -- doublet
+		questName = "doublet",
+	},
+	-- Honey Flower Quest
+	[6186] = {
+		useKV = true,
+		itemId = 9226,
+		itemPos = { x = 32005, y = 32139, z = 3 },
+		reward = { { 2984, 1 } }, -- honey
+		questName = "honeyflower",
 	},
 	-- The Ice Island Quest - Skeleton - Formorgar Glacier
 	[6216] = {
@@ -1538,5 +2274,10 @@ ChestUnique = {
 	[14042] = {
 		itemId = 2473,
 		itemPos = { x = 32099, y = 32198, z = 9 },
+	},
+	-- The Outlaw Camp Quest (Bright Sword Quest)
+	[14091] = {
+		itemId = 2472,
+		itemPos = { x = 32620, y = 32198, z = 10 },
 	},
 }

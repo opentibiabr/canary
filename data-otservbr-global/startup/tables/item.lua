@@ -3,6 +3,17 @@
 ItemAction = {
 	--Parchment room quest
 	-- data\scripts\quests\parchment_room\movement-parchment.lua
+	[102] = { -- downFloor
+		itemId = false,
+		itemPos = {
+			{ x = 32171, y = 32439, z = 7 }, -- fibula acess
+			{ x = 32172, y = 32439, z = 7 }, -- fibula acess
+			{ x = 32507, y = 32176, z = 13 },
+			{ x = 32508, y = 32176, z = 13 },
+			{ x = 32353, y = 32131, z = 8 }, -- scale armor quest
+			{ x = 32354, y = 32131, z = 8 }, -- scale armor quest
+		},
+	},
 	[104] = {
 		itemId = 2819,
 		itemPos = { { x = 33063, y = 31624, z = 15 } },
@@ -377,6 +388,13 @@ ItemAction = {
 		itemId = false,
 		itemPos = {
 			{ x = 33155, y = 31297, z = 3 },
+		},
+	},
+	-- naginata quest
+	[40031] = { -- stone
+		itemId = 1791,
+		itemPos = {
+			{ x = 32356, y = 32074, z = 10 },
 		},
 	},
 	-- The Ice Islands Quest, Nibelor 1: Breaking the Ice

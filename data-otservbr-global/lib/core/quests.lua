@@ -2157,6 +2157,7 @@ if not Quests then
 					states = {
 						[1] = "Collect a legion helmet, 100 chicken feathers and 50 honeycombs and bring them to either \z
 							Hanna or Norma to have them make a feather hat addon for you.",
+						[2] = "You got the Citizen Hat Addon!",
 					},
 				},
 				[4] = {
@@ -5640,9 +5641,9 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Mr Morris tasked you to find an ancient amulet that was lost somewhare on Dawnport - probably next to a corpse somewhare.",
-						[2] = "Come back to Mr Morris",
-						[3] = "Mr Morris thanks for the help",
+						[1] = "Mr Morris tasked you to find an ancient amulet that was lost somewhere on Dawnport - probably next to a corpse somewhere.",
+						[2] = "Come back to Mr Morris.",
+						[3] = "Mr Morris thanks for you the help.",
 					},
 				},
 				[3] = {
@@ -5652,8 +5653,8 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Mr Morris urged you fo find a log book that was stolen by trolls.",
-						[2] = "Mr Morris thanks for the help",
+						[1] = "Mr Morris urged you to find a log book that was stolen by trolls.",
+						[2] = "Mr Morris thanks you for the help.",
 					},
 				},
 				[4] = {
@@ -5663,9 +5664,9 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Mr Morris needs the rae Dawnfire herb harvested and brought to hin. It grows on grey sand only, he said.",
-						[2] = "Come back to Mr Morris",
-						[3] = "Mr Morris thanks for the help",
+						[1] = "Mr Morris needs the rare Dawnfire herb harvested and brought to him. It grows on gray sand only, he said.",
+						[2] = "Come back to Mr Morris.",
+						[3] = "Mr Morris thanks you for the help.",
 					},
 				},
 				[5] = {
@@ -5676,40 +5677,40 @@ if not Quests then
 					endValue = 5,
 					states = {
 						[1] = "The key to the adventurer's dormitory has disappeared. Maybe you can find it. Ask around to find out who was the last to have seen it.",
-						[2] = "use the fishing rod in the nearby lake to fish old nasty",
+						[2] = "Use the fishing rod in the nearby lake to fish Old Nasty.",
 						[3] = "Come back to Woblin with Old Nasty",
-						[4] = "Come back to Mr Morris with key 0010",
+						[4] = "Come back to Mr Morris with Key 0010",
 						[5] = "Mr Morris thanks for the help",
 					},
 				},
 				[6] = {
-					name = "Task: Mountain Trolls",
-					storageId = 65062,
+					name = "Task: A Toll on Trolls",
+					storageId = Storage.Quest.U10_55.Dawnport.MorrisTrollCount,
 					missionId = 10394,
 					startValue = 0,
 					endValue = 20,
 					description = function(player)
-						return string.format("You already hunted %d/20 Mountain Trolls.", (math.max(player:getStorageValue(65062), 0)))
+						return string.format("You already hunted %d/20 Mountain Trolls.", (math.max(player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisTrollCount), 0)))
 					end,
 				},
 				[7] = {
-					name = "Task: Muglex Clan Footman",
-					storageId = 65061,
+					name = "Task: The Goblin Slayer",
+					storageId = Storage.Quest.U10_55.Dawnport.MorrisGoblinCount,
 					missionId = 10395,
 					startValue = 0,
 					endValue = 20,
 					description = function(player)
-						return string.format("You already hunted %d/20 Muglex Clan Footman.", (math.max(player:getStorageValue(65061), 0)))
+						return string.format("You already hunted %d/20 Muglex Clan Footman.", (math.max(player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisGoblinCount), 0)))
 					end,
 				},
 				[8] = {
-					name = "Task: Minotaur Bruisers",
-					storageId = 65060,
+					name = "Task: Plus Minos a Few",
+					storageId = Storage.Quest.U10_55.Dawnport.MorrisMinosCount,
 					missionId = 10396,
 					startValue = 0,
 					endValue = 20,
 					description = function(player)
-						return string.format("You already hunted %d/20 Minotaurs Bruisers.", (math.max(player:getStorageValue(65060), 0)))
+						return string.format("You already hunted %d/20 Minotaurs Bruisers.", (math.max(player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisMinosCount), 0)))
 					end,
 				},
 			},
@@ -5745,16 +5746,17 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03: A Rational Request",
-					storageId = Storage.TheRookieGuard.Mission03,
+					storageId = Storage.TheRookieGuard.RatKills,
 					missionId = 10399,
-					startValue = 1,
-					endValue = 2,
-					states = {
-						[1] = function(player)
-							return string.format("Vascalir sent you to the Rookgaard sewers to kill 5 rats. You have already killed %d/5. Return to Vascalir once you're done.", player:getStorageValue(Storage.TheRookieGuard.RatKills))
-						end,
-						[2] = "Vascalir was pleased with your hunting efforts. You've proven that you are a skilled hunter, ready for the task at hand.",
-					},
+					startValue = 0,
+					endValue = 5,
+					description = function(player)
+						return string.format(
+							"Vascalir sent you to the Rookgaard sewers to kill 5 rats. You have already killed %d/5. \z
+						Return to Vascalir once you're done.",
+							(math.max(player:getStorageValue(Storage.TheRookieGuard.RatKills), 0))
+						)
+					end,
 				},
 				[4] = {
 					name = "Mission 04: Home-Brewed",
@@ -6506,6 +6508,21 @@ if not Quests then
 						[1] = "", --
 						[2] = "Scarlett Etzel once stood proud and righteous. The assassins she rallied around her under the Order of the Cobra, however, where of ill repute and had to be vanquished. And so did she, you prevailed.",
 					},
+				},
+			},
+		},
+		[49] = {
+			name = "The Outlaw Camp",
+			startStorageId = Storage.QuestChests.OutlawCamp,
+			startStorageValue = 1,
+			missions = {
+				[1] = {
+					name = "Outlaw Treasure",
+					storageId = Storage.QuestChests.OutlawCamp,
+					missionId = 10451,
+					startValue = 1,
+					endValue = 1,
+					description = "You made your way through the Outlaw Camp and found the hidden treasure of the bandits.",
 				},
 			},
 		},

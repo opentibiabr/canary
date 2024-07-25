@@ -164,10 +164,10 @@ TeleportUnique = {
 	-- Quests teleports
 	-- Deeper fibula quest teleport
 	-- Entrance
-	[38001] = {
+	[38001] = { -- "left portal" to go back
 		itemId = 1949,
 		itemPos = { x = 32208, y = 32433, z = 10 },
-		destination = { x = 32281, y = 32389, z = 10 },
+		destination = { x = 32167, y = 32438, z = 9 },
 		effect = CONST_ME_TELEPORT,
 	},
 	-- Exit

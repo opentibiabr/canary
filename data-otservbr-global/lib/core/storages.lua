@@ -1471,11 +1471,8 @@ Storage = {
 			ID3610 = 3610,
 			ID3620 = 3620,
 			ID3666 = 3666,
-<<<<<<< HEAD
-			ID3700 = 3700,
-=======
 			ID3667 = 3667,
->>>>>>> upstream/main
+			ID3700 = 3700,
 			ID3702 = 3702,
 			ID3800 = 3800,
 			ID3801 = 3801,
@@ -1506,7 +1503,6 @@ Storage = {
 					Cookies = 40031,
 				},
 			},
-<<<<<<< HEAD
 			OrcFortress = {
 				Rewards = {
 					KnightAxe = 40033,
@@ -1527,8 +1523,6 @@ Storage = {
 					BagWithAmulets = 40052,
 				},
 			},
-=======
->>>>>>> upstream/main
 		},
 		U6_4 = { -- update 6.4 - Reserved Storages 40071 - 40110
 			BerserkerTreasure = {

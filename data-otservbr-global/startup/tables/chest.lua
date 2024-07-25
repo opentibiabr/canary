@@ -1727,7 +1727,7 @@ ChestUnique = {
 		questName = "doublet",
 	},
 	-- Honey Flower Quest
-	[6185] = {
+	[6186] = {
 		useKV = true,
 		itemId = 9226,
 		itemPos = { x = 32005, y = 32139, z = 3 },

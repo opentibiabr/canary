@@ -5666,7 +5666,7 @@ if not Quests then
 					endValue = 3,
 					states = {
 						[1] = "Mr Morris needs the rare Dawnfire herb harvested and brought to him. It grows on gray sand only, he said.",
-						[2] = "Come back to Mr Morri.s",
+						[2] = "Come back to Mr Morris.",
 						[3] = "Mr Morris thanks you for the help.",
 					},
 				},

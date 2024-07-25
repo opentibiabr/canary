@@ -78,24 +78,22 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "addon") or MsgContains(message, "outfit") or MsgContains(message, "hat") then
-		local addonProgress = player:getStorageValue(Storage.OutfitQuest.Citizen.MissionHat)
-		if addonProgress < 1 then
-			npcHandler:say("Pretty, isn't it? My friend Amber taught me how to make it, but I could help you with one if you like. What do you say?", npc, creature)
-			npcHandler:setTopic(playerId, 1)
-		elseif addonProgress == 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonHatRook) == 1 then
 			npcHandler:say("Oh, you're back already? Did you bring a legion helmet, 100 chicken feathers and 50 honeycombs?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif addonProgress == 2 then
-			npcHandler:say("Pretty hat, isn't it?", npc, creature)
+		elseif player:getStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionHatRookRook) < 1 then
+			npcHandler:say("Pretty, isn't it? I made it myself, but I could teach you how to do that if you like. What do you say?", npc, creature)
+			npcHandler:setTopic(playerId, 1)
 		end
+
 		return true
 	end
 
 	if npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, "yes") then
-			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
-			player:setStorageValue(Storage.OutfitQuest.Citizen.MissionHat, 1)
-			npcHandler:say("Okay, here we go, listen closely! I need a few things... a basic hat of course, maybe a legion helmet would do. Then about 100 chicken feathers... and 50 honeycombs as glue. That's it, come back to me once you gathered it!", npc, creature)
+			player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonHatRook, 1)
+			player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionHatRook, 1)
+			npcHandler:say("Okay, here we go, listen closely! I need a few things... a basic hat of course, maybe a legion helmet would do. Then about 100 chicken feathers... and 50 honeycombs as glue.That's it, come back to me once you gathered it!!", npc, creature)
 		else
 			npcHandler:say("Aw, I guess you don't like feather hats. No big deal.", npc, creature)
 		end
@@ -111,15 +109,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			else
 				npcHandler:say("Great job! That must have taken a lot of work. Okay, you put it like this... then glue like this... here!", npc, creature)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-
 				player:removeItem(3374, 1)
 				player:removeItem(5902, 50)
 				player:removeItem(5890, 100)
-
 				player:addOutfitAddon(136, 2)
 				player:addOutfitAddon(128, 2)
-
-				player:setStorageValue(Storage.OutfitQuest.Citizen.MissionHat, 2)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionHatRook, 0)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonHatRook, 2)
 			end
 		else
 			npcHandler:say("Maybe another time.", npc, creature)

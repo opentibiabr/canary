@@ -1,6 +1,13 @@
 -- Look README.md for see the reserved action/unique numbers
 
 TileAction = {
+	-- The Ape City Quest
+	[12124] = {
+		itemId = 419,
+		itemPos = {
+			{ x = 33305, y = 32861, z = 13 },
+		},
+	},
 	-- Cure poison tiles at dawnport outpost entrances
 	-- Tiles data\scripts\movements\others\dawnport_tiles.lua
 	[20001] = {

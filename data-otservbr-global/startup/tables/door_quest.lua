@@ -41,7 +41,7 @@ QuestDoorAction = {
 		itemPos = { { x = 32223, y = 31890, z = 14 } },
 	},
 	-- Sams old backpack door
-	[Storage.SamsOldBackpackDoor] = {
+	[Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackDoor] = {
 		itemId = false,
 		itemPos = { { x = 32455, y = 31967, z = 14 } },
 	},
@@ -96,48 +96,48 @@ QuestDoorAction = {
 		itemPos = { { x = 33269, y = 32446, z = 12 } },
 	},
 	-- Beggar outfit quest door
-	[Storage.OutfitQuest.BeggarFirstAddonDoor] = {
+	[Storage.Quest.U7_8.BeggarOutfits.BeggarFirstAddonDoor] = {
 		itemId = false,
 		itemPos = { { x = 33165, y = 31600, z = 15 } },
 	},
 	-- The explorer society quest doors
 	-- Mission in Dwacatra
-	[Storage.ExplorerSociety.DwacatraDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.DwacatraDoor] = {
 		itemId = false,
 		itemPos = { { x = 32598, y = 31933, z = 15 } },
 	},
 	-- Mission in Chor
-	[Storage.ExplorerSociety.ChorurnDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.ChorurnDoor] = {
 		itemId = false,
 		itemPos = { { x = 32957, y = 32835, z = 8 } },
 	},
 	-- Mission in Dark Pyramid
-	[Storage.ExplorerSociety.BonelordsDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.BonelordsDoor] = {
 		itemId = false,
 		itemPos = { { x = 33308, y = 32280, z = 12 } },
 	},
 	-- Mission in Orc Fortress
-	[Storage.ExplorerSociety.OrcDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.OrcDoor] = {
 		itemId = false,
 		itemPos = { { x = 32967, y = 31720, z = 2 } },
 	},
 	-- Mission in Hell Gate
-	[Storage.ExplorerSociety.ElvenDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.ElvenDoor] = {
 		itemId = false,
 		itemPos = { { x = 32703, y = 31605, z = 14 } },
 	},
 	-- Mission in Endron
-	[Storage.ExplorerSociety.MemoryStoneDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.MemoryStoneDoor] = {
 		itemId = false,
 		itemPos = { { x = 33151, y = 31640, z = 11 } },
 	},
 	-- Mission in Isle of Kings
-	[Storage.ExplorerSociety.BansheeDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.BansheeDoor] = {
 		itemId = false,
 		itemPos = { { x = 32259, y = 31948, z = 14 } },
 	},
 	-- Astral Bridge from Port Hope to Northport
-	[Storage.ExplorerSociety.SpectralStoneDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.SpectralStoneDoor] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32665, y = 32734, z = 6 },
@@ -145,7 +145,7 @@ QuestDoorAction = {
 		},
 	},
 	-- Astral Bridge from Svargrond to Liberty Bay
-	[Storage.ExplorerSociety.IceMusicDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.IceMusicDoor] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32318, y = 31137, z = 6 },
@@ -153,25 +153,25 @@ QuestDoorAction = {
 		},
 	},
 	-- Mission in Calassa
-	[Storage.ExplorerSociety.CalassaDoor] = {
+	[Storage.Quest.U7_6.ExplorerSociety.CalassaDoor] = {
 		itemId = false,
 		itemPos = { { x = 31939, y = 32771, z = 13 } },
 	},
 	-- The war djin quest
 	-- Marid faction
-	[Storage.DjinnWar.Faction.MaridDoor] = {
+	[Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor] = {
 		itemId = false,
 		itemPos = { { x = 33106, y = 32532, z = 6 } },
 	},
-	[Storage.DjinnWar.Faction.EfreetDoor] = {
+	[Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor] = {
 		itemId = false,
 		itemPos = { { x = 33047, y = 32626, z = 6 } },
 	},
-	[Storage.DjinnWar.MaridFaction.DoorToLamp] = {
+	[Storage.Quest.U7_4.DjinnWar.MaridFaction.DoorToLamp] = {
 		itemId = false,
 		itemPos = { { x = 33038, y = 32632, z = 1 } },
 	},
-	[Storage.DjinnWar.MaridFaction.DoorToEfreetTerritory] = {
+	[Storage.Quest.U7_4.DjinnWar.MaridFaction.DoorToEfreetTerritory] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33034, y = 32620, z = 6 },
@@ -180,11 +180,11 @@ QuestDoorAction = {
 		},
 	},
 	-- Efreet faction
-	[Storage.DjinnWar.EfreetFaction.DoorToLamp] = {
+	[Storage.Quest.U7_4.DjinnWar.EfreetFaction.DoorToLamp] = {
 		itemId = false,
 		itemPos = { { x = 33097, y = 32531, z = 1 } },
 	},
-	[Storage.DjinnWar.EfreetFaction.DoorToMaridTerritory] = {
+	[Storage.Quest.U7_4.DjinnWar.EfreetFaction.DoorToMaridTerritory] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33100, y = 32518, z = 7 },
@@ -306,25 +306,25 @@ QuestDoorAction = {
 		itemPos = { { x = 33666, y = 31924, z = 7 } },
 	},
 	-- Outfit quest door
-	[Storage.OutfitQuest.HunterHatAddon] = {
+	[Storage.Quest.U7_8.HunterOutfits.HunterHatAddon] = {
 		itemId = false,
 		itemPos = { { x = 32369, y = 32796, z = 10 } },
 	},
-	-- Ancient tombs door
-	[Storage.TheAncientTombs.VashresamunsDoor] = {
+	-- The Ancient Tombs Quest - door Vashresamuns
+	[Storage.Quest.U7_4.TheAncientTombs.VashresamunsDoor] = {
 		itemId = false,
 		itemPos = { { x = 33184, y = 32665, z = 15 } },
 	},
 	-- The ape city door
-	[Storage.TheApeCity.ChorDoor] = {
+	[Storage.Quest.U7_6.TheApeCity.ChorDoor] = {
 		itemId = false,
 		itemPos = { { x = 32934, y = 32886, z = 7 } },
 	},
-	[Storage.TheApeCity.FibulaDoor] = {
+	[Storage.Quest.U7_6.TheApeCity.FibulaDoor] = {
 		itemId = false,
 		itemPos = { { x = 32182, y = 32468, z = 10 } },
 	},
-	[Storage.TheApeCity.CasksDoor] = {
+	[Storage.Quest.U7_6.TheApeCity.CasksDoor] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32861, y = 32495, z = 9 },
@@ -336,7 +336,7 @@ QuestDoorAction = {
 			{ x = 32861, y = 32507, z = 9 },
 		},
 	},
-	[Storage.TheApeCity.DworcDoor] = {
+	[Storage.Quest.U7_6.TheApeCity.DworcDoor] = {
 		itemId = false,
 		itemPos = { { x = 32781, y = 32910, z = 8 } },
 	},
@@ -601,11 +601,11 @@ QuestDoorAction = {
 		itemPos = { { x = 33247, y = 32534, z = 8 } },
 	},
 	-- THe shattered isles door
-	[Storage.TheShatteredIsles.TortoiseEggNargorDoor] = {
+	[Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor] = {
 		itemId = false,
 		itemPos = { { x = 31934, y = 32838, z = 7 } },
 	},
-	[Storage.TheShatteredIsles.YavernDoor] = {
+	[Storage.Quest.U7_8.TheShatteredIsles.YavernDoor] = {
 		itemId = false,
 		itemPos = { { x = 31978, y = 32856, z = 3 } },
 	},
@@ -644,11 +644,11 @@ QuestDoorAction = {
 		itemPos = { { x = 32227, y = 31052, z = 7 } },
 	},
 	-- The pits of inferno door
-	[Storage.PitsOfInferno.ShortcutHubDoor] = {
+	[Storage.Quest.U7_9.ThePitsOfInferno.ShortcutHubDoor] = {
 		itemId = false,
 		itemPos = { { x = 32786, y = 32328, z = 6 } },
 	},
-	[Storage.PitsOfInferno.ShortcutLeverDoor] = {
+	[Storage.Quest.U7_9.ThePitsOfInferno.ShortcutLeverDoor] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32825, y = 32331, z = 11 },
@@ -743,7 +743,7 @@ QuestDoorAction = {
 		itemId = 6260,
 		itemPos = { { x = 32180, y = 31933, z = 11 } },
 	},
-	[Storage.OutfitQuest.Knight.RamsaysHelmetDoor] = {
+	[Storage.Quest.U7_8.KnightOutfits.RamsaysHelmetDoor] = {
 		itemId = 5122,
 		itemPos = { { x = 32860, y = 32517, z = 11 } },
 	},
@@ -912,6 +912,25 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = {
 			{ x = 33782, y = 32576, z = 12 },
+		},
+	},
+	[Storage.Quest.U7_8.DruidOutfits.DruidAmuletDoor] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32939, y = 31775, z = 9 },
+		},
+	},
+	[Storage.Quest.U7_8.OrientalOutfits.OrientalDoor] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32084, y = 32776, z = 11 },
+		},
+	},
+	[Storage.Quest.U7_9.NightmareOutfits.KnightwatchTowerDoor] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32815, y = 32328, z = 8 },
+			{ x = 32817, y = 32328, z = 8 },
 		},
 	},
 }

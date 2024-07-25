@@ -1,8 +1,4 @@
 local specialQuests = {
-	-- {x = 32752, y = 32343, z = 14}
-	[52167] = Storage.DreamersChallenge.Reward,
-	-- {x = 32806, y = 32230, z = 11}
-	[52003] = Storage.PitsOfInferno.WeaponReward,
 	-- {x = 32311, y = 32211, z = 8}
 	[51400] = Storage.ThievesGuild.Reward,
 	[51324] = Storage.WrathoftheEmperor.MainReward,
@@ -176,8 +172,8 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	end
 
 	if table.contains(hotaQuest, item.uid) then
-		if player:getStorageValue(Storage.TheAncientTombs.DefaultStart) ~= 1 then
-			player:setStorageValue(Storage.TheAncientTombs.DefaultStart, 1)
+		if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.DefaultStart) ~= 1 then
+			player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.DefaultStart, 1)
 		end
 	end
 

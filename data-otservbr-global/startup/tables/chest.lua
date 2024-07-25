@@ -1627,37 +1627,6 @@ ChestUnique = {
 		reward = { { 3271, 1 } }, -- 5 power bolt, 12 burst arrow
 		questName = "spikesword",
 	},
-	-- Elvenbane Quest
-	[6172] = {
-		useKV = true,
-		itemId = 2434,
-		itemPos = { x = 32588, y = 31644, z = 3 },
-		container = 2853,
-		reward = { { 3031, 100 }, { 3028, 2 } }, -- 100 gold coin, 2 small diamond
-		questName = "elvebanequest1",
-	},
-	[6173] = {
-		useKV = true,
-		itemId = 2434,
-		itemPos = { x = 32588, y = 31645, z = 3 },
-		container = 2853,
-		reward = { { 3059, 1 }, { 3147, 1 }, { 237, 1 } }, -- spellbook, blank rune, strong mana potion
-		questName = "elvebanequest2",
-	},
-	[6174] = {
-		useKV = true,
-		itemId = 2472,
-		itemPos = { x = 32590, y = 31647, z = 3 },
-		reward = { { 3282, 1 } }, --
-		questName = "elvebanequest3",
-	},
-	[6175] = {
-		useKV = true,
-		itemId = 2472,
-		itemPos = { x = 32591, y = 31647, z = 3 },
-		reward = { { 3425, 1 } }, --
-		questName = "elvebanequest4",
-	},
 	-- Iron Hammer Quest
 	[6176] = {
 		useKV = true,

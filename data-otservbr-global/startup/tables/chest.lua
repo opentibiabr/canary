@@ -1735,7 +1735,7 @@ ChestUnique = {
 		questName = "honeyflower",
 	},
 	-- The Ice Island Quest - Skeleton - Formorgar Glacier
-	[6216] = {
+	[6217] = {
 		itemId = 4024,
 		itemPos = { x = 32121, y = 31106, z = 12 },
 		container = 2853,
@@ -1743,7 +1743,7 @@ ChestUnique = {
 		weight = 97.00,
 		storage = Storage.Quest.U8_0.TheIceIslands.FormorgarGlacierSkeleton,
 	},
-	[6217] = {
+	[6218] = {
 		itemId = 2472,
 		itemPos = { x = 32027, y = 31104, z = 11 },
 		reward = { { 2820, 1 } },
@@ -1751,7 +1751,7 @@ ChestUnique = {
 		storage = Storage.Quest.U8_0.TheIceIslands.FormorgarGlacierChest,
 	},
 	-- Shards of Ancient Winters Quest
-	[6218] = {
+	[6219] = {
 		itemId = 2523,
 		itemPos = { x = 32483, y = 31110, z = 8 },
 		container = 7343,
@@ -1759,7 +1759,7 @@ ChestUnique = {
 		weight = 67.80,
 		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Inukaya,
 	},
-	[6219] = {
+	[6220] = {
 		itemId = 2523,
 		itemPos = { x = 32431, y = 31235, z = 8 },
 		container = 2853,
@@ -1767,7 +1767,7 @@ ChestUnique = {
 		weight = 45.90,
 		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Tyrsung,
 	},
-	[6220] = {
+	[6221] = {
 		itemId = 2473,
 		itemPos = { x = 32146, y = 31430, z = 8 },
 		container = 2853,
@@ -1775,7 +1775,7 @@ ChestUnique = {
 		weight = 45.90,
 		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Okolnir,
 	},
-	[6221] = {
+	[6222] = {
 		itemId = 4024,
 		itemPos = { x = 32490, y = 31192, z = 10 },
 		container = 2853,
@@ -1783,7 +1783,7 @@ ChestUnique = {
 		weight = 52.00,
 		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Helheim,
 	},
-	[6222] = {
+	[6223] = {
 		itemId = 2472,
 		itemPos = { x = 32154, y = 31116, z = 9 },
 		container = 2853,
@@ -1792,7 +1792,7 @@ ChestUnique = {
 		storage = Storage.Quest.U8_0.ShardsofAncientWinters.FormorgarMines,
 	},
 	-- Barbarian Arena Quest - Greenhorn
-	[6223] = {
+	[6224] = {
 		itemId = 2472,
 		itemPos = { x = 32231, y = 31065, z = 7 },
 		container = 2856,
@@ -1800,7 +1800,7 @@ ChestUnique = {
 		weight = 25.10,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornPresent,
 	},
-	[6224] = {
+	[6225] = {
 		itemId = 2480,
 		itemPos = { x = 32231, y = 31068, z = 7 },
 		container = 7342,
@@ -1808,21 +1808,21 @@ ChestUnique = {
 		weight = 158.00,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornBP,
 	},
-	[6225] = {
+	[6226] = {
 		itemId = 2482,
 		itemPos = { x = 32235, y = 31068, z = 7 },
 		reward = { { 7392, 1 } },
 		weight = 54.00,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornWeapons,
 	},
-	[6226] = {
+	[6227] = {
 		itemId = 2482,
 		itemPos = { x = 32235, y = 31066, z = 7 },
 		reward = { { 7380, 1 } },
 		weight = 45.00,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornWeapons,
 	},
-	[6227] = {
+	[6228] = {
 		itemId = 2482,
 		itemPos = { x = 32235, y = 31064, z = 7 },
 		reward = { { 7406, 1 } },
@@ -1830,7 +1830,7 @@ ChestUnique = {
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornWeapons,
 	},
 	-- Barbarian Arena Quest - Scrapper
-	[6228] = {
+	[6229] = {
 		itemId = 2472,
 		itemPos = { x = 32231, y = 31058, z = 7 },
 		container = 2856,
@@ -1838,7 +1838,7 @@ ChestUnique = {
 		weight = 25.10,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperPresent,
 	},
-	[6229] = {
+	[6230] = {
 		itemId = 2480,
 		itemPos = { x = 32231, y = 31068, z = 7 },
 		container = 7342,
@@ -1846,21 +1846,21 @@ ChestUnique = {
 		weight = 270.40,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperBP,
 	},
-	[6230] = {
+	[6231] = {
 		itemId = 2482,
 		itemPos = { x = 32235, y = 31061, z = 7 },
 		reward = { { 7415, 1 } },
 		weight = 78.00,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperWeapons,
 	},
-	[6231] = {
+	[6232] = {
 		itemId = 2482,
 		itemPos = { x = 32235, y = 31059, z = 7 },
 		reward = { { 7389, 1 } },
 		weight = 61.00,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperWeapons,
 	},
-	[6232] = {
+	[6233] = {
 		itemId = 2482,
 		itemPos = { x = 32235, y = 31057, z = 7 },
 		reward = { { 7384, 1 } },
@@ -1868,7 +1868,7 @@ ChestUnique = {
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperWeapons,
 	},
 	-- Barbarian Arena Quest - Warlord
-	[6233] = {
+	[6234] = {
 		itemId = 2472,
 		itemPos = { x = 32231, y = 31051, z = 7 },
 		container = 2856,
@@ -1876,7 +1876,7 @@ ChestUnique = {
 		weight = 13.60,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordPresent,
 	},
-	[6234] = {
+	[6235] = {
 		itemId = 2480,
 		itemPos = { x = 32231, y = 31054, z = 7 },
 		container = 7342,
@@ -1884,21 +1884,21 @@ ChestUnique = {
 		weight = 115.30,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordBP,
 	},
-	[6235] = {
+	[6236] = {
 		itemId = 2482,
 		itemPos = { x = 32235, y = 31054, z = 7 },
 		reward = { { 7429, 1 } },
 		weight = 39.00,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordWeapons,
 	},
-	[6236] = {
+	[6237] = {
 		itemId = 2482,
 		itemPos = { x = 32235, y = 31052, z = 7 },
 		reward = { { 7434, 1 } },
 		weight = 92.00,
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordWeapons,
 	},
-	[6237] = {
+	[6238] = {
 		itemId = 2482,
 		itemPos = { x = 32235, y = 31050, z = 7 },
 		reward = { { 7390, 1 } },
@@ -1906,7 +1906,7 @@ ChestUnique = {
 		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordWeapons,
 	},
 	-- Fishing Box Quest
-	[6238] = {
+	[6239] = {
 		itemId = 2473,
 		itemPos = { x = 32015, y = 31409, z = 7 },
 		container = 2853,
@@ -1915,49 +1915,49 @@ ChestUnique = {
 		storage = Storage.Quest.U8_0.FishingBox,
 	},
 	-- Koshei The Deathless Quest
-	[6239] = {
+	[6240] = {
 		itemId = 2908,
 		itemPos = { x = 33193, y = 32459, z = 7 },
 		reward = { { 7530, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart1,
 	},
-	[6240] = {
+	[6241] = {
 		itemId = 1983,
 		itemPos = { x = 33305, y = 32277, z = 10 },
 		reward = { { 7528, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart2,
 	},
-	[6241] = {
+	[6242] = {
 		itemId = 231,
 		itemPos = { x = 33212, y = 32593, z = 7 },
 		reward = { { 7531, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart3,
 	},
-	[6242] = {
+	[6243] = {
 		itemId = 1983,
 		itemPos = { x = 33053, y = 32468, z = 11 },
 		reward = { { 7529, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart4,
 	},
-	[6243] = {
+	[6244] = {
 		itemId = 2472,
 		itemPos = { x = 33261, y = 32444, z = 12 },
 		reward = { { 645, 1 } },
 		weight = 18.00,
 		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessLegs,
 	},
-	[6244] = {
+	[6245] = {
 		itemId = 2480,
 		itemPos = { x = 33261, y = 32448, z = 12 },
 		reward = { { 3035, 100 } },
 		weight = 5.00,
 		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessPlatinum,
 	},
-	[6245] = {
+	[6246] = {
 		itemId = 2469,
 		itemPos = { x = 33273, y = 32470, z = 11 },
 		reward = { { 3031, 100 } },
@@ -1965,70 +1965,70 @@ ChestUnique = {
 		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessGold,
 	},
 	-- Secret Service Quest
-	[6246] = {
+	[6247] = {
 		itemId = 2433,
 		itemPos = { x = 32311, y = 32177, z = 5 },
 		reward = { { 403, 1 } },
 		weight = 13.00,
 		storage = Storage.Quest.U8_1.SecretService.AHX17L89,
 	},
-	[6247] = {
+	[6248] = {
 		itemId = 1983,
 		itemPos = { x = 32156, y = 31954, z = 13 },
 		reward = { { 406, 1 } },
 		weight = 0.80,
 		storage = Storage.Quest.U8_1.SecretService.FamilySignetRing,
 	},
-	[6248] = {
+	[6249] = {
 		itemId = 2433,
 		itemPos = { x = 33271, y = 31839, z = 3 },
 		reward = { { 648, 1 } },
 		weight = 58.00,
 		storage = Storage.Quest.U8_1.SecretService.MagicSpellbook,
 	},
-	[6249] = {
+	[6250] = {
 		itemId = 2473,
 		itemPos = { x = 32907, y = 32012, z = 6 },
 		reward = { { 399, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U8_1.SecretService.BuildingPlans,
 	},
-	[6250] = {
+	[6251] = {
 		itemId = 2433,
 		itemPos = { x = 32598, y = 32380, z = 10 },
 		reward = { { 400, 1 } },
 		weight = 1.50,
 		storage = Storage.Quest.U8_1.SecretService.SuspiciousDocuments,
 	},
-	[6251] = {
+	[6252] = {
 		itemId = 2473,
 		itemPos = { x = 32180, y = 31930, z = 11 },
 		reward = { { 401, 1 } },
 		weight = 13.00,
 		storage = Storage.Quest.U8_1.SecretService.Book,
 	},
-	[6252] = {
+	[6253] = {
 		itemId = 3634,
 		itemPos = { x = 32876, y = 31958, z = 11 },
 		reward = { { 652, 1 } },
 		weight = 45.00,
 		storage = Storage.Quest.U8_1.SecretService.RottenHeartOfTree,
 	},
-	[6253] = {
+	[6254] = {
 		itemId = 2469,
 		itemPos = { x = 32872, y = 31958, z = 11 },
 		reward = { { 5956, 1 } },
 		weight = 1.20,
 		storage = Storage.Quest.U8_1.SecretService.LotteryTicket,
 	},
-	[6254] = {
+	[6255] = {
 		itemId = 2472,
 		itemPos = { x = 32643, y = 32733, z = 7 },
 		reward = { { 5952, 1 } },
 		weight = 1.20,
 		storage = Storage.Quest.U8_1.SecretService.PoemScroll,
 	},
-	[6255] = {
+	[6256] = {
 		itemId = 4240,
 		itemPos = { x = 32773, y = 31582, z = 11 },
 		reward = { { 348, 1 } },
@@ -2036,21 +2036,21 @@ ChestUnique = {
 		storage = Storage.Quest.U8_1.SecretService.IntelligenceReports,
 	},
 	-- To Blind the Enemy Quest
-	[6256] = {
+	[6257] = {
 		itemId = 2472,
 		itemPos = { x = 32591, y = 31647, z = 3 },
 		reward = { { 3425, 1 } },
 		weight = 55.00,
 		storage = Storage.TibiaTales.ToBlindTheEnemy.DwarvenShield,
 	},
-	[6257] = {
+	[6258] = {
 		itemId = 2472,
 		itemPos = { x = 32590, y = 31647, z = 3 },
 		reward = { { 3282, 1 } },
 		weight = 54.00,
 		storage = Storage.TibiaTales.ToBlindTheEnemy.MorningStar,
 	},
-	[6258] = {
+	[6259] = {
 		itemId = 2434,
 		itemPos = { x = 32588, y = 31645, z = 3 },
 		container = 2853,
@@ -2058,7 +2058,7 @@ ChestUnique = {
 		weight = 31.00,
 		storage = Storage.TibiaTales.ToBlindTheEnemy.BP1,
 	},
-	[6259] = {
+	[6260] = {
 		itemId = 2434,
 		itemPos = { x = 32588, y = 31644, z = 3 },
 		container = 2853,
@@ -2067,7 +2067,7 @@ ChestUnique = {
 		storage = Storage.TibiaTales.ToBlindTheEnemy.BP2,
 	},
 	-- To Outfox a Fox Quest
-	[6260] = {
+	[6261] = {
 		itemId = 2469,
 		itemPos = { x = 32467, y = 31970, z = 5 },
 		reward = { { 139, 1 } },
@@ -2075,7 +2075,7 @@ ChestUnique = {
 		storage = Storage.TibiaTales.ToOutfoxAFoxQuest.MiningHelmet,
 	},
 	-- Waterfall Quest
-	[6261] = {
+	[6262] = {
 		itemId = 2472,
 		itemPos = { x = 32970, y = 32646, z = 8 },
 		container = 5926,

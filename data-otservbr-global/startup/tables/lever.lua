@@ -166,6 +166,7 @@ LeverUnique = {
 	[1017] = {
 		itemId = 2772,
 		itemPos = { x = 33172, y = 31896, z = 8 },
+	},
 	-- The Pits of Inferno
 	[1037] = {
 		itemId = 2772,

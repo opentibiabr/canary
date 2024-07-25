@@ -998,6 +998,7 @@ ItemUnique = {
 	[3266] = {
 		itemId = 10145,
 		itemPos = { x = 32229, y = 31051, z = 7 },
+	},
 	-- The Pits of Inferno Quest
 	[3303] = {
 		itemId = 431,
@@ -1191,7 +1192,6 @@ ItemUnique = {
 		itemId = 31484,
 		itemPos = { x = 33395, y = 32660, z = 6 },
 	},
-
 	-- Kilmaresh
 	-- First mission
 	-- data\scripts\quests\kilmaresh\1-fafnars-wrath\2-ambassadors-treason.lua
@@ -1212,7 +1212,6 @@ ItemUnique = {
 		itemId = 31269,
 		itemPos = { x = 33879, y = 31490, z = 6 },
 	},
-
 	[40033] = { -- Gryphon mask
 		itemId = 31630,
 		itemPos = { x = 33841, y = 31682, z = 3 },

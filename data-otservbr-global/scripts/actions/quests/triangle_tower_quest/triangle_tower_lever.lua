@@ -15,5 +15,5 @@ function othersTriangle.onUse(player, item, fromPosition, target, toPosition, is
 	return true
 end
 
-othersTriangle:uid(50023)
+othersTriangle:uid(30034)
 othersTriangle:register()

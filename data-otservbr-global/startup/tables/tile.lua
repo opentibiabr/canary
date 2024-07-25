@@ -1154,19 +1154,19 @@ TileUnique = {
 	-- Path: data\scripts\actions\quests\the_rookie_guard\mission05_web_terror.lua
 	-- Spider lair entrance hole
 	[25022] = {
-		itemId = 12728,
+		itemId = 385,
 		itemPos = { x = 32051, y = 32110, z = 7 },
 	},
 	-- Spider queen chamber hole
 	[25023] = {
-		itemId = 12728,
+		itemId = 385,
 		itemPos = { x = 32018, y = 32098, z = 11 },
 	},
 	-- The Rookie Guard Quest - Mission 06: Run Like a Wolf
 	-- Path: data\scripts\actions\quests\the_rookie_guard\mission06_run_like_wolf.lua
 	-- War wolf den entrance hole
 	[25024] = {
-		itemId = 12728,
+		itemId = 385,
 		itemPos = { x = 32138, y = 32132, z = 7 },
 	},
 	-- War wolf den fall tile
@@ -1188,10 +1188,14 @@ TileUnique = {
 	-- Path: data\scripts\actions\quests\the_rookie_guard\mission09_rock_troll.lua
 	-- Troll caves dug tunnel hole
 	[25028] = {
-		itemId = 12728,
+		itemId = 385,
 		itemPos = { x = 32059, y = 32135, z = 9 },
 	},
-
+	-- Mintwallin Quest (Devil Helmet Quest)
+	[25030] = {
+		itemId = 431,
+		itemPos = { x = 32468, y = 32119, z = 14 },
+	},
 	-- The Paradox Tower Quest
 	[25031] = {
 		itemId = 599,

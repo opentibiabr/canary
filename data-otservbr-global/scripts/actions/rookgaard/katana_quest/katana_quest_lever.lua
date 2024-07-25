@@ -8,7 +8,7 @@ function katanaQuestLever.onUse(player, item, fromPosition, target, toPosition, 
 		local doorItem = Tile(doorPosition):getItemById(5107)
 		if doorItem then
 			doorItem:transform(5108)
-			doorItem:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, 1055)
+			doorItem:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, 22006)
 			item:transform(2773)
 		end
 	else
@@ -17,12 +17,12 @@ function katanaQuestLever.onUse(player, item, fromPosition, target, toPosition, 
 		if doorItem then
 			tile:relocateTo(relocatePosition, true)
 			doorItem:transform(5107)
-			doorItem:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, 1055)
+			doorItem:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, 22006)
 			item:transform(2772)
 		end
 	end
 	return true
 end
 
-katanaQuestLever:uid(1054)
+katanaQuestLever:uid(30029)
 katanaQuestLever:register()

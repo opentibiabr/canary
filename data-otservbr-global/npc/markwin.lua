@@ -66,6 +66,7 @@ local function greetCallback(npc, creature)
 				position:sendMagicEffect(CONST_ME_TELEPORT)
 			end
 		end
+		npcHandler:say("No! The hornless have reached my city! BODYGUARDS TO ME!", npc, creature)
 		return false
 	elseif player:getStorageValue(Storage.MarkwinGreeting) == 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Well ... you defeated my guards! Now everything is over! I guess I will have to answer your questions now.")

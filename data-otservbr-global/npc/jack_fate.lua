@@ -64,7 +64,7 @@ local function addTravelKeyword(keyword, cost, destination, text, condition)
 
 	if keyword == "goroma" then
 		keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Never heard about a place like this." }, function(player)
-			return player:getStorageValue(Storage.TheShatteredIsles.AccessToGoroma) ~= 1
+			return player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.AccessToGoroma) ~= 1
 		end)
 	end
 

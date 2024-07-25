@@ -1,11 +1,11 @@
 local throneStorages = {
-	Storage.PitsOfInferno.ThroneInfernatil,
-	Storage.PitsOfInferno.ThroneTafariel,
-	Storage.PitsOfInferno.ThroneVerminor,
-	Storage.PitsOfInferno.ThroneApocalypse,
-	Storage.PitsOfInferno.ThroneBazir,
-	Storage.PitsOfInferno.ThroneAshfalor,
-	Storage.PitsOfInferno.ThronePumin,
+	Storage.Quest.U7_9.ThePitsOfInferno.ThroneInfernatil,
+	Storage.Quest.U7_9.ThePitsOfInferno.ThroneTafariel,
+	Storage.Quest.U7_9.ThePitsOfInferno.ThroneVerminor,
+	Storage.Quest.U7_9.ThePitsOfInferno.ThroneApocalypse,
+	Storage.Quest.U7_9.ThePitsOfInferno.ThroneBazir,
+	Storage.Quest.U7_9.ThePitsOfInferno.ThroneAshfalor,
+	Storage.Quest.U7_9.ThePitsOfInferno.ThronePumin,
 }
 
 local function hasTouchedOneThrone(player)

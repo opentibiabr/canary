@@ -77,7 +77,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TheWayToYalahar.QuestLine) < 1 and player:getStorageValue(Storage.ExplorerSociety.JoiningTheExplorers) >= 4 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) >= 4 then
+		if player:getStorageValue(Storage.TheWayToYalahar.QuestLine) < 1 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers) >= 4 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) >= 4 then
 			npcHandler:say({
 				"There is indeed something that needs our attention. In the far north, a new city named Yalahar was discovered. It seems to be incredibly huge. ...",
 				"According to travelers, it's a city of glory and wonders. We need to learn as much as we can about this city and its inhabitants. ...",

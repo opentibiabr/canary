@@ -1,9 +1,9 @@
 local config = {
-	[2285] = {
+	[2285] = { -- The Djinn War Quest - lamp
 		items = {
 			{ itemId = 3243 },
 		},
-		storage = Storage.DjinnWar.EfreetFaction.Mission03,
+		storage = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03,
 		formerValue = 1,
 		newValue = 2,
 		needItem = { itemId = 3231 },
@@ -35,7 +35,7 @@ local config = {
 		items = {
 			{ itemId = 3243 },
 		},
-		storage = Storage.DjinnWar.MaridFaction.Mission03,
+		storage = Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03,
 		formerValue = 1,
 		newValue = 2,
 		needItem = { itemId = 3231 },
@@ -92,7 +92,7 @@ local config = {
 		items = {
 			{ itemId = 4832 },
 		},
-		storage = Storage.TheApeCity.HolyApeHair,
+		storage = Storage.Quest.U7_6.TheApeCity.HolyApeHair,
 	},
 	[9136] = {
 		items = {
@@ -104,21 +104,22 @@ local config = {
 		items = {
 			{ itemId = 3397 },
 		},
-		storage = Storage.SamsOldBackpack,
+		storage = Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc,
 		formerValue = 2,
 		newValue = 3,
 	},
+	-- Hydra Egg Quest
 	[9255] = {
 		items = {
 			{ itemId = 4839 },
 		},
-		storage = Storage.HydraEggQuest,
+		storage = Storage.Quest.U7_6.HydraEggQuest,
 	},
 	[9256] = {
 		items = {
 			{ itemId = 4829, decay = true },
 		},
-		storage = Storage.TheApeCity.WitchesCapSpot,
+		storage = Storage.Quest.U7_6.TheApeCity.WitchesCapSpot,
 		time = true,
 	},
 	[9259] = {

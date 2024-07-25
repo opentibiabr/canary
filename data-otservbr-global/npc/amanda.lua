@@ -120,23 +120,23 @@ stoneKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, t
 
 -- Wooden Stake
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "I think you have forgotten to bring your stake, my child." }, function(player)
-	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 6 and player:getItemCount(5941) == 0
+	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 6 and player:getItemCount(5941) == 0
 end)
 
 local stakeKeyword = keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, I was informed what to do. Are you prepared to receive my line of the prayer?" }, function(player)
-	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 6
+	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 6
 end)
 stakeKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "So receive my prayer: 'Wicked curses shall be broken'. Now, bring your stake to Kasmir in Darashia for the next line of the prayer. I will inform him what to do.", reset = true }, nil, function(player)
-	player:setStorageValue(Storage.FriendsandTraders.TheBlessedStake, 7)
+	player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake, 7)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 end)
 stakeKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "I'll wait for you.", reset = true })
 
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "You should visit Kasmir in Darashia now, my child." }, function(player)
-	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 7
+	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 7
 end)
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "You already received my line of the prayer." }, function(player)
-	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) > 7
+	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) > 7
 end)
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "A blessed stake? That's a strange request. Maybe Quentin knows more, he is one of the oldest monks after all." })
 

@@ -1,6 +1,13 @@
 -- Look README.md for see the reserved action/unique numbers
 
 TileAction = {
+	-- The Ape City Quest
+	[12124] = {
+		itemId = 419,
+		itemPos = {
+			{ x = 33305, y = 32861, z = 13 },
+		},
+	},
 	-- Cure poison tiles at dawnport outpost entrances
 	-- Tiles data\scripts\movements\others\dawnport_tiles.lua
 	[20001] = {
@@ -1099,8 +1106,8 @@ TileUnique = {
 	},
 	-- The paradox tower quest
 	[25011] = {
-		itemId = 354,
-		itemPos = { x = 32497, y = 31889, z = 7 },
+		itemId = 353,
+		itemPos = { x = 32497, y = 31888, z = 7 },
 	},
 	[25012] = {
 		itemId = 10145,
@@ -1195,6 +1202,31 @@ TileUnique = {
 	[25030] = {
 		itemId = 431,
 		itemPos = { x = 32468, y = 32119, z = 14 },
+	},
+	-- The Paradox Tower Quest
+	[25031] = {
+		itemId = 599,
+		itemPos = { x = 32477, y = 31905, z = 7 },
+	},
+	[25032] = {
+		itemId = 599,
+		itemPos = { x = 32476, y = 31906, z = 7 },
+	},
+	[25034] = {
+		itemId = 599,
+		itemPos = { x = 32486, y = 31927, z = 7 },
+	},
+	[25035] = {
+		itemId = 599,
+		itemPos = { x = 32487, y = 31927, z = 7 },
+	},
+	[25036] = {
+		itemId = 599,
+		itemPos = { x = 32486, y = 31928, z = 7 },
+	},
+	[25037] = {
+		itemId = 599,
+		itemPos = { x = 32487, y = 31928, z = 7 },
 	},
 	-- Remove/create item on stepIn
 	-- Reserved uniques range from 29001/30000

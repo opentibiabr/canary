@@ -19,7 +19,7 @@ function icePaint.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 9)
 			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission04, 2) -- Questlog The Ice Islands Quest, Nibelor 3: Artful Sabotage
 			player:removeItem(7253, 1)
-			if player:getStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor) >= 2 then
+			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.TortoiseEggNargorDoor) >= 2 then
 				player:addAchievement("Animal Activist")
 			end
 		end

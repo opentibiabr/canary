@@ -608,12 +608,12 @@ if not Quests then
 		},
 		[7] = {
 			name = "Factions",
-			startStorageId = Storage.Factions,
+			startStorageId = Storage.Quest.U7_4.DjinnWar.Factions,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Marid and the Efreet - Djinn Greeting",
-					storageId = Storage.DjinnWar.Faction.Greeting,
+					storageId = Storage.Quest.U7_4.DjinnWar.Faction.Greeting,
 					missionId = 1064,
 					startValue = 1,
 					endValue = 2,
@@ -625,7 +625,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Marid and the Efreet - Marid Faction",
-					storageId = Storage.DjinnWar.Faction.MaridDoor,
+					storageId = Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor,
 					missionId = 1065,
 					startValue = 1,
 					endValue = 2,
@@ -637,7 +637,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Efreet and the Efreet - Efreet Faction",
-					storageId = Storage.DjinnWar.Faction.EfreetDoor,
+					storageId = Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor,
 					missionId = 1066,
 					startValue = 1,
 					endValue = 2,
@@ -651,12 +651,12 @@ if not Quests then
 		},
 		[8] = {
 			name = "Friends and Traders",
-			startStorageId = Storage.FriendsandTraders.DefaultStart,
+			startStorageId = Storage.Quest.U7_8.FriendsAndTraders.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Sweaty Cyclops",
-					storageId = Storage.FriendsandTraders.TheSweatyCyclops,
+					storageId = Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops,
 					missionId = 1067,
 					startValue = 1,
 					endValue = 2,
@@ -669,7 +669,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Mermaid Marina",
-					storageId = Storage.FriendsandTraders.TheMermaidMarina,
+					storageId = Storage.Quest.U7_8.FriendsAndTraders.TheMermaidMarina,
 					missionId = 1068,
 					startValue = 1,
 					endValue = 2,
@@ -682,7 +682,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Blessed Stake",
-					storageId = Storage.FriendsandTraders.TheBlessedStake,
+					storageId = Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake,
 					missionId = 1069,
 					startValue = 1,
 					endValue = 12,
@@ -2125,7 +2125,7 @@ if not Quests then
 			missions = {
 				[1] = {
 					name = "Assassin Addon: The Red Death",
-					storageId = Storage.OutfitQuest.AssassinSecondAddon,
+					storageId = Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit,
 					missionId = 10168,
 					startValue = 1,
 					endValue = 2,
@@ -2137,7 +2137,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Citizen Addon: Backpack",
-					storageId = Storage.OutfitQuest.Citizen.MissionBackpack,
+					storageId = Storage.Quest.U7_8.CitizenOutfits.MissionBackpack,
 					missionId = 10169,
 					startValue = 1,
 					endValue = 2,
@@ -2150,7 +2150,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Citizen Addon: Feather Hat",
-					storageId = Storage.OutfitQuest.Citizen.MissionHat,
+					storageId = Storage.Quest.U7_8.CitizenOutfits.MissionHat,
 					missionId = 10170,
 					startValue = 1,
 					endValue = 2,
@@ -2162,7 +2162,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Barbarian Outfit Quest",
-					storageId = Storage.OutfitQuest.BarbarianAddon,
+					storageId = Storage.Quest.U7_8.BarbarianOutfits.BarbarianAddon,
 					missionId = 10171,
 					startValue = 1,
 					endValue = 17,
@@ -2194,10 +2194,10 @@ if not Quests then
 				},
 				[5] = {
 					name = "Beggar Outfit: The Newest Fashion",
-					storageId = Storage.OutfitQuest.BeggarOutfit,
+					storageId = Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit,
 					missionId = 10172,
 					startValue = 1,
-					endValue = 6,
+					endValue = 8,
 					states = {
 						[1] = "Your current task is to bring Hugo 20 pieces of brown cloth, like the worn and ragged ghoul clothing.",
 						[2] = "Your current task is to bring 50 pieces of minotaur leather to Hugo. \z
@@ -2207,11 +2207,13 @@ if not Quests then
 						[5] = "You brought all items required for the &quot;poor man's look&quot; to Hugo. \z
 							He told you to come back to him after a whole day has passed, then the outfit should be finished.",
 						[6] = "You got the outfit!",
+						[7] = "Now you need to go after the items to get the first addon.",
+						[8] = "Congratulations, you delivered the items for the first addon.",
 					},
 				},
 				[6] = {
 					name = "Druid Outfit Quest",
-					storageId = Storage.OutfitQuest.DruidHatAddon,
+					storageId = Storage.Quest.U7_8.DruidOutfits.DruidHatAddon,
 					missionId = 10173,
 					startValue = 1,
 					endValue = 10,
@@ -2232,7 +2234,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Hunter Outfit Quest",
-					storageId = Storage.OutfitQuest.HunterHatAddon,
+					storageId = Storage.Quest.U7_8.HunterOutfits.HunterHatAddon,
 					missionId = 10174,
 					startValue = 1,
 					endValue = 5,
@@ -2246,7 +2248,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Knight Addon: Helmet",
-					storageId = Storage.OutfitQuest.Knight.MissionHelmet,
+					storageId = Storage.Quest.U7_8.KnightOutfits.MissionHelmet,
 					missionId = 10175,
 					startValue = 1,
 					endValue = 6,
@@ -2265,7 +2267,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mage &amp; Summoner Outfit Quest (Wand)",
-					storageId = Storage.OutfitQuest.MageSummoner.AddonWand,
+					storageId = Storage.Quest.U7_8.MageAndSummonerOutfits.AddonWand,
 					missionId = 10176,
 					startValue = 1,
 					endValue = 7,
@@ -2283,7 +2285,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mage &amp; Summoner Outfit Quest (Fluid Belt)",
-					storageId = Storage.OutfitQuest.MageSummoner.AddonBelt,
+					storageId = Storage.Quest.U7_8.MageAndSummonerOutfits.AddonBelt,
 					missionId = 10177,
 					startValue = 1,
 					endValue = 2,
@@ -2294,7 +2296,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Female Mage and Male Summoner Addon: Headgear",
-					storageId = Storage.OutfitQuest.MageSummoner.MissionHatCloak,
+					storageId = Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak,
 					missionId = 10178,
 					startValue = 1,
 					endValue = 11,
@@ -2331,7 +2333,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "Warrior Addon: Shoulder Spike",
-					storageId = Storage.OutfitQuest.WarriorShoulderAddon,
+					storageId = Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderAddon,
 					missionId = 10180,
 					startValue = 1,
 					endValue = 7,
@@ -2354,7 +2356,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "Wizard Outfits Quest",
-					storageId = Storage.OutfitQuest.WizardAddon,
+					storageId = Storage.Quest.U7_8.WizardOutfits,
 					missionId = 10181,
 					startValue = 1,
 					endValue = 7,
@@ -2370,7 +2372,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "Pirate Outfit Quest (Sabre)",
-					storageId = Storage.OutfitQuest.PirateSabreAddon,
+					storageId = Storage.Quest.U7_8.PirateOutfits.PirateSabreAddon,
 					missionId = 10182,
 					startValue = 1,
 					endValue = 5,
@@ -2384,7 +2386,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "Oriental Addon: Hipwear",
-					storageId = Storage.OutfitQuest.FirstOrientalAddon,
+					storageId = Storage.Quest.U7_8.OrientalOutfits.FirstOrientalAddon,
 					missionId = 10183,
 					startValue = 1,
 					endValue = 2,
@@ -2397,7 +2399,7 @@ if not Quests then
 				},
 				[17] = {
 					name = "Oriental Addon: Headgear",
-					storageId = Storage.OutfitQuest.SecondOrientalAddon,
+					storageId = Storage.Quest.U7_8.OrientalOutfits.SecondOrientalAddon,
 					missionId = 10184,
 					startValue = 1,
 					endValue = 5,
@@ -2414,7 +2416,7 @@ if not Quests then
 				},
 				[18] = {
 					name = "Shaman Addon: Staff",
-					storageId = Storage.OutfitQuest.Shaman.MissionStaff,
+					storageId = Storage.Quest.U7_8.ShamanOutfits.MissionStaff,
 					missionId = 10185,
 					startValue = 1,
 					endValue = 2,
@@ -2425,7 +2427,7 @@ if not Quests then
 				},
 				[19] = {
 					name = "Shaman Addon: Mask",
-					storageId = Storage.OutfitQuest.Shaman.MissionMask,
+					storageId = Storage.Quest.U7_8.ShamanOutfits.MissionMask,
 					missionId = 10186,
 					startValue = 1,
 					endValue = 2,
@@ -2438,12 +2440,12 @@ if not Quests then
 		},
 		[13] = {
 			name = "Sam's Old Backpack",
-			startStorageId = Storage.SamsOldBackpack,
+			startStorageId = Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Dwarven Armor Quest",
-					storageId = Storage.SamsOldBackpack,
+					storageId = Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc,
 					missionId = 10187,
 					startValue = 1,
 					endValue = 3,
@@ -2752,75 +2754,98 @@ if not Quests then
 		},
 		[16] = {
 			name = "The Ancient Tombs",
-			startStorageId = Storage.TheAncientTombs.DefaultStart,
+			startStorageId = Storage.Quest.U7_4.TheAncientTombs.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Omruc's Treasure",
-					storageId = Storage.TheAncientTombs.OmrucsTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.OmrucsTreasure,
 					missionId = 10210,
 					startValue = 1,
-					endValue = 1,
-					description = "You defeated Omruc and received a helmet adornment",
+					endValue = 2,
+					states = {
+						[1] = "Now you can start the steps until you reach Omruc's room.",
+						[2] = "You defeated Omruc and received a helmet adornment.",
+					},
 				},
 				[2] = {
 					name = "Thalas' Treasure",
-					storageId = Storage.TheAncientTombs.ThalasTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.ThalasTreasure,
 					missionId = 10211,
 					startValue = 1,
-					endValue = 1,
-					description = "You defeated Thalas and received a Gem Holder",
+					endValue = 2,
+					states = {
+						[1] = "Congratulations, you have pulled all 8 levers and can now continue to the next step.",
+						[2] = "You defeated Thalas and received a Gem Holder",
+					},
 				},
 				[3] = {
 					name = "Diphtrah's Treasure",
-					storageId = Storage.TheAncientTombs.DiphtrahsTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.DiphtrahsTreasure,
 					missionId = 10212,
 					startValue = 1,
-					endValue = 1,
-					description = "You defeated Dipthrah and received a Damaged Helmet",
+					endValue = 3,
+					states = {
+						[1] = "Now you need to pull all 11 levers to be able to continue.",
+						[2] = "Now you need to use all the plaques before accessing Diphtrah's room.",
+						[3] = "Congratulations, this step has been completed.",
+					},
 				},
 				[4] = {
 					name = "Mahrdis' Treasure",
-					storageId = Storage.TheAncientTombs.MahrdisTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.MahrdisTreasure,
 					missionId = 10213,
 					startValue = 1,
-					endValue = 1,
-					description = "You defeated Mahrdis and received a Helmet Ornament",
+					endValue = 2,
+					states = {
+						[1] = "You need to defeat Mahrdis and receive a Helmet Ornament.",
+						[2] = "You defeated Mahrdis and received a Helmet Ornament.",
+					},
 				},
 				[5] = {
 					name = "Vashresamun's Treasure",
-					storageId = Storage.TheAncientTombs.VashresamunsTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.VashresamunsTreasure,
 					missionId = 10214,
 					startValue = 1,
-					endValue = 1,
-					description = "You solved the musical riddles of Vashresamun's Tomb and received a left horn.",
+					endValue = 3,
+					states = {
+						[1] = "Once you've started this quest, you'll need to play the musicals before teleporting.",
+						[2] = "Congratulations, you played the musical correctly, now you can continue.",
+						[3] = "You solved the musical riddles of Vashresamun's Tomb and received a left horn.",
+					},
 				},
 				[6] = {
 					name = "Morguthis' Treasure",
-					storageId = Storage.TheAncientTombs.MorguthisTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.MorguthisTreasure,
 					missionId = 10215,
 					startValue = 1,
-					endValue = 1,
-					description = "You defeated Morguthis and received a Right Horn",
+					endValue = 2,
+					states = {
+						[1] = "Now you need to go over the blue fireworks on the path.",
+						[2] = "You defeated Morguthis and received a Right Horn.",
+					},
 				},
 				[7] = {
 					name = "Rahemos' Treasure",
-					storageId = Storage.TheAncientTombs.RahemosTreasure,
+					storageId = Storage.Quest.U7_4.TheAncientTombs.RahemosTreasure,
 					missionId = 10216,
 					startValue = 1,
-					endValue = 1,
-					description = "You defeated Rahemos and received a Helmet Piece",
+					endValue = 2,
+					states = {
+						[1] = "You have started the steps to access Rahemos' room, and you will need to pull some levers to get to Rahemos' room.",
+						[2] = "You defeated Rahemos and received a Helmet Piece.",
+					},
 				},
 			},
 		},
 		[17] = {
 			name = "The Ape City",
-			startStorageId = Storage.TheApeCity.Started,
+			startStorageId = Storage.Quest.U7_6.TheApeCity.Started,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Hairycles' Missions",
-					storageId = Storage.TheApeCity.Questline,
+					storageId = Storage.Quest.U7_6.TheApeCity.Questline,
 					missionId = 10217,
 					startValue = 1,
 					endValue = 18,
@@ -2948,12 +2973,12 @@ if not Quests then
 		},
 		[19] = {
 			name = "The Djinn War - Efreet Faction",
-			startStorageId = Storage.DjinnWar.EfreetFaction.Start,
+			startStorageId = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Start,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Efreet Mission 1: The Supply Thief",
-					storageId = Storage.DjinnWar.EfreetFaction.Mission01,
+					storageId = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01,
 					missionId = 10221,
 					startValue = 1,
 					endValue = 3,
@@ -2967,7 +2992,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Efreet Mission 2: The Tear of Daraman",
-					storageId = Storage.DjinnWar.EfreetFaction.Mission02,
+					storageId = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission02,
 					missionId = 10222,
 					startValue = 1,
 					endValue = 3,
@@ -2981,7 +3006,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Efreet Mission 3: The Sleeping Lamp",
-					storageId = Storage.DjinnWar.EfreetFaction.Mission03,
+					storageId = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03,
 					missionId = 10223,
 					startValue = 1,
 					endValue = 3,
@@ -2996,12 +3021,12 @@ if not Quests then
 		},
 		[20] = {
 			name = "The Djinn War - Marid Faction",
-			startStorageId = Storage.DjinnWar.MaridFaction.Start,
+			startStorageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.Start,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Marid Mission 1: The Dwarven Kitchen",
-					storageId = Storage.DjinnWar.MaridFaction.Mission01,
+					storageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission01,
 					missionId = 10224,
 					startValue = 1,
 					endValue = 2,
@@ -3013,7 +3038,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Marid Mission 2: The Spyreport",
-					storageId = Storage.DjinnWar.MaridFaction.Mission02,
+					storageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission02,
 					missionId = 10225,
 					startValue = 1,
 					endValue = 2,
@@ -3026,7 +3051,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Rata'Mari and the Cheese",
-					storageId = Storage.DjinnWar.MaridFaction.RataMari,
+					storageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.RataMari,
 					missionId = 10226,
 					startValue = 1,
 					endValue = 2,
@@ -3037,7 +3062,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Marid Mission 3: The Sleeping Lamp",
-					storageId = Storage.DjinnWar.MaridFaction.Mission03,
+					storageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03,
 					missionId = 10227,
 					startValue = 1,
 					endValue = 3,
@@ -3560,7 +3585,7 @@ if not Quests then
 					storageId = Storage.Postman.Mission07,
 					missionId = 10258,
 					startValue = 1,
-					endValue = 8,
+					endValue = 9,
 					states = {
 						[1] = "Kevin wants you to bring him the measurements of Benjamin, Lokur, Dove, Liane, Chrystal and Olrik.",
 						[2] = "You have received the measurements from 1 of 6 post officers.",
@@ -3568,8 +3593,8 @@ if not Quests then
 						[4] = "You have received the measurements from 3 of 6 post officers.",
 						[5] = "You have received the measurements from 4 of 6 post officers.",
 						[6] = "You have received the measurements from 5 of 6 post officers.",
-						[7] = "You have received all measurements, report back to Kevin!",
-						[8] = "You have reported back that you have completed the mission.",
+						[8] = "You have received all measurements, report back to Kevin!",
+						[9] = "You have reported back that you have completed the mission.",
 					},
 				},
 				[8] = {
@@ -3627,12 +3652,12 @@ if not Quests then
 		},
 		[25] = {
 			name = "The Shattered Isles",
-			startStorageId = Storage.TheShatteredIsles.DefaultStart,
+			startStorageId = Storage.Quest.U7_8.TheShatteredIsles.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "A Djinn in Love",
-					storageId = Storage.TheShatteredIsles.ADjinnInLove,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ADjinnInLove,
 					missionId = 10263,
 					startValue = 1,
 					endValue = 5,
@@ -3648,7 +3673,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "A Poem for the Mermaid",
-					storageId = Storage.TheShatteredIsles.APoemForTheMermaid,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.APoemForTheMermaid,
 					missionId = 10264,
 					startValue = 1,
 					endValue = 3,
@@ -3663,7 +3688,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Access to Goroma",
-					storageId = Storage.TheShatteredIsles.AccessToGoroma,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.AccessToGoroma,
 					missionId = 10265,
 					startValue = 1,
 					endValue = 1,
@@ -3672,7 +3697,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Access to Laguna Island",
-					storageId = Storage.TheShatteredIsles.AccessToLagunaIsland,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.AccessToLagunaIsland,
 					missionId = 10266,
 					startValue = 1,
 					endValue = 1,
@@ -3681,7 +3706,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Access to Meriana",
-					storageId = Storage.TheShatteredIsles.AccessToMeriana,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.AccessToMeriana,
 					missionId = 10267,
 					startValue = 1,
 					endValue = 1,
@@ -3690,7 +3715,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Access to Nargor",
-					storageId = Storage.TheShatteredIsles.AccessToNargor,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.AccessToNargor,
 					missionId = 10268,
 					startValue = 1,
 					endValue = 1,
@@ -3699,7 +3724,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Ray's Mission 1: Fafnar's Fire",
-					storageId = Storage.TheShatteredIsles.RaysMission1,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.RaysMission1,
 					missionId = 10269,
 					startValue = 1,
 					endValue = 3,
@@ -3714,7 +3739,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Ray's Mission 2: Sabotage",
-					storageId = Storage.TheShatteredIsles.RaysMission2,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.RaysMission2,
 					missionId = 10270,
 					startValue = 1,
 					endValue = 3,
@@ -3729,7 +3754,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Ray's Mission 3: Spy Mission",
-					storageId = Storage.TheShatteredIsles.RaysMission3,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.RaysMission3,
 					missionId = 10271,
 					startValue = 1,
 					endValue = 2,
@@ -3742,7 +3767,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Ray's Mission 4: Proof of Death",
-					storageId = Storage.TheShatteredIsles.RaysMission4,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.RaysMission4,
 					missionId = 10272,
 					startValue = 1,
 					endValue = 5,
@@ -3761,7 +3786,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Reputation in Sabrehaven: Suspicious",
-					storageId = Storage.TheShatteredIsles.ReputationInSabrehaven,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven,
 					missionId = 10273,
 					startValue = 2,
 					endValue = 13,
@@ -3790,7 +3815,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Reputation in Sabrehaven: Friendly",
-					storageId = Storage.TheShatteredIsles.ReputationInSabrehaven,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven,
 					missionId = 10274,
 					startValue = 14,
 					endValue = 17,
@@ -3805,7 +3830,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "Reputation in Sabrehaven: Cordial",
-					storageId = Storage.TheShatteredIsles.ReputationInSabrehaven,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven,
 					missionId = 10275,
 					startValue = 18,
 					endValue = 19,
@@ -3814,7 +3839,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "Reputation in Sabrehaven: Loyal",
-					storageId = Storage.TheShatteredIsles.ReputationInSabrehaven,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven,
 					missionId = 10276,
 					startValue = 20,
 					endValue = 22,
@@ -3826,7 +3851,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "The Counterspell",
-					storageId = Storage.TheShatteredIsles.TheCounterspell,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.TheCounterspell,
 					missionId = 10277,
 					startValue = 1,
 					endValue = 4,
@@ -3843,7 +3868,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "The Errand",
-					storageId = Storage.TheShatteredIsles.TheErrand,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.TheErrand,
 					missionId = 10278,
 					startValue = 1,
 					endValue = 2,
@@ -3855,7 +3880,7 @@ if not Quests then
 				},
 				[17] = {
 					name = "The Governor's Daughter",
-					storageId = Storage.TheShatteredIsles.TheGovernorDaughter,
+					storageId = Storage.Quest.U7_8.TheShatteredIsles.TheGovernorDaughter,
 					missionId = 10279,
 					startValue = 1,
 					endValue = 3,
@@ -4076,12 +4101,12 @@ if not Quests then
 		},
 		[28] = {
 			name = "The Explorer Society",
-			startStorageId = Storage.ExplorerSociety.QuestLine,
+			startStorageId = Storage.Quest.U7_6.ExplorerSociety.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Joining the Explorers",
-					storageId = Storage.ExplorerSociety.JoiningTheExplorers,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers,
 					missionId = 10295,
 					startValue = 1,
 					endValue = 5,
@@ -4096,7 +4121,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Ice Delivery",
-					storageId = Storage.ExplorerSociety.TheIceDelivery,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheIceDelivery,
 					missionId = 10296,
 					startValue = 6,
 					endValue = 8,
@@ -4110,7 +4135,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Butterfly Hunt",
-					storageId = Storage.ExplorerSociety.TheButterflyHunt,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheButterflyHunt,
 					missionId = 10297,
 					startValue = 9,
 					endValue = 17,
@@ -4131,7 +4156,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "The Plant Collection",
-					storageId = Storage.ExplorerSociety.ThePlantCollection,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.ThePlantCollection,
 					missionId = 10298,
 					startValue = 18,
 					endValue = 26,
@@ -4149,7 +4174,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "The Lizard Urn",
-					storageId = Storage.ExplorerSociety.TheLizardUrn,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheLizardUrn,
 					missionId = 10299,
 					startValue = 27,
 					endValue = 29,
@@ -4163,7 +4188,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "The Bonelord Secret",
-					storageId = Storage.ExplorerSociety.TheBonelordSecret,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheBonelordSecret,
 					missionId = 10300,
 					startValue = 30,
 					endValue = 32,
@@ -4176,7 +4201,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "The Orc Powder",
-					storageId = Storage.ExplorerSociety.TheOrcPowder,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheOrcPowder,
 					missionId = 10301,
 					startValue = 33,
 					endValue = 35,
@@ -4190,7 +4215,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "The Elven Poetry",
-					storageId = Storage.ExplorerSociety.TheElvenPoetry,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheElvenPoetry,
 					missionId = 10302,
 					startValue = 36,
 					endValue = 38,
@@ -4202,7 +4227,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "The Memory Stone",
-					storageId = Storage.ExplorerSociety.TheMemoryStone,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheMemoryStone,
 					missionId = 10303,
 					startValue = 39,
 					endValue = 41,
@@ -4214,7 +4239,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "The Rune Writings",
-					storageId = Storage.ExplorerSociety.TheRuneWritings,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheRuneWritings,
 					missionId = 10304,
 					startValue = 42,
 					endValue = 44,
@@ -4228,7 +4253,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "The Ectoplasm",
-					storageId = Storage.ExplorerSociety.TheEctoplasm,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheEctoplasm,
 					missionId = 10305,
 					startValue = 45,
 					endValue = 47,
@@ -4239,7 +4264,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "The Spectral Dress",
-					storageId = Storage.ExplorerSociety.TheSpectralDress,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheSpectralDress,
 					missionId = 10306,
 					startValue = 48,
 					endValue = 50,
@@ -4251,7 +4276,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "The Spectral Stone",
-					storageId = Storage.ExplorerSociety.TheSpectralStone,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheSpectralStone,
 					missionId = 10307,
 					startValue = 51,
 					endValue = 55,
@@ -4266,7 +4291,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "The Astral Portals",
-					storageId = Storage.ExplorerSociety.TheAstralPortals,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheAstralPortals,
 					missionId = 10308,
 					startValue = 56,
 					endValue = 56,
@@ -4277,7 +4302,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "The Island of Dragons",
-					storageId = Storage.ExplorerSociety.TheIslandofDragons,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheIslandofDragons,
 					missionId = 10309,
 					startValue = 57,
 					endValue = 59,
@@ -4289,7 +4314,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "The Ice Music",
-					storageId = Storage.ExplorerSociety.TheIceMusic,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.TheIceMusic,
 					missionId = 10310,
 					startValue = 60,
 					endValue = 62,
@@ -4303,14 +4328,14 @@ if not Quests then
 				},
 				[17] = {
 					name = "The Undersea Kingdom",
-					storageId = Storage.ExplorerSociety.CalassaQuest,
+					storageId = Storage.Quest.U7_6.ExplorerSociety.CalassaQuest,
 					missionId = 10311,
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Captain Max will bring you to Calassa whenever you are ready. \z
-							Please try to retrieve the missing logbook which must be in one of the sunken shipwrecks.",
+						[1] = "Captain Max will bring you to Calassa whenever you are ready. Please try to retrieve the missing logbook which must be in one of the sunken shipwrecks.",
 						[2] = "Report about your Calassa mission to Berenice in Liberty Bay.",
+						[3] = "Congratulations, you completed the remaining part of this mission!",
 					},
 				},
 			},

@@ -278,6 +278,14 @@ ChestUnique = {
 		reward = { { 2969, 1 } },
 		storage = Storage.Quest.Key.ID3008,
 	},
+	-- The Pits of Inferno - Key 3700
+	[5024] = {
+		isKey = true,
+		itemId = 2472,
+		itemPos = { x = 32842, y = 32225, z = 8 },
+		reward = { { 2971, 1 } },
+		storage = Storage.Quest.Key.ID3700,
+	},
 	-- To add a reward inside a bag, you need to add the variable "container = bagId" before "reward"
 	-- Just duplicate the table and configure correctly, the scripts already register the entire table automatically
 	-- Path: data\scripts\actions\system\quest_reward_common.lua
@@ -408,7 +416,7 @@ ChestUnique = {
 		reward = { { 3587, 1 } },
 		questName = "bananapremium",
 	},
-	-- Explorer brooch quest (kazordoon)
+	-- The Explorer Society - Explorer brooch (kazordoon)
 	[6019] = {
 		useKV = true,
 		itemId = 4240,
@@ -867,21 +875,21 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32774, y = 32253, z = 8 },
 		reward = { { 3034, 1 } },
-		storage = Storage.Quest.U7_24.GiantSmithhammer.Talon,
+		storage = Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.Talon,
 	},
 	-- Giant smithhammer
 	[6078] = {
 		itemId = 2472,
 		itemPos = { x = 32776, y = 32253, z = 8 },
 		reward = { { 12510, 1 } },
-		storage = Storage.Quest.U7_24.GiantSmithhammer.Hammer,
+		storage = Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.Hammer,
 	},
 	-- 100 gold coin
 	[6079] = {
 		itemId = 2472,
 		itemPos = { x = 32778, y = 32253, z = 8 },
 		reward = { { 3031, 100 } },
-		storage = Storage.Quest.U7_24.GiantSmithhammer.GoldCoin,
+		storage = Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.GoldCoin,
 	},
 	-- Mad Mage room quest
 	[6080] = {
@@ -913,7 +921,7 @@ ChestUnique = {
 		container = 2853,
 		weight = 42,
 		reward = { { 3026, 1 }, { 3207, 1 } },
-		storage = Storage.Quest.U7_24.SkullOfRatha.Bag1,
+		storage = Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag1,
 	},
 	-- Bag (wolf tooth chain/dwarven ring)
 	[6084] = {
@@ -922,7 +930,7 @@ ChestUnique = {
 		container = 2853,
 		weight = 42,
 		reward = { { 3012, 1 }, { 3097, 1 } },
-		storage = Storage.Quest.U7_24.SkullOfRatha.Bag2,
+		storage = Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag2,
 	},
 	-- The annihilator quest
 	-- Demon armor
@@ -1733,6 +1741,238 @@ ChestUnique = {
 		itemPos = { x = 32005, y = 32139, z = 3 },
 		reward = { { 2984, 1 } }, -- honey
 		questName = "honeyflower",
+	},
+	-- The Medusa Quest
+	[6187] = {
+		itemId = 1983,
+		itemPos = { x = 33049, y = 32399, z = 10 },
+		container = 2853,
+		weight = 105,
+		reward = { { 3436, 1 }, { 3567, 1 }, { 3324, 1 } },
+		storage = Storage.Quest.U7_3.TheMedusaQuest,
+	},
+	-- Serpentine Tower Quest
+	[6188] = {
+		itemId = 2472,
+		itemPos = { x = 33150, y = 32862, z = 7 },
+		weight = 0.20,
+		reward = { { 3026, 1 } },
+		storage = Storage.Quest.U7_3.SerpentineTower.WhitePearl,
+	},
+	-- Elephant Tusk Quest
+	[6189] = {
+		itemId = 2472,
+		itemPos = { x = 32922, y = 32755, z = 7 },
+		weight = 0.20,
+		reward = { { 3044, 2 } },
+		storage = Storage.Quest.U7_5.ElephantTusk,
+	},
+	-- The Explorer Society - Books
+	[6190] = {
+		itemId = 2434,
+		itemPos = { x = 32770, y = 32245, z = 8 },
+		weight = 13,
+		reward = { { 2821, 1 } },
+		storage = Storage.Quest.U7_6.ExplorerSociety.Books.Cyclops,
+	},
+	[6191] = {
+		itemId = 2523,
+		itemPos = { x = 32786, y = 32254, z = 8 },
+		weight = 13.00,
+		reward = { { 2821, 1 } },
+		storage = Storage.Quest.U7_6.ExplorerSociety.Books.Hengis,
+	},
+	-- Witch House Quest
+	[6192] = {
+		itemId = 2472,
+		itemPos = { x = 32867, y = 31909, z = 8 },
+		weight = 23.30,
+		container = 2853,
+		reward = { { 3027, 2 }, { 3008, 1 }, { 3031, 100 } },
+		storage = Storage.QuestChests.WitchHouseQuest,
+	},
+	-- Simon The Beggar's Favorite Staff
+	[6193] = {
+		itemId = 2482,
+		itemPos = { x = 33167, y = 31600, z = 15 },
+		weight = 38.00,
+		reward = { { 6107, 1 } },
+		storage = Storage.QuestChests.SimonTheBeggarsFavoriteStaff,
+	},
+	-- Druid Outfit Quest - Wolf Tooth Chain
+	[6194] = {
+		itemId = 2480,
+		itemPos = { x = 32939, y = 31776, z = 9 },
+		weight = 3.30,
+		reward = { { 5940, 1 } },
+		storage = Storage.Quest.U7_8.DruidOutfits.WolfToothChain,
+	},
+	-- Hunter Outfits Quest - Elane Crossbow
+	[6195] = {
+		itemId = 2472,
+		itemPos = { x = 32369, y = 32795, z = 10 },
+		weight = 40.00,
+		reward = { { 5947, 1 } },
+		storage = Storage.Quest.U7_8.HunterOutfits.ElaneCrossbow,
+	},
+	-- Knight Outfits Quest - Ramsay the Reckless Helmet
+	[6196] = {
+		itemId = 2472,
+		itemPos = { x = 32860, y = 32516, z = 11 },
+		weight = 46.00,
+		reward = { { 5924, 1 } },
+		storage = Storage.Quest.U7_8.KnightOutfits.RamsaysHelmetChest,
+	},
+	-- Oriental Outfits Quest - Chest
+	[6197] = {
+		itemId = 2472,
+		itemPos = { x = 32088, y = 32780, z = 11 },
+		weight = 4.50,
+		reward = { { 5945, 1 } },
+		storage = Storage.Quest.U7_8.OrientalOutfits.CoralComb,
+	},
+	-- The Shattered Isles Quest - Dragahs Spellbook
+	[6198] = {
+		itemId = 4240,
+		itemPos = { x = 32093, y = 32574, z = 8 },
+		weight = 58.00,
+		reward = { { 6120, 1 } },
+		storage = Storage.Quest.U7_8.TheShatteredIsles.DragahsSpellbook,
+	},
+	-- Dreamer's Challenge Quest
+	[6199] = {
+		itemId = 4240,
+		itemPos = { x = 32860, y = 32249, z = 9 },
+		weight = 150.00,
+		container = 2854,
+		reward = { { 2816, 1 }, { 3285, 1 }, { 3352, 1 }, { 3558, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.BPLongSword,
+	},
+	[6200] = {
+		itemId = 2472,
+		itemPos = { x = 32850, y = 32285, z = 14 },
+		weight = 13.00,
+		reward = { { 2821, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestBook,
+	},
+	[6201] = {
+		itemId = 2469,
+		itemPos = { x = 32749, y = 32341, z = 14 },
+		weight = 15.30,
+		container = 2853,
+		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
+	},
+	[6202] = {
+		itemId = 2469,
+		itemPos = { x = 32751, y = 32341, z = 14 },
+		weight = 15.30,
+		container = 2853,
+		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
+	},
+	[6203] = {
+		itemId = 2469,
+		itemPos = { x = 32753, y = 32341, z = 14 },
+		weight = 15.30,
+		container = 2853,
+		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
+	},
+	[6204] = {
+		itemId = 2469,
+		itemPos = { x = 32755, y = 32341, z = 14 },
+		weight = 15.30,
+		container = 2853,
+		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
+	},
+	[6205] = {
+		itemId = 2469,
+		itemPos = { x = 32835, y = 32223, z = 14 },
+		weight = 0.30,
+		reward = { { 3028, 3 } },
+		storage = Storage.Quest.U7_9.DreamersChallenge.Chests3SmallDiamond,
+	},
+	-- The Pits of Inferno
+	[6206] = {
+		itemId = 2472,
+		itemPos = { x = 32828, y = 32340, z = 7 },
+		weight = 13.00,
+		reward = { { 2836, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.ChestTible,
+	},
+	[6207] = {
+		itemId = 5972,
+		itemPos = { x = 32854, y = 32325, z = 11 },
+		weight = 13.00,
+		reward = { { 2816, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.CorpseBook,
+	},
+	[6208] = {
+		itemId = 5972,
+		itemPos = { x = 32832, y = 32277, z = 10 },
+		weight = 40.90,
+		container = 5926,
+		reward = { { 6561, 1 }, { 6299, 1 }, { 3052, 1 }, { 5021, 3 }, { 3026, 5 }, { 3035, 11 }, { 5944, 2 }, { 3160, 3 }, { 3155, 2 }, { 3147, 1 }, { 238, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.CorpsePirateBP,
+	},
+	[6209] = {
+		itemId = 2472,
+		itemPos = { x = 32826, y = 32232, z = 11 },
+		weight = 20.70,
+		container = 3253,
+		reward = { { 11605, 1 }, { 11607, 1 }, { 11609, 1 }, { 11603, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestBP,
+	},
+	[6210] = {
+		itemId = 2472,
+		itemPos = { x = 32824, y = 32232, z = 11 },
+		weight = 10.00,
+		reward = { { 3035, 100 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestPlatinumCoins,
+	},
+	[6211] = {
+		itemId = 2472,
+		itemPos = { x = 32819, y = 32232, z = 11 },
+		weight = 10.00,
+		reward = { { 3249, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestFrozenStarlight,
+	},
+	[6212] = {
+		itemId = 2472,
+		itemPos = { x = 32814, y = 32232, z = 11 },
+		weight = 8.50,
+		reward = { { 5791, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStuffed,
+	},
+	[6213] = {
+		itemId = 2472,
+		itemPos = { x = 32812, y = 32232, z = 11 },
+		weight = 8.00,
+		reward = { { 6529, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestSoftBoots,
+	},
+	[6214] = {
+		itemId = 2472,
+		itemPos = { x = 32804, y = 32229, z = 11 },
+		weight = 40.00,
+		reward = { { 3341, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
+	},
+	[6215] = {
+		itemId = 2472,
+		itemPos = { x = 32806, y = 32229, z = 11 },
+		weight = 64.00,
+		reward = { { 6527, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
+	},
+	[6216] = {
+		itemId = 2472,
+		itemPos = { x = 32808, y = 32229, z = 11 },
+		weight = 95.00,
+		reward = { { 5803, 1 } },
+		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
 	},
 	-- The Ice Island Quest - Skeleton - Formorgar Glacier
 	[6217] = {

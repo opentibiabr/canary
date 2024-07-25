@@ -12,6 +12,7 @@
 #include "mapcache.hpp"
 
 #include "game/movement/teleport.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "items/bed.hpp"
 #include "io/iologindata.hpp"
 #include "items/item.hpp"
@@ -135,9 +136,13 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	}
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
-	for (const auto &zone : Zone::getZones(pos)) {
-		tile->addZone(zone);
-	}
+
+	// add zone synchronously
+	g_dispatcher().context().tryAddEvent([tile, pos] {
+		for (const auto &zone : Zone::getZones(pos)) {
+			tile->addZone(zone);
+		}
+	});
 
 	floor->setTile(x, y, tile);
 

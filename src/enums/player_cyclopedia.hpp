@@ -37,6 +37,16 @@ enum CyclopediaTitle_t : uint8_t {
 	OTHERS,
 };
 
+enum Summary_t : uint8_t {
+	HOUSE_ITEMS = 9,
+	BOOSTS = 10,
+	PREY_CARDS = 12,
+	BLESSINGS = 14,
+	ALL_BLESSINGS = 17,
+	INSTANT_REWARDS = 18,
+	HIRELINGS = 20,
+};
+
 enum class CyclopediaMapData_t : uint8_t {
 	MinimapMarker = 0,
 	DiscoveryData = 1,

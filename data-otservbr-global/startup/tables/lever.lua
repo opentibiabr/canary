@@ -1,6 +1,81 @@
 -- Look README.md for see the reserved action/unique numbers
 
 LeverAction = {
+	-- The Pits of Inferno Quest
+	[4001] = {
+		itemId = 431,
+		itemPos = {
+			{ x = 32848, y = 32277, z = 9 },
+		},
+	},
+	[7799] = {
+		itemId = 431,
+		itemPos = {
+			{ x = 32842, y = 32274, z = 9 },
+			{ x = 32842, y = 32275, z = 9 },
+			{ x = 32842, y = 32276, z = 9 },
+		},
+	},
+	-- Dreamer's Challenge Quest
+	[8033] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 32836, y = 32278, z = 14 },
+		},
+	},
+	-- The Ancient Tombs Quest
+	[12121] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 33358, y = 32701, z = 14 },
+			{ x = 33349, y = 32680, z = 14 },
+			{ x = 33305, y = 32734, z = 14 },
+			{ x = 33357, y = 32749, z = 14 },
+			{ x = 33368, y = 32763, z = 14 },
+			{ x = 33382, y = 32786, z = 14 },
+			{ x = 33338, y = 32702, z = 14 },
+			{ x = 33320, y = 32682, z = 14 },
+		},
+	},
+	[12122] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 33027, y = 32530, z = 13 },
+			{ x = 33006, y = 32563, z = 13 },
+			{ x = 33123, y = 32599, z = 13 },
+			{ x = 33028, y = 32588, z = 13 },
+			{ x = 33147, y = 32524, z = 13 },
+			{ x = 33104, y = 32514, z = 13 },
+			{ x = 33055, y = 32487, z = 13 },
+			{ x = 33036, y = 32507, z = 13 },
+			{ x = 33089, y = 32514, z = 13 },
+			{ x = 33077, y = 32507, z = 13 },
+			{ x = 33130, y = 32489, z = 13 },
+		},
+	},
+	[12123] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 33183, y = 32884, z = 11 },
+			{ x = 33181, y = 32889, z = 11 },
+			{ x = 33175, y = 32884, z = 11 },
+			{ x = 33176, y = 32880, z = 11 },
+			{ x = 33182, y = 32880, z = 11 },
+			{ x = 33176, y = 32889, z = 11 },
+		},
+	},
+	-- The Ape City Quest - levers
+	[12129] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 32891, y = 32590, z = 11 },
+			{ x = 32843, y = 32649, z = 11 },
+			{ x = 32808, y = 32613, z = 11 },
+			{ x = 32775, y = 32583, z = 11 },
+			{ x = 32756, y = 32494, z = 11 },
+			{ x = 32799, y = 32556, z = 11 },
+		},
+	},
 	-- Dawnport bridge lever
 	-- Path: data\scripts\actions\dawnport\lever.lua
 	[30001] = {
@@ -51,9 +126,186 @@ LeverAction = {
 			{ x = 32601, y = 31421, z = 9 },
 		},
 	},
+	[30006] = { -- bear room quest stone
+		itemId = false,
+		itemPos = {
+			{ x = 32148, y = 32105, z = 11 },
+		},
+	},
+	[30007] = { -- life ring bridge lever
+		itemId = false,
+		itemPos = {
+			{ x = 32414, y = 32252, z = 10 },
+			{ x = 32413, y = 32230, z = 10 },
+		},
+	},
+	[30008] = { -- devil helmet lever
+		itemId = false,
+		itemPos = {
+			{ x = 32600, y = 32105, z = 14 },
+		},
+	},
+	-- The Pits of Inferno Quest
+	[50160] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 32853, y = 32318, z = 9 },
+		},
+	},
 }
 
 LeverUnique = {
+	-- The Pits of Inferno
+	[1037] = {
+		itemId = 2772,
+		itemPos = { x = 32800, y = 32339, z = 11 },
+	},
+	-- The Ape City Quest - levers
+	[1040] = {
+		itemId = 2772,
+		itemPos = { x = 32862, y = 32557, z = 11 },
+	},
+	[1041] = {
+		itemId = 2772,
+		itemPos = { x = 32862, y = 32555, z = 11 },
+	},
+	-- Dreamers Challenge Quest
+	[2004] = {
+		itemId = 2772,
+		itemPos = { x = 32873, y = 32263, z = 14 },
+	},
+	-- The Pits of Inferno Quest
+	[2025] = {
+		itemId = 2772,
+		itemPos = { x = 32820, y = 32321, z = 10 },
+	},
+	[2026] = {
+		itemId = 2772,
+		itemPos = { x = 32820, y = 32345, z = 10 },
+	},
+	[2027] = {
+		itemId = 2772,
+		itemPos = { x = 32847, y = 32339, z = 10 },
+	},
+	[2028] = {
+		itemId = 2772,
+		itemPos = { x = 32847, y = 32327, z = 10 },
+	},
+	[2050] = {
+		itemId = 2772,
+		itemPos = { x = 32874, y = 32334, z = 12 },
+	},
+	[2051] = {
+		itemId = 2772,
+		itemPos = { x = 32891, y = 32328, z = 14 },
+	},
+	[2052] = {
+		itemId = 2772,
+		itemPos = { x = 32843, y = 32352, z = 14 },
+	},
+	[2053] = {
+		itemId = 2772,
+		itemPos = { x = 32889, y = 32349, z = 15 },
+	},
+	[2054] = {
+		itemId = 2772,
+		itemPos = { x = 32887, y = 32330, z = 12 },
+	},
+	[2055] = {
+		itemId = 2772,
+		itemPos = { x = 32846, y = 32318, z = 12 },
+	},
+	[2056] = {
+		itemId = 2772,
+		itemPos = { x = 32887, y = 32355, z = 13 },
+	},
+	[2057] = {
+		itemId = 2772,
+		itemPos = { x = 32853, y = 32359, z = 14 },
+	},
+	[2058] = {
+		itemId = 2772,
+		itemPos = { x = 32843, y = 32359, z = 12 },
+	},
+	[2059] = {
+		itemId = 2772,
+		itemPos = { x = 32847, y = 32332, z = 13 },
+	},
+	[2060] = {
+		itemId = 2772,
+		itemPos = { x = 32886, y = 32337, z = 13 },
+	},
+	[2061] = {
+		itemId = 2772,
+		itemPos = { x = 32874, y = 32365, z = 13 },
+	},
+	[2062] = {
+		itemId = 2772,
+		itemPos = { x = 32850, y = 32366, z = 13 },
+	},
+	[2063] = {
+		itemId = 2772,
+		itemPos = { x = 32859, y = 32364, z = 13 },
+	},
+	[2064] = {
+		itemId = 2772,
+		itemPos = { x = 32874, y = 32354, z = 14 },
+	},
+	[2065] = {
+		itemId = 2772,
+		itemPos = { x = 32848, y = 32335, z = 12 },
+	},
+	-- Dreamers Challenge Quest
+	[2246] = {
+		itemId = 2772,
+		itemPos = { x = 32763, y = 32291, z = 14 },
+	},
+	[2247] = {
+		itemId = 2772,
+		itemPos = { x = 32761, y = 32291, z = 14 },
+	},
+	[2248] = {
+		itemId = 2772,
+		itemPos = { x = 32763, y = 32289, z = 14 },
+	},
+	[2249] = {
+		itemId = 2772,
+		itemPos = { x = 32761, y = 32289, z = 14 },
+	},
+	[2272] = {
+		itemId = 2772,
+		itemPos = { x = 32838, y = 32263, z = 14 },
+	},
+	-- Dreamers Challenge Quest
+	[3041] = {
+		itemId = 2772,
+		itemPos = { x = 32837, y = 32221, z = 14 },
+	},
+	[3042] = {
+		itemId = 2772,
+		itemPos = { x = 32836, y = 32229, z = 14 },
+	},
+	[3043] = {
+		itemId = 2772,
+		itemPos = { x = 32833, y = 32224, z = 14 },
+	},
+	-- The Pits of Inferno Quest
+	[3300] = {
+		itemId = 2772,
+		itemPos = { x = 32850, y = 32268, z = 10 },
+	},
+	[3301] = {
+		itemId = 2772,
+		itemPos = { x = 32862, y = 32312, z = 11 },
+	},
+	[3302] = {
+		itemId = 2772,
+		itemPos = { x = 32851, y = 32308, z = 11 },
+	},
+	[3304] = {
+		itemId = 2772,
+		itemPos = { x = 32826, y = 32263, z = 11 },
+	},
 	-- Dark trails quest (The Ravager lever)
 	-- Path: data\scripts\actions\quests\dark_trails\lever_the_ravager.lua
 	[30001] = {
@@ -190,6 +442,31 @@ LeverUnique = {
 		itemId = 2772,
 		itemPos = { x = 32478, y = 31904, z = 3 },
 	},
+	-- The Pits of Inferno Quest
+	[50095] = {
+		itemId = 2772,
+		itemPos = { x = 32815, y = 32333, z = 15 },
+	},
+	[50097] = {
+		itemId = 2772,
+		itemPos = { x = 32811, y = 32357, z = 15 },
+	},
+	[50098] = {
+		itemId = 2772,
+		itemPos = { x = 32803, y = 32353, z = 15 },
+	},
+	[50104] = {
+		itemId = 2772,
+		itemPos = { x = 32821, y = 32341, z = 13 },
+	},
+	[50105] = {
+		itemId = 2772,
+		itemPos = { x = 32821, y = 32346, z = 13 },
+	},
+	[50106] = {
+		itemId = 2772,
+		itemPos = { x = 32915, y = 32215, z = 15 },
+	},
 	[Storage.ThaisExhibition.FriendshipAmulet] = {
 		itemId = 2772,
 		itemPos = { x = 32399, y = 32209, z = 9 },
@@ -297,5 +574,40 @@ LeverUnique = {
 	[Storage.ThaisExhibition.TibiorasBox] = {
 		itemId = 2772,
 		itemPos = { x = 32440, y = 32191, z = 10 },
+	},
+	-- Path: data\scripts\rookgaard\katana_quest\katana_quest_lever.lua
+	[30029] = {
+		itemId = 2772,
+		itemPos = { x = 32182, y = 32145, z = 11 },
+	},
+	-- Path: data-otservbr-global\scripts\actions\quests\desert_dungeon_quest\desert_dungeon_lever.lua
+	[30030] = {
+		itemId = 2772,
+		itemPos = { x = 32673, y = 32086, z = 8 },
+	},
+	-- Path: data-otservbr-global/scripts/actions/quests/the_outlaw_camp/oven.lua
+	[30031] = {
+		itemId = 2772,
+		itemPos = { x = 32614, y = 32173, z = 9 },
+	},
+	-- Path: data-otservbr-global/scripts/actions/quests/the_outlaw_camp/power_switch.lua
+	[30032] = {
+		itemId = 2772,
+		itemPos = { x = 32594, y = 32212, z = 9 },
+	},
+	-- Path: data-otservbr-global/scripts/actions/quests/the_outlaw_camp/power_burn.lua
+	[30033] = {
+		itemId = 2772,
+		itemPos = { x = 32616, y = 32222, z = 10 },
+	},
+	-- Path: data-otservbr-global/scripts/actions/quests/others/triangle_tower_lever.lua
+	[30034] = {
+		itemId = 2772,
+		itemPos = { x = 32573, y = 32121, z = 7 },
+	},
+	-- Path: data\scripts\quests\draconia\action-lever.lua
+	[30035] = {
+		itemId = 2772,
+		itemPos = { x = 32792, y = 31579, z = 7 },
 	},
 }

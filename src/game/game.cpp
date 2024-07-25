@@ -1543,10 +1543,6 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 		return ret;
 	}
 
-	if (creature->hasCondition(CONDITION_ROOTED)) {
-		return RETURNVALUE_NOTPOSSIBLE;
-	}
-
 	if (creature->hasCondition(CONDITION_FEARED)) {
 		std::shared_ptr<MagicField> field = toTile->getFieldItem();
 		if (field && !field->isBlocking() && field->getDamage() != 0) {

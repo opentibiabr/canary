@@ -14,5 +14,5 @@ function theOutlawPowerSwitch.onUse(player, item, fromPosition, target, toPositi
 	return true
 end
 
-theOutlawPowerSwitch:uid(3401)
+theOutlawPowerSwitch:uid(30032)
 theOutlawPowerSwitch:register()

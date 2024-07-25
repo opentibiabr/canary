@@ -65,7 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- Pegando a quest
 	if MsgContains(message, "mission") and player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) < 1 then
-		if player:getStorageValue(Storage.DjinnWar.Faction.MaridDoor) < 1 and player:getStorageValue(Storage.DjinnWar.Faction.EfreetDoor) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor) < 1 and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor) < 1 then
 			npcHandler:say({
 				"Do you know the location of the djinn fortresses in the mountains south of here?",
 			}, npc, creature)

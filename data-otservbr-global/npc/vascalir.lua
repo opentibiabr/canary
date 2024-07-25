@@ -218,6 +218,7 @@ local mission2Accept = mission2:addChildKeyword(
 		text = {
 			"Great. We best start by reinforcing our defences. There are four large catapults positioned on roofs high over the village. If you want to fight, you have to build up some muscles. ...",
 			"Go into the barn just a few steps to the north-west of here and down the ladder into the cellar. You'll find a huge stone pile down there. Use it to pick up one of the big stones. ...",
+			"They are really heavy, so make sure you have lots of space in your inventory. ...",
 			"Carry one stone to at least two of the four catapults located on Norma's roof to the north, this academy and Obi's roof to the south. ...",
 			"Use the stone on the catapult to load it. You can load each catapult only once, so try spotting two different catapults. Have you understood all of that?",
 		},
@@ -279,6 +280,7 @@ local mission3 = keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 	text = {
 		"Ah, that came with confidence. Suited monsters to do some basic fighting would be rats - they actually fight back, but they don't hit that hard. Just make sure you wear your new studded shield and a sword. ...",
 		"You can find rats in the sewers. In case you might think so, this task is not a lame excuse to help us with some rat infestation, we got the rat population quite under control. ...",
+		"Also please don't come carrying their dead bodies - what adventurers somehow tend to do for some reason. Maybe they think they're cats? I'm going to believe you, promise. ...",
 		"So, back to the topic - please kill 5 rats and then come back to me. Shouldn't be too hard, should it? Just pay attention they don't trap you in a narrow passage and take on one at a time. ...",
 		"If you run low on health, go on full defence - click the little shield icon - and leave the dungeon. Nothing corwardish about running, because dying hurts. Are you ready to go?",
 	},
@@ -301,9 +303,9 @@ mission3:addChildKeyword(
 	{
 		npcHandler = npcHandler,
 		text = {
-			"Nice. I've marked two rat dungeons on your map. Kill 5 rats and return to me. Smart adventurers try to face one creature at a time - use the environment to your advantage. ...",
-			"If you should happen to forget how many you have killed in the meantime, simply check your questlog. ...",
-			"Once you reach level 8, you should leave this island. While it is possible to reach higher levels, this quest is meant to be played up to level 8. ...",
+			"Nice. I've marked two rat dungeons on your map. Kill 5 rats and return to me. If you should happen to forget how many you have killed in the meantime, simply check your questlog. ...",
+			"I should also give you a small word of warning - once you reach level 8, you should leave this island. Thus you won't be able to continue this quest once you've reached level 9. ...",
+			"It's not good to reach level 9 without having chosen a vocation - you'll be weaker than normal. ...",
 			"No need to be scared, just saying you don't need to plan large hunting sessions while helping me with this mission or kill more rats than I've asked you to. So, good hunting!",
 		},
 	},
@@ -348,7 +350,7 @@ keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 		"Anyway, I think you're well enough equipped now to leave the village of Rookgaard for another small task. Find Lily south-west of here, she will tell you what she needs done.",
 	},
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission03) == 1 and player:getStorageValue(Storage.TheRookieGuard.RatKills) == 5
+	return player:getStorageValue(Storage.TheRookieGuard.Mission03) == 1 and player:getStorageValue(Storage.TheRookieGuard.RatKills) >= 5
 end, function(player)
 	player:setStorageValue(Storage.TheRookieGuard.Mission03, 2)
 	player:setStorageValue(Storage.TheRookieGuard.Mission04, 1)
@@ -884,7 +886,7 @@ end)
 keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
-		"You DID kill him indeed! Incredible! This little village can finally live in peace again - and you've grown so strong, too. I'm proud of you, Synanceia Horrida. My work here is done, and yours too. Thank you for all you've done for us. ...",
+		"You DID kill him indeed! Incredible! This little village can finally live in peace again - and you've grown so strong, too. I'm proud of you, |PLAYERNAME|. My work here is done, and yours too. Thank you for all you've done for us. ...",
 		"Now all that is left for you to do here is to talk to the oracle above the academy and travel to the Isle of Destiny. There, you will determine your future - which I'm sure is a bright one. ...",
 		"What will become of you? A mighty sorcerer? A fierce knight? A skilled paladin? Or a powerful druid? Only you can decide. ...",
 		"Rookgaard will miss you, but the whole world of Tibia is open to you now. Take care, |PLAYERNAME|. It's good to know you.",

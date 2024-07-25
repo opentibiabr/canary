@@ -41,5 +41,5 @@ function craftHelmet.onAddItem(moveitem, tileitem, position)
 end
 
 craftHelmet:type("additem")
-craftHelmet:aid(40039)
+craftHelmet:aid(40040)
 craftHelmet:register()

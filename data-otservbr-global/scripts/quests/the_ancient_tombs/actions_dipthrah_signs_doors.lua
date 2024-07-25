@@ -1,14 +1,14 @@
 local actions_dipthrah_signs_doors = Action()
 
 local questSteps = {
-	[40031] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign1,
-	[40032] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign2,
-	[40033] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign3,
-	[40034] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign4,
-	[40035] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign5,
-	[40036] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign6,
-	[40037] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign7,
-	[40038] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign8,
+	[40032] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign1,
+	[40033] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign2,
+	[40034] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign3,
+	[40035] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign4,
+	[40036] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign5,
+	[40037] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign6,
+	[40038] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign7,
+	[40039] = Storage.Quest.U7_4.TheAncientTombs.Diprath_sign8,
 }
 
 local function hasCompletedPreviousStep(player, currentStep)

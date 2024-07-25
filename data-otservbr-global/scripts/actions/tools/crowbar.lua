@@ -1,5 +1,5 @@
 local function the_ape_city(player, item, target, toPosition)
-	if target:getActionId() == 40040 and target:getId() == 4848 then
+	if target:getActionId() == 40041 and target:getId() == 4848 then
 		local storageValue = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Casks)
 		if storageValue < 0 then
 			storageValue = 0

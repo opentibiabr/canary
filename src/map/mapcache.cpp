@@ -134,7 +134,7 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 		tile->internalAddThing(createItem(BasicItemd, pos));
 	}
 
-	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));		
+	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 	for (const auto &zone : Zone::getZones(pos)) {
 		tile->addZone(zone);
 	}

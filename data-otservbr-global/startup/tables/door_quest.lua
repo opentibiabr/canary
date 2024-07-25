@@ -963,4 +963,9 @@ QuestDoorUnique = {
 		itemId = 17709,
 		itemPos = { x = 32908, y = 32112, z = 7 },
 	},
+	-- Katana Quest
+	[22006] = {
+		itemId = 5107,
+		itemPos = { x = 32177, y = 32148, z = 11 },
+	},
 }

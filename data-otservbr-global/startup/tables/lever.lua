@@ -126,6 +126,25 @@ LeverAction = {
 			{ x = 32601, y = 31421, z = 9 },
 		},
 	},
+	[30006] = { -- bear room quest stone
+		itemId = false,
+		itemPos = {
+			{ x = 32148, y = 32105, z = 11 },
+		},
+	},
+	[30007] = { -- life ring bridge lever
+		itemId = false,
+		itemPos = {
+			{ x = 32414, y = 32252, z = 10 },
+			{ x = 32413, y = 32230, z = 10 },
+		},
+	},
+	[30008] = { -- devil helmet lever
+		itemId = false,
+		itemPos = {
+			{ x = 32600, y = 32105, z = 14 },
+		},
+	},
 	-- The Pits of Inferno Quest
 	[50160] = {
 		itemId = 2772,
@@ -555,5 +574,40 @@ LeverUnique = {
 	[Storage.ThaisExhibition.TibiorasBox] = {
 		itemId = 2772,
 		itemPos = { x = 32440, y = 32191, z = 10 },
+	},
+	-- Path: data\scripts\rookgaard\katana_quest\katana_quest_lever.lua
+	[30029] = {
+		itemId = 2772,
+		itemPos = { x = 32182, y = 32145, z = 11 },
+	},
+	-- Path: data-otservbr-global\scripts\actions\quests\desert_dungeon_quest\desert_dungeon_lever.lua
+	[30030] = {
+		itemId = 2772,
+		itemPos = { x = 32673, y = 32086, z = 8 },
+	},
+	-- Path: data-otservbr-global/scripts/actions/quests/the_outlaw_camp/oven.lua
+	[30031] = {
+		itemId = 2772,
+		itemPos = { x = 32614, y = 32173, z = 9 },
+	},
+	-- Path: data-otservbr-global/scripts/actions/quests/the_outlaw_camp/power_switch.lua
+	[30032] = {
+		itemId = 2772,
+		itemPos = { x = 32594, y = 32212, z = 9 },
+	},
+	-- Path: data-otservbr-global/scripts/actions/quests/the_outlaw_camp/power_burn.lua
+	[30033] = {
+		itemId = 2772,
+		itemPos = { x = 32616, y = 32222, z = 10 },
+	},
+	-- Path: data-otservbr-global/scripts/actions/quests/others/triangle_tower_lever.lua
+	[30034] = {
+		itemId = 2772,
+		itemPos = { x = 32573, y = 32121, z = 7 },
+	},
+	-- Path: data\scripts\quests\draconia\action-lever.lua
+	[30035] = {
+		itemId = 2772,
+		itemPos = { x = 32792, y = 31579, z = 7 },
 	},
 }

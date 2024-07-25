@@ -1314,7 +1314,7 @@ ChestUnique = {
 		weight = 54.00,
 		storage = Storage.TibiaTales.ToBlindTheEnemy.MorningStar,
 	},
-	[6259] = {
+	[6258] = {
 		itemId = 2434,
 		itemPos = { x = 32588, y = 31645, z = 3 },
 		container = 2853,
@@ -1322,7 +1322,7 @@ ChestUnique = {
 		weight = 31.00,
 		storage = Storage.TibiaTales.ToBlindTheEnemy.BP1,
 	},
-	[6260] = {
+	[6259] = {
 		itemId = 2434,
 		itemPos = { x = 32588, y = 31644, z = 3 },
 		container = 2853,

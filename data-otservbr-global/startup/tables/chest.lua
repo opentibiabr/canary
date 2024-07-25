@@ -1743,7 +1743,7 @@ ChestUnique = {
 		questName = "honeyflower",
 	},
 	-- The Medusa Quest
-	[6186] = {
+	[6187] = {
 		itemId = 1983,
 		itemPos = { x = 33049, y = 32399, z = 10 },
 		container = 2853,
@@ -1752,7 +1752,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_3.TheMedusaQuest,
 	},
 	-- Serpentine Tower Quest
-	[6187] = {
+	[6188] = {
 		itemId = 2472,
 		itemPos = { x = 33150, y = 32862, z = 7 },
 		weight = 0.20,
@@ -1760,7 +1760,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_3.SerpentineTower.WhitePearl,
 	},
 	-- Elephant Tusk Quest
-	[6188] = {
+	[6189] = {
 		itemId = 2472,
 		itemPos = { x = 32922, y = 32755, z = 7 },
 		weight = 0.20,
@@ -1768,14 +1768,14 @@ ChestUnique = {
 		storage = Storage.Quest.U7_5.ElephantTusk,
 	},
 	-- The Explorer Society - Books
-	[6189] = {
+	[6190] = {
 		itemId = 2434,
 		itemPos = { x = 32770, y = 32245, z = 8 },
 		weight = 13,
 		reward = { { 2821, 1 } },
 		storage = Storage.Quest.U7_6.ExplorerSociety.Books.Cyclops,
 	},
-	[6190] = {
+	[6191] = {
 		itemId = 2523,
 		itemPos = { x = 32786, y = 32254, z = 8 },
 		weight = 13.00,
@@ -1783,7 +1783,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_6.ExplorerSociety.Books.Hengis,
 	},
 	-- Witch House Quest
-	[6191] = {
+	[6192] = {
 		itemId = 2472,
 		itemPos = { x = 32867, y = 31909, z = 8 },
 		weight = 23.30,
@@ -1792,7 +1792,7 @@ ChestUnique = {
 		storage = Storage.QuestChests.WitchHouseQuest,
 	},
 	-- Simon The Beggar's Favorite Staff
-	[6192] = {
+	[6193] = {
 		itemId = 2482,
 		itemPos = { x = 33167, y = 31600, z = 15 },
 		weight = 38.00,
@@ -1800,7 +1800,7 @@ ChestUnique = {
 		storage = Storage.QuestChests.SimonTheBeggarsFavoriteStaff,
 	},
 	-- Druid Outfit Quest - Wolf Tooth Chain
-	[6193] = {
+	[6194] = {
 		itemId = 2480,
 		itemPos = { x = 32939, y = 31776, z = 9 },
 		weight = 3.30,
@@ -1808,7 +1808,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.DruidOutfits.WolfToothChain,
 	},
 	-- Hunter Outfits Quest - Elane Crossbow
-	[6194] = {
+	[6195] = {
 		itemId = 2472,
 		itemPos = { x = 32369, y = 32795, z = 10 },
 		weight = 40.00,
@@ -1816,7 +1816,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.HunterOutfits.ElaneCrossbow,
 	},
 	-- Knight Outfits Quest - Ramsay the Reckless Helmet
-	[6195] = {
+	[6196] = {
 		itemId = 2472,
 		itemPos = { x = 32860, y = 32516, z = 11 },
 		weight = 46.00,
@@ -1824,7 +1824,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.KnightOutfits.RamsaysHelmetChest,
 	},
 	-- Oriental Outfits Quest - Chest
-	[6196] = {
+	[6197] = {
 		itemId = 2472,
 		itemPos = { x = 32088, y = 32780, z = 11 },
 		weight = 4.50,
@@ -1832,7 +1832,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.OrientalOutfits.CoralComb,
 	},
 	-- The Shattered Isles Quest - Dragahs Spellbook
-	[6197] = {
+	[6198] = {
 		itemId = 4240,
 		itemPos = { x = 32093, y = 32574, z = 8 },
 		weight = 58.00,
@@ -1840,7 +1840,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.TheShatteredIsles.DragahsSpellbook,
 	},
 	-- Dreamer's Challenge Quest
-	[6198] = {
+	[6199] = {
 		itemId = 4240,
 		itemPos = { x = 32860, y = 32249, z = 9 },
 		weight = 150.00,
@@ -1848,14 +1848,14 @@ ChestUnique = {
 		reward = { { 2816, 1 }, { 3285, 1 }, { 3352, 1 }, { 3558, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.BPLongSword,
 	},
-	[6199] = {
+	[6200] = {
 		itemId = 2472,
 		itemPos = { x = 32850, y = 32285, z = 14 },
 		weight = 13.00,
 		reward = { { 2821, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestBook,
 	},
-	[6200] = {
+	[6201] = {
 		itemId = 2469,
 		itemPos = { x = 32749, y = 32341, z = 14 },
 		weight = 15.30,
@@ -1863,7 +1863,7 @@ ChestUnique = {
 		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
 	},
-	[6201] = {
+	[6202] = {
 		itemId = 2469,
 		itemPos = { x = 32751, y = 32341, z = 14 },
 		weight = 15.30,
@@ -1871,7 +1871,7 @@ ChestUnique = {
 		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
 	},
-	[6202] = {
+	[6203] = {
 		itemId = 2469,
 		itemPos = { x = 32753, y = 32341, z = 14 },
 		weight = 15.30,
@@ -1879,7 +1879,7 @@ ChestUnique = {
 		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
 	},
-	[6203] = {
+	[6204] = {
 		itemId = 2469,
 		itemPos = { x = 32755, y = 32341, z = 14 },
 		weight = 15.30,
@@ -1887,7 +1887,7 @@ ChestUnique = {
 		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
 	},
-	[6204] = {
+	[6205] = {
 		itemId = 2469,
 		itemPos = { x = 32835, y = 32223, z = 14 },
 		weight = 0.30,
@@ -1895,21 +1895,21 @@ ChestUnique = {
 		storage = Storage.Quest.U7_9.DreamersChallenge.Chests3SmallDiamond,
 	},
 	-- The Pits of Inferno
-	[6205] = {
+	[6206] = {
 		itemId = 2472,
 		itemPos = { x = 32828, y = 32340, z = 7 },
 		weight = 13.00,
 		reward = { { 2836, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.ChestTible,
 	},
-	[6206] = {
+	[6207] = {
 		itemId = 5972,
 		itemPos = { x = 32854, y = 32325, z = 11 },
 		weight = 13.00,
 		reward = { { 2816, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.CorpseBook,
 	},
-	[6207] = {
+	[6208] = {
 		itemId = 5972,
 		itemPos = { x = 32832, y = 32277, z = 10 },
 		weight = 40.90,
@@ -1917,7 +1917,7 @@ ChestUnique = {
 		reward = { { 6561, 1 }, { 6299, 1 }, { 3052, 1 }, { 5021, 3 }, { 3026, 5 }, { 3035, 11 }, { 5944, 2 }, { 3160, 3 }, { 3155, 2 }, { 3147, 1 }, { 238, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.CorpsePirateBP,
 	},
-	[6208] = {
+	[6209] = {
 		itemId = 2472,
 		itemPos = { x = 32826, y = 32232, z = 11 },
 		weight = 20.70,
@@ -1925,49 +1925,49 @@ ChestUnique = {
 		reward = { { 11605, 1 }, { 11607, 1 }, { 11609, 1 }, { 11603, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestBP,
 	},
-	[6209] = {
+	[6210] = {
 		itemId = 2472,
 		itemPos = { x = 32824, y = 32232, z = 11 },
 		weight = 10.00,
 		reward = { { 3035, 100 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestPlatinumCoins,
 	},
-	[6210] = {
+	[6211] = {
 		itemId = 2472,
 		itemPos = { x = 32819, y = 32232, z = 11 },
 		weight = 10.00,
 		reward = { { 3249, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestFrozenStarlight,
 	},
-	[6211] = {
+	[6212] = {
 		itemId = 2472,
 		itemPos = { x = 32814, y = 32232, z = 11 },
 		weight = 8.50,
 		reward = { { 5791, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStuffed,
 	},
-	[6212] = {
+	[6213] = {
 		itemId = 2472,
 		itemPos = { x = 32812, y = 32232, z = 11 },
 		weight = 8.00,
 		reward = { { 6529, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestSoftBoots,
 	},
-	[6213] = {
+	[6214] = {
 		itemId = 2472,
 		itemPos = { x = 32804, y = 32229, z = 11 },
 		weight = 40.00,
 		reward = { { 3341, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
 	},
-	[6214] = {
+	[6215] = {
 		itemId = 2472,
 		itemPos = { x = 32806, y = 32229, z = 11 },
 		weight = 64.00,
 		reward = { { 6527, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
 	},
-	[6215] = {
+	[6216] = {
 		itemId = 2472,
 		itemPos = { x = 32808, y = 32229, z = 11 },
 		weight = 95.00,

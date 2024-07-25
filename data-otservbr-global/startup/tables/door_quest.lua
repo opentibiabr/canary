@@ -927,6 +927,12 @@ QuestDoorAction = {
 			{ x = 32204, y = 31022, z = 14 },
 		},
 	},
+	[Storage.Quest.U8_1.TowerDefenceQuest.Door] = {
+		itemId = 6258,
+		itemPos = {
+			{ x = 32600, y = 31758, z = 9 },
+		},
+	},
 }
 
 QuestDoorUnique = {

@@ -1174,6 +1174,7 @@ Storage = {
 			Questline = 51538,
 			MiningHelmet = 51539,
 		},
+		-- TowerDefenceQuest: when there is space, bring this quest that is in update 8.1 to Tibia Tales
 	},
 	TheShatteredIsles = {
 		-- Reserved storage from 51540 - 51589
@@ -2081,8 +2082,10 @@ Storage = {
 				Mission06 = 41396,
 				Mission07 = 41397,
 			},
-			ToOutfoxAFox = {},
-			TowerDefence = {},
+			TowerDefenceQuest = {
+				Questline = 41398,
+				Door = 41399,
+			},
 			Waterfall = {},
 			WhatAFoolish = {},
 		},

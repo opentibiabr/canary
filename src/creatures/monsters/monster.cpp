@@ -1129,23 +1129,27 @@ void Monster::pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirecti
 	// We can not use iterators here since we can push the item to another tile
 	// which will invalidate the iterator.
 	// start from the end to minimize the amount of traffic
-	if (const auto items = tile->getItemList()) {
-		uint32_t moveCount = 0;
-		uint32_t removeCount = 0;
-		int32_t downItemSize = tile->getDownItemCount();
-		for (int32_t i = downItemSize; --i >= 0;) {
-			const auto &item = items->at(i);
-			if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
-				if (moveCount < 20 && pushItem(item, nextDirection)) {
-					++moveCount;
-				} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
-					++removeCount;
-				}
+	TileItemVector* items;
+	if (!(items = tile->getItemList())) {
+		return;
+	}
+	uint32_t moveCount = 0;
+	uint32_t removeCount = 0;
+	auto it = items->begin();
+	while (it != items->end()) {
+		std::shared_ptr<Item> item = *it;
+		if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
+			if (moveCount < 20 && pushItem(item, nextDirection)) {
+				++moveCount;
+			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
+				++removeCount;
 			}
+		} else {
+			it++;
 		}
-		if (removeCount > 0) {
-			g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
-		}
+	}
+	if (removeCount > 0) {
+		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 	}
 }
 

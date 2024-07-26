@@ -2962,6 +2962,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		newmsg.add<uint16_t>(raceid_);
 
 		uint8_t progress = 0;
+		uint8_t occurrence = 0;
 		for (const auto &_it : creaturesKilled) {
 			if (_it.first == raceid_) {
 				const auto tmpType = g_monsters().getMonsterType(it_.second);
@@ -2969,11 +2970,13 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 					return;
 				}
 				progress = g_iobestiary().getKillStatus(tmpType, _it.second);
+				occurrence = tmpType->info.bestiaryOccurrence;
 			}
 		}
 
 		if (progress > 0) {
-			newmsg.add<uint16_t>(static_cast<uint16_t>(progress));
+			newmsg.addByte(progress);
+			newmsg.addByte(occurrence);
 		} else {
 			newmsg.addByte(0);
 		}

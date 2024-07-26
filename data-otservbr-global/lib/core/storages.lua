@@ -66,8 +66,6 @@ Reserved player action storage key ranges (const.h)
 	[4502] = key 4502
 	[4503] = key 4503
 	[4600] = key 4600
-	[4601] = key 4601
-	[4603] = key 4603
 	[5000] = key 5000
 	[5002] = key 5002
 	[5010] = key 5010
@@ -81,34 +79,27 @@ Storage = {
 	-- General storages
 	Dragonfetish = 30003,
 	EdronRopeQuest = 30004,
-	GhostShipQuest = 30005,
 	OrcKingGreeting = 30006,
 	MarkwinGreeting = 30007,
 	-- EmoteSpells Storage cannot be changed, it is set in source code
 	EmoteSpells = 30008,
 	WagonTicket = 30009,
-	BloodHerbQuest = 30010,
 	FirstMageWeapon = 30011,
 	ToOutfoxAFoxQuest = 30012,
 	KawillBlessing = 30014,
 	RentedHorseTimer = 30015,
 	FountainOfLife = 30016,
-	KnightwatchTowerDoor = 30017,
 	-- Promotion Storage cannot be changed, it is set in source code
 	Promotion = 30018,
 	RookgaardHints = 30019,
 	RookgaardDestiny = 30020,
 	EruaranGreeting = 30021,
 	MaryzaCookbook = 30022,
-	Factions = 30024,
 	-- unused TrainerRoom = 30027,
 	-- unused NpcSpawn = 30028,
 	-- unused ExerciseDummyExhaust = 30029,
-	SamsOldBackpack = 30030,
-	SamsOldBackpackDoor = 30031,
 	ChayenneReward = 30033,
 	SwampDiggingTimeout = 30034,
-	HydraEggQuest = 30035,
 	Atrad = 30036,
 	ElementalistQuest1 = 30037,
 	ElementalistQuest2 = 30038,
@@ -128,7 +119,6 @@ Storage = {
 	-- Reserved in Global.Storage.FamiliarSummonEvent60 = 30055
 	ChayenneKeyTime = 30056,
 	FreeQuests = 30057,
-	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
 	PlayerWeaponReward = 30061,
 	--[[
@@ -526,41 +516,6 @@ Storage = {
 		AmuletTimer = 50520,
 		AmuletStatus = 50521,
 	},
-	ExplorerSociety = {
-		-- Reserved storage from 50530 - 50599
-		QuestLine = 50530,
-		SpectralStone = 50531,
-		SkullOfRatha = 50532,
-		GiantSmithHammer = 50533,
-		JoiningTheExplorers = 505344,
-		TheIceDelivery = 50535,
-		TheButterflyHunt = 50536,
-		ThePlantCollection = 50537,
-		TheLizardUrn = 50538,
-		TheBonelordSecret = 50539,
-		TheOrcPowder = 50540,
-		CalassaQuest = 50541,
-		TheMemoryStone = 50542,
-		TheRuneWritings = 50543,
-		TheEctoplasm = 50544,
-		TheSpectralDress = 50545,
-		TheSpectralStone = 50546,
-		TheAstralPortals = 50547,
-		TheIslandofDragons = 50548,
-		TheIceMusic = 50549,
-		BansheeDoor = 50550,
-		BonelordsDoor = 50551,
-		CalassaDoor = 50552,
-		MemoryStoneDoor = 50553,
-		ElvenDoor = 50554,
-		OrcDoor = 50555,
-		ChorurnDoor = 50556,
-		DwacatraDoor = 50557,
-		FamilyBroochDoor = 50558,
-		TheElvenPoetry = 50559,
-		SpectralStoneDoor = 50560,
-		IceMusicDoor = 50561,
-	},
 	TravellingTrader = {
 		-- Reserved storage from 50600 - 50619
 		Mission01 = 50600,
@@ -571,34 +526,6 @@ Storage = {
 		Mission06 = 50605,
 		Mission07 = 50606,
 		-- unused packageDoor = 50607
-	},
-	DjinnWar = {
-		-- Reserved storage from 50620 - 50649
-		Faction = {
-			Greeting = 50620,
-			MaridDoor = 50621,
-			EfreetDoor = 50622,
-		},
-		RecievedLamp = 50625,
-		-- Blue djinn
-		MaridFaction = {
-			Start = 50630,
-			Mission01 = 50631,
-			Mission02 = 50632,
-			RataMari = 50633,
-			Mission03 = 50634,
-			DoorToLamp = 50635,
-			DoorToEfreetTerritory = 50636,
-		},
-		-- Green djinn
-		EfreetFaction = {
-			Start = 50640,
-			Mission01 = 50641,
-			Mission02 = 50642,
-			Mission03 = 50643,
-			DoorToLamp = 50644,
-			DoorToMaridTerritory = 50645,
-		},
 	},
 	VampireHunter = {
 		-- Reserved storage from 50650 - 50659
@@ -814,122 +741,12 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		Citizen = {
-			-- Mission storages for temporary questlog entries
-			MissionHat = 50966,
-			AddonHat = 50967,
-			MissionBackpack = 50968,
-			AddonBackpack = 50969,
-			AddonBackpackTimer = 50970,
-		},
-		-- Begger Outfit Quest
-		BeggarFirstAddonDoor = 50975, -- Staff quest
-		BeggarSecondAddon = 50976,
-		-- Druid-outfit Quest
-		DruidHatAddon = 50977,
-		DruidBodyAddon = 50978,
-		DruidAmuletDoor = 50979,
-		-- Barbarian-outfit Quest
-		BarbarianAddon = 50980,
-		BarbarianAddonWaitTimer = 50981,
-		-- Beggar
-		BeggarOutfit = 50982,
-		BeggarOutfitTimer = 50983,
-		-- Hunter-outfit Quest
-		HunterMusicSheet01 = 50984,
-		HunterMusicSheet02 = 50985,
-		HunterMusicSheet03 = 50986,
-		HunterMusicSheet04 = 50987,
-		HunterBodyAddon = 50988,
-		HunterHatAddon = 50989,
-		Hunter = {
-			AddonGlove = 50990,
-			AddonHat = 50991,
-		},
-		Knight = {
-			AddonSword = 50992,
-			MissionHelmet = 50993,
-			AddonHelmet = 50994,
-			AddonHelmetTimer = 50995,
-			RamsaysHelmetDoor = 50996,
-		},
-		MageSummoner = {
-			AddonWand = 50997,
-			AddonBelt = 50998,
-			MissionHatCloak = 50999,
-			AddonHatCloak = 51000,
-			AddonWandTimer = 51001,
-		},
-		-- Nobleman Outfit
-		NoblemanFirstAddon = 51002,
-		NoblemanSecondAddon = 51003,
 		-- Norseman-outfit Quest
 		NorsemanAddon = 51004,
-		-- Warrior-outfit Quest
-		WarriorShoulderAddon = 51005,
-		WarriorSwordAddon = 51006,
-		WarriorShoulderTimer = 51007,
-		-- Wizard-outfit Quest
-		WizardAddon = 51008,
-		-- Pirate-outfit Quest
-		PirateBaseOutfit = 51009,
-		PirateSabreAddon = 51010,
-		PirateHatAddon = 51011,
-		-- Assassin Outfit
-		AssassinBaseOutfit = 51012,
-		AssassinFirstAddon = 51013,
-		AssassinSecondAddon = 51014,
 		-- Golden Outfit
 		GoldenOutfit = 51015,
-		NightmareOutfit = 51016,
-		NightmareDoor = 51017,
-		BrotherhoodOutfit = 51018,
-		BrotherhoodDoor = 51019,
-		Shaman = {
-			AddonStaffMask = 51020,
-			MissionStaff = 51021,
-			MissionMask = 51022,
-		},
 		DeeplingAnchor = 51023,
-		FirstOrientalAddon = 51024,
-		SecondOrientalAddon = 51025,
 		RoyalCostumeOutfit = 51026,
-	},
-	TheAncientTombs = {
-		-- Reserved storage from 50940 - 51059
-		DefaultStart = 50940,
-		VashresamunInstruments = 50941,
-		VashresamunsDoor = 50942,
-		MorguthisBlueFlameStorage1 = 50943,
-		MorguthisBlueFlameStorage2 = 50944,
-		MorguthisBlueFlameStorage3 = 50945,
-		MorguthisBlueFlameStorage4 = 50946,
-		MorguthisBlueFlameStorage5 = 50947,
-		MorguthisBlueFlameStorage6 = 50948,
-		MorguthisBlueFlameStorage7 = 50949,
-
-		OmrucsTreasure = 50950,
-		ThalasTreasure = 50951,
-		DiphtrahsTreasure = 50952,
-		MahrdisTreasure = 50953,
-		VashresamunsTreasure = 50954,
-		MorguthisTreasure = 50955,
-		RahemosTreasure = 50956,
-	},
-	TheApeCity = {
-		-- Reserved storage from 51060 - 51079
-		Started = 51060,
-		Questline = 51061,
-		DworcDoor = 51062,
-		ChorDoor = 51063,
-		ParchmentDecyphering = 51064,
-		FibulaDoor = 51065,
-		WitchesCapSpot = 51066,
-		CasksDoor = 51067,
-		Casks = 51068,
-		HolyApeHair = 51069,
-		SnakeDestroyer = 51070,
-		ShamanOufit = 51071,
 	},
 	TheInquisition = {
 		-- Reserved storage from 51110 - 51139
@@ -1103,14 +920,6 @@ Storage = {
 			BossRoom = 51332,
 		},
 	},
-	FriendsandTraders = {
-		-- Reserved storage from 51340 - 51359
-		DefaultStart = 51340,
-		TheSweatyCyclops = 51341,
-		TheMermaidMarina = 51342,
-		TheBlessedStake = 51343,
-		TheBlessedStakeWaitTime = 51344,
-	},
 	Postman = {
 		-- Reserved storage from 51360 - 51389
 		Mission01 = 51360,
@@ -1248,32 +1057,6 @@ Storage = {
 			Questline = 51532,
 		},
 	},
-	TheShatteredIsles = {
-		-- Reserved storage from 51540 - 51589
-		DefaultStart = 51540,
-		TheGovernorDaughter = 51541,
-		TheErrand = 51542,
-		AccessToMeriana = 51543,
-		APoemForTheMermaid = 51544,
-		ADjinnInLove = 51545,
-		AccessToLagunaIsland = 51546,
-		AccessToGoroma = 51547,
-		Shipwrecked = 51548,
-		DragahsSpellbook = 51549,
-		TheCounterspell = 51550,
-		ReputationInSabrehaven = 51551,
-		RaysMission1 = 51552,
-		RaysMission2 = 51553,
-		RaysMission3 = 51554,
-		RaysMission4 = 51555,
-		AccessToNargor = 51556,
-		TortoiseEggNargorDoor = 51557,
-		TortoiseEggNargorTime = 51558,
-		YavernDoor = 51559,
-		TavernMap1 = 51560,
-		TavernMap2 = 51561,
-		TavernMap3 = 51562,
-	},
 	SearoutesAroundYalahar = {
 		-- Reserved storage from 51590 - 51609
 		TownsCounter = 51590,
@@ -1399,17 +1182,12 @@ Storage = {
 		FormorgarMinesHoistSkeleton = 51737,
 		FormorgarMinesHoistChest = 51738,
 		-- Custom Quests, currently not using system.lua (aid 2000)
-		BlackKnightTreeCrownShield = 51739,
-		BlackKnightTreeCrownArmor = 51740,
-		BlackKnightTreeKey = 51741,
 		KosheiAmulet1 = 51742,
 		KosheiAmulet2 = 51743,
-		SilverBrooch = 51744,
 		FamilyBrooch = 51745,
 		DCQGhoul = 51746,
 		FirewalkerBoots = 51747,
 		DeeperFibulaKey = 51748,
-		SixRubiesQuest = 51749,
 		ParchmentRoomQuest = 51750,
 		WarzoneReward1 = 51751,
 		WarzoneReward2 = 51752,
@@ -1420,30 +1198,13 @@ Storage = {
 		FathersBurdenCrystal = 51757,
 		FathersBurdenSilk = 51758,
 		FathersBurdenCloth = 51759,
-		OutlawCampKey1 = 51760,
-		OutlawCampKey2 = 51761,
-		OutlawCampKey3 = 51762,
-		DoubletQuest = 51763,
-		HoneyFlower = 51764,
-		BananaPalm = 51765,
 		WhisperMoss = 51766,
 		OldParchment = 51767,
 		DragahsSpellbook = 51768,
 		StealFromThieves = 51769,
-	},
-	PitsOfInferno = {
-		-- Reserved storage from 52000 - 52019
-		ShortcutHubDoor = 52000,
-		ShortcutLeverDoor = 52001,
-		Pumin = 52002,
-		WeaponReward = 52003,
-		ThroneInfernatil = 52004,
-		ThroneTafariel = 52005,
-		ThroneVerminor = 52006,
-		ThroneApocalypse = 52007,
-		ThroneBazir = 52008,
-		ThroneAshfalor = 52009,
-		ThronePumin = 52010,
+		OutlawCamp = 51770, -- quest log to The Outlaw Camp
+		WitchHouseQuest = 51771,
+		SimonTheBeggarsFavoriteStaff = 51772,
 	},
 	HorestisTomb = {
 		-- Reserved storage from 52020 - 52029
@@ -1573,17 +1334,6 @@ Storage = {
 		QuestLine = 52148,
 		TheLostBrother = 52149,
 	},
-	DreamersChallenge = {
-		-- Reserved storage from 52160 - 52199
-		LeverNightmare1 = 52160,
-		LeverNightmare2 = 52161,
-		LeverNightmare3 = 52162,
-		LeverBrotherhood1 = 52163,
-		LeverBrotherhood2 = 52164,
-		LeverBrotherhood3 = 52165,
-		TicTac = 52166,
-		Reward = 52167,
-	},
 	HallsOfHope = {
 		-- Reserved storage from 52200 - 52219
 		Questline = 52200,
@@ -1711,9 +1461,18 @@ Storage = {
 			ID3007 = 3007,
 			ID3008 = 3008,
 			ID3012 = 3012,
+			ID3142 = 3142,
+			ID3301 = 3301,
+			ID3302 = 3302,
+			ID3303 = 3303,
+			ID3304 = 3304,
+			ID3520 = 3520,
 			ID3600 = 3600,
+			ID3610 = 3610,
 			ID3620 = 3620,
 			ID3666 = 3666,
+			ID3667 = 3667,
+			ID3700 = 3700,
 			ID3702 = 3702,
 			ID3800 = 3800,
 			ID3801 = 3801,
@@ -1723,6 +1482,8 @@ Storage = {
 			ID3980 = 3980,
 			ID4055 = 4055,
 			ID4502 = 4502,
+			ID4601 = 4601,
+			ID4603 = 4603,
 			ID5010 = 5010,
 			ID6010 = 6010,
 		},
@@ -1730,38 +1491,9 @@ Storage = {
 		-- Use the reserved storage keys accordingly
 		KeysUpdate = 40000,
 		PreU6_0 = { -- update pre-6.0 - Reserved Storages 40001 - 40020
-			DeeperFibula = {
-				Rewards = {
-					TowerShield = 40001,
-					WarriorHelmet = 40002,
-					DwarvenRing = 40003,
-					ElvenAmulet = 40004,
-					KnightAxe = 40005,
-				},
-			},
 			OrnamentedShield = {
 				Rewards = {
 					OrnamentedShield = 40006,
-					TimeRing = 40007,
-				},
-			},
-			ShortSword = {
-				Rewards = {
-					Book = 40008,
-				},
-			},
-			ThaisLighthouse = {
-				Rewards = {
-					BattleHammer = 40009,
-					DarkShield = 40010,
-				},
-			},
-		},
-		U6_0 = { -- update 6.0 - Reserved Storages 40021 - 40030
-			StuddedShield = {
-				Rewards = {
-					BananaFree = 40021,
-					BananaPremium = 40022,
 				},
 			},
 		},
@@ -1770,9 +1502,6 @@ Storage = {
 				Rewards = {
 					Cookies = 40031,
 				},
-			},
-			ExplorerBrooch = {
-				Brooch = 40032,
 			},
 			OrcFortress = {
 				Rewards = {
@@ -1796,25 +1525,9 @@ Storage = {
 			},
 		},
 		U6_4 = { -- update 6.4 - Reserved Storages 40071 - 40110
-			AdornedUHRune = {
-				Rewards = {
-					SilverRuneEmblem = 40071,
-				},
-			},
-			BarbarianAxe = {
-				Rewards = {
-					BarbarianAxe = 40072,
-					Scimitar = 40073,
-				},
-			},
 			BerserkerTreasure = {
 				Rewards = {
 					WhitePearls = 40074,
-				},
-			},
-			DarkArmor = {
-				Rewards = {
-					Armor = 40075,
 				},
 			},
 			DemonHelmet = {
@@ -1824,86 +1537,12 @@ Storage = {
 					DemonShield = 40078,
 				},
 			},
-			DoubleHero = {
-				Rewards = {
-					RedGem = 40079,
-					ClubRing = 40080,
-				},
-			},
-			EdronGoblin = {
-				Rewards = {
-					SilverAmulet = 40081,
-					SteelShield = 40082,
-				},
-			},
-			FireAxe = {
-				Rewards = {
-					Bag = 40083,
-					FireAxe = 40084,
-				},
-			},
-			PoisonDaggers = {
-				Rewards = {
-					BackpackReward = 40085,
-				},
-			},
-			ShamanTreasure = {
-				Rewards = {
-					BlankRunes = 40086,
-				},
-			},
-			TrollCave = {
-				Rewards = {
-					GarlicNecklace = 40087,
-					BrassLegs = 40088,
-				},
-			},
-			VampireShield = {
-				Rewards = {
-					StrangeSymbol = 40089,
-					DragonLance = 40090,
-					VampireShield = 40091,
-				},
-			},
-			WeddingRing = {
-				Rewards = {
-					DragonNecklace = 40092,
-					WeedingRing = 40093,
-				},
-			},
-		},
-		U6_5 = { -- update 6.5 - Reserved Storages 40111 - 40120
-			AlawarsVault = {
-				Rewards = {
-					WhitePearl = 40111,
-					Broadsword = 40112,
-				},
-			},
 		},
 		U7_1 = { -- update 7.1 - Reserved Storages 40121 - 40140
-			BlackKnight = {
-				Rewards = {
-					CrownArmor = 40121,
-					CrownShield = 40122,
-				},
-			},
 			DragonTower = {
 				Rewards = {
 					Backpack1 = 40123,
 					Backpack2 = 40124,
-				},
-			},
-			Ring = {
-				Rewards = {
-					TimeRing = 40125,
-					SwordRing = 40126,
-				},
-			},
-			TimeRing = {
-				Rewards = {
-					CrystallBall = 40127,
-					TimeRing = 40128,
-					ElvenAmulet = 40129,
 				},
 			},
 		},
@@ -1951,22 +1590,9 @@ Storage = {
 			FamilyBrooch = {
 				Brooch = 9000,
 			},
-			GiantSmithhammer = {
-				QuestLine = 10091,
-				Talon = 10092,
-				Hammer = 10093,
-				GoldCoin = 10094,
-			},
 			MadMageRoom = {
 				QuestLine = 10095,
 				APrisoner = 10096,
-				StarAmulet = 10097,
-				Hat = 10098,
-				StoneSkinAmulet = 10099,
-			},
-			SkullOfRatha = {
-				Bag1 = 10100,
-				Bag2 = 10101,
 			},
 			TheAnnihilator = {
 				Reward = 10102,
@@ -1989,54 +1615,322 @@ Storage = {
 			VoodooDoll = {},
 		},
 		U7_3 = { -- update 7.3 - Reserved Storages 40351 - 40400
-			MedusaShield = {},
-			SerpentineTower = {},
-			WhitePearl = {},
+			TheMedusaQuest = 40351,
+			SerpentineTower = {
+				WhitePearl = 40352,
+			},
 		},
 		U7_4 = { -- update 7.4 - Reserved Storages 40401 - 40600
-			TheAncientTombs = {},
-			TheDjinnWarEfreetFaction = {},
-			TheDjinnWarMaridFaction = {},
+			TheAncientTombs = {
+				DefaultStart = 40401,
+				VashresamunInstruments = 40402,
+				VashresamunsDoor = 40403,
+				MorguthisBlueFlameStorage1 = 40404,
+				MorguthisBlueFlameStorage2 = 40405,
+				MorguthisBlueFlameStorage3 = 40406,
+				MorguthisBlueFlameStorage4 = 40407,
+				MorguthisBlueFlameStorage5 = 40408,
+				MorguthisBlueFlameStorage6 = 40409,
+				MorguthisBlueFlameStorage7 = 40410,
+				OmrucsTreasure = 40411,
+				ThalasTreasure = 40412,
+				DiphtrahsTreasure = 40413,
+				MahrdisTreasure = 40414,
+				VashresamunsTreasure = 40415,
+				MorguthisTreasure = 40416,
+				RahemosTreasure = 40417,
+				ThalasSwitchesGlobalStorage = 40418,
+				DiprathSwitchesGlobalStorage = 40419,
+				AshmunrahSwitchesGlobalStorage = 40420,
+				Diprath_sign1 = 40421,
+				Diprath_sign2 = 40422,
+				Diprath_sign3 = 40423,
+				Diprath_sign4 = 40424,
+				Diprath_sign5 = 40425,
+				Diprath_sign6 = 40426,
+				Diprath_sign7 = 40427,
+				Diprath_sign8 = 40428,
+			},
+			DjinnWar = {
+				Factions = 40429,
+				-- Reserved storage from 50620 - 50649
+				Faction = {
+					Greeting = 40430,
+					MaridDoor = 40431,
+					EfreetDoor = 40432,
+				},
+				RecievedLamp = 40433,
+				-- Blue djinn
+				MaridFaction = {
+					Start = 40434,
+					Mission01 = 40435,
+					Mission02 = 40436,
+					RataMari = 40437,
+					Mission03 = 40438,
+					DoorToLamp = 40439,
+					DoorToEfreetTerritory = 40440,
+				},
+				-- Green djinn
+				EfreetFaction = {
+					Start = 40441,
+					Mission01 = 40442,
+					Mission02 = 40443,
+					Mission03 = 40444,
+					DoorToLamp = 40445,
+					DoorToMaridTerritory = 40446,
+				},
+			},
 		},
 		U7_5 = { -- update 7.5 - Reserved Storages 40601 - 40610
-			ElephantTusk = {},
-			SamsOldBackpack = {},
+			ElephantTusk = 40601,
+			SamsOldBackpack = {
+				SamsOldBackpackNpc = 40602,
+				SamsOldBackpackDoor = 40603,
+			},
 		},
 		U7_6 = { -- update 7.6 - Reserved Storages 40611 - 40760
-			HydraEgg = {},
-			TheApeCity = {},
-			TheExplorerSociety = {},
+			HydraEggQuest = 40611,
+			TheApeCity = {
+				Started = 40612,
+				Questline = 40613,
+				DworcDoor = 40614,
+				ChorDoor = 40615,
+				ParchmentDecyphering = 40616,
+				FibulaDoor = 40617,
+				WitchesCapSpot = 40618,
+				CasksDoor = 40619,
+				Casks = 40620,
+				HolyApeHair = 40621,
+				SnakeDestroyer = 40622,
+				ShamanOufit = 40623,
+				TheLargeAmphoras1 = 40624,
+				TheLargeAmphoras2 = 40625,
+				TheLargeAmphoras3 = 40626,
+				TheLargeAmphoras4 = 40627,
+				TheLargeAmphorasCooldown = 40628,
+			},
+			ExplorerSociety = {
+				QuestLine = 40629,
+				SpectralStone = 40630,
+				JoiningTheExplorers = 40631,
+				TheIceDelivery = 40632,
+				TheButterflyHunt = 40633,
+				ThePlantCollection = 40634,
+				TheLizardUrn = 40635,
+				TheBonelordSecret = 40636,
+				TheOrcPowder = 40637,
+				CalassaQuest = 40638,
+				TheMemoryStone = 40639,
+				TheRuneWritings = 40640,
+				TheEctoplasm = 40641,
+				TheSpectralDress = 40642,
+				TheSpectralStone = 40643,
+				TheAstralPortals = 40644,
+				TheIslandofDragons = 40645,
+				TheIceMusic = 40646,
+				BansheeDoor = 40647,
+				BonelordsDoor = 40648,
+				CalassaDoor = 40649,
+				MemoryStoneDoor = 40650,
+				ElvenDoor = 40651,
+				OrcDoor = 40652,
+				ChorurnDoor = 40653,
+				DwacatraDoor = 40654,
+				FamilyBroochDoor = 40655,
+				TheElvenPoetry = 40656,
+				SpectralStoneDoor = 40657,
+				IceMusicDoor = 40658,
+				ExplorerBrooch = 40659,
+				SkullOfRatha = {
+					Bag1 = 40660,
+					Bag2 = 40661,
+				},
+				GiantSmithHammer = {
+					Talon = 40662,
+					Hammer = 40663,
+					GoldCoin = 40664,
+				},
+				Books = {
+					Cyclops = 40665,
+					Hengis = 40666,
+				},
+			},
 		},
 		U7_8 = { -- update 7.8 - Reserved Storages 40761 - 41000
-			AssassinOutfits = {},
-			BarbarianOutfits = {},
-			BeggarOutfits = {},
-			CitizenOutfits = {},
-			CitizenOutfitsRook = {},
-			DruidOutfits = {},
-			DruidOutfitsRook = {},
-			HunterOutfits = {},
-			KnightOutfits = {},
-			MageOutfits = {},
-			MarlinTrophy = {},
-			Meriana = {},
-			NoblemanOutfits = {},
-			ObsidianKnife = {},
-			OrientalOutfits = {},
-			PirateOutfits = {},
-			ShamanOutfits = {},
-			SummonerOutfits = {},
-			TheBlessedStake = {},
-			TheMermaidMarina = {},
-			TheShatteredIsles = {},
-			TheSweatyCyclops = {},
-			TreasureIsland = {},
-			WarriorOutfits = {},
-			WizardOutfits = {},
+			AssassinOutfits = {
+				AssassinBaseOutfit = 40761,
+				AssassinFirstAddon = 40762,
+				AssassinSecondAddon = 40763,
+			},
+			BarbarianOutfits = {
+				BarbarianAddon = 40764,
+				BarbarianAddonWaitTimer = 40765,
+			},
+			BeggarOutfits = {
+				BeggarOutfit = 40766,
+				BeggarOutfitTimer = 40767,
+				BeggarFirstAddonDoor = 40768,
+				BeggarSecondAddon = 40769,
+				BeggarOutfitTimerAddon = 40770,
+			},
+			CitizenOutfitsRook = {
+				MissionHatRook = 40771,
+				AddonHatRook = 40772,
+				MissionBackpackRook = 40773,
+				AddonBackpackRook = 40774,
+				AddonBackpackRookTimer = 40775,
+			},
+			CitizenOutfits = {
+				MissionHat = 40776,
+				AddonHat = 40777,
+				MissionBackpack = 40778,
+				AddonBackpack = 40779,
+				AddonBackpackTimer = 40780,
+			},
+			DruidOutfitsRook = {
+				DruidBodyAddonRook = 40781,
+			},
+			DruidOutfits = {
+				DruidHatAddon = 40782,
+				DruidBodyAddon = 40783,
+				DruidAmuletDoor = 40784,
+				GriffinclawFlower = 40785,
+				CeironsWaterskin = 40786,
+				WolfToothChain = 40787,
+			},
+			HunterOutfits = {
+				HunterMusicSheet01 = 40788,
+				HunterMusicSheet02 = 40789,
+				HunterMusicSheet03 = 40790,
+				HunterMusicSheet04 = 40791,
+				HunterBodyAddon = 40792,
+				HunterHatAddon = 40793,
+				Hunter = {
+					AddonGlove = 40794,
+					AddonHat = 40795,
+				},
+				ElaneCrossbow = 40796,
+			},
+			KnightOutfits = {
+				AddonSword = 40797,
+				MissionHelmet = 40798,
+				AddonHelmet = 40799,
+				AddonHelmetTimer = 40800,
+				RamsaysHelmetDoor = 40801,
+				RamsaysHelmetChest = 40802,
+			},
+			MageAndSummonerOutfits = {
+				AddonWand = 40803,
+				AddonBelt = 40804,
+				MissionHatCloak = 40805,
+				AddonHatCloak = 40806,
+				AddonWandTimer = 40807,
+			},
+			MarlinTrophy = 40808,
+			NoblemanOutfits = {
+				NoblemanFirstAddon = 40809,
+				NoblemanSecondAddon = 40810,
+			},
+			ObsidianKnife = 40811,
+			OrientalOutfits = {
+				FirstOrientalAddon = 40812,
+				SecondOrientalAddon = 40813,
+				OrientalDoor = 40814,
+				CoralComb = 40815,
+			},
+			PirateOutfits = {
+				PirateBaseOutfit = 40816,
+				PirateSabreAddon = 40817,
+				PirateHatAddon = 40818,
+			},
+			ShamanOutfits = {
+				AddonStaffMask = 40819,
+				MissionStaff = 40820,
+				MissionMask = 40821,
+			},
+			FriendsAndTraders = {
+				DefaultStart = 40822,
+				TheSweatyCyclops = 40823,
+				TheMermaidMarina = 40824,
+				TheBlessedStake = 40825,
+				TheBlessedStakeWaitTime = 40826,
+			},
+			TheShatteredIsles = {
+				DefaultStart = 40827,
+				TheGovernorDaughter = 40828,
+				TheErrand = 40829,
+				AccessToMeriana = 40830,
+				APoemForTheMermaid = 40831,
+				ADjinnInLove = 40832,
+				AccessToLagunaIsland = 40833,
+				AccessToGoroma = 40834,
+				Shipwrecked = 40835,
+				DragahsSpellbook = 40836,
+				TheCounterspell = 40837,
+				ReputationInSabrehaven = 40838,
+				RaysMission1 = 40839,
+				RaysMission2 = 40840,
+				RaysMission3 = 40841,
+				RaysMission4 = 40842,
+				AccessToNargor = 40843,
+				TortoiseEggNargorDoor = 40844,
+				TortoiseEggNargorTime = 40845,
+				YavernDoor = 40846,
+				TavernMap1 = 40847,
+				TavernMap2 = 40848,
+				TavernMap3 = 40849,
+			},
+			WarriorOutfits = {
+				WarriorShoulderAddon = 40850,
+				WarriorSwordAddon = 40851,
+				WarriorShoulderTimer = 40852,
+			},
+			WizardOutfits = 40853,
 		},
 		U7_9 = { -- update 7.9 - Reserved Storages 41001 - 41150
-			DreamersChallenge = {},
-			ThePitsOfInferno = {},
+			DreamersChallenge = {
+				LeverNightmare1 = 41001,
+				LeverNightmare2 = 41002,
+				LeverNightmare3 = 41003,
+				LeverBrotherhood1 = 41004,
+				LeverBrotherhood2 = 41005,
+				LeverBrotherhood3 = 41006,
+				TicTac = 41007,
+				BPLongSword = 41008,
+				ChestBook = 41009,
+				ChestsWine = 41010,
+				Chests3SmallDiamond = 41011,
+			},
+			NightmareOutfits = {
+				Outfits = 41012,
+				Door = 41013,
+				KnightwatchTowerDoor = 41014,
+			},
+			BrotherhoodOutfits = {
+				Outfits = 41015,
+				Door = 41016,
+			},
+			ThePitsOfInferno = {
+				ShortcutHubDoor = 41017,
+				ShortcutLeverDoor = 41018,
+				Pumin = 41019,
+				ThroneInfernatil = 41020,
+				ThroneTafariel = 41021,
+				ThroneVerminor = 41022,
+				ThroneApocalypse = 41023,
+				ThroneBazir = 41024,
+				ThroneAshfalor = 41025,
+				ThronePumin = 41026,
+				ChestTible = 41027,
+				CorpseBook = 41028,
+				CorpsePirateBP = 41029,
+				RewardChestBP = 41030,
+				RewardChestPlatinumCoins = 41031,
+				RewardChestFrozenStarlight = 41032,
+				RewardChestStuffed = 41033,
+				RewardChestSoftBoots = 41034,
+				RewardChestStaffAvengerArbalest = 41035,
+			},
 		},
 		U8_0 = { -- update 8.0 - Reserved Storages 41151 - 41350
 			BarbarianArena = {},
@@ -2058,12 +1952,10 @@ Storage = {
 		U8_1 = { -- update 8.1 - Reserved Storages 41351 - 41650
 			AgainstTheSpiderCult = {},
 			AritosTask = {},
-			BrotherhoodOutfits = {},
 			OutfitBrotherhoodMaleAddon = {},
 			IntoTheBonePit = {},
 			KissingAPig = {},
 			KosheiTheDeathless = {},
-			NightmareOutfits = {},
 			OutfitNightmareMaleAddon = {},
 			NomadsLand = {},
 			RestInHallowedGround = {},
@@ -2508,10 +2400,6 @@ Storage = {
 				MorrisGoblinCount = 20013,
 				MorrisMinos = 20014,
 				MorrisMinosCount = 20015,
-			},
-			SanctuaryOfTheLizardGod = {
-				LizardGodTeleport = 20020,
-				LegionHelmet = 20021,
 			},
 		},
 		U10_70 = { -- update 10.70 - Reserved Storages 44801 - 44950
@@ -3044,12 +2932,6 @@ GlobalStorage = {
 		Machine3 = 60147,
 		Machine4 = 60148,
 	},
-	TheAncientTombs = {
-		-- Reserved storage from 60160 - 60169
-		ThalasSwitchesGlobalStorage = 60160,
-		DiprathSwitchesGlobalStorage = 60161,
-		AshmunrahSwitchesGlobalStorage = 60162,
-	},
 	TheOrderOfTheLion = {
 		-- Reserved storage from 60170 - 60171
 		Drume = {
@@ -3108,9 +2990,9 @@ GlobalStorage = {
 }
 
 startupGlobalStorages = {
-	GlobalStorage.TheAncientTombs.AshmunrahSwitchesGlobalStorage,
-	GlobalStorage.TheAncientTombs.DiprathSwitchesGlobalStorage,
-	GlobalStorage.TheAncientTombs.ThalasSwitchesGlobalStorage,
+	Storage.Quest.U7_4.TheAncientTombs.AshmunrahSwitchesGlobalStorage,
+	Storage.Quest.U7_4.TheAncientTombs.DiprathSwitchesGlobalStorage,
+	Storage.Quest.U7_4.TheAncientTombs.ThalasSwitchesGlobalStorage,
 	GlobalStorage.HeroRathleton.FirstMachines,
 	GlobalStorage.HeroRathleton.SecondMachines,
 	GlobalStorage.HeroRathleton.ThirdMachines,

@@ -103,7 +103,7 @@ local itemsTable = {
 		{ itemName = "goanna meat", clientId = 31560, sell = 190 },
 		{ itemName = "lamassu hoof", clientId = 31441, sell = 330 },
 		{ itemName = "lamassu horn", clientId = 31442, sell = 240 },
-		{ itemName = "life crystal", clientId = 3061, sell = 85 },
+		{ itemName = "life crystal", clientId = 3061, sell = 75 },
 		{ itemName = "lizard heart", clientId = 31340, sell = 530 },
 		{ itemName = "manticore ear", clientId = 31440, sell = 310 },
 		{ itemName = "manticore tail", clientId = 31439, sell = 220 },

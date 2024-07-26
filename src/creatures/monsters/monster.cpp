@@ -1257,12 +1257,12 @@ void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result
 			return;
 		}
 
-		stdext::arraylist<Direction> listDir(128);
+		std::vector<Direction> listDir;
 		if (!getPathTo(masterPos, listDir, 0, std::max<int32_t>(0, distance - 5), true, true, distance)) {
 			isWalkingBack = false;
 			return;
 		}
-		startAutoWalk(listDir.data());
+		startAutoWalk(listDir);
 	}
 }
 

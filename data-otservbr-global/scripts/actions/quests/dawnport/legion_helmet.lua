@@ -15,9 +15,9 @@ function sacredSnake.onUse(player, item, fromPosition, target, toPosition, isHot
 		for i = 1, #sacrificialPosition do
 			local tile = Tile(sacrificialPosition[i])
 			if toPosition == sacrificialPosition[i] then
-				if player:getStorageValue(Storage.Quest.U10_55.SanctuaryOfTheLizardGod.LizardGodTeleport) < 1 then
+				if not player:kv():scoped("lizard-god-teleport"):get("discovered") then
 					player:removeItem(21469, 1)
-					player:setStorageValue(Storage.Quest.U10_55.SanctuaryOfTheLizardGod.LizardGodTeleport, 1)
+					player:kv():scoped("lizard-god-teleport"):set("discovered", true)
 					player:say("The lizard god accepts your offer! You may enter the santuary!", TALKTYPE_MONSTER_SAY, false, player, toPosition)
 					toPosition:sendMagicEffect(CONST_ME_MORTAREA)
 					item:remove(1)

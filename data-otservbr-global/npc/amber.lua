@@ -68,70 +68,43 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local addonProgress = player:getStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack)
+	local addonProgress = player:getStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonBackpackRook)
 	if MsgContains(message, "addon") or MsgContains(message, "outfit") or (addonProgress == 1 and MsgContains(message, "leather")) or ((addonProgress == 1 or addonProgress == 2) and MsgContains(message, "backpack")) then
 		if addonProgress < 1 then
-			npcHandler:say("Sorry, the backpack I wear is not for sale. It's handmade from rare minotaur leather.", npc, creature)
+			npcHandler:say("Ah, you noticed my new accessory? Sorry, this one is not for sale. It's handmade from rare minotaur leather.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif addonProgress == 1 then
-			npcHandler:say(
-				"Ah, right, almost forgot about the backpack! \z
-						   Have you brought me 100 pieces of minotaur leather as requested?",
-				npc,
-				creature
-			)
+			npcHandler:say("Ah, right, almost forgot about the backpack! Have you brought me 100 pieces of minotaur leather as requested?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif addonProgress == 2 then
-			if player:getStorageValue(Storage.OutfitQuest.Citizen.AddonBackpackTimer) < os.time() then
+			if player:getStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonBackpackRookTimer) < os.time() then
 				npcHandler:say("Just in time! Your backpack is finished. Here you go, I hope you like it.", npc, creature)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.OutfitQuest.Ref, math.min(0, player:getStorageValue(Storage.OutfitQuest.Ref) - 1))
-				player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 0)
-				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 3)
-
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionBackpackRook, 4)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonBackpackRook, 3)
 				player:addOutfitAddon(136, 1)
 				player:addOutfitAddon(128, 1)
 			else
-				npcHandler:say(
-					"Uh... I didn't expect you to return that early. \z
-							   Sorry, but I'm not finished yet with your backpack. \z
-							   I'm doing the best I can, promised.",
-					npc,
-					creature
-				)
+				npcHandler:say("Uh... I didn't expect you to return that early. Sorry, but I'm not finished yet with your backpack. I'm doing the best I can, promised.", npc, creature)
 			end
 		elseif addonProgress == 3 then
-			npcHandler:say(
-				"Sorry, but I can only make one backpack per person, \z
-						   else I'd have to close my shop and open a leather manufactory.",
-				npc,
-				creature
-			)
+			npcHandler:say("Sorry, but I can only make one backpack per person, else I'd have to close my shop and open a leather manufactory.", npc, creature)
 		end
 		return true
 	end
 
 	if npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, "backpack") or MsgContains(message, "minotaur") or MsgContains(message, "leather") then
-			npcHandler:say(
-				"Well, if you really like this backpack, I could make one for you, \z
-						   but minotaur leather is hard to come by these days. Are you willing to put some work into this?",
-				npc,
-				creature
-			)
+			npcHandler:say("Well, if you really like this backpack, I could make one for you, but minotaur leather is hard to come by these days. Are you willing to put some work into this?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, "yes") then
 			player:setStorageValue(Storage.OutfitQuest.Ref, math.max(0, player:getStorageValue(Storage.OutfitQuest.Ref)) + 1)
-			player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 1)
-			player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 1)
-			npcHandler:say(
-				"Alright then, if you bring me 100 pieces of fine minotaur leather I will \z
-						   see what I can do for you. You probably have to kill really many minotaurs though... so good luck!",
-				npc,
-				creature
-			)
+			player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonBackpackRook, 1)
+			player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionBackpackRook, 1)
+			npcHandler:say("Alright then, if you bring me 100 pieces of fine minotaur leather I will see what I can do for you. You probably have to kill really many minotaurs though... so good luck!", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 		else
 			npcHandler:say("Sorry, but I don't run a welfare office, you know... no pain, no gain.", npc, creature)
@@ -140,29 +113,16 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 3 then
 		if MsgContains(message, "yes") then
 			if player:getItemCount(5878) < 100 then
-				npcHandler:say(
-					"Sorry, but that's not enough leather yet to make one of these backpacks. \z
-							   Would you rather like to buy a normal backpack for 10 gold?",
-					npc,
-					creature
-				)
+				npcHandler:say("Sorry, but that's not enough leather yet to make one of these backpacks. Would you rather like to buy a normal backpack for 10 gold?", npc, creature)
 			else
 				npcHandler:say("Great! Alright, I need a while to finish this backpack for you. Come ask me later, okay?", npc, creature)
-
 				player:removeItem(5878, 100)
-
-				player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 2)
-				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 2)
-				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpackTimer, os.time() + 2 * 60 * 60)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionBackpackRook, 2)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonBackpackRook, 2)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonBackpackRookTimer, os.time() + 2 * 60 * 60) --2 hours
 			end
 		else
-			npcHandler:say(
-				"I know, it's quite some work... don't lose heart, \z
-						   just keep killing minotaurs and you'll eventually get lucky. \z
-						   Would you rather like to buy a normal backpack for 10 gold?",
-				npc,
-				creature
-			)
+			npcHandler:say("I know, it's quite some work... don't lose heart, just keep killing minotaurs and you'll eventually get lucky. Would you rather like to buy a normal backpack for 10 gold?", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
 	end
@@ -184,14 +144,11 @@ keywordHandler:addKeyword({ "explore" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "adventure" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I fought fierce {monsters}, climbed the highest mountains, explored the deepest {dungeons} \z
-			   and crossed the {sea} on a {raft}.",
+	text = "I fought fierce {monsters}, climbed the highest mountains, explored the deepest {dungeons} and crossed the {sea} on a {raft}.",
 })
 keywordHandler:addKeyword({ "sea" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "My voyage on the sea was exhausting. \z
-			   The weather was bad, the waves high and my raft quite simple. \z
-			   There's a certain excitement to it, though.",
+	text = "My voyage on the sea was exhausting. The weather was bad, the waves high and my raft quite simple. There's a certain excitement to it, though.",
 })
 keywordHandler:addKeyword({ "time" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -199,24 +156,19 @@ keywordHandler:addKeyword({ "time" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "help" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "Well, I can give you general {hints} or tell you about my {adventures} and many other topics. \z
-				Oh, and if you are bored, I might have a small {quest} for you.",
+	text = "Well, I can give you general {hints} or tell you about my {adventures} and many other topics. Oh, and if you are bored, I might have a small {quest} for you.",
 })
 keywordHandler:addKeyword({ "information" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "Well, I can give you general {hints} or tell you about my {adventures} and many other topics. \z
-				Oh, and if you are bored, I might have a small {quest} for you.",
+	text = "Well, I can give you general {hints} or tell you about my {adventures} and many other topics. Oh, and if you are bored, I might have a small {quest} for you.",
 })
 keywordHandler:addKeyword({ "dungeon" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I had no time to explore the dungeons of this isle yet, \z
-				but I've seen two big caves in the East, and there is a ruined tower to the north-west. \z
-				Oh, and there're the {sewers}.",
+	text = "I had no time to explore the dungeons of this isle yet, but I've seen two big caves in the East, and there is a ruined tower to the north-west. Oh, and there're the {sewers}.",
 })
 keywordHandler:addKeyword({ "sewer" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I like sewers. I made my very first battle experience in the sewers below {Thais}. \z
-				The small sewer system of {Rookgaard} has some nasty rats to fight.",
+	text = "I like sewers. I made my very first battle experience in the sewers below {Thais}. The small sewer system of {Rookgaard} has some nasty rats to fight.",
 })
 keywordHandler:addKeyword({ "monster" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -226,30 +178,21 @@ keywordHandler:addKeyword({ "cyclops" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "I don't like the way they look at you. Their eye seems to pierce right through you. Creepy!",
 })
-keywordHandler:addKeyword({ "minotaur" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "They are nasty monsters, particularly as they have distance fighters and mages in their clans. \z
-				My {backpack} is handmade from minotaur leather.",
-})
 keywordHandler:addKeyword({ "dragon" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "Their breath is so hot! I had to cut my hair after my last encounter with \z
-				a dragon because the ends were all burnt. That's what you gotta deal with as a female adventurer!",
+	text = "Their breath is so hot! I had to cut my hair after my last encounter with a dragon because the ends were all burnt. That's what you gotta deal with as a female adventurer!",
 })
 keywordHandler:addKeyword({ "raft" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I left my raft at the south-eastern shore. I forgot my private {notebook} on it. \z
-				If you could return it to me, I would be very grateful.",
+	text = "I left my raft at the south-eastern shore. I forgot my private {notebook} on it. If you could return it to me, I would be very grateful.",
 })
 keywordHandler:addKeyword({ "quest" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I left my raft at the south-eastern shore. I forgot my private {notebook} on it. \z
-				If you could return it to me, I would be very grateful.",
+	text = "I left my raft at the south-eastern shore. I forgot my private {notebook} on it. If you could return it to me, I would be very grateful.",
 })
 keywordHandler:addKeyword({ "mission" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I left my raft at the south-eastern shore. I forgot my private {notebook} on it. \z
-				If you could return it to me, I would be very grateful.",
+	text = "I left my raft at the south-eastern shore. I forgot my private {notebook} on it. If you could return it to me, I would be very grateful.",
 })
 keywordHandler:addKeyword({ "seymour" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -269,8 +212,7 @@ keywordHandler:addKeyword({ "thais" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "weapon" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "The best weapons on this isle are just toothpicks \z
-				compared with the weapons warriors wield on the {mainland}.",
+	text = "The best weapons on this isle are just toothpicks compared with the weapons warriors wield on the {mainland}.",
 })
 keywordHandler:addKeyword({ "magic" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -294,8 +236,7 @@ keywordHandler:addKeyword({ "tools" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "rope" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "One day I fell into a hole without having a rope. I was yelling for help for three whole days! \z
-				Eventually a fisherman passed by and pulled me out with his own rope, lucky me.",
+	text = "One day I fell into a hole without having a rope. I was yelling for help for three whole days! Eventually a fisherman passed by and pulled me out with his own rope, lucky me.",
 })
 keywordHandler:addKeyword({ "shovel" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -303,8 +244,7 @@ keywordHandler:addKeyword({ "shovel" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "torch" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "You know, on mainland you will be able to cast magic spells which provide you with light. \z
-				You won't really need torches anymore.",
+	text = "You know, on mainland you will be able to cast magic spells which provide you with light. You won't really need torches anymore.",
 })
 keywordHandler:addKeyword({ "bank" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -374,8 +314,7 @@ keywordHandler:addKeyword({ "lily" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "billy" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "He brought me some of his famous rat stew. I really didn't want to insult him, \z
-				but I simply can't eat something like that. So I told him I'm a vegetarian and I only eat fish. <gulps>",
+	text = "He brought me some of his famous rat stew. I really didn't want to insult him, but I simply can't eat something like that. So I told him I'm a vegetarian and I only eat fish. <gulps>",
 })
 keywordHandler:addKeyword({ "willie" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -410,8 +349,7 @@ keywordHandler:addAliasKeyword({ "dallheim" })
 -- Orc language
 keywordHandler:addKeyword({ "orc" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "Not the nicest guys you can encounter. \z
-				I had some clashes with them and finally ended up being their {prisoner} for a few months.",
+	text = "Not the nicest guys you can encounter. I had some clashes with them and finally ended up being their {prisoner} for a few months.",
 })
 local prisonerKeyword = keywordHandler:addKeyword({ "prisoner" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -487,11 +425,7 @@ keywordHandler:addAliasKeyword({ "notebook" })
 
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Yeah, see you later.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "See you later, |PLAYERNAME|.")
-npcHandler:setMessage(
-	MESSAGE_GREET,
-	"Oh hello, nice to see you |PLAYERNAME|. \z
-									  Are you here to hear some stories of my {adventures} or do you need {help}?"
-)
+npcHandler:setMessage(MESSAGE_GREET, "Oh hello, nice to see you |PLAYERNAME|. Are you here to hear some stories of my {adventures} or do you need {help}?")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

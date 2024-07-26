@@ -94,12 +94,12 @@ public:
 		return fileName = std::move(setName);
 	}
 
-	std::forward_list<std::shared_ptr<SpawnNpc>> &getSpawnNpcList() {
+	std::vector<std::shared_ptr<SpawnNpc>> &getSpawnNpcList() {
 		return spawnNpcList;
 	}
 
 private:
-	std::forward_list<std::shared_ptr<SpawnNpc>> spawnNpcList;
+	std::vector<std::shared_ptr<SpawnNpc>> spawnNpcList;
 	std::string fileName;
 	bool loaded = false;
 	bool started = false;

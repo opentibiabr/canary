@@ -281,6 +281,10 @@ public:
 	const Outfit_t getDefaultOutfit() const {
 		return defaultOutfit;
 	}
+	bool isWearingSupportOutfit() const {
+		auto outfit = currentOutfit.lookType;
+		return outfit == 75 || outfit == 266 || outfit == 302;
+	}
 	bool isInvisible() const;
 	ZoneType_t getZoneType() {
 		if (getTile()) {

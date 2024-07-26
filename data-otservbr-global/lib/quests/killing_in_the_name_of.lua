@@ -28,13 +28,13 @@ tasks = {
 	Extra = {
 		[1] = {
 			killsRequired = 20,
-			raceName = "Mountain Trolls",
+			raceName = "Mountain Troll",
 			level = { 1, 9999 },
 			storage = { 12701, 1 },
 			norepeatable = true,
 			premium = false,
 			creatures = {
-				"mountain trolls",
+				"mountain troll",
 			},
 			rewards = {
 				{ type = "storage", value = { 17524, 1 } },

@@ -59,7 +59,7 @@ end
 local function addTravelKeyword(keyword, text, cost, destination)
 	if keyword == "calassa" then
 		keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry but we don't serve this route." }, function(player)
-			return player:getStorageValue(Storage.ExplorerSociety.CalassaQuest) < 1
+			return player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.CalassaQuest) < 1
 		end)
 	end
 

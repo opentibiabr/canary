@@ -134,28 +134,28 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 
-		if player:getStorageValue(Storage.OutfitQuest.BeggarOutfit) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit) < 1 then
 			npcHandler:say({
 				"I think I'm having an innovative vision! I feel that people are getting tired of attempting to look wealthy and of displaying their treasures. ...",
 				"A really new and innovative look would be - the 'poor man's look'! I can already see it in front of me... yes... a little ragged... but not too shabby! ...",
 				"I need material right now! Argh - the vision starts to fade... please hurry, can you bring me some stuff?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif player:getStorageValue(Storage.OutfitQuest.BeggarOutfit) > 0 and player:getStorageValue(Storage.OutfitQuest.BeggarOutfit) < 5 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit) > 0 and player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit) < 5 then
 			npcHandler:say("I am so excited! This poor man's look will be an outfit like the world has never seen before.", npc, creature)
-		elseif player:getStorageValue(Storage.OutfitQuest.BeggarOutfit) == 5 then
-			if player:getStorageValue(Storage.OutfitQuest.BeggarOutfitTimer) > os.time() then
+		elseif player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit) == 5 then
+			if player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfitTimer) > os.time() then
 				npcHandler:say("Sorry, but I am not done with the outfit yet. Venore wasn't built in a day.", npc, creature)
-			elseif player:getStorageValue(Storage.OutfitQuest.BeggarOutfitTimer) > 0 and player:getStorageValue(Storage.OutfitQuest.BeggarOutfitTimer) < os.time() then
+			elseif player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfitTimer) > 0 and player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfitTimer) < os.time() then
 				npcHandler:say("Eureka! Alas, the poor man's outfit is finished, but... to be honest... it turned out much less appealing than I expected. However, you can have it if you want, okay?", npc, creature)
 				npcHandler:setTopic(playerId, 5)
 			end
-		elseif player:getStorageValue(Storage.OutfitQuest.BeggarOutfit) == 6 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit) == 6 then
 			npcHandler:say("I guess my vision wasn't that grand after all. I hope there are still people who enjoy it.", npc, creature)
 		end
 	elseif config[message:lower()] then
 		local targetMessage = config[message:lower()]
-		if player:getStorageValue(Storage.OutfitQuest.BeggarOutfit) ~= targetMessage.value then
+		if player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit) ~= targetMessage.value then
 			npcHandler:say(targetMessage.messages.done, npc, creature)
 			return true
 		end
@@ -175,7 +175,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
 				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
 			end
-			player:setStorageValue(Storage.OutfitQuest.BeggarOutfit, 1)
+			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, 1)
 			npcHandler:say("Terrific! What are you waiting for?! Start right away gathering 20 pieces of brown cloth and come back once you have them!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 then
@@ -185,16 +185,16 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.OutfitQuest.BeggarOutfit, player:getStorageValue(Storage.OutfitQuest.BeggarOutfit) + 1)
+			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit) + 1)
 			if targetMessage.lastItem then
-				player:setStorageValue(Storage.OutfitQuest.BeggarOutfitTimer, os.time() + 86400)
+				player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfitTimer, os.time() + 86400)
 			end
 			npcHandler:say(targetMessage.messages.success, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			player:addOutfit(153)
 			player:addOutfit(157)
-			player:setStorageValue(Storage.OutfitQuest.BeggarOutfit, 6)
+			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, 6)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			npcHandler:say("Here you go. Maybe you enjoy if after all.", npc, creature)
 			npcHandler:setTopic(playerId, 0)

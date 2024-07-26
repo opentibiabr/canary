@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "addon") or MsgContains(message, "outfit") then
-		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon) < 1 then
 			npcHandler:say("Oh, my winged tiara? Those are traditionally awarded after having completed a difficult {task} for our guild, only to female aspirants though. Male warriors will receive a hooded cloak.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -69,22 +69,22 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 		end
 	elseif MsgContains(message, "crossbow") then
-		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon) == 1 then
 			npcHandler:say("I'm so excited! Have you really found my crossbow?", npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		end
 	elseif MsgContains(message, "leather") then
-		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) == 2 then
+		if player:getStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon) == 2 then
 			npcHandler:say("Did you bring me 100 pieces of lizard leather and 100 pieces of red dragon leather?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
 	elseif MsgContains(message, "chicken wing") then
-		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) == 3 then
+		if player:getStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon) == 3 then
 			npcHandler:say("Were you able to get hold of 5 enchanted chicken wings?", npc, creature)
 			npcHandler:setTopic(playerId, 6)
 		end
 	elseif MsgContains(message, "steel") then
-		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) == 4 then
+		if player:getStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon) == 4 then
 			npcHandler:say("Ah, have you brought one piece of royal steel, draconian steel and hell steel each?", npc, creature)
 			npcHandler:setTopic(playerId, 7)
 		end
@@ -102,13 +102,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say("That's the spirit! I hope you will find my crossbow, |PLAYERNAME|!", npc, creature)
-			player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 1)
+			player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon, 1)
 			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if player:removeItem(5947, 1) then
 				npcHandler:say("Yeah! I could kiss you right here and there! Besides, you're a handsome one. <giggles> Please bring me 100 pieces of lizard leather and 100 pieces of red dragon leather now!", npc, creature)
-				player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 2)
+				player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon, 2)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("You don't have it...", npc, creature)
@@ -118,7 +118,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Good work, |PLAYERNAME|! That is enough leather for a lot of sturdy quivers. Now, please bring me 5 enchanted chicken wings.", npc, creature)
 				player:removeItem(5876, 100)
 				player:removeItem(5948, 100)
-				player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 3)
+				player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon, 3)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("You don't have it...", npc, creature)
@@ -126,7 +126,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 6 then
 			if player:removeItem(5891, 5) then
 				npcHandler:say("Great! Now we can create a few more Tiaras. If only they weren't that expensive... Well anyway, please obtain one piece of royal steel, draconian steel and hell steel each.", npc, creature)
-				player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 4)
+				player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon, 4)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("You don't have it...", npc, creature)
@@ -137,7 +137,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:removeItem(5887, 1)
 				player:removeItem(5888, 1)
 				player:removeItem(5889, 1)
-				player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 5)
+				player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon, 5)
 				player:addOutfitAddon(129, 1)
 				player:addOutfitAddon(137, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
@@ -187,7 +187,7 @@ addGloveKeyword({
 	"Maybe another time.",
 	"Alright! Here is your money, thank you very much.",
 }, function(player)
-	return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == 1
+	return player:getStorageValue(Storage.Quest.U7_8.HunterOutfits.Hunter.AddonGlove) == 1
 end, function(player)
 	player:removeItem(5875, 1)
 	player:addMoney(2000)
@@ -199,10 +199,10 @@ addGloveKeyword({
 	"No problem, maybe another time.",
 	"Great! I hereby grant you the right to wear the sniper gloves as an accessory. Congratulations!",
 }, function(player)
-	return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == -1
+	return player:getStorageValue(Storage.Quest.U7_8.HunterOutfits.Hunter.AddonGlove) == -1
 end, function(player)
 	player:removeItem(5875, 1)
-	player:setStorageValue(Storage.OutfitQuest.Hunter.AddonGlove, 1)
+	player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.Hunter.AddonGlove, 1)
 	player:addOutfitAddon(129, 2)
 	player:addOutfitAddon(137, 1)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)

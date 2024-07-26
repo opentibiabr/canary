@@ -141,7 +141,7 @@ npcConfig.shop = {
 	{ itemName = "hatchet", clientId = 3276, sell = 25 },
 	{ itemName = "katana", clientId = 3300, sell = 35 },
 	{ itemName = "mace", clientId = 3286, sell = 30 },
-	{ itemName = "machete", clientId = 3308, sell = 30 },
+	{ itemName = "machete", clientId = 3308, sell = 6 },
 	{ itemName = "rapier", clientId = 3272, buy = 15, sell = 5 },
 	{ itemName = "sabre", clientId = 3273, buy = 25, sell = 12 },
 	{ itemName = "scythe", clientId = 3453, buy = 12, sell = 3 },

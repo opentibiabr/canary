@@ -30,6 +30,9 @@ function onBossDeath.onDeath(creature)
 			zn:removePlayers()
 		end, bossLever.timeAfterKill * 1000, zone)
 	end
+	onDeathForDamagingPlayers(creature, function(creature, player)
+		player:takeScreenshot(SCREENSHOT_TYPE_BOSSDEFEATED)
+	end)
 	return true
 end
 

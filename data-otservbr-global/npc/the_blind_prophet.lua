@@ -83,11 +83,16 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 1)
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, "yes") then
-			npcHandler:say("Take care!", npc, creature)
-			local destination = Position(33025, 32580, 6)
-			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			player:teleportTo(destination)
-			destination:sendMagicEffect(CONST_ME_TELEPORT)
+			local questlineValue = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Questline)
+			if questlineValue >= 15 then
+				npcHandler:say("Take care!", npc, creature)
+				local destination = Position(33025, 32580, 6)
+				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+				player:teleportTo(destination)
+				destination:sendMagicEffect(CONST_ME_TELEPORT)
+			else
+				npcHandler:say("You are not worthy to be transported there yet.", npc, creature)
+			end
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Wise decision maybe.", npc, creature)
 		end

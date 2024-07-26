@@ -19,5 +19,5 @@ function theOutlawOven.onUse(player, item, fromPosition, target, toPosition, isH
 	return true
 end
 
-theOutlawOven:uid(3400)
+theOutlawOven:uid(30031)
 theOutlawOven:register()

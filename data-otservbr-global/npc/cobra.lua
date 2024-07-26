@@ -54,6 +54,10 @@ local function greetCallback(npc, creature)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(Position(33396, 32836, 14))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		if player:getStorageValue(Storage.Quest.U7_4.TheAncientTombs.ThalasTreasure) <= 1 then
+			player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.ThalasTreasure, 2)
+		end
+
 		return false
 	else
 		npcHandler:say("Begone! Hissssss! You bear not the mark of the cobra!", npc, creature)

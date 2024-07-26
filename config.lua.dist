@@ -239,6 +239,7 @@ onlyPremiumAccount = false
 
 -- Customs
 -- NOTE: stashMoving = true, stow an container inside your stash
+-- NOTE: stashItemCount, the maximum items quantity in stash
 -- NOTE: depotChest, the non-stackable items will be moved to the selected depot chest(I - XVIII).
 -- NOTE: autoBank = true, the dropped coins from monsters will be automatically deposited to your bank account.
 -- NOTE: toggleGoldPouchAllowAnything will allow players to move items or gold to gold pouch
@@ -254,7 +255,9 @@ onlyPremiumAccount = false
 -- NOTE: startStreakLevel will make a reward streak level for new players who never logged in
 -- NOTE: if showLootsInBestiary is true, will cause all loots to be shown in the bestiary even if the player has not reached the required number of kills
 -- NOTE: minTownIdToBankTransfer blocks towns less than defined from receiving money transfers
+-- NOTE: enableSupportOutfit enable GODS and GMS to select support outfit (gamemaster, customer support or community manager)
 stashMoving = false
+stashItemCount = 5000
 depotChest = 4
 autoLoot = false
 autoBank = false
@@ -273,6 +276,7 @@ enablePlayerPutItemInAmmoSlot = false
 startStreakLevel = 0
 showLootsInBestiary = false
 minTownIdToBankTransfer = 3
+enableSupportOutfit = true
 
 -- Teleport summon
 -- Set to true will never remove the summon
@@ -502,6 +506,9 @@ rateMonsterHealth = 1.0
 rateMonsterAttack = 1.0
 rateMonsterDefense = 1.0
 
+-- Npc rates
+rateNpcHealth = 1.0
+
 -- Boss rates
 rateBossHealth = 1.0
 rateBossAttack = 1.0
@@ -539,6 +546,7 @@ location = "South America"
 -- Leave empty if you wish to disable.
 discordWebhookURL = ""
 discordSendFooter = true
+discordWebhookDelayMs = 1000
 
 -- Vip System (Get more info in: https://github.com/opentibiabr/canary/pull/1063)
 -- NOTE: set vipSystemEnabled to true to enable the vip system functionalities (this overrides premium checks)

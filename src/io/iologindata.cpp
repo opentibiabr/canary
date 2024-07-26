@@ -349,15 +349,14 @@ bool IOLoginData::hasBiddedOnHouse(uint32_t guid) {
 	return db.storeQuery(query.str()).get() != nullptr;
 }
 
-std::forward_list<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
-	std::forward_list<VIPEntry> entries;
-
+std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 	std::string query = fmt::format("SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = {}", accountId);
+	std::vector<VIPEntry> entries;
 
-	DBResult_ptr result = Database::getInstance().storeQuery(query);
-	if (result) {
+	if (const auto &result = Database::getInstance().storeQuery(query)) {
+		entries.reserve(result->countResults());
 		do {
-			entries.emplace_front(
+			entries.emplace_back(
 				result->getNumber<uint32_t>("player_id"),
 				result->getString("name"),
 				result->getString("description"),
@@ -366,6 +365,7 @@ std::forward_list<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 			);
 		} while (result->next());
 	}
+
 	return entries;
 }
 
@@ -388,15 +388,16 @@ void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
 	g_database().executeQuery(query);
 }
 
-std::forward_list<VIPGroupEntry> IOLoginData::getVIPGroupEntries(uint32_t accountId, uint32_t guid) {
-	std::forward_list<VIPGroupEntry> entries;
-
+std::vector<VIPGroupEntry> IOLoginData::getVIPGroupEntries(uint32_t accountId, uint32_t guid) {
 	std::string query = fmt::format("SELECT `id`, `name`, `customizable` FROM `account_vipgroups` WHERE `account_id` = {}", accountId);
 
-	DBResult_ptr result = g_database().storeQuery(query);
-	if (result) {
+	std::vector<VIPGroupEntry> entries;
+
+	if (const auto &result = g_database().storeQuery(query)) {
+		entries.reserve(result->countResults());
+
 		do {
-			entries.emplace_front(
+			entries.emplace_back(
 				result->getNumber<uint8_t>("id"),
 				result->getString("name"),
 				result->getNumber<uint8_t>("customizable") == 0 ? false : true

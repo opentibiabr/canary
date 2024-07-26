@@ -65,7 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	-- Citizen outfit addon
-	local addonProgress = player:getStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack)
+	local addonProgress = player:getStorageValue(Storage.Quest.U7_8.CitizenOutfits.AddonBackpack)
 	if MsgContains(message, "addon") or MsgContains(message, "outfit") or (addonProgress == 1 and MsgContains(message, "leather")) or ((addonProgress == 1 or addonProgress == 2) and MsgContains(message, "backpack")) then
 		if addonProgress < 1 then
 			npcHandler:say("Sorry, the backpack I wear is not for sale. It's handmade from rare minotaur leather.", npc, creature)
@@ -74,13 +74,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Ah, right, almost forgot about the backpack! Have you brought me 100 pieces of minotaur leather as requested?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif addonProgress == 2 then
-			if player:getStorageValue(Storage.OutfitQuest.Citizen.AddonBackpackTimer) < os.time() then
+			if player:getStorageValue(Storage.Quest.U7_8.CitizenOutfits.AddonBackpackTimer) < os.time() then
 				npcHandler:say("Just in time! Your backpack is finished. Here you go, I hope you like it.", npc, creature)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				player:setStorageValue(Storage.OutfitQuest.Ref, math.min(0, player:getStorageValue(Storage.OutfitQuest.Ref) - 1))
-				player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 0)
-				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 3)
-
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.MissionBackpack, 0)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.AddonBackpack, 3)
 				player:addOutfitAddon(136, 1)
 				player:addOutfitAddon(128, 1)
 			else
@@ -98,9 +96,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, "yes") then
-			player:setStorageValue(Storage.OutfitQuest.Ref, math.max(0, player:getStorageValue(Storage.OutfitQuest.Ref)) + 1)
-			player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 1)
-			player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 1)
+			player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.AddonBackpack, 1)
+			player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.MissionBackpack, 1)
 			npcHandler:say("Alright then, if you bring me 100 pieces of fine minotaur leather I will see what I can do for you. You probably have to kill really many minotaurs though... so good luck!", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 		else
@@ -116,9 +113,9 @@ local function creatureSayCallback(npc, creature, type, message)
 
 				player:removeItem(5878, 100)
 
-				player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 2)
-				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 2)
-				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpackTimer, os.time() + 2 * 60 * 60)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.MissionBackpack, 2)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.AddonBackpack, 2)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.AddonBackpackTimer, os.time() + 2 * 60 * 60)
 			end
 		else
 			npcHandler:say("I know, it's quite some work... don't lose heart, just keep killing minotaurs and you'll eventually get lucky. Would you rather like to buy a normal backpack for 10 gold?", npc, creature)

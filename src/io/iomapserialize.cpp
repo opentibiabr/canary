@@ -241,19 +241,21 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 		return;
 	}
 
-	std::forward_list<std::shared_ptr<Item>> items;
+	std::vector<std::shared_ptr<Item>> items;
+	items.reserve(32);
+
 	uint16_t count = 0;
 	for (auto &item : *tileItems) {
 		if (item->getID() == ITEM_BATHTUB_FILLED_NOTMOVABLE) {
 			std::shared_ptr<Item> tub = Item::CreateItem(ITEM_BATHTUB_FILLED);
-			items.push_front(tub);
+			items.emplace_back(tub);
 			++count;
 			continue;
 		} else if (!item->isSavedToHouses()) {
 			continue;
 		}
 
-		items.push_front(item);
+		items.emplace_back(item);
 		++count;
 	}
 

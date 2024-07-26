@@ -35,7 +35,7 @@ bool PlayerAchievement::add(uint16_t id, bool message /* = true*/, uint32_t time
 	addPoints(achievement.points);
 	int toSaveTimeStamp = timestamp != 0 ? timestamp : (OTSYS_TIME() / 1000);
 	getUnlockedKV()->set(achievement.name, toSaveTimeStamp);
-	m_achievementsUnlocked.push_back({ achievement.id, toSaveTimeStamp });
+	m_achievementsUnlocked.emplace_back(achievement.id, toSaveTimeStamp);
 	m_achievementsUnlocked.shrink_to_fit();
 	return true;
 }
@@ -80,7 +80,8 @@ bool PlayerAchievement::isUnlocked(uint16_t id) const {
 }
 
 uint16_t PlayerAchievement::getPoints() const {
-	return m_player.kv()->scoped("achievements")->get("points")->getNumber();
+	auto kvScoped = m_player.kv()->scoped("achievements")->get("points");
+	return kvScoped ? static_cast<uint16_t>(kvScoped->getNumber()) : 0;
 }
 
 void PlayerAchievement::addPoints(uint16_t toAddPoints) {
@@ -109,12 +110,12 @@ void PlayerAchievement::loadUnlockedAchievements() {
 
 		g_logger().debug("[{}] - Achievement {} found for player {}.", __FUNCTION__, achievementName, m_player.getName());
 
-		m_achievementsUnlocked.push_back({ achievement.id, getUnlockedKV()->get(achievementName)->getNumber() });
+		m_achievementsUnlocked.emplace_back(achievement.id, getUnlockedKV()->get(achievementName)->getNumber());
 	}
 }
 
 void PlayerAchievement::sendUnlockedSecretAchievements() {
-	std::vector<std::pair<Achievement, uint32_t>> m_achievementsUnlocked;
+	std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked;
 	uint16_t unlockedSecret = 0;
 	for (const auto &[achievId, achievCreatedTime] : getUnlockedAchievements()) {
 		Achievement achievement = g_game().getAchievementById(achievId);
@@ -126,10 +127,10 @@ void PlayerAchievement::sendUnlockedSecretAchievements() {
 			unlockedSecret++;
 		}
 
-		m_achievementsUnlocked.push_back({ achievement, achievCreatedTime });
+		achievementsUnlocked.emplace_back(achievement, achievCreatedTime);
 	}
 
-	m_player.sendCyclopediaCharacterAchievements(unlockedSecret, m_achievementsUnlocked);
+	m_player.sendCyclopediaCharacterAchievements(unlockedSecret, achievementsUnlocked);
 }
 
 const std::shared_ptr<KV> &PlayerAchievement::getUnlockedKV() {

@@ -16,5 +16,5 @@ function theOutlawPower.onUse(player, item, fromPosition, target, toPosition, is
 	return true
 end
 
-theOutlawPower:uid(3402)
+theOutlawPower:uid(30033)
 theOutlawPower:register()

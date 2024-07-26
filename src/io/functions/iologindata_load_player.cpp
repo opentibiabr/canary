@@ -182,6 +182,8 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 
 	player->setManaShield(result->getNumber<uint32_t>("manashield"));
 	player->setMaxManaShield(result->getNumber<uint32_t>("max_manashield"));
+
+	player->setMarriageSpouse(result->getNumber<int32_t>("marriage_spouse"));
 	return true;
 }
 
@@ -215,9 +217,7 @@ void IOLoginDataLoad::loadPlayerBlessings(std::shared_ptr<Player> player, DBResu
 	}
 
 	for (int i = 1; i <= 8; i++) {
-		std::ostringstream ss;
-		ss << "blessings" << i;
-		player->addBlessing(static_cast<uint8_t>(i), static_cast<uint8_t>(result->getNumber<uint16_t>(ss.str())));
+		player->addBlessing(static_cast<uint8_t>(i), static_cast<uint8_t>(result->getNumber<uint16_t>(fmt::format("blessings{}", i))));
 	}
 }
 
@@ -235,7 +235,7 @@ void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBRes
 	auto condition = Condition::createCondition(propStream);
 	while (condition) {
 		if (condition->unserialize(propStream)) {
-			player->storedConditionList.push_front(condition);
+			player->storedConditionList.emplace_back(condition);
 		}
 		condition = Condition::createCondition(propStream);
 	}
@@ -465,7 +465,7 @@ void IOLoginDataLoad::loadPlayerInstantSpellList(std::shared_ptr<Player> player,
 	query << "SELECT `player_id`, `name` FROM `player_spells` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
-			player->learnedInstantSpellList.emplace_front(result->getString("name"));
+			player->learnedInstantSpellList.emplace_back(result->getString("name"));
 		} while (result->next());
 	}
 }
@@ -913,6 +913,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player)
 	player->achiev()->loadUnlockedAchievements();
 	player->badge()->checkAndUpdateNewBadges();
 	player->title()->checkAndUpdateNewTitles();
+	player->cyclopedia()->loadSummaryData();
 
 	player->initializePrey();
 	player->initializeTaskHunting();

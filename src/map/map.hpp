@@ -119,7 +119,7 @@ public:
 	 *	\returns The result if there is no obstacles
 	 */
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck);
-	bool checkSightLine(const Position &fromPos, const Position &toPos);
+	bool checkSightLine(Position start, Position destination);
 
 	std::shared_ptr<Tile> canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos);
 

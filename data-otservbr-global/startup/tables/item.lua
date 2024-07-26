@@ -3,11 +3,333 @@
 ItemAction = {
 	--Parchment room quest
 	-- data\scripts\quests\parchment_room\movement-parchment.lua
+	[102] = { -- downFloor
+		itemId = false,
+		itemPos = {
+			{ x = 32171, y = 32439, z = 7 }, -- fibula acess
+			{ x = 32172, y = 32439, z = 7 }, -- fibula acess
+			{ x = 32507, y = 32176, z = 13 },
+			{ x = 32508, y = 32176, z = 13 },
+			{ x = 32353, y = 32131, z = 8 }, -- scale armor quest
+			{ x = 32354, y = 32131, z = 8 }, -- scale armor quest
+		},
+	},
 	[104] = {
 		itemId = 2819,
 		itemPos = { { x = 33063, y = 31624, z = 15 } },
 	},
-	[40001] = { -- The cursed crystal skeletons
+	-- The Pits of Inferno Quest
+	[2023] = {
+		itemId = 1982,
+		itemPos = {
+			{ x = 32791, y = 32333, z = 6 },
+		},
+	},
+	-- The Explorer Society - Jump - Calassa
+	[2070] = {
+		itemId = 470,
+		itemPos = {
+			{ x = 31914, y = 32716, z = 6 },
+			{ x = 31915, y = 32716, z = 6 },
+		},
+	},
+	-- Dreamers Challenge Quest
+	[2245] = {
+		itemId = 431,
+		itemPos = {
+			{ x = 32816, y = 32334, z = 9 },
+			{ x = 32816, y = 32335, z = 9 },
+			{ x = 32816, y = 32336, z = 9 },
+			{ x = 32816, y = 32337, z = 9 },
+			{ x = 32816, y = 32339, z = 9 },
+		},
+	},
+	[2246] = {
+		itemId = 431,
+		itemPos = {
+			{ x = 32818, y = 32332, z = 9 },
+			{ x = 32819, y = 32332, z = 9 },
+			{ x = 32820, y = 32332, z = 9 },
+			{ x = 32821, y = 32332, z = 9 },
+			{ x = 32822, y = 32332, z = 9 },
+		},
+	},
+	-- The Pits of Inferno Quest
+	[4002] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32854, y = 32326, z = 11 },
+		},
+	},
+	-- Griffinclaw flower
+	[3152] = {
+		itemId = 5658,
+		itemPos = { x = 32024, y = 32830, z = 4 },
+	},
+	-- The Pits of Inferno Quest
+	[8815] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32805, y = 32319, z = 11 },
+			{ x = 32806, y = 32319, z = 11 },
+			{ x = 32806, y = 32318, z = 11 },
+			{ x = 32805, y = 32318, z = 11 },
+		},
+	},
+	-- Dreamers Challenge Quest
+	[9049] = {
+		itemId = 2576,
+		itemPos = {
+			{ x = 32934, y = 32282, z = 13 },
+			{ x = 32934, y = 32281, z = 13 },
+			{ x = 32933, y = 32281, z = 13 },
+			{ x = 32934, y = 32280, z = 13 },
+			{ x = 32933, y = 32280, z = 13 },
+			{ x = 32934, y = 32279, z = 13 },
+			{ x = 32933, y = 32279, z = 13 },
+			{ x = 32934, y = 32278, z = 13 },
+			{ x = 32933, y = 32278, z = 13 },
+			{ x = 32934, y = 32277, z = 13 },
+			{ x = 32933, y = 32277, z = 13 },
+			{ x = 32934, y = 32277, z = 13 },
+			{ x = 32934, y = 32276, z = 13 },
+			{ x = 32933, y = 32276, z = 13 },
+			{ x = 32934, y = 32275, z = 13 },
+			{ x = 32933, y = 32275, z = 13 },
+			{ x = 32934, y = 32274, z = 13 },
+			{ x = 32933, y = 32274, z = 13 },
+			{ x = 32934, y = 32273, z = 13 },
+			{ x = 32933, y = 32273, z = 13 },
+			{ x = 32934, y = 32272, z = 13 },
+			{ x = 32933, y = 32272, z = 13 },
+			{ x = 32934, y = 32271, z = 13 },
+			{ x = 32933, y = 32271, z = 13 },
+			{ x = 32934, y = 32270, z = 13 },
+			{ x = 32933, y = 32270, z = 13 },
+		},
+	},
+	-- The Djinn War Quest - Green - Water fountain
+	[12105] = {
+		itemId = 1928,
+		itemPos = {
+			{ x = 33109, y = 32530, z = 3 },
+		},
+	},
+	-- The Ancient Tombs Quest
+	[12105] = {
+		itemId = false,
+		itemPos = {
+			{ x = 33188, y = 32660, z = 15 },
+			{ x = 33189, y = 32660, z = 15 },
+			{ x = 33190, y = 32660, z = 15 },
+			{ x = 33191, y = 32660, z = 15 },
+			{ x = 33188, y = 32669, z = 15 },
+			{ x = 33189, y = 32669, z = 15 },
+			{ x = 33190, y = 32669, z = 15 },
+			{ x = 33191, y = 32669, z = 15 },
+		},
+	},
+	[12107] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 33118, y = 32761, z = 14 },
+			{ x = 33118, y = 32762, z = 14 },
+			{ x = 33118, y = 32763, z = 14 },
+		},
+	},
+	[12107] = {
+		itemId = 1662,
+		itemPos = {
+			{ x = 33122, y = 32765, z = 14 },
+		},
+	},
+	-- The Shattered Isles Quest
+	[12585] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 31919, y = 32600, z = 10 },
+		},
+	},
+	-- The Pits of Inferno Quest
+	[16772] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32767, y = 32358, z = 15 },
+		},
+	},
+	[16774] = {
+		itemId = 2576,
+		itemPos = {
+			{ x = 32741, y = 32382, z = 15 },
+		},
+	},
+	-- Hunter Outfits Quest - piano
+	[33216] = {
+		itemId = 6123,
+		itemPos = {
+			{ x = 32406, y = 32794, z = 9 },
+		},
+	},
+	-- The Pits of Inferno Quest
+	[28810] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32858, y = 32285, z = 9 },
+		},
+	},
+	[28811] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32836, y = 32289, z = 9 },
+		},
+	},
+	[28812] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32851, y = 32290, z = 9 },
+		},
+	},
+	[28813] = {
+		itemId = 354,
+		itemPos = {
+			{ x = 32839, y = 32292, z = 9 },
+		},
+	},
+	[28814] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32857, y = 32292, z = 9 },
+		},
+	},
+	[28815] = {
+		itemId = 351,
+		itemPos = {
+			{ x = 32844, y = 32294, z = 9 },
+		},
+	},
+	[28816] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32852, y = 32297, z = 9 },
+		},
+	},
+	[28817] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32832, y = 32299, z = 9 },
+		},
+	},
+	[28818] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32862, y = 32300, z = 9 },
+		},
+	},
+	[28819] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32855, y = 32301, z = 9 },
+		},
+	},
+	[28820] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32843, y = 32303, z = 9 },
+		},
+	},
+	[28821] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32834, y = 32307, z = 9 },
+		},
+	},
+	[28822] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32834, y = 32310, z = 9 },
+		},
+	},
+	[28823] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32862, y = 32311, z = 9 },
+		},
+	},
+	[28824] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32839, y = 32312, z = 9 },
+		},
+	},
+	[28825] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32862, y = 32313, z = 9 },
+		},
+	},
+	[28826] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32837, y = 32315, z = 9 },
+		},
+	},
+	[28827] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32843, y = 32319, z = 9 },
+		},
+	},
+	[28828] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32850, y = 32319, z = 9 },
+		},
+	},
+	[28829] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32858, y = 32324, z = 9 },
+		},
+	},
+	[28830] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32848, y = 32325, z = 9 },
+		},
+	},
+	[28831] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32858, y = 32289, z = 9 },
+		},
+	},
+	[28832] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32854, y = 32307, z = 9 },
+		},
+	},
+	[28833] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32830, y = 32308, z = 9 },
+		},
+	},
+	[28834] = {
+		itemId = 353,
+		itemPos = {
+			{ x = 32858, y = 32321, z = 9 },
+		},
+	},
+	-- The Pits of Inferno
+	[39511] = {
+		itemId = 6433,
+		itemPos = {
+			{ x = 32739, y = 32392, z = 14 },
+		},
+	},
+	-- The cursed crystal skeletons
+	[40001] = {
 		itemId = 27490,
 		itemPos = {
 			{ x = 31974, y = 32907, z = 8 },
@@ -273,16 +595,375 @@ ItemAction = {
 			{ x = 33155, y = 31297, z = 3 },
 		},
 	},
+	-- naginata quest
+	[40031] = { -- stone
+		itemId = 1791,
+		itemPos = {
+			{ x = 32356, y = 32074, z = 10 },
+		},
+	},
+	-- The Ancient Tombs Quest
+	[40032] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33071, y = 32637, z = 15 },
+		},
+	},
+	[40033] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33074, y = 32633, z = 15 },
+		},
+	},
+	[40034] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33071, y = 32629, z = 15 },
+		},
+	},
+	[40035] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33077, y = 32625, z = 15 },
+		},
+	},
+	[40036] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33077, y = 32621, z = 15 },
+		},
+	},
+	[40037] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33071, y = 32617, z = 15 },
+		},
+	},
+	[40038] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33077, y = 32613, z = 15 },
+		},
+	},
+	[40039] = {
+		itemId = 2023,
+		itemPos = {
+			{ x = 33071, y = 32609, z = 15 },
+		},
+	},
+	[40040] = {
+		itemId = 2344,
+		itemPos = {
+			{ x = 33198, y = 32876, z = 11 },
+		},
+	},
+	-- The Ape City Quest - Casks
+	[40041] = {
+		itemId = 4848,
+		itemPos = {
+			{ x = 32862, y = 32507, z = 9 },
+			{ x = 32862, y = 32505, z = 9 },
+			{ x = 32862, y = 32503, z = 9 },
+			{ x = 32862, y = 32501, z = 9 },
+			{ x = 32862, y = 32499, z = 9 },
+			{ x = 32862, y = 32497, z = 9 },
+			{ x = 32862, y = 32495, z = 9 },
+		},
+	},
+	-- The Pits of Inferno
+	[50082] = {
+		itemId = 2576,
+		itemPos = {
+			{ x = 32745, y = 32383, z = 15 },
+		},
+	},
+	[50083] = {
+		itemId = 2576,
+		itemPos = {
+			{ x = 32745, y = 32392, z = 15 },
+		},
+	},
+	[50087] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32732, y = 32264, z = 15 },
+		},
+	},
+	-- Dreamers Challenge Quest
+	[50149] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32840, y = 32226, z = 14 },
+		},
+	},
+	[50150] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32788, y = 32227, z = 14 },
+		},
+	},
 }
 
 ItemUnique = {
+	-- The Pits of Inferno Quest
+	[2000] = {
+		itemId = 599,
+		itemPos = { x = 32791, y = 32328, z = 10 },
+	},
+	[2002] = {
+		itemId = 431,
+		itemPos = { x = 32906, y = 32287, z = 12 },
+	},
+	[2001] = {
+		itemId = 599,
+		itemPos = { x = 32791, y = 32330, z = 10 },
+	},
+	[2080] = {
+		itemId = 5915,
+		itemPos = { x = 32909, y = 32207, z = 15 },
+	},
+	[2081] = {
+		itemId = 5916,
+		itemPos = { x = 32757, y = 32243, z = 15 },
+	},
+	[2082] = {
+		itemId = 5915,
+		itemPos = { x = 32840, y = 32324, z = 15 },
+	},
+	[2083] = {
+		itemId = 5915,
+		itemPos = { x = 32875, y = 32264, z = 15 },
+	},
+	[2084] = {
+		itemId = 5915,
+		itemPos = { x = 32717, y = 32381, z = 13 },
+	},
+	[2085] = {
+		itemId = 5915,
+		itemPos = { x = 32839, y = 32305, z = 15 },
+	},
+	[2086] = {
+		itemId = 5915,
+		itemPos = { x = 32785, y = 32275, z = 15 },
+	},
+	[2090] = {
+		itemId = 1482,
+		itemPos = { x = 32824, y = 32230, z = 12 },
+	},
+	[2091] = {
+		itemId = 1482,
+		itemPos = { x = 32824, y = 32229, z = 12 },
+	},
+	[2092] = {
+		itemId = 1482,
+		itemPos = { x = 32824, y = 32228, z = 12 },
+	},
+	[2093] = {
+		itemId = 1482,
+		itemPos = { x = 32824, y = 32227, z = 12 },
+	},
+	[2094] = {
+		itemId = 1482,
+		itemPos = { x = 32824, y = 32226, z = 12 },
+	},
+	[2095] = {
+		itemId = 1482,
+		itemPos = { x = 32824, y = 32225, z = 12 },
+	},
+	[2096] = {
+		itemId = 1482,
+		itemPos = { x = 32824, y = 32224, z = 12 },
+	},
+	-- Dreamers Challenge Quest
+	[2241] = {
+		itemId = 353,
+		itemPos = { x = 32861, y = 32239, z = 9 },
+	},
+	[2242] = {
+		itemId = 351,
+		itemPos = { x = 32861, y = 32236, z = 9 },
+	},
+	[2243] = {
+		itemId = 3134,
+		itemPos = { x = 32849, y = 32233, z = 9 },
+	},
+	[2244] = {
+		itemId = 563,
+		itemPos = { x = 32857, y = 32225, z = 11 },
+	},
+	[2250] = {
+		itemId = 5572,
+		itemPos = { x = 32915, y = 32278, z = 14 },
+	},
+	[2251] = {
+		itemId = 5590,
+		itemPos = { x = 32916, y = 32263, z = 14 },
+	},
+	[2252] = {
+		itemId = 5484,
+		itemPos = { x = 32953, y = 32277, z = 13 },
+	},
+	[2253] = {
+		itemId = 452,
+		itemPos = { x = 32976, y = 32271, z = 14 },
+	},
+	[2254] = {
+		itemId = 2576,
+		itemPos = { x = 32933, y = 32269, z = 13 },
+	},
+	[2255] = {
+		itemId = 2576,
+		itemPos = { x = 32934, y = 32269, z = 13 },
+	},
+	-- The Shattered Isles Quest - Catapult
+	[2273] = {
+		itemId = 5601,
+		itemPos = { x = 31978, y = 32887, z = 6 },
+	},
+	-- The Explorer Society - The Rune Writings
+	[3010] = {
+		itemId = 2199,
+		itemPos = { x = 32754, y = 32559, z = 9 },
+	},
+	-- Dreamers Challenge Quest
+	[3048] = {
+		itemId = 1949,
+		itemPos = { x = 32822, y = 32344, z = 6 },
+	},
+	[3049] = {
+		itemId = 1949,
+		itemPos = { x = 32815, y = 32344, z = 6 },
+	},
+	[3050] = {
+		itemId = 1949,
+		itemPos = { x = 32818, y = 32347, z = 6 },
+	},
+	[3051] = {
+		itemId = 1949,
+		itemPos = { x = 32818, y = 32347, z = 5 },
+	},
+	[3052] = {
+		itemId = 1949,
+		itemPos = { x = 32815, y = 32344, z = 5 },
+	},
+	[3053] = {
+		itemId = 1949,
+		itemPos = { x = 32822, y = 32344, z = 5 },
+	},
+	[3054] = {
+		itemId = 1949,
+		itemPos = { x = 32815, y = 32344, z = 4 },
+	},
+	[3055] = {
+		itemId = 1949,
+		itemPos = { x = 32822, y = 32344, z = 4 },
+	},
+	[3056] = {
+		itemId = 1949,
+		itemPos = { x = 32819, y = 32347, z = 4 },
+	},
+	-- The Pits of Inferno Quest
+	[3303] = {
+		itemId = 431,
+		itemPos = { x = 32826, y = 32273, z = 11 },
+	},
+	-- The Ancient Tombs Quest
+	[3950] = {
+		itemId = 1949,
+		itemPos = { x = 33174, y = 32694, z = 14 },
+	},
+	[3951] = {
+		itemId = 1949,
+		itemPos = { x = 33396, y = 32852, z = 14 },
+	},
+	[3952] = {
+		itemId = 1949,
+		itemPos = { x = 33191, y = 32959, z = 15 },
+	},
+	[3953] = {
+		itemId = 1949,
+		itemPos = { x = 33195, y = 33002, z = 14 },
+	},
+	[3954] = {
+		itemId = 1949,
+		itemPos = { x = 33073, y = 32781, z = 14 },
+	},
+	[3955] = {
+		itemId = 1949,
+		itemPos = { x = 33103, y = 32590, z = 15 },
+	},
+	[3956] = {
+		itemId = 1949,
+		itemPos = { x = 33116, y = 32656, z = 15 },
+	},
+	-- The Ape City - HolyApeHair
+	[4010] = {
+		itemId = 2753,
+		itemPos = { x = 32933, y = 32495, z = 7 },
+	},
+	-- Dreamers Challenge Quest
+	[9030] = {
+		itemId = 1949,
+		itemPos = { x = 32762, y = 32290, z = 14 },
+	},
+	-- The Ape City - HolyApeHair
+	[9033] = {
+		itemId = 2114,
+		itemPos = { x = 33098, y = 32816, z = 13 },
+	},
+	[9034] = {
+		itemId = 2114,
+		itemPos = { x = 33293, y = 32741, z = 13 },
+	},
+	[9035] = {
+		itemId = 2114,
+		itemPos = { x = 33073, y = 32589, z = 13 },
+	},
+	[9036] = {
+		itemId = 2114,
+		itemPos = { x = 33240, y = 32855, z = 13 },
+	},
+	[9037] = {
+		itemId = 2114,
+		itemPos = { x = 33276, y = 32552, z = 14 },
+	},
+	[9038] = {
+		itemId = 2114,
+		itemPos = { x = 33233, y = 32692, z = 13 },
+	},
+	[9039] = {
+		itemId = 2114,
+		itemPos = { x = 33135, y = 32682, z = 12 },
+	},
+	[9040] = {
+		itemId = 2114,
+		itemPos = { x = 33161, y = 32831, z = 10 },
+	},
+	-- Dreamers Challenge Quest
+	[9234] = {
+		itemId = 1949,
+		itemPos = { x = 32857, y = 32230, z = 11 },
+	},
+	-- Hydra Egg Quest
+	[9255] = {
+		itemId = 5676,
+		itemPos = { x = 32954, y = 32695, z = 8 },
+	},
+	-- The Ape City Quest
+	[9256] = {
+		itemId = 3919,
+		itemPos = { x = 32181, y = 32468, z = 10 },
+	},
+	[9257] = {
+		itemId = 1949,
+		itemPos = { x = 32839, y = 32533, z = 9 },
+	},
 	-- Issavi town teleport
 	[9515] = {
 		itemId = 1949,
 		itemPos = { x = 33926, y = 31477, z = 5 },
 	},
 	-- The shattered isles
-	-- data\scripts\actions\quests\the_shattered_isles\nargor_maps.lua
 	[40001] = {
 		itemId = 6118,
 		itemPos = { x = 31978, y = 32828, z = 2 },
@@ -430,20 +1111,17 @@ ItemUnique = {
 		itemPos = { x = 33874, y = 31433, z = 9 },
 	},
 	-- Explorer Society Quest
-	-- Path: data\scripts\actions\quests\explorer_society\findings.lua
 	-- Lizard Urn (Chor)
 	[40041] = {
 		itemId = 2904,
 		itemPos = { x = 32957, y = 32834, z = 8 },
 	},
 	-- Frozen Dragon (Okolnir)
-	-- Path: data\scripts\actions\quests\explorer_society\dragon.lua
 	[40042] = {
 		itemId = 7295,
 		itemPos = { x = 32321, y = 31455, z = 9 },
 	},
 	-- Icicles for Ice Music (Camp / Hrodmir)
-	-- Path: data\scripts\actions\quests\explorer_society\resonance.lua
 	[40043] = {
 		itemId = 6966,
 		itemPos = { x = 32078, y = 31217, z = 7 },
@@ -647,5 +1325,118 @@ ItemUnique = {
 	[40081] = {
 		itemId = 4077,
 		itemPos = { x = 31978, y = 32184, z = 10 },
+	},
+	-- The Ancient Tombs Quest
+	[40083] = {
+		itemId = 1949,
+		itemPos = { x = 33073, y = 32603, z = 15 },
+	},
+	[40084] = {
+		itemId = 1949,
+		itemPos = { x = 33183, y = 32757, z = 15 },
+	},
+	[40085] = {
+		itemId = 1949,
+		itemPos = { x = 33238, y = 32644, z = 14 },
+	},
+	[40086] = {
+		itemId = 1949,
+		itemPos = { x = 33109, y = 33009, z = 14 },
+	},
+	[40087] = {
+		itemId = 1949,
+		itemPos = { x = 33206, y = 32982, z = 14 },
+	},
+	[40088] = {
+		itemId = 1949,
+		itemPos = { x = 33130, y = 32736, z = 14 },
+	},
+	[40089] = {
+		itemId = 1949,
+		itemPos = { x = 33120, y = 32811, z = 15 },
+	},
+	[40090] = {
+		itemId = 1949,
+		itemPos = { x = 33117, y = 32627, z = 15 },
+	},
+	[40091] = {
+		itemId = 1949,
+		itemPos = { x = 33178, y = 32664, z = 15 },
+	},
+	-- The Ape City Quest - The Large Amphoras
+	[40092] = {
+		itemId = 4995,
+		itemPos = { x = 32792, y = 32527, z = 10 },
+	},
+	[40093] = {
+		itemId = 4995,
+		itemPos = { x = 32823, y = 32525, z = 10 },
+	},
+	[40094] = {
+		itemId = 4995,
+		itemPos = { x = 32876, y = 32584, z = 10 },
+	},
+	[40095] = {
+		itemId = 4995,
+		itemPos = { x = 32744, y = 32586, z = 10 },
+	},
+	-- Druid Outfits Quest - Ceirons Waterskin
+	[40096] = {
+		itemId = 5662,
+		itemPos = { x = 33024, y = 32672, z = 6 },
+	},
+	-- The Ancient Tombs Quest
+	[50135] = {
+		itemId = 1949,
+		itemPos = { x = 33393, y = 32802, z = 14 },
+	},
+	[50136] = {
+		itemId = 419,
+		itemPos = { x = 33362, y = 32811, z = 14 },
+	},
+	[50137] = {
+		itemId = 1949,
+		itemPos = { x = 33083, y = 32569, z = 13 },
+	},
+	[50138] = {
+		itemId = 1949,
+		itemPos = { x = 33179, y = 32890, z = 11 },
+	},
+	[50139] = {
+		itemId = 1959,
+		itemPos = { x = 33252, y = 32703, z = 15 },
+	},
+	[50140] = {
+		itemId = 1959,
+		itemPos = { x = 33270, y = 32667, z = 15 },
+	},
+	[50141] = {
+		itemId = 1959,
+		itemPos = { x = 33245, y = 32686, z = 15 },
+	},
+	[50142] = {
+		itemId = 1959,
+		itemPos = { x = 33275, y = 32685, z = 14 },
+	},
+	[50143] = {
+		itemId = 1959,
+		itemPos = { x = 33279, y = 32682, z = 14 },
+	},
+	[50144] = {
+		itemId = 1959,
+		itemPos = { x = 33263, y = 32681, z = 14 },
+	},
+	[50145] = {
+		itemId = 1959,
+		itemPos = { x = 33269, y = 32698, z = 14 },
+	},
+	[50146] = {
+		itemId = 1949,
+		itemPos = { x = 33263, y = 32668, z = 13 },
+	},
+	-- Dreamers Challenge Quest
+	[50147] = {
+		itemId = 1949,
+		itemPos = { x = 32826, y = 32347, z = 9 },
 	},
 }

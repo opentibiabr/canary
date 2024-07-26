@@ -39,7 +39,7 @@ local function processHouseAuctions()
 				local lastBid = Result.getNumber(resultId, "last_bid")
 				if balance >= lastBid then
 					db.query("UPDATE `players` SET `balance` = " .. (balance - lastBid) .. " WHERE `id` = " .. highestBidder)
-					house:setOwnerGuid(highestBidder)
+					house:setHouseOwner(highestBidder)
 				end
 
 				db.asyncQuery("UPDATE `houses` SET `last_bid` = 0, `bid_end` = 0, `highest_bidder` = 0, `bid` = 0 " .. "WHERE `id` = " .. house:getId())

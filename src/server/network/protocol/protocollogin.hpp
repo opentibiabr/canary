@@ -10,6 +10,7 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocolcodes.hpp"
 
 class NetworkMessage;
 class OutputMessage;

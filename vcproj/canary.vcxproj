@@ -211,6 +211,7 @@
     <ClInclude Include="..\src\server\network\message\networkmessage.hpp" />
     <ClInclude Include="..\src\server\network\message\outputmessage.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocol.hpp" />
+    <ClInclude Include="..\src\server\network\protocol\protocolcodes.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocolgame.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocollogin.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocolstatus.hpp" />

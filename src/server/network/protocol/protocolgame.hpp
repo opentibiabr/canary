@@ -10,6 +10,7 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocolcodes.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"

@@ -924,7 +924,7 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 	if (recvbyte == 0x14) {
-		// Remove player from game if click "ok" using otcv8
+		// Remove player from game if click "ok" using otc
 		if (player && isOTC) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}

@@ -4261,12 +4261,10 @@ void ProtocolGame::sendBasicData() {
 	msg.addByte(player->getVocation()->getClientId());
 
 	// Prey window
-	if (!oldProtocol) {
-		if (player->getVocation()->getId() == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
-			msg.addByte(0);
-		} else {
-			msg.addByte(1); // has reached Main (allow player to open Prey window)
-		}
+	if (player->getVocation()->getId() == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
+		msg.addByte(0);
+	} else {
+		msg.addByte(1); // has reached Main (allow player to open Prey window)
 	}
 
 	// Filter only valid ids

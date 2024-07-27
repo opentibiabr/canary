@@ -103,20 +103,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "outfit") then
-		npcHandler:say(player:getSex() == PLAYERSEX_FEMALE and "My turban? I know something better for a pretty girl like you. Why don't you go talk to Miraia?" or "My turban? Eh no, you can't have it. Only oriental weaponmasters may wear it after having completed a difficult task.", npc, creature)
-	elseif MsgContains(message, "task") then
-		if player:getSex() == PLAYERSEX_FEMALE then
-			npcHandler:say("I really don't want to make girls work for me. If you are looking for a job, ask Miraia.", npc, creature)
-			return true
-		end
-
-		if player:getStorageValue(Storage.OutfitQuest.secondOrientalAddon) < 1 then
+	if player:getSex() == PLAYERSEX_MALE and MsgContains(message, "outfit") then
+		npcHandler:say("My turban? Eh no, you can't have it. Only oriental weapon masters may wear it after having completed a difficult task.", npc, creature)
+	elseif player:getSex() == PLAYERSEX_MALE and MsgContains(message, "task") then
+		if player:getStorageValue(Storage.Quest.U7_8.OrientalOutfits.SecondOrientalAddon) < 1 then
 			npcHandler:say("You mean, you would like to prove that you deserve to wear such a turban?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif config[message] and npcHandler:getTopic(playerId) == 0 then
-		if player:getStorageValue(Storage.OutfitQuest.secondOrientalAddon) == config[message].storageValue then
+		if player:getStorageValue(Storage.Quest.U7_8.OrientalOutfits.SecondOrientalAddon) == config[message].storageValue then
 			npcHandler:say(config[message].text[1], npc, creature)
 			npcHandler:setTopic(playerId, 3)
 			topic[playerId] = message
@@ -138,7 +133,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
 				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
 			end
-			player:setStorageValue(Storage.OutfitQuest.secondOrientalAddon, 1)
+			player:setStorageValue(Storage.Quest.U7_8.OrientalOutfits.SecondOrientalAddon, 1)
 			npcHandler:say("Excellent! Come back to me once you have collected 100 pieces of ape fur.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
@@ -149,10 +144,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.OutfitQuest.secondOrientalAddon, player:getStorageValue(Storage.OutfitQuest.secondOrientalAddon) + 1)
-			if player:getStorageValue(Storage.OutfitQuest.secondOrientalAddon) == 5 then
-				player:addOutfitAddon(146, 2)
-				player:addOutfitAddon(150, 2)
+			player:setStorageValue(Storage.Quest.U7_8.OrientalOutfits.SecondOrientalAddon, player:getStorageValue(Storage.Quest.U7_8.OrientalOutfits.SecondOrientalAddon) + 1)
+			if player:getStorageValue(Storage.Quest.U7_8.OrientalOutfits.SecondOrientalAddon) == 5 then
+				player:addOutfitAddon(146, 2) -- male addon
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			end
 			npcHandler:say(targetMessage.text[3], npc, creature)

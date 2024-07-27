@@ -19,7 +19,7 @@ function sewer.onStepIn(creature, item, position, fromPosition)
 end
 
 sewer:type("stepin")
-sewer:uid(65203)
+sewer:uid(25030)
 sewer:register()
 
 sewer = MoveEvent()
@@ -41,5 +41,5 @@ function sewer.onStepOut(creature, item, position, fromPosition)
 end
 
 sewer:type("stepout")
-sewer:uid(65203)
+sewer:uid(25030)
 sewer:register()

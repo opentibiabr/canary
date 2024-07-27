@@ -473,6 +473,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 	// Extended opcodes
 	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+		isOTC = true;
 		NetworkMessage opcodeMessage;
 		opcodeMessage.addByte(0x32);
 		opcodeMessage.addByte(0x00);
@@ -924,7 +925,7 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 	if (recvbyte == 0x14) {
 		// Remove player from game if click "ok" using otcv8
-		if (player && otclientV8 > 0) {
+		if (player && isOTC) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}
 		disconnect();

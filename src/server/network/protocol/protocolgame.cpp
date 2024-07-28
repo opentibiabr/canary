@@ -473,6 +473,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 	// Extended opcodes
 	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+		isOTC = true;
 		NetworkMessage opcodeMessage;
 		opcodeMessage.addByte(0x32);
 		opcodeMessage.addByte(0x00);
@@ -923,8 +924,8 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 	if (recvbyte == 0x14) {
-		// Remove player from game if click "ok" using otcv8
-		if (player && otclientV8 > 0) {
+		// Remove player from game if click "ok" using otc
+		if (player && isOTC) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}
 		disconnect();
@@ -4261,12 +4262,10 @@ void ProtocolGame::sendBasicData() {
 	msg.addByte(player->getVocation()->getClientId());
 
 	// Prey window
-	if (!oldProtocol) {
-		if (player->getVocation()->getId() == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
-			msg.addByte(0);
-		} else {
-			msg.addByte(1); // has reached Main (allow player to open Prey window)
-		}
+	if (player->getVocation()->getId() == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
+		msg.addByte(0);
+	} else {
+		msg.addByte(1); // has reached Main (allow player to open Prey window)
 	}
 
 	// Filter only valid ids

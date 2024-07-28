@@ -586,7 +586,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 
 			LuaData_t type = getNumber<LuaData_t>(L, -1);
 			if (type != LuaData_t::Unknown && type <= LuaData_t::Npc) {
-				indexes.push_back({ i, type });
+				indexes.emplace_back(i, type);
 			}
 			lua_pop(globalState, 2);
 		}

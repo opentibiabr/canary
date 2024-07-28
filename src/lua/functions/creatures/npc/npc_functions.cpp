@@ -53,7 +53,7 @@ int NpcFunctions::luaNpcIsNpc(lua_State* L) {
 
 int NpcFunctions::luaNpcSetMasterPos(lua_State* L) {
 	// npc:setMasterPos(pos)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		pushBoolean(L, false);
@@ -68,7 +68,7 @@ int NpcFunctions::luaNpcSetMasterPos(lua_State* L) {
 
 int NpcFunctions::luaNpcGetCurrency(lua_State* L) {
 	// npc:getCurrency()
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		lua_pushnil(L);
@@ -80,7 +80,7 @@ int NpcFunctions::luaNpcGetCurrency(lua_State* L) {
 
 int NpcFunctions::luaNpcSetCurrency(lua_State* L) {
 	// npc:getCurrency()
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		pushBoolean(L, false);
@@ -93,7 +93,7 @@ int NpcFunctions::luaNpcSetCurrency(lua_State* L) {
 
 int NpcFunctions::luaNpcGetSpeechBubble(lua_State* L) {
 	// npc:getSpeechBubble()
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		lua_pushnil(L);
@@ -105,7 +105,7 @@ int NpcFunctions::luaNpcGetSpeechBubble(lua_State* L) {
 
 int NpcFunctions::luaNpcSetSpeechBubble(lua_State* L) {
 	// npc:setSpeechBubble(speechBubble)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		lua_pushnil(L);
@@ -117,7 +117,7 @@ int NpcFunctions::luaNpcSetSpeechBubble(lua_State* L) {
 
 int NpcFunctions::luaNpcGetName(lua_State* L) {
 	// npc:getName()
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		lua_pushnil(L);
@@ -130,7 +130,7 @@ int NpcFunctions::luaNpcGetName(lua_State* L) {
 
 int NpcFunctions::luaNpcSetName(lua_State* L) {
 	// npc:setName(name)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	const std::string &name = getString(L, 2);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
@@ -143,7 +143,7 @@ int NpcFunctions::luaNpcSetName(lua_State* L) {
 
 int NpcFunctions::luaNpcPlace(lua_State* L) {
 	// npc:place(position[, extended = false[, force = true]])
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		lua_pushnil(L);
@@ -183,9 +183,9 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 
 	bool ghost = getBoolean(L, 4, false);
 
-	SpeakClasses type = getNumber<SpeakClasses>(L, 3, TALKTYPE_PRIVATE_NP);
+	const auto &type = getNumber<SpeakClasses>(L, 3, TALKTYPE_PRIVATE_NP);
 	const std::string &text = getString(L, 2);
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		lua_pushnil(L);
 		return 1;
@@ -210,7 +210,7 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
  */
 int NpcFunctions::luaNpcTurnToCreature(lua_State* L) {
 	// npc:turnToCreature(creature, true)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	std::shared_ptr<Creature> creature = getCreature(L, 2);
 
 	if (!npc) {
@@ -236,9 +236,9 @@ int NpcFunctions::luaNpcTurnToCreature(lua_State* L) {
 
 int NpcFunctions::luaNpcSetPlayerInteraction(lua_State* L) {
 	// npc:setPlayerInteraction(creature, topic = 0)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	std::shared_ptr<Creature> creature = getCreature(L, 2);
-	uint16_t topicId = getNumber<uint16_t>(L, 3, 0);
+	auto topicId = getNumber<uint16_t>(L, 3, 0);
 
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
@@ -259,7 +259,7 @@ int NpcFunctions::luaNpcSetPlayerInteraction(lua_State* L) {
 
 int NpcFunctions::luaNpcRemovePlayerInteraction(lua_State* L) {
 	// npc:removePlayerInteraction()
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	std::shared_ptr<Creature> creature = getCreature(L, 2);
 
 	if (!npc) {
@@ -281,7 +281,7 @@ int NpcFunctions::luaNpcRemovePlayerInteraction(lua_State* L) {
 
 int NpcFunctions::luaNpcIsInteractingWithPlayer(lua_State* L) {
 	// npc:isInteractingWithPlayer(creature)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	std::shared_ptr<Creature> creature = getCreature(L, 2);
 
 	if (!npc) {
@@ -302,9 +302,9 @@ int NpcFunctions::luaNpcIsInteractingWithPlayer(lua_State* L) {
 
 int NpcFunctions::luaNpcIsPlayerInteractingOnTopic(lua_State* L) {
 	// npc:isPlayerInteractingOnTopic(creature, topicId = 0)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	std::shared_ptr<Creature> creature = getCreature(L, 2);
-	uint32_t topicId = getNumber<uint32_t>(L, 3, 0);
+	auto topicId = getNumber<uint32_t>(L, 3, 0);
 
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
@@ -324,9 +324,9 @@ int NpcFunctions::luaNpcIsPlayerInteractingOnTopic(lua_State* L) {
 
 int NpcFunctions::luaNpcIsInTalkRange(lua_State* L) {
 	// npc:isInTalkRange(position[, range = 4])
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	const Position &position = getPosition(L, 2);
-	uint32_t range = getNumber<uint32_t>(L, 3, 4);
+	auto range = getNumber<uint32_t>(L, 3, 4);
 
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
@@ -340,7 +340,7 @@ int NpcFunctions::luaNpcIsInTalkRange(lua_State* L) {
 
 int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 	// npc:openShopWindow(player)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		pushBoolean(L, false);
@@ -417,7 +417,7 @@ int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		pushBoolean(L, false);
@@ -434,7 +434,7 @@ int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 
 int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
 	// npc:isMerchant()
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		pushBoolean(L, false);
@@ -454,7 +454,7 @@ int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
 
 int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 	// npc:getShopItem(itemId)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		pushBoolean(L, false);
@@ -463,7 +463,7 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 
 	auto playerGUID = getNumber<uint32_t>(L, 2, 0);
 	const auto &shopItems = npc->getShopItemVector(playerGUID);
-	for (ShopBlock shopBlock : shopItems) {
+	for (const ShopBlock &shopBlock : shopItems) {
 		setField(L, "id", shopBlock.itemId);
 		setField(L, "name", shopBlock.itemName);
 		setField(L, "subType", shopBlock.itemSubType);
@@ -479,7 +479,7 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 
 int NpcFunctions::luaNpcMove(lua_State* L) {
 	// npc:move(direction)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (npc) {
 		g_game().internalMoveCreature(npc, getNumber<Direction>(L, 2));
 	}
@@ -488,7 +488,7 @@ int NpcFunctions::luaNpcMove(lua_State* L) {
 
 int NpcFunctions::luaNpcTurn(lua_State* L) {
 	// npc:turn(direction)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (npc) {
 		g_game().internalCreatureTurn(npc, getNumber<Direction>(L, 2));
 	}
@@ -497,7 +497,7 @@ int NpcFunctions::luaNpcTurn(lua_State* L) {
 
 int NpcFunctions::luaNpcFollow(lua_State* L) {
 	// npc:follow(player)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		pushBoolean(L, false);
 		return 1;
@@ -515,7 +515,7 @@ int NpcFunctions::luaNpcFollow(lua_State* L) {
 
 int NpcFunctions::luaNpcGetId(lua_State* L) {
 	// npc:getId()
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		lua_pushnil(L);
@@ -528,7 +528,7 @@ int NpcFunctions::luaNpcGetId(lua_State* L) {
 
 int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	// npc:sellItem(player, itemid, amount, <optional: default: 1> subtype, <optional: default: 0> actionid, <optional: default: false> ignoreCap, <optional: default: false> inBackpacks)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		pushBoolean(L, false);
@@ -542,10 +542,10 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 		return 1;
 	}
 
-	uint16_t itemId = getNumber<uint16_t>(L, 3);
+	auto itemId = getNumber<uint16_t>(L, 3);
 	double amount = getNumber<double>(L, 4);
-	uint16_t subType = getNumber<uint16_t>(L, 5, 1);
-	uint16_t actionId = getNumber<uint16_t>(L, 6, 0);
+	auto subType = getNumber<uint16_t>(L, 5, 1);
+	auto actionId = getNumber<uint16_t>(L, 6, 0);
 	bool ignoreCap = getBoolean(L, 7, false);
 	bool inBackpacks = getBoolean(L, 8, false);
 
@@ -574,7 +574,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 
 	uint64_t pricePerUnit = 0;
 	const auto &shopVector = npc->getShopItemVector(player->getGUID());
-	for (ShopBlock shopBlock : shopVector) {
+	for (const ShopBlock &shopBlock : shopVector) {
 		if (itemId == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			pricePerUnit = shopBlock.itemBuyPrice;
 			break;
@@ -646,7 +646,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 
 int NpcFunctions::luaNpcGetDistanceTo(lua_State* L) {
 	// npc:getDistanceTo(uid)
-	std::shared_ptr<Npc> npc = getUserdataShared<Npc>(L, 1);
+	const auto &npc = getUserdataShared<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
 		pushBoolean(L, false);

@@ -72,7 +72,7 @@ bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
 	// Recursive iterate through all entries in the directory
 	for (const auto &entry : std::filesystem::recursive_directory_iterator(dir)) {
 		// Get the filename of the entry as a string
-		const auto realPath = entry.path();
+		const auto &realPath = entry.path();
 		std::string fileFolder = realPath.parent_path().filename().string();
 		// Script folder, example: "actions"
 		std::string scriptFolder = realPath.parent_path().string();

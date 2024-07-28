@@ -18,10 +18,10 @@ Modules::Modules() :
 	scriptInterface.initState();
 }
 
-void Modules::clear(bool) {
+void Modules::clear() {
 	// clear recvbyte list
-	for (auto &it : recvbyteList) {
-		it.second.clearEvent();
+	for (const auto &it : recvbyteList) {
+		it.second->clearEvent();
 	}
 
 	// clear lua state
@@ -40,54 +40,55 @@ Event_ptr Modules::getEvent(const std::string &nodeName) {
 	if (strcasecmp(nodeName.c_str(), "module") != 0) {
 		return nullptr;
 	}
-	return Event_ptr(new Module(&scriptInterface));
+	return std::make_unique<Module>(&scriptInterface);
 }
 
-bool Modules::registerEvent(Event_ptr event, const pugi::xml_node &) {
-	Module_ptr module { static_cast<Module*>(event.release()) };
+bool Modules::registerEvent(const Event_ptr &event, const pugi::xml_node &) {
+	auto module = std::dynamic_pointer_cast<Module>(event);
 	if (module->getEventType() == MODULE_TYPE_NONE) {
 		g_logger().error("Trying to register event without type!");
 		return false;
 	}
 
-	Module* oldModule = getEventByRecvbyte(module->getRecvbyte(), false);
+	auto oldModule = getEventByRecvbyte(module->getRecvbyte(), false);
 	if (oldModule) {
 		if (!oldModule->isLoaded() && oldModule->getEventType() == module->getEventType()) {
-			oldModule->copyEvent(module.get());
+			oldModule->copyEvent(module);
+			return true;
 		}
 		return false;
-	} else {
-		auto it = recvbyteList.find(module->getRecvbyte());
-		if (it != recvbyteList.end()) {
-			it->second = *module;
-		} else {
-			recvbyteList.emplace(module->getRecvbyte(), std::move(*module));
-		}
-		return true;
 	}
+
+	auto it = recvbyteList.find(module->getRecvbyte());
+	if (it != recvbyteList.end()) {
+		it->second = module;
+	} else {
+		recvbyteList.emplace(module->getRecvbyte(), module);
+	}
+	return true;
 }
 
-Module* Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
-	ModulesList::iterator it = recvbyteList.find(recvbyte);
+Module_ptr Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
+	auto it = recvbyteList.find(recvbyte);
 	if (it != recvbyteList.end()) {
-		if (!force || it->second.isLoaded()) {
-			return &it->second;
+		if (!force || it->second->isLoaded()) {
+			return it->second;
 		}
 	}
 	return nullptr;
 }
 
 void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const {
-	std::shared_ptr<Player> player = g_game().getPlayerByID(playerId);
+	auto player = g_game().getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	for (auto &it : recvbyteList) {
-		Module module = it.second;
-		if (module.getEventType() == MODULE_TYPE_RECVBYTE && module.getRecvbyte() == byte && player->canRunModule(module.getRecvbyte())) {
-			player->setModuleDelay(module.getRecvbyte(), module.getDelay());
-			module.executeOnRecvbyte(player, msg);
+	for (const auto &it : recvbyteList) {
+		auto &module = it.second;
+		if (module->getEventType() == MODULE_TYPE_RECVBYTE && module->getRecvbyte() == byte && player->canRunModule(module->getRecvbyte())) {
+			player->setModuleDelay(module->getRecvbyte(), module->getDelay());
+			module->executeOnRecvbyte(player, msg);
 			return;
 		}
 	}
@@ -99,15 +100,15 @@ Module::Module(LuaScriptInterface* interface) :
 bool Module::configureEvent(const pugi::xml_node &node) {
 	delay = 0;
 
-	pugi::xml_attribute typeAttribute = node.attribute("type");
+	auto typeAttribute = node.attribute("type");
 	if (!typeAttribute) {
 		g_logger().error("Missing type for module.");
 		return false;
 	}
 
-	std::string tmpStr = asLowerCaseString(typeAttribute.as_string());
+	auto tmpStr = asLowerCaseString(typeAttribute.as_string());
 	if (tmpStr == "recvbyte") {
-		pugi::xml_attribute byteAttribute = node.attribute("byte");
+		auto byteAttribute = node.attribute("byte");
 		if (!byteAttribute) {
 			g_logger().error("Missing byte for module typed recvbyte.");
 			return false;
@@ -120,9 +121,9 @@ bool Module::configureEvent(const pugi::xml_node &node) {
 		return false;
 	}
 
-	pugi::xml_attribute delayAttribute = node.attribute("delay");
+	auto delayAttribute = node.attribute("delay");
 	if (delayAttribute) {
-		delay = static_cast<uint16_t>(delayAttribute.as_uint());
+		delay = static_cast<int16_t>(delayAttribute.as_uint());
 	}
 
 	loaded = true;
@@ -134,11 +135,11 @@ std::string Module::getScriptEventName() const {
 		case MODULE_TYPE_RECVBYTE:
 			return "onRecvbyte";
 		default:
-			return std::string();
+			return {};
 	}
 }
 
-void Module::copyEvent(Module* module) {
+void Module::copyEvent(const Module_ptr &module) {
 	scriptId = module->scriptId;
 	scriptInterface = module->scriptInterface;
 	scripted = module->scripted;
@@ -152,14 +153,13 @@ void Module::clearEvent() {
 	loaded = false;
 }
 
-void Module::executeOnRecvbyte(std::shared_ptr<Player> player, NetworkMessage &msg) {
-	// onRecvbyte(player, msg, recvbyte)
-	if (!scriptInterface->reserveScriptEnv()) {
+void Module::executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg) {
+	if (!LuaEnvironment::reserveScriptEnv()) {
 		g_logger().error("Call stack overflow. Too many lua script calls being nested {}", player->getName());
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
+	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
 	env->setScriptId(scriptId, scriptInterface);
 
 	lua_State* L = scriptInterface->getLuaState();

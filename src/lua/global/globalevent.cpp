@@ -30,7 +30,7 @@ void GlobalEvents::clear() {
 	timerMap.clear();
 }
 
-bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEvent) {
+bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent) {
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
 		auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
@@ -206,20 +206,20 @@ std::string GlobalEvent::getScriptTypeName() const {
 			return "onSave";
 		default:
 			g_logger().error("[GlobalEvent::getScriptTypeName] - Invalid event type");
-			return std::string();
+			return {};
 	}
 }
 
 bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightInfo) const {
 	// onPeriodChange(lightState, lightTime)
-	if (!getScriptInterface()->reserveScriptEnv()) {
+	if (!LuaEnvironment::reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executePeriodChange - {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -232,14 +232,14 @@ bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightIn
 
 bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
 	// onRecord(current, old)
-	if (!getScriptInterface()->reserveScriptEnv()) {
+	if (!LuaEnvironment::reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executeRecord - {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -251,14 +251,14 @@ bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
 }
 
 bool GlobalEvent::executeEvent() const {
-	if (!getScriptInterface()->reserveScriptEnv()) {
+	if (!LuaEnvironment::reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executeEvent - {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());

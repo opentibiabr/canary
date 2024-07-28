@@ -81,45 +81,45 @@ public:
 	}
 
 	// Creature
-	bool eventCreatureOnChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit);
-	ReturnValue eventCreatureOnAreaCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> tile, bool aggressive);
-	ReturnValue eventCreatureOnTargetCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target);
-	void eventCreatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, SpeakClasses type);
-	void eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
+	bool eventCreatureOnChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit);
+	ReturnValue eventCreatureOnAreaCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, bool aggressive);
+	ReturnValue eventCreatureOnTargetCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target);
+	void eventCreatureOnHear(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &speaker, const std::string &words, SpeakClasses type);
+	void eventCreatureOnDrainHealth(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
 
 	// Party
-	bool eventPartyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player);
-	bool eventPartyOnLeave(std::shared_ptr<Party> party, std::shared_ptr<Player> player);
-	bool eventPartyOnDisband(std::shared_ptr<Party> party);
-	void eventPartyOnShareExperience(std::shared_ptr<Party> party, uint64_t &exp);
+	bool eventPartyOnJoin(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player);
+	bool eventPartyOnLeave(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player);
+	bool eventPartyOnDisband(const std::shared_ptr<Party> &party);
+	void eventPartyOnShareExperience(const std::shared_ptr<Party> &party, uint64_t &exp);
 
 	// Player
-	bool eventPlayerOnBrowseField(std::shared_ptr<Player> player, const Position &position);
-	void eventPlayerOnLook(std::shared_ptr<Player> player, const Position &position, std::shared_ptr<Thing> thing, uint8_t stackpos, int32_t lookDistance);
-	void eventPlayerOnLookInBattleList(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, int32_t lookDistance);
-	void eventPlayerOnLookInTrade(std::shared_ptr<Player> player, std::shared_ptr<Player> partner, std::shared_ptr<Item> item, int32_t lookDistance);
-	bool eventPlayerOnLookInShop(std::shared_ptr<Player> player, const ItemType* itemType, uint8_t count);
-	bool eventPlayerOnMoveItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder);
-	void eventPlayerOnItemMoved(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder);
-	void eventPlayerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t zone);
-	bool eventPlayerOnMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition);
-	void eventPlayerOnReportRuleViolation(std::shared_ptr<Player> player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
-	bool eventPlayerOnReportBug(std::shared_ptr<Player> player, const std::string &message, const Position &position, uint8_t category);
-	bool eventPlayerOnTurn(std::shared_ptr<Player> player, Direction direction);
-	bool eventPlayerOnTradeRequest(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item);
-	bool eventPlayerOnTradeAccept(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item, std::shared_ptr<Item> targetItem);
-	void eventPlayerOnGainExperience(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint64_t &exp, uint64_t rawExp);
-	void eventPlayerOnLoseExperience(std::shared_ptr<Player> player, uint64_t &exp);
-	void eventPlayerOnGainSkillTries(std::shared_ptr<Player> player, skills_t skill, uint64_t &tries);
-	bool eventPlayerOnRemoveCount(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
-	void eventPlayerOnRequestQuestLog(std::shared_ptr<Player> player);
-	void eventPlayerOnRequestQuestLine(std::shared_ptr<Player> player, uint16_t questId);
-	void eventOnStorageUpdate(std::shared_ptr<Player> player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime);
-	void eventPlayerOnCombat(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, CombatDamage &damage);
-	void eventPlayerOnInventoryUpdate(std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool equip);
+	bool eventPlayerOnBrowseField(const std::shared_ptr<Player> &player, const Position &position);
+	void eventPlayerOnLook(const std::shared_ptr<Player> &player, const Position &position, const std::shared_ptr<Thing> &thing, uint8_t stackpos, int32_t lookDistance);
+	void eventPlayerOnLookInBattleList(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &creature, int32_t lookDistance);
+	void eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, std::shared_ptr<Player> partner, const std::shared_ptr<Item> &item, int32_t lookDistance);
+	bool eventPlayerOnLookInShop(const std::shared_ptr<Player> &player, const ItemType* itemType, uint8_t count);
+	bool eventPlayerOnMoveItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder);
+	void eventPlayerOnItemMoved(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder);
+	void eventPlayerOnChangeZone(const std::shared_ptr<Player> &player, ZoneType_t zone);
+	bool eventPlayerOnMoveCreature(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &creature, const Position &fromPosition, const Position &toPosition);
+	void eventPlayerOnReportRuleViolation(const std::shared_ptr<Player> &player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
+	bool eventPlayerOnReportBug(const std::shared_ptr<Player> &player, const std::string &message, const Position &position, uint8_t category);
+	bool eventPlayerOnTurn(const std::shared_ptr<Player> &player, Direction direction);
+	bool eventPlayerOnTradeRequest(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &target, const std::shared_ptr<Item> &item);
+	bool eventPlayerOnTradeAccept(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &target, const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &targetItem);
+	void eventPlayerOnGainExperience(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint64_t &exp, uint64_t rawExp);
+	void eventPlayerOnLoseExperience(const std::shared_ptr<Player> &player, uint64_t &exp);
+	void eventPlayerOnGainSkillTries(const std::shared_ptr<Player> &player, skills_t skill, uint64_t &tries);
+	bool eventPlayerOnRemoveCount(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item);
+	void eventPlayerOnRequestQuestLog(const std::shared_ptr<Player> &player);
+	void eventPlayerOnRequestQuestLine(const std::shared_ptr<Player> &player, uint16_t questId);
+	void eventOnStorageUpdate(const std::shared_ptr<Player> &player, uint32_t key, int32_t value, int32_t oldValue, uint64_t currentTime);
+	void eventPlayerOnCombat(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item, CombatDamage &damage);
+	void eventPlayerOnInventoryUpdate(std::shared_ptr<Player> player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip);
 
 	// Monster
-	void eventMonsterOnDropLoot(std::shared_ptr<Monster> monster, std::shared_ptr<Container> corpse);
+	void eventMonsterOnDropLoot(std::shared_ptr<Monster> monster, const std::shared_ptr<Container> &corpse);
 	void eventMonsterOnSpawn(std::shared_ptr<Monster> monster, const Position &position);
 
 	// Monster

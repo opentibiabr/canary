@@ -14,7 +14,6 @@
 #include "game/game.hpp"
 #include "items/item.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/scripts.hpp"
 #include "utils/tools.hpp"
 
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {

@@ -29,7 +29,6 @@
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
 #include "map/spectators.hpp"
 
 // Game
@@ -108,7 +107,7 @@ int GameFunctions::luaGameGetSpectators(lua_State* L) {
 	lua_createtable(L, spectators.size(), 0);
 
 	int index = 0;
-	for (std::shared_ptr<Creature> creature : spectators) {
+	for (const auto &creature : spectators) {
 		pushUserdata<Creature>(L, creature);
 		setCreatureMetatable(L, -1, creature);
 		lua_rawseti(L, -2, ++index);
@@ -130,7 +129,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 
 	if (lua_gettop(L) <= 2) {
 		std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
-		for (auto ita : mtype_list) {
+		for (const auto &ita : mtype_list) {
 			if (name) {
 				pushString(L, ita.second);
 			} else {
@@ -141,7 +140,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 	} else {
 		if (isNumber(L, 2)) {
 			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName("CANARY", false, getNumber<BestiaryType_t>(L, 2));
-			for (auto itb : tmplist) {
+			for (const auto &itb : tmplist) {
 				if (name) {
 					pushString(L, itb.second);
 				} else {
@@ -151,7 +150,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 			}
 		} else {
 			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName(getString(L, 2));
-			for (auto itc : tmplist) {
+			for (const auto &itc : tmplist) {
 				if (name) {
 					pushString(L, itc.second);
 				} else {
@@ -240,7 +239,7 @@ int GameFunctions::luaGameGetTowns(lua_State* L) {
 	lua_createtable(L, towns.size(), 0);
 
 	int index = 0;
-	for (auto townEntry : towns) {
+	for (const auto &townEntry : towns) {
 		pushUserdata<Town>(L, townEntry.second);
 		setMetatable(L, -1, "Town");
 		lua_rawseti(L, -2, ++index);
@@ -254,7 +253,7 @@ int GameFunctions::luaGameGetHouses(lua_State* L) {
 	lua_createtable(L, houses.size(), 0);
 
 	int index = 0;
-	for (auto houseEntry : houses) {
+	for (const auto &houseEntry : houses) {
 		pushUserdata<House>(L, houseEntry.second);
 		setMetatable(L, -1, "House");
 		lua_rawseti(L, -2, ++index);
@@ -354,7 +353,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 		}
 
 		if (position.x != 0) {
-			std::shared_ptr<Tile> tile = g_game().map.getTile(position);
+			const auto &tile = g_game().map.getTile(position);
 			if (!tile) {
 				if (!hasTable) {
 					lua_pushnil(L);
@@ -402,7 +401,7 @@ int GameFunctions::luaGameCreateContainer(lua_State* L) {
 		}
 	}
 
-	std::shared_ptr<Container> container = Item::CreateItemAsContainer(id, size);
+	const auto &container = Item::CreateItemAsContainer(id, size);
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
@@ -595,19 +594,19 @@ int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 int GameFunctions::luaGameReload(lua_State* L) {
 	// Game.reload(reloadType)
 	Reload_t reloadType = getNumber<Reload_t>(L, 1);
-	if (g_gameReload().getReloadNumber(reloadType) == g_gameReload().getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
+	if (GameReload::getReloadNumber(reloadType) == GameReload::getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
 		reportErrorFunc("Reload type is none");
 		pushBoolean(L, false);
 		return 0;
 	}
 
-	if (g_gameReload().getReloadNumber(reloadType) >= g_gameReload().getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
+	if (GameReload::getReloadNumber(reloadType) >= GameReload::getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
 		reportErrorFunc("Reload type not exist");
 		pushBoolean(L, false);
 		return 0;
 	}
 
-	pushBoolean(L, g_gameReload().init(reloadType));
+	pushBoolean(L, GameReload::init(reloadType));
 	lua_gc(g_luaEnvironment().getLuaState(), LUA_GCCOLLECT, 0);
 	return 1;
 }

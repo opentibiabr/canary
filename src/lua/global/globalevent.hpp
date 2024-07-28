@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "utils/utils_definitions.hpp"
 #include "lua/scripts/scripts.hpp"
 
@@ -38,7 +40,7 @@ public:
 
 	GlobalEventMap getEventMap(GlobalEvent_t type);
 
-	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEvent);
+	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent);
 	void clear();
 
 private:
@@ -67,7 +69,7 @@ public:
 		return name;
 	}
 	void setName(std::string eventName) {
-		name = eventName;
+		name = std::move(eventName);
 	}
 	uint32_t getInterval() const {
 		return interval;

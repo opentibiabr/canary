@@ -64,7 +64,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 	bool restoreHealth = getBoolean(L, 3, false);
 	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);
 	if (monster) {
-		std::shared_ptr<MonsterType> mType = nullptr;
+		std::shared_ptr<MonsterType> mType;
 		if (isNumber(L, 2)) {
 			mType = g_monsters().getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
 		} else {
@@ -290,7 +290,7 @@ int MonsterFunctions::luaMonsterGetTargetList(lua_State* L) {
 	lua_createtable(L, targetList.size(), 0);
 
 	int index = 0;
-	for (std::shared_ptr<Creature> creature : targetList) {
+	for (const auto &creature : targetList) {
 		pushUserdata<Creature>(L, creature);
 		setCreatureMetatable(L, -1, creature);
 		lua_rawseti(L, -2, ++index);
@@ -313,8 +313,8 @@ int MonsterFunctions::luaMonsterChangeTargetDistance(lua_State* L) {
 	// monster:changeTargetDistance(distance[, duration = 12000])
 	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);
 	if (monster) {
-		int32_t distance = getNumber<int32_t>(L, 2, 1);
-		uint32_t duration = getNumber<uint32_t>(L, 3, 12000);
+		auto distance = getNumber<int32_t>(L, 2, 1);
+		auto duration = getNumber<uint32_t>(L, 3, 12000);
 		pushBoolean(L, monster->changeTargetDistance(distance, duration));
 	} else {
 		lua_pushnil(L);
@@ -349,7 +349,7 @@ int MonsterFunctions::luaMonsterSearchTarget(lua_State* L) {
 	// monster:searchTarget([searchType = TARGETSEARCH_DEFAULT])
 	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);
 	if (monster) {
-		TargetSearchType_t searchType = getNumber<TargetSearchType_t>(L, 2, TARGETSEARCH_DEFAULT);
+		const auto &searchType = getNumber<TargetSearchType_t>(L, 2, TARGETSEARCH_DEFAULT);
 		pushBoolean(L, monster->searchTarget(searchType));
 	} else {
 		lua_pushnil(L);
@@ -465,7 +465,7 @@ int MonsterFunctions::luaMonsterGetForgeStack(lua_State* L) {
 
 int MonsterFunctions::luaMonsterSetForgeStack(lua_State* L) {
 	// monster:setForgeStack(stack)
-	uint16_t stack = getNumber<uint16_t>(L, 2, 0);
+	auto stack = getNumber<uint16_t>(L, 2, 0);
 	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));

@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "database/database.hpp"
 #include "declarations.hpp"
 
@@ -52,9 +54,9 @@ public:
 
 	void getEventInfo(int32_t &scriptId, LuaScriptInterface*&scriptInterface, int32_t &callbackId, bool &timerEvent) const;
 
-	void addTempItem(std::shared_ptr<Item> item);
-	static void removeTempItem(std::shared_ptr<Item> item);
-	uint32_t addThing(std::shared_ptr<Thing> thing);
+	void addTempItem(const std::shared_ptr<Item> &item);
+	static void removeTempItem(const std::shared_ptr<Item> &item);
+	uint32_t addThing(const std::shared_ptr<Thing> &thing);
 	void insertItem(uint32_t uid, std::shared_ptr<Item> item);
 
 	static DBResult_ptr getResultByID(uint32_t id);
@@ -62,7 +64,7 @@ public:
 	static bool removeResult(uint32_t id);
 
 	void setNpc(std::shared_ptr<Npc> npc) {
-		curNpc = npc;
+		curNpc = std::move(npc);
 	}
 	std::shared_ptr<Npc> getNpc() const {
 		return curNpc;
@@ -77,7 +79,7 @@ private:
 	using StorageMap = std::map<uint32_t, int32_t>;
 	using DBResultMap = std::map<uint32_t, DBResult_ptr>;
 
-	LuaScriptInterface* interface;
+	LuaScriptInterface* interface {};
 
 	// for npc scripts
 	std::shared_ptr<Npc> curNpc = nullptr;
@@ -90,9 +92,9 @@ private:
 	uint32_t lastUID = std::numeric_limits<uint16_t>::max();
 
 	// script file id
-	int32_t scriptId;
-	int32_t callbackId;
-	bool timerEvent;
+	int32_t scriptId {};
+	int32_t callbackId {};
+	bool timerEvent {};
 
 	// result map
 	static uint32_t lastResultId;

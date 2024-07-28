@@ -12,7 +12,6 @@
 #include "lua/functions/events/global_event_functions.hpp"
 #include "game/game.hpp"
 #include "lua/global/globalevent.hpp"
-#include "lua/scripts/scripts.hpp"
 #include "utils/tools.hpp"
 
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
@@ -26,7 +25,7 @@ int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 	// globalevent:type(callback)
-	const auto global = getUserdataShared<GlobalEvent>(L, 1);
+	const auto &global = getUserdataShared<GlobalEvent>(L, 1);
 	if (global) {
 		std::string typeName = getString(L, 2);
 		std::string tmpStr = asLowerCaseString(typeName);
@@ -56,7 +55,7 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 	// globalevent:register()
-	const auto globalevent = getUserdataShared<GlobalEvent>(L, 1);
+	const auto &globalevent = getUserdataShared<GlobalEvent>(L, 1);
 	if (globalevent) {
 		if (!globalevent->isLoadedCallback()) {
 			pushBoolean(L, false);
@@ -76,7 +75,7 @@ int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventOnCallback(lua_State* L) {
 	// globalevent:onThink / record / etc. (callback)
-	const auto globalevent = getUserdataShared<GlobalEvent>(L, 1);
+	const auto &globalevent = getUserdataShared<GlobalEvent>(L, 1);
 	if (globalevent) {
 		if (!globalevent->loadCallback()) {
 			pushBoolean(L, false);
@@ -91,7 +90,7 @@ int GlobalEventFunctions::luaGlobalEventOnCallback(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 	// globalevent:time(time)
-	const auto globalevent = getUserdataShared<GlobalEvent>(L, 1);
+	const auto &globalevent = getUserdataShared<GlobalEvent>(L, 1);
 	if (globalevent) {
 		std::string timer = getString(L, 2);
 		std::vector<int32_t> params = vectorAtoi(explodeString(timer, ":"));
@@ -154,7 +153,7 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventInterval(lua_State* L) {
 	// globalevent:interval(interval)
-	const auto globalevent = getUserdataShared<GlobalEvent>(L, 1);
+	const auto &globalevent = getUserdataShared<GlobalEvent>(L, 1);
 	if (globalevent) {
 		globalevent->setInterval(getNumber<uint32_t>(L, 2));
 		globalevent->setNextExecution(OTSYS_TIME() + getNumber<uint32_t>(L, 2));

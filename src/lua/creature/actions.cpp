@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include <utility>
+
 #include "pch.hpp"
 
 #include "lua/creature/actions.hpp"
@@ -27,7 +29,7 @@ void Actions::clear() {
 	actionPositionMap.clear();
 }
 
-bool Actions::registerLuaItemEvent(const std::shared_ptr<Action> action) {
+bool Actions::registerLuaItemEvent(const std::shared_ptr<Action> &action) {
 	auto itemIdVector = action->getItemIdsVector();
 	if (itemIdVector.empty()) {
 		return false;
@@ -60,7 +62,7 @@ bool Actions::registerLuaItemEvent(const std::shared_ptr<Action> action) {
 	return !itemIdVector.empty();
 }
 
-bool Actions::registerLuaUniqueEvent(const std::shared_ptr<Action> action) {
+bool Actions::registerLuaUniqueEvent(const std::shared_ptr<Action> &action) {
 	auto uniqueIdVector = action->getUniqueIdsVector();
 	if (uniqueIdVector.empty()) {
 		return false;
@@ -91,7 +93,7 @@ bool Actions::registerLuaUniqueEvent(const std::shared_ptr<Action> action) {
 	return !uniqueIdVector.empty();
 }
 
-bool Actions::registerLuaActionEvent(const std::shared_ptr<Action> action) {
+bool Actions::registerLuaActionEvent(const std::shared_ptr<Action> &action) {
 	auto actionIdVector = action->getActionIdsVector();
 	if (actionIdVector.empty()) {
 		return false;
@@ -122,7 +124,7 @@ bool Actions::registerLuaActionEvent(const std::shared_ptr<Action> action) {
 	return !actionIdVector.empty();
 }
 
-bool Actions::registerLuaPositionEvent(const std::shared_ptr<Action> action) {
+bool Actions::registerLuaPositionEvent(const std::shared_ptr<Action> &action) {
 	auto positionVector = action->getPositionsVector();
 	if (positionVector.empty()) {
 		return false;
@@ -151,7 +153,7 @@ bool Actions::registerLuaPositionEvent(const std::shared_ptr<Action> action) {
 	return !positionVector.empty();
 }
 
-bool Actions::registerLuaEvent(const std::shared_ptr<Action> action) {
+bool Actions::registerLuaEvent(const std::shared_ptr<Action> &action) {
 	// Call all register lua events
 	if (registerLuaItemEvent(action) || registerLuaUniqueEvent(action) || registerLuaActionEvent(action) || registerLuaPositionEvent(action)) {
 		return true;
@@ -167,7 +169,7 @@ bool Actions::registerLuaEvent(const std::shared_ptr<Action> action) {
 	return false;
 }
 
-ReturnValue Actions::canUse(std::shared_ptr<Player> player, const Position &pos) {
+ReturnValue Actions::canUse(const std::shared_ptr<Player> &player, const Position &pos) {
 	if (pos.x != 0xFFFF) {
 		const Position &playerPos = player->getPosition();
 		if (playerPos.z != pos.z) {
@@ -181,15 +183,15 @@ ReturnValue Actions::canUse(std::shared_ptr<Player> player, const Position &pos)
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Actions::canUse(std::shared_ptr<Player> player, const Position &pos, std::shared_ptr<Item> item) {
+ReturnValue Actions::canUse(std::shared_ptr<Player> player, const Position &pos, const std::shared_ptr<Item> &item) {
 	const std::shared_ptr<Action> action = getAction(item);
 	if (action != nullptr) {
-		return action->canExecuteAction(player, pos);
+		return action->canExecuteAction(std::move(player), pos);
 	}
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Actions::canUseFar(std::shared_ptr<Creature> creature, const Position &toPos, bool checkLineOfSight, bool checkFloor) {
+ReturnValue Actions::canUseFar(const std::shared_ptr<Creature> &creature, const Position &toPos, bool checkLineOfSight, bool checkFloor) {
 	if (toPos.x == 0xFFFF) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -210,7 +212,7 @@ ReturnValue Actions::canUseFar(std::shared_ptr<Creature> creature, const Positio
 	return RETURNVALUE_NOERROR;
 }
 
-std::shared_ptr<Action> Actions::getAction(std::shared_ptr<Item> item) {
+std::shared_ptr<Action> Actions::getAction(const std::shared_ptr<Item> &item) {
 	if (item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		auto it = uniqueItemMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID));
 		if (it != uniqueItemMap.end()) {
@@ -248,7 +250,7 @@ std::shared_ptr<Action> Actions::getAction(std::shared_ptr<Item> item) {
 	return g_spells().getRuneSpell(item->getID());
 }
 
-ReturnValue Actions::internalUseItem(std::shared_ptr<Player> player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey) {
+ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> &player, const Position &pos, uint8_t index, const std::shared_ptr<Item> &item, bool isHotkey) {
 	if (std::shared_ptr<Door> door = item->getDoor()) {
 		if (!door->canUse(player)) {
 			return RETURNVALUE_CANNOTUSETHISOBJECT;
@@ -388,7 +390,7 @@ ReturnValue Actions::internalUseItem(std::shared_ptr<Player> player, const Posit
 	return RETURNVALUE_CANNOTUSETHISOBJECT;
 }
 
-bool Actions::useItem(std::shared_ptr<Player> player, const Position &pos, uint8_t index, std::shared_ptr<Item> item, bool isHotkey) {
+bool Actions::useItem(const std::shared_ptr<Player> &player, const Position &pos, uint8_t index, const std::shared_ptr<Item> &item, bool isHotkey) {
 	const ItemType &it = Item::items[item->getID()];
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		if (player->walkExhausted()) {
@@ -420,7 +422,7 @@ bool Actions::useItem(std::shared_ptr<Player> player, const Position &pos, uint8
 	return true;
 }
 
-bool Actions::useItemEx(std::shared_ptr<Player> player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, std::shared_ptr<Item> item, bool isHotkey, std::shared_ptr<Creature> creature /* = nullptr*/) {
+bool Actions::useItemEx(const std::shared_ptr<Player> &player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, const std::shared_ptr<Item> &item, bool isHotkey, const std::shared_ptr<Creature> &creature /* = nullptr*/) {
 	const ItemType &it = Item::items[item->getID()];
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		if (player->walkExhausted()) {
@@ -472,7 +474,7 @@ bool Actions::useItemEx(std::shared_ptr<Player> player, const Position &fromPos,
 	return true;
 }
 
-void Actions::showUseHotkeyMessage(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint32_t count) {
+void Actions::showUseHotkeyMessage(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint32_t count) {
 	std::ostringstream ss;
 
 	const ItemType &it = Item::items[item->getID()];
@@ -508,19 +510,19 @@ std::shared_ptr<Thing> Action::getTarget(std::shared_ptr<Player> player, std::sh
 	if (targetCreature != nullptr) {
 		return targetCreature;
 	}
-	return g_game().internalGetThing(player, toPosition, toStackPos, 0, STACKPOS_USETARGET);
+	return g_game().internalGetThing(std::move(player), toPosition, toStackPos, 0, STACKPOS_USETARGET);
 }
 
 bool Action::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) {
 	// onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (!getScriptInterface()->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Action::executeUse - Player {}, on item {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 player->getName(), item->getName());
 		return false;
 	}
 
-	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	ScriptEnvironment* scriptEnvironment = LuaScriptInterface::getScriptEnv();
 	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -533,7 +535,7 @@ bool Action::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> it
 	LuaScriptInterface::pushThing(L, item);
 	LuaScriptInterface::pushPosition(L, fromPosition);
 
-	LuaScriptInterface::pushThing(L, target);
+	LuaScriptInterface::pushThing(L, std::move(target));
 	LuaScriptInterface::pushPosition(L, toPosition);
 
 	LuaScriptInterface::pushBoolean(L, isHotkey);

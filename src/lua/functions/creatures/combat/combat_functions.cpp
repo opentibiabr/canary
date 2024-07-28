@@ -89,7 +89,7 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 int CombatFunctions::luaCombatSetCondition(lua_State* L) {
 	// combat:addCondition(condition)
 	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 2);
-	Combat* combat = getUserdata<Combat>(L, 1);
+	auto* combat = getUserdata<Combat>(L, 1);
 	if (combat && condition) {
 		combat->addCondition(condition->clone());
 		pushBoolean(L, true);

@@ -89,7 +89,7 @@ public:
 private:
 	void executeTimerEvent(uint32_t eventIndex);
 
-	phmap::flat_hash_map<uint32_t, LuaTimerEventDesc> timerEvents;
+	std::unordered_map<uint32_t, LuaTimerEventDesc> timerEvents;
 	uint32_t lastEventTimerId = 1;
 
 	phmap::flat_hash_map<uint32_t, std::unique_ptr<AreaCombat>> areaMap;
@@ -100,8 +100,8 @@ private:
 	phmap::flat_hash_map<LuaScriptInterface*, std::vector<uint32_t>> combatIdMap;
 	uint32_t lastCombatId = 0;
 
-	phmap::flat_hash_map<uint32_t, std::shared_ptr<Weapon>> weaponMap;
-	phmap::flat_hash_map<LuaScriptInterface*, std::vector<uint32_t>> weaponIdMap;
+	std::unordered_map<uint32_t, std::shared_ptr<Weapon>> weaponMap;
+	std::unordered_map<LuaScriptInterface*, std::vector<uint32_t>> weaponIdMap;
 	uint32_t lastWeaponId = 0;
 
 	LuaScriptInterface* testInterface = nullptr;

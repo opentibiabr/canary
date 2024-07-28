@@ -41,7 +41,7 @@ bool BaseEvents::loadFromXml() {
 	loaded = true;
 
 	for (auto node : doc.child(scriptsName.c_str()).children()) {
-		Event_ptr event = getEvent(node.name());
+		const auto &event = getEvent(node.name());
 		if (!event) {
 			continue;
 		}
@@ -66,7 +66,7 @@ bool BaseEvents::loadFromXml() {
 		}
 
 		if (success) {
-			registerEvent(std::move(event), node);
+			registerEvent(event, node);
 		}
 	}
 	return true;
@@ -74,7 +74,7 @@ bool BaseEvents::loadFromXml() {
 
 bool BaseEvents::reload() {
 	loaded = false;
-	clear(false);
+	clear();
 	return loadFromXml();
 }
 

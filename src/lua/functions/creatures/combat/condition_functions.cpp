@@ -25,7 +25,7 @@ int ConditionFunctions::luaConditionCreate(lua_State* L) {
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
 	bool isPersistent = getBoolean(L, 5, false);
 
-	std::shared_ptr<Condition> condition = Condition::createCondition(conditionId, conditionType, 0, 0, false, subId, isPersistent);
+	const auto &condition = Condition::createCondition(conditionId, conditionType, 0, 0, false, subId, isPersistent);
 	if (condition) {
 		pushUserdata<Condition>(L, condition);
 		setMetatable(L, -1, "Condition");

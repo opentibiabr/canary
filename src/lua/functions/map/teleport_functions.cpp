@@ -18,7 +18,7 @@ int TeleportFunctions::luaTeleportCreate(lua_State* L) {
 	// Teleport(uid)
 	uint32_t id = getNumber<uint32_t>(L, 2);
 
-	std::shared_ptr<Item> item = getScriptEnv()->getItemByUID(id);
+	const auto &item = getScriptEnv()->getItemByUID(id);
 	if (item && item->getTeleport()) {
 		pushUserdata(L, item);
 		setMetatable(L, -1, "Teleport");
@@ -30,7 +30,7 @@ int TeleportFunctions::luaTeleportCreate(lua_State* L) {
 
 int TeleportFunctions::luaTeleportGetDestination(lua_State* L) {
 	// teleport:getDestination()
-	std::shared_ptr<Teleport> teleport = getUserdataShared<Teleport>(L, 1);
+	const auto &teleport = getUserdataShared<Teleport>(L, 1);
 	if (teleport) {
 		pushPosition(L, teleport->getDestPos());
 	} else {
@@ -41,7 +41,7 @@ int TeleportFunctions::luaTeleportGetDestination(lua_State* L) {
 
 int TeleportFunctions::luaTeleportSetDestination(lua_State* L) {
 	// teleport:setDestination(position)
-	std::shared_ptr<Teleport> teleport = getUserdataShared<Teleport>(L, 1);
+	const auto &teleport = getUserdataShared<Teleport>(L, 1);
 	if (teleport) {
 		teleport->setDestPos(getPosition(L, 2));
 		pushBoolean(L, true);

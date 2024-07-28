@@ -133,7 +133,7 @@ int ZoneFunctions::luaZoneGetCreatures(lua_State* L) {
 	lua_createtable(L, static_cast<int>(creatures.size()), 0);
 
 	int index = 0;
-	for (auto creature : creatures) {
+	for (const auto &creature : creatures) {
 		index++;
 		pushUserdata<Creature>(L, creature);
 		setCreatureMetatable(L, -1, creature);
@@ -154,7 +154,7 @@ int ZoneFunctions::luaZoneGetPlayers(lua_State* L) {
 	lua_createtable(L, static_cast<int>(players.size()), 0);
 
 	int index = 0;
-	for (auto player : players) {
+	for (const auto &player : players) {
 		index++;
 		pushUserdata<Player>(L, player);
 		setMetatable(L, -1, "Player");
@@ -175,7 +175,7 @@ int ZoneFunctions::luaZoneGetMonsters(lua_State* L) {
 	lua_createtable(L, static_cast<int>(monsters.size()), 0);
 
 	int index = 0;
-	for (auto monster : monsters) {
+	for (const auto &monster : monsters) {
 		index++;
 		pushUserdata<Monster>(L, monster);
 		setMetatable(L, -1, "Monster");
@@ -196,7 +196,7 @@ int ZoneFunctions::luaZoneGetNpcs(lua_State* L) {
 	lua_createtable(L, static_cast<int>(npcs.size()), 0);
 
 	int index = 0;
-	for (auto npc : npcs) {
+	for (const auto &npc : npcs) {
 		index++;
 		pushUserdata<Npc>(L, npc);
 		setMetatable(L, -1, "Npc");
@@ -217,7 +217,7 @@ int ZoneFunctions::luaZoneGetItems(lua_State* L) {
 	lua_createtable(L, static_cast<int>(items.size()), 0);
 
 	int index = 0;
-	for (auto item : items) {
+	for (const auto &item : items) {
 		index++;
 		pushUserdata<Item>(L, item);
 		setMetatable(L, -1, "Item");
@@ -305,7 +305,7 @@ int ZoneFunctions::luaZoneGetByPosition(lua_State* L) {
 	int index = 0;
 	auto zones = tile->getZones();
 	lua_createtable(L, static_cast<int>(zones.size()), 0);
-	for (auto zone : zones) {
+	for (const auto &zone : zones) {
 		index++;
 		pushUserdata<Zone>(L, zone);
 		setMetatable(L, -1, "Zone");
@@ -319,7 +319,7 @@ int ZoneFunctions::luaZoneGetAll(lua_State* L) {
 	auto zones = Zone::getZones();
 	lua_createtable(L, static_cast<int>(zones.size()), 0);
 	int index = 0;
-	for (auto zone : zones) {
+	for (const auto &zone : zones) {
 		index++;
 		pushUserdata<Zone>(L, zone);
 		setMetatable(L, -1, "Zone");

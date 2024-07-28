@@ -14,7 +14,7 @@
 class PositionFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "Position", "", PositionFunctions::luaPositionCreate);
+		registerSharedClass(L, "Position", "", PositionFunctions::luaPositionCreate);
 		registerMetaMethod(L, "Position", "__add", PositionFunctions::luaPositionAdd);
 		registerMetaMethod(L, "Position", "__sub", PositionFunctions::luaPositionSub);
 		registerMetaMethod(L, "Position", "__eq", PositionFunctions::luaPositionCompare);

@@ -39,11 +39,11 @@ public:
 	static void reportError(const char* function, const std::string &error_desc, bool stack_trace = false);
 	static int luaErrorHandler(lua_State* L);
 
-	static void pushThing(lua_State* L, std::shared_ptr<Thing> thing);
+	static void pushThing(lua_State* L, const std::shared_ptr<Thing> &thing);
 	static void pushVariant(lua_State* L, const LuaVariant &var);
 	static void pushString(lua_State* L, const std::string &value);
 	static void pushCallback(lua_State* L, int32_t callback);
-	static void pushCylinder(lua_State* L, std::shared_ptr<Cylinder> cylinder);
+	static void pushCylinder(lua_State* L, const std::shared_ptr<Cylinder> &cylinder);
 
 	static std::string popString(lua_State* L);
 	static int32_t popCallback(lua_State* L);
@@ -56,8 +56,8 @@ public:
 
 	static void setMetatable(lua_State* L, int32_t index, const std::string &name);
 	static void setWeakMetatable(lua_State* L, int32_t index, const std::string &name);
-	static void setItemMetatable(lua_State* L, int32_t index, std::shared_ptr<Item> item);
-	static void setCreatureMetatable(lua_State* L, int32_t index, std::shared_ptr<Creature> creature);
+	static void setItemMetatable(lua_State* L, int32_t index, const std::shared_ptr<Item> &item);
+	static void setCreatureMetatable(lua_State* L, int32_t index, const std::shared_ptr<Creature> &creature);
 
 	template <typename T>
 	static typename std::enable_if<std::is_enum<T>::value, T>::type

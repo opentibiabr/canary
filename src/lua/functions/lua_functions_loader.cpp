@@ -186,7 +186,7 @@ void LuaFunctionsLoader::pushVariant(lua_State* L, const LuaVariant &var) {
 	setMetatable(L, -1, "Variant");
 }
 
-void LuaFunctionsLoader::pushThing(lua_State* L, std::shared_ptr<Thing> thing) {
+void LuaFunctionsLoader::pushThing(lua_State* L, const std::shared_ptr<Thing> &thing) {
 	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
@@ -200,10 +200,10 @@ void LuaFunctionsLoader::pushThing(lua_State* L, std::shared_ptr<Thing> thing) {
 		return;
 	}
 
-	if (std::shared_ptr<Item> item = thing->getItem()) {
+	if (const auto &item = thing->getItem()) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
-	} else if (std::shared_ptr<Creature> creature = thing->getCreature()) {
+	} else if (const auto &creature = thing->getCreature()) {
 		pushUserdata<Creature>(L, creature);
 		setCreatureMetatable(L, -1, creature);
 	} else {
@@ -211,18 +211,18 @@ void LuaFunctionsLoader::pushThing(lua_State* L, std::shared_ptr<Thing> thing) {
 	}
 }
 
-void LuaFunctionsLoader::pushCylinder(lua_State* L, std::shared_ptr<Cylinder> cylinder) {
+void LuaFunctionsLoader::pushCylinder(lua_State* L, const std::shared_ptr<Cylinder> &cylinder) {
 	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
 
-	if (std::shared_ptr<Creature> creature = cylinder->getCreature()) {
+	if (const auto &creature = cylinder->getCreature()) {
 		pushUserdata<Creature>(L, creature);
 		setCreatureMetatable(L, -1, creature);
-	} else if (std::shared_ptr<Item> parentItem = cylinder->getItem()) {
+	} else if (const auto &parentItem = cylinder->getItem()) {
 		pushUserdata<Item>(L, parentItem);
 		setItemMetatable(L, -1, parentItem);
-	} else if (std::shared_ptr<Tile> tile = cylinder->getTile()) {
+	} else if (const auto &tile = cylinder->getTile()) {
 		pushUserdata<Tile>(L, tile);
 		setMetatable(L, -1, "Tile");
 	} else if (cylinder == VirtualCylinder::virtualCylinder) {
@@ -250,7 +250,7 @@ void LuaFunctionsLoader::pushCallback(lua_State* L, int32_t callback) {
 
 std::string LuaFunctionsLoader::popString(lua_State* L) {
 	if (lua_gettop(L) == 0) {
-		return std::string();
+		return {};
 	}
 
 	std::string str(getString(L, -1));
@@ -310,7 +310,7 @@ void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std
 	lua_setmetatable(L, index - 1);
 }
 
-void LuaFunctionsLoader::setItemMetatable(lua_State* L, int32_t index, std::shared_ptr<Item> item) {
+void LuaFunctionsLoader::setItemMetatable(lua_State* L, int32_t index, const std::shared_ptr<Item> &item) {
 	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
@@ -325,7 +325,7 @@ void LuaFunctionsLoader::setItemMetatable(lua_State* L, int32_t index, std::shar
 	lua_setmetatable(L, index - 1);
 }
 
-void LuaFunctionsLoader::setCreatureMetatable(lua_State* L, int32_t index, std::shared_ptr<Creature> creature) {
+void LuaFunctionsLoader::setCreatureMetatable(lua_State* L, int32_t index, const std::shared_ptr<Creature> &creature) {
 	if (validateDispatcherContext(__FUNCTION__)) {
 		return;
 	}
@@ -392,7 +392,7 @@ std::string LuaFunctionsLoader::getString(lua_State* L, int32_t arg) {
 	size_t len;
 	const char* c_str = lua_tolstring(L, arg, &len);
 	if (!c_str || len == 0) {
-		return std::string();
+		return {};
 	}
 	return std::string(c_str, len);
 }

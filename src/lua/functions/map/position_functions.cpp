@@ -131,13 +131,13 @@ int PositionFunctions::luaPositionGetTile(lua_State* L) {
 int PositionFunctions::luaPositionGetZones(lua_State* L) {
 	// position:getZones()
 	const Position &position = getPosition(L, 1);
-	auto tile = g_game().map.getTile(position);
+	const auto &tile = g_game().map.getTile(position);
 	if (tile == nullptr) {
 		lua_pushnil(L);
 		return 1;
 	}
 	int index = 0;
-	for (auto zone : tile->getZones()) {
+	for (const auto &zone : tile->getZones()) {
 		index++;
 		pushUserdata<Zone>(L, zone);
 		setMetatable(L, -1, "Zone");

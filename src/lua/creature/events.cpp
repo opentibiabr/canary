@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include <utility>
+
 #include "pch.hpp"
 
 #include "lua/creature/events.hpp"
@@ -156,7 +158,7 @@ void Events::eventMonsterOnSpawn(std::shared_ptr<Monster> monster, const Positio
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("{} - "
 		                 "Position {}"
 		                 ". Call stack overflow. Too many lua script calls being nested.",
@@ -164,23 +166,23 @@ void Events::eventMonsterOnSpawn(std::shared_ptr<Monster> monster, const Positio
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.monsterOnSpawn, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.monsterOnSpawn);
 
-	LuaScriptInterface::pushUserdata<Monster>(L, monster);
+	LuaScriptInterface::pushUserdata<Monster>(L, std::move(monster));
 	LuaScriptInterface::setMetatable(L, -1, "Monster");
 	LuaScriptInterface::pushPosition(L, position);
 
-	if (scriptInterface.protectedCall(L, 2, 1) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		lua_pop(L, 1);
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 }
 
 // Npc
@@ -190,7 +192,7 @@ void Events::eventNpcOnSpawn(std::shared_ptr<Npc> npc, const Position &position)
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("{} - "
 		                 "Position {}"
 		                 ". Call stack overflow. Too many lua script calls being nested.",
@@ -198,40 +200,40 @@ void Events::eventNpcOnSpawn(std::shared_ptr<Npc> npc, const Position &position)
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.npcOnSpawn, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.npcOnSpawn);
 
-	LuaScriptInterface::pushUserdata<Npc>(L, npc);
+	LuaScriptInterface::pushUserdata<Npc>(L, std::move(npc));
 	LuaScriptInterface::setMetatable(L, -1, "Npc");
 	LuaScriptInterface::pushPosition(L, position);
 
-	if (scriptInterface.protectedCall(L, 2, 1) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		lua_pop(L, 1);
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 }
 
 // Creature
-bool Events::eventCreatureOnChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) {
+bool Events::eventCreatureOnChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit) {
 	// Creature:onChangeOutfit(outfit) or Creature.onChangeOutfit(self, outfit)
 	if (info.creatureOnChangeOutfit == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventCreatureOnChangeOutfit - Creature {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 creature->getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.creatureOnChangeOutfit, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -245,13 +247,13 @@ bool Events::eventCreatureOnChangeOutfit(std::shared_ptr<Creature> creature, con
 	return scriptInterface.callFunction(2);
 }
 
-ReturnValue Events::eventCreatureOnAreaCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Tile> tile, bool aggressive) {
+ReturnValue Events::eventCreatureOnAreaCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, bool aggressive) {
 	// Creature:onAreaCombat(tile, aggressive) or Creature.onAreaCombat(self, tile, aggressive)
 	if (info.creatureOnAreaCombat == -1) {
 		return RETURNVALUE_NOERROR;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventCreatureOnAreaCombat - "
 		                 "Creature {} on tile position {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -259,7 +261,7 @@ ReturnValue Events::eventCreatureOnAreaCombat(std::shared_ptr<Creature> creature
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.creatureOnAreaCombat, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -278,7 +280,7 @@ ReturnValue Events::eventCreatureOnAreaCombat(std::shared_ptr<Creature> creature
 	LuaScriptInterface::pushBoolean(L, aggressive);
 
 	ReturnValue returnValue;
-	if (scriptInterface.protectedCall(L, 3, 1) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 3, 1) != 0) {
 		returnValue = RETURNVALUE_NOTPOSSIBLE;
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
@@ -286,17 +288,17 @@ ReturnValue Events::eventCreatureOnAreaCombat(std::shared_ptr<Creature> creature
 		lua_pop(L, 1);
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 	return returnValue;
 }
 
-ReturnValue Events::eventCreatureOnTargetCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) {
+ReturnValue Events::eventCreatureOnTargetCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) {
 	// Creature:onTargetCombat(target) or Creature.onTargetCombat(self, target)
 	if (info.creatureOnTargetCombat == -1) {
 		return RETURNVALUE_NOERROR;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventCreatureOnTargetCombat - "
 		                 "Creature {} target {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -304,7 +306,7 @@ ReturnValue Events::eventCreatureOnTargetCombat(std::shared_ptr<Creature> creatu
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.creatureOnTargetCombat, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -321,7 +323,7 @@ ReturnValue Events::eventCreatureOnTargetCombat(std::shared_ptr<Creature> creatu
 	LuaScriptInterface::setCreatureMetatable(L, -1, target);
 
 	ReturnValue returnValue;
-	if (scriptInterface.protectedCall(L, 2, 1) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
 		returnValue = RETURNVALUE_NOTPOSSIBLE;
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
@@ -329,17 +331,17 @@ ReturnValue Events::eventCreatureOnTargetCombat(std::shared_ptr<Creature> creatu
 		lua_pop(L, 1);
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 	return returnValue;
 }
 
-void Events::eventCreatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, SpeakClasses type) {
+void Events::eventCreatureOnHear(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &speaker, const std::string &words, SpeakClasses type) {
 	// Creature:onHear(speaker, words, type)
 	if (info.creatureOnHear == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventCreatureOnHear - "
 		                 "Creature {} speaker {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -347,7 +349,7 @@ void Events::eventCreatureOnHear(std::shared_ptr<Creature> creature, std::shared
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.creatureOnHear, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -365,12 +367,12 @@ void Events::eventCreatureOnHear(std::shared_ptr<Creature> creature, std::shared
 	scriptInterface.callVoidFunction(4);
 }
 
-void Events::eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) {
+void Events::eventCreatureOnDrainHealth(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) {
 	if (info.creatureOnDrainHealth == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventCreatureOnDrainHealth - "
 		                 "Creature {} attacker {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -378,7 +380,7 @@ void Events::eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std:
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.creatureOnDrainHealth, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -405,7 +407,7 @@ void Events::eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std:
 	lua_pushnumber(L, colorPrimary);
 	lua_pushnumber(L, colorSecondary);
 
-	if (scriptInterface.protectedCall(L, 8, 6) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 8, 6) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		typePrimary = LuaScriptInterface::getNumber<CombatType_t>(L, -6);
@@ -417,17 +419,17 @@ void Events::eventCreatureOnDrainHealth(std::shared_ptr<Creature> creature, std:
 		lua_pop(L, 6);
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 }
 
 // Party
-bool Events::eventPartyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player) {
+bool Events::eventPartyOnJoin(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player) {
 	// Party:onJoin(player) or Party.onJoin(self, player)
 	if (info.partyOnJoin == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPartyOnJoin - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -435,13 +437,13 @@ bool Events::eventPartyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Play
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.partyOnJoin, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.partyOnJoin);
 
-	LuaScriptInterface::pushUserdata<Party>(L, party);
+	LuaScriptInterface::pushUserdata<Party>(L, std::move(party));
 	LuaScriptInterface::setMetatable(L, -1, "Party");
 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
@@ -450,13 +452,13 @@ bool Events::eventPartyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Play
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPartyOnLeave(std::shared_ptr<Party> party, std::shared_ptr<Player> player) {
+bool Events::eventPartyOnLeave(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player) {
 	// Party:onLeave(player) or Party.onLeave(self, player)
 	if (info.partyOnLeave == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPartyOnLeave - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -464,13 +466,13 @@ bool Events::eventPartyOnLeave(std::shared_ptr<Party> party, std::shared_ptr<Pla
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.partyOnLeave, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.partyOnLeave);
 
-	LuaScriptInterface::pushUserdata<Party>(L, party);
+	LuaScriptInterface::pushUserdata<Party>(L, std::move(party));
 	LuaScriptInterface::setMetatable(L, -1, "Party");
 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
@@ -479,20 +481,20 @@ bool Events::eventPartyOnLeave(std::shared_ptr<Party> party, std::shared_ptr<Pla
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPartyOnDisband(std::shared_ptr<Party> party) {
+bool Events::eventPartyOnDisband(const std::shared_ptr<Party> &party) {
 	// Party:onDisband() or Party.onDisband(self)
 	if (info.partyOnDisband == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPartyOnDisband - Party leader {}] Call stack "
 		                 "overflow. Too many lua script calls being nested.",
 		                 party->getLeader() ? party->getLeader()->getName() : "unknown");
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.partyOnDisband, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -504,18 +506,18 @@ bool Events::eventPartyOnDisband(std::shared_ptr<Party> party) {
 	return scriptInterface.callFunction(1);
 }
 
-void Events::eventPartyOnShareExperience(std::shared_ptr<Party> party, uint64_t &exp) {
+void Events::eventPartyOnShareExperience(const std::shared_ptr<Party> &party, uint64_t &exp) {
 	// Party:onShareExperience(exp) or Party.onShareExperience(self, exp)
 	if (info.partyOnShareExperience == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("Party leader {}. Call stack overflow. Too many lua script calls being nested.", party->getLeader() ? party->getLeader()->getName() : "unknown");
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.partyOnShareExperience, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -526,24 +528,24 @@ void Events::eventPartyOnShareExperience(std::shared_ptr<Party> party, uint64_t 
 
 	lua_pushnumber(L, exp);
 
-	if (scriptInterface.protectedCall(L, 2, 1) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		exp = LuaScriptInterface::getNumber<uint64_t>(L, -1);
 		lua_pop(L, 1);
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 }
 
 // Player
-bool Events::eventPlayerOnBrowseField(std::shared_ptr<Player> player, const Position &position) {
+bool Events::eventPlayerOnBrowseField(const std::shared_ptr<Player> &player, const Position &position) {
 	// Player:onBrowseField(position) or Player.onBrowseField(self, position)
 	if (info.playerOnBrowseField == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnBrowseField - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -551,7 +553,7 @@ bool Events::eventPlayerOnBrowseField(std::shared_ptr<Player> player, const Posi
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnBrowseField, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -565,13 +567,13 @@ bool Events::eventPlayerOnBrowseField(std::shared_ptr<Player> player, const Posi
 	return scriptInterface.callFunction(2);
 }
 
-void Events::eventPlayerOnLook(std::shared_ptr<Player> player, const Position &position, std::shared_ptr<Thing> thing, uint8_t stackpos, int32_t lookDistance) {
+void Events::eventPlayerOnLook(const std::shared_ptr<Player> &player, const Position &position, const std::shared_ptr<Thing> &thing, uint8_t stackpos, int32_t lookDistance) {
 	// Player:onLook(thing, position, distance) or Player.onLook(self, thing, position, distance)
 	if (info.playerOnLook == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnLook - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -579,7 +581,7 @@ void Events::eventPlayerOnLook(std::shared_ptr<Player> player, const Position &p
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnLook, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -604,13 +606,13 @@ void Events::eventPlayerOnLook(std::shared_ptr<Player> player, const Position &p
 	scriptInterface.callVoidFunction(4);
 }
 
-void Events::eventPlayerOnLookInBattleList(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, int32_t lookDistance) {
+void Events::eventPlayerOnLookInBattleList(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &creature, int32_t lookDistance) {
 	// Player:onLookInBattleList(creature, position, distance) or Player.onLookInBattleList(self, creature, position, distance)
 	if (info.playerOnLookInBattleList == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnLookInBattleList - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -618,7 +620,7 @@ void Events::eventPlayerOnLookInBattleList(std::shared_ptr<Player> player, std::
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnLookInBattleList, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -635,13 +637,13 @@ void Events::eventPlayerOnLookInBattleList(std::shared_ptr<Player> player, std::
 	scriptInterface.callVoidFunction(3);
 }
 
-void Events::eventPlayerOnLookInTrade(std::shared_ptr<Player> player, std::shared_ptr<Player> partner, std::shared_ptr<Item> item, int32_t lookDistance) {
+void Events::eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, std::shared_ptr<Player> partner, const std::shared_ptr<Item> &item, int32_t lookDistance) {
 	// Player:onLookInTrade(partner, item, distance) or Player.onLookInTrade(self, partner, item, distance)
 	if (info.playerOnLookInTrade == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnLookInTrade - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -649,7 +651,7 @@ void Events::eventPlayerOnLookInTrade(std::shared_ptr<Player> player, std::share
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnLookInTrade, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -658,7 +660,7 @@ void Events::eventPlayerOnLookInTrade(std::shared_ptr<Player> player, std::share
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	LuaScriptInterface::pushUserdata<Player>(L, partner);
+	LuaScriptInterface::pushUserdata<Player>(L, std::move(partner));
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	LuaScriptInterface::pushUserdata<Item>(L, item);
@@ -669,13 +671,13 @@ void Events::eventPlayerOnLookInTrade(std::shared_ptr<Player> player, std::share
 	scriptInterface.callVoidFunction(4);
 }
 
-bool Events::eventPlayerOnLookInShop(std::shared_ptr<Player> player, const ItemType* itemType, uint8_t count) {
+bool Events::eventPlayerOnLookInShop(const std::shared_ptr<Player> &player, const ItemType* itemType, uint8_t count) {
 	// Player:onLookInShop(itemType, count) or Player.onLookInShop(self, itemType, count)
 	if (info.playerOnLookInShop == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnLookInShop - "
 		                 "Player {} itemType {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -683,7 +685,7 @@ bool Events::eventPlayerOnLookInShop(std::shared_ptr<Player> player, const ItemT
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnLookInShop, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -700,13 +702,13 @@ bool Events::eventPlayerOnLookInShop(std::shared_ptr<Player> player, const ItemT
 	return scriptInterface.callFunction(3);
 }
 
-bool Events::eventPlayerOnRemoveCount(std::shared_ptr<Player> player, std::shared_ptr<Item> item) {
+bool Events::eventPlayerOnRemoveCount(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) {
 	// Player:onMove()
 	if (info.playerOnRemoveCount == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnMove - "
 		                 "Player {} item {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -714,7 +716,7 @@ bool Events::eventPlayerOnRemoveCount(std::shared_ptr<Player> player, std::share
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnRemoveCount, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -729,13 +731,13 @@ bool Events::eventPlayerOnRemoveCount(std::shared_ptr<Player> player, std::share
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPlayerOnMoveItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
+bool Events::eventPlayerOnMoveItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
 	// Player:onMoveItem(item, count, fromPosition, toPosition) or Player.onMoveItem(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if (info.playerOnMoveItem == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnMoveItem - "
 		                 "Player {} item {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -743,7 +745,7 @@ bool Events::eventPlayerOnMoveItem(std::shared_ptr<Player> player, std::shared_p
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnMoveItem, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -759,19 +761,19 @@ bool Events::eventPlayerOnMoveItem(std::shared_ptr<Player> player, std::shared_p
 	LuaScriptInterface::pushPosition(L, fromPosition);
 	LuaScriptInterface::pushPosition(L, toPosition);
 
-	LuaScriptInterface::pushCylinder(L, fromCylinder);
-	LuaScriptInterface::pushCylinder(L, toCylinder);
+	LuaScriptInterface::pushCylinder(L, std::move(fromCylinder));
+	LuaScriptInterface::pushCylinder(L, std::move(toCylinder));
 
 	return scriptInterface.callFunction(7);
 }
 
-void Events::eventPlayerOnItemMoved(std::shared_ptr<Player> player, std::shared_ptr<Item> item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
+void Events::eventPlayerOnItemMoved(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
 	// Player:onItemMoved(item, count, fromPosition, toPosition) or Player.onItemMoved(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if (info.playerOnItemMoved == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnItemMoved - "
 		                 "Player {} item {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -779,7 +781,7 @@ void Events::eventPlayerOnItemMoved(std::shared_ptr<Player> player, std::shared_
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnItemMoved, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -795,19 +797,19 @@ void Events::eventPlayerOnItemMoved(std::shared_ptr<Player> player, std::shared_
 	LuaScriptInterface::pushPosition(L, fromPosition);
 	LuaScriptInterface::pushPosition(L, toPosition);
 
-	LuaScriptInterface::pushCylinder(L, fromCylinder);
-	LuaScriptInterface::pushCylinder(L, toCylinder);
+	LuaScriptInterface::pushCylinder(L, std::move(fromCylinder));
+	LuaScriptInterface::pushCylinder(L, std::move(toCylinder));
 
 	scriptInterface.callVoidFunction(7);
 }
 
-void Events::eventPlayerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t zone) {
+void Events::eventPlayerOnChangeZone(const std::shared_ptr<Player> &player, ZoneType_t zone) {
 	// Player:onChangeZone(zone)
 	if (info.playerOnChangeZone == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnChangeZone - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -815,7 +817,7 @@ void Events::eventPlayerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t 
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnChangeZone, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -828,13 +830,13 @@ void Events::eventPlayerOnChangeZone(std::shared_ptr<Player> player, ZoneType_t 
 	scriptInterface.callVoidFunction(2);
 }
 
-bool Events::eventPlayerOnMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> creature, const Position &fromPosition, const Position &toPosition) {
+bool Events::eventPlayerOnMoveCreature(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &creature, const Position &fromPosition, const Position &toPosition) {
 	// Player:onMoveCreature(creature, fromPosition, toPosition) or Player.onMoveCreature(self, creature, fromPosition, toPosition)
 	if (info.playerOnMoveCreature == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnMoveCreature - "
 		                 "Player {} creature {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -842,7 +844,7 @@ bool Events::eventPlayerOnMoveCreature(std::shared_ptr<Player> player, std::shar
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnMoveCreature, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -860,13 +862,13 @@ bool Events::eventPlayerOnMoveCreature(std::shared_ptr<Player> player, std::shar
 	return scriptInterface.callFunction(4);
 }
 
-void Events::eventPlayerOnReportRuleViolation(std::shared_ptr<Player> player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) {
+void Events::eventPlayerOnReportRuleViolation(const std::shared_ptr<Player> &player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) {
 	// Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
 	if (info.playerOnReportRuleViolation == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnReportRuleViolation - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -874,7 +876,7 @@ void Events::eventPlayerOnReportRuleViolation(std::shared_ptr<Player> player, co
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnReportRuleViolation, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -894,13 +896,13 @@ void Events::eventPlayerOnReportRuleViolation(std::shared_ptr<Player> player, co
 	scriptInterface.callVoidFunction(6);
 }
 
-bool Events::eventPlayerOnReportBug(std::shared_ptr<Player> player, const std::string &message, const Position &position, uint8_t category) {
+bool Events::eventPlayerOnReportBug(const std::shared_ptr<Player> &player, const std::string &message, const Position &position, uint8_t category) {
 	// Player:onReportBug(message, position, category)
 	if (info.playerOnReportBug == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnReportBug - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -908,7 +910,7 @@ bool Events::eventPlayerOnReportBug(std::shared_ptr<Player> player, const std::s
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnReportBug, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -924,13 +926,13 @@ bool Events::eventPlayerOnReportBug(std::shared_ptr<Player> player, const std::s
 	return scriptInterface.callFunction(4);
 }
 
-bool Events::eventPlayerOnTurn(std::shared_ptr<Player> player, Direction direction) {
+bool Events::eventPlayerOnTurn(const std::shared_ptr<Player> &player, Direction direction) {
 	// Player:onTurn(direction) or Player.onTurn(self, direction)
 	if (info.playerOnTurn == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnTurn - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -938,7 +940,7 @@ bool Events::eventPlayerOnTurn(std::shared_ptr<Player> player, Direction directi
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnTurn, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -952,13 +954,13 @@ bool Events::eventPlayerOnTurn(std::shared_ptr<Player> player, Direction directi
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPlayerOnTradeRequest(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item) {
+bool Events::eventPlayerOnTradeRequest(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &target, const std::shared_ptr<Item> &item) {
 	// Player:onTradeRequest(target, item)
 	if (info.playerOnTradeRequest == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnTradeRequest - "
 		                 "Player {} target {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -966,7 +968,7 @@ bool Events::eventPlayerOnTradeRequest(std::shared_ptr<Player> player, std::shar
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnTradeRequest, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -984,13 +986,13 @@ bool Events::eventPlayerOnTradeRequest(std::shared_ptr<Player> player, std::shar
 	return scriptInterface.callFunction(3);
 }
 
-bool Events::eventPlayerOnTradeAccept(std::shared_ptr<Player> player, std::shared_ptr<Player> target, std::shared_ptr<Item> item, std::shared_ptr<Item> targetItem) {
+bool Events::eventPlayerOnTradeAccept(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &target, const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &targetItem) {
 	// Player:onTradeAccept(target, item, targetItem)
 	if (info.playerOnTradeAccept == -1) {
 		return true;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnTradeAccept - "
 		                 "Player {} target {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -998,7 +1000,7 @@ bool Events::eventPlayerOnTradeAccept(std::shared_ptr<Player> player, std::share
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnTradeAccept, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -1019,14 +1021,14 @@ bool Events::eventPlayerOnTradeAccept(std::shared_ptr<Player> player, std::share
 	return scriptInterface.callFunction(4);
 }
 
-void Events::eventPlayerOnGainExperience(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint64_t &exp, uint64_t rawExp) {
+void Events::eventPlayerOnGainExperience(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint64_t &exp, uint64_t rawExp) {
 	// Player:onGainExperience(target, exp, rawExp)
 	// rawExp gives the original exp which is not multiplied
 	if (info.playerOnGainExperience == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnGainExperience - "
 		                 "Player {} target {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -1034,7 +1036,7 @@ void Events::eventPlayerOnGainExperience(std::shared_ptr<Player> player, std::sh
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnGainExperience, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -1053,23 +1055,23 @@ void Events::eventPlayerOnGainExperience(std::shared_ptr<Player> player, std::sh
 	lua_pushnumber(L, exp);
 	lua_pushnumber(L, rawExp);
 
-	if (scriptInterface.protectedCall(L, 4, 1) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 4, 1) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		exp = LuaScriptInterface::getNumber<uint64_t>(L, -1);
 		lua_pop(L, 1);
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 }
 
-void Events::eventPlayerOnLoseExperience(std::shared_ptr<Player> player, uint64_t &exp) {
+void Events::eventPlayerOnLoseExperience(const std::shared_ptr<Player> &player, uint64_t &exp) {
 	// Player:onLoseExperience(exp)
 	if (info.playerOnLoseExperience == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnLoseExperience - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -1077,7 +1079,7 @@ void Events::eventPlayerOnLoseExperience(std::shared_ptr<Player> player, uint64_
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnLoseExperience, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -1088,23 +1090,23 @@ void Events::eventPlayerOnLoseExperience(std::shared_ptr<Player> player, uint64_
 
 	lua_pushnumber(L, exp);
 
-	if (scriptInterface.protectedCall(L, 2, 1) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		exp = LuaScriptInterface::getNumber<uint64_t>(L, -1);
 		lua_pop(L, 1);
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 }
 
-void Events::eventPlayerOnGainSkillTries(std::shared_ptr<Player> player, skills_t skill, uint64_t &tries) {
+void Events::eventPlayerOnGainSkillTries(const std::shared_ptr<Player> &player, skills_t skill, uint64_t &tries) {
 	// Player:onGainSkillTries(skill, tries)
 	if (info.playerOnGainSkillTries == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnGainSkillTries - "
 		                 "Player {} skill {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -1112,7 +1114,7 @@ void Events::eventPlayerOnGainSkillTries(std::shared_ptr<Player> player, skills_
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnGainSkillTries, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -1124,23 +1126,23 @@ void Events::eventPlayerOnGainSkillTries(std::shared_ptr<Player> player, skills_
 	lua_pushnumber(L, skill);
 	lua_pushnumber(L, tries);
 
-	if (scriptInterface.protectedCall(L, 3, 1) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 3, 1) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		tries = LuaScriptInterface::getNumber<uint64_t>(L, -1);
 		lua_pop(L, 1);
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 }
 
-void Events::eventPlayerOnCombat(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, CombatDamage &damage) {
+void Events::eventPlayerOnCombat(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item, CombatDamage &damage) {
 	// Player:onCombat(target, item, primaryDamage, primaryType, secondaryDamage, secondaryType)
 	if (info.playerOnCombat == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnCombat - "
 		                 "Player {} target {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -1148,7 +1150,7 @@ void Events::eventPlayerOnCombat(std::shared_ptr<Player> player, std::shared_ptr
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnCombat, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -1173,7 +1175,7 @@ void Events::eventPlayerOnCombat(std::shared_ptr<Player> player, std::shared_ptr
 
 	LuaScriptInterface::pushCombatDamage(L, damage);
 
-	if (scriptInterface.protectedCall(L, 8, 4) != 0) {
+	if (LuaScriptInterface::protectedCall(L, 8, 4) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		damage.primary.value = std::abs(LuaScriptInterface::getNumber<int32_t>(L, -4));
@@ -1188,16 +1190,16 @@ void Events::eventPlayerOnCombat(std::shared_ptr<Player> player, std::shared_ptr
 		}
 	}
 
-	scriptInterface.resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 }
 
-void Events::eventPlayerOnRequestQuestLog(std::shared_ptr<Player> player) {
+void Events::eventPlayerOnRequestQuestLog(const std::shared_ptr<Player> &player) {
 	// Player:onRequestQuestLog()
 	if (info.playerOnRequestQuestLog == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnRequestQuestLog - "
 		                 "Player {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -1205,7 +1207,7 @@ void Events::eventPlayerOnRequestQuestLog(std::shared_ptr<Player> player) {
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnRequestQuestLog, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -1217,13 +1219,13 @@ void Events::eventPlayerOnRequestQuestLog(std::shared_ptr<Player> player) {
 	scriptInterface.callVoidFunction(1);
 }
 
-void Events::eventPlayerOnRequestQuestLine(std::shared_ptr<Player> player, uint16_t questId) {
+void Events::eventPlayerOnRequestQuestLine(const std::shared_ptr<Player> &player, uint16_t questId) {
 	// Player::onRequestQuestLine()
 	if (info.playerOnRequestQuestLine == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventPlayerOnRequestQuestLine - "
 		                 "Player {} questId {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -1231,7 +1233,7 @@ void Events::eventPlayerOnRequestQuestLine(std::shared_ptr<Player> player, uint1
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnRequestQuestLine, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -1245,24 +1247,24 @@ void Events::eventPlayerOnRequestQuestLine(std::shared_ptr<Player> player, uint1
 	scriptInterface.callVoidFunction(2);
 }
 
-void Events::eventPlayerOnInventoryUpdate(std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool equip) {
+void Events::eventPlayerOnInventoryUpdate(std::shared_ptr<Player> player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) {
 	// Player:onInventoryUpdate(item, slot, equip)
 	if (info.playerOnInventoryUpdate == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[{}] Call stack overflow", __FUNCTION__);
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnInventoryUpdate, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.playerOnInventoryUpdate);
 
-	LuaScriptInterface::pushUserdata<Player>(L, player);
+	LuaScriptInterface::pushUserdata<Player>(L, std::move(player));
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	LuaScriptInterface::pushUserdata<Item>(L, item);
@@ -1274,13 +1276,13 @@ void Events::eventPlayerOnInventoryUpdate(std::shared_ptr<Player> player, std::s
 	scriptInterface.callVoidFunction(4);
 }
 
-void Events::eventOnStorageUpdate(std::shared_ptr<Player> player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) {
+void Events::eventOnStorageUpdate(const std::shared_ptr<Player> &player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) {
 	// Player::onStorageUpdate(key, value, oldValue, currentTime)
 	if (info.playerOnStorageUpdate == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventOnStorageUpdate - "
 		                 "Player {} key {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -1288,7 +1290,7 @@ void Events::eventOnStorageUpdate(std::shared_ptr<Player> player, const uint32_t
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.playerOnStorageUpdate, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
@@ -1306,13 +1308,13 @@ void Events::eventOnStorageUpdate(std::shared_ptr<Player> player, const uint32_t
 }
 
 // Monster
-void Events::eventMonsterOnDropLoot(std::shared_ptr<Monster> monster, std::shared_ptr<Container> corpse) {
+void Events::eventMonsterOnDropLoot(std::shared_ptr<Monster> monster, const std::shared_ptr<Container> &corpse) {
 	// Monster:onDropLoot(corpse)
 	if (info.monsterOnDropLoot == -1) {
 		return;
 	}
 
-	if (!scriptInterface.reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Events::eventMonsterOnDropLoot - "
 		                 "Monster corpse {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
@@ -1320,13 +1322,13 @@ void Events::eventMonsterOnDropLoot(std::shared_ptr<Monster> monster, std::share
 		return;
 	}
 
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(info.monsterOnDropLoot, &scriptInterface);
 
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.monsterOnDropLoot);
 
-	LuaScriptInterface::pushUserdata<Monster>(L, monster);
+	LuaScriptInterface::pushUserdata<Monster>(L, std::move(monster));
 	LuaScriptInterface::setMetatable(L, -1, "Monster");
 
 	LuaScriptInterface::pushUserdata<Container>(L, corpse);

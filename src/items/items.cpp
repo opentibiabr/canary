@@ -25,7 +25,7 @@ void Items::clear() {
 	ladders.clear();
 	dummys.clear();
 	nameToItems.clear();
-	g_moveEvents().clear(true);
+	g_moveEvents().clear();
 	g_weapons().clear(true);
 }
 

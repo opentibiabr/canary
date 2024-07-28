@@ -1661,7 +1661,7 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 	}
 
 	uint16_t startBufferPosition = msg.getBufferPosition();
-	Module* outfitModule = g_modules().getEventByRecvbyte(0xD3, false);
+	const auto &outfitModule = g_modules().getEventByRecvbyte(0xD3, false);
 	if (outfitModule) {
 		outfitModule->executeOnRecvbyte(player, msg);
 	}

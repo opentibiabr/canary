@@ -208,7 +208,7 @@ bool Raid::loadFromXml(const std::string &filename) {
 	}
 
 	// sort by delay time
-	std::sort(raidEvents.begin(), raidEvents.end(), [](const std::shared_ptr<RaidEvent> lhs, const std::shared_ptr<RaidEvent> rhs) {
+	std::sort(raidEvents.begin(), raidEvents.end(), [](const std::shared_ptr<RaidEvent> &lhs, const std::shared_ptr<RaidEvent> &rhs) {
 		return lhs->getDelay() < rhs->getDelay();
 	});
 
@@ -229,7 +229,7 @@ void Raid::startRaid() {
 	}
 }
 
-void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent) {
+void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent) {
 	if (raidEvent->executeEvent()) {
 		nextEvent++;
 		const auto newRaidEvent = getNextRaidEvent();
@@ -593,14 +593,14 @@ std::string ScriptEvent::getScriptEventName() const {
 
 bool ScriptEvent::executeEvent() {
 	// onRaid()
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("{} - Script with name {} "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 __FUNCTION__, getScriptName());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(scriptId, scriptInterface);
 
 	scriptInterface->pushFunction(scriptId);

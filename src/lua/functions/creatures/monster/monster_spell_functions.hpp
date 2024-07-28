@@ -14,7 +14,7 @@
 class MonsterSpellFunctions final : LuaScriptInterface {
 public:
 	static void init(lua_State* L) {
-		registerClass(L, "MonsterSpell", "", MonsterSpellFunctions::luaCreateMonsterSpell);
+		registerSharedClass(L, "MonsterSpell", "", MonsterSpellFunctions::luaCreateMonsterSpell);
 
 		registerMethod(L, "MonsterSpell", "setType", MonsterSpellFunctions::luaMonsterSpellSetType);
 		registerMethod(L, "MonsterSpell", "setScriptName", MonsterSpellFunctions::luaMonsterSpellSetScriptName);

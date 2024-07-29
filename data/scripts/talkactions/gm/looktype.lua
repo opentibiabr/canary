@@ -373,15 +373,22 @@ function looktype.onSay(player, words, param)
 		return true
 	end
 
-	local lookType = tonumber(param)
-	if lookType >= 0 and lookType < 1469 and not table.contains(invalidTypes, lookType) then
-		local playerOutfit = player:getOutfit()
-		playerOutfit.lookType = lookType
-		player:setOutfit(playerOutfit)
+	-- Test if supplied parameter is actually a numerical value to ensure there is no nil value passed.
+	if param:match("%d") then
+		local lookType = tonumber(param)
+		if lookType >= 0 and lookType < 1469 and not table.contains(invalidTypes, lookType) then
+			local playerOutfit = player:getOutfit()
+			playerOutfit.lookType = lookType
+			player:setOutfit(playerOutfit)
+		else
+			player:sendCancelMessage("A look type with that id does not exist.")
+		end
+		return true
 	else
-		player:sendCancelMessage("A look type with that id does not exist.")
+		-- return message if supplied param is not numerical.
+		player:sendCancelMessage("Looktype must be a numerical value.")
+		return true
 	end
-	return true
 end
 
 looktype:separator(" ")

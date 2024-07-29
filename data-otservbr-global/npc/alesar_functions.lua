@@ -2,9 +2,9 @@ function ParseAlesarSay(npc, creature, message, npcHandler)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	local missionProgress = player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission02)
+	local missionProgress = player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission02)
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission01) == 3 then
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01) == 3 then
 			if missionProgress < 1 then
 				npcHandler:say({
 					"So Baa'leal thinks you are up to do a mission for us? ...",
@@ -32,8 +32,8 @@ function ParseAlesarSay(npc, creature, message, npcHandler)
 				"Well... to cut a long story short, your mission is to sneak into Ashta'daramai and to steal it. ...",
 				"Needless to say, the Marid won't be too eager to part with it. Try not to get killed until you have delivered the stone to me.",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission02, 1)
-			player:setStorageValue(Storage.DjinnWar.EfreetFaction.DoorToMaridTerritory, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission02, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.DoorToMaridTerritory, 1)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Then not.", npc, creature)
 		end
@@ -52,7 +52,7 @@ function ParseAlesarSay(npc, creature, message, npcHandler)
 					"Looks like you have managed to extended your life expectancy - for just a bit longer.",
 				}, npc, creature)
 				player:removeItem(3233, 1)
-				player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission02, 3)
+				player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission02, 3)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif MsgContains(message, "no") then

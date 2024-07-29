@@ -937,7 +937,8 @@ void Combat::addDistanceEffect(std::shared_ptr<Creature> caster, const Position 
 
 void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t effect) {
 	if (effect > 0) {
-		stdext::arraylist<Direction> dirList(128);
+		std::vector<Direction> dirList;
+
 		FindPathParams fpp;
 		fpp.minTargetDist = 0;
 		fpp.maxTargetDist = 1;

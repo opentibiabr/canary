@@ -40,8 +40,8 @@ local configs = {
 for concoctionKey, concoctionId in pairs(Concoction.Ids) do
 	Concoction.new({
 		id = concoctionId,
-		timeLeftStorage = Storage.TibiaDrome[concoctionKey].TimeLeft,
-		lastActivatedAtStorage = Storage.TibiaDrome[concoctionKey].LastActivatedAt,
+		timeLeftStorage = Global.Storage.TibiaDrome[concoctionKey].TimeLeft,
+		lastActivatedAtStorage = Global.Storage.TibiaDrome[concoctionKey].LastActivatedAt,
 		config = configs[concoctionId] or {},
 	}):register()
 end

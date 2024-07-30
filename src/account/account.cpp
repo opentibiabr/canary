@@ -280,7 +280,7 @@ bool Account::authenticateSession() {
 }
 
 bool Account::authenticatePassword(const std::string &password) {
-	if (Argon2 {}.argon(password.c_str(), getPassword())) {
+	if (Argon2 {}.argon(password, getPassword())) {
 		return true;
 	}
 

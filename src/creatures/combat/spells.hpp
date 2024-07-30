@@ -46,9 +46,9 @@ public:
 
 	std::shared_ptr<InstantSpell> getInstantSpellById(uint16_t spellId);
 
-	TalkActionResult_t playerSaySpell(std::shared_ptr<Player> player, std::string &words);
+	TalkActionResult_t playerSaySpell(const std::shared_ptr<Player> &player, std::string &words);
 
-	static Position getCasterPosition(std::shared_ptr<Creature> creature, Direction dir);
+	static Position getCasterPosition(const std::shared_ptr<Creature> &creature, Direction dir);
 
 	std::list<uint16_t> getSpellsByVocation(uint16_t vocationId);
 
@@ -58,13 +58,13 @@ public:
 
 	[[nodiscard]] bool hasInstantSpell(const std::string &word) const;
 
-	void setInstantSpell(const std::string &word, const std::shared_ptr<InstantSpell> instant) {
+	void setInstantSpell(const std::string &word, const std::shared_ptr<InstantSpell> &instant) {
 		instants.try_emplace(word, instant);
 	}
 
 	void clear();
-	bool registerInstantLuaEvent(std::shared_ptr<InstantSpell> instant);
-	bool registerRuneLuaEvent(std::shared_ptr<RuneSpell> rune);
+	bool registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instant);
+	bool registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune);
 
 private:
 	std::map<uint16_t, std::shared_ptr<RuneSpell>> runes;
@@ -75,7 +75,7 @@ private:
 
 constexpr auto g_spells = Spells::getInstance;
 
-using RuneSpellFunction = std::function<bool(const std::shared_ptr<RuneSpell> spell, std::shared_ptr<Player> player, const Position &posTo)>;
+using RuneSpellFunction = std::function<bool(const std::shared_ptr<RuneSpell> spell, const auto player, const Position &posTo)>;
 
 class BaseSpell {
 public:
@@ -92,7 +92,7 @@ public:
 class CombatSpell final : public Script, public BaseSpell, public std::enable_shared_from_this<CombatSpell> {
 public:
 	// Constructor
-	CombatSpell(std::shared_ptr<Combat> newCombat, bool newNeedTarget, bool newNeedDirection);
+	CombatSpell(const std::shared_ptr<Combat> &newCombat, bool newNeedTarget, bool newNeedDirection);
 
 	// The copy constructor and the assignment operator have been deleted to prevent accidental copying.
 	CombatSpell(const CombatSpell &) = delete;
@@ -102,7 +102,7 @@ public:
 	bool castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) override;
 
 	// Scripting spell
-	bool executeCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var) const;
+	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var) const;
 
 	bool loadScriptCombat();
 	std::shared_ptr<Combat> getCombat() const {
@@ -137,14 +137,14 @@ public:
 		m_spellId = id;
 	}
 
-	void postCastSpell(std::shared_ptr<Player> player, bool finishedCast = true, bool payCost = true) const;
-	static void postCastSpell(std::shared_ptr<Player> player, uint32_t manaCost, uint32_t soulCost);
+	void postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast = true, bool payCost = true) const;
+	static void postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCost, uint32_t soulCost);
 	[[nodiscard]] virtual bool isInstant() const = 0;
 	[[nodiscard]] bool isLearnable() const {
 		return learnable;
 	}
 
-	uint32_t getManaCost(std::shared_ptr<Player> player) const;
+	uint32_t getManaCost(const std::shared_ptr<Player> &player) const;
 	[[nodiscard]] uint32_t getSoulCost() const {
 		return soul;
 	}
@@ -345,14 +345,14 @@ public:
 		m_separator = newSeparator.data();
 	}
 
-	void getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &damage);
-	int32_t calculateAugmentSpellCooldownReduction(std::shared_ptr<Player> player) const;
+	void getCombatDataAugment(const std::shared_ptr<Player> &player, CombatDamage &damage);
+	int32_t calculateAugmentSpellCooldownReduction(const std::shared_ptr<Player> &player) const;
 
 protected:
-	void applyCooldownConditions(std::shared_ptr<Player> player) const;
-	bool playerSpellCheck(std::shared_ptr<Player> player) const;
-	bool playerInstantSpellCheck(std::shared_ptr<Player> player, const Position &toPos) const;
-	bool playerRuneSpellCheck(std::shared_ptr<Player> player, const Position &toPos);
+	void applyCooldownConditions(const std::shared_ptr<Player> &player) const;
+	bool playerSpellCheck(const std::shared_ptr<Player> &player) const;
+	bool playerInstantSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos) const;
+	bool playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos);
 
 	VocSpellMap vocSpellMap;
 
@@ -405,7 +405,7 @@ public:
 	bool castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) override;
 
 	// Scripting spell
-	bool executeCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var) const;
+	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var) const;
 
 	[[nodiscard]] bool isInstant() const override {
 		return true;
@@ -440,8 +440,8 @@ public:
 	void setBlockWalls(bool w) {
 		checkLineOfSight = w;
 	}
-	bool canCast(std::shared_ptr<Player> player) const;
-	bool canThrowSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
+	bool canCast(const std::shared_ptr<Player> &player) const;
+	bool canThrowSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const;
 
 private:
 	[[nodiscard]] std::string getScriptTypeName() const override {
@@ -459,21 +459,21 @@ class RuneSpell final : public Action, public Spell {
 public:
 	using Action::Action;
 
-	ReturnValue canExecuteAction(std::shared_ptr<Player> player, const Position &toPos) override;
+	ReturnValue canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) override;
 	bool hasOwnErrorHandler() override {
 		return true;
 	}
-	std::shared_ptr<Thing> getTarget(std::shared_ptr<Player>, std::shared_ptr<Creature> targetCreature, const Position &, uint8_t) const override {
+	std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &, std::shared_ptr<Creature> targetCreature, const Position &, uint8_t) const override {
 		return targetCreature;
 	}
 
-	bool executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) override;
+	bool executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &fromPosition, const std::shared_ptr<Thing> &target, const Position &toPosition, bool isHotkey) override;
 
 	bool castSpell(std::shared_ptr<Creature> creature) override;
 	bool castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) override;
 
 	// Scripting spell
-	bool executeCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var, bool isHotkey) const;
+	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const;
 
 	[[nodiscard]] bool isInstant() const override {
 		return false;
@@ -499,7 +499,7 @@ private:
 		return "onCastSpell";
 	}
 
-	bool internalCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var, bool isHotkey);
+	bool internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey);
 
 	uint16_t runeId = 0;
 	uint32_t charges = 0;

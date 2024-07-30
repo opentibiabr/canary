@@ -57,7 +57,7 @@ int PlayerFunctions::luaPlayerSendLootStats(lua_State* L) {
 		return 1;
 	}
 
-	uint8_t count = getNumber<uint8_t>(L, 3, 0);
+	auto count = getNumber<uint8_t>(L, 3, 0);
 	if (count == 0) {
 		lua_pushnil(L);
 		return 1;
@@ -913,7 +913,7 @@ int PlayerFunctions::luaPlayerSendSpellCooldown(lua_State* L) {
 		return 1;
 	}
 	uint8_t spellId = getNumber<uint32_t>(L, 2, 1);
-	uint32_t time = getNumber<uint32_t>(L, 3, 0);
+	auto time = getNumber<uint32_t>(L, 3, 0);
 
 	player->sendSpellCooldown(spellId, time);
 	pushBoolean(L, true);
@@ -928,8 +928,8 @@ int PlayerFunctions::luaPlayerSendSpellGroupCooldown(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	SpellGroup_t groupId = getNumber<SpellGroup_t>(L, 2, SPELLGROUP_ATTACK);
-	uint32_t time = getNumber<uint32_t>(L, 3, 0);
+	auto groupId = getNumber<SpellGroup_t>(L, 2, SPELLGROUP_ATTACK);
+	auto time = getNumber<uint32_t>(L, 3, 0);
 
 	player->sendSpellGroupCooldown(groupId, time);
 	pushBoolean(L, true);
@@ -1300,7 +1300,7 @@ int PlayerFunctions::luaPlayerGetItemCount(lua_State* L) {
 		}
 	}
 
-	int32_t subType = getNumber<int32_t>(L, 3, -1);
+	auto subType = getNumber<int32_t>(L, 3, -1);
 	lua_pushnumber(L, player->getItemTypeCount(itemId, subType));
 	return 1;
 }
@@ -1353,7 +1353,7 @@ int PlayerFunctions::luaPlayerGetItemById(lua_State* L) {
 		}
 	}
 	bool deepSearch = getBoolean(L, 3);
-	int32_t subType = getNumber<int32_t>(L, 4, -1);
+	auto subType = getNumber<int32_t>(L, 4, -1);
 
 	const auto &item = g_game().findItemOfType(player, itemId, deepSearch, subType);
 	if (item) {
@@ -1809,8 +1809,8 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 		}
 	}
 
-	int32_t count = getNumber<int32_t>(L, 3, 1);
-	int32_t subType = getNumber<int32_t>(L, 5, 1);
+	auto count = getNumber<int32_t>(L, 3, 1);
+	auto subType = getNumber<int32_t>(L, 5, 1);
 
 	const ItemType &it = Item::items[itemId];
 
@@ -1837,7 +1837,7 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 	}
 
 	bool canDropOnMap = getBoolean(L, 4, true);
-	Slots_t slot = getNumber<Slots_t>(L, 6, CONST_SLOT_WHEREEVER);
+	auto slot = getNumber<Slots_t>(L, 6, CONST_SLOT_WHEREEVER);
 	auto tier = getNumber<uint8_t>(L, 7, 0);
 	for (int32_t i = 1; i <= itemCount; ++i) {
 		int32_t stackCount = subType;
@@ -1904,11 +1904,11 @@ int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 	bool canDropOnMap = getBoolean(L, 3, false);
 	ReturnValue returnValue;
 	if (canDropOnMap) {
-		Slots_t slot = getNumber<Slots_t>(L, 4, CONST_SLOT_WHEREEVER);
+		auto slot = getNumber<Slots_t>(L, 4, CONST_SLOT_WHEREEVER);
 		returnValue = g_game().internalPlayerAddItem(player, item, true, slot);
 	} else {
-		int32_t index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
-		uint32_t flags = getNumber<uint32_t>(L, 5, 0);
+		auto index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
+		auto flags = getNumber<uint32_t>(L, 5, 0);
 		returnValue = g_game().internalAddItem(player, item, index, flags);
 	}
 
@@ -1985,7 +1985,7 @@ int PlayerFunctions::luaPlayerRemoveItem(lua_State* L) {
 	}
 
 	uint32_t count = getNumber<uint32_t>(L, 3);
-	int32_t subType = getNumber<int32_t>(L, 4, -1);
+	auto subType = getNumber<int32_t>(L, 4, -1);
 	bool ignoreEquipped = getBoolean(L, 5, false);
 	pushBoolean(L, player->removeItemOfType(itemId, count, subType, ignoreEquipped));
 	return 1;
@@ -2058,7 +2058,7 @@ int PlayerFunctions::luaPlayerRemoveMoney(lua_State* L) {
 	const auto &player = getUserdataShared<Player>(L, 1);
 	if (player) {
 		uint64_t money = getNumber<uint64_t>(L, 2);
-		int32_t flags = getNumber<int32_t>(L, 3, 0);
+		auto flags = getNumber<int32_t>(L, 3, 0);
 		bool useBank = getBoolean(L, 4, true);
 		pushBoolean(L, g_game().removeMoney(player, money, flags, useBank));
 	} else {
@@ -2075,7 +2075,7 @@ int PlayerFunctions::luaPlayerShowTextDialog(lua_State* L) {
 		return 1;
 	}
 
-	int32_t length = getNumber<int32_t>(L, 5, -1);
+	auto length = getNumber<int32_t>(L, 5, -1);
 	bool canWrite = getBoolean(L, 4, false);
 	std::string text;
 
@@ -2189,7 +2189,7 @@ int PlayerFunctions::luaPlayerSendPrivateMessage(lua_State* L) {
 
 	const auto &speaker = getUserdataShared<Player>(L, 2);
 	const std::string &text = getString(L, 3);
-	SpeakClasses type = getNumber<SpeakClasses>(L, 4, TALKTYPE_PRIVATE_FROM);
+	auto type = getNumber<SpeakClasses>(L, 4, TALKTYPE_PRIVATE_FROM);
 	player->sendPrivateMessage(speaker, type, text);
 	pushBoolean(L, true);
 	return 1;
@@ -2337,7 +2337,7 @@ int PlayerFunctions::luaPlayerHasOutfit(lua_State* L) {
 	const auto &player = getUserdataShared<Player>(L, 1);
 	if (player) {
 		uint16_t lookType = getNumber<uint16_t>(L, 2);
-		uint8_t addon = getNumber<uint8_t>(L, 3, 0);
+		auto addon = getNumber<uint8_t>(L, 3, 0);
 		pushBoolean(L, player->canWear(lookType, addon));
 	} else {
 		lua_pushnil(L);

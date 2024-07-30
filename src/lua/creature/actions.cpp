@@ -183,10 +183,10 @@ ReturnValue Actions::canUse(const std::shared_ptr<Player> &player, const Positio
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Actions::canUse(std::shared_ptr<Player> player, const Position &pos, const std::shared_ptr<Item> &item) {
+ReturnValue Actions::canUse(const std::shared_ptr<Player> &player, const Position &pos, const std::shared_ptr<Item> &item) {
 	const std::shared_ptr<Action> action = getAction(item);
 	if (action != nullptr) {
-		return action->canExecuteAction(std::move(player), pos);
+		return action->canExecuteAction(player, pos);
 	}
 	return RETURNVALUE_NOERROR;
 }
@@ -236,7 +236,7 @@ std::shared_ptr<Action> Actions::getAction(const std::shared_ptr<Item> &item) {
 	    iteratePositions != actionPositionMap.end()) {
 		if (std::shared_ptr<Tile> tile = item->getTile();
 		    tile) {
-			if (std::shared_ptr<Player> player = item->getHoldingPlayer();
+			if (const auto player = item->getHoldingPlayer();
 			    player && item->getTopParent() == player) {
 				g_logger().debug("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
 				return nullptr;
@@ -498,7 +498,7 @@ void Actions::showUseHotkeyMessage(const std::shared_ptr<Player> &player, const 
 Action::Action(LuaScriptInterface* interface) :
 	Script(interface) { }
 
-ReturnValue Action::canExecuteAction(std::shared_ptr<Player> player, const Position &toPos) {
+ReturnValue Action::canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) {
 	if (!allowFarUse) {
 		return g_actions().canUse(player, toPos);
 	}
@@ -506,14 +506,14 @@ ReturnValue Action::canExecuteAction(std::shared_ptr<Player> player, const Posit
 	return g_actions().canUseFar(player, toPos, checkLineOfSight, checkFloor);
 }
 
-std::shared_ptr<Thing> Action::getTarget(std::shared_ptr<Player> player, std::shared_ptr<Creature> targetCreature, const Position &toPosition, uint8_t toStackPos) const {
+std::shared_ptr<Thing> Action::getTarget(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> targetCreature, const Position &toPosition, uint8_t toStackPos) const {
 	if (targetCreature != nullptr) {
 		return targetCreature;
 	}
-	return g_game().internalGetThing(std::move(player), toPosition, toStackPos, 0, STACKPOS_USETARGET);
+	return g_game().internalGetThing(player, toPosition, toStackPos, 0, STACKPOS_USETARGET);
 }
 
-bool Action::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) {
+bool Action::executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &fromPosition, const std::shared_ptr<Thing> &target, const Position &toPosition, bool isHotkey) {
 	// onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[Action::executeUse - Player {}, on item {}] "
@@ -535,7 +535,7 @@ bool Action::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> it
 	LuaScriptInterface::pushThing(L, item);
 	LuaScriptInterface::pushPosition(L, fromPosition);
 
-	LuaScriptInterface::pushThing(L, std::move(target));
+	LuaScriptInterface::pushThing(L, target);
 	LuaScriptInterface::pushPosition(L, toPosition);
 
 	LuaScriptInterface::pushBoolean(L, isHotkey);

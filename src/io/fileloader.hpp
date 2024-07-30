@@ -22,9 +22,9 @@ namespace OTB {
 		Node &operator=(const Node &) = delete;
 
 		std::list<Node> children;
-		mio::mmap_source::const_iterator propsBegin;
-		mio::mmap_source::const_iterator propsEnd;
-		uint8_t type;
+		mio::mmap_source::const_iterator propsBegin {};
+		mio::mmap_source::const_iterator propsEnd {};
+		uint8_t type {};
 		enum NodeChar : uint8_t {
 			ESCAPE = 0xFD,
 			START = 0xFE,

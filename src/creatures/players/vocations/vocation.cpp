@@ -35,7 +35,7 @@ bool Vocations::loadFromXml() {
 			continue;
 		}
 
-		uint16_t id = pugi::cast<uint16_t>(attr.value());
+		auto id = pugi::cast<uint16_t>(attr.value());
 
 		auto res = vocationsMap.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(std::make_shared<Vocation>(id)));
 		auto voc = res.first->second;
@@ -124,7 +124,7 @@ bool Vocations::loadFromXml() {
 			if (strcasecmp(childNode.name(), "skill") == 0) {
 				pugi::xml_attribute skillIdAttribute = childNode.attribute("id");
 				if (skillIdAttribute) {
-					uint16_t skill_id = pugi::cast<uint16_t>(skillIdAttribute.value());
+					auto skill_id = pugi::cast<uint16_t>(skillIdAttribute.value());
 					if (skill_id <= SKILL_LAST) {
 						voc->skillMultipliers[skill_id] = pugi::cast<float>(childNode.attribute("multiplier").value());
 					} else {
@@ -254,7 +254,7 @@ uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level) {
 		return it->second;
 	}
 
-	uint64_t tries = static_cast<uint64_t>(skillBase[skill] * std::pow(static_cast<double>(skillMultipliers[skill]), level - (minSkillLevel + 1)));
+	auto tries = static_cast<uint64_t>(skillBase[skill] * std::pow(static_cast<double>(skillMultipliers[skill]), level - (minSkillLevel + 1)));
 	cacheSkill[skill][level] = tries;
 	return tries;
 }

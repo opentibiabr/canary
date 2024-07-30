@@ -14,7 +14,7 @@
 
 class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
-	explicit Protocol(Connection_ptr initConnection) :
+	explicit Protocol(const Connection_ptr &initConnection) :
 		connectionPtr(initConnection) { }
 
 	virtual ~Protocol() = default;

@@ -38,7 +38,7 @@ uint8_t PlayerVIP::getMaxGroupEntries() const {
 	return 0;
 }
 
-void PlayerVIP::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) const {
+void PlayerVIP::notifyStatusChange(const std::shared_ptr<Player> &loginPlayer, VipStatus_t status, bool message) const {
 	if (!m_player.client) {
 		return;
 	}
@@ -101,7 +101,7 @@ bool PlayerVIP::addInternal(uint32_t vipGuid) {
 	return vipGuids.insert(vipGuid).second;
 }
 
-bool PlayerVIP::edit(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify, std::vector<uint8_t> groupsId) const {
+bool PlayerVIP::edit(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify, const std::vector<uint8_t> &groupsId) const {
 	const auto it = vipGuids.find(vipGuid);
 	if (it == vipGuids.end()) {
 		return false; // player is not in VIP
@@ -125,7 +125,7 @@ bool PlayerVIP::edit(uint32_t vipGuid, const std::string &description, uint32_t 
 }
 
 std::shared_ptr<VIPGroup> PlayerVIP::getGroupByID(uint8_t groupId) const {
-	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupId](const std::shared_ptr<VIPGroup> vipGroup) {
+	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupId](const std::shared_ptr<VIPGroup> &vipGroup) {
 		return vipGroup->id == groupId;
 	});
 
@@ -134,7 +134,7 @@ std::shared_ptr<VIPGroup> PlayerVIP::getGroupByID(uint8_t groupId) const {
 
 std::shared_ptr<VIPGroup> PlayerVIP::getGroupByName(const std::string &name) const {
 	const auto groupName = name.c_str();
-	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupName](const std::shared_ptr<VIPGroup> vipGroup) {
+	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupName](const std::shared_ptr<VIPGroup> &vipGroup) {
 		return strcmp(groupName, vipGroup->name.c_str()) == 0;
 	});
 
@@ -157,7 +157,7 @@ void PlayerVIP::addGroupInternal(uint8_t groupId, const std::string &name, bool 
 }
 
 void PlayerVIP::removeGroup(uint8_t groupId) {
-	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupId](const std::shared_ptr<VIPGroup> vipGroup) {
+	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupId](const std::shared_ptr<VIPGroup> &vipGroup) {
 		return vipGroup->id == groupId;
 	});
 
@@ -229,7 +229,7 @@ uint8_t PlayerVIP::getFreeId() const {
 	return 0;
 }
 
-const std::vector<uint8_t> PlayerVIP::getGroupsIdGuidBelongs(uint32_t guid) {
+std::vector<uint8_t> PlayerVIP::getGroupsIdGuidBelongs(uint32_t guid) {
 	std::vector<uint8_t> guidBelongs;
 	for (const auto &vipGroup : vipGroups) {
 		if (vipGroup->vipGroupGuids.contains(guid)) {
@@ -239,7 +239,7 @@ const std::vector<uint8_t> PlayerVIP::getGroupsIdGuidBelongs(uint32_t guid) {
 	return guidBelongs;
 }
 
-void PlayerVIP::addGuidToGroupInternal(uint8_t groupId, uint32_t guid) {
+void PlayerVIP::addGuidToGroupInternal(uint8_t groupId, uint32_t guid) const {
 	const auto &group = getGroupByID(groupId);
 	if (group) {
 		group->vipGroupGuids.insert(guid);

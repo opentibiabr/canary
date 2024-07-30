@@ -17,7 +17,7 @@ int WebhookFunctions::luaWebhookSendMessage(lua_State* L) {
 	// Webhook.sendMessage(message, url = "WEBHOOK_DISCORD_URL")
 	std::string title = getString(L, 1);
 	std::string message = getString(L, 2);
-	uint32_t color = getNumber<uint32_t>(L, 3, 0);
+	auto color = getNumber<uint32_t>(L, 3, 0);
 	std::string url = getString(L, -1);
 	if (url == title) {
 		g_webhook().sendMessage(title);

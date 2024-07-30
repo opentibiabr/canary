@@ -24,7 +24,7 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 	if (lua_gettop(L) > 1) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
-		callback = [ref, scriptId](DBResult_ptr, bool success) {
+		callback = [ref, scriptId](const DBResult_ptr &, bool success) {
 			lua_State* luaState = g_luaEnvironment().getLuaState();
 			if (!luaState) {
 				return;
@@ -62,7 +62,7 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 	if (lua_gettop(L) > 1) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
-		callback = [ref, scriptId](DBResult_ptr result, bool) {
+		callback = [ref, scriptId](const DBResult_ptr &result, bool) {
 			lua_State* luaState = g_luaEnvironment().getLuaState();
 			if (!luaState) {
 				return;

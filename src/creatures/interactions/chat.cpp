@@ -136,21 +136,21 @@ bool ChatChannel::talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses t
 	return true;
 }
 
-bool ChatChannel::executeCanJoinEvent(const std::shared_ptr<Player> &player) {
+bool ChatChannel::executeCanJoinEvent(const std::shared_ptr<Player> &player) const {
 	if (canJoinEvent == -1) {
 		return true;
 	}
 
 	// canJoin(player)
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[CanJoinChannelEvent::execute - Player {}, on channel {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 player->getName(), getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(canJoinEvent, scriptInterface);
 
 	lua_State* L = scriptInterface->getLuaState();
@@ -162,21 +162,21 @@ bool ChatChannel::executeCanJoinEvent(const std::shared_ptr<Player> &player) {
 	return scriptInterface->callFunction(1);
 }
 
-bool ChatChannel::executeOnJoinEvent(const std::shared_ptr<Player> &player) {
+bool ChatChannel::executeOnJoinEvent(const std::shared_ptr<Player> &player) const {
 	if (onJoinEvent == -1) {
 		return true;
 	}
 
 	// onJoin(player)
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[OnJoinChannelEvent::execute - Player {}, on channel {}] "
 		                 "Call stack overflow. Too many lua script calls being nested",
 		                 player->getName(), getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(onJoinEvent, scriptInterface);
 
 	lua_State* L = scriptInterface->getLuaState();
@@ -188,21 +188,21 @@ bool ChatChannel::executeOnJoinEvent(const std::shared_ptr<Player> &player) {
 	return scriptInterface->callFunction(1);
 }
 
-bool ChatChannel::executeOnLeaveEvent(const std::shared_ptr<Player> &player) {
+bool ChatChannel::executeOnLeaveEvent(const std::shared_ptr<Player> &player) const {
 	if (onLeaveEvent == -1) {
 		return true;
 	}
 
 	// onLeave(player)
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[OnLeaveChannelEvent::execute - Player {}, on channel {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 player->getName(), getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(onLeaveEvent, scriptInterface);
 
 	lua_State* L = scriptInterface->getLuaState();
@@ -214,21 +214,21 @@ bool ChatChannel::executeOnLeaveEvent(const std::shared_ptr<Player> &player) {
 	return scriptInterface->callFunction(1);
 }
 
-bool ChatChannel::executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message) {
+bool ChatChannel::executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message) const {
 	if (onSpeakEvent == -1) {
 		return true;
 	}
 
 	// onSpeak(player, type, message)
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[OnSpeakChannelEvent::execute - Player {}, type {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 player->getName(), fmt::underlying(type));
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(onSpeakEvent, scriptInterface);
 
 	lua_State* L = scriptInterface->getLuaState();
@@ -242,7 +242,7 @@ bool ChatChannel::executeOnSpeakEvent(const std::shared_ptr<Player> &player, Spe
 
 	bool result = false;
 	int size0 = lua_gettop(L);
-	int ret = scriptInterface->protectedCall(L, 3, 1);
+	int ret = LuaScriptInterface::protectedCall(L, 3, 1);
 	if (ret != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else if (lua_gettop(L) > 0) {
@@ -258,7 +258,7 @@ bool ChatChannel::executeOnSpeakEvent(const std::shared_ptr<Player> &player, Spe
 	if ((lua_gettop(L) + 4) != size0) {
 		LuaScriptInterface::reportError(nullptr, "Stack size changed!");
 	}
-	scriptInterface->resetScriptEnv();
+	LuaScriptInterface::resetScriptEnv();
 	return result;
 }
 
@@ -279,7 +279,7 @@ bool Chat::load() {
 	}
 
 	for (auto channelNode : doc.child("channels").children()) {
-		uint16_t channelId = pugi::cast<uint16_t>(channelNode.attribute("id").value());
+		auto channelId = pugi::cast<uint16_t>(channelNode.attribute("id").value());
 		std::string channelName = channelNode.attribute("name").as_string();
 		bool isPublic = channelNode.attribute("public").as_bool();
 		pugi::xml_attribute scriptAttribute = channelNode.attribute("script");

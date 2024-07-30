@@ -37,7 +37,7 @@ public:
 		return inject<ConnectionManager>();
 	}
 
-	Connection_ptr createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort);
+	Connection_ptr createConnection(asio::io_service &io_service, const ConstServicePort_ptr &servicePort);
 	void releaseConnection(const Connection_ptr &connection);
 	void closeAll();
 
@@ -76,7 +76,7 @@ private:
 
 	void onWriteOperation(const std::error_code &error);
 
-	static void handleTimeout(ConnectionWeak_ptr connectionWeak, const std::error_code &error);
+	static void handleTimeout(const ConnectionWeak_ptr &connectionWeak, const std::error_code &error);
 
 	void closeSocket();
 	void internalWorker();

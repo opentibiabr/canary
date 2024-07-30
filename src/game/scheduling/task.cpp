@@ -16,26 +16,6 @@
 
 std::atomic_uint_fast64_t Task::LAST_EVENT_ID = 0;
 
-Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
-	func(std::move(f)), context(context), utime(OTSYS_TIME()), expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
-	if (this->context.empty()) {
-		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
-		return;
-	}
-
-	assert(!this->context.empty() && "Context cannot be empty!");
-}
-
-Task::Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle /* = false*/, bool log /*= true*/) :
-	func(std::move(f)), context(context), utime(OTSYS_TIME() + delay), delay(delay), cycle(cycle), log(log) {
-	if (this->context.empty()) {
-		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
-		return;
-	}
-
-	assert(!this->context.empty() && "Context cannot be empty!");
-}
-
 bool Task::execute() const {
 	metrics::task_latency measure(context);
 	if (isCanceled()) {
@@ -43,19 +23,18 @@ bool Task::execute() const {
 	}
 
 	if (hasExpired()) {
-		g_logger().info("The task '{}' has expired, it has not been executed in {}.", getContext(), expiration - utime);
+		g_logger().info("The task '{}' has expired, it has not been executed in {}. Function: {}", getContext(), expiration - utime, functionName);
 		return false;
 	}
 
 	if (log) {
 		if (hasTraceableContext()) {
-			g_logger().trace("Executing task {}.", getContext());
+			g_logger().trace("Executing task {}. Function: {}", getContext(), functionName);
 		} else {
-			g_logger().debug("Executing task {}.", getContext());
+			g_logger().debug("Executing task {}. Function: {}", getContext(), functionName);
 		}
 	}
 
 	func();
-
 	return true;
 }

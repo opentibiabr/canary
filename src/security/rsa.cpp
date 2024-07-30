@@ -123,7 +123,7 @@ std::string RSA::base64Decrypt(const std::string &input) const {
 	};
 
 	if (input.empty()) {
-		return std::string();
+		return {};
 	}
 
 	size_t length = input.length();

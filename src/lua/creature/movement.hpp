@@ -214,26 +214,23 @@ public:
 	void setSlot(uint32_t s) {
 		slot = s;
 	}
-	uint32_t getRequiredLevel() {
+	uint32_t getRequiredLevel() const {
 		return reqLevel;
 	}
 	void setRequiredLevel(uint32_t level) {
 		reqLevel = level;
 	}
-	uint32_t getRequiredMagLevel() {
+	uint32_t getRequiredMagLevel() const {
 		return reqMagLevel;
 	}
 	void setRequiredMagLevel(uint32_t level) {
 		reqMagLevel = level;
 	}
-	bool needPremium() {
+	bool needPremium() const {
 		return premium;
 	}
 	void setNeedPremium(bool b) {
 		premium = b;
-	}
-	uint32_t getWieldInfo() {
-		return wieldInfo;
 	}
 	void setWieldInfo(WieldInfo_t info) {
 		wieldInfo |= info;

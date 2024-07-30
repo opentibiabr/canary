@@ -24,7 +24,7 @@ ReturnValue Inbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
-	std::shared_ptr<Item> item = thing->getItem();
+	const auto item = thing->getItem();
 	if (!item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}

@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "declarations.hpp"
 
 #include "config/configmanager.hpp"
@@ -157,8 +159,8 @@ private:
 
 class IOMapException : public std::exception {
 public:
-	explicit IOMapException(const std::string &msg) :
-		message(msg) { }
+	explicit IOMapException(std::string msg) :
+		message(std::move(msg)) { }
 
 	const char* what() const noexcept override {
 		return message.c_str();

@@ -16,7 +16,7 @@
 #include "map/spectators.hpp"
 
 ReturnValue Mailbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, std::shared_ptr<Creature>) {
-	std::shared_ptr<Item> item = thing->getItem();
+	const auto item = thing->getItem();
 	if (item && Mailbox::canSend(item)) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -45,7 +45,7 @@ void Mailbox::addThing(int32_t, std::shared_ptr<Thing> thing) {
 		return;
 	}
 
-	std::shared_ptr<Item> item = thing->getItem();
+	const auto item = thing->getItem();
 	if (item && Mailbox::canSend(item)) {
 		sendItem(item);
 	}
@@ -71,7 +71,7 @@ void Mailbox::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_p
 	getParent()->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 }
 
-bool Mailbox::sendItem(std::shared_ptr<Item> item) const {
+bool Mailbox::sendItem(const std::shared_ptr<Item> &item) const {
 	std::string receiver;
 	if (!getReceiver(item, receiver)) {
 		return false;
@@ -88,9 +88,9 @@ bool Mailbox::sendItem(std::shared_ptr<Item> item) const {
 		}
 	}
 
-	std::shared_ptr<Player> player = g_game().getPlayerByName(receiver, true);
+	const auto player = g_game().getPlayerByName(receiver, true);
 	std::string writer;
-	time_t date = time(0);
+	time_t date = time(nullptr);
 	std::string text;
 	if (item && item->getID() == ITEM_LETTER && !item->getAttribute<std::string>(ItemAttribute_t::WRITER).empty()) {
 		writer = item->getAttribute<std::string>(ItemAttribute_t::WRITER);
@@ -100,7 +100,7 @@ bool Mailbox::sendItem(std::shared_ptr<Item> item) const {
 	if (player && item) {
 		if (g_game().internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			auto newItem = g_game().transformItem(item, item->getID() + 1);
-			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {
+			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && !writer.empty()) {
 				newItem->setAttribute(ItemAttribute_t::WRITER, writer);
 				newItem->setAttribute(ItemAttribute_t::DATE, date);
 				newItem->setAttribute(ItemAttribute_t::TEXT, text);
@@ -116,10 +116,10 @@ bool Mailbox::sendItem(std::shared_ptr<Item> item) const {
 	return false;
 }
 
-bool Mailbox::getReceiver(std::shared_ptr<Item> item, std::string &name) const {
+bool Mailbox::getReceiver(const std::shared_ptr<Item> &item, std::string &name) const {
 	std::shared_ptr<Container> container = item->getContainer();
 	if (container) {
-		for (std::shared_ptr<Item> containerItem : container->getItemList()) {
+		for (const std::shared_ptr<Item> &containerItem : container->getItemList()) {
 			if (containerItem->getID() == ITEM_LABEL && getReceiver(containerItem, name)) {
 				return true;
 			}
@@ -137,6 +137,6 @@ bool Mailbox::getReceiver(std::shared_ptr<Item> item, std::string &name) const {
 	return true;
 }
 
-bool Mailbox::canSend(std::shared_ptr<Item> item) {
+bool Mailbox::canSend(const std::shared_ptr<Item> &item) {
 	return !item->hasOwner() && (item->getID() == ITEM_PARCEL || item->getID() == ITEM_LETTER);
 }

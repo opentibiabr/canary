@@ -104,7 +104,7 @@ void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f
 }
 
 void Dispatcher::executeEvents(const TaskGroup startGroup) {
-	for (uint_fast8_t groupId = static_cast<uint8_t>(startGroup); groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
+	for (auto groupId = static_cast<uint8_t>(startGroup); groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
 		auto &tasks = m_tasks[groupId];
 		if (tasks.empty()) {
 			return;
@@ -155,8 +155,8 @@ void Dispatcher::executeScheduledEvents() {
 
 // Merge only async thread events with main dispatch events
 void Dispatcher::mergeAsyncEvents() {
-	constexpr uint8_t start = static_cast<uint8_t>(TaskGroup::GenericParallel);
-	constexpr uint8_t end = static_cast<uint8_t>(TaskGroup::Last);
+	constexpr auto start = static_cast<uint8_t>(TaskGroup::GenericParallel);
+	constexpr auto end = static_cast<uint8_t>(TaskGroup::Last);
 
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
@@ -171,7 +171,7 @@ void Dispatcher::mergeAsyncEvents() {
 
 // Merge thread events with main dispatch events
 void Dispatcher::mergeEvents() {
-	constexpr uint8_t serial = static_cast<uint8_t>(TaskGroup::Serial);
+	constexpr auto serial = static_cast<uint8_t>(TaskGroup::Serial);
 
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);

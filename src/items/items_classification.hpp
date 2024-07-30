@@ -32,6 +32,6 @@ public:
 		table.convergenceTransferPrice = convergenceTransferPrice;
 	}
 
-	uint8_t id;
+	uint8_t id {};
 	std::map<uint8_t, TierInfo> tiers;
 };

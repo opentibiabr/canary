@@ -39,12 +39,12 @@ public:
 		return inject<Weapons>();
 	}
 
-	const WeaponShared_ptr getWeapon(std::shared_ptr<Item> item) const;
+	WeaponShared_ptr getWeapon(const std::shared_ptr<Item> &item) const;
 
 	static int32_t getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue);
 	static int32_t getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee);
 
-	bool registerLuaEvent(WeaponShared_ptr event, bool fromXML = false);
+	bool registerLuaEvent(const WeaponShared_ptr &event, bool fromXML = false);
 	void clear(bool isFromXML = false);
 
 private:
@@ -62,9 +62,9 @@ public:
 		return false;
 	}
 
-	int32_t playerWeaponCheck(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint8_t shootRange) const;
-	static bool useFist(std::shared_ptr<Player> player, std::shared_ptr<Creature> target);
-	virtual bool useWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target) const;
+	int32_t playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint8_t shootRange) const;
+	static bool useFist(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target);
+	virtual bool useWeapon(const std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target) const;
 
 	virtual int32_t getWeaponDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const = 0;
 	virtual int32_t getElementDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item) const = 0;
@@ -162,7 +162,7 @@ public:
 		wieldInfo |= info;
 	}
 
-	void addVocWeaponMap(std::string vocName) {
+	void addVocWeaponMap(const std::string &vocName) {
 		int32_t vocationId = g_vocations().getVocationId(vocName);
 		if (vocationId != -1) {
 			vocWeaponMap[vocationId] = true;
@@ -224,17 +224,17 @@ public:
 	bool calculateSkillFormula(const std::shared_ptr<Player> &player, int32_t &attackSkill, int32_t &attackValue, float &attackFactor, int16_t &elementAttack, CombatDamage &damage, bool useCharges = false) const;
 
 protected:
-	void internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target, int32_t damageModifier, int32_t cleavePercent = 0) const;
-	void internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Tile> tile) const;
+	void internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &target, int32_t damageModifier, int32_t cleavePercent = 0) const;
+	void internalUseWeapon(const std::shared_ptr<Player> &player, const auto item, const std::shared_ptr<Tile> &tile) const;
 
 private:
 	virtual bool getSkillType(std::shared_ptr<Player>, std::shared_ptr<Item>, skills_t &, uint32_t &) const {
 		return false;
 	}
 
-	uint32_t getManaCost(std::shared_ptr<Player> player) const;
-	int32_t getHealthCost(std::shared_ptr<Player> player) const;
-	bool executeUseWeapon(std::shared_ptr<Player> player, const LuaVariant &var) const;
+	uint32_t getManaCost(const std::shared_ptr<Player> &player) const;
+	int32_t getHealthCost(const std::shared_ptr<Player> &player) const;
+	bool executeUseWeapon(const std::shared_ptr<Player> &player, const LuaVariant &var) const;
 
 	uint16_t id = 0;
 
@@ -252,11 +252,11 @@ private:
 	bool premium = false;
 	bool wieldUnproperly = false;
 	bool m_isDisabledChain = false;
-	std::string vocationString = "";
+	std::string vocationString;
 
-	void onUsedWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Tile> destTile) const;
+	void onUsedWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &destTile) const;
 
-	static void decrementItemCount(std::shared_ptr<Item> item);
+	static void decrementItemCount(const std::shared_ptr<Item> &item);
 
 	WeaponAction_t action = WEAPONACTION_NONE;
 	CombatParams params;

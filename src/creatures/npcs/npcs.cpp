@@ -17,7 +17,7 @@
 #include "lua/scripts/scripts.hpp"
 #include "game/game.hpp"
 
-bool NpcType::canSpawn(const Position &pos) {
+bool NpcType::canSpawn(const Position &pos) const {
 	bool canSpawn = true;
 	bool isDay = g_game().gameIsDay();
 

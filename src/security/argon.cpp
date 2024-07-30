@@ -26,7 +26,7 @@ void Argon2::updateConstants() {
 	parallelism = g_configManager().getNumber(PARALLELISM, __FUNCTION__);
 }
 
-uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
+uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) {
 	std::stringstream ss(bitShiftStr);
 	int base;
 	int shift;
@@ -41,7 +41,6 @@ uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
 }
 
 bool Argon2::verifyPassword(const std::string &password, const std::string &phash) const {
-
 	const std::regex re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
 	std::smatch match;
 	if (!std::regex_search(phash, match, re)) {
@@ -63,7 +62,7 @@ bool Argon2::verifyPassword(const std::string &password, const std::string &phas
 	return computed_hash == hash;
 }
 
-std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
+std::vector<uint8_t> Argon2::base64_decode(const std::string &input) {
 	const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	std::vector<uint8_t> ret;
 	int i = 0;

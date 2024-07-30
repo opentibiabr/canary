@@ -123,7 +123,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 
-			uint16_t category = pugi::cast<uint16_t>(categorybase.value());
+			auto category = pugi::cast<uint16_t>(categorybase.value());
 			auto category_p = getCategoryByID(category);
 			if (category_p == nullptr) {
 				g_logger().warn("Category imbuement {} not exist", category);
@@ -151,7 +151,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						g_logger().warn("Missing item ID for imbuement name '{}'", imbuement.name);
 						continue;
 					}
-					uint16_t sourceId = pugi::cast<uint16_t>(attr.value());
+					auto sourceId = pugi::cast<uint16_t>(attr.value());
 
 					uint16_t count = 1;
 					if ((attr = childNode.attribute("count"))) {
@@ -230,7 +230,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							g_logger().warn("Missing skill bonus for imbuement name {}", imbuement.name);
 							continue;
 						}
-						int32_t bonus = pugi::cast<int32_t>(attr.value());
+						auto bonus = pugi::cast<int32_t>(attr.value());
 
 						if (usenormalskill == 1) {
 							imbuement.skills[skillId] = bonus;
@@ -336,7 +336,7 @@ CategoryImbuement* Imbuements::getCategoryByID(uint16_t id) {
 	return categoryImbuements != categoriesImbuement.end() ? &*categoryImbuements : nullptr;
 }
 
-std::vector<Imbuement*> Imbuements::getImbuements(std::shared_ptr<Player> player, std::shared_ptr<Item> item) {
+std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) {
 	std::vector<Imbuement*> imbuements;
 
 	for (auto &[key, value] : imbuementMap) {

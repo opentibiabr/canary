@@ -121,7 +121,7 @@ namespace extension {
 				core::injector<runtime_provider<TErrorPolicy, TScopeTraits>> { core::init {} } { }
 
 			template <class T>
-			/*non explicit*/ injector(const T &bindings) :
+			/*non explicit*/ explicit injector(const T &bindings) :
 				injector() {
 				install(bindings);
 			}

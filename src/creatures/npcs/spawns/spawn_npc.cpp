@@ -268,7 +268,7 @@ bool SpawnNpc::addNpc(const std::string &name, const Position &pos, Direction di
 	return true;
 }
 
-void SpawnNpc::removeNpc(std::shared_ptr<Npc> npc) {
+void SpawnNpc::removeNpc(const std::shared_ptr<Npc> &npc) {
 	for (auto it = spawnedNpcMap.begin(), end = spawnedNpcMap.end(); it != end; ++it) {
 		if (it->second == npc) {
 			spawnedNpcMap.erase(it);

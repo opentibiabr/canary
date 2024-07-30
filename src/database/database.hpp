@@ -15,6 +15,7 @@
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <mysql/mysql.h>
 	#include <mutex>
+	#include <utility>
 #endif
 
 class DBResult;
@@ -63,7 +64,7 @@ private:
 	bool rollback();
 	bool commit();
 
-	bool isRecoverableError(unsigned int error) const;
+	static bool isRecoverableError(unsigned int error);
 
 	MYSQL* handle = nullptr;
 	std::recursive_mutex databaseLock;
@@ -149,8 +150,8 @@ public:
 
 	std::string getString(const std::string &s) const;
 	const char* getStream(const std::string &s, unsigned long &size) const;
-	uint8_t getU8FromString(const std::string &string, const std::string &function) const;
-	int8_t getInt8FromString(const std::string &string, const std::string &function) const;
+	static uint8_t getU8FromString(const std::string &string, const std::string &function);
+	static int8_t getInt8FromString(const std::string &string, const std::string &function);
 
 	size_t countResults() const;
 	bool hasNext() const;
@@ -172,7 +173,7 @@ class DBInsert {
 public:
 	explicit DBInsert(std::string query);
 	void upsert(const std::vector<std::string> &columns);
-	bool addRow(const std::string_view row);
+	bool addRow(std::string_view row);
 	bool addRow(std::ostringstream &row);
 	bool execute();
 
@@ -280,10 +281,10 @@ private:
 
 class DatabaseException : public std::exception {
 public:
-	explicit DatabaseException(const std::string &message) :
-		message(message) { }
+	explicit DatabaseException(std::string message) :
+		message(std::move(message)) { }
 
-	virtual const char* what() const throw() {
+	const char* what() const noexcept override {
 		return message.c_str();
 	}
 

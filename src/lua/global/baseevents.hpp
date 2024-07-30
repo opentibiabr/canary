@@ -84,7 +84,7 @@ public:
 	 *
 	 * @return int32_t
 	 */
-	int32_t getScriptId() {
+	int32_t getScriptId() const {
 		return scriptId;
 	}
 

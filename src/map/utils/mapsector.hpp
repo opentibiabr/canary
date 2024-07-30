@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "map/map_const.hpp"
 
 class Creature;
@@ -25,7 +27,7 @@ struct Floor {
 	}
 
 	void setTile(uint16_t x, uint16_t y, std::shared_ptr<Tile> tile) {
-		tiles[x & SECTOR_MASK][y & SECTOR_MASK].first = tile;
+		tiles[x & SECTOR_MASK][y & SECTOR_MASK].first = std::move(tile);
 	}
 
 	std::shared_ptr<BasicTile> getTileCache(uint16_t x, uint16_t y) const {

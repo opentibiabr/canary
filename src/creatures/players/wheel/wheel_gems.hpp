@@ -219,7 +219,7 @@ public:
 
 private:
 	WheelGemAffinity_t m_affinity;
-	uint16_t m_value;
+	uint16_t m_value {};
 };
 
 class GemModifierSpellBonusStrategy : public GemModifierStrategy {

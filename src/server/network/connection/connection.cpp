@@ -15,7 +15,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "server/server.hpp"
 
-Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
+Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, const ConstServicePort_ptr &servicePort) {
 	auto connection = std::make_shared<Connection>(io_service, servicePort);
 	connections.emplace(connection);
 	return connection;
@@ -247,7 +247,7 @@ void Connection::parsePacket(const std::error_code &error) {
 				checksum = 0;
 			}
 
-			uint32_t recvChecksum = msg.get<uint32_t>();
+			auto recvChecksum = msg.get<uint32_t>();
 			if (recvChecksum != checksum) {
 				// it might not have been the checksum, step back
 				msg.skipBytes(-CHECKSUM_LENGTH);
@@ -392,7 +392,7 @@ void Connection::onWriteOperation(const std::error_code &error) {
 	}
 }
 
-void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::error_code &error) {
+void Connection::handleTimeout(const ConnectionWeak_ptr &connectionWeak, const std::error_code &error) {
 	if (error == asio::error::operation_aborted) {
 		return;
 	}

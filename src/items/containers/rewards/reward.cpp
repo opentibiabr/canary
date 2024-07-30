@@ -23,7 +23,7 @@ ReturnValue Reward::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint3
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	std::shared_ptr<Item> item = thing->getItem();
+	const auto item = thing->getItem();
 	if (!item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}

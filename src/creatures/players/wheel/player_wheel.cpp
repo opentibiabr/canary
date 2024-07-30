@@ -1301,7 +1301,7 @@ uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {
 
 	// Check if is in the temple range (we assume the temple is within the range of 10 sqms)
 	if (m_player.getZoneType() == ZONE_PROTECTION) {
-		for (auto [townid, town] : g_game().map.towns.getTowns()) {
+		for (const auto &[townid, town] : g_game().map.towns.getTowns()) {
 			if (Position::areInRange<1, 10>(town->getTemplePosition(), m_player.getPosition())) {
 				return 1;
 			}
@@ -1669,7 +1669,7 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 			continue;
 		}
 
-		WheelGemAffinity_t affinity = static_cast<WheelGemAffinity_t>(i);
+		auto affinity = static_cast<WheelGemAffinity_t>(i);
 		std::string affinityName(magic_enum::enum_name(affinity));
 		g_logger().debug("  Affinity: {} count: {}", affinityName, bonusData.unlockedVesselResonances[i]);
 	}
@@ -2112,7 +2112,7 @@ bool PlayerWheel::checkBallisticMastery() {
 	uint16_t newHolyBonus = 2; // 2%
 	uint16_t newPhysicalBonus = 2; // 2%
 
-	std::shared_ptr<Item> item = m_player.getWeapon();
+	const auto item = m_player.getWeapon();
 	if (item && item->getAmmoType() == AMMO_BOLT) {
 		if (getMajorStat(WheelMajor_t::CRITICAL_DMG) != newCritical) {
 			setMajorStat(WheelMajor_t::CRITICAL_DMG, newCritical);
@@ -2153,7 +2153,7 @@ bool PlayerWheel::checkCombatMastery() {
 	bool updateClient = false;
 	uint8_t stage = getStage(WheelStage_t::COMBAT_MASTERY);
 
-	std::shared_ptr<Item> item = m_player.getWeapon();
+	const auto item = m_player.getWeapon();
 	if (item && item->getSlotPosition() & SLOTP_TWO_HAND) {
 		int32_t criticalSkill = 0;
 		if (stage >= 3) {
@@ -2236,7 +2236,7 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	return updateClient;
 }
 
-int32_t PlayerWheel::checkDivineGrenade(std::shared_ptr<Creature> target) const {
+int32_t PlayerWheel::checkDivineGrenade(const std::shared_ptr<Creature> &target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
@@ -2272,7 +2272,7 @@ void PlayerWheel::checkGiftOfLife() {
 	sendGiftOfLifeCooldown();
 }
 
-int32_t PlayerWheel::checkBlessingGroveHealingByTarget(std::shared_ptr<Creature> target) const {
+int32_t PlayerWheel::checkBlessingGroveHealingByTarget(const std::shared_ptr<Creature> &target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
@@ -2301,7 +2301,7 @@ int32_t PlayerWheel::checkBlessingGroveHealingByTarget(std::shared_ptr<Creature>
 	return healingBonus;
 }
 
-int32_t PlayerWheel::checkTwinBurstByTarget(std::shared_ptr<Creature> target) const {
+int32_t PlayerWheel::checkTwinBurstByTarget(const std::shared_ptr<Creature> &target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
@@ -2322,7 +2322,7 @@ int32_t PlayerWheel::checkTwinBurstByTarget(std::shared_ptr<Creature> target) co
 	return damageBonus;
 }
 
-int32_t PlayerWheel::checkExecutionersThrow(std::shared_ptr<Creature> target) const {
+int32_t PlayerWheel::checkExecutionersThrow(const std::shared_ptr<Creature> &target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
@@ -2357,7 +2357,7 @@ int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	return damageBoost;
 }
 
-int32_t PlayerWheel::checkDrainBodyLeech(std::shared_ptr<Creature> target, skills_t skill) const {
+int32_t PlayerWheel::checkDrainBodyLeech(const std::shared_ptr<Creature> &target, skills_t skill) const {
 	if (!target || !target->getMonster() || target->getWheelOfDestinyDrainBodyDebuff() == 0) {
 		return 0;
 	}
@@ -2795,7 +2795,7 @@ bool PlayerWheel::getInstant(WheelInstant_t type) const {
 	return false;
 }
 
-uint8_t PlayerWheel::getStage(const std::string name) const {
+uint8_t PlayerWheel::getStage(const std::string &name) const {
 	if (name == "Battle Instinct") {
 		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_INSTINCT);
 	} else if (name == "Battle Healing") {
@@ -2919,7 +2919,7 @@ int64_t PlayerWheel::getOnThinkTimer(WheelOnThink_t type) const {
 	return 0;
 }
 
-bool PlayerWheel::getInstant(const std::string name) const {
+bool PlayerWheel::getInstant(const std::string &name) const {
 	if (name == "Battle Instinct") {
 		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_INSTINCT);
 	} else if (name == "Battle Healing") {

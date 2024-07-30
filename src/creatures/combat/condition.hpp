@@ -24,7 +24,7 @@ public:
 	Condition(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0, bool isPersistent = false) :
 		endTime(initTicks == -1 ? std::numeric_limits<int64_t>::max() : 0),
 		subId(initSubId), ticks(initTicks), conditionType(initType), id(initId), isBuff(initBuff), m_isPersistent(isPersistent) { }
-	virtual ~Condition() = default;
+	~Condition() override = default;
 
 	virtual bool startCondition(std::shared_ptr<Creature> creature);
 	virtual bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval);
@@ -153,19 +153,19 @@ private:
 
 	bool disableDefense = false;
 
-	void updatePercentStats(std::shared_ptr<Player> player);
-	void updateStats(std::shared_ptr<Player> player);
-	void updatePercentSkills(std::shared_ptr<Player> player);
-	void updateSkills(std::shared_ptr<Player> player);
-	void updateBuffs(std::shared_ptr<Creature> creature);
+	void updatePercentStats(const std::shared_ptr<Player> &player);
+	void updateStats(const std::shared_ptr<Player> &player);
+	void updatePercentSkills(const std::shared_ptr<Player> &player);
+	void updateSkills(const std::shared_ptr<Player> &player);
+	void updateBuffs(const std::shared_ptr<Creature> &creature);
 
 	// 12.72 mechanics
-	void updatePercentAbsorbs(std::shared_ptr<Creature> creature);
-	void updateAbsorbs(std::shared_ptr<Creature> creature) const;
-	void updatePercentIncreases(std::shared_ptr<Creature> creature);
-	void updateIncreases(std::shared_ptr<Creature> creature) const;
-	void updateCharmChanceModifier(std::shared_ptr<Creature> creature) const;
-	void updatePercentBuffs(std::shared_ptr<Creature> creature);
+	void updatePercentAbsorbs(const std::shared_ptr<Creature> &creature);
+	void updateAbsorbs(const std::shared_ptr<Creature> &creature) const;
+	void updatePercentIncreases(const std::shared_ptr<Creature> &creature);
+	void updateIncreases(const std::shared_ptr<Creature> &creature) const;
+	void updateCharmChanceModifier(const std::shared_ptr<Creature> &creature) const;
+	void updatePercentBuffs(const std::shared_ptr<Creature> &creature);
 };
 
 class ConditionRegeneration final : public ConditionGeneric {
@@ -180,8 +180,8 @@ public:
 
 	bool setParam(ConditionParam_t param, int32_t value) override;
 
-	uint32_t getHealthTicks(std::shared_ptr<Creature> creature) const;
-	uint32_t getManaTicks(std::shared_ptr<Creature> creature) const;
+	uint32_t getHealthTicks(const std::shared_ptr<Creature> &creature) const;
+	uint32_t getManaTicks(const std::shared_ptr<Creature> &creature) const;
 
 	std::shared_ptr<Condition> clone() const override {
 		return std::make_shared<ConditionRegeneration>(*this);
@@ -310,7 +310,7 @@ private:
 	std::list<IntervalInfo> damageList;
 
 	bool getNextDamage(int32_t &damage);
-	bool doDamage(std::shared_ptr<Creature> creature, int32_t healthChange);
+	bool doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange);
 
 	bool updateCondition(std::shared_ptr<Condition> addCondition) override;
 };
@@ -334,10 +334,10 @@ public:
 	bool setPositionParam(ConditionParam_t param, const Position &pos) override;
 
 private:
-	bool canWalkTo(std::shared_ptr<Creature> creature, Position pos, Direction moveDirection) const;
-	bool getFleeDirection(std::shared_ptr<Creature> creature);
-	bool getFleePath(std::shared_ptr<Creature> creature, const Position &pos, std::vector<Direction> &dirList);
-	bool getRandomDirection(std::shared_ptr<Creature> creature, Position pos);
+	bool canWalkTo(const std::shared_ptr<Creature> &creature, Position pos, Direction moveDirection) const;
+	bool getFleeDirection(const std::shared_ptr<Creature> &creature);
+	bool getFleePath(const std::shared_ptr<Creature> &creature, const Position &pos, std::vector<Direction> &dirList);
+	bool getRandomDirection(const std::shared_ptr<Creature> &creature, Position pos);
 	bool isStuck(std::shared_ptr<Creature> creature, Position pos) const;
 
 	std::vector<Direction> m_directionsVector {

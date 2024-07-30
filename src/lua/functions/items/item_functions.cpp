@@ -159,7 +159,7 @@ int ItemFunctions::luaItemRemove(lua_State* L) {
 	// item:remove([count = -1])
 	const auto &item = getUserdataShared<Item>(L, 1);
 	if (item) {
-		int32_t count = getNumber<int32_t>(L, 2, -1);
+		auto count = getNumber<int32_t>(L, 2, -1);
 		pushBoolean(L, g_game().internalRemoveItem(item, count) == RETURNVALUE_NOERROR);
 	} else {
 		lua_pushnil(L);
@@ -626,7 +626,7 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t flags = getNumber<uint32_t>(L, 3, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVABLE);
+	auto flags = getNumber<uint32_t>(L, 3, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVABLE);
 
 	if (item->getParent() == VirtualCylinder::virtualCylinder) {
 		pushBoolean(L, g_game().internalAddItem(toCylinder, item, INDEX_WHEREEVER, flags) == RETURNVALUE_NOERROR);
@@ -666,7 +666,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 		}
 	}
 
-	int32_t subType = getNumber<int32_t>(L, 3, -1);
+	auto subType = getNumber<int32_t>(L, 3, -1);
 	if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
 		pushBoolean(L, true);
 		return 1;
@@ -725,7 +725,7 @@ int ItemFunctions::luaItemMoveToSlot(lua_State* L) {
 		return 1;
 	}
 
-	Slots_t slot = getNumber<Slots_t>(L, 3, CONST_SLOT_WHEREEVER);
+	auto slot = getNumber<Slots_t>(L, 3, CONST_SLOT_WHEREEVER);
 
 	std::shared_ptr<Item> moveItem = nullptr;
 	ReturnValue ret = g_game().internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);

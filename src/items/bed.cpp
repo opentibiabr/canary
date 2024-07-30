@@ -79,7 +79,7 @@ std::shared_ptr<BedItem> BedItem::getNextBedItem() {
 	return tile->getBedItem();
 }
 
-bool BedItem::canUse(std::shared_ptr<Player> player) {
+bool BedItem::canUse(const std::shared_ptr<Player> &player) {
 	if ((player == nullptr) || (house == nullptr) || !player->isPremium()) {
 		return false;
 	}
@@ -117,7 +117,7 @@ bool BedItem::canUse(std::shared_ptr<Player> player) {
 	return true;
 }
 
-bool BedItem::isBedComplete(std::shared_ptr<BedItem> nextBedItem) {
+bool BedItem::isBedComplete(const std::shared_ptr<BedItem> &nextBedItem) {
 	const ItemType &it = Item::items[id];
 
 	if (nextBedItem == nullptr) {
@@ -134,7 +134,7 @@ bool BedItem::isBedComplete(std::shared_ptr<BedItem> nextBedItem) {
 	return it.bedPartOf == nextBedItem->getID();
 }
 
-bool BedItem::trySleep(std::shared_ptr<Player> player) {
+bool BedItem::trySleep(const std::shared_ptr<Player> &player) {
 	if (!house || player->isRemoved()) {
 		return false;
 	}
@@ -150,7 +150,7 @@ bool BedItem::trySleep(std::shared_ptr<Player> player) {
 	return true;
 }
 
-bool BedItem::sleep(std::shared_ptr<Player> player) {
+bool BedItem::sleep(const std::shared_ptr<Player> &player) {
 	if (house == nullptr) {
 		return false;
 	}
@@ -191,7 +191,7 @@ bool BedItem::sleep(std::shared_ptr<Player> player) {
 	return true;
 }
 
-void BedItem::wakeUp(std::shared_ptr<Player> player) {
+void BedItem::wakeUp(const std::shared_ptr<Player> &player) {
 	if (house == nullptr) {
 		return;
 	}
@@ -232,7 +232,7 @@ void BedItem::wakeUp(std::shared_ptr<Player> player) {
 	}
 }
 
-void BedItem::regeneratePlayer(std::shared_ptr<Player> player) const {
+void BedItem::regeneratePlayer(const std::shared_ptr<Player> &player) const {
 	const uint32_t sleptTime = time(nullptr) - sleepStart;
 
 	std::shared_ptr<Condition> condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
@@ -258,7 +258,7 @@ void BedItem::regeneratePlayer(std::shared_ptr<Player> player) const {
 	player->changeSoul(soulRegen);
 }
 
-void BedItem::updateAppearance(std::shared_ptr<Player> player) {
+void BedItem::updateAppearance(const std::shared_ptr<Player> &player) {
 	const ItemType &it = Item::items[id];
 	if (it.type == ITEM_TYPE_BED) {
 		if ((player != nullptr) && it.transformToOnUse[player->getSex()] != 0) {
@@ -275,7 +275,7 @@ void BedItem::updateAppearance(std::shared_ptr<Player> player) {
 	}
 }
 
-void BedItem::internalSetSleeper(std::shared_ptr<Player> player) {
+void BedItem::internalSetSleeper(const std::shared_ptr<Player> &player) {
 	std::string desc_str = player->getName() + " is sleeping there.";
 
 	sleeperGUID = player->getGUID();

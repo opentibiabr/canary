@@ -144,7 +144,7 @@ void Npc::manageIdle() {
 	}
 }
 
-void Npc::onPlayerAppear(std::shared_ptr<Player> player) {
+void Npc::onPlayerAppear(const std::shared_ptr<Player> &player) {
 	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
 		return;
 	}
@@ -152,7 +152,7 @@ void Npc::onPlayerAppear(std::shared_ptr<Player> player) {
 	manageIdle();
 }
 
-void Npc::onPlayerDisappear(std::shared_ptr<Player> player) {
+void Npc::onPlayerDisappear(const std::shared_ptr<Player> &player) {
 	removePlayerInteraction(player);
 	if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(player)) {
 		playerSpectators.erase(player);
@@ -228,7 +228,7 @@ void Npc::onThink(uint32_t interval) {
 	}
 }
 
-void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks) {
+void Npc::onPlayerBuyItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks) {
 	if (player == nullptr) {
 		g_logger().error("[Npc::onPlayerBuyItem] - Player is nullptr");
 		return;
@@ -302,13 +302,13 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 	}
 }
 
-void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore) {
+void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore) {
 	uint64_t totalPrice = 0;
-	onPlayerSellItem(std::move(player), itemId, subType, amount, ignore, totalPrice);
+	onPlayerSellItem(player, itemId, subType, amount, ignore, totalPrice);
 }
 
 void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, uint64_t totalPrice) {
-	std::shared_ptr<Player> player = g_game().getPlayerByID(playerId);
+	const auto player = g_game().getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -358,7 +358,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 	}
 }
 
-void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, uint64_t &totalPrice, std::shared_ptr<Cylinder> parent /*= nullptr*/) {
+void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, uint64_t &totalPrice, const std::shared_ptr<Cylinder> &parent /*= nullptr*/) {
 	if (!player) {
 		return;
 	}
@@ -442,7 +442,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	}
 }
 
-void Npc::onPlayerCheckItem(std::shared_ptr<Player> player, uint16_t itemId, uint8_t subType) {
+void Npc::onPlayerCheckItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType) {
 	if (!player) {
 		return;
 	}
@@ -461,8 +461,8 @@ void Npc::onPlayerCheckItem(std::shared_ptr<Player> player, uint16_t itemId, uin
 	}
 }
 
-void Npc::onPlayerCloseChannel(std::shared_ptr<Creature> creature) {
-	std::shared_ptr<Player> player = creature->getPlayer();
+void Npc::onPlayerCloseChannel(const std::shared_ptr<Creature> &creature) {
+	const auto player = creature->getPlayer();
 	if (!player) {
 		return;
 	}
@@ -582,7 +582,7 @@ void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 	playerInteractions[playerId] = topicId;
 }
 
-void Npc::removePlayerInteraction(std::shared_ptr<Player> player) {
+void Npc::removePlayerInteraction(const std::shared_ptr<Player> &player) {
 	if (playerInteractions.contains(player->getID())) {
 		playerInteractions.erase(player->getID());
 		player->closeShopWindow();
@@ -664,7 +664,7 @@ void Npc::closeAllShopWindows() {
 	shopPlayers.clear();
 }
 
-void Npc::handlePlayerMove(std::shared_ptr<Player> player, const Position &newPos) {
+void Npc::handlePlayerMove(const std::shared_ptr<Player> &player, const Position &newPos) {
 	if (!canInteract(newPos)) {
 		removePlayerInteraction(player);
 	}

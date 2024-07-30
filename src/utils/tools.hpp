@@ -27,7 +27,7 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 
 std::string transformToSHA1(const std::string &input);
 
-uint16_t getStashSize(StashItemList itemList);
+uint16_t getStashSize(const StashItemList &itemList);
 
 std::string generateToken(const std::string &secret, uint32_t ticks);
 
@@ -60,7 +60,7 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber);
 int32_t normal_random(int32_t minNumber, int32_t maxNumber);
 bool boolean_random(double probability = 0.5);
 
-BedItemPart_t getBedPart(const std::string_view string);
+BedItemPart_t getBedPart(std::string_view string);
 Direction getDirection(const std::string &string);
 Position getNextPosition(Direction direction, Position pos);
 
@@ -138,7 +138,7 @@ const char* getReturnMessage(ReturnValue value);
 
 void sleep_for(uint64_t ms);
 void capitalizeWords(std::string &source);
-void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore);
+void capitalizeWordsIgnoringString(std::string &source, const std::string &stringToIgnore);
 void consoleHandlerExit();
 NameEval_t validateName(const std::string &name);
 

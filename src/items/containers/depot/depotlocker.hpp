@@ -20,7 +20,7 @@ public:
 		return static_self_cast<DepotLocker>();
 	}
 
-	void removeInbox(std::shared_ptr<Inbox> inbox);
+	void removeInbox(const std::shared_ptr<Inbox> &inbox);
 
 	// serialization
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;

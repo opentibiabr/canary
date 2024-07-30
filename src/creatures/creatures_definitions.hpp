@@ -11,6 +11,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <string>
+	#include <utility>
 	#include <vector>
 	#include <map>
 	#include <list>
@@ -1368,7 +1369,7 @@ struct CreatureIcon {
 	explicit constexpr CreatureIcon(CreatureIconQuests_t quest, uint16_t count = 0) :
 		category(CreatureIconCategory_t::Quests), quest(quest), count(count) { }
 
-	CreatureIconCategory_t category;
+	CreatureIconCategory_t category {};
 	CreatureIconModifications_t modification = CreatureIconModifications_t::None;
 	CreatureIconQuests_t quest = CreatureIconQuests_t::None;
 	uint16_t count = 0;
@@ -1397,7 +1398,7 @@ struct CreatureIcon {
 struct Position;
 
 struct VIPEntry {
-	VIPEntry(uint32_t initGuid, const std::string &initName, const std::string &initDescription, uint32_t initIcon, bool initNotify) :
+	VIPEntry(uint32_t initGuid, std::string initName, std::string initDescription, uint32_t initIcon, bool initNotify) :
 		guid(initGuid),
 		name(std::move(initName)),
 		description(std::move(initDescription)),
@@ -1405,20 +1406,20 @@ struct VIPEntry {
 		notify(initNotify) { }
 
 	uint32_t guid = 0;
-	std::string name = "";
-	std::string description = "";
+	std::string name;
+	std::string description;
 	uint32_t icon = 0;
 	bool notify = false;
 };
 
 struct VIPGroupEntry {
-	VIPGroupEntry(uint8_t initId, const std::string &initName, bool initCustomizable) :
+	VIPGroupEntry(uint8_t initId, std::string initName, bool initCustomizable) :
 		id(initId),
 		name(std::move(initName)),
 		customizable(initCustomizable) { }
 
 	uint8_t id = 0;
-	std::string name = "";
+	std::string name;
 	bool customizable = false;
 };
 
@@ -1485,7 +1486,7 @@ struct MarketOffer {
 
 struct MarketOfferEx {
 	MarketOfferEx() = default;
-	MarketOfferEx(MarketOfferEx &&other) :
+	MarketOfferEx(MarketOfferEx &&other) noexcept :
 		id(other.id),
 		playerId(other.playerId),
 		timestamp(other.timestamp),
@@ -1497,15 +1498,15 @@ struct MarketOfferEx {
 		tier(other.tier),
 		playerName(std::move(other.playerName)) { }
 
-	uint32_t id;
-	uint32_t playerId;
-	uint32_t timestamp;
-	uint64_t price;
-	uint16_t amount;
-	uint16_t counter;
-	uint16_t itemId;
-	MarketAction_t type;
-	uint8_t tier;
+	uint32_t id {};
+	uint32_t playerId {};
+	uint32_t timestamp {};
+	uint64_t price {};
+	uint16_t amount {};
+	uint16_t counter {};
+	uint16_t itemId {};
+	MarketAction_t type {};
+	uint8_t tier {};
 	std::string playerName;
 };
 

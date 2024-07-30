@@ -42,7 +42,7 @@ void DepotLocker::postRemoveNotification(std::shared_ptr<Thing> thing, std::shar
 	}
 }
 
-void DepotLocker::removeInbox(std::shared_ptr<Inbox> inbox) {
+void DepotLocker::removeInbox(const std::shared_ptr<Inbox> &inbox) {
 	auto cit = std::find(itemlist.begin(), itemlist.end(), inbox);
 	if (cit == itemlist.end()) {
 		return;

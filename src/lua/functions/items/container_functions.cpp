@@ -144,7 +144,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 		}
 	}
 
-	uint32_t count = getNumber<uint32_t>(L, 3, 1);
+	auto count = getNumber<uint32_t>(L, 3, 1);
 	const ItemType &it = Item::items[itemId];
 	if (it.stackable) {
 		count = std::min<uint16_t>(count, it.stackSize);
@@ -157,8 +157,8 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 		return 1;
 	}
 
-	int32_t index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
-	uint32_t flags = getNumber<uint32_t>(L, 5, 0);
+	auto index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
+	auto flags = getNumber<uint32_t>(L, 5, 0);
 
 	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
@@ -191,8 +191,8 @@ int ContainerFunctions::luaContainerAddItemEx(lua_State* L) {
 		return 1;
 	}
 
-	int32_t index = getNumber<int32_t>(L, 3, INDEX_WHEREEVER);
-	uint32_t flags = getNumber<uint32_t>(L, 4, 0);
+	auto index = getNumber<int32_t>(L, 3, INDEX_WHEREEVER);
+	auto flags = getNumber<uint32_t>(L, 4, 0);
 	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		ScriptEnvironment::removeTempItem(item);
@@ -231,7 +231,7 @@ int ContainerFunctions::luaContainerGetItemCountById(lua_State* L) {
 		}
 	}
 
-	int32_t subType = getNumber<int32_t>(L, 3, -1);
+	auto subType = getNumber<int32_t>(L, 3, -1);
 	lua_pushnumber(L, container->getItemTypeCount(itemId, subType));
 	return 1;
 }

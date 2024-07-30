@@ -14,7 +14,7 @@ bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 		return false;
 	}
 
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		auto targetCreature = m_targetCreature.lock();
 		g_logger().error(
 			"[CreatureCallback::startScriptInterface] - {} {} Call stack overflow. Too many lua script calls being nested.",
@@ -24,8 +24,7 @@ bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 		return false;
 	}
 
-	scriptInterface
-		->getScriptEnv()
+	LuaScriptInterface::getScriptEnv()
 		->setScriptId(scriptId, scriptInterface);
 
 	L = scriptInterface->getLuaState();
@@ -35,12 +34,12 @@ bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 	return true;
 }
 
-void CreatureCallback::pushSpecificCreature(std::shared_ptr<Creature> creature) {
+void CreatureCallback::pushSpecificCreature(const std::shared_ptr<Creature> &creature) {
 	if (std::shared_ptr<Npc> npc = creature->getNpc()) {
 		LuaScriptInterface::pushUserdata<Npc>(L, npc);
 	} else if (std::shared_ptr<Monster> monster = creature->getMonster()) {
 		LuaScriptInterface::pushUserdata<Monster>(L, monster);
-	} else if (std::shared_ptr<Player> player = creature->getPlayer()) {
+	} else if (const auto player = creature->getPlayer()) {
 		LuaScriptInterface::pushUserdata<Player>(L, player);
 	} else {
 		return;
@@ -50,7 +49,7 @@ void CreatureCallback::pushSpecificCreature(std::shared_ptr<Creature> creature) 
 	LuaScriptInterface::setMetatable(L, -1, getCreatureClass(creature));
 }
 
-std::string CreatureCallback::getCreatureClass(std::shared_ptr<Creature> creature) {
+std::string CreatureCallback::getCreatureClass(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		return "";
 	}

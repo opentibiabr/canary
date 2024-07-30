@@ -31,7 +31,7 @@ std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
 	return std::make_shared<Monster>(mType);
 }
 
-Monster::Monster(const std::shared_ptr<MonsterType> mType) :
+Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
 	Creature(),
 	nameDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
@@ -496,7 +496,7 @@ void Monster::clearFriendList() {
 	friendList.clear();
 }
 
-void Monster::onCreatureFound(std::shared_ptr<Creature> creature, bool pushFront /* = false*/) {
+void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
 	if (isFriend(creature)) {
 		addFriend(creature);
 	}
@@ -508,8 +508,8 @@ void Monster::onCreatureFound(std::shared_ptr<Creature> creature, bool pushFront
 	updateIdleStatus();
 }
 
-void Monster::onCreatureEnter(std::shared_ptr<Creature> creature) {
-	onCreatureFound(std::move(creature), true);
+void Monster::onCreatureEnter(const std::shared_ptr<Creature> &creature) {
+	onCreatureFound(creature, true);
 }
 
 bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
@@ -556,7 +556,7 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 	return false;
 }
 
-void Monster::onCreatureLeave(std::shared_ptr<Creature> creature) {
+void Monster::onCreatureLeave(const std::shared_ptr<Creature> &creature) {
 	// update friendList
 	if (isFriend(creature)) {
 		removeFriend(creature);
@@ -740,7 +740,7 @@ BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t c
 		}
 
 		// Wheel of destiny
-		std::shared_ptr<Player> player = attacker ? attacker->getPlayer() : nullptr;
+		const auto player = attacker ? attacker->getPlayer() : nullptr;
 		if (player && player->wheel()->getInstant("Ballistic Mastery")) {
 			elementMod -= player->wheel()->checkElementSensitiveReduction(combatType);
 		}
@@ -757,7 +757,7 @@ BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t c
 	return blockType;
 }
 
-bool Monster::isTarget(std::shared_ptr<Creature> creature) {
+bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
 	if (creature->isRemoved() || !creature->isAttackable() || creature->getZoneType() == ZONE_PROTECTION || !canSeeCreature(creature)) {
 		return false;
 	}
@@ -1206,7 +1206,7 @@ void Monster::onThinkSound(uint32_t interval) {
 	}
 }
 
-bool Monster::pushItem(std::shared_ptr<Item> item, const Direction &nextDirection) {
+bool Monster::pushItem(const std::shared_ptr<Item> &item, const Direction &nextDirection) {
 	const Position &centerPos = item->getPosition();
 	for (const auto &[x, y] : getPushItemLocationOptions(nextDirection)) {
 		Position tryPos(centerPos.x + x, centerPos.y + y, centerPos.z);
@@ -1218,7 +1218,7 @@ bool Monster::pushItem(std::shared_ptr<Item> item, const Direction &nextDirectio
 	return false;
 }
 
-void Monster::pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirection) {
+void Monster::pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection) {
 	// We can not use iterators here since we can push the item to another tile
 	// which will invalidate the iterator.
 	// start from the end to minimize the amount of traffic
@@ -1242,7 +1242,7 @@ void Monster::pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirecti
 	}
 }
 
-bool Monster::pushCreature(std::shared_ptr<Creature> creature) {
+bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 	static std::vector<Direction> dirList {
 		DIRECTION_NORTH,
 		DIRECTION_WEST, DIRECTION_EAST,
@@ -1260,7 +1260,7 @@ bool Monster::pushCreature(std::shared_ptr<Creature> creature) {
 	return false;
 }
 
-void Monster::pushCreatures(std::shared_ptr<Tile> tile) {
+void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 	// We can not use iterators here since we can push a creature to another tile
 	// which will invalidate the iterator.
 	if (CreatureVector* creatures = tile->getCreatures()) {
@@ -2189,7 +2189,7 @@ bool Monster::challengeCreature(std::shared_ptr<Creature> creature, int targetCh
 		challengeFocusDuration = targetChangeCooldown;
 		targetChangeTicks = 0;
 		// Wheel of destiny
-		std::shared_ptr<Player> player = creature ? creature->getPlayer() : nullptr;
+		const auto player = creature ? creature->getPlayer() : nullptr;
 		if (player && !player->isRemoved()) {
 			player->wheel()->healIfBattleHealingActive();
 		}

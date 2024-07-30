@@ -75,7 +75,7 @@ protected:
 	std::string getScriptBaseName() const override;
 	Event_ptr getEvent(const std::string &nodeName) override;
 	bool registerEvent(const Event_ptr &event, const pugi::xml_node &node) override;
-	void clear() override final;
+	void clear() final;
 
 	using ModulesList = std::map<uint8_t, Module_ptr>;
 	ModulesList recvbyteList;

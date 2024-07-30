@@ -210,7 +210,7 @@ void Map::refreshZones(uint16_t x, uint16_t y, uint8_t z) {
 	}
 }
 
-void Map::setTile(uint16_t x, uint16_t y, uint8_t z, std::shared_ptr<Tile> newTile) {
+void Map::setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile> &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
 		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
@@ -223,7 +223,7 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, std::shared_ptr<Tile> newTi
 	}
 }
 
-bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
+bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creature> &creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
 	auto monster = creature->getMonster();
 	if (monster) {
 		monster->ignoreFieldDamage = true;

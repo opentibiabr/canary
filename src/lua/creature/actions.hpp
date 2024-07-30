@@ -21,7 +21,7 @@ public:
 	explicit Action(LuaScriptInterface* interface);
 
 	// Scripting
-	virtual bool executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &fromPosition, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey);
+	virtual bool executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &fromPosition, const std::shared_ptr<Thing> &target, const Position &toPosition, bool isHotkey);
 
 	bool getAllowFarUse() const {
 		return allowFarUse;
@@ -96,13 +96,13 @@ public:
 		positions.emplace_back(pos);
 	}
 
-	virtual ReturnValue canExecuteAction(std::shared_ptr<Player> player, const Position &toPos);
+	virtual ReturnValue canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos);
 
 	virtual bool hasOwnErrorHandler() {
 		return false;
 	}
 
-	virtual std::shared_ptr<Thing> getTarget(std::shared_ptr<Player> player, std::shared_ptr<Creature> targetCreature, const Position &toPosition, uint8_t toStackPos) const;
+	virtual std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> targetCreature, const Position &toPosition, uint8_t toStackPos) const;
 
 private:
 	std::string getScriptTypeName() const override {
@@ -147,7 +147,7 @@ public:
 	bool useItemEx(const std::shared_ptr<Player> &player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, const std::shared_ptr<Item> &item, bool isHotkey, const std::shared_ptr<Creature> &creature = nullptr);
 
 	ReturnValue canUse(const std::shared_ptr<Player> &player, const Position &pos);
-	ReturnValue canUse(std::shared_ptr<Player> player, const Position &pos, const std::shared_ptr<Item> &item);
+	ReturnValue canUse(const std::shared_ptr<Player> &player, const Position &pos, const std::shared_ptr<Item> &item);
 	ReturnValue canUseFar(const std::shared_ptr<Creature> &creature, const Position &toPos, bool checkLineOfSight, bool checkFloor);
 
 	bool registerLuaItemEvent(const std::shared_ptr<Action> &action);

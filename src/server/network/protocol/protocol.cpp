@@ -57,7 +57,7 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 
 bool Protocol::onRecvMessage(NetworkMessage &msg) {
 	if (checksumMethod != CHECKSUM_METHOD_NONE) {
-		uint32_t recvChecksum = msg.get<uint32_t>();
+		auto recvChecksum = msg.get<uint32_t>();
 		if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
 			if (recvChecksum == 0) {
 				// checksum 0 indicate that the packet should be connection ping - 0x1C packet header
@@ -169,7 +169,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 		readPos += 8;
 	}
 
-	uint16_t innerLength = msg.get<uint16_t>();
+	auto innerLength = msg.get<uint16_t>();
 	if (std::cmp_greater(innerLength, msgLength - 2)) {
 		return false;
 	}
@@ -202,7 +202,9 @@ bool Protocol::compression(OutputMessage &msg) const {
 		return false;
 	}
 
-	static const thread_local auto &compress = std::make_unique<ZStream>();
+	static thread_local auto compress_ptr = std::make_unique<ZStream>();
+	static const auto &compress = compress_ptr;
+
 	if (!compress->stream) {
 		return false;
 	}

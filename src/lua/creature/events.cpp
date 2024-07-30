@@ -593,7 +593,7 @@ void Events::eventPlayerOnLook(const std::shared_ptr<Player> &player, const Posi
 	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
 		LuaScriptInterface::pushUserdata<Creature>(L, creature);
 		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-	} else if (std::shared_ptr<Item> item = thing->getItem()) {
+	} else if (const auto item = thing->getItem()) {
 		LuaScriptInterface::pushUserdata<Item>(L, item);
 		LuaScriptInterface::setItemMetatable(L, -1, item);
 	} else {
@@ -731,7 +731,7 @@ bool Events::eventPlayerOnRemoveCount(const std::shared_ptr<Player> &player, con
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPlayerOnMoveItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
+bool Events::eventPlayerOnMoveItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, const std::shared_ptr<Cylinder> &fromCylinder, const std::shared_ptr<Cylinder> &toCylinder) {
 	// Player:onMoveItem(item, count, fromPosition, toPosition) or Player.onMoveItem(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if (info.playerOnMoveItem == -1) {
 		return true;
@@ -761,13 +761,13 @@ bool Events::eventPlayerOnMoveItem(const std::shared_ptr<Player> &player, const 
 	LuaScriptInterface::pushPosition(L, fromPosition);
 	LuaScriptInterface::pushPosition(L, toPosition);
 
-	LuaScriptInterface::pushCylinder(L, std::move(fromCylinder));
-	LuaScriptInterface::pushCylinder(L, std::move(toCylinder));
+	LuaScriptInterface::pushCylinder(L, fromCylinder);
+	LuaScriptInterface::pushCylinder(L, toCylinder);
 
 	return scriptInterface.callFunction(7);
 }
 
-void Events::eventPlayerOnItemMoved(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) {
+void Events::eventPlayerOnItemMoved(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, const std::shared_ptr<Cylinder> &fromCylinder, const std::shared_ptr<Cylinder> &toCylinder) {
 	// Player:onItemMoved(item, count, fromPosition, toPosition) or Player.onItemMoved(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if (info.playerOnItemMoved == -1) {
 		return;
@@ -797,8 +797,8 @@ void Events::eventPlayerOnItemMoved(const std::shared_ptr<Player> &player, const
 	LuaScriptInterface::pushPosition(L, fromPosition);
 	LuaScriptInterface::pushPosition(L, toPosition);
 
-	LuaScriptInterface::pushCylinder(L, std::move(fromCylinder));
-	LuaScriptInterface::pushCylinder(L, std::move(toCylinder));
+	LuaScriptInterface::pushCylinder(L, fromCylinder);
+	LuaScriptInterface::pushCylinder(L, toCylinder);
 
 	scriptInterface.callVoidFunction(7);
 }
@@ -1247,7 +1247,7 @@ void Events::eventPlayerOnRequestQuestLine(const std::shared_ptr<Player> &player
 	scriptInterface.callVoidFunction(2);
 }
 
-void Events::eventPlayerOnInventoryUpdate(std::shared_ptr<Player> player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) {
+void Events::eventPlayerOnInventoryUpdate(const auto player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) {
 	// Player:onInventoryUpdate(item, slot, equip)
 	if (info.playerOnInventoryUpdate == -1) {
 		return;

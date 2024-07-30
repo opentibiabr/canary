@@ -60,7 +60,7 @@ public:
 
 	BaseImbuement* getBaseByID(uint16_t id);
 	CategoryImbuement* getCategoryByID(uint16_t id);
-	std::vector<Imbuement*> getImbuements(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
+	std::vector<Imbuement*> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item);
 
 protected:
 	friend class Imbuement;
@@ -94,7 +94,7 @@ public:
 		return storage;
 	}
 
-	bool isPremium() {
+	bool isPremium() const {
 		return premium;
 	}
 	std::string getName() const {
@@ -116,7 +116,7 @@ public:
 		return items;
 	}
 
-	uint16_t getIconID() {
+	uint16_t getIconID() const {
 		return icon + (baseid - 1);
 	}
 
@@ -139,7 +139,7 @@ private:
 	bool premium = false;
 	uint32_t storage = 0;
 	uint16_t id, baseid, category = 0;
-	std::string name, description, subgroup = "";
+	std::string name, description, subgroup;
 
 	std::vector<std::pair<uint16_t, uint16_t>> items;
 };

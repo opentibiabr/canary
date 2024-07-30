@@ -229,13 +229,13 @@ public:
 	bool checkBallisticMastery();
 	bool checkCombatMastery();
 	bool checkDivineEmpowerment();
-	int32_t checkDrainBodyLeech(std::shared_ptr<Creature> target, skills_t skill) const;
+	int32_t checkDrainBodyLeech(const std::shared_ptr<Creature> &target, skills_t skill) const;
 	int32_t checkBeamMasteryDamage() const;
 	int32_t checkBattleHealingAmount() const;
-	int32_t checkBlessingGroveHealingByTarget(std::shared_ptr<Creature> target) const;
-	int32_t checkTwinBurstByTarget(std::shared_ptr<Creature> target) const;
-	int32_t checkExecutionersThrow(std::shared_ptr<Creature> target) const;
-	int32_t checkDivineGrenade(std::shared_ptr<Creature> target) const;
+	int32_t checkBlessingGroveHealingByTarget(const std::shared_ptr<Creature> &target) const;
+	int32_t checkTwinBurstByTarget(const std::shared_ptr<Creature> &target) const;
+	int32_t checkExecutionersThrow(const std::shared_ptr<Creature> &target) const;
+	int32_t checkDivineGrenade(const std::shared_ptr<Creature> &target) const;
 	int32_t checkAvatarSkill(WheelAvatarSkill_t skill) const;
 	int32_t checkFocusMasteryDamage();
 	int32_t checkElementSensitiveReduction(CombatType_t type) const;
@@ -322,7 +322,7 @@ public:
 	// Wheel of destiny - Header get:
 	bool getInstant(WheelInstant_t type) const;
 	bool getHealingLinkUpgrade(const std::string &spell) const;
-	uint8_t getStage(const std::string name) const;
+	uint8_t getStage(const std::string &name) const;
 	uint8_t getStage(WheelStage_t type) const;
 	WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 	int32_t getMajorStat(WheelMajor_t type) const;
@@ -330,7 +330,7 @@ public:
 	int32_t getResistance(CombatType_t type) const;
 	int32_t getMajorStatConditional(const std::string &instant, WheelMajor_t major) const;
 	int64_t getOnThinkTimer(WheelOnThink_t type) const;
-	bool getInstant(const std::string name) const;
+	bool getInstant(const std::string &name) const;
 	double getMitigationMultiplier() const;
 
 	// Wheel of destiny - Specific functions

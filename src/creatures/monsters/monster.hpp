@@ -22,7 +22,7 @@ public:
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
-	explicit Monster(std::shared_ptr<MonsterType> mType);
+	explicit Monster(const std::shared_ptr<MonsterType> &mType);
 
 	// non-copyable
 	Monster(const Monster &) = delete;
@@ -221,7 +221,7 @@ public:
 		return list;
 	}
 
-	bool isTarget(std::shared_ptr<Creature> creature);
+	bool isTarget(const std::shared_ptr<Creature> &creature);
 	bool isFleeing() const {
 		return !isSummon() && getHealth() <= runAwayHealth && challengeFocusDuration <= 0 && challengeMeleeDuration <= 0;
 	}
@@ -427,9 +427,9 @@ private:
 	bool m_isDead = false;
 	bool m_isImmune = false;
 
-	void onCreatureEnter(std::shared_ptr<Creature> creature);
-	void onCreatureLeave(std::shared_ptr<Creature> creature);
-	void onCreatureFound(std::shared_ptr<Creature> creature, bool pushFront = false);
+	void onCreatureEnter(const std::shared_ptr<Creature> &creature);
+	void onCreatureLeave(const std::shared_ptr<Creature> &creature);
+	void onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront = false);
 
 	void updateLookDirection();
 
@@ -458,10 +458,10 @@ private:
 	bool isInSpawnRange(const Position &pos) const;
 	bool canWalkTo(Position pos, Direction direction);
 
-	static bool pushItem(std::shared_ptr<Item> item, const Direction &nextDirection);
-	static void pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirection);
-	static bool pushCreature(std::shared_ptr<Creature> creature);
-	static void pushCreatures(std::shared_ptr<Tile> tile);
+	static bool pushItem(const std::shared_ptr<Item> &item, const Direction &nextDirection);
+	static void pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection);
+	static bool pushCreature(const std::shared_ptr<Creature> &creature);
+	static void pushCreatures(const std::shared_ptr<Tile> &tile);
 
 	void onThinkTarget(uint32_t interval);
 	void onThinkYell(uint32_t interval);

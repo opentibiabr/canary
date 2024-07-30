@@ -47,7 +47,7 @@ std::shared_ptr<Cylinder> Teleport::queryDestination(int32_t &, const std::share
 	return getTeleport();
 }
 
-bool Teleport::checkInfinityLoop(std::shared_ptr<Tile> destTile) {
+bool Teleport::checkInfinityLoop(const std::shared_ptr<Tile> &destTile) {
 	if (!destTile) {
 		return false;
 	}
@@ -95,7 +95,7 @@ void Teleport::addThing(int32_t, std::shared_ptr<Thing> thing) {
 			g_game().addMagicEffect(origPos, effect);
 			g_game().addMagicEffect(destTile->getPosition(), effect);
 		}
-	} else if (std::shared_ptr<Item> item = thing->getItem()) {
+	} else if (const auto item = thing->getItem()) {
 		if (effect != CONST_ME_NONE) {
 			g_game().addMagicEffect(destTile->getPosition(), effect);
 			g_game().addMagicEffect(item->getPosition(), effect);

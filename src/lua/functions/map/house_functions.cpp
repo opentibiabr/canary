@@ -137,7 +137,7 @@ int HouseFunctions::luaHouseSetNewOwnerGuid(lua_State* L) {
 			return 1;
 		}
 
-		uint32_t guid = getNumber<uint32_t>(L, 2, 0);
+		auto guid = getNumber<uint32_t>(L, 2, 0);
 		house->setNewOwnerGuid(guid, false);
 		pushBoolean(L, true);
 	} else {

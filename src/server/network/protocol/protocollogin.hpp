@@ -24,10 +24,10 @@ public:
 		return "login protocol";
 	}
 
-	explicit ProtocolLogin(Connection_ptr loginConnection) :
+	explicit ProtocolLogin(const Connection_ptr &loginConnection) :
 		Protocol(loginConnection) { }
 
-	void onRecvFirstMessage(NetworkMessage &msg);
+	void onRecvFirstMessage(NetworkMessage &msg) override;
 
 private:
 	void disconnectClient(const std::string &message);

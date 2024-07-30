@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include <utility>
+
 #include "pch.hpp"
 
 #include "kv/value_wrapper.hpp"
@@ -15,8 +17,8 @@
 ValueWrapper::ValueWrapper(uint64_t timestamp) :
 	timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
 
-ValueWrapper::ValueWrapper(const ValueVariant &value, uint64_t timestamp) :
-	data_(value), timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
+ValueWrapper::ValueWrapper(ValueVariant value, uint64_t timestamp) :
+	data_(std::move(value)), timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
 
 ValueWrapper::ValueWrapper(const std::string &value, uint64_t timestamp) :
 	data_(value), timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }

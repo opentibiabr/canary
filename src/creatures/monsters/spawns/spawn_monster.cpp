@@ -166,7 +166,7 @@ bool SpawnMonster::isInSpawnMonsterZone(const Position &pos) {
 	return SpawnsMonster::isInZone(centerPos, radius, pos);
 }
 
-bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> monsterType, bool startup /*= false*/) {
+bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> &monsterType, bool startup /*= false*/) {
 	if (spawnedMonsterMap.contains(spawnMonsterId)) {
 		return false;
 	}
@@ -272,7 +272,7 @@ void SpawnMonster::checkSpawnMonster() {
 	}
 }
 
-void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> mType, uint16_t interval, bool startup /*= false*/) {
+void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> &mType, uint16_t interval, bool startup /*= false*/) {
 	if (interval <= 0) {
 		spawnMonster(spawnMonsterId, sb, mType, startup);
 	} else {
@@ -361,7 +361,7 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 	return true;
 }
 
-void SpawnMonster::removeMonster(std::shared_ptr<Monster> monster) {
+void SpawnMonster::removeMonster(const std::shared_ptr<Monster> &monster) {
 	uint32_t spawnMonsterId = 0;
 	for (const auto &[id, m] : spawnedMonsterMap) {
 		if (m == monster) {

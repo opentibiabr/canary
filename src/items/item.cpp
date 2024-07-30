@@ -100,7 +100,7 @@ void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 }
 
 void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
-	std::shared_ptr<Player> player = getHoldingPlayer();
+	const auto player = getHoldingPlayer();
 	if (!player) {
 		return;
 	}
@@ -226,7 +226,7 @@ Item::Item(const std::shared_ptr<Item> &i) :
 }
 
 std::shared_ptr<Item> Item::clone() const {
-	std::shared_ptr<Item> item = Item::CreateItem(id, count);
+	const auto item = Item::CreateItem(id, count);
 	if (item == nullptr) {
 		g_logger().error("[{}] item is nullptr", __FUNCTION__);
 		return nullptr;
@@ -239,7 +239,7 @@ std::shared_ptr<Item> Item::clone() const {
 	return item;
 }
 
-bool Item::equals(std::shared_ptr<Item> compareItem) const {
+bool Item::equals(const std::shared_ptr<Item> &compareItem) const {
 	if (!compareItem) {
 		return false;
 	}
@@ -396,7 +396,7 @@ bool Item::isItemStorable() const {
 	if (isStoreItem() || hasOwner()) {
 		return false;
 	}
-	auto isContainerAndHasSomethingInside = (getContainer() != NULL) && (getContainer()->getItemList().size() > 0);
+	auto isContainerAndHasSomethingInside = (getContainer() != nullptr) && (!getContainer()->getItemList().empty());
 	return (isStowable() || isContainerAndHasSomethingInside);
 }
 
@@ -888,7 +888,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.writeString(text);
 	}
 
-	if (const uint64_t writtenDate = getAttribute<uint64_t>(ItemAttribute_t::DATE)) {
+	if (const auto writtenDate = getAttribute<uint64_t>(ItemAttribute_t::DATE)) {
 		propWriteStream.write<uint8_t>(ATTR_WRITTENDATE);
 		propWriteStream.write<uint64_t>(writtenDate);
 	}
@@ -1027,7 +1027,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 	}
 }
 
-void Item::setOwner(std::shared_ptr<Creature> owner) {
+void Item::setOwner(const std::shared_ptr<Creature> &owner) {
 	auto ownerId = owner->getID();
 	if (owner->getPlayer()) {
 		ownerId = owner->getPlayer()->getGUID();
@@ -1035,7 +1035,7 @@ void Item::setOwner(std::shared_ptr<Creature> owner) {
 	setOwner(ownerId);
 }
 
-bool Item::isOwner(std::shared_ptr<Creature> owner) const {
+bool Item::isOwner(const std::shared_ptr<Creature> &owner) const {
 	if (!owner) {
 		return false;
 	}
@@ -1133,7 +1133,7 @@ uint32_t Item::getWeight() const {
 }
 
 std::vector<std::pair<std::string, std::string>>
-Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr*/) {
+Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= nullptr*/) {
 	std::ostringstream ss;
 	std::vector<std::pair<std::string, std::string>> descriptions;
 	bool isTradeable = true;
@@ -1412,7 +1412,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			for (uint8_t i = 0; i < item->getImbuementSlot(); ++i) {
 				slotName = fmt::format("Imbuement Slot {}", i + 1);
 				ss.str("");
-				const auto castItem = item;
+				const auto &castItem = item;
 				if (!castItem) {
 					continue;
 				}
@@ -1907,7 +1907,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 	return descriptions;
 }
 
-std::string Item::parseImbuementDescription(std::shared_ptr<Item> item) {
+std::string Item::parseImbuementDescription(const std::shared_ptr<Item> &item) {
 	std::ostringstream s;
 	if (item && item->getImbuementSlot() >= 1) {
 		s << std::endl
@@ -1944,7 +1944,7 @@ bool Item::isSavedToHouses() {
 	return it.movable || it.isWrappable() || it.isCarpet() || getDoor() || (getContainer() && !getContainer()->empty()) || it.canWriteText || getBed() || it.m_transformOnUse;
 }
 
-SoundEffect_t Item::getMovementSound(std::shared_ptr<Cylinder> toCylinder) const {
+SoundEffect_t Item::getMovementSound(const std::shared_ptr<Cylinder> &toCylinder) const {
 	if (!toCylinder) {
 		return SoundEffect_t::ITEM_MOVE_DEFAULT;
 	}
@@ -2006,7 +2006,7 @@ SoundEffect_t Item::getMovementSound(std::shared_ptr<Cylinder> toCylinder) const
 	return SoundEffect_t::ITEM_MOVE_DEFAULT;
 }
 
-std::string Item::parseClassificationDescription(std::shared_ptr<Item> item) {
+std::string Item::parseClassificationDescription(const std::shared_ptr<Item> &item) {
 	std::ostringstream string;
 	if (item && item->getClassification() >= 1) {
 		string << std::endl
@@ -2039,7 +2039,7 @@ std::string Item::parseShowDurationSpeed(int32_t speed, bool &begin) {
 	return description.str();
 }
 
-std::string Item::parseShowDuration(std::shared_ptr<Item> item) {
+std::string Item::parseShowDuration(const std::shared_ptr<Item> &item) {
 	if (!item) {
 		return {};
 	}
@@ -2082,7 +2082,7 @@ std::string Item::parseShowDuration(std::shared_ptr<Item> item) {
 	return description.str();
 }
 
-std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, const uint16_t itemId) {
+std::string Item::parseShowAttributesDescription(const std::shared_ptr<Item> &item, const uint16_t itemId) {
 	std::ostringstream itemDescription;
 	const ItemType &itemType = Item::items[itemId];
 
@@ -2310,8 +2310,8 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 	return itemDescription.str();
 }
 
-std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::shared_ptr<Item> item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
-	std::string text = "";
+std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const std::shared_ptr<Item> &item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
+	std::string text;
 
 	std::ostringstream s;
 	s << getNameDescription(it, item, subType, addArticle);
@@ -3078,7 +3078,7 @@ std::string Item::getDescription(int32_t lookDistance) {
 	return getDescription(it, lookDistance, getItem());
 }
 
-std::string Item::getNameDescription(const ItemType &it, std::shared_ptr<Item> item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
+std::string Item::getNameDescription(const ItemType &it, const std::shared_ptr<Item> &item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
 	if (item) {
 		subType = item->getSubType();
 	}
@@ -3144,7 +3144,7 @@ std::string Item::getWeightDescription(uint32_t weight) const {
 std::string Item::getWeightDescription() const {
 	uint32_t weight = getWeight();
 	if (weight == 0) {
-		return std::string();
+		return {};
 	}
 	return getWeightDescription(weight);
 }

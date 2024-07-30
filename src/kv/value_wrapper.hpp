@@ -33,7 +33,7 @@ using ValueVariant = std::variant<StringType, BooleanType, IntType, DoubleType, 
 class ValueWrapper {
 public:
 	explicit ValueWrapper(uint64_t timestamp = 0);
-	explicit(false) ValueWrapper(const ValueVariant &value, uint64_t timestamp = 0);
+	explicit(false) ValueWrapper(ValueVariant value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const std::string &value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(bool value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(int value, uint64_t timestamp = 0);

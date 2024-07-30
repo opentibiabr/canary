@@ -10,12 +10,29 @@
 #pragma once
 #include "utils/tools.hpp"
 #include <unordered_set>
+#include <source_location>
 
 class Task {
 public:
-	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context);
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context, const std::source_location &location = std::source_location::current()) :
+		func(std::move(f)), context(context), functionName(location.function_name()), utime(OTSYS_TIME()),
+		expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
+		if (this->context.empty()) {
+			g_logger().error("[{}]: task context cannot be empty! Function: {}", __FUNCTION__, functionName);
+			return;
+		}
+		assert(!this->context.empty() && "Context cannot be empty!");
+	}
 
-	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true);
+	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true, const std::source_location &location = std::source_location::current()) :
+		func(std::move(f)), context(context), functionName(location.function_name()), utime(OTSYS_TIME() + delay), delay(delay),
+		cycle(cycle), log(log) {
+		if (this->context.empty()) {
+			g_logger().error("[{}]: task context cannot be empty! Function: {}", __FUNCTION__, functionName);
+			return;
+		}
+		assert(!this->context.empty() && "Context cannot be empty!");
+	}
 
 	~Task() = default;
 
@@ -24,10 +41,8 @@ public:
 			if (++LAST_EVENT_ID == 0) {
 				LAST_EVENT_ID = 1;
 			}
-
 			id = LAST_EVENT_ID;
 		}
-
 		return id;
 	}
 
@@ -37,6 +52,10 @@ public:
 
 	std::string_view getContext() const {
 		return context;
+	}
+
+	std::string_view getFunctionName() const {
+		return functionName;
 	}
 
 	auto getTime() const {
@@ -93,7 +112,6 @@ private:
 		                                                                        "SpawnNpc::checkSpawnNpc",
 		                                                                        "Webhook::run",
 		                                                                        "Protocol::sendRecvMessageCallback" });
-
 		return tasksContext.contains(context);
 	}
 
@@ -105,6 +123,7 @@ private:
 
 	std::function<void(void)> func = nullptr;
 	std::string context;
+	std::string functionName;
 
 	int64_t utime = 0;
 	int64_t expiration = 0;

@@ -215,27 +215,27 @@ private:
 class Item : virtual public Thing, public ItemProperties, public SharedObject {
 public:
 	// Factory member to create item of right type based on type
-	static std::shared_ptr<Item> CreateItem(const uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
-	static std::shared_ptr<Container> CreateItemAsContainer(const uint16_t type, uint16_t size);
+	static std::shared_ptr<Item> CreateItem(uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
+	static std::shared_ptr<Container> CreateItemAsContainer(uint16_t type, uint16_t size);
 	static std::shared_ptr<Item> CreateItem(uint16_t itemId, Position &itemPosition);
 	static Items items;
 
 	// Constructor for items
-	Item(const uint16_t type, uint16_t count = 0);
-	Item(const std::shared_ptr<Item> &i);
+	explicit Item(uint16_t type, uint16_t count = 0);
+	explicit Item(const std::shared_ptr<Item> &i);
 	virtual std::shared_ptr<Item> clone() const;
 
-	virtual ~Item() = default;
+	~Item() override = default;
 
 	// non-assignable
 	Item &operator=(const Item &) = delete;
 
-	bool equals(std::shared_ptr<Item> compareItem) const;
+	bool equals(const std::shared_ptr<Item> &compareItem) const;
 
-	std::shared_ptr<Item> getItem() override final {
+	std::shared_ptr<Item> getItem() final {
 		return static_self_cast<Item>();
 	}
-	std::shared_ptr<const Item> getItem() const override final {
+	std::shared_ptr<const Item> getItem() const final {
 		return static_self_cast<Item>();
 	}
 	virtual std::shared_ptr<Teleport> getTeleport() {
@@ -259,7 +259,7 @@ public:
 
 	bool isSavedToHouses();
 
-	SoundEffect_t getMovementSound(std::shared_ptr<Cylinder> toCylinder) const;
+	SoundEffect_t getMovementSound(const std::shared_ptr<Cylinder> &toCylinder) const;
 
 	void setIsLootTrackeable(bool value) {
 		isLootTrackeable = value;
@@ -273,7 +273,7 @@ public:
 		setAttribute(ItemAttribute_t::OWNER, owner);
 	}
 
-	void setOwner(std::shared_ptr<Creature> owner);
+	void setOwner(const std::shared_ptr<Creature> &owner);
 
 	virtual uint32_t getOwnerId() const;
 
@@ -281,7 +281,7 @@ public:
 
 	std::string getOwnerName() const;
 
-	bool isOwner(std::shared_ptr<Creature> owner) const;
+	bool isOwner(const std::shared_ptr<Creature> &owner) const;
 
 	bool hasOwner() const {
 		return getOwnerId() != 0;
@@ -291,24 +291,24 @@ public:
 		return isStoreItem() || hasOwner();
 	}
 
-	static std::string parseAugmentDescription(std::shared_ptr<Item> item, bool inspect = false) {
+	static std::string parseAugmentDescription(const std::shared_ptr<Item> &item, bool inspect = false) {
 		if (!item) {
 			return "";
 		}
 		return items[item->getID()].parseAugmentDescription(inspect);
 	}
-	static std::string parseImbuementDescription(std::shared_ptr<Item> item);
+	static std::string parseImbuementDescription(const std::shared_ptr<Item> &item);
 	static std::string parseShowDurationSpeed(int32_t speed, bool &begin);
-	static std::string parseShowDuration(std::shared_ptr<Item> item);
-	static std::string parseShowAttributesDescription(std::shared_ptr<Item> item, const uint16_t itemId);
-	static std::string parseClassificationDescription(std::shared_ptr<Item> item);
+	static std::string parseShowDuration(const std::shared_ptr<Item> &item);
+	static std::string parseShowAttributesDescription(const std::shared_ptr<Item> &item, uint16_t itemId);
+	static std::string parseClassificationDescription(const std::shared_ptr<Item> &item);
 
-	static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType &it, std::shared_ptr<Item> item = nullptr);
-	static std::string getDescription(const ItemType &it, int32_t lookDistance, std::shared_ptr<Item> item = nullptr, int32_t subType = -1, bool addArticle = true);
-	static std::string getNameDescription(const ItemType &it, std::shared_ptr<Item> item = nullptr, int32_t subType = -1, bool addArticle = true);
+	static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item = nullptr);
+	static std::string getDescription(const ItemType &it, int32_t lookDistance, const std::shared_ptr<Item> &item = nullptr, int32_t subType = -1, bool addArticle = true);
+	static std::string getNameDescription(const ItemType &it, const std::shared_ptr<Item> &item = nullptr, int32_t subType = -1, bool addArticle = true);
 	static std::string getWeightDescription(const ItemType &it, uint32_t weight, uint32_t count = 1);
 
-	std::string getDescription(int32_t lookDistance) override final;
+	std::string getDescription(int32_t lookDistance) final;
 	std::string getNameDescription();
 	std::string getWeightDescription() const;
 
@@ -319,10 +319,10 @@ public:
 
 	virtual void serializeAttr(PropWriteStream &propWriteStream) const;
 
-	bool isPushable() override final {
+	bool isPushable() final {
 		return isMovable();
 	}
-	int32_t getThrowRange() const override final {
+	int32_t getThrowRange() const final {
 		return (isPickupable() ? 15 : 2);
 	}
 
@@ -428,7 +428,7 @@ public:
 	std::vector<std::shared_ptr<AugmentInfo>> getAugments() const {
 		return items[id].augments;
 	}
-	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellNameAndType(std::string spellName, Augment_t augmentType) const {
+	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellNameAndType(const std::string &spellName, Augment_t augmentType) const {
 		std::vector<std::shared_ptr<AugmentInfo>> augments;
 		for (auto &augment : items[id].augments) {
 			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0 && augment->type == augmentType) {
@@ -438,7 +438,7 @@ public:
 
 		return augments;
 	}
-	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellName(std::string spellName) const {
+	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellName(const std::string &spellName) const {
 		std::vector<std::shared_ptr<AugmentInfo>> augments;
 		for (auto &augment : items[id].augments) {
 			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0) {
@@ -565,7 +565,7 @@ public:
 		}
 		return items[id].name;
 	}
-	const std::string getPluralName() const {
+	std::string getPluralName() const {
 		if (hasAttribute(ItemAttribute_t::PLURALNAME)) {
 			return getString(ItemAttribute_t::PLURALNAME);
 		}
@@ -597,7 +597,7 @@ public:
 		count = n;
 	}
 
-	static uint32_t countByType(std::shared_ptr<Item> item, int32_t subType) {
+	static uint32_t countByType(const std::shared_ptr<Item> &item, int32_t subType) {
 		if (subType == -1 || subType == item->getSubType()) {
 			return item->getItemCount();
 		}
@@ -691,7 +691,7 @@ public:
 	void clearImbuement(uint8_t slot, uint16_t imbuementId) {
 		return setImbuement(slot, imbuementId, 0);
 	}
-	bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) {
+	bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) const {
 		auto it = items[id].imbuementTypes.find(imbuementType);
 		if (it != items[id].imbuementTypes.end()) {
 			return (it->second >= imbuementTier);

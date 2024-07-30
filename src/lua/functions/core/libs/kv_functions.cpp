@@ -96,7 +96,7 @@ int KVFunctions::luaKVRemove(lua_State* L) {
 int KVFunctions::luaKVKeys(lua_State* L) {
 	// KV.keys([prefix = ""]) | scopedKV:keys([prefix = ""])
 	std::unordered_set<std::string> keys;
-	std::string prefix = "";
+	std::string prefix;
 
 	if (isString(L, -1)) {
 		prefix = getString(L, -1);

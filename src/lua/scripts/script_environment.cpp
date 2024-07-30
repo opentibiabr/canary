@@ -34,7 +34,7 @@ void ScriptEnvironment::resetEnv() {
 	auto pair = tempItems.equal_range(this);
 	auto it = pair.first;
 	while (it != pair.second) {
-		std::shared_ptr<Item> item = it->second;
+		const auto item = it->second;
 		it = tempItems.erase(it);
 	}
 }

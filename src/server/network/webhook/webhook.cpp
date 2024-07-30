@@ -25,7 +25,7 @@ Webhook::Webhook(ThreadPool &threadPool) :
 	headers = curl_slist_append(headers, "content-type: application/json");
 	headers = curl_slist_append(headers, "accept: application/json");
 
-	if (headers == NULL) {
+	if (headers == nullptr) {
 		g_logger().error("Failed to init curl, appending request headers failed");
 		return;
 	}
@@ -44,7 +44,7 @@ void Webhook::run() {
 	);
 }
 
-void Webhook::sendPayload(const std::string &payload, std::string url) {
+void Webhook::sendPayload(const std::string &payload, const std::string &url) {
 	std::scoped_lock lock { taskLock };
 	webhooks.push_back(std::make_shared<WebhookTask>(payload, url));
 }

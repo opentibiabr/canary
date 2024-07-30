@@ -67,7 +67,7 @@ ItemTypes_t Items::getLootType(const std::string &strValue) {
 	return ITEM_TYPE_NONE;
 }
 
-const std::string Items::getAugmentNameByType(Augment_t augmentType) {
+std::string Items::getAugmentNameByType(Augment_t augmentType) {
 	std::string augmentTypeName = magic_enum::enum_name(augmentType).data();
 	augmentTypeName = toStartCaseWithSpace(augmentTypeName);
 	if (!isAugmentWithoutValueDescription(augmentType)) {
@@ -155,7 +155,7 @@ void Items::loadFromProtobuf() {
 		// This attribute is only used on 10x protocol, so we should not waste our time iterating it when it's disabled.
 		if (supportAnimation) {
 			for (uint32_t frame_it = 0; frame_it < object.frame_group_size(); ++frame_it) {
-				FrameGroup objectFrame = object.frame_group(frame_it);
+				const FrameGroup &objectFrame = object.frame_group(frame_it);
 				if (!objectFrame.has_sprite_info()) {
 					continue;
 				}
@@ -265,8 +265,8 @@ bool Items::loadFromXml() {
 			continue;
 		}
 
-		uint16_t id = pugi::cast<uint16_t>(fromIdAttribute.value());
-		uint16_t toId = pugi::cast<uint16_t>(toIdAttribute.value());
+		auto id = pugi::cast<uint16_t>(fromIdAttribute.value());
+		auto toId = pugi::cast<uint16_t>(toIdAttribute.value());
 		while (id <= toId) {
 			parseItemNode(itemNode, id++);
 		}

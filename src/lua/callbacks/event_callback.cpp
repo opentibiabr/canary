@@ -428,7 +428,7 @@ void EventCallback::playerOnLook(const std::shared_ptr<Player> &player, const Po
 	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
 		LuaScriptInterface::pushUserdata<Creature>(L, creature);
 		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-	} else if (std::shared_ptr<Item> item = thing->getItem()) {
+	} else if (const auto item = thing->getItem()) {
 		LuaScriptInterface::pushUserdata<Item>(L, item);
 		LuaScriptInterface::setItemMetatable(L, -1, item);
 	} else {
@@ -546,7 +546,7 @@ void EventCallback::playerOnRemoveCount(const std::shared_ptr<Player> &player, c
 	getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::playerOnMoveItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPos, const Position &toPos, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const {
+bool EventCallback::playerOnMoveItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPos, const Position &toPos, const std::shared_ptr<Cylinder> &fromCylinder, const std::shared_ptr<Cylinder> &toCylinder) const {
 	if (!getScriptInterface()) {
 		g_logger().error("script interface nullptr");
 		return false;
@@ -575,13 +575,13 @@ bool EventCallback::playerOnMoveItem(const std::shared_ptr<Player> &player, cons
 	LuaScriptInterface::pushPosition(L, fromPos);
 	LuaScriptInterface::pushPosition(L, toPos);
 
-	LuaScriptInterface::pushCylinder(L, std::move(fromCylinder));
-	LuaScriptInterface::pushCylinder(L, std::move(toCylinder));
+	LuaScriptInterface::pushCylinder(L, fromCylinder);
+	LuaScriptInterface::pushCylinder(L, toCylinder);
 
 	return getScriptInterface()->callFunction(7);
 }
 
-void EventCallback::playerOnItemMoved(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder) const {
+void EventCallback::playerOnItemMoved(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, const std::shared_ptr<Cylinder> &fromCylinder, const std::shared_ptr<Cylinder> &toCylinder) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnItemMoved - "
 		                 "Player {} item {}] "
@@ -606,8 +606,8 @@ void EventCallback::playerOnItemMoved(const std::shared_ptr<Player> &player, con
 	LuaScriptInterface::pushPosition(L, fromPosition);
 	LuaScriptInterface::pushPosition(L, toPosition);
 
-	LuaScriptInterface::pushCylinder(L, std::move(fromCylinder));
-	LuaScriptInterface::pushCylinder(L, std::move(toCylinder));
+	LuaScriptInterface::pushCylinder(L, fromCylinder);
+	LuaScriptInterface::pushCylinder(L, toCylinder);
 
 	getScriptInterface()->callVoidFunction(7);
 }

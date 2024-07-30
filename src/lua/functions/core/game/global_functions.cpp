@@ -25,7 +25,7 @@ class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count/subtype, <optional: default: 1> canDropOnMap)
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count, <optional: default: 1> canDropOnMap, <optional: default: 1>subtype)
-	std::shared_ptr<Player> player = getPlayer(L, 1);
+	const auto player = getPlayer(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -33,9 +33,9 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	}
 
 	uint16_t itemId = getNumber<uint16_t>(L, 2);
-	int32_t count = getNumber<int32_t>(L, 3, 1);
+	auto count = getNumber<int32_t>(L, 3, 1);
 	bool canDropOnMap = getBoolean(L, 4, true);
-	uint16_t subType = getNumber<uint16_t>(L, 5, 1);
+	auto subType = getNumber<uint16_t>(L, 5, 1);
 
 	const ItemType &it = Item::items[itemId];
 	int32_t itemCount;
@@ -133,7 +133,7 @@ int GlobalFunctions::luaDoAddContainerItem(lua_State* L) {
 
 	int32_t itemCount = 1;
 	int32_t subType = 1;
-	uint32_t count = getNumber<uint32_t>(L, 3, 1);
+	auto count = getNumber<uint32_t>(L, 3, 1);
 
 	if (it.hasSubType()) {
 		if (it.stackable) {

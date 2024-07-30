@@ -20,7 +20,7 @@ public:
 		return static_self_cast<Teleport>();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() override final {
+	std::shared_ptr<Cylinder> getCylinder() final {
 		return getTeleport();
 	}
 
@@ -32,10 +32,10 @@ public:
 		return destPos;
 	}
 	void setDestPos(Position pos) {
-		destPos = std::move(pos);
+		destPos = pos;
 	}
 
-	bool checkInfinityLoop(std::shared_ptr<Tile> destTile);
+	bool checkInfinityLoop(const std::shared_ptr<Tile> &destTile);
 
 	// cylinder implementations
 	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;

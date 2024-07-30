@@ -56,10 +56,10 @@ public:
 		return publicChannel;
 	}
 
-	bool executeOnJoinEvent(const std::shared_ptr<Player> &player);
-	bool executeCanJoinEvent(const std::shared_ptr<Player> &player);
-	bool executeOnLeaveEvent(const std::shared_ptr<Player> &player);
-	bool executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message);
+	bool executeOnJoinEvent(const std::shared_ptr<Player> &player) const;
+	bool executeCanJoinEvent(const std::shared_ptr<Player> &player) const;
+	bool executeOnLeaveEvent(const std::shared_ptr<Player> &player) const;
+	bool executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message) const;
 
 protected:
 	UsersMap users;

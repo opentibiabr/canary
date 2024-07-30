@@ -91,10 +91,10 @@ int GameFunctions::luaGameGetSpectators(lua_State* L) {
 	const Position &position = getPosition(L, 1);
 	bool multifloor = getBoolean(L, 2, false);
 	bool onlyPlayers = getBoolean(L, 3, false);
-	int32_t minRangeX = getNumber<int32_t>(L, 4, 0);
-	int32_t maxRangeX = getNumber<int32_t>(L, 5, 0);
-	int32_t minRangeY = getNumber<int32_t>(L, 6, 0);
-	int32_t maxRangeY = getNumber<int32_t>(L, 7, 0);
+	auto minRangeX = getNumber<int32_t>(L, 4, 0);
+	auto maxRangeX = getNumber<int32_t>(L, 5, 0);
+	auto minRangeY = getNumber<int32_t>(L, 6, 0);
+	auto maxRangeY = getNumber<int32_t>(L, 7, 0);
 
 	Spectators spectators;
 
@@ -309,7 +309,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 		}
 	}
 
-	int32_t count = getNumber<int32_t>(L, 2, 1);
+	auto count = getNumber<int32_t>(L, 2, 1);
 	int32_t itemCount = 1;
 	int32_t subType = 1;
 
@@ -344,7 +344,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 			subType -= stackCount;
 		}
 
-		std::shared_ptr<Item> item = Item::CreateItem(itemId, stackCount);
+		const auto item = Item::CreateItem(itemId, stackCount);
 		if (!item) {
 			if (!hasTable) {
 				lua_pushnil(L);
@@ -653,7 +653,7 @@ int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
 	// Game.getNormalizedPlayerName(name[, isNewName = false])
 	auto name = getString(L, 1);
 	auto isNewName = getBoolean(L, 2, false);
-	std::shared_ptr<Player> player = g_game().getPlayerByName(name, true, isNewName);
+	const auto player = g_game().getPlayerByName(name, true, isNewName);
 	if (player) {
 		pushString(L, player->getName());
 	} else {
@@ -744,7 +744,7 @@ int GameFunctions::luaGameGetDummies(lua_State* L) {
 
 int GameFunctions::luaGameMakeFiendishMonster(lua_State* L) {
 	// Game.makeFiendishMonster(monsterId[default= 0])
-	uint32_t monsterId = getNumber<uint32_t>(L, 1, 0);
+	auto monsterId = getNumber<uint32_t>(L, 1, 0);
 	auto createForgeableMonsters = getBoolean(L, 2, false);
 	lua_pushnumber(L, g_game().makeFiendishMonster(monsterId, createForgeableMonsters));
 	return 1;

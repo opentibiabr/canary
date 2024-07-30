@@ -27,9 +27,9 @@ int PositionFunctions::luaPositionCreate(lua_State* L) {
 		const Position &position = getPosition(L, 2, stackpos);
 		pushPosition(L, position, stackpos);
 	} else {
-		uint16_t x = getNumber<uint16_t>(L, 2, 0);
-		uint16_t y = getNumber<uint16_t>(L, 3, 0);
-		uint8_t z = getNumber<uint8_t>(L, 4, 0);
+		auto x = getNumber<uint16_t>(L, 2, 0);
+		auto y = getNumber<uint16_t>(L, 3, 0);
+		auto z = getNumber<uint8_t>(L, 4, 0);
 		stackpos = getNumber<int32_t>(L, 5, 0);
 
 		pushPosition(L, Position(x, y, z), stackpos);

@@ -21,7 +21,7 @@ public:
 		return static_self_cast<Mailbox>();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() override final {
+	std::shared_ptr<Cylinder> getCylinder() final {
 		return getMailbox();
 	}
 
@@ -43,8 +43,8 @@ public:
 	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
 private:
-	bool getReceiver(std::shared_ptr<Item> item, std::string &name) const;
-	bool sendItem(std::shared_ptr<Item> item) const;
+	bool getReceiver(const std::shared_ptr<Item> &item, std::string &name) const;
+	bool sendItem(const std::shared_ptr<Item> &item) const;
 
-	static bool canSend(std::shared_ptr<Item> item);
+	static bool canSend(const std::shared_ptr<Item> &item);
 };

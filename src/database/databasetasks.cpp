@@ -22,7 +22,7 @@ DatabaseTasks &DatabaseTasks::getInstance() {
 	return inject<DatabaseTasks>();
 }
 
-void DatabaseTasks::execute(const std::string &query, std::function<void(DBResult_ptr, bool)> callback /* nullptr */) {
+void DatabaseTasks::execute(const std::string &query, const std::function<void(DBResult_ptr, bool)> &callback /* nullptr */) {
 	threadPool.detach_task([this, query, callback]() {
 		bool success = db.executeQuery(query);
 		if (callback != nullptr) {
@@ -31,7 +31,7 @@ void DatabaseTasks::execute(const std::string &query, std::function<void(DBResul
 	});
 }
 
-void DatabaseTasks::store(const std::string &query, std::function<void(DBResult_ptr, bool)> callback /* nullptr */) {
+void DatabaseTasks::store(const std::string &query, const std::function<void(DBResult_ptr, bool)> &callback /* nullptr */) {
 	threadPool.detach_task([this, query, callback]() {
 		DBResult_ptr result = db.storeQuery(query);
 		if (callback != nullptr) {

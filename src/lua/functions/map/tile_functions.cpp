@@ -194,7 +194,7 @@ int TileFunctions::luaTileGetItemById(lua_State* L) {
 			return 1;
 		}
 	}
-	int32_t subType = getNumber<int32_t>(L, 3, -1);
+	auto subType = getNumber<int32_t>(L, 3, -1);
 
 	const auto &item = g_game().findItemOfType(tile, itemId, false, subType);
 	if (item) {
@@ -299,7 +299,7 @@ int TileFunctions::luaTileGetItemCountById(lua_State* L) {
 		return 1;
 	}
 
-	int32_t subType = getNumber<int32_t>(L, 3, -1);
+	auto subType = getNumber<int32_t>(L, 3, -1);
 
 	uint16_t itemId;
 	if (isNumber(L, 2)) {
@@ -562,7 +562,7 @@ int TileFunctions::luaTileQueryAdd(lua_State* L) {
 
 	const auto &thing = getThing(L, 2);
 	if (thing) {
-		uint32_t flags = getNumber<uint32_t>(L, 3, 0);
+		auto flags = getNumber<uint32_t>(L, 3, 0);
 		lua_pushnumber(L, tile->queryAdd(0, thing, 1, flags));
 	} else {
 		lua_pushnil(L);
@@ -589,7 +589,7 @@ int TileFunctions::luaTileAddItem(lua_State* L) {
 		}
 	}
 
-	uint32_t subType = getNumber<uint32_t>(L, 3, 1);
+	auto subType = getNumber<uint32_t>(L, 3, 1);
 
 	const auto &item = Item::CreateItem(itemId, std::min<uint32_t>(subType, Item::items[itemId].stackSize));
 	if (!item) {
@@ -597,7 +597,7 @@ int TileFunctions::luaTileAddItem(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t flags = getNumber<uint32_t>(L, 4, 0);
+	auto flags = getNumber<uint32_t>(L, 4, 0);
 
 	ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
 	if (ret == RETURNVALUE_NOERROR) {
@@ -630,7 +630,7 @@ int TileFunctions::luaTileAddItemEx(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t flags = getNumber<uint32_t>(L, 3, 0);
+	auto flags = getNumber<uint32_t>(L, 3, 0);
 	ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		ScriptEnvironment::removeTempItem(item);

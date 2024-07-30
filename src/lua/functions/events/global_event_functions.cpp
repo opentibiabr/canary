@@ -136,7 +136,7 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 		timeinfo->tm_min = min;
 		timeinfo->tm_sec = sec;
 
-		time_t difference = static_cast<time_t>(difftime(mktime(timeinfo), current_time));
+		auto difference = static_cast<time_t>(difftime(mktime(timeinfo), current_time));
 		// If the difference is negative, add 86400 seconds (1 day) to it
 		if (difference < 0) {
 			difference += 86400;

@@ -16,7 +16,7 @@
 #include "game/scheduling/save_manager.hpp"
 #include "lib/metrics/metrics.hpp"
 
-Bank::Bank(const std::shared_ptr<Bankable> bankable) :
+Bank::Bank(const std::shared_ptr<Bankable> &bankable) :
 	m_bankable(bankable) {
 }
 
@@ -25,7 +25,7 @@ Bank::~Bank() {
 	if (bankable == nullptr || bankable->isOnline()) {
 		return;
 	}
-	std::shared_ptr<Player> player = bankable->getPlayer();
+	const auto player = bankable->getPlayer();
 	if (player && !player->isOnline()) {
 		g_saveManager().savePlayer(player);
 
@@ -53,7 +53,7 @@ bool Bank::debit(uint64_t amount) {
 bool Bank::balance(uint64_t amount) const {
 	auto bankable = getBankable();
 	if (!bankable) {
-		return 0;
+		return false;
 	}
 	bankable->setBankBalance(amount);
 	return true;
@@ -80,7 +80,7 @@ const std::set<std::string> deniedNames = {
 	"paladinsample"
 };
 
-bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) {
+bool Bank::transferTo(const std::shared_ptr<Bank> &destination, uint64_t amount) {
 	if (!destination) {
 		g_logger().error("Bank::transferTo: destination is nullptr");
 		return false;
@@ -129,11 +129,10 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 	return true;
 }
 
-bool Bank::withdraw(std::shared_ptr<Player> player, uint64_t amount) {
+bool Bank::withdraw(const std::shared_ptr<Player> &player, uint64_t amount) {
 	if (!player) {
 		return false;
 	}
-
 	if (!debit(amount)) {
 		return false;
 	}
@@ -142,7 +141,7 @@ bool Bank::withdraw(std::shared_ptr<Player> player, uint64_t amount) {
 	return true;
 }
 
-bool Bank::deposit(const std::shared_ptr<Bank> destination) {
+bool Bank::deposit(const std::shared_ptr<Bank> &destination) {
 	auto bankable = getBankable();
 	if (!bankable) {
 		return false;
@@ -154,7 +153,7 @@ bool Bank::deposit(const std::shared_ptr<Bank> destination) {
 	return deposit(destination, amount);
 }
 
-bool Bank::deposit(const std::shared_ptr<Bank> destination, uint64_t amount) {
+bool Bank::deposit(const std::shared_ptr<Bank> &destination, uint64_t amount) {
 	if (!destination) {
 		return false;
 	}

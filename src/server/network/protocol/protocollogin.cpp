@@ -107,7 +107,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 
 	msg.skipBytes(2); // client OS
 
-	uint16_t version = msg.get<uint16_t>();
+	auto version = msg.get<uint16_t>();
 
 	// Old protocol support
 	oldProtocol = version == 1100;

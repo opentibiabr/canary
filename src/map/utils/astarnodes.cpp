@@ -171,7 +171,7 @@ AStarNode* AStarNodes::getBestNode() {
 	_mm_store_si128(reinterpret_cast<__m128i*>(indices_array), minindices);
 
 	int32_t best_node = indices_array[(_mm_ctz(_mm_movemask_epi8(_mm_cmpeq_epi32(minvalues, res))) >> 2)];
-	return (openNodes[best_node] ? &nodes[best_node] : NULL);
+	return (openNodes[best_node] ? &nodes[best_node] : nullptr);
 #else
 	int32_t best_node_f = std::numeric_limits<int32_t>::max();
 	int32_t best_node = -1;

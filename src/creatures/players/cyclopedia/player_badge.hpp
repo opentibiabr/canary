@@ -16,7 +16,7 @@ class KV;
 
 struct Badge {
 	uint8_t m_id = 0;
-	CyclopediaBadge_t m_type;
+	CyclopediaBadge_t m_type {};
 	std::string m_name;
 	uint16_t m_amount = 0;
 

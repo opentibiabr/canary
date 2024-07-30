@@ -21,7 +21,7 @@ public:
 		return static_self_cast<TrashHolder>();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() override final {
+	std::shared_ptr<Cylinder> getCylinder() final {
 		return getTrashHolder();
 	}
 

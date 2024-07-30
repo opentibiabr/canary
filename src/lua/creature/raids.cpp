@@ -398,7 +398,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 
 	pugi::xml_attribute attr;
 	if ((attr = eventNode.attribute("radius"))) {
-		int32_t radius = pugi::cast<int32_t>(attr.value());
+		auto radius = pugi::cast<int32_t>(attr.value());
 		Position centerPos;
 
 		if ((attr = eventNode.attribute("centerx"))) {

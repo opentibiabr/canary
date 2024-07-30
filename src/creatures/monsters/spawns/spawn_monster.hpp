@@ -56,7 +56,7 @@ public:
 	}
 
 	bool addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t interval, uint32_t weight = 1);
-	void removeMonster(std::shared_ptr<Monster> monster);
+	void removeMonster(const std::shared_ptr<Monster> &monster);
 	void removeMonsters();
 
 	uint32_t getInterval() const {
@@ -90,9 +90,9 @@ private:
 	uint32_t checkSpawnMonsterEvent = 0;
 
 	static bool findPlayer(const Position &pos);
-	bool spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, std::shared_ptr<MonsterType> monsterType, bool startup = false);
+	bool spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> &monsterType, bool startup = false);
 	void checkSpawnMonster();
-	void scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, std::shared_ptr<MonsterType> monsterType, uint16_t interval, bool startup = false);
+	void scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> &monsterType, uint16_t interval, bool startup = false);
 };
 
 class SpawnsMonster {

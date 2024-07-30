@@ -31,7 +31,7 @@ enum class DispatcherType : uint8_t {
 };
 
 struct DispatcherContext {
-	bool isOn() const {
+	static bool isOn() {
 		return OTSYS_TIME() != 0;
 	}
 
@@ -70,7 +70,7 @@ private:
 
 	DispatcherType type = DispatcherType::None;
 	TaskGroup group = TaskGroup::ThreadPool;
-	std::string_view taskName = "";
+	std::string_view taskName;
 
 	friend class Dispatcher;
 };
@@ -128,7 +128,7 @@ public:
 
 	void stopEvent(uint64_t eventId);
 
-	const auto &context() const {
+	static const auto &context() {
 		return dispacherContext;
 	}
 
@@ -150,11 +150,11 @@ private:
 
 	inline void mergeAsyncEvents();
 	inline void mergeEvents();
-	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Serial);
+	inline void executeEvents(TaskGroup startGroup = TaskGroup::Serial);
 	inline void executeScheduledEvents();
 
 	inline void executeSerialEvents(std::vector<Task> &tasks);
-	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId);
+	inline void executeParallelEvents(std::vector<Task> &tasks, uint8_t groupId);
 	inline std::chrono::milliseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {

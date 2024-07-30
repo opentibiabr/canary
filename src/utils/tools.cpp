@@ -25,7 +25,7 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 	uint32_t currentLine = 1;
 	std::string line;
 
-	size_t offset = static_cast<size_t>(result.offset);
+	auto offset = static_cast<size_t>(result.offset);
 	size_t lineOffsetPosition = 0;
 	size_t index = 0;
 	size_t bytes;
@@ -187,7 +187,7 @@ std::string transformToSHA1(const std::string &input) {
 	return std::string(hexstring, 40);
 }
 
-uint16_t getStashSize(StashItemList itemList) {
+uint16_t getStashSize(const StashItemList &itemList) {
 	uint16_t size = 0;
 	for (auto item : itemList) {
 		size += ceil(item.second / (float_t)Item::items[item.first].stackSize);
@@ -1073,7 +1073,7 @@ std::string getWeaponName(WeaponType_t weaponType) {
 		case WEAPON_MISSILE:
 			return "missile";
 		default:
-			return std::string();
+			return {};
 	}
 }
 
@@ -1551,7 +1551,7 @@ SpellGroup_t stringToSpellGroup(const std::string &value) {
  */
 void capitalizeWords(std::string &source) {
 	toLowerCaseString(source);
-	uint8_t size = (uint8_t)source.size();
+	auto size = (uint8_t)source.size();
 	for (uint8_t i = 0; i < size; i++) {
 		if (i == 0) {
 			source[i] = (char)toupper(source[i]);
@@ -1561,7 +1561,7 @@ void capitalizeWords(std::string &source) {
 	}
 }
 
-void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore) {
+void capitalizeWordsIgnoringString(std::string &source, const std::string &stringToIgnore) {
 	toLowerCaseString(source);
 	auto size = static_cast<uint8_t>(source.size());
 	auto indexFound = source.find(stringToIgnore);
@@ -1586,7 +1586,6 @@ void consoleHandlerExit() {
 	if (isatty(STDIN_FILENO)) {
 		getchar();
 	}
-	return;
 }
 
 NameEval_t validateName(const std::string &name) {
@@ -1607,7 +1606,7 @@ NameEval_t validateName(const std::string &name) {
 		return INVALID_CHARACTER;
 	}
 
-	for (std::string str : toks) {
+	for (const std::string &str : toks) {
 		if (str.length() < 2) {
 			return INVALID_TOKEN_LENGTH;
 		} else if (std::find(prohibitedWords.begin(), prohibitedWords.end(), str) != prohibitedWords.end()) { // searching for prohibited words
@@ -1677,7 +1676,7 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 		case OBJECTCATEGORY_DEFAULT:
 			return "Unassigned Loot";
 		default:
-			return std::string();
+			return {};
 	}
 }
 

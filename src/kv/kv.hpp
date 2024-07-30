@@ -18,6 +18,7 @@
 	#include <unordered_set>
 	#include <iomanip>
 	#include <list>
+	#include <utility>
 #endif
 
 #include "lib/logging/logger.hpp"
@@ -91,8 +92,8 @@ public:
 		store_.clear();
 	}
 
-	std::shared_ptr<KV> scoped(const std::string &scope) override final;
-	std::unordered_set<std::string> keys(const std::string &prefix = "");
+	std::shared_ptr<KV> scoped(const std::string &scope) final;
+	std::unordered_set<std::string> keys(const std::string &prefix = "") override;
 
 protected:
 	phmap::parallel_flat_hash_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> getStore() {
@@ -121,8 +122,8 @@ private:
 
 class ScopedKV final : public KV {
 public:
-	ScopedKV(Logger &logger, KVStore &rootKV, const std::string &prefix) :
-		logger(logger), rootKV_(rootKV), prefix_(prefix) { }
+	ScopedKV(Logger &logger, KVStore &rootKV, std::string prefix) :
+		logger(logger), rootKV_(rootKV), prefix_(std::move(prefix)) { }
 
 	void set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) override {
 		rootKV_.set(buildKey(key), init_list);
@@ -151,7 +152,7 @@ public:
 		return rootKV_.saveAll();
 	}
 
-	std::shared_ptr<KV> scoped(const std::string &scope) override final {
+	std::shared_ptr<KV> scoped(const std::string &scope) final {
 		logger.trace("ScopedKV::scoped({})", buildKey(scope));
 		return std::make_shared<ScopedKV>(logger, rootKV_, buildKey(scope));
 	}

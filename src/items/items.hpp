@@ -110,7 +110,7 @@ public:
 	ItemType(const ItemType &other) = delete;
 	ItemType &operator=(const ItemType &other) = delete;
 
-	ItemType(ItemType &&other) = default;
+	ItemType(ItemType &&other) noexcept = default;
 	ItemType &operator=(ItemType &&other) = default;
 
 	bool isGroundTile() const {
@@ -255,7 +255,7 @@ public:
 	std::string parseAugmentDescription(bool inspect = false) const;
 	std::string getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const;
 
-	void addAugment(std::string spellName, Augment_t augmentType, int32_t value) {
+	void addAugment(const std::string &spellName, Augment_t augmentType, int32_t value) {
 		auto augmentInfo = std::make_shared<AugmentInfo>(spellName, augmentType, value);
 		augments.emplace_back(augmentInfo);
 	}
@@ -445,7 +445,7 @@ public:
 		return dummys;
 	}
 
-	static const std::string getAugmentNameByType(Augment_t augmentType);
+	static std::string getAugmentNameByType(Augment_t augmentType);
 
 	static bool isAugmentWithoutValueDescription(Augment_t augmentType) {
 		static std::vector<Augment_t> vector = {

@@ -2292,6 +2292,22 @@ ChestUnique = {
 		weight = 7.00,
 		storage = Storage.Quest.U8_1.WaterfallQuest,
 	},
+	-- What a Foolish Quest
+	[6259] = {
+		itemId = 2469,
+		itemPos = { x = 32563, y = 32115, z = 4 },
+		reward = { { 112, 1 } },
+		weight = 0.50,
+		storage = Storage.Quest.U8_1.WhatAFoolishQuest.MagicalWatch,
+	},
+	[6269] = {
+		itemId = 2472,
+		itemPos = { x = 32661, y = 31855, z = 13 },
+		container = 2853,
+		reward = { { 3469, 1 }, { 2821, 1 }, },
+		weight = 22.00,
+		storage = Storage.Quest.U8_1.WhatAFoolishQuest.BagBookKnife,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

@@ -50,6 +50,29 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function endConversationWithDelay(npcHandler, npc, creature)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
+end
+
+local function greetCallback(npc, creature, message)
+	local player = Player(creature)
+	local playerId = player:getId()
+
+	if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 35 and player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.ScaredKazzan) ~= 1 and player:getOutfit().lookType == 65 then
+		player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.ScaredKazzan, 1)
+		npcHandler:say("WAAAAAHHH!!!", npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
+
+	npcHandler:say("Feel welcome in the lands of the children of the enlightened Daraman, |PLAYERNAME|.", npc, creature)
+	npcHandler:setInteraction(npc, creature)
+
+	return true
+end
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -58,9 +81,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	-- Pegando a quest
 	if MsgContains(message, "mission") and player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) < 1 then
-		if player:getStorageValue(Storage.DjinnWar.Faction.MaridDoor) < 1 and player:getStorageValue(Storage.DjinnWar.Faction.EfreetDoor) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor) < 1 and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor) < 1 then
 			npcHandler:say("Do you know the location of the djinn fortresses in the mountains south of here?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -86,18 +108,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:addItem(3035, 20)
 	end
 
-	if player:getStorageValue(Storage.WhatAFoolish.Questline) == 35 and player:getStorageValue(Storage.WhatAFoolish.ScaredKazzan) ~= 1 and player:getOutfit().lookType == 65 then
-		player:setStorageValue(Storage.WhatAFoolish.ScaredKazzan, 1)
-		npcHandler:say("WAAAAAHHH!!!", npc, creature)
-		return false
-	end
 	return true
 end
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)
 
-npcHandler:setMessage(MESSAGE_GREET, "Feel welcome in the lands of the children of the enlightened Daraman, |PLAYERNAME|.")
+npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

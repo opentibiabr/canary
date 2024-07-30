@@ -973,40 +973,37 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
 function onUseSpoon(player, item, fromPosition, target, toPosition, isHotkey)
-	if target.itemid == 390 then
-		--The ice islands quest
-		if player:getStorageValue(Storage.TheIceIslands.Questline) >= 21 then
-			if player:getStorageValue(Storage.TheIceIslands.SulphurLava) < 1 then
-				-- Fine sulphur
-				player:addItem(7247, 1)
-				player:setStorageValue(Storage.TheIceIslands.SulphurLava, 1)
+	local targetId = target:getId()
+
+	if targetId == 3920 then
+		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.SporesMushroom) < 1 then
+			player:addItem(7251, 1)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.SporesMushroom, 1)
+			toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)
+			player:say("You retrieve spores from a mushroom.", TALKTYPE_MONSTER_SAY)
+			return true
+		end
+	elseif targetId == 390 then
+		-- The Ice Islands Quest - Cure the Dogs
+		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) >= 21 then
+			if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.SulphurLava) < 1 then
+				player:addItem(7247, 1) -- fine sulphur
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.SulphurLava, 1)
+				toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)
+				player:say("You retrieve a fine sulphur from a lava hole.", TALKTYPE_MONSTER_SAY)
+			end
+		-- What a Foolish Quest - Mission 8 (sulphur)
+		elseif player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 21 then
+			if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.InflammableSulphur) < 1 then
+				player:addItem(124, 1) -- Easily inflammable sulphur
+				player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.InflammableSulphur, 1)
 				toPosition:sendMagicEffect(CONST_ME_YELLOW_RINGS)
-				player:say("You retrive a fine sulphur from a lava hole.", TALKTYPE_MONSTER_SAY)
 			end
-		end
-	elseif target.itemid == 3920 then
-		--The ice islands quest
-		if player:getStorageValue(Storage.TheIceIslands.Questline) >= 21 then
-			if player:getStorageValue(Storage.TheIceIslands.SporesMushroom) < 1 then
-				player:addItem(7251, 1)
-				player:setStorageValue(Storage.TheIceIslands.SporesMushroom, 1)
-				toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
-				player:say("You retrive spores from a mushroom.", TALKTYPE_MONSTER_SAY)
-			end
-		end
-	elseif target.itemid == 7743 or target.itemid == 390 then
-		-- What a foolish quest - mission 8 (sulphur)
-		if player:getStorageValue(Storage.WhatAFoolishQuest.Questline) ~= 21 or player:getStorageValue(Storage.WhatAFoolishQuest.InflammableSulphur) == 1 then
+		else
 			return false
 		end
-
-		player:setStorageValue(Storage.WhatAFoolishQuest.InflammableSulphur, 1)
-		-- Easily inflammable sulphur
-		player:addItem(124, 1)
-		toPosition:sendMagicEffect(CONST_ME_YELLOW_RINGS)
-	else
-		return false
 	end
+
 	return true
 end
 
@@ -1060,32 +1057,34 @@ function onUseKitchenKnife(player, item, fromPosition, target, toPosition, isHot
 		return false
 	end
 
-	-- The ice islands quest
-	if target.itemid == 7261 then
-		if player:getStorageValue(Storage.TheIceIslands.Questline) >= 21 then
-			if player:getStorageValue(Storage.TheIceIslands.FrostbiteHerb) < 1 then
+	local targetId = target:getId()
+
+	--The Ice Islands Quest - Cure the Dogs
+	if targetId == 7261 then
+		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) >= 21 then
+			if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.FrostbiteHerb) < 1 then
 				player:addItem(7248, 1)
-				player:setStorageValue(Storage.TheIceIslands.FrostbiteHerb, 1)
-				toPosition:sendMagicEffect(CONST_ME_HITBYPOISON)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.FrostbiteHerb, 1)
+				toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:say("You cut a leaf from a frostbite herb.", TALKTYPE_MONSTER_SAY)
 			end
 		end
-	elseif target.itemid == 3647 then
-		if player:getStorageValue(Storage.TheIceIslands.Questline) >= 21 then
-			if player:getStorageValue(Storage.TheIceIslands.FlowerCactus) < 1 then
+	elseif targetId == 3647 then
+		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) >= 21 then
+			if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.FlowerCactus) < 1 then
 				player:addItem(7245, 1)
-				player:setStorageValue(Storage.TheIceIslands.FlowerCactus, 1)
-				target:transform(3637)
-				addEvent(revertItem, 60 * 1000, toPosition, 3637, 3647)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.FlowerCactus, 1)
+				target:transform(3646)
+				addEvent(revertItem, 60 * 1000, toPosition, 3646, 3647)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 				player:say("You cut a flower from a cactus.", TALKTYPE_MONSTER_SAY)
 			end
 		end
-	elseif target.itemid == 3753 then
-		if player:getStorageValue(Storage.TheIceIslands.Questline) >= 21 then
-			if player:getStorageValue(Storage.TheIceIslands.FlowerBush) < 1 then
+	elseif targetId == 3753 then
+		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) >= 21 then
+			if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.FlowerBush) < 1 then
 				player:addItem(7249, 1)
-				player:setStorageValue(Storage.TheIceIslands.FlowerBush, 1)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.FlowerBush, 1)
 				target:transform(3750)
 				addEvent(revertItem, 60 * 1000, toPosition, 3750, 3753)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
@@ -1102,23 +1101,23 @@ function onUseKitchenKnife(player, item, fromPosition, target, toPosition, isHot
 			player:say("This flower is too pathetic.", TALKTYPE_MONSTER_SAY, false, player, toPosition)
 		end
 		-- What a foolish quest (mission 5)
-	elseif target.itemid == 114 then
-		if player:getStorageValue(Storage.WhatAFoolishQuest.EmperorBeardShave) == 1 then
+	elseif targetId == 114 then
+		if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.EmperorBeardShave) == 1 then
 			player:say("God shave the emperor. Some fool already did it.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
 
-		player:setStorageValue(Storage.WhatAFoolishQuest.EmperorBeardShave, 1)
+		player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.EmperorBeardShave, 1)
 		player:say("This is probably the most foolish thing you've ever done!", TALKTYPE_MONSTER_SAY)
 		player:addItem(113, 1)
 		Game.createMonster("dwarf guard", Position(32656, 31853, 13))
 		-- What a foolish quest (mission 8)
-	elseif target.itemid == 3744 then
-		if player:getStorageValue(Storage.WhatAFoolishQuest.Questline) ~= 22 or player:getStorageValue(Storage.WhatAFoolishQuest.SpecialLeaves) == 1 then
+	elseif targetId == 3744 then
+		if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) ~= 22 or player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.SpecialLeaves) == 1 then
 			return false
 		end
 
-		player:setStorageValue(Storage.WhatAFoolishQuest.SpecialLeaves, 1)
+		player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.SpecialLeaves, 1)
 		player:addItem(3129, 1)
 		toPosition:sendMagicEffect(CONST_ME_BLOCKHIT)
 	elseif table.contains(fruits, target.itemid) and player:removeItem(6277, 1) then
@@ -1128,6 +1127,7 @@ function onUseKitchenKnife(player, item, fromPosition, target, toPosition, isHot
 	else
 		return false
 	end
+
 	return true
 end
 

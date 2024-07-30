@@ -64,7 +64,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif MsgContains(message, "cookie") then
-			if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.AvarTar) ~= 1 then
+			if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 31 and player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.AvarTar) ~= 1 then
 				npcHandler:say("Do you really think you could bribe a hero like me with a meagre cookie?", npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			end
@@ -80,7 +80,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.AvarTar, 1)
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.AvarTar, 1)
 			if player:getCookiesDelivered() == 10 then
 				player:addAchievement("Allow Cookies?")
 			end

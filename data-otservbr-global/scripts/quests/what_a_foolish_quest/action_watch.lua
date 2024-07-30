@@ -5,7 +5,7 @@ local targetDestination = {
 
 local whatFoolishWatch = Action()
 function whatFoolishWatch.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(Storage.WhatAFoolish.Questline) ~= 11 then
+	if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) ~= 11 then
 		return false
 	end
 

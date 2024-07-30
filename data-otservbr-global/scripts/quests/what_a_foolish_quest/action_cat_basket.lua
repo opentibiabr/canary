@@ -16,11 +16,11 @@ end
 
 local whatFoolishCat = Action()
 function whatFoolishCat.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(Storage.WhatAFoolish.Questline) ~= 19 or player:getStorageValue(Storage.WhatAFoolish.CatBasket) == 1 then
+	if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) ~= 19 or player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CatBasket) == 1 then
 		return false
 	end
 
-	player:setStorageValue(Storage.WhatAFoolish.CatBasket, 1)
+	player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CatBasket, 1)
 	player:say("The queen's cat is not amused!", TALKTYPE_MONSTER_SAY)
 	player:getPosition():sendMagicEffect(CONST_ME_DRAWBLOOD)
 	player:say("Fchhhhh", TALKTYPE_MONSTER_SAY, false, player, effectPositions[1])

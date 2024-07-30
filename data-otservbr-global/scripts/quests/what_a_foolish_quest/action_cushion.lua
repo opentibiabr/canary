@@ -4,11 +4,11 @@ function whatFoolishCushion.onUse(player, item, fromPosition, target, toPosition
 		return false
 	end
 
-	if player:getStorageValue(Storage.WhatAFoolish.Questline) ~= 17 or player:getStorageValue(Storage.WhatAFoolish.WhoopeeCushion) == 1 then
+	if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) ~= 17 or player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.WhoopeeCushion) == 1 then
 		return false
 	end
 
-	player:setStorageValue(Storage.WhatAFoolish.WhoopeeCushion, 1)
+	player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.WhoopeeCushion, 1)
 	player:say("*chuckles maniacally*", TALKTYPE_MONSTER_SAY)
 	player:getPosition():sendMagicEffect(CONST_ME_POFF)
 	player:say("Woooosh!", TALKTYPE_MONSTER_SAY, false, player, toPosition)

@@ -4,7 +4,7 @@ function whatFoolishCrate.onUse(player, item, fromPosition, target, toPosition, 
 		return false
 	end
 
-	if player:getStorageValue(Storage.WhatAFoolish.Questline) ~= 8 then
+	if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) ~= 8 then
 		return false
 	end
 

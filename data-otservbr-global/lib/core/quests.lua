@@ -4828,12 +4828,12 @@ if not Quests then
 		},
 		[33] = {
 			name = "What a foolish Quest",
-			startStorageId = Storage.WhatAFoolish.Questline,
+			startStorageId = Storage.Quest.U8_1.WhatAFoolishQuest.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "What a foolish Quest - Tasks of a Fool",
-					storageId = Storage.WhatAFoolish.Mission1,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission1,
 					missionId = 10336,
 					startValue = 1,
 					endValue = 2,
@@ -4844,7 +4844,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "What a foolish Quest - That stinks!",
-					storageId = Storage.WhatAFoolish.Mission2,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission2,
 					missionId = 10337,
 					startValue = 1,
 					endValue = 2,
@@ -4857,7 +4857,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "What a foolish Quest - A Piece of Cake",
-					storageId = Storage.WhatAFoolish.Mission3,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission3,
 					missionId = 10338,
 					startValue = 1,
 					endValue = 2,
@@ -4868,7 +4868,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "What a foolish Quest - Fool Spirits",
-					storageId = Storage.WhatAFoolish.Mission4,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission4,
 					missionId = 10339,
 					startValue = 1,
 					endValue = 3,
@@ -4880,7 +4880,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "What a foolish Quest - Watch out for the foolish",
-					storageId = Storage.WhatAFoolish.Mission5,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission5,
 					missionId = 10340,
 					startValue = 1,
 					endValue = 3,
@@ -4894,7 +4894,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "What a foolish Quest - The queen of farts",
-					storageId = Storage.WhatAFoolish.Mission6,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission6,
 					missionId = 10341,
 					startValue = 1,
 					endValue = 5,
@@ -4908,7 +4908,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "What a foolish Quest - For your mice only",
-					storageId = Storage.WhatAFoolish.Mission7,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission7,
 					missionId = 10342,
 					startValue = 1,
 					endValue = 2,
@@ -4919,7 +4919,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "What a foolish Quest - Smoking is a foolish thing",
-					storageId = Storage.WhatAFoolish.Mission8,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission8,
 					missionId = 10343,
 					startValue = 1,
 					endValue = 5,
@@ -4933,7 +4933,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "What a foolish Quest - A fool's bargain",
-					storageId = Storage.WhatAFoolish.Mission9,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission9,
 					missionId = 10344,
 					startValue = 1,
 					endValue = 5,
@@ -4949,7 +4949,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "What a foolish Quest - A sweet surprise",
-					storageId = Storage.WhatAFoolish.Mission10,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission10,
 					missionId = 10345,
 					startValue = 1,
 					endValue = 2,
@@ -4961,7 +4961,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "What a foolish Quest - The final foolishness",
-					storageId = Storage.WhatAFoolish.Mission11,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission11,
 					missionId = 10346,
 					startValue = 1,
 					endValue = 4,
@@ -4976,7 +4976,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "What a foolish Quest - To become a complete fool",
-					storageId = Storage.WhatAFoolish.JesterOutfit,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.JesterOutfit,
 					missionId = 10347,
 					startValue = 4,
 					endValue = 4,

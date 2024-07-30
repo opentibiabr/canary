@@ -4,7 +4,7 @@ function whatFoolishContract.onUse(player, item, fromPosition, target, toPositio
 		return false
 	end
 
-	if player:getStorageValue(Storage.WhatAFoolish.Contract) ~= 1 then
+	if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Contract) ~= 1 then
 		return false
 	end
 

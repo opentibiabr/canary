@@ -669,11 +669,11 @@ QuestDoorAction = {
 		},
 	},
 	-- What a foolish door
-	[Storage.WhatAFoolish.TriangleTowerDoor] = {
+	[Storage.Quest.U8_1.WhatAFoolishQuest.TriangleTowerDoor] = {
 		itemId = false,
 		itemPos = { { x = 32563, y = 32116, z = 4 } },
 	},
-	[Storage.WhatAFoolish.QueenEloiseCatDoor] = {
+	[Storage.Quest.U8_1.WhatAFoolishQuest.QueenEloiseCatDoor] = {
 		itemId = false,
 		itemPos = { { x = 32316, y = 31757, z = 9 } },
 	},

@@ -76,6 +76,19 @@ ItemAction = {
 			{ x = 32854, y = 32326, z = 11 },
 		},
 	},
+	-- What a Foolish Quest
+	[4200] = {
+		itemId = 3656,
+		itemPos = { { x = 32349, y = 32361, z = 7 } },
+	},
+	[4202] = {
+		itemId = 5916,
+		itemPos = { { x = 32312, y = 31754, z = 7 } },
+	},
+	[4203] = {
+		itemId = 3520,
+		itemPos = { { x = 33062, y = 32431, z = 2 } },
+	},
 	-- Into The Bone Pit Quest - ectoplasm container
 	[4205] = {
 		itemId = 103,

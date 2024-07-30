@@ -2304,7 +2304,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32661, y = 31855, z = 13 },
 		container = 2853,
-		reward = { { 3469, 1 }, { 2821, 1 }, },
+		reward = { { 3469, 1 }, { 2821, 1 } },
 		weight = 22.00,
 		storage = Storage.Quest.U8_1.WhatAFoolishQuest.BagBookKnife,
 	},

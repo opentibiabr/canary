@@ -94,7 +94,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-
 npcHandler:setMessage(MESSAGE_GREET, "Welcome, |PLAYERNAME|. I am looking forward to trade with you.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

@@ -26,7 +26,7 @@ local config = {
 		from = Position(33261, 31829, 12),
 		to = Position(33274, 31842, 12),
 	},
-	machineStorages = { GlobalStorage.ElementalSphere.Machine1, GlobalStorage.ElementalSphere.Machine2, GlobalStorage.ElementalSphere.Machine3, GlobalStorage.ElementalSphere.Machine4 },
+	machineStorages = { Storage.Quest.U8_2.ElementalSpheres.Machine1, Storage.Quest.U8_2.ElementalSpheres.Machine2, Storage.Quest.U8_2.ElementalSpheres.Machine3, Storage.Quest.U8_2.ElementalSpheres.Machine4 },
 	centerPosition = Position(33267, 31836, 12),
 	effectPositions = {
 		Position(33261, 31829, 12),
@@ -93,7 +93,7 @@ local function resetRoom(players)
 		end
 	end
 
-	Game.setStorageValue(GlobalStorage.ElementalSphere.BossRoom, -1)
+	Game.setStorageValue(Storage.Quest.U8_2.ElementalSpheres.BossRoom, -1)
 	for i = 1, #config.machineStorages do
 		Game.setStorageValue(config.machineStorages[i], -1)
 	end
@@ -173,7 +173,7 @@ function elementalSpheresLordLever.onUse(player, item, fromPosition, target, toP
 		end
 	end
 
-	Game.setStorageValue(GlobalStorage.ElementalSphere.BossRoom, 1)
+	Game.setStorageValue(Storage.Quest.U8_2.ElementalSpheres.BossRoom, 1)
 	Game.createMonster("Lord of the Elements", config.centerPosition)
 	player:say("You have 10 minutes from now on until you get teleported out.", TALKTYPE_MONSTER_YELL, false, 0, config.centerPosition)
 	addEvent(warnPlayers, 5 * 60 * 1000, players)

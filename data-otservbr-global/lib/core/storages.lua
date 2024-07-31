@@ -575,13 +575,6 @@ Storage = {
 		SlimeGobblerTimeout = 50720,
 		SlimeGobblerReceived = 50721,
 	},
-
-	ElementalSphere = {
-		-- Reserved storage from 50750 - 50759
-		QuestLine = 50750,
-		BossStorage = 50751,
-		MachineGemCount = 50752,
-	},
 	GravediggerOfDrefia = {
 		-- Reserved storage from 50760 - 50849
 		QuestStart = 50760,
@@ -1023,20 +1016,6 @@ Storage = {
 		CurrentDish = 51651,
 		QuestLog = 51652,
 		CookbookDoor = 51653,
-	},
-	RookgaardTutorialIsland = {
-		-- Reserved storage from 51660 - 51679
-		TutorialHintsStorage = 51665,
-		SantiagoNpcGreetStorage = 51666,
-		SantiagoQuestLog = 51667,
-		-- unused cockroachKillStorage = 51668,
-		-- unused cockroachLegsMsgStorage = 51669,
-		-- unused cockroachBodyMsgStorage = 51670,
-		ZirellaNpcGreetStorage = 51671,
-		ZirellaQuestLog = 51672,
-		CarlosNpcTradeStorage = 51673,
-		CarlosNpcGreetStorage = 51677,
-		CarlosQuestLog = 51678,
 	},
 	TheRookieGuard = {
 		--Reserved storage 52360 - 52395
@@ -1990,9 +1969,31 @@ Storage = {
 			},
 		},
 		U8_2 = { -- update 8.2 - Reserved Storages 41651 - 41900
-			ElementalSpheres = {},
+			ElementalSpheres = {
+				QuestLine = 50750,
+				BossStorage = 50751,
+				MachineGemCount = 50752,
+				BossRoom = 60140,
+				KnightBoss = 60141,
+				SorcererBoss = 60142,
+				PaladinBoss = 60143,
+				DruidBoss = 60144,
+				Machine1 = 60145,
+				Machine2 = 60146,
+				Machine3 = 60147,
+				Machine4 = 60148,
+			},
 			MachineryOfWar = {},
-			TheBeginning = {},
+			TheBeginningQuest = {
+				TutorialHintsStorage = 51665,
+				SantiagoNpcGreetStorage = 51666,
+				SantiagoQuestLog = 51667,
+				ZirellaNpcGreetStorage = 51671,
+				ZirellaQuestLog = 51672,
+				CarlosNpcTradeStorage = 51673,
+				CarlosNpcGreetStorage = 51677,
+				CarlosQuestLog = 51678,
+			},
 			TheDemonOak = {},
 			FishForASerpent = {
 				QuestLine = 41651,
@@ -2934,18 +2935,6 @@ GlobalStorage = {
 			Scorn = 60132,
 			Spite = 60133,
 		},
-	},
-	ElementalSphere = {
-		-- Reserved storage from 60140 - 60159
-		BossRoom = 60140,
-		KnightBoss = 60141,
-		SorcererBoss = 60142,
-		PaladinBoss = 60143,
-		DruidBoss = 60144,
-		Machine1 = 60145,
-		Machine2 = 60146,
-		Machine3 = 60147,
-		Machine4 = 60148,
 	},
 	TheOrderOfTheLion = {
 		-- Reserved storage from 60170 - 60171

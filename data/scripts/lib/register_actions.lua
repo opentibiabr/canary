@@ -410,7 +410,7 @@ function onUseRope(player, item, fromPosition, target, toPosition, isHotkey)
 	if tile and tile:isRopeSpot() then
 		player:teleportTo(toPosition:moveUpstairs())
 		if target.itemid == 7762 then
-			if player:getStorageValue(Storage.RookgaardTutorialIsland.TutorialHintsStorage) < 22 then
+			if player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.TutorialHintsStorage) < 22 then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have successfully used your rope to climb out of the hole. Congratulations! Now continue to the east.")
 			end
 		end
@@ -490,9 +490,9 @@ function onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
 	elseif target.itemid == 351 and target.actionid == 8024 then
 		player:addItem(11341, 1)
 		player:say("You dig out a handful of earth from this sacred place.", TALKTYPE_MONSTER_SAY)
-	elseif target.itemid == 7749 and player:getStorageValue(Storage.RookgaardTutorialIsland.TutorialHintsStorage) < 20 then
+	elseif target.itemid == 7749 and player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.TutorialHintsStorage) < 20 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You dug a hole! Walk onto it as long as it is open to jump down into the forest cave.")
-		player:setStorageValue(Storage.RookgaardTutorialIsland.TutorialHintsStorage, 19)
+		player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.TutorialHintsStorage, 19)
 		Position(32070, 32266, 7):sendMagicEffect(CONST_ME_TUTORIALARROW)
 		Position(32070, 32266, 7):sendMagicEffect(CONST_ME_TUTORIALSQUARE)
 		target:transform(594)

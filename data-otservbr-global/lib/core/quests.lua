@@ -2894,12 +2894,12 @@ if not Quests then
 		},
 		[18] = {
 			name = "The Beginning",
-			startStorageId = Storage.RookgaardTutorialIsland.SantiagoQuestLog,
+			startStorageId = Storage.Quest.U8_2.TheBeginningQuest.SantiagoQuestLog,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Cockroach Plague",
-					storageId = Storage.RookgaardTutorialIsland.SantiagoQuestLog,
+					storageId = Storage.Quest.U8_2.TheBeginningQuest.SantiagoQuestLog,
 					missionId = 10218,
 					startValue = 1,
 					endValue = 11,
@@ -2926,7 +2926,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Collecting Wood",
-					storageId = Storage.RookgaardTutorialIsland.ZirellaQuestLog,
+					storageId = Storage.Quest.U8_2.TheBeginningQuest.ZirellaQuestLog,
 					missionId = 10219,
 					startValue = 1,
 					endValue = 8,
@@ -2948,7 +2948,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "A Hungry Tailor",
-					storageId = Storage.RookgaardTutorialIsland.CarlosQuestLog,
+					storageId = Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog,
 					missionId = 10220,
 					startValue = 1,
 					endValue = 8,

@@ -9,10 +9,10 @@ local elementalSpheresMachine1 = Action()
 function elementalSpheresMachine1.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local destination = config[player:getVocation():getBaseId()]
 	if table.contains({ 842, 843 }, item.itemid) then
-		local gemCount = player:getStorageValue(Storage.ElementalSphere.MachineGemCount)
+		local gemCount = player:getStorageValue(Storage.Quest.U8_2.ElementalSpheres.MachineGemCount)
 		if table.contains({ 33268, 33269 }, toPosition.x) and toPosition.y == 31830 and toPosition.z == 10 and gemCount >= 20 then
 			player:teleportTo(destination, false)
-			player:setStorageValue(Storage.ElementalSphere.MachineGemCount, gemCount - 20)
+			player:setStorageValue(Storage.Quest.U8_2.ElementalSpheres.MachineGemCount, gemCount - 20)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		end

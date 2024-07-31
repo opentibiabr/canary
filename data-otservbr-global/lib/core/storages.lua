@@ -1993,15 +1993,13 @@ Storage = {
 				AxeBlowsRight = 51705,
 				AxeBlowsFace = 51706,
 			},
-			FishForASerpent = {
-				QuestLine = 41651,
-			},
 			TheHuntForTheSeaSerpent = {
 				QuestLine = 41652,
 				SuccessSwitch = 41653,
 				Bait = 41654,
 				Direction = 41655,
 				Access = 41656,
+				FishForASerpent = 41651,
 			},
 			TheInquisition = {},
 			TheThievesGuild = {},

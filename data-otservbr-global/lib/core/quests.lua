@@ -4686,7 +4686,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "Fish for a Serpent",
-					storageId = Storage.Quest.U8_2.FishForASerpent.QuestLine,
+					storageId = Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent,
 					missionId = 10097,
 					startValue = 1,
 					endValue = 5,

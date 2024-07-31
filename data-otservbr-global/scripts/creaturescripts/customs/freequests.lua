@@ -379,7 +379,7 @@ local questTable = {
 	{ storage = Storage.HeroRathleton.AccessTeleport3, storageValue = 1 },
 
 	-- Sea Serpent Quest
-	{ storage = Storage.Quest.U8_2.FishForASerpent.QuestLine, storageValue = 5 },
+	{ storage = Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent, storageValue = 5 },
 	{ storage = Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine, storageValue = 2 },
 
 	--The White Raven Monastery

@@ -1056,16 +1056,6 @@ Storage = {
 		-- Reserved storage from 51680 - 51689
 		DeeperBanutaShortcut = 51680,
 	},
-	DemonOak = {
-		-- Reserved storage from 51700 - 51709
-		Done = 51700,
-		Progress = 51701,
-		Squares = 51702,
-		AxeBlowsBird = 51703,
-		AxeBlowsLeft = 51704,
-		AxeBlowsRight = 51705,
-		AxeBlowsFace = 51706,
-	},
 	QuestChests = {
 		-- Reserved storage from 51730 - 51999
 
@@ -1994,7 +1984,15 @@ Storage = {
 				CarlosNpcGreetStorage = 51677,
 				CarlosQuestLog = 51678,
 			},
-			TheDemonOak = {},
+			TheDemonOak = {
+				Done = 51700,
+				Progress = 51701,
+				Squares = 51702,
+				AxeBlowsBird = 51703,
+				AxeBlowsLeft = 51704,
+				AxeBlowsRight = 51705,
+				AxeBlowsFace = 51706,
+			},
 			FishForASerpent = {
 				QuestLine = 41651,
 			},

@@ -832,6 +832,11 @@ ItemAction = {
 }
 
 ItemUnique = {
+	-- The Demon Oak Quest
+	[1001] = {
+		itemId = 1979,
+		itemPos = { x = 32710, y = 32398, z = 7 },
+	},
 	-- The Ice Islands Quest
 	[1061] = {
 		itemId = 2576,
@@ -1050,6 +1055,11 @@ ItemUnique = {
 	[4010] = {
 		itemId = 2753,
 		itemPos = { x = 32933, y = 32495, z = 7 },
+	},
+	-- The Demon Oak Quest
+	[9000] = {
+		itemId = 918,
+		itemPos = { x = 32716, y = 32344, z = 7 },
 	},
 	-- Dreamers Challenge Quest
 	[9030] = {

@@ -1,4 +1,4 @@
- --[[
+--[[
 	Look README.md for see the reserved action/unique numbers
 	From range 5000 to 6000 is reserved for keys chest
 	From range 6001 to 472 is reserved for script reward

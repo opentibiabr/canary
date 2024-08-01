@@ -12,8 +12,6 @@
 #include "account/account.hpp"
 
 #include "account/account_repository_db.hpp"
-#include "config/configmanager.hpp"
-#include "utils/definitions.hpp"
 #include "security/argon.hpp"
 #include "utils/tools.hpp"
 #include "lib/logging/log_with_spd_log.hpp"
@@ -164,7 +162,7 @@ void Account::registerCoinTransaction(const uint8_t &transactionType, const uint
 
 [[nodiscard]] uint32_t Account::getID() const {
 	return m_account.id;
-};
+}
 
 std::string Account::getDescriptor() const {
 	return m_descriptor;

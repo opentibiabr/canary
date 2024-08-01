@@ -56,10 +56,10 @@ struct DispatcherContext {
 	}
 
 	// postpone the event
-	void addEvent(std::function<void(void)> &&f) const;
+	void addEvent(std::function<void(void)> &&f, std::string_view context) const;
 
 	// if the context is async, the event will be postponed, if not, it will be executed immediately.
-	void tryAddEvent(std::function<void(void)> &&f) const;
+	void tryAddEvent(std::function<void(void)> &&f, std::string_view context) const;
 
 private:
 	void reset() {
@@ -128,7 +128,7 @@ public:
 
 	void stopEvent(uint64_t eventId);
 
-	static const auto &context() {
+	const auto &context() {
 		return dispacherContext;
 	}
 

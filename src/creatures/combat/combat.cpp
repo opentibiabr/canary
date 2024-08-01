@@ -325,15 +325,15 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 	}
 
 	if (attacker) {
-		const std::shared_ptr<Creature> attackerMaster = attacker->getMaster();
+		const auto &attackerMaster = attacker->getMaster();
 		if (targetPlayer) {
 			if (targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 			}
 
-			const std::shared_ptr<Tile> targetPlayerTile = targetPlayer->getTile();
+			const auto &targetPlayerTile = targetPlayer->getTile();
 
-			if (const std::shared_ptr<Player> attackerPlayer = attacker->getPlayer()) {
+			if (const auto &attackerPlayer = attacker->getPlayer()) {
 				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 				}
@@ -356,7 +356,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 			}
 
 			if (attackerMaster) {
-				if (const std::shared_ptr<Player> masterAttackerPlayer = attackerMaster->getPlayer()) {
+				if (const auto &masterAttackerPlayer = attackerMaster->getPlayer()) {
 					if (masterAttackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
@@ -381,7 +381,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 				return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 			}
 
-			if (const std::shared_ptr<Player> attackerPlayer = attacker->getPlayer()) {
+			if (const auto &attackerPlayer = attacker->getPlayer()) {
 				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackMonster)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 				}
@@ -390,7 +390,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
 			} else if (attacker->getMonster()) {
-				const std::shared_ptr<Creature> targetMaster = target->getMaster();
+				const auto &targetMaster = target->getMaster();
 
 				if ((!targetMaster || !targetMaster->getPlayer()) && attacker->getFaction() == FACTION_DEFAULT) {
 					if (!attackerMaster || !attackerMaster->getPlayer()) {
@@ -604,7 +604,7 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 	g_logger().trace("[{}] (new) eventcallback: 'creatureOnCombat', damage primary: '{}', secondary: '{}'", __FUNCTION__, damage.primary.value, damage.secondary.value);
 
 	if (attackerPlayer) {
-		const auto item = attackerPlayer->getWeapon();
+		const auto &item = attackerPlayer->getWeapon();
 		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
 		g_callbacks().executeCallback(EventCallback_t::playerOnCombat, &EventCallback::playerOnCombat, attackerPlayer, target, item, std::ref(damage));
@@ -628,7 +628,7 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 
 	// Player attacking monster
 	if (attackerPlayer && targetMonster) {
-		const std::unique_ptr<PreySlot> &slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
+		const auto &slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
 		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Damage && slot->bonusTimeLeft > 0) {
 			damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
 			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
@@ -640,7 +640,7 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 
 	// Monster attacking player
 	if (attackerMonster && targetPlayer) {
-		const std::unique_ptr<PreySlot> &slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
+		const auto &slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
 		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Defense && slot->bonusTimeLeft > 0) {
 			damage.primary.value -= static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
 			damage.secondary.value -= static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
@@ -723,7 +723,7 @@ bool Combat::checkFearConditionAffected(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
-	auto party = player->getParty();
+	const auto &party = player->getParty();
 	if (party) {
 		auto affectedCount = (party->getMemberCount() + 5) / 5;
 		g_logger().debug("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
@@ -760,7 +760,7 @@ void Combat::CombatConditionFunc(const std::shared_ptr<Creature> &caster, const 
 			} else if (caster && caster->getMonster()) {
 				uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_CLEANSE, false, 0);
 				if (playerCharmRaceid != 0) {
-					const auto mType = g_monsters().getMonsterType(caster->getName());
+					const auto &mType = g_monsters().getMonsterType(caster->getName());
 					if (mType && playerCharmRaceid == mType->info.raceid) {
 						const auto charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
 						if (charm && (charm->chance > normal_random(0, 100))) {
@@ -913,7 +913,7 @@ void Combat::addDistanceEffect(const std::shared_ptr<Creature> &caster, const Po
 			return;
 		}
 
-		const auto player = caster->getPlayer();
+		const auto &player = caster->getPlayer();
 		if (!player) {
 			return;
 		}
@@ -1144,7 +1144,7 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 	uint32_t maxY = 0;
 
 	// calculate the max viewable range
-	for (const std::shared_ptr<Tile> &tile : tileList) {
+	for (const auto &tile : tileList) {
 		const Position &tilePos = tile->getPosition();
 
 		uint32_t diff = Position::getDistanceX(tilePos, pos);
@@ -1162,16 +1162,16 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
 
 	int affected = 0;
-	for (const std::shared_ptr<Tile> &tile : tileList) {
+	for (const auto &tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
 			continue;
 		}
 
 		if (CreatureVector* creatures = tile->getCreatures()) {
-			const std::shared_ptr<Creature> topCreature = tile->getTopCreature();
+			const auto &topCreature = tile->getTopCreature();
 			// A copy of the tile's creature list is made because modifications to this vector, such as adding or removing creatures through a Lua callback, may occur during the iteration within the for loop.
 			CreatureVector creaturesCopy = *creatures;
-			for (auto &creature : creaturesCopy) {
+			for (const auto &creature : creaturesCopy) {
 				if (params.targetCasterOrTopMost) {
 					if (caster && caster->getTile() == tile) {
 						if (creature != caster) {
@@ -1219,16 +1219,16 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 	uint8_t beamAffectedCurrent = 0;
 
 	tmpDamage.affected = affected;
-	for (const std::shared_ptr<Tile> &tile : tileList) {
+	for (const auto &tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
 			continue;
 		}
 
 		if (CreatureVector* creatures = tile->getCreatures()) {
-			const std::shared_ptr<Creature> topCreature = tile->getTopCreature();
+			const auto topCreature = tile->getTopCreature();
 			// A copy of the tile's creature list is made because modifications to this vector, such as adding or removing creatures through a Lua callback, may occur during the iteration within the for loop.
 			CreatureVector creaturesCopy = *creatures;
-			for (auto &creature : creaturesCopy) {
+			for (const auto &creature : creaturesCopy) {
 				if (params.targetCasterOrTopMost) {
 					if (caster && caster->getTile() == tile) {
 						if (creature != caster) {
@@ -1541,9 +1541,9 @@ uint32_t ValueCallback::getMagicLevelSkill(const std::shared_ptr<Player> &player
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny
 	if (player && player->wheel()->getInstant("Runic Mastery") && damage.instantSpellName.empty()) {
-		const std::shared_ptr<Spell> spell = g_spells().getRuneSpellByName(damage.runeSpellName);
+		const std::shared_ptr<Spell> &spell = g_spells().getRuneSpellByName(damage.runeSpellName);
 		// Rune conjuring spell have the same name as the rune item spell.
-		const std::shared_ptr<InstantSpell> conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
+		const std::shared_ptr<InstantSpell> &conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
 		if (spell && conjuringSpell && conjuringSpell != spell && normal_random(0, 100) <= 25) {
 			uint32_t castResult = conjuringSpell->canCast(player) ? 20 : 10;
 			magicLevelSkill += magicLevelSkill * castResult / 100;
@@ -1591,7 +1591,7 @@ void ValueCallback::getMinMaxValues(const std::shared_ptr<Player> &player, Comba
 
 		case COMBAT_FORMULA_SKILL: {
 			// onGetPlayerMinMaxValues(player, attackSkill, attackValue, attackFactor)
-			std::shared_ptr<Item> tool = player->getWeapon();
+			const auto &tool = player->getWeapon();
 			const auto &weapon = g_weapons().getWeapon(tool);
 			int32_t attackSkill = 0;
 			float attackFactor = 0;
@@ -1845,7 +1845,7 @@ AreaCombat::AreaCombat(const AreaCombat &rhs) {
 }
 
 void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list) const {
-	const std::unique_ptr<MatrixArea> &area = getArea(centerPos, targetPos);
+	const auto &area = getArea(centerPos, targetPos);
 	if (!area) {
 		return;
 	}
@@ -2115,7 +2115,7 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 
 	const ItemType &it = items[getID()];
 	if (it.conditionDamage) {
-		auto conditionCopy = it.conditionDamage->clone();
+		const auto &conditionCopy = it.conditionDamage->clone();
 		auto ownerId = getOwnerId();
 		if (ownerId) {
 			bool harmfulField = true;
@@ -2133,9 +2133,9 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 				}
 			}
 
-			std::shared_ptr<Player> targetPlayer = creature->getPlayer();
+			const auto &targetPlayer = creature->getPlayer();
 			if (targetPlayer) {
-				const std::shared_ptr<Player> attackerPlayer = g_game().getPlayerByID(ownerId);
+				const auto &attackerPlayer = g_game().getPlayerByID(ownerId);
 				if (attackerPlayer) {
 					if (Combat::isProtected(attackerPlayer, targetPlayer)) {
 						harmfulField = false;
@@ -2163,15 +2163,15 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 	// Critical hit
 	uint16_t chance = 0;
 	int32_t bonus = 50;
-	auto player = caster->getPlayer();
-	auto monster = caster->getMonster();
+	const auto &player = caster->getPlayer();
+	const auto &monster = caster->getMonster();
 	if (player) {
 		chance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		bonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE);
 		if (target && target->getMonster()) {
 			uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
-				const auto mType = g_monsters().getMonsterType(target->getName());
+				const auto &mType = g_monsters().getMonsterType(target->getName());
 				if (mType && playerCharmRaceid == mType->info.raceid) {
 					const auto charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
@@ -2197,7 +2197,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 	if (player) {
 		// Fatal hit (onslaught)
-		if (auto playerWeapon = player->getInventoryItem(CONST_SLOT_LEFT);
+		if (const auto &playerWeapon = player->getInventoryItem(CONST_SLOT_LEFT);
 		    playerWeapon != nullptr && playerWeapon->getTier() > 0) {
 			double_t fatalChance = playerWeapon->getFatalChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;

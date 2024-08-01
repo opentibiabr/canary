@@ -27,7 +27,7 @@ public:
 	~Condition() override = default;
 
 	virtual bool startCondition(std::shared_ptr<Creature> creature);
-	virtual bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval);
+	virtual bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval);
 	virtual void endCondition(std::shared_ptr<Creature> creature) = 0;
 	virtual void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) = 0;
 	virtual std::unordered_set<PlayerIcon> getIcons() const;
@@ -75,7 +75,7 @@ protected:
 	bool isBuff {};
 	bool m_isPersistent {};
 
-	virtual bool updateCondition(std::shared_ptr<Condition> addCondition);
+	virtual bool updateCondition(const std::shared_ptr<Condition> &addCondition);
 
 private:
 	SoundEffect_t tickSound = SoundEffect_t::SILENCE;
@@ -91,7 +91,7 @@ public:
 		Condition(initId, initType, initTicks, initBuff, initSubId, isPersistent) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
-	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 	std::unordered_set<PlayerIcon> getIcons() const override;
@@ -107,7 +107,7 @@ public:
 		ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) final;
-	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) final;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) final;
 	void endCondition(std::shared_ptr<Creature> creature) final;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) final;
 
@@ -176,7 +176,7 @@ public:
 	bool startCondition(std::shared_ptr<Creature> creature) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> addCondition) override;
-	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
 
 	bool setParam(ConditionParam_t param, int32_t value) override;
 
@@ -231,7 +231,7 @@ public:
 		ConditionGeneric(initId, initType, iniTicks, initBuff, initSubId) { }
 
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> addCondition) override;
-	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
 
 	bool setParam(ConditionParam_t param, int32_t value) override;
 
@@ -271,7 +271,7 @@ public:
 	static void generateDamageList(int32_t amount, int32_t start, std::list<int32_t> &list);
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
-	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 	std::unordered_set<PlayerIcon> getIcons() const override;
@@ -312,7 +312,7 @@ private:
 	bool getNextDamage(int32_t &damage);
 	bool doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange);
 
-	bool updateCondition(std::shared_ptr<Condition> addCondition) override;
+	bool updateCondition(const std::shared_ptr<Condition> &addCondition) override;
 };
 
 class ConditionFeared final : public Condition {
@@ -322,7 +322,7 @@ public:
 		Condition(intiId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
-	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 	std::unordered_set<PlayerIcon> getIcons() const override;
@@ -361,7 +361,7 @@ public:
 		Condition(initId, initType, initTicks, initBuff, initSubId), speedDelta(initChangeSpeed) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
-	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 	std::unordered_set<PlayerIcon> getIcons() const override;
@@ -396,7 +396,7 @@ public:
 		Condition(initId, initType, initTicks, initBuff, initSubId) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
-	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 
@@ -422,7 +422,7 @@ public:
 		Condition(initId, initType, initTicks, initBuff, initSubId), lightInfo(initLightlevel, initLightcolor) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
-	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> addCondition) override;
 

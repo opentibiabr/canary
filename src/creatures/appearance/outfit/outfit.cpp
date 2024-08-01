@@ -34,7 +34,7 @@ bool Outfits::loadFromXml() {
 		return false;
 	}
 
-	for (auto outfitNode : doc.child("outfits").children()) {
+	for (const auto &outfitNode : doc.child("outfits").children()) {
 		pugi::xml_attribute attr;
 		if ((attr = outfitNode.attribute("enabled")) && !attr.as_bool()) {
 			continue;

@@ -14,11 +14,9 @@
 
 class Task {
 public:
-	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context,
-	     const std::source_location& location = std::source_location::current());
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context, const std::source_location &location = std::source_location::current());
 
-	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true,
-	     const std::source_location& location = std::source_location::current());
+	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true, const std::source_location &location = std::source_location::current());
 
 	~Task() = default;
 
@@ -32,31 +30,31 @@ public:
 		return id;
 	}
 
-	uint32_t getDelay() const {
+	[[nodiscard]] uint32_t getDelay() const {
 		return delay;
 	}
 
-	std::string_view getContext() const {
+	[[nodiscard]] std::string_view getContext() const {
 		return context;
 	}
 
-	std::string_view getFunctionName() const {
+	[[nodiscard]] std::string_view getFunctionName() const {
 		return functionName;
 	}
 
-	auto getTime() const {
+	[[nodiscard]] auto getTime() const {
 		return utime;
 	}
 
-	bool hasExpired() const {
+	[[nodiscard]] bool hasExpired() const {
 		return expiration != 0 && expiration < OTSYS_TIME();
 	}
 
-	bool isCycle() const {
+	[[nodiscard]] bool isCycle() const {
 		return cycle;
 	}
 
-	bool isCanceled() const {
+	[[nodiscard]] bool isCanceled() const {
 		return func == nullptr;
 	}
 
@@ -64,7 +62,7 @@ public:
 		func = nullptr;
 	}
 
-	bool execute() const;
+	[[nodiscard]] bool execute() const;
 
 private:
 	static std::atomic_uint_fast64_t LAST_EVENT_ID;
@@ -73,7 +71,7 @@ private:
 		utime = OTSYS_TIME() + delay;
 	}
 
-	bool hasTraceableContext() const {
+	[[nodiscard]] bool hasTraceableContext() const {
 		const static auto tasksContext = std::unordered_set<std::string_view>({ "Decay::checkDecay",
 		                                                                        "Dispatcher::asyncEvent",
 		                                                                        "Game::checkCreatureAttack",

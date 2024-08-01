@@ -156,7 +156,8 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 		for (const auto &zone : Zone::getZones(pos)) {
 			tile->addZone(zone);
 		}
-	});
+	},
+	                                     __FUNCTION__);
 
 	floor->setTile(x, y, tile);
 

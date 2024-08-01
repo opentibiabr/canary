@@ -25,13 +25,13 @@ AccountRepositoryDB::AccountRepositoryDB() :
 bool AccountRepositoryDB::loadByID(const uint32_t &id, AccountInfo &acc) {
 	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);
 	return load(query, acc);
-};
+}
 
 bool AccountRepositoryDB::loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) {
 	auto identifier = oldProtocol ? "name" : "email";
 	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `{}` = {}", identifier, g_database().escapeString(emailOrName));
 	return load(query, acc);
-};
+}
 
 bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, AccountInfo &acc) {
 	auto query = fmt::format(
@@ -42,7 +42,7 @@ bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, AccountIn
 		g_database().escapeString(transformToSHA1(sessionKey))
 	);
 	return load(query, acc);
-};
+}
 
 bool AccountRepositoryDB::save(const AccountInfo &accInfo) {
 	bool successful = g_database().executeQuery(
@@ -62,7 +62,7 @@ bool AccountRepositoryDB::save(const AccountInfo &accInfo) {
 	}
 
 	return successful;
-};
+}
 
 bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password) {
 	auto result = g_database().storeQuery(fmt::format("SELECT * FROM `accounts` WHERE `id` = {}", id));
@@ -73,7 +73,7 @@ bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password)
 
 	password = result->getString("password");
 	return true;
-};
+}
 
 bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint32_t &coins) {
 	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
@@ -94,7 +94,7 @@ bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint
 	coins = result->getNumber<uint32_t>(coinTypeToColumn.at(type));
 
 	return true;
-};
+}
 
 bool AccountRepositoryDB::setCoins(const uint32_t &id, const uint8_t &type, const uint32_t &amount) {
 	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
@@ -114,7 +114,7 @@ bool AccountRepositoryDB::setCoins(const uint32_t &id, const uint8_t &type, cons
 	}
 
 	return successful;
-};
+}
 
 bool AccountRepositoryDB::registerCoinsTransaction(
 	const uint32_t &id,
@@ -146,7 +146,7 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 	}
 
 	return successful;
-};
+}
 
 bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 	auto result = g_database().storeQuery(

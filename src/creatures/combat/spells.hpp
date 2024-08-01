@@ -75,15 +75,15 @@ private:
 
 constexpr auto g_spells = Spells::getInstance;
 
-using RuneSpellFunction = std::function<bool(const std::shared_ptr<RuneSpell> spell, const auto player, const Position &posTo)>;
+using RuneSpellFunction [[maybe_unused]] = std::function<bool(const std::shared_ptr<RuneSpell> &spell, const std::shared_ptr<Player> &player, const Position &posTo)>;
 
 class BaseSpell {
 public:
 	constexpr BaseSpell() = default;
 	virtual ~BaseSpell() = default;
 
-	virtual bool castSpell(std::shared_ptr<Creature> creature) = 0;
-	virtual bool castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) = 0;
+	virtual bool castSpell(const std::shared_ptr<Creature> &creature) = 0;
+	virtual bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) = 0;
 
 	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 	SoundEffect_t soundCastEffect = SoundEffect_t::SPELL_OR_RUNE;
@@ -98,8 +98,8 @@ public:
 	CombatSpell(const CombatSpell &) = delete;
 	CombatSpell &operator=(const CombatSpell &) = delete;
 
-	bool castSpell(std::shared_ptr<Creature> creature) override;
-	bool castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) override;
+	bool castSpell(const std::shared_ptr<Creature> &creature) override;
+	bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) override;
 
 	// Scripting spell
 	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var) const;
@@ -401,8 +401,8 @@ public:
 
 	virtual bool playerCastInstant(std::shared_ptr<Player> player, std::string &param);
 
-	bool castSpell(std::shared_ptr<Creature> creature) override;
-	bool castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) override;
+	bool castSpell(const std::shared_ptr<Creature> &creature) override;
+	bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) override;
 
 	// Scripting spell
 	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var) const;
@@ -469,8 +469,8 @@ public:
 
 	bool executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &fromPosition, const std::shared_ptr<Thing> &target, const Position &toPosition, bool isHotkey) override;
 
-	bool castSpell(std::shared_ptr<Creature> creature) override;
-	bool castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) override;
+	bool castSpell(const std::shared_ptr<Creature> &creature) override;
+	bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) override;
 
 	// Scripting spell
 	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const;

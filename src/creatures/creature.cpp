@@ -261,7 +261,8 @@ void Creature::addEventWalk(bool firstStep) {
 			static_cast<uint32_t>(ticks),
 			[creatureId = self->getID()] { g_game().checkCreatureWalk(creatureId); }, "Game::checkCreatureWalk"
 		);
-	});
+	},
+	                                     __FUNCTION__);
 }
 
 void Creature::stopEventWalk() {
@@ -1061,7 +1062,7 @@ void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
 	});
 
 	if (onComplete) {
-		g_dispatcher().context().addEvent(std::move(onComplete));
+		g_dispatcher().context().addEvent(std::move(onComplete), __FUNCTION__);
 	}
 }
 

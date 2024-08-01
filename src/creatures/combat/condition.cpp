@@ -1954,7 +1954,7 @@ bool ConditionFeared::getFleeDirection(std::shared_ptr<Creature> creature) {
 	return false;
 }
 
-bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Position &pos, stdext::arraylist<Direction> &dirList) {
+bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Position &pos, std::vector<Direction> &dirList) {
 	const std::vector<uint8_t> walkSize { 15, 9, 3, 1 };
 	bool found = false;
 	std::ptrdiff_t found_size = 0;
@@ -2057,7 +2057,7 @@ bool ConditionFeared::startCondition(std::shared_ptr<Creature> creature) {
 
 bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32_t interval) {
 	Position currentPos = creature->getPosition();
-	stdext::arraylist<Direction> listDir(128);
+	std::vector<Direction> listDir;
 
 	g_logger().debug("[ConditionFeared::executeCondition] Executing condition, current position is {}", currentPos.toString());
 
@@ -2067,7 +2067,7 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addEvent([id = creature->getID(), listDir = listDir.data()] {
+			g_dispatcher().addEvent([id = creature->getID(), listDir] {
 				g_game().forcePlayerAutoWalk(id, listDir);
 			},
 			                        "ConditionFeared::executeCondition");

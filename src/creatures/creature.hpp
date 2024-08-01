@@ -588,8 +588,8 @@ public:
 
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
-	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, const FindPathParams &fpp);
-	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
+	bool getPathTo(const Position &targetPos, std::vector<Direction> &dirList, const FindPathParams &fpp);
+	bool getPathTo(const Position &targetPos, std::vector<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
 	struct CountBlock_t {
 		int32_t total;
@@ -728,7 +728,7 @@ protected:
 	CreatureEventList eventsList;
 	ConditionList conditions;
 
-	std::deque<Direction> listWalkDir;
+	std::vector<Direction> listWalkDir;
 
 	std::weak_ptr<Tile> m_tile;
 	std::weak_ptr<Creature> m_attackedCreature;

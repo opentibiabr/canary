@@ -442,7 +442,7 @@ public:
 		return boostedCreature;
 	}
 
-	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
+	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight = SightLine_CheckSightLine, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor);
 
 	void changeSpeed(std::shared_ptr<Creature> creature, int32_t varSpeedDelta);

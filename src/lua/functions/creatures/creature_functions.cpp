@@ -938,7 +938,7 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 	fpp.clearSight = getBoolean(L, 6, fpp.clearSight);
 	fpp.maxSearchDist = getNumber<int32_t>(L, 7, fpp.maxSearchDist);
 
-	stdext::arraylist<Direction> dirList(128);
+	std::vector<Direction> dirList;
 	if (creature->getPathTo(position, dirList, fpp)) {
 		lua_newtable(L);
 

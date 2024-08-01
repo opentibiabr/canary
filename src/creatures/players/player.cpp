@@ -7820,9 +7820,9 @@ SoundEffect_t Player::getAttackSoundEffect() const {
 bool Player::canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay /* = 500*/) {
 	if (!Position::areInRange<1, 1>(getPosition(), toPosition)) {
 		// Check if can walk to the toPosition and send event to use function
-		stdext::arraylist<Direction> listDir(128);
+		std::vector<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([creatureId = getID(), dirs = listDir.data()] { g_game().playerAutoWalk(creatureId, dirs); }, __FUNCTION__);
+			g_dispatcher().addEvent([creatureId = getID(), listDir] { g_game().playerAutoWalk(creatureId, listDir); }, __FUNCTION__);
 
 			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);

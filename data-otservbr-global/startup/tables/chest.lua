@@ -154,7 +154,7 @@ ChestUnique = {
 		isKey = true,
 		itemId = 2472,
 		itemPos = { x = 32201, y = 31571, z = 10 },
-		container = ,
+		container = 2853,
 		reward = { { 2970, 1 }, { 3031, 23 }, { 3147, 1 }, { 3298, 4 }, { 3384, 1 } },
 		weight = 80.00,
 		storage = Storage.Quest.Key.ID4502,

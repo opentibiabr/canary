@@ -4541,15 +4541,25 @@ void ProtocolGame::sendChannelMessage(const std::string &author, const std::stri
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendIcons(uint32_t icons) {
+void ProtocolGame::sendIcons(const std::unordered_set<Icons_t> &iconSet) {
 	NetworkMessage msg;
 	msg.addByte(0xA2);
+
+	std::bitset<ICON_COUNT> iconsBitSet;
+	for (const auto &icon : iconSet) {
+		iconsBitSet.set(icon);
+	}
+	uint32_t icons = iconsBitSet.to_ulong();
+
 	if (oldProtocol) {
+		// Send as uint16_t in old protocol
 		msg.add<uint16_t>(static_cast<uint16_t>(icons));
 	} else {
+		// Send as uint32_t in new protocol
 		msg.add<uint32_t>(icons);
 		msg.addByte(0x00); // 13.20 icon counter
 	}
+
 	writeToOutputBuffer(msg);
 }
 

@@ -75,7 +75,13 @@ int ConditionFunctions::luaConditionGetIcons(lua_State* L) {
 	// condition:getIcons()
 	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 1);
 	if (condition) {
-		lua_pushnumber(L, condition->getIcons());
+		auto icons = condition->getIcons();
+		lua_newtable(L); // Creates a new table on the Lua stack
+		int index = 1;
+		for (const auto &icon : icons) {
+			lua_pushstring(L, magic_enum::enum_name(icon).data()); // Converts the enum to a string
+			lua_rawseti(L, -2, index++); // Inserts into the Lua table array
+		}
 	} else {
 		lua_pushnil(L);
 	}

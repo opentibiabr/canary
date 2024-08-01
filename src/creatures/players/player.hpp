@@ -313,7 +313,7 @@ public:
 		return inbox;
 	}
 
-	uint32_t getClientIcons();
+	std::unordered_set<Icons_t> getClientIcons();
 
 	const GuildWarVector &getGuildWarVector() const {
 		return guildWarVector;

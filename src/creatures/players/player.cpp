@@ -466,41 +466,37 @@ float Player::getDefenseFactor() const {
 	}
 }
 
-uint32_t Player::getClientIcons() {
-	uint32_t icons = 0;
+std::unordered_set<Icons_t> Player::getClientIcons() {
+	std::unordered_set<Icons_t> icons;
+
 	for (const auto &condition : conditions) {
 		if (!isSuppress(condition->getType(), false)) {
-			icons |= condition->getIcons();
+			auto conditionIcons = condition->getIcons();
+			icons.insert(conditionIcons.begin(), conditionIcons.end());
 		}
 	}
 
 	if (pzLocked) {
-		icons |= ICON_REDSWORDS;
+		icons.insert(ICON_REDSWORDS);
 	}
 
 	auto tile = getTile();
 	if (tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-		icons |= ICON_PIGEON;
+		icons.insert(ICON_PIGEON);
 		client->sendRestingStatus(1);
 
-		// Don't show ICON_SWORDS if player is in protection zone.
-		if (hasBitSet(ICON_SWORDS, icons)) {
-			icons &= ~ICON_SWORDS;
-		}
+		icons.erase(ICON_SWORDS);
 	} else {
 		client->sendRestingStatus(0);
 	}
 
-	// Game client debugs with 10 or more icons
-	// so let's prevent that from happening.
-	std::bitset<32> icon_bitset(static_cast<uint64_t>(icons));
-	for (size_t pos = 0, bits_set = icon_bitset.count(); bits_set >= 10; ++pos) {
-		if (icon_bitset[pos]) {
-			icon_bitset.reset(pos);
-			--bits_set;
-		}
+	// Limit the number of active icons to a maximum of 9 to avoid visual overload on the client
+	while (icons.size() > 9) {
+		// Remove last inserted icon if exceeds 9
+		icons.erase(std::prev(icons.end()));
 	}
-	return icon_bitset.to_ulong();
+
+	return icons;
 }
 
 void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {

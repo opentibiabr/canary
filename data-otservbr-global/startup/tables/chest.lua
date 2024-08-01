@@ -1,4 +1,4 @@
---[[
+ --[[
 	Look README.md for see the reserved action/unique numbers
 	From range 5000 to 6000 is reserved for keys chest
 	From range 6001 to 472 is reserved for script reward
@@ -122,8 +122,8 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32648, y = 31905, z = 3 },
 		container = 2853,
-		reward = { { 2970, 1 }, { 3598, 20 }, { 3598, 7 } },
-		weight = 44,
+		reward = { { 2970, 1 }, { 3598, 27 } },
+		weight = 12.00,
 		storage = Storage.Quest.U6_1.EmperorsCookies.Rewards.Cookies,
 		keyAction = Storage.Quest.Key.ID3801,
 	},
@@ -154,9 +154,9 @@ ChestUnique = {
 		isKey = true,
 		itemId = 2472,
 		itemPos = { x = 32201, y = 31571, z = 10 },
-		container = 2853,
+		container = ,
 		reward = { { 2970, 1 }, { 3031, 23 }, { 3147, 1 }, { 3298, 4 }, { 3384, 1 } },
-		weight = 80,
+		weight = 80.00,
 		storage = Storage.Quest.Key.ID4502,
 		keyAction = Storage.Quest.Key.ID4502,
 	},
@@ -453,7 +453,7 @@ ChestUnique = {
 		itemPos = { x = 32803, y = 31582, z = 2 },
 		container = 2853,
 		reward = { { 3284, 1 }, { 3297, 1 } }, -- bag with weapons
-		weight = 64,
+		weight = 64.00,
 		questName = "draconia1",
 	},
 	[6024] = {
@@ -747,7 +747,7 @@ ChestUnique = {
 		container = 2853,
 		keyAction = Storage.Quest.Key.ID3702,
 		reward = { { 2971, 1 }, { 3509, 1 }, { 3351, 1 }, { 3424, 1 }, { 2821, 1 }, { 3271, 1 }, { 3085, 1 }, { 3048, 1 } },
-		weight = 194,
+		weight = 195.00,
 		storage = Storage.Quest.PreU6_0.OrnamentedShield.Rewards.OrnamentedShield,
 	},
 	[6063] = {
@@ -756,7 +756,7 @@ ChestUnique = {
 		itemPos = { x = 32769, y = 32302, z = 10 },
 		container = 2859,
 		reward = { { 2949, 1 }, { 3059, 1 }, { 3083, 1 }, { 3035, 5 }, { 3053, 1 } },
-		weight = 44,
+		weight = 44.00,
 		questName = "ornamentedshield",
 	},
 	--[6064] EMPTY
@@ -766,7 +766,7 @@ ChestUnique = {
 		itemPos = { x = 32644, y = 32131, z = 8 },
 		container = 2853,
 		reward = { { 3033, 2 }, { 3050, 1 }, { 2953, 1 } },
-		weight = 44,
+		weight = 18.00,
 		questName = "panpipe",
 	},
 	[6066] = {
@@ -774,7 +774,7 @@ ChestUnique = {
 		itemPos = { x = 33199, y = 31923, z = 11 },
 		container = 2853,
 		reward = { { 3031, 98 }, { 3031, 77 }, { 3026, 3 } },
-		weight = 27,
+		weight = 27.00,
 		storage = Storage.Quest.U6_4.BerserkerTreasure.Rewards.WhitePearls,
 	},
 	-- Fire axe quest
@@ -784,7 +784,7 @@ ChestUnique = {
 		itemPos = { x = 33078, y = 31656, z = 11 },
 		container = 2853,
 		reward = { { 3098, 1 }, { 3085, 200 }, { 3028, 7 }, { 3320, 1 } }, -- Bag (Ring of Healing, Dragon Necklace, 7 Small Diamonds)
-		weight = 27,
+		weight = 56.00,
 		questName = "fireaxe1",
 	},
 	-- Poison daggers quest
@@ -793,8 +793,8 @@ ChestUnique = {
 		itemId = 2473,
 		itemPos = { x = 33155, y = 31880, z = 11 },
 		container = 2854,
-		reward = { { 3448, 30 }, { 3299, 1 }, { 3299, 1 } }, -- Backpack (2 Poison Daggers, 30 Poison Arrows)
-		weight = 60,
+		reward = { { 3448, 30 }, { 3299, 1 } }, -- Backpack (2 Poison Daggers, 30 Poison Arrows)
+		weight = 51.00,
 		questName = "poisondaggers",
 	},
 	-- Shaman treasure quest
@@ -804,7 +804,7 @@ ChestUnique = {
 		itemPos = { x = 33127, y = 31885, z = 9 },
 		container = 2853,
 		reward = { { 3147, 3 } }, -- Bag with 3 blank runes
-		weight = 15,
+		weight = 15.00,
 		questName = "shamantreasure",
 	},
 	-- Strong potions quest
@@ -814,7 +814,7 @@ ChestUnique = {
 		itemPos = { x = 33163, y = 31603, z = 15 },
 		container = 2857,
 		reward = { { 237, 5 } },
-		weight = 23,
+		weight = 23.00,
 		storage = Storage.Quest.U8_1.StrongPotions.Reward,
 	},
 	-- Vampire shield quest
@@ -824,7 +824,7 @@ ChestUnique = {
 		itemPos = { x = 33188, y = 31682, z = 14 },
 		container = 2853,
 		reward = { { 3058, 1 }, { 3027, 1 }, { 3078, 1 } }, -- Bag (Strange Symbol, Black Pearl and Mysterious Fetish)
-		weight = 16,
+		weight = 16.00,
 		questName = "vampireshield1",
 	},
 	-- [6072] empty
@@ -835,7 +835,7 @@ ChestUnique = {
 		itemPos = { x = 33072, y = 32169, z = 2 },
 		container = 2854,
 		reward = { { 268, 1 }, { 266, 1 }, { 3449, 30 }, { 3448, 60 } },
-		weight = 80,
+		weight = 99.00,
 		storage = Storage.Quest.U7_1.DragonTower.Rewards.Backpack1,
 	},
 	-- Backpack 2
@@ -844,7 +844,7 @@ ChestUnique = {
 		itemPos = { x = 33078, y = 32169, z = 2 },
 		container = 2854,
 		reward = { { 3350, 1 }, { 3029, 2 } },
-		weight = 50,
+		weight = 50.00,
 		storage = Storage.Quest.U7_1.DragonTower.Rewards.Backpack2,
 	},
 	-- Behemoth quest
@@ -855,7 +855,7 @@ ChestUnique = {
 		itemPos = { x = 33294, y = 31658, z = 13 },
 		container = 2853,
 		reward = { { 3028, 3 }, { 3029, 4 }, { 3007, 1 }, { 3052, 1 }, { 3055, 1 } },
-		weight = 50,
+		weight = 17.00,
 		questName = "behemothquest1",
 	},
 	-- Parchment room quest
@@ -919,7 +919,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 32845, y = 31917, z = 6 },
 		container = 2853,
-		weight = 42,
+		weight = 31.00,
 		reward = { { 3026, 1 }, { 3207, 1 } },
 		storage = Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag1,
 	},
@@ -928,7 +928,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 32847, y = 31917, z = 6 },
 		container = 2853,
-		weight = 42,
+		weight = 13.00,
 		reward = { { 3012, 1 }, { 3097, 1 } },
 		storage = Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag2,
 	},
@@ -959,7 +959,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 33233, y = 31656, z = 13 },
 		container = 2856,
-		weight = 50,
+		weight = 50.00,
 		reward = { { 3213, 1 } },
 		storage = Storage.Quest.U7_24.TheAnnihilator.Reward,
 	},
@@ -1026,7 +1026,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 33057, y = 31029, z = 7 },
 		container = 2854,
-		weight = 14.90,
+		weight = 25.00,
 		reward = { { 7439, 1 }, { 7440, 1 }, { 7443, 1 } },
 		storage = Storage.Quest.U8_54.TheNewFrontier.Reward.Potions,
 	},
@@ -1150,6 +1150,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32149, y = 32105, z = 11 },
 		container = 2854, -- backpack
+		weight = 35.00,
 		reward = { { 2882, 1 }, { 2856, 1 }, { 2881, 1 }, { 2905, 1 } }, -- Jug, Present Box, Cup and Plate
 		questName = "presentBox",
 	},
@@ -1159,6 +1160,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32146, y = 32097, z = 11 },
 		container = 2853, -- bag
+		weight = 21.00,
 		reward = { { 3447, 12 }, { 3031, 40 } }, -- bag: 12 arrows, 40 gold coin
 		questName = "bearChest1",
 	},
@@ -1198,6 +1200,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 31973, y = 32209, z = 12 },
 		container = 2853, -- bag
+		weight = 37.00,
 		reward = { { 3551, 1 }, { 1781, 5 }, { 3031, 50 } }, -- sandals, 5 small stones, 50 gold coins
 		questName = "goblintemple",
 	},
@@ -1206,6 +1209,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 31977, y = 32209, z = 12 },
 		container = 2853, -- bag
+		weight = 31.00,
 		reward = { { 3466, 1 }, { 2992, 4 }, { 2874, 1 } }, -- pan, 4 snowballs, vial of milk
 		questName = "goblintemple2",
 	},
@@ -1222,6 +1226,7 @@ ChestUnique = {
 		itemId = 2473,
 		itemPos = { x = 32127, y = 32065, z = 12 },
 		container = 2853, -- bag
+		weight = 19.00,
 		reward = { { 3447, 10 }, { 3448, 4 } }, -- 10 arrows, 4 poison arrow
 		questName = "minohell2",
 	},
@@ -1305,6 +1310,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 32443, y = 32238, z = 11 },
 		container = 2853, -- bag
+		weight = 18.00,
 		reward = { { 3052, 1 }, { 3085, 200 } }, -- life ring , dragon necklace
 		questName = "lifering",
 	},
@@ -1329,6 +1335,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 32456, y = 32008, z = 13 },
 		container = 2853, -- bag
+		weight = 10.00,
 		reward = { { 3029, 1 }, { 3028, 1 }, { 3097, 1 } }, -- small sapphire, small diamond, dwarven ring
 		questName = "geomancer",
 	},
@@ -1437,6 +1444,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32651, y = 31969, z = 9 },
 		container = 2853, -- bag
+		weight = 40.00,
 		reward = { { 3147, 3 }, { 2989, 1 }, { 3031, 76 }, { 3463, 1 } }, -- 3 blank rune, wooden doll, 76 gold coin, mirror
 		questName = "longsword3",
 	},
@@ -1454,6 +1462,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 33089, y = 32030, z = 9 },
 		container = 2853, -- bag
+		weight = 26.00,
 		reward = { { 3046, 1 }, { 3092, 1 }, { 3147, 1 } }, -- magic light wand, axe ring, blank rune
 		questName = "orcshaman",
 	},
@@ -1478,6 +1487,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32357, y = 32130, z = 9 },
 		container = 2853, -- bag
+		weight = 113.00,
 		reward = { { 3377, 1 } }, -- scale armor
 		questName = "scalearmor",
 	},
@@ -1495,6 +1505,7 @@ ChestUnique = {
 		itemId = 2476,
 		itemPos = { x = 32775, y = 32006, z = 11 },
 		container = 2853, -- bag
+		weight = 10.00,
 		reward = { { 3017, 1 }, { 3030, 2 }, { 3028, 3 } }, -- Silver Brooch, 2 Small Rubies, 3 Small Diamonds
 		questName = "silverbrooch",
 	},
@@ -1519,6 +1530,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32675, y = 32069, z = 8 },
 		container = 2857, -- green bag
+		weight = 34.00,
 		reward = { { 3084, 250 }, { 3098, 1 }, { 3046, 1 }, { 3077, 1 } }, -- protection amulet, ring of healing, magic light wand and anhk
 		questName = "desert2",
 	},
@@ -1536,6 +1548,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32565, y = 32119, z = 3 },
 		container = 2853, -- bag
+		weight = 14.00,
 		reward = { { 3083, 150 }, { 3029, 2 }, { 3097, 1 } }, -- garlick necklace, small sapphire, dwarven ring
 		questName = "triangletower",
 	},
@@ -1545,6 +1558,7 @@ ChestUnique = {
 		itemId = 4025,
 		itemPos = { x = 32179, y = 32224, z = 9 },
 		container = 2853, -- bag
+		weight = 102.00,
 		reward = { { 3374, 1 }, { 3430, 1 } }, -- Copper Shield and Legion Helmet
 		questName = "dragoncorpse",
 	},
@@ -1598,6 +1612,7 @@ ChestUnique = {
 		itemId = 4240,
 		itemPos = { x = 32769, y = 32225, z = 7 },
 		container = 2854,
+		weight = 162.00
 		reward = { { 3123, 1 }, { 3155, 3 }, { 3361, 1 }, { 3353, 1 }, { 3285, 1 }, { 3506, 1 } }, -- worn leather boots, sudden death rune, leather armor, iron helmet, longsword, stamped letter
 		questName = "ironhelmet",
 	},
@@ -1607,6 +1622,7 @@ ChestUnique = {
 		itemId = 4240,
 		itemPos = { x = 32514, y = 32303, z = 10 },
 		container = 2853,
+		weight = 49.00,
 		reward = { { 3350, 1 }, { 3448, 5 }, { 268, 1 }, { 266, 1 } }, -- bow, 5 poison arrows, mana potion, health potion
 		questName = "deadarcher",
 	},
@@ -1616,6 +1632,7 @@ ChestUnique = {
 		itemId = 4240,
 		itemPos = { x = 32816, y = 32279, z = 8 },
 		container = 2853,
+		weight = 24.00,
 		reward = { { 3450, 5 }, { 3449, 12 } }, -- 5 power bolt, 12 burst arrow
 		questName = "powerbolt1",
 	},
@@ -1716,7 +1733,7 @@ ChestUnique = {
 		itemId = 1983,
 		itemPos = { x = 33049, y = 32399, z = 10 },
 		container = 2853,
-		weight = 105,
+		weight = 105.00,
 		reward = { { 3436, 1 }, { 3567, 1 }, { 3324, 1 } },
 		storage = Storage.Quest.U7_3.TheMedusaQuest,
 	},

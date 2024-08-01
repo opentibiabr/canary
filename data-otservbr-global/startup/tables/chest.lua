@@ -1612,7 +1612,7 @@ ChestUnique = {
 		itemId = 4240,
 		itemPos = { x = 32769, y = 32225, z = 7 },
 		container = 2854,
-		weight = 162.00
+		weight = 162.00,
 		reward = { { 3123, 1 }, { 3155, 3 }, { 3361, 1 }, { 3353, 1 }, { 3285, 1 }, { 3506, 1 } }, -- worn leather boots, sudden death rune, leather armor, iron helmet, longsword, stamped letter
 		questName = "ironhelmet",
 	},

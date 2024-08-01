@@ -1222,7 +1222,9 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 
 		if (CreatureVector* creatures = tile->getCreatures()) {
 			const std::shared_ptr<Creature> topCreature = tile->getTopCreature();
-			for (auto &creature : *creatures) {
+			// A copy of the tile's creature list is made because modifications to this vector, such as adding or removing creatures through a Lua callback, may occur during the iteration within the for loop.
+			CreatureVector creaturesCopy = *creatures;
+			for (auto &creature : creaturesCopy) {
 				if (params.targetCasterOrTopMost) {
 					if (caster && caster->getTile() == tile) {
 						if (creature != caster) {

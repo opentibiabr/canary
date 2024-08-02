@@ -112,8 +112,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addItem(133, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 5 then
-				npcHandler:say("Your current mission is to destroy this coven. Are you done with that mission?", npc, creature)
-				npcHandler:setTopic(playerId, 9)
+			npcHandler:say("Your current mission is to destroy this coven. Are you done with that mission?", npc, creature)
+			npcHandler:setTopic(playerId, 9)
 		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 6 then
 			npcHandler:say({
 				"I think it's time to truly test your abilities. One of our allies has requested assistance. I think you are just the right person to help him ...",
@@ -191,7 +191,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
-			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.WalterGuard) == 1 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.KulagGuard) == 1 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.GrofGuard) == 1 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.MilesGuard) == 1 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.TimGuard) == 1 then
+			if
+				player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.WalterGuard) == 1
+				and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.KulagGuard) == 1
+				and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.GrofGuard) == 1
+				and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.MilesGuard) == 1
+				and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.TimGuard) == 1
+			then
 				npcHandler:say({
 					"Indeed, this is exactly what my other sources told me. Of course I knew the outcome of this investigation in advance. This was just a test. ...",
 					"Well, now that you've proven yourself as useful, you can ask me for another mission. Let's see if you can handle some field duty, too.",

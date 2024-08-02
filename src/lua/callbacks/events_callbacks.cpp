@@ -39,9 +39,12 @@ bool EventsCallbacks::isCallbackRegistered(const std::shared_ptr<EventCallback> 
 }
 
 void EventsCallbacks::addCallback(const std::shared_ptr<EventCallback> &callback) {
-	if (m_callbacks.find(callback->getName()) != m_callbacks.end()) {
+	if (m_callbacks.find(callback->getName()) != m_callbacks.end() && !callback->skipDuplicationCheck()) {
+		g_logger().error("Event callback already registered: {}", callback->getName());
 		return;
 	}
+
+	g_logger().trace("Registering event callback: {}", callback->getName());
 
 	m_callbacks[callback->getName()] = callback;
 }

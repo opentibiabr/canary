@@ -1,3 +1,4 @@
+---
 version: "1.0"
 bootstrap: |
   sudo apt-get update
@@ -11,4 +12,3 @@ bootstrap: |
   mkdir -p build
   cd build
   cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-debug || true
-

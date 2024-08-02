@@ -473,27 +473,26 @@ std::unordered_set<Icons_t> Player::getClientIcons() {
 		if (!isSuppress(condition->getType(), false)) {
 			auto conditionIcons = condition->getIcons();
 			icons.insert(conditionIcons.begin(), conditionIcons.end());
+			if (icons.size() == 9) {
+				return icons;
+			}
 		}
 	}
 
-	if (pzLocked) {
+	if (pzLocked && icons.size() < 9) {
 		icons.insert(ICON_REDSWORDS);
 	}
 
 	auto tile = getTile();
 	if (tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-		icons.insert(ICON_PIGEON);
+		if (icons.size() < 9) {
+			icons.insert(ICON_PIGEON);
+		}
 		client->sendRestingStatus(1);
 
 		icons.erase(ICON_SWORDS);
 	} else {
 		client->sendRestingStatus(0);
-	}
-
-	// Limit the number of active icons to a maximum of 9 to avoid visual overload on the client
-	while (icons.size() > 9) {
-		// Remove last inserted icon if exceeds 9
-		icons.erase(std::prev(icons.end()));
 	}
 
 	return icons;

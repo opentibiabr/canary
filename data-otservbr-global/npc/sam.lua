@@ -65,16 +65,16 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "adorn") or MsgContains(message, "outfit") or MsgContains(message, "addon") then
-		local addonProgress = player:getStorageValue(Storage.OutfitQuest.Knight.AddonHelmet)
+		local addonProgress = player:getStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet)
 		if addonProgress == 5 then
-			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 6)
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 6)
-			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmetTimer, os.time() + 7200)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 6)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 6)
+			player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmetTimer, os.time() + 7200) -- 2 hours
 			npcHandler:say("Oh, Gregor sent you? I see. It will be my pleasure to adorn your helmet. Please give me some time to finish it.", npc, creature)
 		elseif addonProgress == 6 then
-			if player:getStorageValue(Storage.OutfitQuest.Knight.AddonHelmetTimer) < os.time() then
-				player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 0)
-				player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 7)
+			if player:getStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmetTimer) < os.time() then
+				player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 0)
+				player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 7)
 				player:setStorageValue(Storage.OutfitQuest.Ref, math.min(0, player:getStorageValue(Storage.OutfitQuest.Ref) - 1))
 				player:addOutfitAddon(131, 2)
 				player:addOutfitAddon(139, 2)
@@ -89,7 +89,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Sorry, but without the permission of Gregor I cannot help you with this matter.", npc, creature)
 		end
 	elseif MsgContains(message, "old backpack") or MsgContains(message, "backpack") then
-		if player:getStorageValue(Storage.SamsOldBackpack) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc) < 1 then
 			npcHandler:say("What? Are you telling me you found my old adventurer's backpack that I lost years ago??", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -113,7 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"Thank you very much! This brings back good old memories! Please, as a reward, travel to Kazordoon and ask my old friend Kroox to provide you a special dwarven armor. ...",
 					"I will mail him about you immediately. Just tell him, his old buddy Sam is sending you.",
 				}, npc, creature)
-				player:setStorageValue(Storage.SamsOldBackpack, 1)
+				player:setStorageValue(Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc, 1)
 				player:addAchievement("Backpack Tourist")
 			else
 				npcHandler:say("You don't have it...", npc, creature)

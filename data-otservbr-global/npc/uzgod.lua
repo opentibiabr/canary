@@ -57,7 +57,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "piece of draconian steel") then
+	if MsgContains(message, "piece of draconian steel") and player:getStorageValue(Storage.Quest.U7_8.ObsidianKnife) < 1 then
 		npcHandler:say("You bringing me draconian steel and obsidian lance in exchange for obsidian knife?", npc, creature)
 		npcHandler:setTopic(playerId, 15)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 15 then
@@ -65,6 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(5889, 1) and player:removeItem(3313, 1) then
 				npcHandler:say("Here you have it.", npc, creature)
 				player:addItem(5908, 1)
+				player:setStorageValue(Storage.Quest.U7_8.ObsidianKnife, 1)
 				npcHandler:setTopic(playerId, 0)
 			end
 		else
@@ -74,7 +75,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "pickaxe") then
-		if player:getStorageValue(Storage.ExplorerSociety.JoiningTheExplorers) == 1 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers) == 1 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 1 then
 			npcHandler:say("True dwarven pickaxes having to be maded by true weaponsmith! You wanting to get pickaxe for explorer society?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -89,7 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 6)
 		end
 	elseif MsgContains(message, "brooch") then
-		if player:getStorageValue(Storage.ExplorerSociety.JoiningTheExplorers) == 3 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 3 then
+		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers) == 3 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 3 then
 			npcHandler:say("You got me brooch?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
@@ -103,9 +104,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Last key should be in the generals quarter near armory. Only General might have key to enter there too. But me not knowing how to enter Generals private room at barracks. You looking on your own ...", npc, creature)
 			npcHandler:say("When got key, then you going down to dwarven prison and getting me that brooch. Tell me that you got brooch when having it.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			player:setStorageValue(Storage.ExplorerSociety.JoiningTheExplorers, 2)
-			player:setStorageValue(Storage.ExplorerSociety.DwacatraDoor, 1)
-			player:setStorageValue(Storage.ExplorerSociety.QuestLine, 2)
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers, 2)
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.DwacatraDoor, 1)
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 2)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(4834, 1) then -----
 				npcHandler:say("Thanking you for brooch. Me guessing you now want your pickaxe?", npc, creature)
@@ -114,8 +115,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say("Here you have it.", npc, creature)
 			player:addItem(4845, 1) -----
-			player:setStorageValue(Storage.ExplorerSociety.JoiningTheExplorers, 4)
-			player:setStorageValue(Storage.ExplorerSociety.QuestLine, 4)
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers, 4)
+			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 4)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 9 then
 			if player:getMoney() + player:getBankBalance() >= 250 and player:getItemCount(5880) >= 3 then
@@ -141,6 +142,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Hiho |PLAYERNAME|! Wanna weapon, eh?")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Guut bye. Coming back soon.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Guut bye. Coming back soon.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

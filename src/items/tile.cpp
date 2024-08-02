@@ -993,32 +993,36 @@ void Tile::addThing(std::shared_ptr<Thing> thing) {
 
 void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 	if (!thing) {
-		return /*RETURNVALUE_NOTPOSSIBLE*/;
+		return; // RETURNVALUE_NOTPOSSIBLE
 	}
 
+	// Verify if the thing is a creature
 	std::shared_ptr<Creature> creature = thing->getCreature();
 	if (creature) {
 		Spectators::clearCache();
 		creature->setParent(static_self_cast<Tile>());
 
+		// Safely add creature to the list
 		CreatureVector* creatures = makeCreatures();
-		creatures->insert(creatures->begin(), creature);
+		if (creatures) {
+			creatures->insert(creatures->begin(), creature);
+		}
 	} else {
-		const auto item = thing->getItem();
-		if (item == nullptr) {
-			return /*RETURNVALUE_NOTPOSSIBLE*/;
+		const auto &item = thing->getItem();
+		if (!item) {
+			return; // RETURNVALUE_NOTPOSSIBLE
 		}
 
 		TileItemVector* items = getItemList();
 		if (items && items->size() >= 0xFFFF) {
-			return /*RETURNVALUE_NOTPOSSIBLE*/;
+			return; // RETURNVALUE_NOTPOSSIBLE
 		}
 
 		item->setParent(static_self_cast<Tile>());
 
 		const ItemType &itemType = Item::items[item->getID()];
 		if (itemType.isGroundTile()) {
-			if (ground == nullptr) {
+			if (!ground) {
 				ground = item;
 				onAddTileItem(item);
 			} else {
@@ -1034,9 +1038,9 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 			}
 		} else if (item->isAlwaysOnTop()) {
 			if (itemType.isSplash() && items) {
-				// remove old splash if exists
-				for (ItemVector::const_iterator it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
-					const std::shared_ptr<Item> &oldSplash = *it;
+				// Remove old splash if it exists
+				for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
+					const auto oldSplash = *it;
 					if (!Item::items[oldSplash->getID()].isSplash()) {
 						continue;
 					}
@@ -1052,7 +1056,7 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 
 			if (items) {
 				for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
-					// Note: this is different from internalAddThing
+					// Check if the current item should be placed before the current item
 					if (itemType.alwaysOnTopOrder <= Item::items[(*it)->getID()].alwaysOnTopOrder) {
 						items->insert(it, item);
 						isInserted = true;
@@ -1063,16 +1067,16 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 				items = makeItemList();
 			}
 
-			if (!isInserted) {
+			if (!isInserted && items) {
 				items->push_back(item);
 			}
 
 			onAddTileItem(item);
 		} else {
 			if (itemType.isMagicField()) {
-				// remove old field item if exists
+				// Remove old field item if it exists
 				if (items) {
-					for (ItemVector::const_iterator it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
+					for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
 						std::shared_ptr<MagicField> oldField = (*it)->getMagicField();
 						if (oldField) {
 							if (oldField->isReplaceable()) {
@@ -1091,9 +1095,11 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 				}
 			}
 
-			items = makeItemList();
-			items->insert(items->getBeginDownItem(), item);
-			items->increaseDownItemCount();
+			if (items) {
+				items = makeItemList();
+				items->insert(items->getBeginDownItem(), item);
+				items->increaseDownItemCount();
+			}
 			onAddTileItem(item);
 		}
 	}

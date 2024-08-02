@@ -63,7 +63,7 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = false,
-	isPreyExclusive = true
+	isPreyExclusive = true,
 }
 
 monster.light = {

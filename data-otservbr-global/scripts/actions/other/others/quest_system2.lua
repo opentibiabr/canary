@@ -135,7 +135,7 @@ local config = {
 		items = {
 			{ itemId = 7936 },
 		},
-		storage = Storage.ThievesGuild.Mission06,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.Mission06,
 		formerValue = 2,
 		newValue = 3,
 		say = "To buy some time you replace the fish with a piece of carrot.",

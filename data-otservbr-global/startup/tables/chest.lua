@@ -2333,6 +2333,56 @@ ChestUnique = {
 		weight = 13.00,
 		storage = Storage.Quest.U8_2.TheInquisitionQuest.WitchesGrimoire,
 	},
+	-- The Thieves Guild Quest
+	[6271] = {
+		itemId = 2473,
+		itemPos = { x = 33131, y = 32661, z = 7 },
+		reward = { { 235, 1 } },
+		weight = 8.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardOasis,
+	},
+	[6272] = {
+		itemId = 2473,
+		itemPos = { x = 32367, y = 31781, z = 8 },
+		reward = { { 8117, 1 } },
+		weight = 13.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardBook,
+	},
+	[6273] = {
+		itemId = 2469,
+		itemPos = { x = 32551, y = 32652, z = 10 },
+		reward = { { 7369, 1 } },
+		weight = 5.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.GoldenGoblet,
+	},
+	[6274] = {
+		itemId = 2433,
+		itemPos = { x = 32902, y = 32143, z = 4 },
+		reward = { { 7935, 1 } },
+		weight = 0.10,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.CompromisingLetter,
+	},
+	[6275] = {
+		itemId = 2434,
+		itemPos = { x = 32309, y = 32209, z = 8 },
+		reward = { { 8021, 1 } },
+		weight = 35.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardEnd,
+	},
+	[6276] = {
+		itemId = 2434,
+		itemPos = { x = 32309, y = 32211, z = 8 },
+		reward = { { 7404, 1 } },
+		weight = 17.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardEnd,
+	},
+	[6277] = {
+		itemId = 2434,
+		itemPos = { x = 32309, y = 32213, z = 8 },
+		reward = { { 8073, 1 } },
+		weight = 21.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardEnd,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

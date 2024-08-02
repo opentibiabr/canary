@@ -274,6 +274,23 @@ ItemAction = {
 			{ x = 33122, y = 32765, z = 14 },
 		},
 	},
+	-- The Thieves Guild Quest
+	[12501] = {
+		itemId = 7890,
+		itemPos = { { x = 32337, y = 31814, z = 7 } },
+	},
+	[12502] = {
+		itemId = 7891,
+		itemPos = { { x = 32337, y = 31814, z = 6 } },
+	},
+	[12503] = {
+		itemId = 7892,
+		itemPos = { { x = 32337, y = 31812, z = 6 } },
+	},
+	[12509] = {
+		itemId = 1451,
+		itemPos = { { x = 32598, y = 32381, z = 10 } },
+	},
 	-- Secret Service
 	[12550] = {
 		itemId = 16622,

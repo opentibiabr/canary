@@ -103,13 +103,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "documents") then
-		if player:getStorageValue(Storage.ThievesGuild.Mission04) == 2 then
-			player:setStorageValue(Storage.ThievesGuild.Mission04, 3)
+		if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission04) == 2 then
+			player:setStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission04, 3)
 			npcHandler:say({
 				"You need some forged documents? But I will only forge something for a friend. ...",
 				"The nomads at the northern oasis killed someone dear to me. Go and kill at least one of them, then we talk about your document.",
 			}, npc, creature)
-		elseif player:getStorageValue(Storage.ThievesGuild.Mission04) == 4 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.RewardOasis) == 1 then
 			npcHandler:say("The slayer of my enemies is my friend! For a mere 1000 gold I will create the documents you need. Are you interested?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -131,7 +131,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:removeMoneyBank(1000) then
 				player:addItem(7866, 1)
-				player:setStorageValue(Storage.ThievesGuild.Mission04, 5)
+				player:setStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission04, 5)
 				npcHandler:say("And here they are! Now forget where you got them from.", npc, creature)
 			else
 				npcHandler:say("You don't have enough money.", npc, creature)
@@ -176,6 +176,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Be mourned pilgrim in flesh. I'm selling general goods.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

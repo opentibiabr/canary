@@ -3895,12 +3895,12 @@ if not Quests then
 		},
 		[26] = {
 			name = "The Thieves Guild",
-			startStorageId = Storage.ThievesGuild.Quest,
+			startStorageId = Storage.Quest.U8_2.TheThievesGuildQuest.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: Ivory Poaching",
-					storageId = Storage.ThievesGuild.Mission01,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission01,
 					missionId = 10280,
 					startValue = 1,
 					endValue = 2,
@@ -3911,7 +3911,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: Burglary",
-					storageId = Storage.ThievesGuild.Mission02,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission02,
 					missionId = 10281,
 					startValue = 1,
 					endValue = 3,
@@ -3923,7 +3923,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: Invitation",
-					storageId = Storage.ThievesGuild.Mission03,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission03,
 					missionId = 10282,
 					startValue = 1,
 					endValue = 3,
@@ -3935,7 +3935,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 4: Bridge Robbery",
-					storageId = Storage.ThievesGuild.Mission04,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission04,
 					missionId = 10283,
 					startValue = 1,
 					endValue = 8,
@@ -3952,7 +3952,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 5: Enforcing Debts",
-					storageId = Storage.ThievesGuild.Mission05,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission05,
 					missionId = 10284,
 					startValue = 1,
 					endValue = 2,
@@ -3964,7 +3964,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 6: Fishnapping",
-					storageId = Storage.ThievesGuild.Mission06,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission06,
 					missionId = 10285,
 					startValue = 1,
 					endValue = 4,
@@ -3978,7 +3978,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 7: Blackmail",
-					storageId = Storage.ThievesGuild.Mission07,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission07,
 					missionId = 10286,
 					startValue = 1,
 					endValue = 2,
@@ -3990,7 +3990,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 8: Message",
-					storageId = Storage.ThievesGuild.Mission08,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission08,
 					missionId = 10287,
 					startValue = 1,
 					endValue = 3,

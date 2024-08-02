@@ -522,19 +522,19 @@ QuestDoorAction = {
 		},
 	},
 	-- The thieves guild door
-	[Storage.ThievesGuild.Mission04] = {
+	[Storage.Quest.U8_2.TheThievesGuildQuest.Mission04] = {
 		itemId = false,
 		itemPos = { { x = 32359, y = 32787, z = 6 } },
 	},
-	[Storage.ThievesGuild.Mission05] = {
+	[Storage.Quest.U8_2.TheThievesGuildQuest.Mission05] = {
 		itemId = false,
 		itemPos = { { x = 32550, y = 32652, z = 10 } },
 	},
-	[Storage.ThievesGuild.Door] = {
+	[Storage.Quest.U8_2.TheThievesGuildQuest.Door] = {
 		itemId = false,
 		itemPos = { { x = 32314, y = 32210, z = 8 } },
 	},
-	[Storage.ThievesGuild.TheatreScript] = {
+	[Storage.Quest.U8_2.TheThievesGuildQuest.TheatreScript] = {
 		itemId = false,
 		itemPos = { { x = 32367, y = 31782, z = 8 } },
 	},

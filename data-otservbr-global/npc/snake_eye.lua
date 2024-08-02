@@ -65,8 +65,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "documents") then
-		if player:getStorageValue(Storage.ThievesGuild.Mission04) == 1 then
-			player:setStorageValue(Storage.ThievesGuild.Mission04, 2)
+		if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission04) == 1 then
+			player:setStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission04, 2)
 			npcHandler:say("Funny thing that everyone thinks we have forgers for fake documents here. But no, we don't. The best forger is old Ahmet in Ankrahmun.", npc, creature)
 		end
 	end

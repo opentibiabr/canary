@@ -1,16 +1,17 @@
-local throneStorages = {
-	Storage.Quest.U7_9.ThePitsOfInferno.ThroneInfernatil,
-	Storage.Quest.U7_9.ThePitsOfInferno.ThroneTafariel,
-	Storage.Quest.U7_9.ThePitsOfInferno.ThroneVerminor,
-	Storage.Quest.U7_9.ThePitsOfInferno.ThroneApocalypse,
-	Storage.Quest.U7_9.ThePitsOfInferno.ThroneBazir,
-	Storage.Quest.U7_9.ThePitsOfInferno.ThroneAshfalor,
-	Storage.Quest.U7_9.ThePitsOfInferno.ThronePumin,
+local throneConfig = {
+	{ storage = Storage.Quest.U7_9.ThePitsOfInferno.ThroneInfernatil, value = 1 },
+	{ storage = Storage.Quest.U7_9.ThePitsOfInferno.ThroneTafariel, value = 1 },
+	{ storage = Storage.Quest.U7_9.ThePitsOfInferno.ThroneVerminor, value = 1 },
+	{ storage = Storage.Quest.U7_9.ThePitsOfInferno.ThroneApocalypse, value = 1 },
+	{ storage = Storage.Quest.U7_9.ThePitsOfInferno.ThroneBazir, value = 1 },
+	{ storage = Storage.Quest.U7_9.ThePitsOfInferno.ThroneAshfalor, value = 1 },
+	{ storage = Storage.Quest.U7_9.ThePitsOfInferno.ThronePumin, value = 10 },
 }
 
 local function hasTouchedOneThrone(player)
-	for i = 1, #throneStorages do
-		if player:getStorageValue(throneStorages[i]) == 1 then
+	for i = 1, #throneConfig do
+		local config = throneConfig[i]
+		if player:getStorageValue(config.storage) == config.value then
 			return true
 		end
 	end
@@ -28,7 +29,7 @@ function entrance.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if hasTouchedOneThrone(player) and player:getLevel() >= 100 and player:getStorageValue(Storage.TheInquisition.Questline) >= 20 then
+	if hasTouchedOneThrone(player) and player:getLevel() >= 100 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) >= 20 then
 		for i = 1, #config do
 			local cfg = config[i]
 			if Position(cfg.position.x, cfg.position.y, cfg.position.z) == player:getPosition() then

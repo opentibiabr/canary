@@ -3379,12 +3379,12 @@ if not Quests then
 		},
 		[23] = {
 			name = "The Inquisition",
-			startStorageId = Storage.TheInquisition.Questline,
+			startStorageId = Storage.Quest.U8_2.TheInquisitionQuest.Questline,
 			startStorageValue = 2,
 			missions = {
 				[1] = {
 					name = "Mission 1: Interrogation",
-					storageId = Storage.TheInquisition.Mission01,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission01,
 					missionId = 10245,
 					startValue = 1,
 					endValue = 7,
@@ -3401,7 +3401,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: Eclipse",
-					storageId = Storage.TheInquisition.Mission02,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission02,
 					missionId = 10246,
 					startValue = 1,
 					endValue = 3,
@@ -3416,7 +3416,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: Vampire Hunt",
-					storageId = Storage.TheInquisition.Mission03,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission03,
 					missionId = 10247,
 					startValue = 1,
 					endValue = 6,
@@ -3434,7 +3434,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 4: The Haunted Ruin",
-					storageId = Storage.TheInquisition.Mission04,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission04,
 					missionId = 10248,
 					startValue = 1,
 					endValue = 3,
@@ -3447,7 +3447,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 5: Essential Gathering",
-					storageId = Storage.TheInquisition.Mission05,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission05,
 					missionId = 10249,
 					startValue = 1,
 					endValue = 3,
@@ -3459,7 +3459,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 6: The Demon Ungreez",
-					storageId = Storage.TheInquisition.Mission06,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission06,
 					missionId = 10250,
 					startValue = 1,
 					endValue = 3,
@@ -3471,7 +3471,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 7: The Shadow Nexus",
-					storageId = Storage.TheInquisition.Mission07,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission07,
 					missionId = 10251,
 					startValue = 1,
 					endValue = 5,

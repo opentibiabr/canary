@@ -5,10 +5,11 @@ local altars = {
 }
 
 local inquisitionVampire = Action()
+
 function inquisitionVampire.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(Storage.TheInquisition.Questline) == 8 then
-		player:setStorageValue(Storage.TheInquisition.Questline, 9)
-		player:setStorageValue(Storage.TheInquisition.Mission03, 4) -- The Inquisition Questlog- "Mission 3: Vampire Hunt"
+	if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 8 then
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 9)
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission03, 4) -- The Inquisition Questlog- "Mission 3: Vampire Hunt"
 		local k = {}
 		for i = 1, #altars do
 			local tmp = Tile(altars[i]):getItemById(3083)

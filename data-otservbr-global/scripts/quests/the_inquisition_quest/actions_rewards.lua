@@ -12,10 +12,10 @@ local rewards = {
 
 local inquisitionRewards = Action()
 function inquisitionRewards.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(Storage.TheInquisition.Reward) < 1 then
-		player:setStorageValue(Storage.TheInquisition.Reward, 1)
-		player:setStorageValue(Storage.TheInquisition.Questline, 25)
-		player:setStorageValue(Storage.TheInquisition.Mission07, 5) -- The Inquisition Questlog- "Mission 7: The Shadow Nexus"
+	if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Reward) < 1 then
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Reward, 1)
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 25)
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission07, 5) -- The Inquisition Questlog- "Mission 7: The Shadow Nexus"
 		player:addItem(rewards[item.uid], 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found " .. ItemType(rewards[item.uid]):getName() .. ".")
 		player:addAchievement("Master of the Nexus")

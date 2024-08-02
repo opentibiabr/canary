@@ -184,14 +184,14 @@ function teleportMain.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local teleport = teleports[item.uid]
-	if teleport.alwaysSetStorage and player:getStorageValue(Storage.TheInquisition.EnterTeleport) < teleport.storage then
-		player:setStorageValue(Storage.TheInquisition.EnterTeleport, teleport.storage)
+	if teleport.alwaysSetStorage and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.EnterTeleport) < teleport.storage then
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.EnterTeleport, teleport.storage)
 	end
 
 	if teleport.bossStorage then
 		if Game.getStorageValue(teleport.bossStorage) >= 2 then
-			if player:getStorageValue(Storage.TheInquisition.EnterTeleport) < teleport.storage then
-				player:setStorageValue(Storage.TheInquisition.EnterTeleport, teleport.storage)
+			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.EnterTeleport) < teleport.storage then
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.EnterTeleport, teleport.storage)
 				player:setStorageValue(teleport.bossStorage, 0)
 			end
 		else
@@ -200,7 +200,7 @@ function teleportMain.onStepIn(creature, item, position, fromPosition)
 			player:say("Escaping back to the Retreat.", TALKTYPE_MONSTER_SAY)
 			return true
 		end
-	elseif teleport.storage and player:getStorageValue(Storage.TheInquisition.EnterTeleport) < teleport.storage then
+	elseif teleport.storage and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.EnterTeleport) < teleport.storage then
 		player:teleportTo(fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:say("You don't have enough energy to enter this portal", TALKTYPE_MONSTER_SAY)

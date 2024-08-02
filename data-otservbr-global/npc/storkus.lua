@@ -58,20 +58,20 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TheInquisition.Questline) == 6 then
-			if player:getStorageValue(Storage.TheInquisition.StorkusVampiredust) < 0 then
-				player:setStorageValue(Storage.TheInquisition.StorkusVampiredust, 0)
-			end
-			if player:getStorageValue(Storage.TheInquisition.StorkusVampiredust) < 20 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 6 then
+			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) == 0 then
+				npcHandler:say("So they've sent another one? I just hope ye' better than the last one. Are ye' ready for a mission?", npc, creature)
+				npcHandler:setTopic(playerId, 9)
+			elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) >= 1 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) <= 20 then
 				npcHandler:say("So far ye've brought me " .. player:getItemCount(5905) .. " of 20 {vampire dusts}. Do ye' have any more with ye'? ", npc, creature)
 				npcHandler:setTopic(playerId, 1)
-			elseif player:getStorageValue(Storage.TheInquisition.StorkusVampiredust) == 20 then
+			elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) == 21 then
 				npcHandler:say("Fine, you're done! Ye' should talk to me about your {mission} again now.", npc, creature)
 				npcHandler:setTopic(playerId, 2)
-				player:setStorageValue(Storage.TheInquisition.Questline, 7)
-				player:setStorageValue(Storage.TheInquisition.Mission03, 2) -- The Inquisition Questlog- "Mission 3: Vampire Hunt"
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 7)
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission03, 2) -- The Inquisition Questlog- "Mission 3: Vampire Hunt"
 			end
-		elseif player:getStorageValue(Storage.TheInquisition.Questline) == 7 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 7 then
 			npcHandler:say({
 				"While ye' were keeping the lower ranks busy, I could get valuable information about some vampire lords. ...",
 				"One of them is hiding somewhere beneath the Green Claw Swamp. I expect ye' to find him and kill him. ...",
@@ -79,10 +79,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Before ye' open his coffin and drag that beast out to destroy it, I advise ye' to place some garlic necklaces on the stone slabs next to his coffin. That will weaken him considerably. ...",
 				"Bring me his ring as proof for his death. And now hurry and good hunt to ye'.",
 			}, npc, creature)
-			player:setStorageValue(Storage.TheInquisition.Questline, 8)
-			player:setStorageValue(Storage.TheInquisition.Mission03, 3) -- The Inquisition Questlog- "Mission 3: Vampire Hunt"
+			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 8)
+			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission03, 3) -- The Inquisition Questlog- "Mission 3: Vampire Hunt"
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheInquisition.Questline) == 8 or player:getStorageValue(Storage.TheInquisition.Questline) == 9 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 8 or player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 9 then
 			if player:removeItem(7924, 1) then
 				npcHandler:say({
 					"Ding, dong, the vampire is dead, eh? So I guess ye' can return to Henricus and tell him that ye' finished your job here. I'm quite sure he has some more challenging task up his sleeve. ...",
@@ -90,14 +90,14 @@ local function creatureSayCallback(npc, creature, type, message)
 					"They are quite hard to find. If ye' stumble across one of them and manage to kill him, he will surely drop some token that proves his death. Bring me these tokens. ...",
 					"If ye' kill enough of them, I might have a little surprise for ye'.",
 				}, npc, creature)
-				player:setStorageValue(Storage.TheInquisition.Questline, 10)
-				player:setStorageValue(Storage.TheInquisition.Mission03, 5) -- The Inquisition Questlog- "Mission 3: Vampire Hunt"
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 10)
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission03, 5) -- The Inquisition Questlog- "Mission 3: Vampire Hunt"
 			else
 				npcHandler:say("Have ye' killed the vampire lord? Because ye' have no his ring.", npc, creature)
 			end
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, "vampire lord token") and player:getStorageValue(Storage.TheInquisition.Questline) == 10 then
+	elseif MsgContains(message, "vampire lord token") and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 10 then
 		if player:getStorageValue(Storage.VampireHunter.Rank) < 1 then
 			npcHandler:say("Would ye' like to give me vampire tokens?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
@@ -120,13 +120,24 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			local count = player:getItemCount(5905)
-			local requiredCount = 20 - player:getStorageValue(Storage.TheInquisition.StorkusVampiredust)
+			local currentStorage = player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)
+			local requiredCount = 21 - currentStorage
 			if count > requiredCount then
 				count = requiredCount
 			end
-			player:setStorageValue(Storage.TheInquisition.StorkusVampiredust, player:getStorageValue(Storage.TheInquisition.StorkusVampiredust) + count)
+			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust, currentStorage + count)
 			player:removeItem(5905, count)
-			npcHandler:say("Ye've brought me " .. count .. " vampire dusts. " .. (20 - player:getStorageValue(Storage.TheInquisition.StorkusVampiredust)) == 0 and "Ask me for a {mission} to continue your quest." or ("Ye' need to bring " .. (20 - player:getStorageValue(Storage.TheInquisition.StorkusVampiredust)) .. " more."), npc, creature)
+
+			local newStorage = player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)
+			local remainingDusts = 20 - newStorage
+
+			local message
+			if remainingDusts <= 0 then
+				message = "Ask me for a {mission} to continue your quest."
+			else
+				message = "Ye' need to bring " .. remainingDusts .. " more."
+			end
+			npcHandler:say("Ye've brought me " .. count .. " vampire dusts. " .. message, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(8192, 1) then
@@ -182,6 +193,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			else
 				npcHandler:say("Ye' don't have enought tokens.", npc, creature)
 			end
+			npcHandler:setTopic(playerId, 0)
+		elseif npcHandler:getTopic(playerId) == 9 then
+			npcHandler:say("As they might have told ye', I'm a vampire hunter. If ye' want to be of any help, ye' can assist me with some of my tasks and bring me 20 ounces of vampire dust. This gives me some time to concentrate on a bigger project.", npc, creature)
+			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

@@ -18,10 +18,40 @@ ItemAction = {
 		itemId = 2819,
 		itemPos = { { x = 33063, y = 31624, z = 15 } },
 	},
+	-- The Inquisition Quest
+	[1004] = {
+		itemId = 5113,
+		itemPos = {
+			{ x = 33146, y = 31639, z = 11 },
+		},
+	},
 	-- The Travelling Trader Quest
 	[1108] = {
 		itemId = 1642,
 		itemPos = { { x = 32660, y = 32192, z = 8 } },
+	},
+	-- The Inquisition Quest
+	[2000] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32657, y = 31927, z = 1 },
+			{ x = 32658, y = 31927, z = 1 },
+			{ x = 32657, y = 31928, z = 1 },
+			{ x = 32658, y = 31928, z = 1 },
+		},
+	},
+	[2002] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32779, y = 31979, z = 9 },
+			{ x = 32779, y = 31980, z = 9 },
+		},
+	},
+	[2003] = {
+		itemId = 7867,
+		itemPos = {
+			{ x = 32256, y = 32790, z = 7 },
+		},
 	},
 	-- The Pits of Inferno Quest
 	[2023] = {
@@ -910,6 +940,131 @@ ItemUnique = {
 	[2096] = {
 		itemId = 1482,
 		itemPos = { x = 32824, y = 32224, z = 12 },
+	},
+	-- The Inquisition Quest
+	[2150] = {
+		itemId = 1949,
+		itemPos = { x = 33230, y = 31633, z = 12 },
+	},
+	[2151] = {
+		itemId = 1949,
+		itemPos = { x = 33157, y = 31728, z = 11 },
+	},
+	[2152] = {
+		itemId = 1949,
+		itemPos = { x = 33068, y = 31782, z = 13 },
+	},
+	[2153] = {
+		itemId = 1949,
+		itemPos = { x = 33169, y = 31705, z = 14 },
+	},
+	[2154] = {
+		itemId = 1949,
+		itemPos = { x = 33065, y = 31771, z = 10 },
+	},
+	[2155] = {
+		itemId = 1949,
+		itemPos = { x = 33168, y = 31755, z = 13 },
+	},
+	[2156] = {
+		itemId = 1949,
+		itemPos = { x = 33260, y = 31750, z = 13 },
+	},
+	[2157] = {
+		itemId = 1949,
+		itemPos = { x = 33123, y = 31692, z = 11 },
+	},
+	[2158] = {
+		itemId = 1949,
+		itemPos = { x = 33372, y = 31614, z = 14 },
+	},
+	[2159] = {
+		itemId = 1949,
+		itemPos = { x = 33175, y = 31709, z = 14 },
+	},
+	[2160] = {
+		itemId = 1949,
+		itemPos = { x = 33357, y = 31588, z = 12 },
+	},
+	[2161] = {
+		itemId = 1949,
+		itemPos = { x = 33365, y = 31613, z = 11 },
+	},
+	[2162] = {
+		itemId = 1949,
+		itemPos = { x = 33197, y = 31768, z = 11 },
+	},
+	[2163] = {
+		itemId = 1949,
+		itemPos = { x = 33152, y = 31782, z = 12 },
+	},
+	[2164] = {
+		itemId = 1949,
+		itemPos = { x = 33175, y = 31713, z = 14 },
+	},
+	[2165] = {
+		itemId = 1949,
+		itemPos = { x = 33234, y = 31758, z = 12 },
+	},
+	[2166] = {
+		itemId = 1949,
+		itemPos = { x = 33249, y = 31632, z = 13 },
+	},
+	[2167] = {
+		itemId = 1949,
+		itemPos = { x = 33339, y = 31632, z = 13 },
+	},
+	[2168] = {
+		itemId = 1949,
+		itemPos = { x = 33232, y = 31734, z = 11 },
+	},
+	[2169] = {
+		itemId = 1949,
+		itemPos = { x = 33038, y = 31752, z = 15 },
+	},
+	[2170] = {
+		itemId = 1949,
+		itemPos = { x = 33170, y = 31719, z = 14 },
+	},
+	[2171] = {
+		itemId = 1949,
+		itemPos = { x = 33187, y = 31759, z = 15 },
+	},
+	[2172] = {
+		itemId = 1949,
+		itemPos = { x = 33093, y = 31574, z = 11 },
+	},
+	[2173] = {
+		itemId = 1949,
+		itemPos = { x = 33137, y = 31671, z = 11 },
+	},
+	[2174] = {
+		itemId = 1949,
+		itemPos = { x = 33197, y = 31704, z = 11 },
+	},
+	[2175] = {
+		itemId = 1949,
+		itemPos = { x = 33199, y = 31687, z = 12 },
+	},
+	[2176] = {
+		itemId = 1949,
+		itemPos = { x = 33165, y = 31719, z = 14 },
+	},
+	[2177] = {
+		itemId = 1949,
+		itemPos = { x = 33225, y = 31607, z = 9 },
+	},
+	[2178] = {
+		itemId = 1949,
+		itemPos = { x = 33104, y = 31735, z = 11 },
+	},
+	[2179] = {
+		itemId = 1949,
+		itemPos = { x = 33110, y = 31681, z = 12 },
+	},
+	[2180] = {
+		itemId = 1949,
+		itemPos = { x = 33355, y = 31589, z = 11 },
 	},
 	-- Dreamers Challenge Quest
 	[2241] = {

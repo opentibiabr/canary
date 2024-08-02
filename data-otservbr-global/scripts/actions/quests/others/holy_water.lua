@@ -59,20 +59,20 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 	elseif target.actionid == 2000 then
 		item:remove(1)
 		toPosition:sendMagicEffect(CONST_ME_FIREAREA)
-		player:setStorageValue(Storage.TheInquisition.Mission02, 2)
-		player:setStorageValue(Storage.TheInquisition.Questline, 5)
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission02, 2)
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 5)
 		return true
 
 		-- Haunted Ruin Quest
 	elseif target.actionid == 2003 then
-		if player:getStorageValue(Storage.TheInquisition.Questline) ~= 12 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) ~= 12 then
 			return true
 		end
 
 		Game.createMonster("Pirate Ghost", toPosition)
 		item:remove(1)
-		player:setStorageValue(Storage.TheInquisition.Questline, 13)
-		player:setStorageValue(Storage.TheInquisition.Mission04, 2)
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 13)
+		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission04, 2)
 
 		local doorItem = Tile(doorPosition):getItemById(7869)
 		if doorItem then
@@ -120,9 +120,9 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 	elseif target.itemid == 7931 then
 		if Game.getStorageValue(GlobalStorage.Inquisition) > 0 then
 			Game.setStorageValue(GlobalStorage.Inquisition, (Game.getStorageValue(GlobalStorage.Inquisition) - 1))
-			if player:getStorageValue(Storage.TheInquisition.Questline) < 22 then
-				player:setStorageValue(Storage.TheInquisition.Mission07, 2)
-				player:setStorageValue(Storage.TheInquisition.Questline, 22)
+			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) < 22 then
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission07, 2)
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 22)
 			end
 			for i = 1, #effectPositions do
 				effectPositions[i]:sendMagicEffect(CONST_ME_HOLYAREA)

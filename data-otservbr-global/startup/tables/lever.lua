@@ -162,6 +162,23 @@ LeverAction = {
 }
 
 LeverUnique = {
+	-- The Inquisiton Quest
+	[1006] = {
+		itemId = 2772,
+		itemPos = { x = 33240, y = 31722, z = 11 },
+	},
+	[1007] = {
+		itemId = 2772,
+		itemPos = { x = 33224, y = 31722, z = 11 },
+	},
+	[1008] = {
+		itemId = 2772,
+		itemPos = { x = 33224, y = 31734, z = 11 },
+	},
+	[1009] = {
+		itemId = 2772,
+		itemPos = { x = 33240, y = 31734, z = 11 },
+	},
 	-- Against the Spider Cult Quest
 	[1017] = {
 		itemId = 2772,

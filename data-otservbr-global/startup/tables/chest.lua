@@ -2325,6 +2325,14 @@ ChestUnique = {
 		weight = 22.00,
 		storage = Storage.Quest.U8_1.WhatAFoolishQuest.BagBookKnife,
 	},
+	-- The Inquisition Quest
+	[6270] = {
+		itemId = 2472,
+		itemPos = { x = 32649, y = 31932, z = 1 },
+		reward = { { 7874, 1 } },
+		weight = 13.00,
+		storage = Storage.Quest.U8_2.TheInquisitionQuest.WitchesGrimoire,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

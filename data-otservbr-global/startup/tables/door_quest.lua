@@ -395,11 +395,11 @@ QuestDoorAction = {
 		},
 	},
 	-- The inquisition door
-	[Storage.TheInquisition.Mission01] = {
+	[Storage.Quest.U8_2.TheInquisitionQuest.Mission01] = {
 		itemId = false,
 		itemPos = { { x = 32316, y = 32264, z = 8 } },
 	},
-	[Storage.TheInquisition.RewardDoor] = {
+	[Storage.Quest.U8_2.TheInquisitionQuest.RewardDoor] = {
 		itemId = false,
 		itemPos = { { x = 32320, y = 32258, z = 9 } },
 	},

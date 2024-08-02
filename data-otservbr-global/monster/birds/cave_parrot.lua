@@ -60,11 +60,12 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = false,
+	isPreyExclusive = true
 }
 
 monster.light = {
 	level = 0,
-	color = 0,
+	color = 0 
 }
 
 monster.voices = {

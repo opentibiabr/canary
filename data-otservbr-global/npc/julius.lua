@@ -154,7 +154,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Well, you need to mix flour with holy water and use that dough on garlic to create a special dough. Bake it like normal bread, but I guarantee that no vampire can eat that. Are you following me?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 8 then
-			if player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Serafin) == 2 and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Lisander) == 2 and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Ortheus) == 2 and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Maris) == 2 and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Armenius) == 2 then
+			if
+				player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Serafin) == 2
+				and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Lisander) == 2
+				and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Ortheus) == 2
+				and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Maris) == 2
+				and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Armenius) == 2
+			then
 				npcHandler:say("I guess Armenius, Lisander, Maris, Ortheus and Serafin are all the names we can get for now. Let me think for a moment what we are going to do, talk to me about your mission again later.", npc, creature)
 				player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission02, 2)
 				npcHandler:setTopic(playerId, 0)

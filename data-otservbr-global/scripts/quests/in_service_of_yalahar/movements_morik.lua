@@ -6,10 +6,10 @@ function morik.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 51 then
+	if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) == 51 then
 		-- StorageValue for Questlog 'Mission 10: The Final Battle'
-		player:setStorageValue(Storage.InServiceofYalahar.Mission10, 3)
-		player:setStorageValue(Storage.InServiceofYalahar.Questline, 52)
+		player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission10, 3)
+		player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 52)
 		player:say(
 			"It seems by defeating Azerus you have stopped this army from entering your world! \z
 			Better leave this ghastly place forever.",

@@ -404,38 +404,38 @@ QuestDoorAction = {
 		itemPos = { { x = 32320, y = 32258, z = 9 } },
 	},
 	-- In service of yalahar door
-	[Storage.InServiceofYalahar.Mission03] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.Mission03] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32801, y = 31220, z = 7 },
 			{ x = 32803, y = 31220, z = 7 },
 		},
 	},
-	[Storage.InServiceofYalahar.AlchemistFormula] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.AlchemistFormula] = {
 		itemId = false,
 		itemPos = { { x = 32693, y = 31085, z = 7 } },
 	},
-	[Storage.InServiceofYalahar.TamerinStatus] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.TamerinStatus] = {
 		itemId = false,
 		itemPos = { { x = 32660, y = 31222, z = 8 } },
 	},
-	[Storage.InServiceofYalahar.MorikSummon] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.MorikSummon] = {
 		itemId = false,
 		itemPos = { { x = 32690, y = 31241, z = 6 } },
 	},
-	[Storage.InServiceofYalahar.MatrixReward] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.MatrixReward] = {
 		itemId = false,
 		itemPos = { { x = 32879, y = 31260, z = 8 } },
 	},
-	[Storage.InServiceofYalahar.NotesPalimuth] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.NotesPalimuth] = {
 		itemId = false,
 		itemPos = { { x = 32797, y = 31226, z = 7 } },
 	},
-	[Storage.InServiceofYalahar.DoorToAzerus] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.DoorToAzerus] = {
 		itemId = false,
 		itemPos = { { x = 32796, y = 31185, z = 7 } },
 	},
-	[Storage.InServiceofYalahar.DoorToBog] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.DoorToBog] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32673, y = 31121, z = 7 },
@@ -444,18 +444,18 @@ QuestDoorAction = {
 			{ x = 32709, y = 31186, z = 8 },
 		},
 	},
-	[Storage.InServiceofYalahar.DoorToLastFight] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.DoorToLastFight] = {
 		itemId = false,
 		itemPos = { { x = 32783, y = 31193, z = 8 } },
 	},
-	[Storage.InServiceofYalahar.DoorToMatrix] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.DoorToMatrix] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32867, y = 31265, z = 10 },
 			{ x = 32940, y = 31248, z = 9 },
 		},
 	},
-	[Storage.InServiceofYalahar.DoorToQuara] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.DoorToQuara] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32906, y = 31209, z = 14 },
@@ -463,7 +463,7 @@ QuestDoorAction = {
 			{ x = 32975, y = 31148, z = 14 },
 		},
 	},
-	[Storage.InServiceofYalahar.DoorToReward] = {
+	[Storage.Quest.U8_4.InServiceOfYalahar.DoorToReward] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32780, y = 31205, z = 7 },

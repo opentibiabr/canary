@@ -894,18 +894,6 @@ Storage = {
 		},
 		-- TowerDefenceQuest: when there is space, bring this quest that is in update 8.1 to Tibia Tales
 	},
-	SearoutesAroundYalahar = {
-		-- Reserved storage from 51590 - 51609
-		TownsCounter = 51590,
-		AbDendriel = 51591,
-		Darashia = 51592,
-		Venore = 51593,
-		Ankrahmun = 51594,
-		PortHope = 51595,
-		Thais = 51596,
-		LibertyBay = 51597,
-		Carlin = 51598,
-	},
 	KillingInTheNameOf = {
 		-- Reserved storage from 51610 - 51629
 		LugriNecromancers = 51610,
@@ -2029,6 +2017,17 @@ Storage = {
 				LastFight = 41991,
 				WarGolemsMachine1 = 41992,
 				WarGolemsMachine2 = 41993,
+				SearoutesAroundYalahar = {
+					TownsCounter = 41994,
+					AbDendriel = 41995,
+					Darashia = 41996,
+					Venore = 41997,
+					Ankrahmun = 41998,
+					PortHope = 41999,
+					Thais = 42000,
+					LibertyBay = 42001,
+					Carlin = 42002,
+				},
 			},
 			TheHiddenCityOfBeregar = {},
 			TopOfTheCity = {},

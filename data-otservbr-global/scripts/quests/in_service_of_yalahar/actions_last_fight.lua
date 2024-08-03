@@ -20,7 +20,7 @@ local effectPositions = {
 }
 
 local function doClearAreaAzerus()
-	if Game.getStorageValue(GlobalStorage.InServiceOfYalahar.LastFight) == 1 then
+	if Game.getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.LastFight) == 1 then
 		local spectators, spectator = Game.getSpectators(Position(32783, 31166, 10), false, false, 10, 10, 10, 10)
 		for i = 1, #spectators do
 			spectator = spectators[i]
@@ -29,7 +29,7 @@ local function doClearAreaAzerus()
 				spectator:remove()
 			end
 		end
-		Game.setStorageValue(GlobalStorage.InServiceOfYalahar.LastFight, 0)
+		Game.setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.LastFight, 0)
 	end
 	return true
 end
@@ -56,7 +56,7 @@ end
 
 local inServiceYalaharLastFight = Action()
 function inServiceYalaharLastFight.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if Game.getStorageValue(GlobalStorage.InServiceOfYalahar.LastFight) == 1 then
+	if Game.getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.LastFight) == 1 then
 		player:say("You have to wait some time before this globe charges.", TALKTYPE_MONSTER_SAY)
 		return true
 	end
@@ -70,7 +70,7 @@ function inServiceYalaharLastFight.onUse(player, item, fromPosition, target, toP
 		return true
 	end
 
-	Game.setStorageValue(GlobalStorage.InServiceOfYalahar.LastFight, 1)
+	Game.setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.LastFight, 1)
 	addEvent(Game.createMonster, 18 * 1000, "Azerus2", Position(32783, 31167, 10), false, true)
 	--addEvent(Game.createMonster, 18 * 1000, "Azerus2", Position(32783, 31167, 10))
 

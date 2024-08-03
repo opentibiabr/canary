@@ -1,10 +1,10 @@
 local setting = {
 	[23698] = {
-		storage = GlobalStorage.InServiceOfYalahar.WarGolemsMachine2,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.WarGolemsMachine2,
 		destination = Position(32869, 31312, 11),
 	},
 	[23699] = {
-		storage = GlobalStorage.InServiceOfYalahar.WarGolemsMachine1,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.WarGolemsMachine1,
 		destination = Position(32881, 31312, 11),
 	},
 	[23702] = {

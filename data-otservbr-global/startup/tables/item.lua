@@ -1,6 +1,15 @@
 -- Look README.md for see the reserved action/unique numbers
 
 ItemAction = {
+	[100] = {
+		itemId = false,
+		itemPos = {
+			-- In Service of Yalahar Quest
+			{ x = 32776, y = 31062, z = 7 },
+			{ x = 32884, y = 31248, z = 8 },
+			{ x = 32884, y = 31248, z = 8 },
+		},
+	},
 	--Parchment room quest
 	-- data\scripts\quests\parchment_room\movement-parchment.lua
 	[102] = { -- downFloor
@@ -196,6 +205,16 @@ ItemAction = {
 	[4223] = {
 		itemId = 1979,
 		itemPos = { { x = 33217, y = 31661, z = 7 } },
+	},
+	-- In Service of Yalahar Quest
+	[7812] = {
+		itemId = 7804,
+		itemPos = {
+			{ x = 32950, y = 31182, z = 6 },
+			{ x = 32951, y = 31182, z = 6 },
+			{ x = 32950, y = 31183, z = 6 },
+			{ x = 32951, y = 31183, z = 6 },
+		},
 	},
 	-- The Pits of Inferno Quest
 	[8815] = {
@@ -884,6 +903,11 @@ ItemUnique = {
 		itemId = 1979,
 		itemPos = { x = 32710, y = 32398, z = 7 },
 	},
+	-- In Service of Yalahar Quest
+	[1015] = {
+		itemId = 8821,
+		itemPos = { x = 32682, y = 31242, z = 6 },
+	},
 	-- The Ice Islands Quest
 	[1061] = {
 		itemId = 2576,
@@ -1176,6 +1200,79 @@ ItemUnique = {
 		itemId = 7534,
 		itemPos = { x = 33281, y = 32447, z = 8 },
 	},
+	-- In Service of Yalahar Quest
+	[3071] = {
+		itemId = 8435,
+		itemPos = { x = 32823, y = 31161, z = 8 },
+	},
+	[3072] = {
+		itemId = 8615,
+		itemPos = { x = 32842, y = 31250, z = 8 },
+	},
+	[3073] = {
+		itemId = 5025,
+		itemPos = { x = 32795, y = 31152, z = 8 },
+	},
+	[3074] = {
+		itemId = 8431,
+		itemPos = { x = 32796, y = 31191, z = 8 },
+	},
+	[3081] = {
+		itemId = 5287,
+		itemPos = { x = 32786, y = 31286, z = 8 },
+	},
+	[3082] = {
+		itemId = 6260,
+		itemPos = { x = 32771, y = 31355, z = 5 },
+	},
+	[3086] = {
+		itemId = 8852,
+		itemPos = { x = 32783, y = 31166, z = 10 },
+	},
+	[3087] = {
+		itemId = 7739,
+		itemPos = { x = 32781, y = 31162, z = 14 },
+	},
+	[3091] = {
+		itemId = 8618,
+		itemPos = { x = 32743, y = 31164, z = 5 },
+	},
+	[3092] = {
+		itemId = 8618,
+		itemPos = { x = 32743, y = 31161, z = 5 },
+	},
+	[3095] = {
+		itemId = 8615,
+		itemPos = { x = 32734, y = 31199, z = 5 },
+	},
+	[3096] = {
+		itemId = 8615,
+		itemPos = { x = 32729, y = 31199, z = 5 },
+	},
+	[3097] = {
+		itemId = 8615,
+		itemPos = { x = 32775, y = 31145, z = 5 },
+	},
+	[3098] = {
+		itemId = 8615,
+		itemPos = { x = 32775, y = 31141, z = 5 },
+	},
+	[3099] = {
+		itemId = 8615,
+		itemPos = { x = 32869, y = 31203, z = 5 },
+	},
+	[3100] = {
+		itemId = 8615,
+		itemPos = { x = 32874, y = 31203, z = 5 },
+	},
+	[3101] = {
+		itemId = 8618,
+		itemPos = { x = 32857, y = 31248, z = 5 },
+	},
+	[3102] = {
+		itemId = 8618,
+		itemPos = { x = 32853, y = 31251, z = 5 },
+	},
 	-- Barbarian Arena Quest
 	[3264] = {
 		itemId = 10145,
@@ -1227,6 +1324,15 @@ ItemUnique = {
 	[4010] = {
 		itemId = 2753,
 		itemPos = { x = 32933, y = 32495, z = 7 },
+	},
+	-- In Service of Yalahar Quest
+	[7809] = {
+		itemId = 1949,
+		itemPos = { x = 32784, y = 31177, z = 9 },
+	},
+	[7810] = {
+		itemId = 1949,
+		itemPos = { x = 32783, y = 31175, z = 10 },
 	},
 	-- The Demon Oak Quest
 	[9000] = {

@@ -45,13 +45,13 @@ local config = {
 		items = {
 			{ itemId = 8829 },
 		},
-		storage = Storage.InServiceofYalahar.MatrixReward,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.MatrixReward,
 	},
 	[3085] = {
 		items = {
 			{ itemId = 8828 },
 		},
-		storage = Storage.InServiceofYalahar.MatrixReward,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.MatrixReward,
 	},
 	[3112] = {
 		items = {
@@ -209,7 +209,7 @@ So they decided to recruit Augur on their own. This way most of our forefathers 
 				name = "History of the Augur, Part I",
 			},
 		},
-		storage = Storage.InServiceofYalahar.NotesPalimuth,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.NotesPalimuth,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -240,7 +240,7 @@ To some extent, we have to work like a gardener. The rotten parts have to be cut
 				name = "Manifest of the Yalahari, Part I",
 			},
 		},
-		storage = Storage.InServiceofYalahar.NotesAzerus,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.NotesAzerus,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -248,7 +248,7 @@ To some extent, we have to work like a gardener. The rotten parts have to be cut
 		items = {
 			{ itemId = 8818 },
 		},
-		storage = Storage.InServiceofYalahar.AlchemistFormula,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.AlchemistFormula,
 		formerValue = 0,
 		newValue = 1,
 	},

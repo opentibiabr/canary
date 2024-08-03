@@ -752,12 +752,12 @@ if not Quests then
 		},
 		[10] = {
 			name = "In Service of Yalahar",
-			startStorageId = Storage.InServiceofYalahar.Questline,
+			startStorageId = Storage.Quest.U8_4.InServiceOfYalahar.Questline,
 			startStorageValue = 5,
 			missions = {
 				[1] = {
 					name = "Mission 01: Something Rotten",
-					storageId = Storage.InServiceofYalahar.Mission01,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission01,
 					missionId = 1071,
 					startValue = 1,
 					endValue = 6,
@@ -773,7 +773,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 02: Watching the Watchmen",
-					storageId = Storage.InServiceofYalahar.Mission02,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission02,
 					missionId = 1072,
 					startValue = 1,
 					endValue = 8,
@@ -791,7 +791,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03: Death to the Deathbringer",
-					storageId = Storage.InServiceofYalahar.Mission03,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission03,
 					missionId = 1073,
 					startValue = 1,
 					endValue = 6,
@@ -808,7 +808,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 04: Good to be Kingpin",
-					storageId = Storage.InServiceofYalahar.Mission04,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission04,
 					missionId = 1074,
 					startValue = 1,
 					endValue = 6,
@@ -825,7 +825,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 05: Food or Fight",
-					storageId = Storage.InServiceofYalahar.Mission05,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission05,
 					missionId = 1075,
 					startValue = 1,
 					endValue = 8,
@@ -846,7 +846,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 06: Frightening Fuel",
-					storageId = Storage.InServiceofYalahar.Mission06,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission06,
 					missionId = 1076,
 					startValue = 1,
 					endValue = 5,
@@ -865,7 +865,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 07: A Fishy Mission",
-					storageId = Storage.InServiceofYalahar.Mission07,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission07,
 					missionId = 1077,
 					startValue = 1,
 					endValue = 5,
@@ -882,7 +882,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 08: Dangerous Machinations",
-					storageId = Storage.InServiceofYalahar.Mission08,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission08,
 					missionId = 1078,
 					startValue = 1,
 					endValue = 4,
@@ -897,7 +897,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 09: Decision",
-					storageId = Storage.InServiceofYalahar.Mission09,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission09,
 					missionId = 1079,
 					startValue = 1,
 					endValue = 2,
@@ -910,7 +910,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 10: The Final Battle",
-					storageId = Storage.InServiceofYalahar.Mission10,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission10,
 					missionId = 1080,
 					startValue = 1,
 					endValue = 5,

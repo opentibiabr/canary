@@ -26,8 +26,8 @@ function inServiceYalaharGhost.onUse(player, item, fromPosition, target, toPosit
 	player:say("The ghost charm is charging.", TALKTYPE_MONSTER_SAY)
 
 	if target.itemid == 8859 then
-		player:setStorageValue(Storage.InServiceofYalahar.Questline, 37)
-		player:setStorageValue(Storage.InServiceofYalahar.Mission06, 3) -- StorageValue for Questlog "Mission 06: Frightening Fuel"
+		player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 37)
+		player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission06, 3) -- StorageValue for Questlog "Mission 06: Frightening Fuel"
 		player:removeItem(8822, 1)
 	end
 	return true

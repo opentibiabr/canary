@@ -701,22 +701,22 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 				Getting liquid silver out of the mountain needs concentration and a steady hand."
 			)
 		end
-	elseif target.itemid == 7185 then
+	elseif target:getActionId() == 60000 then
 		--The Ice Islands Quest, Nibelor 1: Breaking the Ice
-		local missionProgress = player:getStorageValue(Storage.TheIceIslands.Mission02)
-		local pickAmount = player:getStorageValue(Storage.TheIceIslands.PickAmount)
-		if missionProgress < 1 or pickAmount >= 3 or player:getStorageValue(Storage.TheIceIslands.Questline) ~= 3 then
+		local missionProgress = player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission02)
+		local pickAmount = player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.PickAmount)
+		if missionProgress < 1 or pickAmount >= 3 or player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) ~= 3 then
 			return false
 		end
 
-		player:setStorageValue(Storage.TheIceIslands.PickAmount, math.max(0, pickAmount) + 1)
+		player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.PickAmount, math.max(0, pickAmount) + 1)
 		-- Questlog The Ice Islands Quest, Nibelor 1: Breaking the Ice
-		player:setStorageValue(Storage.TheIceIslands.Mission02, missionProgress + 1)
+		player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission02, missionProgress + 1)
 
 		if pickAmount >= 2 then
-			player:setStorageValue(Storage.TheIceIslands.Questline, 4)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 4)
 			-- Questlog The Ice Islands Quest, Nibelor 1: Breaking the Ice
-			player:setStorageValue(Storage.TheIceIslands.Mission02, 4)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission02, 4)
 		end
 
 		local crackItem = Tile(toPosition):getItemById(7185)
@@ -886,6 +886,24 @@ function onUseMachete(player, item, fromPosition, target, toPosition, isHotkey)
 	return onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
+local function the_ape_city(player, item, target, toPosition)
+	if target:getActionId() == 40041 and target:getId() == 4848 then
+		local storageValue = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Casks)
+		if storageValue < 0 then
+			storageValue = 0
+		end
+
+		if storageValue >= 3 then
+			return true
+		end
+
+		player:setStorageValue(Storage.Quest.U7_6.TheApeCity.Casks, storageValue + 1)
+
+		return true
+	end
+	return false
+end
+
 function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 	if not table.contains({ 3304, 9598 }, item.itemid) then
 		return false
@@ -893,12 +911,12 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 
 	if target.uid == 3071 then
 		-- In service of yalahar quest
-		if player:getStorageValue(Storage.InServiceofYalahar.SewerPipe01) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SewerPipe01) < 0 then
 			doSetMonsterOutfit(player, "skeleton", 3 * 1000)
 			fromPosition:sendMagicEffect(CONST_ME_ENERGYHIT)
-			player:setStorageValue(Storage.InServiceofYalahar.SewerPipe01, 1)
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SewerPipe01, 1)
 			-- StorageValue for Questlog "Mission 01: Something Rotten"
-			player:setStorageValue(Storage.InServiceofYalahar.Mission01, player:getStorageValue(Storage.InServiceofYalahar.Mission01) + 1)
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission01, player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission01) + 1)
 			local position = player:getPosition()
 			for x = -1, 1 do
 				for y = -1, 1 do
@@ -908,10 +926,10 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 			end
 		end
 	elseif target.uid == 3072 then
-		if player:getStorageValue(Storage.InServiceofYalahar.SewerPipe02) < 1 then
-			player:setStorageValue(Storage.InServiceofYalahar.SewerPipe02, 1)
+		if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SewerPipe02) < 1 then
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SewerPipe02, 1)
 			-- StorageValue for Questlog "Mission 01: Something Rotten"
-			player:setStorageValue(Storage.InServiceofYalahar.Mission01, player:getStorageValue(Storage.InServiceofYalahar.Mission01) + 1)
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission01, player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission01) + 1)
 			local position = player:getPosition()
 			for x = -1, 1 do
 				for y = -1, 1 do
@@ -924,19 +942,19 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 			end
 		end
 	elseif target.uid == 3073 then
-		if player:getStorageValue(Storage.InServiceofYalahar.SewerPipe03) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SewerPipe03) < 1 then
 			player:say("You have used the crowbar on a grate.", TALKTYPE_MONSTER_SAY)
-			player:setStorageValue(Storage.InServiceofYalahar.SewerPipe03, 1)
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SewerPipe03, 1)
 			-- StorageValue for Questlog "Mission 01: Something Rotten"
-			player:setStorageValue(Storage.InServiceofYalahar.Mission01, player:getStorageValue(Storage.InServiceofYalahar.Mission01) + 1)
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission01, player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission01) + 1)
 		end
 	elseif target.uid == 3074 then
-		if player:getStorageValue(Storage.InServiceofYalahar.SewerPipe04) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SewerPipe04) < 1 then
 			doSetMonsterOutfit(player, "bog raider", 5 * 1000)
 			player:say("You have used the crowbar on a knot.", TALKTYPE_MONSTER_SAY)
-			player:setStorageValue(Storage.InServiceofYalahar.SewerPipe04, 1)
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SewerPipe04, 1)
 			-- StorageValue for Questlog "Mission 01: Something Rotten"
-			player:setStorageValue(Storage.InServiceofYalahar.Mission01, player:getStorageValue(Storage.InServiceofYalahar.Mission01) + 1)
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission01, player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission01) + 1)
 		end
 	elseif target.actionid == 100 then
 		if target.itemid == 3501 then
@@ -945,11 +963,11 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 				player:setStorageValue(Storage.Postman.Mission02, 2)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			end
-		elseif target.itemid == 4848 then
+		elseif target:getActionId() == 40041 and target.itemid == 4848 then
 			-- The ape city - mission 7
-			local apeCityStorage = player:getStorageValue(Storage.TheApeCity.Casks)
+			local apeCityStorage = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Casks)
 			if apeCityStorage < 3 then
-				player:setStorageValue(Storage.TheApeCity.Casks, math.max(0, apeCityStorage) + 1)
+				player:setStorageValue(Storage.Quest.U7_6.TheApeCity.Casks, apeCityStorage + 1)
 				target:transform(3134)
 				toPosition:sendMagicEffect(CONST_ME_EXPLOSIONAREA)
 				addEvent(revertCask, 3 * 60 * 1000, toPosition)

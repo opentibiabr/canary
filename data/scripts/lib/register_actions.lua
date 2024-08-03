@@ -949,7 +949,7 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 			-- The ape city - mission 7
 			local apeCityStorage = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Casks)
 			if apeCityStorage < 3 then
-				player:setStorageValue(Storage.Quest.U7_6.TheApeCity.Casks, math.max(0, apeCityStorage + 1)
+				player:setStorageValue(Storage.Quest.U7_6.TheApeCity.Casks, math.max(0, apeCityStorage) + 1)
 				target:transform(3134)
 				toPosition:sendMagicEffect(CONST_ME_EXPLOSIONAREA)
 				addEvent(revertCask, 3 * 60 * 1000, toPosition)

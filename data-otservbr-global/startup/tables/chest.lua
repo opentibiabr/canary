@@ -2383,6 +2383,14 @@ ChestUnique = {
 		weight = 21.00,
 		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardEnd,
 	},
+	-- Vampire Hunter Quest
+	[6278] = {
+		itemId = 1986,
+		itemPos = { x = 32972, y = 31461, z = 10 },
+		reward = { { 8532, 1 } },
+		weight = 5.00,
+		storage = Storage.Quest.U8_2.VampireHunterQuest.BloodSkull,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

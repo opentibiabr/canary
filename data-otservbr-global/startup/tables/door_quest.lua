@@ -952,6 +952,12 @@ QuestDoorAction = {
 			{ x = 32600, y = 31758, z = 9 },
 		},
 	},
+	[Storage.Quest.U8_2.VampireHunterQuest.Door] = {
+		itemId = 8259,
+		itemPos = {
+			{ x = 32953, y = 31460, z = 9 },
+		},
+	},
 }
 
 QuestDoorUnique = {

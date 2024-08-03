@@ -515,10 +515,6 @@ Storage = {
 		AmuletTimer = 50520,
 		AmuletStatus = 50521,
 	},
-	VampireHunter = {
-		-- Reserved storage from 50650 - 50659
-		Rank = 50650,
-	},
 	BigfootBurden = {
 		-- Reserved storage from 50660 - 50719
 		QuestLine = 50660,
@@ -2003,13 +1999,17 @@ Storage = {
 				RewardBook = 51403,
 				GoldenGoblet = 51404,
 				CompromisingLetter = 51405,
-				RewardEnd = 51405,
+				RewardEnd = 51406,
 			},
 			TrollSabotageQuest = {
 				Questline = 41840,
 				JumpTimer = 41841,
 			},
-			VampireHunter = {},
+			VampireHunterQuest = {
+				Rank = 50650,
+				Door = 50651,
+				BloodSkull = 50652,
+			},
 			TheMutatedPumpkin = {
 				Skinned = 41860,
 			},

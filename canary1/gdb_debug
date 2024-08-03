@@ -1,0 +1,13 @@
+#Arguments for gdb configuration
+
+set $_exitcode = 999
+run
+
+if $_exitcode == 999
+	thread apply all bt full
+	quit
+end
+
+if $_exitcode != 999
+	quit
+end

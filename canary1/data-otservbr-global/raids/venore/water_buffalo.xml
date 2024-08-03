@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<areaspawn delay="1000" fromx="32857" fromy="32135" fromz="7" tox="32865" toy="32142" toz="7">
+		<monster name="water buffalo" amount="4"/>
+	</areaspawn>
+	<areaspawn delay="1000" fromx="32874" fromy="32201" fromz="7" tox="32882" toy="32207" toz="7">
+		<monster name="water buffalo" amount="4"/>
+	</areaspawn>
+	<areaspawn delay="1000" fromx="32881" fromy="32229" fromz="7" tox="32885" toy="32233" toz="7">
+		<monster name="water buffalo" amount="4"/>
+	</areaspawn>
+	<areaspawn delay="1000" fromx="32942" fromy="32260" fromz="7" tox="32951" toy="32266" toz="7">
+		<monster name="water buffalo" amount="4"/>
+	</areaspawn>
+	<areaspawn delay="1000" fromx="32957" fromy="32226" fromz="7" tox="32965" toy="32236" toz="7">
+		<monster name="water buffalo" amount="4"/>
+	</areaspawn>
+	<areaspawn delay="1000" fromx="32818" fromy="32168" fromz="7" tox="32825" toy="32173" toz="7">
+		<monster name="water buffalo" amount="4"/>
+	</areaspawn>
+	<areaspawn delay="1000" fromx="33091" fromy="32069" fromz="7" tox="33095" toy="32073" toz="7">
+		<monster name="water buffalo" amount="4"/>
+	</areaspawn>
+	<areaspawn delay="1000" fromx="33057" fromy="32141" fromz="7" tox="33062" toy="32148" toz="7">
+		<monster name="water buffalo" amount="4"/>
+	</areaspawn>
+</raid>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+
+<announce delay="1000" type="event" message="Something is moving to the icy grounds of Folda." />
+<announce delay="20000" type="event" message="Many Yetis are emerging from the icy mountains of Folda." />
+<announce delay="60000" type="event" message="Numerous Yetis are dominating Folda, beware!" />
+
+	<areaspawn delay="60000" fromx="31991" fromy="31580" fromz="7" tox="32044" toy="31616" toz="7">
+		<monster name="Yeti" amount="60" />
+	</areaspawn>
+
+</raid>

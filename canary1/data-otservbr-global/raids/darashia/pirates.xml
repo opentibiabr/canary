@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="event" message="Pillage and plunder! Pirates have been sighted north of Darashia!." />
+	<!--Single Spawns-->
+	<areaspawn delay="1000" fromx="33275" fromy="32324" fromz="7" tox="33316" toy="32360" toz="7">
+		<monster name="Pirate Buccaneer" amount="20" />
+		<monster name="Pirate Cutthroat" amount="15" />
+		<monster name="Pirate Marauder" amount="15" />
+	</areaspawn>
+</raid>

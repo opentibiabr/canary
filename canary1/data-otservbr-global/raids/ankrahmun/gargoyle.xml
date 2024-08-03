@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<raid>
+	<announce delay="1000" type="event" message="There is something stony moving down in the Ankrahmun Rahemos tombs." />
+	<announce delay="20000" type="event" message="Gargoyle attack in the Ankrahmun Rahemos tombs!" />
+	<areaspawn delay="20000" fromx="33141" fromy="32680" fromz="12" tox="33173" toy="32699" toz="12">
+		<monster name="Gargoyle" amount="15" />
+	</areaspawn>
+</raid>

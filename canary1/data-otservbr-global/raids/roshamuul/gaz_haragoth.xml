@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="Event" message="Something out of the ordinary, it's better we hide now!" />
+	<announce delay="20000" type="Event" message="His strength is unlimited, the demons kneeling before him .!" />
+	<announce delay="50000" type="Event" message="The dreaded Gaz'Haragoth is invading the land from prison." />
+	<announce delay="80000" type="Event" message="Leave now mortals, beware Gaz'Haragoth." />
+
+	<!--Single Spawns-->
+	<singlespawn delay="80000" name="Gaz'Haragoth" x="33538" y="32381" z="12"/>
+</raid>

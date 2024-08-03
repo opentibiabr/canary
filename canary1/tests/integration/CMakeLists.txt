@@ -1,0 +1,1 @@
+setup_test(canary_it integration)

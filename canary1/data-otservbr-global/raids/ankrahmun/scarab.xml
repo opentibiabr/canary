@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Unusual frequent scarab sightings at the gates of Ankrahmun" />
+	<announce delay="60000" type="event" message="Ancient scarabs are leading an attack on Ankrahmun." />
+	<areaspawn delay="60000" fromx="33254" fromy="32752" fromz="7" tox="33073" toy="32765" toz="7">
+		<monster name="Larva" amount="50" />
+		<monster name="Scarab" amount="30" />
+		<monster name="Ancient Scarab" amount="16" />
+	</areaspawn>
+</raid>

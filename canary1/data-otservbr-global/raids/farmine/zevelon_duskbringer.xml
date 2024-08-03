@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+<announce delay="1000" type="event" message="Beware of Zevelon Duskbringer!" />
+	<!--Single Spawns-->
+	<singlespawn delay="1000" name="Zevelon Duskbringer" x="32754" y="31578" z="11" />
+</raid>

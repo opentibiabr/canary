@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<areaspawn delay="2000" fromx="31909" fromy="32554" fromz="10" tox="31983" toy="32579" toz="10">
+			<monster name="Undead Cavebear" amount="3" />
+	</areaspawn>
+</raid>

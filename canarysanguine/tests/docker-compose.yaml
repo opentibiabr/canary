@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+  otdb-test:
+    container_name: otdb-test
+    build:
+      context: ../
+      dockerfile: ./tests/Dockerfile.database
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=otserver
+      - MYSQL_USER=otserver
+      - MYSQL_PASSWORD=otserver
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    ports:
+      - "3306:3306"

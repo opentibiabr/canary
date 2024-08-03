@@ -1,0 +1,12 @@
+---
+extends: default
+
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+
+rules:
+  comments-indentation: disable
+  line-length: disable
+  truthy: disable

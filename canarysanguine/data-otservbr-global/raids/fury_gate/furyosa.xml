@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<areaspawn delay="2000" fromx="33257" fromy="31784" fromz="14" tox="33342" toy="31867" toz="14">
+		<monster name="Demon" amount="30" />
+	</areaspawn>
+	<areaspawn delay="2000" fromx="33257" fromy="31784" fromz="15" tox="33342" toy="31867" toz="15">
+		<monster name="Demon" amount="30" />
+	</areaspawn>
+	<singlespawn delay="2000" name="Furyosa" x="33281" y="31804" z="15"/>
+</raid>

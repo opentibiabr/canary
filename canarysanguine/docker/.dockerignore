@@ -1,0 +1,11 @@
+vcproj/
+tests/
+docs/
+docker/
+
+sonar-project.properties
+*.md
+Jenkinsfile
+.*
+gdb_debug
+client_assertions.txt

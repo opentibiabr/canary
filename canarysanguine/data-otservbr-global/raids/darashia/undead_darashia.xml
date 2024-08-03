@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Sightings of undead, west of Darashia! Imminent invasion is suspected!" />
+	<announce delay="10000" type="event" message="The undead are attacking Darashia!" />
+	<areaspawn delay="11000" fromx="33156" fromy="32414" fromz="7" tox="33182" toy="32458" toz="7">
+		<monster name="Vampire" amount="25" />
+		<monster name="Stalker" amount="30" />
+		<monster name="Skeleton" amount="35" />
+		<monster name="demon skeleton" amount="35" />
+		<monster name="bonelord" amount="25" />
+		<monster name="necromancer" amount="25" />
+		<monster name="bonebeast" amount="25" />
+	</areaspawn>
+</raid>

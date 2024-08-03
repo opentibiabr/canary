@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+<announce delay="1000" type="event" message="Beware of Sir Valorcrest!" />
+	<!--Single Spawns-->
+	<singlespawn delay="1000" name="Sir Valorcrest" x="33264" y="31768" z="10" />
+</raid>

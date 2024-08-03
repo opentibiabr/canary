@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<npcs>
+	<npc centerx="5854" centery="5300" centerz="5" radius="6">
+		<npc name="Canary" x="0" y="-2" z="5" spawntime="60" />
+	</npc>
+	<npc centerx="4974" centery="5302" centerz="5" radius="6">
+		<npc name="Canary" x="0" y="-2" z="5" spawntime="60" />
+	</npc>
+	<npc centerx="5521" centery="5124" centerz="6" radius="3">
+		<npc name="Canary" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="1943" centery="1345" centerz="7" radius="6">
+		<npc name="Canary" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="5004" centery="4998" centerz="7" radius="1">
+		<npc name="Canary" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="4804" centery="5089" centerz="7" radius="3">
+		<npc name="Canary" x="0" y="-1" z="7" spawntime="60" />
+	</npc>
+</npcs>

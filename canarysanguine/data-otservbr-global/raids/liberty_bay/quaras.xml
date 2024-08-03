@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Something is moving in the depths of the sea around Liberty Bay" />
+	<announce delay="20000" type="event" message="Numerous Quara fins have been sighted in the seas around Liberty Bay." />
+	<announce delay="60000" type="event" message="Quara emerged from the sea to attack Liberty Bay." />
+	<areaspawn delay="60000" fromx="32306" fromy="32705" fromz="7" tox="32319" toy="32731" toz="7">
+		<monster name="Quara Mantassin Scout" amount="12" />
+		<monster name="Quara Constrictor Scout" amount="12" />
+		<monster name="Quara Hydromancer Scout" amount="12" />
+		<monster name="Quara Pincher Scout" amount="12" />
+		<monster name="Quara Predator Scout" amount="10" />
+	</areaspawn>
+</raid>

@@ -1,0 +1,52 @@
+root = true
+
+# General configuration
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = tab
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C/C++
+[*.{cpp,hpp,h}]
+indent_style = tab
+indent_size = 2
+
+# CMake
+[CMakeLists.txt]
+indent_style = space
+indent_size = 2
+
+# XML
+[*.xml]
+indent_style = tab
+indent_size = 2
+tab_width = 2
+
+# YAML, JSON, SQL
+[*.{yml,yaml,yamllint,json,sql}]
+indent_style = space
+indent_size = 2
+
+[*.lua]
+# do this to prevent breaking long lines
+max_line_length = 400
+break_all_list_when_line_exceed = false
+space_around_table_append_operator = true
+
+# [indent]
+indent_style = tab
+indent_size = 2
+tab_width = 2
+
+# [align]
+align_call_args = false
+align_function_params = false
+align_continuous_assign_statement = false
+align_continuous_rect_table_field = false
+align_if_branch = false
+align_array_table = false
+align_continuous_similar_call_args = false
+align_continuous_inline_comment = false
+align_chain_expr = none

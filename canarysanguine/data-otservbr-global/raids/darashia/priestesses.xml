@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="event" message="The priestesses in Drefia are preparing a black celebration." />
+	<!--Single Spawns-->
+	<areaspawn delay="1000" fromx="32984" fromy="32404" fromz="7" tox="33009" toy="32430" toz="7">
+		<monster name="Priestess" amount="25" />
+	</areaspawn>
+</raid>

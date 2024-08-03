@@ -886,24 +886,6 @@ function onUseMachete(player, item, fromPosition, target, toPosition, isHotkey)
 	return onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
-local function the_ape_city(player, item, target, toPosition)
-	if target:getActionId() == 40041 and target:getId() == 4848 then
-		local storageValue = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Casks)
-		if storageValue < 0 then
-			storageValue = 0
-		end
-
-		if storageValue >= 3 then
-			return true
-		end
-
-		player:setStorageValue(Storage.Quest.U7_6.TheApeCity.Casks, storageValue + 1)
-
-		return true
-	end
-	return false
-end
-
 function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 	if not table.contains({ 3304, 9598 }, item.itemid) then
 		return false

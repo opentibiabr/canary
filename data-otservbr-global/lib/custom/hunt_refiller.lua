@@ -1,0 +1,1 @@
+HUNT_REFILLER = {}

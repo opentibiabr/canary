@@ -2005,7 +2005,7 @@ Storage = {
 				CompromisingLetter = 51405,
 				RewardEnd = 51405,
 			},
-			TrollSabotage = {
+			TrollSabotageQuest = {
 				Questline = 41840,
 				JumpTimer = 41841,
 			},

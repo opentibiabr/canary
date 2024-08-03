@@ -7,7 +7,7 @@ local function boots(player, item, fromPosition, position)
 	end
 	if bootsItem and bootsItem.itemid == 3079 then
 		if fromPosition == config[4] then
-			if player:getStorageValue(Storage.Quest.U8_2.TrollSabotage.JumpTimer) < os.time() then
+			if player:getStorageValue(Storage.Quest.U8_2.TrollSabotageQuest.JumpTimer) < os.time() then
 				player:teleportTo(position)
 				player:say("You don't dare jump over the gap.", TALKTYPE_MONSTER_SAY)
 				return true
@@ -62,7 +62,7 @@ function teleport.onStepIn(player, item, fromPosition, position, target)
 		return true
 	end
 	if fromPosition == Position(33231, 31765, 2) then
-		player:setStorageValue(Storage.Quest.U8_2.TrollSabotage.JumpTimer, os.time() + 1)
+		player:setStorageValue(Storage.Quest.U8_2.TrollSabotageQuest.JumpTimer, os.time() + 1)
 	end
 	for i = 1, #config do
 		if fromPosition == config[i] and i < 4 then

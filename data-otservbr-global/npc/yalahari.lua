@@ -188,7 +188,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 40)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission07, 1) -- StorageValue for Questlog "Mission 07: A Fishy Mission"
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) == 41 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.QuaraInky) == 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.QuaraSharptooth) == 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.QuaraSplasher) == 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.QuaraState) == 2 then
+		elseif
+			player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) == 41
+			and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.QuaraInky) == 1
+			and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.QuaraSharptooth) == 1
+			and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.QuaraSplasher) == 1
+			and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.QuaraState) == 2
+		then
 			npcHandler:say("This will teach these fishmen who is the ruler of that area. You have earned yourself a special privilege. But we will talk about that when we speak about your next mission. ", npc, creature)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 43)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission07, 5) -- StorageValue for Questlog "Mission 07: A Fishy Mission"

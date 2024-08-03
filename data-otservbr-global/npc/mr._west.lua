@@ -55,9 +55,9 @@ local function greetCallback(npc, creature)
 	local playerId = player:getId()
 
 	if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.MrWestDoor) == 1 then
-		npcHandler:setMessage(MESSAGE_GREET, {"Wh .. What? How did you get here? Where are all the guards? You .. you could have killed me but yet you chose to talk? What a relief! ...", "So what brings you here my friend, if I might call you like that?"})
+		npcHandler:setMessage(MESSAGE_GREET, { "Wh .. What? How did you get here? Where are all the guards? You .. you could have killed me but yet you chose to talk? What a relief! ...", "So what brings you here my friend, if I might call you like that?" })
 	elseif player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.MrWestDoor) == 2 then
-		npcHandler:setMessage(MESSAGE_GREET, {"Murderer! But .. I give in, you won!", "Dictate me your conditions but please, I beg you, spare my life. What do you want?"})
+		npcHandler:setMessage(MESSAGE_GREET, { "Murderer! But .. I give in, you won!", "Dictate me your conditions but please, I beg you, spare my life. What do you want?" })
 	end
 	return true
 end

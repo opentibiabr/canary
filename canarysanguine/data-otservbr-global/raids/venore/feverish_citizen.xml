@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Feverish Citizens are invading the streets of Venore!" />
+	<areaspawn delay="1000" fromx="33012" fromy="32052" fromz="6" tox="32861" toy="32126" toz="6">
+		<monster name="feverish citizen" amount="120" />
+	</areaspawn>
+</raid>

@@ -1,0 +1,37 @@
+<!--
+This file is gradually being phased out.
+We are transitioning from this XML-based events callback system to the EventCallback system in Lua.
+Therefore, we strongly encourage avoiding the use of this file when possible, as it is on its way to deprecation.
+-->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<events>
+	<!-- Creature Methods -->
+	<event class="Creature" method="onChangeOutfit" enabled="1" />
+	<event class="Creature" method="onDrainHealth" enabled="1" />
+	<event class="Creature" method="onTargetCombat" enabled="1" />
+
+	<!-- Party Methods -->
+	<event class="Party" method="onJoin" enabled="1" />
+	<event class="Party" method="onLeave" enabled="1" />
+	<event class="Party" method="onShareExperience" enabled="1" />
+	<event class="Party" method="onDisband" enabled="1" />
+
+	<!-- Player Methods -->
+	<event class="Player" method="onChangeZone" enabled="1" />
+	<event class="Player" method="onChangeHazard" enabled="1" />
+	<event class="Player" method="onGainExperience" enabled="1" />
+	<event class="Player" method="onGainSkillTries" enabled="1" />
+	<event class="Player" method="onItemMoved" enabled="1" />
+	<event class="Player" method="onInventoryUpdate" enabled="1" />
+	<event class="Player" method="onLookInBattleList" enabled="1" />
+	<event class="Player" method="onLoseExperience" enabled="0" />
+	<event class="Player" method="onMoveCreature" enabled="1" />
+	<event class="Player" method="onMoveItem" enabled="1" />
+	<event class="Player" method="onReportBug" enabled="1" />
+	<event class="Player" method="onReportRuleViolation" enabled="1" />
+	<event class="Player" method="onTradeRequest" enabled="1" />
+	<event class="Player" method="onTurn" enabled="1" />
+	<event class="Player" method="onCombat" enabled="1" />
+
+</events>

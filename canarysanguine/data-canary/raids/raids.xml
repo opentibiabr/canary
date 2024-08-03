@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<raids>
+	<raid name="Example" file="example.xml" interval2="500" margin="100" />
+</raids>

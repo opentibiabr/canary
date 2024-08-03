@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+<announce delay="1000" type="event" message="Beware of Arachir the Ancient One!" />
+	<singlespawn delay="1000" name="Arachir the Ancient One" x="32965" y="32400" z="12" />
+</raid>

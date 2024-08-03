@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<areaspawn delay="120000" fromx="32130" fromy="32154" fromz="10" tox="32130" toy="32154" toz="10">
+		<monster name="Teleskor" amount="1" />
+	</areaspawn>
+</raid>

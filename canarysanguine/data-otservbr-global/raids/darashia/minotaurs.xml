@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	 <!--Announcements-->
+	<announce delay="1000" type="event" message="Minotaurs are preparing an attack in the Darashia Minotaur pyramid!" />
+	<announce delay="20000" type="event" message="Minotaurs are attacking Darashia from the north!" />
+	<announce delay="120000" type="event" message="Minotaurs are advancing to Darashia grom the north!" />
+	 <!--Single Spawns-->
+	 <areaspawn delay="20000" fromx="33253" fromy="32295" fromz="7" tox="33294" toy="32329" toz="7">
+		<monster name="Minotaur" amount="10" />
+		<monster name="Minotaur Guard" amount="10" />
+		<monster name="Minotaur Mage" amount="10" />
+	 </areaspawn>
+	 <areaspawn delay="120000" fromx="33253" fromy="32295" fromz="7" tox="33294" toy="32329" toz="7">
+		<monster name="Minotaur" amount="20" />
+		<monster name="Minotaur Guard" amount="15" />
+		<monster name="Minotaur Mage" amount="20" />
+	 </areaspawn>
+</raid>

@@ -1,0 +1,86 @@
+---
+name: Build - Windows - CMake
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "src/**"
+  merge_group:
+  push:
+    paths:
+      - "src/**"
+    branches:
+      - main
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 2
+  MAKEFLAGS: "-j 2"
+jobs:
+  cancel-runs:
+    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+  job:
+    if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
+    name: ${{ matrix.os }}-${{ matrix.buildtype }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2022]
+        buildtype: [windows-release]
+        include:
+          - os: windows-2022
+            triplet: x64-windows-static
+            packages: >
+              sccache
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+
+      - name: CCache
+        uses: hendrikmuhs/ccache-action@main
+        with:
+          max-size: "1G"
+          variant: "sccache"
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
+          restore-keys: |
+            ccache-${{ matrix.os }}
+
+      - name: Remove Windows pre-installed MySQL
+        if: contains( matrix.os, 'windows')
+        run: rm -r -fo C:/mysql*
+
+      - name: Restore artifacts and install vcpkg
+        id: vcpkg-step
+        run: |
+          $json=Get-Content vcpkg.json -Raw | ConvertFrom-Json
+          $vcpkgCommitId=$json.'builtin-baseline'
+          Write-Host "vcpkg commit ID: $vcpkgCommitId"
+          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Get vcpkg commit id from vcpkg.json
+        uses: lukka/run-vcpkg@main
+        with:
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+
+      - name: Get latest CMake and ninja
+        uses: lukka/get-cmake@main
+
+      - name: Run CMake
+        uses: lukka/run-cmake@main
+        with:
+          configurePreset: ${{ matrix.buildtype }}
+          buildPreset: ${{ matrix.buildtype }}
+
+      - name: Create and Upload Artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: canary-${{ matrix.buildtype }}-${{ github.sha }}
+          path: |
+            ${{ github.workspace }}/build/${{ matrix.buildtype }}/bin/

@@ -1,4 +1,7 @@
 function onCreateMagicWall(creature, tile)
+	if tile:getTopCreature() then
+		return false
+	end
 	local magicWall
 	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
 		magicWall = ITEM_MAGICWALL_SAFE

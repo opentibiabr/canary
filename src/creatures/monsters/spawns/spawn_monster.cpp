@@ -41,7 +41,8 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 
 	std::string boostedNameGet = g_game().getBoostedMonsterName();
 
-	for (auto spawnMonsterNode : doc.child("monsters").children()) {
+	spawnMonsterList.reserve(10000);
+	for (const auto &spawnMonsterNode : doc.child("monsters").children()) {
 		Position centerPos(
 			pugi::cast<uint16_t>(spawnMonsterNode.attribute("centerx").value()),
 			pugi::cast<uint16_t>(spawnMonsterNode.attribute("centery").value()),
@@ -63,7 +64,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 
 		SpawnMonster &spawnMonster = spawnMonsterList.emplace_back(centerPos, radius);
 
-		for (auto childMonsterNode : spawnMonsterNode.children()) {
+		for (const auto &childMonsterNode : spawnMonsterNode.children()) {
 			if (strcasecmp(childMonsterNode.name(), "monster") == 0) {
 				pugi::xml_attribute nameAttribute = childMonsterNode.attribute("name");
 				if (!nameAttribute) {
@@ -304,7 +305,7 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 			break;
 		}
 	}
-	const auto monsterType = g_monsters().getMonsterType(variant + name);
+	const auto &monsterType = g_monsters().getMonsterType(variant + name);
 	if (!monsterType) {
 		g_logger().error("Can not find {}", name);
 		return false;

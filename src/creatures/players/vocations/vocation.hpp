@@ -9,10 +9,12 @@
 
 #pragma once
 
-#include "declarations.hpp"
+#include "config/configmanager.hpp"
+#include "creatures/creatures_definitions.hpp"
 #include "items/item.hpp"
-#include "lib/di/container.hpp"
-#include "creatures/players/wheel/wheel_gems.hpp"
+
+enum class WheelGemSupremeModifier_t : uint8_t;
+enum class WheelGemQuality_t : uint8_t;
 
 class Vocation {
 public:
@@ -174,9 +176,7 @@ public:
 	Vocations(const Vocations &) = delete;
 	void operator=(const Vocations &) = delete;
 
-	static Vocations &getInstance() {
-		return inject<Vocations>();
-	}
+	static Vocations &getInstance();
 
 	bool loadFromXml();
 	bool reload();

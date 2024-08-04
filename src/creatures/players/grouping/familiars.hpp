@@ -9,9 +9,6 @@
 
 #pragma once
 
-#include "declarations.hpp"
-#include "lib/di/container.hpp"
-
 struct FamiliarEntry {
 	constexpr explicit FamiliarEntry(uint16_t initLookType) :
 		lookType(initLookType) { }

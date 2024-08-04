@@ -43,7 +43,7 @@ bool MonsterType::canSpawn(const Position &pos) const {
 }
 
 std::shared_ptr<ConditionDamage> Monsters::getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) {
-	std::shared_ptr<ConditionDamage> condition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0)->static_self_cast<ConditionDamage>();
+	const auto &condition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0)->static_self_cast<ConditionDamage>();
 	condition->setParam(CONDITION_PARAM_TICKINTERVAL, tickInterval);
 	condition->setParam(CONDITION_PARAM_MINVALUE, minDamage);
 	condition->setParam(CONDITION_PARAM_MAXVALUE, maxDamage);
@@ -143,7 +143,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 			conditionType = CONDITION_PARALYZE;
 		}
 
-		std::shared_ptr<ConditionSpeed> condition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, duration, 0)->static_self_cast<ConditionSpeed>();
+		const auto &condition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, duration, 0)->static_self_cast<ConditionSpeed>();
 		float multiplier = 1.0f + static_cast<float>(speedChange) / 1000.0f;
 		condition->setFormulaVars(multiplier / 2, 40, multiplier, 40);
 		combatPtr->addCondition(condition);
@@ -154,7 +154,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 			duration = spell->duration;
 		}
 
-		std::shared_ptr<ConditionOutfit> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_OUTFIT, duration, 0)->static_self_cast<ConditionOutfit>();
+		const auto &condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_OUTFIT, duration, 0)->static_self_cast<ConditionOutfit>();
 
 		if (!spell->outfitMonster.empty()) {
 			condition->setLazyMonsterOutfit(spell->outfitMonster);
@@ -178,7 +178,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 			duration = spell->duration;
 		}
 
-		std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_INVISIBLE, duration, 0);
+		const auto &condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_INVISIBLE, duration, 0);
 		combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		combatPtr->addCondition(condition);
 	} else if (spellName == "drunk") {
@@ -188,7 +188,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 			duration = spell->duration;
 		}
 
-		std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, 0);
+		const auto &condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, 0);
 		combatPtr->addCondition(condition);
 	} else if (spellName == "soulwars fear" || spellName == "fear") {
 		int32_t duration = 6000;
@@ -197,7 +197,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 			duration = spell->duration;
 		}
 
-		const auto condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_FEARED, duration, 0);
+		const auto &condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_FEARED, duration, 0);
 		combatPtr->addCondition(condition);
 	} else if (spellName == "firefield") {
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);
@@ -248,7 +248,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 			maxDamage = minDamage;
 		}
 
-		std::shared_ptr<Condition> condition = getDamageCondition(spell->conditionType, maxDamage, minDamage, startDamage, tickInterval);
+		const auto &condition = getDamageCondition(spell->conditionType, maxDamage, minDamage, startDamage, tickInterval);
 		combatPtr->addCondition(condition);
 	}
 
@@ -324,7 +324,7 @@ std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name, b
 }
 
 std::shared_ptr<MonsterType> Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = false*/) const {
-	auto bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
+	const auto &bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
 	if (isBoss && bossType) {
 		return bossType;
 	}

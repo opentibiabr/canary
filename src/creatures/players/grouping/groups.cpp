@@ -12,15 +12,13 @@
 #include "config/configmanager.hpp"
 #include "game/game.hpp"
 #include "creatures/players/grouping/groups.hpp"
-#include "utils/pugicast.hpp"
-#include "utils/tools.hpp"
 
 namespace ParsePlayerFlagMap {
 	// Initialize the map with all the values from the PlayerFlags_t enumeration
 	phmap::flat_hash_map<std::string, PlayerFlags_t> initParsePlayerFlagMap() {
 		phmap::flat_hash_map<std::string, PlayerFlags_t> map;
 		// Iterate through all values of the PlayerFlags_t enumeration
-		for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
+		for (const auto &value : magic_enum::enum_values<PlayerFlags_t>()) {
 			// Get the string representation of the current enumeration value
 			std::string name(magic_enum::enum_name(value).data());
 			// Convert the string to lowercase
@@ -51,7 +49,7 @@ bool Groups::reload() {
 
 void parseGroupFlags(Group &group, const pugi::xml_node &groupNode) {
 	if (pugi::xml_node node = groupNode.child("flags")) {
-		for (auto flagNode : node.children()) {
+		for (const auto &flagNode : node.children()) {
 			pugi::xml_attribute attr = flagNode.first_attribute();
 			if (!attr || !attr.as_bool()) {
 				continue;
@@ -76,7 +74,7 @@ bool Groups::load() {
 		return false;
 	}
 
-	for (auto groupNode : doc.child("groups").children()) {
+	for (const auto &groupNode : doc.child("groups").children()) {
 		Group group;
 		group.id = pugi::cast<uint32_t>(groupNode.attribute("id").value());
 		group.name = groupNode.attribute("name").as_string();

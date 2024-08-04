@@ -10,7 +10,7 @@
 #include "pch.hpp"
 
 #include "player_badge.hpp"
-
+#include "enums/player_cyclopedia.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"

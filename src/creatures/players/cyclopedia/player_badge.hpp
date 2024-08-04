@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include "enums/player_cyclopedia.hpp"
-
 class Player;
 class KV;
+
+enum class CyclopediaBadge_t : uint8_t;
 
 struct Badge {
 	uint8_t m_id = 0;

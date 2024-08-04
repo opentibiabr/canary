@@ -9,11 +9,7 @@
 
 #pragma once
 
-#include <utility>
-
-#include "creatures/creatures_definitions.hpp"
 #include "enums/player_cyclopedia.hpp"
-#include "enums/account_group_type.hpp"
 
 class Player;
 class KV;

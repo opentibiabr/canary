@@ -37,7 +37,7 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 	setFileName(fileNpcName);
 	setLoaded(true);
 
-	for (auto spawnNode : doc.child("npcs").children()) {
+	for (const auto &spawnNode : doc.child("npcs").children()) {
 		Position centerPos(
 			pugi::cast<uint16_t>(spawnNode.attribute("centerx").value()),
 			pugi::cast<uint16_t>(spawnNode.attribute("centery").value()),
@@ -59,7 +59,7 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 
 		const auto &spawnNpc = spawnNpcList.emplace_back(std::make_shared<SpawnNpc>(centerPos, radius));
 
-		for (auto childNode : spawnNode.children()) {
+		for (const auto &childNode : spawnNode.children()) {
 			if (strcasecmp(childNode.name(), "npc") == 0) {
 				pugi::xml_attribute nameAttribute = childNode.attribute("name");
 				if (!nameAttribute) {

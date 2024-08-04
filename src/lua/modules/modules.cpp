@@ -154,12 +154,12 @@ void Module::clearEvent() {
 }
 
 void Module::executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg) {
-	if (!LuaEnvironment::reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("Call stack overflow. Too many lua script calls being nested {}", player->getName());
 		return;
 	}
 
-	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(scriptId, scriptInterface);
 
 	lua_State* L = scriptInterface->getLuaState();

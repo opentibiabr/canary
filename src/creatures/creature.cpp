@@ -361,7 +361,7 @@ void Creature::onRemoveTileItem(std::shared_ptr<Tile> updateTile, const Position
 	}
 }
 
-void Creature::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) {
+void Creature::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (creature == getCreature()) {
 		if (useCacheMap()) {
@@ -379,7 +379,7 @@ void Creature::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin
 	}
 }
 
-void Creature::onRemoveCreature(std::shared_ptr<Creature> creature, bool) {
+void Creature::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	onCreatureDisappear(creature, true);
 	if (creature != getCreature() && isMapLoaded) {
@@ -853,7 +853,7 @@ bool Creature::hasBeenAttacked(uint32_t attackerId) {
 	return (OTSYS_TIME() - it->second.ticks) <= g_configManager().getNumber(PZ_LOCKED, __FUNCTION__);
 }
 
-std::shared_ptr<Item> Creature::getCorpse(std::shared_ptr<Creature>, std::shared_ptr<Creature>) {
+std::shared_ptr<Item> Creature::getCorpse(const std::shared_ptr<Creature> &, const std::shared_ptr<Creature> &) {
 	if (getLookCorpse() != 0) {
 		return Item::CreateItem(getLookCorpse());
 	}
@@ -892,7 +892,7 @@ void Creature::gainHealth(const std::shared_ptr<Creature> &healer, int32_t healt
 	}
 }
 
-void Creature::drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) {
+void Creature::drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) {
 	changeHealth(-damage, false);
 
 	if (attacker) {
@@ -943,7 +943,7 @@ void Creature::applyAbsorbDamageModifications(const std::shared_ptr<Creature> &a
 	}
 }
 
-BlockType_t Creature::blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */) {
+BlockType_t Creature::blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */) {
 	BlockType_t blockType = BLOCK_NONE;
 
 	// Apply skills 12.72 absorbs damage
@@ -1201,7 +1201,7 @@ void Creature::addDamagePoints(const std::shared_ptr<Creature> &attacker, int32_
 	lastHitCreatureId = attackerId;
 }
 
-void Creature::onAddCondition(ConditionType_t type) {
+void Creature::onAddCondition(const ConditionType_t &type) {
 	if (type == CONDITION_PARALYZE && hasCondition(CONDITION_HASTE)) {
 		removeCondition(CONDITION_HASTE);
 	} else if (type == CONDITION_HASTE && hasCondition(CONDITION_PARALYZE)) {
@@ -1209,11 +1209,11 @@ void Creature::onAddCondition(ConditionType_t type) {
 	}
 }
 
-void Creature::onAddCombatCondition(ConditionType_t) {
+void Creature::onAddCombatCondition(const ConditionType_t &) {
 	//
 }
 
-void Creature::onEndCondition(ConditionType_t) {
+void Creature::onEndCondition(const ConditionType_t &) {
 	//
 }
 

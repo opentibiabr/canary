@@ -898,7 +898,7 @@ public:
 	bool isPzLocked() const {
 		return pzLocked;
 	}
-	BlockType_t blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+	BlockType_t blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 	void doAttacking(uint32_t interval) override;
 	bool hasExtraSwing() override {
 		return lastAttack > 0 && !checkLastAttackWithin(getAttackSpeed());
@@ -974,7 +974,7 @@ public:
 	int32_t getWeaponSkill(const std::shared_ptr<Item> &item) const;
 	void getShieldAndWeapon(std::shared_ptr<Item> &shield, std::shared_ptr<Item> &weapon) const;
 
-	void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) override;
+	void drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) override;
 	void drainMana(std::shared_ptr<Creature> attacker, int32_t manaLoss) override;
 	void addManaSpent(uint64_t amount);
 	void addSkillAdvance(skills_t skill, uint64_t count);
@@ -990,9 +990,9 @@ public:
 	uint64_t getGainedExperience(std::shared_ptr<Creature> attacker) const override;
 
 	// combat event functions
-	void onAddCondition(ConditionType_t type) override;
-	void onAddCombatCondition(ConditionType_t type) override;
-	void onEndCondition(ConditionType_t type) override;
+	void onAddCondition(const ConditionType_t &type) override;
+	void onAddCombatCondition(const ConditionType_t &type) override;
+	void onEndCondition(const ConditionType_t &type) override;
 	void onCombatRemoveCondition(std::shared_ptr<Condition> condition) override;
 	void onAttackedCreature(std::shared_ptr<Creature> target) override;
 	void onAttacked() override;
@@ -1317,8 +1317,8 @@ public:
 	void onUpdateTileItem(std::shared_ptr<Tile> tile, const Position &pos, std::shared_ptr<Item> oldItem, const ItemType &oldType, std::shared_ptr<Item> newItem, const ItemType &newType) override;
 	void onRemoveTileItem(std::shared_ptr<Tile> tile, const Position &pos, const ItemType &iType, std::shared_ptr<Item> item) override;
 
-	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
-	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
+	void onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) override;
+	void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) override;
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
 
 	void onEquipInventory();
@@ -2690,7 +2690,7 @@ private:
 	bool spawn();
 	void despawn();
 	bool dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified) override;
-	std::shared_ptr<Item> getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature) override;
+	std::shared_ptr<Item> getCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature) override;
 
 	// cylinder implementations
 	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;

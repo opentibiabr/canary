@@ -794,7 +794,7 @@ std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 
 std::vector<PlayerWheelGem> PlayerWheel::getActiveGems() const {
 	std::vector<PlayerWheelGem> activeGems;
-	for (auto affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
 		std::string key(magic_enum::enum_name(affinity));
 		auto uuidKV = gemsKV()->scoped("active")->get(key);
 		if (!uuidKV.has_value()) {
@@ -1028,7 +1028,7 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	addPromotionScrolls(msg);
 	addGems(msg);
 	// TODO: read items from inventory
-	auto voc = m_player.getVocation();
+	const auto &voc = m_player.getVocation();
 	m_player.client->sendResourceBalance(RESOURCE_BANK, m_player.getBankBalance());
 	m_player.client->sendResourceBalance(RESOURCE_INVENTORY_MONEY, m_player.getMoney());
 	m_player.client->sendResourceBalance(RESOURCE_LESSER_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Lesser)));
@@ -1154,7 +1154,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	}
 
 	// Gem Vessels
-	for (auto affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
 		bool hasGem = msg.getByte();
 		if (!hasGem) {
 			removeActiveGem(affinity);
@@ -2017,12 +2017,12 @@ bool PlayerWheel::checkBattleInstinct() {
 				m_player.getPosition().y + offsetY,
 				m_player.getPosition().z
 			);
-			std::shared_ptr<Tile> tile = g_game().map.getTile(playerPositionOffSet);
+			const auto &tile = g_game().map.getTile(playerPositionOffSet);
 			if (!tile) {
 				continue;
 			}
 
-			std::shared_ptr<Creature> creature = tile->getTopVisibleCreature(m_player.getPlayer());
+			const auto &creature = tile->getTopVisibleCreature(m_player.getPlayer());
 			if (!creature || creature == m_player.getPlayer() || (creature->getMaster() && creature->getMaster()->getPlayer() == m_player.getPlayer())) {
 				continue;
 			}
@@ -2065,12 +2065,12 @@ bool PlayerWheel::checkPositionalTatics() {
 				m_player.getPosition().y + offsetY,
 				m_player.getPosition().z
 			);
-			std::shared_ptr<Tile> tile = g_game().map.getTile(playerPositionOffSet);
+			const auto &tile = g_game().map.getTile(playerPositionOffSet);
 			if (!tile) {
 				continue;
 			}
 
-			std::shared_ptr<Creature> creature = tile->getTopVisibleCreature(m_player.getPlayer());
+			const auto &creature = tile->getTopVisibleCreature(m_player.getPlayer());
 			if (!creature || creature == m_player.getPlayer() || !creature->getMonster() || (creature->getMaster() && creature->getMaster()->getPlayer())) {
 				continue;
 			}
@@ -2112,7 +2112,7 @@ bool PlayerWheel::checkBallisticMastery() {
 	uint16_t newHolyBonus = 2; // 2%
 	uint16_t newPhysicalBonus = 2; // 2%
 
-	const auto item = m_player.getWeapon();
+	const auto &item = m_player.getWeapon();
 	if (item && item->getAmmoType() == AMMO_BOLT) {
 		if (getMajorStat(WheelMajor_t::CRITICAL_DMG) != newCritical) {
 			setMajorStat(WheelMajor_t::CRITICAL_DMG, newCritical);
@@ -2153,7 +2153,7 @@ bool PlayerWheel::checkCombatMastery() {
 	bool updateClient = false;
 	uint8_t stage = getStage(WheelStage_t::COMBAT_MASTERY);
 
-	const auto item = m_player.getWeapon();
+	const auto &item = m_player.getWeapon();
 	if (item && item->getSlotPosition() & SLOTP_TWO_HAND) {
 		int32_t criticalSkill = 0;
 		if (stage >= 3) {
@@ -2198,12 +2198,12 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	bool updateClient = false;
 	setOnThinkTimer(WheelOnThink_t::DIVINE_EMPOWERMENT, OTSYS_TIME() + 1000);
 
-	const auto tile = m_player.getTile();
+	const auto &tile = m_player.getTile();
 	if (!tile) {
 		return updateClient;
 	}
 
-	const auto items = tile->getItemList();
+	const auto &items = tile->getItemList();
 	if (!items) {
 		return updateClient;
 	}

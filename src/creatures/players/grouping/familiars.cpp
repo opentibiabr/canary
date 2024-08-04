@@ -12,8 +12,6 @@
 #include "creatures/players/grouping/familiars.hpp"
 #include "lib/di/container.hpp"
 #include "config/configmanager.hpp"
-#include "utils/pugicast.hpp"
-#include "utils/tools.hpp"
 
 Familiars &Familiars::getInstance() {
 	return inject<Familiars>();
@@ -36,7 +34,7 @@ bool Familiars::loadFromXml() {
 		return false;
 	}
 
-	for (auto familiarsNode : doc.child("familiars").children()) {
+	for (const auto &familiarsNode : doc.child("familiars").children()) {
 		pugi::xml_attribute attr;
 		if ((attr = familiarsNode.attribute("enabled")) && !attr.as_bool()) {
 			continue;
@@ -74,7 +72,7 @@ bool Familiars::loadFromXml() {
 }
 
 std::shared_ptr<Familiar> Familiars::getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const {
-	if (auto it = std::find_if(familiars[vocation].begin(), familiars[vocation].end(), [lookType](auto familiar_it) {
+	if (auto it = std::find_if(familiars[vocation].begin(), familiars[vocation].end(), [lookType](const auto &familiar_it) {
 			return familiar_it->lookType == lookType;
 		});
 	    it != familiars[vocation].end()) {

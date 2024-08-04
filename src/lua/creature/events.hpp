@@ -116,7 +116,7 @@ public:
 	void eventPlayerOnRequestQuestLine(const std::shared_ptr<Player> &player, uint16_t questId);
 	void eventOnStorageUpdate(const std::shared_ptr<Player> &player, uint32_t key, int32_t value, int32_t oldValue, uint64_t currentTime);
 	void eventPlayerOnCombat(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item, CombatDamage &damage);
-	void eventPlayerOnInventoryUpdate(const auto player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip);
+	void eventPlayerOnInventoryUpdate(const std::shared_ptr<Player> player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip);
 
 	// Monster
 	void eventMonsterOnDropLoot(std::shared_ptr<Monster> monster, const std::shared_ptr<Container> &corpse);

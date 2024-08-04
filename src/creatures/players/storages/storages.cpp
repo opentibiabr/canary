@@ -10,8 +10,12 @@
 #include "pch.hpp"
 
 #include "creatures/players/storages/storages.hpp"
-
 #include "config/configmanager.hpp"
+#include "lib/di/container.hpp"
+
+Storages &Storages::getInstance() {
+	return inject<Storages>();
+}
 
 bool Storages::loadFromXML() {
 	pugi::xml_document doc;
@@ -27,7 +31,7 @@ bool Storages::loadFromXML() {
 
 	std::vector<std::pair<uint32_t, uint32_t>> ranges;
 
-	for (pugi::xml_node range : doc.child("storages").children("range")) {
+	for (const auto &range : doc.child("storages").children("range")) {
 		uint32_t start = range.attribute("start").as_uint();
 		uint32_t end = range.attribute("end").as_uint();
 
@@ -40,11 +44,11 @@ bool Storages::loadFromXML() {
 
 		ranges.emplace_back(start, end);
 
-		for (pugi::xml_node storage : range.children("storage")) {
+		for (const auto &storage : range.children("storage")) {
 			std::string name = storage.attribute("name").as_string();
 			uint32_t key = storage.attribute("key").as_uint();
 
-			for (char c : name) {
+			for (const char &c : name) {
 				if (std::isupper(c)) {
 					g_logger().warn("[{}] Storage from storages.xml with name: {}, contains uppercase letters. Please use dot notation pattern", __func__, name);
 					break;

@@ -1700,7 +1700,7 @@ void Player::onRemoveTileItem(std::shared_ptr<Tile> fromTile, const Position &po
 	checkLootContainers(item->getContainer());
 }
 
-void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) {
+void Player::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
 	Creature::onCreatureAppear(creature, isLogin);
 
 	if (isLogin && creature == getPlayer()) {
@@ -1841,7 +1841,7 @@ void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
 	}
 }
 
-void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
+void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) {
 	Creature::onRemoveCreature(creature, isLogout);
 
 	if (auto player = getPlayer(); player == creature) {
@@ -2286,7 +2286,7 @@ void Player::removeMessageBuffer() {
 	}
 }
 
-void Player::drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) {
+void Player::drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) {
 	if (PLAYER_SOUND_HEALTH_CHANGE >= static_cast<uint32_t>(uniform_random(1, 100))) {
 		g_game().sendSingleSoundEffect(static_self_cast<Player>()->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_BARK : SoundEffect_t::HUMAN_MALE_BARK, getPlayer());
 	}
@@ -2635,7 +2635,7 @@ bool Player::hasShield() const {
 	return false;
 }
 
-BlockType_t Player::blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/) {
+BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/) {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
 	if (attacker) {
 		sendCreatureSquare(attacker, SQ_COLOR_BLACK);
@@ -3017,7 +3017,7 @@ bool Player::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_p
 	return false;
 }
 
-std::shared_ptr<Item> Player::getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature) {
+std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature) {
 	std::shared_ptr<Item> corpse = Creature::getCorpse(lastHitCreature, mostDamageCreature);
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
@@ -4525,7 +4525,7 @@ void Player::updateItemsLight(bool internal /*=false*/) {
 	}
 }
 
-void Player::onAddCondition(ConditionType_t type) {
+void Player::onAddCondition(const ConditionType_t &type) {
 	Creature::onAddCondition(type);
 
 	if (type == CONDITION_OUTFIT && isMounted()) {
@@ -4536,7 +4536,7 @@ void Player::onAddCondition(ConditionType_t type) {
 	sendIcons();
 }
 
-void Player::onAddCombatCondition(ConditionType_t type) {
+void Player::onAddCombatCondition(const ConditionType_t &type) {
 	if (IsConditionSuppressible(type)) {
 		updateLastConditionTime(type);
 	}
@@ -4594,7 +4594,7 @@ void Player::onAddCombatCondition(ConditionType_t type) {
 	}
 }
 
-void Player::onEndCondition(ConditionType_t type) {
+void Player::onEndCondition(const ConditionType_t &type) {
 	Creature::onEndCondition(type);
 
 	if (type == CONDITION_INFIGHT) {

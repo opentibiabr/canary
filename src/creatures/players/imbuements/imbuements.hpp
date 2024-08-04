@@ -12,7 +12,6 @@
 #include "creatures/players/player.hpp"
 #include "declarations.hpp"
 #include "lib/di/container.hpp"
-#include "utils/tools.hpp"
 
 class Player;
 class Item;

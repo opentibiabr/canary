@@ -212,14 +212,14 @@ std::string GlobalEvent::getScriptTypeName() const {
 
 bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightInfo) const {
 	// onPeriodChange(lightState, lightTime)
-	if (!LuaEnvironment::reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executePeriodChange - {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -232,14 +232,14 @@ bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightIn
 
 bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
 	// onRecord(current, old)
-	if (!LuaEnvironment::reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executeRecord - {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -251,14 +251,14 @@ bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
 }
 
 bool GlobalEvent::executeEvent() const {
-	if (!LuaEnvironment::reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executeEvent - {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());

@@ -67,7 +67,7 @@ bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
 	return Creature::canSee(getPosition(), pos, range, range);
 }
 
-void Npc::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) {
+void Npc::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
 	Creature::onCreatureAppear(creature, isLogin);
 
 	if (auto player = creature->getPlayer()) {
@@ -86,7 +86,7 @@ void Npc::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) {
 	}
 }
 
-void Npc::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
+void Npc::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) {
 	Creature::onRemoveCreature(creature, isLogout);
 
 	// onCreatureDisappear(self, creature)
@@ -100,7 +100,7 @@ void Npc::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 		return;
 	}
 
-	if (auto player = creature->getPlayer()) {
+	if (const auto &player = creature->getPlayer()) {
 		removeShopPlayer(player->getGUID());
 		onPlayerDisappear(player);
 	}
@@ -160,7 +160,7 @@ void Npc::onPlayerDisappear(const std::shared_ptr<Player> &player) {
 	}
 }
 
-void Npc::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) {
+void Npc::onCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text) {
 	Creature::onCreatureSay(creature, type, text);
 
 	if (!creature->getPlayer()) {
@@ -308,12 +308,12 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 }
 
 void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, uint64_t totalPrice) {
-	const auto player = g_game().getPlayerByID(playerId);
+	const auto &player = g_game().getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 	if (itemId == ITEM_GOLD_POUCH) {
-		auto container = player->getLootPouch();
+		const auto &container = player->getLootPouch();
 		if (!container) {
 			return;
 		}
@@ -325,7 +325,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 				hasMore = true;
 				break;
 			}
-			auto item = *it;
+			const auto &item = *it;
 			if (!item) {
 				continue;
 			}
@@ -336,7 +336,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 				toSellCount += item->getItemAmount();
 			}
 		}
-		for (auto &[m_itemId, amount] : toSell) {
+		for (const auto &[m_itemId, amount] : toSell) {
 			onPlayerSellItem(player, m_itemId, 0, amount, ignore, totalPrice, container);
 		}
 		auto ss = std::stringstream();
@@ -417,7 +417,7 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 			}
 			g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
 		} else {
-			std::shared_ptr<Item> newItem = Item::CreateItem(getCurrency(), totalCost);
+			const auto &newItem = Item::CreateItem(getCurrency(), totalCost);
 			if (newItem) {
 				g_game().internalPlayerAddItem(player, newItem, true);
 			}
@@ -462,7 +462,7 @@ void Npc::onPlayerCheckItem(const std::shared_ptr<Player> &player, uint16_t item
 }
 
 void Npc::onPlayerCloseChannel(const std::shared_ptr<Creature> &creature) {
-	const auto player = creature->getPlayer();
+	const auto &player = creature->getPlayer();
 	if (!player) {
 		return;
 	}
@@ -572,7 +572,7 @@ bool Npc::isInSpawnRange(const Position &pos) const {
 }
 
 void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
-	std::shared_ptr<Creature> creature = g_game().getCreatureByID(playerId);
+	const auto &creature = g_game().getCreatureByID(playerId);
 	if (!creature) {
 		return;
 	}

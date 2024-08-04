@@ -113,7 +113,7 @@ bool PlayerVIP::edit(uint32_t vipGuid, const std::string &description, uint32_t 
 
 	IOLoginData::removeGuidVIPGroupEntry(m_player.account->getID(), vipGuid);
 
-	for (const auto groupId : groupsId) {
+	for (const auto &groupId : groupsId) {
 		const auto &group = getGroupByID(groupId);
 		if (group) {
 			group->vipGroupGuids.insert(vipGuid);
@@ -125,7 +125,7 @@ bool PlayerVIP::edit(uint32_t vipGuid, const std::string &description, uint32_t 
 }
 
 std::shared_ptr<VIPGroup> PlayerVIP::getGroupByID(uint8_t groupId) const {
-	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupId](const std::shared_ptr<VIPGroup> &vipGroup) {
+	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupId](const auto &vipGroup) {
 		return vipGroup->id == groupId;
 	});
 
@@ -134,7 +134,7 @@ std::shared_ptr<VIPGroup> PlayerVIP::getGroupByID(uint8_t groupId) const {
 
 std::shared_ptr<VIPGroup> PlayerVIP::getGroupByName(const std::string &name) const {
 	const auto groupName = name.c_str();
-	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupName](const std::shared_ptr<VIPGroup> &vipGroup) {
+	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupName](const auto &vipGroup) {
 		return strcmp(groupName, vipGroup->name.c_str()) == 0;
 	});
 
@@ -157,7 +157,7 @@ void PlayerVIP::addGroupInternal(uint8_t groupId, const std::string &name, bool 
 }
 
 void PlayerVIP::removeGroup(uint8_t groupId) {
-	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupId](const std::shared_ptr<VIPGroup> &vipGroup) {
+	auto it = std::find_if(vipGroups.begin(), vipGroups.end(), [groupId](const auto &vipGroup) {
 		return vipGroup->id == groupId;
 	});
 

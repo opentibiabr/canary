@@ -23,7 +23,7 @@ bool PlayerAchievement::add(uint16_t id, bool message /* = true*/, uint32_t time
 		return false;
 	}
 
-	const Achievement &achievement = g_game().getAchievementById(id);
+	const auto &achievement = g_game().getAchievementById(id);
 	if (achievement.id == 0) {
 		return false;
 	}
@@ -45,7 +45,7 @@ bool PlayerAchievement::remove(uint16_t id) {
 		return false;
 	}
 
-	Achievement achievement = g_game().getAchievementById(id);
+	auto achievement = g_game().getAchievementById(id);
 	if (achievement.id == 0) {
 		return false;
 	}
@@ -118,7 +118,7 @@ void PlayerAchievement::sendUnlockedSecretAchievements() {
 	std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked;
 	uint16_t unlockedSecret = 0;
 	for (const auto &[achievId, achievCreatedTime] : getUnlockedAchievements()) {
-		Achievement achievement = g_game().getAchievementById(achievId);
+		const auto &achievement = g_game().getAchievementById(achievId);
 		if (achievement.id == 0) {
 			continue;
 		}

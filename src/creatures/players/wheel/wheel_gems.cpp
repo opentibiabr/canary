@@ -518,7 +518,7 @@ void WheelModifierContext::addStrategies(WheelGemSupremeModifier_t modifier) {
 }
 
 void WheelModifierContext::executeStrategies() {
-	for (auto &strategy : m_strategies) {
+	for (const auto &strategy : m_strategies) {
 		strategy->execute();
 	}
 }

@@ -35,7 +35,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 	}
 
 	loaded = true;
-	for (auto baseNode : doc.child("imbuements").children()) {
+	for (const auto &baseNode : doc.child("imbuements").children()) {
 		pugi::xml_attribute attr;
 		// Base for imbue
 		if (strcasecmp(baseNode.name(), "base") == 0) {
@@ -139,7 +139,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 			}
 			imbuement.name = nameBase.value();
 
-			for (auto childNode : baseNode.children()) {
+			for (const auto &childNode : baseNode.children()) {
 				if (!(attr = childNode.attribute("key"))) {
 					g_logger().warn("Missing key attribute in imbuement id: {}", runningid);
 					continue;

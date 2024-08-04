@@ -1247,7 +1247,7 @@ void Events::eventPlayerOnRequestQuestLine(const std::shared_ptr<Player> &player
 	scriptInterface.callVoidFunction(2);
 }
 
-void Events::eventPlayerOnInventoryUpdate(const auto player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) {
+void Events::eventPlayerOnInventoryUpdate(const std::shared_ptr<Player> player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) {
 	// Player:onInventoryUpdate(item, slot, equip)
 	if (info.playerOnInventoryUpdate == -1) {
 		return;

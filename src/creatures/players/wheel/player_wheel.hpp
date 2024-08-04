@@ -10,7 +10,6 @@
 #pragma once
 
 #include "io/io_wheel.hpp"
-#include "utils/utils_definitions.hpp"
 #include "kv/kv.hpp"
 #include "wheel_gems.hpp"
 

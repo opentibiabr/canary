@@ -10,9 +10,13 @@
 #include "pch.hpp"
 
 #include "creatures/players/vocations/vocation.hpp"
-
+#include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
+
+Vocations &Vocations::getInstance() {
+	return inject<Vocations>();
+}
 
 bool Vocations::reload() {
 	vocationsMap.clear();
@@ -28,7 +32,7 @@ bool Vocations::loadFromXml() {
 		return false;
 	}
 
-	for (auto vocationNode : doc.child("vocations").children()) {
+	for (const auto &vocationNode : doc.child("vocations").children()) {
 		pugi::xml_attribute attr;
 		if (!(attr = vocationNode.attribute("id"))) {
 			g_logger().warn("[{}] - Missing vocation id", __FUNCTION__);
@@ -120,7 +124,7 @@ bool Vocations::loadFromXml() {
 			voc->avatarLookType = pugi::cast<uint16_t>(attr.value());
 		}
 
-		for (auto childNode : vocationNode.children()) {
+		for (const auto &childNode : vocationNode.children()) {
 			if (strcasecmp(childNode.name(), "skill") == 0) {
 				pugi::xml_attribute skillIdAttribute = childNode.attribute("id");
 				if (skillIdAttribute) {

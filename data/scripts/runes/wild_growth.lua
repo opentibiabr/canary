@@ -1,8 +1,8 @@
 function onCreateWildGrowth(creature, position)
-    local tile = Tile(position)
-    if tile and tile:getTopCreature() and not tile:getTopCreature():isPlayer() then
-        return false
-    end
+	local tile = Tile(position)
+	if tile and tile:getTopCreature() and not tile:getTopCreature():isPlayer() then
+		return false
+	end
 	local wildGrowth
 	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
 		wildGrowth = ITEM_WILDGROWTH_SAFE

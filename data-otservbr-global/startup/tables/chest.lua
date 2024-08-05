@@ -2437,8 +2437,8 @@ ChestUnique = {
 	},
 	-- Darashia Dragon Quest
 	[6285] = {
-		itemId = 5984,
-		itemPos = { x = 33236, y = 32275, z = 12 },
+		itemId = 4286,
+		itemPos = { x = 33233, y = 32280, z = 12 },
 		reward = { { 3052, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U8_5.DarashiaDragon,

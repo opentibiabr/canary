@@ -2037,7 +2037,6 @@ Storage = {
 			TopOfTheCity = {},
 		},
 		U8_5 = { -- update 8.5 - Reserved Storages 42146 - 42550
-			Braindeath = {},
 			DarashiaDragon = {},
 			HotCuisine = {},
 			KillingInTheNameOf = {

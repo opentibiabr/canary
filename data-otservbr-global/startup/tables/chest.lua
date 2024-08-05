@@ -2435,6 +2435,14 @@ ChestUnique = {
 		weight = 10.00,
 		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.FirewalkerBoots,
 	},
+	-- Darashia Dragon Quest
+	[6285] = {
+		itemId = 5984,
+		itemPos = { x = 33236, y = 32275, z = 12 },
+		reward = { { 3052, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_5.DarashiaDragon,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

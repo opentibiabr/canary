@@ -2037,7 +2037,7 @@ Storage = {
 			TopOfTheCity = {},
 		},
 		U8_5 = { -- update 8.5 - Reserved Storages 42146 - 42550
-			DarashiaDragon = {},
+			DarashiaDragon = 42146,
 			HotCuisine = {},
 			KillingInTheNameOf = {
 				MonsterKillCount = {

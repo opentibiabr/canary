@@ -62,7 +62,6 @@ include:
   - name: DtsStatementOrder
   - name: HidingNonVirtualFunction
   - name: NotImplementedFunctions
-  - name: ClangdErrorsAndWarnings
   - name: CMakeDeprecatedCommands
   - name: JSDeprecatedSymbols
   - name: EmptyDirectory

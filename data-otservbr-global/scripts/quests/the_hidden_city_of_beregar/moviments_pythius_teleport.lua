@@ -6,7 +6,7 @@ function pythiusTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.HiddenCityOfBeregar.PythiusTheRotten) < os.time() then
+	if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.PythiusTheRotten) < os.time() then
 		position.y = position.y + 4
 		player:teleportTo(position)
 		player:say("OFFER ME SOMETHING IF YOU WANT TO PASS!", TALKTYPE_MONSTER_YELL, false, player, Position(32589, 31407, 15))

@@ -15,7 +15,7 @@ local questsExperience = {
 }
 
 local questLog = {
-	[8213] = Storage.HiddenCityOfBeregar.DefaultStart,
+	[8213] = Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart,
 }
 
 local tutorialIds = {

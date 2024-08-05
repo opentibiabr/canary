@@ -150,13 +150,13 @@ local config = {
 		items = {
 			{ itemId = 3725, count = 10 },
 		},
-		storage = Storage.HiddenCityOfBeregar.BrownMushrooms,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.BrownMushrooms,
 	},
 	[50125] = {
 		items = {
 			{ itemId = 8777 },
 		},
-		storage = Storage.HiddenCityOfBeregar.JusticeForAll,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll,
 		formerValue = 3,
 		newValue = 4,
 	},
@@ -286,7 +286,7 @@ Gromward Hammerfist]],
 				name = "Tunnelling Guide",
 			},
 		},
-		storage = Storage.HiddenCityOfBeregar.TunnellingGuide,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.TunnellingGuide,
 	},
 	[20003] = {
 		items = {

@@ -3077,12 +3077,12 @@ if not Quests then
 		},
 		[21] = {
 			name = "The Hidden City of Beregar",
-			startStorageId = Storage.HiddenCityOfBeregar.DefaultStart,
+			startStorageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Going Down",
-					storageId = Storage.HiddenCityOfBeregar.GoingDown,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.GoingDown,
 					missionId = 10228,
 					startValue = 1,
 					endValue = 2,
@@ -3094,7 +3094,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Justice for All",
-					storageId = Storage.HiddenCityOfBeregar.JusticeForAll,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll,
 					missionId = 10229,
 					startValue = 1,
 					endValue = 6,
@@ -3122,7 +3122,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Sweet as Chocolate Cake",
-					storageId = Storage.HiddenCityOfBeregar.SweetAsChocolateCake,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.SweetAsChocolateCake,
 					missionId = 10231,
 					startValue = 1,
 					endValue = 3,
@@ -3135,7 +3135,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "The Good Guard",
-					storageId = Storage.HiddenCityOfBeregar.TheGoodGuard,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.TheGoodGuard,
 					missionId = 10232,
 					startValue = 1,
 					endValue = 2,

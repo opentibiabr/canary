@@ -580,15 +580,15 @@ QuestDoorAction = {
 		itemPos = { { x = 32537, y = 31897, z = 13 } },
 	},
 	-- Hidden city of beregar door
-	[Storage.HiddenCityOfBeregar.DoorNorthMine] = {
+	[Storage.Quest.U8_4.TheHiddenCityOfBeregar.DoorNorthMine] = {
 		itemId = false,
 		itemPos = { { x = 32606, y = 31489, z = 14 } },
 	},
-	[Storage.HiddenCityOfBeregar.DoorWestMine] = {
+	[Storage.Quest.U8_4.TheHiddenCityOfBeregar.DoorWestMine] = {
 		itemId = false,
 		itemPos = { { x = 32584, y = 31499, z = 14 } },
 	},
-	[Storage.HiddenCityOfBeregar.DoorSouthMine] = {
+	[Storage.Quest.U8_4.TheHiddenCityOfBeregar.DoorSouthMine] = {
 		itemId = false,
 		itemPos = { { x = 32608, y = 31516, z = 14 } },
 	},

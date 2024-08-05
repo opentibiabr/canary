@@ -781,7 +781,7 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		toPosition:sendMagicEffect(CONST_ME_POFF)
 	elseif target.actionid == 50090 then
 		-- The Hidden City of Beregar Quest
-		if player:getStorageValue(Storage.hiddenCityOfBeregar.WayToBeregar) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.WayToBeregar) == 1 then
 			player:teleportTo(Position(32566, 31338, 10))
 		end
 	elseif target.actionid == 40028 then

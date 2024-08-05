@@ -873,6 +873,37 @@ ItemAction = {
 			{ x = 32732, y = 32264, z = 15 },
 		},
 	},
+	-- The Hidden City of Beregar Quest
+	[50090] = {
+		itemId = 6298,
+		itemPos = {
+			{ x = 32566, y = 31338, z = 9 },
+		},
+	},
+	[50091] = {
+		itemId = 7739,
+		itemPos = {
+			{ x = 32607, y = 31501, z = 13 },
+		},
+	},
+	[50092] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32611, y = 31497, z = 14 },
+		},
+	},
+	[50093] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32611, y = 31497, z = 15 },
+		},
+	},
+	[50127] = {
+		itemId = 8425,
+		itemPos = {
+			{ x = 32551, y = 31379, z = 15 },
+		},
+	},
 	-- Dreamers Challenge Quest
 	[50149] = {
 		itemId = 1949,
@@ -1820,6 +1851,11 @@ ItemUnique = {
 	[40096] = {
 		itemId = 5662,
 		itemPos = { x = 33024, y = 32672, z = 6 },
+	},
+	-- The Hidden City of Beregar Quest
+	[50127] = {
+		itemId = 1949,
+		itemPos = { x = 32598, y = 31402, z = 15 },
 	},
 	-- The Ancient Tombs Quest
 	[50135] = {

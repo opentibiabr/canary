@@ -70,7 +70,7 @@ function wagons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		},
 		--Beregar
 		{
-			teleportPos = Position(32579, 31487, 9),
+			teleportPos = Position(32579, 31487, 9), -- The correct place would be 32638, 31960, 10, however this area does not yet exist on the Kazordoon map.
 			railCheck = Tile(Position(32688, 31469, 13)):getItemById(7124) and Tile(Position(32690, 31465, 13)):getItemById(7125) and Tile(Position(32684, 31464, 13)):getItemById(7122) and Tile(Position(32682, 31455, 13)):getItemById(7124),
 		},
 		--NPC Tehlim
@@ -89,14 +89,14 @@ function wagons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			railCheck = Tile(Position(32688, 31469, 13)):getItemById(7123) and Tile(Position(32695, 31464, 13)):getItemById(7123),
 		},
 	}
-	local getstory = player:getStorageValue(Storage.HiddenCityOfBeregar.RoyalRescue)
-	local story = Storage.HiddenCityOfBeregar.RoyalRescue
+	local getstory = player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.RoyalRescue)
+	local story = Storage.Quest.U8_4.TheHiddenCityOfBeregar.RoyalRescue
 	local position = (Position(32571, 31508, 9))
 	local tile = Tile(position)
 	local tile2 = Tile(Position(32619, 31514, 9))
 	for i = 1, #travel do
 		local table = travel[i]
-		if fromPosition == table.wagon and player:getStorageValue(Storage.HiddenCityOfBeregar.OreWagon) == 1 then
+		if fromPosition == table.wagon and player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.OreWagon) == 1 then
 			if travel[i] == travel[1] then
 				local targetPosition = checkpoint[player:getStorageValue(story)]
 				if not targetPosition then
@@ -172,7 +172,7 @@ function wagons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			player:teleportTo(table.destination)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		end
-		if player:getStorageValue(Storage.HiddenCityOfBeregar.OreWagon) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.OreWagon) < 1 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You don't know how to use this yet.")
 			return true
 		end

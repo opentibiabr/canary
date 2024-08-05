@@ -2391,6 +2391,50 @@ ChestUnique = {
 		weight = 5.00,
 		storage = Storage.Quest.U8_2.VampireHunterQuest.BloodSkull,
 	},
+	-- The Hidden City of Beregar Quest
+	[6279] = {
+		itemId = 4024,
+		itemPos = { x = 32601, y = 31386, z = 14 },
+		reward = { { 9058, 1 } },
+		weight = 18.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.CorpseGoldIngot,
+	},
+	[6280] = {
+		itemId = 4240,
+		itemPos = { x = 32588, y = 31406, z = 14 },
+		reward = { { 9057, 3 } },
+		weight = 0.30,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.CorpseSmallTopazes,
+	},
+	[6281] = {
+		itemId = 4024,
+		itemPos = { x = 32650, y = 31467, z = 15 },
+		reward = { { 8895, 1 } },
+		weight = 120.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.CorpseRustedArmor,
+	},
+	[6282] = {
+		itemId = 2472,
+		itemPos = { x = 32754, y = 31462, z = 15 },
+		reward = { { 9172, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.PrisonCellKey,
+	},
+	[6283] = {
+		itemId = 1983,
+		itemPos = { x = 32546, y = 31522, z = 11 },
+		container = 2867,
+		reward = { { 3035, 13 }, { 3003, 1 }, { 3457, 1 }, { 268, 1 }, { 239, 2 } },
+		weight = 82.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.BPTheUndeathStare,
+	},
+	[6284] = {
+		itemId = 2472,
+		itemPos = { x = 32582, y = 31405, z = 15 },
+		reward = { { 9019, 1 } },
+		weight = 10.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.FirewalkerBoots,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

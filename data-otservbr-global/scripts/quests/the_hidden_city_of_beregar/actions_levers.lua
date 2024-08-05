@@ -17,6 +17,7 @@ local config = {
 }
 
 local theHiddenWagonLevers = Action()
+
 function theHiddenWagonLevers.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	for i = 1, #config do
 		local table = config[i]

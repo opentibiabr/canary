@@ -22,6 +22,6 @@ jobs:
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
         with:
-          args: --compile-commands,./build/linux-debug/compile_commands.json --show-report --baseline=qodana.sarif.json
+          args: --compile-commands,./build/linux-debug/compile_commands.json --show-report --baseline=/data/project/qodana.sarif.json
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}

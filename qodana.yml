@@ -12,7 +12,6 @@ bootstrap: |
   mkdir -p build
   cd build
   cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-debug || true
-#fixesStrategy: apply
 profile:
   name: qodana.recommended
 include:

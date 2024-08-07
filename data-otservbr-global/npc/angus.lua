@@ -78,8 +78,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 or npcHandler:getTopic(playerId) == 2 then
 			if player:getStorageValue(TheNewFrontier.Mission05.Angus) == 1 then
 				npcHandler:say({
-				"Those stories are just amazing! Men with faces on their stomach instead of heads you say? And hens that lay golden eggs? Whereas, most amazing is this fountain of youth you've mentioned! ...",
-				"I'll immediately send some of our most dedicated explorers to check those things out!"
+					"Those stories are just amazing! Men with faces on their stomach instead of heads you say? And hens that lay golden eggs? Whereas, most amazing is this fountain of youth you've mentioned! ...",
+					"I'll immediately send some of our most dedicated explorers to check those things out!",
 				}, npc, creature)
 				player:setStorageValue(TheNewFrontier.Mission05.Angus, 3)
 			end

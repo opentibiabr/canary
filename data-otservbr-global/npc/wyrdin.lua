@@ -106,8 +106,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"By Uman! That's one of the rare almanacs of Origus! I had no idea that you are a scholar yourself! And a generous one on top of it! ...",
 					"This book must be worth some thousand crystal coins on the free market. Look at the signature here, it's Origus' very own! ...",
-					"Of course we should talk again about your request. What do you say makes Farmine important?"
-					}, npc, creature)
+					"Of course we should talk again about your request. What do you say makes Farmine important?",
+				}, npc, creature)
 				player:setStorageValue(TheNewFrontier.Mission05.Wyrdin, 1)
 				npcHandler:setTopic(playerId, 2)
 			end

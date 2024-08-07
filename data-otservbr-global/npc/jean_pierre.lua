@@ -88,37 +88,37 @@ local function endConversationWithDelay(npcHandler, npc, creature)
 end
 
 local function canCookToday(player, lastInteractionKey)
-    local currentDate = os.time()
-    local lastInteractionDate = player:getStorageValue(lastInteractionKey)
+	local currentDate = os.time()
+	local lastInteractionDate = player:getStorageValue(lastInteractionKey)
 
-    if lastInteractionDate == -1 then
-        return true
-    end
+	if lastInteractionDate == -1 then
+		return true
+	end
 
-    local lastDateTable = os.date("*t", lastInteractionDate)
-    local currentDateTable = os.date("*t", currentDate)
+	local lastDateTable = os.date("*t", lastInteractionDate)
+	local currentDateTable = os.date("*t", currentDate)
 
-    if currentDateTable.month == 8 and (currentDateTable.year > lastDateTable.year or lastDateTable.month ~= 8) then
-        return true
-    end
+	if currentDateTable.month == 8 and (currentDateTable.year > lastDateTable.year or lastDateTable.month ~= 8) then
+		return true
+	end
 
-    return false
+	return false
 end
 
 local function greetCallback(npc, creature)
-    local player = Player(creature)
-    local playerId = player:getId()
+	local player = Player(creature)
+	local playerId = player:getId()
 
-    local currentDate = os.time()
-    local currentDateTable = os.date("*t", currentDate)
+	local currentDate = os.time()
+	local currentDateTable = os.date("*t", currentDate)
 
-    if currentDateTable.month == 8 then
-        npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|. What are you doing out here?")
-    else
-        endConversationWithDelay(npcHandler, npc, creature)
-    end
+	if currentDateTable.month == 8 then
+		npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|. What are you doing out here?")
+	else
+		endConversationWithDelay(npcHandler, npc, creature)
+	end
 
-    return true
+	return true
 end
 
 local function creatureSayCallback(npc, creature, type, message)

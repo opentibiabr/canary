@@ -45,7 +45,7 @@ local function convertIconsToBitValue(iconList)
 		icon = tonumber(icon)
 		if icon then
 			local flag = bit.lshift(1, icon - 1)
-			bitObj:updateFlag(flag) 
+			bitObj:updateFlag(flag)
 		end
 	end
 	return bitObj:getNumber()

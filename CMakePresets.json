@@ -84,8 +84,7 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_LOG": "ON",
-        "SPEED_UP_BUILD_UNITY": "OFF",
-        "USE_PRECOMPILED_HEADER": "ON"
+        "SPEED_UP_BUILD_UNITY": "OFF"
       }
     },
     {

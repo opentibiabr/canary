@@ -2443,6 +2443,14 @@ ChestUnique = {
 		weight = 1.00,
 		storage = Storage.Quest.U8_5.DarashiaDragon,
 	},
+	-- Lone Medusa Quest
+	[6286] = {
+		itemId = 3990,
+		itemPos = { x = 32406, y = 32764, z = 1 },
+		reward = { { 3027, 4 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_5.LoneMedusa,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

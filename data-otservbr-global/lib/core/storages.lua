@@ -2218,7 +2218,7 @@ Storage = {
 					CyclopsSmithCount = 42502,
 				},
 			},
-			LoneMedusa = {},
+			LoneMedusa = 42503,
 			PilgrimageOfAshes = {},
 			ShadowsOfYalahar = {},
 			TheIsleOfEvil = {},

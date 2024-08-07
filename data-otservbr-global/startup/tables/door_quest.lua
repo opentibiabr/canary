@@ -610,7 +610,7 @@ QuestDoorAction = {
 		itemPos = { { x = 31978, y = 32856, z = 3 } },
 	},
 	-- Hot cuisine door
-	[Storage.HotCuisineQuest.CookbookDoor] = {
+	[Storage.Quest.U8_5.HotCuisineQuest.CookbookDoor] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33065, y = 32529, z = 5 },

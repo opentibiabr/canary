@@ -102,6 +102,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 npcConfig.shop = {
 	{ itemName = "bottle of whisper beer", clientId = 6106, buy = 80 },
 	{ itemName = "mug of beer", clientId = 2880, buy = 20, count = 3 },
+	{ itemName = "vial of beer", clientId = 2874, buy = 20, count = 1, subType = 3 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

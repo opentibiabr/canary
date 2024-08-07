@@ -705,12 +705,12 @@ if not Quests then
 		},
 		[9] = {
 			name = "Hot Cuisine",
-			startStorageId = Storage.HotCuisineQuest.QuestStart,
+			startStorageId = Storage.Quest.U8_5.HotCuisineQuest.QuestStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Hot Cuisine",
-					storageId = Storage.HotCuisineQuest.QuestLog,
+					storageId = Storage.Quest.U8_5.HotCuisineQuest.QuestLog,
 					missionId = 1070,
 					startValue = 1,
 					endValue = 16,

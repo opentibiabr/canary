@@ -893,13 +893,6 @@ Storage = {
 		RotwormTask = 51622,
 		CyclopsTask = 51623,
 	},
-	HotCuisineQuest = {
-		-- Reserved storage from 51650 - 51659
-		QuestStart = 51650,
-		CurrentDish = 51651,
-		QuestLog = 51652,
-		CookbookDoor = 51653,
-	},
 	TheRookieGuard = {
 		--Reserved storage 52360 - 52395
 		Questline = 52360,
@@ -2038,7 +2031,26 @@ Storage = {
 		},
 		U8_5 = { -- update 8.5 - Reserved Storages 42146 - 42550
 			DarashiaDragon = 42146,
-			HotCuisine = {},
+			HotCuisineQuest = {
+				QuestStart = 42147,
+				CurrentDish = 42148,
+				QuestLog = 42149,
+				CookbookDoor = 42150,
+				LastInteractionDate2 = 42151,
+				LastInteractionDate3 = 42152,
+				LastInteractionDate4 = 42153,
+				LastInteractionDate5 = 42154,
+				LastInteractionDate6 = 42155,
+				LastInteractionDate7 = 42156,
+				LastInteractionDate8 = 42157,
+				LastInteractionDate9 = 42158,
+				LastInteractionDate10 = 42159,
+				LastInteractionDate11 = 42160,
+				LastInteractionDate12 = 42161,
+				LastInteractionDate13 = 42162,
+				LastInteractionDate14 = 42163,
+				LastInteractionDate15 = 42164,
+			},
 			KillingInTheNameOf = {
 				MonsterKillCount = {
 					KillCount = 42150,

@@ -360,7 +360,7 @@ local questTable = {
 	{ storage = Storage.Quest.U8_4.BloodBrothers.VengothAccess, storageValue = 1 },
 
 	-- Assassin Outfit quests
-	{ storage = Storage.KillingInTheNameOf.BudrikMinos, storageValue = 0 },
+	{ storage = Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos, storageValue = 0 },
 	{ storage = Storage.TibiaTales.ToOutfoxAFoxQuest.Questline, storageValue = 2 },
 
 	-- Hunter Outfit quests

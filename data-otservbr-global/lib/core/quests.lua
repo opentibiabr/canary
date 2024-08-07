@@ -934,17 +934,17 @@ if not Quests then
 			missions = {
 				[1] = {
 					name = "Paw and Fur - Hunting Elite",
-					storageId = Storage.KillingInTheNameOf.QuestLogEntry,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.QuestLogEntry,
 					missionId = 1081,
 					startValue = 0,
 					endValue = 1,
 					description = function(player)
-						return string.format("You joined the 'Paw and Fur - Hunting Elite'. Ask Grizzly Adams for some hunting tasks. You already gained %d points. You currently have %d boss points.", (math.max(player:getStorageValue(POINTSSTORAGE), 0)), (math.max(player:getStorageValue(Storage.KillingInTheNameOf.BossPoints), 0)))
+						return string.format("You joined the 'Paw and Fur - Hunting Elite'. Ask Grizzly Adams for some hunting tasks. You already gained %d points. You currently have %d boss points.", (math.max(player:getStorageValue(POINTSSTORAGE), 0)), (math.max(player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossPoints), 0)))
 					end,
 				},
 				[2] = {
 					name = "Paw and Fur - Rank: Huntsman",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1082,
 					startValue = 0,
 					endValue = 1,
@@ -952,7 +952,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Paw and Fur - Rank: Ranger",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1083,
 					startValue = 2,
 					endValue = 3,
@@ -960,7 +960,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Paw and Fur - Rank: Big Game Hunter",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1084,
 					startValue = 4,
 					endValue = 5,
@@ -968,7 +968,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Paw and Fur - Rank: Trophy Hunter",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1085,
 					startValue = 5,
 					endValue = 6,
@@ -976,7 +976,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Paw and Fur - Rank: Elite Hunter",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1086,
 					startValue = 7,
 					endValue = 8,
@@ -1929,7 +1929,7 @@ if not Quests then
 				},
 				[77] = {
 					name = "Paw and Fur: Tiquandas Revenge",
-					storageId = Storage.KillingInTheNameOf.MissionTiquandasRevenge,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.MissionTiquandasRevenge,
 					missionId = 10157,
 					startValue = 1,
 					endValue = 3,
@@ -1941,7 +1941,7 @@ if not Quests then
 				},
 				[78] = {
 					name = "Paw and Fur: Demodras",
-					storageId = Storage.KillingInTheNameOf.MissionDemodras,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.MissionDemodras,
 					missionId = 10158,
 					startValue = 1,
 					endValue = 3,
@@ -1953,7 +1953,7 @@ if not Quests then
 				},
 				[79] = { -- Others
 					name = "The Marid: Green Djinns",
-					storageId = Storage.KillingInTheNameOf.GreenDjinnTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.GreenDjinnTask,
 					missionId = 10159,
 					startValue = 0,
 					endValue = 3,
@@ -1968,7 +1968,7 @@ if not Quests then
 				},
 				[80] = {
 					name = "The Efreet: Blue Djinns",
-					storageId = Storage.KillingInTheNameOf.BlueDjinnTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask,
 					missionId = 10160,
 					startValue = 0,
 					endValue = 3,
@@ -1983,7 +1983,7 @@ if not Quests then
 				},
 				[81] = {
 					name = "Meriana Rebels: Pirates",
-					storageId = Storage.KillingInTheNameOf.PirateTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PirateTask,
 					missionId = 10161,
 					startValue = 0,
 					endValue = 3,
@@ -2004,7 +2004,7 @@ if not Quests then
 				},
 				[82] = {
 					name = "Turmoil of War",
-					storageId = Storage.KillingInTheNameOf.BudrikMinos,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos,
 					missionId = 10162,
 					startValue = 0,
 					endValue = 2,
@@ -2024,7 +2024,7 @@ if not Quests then
 				},
 				[83] = {
 					name = "Lugri: Necromancers and Priestesses",
-					storageId = Storage.KillingInTheNameOf.LugriNecromancers,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers,
 					missionId = 10163,
 					startValue = 0,
 					endValue = 4,
@@ -2056,7 +2056,7 @@ if not Quests then
 				},
 				[84] = {
 					name = "Edron City: Trolls",
-					storageId = Storage.KillingInTheNameOf.TrollTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.TrollTask,
 					missionId = 10164,
 					startValue = 0,
 					endValue = 1,
@@ -2069,7 +2069,7 @@ if not Quests then
 				},
 				[85] = {
 					name = "Edron City: Goblins",
-					storageId = Storage.KillingInTheNameOf.GoblinTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.GoblinTask,
 					missionId = 10165,
 					startValue = 0,
 					endValue = 1,
@@ -2087,7 +2087,7 @@ if not Quests then
 				},
 				[86] = {
 					name = "Edron City: Rotworms",
-					storageId = Storage.KillingInTheNameOf.RotwormTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.RotwormTask,
 					missionId = 10166,
 					startValue = 0,
 					endValue = 1,
@@ -2100,7 +2100,7 @@ if not Quests then
 				},
 				[87] = {
 					name = "Edron City: Cyclops",
-					storageId = Storage.KillingInTheNameOf.CyclopsTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.CyclopsTask,
 					missionId = 10167,
 					startValue = 0,
 					endValue = 1,

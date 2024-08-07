@@ -57,24 +57,24 @@ function deathEvent.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
 			end
 		end
 		-- Minotaurs
-		killCheck(player, targetName, Storage.KillingInTheNameOf.BudrikMinos, 0, tasks.Budrik[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos, 0, tasks.Budrik[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount)
 		-- Necromancers and Priestesses
-		killCheck(player, targetName, Storage.KillingInTheNameOf.LugriNecromancers, 0, tasks.Lugri[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount)
-		killCheck(player, targetName, Storage.KillingInTheNameOf.LugriNecromancers, 3, tasks.Lugri[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers, 0, tasks.Lugri[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers, 3, tasks.Lugri[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount)
 		-- Green Djinns or Efreets
-		killCheck(player, targetName, Storage.KillingInTheNameOf.GreenDjinnTask, 0, tasks.Gabel[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GreenDjinnCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GreenDjinnCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.GreenDjinnTask, 0, tasks.Gabel[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GreenDjinnCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GreenDjinnCount)
 		-- Blue Djinns or Marids
-		killCheck(player, targetName, Storage.KillingInTheNameOf.BlueDjinnTask, 0, tasks.Malor[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BlueDjinnCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BlueDjinnCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask, 0, tasks.Malor[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BlueDjinnCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BlueDjinnCount)
 		-- Pirates
-		killCheck(player, targetName, Storage.KillingInTheNameOf.PirateTask, 0, tasks.RaymondStriker[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateMarauderCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.PirateCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.PirateTask, 0, tasks.RaymondStriker[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateMarauderCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.PirateCount)
 		-- Trolls
-		killCheck(player, targetName, Storage.KillingInTheNameOf.TrollTask, 0, tasks.DanielSteelsoul[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.TrollCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.TrollCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.TrollTask, 0, tasks.DanielSteelsoul[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.TrollCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.TrollCount)
 		-- Goblins
-		killCheck(player, targetName, Storage.KillingInTheNameOf.GoblinTask, 0, tasks.DanielSteelsoul[2].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GoblinCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GoblinCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.GoblinTask, 0, tasks.DanielSteelsoul[2].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GoblinCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GoblinCount)
 		-- Rotworms
-		killCheck(player, targetName, Storage.KillingInTheNameOf.RotwormTask, 0, tasks.DanielSteelsoul[3].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.RotwormCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.RotwormCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.RotwormTask, 0, tasks.DanielSteelsoul[3].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.RotwormCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.RotwormCount)
 		-- Cyclops
-		killCheck(player, targetName, Storage.KillingInTheNameOf.CyclopsTask, 0, tasks.DanielSteelsoul[4].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CyclopsCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.CyclopsCount)
+		killCheck(player, targetName, Storage.Quest.U8_5.KillingInTheNameOf.CyclopsTask, 0, tasks.DanielSteelsoul[4].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CyclopsCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.CyclopsCount)
 	end)
 	return true
 end

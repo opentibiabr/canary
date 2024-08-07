@@ -148,7 +148,7 @@ function ZoneEvent:register()
 	end
 
 	if self.onSpawn then
-		local afterEnter = EventCallback("ZoneEventAfterEnter", true)
+		local afterEnter = EventCallback("ZoneEventAfterEnterOnSpawn", true)
 		function afterEnter.zoneAfterCreatureEnter(zone, creature)
 			if zone ~= self.zone then
 				return true

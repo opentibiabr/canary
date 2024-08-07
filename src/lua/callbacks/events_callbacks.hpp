@@ -97,6 +97,7 @@ public:
 					},
 					argsCopy
 				);
+				g_logger().trace("Executed callback: {}", name);
 			}
 		}
 	}

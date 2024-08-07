@@ -2451,6 +2451,21 @@ ChestUnique = {
 		weight = 1.00,
 		storage = Storage.Quest.U8_5.LoneMedusa,
 	},
+	-- The New Frontier Quest
+	[6287] = {
+		itemId = 2472,
+		itemPos = { x = 33164, y = 31257, z = 10 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TheNewFrontier.ChestTomeOfKnowledge1,
+	},
+	[6288] = {
+		itemId = 2472,
+		itemPos = { x = 33057, y = 31019, z = 2 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TheNewFrontier.ChestTomeOfKnowledge2,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

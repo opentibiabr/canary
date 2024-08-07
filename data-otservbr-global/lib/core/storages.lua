@@ -2283,6 +2283,8 @@ Storage = {
 				ZaoPalaceDoors = 42730, -- 10th Tome: Zao Palace
 				SnakeHeadTeleport = 42731, -- 7th Tome: Snake Head Teleport
 				CorruptionHole = 42732, -- 8th Tome: Corruption Hole
+				ChestTomeOfKnowledge1 = 42733,
+				ChestTomeOfKnowledge2 = 42734,
 			},
 			TomesOfKnowledge = {
 				OrcCamp = 42751,

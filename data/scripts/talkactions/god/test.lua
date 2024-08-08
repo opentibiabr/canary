@@ -68,7 +68,7 @@ function testIcons.onSay(player, words, param)
 		msg:addByte(0xA2)
 		local icons = convertIconsToBitValue(param)
 		msg:addU32(icons)
-		msg:addByte(0)
+		msg:addByte(tonumber(param))
 		msg:sendToPlayer(self)
 	end
 

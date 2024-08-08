@@ -1682,12 +1682,11 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 				newOutfit.lookMountBody = std::min<uint8_t>(132, msg.getByte());
 				newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 				newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
-				if (version >= 1334) {
-					isMounted = msg.getByte();
-				}
+				isMounted = msg.getByte();
 				newOutfit.lookFamiliarsType = msg.get<uint16_t>();
+				g_logger().debug("Bool isMounted: {}", isMounted);
 			}
-			g_logger().info("Bool isMounted: {}", isMounted);
+
 			uint8_t isMountRandomized = msg.getByte();
 			g_game().playerChangeOutfit(player->getID(), newOutfit, isMountRandomized);
 		} else if (outfitType == 1) {
@@ -1807,11 +1806,7 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg) {
 		return;
 	}
 
-	uint8_t variant = 0;
-	if (version >= 1340) {
-		variant = msg.getByte();
-	}
-
+	uint8_t variant = msg.getByte();
 	const Position pos = msg.getPosition();
 	uint16_t itemId = 0;
 	uint8_t stackpos = 0;
@@ -1826,6 +1821,7 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg) {
 		lootAllCorpses = variant == 1;
 		autoLoot = false;
 	}
+	g_logger().debug("[{}] variant {}, pos {}, itemId {}, stackPos {}", __FUNCTION__, variant, pos.toString(), itemId, stackpos);
 
 	g_game().playerQuickLoot(player->getID(), pos, itemId, stackpos, nullptr, lootAllCorpses, autoLoot);
 }

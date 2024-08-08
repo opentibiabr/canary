@@ -4,124 +4,70 @@ profile:
   name: qodana.recommended
 
 inspections:
-  - inspection: ClangTidy
-    enabled: true
-  - inspection: Clazy
-    enabled: true
-  - inspection: Misra
-    enabled: true
-  - inspection: OCUnusedConcept
-    enabled: true
-  - inspection: OCUnusedGlobalDeclaration
-    enabled: true
-  - inspection: OCUnusedIncludeDirective
-    enabled: true
-  - inspection: OCUnusedMacro
-    enabled: true
-  - inspection: OCUnusedStruct
-    enabled: true
-  - inspection: OCUnusedTemplateParameter
-    enabled: true
-  - inspection: OCUnusedTypeAlias
-    enabled: true
-  - inspection: CMakeDeprecatedCommands
-    enabled: true
-  - inspection: CMakeMismatchedCommandArguments
-    enabled: true
-  - inspection: ArrayIndexOutOfBounds
-    enabled: true
-  - inspection: ConstantFunctionResult
-    enabled: true
-  - inspection: ConstantParameter
-    enabled: true
-  - inspection: ConstantConditionsOC
-    enabled: true
-  - inspection: OCDFA
-    enabled: true
-  - inspection: DanglingPointer
-    enabled: true
-  - inspection: EndlessLoop
-    enabled: true
-  - inspection: InfiniteRecursion
-    enabled: true
-  - inspection: OCGlobalDFAInspection
-    enabled: true
-  - inspection: LocalValueEscapesScope
-    enabled: true
-  - inspection: LoopDoesntUseConditionVariable
-    enabled: true
-  - inspection: MemoryLeak
-    enabled: true
-  - inspection: NotInitializedField
-    enabled: true
-  - inspection: NullDereference
-    enabled: true
-  - inspection: UnreachableCallsOfFunction
-    enabled: true
-  - inspection: UnreachableCode
-    enabled: true
-  - inspection: UnusedLocalVariable
-    enabled: true
-  - inspection: UnusedParameter
-    enabled: true
-  - inspection: UnusedValue
-    enabled: true
-  - inspection: HidingNonVirtualFunction
-    enabled: true
-  - inspection: NotImplementedFunctions
-    enabled: true
-  - inspection: ArgumentSelectionDefects
-    enabled: true
-  - inspection: ClangdErrorsAndWarnings
-    enabled: true
-  - inspection: EmptyDeclOrStmt
-    enabled: true
-  - inspection: OCInconsistentNaming
-    enabled: true
-  - inspection: PreprocessorComment
-    enabled: true
-  - inspection: Simplify
-    enabled: true
-  - inspection: UnconstrainedVariableType
-    enabled: true
-  - inspection: VirtualCallInCtorOrDtor
-    enabled: true
-  # - inspection: ComposeMissingKeys
-  #   enabled: true
-  # - inspection: ComposeUnknownKeys
-  #   enabled: true
-  # - inspection: ComposeUnknownValues
-  #   enabled: true
-  # - inspection: ComposeUnquotedPorts
-  #   enabled: true
-  # - inspection: DockerJsonFormStringLiterals
-  #   enabled: true
-  # - inspection: DockerFileAddOrCopyPaths
-  #   enabled: true
-  # - inspection: DockerFileAssignments
-  #   enabled: true
-  # - inspection: DockerFileRunCommandMissingContinuation
-  #   enabled: true
-  # - inspection: DockerFileArgumentCount
-  #   enabled: true
-  # - inspection: MarkdownIncorrectTableFormatting
-  #   enabled: true
-  # - inspection: MarkdownIncorrectlyNumberedListItem
-  #   enabled: true
-  # - inspection: MarkdownLinkDestinationWithSpaces
-  #   enabled: true
-  # - inspection: MarkdownOutdatedTableOfContents
-  #   enabled: true
-  # - inspection: MarkdownNoTableBorders
-  #   enabled: true
-  # - inspection: MarkdownUnresolvedFileReference
-  #   enabled: true
-  # - inspection: MarkdownUnresolvedHeaderReference
-  #   enabled: true
-  # - inspection: MarkdownUnresolvedLinkLabel
-  #   enabled: true
+
 
 include:
+  # inspections
+  - name: ClangTidy
+  - name: Clazy
+  - name: Misra
+  - name: OCUnusedConcept
+  - name: OCUnusedGlobalDeclaration
+  - name: OCUnusedIncludeDirective
+  - name: OCUnusedMacro
+  - name: OCUnusedStruct
+  - name: OCUnusedTemplateParameter
+  - name: OCUnusedTypeAlias
+  - name: CMakeDeprecatedCommands
+  - name: CMakeMismatchedCommandArguments
+  - name: ArrayIndexOutOfBounds
+  - name: ConstantFunctionResult
+  - name: ConstantParameter
+  - name: ConstantConditionsOC
+  - name: OCDFA
+  - name: DanglingPointer
+  - name: EndlessLoop
+  - name: InfiniteRecursion
+  - name: OCGlobalDFAInspection
+  - name: LocalValueEscapesScope
+  - name: LoopDoesntUseConditionVariable
+  - name: MemoryLeak
+  - name: NotInitializedField
+  - name: NullDereference
+  - name: UnreachableCallsOfFunction
+  - name: UnreachableCode
+  - name: UnusedLocalVariable
+  - name: UnusedParameter
+  - name: UnusedValue
+  - name: HidingNonVirtualFunction
+  - name: NotImplementedFunctions
+  - name: ArgumentSelectionDefects
+  - name: ClangdErrorsAndWarnings
+  - name: EmptyDeclOrStmt
+  - name: OCInconsistentNaming
+  - name: PreprocessorComment
+  - name: Simplify
+  - name: UnconstrainedVariableType
+  - name: VirtualCallInCtorOrDtor
+  # - name: ComposeMissingKeys
+  # - name: ComposeUnknownKeys
+  # - name: ComposeUnknownValues
+  # - name: ComposeUnquotedPorts
+  # - name: DockerJsonFormStringLiterals
+  # - name: DockerFileAddOrCopyPaths
+  # - name: DockerFileAssignments
+  # - name: DockerFileRunCommandMissingContinuation
+  # - name: DockerFileArgumentCount
+  # - name: MarkdownIncorrectTableFormatting
+  # - name: MarkdownIncorrectlyNumberedListItem
+  # - name: MarkdownLinkDestinationWithSpaces
+  # - name: MarkdownOutdatedTableOfContents
+  # - name: MarkdownNoTableBorders
+  # - name: MarkdownUnresolvedFileReference
+  # - name: MarkdownUnresolvedHeaderReference
+  # - name: MarkdownUnresolvedLinkLabel
+
+  # checks
   - name: abseil-duration-addition
   - name: abseil-duration-comparison
   - name: abseil-duration-conversion-cast

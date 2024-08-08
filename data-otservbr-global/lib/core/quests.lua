@@ -4522,7 +4522,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "An Interest In Botany",
-					storageId = Storage.TibiaTales.AnInterestInBotany,
+					storageId = Storage.TibiaTales.AnInterestInBotany.Questline,
 					missionId = 10321,
 					startValue = 1,
 					endValue = 4,

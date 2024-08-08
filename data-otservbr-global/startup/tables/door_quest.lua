@@ -592,7 +592,7 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 32608, y = 31516, z = 14 } },
 	},
-	[Storage.TibiaTales.AnInterestInBotanyChestDoor] = {
+	[Storage.TibiaTales.AnInterestInBotany.ChestDoor] = {
 		itemId = false,
 		itemPos = { { x = 33007, y = 31536, z = 10 } },
 	},

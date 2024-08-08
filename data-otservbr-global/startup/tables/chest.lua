@@ -2517,6 +2517,14 @@ ChestUnique = {
 		weight = 15.00,
 		storage = Storage.Quest.U8_54.TomesOfKnowledge.ChestTomeOfKnowledge4,
 	},
+	-- An Interest In Botany Quest
+	[6296] = {
+		itemId = 2469,
+		itemPos = { x = 33004, y = 31530, z = 10 },
+		reward = { { 11699, 1 } },
+		weight = 15.00,
+		storage = Storage.TibiaTales.AnInterestInBotany.BotanyAlmanach,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

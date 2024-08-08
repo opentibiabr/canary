@@ -249,7 +249,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 12 then
-			npcHandler:say("Of course you are. And here we go. I have to ask some questions first. One: You aint afraid of no ghost, right?", npc,creature)
+			npcHandler:say("Of course you are. And here we go. I have to ask some questions first. One: You aint afraid of no ghost, right?", npc, creature)
 			npcHandler:setTopic(playerId, 13)
 		elseif npcHandler:getTopic(playerId) == 13 then
 			npcHandler:say("Good. Two: You know that ghosts exist and/or have found and/or defeated one or more of them?", npc, creature)

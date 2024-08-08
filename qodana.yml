@@ -141,8 +141,8 @@ include:
   - name: abseil-time-subtraction
   - name: abseil-upgrade-duration-conversions
   - name: altera-id-dependent-backward-branch
-  - name: altera-kernel-name-restriction
-  - name: altera-single-work-item-barrier
+  # - name: altera-kernel-name-restriction
+  # - name: altera-single-work-item-barrier
   - name: altera-struct-pack-align
   - name: altera-unroll-loops
   - name: android-cloexec-accept
@@ -412,7 +412,7 @@ include:
   - name: clion-misra-cpp2008-6-6-2
   - name: clion-misra-cpp2008-6-6-4
   - name: clion-misra-cpp2008-6-6-5
-  - name: clion-misra-cpp2008-7-3-1
+  # - name: clion-misra-cpp2008-7-3-1
   - name: clion-misra-cpp2008-7-3-4
   - name: clion-misra-cpp2008-7-4-3
   - name: clion-misra-cpp2008-8-0-1
@@ -471,7 +471,7 @@ include:
   - name: cppcoreguidelines-virtual-class-destructor
   - name: darwin-avoid-spinlock
   - name: darwin-dispatch-once-nonstatic
-  - name: fuchsia-default-arguments-calls
+  # - name: fuchsia-default-arguments-calls
   - name: fuchsia-default-arguments-declarations
   - name: fuchsia-header-anon-namespaces
   - name: fuchsia-multiple-inheritance
@@ -699,5 +699,17 @@ exclude:
       - "**/vcpkg_installed"
 
   - name: clion-misra-cpp2008-5-0-4
+    patterns:
+      - "**/lua_enums.cpp"
+
+  - name: clion-misra-cpp2008-7-3-1
+    patterns:
+      - "**/lua_enums.cpp"
+
+  - name: clion-misra-cpp2008-5-2-4
+    patterns:
+      - "**/lua_enums.cpp"
+
+  - name: misc-const-correctness
     patterns:
       - "**/lua_enums.cpp"

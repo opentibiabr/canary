@@ -14,7 +14,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 			if corpse.getId then
 				logger.warn("[bossDeath.onDeath] Corpse (id: {}, name: {}) for reward boss {} is not a container.", corpse:getId(), corpse:getName(), creature:getName())
 			else
-				logger.warn("[bossDeath.onDeath] Error to get corpseId from boss: {}", creature:getName())
+				logger.debug("[bossDeath.onDeath] Boss {} does not have a corpse or corpse not found at position {}", creature:getName(), creature:getPosition())
 			end
 			corpse = Game.createItem(ITEM_BAG, 1)
 		end

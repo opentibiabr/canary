@@ -185,7 +185,7 @@ bool Condition::executeCondition(std::shared_ptr<Creature> creature, int32_t int
 	return true;
 }
 
-std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/) {
+std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/, bool isPersistent /* = false*/) {
 	switch (type) {
 		case CONDITION_POISON:
 		case CONDITION_FIRE:
@@ -242,6 +242,8 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_YELLTICKS:
 		case CONDITION_PACIFIED:
 			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
+		case CONDITION_BAKRAGORE:
+			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId, isPersistent);
 
 		default:
 			return nullptr;
@@ -306,6 +308,10 @@ bool Condition::startCondition(std::shared_ptr<Creature>) {
 }
 
 bool Condition::isPersistent() const {
+	if (m_isPersistent) {
+		g_logger().debug("Condition {} is persistent", conditionType);
+		return true;
+	}
 	if (ticks == -1) {
 		return false;
 	}
@@ -318,6 +324,10 @@ bool Condition::isPersistent() const {
 }
 
 bool Condition::isRemovableOnDeath() const {
+	if (m_isPersistent) {
+		return false;
+	}
+
 	if (ticks == -1) {
 		return false;
 	}

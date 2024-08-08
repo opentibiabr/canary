@@ -21,9 +21,9 @@ class PropWriteStream;
 class Condition : public SharedObject {
 public:
 	Condition() = default;
-	Condition(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+	Condition(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0, bool isPersistent = false) :
 		endTime(initTicks == -1 ? std::numeric_limits<int64_t>::max() : 0),
-		subId(initSubId), ticks(initTicks), conditionType(initType), id(initId), isBuff(initBuff) { }
+		subId(initSubId), ticks(initTicks), conditionType(initType), id(initId), isBuff(initBuff), m_isPersistent(isPersistent) { }
 	virtual ~Condition() = default;
 
 	virtual bool startCondition(std::shared_ptr<Creature> creature);
@@ -51,7 +51,7 @@ public:
 	}
 	void setTicks(int32_t newTicks);
 
-	static std::shared_ptr<Condition> createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param = 0, bool buff = false, uint32_t subId = 0);
+	static std::shared_ptr<Condition> createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param = 0, bool buff = false, uint32_t subId = 0, bool isPersistent = false);
 	static std::shared_ptr<Condition> createCondition(PropStream &propStream);
 
 	virtual bool setParam(ConditionParam_t param, int32_t value);
@@ -73,6 +73,7 @@ protected:
 	ConditionType_t conditionType {};
 	ConditionId_t id {};
 	bool isBuff {};
+	bool m_isPersistent {};
 
 	virtual bool updateCondition(std::shared_ptr<Condition> addCondition);
 
@@ -86,8 +87,8 @@ private:
 
 class ConditionGeneric : public Condition {
 public:
-	ConditionGeneric(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
-		Condition(initId, initType, initTicks, initBuff, initSubId) { }
+	ConditionGeneric(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0, bool isPersistent = false) :
+		Condition(initId, initType, initTicks, initBuff, initSubId, isPersistent) { }
 
 	bool startCondition(std::shared_ptr<Creature> creature) override;
 	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;

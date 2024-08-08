@@ -61,3 +61,45 @@ testIcons:separator(" ")
 testIcons:setDescription("[Usage]: /testicon {icon1}, {icon2}, {icon3}, ... [Usage2]: /testicon special, {icon}")
 testIcons:groupType("god")
 testIcons:register()
+
+local condition = Condition(CONDITION_BAKRAGORE, CONDITIONID_DEFAULT, 0, true)
+
+local akragoreIcon = TalkAction("/bakragoreicon")
+
+function akragoreIcon.onSay(player, words, param)
+	if param == "" then
+		player:sendCancelMessage("Icon number required.")
+		logger.error("[addBakragoreIcon.onSay] - Icon number's required")
+		return true
+	end
+
+	if param == "remove" then
+		for i = 1, 10 do
+			if player:hasCondition(CONDITION_BAKRAGORE, i) then
+				player:removeCondition(CONDITION_BAKRAGORE, i)
+			end
+		end
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Removed all Bakragore icons.")
+		return true
+	end
+
+	local numParam = tonumber(param)
+	if numParam then
+		if player:hasCondition(CONDITION_BAKRAGORE, numParam) then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already have the Bakragore icon.")
+			return true
+		end
+
+		condition:setParameter(CONDITION_PARAM_SUBID, numParam)
+		condition:setParameter(CONDITION_PARAM_TICKS, -1)
+		player:addCondition(condition)
+
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Added Bakragore icon with ID: " .. numParam)
+	end
+
+	return true
+end
+
+akragoreIcon:separator(" ")
+akragoreIcon:groupType("god")
+akragoreIcon:register()

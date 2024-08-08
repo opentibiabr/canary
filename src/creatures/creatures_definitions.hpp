@@ -117,6 +117,7 @@ enum ConditionType_t : uint8_t {
 	CONDITION_GOSHNAR3 = 36,
 	CONDITION_GOSHNAR4 = 37,
 	CONDITION_GOSHNAR5 = 38,
+	CONDITION_BAKRAGORE = 39,
 
 	// Need the last ever
 	CONDITION_COUNT = 39

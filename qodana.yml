@@ -86,40 +86,40 @@ inspections:
     enabled: true
   - inspection: VirtualCallInCtorOrDtor
     enabled: true
-  - inspection: ComposeMissingKeys
-    enabled: true
-  - inspection: ComposeUnknownKeys
-    enabled: true
-  - inspection: ComposeUnknownValues
-    enabled: true
-  - inspection: ComposeUnquotedPorts
-    enabled: true
-  - inspection: DockerJsonFormStringLiterals
-    enabled: true
-  - inspection: DockerFileAddOrCopyPaths
-    enabled: true
-  - inspection: DockerFileAssignments
-    enabled: true
-  - inspection: DockerFileRunCommandMissingContinuation
-    enabled: true
-  - inspection: DockerFileArgumentCount
-    enabled: true
-  - inspection: MarkdownIncorrectTableFormatting
-    enabled: true
-  - inspection: MarkdownIncorrectlyNumberedListItem
-    enabled: true
-  - inspection: MarkdownLinkDestinationWithSpaces
-    enabled: true
-  - inspection: MarkdownOutdatedTableOfContents
-    enabled: true
-  - inspection: MarkdownNoTableBorders
-    enabled: true
-  - inspection: MarkdownUnresolvedFileReference
-    enabled: true
-  - inspection: MarkdownUnresolvedHeaderReference
-    enabled: true
-  - inspection: MarkdownUnresolvedLinkLabel
-    enabled: true
+  # - inspection: ComposeMissingKeys
+  #   enabled: true
+  # - inspection: ComposeUnknownKeys
+  #   enabled: true
+  # - inspection: ComposeUnknownValues
+  #   enabled: true
+  # - inspection: ComposeUnquotedPorts
+  #   enabled: true
+  # - inspection: DockerJsonFormStringLiterals
+  #   enabled: true
+  # - inspection: DockerFileAddOrCopyPaths
+  #   enabled: true
+  # - inspection: DockerFileAssignments
+  #   enabled: true
+  # - inspection: DockerFileRunCommandMissingContinuation
+  #   enabled: true
+  # - inspection: DockerFileArgumentCount
+  #   enabled: true
+  # - inspection: MarkdownIncorrectTableFormatting
+  #   enabled: true
+  # - inspection: MarkdownIncorrectlyNumberedListItem
+  #   enabled: true
+  # - inspection: MarkdownLinkDestinationWithSpaces
+  #   enabled: true
+  # - inspection: MarkdownOutdatedTableOfContents
+  #   enabled: true
+  # - inspection: MarkdownNoTableBorders
+  #   enabled: true
+  # - inspection: MarkdownUnresolvedFileReference
+  #   enabled: true
+  # - inspection: MarkdownUnresolvedHeaderReference
+  #   enabled: true
+  # - inspection: MarkdownUnresolvedLinkLabel
+  #   enabled: true
 
 include:
   - name: abseil-duration-addition

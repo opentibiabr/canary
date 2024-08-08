@@ -1,4 +1,3 @@
-
 local function convertIconsToBitValue(iconList)
 	local bitObj = NewBit(0)
 	for icon in string.gmatch(iconList, "%d+") do

@@ -4541,7 +4541,7 @@ void ProtocolGame::sendChannelMessage(const std::string &author, const std::stri
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet) {
+void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const IconBakragore iconBakragore) {
 	NetworkMessage msg;
 	msg.addByte(0xA2);
 
@@ -4558,7 +4558,7 @@ void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet) {
 	} else {
 		// Send as uint32_t in new protocol
 		msg.add<uint32_t>(icons);
-		msg.addByte(0x00); // Icons Bakragore (empty)
+		msg.addByte(enumToValue(iconBakragore)); // Icons Bakragore
 	}
 
 	writeToOutputBuffer(msg);

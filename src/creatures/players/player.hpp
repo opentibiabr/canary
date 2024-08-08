@@ -1420,7 +1420,7 @@ public:
 		}
 	}
 	void sendClosePrivate(uint16_t channelId);
-	void sendIcons();
+	void sendIcons(const IconBakragore iconBakragore = IconBakragore::None);
 	void sendIconBakragore(const IconBakragore icon);
 	void sendClientCheck() const {
 		if (client) {

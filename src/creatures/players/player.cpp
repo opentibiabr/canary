@@ -6174,9 +6174,9 @@ void Player::sendClosePrivate(uint16_t channelId) {
 	}
 }
 
-void Player::sendIcons() {
+void Player::sendIcons(const IconBakragore iconBakragore/* = IconBakragore::None*/) {
 	if (client) {
-		client->sendIcons(getClientIcons());
+		client->sendIcons(getClientIcons(), iconBakragore);
 	}
 }
 

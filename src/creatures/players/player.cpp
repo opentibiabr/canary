@@ -6193,7 +6193,13 @@ void Player::sendIcons() {
 		}
 	}
 
-	client->sendIcons(getClientIcons(), iconBakragore);
+	// Remove the last icon so that Bakragore's is added
+	auto iconSet = getClientIcons();
+	if (iconSet.size() >= 9 && iconBakragore != IconBakragore::None) {
+		iconSet.erase(std::prev(iconSet.end()));
+	}
+
+	client->sendIcons(iconSet, iconBakragore);
 }
 
 void Player::sendIconBakragore(const IconBakragore icon) {

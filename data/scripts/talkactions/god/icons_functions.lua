@@ -10,6 +10,22 @@ local function convertIconsToBitValue(iconList)
 	return bitObj:getNumber()
 end
 
+function Player:sendNormalIcons(icons)
+	local msg = NetworkMessage()
+	msg:addByte(0xA2)
+	msg:addU32(icons)
+	msg:addByte(0)
+	msg:sendToPlayer(self)
+end
+
+function Player:sendIconBakragore(specialIcon)
+	local msg = NetworkMessage()
+	msg:addByte(0xA3)
+	msg:addU32(specialIcon)
+	msg:addByte(0)
+	msg:sendToPlayer(self)
+end
+
 --[[
 
 Usage (normal icons):
@@ -31,27 +47,15 @@ function testIcons.onSay(player, words, param)
 		return true
 	end
 
-	local numParam = tonumber(param)
-	if numParam then
-		function Player:sendNormalIcons()
-			local msg = NetworkMessage()
-			msg:addByte(0xA2)
-			local icons = convertIconsToBitValue(param)
-			msg:addU32(icons)
-			msg:addByte(0)
-			msg:sendToPlayer(self)
-		end
-
-		player:sendNormalIcons()
-	end
-
 	local split = param:split(",")
-	local specialParam = split[1]:trim():lower()
-	if specialParam == "special" then
+	local firstParam = split[1]:trim():lower()
+
+	if firstParam == "special" and tonumber(split[2]) then
 		local specialIcon = tonumber(split[2])
-		if specialIcon then
-			player:sendIconBakragore(specialIcon)
-		end
+		player:sendIconBakragore(specialIcon)
+	else
+		local icons = convertIconsToBitValue(param)
+		player:sendNormalIcons(icons)
 	end
 
 	return true
@@ -64,9 +68,9 @@ testIcons:register()
 
 local condition = Condition(CONDITION_BAKRAGORE, CONDITIONID_DEFAULT, 0, true)
 
-local akragoreIcon = TalkAction("/bakragoreicon")
+local bakragoreIcon = TalkAction("/bakragoreicon")
 
-function akragoreIcon.onSay(player, words, param)
+function bakragoreIcon.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Icon number required.")
 		logger.error("[addBakragoreIcon.onSay] - Icon number's required")
@@ -100,6 +104,6 @@ function akragoreIcon.onSay(player, words, param)
 	return true
 end
 
-akragoreIcon:separator(" ")
-akragoreIcon:groupType("god")
-akragoreIcon:register()
+bakragoreIcon:separator(" ")
+bakragoreIcon:groupType("god")
+bakragoreIcon:register()

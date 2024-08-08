@@ -2302,7 +2302,6 @@ Storage = {
 				Mission06 = 42787,
 				DanceStatus = 42788,
 			}, -- 42781 - 42830
-			WarmasterOutfits = {}, -- 42831 - 42840
 		},
 		U8_6 = { -- update 8.6 - Reserved Storages 42951 - 43200
 			AFathersBurden = {},

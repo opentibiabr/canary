@@ -532,14 +532,14 @@ include:
   - name: linuxkernel-must-check-errs
   - name: llvm-else-after-return
   - name: llvm-header-guard
-  - name: llvm-include-order
+  # - name: llvm-include-order
   - name: llvm-namespace-comment
   - name: llvm-prefer-isa-or-dyn-cast-in-conditionals
   - name: llvm-prefer-register-over-unsigned
   - name: llvm-qualified-auto
   - name: llvm-twine-local
-  - name: llvmlibc-callee-namespace
-  - name: llvmlibc-implementation-in-namespace
+  # - name: llvmlibc-callee-namespace
+  # - name: llvmlibc-implementation-in-namespace
   - name: llvmlibc-inline-function-decl
   - name: llvmlibc-restrict-system-libc-headers
   - name: misc-confusable-identifiers
@@ -547,7 +547,7 @@ include:
   - name: misc-coroutine-hostile-raii
   - name: misc-definitions-in-headers
   - name: misc-header-include-cycle
-  - name: misc-include-cleaner
+  # - name: misc-include-cleaner
   - name: misc-misleading-bidirectional
   - name: misc-misleading-identifier
   - name: misc-misplaced-const

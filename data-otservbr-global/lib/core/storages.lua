@@ -2298,6 +2298,10 @@ Storage = {
 				CobraHead = 42760,
 				OrcRaid = 42761,
 				ZaoPalace = 42762,
+				ChestTomeOfKnowledge1 = 42763,
+				ChestTomeOfKnowledge2 = 42764,
+				ChestTomeOfKnowledge3 = 42765,
+				ChestTomeOfKnowledge4 = 42766,
 			},
 			UnnaturalSelection = {}, -- 42781 - 42830
 			WarmasterOutfits = {}, -- 42831 - 42840

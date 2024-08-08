@@ -2488,6 +2488,35 @@ ChestUnique = {
 		weight = 15.00,
 		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.ChestTomeOfKnowledge2,
 	},
+	-- Tomes of Knowledge Quest
+	[6292] = {
+		itemId = 2472,
+		itemPos = { x = 33009, y = 31251, z = 8 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TomesOfKnowledge.ChestTomeOfKnowledge1,
+	},
+	[6293] = {
+		itemId = 2472,
+		itemPos = { x = 32978, y = 31427, z = 2 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TomesOfKnowledge.ChestTomeOfKnowledge2,
+	},
+	[6294] = {
+		itemId = 2472,
+		itemPos = { x = 33306, y = 31125, z = 9 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TomesOfKnowledge.ChestTomeOfKnowledge3,
+	},
+	[6295] = {
+		itemId = 2480,
+		itemPos = { x = 33157, y = 31229, z = 15 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TomesOfKnowledge.ChestTomeOfKnowledge4,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

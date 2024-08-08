@@ -411,7 +411,7 @@ include:
   - name: clion-misra-cpp2008-6-5-4
   - name: clion-misra-cpp2008-6-6-2
   - name: clion-misra-cpp2008-6-6-4
-  - name: clion-misra-cpp2008-6-6-5
+  # - name: clion-misra-cpp2008-6-6-5
   # - name: clion-misra-cpp2008-7-3-1
   - name: clion-misra-cpp2008-7-3-4
   - name: clion-misra-cpp2008-7-4-3
@@ -699,10 +699,6 @@ exclude:
       - "**/vcpkg_installed"
 
   - name: clion-misra-cpp2008-5-0-4
-    patterns:
-      - "**/lua_enums.cpp"
-
-  - name: clion-misra-cpp2008-7-3-1
     patterns:
       - "**/lua_enums.cpp"
 

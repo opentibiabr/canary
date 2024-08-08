@@ -87,11 +87,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			npcHandler:say(
-				player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) ~= 1 and "Very kind indeed. Maybe you are not such a bad guy after all. Maybe I can even give it back to you one day... you know I was not always like that *mumbles*." or "Thank you very much... plans you say? I don't know what you are talking about. Plans for a magic... device? And the people call ME crazy.",
-				npc,
-				creature
-			)
+			npcHandler:say(player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) ~= 1 and "Very kind indeed. Maybe you are not such a bad guy after all. Maybe I can even give it back to you one day... you know I was not always like that *mumbles*." or "Thank you very much... plans you say? I don't know what you are talking about. Plans for a magic... device? And the people call ME crazy.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if not player:removeMoneyBank(1) then

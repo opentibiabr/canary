@@ -126,7 +126,7 @@ local config = {
 		items = {
 			{ itemId = 10159 },
 		},
-		storage = Storage.UnnaturalSelection.Mission01,
+		storage = Storage.Quest.U8_54.UnnaturalSelection.Mission01,
 		formerValue = 1,
 		newValue = 2,
 		say = "You dig out a skull from the pile of bones. That must be the skull Lazaran talked about.",

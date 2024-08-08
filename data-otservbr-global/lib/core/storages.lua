@@ -720,17 +720,6 @@ Storage = {
 		DeeplingAnchor = 51023,
 		RoyalCostumeOutfit = 51026,
 	},
-	UnnaturalSelection = {
-		-- Reserved storage from 55159 - 51299
-		Questline = 55159,
-		Mission01 = 51281,
-		Mission02 = 51282,
-		Mission03 = 51283,
-		Mission04 = 51284,
-		Mission05 = 51285,
-		Mission06 = 51286,
-		DanceStatus = 51287,
-	},
 	WrathoftheEmperor = {
 		-- Reserved storage from 51300 - 51339
 		Questline = 51300,
@@ -2303,7 +2292,16 @@ Storage = {
 				ChestTomeOfKnowledge3 = 42765,
 				ChestTomeOfKnowledge4 = 42766,
 			},
-			UnnaturalSelection = {}, -- 42781 - 42830
+			UnnaturalSelection = {
+				Questline = 42781,
+				Mission01 = 42782,
+				Mission02 = 42783,
+				Mission03 = 42784,
+				Mission04 = 42785,
+				Mission05 = 42786,
+				Mission06 = 42787,
+				DanceStatus = 42788,
+			}, -- 42781 - 42830
 			WarmasterOutfits = {}, -- 42831 - 42840
 		},
 		U8_6 = { -- update 8.6 - Reserved Storages 42951 - 43200

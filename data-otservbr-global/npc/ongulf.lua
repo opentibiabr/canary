@@ -139,7 +139,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(TheNewFrontier.Mission03, 1) -- Questlog, The New Frontier Quest "Mission 03: Strangers in the Night"
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(TheNewFrontier.Questline) == 9 then
-			npcHandler:say({ "Primitive humans you say? These are most startling news, that's for sure. Well, I guess I'll send some victuals we can spare as a sign of our good will. ...", "However, our miners encountered another problem in the meantime. I'm afraid this will be your next {mission}" }, npc, creature)
+			npcHandler:say({
+				"Primitive humans you say? These are most startling news, that's for sure. Well, I guess I'll send some victuals we can spare as a sign of our good will. ...",
+				"However, our miners encountered another problem in the meantime. I'm afraid this will be your next {mission}"
+			}, npc, creature)
 			player:setStorageValue(TheNewFrontier.Questline, 10)
 			player:setStorageValue(TheNewFrontier.Mission03, 3) -- Questlog, The New Frontier Quest "Mission 03: Strangers in the Night"
 			npcHandler:setTopic(playerId, 0)

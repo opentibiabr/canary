@@ -284,7 +284,7 @@ QuestDoorAction = {
 		itemPos = { { x = 33076, y = 31176, z = 8 } },
 	},
 	-- Unnatural selection door
-	[Storage.UnnaturalSelection.Mission01] = {
+	[Storage.Quest.U8_54.UnnaturalSelection.Mission01] = {
 		itemId = false,
 		itemPos = { { x = 33046, y = 31302, z = 7 } },
 	},
@@ -476,7 +476,7 @@ QuestDoorAction = {
 		itemPos = { { x = 33330, y = 31411, z = 8 } },
 	},
 	-- Unnatural selection door
-	[Storage.UnnaturalSelection.Mission05] = {
+	[Storage.Quest.U8_54.UnnaturalSelection.Mission05] = {
 		itemId = false,
 		itemPos = { { x = 32982, y = 31439, z = 3 } },
 	},

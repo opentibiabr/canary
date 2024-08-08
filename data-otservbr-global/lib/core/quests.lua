@@ -4724,12 +4724,12 @@ if not Quests then
 		},
 		[32] = {
 			name = "Unnatural Selection",
-			startStorageId = Storage.UnnaturalSelection.Questline,
+			startStorageId = Storage.Quest.U8_54.UnnaturalSelection.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: Skulled",
-					storageId = Storage.UnnaturalSelection.Mission01,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission01,
 					missionId = 10330,
 					startValue = 1,
 					endValue = 3,
@@ -4742,7 +4742,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: All Around the World",
-					storageId = Storage.UnnaturalSelection.Mission02,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission02,
 					missionId = 10331,
 					startValue = 1,
 					endValue = 13,
@@ -4776,7 +4776,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: Dance Dance Evolution",
-					storageId = Storage.UnnaturalSelection.Mission03,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission03,
 					missionId = 10332,
 					startValue = 1,
 					endValue = 3,
@@ -4789,7 +4789,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 4: Bits and Pieces",
-					storageId = Storage.UnnaturalSelection.Mission04,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission04,
 					missionId = 10333,
 					startValue = 1,
 					endValue = 2,
@@ -4801,7 +4801,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 5: Ray of Light",
-					storageId = Storage.UnnaturalSelection.Mission05,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission05,
 					missionId = 10334,
 					startValue = 1,
 					endValue = 3,
@@ -4814,7 +4814,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 6: Firewater Burn",
-					storageId = Storage.UnnaturalSelection.Mission06,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission06,
 					missionId = 10335,
 					startValue = 1,
 					endValue = 3,

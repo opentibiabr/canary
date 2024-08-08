@@ -17,8 +17,6 @@ local config = {
 	[16] = Position(32991, 31496, 1),
 }
 
--- Missing: CONST_ME_CARNIPHILA effects when dancing (pattern unknown)
-
 local mission3DanceDanceEvolution = MoveEvent()
 
 function mission3DanceDanceEvolution.onStepIn(creature, item, position, fromPosition)
@@ -27,35 +25,37 @@ function mission3DanceDanceEvolution.onStepIn(creature, item, position, fromPosi
 		return true
 	end
 
-	local dancePosition = config[player:getStorageValue(Storage.UnnaturalSelection.DanceStatus)]
+	local dancePosition = config[player:getStorageValue(Storage.Quest.U8_54.UnnaturalSelection.DanceStatus)]
 	if not dancePosition then
 		return true
 	end
 
 	if position ~= dancePosition then
-		player:setStorageValue(Storage.UnnaturalSelection.DanceStatus, 1)
+		player:setStorageValue(Storage.Quest.U8_54.UnnaturalSelection.DanceStatus, 1)
 		player:say("You did it wrong. now you have to start again.", TALKTYPE_MONSTER_SAY)
 		config[1]:sendMagicEffect(CONST_ME_SMALLPLANTS)
+		config[1]:sendMagicEffect(CONST_ME_CARNIPHILA) -- Adicionando o efeito CARNIPHILA aqui
 		return true
 	end
 
-	local danceStatus = player:getStorageValue(Storage.UnnaturalSelection.DanceStatus)
+	local danceStatus = player:getStorageValue(Storage.Quest.U8_54.UnnaturalSelection.DanceStatus)
 	if danceStatus == 1 then
 		player:say("Dance for the mighty Krunus!", TALKTYPE_MONSTER_SAY)
 	end
 
 	--Questlog, Unnatural Selection Quest "Mission 2: All Around the World"
-	player:setStorageValue(Storage.UnnaturalSelection.DanceStatus, danceStatus + 1)
+	player:setStorageValue(Storage.Quest.U8_54.UnnaturalSelection.DanceStatus, danceStatus + 1)
 
-	local nextpos = config[player:getStorageValue(Storage.UnnaturalSelection.DanceStatus)]
+	local nextpos = config[player:getStorageValue(Storage.Quest.U8_54.UnnaturalSelection.DanceStatus)]
 	if nextpos then
 		nextpos:sendMagicEffect(CONST_ME_SMALLPLANTS)
+		nextpos:sendMagicEffect(CONST_ME_CARNIPHILA)
 	end
 
 	if danceStatus + 1 > #config then
 		--Questlog, Unnatural Selection Quest "Mission 3: Dance Dance Evolution"
-		player:setStorageValue(Storage.UnnaturalSelection.Mission03, 3)
-		player:setStorageValue(Storage.UnnaturalSelection.Questline, 7)
+		player:setStorageValue(Storage.Quest.U8_54.UnnaturalSelection.Mission03, 3)
+		player:setStorageValue(Storage.Quest.U8_54.UnnaturalSelection.Questline, 7)
 		player:say("Krunus should be pleased.", TALKTYPE_MONSTER_SAY)
 		player:addAchievement("Talented Dancer")
 	end

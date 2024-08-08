@@ -276,6 +276,7 @@ void IOPrey::checkPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) co
 
 					player->sendTextMessage(MESSAGE_STATUS, "You don't have enought prey cards to lock monster and bonus when the slot expire.");
 				} else {
+					slot->reloadMonsterGrid(player->getPreyBlackList(), player->getLevel());
 					player->sendTextMessage(MESSAGE_STATUS, "Your prey bonus has expired.");
 				}
 

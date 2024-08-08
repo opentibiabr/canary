@@ -434,7 +434,7 @@ include:
   - name: cppcoreguidelines-avoid-const-or-ref-data-members
   - name: cppcoreguidelines-avoid-do-while
   - name: cppcoreguidelines-avoid-goto
-  - name: cppcoreguidelines-avoid-magic-numbers
+  # - name: cppcoreguidelines-avoid-magic-numbers
   - name: cppcoreguidelines-avoid-non-const-global-variables
   - name: cppcoreguidelines-avoid-reference-coroutine-parameters
   - name: cppcoreguidelines-c-copy-assignment-signature
@@ -651,7 +651,7 @@ include:
   - name: readability-else-after-return
   - name: readability-function-cognitive-complexity
   - name: readability-function-size
-  - name: readability-identifier-length
+  # - name: readability-identifier-length
   - name: readability-identifier-naming
   - name: readability-implicit-bool-conversion
   - name: readability-inconsistent-declaration-parameter-name

@@ -466,8 +466,8 @@ float Player::getDefenseFactor() const {
 	}
 }
 
-std::unordered_set<Icons_t> Player::getClientIcons() {
-	std::unordered_set<Icons_t> icons;
+std::unordered_set<PlayerIcon> Player::getClientIcons() {
+	std::unordered_set<PlayerIcon> icons;
 
 	for (const auto &condition : conditions) {
 		if (!isSuppress(condition->getType(), false)) {
@@ -480,17 +480,17 @@ std::unordered_set<Icons_t> Player::getClientIcons() {
 	}
 
 	if (pzLocked && icons.size() < 9) {
-		icons.insert(ICON_REDSWORDS);
+		icons.insert(PlayerIcon::RedSwords);
 	}
 
 	auto tile = getTile();
 	if (tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		if (icons.size() < 9) {
-			icons.insert(ICON_PIGEON);
+			icons.insert(PlayerIcon::Pigeon);
 		}
 		client->sendRestingStatus(1);
 
-		icons.erase(ICON_SWORDS);
+		icons.erase(PlayerIcon::Swords);
 	} else {
 		client->sendRestingStatus(0);
 	}
@@ -6171,6 +6171,18 @@ void Player::sendClosePrivate(uint16_t channelId) {
 
 	if (client) {
 		client->sendClosePrivate(channelId);
+	}
+}
+
+void Player::sendIcons() {
+	if (client) {
+		client->sendIcons(getClientIcons());
+	}
+}
+
+void Player::sendIconBakragore(const IconBakragore icon) {
+	if (client) {
+		client->sendIconBakragore(icon);
 	}
 }
 

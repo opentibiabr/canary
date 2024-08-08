@@ -11,6 +11,8 @@
 
 #include "declarations.hpp"
 
+#include "enums/player_icons.hpp"
+
 class Creature;
 class Player;
 class PropStream;
@@ -28,7 +30,7 @@ public:
 	virtual bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval);
 	virtual void endCondition(std::shared_ptr<Creature> creature) = 0;
 	virtual void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) = 0;
-	virtual std::unordered_set<Icons_t> getIcons() const;
+	virtual std::unordered_set<PlayerIcon> getIcons() const;
 	ConditionId_t getId() const {
 		return id;
 	}
@@ -91,7 +93,7 @@ public:
 	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
-	std::unordered_set<Icons_t> getIcons() const override;
+	std::unordered_set<PlayerIcon> getIcons() const override;
 
 	std::shared_ptr<Condition> clone() const override {
 		return std::make_shared<ConditionGeneric>(*this);
@@ -206,7 +208,7 @@ public:
 	bool startCondition(std::shared_ptr<Creature> creature) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> addCondition) override;
-	std::unordered_set<Icons_t> getIcons() const override;
+	std::unordered_set<PlayerIcon> getIcons() const override;
 
 	bool setParam(ConditionParam_t param, int32_t value) override;
 
@@ -271,7 +273,7 @@ public:
 	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
-	std::unordered_set<Icons_t> getIcons() const override;
+	std::unordered_set<PlayerIcon> getIcons() const override;
 
 	std::shared_ptr<Condition> clone() const override {
 		return std::make_shared<ConditionDamage>(*this);
@@ -322,7 +324,7 @@ public:
 	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
-	std::unordered_set<Icons_t> getIcons() const override;
+	std::unordered_set<PlayerIcon> getIcons() const override;
 
 	std::shared_ptr<Condition> clone() const override {
 		return std::make_shared<ConditionFeared>(*this);
@@ -361,7 +363,7 @@ public:
 	bool executeCondition(std::shared_ptr<Creature> creature, int32_t interval) override;
 	void endCondition(std::shared_ptr<Creature> creature) override;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
-	std::unordered_set<Icons_t> getIcons() const override;
+	std::unordered_set<PlayerIcon> getIcons() const override;
 
 	std::shared_ptr<Condition> clone() const override {
 		return std::make_shared<ConditionSpeed>(*this);

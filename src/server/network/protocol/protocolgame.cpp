@@ -4541,14 +4541,15 @@ void ProtocolGame::sendChannelMessage(const std::string &author, const std::stri
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendIcons(const std::unordered_set<Icons_t> &iconSet) {
+void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet) {
 	NetworkMessage msg;
 	msg.addByte(0xA2);
 
-	std::bitset<ICON_COUNT> iconsBitSet;
+	std::bitset<static_cast<size_t>(PlayerIcon::Count)> iconsBitSet;
 	for (const auto &icon : iconSet) {
-		iconsBitSet.set(icon);
+		iconsBitSet.set(enumToValue(icon));
 	}
+
 	uint32_t icons = iconsBitSet.to_ulong();
 
 	if (oldProtocol) {
@@ -4557,9 +4558,17 @@ void ProtocolGame::sendIcons(const std::unordered_set<Icons_t> &iconSet) {
 	} else {
 		// Send as uint32_t in new protocol
 		msg.add<uint32_t>(icons);
-		msg.addByte(0x00); // 13.20 icon counter
+		msg.addByte(0x00); // Icons Bakragore (empty)
 	}
 
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendIconBakragore(const IconBakragore icon) {
+	NetworkMessage msg;
+	msg.addByte(0xA2);
+	msg.add<uint32_t>(0); // Send empty normal icons
+	msg.addByte(enumToValue(icon));
 	writeToOutputBuffer(msg);
 }
 

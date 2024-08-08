@@ -8,7 +8,7 @@ function childrenMission3.onUse(player, item, fromPosition, target, toPosition, 
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The chest is empty.")
 	end
-	
+
 	return true
 end
 

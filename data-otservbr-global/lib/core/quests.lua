@@ -2461,12 +2461,12 @@ if not Quests then
 		},
 		[14] = {
 			name = "Sea of Light",
-			startStorageId = Storage.SeaOfLight.Questline,
+			startStorageId = Storage.Quest.U8_54.SeaOfLight.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: The Plans",
-					storageId = Storage.SeaOfLight.Mission1,
+					storageId = Storage.Quest.U8_54.SeaOfLight.Mission1,
 					missionId = 10188,
 					startValue = 1,
 					endValue = 4,
@@ -2485,7 +2485,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: The Collector",
-					storageId = Storage.SeaOfLight.Mission2,
+					storageId = Storage.Quest.U8_54.SeaOfLight.Mission2,
 					missionId = 10189,
 					startValue = 1,
 					endValue = 3,
@@ -2499,7 +2499,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: The Mirror Crystal",
-					storageId = Storage.SeaOfLight.Mission3,
+					storageId = Storage.Quest.U8_54.SeaOfLight.Mission3,
 					missionId = 10190,
 					startValue = 1,
 					endValue = 4,

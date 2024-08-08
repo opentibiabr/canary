@@ -7,7 +7,9 @@ ItemAction = {
 			-- In Service of Yalahar Quest
 			{ x = 32776, y = 31062, z = 7 },
 			{ x = 32884, y = 31248, z = 8 },
-			{ x = 32884, y = 31248, z = 8 },
+			{ x = 32885, y = 31248, z = 8 },
+			-- Sea of Light Quest
+			{ x = 32011, y = 31709, z = 7 },
 		},
 	},
 	--Parchment room quest

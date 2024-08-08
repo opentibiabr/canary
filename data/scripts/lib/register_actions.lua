@@ -658,15 +658,15 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		toPosition:sendMagicEffect(CONST_ME_HITAREA)
 	elseif target.itemid == 7806 then
 		-- Sea of light quest
-		if player:getStorageValue(Storage.SeaOfLight.Questline) ~= 4 then
+		if player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) ~= 4 then
 			return false
 		end
 
 		if toPosition == Position(33031, 31758, 8) then
 			if math.random(100) <= 30 then
-				if player:getStorageValue(Storage.SeaOfLight.Questline) == 4 then
+				if player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) == 4 then
 					player:addItem(9697, 1)
-					player:setStorageValue(Storage.SeaOfLight.Questline, player:getStorageValue(Storage.SeaOfLight.Questline) + 1)
+					player:setStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline, player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) + 1)
 					player:say("*crush*", TALKTYPE_MONSTER_SAY)
 				end
 			else

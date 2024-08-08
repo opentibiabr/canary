@@ -976,15 +976,6 @@ Storage = {
 		SouleaterUse = 52104,
 		GhostUse = 52105,
 	},
-	SeaOfLight = {
-		-- Reserved storage from 52110 - 52119
-		Questline = 52110,
-		Mission1 = 52111,
-		Mission2 = 52112,
-		Mission3 = 52113,
-		StudyTimer = 52114,
-		LostMinesCrystal = 52115,
-	},
 	Diapason = {
 		-- Reserved storage from 52120 - 52129
 		Lyre = 52120,
@@ -2231,9 +2222,16 @@ Storage = {
 				teleportAccess = 42612,
 				ChestTomeOfKnowledge1 = 42613,
 				FlaskOfExtraGreasyOil = 42614,
-				ChestTomeOfKnowledge2 = 42613,
+				ChestTomeOfKnowledge2 = 42615,
 			},
-			SeaOfLight = {}, -- 42651 - 42700
+			SeaOfLight = {
+				Questline = 42616,
+				Mission1 = 42617,
+				Mission2 = 42618,
+				Mission3 = 42619,
+				StudyTimer = 42620,
+				LostMinesCrystal = 42621,
+			},
 			TheNewFrontier = { -- 42701 - 42750
 				Questline = 42701,
 				FarmineFirstTravel = 42702,

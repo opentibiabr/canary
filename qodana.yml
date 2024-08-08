@@ -697,3 +697,7 @@ exclude:
       - "**/vcpkg"
       - "**/vcpkg_installed/**"
       - "**/vcpkg_installed"
+
+  - name: clion-misra-cpp2008-5-0-4
+    patterns:
+      - "**/lua_enums.cpp"

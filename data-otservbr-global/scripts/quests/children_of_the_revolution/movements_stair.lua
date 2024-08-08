@@ -24,9 +24,9 @@ function stair.onStepIn(creature, item, position, fromPosition)
 	end
 
 	player:say("The area around the gate is suspiciously quiet, you have a bad feeling about this.", TALKTYPE_MONSTER_SAY)
-	if player:getStorageValue(Storage.ChildrenoftheRevolution.Mission05) == 1 then
+	if player:getStorageValue(Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission05) == 1 then
 		--Questlog, Children of the Revolution 'Mission 5: Phantom Army'
-		player:setStorageValue(Storage.ChildrenoftheRevolution.Mission05, 2)
+		player:setStorageValue(Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission05, 2)
 	end
 	return true
 end

@@ -471,7 +471,7 @@ QuestDoorAction = {
 		},
 	},
 	-- Children of the revolution door
-	[Storage.ChildrenoftheRevolution.Mission03] = {
+	[Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission03] = {
 		itemId = false,
 		itemPos = { { x = 33330, y = 31411, z = 8 } },
 	},

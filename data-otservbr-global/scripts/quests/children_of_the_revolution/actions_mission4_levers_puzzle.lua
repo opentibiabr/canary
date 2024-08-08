@@ -18,7 +18,7 @@ local function revertLever(fromPosition)
 end
 local childrenGrease = Action()
 function childrenGrease.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(Storage.ChildrenoftheRevolution.Questline) == 14 then
+	if player:getStorageValue(Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline) == 14 then
 		if fromPosition == Position(33349, 31123, 5) or fromPosition == Position(33349, 31124, 5) then
 			puzzle(puzzlePositions[1], 9935, 9933)
 			puzzle(puzzlePositions[2], 9936, 9937)
@@ -38,8 +38,8 @@ function childrenGrease.onUse(player, item, fromPosition, target, toPosition, is
 		end
 		if Tile(puzzlePositions[1]):getItemById(9933) and Tile(puzzlePositions[2]):getItemById(9936) and Tile(puzzlePositions[3]):getItemById(9939) and Tile(puzzlePositions[4]):getItemById(9938) then
 			player:say("After a cracking noise a deep humming suddenly starts from somewhere below.", TALKTYPE_MONSTER_SAY)
-			player:setStorageValue(Storage.ChildrenoftheRevolution.Questline, 17)
-			player:setStorageValue(Storage.ChildrenoftheRevolution.Mission04, 5)
+			player:setStorageValue(Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline, 17)
+			player:setStorageValue(Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission04, 5)
 		end
 		item:transform(item.itemid == 9125 and 9126 or 9125)
 		if Tile(fromPosition):getItemById(9126) then

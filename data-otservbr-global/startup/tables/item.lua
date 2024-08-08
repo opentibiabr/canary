@@ -216,6 +216,49 @@ ItemAction = {
 			{ x = 32951, y = 31183, z = 6 },
 		},
 	},
+	-- Children of the Revolution Quest
+	[8009] = {
+		itemId = 10180,
+		itemPos = {
+			{ x = 33229, y = 31157, z = 7 },
+			{ x = 33230, y = 31157, z = 7 },
+		},
+	},
+	[8010] = {
+		itemId = 10180,
+		itemPos = {
+			{ x = 33228, y = 31151, z = 8 },
+		},
+	},
+	[8011] = {
+		itemId = 10180,
+		itemPos = {
+			{ x = 33257, y = 31174, z = 7 },
+			{ x = 33258, y = 31174, z = 7 },
+		},
+	},
+	[8012] = {
+		itemId = 10133,
+		itemPos = {
+			{x = 33290, y = 31123, z = 5},
+			{x = 33291, y = 31122, z = 5},
+			{x = 33291, y = 31123, z = 5},
+			{x = 33292, y = 31121, z = 5},
+			{x = 33292, y = 31122, z = 5},
+			{x = 33292, y = 31123, z = 5},
+			{x = 33293, y = 31121, z = 5},
+			{x = 33293, y = 31123, z = 5},
+			{x = 33294, y = 31121, z = 5},
+			{x = 33294, y = 31123, z = 5},
+			{x = 33290, y = 31125, z = 5},
+			{x = 33291, y = 31124, z = 5},
+			{x = 33291, y = 31125, z = 5},
+			{x = 33291, y = 31126, z = 5},
+			{x = 33292, y = 31124, z = 5},
+			{x = 33292, y = 31125, z = 5},
+			{x = 33293, y = 31122, z = 5},
+		},
+	},
 	-- The Pits of Inferno Quest
 	[8815] = {
 		itemId = false,
@@ -291,6 +334,19 @@ ItemAction = {
 		itemId = 1662,
 		itemPos = {
 			{ x = 33122, y = 32765, z = 14 },
+		},
+	},
+	-- Children of the Revolution Quest
+	[12141] = {
+		itemId = 7890,
+		itemPos = {
+			{ x = 33187, y = 31205, z = 6 },
+		},
+	},
+	[12142] = {
+		itemId = 8795,
+		itemPos = {
+			{ x = 33187, y = 31205, z = 7 },
 		},
 	},
 	-- The Thieves Guild Quest
@@ -1303,6 +1359,23 @@ ItemUnique = {
 	[3102] = {
 		itemId = 8618,
 		itemPos = { x = 32853, y = 31251, z = 5 },
+	},
+	-- Children of the Revolution Quest
+	[3162] = {
+		itemId = 10194,
+		itemPos = { x = 33281, y = 31219, z = 7 },
+	},
+	[3163] = {
+		itemId = 10180,
+		itemPos = { x = 33177, y = 31193, z = 7 },
+	},
+	[3169] = {
+		itemId = 8288,
+		itemPos = { x = 33265, y = 31116, z = 8 },
+	},
+	[3170] = {
+		itemId = 9874,
+		itemPos = { x = 33348, y = 31412, z = 8 },
 	},
 	-- Barbarian Arena Quest
 	[3264] = {

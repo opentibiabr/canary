@@ -2466,6 +2466,28 @@ ChestUnique = {
 		weight = 15.00,
 		storage = Storage.Quest.U8_54.TheNewFrontier.ChestTomeOfKnowledge2,
 	},
+	-- Children of the Revolution Quest
+	[6289] = {
+		itemId = 2472,
+		itemPos = { x = 33247, y = 31161, z = 6 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.ChestTomeOfKnowledge1,
+	},
+	[6290] = {
+		itemId = 1895,
+		itemPos = { x = 33327, y = 31410, z = 8 },
+		reward = { { 10189, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.FlaskOfExtraGreasyOil,
+	},
+	[6291] = {
+		itemId = 2472,
+		itemPos = { x = 33264, y = 31130, z = 7 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.ChestTomeOfKnowledge2,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

@@ -82,7 +82,7 @@ local config = {
 		items = {
 			{ itemId = 637 },
 		},
-		storage = Storage.ChildrenoftheRevolution.Questline,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline,
 		formerValue = 1,
 		newValue = 2,
 		say = "A batch of documents has been stashed in the shelf. These might be of interest to Zalamon.",

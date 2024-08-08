@@ -1,14 +1,14 @@
 local config = {
 	[8009] = {
-		storage = Storage.ChildrenoftheRevolution.SpyBuilding01,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.SpyBuilding01,
 		text = "An impressive ammount of fish is stored here.",
 	},
 	[8010] = {
-		storage = Storage.ChildrenoftheRevolution.SpyBuilding02,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.SpyBuilding02,
 		text = "A seemingly endless array of weapon stretches before you into the darkness.",
 	},
 	[8011] = {
-		storage = Storage.ChildrenoftheRevolution.SpyBuilding03,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.SpyBuilding03,
 		text = "These barracks seem to be home for quite a lot of soldiers.",
 	},
 }
@@ -28,7 +28,7 @@ function spy.onStepIn(creature, item, position, fromPosition)
 
 	if player:getStorageValue(targetTile.storage) < 1 then
 		--Questlog, Children of the Revolution "Mission 2: Imperial Zzecret Weaponzz"
-		player:setStorageValue(Storage.ChildrenoftheRevolution.Mission02, player:getStorageValue(Storage.ChildrenoftheRevolution.Mission02) + 1)
+		player:setStorageValue(Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission02, player:getStorageValue(Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission02) + 1)
 		player:setStorageValue(targetTile.storage, 1)
 		player:say(targetTile.text, TALKTYPE_MONSTER_SAY)
 	end

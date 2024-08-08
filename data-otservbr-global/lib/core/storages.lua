@@ -720,21 +720,6 @@ Storage = {
 		DeeplingAnchor = 51023,
 		RoyalCostumeOutfit = 51026,
 	},
-	ChildrenoftheRevolution = {
-		-- Reserved storage from 55145 - 51279
-		Questline = 55145,
-		Mission00 = 55146, -- Prove Your Worzz!
-		Mission01 = 51262,
-		Mission02 = 51263,
-		Mission03 = 51264,
-		Mission04 = 55148,
-		Mission05 = 51266,
-		SpyBuilding01 = 51267,
-		SpyBuilding02 = 51268,
-		SpyBuilding03 = 51269,
-		StrangeSymbols = 55154,
-		teleportAccess = 55155,
-	},
 	UnnaturalSelection = {
 		-- Reserved storage from 55159 - 51299
 		Questline = 55159,
@@ -2231,7 +2216,23 @@ Storage = {
 				Questline = 42551,
 				QuestDoor = 42552,
 			}, -- 42551 - 42600
-			ChildrenOfTheRevolution = {}, -- 42601 - 42650
+			ChildrenOfTheRevolution = {
+					Questline = 42601,
+					Mission00 = 42602, -- Prove Your Worzz!
+					Mission01 = 42603,
+					Mission02 = 42604,
+					Mission03 = 42605,
+					Mission04 = 42606,
+					Mission05 = 42607,
+					SpyBuilding01 = 42608,
+					SpyBuilding02 = 42609,
+					SpyBuilding03 = 42610,
+					StrangeSymbols = 42611,
+					teleportAccess = 42612,
+					ChestTomeOfKnowledge1 = 42613,
+					FlaskOfExtraGreasyOil = 42614,
+					ChestTomeOfKnowledge2 = 42613,
+			},
 			SeaOfLight = {}, -- 42651 - 42700
 			TheNewFrontier = { -- 42701 - 42750
 				Questline = 42701,

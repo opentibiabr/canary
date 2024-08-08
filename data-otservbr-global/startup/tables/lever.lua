@@ -16,6 +16,17 @@ LeverAction = {
 			{ x = 32842, y = 32276, z = 9 },
 		},
 	},
+	-- Children of the Revolution Quest
+	[8013] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33349, y = 31123, z = 5 },
+			{ x = 33349, y = 31124, z = 5 },
+			{ x = 33349, y = 31125, z = 5 },
+			{ x = 33349, y = 31126, z = 5 },
+			{ x = 33349, y = 31127, z = 5 },
+		},
+	},
 	-- Dreamer's Challenge Quest
 	[8033] = {
 		itemId = 2772,

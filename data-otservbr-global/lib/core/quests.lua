@@ -518,12 +518,12 @@ if not Quests then
 		},
 		[6] = {
 			name = "Children of the Revolution",
-			startStorageId = Storage.ChildrenoftheRevolution.Questline,
+			startStorageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Prove Your Worzz!",
-					storageId = Storage.ChildrenoftheRevolution.Mission00,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission00,
 					missionId = 1058,
 					startValue = 1,
 					endValue = 2,
@@ -535,7 +535,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 1: Corruption",
-					storageId = Storage.ChildrenoftheRevolution.Mission01,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission01,
 					missionId = 1059,
 					startValue = 1,
 					endValue = 3,
@@ -547,7 +547,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 2: Imperial Zzecret Weaponzz",
-					storageId = Storage.ChildrenoftheRevolution.Mission02,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission02,
 					missionId = 1060,
 					startValue = 1,
 					endValue = 5,
@@ -562,7 +562,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 3: Zee Killing Fieldzz",
-					storageId = Storage.ChildrenoftheRevolution.Mission03,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission03,
 					missionId = 1061,
 					startValue = 1,
 					endValue = 3,
@@ -576,7 +576,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 4: Zze Way of Zztonezz",
-					storageId = Storage.ChildrenoftheRevolution.Mission04,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission04,
 					missionId = 1062,
 					startValue = 1,
 					endValue = 6,
@@ -594,7 +594,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 5: Phantom Army",
-					storageId = Storage.ChildrenoftheRevolution.Mission05,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission05,
 					missionId = 1063,
 					startValue = 1,
 					endValue = 3,

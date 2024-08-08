@@ -522,8 +522,7 @@
 	</monster>
 	<monster centerx="33916" centery="31125" centerz="9" radius="5">
 		<monster name="Turbulent Elemental" x="-4" y="-3" z="9" spawntime="60" />
-		<monster name="Bony Sea Devil" x="0" y="-3" z="9" spawntime="60" />
-		<monster name="Turbulent Elemental" x="1" y="-2" z="9" spawntime="60" />
+		<monster name="Turbulent Elemental" x="3" y="-2" z="9" spawntime="60" />
 		<monster name="Capricious Phantom" x="5" y="0" z="9" spawntime="60" />
 		<monster name="Capricious Phantom" x="-1" y="1" z="9" spawntime="60" />
 		<monster name="Turbulent Elemental" x="3" y="3" z="9" spawntime="60" />

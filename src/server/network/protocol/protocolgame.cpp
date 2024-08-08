@@ -1675,14 +1675,13 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 		newOutfit.lookFeet = std::min<uint8_t>(132, msg.getByte());
 		newOutfit.lookAddons = msg.getByte();
 		if (outfitType == 0) {
-			bool isMounted = false;
 			newOutfit.lookMount = msg.get<uint16_t>();
 			if (!oldProtocol) {
 				newOutfit.lookMountHead = std::min<uint8_t>(132, msg.getByte());
 				newOutfit.lookMountBody = std::min<uint8_t>(132, msg.getByte());
 				newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 				newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
-				isMounted = msg.getByte();
+				bool isMounted = msg.getByte();
 				newOutfit.lookFamiliarsType = msg.get<uint16_t>();
 				g_logger().debug("Bool isMounted: {}", isMounted);
 			}

@@ -529,7 +529,7 @@ include:
   - name: hicpp-use-nullptr
   - name: hicpp-use-override
   - name: hicpp-vararg
-  - name: linuxkernel-must-check-errs
+  # - name: linuxkernel-must-check-errs
   - name: llvm-else-after-return
   - name: llvm-header-guard
   # - name: llvm-include-order
@@ -597,7 +597,7 @@ include:
   - name: modernize-use-starts-ends-with
   - name: modernize-use-std-numbers
   - name: modernize-use-std-print
-  - name: modernize-use-trailing-return-type
+  # - name: modernize-use-trailing-return-type
   - name: modernize-use-transparent-functors
   - name: modernize-use-uncaught-exceptions
   - name: modernize-use-using

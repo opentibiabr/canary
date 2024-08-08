@@ -131,6 +131,16 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 			return true;
 		}
 
+		case CONDITIONATTR_PERSISTENT: {
+			bool value = false;
+			if (!propStream.read<bool>(value)) {
+				return false;
+			}
+
+			m_isPersistent = value;
+			return true;
+		}
+
 		case CONDITIONATTR_END:
 			return true;
 
@@ -160,6 +170,9 @@ void Condition::serialize(PropWriteStream &propWriteStream) {
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_ADDSOUND);
 	propWriteStream.write<uint16_t>(static_cast<uint16_t>(addSound));
+
+	propWriteStream.write<uint8_t>(CONDITIONATTR_PERSISTENT);
+	propWriteStream.write<bool>(m_isPersistent);
 }
 
 void Condition::setTicks(int32_t newTicks) {

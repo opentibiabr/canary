@@ -41,6 +41,7 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_coins.hpp"
+#include "enums/player_blessings.hpp"
 
 #include "creatures/players/highscore_category.hpp"
 
@@ -3542,15 +3543,14 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.add<uint16_t>(static_cast<uint16_t>(player->getReflectFlat(COMBAT_PHYSICALDAMAGE)));
 
 	uint8_t haveBlesses = 0;
-	uint8_t blessings = 8;
-	for (uint8_t i = 1; i < blessings; ++i) {
-		if (player->hasBlessing(i)) {
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (player->hasBlessing(enumToValue(bless))) {
 			++haveBlesses;
 		}
 	}
 
 	msg.addByte(haveBlesses);
-	msg.addByte(blessings);
+	msg.addByte(magic_enum::enum_count<Blessings>());
 
 	std::shared_ptr<Item> weapon = player->getWeapon();
 	if (weapon) {
@@ -3963,13 +3963,16 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 
 	auto cyclopediaSummary = player->cyclopedia()->getSummary();
 
-	// getBlessingsObtained
-	auto blessingNames = g_game().getBlessingNames();
-	msg.addByte(static_cast<uint8_t>(blessingNames.size()));
-	for (const auto &bless : blessingNames) {
-		msg.addString(bless.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
-		uint8_t blessingIndex = bless.first - 1;
-		msg.addByte((blessingIndex < player->blessings.size()) ? static_cast<uint16_t>(player->blessings[blessingIndex]) : 0);
+	msg.addByte(static_cast<uint8_t>(magic_enum::enum_count<Blessings>()));
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		std::string name = toStartCaseWithSpace(magic_enum::enum_name(bless).data());
+		msg.addString(name, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
+		auto blessValue = enumToValue(bless);
+		if (player->hasBlessing(blessValue)) {
+			msg.addByte(static_cast<uint16_t>(player->blessings[blessValue - 1]));
+		} else {
+			msg.addByte(0x00);
+		}
 	}
 
 	uint8_t preySlotsUnlocked = 0;

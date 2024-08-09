@@ -748,8 +748,6 @@ private:
 	std::vector<HighscoreCategory> m_highscoreCategories;
 	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;
 
-	std::map<uint8_t, std::string> m_blessingNames;
-
 	std::unordered_map<uint8_t, std::string> m_summaryCategories;
 	std::unordered_map<uint16_t, std::string> m_hirelingSkills;
 	std::unordered_map<uint16_t, std::string> m_hirelingOutfits;

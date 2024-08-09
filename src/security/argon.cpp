@@ -15,7 +15,6 @@
 
 #include <argon2.h>
 
-
 Argon2::Argon2() {
 	updateConstants();
 }

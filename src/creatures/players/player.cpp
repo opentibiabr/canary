@@ -466,41 +466,36 @@ float Player::getDefenseFactor() const {
 	}
 }
 
-uint32_t Player::getClientIcons() {
-	uint32_t icons = 0;
+std::unordered_set<PlayerIcon> Player::getClientIcons() {
+	std::unordered_set<PlayerIcon> icons;
+
 	for (const auto &condition : conditions) {
 		if (!isSuppress(condition->getType(), false)) {
-			icons |= condition->getIcons();
+			auto conditionIcons = condition->getIcons();
+			icons.insert(conditionIcons.begin(), conditionIcons.end());
+			if (icons.size() == 9) {
+				return icons;
+			}
 		}
 	}
 
-	if (pzLocked) {
-		icons |= ICON_REDSWORDS;
+	if (pzLocked && icons.size() < 9) {
+		icons.insert(PlayerIcon::RedSwords);
 	}
 
 	auto tile = getTile();
 	if (tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-		icons |= ICON_PIGEON;
+		if (icons.size() < 9) {
+			icons.insert(PlayerIcon::Pigeon);
+		}
 		client->sendRestingStatus(1);
 
-		// Don't show ICON_SWORDS if player is in protection zone.
-		if (hasBitSet(ICON_SWORDS, icons)) {
-			icons &= ~ICON_SWORDS;
-		}
+		icons.erase(PlayerIcon::Swords);
 	} else {
 		client->sendRestingStatus(0);
 	}
 
-	// Game client debugs with 10 or more icons
-	// so let's prevent that from happening.
-	std::bitset<32> icon_bitset(static_cast<uint64_t>(icons));
-	for (size_t pos = 0, bits_set = icon_bitset.count(); bits_set >= 10; ++pos) {
-		if (icon_bitset[pos]) {
-			icon_bitset.reset(pos);
-			--bits_set;
-		}
-	}
-	return icon_bitset.to_ulong();
+	return icons;
 }
 
 void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {
@@ -6176,6 +6171,40 @@ void Player::sendClosePrivate(uint16_t channelId) {
 
 	if (client) {
 		client->sendClosePrivate(channelId);
+	}
+}
+
+void Player::sendIcons() {
+	if (!client) {
+		return;
+	}
+
+	// Iterates over the Bakragore icons to check if the player has any
+	IconBakragore iconBakragore = IconBakragore::None;
+	for (auto icon : magic_enum::enum_values<IconBakragore>()) {
+		if (icon == IconBakragore::None) {
+			continue;
+		}
+
+		const auto &condition = getCondition(CONDITION_BAKRAGORE, CONDITIONID_DEFAULT, magic_enum::enum_integer(icon));
+		if (condition) {
+			g_logger().debug("[{}] found active condition Bakragore with subId {}", __FUNCTION__, magic_enum::enum_integer(icon));
+			iconBakragore = icon;
+		}
+	}
+
+	// Remove the last icon so that Bakragore's is added
+	auto iconSet = getClientIcons();
+	if (iconSet.size() >= 9 && iconBakragore != IconBakragore::None) {
+		iconSet.erase(std::prev(iconSet.end()));
+	}
+
+	client->sendIcons(iconSet, iconBakragore);
+}
+
+void Player::sendIconBakragore(const IconBakragore icon) {
+	if (client) {
+		client->sendIconBakragore(icon);
 	}
 }
 

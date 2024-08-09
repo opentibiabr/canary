@@ -375,7 +375,7 @@ private:
 		registerMethod(L, "Player", "createTransactionSummary", PlayerFunctions::luaPlayerCreateTransactionSummary);
 
 		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
-
+		registerMethod(L, "Player", "sendIconBakragore", PlayerFunctions::luaPlayerSendIconBakragore);
 		registerMethod(L, "Player", "sendCreatureAppear", PlayerFunctions::luaPlayerSendCreatureAppear);
 
 		GroupFunctions::init(L);
@@ -741,6 +741,7 @@ private:
 	static int luaPlayerCreateTransactionSummary(lua_State* L);
 
 	static int luaPlayerTakeScreenshot(lua_State* L);
+	static int luaPlayerSendIconBakragore(lua_State* L);
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
 

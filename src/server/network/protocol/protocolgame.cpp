@@ -41,6 +41,7 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_coins.hpp"
+#include "enums/player_blessings.hpp"
 
 #include "creatures/players/highscore_category.hpp"
 
@@ -3516,10 +3517,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 
 	for (uint8_t i = SKILL_FIRST; i < SKILL_CRITICAL_HIT_CHANCE; ++i) {
 		static const uint8_t HardcodedSkillIds[] = { 11, 9, 8, 10, 7, 6, 13 };
-		skills_t skill = static_cast<skills_t>(i);
-		if (!oldProtocol && (skill == SKILL_LIFE_LEECH_CHANCE || skill == SKILL_MANA_LEECH_CHANCE)) {
-			continue;
-		}
+		const auto skill = static_cast<skills_t>(i);
 		msg.addByte(HardcodedSkillIds[i]);
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(skill));
@@ -3553,7 +3551,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		if (!oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
+		if (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE) {
 			continue;
 		}
 		skills_t skill = static_cast<skills_t>(i);
@@ -3579,15 +3577,14 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.add<uint16_t>(static_cast<uint16_t>(player->getReflectFlat(COMBAT_PHYSICALDAMAGE)));
 
 	uint8_t haveBlesses = 0;
-	uint8_t blessings = 8;
-	for (uint8_t i = 1; i < blessings; ++i) {
-		if (player->hasBlessing(i)) {
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (player->hasBlessing(enumToValue(bless))) {
 			++haveBlesses;
 		}
 	}
 
 	msg.addByte(haveBlesses);
-	msg.addByte(blessings);
+	msg.addByte(magic_enum::enum_count<Blessings>());
 
 	std::shared_ptr<Item> weapon = player->getWeapon();
 	if (weapon) {
@@ -4000,13 +3997,16 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 
 	auto cyclopediaSummary = player->cyclopedia()->getSummary();
 
-	// getBlessingsObtained
-	auto blessingNames = g_game().getBlessingNames();
-	msg.addByte(static_cast<uint8_t>(blessingNames.size()));
-	for (const auto &bless : blessingNames) {
-		msg.addString(bless.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
-		uint8_t blessingIndex = bless.first - 1;
-		msg.addByte((blessingIndex < player->blessings.size()) ? static_cast<uint16_t>(player->blessings[blessingIndex]) : 0);
+	msg.addByte(static_cast<uint8_t>(magic_enum::enum_count<Blessings>()));
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		std::string name = toStartCaseWithSpace(magic_enum::enum_name(bless).data());
+		msg.addString(name, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
+		auto blessValue = enumToValue(bless);
+		if (player->hasBlessing(blessValue)) {
+			msg.addByte(static_cast<uint16_t>(player->blessings[blessValue - 1]));
+		} else {
+			msg.addByte(0x00);
+		}
 	}
 
 	uint8_t preySlotsUnlocked = 0;
@@ -4578,15 +4578,34 @@ void ProtocolGame::sendChannelMessage(const std::string &author, const std::stri
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendIcons(uint32_t icons) {
+void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const IconBakragore iconBakragore) {
 	NetworkMessage msg;
 	msg.addByte(0xA2);
+
+	std::bitset<static_cast<size_t>(PlayerIcon::Count)> iconsBitSet;
+	for (const auto &icon : iconSet) {
+		iconsBitSet.set(enumToValue(icon));
+	}
+
+	uint32_t icons = iconsBitSet.to_ulong();
+
 	if (oldProtocol) {
+		// Send as uint16_t in old protocol
 		msg.add<uint16_t>(static_cast<uint16_t>(icons));
 	} else {
+		// Send as uint32_t in new protocol
 		msg.add<uint32_t>(icons);
-		msg.addByte(0x00); // 13.20 icon counter
+		msg.addByte(enumToValue(iconBakragore)); // Icons Bakragore
 	}
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendIconBakragore(const IconBakragore icon) {
+	NetworkMessage msg;
+	msg.addByte(0xA2);
+	msg.add<uint32_t>(0); // Send empty normal icons
+	msg.addByte(enumToValue(icon));
 	writeToOutputBuffer(msg);
 }
 

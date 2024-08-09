@@ -242,7 +242,8 @@ private:
 	void sendExperienceTracker(int64_t rawExp, int64_t finalExp);
 	void sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId);
 	void sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text);
-	void sendIcons(uint32_t icons);
+	void sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const IconBakragore iconBakragore);
+	void sendIconBakragore(const IconBakragore icon);
 	void sendFYIBox(const std::string &message);
 
 	void openImbuementWindow(std::shared_ptr<Item> item);

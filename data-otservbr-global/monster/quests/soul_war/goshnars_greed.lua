@@ -68,7 +68,7 @@ monster.light = {
 }
 
 monster.summon = {
-	maxSummons = 1
+	maxSummons = 1,
 }
 
 monster.voices = {

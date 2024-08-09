@@ -99,4 +99,8 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
+mType.onThink = function(monster, interval)
+	monster:tryTeleportToPlayer("You have been chosen for a harvest!")
+end
+
 mType:register(monster)

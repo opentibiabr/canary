@@ -284,7 +284,7 @@
 	<house name="Mill Avenue 4" houseid="2953" entryx="32413" entryy="32189" entryz="6" rent="100000" townid="8" size="33" clientid="0" beds="2" />
 	<house name="Mill Avenue 5" houseid="2954" entryx="32422" entryy="32178" entryz="7" rent="300000" townid="8" size="69" clientid="0" beds="4" />
 	<house name="Open-Air Theatre" houseid="2955" entryx="32262" entryy="32238" entryz="7" rent="150000" townid="8" size="81" clientid="0" beds="1" />
-	<house name="Smuggler's Den" houseid="2956" entryx="32419" entryy="32262" entryz="9" rent="400000" townid="8" size="227" clientid="0" beds="7" />
+	<house name="Smuggler's Den" houseid="2956" entryx="32419" entryy="32262" entryz="9" rent="400000" townid="8" size="226" clientid="0" beds="7" />
 	<house name="Sorcerer's Avenue 1a" houseid="2957" entryx="32300" entryy="32254" entryz="7" rent="100000" townid="8" size="24" clientid="0" beds="2" />
 	<house name="Sorcerer's Avenue 5 (Shop)" houseid="2958" entryx="32284" entryy="32256" entryz="7" rent="150000" townid="8" size="54" clientid="0" beds="1" />
 	<house name="Sorcerer's Avenue 1b" houseid="2959" entryx="32300" entryy="32251" entryz="6" rent="80000" townid="8" size="19" clientid="0" beds="2" />

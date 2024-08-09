@@ -372,12 +372,11 @@ private:
 		registerMethod(L, "Player", "getTitles", PlayerFunctions::luaPlayerGetTitles);
 		registerMethod(L, "Player", "setCurrentTitle", PlayerFunctions::luaPlayerSetCurrentTitle);
 
-		// Store Summary
 		registerMethod(L, "Player", "createTransactionSummary", PlayerFunctions::luaPlayerCreateTransactionSummary);
 
 		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
-
 		registerMethod(L, "Player", "sendIconBakragore", PlayerFunctions::luaPlayerSendIconBakragore);
+		registerMethod(L, "Player", "sendCreatureAppear", PlayerFunctions::luaPlayerSendCreatureAppear);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
@@ -743,6 +742,8 @@ private:
 
 	static int luaPlayerTakeScreenshot(lua_State* L);
 	static int luaPlayerSendIconBakragore(lua_State* L);
+
+	static int luaPlayerSendCreatureAppear(lua_State* L);
 
 	friend class CreatureFunctions;
 };

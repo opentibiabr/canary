@@ -35,13 +35,27 @@ class EventCallback : public Script {
 private:
 	EventCallback_t m_callbackType = EventCallback_t::none; ///< The type of the event callback.
 	std::string m_scriptTypeName; ///< The name associated with the script type.
+	std::string m_callbackName; ///< The name of the callback.
+	bool m_skipDuplicationCheck = false; ///< Whether the callback is silent error for already registered log error.
 
 public:
 	/**
 	 * @brief Constructor that initializes the EventCallback with a given script interface.
 	 * @param scriptInterface Pointer to the LuaScriptInterface object.
 	 */
-	explicit EventCallback(LuaScriptInterface* scriptInterface);
+	explicit EventCallback(LuaScriptInterface* scriptInterface, const std::string &callbackName, bool silentAlreadyRegistered);
+
+	/**
+	 * @brief Retrieves the callback name.
+	 * @return The callback name as a string.
+	 */
+	std::string getName() const;
+
+	/**
+	 * @brief Retrieves the skip registration status of the callback.
+	 * @return True if the callback is true for skip duplication check and register again the event, false otherwise.
+	 */
+	bool skipDuplicationCheck() const;
 
 	/**
 	 * @brief Retrieves the script type name.
@@ -84,6 +98,7 @@ public:
 	ReturnValue creatureOnTargetCombat(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const;
 	void creatureOnHear(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> speaker, const std::string &words, SpeakClasses type) const;
 	void creatureOnDrainHealth(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const;
+	void creatureOnCombat(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, CombatDamage &damage) const;
 
 	// Party
 	bool partyOnJoin(std::shared_ptr<Party> party, std::shared_ptr<Player> player) const;
@@ -117,6 +132,7 @@ public:
 	void playerOnInventoryUpdate(std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool equip) const;
 	bool playerOnRotateItem(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &position) const;
 	void playerOnWalk(std::shared_ptr<Player> player, Direction &dir) const;
+	void playerOnThink(std::shared_ptr<Player> player, uint32_t interval) const;
 
 	// Monster
 	void monsterOnDropLoot(std::shared_ptr<Monster> monster, std::shared_ptr<Container> corpse) const;
@@ -132,7 +148,5 @@ public:
 	void zoneAfterCreatureEnter(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const;
 	void zoneAfterCreatureLeave(std::shared_ptr<Zone> zone, std::shared_ptr<Creature> creature) const;
 
-	/**
-	 * @note here end the lua binder functions }
-	 */
+	void mapOnLoad(const std::string &mapFullPath) const;
 };

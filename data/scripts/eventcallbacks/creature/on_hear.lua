@@ -1,4 +1,4 @@
-local callback = EventCallback()
+local callback = EventCallback("CreatureOnHearBaseEvent")
 
 function callback.creatureOnHear(creature, speaker, words, type) end
 

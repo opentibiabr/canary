@@ -144,6 +144,7 @@ end
 ---@param player Player
 ---@return boolean
 function BossLever:onUse(player)
+	local monsterName = MonsterType(self.name):getName()
 	local isParticipant = false
 	for _, v in ipairs(self.playerPositions) do
 		if Position(v.pos) == player:getPosition() then
@@ -161,7 +162,7 @@ function BossLever:onUse(player)
 
 	local zone = self:getZone()
 	if zone:countPlayers(IgnoredByMonsters) > 0 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's already someone fighting with " .. self.name .. ".")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's already someone fighting with " .. monsterName .. ".")
 		return true
 	end
 
@@ -173,14 +174,15 @@ function BossLever:onUse(player)
 			return true
 		end
 
-		if creature:getLevel() < self.requiredLevel then
+		local isAccountNormal = creature:getAccountType() == ACCOUNT_TYPE_NORMAL
+		if isAccountNormal and creature:getLevel() < self.requiredLevel then
 			local message = "All players need to be level " .. self.requiredLevel .. " or higher."
 			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
 			return false
 		end
 
-		if creature:getGroup():getId() < GROUP_TYPE_GOD and self:lastEncounterTime(creature) > os.time() then
+		if creature:getGroup():getId() < GROUP_TYPE_GOD and isAccountNormal and self:lastEncounterTime(creature) > os.time() then
 			local infoPositions = lever:getInfoPositions()
 			for _, posInfo in pairs(infoPositions) do
 				local currentPlayer = posInfo.creature

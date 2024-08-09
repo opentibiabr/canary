@@ -2525,6 +2525,36 @@ ChestUnique = {
 		weight = 15.00,
 		storage = Storage.TibiaTales.AnInterestInBotany.BotanyAlmanach,
 	},
+	-- Wrath of the Emperor Quest
+	[6297] = {
+		itemId = 2469,
+		itemPos = { x = 33073, y = 31169, z = 8 },
+		reward = { { 3035, 100 } },
+		weight = 10.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.Chest100PlatinumCoins,
+	},
+	[6298] = {
+		itemId = 2472,
+		itemPos = { x = 33074, y = 31169, z = 8 },
+		container = 2853,
+		reward = { { 11695, 1 }, { 10326, 1 }, { 5801, 1 }, { 3041, 1 }, { 3027, 10 }, { 9058, 5 }, { 5882, 10 }, { 3043, 10 } },
+		weight = 151.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestBag,
+	},
+	[6299] = {
+		itemId = 2473,
+		itemPos = { x = 33078, y = 31170, z = 8 },
+		reward = { { 11686, 1 } },
+		weight = 130.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestItems,
+	},
+	[6300] = {
+		itemId = 2473,
+		itemPos = { x = 33080, y = 31170, z = 8 },
+		reward = { { 11689, 1 } },
+		weight = 43.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestItems,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

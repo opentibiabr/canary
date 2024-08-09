@@ -4988,12 +4988,12 @@ if not Quests then
 		},
 		[34] = {
 			name = "Wrath of the Emperor",
-			startStorageId = Storage.WrathoftheEmperor.Questline,
+			startStorageId = Storage.Quest.U8_6.WrathOfTheEmperor.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 01: Catering the Lions Den",
-					storageId = Storage.WrathoftheEmperor.Mission01,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission01,
 					missionId = 10348,
 					startValue = 1,
 					endValue = 3,
@@ -5007,7 +5007,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 02: First Contact",
-					storageId = Storage.WrathoftheEmperor.Mission02,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission02,
 					missionId = 10349,
 					startValue = 1,
 					endValue = 3,
@@ -5022,7 +5022,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03: The Keeper",
-					storageId = Storage.WrathoftheEmperor.Mission03,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission03,
 					missionId = 10350,
 					startValue = 1,
 					endValue = 3,
@@ -5035,7 +5035,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 04: Sacrament of the Snake",
-					storageId = Storage.WrathoftheEmperor.Mission04,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission04,
 					missionId = 10351,
 					startValue = 1,
 					endValue = 3,
@@ -5051,7 +5051,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 05: New in Town",
-					storageId = Storage.WrathoftheEmperor.Mission05,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission05,
 					missionId = 10352,
 					startValue = 1,
 					endValue = 3,
@@ -5063,27 +5063,27 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 06: The Office Job",
-					storageId = Storage.WrathoftheEmperor.Mission06,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission06,
 					missionId = 10353,
 					startValue = 0,
-					endValue = 4,
+					endValue = 5,
 					description = function(player)
-						return string.format("Kill four Magistrati in the office building. Then report back to Zlak. You have killed %d magistrati so far.", (math.max(player:getStorageValue(Storage.WrathoftheEmperor.Mission06), 0)))
+						return string.format("Kill four Magistrati in the office building. Then report back to Zlak. You have killed %d magistrati so far.", (math.max(player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission06), 1)))
 					end,
 				},
 				[7] = {
 					name = "Mission 07: A Noble Cause",
-					storageId = Storage.WrathoftheEmperor.Mission07,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission07,
 					missionId = 10354,
 					startValue = 0,
 					endValue = 6,
 					description = function(player)
-						return string.format("Kill six nobles in the city and report back to Zlak. You have killed %d nobles so far.", (math.max(player:getStorageValue(Storage.WrathoftheEmperor.Mission07), 0)))
+						return string.format("Kill six nobles in the city and report back to Zlak. You have killed %d nobles so far.", (math.max(player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission07), 0)))
 					end,
 				},
 				[8] = {
 					name = "Mission 08: Uninvited Guests",
-					storageId = Storage.WrathoftheEmperor.Mission08,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission08,
 					missionId = 10355,
 					startValue = 1,
 					endValue = 2,
@@ -5094,7 +5094,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 09: The Sleeping Dragon",
-					storageId = Storage.WrathoftheEmperor.Mission09,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission09,
 					missionId = 10356,
 					startValue = 1,
 					endValue = 2,
@@ -5106,7 +5106,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 10: A Message of Freedom",
-					storageId = Storage.WrathoftheEmperor.Mission10,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission10,
 					missionId = 10357,
 					startValue = 1,
 					endValue = 6,
@@ -5128,7 +5128,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Mission 11: Payback Time",
-					storageId = Storage.WrathoftheEmperor.Mission11,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission11,
 					missionId = 10358,
 					startValue = 1,
 					endValue = 2,
@@ -5140,7 +5140,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Mission 12: Just Rewards",
-					storageId = Storage.WrathoftheEmperor.Mission12,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission12,
 					missionId = 10359,
 					startValue = 0,
 					endValue = 1,

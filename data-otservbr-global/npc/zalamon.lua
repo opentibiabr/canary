@@ -163,16 +163,16 @@ local function creatureSayCallback(npc, creature, type, message)
 			-- CHILDREN OF REVOLUTION QUEST
 
 			-- WRATH OF THE EMPEROR QUEST
-		elseif player:getStorageValue(Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline) == 21 and player:getStorageValue(Storage.WrathoftheEmperor.Questline) < 1 then
+		elseif player:getStorageValue(Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline) == 21 and player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) < 1 then
 			npcHandler:say({
 				"Zze attackzz have weakened our enemy zzignificantly. Yet, your quezzt continuezz. Bezzidezz zzome tazzkzz you could take, zze zzreat of zze emperor izz zztill hanging over our headzz like a rain cloud. ... ",
 				"Zzo, are you indeed willing to continue zze fight for our cauzze? ",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 14)
-		elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 1 then
 			npcHandler:say("Ah you have returned. I azzume you already found zzome itemzz to build a proper dizzguizze? ", npc, creature)
 			npcHandler:setTopic(playerId, 16)
-		elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 6 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 6 then
 			npcHandler:say({
 				"You ezztablished zze connection to zze hideout, good. But zzizz izz no time to rezzt. Your new tazzk will be quite different. ... ",
 				"Zze gardenzz are plagued by a creature. Zze former keeper of zzizz garden became an abomination of madnezz zzat needzz to be zztopped. ... ",
@@ -181,10 +181,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Now go - what are you waiting for, zzoftzzkin? Ready to finish what needzz to be finished? ",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 19)
-		elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 8 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 8 then
 			npcHandler:say("Zzo... you finished him. Show me hizz head, will you? ", npc, creature)
 			npcHandler:setTopic(playerId, 20)
-		elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 9 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 9 then
 			npcHandler:say({
 				"At zze dawn of time, zze children of zze Great Zznake were numerouzz. Zzey daringly colonizzed many partzz of zze world. But all bravery did not help againzzt zze sheer number of enemiezz zzey encountered. ... ",
 				"And while zze entitiezz zze unbelieverzz call godzz battled for power out of vanity, zze fazze of zze world changed violently. ... ",
@@ -197,13 +197,13 @@ local function creatureSayCallback(npc, creature, type, message)
 				"A shaft, a cuzzp, and an emerald form a zzeptre of zzuch power zzat zze partzz were hidden and are now guarded by vile creaturezz. ... ",
 				"Find it. Retrieve it. And bring it back to me. ",
 			}, npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 10)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission04, 1) --Questlog, Wrath of the Emperor "Mission 04: Sacrament of the Snake"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 10)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission04, 1) --Questlog, Wrath of the Emperor "Mission 04: Sacrament of the Snake"
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 11 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 11 then
 			npcHandler:say("You - azzembled zze zzeptre? Hand it out, give it to me, will you? ", npc, creature)
 			npcHandler:setTopic(playerId, 21)
-		elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 12 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 12 then
 			npcHandler:say({
 				"Now we need to get clozzer to zze emperor himzzelf. A hive of beezz would defend zzeir queen wizz zzeir lives in cazze an enemy gained entranzze. Zzizz makezz a formidable defenzze line, nearly inviolable. ... ",
 				"But a zztranger directly in zze midzzt of zze hive will be acczzepted - after all it izz not pozzible to overcome zzuch a formidable defenzze which izz nearly inviolable, or izz it? Ha. ... ",
@@ -212,8 +212,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"We have alzzo forged zome paperzz for you and zzent zzem to zze zzity. Your victory in zze arena iz well known in our land. Wizz zze help of zzezze paperzz you will pretend zzat zzome of zze higher officialzz want to talk to you about your battle. ... ",
 				"Zzizz way you will be able to enter zze zzity of zze dragon emperor and meet our contact zzere in zze imperial offizze. He will give you zze next inzztructionzz. ",
 			}, npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 13)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission05, 1) --Questlog, Wrath of the Emperor "Mission 05: New in Town"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 13)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission05, 1) --Questlog, Wrath of the Emperor "Mission 05: New in Town"
 			npcHandler:setTopic(playerId, 0)
 			-- WRATH OF THE EMPEROR QUEST
 		end
@@ -360,8 +360,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"One of zzem izz uzzed azz a maintenanzze connection by enemy lizardzz. To enter it, you will have to uzze a dizzguizze. Zzomezzing like a crate perhapzz. ... ",
 				"Mh, if you can find zzome nailzz - 3 should be enough - and 1 piezze of wood, I should be able to create an appropriate cazzing. Return to me if you found zze itemzz and we will talk about zze next zztep. ",
 			}, npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 1)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission01, 1) --Questlog, Wrath of the Emperor "Mission 01: Catering the Lions Den"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 1)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission01, 1) --Questlog, Wrath of the Emperor "Mission 01: Catering the Lions Den"
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 16 then
 			npcHandler:say({
@@ -373,8 +373,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getItemCount(953) >= 3 and player:getItemCount(5901) >= 1 then
 				player:removeItem(5901, 1)
 				player:removeItem(953, 3)
-				player:setStorageValue(Storage.WrathoftheEmperor.Questline, 2)
-				player:setStorageValue(Storage.WrathoftheEmperor.Mission01, 2) --Questlog, Wrath of the Emperor "Mission 01: Catering the Lions Den"
+				player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 2)
+				player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission01, 2) --Questlog, Wrath of the Emperor "Mission 01: Catering the Lions Den"
 				player:addItem(11328, 1)
 				npcHandler:say({
 					"Alright. Let uzz create a crate. Hm. Let me zzee. ... ",
@@ -394,21 +394,21 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Fine. I guezz poizzoning zzome of hizz plantzz will be enough to lure him out of hizz conzzealment. Zzizz plant poizzon here should allow you to do zzome zzignificant damage, take it. ... ",
 				"You can find him eazzt of zze corrupted gardenzz. Zzere uzzed to be a zzmall domizzile zzere but it hazz probably been conzzumed by zze corruption zzo beware. And now - go. ",
 			}, npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 7)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission03, 1) --Questlog, Wrath of the Emperor "Mission 03: The Keeper"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 7)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission03, 1) --Questlog, Wrath of the Emperor "Mission 03: The Keeper"
 			player:addItem(11364, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 20 then
 			if player:removeItem(11367, 1) then
 				npcHandler:say("Zzizz izz not hizz head but clearly belonged to zze keeper. I - I am imprezzed. You can go now. Leave me alone for a zzecond. ", npc, creature)
-				player:setStorageValue(Storage.WrathoftheEmperor.Questline, 9)
-				player:setStorageValue(Storage.WrathoftheEmperor.Mission03, 3) --Questlog, Wrath of the Emperor "Mission 03: The Keeper"
+				player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 9)
+				player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission03, 3) --Questlog, Wrath of the Emperor "Mission 03: The Keeper"
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 21 then
 			if player:removeItem(11371, 1) then
-				player:setStorageValue(Storage.WrathoftheEmperor.Questline, 12)
-				player:setStorageValue(Storage.WrathoftheEmperor.Mission04, 3) --Questlog, Wrath of the Emperor "Mission 04: Sacrament of the Snake"
+				player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 12)
+				player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission04, 3) --Questlog, Wrath of the Emperor "Mission 04: Sacrament of the Snake"
 				npcHandler:say("Finally. At lazzt. Zze zzeptre izz - ourzz. Ourzz of courzze. A weapon we should uzze wizzely for our cauzze. I need a zzecond or two. Do you leave me already? ", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end

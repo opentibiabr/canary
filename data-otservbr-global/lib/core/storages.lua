@@ -720,44 +720,6 @@ Storage = {
 		DeeplingAnchor = 51023,
 		RoyalCostumeOutfit = 51026,
 	},
-	WrathoftheEmperor = {
-		-- Reserved storage from 51300 - 51339
-		Questline = 51300,
-		Mission01 = 51301,
-		Mission02 = 51302,
-		Mission03 = 51303,
-		Mission04 = 51304,
-		Mission05 = 51305,
-		Mission06 = 51306,
-		Mission07 = 51307,
-		Mission08 = 51308,
-		Mission09 = 51309,
-		Mission10 = 51310,
-		Mission11 = 51311,
-		Mission12 = 51312,
-		Message = 51313, --1068
-		GuardcaughtYou = 51314, --1062
-		ZumtahStatus = 51315, --1066
-		PrisonReleaseStatus = 51316, --1067
-		GhostOfAPriest01 = 51317, --1070
-		GhostOfAPriest02 = 51318, --1071
-		GhostOfAPriest03 = 51319, --1072
-		InterdimensionalPotion = 51320, --1084
-		BossStatus = 51321, --1090
-		-- unused platinumReward = 51322,
-		-- unused backpackReward = 51323,
-		MainReward = 51324,
-		TeleportAccess = {
-			Rebel = 51325,
-			Zlak = 51326,
-			Zizzle = 51327,
-			SleepingDragon = 51328,
-			InnerSanctum = 51329,
-			AwarnessEmperor = 51330,
-			Wote10 = 51331,
-			BossRoom = 51332,
-		},
-	},
 	Postman = {
 		-- Reserved storage from 51360 - 51389
 		Mission01 = 51360,
@@ -2308,10 +2270,48 @@ Storage = {
 		},
 		U8_6 = { -- update 8.6 - Reserved Storages 42951 - 43200
 			AFathersBurden = {},
-			AnInterestInBotany = {},
 			TheSpiritWillGetYou = {},
 			WayfarerOutfits = {},
-			WrathOfTheEmperor = {},
+			WrathOfTheEmperor = {
+				Questline = 43000,
+				Mission01 = 43001,
+				Mission02 = 43002,
+				Mission03 = 43003,
+				Mission04 = 43004,
+				Mission05 = 43005,
+				Mission06 = 43006,
+				Mission07 = 43007,
+				Mission08 = 43008,
+				Mission09 = 43009,
+				Mission10 = 43010,
+				Mission11 = 43011,
+				Mission12 = 43012,
+				Message = 43013, --1068
+				GuardcaughtYou = 43014, --1062
+				ZumtahStatus = 43015, --1066
+				PrisonReleaseStatus = 43017, --1067
+				GhostOfAPriest01 = 43018, --1070
+				GhostOfAPriest02 = 43019, --1071
+				GhostOfAPriest03 = 43020, --1072
+				InterdimensionalPotion = 43021, --1084
+				BossStatus = 43022, --1090
+				-- unused platinumReward = 43023,
+				-- unused backpackReward = 43024,
+				MainReward = 43025,
+				TeleportAccess = {
+					Rebel = 43026,
+					Zlak = 43027,
+					Zizzle = 43028,
+					SleepingDragon = 43029,
+					InnerSanctum = 43030,
+					AwarnessEmperor = 43031,
+					Wote10 = 43032,
+					BossRoom = 43033,
+				},
+				Chest100PlatinumCoins = 43034,
+				ChestBag = 43035,
+				ChestItems = 43036,
+			},
 		},
 		U8_61 = { -- update 8.61 - Reserved Storages 43201 - 43230
 			RiseOfDevovorga = {},

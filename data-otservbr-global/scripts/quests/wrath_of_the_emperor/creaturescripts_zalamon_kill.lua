@@ -16,7 +16,7 @@ local bossForms = {
 local zalamonKill = CreatureEvent("ZalamonDeath")
 function zalamonKill.onDeath(creature)
 	if creature:getName():lower() == "mutated zalamon" then
-		Game.setStorageValue(Storage.WrathoftheEmperor.Mission11, -1)
+		Game.setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission11, -1)
 		return true
 	end
 

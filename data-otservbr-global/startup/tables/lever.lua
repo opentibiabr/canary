@@ -209,6 +209,11 @@ LeverUnique = {
 		itemId = 2772,
 		itemPos = { x = 32862, y = 32555, z = 11 },
 	},
+	-- Wrath of the Emperor Quest
+	[1053] = {
+		itemId = 2772,
+		itemPos = { x = 32801, y = 32640, z = 15 },
+	},
 	-- Dreamers Challenge Quest
 	[2004] = {
 		itemId = 2772,
@@ -328,6 +333,15 @@ LeverUnique = {
 	[3043] = {
 		itemId = 2772,
 		itemPos = { x = 32833, y = 32224, z = 14 },
+	},
+	-- Wrath of the Emperor Quest
+	[3184] = {
+		itemId = 2772,
+		itemPos = { x = 33078, y = 31079, z = 13 },
+	},
+	[3185] = {
+		itemId = 2772,
+		itemPos = { x = 33082, y = 31109, z = 2 },
 	},
 	-- The Pits of Inferno Quest
 	[3300] = {

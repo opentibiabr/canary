@@ -271,15 +271,15 @@ QuestDoorAction = {
 		itemPos = { { x = 33470, y = 32786, z = 11 } },
 	},
 	-- Wrath of the emperor door
-	[Storage.WrathoftheEmperor.Mission02] = {
+	[Storage.Quest.U8_6.WrathOfTheEmperor.Mission02] = {
 		itemId = false,
 		itemPos = { { x = 33242, y = 31051, z = 10 } },
 	},
-	[Storage.WrathoftheEmperor.Mission08] = {
+	[Storage.Quest.U8_6.WrathOfTheEmperor.Mission08] = {
 		itemId = false,
 		itemPos = { { x = 33080, y = 31164, z = 8 } },
 	},
-	[Storage.WrathoftheEmperor.Mission12] = {
+	[Storage.Quest.U8_6.WrathOfTheEmperor.Mission12] = {
 		itemId = false,
 		itemPos = { { x = 33076, y = 31176, z = 8 } },
 	},
@@ -758,7 +758,7 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 33047, y = 31295, z = 7 } },
 	},
-	[Storage.WrathoftheEmperor.Mission06] = {
+	[Storage.Quest.U8_6.WrathOfTheEmperor.Mission06] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33080, y = 31215, z = 7 },
@@ -766,14 +766,14 @@ QuestDoorAction = {
 			{ x = 33090, y = 31190, z = 7 },
 		},
 	},
-	[Storage.WrathoftheEmperor.Mission07] = {
+	[Storage.Quest.U8_6.WrathOfTheEmperor.Mission07] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33073, y = 31170, z = 7 },
 			{ x = 33074, y = 31170, z = 7 },
 		},
 	},
-	[Storage.WrathoftheEmperor.Mission09] = {
+	[Storage.Quest.U8_6.WrathOfTheEmperor.Mission09] = {
 		itemId = false,
 		itemPos = { { x = 33083, y = 31216, z = 8 } },
 	},

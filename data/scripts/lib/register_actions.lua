@@ -486,8 +486,8 @@ function onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
 			Game.createMonster("Scarab", toPosition)
 		end
 		toPosition:sendMagicEffect(CONST_ME_POFF)
-		-- Rookgaard tutorial island
-	elseif target.itemid == 351 and target.actionid == 8024 then
+		-- Wrath of the Emperor Quest
+	elseif target.actionid == 8024 then
 		player:addItem(11341, 1)
 		player:say("You dig out a handful of earth from this sacred place.", TALKTYPE_MONSTER_SAY)
 	elseif target.itemid == 7749 and player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.TutorialHintsStorage) < 20 then

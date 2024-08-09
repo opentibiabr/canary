@@ -74771,12 +74771,31 @@ Granted by TibiaGoals.com"/>
 		<attribute key="transformOnUse" value="42367"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
+	<item id="42390" name="stairs"/>
+	<item id="42391" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="42392" name="stairs"/>
+	<item id="42393" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="42394" name="stairs"/>
+	<item id="42395" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="42396" name="stairs"/>
+	<item id="42397" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item id="42618" name="stairs"/>
 	<item id="42619" name="stairs">
 		<attribute key="floorchange" value="north"/>
 	</item>
+	<item id="42620" name="stairs"/>
 	<item id="42621" name="stairs">
 		<attribute key="floorchange" value="west"/>
 	</item>
+	<item id="42622" name="stairs"/>
 	<item id="42623" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
@@ -74811,6 +74830,22 @@ Granted by TibiaGoals.com"/>
 	<item id="42632" name="stairs">
 		<attribute key="floorchange" value="east"/>
 	</item>
+	<item id="42964" name="stairs"/>
+	<item id="42965" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="42966" name="stairs"/>
+	<item id="42967" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="42968" name="stairs"/>
+	<item id="42969" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="42970" name="stairs"/>
+	<item id="42971" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
 	<item id="43952" article="a" name="closed door">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
@@ -74829,6 +74864,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="type" value="door"/>
 		<attribute key="transformOnUse" value="43953"/>
 	</item>
+	<item id="43129" name="stairs"/>
+	<item id="43130" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="43131" name="stairs"/>
+	<item id="43132" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="43133" name="stairs"/>
 	<item id="43134" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>

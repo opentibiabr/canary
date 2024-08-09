@@ -377,6 +377,8 @@ private:
 
 		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
 
+		registerMethod(L, "Player", "sendIconBakragore", PlayerFunctions::luaPlayerSendIconBakragore);
+
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
 		MountFunctions::init(L);
@@ -740,6 +742,7 @@ private:
 	static int luaPlayerCreateTransactionSummary(lua_State* L);
 
 	static int luaPlayerTakeScreenshot(lua_State* L);
+	static int luaPlayerSendIconBakragore(lua_State* L);
 
 	friend class CreatureFunctions;
 };

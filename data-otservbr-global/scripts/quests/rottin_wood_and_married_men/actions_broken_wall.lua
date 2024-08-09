@@ -1,8 +1,8 @@
 local rottinWoodBroken = Action()
 function rottinWoodBroken.onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 	local position = { x = 32655, y = 32205, z = 7 } --32655, 32205, 7
-	if player:getStorageValue(Storage.RottinWoodAndMaried.RottinStart) < 6 then
-		player:setStorageValue(Storage.RottinWoodAndMaried.RottinStart, 6)
+	if player:getStorageValue(Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.RottinStart) < 6 then
+		player:setStorageValue(Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.RottinStart, 6)
 		player:teleportTo(position)
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		player:say("There we go.", TALKTYPE_MONSTER_SAY)

@@ -1051,15 +1051,6 @@ Storage = {
 			Questline = 52311,
 		},
 	},
-	RottinWoodAndMaried = {
-		-- Reserved storage from 52340 - 52349
-		Questline = 52340,
-		RottinStart = 52341,
-		Trap = 52342,
-		Corpse = 52343,
-		Time = 52344,
-		Mission03 = 52345,
-	},
 	TheMummysCurse = {
 		-- Reserved storage from 52350 - 52359
 		Time1 = 52351,
@@ -2335,7 +2326,15 @@ Storage = {
 			JackToTheFuture = {},
 			LastCreepStanding = {},
 			ResearchAndDevelopment = {},
-			RottinWoodAndTheMarriedMen = {},
+			RottinWoodAndTheMarriedMen = {
+				Questline = 43231,
+				RottinStart = 43232,
+				Trap = 43233,
+				Corpse = 43234,
+				Time = 43235,
+				Mission03 = 43236,
+				FirstTime = 43237,
+			},
 			Spirithunters = {},
 			TheColoursOfMagic = {},
 		},

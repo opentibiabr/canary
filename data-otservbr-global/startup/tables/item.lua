@@ -983,6 +983,37 @@ ItemAction = {
 			{ x = 32862, y = 32495, z = 9 },
 		},
 	},
+	-- Rottin Wood and the Married Men Quest
+	[42501] = {
+		itemId = 12183,
+		itemPos = {
+			{ x = 32647, y = 32216, z = 7 },
+		},
+	},
+	[42502] = {
+		itemId = 12183,
+		itemPos = {
+			{ x = 32660, y = 32213, z = 7 },
+		},
+	},
+	[42503] = {
+		itemId = 12185,
+		itemPos = {
+			{ x = 32644, y = 32183, z = 6 },
+		},
+	},
+	[42504] = {
+		itemId = 12184,
+		itemPos = {
+			{ x = 32660, y = 32201, z = 7 },
+		},
+	},
+	[42505] = {
+		itemId = 12185,
+		itemPos = {
+			{ x = 32652, y = 32200, z = 5 },
+		},
+	},
 	-- The Pits of Inferno
 	[50082] = {
 		itemId = 2576,

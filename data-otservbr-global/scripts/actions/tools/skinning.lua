@@ -168,6 +168,11 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			player:addItem(954, 1)
 			player:setStorageValue(789100, 2)
 			return true
+		-- Rottin Wood and the Married Men Quest
+		elseif target.itemid == 4301 then
+			player:say("You successfully gathered a rabbit's food in excellent condition.", TALKTYPE_MONSTER_SAY)
+			player:addItem(12172, 1)
+			return true
 		end
 	end
 

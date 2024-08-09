@@ -7,6 +7,7 @@ function partyHat.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	end
 
 	player:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
+	player:addAchievementProgress("Party Animal", 200)
 	return true
 end
 

@@ -15,9 +15,9 @@ end
 local wrathEmperorMiss1Light = Action()
 function wrathEmperorMiss1Light.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if fromPosition == Position(positions[1]) then
-		if Game.getStorageValue(GlobalStorage.WrathOfTheEmperor.Light01) ~= 1 then
-			Game.setStorageValue(GlobalStorage.WrathOfTheEmperor.Light01, 1)
-			addEvent(Game.setStorageValue, 20 * 1000, GlobalStorage.WrathOfTheEmperor.Light01, 0)
+		if Game.getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Light01) ~= 1 then
+			Game.setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Light01, 1)
+			addEvent(Game.setStorageValue, 20 * 1000, Storage.Quest.U8_6.WrathOfTheEmperor.Light01, 0)
 			local pos = {
 				Position(33369, 31075, 8),
 				Position(33372, 31075, 8),
@@ -29,9 +29,9 @@ function wrathEmperorMiss1Light.onUse(player, item, fromPosition, target, toPosi
 			end
 		end
 	elseif fromPosition == Position(positions[2]) then
-		if Game.getStorageValue(GlobalStorage.WrathOfTheEmperor.Light02) ~= 1 then
-			Game.setStorageValue(GlobalStorage.WrathOfTheEmperor.Light02, 1)
-			addEvent(Game.setStorageValue, 20 * 1000, GlobalStorage.WrathOfTheEmperor.Light02, 0)
+		if Game.getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Light02) ~= 1 then
+			Game.setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Light02, 1)
+			addEvent(Game.setStorageValue, 20 * 1000, Storage.Quest.U8_6.WrathOfTheEmperor.Light02, 0)
 			local pos = {
 				Position(33357, 31077, 8),
 				Position(33360, 31079, 8),
@@ -42,9 +42,9 @@ function wrathEmperorMiss1Light.onUse(player, item, fromPosition, target, toPosi
 			end
 		end
 	elseif fromPosition == Position(positions[3]) then
-		if Game.getStorageValue(GlobalStorage.WrathOfTheEmperor.Light04) ~= 1 then
-			Game.setStorageValue(GlobalStorage.WrathOfTheEmperor.Light04, 1)
-			addEvent(Game.setStorageValue, 20 * 1000, GlobalStorage.WrathOfTheEmperor.Light04, 0)
+		if Game.getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Light04) ~= 1 then
+			Game.setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Light04, 1)
+			addEvent(Game.setStorageValue, 20 * 1000, Storage.Quest.U8_6.WrathOfTheEmperor.Light04, 0)
 			local wallItem, pos
 			for i = 1, 4 do
 				pos = Position(33355, 31067 + i, 9)
@@ -72,9 +72,9 @@ function wrathEmperorMiss1Light.onUse(player, item, fromPosition, target, toPosi
 			end
 		end
 	elseif fromPosition == Position(positions[4]) then
-		if Game.getStorageValue(GlobalStorage.WrathOfTheEmperor.Light03) ~= 1 then
-			Game.setStorageValue(GlobalStorage.WrathOfTheEmperor.Light03, 1)
-			addEvent(Game.setStorageValue, 20 * 1000, GlobalStorage.WrathOfTheEmperor.Light03, 0)
+		if Game.getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Light03) ~= 1 then
+			Game.setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Light03, 1)
+			addEvent(Game.setStorageValue, 20 * 1000, Storage.Quest.U8_6.WrathOfTheEmperor.Light03, 0)
 			local pos = Position(33346, 31074, 8)
 			transformLamp(pos, 10493, 10478)
 			addEvent(transformLamp, 20 * 1000, pos, 10478, 10493)

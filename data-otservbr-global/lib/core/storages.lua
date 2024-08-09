@@ -2311,6 +2311,16 @@ Storage = {
 				Chest100PlatinumCoins = 43034,
 				ChestBag = 43035,
 				ChestItems = 43036,
+				Light01 = 43037,
+				Light02 = 43038,
+				Light03 = 43039,
+				Light04 = 43040,
+				Bosses = {
+					Fury = 43041,
+					Wrath = 43042,
+					Scorn = 43043,
+					Spite = 43044,
+				},
 			},
 		},
 		U8_61 = { -- update 8.61 - Reserved Storages 43201 - 43230
@@ -2927,19 +2937,6 @@ GlobalStorage = {
 			Health = 60113,
 		},
 		Mouthpiece = 60114,
-	},
-	WrathOfTheEmperor = {
-		-- Reserved storage from 60120 - 60139
-		Light01 = 60120,
-		Light02 = 60121,
-		Light03 = 60122,
-		Light04 = 60123,
-		Bosses = {
-			Fury = 60130,
-			Wrath = 60131,
-			Scorn = 60132,
-			Spite = 60133,
-		},
 	},
 	TheOrderOfTheLion = {
 		-- Reserved storage from 60170 - 60171

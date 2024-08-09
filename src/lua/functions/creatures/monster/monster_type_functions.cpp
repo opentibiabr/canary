@@ -107,6 +107,38 @@ int MonsterTypeFunctions::luaMonsterTypeIsSummonable(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeIsPreyExclusive(lua_State* L) {
+	// get: monsterType:isPreyExclusive() set: monsterType:isPreyExclusive(bool)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.isPreyExclusive);
+		} else {
+			monsterType->info.isPreyExclusive = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeIsPreyable(lua_State* L) {
+	// get: monsterType:isPreyable() set: monsterType:isPreyable(bool)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.isPreyable);
+		} else {
+			monsterType->info.isPreyable = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeIsIllusionable(lua_State* L) {
 	// get: monsterType:isIllusionable() set: monsterType:isIllusionable(bool)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);

@@ -223,4 +223,12 @@
 	<mount id="221" clientid="1687" name="Corpsefire Skull" speed="10" premium="no" type="store" />
 	<mount id="222" clientid="1721" name="Mystic Jaguar" speed="10" premium="yes" type="quest" />
 	<mount id="223" clientid="1724" name="Gorgon Hydra" speed="10" premium="no" type="store" />
+	<mount id="224" clientid="1727" name="Dawnbringer Pegasus" speed="10" premium="no" type="store" />
+	<mount id="225" clientid="1728" name="Wrathfire Pegasus" speed="10" premium="no" type="store" />
+	<mount id="226" clientid="1729" name="Skybreaker Pegasus" speed="10" premium="no" type="store" />
+	<mount id="227" clientid="1730" name="Pegasus" speed="10" premium="no" type="quest" />
+	<mount id="228" clientid="1742" name="Glacier Wyrm" speed="10" premium="no" type="store" />
+	<mount id="229" clientid="1743" name="Bog Tyrant" speed="10" premium="no" type="store" />
+	<mount id="230" clientid="1744" name="Crimson Fang" speed="10" premium="no" type="store" />
+	<mount id="231" clientid="1778" name="Bumblebee" speed="10" premium="no" type="store" />
 </mounts>

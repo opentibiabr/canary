@@ -64,7 +64,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "fine vase") then
-		if player:getStorageValue(Storage.TravellingTrader.Mission04) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission04) == 1 then
 			npcHandler:say({
 				"Rashid sent you, I suppose. Before I sell you that vase, one word of advice. ...",
 				"Make room in your backpack so that I can place the vase carefully inside it. If it falls to the floor, it will most likely shatter or break if you try to pick it up again. ...",
@@ -76,7 +76,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:getMoney() + player:getBankBalance() >= 1000 then
 				npcHandler:say("Here it is.", npc, creature)
-				player:setStorageValue(Storage.TravellingTrader.Mission04, 2)
+				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission04, 2)
 				player:addItem(227, 1)
 				player:removeMoneyBank(1000)
 			else

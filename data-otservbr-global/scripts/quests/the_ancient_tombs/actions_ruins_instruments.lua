@@ -41,5 +41,5 @@ function theAncientRuinsInstru.onUse(player, item, fromPosition, target, toPosit
 	return true
 end
 
-theAncientRuinsInstru:aid(12105)
+theAncientRuinsInstru:aid(12106)
 theAncientRuinsInstru:register()

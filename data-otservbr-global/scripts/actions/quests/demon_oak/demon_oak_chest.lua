@@ -8,7 +8,7 @@ local chests = {
 local demonOakChest = Action()
 function demonOakChest.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if chests[item.uid] then
-		if player:getStorageValue(Storage.DemonOak.Done) ~= 2 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Done) ~= 2 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "It's empty.")
 			return true
 		end
@@ -21,7 +21,7 @@ function demonOakChest.onUse(player, item, fromPosition, target, toPosition, isH
 		end
 
 		player:addItem(chest.itemid, chest.count)
-		player:setStorageValue(Storage.DemonOak.Done, 3)
+		player:setStorageValue(Storage.Quest.U8_2.TheDemonOak.Done, 3)
 	end
 	return true
 end

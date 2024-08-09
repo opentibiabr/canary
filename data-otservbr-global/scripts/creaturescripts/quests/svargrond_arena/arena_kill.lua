@@ -5,12 +5,12 @@ function deathEvent.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
 		return true
 	end
 
-	local pit = player:getStorageValue(Storage.SvargrondArena.PitDoor)
+	local pit = player:getStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor)
 	if pit < 1 or pit > 10 then
 		return
 	end
 
-	local arena = player:getStorageValue(Storage.SvargrondArena.Arena)
+	local arena = player:getStorageValue(Storage.Quest.U8_0.BarbarianArena.Arena)
 	if arena < 1 then
 		return
 	end
@@ -34,7 +34,7 @@ function deathEvent.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
 			SvargrondArena.sendPillarEffect(pit)
 		end
 	end
-	player:setStorageValue(Storage.SvargrondArena.PitDoor, pit + 1)
+	player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor, pit + 1)
 	player:say("Victory! Head through the new teleporter into the next room.", TALKTYPE_MONSTER_SAY)
 	return true
 end

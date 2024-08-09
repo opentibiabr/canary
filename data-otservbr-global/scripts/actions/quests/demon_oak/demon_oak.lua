@@ -47,10 +47,10 @@ local config = {
 		},
 	},
 	storages = {
-		[914] = Storage.DemonOak.AxeBlowsBird,
-		[915] = Storage.DemonOak.AxeBlowsLeft,
-		[916] = Storage.DemonOak.AxeBlowsRight,
-		[917] = Storage.DemonOak.AxeBlowsFace,
+		[914] = Storage.Quest.U8_2.TheDemonOak.AxeBlowsBird,
+		[915] = Storage.Quest.U8_2.TheDemonOak.AxeBlowsLeft,
+		[916] = Storage.Quest.U8_2.TheDemonOak.AxeBlowsRight,
+		[917] = Storage.Quest.U8_2.TheDemonOak.AxeBlowsFace,
 	},
 }
 
@@ -86,8 +86,8 @@ function demonOak.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	if isDefeated then
 		player:teleportTo(DEMON_OAK_KICK_POSITION)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Tell Oldrak about your great victory against the demon oak.")
-		player:setStorageValue(Storage.DemonOak.Done, 1)
-		player:setStorageValue(Storage.DemonOak.Progress, 3)
+		player:setStorageValue(Storage.Quest.U8_2.TheDemonOak.Done, 1)
+		player:setStorageValue(Storage.Quest.U8_2.TheDemonOak.Progress, 3)
 		return true
 	end
 

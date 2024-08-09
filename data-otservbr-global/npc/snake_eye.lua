@@ -59,14 +59,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "package for rashid") then
-		if player:getStorageValue(Storage.TravellingTrader.Mission02) >= 1 and player:getStorageValue(Storage.TravellingTrader.Mission02) < 3 then
+		if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02) >= 1 and player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02) < 3 then
 			npcHandler:say("So you're the delivery boy? Go ahead, but I warn you, it's quite heavy. You can take it from the box over there.", npc, creature)
-			player:setStorageValue(Storage.TravellingTrader.Mission02, 3)
+			player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02, 3)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "documents") then
-		if player:getStorageValue(Storage.ThievesGuild.Mission04) == 1 then
-			player:setStorageValue(Storage.ThievesGuild.Mission04, 2)
+		if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission04) == 1 then
+			player:setStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission04, 2)
 			npcHandler:say("Funny thing that everyone thinks we have forgers for fake documents here. But no, we don't. The best forger is old Ahmet in Ankrahmun.", npc, creature)
 		end
 	end
@@ -82,6 +82,8 @@ npcConfig.shop = {
 	{ itemName = "meat", clientId = 3577, buy = 6 },
 	{ itemName = "mug of beer", clientId = 2880, buy = 5, count = 3 },
 	{ itemName = "mug of wine", clientId = 2880, buy = 6, count = 2 },
+	{ itemName = "vial of beer", clientId = 2874, buy = 5, count = 1, subType = 3 },
+	{ itemName = "vial of wine", clientId = 2874, buy = 6, count = 1, subType = 2 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

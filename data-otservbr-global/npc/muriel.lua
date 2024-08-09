@@ -50,15 +50,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local function releasePlayer(npc, creature)
-	if not Player(creature) then
-		return
-	end
-
-	npcHandler:removeInteraction(npc, creature)
-	npcHandler:resetNpc(creature)
-end
-
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -70,9 +61,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "mission") then
 		if player:getLevel() < 35 then
 			npcHandler:say("Indeed there is something to be done, but I need someone more experienced. Come back later if you want to.", npc, creature)
-			addEvent(function()
-				releasePlayer(npc, creature)
-			end, 1000)
 			return true
 		end
 
@@ -88,9 +76,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				"The rotworms dug deep into the soil north of Thais. Rumours say that you can access a place of endless moaning from there. ...",
 				"No one knows how old that common grave is but the people who died there are cursed and never come to rest. A bone from that pit would be perfect for my studies.",
 			}, npc, creature)
-			addEvent(function()
-				releasePlayer(npc, creature)
-			end, 1000)
 		elseif player:getStorageValue(Storage.TibiaTales.IntoTheBonePit) == 2 then
 			player:setStorageValue(Storage.TibiaTales.IntoTheBonePit, 3)
 			if player:removeItem(131, 1) then
@@ -102,33 +87,21 @@ local function creatureSayCallback(npc, creature, type, message)
 					"I thought you have been haunted and killed by the undead. I'm glad that this is not the case. Thank you for your help.",
 				}, npc, creature)
 			end
-			addEvent(function()
-				releasePlayer(npc, creature)
-			end, 1000)
 		else
 			npcHandler:say("I am very glad you helped me, but I am very busy at the moment.", npc, creature)
-			addEvent(function()
-				releasePlayer(npc, creature)
-			end, 1000)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			player:addItem(4852, 1)
-			player:setStorageValue(Storage.TibiaTales.IntoTheBonePit, 1)
 			npcHandler:say({
 				"Great! Here is the container for the bone. Once, I used it to collect ectoplasma of ghosts, but it will work here as well. ...",
 				"If you lose it, you can buy a new one from the explorer's society in North Port or Port Hope. Ask me about the mission when you come back.",
 			}, npc, creature)
-			addEvent(function()
-				releasePlayer(npc, creature)
-			end, 1000)
+			player:addItem(4852, 1)
+			player:setStorageValue(Storage.TibiaTales.IntoTheBonePit, 1)
 		end
 	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Ohh, then I need to find another adventurer who wants to earn a great reward. Bye!", npc, creature)
-			addEvent(function()
-				releasePlayer(npc, creature)
-			end, 1000)
 		end
 	end
 	return true

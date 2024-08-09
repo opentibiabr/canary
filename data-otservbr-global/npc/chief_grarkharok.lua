@@ -53,7 +53,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local mission = Storage.Quest.U8_2.TrollSabotage
+local mission = Storage.Quest.U8_2.TrollSabotageQuest
 local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -71,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "kill") or MsgContains(message, "hurt") or MsgContains(message, "pain") then
-		if player:getStorageValue(Storage.Quest.U8_2.TrollSabotage.Questline) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_2.TrollSabotageQuest.Questline) == 1 then
 			npcHandler:setTopic(playerId, 1)
 		end
 		npcHandler:say("Hrhrhrhr! Me no fear of human! Me Chief Grarkharok!!", npc, creature)

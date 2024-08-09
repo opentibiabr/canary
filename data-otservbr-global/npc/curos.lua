@@ -67,7 +67,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:setStorageValue(TheNewFrontier.Questline, 19)
 			player:setStorageValue(TheNewFrontier.Mission06, 4) --Questlog, The New Frontier Quest "Mission 06: Days Of Doom"
-		elseif player:getStorageValue(TheNewFrontier.Mission06) >= 4 and player:getStorageValue(AnUneasyAlliance.Questline) < 1 then --An Uneasy Alliance Quest
+		elseif player:getStorageValue(TheNewFrontier.Mission06) >= 5 and player:getStorageValue(AnUneasyAlliance.Questline) < 1 then --An Uneasy Alliance Quest
 			npcHandler:say({
 				"So you still think you can be of any use for us? Words are cheap and easy. Admittedly, you've passed our first test but even some resilient beast might have accomplished that. ...",
 				"Your actions will tell if you are only yelping for attention like a puppy or if you have the teeth of a wolf. ...",
@@ -81,7 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(AnUneasyAlliance.Questline, 1)
 			player:setStorageValue(AnUneasyAlliance.QuestDoor, 0)
 		elseif player:getStorageValue(AnUneasyAlliance.Questline) == 1 and player:getStorageValue(AnUneasyAlliance.QuestDoor) == 1 then
-			npcHandler:say({ "With the death of their leader, the rebels return to our camps one by one, deeply humiliated. It might be a wise decision to let a useful tool like you continue to exist." }, npc, creature)
+			npcHandler:say("With the death of their leader, the rebels return to our camps one by one, deeply humiliated. It might be a wise decision to let a useful tool like you continue to exist.", npc, creature)
 			player:setStorageValue(AnUneasyAlliance.Questline, 2)
 		elseif player:getStorageValue(AnUneasyAlliance.Questline) == 2 then
 			npcHandler:say({

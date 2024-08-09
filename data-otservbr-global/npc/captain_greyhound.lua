@@ -67,7 +67,7 @@ addTravelKeyword("edron", 110, Position(33175, 31764, 6))
 addTravelKeyword("venore", 130, Position(32954, 32022, 6))
 addTravelKeyword("svargrond", 110, Position(32341, 31108, 6))
 addTravelKeyword("yalahar", 185, Position(32816, 31272, 6), function(player)
-	return player:getStorageValue(Storage.SearoutesAroundYalahar.Carlin) ~= 1 and player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) < 5
+	return player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.Carlin) ~= 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.TownsCounter) < 5
 end)
 
 -- Kick

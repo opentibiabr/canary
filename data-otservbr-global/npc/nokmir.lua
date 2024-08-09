@@ -58,12 +58,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.HiddenCityOfBeregar.JusticeForAll) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll) < 1 then
 			npcHandler:say("I don't see how you could help me. I'm in deep, deep trouble. I'm accused of having stolen a {ring} from Rerun, but I haven't.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.HiddenCityOfBeregar.JusticeForAll) == 5 then
-			player:setStorageValue(Storage.HiddenCityOfBeregar.JusticeForAll, 6)
-			player:setStorageValue(Storage.HiddenCityOfBeregar.DoorNorthMine, 1)
+		elseif player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll) == 5 then
+			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll, 6)
+			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DoorNorthMine, 1)
 			npcHandler:say("WHAT?! I can't believe it. You saved my life... well, at least one week of it 'cause that would have been the time I had to spend in jail. If you want to, you can pass the door now and take a look at the northern mines. Have fun!", npc, creature)
 		end
 	elseif MsgContains(message, "ring") then
@@ -86,8 +86,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "rehal") then
 		if npcHandler:getTopic(playerId) == 4 then
-			player:setStorageValue(Storage.HiddenCityOfBeregar.DefaultStart, 1)
-			player:setStorageValue(Storage.HiddenCityOfBeregar.JusticeForAll, 1)
+			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart, 1)
+			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll, 1)
 			npcHandler:say("He's a good emperor but I doubt he is wise enough to see the truth behind that false accusation against me. If just someone would find out the truth about that whole mess.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

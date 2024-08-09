@@ -59,10 +59,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "report") then
-		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 7 or player:getStorageValue(Storage.InServiceofYalahar.Questline) == 13 then
+		if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) == 7 or player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) == 13 then
 			npcHandler:say("Uhm, report, eh? <slowly gives a clumsy description of recent problems>. ", npc, creature)
-			player:setStorageValue(Storage.InServiceofYalahar.Questline, math.max(1, player:getStorageValue(Storage.InServiceofYalahar.Questline) + 1))
-			player:setStorageValue(Storage.InServiceofYalahar.Mission02, math.max(1, player:getStorageValue(Storage.InServiceofYalahar.Mission02) + 1)) -- StorageValue for Questlog "Mission 02: Watching the Watchmen"
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, math.max(1, player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) + 1))
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission02, math.max(1, player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission02) + 1)) -- StorageValue for Questlog "Mission 02: Watching the Watchmen"
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "pass") then

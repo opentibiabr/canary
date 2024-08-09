@@ -80,7 +80,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "crimson sword") then
-		if player:getStorageValue(Storage.TravellingTrader.Mission05) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission05) == 1 then
 			npcHandler:say("Me don't sell crimson sword.", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
@@ -123,7 +123,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				if player:removeMoneyBank(250) and player:removeItem(5880, 3) then
 					npcHandler:say("Ah, that's how me like me customers. Ok, me do this... <pling pling> ... another fine swing of the hammer here and there... <ploing>... here you have it!", npc, creature)
 					player:addItem(7385, 1)
-					player:setStorageValue(Storage.TravellingTrader.Mission05, 2)
+					player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission05, 2)
 					npcHandler:setTopic(playerId, 0)
 				end
 			end

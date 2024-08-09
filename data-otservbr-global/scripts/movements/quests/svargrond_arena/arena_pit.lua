@@ -14,34 +14,34 @@ function arenaPit.onStepIn(creature, item, position, fromPosition)
 	if item.actionid == 25300 then
 		player:addCondition(condition)
 
-		player:setStorageValue(Storage.SvargrondArena.PitDoor, -1)
+		player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor, -1)
 		player:teleportTo(SvargrondArena.kickPosition)
 		player:say("Coward!", TALKTYPE_MONSTER_SAY)
 		SvargrondArena.cancelEvents(playerId)
 		return true
 	end
 
-	local pitId = player:getStorageValue(Storage.SvargrondArena.PitDoor)
-	local arenaId = player:getStorageValue(Storage.SvargrondArena.Arena)
+	local pitId = player:getStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor)
+	local arenaId = player:getStorageValue(Storage.Quest.U8_0.BarbarianArena.Arena)
 	if pitId > 10 then
 		player:teleportTo(SvargrondArena.rewardPosition)
-		player:setStorageValue(Storage.SvargrondArena.PitDoor, 0)
+		player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor, 0)
 
 		if arenaId == 1 then
 			SvargrondArena.rewardPosition:sendMagicEffect(CONST_ME_FIREWORK_BLUE)
-			player:setStorageValue(Storage.SvargrondArena.GreenhornDoor, 1)
+			player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.GreenhornDoor, 1)
 			player:say("Welcome back, little hero!", TALKTYPE_MONSTER_SAY)
 		elseif arenaId == 2 then
 			SvargrondArena.rewardPosition:sendMagicEffect(CONST_ME_FIREWORK_YELLOW)
-			player:setStorageValue(Storage.SvargrondArena.ScrapperDoor, 1)
+			player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.ScrapperDoor, 1)
 			player:say("Congratulations, brave warrior!", TALKTYPE_MONSTER_SAY)
 		elseif arenaId == 3 then
 			SvargrondArena.rewardPosition:sendMagicEffect(CONST_ME_FIREWORK_RED)
-			player:setStorageValue(Storage.SvargrondArena.WarlordDoor, 1)
+			player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.WarlordDoor, 1)
 			player:say("Respect and honour to you, champion!", TALKTYPE_MONSTER_SAY)
 		end
 
-		player:setStorageValue(Storage.SvargrondArena.Arena, player:getStorageValue(Storage.SvargrondArena.Arena) + 1)
+		player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.Arena, player:getStorageValue(Storage.Quest.U8_0.BarbarianArena.Arena) + 1)
 		player:say("Congratulations! You completed " .. ARENA[arenaId].name .. " arena, you should take your reward now.")
 		player:setStorageValue(ARENA[arenaId].questLog, 2)
 		player:addAchievement(ARENA[arenaId].achievement)

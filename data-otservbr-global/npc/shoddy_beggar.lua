@@ -71,23 +71,27 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("Hmm, if you can spare a coin... we can talk. What do you say?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "device") then
-		if player:getStorageValue(Storage.SeaOfLight.Questline) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) == 1 then
 			npcHandler:say("Persistent little nuisance, aren't we? Well, I like your spirit so I will tell you a secret. I may not look the part but I was once a {scientist}. The academy seemed to not like my... attitude and never actually invited me.", npc, creature)
 		end
 	elseif MsgContains(message, "scientist") then
-		if player:getStorageValue(Storage.SeaOfLight.Questline) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) == 1 then
 			npcHandler:say("Indeed, I was one myself a long time ago. I may seem a little... distracted by now, but I was working on many important projects. I even created a device to... well, it will cost you another gold coin if you want me to tell you the whole story. You're in?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if not player:removeMoneyBank(1) then
-				npcHandler:say(player:getStorageValue(Storage.SeaOfLight.Questline) ~= 1 and "Is that all you have? That would be less than I have... *mumbles*" or "Mh, it seems you don't have any coins.", npc, creature)
+				npcHandler:say(player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) ~= 1 and "Is that all you have? That would be less than I have... *mumbles*" or "Mh, it seems you don't have any coins.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
 
-			npcHandler:say(player:getStorageValue(Storage.SeaOfLight.Questline) ~= 1 and "Very kind indeed. Maybe you are not such a bad guy after all. Maybe I can even give it back to you one day... you know I was not always like that *mumbles*." or "Thank you very much... plans you say? I don't know what you are talking about. Plans for a magic... device? And the people call ME crazy.", npc, creature)
+			npcHandler:say(
+				player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) ~= 1 and "Very kind indeed. Maybe you are not such a bad guy after all. Maybe I can even give it back to you one day... you know I was not always like that *mumbles*." or "Thank you very much... plans you say? I don't know what you are talking about. Plans for a magic... device? And the people call ME crazy.",
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if not player:removeMoneyBank(1) then
@@ -124,8 +128,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 11 then
 			player:addItem(9696, 1)
-			player:setStorageValue(Storage.SeaOfLight.Questline, 2)
-			player:setStorageValue(Storage.SeaOfLight.Mission1, 2)
+			player:setStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline, 2)
+			player:setStorageValue(Storage.Quest.U8_54.SeaOfLight.Mission1, 2)
 			npcHandler:say("Well, to be honest, I envy him a little. He can continue his research in his laboratory. He still has working equipment... I sometimes read his publications. He is an able man, but completely on the wrong track... give these plans to him.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

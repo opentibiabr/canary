@@ -76,6 +76,7 @@ npcConfig.shop = {
 	{ itemName = "shovel", clientId = 3457, buy = 10, sell = 8 },
 	{ itemName = "torch", clientId = 2920, buy = 2 },
 	{ itemName = "vial of oil", clientId = 2874, buy = 20, count = 7 },
+	{ itemName = "vial of water", clientId = 2874, buy = 40, count = 1 },
 	{ itemName = "watch", clientId = 2906, buy = 20, sell = 6 },
 	{ itemName = "waterskin of water", clientId = 2901, buy = 40, count = 1 },
 	{ itemName = "wooden hammer", clientId = 3459, sell = 15 },

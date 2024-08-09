@@ -309,7 +309,7 @@ local bosses = {
 	},
 	{
 		bossName = "tiquandas revenge",
-		storage = Storage.KillingInTheNameOf.MissionTiquandasRevenge,
+		storage = Storage.Quest.U8_5.KillingInTheNameOf.MissionTiquandasRevenge,
 		teleportPosition = { x = 32877, y = 32583, z = 7 },
 		playerPosition = Position(32888, 32580, 4),
 		bossPosition = Position(32888, 32586, 4),
@@ -320,7 +320,7 @@ local bosses = {
 	},
 	{
 		bossName = "demodras",
-		storage = Storage.KillingInTheNameOf.MissionDemodras,
+		storage = Storage.Quest.U8_5.KillingInTheNameOf.MissionDemodras,
 		teleportPosition = { x = 32769, y = 32290, z = 10 },
 		playerPosition = Position(32748, 32287, 10),
 		bossPosition = Position(32747, 32294, 10),
@@ -331,7 +331,7 @@ local bosses = {
 	},
 	{
 		bossName = "necropharus",
-		storage = Storage.KillingInTheNameOf.LugriNecromancers,
+		storage = Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers,
 		teleportPosition = { x = 33046, y = 32439, z = 11 },
 		playerPosition = Position(33028, 32426, 12),
 		bossPosition = Position(33026, 32422, 12),
@@ -342,7 +342,7 @@ local bosses = {
 	},
 	{
 		bossName = "the horned fox",
-		storage = Storage.KillingInTheNameOf.BudrikMinos,
+		storage = Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos,
 		teleportPosition = { x = 32450, y = 31988, z = 9 },
 		playerPosition = Position(32458, 31994, 9),
 		bossPosition = Position(32458, 32005, 9),
@@ -353,7 +353,7 @@ local bosses = {
 	},
 	{
 		bossName = { "Brutus Bloodbeard", "Deadeye Devious", "lethal lissy", "Ron The Ripper" },
-		storage = Storage.KillingInTheNameOf.PirateTask,
+		storage = Storage.Quest.U8_5.KillingInTheNameOf.PirateTask,
 		teleportPosition = { x = 31978, y = 32853, z = 1 },
 		playerPosition = Position(31976, 32896, 0),
 		bossPosition = Position(31983, 32897, 0),
@@ -364,7 +364,7 @@ local bosses = {
 	},
 	{
 		bossName = "merikh the slaughterer",
-		storage = Storage.KillingInTheNameOf.GreenDjinnTask,
+		storage = Storage.Quest.U8_5.KillingInTheNameOf.GreenDjinnTask,
 		teleportPosition = { x = 32870, y = 31112, z = 4 },
 		playerPosition = Position(32876, 31120, 8),
 		bossPosition = Position(32875, 31112, 8),
@@ -375,7 +375,7 @@ local bosses = {
 	},
 	{
 		bossName = "fahim the wise",
-		storage = Storage.KillingInTheNameOf.BlueDjinnTask,
+		storage = Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask,
 		teleportPosition = { x = 32815, y = 31119, z = 3 },
 		playerPosition = Position(32811, 31121, 2),
 		bossPosition = Position(32811, 31114, 2),

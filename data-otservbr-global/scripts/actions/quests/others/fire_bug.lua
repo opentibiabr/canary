@@ -92,9 +92,9 @@ function othersFireBug.onUse(player, item, fromPosition, target, toPosition, isH
 			target:transform(2113)
 			return true
 		elseif target.actionid == 12550 or target.actionid == 12551 then -- Secret Service Quest
-			if player:getStorageValue(Storage.SecretService.TBIMission01) == 1 then
+			if player:getStorageValue(Storage.Quest.U8_1.SecretService.TBIMission01) == 1 then
 				Game.createItem(2118, 1, Position(32893, 32012, 6))
-				player:setStorageValue(Storage.SecretService.TBIMission01, 2)
+				player:setStorageValue(Storage.Quest.U8_1.SecretService.TBIMission01, 2)
 			end
 		end
 		return true

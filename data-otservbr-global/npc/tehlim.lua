@@ -59,13 +59,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if Player(creature):getStorageValue(Storage.HiddenCityOfBeregar.RoyalRescue) == 5 then
+		if Player(creature):getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.RoyalRescue) == 5 then
 			npcHandler:say("I warn you, those trolls are WAY more dangerous than the usual kind. Alone, I can't do anything for my brothers. Find a way to the trolls' hideout and rescue my brothers. Are you willing to help me?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			Player(creature):setStorageValue(Storage.HiddenCityOfBeregar.RoyalRescue, 6)
+			Player(creature):setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.RoyalRescue, 6)
 			npcHandler:say(" Great! I hope you find my brothers. Good luck!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

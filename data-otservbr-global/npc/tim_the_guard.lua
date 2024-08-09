@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "trouble") and player:getStorageValue(Storage.TheInquisition.TimGuard) < 1 and player:getStorageValue(Storage.TheInquisition.Mission01) ~= -1 then
+	if MsgContains(message, "trouble") and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.TimGuard) < 1 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission01) ~= -1 then
 		npcHandler:say("Ah, well. Just this morning my new toothbrush fell into the toilet.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "authorities") then
@@ -73,11 +73,14 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "gods would allow") then
 		if npcHandler:getTopic(playerId) == 3 then
-			npcHandler:say("It's not a drama!! I think there is just no god who's responsible for toothbrush safety, that's all ... ", npc, creature)
+			npcHandler:say({
+				"It's not a drama!! I think there is just no god who's responsible for toothbrush safety, that's all ...",
+				"And even IF through some miracle the stupid toothbrush had jumped out of the toilet into my hand, I honestly doubt I would ever use it again.",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			if player:getStorageValue(Storage.TheInquisition.TimGuard) < 1 then
-				player:setStorageValue(Storage.TheInquisition.TimGuard, 1)
-				player:setStorageValue(Storage.TheInquisition.Mission01, player:getStorageValue(Storage.TheInquisition.Mission01) + 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
+			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.TimGuard) < 1 then
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.TimGuard, 1)
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission01, player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission01) + 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
 				player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 			end
 		end

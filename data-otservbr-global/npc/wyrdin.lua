@@ -77,7 +77,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TheWayToYalahar.QuestLine) < 1 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers) >= 4 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) >= 4 then
+		if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.TheWayToYalahar) < 1 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) >= 5 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers) >= 5 then
 			npcHandler:say({
 				"There is indeed something that needs our attention. In the far north, a new city named Yalahar was discovered. It seems to be incredibly huge. ...",
 				"According to travelers, it's a city of glory and wonders. We need to learn as much as we can about this city and its inhabitants. ...",
@@ -85,27 +85,29 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Please look for the explorer's society's captain Maximilian in Liberty Bay. Ask him for a passage to Yalahar. There visit Timothy of the explorer's society and get his research notes. ...",
 				"It might be a good idea to explore the city a bit on your own before you deliver the notes here, but please make sure you don't lose them.",
 			}, npc, creature)
-			player:setStorageValue(Storage.TheWayToYalahar.QuestLine, 1)
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.TheWayToYalahar, 1)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheWayToYalahar.QuestLine) == 2 then
-			npcHandler:say("Did you bring the papers I asked you for?", npc, creature)
+		end
+	elseif MsgContains(message, "research") or MsgContains(message, "notes") then
+		if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.TheWayToYalahar) == 2 then
+			npcHandler:say("Do you have the papers I asked you for with you?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:removeItem(9171, 1) then
-				player:setStorageValue(Storage.TheWayToYalahar.QuestLine, 3)
+				player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.TheWayToYalahar, 3)
 				npcHandler:say("Oh marvellous, please excuse me. I need to read this text immediately. Here, take this small reward of 500 gold pieces for your efforts.", npc, creature)
 				player:addMoney(500)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:getStorageValue(TheNewFrontier.Mission05.Wyrdin) == 2 and player:removeItem(10025, 1) then
-				npcHandler:say(
-					{ "By Uman! That's one of the rare almanacs of Origus! I had no idea that you are a scholar yourself! And a generous one on top of it! ...", "This book must be worth some thousand crystal coins on the free market. Look at the signature here, it's Origus' very own! ...", "Of course we should talk again about your request. What do you say makes Farmine important?" },
-					npc,
-					creature
-				)
+				npcHandler:say({
+					"By Uman! That's one of the rare almanacs of Origus! I had no idea that you are a scholar yourself! And a generous one on top of it! ...",
+					"This book must be worth some thousand crystal coins on the free market. Look at the signature here, it's Origus' very own! ...",
+					"Of course we should talk again about your request. What do you say makes Farmine important?",
+				}, npc, creature)
 				player:setStorageValue(TheNewFrontier.Mission05.Wyrdin, 1)
 				npcHandler:setTopic(playerId, 2)
 			end
@@ -150,6 +152,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 npcHandler:setMessage(MESSAGE_GREET, "Hello, what brings you here?")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good luck for your travels, |PLAYERNAME|.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

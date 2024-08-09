@@ -1,6 +1,6 @@
 local config = {
 	[7738] = {
-		storage = GlobalStorage.ElementalSphere.KnightBoss,
+		storage = Storage.Quest.U8_2.ElementalSpheres.KnightBoss,
 		corpse = 8139,
 		charged = 2126,
 		inactive = 0,
@@ -19,7 +19,7 @@ local config = {
 		},
 	},
 	[7739] = {
-		storage = GlobalStorage.ElementalSphere.SorcererBoss,
+		storage = Storage.Quest.U8_2.ElementalSpheres.SorcererBoss,
 		corpse = 8141,
 		charged = 7745,
 		inactive = 7743,
@@ -38,7 +38,7 @@ local config = {
 		},
 	},
 	[7740] = {
-		storage = GlobalStorage.ElementalSphere.PaladinBoss,
+		storage = Storage.Quest.U8_2.ElementalSpheres.PaladinBoss,
 		corpse = 8140,
 		charged = 7744,
 		inactive = 7741,
@@ -58,7 +58,7 @@ local config = {
 		},
 	},
 	[7748] = {
-		storage = GlobalStorage.ElementalSphere.DruidBoss,
+		storage = Storage.Quest.U8_2.ElementalSpheres.DruidBoss,
 		corpse = 8106,
 		charged = 7746,
 		inactive = 7742,

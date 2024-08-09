@@ -37,7 +37,7 @@ function elementalSpheresLever.onUse(player, item, fromPosition, target, toPosit
 	end
 
 	local spectators = Game.getSpectators(Position(33268, 31836, 12), false, true, 30, 30, 30, 30)
-	if #spectators > 0 or Game.getStorageValue(GlobalStorage.ElementalSphere.BossRoom) > 0 then
+	if #spectators > 0 or Game.getStorageValue(Storage.Quest.U8_2.ElementalSpheres.BossRoom) > 0 then
 		player:say("Wait for the current team to exit.", TALKTYPE_MONSTER_SAY, false, 0, Position(33268, 31835, 10))
 		return true
 	end
@@ -51,7 +51,7 @@ function elementalSpheresLever.onUse(player, item, fromPosition, target, toPosit
 		end
 
 		local vocationId = creature:getVocation():getBaseId()
-		if vocationId ~= config[i].vocationId or creature:getItemCount(config[i].itemid) < 1 or creature:getStorageValue(Storage.ElementalSphere.QuestLine) < 1 then
+		if vocationId ~= config[i].vocationId or creature:getItemCount(config[i].itemid) < 1 or creature:getStorageValue(Storage.Quest.U8_2.ElementalSpheres.QuestLine) < 1 then
 			player:say("You need one player of each vocation having completed the Elemental Spheres quest and also carrying the elemental rare item.", TALKTYPE_MONSTER_SAY, false, 0, Position(33268, 31835, 10))
 			return true
 		end

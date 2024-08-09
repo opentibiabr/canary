@@ -1,8 +1,8 @@
 local overlords = {
-	["energy overlord"] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.KnightBoss },
-	["fire overlord"] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.SorcererBoss },
-	["ice overlord"] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.PaladinBoss },
-	["earth overlord"] = { storage = Storage.ElementalSphere.BossStorage, globalStorage = GlobalStorage.ElementalSphere.DruidBoss },
+	["energy overlord"] = { storage = Storage.Quest.U8_2.ElementalSpheres.BossStorage, globalStorage = Storage.Quest.U8_2.ElementalSpheres.KnightBoss },
+	["fire overlord"] = { storage = Storage.Quest.U8_2.ElementalSpheres.BossStorage, globalStorage = Storage.Quest.U8_2.ElementalSpheres.SorcererBoss },
+	["ice overlord"] = { storage = Storage.Quest.U8_2.ElementalSpheres.BossStorage, globalStorage = Storage.Quest.U8_2.ElementalSpheres.PaladinBoss },
+	["earth overlord"] = { storage = Storage.Quest.U8_2.ElementalSpheres.BossStorage, globalStorage = Storage.Quest.U8_2.ElementalSpheres.DruidBoss },
 	["lord of the elements"] = {},
 }
 

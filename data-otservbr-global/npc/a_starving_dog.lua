@@ -56,9 +56,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "meat") then
 		if player:removeItem(3577, 1) then
 			npcHandler:say("<munch>", npc, creature)
-			if player:getStorageValue(Storage.TheIceIslands.Mission01) == 1 then
-				player:setStorageValue(Storage.TheIceIslands.Questline, 2)
-				player:setStorageValue(Storage.TheIceIslands.Mission01, 2) -- Questlog The Ice Islands Quest, Befriending the Musher
+			if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission01) == 1 then
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 2)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission01, 2) -- Questlog The Ice Islands Quest, Befriending the Musher
 			end
 			npcHandler:removeInteraction(npc, creature)
 		end

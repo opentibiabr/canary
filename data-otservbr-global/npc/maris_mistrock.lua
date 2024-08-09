@@ -76,8 +76,8 @@ keywordHandler:addKeyword(
 	},
 	nil,
 	function(player)
-		if player:getStorageValue(Storage.HiddenCityOfBeregar.WayToBeregar) ~= 1 then
-			player:setStorageValue(Storage.HiddenCityOfBeregar.WayToBeregar, 1)
+		if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.WayToBeregar) ~= 1 then
+			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.WayToBeregar, 1)
 		end
 	end
 )

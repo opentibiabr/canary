@@ -54,9 +54,9 @@ local TheHuntForTheSeaSerpent = Storage.Quest.U8_2.TheHuntForTheSeaSerpent
 local function greetCallback(npc, creature)
 	local player = Player(creature)
 
-	if player:getStorageValue(TheHuntForTheSeaSerpent.QuestLine) == 1 then
+	if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine) == 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Wha'd ya want? Ask me 'bout the {instructions} if you don't know what to do! If you wanna head back to {Svargrond}, let me know.")
-	elseif player:getStorageValue(TheHuntForTheSeaSerpent.QuestLine) == 2 then
+	elseif player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine) == 2 then
 		npcHandler:setMessage(MESSAGE_GREET, "You found the spot |PLAYERNAME|!! Grab yourself a helmet of the deep and go explore the {caves} down there.")
 	end
 	return true
@@ -115,41 +115,41 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message:lower(), "straight") then
 		randomMessagesResult = randomMessages.straight[math.random(#randomMessages.straight)]
 		npcHandler:say(randomMessagesResult, npc, creature)
-		if player:getStorageValue(TheHuntForTheSeaSerpent.Direction) == 1 then
-			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 1)
-			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
+		if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction) == 1 then
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.SuccessSwitch, 1)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction, 0)
 		else
-			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 0)
-			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.SuccessSwitch, 0)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction, 0)
 		end
 	elseif MsgContains(message:lower(), "starboard") then
 		randomMessagesResult = randomMessages.starboard[math.random(#randomMessages.starboard)]
 		npcHandler:say(randomMessagesResult, npc, creature)
-		if player:getStorageValue(TheHuntForTheSeaSerpent.Direction) == 2 then
-			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 1)
-			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
+		if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction) == 2 then
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.SuccessSwitch, 1)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction, 0)
 		else
-			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 0)
-			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.SuccessSwitch, 0)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction, 0)
 		end
 	elseif MsgContains(message:lower(), "larboard") then
 		randomMessagesResult = randomMessages.larboard[math.random(#randomMessages.larboard)]
 		npcHandler:say(randomMessagesResult, npc, creature)
-		if player:getStorageValue(TheHuntForTheSeaSerpent.Direction) == 3 then
-			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 1)
-			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
+		if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction) == 3 then
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.SuccessSwitch, 1)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction, 0)
 		else
-			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 0)
-			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.SuccessSwitch, 0)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction, 0)
 		end
 	elseif MsgContains(message:lower(), "speed") then
 		npcHandler:say("IS THAT ALL?!? SPEED UP, TIGHTEN THE MAINSAIL!!!", npc, creature)
-		if player:getStorageValue(TheHuntForTheSeaSerpent.Direction) == 4 then
-			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 1)
-			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
+		if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction) == 4 then
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.SuccessSwitch, 1)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction, 0)
 		else
-			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 0)
-			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.SuccessSwitch, 0)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.Direction, 0)
 		end
 	elseif table.contains({ "god", "svargrond", "back", "hunt", "passage", "trip" }, message:lower()) then
 		if table.contains({ "god", "svargrond", "back", "hunt" }, message:lower()) then

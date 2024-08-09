@@ -71,16 +71,16 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local arenaId = player:getStorageValue(Storage.SvargrondArena.Arena)
+	local arenaId = player:getStorageValue(Storage.Quest.U8_0.BarbarianArena.Arena)
 	if MsgContains(message, "fight") or MsgContains(message, "pit") or MsgContains(message, "challenge") or MsgContains(message, "arena") then
-		if player:getStorageValue(Storage.SvargrondArena.PitDoor) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor) == 1 then
 			npcHandler:say("You already paid the fee, go and fight!", npc, creature)
 			return true
 		end
 
 		if arenaId < 1 then
 			arenaId = 1
-			player:setStorageValue(Storage.SvargrondArena.Arena, arenaId)
+			player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.Arena, arenaId)
 		end
 
 		if ARENA[arenaId] then
@@ -98,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 
 			if player:removeMoneyBank(ARENA[arenaId].price) then
-				player:setStorageValue(Storage.SvargrondArena.PitDoor, 1)
+				player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor, 1)
 				npcHandler:say("As you wish! You can pass the door now and enter the teleporter to the pits.", npc, creature)
 
 				local cStorage = ARENA[arenaId].questLog

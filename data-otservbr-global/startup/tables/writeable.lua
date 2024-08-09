@@ -855,10 +855,11 @@ Not mine!
 		itemPos = { x = 33044, y = 32067, z = 12 },
 		text = "DO NOT ENTER!",
 	},
-	[16] = {
-		itemId = 12783,
-		itemPos = { x = 32205, y = 32883, z = 7 },
-		text = "DANGER. Quara sighted below. Experienced adventurers only! Do not swim into a water channel unless you are prepared to meet your death!",
+	-- Barbarian Arena Quest
+	[27] = {
+		itemId = 2015,
+		itemPos = { x = 32221, y = 31088, z = 7 },
+		text = "Exit",
 	},
 	-- The Ancient Tombs Quest
 	[17] = {

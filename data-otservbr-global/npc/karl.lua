@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "barrel") then
-		if player:getStorageValue(Storage.SecretService.AVINMission03) == 2 then
+		if player:getStorageValue(Storage.Quest.U8_1.SecretService.AVINMission03) == 2 then
 			npcHandler:say("Do you bring me a barrel of beer??", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -71,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:removeItem(404, 1) then
-				player:setStorageValue(Storage.SecretService.AVINMission03, 3)
+				player:setStorageValue(Storage.Quest.U8_1.SecretService.AVINMission03, 3)
 				npcHandler:say("Three cheers for the noble |PLAYERNAME|.", npc, creature)
 			else
 				npcHandler:say("You don't have any barrel of beer!", npc, creature)
@@ -102,6 +102,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 npcConfig.shop = {
 	{ itemName = "bottle of whisper beer", clientId = 6106, buy = 80 },
 	{ itemName = "mug of beer", clientId = 2880, buy = 20, count = 3 },
+	{ itemName = "vial of beer", clientId = 2874, buy = 20, count = 1, subType = 3 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

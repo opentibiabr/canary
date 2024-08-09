@@ -67,7 +67,7 @@ addTravelKeyword("gray island", 150, Position(33196, 31984, 7))
 addTravelKeyword("edron", 70, Position(33175, 31764, 6))
 addTravelKeyword("venore", 90, Position(32954, 32022, 6))
 addTravelKeyword("yalahar", 160, Position(32816, 31272, 6), function(player)
-	return player:getStorageValue(Storage.SearoutesAroundYalahar.AbDendriel) ~= 1 and player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) < 5
+	return player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.AbDendriel) ~= 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.TownsCounter) < 5
 end)
 
 -- Kick

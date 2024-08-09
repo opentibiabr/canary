@@ -6,7 +6,7 @@ function citizenSvargrond.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.BarbarianTest.Mission03) == 3 then
+	if player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8 then
 		player:teleportTo(Position(32212, 31131, 5))
 	else
 		player:teleportTo(Position(32210, 31134, 7))

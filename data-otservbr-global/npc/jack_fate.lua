@@ -80,7 +80,7 @@ addTravelKeyword("darashia", 200, Position(33289, 32480, 6))
 addTravelKeyword("ankrahmun", 90, Position(33092, 32883, 6))
 addTravelKeyword("goroma", 0, Position(32161, 32558, 6), "Ugh. You really want to go back to Goroma? I'll surely have to repair my ship afterwards, so I won't charge. Okay?")
 addTravelKeyword("yalahar", 275, Position(32816, 31272, 6), nil, function(player)
-	return player:getStorageValue(Storage.SearoutesAroundYalahar.LibertyBay) ~= 1 and player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) < 5
+	return player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.LibertyBay) ~= 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.TownsCounter) < 5
 end)
 
 -- Thais

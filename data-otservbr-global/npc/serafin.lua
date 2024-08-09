@@ -54,8 +54,9 @@ local BloodBrothers = Storage.Quest.U8_4.BloodBrothers
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
+
 	if message == "cookie" then
-		if player:getStorageValue(BloodBrothers.Mission02) == 1 and player:getItemCount(8199) > 0 and player:getStorageValue(BloodBrothers.Cookies.Serafin) < 0 then
+		if player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission02) == 1 and player:getItemCount(8199) > 0 and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Serafin) < 0 then
 			npcHandler:say("Oh, no I don't sell cookies. Or, do you mean you'd like to give me one?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
@@ -64,14 +65,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif message == "yes" then
 		if npcHandler:getTopic(playerId) == 1 and player:removeItem(8199, 1) then -- garlic cookie
 			npcHandler:say("COUGH?! What kind of a mean trick is that? Get out of my shop!", npc, creature)
-			player:setStorageValue(BloodBrothers.Cookies.Serafin, 1)
+			player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Serafin, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
 end
 --Basic
 keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHandler, text = "There's something about these words which makes me feel awkward. Or maybe it's you who causes that feeling. You better get lost." }, function(player)
-	return player:getStorageValue(BloodBrothers.Mission03) == 1
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission03) == 1
 end)
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to my fruit and vegetable store, |PLAYERNAME|! Ask me for a {trade} if you'd like to see my wares.")

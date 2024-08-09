@@ -9,6 +9,13 @@ TeleportAction = {
 			{ x = 32210, y = 32292, z = 6 },
 		},
 	},
+	-- Barbarian Test - Temple Citizen Svargrond
+	[30032] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32208, y = 31134, z = 7 },
+		},
+	},
 	[35001] = { -- The Cursed Crystal teleports
 		itemId = 19387,
 		itemPos = {

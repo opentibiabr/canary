@@ -64,7 +64,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif MsgContains(message, "cookie") then
-			if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.AvarTar) ~= 1 then
+			if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 31 and player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.AvarTar) ~= 1 then
 				npcHandler:say("Do you really think you could bribe a hero like me with a meagre cookie?", npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			end
@@ -80,7 +80,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.AvarTar, 1)
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.AvarTar, 1)
 			if player:getCookiesDelivered() == 10 then
 				player:addAchievement("Allow Cookies?")
 			end
@@ -119,11 +119,11 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 2)
 			end
 		elseif MsgContains(message, "helmet") then
-			if player:getStorageValue(Storage.Quest.U7_24.TheAnnihilator.Reward) == 2 and player:getStorageValue(Storage.DemonOak.Done) == 3 then
+			if player:getStorageValue(Storage.Quest.U7_24.TheAnnihilator.Reward) == 2 and player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Done) == 3 then
 				player:addOutfitAddon(541, 2)
 				player:addOutfitAddon(542, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				player:setStorageValue(Storage.DemonOak.Done, 4)
+				player:setStorageValue(Storage.Quest.U8_2.TheDemonOak.Done, 4)
 				npcHandler:say("Receive the helmet, |PLAYERNAME|.", npc, creature)
 			else
 				npcHandler:say("The helmet is for those who have hunted down all 6666 demons and finished the demon oak as well, |PLAYERNAME|.", npc, creature)

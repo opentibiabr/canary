@@ -36,7 +36,7 @@ bool Mounts::loadFromXml() {
 		}
 
 		mounts.emplace(std::make_shared<Mount>(
-			static_cast<uint8_t>(pugi::cast<uint16_t>(mountNode.attribute("id").value())),
+			static_cast<uint16_t>(pugi::cast<uint32_t>(mountNode.attribute("id").value())),
 			lookType,
 			mountNode.attribute("name").as_string(),
 			pugi::cast<int32_t>(mountNode.attribute("speed").value()),
@@ -47,7 +47,7 @@ bool Mounts::loadFromXml() {
 	return true;
 }
 
-std::shared_ptr<Mount> Mounts::getMountByID(uint8_t id) {
+std::shared_ptr<Mount> Mounts::getMountByID(uint16_t id) {
 	auto it = std::find_if(mounts.begin(), mounts.end(), [id](const std::shared_ptr<Mount> &mount) {
 		return mount->id == id; // Note the use of -> operator to access the members of the Mount object
 	});

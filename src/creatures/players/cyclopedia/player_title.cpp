@@ -193,7 +193,7 @@ bool PlayerTitle::checkMount(uint32_t amount) {
 }
 
 bool PlayerTitle::checkOutfit(uint32_t amount) {
-	return m_player.outfits.size() >= amount;
+	return m_player.outfitsMap.size() >= amount;
 }
 
 bool PlayerTitle::checkLevel(uint32_t amount) {

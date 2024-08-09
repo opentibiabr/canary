@@ -41,6 +41,7 @@
 #include "enums/account_errors.hpp"
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
+#include "enums/player_blessings.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -6649,33 +6650,24 @@ void Player::initializeTaskHunting() {
 }
 
 std::string Player::getBlessingsName() const {
-	uint8_t count = 0;
-	std::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
-		if (amount != 0) {
-			count++;
+	std::vector<std::string> blessingNames;
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (hasBlessing(enumToValue(bless))) {
+			std::string name = toStartCaseWithSpace(magic_enum::enum_name(bless).data());
+			blessingNames.emplace_back(name);
 		}
-	});
+	}
 
-	auto BlessingNames = g_game().getBlessingNames();
 	std::ostringstream os;
-	for (uint8_t i = 1; i <= 8; i++) {
-		if (hasBlessing(i)) {
-			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i));
-			    blessName != BlessingNames.end()) {
-				os << (*blessName).second;
-			} else {
-				continue;
-			}
-
-			--count;
-			if (count > 1) {
-				os << ", ";
-			} else if (count == 1) {
-				os << " and ";
-			} else {
-				os << ".";
-			}
+	if (!blessingNames.empty()) {
+		// Join all elements but the last with ", " and add the last one with " and "
+		for (size_t i = 0; i < blessingNames.size() - 1; ++i) {
+			os << blessingNames[i] << ", ";
 		}
+		if (blessingNames.size() > 1) {
+			os << "and ";
+		}
+		os << blessingNames.back() << ".";
 	}
 
 	return os.str();

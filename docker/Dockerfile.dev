@@ -11,12 +11,13 @@ RUN --mount=type=cache,target=/var/cache/apt \
 
 WORKDIR /opt
 COPY vcpkg.json /opt
-RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ') \
-	&& echo "vcpkg commit ID: $vcpkgCommitId" \
-	&& git clone https://github.com/Microsoft/vcpkg.git \
-	&& cd vcpkg \
-	&& git checkout "$vcpkgCommitId" \
-	&& ./bootstrap-vcpkg.sh
+RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ' | tr -d '\r\n') \
+    && echo "vcpkg commit ID: '$vcpkgCommitId'" \
+    && git clone https://github.com/microsoft/vcpkg.git \
+    && cd vcpkg \
+    && git fetch origin \
+    && git checkout "$vcpkgCommitId" \
+    && ./bootstrap-vcpkg.sh
 
 WORKDIR /opt/vcpkg
 COPY vcpkg.json /opt/vcpkg/

@@ -76110,19 +76110,43 @@ Granted by TibiaGoals.com"/>
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
 		</attribute>
 	</item>
-	<item id="44654" article="a" name="dead dragolisk">
+	<item id="44651" article="a" name="dead dragolisk">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44652"/>
+	</item>
+		<item id="44652" article="a" name="dead dragolisk">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44653"/>
+	</item>
+		<item id="44653" article="a" name="dead dragolisk">
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
-	<item id="44656" article="a" name="dead wardragon">
+	<item id="44657" article="a" name="dead wardragon">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44658"/>
+	</item>
+			<item id="44658" article="a" name="dead wardragon">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44659"/>
+	</item>
+		<item id="44659" article="a" name="dead wardragon">
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
-	<item id="44663" article="a" name="dead mega dragon">
+		<item id="44660" article="a" name="dead mega dragon">
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
-	<item id="44746" article="a" name="dragolisk eye">
+		<item id="44661" article="a" name="dead mega dragon">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44660"/>
+	</item>
+	<item id="44662" article="a" name="dead mega dragon">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44661"/>
+	</item>
+		<item id="44743" article="a" name="Nimmersatt's seal">
 		<attribute key="loottype" value="creature products" />
 		<attribute key="primarytype" value="creature products" />
 		<attribute key="weight" value="200" />
@@ -76132,27 +76156,27 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="creature products" />
 		<attribute key="weight" value="200" />
 	</item>
-	<item id="44743" article="a" name="Nimmersatt's seal">
+		<item id="44745" article="a" name="mega dragon heart">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44746" article="a" name="dragolisk eye">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+		<item id="44747" article="a" name="dragolisk poison gland">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+		<item id="44748" article="a" name="wardragon claw">
 		<attribute key="loottype" value="creature products" />
 		<attribute key="primarytype" value="creature products" />
 		<attribute key="weight" value="200" />
 	</item>
 	<item id="44749" article="a" name="wardragon tooth">
-		<attribute key="loottype" value="creature products" />
-		<attribute key="primarytype" value="creature products" />
-		<attribute key="weight" value="200" />
-	</item>
-	<item id="44748" article="a" name="wardragon claw">
-		<attribute key="loottype" value="creature products" />
-		<attribute key="primarytype" value="creature products" />
-		<attribute key="weight" value="200" />
-	</item>
-	<item id="44747" article="a" name="dragolisk poison gland">
-		<attribute key="loottype" value="creature products" />
-		<attribute key="primarytype" value="creature products" />
-		<attribute key="weight" value="200" />
-	</item>
-	<item id="44745" article="a" name="mega dragon heart">
 		<attribute key="loottype" value="creature products" />
 		<attribute key="primarytype" value="creature products" />
 		<attribute key="weight" value="200" />

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <items>
 	<!-- Liquids -->
 	<!-- Fluid type 0 is same as water (id="1") -->
@@ -76110,7 +76110,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
 		</attribute>
 	</item>
-	<item id="44651" article="a" name="dead dragolisk">
+		<item id="44651" article="a" name="dead dragolisk">
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="44652"/>
 	</item>
@@ -76122,11 +76122,11 @@ Granted by TibiaGoals.com"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
-	<item id="44657" article="a" name="dead wardragon">
+		<item id="44657" article="a" name="dead wardragon">
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="44658"/>
 	</item>
-			<item id="44658" article="a" name="dead wardragon">
+		<item id="44658" article="a" name="dead wardragon">
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="44659"/>
 	</item>
@@ -76142,7 +76142,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="44660"/>
 	</item>
-	<item id="44662" article="a" name="dead mega dragon">
+		<item id="44662" article="a" name="dead mega dragon">
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="44661"/>
 	</item>
@@ -76176,7 +76176,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="creature products" />
 		<attribute key="weight" value="200" />
 	</item>
-	<item id="44749" article="a" name="wardragon tooth">
+		<item id="44749" article="a" name="wardragon tooth">
 		<attribute key="loottype" value="creature products" />
 		<attribute key="primarytype" value="creature products" />
 		<attribute key="weight" value="200" />

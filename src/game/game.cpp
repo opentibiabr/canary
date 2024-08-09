@@ -1487,7 +1487,7 @@ ReturnValue Game::internalMoveCreature(std::shared_ptr<Creature> creature, Direc
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if (creature->getBaseSpeed() == 0 && flags != FLAG_IGNORENOTMOVABLE) {
+	if (creature->getBaseSpeed() == 0) {
 		return RETURNVALUE_NOTMOVABLE;
 	}
 

@@ -37,7 +37,7 @@ SoulWarQuest = {
 		"Brachiodemon",
 		"Branchy Crawler",
 		"Capricious Phantom",
-		"Cloak Of Terror",
+		"Cloak of Terror",
 		"Courage Leech",
 		"Distorted Phantom",
 		"Druid's Apparition",

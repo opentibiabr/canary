@@ -68,10 +68,7 @@ monster.light = {
 }
 
 monster.summon = {
-	maxSummons = 1,
-	summons = {
-		{ name = "dreadful harvester", chance = 10, interval = 1000, count = 1 },
-	},
+	maxSummons = 1
 }
 
 monster.voices = {

@@ -84,26 +84,39 @@ monster.immunities = {
 }
 
 local moveTimeCount = 0
+local stop = false
 mType.onThink = function(monster, interval)
-	moveTimeCount = moveTimeCount + interval
-	if moveTimeCount == 3000 then
-		monster:move(DIRECTION_WEST)
-		moveTimeCount = 0
-		local monsterPos = monster:getPosition()
-		local nextPos = Position(monsterPos.x - 1, monsterPos.y, monsterPos.z)
-		local tile = Tile(nextPos)
-		if not tile then
-			return
-		end
+	if stop then
+		return
+	end
 
-		for _, creatureId in pairs(tile:getCreatures()) do
-			local monster = Monster(creatureId)
-			if monster and monster:getName() == "Goshnar's Greed" then
-				monster:setHealth(monster:getMaxHealth())
-				break
+	moveTimeCount = moveTimeCount + interval
+	if moveTimeCount >= 3000 then
+		local currentPos = monster:getPosition()
+		local newPos = Position(currentPos.x - 1, currentPos.y, currentPos.z)
+
+		local nextTile = Tile(newPos)
+		if nextTile then
+			for _, creatureId in pairs(nextTile:getCreatures()) do
+				local greedMonster = Monster(creatureId)
+				if greedMonster and greedMonster:getName() == "Goshnar's Greed" then
+					greedMonster:setHealth(greedMonster:getMaxHealth())
+					stop = true
+					return
+				end
 			end
 		end
+
+		if not stop then
+			monster:teleportTo(newPos, true)
+			moveTimeCount = 0
+		end
 	end
+end
+
+mType.onSpawn = function(monster)
+	moveTimeCount = 0
+	stop = false
 end
 
 mType:register(monster)

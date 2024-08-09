@@ -299,4 +299,3 @@ for index, value in pairs(positions) do
 	crate:position(value)
 end
 crate:register()
-

@@ -6625,7 +6625,7 @@ std::string Player::getBlessingsName() const {
 	for (auto bless : magic_enum::enum_values<Blessings>()) {
 		if (hasBlessing(enumToValue(bless))) {
 			std::string name = toStartCaseWithSpace(magic_enum::enum_name(bless).data());
-			blessingNames.push_back(name);
+			blessingNames.emplace_back(name);
 		}
 	}
 

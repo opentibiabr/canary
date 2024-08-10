@@ -203,7 +203,7 @@ ReturnValue Actions::canUseFar(std::shared_ptr<Creature> creature, const Positio
 		return RETURNVALUE_TOOFARAWAY;
 	}
 
-	if (checkLineOfSight && !g_game().canThrowObjectTo(creaturePos, toPos)) {
+	if (checkLineOfSight && !g_game().canThrowObjectTo(creaturePos, toPos, checkFloor ? SightLine_CheckSightLineAndFloor : SightLine_CheckSightLine)) {
 		return RETURNVALUE_CANNOTTHROW;
 	}
 

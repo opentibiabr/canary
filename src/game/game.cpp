@@ -53,6 +53,7 @@
 #include "enums/account_group_type.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_coins.hpp"
+#include "enums/player_blessings.hpp"
 
 #include <appearances.pb.h>
 
@@ -362,17 +363,6 @@ Game::Game() {
 		HighscoreCategory("Shielding", static_cast<uint8_t>(HighscoreCategories_t::SHIELDING)),
 		HighscoreCategory("Fishing", static_cast<uint8_t>(HighscoreCategories_t::FISHING)),
 		HighscoreCategory("Magic Level", static_cast<uint8_t>(HighscoreCategories_t::MAGIC_LEVEL))
-	};
-
-	m_blessingNames = {
-		{ static_cast<uint8_t>(TWIST_OF_FATE), "Twist of Fate" },
-		{ static_cast<uint8_t>(WISDOM_OF_SOLITUDE), "The Wisdom of Solitude" },
-		{ static_cast<uint8_t>(SPARK_OF_THE_PHOENIX), "The Spark of the Phoenix" },
-		{ static_cast<uint8_t>(FIRE_OF_THE_SUNS), "The Fire of the Suns" },
-		{ static_cast<uint8_t>(SPIRITUAL_SHIELDING), "The Spiritual Shielding" },
-		{ static_cast<uint8_t>(EMBRACE_OF_TIBIA), "The Embrace of Tibia" },
-		{ static_cast<uint8_t>(BLOOD_OF_THE_MOUNTAIN), "Blood of the Mountain" },
-		{ static_cast<uint8_t>(HEARTH_OF_THE_MOUNTAIN), "Heart of the Mountain" },
 	};
 
 	m_summaryCategories = {
@@ -4776,7 +4766,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	if (!canThrowObjectTo(tradePartner->getPosition(), player->getPosition())) {
+	if (!canThrowObjectTo(tradePartner->getPosition(), player->getPosition(), SightLine_CheckSightLineAndFloor)) {
 		player->sendCancelMessage(RETURNVALUE_CREATUREISNOTREACHABLE);
 		return;
 	}
@@ -4946,7 +4936,7 @@ void Game::playerAcceptTrade(uint32_t playerId) {
 		return;
 	}
 
-	if (!canThrowObjectTo(tradePartner->getPosition(), player->getPosition())) {
+	if (!canThrowObjectTo(tradePartner->getPosition(), player->getPosition(), SightLine_CheckSightLineAndFloor)) {
 		player->sendCancelMessage(RETURNVALUE_CREATUREISNOTREACHABLE);
 		return;
 	}
@@ -6223,8 +6213,8 @@ std::shared_ptr<Task> Game::createPlayerTask(uint32_t delay, std::function<void(
 }
 
 //--
-bool Game::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight /*= true*/, int32_t rangex /*= MAP_MAX_CLIENT_VIEW_PORT_X*/, int32_t rangey /*= MAP_MAX_CLIENT_VIEW_PORT_Y*/) {
-	return map.canThrowObjectTo(fromPos, toPos, checkLineOfSight, rangex, rangey);
+bool Game::canThrowObjectTo(const Position &fromPos, const Position &toPos, const SightLines_t lineOfSight /*= SightLine_CheckSightLine*/, const int32_t rangex /*= Map::maxClientViewportX*/, const int32_t rangey /*= Map::maxClientViewportY*/) {
+	return map.canThrowObjectTo(fromPos, toPos, lineOfSight, rangex, rangey);
 }
 
 bool Game::isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck) {
@@ -10666,10 +10656,6 @@ Title Game::getTitleByName(const std::string &name) {
 
 const std::string &Game::getSummaryKeyByType(uint8_t type) {
 	return m_summaryCategories[type];
-}
-
-const std::map<uint8_t, std::string> &Game::getBlessingNames() {
-	return m_blessingNames;
 }
 
 const std::unordered_map<uint16_t, std::string> &Game::getHirelingSkills() {

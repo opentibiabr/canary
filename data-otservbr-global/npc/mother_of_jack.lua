@@ -76,7 +76,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say("Thought so. Of course he wouldn't do anything wrong. And he went where? Edron. Hm. I can see nothing wrong with that. But... he wasn't there often, was he?", npc, creature )
+			npcHandler:say("Thought so. Of course he wouldn't do anything wrong. And he went where? Edron. Hm. I can see nothing wrong with that. But... he wasn't there often, was he?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
 	elseif MsgContains(message, "yes") then

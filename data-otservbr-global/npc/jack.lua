@@ -69,7 +69,7 @@ local function greetCallback(npc, creature, message)
 		npcHandler:setMessage(MESSAGE_GREET, {
 			"What did you do to my SCULPTURE? You simply DESTROYED it? Why? You... you ruined everything... my house, my hobby, my life. My family even refuses to talk to me anymore. ...",
 			"Alright, alright you win. I am done for. You... you must be right, yes. Yes, I was working as an intern... in the academy in Edron... yes... Just... tell this Spectulus guy I want to see him. I have nothing left. I am ready.",
-			})
+		})
 		player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 9)
 	elseif player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 10 then
 		npcHandler:setMessage(MESSAGE_GREET, "So, you've returned to Spectulus? What did he say, is anything wrong? You have this strange expression on your face - is there anything wrong? You DID tell me the truth here, didn't you?")

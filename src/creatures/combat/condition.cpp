@@ -131,6 +131,16 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 			return true;
 		}
 
+		case CONDITIONATTR_PERSISTENT: {
+			bool value = false;
+			if (!propStream.read<bool>(value)) {
+				return false;
+			}
+
+			m_isPersistent = value;
+			return true;
+		}
+
 		case CONDITIONATTR_END:
 			return true;
 
@@ -160,6 +170,9 @@ void Condition::serialize(PropWriteStream &propWriteStream) {
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_ADDSOUND);
 	propWriteStream.write<uint16_t>(static_cast<uint16_t>(addSound));
+
+	propWriteStream.write<uint8_t>(CONDITIONATTR_PERSISTENT);
+	propWriteStream.write<bool>(m_isPersistent);
 }
 
 void Condition::setTicks(int32_t newTicks) {
@@ -185,7 +198,7 @@ bool Condition::executeCondition(std::shared_ptr<Creature> creature, int32_t int
 	return true;
 }
 
-std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/) {
+std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/, bool isPersistent /* = false*/) {
 	switch (type) {
 		case CONDITION_POISON:
 		case CONDITION_FIRE:
@@ -242,6 +255,8 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_YELLTICKS:
 		case CONDITION_PACIFIED:
 			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
+		case CONDITION_BAKRAGORE:
+			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId, isPersistent);
 
 		default:
 			return nullptr;
@@ -306,6 +321,10 @@ bool Condition::startCondition(std::shared_ptr<Creature>) {
 }
 
 bool Condition::isPersistent() const {
+	if (m_isPersistent) {
+		g_logger().debug("Condition {} is persistent", conditionType);
+		return true;
+	}
 	if (ticks == -1) {
 		return false;
 	}
@@ -318,6 +337,10 @@ bool Condition::isPersistent() const {
 }
 
 bool Condition::isRemovableOnDeath() const {
+	if (m_isPersistent) {
+		return false;
+	}
+
 	if (ticks == -1) {
 		return false;
 	}
@@ -329,8 +352,13 @@ bool Condition::isRemovableOnDeath() const {
 	return true;
 }
 
-uint32_t Condition::getIcons() const {
-	return isBuff ? ICON_PARTY_BUFF : 0;
+std::unordered_set<PlayerIcon> Condition::getIcons() const {
+	std::unordered_set<PlayerIcon> icons;
+	if (isBuff) {
+		icons.insert(PlayerIcon::PartyBuff);
+	}
+
+	return icons;
 }
 
 bool Condition::updateCondition(const std::shared_ptr<Condition> addCondition) {
@@ -375,20 +403,20 @@ void ConditionGeneric::addCondition(std::shared_ptr<Creature> creature, const st
 	}
 }
 
-uint32_t ConditionGeneric::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionGeneric::getIcons() const {
+	auto icons = Condition::getIcons();
 
 	switch (conditionType) {
 		case CONDITION_INFIGHT:
-			icons |= ICON_SWORDS;
+			icons.insert(PlayerIcon::Swords);
 			break;
 
 		case CONDITION_DRUNK:
-			icons |= ICON_DRUNK;
+			icons.insert(PlayerIcon::Drunk);
 			break;
 
 		case CONDITION_ROOTED:
-			icons |= ICON_ROOTED;
+			icons.insert(PlayerIcon::Rooted);
 			break;
 
 		default:
@@ -1332,12 +1360,12 @@ bool ConditionManaShield::setParam(ConditionParam_t param, int32_t value) {
 	}
 }
 
-uint32_t ConditionManaShield::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionManaShield::getIcons() const {
+	auto icons = Condition::getIcons();
 	if (manaShield != 0) {
-		icons |= ICON_NEWMANASHIELD;
+		icons.insert(PlayerIcon::NewManaShield);
 	} else {
-		icons |= ICON_MANASHIELD;
+		icons.insert(PlayerIcon::ManaShield);
 	}
 	return icons;
 }
@@ -1739,39 +1767,39 @@ int32_t ConditionDamage::getTotalDamage() const {
 	return std::abs(result);
 }
 
-uint32_t ConditionDamage::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionDamage::getIcons() const {
+	auto icons = Condition::getIcons();
 	switch (conditionType) {
 		case CONDITION_FIRE:
-			icons |= ICON_BURN;
+			icons.insert(PlayerIcon::Burn);
 			break;
 
 		case CONDITION_ENERGY:
-			icons |= ICON_ENERGY;
+			icons.insert(PlayerIcon::Energy);
 			break;
 
 		case CONDITION_DROWN:
-			icons |= ICON_DROWNING;
+			icons.insert(PlayerIcon::Drowning);
 			break;
 
 		case CONDITION_POISON:
-			icons |= ICON_POISON;
+			icons.insert(PlayerIcon::Poison);
 			break;
 
 		case CONDITION_FREEZING:
-			icons |= ICON_FREEZING;
+			icons.insert(PlayerIcon::Freezing);
 			break;
 
 		case CONDITION_DAZZLED:
-			icons |= ICON_DAZZLED;
+			icons.insert(PlayerIcon::Dazzled);
 			break;
 
 		case CONDITION_CURSED:
-			icons |= ICON_CURSED;
+			icons.insert(PlayerIcon::Cursed);
 			break;
 
 		case CONDITION_BLEEDING:
-			icons |= ICON_BLEEDING;
+			icons.insert(PlayerIcon::Bleeding);
 			break;
 
 		default:
@@ -2068,11 +2096,10 @@ void ConditionFeared::addCondition(std::shared_ptr<Creature>, const std::shared_
 	}
 }
 
-uint32_t ConditionFeared::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionFeared::getIcons() const {
+	auto icons = Condition::getIcons();
 
-	icons |= ICON_FEARED;
-
+	icons.insert(PlayerIcon::Feared);
 	return icons;
 }
 
@@ -2208,15 +2235,15 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 	}
 }
 
-uint32_t ConditionSpeed::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionSpeed::getIcons() const {
+	auto icons = Condition::getIcons();
 	switch (conditionType) {
 		case CONDITION_HASTE:
-			icons |= ICON_HASTE;
+			icons.insert(PlayerIcon::Haste);
 			break;
 
 		case CONDITION_PARALYZE:
-			icons |= ICON_PARALYZE;
+			icons.insert(PlayerIcon::Paralyze);
 			break;
 
 		default:

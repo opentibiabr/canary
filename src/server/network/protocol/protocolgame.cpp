@@ -41,6 +41,7 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_coins.hpp"
+#include "enums/player_blessings.hpp"
 
 #include "creatures/players/highscore_category.hpp"
 
@@ -473,6 +474,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 	// Extended opcodes
 	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+		isOTC = true;
 		NetworkMessage opcodeMessage;
 		opcodeMessage.addByte(0x32);
 		opcodeMessage.addByte(0x00);
@@ -707,6 +709,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
 	version = msg.get<uint16_t>(); // Protocol version
+	g_logger().trace("Protocol version: {}", version);
 
 	// Old protocol support
 	oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) && version <= 1100;
@@ -720,10 +723,21 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	clientVersion = static_cast<int32_t>(msg.get<uint32_t>());
 
 	if (!oldProtocol) {
-		msg.getString(); // Client version (String)
+		auto clientVersionString = msg.getString(); // Client version (String)
+		g_logger().trace("Client version: {}", clientVersionString);
+		if (version >= 1334) {
+			auto assetHashIdentifier = msg.getString(); // Assets hash identifier
+			g_logger().trace("Client asset hash identifier: {}", assetHashIdentifier);
+		}
 	}
 
-	msg.skipBytes(3); // U16 dat revision, U8 game preview state
+	if (version < 1334) {
+		auto datRevision = msg.get<uint16_t>(); // Dat revision
+		g_logger().trace("Dat revision: {}", datRevision);
+	}
+
+	auto gamePreviewState = msg.getByte(); // U8 game preview state
+	g_logger().trace("Game preview state: {}", gamePreviewState);
 
 	if (!Protocol::RSA_decrypt(msg)) {
 		g_logger().warn("[ProtocolGame::onRecvFirstMessage] - RSA Decrypt Failed");
@@ -735,7 +749,8 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	enableXTEAEncryption();
 	setXTEAKey(key.data());
 
-	msg.skipBytes(1); // gamemaster flag
+	auto isGameMaster = static_cast<bool>(msg.getByte()); // gamemaster flag
+	g_logger().trace("Is Game Master: {}", isGameMaster);
 
 	std::string authType = g_configManager().getString(AUTH_TYPE, __FUNCTION__);
 	std::ostringstream ss;
@@ -923,8 +938,8 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 	if (recvbyte == 0x14) {
-		// Remove player from game if click "ok" using otcv8
-		if (player && otclientV8 > 0) {
+		// Remove player from game if click "ok" using otc
+		if (player && isOTC) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}
 		disconnect();
@@ -1599,35 +1614,34 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		return;
 	}
 
-	msg.skipBytes(numdirs);
-
-	stdext::arraylist<Direction> path;
-	for (uint8_t i = 0; i < numdirs; ++i) {
-		uint8_t rawdir = msg.getPreviousByte();
+	std::vector<Direction> path;
+	path.resize(numdirs, DIRECTION_NORTH);
+	for (size_t i = numdirs; --i < numdirs;) {
+		const uint8_t rawdir = msg.getByte();
 		switch (rawdir) {
 			case 1:
-				path.push_front(DIRECTION_EAST);
+				path[i] = DIRECTION_EAST;
 				break;
 			case 2:
-				path.push_front(DIRECTION_NORTHEAST);
+				path[i] = DIRECTION_NORTHEAST;
 				break;
 			case 3:
-				path.push_front(DIRECTION_NORTH);
+				path[i] = DIRECTION_NORTH;
 				break;
 			case 4:
-				path.push_front(DIRECTION_NORTHWEST);
+				path[i] = DIRECTION_NORTHWEST;
 				break;
 			case 5:
-				path.push_front(DIRECTION_WEST);
+				path[i] = DIRECTION_WEST;
 				break;
 			case 6:
-				path.push_front(DIRECTION_SOUTHWEST);
+				path[i] = DIRECTION_SOUTHWEST;
 				break;
 			case 7:
-				path.push_front(DIRECTION_SOUTH);
+				path[i] = DIRECTION_SOUTH;
 				break;
 			case 8:
-				path.push_front(DIRECTION_SOUTHEAST);
+				path[i] = DIRECTION_SOUTHEAST;
 				break;
 			default:
 				break;
@@ -1638,7 +1652,7 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		return;
 	}
 
-	g_game().playerAutoWalk(player->getID(), path.data());
+	g_game().playerAutoWalk(player->getID(), path);
 }
 
 void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
@@ -1668,8 +1682,11 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 				newOutfit.lookMountBody = std::min<uint8_t>(132, msg.getByte());
 				newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 				newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
+				bool isMounted = msg.getByte();
 				newOutfit.lookFamiliarsType = msg.get<uint16_t>();
+				g_logger().debug("Bool isMounted: {}", isMounted);
 			}
+
 			uint8_t isMountRandomized = msg.getByte();
 			g_game().playerChangeOutfit(player->getID(), newOutfit, isMountRandomized);
 		} else if (outfitType == 1) {
@@ -1789,11 +1806,23 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg) {
 		return;
 	}
 
-	Position pos = msg.getPosition();
-	uint16_t itemId = msg.get<uint16_t>();
-	uint8_t stackpos = msg.getByte();
-	bool lootAllCorpses = msg.getByte();
-	bool autoLoot = msg.getByte();
+	uint8_t variant = msg.getByte();
+	const Position pos = msg.getPosition();
+	uint16_t itemId = 0;
+	uint8_t stackpos = 0;
+	bool lootAllCorpses = true;
+	bool autoLoot = true;
+
+	if (variant == 2) {
+		// Loot player nearby (13.40)
+	} else {
+		itemId = msg.get<uint16_t>();
+		stackpos = msg.getByte();
+		lootAllCorpses = variant == 1;
+		autoLoot = false;
+	}
+	g_logger().debug("[{}] variant {}, pos {}, itemId {}, stackPos {}", __FUNCTION__, variant, pos.toString(), itemId, stackpos);
+
 	g_game().playerQuickLoot(player->getID(), pos, itemId, stackpos, nullptr, lootAllCorpses, autoLoot);
 }
 
@@ -2348,6 +2377,10 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	newmsg.addString(Class, "ProtocolGame::parseBestiarysendMonsterData - Class");
 
 	newmsg.addByte(currentLevel);
+
+	newmsg.add<uint16_t>(0); // Animus Mastery Bonus
+	newmsg.add<uint16_t>(0); // Animus Mastery Points
+
 	newmsg.add<uint32_t>(killCounter);
 
 	newmsg.add<uint16_t>(mtype->info.bestiaryFirstUnlock);
@@ -2962,6 +2995,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		newmsg.add<uint16_t>(raceid_);
 
 		uint8_t progress = 0;
+		uint8_t occurrence = 0;
 		for (const auto &_it : creaturesKilled) {
 			if (_it.first == raceid_) {
 				const auto tmpType = g_monsters().getMonsterType(it_.second);
@@ -2969,15 +3003,22 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 					return;
 				}
 				progress = g_iobestiary().getKillStatus(tmpType, _it.second);
+				occurrence = tmpType->info.bestiaryOccurrence;
 			}
 		}
 
 		if (progress > 0) {
-			newmsg.add<uint16_t>(static_cast<uint16_t>(progress));
+			newmsg.addByte(progress);
+			newmsg.addByte(occurrence);
 		} else {
 			newmsg.addByte(0);
 		}
+
+		newmsg.add<uint16_t>(0); // Creature Animous Bonus
 	}
+
+	newmsg.add<uint16_t>(0); // Animus Mastery Points
+
 	writeToOutputBuffer(newmsg);
 }
 
@@ -3476,10 +3517,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 
 	for (uint8_t i = SKILL_FIRST; i < SKILL_CRITICAL_HIT_CHANCE; ++i) {
 		static const uint8_t HardcodedSkillIds[] = { 11, 9, 8, 10, 7, 6, 13 };
-		skills_t skill = static_cast<skills_t>(i);
-		if (!oldProtocol && (skill == SKILL_LIFE_LEECH_CHANCE || skill == SKILL_MANA_LEECH_CHANCE)) {
-			continue;
-		}
+		const auto skill = static_cast<skills_t>(i);
 		msg.addByte(HardcodedSkillIds[i]);
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(skill));
@@ -3513,7 +3551,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		if (!oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
+		if (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE) {
 			continue;
 		}
 		skills_t skill = static_cast<skills_t>(i);
@@ -3539,15 +3577,14 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.add<uint16_t>(static_cast<uint16_t>(player->getReflectFlat(COMBAT_PHYSICALDAMAGE)));
 
 	uint8_t haveBlesses = 0;
-	uint8_t blessings = 8;
-	for (uint8_t i = 1; i < blessings; ++i) {
-		if (player->hasBlessing(i)) {
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (player->hasBlessing(enumToValue(bless))) {
 			++haveBlesses;
 		}
 	}
 
 	msg.addByte(haveBlesses);
-	msg.addByte(blessings);
+	msg.addByte(magic_enum::enum_count<Blessings>());
 
 	std::shared_ptr<Item> weapon = player->getWeapon();
 	if (weapon) {
@@ -3960,13 +3997,16 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 
 	auto cyclopediaSummary = player->cyclopedia()->getSummary();
 
-	// getBlessingsObtained
-	auto blessingNames = g_game().getBlessingNames();
-	msg.addByte(static_cast<uint8_t>(blessingNames.size()));
-	for (const auto &bless : blessingNames) {
-		msg.addString(bless.second, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
-		uint8_t blessingIndex = bless.first - 1;
-		msg.addByte((blessingIndex < player->blessings.size()) ? static_cast<uint16_t>(player->blessings[blessingIndex]) : 0);
+	msg.addByte(static_cast<uint8_t>(magic_enum::enum_count<Blessings>()));
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		std::string name = toStartCaseWithSpace(magic_enum::enum_name(bless).data());
+		msg.addString(name, "ProtocolGame::sendCyclopediaCharacterStoreSummary - blessing.name");
+		auto blessValue = enumToValue(bless);
+		if (player->hasBlessing(blessValue)) {
+			msg.addByte(static_cast<uint16_t>(player->blessings[blessValue - 1]));
+		} else {
+			msg.addByte(0x00);
+		}
 	}
 
 	uint8_t preySlotsUnlocked = 0;
@@ -4259,12 +4299,10 @@ void ProtocolGame::sendBasicData() {
 	msg.addByte(player->getVocation()->getClientId());
 
 	// Prey window
-	if (!oldProtocol) {
-		if (player->getVocation()->getId() == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
-			msg.addByte(0);
-		} else {
-			msg.addByte(1); // has reached Main (allow player to open Prey window)
-		}
+	if (player->getVocation()->getId() == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
+		msg.addByte(0);
+	} else {
+		msg.addByte(1); // has reached Main (allow player to open Prey window)
 	}
 
 	// Filter only valid ids
@@ -4540,15 +4578,34 @@ void ProtocolGame::sendChannelMessage(const std::string &author, const std::stri
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendIcons(uint32_t icons) {
+void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const IconBakragore iconBakragore) {
 	NetworkMessage msg;
 	msg.addByte(0xA2);
+
+	std::bitset<static_cast<size_t>(PlayerIcon::Count)> iconsBitSet;
+	for (const auto &icon : iconSet) {
+		iconsBitSet.set(enumToValue(icon));
+	}
+
+	uint32_t icons = iconsBitSet.to_ulong();
+
 	if (oldProtocol) {
+		// Send as uint16_t in old protocol
 		msg.add<uint16_t>(static_cast<uint16_t>(icons));
 	} else {
+		// Send as uint32_t in new protocol
 		msg.add<uint32_t>(icons);
-		msg.addByte(0x00); // 13.20 icon counter
+		msg.addByte(enumToValue(iconBakragore)); // Icons Bakragore
 	}
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendIconBakragore(const IconBakragore icon) {
+	NetworkMessage msg;
+	msg.addByte(0xA2);
+	msg.add<uint32_t>(0); // Send empty normal icons
+	msg.addByte(enumToValue(icon));
 	writeToOutputBuffer(msg);
 }
 
@@ -4662,6 +4719,19 @@ void ProtocolGame::sendContainer(uint8_t cid, std::shared_ptr<Container> contain
 	} else {
 		msg.addByte(0x00);
 		msg.addByte(0x00);
+	}
+
+	// New container menu options
+	if (container->isMovable()) { // Pickupable/Moveable (?)
+		msg.addByte(1);
+	} else {
+		msg.addByte(0);
+	}
+
+	if (container->getHoldingPlayer()) { // Player holding the item (?)
+		msg.addByte(1);
+	} else {
+		msg.addByte(0);
 	}
 
 	writeToOutputBuffer(msg);
@@ -4860,9 +4930,9 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		msg.add<uint64_t>(player->getMoney() + player->getBankBalance());
 	}
 
-	uint8_t itemsToSend = 0;
+	uint16_t itemsToSend = 0;
 	auto msgPosition = msg.getBufferPosition();
-	msg.skipBytes(1);
+	msg.skipBytes(2);
 
 	for (const ShopBlock &shopBlock : shopVector) {
 		if (shopBlock.itemSellPrice == 0) {
@@ -4877,14 +4947,14 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 			} else {
 				msg.add<uint16_t>(std::min<uint16_t>(it->second, std::numeric_limits<uint16_t>::max()));
 			}
-			if (++itemsToSend >= 0xFF) {
+			if (++itemsToSend >= 0xFFFF) {
 				break;
 			}
 		}
 	}
 
 	msg.setBufferPosition(msgPosition);
-	msg.addByte(itemsToSend);
+	msg.add<uint16_t>(itemsToSend);
 	writeToOutputBuffer(msg);
 }
 

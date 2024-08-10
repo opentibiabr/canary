@@ -40,7 +40,7 @@ local itemsTable = {
 	},
 	["creature products"] = {
 		{ itemName = "crystal ball", clientId = 3076, buy = 530, sell = 190 },
-		{ itemName = "life crystal", clientId = 3061, sell = 83 },
+		{ itemName = "life crystal", clientId = 3061, sell = 85 },
 		{ itemName = "mind stone", clientId = 3062, sell = 170 },
 	},
 	["shields"] = {

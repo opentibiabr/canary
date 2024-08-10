@@ -246,6 +246,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"...now wh- no, NO, NOOO! It just ...",
 				"...slipped. And cracked. Don't look at me like that ...",
 				"...I need some time to get over this. What? Oh, yes you can take the remains if you like. Just get it out of my sight.",
+				"A debacle, catastrophe, disaster - I need time to fully understand what chance just slipped through our hands here... hm? Oh yes, yes through my hands, my hands of course. Now would you please leave me alone?!",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 12 then
@@ -433,10 +434,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({ "jack" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "He was the first one I ever hired as an intern to help me with my studies and research. He did an exceptionally good job and I certainly don't know where I would stand today without him. We have to save him |PLAYERNAME|!",
-})
 keywordHandler:addKeyword({ "device" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "I heard of a device which would allow man to sail the sea of light. I call it the {Lightboat}, probably the most important invention in our history. And I will not rest until I have found a way to put the plan of its inventor into action.",

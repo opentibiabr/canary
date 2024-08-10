@@ -6173,12 +6173,12 @@ if not Quests then
 		},
 		[45] = {
 			name = "Spirithunters Quest",
-			startStorageId = Storage.SpiritHunters.Mission01,
+			startStorageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Method",
-					storageId = Storage.SpiritHunters.Mission01,
+					storageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 					missionId = 10426,
 					startValue = 1,
 					endValue = 2,
@@ -6189,7 +6189,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "First Mission",
-					storageId = Storage.SpiritHunters.Mission01,
+					storageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 					missionId = 10427,
 					startValue = 2,
 					endValue = 4,
@@ -6200,7 +6200,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Second Mission",
-					storageId = Storage.SpiritHunters.Mission01,
+					storageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 					missionId = 10428,
 					startValue = 4,
 					endValue = 6,

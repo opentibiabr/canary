@@ -81,9 +81,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "research") then
-		local qStorage = player:getStorageValue(Storage.SpiritHunters.Mission01)
-		local tombsStorage = player:getStorageValue(Storage.SpiritHunters.TombUse)
+	if MsgContains(message, "research") and player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 11 then
+		local qStorage = player:getStorageValue(Storage.Quest.U8_7.SpiritHunters.Mission01)
+		local tombsStorage = player:getStorageValue(Storage.Quest.U8_7.SpiritHunters.TombUse)
 		if qStorage == -1 then
 			if npcHandler:getTopic(playerId) == 17 then
 				npcHandler:say({
@@ -270,14 +270,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 17)
 		elseif npcHandler:getTopic(playerId) == 18 then
 			npcHandler:say("Good. Take this wand - we call it a spirit meter - and go to the graveyard I have marked on your map and take a few measurements on the graves.", npc, creature)
-			player:setStorageValue(Storage.SpiritHunters.Mission01, 1)
+			player:setStorageValue(Storage.Quest.U8_7.SpiritHunters.Mission01, 1)
 			player:addItem(4049, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 19 then
 			npcHandler:say("Let me see the spirit meter. Hmmm... those are grave news you bring - uhm, you know what I mean. But this is awesome! Now I know for sure that the calibration is only some short bursts of magically enhanced energy away.", npc, creature)
 			player:addExperience(500, true)
 			player:addItem(3035, 5)
-			player:setStorageValue(Storage.SpiritHunters.Mission01, 2)
+			player:setStorageValue(Storage.Quest.U8_7.SpiritHunters.Mission01, 2)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 27 then
 			npcHandler:say({
@@ -350,7 +350,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "collective apparitions") then
-		local qStorage = player:getStorageValue(Storage.SpiritHunters.Mission01)
+		local qStorage = player:getStorageValue(Storage.Quest.U8_7.SpiritHunters.Mission01)
 		if qStorage == -1 then
 			if npcHandler:getTopic(playerId) == 15 then
 				npcHandler:say("Ah well, let's forget about the scientific details - you will do just fine as long as you do exactly what I say. Ready for me to go on with your task?", npc, creature)

@@ -921,15 +921,6 @@ Storage = {
 			Sinew = 52052,
 		},
 	},
-	SpiritHunters = {
-		-- Reserved storage from 52100 - 52109
-		Mission01 = 52100,
-		TombUse = 52101,
-		CharmUse = 52102,
-		NightstalkerUse = 52103,
-		SouleaterUse = 52104,
-		GhostUse = 52105,
-	},
 	Diapason = {
 		-- Reserved storage from 52120 - 52129
 		Lyre = 52120,
@@ -2323,7 +2314,6 @@ Storage = {
 			AnnualAutumnVintage = {},
 			Bewitched = {},
 			DemonsLullaby = {},
-			JackToTheFuture = {},
 			LastCreepStanding = {},
 			ResearchAndDevelopment = {},
 			RottinWoodAndTheMarriedMen = {
@@ -2335,7 +2325,14 @@ Storage = {
 				Mission03 = 43236,
 				FirstTime = 43237,
 			},
-			Spirithunters = {},
+			SpiritHunters = {
+				Mission01 = 52100,
+				TombUse = 52101,
+				CharmUse = 52102,
+				NightstalkerUse = 52103,
+				SouleaterUse = 52104,
+				GhostUse = 52105,
+			},
 			TheColoursOfMagic = {},
 		},
 		U9_1 = { --update 9.1 - Reserved Storages 43351 - 43550

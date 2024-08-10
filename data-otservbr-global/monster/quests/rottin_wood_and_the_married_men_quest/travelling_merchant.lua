@@ -13,7 +13,6 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-
 monster.health = 110
 monster.maxHealth = 110
 monster.race = "blood"
@@ -60,8 +59,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 },

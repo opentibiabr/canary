@@ -52,7 +52,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "mission") or MsgContains(message, "task") then
 		-- Checks if the mission has not yet started and the cooldown has expired
-		if (getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03) < 1) then
+		if getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03) < 1 then
 			if getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Time) <= os.time() then
 				npcHandler:say("Oh, you want some work? You can help us, alright. Did you know that the people of the city think those rabbit feet are actually lucky charms?", npc, creature)
 				npcHandler:setTopic(playerId, 1)

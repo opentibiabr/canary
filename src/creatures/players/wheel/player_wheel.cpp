@@ -999,6 +999,9 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 			msg.addByte(static_cast<uint8_t>(gem.supremeModifier));
 		}
 	}
+
+	msg.addByte(0); // Lesser gems
+	msg.addByte(0); // Greater gems
 }
 
 void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const {

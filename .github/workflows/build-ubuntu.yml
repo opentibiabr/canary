@@ -95,10 +95,10 @@ jobs:
           path: |
             ${{ github.workspace }}/build/${{ matrix.buildtype }}/bin/
 
-#      - name: Run Unit Tests
-#        run: |
-#          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/unit
-#          ctest --verbose
+      - name: Run Unit Tests
+        run: |
+          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/unit
+          ctest --verbose
 
 #      - name: Run Integration Tests
 #        run: |

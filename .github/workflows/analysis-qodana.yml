@@ -51,16 +51,18 @@ jobs:
         with:
           configurePreset: linux-debug
 
-      - name: Qodana Scan
-        run: |
-          docker run \
-          -v $(pwd):/data/project/ \
-          -v $(pwd):$(pwd) \
-          -e QODANA_TOKEN="${{ secrets.QODANA_TOKEN }}" \
-          jetbrains/qodana-clang:2024.1-eap \
-          --compile-commands ./build/linux-debug/compile_commands.json
+      # - name: Qodana Scan
+      #   run: |
+      #     docker run \
+      #     -v $(pwd):/data/project/ \
+      #     -v $(pwd):$(pwd) \
+      #     -e QODANA_TOKEN="${{ secrets.QODANA_TOKEN }}" \
+      #     jetbrains/qodana-clang:2024.1-eap \
+      #     --compile-commands ./build/linux-debug/compile_commands.json
 
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
+        with:
+          args: --compile-commands,./build/linux-debug/compile_commands.json
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}

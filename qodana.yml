@@ -3,8 +3,21 @@ version: "1.0"
 profile:
   name: qodana.recommended
 
-inspections:
-
+bootstrap: |
+  sudo apt-get update
+  sudo apt-get install -y cmake git unzip build-essential ca-certificates curl zip unzip tar pkg-config ninja-build autoconf automake libtool python3
+  cd ~
+  git clone https://github.com/Microsoft/vcpkg.git
+  cd vcpkg
+  ./bootstrap-vcpkg.sh
+  cd /data/project
+  rm -rf build
+  mkdir -p build
+  cd build
+  export CMAKE_CC_COMPILER=cc
+  export CMAKE_CXX_COMPILER=c++
+  cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+  --preset linux-debug || true
 
 include:
   # inspections

@@ -21,35 +21,35 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: Install Linux Dependencies
-        run: >
-          sudo apt-get update && sudo apt-get install ccache
-          linux-headers-$(uname -r)
-      - name: CCache
-        uses: hendrikmuhs/ccache-action@main
-        with:
-          max-size: "1G"
-          key: ccache-qodana
+      # - name: Install Linux Dependencies
+      #   run: >
+      #     sudo apt-get update && sudo apt-get install ccache
+      #     linux-headers-$(uname -r)
+      # - name: CCache
+      #   uses: hendrikmuhs/ccache-action@main
+      #   with:
+      #     max-size: "1G"
+      #     key: ccache-qodana
 
-      - name: Restore artifacts and install vcpkg
-        id: vcpkg-step
-        run: |
-          vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ')
-          echo "vcpkg commit ID: $vcpkgCommitId"
-          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> $GITHUB_ENV
-      - name: Get vcpkg commit id from vcpkg.json
-        uses: lukka/run-vcpkg@main
-        with:
-          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
-          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+      # - name: Restore artifacts and install vcpkg
+      #   id: vcpkg-step
+      #   run: |
+      #     vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ')
+      #     echo "vcpkg commit ID: $vcpkgCommitId"
+      #     echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> $GITHUB_ENV
+      # - name: Get vcpkg commit id from vcpkg.json
+      #   uses: lukka/run-vcpkg@main
+      #   with:
+      #     vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+      #     vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 
-      - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@main
+      # - name: Get latest CMake and ninja
+      #   uses: lukka/get-cmake@main
 
-      - name: Run CMake
-        uses: lukka/run-cmake@main
-        with:
-          configurePreset: linux-debug
+      # - name: Run CMake
+      #   uses: lukka/run-cmake@main
+      #   with:
+      #     configurePreset: linux-debug
 
       # - name: Qodana Scan
       #   run: |

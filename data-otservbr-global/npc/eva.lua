@@ -1306,7 +1306,7 @@ npcConfig.shop = {
 		{ itemName = "white piece of cloth",  clientId = 5909,  sell  =  100 , buy =400}, 
 		{ itemName = "widow's mandibles",  clientId = 10411,  sell  =  110 , buy =440}, 
 		{ itemName = "wild flowers",  clientId = 25691,  sell  =  120 , buy =480}, 
-		{ itemName = "might ring", clientId = 3048, buy = 5000, sell = 250, count = 20 },
+		{ itemName = "might ring", clientId = 3048, buy = 5000, sell = 1000, count = 20 },
 		{ itemName = "dragon necklace", clientId = 3085, buy = 1000, sell = 100, count = 200 },
 		{ itemName = "protection amulet", clientId = 3084, buy = 700, sell = 100, count = 250 },
 		{ itemName = "wimp tooth chain",  clientId = 17847,  sell  =  120 , buy =480}, 

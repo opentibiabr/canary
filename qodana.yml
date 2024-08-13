@@ -14,11 +14,10 @@ bootstrap: |
   rm -rf build
   mkdir -p build
   cd build
-  export CMAKE_CC_COMPILER=cc
-  export CMAKE_CXX_COMPILER=c++
-  cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-debug || true
+  CMAKE_CC_COMPILER=cc export CMAKE_CXX_COMPILER=c++ cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-debug || true
   ls ./linux-debug/compile_commands.json
   cat ./linux-debug/compile_commands.json
+  cat /data/project/logs/*
 
 
 include:

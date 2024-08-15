@@ -18,7 +18,8 @@ jobs:
       - name: Actions checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.workflow_run.head_repository }}
+          ref: ${{ github.event.workflow_run.head_sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: JohnnyMorganz/stylua-action@v3

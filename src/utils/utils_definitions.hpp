@@ -364,7 +364,7 @@ enum Fluids_t : uint8_t {
 	FLUID_MEAD = 16, /* Orange */
 	FLUID_TEA = 17, /* Orange */
 	FLUID_INK = 18, /* Black */
-	FLUID_UNKNOWN = 19, /* Red with White pieces */
+	FLUID_CANDY = 19, /* Red with white pieces */
 	FLUID_CHOCOLATE = 20, /* Brown */
 	// 13.40 last fluid is 20, 21+ is a loop from 0 to 20 over and over again
 };

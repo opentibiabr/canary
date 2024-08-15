@@ -20,7 +20,7 @@
     <item id="16" name="mead"/>
     <item id="17" name="tea"/>
     <item id="18" name="ink"/>
-    <item id="19" name="unknown"/>
+    <item id="19" name="candyfluid"/>
     <item id="20" name="chocolate"/>
     <!-- 13.40 last fluid is 20, 21+ is a loop from 0 to 20 over and over again -->
 

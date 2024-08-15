@@ -1,4 +1,5 @@
 ---
+name: Lua-format-workflow
 on:
   workflow_run:
     workflows: ["Lua-format"]
@@ -16,8 +17,7 @@ jobs:
       - name: Actions checkout
         uses: actions/checkout@v3
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: JohnnyMorganz/stylua-action@v3

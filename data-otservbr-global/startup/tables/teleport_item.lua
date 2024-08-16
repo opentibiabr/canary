@@ -49,6 +49,19 @@ TeleportItemAction = {
 			{ x = 32172, y = 32439, z = 7 },
 		},
 	},
+	-- Teleports Thais
+	[24873] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32325, y = 32087, z = 7 },
+			{ x = 32328, y = 32087, z = 7 },
+			{ x = 32331, y = 32087, z = 7 },
+			{ x = 32334, y = 32087, z = 7 },
+			{ x = 32337, y = 32087, z = 7 },
+			{ x = 32340, y = 32087, z = 7 },
+			{ x = 32332, y = 32094, z = 7 },
+		},
+	},
 }
 
 TeleportItemUnique = {

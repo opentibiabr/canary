@@ -58,15 +58,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "trouble") and player:getStorageValue(Storage.TheInquisition.KulagGuard) < 1 and player:getStorageValue(Storage.TheInquisition.Mission01) ~= -1 then
+	if MsgContains(message, "trouble") and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.KulagGuard) < 1 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission01) ~= -1 then
 		npcHandler:say("You adventurers become more and more of a pest.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "authorities") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("They should throw you all into jail instead of giving you all those quests and rewards an honest watchman can only dream about.", npc, creature)
-			if player:getStorageValue(Storage.TheInquisition.KulagGuard) < 1 then
-				player:setStorageValue(Storage.TheInquisition.KulagGuard, 1)
-				player:setStorageValue(Storage.TheInquisition.Mission01, player:getStorageValue(Storage.TheInquisition.Mission01) + 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
+			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.KulagGuard) < 1 then
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.KulagGuard, 1)
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission01, player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission01) + 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
 				player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 			end
 			npcHandler:setTopic(playerId, 0)

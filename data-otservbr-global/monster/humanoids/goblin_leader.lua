@@ -42,6 +42,10 @@ monster.strategiesTarget = {
 	nearest = 100,
 }
 
+monster.events = {
+	"GoblinLeaderDeath",
+}
+
 monster.flags = {
 	summonable = true,
 	attackable = true,

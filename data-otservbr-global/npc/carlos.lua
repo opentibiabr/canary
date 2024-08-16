@@ -82,27 +82,27 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage) < 1 then
+	if player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Be greeted, |PLAYERNAME|! As a tailor and merchant I have to say - we need to do something about your {outfit}, shall we?")
-		player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 1)
-		player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 1)
+		player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 1)
+		player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 1)
 		storeTalkCid[playerId] = 1
-	elseif player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage) == 1 then
+	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hey, I thought you were going to run away, but luckily you came back. I'll show you how to change your {outfit}, okay?")
 		storeTalkCid[playerId] = 1
-	elseif player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage) == 2 then
+	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 2 then
 		npcHandler:setMessage(MESSAGE_GREET, "Welcome back! You know, after providing my little outfit service, I like to ask a little favour of you. Can you {help} me?")
 		storeTalkCid[playerId] = 2
-	elseif player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage) == 3 then
+	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 3 then
 		npcHandler:setMessage(MESSAGE_GREET, "Oh hey |PLAYERNAME|, you didn't answer my question yet - could you help me get some {food}? I'll even give you some gold for it.")
 		storeTalkCid[playerId] = 3
-	elseif player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage) == 4 then
+	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 4 then
 		npcHandler:setMessage(MESSAGE_GREET, "Welcome back |PLAYERNAME|, I hope you changed your mind and will bring me some {meat}? I'll even give you some gold for it.")
 		storeTalkCid[playerId] = 4
-	elseif player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage) == 5 then
+	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 5 then
 		npcHandler:setMessage(MESSAGE_GREET, "Welcome back, |PLAYERNAME|! Did you have a successful hunt and carry a piece of {meat} or ham with you?")
 		storeTalkCid[playerId] = 5
-	elseif player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage) == 6 then
+	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 6 then
 		if player:getItemCount(3577) > 0 or player:getItemCount(3582) > 0 then
 			npcHandler:setMessage(MESSAGE_GREET, "Welcome back, Isleth Eagonst! Do you still have that piece of meat or ham? If so, please ask me for a {trade} and I'll give you some gold for it.")
 			storeTalkCid[playerId] = 6
@@ -111,13 +111,13 @@ local function greetCallback(npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		end
-	elseif player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage) == 7 then
+	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 7 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hey there, |PLAYERNAME|! Well, that's how trading with NPCs like me works. I think you are ready now to cross the bridge to Rookgaard! Take care!")
-		player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 7)
-		player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 8)
+		player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 7)
+		player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 8)
 		npcHandler:removeInteraction(npc, creature)
 		npcHandler:resetNpc(creature)
-	elseif player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage) == 8 then
+	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 8 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hello again, |PLAYERNAME|! What are you still doing here? You should head over the bridge to Rookgaard village now!")
 		npcHandler:removeInteraction(npc, creature)
 		npcHandler:resetNpc(creature)
@@ -145,33 +145,33 @@ local function creatureSayCallback(npc, creature, type, message)
 	if table.contains({ "yes", "help", "ok" }, message) then
 		if storeTalkCid[playerId] == 1 then
 			npcHandler:say("Very well. Just choose an outfit and a colour combination that suits you. You can open this dialogue anytime by right-clicking on yourself and selecting 'Set Outfit'. Just try it and then talk to me again!", npc, creature)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 2)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 2)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 2)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 2)
 			player:sendTutorial(12)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif storeTalkCid[playerId] == 2 then
 			npcHandler:say("You see, I'm quite hungry from standing here all day. Could you get me some {food}?", npc, creature)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 3)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 3)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 3)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 3)
 			storeTalkCid[playerId] = 3
 		elseif storeTalkCid[playerId] == 3 then
 			npcHandler:say("Thank you! I would do it myself, but I don't have a weapon. Just kill a few rabbits or deer, loot food from them and bring me one piece of {meat} or ham, will you?", npc, creature)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 4)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 4)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 4)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 4)
 			storeTalkCid[playerId] = 4
 		elseif storeTalkCid[playerId] == 4 then
 			npcHandler:say("Splendid. I'll be awaiting your return eagerly. Don't forget that you can click on the 'Chase Opponent' button to run after those fast creatures. Good {bye} for now!", npc, creature)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 5)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 5)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 5)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 5)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif storeTalkCid[playerId] == 5 then
 			if player:getItemCount(3577) > 0 or player:getItemCount(3582) > 0 then
 				npcHandler:say("What's that delicious smell? That must be a piece of meat! Please hurry, simply ask me for a {trade} and I'll give you two gold pieces for it!", npc, creature)
-				player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 6)
-				player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 6)
-				player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcTradeStorage, 1)
+				player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 6)
+				player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 6)
+				player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcTradeStorage, 1)
 				storeTalkCid[playerId] = 6
 			else
 				npcHandler:say("Hmm. No, I don't think you have something with you that I'd like to eat. Please come back once you looted a piece of meat or a piece of ham from a rabbit or deer.", npc, creature)
@@ -184,8 +184,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"And by the way: if you thought all of this was boring and you'd rather skip the tutorial with your next character, just say 'skip tutorial' to Santiago. ...",
 				"Then you'll miss out on those nice items and experience though. Hehehe! It's your choice. Well, take care for now!",
 			}, npc, creature)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 7)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 8)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 7)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 8)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		end
@@ -196,8 +196,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"And by the way: if you thought all of this was boring and you'd rather skip the tutorial with your next character, just say 'skip tutorial' to Santiago. ...",
 				"Then you'll miss out on those nice items and experience though. Hehehe! It's your choice. Well, take care for now!",
 			}, npc, creature)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 7)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 8)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 7)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 8)
 			addEvent(function()
 				releasePlayer(npc, creature)
 			end, 1000)
@@ -209,8 +209,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"And by the way: if you thought all of this was boring and you'd rather skip the tutorial with your next character, just say 'skip tutorial' to Santiago. ...",
 				"Then you'll miss out on those nice items and experience though. Hehehe! It's your choice. Well, take care for now!",
 			}, npc, creature)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosQuestLog, 7)
-			player:setStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcGreetStorage, 8)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 7)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 8)
 			addEvent(function()
 				releasePlayer(npc, creature)
 			end, 5000)
@@ -223,7 +223,7 @@ local function onTradeRequest(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.RookgaardTutorialIsland.CarlosNpcTradeStorage) ~= 1 then
+	if player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcTradeStorage) ~= 1 then
 		return false
 	end
 

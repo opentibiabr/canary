@@ -1,13 +1,13 @@
 local specialQuests = {
 	-- {x = 32311, y = 32211, z = 8}
-	[51400] = Storage.ThievesGuild.Reward,
-	[51324] = Storage.WrathoftheEmperor.MainReward,
+	[51400] = Storage.Quest.U8_2.TheThievesGuildQuest.Reward,
+	[51324] = Storage.Quest.U8_6.WrathOfTheEmperor.MainReward,
 	-- {x = 32232, y = 31066, z = 7}
-	[51715] = Storage.SvargrondArena.RewardGreenhorn,
+	[51715] = Storage.Quest.U8_0.BarbarianArena.RewardGreenhorn,
 	-- {x = 32232, y = 31059, z = 7}
-	[51716] = Storage.SvargrondArena.RewardScrapper,
+	[51716] = Storage.Quest.U8_0.BarbarianArena.RewardScrapper,
 	-- {x = 32232, y = 31052, z = 7}
-	[51717] = Storage.SvargrondArena.RewardWarlord,
+	[51717] = Storage.Quest.U8_0.BarbarianArena.RewardWarlord,
 }
 
 local questsExperience = {
@@ -15,7 +15,7 @@ local questsExperience = {
 }
 
 local questLog = {
-	[8213] = Storage.HiddenCityOfBeregar.DefaultStart,
+	[8213] = Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart,
 }
 
 local tutorialIds = {
@@ -57,7 +57,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	end
 
 	if storage == 23644 or storage == 24632 or storage == 14338 then
-		player:setStorageValue(Storage.SvargrondArena.PitDoor, -1)
+		player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor, -1)
 	end
 
 	if player:getStorageValue(storage) > 0 and player:getGroup():getId() < GROUP_TYPE_GAMEMASTER then
@@ -167,7 +167,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	if tutorialIds[storage] then
 		player:sendTutorial(tutorialIds[storage])
 		if item.uid == 50080 then
-			player:setStorageValue(Storage.RookgaardTutorialIsland.SantiagoNpcGreetStorage, 3)
+			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.SantiagoNpcGreetStorage, 3)
 		end
 	end
 

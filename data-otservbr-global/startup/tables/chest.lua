@@ -122,8 +122,8 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32648, y = 31905, z = 3 },
 		container = 2853,
-		reward = { { 2970, 1 }, { 3598, 20 }, { 3598, 7 } },
-		weight = 44,
+		reward = { { 2970, 1 }, { 3598, 27 } },
+		weight = 12.00,
 		storage = Storage.Quest.U6_1.EmperorsCookies.Rewards.Cookies,
 		keyAction = Storage.Quest.Key.ID3801,
 	},
@@ -156,7 +156,7 @@ ChestUnique = {
 		itemPos = { x = 32201, y = 31571, z = 10 },
 		container = 2853,
 		reward = { { 2970, 1 }, { 3031, 23 }, { 3147, 1 }, { 3298, 4 }, { 3384, 1 } },
-		weight = 80,
+		weight = 80.00,
 		storage = Storage.Quest.Key.ID4502,
 		keyAction = Storage.Quest.Key.ID4502,
 	},
@@ -453,7 +453,7 @@ ChestUnique = {
 		itemPos = { x = 32803, y = 31582, z = 2 },
 		container = 2853,
 		reward = { { 3284, 1 }, { 3297, 1 } }, -- bag with weapons
-		weight = 64,
+		weight = 64.00,
 		questName = "draconia1",
 	},
 	[6024] = {
@@ -747,7 +747,7 @@ ChestUnique = {
 		container = 2853,
 		keyAction = Storage.Quest.Key.ID3702,
 		reward = { { 2971, 1 }, { 3509, 1 }, { 3351, 1 }, { 3424, 1 }, { 2821, 1 }, { 3271, 1 }, { 3085, 1 }, { 3048, 1 } },
-		weight = 194,
+		weight = 195.00,
 		storage = Storage.Quest.PreU6_0.OrnamentedShield.Rewards.OrnamentedShield,
 	},
 	[6063] = {
@@ -756,7 +756,7 @@ ChestUnique = {
 		itemPos = { x = 32769, y = 32302, z = 10 },
 		container = 2859,
 		reward = { { 2949, 1 }, { 3059, 1 }, { 3083, 1 }, { 3035, 5 }, { 3053, 1 } },
-		weight = 44,
+		weight = 44.00,
 		questName = "ornamentedshield",
 	},
 	--[6064] EMPTY
@@ -766,7 +766,7 @@ ChestUnique = {
 		itemPos = { x = 32644, y = 32131, z = 8 },
 		container = 2853,
 		reward = { { 3033, 2 }, { 3050, 1 }, { 2953, 1 } },
-		weight = 44,
+		weight = 18.00,
 		questName = "panpipe",
 	},
 	[6066] = {
@@ -774,7 +774,7 @@ ChestUnique = {
 		itemPos = { x = 33199, y = 31923, z = 11 },
 		container = 2853,
 		reward = { { 3031, 98 }, { 3031, 77 }, { 3026, 3 } },
-		weight = 27,
+		weight = 27.00,
 		storage = Storage.Quest.U6_4.BerserkerTreasure.Rewards.WhitePearls,
 	},
 	-- Fire axe quest
@@ -784,7 +784,7 @@ ChestUnique = {
 		itemPos = { x = 33078, y = 31656, z = 11 },
 		container = 2853,
 		reward = { { 3098, 1 }, { 3085, 200 }, { 3028, 7 }, { 3320, 1 } }, -- Bag (Ring of Healing, Dragon Necklace, 7 Small Diamonds)
-		weight = 27,
+		weight = 56.00,
 		questName = "fireaxe1",
 	},
 	-- Poison daggers quest
@@ -793,8 +793,8 @@ ChestUnique = {
 		itemId = 2473,
 		itemPos = { x = 33155, y = 31880, z = 11 },
 		container = 2854,
-		reward = { { 3448, 30 }, { 3299, 1 }, { 3299, 1 } }, -- Backpack (2 Poison Daggers, 30 Poison Arrows)
-		weight = 60,
+		reward = { { 3448, 30 }, { 3299, 1 } }, -- Backpack (2 Poison Daggers, 30 Poison Arrows)
+		weight = 51.00,
 		questName = "poisondaggers",
 	},
 	-- Shaman treasure quest
@@ -804,7 +804,7 @@ ChestUnique = {
 		itemPos = { x = 33127, y = 31885, z = 9 },
 		container = 2853,
 		reward = { { 3147, 3 } }, -- Bag with 3 blank runes
-		weight = 15,
+		weight = 15.00,
 		questName = "shamantreasure",
 	},
 	-- Strong potions quest
@@ -814,7 +814,7 @@ ChestUnique = {
 		itemPos = { x = 33163, y = 31603, z = 15 },
 		container = 2857,
 		reward = { { 237, 5 } },
-		weight = 23,
+		weight = 23.00,
 		storage = Storage.Quest.U8_1.StrongPotions.Reward,
 	},
 	-- Vampire shield quest
@@ -824,7 +824,7 @@ ChestUnique = {
 		itemPos = { x = 33188, y = 31682, z = 14 },
 		container = 2853,
 		reward = { { 3058, 1 }, { 3027, 1 }, { 3078, 1 } }, -- Bag (Strange Symbol, Black Pearl and Mysterious Fetish)
-		weight = 16,
+		weight = 16.00,
 		questName = "vampireshield1",
 	},
 	-- [6072] empty
@@ -835,7 +835,7 @@ ChestUnique = {
 		itemPos = { x = 33072, y = 32169, z = 2 },
 		container = 2854,
 		reward = { { 268, 1 }, { 266, 1 }, { 3449, 30 }, { 3448, 60 } },
-		weight = 80,
+		weight = 99.00,
 		storage = Storage.Quest.U7_1.DragonTower.Rewards.Backpack1,
 	},
 	-- Backpack 2
@@ -844,7 +844,7 @@ ChestUnique = {
 		itemPos = { x = 33078, y = 32169, z = 2 },
 		container = 2854,
 		reward = { { 3350, 1 }, { 3029, 2 } },
-		weight = 50,
+		weight = 50.00,
 		storage = Storage.Quest.U7_1.DragonTower.Rewards.Backpack2,
 	},
 	-- Behemoth quest
@@ -855,7 +855,7 @@ ChestUnique = {
 		itemPos = { x = 33294, y = 31658, z = 13 },
 		container = 2853,
 		reward = { { 3028, 3 }, { 3029, 4 }, { 3007, 1 }, { 3052, 1 }, { 3055, 1 } },
-		weight = 50,
+		weight = 17.00,
 		questName = "behemothquest1",
 	},
 	-- Parchment room quest
@@ -919,7 +919,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 32845, y = 31917, z = 6 },
 		container = 2853,
-		weight = 42,
+		weight = 31.00,
 		reward = { { 3026, 1 }, { 3207, 1 } },
 		storage = Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag1,
 	},
@@ -928,7 +928,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 32847, y = 31917, z = 6 },
 		container = 2853,
-		weight = 42,
+		weight = 13.00,
 		reward = { { 3012, 1 }, { 3097, 1 } },
 		storage = Storage.Quest.U7_6.ExplorerSociety.SkullOfRatha.Bag2,
 	},
@@ -959,7 +959,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 33233, y = 31656, z = 13 },
 		container = 2856,
-		weight = 50,
+		weight = 50.00,
 		reward = { { 3213, 1 } },
 		storage = Storage.Quest.U7_24.TheAnnihilator.Reward,
 	},
@@ -1026,7 +1026,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 33057, y = 31029, z = 7 },
 		container = 2854,
-		weight = 14.90,
+		weight = 25.00,
 		reward = { { 7439, 1 }, { 7440, 1 }, { 7443, 1 } },
 		storage = Storage.Quest.U8_54.TheNewFrontier.Reward.Potions,
 	},
@@ -1150,6 +1150,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32149, y = 32105, z = 11 },
 		container = 2854, -- backpack
+		weight = 35.00,
 		reward = { { 2882, 1 }, { 2856, 1 }, { 2881, 1 }, { 2905, 1 } }, -- Jug, Present Box, Cup and Plate
 		questName = "presentBox",
 	},
@@ -1159,6 +1160,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32146, y = 32097, z = 11 },
 		container = 2853, -- bag
+		weight = 21.00,
 		reward = { { 3447, 12 }, { 3031, 40 } }, -- bag: 12 arrows, 40 gold coin
 		questName = "bearChest1",
 	},
@@ -1198,6 +1200,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 31973, y = 32209, z = 12 },
 		container = 2853, -- bag
+		weight = 37.00,
 		reward = { { 3551, 1 }, { 1781, 5 }, { 3031, 50 } }, -- sandals, 5 small stones, 50 gold coins
 		questName = "goblintemple",
 	},
@@ -1206,6 +1209,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 31977, y = 32209, z = 12 },
 		container = 2853, -- bag
+		weight = 31.00,
 		reward = { { 3466, 1 }, { 2992, 4 }, { 2874, 1 } }, -- pan, 4 snowballs, vial of milk
 		questName = "goblintemple2",
 	},
@@ -1222,6 +1226,7 @@ ChestUnique = {
 		itemId = 2473,
 		itemPos = { x = 32127, y = 32065, z = 12 },
 		container = 2853, -- bag
+		weight = 19.00,
 		reward = { { 3447, 10 }, { 3448, 4 } }, -- 10 arrows, 4 poison arrow
 		questName = "minohell2",
 	},
@@ -1305,6 +1310,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 32443, y = 32238, z = 11 },
 		container = 2853, -- bag
+		weight = 18.00,
 		reward = { { 3052, 1 }, { 3085, 200 } }, -- life ring , dragon necklace
 		questName = "lifering",
 	},
@@ -1329,6 +1335,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 32456, y = 32008, z = 13 },
 		container = 2853, -- bag
+		weight = 10.00,
 		reward = { { 3029, 1 }, { 3028, 1 }, { 3097, 1 } }, -- small sapphire, small diamond, dwarven ring
 		questName = "geomancer",
 	},
@@ -1437,6 +1444,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32651, y = 31969, z = 9 },
 		container = 2853, -- bag
+		weight = 40.00,
 		reward = { { 3147, 3 }, { 2989, 1 }, { 3031, 76 }, { 3463, 1 } }, -- 3 blank rune, wooden doll, 76 gold coin, mirror
 		questName = "longsword3",
 	},
@@ -1454,6 +1462,7 @@ ChestUnique = {
 		itemId = 2469,
 		itemPos = { x = 33089, y = 32030, z = 9 },
 		container = 2853, -- bag
+		weight = 26.00,
 		reward = { { 3046, 1 }, { 3092, 1 }, { 3147, 1 } }, -- magic light wand, axe ring, blank rune
 		questName = "orcshaman",
 	},
@@ -1478,6 +1487,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32357, y = 32130, z = 9 },
 		container = 2853, -- bag
+		weight = 113.00,
 		reward = { { 3377, 1 } }, -- scale armor
 		questName = "scalearmor",
 	},
@@ -1495,6 +1505,7 @@ ChestUnique = {
 		itemId = 2476,
 		itemPos = { x = 32775, y = 32006, z = 11 },
 		container = 2853, -- bag
+		weight = 10.00,
 		reward = { { 3017, 1 }, { 3030, 2 }, { 3028, 3 } }, -- Silver Brooch, 2 Small Rubies, 3 Small Diamonds
 		questName = "silverbrooch",
 	},
@@ -1519,6 +1530,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32675, y = 32069, z = 8 },
 		container = 2857, -- green bag
+		weight = 34.00,
 		reward = { { 3084, 250 }, { 3098, 1 }, { 3046, 1 }, { 3077, 1 } }, -- protection amulet, ring of healing, magic light wand and anhk
 		questName = "desert2",
 	},
@@ -1536,6 +1548,7 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32565, y = 32119, z = 3 },
 		container = 2853, -- bag
+		weight = 14.00,
 		reward = { { 3083, 150 }, { 3029, 2 }, { 3097, 1 } }, -- garlick necklace, small sapphire, dwarven ring
 		questName = "triangletower",
 	},
@@ -1545,6 +1558,7 @@ ChestUnique = {
 		itemId = 4025,
 		itemPos = { x = 32179, y = 32224, z = 9 },
 		container = 2853, -- bag
+		weight = 102.00,
 		reward = { { 3374, 1 }, { 3430, 1 } }, -- Copper Shield and Legion Helmet
 		questName = "dragoncorpse",
 	},
@@ -1598,6 +1612,7 @@ ChestUnique = {
 		itemId = 4240,
 		itemPos = { x = 32769, y = 32225, z = 7 },
 		container = 2854,
+		weight = 162.00,
 		reward = { { 3123, 1 }, { 3155, 3 }, { 3361, 1 }, { 3353, 1 }, { 3285, 1 }, { 3506, 1 } }, -- worn leather boots, sudden death rune, leather armor, iron helmet, longsword, stamped letter
 		questName = "ironhelmet",
 	},
@@ -1607,6 +1622,7 @@ ChestUnique = {
 		itemId = 4240,
 		itemPos = { x = 32514, y = 32303, z = 10 },
 		container = 2853,
+		weight = 49.00,
 		reward = { { 3350, 1 }, { 3448, 5 }, { 268, 1 }, { 266, 1 } }, -- bow, 5 poison arrows, mana potion, health potion
 		questName = "deadarcher",
 	},
@@ -1616,6 +1632,7 @@ ChestUnique = {
 		itemId = 4240,
 		itemPos = { x = 32816, y = 32279, z = 8 },
 		container = 2853,
+		weight = 24.00,
 		reward = { { 3450, 5 }, { 3449, 12 } }, -- 5 power bolt, 12 burst arrow
 		questName = "powerbolt1",
 	},
@@ -1627,39 +1644,8 @@ ChestUnique = {
 		reward = { { 3271, 1 } }, -- 5 power bolt, 12 burst arrow
 		questName = "spikesword",
 	},
-	-- Elvenbane Quest
-	[6172] = {
-		useKV = true,
-		itemId = 2434,
-		itemPos = { x = 32588, y = 31644, z = 3 },
-		container = 2853,
-		reward = { { 3031, 100 }, { 3028, 2 } }, -- 100 gold coin, 2 small diamond
-		questName = "elvebanequest1",
-	},
-	[6173] = {
-		useKV = true,
-		itemId = 2434,
-		itemPos = { x = 32588, y = 31645, z = 3 },
-		container = 2853,
-		reward = { { 3059, 1 }, { 3147, 1 }, { 237, 1 } }, -- spellbook, blank rune, strong mana potion
-		questName = "elvebanequest2",
-	},
-	[6174] = {
-		useKV = true,
-		itemId = 2472,
-		itemPos = { x = 32590, y = 31647, z = 3 },
-		reward = { { 3282, 1 } }, --
-		questName = "elvebanequest3",
-	},
-	[6175] = {
-		useKV = true,
-		itemId = 2472,
-		itemPos = { x = 32591, y = 31647, z = 3 },
-		reward = { { 3425, 1 } }, --
-		questName = "elvebanequest4",
-	},
 	-- Iron Hammer Quest
-	[6176] = {
+	[6172] = {
 		useKV = true,
 		itemId = 2473,
 		itemPos = { x = 32434, y = 31938, z = 8 },
@@ -1667,7 +1653,7 @@ ChestUnique = {
 		questName = "ironhamer",
 	},
 	-- Plate Armor quest
-	[6177] = {
+	[6173] = {
 		useKV = true,
 		itemId = 2474,
 		itemPos = { x = 33327, y = 32182, z = 7 },
@@ -1675,14 +1661,14 @@ ChestUnique = {
 		questName = "platearmor",
 	},
 	-- Stealth Ring Quest
-	[6178] = {
+	[6174] = {
 		useKV = true,
 		itemId = 1983,
 		itemPos = { x = 33315, y = 32277, z = 11 },
 		reward = { { 3084, 250 } }, -- protection amulet
 		questName = "stealhring1",
 	},
-	[6179] = {
+	[6175] = {
 		useKV = true,
 		itemId = 1983,
 		itemPos = { x = 33315, y = 32282, z = 11 },
@@ -1690,28 +1676,28 @@ ChestUnique = {
 		questName = "stealhring2",
 	},
 	-- Steel Helmet Quest
-	[6180] = {
+	[6176] = {
 		useKV = true,
 		itemId = 2434,
 		itemPos = { x = 32460, y = 31951, z = 5 },
 		reward = { { 3031, 56 } }, -- 56 gold coin
 		questName = "steelhelmet1",
 	},
-	[6181] = {
+	[6177] = {
 		useKV = true,
 		itemId = 2469,
 		itemPos = { x = 32464, y = 31957, z = 5 },
 		reward = { { 3031, 47 } }, -- 47 gold coin
 		questName = "steelhelmet2",
 	},
-	[6182] = {
+	[6178] = {
 		useKV = true,
 		itemId = 2473,
 		itemPos = { x = 32462, y = 31947, z = 4 },
 		reward = { { 3351, 1 } }, -- steel helmet
 		questName = "steelhelmet3",
 	},
-	[6183] = {
+	[6179] = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32467, y = 31962, z = 4 },
@@ -1719,7 +1705,7 @@ ChestUnique = {
 		questName = "steelhelmet4",
 	},
 	-- Battle Axe Quest
-	[6184] = {
+	[6180] = {
 		useKV = true,
 		itemId = 4285,
 		itemPos = { x = 32305, y = 32254, z = 9 },
@@ -1727,7 +1713,7 @@ ChestUnique = {
 		questName = "battleaxe",
 	},
 	-- Doublet Quest
-	[6185] = {
+	[6181] = {
 		useKV = true,
 		itemId = 408,
 		itemPos = { x = 32084, y = 32181, z = 8 },
@@ -1735,7 +1721,7 @@ ChestUnique = {
 		questName = "doublet",
 	},
 	-- Honey Flower Quest
-	[6186] = {
+	[6182] = {
 		useKV = true,
 		itemId = 9226,
 		itemPos = { x = 32005, y = 32139, z = 3 },
@@ -1743,16 +1729,16 @@ ChestUnique = {
 		questName = "honeyflower",
 	},
 	-- The Medusa Quest
-	[6187] = {
+	[6183] = {
 		itemId = 1983,
 		itemPos = { x = 33049, y = 32399, z = 10 },
 		container = 2853,
-		weight = 105,
+		weight = 105.00,
 		reward = { { 3436, 1 }, { 3567, 1 }, { 3324, 1 } },
 		storage = Storage.Quest.U7_3.TheMedusaQuest,
 	},
 	-- Serpentine Tower Quest
-	[6188] = {
+	[6184] = {
 		itemId = 2472,
 		itemPos = { x = 33150, y = 32862, z = 7 },
 		weight = 0.20,
@@ -1760,7 +1746,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_3.SerpentineTower.WhitePearl,
 	},
 	-- Elephant Tusk Quest
-	[6189] = {
+	[6185] = {
 		itemId = 2472,
 		itemPos = { x = 32922, y = 32755, z = 7 },
 		weight = 0.20,
@@ -1768,14 +1754,14 @@ ChestUnique = {
 		storage = Storage.Quest.U7_5.ElephantTusk,
 	},
 	-- The Explorer Society - Books
-	[6190] = {
+	[6186] = {
 		itemId = 2434,
 		itemPos = { x = 32770, y = 32245, z = 8 },
 		weight = 13,
 		reward = { { 2821, 1 } },
 		storage = Storage.Quest.U7_6.ExplorerSociety.Books.Cyclops,
 	},
-	[6191] = {
+	[6187] = {
 		itemId = 2523,
 		itemPos = { x = 32786, y = 32254, z = 8 },
 		weight = 13.00,
@@ -1783,7 +1769,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_6.ExplorerSociety.Books.Hengis,
 	},
 	-- Witch House Quest
-	[6192] = {
+	[6188] = {
 		itemId = 2472,
 		itemPos = { x = 32867, y = 31909, z = 8 },
 		weight = 23.30,
@@ -1792,7 +1778,7 @@ ChestUnique = {
 		storage = Storage.QuestChests.WitchHouseQuest,
 	},
 	-- Simon The Beggar's Favorite Staff
-	[6193] = {
+	[6189] = {
 		itemId = 2482,
 		itemPos = { x = 33167, y = 31600, z = 15 },
 		weight = 38.00,
@@ -1800,7 +1786,7 @@ ChestUnique = {
 		storage = Storage.QuestChests.SimonTheBeggarsFavoriteStaff,
 	},
 	-- Druid Outfit Quest - Wolf Tooth Chain
-	[6194] = {
+	[6190] = {
 		itemId = 2480,
 		itemPos = { x = 32939, y = 31776, z = 9 },
 		weight = 3.30,
@@ -1808,7 +1794,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.DruidOutfits.WolfToothChain,
 	},
 	-- Hunter Outfits Quest - Elane Crossbow
-	[6195] = {
+	[6191] = {
 		itemId = 2472,
 		itemPos = { x = 32369, y = 32795, z = 10 },
 		weight = 40.00,
@@ -1816,7 +1802,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.HunterOutfits.ElaneCrossbow,
 	},
 	-- Knight Outfits Quest - Ramsay the Reckless Helmet
-	[6196] = {
+	[6192] = {
 		itemId = 2472,
 		itemPos = { x = 32860, y = 32516, z = 11 },
 		weight = 46.00,
@@ -1824,7 +1810,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.KnightOutfits.RamsaysHelmetChest,
 	},
 	-- Oriental Outfits Quest - Chest
-	[6197] = {
+	[6193] = {
 		itemId = 2472,
 		itemPos = { x = 32088, y = 32780, z = 11 },
 		weight = 4.50,
@@ -1832,7 +1818,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.OrientalOutfits.CoralComb,
 	},
 	-- The Shattered Isles Quest - Dragahs Spellbook
-	[6198] = {
+	[6194] = {
 		itemId = 4240,
 		itemPos = { x = 32093, y = 32574, z = 8 },
 		weight = 58.00,
@@ -1840,7 +1826,7 @@ ChestUnique = {
 		storage = Storage.Quest.U7_8.TheShatteredIsles.DragahsSpellbook,
 	},
 	-- Dreamer's Challenge Quest
-	[6199] = {
+	[6195] = {
 		itemId = 4240,
 		itemPos = { x = 32860, y = 32249, z = 9 },
 		weight = 150.00,
@@ -1848,14 +1834,14 @@ ChestUnique = {
 		reward = { { 2816, 1 }, { 3285, 1 }, { 3352, 1 }, { 3558, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.BPLongSword,
 	},
-	[6200] = {
+	[6196] = {
 		itemId = 2472,
 		itemPos = { x = 32850, y = 32285, z = 14 },
 		weight = 13.00,
 		reward = { { 2821, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestBook,
 	},
-	[6201] = {
+	[6197] = {
 		itemId = 2469,
 		itemPos = { x = 32749, y = 32341, z = 14 },
 		weight = 15.30,
@@ -1863,7 +1849,7 @@ ChestUnique = {
 		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
 	},
-	[6202] = {
+	[6198] = {
 		itemId = 2469,
 		itemPos = { x = 32751, y = 32341, z = 14 },
 		weight = 15.30,
@@ -1871,7 +1857,7 @@ ChestUnique = {
 		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
 	},
-	[6203] = {
+	[6199] = {
 		itemId = 2469,
 		itemPos = { x = 32753, y = 32341, z = 14 },
 		weight = 15.30,
@@ -1879,7 +1865,7 @@ ChestUnique = {
 		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
 	},
-	[6204] = {
+	[6200] = {
 		itemId = 2469,
 		itemPos = { x = 32755, y = 32341, z = 14 },
 		weight = 15.30,
@@ -1887,7 +1873,7 @@ ChestUnique = {
 		reward = { { 6498, 1 }, { 2874, 1 }, { 3602, 1 } },
 		storage = Storage.Quest.U7_9.DreamersChallenge.ChestsWine,
 	},
-	[6205] = {
+	[6201] = {
 		itemId = 2469,
 		itemPos = { x = 32835, y = 32223, z = 14 },
 		weight = 0.30,
@@ -1895,21 +1881,21 @@ ChestUnique = {
 		storage = Storage.Quest.U7_9.DreamersChallenge.Chests3SmallDiamond,
 	},
 	-- The Pits of Inferno
-	[6206] = {
+	[6202] = {
 		itemId = 2472,
 		itemPos = { x = 32828, y = 32340, z = 7 },
 		weight = 13.00,
 		reward = { { 2836, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.ChestTible,
 	},
-	[6207] = {
+	[6203] = {
 		itemId = 5972,
 		itemPos = { x = 32854, y = 32325, z = 11 },
 		weight = 13.00,
 		reward = { { 2816, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.CorpseBook,
 	},
-	[6208] = {
+	[6204] = {
 		itemId = 5972,
 		itemPos = { x = 32832, y = 32277, z = 10 },
 		weight = 40.90,
@@ -1917,7 +1903,7 @@ ChestUnique = {
 		reward = { { 6561, 1 }, { 6299, 1 }, { 3052, 1 }, { 5021, 3 }, { 3026, 5 }, { 3035, 11 }, { 5944, 2 }, { 3160, 3 }, { 3155, 2 }, { 3147, 1 }, { 238, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.CorpsePirateBP,
 	},
-	[6209] = {
+	[6205] = {
 		itemId = 2472,
 		itemPos = { x = 32826, y = 32232, z = 11 },
 		weight = 20.70,
@@ -1925,54 +1911,649 @@ ChestUnique = {
 		reward = { { 11605, 1 }, { 11607, 1 }, { 11609, 1 }, { 11603, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestBP,
 	},
-	[6210] = {
+	[6206] = {
 		itemId = 2472,
 		itemPos = { x = 32824, y = 32232, z = 11 },
 		weight = 10.00,
 		reward = { { 3035, 100 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestPlatinumCoins,
 	},
-	[6211] = {
+	[6207] = {
 		itemId = 2472,
 		itemPos = { x = 32819, y = 32232, z = 11 },
 		weight = 10.00,
 		reward = { { 3249, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestFrozenStarlight,
 	},
-	[6212] = {
+	[6208] = {
 		itemId = 2472,
 		itemPos = { x = 32814, y = 32232, z = 11 },
 		weight = 8.50,
 		reward = { { 5791, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStuffed,
 	},
-	[6213] = {
+	[6209] = {
 		itemId = 2472,
 		itemPos = { x = 32812, y = 32232, z = 11 },
 		weight = 8.00,
 		reward = { { 6529, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestSoftBoots,
 	},
-	[6214] = {
+	[6210] = {
 		itemId = 2472,
 		itemPos = { x = 32804, y = 32229, z = 11 },
 		weight = 40.00,
 		reward = { { 3341, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
 	},
-	[6215] = {
+	[6211] = {
 		itemId = 2472,
 		itemPos = { x = 32806, y = 32229, z = 11 },
 		weight = 64.00,
 		reward = { { 6527, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
 	},
-	[6216] = {
+	[6212] = {
 		itemId = 2472,
 		itemPos = { x = 32808, y = 32229, z = 11 },
 		weight = 95.00,
 		reward = { { 5803, 1 } },
 		storage = Storage.Quest.U7_9.ThePitsOfInferno.RewardChestStaffAvengerArbalest,
+	},
+	-- The Ice Island Quest - Skeleton - Formorgar Glacier
+	[6213] = {
+		itemId = 4024,
+		itemPos = { x = 32121, y = 31106, z = 12 },
+		container = 2853,
+		reward = { { 3450, 20 }, { 3349, 1 }, { 7443, 1 }, { 3031, 100 }, { 7290, 1 } },
+		weight = 97.00,
+		storage = Storage.Quest.U8_0.TheIceIslands.FormorgarGlacierSkeleton,
+	},
+	[6214] = {
+		itemId = 2472,
+		itemPos = { x = 32027, y = 31104, z = 11 },
+		reward = { { 2820, 1 } },
+		weight = 0.50,
+		storage = Storage.Quest.U8_0.TheIceIslands.FormorgarGlacierChest,
+	},
+	-- Shards of Ancient Winters Quest
+	[6215] = {
+		itemId = 2523,
+		itemPos = { x = 32483, y = 31110, z = 8 },
+		container = 7343,
+		reward = { { 7158, 3 }, { 3031, 48 }, { 7290, 1 } },
+		weight = 67.80,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Inukaya,
+	},
+	[6216] = {
+		itemId = 2523,
+		itemPos = { x = 32431, y = 31235, z = 8 },
+		container = 2853,
+		reward = { { 6525, 1 }, { 3031, 89 }, { 7290, 1 } },
+		weight = 45.90,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Tyrsung,
+	},
+	[6217] = {
+		itemId = 2473,
+		itemPos = { x = 32146, y = 31430, z = 8 },
+		container = 2853,
+		reward = { { 7443, 1 }, { 3035, 10 }, { 7290, 1 } },
+		weight = 45.90,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Okolnir,
+	},
+	[6218] = {
+		itemId = 4024,
+		itemPos = { x = 32490, y = 31192, z = 10 },
+		container = 2853,
+		reward = { { 7439, 1 }, { 3031, 200 }, { 6499, 3 }, { 7290, 1 } },
+		weight = 52.00,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.Helheim,
+	},
+	[6219] = {
+		itemId = 2472,
+		itemPos = { x = 32154, y = 31116, z = 9 },
+		container = 2853,
+		reward = { { 7400, 1 }, { 3035, 2 }, { 7290, 1 } },
+		weight = 32.20,
+		storage = Storage.Quest.U8_0.ShardsofAncientWinters.FormorgarMines,
+	},
+	-- Barbarian Arena Quest - Greenhorn
+	[6220] = {
+		itemId = 2472,
+		itemPos = { x = 32231, y = 31065, z = 7 },
+		container = 2856,
+		reward = { { 2995, 1 }, { 6570, 1 }, { 6574, 1 }, { 6569, 10 }, { 7377, 1 } },
+		weight = 25.10,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornPresent,
+	},
+	[6221] = {
+		itemId = 2480,
+		itemPos = { x = 32231, y = 31068, z = 7 },
+		container = 7342,
+		reward = { { 7364, 100 }, { 7365, 100 } },
+		weight = 158.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornBP,
+	},
+	[6222] = {
+		itemId = 2482,
+		itemPos = { x = 32235, y = 31068, z = 7 },
+		reward = { { 7392, 1 } },
+		weight = 54.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornWeapons,
+	},
+	[6223] = {
+		itemId = 2482,
+		itemPos = { x = 32235, y = 31066, z = 7 },
+		reward = { { 7380, 1 } },
+		weight = 45.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornWeapons,
+	},
+	[6224] = {
+		itemId = 2482,
+		itemPos = { x = 32235, y = 31064, z = 7 },
+		reward = { { 7406, 1 } },
+		weight = 59.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardGreenhornWeapons,
+	},
+	-- Barbarian Arena Quest - Scrapper
+	[6225] = {
+		itemId = 2472,
+		itemPos = { x = 32231, y = 31058, z = 7 },
+		container = 2856,
+		reward = { { 6569, 10 }, { 7375, 1 }, { 6574, 1 }, { 7183, 1 } },
+		weight = 25.10,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperPresent,
+	},
+	[6226] = {
+		itemId = 2480,
+		itemPos = { x = 32231, y = 31068, z = 7 },
+		container = 7342,
+		reward = { { 7365, 100 }, { 3450, 200 }, { 11605, 1 }, { 11615, 1 } },
+		weight = 270.40,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperBP,
+	},
+	[6227] = {
+		itemId = 2482,
+		itemPos = { x = 32235, y = 31061, z = 7 },
+		reward = { { 7415, 1 } },
+		weight = 78.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperWeapons,
+	},
+	[6228] = {
+		itemId = 2482,
+		itemPos = { x = 32235, y = 31059, z = 7 },
+		reward = { { 7389, 1 } },
+		weight = 61.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperWeapons,
+	},
+	[6229] = {
+		itemId = 2482,
+		itemPos = { x = 32235, y = 31057, z = 7 },
+		reward = { { 7384, 1 } },
+		weight = 35.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardScrapperWeapons,
+	},
+	-- Barbarian Arena Quest - Warlord
+	[6230] = {
+		itemId = 2472,
+		itemPos = { x = 32231, y = 31051, z = 7 },
+		container = 2856,
+		reward = { { 6569, 10 }, { 6574, 1 }, { 7372, 1 }, { 5080, 1 } },
+		weight = 13.60,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordPresent,
+	},
+	[6231] = {
+		itemId = 2480,
+		itemPos = { x = 32231, y = 31054, z = 7 },
+		container = 7342,
+		reward = { { 11603, 1 }, { 11609, 1 }, { 7443, 1 }, { 7440, 1 }, { 6528, 100 } },
+		weight = 115.30,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordBP,
+	},
+	[6232] = {
+		itemId = 2482,
+		itemPos = { x = 32235, y = 31054, z = 7 },
+		reward = { { 7429, 1 } },
+		weight = 39.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordWeapons,
+	},
+	[6233] = {
+		itemId = 2482,
+		itemPos = { x = 32235, y = 31052, z = 7 },
+		reward = { { 7434, 1 } },
+		weight = 92.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordWeapons,
+	},
+	[6234] = {
+		itemId = 2482,
+		itemPos = { x = 32235, y = 31050, z = 7 },
+		reward = { { 7390, 1 } },
+		weight = 50.00,
+		storage = Storage.Quest.U8_0.BarbarianArena.RewardWarlordWeapons,
+	},
+	-- Fishing Box Quest
+	[6235] = {
+		itemId = 2473,
+		itemPos = { x = 32015, y = 31409, z = 7 },
+		container = 2853,
+		reward = { { 3035, 5 }, { 7158, 3 }, { 7159, 3 } },
+		weight = 68.50,
+		storage = Storage.Quest.U8_0.FishingBox,
+	},
+	-- Koshei The Deathless Quest
+	[6236] = {
+		itemId = 2908,
+		itemPos = { x = 33193, y = 32459, z = 7 },
+		reward = { { 7530, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart1,
+	},
+	[6237] = {
+		itemId = 1983,
+		itemPos = { x = 33305, y = 32277, z = 10 },
+		reward = { { 7528, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart2,
+	},
+	[6238] = {
+		itemId = 231,
+		itemPos = { x = 33212, y = 32593, z = 7 },
+		reward = { { 7531, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart3,
+	},
+	[6239] = {
+		itemId = 1983,
+		itemPos = { x = 33053, y = 32468, z = 11 },
+		reward = { { 7529, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiAmuletPart4,
+	},
+	[6240] = {
+		itemId = 2472,
+		itemPos = { x = 33261, y = 32444, z = 12 },
+		reward = { { 645, 1 } },
+		weight = 18.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessLegs,
+	},
+	[6241] = {
+		itemId = 2480,
+		itemPos = { x = 33261, y = 32448, z = 12 },
+		reward = { { 3035, 100 } },
+		weight = 5.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessPlatinum,
+	},
+	[6242] = {
+		itemId = 2469,
+		itemPos = { x = 33273, y = 32470, z = 11 },
+		reward = { { 3031, 100 } },
+		weight = 10.00,
+		storage = Storage.Quest.U8_1.KosheiTheDeathless.KosheiTheDeathlessGold,
+	},
+	-- Secret Service Quest
+	[6243] = {
+		itemId = 2433,
+		itemPos = { x = 32311, y = 32177, z = 5 },
+		reward = { { 403, 1 } },
+		weight = 13.00,
+		storage = Storage.Quest.U8_1.SecretService.AHX17L89,
+	},
+	[6244] = {
+		itemId = 1983,
+		itemPos = { x = 32156, y = 31954, z = 13 },
+		reward = { { 406, 1 } },
+		weight = 0.80,
+		storage = Storage.Quest.U8_1.SecretService.FamilySignetRing,
+	},
+	[6245] = {
+		itemId = 2433,
+		itemPos = { x = 33271, y = 31839, z = 3 },
+		reward = { { 648, 1 } },
+		weight = 58.00,
+		storage = Storage.Quest.U8_1.SecretService.MagicSpellbook,
+	},
+	[6246] = {
+		itemId = 2473,
+		itemPos = { x = 32907, y = 32012, z = 6 },
+		reward = { { 399, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_1.SecretService.BuildingPlans,
+	},
+	[6247] = {
+		itemId = 2433,
+		itemPos = { x = 32598, y = 32380, z = 10 },
+		reward = { { 400, 1 } },
+		weight = 1.50,
+		storage = Storage.Quest.U8_1.SecretService.SuspiciousDocuments,
+	},
+	[6248] = {
+		itemId = 2473,
+		itemPos = { x = 32180, y = 31930, z = 11 },
+		reward = { { 401, 1 } },
+		weight = 13.00,
+		storage = Storage.Quest.U8_1.SecretService.Book,
+	},
+	[6249] = {
+		itemId = 3634,
+		itemPos = { x = 32876, y = 31958, z = 11 },
+		reward = { { 652, 1 } },
+		weight = 45.00,
+		storage = Storage.Quest.U8_1.SecretService.RottenHeartOfTree,
+	},
+	[6250] = {
+		itemId = 2469,
+		itemPos = { x = 32872, y = 31958, z = 11 },
+		reward = { { 5956, 1 } },
+		weight = 1.20,
+		storage = Storage.Quest.U8_1.SecretService.LotteryTicket,
+	},
+	[6251] = {
+		itemId = 2472,
+		itemPos = { x = 32643, y = 32733, z = 7 },
+		reward = { { 5952, 1 } },
+		weight = 1.20,
+		storage = Storage.Quest.U8_1.SecretService.PoemScroll,
+	},
+	[6252] = {
+		itemId = 4240,
+		itemPos = { x = 32773, y = 31582, z = 11 },
+		reward = { { 348, 1 } },
+		weight = 1.20,
+		storage = Storage.Quest.U8_1.SecretService.IntelligenceReports,
+	},
+	-- To Blind the Enemy Quest
+	[6253] = {
+		itemId = 2472,
+		itemPos = { x = 32591, y = 31647, z = 3 },
+		reward = { { 3425, 1 } },
+		weight = 55.00,
+		storage = Storage.TibiaTales.ToBlindTheEnemy.DwarvenShield,
+	},
+	[6254] = {
+		itemId = 2472,
+		itemPos = { x = 32590, y = 31647, z = 3 },
+		reward = { { 3282, 1 } },
+		weight = 54.00,
+		storage = Storage.TibiaTales.ToBlindTheEnemy.MorningStar,
+	},
+	[6255] = {
+		itemId = 2434,
+		itemPos = { x = 32588, y = 31645, z = 3 },
+		container = 2853,
+		reward = { { 237, 1 }, { 3147, 1 }, { 3059, 1 } },
+		weight = 31.00,
+		storage = Storage.TibiaTales.ToBlindTheEnemy.BP1,
+	},
+	[6256] = {
+		itemId = 2434,
+		itemPos = { x = 32588, y = 31644, z = 3 },
+		container = 2853,
+		reward = { { 3028, 2 }, { 3031, 100 } },
+		weight = 18.20,
+		storage = Storage.TibiaTales.ToBlindTheEnemy.BP2,
+	},
+	-- To Outfox a Fox Quest
+	[6257] = {
+		itemId = 2469,
+		itemPos = { x = 32467, y = 31970, z = 5 },
+		reward = { { 139, 1 } },
+		weight = 7.00,
+		storage = Storage.TibiaTales.ToOutfoxAFoxQuest.MiningHelmet,
+	},
+	-- Waterfall Quest
+	[6258] = {
+		itemId = 2472,
+		itemPos = { x = 32970, y = 32646, z = 8 },
+		container = 5926,
+		reward = { { 6096, 1 }, { 3097, 1 } },
+		weight = 7.00,
+		storage = Storage.Quest.U8_1.WaterfallQuest,
+	},
+	-- What a Foolish Quest
+	[6259] = {
+		itemId = 2469,
+		itemPos = { x = 32563, y = 32115, z = 4 },
+		reward = { { 112, 1 } },
+		weight = 0.50,
+		storage = Storage.Quest.U8_1.WhatAFoolishQuest.MagicalWatch,
+	},
+	[6269] = {
+		itemId = 2472,
+		itemPos = { x = 32661, y = 31855, z = 13 },
+		container = 2853,
+		reward = { { 3469, 1 }, { 2821, 1 } },
+		weight = 22.00,
+		storage = Storage.Quest.U8_1.WhatAFoolishQuest.BagBookKnife,
+	},
+	-- The Inquisition Quest
+	[6270] = {
+		itemId = 2472,
+		itemPos = { x = 32649, y = 31932, z = 1 },
+		reward = { { 7874, 1 } },
+		weight = 13.00,
+		storage = Storage.Quest.U8_2.TheInquisitionQuest.WitchesGrimoire,
+	},
+	-- The Thieves Guild Quest
+	[6271] = {
+		itemId = 2473,
+		itemPos = { x = 33131, y = 32661, z = 7 },
+		reward = { { 235, 1 } },
+		weight = 8.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardOasis,
+	},
+	[6272] = {
+		itemId = 2473,
+		itemPos = { x = 32367, y = 31781, z = 8 },
+		reward = { { 8117, 1 } },
+		weight = 13.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardBook,
+	},
+	[6273] = {
+		itemId = 2469,
+		itemPos = { x = 32551, y = 32652, z = 10 },
+		reward = { { 7369, 1 } },
+		weight = 5.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.GoldenGoblet,
+	},
+	[6274] = {
+		itemId = 2433,
+		itemPos = { x = 32902, y = 32143, z = 4 },
+		reward = { { 7935, 1 } },
+		weight = 0.10,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.CompromisingLetter,
+	},
+	[6275] = {
+		itemId = 2434,
+		itemPos = { x = 32309, y = 32209, z = 8 },
+		reward = { { 8021, 1 } },
+		weight = 35.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardEnd,
+	},
+	[6276] = {
+		itemId = 2434,
+		itemPos = { x = 32309, y = 32211, z = 8 },
+		reward = { { 7404, 1 } },
+		weight = 17.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardEnd,
+	},
+	[6277] = {
+		itemId = 2434,
+		itemPos = { x = 32309, y = 32213, z = 8 },
+		reward = { { 8073, 1 } },
+		weight = 21.00,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.RewardEnd,
+	},
+	-- Vampire Hunter Quest
+	[6278] = {
+		itemId = 1986,
+		itemPos = { x = 32972, y = 31461, z = 10 },
+		reward = { { 8532, 1 } },
+		weight = 5.00,
+		storage = Storage.Quest.U8_2.VampireHunterQuest.BloodSkull,
+	},
+	-- The Hidden City of Beregar Quest
+	[6279] = {
+		itemId = 4024,
+		itemPos = { x = 32601, y = 31386, z = 14 },
+		reward = { { 9058, 1 } },
+		weight = 18.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.CorpseGoldIngot,
+	},
+	[6280] = {
+		itemId = 4240,
+		itemPos = { x = 32588, y = 31406, z = 14 },
+		reward = { { 9057, 3 } },
+		weight = 0.30,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.CorpseSmallTopazes,
+	},
+	[6281] = {
+		itemId = 4024,
+		itemPos = { x = 32650, y = 31467, z = 15 },
+		reward = { { 8895, 1 } },
+		weight = 120.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.CorpseRustedArmor,
+	},
+	[6282] = {
+		itemId = 2472,
+		itemPos = { x = 32754, y = 31462, z = 15 },
+		reward = { { 9172, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.PrisonCellKey,
+	},
+	[6283] = {
+		itemId = 1983,
+		itemPos = { x = 32546, y = 31522, z = 11 },
+		container = 2867,
+		reward = { { 3035, 13 }, { 3003, 1 }, { 3457, 1 }, { 268, 1 }, { 239, 2 } },
+		weight = 82.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.BPTheUndeathStare,
+	},
+	[6284] = {
+		itemId = 2472,
+		itemPos = { x = 32582, y = 31405, z = 15 },
+		reward = { { 9019, 1 } },
+		weight = 10.00,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.FirewalkerBoots,
+	},
+	-- Darashia Dragon Quest
+	[6285] = {
+		itemId = 4286,
+		itemPos = { x = 33233, y = 32280, z = 12 },
+		reward = { { 3052, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_5.DarashiaDragon,
+	},
+	-- Lone Medusa Quest
+	[6286] = {
+		itemId = 3990,
+		itemPos = { x = 32406, y = 32764, z = 1 },
+		reward = { { 3027, 4 } },
+		weight = 1.00,
+		storage = Storage.Quest.U8_5.LoneMedusa,
+	},
+	-- The New Frontier Quest
+	[6287] = {
+		itemId = 2472,
+		itemPos = { x = 33164, y = 31257, z = 10 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TheNewFrontier.ChestTomeOfKnowledge1,
+	},
+	[6288] = {
+		itemId = 2472,
+		itemPos = { x = 33057, y = 31019, z = 2 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TheNewFrontier.ChestTomeOfKnowledge2,
+	},
+	-- Children of the Revolution Quest
+	[6289] = {
+		itemId = 2472,
+		itemPos = { x = 33247, y = 31161, z = 6 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.ChestTomeOfKnowledge1,
+	},
+	[6290] = {
+		itemId = 1895,
+		itemPos = { x = 33327, y = 31410, z = 8 },
+		reward = { { 10189, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.FlaskOfExtraGreasyOil,
+	},
+	[6291] = {
+		itemId = 2472,
+		itemPos = { x = 33264, y = 31130, z = 7 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.ChestTomeOfKnowledge2,
+	},
+	-- Tomes of Knowledge Quest
+	[6292] = {
+		itemId = 2472,
+		itemPos = { x = 33009, y = 31251, z = 8 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TomesOfKnowledge.ChestTomeOfKnowledge1,
+	},
+	[6293] = {
+		itemId = 2472,
+		itemPos = { x = 32978, y = 31427, z = 2 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TomesOfKnowledge.ChestTomeOfKnowledge2,
+	},
+	[6294] = {
+		itemId = 2472,
+		itemPos = { x = 33306, y = 31125, z = 9 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TomesOfKnowledge.ChestTomeOfKnowledge3,
+	},
+	[6295] = {
+		itemId = 2480,
+		itemPos = { x = 33157, y = 31229, z = 15 },
+		reward = { { 10217, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U8_54.TomesOfKnowledge.ChestTomeOfKnowledge4,
+	},
+	-- An Interest In Botany Quest
+	[6296] = {
+		itemId = 2469,
+		itemPos = { x = 33004, y = 31530, z = 10 },
+		reward = { { 11699, 1 } },
+		weight = 15.00,
+		storage = Storage.TibiaTales.AnInterestInBotany.BotanyAlmanach,
+	},
+	-- Wrath of the Emperor Quest
+	[6297] = {
+		itemId = 2469,
+		itemPos = { x = 33073, y = 31169, z = 8 },
+		reward = { { 3035, 100 } },
+		weight = 10.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.Chest100PlatinumCoins,
+	},
+	[6298] = {
+		itemId = 2472,
+		itemPos = { x = 33074, y = 31169, z = 8 },
+		container = 2853,
+		reward = { { 11695, 1 }, { 10326, 1 }, { 5801, 1 }, { 3041, 1 }, { 3027, 10 }, { 9058, 5 }, { 5882, 10 }, { 3043, 10 } },
+		weight = 151.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestBag,
+	},
+	[6299] = {
+		itemId = 2473,
+		itemPos = { x = 33078, y = 31170, z = 8 },
+		reward = { { 11686, 1 } },
+		weight = 130.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestItems,
+	},
+	[6300] = {
+		itemId = 2473,
+		itemPos = { x = 33080, y = 31170, z = 8 },
+		reward = { { 11689, 1 } },
+		weight = 43.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestItems,
 	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest

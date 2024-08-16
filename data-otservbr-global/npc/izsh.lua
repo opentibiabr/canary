@@ -54,7 +54,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if Player(creature):getStorageValue(Storage.WrathoftheEmperor.Questline) == 33 then
+		if Player(creature):getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 33 then
 			npcHandler:say("Oh yez, let me zee ze documentz. Here we go: zree cheztz filled wiz platinum, one houze, a zet of elite armor, and an unending mana cazket. Iz ziz correct?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -71,7 +71,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			"You will find your rewardz in one of ze old zupply zellarz. Beware of ze ratz zough. ...",
 			"Ze rednezz of your faze and ze zound you make wiz your teez iz obviouzly a zign of gratitude of your zpeziez! I am flattered, but pleaze leave now az I have to attend to zome important buzinezz.",
 		}, npc, creature)
-		Player(creature):setStorageValue(Storage.WrathoftheEmperor.Questline, 34)
+		player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 34)
+		player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission12, 0) --Questlog, Wrath of the Emperor "Mission 12: Just Rewards"
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true

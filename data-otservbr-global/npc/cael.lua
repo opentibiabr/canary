@@ -389,6 +389,7 @@ local function onTradeRequest(npc, creature)
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|! You must have come around quite a bit. I'm always interested in learning new things about Zao.")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Keep in mind you won't find better offers here. Just browse through my wares.")
 
 npcHandler:setCallback(CALLBACK_ON_TRADE_REQUEST, onTradeRequest)

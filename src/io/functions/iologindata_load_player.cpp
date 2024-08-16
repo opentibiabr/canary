@@ -720,7 +720,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(const std::shared_ptr<Player> &player,
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
-		if (result = db.storeQuery(query.str())) {
+		if ((result = db.storeQuery(query.str()))) {
 			do {
 				auto slot = std::make_unique<PreySlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
 				auto state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
@@ -767,7 +767,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
-		if (result = db.storeQuery(query.str())) {
+		if ((result = db.storeQuery(query.str()))) {
 			do {
 				auto slot = std::make_unique<TaskHuntingSlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
 				auto state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
@@ -815,7 +815,7 @@ void IOLoginDataLoad::loadPlayerForgeHistory(const std::shared_ptr<Player> &play
 
 	std::ostringstream query;
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if (result = Database::getInstance().storeQuery(query.str())) {
+	if ((result = Database::getInstance().storeQuery(query.str()))) {
 		do {
 			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getNumber<uint16_t>("action_type"));
 			ForgeHistory history;
@@ -841,7 +841,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(const std::shared_ptr<Player> &player,
 
 	std::ostringstream query;
 	query << "SELECT * FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
-	if (result = Database::getInstance().storeQuery(query.str())) {
+	if ((result = Database::getInstance().storeQuery(query.str()))) {
 		do {
 			player->setSlotBossId(1, result->getNumber<uint16_t>("bossIdSlotOne"));
 			player->setSlotBossId(2, result->getNumber<uint16_t>("bossIdSlotTwo"));

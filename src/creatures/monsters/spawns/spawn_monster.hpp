@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include "items/tile.hpp"
 #include "game/movement/position.hpp"
 
 class Monster;
@@ -17,9 +16,9 @@ class MonsterType;
 
 struct spawnBlock_t {
 	Position pos;
-	std::unordered_map<std::shared_ptr<MonsterType>, uint32_t> monsterTypes;
-	int64_t lastSpawn;
-	uint32_t interval;
+	std::unordered_map<std::shared_ptr<MonsterType>, uint32_t> monsterTypes {};
+	int64_t lastSpawn {};
+	uint32_t interval {};
 	Direction direction;
 
 	std::shared_ptr<MonsterType> getMonsterType() const;
@@ -38,9 +37,9 @@ public:
 
 	// moveable
 	SpawnMonster(SpawnMonster &&rhs) noexcept :
-		spawnMonsterMap(std::move(rhs.spawnMonsterMap)),
 		spawnedMonsterMap(std::move(rhs.spawnedMonsterMap)),
-		checkSpawnMonsterEvent(rhs.checkSpawnMonsterEvent), centerPos(rhs.centerPos), radius(rhs.radius), interval(rhs.interval) { }
+		spawnMonsterMap(std::move(rhs.spawnMonsterMap)),
+		centerPos(rhs.centerPos), radius(rhs.radius), interval(rhs.interval), checkSpawnMonsterEvent(rhs.checkSpawnMonsterEvent) { }
 
 	SpawnMonster &operator=(SpawnMonster &&rhs) noexcept {
 		if (this != &rhs) {

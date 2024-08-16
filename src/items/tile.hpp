@@ -256,7 +256,7 @@ public:
 			resetTileFlags(ground);
 		}
 
-		if (ground = item) {
+		if ((ground = item)) {
 			setTileFlags(item);
 		}
 	}

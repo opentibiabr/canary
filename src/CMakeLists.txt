@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
 # Base configurations and settings for the project
 include(BaseConfig)
+include(CheckSIMDSupport)
 include(GNUInstallDirs)
 
 # Import configurations, source definitions, and linker settings

@@ -19,6 +19,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "creatures/players/highscore_category.hpp"
+#include "game/world/gameworldconfig.hpp"
 #include "game/zones/zone.hpp"
 #include "lua/global/globalevent.hpp"
 #include "io/iologindata.hpp"
@@ -413,10 +414,11 @@ void Game::resetNpcs() const {
 
 void Game::loadBoostedCreature() {
 	auto &db = Database::getInstance();
-	const auto result = db.storeQuery("SELECT * FROM `boosted_creature`");
+	const auto worldId = g_gameworld().getWorldId();
+
+	const auto result = db.storeQuery(fmt::format("SELECT * FROM `boosted_creature` WHERE `worldId` = {}", worldId));
 	if (!result) {
-		g_logger().warn("[Game::loadBoostedCreature] - "
-		                "Failed to detect boosted creature database. (CODE 01)");
+		g_logger().warn("{} - Failed to detect boosted creature database. (CODE 01)", __FUNCTION__);
 		return;
 	}
 
@@ -452,36 +454,28 @@ void Game::loadBoostedCreature() {
 	}
 
 	if (selectedMonster.raceId == 0) {
-		g_logger().warn("[Game::loadBoostedCreature] - "
-		                "It was not possible to generate a new boosted creature->");
+		g_logger().warn("{} - It was not possible to generate a new boosted creature->", __FUNCTION__);
 		return;
 	}
 
 	const auto monsterType = g_monsters().getMonsterType(selectedMonster.name);
 	if (!monsterType) {
-		g_logger().warn("[Game::loadBoostedCreature] - "
-		                "It was not possible to generate a new boosted creature-> Monster '{}' not found.",
-		                selectedMonster.name);
+		g_logger().warn("{} - It was not possible to generate a new boosted creature-> Monster '{}' not found.", __FUNCTION__, selectedMonster.name);
 		return;
 	}
 
 	setBoostedName(selectedMonster.name);
 
-	auto query = std::string("UPDATE `boosted_creature` SET ")
-		+ "`date` = '" + std::to_string(ltm->tm_mday) + "',"
-		+ "`boostname` = " + db.escapeString(selectedMonster.name) + ","
-		+ "`looktype` = " + std::to_string(monsterType->info.outfit.lookType) + ","
-		+ "`lookfeet` = " + std::to_string(monsterType->info.outfit.lookFeet) + ","
-		+ "`looklegs` = " + std::to_string(monsterType->info.outfit.lookLegs) + ","
-		+ "`lookhead` = " + std::to_string(monsterType->info.outfit.lookHead) + ","
-		+ "`lookbody` = " + std::to_string(monsterType->info.outfit.lookBody) + ","
-		+ "`lookaddons` = " + std::to_string(monsterType->info.outfit.lookAddons) + ","
-		+ "`lookmount` = " + std::to_string(monsterType->info.outfit.lookMount) + ","
-		+ "`raceid` = '" + std::to_string(selectedMonster.raceId) + "'";
+	auto query = fmt::format(
+		"UPDATE `boosted_creature` SET `date` = '{}', `boostname` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, `lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, `raceid` = {}, `worldId` = {}",
+		std::to_string(ltm->tm_mday), db.escapeString(selectedMonster.name), std::to_string(monsterType->info.outfit.lookType), std::to_string(monsterType->info.outfit.lookFeet),
+		std::to_string(monsterType->info.outfit.lookLegs), std::to_string(monsterType->info.outfit.lookHead), std::to_string(monsterType->info.outfit.lookBody),
+		std::to_string(monsterType->info.outfit.lookAddons), std::to_string(monsterType->info.outfit.lookMount), std::to_string(selectedMonster.raceId),
+		worldId
+	);
 
 	if (!db.executeQuery(query)) {
-		g_logger().warn("[Game::loadBoostedCreature] - "
-		                "Failed to detect boosted creature database. (CODE 02)");
+		g_logger().warn("{} - Failed to detect boosted creature database. (CODE 02)", __FUNCTION__);
 	}
 }
 
@@ -8080,35 +8074,35 @@ void Game::updateCreatureType(std::shared_ptr<Creature> creature) {
 
 void Game::loadMotdNum() {
 	Database &db = Database::getInstance();
+	const auto worldId = g_gameworld().getWorldId();
 
-	DBResult_ptr result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num'");
+	auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num' AND `worldId` = {}", worldId));
 	if (result) {
 		motdNum = result->getNumber<uint32_t>("value");
 	} else {
-		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('motd_num', '0')");
+		db.executeQuery(fmt::format("INSERT INTO `server_config` (`worldId`, `config`, `value`) VALUES ({}, 'motd_num', '0')", worldId));
 	}
 
-	result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash'");
+	result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash' AND `worldId` = {}", worldId));
 	if (result) {
 		motdHash = result->getString("value");
 		if (motdHash != transformToSHA1(g_configManager().getString(SERVER_MOTD, __FUNCTION__))) {
 			++motdNum;
 		}
 	} else {
-		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('motd_hash', '')");
+		db.executeQuery(fmt::format("INSERT INTO `server_config` (`worldId`, `config`, `value`) VALUES ({}, 'motd_hash', '')", worldId));
 	}
 }
 
 void Game::saveMotdNum() const {
 	Database &db = Database::getInstance();
+	const auto worldId = g_gameworld().getWorldId();
 
-	std::ostringstream query;
-	query << "UPDATE `server_config` SET `value` = '" << motdNum << "' WHERE `config` = 'motd_num'";
-	db.executeQuery(query.str());
+	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'motd_num' AND `worldId` = {}", motdNum, worldId);
+	db.executeQuery(query);
 
-	query.str(std::string());
-	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_configManager().getString(SERVER_MOTD, __FUNCTION__)) << "' WHERE `config` = 'motd_hash'";
-	db.executeQuery(query.str());
+	query = fmt::format("UPDATE `server_config` SET `value` = '{}' WHERE `config` = 'motd_hash' AND `worldId` = {}", transformToSHA1(g_configManager().getString(SERVER_MOTD, __FUNCTION__)), worldId);
+	db.executeQuery(query);
 }
 
 void Game::checkPlayersRecord() {
@@ -8127,19 +8121,19 @@ void Game::checkPlayersRecord() {
 void Game::updatePlayersRecord() const {
 	Database &db = Database::getInstance();
 
-	std::ostringstream query;
-	query << "UPDATE `server_config` SET `value` = '" << playersRecord << "' WHERE `config` = 'players_record'";
-	db.executeQuery(query.str());
+	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'players_record' AND `worldId` = {}", playersRecord, g_gameworld().getWorldId());
+	db.executeQuery(query);
 }
 
 void Game::loadPlayersRecord() {
 	Database &db = Database::getInstance();
+	const auto worldId = g_gameworld().getWorldId();
 
-	DBResult_ptr result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'players_record'");
+	const auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'players_record' AND `worldId` = {}", worldId));
 	if (result) {
 		playersRecord = result->getNumber<uint32_t>("value");
 	} else {
-		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('players_record', '0')");
+		db.executeQuery(fmt::format("INSERT INTO `server_config` (`worldId`, `config`, `value`) VALUES ({}, 'players_record', '0')", worldId));
 	}
 }
 

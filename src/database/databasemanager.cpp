@@ -13,6 +13,7 @@
 #include "database/databasemanager.hpp"
 #include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.hpp"
+#include "game/world/gameworldconfig.hpp"
 
 bool DatabaseManager::optimizeTables() {
 	Database &db = Database::getInstance();
@@ -61,8 +62,8 @@ bool DatabaseManager::isDatabaseSetup() {
 int32_t DatabaseManager::getDatabaseVersion() {
 	if (!tableExists("server_config")) {
 		Database &db = Database::getInstance();
-		db.executeQuery("CREATE TABLE `server_config` (`config` VARCHAR(50) NOT NULL, `value` VARCHAR(256) NOT NULL DEFAULT '', UNIQUE(`config`)) ENGINE = InnoDB");
-		db.executeQuery("INSERT INTO `server_config` VALUES ('db_version', 0)");
+		db.executeQuery("CREATE TABLE `server_config` (`worldId` INT(11), `config` VARCHAR(50) NOT NULL, `value` VARCHAR(256) NOT NULL DEFAULT '', UNIQUE(`config`)) ENGINE = InnoDB");
+		db.executeQuery(fmt::format("INSERT INTO `server_config` VALUES ({}, 'db_version', 0)", g_gameworld().getWorldId()));
 		return 0;
 	}
 
@@ -121,10 +122,9 @@ void DatabaseManager::updateDatabase() {
 
 bool DatabaseManager::getDatabaseConfig(const std::string &config, int32_t &value) {
 	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT `value` FROM `server_config` WHERE `config` = " << db.escapeString(config);
+	std::string query = fmt::format("SELECT `value` FROM `server_config` WHERE `worldId` = {} AND `config` = {}", g_gameworld().getWorldId(), db.escapeString(config));
 
-	DBResult_ptr result = db.storeQuery(query.str());
+	const auto result = db.storeQuery(query);
 	if (!result) {
 		return false;
 	}
@@ -135,15 +135,15 @@ bool DatabaseManager::getDatabaseConfig(const std::string &config, int32_t &valu
 
 void DatabaseManager::registerDatabaseConfig(const std::string &config, int32_t value) {
 	Database &db = Database::getInstance();
-	std::ostringstream query;
+	std::string query;
 
 	int32_t tmp;
 
 	if (!getDatabaseConfig(config, tmp)) {
-		query << "INSERT INTO `server_config` VALUES (" << db.escapeString(config) << ", '" << value << "')";
+		query = fmt::format("INSERT INTO `server_config` VALUES ({}, {})", db.escapeString(config), value);
 	} else {
-		query << "UPDATE `server_config` SET `value` = '" << value << "' WHERE `config` = " << db.escapeString(config);
+		query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = {}", value, db.escapeString(config));
 	}
 
-	db.executeQuery(query.str());
+	db.executeQuery(query);
 }

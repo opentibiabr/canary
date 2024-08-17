@@ -15,6 +15,7 @@
 #include "game/game.hpp"
 #include "items/bed.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "game/world/gameworldconfig.hpp"
 #include "lib/metrics/metrics.hpp"
 
 House::House(uint32_t houseId) :
@@ -33,11 +34,10 @@ void House::setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup) {
 		return;
 	}
 
-	std::ostringstream query;
-	query << "UPDATE `houses` SET `new_owner` = " << newOwnerGuid << " WHERE `id` = " << id;
+	std::string query = fmt::format("UPDATE `houses` SET `new_owner` = {} WHERE `id` = {} AND `worldId` = {}", newOwnerGuid, g_gameworld().getWorldId());
 
 	Database &db = Database::getInstance();
-	db.executeQuery(query.str());
+	db.executeQuery(query);
 	if (!serverStartup) {
 		setNewOwnership();
 	}
@@ -88,12 +88,17 @@ bool House::tryTransferOwnership(std::shared_ptr<Player> player, bool serverStar
 }
 
 void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared_ptr<Player> player /* = nullptr*/) {
+	const auto worldId = g_gameworld().getWorldId();
+
 	if (updateDatabase && owner != guid) {
 		Database &db = Database::getInstance();
 
-		std::ostringstream query;
-		query << "UPDATE `houses` SET `owner` = " << guid << ", `new_owner` = -1, `bid` = 0, `bid_end` = 0, `last_bid` = 0, `highest_bidder` = 0  WHERE `id` = " << id;
-		db.executeQuery(query.str());
+		std::string query = fmt::format(
+			"UPDATE `houses` SET `owner` = {}, `new_owner` = -1, `bid` = 0, `bid_end` = 0, `last_bid` = 0, `highest_bidder` = 0  WHERE `id` = {} AND `worldId` = {}",
+			guid, id, worldId
+		);
+
+		db.executeQuery(query);
 	}
 
 	if (isLoaded && owner == guid) {
@@ -126,9 +131,8 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared
 
 	if (guid != 0) {
 		Database &db = Database::getInstance();
-		std::ostringstream query;
-		query << "SELECT `name`, `account_id` FROM `players` WHERE `id` = " << guid;
-		DBResult_ptr result = db.storeQuery(query.str());
+		std::string query = fmt::format("SELECT `name`, `account_id` FROM `players` WHERE `id` = {} AND `worldId` = {}", guid, worldId);
+		DBResult_ptr result = db.storeQuery(query);
 		if (!result) {
 			return;
 		}

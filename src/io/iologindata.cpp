@@ -347,7 +347,8 @@ bool IOLoginData::hasBiddedOnHouse(uint32_t guid) {
 std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 	std::string query = fmt::format(
 		"SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = {} AND `worldId` = {}",
-		accountId, g_gameworld().getWorldId());
+		accountId, g_gameworld().getWorldId()
+	);
 	std::vector<VIPEntry> entries;
 
 	if (const auto &result = Database::getInstance().storeQuery(query)) {

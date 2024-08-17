@@ -128,7 +128,8 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 
 	std::string query = fmt::format(
 		"SELECT `itemtype`, `amount`, `price`, `expires_at`, `state`, `tier` FROM `market_history` WHERE `player_id` = {} AND `sale` = {} AND `worldId` = {}",
-		playerId, action, g_gameworld().getWorldId());
+		playerId, action, g_gameworld().getWorldId()
+	);
 
 	DBResult_ptr result = Database::getInstance().storeQuery(query);
 	if (!result) {

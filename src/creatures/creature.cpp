@@ -511,7 +511,14 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 				if (oldPos.y > newPos.y) { // north
 					// shift y south
 					for (int32_t y = mapWalkHeight - 1; --y >= 0;) {
+// Copiando linhas usando SIMD
+#if defined(__AVX2__)
+						_mm256_storeu_si256(reinterpret_cast<__m256i*>(localMapCache[y + 1]), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(localMapCache[y])));
+#elif defined(__SSE2__)
+						_mm_storeu_si128(reinterpret_cast<__m128i*>(localMapCache[y + 1]), _mm_loadu_si128(reinterpret_cast<const __m128i*>(localMapCache[y])));
+#else
 						memcpy(localMapCache[y + 1], localMapCache[y], sizeof(localMapCache[y]));
+#endif
 					}
 
 					// update 0
@@ -522,7 +529,14 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 				} else if (oldPos.y < newPos.y) { // south
 					// shift y north
 					for (int32_t y = 0; y <= mapWalkHeight - 2; ++y) {
+// Copiando linhas usando SIMD
+#if defined(__AVX2__)
+						_mm256_storeu_si256(reinterpret_cast<__m256i*>(localMapCache[y]), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(localMapCache[y + 1])));
+#elif defined(__SSE2__)
+						_mm_storeu_si128(reinterpret_cast<__m128i*>(localMapCache[y]), _mm_loadu_si128(reinterpret_cast<const __m128i*>(localMapCache[y + 1])));
+#else
 						memcpy(localMapCache[y], localMapCache[y + 1], sizeof(localMapCache[y]));
+#endif
 					}
 
 					// update mapWalkHeight - 1
@@ -615,7 +629,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 			onCreatureDisappear(attackedCreature, false);
 		} else {
 			if (hasExtraSwing()) {
-				// our target is moving lets see if we can get in hit
+				// our target is moving, let's see if we can get a hit
 				g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
 			}
 

@@ -50,12 +50,61 @@ void NetworkMessage::addString(const std::string &value, const std::string &func
 		return;
 	}
 	if (stringLen > NETWORKMESSAGE_MAXSIZE) {
-		g_logger().error("[NetworkMessage::addString] - Exceded NetworkMessage max size: {}, actually size: {}, function '{}'", NETWORKMESSAGE_MAXSIZE, stringLen, function);
+		g_logger().error("[NetworkMessage::addString] - Exceeded NetworkMessage max size: {}, actual size: {}, function '{}'", NETWORKMESSAGE_MAXSIZE, stringLen, function);
 		return;
 	}
 
 	add<uint16_t>(stringLen);
-	memcpy(buffer + info.position, value.c_str(), stringLen);
+
+	unsigned char* dst = buffer + info.position;
+	const auto* src = reinterpret_cast<const unsigned char*>(value.c_str());
+	size_t remaining = stringLen;
+
+#if defined(__AVX2__)
+	// Use AVX2 to copy 32 bytes at a time
+	while (remaining >= 32) {
+		_mm256_storeu_si256(reinterpret_cast<__m256i*>(dst), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(src)));
+		src += 32;
+		dst += 32;
+		remaining -= 32;
+	}
+#endif
+
+#if defined(__SSE2__)
+	// Use SSE2 to copy remaining bytes
+	while (remaining >= 16) {
+		_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), _mm_loadu_si128(reinterpret_cast<const __m128i*>(src)));
+		src += 16;
+		dst += 16;
+		remaining -= 16;
+	}
+	while (remaining >= 8) {
+		_mm_storel_epi64(reinterpret_cast<__m128i*>(dst), _mm_loadl_epi64(reinterpret_cast<const __m128i*>(src)));
+		src += 8;
+		dst += 8;
+		remaining -= 8;
+	}
+	while (remaining >= 4) {
+		*reinterpret_cast<uint32_t*>(dst) = *reinterpret_cast<const uint32_t*>(src);
+		src += 4;
+		dst += 4;
+		remaining -= 4;
+	}
+	while (remaining >= 2) {
+		*reinterpret_cast<uint16_t*>(dst) = *reinterpret_cast<const uint16_t*>(src);
+		src += 2;
+		dst += 2;
+		remaining -= 2;
+	}
+	while (remaining == 1) {
+		*dst = *src;
+		remaining -= 1;
+	}
+#else
+	// Fallback to original method using memcpy if neither AVX2 nor SSE2 are available
+	memcpy(dst, src, remaining);
+#endif
+
 	info.position += stringLen;
 	info.length += stringLen;
 }
@@ -75,11 +124,59 @@ void NetworkMessage::addBytes(const char* bytes, size_t size) {
 		return;
 	}
 	if (size > NETWORKMESSAGE_MAXSIZE) {
-		g_logger().error("[NetworkMessage::addBytes] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, size);
+		g_logger().error("[NetworkMessage::addBytes] - Exceeded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, size);
 		return;
 	}
 
-	memcpy(buffer + info.position, bytes, size);
+	unsigned char* dst = buffer + info.position;
+	const auto* src = reinterpret_cast<const unsigned char*>(bytes);
+	size_t remaining = size;
+
+#if defined(__AVX2__)
+	// Use AVX2 to copy 32 bytes at a time
+	while (remaining >= 32) {
+		_mm256_storeu_si256(reinterpret_cast<__m256i*>(dst), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(src)));
+		src += 32;
+		dst += 32;
+		remaining -= 32;
+	}
+#endif
+
+#if defined(__SSE2__)
+	// Use SSE2 to copy remaining bytes
+	while (remaining >= 16) {
+		_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), _mm_loadu_si128(reinterpret_cast<const __m128i*>(src)));
+		src += 16;
+		dst += 16;
+		remaining -= 16;
+	}
+	while (remaining >= 8) {
+		_mm_storel_epi64(reinterpret_cast<__m128i*>(dst), _mm_loadl_epi64(reinterpret_cast<const __m128i*>(src)));
+		src += 8;
+		dst += 8;
+		remaining -= 8;
+	}
+	while (remaining >= 4) {
+		*reinterpret_cast<uint32_t*>(dst) = *reinterpret_cast<const uint32_t*>(src);
+		src += 4;
+		dst += 4;
+		remaining -= 4;
+	}
+	while (remaining >= 2) {
+		*reinterpret_cast<uint16_t*>(dst) = *reinterpret_cast<const uint16_t*>(src);
+		src += 2;
+		dst += 2;
+		remaining -= 2;
+	}
+	while (remaining == 1) {
+		*dst = *src;
+		remaining -= 1;
+	}
+#else
+	// Fallback to original method using memcpy if neither AVX2 nor SSE2 are available
+	memcpy(dst, src, remaining);
+#endif
+
 	info.position += size;
 	info.length += size;
 }
@@ -91,7 +188,53 @@ void NetworkMessage::addPaddingBytes(size_t n) {
 	}
 #undef canAdd
 
-	memset(buffer + info.position, 0x33, n);
+	unsigned char* dst = buffer + info.position;
+	size_t remaining = n;
+
+#if defined(__AVX2__)
+	const __m256i padding_avx2 = _mm256_set1_epi8(0x33); // AVX2: 32 bytes de valor de preenchimento
+
+	// Use AVX2 para preencher 32 bytes de cada vez
+	while (remaining >= 32) {
+		_mm256_storeu_si256(reinterpret_cast<__m256i*>(dst), padding_avx2);
+		dst += 32;
+		remaining -= 32;
+	}
+#endif
+
+#if defined(__SSE2__)
+	const __m128i padding_sse2 = _mm_set1_epi8(0x33); // SSE2: 16 bytes de valor de preenchimento
+
+	// Use SSE2 para preencher os bytes restantes
+	while (remaining >= 16) {
+		_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), padding_sse2);
+		dst += 16;
+		remaining -= 16;
+	}
+	while (remaining >= 8) {
+		_mm_storel_epi64(reinterpret_cast<__m128i*>(dst), _mm_loadl_epi64(reinterpret_cast<const __m128i*>(&padding_sse2)));
+		dst += 8;
+		remaining -= 8;
+	}
+	while (remaining >= 4) {
+		*reinterpret_cast<uint32_t*>(dst) = 0x33333333; // Preencher 4 bytes com 0x33
+		dst += 4;
+		remaining -= 4;
+	}
+	while (remaining >= 2) {
+		*reinterpret_cast<uint16_t*>(dst) = 0x3333; // Preencher 2 bytes com 0x33
+		dst += 2;
+		remaining -= 2;
+	}
+	while (remaining == 1) {
+		*dst = 0x33; // Preencher 1 byte com 0x33
+		remaining -= 1;
+	}
+#else
+	// Fallback para o método original usando memset se nem AVX2 nem SSE2 estiverem disponíveis
+	memset(dst, 0x33, remaining);
+#endif
+
 	info.length += n;
 }
 

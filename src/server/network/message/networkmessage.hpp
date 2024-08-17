@@ -53,7 +53,57 @@ public:
 		}
 
 		T v;
+		const unsigned char* src = buffer + info.position;
+		auto* dst = reinterpret_cast<unsigned char*>(&v);
+
+		size_t remaining = sizeof(T);
+
+#if defined(__AVX2__)
+		// Use AVX2 para carregar 32 bytes por vez
+		while (remaining >= 32) {
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(dst), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(src)));
+			src += 32;
+			dst += 32;
+			remaining -= 32;
+		}
+#endif
+
+#if defined(__SSE2__)
+		// Use SSE2 para carregar os bytes restantes
+		while (remaining >= 16) {
+			_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), _mm_loadu_si128(reinterpret_cast<const __m128i*>(src)));
+			src += 16;
+			dst += 16;
+			remaining -= 16;
+		}
+		while (remaining >= 8) {
+			_mm_storel_epi64(reinterpret_cast<__m128i*>(dst), _mm_loadl_epi64(reinterpret_cast<const __m128i*>(src)));
+			src += 8;
+			dst += 8;
+			remaining -= 8;
+		}
+		while (remaining >= 4) {
+			*reinterpret_cast<uint32_t*>(dst) = *reinterpret_cast<const uint32_t*>(src);
+			src += 4;
+			dst += 4;
+			remaining -= 4;
+		}
+		while (remaining >= 2) {
+			*reinterpret_cast<uint16_t*>(dst) = *reinterpret_cast<const uint16_t*>(src);
+			src += 2;
+			dst += 2;
+			remaining -= 2;
+		}
+		while (remaining == 1) {
+			*dst = *src;
+			remaining -= 1;
+		}
+#else
+		// Fallback para o método original usando memcpy se nem AVX2 nem SSE2 estiverem disponíveis
 		memcpy(&v, buffer + info.position, sizeof(T));
+		spdlog::info("[{}]: AVX2/SSE2 not available, used memcpy to load {} bytes.", __FUNCTION__, sizeof(T));
+#endif
+
 		info.position += sizeof(T);
 		return v;
 	}
@@ -82,7 +132,57 @@ public:
 			return;
 		}
 
-		memcpy(buffer + info.position, &value, sizeof(T));
+		unsigned char* dst = buffer + info.position;
+		const auto* src = reinterpret_cast<const unsigned char*>(&value);
+
+		size_t remaining = sizeof(T);
+
+#if defined(__AVX2__)
+		// Use AVX2 to copy 32 bytes at a time
+		while (remaining >= 32) {
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(dst), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(src)));
+			src += 32;
+			dst += 32;
+			remaining -= 32;
+		}
+#endif
+
+#if defined(__SSE2__)
+		// Use SSE2 to copy remaining bytes
+		while (remaining >= 16) {
+			_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), _mm_loadu_si128(reinterpret_cast<const __m128i*>(src)));
+			src += 16;
+			dst += 16;
+			remaining -= 16;
+		}
+		while (remaining >= 8) {
+			_mm_storel_epi64(reinterpret_cast<__m128i*>(dst), _mm_loadl_epi64(reinterpret_cast<const __m128i*>(src)));
+			src += 8;
+			dst += 8;
+			remaining -= 8;
+		}
+		while (remaining >= 4) {
+			*reinterpret_cast<uint32_t*>(dst) = *reinterpret_cast<const uint32_t*>(src);
+			src += 4;
+			dst += 4;
+			remaining -= 4;
+		}
+		while (remaining >= 2) {
+			*reinterpret_cast<uint16_t*>(dst) = *reinterpret_cast<const uint16_t*>(src);
+			src += 2;
+			dst += 2;
+			remaining -= 2;
+		}
+		while (remaining == 1) {
+			*dst = *src;
+			remaining -= 1;
+		}
+#else
+		// Fallback to original method using memcpy if neither AVX2 nor SSE2 are available
+		memcpy(dst, src, remaining);
+		spdlog::info("[{}]: AVX2/SSE2 not available, used memcpy to copy {} bytes.", __FUNCTION__, remaining);
+#endif
+
 		info.position += sizeof(T);
 		info.length += sizeof(T);
 	}
@@ -169,5 +269,5 @@ protected:
 	};
 
 	NetworkMessageInfo info;
-	uint8_t buffer[NETWORKMESSAGE_MAXSIZE];
+	uint8_t buffer[NETWORKMESSAGE_MAXSIZE] {};
 };

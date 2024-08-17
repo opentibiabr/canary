@@ -45,18 +45,97 @@ bool FileStream::read(T &ret, bool escape) {
 		throw std::ios_base::failure("Read failed");
 	}
 
-	std::array<uint8_t, sizeof(T)> array;
 	if (escape) {
-		for (int_fast8_t i = -1; ++i < size;) {
+		std::array<uint8_t, sizeof(T)> array;
+		size_t i = 0;
+		while (i < size) {
 			if (m_data[m_pos] == OTB::Node::ESCAPE) {
 				++m_pos;
 			}
 			array[i] = m_data[m_pos];
 			++m_pos;
+			++i;
 		}
+		uint8_t* dst = reinterpret_cast<uint8_t*>(&ret);
+
+#if defined(__AVX2__)
+		// Use AVX2 para copiar 32 bytes de cada vez
+		for (i = 0; i + 32 <= size; i += 32) {
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(dst + i), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(array.data() + i)));
+		}
+#endif
+
+#if defined(__SSE2__)
+		// Use SSE2 para copiar 16 bytes de cada vez
+		for (i = 0; i + 16 <= size; i += 16) {
+			_mm_storeu_si128(reinterpret_cast<__m128i*>(dst + i), _mm_loadu_si128(reinterpret_cast<const __m128i*>(array.data() + i)));
+		}
+
+		for (; i + 8 <= size; i += 8) {
+			_mm_storel_epi64(reinterpret_cast<__m128i*>(dst + i), _mm_loadl_epi64(reinterpret_cast<const __m128i*>(array.data() + i)));
+		}
+		for (; i + 4 <= size; i += 4) {
+			*reinterpret_cast<uint32_t*>(dst + i) = *reinterpret_cast<const uint32_t*>(array.data() + i);
+		}
+		for (; i + 2 <= size; i += 2) {
+			*reinterpret_cast<uint16_t*>(dst + i) = *reinterpret_cast<const uint16_t*>(array.data() + i);
+		}
+		if (i < size) {
+			dst[i] = array[i];
+		}
+#elif
 		memcpy(&ret, array.data(), size);
+#endif
 	} else {
+		uint8_t* dst = reinterpret_cast<uint8_t*>(&ret);
+		const uint8_t* src = &m_data[m_pos];
+		size_t remaining = size;
+
+#if defined(__AVX2__)
+		// Use AVX2 para copiar 32 bytes de cada vez
+		while (remaining >= 32) {
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(dst), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(src)));
+			dst += 32;
+			src += 32;
+			remaining -= 32;
+		}
+#endif
+
+#if defined(__SSE2__)
+		// Use SSE2 para copiar os bytes restantes
+		while (remaining >= 16) {
+			_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), _mm_loadu_si128(reinterpret_cast<const __m128i*>(src)));
+			dst += 16;
+			src += 16;
+			remaining -= 16;
+		}
+		while (remaining >= 8) {
+			_mm_storel_epi64(reinterpret_cast<__m128i*>(dst), _mm_loadl_epi64(reinterpret_cast<const __m128i*>(src)));
+			dst += 8;
+			src += 8;
+			remaining -= 8;
+		}
+
+		// Copie os bytes restantes usando operações padrão
+		while (remaining >= 4) {
+			*reinterpret_cast<uint32_t*>(dst) = *reinterpret_cast<const uint32_t*>(src);
+			dst += 4;
+			src += 4;
+			remaining -= 4;
+		}
+		while (remaining >= 2) {
+			*reinterpret_cast<uint16_t*>(dst) = *reinterpret_cast<const uint16_t*>(src);
+			dst += 2;
+			src += 2;
+			remaining -= 2;
+		}
+		if (remaining == 1) {
+			*dst = *src;
+		}
+#elif
 		memcpy(&ret, &m_data[m_pos], size);
+#endif
+
 		m_pos += size;
 	}
 

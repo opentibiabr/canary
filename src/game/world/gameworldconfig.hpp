@@ -10,10 +10,13 @@
 #pragma once
 
 struct GameWorld {
+	GameWorld(uint16_t id, std::string name, std::string ip, uint16_t port) :
+		id(id), name(std::move(name)), ip(std::move(ip)), port(port) { }
+
 	std::string name = "";
 	std::string ip = "";
 
-	uint16_t worldId = 0;
+	uint16_t id = 0;
 	uint16_t port = 7171;
 };
 
@@ -21,7 +24,7 @@ class GameWorldConfig {
 public:
 	static GameWorldConfig &getInstance();
 
-	bool load();
+	bool loadFromXml();
 	bool reload();
 	[[nodiscard]] const char* getWorldIp(uint16_t id);
 	[[nodiscard]] uint16_t getWorldPort(uint16_t id);

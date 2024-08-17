@@ -19,7 +19,7 @@ GameWorldConfig &GameWorldConfig::getInstance() {
 	return inject<GameWorldConfig>();
 }
 
-bool GameWorldConfig::load() {
+bool GameWorldConfig::loadFromXml() {
 	pugi::xml_document doc;
 	const auto folder = fmt::format("{}/XML/gameworlds.xml", g_configManager().getString(CORE_DIRECTORY, __FUNCTION__));
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
@@ -31,22 +31,19 @@ bool GameWorldConfig::load() {
 	gameworlds.clear();
 
 	for (auto worldNode : doc.child("worlds").children()) {
-		GameWorld gameWorld;
-
-		// Normal handling values
-		gameWorld.name = worldNode.attribute("name").as_string();
-		gameWorld.ip = worldNode.attribute("ip").as_string();
-		gameWorld.port = pugi::cast<uint16_t>(worldNode.attribute("port").value());
-		gameWorld.worldId = pugi::cast<uint16_t>(worldNode.attribute("id").value());
-
+		const auto id = pugi::cast<uint16_t>(worldNode.attribute("id").value());
+		const auto name = worldNode.attribute("name").as_string();
+		const auto ip = worldNode.attribute("ip").as_string();
+		const auto port = pugi::cast<uint16_t>(worldNode.attribute("port").value());
+		
 		// Stored values to use later
-		std::string oldIp = gameWorld.ip;
+		std::string oldIp = ip;
 		const char* serverIp = oldIp.c_str();
-		worldIp[gameWorld.worldId] = serverIp;
-		worldPort[gameWorld.worldId] = gameWorld.port;
-		worldName[gameWorld.worldId] = gameWorld.name;
+		worldIp[id] = serverIp;
+		worldPort[id] = port;
+		worldName[id] = name;
 
-		gameworlds.emplace_back(gameWorld);
+		gameworlds.emplace_back(id, name, ip, port);
 	}
 
 	loaded = true;
@@ -74,5 +71,6 @@ void GameWorldConfig::setWorldId(uint16_t id) noexcept {
 }
 
 bool GameWorldConfig::reload() {
-	return load();
+	gameworlds.clear();
+	return loadFromXml();
 }

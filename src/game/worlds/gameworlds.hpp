@@ -35,7 +35,7 @@ public:
 	}
 
 private:
-	std::vector<GameWorld> worlds;
+	std::vector<World> worlds;
 
 	uint16_t id = 0;
 	std::map<uint16_t, const char*> ip;

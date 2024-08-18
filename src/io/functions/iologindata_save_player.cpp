@@ -240,7 +240,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 
 	query << "`conditions` = " << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize)) << ",";
 
-	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
+	if (g_game().worlds()->getType() != WORLD_TYPE_PVP_ENFORCED) {
 		int64_t skullTime = 0;
 
 		if (player->skullTicks > 0) {

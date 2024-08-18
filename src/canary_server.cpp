@@ -146,11 +146,11 @@ int CanaryServer::run() {
 void CanaryServer::setWorldType() {
 	const std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE, __FUNCTION__));
 	if (worldType == "pvp") {
-		g_game().setWorldType(WORLD_TYPE_PVP);
+		g_game().worlds()->setType(WORLD_TYPE_PVP);
 	} else if (worldType == "no-pvp") {
-		g_game().setWorldType(WORLD_TYPE_NO_PVP);
+		g_game().worlds()->setType(WORLD_TYPE_NO_PVP);
 	} else if (worldType == "pvp-enforced") {
-		g_game().setWorldType(WORLD_TYPE_PVP_ENFORCED);
+		g_game().worlds()->setType(WORLD_TYPE_PVP_ENFORCED);
 	} else {
 		throw FailedToInitializeCanary(
 			fmt::format(

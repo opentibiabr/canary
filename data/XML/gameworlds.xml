@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<worlds>
-	<world id="0" name="InnerWorld" ip="127.0.0.1" port="7172"/>
-	<world id="1" name="OuterWorld" ip="127.0.0.1" port="7173"/>
-</worlds>

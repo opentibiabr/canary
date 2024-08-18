@@ -86,7 +86,6 @@ Storage = {
 	WagonTicket = 30009,
 	FirstMageWeapon = 30011,
 	KawillBlessing = 30014,
-	RentedHorseTimer = 30015,
 	FountainOfLife = 30016,
 	-- Promotion Storage cannot be changed, it is set in source code
 	Promotion = 30018,
@@ -2340,7 +2339,9 @@ Storage = {
 				Addon1 = 43353,
 				Addon2 = 43354,
 			},
-			HorseStationWorldChange = {},
+			HorseStationWorldChange = {
+				Timer = 43355,
+			},
 			InsectoidInvasionWorldChange = {},
 			LooseEnds = {},
 			OverhuntingWorldChange = {},

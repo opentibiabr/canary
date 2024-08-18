@@ -898,6 +898,7 @@ private:
 	bool browseField = false;
 
 	GameState_t gameState = GAME_STATE_NORMAL;
+	uint16_t worldId = 0;
 	WorldType_t worldType = WORLD_TYPE_PVP;
 
 	LightState_t lightState = LIGHT_STATE_DAY;

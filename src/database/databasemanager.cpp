@@ -62,8 +62,8 @@ bool DatabaseManager::isDatabaseSetup() {
 int32_t DatabaseManager::getDatabaseVersion() {
 	if (!tableExists("server_config")) {
 		Database &db = Database::getInstance();
-		db.executeQuery("CREATE TABLE `server_config` (`worldId` INT(11), `config` VARCHAR(50) NOT NULL, `value` VARCHAR(256) NOT NULL DEFAULT '', UNIQUE(`config`)) ENGINE = InnoDB");
-		db.executeQuery(fmt::format("INSERT INTO `server_config` VALUES ({}, 'db_version', 0)", g_gameworld().getWorldId()));
+		db.executeQuery("CREATE TABLE `server_config` (`worldId` INT(11) NOT NULL DEFAULT '0', `config` VARCHAR(50) NOT NULL, `value` VARCHAR(256) NOT NULL DEFAULT '', UNIQUE(`config`)) ENGINE = InnoDB");
+		db.executeQuery(fmt::format("INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', 0)"));
 		return 0;
 	}
 
@@ -86,9 +86,8 @@ void DatabaseManager::updateDatabase() {
 
 	int32_t version = getDatabaseVersion();
 	do {
-		std::ostringstream ss;
-		ss << g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/migrations/" << version << ".lua";
-		if (luaL_dofile(L, ss.str().c_str()) != 0) {
+		std::string file = fmt::format("{}/migrations/{}.lua", g_configManager().getString(DATA_DIRECTORY, __FUNCTION__), version);
+		if (luaL_dofile(L, file.c_str()) != 0) {
 			g_logger().error("DatabaseManager::updateDatabase - Version: {}"
 			                 "] {}",
 			                 version, lua_tostring(L, -1));
@@ -123,6 +122,9 @@ void DatabaseManager::updateDatabase() {
 bool DatabaseManager::getDatabaseConfig(const std::string &config, int32_t &value) {
 	Database &db = Database::getInstance();
 	std::string query = fmt::format("SELECT `value` FROM `server_config` WHERE `worldId` = {} AND `config` = {}", g_gameworld().getWorldId(), db.escapeString(config));
+	if (config == "db_version") {
+		query = fmt::format("SELECT `value` FROM `server_config` WHERE `config` = {}", db.escapeString(config));
+	}
 
 	const auto result = db.storeQuery(query);
 	if (!result) {
@@ -140,9 +142,12 @@ void DatabaseManager::registerDatabaseConfig(const std::string &config, int32_t 
 	int32_t tmp;
 
 	if (!getDatabaseConfig(config, tmp)) {
-		query = fmt::format("INSERT INTO `server_config` VALUES ({}, {})", db.escapeString(config), value);
+		query = fmt::format("INSERT INTO `server_config` (`config`, `value`, `worldId`) VALUES ({}, {}, {})", db.escapeString(config), value, g_gameworld().getWorldId());
 	} else {
-		query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = {}", value, db.escapeString(config));
+		query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `worldId` = {}, `config` = {}", value, g_gameworld().getWorldId(), db.escapeString(config));
+		if (strcasecmp(config.c_str(), "db_version")) {
+			query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = {}", value, db.escapeString(config));
+		}
 	}
 
 	db.executeQuery(query);

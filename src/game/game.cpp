@@ -416,10 +416,17 @@ void Game::loadBoostedCreature() {
 	auto &db = Database::getInstance();
 	const auto worldId = g_gameworld().getWorldId();
 
-	const auto result = db.storeQuery(fmt::format("SELECT * FROM `boosted_creature` WHERE `worldId` = {}", worldId));
+	const std::string selectQuery = "SELECT * FROM `boosted_creature`";
+
+	auto result = db.storeQuery(selectQuery);
 	if (!result) {
-		g_logger().warn("{} - Failed to detect boosted creature database. (CODE 01)", __FUNCTION__);
-		return;
+		db.storeQuery("INSERT INTO `boosted_creature` (`boostname`, `date`, `raceid`) VALUES ('default', 0, 0)");
+
+		result = db.storeQuery(selectQuery);
+		if (!result) {
+			g_logger().warn("{} - Failed to detect boosted creature database. (CODE 01)", __FUNCTION__);
+			return;
+		}
 	}
 
 	const uint16_t date = result->getNumber<uint16_t>("date");
@@ -467,11 +474,10 @@ void Game::loadBoostedCreature() {
 	setBoostedName(selectedMonster.name);
 
 	auto query = fmt::format(
-		"UPDATE `boosted_creature` SET `date` = '{}', `boostname` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, `lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, `raceid` = {}, `worldId` = {}",
+		"UPDATE `boosted_creature` SET `date` = '{}', `boostname` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, `lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, `raceid` = {}",
 		std::to_string(ltm->tm_mday), db.escapeString(selectedMonster.name), std::to_string(monsterType->info.outfit.lookType), std::to_string(monsterType->info.outfit.lookFeet),
 		std::to_string(monsterType->info.outfit.lookLegs), std::to_string(monsterType->info.outfit.lookHead), std::to_string(monsterType->info.outfit.lookBody),
-		std::to_string(monsterType->info.outfit.lookAddons), std::to_string(monsterType->info.outfit.lookMount), std::to_string(selectedMonster.raceId),
-		worldId
+		std::to_string(monsterType->info.outfit.lookAddons), std::to_string(monsterType->info.outfit.lookMount), std::to_string(selectedMonster.raceId)
 	);
 
 	if (!db.executeQuery(query)) {

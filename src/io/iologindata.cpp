@@ -50,7 +50,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		return false;
 	}
 
-	if (players[characterName] != 0) {
+	if (players[characterName].deletion != 0) {
 		g_logger().error("Account [{}] player [{}] not found or deleted.", accountDescriptor, characterName);
 		return false;
 	}
@@ -95,13 +95,13 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 // The boolean "disableIrrelevantInfo" will deactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
 bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
-	std::string query = fmt::format("SELECT * FROM `players` WHERE `id` = {} AND `worldId` = {}", id, g_gameworld().getWorldId());
+	std::string query = fmt::format("SELECT * FROM `players` WHERE `id` = {}", id);
 	return loadPlayer(player, db.storeQuery(query), disableIrrelevantInfo);
 }
 
 bool IOLoginData::loadPlayerByName(std::shared_ptr<Player> player, const std::string &name, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
-	std::string query = fmt::format("SELECT * FROM `players` WHERE `name` = {} AND `worldId` = {}", db.escapeString(name), g_gameworld().getWorldId());
+	std::string query = fmt::format("SELECT * FROM `players` WHERE `name` = {}", db.escapeString(name));
 	return loadPlayer(player, db.storeQuery(query), disableIrrelevantInfo);
 }
 

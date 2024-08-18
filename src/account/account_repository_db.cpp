@@ -150,7 +150,7 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 
 bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 	auto result = g_database().storeQuery(
-		fmt::format("SELECT `name`, `deletion` FROM `players` WHERE `account_id` = {} ORDER BY `name` ASC", acc.id)
+		fmt::format("SELECT `name`, `deletion`, `worldId` FROM `players` WHERE `account_id` = {} ORDER BY `name` ASC", acc.id)
 	);
 
 	if (!result) {
@@ -159,11 +159,14 @@ bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 	}
 
 	do {
-		if (result->getNumber<uint64_t>("deletion") != 0) {
+		const auto deletion = result->getNumber<uint64_t>("deletion");
+
+		if (deletion != 0) {
 			continue;
 		}
 
-		acc.players.try_emplace({ result->getString("name"), result->getNumber<uint64_t>("deletion") });
+		Character character = { deletion, result->getNumber<uint16_t>("worldId") };
+		acc.players.try_emplace(result->getString("name"), character);
 	} while (result->next());
 
 	return true;

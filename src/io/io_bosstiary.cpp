@@ -22,8 +22,9 @@ void IOBosstiary::loadBoostedBoss() {
 	Database &database = Database::getInstance();
 	const auto worldId = g_gameworld().getWorldId();
 
-	std::string query = fmt::format("SELECT * FROM `boosted_boss` WHERE `worldId` = {}", worldId);
-	DBResult_ptr result = database.storeQuery(query);
+	std::string query = "SELECT * FROM `boosted_boss`";
+	auto result = database.storeQuery(query);
+
 	if (!result) {
 		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 01)", __FUNCTION__);
 		return;
@@ -98,8 +99,8 @@ void IOBosstiary::loadBoostedBoss() {
 	const auto lookMount = bossType ? bossType->info.outfit.lookMount : 0;
 
 	query = fmt::format(
-		"UPDATE `boosted_boss` SET `date` = {}, `boostname` = {}, `looktypeEx` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, `lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, `raceid` = {} WHERE `worldId` = {}",
-		today, database.escapeString(bossName), lookTypeEx, lookType, lookFeet, lookLegs, lookHead, lookBody, lookAddons, lookMount, bossId, worldId
+		"UPDATE `boosted_boss` SET `date` = {}, `boostname` = {}, `looktypeEx` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, `lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, `raceid` = {}",
+		today, database.escapeString(bossName), lookTypeEx, lookType, lookFeet, lookLegs, lookHead, lookBody, lookAddons, lookMount, bossId
 	);
 
 	if (!database.executeQuery(query)) {
@@ -107,12 +108,12 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
-	query = fmt::format("UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = {} AND `worldId` = {}", bossId, worldId);
+	query = fmt::format("UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = {}", bossId);
 	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to reset players selected boss slot 1. (CODE 03)", __FUNCTION__);
 	}
 
-	query = fmt::format("UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = {} AND `worldId` = {}", bossId, worldId);
+	query = fmt::format("UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = {}", bossId);
 	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to reset players selected boss slot 1. (CODE 03)", __FUNCTION__);
 	}

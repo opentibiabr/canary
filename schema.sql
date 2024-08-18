@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     `worldId` int(11) NOT NULL DEFAULT 0,
     `config` varchar(50) NOT NULL,
     `value` varchar(256) NOT NULL DEFAULT '',
-    CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
+    CONSTRAINT `server_config_pk` PRIMARY KEY (`worldId`, `config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '46'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
@@ -269,7 +269,6 @@ CREATE TABLE IF NOT EXISTS `boosted_boss` (
     `lookbody` int(11) NOT NULL DEFAULT 0,
     `lookaddons` int(11) NOT NULL DEFAULT 0,
     `lookmount` int(11) DEFAULT 0,
-    `worldId` int(11) NOT NULL DEFAULT 0,
     PRIMARY KEY (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -287,7 +286,6 @@ CREATE TABLE IF NOT EXISTS `boosted_creature` (
     `lookbody` int(11) NOT NULL DEFAULT 0,
     `lookaddons` int(11) NOT NULL DEFAULT 0,
     `lookmount` int(11) DEFAULT 0,
-    `worldId` int(11) NOT NULL DEFAULT 0,
     PRIMARY KEY (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -466,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `houses` (
     `worldId` int(11) NOT NULL DEFAULT 0,
     INDEX `owner` (`owner`),
     INDEX `town_id` (`town_id`),
-    CONSTRAINT `houses_pk` PRIMARY KEY (`id`)
+    CONSTRAINT `houses_pk` PRIMARY KEY (`id`, `worldId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -474,7 +472,7 @@ CREATE TABLE IF NOT EXISTS `houses` (
 --
 DELIMITER //
 CREATE TRIGGER `ondelete_players` BEFORE DELETE ON `players` FOR EACH ROW BEGIN
-    UPDATE `houses` SET `owner` = 0 WHERE `owner` = OLD.`id`;
+    UPDATE `houses` SET `owner` = 0 WHERE `owner` = OLD.`id` AND `worldId` = OLD.`worldId`;
 END
 //
 DELIMITER ;
@@ -743,7 +741,6 @@ CREATE TABLE IF NOT EXISTS `player_bosstiary` (
     `bossIdSlotTwo` int NOT NULL DEFAULT 0,
     `removeTimes` int NOT NULL DEFAULT 1,
     `tracker` blob NOT NULL,
-    `worldId` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_rewards`
@@ -846,6 +843,16 @@ CREATE TABLE IF NOT EXISTS `kv_store` (
   `value` longblob NOT NULL,
   PRIMARY KEY (`key_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `worlds` (
+    `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+    `worldType` varchar(12) NOT NULL,
+    `ip` varchar(15) NOT NULL,
+    `port` int(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `worlds_unique` UNIQUE (`name`)
+)
 
 -- Create Account god/god
 INSERT INTO `accounts`

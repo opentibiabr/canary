@@ -2342,7 +2342,6 @@ Storage = {
 			HorseStationWorldChange = {
 				Timer = 43355,
 			},
-			InsectoidInvasionWorldChange = {},
 			LooseEnds = {},
 			OverhuntingWorldChange = {},
 			SteamshipWorldChange = {},

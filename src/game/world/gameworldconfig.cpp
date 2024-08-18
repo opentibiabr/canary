@@ -35,7 +35,7 @@ bool GameWorldConfig::loadFromXml() {
 		const auto name = worldNode.attribute("name").as_string();
 		const auto ip = worldNode.attribute("ip").as_string();
 		const auto port = pugi::cast<uint16_t>(worldNode.attribute("port").value());
-		
+
 		// Stored values to use later
 		std::string oldIp = ip;
 		const char* serverIp = oldIp.c_str();

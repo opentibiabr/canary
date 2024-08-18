@@ -369,7 +369,7 @@ std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 
 void IOLoginData::addVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
 	std::string query = fmt::format(
-		"INSERT INTO `account_viplist` (`account_id`, `player_id`, `worldId`, `description`, `icon`, `notify`) VALUES ({}, {}, {}, {}, {})",
+		"INSERT INTO `account_viplist` (`account_id`, `player_id`, `worldId`, `description`, `icon`, `notify`) VALUES ({}, {}, {}, {}, {}, {})",
 		accountId, guid, g_gameworld().getWorldId(), g_database().escapeString(description), icon, notify
 	);
 	if (!g_database().executeQuery(query)) {

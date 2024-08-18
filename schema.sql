@@ -2,6 +2,7 @@
 
 -- Table structure `server_config`
 CREATE TABLE IF NOT EXISTS `server_config` (
+    `worldId` int(11) NOT NULL DEFAULT 0,
     `config` varchar(50) NOT NULL,
     `value` varchar(256) NOT NULL DEFAULT '',
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
@@ -148,6 +149,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `forge_dust_level` bigint(21) NOT NULL DEFAULT '100',
     `randomize_mount` tinyint(1) NOT NULL DEFAULT '0',
     `boss_points` int NOT NULL DEFAULT '0',
+    `worldId` int(11) NOT NULL DEFAULT 0,
     INDEX `account_id` (`account_id`),
     INDEX `vocation` (`vocation`),
     CONSTRAINT `players_pk` PRIMARY KEY (`id`),
@@ -204,6 +206,7 @@ CREATE TABLE IF NOT EXISTS `account_viplist` (
     `description` varchar(128) NOT NULL DEFAULT '',
     `icon` tinyint(2) UNSIGNED NOT NULL DEFAULT '0',
     `notify` tinyint(1) NOT NULL DEFAULT '0',
+    `worldId` int(11) NOT NULL DEFAULT 0,
     INDEX `account_id` (`account_id`),
     INDEX `player_id` (`player_id`),
     CONSTRAINT `account_viplist_unique` UNIQUE (`account_id`, `player_id`),
@@ -266,6 +269,7 @@ CREATE TABLE IF NOT EXISTS `boosted_boss` (
     `lookbody` int(11) NOT NULL DEFAULT 0,
     `lookaddons` int(11) NOT NULL DEFAULT 0,
     `lookmount` int(11) DEFAULT 0,
+    `worldId` int(11) NOT NULL DEFAULT 0,
     PRIMARY KEY (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -283,6 +287,7 @@ CREATE TABLE IF NOT EXISTS `boosted_creature` (
     `lookbody` int(11) NOT NULL DEFAULT 0,
     `lookaddons` int(11) NOT NULL DEFAULT 0,
     `lookmount` int(11) DEFAULT 0,
+    `worldId` int(11) NOT NULL DEFAULT 0,
     PRIMARY KEY (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -458,6 +463,7 @@ CREATE TABLE IF NOT EXISTS `houses` (
     `size` int(11) NOT NULL DEFAULT '0',
     `guildid` int(11),
     `beds` int(11) NOT NULL DEFAULT '0',
+    `worldId` int(11) NOT NULL DEFAULT 0,
     INDEX `owner` (`owner`),
     INDEX `town_id` (`town_id`),
     CONSTRAINT `houses_pk` PRIMARY KEY (`id`)
@@ -479,6 +485,7 @@ CREATE TABLE IF NOT EXISTS `house_lists` (
   `listid` int NOT NULL,
   `version` bigint NOT NULL DEFAULT '0',
   `list` text NOT NULL,
+  `worldId` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`house_id`, `listid`),
   KEY `house_id_index` (`house_id`),
   KEY `version` (`version`),
@@ -512,6 +519,7 @@ CREATE TABLE IF NOT EXISTS `market_history` (
     `inserted` bigint(20) UNSIGNED NOT NULL,
     `state` tinyint(1) UNSIGNED NOT NULL,
     `tier` tinyint UNSIGNED NOT NULL DEFAULT '0',
+    `worldId` int(11) NOT NULL DEFAULT 0,
     INDEX `player_id` (`player_id`,`sale`),
     CONSTRAINT `market_history_pk` PRIMARY KEY (`id`),
     CONSTRAINT `market_history_players_fk`
@@ -530,6 +538,7 @@ CREATE TABLE IF NOT EXISTS `market_offers` (
     `anonymous` tinyint(1) NOT NULL DEFAULT '0',
     `price` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `tier` tinyint UNSIGNED NOT NULL DEFAULT '0',
+    `worldId` int(11) NOT NULL DEFAULT 0,
     INDEX `sale` (`sale`,`itemtype`),
     INDEX `created` (`created`),
     INDEX `player_id` (`player_id`),
@@ -542,6 +551,7 @@ CREATE TABLE IF NOT EXISTS `market_offers` (
 -- Table structure `players_online`
 CREATE TABLE IF NOT EXISTS `players_online` (
     `player_id` int(11) NOT NULL,
+    `worldId` int(11) NOT NULL DEFAULT 0,
     CONSTRAINT `players_online_pk` PRIMARY KEY (`player_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 
@@ -732,7 +742,8 @@ CREATE TABLE IF NOT EXISTS `player_bosstiary` (
     `bossIdSlotOne` int NOT NULL DEFAULT 0,
     `bossIdSlotTwo` int NOT NULL DEFAULT 0,
     `removeTimes` int NOT NULL DEFAULT 1,
-    `tracker` blob NOT NULL
+    `tracker` blob NOT NULL,
+    `worldId` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_rewards`
@@ -801,6 +812,7 @@ CREATE TABLE IF NOT EXISTS `store_history` (
 CREATE TABLE IF NOT EXISTS `tile_store` (
     `house_id` int(11) NOT NULL,
     `data` longblob NOT NULL,
+    `worldId` int(11) NOT NULL DEFAULT 0,
     INDEX `house_id` (`house_id`),
     CONSTRAINT `tile_store_account_fk`
         FOREIGN KEY (`house_id`) REFERENCES `houses` (`id`)

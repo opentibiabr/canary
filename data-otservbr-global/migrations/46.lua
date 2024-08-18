@@ -10,7 +10,7 @@ function onUpdateDatabase()
 			`port` int(5) UNSIGNED NOT NULL,
 			PRIMARY KEY (`id`),
 			CONSTRAINT `worlds_unique` UNIQUE (`name`)
-		)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	]])
 
 	db.query("ALTER TABLE `server_config` DROP PRIMARY KEY server_config_pk;")

@@ -852,7 +852,7 @@ CREATE TABLE IF NOT EXISTS `worlds` (
     `port` int(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `worlds_unique` UNIQUE (`name`)
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create Account god/god
 INSERT INTO `accounts`

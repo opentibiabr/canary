@@ -66,7 +66,7 @@ bool ConfigManager::load() {
 		loadIntConfig(L, SQL_PORT, "mysqlPort", 3306);
 		loadIntConfig(L, STASH_ITEMS, "stashItemCount", 5000);
 		loadIntConfig(L, STATUS_PORT, "statusProtocolPort", 7171);
-		loadIntConfig(L, WORLD_ID, "worldId", 0);
+		loadIntConfig(L, WORLD_ID, "worldId", 1);
 
 		loadStringConfig(L, AUTH_TYPE, "authType", "password");
 		loadStringConfig(L, HOUSE_RENT_PERIOD, "houseRentPeriod", "never");

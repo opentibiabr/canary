@@ -16,6 +16,7 @@
 #include "io/iologindata.hpp"
 #include "creatures/players/management/ban.hpp"
 #include "game/game.hpp"
+#include "game/world/gameworldconfig.hpp"
 #include "core.hpp"
 #include "enums/account_errors.hpp"
 
@@ -72,20 +73,22 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	output->addByte(0x64);
 
-	output->addByte(1); // number of worlds
+	std::vector<GameWorld> gameworlds = g_gameworld().getGameworlds();
 
-	output->addByte(0); // world id
-	output->addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolLogin::getCharacterList - _configManager().getString(SERVER_NAME)");
-	output->addString(g_configManager().getString(IP, __FUNCTION__), "ProtocolLogin::getCharacterList - g_configManager().getString(IP)");
+	output->addByte(gameworlds.size()); // number of worlds
 
-	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__));
-
-	output->addByte(0);
+	for (const auto &world : gameworlds) {
+		output->addByte(world.id); // world id
+		output->addString(world.name, "ProtocolLogin::getCharacterList - world.name");
+		output->addString(world.ip, "ProtocolLogin::getCharacterList - world.ip");
+		output->add<uint16_t>(world.port);
+		output->addByte(0); // preview state
+	}
 
 	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
 	output->addByte(size);
-	for (const auto &[name, deletion] : players) {
-		output->addByte(0);
+	for (const auto &[name, characterInfo] : players) {
+		output->addByte(characterInfo.worldId);
 		output->addString(name, "ProtocolLogin::getCharacterList - name");
 	}
 

@@ -71,50 +71,51 @@ private:
 		utime = OTSYS_TIME() + delay;
 	}
 
-	[[nodiscard]] bool hasTraceableContext() const {
-		const static auto tasksContext = std::unordered_set<std::string_view>({ "Decay::checkDecay",
-		                                                                        "Dispatcher::asyncEvent",
-		                                                                        "Game::checkCreatureAttack",
-		                                                                        "Game::checkCreatureWalk",
-		                                                                        "Game::checkCreatures",
-		                                                                        "Game::checkImbuements",
-		                                                                        "Game::checkLight",
-		                                                                        "Game::createFiendishMonsters",
-		                                                                        "Game::createInfluencedMonsters",
-		                                                                        "Game::updateCreatureWalk",
-		                                                                        "Game::updateForgeableMonsters",
-		                                                                        "GlobalEvents::think",
-		                                                                        "LuaEnvironment::executeTimerEvent",
-		                                                                        "Modules::executeOnRecvbyte",
-		                                                                        "OutputMessagePool::sendAll",
-		                                                                        "ProtocolGame::addGameTask",
-		                                                                        "ProtocolGame::parsePacketFromDispatcher",
-		                                                                        "Raids::checkRaids",
-		                                                                        "SpawnMonster::checkSpawnMonster",
-		                                                                        "SpawnMonster::scheduleSpawn",
-		                                                                        "SpawnMonster::startup",
-		                                                                        "SpawnNpc::checkSpawnNpc",
-		                                                                        "Webhook::run",
-		                                                                        "Protocol::sendRecvMessageCallback" });
+	bool hasTraceableContext() const {
+		const static std::unordered_set<std::string_view> tasksContext = {
+			"Decay::checkDecay",
+			"Dispatcher::asyncEvent",
+			"Game::checkCreatureAttack",
+			"Game::checkCreatureWalk",
+			"Game::checkCreatures",
+			"Game::checkImbuements",
+			"Game::checkLight",
+			"Game::createFiendishMonsters",
+			"Game::createInfluencedMonsters",
+			"Game::updateCreatureWalk",
+			"Game::updateForgeableMonsters",
+			"GlobalEvents::think",
+			"LuaEnvironment::executeTimerEvent",
+			"Modules::executeOnRecvbyte",
+			"OutputMessagePool::sendAll",
+			"ProtocolGame::addGameTask",
+			"ProtocolGame::parsePacketFromDispatcher",
+			"Raids::checkRaids",
+			"SpawnMonster::checkSpawnMonster",
+			"SpawnMonster::scheduleSpawn",
+			"SpawnMonster::startup",
+			"SpawnNpc::checkSpawnNpc",
+			"Webhook::run",
+			"Protocol::sendRecvMessageCallback"
+		};
+
 		return tasksContext.contains(context);
 	}
 
 	struct Compare {
 		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
-			return a->utime < b->utime;
+			return a->getTime() < b->getTime();
 		}
 	};
 
-	std::function<void(void)> func = nullptr;
+	std::function<void(void)> func;
 	std::string context;
 	std::string functionName;
 
 	int64_t utime = 0;
 	int64_t expiration = 0;
-
 	uint64_t id = 0;
 	uint32_t delay = 0;
-
 	bool cycle = false;
 	bool log = true;
 

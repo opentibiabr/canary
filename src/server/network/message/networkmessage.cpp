@@ -101,7 +101,6 @@ void NetworkMessage::addString(const std::string &value, const std::string &func
 		remaining -= 1;
 	}
 #else
-	// Fallback to original method using memcpy if neither AVX2 nor SSE2 are available
 	memcpy(dst, src, remaining);
 #endif
 
@@ -173,7 +172,6 @@ void NetworkMessage::addBytes(const char* bytes, size_t size) {
 		remaining -= 1;
 	}
 #else
-	// Fallback to original method using memcpy if neither AVX2 nor SSE2 are available
 	memcpy(dst, src, remaining);
 #endif
 
@@ -231,7 +229,6 @@ void NetworkMessage::addPaddingBytes(size_t n) {
 		remaining -= 1;
 	}
 #else
-	// Fallback para o método original usando memset se nem AVX2 nem SSE2 estiverem disponíveis
 	memset(dst, 0x33, remaining);
 #endif
 

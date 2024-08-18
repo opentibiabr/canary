@@ -24,13 +24,10 @@ namespace OTB {
 		Identifier fileIdentifier;
 
 #if defined(__AVX2__)
-		// Use AVX2 para copiar 32 bytes de cada vez (caso aplicável)
 		_mm256_storeu_si256(reinterpret_cast<__m256i*>(fileIdentifier.data()), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(fileContents.data())));
 #elif defined(__SSE2__)
-		// Use SSE2 para copiar 16 bytes de cada vez
 		_mm_storeu_si128(reinterpret_cast<__m128i*>(fileIdentifier.data()), _mm_loadu_si128(reinterpret_cast<const __m128i*>(fileContents.data())));
 #else
-		// Fallback para std::copy se nem AVX2 nem SSE2 estiverem disponíveis
 		std::copy(fileContents.begin(), fileContents.begin() + fileIdentifier.size(), fileIdentifier.begin());
 #endif
 

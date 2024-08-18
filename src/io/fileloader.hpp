@@ -116,7 +116,6 @@ public:
 			remaining -= 1;
 		}
 #else
-		// Fallback para memcpy se nem AVX2 nem SSE2 estiverem disponíveis
 		memcpy(dst, src, remaining);
 #endif
 
@@ -180,7 +179,6 @@ public:
 			remaining -= 1;
 		}
 #else
-		// Fallback para memcpy se nem AVX2 nem SSE2 estiverem disponíveis
 		memcpy(dst, src, remaining);
 #endif
 
@@ -271,7 +269,6 @@ public:
 			*dst = *addr;
 		}
 #else
-		// Fallback para std::copy se nem AVX2 nem SSE2 estiverem disponíveis
 		std::copy(addr, addr + remaining, std::back_inserter(buffer));
 #endif
 	}

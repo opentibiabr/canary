@@ -181,7 +181,13 @@ uint16_t RSA::decodeLength(char*&pos) const {
 			default:
 				break;
 		}
+
+#if defined(__SSE2__)
+		__m128i temp = _mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer));
+		length = _mm_cvtsi128_si32(temp);
+#else
 		std::memcpy(&length, buffer, sizeof(length));
+#endif
 	}
 	return length;
 }

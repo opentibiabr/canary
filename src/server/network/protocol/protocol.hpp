@@ -66,8 +66,19 @@ protected:
 		encryptionEnabled = true;
 	}
 	void setXTEAKey(const uint32_t* newKey) {
-		memcpy(this->key.data(), newKey, sizeof(*newKey) * 4);
+		uint32_t* dst = this->key.data();
+
+#if defined(__AVX2__)
+		__m128i avx_key = _mm_loadu_si128(reinterpret_cast<const __m128i*>(newKey));
+		_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), avx_key);
+#elif defined(__SSE2__)
+		__m128i sse_key = _mm_loadu_si128(reinterpret_cast<const __m128i*>(newKey));
+		_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), sse_key);
+#else
+		memcpy(dst, newKey, sizeof(uint32_t) * 4);
+#endif
 	}
+
 	void setChecksumMethod(ChecksumMethods_t method) {
 		checksumMethod = method;
 	}

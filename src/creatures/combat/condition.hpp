@@ -65,6 +65,54 @@ public:
 	bool isPersistent() const;
 	bool isRemovableOnDeath() const;
 
+	template <typename T>
+	static void simd_memcpy(T* dest, const T* src, size_t count) {
+		size_t remaining = count * sizeof(T);
+		auto* dst = reinterpret_cast<unsigned char*>(dest);
+		const auto* source = reinterpret_cast<const unsigned char*>(src);
+
+#if defined(__AVX2__)
+		while (remaining >= 32) {
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(dst), _mm256_loadu_si256(reinterpret_cast<const __m256i*>(source)));
+			dst += 32;
+			source += 32;
+			remaining -= 32;
+		}
+#endif
+
+#if defined(__SSE2__)
+		while (remaining >= 16) {
+			_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), _mm_loadu_si128(reinterpret_cast<const __m128i*>(source)));
+			dst += 16;
+			source += 16;
+			remaining -= 16;
+		}
+		while (remaining >= 8) {
+			*reinterpret_cast<uint64_t*>(dst) = *reinterpret_cast<const uint64_t*>(source);
+			dst += 8;
+			source += 8;
+			remaining -= 8;
+		}
+		while (remaining >= 4) {
+			*reinterpret_cast<uint32_t*>(dst) = *reinterpret_cast<const uint32_t*>(source);
+			dst += 4;
+			source += 4;
+			remaining -= 4;
+		}
+		while (remaining >= 2) {
+			*reinterpret_cast<uint16_t*>(dst) = *reinterpret_cast<const uint16_t*>(source);
+			dst += 2;
+			source += 2;
+			remaining -= 2;
+		}
+		if (remaining == 1) {
+			*dst = *source;
+		}
+#else
+		std::memcpy(dest, src, count * sizeof(T));
+#endif
+	}
+
 protected:
 	uint8_t drainBodyStage = 0;
 	int64_t endTime {};

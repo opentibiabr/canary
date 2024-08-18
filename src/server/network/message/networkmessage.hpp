@@ -99,9 +99,7 @@ public:
 			remaining -= 1;
 		}
 #else
-		// Fallback para o método original usando memcpy se nem AVX2 nem SSE2 estiverem disponíveis
 		memcpy(&v, buffer + info.position, sizeof(T));
-		spdlog::info("[{}]: AVX2/SSE2 not available, used memcpy to load {} bytes.", __FUNCTION__, sizeof(T));
 #endif
 
 		info.position += sizeof(T);
@@ -178,9 +176,7 @@ public:
 			remaining -= 1;
 		}
 #else
-		// Fallback to original method using memcpy if neither AVX2 nor SSE2 are available
 		memcpy(dst, src, remaining);
-		spdlog::info("[{}]: AVX2/SSE2 not available, used memcpy to copy {} bytes.", __FUNCTION__, remaining);
 #endif
 
 		info.position += sizeof(T);

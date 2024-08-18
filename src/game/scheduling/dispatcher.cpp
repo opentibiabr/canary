@@ -135,7 +135,7 @@ void Dispatcher::executeScheduledEvents() {
 
 		if (task->execute() && task->isCycle()) {
 			task->updateTime();
-			threadScheduledTasks.emplace_back(task);
+			threadScheduledTasks.emplace(task);
 		} else {
 			scheduledTasksRef.erase(task->getId());
 		}
@@ -174,14 +174,16 @@ void Dispatcher::mergeEvents() {
 	constexpr auto serial = static_cast<uint8_t>(TaskGroup::Serial);
 
 	for (const auto &thread : threads) {
-		std::scoped_lock lock(thread->mutex);
-		if (!thread->tasks[serial].empty()) {
-			m_tasks[serial].insert(m_tasks[serial].end(), make_move_iterator(thread->tasks[serial].begin()), make_move_iterator(thread->tasks[serial].end()));
-			thread->tasks[serial].clear();
+		{
+			std::scoped_lock lock(thread->mutex);
+			if (!thread->tasks[serial].empty()) {
+				m_tasks[serial].insert(m_tasks[serial].end(), make_move_iterator(thread->tasks[serial].begin()), make_move_iterator(thread->tasks[serial].end()));
+				thread->tasks[serial].clear();
+			}
 		}
 
 		if (!thread->scheduledTasks.empty()) {
-			scheduledTasks.insert(make_move_iterator(thread->scheduledTasks.begin()), make_move_iterator(thread->scheduledTasks.end()));
+			scheduledTasks.insert(thread->scheduledTasks.begin(), thread->scheduledTasks.end());
 			thread->scheduledTasks.clear();
 		}
 	}
@@ -211,11 +213,9 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	const auto &thread = getThreadTask();
-	std::scoped_lock lock(thread->mutex);
 
-	auto eventId = scheduledTasksRef
-					   .emplace(task->getId(), thread->scheduledTasks.emplace_back(task))
-					   .first->first;
+	thread->scheduledTasks.emplace(task);
+	auto eventId = scheduledTasksRef.emplace(task->getId(), task).first->first;
 
 	notify();
 	return eventId;

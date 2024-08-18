@@ -77,7 +77,6 @@ public:
 			remaining -= 1;
 		}
 #else
-		// Fallback to original method using memcpy if neither AVX2 nor SSE2 are available
 		memcpy(dst, src, remaining);
 #endif
 
@@ -123,7 +122,6 @@ public:
 			remaining -= 1;
 		}
 #else
-		// Fallback to original method using memcpy if neither AVX2 nor SSE2 are available
 		memcpy(dst, src, remaining);
 #endif
 
@@ -160,7 +158,6 @@ private:
 			*reinterpret_cast<uint8_t*>(buffer + outputBufferStart) = *reinterpret_cast<const uint8_t*>(&addHeader);
 		}
 #else
-		// Fallback to original method using memcpy if SSE2 is not available
 		memcpy(buffer + outputBufferStart, &addHeader, sizeof(T));
 #endif
 

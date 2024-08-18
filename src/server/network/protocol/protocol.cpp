@@ -121,19 +121,41 @@ void Protocol::XTEA_encrypt(OutputMessage &msg) const {
 	// TODO: refactor this for not use c-style
 	uint32_t precachedControlSum[32][2];
 	uint32_t sum = 0;
-	for (int32_t i = 0; i < 32; ++i) {
-		precachedControlSum[i][0] = (sum + newKey[sum & 3]);
+
+	for (auto &i : precachedControlSum) {
+		i[0] = (sum + newKey[sum & 3]);
 		sum -= delta;
-		precachedControlSum[i][1] = (sum + newKey[(sum >> 11) & 3]);
+		i[1] = (sum + newKey[(sum >> 11) & 3]);
 	}
 	while (readPos < messageLength) {
 		std::array<uint32_t, 2> vData = {};
+
+#if defined(__AVX2__)
+		__m128i data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos));
+		_mm_storeu_si128(reinterpret_cast<__m128i*>(vData.data()), data);
+#elif defined(__SSE2__)
+		__m128i data = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(buffer + readPos));
+		_mm_storel_epi64(reinterpret_cast<__m128i*>(vData.data()), data);
+#else
 		memcpy(vData.data(), buffer + readPos, 8);
-		for (int32_t i = 0; i < 32; ++i) {
-			vData[0] += ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][0];
-			vData[1] += ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][1];
+#endif
+
+		// XTEA encryption loop
+		for (auto &i : precachedControlSum) {
+			vData[0] += ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ i[0];
+			vData[1] += ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ i[1];
 		}
+
+#if defined(__AVX2__)
+		data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(vData.data()));
+		_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), data);
+#elif defined(__SSE2__)
+		data = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(vData.data()));
+		_mm_storel_epi64(reinterpret_cast<__m128i*>(buffer + readPos), data);
+#else
 		memcpy(buffer + readPos, vData.data(), 8);
+#endif
+
 		readPos += 8;
 	}
 }
@@ -153,19 +175,42 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	// TODO: refactor this for not use c-style
 	uint32_t precachedControlSum[32][2];
 	uint32_t sum = 0xC6EF3720;
-	for (int32_t i = 0; i < 32; ++i) {
-		precachedControlSum[i][0] = (sum + newKey[(sum >> 11) & 3]);
+
+	for (auto &i : precachedControlSum) {
+		i[0] = (sum + newKey[(sum >> 11) & 3]);
 		sum += delta;
-		precachedControlSum[i][1] = (sum + newKey[sum & 3]);
+		i[1] = (sum + newKey[sum & 3]);
 	}
 	while (readPos < messageLength) {
 		std::array<uint32_t, 2> vData = {};
+
+#if defined(__AVX2__)
+		__m128i data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos));
+		_mm_storeu_si128(reinterpret_cast<__m128i*>(vData.data()), data);
+#elif defined(__SSE2__)
+		__m128i data = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(buffer + readPos));
+		_mm_storel_epi64(reinterpret_cast<__m128i*>(vData.data()), data);
+#else
 		memcpy(vData.data(), buffer + readPos, 8);
-		for (int32_t i = 0; i < 32; ++i) {
-			vData[1] -= ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][0];
-			vData[0] -= ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][1];
+#endif
+
+		// XTEA decryption loop
+		for (auto &i : precachedControlSum) {
+			vData[1] -= ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ i[0];
+			vData[0] -= ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ i[1];
 		}
+
+#if defined(__AVX2__)
+		data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(vData.data()));
+		_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), data);
+
+#elif defined(__SSE2__)
+		data = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(vData.data()));
+		_mm_storel_epi64(reinterpret_cast<__m128i*>(buffer + readPos), data);
+#else
 		memcpy(buffer + readPos, vData.data(), 8);
+#endif
+
 		readPos += 8;
 	}
 

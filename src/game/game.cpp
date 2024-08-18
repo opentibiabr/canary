@@ -19,7 +19,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "creatures/players/highscore_category.hpp"
-#include "game/world/gameworldconfig.hpp"
+#include "game/worlds/gameworlds.hpp"
 #include "game/zones/zone.hpp"
 #include "lua/global/globalevent.hpp"
 #include "io/iologindata.hpp"
@@ -195,6 +195,9 @@ Game::Game() {
 	offlineTrainingWindow.defaultEscapeButton = 1;
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;
+
+	// Create instance of worlds
+	m_worlds = std::make_unique<Worlds>();
 
 	// Create instance of IOWheel to Game class
 	m_IOWheel = std::make_unique<IOWheel>();
@@ -397,6 +400,15 @@ Game::Game() {
 
 Game::~Game() = default;
 
+// Worlds interface
+std::unique_ptr<Worlds> &Game::worlds() {
+	return m_worlds;
+}
+
+const std::unique_ptr<Worlds> &Game::worlds() const {
+	return m_worlds;
+}
+
 void Game::resetMonsters() const {
 	for (const auto &[monsterId, monster] : getMonsters()) {
 		monster->clearTargetList();
@@ -414,7 +426,7 @@ void Game::resetNpcs() const {
 
 void Game::loadBoostedCreature() {
 	auto &db = Database::getInstance();
-	const auto worldId = g_gameworld().getWorldId();
+	const auto worldId = worlds()->getId();
 
 	const std::string selectQuery = "SELECT * FROM `boosted_creature`";
 
@@ -534,10 +546,6 @@ void Game::start(ServiceManager* manager) {
 
 GameState_t Game::getGameState() const {
 	return gameState;
-}
-
-void Game::setWorldType(WorldType_t type) {
-	worldType = type;
 }
 
 void Game::setGameState(GameState_t newState) {
@@ -8030,7 +8038,7 @@ void Game::updateCreatureWalkthrough(std::shared_ptr<Creature> creature) {
 }
 
 void Game::updateCreatureSkull(std::shared_ptr<Creature> creature) {
-	if (getWorldType() != WORLD_TYPE_PVP) {
+	if (worlds()->getType() != WORLD_TYPE_PVP) {
 		return;
 	}
 
@@ -8080,7 +8088,7 @@ void Game::updateCreatureType(std::shared_ptr<Creature> creature) {
 
 void Game::loadMotdNum() {
 	Database &db = Database::getInstance();
-	const auto worldId = g_gameworld().getWorldId();
+	const auto worldId = worlds()->getId();
 
 	auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num' AND `worldId` = {}", worldId));
 	if (result) {
@@ -8102,7 +8110,7 @@ void Game::loadMotdNum() {
 
 void Game::saveMotdNum() const {
 	Database &db = Database::getInstance();
-	const auto worldId = g_gameworld().getWorldId();
+	const auto worldId = worlds()->getId();
 
 	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'motd_num' AND `worldId` = {}", motdNum, worldId);
 	db.executeQuery(query);
@@ -8127,13 +8135,13 @@ void Game::checkPlayersRecord() {
 void Game::updatePlayersRecord() const {
 	Database &db = Database::getInstance();
 
-	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'players_record' AND `worldId` = {}", playersRecord, g_gameworld().getWorldId());
+	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'players_record' AND `worldId` = {}", playersRecord, worlds()->getId());
 	db.executeQuery(query);
 }
 
 void Game::loadPlayersRecord() {
 	Database &db = Database::getInstance();
-	const auto worldId = g_gameworld().getWorldId();
+	const auto worldId = worlds()->getId();
 
 	const auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'players_record' AND `worldId` = {}", worldId));
 	if (result) {

@@ -15,7 +15,6 @@
 #include "game/game.hpp"
 #include "items/bed.hpp"
 #include "game/scheduling/save_manager.hpp"
-#include "game/world/gameworldconfig.hpp"
 #include "lib/metrics/metrics.hpp"
 
 House::House(uint32_t houseId) :
@@ -34,7 +33,7 @@ void House::setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup) {
 		return;
 	}
 
-	std::string query = fmt::format("UPDATE `houses` SET `new_owner` = {} WHERE `id` = {} AND `worldId` = {}", newOwnerGuid, id, g_gameworld().getWorldId());
+	std::string query = fmt::format("UPDATE `houses` SET `new_owner` = {} WHERE `id` = {} AND `worldId` = {}", newOwnerGuid, id, g_game().worlds()->getId());
 
 	Database &db = Database::getInstance();
 	db.executeQuery(query);
@@ -88,7 +87,7 @@ bool House::tryTransferOwnership(std::shared_ptr<Player> player, bool serverStar
 }
 
 void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared_ptr<Player> player /* = nullptr*/) {
-	const auto worldId = g_gameworld().getWorldId();
+	const auto worldId = g_game().worlds()->getId();
 
 	if (updateDatabase && owner != guid) {
 		Database &db = Database::getInstance();

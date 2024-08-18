@@ -16,7 +16,6 @@
 #include "io/iologindata.hpp"
 #include "creatures/players/management/ban.hpp"
 #include "game/game.hpp"
-#include "game/world/gameworldconfig.hpp"
 #include "core.hpp"
 #include "enums/account_errors.hpp"
 
@@ -73,11 +72,11 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	output->addByte(0x64);
 
-	std::vector<GameWorld> gameworlds = g_gameworld().getGameworlds();
+	std::vector<World> worlds = g_game().worlds()->getWorlds();
 
-	output->addByte(gameworlds.size()); // number of worlds
+	output->addByte(worlds.size()); // number of worlds
 
-	for (const auto &world : gameworlds) {
+	for (const auto &world : worlds) {
 		output->addByte(world.id); // world id
 		output->addString(world.name, "ProtocolLogin::getCharacterList - world.name");
 		output->addString(world.ip, "ProtocolLogin::getCharacterList - world.ip");

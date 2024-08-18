@@ -8,6 +8,6 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     scheduling/dispatcher.cpp
     scheduling/task.cpp
     scheduling/save_manager.cpp
-    world/gameworldconfig.cpp
+    worlds/gameworlds.cpp
     zones/zone.cpp
 )

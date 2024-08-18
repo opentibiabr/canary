@@ -14,13 +14,12 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "game/world/gameworldconfig.hpp"
 #include "utils/tools.hpp"
 #include "items/item.hpp"
 
 void IOBosstiary::loadBoostedBoss() {
 	Database &database = Database::getInstance();
-	const auto worldId = g_gameworld().getWorldId();
+	const auto worldId = g_game().worlds()->getId();
 
 	std::string query = "SELECT * FROM `boosted_boss`";
 	auto result = database.storeQuery(query);

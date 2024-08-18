@@ -19,7 +19,6 @@
 #include "game/zones/zone.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
-#include "game/world/gameworldconfig.hpp"
 #include "io/iomarket.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
@@ -75,7 +74,7 @@ int CanaryServer::run() {
 				g_metrics().init(metricsOptions);
 #endif
 				rsa.start();
-				g_gameworld().setWorldId(g_configManager().getNumber(WORLD_ID, __FUNCTION__));
+				g_game().worlds()->setId(g_configManager().getNumber(WORLD_ID, __FUNCTION__));
 				initializeDatabase();
 				loadModules();
 				setWorldType();

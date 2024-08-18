@@ -15,7 +15,6 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
-#include "game/world/gameworldconfig.hpp"
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
@@ -34,7 +33,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
 		"SELECT `id`, `itemtype`, `amount`, `price`, `tier`, `created`, `anonymous`, "
 		"(SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` "
 		"FROM `market_offers` WHERE `sale` = {} AND `worldId` = {}",
-		action, g_gameworld().getWorldId()
+		action, g_game().worlds()->getId()
 	);
 
 	DBResult_ptr result = g_database().storeQuery(query);
@@ -67,7 +66,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 
 	std::string query = fmt::format(
 		"SELECT `id`, `amount`, `price`, `tier`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `sale` = {} AND `itemtype` = {} AND `tier` = {} AND `worldId` = {}",
-		action, itemId, std::to_string(tier), g_gameworld().getWorldId()
+		action, itemId, std::to_string(tier), g_game().worlds()->getId()
 	);
 
 	DBResult_ptr result = Database::getInstance().storeQuery(query);
@@ -102,7 +101,7 @@ MarketOfferList IOMarket::getOwnOffers(MarketAction_t action, uint32_t playerId)
 
 	std::string query = fmt::format(
 		"SELECT `id`, `amount`, `price`, `created`, `itemtype`, `tier` FROM `market_offers` WHERE `player_id` = {} AND `sale` = {} AND `worldId` = {}",
-		playerId, action, g_gameworld().getWorldId()
+		playerId, action, g_game().worlds()->getId()
 	);
 
 	DBResult_ptr result = Database::getInstance().storeQuery(query);
@@ -128,7 +127,7 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 
 	std::string query = fmt::format(
 		"SELECT `itemtype`, `amount`, `price`, `expires_at`, `state`, `tier` FROM `market_history` WHERE `player_id` = {} AND `sale` = {} AND `worldId` = {}",
-		playerId, action, g_gameworld().getWorldId()
+		playerId, action, g_game().worlds()->getId()
 	);
 
 	DBResult_ptr result = Database::getInstance().storeQuery(query);
@@ -238,7 +237,7 @@ void IOMarket::checkExpiredOffers() {
 
 	std::string query = fmt::format(
 		"SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale`, `tier` FROM `market_offers` WHERE `created` <= {} AND `worldId` = {}",
-		lastExpireDate, g_gameworld().getWorldId()
+		lastExpireDate, g_game().worlds()->getId()
 	);
 	g_databaseTasks().store(query, IOMarket::processExpiredOffers);
 
@@ -253,7 +252,7 @@ void IOMarket::checkExpiredOffers() {
 uint32_t IOMarket::getPlayerOfferCount(uint32_t playerId) {
 	std::string query = fmt::format(
 		"SELECT COUNT(*) AS `count` FROM `market_offers` WHERE `player_id` = {} AND `worldId` = {}",
-		playerId, g_gameworld().getWorldId()
+		playerId, g_game().worlds()->getId()
 	);
 
 	DBResult_ptr result = Database::getInstance().storeQuery(query);
@@ -270,7 +269,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter) 
 
 	std::string query = fmt::format(
 		"SELECT `id`, `sale`, `itemtype`, `amount`, `created`, `price`, `player_id`, `anonymous`, `tier`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `created` = {} AND (`id` & 65535) = {} AND `worldId` = {} LIMIT 1",
-		created, counter, g_gameworld().getWorldId()
+		created, counter, g_game().worlds()->getId()
 	);
 
 	DBResult_ptr result = Database::getInstance().storeQuery(query);
@@ -299,32 +298,32 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter) 
 void IOMarket::createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint64_t price, uint8_t tier, bool anonymous) {
 	std::string query = fmt::format(
 		"INSERT INTO `market_offers` (`player_id`, `sale`, `itemtype`, `amount`, `created`, `anonymous`, `price`, `tier`, `worldId`) VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {})",
-		playerId, action, itemId, amount, getTimeNow(), anonymous, price, std::to_string(tier), g_gameworld().getWorldId()
+		playerId, action, itemId, amount, getTimeNow(), anonymous, price, std::to_string(tier), g_game().worlds()->getId()
 	);
 	Database::getInstance().executeQuery(query);
 }
 
 void IOMarket::acceptOffer(uint32_t offerId, uint16_t amount) {
-	std::string query = fmt::format("UPDATE `market_offers` SET `amount` = `amount` - {} WHERE `id` = {} AND `worldId` = {}", amount, offerId, g_gameworld().getWorldId());
+	std::string query = fmt::format("UPDATE `market_offers` SET `amount` = `amount` - {} WHERE `id` = {} AND `worldId` = {}", amount, offerId, g_game().worlds()->getId());
 	Database::getInstance().executeQuery(query);
 }
 
 void IOMarket::deleteOffer(uint32_t offerId) {
-	std::string query = fmt::format("DELETE FROM `market_offers` WHERE `id` = {} AND `worldId` = {}", offerId, g_gameworld().getWorldId());
+	std::string query = fmt::format("DELETE FROM `market_offers` WHERE `id` = {} AND `worldId` = {}", offerId, g_game().worlds()->getId());
 	Database::getInstance().executeQuery(query);
 }
 
 void IOMarket::appendHistory(uint32_t playerId, MarketAction_t type, uint16_t itemId, uint16_t amount, uint64_t price, time_t timestamp, uint8_t tier, MarketOfferState_t state) {
 	std::string query = fmt::format(
 		"INSERT INTO `market_history` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `expires_at`, `inserted`, `state`, `tier`, `worldId`) VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {})",
-		playerId, type, itemId, amount, price, timestamp, getTimeNow(), state, std::to_string(tier), g_gameworld().getWorldId()
+		playerId, type, itemId, amount, price, timestamp, getTimeNow(), state, std::to_string(tier), g_game().worlds()->getId()
 	);
 	g_databaseTasks().execute(query);
 }
 
 bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state) {
 	Database &db = Database::getInstance();
-	const auto worldId = g_gameworld().getWorldId();
+	const auto worldId = g_game().worlds()->getId();
 
 	std::string query = fmt::format(
 		"SELECT `player_id`, `sale`, `itemtype`, `amount`, `price`, `created`, `tier` FROM `market_offers` WHERE `id` = {} AND `worldId` = {}",
@@ -359,7 +358,7 @@ void IOMarket::updateStatistics() {
 		"FROM market_history "
 		"WHERE state = '{}' AND `worldId` = {} "
 		"GROUP BY itemtype, sale, tier",
-		OFFERSTATE_ACCEPTED, g_gameworld().getWorldId()
+		OFFERSTATE_ACCEPTED, g_game().worlds()->getId()
 	);
 
 	DBResult_ptr result = g_database().storeQuery(query);

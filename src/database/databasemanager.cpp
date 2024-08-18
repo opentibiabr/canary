@@ -13,7 +13,7 @@
 #include "database/databasemanager.hpp"
 #include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.hpp"
-#include "game/world/gameworldconfig.hpp"
+#include "game/game.hpp"
 
 bool DatabaseManager::optimizeTables() {
 	Database &db = Database::getInstance();
@@ -121,7 +121,7 @@ void DatabaseManager::updateDatabase() {
 
 bool DatabaseManager::getDatabaseConfig(const std::string &config, int32_t &value) {
 	Database &db = Database::getInstance();
-	std::string query = fmt::format("SELECT `value` FROM `server_config` WHERE `worldId` = {} AND `config` = {}", g_gameworld().getWorldId(), db.escapeString(config));
+	std::string query = fmt::format("SELECT `value` FROM `server_config` WHERE `worldId` = {} AND `config` = {}", g_game().worlds()->getId(), db.escapeString(config));
 	if (config == "db_version") {
 		query = fmt::format("SELECT `value` FROM `server_config` WHERE `config` = {}", db.escapeString(config));
 	}
@@ -142,9 +142,9 @@ void DatabaseManager::registerDatabaseConfig(const std::string &config, int32_t 
 	int32_t tmp;
 
 	if (!getDatabaseConfig(config, tmp)) {
-		query = fmt::format("INSERT INTO `server_config` (`config`, `value`, `worldId`) VALUES ({}, {}, {})", db.escapeString(config), value, g_gameworld().getWorldId());
+		query = fmt::format("INSERT INTO `server_config` (`config`, `value`, `worldId`) VALUES ({}, {}, {})", db.escapeString(config), value, g_game().worlds()->getId());
 	} else {
-		query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `worldId` = {}, `config` = {}", value, g_gameworld().getWorldId(), db.escapeString(config));
+		query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `worldId` = {}, `config` = {}", value, g_game().worlds()->getId(), db.escapeString(config));
 		if (strcasecmp(config.c_str(), "db_version")) {
 			query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = {}", value, db.escapeString(config));
 		}

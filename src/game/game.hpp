@@ -25,6 +25,7 @@
 #include "items/items_classification.hpp"
 #include "modal_window/modal_window.hpp"
 #include "enums/object_category.hpp"
+#include "game/worlds/gameworlds.hpp"
 
 // Forward declaration for protobuf class
 namespace Canary {
@@ -91,6 +92,10 @@ public:
 		return inject<Game>();
 	}
 
+	// Game worlds interface
+	std::unique_ptr<Worlds> &worlds();
+	const std::unique_ptr<Worlds> &worlds() const;
+
 	void resetMonsters() const;
 	void resetNpcs() const;
 
@@ -118,11 +123,6 @@ public:
 	void getMapDimensions(uint32_t &width, uint32_t &height) const {
 		width = map.width;
 		height = map.height;
-	}
-
-	void setWorldType(WorldType_t type);
-	WorldType_t getWorldType() const {
-		return worldType;
 	}
 
 	const std::map<uint32_t, std::unique_ptr<TeamFinder>> &getTeamFinderList() const {
@@ -898,8 +898,6 @@ private:
 	bool browseField = false;
 
 	GameState_t gameState = GAME_STATE_NORMAL;
-	uint16_t worldId = 0;
-	WorldType_t worldType = WORLD_TYPE_PVP;
 
 	LightState_t lightState = LIGHT_STATE_DAY;
 	LightState_t currentLightState = lightState;
@@ -964,6 +962,7 @@ private:
 
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
+	std::unique_ptr<Worlds> m_worlds;
 
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);

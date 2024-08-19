@@ -54,9 +54,8 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const s
 bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::string &name) {
 	Database &db = Database::getInstance();
 
-	std::ostringstream query;
-	query << "SELECT `id`, `account_id`, `group_id`, `deletion` FROM `players` WHERE `name` = " << db.escapeString(name);
-	DBResult_ptr result = db.storeQuery(query.str());
+	std::string query = fmt::format("SELECT `id`, `account_id`, `group_id`, `deletion`, `worldId` FROM `players` WHERE `name` = {}", db.escapeString(name));
+	DBResult_ptr result = db.storeQuery(query);
 	if (!result) {
 		return false;
 	}
@@ -64,6 +63,8 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 	if (result->getNumber<uint64_t>("deletion") != 0) {
 		return false;
 	}
+
+	player->worldId = result->getNumber<uint8_t>("worldId");
 
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	const auto &group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
@@ -130,7 +131,6 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 		return false;
 	}
 
-	player->worldId = result->getNumber<uint8_t>("worldId");
 	player->setBankBalance(result->getNumber<uint64_t>("balance"));
 	player->quickLootFallbackToMainContainer = result->getNumber<bool>("quickloot_fallback");
 	player->setSex(static_cast<PlayerSex_t>(result->getNumber<uint16_t>("sex")));

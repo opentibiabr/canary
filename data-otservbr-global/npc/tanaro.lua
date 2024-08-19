@@ -67,8 +67,6 @@ npcConfig.shop = {
 	{ itemName = "salmon", clientId = 3579, buy = 6 },
 	{ itemName = "valentine's cake", clientId = 6392, buy = 100 },
 	{ itemName = "white mushroom", clientId = 3723, buy = 6 },
-	{ itemName = "vial of wine", clientId = 2874, buy = 3, count = 1, subType = 2 },
-	{ itemName = "vial of water", clientId = 2874, buy = 2, count = 1 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

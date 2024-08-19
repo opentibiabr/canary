@@ -27,7 +27,7 @@ local config = {
 		items = {
 			{ itemId = 145 },
 		},
-		storage = Storage.TravellingTrader.Mission02,
+		storage = Storage.Quest.U8_1.TheTravellingTrader.Mission02,
 		formerValue = 3,
 		newValue = 4,
 	},
@@ -41,38 +41,26 @@ local config = {
 		needItem = { itemId = 3231 },
 		effect = CONST_ME_MAGIC_RED,
 	},
-	[3062] = {
-		items = {
-			{ itemId = 7528 },
-		},
-		storage = Storage.QuestChests.KosheiAmulet1,
-	},
-	[3064] = {
-		items = {
-			{ itemId = 7530 },
-		},
-		storage = Storage.QuestChests.KosheiAmulet2,
-	},
 	[3084] = {
 		items = {
 			{ itemId = 8829 },
 		},
-		storage = Storage.InServiceofYalahar.MatrixReward,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.MatrixReward,
 	},
 	[3085] = {
 		items = {
 			{ itemId = 8828 },
 		},
-		storage = Storage.InServiceofYalahar.MatrixReward,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.MatrixReward,
 	},
 	[3112] = {
 		items = {
 			{ itemId = 2820, text = "<the paper is old and tattered, you can only make out a signature:> Tylaf, apprentice of Hjaern" },
 		},
-		storage = Storage.TheIceIslands.Questline,
+		storage = Storage.Quest.U8_0.TheIceIslands.Questline,
 		formerValue = 35,
 		newValue = 36,
-		missionStorage = { key = Storage.TheIceIslands.Mission09, value = 2 },
+		missionStorage = { key = Storage.Quest.U8_0.TheIceIslands.Mission09, value = 2 },
 	},
 	[3116] = {
 		items = {
@@ -94,7 +82,7 @@ local config = {
 		items = {
 			{ itemId = 637 },
 		},
-		storage = Storage.ChildrenoftheRevolution.Questline,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline,
 		formerValue = 1,
 		newValue = 2,
 		say = "A batch of documents has been stashed in the shelf. These might be of interest to Zalamon.",
@@ -138,7 +126,7 @@ local config = {
 		items = {
 			{ itemId = 10159 },
 		},
-		storage = Storage.UnnaturalSelection.Mission01,
+		storage = Storage.Quest.U8_54.UnnaturalSelection.Mission01,
 		formerValue = 1,
 		newValue = 2,
 		say = "You dig out a skull from the pile of bones. That must be the skull Lazaran talked about.",
@@ -147,7 +135,7 @@ local config = {
 		items = {
 			{ itemId = 7936 },
 		},
-		storage = Storage.ThievesGuild.Mission06,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.Mission06,
 		formerValue = 2,
 		newValue = 3,
 		say = "To buy some time you replace the fish with a piece of carrot.",
@@ -156,19 +144,19 @@ local config = {
 		items = {
 			{ itemId = 652 },
 		},
-		storage = Storage.SecretService.RottenTree,
+		storage = Storage.Quest.U8_1.SecretService.RottenTree,
 	},
 	[50112] = {
 		items = {
 			{ itemId = 3725, count = 10 },
 		},
-		storage = Storage.HiddenCityOfBeregar.BrownMushrooms,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.BrownMushrooms,
 	},
 	[50125] = {
 		items = {
 			{ itemId = 8777 },
 		},
-		storage = Storage.HiddenCityOfBeregar.JusticeForAll,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll,
 		formerValue = 3,
 		newValue = 4,
 	},
@@ -221,7 +209,7 @@ So they decided to recruit Augur on their own. This way most of our forefathers 
 				name = "History of the Augur, Part I",
 			},
 		},
-		storage = Storage.InServiceofYalahar.NotesPalimuth,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.NotesPalimuth,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -252,7 +240,7 @@ To some extent, we have to work like a gardener. The rotten parts have to be cut
 				name = "Manifest of the Yalahari, Part I",
 			},
 		},
-		storage = Storage.InServiceofYalahar.NotesAzerus,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.NotesAzerus,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -260,7 +248,7 @@ To some extent, we have to work like a gardener. The rotten parts have to be cut
 		items = {
 			{ itemId = 8818 },
 		},
-		storage = Storage.InServiceofYalahar.AlchemistFormula,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.AlchemistFormula,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -298,7 +286,7 @@ Gromward Hammerfist]],
 				name = "Tunnelling Guide",
 			},
 		},
-		storage = Storage.HiddenCityOfBeregar.TunnellingGuide,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.TunnellingGuide,
 	},
 	[20003] = {
 		items = {

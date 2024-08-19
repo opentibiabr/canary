@@ -57,7 +57,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 
 	if MsgContains(message, "Nupi") then
-		if player:getStorageValue(Storage.BarbarianTest.Questline) >= 3 and player:getStorageValue(Storage.TheIceIslands.Questline) >= 5 then
+		if player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) >= 3 and player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) >= 5 then
 			for i = 1, #fishsID do
 				if player:getItemCount(fishsID[i]) >= 100 then
 					player:removeItem(fishsID[i], 100)

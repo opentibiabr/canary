@@ -92,7 +92,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "invitation") then
-		if player:getStorageValue(Storage.ThievesGuild.Mission03) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission03) == 1 then
 			npcHandler:say("What? So why in the world should I give you an invitation? It's not as if you were someone important, are you?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -103,7 +103,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeMoneyBank(1000) then
 				player:addItem(7933, 1)
-				player:setStorageValue(Storage.ThievesGuild.Mission03, 2)
+				player:setStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission03, 2)
 				npcHandler:say("Excellent! Here is your invitation!", npc, creature)
 			else
 				npcHandler:say("You don't have enough money.", npc, creature)

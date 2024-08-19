@@ -153,10 +153,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "task") and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03) == 3 then
-		if player:getStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask) < 0 or player:getStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask) == 3 then
+		if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask) < 0 or player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask) == 3 then
 			npcHandler:say("There are still blue djinns everywhere! We can't let a single one of them live. I guess a start would be for you to kill 500 blue djinns and Marid. Will you assist us?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
-		elseif player:getStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask) == 0 then
+		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BlueDjinnCount) >= 500 then
 				npcHandler:say({
 					"Well well, human. Not bad. I'm not surprised, since you have done acceptably well in the past. So I suppose I can ask you for another thing. ...",
@@ -164,16 +164,16 @@ local function creatureSayCallback(npc, creature, type, message)
 					"I suggest you teach that joke of a djinn a lesson he won't forget.",
 				}, npc, creature)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.FahimCount, 0)
-				player:setStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask, 1)
+				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask, 1)
 			else
 				npcHandler:say("Come back when you kill 500 blue djinns and Marid.", npc, creature)
 			end
-		elseif player:getStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask) == 2 then
+		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask) == 2 then
 			npcHandler:say({
 				"You've met Fahim the Wise? That's good. I'm pretty sure it was easy to give him a nice beating. ...",
 				"If you should feel like killing blue djinns in our service again, just talk to me about that task.",
 			}, npc, creature)
-			player:setStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask, 3)
+			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask, 3)
 			player:addExperience(10000, true)
 			player:addMoney(5000)
 		end
@@ -183,7 +183,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BlueDjinnCount, 0)
 		player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BlueDjinnCount, 0)
 		player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MaridCount, 0)
-		player:setStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask, 0)
+		player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask, 0)
 	end
 	return true
 end

@@ -47,7 +47,7 @@ end
 
 local function greetCallback(npc, creature)
 	local playerId = creature:getId()
-	if Player(creature):getStorageValue(Storage.WrathoftheEmperor.Questline) == 27 then
+	if Player(creature):getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 27 then
 		npcHandler:setMessage(MESSAGE_GREET, "ZzzzZzzZz...chrrr...")
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Greetings, {wayfarer}.")
@@ -63,8 +63,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 27 then
-		if (message == "SOLOSARASATIQUARIUM") and player:getStorageValue(Storage.WrathoftheEmperor.InterdimensionalPotion) == 1 then
+	if player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 27 then
+		if (message == "SOLOSARASATIQUARIUM") and player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.InterdimensionalPotion) == 1 then
 			npcHandler:say({
 				"Dragon dreams are golden. ...",
 				"A broad darkness surrounds you as if a heavy curtain is closing before your eyes. After what seems like minutes of floating through emptiness, you get the feeling as if a hole opens in the dark before you. ...",
@@ -123,25 +123,21 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You head north passing countless stones in the crimson sea of stones beneath your feet.", npc, creature)
 			npcHandler:setTopic(playerId, 14)
 		elseif message:lower() == "use attachment" and npcHandler:getTopic(playerId) == 14 then
-			npcHandler:say({
-				"Avoiding the bright light, you carefully put the attachment on top of the strange socket. ...",
-				"As your eyes adjust to the sudden reduction of brightness, you see the giant wings of the gate before you move to the side. You can also make out something shiny on the ground.",
-			}, npc, creature)
+			npcHandler:say("Avoiding the bright light, you carefully put the attachment on top of the strange socket. ...", npc, creature)
 			npcHandler:setTopic(playerId, 15)
 		elseif message:lower() == "take mirror" and npcHandler:getTopic(playerId) == 15 then
-			npcHandler:say("You pick the mirror from the ground.", npc, creature)
+			npcHandler:say({
+				"As your eyes adjust to the sudden reduction of brightness, you see the giant wings of the gate before you move to the side. You can also make out something shiny on the ground.",
+				"You pick the mirror from the ground.",
+			}, npc, creature)
 			npcHandler:setTopic(playerId, 16)
 		elseif message:lower() == "north" and npcHandler:getTopic(playerId) == 16 then
-			npcHandler:say({
-				"Your path to the north is open. You pass the gigantic gate wings to your left and right as you advance. After about an hour of travel you hear a slight rustling in the distance. You head further into that direction. ...",
-				"The rustling gets louder until you come to a small dune. Behind it you find the source of the noise.",
-			}, npc, creature)
+			npcHandler:say("Your path to the north is open. You pass the gigantic gate wings to your left and right as you advance. After about an hour of travel you hear a slight rustling in the distance. You head further into that direction. ...", npc, creature)
 			npcHandler:setTopic(playerId, 17)
 		elseif message:lower() == "use model" and npcHandler:getTopic(playerId) == 17 then
 			npcHandler:say({
 				"You lunge out and throw the model far into the water. As nothing happens, you turn your back to the ocean. ...",
 				"The very moment you walk down the dune to head back south, rays of light burst over your head in a shock wave that makes you tumble down the rest of the hill. ...",
-				"You can also hear a deep loud scraping for several minutes somewhere far in the west.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 18)
 		elseif message:lower() == "south" and npcHandler:getTopic(playerId) == 18 then
@@ -162,34 +158,31 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif message:lower() == "west" and npcHandler:getTopic(playerId) == 23 then
 			npcHandler:say("You leave the massive open gate behind you and go to the west. ", npc, creature)
 			npcHandler:setTopic(playerId, 24)
-		elseif message:lower() == "bastesh" and npcHandler:getTopic(playerId) == 24 then
-			npcHandler:say("This huge statue of Bastesh is made from onyx, and thrones on a large plateau which can be reached by a sprawling stairway. She holds a large {sapphire} in her hands. ", npc, creature)
+		elseif message:lower() == "take sapphire" and npcHandler:getTopic(playerId) == 24 then
+			npcHandler:say("You carefully remove the sapphire from Bastesh's grasp.", npc, creature)
 			npcHandler:setTopic(playerId, 25)
-		elseif message:lower() == "take sapphire" and npcHandler:getTopic(playerId) == 25 then
-			npcHandler:say("You carefully remove the sapphire from Bastesh's grasp. ", npc, creature)
+		elseif message:lower() == "east" and npcHandler:getTopic(playerId) == 25 then
+			npcHandler:say("You head back to the east and to the plateau.", npc, creature)
 			npcHandler:setTopic(playerId, 26)
-		elseif message:lower() == "east" and npcHandler:getTopic(playerId) == 26 then
-			npcHandler:say("You head back to the east and to the plateau. ", npc, creature)
+		elseif message:lower() == "south" and npcHandler:getTopic(playerId) == 26 then
+			npcHandler:say("You head back south to the site with the onyx lookout.", npc, creature)
 			npcHandler:setTopic(playerId, 27)
-		elseif message:lower() == "south" and npcHandler:getTopic(playerId) == 27 then
-			npcHandler:say("You head back south to the site with the onyx lookout. ", npc, creature)
+		elseif message:lower() == "east" and npcHandler:getTopic(playerId) == 27 then
+			npcHandler:say("You return to the plateau in the east.", npc, creature)
 			npcHandler:setTopic(playerId, 28)
-		elseif message:lower() == "east" and npcHandler:getTopic(playerId) == 28 then
-			npcHandler:say("You return to the plateau in the east. ", npc, creature)
+		elseif message:lower() == "use stand" and npcHandler:getTopic(playerId) == 28 then
+			npcHandler:say("You put the stand into a small recess you find near the middle of the plateau.", npc, creature)
 			npcHandler:setTopic(playerId, 29)
-		elseif message:lower() == "use stand" and npcHandler:getTopic(playerId) == 29 then
-			npcHandler:say("You put the stand into a small recess you find near the middle of the plateau. ", npc, creature)
+		elseif message:lower() == "use ruby" and npcHandler:getTopic(playerId) == 29 then
+			npcHandler:say("As the ruby slips into the notch, the strong red of the stone intensifies a thousandfold. You fear to hurt your eyes and turn away immediately. The ray seems to be directed to the centre of the plateau with astounding precision.", npc, creature)
 			npcHandler:setTopic(playerId, 30)
-		elseif message:lower() == "use ruby" and npcHandler:getTopic(playerId) == 30 then
-			npcHandler:say("As the ruby slips into the notch, the strong red of the stone intensifies a thousandfold. You fear to hurt your eyes and turn away immediately. The ray seems to be directed to the centre of the plateau with astounding precision. ", npc, creature)
+		elseif message:lower() == "use sapphire" and npcHandler:getTopic(playerId) == 30 then
+			npcHandler:say("As the sapphire slips into the notch, the deep blue of the stone intensifies a thousandfold. You fear to hurt your eyes and turn away immediately. The ray seems to be directed to the centre of the plateau with astounding precision.", npc, creature)
 			npcHandler:setTopic(playerId, 31)
-		elseif message:lower() == "use sapphire" and npcHandler:getTopic(playerId) == 31 then
-			npcHandler:say("As the sapphire slips into the notch, the deep blue of the stone intensifies a thousandfold. You fear to hurt your eyes and turn away immediately. The ray seems to be directed to the centre of the plateau with astounding precision. ", npc, creature)
+		elseif message:lower() == "use emerald" and npcHandler:getTopic(playerId) == 31 then
+			npcHandler:say("As the emerald slips into the notch, the vibrant green of the stone intensifies a thousandfold. You fear to hurt your eyes and turn away immediately. The ray seems to be directed to the centre of the plateau with astounding precision.", npc, creature)
 			npcHandler:setTopic(playerId, 32)
-		elseif message:lower() == "use emerald" and npcHandler:getTopic(playerId) == 32 then
-			npcHandler:say("As the emerald slips into the notch, the vibrant green of the stone intensifies a thousandfold. You fear to hurt your eyes and turn away immediately. The ray seems to be directed to the centre of the plateau with astounding precision. ", npc, creature)
-			npcHandler:setTopic(playerId, 33)
-		elseif message:lower() == "use mirror" and npcHandler:getTopic(playerId) == 33 then
+		elseif message:lower() == "use mirror" and npcHandler:getTopic(playerId) == 32 then
 			npcHandler:say({
 				"With your eyes covered and avoiding direct sight of the rays, you put the mirror into the stand. ...",
 				"Instinctively you run to a larger emerald bluff near the raise to find cover. Mere seconds after you claimed the sturdy shelter, a deep dark humming starts to swirl through the air. ...",
@@ -200,11 +193,11 @@ local function creatureSayCallback(npc, creature, type, message)
 				"The growl transforms into a scream, everything around you seems to compress. As you press yourself tightly against the bluff, everything falls silent and in a split second, the dark being dissolves into bursts of blackness. You wake.",
 			}, npc, creature)
 			player:addAchievement("Wayfarer")
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 28)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission09, 2) --Questlog, Wrath of the Emperor "Mission 09: The Sleeping Dragon"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 28)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission09, 2) --Questlog, Wrath of the Emperor "Mission 09: The Sleeping Dragon"
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 28 then
+	elseif player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 28 then
 		if MsgContains(message, "wayfarer") then
 			npcHandler:say("I call you the wayfarer. You travelled through my dreams. You ultimately freed my mind. My mind accepted you and so will I.", npc, creature)
 		elseif MsgContains(message, "mission") then
@@ -223,8 +216,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"The transfer was successful. ...",
 				"You are now prepared to enter the realm of the evildoer. I am grateful for your help, wayfarer. Should you seek my council, use this charm I cede to you. For my spirit will guide you wherever you are. May you enjoy a sheltered future, you shall prevail.",
 			}, npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 29)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission10, 1) --Questlog, Wrath of the Emperor "Mission 10: A Message of Freedom"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 29)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission10, 1) --Questlog, Wrath of the Emperor "Mission 10: A Message of Freedom"
 			player:addItem(10343, 1)
 			npcHandler:setTopic(playerId, 0)
 		end

@@ -2208,7 +2208,7 @@ void ProtocolGame::sendHighscores(const std::string &selectedWorld, const std::v
 
 	const auto worlds = g_game().worlds()->getWorlds();
 	msg.addByte(worlds.size()); // Worlds
-	for (const auto& world : worlds) {
+	for (const auto &world : worlds) {
 		msg.addString(world->name, "ProtocolGame::sendHighscores - world->name"); // Worlds
 	}
 

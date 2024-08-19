@@ -228,6 +228,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, SCREENSHOT_TYPE_PLAYERATTACKING);
 	registerEnum(L, SCREENSHOT_TYPE_TREASUREFOUND);
 	registerEnum(L, SCREENSHOT_TYPE_SKILLUP);
+	registerEnum(L, SCREENSHOT_TYPE_GIFTOFLIFE);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {

@@ -148,6 +148,10 @@ public:
 		return online;
 	}
 
+	uint8_t getWorldId() {
+		return worldId;
+	}
+
 	static uint32_t getFirstID();
 	static uint32_t getLastID();
 
@@ -2865,6 +2869,7 @@ private:
 	uint32_t coinTransferableBalance = 0;
 	uint16_t xpBoostTime = 0;
 	uint8_t randomMount = 0;
+	uint8_t worldId = 1;
 
 	uint16_t lastStatsTrainingTime = 0;
 	uint16_t staminaMinutes = 2520;

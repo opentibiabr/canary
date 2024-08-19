@@ -82,13 +82,19 @@ bool Mailbox::sendItem(std::shared_ptr<Item> item) const {
 		return false;
 	}
 
+	std::shared_ptr<Player> player = g_game().getPlayerByName(receiver, true);
+
+	// Check if player receiver is from the same world of this.
+	if (!player || player->getWorldId() != g_game().worlds()->getId()) {
+		return false;
+	}
+
 	if (item && item->getContainer() && item->getTile()) {
 		for (const auto &spectator : Spectators().find<Player>(item->getTile()->getPosition())) {
 			spectator->getPlayer()->autoCloseContainers(item->getContainer());
 		}
 	}
 
-	std::shared_ptr<Player> player = g_game().getPlayerByName(receiver, true);
 	std::string writer;
 	time_t date = time(0);
 	std::string text;
@@ -97,7 +103,7 @@ bool Mailbox::sendItem(std::shared_ptr<Item> item) const {
 		date = item->getAttribute<time_t>(ItemAttribute_t::DATE);
 		text = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
 	}
-	if (player && item) {
+	if (item) {
 		if (g_game().internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			auto newItem = g_game().transformItem(item, item->getID() + 1);
 			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {

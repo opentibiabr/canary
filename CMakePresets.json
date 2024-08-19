@@ -83,6 +83,7 @@
       "description": "Build Debug Mode",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "DEBUG_LOG": "ON",
         "SPEED_UP_BUILD_UNITY": "OFF"
       }

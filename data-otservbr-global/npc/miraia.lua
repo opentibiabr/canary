@@ -119,9 +119,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(config[message].text[2], npc, creature)
 		end
 	elseif MsgContains(message, "scarab cheese") then
-		if player:getStorageValue(Storage.TravellingTrader.Mission03) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission03) == 1 then
 			npcHandler:say("Let me cover my nose before I get this for you... Would you REALLY like to buy scarab cheese for 100 gold?", npc, creature)
-		elseif player:getStorageValue(Storage.TravellingTrader.Mission03) == 2 then
+		elseif player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission03) == 2 then
 			npcHandler:say("Oh the last cheese molded? Would you like to buy another one for 100 gold?", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 4)
@@ -159,7 +159,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if player:getMoney() + player:getBankBalance() >= 100 then
-				player:setStorageValue(Storage.TravellingTrader.Mission03, 2)
+				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission03, 2)
 				player:addItem(169, 1)
 				player:removeMoneyBank(100)
 				npcHandler:say("Here it is.", npc, creature)
@@ -200,6 +200,8 @@ npcConfig.shop = {
 	{ itemName = "mug of milk", clientId = 2880, buy = 5, count = 9 },
 	{ itemName = "mug of water", clientId = 2880, buy = 2, count = 1 },
 	{ itemName = "scarab cheese", clientId = 169, buy = 100 },
+	{ itemName = "vial of milk", clientId = 2874, buy = 5, count = 1, subType = 9 },
+	{ itemName = "vial of water", clientId = 2874, buy = 2, count = 1 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

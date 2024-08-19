@@ -18,6 +18,7 @@
 #include "enums/account_type.hpp"
 #include "enums/account_coins.hpp"
 #include "account/account_info.hpp"
+#include "game/game.hpp"
 
 AccountRepositoryDB::AccountRepositoryDB() :
 	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" }, { enumToValue(CoinType::Tournament), "tournament_coins" }, { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
@@ -150,7 +151,7 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 
 bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 	auto result = g_database().storeQuery(
-		fmt::format("SELECT `name`, `deletion`, `worldId` FROM `players` WHERE `account_id` = {} ORDER BY `name` ASC", acc.id)
+		fmt::format("SELECT `name`, `deletion`, `worldId` FROM `players` WHERE `account_id` = {} AND `worldId` = {} ORDER BY `name` ASC", acc.id, g_game().worlds()->getId())
 	);
 
 	if (!result) {

@@ -965,12 +965,12 @@ private:
 	std::unique_ptr<Worlds> m_worlds;
 
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
-	void processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
+	void processHighscoreResults(DBResult_ptr result, const std::string &worldName, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
 	std::string generateVocationConditionHighscore(uint32_t vocation);
-	std::string generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
+	std::string generateHighscoreQueryForEntries(const std::string &categoryName, const std::string &worldName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
-	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
+	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, const std::string &worldName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 };
 

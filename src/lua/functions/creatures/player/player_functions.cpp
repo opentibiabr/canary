@@ -4408,3 +4408,22 @@ int PlayerFunctions::luaPlayerSendIconBakragore(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerRemoveIconBakragore(lua_State* L) {
+	// player:removeIconBakragore(iconType or nil for remove all bakragore icons)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto iconType = getNumber<IconBakragore>(L, 2, IconBakragore::None);
+	if (iconType == IconBakragore::None) {
+		player->removeBakragoreIcons();
+	} else {
+		player->removeBakragoreIcon(iconType);
+	}
+
+	pushBoolean(L, true);
+	return 1;
+}

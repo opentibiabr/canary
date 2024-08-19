@@ -33,7 +33,7 @@ function onUpdateDatabase()
 	db.query([[
 		CREATE TRIGGER `ondelete_players` BEFORE DELETE ON `players` FOR EACH ROW BEGIN
     		UPDATE `houses` SET `owner` = 0 WHERE `owner` = OLD.`id` AND `worldId` = OLD.`worldId`;
-		END
+		END;
 	]])
 
 	return true

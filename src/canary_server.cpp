@@ -74,10 +74,10 @@ int CanaryServer::run() {
 				g_metrics().init(metricsOptions);
 #endif
 				rsa.start();
-				g_game().worlds()->setId(g_configManager().getNumber(WORLD_ID, __FUNCTION__));
+				loadThisWorld();
 				initializeDatabase();
+				g_game().worlds()->load();
 				loadModules();
-				setWorldType();
 				loadMaps();
 
 				logger.info("Initializing gamestate...");
@@ -143,15 +143,11 @@ int CanaryServer::run() {
 	return EXIT_SUCCESS;
 }
 
-void CanaryServer::setWorldType() {
-	const std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE, __FUNCTION__));
-	if (worldType == "pvp") {
-		g_game().worlds()->setType(WORLD_TYPE_PVP);
-	} else if (worldType == "no-pvp") {
-		g_game().worlds()->setType(WORLD_TYPE_NO_PVP);
-	} else if (worldType == "pvp-enforced") {
-		g_game().worlds()->setType(WORLD_TYPE_PVP_ENFORCED);
-	} else {
+void CanaryServer::loadThisWorld() {
+	const auto worldTypeStr = g_configManager().getString(WORLD_TYPE, __FUNCTION__);
+	const auto worldType = Worlds::getTypeByString(worldTypeStr);
+
+	if (worldType == WORLD_TYPE_NONE) {
 		throw FailedToInitializeCanary(
 			fmt::format(
 				"Unknown world type: {}, valid world types are: pvp, no-pvp and pvp-enforced",
@@ -160,7 +156,13 @@ void CanaryServer::setWorldType() {
 		);
 	}
 
-	logger.debug("World type set as {}", asUpperCaseString(worldType));
+	g_game().worlds()->setId(g_configManager().getNumber(WORLD_ID, __FUNCTION__));
+	g_game().worlds()->setName(g_configManager().getString(SERVER_NAME, __FUNCTION__));
+	g_game().worlds()->setType(worldType);
+	g_game().worlds()->setIp(g_configManager().getString(IP, __FUNCTION__));
+	g_game().worlds()->setPort(g_configManager().getNumber(GAME_PORT, __FUNCTION__));
+
+	logger.debug("World type set as {}", asUpperCaseString(worldTypeStr));
 }
 
 void CanaryServer::loadMaps() const {

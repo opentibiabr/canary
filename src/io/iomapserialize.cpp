@@ -96,7 +96,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 			size_t attributesSize;
 			const char* attributes = stream.getStream(attributesSize);
 			if (attributesSize > 0) {
-				query << house->getId() << ',' << db.escapeBlob(attributes, attributesSize) << ',' << g_game().worlds()->getId();
+				query << house->getId() << ',' << db.escapeBlob(attributes, attributesSize) << ',' << static_cast<int>(g_game().worlds()->getId());
 				if (!stmt.addRow(query)) {
 					return false;
 				}

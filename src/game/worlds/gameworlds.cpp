@@ -10,32 +10,78 @@
 #include "pch.hpp"
 
 #include "game/worlds/gameworlds.hpp"
-#include "game/game_definitions.hpp"
+#include "io/iologindata.hpp"
+#include "utils/tools.hpp"
 
-[[nodiscard]] const char* Worlds::getIp(uint16_t id) {
-	return ip[id];
+void Worlds::load() {
+	worlds = IOLoginData::loadWorlds();
 }
 
-[[nodiscard]] uint16_t Worlds::getPort(uint16_t id) {
-	return port[id];
+void Worlds::reload() {
+	worlds.clear();
+	load();
 }
 
-[[nodiscard]] std::string Worlds::getName(uint16_t id) {
-	return name[id];
+[[nodiscard]] const std::shared_ptr<World> &Worlds::getById(uint8_t id) const {
+	auto it = std::find_if(worlds.begin(), worlds.end(), [id](const std::shared_ptr<World> &world) {
+		return world->id == id;
+	});
+
+	return it != worlds.end() ? (*it) : nullptr;
 }
 
-[[nodiscard]] uint16_t Worlds::getId() const noexcept {
-	return id;
+void Worlds::setId(uint8_t newId) {
+	thisWorld->id = newId;
 }
 
-void Worlds::setId(uint16_t newId) noexcept {
-	id = newId;
+[[nodiscard]] uint8_t Worlds::getId() const {
+	return thisWorld->id;
 }
 
-void Worlds::setType(WorldType_t newType) noexcept {
-	type = newType;
+void Worlds::setIp(const std::string newIp) {
+	thisWorld->ip = newIp;
 }
 
-[[nodiscard]] WorldType_t Worlds::getType() const noexcept {
-	return type;
+[[nodiscard]] const std::string &Worlds::getIp() const {
+	return thisWorld->ip;
+}
+
+void Worlds::setPort(uint16_t newPort) {
+	thisWorld->port = newPort;
+}
+
+[[nodiscard]] uint16_t Worlds::getPort() const {
+	return thisWorld->port;
+}
+
+void Worlds::setName(const std::string newName) {
+	thisWorld->name = newName;
+}
+
+[[nodiscard]] const std::string &Worlds::getName() const {
+	return thisWorld->name;
+}
+
+void Worlds::setType(WorldType_t newType) {
+	thisWorld->type = newType;
+}
+
+[[nodiscard]] WorldType_t Worlds::getType() const {
+	return thisWorld->type;
+}
+
+[[nodiscard]] WorldType_t Worlds::getTypeByString(const std::string &type) {
+	const std::string worldType = asLowerCaseString(type);
+
+	if (worldType == "pvp") {
+		return WORLD_TYPE_PVP;
+	} else if (worldType == "no-pvp") {
+		return WORLD_TYPE_NO_PVP;
+	} else if (worldType == "pvp-enforced") {
+		return WORLD_TYPE_PVP_ENFORCED;
+	}
+
+	g_logger().error("[{}] - Unable to get world type from string '{}'", __FUNCTION__, worldType);
+
+	return WORLD_TYPE_NONE;
 }

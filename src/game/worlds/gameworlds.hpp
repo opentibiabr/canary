@@ -7,39 +7,47 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "game/game_definitions.hpp"
+
 #pragma once
 
 struct World {
-	World(uint16_t id, std::string name, std::string ip, uint16_t port) :
-		id(id), name(std::move(name)), ip(std::move(ip)), port(port) { }
+	World() = default;
+	World(uint16_t id, std::string name, WorldType_t type, std::string ip, uint16_t port) :
+		id(id), name(std::move(name)), type(type), ip(std::move(ip)), port(port) { }
 
+	uint8_t id = 0;
 	std::string name = "";
+	WorldType_t type = WORLD_TYPE_PVP;
 	std::string ip = "";
-
-	uint16_t id = 0;
 	uint16_t port = 7171;
 };
 
 class Worlds {
 public:
-	void setId(uint16_t id) noexcept;
-	[[nodiscard]] const char* getIp(uint16_t id);
-	[[nodiscard]] uint16_t getPort(uint16_t id);
-	[[nodiscard]] std::string getName(uint16_t id);
-	[[nodiscard]] uint16_t getId() const noexcept;
-	void setType(WorldType_t type) noexcept;
-	[[nodiscard]] WorldType_t getType() const noexcept;
+	void load();
+	void reload();
 
-	[[nodiscard]] const std::vector<World> &getWorlds() const noexcept {
+	[[nodiscard]] const std::shared_ptr<World> &getById(uint8_t id) const;
+	void setId(uint8_t id);
+	[[nodiscard]] uint8_t getId() const;
+	void setIp(const std::string newIp);
+	[[nodiscard]] const std::string &getIp() const;
+	void setPort(uint16_t newPort);
+	[[nodiscard]] uint16_t getPort() const;
+	void setName(const std::string newName);
+	[[nodiscard]] const std::string &getName() const;
+	void setType(WorldType_t newType);
+	[[nodiscard]] WorldType_t getType() const;
+
+	[[nodiscard]] static WorldType_t getTypeByString(const std::string &type);
+
+	[[nodiscard]] const std::vector<std::shared_ptr<World>> &getWorlds() const noexcept {
 		return worlds;
 	}
 
 private:
-	std::vector<World> worlds;
+	std::vector<std::shared_ptr<World>> worlds;
 
-	uint16_t id = 0;
-	std::map<uint16_t, const char*> ip;
-	std::map<uint16_t, std::string> name;
-	WorldType_t type = WORLD_TYPE_PVP;
-	std::map<uint16_t, uint16_t> port;
+	std::shared_ptr<World> thisWorld = std::make_shared<World>();
 };

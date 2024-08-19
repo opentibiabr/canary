@@ -12,7 +12,6 @@
 #include "io/iologindata.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "io/functions/iologindata_save_player.hpp"
-#include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "lib/metrics/metrics.hpp"
@@ -439,4 +438,25 @@ void IOLoginData::addGuidVIPGroupEntry(uint8_t groupId, uint32_t accountId, uint
 void IOLoginData::removeGuidVIPGroupEntry(uint32_t accountId, uint32_t guid) {
 	std::string query = fmt::format("DELETE FROM `account_vipgrouplist` WHERE `account_id` = {} AND `player_id` = {}", accountId, guid);
 	g_database().executeQuery(query);
+}
+
+std::vector<std::shared_ptr<World>> IOLoginData::loadWorlds() {
+	std::string query = "SELECT `id`, `name`, `type`, `ip`, `port` FROM `worlds`";
+
+	std::vector<std::shared_ptr<World>> entries;
+
+	if (const auto &result = Database::getInstance().storeQuery(query)) {
+		entries.reserve(result->countResults());
+		do {
+			entries.emplace_back(std::make_shared<World>(
+				result->getNumber<uint8_t>("id"),
+				result->getString("name"),
+				g_game().worlds()->getTypeByString(result->getString("type")),
+				result->getString("ip"),
+				result->getNumber<uint16_t>("port")
+			));
+		} while (result->next());
+	}
+
+	return entries;
 }

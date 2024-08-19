@@ -20,6 +20,7 @@ enum StackPosType_t {
 };
 
 enum WorldType_t {
+	WORLD_TYPE_NONE = 0,
 	WORLD_TYPE_NO_PVP = 1,
 	WORLD_TYPE_PVP = 2,
 	WORLD_TYPE_PVP_ENFORCED = 3,

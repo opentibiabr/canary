@@ -72,15 +72,15 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	output->addByte(0x64);
 
-	std::vector<World> worlds = g_game().worlds()->getWorlds();
+	std::vector<std::shared_ptr<World>> worlds = g_game().worlds()->getWorlds();
 
 	output->addByte(worlds.size()); // number of worlds
 
 	for (const auto &world : worlds) {
-		output->addByte(world.id); // world id
-		output->addString(world.name, "ProtocolLogin::getCharacterList - world.name");
-		output->addString(world.ip, "ProtocolLogin::getCharacterList - world.ip");
-		output->add<uint16_t>(world.port);
+		output->addByte(world->id); // world id
+		output->addString(world->name, "ProtocolLogin::getCharacterList - world.name");
+		output->addString(world->ip, "ProtocolLogin::getCharacterList - world.ip");
+		output->add<uint16_t>(world->port);
 		output->addByte(0); // preview state
 	}
 

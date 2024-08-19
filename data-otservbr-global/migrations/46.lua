@@ -23,10 +23,10 @@ function onUpdateDatabase()
 	db.query("ALTER TABLE `market_offers` ADD `worldId` INT(3) UNSIGNED NOT NULL DEFAULT '1';")
 	db.query("ALTER TABLE `market_history` ADD `worldId` INT(3) UNSIGNED NOT NULL DEFAULT '1';")
 
-	db.query("ALTER TABLE `server_config` DROP PRIMARY KEY `server_config_pk`;")
+	db.query("ALTER TABLE `server_config` DROP CONSTRAINT `server_config_pk`;")
 	db.query("ALTER TABLE `server_config` ADD CONSTRAINT `server_config_pk` PRIMARY KEY (`worldId`, `config`);")
 
-	db.query("ALTER TABLE `houses` DROP PRIMARY KEY `houses_pk`;")
+	db.query("ALTER TABLE `houses` DROP CONSTRAINT `houses_pk`;")
 	db.query("ALTER TABLE `houses` ADD CONSTRAINT `houses_pk` PRIMARY KEY (`id`, `worldId`);")
 
 	db.query("DROP TRIGGER `ondelete_players`")

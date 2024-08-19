@@ -348,23 +348,25 @@ enum Fluids_t : uint8_t {
 	FLUID_NONE = 0, /* Blue */
 	FLUID_WATER = 1, /* Blue */
 	FLUID_WINE = 2, /* Purple */
-	FLUID_BEER = 3, /* Brown */
-	FLUID_MUD = 4, /* Brown */
+	FLUID_BEER = 3, /* Orange */
+	FLUID_MUD = 4, /* Orange */
 	FLUID_BLOOD = 5, /* Red */
 	FLUID_SLIME = 6, /* Green */
-	FLUID_OIL = 7, /* Brown */
+	FLUID_OIL = 7, /* Orange */
 	FLUID_URINE = 8, /* Yellow */
 	FLUID_MILK = 9, /* White */
 	FLUID_MANA = 10, /* Purple */
 	FLUID_LIFE = 11, /* Red */
 	FLUID_LEMONADE = 12, /* Yellow */
-	FLUID_RUM = 13, /* Brown */
+	FLUID_RUM = 13, /* Orange */
 	FLUID_FRUITJUICE = 14, /* Yellow */
 	FLUID_COCONUTMILK = 15, /* White */
-	FLUID_MEAD = 16, /* Brown */
-	FLUID_TEA = 17, /* Brown */
-	FLUID_INK = 18 /* Black */
-	// 12.85 last fluid is 18, 19+ is a loop from 0 to 18 over and over again
+	FLUID_MEAD = 16, /* Orange */
+	FLUID_TEA = 17, /* Orange */
+	FLUID_INK = 18, /* Black */
+	FLUID_CANDY = 19, /* Red with white pieces */
+	FLUID_CHOCOLATE = 20, /* Brown */
+	// 13.40 last fluid is 20, 21+ is a loop from 0 to 20 over and over again
 };
 
 enum SquareColor_t : uint8_t {

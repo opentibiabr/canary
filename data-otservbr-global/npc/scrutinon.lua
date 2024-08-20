@@ -62,15 +62,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif npcHandler:getTopic(playerId) == 1 and MsgContains(message, "visitor") then
-			npcHandler:say({
-				"He travelled on the very ground to reach the hostile shores of Quirefang. He used something that turned the soil and carved a way to the island. ...",
-				"You will need to follow his trail if you want to reach it.",
-			}, npc, creature)
-			if player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Questline) < 1 then
-				player:setStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Questline, 1)
-				player:setStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor, 1)
-			end
-			npcHandler:setTopic(playerId, 0)
+		npcHandler:say({
+			"He travelled on the very ground to reach the hostile shores of Quirefang. He used something that turned the soil and carved a way to the island. ...",
+			"You will need to follow his trail if you want to reach it.",
+		}, npc, creature)
+		if player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Questline) < 1 then
+			player:setStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Questline, 1)
+			player:setStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor, 1)
+		end
+		npcHandler:setTopic(playerId, 0)
 	end
 
 	return true

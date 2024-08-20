@@ -5742,12 +5742,12 @@ if not Quests then
 		},
 		[43] = {
 			name = "The Rookie Guard",
-			startStorageId = Storage.TheRookieGuard.Questline,
+			startStorageId = Storage.Quest.U9_1.TheRookieGuard.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 01: A Taste of Things to Come",
-					storageId = Storage.TheRookieGuard.Mission01,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission01,
 					missionId = 10397,
 					startValue = 1,
 					endValue = 1,
@@ -5757,7 +5757,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 02: Defence!",
-					storageId = Storage.TheRookieGuard.Mission02,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission02,
 					missionId = 10398,
 					startValue = 1,
 					endValue = 5,
@@ -5771,7 +5771,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03: A Rational Request",
-					storageId = Storage.TheRookieGuard.RatKills,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.RatKills,
 					missionId = 10399,
 					startValue = 0,
 					endValue = 5,
@@ -5779,13 +5779,13 @@ if not Quests then
 						return string.format(
 							"Vascalir sent you to the Rookgaard sewers to kill 5 rats. You have already killed %d/5. \z
 						Return to Vascalir once you're done.",
-							(math.max(player:getStorageValue(Storage.TheRookieGuard.RatKills), 0))
+							(math.max(player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.RatKills), 0))
 						)
 					end,
 				},
 				[4] = {
 					name = "Mission 04: Home-Brewed",
-					storageId = Storage.TheRookieGuard.Mission04,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission04,
 					missionId = 10400,
 					startValue = 1,
 					endValue = 6,
@@ -5800,7 +5800,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 05: Web of Terror",
-					storageId = Storage.TheRookieGuard.Mission05,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission05,
 					missionId = 10401,
 					startValue = 1,
 					endValue = 6,
@@ -5815,7 +5815,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 06: Run Like a Wolf",
-					storageId = Storage.TheRookieGuard.Mission06,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission06,
 					missionId = 10402,
 					startValue = 1,
 					endValue = 7,
@@ -5831,7 +5831,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 07: Attack!",
-					storageId = Storage.TheRookieGuard.Mission07,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission07,
 					missionId = 10403,
 					startValue = 1,
 					endValue = 2,
@@ -5842,7 +5842,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 08: Less Risk - More Fun",
-					storageId = Storage.TheRookieGuard.Mission08,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission08,
 					missionId = 10404,
 					startValue = 1,
 					endValue = 2,
@@ -5853,7 +5853,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 09: Rock 'n Troll",
-					storageId = Storage.TheRookieGuard.Mission09,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission09,
 					missionId = 10405,
 					startValue = 1,
 					endValue = 10,
@@ -5872,7 +5872,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 10: Tomb Raiding",
-					storageId = Storage.TheRookieGuard.Mission10,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission10,
 					missionId = 10406,
 					startValue = 1,
 					endValue = 3,
@@ -5884,7 +5884,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Mission 11: Sweet Poison",
-					storageId = Storage.TheRookieGuard.Mission11,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission11,
 					missionId = 10407,
 					startValue = 1,
 					endValue = 5,
@@ -5898,7 +5898,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Mission 12: Into The Fortress",
-					storageId = Storage.TheRookieGuard.Mission12,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission12,
 					missionId = 10408,
 					startValue = 1,
 					endValue = 15,

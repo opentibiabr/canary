@@ -64,7 +64,7 @@ public:
 	 */
 	template <typename CallbackFunc, typename... Args>
 	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
-		auto it = m_callbacks.find(eventType);
+		const auto &it = m_callbacks.find(eventType);
 		if (it == m_callbacks.end()) {
 			return;
 		}
@@ -91,7 +91,7 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		ReturnValue res = RETURNVALUE_NOERROR;
-		auto it = m_callbacks.find(eventType);
+		const auto &it = m_callbacks.find(eventType);
 		if (it == m_callbacks.end()) {
 			return res;
 		}
@@ -123,7 +123,7 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		bool allCallbacksSucceeded = true;
-		auto it = m_callbacks.find(eventType);
+		const auto &it = m_callbacks.find(eventType);
 		if (it == m_callbacks.end()) {
 			return allCallbacksSucceeded;
 		}

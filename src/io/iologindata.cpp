@@ -440,6 +440,30 @@ void IOLoginData::removeGuidVIPGroupEntry(uint32_t accountId, uint32_t guid) {
 	g_database().executeQuery(query);
 }
 
+void IOLoginData::createFirstWorld() {
+	std::string query = "SELECT * FROM `worlds`";
+	const auto &result = g_database().storeQuery(query);
+
+	const auto &serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__);
+	const auto &worldType = g_configManager().getString(WORLD_TYPE, __FUNCTION__);
+	const auto &ip = g_configManager().getString(IP, __FUNCTION__);
+	const auto &port = g_configManager().getNumber(GAME_PORT, __FUNCTION__);
+
+	if (result.get() == nullptr || result->countResults() < 1) {
+		query = fmt::format(
+			"INSERT INTO `worlds` (`name`, `type`, `ip`, `port`) VALUES ({}, {}, {}, {})",
+			g_database().escapeString(serverName), g_database().escapeString(worldType), g_database().escapeString(ip), port
+		);
+		const auto &insertResult = g_database().executeQuery(query);
+
+		if (insertResult) {
+			g_logger().info("Added initial world id 1 - {} to database", serverName);
+		} else {
+			g_logger().error("Failed to add initial world id 1 - {} to database", serverName);
+		}
+	}
+}
+
 std::vector<std::shared_ptr<World>> IOLoginData::loadWorlds() {
 	std::string query = "SELECT `id`, `name`, `type`, `ip`, `port` FROM `worlds`";
 

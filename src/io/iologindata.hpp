@@ -44,6 +44,7 @@ public:
 	static void addGuidVIPGroupEntry(uint8_t groupId, uint32_t accountId, uint32_t guid);
 	static void removeGuidVIPGroupEntry(uint32_t accountId, uint32_t guid);
 
+	static void createFirstWorld();
 	static std::vector<std::shared_ptr<World>> loadWorlds();
 
 private:

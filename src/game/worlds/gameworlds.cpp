@@ -14,6 +14,7 @@
 #include "utils/tools.hpp"
 
 void Worlds::load() {
+	IOLoginData::createFirstWorld();
 	worlds = IOLoginData::loadWorlds();
 }
 

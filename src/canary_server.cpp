@@ -135,7 +135,7 @@ int CanaryServer::run() {
 		return EXIT_FAILURE;
 	}
 
-	logger.info("{} {}", g_configManager().getString(SERVER_NAME, __FUNCTION__), "server online!");
+	logger.info("World {} - {} online!", g_configManager().getNumber(WORLD_ID, __FUNCTION__), g_configManager().getString(SERVER_NAME, __FUNCTION__));
 
 	serviceManager.run();
 

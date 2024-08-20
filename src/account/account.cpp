@@ -131,7 +131,7 @@ uint8_t Account::removeCoins(const uint8_t &type, const uint32_t &amount, const 
 	}
 
 	if (coins < amount) {
-		g_logger().info("Account doesn't have enough coins! current[{}], remove:[{}]", coins, amount);
+		g_logger().info("Account {} doesn't have enough coins! current[{}], remove:[{}]", getID(), coins, amount);
 		return enumToValue(AccountErrors_t::RemoveCoins);
 	}
 

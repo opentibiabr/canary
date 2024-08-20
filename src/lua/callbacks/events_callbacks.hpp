@@ -70,8 +70,8 @@ public:
 		}
 
 		for (const auto &callback : (*it).second) {
-			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
+				auto argsCopy = std::make_tuple(args...);
 				std::apply(
 					[&callback, &callbackFunc](auto &&... args) {
 						((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
@@ -97,8 +97,8 @@ public:
 		}
 
 		for (const auto &callback : (*it).second) {
-			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
+				auto argsCopy = std::make_tuple(args...);
 				ReturnValue callbackResult = std::apply(
 					[&callback, &callbackFunc](auto &&... args) {
 						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
@@ -129,8 +129,8 @@ public:
 		}
 
 		for (const auto &callback : (*it).second) {
-			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
+				auto argsCopy = std::make_tuple(args...);
 				bool callbackResult = std::apply(
 					[&callback, &callbackFunc](auto &&... args) {
 						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);

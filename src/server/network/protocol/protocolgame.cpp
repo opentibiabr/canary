@@ -9146,7 +9146,7 @@ void ProtocolGame::openStore() {
 
 	auto storeCategories = g_ioStore().getCategoryVector();
 	// Categories Bytes
-	for (const auto& category : storeCategories) {
+	for (const auto &category : storeCategories) {
 		msg.addString(category.getCategoryName());
 
 		auto categoryState = magic_enum::enum_integer<States_t>(category.getCategoryState());
@@ -9160,10 +9160,10 @@ void ProtocolGame::openStore() {
 	}
 
 	// Subcategories Bytes
-	for (const auto& category : storeCategories) {
+	for (const auto &category : storeCategories) {
 		if (!category.isSpecialCategory()) {
 			auto internalSubCatVector = category.getSubCategoriesVector();
-			for (const auto& subCategory : internalSubCatVector) {
+			for (const auto &subCategory : internalSubCatVector) {
 				msg.addString(subCategory.getCategoryName());
 
 				auto subCategoryState = magic_enum::enum_integer<States_t>(subCategory.getCategoryState());
@@ -9184,7 +9184,7 @@ void ProtocolGame::openStore() {
 	updateCoinBalance();
 }
 
-void ProtocolGame::parseOfferDescription(NetworkMessage& msg) {
+void ProtocolGame::parseOfferDescription(NetworkMessage &msg) {
 	uint32_t offerId = msg.get<uint32_t>();
 	auto offer = g_ioStore().getOfferById(offerId);
 	if (!offer) {
@@ -9194,19 +9194,19 @@ void ProtocolGame::parseOfferDescription(NetworkMessage& msg) {
 	sendOfferDescription(offer);
 }
 
-void ProtocolGame::parseCoinTransfer(NetworkMessage& msg) {
+void ProtocolGame::parseCoinTransfer(NetworkMessage &msg) {
 	auto receptor = msg.getString();
 	auto amount = msg.get<uint32_t>();
 
 	addGameTask(&Game::playerCoinTransfer, player->getID(), receptor, amount);
 }
 
-void ProtocolGame::parseOpenStoreHistory(NetworkMessage& msg) {
+void ProtocolGame::parseOpenStoreHistory(NetworkMessage &msg) {
 	uint8_t entryPages = msg.getByte(); // Always 26?
 	addGameTask(&Game::playerOpenStoreHistory, player->getID(), 1);
 }
 
-void ProtocolGame::parseRequestStoreHistory(NetworkMessage& msg) {
+void ProtocolGame::parseRequestStoreHistory(NetworkMessage &msg) {
 	uint32_t currentPage = msg.get<uint32_t>();
 	addGameTask(&Game::playerOpenStoreHistory, player->getID(), currentPage + 1);
 }
@@ -9234,7 +9234,7 @@ void ProtocolGame::sendStoreHistory(uint32_t page) {
 	msg.addByte(static_cast<uint8_t>(historyPageToSend)); // History to send
 
 	if (historyPageToSend > 0) {
-		for (const auto& history : historyPerPage) {
+		for (const auto &history : historyPerPage) {
 			msg.add<uint32_t>(0x00);
 
 			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
@@ -9250,7 +9250,7 @@ void ProtocolGame::sendStoreHistory(uint32_t page) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseRequestStoreOffers(NetworkMessage& msg) {
+void ProtocolGame::parseRequestStoreOffers(NetworkMessage &msg) {
 	uint8_t actionType = msg.getByte();
 
 	if (actionType == 0) {
@@ -9278,7 +9278,7 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage& msg) {
 	}
 }
 
-void ProtocolGame::sendOfferBytes(NetworkMessage& msg, const Offer* offer) {
+void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 	msg.addString(offer->getOfferName());
 	msg.addByte(0x01); // Offers inside an offer (?)
 	sendOfferDescription(offer);
@@ -9363,7 +9363,7 @@ void ProtocolGame::sendStoreHome() {
 	msg.add<uint16_t>(homeOffersCount); // Offers Amount
 
 	if (homeOffersCount > 0) {
-		for (const auto& homeOfferId : homeOffersVector) {
+		for (const auto &homeOfferId : homeOffersVector) {
 			auto offer = g_ioStore().getOfferById(homeOfferId);
 			sendOfferBytes(msg, offer);
 		}
@@ -9375,7 +9375,7 @@ void ProtocolGame::sendStoreHome() {
 	auto bannersVectorSize = bannersVector.size();
 	msg.addByte(bannersVectorSize); // Banners Amount
 
-	for (const auto& banner : bannersVector) {
+	for (const auto &banner : bannersVector) {
 		msg.addString(banner.bannerName);
 		msg.addByte(0x04); // Banner Type (0x04 = Offer)
 		msg.add<uint32_t>(banner.offerId); // Offer Id
@@ -9415,7 +9415,7 @@ void ProtocolGame::sendCategoryOffers(const Category* category, uint32_t redirec
 	msg.add<uint16_t>(offersCount);
 
 	if (offersCount > 0) {
-		for (const auto& offer : offersVector) {
+		for (const auto &offer : offersVector) {
 			sendOfferBytes(msg, &offer);
 		}
 	}
@@ -9447,7 +9447,7 @@ void ProtocolGame::sendFoundOffers(std::vector<Offer> foundOffers) {
 	msg.add<uint16_t>(offersCount);
 
 	if (offersCount > 0) {
-		for (const auto& offer : foundOffers) {
+		for (const auto &offer : foundOffers) {
 			sendOfferBytes(msg, &offer);
 		}
 	}
@@ -9466,7 +9466,7 @@ void ProtocolGame::sendOfferDescription(const Offer* offer) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseBuyStoreOffer(NetworkMessage& msg) {
+void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
 	auto offerId = msg.get<uint32_t>();
 	auto offerType = msg.getByte();
 	SPDLOG_WARN("{}", offerType);
@@ -9478,7 +9478,7 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage& msg) {
 	uint8_t sexId;
 
 	if (currentOfferType == OfferTypes_t::NAMECHANGE
-		|| currentOfferType == OfferTypes_t::HIRELING_NAMECHANGE) {
+	    || currentOfferType == OfferTypes_t::HIRELING_NAMECHANGE) {
 		stringName = msg.getString();
 		if (stringName.empty()) {
 			requestPurchaseData(currentOffer->getOfferId(), 1);

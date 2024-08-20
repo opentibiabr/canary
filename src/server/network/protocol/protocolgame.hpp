@@ -284,12 +284,12 @@ private:
 
 	// Store Functions
 	void parseOpenStore();
-	void parseOfferDescription(NetworkMessage& msg);
-	void parseCoinTransfer(NetworkMessage& msg);
-	void parseRequestStoreOffers(NetworkMessage& msg);
-	void parseBuyStoreOffer(NetworkMessage& msg);
-	void parseOpenStoreHistory(NetworkMessage& msg);
-	void parseRequestStoreHistory(NetworkMessage& msg);
+	void parseOfferDescription(NetworkMessage &msg);
+	void parseCoinTransfer(NetworkMessage &msg);
+	void parseRequestStoreOffers(NetworkMessage &msg);
+	void parseBuyStoreOffer(NetworkMessage &msg);
+	void parseOpenStoreHistory(NetworkMessage &msg);
+	void parseRequestStoreHistory(NetworkMessage &msg);
 
 	void openStore();
 	void sendStoreHome();

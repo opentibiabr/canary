@@ -27,7 +27,7 @@ bool IOStore::loadFromXml() {
 	auto storeNode = doc.child("store");
 
 	pugi::xml_node homeNode = storeNode.child("home");
-	if(!loadStoreHome(homeNode)) {
+	if (!loadStoreHome(homeNode)) {
 		return false;
 	}
 
@@ -61,7 +61,7 @@ bool IOStore::loadFromXml() {
 				auto subCategoryStateString = std::string(subcategory.attribute("state").as_string());
 				States_t subCategoryState;
 				if (auto it = stringToOfferStateMap.find(subCategoryStateString);
-					it != stringToOfferStateMap.end()) {
+				    it != stringToOfferStateMap.end()) {
 					subCategoryState = it->second;
 				} else {
 					subCategoryState = States_t::NONE;
@@ -103,7 +103,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	if (offer.attribute("icon")) {
 		icon = std::string(offer.attribute("icon").as_string());
 	}
-	
+
 	auto id = static_cast<uint32_t>(offer.attribute("offerId").as_uint());
 	if (id == 0) {
 		SPDLOG_WARN("Offer {} id is 0.", name);
@@ -119,7 +119,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	auto typeString = std::string(offer.attribute("type").as_string());
 	OfferTypes_t type;
 	if (auto it = stringToOfferTypeMap.find(typeString);
-		it != stringToOfferTypeMap.end()) {
+	    it != stringToOfferTypeMap.end()) {
 		type = it->second;
 	} else {
 		SPDLOG_WARN("Offer {} type is none.", name);
@@ -137,7 +137,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	auto stateString = std::string(offer.attribute("state").as_string());
 	States_t state = States_t::NONE;
 	if (auto it = stringToOfferStateMap.find(stateString);
-		it != stringToOfferStateMap.end()) {
+	    it != stringToOfferStateMap.end()) {
 		state = it->second;
 	}
 
@@ -163,7 +163,6 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 
 	auto parentName = category->getCategoryName();
 	Offer newOffer(parentName, name, icon, id, price, type, state, count, validUntil, coinType, desc, outfitId);
-
 
 	addOffer(id, newOffer);
 	category->addOffer(newOffer);
@@ -203,26 +202,26 @@ bool IOStore::loadStoreHome(pugi::xml_node homeNode) {
 			auto homeOfferId = static_cast<uint32_t>(offer.attribute("id").as_uint());
 
 			homeOffers.push_back(homeOfferId);
-
 		}
 	}
 
 	return true;
-} 
+}
 
 std::vector<Category> IOStore::getCategoryVector() const {
 	return categoryVector;
 }
 void IOStore::addCategory(Category newCategory) {
-	for (const auto& category : categoryVector) {
-		if (newCategory.getCategoryName() == category.getCategoryName())
+	for (const auto &category : categoryVector) {
+		if (newCategory.getCategoryName() == category.getCategoryName()) {
 			return;
+		}
 	}
 	categoryVector.push_back(newCategory);
 }
 
 const Category* IOStore::getCategoryByName(std::string categoryName) const {
-	for (const auto& category : categoryVector) {
+	for (const auto &category : categoryVector) {
 		if (categoryName == category.getCategoryName()) {
 			return &category;
 		}
@@ -231,7 +230,7 @@ const Category* IOStore::getCategoryByName(std::string categoryName) const {
 }
 
 const Category* IOStore::getSubCategoryByName(std::string subCategoryName) const {
-	for (const auto& subCategory : subCategoryVector) {
+	for (const auto &subCategory : subCategoryVector) {
 		if (subCategoryName == subCategory.getCategoryName()) {
 			return &subCategory;
 		}
@@ -241,7 +240,7 @@ const Category* IOStore::getSubCategoryByName(std::string subCategoryName) const
 
 void IOStore::addOffer(uint32_t offerId, Offer offer) {
 	if (auto it = offersMap.find(offerId);
-		it != offersMap.end()) {
+	    it != offersMap.end()) {
 		return;
 	}
 
@@ -252,7 +251,7 @@ void IOStore::addOffer(uint32_t offerId, Offer offer) {
 
 const Offer* IOStore::getOfferById(uint32_t offerId) const {
 	if (auto it = offersMap.find(offerId);
-		it != offersMap.end()) {
+	    it != offersMap.end()) {
 		return &it->second;
 	}
 	return nullptr;
@@ -262,7 +261,7 @@ std::vector<Offer> IOStore::getOffersContainingSubstring(const std::string &sear
 	std::vector<Offer> offersVector;
 	auto lowerSearchString = asLowerCaseString(searchString);
 
-	 for (const auto &offer : offersMap) {
+	for (const auto &offer : offersMap) {
 		auto currentOfferName = offer.second.getOfferName();
 		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
 
@@ -314,9 +313,10 @@ std::vector<Category> Category::getSubCategoriesVector() const {
 	return subCategories;
 }
 void Category::addSubCategory(Category newSubCategory) {
-	for (const auto& subCategory : subCategories) {
-		if (newSubCategory.getCategoryName() == subCategory.getCategoryName())
+	for (const auto &subCategory : subCategories) {
+		if (newSubCategory.getCategoryName() == subCategory.getCategoryName()) {
 			return;
+		}
 	}
 	subCategories.push_back(newSubCategory);
 }
@@ -325,11 +325,11 @@ std::vector<Offer> Category::getOffersVector() const {
 	return offers;
 }
 void Category::addOffer(Offer newOffer) {
-	for (const auto& offer : offers) {
+	for (const auto &offer : offers) {
 		if (newOffer.getOfferId() == offer.getOfferId()
-			&& newOffer.getOfferName() == offer.getOfferName()
-			&& newOffer.getOfferCount() == offer.getOfferCount()) {
-				return;
+		    && newOffer.getOfferName() == offer.getOfferName()
+		    && newOffer.getOfferCount() == offer.getOfferCount()) {
+			return;
 		}
 	}
 	offers.push_back(newOffer);

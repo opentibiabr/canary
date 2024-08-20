@@ -10302,7 +10302,7 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 		}
 	}
 
-		if (playerDonator == playerReceptor || playerDonator->getAccount() == playerReceptor->getAccount()) {
+	if (playerDonator == playerReceptor || playerDonator->getAccount() == playerReceptor->getAccount()) {
 		return;
 	}
 
@@ -10558,7 +10558,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 			}
 
 			player->addPreyCards(cardsAmount);
-			
+
 			success = true;
 			break;
 		}
@@ -10655,7 +10655,7 @@ bool Game::processHouseOffer(const Player* player, uint32_t itemId, uint16_t cha
 		return false;
 	}
 
-	const ItemType& itemType = Item::items[itemId];
+	const ItemType &itemType = Item::items[itemId];
 	std::string description = fmt::format("You bought this item in the Store.\nUnwrap it in your own house to create a <{}>.", itemType.name);
 	decoKit->setAttribute(ItemAttribute_t::DESCRIPTION, description);
 	decoKit->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
@@ -10751,7 +10751,7 @@ bool Game::processStackableOffer(const Player* player, uint32_t itemId, uint16_t
 	return true;
 }
 
-bool Game::processNameChangeOffer(const Player* player, std::string& name) {
+bool Game::processNameChangeOffer(const Player* player, std::string &name) {
 	std::string newName = name;
 	trimString(newName);
 
@@ -10762,7 +10762,7 @@ bool Game::processNameChangeOffer(const Player* player, std::string& name) {
 	}
 
 	std::ostringstream query;
-	Database& db = Database::getInstance();
+	Database &db = Database::getInstance();
 	query << "SELECT `id` FROM `player` WHERE `name` = " << db.escapeString(newName);
 	if (db.storeQuery(query.str())) {
 		return false;
@@ -10788,7 +10788,7 @@ bool Game::processTempleOffer(Player* player) {
 		return false;
 	}
 
-	const auto& position = player->getTemplePosition();
+	const auto &position = player->getTemplePosition();
 	const auto oldPos = player->getPosition();
 
 	if (internalTeleport(player, position, false) != RETURNVALUE_NOERROR) {

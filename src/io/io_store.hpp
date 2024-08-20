@@ -124,10 +124,10 @@ class Offer;
 
 class IOStore {
 public:
-	IOStore(const IOStore&) = delete;
-	void operator=(const IOStore&) = delete;
+	IOStore(const IOStore &) = delete;
+	void operator=(const IOStore &) = delete;
 
-	static IOStore& getInstance() {
+	static IOStore &getInstance() {
 		static IOStore instance;
 		return instance;
 	}

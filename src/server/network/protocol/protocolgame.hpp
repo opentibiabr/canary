@@ -293,7 +293,7 @@ private:
 
 	void openStore();
 	void sendStoreHome();
-	void sendOfferBytes(NetworkMessage& msg, const Offer* offer);
+	void sendOfferBytes(NetworkMessage &msg, const Offer* offer);
 	void sendCategoryOffers(const Category* category, uint32_t redirectId = 0);
 	void sendFoundOffers(std::vector<Offer> foundOffers);
 	void sendOfferDescription(const Offer* offer);

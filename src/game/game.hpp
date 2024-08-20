@@ -302,7 +302,16 @@ public:
 
 	void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
 
-	bool addItemStoreInbox(std::shared_ptr<Player> player, uint32_t itemId);
+	// Store Functions
+	void playerOpenStore(uint32_t playerId);
+	void playerCoinTransfer(uint32_t playerId, std::string receptorName, uint32_t coinAmount);
+	void playerOpenStoreHistory(uint32_t playerId, uint32_t page);
+	void playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::string newName, uint8_t sexId);
+	// Process Offers
+	bool processItemOffer(const Player* player, uint32_t itemId, uint16_t charges = 0);
+	bool processHouseOffer(const Player* player, uint32_t itemId, uint16_t charges = 0);
+	bool processNameChangeOffer(const Player* player, std::string &name);
+	bool processTempleOffer(Player* player);
 
 	void playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems = 0);
 

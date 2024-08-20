@@ -13,6 +13,7 @@
 #include "creatures/interactions/chat.hpp"
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"
+#include "io/io_store.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
@@ -280,6 +281,24 @@ private:
 	void parseSetMonsterPodium(NetworkMessage &msg) const;
 	void sendBosstiaryCooldownTimer();
 	void sendBosstiaryEntryChanged(uint32_t bossid);
+
+	// Store Functions
+	void parseOpenStore();
+	void parseOfferDescription(NetworkMessage& msg);
+	void parseCoinTransfer(NetworkMessage& msg);
+	void parseRequestStoreOffers(NetworkMessage& msg);
+	void parseBuyStoreOffer(NetworkMessage& msg);
+	void parseOpenStoreHistory(NetworkMessage& msg);
+	void parseRequestStoreHistory(NetworkMessage& msg);
+
+	void openStore();
+	void sendStoreHome();
+	void sendCategoryOffers(const Category* category);
+	void sendOfferDescription(const Offer* offer);
+	void sendStoreHistory(uint32_t page);
+	void sendStoreSuccess(std::string successMessage);
+	void sendStoreError(StoreErrors_t errorType, std::string errorMessage);
+	void requestPurchaseData(uint32_t offerId, uint8_t offerType);
 
 	void sendAllowBugReport();
 	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type);

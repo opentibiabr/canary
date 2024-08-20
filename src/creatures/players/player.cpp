@@ -34,6 +34,7 @@
 #include "io/iologindata.hpp"
 #include "items/bed.hpp"
 #include "items/weapons/weapons.hpp"
+#include "io/io_store.hpp"
 #include "core.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"

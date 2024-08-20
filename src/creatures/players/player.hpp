@@ -93,6 +93,16 @@ struct ForgeHistory {
 	std::string secondItemName;
 };
 
+struct StoreHistory {
+	uint16_t coinType = 0;
+
+	time_t createdAt;
+
+	int16_t coinAmount = 0;
+
+	std::string description;
+};
+
 struct OpenContainer {
 	std::shared_ptr<Container> container;
 	uint16_t index;
@@ -2654,6 +2664,39 @@ public:
 	bool canSpeakWithHireling(uint8_t speechbubble);
 
 	uint16_t getPlayerVocationEnum() const;
+
+	// Store functions
+	void openStore() {
+		if (client) {
+			client->openStore();
+		}
+	}
+
+	void sendStoreHistory(uint32_t page) const {
+		if (client) {
+			client->sendStoreHistory(page);
+		}
+	}
+
+	void sendStoreSuccess(const std::string& successMessage) {
+		if (client) {
+			client->sendStoreSuccess(successMessage);
+		}
+	}
+
+	void sendStoreError(StoreErrors_t errorType, std::string errorMessage) {
+		if (client) {
+			client->sendStoreError(errorType, errorMessage);
+		}
+	}
+
+	std::vector<StoreHistory>& getStoreHistory() {
+		return storeHistoryVector;
+	}
+
+	void setStoreHistory(const StoreHistory& history) {
+		storeHistoryVector.push_back(history);
+	}
 
 private:
 	friend class PlayerLock;

@@ -720,6 +720,35 @@ bool IOLoginDataSave::savePlayerForgeHistory(std::shared_ptr<Player> player) {
 	return true;
 }
 
+bool IOLoginDataSave::savePlayerStoreHistory(Player* player) {
+	std::ostringstream query;
+	query << "DELETE FROM `store_history` WHERE `account_id` = " << player->getAccount();
+	if (!Database::getInstance().executeQuery(query.str())) {
+		return false;
+	}
+
+	DBInsert insertQuery("INSERT INTO `store_history` (`account_id`, `description`, `coin_type`, `coin_amount`, `time`) VALUES");
+	for (const auto& historyEntry : player->getStoreHistory()) {
+		const auto descriptionString = Database::getInstance().escapeString(historyEntry.description);
+		// Append query informations
+		query << player->getAccount() << ','
+			  << descriptionString << ','
+			  << historyEntry.coinType << ','
+			  << historyEntry.coinAmount << ','
+			  << historyEntry.createdAt;
+
+		if (!insertQuery.addRow(query)) {
+			return false;
+		}
+	}
+
+	if (!insertQuery.execute()) {
+		return false;
+	}
+
+	return true;
+}
+
 bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);

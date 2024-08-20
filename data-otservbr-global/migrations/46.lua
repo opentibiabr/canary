@@ -42,7 +42,6 @@ function onUpdateDatabase()
 	db.query("ALTER TABLE `market_history` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
 	db.query("ALTER TABLE `market_history` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
-
 	db.query("ALTER TABLE `server_config` DROP PRIMARY KEY")
 	db.query("ALTER TABLE `server_config` ADD PRIMARY KEY (`worldId`, `config`);")
 

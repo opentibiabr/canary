@@ -561,11 +561,6 @@ Storage = {
 		DoorGoldenFruits = 50706,
 		GnomedixMsg = 50710,
 	},
-	TheirMastersVoice = {
-		-- Reserved storage from 50720 - 50739
-		SlimeGobblerTimeout = 50720,
-		SlimeGobblerReceived = 50721,
-	},
 	GravediggerOfDrefia = {
 		-- Reserved storage from 50760 - 50849
 		QuestStart = 50760,
@@ -2347,7 +2342,12 @@ Storage = {
 				OrcFortressChests = 43386,
 				Level8Warning = 43387,
 			},
-			TheirMastersVoiceWorldChange = {},
+			TheirMastersVoiceWorldChange = {
+				CurrentServantWave = 43388,
+				ServantsKilled = 43389,
+				SlimeGobblerTimeout = 43390,
+				SlimeGobblerReceived = 43391,
+			},
 			ThornfireWorldChange = {},
 			TwistedWatersWorldChange = {},
 		},
@@ -2763,11 +2763,6 @@ GlobalStorage = {
 			WarzoneV = 60002,
 			WarzoneIV = 60003,
 		},
-	},
-	TheirMastersVoice = {
-		-- Reserved storage from 60010 - 60019
-		CurrentServantWave = 60010,
-		ServantsKilled = 60011,
 	},
 	Feroxa = {
 		-- Reserved storage from 60020 - 60029

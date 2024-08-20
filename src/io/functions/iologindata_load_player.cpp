@@ -835,7 +835,7 @@ void IOLoginDataLoad::loadPlayerStoreHistory(std::shared_ptr<Player> player, DBR
 	}
 
 	std::ostringstream query;
-	query << "SELECT * FROM `store_history` WHERE `account_id` = " << player->getAccount();
+	query << "SELECT * FROM `store_history` WHERE `account_id` = " << player->getAccountId();
 	if (result = Database::getInstance().storeQuery(query.str())) {
 		do {
 			StoreHistory history;

@@ -17,7 +17,7 @@
 
 bool IOStore::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/store/store.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/store/store.xml";
 	if (!doc.load_file(folder.c_str())) {
 		printXMLError(__FUNCTION__, folder, doc.load_file(folder.c_str()));
 		consoleHandlerExit();
@@ -95,7 +95,7 @@ bool IOStore::loadFromXml() {
 bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	auto name = std::string(offer.attribute("name").as_string());
 	if (name.empty()) {
-		SPDLOG_WARN("Offer name empty.");
+		g_logger().warn("Offer name empty.");
 		return false;
 	}
 
@@ -106,13 +106,13 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 
 	auto id = static_cast<uint32_t>(offer.attribute("offerId").as_uint());
 	if (id == 0) {
-		SPDLOG_WARN("Offer {} id is 0.", name);
+		g_logger().warn("Offer {} id is 0.", name);
 		return false;
 	}
 
 	auto price = static_cast<uint32_t>(offer.attribute("price").as_uint());
 	if (price == 0) {
-		SPDLOG_WARN("Offer {} price is 0.", name);
+		g_logger().warn("Offer {} price is 0.", name);
 		return false;
 	}
 
@@ -122,7 +122,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	    it != stringToOfferTypeMap.end()) {
 		type = it->second;
 	} else {
-		SPDLOG_WARN("Offer {} type is none.", name);
+		g_logger().warn("Offer {} type is none.", name);
 		return false;
 	}
 

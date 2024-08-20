@@ -293,12 +293,15 @@ private:
 
 	void openStore();
 	void sendStoreHome();
-	void sendCategoryOffers(const Category* category);
+	void sendOfferBytes(NetworkMessage& msg, const Offer* offer);
+	void sendCategoryOffers(const Category* category, uint32_t redirectId = 0);
+	void sendFoundOffers(std::vector<Offer> foundOffers);
 	void sendOfferDescription(const Offer* offer);
 	void sendStoreHistory(uint32_t page);
 	void sendStoreSuccess(std::string successMessage);
 	void sendStoreError(StoreErrors_t errorType, std::string errorMessage);
 	void requestPurchaseData(uint32_t offerId, uint8_t offerType);
+	// End Store Functions
 
 	void sendAllowBugReport();
 	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type);

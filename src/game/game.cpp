@@ -10268,7 +10268,7 @@ void Game::addPlayerUniqueLogin(std::shared_ptr<Player> player) {
 }
 
 void Game::playerOpenStore(uint32_t playerId) {
-	Player* player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -10283,7 +10283,7 @@ void Game::playerOpenStore(uint32_t playerId) {
 }
 
 void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint32_t coinAmount) {
-	Player* playerDonator = getPlayerByID(playerId);
+	std::shared_ptr<Player> playerDonator = getPlayerByID(playerId);
 	if (!playerDonator) {
 		return;
 	}
@@ -10293,11 +10293,10 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 		return;
 	}
 
-	Player* playerReceptor = getPlayerByName(receptorName);
+	std::shared_ptr<Player> playerReceptor = getPlayerByName(receptorName);
 	if (!playerReceptor) {
-		playerReceptor = new Player(nullptr);
+		playerReceptor = std::make_shared<Player>(nullptr);
 		if (!IOLoginData::loadPlayerByName(playerReceptor, receptorName)) {
-			delete playerReceptor;
 			return;
 		}
 	}
@@ -10306,32 +10305,18 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 		return;
 	}
 
-	account::Account accDonator(playerDonator->getAccount());
-	if (accDonator.LoadAccountDB() != account::ERROR_NO) {
+	auto [transferableCoins, result] = playerDonator->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+	if (coinAmount > transferableCoins) {
+		playerDonator->sendStoreError(StoreErrors_t::TRANSFER, "You don't have enough coins.");
 		return;
 	}
-
-	account::Account accReceptor(playerReceptor->getAccount());
-	if (accReceptor.LoadAccountDB() != account::ERROR_NO) {
-		return;
-	}
-
-	uint32_t donatorCoins;
-	accDonator.GetCoins(&donatorCoins);
-	if (coinAmount > donatorCoins) {
-		return;
-	}
-
-	accDonator.RemoveCoins(coinAmount);
-	accReceptor.AddCoins(coinAmount);
 
 	std::string historyDesc = fmt::format("{} gifted to {}", playerDonator->getName(), playerReceptor->getName());
-	accDonator.RegisterCoinsTransaction(account::COIN_REMOVE, coinAmount, historyDesc);
-	accReceptor.RegisterCoinsTransaction(account::COIN_ADD, coinAmount, historyDesc);
+	playerDonator->getAccount()->removeCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(coinAmount), historyDesc);
+	playerReceptor->getAccount()->addCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(coinAmount), historyDesc);
 
 	if (playerReceptor->isOffline()) {
 		IOLoginData::savePlayer(playerReceptor);
-		delete playerReceptor;
 	} else {
 		playerReceptor->sendCoinBalance();
 	}
@@ -10341,7 +10326,7 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 }
 
 void Game::playerOpenStoreHistory(uint32_t playerId, uint32_t page) {
-	Player* player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -10356,7 +10341,7 @@ void Game::playerOpenStoreHistory(uint32_t playerId, uint32_t page) {
 }
 
 void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::string newName, uint8_t sexId) {
-	Player* player = getPlayerByID(playerId);
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -10400,7 +10385,6 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::POUCH: {
 			auto itemId = offer->getOfferId();
-
 			auto pouchStorageValue = player->getStorageValue(STORAGEVALUE_POUCH);
 
 			if (pouchStorageValue == 1) {
@@ -10473,11 +10457,11 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::EXPBOOST: {
 			// Fix Boost Price in io_store.cpp
-			auto currentExpBoost = player->getExpBoostStamina();
+			auto currentExpBoost = player->getStaminaXpBoost();
 			auto expBoostCount = player->getStorageValue(STORAGEVALUE_EXPBOOST);
 
-			player->setStoreXpBoost(50);
-			player->setExpBoostStamina(currentExpBoost + 3600);
+			player->setXpBoostPercent(50);
+			player->setStaminaXpBoost(currentExpBoost + 3600);
 
 			if (expBoostCount == -1 || expBoostCount == 6) {
 				expBoostCount = 1;
@@ -10508,10 +10492,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::ALLBLESSINGS: {
-			uint8_t firstBless = Blessings_t::TWIST_OF_FATE;
-			uint8_t lastBless = Blessings_t::HEARTH_OF_THE_MOUNTAIN;
-
-			for (uint8_t bless = firstBless; bless <= lastBless; ++bless) {
+			for (uint8_t bless = 1; bless <= 8; ++bless) {
 				player->addBlessing(bless, 1);
 			}
 
@@ -10522,21 +10503,21 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::PREMIUM: {
-			auto premiumDaysLeft = player->premiumDays;
+			auto premiumDaysLeft = player->getPremiumDays();
 			if (premiumDaysLeft > 65175) {
 				break;
 			}
 
 			int32_t premiumDays = 3000 - offer->getOfferId();
-			player->setPremiumDays(static_cast<int32_t>(premiumDaysLeft + premiumDays));
-			IOLoginData::addPremiumDays(player->getAccount(), premiumDays);
+			// player->setPremiumDays(static_cast<int32_t>(premiumDaysLeft + premiumDays));
+			player->getAccount()->addPremiumDays(premiumDays);
 
 			success = true;
 			break;
 		}
 
 		case OfferTypes_t::PREYSLOT: {
-			auto thirdSlot = player->getPreySlotById(PreySlot_Three);
+			const auto &thirdSlot = player->getPreySlotById(PreySlot_Three);
 
 			if (thirdSlot->state != PreyDataState_Locked) {
 				break;
@@ -10575,7 +10556,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::HUNTINGSLOT: {
-			auto thirdSlot = player->getTaskHuntingSlotById(PreySlot_Three);
+			const auto &thirdSlot = player->getTaskHuntingSlotById(PreySlot_Three);
 
 			if (thirdSlot->state != PreyDataState_Locked) {
 				break;
@@ -10606,19 +10587,19 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::HIRELING:
-			SPDLOG_WARN("HIRELING");
+			g_logger().warn("HIRELING");
 			break;
 		case OfferTypes_t::HIRELING_NAMECHANGE:
-			SPDLOG_WARN("HIRELING_NAMECHANGE");
+			g_logger().warn("HIRELING_NAMECHANGE");
 			break;
 		case OfferTypes_t::HIRELING_SEXCHANGE:
-			SPDLOG_WARN("HIRELING_SEXCHANGE");
+			g_logger().warn("HIRELING_SEXCHANGE");
 			break;
 		case OfferTypes_t::HIRELING_SKILL:
-			SPDLOG_WARN("HIRELING_SKILL");
+			g_logger().warn("HIRELING_SKILL");
 			break;
 		case OfferTypes_t::HIRELING_OUTFIT:
-			SPDLOG_WARN("HIRELING_OUTFIT");
+			g_logger().warn("HIRELING_OUTFIT");
 			break;
 
 		default:
@@ -10628,9 +10609,12 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 	if (success) {
 		auto offerPrice = offer->getOfferPrice();
 
-		account::Account account(player->getAccount());
-		account.LoadAccountDB();
-		account.RemoveCoins(offerPrice);
+		std::string returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getOfferName(), offer->getOfferPrice());
+		uint8_t result = player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(offerPrice), returnmessage);
+		if (result == enumToValue(AccountErrors_t::RemoveCoins)) {
+			player->sendStoreError(StoreErrors_t::PURCHASE, "You don't have enough coins.");
+			return;
+		}
 
 		StoreHistory tempHistory;
 
@@ -10638,7 +10622,6 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		tempHistory.coinAmount = offerPrice;
 		tempHistory.createdAt = getTimeNow();
 
-		std::string returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getOfferName(), offer->getOfferPrice());
 		player->sendStoreSuccess(returnmessage);
 
 		player->setStoreHistory(tempHistory);
@@ -10649,8 +10632,8 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 	player->updateUIExhausted();
 }
 
-bool Game::processHouseOffer(const Player* player, uint32_t itemId, uint16_t charges /* = 0*/) {
-	Item* decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
+bool Game::processHouseOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/) {
+	std::shared_ptr<Item> decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
 	if (!decoKit) {
 		return false;
 	}
@@ -10665,17 +10648,17 @@ bool Game::processHouseOffer(const Player* player, uint32_t itemId, uint16_t cha
 		decoKit->setAttribute(ItemAttribute_t::DATE, charges);
 	}
 
-	Thing* thing = player->getThing(CONST_SLOT_STORE_INBOX);
+	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
 	if (!thing) {
 		return false;
 	}
 
-	Item* inboxItem = thing->getItem();
+	std::shared_ptr<Item> inboxItem = thing->getItem();
 	if (!inboxItem) {
 		return false;
 	}
 
-	Container* inboxContainer = inboxItem->getContainer();
+	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
 	if (!inboxContainer) {
 		return false;
 	}
@@ -10689,8 +10672,8 @@ bool Game::processHouseOffer(const Player* player, uint32_t itemId, uint16_t cha
 	return true;
 }
 
-bool Game::processChargesOffer(const Player* player, uint32_t itemId, uint16_t charges /* = 0*/) {
-	Item* newItem = Item::CreateItem(itemId, 1);
+bool Game::processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/) {
+	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, 1);
 	if (!newItem) {
 		return false;
 	}
@@ -10699,17 +10682,17 @@ bool Game::processChargesOffer(const Player* player, uint32_t itemId, uint16_t c
 		newItem->setAttribute(ItemAttribute_t::CHARGES, charges);
 	}
 
-	Thing* thing = player->getThing(CONST_SLOT_STORE_INBOX);
+	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
 	if (!thing) {
 		return false;
 	}
 
-	Item* inboxItem = thing->getItem();
+	std::shared_ptr<Item> inboxItem = thing->getItem();
 	if (!inboxItem) {
 		return false;
 	}
 
-	Container* inboxContainer = inboxItem->getContainer();
+	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
 	if (!inboxContainer) {
 		return false;
 	}
@@ -10722,23 +10705,23 @@ bool Game::processChargesOffer(const Player* player, uint32_t itemId, uint16_t c
 	return true;
 }
 
-bool Game::processStackableOffer(const Player* player, uint32_t itemId, uint16_t amount /* = 1*/) {
-	Item* newItem = Item::CreateItem(itemId, amount);
+bool Game::processStackableOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t amount /* = 1*/) {
+	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, amount);
 	if (!newItem) {
 		return false;
 	}
 
-	Thing* thing = player->getThing(CONST_SLOT_STORE_INBOX);
+	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
 	if (!thing) {
 		return false;
 	}
 
-	Item* inboxItem = thing->getItem();
+	std::shared_ptr<Item> inboxItem = thing->getItem();
 	if (!inboxItem) {
 		return false;
 	}
 
-	Container* inboxContainer = inboxItem->getContainer();
+	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
 	if (!inboxContainer) {
 		return false;
 	}
@@ -10751,7 +10734,7 @@ bool Game::processStackableOffer(const Player* player, uint32_t itemId, uint16_t
 	return true;
 }
 
-bool Game::processNameChangeOffer(const Player* player, std::string &name) {
+bool Game::processNameChangeOffer(std::shared_ptr<Player> player, std::string &name) {
 	std::string newName = name;
 	trimString(newName);
 
@@ -10783,7 +10766,7 @@ bool Game::processNameChangeOffer(const Player* player, std::string &name) {
 	return true;
 }
 
-bool Game::processTempleOffer(Player* player) {
+bool Game::processTempleOffer(std::shared_ptr<Player> player) {
 	if (player->isPzLocked() || player->hasCondition(CONDITION_INFIGHT)) {
 		return false;
 	}

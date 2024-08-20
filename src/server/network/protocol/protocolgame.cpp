@@ -9133,10 +9133,14 @@ void ProtocolGame::sendBosstiaryEntryChanged(uint32_t bossid) {
 }
 
 void ProtocolGame::parseOpenStore() {
-	addGameTask(&Game::playerOpenStore, player->getID());
+	g_game().playerOpenStore(player->getID());
 }
 
 void ProtocolGame::openStore() {
+	if (oldProtocol) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xFB);
 
@@ -9198,17 +9202,17 @@ void ProtocolGame::parseCoinTransfer(NetworkMessage &msg) {
 	auto receptor = msg.getString();
 	auto amount = msg.get<uint32_t>();
 
-	addGameTask(&Game::playerCoinTransfer, player->getID(), receptor, amount);
+	g_game().playerCoinTransfer(player->getID(), receptor, amount);
 }
 
 void ProtocolGame::parseOpenStoreHistory(NetworkMessage &msg) {
 	uint8_t entryPages = msg.getByte(); // Always 26?
-	addGameTask(&Game::playerOpenStoreHistory, player->getID(), 1);
+	g_game().playerOpenStoreHistory(player->getID(), 1);
 }
 
 void ProtocolGame::parseRequestStoreHistory(NetworkMessage &msg) {
 	uint32_t currentPage = msg.get<uint32_t>();
-	addGameTask(&Game::playerOpenStoreHistory, player->getID(), currentPage + 1);
+	g_game().playerOpenStoreHistory(player->getID(), currentPage + 1);
 }
 
 void ProtocolGame::sendStoreHistory(uint32_t page) {
@@ -9469,7 +9473,7 @@ void ProtocolGame::sendOfferDescription(const Offer* offer) {
 void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
 	auto offerId = msg.get<uint32_t>();
 	auto offerType = msg.getByte();
-	SPDLOG_WARN("{}", offerType);
+	g_logger().warn("{}", offerType);
 
 	auto currentOffer = g_ioStore().getOfferById(offerId);
 	auto currentOfferType = currentOffer->getOfferType();
@@ -9493,7 +9497,7 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
 		}
 	}
 
-	addGameTask(&Game::playerBuyStoreOffer, player->getID(), currentOffer, stringName, sexId);
+	g_game().playerBuyStoreOffer(player->getID(), currentOffer, stringName, sexId);
 }
 
 void ProtocolGame::sendStoreSuccess(std::string successMessage) {

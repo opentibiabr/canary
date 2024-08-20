@@ -25,6 +25,7 @@ static constexpr int32_t CHANNEL_PRIVATE = 0xFFFF;
 static constexpr int32_t EVENT_IMBUEMENT_INTERVAL = 1000;
 static constexpr uint8_t IMBUEMENT_MAX_TIER = 3;
 
+static constexpr int32_t STORAGEVALUE_POUCH = 14904;
 static constexpr int32_t STORAGEVALUE_EMOTE = 30008;
 static constexpr int32_t STORAGEVALUE_PODIUM = 30020;
 static constexpr int32_t STORAGEVALUE_EXPBOOST = 51052;

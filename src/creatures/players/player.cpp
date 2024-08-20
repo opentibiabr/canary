@@ -7785,7 +7785,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::PREYSLOT: {
-			auto thirdSlot = getPreySlotById(PreySlot_Three);
+			const auto &thirdSlot = getPreySlotById(PreySlot_Three);
 
 			if (thirdSlot->state != PreyDataState_Locked) {
 				canBuy = false;
@@ -7817,10 +7817,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::ALLBLESSINGS: {
-			uint8_t firstBless = Blessings_t::TWIST_OF_FATE;
-			uint8_t lastBless = Blessings_t::HEARTH_OF_THE_MOUNTAIN;
-
-			for (uint8_t bless = firstBless; bless <= lastBless; ++bless) {
+			for (uint8_t bless = 1; bless <= 8; ++bless) {
 				auto blessingAmount = getBlessingCount(bless);
 				if (blessingAmount >= 5) {
 					canBuy = false;
@@ -7860,8 +7857,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::HUNTINGSLOT: {
-			auto thirdSlot = getTaskHuntingSlotById(PreySlot_Three);
-
+			const auto &thirdSlot = getTaskHuntingSlotById(PreySlot_Three);
 			if (thirdSlot->state != PreyDataState_Locked) {
 				canBuy = false;
 			}

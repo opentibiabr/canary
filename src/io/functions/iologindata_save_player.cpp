@@ -727,14 +727,15 @@ bool IOLoginDataSave::savePlayerStoreHistory(Player* player) {
 		return false;
 	}
 
-	DBInsert insertQuery("INSERT INTO `store_history` (`account_id`, `description`, `coin_type`, `coin_amount`, `time`) VALUES");
+	DBInsert insertQuery("INSERT INTO `store_history` (`account_id`, `description`, `coin_amount`, `coin_type`, `type`, `time`) VALUES");
 	for (const auto& historyEntry : player->getStoreHistory()) {
 		const auto descriptionString = Database::getInstance().escapeString(historyEntry.description);
 		// Append query informations
 		query << player->getAccount() << ','
 			  << descriptionString << ','
-			  << historyEntry.coinType << ','
 			  << historyEntry.coinAmount << ','
+			  << historyEntry.coinType << ','
+			  << historyEntry.historyType << ','
 			  << historyEntry.createdAt;
 
 		if (!insertQuery.addRow(query)) {

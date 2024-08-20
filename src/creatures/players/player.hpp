@@ -94,11 +94,11 @@ struct ForgeHistory {
 };
 
 struct StoreHistory {
-	uint16_t coinType = 0;
-
 	time_t createdAt;
 
-	int16_t coinAmount = 0;
+	uint16_t coinAmount = 0;
+	uint16_t coinType = 0;
+	uint16_t historyType = 0;
 
 	std::string description;
 };
@@ -2698,6 +2698,8 @@ public:
 		storeHistoryVector.push_back(history);
 	}
 
+	bool canBuyStoreOffer(const Offer* offer);
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
@@ -2790,6 +2792,7 @@ private:
 
 	std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>> m_managedContainers;
 	std::vector<ForgeHistory> forgeHistoryVector;
+	std::vector<StoreHistory> storeHistoryVector;
 
 	std::vector<uint16_t> quickLootListItemIds;
 

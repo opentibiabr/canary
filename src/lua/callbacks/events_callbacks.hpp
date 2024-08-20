@@ -52,19 +52,6 @@ public:
 	void addCallback(const std::shared_ptr<EventCallback> callback);
 
 	/**
-	 * @brief Gets all registered event callbacks.
-	 * @return Vector of pointers to EventCallback objects.
-	 */
-	std::vector<std::shared_ptr<EventCallback>> getCallbacks() const;
-
-	/**
-	 * @brief Gets event callbacks by their type.
-	 * @param type The type of callbacks to retrieve.
-	 * @return Vector of pointers to EventCallback objects of the specified type.
-	 */
-	std::vector<std::shared_ptr<EventCallback>> getCallbacksByType(EventCallback_t type) const;
-
-	/**
 	 * @brief Clears all registered event callbacks.
 	 */
 	void clear();
@@ -77,7 +64,12 @@ public:
 	 */
 	template <typename CallbackFunc, typename... Args>
 	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
-		for (const auto &callback : getCallbacksByType(eventType)) {
+		auto it = m_callbacks.find(eventType);
+		if (it == m_callbacks.end()) {
+			return;
+		}
+
+		for (const auto &callback : (*it).second) {
 			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
 				std::apply(
@@ -99,7 +91,12 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		ReturnValue res = RETURNVALUE_NOERROR;
-		for (const auto &callback : getCallbacksByType(eventType)) {
+		auto it = m_callbacks.find(eventType);
+		if (it == m_callbacks.end()) {
+			return res;
+		}
+
+		for (const auto &callback : (*it).second) {
 			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
 				ReturnValue callbackResult = std::apply(
@@ -126,8 +123,12 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		bool allCallbacksSucceeded = true;
+		auto it = m_callbacks.find(eventType);
+		if (it == m_callbacks.end()) {
+			return allCallbacksSucceeded;
+		}
 
-		for (const auto &callback : getCallbacksByType(eventType)) {
+		for (const auto &callback : (*it).second) {
 			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
 				bool callbackResult = std::apply(
@@ -144,7 +145,7 @@ public:
 
 private:
 	// Container for storing registered event callbacks.
-	std::vector<std::shared_ptr<EventCallback>> m_callbacks;
+	phmap::flat_hash_map<EventCallback_t, std::vector<std::shared_ptr<EventCallback>>> m_callbacks;
 };
 
 constexpr auto g_callbacks = EventsCallbacks::getInstance;

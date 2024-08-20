@@ -29,24 +29,8 @@ EventsCallbacks &EventsCallbacks::getInstance() {
 }
 
 void EventsCallbacks::addCallback(const std::shared_ptr<EventCallback> callback) {
-	m_callbacks.push_back(callback);
-}
-
-std::vector<std::shared_ptr<EventCallback>> EventsCallbacks::getCallbacks() const {
-	return m_callbacks;
-}
-
-std::vector<std::shared_ptr<EventCallback>> EventsCallbacks::getCallbacksByType(EventCallback_t type) const {
-	std::vector<std::shared_ptr<EventCallback>> eventCallbacks;
-	for (auto callback : getCallbacks()) {
-		if (callback->getType() != type) {
-			continue;
-		}
-
-		eventCallbacks.push_back(callback);
-	}
-
-	return eventCallbacks;
+	const auto &it = m_callbacks.find(callback->getType());
+	(it == m_callbacks.end() ? m_callbacks.emplace(callback->getType(), std::vector<std::shared_ptr<EventCallback>>()).first : it)->second.emplace_back(callback);
 }
 
 void EventsCallbacks::clear() {

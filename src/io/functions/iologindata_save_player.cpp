@@ -720,7 +720,12 @@ bool IOLoginDataSave::savePlayerForgeHistory(std::shared_ptr<Player> player) {
 	return true;
 }
 
-bool IOLoginDataSave::savePlayerStoreHistory(Player* player) {
+bool IOLoginDataSave::savePlayerStoreHistory(std::shared_ptr<Player> player) {
+	if (!player) {
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	std::ostringstream query;
 	query << "DELETE FROM `store_history` WHERE `account_id` = " << player->getAccount();
 	if (!Database::getInstance().executeQuery(query.str())) {

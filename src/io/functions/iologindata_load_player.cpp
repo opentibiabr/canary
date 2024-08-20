@@ -828,7 +828,12 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 	}
 }
 
-void IOLoginDataLoad::loadPlayerStoreHistory(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerStoreHistory(std::shared_ptr<Player> player, DBResult_ptr result) {
+	if (!result || !player) {
+		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	std::ostringstream query;
 	query << "SELECT * FROM `store_history` WHERE `account_id` = " << player->getAccount();
 	if (result = Database::getInstance().storeQuery(query.str())) {

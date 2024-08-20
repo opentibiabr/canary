@@ -5030,11 +5030,11 @@ void ProtocolGame::sendCoinBalance() {
 	msg.addByte(0xDF);
 	msg.addByte(0x01);
 
-	msg.add<uint32_t>(player->coinBalance); // Normal Coins
+	msg.add<uint32_t>(player->coinBalance + player->coinTransferableBalance); // Total Coins (Normal Coins + Transferable Coins)
 	msg.add<uint32_t>(player->coinTransferableBalance); // Transferable Coins
 
 	if (!oldProtocol) {
-		msg.add<uint32_t>(player->coinBalance); // Reserved Auction Coins
+		msg.add<uint32_t>(0x00); // Reserved Auction Coins
 	}
 
 	writeToOutputBuffer(msg);

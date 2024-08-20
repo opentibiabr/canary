@@ -10,6 +10,10 @@
 
 #include "lib/logging/logger.hpp"
 
+namespace spdlog {
+	class logger; // Forward declaration
+}
+
 class LogWithSpdLog final : public Logger {
 public:
 	LogWithSpdLog();
@@ -19,8 +23,14 @@ public:
 
 	void setLevel(const std::string &name) override;
 	std::string getLevel() const override;
+	bool shouldLog(const std::string &lvl) const override;
+	void logProfile(const std::string &name, double duration_ms) const override;
+	void setupLogger() const;
 
 	void log(const std::string &lvl, fmt::basic_string_view<char> msg) const override;
+
+private:
+	mutable std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> profile_loggers_;
 };
 
 constexpr auto g_logger = LogWithSpdLog::getInstance;

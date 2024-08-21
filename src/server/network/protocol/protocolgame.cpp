@@ -4954,7 +4954,11 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	}
 
 	msg.setBufferPosition(msgPosition);
-	msg.add<uint16_t>(itemsToSend);
+	if (oldProtocol) {
+		msg.addByte(itemsToSend);
+	} else {
+		msg.add<uint16_t>(itemsToSend);
+	}
 	writeToOutputBuffer(msg);
 }
 

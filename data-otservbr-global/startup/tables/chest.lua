@@ -2758,7 +2758,7 @@ ChestUnique = {
 		reward = { { 3381, 1 } },
 		storage = Storage.QuestChests.BlackKnightTreeCrownArmor,
 	},
-	[3634] = {
+	[9055] = {
 		itemId = 3634,
 		itemPos = { x = 32880, y = 31955, z = 11 },
 		reward = { { 3419, 1 } },

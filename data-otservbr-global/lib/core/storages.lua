@@ -2384,7 +2384,6 @@ Storage = {
 		},
 		U9_80 = { -- update 9.80 - Reserved Storages 44001 - 44100
 			ChildOfDestiny = {},
-			DemonOutfits = {},
 			GoblinMerchant = {},
 			VenoreDailyTasks = {},
 		},

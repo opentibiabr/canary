@@ -10510,9 +10510,11 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 				break;
 			}
 
-			int32_t premiumDays = 3000 - offer->getOfferId();
-			// player->setPremiumDays(static_cast<int32_t>(premiumDaysLeft + premiumDays));
+			int32_t premiumDays = offer->getOfferId() - 3000;
 			player->getAccount()->addPremiumDays(premiumDays);
+			if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
+				break;
+			}
 
 			success = true;
 			break;

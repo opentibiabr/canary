@@ -1024,7 +1024,7 @@ int CreatureFunctions::luaCreatureSetIcon(lua_State* L) {
 	auto count = getNumber<uint16_t>(L, 5, 0);
 	CreatureIcon creatureIcon;
 	if (category == CreatureIconCategory_t::Modifications) {
-		auto icon = getNumber<CreatureIconModifications_t>(L, 5);
+		auto icon = getNumber<CreatureIconModifications_t>(L, 4);
 		creatureIcon = CreatureIcon(icon, count);
 	} else {
 		auto icon = getNumber<CreatureIconQuests_t>(L, 4);

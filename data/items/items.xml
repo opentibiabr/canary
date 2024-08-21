@@ -41,7 +41,7 @@
 		<attribute key="field" value="poison">
 			<attribute key="ticks" value="5000"/>
 			<attribute key="start" value="5"/>
-			<attribute key="damage" value="100"/>
+			<attribute key="damage" value="10"/>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="eventType" value="stepin"/>

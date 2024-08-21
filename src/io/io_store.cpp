@@ -15,8 +15,6 @@
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 
-#include "enums/account_coins.hpp"
-
 bool IOStore::loadFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/store/store.xml";

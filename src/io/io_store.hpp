@@ -16,6 +16,8 @@
 #include <string>
 #include <vector>
 
+#include "enums/account_coins.hpp"
+
 // XML
 enum class OfferTypes_t : uint8_t {
 	NONE = 0,

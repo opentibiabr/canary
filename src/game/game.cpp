@@ -10632,6 +10632,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 	}
 
 	player->updateUIExhausted();
+	player->openStore();
 }
 
 bool Game::processHouseOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/) {

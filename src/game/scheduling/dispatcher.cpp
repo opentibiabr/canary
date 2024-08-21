@@ -16,6 +16,11 @@
 
 thread_local DispatcherContext Dispatcher::dispacherContext;
 
+// set a maximum time to execute scheduled tasks.
+// If this time is exceeded, the next scheduled tasks will be executed in the next cycle,
+// thus executing the waiting events, thus causing less lag.
+constexpr auto MAX_PROCESSING_TIME_FOR_SCHEDULEDTASK = 100; // MS	(0 to disable)
+
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }
@@ -124,6 +129,8 @@ void Dispatcher::executeEvents(const TaskGroup startGroup) {
 void Dispatcher::executeScheduledEvents() {
 	auto &threadScheduledTasks = getThreadTask()->scheduledTasks;
 
+	const auto time_to_quit = MAX_PROCESSING_TIME_FOR_SCHEDULEDTASK > 0 ? OTSYS_TIME(true) + MAX_PROCESSING_TIME_FOR_SCHEDULEDTASK : 0;
+
 	auto it = scheduledTasks.begin();
 	while (it != scheduledTasks.end()) {
 		const auto &task = *it;
@@ -145,6 +152,10 @@ void Dispatcher::executeScheduledEvents() {
 		outputMsg.try_flush();
 
 		++it;
+
+		if (time_to_quit > 0 && OTSYS_TIME(true) > time_to_quit) {
+			break;
+		}
 	}
 
 	if (it != scheduledTasks.begin()) {

@@ -103,11 +103,6 @@ enum class ActionType_t : uint8_t {
 	OPEN_OFFER = 4,
 };
 
-enum class CoinType_t : uint8_t {
-	COIN = 0,
-	TRANSFERABLE = 1,
-};
-
 // Structs
 struct OutfitIds {
 	uint16_t maleId;
@@ -278,7 +273,7 @@ private:
 
 class Offer {
 public:
-	Offer(std::string parentName, std::string name, std::string icon, uint32_t id, uint32_t price, OfferTypes_t type, States_t state, uint16_t count, uint16_t duration, CoinType_t coin, std::string description, OutfitIds outfitIds, bool movable) :
+	Offer(std::string parentName, std::string name, std::string icon, uint32_t id, uint32_t price, OfferTypes_t type, States_t state, uint16_t count, uint16_t duration, CoinType coin, std::string description, OutfitIds outfitIds, bool movable) :
 		parentName(parentName), offerName(name), offerIcon(icon), offerId(id), offerPrice(price), offerType(type), offerState(state), offerCount(count), validUntil(duration), coinType(coin), offerDescription(description), outfitId(outfitIds), movable(movable) { }
 
 	std::string getOfferName() const {
@@ -305,7 +300,7 @@ public:
 	uint16_t getValidUntil() const {
 		return validUntil;
 	}
-	CoinType_t getCoinType() const {
+	CoinType getCoinType() const {
 		return coinType;
 	}
 	std::string getOfferDescription() const {
@@ -335,7 +330,7 @@ private:
 	States_t offerState = States_t::NONE;
 	uint16_t offerCount = 0; // Or charges
 	uint16_t validUntil;
-	CoinType_t coinType = CoinType_t::COIN;
+	CoinType coinType = CoinType::Normal;
 	std::string offerDescription;
 	OutfitIds outfitId;
 	bool movable;

@@ -15,6 +15,8 @@
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 
+#include "enums/account_coins.hpp"
+
 bool IOStore::loadFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/store/store.xml";
@@ -151,9 +153,9 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		validUntil = static_cast<uint16_t>(offer.attribute("validUntil").as_uint());
 	}
 
-	CoinType_t coinType = CoinType_t::COIN;
+	CoinType coinType = CoinType::Normal;
 	if (offer.attribute("coinType")) {
-		coinType = CoinType_t::COIN;
+		coinType = CoinType::Normal;
 	}
 
 	std::string desc = "";

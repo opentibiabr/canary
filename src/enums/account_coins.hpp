@@ -15,7 +15,6 @@ enum class CoinTransactionType : uint8_t {
 };
 
 enum class CoinType : uint8_t {
-	Normal = 1,
-	Tournament = 2,
-	Transferable = 3
+	Normal = 0,
+	Transferable = 1
 };

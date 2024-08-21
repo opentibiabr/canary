@@ -79,22 +79,6 @@ ChestAction = {
 		reward = { { 2969, 1 } },
 		storage = Storage.Quest.Key.ID5010,
 	},
-	[5003] = {
-		itemId = 3634,
-		itemPos = {
-			{ x = 32868, y = 31955, z = 11 },
-		},
-		reward = { { 3381, 1 } },
-		storage = Storage.QuestChests.BlackKnightTreeCrownArmor,
-	},
-	[5004] = {
-		itemId = 3634,
-		itemPos = {
-			{ x = 32880, y = 31955, z = 11 },
-		},
-		reward = { { 3419, 1 } },
-		storage = Storage.QuestChests.BlackKnightTreeCrownShield,
-	},
 }
 
 ChestUnique = {
@@ -2767,5 +2751,17 @@ ChestUnique = {
 	[14091] = {
 		itemId = 2472,
 		itemPos = { x = 32620, y = 32198, z = 10 },
+	},
+	[3027] = {
+		itemId = 3634,
+		itemPos = { x = 32868, y = 31955, z = 11 },
+		reward = { { 3381, 1 } },
+		storage = Storage.QuestChests.BlackKnightTreeCrownArmor,
+	},
+	[3634] = {
+		itemId = 3634,
+		itemPos = { x = 32880, y = 31955, z = 11 },
+		reward = { { 3419, 1 } },
+		storage = Storage.QuestChests.BlackKnightTreeCrownShield,
 	},
 }

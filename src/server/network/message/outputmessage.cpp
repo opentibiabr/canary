@@ -13,11 +13,11 @@
 #include "server/network/protocol/protocol.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
-const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
+constexpr auto OUTPUTMESSAGE_AUTOSEND_DELAY = 10;
 
 void OutputMessagePool::scheduleSendAll() {
 	g_dispatcher().scheduleEvent(
-		OUTPUTMESSAGE_AUTOSEND_DELAY.count(), [this] { sendAll(); }, "OutputMessagePool::sendAll"
+		OUTPUTMESSAGE_AUTOSEND_DELAY, [this] { sendAll(); }, "OutputMessagePool::sendAll"
 	);
 }
 

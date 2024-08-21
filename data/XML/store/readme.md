@@ -76,13 +76,13 @@
 
 ### Offer types
 
-|              |            | Type Options |            |                |
-| ------------ | ---------- | --------- | ------------- | -------------- |
-| none         | mount      | preyslot  | pounch        | namechange     |
-| item         | namechange | preybonus | allblessings  | sexchange      |
-| stackable    | sexchange  | temple    | instantreward | hirelingskill  |
-| charges      | house      | bleesings | charms        | hirelingoutfit |
-| outfit       | expboost   | premium   | hireling      | huntingslot    |
+|           |            | Type Options |               |                |
+| --------- | ---------- | ------------ | ------------- | -------------- |
+| none      | mount      | preyslot     | pounch        | namechange     |
+| item      | namechange | preybonus    | allblessings  | sexchange      |
+| stackable | sexchange  | temple       | instantreward | hirelingskill  |
+| charges   | house      | bleesings    | charms        | hirelingoutfit |
+| outfit    | expboost   | premium      | hireling      | huntingslot    |
 
 #### Optional Fields
 
@@ -92,6 +92,7 @@
 | validUntil  | unsigned int | offer validUntil  | 0       |
 | coinType    | string       | offer coin type   | coin    |
 | description | string       | offer description | ""      |
+| movable     | string       | offer movable     | false   |
 
 ### Coin types
 
@@ -104,5 +105,5 @@
 #### Example :
 
 ```XML
-<offer name="Strong Health Cask" icon="Strong_Health_Cask.png" offerId="25880" price="11" type="house" state="none" count="1000" description="" />
+<offer name="Strong Health Cask" icon="Strong_Health_Cask.png" offerId="25880" price="11" type="house" movable="true" state="none" count="1000" description="" />
 ```

@@ -308,8 +308,8 @@ public:
 	void playerOpenStoreHistory(uint32_t playerId, uint32_t page);
 	void playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::string newName, uint8_t sexId);
 	// Process Offers
-	bool processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges = 0);
-	bool processStackableOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t amount = 1);
+	bool processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges = 0, bool movable = false);
+	bool processStackableOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t amount = 1, bool movable = false);
 	bool processHouseOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges = 0);
 	bool processNameChangeOffer(std::shared_ptr<Player> player, std::string &name);
 	bool processTempleOffer(std::shared_ptr<Player> player);

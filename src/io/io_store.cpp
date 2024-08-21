@@ -161,8 +161,13 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		desc = std::string(offer.attribute("description").as_string());
 	}
 
+	bool isMovable = false;
+	if (offer.attribute("movable")) {
+		isMovable = bool(offer.attribute("movable").as_bool());
+	}
+
 	auto parentName = category->getCategoryName();
-	Offer newOffer(parentName, name, icon, id, price, type, state, count, validUntil, coinType, desc, outfitId);
+	Offer newOffer(parentName, name, icon, id, price, type, state, count, validUntil, coinType, desc, outfitId, isMovable);
 
 	addOffer(id, newOffer);
 	category->addOffer(newOffer);

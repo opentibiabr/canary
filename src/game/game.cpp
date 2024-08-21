@@ -10369,8 +10369,9 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		case OfferTypes_t::CHARGES: {
 			auto itemId = offer->getOfferId();
 			auto itemCharges = offer->getOfferCount();
+			auto isMovable = offer->isMovable();
 
-			success = processChargesOffer(player, itemId, itemCharges);
+			success = processChargesOffer(player, itemId, itemCharges, isMovable);
 			break;
 		}
 
@@ -10378,8 +10379,9 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		case OfferTypes_t::STACKABLE: {
 			auto itemId = offer->getOfferId();
 			auto itemAmount = offer->getOfferCount();
+			auto isMovable = offer->isMovable();
 
-			success = processStackableOffer(player, itemId, itemAmount);
+			success = processStackableOffer(player, itemId, itemAmount, isMovable);
 			break;
 		}
 
@@ -10393,7 +10395,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 			player->addStorageValue(STORAGEVALUE_POUCH, 1);
 
-			success = processStackableOffer(player, itemId);
+			success = processStackableOffer(player, itemId, false);
 			break;
 		}
 
@@ -10648,6 +10650,8 @@ bool Game::processHouseOffer(std::shared_ptr<Player> player, uint32_t itemId, ui
 		decoKit->setAttribute(ItemAttribute_t::DATE, charges);
 	}
 
+	decoKit->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+
 	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
 	if (!thing) {
 		return false;
@@ -10672,7 +10676,7 @@ bool Game::processHouseOffer(std::shared_ptr<Player> player, uint32_t itemId, ui
 	return true;
 }
 
-bool Game::processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/) {
+bool Game::processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/, bool movable /* = false*/) {
 	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, 1);
 	if (!newItem) {
 		return false;
@@ -10681,6 +10685,12 @@ bool Game::processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, 
 	if (charges > 0) {
 		newItem->setAttribute(ItemAttribute_t::CHARGES, charges);
 	}
+
+	if (!movable) {
+		newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+	}
+
+	newItem->setOwner(player);
 
 	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
 	if (!thing) {
@@ -10705,11 +10715,17 @@ bool Game::processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, 
 	return true;
 }
 
-bool Game::processStackableOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t amount /* = 1*/) {
+bool Game::processStackableOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t amount /* = 1*/, bool movable /* = false*/) {
 	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, amount);
 	if (!newItem) {
 		return false;
 	}
+
+	if (!movable) {
+		newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+	}
+
+	newItem->setOwner(player);
 
 	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
 	if (!thing) {

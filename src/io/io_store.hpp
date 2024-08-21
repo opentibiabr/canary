@@ -278,8 +278,8 @@ private:
 
 class Offer {
 public:
-	Offer(std::string parentName, std::string name, std::string icon, uint32_t id, uint32_t price, OfferTypes_t type, States_t state, uint16_t count, uint16_t duration, CoinType_t coin, std::string description, OutfitIds outfitIds) :
-		parentName(parentName), offerName(name), offerIcon(icon), offerId(id), offerPrice(price), offerType(type), offerState(state), offerCount(count), validUntil(duration), coinType(coin), offerDescription(description), outfitId(outfitIds) { }
+	Offer(std::string parentName, std::string name, std::string icon, uint32_t id, uint32_t price, OfferTypes_t type, States_t state, uint16_t count, uint16_t duration, CoinType_t coin, std::string description, OutfitIds outfitIds, bool movable) :
+		parentName(parentName), offerName(name), offerIcon(icon), offerId(id), offerPrice(price), offerType(type), offerState(state), offerCount(count), validUntil(duration), coinType(coin), offerDescription(description), outfitId(outfitIds), movable(movable) { }
 
 	std::string getOfferName() const {
 		return offerName;
@@ -319,6 +319,9 @@ public:
 	}
 	ConverType_t getConverType() const;
 	bool getUseConfigure() const;
+	bool isMovable() const {
+		return movable;
+	}
 
 private:
 	// Mandatory
@@ -335,6 +338,7 @@ private:
 	CoinType_t coinType = CoinType_t::COIN;
 	std::string offerDescription;
 	OutfitIds outfitId;
+	bool movable;
 
 	// Internal
 	std::string parentName;

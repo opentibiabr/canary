@@ -96,9 +96,9 @@ struct ForgeHistory {
 struct StoreHistory {
 	time_t createdAt;
 
-	uint16_t coinAmount = 0;
-	uint16_t coinType = 0;
-	uint16_t historyType = 0;
+	int32_t coinAmount = 0;
+	uint8_t coinType = 0;
+	uint8_t historyType = 0;
 
 	std::string description;
 };

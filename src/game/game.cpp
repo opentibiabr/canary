@@ -10293,12 +10293,9 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 		return;
 	}
 
-	std::shared_ptr<Player> playerReceptor = getPlayerByName(receptorName);
+	std::shared_ptr<Player> playerReceptor = getPlayerByName(receptorName, true);
 	if (!playerReceptor) {
-		playerReceptor = std::make_shared<Player>(nullptr);
-		if (!IOLoginData::loadPlayerByName(playerReceptor, receptorName)) {
-			return;
-		}
+		return;
 	}
 
 	if (playerDonator == playerReceptor || playerDonator->getAccount() == playerReceptor->getAccount()) {
@@ -10312,13 +10309,38 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 	}
 
 	std::string historyDesc = fmt::format("{} gifted to {}", playerDonator->getName(), playerReceptor->getName());
-	playerDonator->getAccount()->removeCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(coinAmount), historyDesc);
-	playerReceptor->getAccount()->addCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(coinAmount), historyDesc);
+	playerDonator->getAccount()->removeCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
+	playerReceptor->getAccount()->addCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
+
+	StoreHistory tempHistory;
+	tempHistory.description = historyDesc;
+	tempHistory.coinType = enumToValue(CoinType::Transferable);
+	tempHistory.historyType = enumToValue(HistoryTypes_t::NONE);
+	tempHistory.coinAmount = static_cast<int32_t>(coinAmount * -1);
+	tempHistory.createdAt = getTimeNow();
+
+	playerDonator->setStoreHistory(tempHistory);
 
 	if (playerReceptor->isOffline()) {
-		IOLoginData::savePlayer(playerReceptor);
+		std::shared_ptr<Player> newPlayerReceptor;
+		const auto playersAccountVector = getPlayersByAccount(playerReceptor->getAccount());
+		for (const auto player : playersAccountVector) {
+			if (player->isOnline()) {
+				newPlayerReceptor = player;
+			}
+		}
+
+		if (newPlayerReceptor) {
+			tempHistory.coinAmount = coinAmount;
+			newPlayerReceptor->sendCoinBalance();
+			newPlayerReceptor->setStoreHistory(tempHistory);
+		} else {
+			playerReceptor->getAccount()->registerStoreTransaction(tempHistory.historyType, coinAmount, tempHistory.coinType, historyDesc, tempHistory.createdAt);
+		}
 	} else {
+		tempHistory.coinAmount = coinAmount;
 		playerReceptor->sendCoinBalance();
+		playerReceptor->setStoreHistory(tempHistory);
 	}
 
 	playerDonator->openStore();
@@ -10623,7 +10645,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		StoreHistory tempHistory;
 
 		tempHistory.description = offer->getOfferName();
-		tempHistory.coinAmount = offerPrice;
+		tempHistory.coinAmount = static_cast<int32_t>(offerPrice * -1);
 		tempHistory.createdAt = getTimeNow();
 
 		player->sendStoreSuccess(returnmessage);
@@ -10756,27 +10778,26 @@ bool Game::processNameChangeOffer(std::shared_ptr<Player> player, std::string &n
 	trimString(newName);
 
 	auto isValidName = validateName(newName);
-
 	if (isValidName != VALID) {
 		return false;
 	}
 
-	std::ostringstream query;
-	Database &db = Database::getInstance();
-	query << "SELECT `id` FROM `player` WHERE `name` = " << db.escapeString(newName);
-	if (db.storeQuery(query.str())) {
-		return false;
-	}
+	capitalizeWords(newName);
 
-	if (g_monsters().getMonsterType(newName)) {
+	if (g_monsters().getMonsterType(newName, true)) {
 		return false;
 	} else if (getNpcByName(newName)) {
 		return false;
 	}
 
-	capitalizeWords(newName);
-	query << "UPDATE `players` SET `name` = " << db.escapeString(newName) << "WHERE `id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
+	Database &db = Database::getInstance();
+	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `name` = {}", db.escapeString(newName)));
+	if (result) {
+		return false;
+	}
+
+	std::string query = fmt::format("UPDATE `players` SET `name` = {} WHERE `id` = {}", db.escapeString(newName), player->getGUID());
+	if (!db.executeQuery(query)) {
 		return false;
 	}
 

@@ -162,6 +162,24 @@ void Account::registerCoinTransaction(const uint8_t &transactionType, const uint
 	}
 }
 
+void Account::registerStoreTransaction(const uint8_t &type, const uint32_t &amount, const uint8_t &coinType, const std::string &description, const time_t &time) {
+	if (!m_accLoaded) {
+		return;
+	}
+
+	if (description.empty()) {
+		return;
+	}
+
+	if (!g_accountRepository().registerStoreTransaction(m_account.id, type, amount, coinType, description, time)) {
+		g_logger().error(
+			"Failed to register transaction: 'account:[{}], transaction "
+			"type:[{}], coins:[{}], coin type:[{}], description:[{}], time:[{}]",
+			m_account.id, type, amount, type, description, time
+		);
+	}
+}
+
 [[nodiscard]] uint32_t Account::getID() const {
 	return m_account.id;
 };

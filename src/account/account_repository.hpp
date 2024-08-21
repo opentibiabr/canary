@@ -38,6 +38,15 @@ public:
 		const uint8_t &coinType,
 		const std::string &description
 	) = 0;
+
+	virtual bool registerStoreTransaction(
+		const uint32_t &id,
+		uint8_t type,
+		int32_t amount,
+		const uint8_t &coinType,
+		const std::string &description,
+		const time_t &time
+	) = 0;
 };
 
 constexpr auto g_accountRepository = AccountRepository::getInstance;

@@ -740,8 +740,8 @@ bool IOLoginDataSave::savePlayerStoreHistory(std::shared_ptr<Player> player) {
 		query << player->getAccountId() << ','
 			  << descriptionString << ','
 			  << historyEntry.coinAmount << ','
-			  << historyEntry.coinType << ','
-			  << historyEntry.historyType << ','
+			  << static_cast<uint16_t>(historyEntry.coinType) << ','
+			  << static_cast<uint16_t>(historyEntry.historyType) << ','
 			  << historyEntry.createdAt;
 
 		if (!insertQuery.addRow(query)) {

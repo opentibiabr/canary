@@ -9239,10 +9239,10 @@ void ProtocolGame::sendStoreHistory(uint32_t page) {
 
 	if (historyPageToSend > 0) {
 		for (const auto &history : historyPerPage) {
-			msg.add<uint32_t>(0x00);
+			msg.add<uint32_t>(0x00); // Id?
 
 			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
-			msg.addByte(0x00);
+			msg.addByte(history.historyType);
 			msg.add<int32_t>(history.coinAmount);
 
 			msg.addByte(history.coinType);

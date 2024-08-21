@@ -148,6 +148,42 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 	return successful;
 };
 
+bool AccountRepositoryDB::registerStoreTransaction(
+	const uint32_t &id,
+	uint8_t type,
+	int32_t amount,
+	const uint8_t &coinType,
+	const std::string &description,
+	const time_t &time
+) {
+
+	bool successful = g_database().executeQuery(
+		fmt::format(
+			"INSERT INTO `store_history` (`account_id`, `description`, `coin_amount`, `coin_type`, `type`, `time`) VALUES ({}, {}, {}, {}, {}, {})",
+			id,
+			g_database().escapeString(description),
+			amount,
+			coinType,
+			type,
+			time
+		)
+	);
+
+	if (!successful) {
+		g_logger().error(
+			"Error registering coin transaction! account_id:[{}], type:[{}], coin_type:[{}], coins:[{}], description:[{}], time:[{}]",
+			id,
+			type,
+			coinType,
+			amount,
+			g_database().escapeString(description),
+			time
+		);
+	}
+
+	return successful;
+};
+
 bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 	auto result = g_database().storeQuery(
 		fmt::format("SELECT `name`, `deletion` FROM `players` WHERE `account_id` = {} ORDER BY `name` ASC", acc.id)

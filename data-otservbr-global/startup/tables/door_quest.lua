@@ -193,7 +193,7 @@ QuestDoorAction = {
 		},
 	},
 	-- Bigfoot burden quest
-	[Storage.BigfootBurden.DoorGoldenFruits] = {
+	[Storage.Quest.U9_60.BigfootsBurden.DoorGoldenFruits] = {
 		itemId = false,
 		itemPos = { { x = 32822, y = 31745, z = 10 } },
 	},

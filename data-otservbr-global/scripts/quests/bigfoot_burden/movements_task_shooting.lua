@@ -34,7 +34,7 @@ function taskShooting.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.BigfootBurden.QuestLine) ~= 13 then
+	if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine) ~= 13 then
 		player:teleportTo(fromPosition)
 		return true
 	end

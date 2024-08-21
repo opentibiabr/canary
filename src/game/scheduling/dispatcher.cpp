@@ -125,7 +125,7 @@ void Dispatcher::executeScheduledEvents() {
 	auto it = scheduledTasks.begin();
 	while (it != scheduledTasks.end()) {
 		const auto &task = *it;
-		if (task->getTime() > OTSYS_TIME()) {
+		if (task->getTime() > OTSYS_TIME(true)) {
 			break;
 		}
 
@@ -191,14 +191,14 @@ void Dispatcher::mergeEvents() {
 
 std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() const {
 	constexpr auto CHRONO_0 = std::chrono::milliseconds(0);
-	constexpr auto CHRONO_MILI_MAX = std::chrono::milliseconds::max();
+	constexpr auto CHRONO_MILI_MAX = std::chrono::milliseconds(SCHEDULER_MINTICKS);
 
 	if (scheduledTasks.empty()) {
 		return CHRONO_MILI_MAX;
 	}
 
 	const auto &task = *scheduledTasks.begin();
-	const auto timeRemaining = std::chrono::milliseconds(task->getTime() - OTSYS_TIME());
+	const auto timeRemaining = std::chrono::milliseconds(task->getTime() - OTSYS_TIME(true));
 	return std::max<std::chrono::milliseconds>(timeRemaining, CHRONO_0);
 }
 

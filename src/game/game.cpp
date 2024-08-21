@@ -1855,7 +1855,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 				return RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH;
 			}
 
-			// prevent move up from ponch to store inbox.
+			// prevent move up from pouch to store inbox
 			if (!item->canBeMovedToStore() && fromCylinder->getContainer() && fromCylinder->getContainer()->getID() == ITEM_GOLD_POUCH) {
 				return RETURNVALUE_NOTBOUGHTINSTORE;
 			}
@@ -1923,7 +1923,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 				}
 			}
 
-			if (item->isStoreItem() && !house) {
+			if (item->isStoreItem() && (!item->isWrapable() || !house)) {
 				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
 			}
 		}

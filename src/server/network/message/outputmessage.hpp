@@ -83,16 +83,20 @@ public:
 		return inject<OutputMessagePool>();
 	}
 
-	void sendAll();
-	void scheduleSendAll();
+	void flush() const;
+	void try_flush();
 
 	static OutputMessage_ptr getOutputMessage();
 
-	void addProtocolToAutosend(Protocol_ptr protocol);
+	void addProtocolToAutosend(Protocol_ptr protocol) {
+		bufferedProtocols.emplace_back(protocol);
+	}
+
 	void removeProtocolFromAutosend(const Protocol_ptr &protocol);
 
 private:
 	// NOTE: A vector is used here because this container is mostly read
 	// and relatively rarely modified (only when a client connects/disconnects)
 	std::vector<Protocol_ptr> bufferedProtocols;
+	int64_t timeLastFlush = 0;
 };

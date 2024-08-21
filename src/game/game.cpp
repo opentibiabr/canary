@@ -10671,8 +10671,6 @@ bool Game::processHouseOffer(std::shared_ptr<Player> player, uint32_t itemId, ui
 		return false;
 	}
 
-	inboxContainer->internalAddThing(decoKit);
-
 	return true;
 }
 

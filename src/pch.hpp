@@ -167,7 +167,7 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : fmt::forma
 #include "lib/messaging/message.hpp"
 #include "lib/messaging/command.hpp"
 #include "lib/messaging/event.hpp"
-#include "lib/logging/log_with_spd_log.hpp"
+#include "lib/logging/logger.hpp"
 
 #include <eventpp/utilities/scopedremover.h>
 #include <eventpp/eventdispatcher.h>

@@ -832,7 +832,7 @@ protected:
 	std::atomic_bool asyncTasksRunning = false;
 	bool m_goToFollowCreature = false;
 
-	void addAsyncTask(std::function<void()>&& fnc) {
+	void addAsyncTask(std::function<void()> &&fnc) {
 		asyncTasks.emplace_back(std::move(fnc));
 		sendAsyncTasks();
 	}

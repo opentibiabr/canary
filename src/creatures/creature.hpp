@@ -834,6 +834,7 @@ protected:
 
 	void addAsyncTask(std::function<void()>&& fnc) {
 		asyncTasks.emplace_back(std::move(fnc));
+		sendAsyncTasks();
 	}
 
 private:

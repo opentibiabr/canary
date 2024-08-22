@@ -1896,7 +1896,6 @@ void Creature::iconChanged() {
 }
 
 void Creature::sendAsyncTasks() {
-	metrics::method_latency measure(__METHOD_NAME__);
 	if (asyncTasksRunning.load()) {
 		return;
 	}

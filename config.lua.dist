@@ -22,10 +22,10 @@ toggleMaintainMode = false
 maintainModeMessage = ""
 
 -- Combat settings
+-- NOTE: World id is 1 as default, new worlds must have different ids always greater than 1
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 -- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)
 -- NOTE: refundManaOnBeginningWeapons: wand of vortex and snakebite refund mana used (allows training for mages)
--- NOTE: World id is 1 as default, new worlds must have different ids.
 worldId = 1
 worldType = "pvp"
 hotkeyAimbotEnabled = true

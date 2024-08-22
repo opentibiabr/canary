@@ -77,14 +77,17 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "bluff") and player:getStorageValue(TheNewFrontier.Mission05.AngusKeyword) == 1 and player:getStorageValue(TheNewFrontier.Questline) == 14 and player:getStorageValue(TheNewFrontier.Mission05.Angus) == 1 then
 		if npcHandler:getTopic(playerId) == 1 or npcHandler:getTopic(playerId) == 2 then
 			if player:getStorageValue(TheNewFrontier.Mission05.Angus) == 1 then
-				npcHandler:say({ "Those stories are just amazing! Men with faces on their stomach instead of heads you say? And hens that lay golden eggs? Whereas, most amazing is this fountain of youth you've mentioned! ...", "I'll immediately send some of our most dedicated explorers to check those things out!" }, npc, creature)
+				npcHandler:say({
+					"Those stories are just amazing! Men with faces on their stomach instead of heads you say? And hens that lay golden eggs? Whereas, most amazing is this fountain of youth you've mentioned! ...",
+					"I'll immediately send some of our most dedicated explorers to check those things out!",
+				}, npc, creature)
 				player:setStorageValue(TheNewFrontier.Mission05.Angus, 3)
 			end
 		end
 	elseif MsgContains(message, "impress") and player:getStorageValue(TheNewFrontier.Mission05.AngusKeyword) == 2 and player:getStorageValue(TheNewFrontier.Questline) == 14 and player:getStorageValue(TheNewFrontier.Mission05.Angus) == 1 then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:getStorageValue(TheNewFrontier.Mission05.Angus) == 1 then
-				npcHandler:say({ "A whole new land is indeed very tempting. I can hardly imagine all the wonders that await us there. I doubt I could stop our explorers from going there even if I tried to." }, npc, creature)
+				npcHandler:say("A whole new land is indeed very tempting. I can hardly imagine all the wonders that await us there. I doubt I could stop our explorers from going there even if I tried to.", npc, creature)
 				player:setStorageValue(TheNewFrontier.Mission05.Angus, 3)
 			end
 		elseif npcHandler:getTopic(playerId) == 2 then

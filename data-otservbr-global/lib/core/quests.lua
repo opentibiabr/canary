@@ -518,12 +518,12 @@ if not Quests then
 		},
 		[6] = {
 			name = "Children of the Revolution",
-			startStorageId = Storage.ChildrenoftheRevolution.Questline,
+			startStorageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Prove Your Worzz!",
-					storageId = Storage.ChildrenoftheRevolution.Mission00,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission00,
 					missionId = 1058,
 					startValue = 1,
 					endValue = 2,
@@ -535,7 +535,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 1: Corruption",
-					storageId = Storage.ChildrenoftheRevolution.Mission01,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission01,
 					missionId = 1059,
 					startValue = 1,
 					endValue = 3,
@@ -547,7 +547,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 2: Imperial Zzecret Weaponzz",
-					storageId = Storage.ChildrenoftheRevolution.Mission02,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission02,
 					missionId = 1060,
 					startValue = 1,
 					endValue = 5,
@@ -562,7 +562,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 3: Zee Killing Fieldzz",
-					storageId = Storage.ChildrenoftheRevolution.Mission03,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission03,
 					missionId = 1061,
 					startValue = 1,
 					endValue = 3,
@@ -576,7 +576,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 4: Zze Way of Zztonezz",
-					storageId = Storage.ChildrenoftheRevolution.Mission04,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission04,
 					missionId = 1062,
 					startValue = 1,
 					endValue = 6,
@@ -594,7 +594,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 5: Phantom Army",
-					storageId = Storage.ChildrenoftheRevolution.Mission05,
+					storageId = Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission05,
 					missionId = 1063,
 					startValue = 1,
 					endValue = 3,
@@ -705,12 +705,12 @@ if not Quests then
 		},
 		[9] = {
 			name = "Hot Cuisine",
-			startStorageId = Storage.HotCuisineQuest.QuestStart,
+			startStorageId = Storage.Quest.U8_5.HotCuisineQuest.QuestStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Hot Cuisine",
-					storageId = Storage.HotCuisineQuest.QuestLog,
+					storageId = Storage.Quest.U8_5.HotCuisineQuest.QuestLog,
 					missionId = 1070,
 					startValue = 1,
 					endValue = 16,
@@ -752,12 +752,12 @@ if not Quests then
 		},
 		[10] = {
 			name = "In Service of Yalahar",
-			startStorageId = Storage.InServiceofYalahar.Questline,
+			startStorageId = Storage.Quest.U8_4.InServiceOfYalahar.Questline,
 			startStorageValue = 5,
 			missions = {
 				[1] = {
 					name = "Mission 01: Something Rotten",
-					storageId = Storage.InServiceofYalahar.Mission01,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission01,
 					missionId = 1071,
 					startValue = 1,
 					endValue = 6,
@@ -773,7 +773,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 02: Watching the Watchmen",
-					storageId = Storage.InServiceofYalahar.Mission02,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission02,
 					missionId = 1072,
 					startValue = 1,
 					endValue = 8,
@@ -791,7 +791,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03: Death to the Deathbringer",
-					storageId = Storage.InServiceofYalahar.Mission03,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission03,
 					missionId = 1073,
 					startValue = 1,
 					endValue = 6,
@@ -808,7 +808,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 04: Good to be Kingpin",
-					storageId = Storage.InServiceofYalahar.Mission04,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission04,
 					missionId = 1074,
 					startValue = 1,
 					endValue = 6,
@@ -825,7 +825,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 05: Food or Fight",
-					storageId = Storage.InServiceofYalahar.Mission05,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission05,
 					missionId = 1075,
 					startValue = 1,
 					endValue = 8,
@@ -846,7 +846,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 06: Frightening Fuel",
-					storageId = Storage.InServiceofYalahar.Mission06,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission06,
 					missionId = 1076,
 					startValue = 1,
 					endValue = 5,
@@ -865,7 +865,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 07: A Fishy Mission",
-					storageId = Storage.InServiceofYalahar.Mission07,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission07,
 					missionId = 1077,
 					startValue = 1,
 					endValue = 5,
@@ -882,7 +882,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 08: Dangerous Machinations",
-					storageId = Storage.InServiceofYalahar.Mission08,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission08,
 					missionId = 1078,
 					startValue = 1,
 					endValue = 4,
@@ -897,7 +897,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 09: Decision",
-					storageId = Storage.InServiceofYalahar.Mission09,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission09,
 					missionId = 1079,
 					startValue = 1,
 					endValue = 2,
@@ -910,7 +910,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 10: The Final Battle",
-					storageId = Storage.InServiceofYalahar.Mission10,
+					storageId = Storage.Quest.U8_4.InServiceOfYalahar.Mission10,
 					missionId = 1080,
 					startValue = 1,
 					endValue = 5,
@@ -934,17 +934,17 @@ if not Quests then
 			missions = {
 				[1] = {
 					name = "Paw and Fur - Hunting Elite",
-					storageId = Storage.KillingInTheNameOf.QuestLogEntry,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.QuestLogEntry,
 					missionId = 1081,
 					startValue = 0,
 					endValue = 1,
 					description = function(player)
-						return string.format("You joined the 'Paw and Fur - Hunting Elite'. Ask Grizzly Adams for some hunting tasks. You already gained %d points. You currently have %d boss points.", (math.max(player:getStorageValue(POINTSSTORAGE), 0)), (math.max(player:getStorageValue(Storage.KillingInTheNameOf.BossPoints), 0)))
+						return string.format("You joined the 'Paw and Fur - Hunting Elite'. Ask Grizzly Adams for some hunting tasks. You already gained %d points. You currently have %d boss points.", (math.max(player:getStorageValue(POINTSSTORAGE), 0)), (math.max(player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossPoints), 0)))
 					end,
 				},
 				[2] = {
 					name = "Paw and Fur - Rank: Huntsman",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1082,
 					startValue = 0,
 					endValue = 1,
@@ -952,7 +952,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Paw and Fur - Rank: Ranger",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1083,
 					startValue = 2,
 					endValue = 3,
@@ -960,7 +960,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Paw and Fur - Rank: Big Game Hunter",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1084,
 					startValue = 4,
 					endValue = 5,
@@ -968,7 +968,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Paw and Fur - Rank: Trophy Hunter",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1085,
 					startValue = 5,
 					endValue = 6,
@@ -976,7 +976,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Paw and Fur - Rank: Elite Hunter",
-					storageId = Storage.KillingInTheNameOf.PawAndFurRank,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank,
 					missionId = 1086,
 					startValue = 7,
 					endValue = 8,
@@ -1929,7 +1929,7 @@ if not Quests then
 				},
 				[77] = {
 					name = "Paw and Fur: Tiquandas Revenge",
-					storageId = Storage.KillingInTheNameOf.MissionTiquandasRevenge,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.MissionTiquandasRevenge,
 					missionId = 10157,
 					startValue = 1,
 					endValue = 3,
@@ -1941,7 +1941,7 @@ if not Quests then
 				},
 				[78] = {
 					name = "Paw and Fur: Demodras",
-					storageId = Storage.KillingInTheNameOf.MissionDemodras,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.MissionDemodras,
 					missionId = 10158,
 					startValue = 1,
 					endValue = 3,
@@ -1953,7 +1953,7 @@ if not Quests then
 				},
 				[79] = { -- Others
 					name = "The Marid: Green Djinns",
-					storageId = Storage.KillingInTheNameOf.GreenDjinnTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.GreenDjinnTask,
 					missionId = 10159,
 					startValue = 0,
 					endValue = 3,
@@ -1968,7 +1968,7 @@ if not Quests then
 				},
 				[80] = {
 					name = "The Efreet: Blue Djinns",
-					storageId = Storage.KillingInTheNameOf.BlueDjinnTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.BlueDjinnTask,
 					missionId = 10160,
 					startValue = 0,
 					endValue = 3,
@@ -1983,7 +1983,7 @@ if not Quests then
 				},
 				[81] = {
 					name = "Meriana Rebels: Pirates",
-					storageId = Storage.KillingInTheNameOf.PirateTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.PirateTask,
 					missionId = 10161,
 					startValue = 0,
 					endValue = 3,
@@ -2004,7 +2004,7 @@ if not Quests then
 				},
 				[82] = {
 					name = "Turmoil of War",
-					storageId = Storage.KillingInTheNameOf.BudrikMinos,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos,
 					missionId = 10162,
 					startValue = 0,
 					endValue = 2,
@@ -2024,7 +2024,7 @@ if not Quests then
 				},
 				[83] = {
 					name = "Lugri: Necromancers and Priestesses",
-					storageId = Storage.KillingInTheNameOf.LugriNecromancers,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers,
 					missionId = 10163,
 					startValue = 0,
 					endValue = 4,
@@ -2056,7 +2056,7 @@ if not Quests then
 				},
 				[84] = {
 					name = "Edron City: Trolls",
-					storageId = Storage.KillingInTheNameOf.TrollTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.TrollTask,
 					missionId = 10164,
 					startValue = 0,
 					endValue = 1,
@@ -2069,7 +2069,7 @@ if not Quests then
 				},
 				[85] = {
 					name = "Edron City: Goblins",
-					storageId = Storage.KillingInTheNameOf.GoblinTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.GoblinTask,
 					missionId = 10165,
 					startValue = 0,
 					endValue = 1,
@@ -2087,7 +2087,7 @@ if not Quests then
 				},
 				[86] = {
 					name = "Edron City: Rotworms",
-					storageId = Storage.KillingInTheNameOf.RotwormTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.RotwormTask,
 					missionId = 10166,
 					startValue = 0,
 					endValue = 1,
@@ -2100,7 +2100,7 @@ if not Quests then
 				},
 				[87] = {
 					name = "Edron City: Cyclops",
-					storageId = Storage.KillingInTheNameOf.CyclopsTask,
+					storageId = Storage.Quest.U8_5.KillingInTheNameOf.CyclopsTask,
 					missionId = 10167,
 					startValue = 0,
 					endValue = 1,
@@ -2321,7 +2321,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Norseman Outfit Quest",
-					storageId = Storage.OutfitQuest.NorsemanAddon,
+					storageId = Storage.Quest.U8_0.TheIceIslands.NorsemanOutfit,
 					missionId = 10179,
 					startValue = 1,
 					endValue = 3,
@@ -2461,12 +2461,12 @@ if not Quests then
 		},
 		[14] = {
 			name = "Sea of Light",
-			startStorageId = Storage.SeaOfLight.Questline,
+			startStorageId = Storage.Quest.U8_54.SeaOfLight.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: The Plans",
-					storageId = Storage.SeaOfLight.Mission1,
+					storageId = Storage.Quest.U8_54.SeaOfLight.Mission1,
 					missionId = 10188,
 					startValue = 1,
 					endValue = 4,
@@ -2485,7 +2485,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: The Collector",
-					storageId = Storage.SeaOfLight.Mission2,
+					storageId = Storage.Quest.U8_54.SeaOfLight.Mission2,
 					missionId = 10189,
 					startValue = 1,
 					endValue = 3,
@@ -2499,7 +2499,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: The Mirror Crystal",
-					storageId = Storage.SeaOfLight.Mission3,
+					storageId = Storage.Quest.U8_54.SeaOfLight.Mission3,
 					missionId = 10190,
 					startValue = 1,
 					endValue = 4,
@@ -2519,12 +2519,12 @@ if not Quests then
 		},
 		[15] = {
 			name = "Secret Service",
-			startStorageId = Storage.SecretService.Quest,
+			startStorageId = Storage.Quest.U8_1.SecretService.Quest,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: From Thais with Love",
-					storageId = Storage.SecretService.TBIMission01,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission01,
 					missionId = 10191,
 					startValue = 1,
 					endValue = 3,
@@ -2537,7 +2537,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 1: For Your Eyes Only",
-					storageId = Storage.SecretService.AVINMission01,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission01,
 					missionId = 10192,
 					startValue = 1,
 					endValue = 4,
@@ -2551,7 +2551,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 1: Borrowed Knowledge",
-					storageId = Storage.SecretService.CGBMission01,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission01,
 					missionId = 10193,
 					startValue = 1,
 					endValue = 2,
@@ -2562,7 +2562,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 2: Operation Green Claw",
-					storageId = Storage.SecretService.TBIMission02,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission02,
 					missionId = 10194,
 					startValue = 1,
 					endValue = 2,
@@ -2574,7 +2574,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 2: A File Between Friends",
-					storageId = Storage.SecretService.AVINMission02,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission02,
 					missionId = 10195,
 					startValue = 1,
 					endValue = 2,
@@ -2585,7 +2585,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 2: Codename:Lumberjack",
-					storageId = Storage.SecretService.CGBMission02,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission02,
 					missionId = 10196,
 					startValue = 1,
 					endValue = 2,
@@ -2597,7 +2597,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 3: Treachery in Port Hope",
-					storageId = Storage.SecretService.TBIMission03,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission03,
 					missionId = 10197,
 					startValue = 1,
 					endValue = 3,
@@ -2609,7 +2609,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 3: What Men are Made of",
-					storageId = Storage.SecretService.AVINMission03,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission03,
 					missionId = 10198,
 					startValue = 1,
 					endValue = 4,
@@ -2623,7 +2623,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 3: Rust in Peace",
-					storageId = Storage.SecretService.CGBMission03,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission03,
 					missionId = 10199,
 					startValue = 1,
 					endValue = 3,
@@ -2636,7 +2636,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 4: Objective Hellgate",
-					storageId = Storage.SecretService.TBIMission04,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission04,
 					missionId = 10200,
 					startValue = 1,
 					endValue = 2,
@@ -2647,7 +2647,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Mission 4: Pawn Captures Knight",
-					storageId = Storage.SecretService.AVINMission04,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission04,
 					missionId = 10201,
 					startValue = 1,
 					endValue = 3,
@@ -2659,7 +2659,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Mission 4: Plot for A Plan",
-					storageId = Storage.SecretService.CGBMission04,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission04,
 					missionId = 10202,
 					startValue = 1,
 					endValue = 2,
@@ -2670,7 +2670,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "Mission 5: Coldfinger",
-					storageId = Storage.SecretService.TBIMission05,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission05,
 					missionId = 10203,
 					startValue = 1,
 					endValue = 3,
@@ -2682,7 +2682,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "Mission 5: A Cryptic Mission",
-					storageId = Storage.SecretService.AVINMission05,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission05,
 					missionId = 10204,
 					startValue = 1,
 					endValue = 2,
@@ -2693,7 +2693,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "Mission 5: No Admittance",
-					storageId = Storage.SecretService.CGBMission05,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission05,
 					missionId = 10205,
 					startValue = 1,
 					endValue = 2,
@@ -2704,7 +2704,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "Mission 6: The Weakest Spot",
-					storageId = Storage.SecretService.TBIMission06,
+					storageId = Storage.Quest.U8_1.SecretService.TBIMission06,
 					missionId = 10206,
 					startValue = 1,
 					endValue = 3,
@@ -2717,7 +2717,7 @@ if not Quests then
 				},
 				[17] = {
 					name = "Mission 6: A Little Bribe Won't Hurt",
-					storageId = Storage.SecretService.AVINMission06,
+					storageId = Storage.Quest.U8_1.SecretService.AVINMission06,
 					missionId = 10207,
 					startValue = 1,
 					endValue = 3,
@@ -2729,7 +2729,7 @@ if not Quests then
 				},
 				[18] = {
 					name = "Mission 6: News From the Past",
-					storageId = Storage.SecretService.CGBMission06,
+					storageId = Storage.Quest.U8_1.SecretService.CGBMission06,
 					missionId = 10208,
 					startValue = 1,
 					endValue = 2,
@@ -2740,7 +2740,7 @@ if not Quests then
 				},
 				[19] = {
 					name = "Mission 7: Licence to Kill",
-					storageId = Storage.SecretService.Mission07,
+					storageId = Storage.Quest.U8_1.SecretService.Mission07,
 					missionId = 10209,
 					startValue = 1,
 					endValue = 2,
@@ -2894,12 +2894,12 @@ if not Quests then
 		},
 		[18] = {
 			name = "The Beginning",
-			startStorageId = Storage.RookgaardTutorialIsland.SantiagoQuestLog,
+			startStorageId = Storage.Quest.U8_2.TheBeginningQuest.SantiagoQuestLog,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Cockroach Plague",
-					storageId = Storage.RookgaardTutorialIsland.SantiagoQuestLog,
+					storageId = Storage.Quest.U8_2.TheBeginningQuest.SantiagoQuestLog,
 					missionId = 10218,
 					startValue = 1,
 					endValue = 11,
@@ -2926,7 +2926,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Collecting Wood",
-					storageId = Storage.RookgaardTutorialIsland.ZirellaQuestLog,
+					storageId = Storage.Quest.U8_2.TheBeginningQuest.ZirellaQuestLog,
 					missionId = 10219,
 					startValue = 1,
 					endValue = 8,
@@ -2948,7 +2948,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "A Hungry Tailor",
-					storageId = Storage.RookgaardTutorialIsland.CarlosQuestLog,
+					storageId = Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog,
 					missionId = 10220,
 					startValue = 1,
 					endValue = 8,
@@ -3077,12 +3077,12 @@ if not Quests then
 		},
 		[21] = {
 			name = "The Hidden City of Beregar",
-			startStorageId = Storage.HiddenCityOfBeregar.DefaultStart,
+			startStorageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Going Down",
-					storageId = Storage.HiddenCityOfBeregar.GoingDown,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.GoingDown,
 					missionId = 10228,
 					startValue = 1,
 					endValue = 2,
@@ -3094,7 +3094,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Justice for All",
-					storageId = Storage.HiddenCityOfBeregar.JusticeForAll,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll,
 					missionId = 10229,
 					startValue = 1,
 					endValue = 6,
@@ -3122,7 +3122,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Sweet as Chocolate Cake",
-					storageId = Storage.HiddenCityOfBeregar.SweetAsChocolateCake,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.SweetAsChocolateCake,
 					missionId = 10231,
 					startValue = 1,
 					endValue = 3,
@@ -3135,7 +3135,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "The Good Guard",
-					storageId = Storage.HiddenCityOfBeregar.TheGoodGuard,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.TheGoodGuard,
 					missionId = 10232,
 					startValue = 1,
 					endValue = 2,
@@ -3149,12 +3149,12 @@ if not Quests then
 		},
 		[22] = {
 			name = "The Ice Islands Quest",
-			startStorageId = Storage.TheIceIslands.Questline,
+			startStorageId = Storage.Quest.U8_0.TheIceIslands.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Befriending the Musher",
-					storageId = Storage.TheIceIslands.Mission01,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission01,
 					missionId = 10233,
 					startValue = 1,
 					endValue = 3,
@@ -3169,7 +3169,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Nibelor 1: Breaking the Ice",
-					storageId = Storage.TheIceIslands.Mission02,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission02,
 					missionId = 10234,
 					startValue = 1,
 					endValue = 5,
@@ -3184,7 +3184,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Nibelor 2: Ecological Terrorism",
-					storageId = Storage.TheIceIslands.Mission03,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission03,
 					missionId = 10235,
 					startValue = 1,
 					endValue = 3,
@@ -3199,7 +3199,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Nibelor 3: Artful Sabotage",
-					storageId = Storage.TheIceIslands.Mission04,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission04,
 					missionId = 10236,
 					startValue = 1,
 					endValue = 2,
@@ -3211,7 +3211,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Nibelor 4: Berserk Brewery",
-					storageId = Storage.TheIceIslands.Mission05,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission05,
 					missionId = 10237,
 					startValue = 1,
 					endValue = 6,
@@ -3226,7 +3226,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Nibelor 5: Cure the Dogs",
-					storageId = Storage.TheIceIslands.Mission06,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission06,
 					missionId = 10238,
 					startValue = 1,
 					endValue = 8,
@@ -3253,20 +3253,19 @@ if not Quests then
 				},
 				[7] = {
 					name = "The Secret of Helheim",
-					storageId = Storage.TheIceIslands.Mission07,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission07,
 					missionId = 10239,
 					startValue = 1,
 					endValue = 3,
 					states = {
 						[1] = "Hjaern might have a mission for you. So maybe you go and talk to him.",
-						[2] = "Hjaern send you to find someone in Svargrond who can give you a passage to \z
-						Helheim and seek the reason for the unrest there.",
+						[2] = "Hjaern send you to find someone in Svargrond who can give you a passage to Helheim and seek the reason for the unrest there.",
 						[3] = "You discovered the necromantic altar and should report Hjaern about it.",
 					},
 				},
 				[8] = {
 					name = "The Contact",
-					storageId = Storage.TheIceIslands.Mission08,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission08,
 					missionId = 10240,
 					startValue = 1,
 					endValue = 4,
@@ -3281,7 +3280,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Formorgar Mines 1: The Mission",
-					storageId = Storage.TheIceIslands.Mission09,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission09,
 					missionId = 10241,
 					startValue = 1,
 					endValue = 2,
@@ -3294,7 +3293,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Formorgar Mines 2: Ghostwhisperer",
-					storageId = Storage.TheIceIslands.Mission10,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission10,
 					missionId = 10242,
 					startValue = 1,
 					endValue = 2,
@@ -3305,7 +3304,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Formorgar Mines 3: The Secret",
-					storageId = Storage.TheIceIslands.Mission11,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission11,
 					missionId = 10243,
 					startValue = 1,
 					endValue = 2,
@@ -3318,7 +3317,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Formorgar Mines 4: Retaliation",
-					storageId = Storage.TheIceIslands.Mission12,
+					storageId = Storage.Quest.U8_0.TheIceIslands.Mission12,
 					missionId = 10244,
 					startValue = 1,
 					endValue = 6,
@@ -3334,7 +3333,7 @@ if not Quests then
 				},
 				[13] = {
 					name = "Barbarian Test 1: Barbarian Booze",
-					storageId = Storage.BarbarianTest.Mission01,
+					storageId = Storage.Quest.U8_0.BarbarianTest.Mission01,
 					missionId = 1055,
 					startValue = 1,
 					endValue = 3,
@@ -3346,7 +3345,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "Barbarian Test 2: The Bear Hugging",
-					storageId = Storage.BarbarianTest.Mission02,
+					storageId = Storage.Quest.U8_0.BarbarianTest.Mission02,
 					missionId = 1056,
 					startValue = 1,
 					endValue = 2,
@@ -3357,7 +3356,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "Barbarian Test 3: The Mammoth Pushing",
-					storageId = Storage.BarbarianTest.Mission03,
+					storageId = Storage.Quest.U8_0.BarbarianTest.Mission03,
 					missionId = 1057,
 					startValue = 1,
 					endValue = 2,
@@ -3368,7 +3367,7 @@ if not Quests then
 				},
 				[16] = {
 					name = "The Honorary Barbarian",
-					storageId = Storage.BarbarianTest.Questline,
+					storageId = Storage.Quest.U8_0.BarbarianTest.Questline,
 					missionId = 10099,
 					startValue = 8,
 					endValue = 8,
@@ -3380,12 +3379,12 @@ if not Quests then
 		},
 		[23] = {
 			name = "The Inquisition",
-			startStorageId = Storage.TheInquisition.Questline,
+			startStorageId = Storage.Quest.U8_2.TheInquisitionQuest.Questline,
 			startStorageValue = 2,
 			missions = {
 				[1] = {
 					name = "Mission 1: Interrogation",
-					storageId = Storage.TheInquisition.Mission01,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission01,
 					missionId = 10245,
 					startValue = 1,
 					endValue = 7,
@@ -3402,7 +3401,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: Eclipse",
-					storageId = Storage.TheInquisition.Mission02,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission02,
 					missionId = 10246,
 					startValue = 1,
 					endValue = 3,
@@ -3417,7 +3416,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: Vampire Hunt",
-					storageId = Storage.TheInquisition.Mission03,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission03,
 					missionId = 10247,
 					startValue = 1,
 					endValue = 6,
@@ -3435,7 +3434,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 4: The Haunted Ruin",
-					storageId = Storage.TheInquisition.Mission04,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission04,
 					missionId = 10248,
 					startValue = 1,
 					endValue = 3,
@@ -3448,7 +3447,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 5: Essential Gathering",
-					storageId = Storage.TheInquisition.Mission05,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission05,
 					missionId = 10249,
 					startValue = 1,
 					endValue = 3,
@@ -3460,7 +3459,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 6: The Demon Ungreez",
-					storageId = Storage.TheInquisition.Mission06,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission06,
 					missionId = 10250,
 					startValue = 1,
 					endValue = 3,
@@ -3472,7 +3471,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 7: The Shadow Nexus",
-					storageId = Storage.TheInquisition.Mission07,
+					storageId = Storage.Quest.U8_2.TheInquisitionQuest.Mission07,
 					missionId = 10251,
 					startValue = 1,
 					endValue = 5,
@@ -3896,12 +3895,12 @@ if not Quests then
 		},
 		[26] = {
 			name = "The Thieves Guild",
-			startStorageId = Storage.ThievesGuild.Quest,
+			startStorageId = Storage.Quest.U8_2.TheThievesGuildQuest.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: Ivory Poaching",
-					storageId = Storage.ThievesGuild.Mission01,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission01,
 					missionId = 10280,
 					startValue = 1,
 					endValue = 2,
@@ -3912,7 +3911,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: Burglary",
-					storageId = Storage.ThievesGuild.Mission02,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission02,
 					missionId = 10281,
 					startValue = 1,
 					endValue = 3,
@@ -3924,7 +3923,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: Invitation",
-					storageId = Storage.ThievesGuild.Mission03,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission03,
 					missionId = 10282,
 					startValue = 1,
 					endValue = 3,
@@ -3936,7 +3935,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 4: Bridge Robbery",
-					storageId = Storage.ThievesGuild.Mission04,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission04,
 					missionId = 10283,
 					startValue = 1,
 					endValue = 8,
@@ -3953,7 +3952,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 5: Enforcing Debts",
-					storageId = Storage.ThievesGuild.Mission05,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission05,
 					missionId = 10284,
 					startValue = 1,
 					endValue = 2,
@@ -3965,7 +3964,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 6: Fishnapping",
-					storageId = Storage.ThievesGuild.Mission06,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission06,
 					missionId = 10285,
 					startValue = 1,
 					endValue = 4,
@@ -3979,7 +3978,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 7: Blackmail",
-					storageId = Storage.ThievesGuild.Mission07,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission07,
 					missionId = 10286,
 					startValue = 1,
 					endValue = 2,
@@ -3991,7 +3990,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 8: Message",
-					storageId = Storage.ThievesGuild.Mission08,
+					storageId = Storage.Quest.U8_2.TheThievesGuildQuest.Mission08,
 					missionId = 10287,
 					startValue = 1,
 					endValue = 3,
@@ -4006,12 +4005,12 @@ if not Quests then
 		},
 		[27] = {
 			name = "The Travelling Trader Quest",
-			startStorageId = Storage.TravellingTrader.Mission01,
+			startStorageId = Storage.Quest.U8_1.TheTravellingTrader.Mission01,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: Trophy",
-					storageId = Storage.TravellingTrader.Mission01,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission01,
 					missionId = 10288,
 					startValue = 1,
 					endValue = 2,
@@ -4023,7 +4022,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: Delivery",
-					storageId = Storage.TravellingTrader.Mission02,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission02,
 					missionId = 10289,
 					startValue = 1,
 					endValue = 5,
@@ -4038,7 +4037,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: Cheese",
-					storageId = Storage.TravellingTrader.Mission03,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission03,
 					missionId = 10290,
 					startValue = 1,
 					endValue = 3,
@@ -4051,7 +4050,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 4: Vase",
-					storageId = Storage.TravellingTrader.Mission04,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission04,
 					missionId = 10291,
 					startValue = 1,
 					endValue = 3,
@@ -4065,7 +4064,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 5: Make a deal",
-					storageId = Storage.TravellingTrader.Mission05,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission05,
 					missionId = 10292,
 					startValue = 1,
 					endValue = 3,
@@ -4078,7 +4077,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 6: Goldfish",
-					storageId = Storage.TravellingTrader.Mission06,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission06,
 					missionId = 10293,
 					startValue = 1,
 					endValue = 2,
@@ -4089,7 +4088,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 7: Declare",
-					storageId = Storage.TravellingTrader.Mission07,
+					storageId = Storage.Quest.U8_1.TheTravellingTrader.Mission07,
 					missionId = 10294,
 					startValue = 1,
 					endValue = 1,
@@ -4343,12 +4342,12 @@ if not Quests then
 		},
 		[29] = {
 			name = "The Ultimate Challenges",
-			startStorageId = Storage.SvargrondArena.QuestLogGreenhorn,
+			startStorageId = Storage.Quest.U8_0.BarbarianArena.QuestLogGreenhorn,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Barbarian Arena - Greenhorn Mode",
-					storageId = Storage.SvargrondArena.QuestLogGreenhorn,
+					storageId = Storage.Quest.U8_0.BarbarianArena.QuestLogGreenhorn,
 					missionId = 10312,
 					startValue = 1,
 					endValue = 2,
@@ -4359,7 +4358,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Barbarian Arena - Scrapper Mode",
-					storageId = Storage.SvargrondArena.QuestLogScrapper,
+					storageId = Storage.Quest.U8_0.BarbarianArena.QuestLogScrapper,
 					missionId = 10313,
 					startValue = 1,
 					endValue = 2,
@@ -4370,7 +4369,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Barbarian Arena - Warlord Mode",
-					storageId = Storage.SvargrondArena.QuestLogWarlord,
+					storageId = Storage.Quest.U8_0.BarbarianArena.QuestLogWarlord,
 					missionId = 10314,
 					startValue = 1,
 					endValue = 2,
@@ -4523,7 +4522,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "An Interest In Botany",
-					storageId = Storage.TibiaTales.AnInterestInBotany,
+					storageId = Storage.TibiaTales.AnInterestInBotany.Questline,
 					missionId = 10321,
 					startValue = 1,
 					endValue = 4,
@@ -4676,7 +4675,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "To Outfox a Fox",
-					storageId = Storage.ToOutfoxAFoxQuest,
+					storageId = Storage.TibiaTales.ToOutfoxAFoxQuest,
 					missionId = 10432,
 					startValue = 1,
 					endValue = 2,
@@ -4687,7 +4686,7 @@ if not Quests then
 				},
 				[15] = {
 					name = "Fish for a Serpent",
-					storageId = Storage.Quest.U8_2.FishForASerpent.QuestLine,
+					storageId = Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent,
 					missionId = 10097,
 					startValue = 1,
 					endValue = 5,
@@ -4725,12 +4724,12 @@ if not Quests then
 		},
 		[32] = {
 			name = "Unnatural Selection",
-			startStorageId = Storage.UnnaturalSelection.Questline,
+			startStorageId = Storage.Quest.U8_54.UnnaturalSelection.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 1: Skulled",
-					storageId = Storage.UnnaturalSelection.Mission01,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission01,
 					missionId = 10330,
 					startValue = 1,
 					endValue = 3,
@@ -4743,7 +4742,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 2: All Around the World",
-					storageId = Storage.UnnaturalSelection.Mission02,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission02,
 					missionId = 10331,
 					startValue = 1,
 					endValue = 13,
@@ -4777,7 +4776,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 3: Dance Dance Evolution",
-					storageId = Storage.UnnaturalSelection.Mission03,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission03,
 					missionId = 10332,
 					startValue = 1,
 					endValue = 3,
@@ -4790,7 +4789,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 4: Bits and Pieces",
-					storageId = Storage.UnnaturalSelection.Mission04,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission04,
 					missionId = 10333,
 					startValue = 1,
 					endValue = 2,
@@ -4802,7 +4801,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 5: Ray of Light",
-					storageId = Storage.UnnaturalSelection.Mission05,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission05,
 					missionId = 10334,
 					startValue = 1,
 					endValue = 3,
@@ -4815,7 +4814,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 6: Firewater Burn",
-					storageId = Storage.UnnaturalSelection.Mission06,
+					storageId = Storage.Quest.U8_54.UnnaturalSelection.Mission06,
 					missionId = 10335,
 					startValue = 1,
 					endValue = 3,
@@ -4829,12 +4828,12 @@ if not Quests then
 		},
 		[33] = {
 			name = "What a foolish Quest",
-			startStorageId = Storage.WhatAFoolish.Questline,
+			startStorageId = Storage.Quest.U8_1.WhatAFoolishQuest.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "What a foolish Quest - Tasks of a Fool",
-					storageId = Storage.WhatAFoolish.Mission1,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission1,
 					missionId = 10336,
 					startValue = 1,
 					endValue = 2,
@@ -4845,7 +4844,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "What a foolish Quest - That stinks!",
-					storageId = Storage.WhatAFoolish.Mission2,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission2,
 					missionId = 10337,
 					startValue = 1,
 					endValue = 2,
@@ -4858,7 +4857,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "What a foolish Quest - A Piece of Cake",
-					storageId = Storage.WhatAFoolish.Mission3,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission3,
 					missionId = 10338,
 					startValue = 1,
 					endValue = 2,
@@ -4869,7 +4868,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "What a foolish Quest - Fool Spirits",
-					storageId = Storage.WhatAFoolish.Mission4,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission4,
 					missionId = 10339,
 					startValue = 1,
 					endValue = 3,
@@ -4881,7 +4880,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "What a foolish Quest - Watch out for the foolish",
-					storageId = Storage.WhatAFoolish.Mission5,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission5,
 					missionId = 10340,
 					startValue = 1,
 					endValue = 3,
@@ -4895,7 +4894,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "What a foolish Quest - The queen of farts",
-					storageId = Storage.WhatAFoolish.Mission6,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission6,
 					missionId = 10341,
 					startValue = 1,
 					endValue = 5,
@@ -4909,7 +4908,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "What a foolish Quest - For your mice only",
-					storageId = Storage.WhatAFoolish.Mission7,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission7,
 					missionId = 10342,
 					startValue = 1,
 					endValue = 2,
@@ -4920,7 +4919,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "What a foolish Quest - Smoking is a foolish thing",
-					storageId = Storage.WhatAFoolish.Mission8,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission8,
 					missionId = 10343,
 					startValue = 1,
 					endValue = 5,
@@ -4934,7 +4933,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "What a foolish Quest - A fool's bargain",
-					storageId = Storage.WhatAFoolish.Mission9,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission9,
 					missionId = 10344,
 					startValue = 1,
 					endValue = 5,
@@ -4950,7 +4949,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "What a foolish Quest - A sweet surprise",
-					storageId = Storage.WhatAFoolish.Mission10,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission10,
 					missionId = 10345,
 					startValue = 1,
 					endValue = 2,
@@ -4962,7 +4961,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "What a foolish Quest - The final foolishness",
-					storageId = Storage.WhatAFoolish.Mission11,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission11,
 					missionId = 10346,
 					startValue = 1,
 					endValue = 4,
@@ -4977,7 +4976,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "What a foolish Quest - To become a complete fool",
-					storageId = Storage.WhatAFoolish.JesterOutfit,
+					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.JesterOutfit,
 					missionId = 10347,
 					startValue = 4,
 					endValue = 4,
@@ -4989,12 +4988,12 @@ if not Quests then
 		},
 		[34] = {
 			name = "Wrath of the Emperor",
-			startStorageId = Storage.WrathoftheEmperor.Questline,
+			startStorageId = Storage.Quest.U8_6.WrathOfTheEmperor.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 01: Catering the Lions Den",
-					storageId = Storage.WrathoftheEmperor.Mission01,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission01,
 					missionId = 10348,
 					startValue = 1,
 					endValue = 3,
@@ -5008,7 +5007,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 02: First Contact",
-					storageId = Storage.WrathoftheEmperor.Mission02,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission02,
 					missionId = 10349,
 					startValue = 1,
 					endValue = 3,
@@ -5023,7 +5022,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03: The Keeper",
-					storageId = Storage.WrathoftheEmperor.Mission03,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission03,
 					missionId = 10350,
 					startValue = 1,
 					endValue = 3,
@@ -5036,7 +5035,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 04: Sacrament of the Snake",
-					storageId = Storage.WrathoftheEmperor.Mission04,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission04,
 					missionId = 10351,
 					startValue = 1,
 					endValue = 3,
@@ -5052,7 +5051,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 05: New in Town",
-					storageId = Storage.WrathoftheEmperor.Mission05,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission05,
 					missionId = 10352,
 					startValue = 1,
 					endValue = 3,
@@ -5064,27 +5063,27 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 06: The Office Job",
-					storageId = Storage.WrathoftheEmperor.Mission06,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission06,
 					missionId = 10353,
 					startValue = 0,
-					endValue = 4,
+					endValue = 5,
 					description = function(player)
-						return string.format("Kill four Magistrati in the office building. Then report back to Zlak. You have killed %d magistrati so far.", (math.max(player:getStorageValue(Storage.WrathoftheEmperor.Mission06), 0)))
+						return string.format("Kill four Magistrati in the office building. Then report back to Zlak. You have killed %d magistrati so far.", (math.max(player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission06), 1)))
 					end,
 				},
 				[7] = {
 					name = "Mission 07: A Noble Cause",
-					storageId = Storage.WrathoftheEmperor.Mission07,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission07,
 					missionId = 10354,
 					startValue = 0,
 					endValue = 6,
 					description = function(player)
-						return string.format("Kill six nobles in the city and report back to Zlak. You have killed %d nobles so far.", (math.max(player:getStorageValue(Storage.WrathoftheEmperor.Mission07), 0)))
+						return string.format("Kill six nobles in the city and report back to Zlak. You have killed %d nobles so far.", (math.max(player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission07), 0)))
 					end,
 				},
 				[8] = {
 					name = "Mission 08: Uninvited Guests",
-					storageId = Storage.WrathoftheEmperor.Mission08,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission08,
 					missionId = 10355,
 					startValue = 1,
 					endValue = 2,
@@ -5095,7 +5094,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 09: The Sleeping Dragon",
-					storageId = Storage.WrathoftheEmperor.Mission09,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission09,
 					missionId = 10356,
 					startValue = 1,
 					endValue = 2,
@@ -5107,7 +5106,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 10: A Message of Freedom",
-					storageId = Storage.WrathoftheEmperor.Mission10,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission10,
 					missionId = 10357,
 					startValue = 1,
 					endValue = 6,
@@ -5129,7 +5128,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Mission 11: Payback Time",
-					storageId = Storage.WrathoftheEmperor.Mission11,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission11,
 					missionId = 10358,
 					startValue = 1,
 					endValue = 2,
@@ -5141,7 +5140,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Mission 12: Just Rewards",
-					storageId = Storage.WrathoftheEmperor.Mission12,
+					storageId = Storage.Quest.U8_6.WrathOfTheEmperor.Mission12,
 					missionId = 10359,
 					startValue = 0,
 					endValue = 1,
@@ -6174,12 +6173,12 @@ if not Quests then
 		},
 		[45] = {
 			name = "Spirithunters Quest",
-			startStorageId = Storage.SpiritHunters.Mission01,
+			startStorageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Method",
-					storageId = Storage.SpiritHunters.Mission01,
+					storageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 					missionId = 10426,
 					startValue = 1,
 					endValue = 2,
@@ -6190,7 +6189,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "First Mission",
-					storageId = Storage.SpiritHunters.Mission01,
+					storageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 					missionId = 10427,
 					startValue = 2,
 					endValue = 4,
@@ -6201,7 +6200,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Second Mission",
-					storageId = Storage.SpiritHunters.Mission01,
+					storageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 					missionId = 10428,
 					startValue = 4,
 					endValue = 6,

@@ -7778,7 +7778,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		case OfferTypes_t::EXPBOOST: {
 			auto expBoostCount = getStorageValue(STORAGEVALUE_EXPBOOST);
 
-			if (expBoostCount == 6) {
+			if (expBoostCount >= 6 || getXpBoostTime() > 0) {
 				canBuy = false;
 			}
 			break;

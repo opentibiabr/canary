@@ -10480,20 +10480,19 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::EXPBOOST: {
-			// Fix Boost Price in io_store.cpp
-			auto currentExpBoost = player->getStaminaXpBoost();
+			auto currentExpBoost = player->getXpBoostTime();
 			auto expBoostCount = player->getStorageValue(STORAGEVALUE_EXPBOOST);
 
 			player->setXpBoostPercent(50);
-			player->setStaminaXpBoost(currentExpBoost + 3600);
+			player->setXpBoostTime(currentExpBoost + 3600);
 
 			if (expBoostCount == -1 || expBoostCount == 6) {
 				expBoostCount = 1;
-				player->addStorageValue(STORAGEVALUE_EXPBOOST, 1);
 			}
 
 			player->addStorageValue(STORAGEVALUE_EXPBOOST, expBoostCount + 1);
 			player->sendStats();
+			success = true;
 			break;
 		}
 
@@ -10633,17 +10632,20 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 	}
 
 	if (success) {
-		auto offerPrice = offer->getOfferPrice();
+		uint32_t offerPrice = offer->getOfferPrice();
 
-		std::string returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getOfferName(), offer->getOfferPrice());
-		uint8_t result = player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(offerPrice), returnmessage);
+		if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
+			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST) - 1);
+		}
+
+		std::string returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getOfferName(), offerPrice);
+		uint8_t result = player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), offerPrice, returnmessage);
 		if (result == enumToValue(AccountErrors_t::RemoveCoins)) {
 			player->sendStoreError(StoreErrors_t::PURCHASE, "You don't have enough coins.");
 			return;
 		}
 
 		StoreHistory tempHistory;
-
 		tempHistory.description = offer->getOfferName();
 		tempHistory.coinAmount = static_cast<int32_t>(offerPrice * -1);
 		tempHistory.createdAt = getTimeNow();

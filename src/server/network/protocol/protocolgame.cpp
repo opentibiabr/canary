@@ -9259,6 +9259,15 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage &msg) {
 
 	if (actionType == 0) {
 		sendStoreHome();
+	} else if (actionType == 1) {
+		uint8_t innerAction = msg.getByte();
+		if (innerAction == 1) {
+			auto currentCategory = g_ioStore().findCategory("Boosts");
+			if (!currentCategory) {
+				return;
+			}
+			sendCategoryOffers(currentCategory);
+		}
 	} else if (actionType == 2) {
 		std::string categoryName = msg.getString();
 		auto currentCategory = g_ioStore().findCategory(categoryName);
@@ -9289,7 +9298,12 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 
 	msg.add<uint32_t>(offer->getOfferId());
 	msg.add<uint16_t>(offer->getOfferCount());
-	msg.add<uint32_t>(offer->getOfferPrice());
+
+	uint32_t offerPrice = offer->getOfferPrice();
+	if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
+		offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
+	}
+	msg.add<uint32_t>(offerPrice);
 	msg.addByte(0x00); // Coin Type
 
 	auto canBuyOffer = player->canBuyStoreOffer(offer);
@@ -9297,6 +9311,9 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 	if (!canBuyOffer) {
 		msg.addByte(0x01);
 		auto vectorIndex = g_ioStore().offersDisableIndex.find(offer->getOfferType());
+		if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
+			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
+		}
 		msg.add<uint16_t>(vectorIndex->second);
 	}
 

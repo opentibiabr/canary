@@ -1635,7 +1635,7 @@ const uint32_t calculateBoostPrice(int32_t boostCounter) {
 		return 360;
 	}
 
-	switch(boostCounter) {
+	switch (boostCounter) {
 		case 1:
 			return 30;
 		case 2:

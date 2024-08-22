@@ -9311,9 +9311,6 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 	if (!canBuyOffer) {
 		msg.addByte(0x01);
 		auto vectorIndex = g_ioStore().offersDisableIndex.find(offer->getOfferType());
-		if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
-			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
-		}
 		msg.add<uint16_t>(vectorIndex->second);
 	}
 

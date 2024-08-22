@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 46 (feat: gamestore cpp)")
+	logger.info("Updating database to version 47 (feat: gamestore cpp)")
 
 	db.query([[
 			ALTER TABLE `store_history`

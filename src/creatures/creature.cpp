@@ -362,7 +362,7 @@ void Creature::onRemoveTileItem(std::shared_ptr<Tile> updateTile, const Position
 
 void Creature::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) {
 	metrics::method_latency measure(__METHOD_NAME__);
-	if (creature == getCreature()) {
+	if (creature.get() == this) {
 		if (useCacheMap()) {
 			isMapLoaded = true;
 			updateMapCache();
@@ -470,7 +470,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 
 void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
 	metrics::method_latency measure(__METHOD_NAME__);
-	if (creature == getCreature()) {
+	if (creature.get() == this) {
 		lastStep = OTSYS_TIME();
 		lastStepCost = 1;
 
@@ -1045,24 +1045,12 @@ void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathPa
 }
 
 void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
-	metrics::method_latency measure(__METHOD_NAME__);
-	if (pathfinderRunning.load()) {
-		return;
-	}
-
-	pathfinderRunning.store(true);
-	g_dispatcher().asyncEvent([self = getCreature()] {
-		if (!self || self->isRemoved()) {
-			return;
-		}
-
-		self->goToFollowCreature();
-		self->pathfinderRunning.store(false);
-	});
-
-	if (onComplete) {
+	if (!m_goToFollowCreature && onComplete) {
 		g_dispatcher().context().addEvent(std::move(onComplete));
 	}
+
+	m_goToFollowCreature = true;
+	sendAsyncTasks();
 }
 
 void Creature::goToFollowCreature() {
@@ -1905,4 +1893,31 @@ void Creature::iconChanged() {
 	for (const auto &spectator : Spectators().find<Player>(tile->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureIcon(getCreature());
 	}
+}
+
+void Creature::sendAsyncTasks() {
+	metrics::method_latency measure(__METHOD_NAME__);
+	if (asyncTasksRunning.load()) {
+		return;
+	}
+
+	asyncTasksRunning.store(true);
+	g_dispatcher().asyncEvent([self = getCreature()] {
+		if (!self || self->isRemoved()) {
+			return;
+		}
+
+		self->callAsyncTasks();
+		for (const auto &task : self->asyncTasks) {
+			task();
+		}
+		self->asyncTasks.clear();
+
+		if (self->m_goToFollowCreature) {
+			self->goToFollowCreature();
+			self->m_goToFollowCreature = false;
+		}
+
+		self->asyncTasksRunning.store(false);
+	});
 }

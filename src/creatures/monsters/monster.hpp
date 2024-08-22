@@ -472,4 +472,11 @@ private:
 	void doRandomStep(Direction &nextDirection, bool &result);
 
 	void onConditionStatusChange(const ConditionType_t &type);
+
+	// async
+	void callAsyncTasks() override;
+	void updateTargetList_async();
+	void updateIdleStatus_async();
+	bool m_updateTargetList = false;
+	bool m_updateIdleStatus = false;
 };

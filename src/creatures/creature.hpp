@@ -792,8 +792,6 @@ protected:
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;
 
-	std::atomic_bool pathfinderRunning = false;
-
 	// use map here instead of phmap to keep the keys in a predictable order
 	std::map<std::string, CreatureIcon> creatureIcons = {};
 
@@ -827,6 +825,13 @@ protected:
 	friend class Game;
 	friend class Map;
 	friend class CreatureFunctions;
+
+	// async
+	void sendAsyncTasks();
+	virtual void callAsyncTasks() {};
+	std::atomic_bool asyncTasksRunning = false;
+	bool m_goToFollowCreature = false;
+	std::vector<std::function<void()>> asyncTasks;
 
 private:
 	bool canFollowMaster();

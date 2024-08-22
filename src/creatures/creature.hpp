@@ -831,12 +831,17 @@ protected:
 	virtual void callAsyncTasks() {};
 	std::atomic_bool asyncTasksRunning = false;
 	bool m_goToFollowCreature = false;
-	std::vector<std::function<void()>> asyncTasks;
+
+	void addAsyncTask(std::function<void()>&& fnc) {
+		asyncTasks.emplace_back(std::move(fnc));
+	}
 
 private:
 	bool canFollowMaster();
 	bool isLostSummon();
 	void handleLostSummon(bool teleportSummons);
+
+	std::vector<std::function<void()>> asyncTasks;
 
 	struct {
 		uint16_t groundSpeed { 0 };

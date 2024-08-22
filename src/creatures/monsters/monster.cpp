@@ -246,7 +246,7 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		updateTargetList_async();
 		updateIdleStatus_async();
 	} else {
-		asyncTasks.emplace_back([self = getMonster(), newPos, oldPos, creature] {
+		addAsyncTask([self = getMonster(), newPos, oldPos, creature] {
 			bool canSeeNewPos = self->canSee(newPos);
 			bool canSeeOldPos = self->canSee(oldPos);
 

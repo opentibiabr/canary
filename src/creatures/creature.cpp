@@ -272,6 +272,10 @@ void Creature::stopEventWalk() {
 }
 
 void Creature::updateMapCache() {
+	if (!useCacheMap()) {
+		return;
+	}
+
 	metrics::method_latency measure(__METHOD_NAME__);
 	std::shared_ptr<Tile> newTile;
 	const Position &myPos = getPosition();

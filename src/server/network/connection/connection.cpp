@@ -326,7 +326,6 @@ void Connection::internalWorker() {
 		return;
 	}
 
-
 	const auto &outputMessage = messageQueue.front();
 	protocol->onSendMessage(outputMessage);
 

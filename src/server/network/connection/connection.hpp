@@ -129,15 +129,15 @@ private:
 			unlock();
 		}
 
-		private:
-			void lock() {
-				locked.wait(true);
-				locked.store(true);
-			}
-			void unlock() {
-				locked.store(false);
-				locked.notify_one();
-			}
+	private:
+		void lock() {
+			locked.wait(true);
+			locked.store(true);
+		}
+		void unlock() {
+			locked.store(false);
+			locked.notify_one();
+		}
 		std::deque<OutputMessage_ptr> list;
 		std::atomic_bool locked = false;
 	} messageQueue;

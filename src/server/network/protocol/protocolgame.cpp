@@ -5363,7 +5363,8 @@ void ProtocolGame::sendForgingData() {
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
-	std::map<int32_t, std::map<uint16_t, std::map<uint8_t, uint16_t>>> convergenceItemsMap;
+	std::map<int32_t, std::map<uint16_t, std::map<uint8_t, uint16_t>>> convergenceFusionItemsMap;
+	std::map<int32_t, std::map<uint16_t, std::map<uint8_t, uint16_t>>> convergenceTransferItemsMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
 
@@ -5398,7 +5399,8 @@ void ProtocolGame::sendOpenForge() {
 				getForgeInfoMap(item, receiveTierItemMap);
 			}
 			if (itemClassification == 4) {
-				getForgeInfoMap(item, convergenceItemsMap[item->getClassification()]);
+				getForgeInfoMap(item, convergenceFusionItemsMap[item->getSlotPosition()]);
+				getForgeInfoMap(item, convergenceTransferItemsMap[item->getClassification()]);
 			}
 		}
 	}
@@ -5445,7 +5447,7 @@ void ProtocolGame::sendOpenForge() {
 	    1 byte: tier
 	    2 bytes: count
 	*/
-	for (const auto &[slot, itemMap] : convergenceItemsMap) {
+	for (const auto &[slot, itemMap] : convergenceFusionItemsMap) {
 		uint8_t totalItemsCount = 0;
 		auto totalItemsCountPosition = msg.getBufferPosition();
 		msg.skipBytes(1); // Total items count
@@ -5533,7 +5535,7 @@ void ProtocolGame::sendOpenForge() {
 	        2 bytes: item id
 	        2 bytes: count
 	*/
-	for (const auto &[slot, itemMap] : convergenceItemsMap) {
+	for (const auto &[slot, itemMap] : convergenceTransferItemsMap) {
 		uint16_t donorCount = 0;
 		uint16_t receiverCount = 0;
 		auto donorCountPosition = msg.getBufferPosition();

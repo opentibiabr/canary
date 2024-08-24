@@ -268,7 +268,7 @@ private:
 	// equipFunction
 	std::function<uint32_t(
 		std::shared_ptr<MoveEvent> moveEvent,
-		std::shared_ptr<Player> player,
+		const std::shared_ptr<Player> &player,
 		std::shared_ptr<Item> item,
 		Slots_t slot,
 		bool boolean

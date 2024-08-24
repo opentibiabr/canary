@@ -129,8 +129,8 @@ public:
 	void playerOnRequestQuestLine(const std::shared_ptr<Player> &player, uint16_t questId) const;
 	void playerOnStorageUpdate(const std::shared_ptr<Player> &player, uint32_t key, int32_t value, int32_t oldValue, uint64_t currentTime) const;
 	void playerOnCombat(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item, CombatDamage &damage) const;
-	void playerOnInventoryUpdate(std::shared_ptr<Player> player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) const;
-	bool playerOnRotateItem(std::shared_ptr<Player> player, const std::shared_ptr<Item> &item, const Position &position) const;
+	void playerOnInventoryUpdate(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) const;
+	bool playerOnRotateItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &position) const;
 	void playerOnWalk(const std::shared_ptr<Player> &player, Direction &dir) const;
 	void playerOnThink(std::shared_ptr<Player> player, uint32_t interval) const;
 

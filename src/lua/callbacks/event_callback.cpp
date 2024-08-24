@@ -1000,7 +1000,7 @@ void EventCallback::playerOnRequestQuestLine(const std::shared_ptr<Player> &play
 	getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::playerOnInventoryUpdate(std::shared_ptr<Player> player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) const {
+void EventCallback::playerOnInventoryUpdate(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[{}] Call stack overflow", __FUNCTION__);
 		return;
@@ -1024,7 +1024,7 @@ void EventCallback::playerOnInventoryUpdate(std::shared_ptr<Player> player, cons
 	getScriptInterface()->callVoidFunction(4);
 }
 
-bool EventCallback::playerOnRotateItem(std::shared_ptr<Player> player, const std::shared_ptr<Item> &item, const Position &position) const {
+bool EventCallback::playerOnRotateItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &position) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[{}] Call stack overflow", __FUNCTION__);
 		return false;

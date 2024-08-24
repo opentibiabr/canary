@@ -399,7 +399,7 @@ class InstantSpell final : public Script, public Spell {
 public:
 	using Script::Script;
 
-	virtual bool playerCastInstant(std::shared_ptr<Player> player, std::string &param);
+	virtual bool playerCastInstant(const std::shared_ptr<Player> &player, std::string &param);
 
 	bool castSpell(const std::shared_ptr<Creature> &creature) override;
 	bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) override;

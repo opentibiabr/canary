@@ -771,7 +771,7 @@ uint32_t Spell::getManaCost(const std::shared_ptr<Player> &player) const {
 	return 0;
 }
 
-bool InstantSpell::playerCastInstant(std::shared_ptr<Player> player, std::string &param) {
+bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) {
 	if (!playerSpellCheck(player)) {
 		return false;
 	}

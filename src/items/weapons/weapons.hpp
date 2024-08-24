@@ -64,13 +64,13 @@ public:
 
 	int32_t playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint8_t shootRange) const;
 	static bool useFist(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target);
-	virtual bool useWeapon(const std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target) const;
+	virtual bool useWeapon(const const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target) const;
 
-	virtual int32_t getWeaponDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const = 0;
-	virtual int32_t getElementDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item) const = 0;
+	virtual int32_t getWeaponDamage(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const = 0;
+	virtual int32_t getElementDamage(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item) const = 0;
 	virtual CombatType_t getElementType() const = 0;
 	virtual int16_t getElementDamageValue() const = 0;
-	virtual CombatDamage getCombatDamage(CombatDamage combat, std::shared_ptr<Player> player, std::shared_ptr<Item> item, int32_t damageModifier) const;
+	virtual CombatDamage getCombatDamage(CombatDamage combat, const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, int32_t damageModifier) const;
 	uint16_t getID() const {
 		return id;
 	}
@@ -284,17 +284,17 @@ public:
 
 	void configureWeapon(const ItemType &it) override;
 
-	bool useWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target) const override;
+	bool useWeapon(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target) const override;
 
-	int32_t getWeaponDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const override;
-	int32_t getElementDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item) const override;
+	int32_t getWeaponDamage(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const override;
+	int32_t getElementDamage(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item) const override;
 	CombatType_t getElementType() const override {
 		return elementType;
 	}
 	virtual int16_t getElementDamageValue() const override;
 
 private:
-	bool getSkillType(std::shared_ptr<Player> player, std::shared_ptr<Item> item, skills_t &skill, uint32_t &skillpoint) const override;
+	bool getSkillType(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, skills_t &skill, uint32_t &skillpoint) const override;
 	uint16_t elementDamage = 0;
 	CombatType_t elementType = COMBAT_NONE;
 };
@@ -312,17 +312,17 @@ public:
 		return true;
 	}
 
-	bool useWeapon(std::shared_ptr<Player> player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target) const override;
+	bool useWeapon(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target) const override;
 
-	int32_t getWeaponDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const override;
-	int32_t getElementDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item) const override;
+	int32_t getWeaponDamage(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const override;
+	int32_t getElementDamage(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item) const override;
 	CombatType_t getElementType() const override {
 		return elementType;
 	}
 	virtual int16_t getElementDamageValue() const override;
 
 private:
-	bool getSkillType(std::shared_ptr<Player> player, std::shared_ptr<Item> item, skills_t &skill, uint32_t &skillpoint) const override;
+	bool getSkillType(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, skills_t &skill, uint32_t &skillpoint) const override;
 
 	CombatType_t elementType = COMBAT_NONE;
 	uint16_t elementDamage = 0;
@@ -338,7 +338,7 @@ public:
 
 	void configureWeapon(const ItemType &it) override;
 
-	int32_t getWeaponDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const override;
+	int32_t getWeaponDamage(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const override;
 	int32_t getElementDamage(std::shared_ptr<Player>, std::shared_ptr<Creature>, std::shared_ptr<Item>) const override {
 		return 0;
 	}

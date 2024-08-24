@@ -110,7 +110,7 @@ private:
 	}
 
 	std::function<bool(
-		std::shared_ptr<Player> player, std::shared_ptr<Item> item,
+		const std::shared_ptr<Player> &player, std::shared_ptr<Item> item,
 		const Position &fromPosition, std::shared_ptr<Thing> target,
 		const Position &toPosition, bool isHotkey
 	)>

@@ -150,7 +150,7 @@ public:
 		teamFinderMap.erase(leaderGuid);
 	}
 
-	std::shared_ptr<Cylinder> internalGetCylinder(std::shared_ptr<Player> player, const Position &pos);
+	std::shared_ptr<Cylinder> internalGetCylinder(const std::shared_ptr<Player> &player, const Position &pos);
 	std::shared_ptr<Thing> internalGetThing(const std::shared_ptr<Player> &player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type);
 	static void internalGetPosition(const std::shared_ptr<Item> &item, Position &pos, uint8_t &stackpos);
 
@@ -388,7 +388,7 @@ public:
 	void playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier);
 	void playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type);
 	void playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position &pos);
-	void playerMoveThingFromDepotSearch(std::shared_ptr<Player> player, uint16_t itemId, uint8_t tier, uint8_t count, const Position &fromPos, const Position &toPos, bool allItems = false);
+	void playerMoveThingFromDepotSearch(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t tier, uint8_t count, const Position &fromPos, const Position &toPos, bool allItems = false);
 
 	void playerRequestAddVip(uint32_t playerId, const std::string &name);
 	void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);

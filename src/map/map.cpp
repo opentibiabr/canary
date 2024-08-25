@@ -424,9 +424,13 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	oldTile->postRemoveNotification(creature, newTile, 0);
-	newTile->postAddNotification(creature, oldTile, 0);
-	g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+	g_dispatcher().addEvent([=] {
+		oldTile->postRemoveNotification(creature, newTile, 0);
+		newTile->postAddNotification(creature, oldTile, 0);
+		g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+	},
+	                        "Map::moveCreature");
+
 }
 
 bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, const SightLines_t lineOfSight /*= SightLine_CheckSightLine*/, const int32_t rangex /*= Map::maxClientViewportX*/, const int32_t rangey /*= Map::maxClientViewportY*/) {

@@ -452,7 +452,7 @@ function GetHirelingOutfitNameById(id)
 end
 
 function HirelingsInit()
-	local query = string.format("SELECT `ph`.* FROM `player_hirelings` AS `ph` INNER JOIN `players` as `p` ON `p`.`id` = `ph`.`player_id` WHERE `p`.`worldId` = %d", configManager.getNumber(configKeys.WORLD_ID))
+	local query = string.format("SELECT `ph`.* FROM `player_hirelings` AS `ph` INNER JOIN `players` as `p` ON `p`.`id` = `ph`.`player_id` WHERE `p`.`world_id` = %d", configManager.getNumber(configKeys.WORLD_ID))
 	local rows = db.storeQuery(query)
 	if rows then
 		local player_id, hireling

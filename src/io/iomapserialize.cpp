@@ -18,7 +18,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 	Benchmark bm_context;
 
 	DBResult_ptr result = Database::getInstance().storeQuery(
-		fmt::format("SELECT `data` FROM `tile_store` WHERE `worldId` = {}", g_game().worlds()->getId())
+		fmt::format("SELECT `data` FROM `tile_store` WHERE `world_id` = {}", g_game().worlds()->getId())
 	);
 	if (!result) {
 		return;
@@ -81,11 +81,11 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	std::ostringstream query;
 
 	// clear old tile data
-	if (!db.executeQuery(fmt::format("DELETE FROM `tile_store` WHERE `worldId` = {}", g_game().worlds()->getId()))) {
+	if (!db.executeQuery(fmt::format("DELETE FROM `tile_store` WHERE `world_id` = {}", g_game().worlds()->getId()))) {
 		return false;
 	}
 
-	DBInsert stmt("INSERT INTO `tile_store` (`house_id`, `data`, `worldId`) VALUES ");
+	DBInsert stmt("INSERT INTO `tile_store` (`house_id`, `data`, `world_id`) VALUES ");
 
 	PropWriteStream stream;
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
@@ -277,7 +277,7 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 bool IOMapSerialize::loadHouseInfo() {
 	Database &db = Database::getInstance();
 
-	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id`, `owner`, `new_owner`, `paid`, `warnings` FROM `houses` WHERE `worldId` = {}", g_game().worlds()->getId()));
+	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id`, `owner`, `new_owner`, `paid`, `warnings` FROM `houses` WHERE `world_id` = {}", g_game().worlds()->getId()));
 	if (!result) {
 		return false;
 	}
@@ -307,7 +307,7 @@ bool IOMapSerialize::loadHouseInfo() {
 		}
 	} while (result->next());
 
-	result = db.storeQuery(fmt::format("SELECT `house_id`, `listid`, `list` FROM `house_lists` WHERE `worldId` = {}", g_game().worlds()->getId()));
+	result = db.storeQuery(fmt::format("SELECT `house_id`, `listid`, `list` FROM `house_lists` WHERE `world_id` = {}", g_game().worlds()->getId()));
 	if (result) {
 		do {
 			const auto &house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("house_id"));
@@ -336,7 +336,7 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 	const auto worldId = g_game().worlds()->getId();
 
 	std::ostringstream query;
-	DBInsert houseUpdate("INSERT INTO `houses` (`id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`, `worldId`) VALUES ");
+	DBInsert houseUpdate("INSERT INTO `houses` (`id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`, `world_id`) VALUES ");
 	houseUpdate.upsert({ "owner", "paid", "warnings", "name", "town_id", "rent", "size", "beds" });
 
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
@@ -355,7 +355,7 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 		return false;
 	}
 
-	DBInsert listUpdate("INSERT INTO `house_lists` (`house_id` , `listid` , `list`, `version`, `worldId`) VALUES ");
+	DBInsert listUpdate("INSERT INTO `house_lists` (`house_id` , `listid` , `list`, `version`, `world_id`) VALUES ");
 	listUpdate.upsert({ "list", "version" });
 	auto version = getTimeUsNow();
 
@@ -395,7 +395,7 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 		return false;
 	}
 
-	if (!db.executeQuery(fmt::format("DELETE FROM `house_lists` WHERE `version` < {} AND `worldId` = {}", version, worldId))) {
+	if (!db.executeQuery(fmt::format("DELETE FROM `house_lists` WHERE `version` < {} AND `world_id` = {}", version, worldId))) {
 		return false;
 	}
 

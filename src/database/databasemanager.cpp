@@ -62,7 +62,7 @@ bool DatabaseManager::isDatabaseSetup() {
 int32_t DatabaseManager::getDatabaseVersion() {
 	if (!tableExists("server_config")) {
 		Database &db = Database::getInstance();
-		db.executeQuery("CREATE TABLE `server_config` (`config` VARCHAR(50) NOT NULL, `value` VARCHAR(256) NOT NULL DEFAULT '', `worldId` INT(11) NOT NULL DEFAULT '1', UNIQUE(`config`, `worldId`)) ENGINE = InnoDB");
+		db.executeQuery("CREATE TABLE `server_config` (`config` VARCHAR(50) NOT NULL, `value` VARCHAR(256) NOT NULL DEFAULT '', `world_id` INT(11) NOT NULL DEFAULT '1', UNIQUE(`config`, `world_id`)) ENGINE = InnoDB");
 		db.executeQuery(fmt::format("INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', 0)"));
 		return 0;
 	}
@@ -121,7 +121,7 @@ void DatabaseManager::updateDatabase() {
 
 bool DatabaseManager::getDatabaseConfig(const std::string &config, int32_t &value) {
 	Database &db = Database::getInstance();
-	std::string query = fmt::format("SELECT `value` FROM `server_config` WHERE `worldId` = {} AND `config` = {}", g_game().worlds()->getId(), db.escapeString(config));
+	std::string query = fmt::format("SELECT `value` FROM `server_config` WHERE `world_id` = {} AND `config` = {}", g_game().worlds()->getId(), db.escapeString(config));
 	if (config == "db_version") {
 		query = fmt::format("SELECT `value` FROM `server_config` WHERE `config` = {}", db.escapeString(config));
 	}
@@ -142,9 +142,9 @@ void DatabaseManager::registerDatabaseConfig(const std::string &config, int32_t 
 	int32_t tmp;
 
 	if (!getDatabaseConfig(config, tmp)) {
-		query = fmt::format("INSERT INTO `server_config` (`config`, `value`, `worldId`) VALUES ({}, {}, {})", db.escapeString(config), value, g_game().worlds()->getId());
+		query = fmt::format("INSERT INTO `server_config` (`config`, `value`, `world_id`) VALUES ({}, {}, {})", db.escapeString(config), value, g_game().worlds()->getId());
 	} else {
-		query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `worldId` = {} AND `config` = {}", value, g_game().worlds()->getId(), db.escapeString(config));
+		query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `world_id` = {} AND `config` = {}", value, g_game().worlds()->getId(), db.escapeString(config));
 		if (strcasecmp(config.c_str(), "db_version")) {
 			query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = {}", value, db.escapeString(config));
 		}

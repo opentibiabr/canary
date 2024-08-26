@@ -8090,21 +8090,21 @@ void Game::loadMotdNum() {
 	Database &db = Database::getInstance();
 	const auto worldId = worlds()->getId();
 
-	auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num' AND `worldId` = {}", worldId));
+	auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num' AND `world_id` = {}", worldId));
 	if (result) {
 		motdNum = result->getNumber<uint32_t>("value");
 	} else {
-		db.executeQuery(fmt::format("INSERT INTO `server_config` (`worldId`, `config`, `value`) VALUES ({}, 'motd_num', '0')", worldId));
+		db.executeQuery(fmt::format("INSERT INTO `server_config` (`world_id`, `config`, `value`) VALUES ({}, 'motd_num', '0')", worldId));
 	}
 
-	result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash' AND `worldId` = {}", worldId));
+	result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash' AND `world_id` = {}", worldId));
 	if (result) {
 		motdHash = result->getString("value");
 		if (motdHash != transformToSHA1(g_configManager().getString(SERVER_MOTD, __FUNCTION__))) {
 			++motdNum;
 		}
 	} else {
-		db.executeQuery(fmt::format("INSERT INTO `server_config` (`worldId`, `config`, `value`) VALUES ({}, 'motd_hash', '')", worldId));
+		db.executeQuery(fmt::format("INSERT INTO `server_config` (`world_id`, `config`, `value`) VALUES ({}, 'motd_hash', '')", worldId));
 	}
 }
 
@@ -8112,10 +8112,10 @@ void Game::saveMotdNum() const {
 	Database &db = Database::getInstance();
 	const auto worldId = worlds()->getId();
 
-	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'motd_num' AND `worldId` = {}", motdNum, worldId);
+	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'motd_num' AND `world_id` = {}", motdNum, worldId);
 	db.executeQuery(query);
 
-	query = fmt::format("UPDATE `server_config` SET `value` = '{}' WHERE `config` = 'motd_hash' AND `worldId` = {}", transformToSHA1(g_configManager().getString(SERVER_MOTD, __FUNCTION__)), worldId);
+	query = fmt::format("UPDATE `server_config` SET `value` = '{}' WHERE `config` = 'motd_hash' AND `world_id` = {}", transformToSHA1(g_configManager().getString(SERVER_MOTD, __FUNCTION__)), worldId);
 	db.executeQuery(query);
 }
 
@@ -8135,7 +8135,7 @@ void Game::checkPlayersRecord() {
 void Game::updatePlayersRecord() const {
 	Database &db = Database::getInstance();
 
-	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'players_record' AND `worldId` = {}", playersRecord, worlds()->getId());
+	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'players_record' AND `world_id` = {}", playersRecord, worlds()->getId());
 	db.executeQuery(query);
 }
 
@@ -8143,11 +8143,11 @@ void Game::loadPlayersRecord() {
 	Database &db = Database::getInstance();
 	const auto worldId = worlds()->getId();
 
-	const auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'players_record' AND `worldId` = {}", worldId));
+	const auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'players_record' AND `world_id` = {}", worldId));
 	if (result) {
 		playersRecord = result->getNumber<uint32_t>("value");
 	} else {
-		db.executeQuery(fmt::format("INSERT INTO `server_config` (`worldId`, `config`, `value`) VALUES ({}, 'players_record', '0')", worldId));
+		db.executeQuery(fmt::format("INSERT INTO `server_config` (`world_id`, `config`, `value`) VALUES ({}, 'players_record', '0')", worldId));
 	}
 }
 
@@ -8383,7 +8383,7 @@ std::string Game::generateHighscoreQueryForEntries(const std::string &categoryNa
 	const auto world = !worldName.empty() ? fmt::format("AND `w`.`name` = {}", db.escapeString(worldName)) : "";
 
 	std::string query = fmt::format(
-		"SELECT *, @row AS `entries`, {0} AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `w`.`name` AS `worldName`, `p`.`{1}` AS `points`, @curRank := IF(@prevRank = `{1}`, @curRank, IF(@prevRank := `{1}`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p` INNER JOIN `worlds` `w` ON `p`.`worldId` = `w`.`id`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < {2} {6} ORDER BY `{1}` DESC) `t`{3}) `T` WHERE `rn` > {4} AND `rn` <= {5}",
+		"SELECT *, @row AS `entries`, {0} AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `w`.`name` AS `worldName`, `p`.`{1}` AS `points`, @curRank := IF(@prevRank = `{1}`, @curRank, IF(@prevRank := `{1}`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p` INNER JOIN `worlds` `w` ON `p`.`world_id` = `w`.`id`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < {2} {6} ORDER BY `{1}` DESC) `t`{3}) `T` WHERE `rn` > {4} AND `rn` <= {5}",
 		page, categoryName, static_cast<int>(GROUP_TYPE_GAMEMASTER), vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation) : "", startPage, endPage, world
 	);
 
@@ -8394,7 +8394,7 @@ std::string Game::generateHighscoreQueryForOurRank(const std::string &categoryNa
 	std::string entriesStr = std::to_string(entriesPerPage);
 
 	std::string query = fmt::format(
-		"SELECT *, @row AS `entries`, (@ourRow DIV {0}) + 1 AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn`, @ourRow := IF(`id` = {1}, @row - 1, @ourRow) AS `rw` FROM (SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `w`.`name` AS `worldName`, `{2}` AS `points`, @curRank := IF(@prevRank = `{2}`, @curRank, IF(@prevRank := `{2}`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p` INNER JOIN `worlds` `w` ON `p`.`worldId` = `w`.`id`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` WHERE `group_id` < {3} ORDER BY `{2}` DESC) `t`{4}) `T` WHERE `rn` > ((@ourRow DIV {0}) * {0}) AND `rn` <= (((@ourRow DIV {0}) * {0}) + {0})",
+		"SELECT *, @row AS `entries`, (@ourRow DIV {0}) + 1 AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn`, @ourRow := IF(`id` = {1}, @row - 1, @ourRow) AS `rw` FROM (SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `w`.`name` AS `worldName`, `{2}` AS `points`, @curRank := IF(@prevRank = `{2}`, @curRank, IF(@prevRank := `{2}`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p` INNER JOIN `worlds` `w` ON `p`.`world_id` = `w`.`id`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` WHERE `group_id` < {3} ORDER BY `{2}` DESC) `t`{4}) `T` WHERE `rn` > ((@ourRow DIV {0}) * {0}) AND `rn` <= (((@ourRow DIV {0}) * {0}) + {0})",
 		entriesStr, playerGUID, categoryName, static_cast<int>(GROUP_TYPE_GAMEMASTER), vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation) : ""
 	);
 

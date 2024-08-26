@@ -33,7 +33,7 @@ void House::setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup) {
 		return;
 	}
 
-	std::string query = fmt::format("UPDATE `houses` SET `new_owner` = {} WHERE `id` = {} AND `worldId` = {}", newOwnerGuid, id, g_game().worlds()->getId());
+	std::string query = fmt::format("UPDATE `houses` SET `new_owner` = {} WHERE `id` = {} AND `world_id` = {}", newOwnerGuid, id, g_game().worlds()->getId());
 
 	Database &db = Database::getInstance();
 	db.executeQuery(query);
@@ -93,7 +93,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared
 		Database &db = Database::getInstance();
 
 		std::string query = fmt::format(
-			"UPDATE `houses` SET `owner` = {}, `new_owner` = -1, `bid` = 0, `bid_end` = 0, `last_bid` = 0, `highest_bidder` = 0  WHERE `id` = {} AND `worldId` = {}",
+			"UPDATE `houses` SET `owner` = {}, `new_owner` = -1, `bid` = 0, `bid_end` = 0, `last_bid` = 0, `highest_bidder` = 0  WHERE `id` = {} AND `world_id` = {}",
 			guid, id, worldId
 		);
 
@@ -130,7 +130,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared
 
 	if (guid != 0) {
 		Database &db = Database::getInstance();
-		std::string query = fmt::format("SELECT `name`, `account_id` FROM `players` WHERE `id` = {} AND `worldId` = {}", guid, worldId);
+		std::string query = fmt::format("SELECT `name`, `account_id` FROM `players` WHERE `id` = {} AND `world_id` = {}", guid, worldId);
 		DBResult_ptr result = db.storeQuery(query);
 		if (!result) {
 			return;

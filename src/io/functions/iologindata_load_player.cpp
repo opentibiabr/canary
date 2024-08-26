@@ -54,7 +54,7 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const s
 bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::string &name) {
 	Database &db = Database::getInstance();
 
-	std::string query = fmt::format("SELECT `id`, `account_id`, `group_id`, `deletion`, `worldId` FROM `players` WHERE `name` = {}", db.escapeString(name));
+	std::string query = fmt::format("SELECT `id`, `account_id`, `group_id`, `deletion`, `world_id` FROM `players` WHERE `name` = {}", db.escapeString(name));
 	DBResult_ptr result = db.storeQuery(query);
 	if (!result) {
 		return false;
@@ -64,7 +64,7 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 		return false;
 	}
 
-	player->worldId = result->getNumber<uint8_t>("worldId");
+	player->worldId = result->getNumber<uint8_t>("world_id");
 
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	const auto &group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));

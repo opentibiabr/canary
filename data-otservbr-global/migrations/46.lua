@@ -15,48 +15,48 @@ function onUpdateDatabase()
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	]])
 
-	db.query("ALTER TABLE `server_config` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `server_config` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
 	db.query("ALTER TABLE `server_config` DROP PRIMARY KEY;")
-	db.query("ALTER TABLE `server_config` ADD PRIMARY KEY (`config`, `worldId`);")
-	db.query("ALTER TABLE `server_config` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `server_config` ADD PRIMARY KEY (`config`, `world_id`);")
+	db.query("ALTER TABLE `server_config` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
-	db.query("ALTER TABLE `players_online` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
-	db.query("ALTER TABLE `players_online` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `players_online` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `players_online` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
-	db.query("ALTER TABLE `players` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
-	db.query("ALTER TABLE `players` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `players` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `players` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
-	db.query("ALTER TABLE `houses` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
-	db.query("ALTER TABLE `houses` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `houses` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `houses` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
-	db.query("ALTER TABLE `house_lists` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
-	db.query("ALTER TABLE `house_lists` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `house_lists` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `house_lists` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
-	db.query("ALTER TABLE `account_viplist` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
-	db.query("ALTER TABLE `account_viplist` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `account_viplist` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `account_viplist` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
-	db.query("ALTER TABLE `tile_store` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
-	db.query("ALTER TABLE `tile_store` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `tile_store` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `tile_store` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
-	db.query("ALTER TABLE `market_offers` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
-	db.query("ALTER TABLE `market_offers` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `market_offers` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `market_offers` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
-	db.query("ALTER TABLE `market_history` ADD `worldId` int(3) UNSIGNED NOT NULL DEFAULT 1;")
-	db.query("ALTER TABLE `market_history` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `market_history` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `market_history` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
 	db.query("ALTER TABLE `server_config` DROP PRIMARY KEY")
-	db.query("ALTER TABLE `server_config` ADD PRIMARY KEY (`worldId`, `config`);")
+	db.query("ALTER TABLE `server_config` ADD PRIMARY KEY (`world_id`, `config`);")
 
 	db.query("ALTER TABLE `houses` CHANGE `id` `id` INT(11) NOT NULL;")
 	db.query("ALTER TABLE `houses` DROP PRIMARY KEY;")
-	db.query("ALTER TABLE `houses` ADD PRIMARY KEY (`id`, `worldId`);")
+	db.query("ALTER TABLE `houses` ADD PRIMARY KEY (`id`, `world_id`);")
 	db.query("ALTER TABLE `houses` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT;")
-	db.query("ALTER TABLE `houses` ADD FOREIGN KEY (`worldId`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+	db.query("ALTER TABLE `houses` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
 	db.query("DROP TRIGGER `ondelete_players`;")
 	db.query([[
 		CREATE TRIGGER `ondelete_players` BEFORE DELETE ON `players` FOR EACH ROW BEGIN
-    		UPDATE `houses` SET `owner` = 0 WHERE `owner` = OLD.`id` AND `worldId` = OLD.`worldId`;
+    		UPDATE `houses` SET `owner` = 0 WHERE `owner` = OLD.`id` AND `world_id` = OLD.`world_id`;
 		END;
 	]])
 

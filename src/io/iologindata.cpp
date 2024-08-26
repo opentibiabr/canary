@@ -84,7 +84,7 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 		updateOnline[guid] = true;
 	} else {
 		g_metrics().addUpDownCounter("players_online", -1);
-		query = fmt::format("DELETE FROM `players_online` WHERE `player_id` = {} AND `worldId` = {}", guid, worldId);
+		query = fmt::format("DELETE FROM `players_online` WHERE `player_id` = {} AND `world_id` = {}", guid, worldId);
 		updateOnline.erase(guid);
 	}
 	Database::getInstance().executeQuery(query);
@@ -93,13 +93,13 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 // The boolean "disableIrrelevantInfo" will deactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
 bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
-	std::string query = fmt::format("SELECT * FROM `players` WHERE `id` = {} AND `worldId` = {}", id, g_game().worlds()->getId());
+	std::string query = fmt::format("SELECT * FROM `players` WHERE `id` = {} AND `world_id` = {}", id, g_game().worlds()->getId());
 	return loadPlayer(player, db.storeQuery(query), disableIrrelevantInfo);
 }
 
 bool IOLoginData::loadPlayerByName(std::shared_ptr<Player> player, const std::string &name, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
-	std::string query = fmt::format("SELECT * FROM `players` WHERE `name` = {} AND `worldId` = {}", db.escapeString(name), g_game().worlds()->getId());
+	std::string query = fmt::format("SELECT * FROM `players` WHERE `name` = {} AND `world_id` = {}", db.escapeString(name), g_game().worlds()->getId());
 	return loadPlayer(player, db.storeQuery(query), disableIrrelevantInfo);
 }
 
@@ -278,7 +278,7 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 }
 
 std::string IOLoginData::getNameByGuid(uint32_t guid) {
-	std::string query = fmt::format("SELECT `name` FROM `players` WHERE `id` = {} AND `worldId` = {}", guid, g_game().worlds()->getId());
+	std::string query = fmt::format("SELECT `name` FROM `players` WHERE `id` = {} AND `world_id` = {}", guid, g_game().worlds()->getId());
 	DBResult_ptr result = Database::getInstance().storeQuery(query);
 	if (!result) {
 		return std::string();
@@ -289,7 +289,7 @@ std::string IOLoginData::getNameByGuid(uint32_t guid) {
 uint32_t IOLoginData::getGuidByName(const std::string &name) {
 	Database &db = Database::getInstance();
 
-	std::string query = fmt::format("SELECT `id` FROM `players` WHERE `name` = {} AND `worldId` = {}", db.escapeString(name), g_game().worlds()->getId());
+	std::string query = fmt::format("SELECT `id` FROM `players` WHERE `name` = {} AND `world_id` = {}", db.escapeString(name), g_game().worlds()->getId());
 	DBResult_ptr result = db.storeQuery(query);
 	if (!result) {
 		return 0;
@@ -300,7 +300,7 @@ uint32_t IOLoginData::getGuidByName(const std::string &name) {
 bool IOLoginData::getGuidByNameEx(uint32_t &guid, bool &specialVip, std::string &name) {
 	Database &db = Database::getInstance();
 
-	std::string query = fmt::format("SELECT `name`, `id`, `group_id`, `account_id` FROM `players` WHERE `name` = {} AND `worldId` = {}", db.escapeString(name), g_game().worlds()->getId());
+	std::string query = fmt::format("SELECT `name`, `id`, `group_id`, `account_id` FROM `players` WHERE `name` = {} AND `world_id` = {}", db.escapeString(name), g_game().worlds()->getId());
 	DBResult_ptr result = db.storeQuery(query);
 	if (!result) {
 		return false;
@@ -319,7 +319,7 @@ bool IOLoginData::getGuidByNameEx(uint32_t &guid, bool &specialVip, std::string 
 bool IOLoginData::formatPlayerName(std::string &name) {
 	Database &db = Database::getInstance();
 
-	std::string query = fmt::format("SELECT `name` FROM `players` WHERE `name` = {} AND `worldId` = {}", db.escapeString(name), g_game().worlds()->getId());
+	std::string query = fmt::format("SELECT `name` FROM `players` WHERE `name` = {} AND `world_id` = {}", db.escapeString(name), g_game().worlds()->getId());
 
 	DBResult_ptr result = db.storeQuery(query);
 	if (!result) {
@@ -331,20 +331,20 @@ bool IOLoginData::formatPlayerName(std::string &name) {
 }
 
 void IOLoginData::increaseBankBalance(uint32_t guid, uint64_t bankBalance) {
-	std::string query = fmt::format("UPDATE `players` SET `balance` = `balance` + {} WHERE `id` = {} AND `worldId` = {}", bankBalance, guid, g_game().worlds()->getId());
+	std::string query = fmt::format("UPDATE `players` SET `balance` = `balance` + {} WHERE `id` = {} AND `world_id` = {}", bankBalance, guid, g_game().worlds()->getId());
 	Database::getInstance().executeQuery(query);
 }
 
 bool IOLoginData::hasBiddedOnHouse(uint32_t guid) {
 	Database &db = Database::getInstance();
 
-	std::string query = fmt::format("SELECT `id` FROM `houses` WHERE `highest_bidder` = {} AND `worldId` = {} LIMIT 1", guid, g_game().worlds()->getId());
+	std::string query = fmt::format("SELECT `id` FROM `houses` WHERE `highest_bidder` = {} AND `world_id` = {} LIMIT 1", guid, g_game().worlds()->getId());
 	return db.storeQuery(query).get() != nullptr;
 }
 
 std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 	std::string query = fmt::format(
-		"SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = {} AND `worldId` = {}",
+		"SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = {} AND `world_id` = {}",
 		accountId, g_game().worlds()->getId()
 	);
 	std::vector<VIPEntry> entries;
@@ -367,7 +367,7 @@ std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 
 void IOLoginData::addVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
 	std::string query = fmt::format(
-		"INSERT INTO `account_viplist` (`account_id`, `player_id`, `worldId`, `description`, `icon`, `notify`) VALUES ({}, {}, {}, {}, {}, {})",
+		"INSERT INTO `account_viplist` (`account_id`, `player_id`, `world_id`, `description`, `icon`, `notify`) VALUES ({}, {}, {}, {}, {}, {})",
 		accountId, guid, g_game().worlds()->getId(), g_database().escapeString(description), icon, notify
 	);
 	if (!g_database().executeQuery(query)) {
@@ -377,7 +377,7 @@ void IOLoginData::addVIPEntry(uint32_t accountId, uint32_t guid, const std::stri
 
 void IOLoginData::editVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
 	std::string query = fmt::format(
-		"UPDATE `account_viplist` SET `description` = {}, `icon` = {}, `notify` = {} WHERE `account_id` = {} AND `player_id` = {} AND `worldId` = {}",
+		"UPDATE `account_viplist` SET `description` = {}, `icon` = {}, `notify` = {} WHERE `account_id` = {} AND `player_id` = {} AND `world_id` = {}",
 		g_database().escapeString(description), icon, notify, accountId, guid, g_game().worlds()->getId()
 	);
 	if (!g_database().executeQuery(query)) {
@@ -386,7 +386,7 @@ void IOLoginData::editVIPEntry(uint32_t accountId, uint32_t guid, const std::str
 }
 
 void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
-	std::string query = fmt::format("DELETE FROM `account_viplist` WHERE `account_id` = {} AND `player_id` = {} AND `worldId` = {}", accountId, guid, g_game().worlds()->getId());
+	std::string query = fmt::format("DELETE FROM `account_viplist` WHERE `account_id` = {} AND `player_id` = {} AND `world_id` = {}", accountId, guid, g_game().worlds()->getId());
 	g_database().executeQuery(query);
 }
 

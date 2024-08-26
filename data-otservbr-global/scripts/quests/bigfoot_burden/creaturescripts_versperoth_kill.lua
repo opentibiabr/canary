@@ -18,8 +18,8 @@ end
 local versperothKill = CreatureEvent("VersperothDeath")
 function versperothKill.onDeath(creature)
 	local config = warzoneConfig.findByName("Abyssador")
-	Game.setStorageValue(GlobalStorage.BigfootBurden.Versperoth.Battle, 2)
-	addEvent(Game.setStorageValue, 30 * 60 * 1000, GlobalStorage.BigfootBurden.Versperoth.Battle, 0)
+	Game.setStorageValue(Storage.Quest.U9_60.BigfootsBurden.Versperoth.Battle, 2)
+	addEvent(Game.setStorageValue, 30 * 60 * 1000, Storage.Quest.U9_60.BigfootsBurden.Versperoth.Battle, 0)
 
 	blood = Tile(teleportPosition):getItemById(2886)
 	if blood then

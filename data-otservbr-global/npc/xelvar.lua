@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "adventures") or MsgContains(message, "join") then
-		if player:getStorageValue(Storage.BigfootBurden.QuestLine) < 1 then
+		if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine) < 1 then
 			npcHandler:say({
 				"I am glad to hear that. In the spirit of our own foreign legion we suggested the gnomes might hire heroes like you to build some kind of troop. They gave me that strange crystal to allow people passage to their realm. ...",
 				"I hereby grant you permission to use the basic gnomish teleporters. I also give you four gnomish teleport crystals. One will be used up each time you use the teleporter. ...",
@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Good luck to you and don't embarrass your race down there! Keep in mind that you are a representative of the big people.",
 			}, npc, creature)
 
-			player:setStorageValue(Storage.BigfootBurden.QuestLine, 1)
+			player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine, 1)
 			player:addItem(16167, 4)
 
 			--npcHandler:say("Right now I am sort of {recruiting} people.", npc, creature)
@@ -113,13 +113,15 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Good luck to you and don't embarrass your race down there! Keep in mind that you are a representative of the big people.",
 			}, npc, creature)
 
-			player:setStorageValue(Storage.BigfootBurden.QuestLine, 1)
+			player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine, 1)
 			player:addItem(16167, 4)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Greetings. Are you interested in adventures?")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

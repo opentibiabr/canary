@@ -5456,7 +5456,7 @@ void ProtocolGame::sendOpenForge() {
 		auto totalItemsCountPosition = msg.getBufferPosition();
 		msg.skipBytes(1); // Total items count
 		for (const auto &[itemId, tierAndCountMap] : itemMap) {
-			for (const auto [tier, itemCount] : tierAndCountMap) {
+			for (const auto &[tier, itemCount] : tierAndCountMap) {
 				if (tier >= maxConfigTier) {
 					continue;
 				}
@@ -5495,7 +5495,7 @@ void ProtocolGame::sendOpenForge() {
 			// Total count of item (donator of tier)
 			auto donorTierTotalItemsCount = getIterationIncreaseCount(tierAndCountMap);
 			msg.add<uint16_t>(donorTierTotalItemsCount);
-			for (const auto [donorItemTier, donorItemCount] : tierAndCountMap) {
+			for (const auto &[donorItemTier, donorItemCount] : tierAndCountMap) {
 				msg.add<uint16_t>(itemId);
 				msg.addByte(donorItemTier);
 				msg.add<uint16_t>(donorItemCount);
@@ -5506,7 +5506,7 @@ void ProtocolGame::sendOpenForge() {
 				// Let's access the itemType to check the item's (receiver of tier) classification level
 				const ItemType &receiveType = Item::items[iteratorItemId];
 				auto receiveSlotPosition = receiveType.slotPosition;
-				if (receiveSlotPosition & SLOTP_TWO_HAND) {
+				if ((receiveSlotPosition & SLOTP_TWO_HAND) != 0) {
 					receiveSlotPosition = SLOTP_HAND;
 				}
 				if (donorType.upgradeClassification == receiveType.upgradeClassification && donorSlotPosition == receiveSlotPosition) {
@@ -5521,11 +5521,11 @@ void ProtocolGame::sendOpenForge() {
 					// Let's access the itemType to check the item's (receiver of tier) classification level
 					const ItemType &receiveType = Item::items[receiveItemId];
 					auto receiveSlotPosition = receiveType.slotPosition;
-					if (receiveSlotPosition & SLOTP_TWO_HAND) {
+					if ((receiveSlotPosition & SLOTP_TWO_HAND) != 0) {
 						receiveSlotPosition = SLOTP_HAND;
 					}
 					if (donorType.upgradeClassification == receiveType.upgradeClassification && donorSlotPosition == receiveSlotPosition) {
-						for (const auto [receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
+						for (const auto &[receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
 							msg.add<uint16_t>(receiveItemId);
 							msg.add<uint16_t>(receiveItemCount);
 						}

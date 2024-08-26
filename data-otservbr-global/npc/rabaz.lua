@@ -140,11 +140,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local formattedCategoryNames = {}
-	for categoryName, _ in pairs(itemsTable) do
-		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
-	end
-
 	local categoryTable = itemsTable[message:lower()]
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.TibiaTales.AnInterestInBotany.Questline) < 1 then
@@ -189,7 +184,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif categoryTable then
-		npcHandler:say("Have a look.", npc, player)
+		local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+		npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
 		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
@@ -199,7 +195,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_GREET, "Ah, a customer! Please feel free to browse my wares, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Have a look. But perhaps you just want to see my {potions}, {wands} or {runes}?")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Have a look. But perhaps you just want to see my " .. GetFormattedShopCategoryNames(itemsTable) .. ".")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- On buy npc shop message

@@ -5400,7 +5400,7 @@ void ProtocolGame::sendOpenForge() {
 			}
 			if (itemClassification == 4) {
 				auto slotPosition = item->getSlotPosition();
-				if (slotPosition & SLOTP_TWO_HAND) {
+				if ((slotPosition & SLOTP_TWO_HAND) != 0) {
 					slotPosition = SLOTP_HAND;
 				}
 				getForgeInfoMap(item, convergenceFusionItemsMap[slotPosition]);
@@ -5488,7 +5488,7 @@ void ProtocolGame::sendOpenForge() {
 			// Must be the same as the item that will receive the tier
 			const ItemType &donorType = Item::items[itemId];
 			auto donorSlotPosition = donorType.slotPosition;
-			if (donorSlotPosition & SLOTP_TWO_HAND) {
+			if ((donorSlotPosition & SLOTP_TWO_HAND) != 0) {
 				donorSlotPosition = SLOTP_HAND;
 			}
 

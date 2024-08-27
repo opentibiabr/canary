@@ -552,7 +552,7 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.addAccount(
 			"canary@test.com",
-			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, {{ "Canary", 1 }, { "Canary2", 2 }} }
+			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, {{ "Canary", Character { 1, 1 } }, { "Canary2", Character { 2, 1 } }} }
  		);
 
 		expect(acc.load() == enumToValue(AccountErrors_t::Ok));
@@ -561,8 +561,8 @@ suite<"account"> accountTest = [] {
 		expect(
 			eq(error, enumToValue(AccountErrors_t::Ok)) and
 			eq(players.size(), 2) and
-			eq(players["Canary"], 1) and
-			eq(players["Canary2"], 2)
+			eq(players["Canary"].deletion, 1) and
+			eq(players["Canary2"].deletion, 2)
 		);
 	};
 
@@ -572,7 +572,7 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.addAccount(
 			"canary@test.com",
-			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", 1 }, { "Canary2", 2 } } }
+			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", Character { 1, 1 } }, { "Canary2", Character { 2, 1 } } } }
 		);
 
 		expect(acc.load() == enumToValue(AccountErrors_t::Ok));
@@ -586,7 +586,7 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.addAccount(
 			"session-key",
-			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", 1 }, { "Canary2", 2 } }, false, getTimeNow() + 24 * 60 * 60 * 1000 }
+			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", Character { 1, 1 } }, { "Canary2", Character { 2, 1 } } }, false, getTimeNow() + 24 * 60 * 60 * 1000 }
 		);
 
 		expect(acc.load() == enumToValue(AccountErrors_t::Ok));

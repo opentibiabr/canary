@@ -22650,7 +22650,7 @@
 		<attribute key="maxtextlen" value="99"/>
 		<attribute key="weight" value="1000"/>
 	</item>
-	<item id="8152" article="the" name="Mexcalibur">
+	<item id="8152" article="the" name="mexcalibur">
 		<attribute key="description" value="Your name is carved on this mighty sword"/>
 		<attribute key="weight" value="1200"/>
 	</item>
@@ -39119,7 +39119,7 @@
 			<attribute key="slot" value="necklace"/>
 		</attribute>
 	</item>
-	<item id="19154" article="the" name="Mexcalibur">
+	<item id="19154" article="the" name="mexcalibur">
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="1200"/>
 	</item>
@@ -64849,7 +64849,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="A fine but practically ancient wine. It's absolutely not advised to actually drink it"/>
 		<attribute key="weight" value="100"/>
 	</item>
-	<item id="34210" article="a" name="Goromaphone">
+	<item id="34210" article="a" name="goromaphone">
 		<attribute key="primarytype" value="fansite items"/>
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="6659"/>
@@ -74817,15 +74817,15 @@ Granted by TibiaGoals.com"/>
 	<item id="43374" name="vine">
 		<attribute key="type" value="ladder"/>
 	</item>
-	<item id="43510" name="tibiora's box replica">
+	<item id="43510" name="tibiora's box">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="4200"/>
 	</item>
-	<item id="43511" article="a" name="citizen doll replica">
+	<item id="43511" article="a" name="citizen doll">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="2200"/>
 	</item>
-	<item id="43517" article="a" name="shield of destiny replica">
+	<item id="43517" article="a" name="shield of destiny">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="6800"/>
 	</item>

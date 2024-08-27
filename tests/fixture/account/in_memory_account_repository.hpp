@@ -120,6 +120,17 @@ namespace tests {
 			return true;
 		}
 
+		bool getCharacterByNameAndAccountId(const uint32_t &id, const std::string &name) final {
+			for (auto it = accounts.begin(); it != accounts.end(); ++it) {
+				if (it->second.id == id) {
+					if (it->second.players.find(name) != it->second.players.end()) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
 		InMemoryAccountRepository &reset() {
 			accounts.clear();
 			coins_.clear();

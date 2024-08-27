@@ -242,7 +242,7 @@ void House::setAccessList(uint32_t listId, const std::string &textlist) {
 	for (const std::shared_ptr<HouseTile> &tile : houseTiles) {
 		if (CreatureVector* creatures = tile->getCreatures()) {
 			for (int32_t i = creatures->size(); --i >= 0;) {
-				const auto player = (*creatures)[i]->getPlayer();
+				const auto &player = (*creatures)[i]->getPlayer();
 				if (player && !isInvited(player)) {
 					kickPlayer(nullptr, player);
 				}
@@ -256,7 +256,7 @@ bool House::transferToDepot() const {
 		return false;
 	}
 
-	const auto player = g_game().getPlayerByGUID(owner);
+	const auto &player = g_game().getPlayerByGUID(owner);
 	if (player) {
 		transferToDepot(player);
 	} else {
@@ -587,7 +587,7 @@ void AccessList::parseList(const std::string &list) {
 }
 
 void AccessList::addPlayer(const std::string &name) {
-	const auto player = g_game().getPlayerByName(name);
+	const auto &player = g_game().getPlayerByName(name);
 	if (player) {
 		playerList.insert(player->getGUID());
 	} else {

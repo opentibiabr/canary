@@ -163,7 +163,7 @@ void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
 	}
 
 	if (it.decayTo != 0) {
-		const auto player = item->getHoldingPlayer();
+		const auto &player = item->getHoldingPlayer();
 		if (player) {
 			bool needUpdateSkills = false;
 			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {

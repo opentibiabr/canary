@@ -39,7 +39,7 @@ void CreatureCallback::pushSpecificCreature(const std::shared_ptr<Creature> &cre
 		LuaScriptInterface::pushUserdata<Npc>(L, npc);
 	} else if (std::shared_ptr<Monster> monster = creature->getMonster()) {
 		LuaScriptInterface::pushUserdata<Monster>(L, monster);
-	} else if (const auto player = creature->getPlayer()) {
+	} else if (const auto &player = creature->getPlayer()) {
 		LuaScriptInterface::pushUserdata<Player>(L, player);
 	} else {
 		return;

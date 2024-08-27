@@ -43,6 +43,7 @@
 #include "enums/player_blessings.hpp"
 
 #include "creatures/players/highscore_category.hpp"
+#include "utils/counter_pointer.hpp"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
@@ -488,6 +489,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	if (!foundPlayer) {
 		player = std::make_shared<Player>(getThis());
 		player->setName(name);
+		g_beats().store(name, player);
 		g_game().addPlayerUniqueLogin(player);
 
 		player->setID();

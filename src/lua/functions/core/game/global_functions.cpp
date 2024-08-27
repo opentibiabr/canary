@@ -25,7 +25,7 @@ class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count/subtype, <optional: default: 1> canDropOnMap)
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count, <optional: default: 1> canDropOnMap, <optional: default: 1>subtype)
-	const auto player = getPlayer(L, 1);
+	const auto &player = getPlayer(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -286,7 +286,7 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 		damage.instantSpellName = getString(L, 9);
 		damage.runeSpellName = getString(L, 10);
 		if (creature) {
-			if (auto player = creature->getPlayer()) {
+			if (const auto &player = creature->getPlayer()) {
 				player->wheel()->getCombatDataSpell(damage);
 			}
 		}
@@ -330,7 +330,7 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	damage.instantSpellName = getString(L, 9);
 	damage.runeSpellName = getString(L, 10);
 	if (creature) {
-		if (auto player = creature->getPlayer()) {
+		if (const auto &player = creature->getPlayer()) {
 			player->wheel()->getCombatDataSpell(damage);
 		}
 	}
@@ -368,7 +368,7 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 		damage.instantSpellName = getString(L, 8);
 		damage.runeSpellName = getString(L, 9);
 		if (creature) {
-			if (auto player = creature->getPlayer()) {
+			if (const auto &player = creature->getPlayer()) {
 				player->wheel()->getCombatDataSpell(damage);
 			}
 		}
@@ -413,7 +413,7 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 	damage.instantSpellName = getString(L, 7);
 	damage.runeSpellName = getString(L, 8);
 	if (creature) {
-		if (auto player = creature->getPlayer()) {
+		if (const auto &player = creature->getPlayer()) {
 			player->wheel()->getCombatDataSpell(damage);
 		}
 	}

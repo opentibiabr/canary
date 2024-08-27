@@ -70,7 +70,7 @@ bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
 void Npc::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
 	Creature::onCreatureAppear(creature, isLogin);
 
-	if (auto player = creature->getPlayer()) {
+	if (const auto &player = creature->getPlayer()) {
 		onPlayerAppear(player);
 	}
 

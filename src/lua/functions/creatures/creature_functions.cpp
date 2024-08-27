@@ -485,7 +485,7 @@ int CreatureFunctions::luaCreatureSetHealth(lua_State* L) {
 	creature->health = std::min<int32_t>(getNumber<uint32_t>(L, 2), creature->healthMax);
 	g_game().addCreatureHealth(creature);
 
-	const auto player = creature->getPlayer();
+	const auto &player = creature->getPlayer();
 	if (player) {
 		player->sendStats();
 	}
@@ -537,7 +537,7 @@ int CreatureFunctions::luaCreatureSetMaxHealth(lua_State* L) {
 	creature->health = std::min<int32_t>(creature->health, creature->healthMax);
 	g_game().addCreatureHealth(creature);
 
-	const auto player = creature->getPlayer();
+	const auto &player = creature->getPlayer();
 	if (player) {
 		player->sendStats();
 	}
@@ -764,7 +764,7 @@ int CreatureFunctions::luaCreatureRemove(lua_State* L) {
 	}
 
 	bool forced = getBoolean(L, 2, true);
-	if (const auto player = creature->getPlayer()) {
+	if (const auto &player = creature->getPlayer()) {
 		if (forced) {
 			player->removePlayer(true);
 		} else {

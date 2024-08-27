@@ -968,7 +968,7 @@ bool Player::canWalkthrough(const std::shared_ptr<Creature> &creature) {
 		return true;
 	}
 
-	const auto player = creature->getPlayer();
+	const auto &player = creature->getPlayer();
 	std::shared_ptr<Monster> monster = creature->getMonster();
 	std::shared_ptr<Npc> npc = creature->getNpc();
 	if (monster) {
@@ -1024,7 +1024,7 @@ bool Player::canWalkthroughEx(const std::shared_ptr<Creature> &creature) {
 		return true;
 	}
 
-	const auto player = creature->getPlayer();
+	const auto &player = creature->getPlayer();
 	std::shared_ptr<Npc> npc = creature->getNpc();
 	if (player) {
 		std::shared_ptr<Tile> playerTile = player->getTile();
@@ -1844,7 +1844,7 @@ void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
 void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) {
 	Creature::onRemoveCreature(creature, isLogout);
 
-	if (auto player = getPlayer(); player == creature) {
+	if (const auto &player = getPlayer(); player == creature) {
 		if (isLogout) {
 			onDeEquipInventory();
 
@@ -5127,7 +5127,7 @@ Skulls_t Player::getSkullClient(std::shared_ptr<Creature> creature) {
 		return SKULL_NONE;
 	}
 
-	const auto player = creature->getPlayer();
+	const auto &player = creature->getPlayer();
 	if (player && player->getSkull() == SKULL_NONE) {
 		if (player.get() == this) {
 			for (const auto &kill : unjustifiedKills) {

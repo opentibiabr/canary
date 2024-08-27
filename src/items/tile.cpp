@@ -259,7 +259,7 @@ std::shared_ptr<Creature> Tile::getBottomCreature() const {
 std::shared_ptr<Creature> Tile::getTopVisibleCreature(const std::shared_ptr<Creature> &creature) const {
 	if (const CreatureVector* creatures = getCreatures()) {
 		if (creature) {
-			const auto player = creature->getPlayer();
+			const auto &player = creature->getPlayer();
 			if (player && player->isAccessPlayer()) {
 				return getTopCreature();
 			}
@@ -272,7 +272,7 @@ std::shared_ptr<Creature> Tile::getTopVisibleCreature(const std::shared_ptr<Crea
 		} else {
 			for (auto &tileCreature : *creatures) {
 				if (!tileCreature->isInvisible()) {
-					const auto player = tileCreature->getPlayer();
+					const auto &player = tileCreature->getPlayer();
 					if (!player || !player->isInGhostMode()) {
 						return tileCreature;
 					}
@@ -286,7 +286,7 @@ std::shared_ptr<Creature> Tile::getTopVisibleCreature(const std::shared_ptr<Crea
 std::shared_ptr<Creature> Tile::getBottomVisibleCreature(const std::shared_ptr<Creature> &creature) const {
 	if (const CreatureVector* creatures = getCreatures()) {
 		if (creature) {
-			const auto player = creature->getPlayer();
+			const auto &player = creature->getPlayer();
 			if (player && player->isAccessPlayer()) {
 				return getBottomCreature();
 			}
@@ -663,7 +663,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 		}
 
 		const CreatureVector* creatures = getCreatures();
-		if (const auto player = creature->getPlayer()) {
+		if (const auto &player = creature->getPlayer()) {
 			if (creatures && !creatures->empty() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, tileFlags) && !player->isAccessPlayer()) {
 				for (auto &tileCreature : *creatures) {
 					if (!player->canWalkthrough(tileCreature)) {

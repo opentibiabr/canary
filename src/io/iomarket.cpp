@@ -168,7 +168,7 @@ void IOMarket::processExpiredOffers(const DBResult_ptr &result, bool) {
 				continue;
 			}
 
-			const auto player = g_game().getPlayerByGUID(playerId, true);
+			const auto &player = g_game().getPlayerByGUID(playerId, true);
 			if (!player) {
 				continue;
 			}
@@ -216,7 +216,7 @@ void IOMarket::processExpiredOffers(const DBResult_ptr &result, bool) {
 		} else {
 			uint64_t totalPrice = result->getNumber<uint64_t>("price") * amount;
 
-			const auto player = g_game().getPlayerByGUID(playerId);
+			const auto &player = g_game().getPlayerByGUID(playerId);
 			if (player) {
 				player->setBankBalance(player->getBankBalance() + totalPrice);
 			} else {

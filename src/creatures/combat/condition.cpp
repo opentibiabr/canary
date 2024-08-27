@@ -1158,14 +1158,14 @@ bool ConditionRegeneration::startCondition(std::shared_ptr<Creature> creature) {
 		return false;
 	}
 
-	if (const auto player = creature->getPlayer()) {
+	if (const auto &player = creature->getPlayer()) {
 		player->sendStats();
 	}
 	return true;
 }
 
 void ConditionRegeneration::endCondition(std::shared_ptr<Creature> creature) {
-	if (const auto player = creature->getPlayer()) {
+	if (const auto &player = creature->getPlayer()) {
 		player->sendStats();
 	}
 }
@@ -2112,7 +2112,7 @@ void ConditionFeared::endCondition(std::shared_ptr<Creature> creature) {
 	/*
 	 * After a player is feared there's a 10 seconds before they can can feared again.
 	 */
-	const auto player = creature->getPlayer();
+	const auto &player = creature->getPlayer();
 	if (player) {
 		player->setImmuneFear();
 	}

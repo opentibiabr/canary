@@ -88,7 +88,7 @@ bool Mailbox::sendItem(const std::shared_ptr<Item> &item) const {
 		}
 	}
 
-	const auto player = g_game().getPlayerByName(receiver, true);
+	const auto &player = g_game().getPlayerByName(receiver, true);
 	std::string writer;
 	time_t date = time(nullptr);
 	std::string text;

@@ -239,7 +239,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddItem(lua_State* L) {
 		return 1;
 	}
 
-	const auto player = getUserdataShared<Player>(L, 3);
+	const auto &player = getUserdataShared<Player>(L, 3);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		lua_pushnil(L);
@@ -289,7 +289,7 @@ int NetworkMessageFunctions::luaNetworkMessageSendToPlayer(lua_State* L) {
 		return 1;
 	}
 
-	const auto player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;

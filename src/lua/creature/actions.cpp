@@ -236,7 +236,7 @@ std::shared_ptr<Action> Actions::getAction(const std::shared_ptr<Item> &item) {
 	    iteratePositions != actionPositionMap.end()) {
 		if (std::shared_ptr<Tile> tile = item->getTile();
 		    tile) {
-			if (const auto player = item->getHoldingPlayer();
+			if (const auto &player = item->getHoldingPlayer();
 			    player && item->getTopParent() == player) {
 				g_logger().debug("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
 				return nullptr;

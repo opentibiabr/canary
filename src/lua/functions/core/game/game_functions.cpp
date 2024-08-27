@@ -653,7 +653,7 @@ int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
 	// Game.getNormalizedPlayerName(name[, isNewName = false])
 	auto name = getString(L, 1);
 	auto isNewName = getBoolean(L, 2, false);
-	const auto player = g_game().getPlayerByName(name, true, isNewName);
+	const auto &player = g_game().getPlayerByName(name, true, isNewName);
 	if (player) {
 		pushString(L, player->getName());
 	} else {

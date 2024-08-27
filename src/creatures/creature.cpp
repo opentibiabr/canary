@@ -168,7 +168,7 @@ void Creature::onCreatureWalk() {
 		if (getNextStep(dir, flags)) {
 			ReturnValue ret = g_game().internalMoveCreature(static_self_cast<Creature>(), dir, flags);
 			if (ret != RETURNVALUE_NOERROR) {
-				if (const auto player = getPlayer()) {
+				if (const auto &player = getPlayer()) {
 					player->sendCancelMessage(ret);
 					player->sendCancelWalk();
 				}
@@ -491,7 +491,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 			handleLostSummon(configTeleportSummons);
 		}
 
-		if (const auto player = creature->getPlayer()) {
+		if (const auto &player = creature->getPlayer()) {
 			if (player->isExerciseTraining()) {
 				player->setTraining(false);
 			}
@@ -709,7 +709,7 @@ void Creature::onDeath() {
 	for (const auto &killer : killers) {
 		if (auto monster = getMonster()) {
 			killer->onKilledMonster(monster);
-		} else if (auto player = getPlayer(); player && mostDamageCreature != killer) {
+		} else if (const auto &player = getPlayer(); player && mostDamageCreature != killer) {
 			killer->onKilledPlayer(player, false);
 		}
 	}
@@ -814,7 +814,7 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
 			bool disallowedCorpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
-			const auto player = mostDamageCreature ? mostDamageCreature->getPlayer() : nullptr;
+			const auto &player = mostDamageCreature ? mostDamageCreature->getPlayer() : nullptr;
 			auto corpseContainer = corpse->getContainer();
 			if (corpseContainer && player && !disallowedCorpses) {
 				auto monster = getMonster();

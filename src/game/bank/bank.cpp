@@ -25,7 +25,7 @@ Bank::~Bank() {
 	if (bankable == nullptr || bankable->isOnline()) {
 		return;
 	}
-	const auto player = bankable->getPlayer();
+	const auto &player = bankable->getPlayer();
 	if (player && !player->isOnline()) {
 		g_saveManager().savePlayer(player);
 

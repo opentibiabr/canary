@@ -100,7 +100,7 @@ void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 }
 
 void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
-	const auto player = getHoldingPlayer();
+	const auto &player = getHoldingPlayer();
 	if (!player) {
 		return;
 	}
@@ -335,7 +335,7 @@ bool Item::isOwner(uint32_t ownerId) const {
 		const auto &player = g_game().getPlayerByID(ownerId);
 		return player && player->getGUID() == getOwnerId();
 	}
-	if (auto player = g_game().getPlayerByGUID(ownerId); player) {
+	if (const auto &player = g_game().getPlayerByGUID(ownerId); player) {
 		return player->getID() == getOwnerId();
 	}
 	return false;

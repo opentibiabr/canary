@@ -155,7 +155,7 @@ std::shared_ptr<Bank> BankFunctions::getBank(lua_State* L, int32_t arg, bool isG
 		}
 		return std::make_shared<Bank>(guild);
 	}
-	const auto player = getPlayer(L, arg, true);
+	const auto &player = getPlayer(L, arg, true);
 	if (!player) {
 		return nullptr;
 	}

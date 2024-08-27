@@ -740,7 +740,7 @@ BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const C
 		}
 
 		// Wheel of destiny
-		const auto player = attacker ? attacker->getPlayer() : nullptr;
+		const auto &player = attacker ? attacker->getPlayer() : nullptr;
 		if (player && player->wheel()->getInstant("Ballistic Mastery")) {
 			elementMod -= player->wheel()->checkElementSensitiveReduction(combatType);
 		}

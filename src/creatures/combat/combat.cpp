@@ -70,7 +70,7 @@ CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, 
 		int32_t min, max;
 		if (creature->getCombatValues(min, max)) {
 			damage.primary.value = normal_random(min, max);
-		} else if (const auto player = creature->getPlayer()) {
+		} else if (const auto &player = creature->getPlayer()) {
 			if (params.valueCallback) {
 				params.valueCallback->getMinMaxValues(player, damage, params.useCharges);
 			} else if (formulaType == COMBAT_FORMULA_LEVELMAGIC) {
@@ -273,7 +273,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const s
 			return RETURNVALUE_FIRSTGOUPSTAIRS;
 		}
 
-		if (const auto player = caster->getPlayer()) {
+		if (const auto &player = caster->getPlayer()) {
 			if (player->hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 				return RETURNVALUE_NOERROR;
 			}

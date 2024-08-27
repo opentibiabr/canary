@@ -260,7 +260,7 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 	onUsedWeapon(player, item, target->getTile());
 }
 
-void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const auto item, const std::shared_ptr<Tile> &tile) const {
+void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile) const {
 	if (isLoadedCallback()) {
 		LuaVariant var;
 		var.type = VARIANT_TARGETPOSITION;
@@ -597,7 +597,7 @@ void WeaponDistance::configureWeapon(const ItemType &it) {
 	Weapon::configureWeapon(it);
 }
 
-bool WeaponDistance::useWeapon(const std::shared_ptr<Player> &player, std::shared_ptr<Item> item, std::shared_ptr<Creature> target) const {
+bool WeaponDistance::useWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &target) const {
 	int32_t damageModifier;
 	const ItemType &it = Item::items[id];
 	if (it.weaponType == WEAPON_AMMO) {
@@ -850,7 +850,7 @@ int32_t WeaponDistance::getWeaponDamage(const std::shared_ptr<Player> &player, s
 	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->distDamageMultiplier)));
 }
 
-bool WeaponDistance::getSkillType(const std::shared_ptr<Player> &player, std::shared_ptr<Item>, skills_t &skill, uint32_t &skillpoint) const {
+bool WeaponDistance::getSkillType(const std::shared_ptr<Player> &player, const std::shared_ptr<Item>&, skills_t &skill, uint32_t &skillpoint) const {
 	skill = SKILL_DISTANCE;
 
 	if (player->getAddAttackSkill()) {

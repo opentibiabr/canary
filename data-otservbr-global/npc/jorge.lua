@@ -98,44 +98,44 @@ local items = {
 }
 
 local function creatureSayCallback(npc, creature, type, message)
-    local player = Player(creature)
-    local playerId = player:getId()
+	local player = Player(creature)
+	local playerId = player:getId()
 
-    if not npcHandler:checkInteraction(npc, creature) then
-        return false
-    end
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
 
-    -- Implementing the "souvenir" message interaction
-    if MsgContains(message, "souvenir") then
-        npcHandler:say({
-            "In this category I can offer you a Norseman doll, an abacus, a key of numerous locks, a friendship amulet, a mexcalibur sword, an orc shredder, a frozen heart, a phoenix statue, a dragon eye and a noble sword. Or: ...",
-            "A hand puppet, a music box, an encyclopedia, a Durin doll, a medusa skull, a newspaper, a bag of spices or an Exhiti imortus. ...",
-            "A mathmaster shield, a draken doll, an emblem, a crimson doll, an old radio, a bookworm doll, a golden falcon and an assassin doll. ...",
-            "A dragon goblet, a pigeon trophy, a loremaster doll and a jade amulet. ...",
-            "All listed souvenirs are at 20 silver raid tokens each. Which one of them do you want?"
-        }, npc, creature)
-        npcHandler:setTopic(playerId, 1)
-        return true
-    end
+	-- Implementing the "souvenir" message interaction
+	if MsgContains(message, "souvenir") then
+		npcHandler:say({
+			"In this category I can offer you a Norseman doll, an abacus, a key of numerous locks, a friendship amulet, a mexcalibur sword, an orc shredder, a frozen heart, a phoenix statue, a dragon eye and a noble sword. Or: ...",
+			"A hand puppet, a music box, an encyclopedia, a Durin doll, a medusa skull, a newspaper, a bag of spices or an Exhiti imortus. ...",
+			"A mathmaster shield, a draken doll, an emblem, a crimson doll, an old radio, a bookworm doll, a golden falcon and an assassin doll. ...",
+			"A dragon goblet, a pigeon trophy, a loremaster doll and a jade amulet. ...",
+			"All listed souvenirs are at 20 silver raid tokens each. Which one of them do you want?",
+		}, npc, creature)
+		npcHandler:setTopic(playerId, 1)
+		return true
+	end
 
-    -- Checking if the player responded with an item name after "souvenir"
-    if npcHandler:getTopic(playerId) == 1 then
-        for i = 1, #items do
-            if MsgContains(message, items[i].name) then
-                if getPlayerItemCount(creature, 19083) >= 20 then
-                    doPlayerRemoveItem(creature, 19083, 20)
-                    doPlayerAddItem(creature, items[i].id, 1)
-                    npcHandler:say("You just swapped 20 silver raid tokens for 1 " .. items[i].name .. ".", npc, creature)
-                else
-                    npcHandler:say("I'm sorry, I need at least 20 silver tokens for that. Please come back when you have them.", npc, creature)
-                end
-                npcHandler:setTopic(playerId, 0) -- Reset topic after processing
-                return true
-            end
-        end
-    end
+	-- Checking if the player responded with an item name after "souvenir"
+	if npcHandler:getTopic(playerId) == 1 then
+		for i = 1, #items do
+			if MsgContains(message, items[i].name) then
+				if getPlayerItemCount(creature, 19083) >= 20 then
+					doPlayerRemoveItem(creature, 19083, 20)
+					doPlayerAddItem(creature, items[i].id, 1)
+					npcHandler:say("You just swapped 20 silver raid tokens for 1 " .. items[i].name .. ".", npc, creature)
+				else
+					npcHandler:say("I'm sorry, I need at least 20 silver tokens for that. Please come back when you have them.", npc, creature)
+				end
+				npcHandler:setTopic(playerId, 0) -- Reset topic after processing
+				return true
+			end
+		end
+	end
 
-    return true
+	return true
 end
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)

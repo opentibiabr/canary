@@ -376,7 +376,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 0)
 	end
 
-	if MsgContains(message, "machine") and player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
+	if MsgContains(message, "machine") and player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor) == 3 then
 		npcHandler:say({
 			"Ah, the machine you found at that island. Well, I built this thing to venture far beneath the very soil we walk on. I suspected something there. Something deep down below. Something evil. Even more so than the dreaded bugs which are crawling my study. ...",
 			"Drilling hole after hole only to get stuck in another hard, unbreakable sediment again and again, I was about to quit this pointless enterprise. ...",
@@ -384,8 +384,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			"I am well aware that this may sound laughable now - at this part all of my colleagues burst into laughter anyway - but suddenly there were stairs. Incredibly large stairs that led to the underworld. A world deep under the sea - can you believe this?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 21)
-	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 21 and player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
-		if player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 21 and player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor) == 3 then
+		if player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor) == 3 then
 			npcHandler:say({
 				"You do? Well, the end of this story was that I had to leave the place. ...",
 				"I couldnt explore what lies below the stairs as there was an unpredictable stream. Diving into these waters would have been an uncontrollable risk, even with the means to survive without any air. ...",
@@ -396,8 +396,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 22)
 		end
-	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 22 and player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
-		if player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 22 and player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor) == 3 then
+		if player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor) == 3 then
 			npcHandler:say({
 				"Well, if you really want to delve into this - I could use some help. So you have found my {machine} on that island? And you found the notes with the coordinates? Then you can find the entrance! ...",
 				"Just look for a large staircase with sprawling steps. There is an unpassable stream there that will prevent you from venturing further on. But fear not, you can indeed travel down there - with these small {enhancements} I created. ...",
@@ -406,10 +406,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 23)
 		end
-	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 23 and player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
-		if player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 23 and player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor) == 3 then
+		if player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor) == 3 then
 			npcHandler:say("Then off you go! Im sorry that I cannot offer you any further help but Im sure you will find support along your way. And - be careful. The sea can appear pitch black down there.", npc, creature)
-			player:setStorageValue(Storage.LiquidBlackQuest.Visitor, 4)
+			player:setStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor, 4)
 			npcHandler:setTopic(playerId, 24)
 		end
 	elseif MsgContains(message, "task") then

@@ -9,7 +9,7 @@ local function removeMinion(mid)
 end
 
 local function executeVersperothBattle(mid)
-	if Game.getStorageValue(GlobalStorage.BigfootBurden.Versperoth.Battle) ~= 1 then
+	if Game.getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Versperoth.Battle) ~= 1 then
 		return false
 	end
 
@@ -20,7 +20,7 @@ local function executeVersperothBattle(mid)
 		else
 		end
 
-		Game.setStorageValue(GlobalStorage.BigfootBurden.Versperoth.Health, monster:getHealth())
+		Game.setStorageValue(Storage.Quest.U9_60.BigfootsBurden.Versperoth.Health, monster:getHealth())
 		monster:remove()
 		local blood = Tile(versperothPosition):getItemById(2889)
 		if blood then
@@ -53,7 +53,7 @@ local function executeVersperothBattle(mid)
 			holee:remove()
 		end
 		versperothPosition:sendMagicEffect(CONST_ME_GROUNDSHAKER)
-		monster:setHealth(Game.getStorageValue(GlobalStorage.BigfootBurden.Versperoth.Health))
+		monster:setHealth(Game.getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Versperoth.Health))
 		addEvent(executeVersperothBattle, 20 * 1000, monster:getId())
 	end
 end
@@ -66,13 +66,13 @@ function versperothSpawn.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if Game.getStorageValue(GlobalStorage.BigfootBurden.Versperoth.Battle) >= 1 then
+	if Game.getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Versperoth.Battle) >= 1 then
 		player:say("Versperoth has already been defeated in the last 30 minutes.", TALKTYPE_MONSTER_SAY)
 		return true
 	end
 	player:teleportTo(Position(33072, 31877, 12))
-	Game.setStorageValue(GlobalStorage.BigfootBurden.Versperoth.Battle, 1)
-	Game.setStorageValue(GlobalStorage.BigfootBurden.Versperoth.Health, 100000)
+	Game.setStorageValue(Storage.Quest.U9_60.BigfootsBurden.Versperoth.Battle, 1)
+	Game.setStorageValue(Storage.Quest.U9_60.BigfootsBurden.Versperoth.Health, 100000)
 	executeVersperothBattle()
 	item:remove()
 	return true

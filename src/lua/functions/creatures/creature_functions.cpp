@@ -1020,11 +1020,11 @@ int CreatureFunctions::luaCreatureSetIcon(lua_State* L) {
 		return 1;
 	}
 	const auto key = getString(L, 2);
-	auto category = getNumber<CreatureIconCategory_t>(L, 3);
-	auto count = getNumber<uint16_t>(L, 5, 0);
+	const auto category = getNumber<CreatureIconCategory_t>(L, 3);
+	const auto count = getNumber<uint16_t>(L, 5, 0);
 	CreatureIcon creatureIcon;
 	if (category == CreatureIconCategory_t::Modifications) {
-		auto icon = getNumber<CreatureIconModifications_t>(L, 5);
+		auto icon = getNumber<CreatureIconModifications_t>(L, 4);
 		creatureIcon = CreatureIcon(icon, count);
 	} else {
 		auto icon = getNumber<CreatureIconQuests_t>(L, 4);

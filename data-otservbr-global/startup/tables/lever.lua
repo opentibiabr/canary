@@ -16,6 +16,17 @@ LeverAction = {
 			{ x = 32842, y = 32276, z = 9 },
 		},
 	},
+	-- Children of the Revolution Quest
+	[8013] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33349, y = 31123, z = 5 },
+			{ x = 33349, y = 31124, z = 5 },
+			{ x = 33349, y = 31125, z = 5 },
+			{ x = 33349, y = 31126, z = 5 },
+			{ x = 33349, y = 31127, z = 5 },
+		},
+	},
 	-- Dreamer's Challenge Quest
 	[8033] = {
 		itemId = 2772,
@@ -74,6 +85,13 @@ LeverAction = {
 			{ x = 32775, y = 32583, z = 11 },
 			{ x = 32756, y = 32494, z = 11 },
 			{ x = 32799, y = 32556, z = 11 },
+		},
+	},
+	-- Secret Service
+	[12574] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 32576, y = 31862, z = 14 },
 		},
 	},
 	-- Dawnport bridge lever
@@ -155,6 +173,28 @@ LeverAction = {
 }
 
 LeverUnique = {
+	-- The Inquisiton Quest
+	[1006] = {
+		itemId = 2772,
+		itemPos = { x = 33240, y = 31722, z = 11 },
+	},
+	[1007] = {
+		itemId = 2772,
+		itemPos = { x = 33224, y = 31722, z = 11 },
+	},
+	[1008] = {
+		itemId = 2772,
+		itemPos = { x = 33224, y = 31734, z = 11 },
+	},
+	[1009] = {
+		itemId = 2772,
+		itemPos = { x = 33240, y = 31734, z = 11 },
+	},
+	-- Against the Spider Cult Quest
+	[1017] = {
+		itemId = 2772,
+		itemPos = { x = 33172, y = 31896, z = 8 },
+	},
 	-- The Pits of Inferno
 	[1037] = {
 		itemId = 2772,
@@ -168,6 +208,11 @@ LeverUnique = {
 	[1041] = {
 		itemId = 2772,
 		itemPos = { x = 32862, y = 32555, z = 11 },
+	},
+	-- Wrath of the Emperor Quest
+	[1053] = {
+		itemId = 2772,
+		itemPos = { x = 32801, y = 32640, z = 15 },
 	},
 	-- Dreamers Challenge Quest
 	[2004] = {
@@ -288,6 +333,15 @@ LeverUnique = {
 	[3043] = {
 		itemId = 2772,
 		itemPos = { x = 32833, y = 32224, z = 14 },
+	},
+	-- Wrath of the Emperor Quest
+	[3184] = {
+		itemId = 2772,
+		itemPos = { x = 33078, y = 31079, z = 13 },
+	},
+	[3185] = {
+		itemId = 2772,
+		itemPos = { x = 33082, y = 31109, z = 2 },
 	},
 	-- The Pits of Inferno Quest
 	[3300] = {

@@ -51,58 +51,90 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "mission") or MsgContains(message, "task") then
-		if (getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03) < 1) and getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Time) <= os.time() then
-			npcHandler:say("Oh, you want some work? You can help us, alright. Did you know that the people of the city think those rabbit feet are actually lucky charms?", npc, creature)
-			npcHandler:setTopic(playerId, 1)
-		elseif getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03) == 1 then
+		-- Checks if the mission has not yet started and the cooldown has expired
+		if getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03) < 1 then
+			if getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Time) <= os.time() then
+				npcHandler:say("Oh, you want some work? You can help us, alright. Did you know that the people of the city think those rabbit feet are actually lucky charms?", npc, creature)
+				npcHandler:setTopic(playerId, 1)
+			else
+				npcHandler:say("You need to wait some hours to take another mission again or you are still on a mission.", npc, creature)
+			end
+
+		-- Checks if the player is already on the rabbit feet collection mission
+		elseif getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03) == 1 then
 			npcHandler:say("Good to see you back. Now, did you bring us the lucky charms?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
-		elseif getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Time) > os.time() then
-			npcHandler:say("You need wait some hours to take other mission again or you are still on a mission.", npc, creature)
 
-			------------------------ FINISH MISSION 01 ------------------------
-		elseif getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03) == 2 then
-			npcHandler:say({
-				"Of course, of course, there is indeed something you can help us with. Remember that we also have some tasks for you. So, are you ready for another quest to help the men of the forest?",
-				"There is a problem with one of our deer stands. Right. Well, there are two problems, our deer stands - and some of the walls of the buildings in the camp are broken. ...",
-				"You know, the guys built all of that themselves. Sure, at first it didn't quite work out as we planned and in the end we had to tear down half the forest - but - it was worth it. ...",
-				"Still, most of the camp is kind of... broken now. And someone with a good hammer and a steady hand needs to fix that. Or I am afraid we will have to freeze... during the cold evenings... well you know, hard times. ...",
-				"So what do you say, in for this one?",
-			}, npc, creature)
-			npcHandler:setTopic(playerId, 4)
-		elseif (getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03) == 3) and getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.RottinStart) > 4 then
-			npcHandler:say("Ah there you are. So, did you repair all the broken structures?", npc, creature)
-			npcHandler:setTopic(playerId, 5)
-			------------------------ FINISH MISSION 02 ------------------------
-		elseif getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03) == 4 then
-			npcHandler:say({
-				"Oh my good friend, good to see you! Today you will help us with a very important task. Very important indeed. ...",
-				"You know, a large group of merchants is travelling from Thais to Venore and they are crossing the forest to shorten their way - can you believe it? ...",
-				"They will enter the forest near our camp which is where you come in - uhm I mean you do want to help us with this, right?",
-			}, npc, creature)
-			npcHandler:setTopic(playerId, 6)
-		elseif (getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03) == 5) and getPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Corpse) == 4 then
-			npcHandler:say("You did it!! And I assume you took only what you needed? Heh. No, I know it. Because my men took the rest. Thanks for helping us, you did a very good job. In fact I have a little 'extra' for you here, thanks again.", npc, creature)
-			------------------ RESET STORAGE --------------------
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03, -1) -- reset storage
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.RottinStart, -1) -- reset storage
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Trap, -1) -- reset storage
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Corpse, -1) -- reset storage
-			-----------------------------------------------------
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Time, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)) -- set time to start mission again
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Questline, 2) -- quest log
-			------------------- ITEM RANDOM --------------------
-			local items = {
-				[0] = { id = 3035, count = 3, chance = 100 },
-				[1] = { id = 3053, count = 1, chance = 80 },
-				[2] = { id = 12260, count = 1, chance = 25 },
-			}
-			for i = 0, #items do
-				if items[i].chance > math.random(1, 100) then
-					doPlayerAddItem(creature, items[i].id, items[i].count)
-					----------------------------------------------------
-					npcHandler:setTopic(playerId, 0)
+		-- Checks if Mission 03 is completed and the cooldown has expired
+		elseif getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03) == 2 then
+			if getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Time) <= os.time() then
+				npcHandler:say({
+					"Of course, of course, there is indeed something you can help us with. Remember that we also have some tasks for you. So, are you ready for another quest to help the men of the forest?",
+					"There is a problem with one of our deer stands. Right. Well, there are two problems, our deer stands - and some of the walls of the buildings in the camp are broken. ...",
+					"You know, the guys built all of that themselves. Sure, at first it didn't quite work out as we planned and in the end we had to tear down half the forest - but - it was worth it. ...",
+					"Still, most of the camp is kind of... broken now. And someone with a good hammer and a steady hand needs to fix that. Or I am afraid we will have to freeze... during the cold evenings... well you know, hard times. ...",
+					"So what do you say, in for this one?",
+				}, npc, creature)
+				npcHandler:setTopic(playerId, 4)
+			else
+				npcHandler:say("You need to wait some hours to take another mission again or you are still on a mission.", npc, creature)
+			end
+
+		-- Checks if Mission 04 is completed and the cooldown has expired
+		elseif (getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03) == 3) and getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.RottinStart) >= 4 then
+			if getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Time) <= os.time() then
+				npcHandler:say("Ah there you are. So, did you repair all the broken structures?", npc, creature)
+				npcHandler:setTopic(playerId, 5)
+			else
+				npcHandler:say("You need to wait some hours to take another mission again or you are still on a mission.", npc, creature)
+			end
+
+		-- Checks if Mission 05 is completed and the cooldown has expired
+		elseif getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03) == 4 then
+			if getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Time) <= os.time() then
+				npcHandler:say({
+					"Oh |PLAYERNAME| my good friend, good to see you! Today you will help us with a very important task. Very important indeed. ...",
+					"You know, a large group of merchants is travelling from Thais to Venore and they are crossing the forest to shorten their way - can you believe it? ...",
+					"They will enter the forest near our camp which is where you come in - uhm I mean you do want to help us with this, right?",
+				}, npc, creature)
+				npcHandler:setTopic(playerId, 6)
+			else
+				npcHandler:say("You need to wait some hours to take another mission again or you are still on a mission.", npc, creature)
+			end
+
+		-- Checks if Mission 06 is completed and the cooldown has expired
+		elseif (getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03) == 5) and getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Corpse) == 4 then
+			if getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Time) <= os.time() then
+				npcHandler:say("You did it!! And I assume you took only what you needed? Heh. No, I know it. Because my men took the rest. Thanks for helping us, you did a very good job. In fact I have a little 'extra' for you here, thanks again.", npc, creature)
+				-- Checks if this is the first time the quest is completed
+				if getPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.FirstTime) == 0 then
+					player:addExperience(1000, true) -- Adds 1000 experience on the first time
+					setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.FirstTime, 1) -- Marks the quest as completed for the first time
+				else
+					player:addExperience(100, true) -- Adds 100 experience on subsequent completions
 				end
+				-- Resets storage values to start new missions
+				setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03, -1) -- reset storage
+				setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.RottinStart, -1) -- reset storage
+				setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Trap, -1) -- reset storage
+				setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Corpse, -1) -- reset storage
+				-- Sets the time to start a new mission
+				setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Time, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)) -- set time to start mission again
+				setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Questline, 2) -- quest log
+				-- Gives a reward item to the player
+				local items = {
+					[0] = { id = 3035, count = 3, chance = 100 },
+					[1] = { id = 3053, count = 1, chance = 80 },
+					[2] = { id = 12260, count = 1, chance = 25 },
+				}
+				for i = 0, #items do
+					if items[i].chance > math.random(1, 100) then
+						doPlayerAddItem(creature, items[i].id, items[i].count)
+						npcHandler:setTopic(playerId, 0)
+					end
+				end
+			else
+				npcHandler:say("You need to wait some hours to take another mission again or you are still on a mission.", npc, creature)
 			end
 		end
 		------------------------ FINISH MISSION 03 ------------------------
@@ -117,32 +149,33 @@ local function creatureSayCallback(npc, creature, type, message)
 				"We will need at least seven. And seven is a lucky number, don't you think? Heh. ...",
 				"If you need some more ribbons just come back to me and ask.",
 			}, npc, creature)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03, 1)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Questline, 1) -- quest log
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03, 1)
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Questline, 1) -- quest log
 			doPlayerAddItem(creature, 12171, 7)
 			npcHandler:setTopic(playerId, 0)
 		elseif (npcHandler:getTopic(playerId) == 3) and getPlayerItemCount(creature, 12173) >= 7 then
 			npcHandler:say("Good hunt. That will be enough to help us uhm... get through the winter yes. Now if you want to help us getting even more lucky charms, you can always ask.", npc, creature)
 			doPlayerRemoveItem(creature, 12173, 7)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03, 2)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Questline, 4) -- quest log
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03, 2)
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Questline, 4) -- quest log
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Time, os.time() + (20 * 3600)) -- 20 hours
 			npcHandler:setTopic(playerId, 0)
 		elseif (npcHandler:getTopic(playerId) == 3) and getPlayerItemCount(creature, 12173) <= 6 then
 			npcHandler:say("You do not have sufficient rabbit's foot.", npc, creature)
-
 			------------------------ FINISH MISSION 01 ------------------------
 		elseif npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say("Good, good. Do you remember the old saying? If it ain't broken, it was not made by us. Now, off you go!", npc, creature)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03, 3)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Questline, 3) -- quest log
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03, 3)
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Questline, 3) -- quest log
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			npcHandler:say({
 				"Mmmmh, I have to say - good workmanship. No doubt. Yes, the person who made that tool you used to fix all this was a pure professional. Something I can't say about your work, though. ...",
 				"The walls look as if they will come off in a matter of hours. Oh well, you can always come back and repair this mess, ask me for a task if you want to. Yeah, yeah and here's your reward for today.",
 			}, npc, creature)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03, 4)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Questline, 6) -- quest log
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03, 4)
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Questline, 6) -- quest log
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Time, os.time() + (20 * 3600)) -- 20 hours
 			doPlayerAddItem(creature, 3035, 5)
 			npcHandler:setTopic(playerId, 0)
 			------------------------ FINISH MISSION 02 ------------------------
@@ -165,14 +198,16 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Off you go and - good hunt, heh.",
 			}, npc, creature)
 			doPlayerAddItem(creature, 12186, 5)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Mission03, 5)
-			setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Questline, 5) -- quest log
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Mission03, 5)
+			setPlayerStorageValue(creature, Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.Questline, 5) -- quest log
 			npcHandler:setTopic(playerId, 0)
 			------------------------ FINISH MISSION 03 ------------------------
 		end
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Hunter's greeting! I assume you want something from me since you came all the way out here on your own. This is a dangerous place to be, I doubt that all my men will accept strangers like I do. You don't seem to have any problems with that, though.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

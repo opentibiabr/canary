@@ -171,6 +171,12 @@ registerMonsterType.flags = function(mtype, mask)
 		if mask.flags.summonable ~= nil then
 			mtype:isSummonable(mask.flags.summonable)
 		end
+		if mask.flags.isPreyable ~= nil then
+			mtype:isPreyable(mask.flags.isPreyable)
+		end
+		if mask.flags.isPreyExclusive ~= nil then
+			mtype:isPreyExclusive(mask.flags.isPreyExclusive)
+		end
 		if mask.flags.illusionable ~= nil then
 			mtype:isIllusionable(mask.flags.illusionable)
 		end

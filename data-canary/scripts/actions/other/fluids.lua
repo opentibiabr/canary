@@ -81,6 +81,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			item:transform(item:getId(), 0)
 		end
 	end
+
 	return true
 end
 

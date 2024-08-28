@@ -26,6 +26,9 @@ function onUpdateDatabase()
 	db.query("ALTER TABLE `players` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
 	db.query("ALTER TABLE `players` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 
+	db.query("ALTER TABLE `guilds` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
+	db.query("ALTER TABLE `guilds` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
+
 	db.query("ALTER TABLE `houses` ADD `world_id` int(3) UNSIGNED NOT NULL DEFAULT 1;")
 	db.query("ALTER TABLE `houses` ADD FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`) ON DELETE CASCADE;")
 

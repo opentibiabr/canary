@@ -4,11 +4,6 @@ local function isSpecialItem(itemId)
 	return (itemId >= ITEM_HEALTH_CASK_START and itemId <= ITEM_HEALTH_CASK_END) or (itemId >= ITEM_MANA_CASK_START and itemId <= ITEM_MANA_CASK_END) or (itemId >= ITEM_SPIRIT_CASK_START and itemId <= ITEM_SPIRIT_CASK_END) or (itemId >= ITEM_KEG_START and itemId <= ITEM_KEG_END)
 end
 
-local actionIdDescriptions = {
-	[5640] = "a honeyflower patch.",
-	[5641] = "a banana palm.",
-}
-
 local function getPositionDescription(position)
 	if position.x == 65535 then
 		return "Position: In your inventory."
@@ -20,9 +15,7 @@ end
 local function handleItemDescription(inspectedThing, lookDistance)
 	local descriptionText = inspectedThing:getDescription(lookDistance)
 
-	if actionIdDescriptions[inspectedThing.actionid] then
-		return "You see " .. actionIdDescriptions[inspectedThing.actionid]
-	elseif isSpecialItem(inspectedThing.itemid) then
+	if isSpecialItem(inspectedThing.itemid) then
 		local itemCharges = inspectedThing:getCharges()
 		if itemCharges > 0 then
 			return string.format("You see %s\nIt has %d refillings left.", descriptionText, itemCharges)
@@ -37,7 +30,6 @@ end
 local function handleCreatureDescription(inspectedThing, lookDistance)
 	local descriptionText = inspectedThing:getDescription(lookDistance)
 
-	-- Handle familiar monsters
 	if inspectedThing:isMonster() then
 		local monsterMaster = inspectedThing:getMaster()
 		if monsterMaster and table.contains({ "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }, inspectedThing:getName():lower()) then
@@ -58,7 +50,7 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 			descriptionText = string.format("%s, Action ID: %d", descriptionText, itemActionId)
 		end
 
-		local itemUniqueId = inspectedThing:getAttribute(ITEM_ATTRIBUTE_UNIQUEID)
+		local itemUniqueId = inspectedThing:getUniqueId()
 		if itemUniqueId > 0 and itemUniqueId < 65536 then
 			descriptionText = string.format("%s, Unique ID: %d", descriptionText, itemUniqueId)
 		end
@@ -87,6 +79,7 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 		elseif inspectedThing:isNpc() then
 			creatureId = string.format("NPC ID: %i", inspectedThing:getId())
 		end
+
 		descriptionText = string.format(healthDescription, descriptionText, creatureId, inspectedThing:getHealth(), inspectedThing:getMaxHealth())
 	end
 
@@ -95,7 +88,7 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 	if inspectedThing:isCreature() then
 		local creatureBaseSpeed = inspectedThing:getBaseSpeed()
 		local creatureCurrentSpeed = inspectedThing:getSpeed()
-		descriptionText = string.format("%s\nSpeedBase: %d\nSpeed: %d", descriptionText, creatureBaseSpeed, creatureCurrentSpeed)
+		descriptionText = string.format("%s\nSpeed Base: %d\nSpeed: %d", descriptionText, creatureBaseSpeed, creatureCurrentSpeed)
 
 		if inspectedThing:isPlayer() then
 			descriptionText = string.format("%s\nIP: %s", descriptionText, Game.convertIpToString(inspectedThing:getIp()))

@@ -66,6 +66,7 @@ local function greetCallback(npc, creature)
 				position:sendMagicEffect(CONST_ME_TELEPORT)
 			end
 		end
+		npcHandler:say("No! The hornless have reached my city! BODYGUARDS TO ME!", npc, creature)
 		return false
 	elseif player:getStorageValue(Storage.MarkwinGreeting) == 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Well ... you defeated my guards! Now everything is over! I guess I will have to answer your questions now.")
@@ -92,7 +93,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif MsgContains(message, "cookie") then
-		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Markwin) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 31 and player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.Markwin) ~= 1 then
 			npcHandler:say("You bring me ... a cookie???", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
@@ -109,7 +110,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.Markwin, 1)
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.Markwin, 1)
 			if player:getCookiesDelivered() == 10 then
 				player:addAchievement("Allow Cookies?")
 			end

@@ -5,7 +5,7 @@ local missionTiles = {
 		{
 			states = { 1 },
 			extra = {
-				storage = Storage.TheRookieGuard.AcademyChest,
+				storage = Storage.Quest.U9_1.TheRookieGuard.AcademyChest,
 				state = -1,
 			},
 			message = "This chest should contain everything you need to infiltrate the fortress.",
@@ -14,7 +14,7 @@ local missionTiles = {
 		{
 			states = { 1 },
 			extra = {
-				storage = Storage.TheRookieGuard.AcademyChest,
+				storage = Storage.Quest.U9_1.TheRookieGuard.AcademyChest,
 				state = 1,
 			},
 			message = "Those items should be what you need to infiltrate the fortress. Go back near the wasps' nest and walk south from there.",
@@ -105,7 +105,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	-- Skip if not was started or finished
 	if missionState == -1 then
 		return true
@@ -125,7 +125,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 			end
 			-- Update state
 			if tile[i].newState then
-				player:setStorageValue(Storage.TheRookieGuard.Mission12, tile[i].newState)
+				player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, tile[i].newState)
 			end
 			-- Walk to relative position
 			if tile[i].walkTo then
@@ -162,22 +162,22 @@ local reward = {
 local treasureChest = Action()
 
 function treasureChest.onUse(player, item, frompos, itemEx, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
 	end
 	if missionState >= 1 and missionState <= 13 then
-		local chestState = player:getStorageValue(Storage.TheRookieGuard.AcademyChest)
-		local chestTimer = player:getStorageValue(Storage.TheRookieGuard.AcademyChestTimer)
+		local chestState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.AcademyChest)
+		local chestTimer = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.AcademyChestTimer)
 		if chestState == -1 or chestTimer - os.time() <= 0 then
 			local container = Game.createItem(reward.containerId)
 			for i = #reward.itemIds, 1, -1 do
 				container:addItem(reward.itemIds[i], 1)
 			end
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found " .. container:getArticle() .. " " .. container:getName() .. ".")
-			player:setStorageValue(Storage.TheRookieGuard.AcademyChest, 1)
-			player:setStorageValue(Storage.TheRookieGuard.AcademyChestTimer, os.time() + 24 * 60 * 60)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.AcademyChest, 1)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.AcademyChestTimer, os.time() + 24 * 60 * 60)
 			player:addItemEx(container, true, CONST_SLOT_WHEREEVER)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. item:getName() .. " is empty.")
@@ -204,11 +204,11 @@ end
 local rollingPin = Action()
 
 function rollingPin.onUse(player, item, frompos, itemEx, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	if missionState >= 2 and missionState <= 13 and itemEx.itemid == 12790 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You knock the unsuspicious orc unconscious. Use him to disguise yourself as orc!")
 		if missionState == 2 then
-			player:setStorageValue(Storage.TheRookieGuard.Mission12, 3)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, 3)
 			player:addExperience(50, true)
 		end
 		itemEx:transform(12791, 1)
@@ -227,11 +227,11 @@ rollingPin:register()
 local unconsciousOrc = Action()
 
 function unconsciousOrc.onUse(player, item, frompos, itemEx, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	if missionState >= 3 and missionState <= 13 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You look almost like an orc. It won't fool all orcs, but the stupid guardsman in front of the fortress should fall for it.")
 		if missionState == 3 then
-			player:setStorageValue(Storage.TheRookieGuard.Mission12, 4)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, 4)
 		end
 		local conditionOutfit = Condition(CONDITION_OUTFIT)
 		conditionOutfit:setTicks(300000)
@@ -272,11 +272,11 @@ end
 local fleshyBone = Action()
 
 function fleshyBone.onUse(player, item, frompos, itemEx, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	if missionState >= 5 and itemEx.itemid == 12792 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This should be enough distraction for you to sneak into the fortress! Hurry up!")
 		if missionState == 5 then
-			player:setStorageValue(Storage.TheRookieGuard.Mission12, 6)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, 6)
 			player:addExperience(50, true)
 		end
 		local position = itemEx:getPosition()
@@ -305,10 +305,10 @@ fleshyBone:register()
 local poisonFlask = Action()
 
 function poisonFlask.onUse(player, item, frompos, itemEx, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	if missionState == 7 and itemEx.actionid == 40012 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You poisoned Kraknaknork's soup. This should weaken him immensely. Time to find his room.")
-		player:setStorageValue(Storage.TheRookieGuard.Mission12, 8)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, 8)
 		player:removeItem(12784, 1)
 		player:addExperience(50, true)
 	end
@@ -323,12 +323,12 @@ poisonFlask:register()
 local taranturaTrap = Action()
 
 function taranturaTrap.onUse(player, item, frompos, itemEx, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	target = Tile(topos):getTopCreature()
 	if missionState >= 8 and target:getName() == "Furious Orc Berserker" then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The berserker can't catch you anymore - but only for 20 seconds. You need to lure him away from the teleporter!")
 		if missionState == 8 then
-			player:setStorageValue(Storage.TheRookieGuard.Mission12, 9)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, 9)
 		end
 		local conditionSlow = Condition(CONDITION_PARALYZE)
 		conditionSlow:setParameter(CONDITION_PARAM_TICKS, 20000)
@@ -350,12 +350,12 @@ function bossLairTeleport.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	-- Skip if not was started or finished
 	if missionState == -1 then
 		return true
 	end
-	if missionState >= 8 then
+	if missionState >= 9 then
 		local spectators = Game.getSpectators(position, false, false, 2, 2, 2, 2)
 		for i = 1, #spectators do
 			if not spectators[i]:isPlayer() and spectators[i]:getName() == "Furious Orc Berserker" then
@@ -368,7 +368,7 @@ function bossLairTeleport.onStepIn(creature, item, position, fromPosition)
 		end
 		if missionState == 9 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You're entering Kraknaknork's lair.")
-			player:setStorageValue(Storage.TheRookieGuard.Mission12, 10)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, 10)
 		end
 		local toPosition = Position(31980, 32173, 10)
 		player:teleportTo(toPosition, false)
@@ -470,7 +470,7 @@ end
 local missionLevers = Action()
 
 function missionLevers.onUse(player, item, position, itemEx, toPosition)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	if missionState >= 10 then
 		local lever = levers[item.uid]
 		local energyBarrier = Tile(energyBarriers[lever.barrier].position):getItemById(12796)
@@ -483,7 +483,7 @@ function missionLevers.onUse(player, item, position, itemEx, toPosition)
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "An energy barrier somewhere temporarily disappeared.")
 			end
 			if missionState == 10 and lever.newState then
-				player:setStorageValue(Storage.TheRookieGuard.Mission12, lever.newState)
+				player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, lever.newState)
 			end
 			addEvent(energyBarrierRestore, 60000, lever.barrier)
 		else
@@ -537,7 +537,7 @@ function enterBossRoomTeleport.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	-- Skip if not was started or finished
 	if missionState == -1 then
 		return true
@@ -562,7 +562,7 @@ function enterBossRoomTeleport.onStepIn(creature, item, position, fromPosition)
 		boss.uid = bossCreature.uid
 		-- Teleport the player to the room
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You're entering Kraknaknork's throne room. You have 5 minutes to kill him!")
-		player:setStorageValue(Storage.TheRookieGuard.Mission12, 12)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, 12)
 		local roomPosition = Position(31944, 32174, 10)
 		player:teleportTo(roomPosition, false)
 		position:sendMagicEffect(CONST_ME_TELEPORT)
@@ -614,7 +614,7 @@ function enterTreasureRoomTeleport.onStepIn(creature, item, position, fromPositi
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	if missionState == 12 then
 		local spectators = Game.getSpectators(Position(boss.roomCenter), false, false, 8, 8, 5, 5)
 		-- Check the boss do not exist
@@ -630,7 +630,7 @@ function enterTreasureRoomTeleport.onStepIn(creature, item, position, fromPositi
 			end
 		end
 		-- Teleport the player to the treasure room
-		player:setStorageValue(Storage.TheRookieGuard.Mission12, 13)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, 13)
 		local treasureRoomPosition = Position(31932, 32171, 11)
 		player:teleportTo(treasureRoomPosition, false)
 		position:sendMagicEffect(CONST_ME_TELEPORT)
@@ -669,14 +669,14 @@ local chests = {
 local bossChests = Action()
 
 function bossChests.onUse(player, item, frompos, itemEx, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
 	end
 	if missionState == 13 then
 		local chest = chests[item.uid]
-		local chestsState = player:getStorageValue(Storage.TheRookieGuard.KraknaknorkChests)
+		local chestsState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.KraknaknorkChests)
 		local hasUsedChest = testFlag(chestsState, chest.id)
 		if not hasUsedChest then
 			local reward = Game.createItem(chest.item.id, chest.item.amount)
@@ -685,7 +685,7 @@ function bossChests.onUse(player, item, frompos, itemEx, topos)
 			elseif reward:getCount() > 1 then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found " .. reward:getCount() .. " " .. reward:getPluralName() .. ".")
 			end
-			player:setStorageValue(Storage.TheRookieGuard.KraknaknorkChests, chestsState + chest.id)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.KraknaknorkChests, chestsState + chest.id)
 			player:addItemEx(reward, true, CONST_SLOT_WHEREEVER)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. item:getName() .. " is empty.")
@@ -706,7 +706,7 @@ function exitTreasureRoomTeleport.onStepIn(creature, item, position, fromPositio
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission12)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12)
 	if missionState == 13 then
 		local health, maxHealth = player:getHealth(), player:getBaseMaxHealth()
 		-- Heal the player if needed
@@ -715,7 +715,7 @@ function exitTreasureRoomTeleport.onStepIn(creature, item, position, fromPositio
 		end
 		-- Teleport the player to the orcland exit
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "With Kraknaknork's final source of energy, you escape the fortress. Time to return to Vascalir.")
-		player:setStorageValue(Storage.TheRookieGuard.Mission12, 14)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission12, 14)
 		local exitPosition = Position(32016, 32150, 7)
 		player:teleportTo(exitPosition, false)
 		position:sendMagicEffect(CONST_ME_TELEPORT)
@@ -762,13 +762,13 @@ local chests = {
 local orcFortressChests = Action()
 
 function orcFortressChests.onUse(player, item, frompos, itemEx, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission10)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission10)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
 	end
 	local chest = chests[item.uid]
-	local chestsState = player:getStorageValue(Storage.TheRookieGuard.OrcFortressChests)
+	local chestsState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.OrcFortressChests)
 	local hasOpenedChest = testFlag(chestsState, chest.id)
 	if not hasOpenedChest then
 		local reward = Game.createItem(chest.item.id, chest.item.amount)
@@ -777,7 +777,7 @@ function orcFortressChests.onUse(player, item, frompos, itemEx, topos)
 		elseif reward:getCount() > 1 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found " .. reward:getCount() .. " " .. reward:getPluralName() .. ".")
 		end
-		player:setStorageValue(Storage.TheRookieGuard.OrcFortressChests, chestsState + chest.id)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.OrcFortressChests, chestsState + chest.id)
 		player:addItemEx(reward, true, CONST_SLOT_WHEREEVER)
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. item:getName() .. " is empty.")

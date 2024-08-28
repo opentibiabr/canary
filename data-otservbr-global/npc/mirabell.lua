@@ -65,7 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "pies") then
-		if player:getStorageValue(Storage.WhatAFoolish.PieBuying) == -1 then
+		if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBuying) == -1 then
 			npcHandler:say("Oh you've heard about my excellent pies, didn't you? I am flattered. Unfortunately I'm completely out of flour. I need 2 portions of flour for one pie. Just tell me when you have enough flour for your pies.", npc, creature)
 			return true
 		end
@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.WhatAFoolish.PieBuying, player:getStorageValue(Storage.WhatAFoolish.PieBuying) + 1)
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBuying, player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBuying) + 1)
 			npcHandler:say("Excellent. Now I can start baking the pies. As you helped me, I will make you a good price for them.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
@@ -94,8 +94,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 
 			player:addItem(119, 1)
-			player:setStorageValue(Storage.WhatAFoolish.PieBuying, player:getStorageValue(Storage.WhatAFoolish.PieBuying) - 1)
-			player:setStorageValue(Storage.WhatAFoolish.PieBoxTimer, os.time() + 1200) -- 20 minutes to deliver
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBuying, player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBuying) - 1)
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBoxTimer, os.time() + 1200) -- 20 minutes to deliver
 			npcHandler:say({
 				"Here they are. Wait! Two things you should know: Firstly, they won't last long in the sun so you better get them to their destination as quickly as possible ...",
 				"Secondly, since my pies are that delicious it is forbidden to leave the town with them. We can't afford to attract more tourists to Edron.",
@@ -134,6 +134,9 @@ npcConfig.shop = {
 	{ itemName = "mug of lemonade", clientId = 2880, buy = 2, count = 12 },
 	{ itemName = "mug of water", clientId = 2880, buy = 1, count = 1 },
 	{ itemName = "mug of wine", clientId = 2880, buy = 3, count = 2 },
+	{ itemName = "vial of beer", clientId = 2874, buy = 2, count = 1, subType = 3 },
+	{ itemName = "vial of wine", clientId = 2874, buy = 3, count = 1, subType = 2 },
+	{ itemName = "vial of water", clientId = 2874, buy = 1, count = 1 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

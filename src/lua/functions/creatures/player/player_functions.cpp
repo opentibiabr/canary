@@ -9,6 +9,8 @@
 
 #include "pch.hpp"
 
+#include "lua/functions/creatures/player/player_functions.hpp"
+
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/interactions/chat.hpp"
@@ -22,7 +24,6 @@
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
 #include "items/item.hpp"
-#include "lua/functions/creatures/player/player_functions.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "map/spectators.hpp"
@@ -4223,8 +4224,12 @@ int PlayerFunctions::luaPlayerAddAchievement(lua_State* L) {
 		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
 	}
 
-	player->sendTakeScreenshot(SCREENSHOT_TYPE_ACHIEVEMENT);
-	pushBoolean(L, player->achiev()->add(achievementId, getBoolean(L, 3, true)));
+	bool success = player->achiev()->add(achievementId, getBoolean(L, 3, true));
+	if (success) {
+		player->sendTakeScreenshot(SCREENSHOT_TYPE_ACHIEVEMENT);
+	}
+
+	pushBoolean(L, success);
 	return 1;
 }
 
@@ -4390,6 +4395,20 @@ int PlayerFunctions::luaPlayerTakeScreenshot(lua_State* L) {
 
 	auto screenshotType = getNumber<Screenshot_t>(L, 2);
 	player->sendTakeScreenshot(screenshotType);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendIconBakragore(lua_State* L) {
+	// player:sendIconBakragore()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto iconType = getNumber<IconBakragore>(L, 2);
+	player->sendIconBakragore(iconType);
 	pushBoolean(L, true);
 	return 1;
 }

@@ -108,8 +108,7 @@ public:
 	 *	\param checkLineOfSight checks if there is any blocking objects in the way
 	 *	\returns The result if you can throw there or not
 	 */
-	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
-
+	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight = SightLine_CheckSightLine, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 	/**
 	 * Checks if path is clear from fromPos to toPos
 	 * Notice: This only checks a straight line if the path is clear, for path finding use getPathTo.
@@ -123,9 +122,11 @@ public:
 
 	std::shared_ptr<Tile> canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos);
 
-	bool getPathMatching(const std::shared_ptr<Creature> &creature, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatching(const std::shared_ptr<Creature> &creature, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatching(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatchingCond(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
-	bool getPathMatching(const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	bool getPathMatching(const Position &startPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 		return getPathMatching(nullptr, startPos, dirList, pathCondition, fpp);
 	}
 
@@ -143,8 +144,6 @@ public:
 	Houses housesCustomMaps[50];
 
 private:
-	bool getPathMatching(const std::shared_ptr<Creature> &creature, const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
-
 	/**
 	 * Set a single tile.
 	 */

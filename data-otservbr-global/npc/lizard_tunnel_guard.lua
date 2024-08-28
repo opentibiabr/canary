@@ -49,8 +49,8 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.WrathoftheEmperor.Questline) >= 2 then
-		player:setStorageValue(Storage.WrathoftheEmperor.GuardcaughtYou, 1)
+	if player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) >= 2 then
+		player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.GuardcaughtYou, 1)
 		player:removeCondition(CONDITION_OUTFIT)
 		player:removeItem(11328, 1)
 		player:teleportTo(Position(33361, 31206, 8))

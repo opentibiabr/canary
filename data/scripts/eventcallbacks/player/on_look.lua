@@ -1,7 +1,17 @@
-local callback = EventCallback()
+local specialItemRanges = {
+	{ rangeStart = ITEM_HEALTH_CASK_START, rangeEnd = ITEM_HEALTH_CASK_END },
+	{ rangeStart = ITEM_MANA_CASK_START, rangeEnd = ITEM_MANA_CASK_END },
+	{ rangeStart = ITEM_SPIRIT_CASK_START, rangeEnd = ITEM_SPIRIT_CASK_END },
+	{ rangeStart = ITEM_KEG_START, rangeEnd = ITEM_KEG_END },
+}
 
 local function isSpecialItem(itemId)
-	return (itemId >= ITEM_HEALTH_CASK_START and itemId <= ITEM_HEALTH_CASK_END) or (itemId >= ITEM_MANA_CASK_START and itemId <= ITEM_MANA_CASK_END) or (itemId >= ITEM_SPIRIT_CASK_START and itemId <= ITEM_SPIRIT_CASK_END) or (itemId >= ITEM_KEG_START and itemId <= ITEM_KEG_END)
+	for _, range in ipairs(specialItemRanges) do
+		if itemId >= range.rangeStart and itemId <= range.rangeEnd then
+			return true
+		end
+	end
+	return false
 end
 
 local function getPositionDescription(position)
@@ -97,6 +107,8 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 
 	return descriptionText
 end
+
+local callback = EventCallback()
 
 function callback.playerOnLook(player, inspectedThing, inspectedPosition, lookDistance)
 	local descriptionText

@@ -9,6 +9,14 @@ local actionIdDescriptions = {
 	[5641] = "a banana palm.",
 }
 
+local function getPositionDescription(position)
+	if position.x == 65535 then
+		return "Position: In your inventory."
+	else
+		return string.format("Position: (%d, %d, %d)", position.x, position.y, position.z)
+	end
+end
+
 local function handleItemDescription(inspectedThing, lookDistance)
 	local descriptionText = inspectedThing:getDescription(lookDistance)
 
@@ -82,7 +90,7 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 		descriptionText = string.format(healthDescription, descriptionText, creatureId, inspectedThing:getHealth(), inspectedThing:getMaxHealth())
 	end
 
-	descriptionText = string.format("%s\nPosition: (%d, %d, %d)", descriptionText, inspectedPosition.x, inspectedPosition.y, inspectedPosition.z)
+	descriptionText = string.format("%s\n%s", descriptionText, getPositionDescription(inspectedPosition))
 
 	if inspectedThing:isCreature() then
 		local creatureBaseSpeed = inspectedThing:getBaseSpeed()

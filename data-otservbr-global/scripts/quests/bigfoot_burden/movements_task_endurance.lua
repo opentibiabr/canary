@@ -26,11 +26,11 @@ function taskEndurance.onStepIn(creature, item, position, fromPosition)
 			player:teleportTo(fromPosition)
 		end
 	elseif item.actionid == 7817 then --finish of the test
-		player:setStorageValue(Storage.BigfootBurden.QuestLine, 18)
+		player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine, 18)
 		player:teleportTo(Position(32760, 31811, 10))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	elseif item.actionid == 7818 then -- entrance to the test
-		if player:getStorageValue(Storage.BigfootBurden.QuestLine) == 17 then
+		if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine) == 17 then
 			player:teleportTo(Position(32759, 31812, 11))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		else

@@ -594,7 +594,7 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 	-- The Rookie Guard Quest - Mission 09: Rock 'n Troll
 	-- Path: data\scripts\actions\quests\the_rookie_guard\mission09_rock_troll.lua
 	-- Damage tunnel pillars
-	if player:getStorageValue(Storage.TheRookieGuard.Mission09) ~= -1 and target.itemid == 1600 then
+	if player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission09) ~= -1 and target.itemid == 1600 then
 		return onUsePickAtTunnelPillar(player, item, fromPosition, target, toPosition)
 	end
 

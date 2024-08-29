@@ -4931,8 +4931,9 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	}
 
 	uint16_t itemsToSend = 0;
+	const uint16_t ItemsToSendLimit = oldProtocol ? 0xFF : 0xFFFF;
 	auto msgPosition = msg.getBufferPosition();
-	msg.skipBytes(2);
+	msg.skipBytes(oldProtocol ? 1 : 2);
 
 	for (const ShopBlock &shopBlock : shopVector) {
 		if (shopBlock.itemSellPrice == 0) {
@@ -4947,14 +4948,18 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 			} else {
 				msg.add<uint16_t>(std::min<uint16_t>(it->second, std::numeric_limits<uint16_t>::max()));
 			}
-			if (++itemsToSend >= 0xFFFF) {
+			if (++itemsToSend >= ItemsToSendLimit) {
 				break;
 			}
 		}
 	}
 
 	msg.setBufferPosition(msgPosition);
-	msg.add<uint16_t>(itemsToSend);
+	if (oldProtocol) {
+		msg.addByte(static_cast<uint8_t>(itemsToSend));
+	} else {
+		msg.add<uint16_t>(itemsToSend);
+	}
 	writeToOutputBuffer(msg);
 }
 

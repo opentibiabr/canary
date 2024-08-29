@@ -1811,7 +1811,7 @@ ItemUnique = {
 	-- Path: data\scripts\actions\quests\the_rookie_guard\mission06_run_like_wolf.lua
 	-- Poacher corpse
 	[40044] = {
-		itemId = 3204,
+		itemId = 111,
 		itemPos = { x = 32135, y = 32133, z = 8 },
 	},
 	-- War wolf corpse

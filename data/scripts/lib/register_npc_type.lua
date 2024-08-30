@@ -141,25 +141,57 @@ registerNpcType.events = function(npcType, mask)
 	end
 end
 
+-- Global item tracker to track buy and sell prices across all NPCs
+NpcPriceChecker = NpcPriceChecker or {}
+
 registerNpcType.shop = function(npcType, mask)
 	if type(mask.shop) == "table" then
 		for _, shopItems in pairs(mask.shop) do
 			local parent = Shop()
-			if shopItems.itemName or shopItems.itemname then
-				parent:setNameItem(shopItems.itemName or shopItems.itemname)
+			local itemName = shopItems.itemName or shopItems.itemname
+			local clientId = shopItems.clientId or shopItems.clientid
+			local buyPrice = shopItems.buy
+			local sellPrice = shopItems.sell
+			local npcName = npcType:getName() -- Assuming `npcType` has a `getName` method to get the NPC's name
+
+			if itemName then
+				parent:setNameItem(itemName)
 			end
-			if shopItems.clientId or shopItems.clientid then
-				parent:setId(shopItems.clientId or shopItems.clientid)
+			if clientId then
+				parent:setId(clientId)
 			end
 			if shopItems.subType or shopItems.subtype or shopItems.count then
 				parent:setCount(shopItems.subType or shopItems.subtype or shopItems.count)
 			end
-			if shopItems.buy then
-				parent:setBuyPrice(shopItems.buy)
+			if buyPrice then
+				parent:setBuyPrice(buyPrice)
 			end
-			if shopItems.sell then
-				parent:setSellPrice(shopItems.sell)
+			if sellPrice then
+				parent:setSellPrice(sellPrice)
 			end
+
+			if clientId then
+				if not NpcPriceChecker[clientId] then
+					NpcPriceChecker[clientId] = { buy = nil, sell = nil, buyNpc = nil, sellNpc = nil }
+				end
+
+				if buyPrice then
+					NpcPriceChecker[clientId].buy = buyPrice
+					NpcPriceChecker[clientId].buyNpc = npcName
+				end
+
+				if sellPrice then
+					NpcPriceChecker[clientId].sell = sellPrice
+					NpcPriceChecker[clientId].sellNpc = npcName
+				end
+
+				if NpcPriceChecker[clientId].buy and NpcPriceChecker[clientId].sell then
+					if NpcPriceChecker[clientId].sell > NpcPriceChecker[clientId].buy then
+						logger.warn("The item {} ({}) is being sold for a value greater than the value it is purchased for by the NPCs. Buy NPC: {}, Sell NPC: {}", itemName, clientId, NpcPriceChecker[clientId].buyNpc, NpcPriceChecker[clientId].sellNpc)
+					end
+				end
+			end
+
 			if shopItems.storageKey or shopItems.storagekey then
 				parent:setStorageKey(shopItems.storageKey or shopItems.storagekey)
 			end
@@ -169,26 +201,26 @@ registerNpcType.shop = function(npcType, mask)
 			if shopItems.child then
 				for _, children in pairs(shopItems.child) do
 					local child = Shop()
-					if shopItems.itemName or shopItems.itemname then
-						child:setNameItem(shopItems.itemName or shopItems.itemname)
+					if children.itemName or children.itemname then
+						child:setNameItem(children.itemName or children.itemname)
 					end
-					if shopItems.clientId or shopItems.clientid then
-						child:setId(shopItems.clientId or shopItems.clientid)
+					if children.clientId or children.clientid then
+						child:setId(children.clientId or children.clientid)
 					end
-					if shopItems.subType or shopItems.subtype or shopItems.count then
-						child:setCount(shopItems.subType or shopItems.subtype or shopItems.count)
+					if children.subType or children.subtype or children.count then
+						child:setCount(children.subType or children.subtype or children.count)
 					end
-					if shopItems.buy then
-						child:setBuyPrice(shopItems.buy)
+					if children.buy then
+						child:setBuyPrice(children.buy)
 					end
-					if shopItems.sell then
-						child:setSellPrice(shopItems.sell)
+					if children.sell then
+						child:setSellPrice(children.sell)
 					end
-					if shopItems.storageKey or shopItems.storagekey then
-						child:setStorageKey(shopItems.storageKey or shopItems.storagekey)
+					if children.storageKey or children.storagekey then
+						child:setStorageKey(children.storageKey or children.storagekey)
 					end
-					if shopItems.storageValue or shopItems.storagevalue then
-						child:setStorageValue(shopItems.storageValue or shopItems.storagevalue)
+					if children.storageValue or children.storagevalue then
+						child:setStorageValue(children.storageValue or children.storagevalue)
 					end
 					parent:addChildShop(child)
 				end

@@ -33,7 +33,7 @@ void House::setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup) {
 		return;
 	}
 
-	std::string query = fmt::format("UPDATE `houses` SET `new_owner` = {} WHERE `id` = {} AND `world_id` = {}", newOwnerGuid, id, g_game().worlds()->getId());
+	std::string query = fmt::format("UPDATE `houses` SET `new_owner` = {} WHERE `id` = {} AND `world_id` = {}", newOwnerGuid, id, g_game().worlds()->getCurrentWorld()->id);
 
 	Database &db = Database::getInstance();
 	db.executeQuery(query);
@@ -87,7 +87,7 @@ bool House::tryTransferOwnership(std::shared_ptr<Player> player, bool serverStar
 }
 
 void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared_ptr<Player> player /* = nullptr*/) {
-	const auto worldId = g_game().worlds()->getId();
+	const auto worldId = g_game().worlds()->getCurrentWorld()->id;
 
 	if (updateDatabase && owner != guid) {
 		Database &db = Database::getInstance();

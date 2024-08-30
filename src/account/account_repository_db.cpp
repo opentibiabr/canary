@@ -151,7 +151,7 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 
 bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 	auto result = g_database().storeQuery(
-		fmt::format("SELECT `name`, `deletion`, `world_id` FROM `players` WHERE `account_id` = {} AND `world_id` = {} ORDER BY `name` ASC", acc.id, g_game().worlds()->getId())
+		fmt::format("SELECT `name`, `deletion`, `world_id` FROM `players` WHERE `account_id` = {} AND `world_id` = {} ORDER BY `name` ASC", acc.id, g_game().worlds()->getCurrentWorld()->id)
 	);
 
 	if (!result) {

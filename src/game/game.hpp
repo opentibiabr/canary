@@ -94,7 +94,8 @@ public:
 
 	// Game worlds interface
 	std::unique_ptr<Worlds> &worlds();
-	const std::unique_ptr<Worlds> &worlds() const;
+	[[nodiscard]] const std::unique_ptr<Worlds> &worlds() const;
+	[[nodiscard]] const std::unordered_map<uint8_t, std::string> &getWorldTypeNames() const;
 
 	void resetMonsters() const;
 	void resetNpcs() const;
@@ -739,6 +740,8 @@ public:
 	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
 
 private:
+	std::unordered_map<uint8_t, std::string> m_worldTypesNames;
+
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
 

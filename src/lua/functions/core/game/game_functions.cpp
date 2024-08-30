@@ -278,15 +278,7 @@ int GameFunctions::luaGameSetGameState(lua_State* L) {
 
 int GameFunctions::luaGameGetWorldType(lua_State* L) {
 	// Game.getWorldType()
-	lua_pushnumber(L, g_game().worlds()->getType());
-	return 1;
-}
-
-int GameFunctions::luaGameSetWorldType(lua_State* L) {
-	// Game.setWorldType(type)
-	WorldType_t type = getNumber<WorldType_t>(L, 1);
-	g_game().worlds()->setType(type);
-	pushBoolean(L, true);
+	lua_pushnumber(L, g_game().worlds()->getCurrentWorld()->type);
 	return 1;
 }
 

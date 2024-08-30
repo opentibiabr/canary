@@ -198,6 +198,13 @@ Game::Game() {
 
 	// Create instance of worlds
 	m_worlds = std::make_unique<Worlds>();
+	m_worldTypesNames = {
+		{ static_cast<uint8_t>(WorldType_t::WORLD_TYPE_PVP), "Open PvP" },
+		{ static_cast<uint8_t>(WorldType_t::WORLD_TYPE_NO_PVP), "Optional PvP" },
+		{ static_cast<uint8_t>(WorldType_t::WORLD_TYPE_PVP_ENFORCED), "Hardcore PvP" },
+		{ static_cast<uint8_t>(WorldType_t::WORLD_TYPE_RETRO_PVP), "Retro Open PvP" },
+		{ static_cast<uint8_t>(WorldType_t::WORLD_TYPE_RETRO_PVP_ENFORCED), "Retro Hardcore PvP" },
+	};
 
 	// Create instance of IOWheel to Game class
 	m_IOWheel = std::make_unique<IOWheel>();
@@ -407,6 +414,10 @@ std::unique_ptr<Worlds> &Game::worlds() {
 
 const std::unique_ptr<Worlds> &Game::worlds() const {
 	return m_worlds;
+}
+
+const std::unordered_map<uint8_t, std::string> &Game::getWorldTypeNames() const {
+	return m_worldTypesNames;
 }
 
 void Game::resetMonsters() const {
@@ -8037,7 +8048,7 @@ void Game::updateCreatureWalkthrough(std::shared_ptr<Creature> creature) {
 }
 
 void Game::updateCreatureSkull(std::shared_ptr<Creature> creature) {
-	if (worlds()->getType() != WORLD_TYPE_PVP) {
+	if (worlds()->getCurrentWorld()->type != WORLD_TYPE_PVP) {
 		return;
 	}
 
@@ -8087,7 +8098,7 @@ void Game::updateCreatureType(std::shared_ptr<Creature> creature) {
 
 void Game::loadMotdNum() {
 	Database &db = Database::getInstance();
-	const auto worldId = worlds()->getId();
+	const auto worldId = worlds()->getCurrentWorld()->id;
 
 	auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num' AND `world_id` = {}", worldId));
 	if (result) {
@@ -8109,7 +8120,7 @@ void Game::loadMotdNum() {
 
 void Game::saveMotdNum() const {
 	Database &db = Database::getInstance();
-	const auto worldId = worlds()->getId();
+	const auto worldId = worlds()->getCurrentWorld()->id;
 
 	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'motd_num' AND `world_id` = {}", motdNum, worldId);
 	db.executeQuery(query);
@@ -8134,13 +8145,13 @@ void Game::checkPlayersRecord() {
 void Game::updatePlayersRecord() const {
 	Database &db = Database::getInstance();
 
-	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'players_record' AND `world_id` = {}", playersRecord, worlds()->getId());
+	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'players_record' AND `world_id` = {}", playersRecord, worlds()->getCurrentWorld()->id);
 	db.executeQuery(query);
 }
 
 void Game::loadPlayersRecord() {
 	Database &db = Database::getInstance();
-	const auto worldId = worlds()->getId();
+	const auto worldId = worlds()->getCurrentWorld()->id;
 
 	const auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'players_record' AND `world_id` = {}", worldId));
 	if (result) {

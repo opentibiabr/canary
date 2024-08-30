@@ -2166,7 +2166,7 @@ void ProtocolGame::parseHighscores(NetworkMessage &msg) {
 	}
 	uint8_t entriesPerPage = std::min<uint8_t>(30, std::max<uint8_t>(5, msg.getByte()));
 
-	g_game().playerHighscores(player, type, category, vocation, worldName == "OWN" || type == HIGHSCORE_OURRANK ? g_game().worlds()->getName() : worldName, page, entriesPerPage);
+	g_game().playerHighscores(player, type, category, vocation, worldName == "OWN" || type == HIGHSCORE_OURRANK ? g_game().worlds()->getCurrentWorld()->name : worldName, page, entriesPerPage);
 }
 
 void ProtocolGame::parseTaskHuntingAction(NetworkMessage &msg) {
@@ -3374,7 +3374,7 @@ void ProtocolGame::sendCreatureEmblem(std::shared_ptr<Creature> creature) {
 }
 
 void ProtocolGame::sendCreatureSkull(std::shared_ptr<Creature> creature) {
-	if (g_game().worlds()->getType() != WORLD_TYPE_PVP) {
+	if (g_game().worlds()->getCurrentWorld()->type != WORLD_TYPE_PVP) {
 		return;
 	}
 
@@ -6446,7 +6446,7 @@ void ProtocolGame::sendPartyCreatureShield(std::shared_ptr<Creature> target) {
 }
 
 void ProtocolGame::sendPartyCreatureSkull(std::shared_ptr<Creature> target) {
-	if (g_game().worlds()->getType() != WORLD_TYPE_PVP) {
+	if (g_game().worlds()->getCurrentWorld()->type != WORLD_TYPE_PVP) {
 		return;
 	}
 

@@ -23,7 +23,10 @@ void Worlds::reload() {
 	load();
 }
 
-[[nodiscard]] const std::shared_ptr<World> &Worlds::getById(uint8_t id) const {
+[[nodiscard]] const std::shared_ptr<World> &Worlds::getWorldConfigsById(uint8_t id) const {
+	if (id == 0) {
+		return {};
+	}
 	auto it = std::find_if(worlds.begin(), worlds.end(), [id](const std::shared_ptr<World> &world) {
 		return world->id == id;
 	});
@@ -31,72 +34,16 @@ void Worlds::reload() {
 	return it != worlds.end() ? (*it) : nullptr;
 }
 
-void Worlds::setId(uint8_t newId) {
-	thisWorld->id = newId;
+void Worlds::setCurrentWorld(const std::shared_ptr<World> &world) {
+	m_currentWorld = world;
 }
 
-[[nodiscard]] uint8_t Worlds::getId() const {
-	return thisWorld->id;
+const std::shared_ptr<World> &Worlds::getCurrentWorld() const {
+	return m_currentWorld;
 }
 
-void Worlds::setName(const std::string newName) {
-	thisWorld->name = newName;
-}
-
-[[nodiscard]] const std::string &Worlds::getName() const {
-	return thisWorld->name;
-}
-
-void Worlds::setType(WorldType_t newType) {
-	thisWorld->type = newType;
-}
-
-[[nodiscard]] WorldType_t Worlds::getType() const {
-	return thisWorld->type;
-}
-
-void Worlds::setMotd(const std::string newMotd) {
-	thisWorld->motd = newMotd;
-}
-
-[[nodiscard]] const std::string &Worlds::getMotd() const {
-	return thisWorld->motd;
-}
-
-void Worlds::setLocation(Location_t newLocation) {
-	thisWorld->location = newLocation;
-}
-
-[[nodiscard]] Location_t Worlds::getLocation() const {
-	return thisWorld->location;
-}
-
-void Worlds::setIp(const std::string newIp) {
-	thisWorld->ip = newIp;
-}
-
-[[nodiscard]] const std::string &Worlds::getIp() const {
-	return thisWorld->ip;
-}
-
-void Worlds::setPort(uint16_t newPort) {
-	thisWorld->port = newPort;
-}
-
-[[nodiscard]] uint16_t Worlds::getPort() const {
-	return thisWorld->port;
-}
-
-void Worlds::setCreation(uint16_t creation) {
-	thisWorld->creation = creation;
-}
-
-[[nodiscard]] uint16_t Worlds::getCreation() const {
-	return thisWorld->creation;
-}
-
-[[nodiscard]] WorldType_t Worlds::getTypeByString(const std::string &type) {
-	const std::string worldType = asLowerCaseString(type);
+[[nodiscard]] WorldType_t Worlds::getWorldTypeIdByKey(const std::string &key) {
+	const std::string worldType = asLowerCaseString(key);
 
 	if (worldType == "pvp") {
 		return WORLD_TYPE_PVP;
@@ -115,20 +62,20 @@ void Worlds::setCreation(uint16_t creation) {
 	return WORLD_TYPE_NONE;
 }
 
-[[nodiscard]] Location_t Worlds::getLocationCode(const std::string &location) {
-	const std::string location_ = asLowerCaseString(location);
+[[nodiscard]] Location_t Worlds::getWorldLocationByKey(const std::string &key) {
+	const std::string location = asLowerCaseString(key);
 
-	if (location_ == "europe") {
+	if (location == "europe") {
 		return LOCATION_EUROPE;
-	} else if (location_ == "north america") {
+	} else if (location == "north america") {
 		return LOCATION_NORTH_AMERICA;
-	} else if (location_ == "south america") {
+	} else if (location == "south america") {
 		return LOCATION_SOUTH_AMERICA;
-	} else if (location_ == "oceania") {
+	} else if (location == "oceania") {
 		return LOCATION_OCEANIA;
 	}
 
-	g_logger().error("[{}] - Unable to get world location from string '{}'", __FUNCTION__, location_);
+	g_logger().error("[{}] - Unable to get world location from string '{}'", __FUNCTION__, location);
 
 	return LOCATION_NONE;
 }

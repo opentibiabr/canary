@@ -279,7 +279,7 @@ void IOLoginDataLoad::loadPlayerSkullSystem(std::shared_ptr<Player> player, DBRe
 		return;
 	}
 
-	if (g_game().worlds()->getType() != WORLD_TYPE_PVP_ENFORCED) {
+	if (g_game().worlds()->getCurrentWorld()->type != WORLD_TYPE_PVP_ENFORCED) {
 		const time_t skullSeconds = result->getNumber<time_t>("skulltime") - time(nullptr);
 		if (skullSeconds > 0) {
 			// ensure that we round up the number of ticks

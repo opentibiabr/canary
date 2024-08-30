@@ -71,7 +71,7 @@ bool AccountRepositoryDB::getCharacterByNameAndAccountId(const uint32_t &id, con
 		return false;
 	}
 
-	return result->countResults() > 0;
+	return result->countResults() == 1;
 }
 
 bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password) {

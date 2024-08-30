@@ -441,18 +441,20 @@ void IOLoginData::removeGuidVIPGroupEntry(uint32_t accountId, uint32_t guid) {
 }
 
 void IOLoginData::createFirstWorld() {
-	std::string query = "SELECT * FROM `worlds`";
-	const auto &result = g_database().storeQuery(query);
-
-	const auto &serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__);
-	const auto &worldType = g_configManager().getString(WORLD_TYPE, __FUNCTION__);
-	const auto &ip = g_configManager().getString(IP, __FUNCTION__);
-	const auto &port = g_configManager().getNumber(GAME_PORT, __FUNCTION__);
+	const auto &result = g_database().storeQuery("SELECT * FROM `worlds`");
 
 	if (result.get() == nullptr || result->countResults() < 1) {
-		query = fmt::format(
-			"INSERT INTO `worlds` (`name`, `type`, `ip`, `port`) VALUES ({}, {}, {}, {})",
-			g_database().escapeString(serverName), g_database().escapeString(worldType), g_database().escapeString(ip), port
+		const auto &retro = g_configManager().getBoolean(TOGGLE_SERVER_IS_RETRO, __FUNCTION__) ? "retro-" : "";
+		const auto &serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__);
+		const auto &worldType = fmt::format("{}{}", retro, g_configManager().getString(WORLD_TYPE, __FUNCTION__));
+		const auto &worldMotd = g_configManager().getString(SERVER_MOTD, __FUNCTION__);
+		const auto &location = g_configManager().getString(WORLD_LOCATION, __FUNCTION__);
+		const auto &ip = g_configManager().getString(IP, __FUNCTION__);
+		const auto &port = g_configManager().getNumber(GAME_PORT, __FUNCTION__);
+
+		std::string query = fmt::format(
+			"INSERT INTO `worlds` (`name`, `type`, `motd`, `location`, `ip`, `port`, `creation`) VALUES ({}, {}, {}, {}, {}, {}, {})",
+			g_database().escapeString(serverName), g_database().escapeString(worldType), g_database().escapeString(worldMotd), g_database().escapeString(location), g_database().escapeString(ip), port, getTimeNow()
 		);
 		const auto &insertResult = g_database().executeQuery(query);
 
@@ -465,19 +467,20 @@ void IOLoginData::createFirstWorld() {
 }
 
 std::vector<std::shared_ptr<World>> IOLoginData::loadWorlds() {
-	std::string query = "SELECT `id`, `name`, `type`, `ip`, `port` FROM `worlds`";
-
 	std::vector<std::shared_ptr<World>> entries;
 
-	if (const auto &result = Database::getInstance().storeQuery(query)) {
+	if (const auto &result = Database::getInstance().storeQuery("SELECT * FROM `worlds`")) {
 		entries.reserve(result->countResults());
 		do {
 			entries.emplace_back(std::make_shared<World>(
 				result->getNumber<uint8_t>("id"),
 				result->getString("name"),
 				g_game().worlds()->getTypeByString(result->getString("type")),
+				result->getString("motd"),
+				g_game().worlds()->getLocationCode(result->getString("location")),
 				result->getString("ip"),
-				result->getNumber<uint16_t>("port")
+				result->getNumber<uint16_t>("port"),
+				result->getNumber<uint16_t>("creation")
 			));
 		} while (result->next());
 	}

@@ -19,7 +19,6 @@
 
 void IOBosstiary::loadBoostedBoss() {
 	Database &database = Database::getInstance();
-	const auto worldId = g_game().worlds()->getId();
 
 	std::string query = "SELECT * FROM `boosted_boss`";
 	auto result = database.storeQuery(query);

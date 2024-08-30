@@ -3,12 +3,7 @@ function onCreateMagicWall(creature, position)
 	if tile and tile:getTopCreature() and not tile:getTopCreature():isPlayer() then
 		return false
 	end
-	local magicWall
-	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
-		magicWall = ITEM_MAGICWALL_SAFE
-	else
-		magicWall = ITEM_MAGICWALL
-	end
+	local magicWall = Game.getWorldType() == WORLD_TYPE_NO_PVP and ITEM_MAGICWALL_SAFE or ITEM_MAGICWALL
 	local item = Game.createItem(magicWall, 1, position)
 	item:setDuration(16, 24)
 end

@@ -93,7 +93,7 @@ void ProtocolStatus::sendStatusString() {
 	serverinfo.append_attribute("ip") = g_configManager().getString(IP, __FUNCTION__).c_str();
 	serverinfo.append_attribute("servername") = g_configManager().getString(ConfigKey_t::SERVER_NAME, __FUNCTION__).c_str();
 	serverinfo.append_attribute("port") = std::to_string(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)).c_str();
-	serverinfo.append_attribute("location") = g_configManager().getString(LOCATION, __FUNCTION__).c_str();
+	serverinfo.append_attribute("location") = g_configManager().getString(WORLD_LOCATION, __FUNCTION__).c_str();
 	serverinfo.append_attribute("url") = g_configManager().getString(URL, __FUNCTION__).c_str();
 	serverinfo.append_attribute("server") = ProtocolStatus::SERVER_NAME.c_str();
 	serverinfo.append_attribute("version") = ProtocolStatus::SERVER_VERSION.c_str();
@@ -177,7 +177,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 	if (requestedInfo & REQUEST_MISC_SERVER_INFO) {
 		output->addByte(0x12);
 		output->addString(g_configManager().getString(SERVER_MOTD, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(SERVER_MOTD)");
-		output->addString(g_configManager().getString(LOCATION, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(LOCATION)");
+		output->addString(g_configManager().getString(WORLD_LOCATION, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(WORLD_LOCATION)");
 		output->addString(g_configManager().getString(URL, __FUNCTION__), "ProtocolStatus::sendInfo - g_configManager().getString(URL)");
 		output->add<uint64_t>((OTSYS_TIME() - ProtocolStatus::start) / 1000);
 	}

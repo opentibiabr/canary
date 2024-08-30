@@ -63,6 +63,7 @@ is "SILENCE", the registered full name will be "SOUND_EFFECT_TYPE_SILENCE".
 	void(0)
 
 void LuaEnums::init(lua_State* L) {
+	initWorldTypes(L);
 	initOthersEnums(L);
 	initAccountEnums(L);
 	initDailyRewardEnums(L);
@@ -114,10 +115,16 @@ void LuaEnums::init(lua_State* L) {
 	initConcoctionsEnum(L);
 }
 
-void LuaEnums::initOthersEnums(lua_State* L) {
-	registerEnum(L, WORLD_TYPE_NO_PVP);
+void LuaEnums::initWorldTypes(lua_State* L) {
+	registerEnum(L, WORLD_TYPE_NONE);
 	registerEnum(L, WORLD_TYPE_PVP);
+	registerEnum(L, WORLD_TYPE_NO_PVP);
 	registerEnum(L, WORLD_TYPE_PVP_ENFORCED);
+	registerEnum(L, WORLD_TYPE_RETRO_PVP);
+	registerEnum(L, WORLD_TYPE_RETRO_PVP_ENFORCED);
+}
+
+void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, AMMO_NONE);
 	registerEnum(L, AMMO_BOLT);
 	registerEnum(L, AMMO_ARROW);

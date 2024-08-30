@@ -22,12 +22,8 @@ toggleMaintainMode = false
 maintainModeMessage = ""
 
 -- Combat settings
--- NOTE: World id is 1 as default, new worlds must have different ids always greater than 1
--- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 -- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)
 -- NOTE: refundManaOnBeginningWeapons: wand of vortex and snakebite refund mana used (allows training for mages)
-worldId = 1
-worldType = "pvp"
 hotkeyAimbotEnabled = true
 protectionLevel = 7
 pzLocked = 60 * 1000
@@ -54,7 +50,8 @@ cleanProtectionZones = false
 -- Connection Config
 -- NOTE: allowOldProtocol can allow login on 10x protocol. (11.00)
 -- NOTE: maxPlayers set to 0 means no limit
--- NOTE: MaxPacketsPerSeconds if you change you will be subject to bugs by WPE, keep the default value of 25, 
+-- NOTE: serverName it's different than world name
+-- NOTE: MaxPacketsPerSeconds if you change you will be subject to bugs by WPE, keep the default value of 25,
 -- It's recommended to use a range like min 50 in this function, otherwise you will be disconnected after equipping two-handed distance weapons.
 ip = "127.0.0.1"
 allowOldProtocol = false
@@ -72,6 +69,14 @@ maxItem = 2000
 maxContainer = 100
 maxPlayersOnlinePerAccount = 1
 maxPlayersOutsidePZPerAccount = 1
+
+-- World settings (This information will be loaded from the 'worlds' database table as well)
+-- NOTE: World id is 1 as default, new worlds must have different ids always greater than 1
+-- NOTE: valid values for worldType are: "pvp", "no-pvp", "pvp-enforced", "retro-pvp" and "retro-pvp-enforced"
+-- NOTE: valid values for worldLocation are: "Europe", "North America", "South America" and "Oceania"
+worldId = 1
+worldType = "pvp"
+worldLocation = "South America"
 
 -- Packet Compression
 -- Minimize network bandwith and reduce ping
@@ -246,7 +251,6 @@ onlyPremiumAccount = false
 -- NOTE: autoBank = true, the dropped coins from monsters will be automatically deposited to your bank account.
 -- NOTE: toggleGoldPouchAllowAnything will allow players to move items or gold to gold pouch
 -- NOTE: toggleGoldPouchQuickLootOnly will ONLY allow quickloot to move items to gold pouch
--- NOTE: toggleServerIsRetroPVP will make this server as retro, setting PARTY_PROTECTION and ADVANCED_SECURE_MODE to 0
 -- NOTE: toggleTravelsFree will make all travels from boat free
 -- NOTE: buyAolCommandFee will add fee when player buy aol by command (!aol), active changing value more than 0 (fee value. ex: 1 = 1gp  aol will be 50001)
 -- NOTE: buyBlessCommandFee will add fee when player buy bless by command (!bless), active changing value between 1 and 100 (fee percent. ex: 3 = 3%, 30 = 30%)
@@ -265,7 +269,6 @@ autoLoot = false
 autoBank = false
 toggleGoldPouchAllowAnything = false
 toggleGoldPouchQuickLootOnly = false
-toggleServerIsRetroPVP = false
 toggleTravelsFree = false
 buyAolCommandFee = 0
 buyBlessCommandFee = 0
@@ -541,7 +544,6 @@ startupDatabaseOptimization = true
 ownerName = "OpenTibiaBR"
 ownerEmail = "opentibiabr@outlook.com"
 url = "http://docs.opentibiabr.com/"
-location = "South America"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.
 -- The URL layout is https://discord.com/api/webhooks/:id/:token

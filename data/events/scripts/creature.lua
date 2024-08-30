@@ -59,7 +59,7 @@ function Creature:onTargetCombat(target)
 		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE
 	end
 
-	if not IsRetroPVP() or PARTY_PROTECTION ~= 0 then
+	if not IsRetroPVP() then
 		if self:isPlayer() and target:isPlayer() then
 			local party = self:getParty()
 			if party then
@@ -71,7 +71,7 @@ function Creature:onTargetCombat(target)
 		end
 	end
 
-	if not IsRetroPVP() or ADVANCED_SECURE_MODE ~= 0 then
+	if not IsRetroPVP() then
 		if self:isPlayer() and target:isPlayer() then
 			if self:hasSecureMode() then
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER

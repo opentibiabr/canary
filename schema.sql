@@ -3,15 +3,19 @@
 -- Table structure `worlds`
 CREATE TABLE IF NOT EXISTS `worlds` (
     `id` int(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) NOT NULL,
-    `type` varchar(12) NOT NULL,
+    `name` varchar(80) NOT NULL,
+    `type` enum('no-pvp','pvp','retro-pvp','pvp-enforced','retro-pvp-enforced') NOT NULL,
+    `motd` varchar(255) NOT NULL DEFAULT '',
+    `location` enum('Europe','North America','South America','Oceania') NOT NULL,
     `ip` varchar(15) NOT NULL,
     `port` int(5) UNSIGNED NOT NULL,
+    `creation` int(11) NOT NULL DEFAULT unix_timestamp(),
     CONSTRAINT `worlds_pk` PRIMARY KEY (`id`),
     CONSTRAINT `worlds_unique` UNIQUE (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `worlds` (`name`, `type`, `ip`, `port`) VALUES ('OTServBR-Global', 'pvp', '127.0.0.1', 7172);
+INSERT INTO `worlds` (`name`, `type`, `motd`, `location`, `ip`, `port`)
+VALUES ('OTServBR-Global', 'pvp', 'Welcome to the OTServBR-Global!', 'South America', '127.0.0.1', 7172);
 
 -- Table structure `server_config`
 CREATE TABLE IF NOT EXISTS `server_config` (

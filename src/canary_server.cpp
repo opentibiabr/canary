@@ -145,24 +145,36 @@ int CanaryServer::run() {
 
 void CanaryServer::loadThisWorld() {
 	const auto worldTypeStr = g_configManager().getString(WORLD_TYPE, __FUNCTION__);
-	const auto worldType = Worlds::getTypeByString(worldTypeStr);
+	auto worldType = Worlds::getTypeByString(worldTypeStr);
 
 	if (worldType == WORLD_TYPE_NONE) {
 		throw FailedToInitializeCanary(
-			fmt::format(
-				"Unknown world type: {}, valid world types are: pvp, no-pvp and pvp-enforced",
-				g_configManager().getString(WORLD_TYPE, __FUNCTION__)
-			)
+			fmt::format("Unknown world type: {}, valid world types are: no-pvp, pvp, retro-pvp, pvp-enforced and retro-pvp-enforced", worldTypeStr)
 		);
+	}
+
+	const auto locationStr = g_configManager().getString(WORLD_LOCATION, __FUNCTION__);
+	const auto location = Worlds::getLocationCode(locationStr);
+	if (location == LOCATION_NONE) {
+		throw FailedToInitializeCanary(
+			fmt::format("Unknown world location: {}, valid world locations are: Europe, North America, South America and Oceania", locationStr)
+		);
+	}
+
+	if (g_configManager().getBoolean(TOGGLE_SERVER_IS_RETRO, __FUNCTION__)) {
+		g_logger().warn("[{}] - Config deprecated, you need to update your world type to 'retro-pvp' or 'retro-pvp-enforced'", __FUNCTION__);
+		worldType = worldType == WORLD_TYPE_PVP ? WORLD_TYPE_RETRO_PVP : WORLD_TYPE_RETRO_PVP_ENFORCED;
 	}
 
 	g_game().worlds()->setId(g_configManager().getNumber(WORLD_ID, __FUNCTION__));
 	g_game().worlds()->setName(g_configManager().getString(SERVER_NAME, __FUNCTION__));
 	g_game().worlds()->setType(worldType);
+	g_game().worlds()->setMotd(g_configManager().getString(SERVER_MOTD, __FUNCTION__));
+	g_game().worlds()->setLocation(location);
 	g_game().worlds()->setIp(g_configManager().getString(IP, __FUNCTION__));
 	g_game().worlds()->setPort(g_configManager().getNumber(GAME_PORT, __FUNCTION__));
 
-	logger.debug("World type set as {}", asUpperCaseString(worldTypeStr));
+	logger.debug("World type set as {} and location {}", asUpperCaseString(worldTypeStr), asUpperCaseString(locationStr));
 }
 
 void CanaryServer::loadMaps() const {

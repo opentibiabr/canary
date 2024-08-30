@@ -426,7 +426,6 @@ void Game::resetNpcs() const {
 
 void Game::loadBoostedCreature() {
 	auto &db = Database::getInstance();
-	const auto worldId = worlds()->getId();
 
 	const std::string selectQuery = "SELECT * FROM `boosted_creature`";
 

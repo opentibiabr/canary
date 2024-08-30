@@ -12,7 +12,7 @@ function onUpdateDatabase()
 			`location` enum('Europe','North America','South America','Oceania') NOT NULL,
 			`ip` varchar(15) NOT NULL,
 			`port` int(5) UNSIGNED NOT NULL,
-			`creation` int(11) NOT NULL DEFAULT unix_timestamp(),
+			`creation` int(11) NOT NULL DEFAULT 0,
 			CONSTRAINT `worlds_pk` PRIMARY KEY (`id`),
 			CONSTRAINT `worlds_unique` UNIQUE (`name`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;

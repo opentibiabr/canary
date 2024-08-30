@@ -19,11 +19,6 @@
     "zlib",
     "bshoshany-thread-pool",
     {
-      "name": "opentelemetry-cpp",
-      "default-features": true,
-      "features": ["otlp-http", "prometheus"]
-    },
-    {
       "name": "libmariadb",
       "features": [
         "mariadbclient"
@@ -38,5 +33,17 @@
       "platform": "windows"
     }
   ],
+  "features": {
+    "metrics": {
+      "description": "Enable OpenTelemetry support",
+      "dependencies": [
+        {
+          "name": "opentelemetry-cpp",
+          "default-features": true,
+          "features": ["otlp-http", "prometheus"]
+        }
+      ]
+    }
+  },
   "builtin-baseline": "095ee06e7f60dceef7d713e3f8b1c2eb10d650d7"
 }

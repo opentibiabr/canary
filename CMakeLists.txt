@@ -23,17 +23,6 @@ set(VCPKG_BUILD_TYPE "release")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-
-# *****************************************************************************
-# Project canary
-# *****************************************************************************
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    project(canary-debug)
-else()
-    project(canary)
-endif()
-
-
 # *****************************************************************************
 # Append cmake search path
 # *****************************************************************************
@@ -51,7 +40,22 @@ include(LoggingHelper)
 option(OPTIONS_ENABLE_CCACHE "Enable ccache" OFF)
 option(OPTIONS_ENABLE_SCCACHE "Use sccache to speed up compilation process" OFF)
 option(OPTIONS_ENABLE_IPO "Check and Enable interprocedural optimization (IPO/LTO)" ON)
-option(FEATURE_METRICS "Enable metrics feature" OFF)
+option(FEATURE_METRICS "Enable metrics feature" ON)
+
+
+if(FEATURE_METRICS)
+    list(APPEND VCPKG_MANIFEST_FEATURES "metrics")
+endif()
+
+
+# *****************************************************************************
+# Project canary
+# *****************************************************************************
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    project(canary-debug)
+else()
+    project(canary)
+endif()
 
 # *****************************************************************************
 # Options Code

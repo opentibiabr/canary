@@ -850,7 +850,7 @@ int32_t WeaponDistance::getWeaponDamage(const std::shared_ptr<Player> &player, s
 	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->distDamageMultiplier)));
 }
 
-bool WeaponDistance::getSkillType(const std::shared_ptr<Player> &player, const std::shared_ptr<Item>&, skills_t &skill, uint32_t &skillpoint) const {
+bool WeaponDistance::getSkillType(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &, skills_t &skill, uint32_t &skillpoint) const {
 	skill = SKILL_DISTANCE;
 
 	if (player->getAddAttackSkill()) {

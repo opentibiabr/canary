@@ -228,7 +228,7 @@ protected:
 	void internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile) const;
 
 private:
-	virtual bool getSkillType(const std::shared_ptr<Player>&, const std::shared_ptr<Item>&, skills_t &, uint32_t &) const {
+	virtual bool getSkillType(const std::shared_ptr<Player> &, const std::shared_ptr<Item> &, skills_t &, uint32_t &) const {
 		return false;
 	}
 
@@ -339,7 +339,7 @@ public:
 	void configureWeapon(const ItemType &it) override;
 
 	int32_t getWeaponDamage(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> target, std::shared_ptr<Item> item, bool maxDamage = false) const override;
-	int32_t getElementDamage(const std::shared_ptr<Player>&, std::shared_ptr<Creature>, std::shared_ptr<Item>) const override {
+	int32_t getElementDamage(const std::shared_ptr<Player> &, std::shared_ptr<Creature>, std::shared_ptr<Item>) const override {
 		return 0;
 	}
 	CombatType_t getElementType() const override {
@@ -355,7 +355,7 @@ public:
 	}
 
 private:
-	bool getSkillType(const std::shared_ptr<Player>&, const std::shared_ptr<Item>&, skills_t &, uint32_t &) const override {
+	bool getSkillType(const std::shared_ptr<Player> &, const std::shared_ptr<Item> &, skills_t &, uint32_t &) const override {
 		return false;
 	}
 

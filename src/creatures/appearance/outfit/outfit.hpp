@@ -15,8 +15,8 @@ struct OutfitEntry {
 	constexpr explicit OutfitEntry(const uint16_t initLookType, const uint8_t initAddons) :
 		lookType(initLookType), addons(initAddons) { }
 
-	uint16_t lookType;
-	uint8_t addons;
+	uint16_t lookType {};
+	uint8_t addons {};
 };
 
 struct Outfit {

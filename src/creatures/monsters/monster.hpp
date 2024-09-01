@@ -90,7 +90,7 @@ public:
 	}
 
 	bool isEnemyFaction(Faction_t faction) const {
-		auto master = getMaster();
+		const auto &master = getMaster();
 		if (master && master->getMonster()) {
 			return master->getMonster()->isEnemyFaction(faction);
 		}
@@ -346,14 +346,14 @@ public:
 
 	float getAttackMultiplier() const {
 		float multiplier = mType->getAttackMultiplier();
-		if (auto stacks = getForgeStack(); stacks > 0) {
+		if (const auto stacks = getForgeStack(); stacks > 0) {
 			multiplier *= (1.35 + (stacks - 1) * 0.1);
 		}
 		return multiplier;
 	}
 
 	float getDefenseMultiplier() const {
-		float multiplier = mType->getDefenseMultiplier();
+		const float multiplier = mType->getDefenseMultiplier();
 		return multiplier * std::pow(1.02f, getForgeStack());
 	}
 

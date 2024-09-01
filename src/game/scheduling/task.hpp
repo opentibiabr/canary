@@ -62,7 +62,7 @@ public:
 		func = nullptr;
 	}
 
-	[[nodiscard]] bool execute() const;
+	bool execute() const;
 
 private:
 	static std::atomic_uint_fast64_t LAST_EVENT_ID;

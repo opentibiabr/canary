@@ -122,7 +122,7 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 	const uint8_t &coinType,
 	const std::string &description
 ) {
-	bool successful = g_database().executeQuery(
+	const bool successful = g_database().executeQuery(
 		fmt::format(
 			"INSERT INTO `coins_transactions` (`account_id`, `type`, `coin_type`, `amount`, `description`) VALUES ({}, {}, {}, {}, {})",
 			id,

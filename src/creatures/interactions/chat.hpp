@@ -30,9 +30,9 @@ public:
 
 	bool addUser(const std::shared_ptr<Player> &player);
 	bool removeUser(const std::shared_ptr<Player> &player);
-	bool hasUser(const std::shared_ptr<Player> &player);
+	bool hasUser(const std::shared_ptr<Player> &player) const;
 
-	bool talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses type, const std::string &text);
+	bool talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses type, const std::string &text) const;
 	void sendToAll(const std::string &message, SpeakClasses type) const;
 
 	const std::string &getName() const {
@@ -137,7 +137,7 @@ public:
 	std::shared_ptr<ChatChannel> getChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
 	std::shared_ptr<ChatChannel> getChannelById(uint16_t channelId);
 	std::shared_ptr<ChatChannel> getGuildChannelById(uint32_t guildId);
-	std::shared_ptr<PrivateChatChannel> getPrivateChannel(const std::shared_ptr<Player> &player);
+	std::shared_ptr<PrivateChatChannel> getPrivateChannel(const std::shared_ptr<Player> &player) const;
 
 	LuaScriptInterface* getScriptInterface() {
 		return &scriptInterface;

@@ -37,20 +37,20 @@ public:
 		return inject<Spells>();
 	}
 
-	std::shared_ptr<Spell> getSpellByName(const std::string &name);
+	std::shared_ptr<Spell> getSpellByName(const std::string &name) const;
 	std::shared_ptr<RuneSpell> getRuneSpell(uint16_t id);
-	std::shared_ptr<RuneSpell> getRuneSpellByName(const std::string &name);
+	std::shared_ptr<RuneSpell> getRuneSpellByName(const std::string &name) const;
 
-	std::shared_ptr<InstantSpell> getInstantSpell(const std::string &words);
-	std::shared_ptr<InstantSpell> getInstantSpellByName(const std::string &name);
+	std::shared_ptr<InstantSpell> getInstantSpell(const std::string &words) const;
+	std::shared_ptr<InstantSpell> getInstantSpellByName(const std::string &name) const;
 
-	std::shared_ptr<InstantSpell> getInstantSpellById(uint16_t spellId);
+	std::shared_ptr<InstantSpell> getInstantSpellById(uint16_t spellId) const;
 
-	TalkActionResult_t playerSaySpell(const std::shared_ptr<Player> &player, std::string &words);
+	TalkActionResult_t playerSaySpell(const std::shared_ptr<Player> &player, std::string &words) const;
 
 	static Position getCasterPosition(const std::shared_ptr<Creature> &creature, Direction dir);
 
-	std::list<uint16_t> getSpellsByVocation(uint16_t vocationId);
+	std::list<uint16_t> getSpellsByVocation(uint16_t vocationId) const;
 
 	[[nodiscard]] const std::map<std::string, std::shared_ptr<InstantSpell>> &getInstantSpells() const {
 		return instants;
@@ -201,13 +201,13 @@ public:
 		vocSpellMap[vocationId] = b;
 	}
 
-	SpellGroup_t getGroup() {
+	SpellGroup_t getGroup() const {
 		return group;
 	}
 	void setGroup(SpellGroup_t g) {
 		group = g;
 	}
-	SpellGroup_t getSecondaryGroup() {
+	SpellGroup_t getSecondaryGroup() const {
 		return secondaryGroup;
 	}
 	void setSecondaryGroup(SpellGroup_t g) {
@@ -345,14 +345,14 @@ public:
 		m_separator = newSeparator.data();
 	}
 
-	void getCombatDataAugment(const std::shared_ptr<Player> &player, CombatDamage &damage);
+	void getCombatDataAugment(const std::shared_ptr<Player> &player, CombatDamage &damage) const;
 	int32_t calculateAugmentSpellCooldownReduction(const std::shared_ptr<Player> &player) const;
 
 protected:
 	void applyCooldownConditions(const std::shared_ptr<Player> &player) const;
 	bool playerSpellCheck(const std::shared_ptr<Player> &player) const;
 	bool playerInstantSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos) const;
-	bool playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos);
+	bool playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos) const;
 
 	VocSpellMap vocSpellMap;
 
@@ -399,7 +399,7 @@ class InstantSpell final : public Script, public Spell {
 public:
 	using Script::Script;
 
-	virtual bool playerCastInstant(const std::shared_ptr<Player> &player, std::string &param);
+	bool playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const;
 
 	bool castSpell(const std::shared_ptr<Creature> &creature) override;
 	bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) override;
@@ -499,7 +499,7 @@ private:
 		return "onCastSpell";
 	}
 
-	bool internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey);
+	bool internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const;
 
 	uint16_t runeId = 0;
 	uint32_t charges = 0;

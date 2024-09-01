@@ -534,9 +534,9 @@ void Game::start(ServiceManager* manager) {
 		);
 	}
 
-	g_dispatcher().cycleEvent(
-		5000, [this] { teste(); }, "Calling GC"
-	);
+	// g_dispatcher().cycleEvent(
+	// 	5000, [this] { teste(); }, "Calling GC"
+	// );
 }
 
 void Game::teste() const {

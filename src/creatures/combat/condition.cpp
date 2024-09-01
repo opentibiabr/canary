@@ -634,7 +634,7 @@ void ConditionAttributes::updatePercentStats(const std::shared_ptr<Player> &play
 	}
 }
 
-void ConditionAttributes::updateStats(const std::shared_ptr<Player> &player) {
+void ConditionAttributes::updateStats(const std::shared_ptr<Player> &player) const {
 	bool needUpdate = false;
 
 	for (int32_t i = STAT_FIRST; i <= STAT_LAST; ++i) {
@@ -662,7 +662,7 @@ void ConditionAttributes::updatePercentSkills(const std::shared_ptr<Player> &pla
 	}
 }
 
-void ConditionAttributes::updateSkills(const std::shared_ptr<Player> &player) {
+void ConditionAttributes::updateSkills(const std::shared_ptr<Player> &player) const {
 	bool needUpdateSkills = false;
 
 	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
@@ -733,7 +733,7 @@ void ConditionAttributes::updatePercentBuffs(const std::shared_ptr<Creature> &cr
 	}
 }
 
-void ConditionAttributes::updateBuffs(const std::shared_ptr<Creature> &creature) {
+void ConditionAttributes::updateBuffs(const std::shared_ptr<Creature> &creature) const {
 	bool needUpdate = false;
 	for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
 		if (buffs[i]) {
@@ -1699,7 +1699,7 @@ bool ConditionDamage::getNextDamage(int32_t &damage) {
 	return false;
 }
 
-bool ConditionDamage::doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange) {
+bool ConditionDamage::doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange) const {
 	const auto &attacker = g_game().getPlayerByGUID(owner) ? g_game().getPlayerByGUID(owner)->getCreature() : g_game().getCreatureByID(owner);
 	bool isPlayer = attacker && attacker->getPlayer();
 	if (creature->isSuppress(getType(), isPlayer)) {
@@ -1858,7 +1858,7 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
 /**
  *  ConditionFeared
  */
-bool ConditionFeared::isStuck(std::shared_ptr<Creature> creature, Position pos) const {
+bool ConditionFeared::isStuck(const std::shared_ptr<Creature> &creature, Position pos) const {
 	return std::ranges::all_of(m_directionsVector, [&](Direction dir) {
 		return !canWalkTo(creature, pos, dir);
 	});
@@ -1876,12 +1876,15 @@ bool ConditionFeared::getRandomDirection(const std::shared_ptr<Creature> &creatu
 		DIRECTION_NORTHWEST
 	};
 
-	std::ranges::shuffle(directions.begin(), directions.end(), getRandomGenerator());
-	for (Direction dir : directions) {
-		if (canWalkTo(creature, pos, dir)) {
-			this->fleeIndx = static_cast<uint8_t>(dir);
-			return true;
-		}
+	std::ranges::shuffle(directions, getRandomGenerator());
+
+	const auto &it = std::ranges::find_if(directions, [&](Direction dir) {
+		return canWalkTo(creature, pos, dir);
+	});
+
+	if (it != directions.end()) {
+		this->fleeIndx = static_cast<uint8_t>(*it);
+		return true;
 	}
 
 	return false;

@@ -154,20 +154,20 @@ public:
 	ConditionAttributes(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
 		ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
-	bool startCondition(std::shared_ptr<Creature> creature) final;
-	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) final;
-	void endCondition(std::shared_ptr<Creature> creature) final;
-	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) final;
+	bool startCondition(std::shared_ptr<Creature> creature) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
+	void endCondition(std::shared_ptr<Creature> creature) override;
+	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 
-	bool setParam(ConditionParam_t param, int32_t value) final;
+	bool setParam(ConditionParam_t param, int32_t value) override;
 
-	std::shared_ptr<Condition> clone() const final {
+	std::shared_ptr<Condition> clone() const override {
 		return std::make_shared<ConditionAttributes>(*this);
 	}
 
 	// serialization
-	void serialize(PropWriteStream &propWriteStream) final;
-	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) final;
+	void serialize(PropWriteStream &propWriteStream) override;
+	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
 private:
 	// Helpers
@@ -202,10 +202,10 @@ private:
 	bool disableDefense = false;
 
 	void updatePercentStats(const std::shared_ptr<Player> &player);
-	void updateStats(const std::shared_ptr<Player> &player);
+	void updateStats(const std::shared_ptr<Player> &player) const;
 	void updatePercentSkills(const std::shared_ptr<Player> &player);
-	void updateSkills(const std::shared_ptr<Player> &player);
-	void updateBuffs(const std::shared_ptr<Creature> &creature);
+	void updateSkills(const std::shared_ptr<Player> &player) const;
+	void updateBuffs(const std::shared_ptr<Creature> &creature) const;
 
 	// 12.72 mechanics
 	void updatePercentAbsorbs(const std::shared_ptr<Creature> &creature);
@@ -358,7 +358,7 @@ private:
 	std::list<IntervalInfo> damageList;
 
 	bool getNextDamage(int32_t &damage);
-	bool doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange);
+	bool doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange) const;
 
 	bool updateCondition(const std::shared_ptr<Condition> &addCondition) override;
 };
@@ -386,7 +386,7 @@ private:
 	bool getFleeDirection(const std::shared_ptr<Creature> &creature);
 	bool getFleePath(const std::shared_ptr<Creature> &creature, const Position &pos, std::vector<Direction> &dirList);
 	bool getRandomDirection(const std::shared_ptr<Creature> &creature, Position pos);
-	bool isStuck(std::shared_ptr<Creature> creature, Position pos) const;
+	bool isStuck(const std::shared_ptr<Creature> &creature, Position pos) const;
 
 	std::vector<Direction> m_directionsVector {
 		DIRECTION_NORTH,

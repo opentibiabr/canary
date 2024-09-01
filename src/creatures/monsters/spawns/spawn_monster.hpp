@@ -66,7 +66,7 @@ public:
 	void startSpawnMonsterCheck();
 	void stopEvent();
 
-	bool isInSpawnMonsterZone(const Position &pos);
+	bool isInSpawnMonsterZone(const Position &pos) const;
 	void cleanup();
 
 	const Position &getCenterPos() const {

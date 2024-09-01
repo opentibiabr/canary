@@ -26,7 +26,7 @@ public:
 	bool load();
 	bool reload();
 
-	void missingConfigWarning(const char* identifier);
+	void missingConfigWarning(const char* identifier) const;
 
 	const std::string &setConfigFileLua(const std::string &what) {
 		configFileLua = { what };

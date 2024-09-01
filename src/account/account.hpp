@@ -62,7 +62,7 @@ public:
 	 *
 	 * @return AccountErrors_t AccountErrors_t::Ok(0) Success, otherwise Fail.
 	 */
-	uint8_t save();
+	uint8_t save() const;
 
 	/**
 	 * @brief Load Account Information.

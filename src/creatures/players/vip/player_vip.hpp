@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "creatures/creatures_definitions.hpp"
 
 class Player;
@@ -20,8 +22,8 @@ struct VIPGroup {
 	phmap::flat_hash_set<uint32_t> vipGroupGuids;
 
 	VIPGroup() = default;
-	VIPGroup(uint8_t id, const std::string &name, bool customizable) :
-		id(id), name(name), customizable(customizable) { }
+	VIPGroup(uint8_t id, std::string name, bool customizable) :
+		id(id), name(std::move(name)), customizable(customizable) { }
 };
 class PlayerVIP {
 

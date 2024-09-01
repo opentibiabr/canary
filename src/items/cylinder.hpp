@@ -84,21 +84,21 @@ public:
 	 * \param itemId is the new item id
 	 * \param count is the new count value
 	 */
-	virtual void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) = 0;
+	virtual void updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) = 0;
 
 	/**
 	 * Replace an object with a new
 	 * \param index is the position to change (inventory slot/container position)
 	 * \param thing is the object to update
 	 */
-	virtual void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) = 0;
+	virtual void replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) = 0;
 
 	/**
 	 * Remove an object
 	 * \param thing is the object to delete
 	 * \param count is the new count value
 	 */
-	virtual void removeThing(std::shared_ptr<Thing> thing, uint32_t count) = 0;
+	virtual void removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) = 0;
 
 	/**
 	 * Is sent after an operation (move/add) to update internal values
@@ -106,7 +106,7 @@ public:
 	 * \param index is the objects new index value
 	 * \param link holds the relation the object has to the cylinder
 	 */
-	virtual void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) = 0;
+	virtual void postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, const CylinderLink_t link = LINK_OWNER) = 0;
 
 	/**
 	 * Is sent after an operation (move/remove) to update internal values
@@ -114,14 +114,14 @@ public:
 	 * \param index is the previous index of the removed object
 	 * \param link holds the relation the object has to the cylinder
 	 */
-	virtual void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) = 0;
+	virtual void postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link = LINK_OWNER) = 0;
 
 	/**
 	 * Gets the index of an object
 	 * \param thing the object to get the index value from
 	 * \returns the index of the object, returns -1 if not found
 	 */
-	virtual int32_t getThingIndex(std::shared_ptr<Thing> thing) const;
+	virtual int32_t getThingIndex(const std::shared_ptr<Thing> &thing) const;
 
 	/**
 	 * Returns the first index
@@ -160,14 +160,14 @@ public:
 	 * Adds an object to the cylinder without sending to the client(s)
 	 * \param thing is the object to add
 	 */
-	virtual void internalAddThing(std::shared_ptr<Thing> thing);
+	virtual void internalAddThing(const std::shared_ptr<Thing> &thing);
 
 	/**
 	 * Adds an object to the cylinder without sending to the client(s)
 	 * \param thing is the object to add
 	 * \param index points to the destination index (inventory slot/container position)
 	 */
-	virtual void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing);
+	virtual void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing);
 
 	virtual void startDecaying();
 };
@@ -191,12 +191,12 @@ public:
 
 	virtual void addThing(std::shared_ptr<Thing>) override { }
 	virtual void addThing(int32_t, std::shared_ptr<Thing>) override { }
-	virtual void updateThing(std::shared_ptr<Thing>, uint16_t, uint32_t) override { }
-	virtual void replaceThing(uint32_t, std::shared_ptr<Thing>) override { }
-	virtual void removeThing(std::shared_ptr<Thing>, uint32_t) override { }
+	virtual void updateThing(const std::shared_ptr<Thing> &, uint16_t, uint32_t) override { }
+	virtual void replaceThing(uint32_t, const std::shared_ptr<Thing> &) override { }
+	virtual void removeThing(const std::shared_ptr<Thing> &, uint32_t) override { }
 
-	virtual void postAddNotification(std::shared_ptr<Thing>, std::shared_ptr<Cylinder>, int32_t, CylinderLink_t = LINK_OWNER) override { }
-	virtual void postRemoveNotification(std::shared_ptr<Thing>, std::shared_ptr<Cylinder>, int32_t, CylinderLink_t = LINK_OWNER) override { }
+	virtual void postAddNotification(const std::shared_ptr<Thing> &, const std::shared_ptr<Cylinder> &, int32_t, CylinderLink_t = LINK_OWNER) override { }
+	virtual void postRemoveNotification(const std::shared_ptr<Thing> &, const std::shared_ptr<Cylinder> &, int32_t, CylinderLink_t = LINK_OWNER) override { }
 
 	bool isPushable() override {
 		return false;

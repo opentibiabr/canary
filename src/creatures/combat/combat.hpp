@@ -11,7 +11,6 @@
 
 #include "lua/global/baseevents.hpp"
 #include "creatures/combat/condition.hpp"
-#include "declarations.hpp"
 #include "map/map.hpp"
 
 class Condition;
@@ -25,7 +24,7 @@ class Weapon;
 // for luascript callback
 class ValueCallback final : public CallBack {
 public:
-	explicit ValueCallback(formulaType_t initType) :
+	explicit ValueCallback(const formulaType_t initType) :
 		type(initType) { }
 
 	/**
@@ -61,7 +60,7 @@ protected:
 class ChainCallback final : public CallBack {
 public:
 	ChainCallback() = default;
-	ChainCallback(uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) :
+	ChainCallback(const uint8_t &chainTargets, const uint8_t &chainDistance, const bool &backtracking) :
 		m_chainDistance(chainDistance), m_chainTargets(chainTargets), m_backtracking(backtracking) { }
 
 	void getChainValues(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking);
@@ -70,7 +69,7 @@ public:
 	}
 
 private:
-	void onChainCombat(const std::shared_ptr<Creature> &creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking);
+	void onChainCombat(const std::shared_ptr<Creature> &creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) const;
 
 	uint8_t m_chainDistance = 0;
 	uint8_t m_chainTargets = 0;
@@ -162,12 +161,11 @@ public:
 	// non-assignable
 	MatrixArea &operator=(const MatrixArea &) = delete;
 
-	void setValue(uint32_t row, uint32_t col, bool value) {
+	void setValue(uint32_t row, uint32_t col, bool value) const {
 		if (row < rows && col < cols) {
 			data_[row][col] = value;
 		} else {
 			g_logger().error("[{}] Access exceeds the upper limit of memory block");
-			throw std::out_of_range("Access exceeds the upper limit of memory block");
 		}
 	}
 	bool getValue(uint32_t row, uint32_t col) const {
@@ -232,11 +230,11 @@ public:
 
 private:
 	std::unique_ptr<MatrixArea> createArea(const std::list<uint32_t> &list, uint32_t rows);
-	void copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, MatrixOperation_t op);
+	void copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, const MatrixOperation_t &op) const;
 
 	const std::unique_ptr<MatrixArea> &getArea(const Position &centerPos, const Position &targetPos) const {
-		int32_t dx = Position::getOffsetX(targetPos, centerPos);
-		int32_t dy = Position::getOffsetY(targetPos, centerPos);
+		const int32_t dx = Position::getOffsetX(targetPos, centerPos);
+		const int32_t dy = Position::getOffsetY(targetPos, centerPos);
 
 		Direction dir;
 		if (dx < 0) {
@@ -308,7 +306,7 @@ public:
 	bool doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, int affected = 1) const;
 	bool doCombat(const std::shared_ptr<Creature> &caster, const Position &pos) const;
 
-	bool setCallback(CallBackParam_t key);
+	bool setCallback(const CallBackParam_t &key);
 	void setChainCallback(uint8_t chainTargets, uint8_t chainDistance, bool backtracking);
 	CallBack* getCallback(CallBackParam_t key) const;
 

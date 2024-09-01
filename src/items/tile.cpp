@@ -1096,7 +1096,7 @@ void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
 	onAddTileItem(item);
 }
 
-void Tile::updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) {
+void Tile::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) {
 	int32_t index = getThingIndex(thing);
 	if (index == -1) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -1116,7 +1116,7 @@ void Tile::updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t c
 	onUpdateTileItem(item, oldType, item, newType);
 }
 
-void Tile::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
+void Tile::replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) {
 	int32_t pos = index;
 
 	const auto item = thing->getItem();
@@ -1187,7 +1187,7 @@ void Tile::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
 	}
 }
 
-void Tile::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
+void Tile::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) {
 	std::shared_ptr<Creature> creature = thing->getCreature();
 	if (creature) {
 		CreatureVector* creatures = getCreatures();
@@ -1277,7 +1277,7 @@ void Tile::removeCreature(const std::shared_ptr<Creature> &creature) {
 	removeThing(creature, 0);
 }
 
-int32_t Tile::getThingIndex(std::shared_ptr<Thing> thing) const {
+int32_t Tile::getThingIndex(const std::shared_ptr<Thing> &thing) const {
 	int32_t n = -1;
 	if (ground) {
 		if (ground == thing) {
@@ -1488,7 +1488,7 @@ std::shared_ptr<Thing> Tile::getThing(size_t index) const {
 	return nullptr;
 }
 
-void Tile::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/) {
+void Tile::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/) {
 	for (const auto &spectator : Spectators().find<Player>(getPosition(), true)) {
 		spectator->getPlayer()->postAddNotification(thing, oldParent, index, LINK_NEAR);
 	}
@@ -1529,7 +1529,7 @@ void Tile::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cyl
 	}
 }
 
-void Tile::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t) {
+void Tile::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
 	auto spectators = Spectators().find<Player>(getPosition(), true);
 
 	if (getThingCount() > 8) {
@@ -1552,7 +1552,7 @@ void Tile::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<
 	}
 }
 
-void Tile::internalAddThing(std::shared_ptr<Thing> thing) {
+void Tile::internalAddThing(const std::shared_ptr<Thing> &thing) {
 	internalAddThing(0, thing);
 	if (!thing || !thing->getParent()) {
 		return;
@@ -1572,7 +1572,7 @@ void Tile::internalAddThing(std::shared_ptr<Thing> thing) {
 	}
 }
 
-void Tile::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
+void Tile::internalAddThing(uint32_t, const std::shared_ptr<Thing> &thing) {
 	if (!thing) {
 		return;
 	}

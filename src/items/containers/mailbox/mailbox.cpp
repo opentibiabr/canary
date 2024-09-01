@@ -51,23 +51,23 @@ void Mailbox::addThing(int32_t, std::shared_ptr<Thing> thing) {
 	}
 }
 
-void Mailbox::updateThing(std::shared_ptr<Thing>, uint16_t, uint32_t) {
+void Mailbox::updateThing(const std::shared_ptr<Thing> &, uint16_t, uint32_t) {
 	//
 }
 
-void Mailbox::replaceThing(uint32_t, std::shared_ptr<Thing>) {
+void Mailbox::replaceThing(uint32_t, const std::shared_ptr<Thing> &) {
 	//
 }
 
-void Mailbox::removeThing(std::shared_ptr<Thing>, uint32_t) {
+void Mailbox::removeThing(const std::shared_ptr<Thing> &, uint32_t) {
 	//
 }
 
-void Mailbox::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t) {
+void Mailbox::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t) {
 	getParent()->postAddNotification(thing, oldParent, index, LINK_PARENT);
 }
 
-void Mailbox::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t) {
+void Mailbox::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
 	getParent()->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 }
 

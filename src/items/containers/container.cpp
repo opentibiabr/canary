@@ -717,7 +717,7 @@ void Container::addItemBack(const std::shared_ptr<Item> &item) {
 	}
 }
 
-void Container::updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) {
+void Container::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) {
 	int32_t index = getThingIndex(thing);
 	if (index == -1) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -739,7 +739,7 @@ void Container::updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint3
 	}
 }
 
-void Container::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
+void Container::replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) {
 	const auto item = thing->getItem();
 	if (!item) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -762,7 +762,7 @@ void Container::replaceThing(uint32_t index, std::shared_ptr<Thing> thing) {
 	replacedItem->resetParent();
 }
 
-void Container::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
+void Container::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) {
 	const auto item = thing->getItem();
 	if (item == nullptr) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -796,7 +796,7 @@ void Container::removeThing(std::shared_ptr<Thing> thing, uint32_t count) {
 	}
 }
 
-int32_t Container::getThingIndex(std::shared_ptr<Thing> thing) const {
+int32_t Container::getThingIndex(const std::shared_ptr<Thing> &thing) const {
 	int32_t index = 0;
 	for (const std::shared_ptr<Item> &item : itemlist) {
 		if (item == thing) {
@@ -850,7 +850,7 @@ ItemVector Container::getItems(bool recursive /*= false*/) {
 	return containerItems;
 }
 
-void Container::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t) {
+void Container::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t) {
 	std::shared_ptr<Cylinder> topParent = getTopParent();
 	if (topParent->getCreature()) {
 		topParent->postAddNotification(thing, oldParent, index, LINK_TOPPARENT);
@@ -864,7 +864,7 @@ void Container::postAddNotification(std::shared_ptr<Thing> thing, std::shared_pt
 	}
 }
 
-void Container::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t) {
+void Container::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
 	std::shared_ptr<Cylinder> topParent = getTopParent();
 	if (topParent->getCreature()) {
 		topParent->postRemoveNotification(thing, newParent, index, LINK_TOPPARENT);
@@ -878,11 +878,11 @@ void Container::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared
 	}
 }
 
-void Container::internalAddThing(std::shared_ptr<Thing> thing) {
+void Container::internalAddThing(const std::shared_ptr<Thing> &thing) {
 	internalAddThing(0, thing);
 }
 
-void Container::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
+void Container::internalAddThing(uint32_t, const std::shared_ptr<Thing> &thing) {
 	if (!thing) {
 		return;
 	}
@@ -914,8 +914,8 @@ void Container::stopDecaying() {
 uint16_t Container::getFreeSlots() {
 	uint16_t counter = std::max<uint16_t>(0, capacity() - size());
 
-	for (const std::shared_ptr<Item> &item : itemlist) {
-		if (std::shared_ptr<Container> container = item->getContainer()) {
+	for (const auto &item : itemlist) {
+		if (const auto &container = item->getContainer()) {
 			counter += std::max<uint16_t>(0, container->getFreeSlots());
 		}
 	}

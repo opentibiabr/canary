@@ -54,7 +54,7 @@ bool Creature::canSee(const Position &pos) {
 	return canSee(getPosition(), pos, MAP_MAX_VIEW_PORT_X, MAP_MAX_VIEW_PORT_Y);
 }
 
-bool Creature::canSeeCreature(std::shared_ptr<Creature> creature) const {
+bool Creature::canSeeCreature(const std::shared_ptr<Creature> &creature) const {
 	if (!canSeeInvisibility() && creature->isInvisible()) {
 		return false;
 	}
@@ -337,7 +337,7 @@ void Creature::onAddTileItem(const std::shared_ptr<Tile> &tileItem, const Positi
 	}
 }
 
-void Creature::onUpdateTileItem(std::shared_ptr<Tile> updateTile, const Position &pos, std::shared_ptr<Item>, const ItemType &oldType, std::shared_ptr<Item>, const ItemType &newType) {
+void Creature::onUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const std::shared_ptr<Item> &, const ItemType &oldType, const std::shared_ptr<Item> &, const ItemType &newType) {
 	if (!isMapLoaded) {
 		return;
 	}
@@ -349,7 +349,7 @@ void Creature::onUpdateTileItem(std::shared_ptr<Tile> updateTile, const Position
 	}
 }
 
-void Creature::onRemoveTileItem(std::shared_ptr<Tile> updateTile, const Position &pos, const ItemType &iType, std::shared_ptr<Item>) {
+void Creature::onRemoveTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &) {
 	if (!isMapLoaded) {
 		return;
 	}
@@ -770,7 +770,7 @@ void Creature::onDeath() {
 	}
 }
 
-bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified) {
+bool Creature::dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (!lootDrop && getMonster()) {
 		if (getMaster()) {
@@ -1024,7 +1024,7 @@ BlockType_t Creature::blockHit(const std::shared_ptr<Creature> &attacker, const 
 	return blockType;
 }
 
-bool Creature::setAttackedCreature(std::shared_ptr<Creature> creature) {
+bool Creature::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	if (creature) {
 		auto monster = getMonster();
 		auto tile = getTile();
@@ -1135,7 +1135,7 @@ bool Creature::canFollowMaster() const {
 	return tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && (canSeeInvisibility() || !master->isInvisible());
 }
 
-bool Creature::setFollowCreature(std::shared_ptr<Creature> creature) {
+bool Creature::setFollowCreature(const std::shared_ptr<Creature> &creature) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (creature) {
 		if (getFollowCreature() == creature) {
@@ -1190,7 +1190,7 @@ double Creature::getDamageRatio(const std::shared_ptr<Creature> &attacker) const
 	return (static_cast<double>(attackerDamage) / totalDamage);
 }
 
-uint64_t Creature::getGainedExperience(std::shared_ptr<Creature> attacker) const {
+uint64_t Creature::getGainedExperience(const std::shared_ptr<Creature> &attacker) const {
 	return std::floor(getDamageRatio(attacker) * getLostExperience());
 }
 
@@ -1268,7 +1268,7 @@ void Creature::onTickCondition(ConditionType_t type, bool &bRemove) {
 	}
 }
 
-void Creature::onCombatRemoveCondition(std::shared_ptr<Condition> condition) {
+void Creature::onCombatRemoveCondition(const std::shared_ptr<Condition> &condition) {
 	removeCondition(condition);
 }
 
@@ -1276,7 +1276,7 @@ void Creature::onAttacked() {
 	//
 }
 
-void Creature::onAttackedCreatureDrainHealth(std::shared_ptr<Creature> target, int32_t points) {
+void Creature::onAttackedCreatureDrainHealth(const std::shared_ptr<Creature> &target, int32_t points) {
 	target->addDamagePoints(static_self_cast<Creature>(), points);
 }
 
@@ -1303,7 +1303,7 @@ bool Creature::deprecatedOnKilledCreature(const std::shared_ptr<Creature> &targe
 	return false;
 }
 
-void Creature::onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target) {
+void Creature::onGainExperience(uint64_t gainExp, const std::shared_ptr<Creature> &target) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	auto master = getMaster();
 	if (gainExp == 0 || !master) {
@@ -1462,7 +1462,7 @@ void Creature::removeCombatCondition(ConditionType_t type) {
 }
 
 void Creature::removeCondition(const std::shared_ptr<Condition> &condition) {
-	auto it = std::find(conditions.begin(), conditions.end(), condition);
+	const auto it = std::ranges::find(conditions, condition);
 	if (it == conditions.end()) {
 		return;
 	}

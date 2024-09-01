@@ -195,7 +195,7 @@ void CanaryServer::setupHousesRent() {
 	g_game().map.houses.payHouses(rentPeriod);
 }
 
-void CanaryServer::logInfos() {
+void CanaryServer::logInfos() const {
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
 	logger.debug("{} - Version [{}] dated [{}]", ProtocolStatus::SERVER_NAME, SERVER_RELEASE_VERSION, GIT_COMMIT_DATE_ISO8601);
 	#if GIT_IS_DIRTY
@@ -300,7 +300,7 @@ void CanaryServer::loadConfigLua() {
 #endif
 }
 
-void CanaryServer::initializeDatabase() {
+void CanaryServer::initializeDatabase() const {
 	logger.info("Establishing database connection... ");
 	if (!Database::getInstance().connect()) {
 		throw FailedToInitializeCanary("Failed to connect to database!");
@@ -380,7 +380,7 @@ void CanaryServer::loadModules() {
 	g_game().logCyclopediaStats();
 }
 
-void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
+void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) const {
 	logger.debug("Loading {}", moduleName);
 	if (!loaded) {
 		throw FailedToInitializeCanary(fmt::format("Cannot load: {}", moduleName));

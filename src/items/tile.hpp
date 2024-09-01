@@ -104,7 +104,7 @@ public:
 	static const std::shared_ptr<Tile> &nullptr_tile;
 	Tile(uint16_t x, uint16_t y, uint8_t z) :
 		tilePos(x, y, z) { }
-	~Tile() override {};
+	~Tile() override = default;
 
 	// non-copyable
 	Tile(const Tile &) = delete;
@@ -218,24 +218,24 @@ public:
 	void addThing(int32_t index, std::shared_ptr<Thing> thing) override;
 
 	void updateTileFlags(const std::shared_ptr<Item> &item);
-	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) final;
-	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) final;
+	void updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) final;
+	void replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) final;
 
-	void removeThing(std::shared_ptr<Thing> thing, uint32_t count) final;
+	void removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) final;
 
 	void removeCreature(const std::shared_ptr<Creature> &creature);
 
-	int32_t getThingIndex(std::shared_ptr<Thing> thing) const final;
+	int32_t getThingIndex(const std::shared_ptr<Thing> &thing) const final;
 	size_t getFirstIndex() const final;
 	size_t getLastIndex() const final;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const final;
 	std::shared_ptr<Thing> getThing(size_t index) const final;
 
-	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
-	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
+	void postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
+	void postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
 
-	void internalAddThing(std::shared_ptr<Thing> thing) override;
-	void virtual internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override;
+	void internalAddThing(const std::shared_ptr<Thing> &thing) override;
+	void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing) override;
 
 	const Position &getPosition() final {
 		return tilePos;
@@ -276,7 +276,7 @@ protected:
 	std::shared_ptr<Item> ground = nullptr;
 	Position tilePos;
 	uint32_t flags = 0;
-	std::unordered_set<std::shared_ptr<Zone>> zones;
+	std::unordered_set<std::shared_ptr<Zone>> zones {};
 };
 
 // Used for walkable tiles, where there is high likeliness of

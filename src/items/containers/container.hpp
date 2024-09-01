@@ -147,12 +147,12 @@ public:
 	void addThing(int32_t index, std::shared_ptr<Thing> thing) final;
 	void addItemBack(const std::shared_ptr<Item> &item);
 
-	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) final;
-	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
+	void updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) final;
+	void replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) override final;
 
-	void removeThing(std::shared_ptr<Thing> thing, uint32_t count) final;
+	void removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) final;
 
-	int32_t getThingIndex(std::shared_ptr<Thing> thing) const final;
+	int32_t getThingIndex(const std::shared_ptr<Thing> &thing) const final;
 	size_t getFirstIndex() const final;
 	size_t getLastIndex() const final;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const final;
@@ -161,11 +161,11 @@ public:
 
 	ItemVector getItems(bool recursive = false);
 
-	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
-	void internalAddThing(std::shared_ptr<Thing> thing) final;
-	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) final;
+	void internalAddThing(const std::shared_ptr<Thing> &thing) final;
+	void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing) final;
 	void startDecaying() override;
 	void stopDecaying() override;
 

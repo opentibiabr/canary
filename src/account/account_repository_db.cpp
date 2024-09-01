@@ -15,7 +15,6 @@
 #include "lib/logging/logger.hpp"
 #include "utils/definitions.hpp"
 #include "utils/tools.hpp"
-#include "enums/account_type.hpp"
 #include "enums/account_coins.hpp"
 #include "account/account_info.hpp"
 
@@ -23,18 +22,18 @@ AccountRepositoryDB::AccountRepositoryDB() :
 	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" }, { enumToValue(CoinType::Tournament), "tournament_coins" }, { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
 
 bool AccountRepositoryDB::loadByID(const uint32_t &id, AccountInfo &acc) {
-	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);
+	const auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);
 	return load(query, acc);
 }
 
 bool AccountRepositoryDB::loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) {
 	auto identifier = oldProtocol ? "name" : "email";
-	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `{}` = {}", identifier, g_database().escapeString(emailOrName));
+	const auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `{}` = {}", identifier, g_database().escapeString(emailOrName));
 	return load(query, acc);
 }
 
 bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, AccountInfo &acc) {
-	auto query = fmt::format(
+	const auto query = fmt::format(
 		"SELECT `accounts`.`id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, `account_sessions`.`expires` "
 		"FROM `accounts` "
 		"INNER JOIN `account_sessions` ON `account_sessions`.`account_id` = `accounts`.`id` "
@@ -45,7 +44,7 @@ bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, AccountIn
 }
 
 bool AccountRepositoryDB::save(const AccountInfo &accInfo) {
-	bool successful = g_database().executeQuery(
+	const bool successful = g_database().executeQuery(
 		fmt::format(
 			"UPDATE `accounts` SET `type` = {}, `premdays` = {}, `lastday` = {}, `creation` = {}, `premdays_purchased` = {} WHERE `id` = {}",
 			accInfo.accountType,
@@ -65,7 +64,7 @@ bool AccountRepositoryDB::save(const AccountInfo &accInfo) {
 }
 
 bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password) {
-	auto result = g_database().storeQuery(fmt::format("SELECT * FROM `accounts` WHERE `id` = {}", id));
+	const auto result = g_database().storeQuery(fmt::format("SELECT * FROM `accounts` WHERE `id` = {}", id));
 	if (!result) {
 		g_logger().error("Failed to get account:[{}] password!", id);
 		return false;
@@ -76,12 +75,12 @@ bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password)
 }
 
 bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint32_t &coins) {
-	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
+	if (!coinTypeToColumn.contains(type)) {
 		g_logger().error("[{}]: invalid coin type:[{}]", __FUNCTION__, type);
 		return false;
 	}
 
-	auto result = g_database().storeQuery(fmt::format(
+	const auto result = g_database().storeQuery(fmt::format(
 		"SELECT `{}` FROM `accounts` WHERE `id` = {}",
 		coinTypeToColumn.at(type),
 		id
@@ -97,12 +96,12 @@ bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint
 }
 
 bool AccountRepositoryDB::setCoins(const uint32_t &id, const uint8_t &type, const uint32_t &amount) {
-	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
+	if (!coinTypeToColumn.contains(type)) {
 		g_logger().error("[{}]: invalid coin type:[{}]", __FUNCTION__, type);
 		return false;
 	}
 
-	bool successful = g_database().executeQuery(fmt::format(
+	const bool successful = g_database().executeQuery(fmt::format(
 		"UPDATE `accounts` SET `{}` = {} WHERE `id` = {}",
 		coinTypeToColumn.at(type),
 		amount,
@@ -148,8 +147,8 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 	return successful;
 }
 
-bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
-	auto result = g_database().storeQuery(
+bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) const {
+	const auto result = g_database().storeQuery(
 		fmt::format("SELECT `name`, `deletion` FROM `players` WHERE `account_id` = {} ORDER BY `name` ASC", acc.id)
 	);
 
@@ -170,7 +169,7 @@ bool AccountRepositoryDB::loadAccountPlayers(AccountInfo &acc) {
 }
 
 bool AccountRepositoryDB::load(const std::string &query, AccountInfo &acc) {
-	auto result = g_database().storeQuery(query);
+	const auto result = g_database().storeQuery(query);
 
 	if (result == nullptr) {
 		return false;

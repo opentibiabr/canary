@@ -13,7 +13,7 @@
 
 std::shared_ptr<VirtualCylinder> VirtualCylinder::virtualCylinder = std::make_shared<VirtualCylinder>();
 
-int32_t Cylinder::getThingIndex(std::shared_ptr<Thing>) const {
+int32_t Cylinder::getThingIndex(const std::shared_ptr<Thing> &) const {
 	return -1;
 }
 
@@ -37,11 +37,11 @@ std::shared_ptr<Thing> Cylinder::getThing(size_t) const {
 	return nullptr;
 }
 
-void Cylinder::internalAddThing(std::shared_ptr<Thing>) {
+void Cylinder::internalAddThing(const std::shared_ptr<Thing> &) {
 	//
 }
 
-void Cylinder::internalAddThing(uint32_t, std::shared_ptr<Thing>) {
+void Cylinder::internalAddThing(uint32_t, const std::shared_ptr<Thing> &) {
 	//
 }
 

@@ -10,6 +10,7 @@
 #pragma once
 
 #include "config/configmanager.hpp"
+#include "config/config_enums.hpp"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "game/movement/position.hpp"

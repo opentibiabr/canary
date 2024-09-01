@@ -32,7 +32,7 @@ void HouseTile::addThing(int32_t index, std::shared_ptr<Thing> thing) {
 	}
 }
 
-void HouseTile::internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) {
+void HouseTile::internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing) {
 	Tile::internalAddThing(index, thing);
 
 	if (!thing || !thing->getParent()) {

@@ -67,7 +67,7 @@ struct ModalWindow;
 struct Achievement;
 struct Badge;
 struct Title;
-struct VIPGroup;
+class VIPGroup;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -194,13 +194,13 @@ public:
 		randomMount = isMountRandomized;
 	}
 
-	void sendFYIBox(const std::string &message) {
+	void sendFYIBox(const std::string &message) const {
 		if (client) {
 			client->sendFYIBox(message);
 		}
 	}
 
-	void BestiarysendCharms() {
+	void BestiarysendCharms() const {
 		if (client) {
 			client->BestiarysendCharms();
 		}
@@ -242,7 +242,7 @@ public:
 		return staminaMinutes;
 	}
 
-	void sendItemsPrice() {
+	void sendItemsPrice() const {
 		if (client) {
 			client->sendItemsPrice();
 		}
@@ -329,7 +329,7 @@ public:
 
 	void removeMonsterFromCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient = false);
 
-	void sendBestiaryEntryChanged(uint16_t raceid) {
+	void sendBestiaryEntryChanged(uint16_t raceid) const {
 		if (client) {
 			client->sendBestiaryEntryChanged(raceid);
 		}
@@ -358,7 +358,7 @@ public:
 		operatingSystem = clientos;
 	}
 
-	bool isOldProtocol() {
+	bool isOldProtocol() const {
 		return client && client->oldProtocol;
 	}
 
@@ -430,7 +430,7 @@ public:
 	void removePartyInvitation(const std::shared_ptr<Party> &party);
 	void clearPartyInvitations();
 
-	void sendUnjustifiedPoints();
+	void sendUnjustifiedPoints() const;
 
 	GuildEmblems_t getGuildEmblem(const std::shared_ptr<Player> &player) const;
 
@@ -457,10 +457,10 @@ public:
 		bedItem = std::move(b);
 	}
 
-	bool hasImbuingItem() {
+	bool hasImbuingItem() const {
 		return imbuingItem != nullptr;
 	}
-	void setImbuingItem(std::shared_ptr<Item> item);
+	void setImbuingItem(const std::shared_ptr<Item> &item);
 
 	void addBlessing(uint8_t index, uint8_t count) {
 		if (blessings[index - 1] == 255) {
@@ -497,7 +497,7 @@ public:
 	bool isOffline() const {
 		return (getID() == 0);
 	}
-	void disconnect() {
+	void disconnect() const {
 		if (client) {
 			client->disconnect();
 		}
@@ -703,7 +703,7 @@ public:
 	void addMessageBuffer();
 	void removeMessageBuffer();
 
-	bool removeItemOfType(uint16_t itemId, uint32_t itemAmount, int32_t subType, bool ignoreEquipped = false);
+	bool removeItemOfType(uint16_t itemId, uint32_t itemAmount, int32_t subType, bool ignoreEquipped = false) const;
 	/**
 	 * @param itemAmount is uint32_t because stash item is uint32_t max
 	 */
@@ -814,10 +814,10 @@ public:
 	void setMainBackpackUnassigned(const std::shared_ptr<Container> &container);
 
 	bool canSee(const Position &pos) override;
-	bool canSeeCreature(std::shared_ptr<Creature> creature) const override;
+	bool canSeeCreature(const std::shared_ptr<Creature> &creature) const override;
 
 	bool canWalkthrough(const std::shared_ptr<Creature> &creature);
-	bool canWalkthroughEx(const std::shared_ptr<Creature> &creature);
+	bool canWalkthroughEx(const std::shared_ptr<Creature> &creature) const;
 
 	RaceType_t getRace() const override {
 		return RACE_BLOOD;
@@ -847,7 +847,7 @@ public:
 	}
 
 	// follow functions
-	bool setFollowCreature(std::shared_ptr<Creature> creature) override;
+	bool setFollowCreature(const std::shared_ptr<Creature> &creature) override;
 	void goToFollowCreature() override;
 
 	// follow events
@@ -880,7 +880,7 @@ public:
 		faction = factionId;
 	}
 	// combat functions
-	bool setAttackedCreature(std::shared_ptr<Creature> creature) override;
+	bool setAttackedCreature(const std::shared_ptr<Creature> &creature) override;
 	bool isImmune(CombatType_t type) const override;
 	bool isImmune(ConditionType_t type) const override;
 	bool hasShield() const;
@@ -987,22 +987,22 @@ public:
 
 	void addInFightTicks(bool pzlock = false);
 
-	uint64_t getGainedExperience(std::shared_ptr<Creature> attacker) const override;
+	uint64_t getGainedExperience(const std::shared_ptr<Creature> &attacker) const override;
 
 	// combat event functions
 	void onAddCondition(const ConditionType_t &type) override;
 	void onAddCombatCondition(const ConditionType_t &type) override;
 	void onEndCondition(const ConditionType_t &type) override;
-	void onCombatRemoveCondition(std::shared_ptr<Condition> condition) override;
-	void onAttackedCreature(std::shared_ptr<Creature> target) override;
+	void onCombatRemoveCondition(const std::shared_ptr<Condition> &condition) override;
+	void onAttackedCreature(const std::shared_ptr<Creature> &target) override;
 	void onAttacked() override;
-	void onAttackedCreatureDrainHealth(std::shared_ptr<Creature> target, int32_t points) override;
-	void onTargetCreatureGainHealth(std::shared_ptr<Creature> target, int32_t points) override;
+	void onAttackedCreatureDrainHealth(const std::shared_ptr<Creature> &target, int32_t points) override;
+	void onTargetCreatureGainHealth(const std::shared_ptr<Creature> &target, int32_t points) override;
 	bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit) override;
 	bool onKilledMonster(const std::shared_ptr<Monster> &target) override;
-	void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target) override;
+	void onGainExperience(uint64_t gainExp, const std::shared_ptr<Creature> &target) override;
 	void onGainSharedExperience(uint64_t gainExp, const std::shared_ptr<Creature> &target);
-	void onAttackedCreatureBlockHit(BlockType_t blockType) override;
+	void onAttackedCreatureBlockHit(const BlockType_t &blockType) override;
 	void onBlockHit() override;
 	void onTakeDamage(std::shared_ptr<Creature> attacker, int32_t damage) override;
 	void onChangeZone(ZoneType_t zone) override;
@@ -1076,7 +1076,7 @@ public:
 			}
 		}
 	}
-	void sendRemoveTileThing(const Position &pos, int32_t stackpos) {
+	void sendRemoveTileThing(const Position &pos, int32_t stackpos) const {
 		if (stackpos != -1 && client) {
 			client->sendRemoveTileThing(pos, stackpos);
 		}
@@ -1086,18 +1086,18 @@ public:
 			client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(static_self_cast<Player>(), creature), creature);
 		}
 	}
-	void sendUpdateTile(const std::shared_ptr<Tile> &updateTile, const Position &pos) {
+	void sendUpdateTile(const std::shared_ptr<Tile> &updateTile, const Position &pos) const {
 		if (client) {
 			client->sendUpdateTile(updateTile, pos);
 		}
 	}
 
-	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel) {
+	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel) const {
 		if (client) {
 			client->sendChannelMessage(author, text, type, channel);
 		}
 	}
-	void sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent) {
+	void sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent) const {
 		if (client) {
 			client->sendChannelEvent(channelId, playerName, channelEvent);
 		}
@@ -1116,7 +1116,7 @@ public:
 			client->sendAddCreature(creature, pos, tile->getStackposOfCreature(static_self_cast<Player>(), creature), isLogin);
 		}
 	}
-	void sendCreatureMove(const std::shared_ptr<Creature> &creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) {
+	void sendCreatureMove(const std::shared_ptr<Creature> &creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) const {
 		if (client) {
 			client->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
 		}
@@ -1138,27 +1138,27 @@ public:
 			}
 		}
 	}
-	void sendCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text, const Position* pos = nullptr) {
+	void sendCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text, const Position* pos = nullptr) const {
 		if (client) {
 			client->sendCreatureSay(creature, type, text, pos);
 		}
 	}
-	void sendCreatureReload(const std::shared_ptr<Creature> &creature) {
+	void sendCreatureReload(const std::shared_ptr<Creature> &creature) const {
 		if (client) {
 			client->reloadCreature(creature);
 		}
 	}
-	void sendPrivateMessage(const std::shared_ptr<Player> &speaker, SpeakClasses type, const std::string &text) {
+	void sendPrivateMessage(const std::shared_ptr<Player> &speaker, SpeakClasses type, const std::string &text) const {
 		if (client) {
 			client->sendPrivateMessage(speaker, type, text);
 		}
 	}
-	void sendCreatureSquare(const std::shared_ptr<Creature> &creature, SquareColor_t color) {
+	void sendCreatureSquare(const std::shared_ptr<Creature> &creature, SquareColor_t color) const {
 		if (client) {
 			client->sendCreatureSquare(creature, color);
 		}
 	}
-	void sendCreatureChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit) {
+	void sendCreatureChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit) const {
 		if (client) {
 			client->sendCreatureOutfit(creature, outfit);
 		}
@@ -1194,12 +1194,12 @@ public:
 			}
 		}
 	}
-	void sendCreatureLight(const std::shared_ptr<Creature> &creature) {
+	void sendCreatureLight(const std::shared_ptr<Creature> &creature) const {
 		if (client) {
 			client->sendCreatureLight(creature);
 		}
 	}
-	void sendCreatureIcon(const std::shared_ptr<Creature> &creature) {
+	void sendCreatureIcon(const std::shared_ptr<Creature> &creature) const {
 		if (client && !client->oldProtocol) {
 			client->sendCreatureIcon(creature);
 		}
@@ -1209,27 +1209,27 @@ public:
 			client->sendUpdateCreature(creature);
 		}
 	}
-	void sendCreatureWalkthrough(const std::shared_ptr<Creature> &creature, bool walkthrough) {
+	void sendCreatureWalkthrough(const std::shared_ptr<Creature> &creature, bool walkthrough) const {
 		if (client) {
 			client->sendCreatureWalkthrough(creature, walkthrough);
 		}
 	}
-	void sendCreatureShield(const std::shared_ptr<Creature> &creature) {
+	void sendCreatureShield(const std::shared_ptr<Creature> &creature) const {
 		if (client) {
 			client->sendCreatureShield(creature);
 		}
 	}
-	void sendCreatureType(const std::shared_ptr<Creature> &creature, uint8_t creatureType) {
+	void sendCreatureType(const std::shared_ptr<Creature> &creature, uint8_t creatureType) const {
 		if (client) {
 			client->sendCreatureType(creature, creatureType);
 		}
 	}
-	void sendSpellCooldown(uint16_t spellId, uint32_t time) {
+	void sendSpellCooldown(uint16_t spellId, uint32_t time) const {
 		if (client) {
 			client->sendSpellCooldown(spellId, time);
 		}
 	}
-	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time) {
+	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time) const {
 		if (client) {
 			client->sendSpellGroupCooldown(groupId, time);
 		}
@@ -1239,7 +1239,7 @@ public:
 			client->sendUseItemCooldown(time);
 		}
 	}
-	void reloadCreature(const std::shared_ptr<Creature> &creature) {
+	void reloadCreature(const std::shared_ptr<Creature> &creature) const {
 		if (client) {
 			client->reloadCreature(creature);
 		}
@@ -1251,7 +1251,7 @@ public:
 	void sendAddContainerItem(const std::shared_ptr<Container> &container, std::shared_ptr<Item> item);
 	void sendUpdateContainerItem(const std::shared_ptr<Container> &container, uint16_t slot, const std::shared_ptr<Item> &newItem);
 	void sendRemoveContainerItem(const std::shared_ptr<Container> &container, uint16_t slot);
-	void sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) {
+	void sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) const {
 		if (client) {
 			client->sendContainer(cid, container, hasParent, firstIndex);
 		}
@@ -1273,17 +1273,17 @@ public:
 			client->sendDepotSearchResultDetail(itemId, tier, depotCount, depotItems, inboxCount, inboxItems, stashCount);
 		}
 	}
-	void sendCoinBalance() {
+	void sendCoinBalance() const {
 		if (client) {
 			client->sendCoinBalance();
 		}
 	}
-	void sendInventoryItem(Slots_t slot, const std::shared_ptr<Item> &item) {
+	void sendInventoryItem(Slots_t slot, const std::shared_ptr<Item> &item) const {
 		if (client) {
 			client->sendInventoryItem(slot, item);
 		}
 	}
-	void sendInventoryIds() {
+	void sendInventoryIds() const {
 		if (client) {
 			client->sendInventoryIds();
 		}
@@ -1292,19 +1292,19 @@ public:
 	void openPlayerContainers();
 
 	// Quickloot
-	void sendLootContainers() {
+	void sendLootContainers() const {
 		if (client) {
 			client->sendLootContainers();
 		}
 	}
 
-	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
+	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) const {
 		if (client) {
 			client->sendSingleSoundEffect(pos, id, source);
 		}
 	}
 
-	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) {
+	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) const {
 		if (client) {
 			client->sendDoubleSoundEffect(pos, mainSoundId, mainSource, secondarySoundId, secondarySource);
 		}
@@ -1314,8 +1314,8 @@ public:
 	SoundEffect_t getHitSoundEffect() const;
 
 	// event methods
-	void onUpdateTileItem(std::shared_ptr<Tile> tile, const Position &pos, std::shared_ptr<Item> oldItem, const ItemType &oldType, std::shared_ptr<Item> newItem, const ItemType &newType) override;
-	void onRemoveTileItem(std::shared_ptr<Tile> tile, const Position &pos, const ItemType &iType, std::shared_ptr<Item> item) override;
+	void onUpdateTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) override;
+	void onRemoveTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) override;
 
 	void onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) override;
 	void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) override;
@@ -1412,14 +1412,14 @@ public:
 		}
 	}
 	void sendHouseWindow(const std::shared_ptr<House> &house, uint32_t listId) const;
-	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName) {
+	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName) const {
 		if (client) {
 			client->sendCreatePrivateChannel(channelId, channelName);
 		}
 	}
 	void sendClosePrivate(uint16_t channelId);
 	void sendIcons();
-	void sendIconBakragore(const IconBakragore icon);
+	void sendIconBakragore(IconBakragore icon) const;
 	void removeBakragoreIcons();
 	void removeBakragoreIcon(const IconBakragore icon);
 	void sendClientCheck() const {
@@ -1500,7 +1500,7 @@ public:
 			client->sendCloseShop();
 		}
 	}
-	void sendMarketEnter(uint32_t depotId);
+	void sendMarketEnter(uint32_t depotId) const;
 	void sendMarketLeave() {
 		inMarket = false;
 		if (client) {
@@ -1547,22 +1547,22 @@ public:
 			client->sendCloseTrade();
 		}
 	}
-	void sendWorldLight(LightInfo lightInfo) {
+	void sendWorldLight(LightInfo lightInfo) const {
 		if (client) {
 			client->sendWorldLight(lightInfo);
 		}
 	}
-	void sendTibiaTime(int32_t time) {
+	void sendTibiaTime(int32_t time) const {
 		if (client) {
 			client->sendTibiaTime(time);
 		}
 	}
-	void sendChannelsDialog() {
+	void sendChannelsDialog() const {
 		if (client) {
 			client->sendChannelsDialog();
 		}
 	}
-	void sendOpenPrivateChannel(const std::string &receiver) {
+	void sendOpenPrivateChannel(const std::string &receiver) const {
 		if (client) {
 			client->sendOpenPrivateChannel(receiver);
 		}
@@ -1572,16 +1572,16 @@ public:
 			client->sendExperienceTracker(rawExp, finalExp);
 		}
 	}
-	void sendOutfitWindow() {
+	void sendOutfitWindow() const {
 		if (client) {
 			client->sendOutfitWindow();
 		}
 	}
 	// Imbuements
-	void onApplyImbuement(Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot, bool protectionCharm);
+	void onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot, bool protectionCharm);
 	void onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot);
 	void openImbuementWindow(const std::shared_ptr<Item> &item);
-	void sendImbuementResult(const std::string &message) {
+	void sendImbuementResult(const std::string &message) const {
 		if (client) {
 			client->sendImbuementResult(message);
 		}
@@ -1591,104 +1591,104 @@ public:
 			client->closeImbuementWindow();
 		}
 	}
-	void sendPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
+	void sendPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackpos) const {
 		if (client) {
 			client->sendPodiumWindow(podium, position, itemId, stackpos);
 		}
 	}
-	void sendCloseContainer(uint8_t cid) {
+	void sendCloseContainer(uint8_t cid) const {
 		if (client) {
 			client->sendCloseContainer(cid);
 		}
 	}
 
-	void sendChannel(uint16_t channelId, const std::string &channelName, const UsersMap* channelUsers, const InvitedMap* invitedUsers) {
+	void sendChannel(uint16_t channelId, const std::string &channelName, const UsersMap* channelUsers, const InvitedMap* invitedUsers) const {
 		if (client) {
 			client->sendChannel(channelId, channelName, channelUsers, invitedUsers);
 		}
 	}
-	void sendTutorial(uint8_t tutorialId) {
+	void sendTutorial(uint8_t tutorialId) const {
 		if (client) {
 			client->sendTutorial(tutorialId);
 		}
 	}
-	void sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc) {
+	void sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc) const {
 		if (client) {
 			client->sendAddMarker(pos, markType, desc);
 		}
 	}
-	void sendItemInspection(uint16_t itemId, uint8_t itemCount, const std::shared_ptr<Item> &item, bool cyclopedia) {
+	void sendItemInspection(uint16_t itemId, uint8_t itemCount, const std::shared_ptr<Item> &item, bool cyclopedia) const {
 		if (client) {
 			client->sendItemInspection(itemId, itemCount, item, cyclopedia);
 		}
 	}
-	void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode) {
+	void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode) const {
 		if (client) {
 			client->sendCyclopediaCharacterNoData(characterInfoType, errorCode);
 		}
 	}
-	void sendCyclopediaCharacterBaseInformation() {
+	void sendCyclopediaCharacterBaseInformation() const {
 		if (client) {
 			client->sendCyclopediaCharacterBaseInformation();
 		}
 	}
-	void sendCyclopediaCharacterGeneralStats() {
+	void sendCyclopediaCharacterGeneralStats() const {
 		if (client) {
 			client->sendCyclopediaCharacterGeneralStats();
 		}
 	}
-	void sendCyclopediaCharacterCombatStats() {
+	void sendCyclopediaCharacterCombatStats() const {
 		if (client) {
 			client->sendCyclopediaCharacterCombatStats();
 		}
 	}
-	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries) {
+	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries) const {
 		if (client) {
 			client->sendCyclopediaCharacterRecentDeaths(page, pages, entries);
 		}
 	}
-	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries) {
+	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries) const {
 		if (client) {
 			client->sendCyclopediaCharacterRecentPvPKills(page, pages, entries);
 		}
 	}
-	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, const std::vector<std::pair<Achievement, uint32_t>> &achievementsUnlocked);
-	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) {
+	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, const std::vector<std::pair<Achievement, uint32_t>> &achievementsUnlocked) const;
+	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) const {
 		if (client) {
 			client->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 		}
 	}
-	void sendCyclopediaCharacterOutfitsMounts() {
+	void sendCyclopediaCharacterOutfitsMounts() const {
 		if (client) {
 			client->sendCyclopediaCharacterOutfitsMounts();
 		}
 	}
-	void sendCyclopediaCharacterStoreSummary() {
+	void sendCyclopediaCharacterStoreSummary() const {
 		if (client) {
 			client->sendCyclopediaCharacterStoreSummary();
 		}
 	}
-	void sendCyclopediaCharacterInspection() {
+	void sendCyclopediaCharacterInspection() const {
 		if (client) {
 			client->sendCyclopediaCharacterInspection();
 		}
 	}
-	void sendCyclopediaCharacterBadges() {
+	void sendCyclopediaCharacterBadges() const {
 		if (client) {
 			client->sendCyclopediaCharacterBadges();
 		}
 	}
-	void sendCyclopediaCharacterTitles() {
+	void sendCyclopediaCharacterTitles() const {
 		if (client) {
 			client->sendCyclopediaCharacterTitles();
 		}
 	}
-	void sendHighscoresNoData() {
+	void sendHighscoresNoData() const {
 		if (client) {
 			client->sendHighscoresNoData();
 		}
 	}
-	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) {
+	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) const {
 		if (client) {
 			client->sendHighscores(characters, categoryId, vocationId, page, pages, updateTimer);
 		}
@@ -1702,17 +1702,17 @@ public:
 	void resetAsyncOngoingTask(uint64_t flags) {
 		asyncOngoingTasks &= ~(flags);
 	}
-	void sendEnterWorld() {
+	void sendEnterWorld() const {
 		if (client) {
 			client->sendEnterWorld();
 		}
 	}
-	void sendFightModes() {
+	void sendFightModes() const {
 		if (client) {
 			client->sendFightModes();
 		}
 	}
-	void sendNetworkMessage(const NetworkMessage &message) {
+	void sendNetworkMessage(const NetworkMessage &message) const {
 		if (client) {
 			client->writeToOutputBuffer(message);
 		}
@@ -1722,13 +1722,13 @@ public:
 		lastPong = OTSYS_TIME();
 	}
 
-	void sendOpenStash(bool isNpc = false) {
+	void sendOpenStash(bool isNpc = false) const {
 		if (client && ((getLastDepotId() != -1) || isNpc)) {
 			client->sendOpenStash();
 		}
 	}
 
-	void sendTakeScreenshot(Screenshot_t screenshotType) {
+	void sendTakeScreenshot(Screenshot_t screenshotType) const {
 		if (client) {
 			client->sendTakeScreenshot(screenshotType);
 		}
@@ -1736,8 +1736,8 @@ public:
 
 	void onThink(uint32_t interval) override;
 
-	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
 	void setNextAction(int64_t time) {
 		if (time > nextAction) {
@@ -1783,7 +1783,7 @@ public:
 	void forgetInstantSpell(const std::string &spellName);
 	bool hasLearnedInstantSpell(const std::string &spellName) const;
 
-	void updateRegeneration();
+	void updateRegeneration() const;
 
 	void setScheduledSaleUpdate(bool scheduled) {
 		scheduledSaleUpdate = scheduled;
@@ -1801,7 +1801,7 @@ public:
 		inEventMovePush = b;
 	}
 
-	bool walkExhausted() {
+	bool walkExhausted() const {
 		if (hasCondition(CONDITION_PARALYZE)) {
 			return lastWalking > OTSYS_TIME();
 		}
@@ -1879,11 +1879,11 @@ public:
 			return false;
 		}
 
-		auto it = std::find(quickLootListItemIds.begin(), quickLootListItemIds.end(), item->getID());
+		const auto &it = std::ranges::find(quickLootListItemIds, item->getID());
 		return it != quickLootListItemIds.end();
 	}
 
-	bool updateKillTracker(const std::shared_ptr<Container> &corpse, const std::string &playerName, const Outfit_t creatureOutfit) const {
+	bool updateKillTracker(const std::shared_ptr<Container> &corpse, const std::string &playerName, const Outfit_t &creatureOutfit) const {
 		if (client) {
 			client->sendKillTrackerUpdate(corpse, playerName, creatureOutfit);
 			return true;
@@ -1902,28 +1902,28 @@ public:
 	void updateSupplyTracker(const std::shared_ptr<Item> &item);
 	void updateImpactTracker(CombatType_t type, int32_t amount) const;
 
-	void updateInputAnalyzer(CombatType_t type, int32_t amount, const std::string &target) {
+	void updateInputAnalyzer(CombatType_t type, int32_t amount, const std::string &target) const {
 		if (client) {
 			client->sendUpdateInputAnalyzer(type, amount, target);
 		}
 	}
 
-	void createLeaderTeamFinder(NetworkMessage &msg) {
+	void createLeaderTeamFinder(NetworkMessage &msg) const {
 		if (client) {
 			client->createLeaderTeamFinder(msg);
 		}
 	}
-	void sendLeaderTeamFinder(bool reset) {
+	void sendLeaderTeamFinder(bool reset) const {
 		if (client) {
 			client->sendLeaderTeamFinder(reset);
 		}
 	}
-	void sendTeamFinderList() {
+	void sendTeamFinderList() const {
 		if (client) {
 			client->sendTeamFinderList();
 		}
 	}
-	void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers) {
+	void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers) const {
 		if (client) {
 			client->sendCreatureHelpers(creatureId, helpers);
 		}
@@ -2158,7 +2158,7 @@ public:
 	}
 
 	const std::unique_ptr<PreySlot> &getPreySlotById(PreySlot_t slotid) {
-		if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const std::unique_ptr<PreySlot> &preyIt) {
+		if (const auto &it = std::ranges::find_if(preys, [slotid](const std::unique_ptr<PreySlot> &preyIt) {
 				return preyIt->id == slotid;
 			});
 		    it != preys.end()) {
@@ -2225,7 +2225,7 @@ public:
 			return PreySlotNull;
 		}
 
-		if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const std::unique_ptr<PreySlot> &it) {
+		if (const auto &it = std::ranges::find_if(preys, [raceId](const std::unique_ptr<PreySlot> &it) {
 				return it->selectedRaceId == raceId;
 			});
 		    it != preys.end()) {
@@ -2256,7 +2256,7 @@ public:
 	}
 
 	const std::unique_ptr<TaskHuntingSlot> &getTaskHuntingSlotById(PreySlot_t slotid) {
-		if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const std::unique_ptr<TaskHuntingSlot> &itTask) {
+		if (const auto &it = std::ranges::find_if(taskHunting, [slotid](const std::unique_ptr<TaskHuntingSlot> &itTask) {
 				return itTask->id == slotid;
 			});
 		    it != taskHunting.end()) {
@@ -2269,12 +2269,12 @@ public:
 	std::vector<uint16_t> getTaskHuntingBlackList() const {
 		std::vector<uint16_t> rt;
 
-		std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const std::unique_ptr<TaskHuntingSlot> &slot) {
+		std::ranges::for_each(taskHunting, [&rt](const std::unique_ptr<TaskHuntingSlot> &slot) {
 			if (slot->isOccupied()) {
-				rt.push_back(slot->selectedRaceId);
+				rt.emplace_back(slot->selectedRaceId);
 			} else {
-				std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId) {
-					rt.push_back(raceId);
+				std::ranges::for_each(slot->raceIdList, [&rt](uint16_t raceId) {
+					rt.emplace_back(raceId);
 				});
 			}
 		});
@@ -2325,7 +2325,7 @@ public:
 			return TaskHuntingSlotNull;
 		}
 
-		if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const std::unique_ptr<TaskHuntingSlot> &itTask) {
+		if (const auto &it = std::ranges::find_if(taskHunting, [raceId](const std::unique_ptr<TaskHuntingSlot> &itTask) {
 				return itTask->selectedRaceId == raceId;
 			});
 		    it != taskHunting.end()) {
@@ -2380,7 +2380,7 @@ public:
 		SpeakClasses type,
 		const std::string &text,
 		bool ghostMode,
-		Spectators* spectatorsPtr = nullptr,
+		const Spectators* spectatorsPtr = nullptr,
 		const Position* pos = nullptr
 	);
 
@@ -2516,7 +2516,7 @@ public:
 		}
 	}
 
-	void sendBosstiaryEntryChanged(uint32_t bossid) {
+	void sendBosstiaryEntryChanged(uint32_t bossid) const {
 		if (client) {
 			client->sendBosstiaryEntryChanged(bossid);
 		}
@@ -2533,13 +2533,12 @@ public:
 	 ******************************************************************************/
 	// Parser
 	void parseAttackRecvHazardSystem(CombatDamage &damage, const std::shared_ptr<Monster> &monster);
-	void parseAttackDealtHazardSystem(CombatDamage &damage, const std::shared_ptr<Monster> &monster);
+	void parseAttackDealtHazardSystem(CombatDamage &damage, const std::shared_ptr<Monster> &monster) const;
 	// Points increase:
 	void setHazardSystemPoints(int32_t amount);
 	// Points get:
 	uint16_t getHazardSystemPoints() const {
-		int32_t points = 0;
-		points = getStorageValue(STORAGEVALUE_HAZARDCOUNT);
+		const int32_t points = getStorageValue(STORAGEVALUE_HAZARDCOUNT);
 		if (points <= 0) {
 			return 0;
 		}
@@ -2680,7 +2679,7 @@ private:
 	 */
 	void updateInventoryImbuement();
 
-	void setNextWalkActionTask(std::shared_ptr<Task> task);
+	void setNextWalkActionTask(const std::shared_ptr<Task> &task);
 	void setNextWalkTask(const std::shared_ptr<Task> &task);
 	void setNextActionTask(const std::shared_ptr<Task> &task, bool resetIdleTime = true);
 	void setNextActionPushTask(const std::shared_ptr<Task> &task);
@@ -2689,7 +2688,7 @@ private:
 	void death(std::shared_ptr<Creature> lastHitCreature) override;
 	bool spawn();
 	void despawn();
-	bool dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified) override;
+	bool dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified) override;
 	std::shared_ptr<Item> getCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature) override;
 
 	// cylinder implementations
@@ -2701,12 +2700,12 @@ private:
 	void addThing(std::shared_ptr<Thing>) override { }
 	void addThing(int32_t index, std::shared_ptr<Thing> thing) override;
 
-	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) override;
-	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) override;
+	void updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) override;
+	void replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) override;
 
-	void removeThing(std::shared_ptr<Thing> thing, uint32_t count) override;
+	void removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) override;
 
-	int32_t getThingIndex(std::shared_ptr<Thing> thing) const override;
+	int32_t getThingIndex(const std::shared_ptr<Thing> &thing) const override;
 	size_t getFirstIndex() const override;
 	size_t getLastIndex() const override;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
@@ -2721,8 +2720,8 @@ private:
 	std::shared_ptr<Item> getForgeItemFromId(uint16_t itemId, uint8_t tier) const;
 	std::shared_ptr<Thing> getThing(size_t index) const override;
 
-	void internalAddThing(std::shared_ptr<Thing> thing) override;
-	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override;
+	void internalAddThing(const std::shared_ptr<Thing> &thing) override;
+	void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing) override;
 
 	void addHuntingTaskKill(const std::shared_ptr<MonsterType> &mType);
 	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
@@ -3068,7 +3067,7 @@ private:
 	double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
 
 	void removeEmptyRewards();
-	bool hasOtherRewardContainerOpen(std::shared_ptr<Container> container) const;
+	bool hasOtherRewardContainerOpen(const std::shared_ptr<Container> &container) const;
 
 	void checkAndShowBlessingMessage();
 

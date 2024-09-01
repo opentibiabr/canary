@@ -34,13 +34,13 @@ public:
 	void addThing(std::shared_ptr<Thing> thing) override;
 	void addThing(int32_t index, std::shared_ptr<Thing> thing) override;
 
-	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) override;
-	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) override;
+	void updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) override;
+	void replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) override;
 
-	void removeThing(std::shared_ptr<Thing> thing, uint32_t count) override;
+	void removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) override;
 
-	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
 private:
 	bool getReceiver(const std::shared_ptr<Item> &item, std::string &name) const;

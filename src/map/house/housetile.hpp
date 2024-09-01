@@ -25,7 +25,7 @@ public:
 	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
 
 	void addThing(int32_t index, std::shared_ptr<Thing> thing) override;
-	void virtual internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override;
+	void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing) override;
 
 	std::shared_ptr<House> getHouse() override {
 		return house;

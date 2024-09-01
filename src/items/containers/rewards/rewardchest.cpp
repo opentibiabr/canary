@@ -26,14 +26,14 @@ ReturnValue RewardChest::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint3
 	return RETURNVALUE_NOERROR;
 }
 
-void RewardChest::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t) {
+void RewardChest::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t) {
 	auto parentLocked = m_parent.lock();
 	if (parentLocked) {
 		parentLocked->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
-void RewardChest::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t) {
+void RewardChest::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
 	auto parentLocked = m_parent.lock();
 	if (parentLocked) {
 		parentLocked->postRemoveNotification(thing, newParent, index, LINK_PARENT);

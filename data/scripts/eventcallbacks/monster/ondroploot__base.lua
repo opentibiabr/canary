@@ -35,4 +35,3 @@ function callback.monsterOnDropLoot(monster, corpse)
 end
 
 callback:register()
-

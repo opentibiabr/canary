@@ -842,7 +842,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	uint32_t accountId;
-	if (!IOLoginData::gameWorldAuthentication(accountDescriptor, password, characterName, accountId, oldProtocol)) {
+	if (!IOLoginData::gameWorldAuthentication(accountDescriptor, password, characterName, accountId, oldProtocol, getIP())) {
 		ss.str(std::string());
 		if (authType == "session") {
 			ss << "Your session has expired. Please log in again.";

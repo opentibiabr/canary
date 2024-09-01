@@ -63,6 +63,16 @@ bool AccountRepositoryDB::save(const AccountInfo &accInfo) {
 	return successful;
 }
 
+bool AccountRepositoryDB::getCharacterByNameAndAccountId(const uint32_t &id, const std::string &name) {
+	auto result = g_database().storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `account_id` = {} AND `name` = {}", id, g_database().escapeString(name)));
+	if (!result) {
+		g_logger().error("Failed to get character: [{}] from account: [{}]!", name, id);
+		return false;
+	}
+
+	return result->countResults() == 1;
+}
+
 bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password) {
 	const auto result = g_database().storeQuery(fmt::format("SELECT * FROM `accounts` WHERE `id` = {}", id));
 	if (!result) {

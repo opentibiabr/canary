@@ -31,6 +31,8 @@ function callback.monsterOnDropLoot(monster, corpse)
 	end
 	local existingSuffix = corpse:getAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX) or ""
 	corpse:setAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX, existingSuffix .. msgSuffix)
+	setLootHighlight(corpse:getPosition())
 end
 
 callback:register()
+

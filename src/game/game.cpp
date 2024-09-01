@@ -5452,6 +5452,8 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		}
 	}
 
+	g_game().removeMagicEffect(corpse->getPosition(), CONST_ME_LOOT_HIGHLIGHT);
+
 	if (pos.x == 0xffff && !browseField && !corpse->isRewardCorpse()) {
 		uint32_t worth = item->getWorth();
 		ObjectCategory_t category = getObjectCategory(item);

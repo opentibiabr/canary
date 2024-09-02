@@ -251,17 +251,23 @@ void Creature::addEventWalk(bool firstStep) {
 		return;
 	}
 
-	g_dispatcher().context().tryAddEvent([ticks, self = getCreature()]() {
-		// Take first step right away, but still queue the next
-		if (ticks == 1) {
-			g_game().checkCreatureWalk(self->getID());
-		}
+	g_dispatcher().context().tryAddEvent(
+		[ticks, self = getCreature()]() {
+			// Take first step right away, but still queue the next
+			if (ticks == 1) {
+				g_game().checkCreatureWalk(self->getID());
+			}
 
-		self->eventWalk = g_dispatcher().scheduleEvent(
-			static_cast<uint32_t>(ticks),
-			[creatureId = self->getID()] { g_game().checkCreatureWalk(creatureId); }, "Game::checkCreatureWalk"
-		);
-	});
+			self->eventWalk = g_dispatcher().scheduleEvent(
+				static_cast<uint32_t>(ticks),
+				[creatureId = self->getID()] {
+					g_game().checkCreatureWalk(creatureId);
+				},
+				"Game::checkCreatureWalk"
+			);
+		},
+		"Game::checkCreatureWalk"
+	);
 }
 
 void Creature::stopEventWalk() {
@@ -825,10 +831,12 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 				auto isReachable = g_game().map.getPathMatching(player->getPosition(), dirList, FrozenPathingConditionCall(corpse->getPosition()), fpp);
 
 				if (player->checkAutoLoot(monster->isRewardBoss()) && isReachable) {
-					g_dispatcher().addEvent([player, corpseContainer, corpsePosition = corpse->getPosition()] {
-						g_game().playerQuickLootCorpse(player, corpseContainer, corpsePosition);
-					},
-					                        "Game::playerQuickLootCorpse");
+					g_dispatcher().addEvent(
+						[player, corpseContainer, corpsePosition = corpse->getPosition()] {
+							g_game().playerQuickLootCorpse(player, corpseContainer, corpsePosition);
+						},
+						"Game::playerQuickLootCorpse"
+					);
 				}
 			}
 		}
@@ -1061,7 +1069,7 @@ void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
 	});
 
 	if (onComplete) {
-		g_dispatcher().context().addEvent(std::move(onComplete));
+		g_dispatcher().context().addEvent(std::move(onComplete), "Creature::onThink");
 	}
 }
 

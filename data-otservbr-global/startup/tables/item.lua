@@ -477,6 +477,12 @@ ItemAction = {
 			{ x = 33101, y = 32428, z = 11 },
 		},
 	},
+	[4669] = {
+		itemId = 2435,
+		itemPos = {
+			{ x = 32994, y = 32442, z = 11 },
+		},
+	},
 	-- In Service of Yalahar Quest
 	[7812] = {
 		itemId = 7804,

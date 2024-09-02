@@ -214,9 +214,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:addItem(19148, 1)
 			player:setStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission66, 1)
-			--elseif player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission68) == 1 and player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission69) < 1 then
-			--npcHandler:say("Welcome, welcome! Finally! The last scroll piece.... you do have it, haven't you?", npc, creature)
-			--npcHandler:setTopic(playerId, 15)
 		elseif player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission72) == 1 and player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission73) < 1 then
 			npcHandler:say("Don't keep me waiting. The last scroll piece - were you able to {restore} it?", npc, creature)
 			npcHandler:setTopic(playerId, 16)

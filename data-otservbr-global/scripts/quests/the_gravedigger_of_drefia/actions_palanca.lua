@@ -6,7 +6,7 @@ function gravediggerPalanca.onUse(player, item, fromPosition, target, toPosition
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "<sizzle> <fizz>")
 		player:getPosition():sendMagicEffect(CONST_ME_ENERGYHIT)
 	end
-	
+
 	return true
 end
 

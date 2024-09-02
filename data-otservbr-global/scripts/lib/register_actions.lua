@@ -369,9 +369,9 @@ function onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
 	end
 
 	local specificPositions = {
-		{pos = Position(33064, 32435, 10), storage = Storage.Quest.U10_10.TheGravediggerOfDrefia.SmallDragonTears1},
-		{pos = Position(33061, 32428, 10), storage = Storage.Quest.U10_10.TheGravediggerOfDrefia.SmallDragonTears2},
-		{pos = Position(33065, 32423, 10), storage = Storage.Quest.U10_10.TheGravediggerOfDrefia.SmallDragonTears3}
+		{ pos = Position(33064, 32435, 10), storage = Storage.Quest.U10_10.TheGravediggerOfDrefia.SmallDragonTears1 },
+		{ pos = Position(33061, 32428, 10), storage = Storage.Quest.U10_10.TheGravediggerOfDrefia.SmallDragonTears2 },
+		{ pos = Position(33065, 32423, 10), storage = Storage.Quest.U10_10.TheGravediggerOfDrefia.SmallDragonTears3 },
 	}
 	for i = 1, #specificPositions do
 		local data = specificPositions[i]

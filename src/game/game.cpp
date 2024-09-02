@@ -4188,25 +4188,25 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
 			g_dispatcher().addEvent([this, playerId = player->getID(), listDir] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
-			auto &task;
 			if (isPodiumOfRenown) {
-				task = createPlayerTask(
+				const auto &task = createPlayerTask(
 					400,
 					[player, item, pos, itemId, stackPos] {
 						player->sendPodiumWindow(item, pos, itemId, stackPos);
 					},
 					"Game::sendPodiumWindow"
 				);
+				player->setNextWalkActionTask(task);
 			} else {
-				task = createPlayerTask(
+				const auto &task = createPlayerTask(
 					400,
 					[player, item, pos, itemId, stackPos] {
 						player->sendMonsterPodiumWindow(item, pos, itemId, stackPos);
 					},
 					"Game::sendMonsterPodiumWindow"
 				);
+				player->setNextWalkActionTask(task);
 			}
-			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
 		}

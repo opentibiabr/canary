@@ -62,18 +62,31 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "magic") and player:getStorageValue(12902) < 1 then
+	if MsgContains(message, "magic") and player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission70) == 1 and player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission71) < 1 then
 		npcHandler:say("...Tell me...the first... magic word.", npc, creature)
-		player:setStorageValue(12902, 1)
+		npcHandler:setTopic(playerId, 1)
+	elseif npcHandler:getTopic(playerId) == 1 and MsgContains(message, "friendship") then
+		npcHandler:say("Yes... YES... friendship... now... second word?", npc, creature)
+		npcHandler:setTopic(playerId, 2)
+	elseif npcHandler:getTopic(playerId) == 2 and MsgContains(message, "lives") then
+		npcHandler:say("Yes... YES... friendship... lives... now third word?", npc, creature)
+		npcHandler:setTopic(playerId, 3)
+	elseif npcHandler:getTopic(playerId) == 3 and MsgContains(message, "forever") then
+		npcHandler:say({
+			"Yes... YES... friendship... lives... FOREVER. ...",
+			"What you seek.... is buried. Beneath the sand. No graves. ...",
+			"Between a triangle of big stones you must dig... in the eastern caves. ...",
+			"And say hello... to... my old friend... Omrabas.",
+		}, npc, creature)
+		player:setStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission71, 1)
 	else
 		npcHandler:say("...continue with your mission...", npc, creature)
 	end
 end
-keywordHandler:addKeyword({ "mission" }, StdModule.say, { npcHandler = npcHandler, text = "..what about {magic}.." })
-keywordHandler:addKeyword({ "friendship" }, StdModule.say, { npcHandler = npcHandler, text = "Yes... YES... friendship... now... second word?" })
-keywordHandler:addKeyword({ "lives" }, StdModule.say, { npcHandler = npcHandler, text = "Yes... YES... friendship... lives... now third word?" })
-keywordHandler:addKeyword({ "forever" }, StdModule.say, { npcHandler = npcHandler, text = "Yes... YES... friendship... lives... FOREVER ... And say hello... to... my old friend... Omrabas. " })
 
+keywordHandler:addKeyword({ "mission" }, StdModule.say, { npcHandler = npcHandler, text = "..what about {magic}.." })
+
+npcHandler:setMessage(MESSAGE_GREET, "... ... hello...magic... words?")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

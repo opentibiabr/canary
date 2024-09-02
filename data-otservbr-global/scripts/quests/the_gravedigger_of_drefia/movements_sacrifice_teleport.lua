@@ -6,13 +6,11 @@ function sacrificeTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if item.actionid == 4541 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission73) == 1 then
+	if item.actionid == 4541 and player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission73) == 1 then
 		player:teleportTo(Position(33015, 32422, 11))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-	else
-		player:teleportTo(Position(33021, 32419, 11))
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 	end
+
 	return true
 end
 

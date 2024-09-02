@@ -4,8 +4,8 @@ function gravediggerAshes.onUse(player, item, fromPosition, target, toPosition, 
 		return false
 	end
 
-	if player:getStorageValue(Storage.GravediggerOfDrefia.Mission28) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission29) < 1 then
-		player:setStorageValue(Storage.GravediggerOfDrefia.Mission29, 1)
+	if player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission28) == 1 and player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission29) < 1 then
+		player:setStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission29, 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The ashes swirl with a life of their own, mixing with the sparks of the altar.")
 		item:remove(1)
 	end

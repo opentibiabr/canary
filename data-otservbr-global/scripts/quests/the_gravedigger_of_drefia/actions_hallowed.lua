@@ -4,8 +4,8 @@ function gravediggerHallowed.onUse(player, item, fromPosition, target, toPositio
 		return false
 	end
 
-	if player:getStorageValue(Storage.GravediggerOfDrefia.Mission19) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission20) < 1 then
-		player:setStorageValue(Storage.GravediggerOfDrefia.Mission20, 1)
+	if player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission19) == 1 and player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission20) < 1 then
+		player:setStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission20, 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The flames roar and eat the bone hungrily. The Dark Lord is satisfied with your gift")
 		item:remove()
 	end

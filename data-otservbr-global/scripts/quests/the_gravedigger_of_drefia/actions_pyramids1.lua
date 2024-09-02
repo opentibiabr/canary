@@ -1,8 +1,8 @@
 local config = {
-	[4646] = { Storage.GravediggerOfDrefia.Mission38, Storage.GravediggerOfDrefia.Mission38a },
-	[4647] = { Storage.GravediggerOfDrefia.Mission38a, Storage.GravediggerOfDrefia.Mission38b },
-	[4648] = { Storage.GravediggerOfDrefia.Mission38b, Storage.GravediggerOfDrefia.Mission38c },
-	[4649] = { Storage.GravediggerOfDrefia.Mission38c, Storage.GravediggerOfDrefia.Mission39 },
+	[4646] = { Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission38, Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission38a },
+	[4647] = { Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission38a, Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission38b },
+	[4648] = { Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission38b, Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission38c },
+	[4649] = { Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission38c, Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission39 },
 }
 
 local gravediggerPyramids1 = Action()

@@ -8,6 +8,14 @@ LeverAction = {
 			{ x = 32848, y = 32277, z = 9 },
 		},
 	},
+	-- The Gravedigger of Drefia Quest
+	[4650] = {
+		itemId = 9110,
+		itemPos = {
+			{ x = 32972, y = 32412, z = 11 },
+		},
+	},
+	-- The Pits of Inferno Quest
 	[7799] = {
 		itemId = 431,
 		itemPos = {

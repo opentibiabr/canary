@@ -1,6 +1,6 @@
 local config = {
-	[4644] = { storageKey = { Storage.GravediggerOfDrefia.Mission36, Storage.GravediggerOfDrefia.Mission36a }, message = "The blood in the vial is of a deep, ruby red.", itemId = 21418 },
-	[4645] = { storageKey = { Storage.GravediggerOfDrefia.Mission36a, Storage.GravediggerOfDrefia.Mission37 }, message = "The blood in the vial is of a strange colour, as if tainted.", itemId = 21419 },
+	[4644] = { storageKey = { Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission36, Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission36a }, message = "The blood in the vial is of a deep, ruby red.", itemId = 19101 },
+	[4645] = { storageKey = { Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission36a, Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission37 }, message = "The blood in the vial is of a strange colour, as if tainted.", itemId = 19102 },
 }
 
 local gravediggerBlood = Action()

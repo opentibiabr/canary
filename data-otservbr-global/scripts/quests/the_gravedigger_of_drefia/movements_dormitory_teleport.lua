@@ -6,9 +6,9 @@ function dormitoryTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if item.actionid == 4534 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission55) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission56) < 1 then
-		player:setStorageValue(Storage.GravediggerOfDrefia.Mission56, 1)
-		player:setStorageValue(Storage.GravediggerOfDrefia.Mission57, 1)
+	if item.actionid == 4534 and player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission55) == 1 and player:getStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission56) < 1 then
+		player:setStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission56, 1)
+		player:setStorageValue(Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission57, 1)
 		player:teleportTo(Position(33015, 32440, 10))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You should hurry, try not to dwell here any longer than a few minutes.")

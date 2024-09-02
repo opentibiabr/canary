@@ -294,7 +294,7 @@ void SpawnMonster::cleanup() {
 	std::vector<uint32_t> removeList;
 	for (const auto &[spawnMonsterId, monster] : spawnedMonsterMap) {
 		if (monster == nullptr || monster->isRemoved()) {
-			removeList.push_back(spawnMonsterId);
+			removeList.emplace_back(spawnMonsterId);
 		}
 	}
 	for (const auto &spawnMonsterId : removeList) {

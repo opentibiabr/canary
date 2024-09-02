@@ -24,7 +24,7 @@ enum SharedExpStatus_t : uint8_t {
 class Player;
 class Party;
 
-class Party : public SharedObject {
+class Party final : public SharedObject {
 public:
 	static std::shared_ptr<Party> create(const std::shared_ptr<Player> &leader);
 
@@ -38,9 +38,9 @@ public:
 	std::vector<std::shared_ptr<Player>> getPlayers() const {
 		std::vector<std::shared_ptr<Player>> players;
 		for (auto &member : memberList) {
-			players.push_back(member);
+			players.emplace_back(member);
 		}
-		players.push_back(getLeader());
+		players.emplace_back(getLeader());
 		return players;
 	}
 	std::vector<std::shared_ptr<Player>> getMembers() {
@@ -88,7 +88,7 @@ public:
 	void updatePlayerTicks(const std::shared_ptr<Player> &player, uint32_t points);
 	void clearPlayerPoints(const std::shared_ptr<Player> &player);
 
-	void showPlayerStatus(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &member, bool showStatus);
+	void showPlayerStatus(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &member, bool showStatus) const;
 	void updatePlayerStatus(const std::shared_ptr<Player> &player);
 	void updatePlayerStatus(const std::shared_ptr<Player> &player, const Position &oldPos, const Position &newPos);
 	void updatePlayerHealth(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint8_t healthPercent);
@@ -102,10 +102,10 @@ public:
 	void addPlayerHealing(const std::shared_ptr<Player> &player, uint64_t amount);
 	void switchAnalyzerPriceType();
 	void resetAnalyzer();
-	void reloadPrices();
+	void reloadPrices() const;
 
 	std::shared_ptr<PartyAnalyzer> getPlayerPartyAnalyzerStruct(uint32_t playerId) const {
-		if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const std::shared_ptr<PartyAnalyzer> &preyIt) {
+		if (const auto &it = std::ranges::find_if(membersData, [playerId](const std::shared_ptr<PartyAnalyzer> &preyIt) {
 				return preyIt->id == playerId;
 			});
 		    it != membersData.end()) {
@@ -126,7 +126,7 @@ public:
 	std::vector<std::shared_ptr<PartyAnalyzer>> membersData;
 
 private:
-	const char* getSharedExpReturnMessage(SharedExpStatus_t value);
+	const char* getSharedExpReturnMessage(SharedExpStatus_t value) const;
 	bool isPlayerActive(const std::shared_ptr<Player> &player);
 	SharedExpStatus_t getSharedExperienceStatus();
 	uint32_t getHighestLevel();

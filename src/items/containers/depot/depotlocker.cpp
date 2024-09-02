@@ -24,7 +24,7 @@ Attr_ReadValue DepotLocker::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	return Item::readAttr(attr, propStream);
 }
 
-ReturnValue DepotLocker::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature>) {
+ReturnValue DepotLocker::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> &) {
 	return RETURNVALUE_NOTENOUGHROOM;
 }
 

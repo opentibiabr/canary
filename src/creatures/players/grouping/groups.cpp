@@ -48,7 +48,7 @@ bool Groups::reload() {
 }
 
 void parseGroupFlags(Group &group, const pugi::xml_node &groupNode) {
-	if (pugi::xml_node node = groupNode.child("flags")) {
+	if (const pugi::xml_node node = groupNode.child("flags")) {
 		for (const auto &flagNode : node.children()) {
 			pugi::xml_attribute attr = flagNode.first_attribute();
 			if (!attr || !attr.as_bool()) {
@@ -67,8 +67,8 @@ void parseGroupFlags(Group &group, const pugi::xml_node &groupNode) {
 
 bool Groups::load() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/groups.xml";
-	pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	const auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/groups.xml";
+	const pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
@@ -81,10 +81,10 @@ bool Groups::load() {
 		group.access = groupNode.attribute("access").as_bool();
 		group.maxDepotItems = pugi::cast<uint32_t>(groupNode.attribute("maxdepotitems").value());
 		group.maxVipEntries = pugi::cast<uint32_t>(groupNode.attribute("maxvipentries").value());
-		auto flagsInt = static_cast<uint8_t>(groupNode.attribute("flags").as_uint());
+		const auto flagsInt = static_cast<uint8_t>(groupNode.attribute("flags").as_uint());
 		std::bitset<magic_enum::enum_integer(PlayerFlags_t::FlagLast)> flags(flagsInt);
 		for (uint8_t i = 0; i < getFlagNumber(PlayerFlags_t::FlagLast); i++) {
-			PlayerFlags_t flag = getFlagFromNumber(i);
+			const PlayerFlags_t flag = getFlagFromNumber(i);
 			group.flags[i] = flags[Groups::getFlagNumber(flag)];
 		}
 
@@ -98,7 +98,7 @@ bool Groups::load() {
 }
 
 std::shared_ptr<Group> Groups::getGroup(uint16_t id) const {
-	if (auto it = std::find_if(groups_vector.begin(), groups_vector.end(), [id](auto group_it) {
+	if (const auto &it = std::ranges::find_if(groups_vector, [id](auto group_it) {
 			return group_it->id == id;
 		});
 	    it != groups_vector.end()) {

@@ -12,7 +12,7 @@
 #include "items/trashholder.hpp"
 #include "game/game.hpp"
 
-ReturnValue TrashHolder::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, std::shared_ptr<Creature> actor) {
+ReturnValue TrashHolder::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, const std::shared_ptr<Creature> &actor) {
 	const auto item = thing->getItem();
 	if (item == nullptr) {
 		return RETURNVALUE_NOERROR;
@@ -28,7 +28,7 @@ ReturnValue TrashHolder::queryMaxCount(int32_t, const std::shared_ptr<Thing> &, 
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue TrashHolder::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature> /*= nullptr*/) {
+ReturnValue TrashHolder::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> & /*= nullptr */) {
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
@@ -40,7 +40,7 @@ void TrashHolder::addThing(std::shared_ptr<Thing> thing) {
 	return addThing(0, thing);
 }
 
-void TrashHolder::addThing(int32_t, std::shared_ptr<Thing> thing) {
+void TrashHolder::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 	if (!thing) {
 		return;
 	}

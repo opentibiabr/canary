@@ -23,7 +23,7 @@ public:
 	ShopBlock shopBlock;
 };
 
-class NpcType : public SharedObject {
+class NpcType final : public SharedObject {
 	struct NpcInfo {
 		LuaScriptInterface* scriptInterface {};
 

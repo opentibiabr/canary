@@ -18,7 +18,7 @@ RewardChest::RewardChest(uint16_t type) :
 	pagination = true;
 }
 
-ReturnValue RewardChest::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature> actor /* = nullptr*/) {
+ReturnValue RewardChest::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> &actor /* = nullptr*/) {
 	if (actor) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}

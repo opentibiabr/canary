@@ -15,7 +15,8 @@
 
 class Player;
 
-struct VIPGroup {
+class VIPGroup {
+public:
 	uint8_t id = 0;
 	std::string name;
 	bool customizable = false;
@@ -25,8 +26,8 @@ struct VIPGroup {
 	VIPGroup(uint8_t id, std::string name, bool customizable) :
 		id(id), name(std::move(name)), customizable(customizable) { }
 };
-class PlayerVIP {
 
+class PlayerVIP {
 public:
 	explicit PlayerVIP(Player &player);
 
@@ -56,12 +57,12 @@ public:
 	void addGroupInternal(uint8_t groupId, const std::string &name, bool customizable);
 	void removeGroup(uint8_t groupId);
 	void addGroup(const std::string &name, bool customizable = true);
-	void editGroup(uint8_t groupId, const std::string &newName, bool customizable = true);
+	void editGroup(uint8_t groupId, const std::string &newName, bool customizable = true) const;
 
 	void addGuidToGroupInternal(uint8_t groupId, uint32_t guid) const;
 
 	uint8_t getFreeId() const;
-	std::vector<uint8_t> getGroupsIdGuidBelongs(uint32_t guid);
+	std::vector<uint8_t> getGroupsIdGuidBelongs(uint32_t guid) const;
 
 	[[nodiscard]] const std::vector<std::shared_ptr<VIPGroup>> &getGroups() const {
 		return vipGroups;

@@ -18,7 +18,7 @@ Reward::Reward() :
 	pagination = true;
 }
 
-ReturnValue Reward::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, std::shared_ptr<Creature> actor /* = nullptr*/) {
+ReturnValue Reward::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, const std::shared_ptr<Creature> &actor /* = nullptr*/) {
 	if (actor) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}

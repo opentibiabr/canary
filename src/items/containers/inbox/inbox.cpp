@@ -17,7 +17,7 @@ Inbox::Inbox(uint16_t type) :
 	maxInboxItems = std::numeric_limits<uint16_t>::max();
 }
 
-ReturnValue Inbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t flags, std::shared_ptr<Creature>) {
+ReturnValue Inbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t flags, const std::shared_ptr<Creature> &) {
 	int32_t addCount = 0;
 
 	if (!hasBitSet(FLAG_NOLIMIT, flags)) {

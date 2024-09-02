@@ -45,12 +45,12 @@ bool PlayerAchievement::remove(uint16_t id) {
 		return false;
 	}
 
-	auto achievement = g_game().getAchievementById(id);
+	const auto achievement = g_game().getAchievementById(id);
 	if (achievement.id == 0) {
 		return false;
 	}
 
-	if (auto it = std::find_if(m_achievementsUnlocked.begin(), m_achievementsUnlocked.end(), [id](auto achievement_it) {
+	if (const auto &it = std::ranges::find_if(m_achievementsUnlocked, [id](auto achievement_it) {
 			return achievement_it.first == id;
 		});
 	    it != m_achievementsUnlocked.end()) {
@@ -69,7 +69,7 @@ bool PlayerAchievement::isUnlocked(uint16_t id) const {
 		return false;
 	}
 
-	if (auto it = std::find_if(m_achievementsUnlocked.begin(), m_achievementsUnlocked.end(), [id](auto achievement_it) {
+	if (const auto &it = std::ranges::find_if(m_achievementsUnlocked, [id](auto achievement_it) {
 			return achievement_it.first == id;
 		});
 	    it != m_achievementsUnlocked.end()) {
@@ -80,17 +80,17 @@ bool PlayerAchievement::isUnlocked(uint16_t id) const {
 }
 
 uint16_t PlayerAchievement::getPoints() const {
-	auto kvScoped = m_player.kv()->scoped("achievements")->get("points");
+	const auto kvScoped = m_player.kv()->scoped("achievements")->get("points");
 	return kvScoped ? static_cast<uint16_t>(kvScoped->getNumber()) : 0;
 }
 
-void PlayerAchievement::addPoints(uint16_t toAddPoints) {
-	auto oldPoints = getPoints();
+void PlayerAchievement::addPoints(uint16_t toAddPoints) const {
+	const auto oldPoints = getPoints();
 	m_player.kv()->scoped("achievements")->set("points", oldPoints + toAddPoints);
 }
 
-void PlayerAchievement::removePoints(uint16_t points) {
-	auto oldPoints = getPoints();
+void PlayerAchievement::removePoints(uint16_t points) const {
+	const auto oldPoints = getPoints();
 	m_player.kv()->scoped("achievements")->set("points", oldPoints - std::min<uint16_t>(oldPoints, points));
 }
 
@@ -114,7 +114,7 @@ void PlayerAchievement::loadUnlockedAchievements() {
 	}
 }
 
-void PlayerAchievement::sendUnlockedSecretAchievements() {
+void PlayerAchievement::sendUnlockedSecretAchievements() const {
 	std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked;
 	uint16_t unlockedSecret = 0;
 	for (const auto &[achievId, achievCreatedTime] : getUnlockedAchievements()) {

@@ -573,7 +573,7 @@ void Tile::onUpdateTile(const CreatureVector &spectators) {
 	}
 }
 
-ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t tileFlags, std::shared_ptr<Creature>) {
+ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t tileFlags, const std::shared_ptr<Creature> &) {
 	if (hasBitSet(FLAG_NOLIMIT, tileFlags)) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -849,7 +849,7 @@ ReturnValue Tile::queryMaxCount(int32_t, const std::shared_ptr<Thing> &, uint32_
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Tile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t tileFlags, std::shared_ptr<Creature> /*= nullptr */) {
+ReturnValue Tile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t tileFlags, const std::shared_ptr<Creature> & /*= nullptr */) {
 	int32_t index = getThingIndex(thing);
 	if (index == -1) {
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -991,7 +991,7 @@ void Tile::addThing(std::shared_ptr<Thing> thing) {
 	addThing(0, thing);
 }
 
-void Tile::addThing(int32_t, std::shared_ptr<Thing> thing) {
+void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 	if (!thing) {
 		return; // RETURNVALUE_NOTPOSSIBLE
 	}

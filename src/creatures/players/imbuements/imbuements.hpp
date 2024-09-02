@@ -18,6 +18,8 @@ class Item;
 
 class Imbuement;
 
+constexpr int32_t maxSkillOrStatId = std::max<int32_t>(STAT_LAST, SKILL_LAST);
+
 struct BaseImbuement {
 	BaseImbuement(uint16_t initId, std::string initName, uint32_t initPrice, uint32_t initProtectionPrice, uint32_t initRemoveCost, uint32_t initDuration, uint8_t initPercent) :
 		id(initId), name(std::move(initName)), price(initPrice), protectionPrice(initProtectionPrice), removeCost(initRemoveCost), duration(initDuration), percent(initPercent) { }
@@ -120,7 +122,7 @@ public:
 	}
 
 	uint16_t icon = 1;
-	int32_t stats[STAT_LAST + 1] = {};
+	int32_t stats[maxSkillOrStatId + 1] = {};
 	int32_t skills[SKILL_LAST + 1] = {};
 	int32_t speed = 0;
 	uint32_t capacity = 0;

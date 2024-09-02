@@ -1533,7 +1533,7 @@ bool ConditionDamage::unserializeProp(ConditionAttr_t attr, PropStream &propStre
 			return false;
 		}
 
-		damageList.push_back(damageInfo);
+		damageList.emplace_back(damageInfo);
 		if (ticks != -1) {
 			setTicks(ticks + damageInfo.interval);
 		}
@@ -1591,7 +1591,7 @@ bool ConditionDamage::addDamage(int32_t rounds, int32_t time, int32_t value) {
 		damageInfo.timeLeft = time;
 		damageInfo.value = value;
 
-		damageList.push_back(damageInfo);
+		damageList.emplace_back(damageInfo);
 
 		if (ticks != -1) {
 			setTicks(ticks + damageInfo.interval);
@@ -1847,7 +1847,7 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
 
 		do {
 			sum += i;
-			list.push_back(i);
+			list.emplace_back(i);
 
 			x1 = std::fabs(1.0 - ((static_cast<float>(sum)) + i) / med);
 			x2 = std::fabs(1.0 - (static_cast<float>(sum) / med));

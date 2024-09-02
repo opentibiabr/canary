@@ -1463,11 +1463,11 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 	phmap::flat_hash_set<uint32_t> visited;
 
 	if (initialTarget && initialTarget != caster) {
-		targets.push_back(initialTarget);
+		targets.emplace_back(initialTarget);
 		visited.insert(initialTarget->getID());
-		resultMap.push_back({ caster->getPosition(), { initialTarget->getID() } });
+		resultMap.emplace_back(caster->getPosition(), std::vector<uint32_t> { initialTarget->getID() });
 	} else {
-		targets.push_back(caster);
+		targets.emplace_back(caster);
 		maxTargets++;
 	}
 
@@ -1507,10 +1507,10 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 				}
 			}
 			if (!found) {
-				resultMap.push_back({ currentTarget->getPosition(), { closestSpectator->getID() } });
+				resultMap.emplace_back(currentTarget->getPosition(), std::vector<uint32_t> { closestSpectator->getID() });
 			}
 
-			targets.push_back(closestSpectator);
+			targets.emplace_back(closestSpectator);
 			visited.insert(closestSpectator->getID());
 			continue;
 		}
@@ -2024,11 +2024,11 @@ void AreaCombat::setupArea(int32_t length, int32_t spread) {
 
 		for (int32_t x = 1; x <= cols; ++x) {
 			if (y == rows && x == ((cols - (cols % 2)) / 2) + 1) {
-				list.push_back(3);
+				list.emplace_back(3);
 			} else if (x >= mincol && x <= maxcol) {
-				list.push_back(1);
+				list.emplace_back(1);
 			} else {
-				list.push_back(0);
+				list.emplace_back(0);
 			}
 		}
 
@@ -2062,11 +2062,11 @@ void AreaCombat::setupArea(int32_t radius) {
 	for (auto &row : area) {
 		for (const int cell : row) {
 			if (cell == 1) {
-				list.push_back(3);
+				list.emplace_back(3);
 			} else if (cell > 0 && cell <= radius) {
-				list.push_back(1);
+				list.emplace_back(1);
 			} else {
-				list.push_back(0);
+				list.emplace_back(0);
 			}
 		}
 	}

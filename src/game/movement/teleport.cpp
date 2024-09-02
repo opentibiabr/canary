@@ -31,7 +31,7 @@ void Teleport::serializeAttr(PropWriteStream &propWriteStream) const {
 	propWriteStream.write<uint8_t>(destPos.z);
 }
 
-ReturnValue Teleport::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature>) {
+ReturnValue Teleport::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> &) {
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
@@ -39,7 +39,7 @@ ReturnValue Teleport::queryMaxCount(int32_t, const std::shared_ptr<Thing> &, uin
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-ReturnValue Teleport::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature> /*= nullptr */) {
+ReturnValue Teleport::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> & /*= nullptr */) {
 	return RETURNVALUE_NOERROR;
 }
 
@@ -66,7 +66,7 @@ void Teleport::addThing(std::shared_ptr<Thing> thing) {
 	return addThing(0, thing);
 }
 
-void Teleport::addThing(int32_t, std::shared_ptr<Thing> thing) {
+void Teleport::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 	if (!thing) {
 		return;
 	}

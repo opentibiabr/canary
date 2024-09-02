@@ -206,13 +206,13 @@ public:
 		}
 	}
 	void addBestiaryKillCount(uint16_t raceid, uint32_t amount) {
-		uint32_t oldCount = getBestiaryKillCount(raceid);
-		uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
+		const uint32_t oldCount = getBestiaryKillCount(raceid);
+		const uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
 		addStorageValue(key, static_cast<int32_t>(oldCount + amount), true);
 	}
 	uint32_t getBestiaryKillCount(uint16_t raceid) const {
-		uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-		auto value = getStorageValue(key);
+		const uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
+		const auto value = getStorageValue(key);
 		return value > 0 ? static_cast<uint32_t>(value) : 0;
 	}
 
@@ -391,7 +391,7 @@ public:
 
 	void setPerfectShotDamage(uint8_t range, int32_t damage) {
 		int32_t actualDamage = getPerfectShotDamage(range);
-		bool aboveZero = (actualDamage != 0);
+		const bool aboveZero = (actualDamage != 0);
 		actualDamage += damage;
 		if (actualDamage == 0 && aboveZero) {
 			perfectShot.erase(range);
@@ -489,7 +489,7 @@ public:
 				return 0;
 			}
 		}
-		auto amount = kv()->scoped("summary")->scoped("blessings")->scoped(fmt::format("{}", index))->get("amount");
+		const auto amount = kv()->scoped("summary")->scoped("blessings")->scoped(fmt::format("{}", index))->get("amount");
 		return amount ? static_cast<uint8_t>(amount->getNumber()) : 0;
 	}
 	std::string getBlessingsName() const;
@@ -714,7 +714,7 @@ public:
 	bool removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool removeFromStash = true);
 
 	void addItemOnStash(uint16_t itemId, uint32_t amount) {
-		auto it = stashItems.find(itemId);
+		const auto it = stashItems.find(itemId);
 		if (it != stashItems.end()) {
 			stashItems[itemId] += amount;
 			return;
@@ -723,14 +723,14 @@ public:
 		stashItems[itemId] = amount;
 	}
 	uint32_t getStashItemCount(uint16_t itemId) const {
-		auto it = stashItems.find(itemId);
+		const auto it = stashItems.find(itemId);
 		if (it != stashItems.end()) {
 			return it->second;
 		}
 		return 0;
 	}
 	bool withdrawItem(uint16_t itemId, uint32_t amount) {
-		auto it = stashItems.find(itemId);
+		const auto it = stashItems.find(itemId);
 		if (it != stashItems.end()) {
 			if (it->second > amount) {
 				stashItems[itemId] -= amount;
@@ -750,7 +750,8 @@ public:
 	uint32_t getBaseCapacity() const {
 		if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 			return 0;
-		} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
+		}
+		if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 			return std::numeric_limits<uint32_t>::max();
 		}
 		return capacity;
@@ -936,7 +937,7 @@ public:
 		if (!lastConditionTime.contains(static_cast<uint8_t>(type))) {
 			return false;
 		}
-		auto last = lastConditionTime.at(static_cast<uint8_t>(type));
+		const auto last = lastConditionTime.at(static_cast<uint8_t>(type));
 		return last > 0 && ((OTSYS_TIME() - last) < interval);
 	}
 
@@ -975,7 +976,7 @@ public:
 	void getShieldAndWeapon(std::shared_ptr<Item> &shield, std::shared_ptr<Item> &weapon) const;
 
 	void drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) override;
-	void drainMana(std::shared_ptr<Creature> attacker, int32_t manaLoss) override;
+	void drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLoss) override;
 	void addManaSpent(uint64_t amount);
 	void addSkillAdvance(skills_t skill, uint64_t count);
 
@@ -1004,7 +1005,7 @@ public:
 	void onGainSharedExperience(uint64_t gainExp, const std::shared_ptr<Creature> &target);
 	void onAttackedCreatureBlockHit(const BlockType_t &blockType) override;
 	void onBlockHit() override;
-	void onTakeDamage(std::shared_ptr<Creature> attacker, int32_t damage) override;
+	void onTakeDamage(const std::shared_ptr<Creature> &attacker, int32_t damage) override;
 	void onChangeZone(ZoneType_t zone) override;
 	void onAttackedCreatureChangeZone(ZoneType_t zone) override;
 	void onIdleStatus() override;
@@ -1013,7 +1014,7 @@ public:
 	LightInfo getCreatureLight() const override;
 
 	Skulls_t getSkull() const override;
-	Skulls_t getSkullClient(std::shared_ptr<Creature> creature) override;
+	Skulls_t getSkullClient(const std::shared_ptr<Creature> &creature) override;
 	int64_t getSkullTicks() const {
 		return skullTicks;
 	}
@@ -1062,7 +1063,7 @@ public:
 	// send methods
 	void sendAddTileItem(const std::shared_ptr<Tile> &itemTile, const Position &pos, const std::shared_ptr<Item> &item) {
 		if (client) {
-			int32_t stackpos = itemTile->getStackposOfItem(static_self_cast<Player>(), item);
+			const int32_t stackpos = itemTile->getStackposOfItem(static_self_cast<Player>(), item);
 			if (stackpos != -1) {
 				client->sendAddTileItem(pos, stackpos, item);
 			}
@@ -1070,7 +1071,7 @@ public:
 	}
 	void sendUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const std::shared_ptr<Item> &item) {
 		if (client) {
-			int32_t stackpos = updateTile->getStackposOfItem(static_self_cast<Player>(), item);
+			const int32_t stackpos = updateTile->getStackposOfItem(static_self_cast<Player>(), item);
 			if (stackpos != -1) {
 				client->sendUpdateTileItem(pos, stackpos, item);
 			}
@@ -1107,7 +1108,7 @@ public:
 			return;
 		}
 
-		auto tile = creature->getTile();
+		const auto tile = creature->getTile();
 		if (!tile) {
 			return;
 		}
@@ -1126,13 +1127,13 @@ public:
 			return;
 		}
 
-		auto tile = creature->getTile();
+		const auto tile = creature->getTile();
 		if (!tile) {
 			return;
 		}
 
 		if (client && canSeeCreature(creature)) {
-			int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
+			const int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
 			if (stackpos != -1) {
 				client->sendCreatureTurn(creature, stackpos);
 			}
@@ -1178,11 +1179,11 @@ public:
 		} else if (canSeeInvisibility()) {
 			client->sendCreatureOutfit(creature, creature->getCurrentOutfit());
 		} else {
-			auto tile = creature->getTile();
+			const auto tile = creature->getTile();
 			if (!tile) {
 				return;
 			}
-			int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
+			const int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
 			if (stackpos == -1) {
 				return;
 			}
@@ -1777,7 +1778,7 @@ public:
 	void setWriteItem(const std::shared_ptr<Item> &item, uint16_t maxWriteLen = 0);
 
 	std::shared_ptr<House> getEditHouse(uint32_t &windowTextId, uint32_t &listId);
-	void setEditHouse(std::shared_ptr<House> house, uint32_t listId = 0);
+	void setEditHouse(const std::shared_ptr<House> &house, uint32_t listId = 0);
 
 	void learnInstantSpell(const std::string &spellName);
 	void forgetInstantSpell(const std::string &spellName);
@@ -1961,7 +1962,7 @@ public:
 		cleanseCondition.second = OTSYS_TIME() + 10000;
 	}
 	bool isImmuneCleanse(ConditionType_t conditiontype) const {
-		uint64_t timenow = OTSYS_TIME();
+		const uint64_t timenow = OTSYS_TIME();
 		if ((cleanseCondition.first == conditiontype)
 		    && (timenow <= cleanseCondition.second)) {
 			return true;
@@ -2209,10 +2210,10 @@ public:
 		for (const std::unique_ptr<PreySlot> &slot : preys) {
 			if (slot) {
 				if (slot->isOccupied()) {
-					rt.push_back(slot->selectedRaceId);
+					rt.emplace_back(slot->selectedRaceId);
 				}
 				for (uint16_t raceId : slot->raceIdList) {
-					rt.push_back(raceId);
+					rt.emplace_back(raceId);
 				}
 			}
 		}
@@ -2459,7 +2460,7 @@ public:
 	}
 
 	void setForgeHistory(const ForgeHistory &history) {
-		forgeHistoryVector.push_back(history);
+		forgeHistoryVector.emplace_back(history);
 	}
 
 	void registerForgeHistoryDescription(ForgeHistory history);
@@ -2559,11 +2560,11 @@ public:
 		return activeConcoctions;
 	}
 	bool isConcoctionActive(Concoction_t concotion) const {
-		auto itemId = static_cast<uint16_t>(concotion);
+		const auto itemId = static_cast<uint16_t>(concotion);
 		if (!activeConcoctions.contains(itemId)) {
 			return false;
 		}
-		auto timeLeft = activeConcoctions.at(itemId);
+		const auto timeLeft = activeConcoctions.at(itemId);
 		return timeLeft > 0;
 	}
 
@@ -2575,11 +2576,12 @@ public:
 			return false;
 		}
 
-		auto featureKV = kv()->scoped("features")->get("autoloot");
-		auto value = featureKV.has_value() ? featureKV->getNumber() : 0;
+		const auto featureKV = kv()->scoped("features")->get("autoloot");
+		const auto value = featureKV.has_value() ? featureKV->getNumber() : 0;
 		if (value == 2) {
 			return true;
-		} else if (value == 1) {
+		}
+		if (value == 1) {
 			return !isBoss;
 		}
 		return false;
@@ -2685,20 +2687,20 @@ private:
 	void setNextActionPushTask(const std::shared_ptr<Task> &task);
 	void setNextPotionActionTask(const std::shared_ptr<Task> &task);
 
-	void death(std::shared_ptr<Creature> lastHitCreature) override;
+	void death(const std::shared_ptr<Creature> &lastHitCreature) override;
 	bool spawn();
 	void despawn();
 	bool dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified) override;
 	std::shared_ptr<Item> getCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature) override;
 
 	// cylinder implementations
-	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
+	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
 	ReturnValue queryMaxCount(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) override;
-	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
+	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
 	std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &flags) override;
 
 	void addThing(std::shared_ptr<Thing>) override { }
-	void addThing(int32_t index, std::shared_ptr<Thing> thing) override;
+	void addThing(int32_t index, const std::shared_ptr<Thing> &thing) override;
 
 	void updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) override;
 	void replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) override;
@@ -2727,7 +2729,7 @@ private:
 	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
 	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
 
-	phmap::flat_hash_set<uint32_t> attackedSet;
+	phmap::flat_hash_set<uint32_t> attackedSet {};
 
 	std::map<uint8_t, OpenContainer> openContainers;
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
@@ -2984,8 +2986,8 @@ private:
 
 	uint32_t getAttackSpeed() const {
 		if (onFistAttackSpeed) {
-			uint32_t baseAttackSpeed = vocation->getAttackSpeed();
-			uint32_t skillLevel = getSkillLevel(SKILL_FIST);
+			const uint32_t baseAttackSpeed = vocation->getAttackSpeed();
+			const uint32_t skillLevel = getSkillLevel(SKILL_FIST);
 			uint32_t attackSpeed = baseAttackSpeed - (skillLevel * g_configManager().getNumber(MULTIPLIER_ATTACKONFIST, __FUNCTION__));
 
 			if (attackSpeed < MAX_ATTACK_SPEED) {

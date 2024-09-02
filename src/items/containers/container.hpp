@@ -138,13 +138,13 @@ public:
 	}
 
 	// cylinder implementations
-	virtual ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
+	virtual ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
 	ReturnValue queryMaxCount(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) final;
-	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) final;
+	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
 	std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &flags) final;
 
 	void addThing(std::shared_ptr<Thing> thing) final;
-	void addThing(int32_t index, std::shared_ptr<Thing> thing) final;
+	void addThing(int32_t index, const std::shared_ptr<Thing> &thing) final;
 	void addItemBack(const std::shared_ptr<Item> &item);
 
 	void updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) final;

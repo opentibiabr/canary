@@ -23,7 +23,7 @@ bool PlayerBadge::hasBadge(uint8_t id) const {
 		return false;
 	}
 
-	if (auto it = std::find_if(m_badgesUnlocked.begin(), m_badgesUnlocked.end(), [id](auto badge_it) {
+	if (const auto &it = std::ranges::find_if(m_badgesUnlocked, [id](auto badge_it) {
 			return badge_it.first.m_id == id;
 		});
 	    it != m_badgesUnlocked.end()) {
@@ -107,30 +107,30 @@ const std::shared_ptr<KV> &PlayerBadge::getUnlockedKV() {
 }
 
 // Badge Calculate Functions
-bool PlayerBadge::accountAge(uint8_t amount) {
+bool PlayerBadge::accountAge(uint8_t amount) const {
 	return std::floor(m_player.getLoyaltyPoints() / 365) >= amount;
 }
 
-bool PlayerBadge::loyalty(uint8_t amount) {
+bool PlayerBadge::loyalty(uint8_t amount) const {
 	return m_player.getLoyaltyPoints() >= amount;
 }
 
-bool PlayerBadge::accountAllLevel(uint8_t amount) {
+bool PlayerBadge::accountAllLevel(uint8_t amount) const {
 	const auto &players = g_game().getPlayersByAccount(m_player.getAccount(), true);
-	uint16_t total = std::accumulate(players.begin(), players.end(), 0, [](uint16_t sum, const std::shared_ptr<Player> &player) {
+	const uint16_t total = std::accumulate(players.begin(), players.end(), 0, [](uint16_t sum, const std::shared_ptr<Player> &player) {
 		return sum + player->getLevel();
 	});
 	return total >= amount;
 }
 
-bool PlayerBadge::accountAllVocations(uint8_t amount) {
+bool PlayerBadge::accountAllVocations(uint8_t amount) const {
 	auto knight = false;
 	auto paladin = false;
 	auto druid = false;
 	auto sorcerer = false;
 	for (const auto &player : g_game().getPlayersByAccount(m_player.getAccount(), true)) {
 		if (player->getLevel() >= amount) {
-			auto vocationEnum = player->getPlayerVocationEnum();
+			const auto &vocationEnum = player->getPlayerVocationEnum();
 			if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 				knight = true;
 			} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
@@ -145,12 +145,12 @@ bool PlayerBadge::accountAllVocations(uint8_t amount) {
 	return knight && paladin && druid && sorcerer;
 }
 
-bool PlayerBadge::tournamentParticipation(uint8_t skill) {
+bool PlayerBadge::tournamentParticipation(uint8_t skill) const {
 	// todo check if is used
 	return false;
 }
 
-bool PlayerBadge::tournamentPoints(uint8_t race) {
+bool PlayerBadge::tournamentPoints(uint8_t race) const {
 	// todo check if is used
 	return false;
 }

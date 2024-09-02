@@ -19,7 +19,7 @@
 
 bool NpcType::canSpawn(const Position &pos) const {
 	bool canSpawn = true;
-	bool isDay = g_game().gameIsDay();
+	const bool isDay = g_game().gameIsDay();
 
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) || (!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
@@ -30,7 +30,7 @@ bool NpcType::canSpawn(const Position &pos) const {
 }
 
 bool NpcType::loadCallback(LuaScriptInterface* scriptInterface) {
-	int32_t id = scriptInterface->getEvent();
+	const int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
 		g_logger().warn("[NpcType::loadCallback] - Event not found");
 		return false;
@@ -91,25 +91,25 @@ void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBl
 	}
 
 	if (shopBlock.childShop.empty()) {
-		bool isContainer = iType.isContainer();
+		const bool &isContainer = iType.isContainer();
 		if (isContainer) {
 			for (const ShopBlock &child : shopBlock.childShop) {
-				shopBlock.childShop.push_back(child);
+				shopBlock.childShop.emplace_back(child);
 			}
 		}
 	}
-	npcType->info.shopItemVector.push_back(shopBlock);
+	npcType->info.shopItemVector.emplace_back(shopBlock);
 
 	info.speechBubble = SPEECHBUBBLE_TRADE;
 }
 
 bool Npcs::load(bool loadLibs /* = true*/, bool loadNpcs /* = true*/, bool reloading /* = false*/) const {
 	if (loadLibs) {
-		auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+		const auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 		return g_luaEnvironment().loadFile(coreFolder + "/npclib/load.lua", "load.lua") == 0;
 	}
 	if (loadNpcs) {
-		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+		const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
 		return g_scripts().loadScripts(datapackFolder + "/npc", false, reloading);
 	}
 	return false;
@@ -132,8 +132,8 @@ bool Npcs::reload() {
 }
 
 std::shared_ptr<NpcType> Npcs::getNpcType(const std::string &name, bool create /* = false*/) {
-	std::string key = asLowerCaseString(name);
-	auto it = npcs.find(key);
+	const std::string key = asLowerCaseString(name);
+	const auto &it = npcs.find(key);
 
 	if (it != npcs.end()) {
 		return it->second;

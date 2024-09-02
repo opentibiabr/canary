@@ -23,7 +23,7 @@ struct spawnBlockNpc_t {
 	Direction direction;
 };
 
-class SpawnNpc : public SharedObject {
+class SpawnNpc final : public SharedObject {
 public:
 	SpawnNpc(Position initPos, int32_t initRadius) :
 		centerPos(initPos), radius(initRadius) { }
@@ -44,7 +44,7 @@ public:
 	void startSpawnNpcCheck();
 	void stopEvent();
 
-	bool isInSpawnNpcZone(const Position &pos);
+	bool isInSpawnNpcZone(const Position &pos) const;
 	void cleanup();
 
 private:

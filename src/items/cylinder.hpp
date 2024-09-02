@@ -30,7 +30,7 @@ public:
 	 * \param actor the creature trying to add the thing
 	 * \returns ReturnValue holds the return value
 	 */
-	virtual ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) = 0;
+	virtual ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) = 0;
 
 	/**
 	 * Query the cylinder how much it can accept
@@ -49,9 +49,10 @@ public:
 	 * \param thing the object to move/remove
 	 * \param count is the amount that we want to remove
 	 * \param flags optional flags to modify the default behaviour
+	 * \param
 	 * \returns ReturnValue holds the return value
 	 */
-	virtual ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> = nullptr) = 0;
+	virtual ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) = 0;
 
 	/**
 	 * Query the destination cylinder
@@ -76,7 +77,7 @@ public:
 	 * \param index points to the destination index (inventory slot/container position)
 	 * \param thing is the object to add
 	 */
-	virtual void addThing(int32_t index, std::shared_ptr<Thing> thing) = 0;
+	virtual void addThing(int32_t index, const std::shared_ptr<Thing> &thing) = 0;
 
 	/**
 	 * Update the item count or type for an object
@@ -176,13 +177,13 @@ class VirtualCylinder final : public Cylinder {
 public:
 	static std::shared_ptr<VirtualCylinder> virtualCylinder;
 
-	virtual ReturnValue queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature> = nullptr) override {
+	virtual ReturnValue queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> & = nullptr) override {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	virtual ReturnValue queryMaxCount(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t &, uint32_t) override {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-	virtual ReturnValue queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature> = nullptr) override {
+	virtual ReturnValue queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> &actor = nullptr) override {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	virtual std::shared_ptr<Cylinder> queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item>*, uint32_t &) override {
@@ -190,7 +191,7 @@ public:
 	}
 
 	virtual void addThing(std::shared_ptr<Thing>) override { }
-	virtual void addThing(int32_t, std::shared_ptr<Thing>) override { }
+	virtual void addThing(int32_t, const std::shared_ptr<Thing> &) override { }
 	virtual void updateThing(const std::shared_ptr<Thing> &, uint16_t, uint32_t) override { }
 	virtual void replaceThing(uint32_t, const std::shared_ptr<Thing> &) override { }
 	virtual void removeThing(const std::shared_ptr<Thing> &, uint32_t) override { }

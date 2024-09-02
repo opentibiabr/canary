@@ -20,7 +20,7 @@
 HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, std::shared_ptr<House> initHouse) :
 	DynamicTile(initX, initY, initZ), house(std::move(initHouse)) { }
 
-void HouseTile::addThing(int32_t index, std::shared_ptr<Thing> thing) {
+void HouseTile::addThing(int32_t index, const std::shared_ptr<Thing> &thing) {
 	Tile::addThing(index, thing);
 
 	if (!thing || !thing->getParent()) {
@@ -62,7 +62,7 @@ void HouseTile::updateHouse(const std::shared_ptr<Item> &item) {
 	}
 }
 
-ReturnValue HouseTile::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t tileFlags, std::shared_ptr<Creature> actor /* = nullptr*/) {
+ReturnValue HouseTile::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t tileFlags, const std::shared_ptr<Creature> &actor /* = nullptr*/) {
 	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
 		if (const auto &player = creature->getPlayer()) {
 			if (!house->isInvited(player)) {
@@ -116,7 +116,7 @@ std::shared_ptr<Cylinder> HouseTile::queryDestination(int32_t &index, const std:
 	return Tile::queryDestination(index, thing, destItem, tileFlags);
 }
 
-ReturnValue HouseTile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor /*= nullptr*/) {
+ReturnValue HouseTile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor /*= nullptr */) {
 	const auto item = thing->getItem();
 	if (!item) {
 		return RETURNVALUE_NOTPOSSIBLE;

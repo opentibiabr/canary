@@ -440,7 +440,7 @@ void Container::onRemoveContainerItem(uint32_t index, const std::shared_ptr<Item
 	}
 }
 
-ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &addThing, uint32_t addCount, uint32_t flags, std::shared_ptr<Creature> actor /* = nullptr*/) {
+ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &addThing, uint32_t addCount, uint32_t flags, const std::shared_ptr<Creature> &actor /* = nullptr*/) {
 	bool childIsOwner = hasBitSet(FLAG_CHILDISOWNER, flags);
 	if (childIsOwner) {
 		// a child container is querying, since we are the top container (not carried by a player)
@@ -579,7 +579,7 @@ ReturnValue Container::queryMaxCount(int32_t index, const std::shared_ptr<Thing>
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Container::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor /*= nullptr */) {
+ReturnValue Container::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor /*= nullptr */) {
 	int32_t index = getThingIndex(thing);
 	if (index == -1) {
 		g_logger().debug("{} - Failed to get thing index", __FUNCTION__);
@@ -683,7 +683,7 @@ void Container::addThing(std::shared_ptr<Thing> thing) {
 	return addThing(0, thing);
 }
 
-void Container::addThing(int32_t index, std::shared_ptr<Thing> thing) {
+void Container::addThing(int32_t index, const std::shared_ptr<Thing> &thing) {
 	if (!thing) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}

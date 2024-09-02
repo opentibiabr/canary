@@ -36,8 +36,8 @@ bool Storages::loadFromXML() {
 		uint32_t start = range.attribute("start").as_uint();
 		uint32_t end = range.attribute("end").as_uint();
 
-		for (const auto &existingRange : ranges) {
-			if ((start >= existingRange.first && start <= existingRange.second) || (end >= existingRange.first && end <= existingRange.second)) {
+		for (const auto &[fst, snd] : ranges) {
+			if ((start >= fst && start <= snd) || (end >= fst && end <= snd)) {
 				g_logger().warn("[{}] Storage range from {} to {} conflicts with a previously defined range", __func__, start, end);
 				continue;
 			}

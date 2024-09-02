@@ -15,7 +15,7 @@
 #include "game/scheduling/save_manager.hpp"
 #include "map/spectators.hpp"
 
-ReturnValue Mailbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, std::shared_ptr<Creature>) {
+ReturnValue Mailbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, const std::shared_ptr<Creature> &) {
 	const auto item = thing->getItem();
 	if (item && Mailbox::canSend(item)) {
 		return RETURNVALUE_NOERROR;
@@ -28,7 +28,7 @@ ReturnValue Mailbox::queryMaxCount(int32_t, const std::shared_ptr<Thing> &, uint
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Mailbox::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature> /*= nullptr */) {
+ReturnValue Mailbox::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> & /*= nullptr */) {
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
@@ -40,7 +40,7 @@ void Mailbox::addThing(std::shared_ptr<Thing> thing) {
 	return addThing(0, thing);
 }
 
-void Mailbox::addThing(int32_t, std::shared_ptr<Thing> thing) {
+void Mailbox::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 	if (!thing) {
 		return;
 	}

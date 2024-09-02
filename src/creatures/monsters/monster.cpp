@@ -2028,7 +2028,7 @@ bool Monster::canWalkTo(Position pos, Direction moveDirection) {
 	return false;
 }
 
-void Monster::death(std::shared_ptr<Creature>) {
+void Monster::death(const std::shared_ptr<Creature> &) {
 	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
 		g_game().removeForgeMonster(getID(), monsterForgeClassification, true);
 	}
@@ -2164,7 +2164,7 @@ void Monster::updateLookDirection() {
 	g_game().internalCreatureTurn(getMonster(), newDir);
 }
 
-void Monster::dropLoot(const std::shared_ptr<Container> &corpse, std::shared_ptr<Creature>) {
+void Monster::dropLoot(const std::shared_ptr<Container> &corpse, const std::shared_ptr<Creature> &) {
 	if (corpse && lootDrop) {
 		// Only fiendish drops sliver
 		if (const ForgeClassifications_t classification = getMonsterForgeClassification();

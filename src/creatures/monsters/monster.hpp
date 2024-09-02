@@ -438,7 +438,7 @@ private:
 	bool addTarget(const std::shared_ptr<Creature> &creature, bool pushFront = false);
 	bool removeTarget(const std::shared_ptr<Creature> &creature);
 
-	void death(std::shared_ptr<Creature> lastHitCreature) override;
+	void death(const std::shared_ptr<Creature> &lastHitCreature) override;
 	std::shared_ptr<Item> getCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature) override;
 
 	void setIdle(bool idle);
@@ -477,7 +477,7 @@ private:
 	uint16_t getLookCorpse() const override {
 		return mType->info.lookcorpse;
 	}
-	void dropLoot(const std::shared_ptr<Container> &corpse, std::shared_ptr<Creature> lastHitCreature) override;
+	void dropLoot(const std::shared_ptr<Container> &corpse, const std::shared_ptr<Creature> &lastHitCreature) override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 	bool useCacheMap() const override {
 		// return !randomStepping;

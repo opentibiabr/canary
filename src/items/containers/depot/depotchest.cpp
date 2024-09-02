@@ -19,7 +19,7 @@ DepotChest::DepotChest(uint16_t type) :
 	pagination = true;
 }
 
-ReturnValue DepotChest::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor /* = nullptr*/) {
+ReturnValue DepotChest::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor /* = nullptr*/) {
 	const auto item = thing->getItem();
 	if (item == nullptr) {
 		return RETURNVALUE_NOTPOSSIBLE;

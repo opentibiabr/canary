@@ -66,7 +66,7 @@ public:
 		return strDescription + '.';
 	}
 
-	void setName(std::string newName) {
+	void setName(std::string newName) const {
 		npcType->name = std::move(newName);
 	}
 
@@ -84,20 +84,20 @@ public:
 	uint8_t getSpeechBubble() const override {
 		return npcType->info.speechBubble;
 	}
-	void setSpeechBubble(const uint8_t bubble) {
+	void setSpeechBubble(const uint8_t bubble) const {
 		npcType->info.speechBubble = bubble;
 	}
 
 	uint16_t getCurrency() const {
 		return npcType->info.currencyId;
 	}
-	void setCurrency(uint16_t currency) {
+	void setCurrency(uint16_t currency) const {
 		npcType->info.currencyId = currency;
 	}
 
 	const std::vector<ShopBlock> &getShopItemVector(uint32_t playerGUID) const {
 		if (playerGUID != 0) {
-			auto it = shopPlayers.find(playerGUID);
+			const auto &it = shopPlayers.find(playerGUID);
 			if (it != shopPlayers.end() && !it->second.empty()) {
 				return it->second;
 			}
@@ -129,15 +129,15 @@ public:
 	void removePlayerInteraction(const std::shared_ptr<Player> &player);
 	void resetPlayerInteractions();
 
-	bool isInteractingWithPlayer(uint32_t playerId) {
-		if (playerInteractions.find(playerId) == playerInteractions.end()) {
+	bool isInteractingWithPlayer(uint32_t playerId) const {
+		if (!playerInteractions.contains(playerId)) {
 			return false;
 		}
 		return true;
 	}
 
 	bool isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
-		auto it = playerInteractions.find(playerId);
+		const auto &it = playerInteractions.find(playerId);
 		if (it == playerInteractions.end()) {
 			return false;
 		}

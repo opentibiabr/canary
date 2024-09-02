@@ -928,11 +928,6 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 		return;
 	}
 
-	// Modules system
-	if (player && recvbyte != 0xD3) {
-		g_modules().executeOnRecvbyte(player->getID(), msg, recvbyte);
-	}
-
 	parsePacketFromDispatcher(msg, recvbyte);
 }
 
@@ -1369,9 +1364,12 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			// case 0xDF, 0xE0, 0xE1, 0xFB, 0xFC, 0xFD, 0xFE Premium Shop.
 
 		default:
-			std::string hexString = fmt::format("0x{:02x}", recvbyte);
-			g_logger().debug("Player '{}' sent unknown packet header: hex[{}], decimal[{}]", player->getName(), asUpperCaseString(hexString), recvbyte);
-			break;
+			// Modules system
+			if (!g_modules().executeOnRecvbyte(player->getID(), msg, recvbyte)) {
+				std::string hexString = fmt::format("0x{:02x}", recvbyte);
+				g_logger().debug("Player '{}' sent unknown packet header: hex[{}], decimal[{}]", player->getName(), asUpperCaseString(hexString), recvbyte);
+				break;
+			}
 	}
 }
 

@@ -77,10 +77,10 @@ Module* Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
 	return nullptr;
 }
 
-void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const {
-	std::shared_ptr<Player> player = g_game().getPlayerByID(playerId);
+bool Modules::executeOnRecvbyte(const uint32_t playerId, NetworkMessage &msg, const uint8_t byte) const {
+	const auto &player = g_game().getPlayerByID(playerId);
 	if (!player) {
-		return;
+		return false;
 	}
 
 	for (auto &it : recvbyteList) {
@@ -88,9 +88,11 @@ void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t 
 		if (module.getEventType() == MODULE_TYPE_RECVBYTE && module.getRecvbyte() == byte && player->canRunModule(module.getRecvbyte())) {
 			player->setModuleDelay(module.getRecvbyte(), module.getDelay());
 			module.executeOnRecvbyte(player, msg);
-			return;
+			return true;
 		}
 	}
+
+	return false;
 }
 
 Module::Module(LuaScriptInterface* interface) :

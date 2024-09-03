@@ -1397,7 +1397,7 @@ ItemAction = {
 	[56421] = {
 		itemId = 1949,
 		itemPos = {
-			{ x = 32242, y = 32611, z = 11 }
+			{ x = 32242, y = 32611, z = 11 },
 		},
 	},
 	-- The Ice Islands Quest, Nibelor 1: Breaking the Ice

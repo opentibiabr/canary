@@ -1,6 +1,6 @@
 local teleportDestinations = {
-	[4541] = {position = Position(33017, 32419, 11), storageKey = Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission74},
-	[4542] = {position = Position(33018, 32425, 11), storageKey = Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission75}
+	[4541] = { position = Position(33017, 32419, 11), storageKey = Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission74 },
+	[4542] = { position = Position(33018, 32425, 11), storageKey = Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission75 },
 }
 
 local sacrificeTeleport = MoveEvent()

@@ -2,7 +2,7 @@ local summon = { "Spider", "Larva", "Scarab", "Tarantula" }
 
 local spikeTasksNests = Action()
 function spikeTasksNests.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({ -1, 8 }, player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN)) then
+	if table.contains({ -1, 8 }, player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Nest_Main)) then
 		return false
 	end
 
@@ -10,8 +10,8 @@ function spikeTasksNests.onUse(player, item, fromPosition, target, toPosition, i
 		return false
 	end
 
-	local sum = player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN) + 1
-	player:setStorageValue(SPIKE_MIDDLE_NEST_MAIN, sum)
+	local sum = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Nest_Main) + 1
+	player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Nest_Main, sum)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have destroyed a monster nest.")
 
 	if sum == 8 then

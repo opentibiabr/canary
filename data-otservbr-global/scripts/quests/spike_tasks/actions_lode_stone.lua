@@ -10,7 +10,7 @@ local area = { --area where to teleport
 
 local spikeTasksStone = Action()
 function spikeTasksStone.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(SPIKE_MIDDLE_CHARGE_MAIN) ~= 0 then
+	if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main) ~= 0 then
 		return false
 	end
 
@@ -21,7 +21,7 @@ function spikeTasksStone.onUse(player, item, fromPosition, target, toPosition, i
 	target:transform(19379)
 	target:decay()
 	if item:getId() == 19218 then
-		player:setStorageValue(SPIKE_MIDDLE_CHARGE_MAIN, 1)
+		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main, 1)
 		player:getPosition():sendMagicEffect(12)
 		player:say("Your tinkering caused some kind of magnetic storm that caused you to get disorientated.", TALKTYPE_MONSTER_SAY)
 		item:remove()

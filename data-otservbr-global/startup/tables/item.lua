@@ -208,6 +208,47 @@ ItemAction = {
 		itemId = 1979,
 		itemPos = { { x = 33217, y = 31661, z = 7 } },
 	},
+	-- Spike Tasks
+	[4226] = {
+		itemId = 19387,
+		itemPos = { { x = 32624, y = 31853, z = 11 } },
+	},
+	[4227] = {
+		itemId = 19387,
+		itemPos = { { x = 32243, y = 32596, z = 8 } },
+	},
+	[4228] = {
+		itemId = 19387,
+		itemPos = { { x = 32234, y = 32604, z = 8 } },
+	},
+	[4230] = {
+		itemId = 19387,
+		itemPos = { { x = 32234, y = 32604, z = 9 } },
+	},
+	[4232] = {
+		itemId = 19387,
+		itemPos = { { x = 32234, y = 32604, z = 10 } },
+	},
+	[4234] = {
+		itemId = 19387,
+		itemPos = { { x = 32234, y = 32604, z = 11 } },
+	},
+	[4236] = {
+		itemId = 19387,
+		itemPos = { { x = 32234, y = 32604, z = 12 } },
+	},
+	[4238] = {
+		itemId = 19387,
+		itemPos = { { x = 32234, y = 32604, z = 13 } },
+	},
+	[4240] = {
+		itemId = 19387,
+		itemPos = { { x = 32234, y = 32604, z = 14 } },
+	},
+	[4242] = {
+		itemId = 19387,
+		itemPos = { { x = 32234, y = 32604, z = 15 } },
+	},
 	-- The Gravedigger of Drefia Quest
 	[4530] = {
 		itemId = 1949,
@@ -1350,6 +1391,13 @@ ItemAction = {
 		itemId = 1949,
 		itemPos = {
 			{ x = 32788, y = 32227, z = 14 },
+		},
+	},
+	-- Spike Tasks
+	[56421] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32242, y = 32611, z = 11 }
 		},
 	},
 	-- The Ice Islands Quest, Nibelor 1: Breaking the Ice

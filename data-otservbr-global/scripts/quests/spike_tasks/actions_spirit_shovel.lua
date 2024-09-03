@@ -8,7 +8,7 @@ local chance = {
 
 local spikeTasksShovel = Action()
 function spikeTasksShovel.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({ -1, 4 }, player:getStorageValue(SPIKE_UPPER_MOUND_MAIN)) then
+	if table.contains({ -1, 4 }, player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Mound_Main)) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 
@@ -26,8 +26,8 @@ function spikeTasksShovel.onUse(player, item, fromPosition, target, toPosition, 
 				Game.createMonster(result[3], toPosition)
 			end
 			if i == 1 then
-				local sum = player:getStorageValue(SPIKE_UPPER_MOUND_MAIN) + 1
-				player:setStorageValue(SPIKE_UPPER_MOUND_MAIN, sum)
+				local sum = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Mound_Main) + 1
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Mound_Main, sum)
 				if sum == 4 then
 					item:remove()
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Report the task to Gnomilly.")

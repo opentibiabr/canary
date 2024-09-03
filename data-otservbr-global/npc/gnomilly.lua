@@ -94,19 +94,19 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addFamePoint()
 				player:addExperience(1000, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Pacifier_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Pacifier_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Pacifier_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Take the resonance charger and use it on seven of the pacifiers in the cave.", npc, creature)
 			end
 		elseif MsgContains(message, "release") then
 			if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Mound_Main) == -1 then
 				npcHandler:say("You have not started that mission.", npc, creature)
-			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Mound_Main) == 4 then
+			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Mound_Main) == 1 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(1000, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Mound_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Mound_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Mound_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Take the spirit shovel use it on four graves in the cave system.", npc, creature)
 			end
@@ -118,7 +118,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addFamePoint()
 				player:addExperience(1000, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Track_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Track_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Track_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Take the tracking device in the caves and locate the residual spirit energy.", npc, creature)
 			end
@@ -130,7 +130,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addFamePoint()
 				player:addExperience(1000, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Kill_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Kill_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Upper_Kill_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Just go out to the caves and kill at least seven demon skeletons.", npc, creature)
 			end
@@ -275,6 +275,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, "Hi!")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

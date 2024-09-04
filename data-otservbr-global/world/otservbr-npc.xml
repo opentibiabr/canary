@@ -762,11 +762,17 @@
 	<npc centerx="32363" centery="32210" centerz="6" radius="1">
 		<npc name="Todd" x="0" y="0" z="6" spawntime="60" />
 	</npc>
+	<npc centerx="32380" centery="32223" centerz="6" radius="1">
+		<npc name="Sundara" x="0" y="0" z="6" spawntime="60" />
+	</npc>
 	<npc centerx="32425" centery="32223" centerz="6" radius="1">
 		<npc name="Tim, The Guard" x="0" y="0" z="6" spawntime="60" />
 	</npc>
-	<npc centerx="32343" centery="32245" centerz="6" radius="1">
-		<npc name="Galuna" x="0" y="0" z="6" spawntime="60" />
+	<npc centerx="32358" centery="32225" centerz="6" radius="1">
+		<npc name="Seymour" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="32359" centery="32234" centerz="6" radius="1">
+		<npc name="Grizzly Adams" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="32289" centery="32252" centerz="6" radius="1">
 		<npc name="Robin" x="0" y="0" z="6" spawntime="60" />
@@ -1722,7 +1728,7 @@
 	<npc centerx="32645" centery="32213" centerz="7" radius="2">
 		<npc name="H.L." x="0" y="-1" z="7" spawntime="60" />
 	</npc>
-	<npc centerx="32368" centery="32214" centerz="7" radius="1">
+	<npc centerx="32365" centery="32214" centerz="7" radius="1">
 		<npc name="Aruda" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32329" centery="32216" centerz="7" radius="1">
@@ -1746,6 +1752,9 @@
 	<npc centerx="32398" centery="32222" centerz="7" radius="1">
 		<npc name="Xodet" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="32379" centery="32224" centerz="7" radius="1">
+		<npc name="Sundara" x="0" y="0" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="32066" centery="32225" centerz="7" radius="1">
 		<npc name="Lily" x="0" y="0" z="7" spawntime="60" />
 	</npc>
@@ -1764,8 +1773,14 @@
 	<npc centerx="32401" centery="32232" centerz="7" radius="1">
 		<npc name="Pig" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="32359" centery="32234" centerz="7" radius="1">
+		<npc name="The Lootmonger" x="0" y="0" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="32342" centery="32235" centerz="7" radius="1">
-		<npc name="Elane" x="0" y="0" z="7" spawntime="60" />
+		<npc name="Archery" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32351" centery="32235" centerz="7" radius="1">
+		<npc name="Yasir" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="33485" centery="32236" centerz="7" radius="1">
 		<npc name="Maelyrra" x="0" y="0" z="7" spawntime="60" />
@@ -1778,6 +1793,12 @@
 	</npc>
 	<npc centerx="32368" centery="32240" centerz="7" radius="1">
 		<npc name="Quentin" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32351" centery="32241" centerz="7" radius="1">
+		<npc name="Richard" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32342" centery="32242" centerz="7" radius="1">
+		<npc name="Sundara" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="33450" centery="32246" centerz="7" radius="1">
 		<npc name="Gerimor" x="0" y="0" z="7" spawntime="60" />

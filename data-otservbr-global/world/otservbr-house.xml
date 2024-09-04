@@ -275,16 +275,13 @@
 	<house name="Harbour Place 4" houseid="2944" entryx="32332" entryy="32257" entryz="7" rent="80000" townid="8" size="18" clientid="0" beds="5" />
 	<house name="Lower Swamp Lane 1" houseid="2945" entryx="32356" entryy="32262" entryz="7" rent="400000" townid="8" size="80" clientid="0" beds="4" />
 	<house name="Lower Swamp Lane 3" houseid="2946" entryx="32368" entryy="32262" entryz="7" rent="400000" townid="8" size="80" clientid="0" beds="4" />
-	<house name="Main Street 9, 1st floor (Shop)" houseid="2947" entryx="32377" entryy="32224" entryz="7" rent="200000" townid="8" size="30" clientid="0" beds="1" />
-	<house name="Main Street 9a, 2nd floor (Shop)" houseid="2948" entryx="32377" entryy="32222" entryz="6" rent="100000" townid="8" size="15" clientid="0" beds="1" />
-	<house name="Main Street 9b, 2nd floor (Shop)" houseid="2949" entryx="32377" entryy="32224" entryz="6" rent="150000" townid="8" size="27" clientid="0" beds="1" />
 	<house name="Mill Avenue 1 (Shop)" houseid="2950" entryx="32398" entryy="32181" entryz="7" rent="200000" townid="8" size="28" clientid="0" beds="1" />
 	<house name="Mill Avenue 2 (Shop)" houseid="2951" entryx="32404" entryy="32181" entryz="7" rent="200000" townid="8" size="47" clientid="0" beds="2" />
 	<house name="Mill Avenue 3" houseid="2952" entryx="32410" entryy="32184" entryz="7" rent="100000" townid="8" size="32" clientid="0" beds="2" />
 	<house name="Mill Avenue 4" houseid="2953" entryx="32413" entryy="32189" entryz="6" rent="100000" townid="8" size="33" clientid="0" beds="2" />
 	<house name="Mill Avenue 5" houseid="2954" entryx="32422" entryy="32178" entryz="7" rent="300000" townid="8" size="69" clientid="0" beds="4" />
 	<house name="Open-Air Theatre" houseid="2955" entryx="32262" entryy="32238" entryz="7" rent="150000" townid="8" size="81" clientid="0" beds="1" />
-	<house name="Smuggler's Den" houseid="2956" entryx="32419" entryy="32262" entryz="9" rent="400000" townid="8" size="227" clientid="0" beds="7" />
+	<house name="Smuggler's Den" houseid="2956" entryx="32419" entryy="32262" entryz="9" rent="400000" townid="8" size="226" clientid="0" beds="7" />
 	<house name="Sorcerer's Avenue 1a" houseid="2957" entryx="32300" entryy="32254" entryz="7" rent="100000" townid="8" size="24" clientid="0" beds="2" />
 	<house name="Sorcerer's Avenue 5 (Shop)" houseid="2958" entryx="32284" entryy="32256" entryz="7" rent="150000" townid="8" size="54" clientid="0" beds="1" />
 	<house name="Sorcerer's Avenue 1b" houseid="2959" entryx="32300" entryy="32251" entryz="6" rent="80000" townid="8" size="19" clientid="0" beds="2" />
@@ -338,7 +335,6 @@
 	<house name="Fibula Clanhall" houseid="3007" entryx="32178" entryy="32373" entryz="7" rent="250000" guildhall="true" townid="8" size="178" clientid="0" beds="10" />
 	<house name="Dark Mansion" houseid="3008" entryx="32397" entryy="32155" entryz="7" rent="1000000" guildhall="true" townid="8" size="375" clientid="0" beds="17" />
 	<house name="Halls of the Adventurers" houseid="3009" entryx="32396" entryy="32042" entryz="7" rent="250000" guildhall="true" townid="8" size="317" clientid="0" beds="18" />
-	<house name="Mercenary Tower" houseid="3010" entryx="32208" entryy="32437" entryz="7" rent="250000" guildhall="true" townid="8" size="619" clientid="0" beds="26" />
 	<house name="Snake Tower" houseid="3011" entryx="32435" entryy="32359" entryz="7" rent="500000" guildhall="true" townid="8" size="627" clientid="0" beds="21" />
 	<house name="Southern Thais Guildhall" houseid="3012" entryx="32401" entryy="32254" entryz="7" rent="1000000" guildhall="true" townid="8" size="374" clientid="0" beds="16" />
 	<house name="Spiritkeep" houseid="3013" entryx="32265" entryy="32316" entryz="7" rent="500000" guildhall="true" townid="8" size="289" clientid="0" beds="23" />

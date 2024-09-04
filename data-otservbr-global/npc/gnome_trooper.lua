@@ -47,7 +47,7 @@ npcType.onThink = function(npc, interval)
 end
 
 if not DELIVERED_PARCELS then
-    DELIVERED_PARCELS = {}
+	DELIVERED_PARCELS = {}
 end
 
 local response = {
@@ -58,51 +58,51 @@ local response = {
 }
 
 local function greetCallback(npc, creature)
-    local player = Player(creature)
-    local playerId = player:getId()
+	local player = Player(creature)
+	local playerId = player:getId()
 
-    -- Inicializa a tabela se ela for nil
-    if not DELIVERED_PARCELS[player:getGuid()] then
-        DELIVERED_PARCELS[player:getGuid()] = {}
-    end
+	-- Inicializa a tabela se ela for nil
+	if not DELIVERED_PARCELS[player:getGuid()] then
+		DELIVERED_PARCELS[player:getGuid()] = {}
+	end
 
-    if table.contains({ -1, 4 }, player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)) then
-        return false
-    end
-    if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
-        return false
-    end
+	if table.contains({ -1, 4 }, player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)) then
+		return false
+	end
+	if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
+		return false
+	end
 
 	npcHandler:setMessage(MESSAGE_GREET, "Do you have something to deliver?")
 
-    return true
+	return true
 end
 
 local function creatureSayCallback(npc, creature, type, message)
-    local player = Player(creature)
-    local status = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)
+	local player = Player(creature)
+	local status = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)
 
-    -- Inicializa a tabela se ela for nil
-    if not DELIVERED_PARCELS[player:getGuid()] then
-        DELIVERED_PARCELS[player:getGuid()] = {}
-    end
+	-- Inicializa a tabela se ela for nil
+	if not DELIVERED_PARCELS[player:getGuid()] then
+		DELIVERED_PARCELS[player:getGuid()] = {}
+	end
 
-    if MsgContains(message, "something") and not table.contains({ -1, 4 }, status) then
-        if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
-            return true
-        end
+	if MsgContains(message, "something") and not table.contains({ -1, 4 }, status) then
+		if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
+			return true
+		end
 
-        if not player:removeItem(19219, 1) then
-            npcHandler:say("But you don't have it...", npc, creature)
-            return npcHandler:removeInteraction(npc, creature)
-        end
+		if not player:removeItem(19219, 1) then
+			npcHandler:say("But you don't have it...", npc, creature)
+			return npcHandler:removeInteraction(npc, creature)
+		end
 
-        npcHandler:say(response[player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)], npc, creature)
-        player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main, status + 1)
-        table.insert(DELIVERED_PARCELS[player:getGuid()], npc:getId())
-        npcHandler:removeInteraction(npc, creature)
-    end
-    return true
+		npcHandler:say(response[player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)], npc, creature)
+		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main, status + 1)
+		table.insert(DELIVERED_PARCELS[player:getGuid()], npc:getId())
+		npcHandler:removeInteraction(npc, creature)
+	end
+	return true
 end
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)

@@ -90,12 +90,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, "charges") then
 			if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main) == -1 then
 				npcHandler:say("You have not started that mission.", npc, creature)
-			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main) == 2 then
+			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main) == 3 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(2000, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.", npc, creature)
 			end
@@ -107,19 +107,19 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addFamePoint()
 				player:addExperience(2000, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Mushroom_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Mushroom_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Mushroom_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Use the fertiliser on four gardener mushroom in the caves.", npc, creature)
 			end
 		elseif MsgContains(message, "nests") then
 			if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Nest_Main) == -1 then
 				npcHandler:say("You have not started that mission.", npc, creature)
-			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Nest_Main) == 8 then
+			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Nest_Main) == 5 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(2000, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Nest_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Nest_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Nest_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Step into the transformer and destroy eight monster nests.", npc, creature)
 			end
@@ -131,7 +131,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addFamePoint()
 				player:addExperience(2000, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Kill_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Kill_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Kill_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Just go out to the caves and kill at least seven crystalcrushers.", npc, creature)
 			end
@@ -274,6 +274,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, "Hi!")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

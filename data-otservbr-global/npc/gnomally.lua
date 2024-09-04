@@ -125,9 +125,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		topic[playerId] = message
 	elseif MsgContains(message, "relations") then
 		local player = Player(creature)
-		if player:getStorageValue(Storage.BigfootBurden.QuestLine) >= 25 then
+		if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine) >= 25 then
 			npcHandler:say("Our relations improve with every mission you undertake on our behalf. Another way to improve your relations with us gnomes is to trade in minor crystal tokens. ...", npc, creature)
-			npcHandler:say("Your renown amongst us gnomes is currently {" .. math.max(0, player:getStorageValue(Storage.BigfootBurden.Rank)) .. "}. Do you want to improve your standing by sacrificing tokens? One token will raise your renown by 5 points. ", npc, creature)
+			npcHandler:say("Your renown amongst us gnomes is currently {" .. math.max(0, player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Rank)) .. "}. Do you want to improve your standing by sacrificing tokens? One token will raise your renown by 5 points. ", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		else
 			npcHandler:say("You are not even a recruit of the Bigfoots. Sorry I can't help you.", npc, creature)
@@ -174,9 +174,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			local player = Player(creature)
 			if player:removeItem(16128, renown[playerId]) then
-				player:setStorageValue(Storage.BigfootBurden.Rank, math.max(0, player:getStorageValue(Storage.BigfootBurden.Rank)) + renown[playerId] * 5)
+				player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.Rank, math.max(0, player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Rank)) + renown[playerId] * 5)
 				player:checkGnomeRank()
-				npcHandler:say("As you wish! Your new renown is {" .. player:getStorageValue(Storage.BigfootBurden.Rank) .. "}.", npc, creature)
+				npcHandler:say("As you wish! Your new renown is {" .. player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Rank) .. "}.", npc, creature)
 			else
 				npcHandler:say("You don't have these many tokens.", npc, creature)
 			end

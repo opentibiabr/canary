@@ -8,8 +8,8 @@ function shortcut.onStepIn(creature, item, toPosition, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.LiquidBlackQuest.Visitor) >= 4 then
-		player:setStorageValue(Storage.LiquidBlackQuest.Visitor, 5)
+	if player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor) >= 4 then
+		player:setStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor, 5)
 		player:teleportTo(enterPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	else

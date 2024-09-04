@@ -6,7 +6,7 @@ function ladder.onStepIn(creature, item, toPosition, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.LiquidBlackQuest.Visitor) >= 4 then
+	if player:getStorageValue(Storage.Quest.U9_4.LiquidBlackQuest.Visitor) >= 4 then
 		player:getPosition():sendMagicEffect(CONST_ME_WATERSPLASH)
 	else
 		player:teleportTo(fromPosition, true)

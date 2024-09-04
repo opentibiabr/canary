@@ -4,8 +4,8 @@ function bigfootPig.onUse(player, item, fromPosition, target, toPosition, isHotk
 		return false
 	end
 
-	local mushroomCount = player:getStorageValue(Storage.BigfootBurden.MushroomCount)
-	if player:getStorageValue(Storage.BigfootBurden.MissionMushroomDigger) ~= 1 then
+	local mushroomCount = player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.MushroomCount)
+	if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.MissionMushroomDigger) ~= 1 then
 		return false
 	end
 
@@ -14,7 +14,7 @@ function bigfootPig.onUse(player, item, fromPosition, target, toPosition, isHotk
 		return true
 	end
 
-	player:setStorageValue(Storage.BigfootBurden.MushroomCount, mushroomCount + 1)
+	player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.MushroomCount, mushroomCount + 1)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The little pig happily eats the truffles.")
 	target:transform(15701)
 	toPosition:sendMagicEffect(CONST_ME_GROUNDSHAKER)

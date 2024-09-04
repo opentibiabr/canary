@@ -773,23 +773,21 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 				addEvent(revertItem, 2 * 60 * 1000, { x = 33277, y = 31754, z = 7 }, 2066, 2071)
 			end
 		end
-	else
-		return false
-	end
-	if (target ~= nil) and target:isItem() and (target:getId() == 20135) then
-		--Lower Roshamuul
-		if math.random(100) > 50 then
+	elseif target.itemid == 20135 then
+		local chance = math.random(100)
+		if chance > 50 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Crushing the stone produces some fine gravel.")
 			target:transform(20133)
-			target:decay()
 		else
 			Game.createMonster("Frazzlemaw", toPosition)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Crushing the stone yields nothing but slightly finer, yet still unusable rubber.")
 			target:transform(20134)
-			target:decay()
 		end
-		return true
+		target:decay()
+	else
+		return false
 	end
+
 	return true
 end
 

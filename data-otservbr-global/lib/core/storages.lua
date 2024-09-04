@@ -2429,7 +2429,14 @@ Storage = {
 		},
 		U10_30 = { -- update 10.30 - Reserved Storages 44401 - 44500
 			DreamWardenOutfits = {},
-			Roshamuul = {},
+			RoshamuulQuest = {
+				Constants = {
+					Roshamuul_Mortar_Thrown = 44401,
+					Roshamuul_Killed_Frazzlemaws = 44402,
+					Roshamuul_Killed_Silencers = 44403,
+					Roshamuul_Gold_Record = 44404,
+				},
+			},
 		},
 		U10_37 = { -- update 10.37 - Reserved Storages 44501 - 44550
 			TinderBox = {},

@@ -57,14 +57,10 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword(
-	{ "pack imbuement" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Do you want to buy for Skill increase {Bash}, {Blockade}, {Chop}, {Epiphany}, {Precision}, {Slash}. Additional Attributes {Featherweight}, {Strike}, {Swiftness}, {Vampirism}, {Vibrancy}, {Void}. Elemental Damage {Electrify}, {Frost}, {Reap}, {Scorch}, {Venom}. Elemental Protection {Cloud Fabric}, {Demon Presence}, {Dragon Hide}, {Lich Shroud}, {Quara Scale}, {Snake Skin}?",
-	}
-)
+keywordHandler:addKeyword({ "pack imbuement" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Do you want to buy for Skill increase {Bash}, {Blockade}, {Chop}, {Epiphany}, {Precision}, {Slash}. Additional Attributes {Featherweight}, {Strike}, {Swiftness}, {Vampirism}, {Vibrancy}, {Void}. Elemental Damage {Electrify}, {Frost}, {Reap}, {Scorch}, {Venom}. Elemental Protection {Cloud Fabric}, {Demon Presence}, {Dragon Hide}, {Lich Shroud}, {Quara Scale}, {Snake Skin}?",
+})
 
 -- Skill Pack
 

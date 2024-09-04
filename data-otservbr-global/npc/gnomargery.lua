@@ -95,9 +95,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main) == 4 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
-				player:addExperience(1589, true)
+				player:addExperience(3500, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Deliver the four parcels to some of our far away outposts in the caverns.", npc, creature)
 			end
@@ -107,9 +107,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Undercover_Main) == 3 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
-				player:addExperience(1589, true)
+				player:addExperience(3500, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Undercover_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Undercover_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Undercover_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Get three reports from our undercover agents posing as monsters in the caves around us.", npc, creature)
 			end
@@ -119,9 +119,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Lava_Main) == 1 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
-				player:addExperience(1589, true)
+				player:addExperience(3500, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Lava_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Lava_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Lava_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Use the gnomish temperature measurement device to locate the hottest spot at the lava pools in the cave.", npc, creature)
 			end
@@ -131,9 +131,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Kill_Main) == 7 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
-				player:addExperience(1589, true)
+				player:addExperience(3500, true)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Kill_Main, -1)
-				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Kill_Daily, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Kill_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Just go out to the caves and kill at least seven drillworms.", npc, creature)
 			end
@@ -272,6 +272,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, "Hi!")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

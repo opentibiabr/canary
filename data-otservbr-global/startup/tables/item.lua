@@ -261,13 +261,25 @@ ItemAction = {
 		itemId = 19387,
 		itemPos = { { x = 32234, y = 32604, z = 13 } },
 	},
+	[4239] = {
+		itemId = 19387,
+		itemPos = { { x = 32244, y = 32620, z = 13 } },
+	},
 	[4240] = {
 		itemId = 19387,
 		itemPos = { { x = 32234, y = 32604, z = 14 } },
 	},
+	[4241] = {
+		itemId = 19387,
+		itemPos = { { x = 32244, y = 32587, z = 14 } },
+	},
 	[4242] = {
 		itemId = 19387,
 		itemPos = { { x = 32234, y = 32604, z = 15 } },
+	},
+	[4243] = {
+		itemId = 19387,
+		itemPos = { { x = 32223, y = 32606, z = 15 } },
 	},
 	-- The Gravedigger of Drefia Quest
 	[4530] = {

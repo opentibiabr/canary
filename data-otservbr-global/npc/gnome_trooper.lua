@@ -26,16 +26,6 @@ npcConfig.flags = {
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
-local response = {
-	[0] = "It's a pipe! What can be more relaxing for a gnome than to smoke his pipe after a day of duty at the front. At least it's a chance to do something really dangerous after all!",
-	[1] = "Ah, a letter from home! Oh - I had no idea she felt that way! This is most interesting!",
-	[2] = "It's a model of the gnomebase Alpha! For self-assembly! With toothpicks...! Yeeaah...! I guess.",
-	[3] = "A medal of honour! At last they saw my true worth!",
-}
-
-if not DELIVERED_PARCELS then
-	DELIVERED_PARCELS = {}
-end
 npcType.onAppear = function(npc, creature)
 	npcHandler:onAppear(npc, creature)
 end
@@ -56,43 +46,63 @@ npcType.onThink = function(npc, interval)
 	npcHandler:onThink(npc, interval)
 end
 
-local function greetCallback(npc, creature)
-	local player = Player(creature)
-	local playerId = player:getId()
+if not DELIVERED_PARCELS then
+    DELIVERED_PARCELS = {}
+end
 
-	if table.contains({ -1, 4 }, player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)) then
-		return false
-	end
-	if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
-		return false
-	end
-	return true
+local response = {
+	[0] = "It's a pipe! What can be more relaxing for a gnome than to smoke his pipe after a day of duty at the front. At least it's a chance to do something really dangerous after all!",
+	[1] = "Ah, a letter from home! Oh - I had no idea she felt that way! This is most interesting!",
+	[2] = "It's a model of the gnomebase Alpha! For self-assembly! With toothpicks...! Yeeaah...! I guess.",
+	[3] = "A medal of honour! At last they saw my true worth!",
+}
+
+local function greetCallback(npc, creature)
+    local player = Player(creature)
+    local playerId = player:getId()
+
+    -- Inicializa a tabela se ela for nil
+    if not DELIVERED_PARCELS[player:getGuid()] then
+        DELIVERED_PARCELS[player:getGuid()] = {}
+    end
+
+    if table.contains({ -1, 4 }, player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)) then
+        return false
+    end
+    if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
+        return false
+    end
+
+	npcHandler:setMessage(MESSAGE_GREET, "Do you have something to deliver?")
+
+    return true
 end
 
 local function creatureSayCallback(npc, creature, type, message)
-	local player = Player(creature)
-	local status = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)
+    local player = Player(creature)
+    local status = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)
 
-	if not DELIVERED_PARCELS[player:getGuid()] then
-		DELIVERED_PARCELS[player:getGuid()] = {}
-	end
+    -- Inicializa a tabela se ela for nil
+    if not DELIVERED_PARCELS[player:getGuid()] then
+        DELIVERED_PARCELS[player:getGuid()] = {}
+    end
 
-	if MsgContains(message, "something") and not table.contains({ -1, 4 }, status) then
-		if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
-			return true
-		end
+    if MsgContains(message, "something") and not table.contains({ -1, 4 }, status) then
+        if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
+            return true
+        end
 
-		if not player:removeItem(19219, 1) then
-			npcHandler:say("But you don't have it...", npc, creature)
-			return npcHandler:removeInteraction(npc, creature)
-		end
+        if not player:removeItem(19219, 1) then
+            npcHandler:say("But you don't have it...", npc, creature)
+            return npcHandler:removeInteraction(npc, creature)
+        end
 
-		npcHandler:say(response[player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)], npc, creature)
-		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main, status + 1)
-		table.insert(DELIVERED_PARCELS[player:getGuid()], npc:getId())
-		npcHandler:removeInteraction(npc, creature)
-	end
-	return true
+        npcHandler:say(response[player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)], npc, creature)
+        player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main, status + 1)
+        table.insert(DELIVERED_PARCELS[player:getGuid()], npc:getId())
+        npcHandler:removeInteraction(npc, creature)
+    end
+    return true
 end
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)

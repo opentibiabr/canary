@@ -6340,98 +6340,98 @@ GameStore.Categories = {
 		icons = { "Category_ExtraServices.png" },
 		name = "VIP",
 		rookgaard = true,
-		subclasses = { "Equipments"},
+		subclasses = { "Equipments" },
 	},
-	  -- Items
+	-- Items
 	{
-   icons = { "Chaos_Critical_Dicebp.png" }, -- Foto items em www/store
-   parent = "VIP",   
-   name = "Equipments",
-   rookgaard = true,
-   offers = {	
-        {
-          icons = { "Gilded_Eldritch_Rod.png" }, -- Foto de item 
-          name = "Eldritch Rod", -- nombre item
-          price = 150, -- preco
-          itemtype = 36185, -- item id
-          count = 1, -- quantidade
-          description = "b> xxxxxx  /b>", -- Descripcion
-          type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,       
-        }, 
-    	{
-          icons = { "Gilded_Eldritch_Bow.png" }, -- Foto de item 
-          name = "Eldritch Bow", -- nombre item
-          price = 150, -- preco
-          itemtype = 36185, -- item id
-          count = 1, -- quantidade
-          description = "b> xxxxxx  /b>", -- Descripcion
-          type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,       
-        },
-    	{
-          icons = { "Gilded_Eldritch_Warmace.png" }, -- Foto de item 
-          name = "Eldritch Warmace", -- nombre item
-          price = 150, -- preco
-          itemtype = 36185, -- item id
-          count = 1, -- quantidade
-          description = "b> xxxxxx  /b>", -- Descripcion
-          type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,       
-        },
-    	{
-          icons = { "Gilded_Eldritch_Greataxe.png" }, -- Foto de item 
-          name = "Eldritch Greataxe", -- nombre item
-          price = 150, -- preco
-          itemtype = 36185, -- item id
-          count = 1, -- quantidade
-          description = "b> xxxxxx  /b>", -- Descripcion
-          type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,       
-        },
-    	{
-          icons = { "Gilded_Eldritch_Claymore.png" }, -- Foto de item 
-          name = "Eldritch Claymore", -- nombre item
-          price = 150, -- preco
-          itemtype = 36185, -- item id
-          count = 1, -- quantidade
-          description = "b> xxxxxx  /b>", -- Descripcion
-          type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,       
-        },
-    	{
-          icons = { "Eldritch_Quiver.png" }, -- Foto de item 
-          name = "Eldritch Quiver", -- nombre item
-          price = 150, -- preco
-          itemtype = 36185, -- item id
-          count = 1, -- quantidade
-          description = "b> xxxxxx  /b>", -- Descripcion
-          type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,       
-        },
-    	{
-          icons = { "Eldritch_Tome.png" }, -- Foto de item 
-          name = "Eldritch Tome", -- nombre item
-          price = 150, -- preco
-          itemtype = 36185, -- item id
-          count = 1, -- quantidade
-          description = "b> xxxxxx  /b>", -- Descripcion
-          type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,       
-        },
-    	{
-          icons = { "Eldritch_Rod.png" }, -- Foto de item 
-          name = "Eldritch Rod", -- nombre item
-          price = 150, -- preco
-          itemtype = 36185, -- item id
-          count = 1, -- quantidade
-          description = "b> xxxxxx  /b>", -- Descripcion
-          type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,       
-        },
-    	{
-          icons = { "Eldritch_Bow.png" }, -- Foto de item 
-          name = "Eldritch Bow", -- nombre item
-          price = 150, -- preco
-          itemtype = 36185, -- item id
-          count = 1, -- quantidade
-          description = "b> xxxxxx  /b>", -- Descripcion
-          type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,       
-        },
-	}, 
- },
+		icons = { "Chaos_Critical_Dicebp.png" }, -- Foto items em www/store
+		parent = "VIP",
+		name = "Equipments",
+		rookgaard = true,
+		offers = {
+			{
+				icons = { "Gilded_Eldritch_Rod.png" }, -- Foto de item
+				name = "Eldritch Rod", -- nombre item
+				price = 150, -- preco
+				itemtype = 36185, -- item id
+				count = 1, -- quantidade
+				description = "b> xxxxxx  /b>", -- Descripcion
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "Gilded_Eldritch_Bow.png" }, -- Foto de item
+				name = "Eldritch Bow", -- nombre item
+				price = 150, -- preco
+				itemtype = 36185, -- item id
+				count = 1, -- quantidade
+				description = "b> xxxxxx  /b>", -- Descripcion
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "Gilded_Eldritch_Warmace.png" }, -- Foto de item
+				name = "Eldritch Warmace", -- nombre item
+				price = 150, -- preco
+				itemtype = 36185, -- item id
+				count = 1, -- quantidade
+				description = "b> xxxxxx  /b>", -- Descripcion
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "Gilded_Eldritch_Greataxe.png" }, -- Foto de item
+				name = "Eldritch Greataxe", -- nombre item
+				price = 150, -- preco
+				itemtype = 36185, -- item id
+				count = 1, -- quantidade
+				description = "b> xxxxxx  /b>", -- Descripcion
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "Gilded_Eldritch_Claymore.png" }, -- Foto de item
+				name = "Eldritch Claymore", -- nombre item
+				price = 150, -- preco
+				itemtype = 36185, -- item id
+				count = 1, -- quantidade
+				description = "b> xxxxxx  /b>", -- Descripcion
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "Eldritch_Quiver.png" }, -- Foto de item
+				name = "Eldritch Quiver", -- nombre item
+				price = 150, -- preco
+				itemtype = 36185, -- item id
+				count = 1, -- quantidade
+				description = "b> xxxxxx  /b>", -- Descripcion
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "Eldritch_Tome.png" }, -- Foto de item
+				name = "Eldritch Tome", -- nombre item
+				price = 150, -- preco
+				itemtype = 36185, -- item id
+				count = 1, -- quantidade
+				description = "b> xxxxxx  /b>", -- Descripcion
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "Eldritch_Rod.png" }, -- Foto de item
+				name = "Eldritch Rod", -- nombre item
+				price = 150, -- preco
+				itemtype = 36185, -- item id
+				count = 1, -- quantidade
+				description = "b> xxxxxx  /b>", -- Descripcion
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "Eldritch_Bow.png" }, -- Foto de item
+				name = "Eldritch Bow", -- nombre item
+				price = 150, -- preco
+				itemtype = 36185, -- item id
+				count = 1, -- quantidade
+				description = "b> xxxxxx  /b>", -- Descripcion
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+		},
+	},
 	-- Tournament
 	{
 		icons = { "Category_Tournament.png" },

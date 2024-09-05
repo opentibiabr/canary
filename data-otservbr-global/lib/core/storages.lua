@@ -2439,7 +2439,16 @@ Storage = {
 			},
 		},
 		U10_37 = { -- update 10.37 - Reserved Storages 44501 - 44550
-			TinderBox = {},
+			TinderBoxQuestChyllfroest = {
+				Reward = 44501,
+				Obedience = 44502,
+				Items = {
+					item1 = 44503,
+					item2 = 44504,
+					item3 = 44505,
+					item4 = 44506,
+				},
+			},
 			ChyllfroestMiniWorldChange = {},
 		},
 		U10_50 = { -- update 10.50 - Reserved Storages 44551 - 44750

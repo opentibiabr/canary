@@ -3,7 +3,9 @@ local config = {
 	target = 20356,
 	reward = 20355,
 }
+
 local tinderBox = Action()
+
 function tinderBox.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == config.item and target.itemid == config.target then
 		item:remove(1)

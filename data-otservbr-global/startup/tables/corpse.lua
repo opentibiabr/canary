@@ -8,7 +8,6 @@ CorpseAction = {
 		itemId = false,
 		itemPos = { { x = xxxxx, y = xxxxx, z = xx } },
 	},
-
 	-- Others actions
 	-- Threatened dreams quest
 	[20002] = {
@@ -22,6 +21,11 @@ CorpseUnique = {
 	[3112] = {
 		itemId = 4024,
 		itemPos = { x = 32258, y = 31098, z = 10 },
+	},
+	-- Tinder Box Quest - Chyllfroest
+	[3263] = {
+		itemId = 4285,
+		itemPos = { x = 32085, y = 31025, z = 1 },
 	},
 	-- Dark trails (Quandon corpse)
 	-- Path: data\scripts\actions\quests\dark_trails\corpse.lua

@@ -2442,12 +2442,6 @@ Storage = {
 			TinderBoxQuestChyllfroest = {
 				Reward = 44501,
 				Obedience = 44502,
-				Items = {
-					item1 = 44503,
-					item2 = 44504,
-					item3 = 44505,
-					item4 = 44506,
-				},
 			},
 			ChyllfroestMiniWorldChange = {},
 		},

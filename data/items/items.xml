@@ -2,30 +2,30 @@
 <items>
 	<!-- Liquids -->
     <!-- Fluid type 0 is same as water (id="1") -->
-    <item id="1" name="water"/>
-    <item id="2" name="wine"/>
-    <item id="3" name="beer"/>
+    <item id="1" name="agua"/>
+    <item id="2" name="vinho"/>
+    <item id="3" name="cerveja"/>
     <item id="4" name="mud"/>
-    <item id="5" name="blood"/>
+    <item id="5" name="sangue"/>
     <item id="6" name="slime"/>
     <item id="7" name="oil"/>
-    <item id="8" name="urine"/>
-    <item id="9" name="milk"/>
+    <item id="8" name="urina"/>
+    <item id="9" name="leite"/>
     <item id="10" name="manafluid"/>
     <item id="11" name="lifefluid"/>
-    <item id="12" name="lemonade"/>
+    <item id="12" name="limonada"/>
     <item id="13" name="rum"/>
-    <item id="14" name="fruit juice"/>
-    <item id="15" name="coconut milk"/>
+    <item id="14" name="suco de frutas"/>
+    <item id="15" name="leite de coco"/>
     <item id="16" name="mead"/>
     <item id="17" name="tea"/>
-    <item id="18" name="ink"/>
+    <item id="18" name="tinta"/>
     <item id="19" name="candyfluid"/>
     <item id="20" name="chocolate"/>
     <!-- 13.40 last fluid is 20, 21+ is a loop from 0 to 20 over and over again -->
 
 	<item id="100" name="void"/>
-	<item id="101" name="earth"/>
+	<item id="101" name="terra"/>
 	<item id="102" article="a" name="white flower">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="weight" value="10"/>

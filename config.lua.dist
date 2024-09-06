@@ -275,7 +275,7 @@ storeInboxMaxLimit = 2000
 enablePlayerPutItemInAmmoSlot = false
 startStreakLevel = 0
 showLootsInBestiary = false
-minTownIdToBankTransfer = 3
+minTownIdToBankTransfer = 4
 enableSupportOutfit = true
 
 -- Teleport summon

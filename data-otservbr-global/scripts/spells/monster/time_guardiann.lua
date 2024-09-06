@@ -9,7 +9,7 @@ local function functionBack(pos, oldPos)
 		return
 	end
 
-	local tile = TIle(position)
+	local tile = Tile(position)
 	if not tile then
 		return
 	end
@@ -70,7 +70,7 @@ function spell.onCastSpell(creature, var)
 	local index = math.random(1, 2)
 	local position = monsters[index].pos
 	if position then
-		local tile = TIle(position)
+		local tile = Tile(position)
 		if not tile then
 			return true
 		end

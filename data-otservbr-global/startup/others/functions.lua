@@ -54,32 +54,32 @@ function loadLuaMapAction(tablename)
 end
 
 function loadLuaMapUnique(tablename)
-    -- It load uniques
-    for index, value in pairs(tablename) do
-        local tile = Tile(value.itemPos)
-        local item
-        -- Checks if the position is valid
-        if tile then
-            -- Checks that you have no items created
-            if not value.itemId == false and tile:getItemCountById(value.itemId) == 0 then
-                logger.error("[loadLuaMapUnique] - Wrong item id {} found", value.itemId)
-                logger.warn("Unique id: {}, position {}", index, tile:getPosition():toString())
-                goto continue
-            end
-            if tile:getItemCountById(value.itemId) < 1 or value.itemId == false then
-                logger.warn("[loadLuaMapUnique] - Wrong item id {} found", value.itemId)
-                logger.warn("Unique id: {}, position {}, item id: wrong", index, tile:getPosition():toString())
-                goto continue
-            end
-            item = tile:getItemById(value.itemId)
-            -- If he found the item, add the unique id
-            if item then
-                item:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, index)
-            end
-        end
+	-- It load uniques
+	for index, value in pairs(tablename) do
+		local tile = Tile(value.itemPos)
+		local item
+		-- Checks if the position is valid
+		if tile then
+			-- Checks that you have no items created
+			if not value.itemId == false and tile:getItemCountById(value.itemId) == 0 then
+				logger.error("[loadLuaMapUnique] - Wrong item id {} found", value.itemId)
+				logger.warn("Unique id: {}, position {}", index, tile:getPosition():toString())
+				goto continue
+			end
+			if tile:getItemCountById(value.itemId) < 1 or value.itemId == false then
+				logger.warn("[loadLuaMapUnique] - Wrong item id {} found", value.itemId)
+				logger.warn("Unique id: {}, position {}, item id: wrong", index, tile:getPosition():toString())
+				goto continue
+			end
+			item = tile:getItemById(value.itemId)
+			-- If he found the item, add the unique id
+			if item then
+				item:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, index)
+			end
+		end
 
-        ::continue::
-    end
+		::continue::
+	end
 end
 
 function loadLuaMapSign(tablename)

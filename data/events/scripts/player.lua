@@ -275,17 +275,14 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		return true
 	end
 
-	-- Bath tube
 	local toTile = Tile(toCylinder:getPosition())
 	if toTile then
 		local topDownItem = toTile:getTopDownItem()
 		if topDownItem then
 			local topDownItemItemId = topDownItem:getId()
-			-- Bath tube
-			if table.contains({ BATHTUB_EMPTY, BATHTUB_FILLED }, topDownItemItemId) then
+			if table.contains({ BATHTUB_EMPTY, BATHTUB_FILLED }, topDownItemItemId) then -- Bath tube
 				return false
-			-- Podium
-			elseif ItemType(topDownItemItemId):isPodium() then
+			elseif ItemType(topDownItemItemId):isPodium() then -- Podium
 				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 				self:getPosition():sendMagicEffect(CONST_ME_POFF)
 				return false
@@ -324,45 +321,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	-- Reward System
-	if toPosition.x == CONTAINER_POSITION then
-		local containerId = toPosition.y - 64
-		local container = self:getContainerById(containerId)
-		if not container then
-			return true
-		end
-
-		-- Do not let the player insert items into either the Reward Container or the Reward Chest
-		local itemId = container:getId()
-		if itemId == ITEM_REWARD_CONTAINER or itemId == ITEM_REWARD_CHEST then
-			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-			return false
-		end
-
-		-- The player also shouldn't be able to insert items into the boss corpse
-		local tileCorpse = Tile(container:getPosition())
-		if tileCorpse then
-			for index, value in ipairs(tileCorpse:getItems() or {}) do
-				if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
-					self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-					return false
-				end
-			end
-		end
-	end
-
-	-- Do not let the player move the boss corpse.
-	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 then
-		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		return false
-	end
-
-	-- Players cannot throw items on reward chest
-	local tileChest = Tile(toPosition)
-	if tileChest and tileChest:getItemById(ITEM_REWARD_CHEST) then
-		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		self:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return false
-	end
+	self:executeRewardEvents(item, toPosition)
 
 	if tile and tile:getItemById(370) then
 		-- Trapdoor

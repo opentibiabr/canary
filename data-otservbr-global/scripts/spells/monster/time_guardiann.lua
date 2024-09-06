@@ -74,12 +74,12 @@ function spell.onCastSpell(creature, var)
 		if not tile then
 			return true
 		end
-	
+
 		local form = tile:getTopCreature()
 		if not form then
 			return true
 		end
-	
+
 		creature:teleportTo(position)
 
 		local diference = form:getHealth() - creature:getHealth()

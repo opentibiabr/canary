@@ -321,13 +321,52 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	-- Reward System
-	self:executeRewardEvents(item, toPosition)
+	if toPosition.x == CONTAINER_POSITION then
+		local containerId = toPosition.y - 64
+		local container = self:getContainerById(containerId)
+		if not container then
+			return true
+		end
 
-	if tile and tile:getItemById(370) then
-		-- Trapdoor
+		-- Do not let the player insert items into either the Reward Container or the Reward Chest
+		local itemId = container:getId()
+		if itemId == ITEM_REWARD_CONTAINER or itemId == ITEM_REWARD_CHEST then
+			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+			return false
+		end
+
+		-- The player also shouldn't be able to insert items into the boss corpse
+		local tileCorpse = Tile(container:getPosition())
+		if tileCorpse then
+			for index, value in ipairs(tileCorpse:getItems() or {}) do
+				if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
+					self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+					return false
+				end
+			end
+		end
+	end
+
+	-- Do not let the player move the boss corpse.
+	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		self:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
+	end
+
+	if tile then
+		-- Players cannot throw items on reward chest
+		if tile:getItemById(ITEM_REWARD_CHEST) then
+			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+			self:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return false
+		end
+
+		-- Trapdoor
+		if tile:getItemById(370) then
+			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+			self:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return false
+		end
 	end
 
 	if not antiPush(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder) then

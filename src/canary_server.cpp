@@ -157,11 +157,10 @@ void CanaryServer::loadThisWorld() {
 		);
 	}
 
-	const auto locationStr = g_configManager().getString(WORLD_LOCATION, __FUNCTION__);
-	const auto location = Worlds::getWorldLocationByKey(locationStr);
+	const auto location = Worlds::getWorldLocationByKey(world->location_str);
 	if (location == LOCATION_NONE) {
 		throw FailedToInitializeCanary(
-			fmt::format("Unknown world location: {}, valid world locations are: Europe, North America, South America and Oceania", locationStr)
+			fmt::format("Unknown world location: {}, valid world locations are: Europe, North America, South America and Oceania", world->location_str)
 		);
 	}
 
@@ -172,7 +171,7 @@ void CanaryServer::loadThisWorld() {
 
 	g_game().worlds()->setCurrentWorld(world);
 
-	logger.debug("World type set as {} and location {}", g_game().getWorldTypeNames().at(world->type), asUpperCaseString(locationStr));
+	logger.debug("World ID: {}, Name: {}, Type: {}, Location: {}, Port {}", world->id, world->name, g_game().getWorldTypeNames().at(world->type), world->location_str, world->port);
 }
 
 void CanaryServer::loadMaps() const {

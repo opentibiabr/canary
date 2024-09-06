@@ -451,10 +451,11 @@ void IOLoginData::createFirstWorld() {
 		const auto &location = g_configManager().getString(WORLD_LOCATION, __FUNCTION__);
 		const auto &ip = g_configManager().getString(IP, __FUNCTION__);
 		const auto &port = g_configManager().getNumber(GAME_PORT, __FUNCTION__);
+		const auto &portStatus = fmt::format("9{}", port);
 
 		std::string query = fmt::format(
-			"INSERT INTO `worlds` (`name`, `type`, `motd`, `location`, `ip`, `port`, `creation`) VALUES ({}, {}, {}, {}, {}, {}, {})",
-			g_database().escapeString(serverName), g_database().escapeString(worldType), g_database().escapeString(worldMotd), g_database().escapeString(location), g_database().escapeString(ip), port, getTimeNow()
+			"INSERT INTO `worlds` (`name`, `type`, `motd`, `location`, `ip`, `port`, `port_status`, `creation`) VALUES ({}, {}, {}, {}, {}, {}, {}, {})",
+			g_database().escapeString(serverName), g_database().escapeString(worldType), g_database().escapeString(worldMotd), g_database().escapeString(location), g_database().escapeString(ip), port, portStatus, getTimeNow()
 		);
 		const auto &insertResult = g_database().executeQuery(query);
 
@@ -477,9 +478,11 @@ std::vector<std::shared_ptr<World>> IOLoginData::loadWorlds() {
 				result->getString("name"),
 				g_game().worlds()->getWorldTypeIdByKey(result->getString("type")),
 				result->getString("motd"),
+				result->getString("location"),
 				g_game().worlds()->getWorldLocationByKey(result->getString("location")),
 				result->getString("ip"),
 				result->getNumber<uint16_t>("port"),
+				result->getNumber<uint32_t>("port_status"),
 				result->getNumber<uint16_t>("creation")
 			));
 		} while (result->next());

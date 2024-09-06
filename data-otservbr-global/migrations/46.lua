@@ -12,6 +12,7 @@ function onUpdateDatabase()
 			`location` enum('Europe','North America','South America','Oceania') NOT NULL,
 			`ip` varchar(15) NOT NULL,
 			`port` int(5) UNSIGNED NOT NULL,
+			`port_status` int(6) UNSIGNED NOT NULL,
 			`creation` int(11) NOT NULL DEFAULT 0,
 			CONSTRAINT `worlds_pk` PRIMARY KEY (`id`),
 			CONSTRAINT `worlds_unique` UNIQUE (`name`)

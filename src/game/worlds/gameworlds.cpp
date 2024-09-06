@@ -23,15 +23,17 @@ void Worlds::reload() {
 	load();
 }
 
-[[nodiscard]] const std::shared_ptr<World> &Worlds::getWorldConfigsById(uint8_t id) const {
-	if (id == 0) {
-		return {};
-	}
+[[nodiscard]] std::shared_ptr<World> Worlds::getWorldConfigsById(uint8_t id) const {
 	auto it = std::find_if(worlds.begin(), worlds.end(), [id](const std::shared_ptr<World> &world) {
 		return world->id == id;
 	});
 
-	return it != worlds.end() ? (*it) : nullptr;
+	if (it != worlds.end()) {
+		return *it;
+	}
+
+	g_logger().error(fmt::format("World with the specified ID: {} not found", id));
+	return nullptr;
 }
 
 void Worlds::setCurrentWorld(const std::shared_ptr<World> &world) {

@@ -9,13 +9,14 @@ CREATE TABLE IF NOT EXISTS `worlds` (
     `location` enum('Europe','North America','South America','Oceania') NOT NULL,
     `ip` varchar(15) NOT NULL,
     `port` int(5) UNSIGNED NOT NULL,
+    `port_status` int(6) UNSIGNED NOT NULL,
     `creation` int(11) NOT NULL DEFAULT 0,
     CONSTRAINT `worlds_pk` PRIMARY KEY (`id`),
     CONSTRAINT `worlds_unique` UNIQUE (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `worlds` (`name`, `type`, `motd`, `location`, `ip`, `port`, `creation`)
-VALUES ('OTServBR-Global', 'pvp', 'Welcome to the OTServBR-Global!', 'South America', '127.0.0.1', 7172, UNIX_TIMESTAMP());
+INSERT INTO `worlds` (`name`, `type`, `motd`, `location`, `ip`, `port`, `port_status`, `creation`)
+VALUES ('OTServBR-Global', 'pvp', 'Welcome to the OTServBR-Global!', 'South America', '127.0.0.1', 7172, 97172, UNIX_TIMESTAMP());
 
 -- Table structure `server_config`
 CREATE TABLE IF NOT EXISTS `server_config` (

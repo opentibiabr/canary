@@ -1835,11 +1835,14 @@ public:
 	void setGrindingXpBoost(uint16_t value) {
 		grindingXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 	}
-	uint16_t getXpBoostPercent() const {
+	uint16_t getXpBoostPercent(const bool display = false) {
+		if (display) {
+			return static_cast<uint16_t>(xpBoostPercent * (baseXpGain / 100));
+		}
 		return xpBoostPercent;
 	}
-	void setXpBoostPercent(uint16_t percent) {
-		xpBoostPercent = percent;
+	void setXpBoostPercent(const uint16_t percent) {
+		xpBoostPercent = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), percent);
 	}
 	uint16_t getStaminaXpBoost() const {
 		return staminaXpBoost;

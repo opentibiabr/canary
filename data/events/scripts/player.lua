@@ -279,8 +279,17 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	local toTile = Tile(toCylinder:getPosition())
 	if toTile then
 		local topDownItem = toTile:getTopDownItem()
-		if topDownItem and table.contains({ BATHTUB_EMPTY, BATHTUB_FILLED }, topDownItem:getId()) then
-			return false
+		if topDownItem then
+			local topDownItemItemId = topDownItem:getId()
+			-- Bath tube
+			if table.contains({ BATHTUB_EMPTY, BATHTUB_FILLED }, topDownItemItemId) then
+				return false
+			-- Podium
+			elseif ItemType(topDownItemItemId):isPodium() then
+				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+				self:getPosition():sendMagicEffect(CONST_ME_POFF)
+				return false
+			end
 		end
 	end
 

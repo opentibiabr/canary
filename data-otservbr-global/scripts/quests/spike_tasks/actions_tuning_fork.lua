@@ -4,7 +4,7 @@ function spikeTasksFork.onUse(player, item, fromPosition, target, toPosition, is
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 
-	if (target == nil) or not target:isItem() or (target:getId() ~= 19208) then
+	if not target or type(target) ~= "userdata" or not target:isItem() or (target:getId() ~= 19208) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 

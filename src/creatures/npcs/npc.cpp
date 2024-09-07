@@ -236,7 +236,7 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 
 	// Check if the player not have empty slots or the item is not a container
 	auto mainBackpack = player->getInventoryItem(CONST_SLOT_BACKPACK);
-	if (!ignore && (player->getFreeBackpackSlots() == 0 && (mainBackpack || !Item::items[itemId].isContainer()))) {
+	if (!ignore && (player->getFreeBackpackSlots() == 0 && (mainBackpack || (!Item::items[itemId].isContainer() || !(Item::items[itemId].slotPosition & SLOTP_BACKPACK))))) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}

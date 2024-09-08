@@ -22,7 +22,7 @@ class Cylinder;
 class Game;
 class GlobalFunctions;
 
-class LuaEnvironment : public LuaScriptInterface {
+class LuaEnvironment final : public LuaScriptInterface {
 public:
 	static bool shuttingDown;
 
@@ -52,15 +52,15 @@ public:
 	template <typename T>
 	std::shared_ptr<T> createWeaponObject(LuaScriptInterface* interface) {
 		auto weapon = std::make_shared<T>(interface);
-		auto weaponId = ++lastWeaponId;
+		const auto weaponId = ++lastWeaponId;
 		weaponMap[weaponId] = weapon;
-		weaponIdMap[interface].push_back(weaponId);
+		weaponIdMap[interface].emplace_back(weaponId);
 		return weapon;
 	}
 
 	template <typename T>
 	std::shared_ptr<T> getWeaponObject(uint32_t id) const {
-		auto it = weaponMap.find(id);
+		const auto it = weaponMap.find(id);
 		if (it == weaponMap.end()) {
 			return nullptr;
 		}
@@ -68,7 +68,7 @@ public:
 	}
 
 	void clearWeaponObjects(LuaScriptInterface* interface) {
-		auto it = weaponIdMap.find(interface);
+		const auto it = weaponIdMap.find(interface);
 		if (it == weaponIdMap.end()) {
 			return;
 		}

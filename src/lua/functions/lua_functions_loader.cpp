@@ -98,11 +98,11 @@ int LuaFunctionsLoader::protectedCall(lua_State* L, int nargs, int nresults) {
 		return ret;
 	}
 
-	int error_index = lua_gettop(L) - nargs;
+	const int error_index = lua_gettop(L) - nargs;
 	lua_pushcfunction(L, luaErrorHandler);
 	lua_insert(L, error_index);
 
-	int ret = lua_pcall(L, nargs, nresults, error_index);
+	const int ret = lua_pcall(L, nargs, nresults, error_index);
 	lua_remove(L, error_index);
 	return ret;
 }
@@ -134,7 +134,7 @@ void LuaFunctionsLoader::reportError(const char* function, const std::string &er
 	}
 	logMsg << "Error Description: " << error_desc << "\n";
 	if (stack_trace && scriptInterface) {
-		std::string stackTrace = scriptInterface->getStackTrace(error_desc);
+		const std::string stackTrace = scriptInterface->getStackTrace(error_desc);
 		if (!stackTrace.empty() && stackTrace != "N/A") {
 			logMsg << "Stack Trace:\n"
 				   << stackTrace << "\n";
@@ -147,7 +147,7 @@ void LuaFunctionsLoader::reportError(const char* function, const std::string &er
 
 int LuaFunctionsLoader::luaErrorHandler(lua_State* L) {
 	const std::string &errorMessage = popString(L);
-	auto interface = getScriptEnv()->getScriptInterface();
+	const auto interface = getScriptEnv()->getScriptInterface();
 	if (!interface) {
 		g_logger().error("[{}]: LuaScriptInterface not found, error: {}", __FUNCTION__, errorMessage);
 		return 0;
@@ -280,13 +280,13 @@ void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std
 
 	const std::string &weakName = name + "_weak";
 
-	auto result = weakObjectTypes.emplace(name);
+	const auto result = weakObjectTypes.emplace(name);
 	if (result.second) {
 		luaL_getmetatable(L, name.c_str());
-		int childMetatable = lua_gettop(L);
+		const int childMetatable = lua_gettop(L);
 
 		luaL_newmetatable(L, weakName.c_str());
-		int metatable = lua_gettop(L);
+		const int metatable = lua_gettop(L);
 
 		for (static const std::vector<std::string> methodKeys = { "__index", "__metatable", "__eq" };
 		     const std::string &metaKey : methodKeys) {
@@ -295,7 +295,7 @@ void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std
 		}
 
 		for (static const std::vector<int> methodIndexes = { 'h', 'p', 't' };
-		     int metaIndex : methodIndexes) {
+		     const int metaIndex : methodIndexes) {
 			lua_rawgeti(L, childMetatable, metaIndex);
 			lua_rawseti(L, metatable, metaIndex);
 		}
@@ -353,8 +353,8 @@ CombatDamage LuaFunctionsLoader::getCombatDamage(lua_State* L) {
 
 // Get
 std::string LuaFunctionsLoader::getFormatedLoggerMessage(lua_State* L) {
-	std::string format = getString(L, 1);
-	int n = lua_gettop(L);
+	const std::string format = getString(L, 1);
+	const int n = lua_gettop(L);
 	fmt::dynamic_format_arg_store<fmt::format_context> args;
 
 	for (int i = 2; i <= n; i++) {
@@ -365,7 +365,7 @@ std::string LuaFunctionsLoader::getFormatedLoggerMessage(lua_State* L) {
 		} else if (isBoolean(L, i)) {
 			args.push_back(lua_toboolean(L, i) ? "true" : "false");
 		} else if (isUserdata(L, i)) {
-			LuaData_t userType = getUserdataType(L, i);
+			const LuaData_t userType = getUserdataType(L, i);
 			args.push_back(getUserdataTypeName(userType));
 		} else if (isTable(L, i)) {
 			args.push_back("table");
@@ -556,7 +556,7 @@ LuaData_t LuaFunctionsLoader::getUserdataType(lua_State* L, int32_t arg) {
 	}
 	lua_rawgeti(L, -1, 't');
 
-	LuaData_t type = getNumber<LuaData_t>(L, -1);
+	const LuaData_t type = getNumber<LuaData_t>(L, -1);
 	lua_pop(L, 2);
 
 	return type;
@@ -645,11 +645,11 @@ void LuaFunctionsLoader::registerClass(lua_State* L, const std::string &classNam
 	lua_newtable(L);
 	lua_pushvalue(L, -1);
 	lua_setglobal(L, className.c_str());
-	int methods = lua_gettop(L);
+	const int methods = lua_gettop(L);
 
 	// methodsTable = {}
 	lua_newtable(L);
-	int methodsTable = lua_gettop(L);
+	const int methodsTable = lua_gettop(L);
 
 	if (newFunction) {
 		// className.__call = newFunction
@@ -671,7 +671,7 @@ void LuaFunctionsLoader::registerClass(lua_State* L, const std::string &classNam
 
 	// className.metatable = {}
 	luaL_newmetatable(L, className.c_str());
-	int metatable = lua_gettop(L);
+	const int metatable = lua_gettop(L);
 
 	// className.metatable.__metatable = className
 	lua_pushvalue(L, methods);
@@ -781,7 +781,7 @@ void LuaFunctionsLoader::registerSharedClass(lua_State* L, const std::string &cl
 }
 
 int LuaFunctionsLoader::luaGarbageCollection(lua_State* L) {
-	auto objPtr = static_cast<std::shared_ptr<SharedObject>*>(lua_touserdata(L, 1));
+	const auto objPtr = static_cast<std::shared_ptr<SharedObject>*>(lua_touserdata(L, 1));
 	if (objPtr) {
 		objPtr->reset();
 	}

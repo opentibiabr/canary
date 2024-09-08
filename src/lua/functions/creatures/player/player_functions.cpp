@@ -3110,7 +3110,7 @@ int PlayerFunctions::luaPlayerGetInstantSpells(lua_State* L) {
 	spells.reserve(30);
 	for (auto &[key, spell] : g_spells().getInstantSpells()) {
 		if (spell->canCast(player)) {
-			spells.push_back(spell);
+			spells.emplace_back(spell);
 		}
 	}
 

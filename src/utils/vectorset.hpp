@@ -48,8 +48,8 @@ namespace stdext {
 			return container.push_back(v);
 		}
 
-		template <class... _Valty>
-		auto emplace(_Valty &&... v) {
+		template <class... Valty>
+		auto emplace(Valty &&... v) {
 			needUpdate = true;
 			return container.emplace_back(v...);
 		}
@@ -64,20 +64,20 @@ namespace stdext {
 			return container.insert(container.end(), list.begin(), list.end());
 		}
 
-		constexpr auto insert(std::vector<T>::const_iterator _Where, const T &_Val) {
+		constexpr auto insert(typename std::vector<T>::const_iterator Where, const T &Val) {
 			needUpdate = true;
-			return container.insert(_Where, _Val);
+			return container.insert(Where, Val);
 		}
 
-		constexpr auto insert(std::vector<T>::const_iterator _Where, T &&_Val) {
+		constexpr auto insert(typename std::vector<T>::const_iterator Where, T &&Val) {
 			needUpdate = true;
-			return container.insert(_Where, std::move(_Val));
+			return container.insert(Where, std::move(Val));
 		}
 
-		template <std::forward_iterator _Iter>
-		constexpr auto insert(std::vector<T>::const_iterator _Where, _Iter _First, _Iter _Last) {
+		template <std::forward_iterator Iter>
+		constexpr auto insert(typename std::vector<T>::const_iterator Where, Iter First, Iter Last) {
 			needUpdate = true;
-			return container.insert(_Where, _First, _Last);
+			return container.insert(Where, First, Last);
 		}
 
 		bool empty() const noexcept {

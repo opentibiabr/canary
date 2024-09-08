@@ -31,9 +31,9 @@ class FrozenPathingConditionCall;
  * Map class.
  * Holds all the actual map-data
  */
-class Map : public MapCache {
+class Map final : public MapCache {
 public:
-	uint32_t clean();
+	uint32_t clean() const;
 
 	std::filesystem::path getPath() const {
 		return path;

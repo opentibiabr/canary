@@ -133,35 +133,33 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 	}
 
 	uint8_t* msgBuffer = msg.getBuffer();
-	auto charData = static_cast<char*>(static_cast<void*>(msgBuffer));
-	std::string serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__) + "\n";
+	const auto charData = static_cast<char*>(static_cast<void*>(msgBuffer));
+	const std::string serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__) + "\n";
 	if (connectionState == CONNECTION_STATE_IDENTIFYING) {
 		if (msgBuffer[1] == 0x00 || strncasecmp(charData, &serverName[0], 2) != 0) {
 			// Probably not proxy identification so let's try standard parsing method
 			connectionState = CONNECTION_STATE_OPEN;
 			parseHeader(error);
 			return;
-		} else {
-			size_t remainder = serverName.length() - 2;
-			if (remainder > 0) {
-				connectionState = CONNECTION_STATE_READINGS;
-				try {
-					readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-					readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
-
-					// Read the remainder of proxy identification
-					asio::async_read(socket, asio::buffer(msg.getBuffer(), remainder), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parseProxyIdentification(error); });
-				} catch (const std::system_error &e) {
-					g_logger().error("Connection::parseProxyIdentification] - error: {}", e.what());
-					close(FORCE_CLOSE);
-				}
-				return;
-			} else {
-				connectionState = CONNECTION_STATE_OPEN;
-			}
 		}
+		const size_t remainder = serverName.length() - 2;
+		if (remainder > 0) {
+			connectionState = CONNECTION_STATE_READINGS;
+			try {
+				readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
+				readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
+
+				// Read the remainder of proxy identification
+				asio::async_read(socket, asio::buffer(msg.getBuffer(), remainder), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parseProxyIdentification(error); });
+			} catch (const std::system_error &e) {
+				g_logger().error("Connection::parseProxyIdentification] - error: {}", e.what());
+				close(FORCE_CLOSE);
+			}
+			return;
+		}
+		connectionState = CONNECTION_STATE_OPEN;
 	} else if (connectionState == CONNECTION_STATE_READINGS) {
-		size_t remainder = serverName.length() - 2;
+		const size_t remainder = serverName.length() - 2;
 		if (strncasecmp(charData, &serverName[2], remainder) == 0) {
 			connectionState = CONNECTION_STATE_OPEN;
 		} else {
@@ -184,11 +182,12 @@ void Connection::parseHeader(const std::error_code &error) {
 		}
 		close(FORCE_CLOSE);
 		return;
-	} else if (connectionState == CONNECTION_STATE_CLOSED) {
+	}
+	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 
-	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
+	const uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND, __FUNCTION__))) {
 		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
 		close();
@@ -200,7 +199,7 @@ void Connection::parseHeader(const std::error_code &error) {
 		packetsSent = 0;
 	}
 
-	uint16_t size = msg.getLengthHeader();
+	const uint16_t size = msg.getLengthHeader();
 	if (size == 0 || size > INPUTMESSAGE_MAXSIZE) {
 		close(FORCE_CLOSE);
 		return;
@@ -240,14 +239,14 @@ void Connection::parsePacket(const std::error_code &error) {
 		if (!protocol) {
 			// Check packet checksum
 			uint32_t checksum;
-			if (int32_t len = msg.getLength() - msg.getBufferPosition() - CHECKSUM_LENGTH;
+			if (const int32_t len = msg.getLength() - msg.getBufferPosition() - CHECKSUM_LENGTH;
 			    len > 0) {
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition() + CHECKSUM_LENGTH, len);
 			} else {
 				checksum = 0;
 			}
 
-			auto recvChecksum = msg.get<uint32_t>();
+			const auto recvChecksum = msg.get<uint32_t>();
 			if (recvChecksum != checksum) {
 				// it might not have been the checksum, step back
 				msg.skipBytes(-CHECKSUM_LENGTH);
@@ -305,7 +304,7 @@ void Connection::send(const OutputMessage_ptr &outputMessage) {
 		return;
 	}
 
-	bool noPendingWrite = messageQueue.empty();
+	const bool noPendingWrite = messageQueue.empty();
 	messageQueue.emplace_back(outputMessage);
 
 	if (noPendingWrite) {
@@ -337,7 +336,13 @@ void Connection::internalWorker() {
 	protocol->onSendMessage(outputMessage);
 	lock.lock();
 
-	internalSend(outputMessage);
+	try {
+		asio::post(socket.get_executor(), [self = shared_from_this(), outputMessage] { self->internalSend(outputMessage); });
+	} catch (std::system_error& e) {
+		g_logger().error("[Connection::internalWorker] - error: {}", e.what());
+		messageQueue.clear();
+		close(FORCE_CLOSE);
+	}
 }
 
 uint32_t Connection::getIP() {
@@ -345,7 +350,7 @@ uint32_t Connection::getIP() {
 
 	if (ip == 1) {
 		std::error_code error;
-		asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
+		const asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
 		if (error) {
 			g_logger().error("[Connection::getIP] - Failed to get remote endpoint: {}", error.message());
 			ip = 0;
@@ -386,7 +391,13 @@ void Connection::onWriteOperation(const std::error_code &error) {
 		lock.unlock();
 		protocol->onSendMessage(outputMessage);
 		lock.lock();
-		internalSend(outputMessage);
+		try {
+			asio::post(socket.get_executor(), [self = shared_from_this(), outputMessage] { self->internalSend(outputMessage); });
+		} catch (std::system_error& e) {
+			g_logger().error("[Connection::onWriteOperation] - error: {}", e.what());
+			messageQueue.clear();
+			close(FORCE_CLOSE);
+		}
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		closeSocket();
 	}
@@ -397,7 +408,7 @@ void Connection::handleTimeout(const ConnectionWeak_ptr &connectionWeak, const s
 		return;
 	}
 
-	if (auto connection = connectionWeak.lock()) {
+	if (const auto connection = connectionWeak.lock()) {
 		if (!error) {
 			g_logger().debug("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
 		} else {

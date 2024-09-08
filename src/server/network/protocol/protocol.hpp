@@ -57,7 +57,7 @@ public:
 
 protected:
 	void disconnect() const {
-		if (auto connection = getConnection()) {
+		if (const auto connection = getConnection()) {
 			connection->close();
 		}
 	}
@@ -69,7 +69,7 @@ protected:
 		uint32_t* dst = this->key.data();
 
 #if defined(__AVX2__)
-		__m128i avx_key = _mm_loadu_si128(reinterpret_cast<const __m128i*>(newKey));
+		const __m128i avx_key = _mm_loadu_si128(reinterpret_cast<const __m128i*>(newKey));
 		_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), avx_key);
 #elif defined(__SSE2__)
 		__m128i sse_key = _mm_loadu_si128(reinterpret_cast<const __m128i*>(newKey));
@@ -118,6 +118,21 @@ private:
 		std::array<char, NETWORKMESSAGE_MAXSIZE> buffer {};
 	};
 
+	inline void simd_memcpy_avx2(uint8_t* dest, const uint8_t* src, size_t len) const {
+		size_t i = 0;
+
+		// Copiar blocos de 32 bytes por vez (256 bits) com AVX2
+		for (; i + 32 <= len; i += 32) {
+			const __m256i data = _mm256_load_si256(reinterpret_cast<const __m256i*>(src + i));
+			_mm256_store_si256(reinterpret_cast<__m256i*>(dest + i), data);
+		}
+
+		// Copiar os bytes restantes que não formam um bloco completo de 32 bytes
+		for (; i < len; ++i) {
+			dest[i] = src[i];
+		}
+	}
+
 	void XTEA_encrypt(OutputMessage &msg) const;
 	bool XTEA_decrypt(NetworkMessage &msg) const;
 	bool compression(OutputMessage &msg) const;
@@ -125,12 +140,20 @@ private:
 	OutputMessage_ptr outputBuffer;
 
 	const ConnectionWeak_ptr connectionPtr;
-	std::array<uint32_t, 4> key = {};
 	uint32_t serverSequenceNumber = 0;
 	uint32_t clientSequenceNumber = 0;
 	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
 	bool encryptionEnabled = false;
 	bool rawMessages = false;
+
+	mutable std::array<uint32_t, 32 * 2> cachedControlSumsEncrypt; // Cache para criptografia
+	mutable std::array<uint32_t, 32 * 2> cachedControlSumsDecrypt; // Cache para descriptografia
+	mutable bool cacheEncryptInitialized = false;
+	mutable bool cacheDecryptInitialized = false;
+	mutable std::array<uint32_t, 4> key;
+
+	void precacheControlSumsEncrypt() const;
+	void precacheControlSumsDecrypt() const;
 
 	friend class Connection;
 };

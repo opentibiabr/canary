@@ -19,8 +19,8 @@
 #include "core.hpp"
 #include "enums/account_errors.hpp"
 
-void ProtocolLogin::disconnectClient(const std::string &message) {
-	auto output = OutputMessagePool::getOutputMessage();
+void ProtocolLogin::disconnectClient(const std::string &message) const {
+	const auto output = OutputMessagePool::getOutputMessage();
 
 	output->addByte(0x0B);
 	output->addString(message, "ProtocolLogin::disconnectClient - message");
@@ -29,14 +29,15 @@ void ProtocolLogin::disconnectClient(const std::string &message) {
 	disconnect();
 }
 
-void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const std::string &password) {
+void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const std::string &password) const {
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
 	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__)) {
 		disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
 		return;
-	} else if (!oldProtocol) {
+	}
+	if (!oldProtocol) {
 		disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
 		return;
 	}

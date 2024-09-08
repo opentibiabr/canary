@@ -24,7 +24,7 @@ class LuaScriptInterface;
 class Cylinder;
 class Game;
 
-class ScriptEnvironment {
+class ScriptEnvironment final {
 public:
 	ScriptEnvironment();
 	virtual ~ScriptEnvironment();
@@ -44,7 +44,7 @@ public:
 	int32_t getScriptId() const {
 		return scriptId;
 	}
-	LuaScriptInterface* getScriptInterface() {
+	LuaScriptInterface* getScriptInterface() const {
 		return interface;
 	}
 

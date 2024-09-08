@@ -13,7 +13,7 @@
 #include "items/containers/container.hpp"
 
 int32_t NetworkMessage::decodeHeader() {
-	int32_t newSize = buffer[0] | buffer[1] << 8;
+	const int32_t newSize = buffer[0] | buffer[1] << 8;
 	info.length = newSize;
 	return info.length;
 }
@@ -24,10 +24,10 @@ std::string NetworkMessage::getString(uint16_t stringLen /* = 0*/) {
 	}
 
 	if (!canRead(stringLen)) {
-		return std::string();
+		return {};
 	}
 
-	char* v = reinterpret_cast<char*>(buffer) + info.position; // does not break strict aliasing
+	const char* v = reinterpret_cast<char*>(buffer) + info.position; // does not break strict aliasing
 	info.position += stringLen;
 	return std::string(v, stringLen);
 }

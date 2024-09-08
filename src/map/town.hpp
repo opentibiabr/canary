@@ -55,16 +55,16 @@ public:
 	}
 
 	std::shared_ptr<Town> getTown(const std::string &townName) const {
-		for (const auto &it : townMap) {
-			if (strcasecmp(townName.c_str(), it.second->getName().c_str()) == 0) {
-				return it.second;
+		for (const auto &[fst, snd] : townMap) {
+			if (strcasecmp(townName.c_str(), snd->getName().c_str()) == 0) {
+				return snd;
 			}
 		}
 		return nullptr;
 	}
 
 	std::shared_ptr<Town> getTown(uint32_t townId) const {
-		auto it = townMap.find(townId);
+		const auto it = townMap.find(townId);
 		if (it == townMap.end()) {
 			return nullptr;
 		}

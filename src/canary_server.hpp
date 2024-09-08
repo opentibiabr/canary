@@ -60,11 +60,11 @@ private:
 	static std::string getCompiler();
 	static std::string getPlatform();
 
-	void loadConfigLua();
+	void loadConfigLua() const;
 	void initializeDatabase() const;
-	void loadModules();
-	void setWorldType();
+	void loadModules() const;
+	void setWorldType() const;
 	void loadMaps() const;
-	void setupHousesRent();
+	void setupHousesRent() const;
 	void modulesLoadHelper(bool loaded, std::string moduleName) const;
 };

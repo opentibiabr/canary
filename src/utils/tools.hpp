@@ -16,7 +16,7 @@
 #include "enums/object_category.hpp"
 
 namespace pugi {
-	class xml_parse_result;
+	struct xml_parse_result;
 }
 
 #ifndef USE_PRECOMPILED_HEADERS

@@ -27,17 +27,17 @@ namespace stdext {
 			reserve(reserveSize);
 		}
 
-		explicit arraylist(std::initializer_list<T> _Ilist) {
-			backContainer.assign(_Ilist);
+		arraylist(std::initializer_list<T> Ilist) {
+			backContainer.assign(Ilist);
 		}
 
-		arraylist &operator=(std::initializer_list<T> _Ilist) {
-			backContainer.assign(_Ilist);
+		arraylist &operator=(std::initializer_list<T> Ilist) {
+			backContainer.assign(Ilist);
 			return *this;
 		}
 
-		void assign(std::initializer_list<T> _Ilist) {
-			backContainer.assign(_Ilist);
+		void assign(std::initializer_list<T> Ilist) {
+			backContainer.assign(Ilist);
 		}
 
 		bool contains(const T &v) {
@@ -91,31 +91,31 @@ namespace stdext {
 
 		void push_front(const T &v) {
 			needUpdate = true;
-			frontContainer.push_back(v);
+			frontContainer.emplace_back(v);
 		}
 
-		void push_front(T &&_Val) {
+		void push_front(T &&Val) {
 			needUpdate = true;
-			frontContainer.push_back(std::move(_Val));
+			frontContainer.emplace_back(std::move(Val));
 		}
 
-		template <class... _Valty>
-		decltype(auto) emplace_front(_Valty &&... v) {
+		template <class... Valty>
+		decltype(auto) emplace_front(Valty &&... v) {
 			needUpdate = true;
-			return frontContainer.emplace_back(std::forward<_Valty>(v)...);
+			return frontContainer.emplace_back(std::forward<Valty>(v)...);
 		}
 
-		void push_back(const T &v) {
-			backContainer.push_back(v);
+		void emplace_back(const T &v) {
+			backContainer.emplace_back(v);
 		}
 
-		void push_back(T &&_Val) {
-			backContainer.push_back(std::move(_Val));
+		void emplace_back(T &&Val) {
+			backContainer.emplace_back(std::move(Val));
 		}
 
-		template <class... _Valty>
-		decltype(auto) emplace_back(_Valty &&... v) {
-			return backContainer.emplace_back(std::forward<_Valty>(v)...);
+		template <class... Valty>
+		decltype(auto) emplace_back(Valty &&... v) {
+			return backContainer.emplace_back(std::forward<Valty>(v)...);
 		}
 
 		bool empty() const noexcept {

@@ -48,8 +48,8 @@ bool Argon2::verifyPassword(const std::string &password, const std::string &phas
 		return false;
 	}
 
-	std::vector<uint8_t> salt = base64_decode(match[1]);
-	std::vector<uint8_t> hash = base64_decode(match[2]);
+	const std::vector<uint8_t> salt = base64_decode(match[1]);
+	const std::vector<uint8_t> hash = base64_decode(match[2]);
 
 	// Hash the password
 	std::vector<uint8_t> computed_hash(hash.size());
@@ -67,12 +67,12 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) {
 	std::vector<uint8_t> ret;
 	int i = 0;
 	uint32_t val = 0;
-	for (char c : input) {
+	for (const char c : input) {
 		if (isspace(c) || c == '=') {
 			continue;
 		}
 
-		size_t pos = base64_chars.find(c);
+		const size_t pos = base64_chars.find(c);
 		if (pos == std::string::npos) {
 			g_logger().warn("Invalid character in base64 string");
 		} else if (pos > std::numeric_limits<uint32_t>::max()) {
@@ -82,9 +82,9 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) {
 		}
 
 		if (++i % 4 == 0) {
-			ret.push_back((val >> 16) & 0xFF);
-			ret.push_back((val >> 8) & 0xFF);
-			ret.push_back(val & 0xFF);
+			ret.emplace_back((val >> 16) & 0xFF);
+			ret.emplace_back((val >> 8) & 0xFF);
+			ret.emplace_back(val & 0xFF);
 		}
 	}
 
@@ -93,11 +93,11 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) {
 			g_logger().warn("Invalid length for base64 string");
 			break;
 		case 2:
-			ret.push_back((val >> 4) & 0xFF);
+			ret.emplace_back((val >> 4) & 0xFF);
 			break;
 		case 3:
-			ret.push_back((val >> 10) & 0xFF);
-			ret.push_back((val >> 2) & 0xFF);
+			ret.emplace_back((val >> 10) & 0xFF);
+			ret.emplace_back((val >> 2) & 0xFF);
 			break;
 		default:
 			g_logger().warn("Unexpected remainder when dividing string length by 4");

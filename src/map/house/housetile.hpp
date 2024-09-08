@@ -32,7 +32,7 @@ public:
 	}
 
 private:
-	void updateHouse(const std::shared_ptr<Item> &item);
+	void updateHouse(const std::shared_ptr<Item> &item) const;
 
 	std::shared_ptr<House> house;
 };

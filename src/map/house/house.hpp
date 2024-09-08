@@ -88,7 +88,7 @@ public:
 	explicit HouseTransferItem(std::shared_ptr<House> newHouse) :
 		Item(0), house(std::move(newHouse)) { }
 
-	void onTradeEvent(TradeEvents_t event, std::shared_ptr<Player> owner) override;
+	void onTradeEvent(TradeEvents_t event, const std::shared_ptr<Player> &owner) override;
 	bool canTransform() const override {
 		return false;
 	}
@@ -97,7 +97,7 @@ private:
 	std::shared_ptr<House> house;
 };
 
-class House : public SharedObject {
+class House final : public SharedObject {
 public:
 	explicit House(uint32_t houseId);
 
@@ -195,7 +195,7 @@ public:
 	void addDoor(const std::shared_ptr<Door> &door);
 	void removeDoor(const std::shared_ptr<Door> &door);
 	std::shared_ptr<Door> getDoorByNumber(uint32_t doorId) const;
-	std::shared_ptr<Door> getDoorByPosition(const Position &pos);
+	std::shared_ptr<Door> getDoorByPosition(const Position &pos) const;
 
 	std::shared_ptr<HouseTransferItem> getTransferItem();
 	void resetTransferItem();
@@ -284,7 +284,7 @@ public:
 	Houses &operator=(const Houses &) = delete;
 
 	std::shared_ptr<House> addHouse(uint32_t id) {
-		if (auto it = houseMap.find(id); it != houseMap.end()) {
+		if (const auto it = houseMap.find(id); it != houseMap.end()) {
 			return it->second;
 		}
 
@@ -292,14 +292,14 @@ public:
 	}
 
 	std::shared_ptr<House> getHouse(uint32_t houseId) {
-		auto it = houseMap.find(houseId);
+		const auto it = houseMap.find(houseId);
 		if (it == houseMap.end()) {
 			return nullptr;
 		}
 		return it->second;
 	}
 
-	std::shared_ptr<House> getHouseByPlayerId(uint32_t playerId);
+	std::shared_ptr<House> getHouseByPlayerId(uint32_t playerId) const;
 
 	bool loadHousesXML(const std::string &filename);
 

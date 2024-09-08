@@ -55,7 +55,7 @@ public:
 	explicit GlobalEvent(LuaScriptInterface* interface);
 
 	bool executePeriodChange(LightState_t lightState, LightInfo lightInfo) const;
-	bool executeRecord(uint32_t current, uint32_t old);
+	bool executeRecord(uint32_t current, uint32_t old) const;
 	bool executeEvent() const;
 
 	GlobalEvent_t getEventType() const {

@@ -26,11 +26,11 @@ std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
-	uint32_t ip = getIP();
+	const uint32_t ip = getIP();
 	if (ip != 0x0100007F) {
-		std::string ipStr = convertIPToString(ip);
+		const std::string ipStr = convertIPToString(ip);
 		if (ipStr != g_configManager().getString(IP, __FUNCTION__)) {
-			std::map<uint32_t, int64_t>::const_iterator it = ipConnectMap.find(ip);
+			const std::map<uint32_t, int64_t>::const_iterator it = ipConnectMap.find(ip);
 			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT, __FUNCTION__)))) {
 				disconnect();
 				return;
@@ -75,7 +75,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 }
 
 void ProtocolStatus::sendStatusString() {
-	auto output = OutputMessagePool::getOutputMessage();
+	const auto output = OutputMessagePool::getOutputMessage();
 
 	setRawMessages(true);
 
@@ -88,7 +88,7 @@ void ProtocolStatus::sendStatusString() {
 	tsqp.append_attribute("version") = "1.0";
 
 	pugi::xml_node serverinfo = tsqp.append_child("serverinfo");
-	uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
+	const uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
 	serverinfo.append_attribute("uptime") = std::to_string(uptime).c_str();
 	serverinfo.append_attribute("ip") = g_configManager().getString(IP, __FUNCTION__).c_str();
 	serverinfo.append_attribute("servername") = g_configManager().getString(ConfigKey_t::SERVER_NAME, __FUNCTION__).c_str();
@@ -146,20 +146,20 @@ void ProtocolStatus::sendStatusString() {
 	map.append_attribute("width") = std::to_string(mapWidth).c_str();
 	map.append_attribute("height") = std::to_string(mapHeight).c_str();
 
-	pugi::xml_node motd = tsqp.append_child("motd");
+	const pugi::xml_node motd = tsqp.append_child("motd");
 	motd.text() = g_configManager().getString(SERVER_MOTD, __FUNCTION__).c_str();
 
 	std::ostringstream ss;
 	doc.save(ss, "", pugi::format_raw);
 
-	std::string data = ss.str();
+	const std::string data = ss.str();
 	output->addBytes(data.c_str(), data.size());
 	send(output);
 	disconnect();
 }
 
-void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &characterName) {
-	auto output = OutputMessagePool::getOutputMessage();
+void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &characterName) const {
+	const auto output = OutputMessagePool::getOutputMessage();
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
 		output->addByte(0x10);
@@ -204,9 +204,9 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 		const auto players = g_game().getPlayers();
 		output->add<uint32_t>(players.size());
-		for (const auto &it : players) {
-			output->addString(it.second->getName(), "ProtocolStatus::sendInfo - it.second->getName()");
-			output->add<uint32_t>(it.second->getLevel());
+		for (const auto &[fst, snd] : players) {
+			output->addString(snd->getName(), "ProtocolStatus::sendInfo - it.second->getName()");
+			output->add<uint32_t>(snd->getLevel());
 		}
 	}
 

@@ -1876,7 +1876,7 @@ void ProtocolGame::parseQuickLootBlackWhitelist(NetworkMessage &msg) {
 	listedItems.reserve(size);
 
 	for (int i = 0; i < size; i++) {
-		listedItems.push_back(msg.get<uint16_t>());
+		listedItems.emplace_back(msg.get<uint16_t>());
 	}
 
 	g_game().playerQuickLootBlackWhitelist(player->getID(), filter, listedItems);
@@ -4310,7 +4310,7 @@ void ProtocolGame::sendBasicData() {
 	for (uint16_t sid : spellsList) {
 		auto spell = g_spells().getInstantSpellById(sid);
 		if (spell && spell->getSpellId() > 0) {
-			validSpells.push_back(spell);
+			validSpells.emplace_back(spell);
 		}
 	}
 
@@ -5664,7 +5664,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page) {
 	uint16_t pageFirstEntry = (0 < historyVectorLen - (currentPage - 1) * 9) ? historyVectorLen - (currentPage - 1) * 9 : 0;
 	uint16_t pageLastEntry = (0 < historyVectorLen - currentPage * 9) ? historyVectorLen - currentPage * 9 : 0;
 	for (uint16_t entry = pageFirstEntry; entry > pageLastEntry; --entry) {
-		historyPerPage.push_back(historyVector[entry - 1]);
+		historyPerPage.emplace_back(historyVector[entry - 1]);
 	}
 
 	auto historyPageToSend = getVectorIterationIncreaseCount(historyPerPage);
@@ -6092,9 +6092,9 @@ void ProtocolGame::sendTradeItemRequest(const std::string &traderName, const std
 			for (const std::shared_ptr<Item> &containerItem : container->getItemList()) {
 				std::shared_ptr<Container> tmpContainer = containerItem->getContainer();
 				if (tmpContainer) {
-					listContainer.push_back(tmpContainer);
+					listContainer.emplace_back(tmpContainer);
 				}
-				itemList.push_back(containerItem);
+				itemList.emplace_back(containerItem);
 			}
 		}
 
@@ -7070,7 +7070,7 @@ void ProtocolGame::sendOutfitWindow() {
 		std::vector<std::shared_ptr<Mount>> mounts;
 		for (const auto &mount : g_game().mounts.getMounts()) {
 			if (player->hasMount(mount)) {
-				mounts.push_back(mount);
+				mounts.emplace_back(mount);
 			}
 		}
 
@@ -7441,7 +7441,7 @@ void ProtocolGame::sendPreyData(const std::unique_ptr<PreySlot> &slot) {
 	std::vector<uint16_t> validRaceIds;
 	for (auto raceId : slot->raceIdList) {
 		if (g_monsters().getMonsterTypeByRaceId(raceId)) {
-			validRaceIds.push_back(raceId);
+			validRaceIds.emplace_back(raceId);
 		} else {
 			g_logger().error("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}, removing prey slot from player {}", raceId, player->getName());
 			// Remove wrong raceid from slot

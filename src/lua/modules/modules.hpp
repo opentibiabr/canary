@@ -21,7 +21,7 @@ class Module final : public Event {
 public:
 	explicit Module(LuaScriptInterface* interface);
 
-	bool configureEvent(const pugi::xml_node &node) final;
+	bool configureEvent(const pugi::xml_node &node) override;
 
 	ModuleType_t getEventType() const {
 		return type;
@@ -34,7 +34,7 @@ public:
 	void copyEvent(const Module_ptr &creatureEvent);
 
 	// scripting
-	void executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg);
+	void executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg) const;
 	//
 
 	uint8_t getRecvbyte() const {
@@ -46,7 +46,7 @@ public:
 	}
 
 protected:
-	std::string getScriptEventName() const final;
+	std::string getScriptEventName() const override;
 
 	ModuleType_t type;
 	uint8_t recvbyte {};
@@ -74,7 +74,7 @@ protected:
 	std::string getScriptBaseName() const override;
 	Event_ptr getEvent(const std::string &nodeName) override;
 	bool registerEvent(const Event_ptr &event, const pugi::xml_node &node) override;
-	void clear() final;
+	void clear() override;
 
 	using ModulesList = std::map<uint8_t, Module_ptr>;
 	ModulesList recvbyteList;

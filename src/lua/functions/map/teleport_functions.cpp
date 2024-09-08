@@ -16,7 +16,7 @@
 // Teleport
 int TeleportFunctions::luaTeleportCreate(lua_State* L) {
 	// Teleport(uid)
-	uint32_t id = getNumber<uint32_t>(L, 2);
+	const uint32_t id = getNumber<uint32_t>(L, 2);
 
 	const auto &item = getScriptEnv()->getItemByUID(id);
 	if (item && item->getTeleport()) {

@@ -20,8 +20,8 @@ Modules::Modules() :
 
 void Modules::clear() {
 	// clear recvbyte list
-	for (const auto &it : recvbyteList) {
-		it.second->clearEvent();
+	for (const auto &[fst, snd] : recvbyteList) {
+		snd->clearEvent();
 	}
 
 	// clear lua state
@@ -44,13 +44,13 @@ Event_ptr Modules::getEvent(const std::string &nodeName) {
 }
 
 bool Modules::registerEvent(const Event_ptr &event, const pugi::xml_node &) {
-	auto module = std::dynamic_pointer_cast<Module>(event);
+	const auto &module = std::dynamic_pointer_cast<Module>(event);
 	if (module->getEventType() == MODULE_TYPE_NONE) {
 		g_logger().error("Trying to register event without type!");
 		return false;
 	}
 
-	auto oldModule = getEventByRecvbyte(module->getRecvbyte(), false);
+	const auto oldModule = getEventByRecvbyte(module->getRecvbyte(), false);
 	if (oldModule) {
 		if (!oldModule->isLoaded() && oldModule->getEventType() == module->getEventType()) {
 			oldModule->copyEvent(module);
@@ -59,7 +59,7 @@ bool Modules::registerEvent(const Event_ptr &event, const pugi::xml_node &) {
 		return false;
 	}
 
-	auto it = recvbyteList.find(module->getRecvbyte());
+	const auto it = recvbyteList.find(module->getRecvbyte());
 	if (it != recvbyteList.end()) {
 		it->second = module;
 	} else {
@@ -69,7 +69,7 @@ bool Modules::registerEvent(const Event_ptr &event, const pugi::xml_node &) {
 }
 
 Module_ptr Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
-	auto it = recvbyteList.find(recvbyte);
+	const auto it = recvbyteList.find(recvbyte);
 	if (it != recvbyteList.end()) {
 		if (!force || it->second->isLoaded()) {
 			return it->second;
@@ -79,13 +79,13 @@ Module_ptr Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
 }
 
 void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const {
-	auto player = g_game().getPlayerByID(playerId);
+	const auto &player = g_game().getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	for (const auto &it : recvbyteList) {
-		auto &module = it.second;
+	for (const auto &[fst, snd] : recvbyteList) {
+		auto &module = snd;
 		if (module->getEventType() == MODULE_TYPE_RECVBYTE && module->getRecvbyte() == byte && player->canRunModule(module->getRecvbyte())) {
 			player->setModuleDelay(module->getRecvbyte(), module->getDelay());
 			module->executeOnRecvbyte(player, msg);
@@ -100,15 +100,15 @@ Module::Module(LuaScriptInterface* interface) :
 bool Module::configureEvent(const pugi::xml_node &node) {
 	delay = 0;
 
-	auto typeAttribute = node.attribute("type");
+	const auto typeAttribute = node.attribute("type");
 	if (!typeAttribute) {
 		g_logger().error("Missing type for module.");
 		return false;
 	}
 
-	auto tmpStr = asLowerCaseString(typeAttribute.as_string());
+	const auto tmpStr = asLowerCaseString(typeAttribute.as_string());
 	if (tmpStr == "recvbyte") {
-		auto byteAttribute = node.attribute("byte");
+		const auto byteAttribute = node.attribute("byte");
 		if (!byteAttribute) {
 			g_logger().error("Missing byte for module typed recvbyte.");
 			return false;
@@ -121,7 +121,7 @@ bool Module::configureEvent(const pugi::xml_node &node) {
 		return false;
 	}
 
-	auto delayAttribute = node.attribute("delay");
+	const auto delayAttribute = node.attribute("delay");
 	if (delayAttribute) {
 		delay = static_cast<int16_t>(delayAttribute.as_uint());
 	}
@@ -153,7 +153,7 @@ void Module::clearEvent() {
 	loaded = false;
 }
 
-void Module::executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg) {
+void Module::executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("Call stack overflow. Too many lua script calls being nested {}", player->getName());
 		return;

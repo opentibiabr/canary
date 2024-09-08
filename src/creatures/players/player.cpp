@@ -1000,8 +1000,7 @@ bool Player::canWalkthrough(const std::shared_ptr<Creature> &creature) {
 
 		thisPlayer->setLastWalkthroughPosition(creature->getPosition());
 		return true;
-	}
-	if (npc) {
+	} else if (npc) {
 		const auto &tile = npc->getTile();
 		const auto &houseTile = std::dynamic_pointer_cast<HouseTile>(tile);
 		return (houseTile != nullptr);
@@ -1028,13 +1027,13 @@ bool Player::canWalkthroughEx(const std::shared_ptr<Creature> &creature) const {
 	if (player) {
 		const auto &playerTile = player->getTile();
 		return playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL, __FUNCTION__)) || g_game().getWorldType() == WORLD_TYPE_NO_PVP);
-	}
-	if (npc) {
+	} else if (npc) {
 		const auto &tile = npc->getTile();
 		const auto &houseTile = std::dynamic_pointer_cast<HouseTile>(tile);
 		return (houseTile != nullptr);
+	} else {
+		return false;
 	}
-	return false;
 }
 
 void Player::onReceiveMail() {
@@ -2677,16 +2676,22 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 				}
 			}
 
-			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-				ImbuementInfo imbuementInfo;
-				if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-					continue;
-				}
+			if (item) {
+				for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+					ImbuementInfo imbuementInfo;
+					if (!item) {
+						continue;
+					}
 
-				const int16_t &imbuementAbsorbPercent = imbuementInfo.imbuement->absorbPercent[combatTypeToIndex(combatType)];
+					if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+						continue;
+					}
 
-				if (imbuementAbsorbPercent != 0) {
-					damage -= std::ceil(damage * (imbuementAbsorbPercent / 100.));
+					const int16_t &imbuementAbsorbPercent = imbuementInfo.imbuement->absorbPercent[combatTypeToIndex(combatType)];
+
+					if (imbuementAbsorbPercent != 0) {
+						damage -= std::ceil(damage * (imbuementAbsorbPercent / 100.));
+					}
 				}
 			}
 		}
@@ -2896,10 +2901,10 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 			const auto &condition = *it;
 			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
 			if (condition->isPersistent() && condition->isRemovableOnDeath()) {
-				it = conditions.erase(it);
-
 				condition->endCondition(static_self_cast<Player>());
 				onEndCondition(condition->getType());
+
+				it = conditions.erase(it);
 			} else {
 				++it;
 			}
@@ -2911,10 +2916,10 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		while (it != end) {
 			const auto &condition = *it;
 			if (condition->isPersistent()) {
-				it = conditions.erase(it);
-
 				condition->endCondition(static_self_cast<Player>());
 				onEndCondition(condition->getType());
+
+				it = conditions.erase(it);
 			} else {
 				++it;
 			}
@@ -3555,8 +3560,9 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 		index = INDEX_WHEREEVER;
 		*destItem = nullptr;
 		return subCylinder;
+	} else {
+		return getPlayer();
 	}
-	return getPlayer();
 }
 
 void Player::addThing(int32_t index, const std::shared_ptr<Thing> &thing) {
@@ -4211,20 +4217,27 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 }
 
 void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/) {
-	if (link == LINK_OWNER) {
-		// calling movement scripts
-		g_moveEvents().onPlayerDeEquip(getPlayer(), thing->getItem(), static_cast<Slots_t>(index));
+	if (!thing || !newParent) {
+		return;
 	}
 
+	const auto copyThing = thing;
+	const auto copyNewParent = newParent;
+
+	if (link == LINK_OWNER) {
+		if (const auto &item = copyThing->getItem()) {
+			g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(index));
+		}
+	}
 	bool requireListUpdate = true;
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
-		const auto &i = (newParent ? newParent->getItem() : nullptr);
+		const auto &i = (copyNewParent ? copyNewParent->getItem() : nullptr);
 		const auto &container = i ? i->getContainer() : nullptr;
 		if (container) {
 			requireListUpdate = container->getHoldingPlayer() != getPlayer();
 		} else {
-			requireListUpdate = newParent != getPlayer();
+			requireListUpdate = copyNewParent != getPlayer();
 		}
 
 		updateInventoryWeight();
@@ -4233,7 +4246,7 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 		sendStats();
 	}
 
-	if (const auto &item = thing->getItem()) {
+	if (const auto &item = copyThing->getItem()) {
 		if (const auto &container = item->getContainer()) {
 			checkLootContainers(container);
 
@@ -4274,7 +4287,6 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 		}
 	}
 }
-
 // i will keep this function so it can be reviewed
 bool Player::updateSaleShopList(const std::shared_ptr<Item> &item) {
 	const uint16_t itemId = item->getID();

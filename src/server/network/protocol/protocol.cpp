@@ -14,6 +14,12 @@
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
+#ifdef _WIN32
+	#include <malloc.h> // Para _aligned_malloc e _aligned_free no Windows
+#else
+	#include <cstdlib> // Para std::aligned_alloc e std::free em Linux
+#endif
+
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
 		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
@@ -45,8 +51,8 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 	}
 
 	g_dispatcher().addEvent([&msg, protocolWeak = std::weak_ptr<Protocol>(shared_from_this())]() {
-		if (auto protocol = protocolWeak.lock()) {
-			if (auto protocolConnection = protocol->getConnection()) {
+		if (const auto protocol = protocolWeak.lock()) {
+			if (const auto protocolConnection = protocol->getConnection()) {
 				protocol->parsePacket(msg);
 				protocolConnection->resumeWork();
 			}
@@ -57,7 +63,7 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 
 bool Protocol::onRecvMessage(NetworkMessage &msg) {
 	if (checksumMethod != CHECKSUM_METHOD_NONE) {
-		auto recvChecksum = msg.get<uint32_t>();
+		const auto recvChecksum = msg.get<uint32_t>();
 		if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
 			if (recvChecksum == 0) {
 				// checksum 0 indicate that the packet should be connection ping - 0x1C packet header
@@ -65,8 +71,7 @@ bool Protocol::onRecvMessage(NetworkMessage &msg) {
 				return false;
 			}
 
-			uint32_t checksum;
-			checksum = ++clientSequenceNumber;
+			const uint32_t checksum = ++clientSequenceNumber;
 			if (clientSequenceNumber >= 0x7FFFFFFF) {
 				clientSequenceNumber = 0;
 			}
@@ -77,7 +82,7 @@ bool Protocol::onRecvMessage(NetworkMessage &msg) {
 			}
 		} else {
 			uint32_t checksum;
-			if (int32_t len = msg.getLength() - msg.getBufferPosition();
+			if (const int32_t len = msg.getLength() - msg.getBufferPosition();
 			    len > 0) {
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition(), len);
 			} else {
@@ -106,10 +111,8 @@ OutputMessage_ptr Protocol::getOutputBuffer(int32_t size) {
 }
 
 void Protocol::XTEA_encrypt(OutputMessage &msg) const {
-	const uint32_t delta = 0x61C88647;
-
-	// The message must be a multiple of 8
-	size_t paddingBytes = msg.getLength() & 7;
+	// A mensagem deve ser múltiplo de 8
+	const size_t paddingBytes = msg.getLength() & 7;
 	if (paddingBytes != 0) {
 		msg.addPaddingBytes(8 - paddingBytes);
 	}
@@ -117,104 +120,157 @@ void Protocol::XTEA_encrypt(OutputMessage &msg) const {
 	uint8_t* buffer = msg.getOutputBuffer();
 	auto messageLength = static_cast<int32_t>(msg.getLength());
 	int32_t readPos = 0;
-	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
-	// TODO: refactor this for not use c-style
-	uint32_t precachedControlSum[32][2];
-	uint32_t sum = 0;
 
-	for (auto &i : precachedControlSum) {
-		i[0] = (sum + newKey[sum & 3]);
-		sum -= delta;
-		i[1] = (sum + newKey[(sum >> 11) & 3]);
-	}
-	while (readPos < messageLength) {
-		std::array<uint32_t, 2> vData = {};
+	// Precache das somas de controle para criptografia
+	precacheControlSumsEncrypt();
 
-#if defined(__AVX2__)
-		__m128i data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos));
-		_mm_storeu_si128(reinterpret_cast<__m128i*>(vData.data()), data);
-#elif defined(__SSE2__)
-		__m128i data = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(buffer + readPos));
-		_mm_storel_epi64(reinterpret_cast<__m128i*>(vData.data()), data);
+	// Alocar memória alinhada
+#ifdef _WIN32
+	auto* alignedBuffer = static_cast<uint8_t*>(_aligned_malloc(messageLength, 32));
 #else
-		memcpy(vData.data(), buffer + readPos, 8);
+	uint8_t* alignedBuffer = reinterpret_cast<uint8_t*>(std::aligned_alloc(32, messageLength));
 #endif
 
-		// XTEA encryption loop
-		for (auto &i : precachedControlSum) {
-			vData[0] += ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ i[0];
-			vData[1] += ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ i[1];
+	if (!alignedBuffer) {
+		throw std::bad_alloc(); // Tratar erro de alocação
+	}
+
+	// Copiar os dados para o buffer alinhado usando AVX2
+	simd_memcpy_avx2(alignedBuffer, buffer, messageLength);
+
+	// Processar em blocos de 64 bits
+	while (readPos < messageLength) {
+		// Prefetch para reduzir a latência da memória
+		_mm_prefetch(reinterpret_cast<const char*>(alignedBuffer + readPos + 64), _MM_HINT_T0);
+
+		// Carregar 64 bits (dois inteiros de 32 bits) do buffer alinhado com AVX2
+		__m256i vData = _mm256_load_si256(reinterpret_cast<const __m256i*>(alignedBuffer + readPos));
+
+		auto* vDataArr = reinterpret_cast<uint32_t*>(&vData);
+
+		// Desenrolar o loop em grupos de 8 para melhor uso do pipeline
+		for (int32_t i = 0; i < 32; i += 8) {
+			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[i * 2];
+			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[i * 2 + 1];
+
+			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 1) * 2];
+			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 1) * 2 + 1];
+
+			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 2) * 2];
+			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 2) * 2 + 1];
+
+			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 3) * 2];
+			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 3) * 2 + 1];
+
+			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 4) * 2];
+			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 4) * 2 + 1];
+
+			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 5) * 2];
+			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 5) * 2 + 1];
+
+			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 6) * 2];
+			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 6) * 2 + 1];
+
+			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 7) * 2];
+			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 7) * 2 + 1];
 		}
 
-#if defined(__AVX2__)
-		data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(vData.data()));
-		_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), data);
-#elif defined(__SSE2__)
-		data = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(vData.data()));
-		_mm_storel_epi64(reinterpret_cast<__m128i*>(buffer + readPos), data);
-#else
-		memcpy(buffer + readPos, vData.data(), 8);
-#endif
-
+		// Armazenar os resultados de volta no buffer alinhado com AVX2
+		_mm256_store_si256(reinterpret_cast<__m256i*>(alignedBuffer + readPos), vData);
 		readPos += 8;
 	}
+
+	// Copiar o buffer processado de volta para o buffer original usando AVX2
+	simd_memcpy_avx2(buffer, alignedBuffer, messageLength);
+
+	// Liberar memória alinhada
+#ifdef _WIN32
+	_aligned_free(alignedBuffer);
+#else
+	std::free(alignedBuffer);
+#endif
 }
 
 bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
-	uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
+	const uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
 	if ((msgLength & 7) != 0) {
 		return false;
 	}
 
-	const uint32_t delta = 0x61C88647;
-
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
 	auto messageLength = static_cast<int32_t>(msgLength);
 	int32_t readPos = 0;
-	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
-	// TODO: refactor this for not use c-style
-	uint32_t precachedControlSum[32][2];
-	uint32_t sum = 0xC6EF3720;
 
-	for (auto &i : precachedControlSum) {
-		i[0] = (sum + newKey[(sum >> 11) & 3]);
-		sum += delta;
-		i[1] = (sum + newKey[sum & 3]);
-	}
-	while (readPos < messageLength) {
-		std::array<uint32_t, 2> vData = {};
+	// Precache das somas de controle para descriptografia
+	precacheControlSumsDecrypt();
 
-#if defined(__AVX2__)
-		__m128i data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos));
-		_mm_storeu_si128(reinterpret_cast<__m128i*>(vData.data()), data);
-#elif defined(__SSE2__)
-		__m128i data = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(buffer + readPos));
-		_mm_storel_epi64(reinterpret_cast<__m128i*>(vData.data()), data);
+	// Alocar memória alinhada
+#ifdef _WIN32
+	auto* alignedBuffer = reinterpret_cast<uint8_t*>(_aligned_malloc(messageLength, 32));
 #else
-		memcpy(vData.data(), buffer + readPos, 8);
+	uint8_t* alignedBuffer = reinterpret_cast<uint8_t*>(std::aligned_alloc(32, messageLength));
 #endif
 
-		// XTEA decryption loop
-		for (auto &i : precachedControlSum) {
-			vData[1] -= ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ i[0];
-			vData[0] -= ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ i[1];
+	if (!alignedBuffer) {
+		throw std::bad_alloc(); // Tratar erro de alocação
+	}
+
+	// Copiar os dados para o buffer alinhado usando AVX2
+	simd_memcpy_avx2(alignedBuffer, buffer, messageLength);
+
+	// Processar em blocos de 64 bits
+	while (readPos < messageLength) {
+		// Prefetch para reduzir a latência da memória
+		_mm_prefetch(reinterpret_cast<const char*>(alignedBuffer + readPos + 64), _MM_HINT_T0);
+
+		// Carregar 64 bits (dois inteiros de 32 bits) do buffer alinhado com AVX2
+		__m256i vData = _mm256_load_si256(reinterpret_cast<const __m256i*>(alignedBuffer + readPos));
+
+		auto* vDataArr = reinterpret_cast<uint32_t*>(&vData);
+
+		// Desenrolar o loop em grupos de 8 para melhor uso do pipeline
+		for (int32_t i = 0; i < 32; i += 8) {
+			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[i * 2];
+			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[i * 2 + 1];
+
+			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 1) * 2];
+			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 1) * 2 + 1];
+
+			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 2) * 2];
+			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 2) * 2 + 1];
+
+			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 3) * 2];
+			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 3) * 2 + 1];
+
+			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 4) * 2];
+			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 4) * 2 + 1];
+
+			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 5) * 2];
+			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 5) * 2 + 1];
+
+			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 6) * 2];
+			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 6) * 2 + 1];
+
+			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 7) * 2];
+			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 7) * 2 + 1];
 		}
 
-#if defined(__AVX2__)
-		data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(vData.data()));
-		_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), data);
-
-#elif defined(__SSE2__)
-		data = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(vData.data()));
-		_mm_storel_epi64(reinterpret_cast<__m128i*>(buffer + readPos), data);
-#else
-		memcpy(buffer + readPos, vData.data(), 8);
-#endif
-
+		// Armazenar os resultados de volta no buffer alinhado com AVX2
+		_mm256_store_si256(reinterpret_cast<__m256i*>(alignedBuffer + readPos), vData);
 		readPos += 8;
 	}
 
-	auto innerLength = msg.get<uint16_t>();
+	// Copiar o buffer processado de volta para o buffer original usando AVX2
+	simd_memcpy_avx2(buffer, alignedBuffer, messageLength);
+
+	// Liberar memória alinhada
+#ifdef _WIN32
+	_aligned_free(alignedBuffer);
+#else
+	std::free(alignedBuffer);
+#endif
+
+	const auto innerLength = msg.get<uint16_t>();
 	if (std::cmp_greater(innerLength, msgLength - 2)) {
 		return false;
 	}
@@ -223,19 +279,53 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	return true;
 }
 
+inline void Protocol::precacheControlSumsEncrypt() const {
+	if (cacheEncryptInitialized) {
+		return; // Cache já está pronto para criptografia
+	}
+
+	constexpr uint32_t delta = 0x61C88647;
+	uint32_t sum = 0;
+
+	for (int32_t i = 0; i < 32; ++i) {
+		cachedControlSumsEncrypt[i * 2] = sum + key[sum & 3];
+		sum -= delta;
+		cachedControlSumsEncrypt[i * 2 + 1] = sum + key[(sum >> 11) & 3];
+	}
+
+	cacheEncryptInitialized = true;
+}
+
+inline void Protocol::precacheControlSumsDecrypt() const {
+	if (cacheDecryptInitialized) {
+		return; // Cache já está pronto para descriptografia
+	}
+
+	constexpr uint32_t delta = 0x61C88647;
+	uint32_t sum = 0xC6EF3720;
+
+	for (int32_t i = 0; i < 32; ++i) {
+		cachedControlSumsDecrypt[i * 2] = sum + key[(sum >> 11) & 3];
+		sum += delta;
+		cachedControlSumsDecrypt[i * 2 + 1] = sum + key[sum & 3];
+	}
+
+	cacheDecryptInitialized = true;
+}
+
 bool Protocol::RSA_decrypt(NetworkMessage &msg) {
 	if ((msg.getLength() - msg.getBufferPosition()) < 128) {
 		return false;
 	}
 
-	auto charData = static_cast<char*>(static_cast<void*>(msg.getBuffer()));
+	const auto charData = static_cast<char*>(static_cast<void*>(msg.getBuffer()));
 	// Does not break strict aliasing
 	g_RSA().decrypt(charData + msg.getBufferPosition());
 	return (msg.getByte() == 0);
 }
 
 uint32_t Protocol::getIP() const {
-	if (auto protocolConnection = getConnection()) {
+	if (const auto protocolConnection = getConnection()) {
 		return protocolConnection->getIP();
 	}
 

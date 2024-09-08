@@ -46,7 +46,7 @@ void Webhook::run() {
 
 void Webhook::sendPayload(const std::string &payload, const std::string &url) {
 	std::scoped_lock lock { taskLock };
-	webhooks.push_back(std::make_shared<WebhookTask>(payload, url));
+	webhooks.emplace_back(std::make_shared<WebhookTask>(payload, url));
 }
 
 void Webhook::sendMessage(const std::string &title, const std::string &message, int color, std::string url, bool embed) {
@@ -89,7 +89,7 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/opentibiabr/canary)");
 
-	CURLcode res = curl_easy_perform(curl);
+	const CURLcode res = curl_easy_perform(curl);
 
 	if (res != CURLE_OK) {
 		g_logger().error("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
@@ -107,15 +107,15 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 }
 
 size_t Webhook::writeCallback(void* contents, size_t size, size_t nmemb, void* userp) {
-	size_t real_size = size * nmemb;
-	auto* str = reinterpret_cast<std::string*>(userp);
-	str->append(reinterpret_cast<char*>(contents), real_size);
+	const size_t real_size = size * nmemb;
+	auto* str = static_cast<std::string*>(userp);
+	str->append(static_cast<char*>(contents), real_size);
 	return real_size;
 }
 
 std::string Webhook::getPayload(const std::string &title, const std::string &message, int color, bool embed) const {
-	std::time_t now = getTimeNow();
-	std::string time_buf = formatDate(now);
+	const std::time_t now = getTimeNow();
+	const std::string time_buf = formatDate(now);
 
 	std::stringstream footer_text;
 	footer_text
@@ -125,19 +125,19 @@ std::string Webhook::getPayload(const std::string &title, const std::string &mes
 	std::stringstream payload;
 	if (embed) {
 		payload << "{ \"embeds\": [{ ";
-		payload << "\"title\": \"" << title << "\", ";
+		payload << R"("title": ")" << title << "\", ";
 		if (!message.empty()) {
-			payload << "\"description\": \"" << message << "\", ";
+			payload << R"("description": ")" << message << "\", ";
 		}
 		if (g_configManager().getBoolean(DISCORD_SEND_FOOTER, __FUNCTION__)) {
-			payload << "\"footer\": { \"text\": \"" << footer_text.str() << "\" }, ";
+			payload << R"("footer": { "text": ")" << footer_text.str() << "\" }, ";
 		}
 		if (color >= 0) {
 			payload << "\"color\": " << color;
 		}
 		payload << " }] }";
 	} else {
-		payload << "{ \"content\": \"" << (!message.empty() ? message : title) << "\" }";
+		payload << R"({ "content": ")" << (!message.empty() ? message : title) << "\" }";
 	}
 
 	return payload.str();
@@ -149,7 +149,7 @@ void Webhook::sendWebhook() {
 		return;
 	}
 
-	auto task = webhooks.front();
+	const auto task = webhooks.front();
 
 	std::string response_body;
 	auto response_code = sendRequest(task->url.c_str(), task->payload.c_str(), &response_body);

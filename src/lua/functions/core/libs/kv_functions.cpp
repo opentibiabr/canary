@@ -138,7 +138,7 @@ std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
 				g_logger().warn("[{}] invalid param type", __FUNCTION__);
 				return std::nullopt;
 			}
-			array.push_back(value.value());
+			array.emplace_back(value.value());
 			lua_pop(L, 1);
 		}
 		return ValueWrapper(array);

@@ -35,12 +35,12 @@ std::shared_ptr<BasicTile> static_tryGetTileFromCache(const std::shared_ptr<Basi
 	return ref ? tiles.try_emplace(ref->hash(), ref).first->second : nullptr;
 }
 
-void MapCache::flush() {
+void MapCache::flush() const {
 	items.clear();
 	tiles.clear();
 }
 
-void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) {
+void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const {
 	if (BasicItem->charges > 0) {
 		item->setSubType(BasicItem->charges);
 	}
@@ -54,7 +54,7 @@ void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const 
 	}
 
 	if (item->getTeleport() && (BasicItem->destX != 0 || BasicItem->destY != 0 || BasicItem->destZ != 0)) {
-		auto dest = Position(BasicItem->destX, BasicItem->destY, BasicItem->destZ);
+		const auto dest = Position(BasicItem->destX, BasicItem->destY, BasicItem->destZ);
 		item->getTeleport()->setDestPos(dest);
 	}
 
@@ -75,7 +75,7 @@ void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const 
 }
 
 std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position) {
-	auto item = Item::CreateItem(BasicItem->id, position);
+	const auto &item = Item::CreateItem(BasicItem->id, position);
 	if (!item) {
 		return nullptr;
 	}
@@ -103,7 +103,7 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 }
 
 std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
-	const auto cachedTile = floor->getTileCache(x, y);
+	const auto &cachedTile = floor->getTileCache(x, y);
 	const auto oldTile = floor->getTile(x, y);
 	if (!cachedTile) {
 		return oldTile;
@@ -113,7 +113,7 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 
 	const uint8_t z = floor->getZ();
 
-	auto map = dynamic_cast<Map*>(this);
+	const auto map = dynamic_cast<Map*>(this);
 
 	std::vector<std::shared_ptr<Creature>> oldCreatureList;
 	if (oldTile) {
@@ -126,7 +126,7 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 
 	std::shared_ptr<Tile> tile = nullptr;
 	if (cachedTile->isHouse()) {
-		const auto house = map->houses.getHouse(cachedTile->houseId);
+		const auto &house = map->houses.getHouse(cachedTile->houseId);
 		tile = std::make_shared<HouseTile>(x, y, z, house);
 		house->addTile(std::static_pointer_cast<HouseTile>(tile));
 	} else if (cachedTile->isStatic) {
@@ -173,7 +173,7 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared
 		return;
 	}
 
-	const auto tile = static_tryGetTileFromCache(newTile);
+	const auto &tile = static_tryGetTileFromCache(newTile);
 	if (const auto sector = getMapSector(x, y)) {
 		sector->createFloor(z)->setTileCache(x, y, tile);
 	} else {
@@ -181,7 +181,7 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared
 	}
 }
 
-std::shared_ptr<BasicItem> MapCache::tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref) {
+std::shared_ptr<BasicItem> MapCache::tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref) const {
 	return static_tryGetItemFromCache(ref);
 }
 
@@ -226,7 +226,7 @@ MapSector* MapCache::getBestMapSector(uint32_t x, uint32_t y) {
 }
 
 void BasicTile::hash(size_t &h) const {
-	std::array<uint32_t, 4> arr = { flags, houseId, type, isStatic };
+	const std::array<uint32_t, 4> arr = { flags, houseId, type, isStatic };
 	for (const auto v : arr) {
 		if (v > 0) {
 			stdext::hash_combine(h, v);

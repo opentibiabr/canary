@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include <ctime>
 #include <cstdint>
 #include <chrono>
 

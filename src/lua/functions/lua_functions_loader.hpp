@@ -60,12 +60,12 @@ public:
 	static void setCreatureMetatable(lua_State* L, int32_t index, const std::shared_ptr<Creature> &creature);
 
 	template <typename T>
-	static typename std::enable_if<std::is_enum<T>::value, T>::type
+	static std::enable_if_t<std::is_enum_v<T>, T>
 	getNumber(lua_State* L, int32_t arg) {
 		return static_cast<T>(static_cast<int64_t>(lua_tonumber(L, arg)));
 	}
 	template <typename T>
-	static typename std::enable_if<std::is_integral<T>::value || std::is_floating_point<T>::value, T>::type getNumber(lua_State* L, int32_t arg) {
+	static std::enable_if_t<std::is_integral_v<T> || std::is_floating_point_v<T>, T> getNumber(lua_State* L, int32_t arg) {
 		auto number = lua_tonumber(L, arg);
 		// If there is overflow, we return the value 0
 		if constexpr (std::is_integral_v<T> && std::is_unsigned_v<T>) {

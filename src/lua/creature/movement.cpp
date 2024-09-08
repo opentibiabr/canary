@@ -126,7 +126,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, int3
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
-		moveEventList.moveEvent[moveEvent->getEventType()].push_back(moveEvent);
+		moveEventList.moveEvent[moveEvent->getEventType()].emplace_back(moveEvent);
 		moveListMap[id] = moveEventList;
 		return true;
 	} else {
@@ -245,7 +245,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, cons
 	auto it = moveListMap.find(position);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
-		moveEventList.moveEvent[moveEvent->getEventType()].push_back(moveEvent);
+		moveEventList.moveEvent[moveEvent->getEventType()].emplace_back(moveEvent);
 		moveListMap[position] = moveEventList;
 		return true;
 	} else {
@@ -260,7 +260,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, cons
 			return false;
 		}
 
-		moveEventList.push_back(moveEvent);
+		moveEventList.emplace_back(moveEvent);
 		return true;
 	}
 }

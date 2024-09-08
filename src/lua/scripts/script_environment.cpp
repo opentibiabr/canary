@@ -31,9 +31,9 @@ void ScriptEnvironment::resetEnv() {
 	localMap.clear();
 	tempResults.clear();
 
-	auto pair = tempItems.equal_range(this);
-	auto it = pair.first;
-	while (it != pair.second) {
+	const auto [fst, snd] = tempItems.equal_range(this);
+	auto it = fst;
+	while (it != snd) {
 		const auto item = it->second;
 		it = tempItems.erase(it);
 	}
@@ -53,7 +53,7 @@ bool ScriptEnvironment::setCallbackId(int32_t newCallbackId, LuaScriptInterface*
 	return true;
 }
 
-void ScriptEnvironment::getEventInfo(int32_t &retScriptId, LuaScriptInterface*&retScriptInterface, int32_t &retCallbackId, bool &retTimerEvent) const {
+void ScriptEnvironment::getEventInfo(int32_t &retScriptId, LuaScriptInterface* &retScriptInterface, int32_t &retCallbackId, bool &retTimerEvent) const {
 	retScriptId = this->scriptId;
 	retScriptInterface = interface;
 	retCallbackId = this->callbackId;
@@ -75,9 +75,9 @@ uint32_t ScriptEnvironment::addThing(const std::shared_ptr<Thing> &thing) {
 		return item->getAttribute<uint32_t>(ItemAttribute_t::UNIQUEID);
 	}
 
-	for (const auto &it : localMap) {
-		if (it.second == item) {
-			return it.first;
+	for (const auto &[fst, snd] : localMap) {
+		if (snd == item) {
+			return fst;
 		}
 	}
 
@@ -86,8 +86,8 @@ uint32_t ScriptEnvironment::addThing(const std::shared_ptr<Thing> &thing) {
 }
 
 void ScriptEnvironment::insertItem(uint32_t uid, std::shared_ptr<Item> item) {
-	auto result = localMap.emplace(uid, item);
-	if (!result.second) {
+	const auto [fst, snd] = localMap.emplace(uid, item);
+	if (!snd) {
 		g_logger().error("Thing uid already taken: {}", uid);
 	}
 }
@@ -105,7 +105,7 @@ std::shared_ptr<Thing> ScriptEnvironment::getThingByUID(uint32_t uid) {
 		return nullptr;
 	}
 
-	auto it = localMap.find(uid);
+	const auto it = localMap.find(uid);
 	if (it != localMap.end()) {
 		const auto &item = it->second;
 		if (!item->isRemoved()) {
@@ -137,7 +137,7 @@ void ScriptEnvironment::removeItemByUID(uint32_t uid) {
 		return;
 	}
 
-	auto it = localMap.find(uid);
+	const auto it = localMap.find(uid);
 	if (it != localMap.end()) {
 		localMap.erase(it);
 	}
@@ -162,7 +162,7 @@ uint32_t ScriptEnvironment::addResult(DBResult_ptr res) {
 }
 
 bool ScriptEnvironment::removeResult(uint32_t id) {
-	auto it = tempResults.find(id);
+	const auto it = tempResults.find(id);
 	if (it == tempResults.end()) {
 		return false;
 	}
@@ -172,7 +172,7 @@ bool ScriptEnvironment::removeResult(uint32_t id) {
 }
 
 DBResult_ptr ScriptEnvironment::getResultByID(uint32_t id) {
-	auto it = tempResults.find(id);
+	const auto it = tempResults.find(id);
 	if (it == tempResults.end()) {
 		return nullptr;
 	}

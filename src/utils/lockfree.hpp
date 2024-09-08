@@ -96,7 +96,7 @@ public:
 
 	void deallocate(T* p, size_t) const {
 		if (localCache.size() < LOCAL_CACHE_LIMIT) {
-			localCache.push_back(p);
+			localCache.emplace_back(p);
 		} else {
 			auto &inst = LockfreeFreeList<sizeof(T), CAPACITY>::get();
 			inst.push(p);

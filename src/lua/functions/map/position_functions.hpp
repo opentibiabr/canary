@@ -13,6 +13,12 @@
 
 class PositionFunctions final : LuaScriptInterface {
 public:
+	explicit PositionFunctions(lua_State* L)
+		    : LuaScriptInterface("PositionFunctions") {
+		init(L);
+	}
+	~PositionFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Position", "", PositionFunctions::luaPositionCreate);
 		registerMetaMethod(L, "Position", "__add", PositionFunctions::luaPositionAdd);

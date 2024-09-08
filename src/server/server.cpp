@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include <memory>
+
 #include "pch.hpp"
 
 #include "server/network/message/outputmessage.hpp"
@@ -71,7 +73,7 @@ bool ServicePort::is_single_socket() const {
 
 std::string ServicePort::get_protocol_names() const {
 	if (services.empty()) {
-		return std::string();
+		return {};
 	}
 
 	std::string str = services.front()->get_protocol_name();
@@ -92,15 +94,15 @@ void ServicePort::accept() {
 	acceptor->async_accept(connection->getSocket(), [self = shared_from_this(), connection](const std::error_code &error) { self->onAccept(connection, error); });
 }
 
-void ServicePort::onAccept(Connection_ptr connection, const std::error_code &error) {
+void ServicePort::onAccept(const Connection_ptr& connection, const std::error_code &error) {
 	if (!error) {
 		if (services.empty()) {
 			return;
 		}
 
-		auto remote_ip = connection->getIP();
+		const auto remote_ip = connection->getIP();
 		if (remote_ip != 0 && inject<Ban>().acceptConnection(remote_ip)) {
-			Service_ptr service = services.front();
+			const Service_ptr service = services.front();
 			if (service->is_single_socket()) {
 				connection->accept(service->make_protocol(connection));
 			} else {
@@ -123,7 +125,7 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 }
 
 Protocol_ptr ServicePort::make_protocol(bool checksummed, NetworkMessage &msg, const Connection_ptr &connection) const {
-	uint8_t protocolID = msg.getByte();
+	const uint8_t protocolID = msg.getByte();
 	for (auto &service : services) {
 		if (protocolID != service->get_protocol_identifier()) {
 			continue;
@@ -136,12 +138,12 @@ Protocol_ptr ServicePort::make_protocol(bool checksummed, NetworkMessage &msg, c
 	return nullptr;
 }
 
-void ServicePort::onStopServer() {
+void ServicePort::onStopServer() const {
 	close();
 }
 
-void ServicePort::openAcceptor(std::weak_ptr<ServicePort> weak_service, uint16_t port) {
-	if (auto service = weak_service.lock()) {
+void ServicePort::openAcceptor(const std::weak_ptr<ServicePort>& weak_service, uint16_t port) {
+	if (const auto service = weak_service.lock()) {
 		service->open(port);
 	}
 }
@@ -154,9 +156,9 @@ void ServicePort::open(uint16_t port) {
 
 	try {
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS, __FUNCTION__)) {
-			acceptor.reset(new asio::ip::tcp::acceptor(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP, __FUNCTION__))), serverPort)));
+			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP, __FUNCTION__))), serverPort));
 		} else {
-			acceptor.reset(new asio::ip::tcp::acceptor(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort)));
+			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
 		}
 
 		acceptor->set_option(asio::ip::tcp::no_delay(true));
@@ -173,7 +175,7 @@ void ServicePort::open(uint16_t port) {
 	}
 }
 
-void ServicePort::close() {
+void ServicePort::close() const {
 	if (acceptor && acceptor->is_open()) {
 		std::error_code error;
 		acceptor->close(error);
@@ -185,6 +187,6 @@ bool ServicePort::add_service(const Service_ptr &new_svc) {
 		return false;
 	}
 
-	services.push_back(new_svc);
+	services.emplace_back(new_svc);
 	return true;
 }

@@ -19,9 +19,9 @@ int TileFunctions::luaTileCreate(lua_State* L) {
 	if (isTable(L, 2)) {
 		tile = g_game().map.getTile(getPosition(L, 2));
 	} else {
-		uint8_t z = getNumber<uint8_t>(L, 4);
-		uint16_t y = getNumber<uint16_t>(L, 3);
-		uint16_t x = getNumber<uint16_t>(L, 2);
+		const uint8_t z = getNumber<uint8_t>(L, 4);
+		const uint16_t y = getNumber<uint16_t>(L, 3);
+		const uint16_t x = getNumber<uint16_t>(L, 2);
 		tile = g_game().map.getTile(x, y, z);
 	}
 
@@ -59,7 +59,7 @@ int TileFunctions::luaTileGetGround(lua_State* L) {
 
 int TileFunctions::luaTileGetThing(lua_State* L) {
 	// tile:getThing(index)
-	int32_t index = getNumber<int32_t>(L, 2);
+	const int32_t index = getNumber<int32_t>(L, 2);
 	const auto &tile = getUserdataShared<Tile>(L, 1);
 	if (!tile) {
 		lua_pushnil(L);
@@ -194,7 +194,7 @@ int TileFunctions::luaTileGetItemById(lua_State* L) {
 			return 1;
 		}
 	}
-	auto subType = getNumber<int32_t>(L, 3, -1);
+	const auto subType = getNumber<int32_t>(L, 3, -1);
 
 	const auto &item = g_game().findItemOfType(tile, itemId, false, subType);
 	if (item) {
@@ -216,7 +216,7 @@ int TileFunctions::luaTileGetItemByType(lua_State* L) {
 
 	bool found;
 
-	ItemTypes_t itemType = getNumber<ItemTypes_t>(L, 2);
+	const ItemTypes_t itemType = getNumber<ItemTypes_t>(L, 2);
 	switch (itemType) {
 		case ITEM_TYPE_TELEPORT:
 			found = tile->hasFlag(TILESTATE_TELEPORT);
@@ -278,7 +278,7 @@ int TileFunctions::luaTileGetItemByTopOrder(lua_State* L) {
 		return 1;
 	}
 
-	int32_t topOrder = getNumber<int32_t>(L, 2);
+	const int32_t topOrder = getNumber<int32_t>(L, 2);
 
 	const auto &item = tile->getItemByTopOrder(topOrder);
 	if (!item) {
@@ -299,7 +299,7 @@ int TileFunctions::luaTileGetItemCountById(lua_State* L) {
 		return 1;
 	}
 
-	auto subType = getNumber<int32_t>(L, 3, -1);
+	const auto subType = getNumber<int32_t>(L, 3, -1);
 
 	uint16_t itemId;
 	if (isNumber(L, 2)) {
@@ -562,7 +562,7 @@ int TileFunctions::luaTileQueryAdd(lua_State* L) {
 
 	const auto &thing = getThing(L, 2);
 	if (thing) {
-		auto flags = getNumber<uint32_t>(L, 3, 0);
+		const auto flags = getNumber<uint32_t>(L, 3, 0);
 		lua_pushnumber(L, tile->queryAdd(0, thing, 1, flags));
 	} else {
 		lua_pushnil(L);
@@ -589,7 +589,7 @@ int TileFunctions::luaTileAddItem(lua_State* L) {
 		}
 	}
 
-	auto subType = getNumber<uint32_t>(L, 3, 1);
+	const auto subType = getNumber<uint32_t>(L, 3, 1);
 
 	const auto &item = Item::CreateItem(itemId, std::min<uint32_t>(subType, Item::items[itemId].stackSize));
 	if (!item) {
@@ -597,9 +597,9 @@ int TileFunctions::luaTileAddItem(lua_State* L) {
 		return 1;
 	}
 
-	auto flags = getNumber<uint32_t>(L, 4, 0);
+	const auto flags = getNumber<uint32_t>(L, 4, 0);
 
-	ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
+	const ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
@@ -630,8 +630,8 @@ int TileFunctions::luaTileAddItemEx(lua_State* L) {
 		return 1;
 	}
 
-	auto flags = getNumber<uint32_t>(L, 3, 0);
-	ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
+	const auto flags = getNumber<uint32_t>(L, 3, 0);
+	const ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		ScriptEnvironment::removeTempItem(item);
 	}
@@ -663,13 +663,13 @@ int TileFunctions::luaTileSweep(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	auto actor = getPlayer(L, 2);
+	const auto &actor = getPlayer(L, 2);
 	if (!actor) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	auto house = tile->getHouse();
+	const auto &house = tile->getHouse();
 	if (!house) {
 		g_logger().debug("TileFunctions::luaTileSweep: tile has no house");
 		lua_pushnil(L);
@@ -682,7 +682,7 @@ int TileFunctions::luaTileSweep(lua_State* L) {
 		return 1;
 	}
 
-	auto houseTile = std::dynamic_pointer_cast<HouseTile>(tile);
+	const auto &houseTile = std::dynamic_pointer_cast<HouseTile>(tile);
 	if (!houseTile) {
 		g_logger().debug("TileFunctions::luaTileSweep: tile is not a house tile");
 		lua_pushnil(L);

@@ -32,7 +32,7 @@ void GlobalEvents::clear() {
 
 bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent) {
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
-		auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
+		const auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (timerEventId == 0) {
 				timerEventId = g_dispatcher().scheduleEvent(
@@ -42,12 +42,12 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 			return true;
 		}
 	} else if (globalEvent->getEventType() != GLOBALEVENT_NONE) {
-		auto result = serverMap.emplace(globalEvent->getName(), globalEvent);
+		const auto result = serverMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			return true;
 		}
 	} else { // think event
-		auto result = thinkMap.emplace(globalEvent->getName(), globalEvent);
+		const auto result = thinkMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (thinkEventId == 0) {
 				thinkEventId = g_dispatcher().scheduleEvent(
@@ -75,13 +75,13 @@ void GlobalEvents::save() const {
 }
 
 void GlobalEvents::timer() {
-	time_t now = time(nullptr);
+	const time_t now = time(nullptr);
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 
 	auto it = timerMap.begin();
 	while (it != timerMap.end()) {
-		const auto globalEvent = it->second;
+		const auto &globalEvent = it->second;
 
 		int64_t nextExecutionTime = globalEvent->getNextExecution() - now;
 		if (nextExecutionTime > 0) {
@@ -116,7 +116,7 @@ void GlobalEvents::timer() {
 }
 
 void GlobalEvents::think() {
-	int64_t now = OTSYS_TIME();
+	const int64_t now = OTSYS_TIME();
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 	for (const auto &[globalEventName, globalEvent] : thinkMap) {
@@ -145,7 +145,7 @@ void GlobalEvents::think() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		auto delay = static_cast<uint32_t>(nextScheduledTime);
+		const auto delay = static_cast<uint32_t>(nextScheduledTime);
 		thinkEventId = g_dispatcher().scheduleEvent(
 			delay, [this] { think(); }, "GlobalEvents::think"
 		);
@@ -230,7 +230,7 @@ bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightIn
 	return getScriptInterface()->callFunction(2);
 }
 
-bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
+bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) const {
 	// onRecord(current, old)
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executeRecord - {}] "

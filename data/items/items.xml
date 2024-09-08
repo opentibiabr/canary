@@ -4027,6 +4027,9 @@
 			<attribute key="count" value="2"/>
 			<attribute key="damage" value="20"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="2001" article="an" name="unlit campfire">
 		<attribute key="primarytype" value="illumination"/>
@@ -4342,6 +4345,9 @@
 		</attribute>
 		<attribute key="duration" value="120"/>
 		<attribute key="decayTo" value="2132"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="2132" article="a" name="fire field">
 		<attribute key="type" value="magicfield"/>
@@ -20590,6 +20596,9 @@
 		<attribute key="field" value="fire">
 			<attribute key="damage" value="300"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
 	<item fromid="7474" toid="7475" article="a" name="sarcophagus">
@@ -26310,6 +26319,9 @@
 			<attribute key="count" value="7"/>
 			<attribute key="damage" value="10"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
 	<item id="10070" article="a" name="fire field">
@@ -26319,6 +26331,9 @@
 			<attribute key="count" value="7"/>
 			<attribute key="damage" value="10"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
 	<item id="10071" article="a" name="fire field">
@@ -26327,6 +26342,9 @@
 			<attribute key="ticks" value="10000"/>
 			<attribute key="count" value="7"/>
 			<attribute key="damage" value="10"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
@@ -45774,12 +45792,18 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="23366" article="an" name="energy trap">
 		<attribute key="type" value="magicfield"/>
 		<attribute key="field" value="energy">
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 	</item>
 	<item id="23367" article="a" name="toxic trap">
@@ -45788,6 +45812,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="23368" article="a" name="poison trap">
 		<attribute key="type" value="magicfield"/>
@@ -45795,6 +45822,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="5000"/>
 			<attribute key="damage" value="100"/>
 			<attribute key="start" value="5"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 	</item>
 	<item id="23369" article="a" name="blade trap"/>
@@ -58244,6 +58274,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="field" value="energy">
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 	</item>
 	<item id="31381" name="nothing">

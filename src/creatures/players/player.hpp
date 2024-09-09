@@ -1422,6 +1422,8 @@ public:
 	void sendClosePrivate(uint16_t channelId);
 	void sendIcons();
 	void sendIconBakragore(const IconBakragore icon);
+	void removeBakragoreIcons();
+	void removeBakragoreIcon(const IconBakragore icon);
 	void sendClientCheck() const {
 		if (client) {
 			client->sendClientCheck();

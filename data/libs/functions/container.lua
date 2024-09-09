@@ -20,7 +20,7 @@ function Container:addLoot(loot)
 				local countToAdd = math.min(remainingCount, stackSize)
 				local tmpItem = self:addItem(itemId, countToAdd, INDEX_WHEREEVER, FLAG_NOLIMIT)
 				if not tmpItem then
-					logger.warn("Container:addLoot: failed to add stackable item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
+					logger.warn("Container:addLoot: failed to add stackable item: {} with id {}, to corpse {} with id {}", ItemType(itemId):getName(), itemId, self:getName(), self:getId())
 					goto continue
 				end
 				remainingCount = remainingCount - countToAdd
@@ -28,13 +28,13 @@ function Container:addLoot(loot)
 		elseif iType:getCharges() ~= 0 then
 			local tmpItem = self:addItem(itemId, item.count, INDEX_WHEREEVER, FLAG_NOLIMIT)
 			if not tmpItem then
-				logger.warn("Container:addLoot: failed to add charge item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
+				logger.warn("Container:addLoot: failed to add charge item: {} with id {}, to corpse {} with id {}", ItemType(itemId):getName(), itemId, self:getName(), self:getId())
 			end
 		else
 			for i = 1, item.count do
 				local tmpItem = self:addItem(itemId, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 				if not tmpItem then
-					logger.warn("Container:addLoot: failed to add item: {}, to corpse {} with id {}", ItemType(itemId):getName(), self:getName(), self:getId())
+					logger.warn("Container:addLoot: failed to add item: {} with id {}, to corpse {} with id {}", ItemType(itemId):getName(), itemId, self:getName(), self:getId())
 					goto continue
 				end
 

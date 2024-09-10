@@ -1196,7 +1196,15 @@ function Player:resetTaints(skipCheckTime)
 		end
 		self:resetTaintConditions()
 		soulWarQuest:remove("firstTaintTime")
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your goshnar's taints have been reset. You didn't finish the quest in 14 days")
+		local resetMessage = "Your Goshnar's taints have been reset."
+		if not skipCheckTime then
+			resetMessage = resetMessage .. " You didn't finish the quest in 14 days."
+		end
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, resetMessage)
+
+		for bossName, _ in pairs(SoulWarQuest.miniBosses) do
+			soulWarQuest:remove(bossName)
+		end
 	end
 end
 

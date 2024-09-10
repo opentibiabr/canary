@@ -29,6 +29,83 @@ class ServicePort;
 using ServicePort_ptr = std::shared_ptr<ServicePort>;
 using ConstServicePort_ptr = std::shared_ptr<const ServicePort>;
 
+template <typename T>
+class LockFreeQueue {
+private:
+	struct Node {
+		T data; // Armazena diretamente um T (neste caso, OutputMessage_ptr)
+		std::atomic<Node*> next;
+
+		explicit Node(T value) :
+			data(std::move(value)), next(nullptr) { }
+	};
+
+	std::atomic<Node*> head;
+	std::atomic<Node*> tail;
+
+public:
+	LockFreeQueue() {
+		Node* dummy = new Node(T()); // Nó fictício (dummy node) para iniciar a fila
+		head.store(dummy);
+		tail.store(dummy);
+	}
+
+	~LockFreeQueue() {
+		while (Node* node = head.load()) {
+			head.store(node->next);
+			delete node;
+		}
+	}
+
+	// Enfileirar
+	void enqueue(T value) {
+		Node* newNode = new Node(std::move(value));
+		Node* oldTail = nullptr;
+
+		while (true) {
+			oldTail = tail.load();
+			Node* tailNext = oldTail->next.load();
+
+			if (oldTail == tail.load()) {
+				if (tailNext == nullptr) {
+					if (oldTail->next.compare_exchange_weak(tailNext, newNode)) {
+						tail.compare_exchange_weak(oldTail, newNode);
+						return;
+					}
+				} else {
+					tail.compare_exchange_weak(oldTail, tailNext);
+				}
+			}
+		}
+	}
+
+	// Desenfileirar
+	T dequeue() {
+		Node* oldHead = nullptr;
+
+		while (true) {
+			oldHead = head.load();
+			Node* oldTail = tail.load();
+			Node* headNext = oldHead->next.load();
+
+			if (oldHead == head.load()) {
+				if (oldHead == oldTail) {
+					if (headNext == nullptr) {
+						return nullptr; // Fila está vazia, retorna um valor padrão
+					}
+					tail.compare_exchange_weak(oldTail, headNext);
+				} else {
+					if (head.compare_exchange_weak(oldHead, headNext)) {
+						T result = std::move(headNext->data); // Move o `OutputMessage_ptr` diretamente
+						delete oldHead;
+						return result;
+					}
+				}
+			}
+		}
+	}
+};
+
 class ConnectionManager {
 public:
 	ConnectionManager() = default;
@@ -37,7 +114,7 @@ public:
 		return inject<ConnectionManager>();
 	}
 
-	Connection_ptr createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort);
+	Connection_ptr createConnection(asio::io_service &io_service, const ConstServicePort_ptr &servicePort);
 	void releaseConnection(const Connection_ptr &connection);
 	void closeAll();
 
@@ -76,7 +153,7 @@ private:
 
 	void onWriteOperation(const std::error_code &error);
 
-	static void handleTimeout(ConnectionWeak_ptr connectionWeak, const std::error_code &error);
+	static void handleTimeout(const ConnectionWeak_ptr &connectionWeak, const std::error_code &error);
 
 	void closeSocket();
 	void internalWorker();
@@ -91,20 +168,19 @@ private:
 	asio::high_resolution_timer readTimer;
 	asio::high_resolution_timer writeTimer;
 
-	std::recursive_mutex connectionLock;
-
-	std::list<OutputMessage_ptr> messageQueue;
-
 	ConstServicePort_ptr service_port;
 	Protocol_ptr protocol;
 
 	asio::ip::tcp::socket socket;
+	LockFreeQueue<OutputMessage_ptr> messageQueue;
+	std::atomic<bool> writing { false };
 
 	std::time_t timeConnected = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	uint32_t packetsSent = 0;
-	uint32_t ip = 1;
+	std::atomic<uint32_t> ip { 1 };
 
-	std::underlying_type_t<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
+	std::atomic<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
+
 	bool receivedFirst = false;
 
 	friend class ServicePort;

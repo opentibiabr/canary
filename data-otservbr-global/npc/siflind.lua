@@ -59,54 +59,54 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TheIceIslands.Questline) == 5 then
+		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 5 then
 			npcHandler:say("I heard you have already helped our cause. Are you interested in another mission, even when it requires you to travel to a distant land?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 7 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 7 then
 			npcHandler:say("Well done. The termites caused just the distraction that we needed. Are you ready for the next step of my plan?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 9 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 9 then
 			npcHandler:say("You saved the lives of many innocent animals. Thank you very much. If you are looking for another mission, just ask me.", npc, creature)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 10)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 10)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 10 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 10 then
 			npcHandler:say("Our warriors need a more potent yet more secure berserker elixir to fight our enemies. To brew it, I need several ingredients. The first things needed are 5 bat wings. Bring them to me and Ill tell you the next ingredients we need.", npc, creature)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 11)
-			player:setStorageValue(Storage.TheIceIslands.Mission05, 1) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 11)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission05, 1) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 11 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 11 then
 			npcHandler:say("Do you have the 5 bat wings I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 12 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 12 then
 			npcHandler:say("The second things needed are 4 bear paws. Bring them to me and Ill tell you the next ingredients we need.", npc, creature)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 13)
-			player:setStorageValue(Storage.TheIceIslands.Mission05, 2) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 13)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission05, 2) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 13 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 13 then
 			npcHandler:say("Do you have the 4 bear paws I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 6)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 14 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 14 then
 			npcHandler:say("The next things needed are 3 bonelord eyes. Bring them to me and Ill tell you the next ingredients we need.", npc, creature)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 15)
-			player:setStorageValue(Storage.TheIceIslands.Mission05, 3) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 15)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission05, 3) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 15 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 15 then
 			npcHandler:say("Do you have the 3 bonelord eyes I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 7)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 16 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 16 then
 			npcHandler:say("The next things needed are 2 fish fins. Bring them to me and Ill tell you the next ingredients we need.", npc, creature)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 17)
-			player:setStorageValue(Storage.TheIceIslands.Mission05, 4) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 17)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission05, 4) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 17 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 17 then
 			npcHandler:say("Do you have the 2 fish fins I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 8)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 18 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 18 then
 			npcHandler:say("The last thing needed is a green dragon scale. Bring them to me and Ill tell you the next ingredients we need.", npc, creature)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 19)
-			player:setStorageValue(Storage.TheIceIslands.Mission05, 5) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 19)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission05, 5) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 19 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 19 then
 			npcHandler:say("Do you have the green dragon scale I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 9)
 		else
@@ -123,8 +123,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Take this jug here and travel to the jungle of Tiquanda. There you will find a race of wood eating ants called termites. Use the jug on one of their hills to catch some of them ...",
 				"Then find someone in Svargrond that brings you to Tyrsung. There, release the termites on the bottom of a mast in the hull of the hunters' ship. If you are done, report to me about your mission.",
 			}, npc, creature)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 6)
-			player:setStorageValue(Storage.TheIceIslands.Mission03, 1) -- Questlog The Ice Islands Quest, Nibelor 2: Ecological Terrorism
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 6)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission03, 1) -- Questlog The Ice Islands Quest, Nibelor 2: Ecological Terrorism
 			player:addItem(7243, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
@@ -140,13 +140,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say("So let's proceed. Take this vial of paint. Travel to Tyrsung again and ruin as many pelts of baby seals as possible before the paint runs dry or freezes. Then return here to report about your mission. ", npc, creature)
 			player:addItem(7253, 1)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 8)
-			player:setStorageValue(Storage.TheIceIslands.Mission04, 1) -- Questlog The Ice Islands Quest, Nibelor 3: Artful Sabotage
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 8)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission04, 1) -- Questlog The Ice Islands Quest, Nibelor 3: Artful Sabotage
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 5 then -- Wings
 			if player:removeItem(5894, 5) then
 				npcHandler:say("Thank you very much.", npc, creature)
-				player:setStorageValue(Storage.TheIceIslands.Questline, 12)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 12)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("Come back when you do.", npc, creature)
@@ -155,7 +155,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 6 then -- Paws
 			if player:removeItem(5896, 4) then
 				npcHandler:say("Thank you very much.", npc, creature)
-				player:setStorageValue(Storage.TheIceIslands.Questline, 14)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 14)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("Come back when you do.", npc, creature)
@@ -164,7 +164,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 7 then -- Eyes
 			if player:removeItem(5898, 3) then
 				npcHandler:say("Thank you very much.", npc, creature)
-				player:setStorageValue(Storage.TheIceIslands.Questline, 16)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 16)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("Come back when you do.", npc, creature)
@@ -173,7 +173,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 8 then -- Fins
 			if player:removeItem(5895, 2) then
 				npcHandler:say("Thank you very much.", npc, creature)
-				player:setStorageValue(Storage.TheIceIslands.Questline, 18)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 18)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("Come back when you do.", npc, creature)
@@ -182,8 +182,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 9 then -- Scale
 			if player:removeItem(5920, 1) then
 				npcHandler:say("Thank you very much. This will help us to defend Svargrond. But I heard young Nilsor is in dire need of help. Please contact him immediately.", npc, creature)
-				player:setStorageValue(Storage.TheIceIslands.Questline, 20)
-				player:setStorageValue(Storage.TheIceIslands.Mission05, 6) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 20)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission05, 6) -- Questlog The Ice Islands Quest, Nibelor 4: Berserk Brewery
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("Come back when you do.", npc, creature)
@@ -192,7 +192,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	end
 	if MsgContains(message, "buy animal cure") or MsgContains(message, "animal cure") then -- animal cure for in service of yalahar
-		if player:getStorageValue(Storage.InServiceofYalahar.Questline) >= 30 and player:getStorageValue(Storage.InServiceofYalahar.Questline) <= 54 then
+		if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) >= 30 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) <= 54 then
 			npcHandler:say("You want to buy animal cure for 400 gold coins?", npc, creature)
 			npcHandler:setTopic(playerId, 13)
 		else

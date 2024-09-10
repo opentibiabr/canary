@@ -20,6 +20,8 @@ public:
 		registerMethod(L, "MonsterType", "isAttackable", MonsterTypeFunctions::luaMonsterTypeIsAttackable);
 		registerMethod(L, "MonsterType", "isConvinceable", MonsterTypeFunctions::luaMonsterTypeIsConvinceable);
 		registerMethod(L, "MonsterType", "isSummonable", MonsterTypeFunctions::luaMonsterTypeIsSummonable);
+		registerMethod(L, "MonsterType", "isPreyable", MonsterTypeFunctions::luaMonsterTypeIsPreyable);
+		registerMethod(L, "MonsterType", "isPreyExclusive", MonsterTypeFunctions::luaMonsterTypeIsPreyExclusive);
 		registerMethod(L, "MonsterType", "isIllusionable", MonsterTypeFunctions::luaMonsterTypeIsIllusionable);
 		registerMethod(L, "MonsterType", "isHostile", MonsterTypeFunctions::luaMonsterTypeIsHostile);
 		registerMethod(L, "MonsterType", "isPushable", MonsterTypeFunctions::luaMonsterTypeIsPushable);
@@ -153,6 +155,8 @@ private:
 	static int luaMonsterTypeIsAttackable(lua_State* L);
 	static int luaMonsterTypeIsConvinceable(lua_State* L);
 	static int luaMonsterTypeIsSummonable(lua_State* L);
+	static int luaMonsterTypeIsPreyable(lua_State* L);
+	static int luaMonsterTypeIsPreyExclusive(lua_State* L);
 	static int luaMonsterTypeIsIllusionable(lua_State* L);
 	static int luaMonsterTypeIsHostile(lua_State* L);
 	static int luaMonsterTypeIsPushable(lua_State* L);

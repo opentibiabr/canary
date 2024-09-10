@@ -1,6 +1,17 @@
 -- Look README.md for see the reserved action/unique numbers
 
 ItemAction = {
+	[100] = {
+		itemId = false,
+		itemPos = {
+			-- In Service of Yalahar Quest
+			{ x = 32776, y = 31062, z = 7 },
+			{ x = 32884, y = 31248, z = 8 },
+			{ x = 32885, y = 31248, z = 8 },
+			-- Sea of Light Quest
+			{ x = 32011, y = 31709, z = 7 },
+		},
+	},
 	--Parchment room quest
 	-- data\scripts\quests\parchment_room\movement-parchment.lua
 	[102] = { -- downFloor
@@ -17,6 +28,41 @@ ItemAction = {
 	[104] = {
 		itemId = 2819,
 		itemPos = { { x = 33063, y = 31624, z = 15 } },
+	},
+	-- The Inquisition Quest
+	[1004] = {
+		itemId = 5113,
+		itemPos = {
+			{ x = 33146, y = 31639, z = 11 },
+		},
+	},
+	-- The Travelling Trader Quest
+	[1108] = {
+		itemId = 1642,
+		itemPos = { { x = 32660, y = 32192, z = 8 } },
+	},
+	-- The Inquisition Quest
+	[2000] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32657, y = 31927, z = 1 },
+			{ x = 32658, y = 31927, z = 1 },
+			{ x = 32657, y = 31928, z = 1 },
+			{ x = 32658, y = 31928, z = 1 },
+		},
+	},
+	[2002] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32779, y = 31979, z = 9 },
+			{ x = 32779, y = 31980, z = 9 },
+		},
+	},
+	[2003] = {
+		itemId = 7867,
+		itemPos = {
+			{ x = 32256, y = 32790, z = 7 },
+		},
 	},
 	-- The Pits of Inferno Quest
 	[2023] = {
@@ -54,6 +100,16 @@ ItemAction = {
 			{ x = 32822, y = 32332, z = 9 },
 		},
 	},
+	-- Griffinclaw flower
+	[3152] = {
+		itemId = 5658,
+		itemPos = { x = 32024, y = 32830, z = 4 },
+	},
+	-- To Blind the Enemy Quest
+	[4001] = {
+		itemId = 132,
+		itemPos = { { x = 32592, y = 31645, z = 2 } },
+	},
 	-- The Pits of Inferno Quest
 	[4002] = {
 		itemId = 353,
@@ -61,10 +117,205 @@ ItemAction = {
 			{ x = 32854, y = 32326, z = 11 },
 		},
 	},
-	-- Griffinclaw flower
-	[3152] = {
-		itemId = 5658,
-		itemPos = { x = 32024, y = 32830, z = 4 },
+	-- What a Foolish Quest
+	[4200] = {
+		itemId = 3656,
+		itemPos = { { x = 32349, y = 32361, z = 7 } },
+	},
+	[4202] = {
+		itemId = 5916,
+		itemPos = { { x = 32312, y = 31754, z = 7 } },
+	},
+	[4203] = {
+		itemId = 3520,
+		itemPos = { { x = 33062, y = 32431, z = 2 } },
+	},
+	-- Into The Bone Pit Quest - ectoplasm container
+	[4205] = {
+		itemId = 103,
+		itemPos = { { x = 32408, y = 32107, z = 10 } },
+	},
+	-- The Exterminator Quest
+	[4207] = {
+		itemId = 622,
+		itemPos = {
+			{ x = 32306, y = 31821, z = 9 },
+			{ x = 32306, y = 31822, z = 9 },
+		},
+	},
+	-- Rest in Hallowed Ground Quest
+	[4208] = {
+		itemId = 1979,
+		itemPos = { { x = 33188, y = 31688, z = 6 } },
+	},
+	[4209] = {
+		itemId = 1979,
+		itemPos = { { x = 33190, y = 31691, z = 6 } },
+	},
+	[4210] = {
+		itemId = 1979,
+		itemPos = { { x = 33192, y = 31688, z = 6 } },
+	},
+	[4211] = {
+		itemId = 1979,
+		itemPos = { { x = 33196, y = 31691, z = 6 } },
+	},
+	[4212] = {
+		itemId = 1979,
+		itemPos = { { x = 33197, y = 31687, z = 6 } },
+	},
+	[4213] = {
+		itemId = 1979,
+		itemPos = { { x = 33202, y = 31689, z = 6 } },
+	},
+	[4214] = {
+		itemId = 1979,
+		itemPos = { { x = 33203, y = 31687, z = 6 } },
+	},
+	[4215] = {
+		itemId = 1979,
+		itemPos = { { x = 33204, y = 31688, z = 6 } },
+	},
+	[4216] = {
+		itemId = 1979,
+		itemPos = { { x = 33203, y = 31682, z = 6 } },
+	},
+	[4217] = {
+		itemId = 1979,
+		itemPos = { { x = 33205, y = 31680, z = 6 } },
+	},
+	[4218] = {
+		itemId = 1979,
+		itemPos = { { x = 33203, y = 31677, z = 6 } },
+	},
+	[4219] = {
+		itemId = 1979,
+		itemPos = { { x = 33210, y = 31670, z = 7 } },
+	},
+	[4220] = {
+		itemId = 1979,
+		itemPos = { { x = 33215, y = 31667, z = 7 } },
+	},
+	[4221] = {
+		itemId = 1979,
+		itemPos = { { x = 33219, y = 31671, z = 7 } },
+	},
+	[4222] = {
+		itemId = 1979,
+		itemPos = { { x = 33223, y = 31665, z = 7 } },
+	},
+	[4223] = {
+		itemId = 1979,
+		itemPos = { { x = 33217, y = 31661, z = 7 } },
+	},
+	-- In Service of Yalahar Quest
+	[7812] = {
+		itemId = 7804,
+		itemPos = {
+			{ x = 32950, y = 31182, z = 6 },
+			{ x = 32951, y = 31182, z = 6 },
+			{ x = 32950, y = 31183, z = 6 },
+			{ x = 32951, y = 31183, z = 6 },
+		},
+	},
+	-- Children of the Revolution Quest
+	[8009] = {
+		itemId = 10180,
+		itemPos = {
+			{ x = 33229, y = 31157, z = 7 },
+			{ x = 33230, y = 31157, z = 7 },
+		},
+	},
+	[8010] = {
+		itemId = 10180,
+		itemPos = {
+			{ x = 33228, y = 31151, z = 8 },
+		},
+	},
+	[8011] = {
+		itemId = 10180,
+		itemPos = {
+			{ x = 33257, y = 31174, z = 7 },
+			{ x = 33258, y = 31174, z = 7 },
+		},
+	},
+	[8012] = {
+		itemId = 10133,
+		itemPos = {
+			{ x = 33290, y = 31123, z = 5 },
+			{ x = 33291, y = 31122, z = 5 },
+			{ x = 33291, y = 31123, z = 5 },
+			{ x = 33292, y = 31121, z = 5 },
+			{ x = 33292, y = 31122, z = 5 },
+			{ x = 33292, y = 31123, z = 5 },
+			{ x = 33293, y = 31121, z = 5 },
+			{ x = 33293, y = 31123, z = 5 },
+			{ x = 33294, y = 31121, z = 5 },
+			{ x = 33294, y = 31123, z = 5 },
+			{ x = 33290, y = 31125, z = 5 },
+			{ x = 33291, y = 31124, z = 5 },
+			{ x = 33291, y = 31125, z = 5 },
+			{ x = 33291, y = 31126, z = 5 },
+			{ x = 33292, y = 31124, z = 5 },
+			{ x = 33292, y = 31125, z = 5 },
+			{ x = 33293, y = 31122, z = 5 },
+		},
+	},
+	-- Wrath of the Emperor Quest
+	[8024] = {
+		itemId = false,
+		itemPos = {
+			{ x = 33250, y = 31067, z = 10 },
+			{ x = 33251, y = 31064, z = 10 },
+			{ x = 33251, y = 31066, z = 10 },
+			{ x = 33251, y = 31067, z = 10 },
+			{ x = 33252, y = 31065, z = 10 },
+			{ x = 33250, y = 31068, z = 10 },
+			{ x = 33251, y = 31065, z = 10 },
+			{ x = 33250, y = 31064, z = 10 },
+			{ x = 33250, y = 31065, z = 10 },
+			{ x = 33250, y = 31066, z = 10 },
+		},
+	},
+	[8025] = {
+		itemId = false,
+		itemPos = {
+			{ x = 33282, y = 31037, z = 10 },
+			{ x = 33282, y = 31036, z = 10 },
+			{ x = 33282, y = 31036, z = 10 },
+		},
+	},
+	[8026] = {
+		itemId = false,
+		itemPos = {
+			{ x = 33168, y = 31073, z = 11 },
+			{ x = 33179, y = 31072, z = 11 },
+			{ x = 33175, y = 31078, z = 11 },
+			{ x = 33181, y = 31078, z = 11 },
+			{ x = 33183, y = 31076, z = 11 },
+			{ x = 33176, y = 31082, z = 11 },
+			{ x = 33184, y = 31072, z = 11 },
+			{ x = 33161, y = 31061, z = 11 },
+			{ x = 33167, y = 31060, z = 11 },
+			{ x = 33161, y = 31066, z = 11 },
+			{ x = 33164, y = 31064, z = 11 },
+			{ x = 33165, y = 31067, z = 11 },
+			{ x = 33161, y = 31070, z = 11 },
+			{ x = 33182, y = 31059, z = 11 },
+			{ x = 33177, y = 31062, z = 11 },
+			{ x = 33180, y = 31063, z = 11 },
+			{ x = 33178, y = 31067, z = 11 },
+			{ x = 33182, y = 31066, z = 11 },
+			{ x = 33170, y = 31068, z = 11 },
+			{ x = 33176, y = 31070, z = 11 },
+			{ x = 33182, y = 31071, z = 11 },
+			{ x = 33183, y = 31069, z = 11 },
+			{ x = 33161, y = 31074, z = 11 },
+			{ x = 33167, y = 31075, z = 11 },
+			{ x = 33164, y = 31076, z = 11 },
+			{ x = 33166, y = 31081, z = 11 },
+			{ x = 33165, y = 31084, z = 11 },
+		},
 	},
 	-- The Pits of Inferno Quest
 	[8815] = {
@@ -116,7 +367,7 @@ ItemAction = {
 		},
 	},
 	-- The Ancient Tombs Quest
-	[12105] = {
+	[12106] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33188, y = 32660, z = 15 },
@@ -143,6 +394,68 @@ ItemAction = {
 			{ x = 33122, y = 32765, z = 14 },
 		},
 	},
+	-- Children of the Revolution Quest
+	[12141] = {
+		itemId = 7890,
+		itemPos = {
+			{ x = 33187, y = 31205, z = 6 },
+		},
+	},
+	[12142] = {
+		itemId = 8795,
+		itemPos = {
+			{ x = 33187, y = 31205, z = 7 },
+		},
+	},
+	-- Unnatural Selection Quest
+	[12333] = {
+		itemId = 10195,
+		itemPos = {
+			{ x = 32990, y = 31496, z = 1 },
+			{ x = 32990, y = 31497, z = 1 },
+			{ x = 32990, y = 31498, z = 1 },
+			{ x = 32991, y = 31496, z = 1 },
+			{ x = 32991, y = 31497, z = 1 },
+			{ x = 32991, y = 31498, z = 1 },
+			{ x = 32992, y = 31496, z = 1 },
+			{ x = 32992, y = 31497, z = 1 },
+			{ x = 32992, y = 31498, z = 1 },
+		},
+	},
+	-- The Thieves Guild Quest
+	[12501] = {
+		itemId = 7890,
+		itemPos = { { x = 32337, y = 31814, z = 7 } },
+	},
+	[12502] = {
+		itemId = 7891,
+		itemPos = { { x = 32337, y = 31814, z = 6 } },
+	},
+	[12503] = {
+		itemId = 7892,
+		itemPos = { { x = 32337, y = 31812, z = 6 } },
+	},
+	[12509] = {
+		itemId = 1451,
+		itemPos = { { x = 32598, y = 32381, z = 10 } },
+	},
+	-- Secret Service
+	[12550] = {
+		itemId = 16622,
+		itemPos = { { x = 32893, y = 32013, z = 6 } },
+	},
+	[12551] = {
+		itemId = 16485,
+		itemPos = { { x = 32894, y = 32013, z = 6 } },
+	},
+	[12563] = {
+		itemId = 6967,
+		itemPos = { { x = 32020, y = 31439, z = 1 } },
+	},
+	[12566] = {
+		itemId = 2525,
+		itemPos = { { x = 32205, y = 31153, z = 8 } },
+	},
 	-- The Shattered Isles Quest
 	[12585] = {
 		itemId = 1949,
@@ -161,13 +474,6 @@ ItemAction = {
 		itemId = 2576,
 		itemPos = {
 			{ x = 32741, y = 32382, z = 15 },
-		},
-	},
-	-- Hunter Outfits Quest - piano
-	[33216] = {
-		itemId = 6123,
-		itemPos = {
-			{ x = 32406, y = 32794, z = 9 },
 		},
 	},
 	-- The Pits of Inferno Quest
@@ -319,6 +625,13 @@ ItemAction = {
 		itemId = 353,
 		itemPos = {
 			{ x = 32858, y = 32321, z = 9 },
+		},
+	},
+	-- Hunter Outfits Quest - piano
+	[33216] = {
+		itemId = 6123,
+		itemPos = {
+			{ x = 32406, y = 32794, z = 9 },
 		},
 	},
 	-- The Pits of Inferno
@@ -670,6 +983,37 @@ ItemAction = {
 			{ x = 32862, y = 32495, z = 9 },
 		},
 	},
+	-- Rottin Wood and the Married Men Quest
+	[42501] = {
+		itemId = 12183,
+		itemPos = {
+			{ x = 32647, y = 32216, z = 7 },
+		},
+	},
+	[42502] = {
+		itemId = 12183,
+		itemPos = {
+			{ x = 32660, y = 32213, z = 7 },
+		},
+	},
+	[42503] = {
+		itemId = 12185,
+		itemPos = {
+			{ x = 32644, y = 32183, z = 6 },
+		},
+	},
+	[42504] = {
+		itemId = 12184,
+		itemPos = {
+			{ x = 32660, y = 32201, z = 7 },
+		},
+	},
+	[42505] = {
+		itemId = 12185,
+		itemPos = {
+			{ x = 32652, y = 32200, z = 5 },
+		},
+	},
 	-- The Pits of Inferno
 	[50082] = {
 		itemId = 2576,
@@ -689,6 +1033,37 @@ ItemAction = {
 			{ x = 32732, y = 32264, z = 15 },
 		},
 	},
+	-- The Hidden City of Beregar Quest
+	[50090] = {
+		itemId = 6298,
+		itemPos = {
+			{ x = 32566, y = 31338, z = 9 },
+		},
+	},
+	[50091] = {
+		itemId = 7739,
+		itemPos = {
+			{ x = 32607, y = 31501, z = 13 },
+		},
+	},
+	[50092] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32611, y = 31497, z = 14 },
+		},
+	},
+	[50093] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32611, y = 31497, z = 15 },
+		},
+	},
+	[50127] = {
+		itemId = 8425,
+		itemPos = {
+			{ x = 32551, y = 31379, z = 15 },
+		},
+	},
 	-- Dreamers Challenge Quest
 	[50149] = {
 		itemId = 1949,
@@ -702,9 +1077,33 @@ ItemAction = {
 			{ x = 32788, y = 32227, z = 14 },
 		},
 	},
+	-- The Ice Islands Quest, Nibelor 1: Breaking the Ice
+	[60000] = {
+		itemId = 7185,
+		itemPos = {
+			{ x = 32399, y = 31051, z = 7 },
+			{ x = 32394, y = 31062, z = 7 },
+			{ x = 32393, y = 31072, z = 7 },
+		},
+	},
 }
 
 ItemUnique = {
+	-- The Demon Oak Quest
+	[1001] = {
+		itemId = 1979,
+		itemPos = { x = 32710, y = 32398, z = 7 },
+	},
+	-- In Service of Yalahar Quest
+	[1015] = {
+		itemId = 8821,
+		itemPos = { x = 32682, y = 31242, z = 6 },
+	},
+	-- The Ice Islands Quest
+	[1061] = {
+		itemId = 2576,
+		itemPos = { x = 32455, y = 31166, z = 12 },
+	},
 	-- The Pits of Inferno Quest
 	[2000] = {
 		itemId = 599,
@@ -773,6 +1172,131 @@ ItemUnique = {
 	[2096] = {
 		itemId = 1482,
 		itemPos = { x = 32824, y = 32224, z = 12 },
+	},
+	-- The Inquisition Quest
+	[2150] = {
+		itemId = 1949,
+		itemPos = { x = 33230, y = 31633, z = 12 },
+	},
+	[2151] = {
+		itemId = 1949,
+		itemPos = { x = 33157, y = 31728, z = 11 },
+	},
+	[2152] = {
+		itemId = 1949,
+		itemPos = { x = 33068, y = 31782, z = 13 },
+	},
+	[2153] = {
+		itemId = 1949,
+		itemPos = { x = 33169, y = 31705, z = 14 },
+	},
+	[2154] = {
+		itemId = 1949,
+		itemPos = { x = 33065, y = 31771, z = 10 },
+	},
+	[2155] = {
+		itemId = 1949,
+		itemPos = { x = 33168, y = 31755, z = 13 },
+	},
+	[2156] = {
+		itemId = 1949,
+		itemPos = { x = 33260, y = 31750, z = 13 },
+	},
+	[2157] = {
+		itemId = 1949,
+		itemPos = { x = 33123, y = 31692, z = 11 },
+	},
+	[2158] = {
+		itemId = 1949,
+		itemPos = { x = 33372, y = 31614, z = 14 },
+	},
+	[2159] = {
+		itemId = 1949,
+		itemPos = { x = 33175, y = 31709, z = 14 },
+	},
+	[2160] = {
+		itemId = 1949,
+		itemPos = { x = 33357, y = 31588, z = 12 },
+	},
+	[2161] = {
+		itemId = 1949,
+		itemPos = { x = 33365, y = 31613, z = 11 },
+	},
+	[2162] = {
+		itemId = 1949,
+		itemPos = { x = 33197, y = 31768, z = 11 },
+	},
+	[2163] = {
+		itemId = 1949,
+		itemPos = { x = 33152, y = 31782, z = 12 },
+	},
+	[2164] = {
+		itemId = 1949,
+		itemPos = { x = 33175, y = 31713, z = 14 },
+	},
+	[2165] = {
+		itemId = 1949,
+		itemPos = { x = 33234, y = 31758, z = 12 },
+	},
+	[2166] = {
+		itemId = 1949,
+		itemPos = { x = 33249, y = 31632, z = 13 },
+	},
+	[2167] = {
+		itemId = 1949,
+		itemPos = { x = 33339, y = 31632, z = 13 },
+	},
+	[2168] = {
+		itemId = 1949,
+		itemPos = { x = 33232, y = 31734, z = 11 },
+	},
+	[2169] = {
+		itemId = 1949,
+		itemPos = { x = 33038, y = 31752, z = 15 },
+	},
+	[2170] = {
+		itemId = 1949,
+		itemPos = { x = 33170, y = 31719, z = 14 },
+	},
+	[2171] = {
+		itemId = 1949,
+		itemPos = { x = 33187, y = 31759, z = 15 },
+	},
+	[2172] = {
+		itemId = 1949,
+		itemPos = { x = 33093, y = 31574, z = 11 },
+	},
+	[2173] = {
+		itemId = 1949,
+		itemPos = { x = 33137, y = 31671, z = 11 },
+	},
+	[2174] = {
+		itemId = 1949,
+		itemPos = { x = 33197, y = 31704, z = 11 },
+	},
+	[2175] = {
+		itemId = 1949,
+		itemPos = { x = 33199, y = 31687, z = 12 },
+	},
+	[2176] = {
+		itemId = 1949,
+		itemPos = { x = 33165, y = 31719, z = 14 },
+	},
+	[2177] = {
+		itemId = 1949,
+		itemPos = { x = 33225, y = 31607, z = 9 },
+	},
+	[2178] = {
+		itemId = 1949,
+		itemPos = { x = 33104, y = 31735, z = 11 },
+	},
+	[2179] = {
+		itemId = 1949,
+		itemPos = { x = 33110, y = 31681, z = 12 },
+	},
+	[2180] = {
+		itemId = 1949,
+		itemPos = { x = 33355, y = 31589, z = 11 },
 	},
 	-- Dreamers Challenge Quest
 	[2241] = {
@@ -862,6 +1386,151 @@ ItemUnique = {
 		itemId = 1949,
 		itemPos = { x = 32819, y = 32347, z = 4 },
 	},
+	-- Koshei the Deathless Quest
+	[3070] = {
+		itemId = 7534,
+		itemPos = { x = 33281, y = 32447, z = 8 },
+	},
+	-- In Service of Yalahar Quest
+	[3071] = {
+		itemId = 8435,
+		itemPos = { x = 32823, y = 31161, z = 8 },
+	},
+	[3072] = {
+		itemId = 8615,
+		itemPos = { x = 32842, y = 31250, z = 8 },
+	},
+	[3073] = {
+		itemId = 5025,
+		itemPos = { x = 32795, y = 31152, z = 8 },
+	},
+	[3074] = {
+		itemId = 8431,
+		itemPos = { x = 32796, y = 31191, z = 8 },
+	},
+	[3081] = {
+		itemId = 5287,
+		itemPos = { x = 32786, y = 31286, z = 8 },
+	},
+	[3082] = {
+		itemId = 6260,
+		itemPos = { x = 32771, y = 31355, z = 5 },
+	},
+	[3086] = {
+		itemId = 8852,
+		itemPos = { x = 32783, y = 31166, z = 10 },
+	},
+	[3087] = {
+		itemId = 7739,
+		itemPos = { x = 32781, y = 31162, z = 14 },
+	},
+	[3091] = {
+		itemId = 8618,
+		itemPos = { x = 32743, y = 31164, z = 5 },
+	},
+	[3092] = {
+		itemId = 8618,
+		itemPos = { x = 32743, y = 31161, z = 5 },
+	},
+	[3095] = {
+		itemId = 8615,
+		itemPos = { x = 32734, y = 31199, z = 5 },
+	},
+	[3096] = {
+		itemId = 8615,
+		itemPos = { x = 32729, y = 31199, z = 5 },
+	},
+	[3097] = {
+		itemId = 8615,
+		itemPos = { x = 32775, y = 31145, z = 5 },
+	},
+	[3098] = {
+		itemId = 8615,
+		itemPos = { x = 32775, y = 31141, z = 5 },
+	},
+	[3099] = {
+		itemId = 8615,
+		itemPos = { x = 32869, y = 31203, z = 5 },
+	},
+	[3100] = {
+		itemId = 8615,
+		itemPos = { x = 32874, y = 31203, z = 5 },
+	},
+	[3101] = {
+		itemId = 8618,
+		itemPos = { x = 32857, y = 31248, z = 5 },
+	},
+	[3102] = {
+		itemId = 8618,
+		itemPos = { x = 32853, y = 31251, z = 5 },
+	},
+	-- Children of the Revolution Quest
+	[3162] = {
+		itemId = 10194,
+		itemPos = { x = 33281, y = 31219, z = 7 },
+	},
+	[3163] = {
+		itemId = 10180,
+		itemPos = { x = 33177, y = 31193, z = 7 },
+	},
+	[3169] = {
+		itemId = 8288,
+		itemPos = { x = 33265, y = 31116, z = 8 },
+	},
+	[3170] = {
+		itemId = 9874,
+		itemPos = { x = 33348, y = 31412, z = 8 },
+	},
+	-- Wrath of the Emperor Quest
+	[3189] = {
+		itemId = 1949,
+		itemPos = { x = 33052, y = 31083, z = 14 },
+	},
+	[3190] = {
+		itemId = 1949,
+		itemPos = { x = 33098, y = 31083, z = 14 },
+	},
+	[3191] = {
+		itemId = 1949,
+		itemPos = { x = 33101, y = 31118, z = 14 },
+	},
+	[3192] = {
+		itemId = 1949,
+		itemPos = { x = 33059, y = 31122, z = 14 },
+	},
+	[3193] = {
+		itemId = 11427,
+		itemPos = { x = 33048, y = 31085, z = 15 },
+	},
+	[3194] = {
+		itemId = 11427,
+		itemPos = { x = 33094, y = 31087, z = 15 },
+	},
+	[3195] = {
+		itemId = 11427,
+		itemPos = { x = 33095, y = 31110, z = 15 },
+	},
+	[3196] = {
+		itemId = 11427,
+		itemPos = { x = 33048, y = 31111, z = 15 },
+	},
+	[3200] = {
+		itemId = 11431,
+		itemPos = { x = 33073, y = 31173, z = 8 },
+	},
+	-- Barbarian Arena Quest
+	[3264] = {
+		itemId = 10145,
+		itemPos = { x = 32229, y = 31065, z = 7 },
+	},
+	[3265] = {
+		itemId = 10145,
+		itemPos = { x = 32229, y = 31058, z = 7 },
+	},
+	[3266] = {
+		itemId = 10145,
+		itemPos = { x = 32229, y = 31051, z = 7 },
+	},
 	-- The Pits of Inferno Quest
 	[3303] = {
 		itemId = 431,
@@ -900,6 +1569,20 @@ ItemUnique = {
 	[4010] = {
 		itemId = 2753,
 		itemPos = { x = 32933, y = 32495, z = 7 },
+	},
+	-- In Service of Yalahar Quest
+	[7809] = {
+		itemId = 1949,
+		itemPos = { x = 32784, y = 31177, z = 9 },
+	},
+	[7810] = {
+		itemId = 1949,
+		itemPos = { x = 32783, y = 31175, z = 10 },
+	},
+	-- The Demon Oak Quest
+	[9000] = {
+		itemId = 918,
+		itemPos = { x = 32716, y = 32344, z = 7 },
 	},
 	-- Dreamers Challenge Quest
 	[9030] = {
@@ -1055,7 +1738,6 @@ ItemUnique = {
 		itemId = 31484,
 		itemPos = { x = 33395, y = 32660, z = 6 },
 	},
-
 	-- Kilmaresh
 	-- First mission
 	-- data\scripts\quests\kilmaresh\1-fafnars-wrath\2-ambassadors-treason.lua
@@ -1076,7 +1758,6 @@ ItemUnique = {
 		itemId = 31269,
 		itemPos = { x = 33879, y = 31490, z = 6 },
 	},
-
 	[40033] = { -- Gryphon mask
 		itemId = 31630,
 		itemPos = { x = 33841, y = 31682, z = 3 },
@@ -1384,6 +2065,11 @@ ItemUnique = {
 	[40096] = {
 		itemId = 5662,
 		itemPos = { x = 33024, y = 32672, z = 6 },
+	},
+	-- The Hidden City of Beregar Quest
+	[50127] = {
+		itemId = 1949,
+		itemPos = { x = 32598, y = 31402, z = 15 },
 	},
 	-- The Ancient Tombs Quest
 	[50135] = {

@@ -12,9 +12,6 @@
 	<npc centerx="10252" centery="10032" centerz="1" radius="1">
 		<npc name="Chief Grarkharok" x="0" y="0" z="1" spawntime="60" />
 	</npc>
-	<npc centerx="10289" centery="10113" centerz="1" radius="1">
-		<npc name="Spectulus" x="0" y="0" z="1" spawntime="60" />
-	</npc>
 	<npc centerx="32995" centery="31469" centerz="1" radius="1">
 		<npc name="Ulala" x="0" y="0" z="1" spawntime="60" />
 	</npc>
@@ -41,9 +38,6 @@
 	</npc>
 	<npc centerx="33044" centery="32622" centerz="1" radius="1">
 		<npc name="Malor" x="0" y="0" z="1" spawntime="60" />
-	</npc>
-	<npc centerx="10289" centery="10113" centerz="2" radius="1">
-		<npc name="Sinclair" x="0" y="0" z="2" spawntime="60" />
 	</npc>
 	<npc centerx="33078" centery="31022" centerz="2" radius="1">
 		<npc name="Chrak" x="0" y="0" z="2" spawntime="60" />

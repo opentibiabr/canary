@@ -10596,7 +10596,7 @@ std::map<uint16_t, Achievement> Game::getAchievements() {
 
 void Game::logCyclopediaStats() {
 	g_logger().info("Loaded {} badges from Badge System", m_badges.size());
-	g_logger().info("Loaded {} titles from Title system", m_titles.size());
+	g_logger().info("Loaded {} titles from Title System", m_titles.size());
 }
 
 std::unordered_set<Badge> Game::getBadges() {

@@ -86,40 +86,40 @@ local function creatureSayCallback(npc, creature, type, message)
 
 		------------Task Part-------------
 	elseif MsgContains(message, "task") then
-		if player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) < 0 and player:getLevel() >= 60 then
+		if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers) < 0 and player:getLevel() >= 60 then
 			npcHandler:say({
 				"What? Who are you to imply I need help from a worm like you? ...",
 				"I don't need help. But if you desperately wish to do something to earn the favour of Zathroth, feel free. Don't expect any reward though. ...",
 				"Do you want to help and serve Zathroth out of your own free will, without demanding payment or recognition?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 7)
-		elseif player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) == 0 then
+		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount) >= 4000 then
 				npcHandler:say({
 					"You've slain a mere " .. player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount) .. " necromancers and priestesses. Still, you've shown some dedication. Maybe that means you can kill one of those so-called 'leaders' too. ...",
 					"Deep under Drefia, a necromancer called Necropharus is hiding in the Halls of Sacrifice. I'll place a spell on you with which you will be able to pass his weak protective gate. ...",
 					"Know that this will be your only chance to enter his room. If you leave it or die, you won't be able to return. We'll see if you really dare enter those halls.",
 				}, npc, creature)
-				player:setStorageValue(Storage.KillingInTheNameOf.LugriNecromancers, 1)
+				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers, 1)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.NecropharusCount, 0)
 			else
 				npcHandler:say("Come back when you have slain 4000 necromancers and priestesses!", npc, creature)
 			end
-		elseif player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) == 2 then
+		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers) == 2 then
 			npcHandler:say({
 				"Hrm. So you had the guts to enter that room. Well, it's all fake magic anyway and no real threat. ...",
 				"What are you looking at me for? Waiting for something? I told you that there was no reward. Despite being allowed to stand before me without being squashed like a bug. Get out of my sight!",
 			}, npc, creature)
-			player:setStorageValue(Storage.KillingInTheNameOf.LugriNecromancers, 4)
-		elseif player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) == 3 then
+			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers, 4)
+		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers) == 3 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount) >= 1000 then
 				npcHandler:say("Good job!", npc, creature)
 				player:addExperience(40000, true)
-				player:setStorageValue(Storage.KillingInTheNameOf.LugriNecromancers, 4)
+				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers, 4)
 			else
 				npcHandler:say("Come back when you have slain 1000 necromancers and priestesses!", npc, creature)
 			end
-		elseif player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) == 4 then
+		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers) == 4 then
 			npcHandler:say("You can't live without serving, can you? Although you are quite annoying, you're still somewhat useful. Continue killing Necromancers and Priestesses for me. 1000 are enough this time. What do you say?", npc, creature)
 			npcHandler:setTopic(playerId, 8)
 		end
@@ -180,7 +180,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodPriestCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodHandCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.ShadowPupilCount, 0)
-			player:setStorageValue(Storage.KillingInTheNameOf.LugriNecromancers, 0)
+			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers, 0)
 		elseif npcHandler:getTopic(playerId) == 8 then
 			npcHandler:say("Good. Then go.", npc, creature)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount, 0)
@@ -189,7 +189,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodPriestCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodHandCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.ShadowPupilCount, 0)
-			player:setStorageValue(Storage.KillingInTheNameOf.LugriNecromancers, 3)
+			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers, 3)
 		end
 	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) > 1 then

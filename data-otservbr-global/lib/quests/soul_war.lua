@@ -1353,7 +1353,7 @@ function Monster:onThinkGoshnarTormentCounter(interval, maxLimit, intervalBetwee
 	for i = 1, #spectators do
 		local player = spectators[i]
 		local tormentCounter = player:getGoshnarSymbolTormentCounter()
-		local goshnarsHatred = Creature("Goshnar's Hatred")
+		local goshnarsHatred = Creature(bossName or "Goshnar's Megalomania")
 		if not goshnarsHatred then
 			player:resetGoshnarSymbolTormentCounter()
 			goto continue
@@ -1429,6 +1429,23 @@ function Monster:goshnarsDefenseIncrease(kvName)
 	else
 		-- If config time have not passed, logs the increase has been skipped.
 		logger.trace("{} skips increase cooldown due to recent item use.", self:getName())
+	end
+end
+
+function Monster:removeGoshnarsMegalomaniaMonsters(monsterName)
+	if self:getName() ~= "Goshnar's Megalomania" then
+		return
+	end
+
+	local zone = Zone.getByName("boss.goshnar's-megalomania-purple")
+	if zone then
+		logger.info("Removing all monsters from Goshnar's Megalomania zone")
+		local creatures = zone:getCreatures()
+		for _, creature in ipairs(creatures) do
+			if creature:getMonster() then
+				creature:remove()
+			end
+		end
 	end
 end
 

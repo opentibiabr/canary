@@ -922,11 +922,10 @@ local madnessReduce = MoveEvent()
 function madnessReduce.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
 	item:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
-
+	item:remove()
 	if player and player:getGoshnarSymbolTormentCounter() > 0 then
 		player:resetGoshnarSymbolTormentCounter()
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The ooze calms your dread but leaves you vulnerable to phantasmal attacks!")
-		item:remove()
 		return true
 	end
 

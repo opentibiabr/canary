@@ -144,4 +144,8 @@ mType.onThink = function(monsterCallback, interval)
 	monsterCallback:goshnarsDefenseIncrease("cleansed-sanity-action")
 end
 
+mType.onDisappear = function(monster, creature)
+	creature:removeGoshnarsMegalomaniaMonsters()
+end
+
 mType:register(monster)

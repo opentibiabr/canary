@@ -4411,6 +4411,7 @@ int PlayerFunctions::luaPlayerTakeScreenshot(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
 int PlayerFunctions::luaPlayerSendIconBakragore(lua_State* L) {
 	// player:sendIconBakragore()
 	const auto &player = getUserdataShared<Player>(L, 1);

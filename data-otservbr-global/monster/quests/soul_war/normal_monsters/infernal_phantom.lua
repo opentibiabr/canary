@@ -99,6 +99,7 @@ monster.loot = {
 	{ name = "crystal mace", chance = 1610 },
 	{ name = "war axe", chance = 1410 },
 	{ name = "warrior's axe", chance = 1410 },
+	{ name = "bag you desire", chance = 15 },
 }
 
 monster.attacks = {

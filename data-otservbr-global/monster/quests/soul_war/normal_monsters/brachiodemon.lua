@@ -103,6 +103,7 @@ monster.loot = {
 	{ name = "mastermind shield", chance = 420 },
 	{ name = "assassin dagger", chance = 340 },
 	{ name = "alloy legs", chance = 170 },
+	{ name = "bag you desire", chance = 15 },
 }
 
 monster.attacks = {

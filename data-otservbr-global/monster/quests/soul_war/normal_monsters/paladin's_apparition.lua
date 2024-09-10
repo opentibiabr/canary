@@ -95,6 +95,7 @@ monster.loot = {
 	{ name = "stone skin amulet", chance = 1560 },
 	{ id = 23542, chance = 1250 }, -- collar of blue plasma
 	{ id = 23529, chance = 1250 }, -- ring of blue plasma
+	{ name = "bag you desire", chance = 15 },
 }
 
 monster.attacks = {

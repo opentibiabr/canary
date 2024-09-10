@@ -30,8 +30,7 @@ SoulWarQuest = {
 
 	timeToReturnImmuneMegalomania = 70, -- In seconds
 
-	baseBagYouDesireChance = 500, -- 1000 = 1% chance, 500 = 0.5% chance
-	bagYouDesireChancePerTaint = 1, -- Increases 1% per taint
+	bagYouDesireChancePerTaint = 10, -- Increases % per taint
 	bagYouDesireMonsters = {
 		"Bony Sea Devil",
 		"Brachiodemon",
@@ -1089,7 +1088,7 @@ function Monster:createSoulWarWhiteTiles(centerRoomPosition, zonePositions, exec
 	addEvent(revertTilesAndApplyDamage, executeInterval or 3000, zonePositions)
 end
 
-function Monster:generateBagYouDesireLoot(player)
+function MonsterType:calculateBagYouDesireChance(player, itemChance)
 	local playerTaintLevel = player:getTaintLevel()
 	if not playerTaintLevel or playerTaintLevel == 0 then
 		return {}
@@ -1102,29 +1101,24 @@ function Monster:generateBagYouDesireLoot(player)
 	end
 
 	local loot = {}
-	local totalChance = SoulWarQuest.baseBagYouDesireChance
 	local soulWarQuest = player:soulWarQuestKV()
 	local megalomaniaKills = soulWarQuest:scoped("megalomania-kills"):get("count") or 0
 
 	if monsterName == "Goshnar's Megalomania" then
 		-- Special handling for Goshnar's Megalomania
-		totalChance = totalChance + megalomaniaKills * SoulWarQuest.bagYouDesireChancePerTaint
+		itemChance = itemChance + megalomaniaKills * SoulWarQuest.bagYouDesireChancePerTaint
 	else
 		-- General handling for other monsters (bosses and non-bosses)
-		totalChance = totalChance + (playerTaintLevel * SoulWarQuest.bagYouDesireChancePerTaint)
+		itemChance = itemChance + (playerTaintLevel * SoulWarQuest.bagYouDesireChancePerTaint)
 	end
 
-	logger.trace("Player {} killed {} with {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, totalChance)
+	logger.info("Player {} killed {} with {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, itemChance)
 
 	if math.random(1, 100000) <= totalChance then
-		local itemType = ItemType(SoulWarQuest.bagYouDesireItemId)
-		if itemType then
-			loot[itemType:getId()] = { count = 1 }
-			logger.debug("Player {} killed {} and got a bag you desire with drop chance {}", player:getName(), monsterName, totalChance)
-			if monsterName == "Goshnar's Megalomania" then
-				-- Reset kill count on successful drop
-				soulWarQuest:scoped("megalomania-kills"):set("count", 0)
-			end
+		logger.debug("Player {} killed {} and got a bag you desire with drop chance {}", player:getName(), monsterName, itemChance)
+		if monsterName == "Goshnar's Megalomania" then
+			-- Reset kill count on successful drop
+			soulWarQuest:scoped("megalomania-kills"):set("count", 0)
 		end
 	else
 		if monsterName == "Goshnar's Megalomania" then
@@ -1133,7 +1127,7 @@ function Monster:generateBagYouDesireLoot(player)
 		end
 	end
 
-	return loot
+	return itemChance
 end
 
 local intervalBetweenExecutions = 10000

@@ -22,7 +22,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 	local charm = player and player:getCharmMonsterType(CHARM_GUT)
 	local gut = charm and charm:raceId() == mType:raceId()
 
-	local lootTable = mType:generateLootRoll({ factor = factor, gut = gut }, {})
+	local lootTable = mType:generateLootRoll({ factor = factor, gut = gut }, {}, player)
 	corpse:addLoot(lootTable)
 	for _, item in ipairs(lootTable) do
 		if item.gut then

@@ -94,6 +94,7 @@ monster.loot = {
 	{ name = "platinum amulet", chance = 1750 },
 	{ name = "glacier robe", chance = 880 },
 	{ id = 23544, chance = 440 }, -- collar of red plasma
+	{ name = "bag you desire", chance = 15 },
 }
 
 monster.attacks = {

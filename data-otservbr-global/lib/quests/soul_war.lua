@@ -267,6 +267,22 @@ SoulWarQuest = {
 				from = Position(33734, 31624, 14),
 				to = Position(33751, 31640, 14),
 			},
+			onUseExtra = function(player)
+				local zone = Zone("boss.goshnar's-spite")
+				if zone then
+					local positions = zone:getPositions()
+					for _, pos in ipairs(positions) do
+						local tile = Tile(pos)
+						if tile then
+							local item = tile:getItemById(SoulWarQuest.weepingSoulCorpseId)
+							if item then
+								logger.debug("Weeping Soul Corpse removed from position: {}", pos)
+								item:remove()
+							end
+						end
+					end
+				end
+			end,
 			exit = Position(33621, 31427, 10),
 			timeToFightAgain = 20 * 60 * 60, -- 20 hours
 		},

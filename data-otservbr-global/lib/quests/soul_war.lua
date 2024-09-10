@@ -1092,16 +1092,15 @@ end
 function MonsterType:calculateBagYouDesireChance(player, itemChance)
 	local playerTaintLevel = player:getTaintLevel()
 	if not playerTaintLevel or playerTaintLevel == 0 then
-		return {}
+		return itemChance
 	end
 
 	local monsterName = self:getName()
 	local isMonsterValid = table.contains(SoulWarQuest.bagYouDesireMonsters, monsterName)
 	if not isMonsterValid then
-		return {}
+		return itemChance
 	end
 
-	local loot = {}
 	local soulWarQuest = player:soulWarQuestKV()
 	local megalomaniaKills = soulWarQuest:scoped("megalomania-kills"):get("count") or 0
 

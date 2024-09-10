@@ -972,7 +972,7 @@ function cleansedSanity.onUse(player, item, fromPosition, target, toPosition, is
 		SoulWarQuest.kvSoulWar:set("cleansed-sanity-action", currentTime + timeToIncreaseDefense)
 		target:getPosition():sendMagicEffect(CONST_ME_DRAWBLOOD)
 		item:remove()
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Use the item again within " .. timeToIncreaseDefense .. " seconds, or the monster's defense will increase by 2 every " .. timeToIncreaseDefense .. " seconds.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Use the item again within " .. timeToIncreaseDefense .. " seconds, or the monster's defense will increase every " .. timeToIncreaseDefense .. " seconds.")
 		local boss = Creature("Goshnar's Megalomania")
 		if boss then
 			local mtype = boss:getType()

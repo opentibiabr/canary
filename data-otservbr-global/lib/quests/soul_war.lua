@@ -1503,6 +1503,8 @@ function Zone:getRandomPlayer()
 	return players[randomIndex]
 end
 
+local conditionOutfit = Condition(CONDITION_OUTFIT)
+
 local function delayedCastSpell(cid, var, combat, targetId)
 	local creature = Creature(cid)
 	if not creature then
@@ -1512,6 +1514,7 @@ local function delayedCastSpell(cid, var, combat, targetId)
 	local target = Player(targetId)
 	if target then
 		combat:execute(creature, positionToVariant(target:getPosition()))
+		target:removeCondition(conditionOutfit)
 	end
 end
 
@@ -1532,10 +1535,10 @@ function Creature:applyZoneEffect(var, combat, zoneName)
 		return true
 	end
 
-	local condition = Condition(CONDITION_OUTFIT)
-	condition:setTicks(outfitConfig.time)
-	condition:setOutfit(outfitConfig.outfit)
-	target:addCondition(condition)
+	
+	conditionOutfit:setTicks(outfitConfig.time)
+	conditionOutfit:setOutfit(outfitConfig.outfit)
+	target:addCondition(conditionOutfit)
 	target:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 
 	addEvent(delayedCastSpell, SoulWarQuest.goshnarsCrueltyWaveInterval * 1000, self:getId(), var, combat, target:getId())

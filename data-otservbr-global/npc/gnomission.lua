@@ -79,12 +79,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "snippet") then
 		if npcHandler:getTopic(playerId) == 3 then
-			if player:getStorageValue(Storage.BigfootBurden.Rank) < 1440 then
+			if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Rank) < 1440 then
 				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
 			else
-				if player:getStorageValue(Storage.BigfootBurden.Warzone1Access) < 1 then
+				if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Warzone1Access) < 1 then
 					if player:removeItem(16136, 1) then
-						player:setStorageValue(Storage.BigfootBurden.Warzone1Access, 1)
+						player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.Warzone1Access, 1)
 						npcHandler:say("As a war hero you are allowed to use the warzone teleporter one for free!", npc, creature)
 						npcHandler:setTopic(playerId, 0)
 					else
@@ -97,13 +97,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "lash") then
 		if npcHandler:getTopic(playerId) == 3 then
-			if player:getStorageValue(Storage.BigfootBurden.Rank) < 1440 then
+			if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Rank) < 1440 then
 				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
 			else
-				if player:getStorageValue(Storage.BigfootBurden.Warzone3Access) < 1 then
-					if player:getStorageValue(Storage.BigfootBurden.WarzoneStatus) >= 3 then
+				if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Warzone3Access) < 1 then
+					if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.WarzoneStatus) >= 3 then
 						if player:removeItem(16206, 1) then
-							player:setStorageValue(Storage.BigfootBurden.Warzone3Access, 1)
+							player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.Warzone3Access, 1)
 							npcHandler:say("As a war hero you are allowed to use the warzone teleporter three for free!", npc, creature)
 							npcHandler:setTopic(playerId, 0)
 						else
@@ -119,13 +119,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "hat") then
 		if npcHandler:getTopic(playerId) == 3 then
-			if player:getStorageValue(Storage.BigfootBurden.Rank) < 1440 then
+			if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Rank) < 1440 then
 				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
 			else
-				if player:getStorageValue(Storage.BigfootBurden.Warzone2Access) < 1 then
-					if player:getStorageValue(Storage.BigfootBurden.WarzoneStatus) >= 2 then
+				if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Warzone2Access) < 1 then
+					if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.WarzoneStatus) >= 2 then
 						if player:removeItem(16205, 1) then
-							player:setStorageValue(Storage.BigfootBurden.Warzone2Access, 1)
+							player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.Warzone2Access, 1)
 							npcHandler:say("As a war hero you are allowed to use the warzone teleporter second for free!", npc, creature)
 							npcHandler:setTopic(playerId, 0)
 						else
@@ -141,10 +141,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "mission") then
 		if npcHandler:getTopic(playerId) == 1 then
-			if player:getStorageValue(Storage.BigfootBurden.Rank) >= 1440 then
-				if player:getStorageValue(Storage.BigfootBurden.WarzoneStatus) < 1 then
+			if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Rank) >= 1440 then
+				if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.WarzoneStatus) < 1 then
 					npcHandler:say("Fine, I grant you the permission to enter the warzones. Be warned though, this will be not a picnic. Better bring some friends with you. Bringing a lot of them sounds like a good idea.", npc, creature)
-					player:setStorageValue(Storage.BigfootBurden.WarzoneStatus, 1)
+					player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.WarzoneStatus, 1)
 				else
 					npcHandler:say("You have already accepted this mission.", npc, creature)
 				end
@@ -161,7 +161,7 @@ end
 npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|. You are probably eager to enter the {warzones}.")
 
 local function onTradeRequest(npc, creature)
-	if Player(creature):getStorageValue(Storage.BigfootBurden.BossKills) < 20 then
+	if Player(creature):getStorageValue(Storage.Quest.U9_60.BigfootsBurden.BossKills) < 20 then
 		npcHandler:say("Only if you have killed 20 of our major enemies in the warzones I am allowed to trade with you.", npc, creature)
 		return false
 	end

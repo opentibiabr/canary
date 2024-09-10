@@ -2555,6 +2555,15 @@ ChestUnique = {
 		weight = 43.00,
 		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestItems,
 	},
+	-- Rookgaard
+	-- 05 Brown Mushrooms
+	[6301] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32138, y = 32171, z = 3 },
+		reward = { { 3725, 5 } },
+		questName = "Rookgaard05BrownMushrooms",
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

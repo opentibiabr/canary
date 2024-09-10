@@ -31,7 +31,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission04)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04)
 	-- Skip if not was started or finished
 	if missionState == -1 or missionState > 2 then
 		return true

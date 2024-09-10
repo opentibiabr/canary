@@ -1,6 +1,6 @@
 local rewards = {
 	[3148] = {
-		storage = Storage.BigfootBurden.Warzone1Reward,
+		storage = Storage.Quest.U9_60.BigfootsBurden.Warzone1Reward,
 		bossName = "Deathstrike",
 		items = {
 			{ rand = true, itemId = { 16102, 16233, 16234, 16235 } },
@@ -13,7 +13,7 @@ local rewards = {
 		achievement = { "Final Strike", "Death on Strike" },
 	},
 	[3149] = {
-		storage = Storage.BigfootBurden.Warzone2Reward,
+		storage = Storage.Quest.U9_60.BigfootsBurden.Warzone2Reward,
 		bossName = "Gnomevil",
 		items = {
 			{ rand = true, itemId = { 16237, 16238, 16239 } },
@@ -27,7 +27,7 @@ local rewards = {
 		achievement = { "Gnomebane's Bane", "Fall of the Fallen" },
 	},
 	[3150] = {
-		storage = Storage.BigfootBurden.Warzone3Reward,
+		storage = Storage.Quest.U9_60.BigfootsBurden.Warzone3Reward,
 		bossName = "Abyssador",
 		items = {
 			{ rand = true, itemId = { 16229, 16230, 16231 } },
@@ -44,8 +44,8 @@ local rewards = {
 local bigfootRewards = Action()
 function bigfootRewards.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.uid == 3147 then
-		if player:getStorageValue(Storage.BigfootBurden.WarzoneStatus) == 4 then
-			player:setStorageValue(Storage.BigfootBurden.WarzoneStatus, 5)
+		if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.WarzoneStatus) == 4 then
+			player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.WarzoneStatus, 5)
 			player:addItem(3020, 1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found some golden fruits.")
 		else

@@ -4,16 +4,16 @@ function bigfootMatch.onUse(player, item, fromPosition, target, toPosition, isHo
 		return false
 	end
 
-	if player:getStorageValue(Storage.BigfootBurden.MatchmakerStatus) == 1 or player:getStorageValue(Storage.BigfootBurden.MissionMatchmaker) ~= 1 then
+	if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.MatchmakerStatus) == 1 or player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.MissionMatchmaker) ~= 1 then
 		return false
 	end
 
-	if player:getStorageValue(Storage.BigfootBurden.MatchmakerIdNeeded) ~= target.itemid then
+	if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.MatchmakerIdNeeded) ~= target.itemid then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This is not the crystal you're looking for!")
 		return true
 	end
 
-	player:setStorageValue(Storage.BigfootBurden.MatchmakerStatus, 1)
+	player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.MatchmakerStatus, 1)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Congratulations! The crystals seem to have fallen in love and your mission is done!")
 	toPosition:sendMagicEffect(CONST_ME_HEARTS)
 	item:remove()

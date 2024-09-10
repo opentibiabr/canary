@@ -56,14 +56,14 @@ end
 keywordHandler:addKeyword({ "master" }, StdModule.say, { npcHandler = npcHandler, text = "Our. Master. Is. Gone. You. Can. Not. Visit. Him! We. Stand. {Sentry}!" })
 keywordHandler:addKeyword({ "sentry" }, StdModule.say, { npcHandler = npcHandler, text = "{Master}. Conducted. Experiments. Great. Problems. You. Must. Go!" })
 keywordHandler:addKeyword({ "slime" }, StdModule.say, { npcHandler = npcHandler, text = "{Slime}. Dangerous. We. Have. It. Under. Control. ... We. Will. Stand. {Sentry}." }, function(player)
-	return player:getStorageValue(Storage.TheirMastersVoice.SlimeGobblerReceived) == 1
+	return player:getStorageValue(Storage.Quest.U9_1.TheirMastersVoiceWorldChange.SlimeGobblerReceived) == 1
 end)
 
 local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.TheirMastersVoice.SlimeGobblerReceived) < 1 then
+	if player:getStorageValue(Storage.Quest.U9_1.TheirMastersVoiceWorldChange.SlimeGobblerReceived) < 1 then
 		npcHandler:say("The. {Slime}. Has. Entered. Our. {Master}. Has. Left! We. Must. {Help}.", npc, creature)
 	end
 	return true
@@ -77,12 +77,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "help") then
+	if MsgContains(message, "slime") then
 		npcHandler:say("Defeat. {Slime}. We. Will. Why. Did. You. Kill. Us? Do. You. Want. To. Rectify. And. Help?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			player:setStorageValue(Storage.TheirMastersVoice.SlimeGobblerReceived, 1)
+			player:setStorageValue(Storage.Quest.U9_1.TheirMastersVoiceWorldChange.SlimeGobblerReceived, 1)
 			player:addItem(12077, 1)
 			npcHandler:say("Then. Take. This. Gobbler. Always. Hungry. Eats. Slime. Fungus. Go.", npc, creature)
 			npcHandler:setTopic(playerId, 0)

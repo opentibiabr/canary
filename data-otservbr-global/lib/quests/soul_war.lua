@@ -371,6 +371,7 @@ SoulWarQuest = {
 			timeToFightAgain = 20 * 60 * 60, -- 20 hours
 			onUseExtra = function(player)
 				SoulWarQuest.kvSoulWar:remove("greedy-maw-action")
+				SoulWarQuest.kvSoulWar:remove("goshnars-cruelty-defense-drain")
 				player:soulWarQuestKV():scoped("furious-crater"):remove("greedy-maw-action")
 			end,
 		},
@@ -1379,9 +1380,10 @@ function Monster:goshnarsDefenseIncrease(kvName)
 	local lastItemUseTime = SoulWarQuest.kvSoulWar:get(kvName) or 0
 	-- Checks if more than config time have passed since the item was last used.
 	if currentTime >= lastItemUseTime + SoulWarQuest.timeToIncreaseCrueltyDefense then
-		logger.trace("{} old defense {}", self:getName(), self:getDefense())
 		self:addDefense(SoulWarQuest.goshnarsCrueltyDefenseChange)
-		logger.trace("{} new defense {}", self:getName(), self:getDefense())
+		-- Register the drain callback to modify the damage for goshnar's cruelty
+		local newValue = SoulWarQuest.kvSoulWar:get("goshnars-cruelty-defense-drain") or SoulWarQuest.goshnarsCrueltyDefenseChange
+		SoulWarQuest.kvSoulWar:set("goshnars-cruelty-defense-drain", newValue + 1) -- Increment the value to track usage or modifications
 
 		--- Updates the KV to reflect the timing of the increase to maintain control.
 		SoulWarQuest.kvSoulWar:set(kvName, currentTime)

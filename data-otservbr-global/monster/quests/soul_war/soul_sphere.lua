@@ -98,9 +98,9 @@ mType.onThink = function(monster, interval)
 		local nextTile = Tile(newPos)
 		if nextTile then
 			for _, creatureId in pairs(nextTile:getCreatures()) do
-				local greedMonster = Monster(creatureId)
-				if greedMonster and greedMonster:getName() == "Goshnar's Greed" then
-					greedMonster:setHealth(greedMonster:getMaxHealth())
+				local tileMonster = Monster(creatureId)
+				if tileMonster and tileMonster:getName() == "Goshnar's Greed" then
+					tileMonster:setHealth(tileMonster:getMaxHealth())
 					stop = true
 					return
 				end

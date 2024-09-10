@@ -880,6 +880,11 @@ function greedyMaw.onUse(player, item, fromPosition, target, toPosition, isHotke
 				goshnarsCruelty:addDefense(-SoulWarQuest.goshnarsCrueltyDefenseChange)
 				logger.debug("Greedy Maw used on Goshnar's Cruelty, new defense {}", goshnarsCruelty:getDefense())
 			end
+
+			local defenseDrainValue = SoulWarQuest.kvSoulWar:get("goshnars-cruelty-defense-drain") or 0
+			if defenseDrainValue > 0 then
+				SoulWarQuest.kvSoulWar:set("goshnars-cruelty-defense-drain", defenseDrainValue - 1)
+			end
 		end
 		return true
 	end
@@ -1066,3 +1071,19 @@ for _, pos in pairs(teleportPositions) do
 end
 
 teleportStepRemoveIcon:register()
+
+local goshnarsCrueltyBuff = CreatureEvent("GoshnarsCrueltyBuff")
+
+function goshnarsCrueltyBuff.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
+	if creature and creature:isMonster() and attacker:isPlayer() and creature:getName() == "Goshnar's Cruelty" then
+		local newValue = SoulWarQuest.kvSoulWar:get("goshnars-cruelty-defense-drain") or SoulWarQuest.goshnarsCrueltyDefenseChange
+		if newValue ~= 0 then
+			local multiplier = math.max(0, 1 - (newValue / 100))
+			return primaryDamage * multiplier, primaryType, secondaryDamage * multiplier, secondaryType
+		end
+	end
+
+	return primaryDamage, primaryType, secondaryDamage, secondaryType
+end
+
+goshnarsCrueltyBuff:register()

@@ -15,6 +15,7 @@ monster.outfit = {
 
 monster.events = {
 	"SoulWarBossesDeath",
+	"GoshnarsCrueltyBuff",
 }
 
 monster.health = 300000
@@ -134,16 +135,23 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-mType.onThink = function(monster)
-	monster:goshnarsDefenseIncrease("greedy-maw-action")
+local firstTime = 0
+mType.onThink = function(monster, interval)
+	firstTime = firstTime + interval
+	-- Run only 15 seconds before creation
+	if firstTime >= 15000 then
+		monster:goshnarsDefenseIncrease("greedy-maw-action")
+	end
 end
 
 mType.onAppear = function(monster, creature) end
 
-mType.onSpawn = function(monster)
-	if monster:getType():isRewardBoss() then
-		monster:setReward(true)
+mType.onSpawn = function(monsterCallback)
+	if monsterCallback:getType():isRewardBoss() then
+		monsterCallback:setReward(true)
 	end
+
+	firstTime = 0
 end
 
 mType.onDisappear = function(monster, creature) end

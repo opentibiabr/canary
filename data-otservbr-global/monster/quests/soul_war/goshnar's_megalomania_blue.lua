@@ -145,7 +145,7 @@ mType.onThink = function(monsterCallback, interval)
 end
 
 mType.onDisappear = function(monster, creature)
-	creature:removeGoshnarsMegalomaniaMonsters()
+	creature:removeGoshnarsMegalomaniaMonsters(zone)
 end
 
 mType:register(monster)

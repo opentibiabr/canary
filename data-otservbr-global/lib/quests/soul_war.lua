@@ -1432,14 +1432,12 @@ function Monster:goshnarsDefenseIncrease(kvName)
 	end
 end
 
-function Monster:removeGoshnarsMegalomaniaMonsters(monsterName)
+function Monster:removeGoshnarsMegalomaniaMonsters(zone)
 	if self:getName() ~= "Goshnar's Megalomania" then
 		return
 	end
 
-	local zone = Zone.getByName("boss.goshnar's-megalomania-purple")
 	if zone then
-		logger.info("Removing all monsters from Goshnar's Megalomania zone")
 		local creatures = zone:getCreatures()
 		for _, creature in ipairs(creatures) do
 			if creature:getMonster() then

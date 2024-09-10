@@ -552,13 +552,6 @@ end
 goshnarsHatredAccess:position(SoulWarQuest.goshnarsHatredAccessPosition.from)
 goshnarsHatredAccess:register()
 
-local burningHatredMonsters = {
-	"Ashes of Burning Hatred",
-	"Spark of Burning Hatred",
-	"Flame of Burning Hatred",
-	"Blaze of Burning Hatred",
-}
-
 local goshnarsHatredSorrow = Action()
 
 function goshnarsHatredSorrow.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -566,7 +559,7 @@ function goshnarsHatredSorrow.onUse(player, item, fromPosition, target, toPositi
 		return
 	end
 
-	if not table.contains(burningHatredMonsters, target:getName()) then
+	if not table.contains(SoulWarQuest.burningHatredMonsters, target:getName()) then
 		logger.error("Player {} tried to use the item on a non-burning hatred monster.", player:getName())
 		return
 	end
@@ -610,7 +603,7 @@ function burningChangeForm.onThink(creature)
 				local boss = Creature("Goshnar's Hatred")
 				if boss then
 					logger.debug("Increasing hatred damage multiplier.")
-					boss:increaseHatredDamageMultiplier()
+					boss:increaseHatredDamageMultiplier(10)
 				end
 				logger.debug("Beginning of the burning transformation cycle.")
 			end

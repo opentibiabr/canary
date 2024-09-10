@@ -154,7 +154,14 @@ mType.onSpawn = function(monsterCallback)
 	firstTime = 0
 end
 
-mType.onDisappear = function(monster, creature) end
+mType.onDisappear = function(monster, creature)
+	if creature:getName() == "Goshnar's Cruelty" then
+		local eyeCreature = Creature("A Greedy Eye")
+		if eyeCreature then
+			eyeCreature:remove()
+		end
+	end
+end
 
 mType.onMove = function(monster, creature, fromPosition, toPosition) end
 

@@ -145,7 +145,16 @@ mType.onSpawn = function(monster)
 	monster:resetHatredDamageMultiplier()
 end
 
-mType.onDisappear = function(monster, creature) end
+mType.onDisappear = function(monster, creature)
+	if creature:getName() == "Goshnar's Hatred" then
+		for _, monsterName in pairs(SoulWarQuest.burningHatredMonsters) do
+			local ashesCreature = Creature(monsterName)
+			if ashesCreature then
+				ashesCreature:remove()
+			end
+		end
+	end
+end
 
 mType.onMove = function(monster, creature, fromPosition, toPosition) end
 

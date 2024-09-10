@@ -436,6 +436,13 @@ SoulWarQuest = {
 		{ 45, "Blaze of Burning Hatred" },
 	},
 
+	burningHatredMonsters = {
+		"Ashes of Burning Hatred",
+		"Spark of Burning Hatred",
+		"Flame of Burning Hatred",
+		"Blaze of Burning Hatred",
+	},
+
 	requiredCountPerApparition = 25,
 
 	-- Ebb and flow
@@ -1293,7 +1300,7 @@ end
 
 function Monster:increaseHatredDamageMultiplier(multiplierCount)
 	local attackMultiplier = self:getHatredDamageMultiplier()
-	self:getSoulWarKV():set("burning-hatred-empowered", attackMultiplier + multiplierCount or 10)
+	self:getSoulWarKV():set("burning-hatred-empowered", attackMultiplier + multiplierCount)
 end
 
 function Monster:resetHatredDamageMultiplier()
@@ -1346,6 +1353,12 @@ function Monster:onThinkGoshnarTormentCounter(interval, maxLimit, intervalBetwee
 	for i = 1, #spectators do
 		local player = spectators[i]
 		local tormentCounter = player:getGoshnarSymbolTormentCounter()
+		local goshnarsHatred = Creature("Goshnar's Hatred")
+		if not goshnarsHatred then
+			player:resetGoshnarSymbolTormentCounter()
+			goto continue
+		end
+
 		if tormentCounter <= maxLimit then
 			player:increaseGoshnarSymbolTormentCounter(maxLimit)
 			logger.trace("Player {} has {} damage counter", player:getName(), tormentCounter)
@@ -1373,6 +1386,8 @@ function Monster:onThinkGoshnarTormentCounter(interval, maxLimit, intervalBetwee
 		elseif tormentCounter == 36 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The dread's torment is now lethal!")
 		end
+
+		::continue::
 	end
 end
 
@@ -1535,7 +1550,6 @@ function Creature:applyZoneEffect(var, combat, zoneName)
 		return true
 	end
 
-	
 	conditionOutfit:setTicks(outfitConfig.time)
 	conditionOutfit:setOutfit(outfitConfig.outfit)
 	target:addCondition(conditionOutfit)

@@ -1044,9 +1044,9 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 			for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
 				const auto &oldSplash = *it;
 				if (Item::items[oldSplash->getID()].isSplash()) {
+					postRemoveNotification(oldSplash, nullptr, 0);
 					removeThing(oldSplash, 1);
 					oldSplash->resetParent();
-					postRemoveNotification(oldSplash, nullptr, 0);
 					break;
 				}
 			}
@@ -1072,12 +1072,12 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 
 	if (itemType.isMagicField() && items) {
 		for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
-			std::shared_ptr<MagicField> oldField = (*it)->getMagicField();
+			const auto &oldField = (*it)->getMagicField();
 			if (oldField) {
 				if (oldField->isReplaceable()) {
+					postRemoveNotification(oldField, nullptr, 0);
 					removeThing(oldField, 1);
 					oldField->resetParent();
-					postRemoveNotification(oldField, nullptr, 0);
 					break;
 				}
 
@@ -1530,7 +1530,11 @@ void Tile::postAddNotification(const std::shared_ptr<Thing> &thing, const std::s
 }
 
 void Tile::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
-	auto spectators = Spectators().find<Player>(getPosition(), true);
+	if (!thing) {
+		return;
+	}
+
+	const auto spectators = Spectators().find<Player>(getPosition(), true);
 
 	if (getThingCount() > 8) {
 		onUpdateTile(spectators.data());
@@ -1541,7 +1545,7 @@ void Tile::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std
 	}
 
 	// calling movement scripts
-	std::shared_ptr<Creature> creature = thing->getCreature();
+	const auto &creature = thing->getCreature();
 	if (creature) {
 		g_moveEvents().onCreatureMove(creature, static_self_cast<Tile>(), MOVE_EVENT_STEP_OUT);
 	} else {

@@ -1413,11 +1413,9 @@ void Creature::removeCondition(ConditionType_t type) {
 			continue;
 		}
 
-		it = conditions.erase(it);
-
 		condition->endCondition(getCreature());
-
 		onEndCondition(type);
+		it = conditions.erase(it);
 	}
 }
 
@@ -1442,11 +1440,9 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 			}
 		}
 
-		it = conditions.erase(it);
-
 		condition->endCondition(getCreature());
-
 		onEndCondition(conditionType);
+		it = conditions.erase(it);
 	}
 }
 
@@ -1512,12 +1508,10 @@ void Creature::executeConditions(uint32_t interval) {
 		const auto &condition = *it;
 		if (!condition->executeCondition(getCreature(), interval)) {
 			ConditionType_t type = condition->getType();
+			condition->endCondition(getCreature());
+			onEndCondition(type);
 
 			it = conditions.erase(it);
-
-			condition->endCondition(getCreature());
-
-			onEndCondition(type);
 		} else {
 			++it;
 		}

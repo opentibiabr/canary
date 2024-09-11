@@ -249,7 +249,7 @@ function talkaction.onSay(player, words, param)
 			end
 			player:kv():scoped("cast-system"):set("password", data.password)
 		end
-		
+
 		if data.password ~= "" then
 			player:sendTextMessage(MESSAGE_STATUS, "Your stream is currently protected with password: " .. data.password .. ".")
 		else

@@ -1473,7 +1473,7 @@ void CastViewer::addViewer(ProtocolGame_ptr client, bool spy) {
 
 		if (m_viewers.size() > m_castLiveRecord) {
 			m_castLiveRecord = m_viewers.size();
-			sendTextMessage(MESSAGE_STATUS, fmt::format("New record: {} people are watching your livestream now.", std::to_string(m_castLiveRecord)));
+			m_owner->sendTextMessage(TextMessage(MESSAGE_LOOK, fmt::format("New record: {} people are watching your livestream now.", std::to_string(m_castLiveRecord))));
 		}
 	}
 }

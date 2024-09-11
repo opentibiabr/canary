@@ -1595,7 +1595,7 @@ void Game::playerMoveItemByPlayerID(uint32_t playerId, const Position &fromPos, 
 
 void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, std::shared_ptr<Item> item, std::shared_ptr<Cylinder> toCylinder) {
 	if (!player->canDoAction()) {
-		uint32_t delay = player->getNextActionTime();
+		const uint32_t delay = player->getNextActionTime();
 		std::shared_ptr<Task> task = createPlayerTask(
 			delay, [this, playerId = player->getID(), fromPos, itemId, fromStackPos, toPos, count] {
 				playerMoveItemByPlayerID(playerId, fromPos, itemId, fromStackPos, toPos, count);
@@ -1626,7 +1626,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 			fromIndex = fromStackPos;
 		}
 
-		std::shared_ptr<Thing> thing = internalGetThing(player, fromPos, fromIndex, itemId, STACKPOS_MOVE);
+		const auto thing = internalGetThing(player, fromPos, fromIndex, itemId, STACKPOS_MOVE);
 		if (!thing || !thing->getItem()) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
@@ -1669,14 +1669,14 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 	}
 
 	// check if we can move this item
-	if (ReturnValue ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item, toPos); ret != RETURNVALUE_NOERROR) {
+	if (auto ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item, toPos); ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		return;
 	}
 
-	const Position &playerPos = player->getPosition();
-	auto cylinderTile = fromCylinder->getTile();
-	const Position &mapFromPos = cylinderTile ? cylinderTile->getPosition() : item->getPosition();
+	const auto &playerPos = player->getPosition();
+	const auto cylinderTile = fromCylinder->getTile();
+	const auto &mapFromPos = cylinderTile ? cylinderTile->getPosition() : item->getPosition();
 	if (playerPos.z != mapFromPos.z) {
 		player->sendCancelMessage(playerPos.z > mapFromPos.z ? RETURNVALUE_FIRSTGOUPSTAIRS : RETURNVALUE_FIRSTGODOWNSTAIRS);
 		return;
@@ -1701,8 +1701,8 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		return;
 	}
 
-	std::shared_ptr<Tile> toCylinderTile = toCylinder->getTile();
-	const Position &mapToPos = toCylinderTile->getPosition();
+	const auto toCylinderTile = toCylinder->getTile();
+	const auto &mapToPos = toCylinderTile->getPosition();
 
 	// hangable item specific code
 	if (item->isHangable() && toCylinderTile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
@@ -1721,14 +1721,14 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		}
 
 		if (!Position::areInRange<1, 1, 0>(playerPos, mapToPos)) {
-			Position walkPos = mapToPos;
+			auto walkPos = mapToPos;
 			if (vertical) {
 				walkPos.x++;
 			} else {
 				walkPos.y++;
 			}
 
-			Position itemPos = fromPos;
+			auto itemPos = fromPos;
 			uint8_t itemStackPos = fromStackPos;
 
 			if (fromPos.x != 0xFFFF && Position::areInRange<1, 1>(mapFromPos, playerPos)
@@ -1736,7 +1736,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 				// need to pickup the item first
 				std::shared_ptr<Item> moveItem = nullptr;
 
-				ReturnValue ret = internalMoveItem(fromCylinder, player, INDEX_WHEREEVER, item, count, &moveItem);
+				const auto ret = internalMoveItem(fromCylinder, player, INDEX_WHEREEVER, item, count, &moveItem);
 				if (ret != RETURNVALUE_NOERROR) {
 					player->sendCancelMessage(ret);
 					return;
@@ -1764,7 +1764,7 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		}
 	}
 
-	auto throwRange = item->getThrowRange();
+	const auto throwRange = item->getThrowRange();
 	if ((Position::getDistanceX(playerPos, mapToPos) > throwRange) || (Position::getDistanceY(playerPos, mapToPos) > throwRange) || (Position::getDistanceZ(mapFromPos, mapToPos) * 4 > throwRange)) {
 		player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
 		return;
@@ -1793,8 +1793,8 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 	}
 
 	if (item->isWrapable() || item->isStoreItem() || (item->hasOwner() && !item->isOwner(player))) {
-		auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
-		auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
+		const auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
+		const auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
 		if (fromHouseTile && (!toHouseTile || toHouseTile->getHouse()->getId() != fromHouseTile->getHouse()->getId())) {
 			player->sendCancelMessage("You cannot move this item out of this house.");
 			return;
@@ -1809,12 +1809,14 @@ void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPo
 		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
 		return;
 	}
-	ReturnValue ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
+
+	const auto ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 	} else if (toCylinder->getContainer() && fromCylinder->getContainer() && fromCylinder->getContainer()->countsToLootAnalyzerBalance() && toCylinder->getContainer()->getTopParent() == player) {
 		player->sendLootStats(item, count);
 	}
+
 	player->cancelPush();
 
 	item->checkDecayMapItemOnMove();
@@ -1900,7 +1902,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 
 		if (item->getContainer() && !item->isStoreItem()) {
 			for (const std::shared_ptr<Item> &containerItem : item->getContainer()->getItems(true)) {
-				if (containerItem->isStoreItem() && ((containerID != ITEM_GOLD_POUCH && containerID != ITEM_DEPOT && containerID != ITEM_STORE_INBOX) || (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (!topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() != ITEM_STORE_INBOX)))) {
+				if (containerItem->isStoreItem() && !isTryingToStow(toPos, toCylinder) && ((containerID != ITEM_GOLD_POUCH && containerID != ITEM_DEPOT && containerID != ITEM_STORE_INBOX) || (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (!topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() != ITEM_STORE_INBOX)))) {
 					return RETURNVALUE_NOTPOSSIBLE;
 				}
 			}

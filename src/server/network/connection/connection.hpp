@@ -13,6 +13,8 @@
 #include "lib/di/container.hpp"
 #include "server/network/message/networkmessage.hpp"
 
+#include "atomic_queue/atomic_queue.h"
+
 static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;
 static constexpr int32_t CONNECTION_READ_TIMEOUT = 30;
 
@@ -91,9 +93,9 @@ private:
 	asio::high_resolution_timer readTimer;
 	asio::high_resolution_timer writeTimer;
 
-	std::recursive_mutex connectionLock;
 
-	std::list<OutputMessage_ptr> messageQueue;
+	// Use a fila lock-free com capacidade para 1024 mensagens
+	atomic_queue::AtomicQueue2<OutputMessage_ptr, 1024> messageQueue;
 
 	ConstServicePort_ptr service_port;
 	Protocol_ptr protocol;
@@ -102,9 +104,10 @@ private:
 
 	std::time_t timeConnected = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	uint32_t packetsSent = 0;
-	uint32_t ip = 1;
+	std::atomic<uint32_t> ip { 1 };
 
-	std::underlying_type_t<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
+	std::atomic<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
+
 	bool receivedFirst = false;
 
 	friend class ServicePort;

@@ -18,6 +18,7 @@
     "spdlog",
     "zlib",
     "bshoshany-thread-pool",
+    "atomic-queue",
     {
       "name": "libmariadb",
       "features": [

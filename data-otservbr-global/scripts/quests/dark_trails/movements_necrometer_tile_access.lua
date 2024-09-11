@@ -13,7 +13,7 @@ function necrometerTileAccess.onStepIn(creature, item, position, fromPosition)
 		player:teleportTo({ x = 33419, y = 32106, z = 10 })
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The necrometer reveals a hidden passage!")
 	end
-	
+
 	return true
 end
 

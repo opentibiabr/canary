@@ -20,6 +20,10 @@ monster.corpse = 34125
 monster.speed = 100
 monster.manaCost = 0
 
+monster.events = {
+	"HazardousPhantomDeath",
+}
+
 monster.changeTarget = {
 	interval = 4000,
 	chance = 0,
@@ -78,7 +82,7 @@ monster.loot = {
 	{ id = 282, chance = 1570 }, -- giant shimmering pearl
 	{ name = "wand of everblazing", chance = 790 },
 	{ id = 23542, chance = 790 }, -- collar of blue plasma
-	{ id = 34109, chance = 20 }, -- bag you desire
+	{ name = "bag you desire", chance = 15 },
 }
 
 monster.attacks = {

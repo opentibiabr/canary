@@ -9352,7 +9352,6 @@ void ProtocolGame::sendCastViewerAppear(std::shared_ptr<Player> foundPlayer) {
 
 		sendChannel(CHANNEL_CAST, "Livestream", nullptr, nullptr);
 		sendTextMessage(TextMessage(MESSAGE_EVENT_ADVANCE, "Available commands: \n/name newname\n/show"));
-		
 	}
 }
 

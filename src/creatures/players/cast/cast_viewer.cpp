@@ -18,6 +18,40 @@
 #include "server/network/protocol/protocolgame.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 
+namespace {
+	/**
+	 * @typedef ViewersMap
+	 * @brief Defines a map type for storing viewers, mapping each viewer to their corresponding
+	 * client and additional info as a pair.
+	 */
+	using ViewersMap = std::map<std::shared_ptr<ProtocolGame>, std::pair<std::string, uint32_t>>;
+
+	/**
+	 * @brief Sends a specified function to all viewers in the given map asynchronously.
+	 *
+	 * This template function iterates over a map of viewers and applies a user-defined function to each viewer.
+	 * The operation for each viewer is dispatched asynchronously to improve performance and responsiveness
+	 * of the main thread. This function is particularly useful when the same operation needs to be applied
+	 * across all viewers, such as sending updates or notifications.
+	 *
+	 * @tparam Func The type of the function to be applied to each viewer. This function should take a single
+	 * parameter of type std::shared_ptr<ProtocolGame>.
+	 * @param viewers The map of viewers to which the function will be applied.
+	 * @param func The function to apply to each viewer in the map.
+	 *
+	 * @note This function makes a copy of each viewer's shared pointer to ensure thread safety during asynchronous
+	 * operations, preventing potential issues with viewer validity during the execution of the provided function.
+	 */
+	template <typename Func>
+	void sendToAllViewersAsync(const ViewersMap &m_viewers, Func func) {
+		for (const auto &[client, _] : m_viewers) {
+			// Copy to keep viewer valid in async calls
+			auto viewer_ptr = client;
+			g_dispatcher().asyncEvent([viewer_ptr, func] { func(viewer_ptr); }, TaskGroup::GenericParallel);
+		}
+	}
+}
+
 CastViewer::CastViewer(std::shared_ptr<ProtocolGame> client) :
 	m_owner(client) { }
 
@@ -208,9 +242,9 @@ void CastViewer::sendStats() {
 	if (m_owner) {
 		m_owner->sendStats();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendStats();
-		}
+		sendToAllViewersAsync(m_viewers, [](auto viewer_ptr) {
+			viewer_ptr->sendStats();
+		});
 	}
 }
 
@@ -218,9 +252,9 @@ void CastViewer::sendPing() {
 	if (m_owner) {
 		m_owner->sendPing();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendPing();
-		}
+		sendToAllViewersAsync(m_viewers, [](auto viewer_ptr) {
+			viewer_ptr->sendPing();
+		});
 	}
 }
 
@@ -234,9 +268,9 @@ void CastViewer::sendAddContainerItem(uint8_t cid, uint16_t slot, std::shared_pt
 	if (m_owner) {
 		m_owner->sendAddContainerItem(cid, slot, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendAddContainerItem(cid, slot, item);
-		}
+		sendToAllViewersAsync(m_viewers, [cid, slot, item](auto viewer_ptr) {
+			viewer_ptr->sendAddContainerItem(cid, slot, item);
+		});
 	}
 }
 
@@ -244,9 +278,9 @@ void CastViewer::sendUpdateContainerItem(uint8_t cid, uint16_t slot, std::shared
 	if (m_owner) {
 		m_owner->sendUpdateContainerItem(cid, slot, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUpdateContainerItem(cid, slot, item);
-		}
+		sendToAllViewersAsync(m_viewers, [cid, slot, item](auto viewer_ptr) {
+			viewer_ptr->sendUpdateContainerItem(cid, slot, item);
+		});
 	}
 }
 
@@ -254,9 +288,9 @@ void CastViewer::sendRemoveContainerItem(uint8_t cid, uint16_t slot, std::shared
 	if (m_owner) {
 		m_owner->sendRemoveContainerItem(cid, slot, lastItem);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendRemoveContainerItem(cid, slot, lastItem);
-		}
+		sendToAllViewersAsync(m_viewers, [cid, slot, lastItem](auto viewer_ptr) {
+			viewer_ptr->sendRemoveContainerItem(cid, slot, lastItem);
+		});
 	}
 }
 
@@ -264,9 +298,9 @@ void CastViewer::sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus) {
 	if (m_owner) {
 		m_owner->sendUpdatedVIPStatus(guid, newStatus);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUpdatedVIPStatus(guid, newStatus);
-		}
+		sendToAllViewersAsync(m_viewers, [guid, newStatus](auto viewer_ptr) {
+			viewer_ptr->sendUpdatedVIPStatus(guid, newStatus);
+		});
 	}
 }
 
@@ -274,9 +308,9 @@ void CastViewer::sendVIP(uint32_t guid, const std::string &name, const std::stri
 	if (m_owner) {
 		m_owner->sendVIP(guid, name, description, icon, notify, status);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendVIP(guid, name, description, icon, notify, status);
-		}
+		sendToAllViewersAsync(m_viewers, [guid, name, description, icon, notify, status](auto viewer_ptr) {
+			viewer_ptr->sendVIP(guid, name, description, icon, notify, status);
+		});
 	}
 }
 
@@ -284,9 +318,9 @@ void CastViewer::sendVIPGroups() {
 	if (m_owner) {
 		m_owner->sendVIPGroups();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendVIPGroups();
-		}
+		sendToAllViewersAsync(m_viewers, [](auto viewer_ptr) {
+			viewer_ptr->sendVIPGroups();
+		});
 	}
 }
 
@@ -320,9 +354,9 @@ void CastViewer::sendCreatureSkull(const std::shared_ptr<Creature> &creature) co
 	if (m_owner) {
 		m_owner->sendCreatureSkull(creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureSkull(creature);
-		}
+		sendToAllViewersAsync(m_viewers, [creature](auto viewer_ptr) {
+			viewer_ptr->sendCreatureSkull(creature);
+		});
 	}
 }
 
@@ -330,9 +364,9 @@ void CastViewer::sendAddTileItem(const Position &pos, uint32_t stackpos, std::sh
 	if (m_owner) {
 		m_owner->sendAddTileItem(pos, stackpos, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendAddTileItem(pos, stackpos, item);
-		}
+		sendToAllViewersAsync(m_viewers, [pos, stackpos, item](auto viewer_ptr) {
+			viewer_ptr->sendAddTileItem(pos, stackpos, item);
+		});
 	}
 }
 
@@ -340,9 +374,9 @@ void CastViewer::sendUpdateTileItem(const Position &pos, uint32_t stackpos, std:
 	if (m_owner) {
 		m_owner->sendUpdateTileItem(pos, stackpos, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUpdateTileItem(pos, stackpos, item);
-		}
+		sendToAllViewersAsync(m_viewers, [pos, stackpos, item](auto viewer_ptr) {
+			viewer_ptr->sendUpdateTileItem(pos, stackpos, item);
+		});
 	}
 }
 
@@ -350,9 +384,9 @@ void CastViewer::sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 	if (m_owner) {
 		m_owner->sendRemoveTileThing(pos, stackpos);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendRemoveTileThing(pos, stackpos);
-		}
+		sendToAllViewersAsync(m_viewers, [pos, stackpos](auto viewer_ptr) {
+			viewer_ptr->sendRemoveTileThing(pos, stackpos);
+		});
 	}
 }
 
@@ -360,9 +394,9 @@ void CastViewer::sendUpdateTileCreature(const Position &pos, uint32_t stackpos, 
 	if (m_owner) {
 		m_owner->sendUpdateTileCreature(pos, stackpos, creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUpdateTileCreature(pos, stackpos, creature);
-		}
+		sendToAllViewersAsync(m_viewers, [pos, stackpos, creature](auto viewer_ptr) {
+			viewer_ptr->sendUpdateTileCreature(pos, stackpos, creature);
+		});
 	}
 }
 
@@ -370,9 +404,9 @@ void CastViewer::sendUpdateTile(std::shared_ptr<Tile> tile, const Position &pos)
 	if (m_owner) {
 		m_owner->sendUpdateTile(tile, pos);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUpdateTile(tile, pos);
-		}
+		sendToAllViewersAsync(m_viewers, [tile, pos](auto viewer_ptr) {
+			viewer_ptr->sendUpdateTile(tile, pos);
+		});
 	}
 }
 
@@ -380,9 +414,9 @@ void CastViewer::sendChannelMessage(const std::string &author, const std::string
 	if (m_owner) {
 		m_owner->sendChannelMessage(author, message, type, channel);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendChannelMessage(author, message, type, channel);
-		}
+		sendToAllViewersAsync(m_viewers, [author, message, type, channel](auto viewer_ptr) {
+			viewer_ptr->sendChannelMessage(author, message, type, channel);
+		});
 	}
 }
 
@@ -390,9 +424,9 @@ void CastViewer::sendMoveCreature(std::shared_ptr<Creature> creature, const Posi
 	if (m_owner) {
 		m_owner->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, newPos, newStackPos, oldPos, oldStackPos, teleport](auto viewer_ptr) {
+			viewer_ptr->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
+		});
 	}
 }
 
@@ -400,9 +434,9 @@ void CastViewer::sendCreatureTurn(std::shared_ptr<Creature> creature, int32_t st
 	if (m_owner) {
 		m_owner->sendCreatureTurn(creature, stackpos);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureTurn(creature, stackpos);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, stackpos](auto viewer_ptr) {
+			viewer_ptr->sendCreatureTurn(creature, stackpos);
+		});
 	}
 }
 
@@ -422,9 +456,9 @@ void CastViewer::sendCreatureSquare(std::shared_ptr<Creature> creature, SquareCo
 	if (m_owner) {
 		m_owner->sendCreatureSquare(creature, color);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureSquare(creature, color);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, color](auto viewer_ptr) {
+			viewer_ptr->sendCreatureSquare(creature, color);
+		});
 	}
 }
 
@@ -432,9 +466,9 @@ void CastViewer::sendCreatureOutfit(std::shared_ptr<Creature> creature, const Ou
 	if (m_owner) {
 		m_owner->sendCreatureOutfit(creature, outfit);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureOutfit(creature, outfit);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, outfit](auto viewer_ptr) {
+			viewer_ptr->sendCreatureOutfit(creature, outfit);
+		});
 	}
 }
 
@@ -442,9 +476,9 @@ void CastViewer::sendCreatureLight(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendCreatureLight(creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureLight(creature);
-		}
+		sendToAllViewersAsync(m_viewers, [creature](auto viewer_ptr) {
+			viewer_ptr->sendCreatureLight(creature);
+		});
 	}
 }
 
@@ -452,9 +486,9 @@ void CastViewer::sendCreatureWalkthrough(std::shared_ptr<Creature> creature, boo
 	if (m_owner) {
 		m_owner->sendCreatureWalkthrough(creature, walkthrough);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureWalkthrough(creature, walkthrough);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, walkthrough](auto viewer_ptr) {
+			viewer_ptr->sendCreatureWalkthrough(creature, walkthrough);
+		});
 	}
 }
 
@@ -462,9 +496,9 @@ void CastViewer::sendCreatureShield(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendCreatureShield(creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureShield(creature);
-		}
+		sendToAllViewersAsync(m_viewers, [creature](auto viewer_ptr) {
+			viewer_ptr->sendCreatureShield(creature);
+		});
 	}
 }
 
@@ -472,9 +506,9 @@ void CastViewer::sendContainer(uint8_t cid, std::shared_ptr<Container> container
 	if (m_owner) {
 		m_owner->sendContainer(cid, container, hasParent, firstIndex);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendContainer(cid, container, hasParent, firstIndex);
-		}
+		sendToAllViewersAsync(m_viewers, [cid, container, hasParent, firstIndex](auto viewer_ptr) {
+			viewer_ptr->sendContainer(cid, container, hasParent, firstIndex);
+		});
 	}
 }
 
@@ -482,9 +516,9 @@ void CastViewer::sendInventoryItem(Slots_t slot, std::shared_ptr<Item> item) {
 	if (m_owner) {
 		m_owner->sendInventoryItem(slot, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendInventoryItem(slot, item);
-		}
+		sendToAllViewersAsync(m_viewers, [slot, item](auto viewer_ptr) {
+			viewer_ptr->sendInventoryItem(slot, item);
+		});
 	}
 }
 
@@ -492,9 +526,9 @@ void CastViewer::sendCancelMessage(const std::string &msg) const {
 	if (m_owner) {
 		m_owner->sendTextMessage(TextMessage(MESSAGE_FAILURE, msg));
 
-		for (const auto &it : m_viewers) {
-			it.first->sendTextMessage(TextMessage(MESSAGE_FAILURE, msg));
-		}
+		sendToAllViewersAsync(m_viewers, [msg](auto viewer_ptr) {
+			viewer_ptr->sendTextMessage(TextMessage(MESSAGE_FAILURE, msg));
+		});
 	}
 }
 
@@ -502,9 +536,9 @@ void CastViewer::sendCancelTarget() const {
 	if (m_owner) {
 		m_owner->sendCancelTarget();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCancelTarget();
-		}
+		sendToAllViewersAsync(m_viewers, [](auto viewer_ptr) {
+			viewer_ptr->sendCancelTarget();
+		});
 	}
 }
 
@@ -512,9 +546,9 @@ void CastViewer::sendCancelWalk() const {
 	if (m_owner) {
 		m_owner->sendCancelWalk();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCancelWalk();
-		}
+		sendToAllViewersAsync(m_viewers, [](auto viewer_ptr) {
+			viewer_ptr->sendCancelWalk();
+		});
 	}
 }
 
@@ -522,9 +556,9 @@ void CastViewer::sendChangeSpeed(std::shared_ptr<Creature> creature, uint32_t ne
 	if (m_owner) {
 		m_owner->sendChangeSpeed(creature, newSpeed);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendChangeSpeed(creature, newSpeed);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, newSpeed](auto viewer_ptr) {
+			viewer_ptr->sendChangeSpeed(creature, newSpeed);
+		});
 	}
 }
 
@@ -532,9 +566,9 @@ void CastViewer::sendCreatureHealth(std::shared_ptr<Creature> creature) const {
 	if (m_owner) {
 		m_owner->sendCreatureHealth(creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureHealth(creature);
-		}
+		sendToAllViewersAsync(m_viewers, [creature](auto viewer_ptr) {
+			viewer_ptr->sendCreatureHealth(creature);
+		});
 	}
 }
 
@@ -542,9 +576,9 @@ void CastViewer::sendDistanceShoot(const Position &from, const Position &to, uns
 	if (m_owner) {
 		m_owner->sendDistanceShoot(from, to, type);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendDistanceShoot(from, to, type);
-		}
+		sendToAllViewersAsync(m_viewers, [from, to, type](auto viewer_ptr) {
+			viewer_ptr->sendDistanceShoot(from, to, type);
+		});
 	}
 }
 
@@ -558,9 +592,9 @@ void CastViewer::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const 
 	if (m_owner) {
 		m_owner->sendIcons(iconSet, iconBakragore);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendIcons(iconSet, iconBakragore);
-		}
+		sendToAllViewersAsync(m_viewers, [iconSet, iconBakragore](auto viewer_ptr) {
+			viewer_ptr->sendIcons(iconSet, iconBakragore);
+		});
 	}
 }
 
@@ -576,9 +610,9 @@ void CastViewer::sendMagicEffect(const Position &pos, uint8_t type) const {
 	if (m_owner) {
 		m_owner->sendMagicEffect(pos, type);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendMagicEffect(pos, type);
-		}
+		sendToAllViewersAsync(m_viewers, [pos, type](auto viewer_ptr) {
+			viewer_ptr->sendMagicEffect(pos, type);
+		});
 	}
 }
 
@@ -586,9 +620,9 @@ void CastViewer::sendSkills() const {
 	if (m_owner) {
 		m_owner->sendSkills();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendSkills();
-		}
+		sendToAllViewersAsync(m_viewers, [](auto viewer_ptr) {
+			viewer_ptr->sendSkills();
+		});
 	}
 }
 
@@ -596,9 +630,9 @@ void CastViewer::sendTextMessage(MessageClasses mclass, const std::string &messa
 	if (m_owner) {
 		m_owner->sendTextMessage(TextMessage(mclass, message));
 
-		for (const auto &it : m_viewers) {
-			it.first->sendTextMessage(TextMessage(mclass, message));
-		}
+		sendToAllViewersAsync(m_viewers, [mclass, message](auto viewer_ptr) {
+			viewer_ptr->sendTextMessage(TextMessage(mclass, message));
+		});
 	}
 }
 
@@ -606,9 +640,9 @@ void CastViewer::sendTextMessage(const TextMessage &message) const {
 	if (m_owner) {
 		m_owner->sendTextMessage(message);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendTextMessage(message);
-		}
+		sendToAllViewersAsync(m_viewers, [message](auto viewer_ptr) {
+			viewer_ptr->sendTextMessage(message);
+		});
 	}
 }
 
@@ -633,9 +667,9 @@ void CastViewer::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const st
 void CastViewer::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId) {
 	if (m_owner) {
 		m_owner->sendToChannel(creature, type, text, channelId);
-		for (const auto &it : m_viewers) {
-			it.first->sendToChannel(creature, type, text, channelId);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, type, text, channelId](auto viewer_ptr) {
+			viewer_ptr->sendToChannel(creature, type, text, channelId);
+		});
 	}
 }
 
@@ -673,9 +707,9 @@ void CastViewer::sendWorldLight(const LightInfo &lightInfo) {
 	if (m_owner) {
 		m_owner->sendWorldLight(lightInfo);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendWorldLight(lightInfo);
-		}
+		sendToAllViewersAsync(m_viewers, [lightInfo](auto viewer_ptr) {
+			viewer_ptr->sendWorldLight(lightInfo);
+		});
 	}
 }
 
@@ -701,9 +735,9 @@ void CastViewer::sendCloseContainer(uint8_t cid) {
 	if (m_owner) {
 		m_owner->sendCloseContainer(cid);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCloseContainer(cid);
-		}
+		sendToAllViewersAsync(m_viewers, [cid](auto viewer_ptr) {
+			viewer_ptr->sendCloseContainer(cid);
+		});
 	}
 }
 
@@ -735,9 +769,9 @@ void CastViewer::writeToOutputBuffer(const NetworkMessage &message) {
 	if (m_owner) {
 		m_owner->writeToOutputBuffer(message);
 
-		for (const auto &it : m_viewers) {
-			it.first->writeToOutputBuffer(message);
-		}
+		sendToAllViewersAsync(m_viewers, [message](auto viewer_ptr) {
+			viewer_ptr->writeToOutputBuffer(message);
+		});
 	}
 }
 
@@ -745,9 +779,9 @@ void CastViewer::sendAddCreature(std::shared_ptr<Creature> creature, const Posit
 	if (m_owner) {
 		m_owner->sendAddCreature(creature, pos, stackpos, isLogin);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendAddCreature(creature, pos, stackpos, isLogin);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, pos, stackpos, isLogin](auto viewer_ptr) {
+			viewer_ptr->sendAddCreature(creature, pos, stackpos, isLogin);
+		});
 	}
 }
 
@@ -863,9 +897,9 @@ void CastViewer::sendPingBack() {
 	if (m_owner) {
 		m_owner->sendPingBack();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendPingBack();
-		}
+		sendToAllViewersAsync(m_viewers, [](auto viewer_ptr) {
+			viewer_ptr->sendPingBack();
+		});
 	}
 }
 
@@ -1114,9 +1148,9 @@ void CastViewer::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr
 	if (m_owner) {
 		m_owner->sendInventoryImbuements(items);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendInventoryImbuements(items);
-		}
+		sendToAllViewersAsync(m_viewers, [items](auto viewer_ptr) {
+			viewer_ptr->sendInventoryImbuements(items);
+		});
 	}
 }
 
@@ -1280,9 +1314,9 @@ void CastViewer::sendCreatureChangeOutfit(std::shared_ptr<Creature> creature, co
 	if (m_owner) {
 		m_owner->sendCreatureOutfit(creature, outfit);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureOutfit(creature, outfit);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, outfit](auto viewer_ptr) {
+			viewer_ptr->sendCreatureOutfit(creature, outfit);
+		});
 	}
 }
 
@@ -1380,9 +1414,9 @@ void CastViewer::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t
 	if (m_owner) {
 		m_owner->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, skullDuration);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, skullDuration);
-		}
+		sendToAllViewersAsync(m_viewers, [dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, skullDuration](auto viewer_ptr) {
+			viewer_ptr->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, skullDuration);
+		});
 	}
 }
 
@@ -1412,9 +1446,9 @@ void CastViewer::sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasse
 			return;
 		}
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureSay(creature, type, text, pos);
-		}
+		sendToAllViewersAsync(m_viewers, [creature, type, text, pos](auto viewer_ptr) {
+			viewer_ptr->sendCreatureSay(creature, type, text, pos);
+		});
 	}
 }
 
@@ -1519,10 +1553,10 @@ void CastViewer::handle(ProtocolGame_ptr client, const std::string &text, uint16
 							client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "There is already someone with that name."));
 						}
 					} else {
-						client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "It is not possible very long name."));
+						client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Name must be shorter than 18 letters."));
 					}
 				} else {
-					client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "It is not possible very small name."));
+					client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Name must be longer than 2 letters."));
 				}
 			}
 		} else {

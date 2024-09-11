@@ -58,6 +58,8 @@ public:
 	void removeViewer(std::shared_ptr<ProtocolGame> client, bool spy = false);
 	int64_t getCastBroadcastTime() const;
 	void setCastBroadcastTime(int64_t time);
+	uint32_t getCastLiveRecord() const;
+	void setCastLiveRecord(uint32_t value);
 	std::string getCastDescription() const;
 	void setCastDescription(const std::string &desc);
 	uint32_t getViewerId(std::shared_ptr<ProtocolGame> client) const;

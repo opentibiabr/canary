@@ -193,6 +193,14 @@ void CastViewer::setCastBroadcastTime(int64_t time) {
 	m_castBroadcastTime = time;
 }
 
+uint32_t CastViewer::getCastLiveRecord() const {
+	return m_castLiveRecord;
+}
+
+void CastViewer::setCastLiveRecord(uint32_t value) {
+	m_castLiveRecord = value;
+}
+
 std::string CastViewer::getCastDescription() const {
 	return m_castDescription;
 }
@@ -1473,6 +1481,9 @@ void CastViewer::addViewer(ProtocolGame_ptr client, bool spy) {
 
 		if (m_viewers.size() > m_castLiveRecord) {
 			m_castLiveRecord = m_viewers.size();
+			if (m_owner->player) {
+				m_owner->player->kv()->scoped("cast-system")->set("live-record", m_castLiveRecord);
+			}
 			m_owner->sendTextMessage(TextMessage(MESSAGE_LOOK, fmt::format("New record: {} people are watching your livestream now.", std::to_string(m_castLiveRecord))));
 		}
 	}

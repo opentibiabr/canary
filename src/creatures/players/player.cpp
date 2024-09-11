@@ -1763,6 +1763,12 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 		if (castDescription) {
 			client->setCastDescription(castDescription->get<std::string>());
 		}
+		// Update cast live record
+		auto castLiveRecord = kv()->scoped("cast-system")->get("live-record");
+		if (castLiveRecord) {
+			g_logger().trace("Loading cast live record: {}", castLiveRecord->getNumber());
+			client->setCastLiveRecord(castLiveRecord->getNumber());
+		}
 
 		if (guild) {
 			guild->addMember(static_self_cast<Player>());

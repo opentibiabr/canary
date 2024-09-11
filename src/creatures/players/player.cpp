@@ -1744,7 +1744,6 @@ void Player::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool is
 		}
 
 		g_game().checkPlayersRecord();
-		IOLoginData::updateOnlineStatus(guid, true);
 		if (getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__) && getVocationId() > VOCATION_NONE) {
 			for (uint8_t i = 2; i <= 6; i++) {
 				if (!hasBlessing(i)) {
@@ -1859,7 +1858,6 @@ void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool is
 			g_logger().info("{} has logged out", getName());
 			g_chat().removeUserFromAllChannels(player);
 			clearPartyInvitations();
-			IOLoginData::updateOnlineStatus(guid, false);
 		}
 
 		if (eventWalk != 0) {

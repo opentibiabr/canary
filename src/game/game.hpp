@@ -62,6 +62,7 @@ static constexpr int32_t EVENT_LUA_GARBAGE_COLLECTION = 60000 * 10; // 10min
 
 static constexpr std::chrono::minutes CACHE_EXPIRATION_TIME { 10 }; // 10min
 static constexpr std::chrono::minutes HIGHSCORE_CACHE_EXPIRATION_TIME { 10 }; // 10min
+static constexpr int32_t UPDATE_PLAYERS_ONLINE_DB = 60000 * 10; // 10min
 
 struct QueryHighscoreCacheEntry {
 	std::string query;
@@ -129,7 +130,7 @@ public:
 	}
 
 	const std::unique_ptr<TeamFinder> &getTeamFinder(const std::shared_ptr<Player> &player) const {
-		auto it = teamFinderMap.find(player->getGUID());
+		const auto it = teamFinderMap.find(player->getGUID());
 		if (it != teamFinderMap.end()) {
 			return it->second;
 		}
@@ -138,7 +139,7 @@ public:
 	}
 
 	const std::unique_ptr<TeamFinder> &getOrCreateTeamFinder(const std::shared_ptr<Player> &player) {
-		auto it = teamFinderMap.find(player->getGUID());
+		const auto it = teamFinderMap.find(player->getGUID());
 		if (it != teamFinderMap.end()) {
 			return it->second;
 		}
@@ -205,8 +206,8 @@ public:
 		itemsClassifications.push_back(itemsClassification);
 	}
 	ItemClassification* getItemsClassification(uint8_t id, bool create) {
-		auto it = std::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
-			return it->id == id;
+		const auto it = std::ranges::find_if(itemsClassifications, [id](const ItemClassification* item) {
+			return item->id == id;
 		});
 
 		if (it != itemsClassifications.end()) {
@@ -614,15 +615,15 @@ public:
 
 	FILELOADER_ERRORS loadAppearanceProtobuf(const std::string &file);
 	bool isMagicEffectRegistered(uint16_t type) const {
-		return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
+		return std::ranges::find(registeredMagicEffects, type) != registeredMagicEffects.end();
 	}
 
 	bool isDistanceEffectRegistered(uint16_t type) const {
-		return std::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) != registeredDistanceEffects.end();
+		return std::ranges::find(registeredDistanceEffects, type) != registeredDistanceEffects.end();
 	}
 
 	bool isLookTypeRegistered(uint16_t type) const {
-		return std::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) != registeredLookTypes.end();
+		return std::ranges::find(registeredLookTypes, type) != registeredLookTypes.end();
 	}
 
 	void setCreateLuaItems(Position position, uint16_t itemId) {
@@ -972,6 +973,7 @@ private:
 	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
+	void updatePlayersOnline() const;
 	void teste() const;
 };
 

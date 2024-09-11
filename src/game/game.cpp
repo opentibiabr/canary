@@ -535,6 +535,10 @@ void Game::start(ServiceManager* manager) {
 	}
 
 	g_dispatcher().cycleEvent(
+		UPDATE_PLAYERS_ONLINE_DB, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline"
+	);
+
+	g_dispatcher().cycleEvent(
 		5000, [this] { teste(); }, "Calling GC"
 	);
 }
@@ -10353,7 +10357,6 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 
 	if (player->getIP() == 0) {
 		g_game().removePlayerUniqueLogin(playerName);
-		IOLoginData::updateOnlineStatus(player->guid, false);
 		g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
 		player->disconnect();
 		return;
@@ -10369,7 +10372,6 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		if (player->m_deathTime > (kickAfterMinutes * 60000) + 60000) {
 			g_logger().info("Player with name '{}' has logged out due to inactivity after death", player->getName());
 			g_game().removePlayerUniqueLogin(playerName);
-			IOLoginData::updateOnlineStatus(player->guid, false);
 			player->disconnect();
 			return;
 		}
@@ -10682,4 +10684,54 @@ const std::unordered_map<uint16_t, std::string> &Game::getHirelingSkills() {
 
 const std::unordered_map<uint16_t, std::string> &Game::getHirelingOutfits() {
 	return m_hirelingOutfits;
+}
+
+void Game::updatePlayersOnline() const {
+	// Função a ser executada dentro da transação
+	auto updateOperation = [this]() -> bool {
+		const auto &m_players = getPlayers();
+		Database &db = Database::getInstance();
+		bool changesMade = false;
+
+		// g_metrics().addUpDownCounter("players_online", 1);
+		// g_metrics().addUpDownCounter("players_online", -1);
+
+		if (m_players.empty()) {
+			std::string query = "SELECT COUNT(*) AS count FROM players_online;";
+			auto result = g_database().storeQuery(query);
+			int count = result->getNumber<int>("count");
+			if (count > 0) {
+				db.executeQuery("DELETE FROM `players_online`;");
+				changesMade = true;
+			}
+		} else {
+			// Insere os jogadores atuais
+			DBInsert stmt("INSERT IGNORE INTO `players_online` (player_id) VALUES ");
+			for (const auto &[key, player] : m_players) {
+				std::ostringstream playerQuery;
+				playerQuery << "(" << player->getGUID() << ")";
+				stmt.addRow(playerQuery.str());
+			}
+			stmt.execute();
+			changesMade = true;
+
+			// Remove os jogadores que não estão mais online
+			std::ostringstream cleanupQuery;
+			cleanupQuery << "DELETE FROM `players_online` WHERE `player_id` NOT IN (";
+			for (const auto &[key, player] : m_players) {
+				cleanupQuery << player->getGUID() << ",";
+			}
+			cleanupQuery.seekp(-1, std::ostringstream::cur); // Remove a última vírgula
+			cleanupQuery << ");";
+			db.executeQuery(cleanupQuery.str());
+		}
+
+		return changesMade;
+	};
+
+	// Executar a operação dentro de uma transação
+	const bool success = DBTransaction::executeWithinTransaction(updateOperation);
+	if (!success) {
+		g_logger().error("[Game::updatePlayersOnline] Failed to update players online.");
+	}
 }

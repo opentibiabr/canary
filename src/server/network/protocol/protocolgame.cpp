@@ -944,7 +944,6 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}
 		disconnect();
-		IOLoginData::updateOnlineStatus(player->getGUID(), false);
 		return;
 	}
 

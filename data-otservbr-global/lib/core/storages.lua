@@ -2450,7 +2450,10 @@ Storage = {
 				Reward05GlothAndBelongings = 44574,
 				Reward10GlothAndBelongings = 44575,
 			},
-			GloothEngineerOutfits = {},
+			GloothEngineerOutfits = {
+				Addon1 = 44576,
+				Addon2 = 44577,
+			},
 			Oramond = {},
 			Rathleton = {},
 		},

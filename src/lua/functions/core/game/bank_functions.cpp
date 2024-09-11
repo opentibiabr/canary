@@ -57,36 +57,36 @@ int BankFunctions::luaBankHasBalance(lua_State* L) {
 
 int BankFunctions::luaBankTransfer(lua_State* L) {
 	// Bank.transfer(fromPlayerOrGuild, toPlayerOrGuild, amount)
-	auto source = getBank(L, 1);
+	const auto &source = getBank(L, 1);
 	if (source == nullptr) {
 		g_logger().debug("BankFunctions::luaBankTransfer: source is null");
 		reportErrorFunc("Bank is nullptr");
 		return 1;
 	}
-	std::shared_ptr<Bank> destination = getBank(L, 2);
+	const auto &destination = getBank(L, 2);
 	if (destination == nullptr) {
 		g_logger().debug("BankFunctions::luaBankTransfer: destination is null");
 		reportErrorFunc("Bank is nullptr");
 		return 1;
 	}
-	uint64_t amount = getNumber<uint64_t>(L, 3);
+	const uint64_t amount = getNumber<uint64_t>(L, 3);
 	pushBoolean(L, source->transferTo(destination, amount));
 	return 1;
 }
 
 int BankFunctions::luaBankTransferToGuild(lua_State* L) {
 	// Bank.transfer(fromPlayerOrGuild, toGuild, amount)
-	auto source = getBank(L, 1);
+	const auto &source = getBank(L, 1);
 	if (source == nullptr) {
 		reportErrorFunc("Source is nullptr");
 		return 1;
 	}
-	std::shared_ptr<Bank> destination = getBank(L, 2, true /* isGuild */);
+	const auto & destination = getBank(L, 2, true /* isGuild */);
 	if (destination == nullptr) {
 		reportErrorFunc("Destination is nullptr");
 		return 1;
 	}
-	uint64_t amount = getNumber<uint64_t>(L, 3);
+	const uint64_t amount = getNumber<uint64_t>(L, 3);
 	pushBoolean(L, source->transferTo(destination, amount));
 	return 1;
 }

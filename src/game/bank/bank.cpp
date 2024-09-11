@@ -80,26 +80,28 @@ const std::set<std::string> deniedNames = {
 	"paladinsample"
 };
 
-bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) {
+bool Bank::transferTo(const std::shared_ptr<Bank> &destination, const uint64_t amount) {
 	if (!destination) {
 		g_logger().error("Bank::transferTo: destination is nullptr");
 		return false;
 	}
 
-	auto bankable = getBankable();
+	const auto bankable = getBankable();
 	if (!bankable) {
 		g_logger().error("Bank::transferTo: bankable is nullptr");
 		return false;
 	}
 
-	auto destinationBankable = destination->getBankable();
+	const auto destinationBankable = destination->getBankable();
 	if (!destinationBankable) {
 		g_logger().error("Bank::transferTo: destinationBankable is nullptr");
 		return false;
 	}
 
-	auto destinationPlayer = destinationBankable->getPlayer();
-	if (destinationPlayer != nullptr) {
+	const auto &destinationPlayer = destinationBankable->getPlayer();
+	const auto &bankablePlayer = bankable->getPlayer();
+
+	if (destinationPlayer && bankablePlayer) {
 		auto name = asLowerCaseString(destinationPlayer->getName());
 		replaceString(name, " ", "");
 
@@ -108,8 +110,17 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 			return false;
 		}
 
-		if (destinationPlayer->getTown()->getID() < g_configManager().getNumber(MIN_TOWN_ID_TO_BANK_TRANSFER, __FUNCTION__)) {
-			g_logger().warn("Bank::transferTo: denied town: {}", destinationPlayer->getTown()->getID());
+		const auto destinationTownId = destinationPlayer->getTown()->getID();
+		const auto bankableTownId = bankablePlayer->getTown()->getID();
+		const auto minTownIdToTransferFromMain = g_configManager().getNumber(MIN_TOWN_ID_TO_BANK_TRANSFER_FROM_MAIN, __FUNCTION__);
+
+		if (destinationTownId < minTownIdToTransferFromMain && bankableTownId >= minTownIdToTransferFromMain) {
+			g_logger().warn("Bank::transferTo: denied town: {}", destinationTownId);
+			return false;
+		}
+
+		if (bankableTownId < minTownIdToTransferFromMain && destinationTownId >= minTownIdToTransferFromMain) {
+			g_logger().warn("Bank::transferTo: denied town: {}", destinationTownId);
 			return false;
 		}
 	}
@@ -122,8 +133,8 @@ bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) 
 		g_metrics().addCounter("balance_increase", amount, { { "player", destinationPlayer->getName() }, { "context", "bank_transfer" } });
 	}
 
-	if (bankable->getPlayer()) {
-		g_metrics().addCounter("balance_decrease", amount, { { "player", bankable->getPlayer()->getName() }, { "context", "bank_transfer" } });
+	if (bankablePlayer) {
+		g_metrics().addCounter("balance_decrease", amount, { { "player", bankablePlayer->getName() }, { "context", "bank_transfer" } });
 	}
 
 	return true;

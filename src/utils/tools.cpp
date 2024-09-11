@@ -428,9 +428,13 @@ void trimString(std::string &str) {
 }
 
 std::string convertIPToString(uint32_t ip) {
-	char buffer[17];
-	fmt::format_to_n(buffer, sizeof(buffer), "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
-	return buffer;
+	char buffer[16]; // 16 bytes: suficiente para 'xxx.xxx.xxx.xxx' + '\0'
+	auto result = fmt::format_to_n(buffer, sizeof(buffer) - 1, "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
+
+	// Garantir que o buffer esteja nulo-terminado
+	buffer[std::min(result.size, sizeof(buffer) - 1)] = '\0';
+
+	return std::string(buffer);
 }
 
 std::string formatDate(time_t time) {
@@ -1756,31 +1760,31 @@ uint8_t forgeBonus(int32_t number) {
 		return 0;
 	}
 	// Dust not consumed
-	 if (number >= 7400 && number < 9000) {
+	if (number >= 7400 && number < 9000) {
 		return 1;
 	}
 	// Cores not consumed
-	 if (number >= 9000 && number < 9500) {
+	if (number >= 9000 && number < 9500) {
 		return 2;
 	}
 	// Gold not consumed
-	 if (number >= 9500 && number < 9525) {
+	if (number >= 9500 && number < 9525) {
 		return 3;
 	}
 	// Second item retained with decreased tier
-	 if (number >= 9525 && number < 9550) {
+	if (number >= 9525 && number < 9550) {
 		return 4;
 	}
 	// Second item retained with unchanged tier
-	 if (number >= 9550 && number < 9950) {
+	if (number >= 9550 && number < 9950) {
 		return 5;
 	}
 	// Second item retained with increased tier
-	 if (number >= 9950 && number < 9975) {
+	if (number >= 9950 && number < 9975) {
 		return 6;
 	}
 	// Gain two tiers
-	 if (number >= 9975) {
+	if (number >= 9975) {
 		return 7;
 	}
 

@@ -92,7 +92,7 @@ void ServicePort::accept() {
 	acceptor->async_accept(connection->getSocket(), [self = shared_from_this(), connection](const std::error_code &error) { self->onAccept(connection, error); });
 }
 
-void ServicePort::onAccept(const Connection_ptr& connection, const std::error_code &error) {
+void ServicePort::onAccept(const Connection_ptr &connection, const std::error_code &error) {
 	if (!error) {
 		if (services.empty()) {
 			return;
@@ -140,7 +140,7 @@ void ServicePort::onStopServer() const {
 	close();
 }
 
-void ServicePort::openAcceptor(const std::weak_ptr<ServicePort>& weak_service, uint16_t port) {
+void ServicePort::openAcceptor(const std::weak_ptr<ServicePort> &weak_service, uint16_t port) {
 	if (const auto service = weak_service.lock()) {
 		service->open(port);
 	}

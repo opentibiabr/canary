@@ -58,7 +58,7 @@ public:
 	ServicePort(const ServicePort &) = delete;
 	ServicePort &operator=(const ServicePort &) = delete;
 
-	static void openAcceptor(const std::weak_ptr<ServicePort>& weak_service, uint16_t port);
+	static void openAcceptor(const std::weak_ptr<ServicePort> &weak_service, uint16_t port);
 	void open(uint16_t port);
 	void close() const;
 	bool is_single_socket() const;
@@ -68,7 +68,7 @@ public:
 	Protocol_ptr make_protocol(bool checksummed, NetworkMessage &msg, const Connection_ptr &connection) const;
 
 	void onStopServer() const;
-	void onAccept(const Connection_ptr& connection, const std::error_code &error);
+	void onAccept(const Connection_ptr &connection, const std::error_code &error);
 
 private:
 	void accept();

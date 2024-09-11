@@ -13,8 +13,8 @@
 
 class HouseFunctions final : LuaScriptInterface {
 public:
-	explicit HouseFunctions(lua_State* L)
-	    : LuaScriptInterface("HouseFunctions") {
+	explicit HouseFunctions(lua_State* L) :
+		LuaScriptInterface("HouseFunctions") {
 		init(L);
 	}
 	~HouseFunctions() override = default;

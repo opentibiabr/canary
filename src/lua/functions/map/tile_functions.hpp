@@ -13,9 +13,8 @@
 
 class TileFunctions final : LuaScriptInterface {
 public:
-
-	explicit TileFunctions(lua_State* L)
-	: LuaScriptInterface("TileFunctions") {
+	explicit TileFunctions(lua_State* L) :
+		LuaScriptInterface("TileFunctions") {
 		init(L);
 	}
 	~TileFunctions() override = default;

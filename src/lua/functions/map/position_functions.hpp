@@ -13,8 +13,8 @@
 
 class PositionFunctions final : LuaScriptInterface {
 public:
-	explicit PositionFunctions(lua_State* L)
-		    : LuaScriptInterface("PositionFunctions") {
+	explicit PositionFunctions(lua_State* L) :
+		LuaScriptInterface("PositionFunctions") {
 		init(L);
 	}
 	~PositionFunctions() override = default;

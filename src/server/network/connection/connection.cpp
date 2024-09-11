@@ -406,7 +406,7 @@ void Connection::onWriteOperation(const std::error_code &error) {
 			close(FORCE_CLOSE);
 		}
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {
-		closeSocket();  // Fechar o socket se a conexão estiver fechada
+		closeSocket(); // Fechar o socket se a conexão estiver fechada
 	}
 }
 

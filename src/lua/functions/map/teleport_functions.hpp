@@ -13,8 +13,8 @@
 
 class TeleportFunctions final : LuaScriptInterface {
 public:
-	explicit TeleportFunctions(lua_State* L)
-	    : LuaScriptInterface("TeleportFunctions") {
+	explicit TeleportFunctions(lua_State* L) :
+		LuaScriptInterface("TeleportFunctions") {
 		init(L);
 	}
 	~TeleportFunctions() override = default;

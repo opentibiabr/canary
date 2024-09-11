@@ -53,7 +53,7 @@ bool ScriptEnvironment::setCallbackId(int32_t newCallbackId, LuaScriptInterface*
 	return true;
 }
 
-void ScriptEnvironment::getEventInfo(int32_t &retScriptId, LuaScriptInterface* &retScriptInterface, int32_t &retCallbackId, bool &retTimerEvent) const {
+void ScriptEnvironment::getEventInfo(int32_t &retScriptId, LuaScriptInterface*&retScriptInterface, int32_t &retCallbackId, bool &retTimerEvent) const {
 	retScriptId = this->scriptId;
 	retScriptInterface = interface;
 	retCallbackId = this->callbackId;

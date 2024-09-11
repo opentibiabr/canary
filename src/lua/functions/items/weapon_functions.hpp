@@ -13,8 +13,8 @@
 
 class WeaponFunctions final : LuaScriptInterface {
 public:
-	explicit WeaponFunctions(lua_State* L)
-	    : LuaScriptInterface("WeaponFunctions") {
+	explicit WeaponFunctions(lua_State* L) :
+		LuaScriptInterface("WeaponFunctions") {
 		init(L);
 	}
 	~WeaponFunctions() override = default;

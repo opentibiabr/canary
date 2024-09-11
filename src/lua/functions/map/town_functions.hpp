@@ -13,8 +13,8 @@
 
 class TownFunctions final : LuaScriptInterface {
 public:
-	explicit TownFunctions(lua_State* L)
-	    : LuaScriptInterface("TownFunctions") {
+	explicit TownFunctions(lua_State* L) :
+		LuaScriptInterface("TownFunctions") {
 		init(L);
 	}
 	~TownFunctions() override = default;
@@ -34,4 +34,3 @@ private:
 	static int luaTownGetName(lua_State* L);
 	static int luaTownGetTemplePosition(lua_State* L);
 };
-

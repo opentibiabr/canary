@@ -630,7 +630,7 @@ public:
 		return true;
 	}
 	virtual void onRemoved();
-	virtual void onTradeEvent(TradeEvents_t, const std::shared_ptr<Player>&) { }
+	virtual void onTradeEvent(TradeEvents_t, const std::shared_ptr<Player> &) { }
 
 	virtual void startDecaying();
 	virtual void stopDecaying();

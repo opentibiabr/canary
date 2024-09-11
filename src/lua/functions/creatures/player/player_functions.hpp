@@ -17,8 +17,8 @@
 #include "lua/functions/creatures/player/vocation_functions.hpp"
 
 class PlayerFunctions final : LuaScriptInterface {
-	explicit PlayerFunctions(lua_State* L)
-	    : LuaScriptInterface("PlayerFunctions") {
+	explicit PlayerFunctions(lua_State* L) :
+		LuaScriptInterface("PlayerFunctions") {
 		init(L);
 	}
 	~PlayerFunctions() override = default;

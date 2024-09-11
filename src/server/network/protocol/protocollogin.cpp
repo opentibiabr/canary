@@ -36,7 +36,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__)) {
 		disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
 		return;
-	}else if (!oldProtocol) {
+	} else if (!oldProtocol) {
 		disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
 		return;
 	}

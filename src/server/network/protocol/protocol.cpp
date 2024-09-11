@@ -14,12 +14,6 @@
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
-#ifdef _WIN32
-	#include <malloc.h> // Para _aligned_malloc e _aligned_free no Windows
-#else
-	#include <cstdlib> // Para std::aligned_alloc e std::free em Linux
-#endif
-
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
 		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
@@ -111,44 +105,39 @@ OutputMessage_ptr Protocol::getOutputBuffer(int32_t size) {
 }
 
 void Protocol::XTEA_encrypt(OutputMessage &msg) const {
-	// A mensagem deve ser múltiplo de 8
 	const size_t paddingBytes = msg.getLength() & 7;
 	if (paddingBytes != 0) {
 		msg.addPaddingBytes(8 - paddingBytes);
 	}
 
 	uint8_t* buffer = msg.getOutputBuffer();
-	auto messageLength = static_cast<int32_t>(msg.getLength());
-	int32_t readPos = 0;
+	const auto messageLength = static_cast<int32_t>(msg.getLength());
 
-	// Precache das somas de controle para criptografia
 	precacheControlSumsEncrypt();
 
-	// Alocar memória alinhada
-#ifdef _WIN32
-	auto* alignedBuffer = static_cast<uint8_t*>(_aligned_malloc(messageLength, 32));
-#else
-	uint8_t* alignedBuffer = reinterpret_cast<uint8_t*>(std::aligned_alloc(32, messageLength));
-#endif
+	// Alocar memória alinhada usando std::unique_ptr para garantir liberação
+	const std::unique_ptr<uint8_t, AlignedFreeDeleter> alignedBuffer(
+		aligned_alloc_memory(messageLength, 32), AlignedFreeDeleter()
+	);
 
 	if (!alignedBuffer) {
-		throw std::bad_alloc(); // Tratar erro de alocação
+		g_logger().error("[] - Error alianhamento memory", __FUNCTION__);
 	}
 
-	// Copiar os dados para o buffer alinhado usando AVX2
-	simd_memcpy_avx2(alignedBuffer, buffer, messageLength);
+	// Copiar dados para buffer alinhado usando AVX2
+	simd_memcpy_avx2(alignedBuffer.get(), buffer, messageLength);
 
-	// Processar em blocos de 64 bits
+	int32_t readPos = 0;
 	while (readPos < messageLength) {
-		// Prefetch para reduzir a latência da memória
-		_mm_prefetch(reinterpret_cast<const char*>(alignedBuffer + readPos + 64), _MM_HINT_T0);
+		// Usar prefetch otimizado com _MM_HINT_T1 para cache L2
+		_mm_prefetch(reinterpret_cast<const char*>(alignedBuffer.get() + readPos + 256), _MM_HINT_T1);
 
-		// Carregar 64 bits (dois inteiros de 32 bits) do buffer alinhado com AVX2
-		__m256i vData = _mm256_load_si256(reinterpret_cast<const __m256i*>(alignedBuffer + readPos));
+		__m256i vData = is_aligned(alignedBuffer.get() + readPos, 32)
+			? _mm256_load_si256(reinterpret_cast<const __m256i*>(alignedBuffer.get() + readPos))
+			: _mm256_loadu_si256(reinterpret_cast<const __m256i*>(alignedBuffer.get() + readPos));
 
 		auto* vDataArr = reinterpret_cast<uint32_t*>(&vData);
 
-		// Desenrolar o loop em grupos de 8 para melhor uso do pipeline
 		for (int32_t i = 0; i < 32; i += 8) {
 			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[i * 2];
 			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[i * 2 + 1];
@@ -175,20 +164,17 @@ void Protocol::XTEA_encrypt(OutputMessage &msg) const {
 			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 7) * 2 + 1];
 		}
 
-		// Armazenar os resultados de volta no buffer alinhado com AVX2
-		_mm256_store_si256(reinterpret_cast<__m256i*>(alignedBuffer + readPos), vData);
+		if (is_aligned(alignedBuffer.get() + readPos, 32)) {
+			_mm256_store_si256(reinterpret_cast<__m256i*>(alignedBuffer.get() + readPos), vData);
+		} else {
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(alignedBuffer.get() + readPos), vData);
+		}
+
 		readPos += 8;
 	}
 
-	// Copiar o buffer processado de volta para o buffer original usando AVX2
-	simd_memcpy_avx2(buffer, alignedBuffer, messageLength);
-
-	// Liberar memória alinhada
-#ifdef _WIN32
-	_aligned_free(alignedBuffer);
-#else
-	std::free(alignedBuffer);
-#endif
+	// Copiar de volta para o buffer original
+	simd_memcpy_avx2(buffer, alignedBuffer.get(), messageLength);
 }
 
 bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
@@ -198,37 +184,31 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	}
 
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
-	auto messageLength = static_cast<int32_t>(msgLength);
-	int32_t readPos = 0;
+	const auto messageLength = static_cast<int32_t>(msgLength);
 
-	// Precache das somas de controle para descriptografia
 	precacheControlSumsDecrypt();
 
-	// Alocar memória alinhada
-#ifdef _WIN32
-	auto* alignedBuffer = reinterpret_cast<uint8_t*>(_aligned_malloc(messageLength, 32));
-#else
-	uint8_t* alignedBuffer = reinterpret_cast<uint8_t*>(std::aligned_alloc(32, messageLength));
-#endif
+	// Alocar memória alinhada usando std::unique_ptr para garantir liberação
+	const std::unique_ptr<uint8_t, AlignedFreeDeleter> alignedBuffer(
+		aligned_alloc_memory(messageLength, 32), AlignedFreeDeleter()
+	);
 
 	if (!alignedBuffer) {
-		throw std::bad_alloc(); // Tratar erro de alocação
+		g_logger().error("[] - Error alianhamento memory", __FUNCTION__);
 	}
 
-	// Copiar os dados para o buffer alinhado usando AVX2
-	simd_memcpy_avx2(alignedBuffer, buffer, messageLength);
+	simd_memcpy_avx2(alignedBuffer.get(), buffer, messageLength);
 
-	// Processar em blocos de 64 bits
+	int32_t readPos = 0;
 	while (readPos < messageLength) {
-		// Prefetch para reduzir a latência da memória
-		_mm_prefetch(reinterpret_cast<const char*>(alignedBuffer + readPos + 64), _MM_HINT_T0);
+		_mm_prefetch(reinterpret_cast<const char*>(alignedBuffer.get() + readPos + 256), _MM_HINT_T1);
 
-		// Carregar 64 bits (dois inteiros de 32 bits) do buffer alinhado com AVX2
-		__m256i vData = _mm256_load_si256(reinterpret_cast<const __m256i*>(alignedBuffer + readPos));
+		__m256i vData = is_aligned(alignedBuffer.get() + readPos, 32)
+			? _mm256_load_si256(reinterpret_cast<const __m256i*>(alignedBuffer.get() + readPos))
+			: _mm256_loadu_si256(reinterpret_cast<const __m256i*>(alignedBuffer.get() + readPos));
 
 		auto* vDataArr = reinterpret_cast<uint32_t*>(&vData);
 
-		// Desenrolar o loop em grupos de 8 para melhor uso do pipeline
 		for (int32_t i = 0; i < 32; i += 8) {
 			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[i * 2];
 			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[i * 2 + 1];
@@ -255,20 +235,16 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 7) * 2 + 1];
 		}
 
-		// Armazenar os resultados de volta no buffer alinhado com AVX2
-		_mm256_store_si256(reinterpret_cast<__m256i*>(alignedBuffer + readPos), vData);
+		if (is_aligned(alignedBuffer.get() + readPos, 32)) {
+			_mm256_store_si256(reinterpret_cast<__m256i*>(alignedBuffer.get() + readPos), vData);
+		} else {
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(alignedBuffer.get() + readPos), vData);
+		}
+
 		readPos += 8;
 	}
 
-	// Copiar o buffer processado de volta para o buffer original usando AVX2
-	simd_memcpy_avx2(buffer, alignedBuffer, messageLength);
-
-	// Liberar memória alinhada
-#ifdef _WIN32
-	_aligned_free(alignedBuffer);
-#else
-	std::free(alignedBuffer);
-#endif
+	simd_memcpy_avx2(buffer, alignedBuffer.get(), messageLength);
 
 	const auto innerLength = msg.get<uint16_t>();
 	if (std::cmp_greater(innerLength, msgLength - 2)) {

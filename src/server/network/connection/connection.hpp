@@ -93,7 +93,6 @@ private:
 	asio::high_resolution_timer readTimer;
 	asio::high_resolution_timer writeTimer;
 
-
 	// Use a fila lock-free com capacidade para 1024 mensagens
 	atomic_queue::AtomicQueue2<OutputMessage_ptr, 1024> messageQueue;
 

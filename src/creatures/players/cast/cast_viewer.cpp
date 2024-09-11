@@ -1506,7 +1506,7 @@ void CastViewer::handle(ProtocolGame_ptr client, const std::string &text, uint16
 		return;
 	}
 
-	const int64_t &now = OTSYS_TIME();
+	const int64_t &now = OTSYS_STEADY_TIME();
 	if (client->m_castCooldownTime + 5000 < now) {
 		client->m_castCooldownTime = now, client->m_castCount = 0;
 	} else if (client->m_castCount++ >= 3) {

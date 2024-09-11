@@ -1522,6 +1522,12 @@ int64_t OTSYS_TIME(bool useTime) {
 	return OTSYSTIME;
 }
 
+int64_t OTSYS_STEADY_TIME() {
+	return std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::steady_clock::now().time_since_epoch()
+	).count();
+}
+
 SpellGroup_t stringToSpellGroup(const std::string &value) {
 	std::string tmpStr = asLowerCaseString(value);
 	if (tmpStr == "attack" || tmpStr == "1") {

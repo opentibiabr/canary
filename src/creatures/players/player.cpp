@@ -6214,7 +6214,7 @@ void Player::sendClosePrivate(uint16_t channelId) {
 }
 
 void Player::sendIcons() {
-	if (!client) {
+	if (!hasClientOwner()) {
 		return;
 	}
 

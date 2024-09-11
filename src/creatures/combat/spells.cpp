@@ -108,7 +108,7 @@ void Spells::clear() {
 
 bool Spells::hasInstantSpell(const std::string &word) const {
 	if (auto iterate = instants.find(word);
-		iterate != instants.end()) {
+	    iterate != instants.end()) {
 		return true;
 	}
 	return false;
@@ -127,8 +127,8 @@ bool Spells::registerInstantLuaEvent(const std::shared_ptr<InstantSpell> instant
 		// Checks if there is any spell registered with the same name
 		if (hasInstantSpell(words)) {
 			g_logger().warn("[Spells::registerInstantLuaEvent] - "
-							"Duplicate registered instant spell with words: {}, on spell with name: {}",
-							words, instantName);
+			                "Duplicate registered instant spell with words: {}, on spell with name: {}",
+			                words, instantName);
 			return false;
 		}
 		// Register spell word in the map
@@ -166,7 +166,7 @@ std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
 		vocSpellsIt = vocSpells.find(vocationId);
 
 		if (vocSpellsIt != vocSpells.end()
-			&& vocSpellsIt->second) {
+		    && vocSpellsIt->second) {
 			spellsList.push_back(it.second->getSpellId());
 		}
 	}
@@ -361,8 +361,8 @@ bool CombatSpell::executeCastSpell(std::shared_ptr<Creature> creature, const Lua
 	// onCastSpell(creature, var)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CombatSpell::executeCastSpell - Creature {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName());
 		return false;
 	}
 
@@ -552,7 +552,7 @@ bool Spell::playerRuneSpellCheck(std::shared_ptr<Player> player, const Position 
 		return false;
 	}
 
-	if (range != -1 && !g_game().canThrowObjectTo(playerPos, toPos, true, range, range)) {
+	if (range != -1 && !g_game().canThrowObjectTo(playerPos, toPos, SightLine_CheckSightLineAndFloor, range, range)) {
 		player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
@@ -900,7 +900,7 @@ bool InstantSpell::playerCastInstant(std::shared_ptr<Player> player, std::string
 bool InstantSpell::canThrowSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const {
 	const Position &fromPos = creature->getPosition();
 	const Position &toPos = target->getPosition();
-	if (fromPos.z != toPos.z || (range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight)) || (range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight, range, range))) {
+	if (fromPos.z != toPos.z || (range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck)) || (range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck, range, range))) {
 		return false;
 	}
 	return true;
@@ -950,8 +950,8 @@ bool InstantSpell::executeCastSpell(std::shared_ptr<Creature> creature, const Lu
 	// onCastSpell(creature, var)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[InstantSpell::executeCastSpell - Creature {} words {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName(), getWords());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName(), getWords());
 		return false;
 	}
 
@@ -1095,8 +1095,8 @@ bool RuneSpell::executeCastSpell(std::shared_ptr<Creature> creature, const LuaVa
 	// onCastSpell(creature, var, isHotkey)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[RuneSpell::executeCastSpell - Creature {} runeId {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature->getName(), getRuneItemId());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 creature->getName(), getRuneItemId());
 		return false;
 	}
 

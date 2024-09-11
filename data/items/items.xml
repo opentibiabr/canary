@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <items>
 	<!-- Liquids -->
-	<!-- Fluid type 0 is same as water (id="1") -->
-	<item id="1" name="water"/>
-	<item id="2" name="wine"/>
-	<item id="3" name="beer"/>
-	<item id="4" name="mud"/>
-	<item id="5" name="blood"/>
-	<item id="6" name="slime"/>
-	<item id="7" name="oil"/>
-	<item id="8" name="urine"/>
-	<item id="9" name="milk"/>
-	<item id="10" name="manafluid"/>
-	<item id="11" name="lifefluid"/>
-	<item id="12" name="lemonade"/>
-	<item id="13" name="rum"/>
-	<item id="14" name="fruit juice"/>
-	<item id="15" name="coconut milk"/>
-	<item id="16" name="mead"/>
-	<item id="17" name="tea"/>
-	<item id="18" name="ink"/>
-	<!-- 12.85 last fluid is 18, 19+ is a loop from 0 to 18 over and over again -->
+    <!-- Fluid type 0 is same as water (id="1") -->
+    <item id="1" name="water"/>
+    <item id="2" name="wine"/>
+    <item id="3" name="beer"/>
+    <item id="4" name="mud"/>
+    <item id="5" name="blood"/>
+    <item id="6" name="slime"/>
+    <item id="7" name="oil"/>
+    <item id="8" name="urine"/>
+    <item id="9" name="milk"/>
+    <item id="10" name="manafluid"/>
+    <item id="11" name="lifefluid"/>
+    <item id="12" name="lemonade"/>
+    <item id="13" name="rum"/>
+    <item id="14" name="fruit juice"/>
+    <item id="15" name="coconut milk"/>
+    <item id="16" name="mead"/>
+    <item id="17" name="tea"/>
+    <item id="18" name="ink"/>
+    <item id="19" name="candyfluid"/>
+    <item id="20" name="chocolate"/>
+    <!-- 13.40 last fluid is 20, 21+ is a loop from 0 to 20 over and over again -->
 
 	<item id="100" name="void"/>
 	<item id="101" name="earth"/>
@@ -76109,6 +76111,138 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="feet"/>
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
 		</attribute>
+	</item>
+	<item id="44651" article="a" name="dead dragolisk">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44652"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44652" article="a" name="dead dragolisk">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44653"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44653" article="a" name="dead dragolisk">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44654" article="a" name="dead dragolisk">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44651"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44656" article="a" name="dead wardragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44657"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44657" article="a" name="dead wardragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44658"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44658" article="a" name="dead wardragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44659"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44659" article="a" name="dead wardragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44660" article="a" name="dead mega dragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44661" article="a" name="dead mega dragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44660"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44662" article="a" name="dead mega dragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44661"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44663" article="a" name="dead mega dragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44662"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44743" article="a" name="Nimmersatt's seal">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44744" article="a" name="molten dragon essence">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44745" article="a" name="mega dragon heart">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44746" article="a" name="dragolisk eye">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44747" article="a" name="dragolisk poison gland">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44748" article="a" name="wardragon claw">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44749" article="a" name="wardragon tooth">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44750" name="exalted seal">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44751" name="gold-scaled sentinel">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44752" name="crystallized blood">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44753" name="herald's insignia ">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44754" name="herald's wings">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44758" name="dragon hoard">
+		<attribute key="duration" value="60"/>
+		<attribute key="containersize" value="10"/>
+		<attribute key="decayTo" value="0"/>
 	</item>
 </items>
 

@@ -71,6 +71,7 @@ enum ConditionAttr_t {
 	CONDITIONATTR_ABSORBS,
 	CONDITIONATTR_INCREASES,
 	CONDITIONATTR_CHARM_CHANCE_MODIFIER,
+	CONDITIONATTR_PERSISTENT,
 
 	// reserved for serialization
 	CONDITIONATTR_END = 254,
@@ -117,6 +118,7 @@ enum ConditionType_t : uint8_t {
 	CONDITION_GOSHNAR3 = 36,
 	CONDITION_GOSHNAR4 = 37,
 	CONDITION_GOSHNAR5 = 38,
+	CONDITION_BAKRAGORE = 39,
 
 	// Need the last ever
 	CONDITION_COUNT = 39
@@ -1524,12 +1526,12 @@ using StashItemList = std::map<uint16_t, uint32_t>;
 
 using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
 /*
-	> ItemsTierCountList structure:
-	|- [itemID]
-		|- [itemTier]
-			|- Count
-		| ...
-	| ...
+    > ItemsTierCountList structure:
+    |- [itemID]
+        |- [itemTier]
+            |- Count
+        | ...
+    | ...
 */
 
 struct ProtocolFamiliars {

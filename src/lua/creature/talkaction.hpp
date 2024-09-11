@@ -36,6 +36,14 @@ public:
 		}
 	}
 
+	const std::string &getDescription() const {
+		return m_description;
+	}
+
+	void setDescription(const std::string &stringDescription) {
+		m_description = stringDescription;
+	}
+
 	std::string getSeparator() const {
 		return separator;
 	}
@@ -56,6 +64,7 @@ private:
 	}
 
 	std::string m_word;
+	std::string m_description;
 	std::string separator = "\"";
 	uint8_t m_groupType = 0;
 };

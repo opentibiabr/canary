@@ -214,6 +214,21 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, WEAPON_WAND);
 	registerEnum(L, WEAPON_AMMO);
 	registerEnum(L, WEAPON_MISSILE);
+
+	registerEnum(L, SCREENSHOT_TYPE_NONE);
+	registerEnum(L, SCREENSHOT_TYPE_ACHIEVEMENT);
+	registerEnum(L, SCREENSHOT_TYPE_BESTIARYENTRYCOMPLETED);
+	registerEnum(L, SCREENSHOT_TYPE_BESTIARYENTRYUNLOCKED);
+	registerEnum(L, SCREENSHOT_TYPE_BOSSDEFEATED);
+	registerEnum(L, SCREENSHOT_TYPE_DEATHPVE);
+	registerEnum(L, SCREENSHOT_TYPE_DEATHPVP);
+	registerEnum(L, SCREENSHOT_TYPE_LEVELUP);
+	registerEnum(L, SCREENSHOT_TYPE_PLAYERKILLASSIST);
+	registerEnum(L, SCREENSHOT_TYPE_PLAYERKILL);
+	registerEnum(L, SCREENSHOT_TYPE_PLAYERATTACKING);
+	registerEnum(L, SCREENSHOT_TYPE_TREASUREFOUND);
+	registerEnum(L, SCREENSHOT_TYPE_SKILLUP);
+	registerEnum(L, SCREENSHOT_TYPE_GIFTOFLIFE);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {
@@ -316,37 +331,9 @@ void LuaEnums::initFactionEnums(lua_State* L) {
 }
 
 void LuaEnums::initConditionEnums(lua_State* L) {
-	registerEnum(L, CONDITION_NONE);
-	registerEnum(L, CONDITION_POISON);
-	registerEnum(L, CONDITION_FIRE);
-	registerEnum(L, CONDITION_ENERGY);
-	registerEnum(L, CONDITION_BLEEDING);
-	registerEnum(L, CONDITION_HASTE);
-	registerEnum(L, CONDITION_PARALYZE);
-	registerEnum(L, CONDITION_OUTFIT);
-	registerEnum(L, CONDITION_INVISIBLE);
-	registerEnum(L, CONDITION_LIGHT);
-	registerEnum(L, CONDITION_MANASHIELD);
-	registerEnum(L, CONDITION_INFIGHT);
-	registerEnum(L, CONDITION_DRUNK);
-	registerEnum(L, CONDITION_EXHAUST);
-	registerEnum(L, CONDITION_REGENERATION);
-	registerEnum(L, CONDITION_SOUL);
-	registerEnum(L, CONDITION_DROWN);
-	registerEnum(L, CONDITION_MUTED);
-	registerEnum(L, CONDITION_CHANNELMUTEDTICKS);
-	registerEnum(L, CONDITION_YELLTICKS);
-	registerEnum(L, CONDITION_ATTRIBUTES);
-	registerEnum(L, CONDITION_FREEZING);
-	registerEnum(L, CONDITION_DAZZLED);
-	registerEnum(L, CONDITION_CURSED);
-	registerEnum(L, CONDITION_EXHAUST_COMBAT);
-	registerEnum(L, CONDITION_EXHAUST_HEAL);
-	registerEnum(L, CONDITION_PACIFIED);
-	registerEnum(L, CONDITION_SPELLCOOLDOWN);
-	registerEnum(L, CONDITION_SPELLGROUPCOOLDOWN);
-	registerEnum(L, CONDITION_ROOTED);
-	registerEnum(L, CONDITION_FEARED);
+	for (auto value : magic_enum::enum_values<ConditionType_t>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initConditionIdEnums(lua_State* L) {

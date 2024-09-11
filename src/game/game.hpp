@@ -442,7 +442,7 @@ public:
 		return boostedCreature;
 	}
 
-	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
+	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight = SightLine_CheckSightLine, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor);
 
 	void changeSpeed(std::shared_ptr<Creature> creature, int32_t varSpeedDelta);
@@ -732,6 +732,12 @@ public:
 	Title getTitleById(uint8_t id);
 	Title getTitleByName(const std::string &name);
 
+	const std::string &getSummaryKeyByType(uint8_t type);
+
+	const std::map<uint8_t, std::string> &getBlessingNames();
+	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();
+	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
+
 private:
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
@@ -741,6 +747,10 @@ private:
 
 	std::vector<HighscoreCategory> m_highscoreCategories;
 	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;
+
+	std::unordered_map<uint8_t, std::string> m_summaryCategories;
+	std::unordered_map<uint16_t, std::string> m_hirelingSkills;
+	std::unordered_map<uint16_t, std::string> m_hirelingOutfits;
 
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
 	std::unordered_set<uint32_t> fiendishMonsters;

@@ -54,15 +54,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") or MsgContains(message, "pass") then
-		if player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 13 then
+		if player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 13 then
 			npcHandler:say("You want entranzzze to zzze zzzity?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Mh, zzzezzze paperzzz zzzeem legit, I have orderzzz to let you pazzz. Zzzo be it.", npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 22)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission05, 2) --Questlog, Wrath of the Emperor "Mission 05: New in Town"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 22)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission05, 2) --Questlog, Wrath of the Emperor "Mission 05: New in Town"
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			player:teleportTo(Position(33114, 31197, 7), false)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -71,6 +71,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Chhhhzzz. Ugly humanzzz! You better have a good reazzzon to be here!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

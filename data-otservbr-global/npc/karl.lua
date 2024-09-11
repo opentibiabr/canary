@@ -59,29 +59,29 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "barrel") then
-		if player:getStorageValue(Storage.SecretService.AVINMission03) == 2 then
+		if player:getStorageValue(Storage.Quest.U8_1.SecretService.AVINMission03) == 2 then
 			npcHandler:say("Do you bring me a barrel of beer??", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "whisper beer") then
-		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 11 then
+		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 4 then
 			npcHandler:say("Do you want to buy a bottle of our finest whisper beer for 80 gold?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:removeItem(404, 1) then
-				player:setStorageValue(Storage.SecretService.AVINMission03, 3)
+				player:setStorageValue(Storage.Quest.U8_1.SecretService.AVINMission03, 3)
 				npcHandler:say("Three cheers for the noble |PLAYERNAME|.", npc, creature)
 			else
 				npcHandler:say("You don't have any barrel of beer!", npc, creature)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 11 then
+			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 4 then
 				if player:removeMoneyBank(80) then
 					npcHandler:say("Here. Don't take it into the city though.", npc, creature)
-					player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 12)
+					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 5)
 					player:addItem(6106, 1)
 					npcHandler:setTopic(playerId, 0)
 				else
@@ -102,6 +102,7 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 npcConfig.shop = {
 	{ itemName = "bottle of whisper beer", clientId = 6106, buy = 80 },
 	{ itemName = "mug of beer", clientId = 2880, buy = 20, count = 3 },
+	{ itemName = "vial of beer", clientId = 2874, buy = 20, count = 1, subType = 3 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

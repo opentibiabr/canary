@@ -377,6 +377,14 @@ private:
 		registerMethod(L, "Player", "getTitles", PlayerFunctions::luaPlayerGetTitles);
 		registerMethod(L, "Player", "setCurrentTitle", PlayerFunctions::luaPlayerSetCurrentTitle);
 
+		// Store Summary
+		registerMethod(L, "Player", "createTransactionSummary", PlayerFunctions::luaPlayerCreateTransactionSummary);
+
+		registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
+
+		registerMethod(L, "Player", "sendIconBakragore", PlayerFunctions::luaPlayerSendIconBakragore);
+		registerMethod(L, "Player", "removeIconBakragore", PlayerFunctions::luaPlayerRemoveIconBakragore);
+
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
 		MountFunctions::init(L);
@@ -737,6 +745,11 @@ private:
 	static int luaPlayerGetTitles(lua_State* L);
 	static int luaPlayerSetCurrentTitle(lua_State* L);
 
+	static int luaPlayerCreateTransactionSummary(lua_State* L);
+
+	static int luaPlayerTakeScreenshot(lua_State* L);
+	static int luaPlayerSendIconBakragore(lua_State* L);
+	static int luaPlayerRemoveIconBakragore(lua_State* L);
 	static int luaPlayerGetCastViewersCount(lua_State* L);
 	static int luaPlayerGetCastViewers(lua_State* L);
 	static int luaPlayerSetCastViewers(lua_State* L);

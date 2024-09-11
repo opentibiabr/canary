@@ -50,8 +50,8 @@ Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	for (const std::string &scriptName : mType->info.scripts) {
 		if (!registerCreatureEvent(scriptName)) {
 			g_logger().warn("[Monster::Monster] - "
-							"Unknown event name: {}",
-							scriptName);
+			                "Unknown event name: {}",
+			                scriptName);
 		}
 	}
 }
@@ -138,8 +138,8 @@ void Monster::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin)
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("[Monster::onCreatureAppear - Monster {} creature {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 getName(), creature->getName());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -176,8 +176,8 @@ void Monster::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("[Monster::onCreatureDisappear - Monster {} creature {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 getName(), creature->getName());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -217,8 +217,8 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("[Monster::onCreatureMove - Monster {} creature {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 getName(), creature->getName());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -291,8 +291,8 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
-							 "script calls being nested.",
-							 getName(), creature->getName());
+			                 "script calls being nested.",
+			                 getName(), creature->getName());
 			return;
 		}
 
@@ -771,8 +771,8 @@ void Monster::onThink(uint32_t interval) {
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} Call stack overflow. Too many lua script calls "
-							 "being nested.",
-							 getName());
+			                 "being nested.",
+			                 getName());
 			return;
 		}
 
@@ -1129,27 +1129,23 @@ void Monster::pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirecti
 	// We can not use iterators here since we can push the item to another tile
 	// which will invalidate the iterator.
 	// start from the end to minimize the amount of traffic
-	TileItemVector* items;
-	if (!(items = tile->getItemList())) {
-		return;
-	}
-	uint32_t moveCount = 0;
-	uint32_t removeCount = 0;
-	auto it = items->begin();
-	while (it != items->end()) {
-		std::shared_ptr<Item> item = *it;
-		if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
-			if (moveCount < 20 && pushItem(item, nextDirection)) {
-				++moveCount;
-			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
-				++removeCount;
+	if (const auto items = tile->getItemList()) {
+		uint32_t moveCount = 0;
+		uint32_t removeCount = 0;
+		int32_t downItemSize = tile->getDownItemCount();
+		for (int32_t i = downItemSize; --i >= 0;) {
+			const auto &item = items->at(i);
+			if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
+				if (moveCount < 20 && pushItem(item, nextDirection)) {
+					++moveCount;
+				} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
+					++removeCount;
+				}
 			}
-		} else {
-			it++;
 		}
-	}
-	if (removeCount > 0) {
-		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		if (removeCount > 0) {
+			g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		}
 	}
 }
 
@@ -1257,12 +1253,12 @@ void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result
 			return;
 		}
 
-		stdext::arraylist<Direction> listDir(128);
+		std::vector<Direction> listDir;
 		if (!getPathTo(masterPos, listDir, 0, std::max<int32_t>(0, distance - 5), true, true, distance)) {
 			isWalkingBack = false;
 			return;
 		}
-		startAutoWalk(listDir.data());
+		startAutoWalk(listDir);
 	}
 }
 
@@ -2041,8 +2037,8 @@ void Monster::dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creatu
 	if (corpse && lootDrop) {
 		// Only fiendish drops sliver
 		if (ForgeClassifications_t classification = getMonsterForgeClassification();
-			// Condition
-			classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
+		    // Condition
+		    classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
 			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS, __FUNCTION__);
 			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS, __FUNCTION__);
 

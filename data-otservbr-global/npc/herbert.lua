@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "letter") then
-		if player:getStorageValue(Storage.ThievesGuild.Mission06) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission06) == 1 then
 			npcHandler:say("You would like Chantalle's letter? only if you are willing to pay a price. {gold} maybe?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end

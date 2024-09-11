@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)
 			npcHandler:say("Have a nice trip!", npc, creature)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			if player:getStorageValue(Storage.RentedHorseTimer) >= os.time() then
+			if player:getStorageValue(Storage.Quest.U9_1.HorseStationWorldChange.Timer) >= os.time() then
 				npcHandler:say("You already have a horse.", npc, creature)
 				return true
 			end
@@ -95,7 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 			local mountId = { 22, 25, 26 }
 			player:addMount(mountId[math.random(#mountId)])
-			player:setStorageValue(Storage.RentedHorseTimer, os.time() + 86400)
+			player:setStorageValue(Storage.Quest.U9_1.HorseStationWorldChange.Timer, os.time() + 86400)
 			player:addAchievement("Natural Born Cowboy")
 			npcHandler:say("I'll give you one of our experienced ones. Take care! Look out for low hanging branches.", npc, creature)
 		end

@@ -101,14 +101,13 @@ void Npc::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) {
 	}
 
 	if (auto player = creature->getPlayer()) {
+		removeShopPlayer(player->getGUID());
 		onPlayerDisappear(player);
 	}
 
 	if (spawnNpc) {
 		spawnNpc->startSpawnNpcCheck();
 	}
-
-	shopPlayers.clear();
 }
 
 void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
@@ -235,8 +234,8 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 		return;
 	}
 
-	// Check if the player not have empty slots
-	if (!ignore && player->getFreeBackpackSlots() == 0) {
+	// Check if the player not have empty slots or the item is not a container
+	if (!ignore && (player->getFreeBackpackSlots() == 0 && (player->getInventoryItem(CONST_SLOT_BACKPACK) || (!Item::items[itemId].isContainer() || !(Item::items[itemId].slotPosition & SLOTP_BACKPACK))))) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}
@@ -522,8 +521,8 @@ void Npc::onThinkWalk(uint32_t interval) {
 	}
 
 	if (Direction newDirection;
-		getRandomStep(newDirection)) {
-		listWalkDir.push_front(newDirection);
+	    getRandomStep(newDirection)) {
+		listWalkDir.emplace_back(newDirection);
 		addEventWalk();
 	}
 
@@ -634,7 +633,7 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	std::ranges::shuffle(directionvector, getRandomGenerator());
 
 	for (const Position &creaturePos = getPosition();
-		 Direction direction : directionvector) {
+	     Direction direction : directionvector) {
 		if (canWalkTo(creaturePos, direction)) {
 			moveDirection = direction;
 			return true;
@@ -647,8 +646,8 @@ bool Npc::isShopPlayer(uint32_t playerGUID) const {
 	return shopPlayers.find(playerGUID) != shopPlayers.end();
 }
 
-void Npc::addShopPlayer(uint32_t playerGUID) {
-	shopPlayers.insert(playerGUID);
+void Npc::addShopPlayer(uint32_t playerGUID, const std::vector<ShopBlock> &shopItems) {
+	shopPlayers.try_emplace(playerGUID, shopItems);
 }
 
 void Npc::removeShopPlayer(uint32_t playerGUID) {
@@ -656,7 +655,7 @@ void Npc::removeShopPlayer(uint32_t playerGUID) {
 }
 
 void Npc::closeAllShopWindows() {
-	for (const auto playerGUID : shopPlayers) {
+	for (const auto &[playerGUID, shopBlock] : shopPlayers) {
 		const auto &player = g_game().getPlayerByGUID(playerGUID);
 		if (player) {
 			player->closeShopWindow();

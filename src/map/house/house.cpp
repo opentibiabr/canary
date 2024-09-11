@@ -753,8 +753,8 @@ bool Houses::loadHousesXML(const std::string &filename) {
 		);
 		if (entryPos.x == 0 && entryPos.y == 0 && entryPos.z == 0) {
 			g_logger().warn("[Houses::loadHousesXML] - Entry not set for house "
-							"name: {} with id: {}",
-							house->getName(), houseId);
+			                "name: {} with id: {}",
+			                house->getName(), houseId);
 		}
 		house->setEntryPos(entryPos);
 
@@ -871,7 +871,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 				}
 
 				std::ostringstream ss;
-				ss << "Warning! \nThe " << period << " rent of " << house->getRent() << " gold for your house \"" << house->getName() << "\" is payable. Have it within " << daysLeft << " days or you will lose static_self_cast<HouseTransferItem>() house.";
+				ss << "Warning! \nThe " << period << " rent of " << house->getRent() << " gold for your house \"" << house->getName() << "\" is payable. Have it within " << daysLeft << " days or you will lose this house.";
 				letter->setAttribute(ItemAttribute_t::TEXT, ss.str());
 				g_game().internalAddItem(player->getInbox(), letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
 				house->setPayRentWarnings(house->getPayRentWarnings() + 1);

@@ -22,9 +22,6 @@ npcConfig.outfit = {
 npcConfig.flags = {
 	floorchange = false,
 }
-npcConfig.shop = {
-	{ itemName = "holy tible", clientId = 2836 },
-}
 
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -103,31 +100,31 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- Demon oak quest
 	if MsgContains(message, "mission") or MsgContains(message, "demon oak") then
-		if player:getStorageValue(Storage.DemonOak.Done) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Done) < 1 then
 			npcHandler:say("How do you know? Did you go into the infested area?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.DemonOak.Progress) == 2 and player:getStorageValue(Storage.DemonOak.Done) < 1 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Progress) == 2 and player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Done) < 1 then
 			npcHandler:say("You better don't return here until you've defeated the Demon Oak.", npc, creature)
-		elseif player:getStorageValue(Storage.DemonOak.Done) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Done) == 1 then
 			npcHandler:say({
 				"You chopped down the demon oak?!? Unbelievable!! Let's hope it doesn't come back. As long as evil is still existent in the soil of the plains, it won't be over. Still, the demons suffered a setback, that's for sure. ...",
 				"For your brave action, I tell you a secret which has been kept for many many years. There is an old house south of the location where you found the demon oak. There should be a grave with the name 'Yesim Adeit' somewhere close by. ...",
 				"It belongs to a Daramian nobleman named 'Teme Saiyid'. I knew him well and he told me -almost augured- that someone will come who is worthy to obtain his treasure. I'm sure this 'someone' is you. Good luck in finding it!",
 			}, npc, creature)
-			player:setStorageValue(Storage.DemonOak.Done, 2)
+			player:setStorageValue(Storage.Quest.U8_2.TheDemonOak.Done, 2)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
-		player:setStorageValue(Storage.DemonOak.Progress, 1)
-		if player:getStorageValue(Storage.DemonOak.Progress) == 1 then
+		player:setStorageValue(Storage.Quest.U8_2.TheDemonOak.Progress, 1)
+		if player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Progress) == 1 then
 			npcHandler:say("A demon oak?!? <mumbles some blessings> May the gods be on our side. You'll need a {hallowed axe} to harm that tree. Bring me a simple {axe} and I'll prepare it for you.", npc, creature)
-			player:setStorageValue(Storage.DemonOak.Progress, 2)
+			player:setStorageValue(Storage.Quest.U8_2.TheDemonOak.Progress, 2)
 			npcHandler:setTopic(playerId, 0)
 		else
 			npcHandler:say("I don't believe a word of it! How rude to lie to a monk!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "axe") then
-		if player:getStorageValue(Storage.DemonOak.Progress) == 2 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Progress) == 2 then
 			npcHandler:say("Ahh, you've got an axe. Very good. I can make a hallowed axe out of it. It will cost you... er... a donation of 1,000 gold. Alright?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		else
@@ -135,7 +132,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 2 then
-		if player:getStorageValue(Storage.DemonOak.Progress) == 2 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Progress) == 2 then
 			if player:getMoney() + player:getBankBalance() >= 1000 then
 				if player:removeItem(3274, 1) and player:removeMoneyBank(1000) then
 					npcHandler:say("Let's see....<mumbles a prayer>....here we go. The blessing on this axe will be absorbed by all the demonic energy around here. I presume it will not last very long, so better hurry. Actually, I can refresh the blessing as often as you like.", npc, creature)
@@ -176,6 +173,24 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("Yenny, known as the Gentle, was one of the most powerful wielders of magic in ancient times. She was known throughout the world for her mercy and kindness.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
+
+	if MsgContains(message, "holy") or MsgContains(message, "tible") then
+		if player:getStorageValue(Storage.Quest.U7_9.ThePitsOfInferno.ChestTible) == 1 then
+			npcHandler:say("Would you like to buy a The Holy Tible for 1000 gold?", npc, creature)
+			npcHandler:setTopic(playerId, 3)
+		else
+			npcHandler:say("You need to complete the quest for the book first before you can buy The Holy Tible.", npc, creature)
+		end
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 3 then
+		if player:removeMoney(1000) then
+			player:addItem(2836, 1)
+			npcHandler:say("Here is your The Holy Tible.", npc, creature)
+		else
+			npcHandler:say("You do not have enough money.", npc, creature)
+		end
+		npcHandler:setTopic(playerId, 0)
+	end
+
 	return true
 end
 

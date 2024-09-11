@@ -2564,6 +2564,30 @@ ChestUnique = {
 		reward = { { 3725, 5 } },
 		questName = "Rookgaard05BrownMushrooms",
 	},
+	-- Dark Trails Quest
+	[6302] = {
+		itemId = 2469,
+		itemPos = { x = 33457, y = 32073, z = 8 },
+		reward = { { 11450, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U10_50.DarkTrails.RewardSmallNotebook,
+	},
+	[6303] = {
+		itemId = 2478,
+		itemPos = { x = 33468, y = 32083, z = 8 },
+		container = 2853,
+		reward = { { 21203, 5 }, { 21333, 1 } },
+		weight = 189.00,
+		storage = Storage.Quest.U10_50.DarkTrails.Reward05GlothAndBelongings,
+	},
+	[6304] = {
+		itemId = 2478,
+		itemPos = { x = 33487, y = 32085, z = 9 },
+		container = 2853,
+		reward = { { 21203, 10 }, { 21334, 1 } },
+		weight = 189.00,
+		storage = Storage.Quest.U10_50.DarkTrails.Reward10GlothAndBelongings,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

@@ -56,20 +56,25 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- Mission 3 start
 	if MsgContains(message, "abandoned sewers") then
-		if player:getStorageValue(Storage.Oramond.MissionAbandonedSewer) < 21 then
-			npcHandler:say("You want to enter the abandoned sewers? That's rather dangerous and not a good idea, man. That part of the sewers was not sealed off for nothing, you know? ...", npc, creature)
-			npcHandler:say("But hey, it's your life, bro. So here's the deal. I'll let you into the abandoned sewers if you help me with our {mission}.", npc, creature)
-			-- Mission 3 end
-		elseif player:getStorageValue(Storage.Oramond.MissionAbandonedSewer) == 21 then
-			npcHandler:say("Wow, you already did it, that's fast. I'm used to a more laid-back attitude from most people. It's a shame to risk losing you to some collapsing tunnels, but a deal is a deal. ...", npc, creature)
-			npcHandler:say("I hereby grant you the permission to enter the abandoned part of the sewers. Take care, man! ...", npc, creature)
-			npcHandler:say("If you find something interesting, come back to talk about the {abandoned sewers}.", npc, creature)
-			npcHandler:setTopic(playerId, 7)
-			player:setStorageValue(Storage.DarkTrails.Mission04, 1)
-			player:setStorageValue(Storage.Oramond.DoorAbandonedSewer, 1)
-		elseif player:getStorageValue(Storage.DarkTrails.Mission05) == 1 then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission05) == 1 then
 			npcHandler:say("I'm glad to see you back alive and healthy. Did you find anything interesting that you want to {report}?", npc, creature)
 			npcHandler:setTopic(playerId, 7)
+		elseif player:getStorageValue(Storage.Oramond.MissionAbandonedSewer) < 21 then
+			npcHandler:say({
+				"You want to enter the abandoned sewers? That's rather dangerous and not a good idea, man. That part of the sewers was not sealed off for nothing, you know? ...",
+				"But hey, it's your life, bro. So here's the deal. I'll let you into the abandoned sewers if you help me with our {mission}.",
+			}, npc, creature)
+			npcHandler:setTopic(playerId, 0)
+			-- Mission 3 end
+		elseif player:getStorageValue(Storage.Oramond.MissionAbandonedSewer) == 21 then
+			npcHandler:say({
+				"Wow, you already did it, that's fast. I'm used to a more laid-back attitude from most people. It's a shame to risk losing you to some collapsing tunnels, but a deal is a deal. ...",
+				"I hereby grant you the permission to enter the abandoned part of the sewers. Take care, man! ...",
+				"If you find something interesting, come back to talk about the {abandoned sewers}.",
+			}, npc, creature)
+			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission04, 1)
+			player:setStorageValue(Storage.Oramond.DoorAbandonedSewer, 1)
+			npcHandler:setTopic(playerId, 0)
 		end
 		-- Mission 3 start
 	elseif MsgContains(message, "mission") then
@@ -77,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("The sewers need repair. You in?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 			-- Mission 3 end
-		elseif player:getStorageValue(Storage.DarkTrails.Mission03) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission03) == 1 then
 			npcHandler:say("Elliott's keeps calling it that. It's just another job! You fixed some broken pipes and stuff? Let me check, {ok}?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
@@ -98,11 +103,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 		-- Final mission 5
 	elseif MsgContains(message, "report") then
-		if player:getStorageValue(Storage.DarkTrails.Mission05) == 1 then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission05) == 1 then
 			if npcHandler:getTopic(playerId) == 7 then
-				npcHandler:say("A sacrificial site? Damn, sounds like some freakish cult or something. Just great. And this ancient structure you talked about that's not part of the sewers? You'd better see the local historian about that, man. ...", npc, creature)
-				npcHandler:say("He can make more sense of what you found there. His name is Barazbaz. He should be in the magistrate building.", npc, creature)
-				player:setStorageValue(Storage.DarkTrails.Mission06, 1) -- Start mission 6
+				npcHandler:say({
+					"A sacrificial site? Damn, sounds like some freakish cult or something. Just great. And this ancient structure you talked about that's not part of the sewers? You'd better see the local historian about that, man. ...",
+					"He can make more sense of what you found there. His name is Barazbaz. He should be in the magistrate building.",
+				}, npc, creature)
+				player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission06, 1) -- Start mission 6
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("You already reported this mission, go to the next.", npc, creature)
@@ -112,6 +119,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, "<nods> Hi.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

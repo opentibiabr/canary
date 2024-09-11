@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.DarkTrails.Mission01) == -1 then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission01) == -1 then
 			npcHandler:say("Well, there is little where we need help beyond the normal tasks you can do for the city. However, there is one thing out of the ordinary where some {assistance} would be appreciated.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
@@ -74,17 +74,17 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "strange") then
 		if npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("They usually know better than to show up in the streets and harass our citizens, but lately they've grown more bold or desperate or whatever. I ask you to investigate what they are up to. If necessary, you may scare them away a bit.", npc, creature)
-			player:setStorageValue(Storage.DarkTrails.Mission01, 1) -- Mission 1 start
+			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission01, 1) -- Mission 1 start
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "outfit") then
-		if player:getStorageValue(Storage.DarkTrails.Mission18) == 1 then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission18) == 1 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Outfit) < 1 then
 			npcHandler:say("Nice work, take your outfit.", npc, creature)
-			player:setStorageValue(Storage.DarkTrails.Outfit, 1)
 			doPlayerAddOutfit(610, 1)
 			doPlayerAddOutfit(618, 1)
+			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Outfit, 1)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.DarkTrails.Outfit) == 1 then
+		else
 			npcHandler:say("You already have the outfit.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

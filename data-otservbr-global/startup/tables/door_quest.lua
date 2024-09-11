@@ -297,11 +297,11 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 33549, y = 31974, z = 10 } },
 	},
-	[Storage.DarkTrails.DoorQuandon] = {
+	[Storage.Quest.U10_50.DarkTrails.DoorQuandon] = {
 		itemId = false,
 		itemPos = { { x = 33573, y = 31953, z = 7 } },
 	},
-	[Storage.DarkTrails.DoorHideout] = {
+	[Storage.Quest.U10_50.DarkTrails.DoorHideout] = {
 		itemId = false,
 		itemPos = { { x = 33666, y = 31924, z = 7 } },
 	},

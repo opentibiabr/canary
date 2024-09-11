@@ -68,8 +68,8 @@ function theAncientSewers.onUse(player, item, fromPosition, target, toPosition, 
 		elseif player:getStorageValue(Storage.Oramond.MissionAbandonedSewer) == 18 then
 			player:setStorageValue(Storage.Oramond.MissionAbandonedSewer, 19)
 		elseif player:getStorageValue(Storage.Oramond.MissionAbandonedSewer) == 19 then
-			if player:getStorageValue(Storage.DarkTrails.Mission03) < 1 then
-				player:setStorageValue(Storage.DarkTrails.Mission03, 1)
+			if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission03) < 1 then
+				player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission03, 1)
 			end
 			player:setStorageValue(Storage.Oramond.MissionAbandonedSewer, 20)
 		end

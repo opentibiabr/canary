@@ -6,7 +6,9 @@ local helpMessages = {
 	"Available commands:\n",
 	"!cast on - enables the stream",
 	"!cast off - disables the stream",
-	"!cast desc, description - sets description about your cast",
+	"!cast desc, description (or empty for remove) - sets description about your cast",
+	"!cast desc, remove/delete - removes description",
+	"!cast desc - removes description",
 	"!cast password, password - sets a password on the stream",
 	"!cast password off - disables the password protection",
 	"!cast kick, name - kick a spectator from your stream",
@@ -76,7 +78,7 @@ function talkaction.onSay(player, words, param)
 	elseif table.contains({ "kick", "remove" }, split[1]) then
 		if data.broadcast then
 			if split[2] then
-				if split[2] ~= "all" then
+				if split[2]:lower() ~= "all" then
 					local found = false
 					for _, name in ipairs(data.names) do
 						if split[2]:lower() == name:lower() then
@@ -93,7 +95,7 @@ function talkaction.onSay(player, words, param)
 					end
 				else
 					data.kick = data.names
-					player:sendTextMessage(MESSAGE_STATUS, "All players has been kicked.")
+					player:sendTextMessage(MESSAGE_STATUS, "All players have been kicked.")
 				end
 			else
 				player:sendTextMessage(MESSAGE_STATUS, "You need to type a name.")
@@ -223,56 +225,54 @@ function talkaction.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_STATUS, "Your mute list is empty.")
 		end
 	elseif table.contains({ "password", "guard" }, split[1]) then
-		if split[2] then
-			if table.contains({ "off", "no", "disable" }, split[2]) then
-				if data.password:len() ~= 0 then
-					db.query("UPDATE `active_casters` SET `cast_status` = 1 WHERE `caster_id` = " .. player:getGuid())
-				end
-
-				player:kv():scoped("cast-system"):remove("password")
-				player:sendTextMessage(MESSAGE_STATUS, "You have removed password for your stream.")
-				if experienceMultiplier > 0 then
-					player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. experienceMultiplier .. "% was reactivated.")
-					player:kv():scoped("cast-system"):set("experience-bonus", true)
-				end
-			else
-				data.password = string.trim(split[2])
-				if data.password:len() ~= 0 then
-					db.query("UPDATE `active_casters` SET `cast_status` = 3 WHERE `caster_id` = " .. player:getGuid())
-				end
-				player:sendTextMessage(MESSAGE_STATUS, "You have set new password for your stream.")
-				if experienceMultiplier > 0 then
-					player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. experienceMultiplier .. "% was deactivated.")
-					player:kv():scoped("cast-system"):remove("experience-bonus")
-				end
-				player:kv():scoped("cast-system"):set("password", data.password)
+		if not split[2] or split[2]:trim() == "" or table.contains({ "off", "no", "disable" }, split[2]) then
+			if data.password:len() ~= 0 then
+				db.query("UPDATE `active_casters` SET `cast_status` = 1 WHERE `caster_id` = " .. player:getGuid())
 			end
-		elseif data.password ~= "" then
+
+			data.password = ""
+			player:kv():scoped("cast-system"):remove("password")
+			player:sendTextMessage(MESSAGE_STATUS, "You have removed password for your stream.")
+			if experienceMultiplier > 0 then
+				player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. experienceMultiplier .. "% was reactivated.")
+				player:kv():scoped("cast-system"):set("experience-bonus", true)
+			end
+		else
+			data.password = string.trim(split[2])
+			if data.password:len() ~= 0 then
+				db.query("UPDATE `active_casters` SET `cast_status` = 3 WHERE `caster_id` = " .. player:getGuid())
+			end
+			player:sendTextMessage(MESSAGE_STATUS, "You have set new password for your stream.")
+			if experienceMultiplier > 0 then
+				player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. experienceMultiplier .. "% was deactivated.")
+				player:kv():scoped("cast-system"):remove("experience-bonus")
+			end
+			player:kv():scoped("cast-system"):set("password", data.password)
+		end
+		
+		if data.password ~= "" then
 			player:sendTextMessage(MESSAGE_STATUS, "Your stream is currently protected with password: " .. data.password .. ".")
 		else
 			player:sendTextMessage(MESSAGE_STATUS, "Your stream is currently not protected.")
 		end
 	elseif table.contains({ "desc", "description" }, split[1]) then
-		if split[2] then
-			-- print(split[2])
-			if table.contains({ "remove", "delete" }, split[2]) then
-				player:kv():scoped("cast-system"):remove("description")
-				player:sendTextMessage(MESSAGE_STATUS, "You have removed description for your stream.")
-			else
-				if split[2]:match("[%a%d%s%u%l]+") ~= split[2] then
-					player:sendTextMessage(MESSAGE_STATUS, "Please only A-Z 0-9.")
-					return false
-				end
-				if split[2]:len() > 0 and split[2]:len() <= 50 then
-					player:kv():scoped("cast-system"):set("description", split[2])
-				else
-					player:sendTextMessage(MESSAGE_STATUS, "Your description max lenght 50 characters.")
-					return false
-				end
-				player:sendTextMessage(MESSAGE_STATUS, "Cast description was set to: " .. split[2] .. ".")
-			end
+		if not split[2] or split[2]:trim() == "" or table.contains({ "remove", "delete" }, split[2]) then
+			data.description = ""
+			player:kv():scoped("cast-system"):remove("description")
+			player:sendTextMessage(MESSAGE_STATUS, "You have removed description for your stream.")
 		else
-			player:sendTextMessage(MESSAGE_STATUS, "Please enter your description or if you want to remove your description type remove.")
+			if split[2]:match("[%a%d%s%u%l]+") ~= split[2] then
+				player:sendTextMessage(MESSAGE_STATUS, "Please only A-Z 0-9.")
+				return false
+			end
+			if split[2]:len() > 0 and split[2]:len() <= 50 then
+				data.description = split[2]
+				player:kv():scoped("cast-system"):set("description", split[2])
+			else
+				player:sendTextMessage(MESSAGE_STATUS, "Your description max length 50 characters.")
+				return false
+			end
+			player:sendTextMessage(MESSAGE_STATUS, "Cast description was set to: " .. split[2] .. ".")
 		end
 	elseif table.contains({ "status", "info" }, split[1]) then
 		player:sendTextMessage(MESSAGE_STATUS, "Your stream is currently " .. (data.broadcast and "enabled" or "disabled") .. ".")

@@ -4564,7 +4564,7 @@ int PlayerFunctions::luaPlayerSetCastViewers(lua_State* L) {
 
 	if (broadcast) {
 		player->client->insertCaster();
-		player->sendChannel(CHANNEL_CAST, "Tibia Cast", nullptr, nullptr);
+		player->sendChannel(CHANNEL_CAST, "Livestream", nullptr, nullptr);
 	}
 
 	player->client->setCastDescription(description);

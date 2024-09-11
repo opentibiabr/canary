@@ -848,12 +848,6 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
-	// Cast system login (show casting players)
-	if (accountDescriptor == "@cast") {
-		g_dispatcher().addEvent([self = getThis(), characterName, password] { self->castViewerLogin(characterName, password); }, "ProtocolGame::castViewerLogin");
-		return;
-	}
-
 	BanInfo banInfo;
 	if (IOBan::isIpBanned(getIP(), banInfo)) {
 		if (banInfo.reason.empty()) {
@@ -864,6 +858,12 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
 		   << banInfo.reason;
 		disconnectClient(ss.str());
+		return;
+	}
+
+	// Cast system login (show casting players)
+	if (accountDescriptor == "@cast") {
+		g_dispatcher().addEvent([self = getThis(), characterName, password] { self->castViewerLogin(characterName, password); }, "ProtocolGame::castViewerLogin");
 		return;
 	}
 
@@ -9342,7 +9342,7 @@ void ProtocolGame::sendCastViewerAppear(std::shared_ptr<Player> foundPlayer) {
 	acceptPackets = true;
 
 	if (player->client->isCastBroadcasting()) {
-		std::string welcomeMessage = fmt::format("{} is boradcasting for {} people.\nLivestream time: {}", player->getName(), player->client->getViewers().size(), player->client->getCastBroadcastTimeString());
+		std::string welcomeMessage = fmt::format("{} is broadcasting for {} people.\nLivestream time: {}", player->getName(), player->client->getViewers().size(), player->client->getCastBroadcastTimeString());
 		sendTextMessage(TextMessage(MESSAGE_LOOK, welcomeMessage));
 
 		const std::string &description = player->client->getCastDescription();
@@ -9350,9 +9350,12 @@ void ProtocolGame::sendCastViewerAppear(std::shared_ptr<Player> foundPlayer) {
 			sendCreatureSay(player, TALKTYPE_SAY, description);
 		}
 
-		sendChannel(CHANNEL_CAST, "Tibia Cast", nullptr, nullptr);
+		sendChannel(CHANNEL_CAST, "Livestream", nullptr, nullptr);
+		sendTextMessage(TextMessage(MESSAGE_EVENT_ADVANCE, "Available commands: \n/name newname\n/show"));
+		
 	}
 }
+
 void ProtocolGame::castViewerLogin(const std::string &name, const std::string &password) {
 	std::shared_ptr<Player> foundPlayer = g_game().getPlayerByName(name);
 	if (!foundPlayer) {

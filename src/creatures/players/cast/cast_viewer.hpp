@@ -10,8 +10,6 @@
 #pragma once
 
 #include "lua/functions/core/game/lua_enums.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
-
 #include "enums/forge_conversion.hpp"
 
 class Creature;
@@ -81,7 +79,7 @@ public:
 	void sendFYIBox(const std::string &message);
 	uint32_t getVersion() const;
 	void disconnect();
-	void sendCreatureSkull(std::shared_ptr<Creature> creature) const;
+	void sendCreatureSkull(const std::shared_ptr<Creature> &creature) const;
 	void sendAddTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
 	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
 	void sendRemoveTileThing(const Position &pos, int32_t stackpos);
@@ -106,7 +104,8 @@ public:
 	void sendCreatureHealth(std::shared_ptr<Creature> creature) const;
 	void sendDistanceShoot(const Position &from, const Position &to, unsigned char type) const;
 	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName);
-	void sendIcons(uint32_t icons) const;
+	void sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const IconBakragore iconBakragore) const;
+	void sendIconBakragore(const IconBakragore icon);
 	void sendMagicEffect(const Position &pos, uint8_t type) const;
 	void sendSkills() const;
 	void sendTextMessage(MessageClasses mclass, const std::string &message);
@@ -167,7 +166,7 @@ public:
 	void sendLootContainers();
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
-	void sendCreatureEmblem(std::shared_ptr<Creature> creature);
+	void sendCreatureEmblem(const std::shared_ptr<Creature> &creature) const;
 	void sendItemInspection(uint16_t itemId, uint8_t itemCount, std::shared_ptr<Item> item, bool cyclopedia);
 	void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode);
 	void sendCyclopediaCharacterBaseInformation();
@@ -210,6 +209,7 @@ public:
 	void sendMarketCancelOffer(const MarketOfferEx &offer);
 	void sendMessageDialog(const std::string &message);
 	void sendOpenStash();
+	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendPartyCreatureUpdate(std::shared_ptr<Creature> creature);
 	void sendPartyCreatureShield(std::shared_ptr<Creature> creature);
 	void sendPartyCreatureSkull(std::shared_ptr<Creature> creature);

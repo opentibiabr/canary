@@ -1035,12 +1035,12 @@ public:
 	void removeAttacked(std::shared_ptr<Player> attacked);
 	void clearAttacked();
 	void addUnjustifiedDead(std::shared_ptr<Player> attacked);
-	void sendCreatureEmblem(std::shared_ptr<Creature> creature) const {
+	void sendCreatureEmblem(const std::shared_ptr<Creature> &creature) const {
 		if (hasClientOwner()) {
 			client->sendCreatureEmblem(creature);
 		}
 	}
-	void sendCreatureSkull(std::shared_ptr<Creature> creature) const {
+	void sendCreatureSkull(const std::shared_ptr<Creature> &creature) const {
 		if (hasClientOwner()) {
 			client->sendCreatureSkull(creature);
 		}
@@ -1738,7 +1738,7 @@ public:
 	}
 
 	void sendTakeScreenshot(Screenshot_t screenshotType) {
-		if (client) {
+		if (hasClientOwner()) {
 			client->sendTakeScreenshot(screenshotType);
 		}
 	}

@@ -12,13 +12,11 @@
 #include "creatures/players/cast/cast_viewer.hpp"
 
 #include "creatures/players/player.hpp"
-
 #include "creatures/interactions/chat.hpp"
 #include "config/configmanager.hpp"
-
 #include "server/network/message/outputmessage.hpp"
-
 #include "server/network/protocol/protocolgame.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 
 CastViewer::CastViewer(std::shared_ptr<ProtocolGame> client) :
 	m_owner(client) { }
@@ -54,7 +52,11 @@ bool CastViewer::checkPassword(const std::string &_password) {
 	std::string t = _password;
 	trimString(t);
 
-	return t == m_castPassword;
+	if (t.size() != m_castPassword.size()) {
+		return false;
+	}
+
+	return std::ranges::equal(t, m_castPassword);
 }
 
 void CastViewer::setKickViewer(std::vector<std::string> list) {
@@ -314,7 +316,7 @@ void CastViewer::disconnect() {
 	}
 }
 
-void CastViewer::sendCreatureSkull(std::shared_ptr<Creature> creature) const {
+void CastViewer::sendCreatureSkull(const std::shared_ptr<Creature> &creature) const {
 	if (m_owner) {
 		m_owner->sendCreatureSkull(creature);
 
@@ -552,14 +554,22 @@ void CastViewer::sendCreatePrivateChannel(uint16_t channelId, const std::string 
 	}
 }
 
-void CastViewer::sendIcons(uint32_t icons) const {
+void CastViewer::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const IconBakragore iconBakragore) const {
 	if (m_owner) {
-		m_owner->sendIcons(icons);
+		m_owner->sendIcons(iconSet, iconBakragore);
 
 		for (const auto &it : m_viewers) {
-			it.first->sendIcons(icons);
+			it.first->sendIcons(iconSet, iconBakragore);
 		}
 	}
+}
+
+void CastViewer::sendIconBakragore(const IconBakragore icon) {
+	if (!m_owner) {
+		return;
+	}
+
+	m_owner->sendIconBakragore(icon);
 }
 
 void CastViewer::sendMagicEffect(const Position &pos, uint8_t type) const {
@@ -956,7 +966,7 @@ void CastViewer::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSo
 	}
 }
 
-void CastViewer::sendCreatureEmblem(std::shared_ptr<Creature> creature) {
+void CastViewer::sendCreatureEmblem(const std::shared_ptr<Creature> &creature) const {
 	if (m_owner) {
 		m_owner->sendCreatureEmblem(creature);
 	}
@@ -1194,6 +1204,12 @@ void CastViewer::sendOpenStash() {
 	}
 }
 
+void CastViewer::sendTakeScreenshot(Screenshot_t screenshotType) {
+	if (m_owner) {
+		m_owner->sendTakeScreenshot(screenshotType);
+	}
+}
+
 void CastViewer::sendPartyCreatureUpdate(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureUpdate(creature);
@@ -1414,16 +1430,16 @@ void CastViewer::addViewer(ProtocolGame_ptr client, bool spy) {
 	}
 
 	auto viewerId = m_viewers.size() + 1;
-	std::string guestString = fmt::format("Guest-{}", viewerId);
+	std::string guestString = fmt::format("Viewer-{}", viewerId);
 
 	m_viewers[client] = std::make_pair(guestString, m_id);
 
 	if (!spy) {
-		sendChannelMessage("", fmt::format("{} has entered the cast.", guestString), TALKTYPE_CHANNEL_O, CHANNEL_CAST);
+		sendChannelEvent(CHANNEL_CAST, guestString, CHANNELEVENT_JOIN);
 
 		if (m_viewers.size() > m_castLiveRecord) {
 			m_castLiveRecord = m_viewers.size();
-			sendChannelMessage("", fmt::format("New record: {} people are watching your livestream now.", std::to_string(m_castLiveRecord)), TALKTYPE_CHANNEL_O, CHANNEL_CAST);
+			sendTextMessage(MESSAGE_STATUS, fmt::format("New record: {} people are watching your livestream now.", std::to_string(m_castLiveRecord)));
 		}
 	}
 }
@@ -1460,7 +1476,7 @@ void CastViewer::handle(ProtocolGame_ptr client, const std::string &text, uint16
 	if (client->m_castCooldownTime + 5000 < now) {
 		client->m_castCooldownTime = now, client->m_castCount = 0;
 	} else if (client->m_castCount++ >= 3) {
-		client->sendTextMessage(TextMessage(MESSAGE_STATUS, fmt::format("Please wait a {} seconds to send another message.", ((client->m_castCooldownTime + 5000 - now) / 1000) + 1)));
+		client->sendTextMessage(TextMessage(MESSAGE_STATUS, fmt::format("Please wait {} seconds to send another message.", ((client->m_castCooldownTime + 5000 - now) / 1000) + 1)));
 		return;
 	}
 
@@ -1522,7 +1538,7 @@ void CastViewer::handle(ProtocolGame_ptr client, const std::string &text, uint16
 			sendChannelMessage(sit->second.first, text, TALKTYPE_CHANNEL_Y, CHANNEL_CAST);
 		}
 	} else {
-		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "You are mutated."));
+		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "You are muted."));
 	}
 }
 

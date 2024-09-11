@@ -6242,9 +6242,11 @@ void Player::sendIcons() {
 }
 
 void Player::sendIconBakragore(const IconBakragore icon) {
-	if (client) {
-		client->sendIconBakragore(icon);
+	if (!hasClientOwner()) {
+		return;
 	}
+
+	client->sendIconBakragore(icon);
 }
 
 void Player::removeBakragoreIcons() {

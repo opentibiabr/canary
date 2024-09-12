@@ -4446,7 +4446,7 @@ if not Quests then
 					storageId = Storage.Quest.U10_70.LionsRock.Questline,
 					missionId = 10319,
 					startValue = 1,
-					endValue = 8,
+					endValue = 11,
 					states = {
 						[1] = function(player)
 							return string.format(

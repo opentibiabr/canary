@@ -14,7 +14,8 @@ monster.outfit = {
 }
 
 monster.events = {
-	"SoulwarsBossDeath",
+	"GoshnarsHatredBuff",
+	"SoulWarBossesDeath",
 }
 
 monster.health = 300000
@@ -65,14 +66,6 @@ monster.flags = {
 monster.light = {
 	level = 0,
 	color = 0,
-}
-
-monster.summon = {
-	maxSummons = 4,
-	summons = {
-		{ name = "dreadful harvester", chance = 10, interval = 1000, count = 2 },
-		{ name = "hateful soul", chance = 10, interval = 1000, count = 2 },
-	},
 }
 
 monster.voices = {
@@ -143,13 +136,26 @@ monster.immunities = {
 
 mType.onThink = function(monster, interval) end
 
-mType.onAppear = function(monster, creature)
+mType.onAppear = function(monster, creature) end
+
+mType.onSpawn = function(monster)
 	if monster:getType():isRewardBoss() then
 		monster:setReward(true)
 	end
+
+	monster:resetHatredDamageMultiplier()
 end
 
-mType.onDisappear = function(monster, creature) end
+mType.onDisappear = function(monster, creature)
+	if creature:getName() == "Goshnar's Hatred" then
+		for _, monsterName in pairs(SoulWarQuest.burningHatredMonsters) do
+			local ashesCreature = Creature(monsterName)
+			if ashesCreature then
+				ashesCreature:remove()
+			end
+		end
+	end
+end
 
 mType.onMove = function(monster, creature, fromPosition, toPosition) end
 

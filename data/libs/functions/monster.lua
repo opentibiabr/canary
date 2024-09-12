@@ -204,7 +204,7 @@ do
 		return table.contains(equipmentTypes, t)
 	end
 
-	function MonsterType.getBossReward(self, lootFactor, topScore, equipmentOnly, lootTable)
+	function MonsterType.getBossReward(self, lootFactor, topScore, equipmentOnly, lootTable, player)
 		if configManager.getNumber(configKeys.RATE_LOOT) <= 0 then
 			return lootTable or {}
 		end
@@ -221,6 +221,6 @@ do
 				end
 				return true
 			end,
-		}, lootTable)
+		}, lootTable, player)
 	end
 end

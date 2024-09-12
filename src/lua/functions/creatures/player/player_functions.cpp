@@ -2274,10 +2274,23 @@ int PlayerFunctions::luaPlayerGetParty(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddOutfit(lua_State* L) {
-	// player:addOutfit(lookType)
+	// player:addOutfit(lookType or name, addon = 0)
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
 	if (player) {
-		player->addOutfit(getNumber<uint16_t>(L, 2), 0);
+		auto addon = getNumber<uint8_t>(L, 3, 0);
+		if (lua_isnumber(L, 2)) {
+			player->addOutfit(getNumber<uint16_t>(L, 2), addon);
+		} else if (lua_isstring(L, 2)) {
+			const std::string &outfitName = getString(L, 2);
+			const auto &outfit = Outfits::getInstance().getOutfitByName(player->getSex(), outfitName);
+			if (!outfit) {
+				reportErrorFunc("Outfit not found");
+				return 1;
+			}
+
+			player->addOutfit(outfit->lookType, addon);
+		}
+
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -4430,6 +4443,19 @@ int PlayerFunctions::luaPlayerRemoveIconBakragore(lua_State* L) {
 		player->removeBakragoreIcon(iconType);
 	}
 
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendCreatureAppear(lua_State* L) {
+	auto player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	bool isLogin = getBoolean(L, 2, false);
+	player->sendCreatureAppear(player, player->getPosition(), isLogin);
 	pushBoolean(L, true);
 	return 1;
 }

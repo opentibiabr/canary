@@ -58,10 +58,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "chocolate cake") then
-		if player:getStorageValue(Storage.HiddenCityOfBeregar.SweetAsChocolateCake) == 1 and player:getItemCount(8019) >= 1 then
+		if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.SweetAsChocolateCake) == 1 and player:getItemCount(8019) >= 1 then
 			npcHandler:say("Is that for me?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.HiddenCityOfBeregar.SweetAsChocolateCake) == 2 then
+		elseif player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.SweetAsChocolateCake) == 2 then
 			npcHandler:say("So did you tell her that the cake came from me?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
@@ -70,7 +70,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(8019, 1) then
 				npcHandler:say("Err, thanks. I doubt it's from you. Who sent it?", npc, creature)
 				npcHandler:setTopic(playerId, 2)
-				player:setStorageValue(Storage.HiddenCityOfBeregar.SweetAsChocolateCake, 2)
+				player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.SweetAsChocolateCake, 2)
 			else
 				npcHandler:say("Oh, I thought you have one.", npc, creature)
 				npcHandler:setTopic(playerId, 0)

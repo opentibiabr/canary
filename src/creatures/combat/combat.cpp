@@ -12,6 +12,8 @@
 #include "declarations.hpp"
 #include "creatures/combat/combat.hpp"
 #include "lua/creature/events.hpp"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -595,10 +597,15 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 		targetPlayer = target->getPlayer();
 	}
 
+	g_logger().trace("[{}] (old) eventcallback: 'creatureOnCombat', damage primary: '{}', secondary: '{}'", __FUNCTION__, damage.primary.value, damage.secondary.value);
+	g_callbacks().executeCallback(EventCallback_t::creatureOnCombat, &EventCallback::creatureOnCombat, caster, target, std::ref(damage));
+	g_logger().trace("[{}] (new) eventcallback: 'creatureOnCombat', damage primary: '{}', secondary: '{}'", __FUNCTION__, damage.primary.value, damage.secondary.value);
+
 	if (attackerPlayer) {
 		std::shared_ptr<Item> item = attackerPlayer->getWeapon();
 		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
+		g_callbacks().executeCallback(EventCallback_t::playerOnCombat, &EventCallback::playerOnCombat, attackerPlayer, target, item, std::ref(damage));
 
 		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
 			if (damage.primary.type != COMBAT_HEALING) {
@@ -624,6 +631,9 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 			damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
 			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
 		}
+
+		// Monster type onPlayerAttack event
+		targetMonster->onAttackedByPlayer(attackerPlayer);
 	}
 
 	// Monster attacking player
@@ -937,7 +947,8 @@ void Combat::addDistanceEffect(std::shared_ptr<Creature> caster, const Position 
 
 void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t effect) {
 	if (effect > 0) {
-		stdext::arraylist<Direction> dirList(128);
+		std::vector<Direction> dirList;
+
 		FindPathParams fpp;
 		fpp.minTargetDist = 0;
 		fpp.maxTargetDist = 1;
@@ -1156,7 +1167,9 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 
 		if (CreatureVector* creatures = tile->getCreatures()) {
 			const std::shared_ptr<Creature> topCreature = tile->getTopCreature();
-			for (auto &creature : *creatures) {
+			// A copy of the tile's creature list is made because modifications to this vector, such as adding or removing creatures through a Lua callback, may occur during the iteration within the for loop.
+			CreatureVector creaturesCopy = *creatures;
+			for (auto &creature : creaturesCopy) {
 				if (params.targetCasterOrTopMost) {
 					if (caster && caster->getTile() == tile) {
 						if (creature != caster) {
@@ -1211,7 +1224,9 @@ void Combat::CombatFunc(std::shared_ptr<Creature> caster, const Position &origin
 
 		if (CreatureVector* creatures = tile->getCreatures()) {
 			const std::shared_ptr<Creature> topCreature = tile->getTopCreature();
-			for (auto &creature : *creatures) {
+			// A copy of the tile's creature list is made because modifications to this vector, such as adding or removing creatures through a Lua callback, may occur during the iteration within the for loop.
+			CreatureVector creaturesCopy = *creatures;
+			for (auto &creature : creaturesCopy) {
 				if (params.targetCasterOrTopMost) {
 					if (caster && caster->getTile() == tile) {
 						if (creature != caster) {

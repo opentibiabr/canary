@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "trouble") and npcHandler:getTopic(playerId) ~= 3 and player:getStorageValue(Storage.TheInquisition.MilesGuard) < 1 and player:getStorageValue(Storage.TheInquisition.Mission01) ~= -1 then
+	if MsgContains(message, "trouble") and npcHandler:getTopic(playerId) ~= 3 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.MilesGuard) < 1 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission01) ~= -1 then
 		npcHandler:say("I'm fine. There's no trouble at all.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "foresight of the authorities") and npcHandler:getTopic(playerId) == 1 then
@@ -70,9 +70,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "trouble will arise in the near future") and npcHandler:getTopic(playerId) == 3 then
 		npcHandler:say("I think the gods and the government do their best to keep away harm from the citizens.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
-		if player:getStorageValue(Storage.TheInquisition.MilesGuard) < 1 then
-			player:setStorageValue(Storage.TheInquisition.MilesGuard, 1)
-			player:setStorageValue(Storage.TheInquisition.Mission01, player:getStorageValue(Storage.TheInquisition.Mission01) + 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
+		if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.MilesGuard) < 1 then
+			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.MilesGuard, 1)
+			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission01, player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission01) + 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
 			player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 		end
 	end

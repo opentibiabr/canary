@@ -57,7 +57,7 @@ mugKeyword:addChildKeyword({ "golden mug" }, StdModule.say, { npcHandler = npcHa
 	return player:getItemCount(2903) > 0
 end, function(player)
 	player:removeItem(2903, 1)
-	player:setStorageValue(Storage.HiddenCityOfBeregar.PythiusTheRotten, os.time() + 180)
+	player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.PythiusTheRotten, os.time() + 180)
 end)
 mugKeyword:addChildKeyword({ "golden mug" }, StdModule.say, { npcHandler = npcHandler, text = "THIS IS NOT WORTH BEING PART OF MY TREASURE! BRING ME SOMETHING ELSE.", reset = true })
 mugKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "THIS IS NOT WORTH BEING PART OF MY TREASURE! BRING ME SOMETHING ELSE", reset = true })

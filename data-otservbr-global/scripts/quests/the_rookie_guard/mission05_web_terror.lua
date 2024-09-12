@@ -33,7 +33,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local state = player:getStorageValue(Storage.TheRookieGuard.Mission05)
+	local state = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission05)
 	-- Skip if not was started or finished
 	if state == -1 or state == 3 then
 		return true
@@ -70,7 +70,7 @@ function spiderLairHole.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission05)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission05)
 	if missionState == -1 or missionState >= 3 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have no business down there.")
 		player:teleportTo(fromPosition, true)
@@ -86,7 +86,7 @@ spiderLairHole:register()
 local greasyStone = Action()
 
 function greasyStone.onUse(player, item, frompos, item2, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission05)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission05)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
@@ -100,7 +100,7 @@ function greasyStone.onUse(player, item, frompos, item2, topos)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You rub the strange grease on your body. The spider queen will not be able to smell you for about 2 minutes. Hurry!")
 			Position({ x = 32018, y = 32098, z = 11 }):sendMagicEffect(CONST_ME_TUTORIALARROW)
 		end
-		player:setStorageValue(Storage.TheRookieGuard.Mission05, 2)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission05, 2)
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already retrieved some of the spider queen's web. No need to go back down there.")
 	end
@@ -119,7 +119,7 @@ function spiderQueenChamberHole.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission05)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission05)
 	if missionState == 1 then
 		-- Check delayed notifications (message/arrow)
 		if not isTutorialNotificationDelayed(player) then
@@ -145,14 +145,14 @@ spiderQueenChamberHole:register()
 local spiderWeb = Action()
 
 function spiderWeb.onUse(player, item, frompos, item2, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission05)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission05)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
 	end
 	if missionState == 2 or missionState == 4 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You retrieved some of the spider queen's web. Hurry back before she can smell you again!")
-		player:setStorageValue(Storage.TheRookieGuard.Mission05, 3)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission05, 3)
 	end
 	return true
 end

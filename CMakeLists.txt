@@ -20,6 +20,9 @@ endif()
 
 set(VCPKG_FEATURE_FLAGS "versions")
 set(VCPKG_BUILD_TYPE "release")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
 
 # *****************************************************************************
 # Project canary

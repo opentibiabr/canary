@@ -1,4 +1,4 @@
-local applyCobraFlaskEffectOnMonsterSpawn = EventCallback()
+local applyCobraFlaskEffectOnMonsterSpawn = EventCallback("CobraFlaskEffectOnMonsterSpawn")
 
 applyCobraFlaskEffectOnMonsterSpawn.monsterOnSpawn = function(monster, position)
 	if table.contains({ "cobra scout", "cobra vizier", "cobra assassin" }, monster:getName():lower()) then
@@ -27,4 +27,16 @@ function cobraFlask.onUse(player, item, fromPosition, target, toPosition, isHotk
 end
 
 cobraFlask:id(31296)
+cobraFlask:register()
+
+local cobraFlask = Action()
+
+function cobraFlask.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if table.contains({ 4188, 4189, 4190 }, target:getId()) then
+		item:transform(31296)
+	end
+	return true
+end
+
+cobraFlask:id(31297)
 cobraFlask:register()

@@ -255,6 +255,10 @@ public:
 		return creatureIcons.at(key);
 	}
 
+	bool hasIcon(const std::string &key) const {
+		return creatureIcons.contains(key);
+	}
+
 	void setIcon(const std::string &key, CreatureIcon icon) {
 		creatureIcons[key] = icon;
 		iconChanged();
@@ -584,8 +588,8 @@ public:
 
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
-	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, const FindPathParams &fpp);
-	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
+	bool getPathTo(const Position &targetPos, std::vector<Direction> &dirList, const FindPathParams &fpp);
+	bool getPathTo(const Position &targetPos, std::vector<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
 	struct CountBlock_t {
 		int32_t total;
@@ -609,7 +613,7 @@ public:
 	 * @param useCharges Indicates whether charges should be considered.
 	 * @return The reflection percentage for the specified combat type.
 	 */
-	virtual int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
+	virtual double_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
 
 	/**
 	 * @brief Retrieves the flat reflection value for a given combat type.
@@ -707,6 +711,10 @@ protected:
 		return false;
 	}
 
+	virtual bool isDead() const {
+		return false;
+	}
+
 	static constexpr int32_t mapWalkWidth = MAP_MAX_VIEW_PORT_X * 2 + 1;
 	static constexpr int32_t mapWalkHeight = MAP_MAX_VIEW_PORT_Y * 2 + 1;
 	static constexpr int32_t maxWalkCacheWidth = (mapWalkWidth - 1) / 2;
@@ -720,7 +728,7 @@ protected:
 	CreatureEventList eventsList;
 	ConditionList conditions;
 
-	std::deque<Direction> listWalkDir;
+	std::vector<Direction> listWalkDir;
 
 	std::weak_ptr<Tile> m_tile;
 	std::weak_ptr<Creature> m_attackedCreature;

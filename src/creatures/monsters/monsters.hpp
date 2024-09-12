@@ -120,7 +120,9 @@ class MonsterType {
 		int32_t creatureDisappearEvent = -1;
 		int32_t creatureMoveEvent = -1;
 		int32_t creatureSayEvent = -1;
+		int32_t monsterAttackedByPlayerEvent = -1;
 		int32_t thinkEvent = -1;
+		int32_t spawnEvent = -1;
 		int32_t targetDistance = 1;
 		int32_t runAwayHealth = 0;
 		int32_t health = 100;
@@ -155,6 +157,8 @@ class MonsterType {
 		bool canWalkOnFire = true;
 		bool canWalkOnPoison = true;
 		bool isForgeCreature = true;
+		bool isPreyable = true;
+		bool isPreyExclusive = false;
 
 		MonstersEvent_t eventType = MONSTERS_EVENT_NONE;
 	};

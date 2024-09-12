@@ -15,9 +15,6 @@
 
 #include <argon2.h>
 
-const std::regex Argon2::re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
-const std::string Argon2::base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
 Argon2::Argon2() {
 	updateConstants();
 }
@@ -44,6 +41,8 @@ uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
 }
 
 bool Argon2::verifyPassword(const std::string &password, const std::string &phash) const {
+
+	const std::regex re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
 	std::smatch match;
 	if (!std::regex_search(phash, match, re)) {
 		g_logger().debug("No argon2 hash found in string");
@@ -65,6 +64,7 @@ bool Argon2::verifyPassword(const std::string &password, const std::string &phas
 }
 
 std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
+	const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	std::vector<uint8_t> ret;
 	int i = 0;
 	uint32_t val = 0;

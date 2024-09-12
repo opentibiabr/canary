@@ -2585,7 +2585,7 @@ ChestUnique = {
 		itemPos = { x = 33487, y = 32085, z = 9 },
 		container = 2853,
 		reward = { { 21203, 10 }, { 21334, 1 } },
-		weight = 189.00,
+		weight = 338.00,
 		storage = Storage.Quest.U10_50.DarkTrails.Reward10GlothAndBelongings,
 	},
 	-- Reward of others scrips files (varied rewards)

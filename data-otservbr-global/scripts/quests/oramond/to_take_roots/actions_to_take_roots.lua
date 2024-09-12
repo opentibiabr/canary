@@ -15,13 +15,13 @@ function toTakeRoots.onUse(player, item, fromPosition, target, toPosition, isHot
 			item:transform(item.itemid + 2)
 			addEvent(revertRoot, 120000, toPosition, 21106, 21104)
 			toPosition:sendMagicEffect(CONST_ME_GREEN_RINGS)
-			if player:getStorageValue(Storage.Oramond.QuestLine) <= 0 then
-				player:setStorageValue(Storage.Oramond.QuestLine, 1)
+			if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.QuestLine) <= 0 then
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.QuestLine, 1)
 			end
-			if player:getStorageValue(Storage.Oramond.MissionToTakeRoots) <= 0 then
-				player:setStorageValue(Storage.Oramond.MissionToTakeRoots, 1)
+			if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission) <= 0 then
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission, 1)
 			end
-			player:setStorageValue(Storage.Oramond.HarvestedRootCount, player:getStorageValue(Storage.Oramond.HarvestedRootCount) > 0 and player:getStorageValue(Storage.Oramond.HarvestedRootCount) + 1 or 1)
+			player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count, player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count) > 0 and player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count) + 1 or 1)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your harvesting attempt destroyed more of the juicy roots than you could salvage.")
 			item:transform(item.itemid + 2)
@@ -35,13 +35,13 @@ function toTakeRoots.onUse(player, item, fromPosition, target, toPosition, isHot
 			item:transform(item.itemid + 2)
 			addEvent(revertRoot, 120000, toPosition, 21107, 21105)
 			toPosition:sendMagicEffect(CONST_ME_GREEN_RINGS)
-			if player:getStorageValue(Storage.Oramond.QuestLine) <= 0 then
-				player:setStorageValue(Storage.Oramond.QuestLine, 1)
+			if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.QuestLine) <= 0 then
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.QuestLine, 1)
 			end
-			if player:getStorageValue(Storage.Oramond.MissionToTakeRoots) <= 0 then
-				player:setStorageValue(Storage.Oramond.MissionToTakeRoots, 1)
+			if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission) <= 0 then
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission, 1)
 			end
-			player:setStorageValue(Storage.Oramond.HarvestedRootCount, player:getStorageValue(Storage.Oramond.HarvestedRootCount) > 0 and player:getStorageValue(Storage.Oramond.HarvestedRootCount) + 1 or 1)
+			player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count, player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count) > 0 and player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count) + 1 or 1)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your harvesting attempt destroyed more of the juicy roots than you could salvage.")
 			item:transform(item.itemid + 2)

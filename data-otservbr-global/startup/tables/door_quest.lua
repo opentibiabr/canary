@@ -289,11 +289,11 @@ QuestDoorAction = {
 		itemPos = { { x = 33046, y = 31302, z = 7 } },
 	},
 	-- Dark trails/oramond door
-	[Storage.Oramond.DoorBeggarKing] = {
+	[Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Door] = {
 		itemId = false,
 		itemPos = { { x = 33573, y = 31982, z = 7 } },
 	},
-	[Storage.Oramond.DoorAbandonedSewer] = {
+	[Storage.Quest.U10_50.OramondQuest.TheAncientSewers.Door] = {
 		itemId = false,
 		itemPos = { { x = 33549, y = 31974, z = 10 } },
 	},

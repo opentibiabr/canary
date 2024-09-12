@@ -55,7 +55,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "friend") then
-		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission12) == 1 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission13) < 1 and player:getStorageValue(Storage.Oramond.VotingPoints) >= 50 then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission12) == 1 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission13) < 1 and player:getStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints) >= 50 then
 			npcHandler:say({
 				"So you have proven yourself a true friend of our city. It's hard to believe but I think your words only give substance to suspicions my heart had harboured since quite a while. ...",
 				"So Harsin is probably not the person he appeared to be. Actually I haven't heard from him for quite a while. He was resident in the local bed and breakfast hotel. You should be able to find him there or at least to learn about his whereabouts.",

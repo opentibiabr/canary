@@ -505,19 +505,6 @@ Storage = {
 		AmuletTimer = 50520,
 		AmuletStatus = 50521,
 	},
-	Oramond = {
-		-- Reserved storage from 50850 - 50879
-		QuestLine = 50850,
-		VotingPoints = 50851,
-		MissionToTakeRoots = 50852,
-		HarvestedRootCount = 50853,
-		TaskProbing = 50854,
-		DoorBeggarKing = 50855,
-		MissionAbandonedSewer = 50856,
-		DoorAbandonedSewer = 50857,
-		PeppermoonBell = 50858,
-		PeppermoonBellCount = 50859,
-	},
 	OutfitQuest = {
 		-- Reserved storage from 50960 - 51039
 		-- Until all outfit quests are completed
@@ -2449,12 +2436,32 @@ Storage = {
 				RewardSmallNotebook = 44573,
 				Reward05GlothAndBelongings = 44574,
 				Reward10GlothAndBelongings = 44575,
+				OramondTaskProbing = 44576,
 			},
 			GloothEngineerOutfits = {
-				Addon1 = 44576,
-				Addon2 = 44577,
+				Addon1 = 44577,
+				Addon2 = 44578,
 			},
-			Oramond = {},
+			OramondQuest = {
+				QuestLine = 44579,
+				VotingPoints = 44580,
+				ToTakeRoots = {
+					Mission = 44581,
+					Count = 44582,
+					Door = 44583,
+				},
+				Probing = {
+					Mission = 44584,
+					MonoDetector = 44585,
+				},
+				TheAncientSewers = {
+					Mission = 44586,
+					Door = 44587,
+				},
+				ThePowderOfTheStars = {
+					Mission = 44588,
+				},
+			},
 			Rathleton = {},
 		},
 		U10_55 = { -- update 10.55 - Reserved Storages 44751 - 44800

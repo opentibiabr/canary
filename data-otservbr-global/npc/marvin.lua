@@ -55,7 +55,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "funding") then
-		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission07) == 1 and player:getStorageValue(Storage.Oramond.VotingPoints) >= 1 then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission07) == 1 and player:getStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints) >= 1 then
 			npcHandler:say({
 				"So far you earned x votes. Each single vote can be spent on a different topic or you're also able to cast all your votes on one voting. ...",
 				"Well in the topic b you have the possibility to vote for the funding of the {archives}, import of bug {milk} or street {repairs}.",
@@ -76,9 +76,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 3 then
-			local currentVotes = player:getStorageValue(Storage.Oramond.VotingPoints)
+			local currentVotes = player:getStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints)
 			if currentVotes > 0 then
-				player:setStorageValue(Storage.Oramond.VotingPoints, currentVotes - 1)
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints, currentVotes - 1)
 			end
 			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission08, 1)
 			npcHandler:say("Thanks, you successfully cast your vote. Feel free to continue gathering votes by helping the city! Farewell.", npc, creature)

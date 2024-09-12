@@ -54,10 +54,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if MsgContains(message, "necrometer") and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission09) == 1 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission10) < 1 then
-		--[[if player:getStorageValue(Storage.Oramond.TaskProbing) == 1 then
-		-- Essa parte está comentada para o script do npc Doubleday
-		]]
+	if MsgContains(message, "necrometer") and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission09) == 1 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission10) < 1 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission09) == 1 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.OramondTaskProbing) == 1 then
 		npcHandler:say({
 			"A necrometer? Have you any idea how rare and expensive a necrometer is? There is no way I could justify giving a necrometer to an inexperienced adventurer. Hm, although ... if you weren't inexperienced that would be a different matter. ...",
 			"Did you do any measuring task for Doubleday lately?",

@@ -90,13 +90,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "addon") then
 		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Outfit) == 1 then
-			if player:getStorageValue(Storage.Oramond.VotingPoints) >= 6 and player:getStorageValue(Storage.Quest.U10_50.GloothEngineerOutfits.Addon2) < 1 then
+			if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints) >= 6 and player:getStorageValue(Storage.Quest.U10_50.GloothEngineerOutfits.Addon2) < 1 then
 				npcHandler:say("Receive the second addon.", npc, creature)
 				player:addOutfit(610, 2)
 				player:addOutfit(618, 2)
 				player:setStorageValue(Storage.Quest.U10_50.GloothEngineerOutfits.Addon2, 1)
 				npcHandler:setTopic(playerId, 0)
-			elseif player:getStorageValue(Storage.Oramond.VotingPoints) >= 3 and player:getStorageValue(Storage.Quest.U10_50.GloothEngineerOutfits.Addon1) < 1 then
+			elseif player:getStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints) >= 3 and player:getStorageValue(Storage.Quest.U10_50.GloothEngineerOutfits.Addon1) < 1 then
 				npcHandler:say("Receive the first addon.", npc, creature)
 				player:addOutfit(610, 1)
 				player:addOutfit(618, 1)

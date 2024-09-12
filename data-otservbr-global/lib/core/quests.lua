@@ -5153,12 +5153,12 @@ if not Quests then
 		},
 		[35] = {
 			name = "Oramond",
-			startStorageId = Storage.Oramond.QuestLine,
+			startStorageId = Storage.Quest.U10_50.OramondQuest.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "To Take Roots",
-					storageId = Storage.Oramond.MissionToTakeRoots,
+					storageId = Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission,
 					missionId = 10360,
 					startValue = 1,
 					endValue = 3000,

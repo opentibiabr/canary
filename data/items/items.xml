@@ -42046,7 +42046,12 @@
 		<attribute key="weight" value="400"/>
 	</item>
 	<item fromid="21205" toid="21207" name="RESERVED SPRITE"/>
-	<item fromid="21208" toid="21211" name="active probing device">
+	<item id="21208" article="a" name="strange probing device">
+		<attribute key="primarytype" value="quest items"/>
+		<attribute key="description" value="There is no evidence this thing even works. Even slightest movement may trigger its mechanisms."/>
+		<attribute key="weight" value="800"/>
+	</item>
+	<item fromid="21209" toid="21211" name="active probing device">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="description" value="This thing looks highly instable, you better find a place to deploy it soon"/>
 		<attribute key="weight" value="800"/>

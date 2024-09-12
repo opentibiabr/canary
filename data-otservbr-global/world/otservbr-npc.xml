@@ -591,6 +591,9 @@
 	<npc centerx="32190" centery="31957" centerz="6" radius="1">
 		<npc name="Captain Jack" x="0" y="0" z="6" spawntime="60" />
 	</npc>
+	<npc centerx="33640" centery="31957" centerz="6" radius="4">
+		<npc name="Doubleday" x="1" y="0" z="6" spawntime="60" />
+	</npc>
 	<npc centerx="32097" centery="31964" centerz="6" radius="1">
 		<npc name="Captain Kurt" x="0" y="0" z="6" spawntime="60" />
 	</npc>

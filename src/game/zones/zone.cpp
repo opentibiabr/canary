@@ -15,6 +15,7 @@
 #include "creatures/npcs/npc.hpp"
 #include "creatures/players/player.hpp"
 #include "utils/pugicast.hpp"
+#include "kv/kv.hpp"
 
 phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Zone>> Zone::zonesByID = {};
@@ -122,6 +123,10 @@ std::vector<std::shared_ptr<Item>> Zone::getItems() {
 void Zone::removePlayers() {
 	for (const auto &player : getPlayers()) {
 		g_game().internalTeleport(player, getRemoveDestination(player));
+		// Remove icon from player (soul war quest)
+		if (player->hasIcon("goshnars-hatred-damage")) {
+			player->removeIcon("goshnars-hatred-damage");
+		}
 	}
 }
 

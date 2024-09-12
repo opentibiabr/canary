@@ -1726,13 +1726,7 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 			return;
 		}
 
-		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-			std::shared_ptr<Item> item = inventory[slot];
-			if (item) {
-				item->startDecaying();
-				g_moveEvents().onPlayerEquip(getPlayer(), item, static_cast<Slots_t>(slot), false);
-			}
-		}
+		onEquipInventory();
 
 		// Refresh bosstiary tracker onLogin
 		refreshCyclopediaMonsterTracker(true);

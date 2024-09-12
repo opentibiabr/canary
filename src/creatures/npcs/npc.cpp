@@ -234,8 +234,8 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 		return;
 	}
 
-	// Check if the player not have empty slots
-	if (!ignore && player->getFreeBackpackSlots() == 0) {
+	// Check if the player not have empty slots or the item is not a container
+	if (!ignore && (player->getFreeBackpackSlots() == 0 && (player->getInventoryItem(CONST_SLOT_BACKPACK) || (!Item::items[itemId].isContainer() || !(Item::items[itemId].slotPosition & SLOTP_BACKPACK))))) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}
@@ -522,7 +522,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 	if (Direction newDirection;
 	    getRandomStep(newDirection)) {
-		listWalkDir.push_front(newDirection);
+		listWalkDir.emplace_back(newDirection);
 		addEventWalk();
 	}
 

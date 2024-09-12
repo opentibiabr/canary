@@ -35,6 +35,7 @@
 #include "game/bank/bank.hpp"
 #include "enums/object_category.hpp"
 #include "enums/player_cyclopedia.hpp"
+#include "enums/player_icons.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
@@ -313,7 +314,7 @@ public:
 		return inbox;
 	}
 
-	uint32_t getClientIcons();
+	std::unordered_set<PlayerIcon> getClientIcons();
 
 	const GuildWarVector &getGuildWarVector() const {
 		return guildWarVector;
@@ -416,7 +417,7 @@ public:
 		magicShieldCapacityPercent += value;
 	}
 
-	int32_t getReflectPercent(CombatType_t combat, bool useCharges = false) const override;
+	double_t getReflectPercent(CombatType_t combat, bool useCharges = false) const override;
 
 	int32_t getReflectFlat(CombatType_t combat, bool useCharges = false) const override;
 
@@ -1421,11 +1422,10 @@ public:
 		}
 	}
 	void sendClosePrivate(uint16_t channelId);
-	void sendIcons() {
-		if (client) {
-			client->sendIcons(getClientIcons());
-		}
-	}
+	void sendIcons();
+	void sendIconBakragore(const IconBakragore icon);
+	void removeBakragoreIcons();
+	void removeBakragoreIcon(const IconBakragore icon);
 	void sendClientCheck() const {
 		if (client) {
 			client->sendClientCheck();
@@ -2980,7 +2980,7 @@ private:
 	bool marketMenu = false; // Menu option 'show in market'
 	bool exerciseTraining = false;
 	bool moved = false;
-	bool dead = false;
+	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
 
 	// Save Players
@@ -3057,10 +3057,10 @@ private:
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 
 	void setDead(bool isDead) {
-		dead = isDead;
+		m_isDead = isDead;
 	}
-	bool isDead() const {
-		return dead;
+	bool isDead() const override {
+		return m_isDead;
 	}
 
 	void triggerMomentum();

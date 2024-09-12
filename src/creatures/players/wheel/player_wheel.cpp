@@ -889,7 +889,7 @@ void PlayerWheel::revealGem(WheelGemQuality_t quality) {
 	sendOpenWheelWindow(m_player.getID());
 }
 
-PlayerWheelGem PlayerWheel::getGem(uint8_t index) const {
+PlayerWheelGem PlayerWheel::getGem(uint16_t index) const {
 	auto gems = getRevealedGems();
 	if (gems.size() <= index) {
 		g_logger().error("[{}] Player {} trying to get gem with index {} but has only {} gems", __FUNCTION__, m_player.getName(), index, gems.size());
@@ -907,9 +907,9 @@ PlayerWheelGem PlayerWheel::getGem(const std::string &uuid) const {
 	return gem;
 }
 
-uint8_t PlayerWheel::getGemIndex(const std::string &uuid) const {
+uint16_t PlayerWheel::getGemIndex(const std::string &uuid) const {
 	auto gems = getRevealedGems();
-	for (uint8_t i = 0; i < gems.size(); ++i) {
+	for (uint16_t i = 0; i < gems.size(); ++i) {
 		if (gems[i].uuid == uuid) {
 			return i;
 		}
@@ -918,7 +918,7 @@ uint8_t PlayerWheel::getGemIndex(const std::string &uuid) const {
 	return 0xFF;
 }
 
-void PlayerWheel::destroyGem(uint8_t index) {
+void PlayerWheel::destroyGem(uint16_t index) {
 	auto gem = getGem(index);
 	if (gem.locked) {
 		g_logger().error("[{}] Player {} trying to destroy locked gem with index {}", __FUNCTION__, m_player.getName(), index);
@@ -928,7 +928,7 @@ void PlayerWheel::destroyGem(uint8_t index) {
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::switchGemDomain(uint8_t index) {
+void PlayerWheel::switchGemDomain(uint16_t index) {
 	auto gem = getGem(index);
 	if (gem.locked) {
 		g_logger().error("[{}] Player {} trying to destroy locked gem with index {}", __FUNCTION__, m_player.getName(), index);
@@ -946,14 +946,14 @@ void PlayerWheel::switchGemDomain(uint8_t index) {
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::toggleGemLock(uint8_t index) {
+void PlayerWheel::toggleGemLock(uint16_t index) {
 	auto gem = getGem(index);
 	gem.locked = !gem.locked;
 	gem.save(gemsKV());
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint8_t index) {
+void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
 	auto gem = getGem(index);
 	if (gem.uuid.empty()) {
 		g_logger().error("[{}] Failed to load gem with index {}", __FUNCTION__, index);
@@ -979,19 +979,15 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 	for (const auto &gem : activeGems) {
 		auto index = getGemIndex(gem.uuid);
 		g_logger().debug("[{}] Adding active gem: {} with index {}", __FUNCTION__, gem.toString(), index);
-		msg.addByte(getGemIndex(gem.uuid));
+		msg.add<uint16_t>(getGemIndex(gem.uuid));
 	}
 
 	auto revealedGems = getRevealedGems();
-	if (revealedGems.size() > 225) {
-		g_logger().error("[{}] Player {} has more than 225 gems unlocked", __FUNCTION__, m_player.getName());
-		revealedGems.resize(225);
-	}
-	msg.addByte(revealedGems.size());
-	int index = 0;
+	msg.add<uint16_t>(revealedGems.size());
+	uint16_t index = 0;
 	for (const auto &gem : revealedGems) {
 		g_logger().debug("[{}] Adding revealed gem: {}", __FUNCTION__, gem.toString());
-		msg.addByte(index++);
+		msg.add<uint16_t>(index++);
 		msg.addByte(gem.locked);
 		msg.addByte(static_cast<uint8_t>(gem.affinity));
 		msg.addByte(static_cast<uint8_t>(gem.quality));
@@ -1003,6 +999,9 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 			msg.addByte(static_cast<uint8_t>(gem.supremeModifier));
 		}
 	}
+
+	msg.addByte(0); // Lesser gems
+	msg.addByte(0); // Greater gems
 }
 
 void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const {
@@ -1161,7 +1160,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 			removeActiveGem(affinity);
 			continue;
 		}
-		uint8_t gemIndex = msg.getByte();
+		uint16_t gemIndex = msg.get<uint16_t>();
 		setActiveGem(affinity, gemIndex);
 	}
 

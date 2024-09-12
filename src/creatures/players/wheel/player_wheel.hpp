@@ -386,14 +386,14 @@ public:
 	 * @return The calculated mitigation value.
 	 */
 	float calculateMitigation() const;
-	PlayerWheelGem getGem(uint8_t index) const;
+	PlayerWheelGem getGem(uint16_t index) const;
 	PlayerWheelGem getGem(const std::string &uuid) const;
-	uint8_t getGemIndex(const std::string &uuid) const;
+	uint16_t getGemIndex(const std::string &uuid) const;
 	void revealGem(WheelGemQuality_t quality);
-	void destroyGem(uint8_t index);
-	void switchGemDomain(uint8_t index);
-	void toggleGemLock(uint8_t index);
-	void setActiveGem(WheelGemAffinity_t affinity, uint8_t index);
+	void destroyGem(uint16_t index);
+	void switchGemDomain(uint16_t index);
+	void toggleGemLock(uint16_t index);
+	void setActiveGem(WheelGemAffinity_t affinity, uint16_t index);
 	void removeActiveGem(WheelGemAffinity_t affinity);
 	void addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points) {
 		m_bonusRevelationPoints[static_cast<size_t>(affinity)] += points;

@@ -208,7 +208,7 @@ end
 function Creature.getKillers(self, onlyPlayers)
 	local killers = {}
 	local inFightTicks = configManager.getNumber(configKeys.PZ_LOCKED)
-	local timeNow = os.mtime()
+	local timeNow = systemTime()
 	local getCreature = onlyPlayers and Player or Creature
 	for cid, cb in pairs(self:getDamageMap()) do
 		local creature = getCreature(cid)

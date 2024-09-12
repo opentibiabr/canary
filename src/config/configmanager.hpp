@@ -42,18 +42,18 @@ public:
 
 	/**
 	 * @brief Retrieves a float configuration value from the configuration manager, with an optional rounding.
-	 * 
+	 *
 	 * This function is a Lua binding used to get a float value from the configuration manager. It requires
-	 * a key as the first argument, which should be a valid enumeration. An optional second boolean argument 
+	 * a key as the first argument, which should be a valid enumeration. An optional second boolean argument
 	 * specifies whether the retrieved float should be rounded to two decimal places.
-	 * 
+	 *
 	 * @param L Pointer to the Lua state. The first argument must be a valid enum key, and the second argument (optional)
 	 * can be a boolean indicating whether to round the result.
-	 * 
+	 *
 	 * @return Returns 1 after pushing the result onto the Lua stack, indicating the number of return values.
-	 * 
+	 *
 	 * @exception reportErrorFunc Throws an error if the first argument is not a valid enum.
-	 * 
+	 *
 	 * Usage:
 	 *  local result = ConfigManager.getFloat(ConfigKey.SomeKey)
 	 *  local result_rounded = ConfigManager.getFloat(ConfigKey.SomeKey, false)

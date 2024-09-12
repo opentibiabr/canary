@@ -940,8 +940,8 @@ function readSpell(incomingLua, mtype)
 			if incomingLua.effect then
 				spell:setCombatEffect(incomingLua.effect)
 			end
-			if incomingLua.shootEffect then
-				spell:setCombatShootEffect(incomingLua.shootEffect)
+			if incomingLua.shootEffect or incomingLua.shooteffect then
+				spell:setCombatShootEffect(incomingLua.shootEffect or incomingLua.shooteffect)
 			end
 		end
 

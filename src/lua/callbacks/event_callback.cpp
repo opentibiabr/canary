@@ -829,9 +829,9 @@ void EventCallback::playerOnGainExperience(std::shared_ptr<Player> player, std::
 		} else {
 			// Log warning if the return value is not a number
 			reportErrorFunc(fmt::format("[EventCallback::playerOnGainExperience - "
-			                "Player '{}' target '{}'] "
-			                "Lua callback did not return experience value. Using the original exp value.",
-			                player->getName(), target->getName()));
+			                            "Player '{}' target '{}'] "
+			                            "Lua callback did not return experience value. Using the original exp value.",
+			                            player->getName(), target->getName()));
 		}
 		lua_pop(L, 1);
 	}

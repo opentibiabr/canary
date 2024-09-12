@@ -593,7 +593,7 @@ suite<"account"> accountTest = [] {
 		expect(acc.authenticate());
 	};
 
-	test("Account::getCharacterByNameAndAccountId using an account with the given character.") = [&injectionFixture] {
+	test("Account::getCharacterByAccountIdAndName using an account with the given character.") = [&injectionFixture] {
 		auto [accountRepository] = injectionFixture.get<AccountRepository>();
 
 		Account acc { 1 };
@@ -602,12 +602,12 @@ suite<"account"> accountTest = [] {
 			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", 1 }, { "Canary2", 2 } }, false, getTimeNow() + 24 * 60 * 60 * 1000 }
 		);
 
-		const auto hasCharacter = accountRepository.getCharacterByNameAndAccountId(1, "Canary");
+		const auto hasCharacter = accountRepository.getCharacterByAccountIdAndName(1, "Canary");
 
 		expect(hasCharacter);
 	};
 
-	test("Account::getCharacterByNameAndAccountId using an account without the given character.") = [&injectionFixture] {
+	test("Account::getCharacterByAccountIdAndName using an account without the given character.") = [&injectionFixture] {
 		auto [accountRepository] = injectionFixture.get<AccountRepository>();
 
 		Account acc { 1 };
@@ -616,7 +616,7 @@ suite<"account"> accountTest = [] {
 			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", 1 }, { "Canary2", 2 } }, false, getTimeNow() + 24 * 60 * 60 * 1000 }
 		);
 
-		const auto hasCharacter = accountRepository.getCharacterByNameAndAccountId(1, "Invalid");
+		const auto hasCharacter = accountRepository.getCharacterByAccountIdAndName(1, "Invalid");
 
 		expect(!hasCharacter);
 	};

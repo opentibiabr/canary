@@ -38,7 +38,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		}
 	}
 
-	if (!g_accountRepository().getCharacterByNameAndAccountId(account.getID(), characterName)) {
+	if (!g_accountRepository().getCharacterByAccountIdAndName(account.getID(), characterName)) {
 		g_logger().warn("IP [{}] trying to connect into another account character", convertIPToString(ip));
 		return false;
 	}

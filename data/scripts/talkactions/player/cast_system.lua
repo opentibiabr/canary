@@ -1,5 +1,5 @@
 local experienceMultiplier = configManager.getFloat(configKeys.CAST_EXPERIENCE_MULTIPLIER)
-local bonusPercent = math.ceil((experienceMultiplier - 1.0) * 100)
+local bonusPercent = (experienceMultiplier - 1.0) * 100
 
 local playersCasting = {}
 

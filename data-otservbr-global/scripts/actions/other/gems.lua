@@ -47,7 +47,7 @@ local lionsRock = {
 		itemId = 21442,
 		itemPos = { x = 33069, y = 32302, z = 9 },
 		storage = Storage.Quest.U10_70.LionsRock.Questline,
-		value = 6,
+		value = 7,
 		item = 3029,
 		fieldId = 21463,
 		message = "You place the sapphire on the small socket. A blue flame begins to burn.",
@@ -57,7 +57,7 @@ local lionsRock = {
 		itemId = 21440,
 		itemPos = { x = 33077, y = 32302, z = 9 },
 		storage = Storage.Quest.U10_70.LionsRock.Questline,
-		value = 6,
+		value = 8,
 		item = 3033,
 		fieldId = 7465,
 		message = "You place the amethyst on the small socket. A violet flame begins to burn.",
@@ -67,7 +67,7 @@ local lionsRock = {
 		itemId = 21437,
 		itemPos = { x = 33077, y = 32298, z = 9 },
 		storage = Storage.Quest.U10_70.LionsRock.Questline,
-		value = 6,
+		value = 9,
 		item = 9057,
 		fieldId = 21465,
 		message = "You place the topaz on the small socket. A yellow flame begins to burn.",
@@ -142,7 +142,7 @@ function gems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				stone:transform(lionsRockSanctuaryFountainId)
 				lionsRockSanctuaryPos:sendMagicEffect(CONST_ME_THUNDER)
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Something happens at the center of the room ...")
-				player:setStorageValue(storage, 7)
+				player:setStorageValue(storage, 10)
 				return true
 			end
 		end
@@ -159,19 +159,22 @@ function gems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	end
 
-	if player:getStorageValue(setting.storage) >= setting.value then
+	if player:getStorageValue(setting.storage) == setting.value then
 		if setting.item == item.itemid then
 			local gemSpot = Tile(setting.itemPos):getItemById(setting.fieldId)
 			if not gemSpot then
 				toPosition:sendMagicEffect(setting.effect)
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, setting.message)
 				item:remove(1)
+				-- Incrementa a storage para o próximo valor
+				player:setStorageValue(setting.storage, setting.value + 1)
 				addEvent(lionsRockCreateField, 2 * 1000, setting.itemPos, setting.fieldId, setting.storage)
 				addEvent(lionsRockFieldReset, 60 * 1000)
 				return true
 			end
 		end
 	end
+
 	return false
 end
 

@@ -132,7 +132,7 @@ function lionsRockFountain.onUse(player, item, fromPosition, target, toPosition,
 		item:transform(lionsRockSanctuaryRockId)
 		player:addItem(rewards[reward], 1)
 		player:setStorageValue(Storage.Quest.U10_70.LionsRock.Time, os.time() + 24 * 60 * 60)
-		player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, 8)
+		player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, 11)
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "At the moment there is neither a treasure nor anything else in the fountain. Perhaps you might return later.")
 	end

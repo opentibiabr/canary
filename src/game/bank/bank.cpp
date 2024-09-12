@@ -141,6 +141,10 @@ bool Bank::transferTo(const std::shared_ptr<Bank> &destination, const uint64_t a
 }
 
 bool Bank::withdraw(std::shared_ptr<Player> player, uint64_t amount) {
+	if (!player) {
+		return false;
+	}
+
 	if (!debit(amount)) {
 		return false;
 	}

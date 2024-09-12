@@ -4948,6 +4948,10 @@ void ProtocolGame::sendGameNews() {
 }
 
 void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/, uint64_t forgeDust /*= 0*/, uint64_t forgeSliver /*= 0*/, uint64_t forgeCores /*= 0*/) {
+	if (m_isCastViewer) {
+		return;
+	}
+
 	sendResourceBalance(RESOURCE_BANK, bank);
 	sendResourceBalance(RESOURCE_INVENTORY_MONEY, money);
 	sendResourceBalance(RESOURCE_PREY_CARDS, preyCards);

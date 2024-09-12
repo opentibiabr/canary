@@ -1,4 +1,5 @@
-local experienceMultiplier = configManager.getNumber(configKeys.CAST_EXPERIENCE_MULTIPLIER)
+local experienceMultiplier = configManager.getFloat(configKeys.CAST_EXPERIENCE_MULTIPLIER)
+local bonusPercent = math.ceil((experienceMultiplier - 1.0) * 100)
 
 local playersCasting = {}
 
@@ -39,7 +40,7 @@ function talkaction.onSay(player, words, param)
 		data.broadcast = false
 		db.query("UPDATE `active_casters` SET `cast_status` = 0, `cast_viewers` = 0 WHERE `caster_id` = " .. player:getGuid())
 		player:sendTextMessage(MESSAGE_STATUS, "Your stream is currently disabled.")
-		if experienceMultiplier > 0 then
+		if experienceMultiplier > 1.0 then
 			player:sendTextMessage(MESSAGE_LOOK, "Experience bonus deactivated: -" .. experienceMultiplier .. "%")
 			player:kv():scoped("cast-system"):remove("experience-bonus")
 		end
@@ -52,8 +53,8 @@ function talkaction.onSay(player, words, param)
 		data.broadcast = true
 		player:sendTextMessage(MESSAGE_STATUS, "You have started live broadcast.")
 		db.query("INSERT INTO `active_casters` (`caster_id`, `cast_status`) VALUES (" .. player:getGuid() .. ", 1) ON DUPLICATE KEY UPDATE `cast_status` = 1")
-		if experienceMultiplier and experienceMultiplier > 0 then
-			player:sendTextMessage(MESSAGE_LOOK, "Experience bonus actived: +" .. experienceMultiplier .. "%")
+		if experienceMultiplier and experienceMultiplier > 1.0 then
+			player:sendTextMessage(MESSAGE_LOOK, "Experience bonus activated: +" .. bonusPercent .. "%")
 			player:kv():scoped("cast-system"):set("experience-bonus", true)
 		end
 		playersCasting[player:getGuid()] = true
@@ -233,7 +234,7 @@ function talkaction.onSay(player, words, param)
 			data.password = ""
 			player:kv():scoped("cast-system"):remove("password")
 			player:sendTextMessage(MESSAGE_STATUS, "You have removed password for your stream.")
-			if experienceMultiplier > 0 then
+			if experienceMultiplier > 1.0 then
 				player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. experienceMultiplier .. "% was reactivated.")
 				player:kv():scoped("cast-system"):set("experience-bonus", true)
 			end
@@ -243,7 +244,7 @@ function talkaction.onSay(player, words, param)
 				db.query("UPDATE `active_casters` SET `cast_status` = 3 WHERE `caster_id` = " .. player:getGuid())
 			end
 			player:sendTextMessage(MESSAGE_STATUS, "You have set new password for your stream.")
-			if experienceMultiplier > 0 then
+			if experienceMultiplier > 1.0 then
 				player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. experienceMultiplier .. "% was deactivated.")
 				player:kv():scoped("cast-system"):remove("experience-bonus")
 			end
@@ -338,10 +339,12 @@ local gainExperience = EventCallback("CastSystemGainExperience")
 
 function gainExperience.playerOnGainExperience(player, target, exp, rawExp)
 	local castStatus = player:kv():scoped("cast-system"):get("experience-bonus") and 1 or 0
-	if experienceMultiplier > 0 and castStatus > 0 then
-		exp = exp * (1 + (experienceMultiplier / 100))
+	if experienceMultiplier > 1.0 and castStatus > 0 then
+		exp = exp * experienceMultiplier
 		logger.debug("Original exp: {}, casting exp: {} for creature {}", rawExp, exp, target:getName())
 	end
+
+	return exp
 end
 
 gainExperience:register()

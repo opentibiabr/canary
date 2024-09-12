@@ -457,9 +457,9 @@ combatChainSkillFormulaClub = 0.7
 combatChainSkillFormulaSword = 1.1
 
 -- Cast system
--- NOTE: set experience to 0 to deactivate the bonus
-castExperienceMultiplier = 15;
-maximumViewersPerCast = 50;
+-- NOTE: set experience to 1.0 to deactivate the bonus, example of use: 1.15 (15% of bonus)
+castExperienceMultiplier = 1.15
+maximumViewersPerCast = 50
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

@@ -23,7 +23,7 @@ function itemTransformation.onUse(player, item, fromPosition, target, toPosition
 
 		local messages = {
 			"Achoo! You spill the pollen into your bag.",
-			"You collected the smelly pollen into a bag."
+			"You collected the smelly pollen into a bag.",
 		}
 		player:say(messages[math.random(#messages)], TALKTYPE_MONSTER_SAY, false, player, toPosition)
 

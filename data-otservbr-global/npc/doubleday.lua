@@ -85,8 +85,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 5 then
-				npcHandler:say("Hey, let's try to be reasonable here, alright? That's a bit too much for what you did, isn't it? It may seem that way but the number of votes I can offer isn't limitless.", npc, creature)
-				npcHandler:setTopic(playerId, 6)
+			npcHandler:say("Hey, let's try to be reasonable here, alright? That's a bit too much for what you did, isn't it? It may seem that way but the number of votes I can offer isn't limitless.", npc, creature)
+			npcHandler:setTopic(playerId, 6)
 		elseif npcHandler:getTopic(playerId) == 8 then
 			npcHandler:say("Good, you just gained 1 genuine votes in the magistrate!", npc, creature)
 			player:setStorageValue(Storage.Quest.U10_50.OramondQuest.Probing.Mission, -1)

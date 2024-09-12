@@ -777,24 +777,6 @@ Storage = {
 		Lever = 52278,
 		Mainland = 52279,
 	},
-	LionsRock = {
-		-- Reserved storage from 52290 - 52309
-		Questline = 52290,
-		OuterSanctum = {
-			Skeleton = 52291,
-			LionsStrength = 52292,
-			LionsBeauty = 52293,
-			LionsTears = 52294,
-		},
-		InnerSanctum = {
-			SnakeSign = 52295,
-			LizardSign = 52296,
-			ScorpionSign = 52297,
-			HyenaSign = 52298,
-			Message = 52299,
-		},
-		Time = 52300,
-	},
 	GraveDanger = {
 		-- Reserved storage from 52310 - 52339
 		Questline = 52310,
@@ -2490,7 +2472,24 @@ Storage = {
 		},
 		U10_70 = { -- update 10.70 - Reserved Storages 44801 - 44950
 			HeroOfRathleton = {},
-			LionsRock = {},
+			LionsRock = {
+				Questline = 52290,
+				OuterSanctum = {
+					Skeleton = 52291,
+					LionsStrength = 52292,
+					LionsBeauty = 52293,
+					LionsTears = 52294,
+				},
+				InnerSanctum = {
+					SnakeSign = 52295,
+					LizardSign = 52296,
+					ScorpionSign = 52297,
+					HyenaSign = 52298,
+					Message = 52299,
+				},
+				Time = 52300,
+				LionsRockFields = 65007,
+			},
 			TheCursedCrystal = {},
 			TheFireFeatheredSerpentWorldChange = {},
 			TwentyMilesBeneathTheSea = {},
@@ -2932,7 +2931,6 @@ GlobalStorage = {
 	ExpBoost = 65004,
 	SwordOfFury = 65005,
 	GloothFairyTimer = 65006,
-	LionsRockFields = 65007,
 	TheMummysCurse = 65008,
 	OberonEventTime = 65009,
 	PrinceDrazzakEventTime = 65010,

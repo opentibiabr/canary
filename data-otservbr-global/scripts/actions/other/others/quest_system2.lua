@@ -357,7 +357,7 @@ the parchment is destroyed. It seems
 that is was torn by a big paw ...]],
 			},
 		},
-		storage = Storage.LionsRock.OuterSanctum.Skeleton,
+		storage = Storage.Quest.U10_70.LionsRock.OuterSanctum.Skeleton,
 	},
 	-- 65203 reservado
 }

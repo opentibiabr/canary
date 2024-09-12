@@ -334,7 +334,7 @@ end
 
 castOnStartup:register()
 
-local gainExperience = EventCallback()
+local gainExperience = EventCallback("CastSystemGainExperience")
 
 function gainExperience.playerOnGainExperience(player, target, exp, rawExp)
 	local castStatus = player:kv():scoped("cast-system"):get("experience-bonus") and 1 or 0

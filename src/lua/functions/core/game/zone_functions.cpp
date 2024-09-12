@@ -136,7 +136,7 @@ int ZoneFunctions::luaZoneGetCreatures(lua_State* L) {
 	for (auto creature : creatures) {
 		index++;
 		pushUserdata<Creature>(L, creature);
-		setMetatable(L, -1, "Creature");
+		setCreatureMetatable(L, -1, creature);
 		lua_rawseti(L, -2, index);
 	}
 	return 1;

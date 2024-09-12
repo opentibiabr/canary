@@ -471,12 +471,12 @@ void ConditionAttributes::addCondition(std::shared_ptr<Creature> creature, const
 		endCondition(creature);
 
 		// Apply the new one
-		simd_memcpy(skills, conditionAttrs->skills, std::size(skills));
-		simd_memcpy(skillsPercent, conditionAttrs->skillsPercent, std::size(skillsPercent));
-		simd_memcpy(stats, conditionAttrs->stats, std::size(stats));
-		simd_memcpy(statsPercent, conditionAttrs->statsPercent, std::size(statsPercent));
-		simd_memcpy(buffs, conditionAttrs->buffs, std::size(buffs));
-		simd_memcpy(buffsPercent, conditionAttrs->buffsPercent, std::size(buffsPercent));
+		memcpy(skills, conditionAttrs->skills, sizeof(skills));
+		memcpy(skillsPercent, conditionAttrs->skillsPercent, sizeof(skillsPercent));
+		memcpy(stats, conditionAttrs->stats, sizeof(stats));
+		memcpy(statsPercent, conditionAttrs->statsPercent, sizeof(statsPercent));
+		memcpy(buffs, conditionAttrs->buffs, sizeof(buffs));
+		memcpy(buffsPercent, conditionAttrs->buffsPercent, sizeof(buffsPercent));
 
 		// Using std::array can only increment to the new instead of use memcpy
 		absorbs = conditionAttrs->absorbs;

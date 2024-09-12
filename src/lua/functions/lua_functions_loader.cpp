@@ -132,7 +132,11 @@ void LuaFunctionsLoader::reportError(const char* function, const std::string &er
 	if (function && strcmp(function, "N/A") != 0) {
 		logMsg << "Function: " << function << "\n";
 	}
-	logMsg << "Error Description: " << error_desc << "\n";
+
+	// Only add error description if stack_trace is false, to avoid duplicate messages
+	if (!stack_trace) {
+		logMsg << "Error Description: " << error_desc << "\n";
+	}
 	if (stack_trace && scriptInterface) {
 		std::string stackTrace = scriptInterface->getStackTrace(error_desc);
 		if (!stackTrace.empty() && stackTrace != "N/A") {

@@ -247,6 +247,9 @@ public:
 	void disconnectClient(const std::string &message) const;
 
 	bool isOldProtocol();
+	bool isCastViewer() const {
+		return m_owner->m_isCastViewer;
+	}
 
 private:
 	friend class Player;
@@ -257,7 +260,6 @@ private:
 	std::string m_castPassword;
 	std::string m_castDescription;
 	bool m_castBroadcast = false;
-	bool oldProtocol = false;
 	int64_t m_castBroadcastTime = 0;
 	uint16_t m_castLiveRecord = 0;
 	uint32_t m_id = 0;

@@ -4572,3 +4572,16 @@ int PlayerFunctions::luaPlayerSetCastViewers(lua_State* L) {
 
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerIsCastViewer(lua_State* L) {
+	// player:isCastViewer()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, player->isCastViewer());
+	return 1;
+}

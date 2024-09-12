@@ -690,7 +690,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced) {
 	}
 
 	if (m_isCastViewer) {
-		disconnect();
+		sendSessionEndInformation(SESSION_END_LOGOUT);
 		return;
 	}
 

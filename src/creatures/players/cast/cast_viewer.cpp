@@ -1600,5 +1600,5 @@ std::vector<std::string> CastViewer::getViewers() const {
 }
 
 bool CastViewer::isOldProtocol() {
-	return oldProtocol;
+	return m_owner->oldProtocol;
 }

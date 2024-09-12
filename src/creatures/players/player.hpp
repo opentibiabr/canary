@@ -359,7 +359,7 @@ public:
 	}
 
 	bool isOldProtocol() {
-		return client && client->oldProtocol;
+		return client && client->isOldProtocol();
 	}
 
 	uint32_t getProtocolVersion() const {
@@ -1209,7 +1209,7 @@ public:
 		}
 	}
 	void sendCreatureIcon(std::shared_ptr<Creature> creature) {
-		if (hasClientOwner() && !client->oldProtocol) {
+		if (hasClientOwner() && !client->isOldProtocol()) {
 			client->sendCreatureIcon(creature);
 		}
 	}
@@ -3025,6 +3025,10 @@ private:
 	}
 	bool isDead() const {
 		return dead;
+	}
+
+	bool isCastViewer() const {
+		return client && client->isCastViewer();
 	}
 
 	void triggerMomentum();

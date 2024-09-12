@@ -78,6 +78,11 @@ local lionsRock = {
 local gems = Action()
 
 function gems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	local questStorage = player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline)
+	if questStorage == 10 or questStorage == 11 then
+		player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, 6)
+	end
+
 	-- Small emerald for Kilmaresh quest
 	-- see data\scripts\quests\kilmaresh\1-fafnars-wrath\7-four-masks.lua
 	if item.itemid == 3032 and target.uid == 40032 and player:getStorageValue(Storage.Kilmaresh.Sixth.Favor) >= 1 and not testFlag(player:getStorageValue(Storage.Kilmaresh.Sixth.FourMasks), 4) then

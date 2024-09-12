@@ -5,7 +5,7 @@ local itemsGrinder = {
 }
 local holes = { 593, 606, 608, 867, 21341 }
 local jungleGrass = { 3696, 3702, 17153 }
-local wildGrowth = { 3635, 30224 }
+local wildGrowth = { 2130, 3635, 30224 }
 local fruits = { 3584, 3585, 3586, 3587, 3588, 3589, 3590, 3591, 3592, 3593, 3595, 3596, 5096, 8011, 8012, 8013 }
 local lava = {
 	Position(32808, 32336, 11),

@@ -393,6 +393,12 @@ AREA_RING1_BURST3 = {
 	{ 0, 0, 0, 1, 1, 1, 0, 0, 0 },
 }
 
+CrossBeamArea3X2 = {
+	{ 1, 1, 1 },
+	{ 0, 1, 0 },
+	{ 0, 3, 0 },
+}
+
 -- The numbered-keys represents the damage values, and their table
 -- contains the minimum and maximum number of rounds of those damage values.
 RANGE = {

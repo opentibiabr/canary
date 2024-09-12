@@ -1,4 +1,4 @@
-local applyCobraFlaskEffectOnMonsterSpawn = EventCallback()
+local applyCobraFlaskEffectOnMonsterSpawn = EventCallback("CobraFlaskEffectOnMonsterSpawn")
 
 applyCobraFlaskEffectOnMonsterSpawn.monsterOnSpawn = function(monster, position)
 	if table.contains({ "cobra scout", "cobra vizier", "cobra assassin" }, monster:getName():lower()) then

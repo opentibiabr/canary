@@ -1,4 +1,4 @@
-local callback = EventCallback()
+local callback = EventCallback("PlayerOnTradeAcceptBaseEvent")
 
 function callback.playerOnTradeAccept(player, target, item, targetItem)
 	player:closeForge()

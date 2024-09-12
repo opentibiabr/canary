@@ -421,7 +421,7 @@ public:
 		magicShieldCapacityPercent += value;
 	}
 
-	int32_t getReflectPercent(CombatType_t combat, bool useCharges = false) const override;
+	double_t getReflectPercent(CombatType_t combat, bool useCharges = false) const override;
 
 	int32_t getReflectFlat(CombatType_t combat, bool useCharges = false) const override;
 
@@ -2949,7 +2949,7 @@ private:
 	bool marketMenu = false; // Menu option 'show in market'
 	bool exerciseTraining = false;
 	bool moved = false;
-	bool dead = false;
+	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
 
 	// Hazard system
@@ -3019,10 +3019,10 @@ private:
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 
 	void setDead(bool isDead) {
-		dead = isDead;
+		m_isDead = isDead;
 	}
-	bool isDead() const {
-		return dead;
+	bool isDead() const override {
+		return m_isDead;
 	}
 
 	void triggerMomentum();

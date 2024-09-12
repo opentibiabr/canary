@@ -1,5 +1,5 @@
 local holeId = { 294, 369, 370, 385, 394, 411, 412, 413, 432, 433, 435, 482, 483, 594, 595, 609, 610, 615, 868, 874, 1156, 4824, 7515, 7516, 7517, 7518, 7519, 7520, 7521, 7522, 7737, 7755, 7762, 7767, 7768, 8144, 8690, 8709, 12203, 12961, 17239, 19220, 23364 } -- usable rope holes, for rope spots see global.lua
-local wildGrowth = { 3635, 30224 } -- wild growth destroyable by machete
+local wildGrowth = { 2130, 3635, 30224 } -- wild growth destroyable by machete
 local jungleGrass = { -- grass destroyable by machete
 	[3696] = 3695,
 	[3702] = 3701,

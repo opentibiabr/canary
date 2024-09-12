@@ -380,7 +380,7 @@ bool ConfigManager::reload() {
 }
 
 void ConfigManager::missingConfigWarning(const char* identifier) {
-	g_logger().warn("[{}]: Missing configuration for identifier: {}", __FUNCTION__, identifier);
+	g_logger().debug("[{}]: Missing configuration for identifier: {}", __FUNCTION__, identifier);
 }
 
 std::string ConfigManager::loadStringConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const std::string &defaultValue) {

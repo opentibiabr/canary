@@ -1213,11 +1213,9 @@ void LuaEnums::initReloadTypeEnums(lua_State* L) {
 
 void LuaEnums::initCreaturesEventEnums(lua_State* L) {
 	// Monsters
-	registerEnum(L, MONSTERS_EVENT_THINK);
-	registerEnum(L, MONSTERS_EVENT_APPEAR);
-	registerEnum(L, MONSTERS_EVENT_DISAPPEAR);
-	registerEnum(L, MONSTERS_EVENT_MOVE);
-	registerEnum(L, MONSTERS_EVENT_SAY);
+	for (auto value : magic_enum::enum_values<MonstersEvent_t>()) {
+		registerMagicEnum(L, value);
+	}
 
 	// Npcs
 	registerEnum(L, NPCS_EVENT_THINK);

@@ -30,10 +30,10 @@ struct TextMessage;
 struct Achievement;
 struct ModalWindow;
 
-class CastViewer {
+class Livestream {
 public:
-	CastViewer(std::shared_ptr<ProtocolGame> client);
-	virtual ~CastViewer();
+	Livestream(std::shared_ptr<ProtocolGame> client);
+	virtual ~Livestream();
 
 	void clear(bool full);
 	bool checkPassword(const std::string &_password);

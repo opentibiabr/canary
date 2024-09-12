@@ -32,7 +32,7 @@
 #include "enums/account_type.hpp"
 #include "enums/account_coins.hpp"
 
-#include "creatures/players/cast/cast_viewer.hpp"
+#include "creatures/players/cast/livestream.hpp"
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()

@@ -30,7 +30,7 @@ class ProtocolGame;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
-class CastViewer;
+class Livestream;
 
 struct ModalWindow;
 struct Achievement;
@@ -503,7 +503,7 @@ private:
 	friend class Player;
 	friend class PlayerWheel;
 	friend class PlayerVIP;
-	friend class CastViewer;
+	friend class Livestream;
 
 	static std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> liveCasts;
 

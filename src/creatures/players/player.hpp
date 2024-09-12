@@ -40,7 +40,7 @@
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/vip/player_vip.hpp"
-#include "creatures/players/cast/cast_viewer.hpp"
+#include "creatures/players/cast/livestream.hpp"
 
 class House;
 class NetworkMessage;
@@ -2831,7 +2831,7 @@ private:
 	std::shared_ptr<Npc> shopOwner = nullptr;
 	std::shared_ptr<Party> m_party = nullptr;
 	std::shared_ptr<Player> tradePartner = nullptr;
-	std::shared_ptr<CastViewer> client = nullptr;
+	std::shared_ptr<Livestream> client = nullptr;
 	std::shared_ptr<Task> walkTask;
 	std::shared_ptr<Town> town;
 	std::shared_ptr<Vocation> vocation = nullptr;
@@ -3055,7 +3055,7 @@ private:
 	friend class PlayerTitle;
 	friend class PlayerVIP;
 	friend class ProtocolLogin;
-	friend class CastViewer;
+	friend class Livestream;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;

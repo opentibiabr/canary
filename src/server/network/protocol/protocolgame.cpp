@@ -44,7 +44,7 @@
 #include "enums/player_blessings.hpp"
 
 #include "creatures/players/highscore_category.hpp"
-#include "creatures/players/cast/cast_viewer.hpp"
+#include "creatures/players/cast/livestream.hpp"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
@@ -1969,7 +1969,7 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 
 	if (m_isCastViewer) {
 		g_dispatcher().addEvent(
-			[client = player->client, self = getThis(), text, channelId] { client->handle(self, text, channelId); }, "CastViewer::handle"
+			[client = player->client, self = getThis(), text, channelId] { client->handle(self, text, channelId); }, "Livestream::handle"
 		);
 		return;
 	}

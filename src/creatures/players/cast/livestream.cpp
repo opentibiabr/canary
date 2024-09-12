@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/cast/cast_viewer.hpp"
+#include "creatures/players/cast/livestream.hpp"
 
 #include "creatures/players/player.hpp"
 #include "creatures/interactions/chat.hpp"
@@ -52,12 +52,12 @@ namespace {
 	}
 }
 
-CastViewer::CastViewer(std::shared_ptr<ProtocolGame> client) :
+Livestream::Livestream(std::shared_ptr<ProtocolGame> client) :
 	m_owner(client) { }
 
-CastViewer::~CastViewer() { }
+Livestream::~Livestream() { }
 
-void CastViewer::clear(bool full) {
+void Livestream::clear(bool full) {
 	for (const auto &[client, _] : m_viewers) {
 		client->sendSessionEndInformation(SESSION_END_LOGOUT);
 	}
@@ -78,7 +78,7 @@ void CastViewer::clear(bool full) {
 	m_castLiveRecord = 0;
 }
 
-bool CastViewer::checkPassword(const std::string &_password) {
+bool Livestream::checkPassword(const std::string &_password) {
 	if (m_castPassword.empty()) {
 		return true;
 	}
@@ -93,7 +93,7 @@ bool CastViewer::checkPassword(const std::string &_password) {
 	return std::ranges::equal(t, m_castPassword);
 }
 
-void CastViewer::setKickViewer(std::vector<std::string> list) {
+void Livestream::setKickViewer(std::vector<std::string> list) {
 	for (const auto &it : list) {
 		for (const auto &[client, clientInfo] : m_viewers) {
 			if (asLowerCaseString(clientInfo.first) == it) {
@@ -103,19 +103,19 @@ void CastViewer::setKickViewer(std::vector<std::string> list) {
 	}
 }
 
-const std::vector<std::string> &CastViewer::getMuteCastList() const {
+const std::vector<std::string> &Livestream::getMuteCastList() const {
 	return m_mutes;
 }
 
-void CastViewer::setMuteViewer(std::vector<std::string> mutes) {
+void Livestream::setMuteViewer(std::vector<std::string> mutes) {
 	m_mutes = mutes;
 }
 
-const std::map<std::string, uint32_t> &CastViewer::getBanCastList() const {
+const std::map<std::string, uint32_t> &Livestream::getBanCastList() const {
 	return m_bans;
 }
 
-void CastViewer::setBanViewer(std::vector<std::string> bans) {
+void Livestream::setBanViewer(std::vector<std::string> bans) {
 	std::vector<std::string>::const_iterator it;
 	for (auto bit = m_bans.begin(); bit != m_bans.end();) {
 		it = std::find(bans.begin(), bans.end(), bit->first);
@@ -138,7 +138,7 @@ void CastViewer::setBanViewer(std::vector<std::string> bans) {
 	}
 }
 
-bool CastViewer::checkBannedIP(uint32_t ip) const {
+bool Livestream::checkBannedIP(uint32_t ip) const {
 	for (const auto &it : m_bans) {
 		if (it.second == ip) {
 			return true;
@@ -148,35 +148,35 @@ bool CastViewer::checkBannedIP(uint32_t ip) const {
 	return false;
 }
 
-std::shared_ptr<ProtocolGame> CastViewer::getCastOwner() const {
+std::shared_ptr<ProtocolGame> Livestream::getCastOwner() const {
 	return m_owner;
 }
 
-void CastViewer::setCastOwner(std::shared_ptr<ProtocolGame> client) {
+void Livestream::setCastOwner(std::shared_ptr<ProtocolGame> client) {
 	m_owner = client;
 }
 
-void CastViewer::resetCastOwner() {
+void Livestream::resetCastOwner() {
 	m_owner.reset();
 }
 
-std::string CastViewer::getCastPassword() const {
+std::string Livestream::getCastPassword() const {
 	return m_castPassword;
 }
 
-void CastViewer::setCastPassword(const std::string &value) {
+void Livestream::setCastPassword(const std::string &value) {
 	m_castPassword = value;
 }
 
-bool CastViewer::isCastBroadcasting() const {
+bool Livestream::isCastBroadcasting() const {
 	return m_castBroadcast;
 }
 
-void CastViewer::setCastBroadcast(bool value) {
+void Livestream::setCastBroadcast(bool value) {
 	m_castBroadcast = value;
 }
 
-std::string CastViewer::getCastBroadcastTimeString() const {
+std::string Livestream::getCastBroadcastTimeString() const {
 	int64_t seconds = getCastBroadcastTime() / 1000;
 	uint16_t hour = floor(seconds / 60 / 60 % 24);
 	uint16_t minute = floor(seconds / 60 % 60);
@@ -185,31 +185,31 @@ std::string CastViewer::getCastBroadcastTimeString() const {
 	return fmt::format("{} hours, {} minutes and {} seconds", hour, minute, second);
 }
 
-int64_t CastViewer::getCastBroadcastTime() const {
+int64_t Livestream::getCastBroadcastTime() const {
 	return OTSYS_TIME() - m_castBroadcastTime;
 }
 
-void CastViewer::setCastBroadcastTime(int64_t time) {
+void Livestream::setCastBroadcastTime(int64_t time) {
 	m_castBroadcastTime = time;
 }
 
-uint32_t CastViewer::getCastLiveRecord() const {
+uint32_t Livestream::getCastLiveRecord() const {
 	return m_castLiveRecord;
 }
 
-void CastViewer::setCastLiveRecord(uint32_t value) {
+void Livestream::setCastLiveRecord(uint32_t value) {
 	m_castLiveRecord = value;
 }
 
-std::string CastViewer::getCastDescription() const {
+std::string Livestream::getCastDescription() const {
 	return m_castDescription;
 }
 
-void CastViewer::setCastDescription(const std::string &desc) {
+void Livestream::setCastDescription(const std::string &desc) {
 	m_castDescription = desc;
 }
 
-uint32_t CastViewer::getViewerId(std::shared_ptr<ProtocolGame> client) const {
+uint32_t Livestream::getViewerId(std::shared_ptr<ProtocolGame> client) const {
 	auto it = m_viewers.find(client);
 	if (it != m_viewers.end()) {
 		return it->second.second;
@@ -218,19 +218,19 @@ uint32_t CastViewer::getViewerId(std::shared_ptr<ProtocolGame> client) const {
 }
 
 // Inherited
-void CastViewer::insertCaster() {
+void Livestream::insertCaster() {
 	if (m_owner) {
 		m_owner->insertCaster();
 	}
 }
 
-void CastViewer::removeCaster() {
+void Livestream::removeCaster() {
 	if (m_owner) {
 		m_owner->removeCaster();
 	}
 }
 
-bool CastViewer::canSee(const Position &pos) const {
+bool Livestream::canSee(const Position &pos) const {
 	if (m_owner) {
 		return m_owner->canSee(pos);
 	}
@@ -238,7 +238,7 @@ bool CastViewer::canSee(const Position &pos) const {
 	return false;
 }
 
-uint32_t CastViewer::getIP() const {
+uint32_t Livestream::getIP() const {
 	if (m_owner) {
 		return m_owner->getIP();
 	}
@@ -246,7 +246,7 @@ uint32_t CastViewer::getIP() const {
 	return 0;
 }
 
-void CastViewer::sendStats() {
+void Livestream::sendStats() {
 	if (m_owner) {
 		m_owner->sendStats();
 
@@ -256,7 +256,7 @@ void CastViewer::sendStats() {
 	}
 }
 
-void CastViewer::sendPing() {
+void Livestream::sendPing() {
 	if (m_owner) {
 		m_owner->sendPing();
 
@@ -266,13 +266,13 @@ void CastViewer::sendPing() {
 	}
 }
 
-void CastViewer::logout(bool displayEffect, bool forceLogout) {
+void Livestream::logout(bool displayEffect, bool forceLogout) {
 	if (m_owner) {
 		m_owner->logout(displayEffect, forceLogout);
 	}
 }
 
-void CastViewer::sendAddContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> item) {
+void Livestream::sendAddContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> item) {
 	if (m_owner) {
 		m_owner->sendAddContainerItem(cid, slot, item);
 
@@ -282,7 +282,7 @@ void CastViewer::sendAddContainerItem(uint8_t cid, uint16_t slot, std::shared_pt
 	}
 }
 
-void CastViewer::sendUpdateContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> item) {
+void Livestream::sendUpdateContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> item) {
 	if (m_owner) {
 		m_owner->sendUpdateContainerItem(cid, slot, item);
 
@@ -292,7 +292,7 @@ void CastViewer::sendUpdateContainerItem(uint8_t cid, uint16_t slot, std::shared
 	}
 }
 
-void CastViewer::sendRemoveContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> lastItem) {
+void Livestream::sendRemoveContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> lastItem) {
 	if (m_owner) {
 		m_owner->sendRemoveContainerItem(cid, slot, lastItem);
 
@@ -302,7 +302,7 @@ void CastViewer::sendRemoveContainerItem(uint8_t cid, uint16_t slot, std::shared
 	}
 }
 
-void CastViewer::sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus) {
+void Livestream::sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus) {
 	if (m_owner) {
 		m_owner->sendUpdatedVIPStatus(guid, newStatus);
 
@@ -312,7 +312,7 @@ void CastViewer::sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus) {
 	}
 }
 
-void CastViewer::sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status) {
+void Livestream::sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status) {
 	if (m_owner) {
 		m_owner->sendVIP(guid, name, description, icon, notify, status);
 
@@ -322,7 +322,7 @@ void CastViewer::sendVIP(uint32_t guid, const std::string &name, const std::stri
 	}
 }
 
-void CastViewer::sendVIPGroups() {
+void Livestream::sendVIPGroups() {
 	if (m_owner) {
 		m_owner->sendVIPGroups();
 
@@ -332,19 +332,19 @@ void CastViewer::sendVIPGroups() {
 	}
 }
 
-void CastViewer::sendClosePrivate(uint16_t channelId) {
+void Livestream::sendClosePrivate(uint16_t channelId) {
 	if (m_owner) {
 		m_owner->sendClosePrivate(channelId);
 	}
 }
 
-void CastViewer::sendFYIBox(const std::string &message) {
+void Livestream::sendFYIBox(const std::string &message) {
 	if (m_owner) {
 		m_owner->sendFYIBox(message);
 	}
 }
 
-uint32_t CastViewer::getVersion() const {
+uint32_t Livestream::getVersion() const {
 	if (m_owner) {
 		return m_owner->getVersion();
 	}
@@ -352,13 +352,13 @@ uint32_t CastViewer::getVersion() const {
 	return 0;
 }
 
-void CastViewer::disconnect() {
+void Livestream::disconnect() {
 	if (m_owner) {
 		m_owner->sendSessionEndInformation(SESSION_END_LOGOUT);
 	}
 }
 
-void CastViewer::sendCreatureSkull(const std::shared_ptr<Creature> &creature) const {
+void Livestream::sendCreatureSkull(const std::shared_ptr<Creature> &creature) const {
 	if (m_owner) {
 		m_owner->sendCreatureSkull(creature);
 
@@ -368,7 +368,7 @@ void CastViewer::sendCreatureSkull(const std::shared_ptr<Creature> &creature) co
 	}
 }
 
-void CastViewer::sendAddTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item) {
+void Livestream::sendAddTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item) {
 	if (m_owner) {
 		m_owner->sendAddTileItem(pos, stackpos, item);
 
@@ -378,7 +378,7 @@ void CastViewer::sendAddTileItem(const Position &pos, uint32_t stackpos, std::sh
 	}
 }
 
-void CastViewer::sendUpdateTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item) {
+void Livestream::sendUpdateTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item) {
 	if (m_owner) {
 		m_owner->sendUpdateTileItem(pos, stackpos, item);
 
@@ -388,7 +388,7 @@ void CastViewer::sendUpdateTileItem(const Position &pos, uint32_t stackpos, std:
 	}
 }
 
-void CastViewer::sendRemoveTileThing(const Position &pos, int32_t stackpos) {
+void Livestream::sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 	if (m_owner) {
 		m_owner->sendRemoveTileThing(pos, stackpos);
 
@@ -398,7 +398,7 @@ void CastViewer::sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 	}
 }
 
-void CastViewer::sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> creature) {
+void Livestream::sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendUpdateTileCreature(pos, stackpos, creature);
 
@@ -408,7 +408,7 @@ void CastViewer::sendUpdateTileCreature(const Position &pos, uint32_t stackpos, 
 	}
 }
 
-void CastViewer::sendUpdateTile(std::shared_ptr<Tile> tile, const Position &pos) {
+void Livestream::sendUpdateTile(std::shared_ptr<Tile> tile, const Position &pos) {
 	if (m_owner) {
 		m_owner->sendUpdateTile(tile, pos);
 
@@ -418,7 +418,7 @@ void CastViewer::sendUpdateTile(std::shared_ptr<Tile> tile, const Position &pos)
 	}
 }
 
-void CastViewer::sendChannelMessage(const std::string &author, const std::string &message, SpeakClasses type, uint16_t channel) {
+void Livestream::sendChannelMessage(const std::string &author, const std::string &message, SpeakClasses type, uint16_t channel) {
 	if (m_owner) {
 		m_owner->sendChannelMessage(author, message, type, channel);
 
@@ -428,7 +428,7 @@ void CastViewer::sendChannelMessage(const std::string &author, const std::string
 	}
 }
 
-void CastViewer::sendMoveCreature(std::shared_ptr<Creature> creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) {
+void Livestream::sendMoveCreature(std::shared_ptr<Creature> creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) {
 	if (m_owner) {
 		m_owner->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
 
@@ -438,7 +438,7 @@ void CastViewer::sendMoveCreature(std::shared_ptr<Creature> creature, const Posi
 	}
 }
 
-void CastViewer::sendCreatureTurn(std::shared_ptr<Creature> creature, int32_t stackpos) {
+void Livestream::sendCreatureTurn(std::shared_ptr<Creature> creature, int32_t stackpos) {
 	if (m_owner) {
 		m_owner->sendCreatureTurn(creature, stackpos);
 
@@ -448,19 +448,19 @@ void CastViewer::sendCreatureTurn(std::shared_ptr<Creature> creature, int32_t st
 	}
 }
 
-void CastViewer::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence) const {
+void Livestream::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence) const {
 	if (m_owner) {
 		m_owner->sendForgeResult(actionType, leftItemId, leftTier, rightItemId, rightTier, success, bonus, coreCount, convergence);
 	}
 }
 
-void CastViewer::sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text) {
+void Livestream::sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text) {
 	if (m_owner) {
 		m_owner->sendPrivateMessage(speaker, type, text);
 	}
 }
 
-void CastViewer::sendCreatureSquare(std::shared_ptr<Creature> creature, SquareColor_t color) {
+void Livestream::sendCreatureSquare(std::shared_ptr<Creature> creature, SquareColor_t color) {
 	if (m_owner) {
 		m_owner->sendCreatureSquare(creature, color);
 
@@ -470,7 +470,7 @@ void CastViewer::sendCreatureSquare(std::shared_ptr<Creature> creature, SquareCo
 	}
 }
 
-void CastViewer::sendCreatureOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) {
+void Livestream::sendCreatureOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) {
 	if (m_owner) {
 		m_owner->sendCreatureOutfit(creature, outfit);
 
@@ -480,7 +480,7 @@ void CastViewer::sendCreatureOutfit(std::shared_ptr<Creature> creature, const Ou
 	}
 }
 
-void CastViewer::sendCreatureLight(std::shared_ptr<Creature> creature) {
+void Livestream::sendCreatureLight(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendCreatureLight(creature);
 
@@ -490,7 +490,7 @@ void CastViewer::sendCreatureLight(std::shared_ptr<Creature> creature) {
 	}
 }
 
-void CastViewer::sendCreatureWalkthrough(std::shared_ptr<Creature> creature, bool walkthrough) {
+void Livestream::sendCreatureWalkthrough(std::shared_ptr<Creature> creature, bool walkthrough) {
 	if (m_owner) {
 		m_owner->sendCreatureWalkthrough(creature, walkthrough);
 
@@ -500,7 +500,7 @@ void CastViewer::sendCreatureWalkthrough(std::shared_ptr<Creature> creature, boo
 	}
 }
 
-void CastViewer::sendCreatureShield(std::shared_ptr<Creature> creature) {
+void Livestream::sendCreatureShield(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendCreatureShield(creature);
 
@@ -510,7 +510,7 @@ void CastViewer::sendCreatureShield(std::shared_ptr<Creature> creature) {
 	}
 }
 
-void CastViewer::sendContainer(uint8_t cid, std::shared_ptr<Container> container, bool hasParent, uint16_t firstIndex) {
+void Livestream::sendContainer(uint8_t cid, std::shared_ptr<Container> container, bool hasParent, uint16_t firstIndex) {
 	if (m_owner) {
 		m_owner->sendContainer(cid, container, hasParent, firstIndex);
 
@@ -520,7 +520,7 @@ void CastViewer::sendContainer(uint8_t cid, std::shared_ptr<Container> container
 	}
 }
 
-void CastViewer::sendInventoryItem(Slots_t slot, std::shared_ptr<Item> item) {
+void Livestream::sendInventoryItem(Slots_t slot, std::shared_ptr<Item> item) {
 	if (m_owner) {
 		m_owner->sendInventoryItem(slot, item);
 
@@ -530,7 +530,7 @@ void CastViewer::sendInventoryItem(Slots_t slot, std::shared_ptr<Item> item) {
 	}
 }
 
-void CastViewer::sendCancelMessage(const std::string &msg) const {
+void Livestream::sendCancelMessage(const std::string &msg) const {
 	if (m_owner) {
 		m_owner->sendTextMessage(TextMessage(MESSAGE_FAILURE, msg));
 
@@ -540,7 +540,7 @@ void CastViewer::sendCancelMessage(const std::string &msg) const {
 	}
 }
 
-void CastViewer::sendCancelTarget() const {
+void Livestream::sendCancelTarget() const {
 	if (m_owner) {
 		m_owner->sendCancelTarget();
 
@@ -550,7 +550,7 @@ void CastViewer::sendCancelTarget() const {
 	}
 }
 
-void CastViewer::sendCancelWalk() const {
+void Livestream::sendCancelWalk() const {
 	if (m_owner) {
 		m_owner->sendCancelWalk();
 
@@ -560,7 +560,7 @@ void CastViewer::sendCancelWalk() const {
 	}
 }
 
-void CastViewer::sendChangeSpeed(std::shared_ptr<Creature> creature, uint32_t newSpeed) const {
+void Livestream::sendChangeSpeed(std::shared_ptr<Creature> creature, uint32_t newSpeed) const {
 	if (m_owner) {
 		m_owner->sendChangeSpeed(creature, newSpeed);
 
@@ -570,7 +570,7 @@ void CastViewer::sendChangeSpeed(std::shared_ptr<Creature> creature, uint32_t ne
 	}
 }
 
-void CastViewer::sendCreatureHealth(std::shared_ptr<Creature> creature) const {
+void Livestream::sendCreatureHealth(std::shared_ptr<Creature> creature) const {
 	if (m_owner) {
 		m_owner->sendCreatureHealth(creature);
 
@@ -580,7 +580,7 @@ void CastViewer::sendCreatureHealth(std::shared_ptr<Creature> creature) const {
 	}
 }
 
-void CastViewer::sendDistanceShoot(const Position &from, const Position &to, unsigned char type) const {
+void Livestream::sendDistanceShoot(const Position &from, const Position &to, unsigned char type) const {
 	if (m_owner) {
 		m_owner->sendDistanceShoot(from, to, type);
 
@@ -590,13 +590,13 @@ void CastViewer::sendDistanceShoot(const Position &from, const Position &to, uns
 	}
 }
 
-void CastViewer::sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName) {
+void Livestream::sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName) {
 	if (m_owner) {
 		m_owner->sendCreatePrivateChannel(channelId, channelName);
 	}
 }
 
-void CastViewer::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const IconBakragore iconBakragore) const {
+void Livestream::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const IconBakragore iconBakragore) const {
 	if (m_owner) {
 		m_owner->sendIcons(iconSet, iconBakragore);
 
@@ -606,7 +606,7 @@ void CastViewer::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const 
 	}
 }
 
-void CastViewer::sendIconBakragore(const IconBakragore icon) {
+void Livestream::sendIconBakragore(const IconBakragore icon) {
 	if (!m_owner) {
 		return;
 	}
@@ -614,7 +614,7 @@ void CastViewer::sendIconBakragore(const IconBakragore icon) {
 	m_owner->sendIconBakragore(icon);
 }
 
-void CastViewer::sendMagicEffect(const Position &pos, uint8_t type) const {
+void Livestream::sendMagicEffect(const Position &pos, uint8_t type) const {
 	if (m_owner) {
 		m_owner->sendMagicEffect(pos, type);
 
@@ -624,7 +624,7 @@ void CastViewer::sendMagicEffect(const Position &pos, uint8_t type) const {
 	}
 }
 
-void CastViewer::sendSkills() const {
+void Livestream::sendSkills() const {
 	if (m_owner) {
 		m_owner->sendSkills();
 
@@ -634,7 +634,7 @@ void CastViewer::sendSkills() const {
 	}
 }
 
-void CastViewer::sendTextMessage(MessageClasses mclass, const std::string &message) {
+void Livestream::sendTextMessage(MessageClasses mclass, const std::string &message) {
 	if (m_owner) {
 		m_owner->sendTextMessage(TextMessage(mclass, message));
 
@@ -644,7 +644,7 @@ void CastViewer::sendTextMessage(MessageClasses mclass, const std::string &messa
 	}
 }
 
-void CastViewer::sendTextMessage(const TextMessage &message) const {
+void Livestream::sendTextMessage(const TextMessage &message) const {
 	if (m_owner) {
 		m_owner->sendTextMessage(message);
 
@@ -654,25 +654,25 @@ void CastViewer::sendTextMessage(const TextMessage &message) const {
 	}
 }
 
-void CastViewer::sendReLoginWindow(uint8_t unfairFightReduction) {
+void Livestream::sendReLoginWindow(uint8_t unfairFightReduction) {
 	if (m_owner) {
 		m_owner->sendReLoginWindow(unfairFightReduction);
 	}
 }
 
-void CastViewer::sendTextWindow(uint32_t windowTextId, std::shared_ptr<Item> item, uint16_t maxlen, bool canWrite) const {
+void Livestream::sendTextWindow(uint32_t windowTextId, std::shared_ptr<Item> item, uint16_t maxlen, bool canWrite) const {
 	if (m_owner) {
 		m_owner->sendTextWindow(windowTextId, item, maxlen, canWrite);
 	}
 }
 
-void CastViewer::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text) const {
+void Livestream::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text) const {
 	if (m_owner) {
 		m_owner->sendTextWindow(windowTextId, itemId, text);
 	}
 }
 
-void CastViewer::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId) {
+void Livestream::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId) {
 	if (m_owner) {
 		m_owner->sendToChannel(creature, type, text, channelId);
 		sendToAllViewersAsync(m_viewers, [creature, type, text, channelId](auto viewer_ptr) {
@@ -681,37 +681,37 @@ void CastViewer::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses 
 	}
 }
 
-void CastViewer::sendShop(std::shared_ptr<Npc> npc) const {
+void Livestream::sendShop(std::shared_ptr<Npc> npc) const {
 	if (m_owner) {
 		m_owner->sendShop(npc);
 	}
 }
 
-void CastViewer::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap) {
+void Livestream::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap) {
 	if (m_owner) {
 		m_owner->sendSaleItemList(shopVector, inventoryMap);
 	}
 }
 
-void CastViewer::sendCloseShop() const {
+void Livestream::sendCloseShop() const {
 	if (m_owner) {
 		m_owner->sendCloseShop();
 	}
 }
 
-void CastViewer::sendTradeItemRequest(const std::string &traderName, std::shared_ptr<Item> item, bool ack) const {
+void Livestream::sendTradeItemRequest(const std::string &traderName, std::shared_ptr<Item> item, bool ack) const {
 	if (m_owner) {
 		m_owner->sendTradeItemRequest(traderName, item, ack);
 	}
 }
 
-void CastViewer::sendTradeClose() const {
+void Livestream::sendTradeClose() const {
 	if (m_owner) {
 		m_owner->sendCloseTrade();
 	}
 }
 
-void CastViewer::sendWorldLight(const LightInfo &lightInfo) {
+void Livestream::sendWorldLight(const LightInfo &lightInfo) {
 	if (m_owner) {
 		m_owner->sendWorldLight(lightInfo);
 
@@ -721,25 +721,25 @@ void CastViewer::sendWorldLight(const LightInfo &lightInfo) {
 	}
 }
 
-void CastViewer::sendChannelsDialog() {
+void Livestream::sendChannelsDialog() {
 	if (m_owner) {
 		m_owner->sendChannelsDialog();
 	}
 }
 
-void CastViewer::sendOpenPrivateChannel(const std::string &receiver) {
+void Livestream::sendOpenPrivateChannel(const std::string &receiver) {
 	if (m_owner) {
 		m_owner->sendOpenPrivateChannel(receiver);
 	}
 }
 
-void CastViewer::sendOutfitWindow() {
+void Livestream::sendOutfitWindow() {
 	if (m_owner) {
 		m_owner->sendOutfitWindow();
 	}
 }
 
-void CastViewer::sendCloseContainer(uint8_t cid) {
+void Livestream::sendCloseContainer(uint8_t cid) {
 	if (m_owner) {
 		m_owner->sendCloseContainer(cid);
 
@@ -749,31 +749,31 @@ void CastViewer::sendCloseContainer(uint8_t cid) {
 	}
 }
 
-void CastViewer::sendChannel(uint16_t channelId, const std::string &channelName, const std::map<uint32_t, std::shared_ptr<Player>>* channelUsers, const std::map<uint32_t, std::shared_ptr<Player>>* invitedUsers) {
+void Livestream::sendChannel(uint16_t channelId, const std::string &channelName, const std::map<uint32_t, std::shared_ptr<Player>>* channelUsers, const std::map<uint32_t, std::shared_ptr<Player>>* invitedUsers) {
 	if (m_owner) {
 		m_owner->sendChannel(channelId, channelName, channelUsers, invitedUsers);
 	}
 }
 
-void CastViewer::sendTutorial(uint8_t tutorialId) {
+void Livestream::sendTutorial(uint8_t tutorialId) {
 	if (m_owner) {
 		m_owner->sendTutorial(tutorialId);
 	}
 }
 
-void CastViewer::sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc) {
+void Livestream::sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc) {
 	if (m_owner) {
 		m_owner->sendAddMarker(pos, markType, desc);
 	}
 }
 
-void CastViewer::sendFightModes() {
+void Livestream::sendFightModes() {
 	if (m_owner) {
 		m_owner->sendFightModes();
 	}
 }
 
-void CastViewer::writeToOutputBuffer(const NetworkMessage &message) {
+void Livestream::writeToOutputBuffer(const NetworkMessage &message) {
 	if (m_owner) {
 		m_owner->writeToOutputBuffer(message);
 
@@ -783,7 +783,7 @@ void CastViewer::writeToOutputBuffer(const NetworkMessage &message) {
 	}
 }
 
-void CastViewer::sendAddCreature(std::shared_ptr<Creature> creature, const Position &pos, int32_t stackpos, bool isLogin) {
+void Livestream::sendAddCreature(std::shared_ptr<Creature> creature, const Position &pos, int32_t stackpos, bool isLogin) {
 	if (m_owner) {
 		m_owner->sendAddCreature(creature, pos, stackpos, isLogin);
 
@@ -793,115 +793,115 @@ void CastViewer::sendAddCreature(std::shared_ptr<Creature> creature, const Posit
 	}
 }
 
-void CastViewer::sendHouseWindow(uint32_t windowTextId, const std::string &text) {
+void Livestream::sendHouseWindow(uint32_t windowTextId, const std::string &text) {
 	if (m_owner) {
 		m_owner->sendHouseWindow(windowTextId, text);
 	}
 }
 
-void CastViewer::sendCloseTrade() const {
+void Livestream::sendCloseTrade() const {
 	if (m_owner) {
 		m_owner->sendCloseTrade();
 	}
 }
 
-void CastViewer::sendBestiaryCharms() {
+void Livestream::sendBestiaryCharms() {
 	if (m_owner) {
 		m_owner->sendBestiaryCharms();
 	}
 }
 
-void CastViewer::sendImbuementResult(const std::string message) {
+void Livestream::sendImbuementResult(const std::string message) {
 	if (m_owner) {
 		m_owner->sendImbuementResult(message);
 	}
 }
 
-void CastViewer::closeImbuementWindow() {
+void Livestream::closeImbuementWindow() {
 	if (m_owner) {
 		m_owner->closeImbuementWindow();
 	}
 }
 
-void CastViewer::sendPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
+void Livestream::sendPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
 	if (m_owner) {
 		m_owner->sendPodiumWindow(podium, position, itemId, stackpos);
 	}
 }
 
-void CastViewer::sendCreatureIcon(std::shared_ptr<Creature> creature) {
+void Livestream::sendCreatureIcon(std::shared_ptr<Creature> creature) {
 	if (m_owner && !m_owner->oldProtocol) {
 		m_owner->sendCreatureIcon(creature);
 	}
 }
 
-void CastViewer::sendUpdateCreature(std::shared_ptr<Creature> creature) {
+void Livestream::sendUpdateCreature(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendUpdateCreature(creature);
 	}
 }
 
-void CastViewer::sendCreatureType(std::shared_ptr<Creature> creature, uint8_t creatureType) {
+void Livestream::sendCreatureType(std::shared_ptr<Creature> creature, uint8_t creatureType) {
 	if (m_owner) {
 		m_owner->sendCreatureType(creature, creatureType);
 	}
 }
 
-void CastViewer::sendSpellCooldown(uint16_t spellId, uint32_t time) {
+void Livestream::sendSpellCooldown(uint16_t spellId, uint32_t time) {
 	if (m_owner) {
 		m_owner->sendSpellCooldown(spellId, time);
 	}
 }
 
-void CastViewer::sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time) {
+void Livestream::sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time) {
 	if (m_owner) {
 		m_owner->sendSpellGroupCooldown(groupId, time);
 	}
 }
 
-void CastViewer::sendUseItemCooldown(uint32_t time) {
+void Livestream::sendUseItemCooldown(uint32_t time) {
 	if (m_owner) {
 		m_owner->sendUseItemCooldown(time);
 	}
 }
 
-void CastViewer::reloadCreature(std::shared_ptr<Creature> creature) {
+void Livestream::reloadCreature(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->reloadCreature(creature);
 	}
 }
 
-void CastViewer::sendBestiaryEntryChanged(uint16_t raceid) {
+void Livestream::sendBestiaryEntryChanged(uint16_t raceid) {
 	if (m_owner) {
 		m_owner->sendBestiaryEntryChanged(raceid);
 	}
 }
 
-void CastViewer::refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
+void Livestream::refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
 	if (m_owner) {
 		m_owner->refreshCyclopediaMonsterTracker(trackerList, isBoss);
 	}
 }
 
-void CastViewer::sendClientCheck() {
+void Livestream::sendClientCheck() {
 	if (m_owner) {
 		m_owner->sendClientCheck();
 	}
 }
 
-void CastViewer::sendGameNews() {
+void Livestream::sendGameNews() {
 	if (m_owner) {
 		m_owner->sendGameNews();
 	}
 }
 
-void CastViewer::removeMagicEffect(const Position &pos, uint16_t type) {
+void Livestream::removeMagicEffect(const Position &pos, uint16_t type) {
 	if (m_owner) {
 		m_owner->removeMagicEffect(pos, type);
 	}
 }
 
-void CastViewer::sendPingBack() {
+void Livestream::sendPingBack() {
 	if (m_owner) {
 		m_owner->sendPingBack();
 
@@ -911,248 +911,248 @@ void CastViewer::sendPingBack() {
 	}
 }
 
-void CastViewer::sendBasicData() {
+void Livestream::sendBasicData() {
 	if (m_owner) {
 		m_owner->sendBasicData();
 	}
 }
 
-void CastViewer::sendBlessStatus() {
+void Livestream::sendBlessStatus() {
 	if (m_owner) {
 		m_owner->sendBlessStatus();
 	}
 }
 
-void CastViewer::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> party) {
+void Livestream::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> party) {
 	if (m_owner && party) {
 		m_owner->updatePartyTrackerAnalyzer(party);
 	}
 }
 
-void CastViewer::createLeaderTeamFinder(NetworkMessage &msg) {
+void Livestream::createLeaderTeamFinder(NetworkMessage &msg) {
 	if (m_owner) {
 		m_owner->createLeaderTeamFinder(msg);
 	}
 }
 
-void CastViewer::sendLeaderTeamFinder(bool reset) {
+void Livestream::sendLeaderTeamFinder(bool reset) {
 	if (m_owner) {
 		m_owner->sendLeaderTeamFinder(reset);
 	}
 }
 
-void CastViewer::sendTeamFinderList() {
+void Livestream::sendTeamFinderList() {
 	if (m_owner) {
 		m_owner->sendTeamFinderList();
 	}
 }
 
-void CastViewer::sendCreatureHelpers(uint32_t creatureId, uint16_t helpers) {
+void Livestream::sendCreatureHelpers(uint32_t creatureId, uint16_t helpers) {
 	if (m_owner) {
 		m_owner->sendCreatureHelpers(creatureId, helpers);
 	}
 }
 
-void CastViewer::sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent) {
+void Livestream::sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent) {
 	if (m_owner) {
 		m_owner->sendChannelEvent(channelId, playerName, channelEvent);
 	}
 }
 
-void CastViewer::sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count) {
+void Livestream::sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count) {
 	if (m_owner) {
 		m_owner->sendDepotItems(itemMap, count);
 	}
 }
 
-void CastViewer::sendCloseDepotSearch() {
+void Livestream::sendCloseDepotSearch() {
 	if (m_owner) {
 		m_owner->sendCloseDepotSearch();
 	}
 }
 
 using ItemVector = std::vector<std::shared_ptr<Item>>;
-void CastViewer::sendDepotSearchResultDetail(uint16_t itemId, uint8_t tier, uint32_t depotCount, const ItemVector &depotItems, uint32_t inboxCount, const ItemVector &inboxItems, uint32_t stashCount) {
+void Livestream::sendDepotSearchResultDetail(uint16_t itemId, uint8_t tier, uint32_t depotCount, const ItemVector &depotItems, uint32_t inboxCount, const ItemVector &inboxItems, uint32_t stashCount) {
 	if (m_owner) {
 		m_owner->sendDepotSearchResultDetail(itemId, tier, depotCount, depotItems, inboxCount, inboxItems, stashCount);
 	}
 }
 
-void CastViewer::sendCoinBalance() {
+void Livestream::sendCoinBalance() {
 	if (m_owner) {
 		m_owner->sendCoinBalance();
 	}
 }
 
-void CastViewer::sendInventoryIds() {
+void Livestream::sendInventoryIds() {
 	if (m_owner) {
 		m_owner->sendInventoryIds();
 	}
 }
 
-void CastViewer::sendLootContainers() {
+void Livestream::sendLootContainers() {
 	if (m_owner) {
 		m_owner->sendLootContainers();
 	}
 }
 
-void CastViewer::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
+void Livestream::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
 	if (m_owner) {
 		m_owner->sendSingleSoundEffect(pos, id, source);
 	}
 }
 
-void CastViewer::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) {
+void Livestream::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) {
 	if (m_owner) {
 		m_owner->sendDoubleSoundEffect(pos, mainSoundId, mainSource, secondarySoundId, secondarySource);
 	}
 }
 
-void CastViewer::sendCreatureEmblem(const std::shared_ptr<Creature> &creature) const {
+void Livestream::sendCreatureEmblem(const std::shared_ptr<Creature> &creature) const {
 	if (m_owner) {
 		m_owner->sendCreatureEmblem(creature);
 	}
 }
 
-void CastViewer::sendItemInspection(uint16_t itemId, uint8_t itemCount, std::shared_ptr<Item> item, bool cyclopedia) {
+void Livestream::sendItemInspection(uint16_t itemId, uint8_t itemCount, std::shared_ptr<Item> item, bool cyclopedia) {
 	if (m_owner) {
 		m_owner->sendItemInspection(itemId, itemCount, item, cyclopedia);
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode) {
+void Livestream::sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode) {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterNoData(characterInfoType, errorCode);
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterBaseInformation() {
+void Livestream::sendCyclopediaCharacterBaseInformation() {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterBaseInformation();
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterGeneralStats() {
+void Livestream::sendCyclopediaCharacterGeneralStats() {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterGeneralStats();
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterCombatStats() {
+void Livestream::sendCyclopediaCharacterCombatStats() {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterCombatStats();
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries) {
+void Livestream::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries) {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterRecentDeaths(page, pages, entries);
 	}
 }
 
-void CastViewer::sendOpenForge() {
+void Livestream::sendOpenForge() {
 	if (m_owner) {
 		m_owner->sendOpenForge();
 	}
 }
 
-void CastViewer::sendForgeError(ReturnValue returnValue) {
+void Livestream::sendForgeError(ReturnValue returnValue) {
 	if (m_owner) {
 		m_owner->sendForgeError(returnValue);
 	}
 }
 
-void CastViewer::sendForgeHistory(uint8_t page) const {
+void Livestream::sendForgeHistory(uint8_t page) const {
 	if (m_owner) {
 		m_owner->sendForgeHistory(page);
 	}
 }
 
-void CastViewer::closeForgeWindow() const {
+void Livestream::closeForgeWindow() const {
 	if (m_owner) {
 		m_owner->closeForgeWindow();
 	}
 }
 
-void CastViewer::sendBosstiaryCooldownTimer() const {
+void Livestream::sendBosstiaryCooldownTimer() const {
 	if (m_owner) {
 		m_owner->sendBosstiaryCooldownTimer();
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries) {
+void Livestream::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries) {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterRecentPvPKills(page, pages, entries);
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterAchievements(int16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
+void Livestream::sendCyclopediaCharacterAchievements(int16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterAchievements(secretsUnlocked, achievementsUnlocked);
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) {
+void Livestream::sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems) {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterOutfitsMounts() {
+void Livestream::sendCyclopediaCharacterOutfitsMounts() {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterOutfitsMounts();
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterStoreSummary() {
+void Livestream::sendCyclopediaCharacterStoreSummary() {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterStoreSummary();
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterInspection() {
+void Livestream::sendCyclopediaCharacterInspection() {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterInspection();
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterBadges() {
+void Livestream::sendCyclopediaCharacterBadges() {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterBadges();
 	}
 }
 
-void CastViewer::sendCyclopediaCharacterTitles() {
+void Livestream::sendCyclopediaCharacterTitles() {
 	if (m_owner) {
 		m_owner->sendCyclopediaCharacterTitles();
 	}
 }
 
-void CastViewer::sendHighscoresNoData() {
+void Livestream::sendHighscoresNoData() {
 	if (m_owner) {
 		m_owner->sendHighscoresNoData();
 	}
 }
 
-void CastViewer::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) {
+void Livestream::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) {
 	if (m_owner) {
 		m_owner->sendHighscores(characters, categoryId, vocationId, page, pages, updateTimer);
 	}
 }
 
-void CastViewer::sendMonsterPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
+void Livestream::sendMonsterPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
 	if (m_owner) {
 		m_owner->sendMonsterPodiumWindow(podium, position, itemId, stackpos);
 	}
 }
 
-void CastViewer::sendBosstiaryEntryChanged(uint32_t bossid) {
+void Livestream::sendBosstiaryEntryChanged(uint32_t bossid) {
 	if (m_owner) {
 		m_owner->sendBosstiaryEntryChanged(bossid);
 	}
 }
 
-void CastViewer::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> items) {
+void Livestream::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> items) {
 	if (m_owner) {
 		m_owner->sendInventoryImbuements(items);
 
@@ -1162,163 +1162,163 @@ void CastViewer::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr
 	}
 }
 
-void CastViewer::sendEnterWorld() {
+void Livestream::sendEnterWorld() {
 	if (m_owner) {
 		m_owner->sendEnterWorld();
 	}
 }
 
-void CastViewer::sendExperienceTracker(int64_t rawExp, int64_t finalExp) {
+void Livestream::sendExperienceTracker(int64_t rawExp, int64_t finalExp) {
 	if (m_owner) {
 		m_owner->sendExperienceTracker(rawExp, finalExp);
 	}
 }
 
-void CastViewer::sendItemsPrice() {
+void Livestream::sendItemsPrice() {
 	if (m_owner) {
 		m_owner->sendItemsPrice();
 	}
 }
 
-void CastViewer::sendForgingData() {
+void Livestream::sendForgingData() {
 	if (m_owner) {
 		m_owner->sendForgingData();
 	}
 }
 
-void CastViewer::sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &name, const Outfit_t creatureOutfit) {
+void Livestream::sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &name, const Outfit_t creatureOutfit) {
 	if (m_owner) {
 		m_owner->sendKillTrackerUpdate(corpse, name, creatureOutfit);
 	}
 }
 
-void CastViewer::sendMarketLeave() {
+void Livestream::sendMarketLeave() {
 	if (m_owner) {
 		m_owner->sendMarketLeave();
 	}
 }
 
-void CastViewer::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers, uint8_t tier) {
+void Livestream::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers, uint8_t tier) {
 	if (m_owner) {
 		m_owner->sendMarketBrowseItem(itemId, buyOffers, sellOffers, tier);
 	}
 }
 
-void CastViewer::sendMarketBrowseOwnOffers(const MarketOfferList &buyOffers, const MarketOfferList &sellOffers) {
+void Livestream::sendMarketBrowseOwnOffers(const MarketOfferList &buyOffers, const MarketOfferList &sellOffers) {
 	if (m_owner) {
 		m_owner->sendMarketBrowseOwnOffers(buyOffers, sellOffers);
 	}
 }
 
-void CastViewer::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyOffers, const HistoryMarketOfferList &sellOffers) {
+void Livestream::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyOffers, const HistoryMarketOfferList &sellOffers) {
 	if (m_owner) {
 		m_owner->sendMarketBrowseOwnHistory(buyOffers, sellOffers);
 	}
 }
 
-void CastViewer::sendMarketDetail(uint16_t itemId, uint8_t tier) {
+void Livestream::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 	if (m_owner) {
 		m_owner->sendMarketDetail(itemId, tier);
 	}
 }
 
-void CastViewer::sendMarketAcceptOffer(const MarketOfferEx &offer) {
+void Livestream::sendMarketAcceptOffer(const MarketOfferEx &offer) {
 	if (m_owner) {
 		m_owner->sendMarketAcceptOffer(offer);
 	}
 }
 
-void CastViewer::sendMarketCancelOffer(const MarketOfferEx &offer) {
+void Livestream::sendMarketCancelOffer(const MarketOfferEx &offer) {
 	if (m_owner) {
 		m_owner->sendMarketCancelOffer(offer);
 	}
 }
 
-void CastViewer::sendMessageDialog(const std::string &message) {
+void Livestream::sendMessageDialog(const std::string &message) {
 	if (m_owner) {
 		m_owner->sendMessageDialog(message);
 	}
 }
 
-void CastViewer::sendOpenStash() {
+void Livestream::sendOpenStash() {
 	if (m_owner) {
 		m_owner->sendOpenStash();
 	}
 }
 
-void CastViewer::sendTakeScreenshot(Screenshot_t screenshotType) {
+void Livestream::sendTakeScreenshot(Screenshot_t screenshotType) {
 	if (m_owner) {
 		m_owner->sendTakeScreenshot(screenshotType);
 	}
 }
 
-void CastViewer::sendPartyCreatureUpdate(std::shared_ptr<Creature> creature) {
+void Livestream::sendPartyCreatureUpdate(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureUpdate(creature);
 	}
 }
 
-void CastViewer::sendPartyCreatureShield(std::shared_ptr<Creature> creature) {
+void Livestream::sendPartyCreatureShield(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureShield(creature);
 	}
 }
 
-void CastViewer::sendPartyCreatureSkull(std::shared_ptr<Creature> creature) {
+void Livestream::sendPartyCreatureSkull(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureSkull(creature);
 	}
 }
 
-void CastViewer::sendPartyCreatureHealth(std::shared_ptr<Creature> creature, uint8_t healthPercent) {
+void Livestream::sendPartyCreatureHealth(std::shared_ptr<Creature> creature, uint8_t healthPercent) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureHealth(creature, healthPercent);
 	}
 }
 
-void CastViewer::sendPartyPlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent) {
+void Livestream::sendPartyPlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent) {
 	if (m_owner) {
 		m_owner->sendPartyPlayerMana(player, manaPercent);
 	}
 }
 
-void CastViewer::sendPartyCreatureShowStatus(std::shared_ptr<Creature> creature, bool showStatus) {
+void Livestream::sendPartyCreatureShowStatus(std::shared_ptr<Creature> creature, bool showStatus) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureShowStatus(creature, showStatus);
 	}
 }
 
-void CastViewer::sendPartyPlayerVocation(std::shared_ptr<Player> player) {
+void Livestream::sendPartyPlayerVocation(std::shared_ptr<Player> player) {
 	if (m_owner) {
 		m_owner->sendPartyPlayerVocation(player);
 	}
 }
 
-void CastViewer::sendPlayerVocation(std::shared_ptr<Player> player) {
+void Livestream::sendPlayerVocation(std::shared_ptr<Player> player) {
 	if (m_owner) {
 		m_owner->sendPlayerVocation(player);
 	}
 }
 
-void CastViewer::sendPreyTimeLeft(const std::unique_ptr<PreySlot> &slot) {
+void Livestream::sendPreyTimeLeft(const std::unique_ptr<PreySlot> &slot) {
 	if (m_owner) {
 		m_owner->sendPreyTimeLeft(slot);
 	}
 }
 
-void CastViewer::sendResourcesBalance(uint64_t money, uint64_t bank, uint64_t preyCards, uint64_t taskHunting, uint64_t forgeDust, uint64_t forgeSliver, uint64_t forgeCores) {
+void Livestream::sendResourcesBalance(uint64_t money, uint64_t bank, uint64_t preyCards, uint64_t taskHunting, uint64_t forgeDust, uint64_t forgeSliver, uint64_t forgeCores) {
 	if (m_owner) {
 		m_owner->sendResourcesBalance(money, bank, preyCards, taskHunting, forgeDust, forgeSliver, forgeCores);
 	}
 }
 
-void CastViewer::sendCreatureReload(std::shared_ptr<Creature> creature) {
+void Livestream::sendCreatureReload(std::shared_ptr<Creature> creature) {
 	if (m_owner) {
 		m_owner->reloadCreature(creature);
 	}
 }
 
-void CastViewer::sendCreatureChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) {
+void Livestream::sendCreatureChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) {
 	if (m_owner) {
 		m_owner->sendCreatureOutfit(creature, outfit);
 
@@ -1328,97 +1328,97 @@ void CastViewer::sendCreatureChangeOutfit(std::shared_ptr<Creature> creature, co
 	}
 }
 
-void CastViewer::sendPreyData(const std::unique_ptr<PreySlot> &slot) {
+void Livestream::sendPreyData(const std::unique_ptr<PreySlot> &slot) {
 	if (m_owner) {
 		m_owner->sendPreyData(slot);
 	}
 }
 
-void CastViewer::sendSpecialContainersAvailable() {
+void Livestream::sendSpecialContainersAvailable() {
 	if (m_owner) {
 		m_owner->sendSpecialContainersAvailable();
 	}
 }
 
-void CastViewer::sendTaskHuntingData(const std::unique_ptr<TaskHuntingSlot> &slot) {
+void Livestream::sendTaskHuntingData(const std::unique_ptr<TaskHuntingSlot> &slot) {
 	if (m_owner) {
 		m_owner->sendTaskHuntingData(slot);
 	}
 }
 
-void CastViewer::sendTibiaTime(int32_t time) {
+void Livestream::sendTibiaTime(int32_t time) {
 	if (m_owner) {
 		m_owner->sendTibiaTime(time);
 	}
 }
 
-void CastViewer::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
+void Livestream::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
 	if (m_owner) {
 		m_owner->sendUpdateInputAnalyzer(type, amount, target);
 	}
 }
 
-void CastViewer::sendRestingStatus(uint8_t protection) {
+void Livestream::sendRestingStatus(uint8_t protection) {
 	if (m_owner) {
 		m_owner->sendRestingStatus(protection);
 	}
 }
 
-void CastViewer::AddItem(NetworkMessage &msg, std::shared_ptr<Item> item) {
+void Livestream::AddItem(NetworkMessage &msg, std::shared_ptr<Item> item) {
 	if (m_owner) {
 		m_owner->AddItem(msg, item);
 	}
 }
 
-void CastViewer::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) {
+void Livestream::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) {
 	if (m_owner) {
 		m_owner->AddItem(msg, id, count, tier);
 	}
 }
 
-void CastViewer::parseSendBosstiary() {
+void Livestream::parseSendBosstiary() {
 	if (m_owner) {
 		m_owner->parseSendBosstiary();
 	}
 }
 
-void CastViewer::parseSendBosstiarySlots() {
+void Livestream::parseSendBosstiarySlots() {
 	if (m_owner) {
 		m_owner->parseSendBosstiarySlots();
 	}
 }
 
-void CastViewer::sendLootStats(std::shared_ptr<Item> item, uint8_t count) {
+void Livestream::sendLootStats(std::shared_ptr<Item> item, uint8_t count) {
 	if (m_owner) {
 		m_owner->sendLootStats(item, count);
 	}
 }
 
-void CastViewer::sendUpdateSupplyTracker(std::shared_ptr<Item> item) {
+void Livestream::sendUpdateSupplyTracker(std::shared_ptr<Item> item) {
 	if (m_owner) {
 		m_owner->sendUpdateSupplyTracker(item);
 	}
 }
 
-void CastViewer::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
+void Livestream::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
 	if (m_owner) {
 		m_owner->sendUpdateImpactTracker(type, amount);
 	}
 }
 
-void CastViewer::openImbuementWindow(std::shared_ptr<Item> item) {
+void Livestream::openImbuementWindow(std::shared_ptr<Item> item) {
 	if (m_owner) {
 		m_owner->openImbuementWindow(item);
 	}
 }
 
-void CastViewer::sendMarketEnter(uint32_t depotId) {
+void Livestream::sendMarketEnter(uint32_t depotId) {
 	if (m_owner) {
 		m_owner->sendMarketEnter(depotId);
 	}
 }
 
-void CastViewer::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration) {
+void Livestream::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration) {
 	if (m_owner) {
 		m_owner->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, skullDuration);
 
@@ -1428,25 +1428,25 @@ void CastViewer::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t
 	}
 }
 
-void CastViewer::sendModalWindow(const ModalWindow &modalWindow) {
+void Livestream::sendModalWindow(const ModalWindow &modalWindow) {
 	if (m_owner) {
 		m_owner->sendModalWindow(modalWindow);
 	}
 }
 
-void CastViewer::sendResourceBalance(Resource_t resourceType, uint64_t value) {
+void Livestream::sendResourceBalance(Resource_t resourceType, uint64_t value) {
 	if (m_owner) {
 		m_owner->sendResourceBalance(resourceType, value);
 	}
 }
 
-void CastViewer::sendOpenWheelWindow(uint32_t ownerId) {
+void Livestream::sendOpenWheelWindow(uint32_t ownerId) {
 	if (m_owner) {
 		m_owner->sendOpenWheelWindow(ownerId);
 	}
 }
 
-void CastViewer::sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, const Position* pos) {
+void Livestream::sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, const Position* pos) {
 	if (m_owner) {
 		m_owner->sendCreatureSay(creature, type, text, pos);
 
@@ -1460,13 +1460,13 @@ void CastViewer::sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasse
 	}
 }
 
-void CastViewer::disconnectClient(const std::string &message) const {
+void Livestream::disconnectClient(const std::string &message) const {
 	if (m_owner) {
 		m_owner->disconnectClient(message);
 	}
 }
 
-void CastViewer::addViewer(ProtocolGame_ptr client, bool spy) {
+void Livestream::addViewer(ProtocolGame_ptr client, bool spy) {
 	if (m_viewers.find(client) != m_viewers.end()) {
 		return;
 	}
@@ -1489,7 +1489,7 @@ void CastViewer::addViewer(ProtocolGame_ptr client, bool spy) {
 	}
 }
 
-void CastViewer::removeViewer(ProtocolGame_ptr client, bool spy) {
+void Livestream::removeViewer(ProtocolGame_ptr client, bool spy) {
 	auto it = m_viewers.find(client);
 	if (it == m_viewers.end()) {
 		return;
@@ -1507,7 +1507,7 @@ void CastViewer::removeViewer(ProtocolGame_ptr client, bool spy) {
 	m_viewers.erase(it);
 }
 
-void CastViewer::handle(ProtocolGame_ptr client, const std::string &text, uint16_t channelId) {
+void Livestream::handle(ProtocolGame_ptr client, const std::string &text, uint16_t channelId) {
 	if (!m_owner) {
 		return;
 	}
@@ -1587,11 +1587,11 @@ void CastViewer::handle(ProtocolGame_ptr client, const std::string &text, uint16
 	}
 }
 
-uint32_t CastViewer::getCastViewerCount() {
+uint32_t Livestream::getCastViewerCount() {
 	return m_viewers.size();
 }
 
-std::vector<std::string> CastViewer::getViewers() const {
+std::vector<std::string> Livestream::getViewers() const {
 	std::vector<std::string> players;
 	for (const auto &it : m_viewers) {
 		players.push_back(it.second.first);
@@ -1599,6 +1599,6 @@ std::vector<std::string> CastViewer::getViewers() const {
 	return players;
 }
 
-bool CastViewer::isOldProtocol() {
+bool Livestream::isOldProtocol() {
 	return m_owner->oldProtocol;
 }

@@ -50,7 +50,7 @@ Player::Player(ProtocolGame_ptr p) :
 	lastPing(OTSYS_TIME()),
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
-	client(std::make_unique<CastViewer>(p)) {
+	client(std::make_unique<Livestream>(p)) {
 	m_playerVIP = std::make_unique<PlayerVIP>(*this);
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);

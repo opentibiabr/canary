@@ -1043,6 +1043,17 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			case 0xA1:
 				sendCancelTarget();
 				break;
+			// Send store empty
+			case 0xFA:
+				break;
+			case 0xFB:
+				break;
+			case 0xFC:
+				break;
+			case 0xFD:
+				break;
+			case 0xFE:
+				break;
 			default:
 				sendCancelWalk();
 				break;

@@ -115,12 +115,12 @@ bool Bank::transferTo(const std::shared_ptr<Bank> &destination, const uint64_t a
 		const auto minTownIdToTransferFromMain = g_configManager().getNumber(MIN_TOWN_ID_TO_BANK_TRANSFER_FROM_MAIN, __FUNCTION__);
 
 		if (destinationTownId < minTownIdToTransferFromMain && bankableTownId >= minTownIdToTransferFromMain) {
-			g_logger().warn("Bank::transferTo: denied town: {}", destinationTownId);
+			g_logger().warn("[{}] Player {} is from main town, trying to transfer money to player {} in {} town.", __FUNCTION__, bankablePlayer->getName(), destinationPlayer->getName(), destinationTownId);
 			return false;
 		}
 
 		if (bankableTownId < minTownIdToTransferFromMain && destinationTownId >= minTownIdToTransferFromMain) {
-			g_logger().warn("Bank::transferTo: denied town: {}", destinationTownId);
+			g_logger().warn("[{}] Player {} is not from main town, trying to transfer money to player {} in {} town.", __FUNCTION__, bankablePlayer->getName(), destinationPlayer->getName(), destinationTownId);
 			return false;
 		}
 	}

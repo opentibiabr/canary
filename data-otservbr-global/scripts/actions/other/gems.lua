@@ -185,6 +185,4 @@ end
 for index, value in pairs(shrine) do
 	gems:id(index)
 end
-
-gems:id(9057)
 gems:register()

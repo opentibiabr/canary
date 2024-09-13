@@ -18,18 +18,31 @@ public:
 
 private:
 	/**
-	 * @brief Pushes a potentially rounded floating-point configuration value to Lua.
+	 * @brief Retrieves a float configuration value from the configuration manager, with an optional rounding.
 	 *
-	 * This function retrieves a configuration value based on the specified key,
-	 * optionally rounds it to two decimal places to address floating-point precision issues,
-	 * and then pushes this value to the Lua stack depending on the rounding flag provided.
+	 * This function is a Lua binding used to get a float value from the configuration manager. It requires
+	 * a key as the first argument, which should be a valid enumeration. An optional second boolean argument
+	 * specifies whether the retrieved float should be rounded to two decimal places.
 	 *
-	 * @param L Pointer to the Lua state.
-	 * @param roundFlag A boolean value to determine if rounding should be applied.
-	 * @return Returns 1, the number of values pushed onto the Lua stack.
+	 * @param L Pointer to the Lua state. The first argument must be a valid enum key, and the second argument (optional)
+	 * can be a boolean indicating whether to round the result.
 	 *
-	 * @note If roundFlag is true, the function rounds the float to two decimal places,
-	 * reducing typical floating-point representation errors.
+	 * @return Returns 1 after pushing the result onto the Lua stack, indicating the number of return values.
+	 *
+	 * @exception reportErrorFunc Throws an error if the first argument is not a valid enum.
+	 *
+	 * Usage:
+	 *  local result = ConfigManager.getFloat(ConfigKey.SomeKey)
+	 *  local result_rounded = ConfigManager.getFloat(ConfigKey.SomeKey, false)
+	 *
+	 * Detailed behavior:
+	 * 1. Extracts the key from the first Lua stack argument as an enumeration of type `ConfigKey_t`.
+	 * 2. Checks if the second argument is provided; if not, defaults to true for rounding.
+	 * 3. Retrieves the float value associated with the key from the configuration manager.
+	 * 4. If rounding is requested, rounds the value to two decimal places.
+	 * 5. Logs the method call and the obtained value using the debug logger.
+	 * 6. Pushes the final value (rounded or original) back onto the Lua stack.
+	 * 7. Returns 1 to indicate a single return value.
 	 */
 	static int luaConfigManagerGetFloat(lua_State* L);
 	static int luaConfigManagerGetBoolean(lua_State* L);

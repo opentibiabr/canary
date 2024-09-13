@@ -14,6 +14,14 @@ CorpseAction = {
 		itemId = 4285,
 		itemPos = { { x = 32949, y = 31810, z = 7 } },
 	},
+	-- The cursed crystal skeletons
+	[40001] = {
+		itemId = 4285,
+		itemPos = {
+			{ x = 31974, y = 32907, z = 8 },
+			{ x = 32031, y = 32914, z = 8 },
+		},
+	},
 }
 
 CorpseUnique = {

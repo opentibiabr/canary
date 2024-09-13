@@ -592,11 +592,6 @@ Storage = {
 			Statue = 51517,
 			LastMissionState = 51518,
 		},
-		TheCursedCrystal = {
-			Oneeyedjoe = 51530,
-			MedusaOil = 51531,
-			Questline = 51532,
-		},
 		ToBlindTheEnemy = {
 			Questline = 51533,
 			DwarvenShield = 51534,
@@ -608,7 +603,6 @@ Storage = {
 			Questline = 51538,
 			MiningHelmet = 51539,
 		},
-		-- TowerDefenceQuest: when there is space, bring this quest that is in update 8.1 to Tibia Tales
 	},
 	BanutaSecretTunnel = {
 		-- Reserved storage from 51680 - 51689
@@ -2490,7 +2484,14 @@ Storage = {
 				Time = 44811,
 				LionsRockFields = 44812,
 			},
-			TheCursedCrystal = {},
+			TheCursedCrystal = {
+				Questline = 44813,
+				Oneeyedjoe = 44814,
+				MedusaOil = 44815,
+				Time = 44816,
+				SheetOfPaper = 44817,
+				SmallCrystalBell = 44818,
+			},
 			TheFireFeatheredSerpentWorldChange = {},
 			TwentyMilesBeneathTheSea = {},
 		},

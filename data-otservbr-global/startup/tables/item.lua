@@ -824,6 +824,18 @@ ItemAction = {
 			{ x = 32741, y = 32382, z = 15 },
 		},
 	},
+	-- The Cursed Crystal
+	[25018] = {
+		itemId = false,
+		itemPos = {
+			{ x = 31973, y = 32905, z = 11 },
+			{ x = 31973, y = 32905, z = 10 },
+			{ x = 32009, y = 32928, z = 9 },
+			{ x = 32017, y = 32917, z = 10 },
+			{ x = 32017, y = 32918, z = 10 },
+			{ x = 32009, y = 32928, z = 10 },
+		},
+	},
 	-- The Pits of Inferno Quest
 	[28810] = {
 		itemId = 353,
@@ -987,14 +999,6 @@ ItemAction = {
 		itemId = 6433,
 		itemPos = {
 			{ x = 32739, y = 32392, z = 14 },
-		},
-	},
-	-- The cursed crystal skeletons
-	[40001] = {
-		itemId = 27490,
-		itemPos = {
-			{ x = 31974, y = 32907, z = 8 },
-			{ x = 32031, y = 32914, z = 8 },
 		},
 	},
 	[40002] = { -- The cursed crystal red crystal

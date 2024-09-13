@@ -4636,7 +4636,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "The Cursed Crystal",
-					storageId = Storage.TibiaTales.TheCursedCrystal.Questline,
+					storageId = Storage.Quest.U10_70.TheCursedCrystal.Questline,
 					missionId = 10328,
 					startValue = 0,
 					endValue = 4,

@@ -7852,7 +7852,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::ALLBLESSINGS: {
-			for (uint8_t bless = 1; bless <= 8; ++bless) {
+			for (auto bless : magic_enum::enum_values<Blessings>()) {
 				auto blessingAmount = getBlessingCount(bless);
 				if (blessingAmount >= STORE_BLESSING_MAX_AMOUNT) {
 					canBuy = false;

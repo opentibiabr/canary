@@ -9365,6 +9365,11 @@ void ProtocolGame::sendCastViewerAppear(std::shared_ptr<Player> foundPlayer) {
 			sendCreatureSay(player, TALKTYPE_SAY, description);
 		}
 
+		// This icon restricts the player from moving (cipclient feature), effectively disabling all forms of movement
+		std::unordered_set<PlayerIcon> iconSet;
+		iconSet.insert(PlayerIcon::Rooted);
+		sendIcons(iconSet, IconBakragore::None);
+
 		sendChannel(CHANNEL_CAST, "Livestream", nullptr, nullptr);
 		sendTextMessage(TextMessage(MESSAGE_EVENT_ADVANCE, "Available commands: \n/name newname\n/show"));
 	}

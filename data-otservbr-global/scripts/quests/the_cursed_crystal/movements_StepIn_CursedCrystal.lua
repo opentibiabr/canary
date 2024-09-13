@@ -18,15 +18,6 @@ function StepInCursedCrystal.onStepIn(creature, item, position, fromPosition)
         return false
     end
 
-	local timeStorage = player:getStorageValue(Storage.Quest.U10_70.TheCursedCrystal.Time)
-
-	if timeStorage ~= -1 and timeStorage < os.time() then
-		player:say("You need permission to access this area.", TALKTYPE_MONSTER_SAY)
-		player:teleportTo(fromPosition)
-		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-		return true
-	end
-
     if item.actionid == 35001 then
         local playerPos = player:getPosition()
 

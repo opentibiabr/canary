@@ -7750,6 +7750,39 @@ void Player::closeAllExternalContainers() {
 	}
 }
 
+// Store functions
+void Player::openStore() {
+	if (client) {
+		client->openStore();
+	}
+}
+
+void Player::sendStoreHistory(uint32_t page) const {
+	if (client) {
+		client->sendStoreHistory(page);
+	}
+}
+
+void Player::sendStoreSuccess(const std::string &successMessage) {
+	if (client) {
+		client->sendStoreSuccess(successMessage);
+	}
+}
+
+void Player::sendStoreError(StoreErrors_t errorType, std::string errorMessage) {
+	if (client) {
+		client->sendStoreError(errorType, errorMessage);
+	}
+}
+
+std::vector<StoreHistory> &Player::getStoreHistory() {
+	return storeHistoryVector;
+}
+
+void Player::setStoreHistory(const StoreHistory &history) {
+	storeHistoryVector.push_back(history);
+}
+
 bool Player::canBuyStoreOffer(const Offer* offer) {
 	auto offerType = offer->getOfferType();
 	auto canBuy = true;
@@ -7805,12 +7838,14 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 
 		case OfferTypes_t::BLESSINGS: {
 			auto blessId = offer->getOfferId();
-			if (blessId < 1 || blessId > 8) {
+			if (!magic_enum::enum_contains<Blessings>(static_cast<Blessings>(blessId))) {
+				sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
+				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, getName());
 				break;
 			}
 
 			auto blessingAmount = getBlessingCount(blessId);
-			if (blessingAmount >= 5) {
+			if (blessingAmount >= STORE_BLESSING_MAX_AMOUNT) {
 				canBuy = false;
 			}
 			break;
@@ -7819,7 +7854,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		case OfferTypes_t::ALLBLESSINGS: {
 			for (uint8_t bless = 1; bless <= 8; ++bless) {
 				auto blessingAmount = getBlessingCount(bless);
-				if (blessingAmount >= 5) {
+				if (blessingAmount >= STORE_BLESSING_MAX_AMOUNT) {
 					canBuy = false;
 					break;
 				}
@@ -7839,7 +7874,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 
 		case OfferTypes_t::INSTANT_REWARD_ACCESS: {
 			auto offerInstantAmount = offer->getOfferCount();
-			auto playerInstantAmount = getStorageValue(14901);
+			auto playerInstantAmount = getStorageValue(STORAGEVALUE_REWARD_ACCESS);
 
 			if (playerInstantAmount + offerInstantAmount >= 90) {
 				canBuy = false;

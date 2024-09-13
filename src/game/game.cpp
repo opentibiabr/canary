@@ -10257,6 +10257,46 @@ bool Game::addInfluencedMonster(std::shared_ptr<Monster> monster) {
 	return false;
 }
 
+bool Game::processHouseOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/) {
+	std::shared_ptr<Item> decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
+	if (!decoKit) {
+		return false;
+	}
+
+	const ItemType &itemType = Item::items[itemId];
+	std::string description = fmt::format("You bought this item in the Store.\nUnwrap it in your own house to create a <{}>.", itemType.name);
+	decoKit->setAttribute(ItemAttribute_t::DESCRIPTION, description);
+	decoKit->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
+
+	if (charges > 0) {
+		decoKit->setAttribute(ItemAttribute_t::CHARGES, charges);
+		decoKit->setAttribute(ItemAttribute_t::DATE, charges);
+	}
+
+	decoKit->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+
+	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
+	if (!thing) {
+		return false;
+	}
+
+	std::shared_ptr<Item> inboxItem = thing->getItem();
+	if (!inboxItem) {
+		return false;
+	}
+
+	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
+	if (!inboxContainer) {
+		return false;
+	}
+
+	if (internalAddItem(inboxContainer, decoKit) != RETURNVALUE_NOERROR) {
+		return false;
+	}
+
+	return true;
+}
+
 void Game::addPlayerUniqueLogin(std::shared_ptr<Player> player) {
 	if (!player) {
 		g_logger().error("Attempted to add null player to unique player names list");
@@ -10265,6 +10305,240 @@ void Game::addPlayerUniqueLogin(std::shared_ptr<Player> player) {
 
 	const std::string &lowercase_name = asLowerCaseString(player->getName());
 	m_uniqueLoginPlayerNames[lowercase_name] = player;
+}
+
+bool Game::processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/, bool movable /* = false*/) {
+	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, 1);
+	if (!newItem) {
+		return false;
+	}
+
+	if (charges > 0) {
+		newItem->setAttribute(ItemAttribute_t::CHARGES, charges);
+	}
+
+	if (!movable) {
+		newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+	}
+
+	newItem->setOwner(player);
+
+	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
+	if (!thing) {
+		return false;
+	}
+
+	std::shared_ptr<Item> inboxItem = thing->getItem();
+	if (!inboxItem) {
+		return false;
+	}
+
+	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
+	if (!inboxContainer) {
+		return false;
+	}
+
+	auto ret = internalAddItem(inboxContainer, newItem);
+	if (ret != RETURNVALUE_NOERROR) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Game::processStackableOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t amount /* = 1*/, bool movable /* = false*/) {
+	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, amount);
+	if (!newItem) {
+		return false;
+	}
+
+	if (!movable) {
+		newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+	}
+
+	newItem->setOwner(player);
+
+	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
+	if (!thing) {
+		return false;
+	}
+
+	std::shared_ptr<Item> inboxItem = thing->getItem();
+	if (!inboxItem) {
+		return false;
+	}
+
+	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
+	if (!inboxContainer) {
+		return false;
+	}
+
+	auto ret = internalAddItem(inboxContainer, newItem);
+	if (ret != RETURNVALUE_NOERROR) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Game::processNameChangeOffer(std::shared_ptr<Player> player, std::string &name) {
+	std::string newName = name;
+	trimString(newName);
+
+	auto isValidName = validateName(newName);
+	if (isValidName != VALID) {
+		return false;
+	}
+
+	capitalizeWords(newName);
+
+	if (g_monsters().getMonsterType(newName, true)) {
+		return false;
+	} else if (getNpcByName(newName)) {
+		return false;
+	}
+
+	Database &db = Database::getInstance();
+	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `name` = {}", db.escapeString(newName)));
+	if (result) {
+		return false;
+	}
+
+	std::string query = fmt::format("UPDATE `players` SET `name` = {} WHERE `id` = {}", db.escapeString(newName), player->getGUID());
+	if (!db.executeQuery(query)) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Game::processTempleOffer(std::shared_ptr<Player> player) {
+	if (player->isPzLocked() || player->hasCondition(CONDITION_INFIGHT)) {
+		return false;
+	}
+
+	const auto &position = player->getTemplePosition();
+	const auto oldPos = player->getPosition();
+
+	if (internalTeleport(player, position, false) != RETURNVALUE_NOERROR) {
+		return false;
+	}
+
+	addMagicEffect(position, CONST_ME_TELEPORT);
+	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have been teleported to your hometown.");
+
+	return true;
+}
+
+std::shared_ptr<Player> Game::getPlayerUniqueLogin(const std::string &playerName) const {
+	if (playerName.empty()) {
+		g_logger().error("Attempted to get player with empty name string");
+		return nullptr;
+	}
+
+	auto it = m_uniqueLoginPlayerNames.find(asLowerCaseString(playerName));
+	return (it != m_uniqueLoginPlayerNames.end()) ? it->second.lock() : nullptr;
+}
+
+void Game::removePlayerUniqueLogin(const std::string &playerName) {
+	if (playerName.empty()) {
+		g_logger().error("Attempted to remove player with empty name string from unique player names list");
+		return;
+	}
+
+	const std::string &lowercase_name = asLowerCaseString(playerName);
+	m_uniqueLoginPlayerNames.erase(lowercase_name);
+}
+
+void Game::removePlayerUniqueLogin(std::shared_ptr<Player> player) {
+	if (!player) {
+		g_logger().error("Attempted to remove null player from unique player names list.");
+		return;
+	}
+
+	const std::string &lowercaseName = asLowerCaseString(player->getName());
+	m_uniqueLoginPlayerNames.erase(lowercaseName);
+}
+
+void Game::playerCheckActivity(const std::string &playerName, int interval) {
+	std::shared_ptr<Player> player = getPlayerUniqueLogin(playerName);
+	if (!player) {
+		return;
+	}
+
+	if (player->getIP() == 0) {
+		g_game().removePlayerUniqueLogin(playerName);
+		IOLoginData::updateOnlineStatus(player->guid, false);
+		g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
+		player->disconnect();
+		return;
+	}
+
+	if (!player->isDead() || player->client == nullptr) {
+		return;
+	}
+
+	if (!player->isAccessPlayer()) {
+		player->m_deathTime += interval;
+		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES, __FUNCTION__);
+		if (player->m_deathTime > (kickAfterMinutes * 60000) + 60000) {
+			g_logger().info("Player with name '{}' has logged out due to inactivity after death", player->getName());
+			g_game().removePlayerUniqueLogin(playerName);
+			IOLoginData::updateOnlineStatus(player->guid, false);
+			player->disconnect();
+			return;
+		}
+	}
+
+	g_dispatcher().scheduleEvent(
+		1000, [this, playerName, interval] { playerCheckActivity(playerName, interval); }, "Game::playerCheckActivity"
+	);
+}
+
+void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems /* = 0*/) {
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	std::shared_ptr<Thing> thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_FIND_THING);
+	if (!thing) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	auto item = thing->getItem();
+	if (!item || item->getID() != ITEM_REWARD_CHEST || !item->getContainer()) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	const auto &function = [this, playerId = player->getID(), pos, itemId, stackPos, maxMoveItems] {
+		playerRewardChestCollect(playerId, pos, itemId, stackPos, maxMoveItems);
+	};
+
+	if (player->canAutoWalk(item->getPosition(), function)) {
+		return;
+	}
+
+	// Updates the parent of the reward chest and reward containers to avoid memory usage after cleaning
+	auto playerRewardChest = player->getRewardChest();
+	if (playerRewardChest && playerRewardChest->empty()) {
+		player->sendCancelMessage(RETURNVALUE_REWARDCHESTISEMPTY);
+		return;
+	}
+
+	playerRewardChest->setParent(item->getContainer()->getParent()->getTile());
+	for (const auto &[mapRewardId, reward] : player->rewardMap) {
+		reward->setParent(playerRewardChest);
+	}
+
+	std::scoped_lock<std::mutex> lock(player->quickLootMutex);
+
+	ReturnValue returnValue = collectRewardChestItems(player, maxMoveItems);
+	if (returnValue != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(returnValue);
+	}
 }
 
 void Game::playerOpenStore(uint32_t playerId) {
@@ -10503,8 +10777,10 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::BLESSINGS: {
 			auto blessId = offer->getOfferId();
-			if (blessId < 1 || blessId > 8) {
+			if (!magic_enum::enum_contains<Blessings>(static_cast<Blessings>(blessId))) {
 				player->sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
+				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, player->getName());
+				break;
 			}
 
 			player->addBlessing(blessId, offer->getOfferCount());
@@ -10515,8 +10791,8 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::ALLBLESSINGS: {
-			for (uint8_t bless = 1; bless <= 8; ++bless) {
-				player->addBlessing(bless, 1);
+			for (auto bless : magic_enum::enum_values<Blessings>()) {
+				player->addBlessing(enumToValue(bless), 1);
 			}
 
 			player->sendBlessStatus();
@@ -10599,13 +10875,13 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::INSTANT_REWARD_ACCESS: {
 			auto offerInstantAmount = offer->getOfferCount();
-			auto playerInstantAmount = player->getStorageValue(14901);
+			auto playerInstantAmount = player->getStorageValue(STORAGEVALUE_REWARD_ACCESS);
 
 			if (playerInstantAmount + offerInstantAmount >= 90) {
 				break;
 			}
 
-			player->addStorageValue(14901, playerInstantAmount + offerInstantAmount);
+			player->addStorageValue(STORAGEVALUE_REWARD_ACCESS, playerInstantAmount + offerInstantAmount);
 
 			success = true;
 			break;
@@ -10659,280 +10935,6 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 	player->updateUIExhausted();
 	player->openStore();
-}
-
-bool Game::processHouseOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/) {
-	std::shared_ptr<Item> decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
-	if (!decoKit) {
-		return false;
-	}
-
-	const ItemType &itemType = Item::items[itemId];
-	std::string description = fmt::format("You bought this item in the Store.\nUnwrap it in your own house to create a <{}>.", itemType.name);
-	decoKit->setAttribute(ItemAttribute_t::DESCRIPTION, description);
-	decoKit->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
-
-	if (charges > 0) {
-		decoKit->setAttribute(ItemAttribute_t::CHARGES, charges);
-		decoKit->setAttribute(ItemAttribute_t::DATE, charges);
-	}
-
-	decoKit->setAttribute(ItemAttribute_t::STORE, getTimeNow());
-
-	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
-	if (!thing) {
-		return false;
-	}
-
-	std::shared_ptr<Item> inboxItem = thing->getItem();
-	if (!inboxItem) {
-		return false;
-	}
-
-	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
-	if (!inboxContainer) {
-		return false;
-	}
-
-	if (internalAddItem(inboxContainer, decoKit) != RETURNVALUE_NOERROR) {
-		return false;
-	}
-
-	return true;
-}
-
-bool Game::processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/, bool movable /* = false*/) {
-	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, 1);
-	if (!newItem) {
-		return false;
-	}
-
-	if (charges > 0) {
-		newItem->setAttribute(ItemAttribute_t::CHARGES, charges);
-	}
-
-	if (!movable) {
-		newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
-	}
-
-	newItem->setOwner(player);
-
-	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
-	if (!thing) {
-		return false;
-	}
-
-	std::shared_ptr<Item> inboxItem = thing->getItem();
-	if (!inboxItem) {
-		return false;
-	}
-
-	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
-	if (!inboxContainer) {
-		return false;
-	}
-
-	auto ret = internalAddItem(inboxContainer, newItem);
-	if (ret != RETURNVALUE_NOERROR) {
-		return false;
-	}
-
-	return true;
-}
-
-bool Game::processStackableOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t amount /* = 1*/, bool movable /* = false*/) {
-	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, amount);
-	if (!newItem) {
-		return false;
-	}
-
-	if (!movable) {
-		newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
-	}
-
-	newItem->setOwner(player);
-
-	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
-	if (!thing) {
-		return false;
-	}
-
-	std::shared_ptr<Item> inboxItem = thing->getItem();
-	if (!inboxItem) {
-		return false;
-	}
-
-	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
-	if (!inboxContainer) {
-		return false;
-	}
-
-	auto ret = internalAddItem(inboxContainer, newItem);
-	if (ret != RETURNVALUE_NOERROR) {
-		return false;
-	}
-
-	return true;
-}
-
-bool Game::processNameChangeOffer(std::shared_ptr<Player> player, std::string &name) {
-	std::string newName = name;
-	trimString(newName);
-
-	auto isValidName = validateName(newName);
-	if (isValidName != VALID) {
-		return false;
-	}
-
-	capitalizeWords(newName);
-
-	if (g_monsters().getMonsterType(newName, true)) {
-		return false;
-	} else if (getNpcByName(newName)) {
-		return false;
-	}
-
-	Database &db = Database::getInstance();
-	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `name` = {}", db.escapeString(newName)));
-	if (result) {
-		return false;
-	}
-
-	std::string query = fmt::format("UPDATE `players` SET `name` = {} WHERE `id` = {}", db.escapeString(newName), player->getGUID());
-	if (!db.executeQuery(query)) {
-		return false;
-	}
-
-	return true;
-}
-
-bool Game::processTempleOffer(std::shared_ptr<Player> player) {
-	if (player->isPzLocked() || player->hasCondition(CONDITION_INFIGHT)) {
-		return false;
-	}
-
-	const auto &position = player->getTemplePosition();
-	const auto oldPos = player->getPosition();
-
-	if (internalTeleport(player, position, false) != RETURNVALUE_NOERROR) {
-		return false;
-	}
-
-	addMagicEffect(position, CONST_ME_TELEPORT);
-	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have been teleported to your hometown.");
-
-	return true;
-}
-
-std::shared_ptr<Player> Game::getPlayerUniqueLogin(const std::string &playerName) const {
-	if (playerName.empty()) {
-		g_logger().error("Attempted to get player with empty name string");
-		return nullptr;
-	}
-
-	auto it = m_uniqueLoginPlayerNames.find(asLowerCaseString(playerName));
-	return (it != m_uniqueLoginPlayerNames.end()) ? it->second.lock() : nullptr;
-}
-
-void Game::removePlayerUniqueLogin(const std::string &playerName) {
-	if (playerName.empty()) {
-		g_logger().error("Attempted to remove player with empty name string from unique player names list");
-		return;
-	}
-
-	const std::string &lowercase_name = asLowerCaseString(playerName);
-	m_uniqueLoginPlayerNames.erase(lowercase_name);
-}
-
-void Game::removePlayerUniqueLogin(std::shared_ptr<Player> player) {
-	if (!player) {
-		g_logger().error("Attempted to remove null player from unique player names list.");
-		return;
-	}
-
-	const std::string &lowercaseName = asLowerCaseString(player->getName());
-	m_uniqueLoginPlayerNames.erase(lowercaseName);
-}
-
-void Game::playerCheckActivity(const std::string &playerName, int interval) {
-	std::shared_ptr<Player> player = getPlayerUniqueLogin(playerName);
-	if (!player) {
-		return;
-	}
-
-	if (player->getIP() == 0) {
-		g_game().removePlayerUniqueLogin(playerName);
-		IOLoginData::updateOnlineStatus(player->guid, false);
-		g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
-		player->disconnect();
-		return;
-	}
-
-	if (!player->isDead() || player->client == nullptr) {
-		return;
-	}
-
-	if (!player->isAccessPlayer()) {
-		player->m_deathTime += interval;
-		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES, __FUNCTION__);
-		if (player->m_deathTime > (kickAfterMinutes * 60000) + 60000) {
-			g_logger().info("Player with name '{}' has logged out due to inactivity after death", player->getName());
-			g_game().removePlayerUniqueLogin(playerName);
-			IOLoginData::updateOnlineStatus(player->guid, false);
-			player->disconnect();
-			return;
-		}
-	}
-
-	g_dispatcher().scheduleEvent(
-		1000, [this, playerName, interval] { playerCheckActivity(playerName, interval); }, "Game::playerCheckActivity"
-	);
-}
-
-void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems /* = 0*/) {
-	std::shared_ptr<Player> player = getPlayerByID(playerId);
-	if (!player) {
-		return;
-	}
-
-	std::shared_ptr<Thing> thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_FIND_THING);
-	if (!thing) {
-		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-		return;
-	}
-
-	auto item = thing->getItem();
-	if (!item || item->getID() != ITEM_REWARD_CHEST || !item->getContainer()) {
-		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-		return;
-	}
-
-	const auto &function = [this, playerId = player->getID(), pos, itemId, stackPos, maxMoveItems] {
-		playerRewardChestCollect(playerId, pos, itemId, stackPos, maxMoveItems);
-	};
-
-	if (player->canAutoWalk(item->getPosition(), function)) {
-		return;
-	}
-
-	// Updates the parent of the reward chest and reward containers to avoid memory usage after cleaning
-	auto playerRewardChest = player->getRewardChest();
-	if (playerRewardChest && playerRewardChest->empty()) {
-		player->sendCancelMessage(RETURNVALUE_REWARDCHESTISEMPTY);
-		return;
-	}
-
-	playerRewardChest->setParent(item->getContainer()->getParent()->getTile());
-	for (const auto &[mapRewardId, reward] : player->rewardMap) {
-		reward->setParent(playerRewardChest);
-	}
-
-	std::scoped_lock<std::mutex> lock(player->quickLootMutex);
-
-	ReturnValue returnValue = collectRewardChestItems(player, maxMoveItems);
-	if (returnValue != RETURNVALUE_NOERROR) {
-		player->sendCancelMessage(returnValue);
-	}
 }
 
 bool Game::tryRetrieveStashItems(std::shared_ptr<Player> player, std::shared_ptr<Item> item) {

@@ -2666,38 +2666,12 @@ public:
 	uint16_t getPlayerVocationEnum() const;
 
 	// Store functions
-	void openStore() {
-		if (client) {
-			client->openStore();
-		}
-	}
-
-	void sendStoreHistory(uint32_t page) const {
-		if (client) {
-			client->sendStoreHistory(page);
-		}
-	}
-
-	void sendStoreSuccess(const std::string &successMessage) {
-		if (client) {
-			client->sendStoreSuccess(successMessage);
-		}
-	}
-
-	void sendStoreError(StoreErrors_t errorType, std::string errorMessage) {
-		if (client) {
-			client->sendStoreError(errorType, errorMessage);
-		}
-	}
-
-	std::vector<StoreHistory> &getStoreHistory() {
-		return storeHistoryVector;
-	}
-
-	void setStoreHistory(const StoreHistory &history) {
-		storeHistoryVector.push_back(history);
-	}
-
+	void openStore();
+	void sendStoreHistory(uint32_t page) const;
+	void sendStoreSuccess(const std::string &successMessage);
+	void sendStoreError(StoreErrors_t errorType, std::string errorMessage);
+	std::vector<StoreHistory> &getStoreHistory();
+	void setStoreHistory(const StoreHistory &history);
 	bool canBuyStoreOffer(const Offer* offer);
 
 private:

@@ -171,7 +171,6 @@ function gems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				toPosition:sendMagicEffect(setting.effect)
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, setting.message)
 				item:remove(1)
-				-- Incrementa a storage para o próximo valor
 				player:setStorageValue(setting.storage, setting.value + 1)
 				addEvent(lionsRockCreateField, 2 * 1000, setting.itemPos, setting.fieldId, setting.storage)
 				addEvent(lionsRockFieldReset, 60 * 1000)

@@ -53,7 +53,7 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 				}
 			}
 		},
-		"Protocol::sendRecvMessageCallback"
+		__FUNCTION__
 	);
 
 	return true;

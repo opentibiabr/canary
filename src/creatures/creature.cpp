@@ -606,7 +606,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
+			g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, __FUNCTION__);
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -621,7 +621,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 		} else {
 			if (hasExtraSwing()) {
 				// our target is moving lets see if we can get in hit
-				g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
+				g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
 			}
 
 			if (newTile->getZoneType() != oldTile->getZoneType()) {
@@ -835,7 +835,7 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 						[player, corpseContainer, corpsePosition = corpse->getPosition()] {
 							g_game().playerQuickLootCorpse(player, corpseContainer, corpsePosition);
 						},
-						"Game::playerQuickLootCorpse"
+						__FUNCTION__
 					);
 				}
 			}
@@ -880,7 +880,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(static_self_cast<Creature>());
 	}
 	if (health <= 0) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().executeDeath(creatureId); }, "Game::executeDeath");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().executeDeath(creatureId); }, __FUNCTION__);
 	}
 }
 
@@ -1069,7 +1069,7 @@ void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
 	});
 
 	if (onComplete) {
-		g_dispatcher().context().addEvent(std::move(onComplete), "Creature::onThink");
+		g_dispatcher().context().addEvent(std::move(onComplete), __FUNCTION__);
 	}
 }
 

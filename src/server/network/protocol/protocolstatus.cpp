@@ -48,7 +48,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 					[self = std::static_pointer_cast<ProtocolStatus>(shared_from_this())] {
 						self->sendStatusString();
 					},
-					"ProtocolStatus::sendStatusString"
+					__FUNCTION__
 				);
 				return;
 			}
@@ -66,7 +66,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 				[self = std::static_pointer_cast<ProtocolStatus>(shared_from_this()), requestedInfo, characterName] {
 					self->sendInfo(requestedInfo, characterName);
 				},
-				"ProtocolStatus::sendInfo"
+				__FUNCTION__
 			);
 
 			return;

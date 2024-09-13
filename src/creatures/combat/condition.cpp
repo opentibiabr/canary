@@ -2099,7 +2099,7 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 				[id = creature->getID(), listDir] {
 					g_game().forcePlayerAutoWalk(id, listDir);
 				},
-				"Game::forcePlayerAutoWalk"
+				__FUNCTION__
 			);
 
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");

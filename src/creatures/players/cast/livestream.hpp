@@ -263,4 +263,5 @@ private:
 	int64_t m_castBroadcastTime = 0;
 	uint16_t m_castLiveRecord = 0;
 	uint32_t m_id = 0;
+	uint32_t m_viewerCounter = 0;
 };

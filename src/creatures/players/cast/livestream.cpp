@@ -67,6 +67,7 @@ void Livestream::clear(bool full) {
 	removeCaster();
 
 	m_id = 0;
+	m_viewerCounter = 0;
 	if (!full) {
 		return;
 	}
@@ -1471,7 +1472,8 @@ void Livestream::addViewer(ProtocolGame_ptr client, bool spy) {
 		return;
 	}
 
-	auto viewerId = m_viewers.size() + 1;
+	auto viewerId = ++m_viewerCounter;
+
 	std::string guestString = fmt::format("Viewer-{}", viewerId);
 
 	m_viewers[client] = std::make_pair(guestString, m_id);
@@ -1501,7 +1503,7 @@ void Livestream::removeViewer(ProtocolGame_ptr client, bool spy) {
 	}
 
 	if (!spy) {
-		sendChannelMessage("", fmt::format("{} has left the cast.", it->second.first), TALKTYPE_CHANNEL_O, CHANNEL_CAST);
+		sendChannelEvent(CHANNEL_CAST, it->second.first, CHANNELEVENT_LEAVE);
 	}
 
 	m_viewers.erase(it);

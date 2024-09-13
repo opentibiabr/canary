@@ -10398,14 +10398,13 @@ bool Game::processNameChangeOffer(std::shared_ptr<Player> player, std::string &n
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `name` = {}", db.escapeString(newName)));
+	DBResult_ptr result = g_database().storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `name` = {}", g_database().escapeString(newName)));
 	if (result) {
 		return false;
 	}
 
-	std::string query = fmt::format("UPDATE `players` SET `name` = {} WHERE `id` = {}", db.escapeString(newName), player->getGUID());
-	if (!db.executeQuery(query)) {
+	std::string query = fmt::format("UPDATE `players` SET `name` = {} WHERE `id` = {}", g_database().escapeString(newName), player->getGUID());
+	if (!g_database().executeQuery(query)) {
 		return false;
 	}
 

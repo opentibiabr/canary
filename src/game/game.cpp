@@ -538,9 +538,9 @@ void Game::start(ServiceManager* manager) {
 		UPDATE_PLAYERS_ONLINE_DB, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline"
 	);
 
-	g_dispatcher().cycleEvent(
-		5000, [this] { teste(); }, "Calling GC"
-	);
+	// g_dispatcher().cycleEvent(
+	// 	5000, [this] { teste(); }, "Calling GC"
+	// );
 }
 
 void Game::teste() const {

@@ -8,114 +8,62 @@
  */
 
 #pragma once
+#include <atomic_queue/atomic_queue.h>
 
-#include <atomic>
-#include <memory>
-#include <vector>
-#include <thread>
-#include <spdlog/spdlog.h>
+template <typename T, size_t CAPACITY>
+struct LockfreeFreeList {
+	using FreeList = atomic_queue::AtomicQueue2<T*, CAPACITY>;
 
-const int TOTAL_THREADS = static_cast<int>(std::thread::hardware_concurrency());
-const size_t LOCAL_CACHE_LIMIT = std::max(35 / TOTAL_THREADS, 5);
-constexpr size_t STATIC_PREALLOCATION_SIZE = 100;
-
-struct StackNode {
-	void* data;
-	StackNode* next;
-};
-
-template <std::size_t TSize, size_t CAPACITY>
-class LockfreeFreeList {
-public:
-	LockfreeFreeList() :
-		head(nullptr) { }
-
-	static LockfreeFreeList &get() {
-		static LockfreeFreeList instance;
-		return instance;
+	static FreeList &get() {
+		static FreeList freeList;
+		return freeList;
 	}
 
-	bool pop(void*&result) {
-		StackNode* old_head = head.load(std::memory_order_acquire);
-		while (old_head != nullptr) {
-			if (head.compare_exchange_weak(old_head, old_head->next, std::memory_order_acquire)) {
-				result = old_head->data;
-				delete old_head;
-				return true;
+	static void preallocate(size_t count) {
+		auto &freeList = get();
+		for (size_t i = 0; i < count; ++i) {
+			T* p = static_cast<T*>(::operator new(sizeof(T), static_cast<std::align_val_t>(alignof(T))));
+			if (!freeList.try_push(p)) {
+				::operator delete(p, static_cast<std::align_val_t>(alignof(T)));
+				break;
 			}
-
-			std::this_thread::yield();
-		}
-		return false;
-	}
-
-	bool push(void* data) {
-		auto* new_node = new StackNode { data, nullptr };
-		StackNode* old_head = head.load(std::memory_order_relaxed);
-		do {
-			new_node->next = old_head;
-		} while (!head.compare_exchange_weak(old_head, new_node, std::memory_order_release, std::memory_order_relaxed));
-		return true;
-	}
-
-	void preallocate(const size_t numBlocks) {
-		for (size_t i = 0; i < numBlocks; ++i) {
-			void* p = operator new(TSize);
-			push(p);
 		}
 	}
-
-private:
-	std::atomic<StackNode*> head;
 };
 
 template <typename T, size_t CAPACITY>
-class LockfreePoolingAllocator : public std::allocator<T> {
+class LockfreePoolingAllocator {
 public:
-	LockfreePoolingAllocator() = default;
-
-	template <typename U, class = std::enable_if_t<!std::is_same_v<U, T>>>
-	explicit constexpr LockfreePoolingAllocator(const U &) { }
 	using value_type = T;
 
-	T* allocate(size_t) const {
-		ensurePreallocation();
-		if (!localCache.empty()) {
-			void* p = localCache.back();
-			localCache.pop_back();
-			return static_cast<T*>(p);
-		}
+	LockfreePoolingAllocator() = default;
 
-		auto &inst = LockfreeFreeList<sizeof(T), CAPACITY>::get();
-		void* p;
-		if (!inst.pop(p)) {
-			p = operator new(sizeof(T));
+	template <typename U>
+	explicit LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY> &) noexcept { }
+
+	T* allocate(size_t n) {
+		auto &freeList = LockfreeFreeList<T, CAPACITY>::get();
+		if (n == 1) {
+			T* p;
+			if (freeList.try_pop(p)) {
+				return p;
+			}
 		}
-		return static_cast<T*>(p);
+		return static_cast<T*>(::operator new(n * sizeof(T), static_cast<std::align_val_t>(alignof(T))));
 	}
 
-	void deallocate(T* p, size_t) const {
-		if (localCache.size() < LOCAL_CACHE_LIMIT) {
-			localCache.emplace_back(p);
-		} else {
-			auto &inst = LockfreeFreeList<sizeof(T), CAPACITY>::get();
-			inst.push(p);
+	void deallocate(T* p, size_t n) noexcept {
+		if (n == 1) {
+			auto &freeList = LockfreeFreeList<T, CAPACITY>::get();
+			if (freeList.try_push(p)) {
+				return;
+			}
 		}
+		::operator delete(p, static_cast<std::align_val_t>(alignof(T)));
 	}
 
-private:
-	static thread_local std::vector<void*> localCache;
-	static std::once_flag preallocationFlag;
-
-	static void ensurePreallocation() {
-		std::call_once(preallocationFlag, []() {
-			LockfreeFreeList<sizeof(T), CAPACITY>::get().preallocate(STATIC_PREALLOCATION_SIZE);
-		});
-	}
+	template <typename U>
+	struct rebind {
+		using other = LockfreePoolingAllocator<U, CAPACITY>;
+	};
 };
-
-template <typename T, size_t CAPACITY>
-thread_local std::vector<void*> LockfreePoolingAllocator<T, CAPACITY>::localCache;
-
-template <typename T, size_t CAPACITY>
-std::once_flag LockfreePoolingAllocator<T, CAPACITY>::preallocationFlag;

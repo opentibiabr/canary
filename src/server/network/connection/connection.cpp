@@ -384,6 +384,10 @@ void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
 }
 
 void Connection::onWriteOperation(const std::error_code &error) {
+	if (!socket.is_open()) {
+		return;
+	}
+
 	writeTimer.cancel();
 
 	if (error) {

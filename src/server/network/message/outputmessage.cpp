@@ -55,20 +55,5 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol)
 }
 
 OutputMessage_ptr OutputMessagePool::getOutputMessage() {
-	LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY> allocator;
-	OutputMessage* rawPtr = allocator.allocate(1);
-
-	try {
-		new (rawPtr) OutputMessage();
-	} catch (...) {
-		allocator.deallocate(rawPtr, 1);
-		throw;
-	}
-
-	return { rawPtr, [&allocator](OutputMessage*&ptr) mutable {
-				if (ptr) {
-					ptr->~OutputMessage();
-					allocator.deallocate(ptr, 1);
-				}
-			} };
+	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());
 }

@@ -47,7 +47,7 @@ namespace {
 		for (const auto &[client, _] : m_viewers) {
 			// Copy to keep viewer valid in async calls
 			auto viewer_ptr = client;
-			g_dispatcher().asyncEvent([viewer_ptr, func] { func(viewer_ptr); }, TaskGroup::GenericParallel);
+			g_dispatcher().asyncEvent([viewer_ptr, func] { func(viewer_ptr); }, TaskGroup::Serial);
 		}
 	}
 }

@@ -1055,6 +1055,8 @@ int MonsterTypeFunctions::luaMonsterTypeEventOnCallback(lua_State* L) {
 	// monsterType:onDisappear(callback)
 	// monsterType:onMove(callback)
 	// monsterType:onSay(callback)
+	// monsterType:onPlayerAttack(callback)
+	// monsterType:onSpawn(callback)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
 		if (monsterType->loadCallback(&g_scripts().getScriptInterface())) {
@@ -1602,7 +1604,7 @@ int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
 	} else {
 		auto raceId = getNumber<uint16_t>(L, 2, 0);
 		monsterType->info.raceid = raceId;
-		g_ioBosstiary().addBosstiaryMonster(raceId, monsterType->name);
+		g_ioBosstiary().addBosstiaryMonster(raceId, monsterType->typeName);
 		pushBoolean(L, true);
 	}
 

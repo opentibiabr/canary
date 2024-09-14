@@ -522,39 +522,6 @@ Storage = {
 		-- Reserved storage from 51680 - 51689
 		DeeperBanutaShortcut = 51680,
 	},
-	QuestChests = {
-		-- Reserved storage from 51730 - 51999
-		TutorialShovel = 51732,
-		TutorialRope = 51733,
-		FormorgarMinesHoistSkeleton = 51737,
-		FormorgarMinesHoistChest = 51738,
-		-- Custom Quests, currently not using system.lua (aid 2000)
-		BlackKnightTreeCrownShield = 51739,
-		BlackKnightTreeCrownArmor = 51740,
-		BlackKnightTreeKey = 51741,
-		SilverBrooch = 51744,
-		FamilyBrooch = 51745,
-		DCQGhoul = 51746,
-		FirewalkerBoots = 51747,
-		DeeperFibulaKey = 51748,
-		ParchmentRoomQuest = 51750,
-		WarzoneReward1 = 51751,
-		WarzoneReward2 = 51752,
-		WarzoneReward3 = 51753,
-		FathersBurdenWood = 51754,
-		FathersBurdenIron = 51755,
-		FathersBurdenRoot = 5176,
-		FathersBurdenCrystal = 51757,
-		FathersBurdenSilk = 51758,
-		FathersBurdenCloth = 51759,
-		WhisperMoss = 51766,
-		OldParchment = 51767,
-		DragahsSpellbook = 51768,
-		StealFromThieves = 51769,
-		OutlawCamp = 51770, -- quest log to The Outlaw Camp
-		WitchHouseQuest = 51771,
-		SimonTheBeggarsFavoriteStaff = 51772,
-	},
 	HorestisTomb = {
 		-- Reserved storage from 52020 - 52029
 		JarFloor1 = 52020,
@@ -725,7 +692,10 @@ Storage = {
 		},
 		-- Start of quests per version
 		-- Use the reserved storage keys accordingly
-		KeysUpdate = 40000,
+		KeysUpdate = 39999,
+		U5_0 = { -- update 5.0 - Reserved Storages 40000
+			DeeperFibulaKey = 40000,
+		},
 		PreU6_0 = { -- update pre-6.0 - Reserved Storages 40001 - 40020
 			OrnamentedShield = {
 				Rewards = {
@@ -773,6 +743,7 @@ Storage = {
 					DemonShield = 40078,
 				},
 			},
+			OutlawCampQuest = 40079,
 		},
 		U7_1 = { -- update 7.1 - Reserved Storages 40121 - 40140
 			DragonTower = {
@@ -1019,6 +990,8 @@ Storage = {
 					Hengis = 40666,
 				},
 			},
+			OldParchment = 40667,
+			WhisperMoss = 40668,
 		},
 		U7_8 = { -- update 7.8 - Reserved Storages 40761 - 41000
 			AssassinOutfits = {
@@ -1272,6 +1245,8 @@ Storage = {
 				NorsemanOutfit = 41306,
 				NoblemanFirstAddon = 41307,
 				NoblemanSecondAddon = 41308,
+				FormorgarMinesHoistSkeleton = 41309,
+				FormorgarMinesHoistChest = 41310,
 			},
 		},
 		U8_1 = { -- update 8.1 - Reserved Storages 41351 - 41650
@@ -1506,18 +1481,19 @@ Storage = {
 				GoldenGoblet = 41724,
 				CompromisingLetter = 41725,
 				RewardEnd = 41726,
+				StealFromThieves = 41727,
 			},
 			TrollSabotageQuest = {
-				Questline = 41727,
-				JumpTimer = 41728,
+				Questline = 41728,
+				JumpTimer = 41729,
 			},
 			VampireHunterQuest = {
-				Rank = 41729,
-				Door = 41730,
-				BloodSkull = 41731,
+				Rank = 41730,
+				Door = 41731,
+				BloodSkull = 41732,
 			},
 			TheMutatedPumpkin = {
-				Skinned = 41732,
+				Skinned = 41733,
 			},
 		},
 		U8_4 = { -- update 8.4 - Reserved Storages 41901 - 42145

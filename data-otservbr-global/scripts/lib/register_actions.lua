@@ -722,7 +722,7 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	elseif target.actionid == 50127 then
 		-- Pythius The Rotten (Firewalker Boots)
-		if player:getStorageValue(Storage.QuestChests.FirewalkerBoots) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.FirewalkerBoots) == 1 then
 			return false
 		end
 		target:remove(1)

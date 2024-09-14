@@ -3111,7 +3111,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Pythius the Rotten",
-					storageId = Storage.QuestChests.FirewalkerBoots,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.FirewalkerBoots,
 					missionId = 10230,
 					startValue = 1,
 					endValue = 1,
@@ -6538,12 +6538,12 @@ if not Quests then
 		},
 		[49] = {
 			name = "The Outlaw Camp",
-			startStorageId = Storage.QuestChests.OutlawCamp,
+			startStorageId = Storage.Quest.U6_4.OutlawCampQuest,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Outlaw Treasure",
-					storageId = Storage.QuestChests.OutlawCamp,
+					storageId = Storage.Quest.U6_4.OutlawCampQuest,
 					missionId = 10451,
 					startValue = 1,
 					endValue = 1,

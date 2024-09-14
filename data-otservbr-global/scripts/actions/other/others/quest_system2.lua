@@ -9,12 +9,6 @@ local config = {
 		needItem = { itemId = 3231 },
 		effect = CONST_ME_MAGIC_BLUE,
 	},
-	[2286] = {
-		items = {
-			{ itemId = 3205 },
-		},
-		storage = Storage.QuestChests.FamilyBrooch,
-	},
 	[3018] = {
 		items = {
 			{ itemId = 3219 },
@@ -98,7 +92,7 @@ local config = {
 		items = {
 			{ itemId = 2972, actionId = 3980 },
 		},
-		storage = Storage.QuestChests.DeeperFibulaKey,
+		storage = Storage.Quest.U5_0.DeeperFibulaKey,
 	},
 	[9226] = {
 		items = {
@@ -298,7 +292,7 @@ The map shows the original floor plan of this mine. You recognise your position 
 (In the lower right corner someone scribbled a note how to use the hoist on the first mine floor.)]],
 			},
 		},
-		storage = Storage.QuestChests.FormorgarMinesHoistSkeleton,
+		storage = Storage.Quest.U8_0.TheIceIslands.FormorgarMinesHoistSkeleton,
 	},
 	[14041] = {
 		items = {

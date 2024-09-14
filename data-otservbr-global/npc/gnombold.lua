@@ -142,9 +142,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return
 	end
 
-	--[[/////////////////////
-	////GEOMANTIC CHARGES////
-	///////////////////////]]
 	if MsgContains(message, "charges") then
 		if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Daily) >= os.time() then
 			return npcHandler:say("Sorry, you have to wait " .. string.diff(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Daily) - os.time()) .. " before this task gets available again.", npc, creature)

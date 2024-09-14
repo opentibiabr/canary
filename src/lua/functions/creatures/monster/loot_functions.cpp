@@ -261,7 +261,7 @@ int LootFunctions::luaLootAddChildLoot(lua_State* L) {
 	if (loot) {
 		const auto childLoot = getUserdata<Loot>(L, 2);
 		if (childLoot) {
-			loot->lootBlock.childLoot.emplace_back(childLoot->lootBlock);
+			loot->lootBlock.childLoot.push_back(childLoot->lootBlock);
 			pushBoolean(L, true);
 		} else {
 			pushBoolean(L, false);

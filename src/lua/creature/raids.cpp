@@ -83,7 +83,7 @@ bool Raids::loadFromXml() {
 
 		auto newRaid = std::make_shared<Raid>(name, interval, margin, repeat);
 		if (newRaid->loadFromXml(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/raids/" + file)) {
-			raidList.emplace_back(newRaid);
+			raidList.push_back(newRaid);
 		} else {
 			g_logger().error("{} - Failed to load raid: {}", __FUNCTION__, name);
 		}
@@ -199,7 +199,7 @@ bool Raid::loadFromXml(const std::string &filename) {
 		}
 
 		if (event->configureRaidEvent(eventNode)) {
-			raidEvents.emplace_back(event);
+			raidEvents.push_back(event);
 		} else {
 			g_logger().error("{} - "
 			                 "In file: {}, eventNode: {}",
@@ -208,7 +208,7 @@ bool Raid::loadFromXml(const std::string &filename) {
 	}
 
 	// sort by delay time
-	std::sort(raidEvents.begin(), raidEvents.end(), [](const std::shared_ptr<RaidEvent> &lhs, const std::shared_ptr<RaidEvent> &rhs) {
+	std::ranges::sort(raidEvents, [](const std::shared_ptr<RaidEvent> &lhs, const std::shared_ptr<RaidEvent> &rhs) {
 		return lhs->getDelay() < rhs->getDelay();
 	});
 

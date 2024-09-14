@@ -54,7 +54,7 @@ public:
 		auto weapon = std::make_shared<T>(interface);
 		const auto weaponId = ++lastWeaponId;
 		weaponMap[weaponId] = weapon;
-		weaponIdMap[interface].emplace_back(weaponId);
+		weaponIdMap[interface].push_back(weaponId);
 		return weapon;
 	}
 

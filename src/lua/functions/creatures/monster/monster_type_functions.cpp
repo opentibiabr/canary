@@ -819,7 +819,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddAttack(lua_State* L) {
 		if (spell) {
 			spellBlock_t sb;
 			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
-				monsterType->info.attackSpells.emplace_back(std::move(sb));
+				monsterType->info.attackSpells.push_back(std::move(sb));
 			} else {
 				g_logger().warn("Monster: {}, cant load spell: {}", monsterType->name, spell->name);
 			}
@@ -881,7 +881,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddDefense(lua_State* L) {
 		if (spell) {
 			spellBlock_t sb;
 			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
-				monsterType->info.defenseSpells.emplace_back(std::move(sb));
+				monsterType->info.defenseSpells.push_back(std::move(sb));
 			} else {
 				g_logger().warn("Monster: {}, Cant load spell: {}", monsterType->name, spell->name);
 			}
@@ -958,7 +958,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddVoice(lua_State* L) {
 		monsterType->info.yellSpeedTicks = getNumber<uint32_t>(L, 3);
 		monsterType->info.yellChance = getNumber<uint32_t>(L, 4);
 		voice.yellText = getBoolean(L, 5);
-		monsterType->info.voiceVector.emplace_back(voice);
+		monsterType->info.voiceVector.push_back(voice);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -1111,7 +1111,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddSummon(lua_State* L) {
 		summon.speed = getNumber<int32_t>(L, 3);
 		summon.count = getNumber<int32_t>(L, 5, 1);
 		summon.chance = getNumber<int32_t>(L, 4);
-		monsterType->info.summons.emplace_back(summon);
+		monsterType->info.summons.push_back(summon);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -1656,7 +1656,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddSound(lua_State* L) {
 		return 1;
 	}
 
-	monsterType->info.soundVector.emplace_back(getNumber<SoundEffect_t>(L, 2));
+	monsterType->info.soundVector.push_back(getNumber<SoundEffect_t>(L, 2));
 	pushBoolean(L, true);
 	return 1;
 }

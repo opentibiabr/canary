@@ -521,10 +521,10 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 							openContainersList.emplace_back(cid, itemContainer);
 						}
 					}
-					for (bool isLootContainer : { true, false }) {
-						auto checkAttribute = isLootContainer ? ItemAttribute_t::QUICKLOOTCONTAINER : ItemAttribute_t::OBTAINCONTAINER;
+					for (const bool isLootContainer : { true, false }) {
+						const auto checkAttribute = isLootContainer ? ItemAttribute_t::QUICKLOOTCONTAINER : ItemAttribute_t::OBTAINCONTAINER;
 						if (item->hasAttribute(checkAttribute)) {
-							auto flags = item->getAttribute<uint32_t>(checkAttribute);
+							const auto flags = item->getAttribute<uint32_t>(checkAttribute);
 
 							for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
 								if (hasBitSet(1 << category, flags)) {

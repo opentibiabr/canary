@@ -123,10 +123,10 @@ bool MoveEvents::registerLuaEvent(const std::shared_ptr<MoveEvent> &moveEvent) {
 }
 
 bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, int32_t id, std::map<int32_t, MoveEventList> &moveListMap) const {
-	auto it = moveListMap.find(id);
+	const auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
-		moveEventList.moveEvent[moveEvent->getEventType()].emplace_back(moveEvent);
+		moveEventList.moveEvent[moveEvent->getEventType()].push_back(moveEvent);
 		moveListMap[id] = moveEventList;
 		return true;
 	} else {
@@ -142,7 +142,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, int3
 				return false;
 			}
 		}
-		moveEventList.emplace_back(moveEvent);
+		moveEventList.push_back(moveEvent);
 		return true;
 	}
 }
@@ -245,7 +245,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, cons
 	auto it = moveListMap.find(position);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
-		moveEventList.moveEvent[moveEvent->getEventType()].emplace_back(moveEvent);
+		moveEventList.moveEvent[moveEvent->getEventType()].push_back(moveEvent);
 		moveListMap[position] = moveEventList;
 		return true;
 	} else {
@@ -260,7 +260,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, cons
 			return false;
 		}
 
-		moveEventList.emplace_back(moveEvent);
+		moveEventList.push_back(moveEvent);
 		return true;
 	}
 }

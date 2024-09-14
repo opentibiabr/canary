@@ -68,14 +68,14 @@ namespace stdext {
 			return container.back();
 		}
 
-		void emplace_back(const T &v) {
+		void push_back(const T &v) {
 			needUpdate = true;
-			container.emplace_back(v);
+			container.push_back(v);
 		}
 
-		void emplace_back(T &&Val) {
+		void push_back(T &&_Val) {
 			needUpdate = true;
-			container.emplace_back(std::move(Val));
+			container.push_back(std::move(_Val));
 		}
 
 		// Copy all content list to this
@@ -106,10 +106,10 @@ namespace stdext {
 			return res;
 		}
 
-		template <class... Valty>
-		decltype(auto) emplace_back(Valty &&... v) {
+		template <class... _Valty>
+		decltype(auto) emplace_back(_Valty &&... v) {
 			needUpdate = true;
-			return container.emplace_back(std::forward<Valty>(v)...);
+			return container.emplace_back(std::forward<_Valty>(v)...);
 		}
 
 		void partial_sort(size_t begin, size_t end = 0) {

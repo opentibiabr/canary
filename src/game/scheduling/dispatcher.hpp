@@ -92,6 +92,7 @@ public:
 		scheduledTasksRef.reserve(2000);
 	}
 
+	// Ensures that we don't accidentally copy it
 	Dispatcher(const Dispatcher &) = delete;
 	Dispatcher operator=(const Dispatcher &) = delete;
 
@@ -196,8 +197,9 @@ private:
 	ThreadPool &threadPool;
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
-	std::mutex dummyMutex;
+	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
 
+	// Thread Events
 	struct ThreadTask {
 		ThreadTask() {
 			for (auto &task : tasks) {
@@ -207,14 +209,16 @@ private:
 		}
 
 		std::array<std::vector<Task>, static_cast<uint8_t>(TaskGroup::Last)> tasks;
-		phmap::parallel_flat_hash_set_m<std::shared_ptr<Task>> scheduledTasks;
+		std::vector<std::shared_ptr<Task>> scheduledTasks;
 		std::mutex mutex;
 	};
 
 	std::vector<std::unique_ptr<ThreadTask>> threads;
+
+	// Main Events
 	std::array<std::vector<Task>, static_cast<uint8_t>(TaskGroup::Last)> m_tasks;
-	phmap::btree_multiset<std::shared_ptr<Task>, Task::Compare> scheduledTasks;
-	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef;
+	phmap::btree_multiset<std::shared_ptr<Task>, Task::Compare> scheduledTasks {};
+	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef {};
 
 	bool asyncWaitDisabled = false;
 

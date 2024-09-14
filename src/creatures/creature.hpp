@@ -242,7 +242,7 @@ public:
 		icons.reserve(creatureIcons.size());
 		for (const auto &[_, icon] : creatureIcons) {
 			if (icon.isSet()) {
-				icons.emplace_back(icon);
+				icons.push_back(icon);
 			}
 		}
 		return icons;

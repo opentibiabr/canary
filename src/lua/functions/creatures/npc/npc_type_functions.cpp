@@ -210,7 +210,7 @@ int NpcTypeFunctions::luaNpcTypeAddVoice(lua_State* L) {
 		npcType->info.yellSpeedTicks = getNumber<uint32_t>(L, 3);
 		npcType->info.yellChance = getNumber<uint32_t>(L, 4);
 		voice.yellText = getBoolean(L, 5);
-		npcType->info.voiceVector.emplace_back(voice);
+		npcType->info.voiceVector.push_back(voice);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -546,7 +546,7 @@ int NpcTypeFunctions::luaNpcTypeAddSound(lua_State* L) {
 		return 1;
 	}
 
-	npcType->info.soundVector.emplace_back(getNumber<SoundEffect_t>(L, 2));
+	npcType->info.soundVector.push_back(getNumber<SoundEffect_t>(L, 2));
 	pushBoolean(L, true);
 	return 1;
 }

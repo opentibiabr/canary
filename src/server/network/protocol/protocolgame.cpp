@@ -1875,7 +1875,7 @@ void ProtocolGame::parseQuickLootBlackWhitelist(NetworkMessage &msg) {
 	listedItems.reserve(size);
 
 	for (int i = 0; i < size; i++) {
-		listedItems.emplace_back(msg.get<uint16_t>());
+		listedItems.push_back(msg.get<uint16_t>());
 	}
 
 	g_game().playerQuickLootBlackWhitelist(player->getID(), filter, listedItems);

@@ -94,7 +94,7 @@ void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBl
 		const bool &isContainer = iType.isContainer();
 		if (isContainer) {
 			for (const ShopBlock &child : shopBlock.childShop) {
-				shopBlock.childShop.emplace_back(child);
+				shopBlock.childShop.push_back(child);
 			}
 		}
 	}

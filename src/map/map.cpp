@@ -374,9 +374,9 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	oldStackPosVector.reserve(playersSpectators.size());
 	for (const auto &spec : playersSpectators) {
 		if (spec->canSeeCreature(creature)) {
-			oldStackPosVector.emplace_back(oldTile->getClientIndexOfCreature(spec->getPlayer(), creature));
+			oldStackPosVector.push_back(oldTile->getClientIndexOfCreature(spec->getPlayer(), creature));
 		} else {
-			oldStackPosVector.emplace_back(-1);
+			oldStackPosVector.push_back(-1);
 		}
 	}
 

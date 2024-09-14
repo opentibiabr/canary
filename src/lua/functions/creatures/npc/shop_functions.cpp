@@ -139,7 +139,7 @@ int ShopFunctions::luaShopSetStorageValue(lua_State* L) {
 int ShopFunctions::luaShopAddChildShop(lua_State* L) {
 	// shop:addChildShop(shop)
 	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.childShop.emplace_back(getUserdataShared<Shop>(L, 2)->shopBlock);
+		shop->shopBlock.childShop.push_back(getUserdataShared<Shop>(L, 2)->shopBlock);
 	} else {
 		lua_pushnil(L);
 	}

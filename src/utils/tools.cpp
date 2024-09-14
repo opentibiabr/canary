@@ -373,18 +373,18 @@ StringVector explodeString(const std::string &inString, const std::string &separ
 	std::string::size_type start = 0, end = 0;
 
 	while (--limit != -1 && (end = inString.find(separator, start)) != std::string::npos) {
-		returnVector.emplace_back(inString.substr(start, end - start));
+		returnVector.push_back(inString.substr(start, end - start));
 		start = end + separator.size();
 	}
 
-	returnVector.emplace_back(inString.substr(start));
+	returnVector.push_back(inString.substr(start));
 	return returnVector;
 }
 
 IntegerVector vectorAtoi(const StringVector &stringVector) {
 	IntegerVector returnVector;
 	for (const auto &string : stringVector) {
-		returnVector.emplace_back(std::stoi(string));
+		returnVector.push_back(std::stoi(string));
 	}
 	return returnVector;
 }
@@ -1909,7 +1909,7 @@ std::vector<std::string> split(const std::string &str, char delimiter /* = ','*/
 	while (std::getline(tokenStream, token, delimiter)) {
 		auto trimedToken = token;
 		trimString(trimedToken);
-		tokens.emplace_back(trimedToken);
+		tokens.push_back(trimedToken);
 	}
 	return tokens;
 }

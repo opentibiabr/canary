@@ -24,7 +24,7 @@ House::House(uint32_t houseId) :
 
 void House::addTile(const std::shared_ptr<HouseTile> &tile) {
 	tile->setFlag(TILESTATE_PROTECTIONZONE);
-	houseTiles.emplace_back(tile);
+	houseTiles.push_back(tile);
 	updateDoorDescription();
 }
 
@@ -297,7 +297,7 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::sh
 			if (item->isWrapable()) {
 				handleWrapableItem(moveItemList, item, player, tile);
 			} else if (item->isPickupable()) {
-				moveItemList.emplace_back(item);
+				moveItemList.push_back(item);
 			} else {
 				handleContainer(moveItemList, item);
 			}
@@ -376,13 +376,13 @@ void House::handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Ite
 		return;
 	}
 
-	moveItemList.emplace_back(newItem);
+	moveItemList.push_back(newItem);
 }
 
 void House::handleContainer(ItemList &moveItemList, const std::shared_ptr<Item> &item) const {
 	if (const auto &container = item->getContainer()) {
 		for (const auto &containerItem : container->getItemList()) {
-			moveItemList.emplace_back(containerItem);
+			moveItemList.push_back(containerItem);
 		}
 	}
 }
@@ -405,7 +405,7 @@ bool House::getAccessList(uint32_t listId, std::string &list) const {
 }
 
 void House::addDoor(const std::shared_ptr<Door> &door) {
-	doorList.emplace_back(door);
+	doorList.push_back(door);
 	door->setHouse(static_self_cast<House>());
 	updateDoorDescription();
 }
@@ -418,7 +418,7 @@ void House::removeDoor(const std::shared_ptr<Door> &door) {
 }
 
 void House::addBed(const std::shared_ptr<BedItem> &bed) {
-	bedsList.emplace_back(bed);
+	bedsList.push_back(bed);
 	bed->setHouse(static_self_cast<House>());
 }
 

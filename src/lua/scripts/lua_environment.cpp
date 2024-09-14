@@ -106,7 +106,7 @@ std::shared_ptr<Combat> LuaEnvironment::getCombatObject(uint32_t id) const {
 std::shared_ptr<Combat> LuaEnvironment::createCombatObject(LuaScriptInterface* interface) {
 	auto combat = std::make_shared<Combat>();
 	combatMap[++lastCombatId] = combat;
-	combatIdMap[interface].emplace_back(lastCombatId);
+	combatIdMap[interface].push_back(lastCombatId);
 	return combat;
 }
 
@@ -130,7 +130,7 @@ const std::unique_ptr<AreaCombat> &LuaEnvironment::getAreaObject(uint32_t id) co
 
 uint32_t LuaEnvironment::createAreaObject(LuaScriptInterface* interface) {
 	areaMap[++lastAreaId] = std::make_unique<AreaCombat>();
-	areaIdMap[interface].emplace_back(lastAreaId);
+	areaIdMap[interface].push_back(lastAreaId);
 	return lastAreaId;
 }
 

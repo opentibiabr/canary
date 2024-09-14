@@ -457,7 +457,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 			}
 
 			if (monster && monster->isSummon() && !monster->isFamiliar() && !teleportSummon && checkRemoveDist) {
-				despawnMonsterList.emplace_back(summon);
+				despawnMonsterList.push_back(summon);
 			}
 		}
 
@@ -1110,7 +1110,7 @@ void Creature::goToFollowCreature() {
 			// if we can't get anything then let the A* calculate
 			executeOnFollow = false;
 		} else if (dir != DIRECTION_NONE) {
-			listDir.emplace_back(dir);
+			listDir.push_back(dir);
 			hasFollowPath = true;
 		}
 	}

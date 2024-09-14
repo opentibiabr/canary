@@ -19,9 +19,8 @@
 int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
 	// TalkAction(words) or TalkAction(word1, word2, word3)
 	std::vector<std::string> wordsVector;
-	wordsVector.reserve(500);
 	for (int i = 2; i <= lua_gettop(L); i++) {
-		wordsVector.emplace_back(getString(L, i));
+		wordsVector.push_back(getString(L, i));
 	}
 
 	const auto talkactionSharedPtr = std::make_shared<TalkAction>(getScriptEnv()->getScriptInterface());

@@ -133,8 +133,8 @@ StashContainerList Container::getStowableItems() const {
 	for (const auto &item : itemlist) {
 		if (item->getContainer() != nullptr) {
 			auto subContainer = item->getContainer()->getStowableItems();
-			for (const auto &subContItem : subContainer) {
-				std::shared_ptr<Item> containerItem = subContItem.first;
+			for (const auto &key : subContainer | std::views::keys) {
+				std::shared_ptr<Item> containerItem = key;
 				toReturnList.emplace_back(containerItem, static_cast<uint32_t>(containerItem->getItemCount()));
 			}
 		} else if (item->isItemStorable()) {

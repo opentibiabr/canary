@@ -502,6 +502,7 @@ private:
 	void sendOpenWheelWindow(uint32_t ownerId);
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
+	void parseStoreDetail(NetworkMessage &msg);
 
 	friend class Player;
 	friend class PlayerWheel;

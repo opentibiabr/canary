@@ -9053,6 +9053,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	uint64_t totalPrice = offer.price * amount;
 
+	// Store the timestamp to ensure consistency across multiple calls, avoiding slight differences in time
+	auto createdAt = getTimeNow();
+
 	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
@@ -9248,6 +9251,14 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			const auto &tranferable = enumToValue(CoinType::Transferable);
 			const auto &removeCoin = enumToValue(CoinTransactionType::Remove);
 			sellerPlayer->getAccount()->registerCoinTransaction(removeCoin, tranferable, amount, "Sold on Market");
+			StoreHistory storeHistory;
+			storeHistory.fromMarket = true;
+			storeHistory.createdAt = createdAt;
+			storeHistory.coinAmount = amount;
+			storeHistory.coinType = tranferable;
+			storeHistory.historyType = enumToValue(HistoryTypes_t::NONE);
+			storeHistory.description = "Purchased via the Market";
+			sellerPlayer->setStoreHistory(storeHistory);
 		}
 
 		if (it.id != ITEM_STORE_COIN) {
@@ -9270,9 +9281,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	const int32_t marketOfferDuration = g_configManager().getNumber(MARKET_OFFER_DURATION, __FUNCTION__);
 
-	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, time(nullptr), offer.tier, OFFERSTATE_ACCEPTEDEX);
+	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, createdAt, offer.tier, OFFERSTATE_ACCEPTEDEX);
 
-	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, time(nullptr), offer.tier, OFFERSTATE_ACCEPTED);
+	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, createdAt, offer.tier, OFFERSTATE_ACCEPTED);
 
 	offer.amount -= amount;
 

@@ -1251,7 +1251,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xC0:
 			parseForgeBrowseHistory(msg);
 			break;
-		case 0xC9: /* update tile */
+		case 0xC9:
+			parseStoreDetail(msg);
 			break;
 		case 0xCA:
 			parseUpdateContainer(msg);
@@ -9239,15 +9240,14 @@ void ProtocolGame::sendStoreHistory(uint32_t page) {
 
 	if (historyPageToSend > 0) {
 		for (const auto &history : historyPerPage) {
-			msg.add<uint32_t>(0x00); // Id?
-
-			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
+			msg.add<uint32_t>(history.fromMarket ? history.createdAt : 0);
+			msg.add<uint32_t>(history.createdAt);
 			msg.addByte(history.historyType);
 			msg.add<int32_t>(history.coinAmount);
 
 			msg.addByte(history.coinType);
 			msg.addString(history.description);
-			msg.addByte(0x00); // Details
+			msg.addByte(history.fromMarket); // Toggle details button
 		}
 	}
 
@@ -9623,6 +9623,14 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 	}
 
 	g_game().playerSaveWheel(player->getID(), msg);
+}
+
+void ProtocolGame::parseStoreDetail(NetworkMessage &msg) {
+	auto createdAt = msg.get<uint32_t>();
+	if (createdAt != 0) {
+		g_logger().info("Details creation data: {}", createdAt);
+		// Get the offer by creation data and send the details structure based on offer details
+	}
 }
 
 void ProtocolGame::sendDisableLoginMusic() {

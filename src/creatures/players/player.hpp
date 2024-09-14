@@ -94,13 +94,14 @@ struct ForgeHistory {
 };
 
 struct StoreHistory {
-	time_t createdAt;
+	time_t createdAt = 0;
 
 	int32_t coinAmount = 0;
 	uint8_t coinType = 0;
 	uint8_t historyType = 0;
 
 	std::string description;
+	bool fromMarket = false;
 };
 
 struct OpenContainer {

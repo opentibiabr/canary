@@ -70,7 +70,7 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerGuid = player:getGuid()
 	local deliveredParcels = initializeParcelDelivery(player)
-	local parcelStatus = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)
+	local parcelStatus = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Parcel_Main)
 
 	if table.contains({-1, 4}, parcelStatus) or table.contains(deliveredParcels, npc:getId()) then
 		return false
@@ -84,7 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerGuid = player:getGuid()
 	local deliveredParcels = initializeParcelDelivery(player)
-	local parcelStatus = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)
+	local parcelStatus = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Parcel_Main)
 
 	if MsgContains(message, "something") and not table.contains({-1, 4}, parcelStatus) then
 		if table.contains(deliveredParcels, npc:getId()) then
@@ -97,7 +97,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 
 		npcHandler:say(response[parcelStatus], npc, creature)
-		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main, parcelStatus + 1)
+		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Parcel_Main, parcelStatus + 1)
 		table.insert(deliveredParcels, npc:getId())
 		npcHandler:removeInteraction(npc, creature)
 	end

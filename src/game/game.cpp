@@ -9073,7 +9073,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
-		if (player == buyerPlayer || player->getAccount() == buyerPlayer->getAccount()) {
+		if (player == buyerPlayer || player->getAccountId() == buyerPlayer->getAccountId()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
 			return;
 		}
@@ -9170,7 +9170,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
-		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount()) {
+		if (player == sellerPlayer || player->getAccountId() == sellerPlayer->getAccountId()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
 			return;
 		}
@@ -10571,6 +10571,7 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 	}
 
 	if (playerDonator == playerReceptor || playerDonator->getAccountId() == playerReceptor->getAccountId()) {
+		playerDonator->sendStoreError(StoreErrors_t::TRANSFER, "You cannot gift Tibia Coins to characters of your own account.");
 		return;
 	}
 

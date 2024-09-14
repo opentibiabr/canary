@@ -10570,7 +10570,7 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 		return;
 	}
 
-	if (playerDonator == playerReceptor || playerDonator->getAccount() == playerReceptor->getAccount()) {
+	if (playerDonator == playerReceptor || playerDonator->getAccountId() == playerReceptor->getAccountId()) {
 		return;
 	}
 

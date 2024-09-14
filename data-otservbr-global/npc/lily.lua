@@ -65,10 +65,10 @@ local function greetCallback(npc, creature)
 	local playerId = creature:getId()
 	local player = Player(creature)
 	-- Continue mission 4
-	if player:getStorageValue(Storage.TheRookieGuard.Mission04) == 1 then
+	if player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Oh hey, |PLAYERNAME|! Vascalir must have sent you to help me with a little {mission}, right?")
 		-- Not finished mission 4
-	elseif player:getStorageValue(Storage.TheRookieGuard.Mission04) == 2 then
+	elseif player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 2 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hello, |PLAYERNAME|! Back so soon? Have you delivered the herbs to Hyacinth?")
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Welcome, |PLAYERNAME|! You look a little stressed today. If you like to view my offers of potions, just ask me for a {trade}. In case you're looking for the marketplace and dungeons, just follow the path to the east!")
@@ -86,7 +86,7 @@ local mission4 = keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 		"He's old and can't make his way into the village anymore, but needs some of the herbs that grow only around here. Could you please deliver a bag of herbs to Hyacinth?",
 	},
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 1
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 1
 end)
 keywordHandler:addAliasKeyword({ "mission" })
 
@@ -96,7 +96,7 @@ keywordHandler:addKeyword({ "no" }, StdModule.say, {
 	text = "Oh. In that case, maybe you're interested in a {trade} - I sell potions and buy a few other things.",
 	reset = true,
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 1
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 1
 end)
 
 -- Mission 4: Accept
@@ -112,7 +112,7 @@ mission4:addChildKeyword(
 	},
 	nil,
 	function(player)
-		player:setStorageValue(Storage.TheRookieGuard.Mission04, 2)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04, 2)
 		player:addItemEx(Game.createItem(12671, 1), true, CONST_SLOT_WHEREEVER)
 		player:addMapMark({ x = 32091, y = 32178, z = 7 }, MAPMARK_GREENNORTH, "North Exit")
 		player:addMapMark({ x = 32139, y = 32176, z = 7 }, MAPMARK_GREENNORTH, "To Hyacinth")
@@ -131,7 +131,7 @@ keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "No, you haven't. If you're looking for the way to Hyacinth, just leave the village to the north and then go east. I've marked it on your map!",
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 2
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 2
 end)
 
 -- Mission 4: Confirm Not Delivered (Without)
@@ -139,7 +139,7 @@ local mission4LostHerbs = keywordHandler:addKeyword({ "no" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Is something... wrong? You didn't lose the herbs, did you?",
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 2
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 2
 end)
 
 -- Mission 4: Confirm Lost Herbs

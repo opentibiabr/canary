@@ -228,6 +228,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, SCREENSHOT_TYPE_PLAYERATTACKING);
 	registerEnum(L, SCREENSHOT_TYPE_TREASUREFOUND);
 	registerEnum(L, SCREENSHOT_TYPE_SKILLUP);
+	registerEnum(L, SCREENSHOT_TYPE_GIFTOFLIFE);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {
@@ -1205,11 +1206,9 @@ void LuaEnums::initReloadTypeEnums(lua_State* L) {
 
 void LuaEnums::initCreaturesEventEnums(lua_State* L) {
 	// Monsters
-	registerEnum(L, MONSTERS_EVENT_THINK);
-	registerEnum(L, MONSTERS_EVENT_APPEAR);
-	registerEnum(L, MONSTERS_EVENT_DISAPPEAR);
-	registerEnum(L, MONSTERS_EVENT_MOVE);
-	registerEnum(L, MONSTERS_EVENT_SAY);
+	for (auto value : magic_enum::enum_values<MonstersEvent_t>()) {
+		registerMagicEnum(L, value);
+	}
 
 	// Npcs
 	registerEnum(L, NPCS_EVENT_THINK);

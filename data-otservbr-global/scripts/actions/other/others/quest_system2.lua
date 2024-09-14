@@ -19,7 +19,7 @@ local config = {
 		items = {
 			{ itemId = 3219 },
 		},
-		storage = Storage.Postman.Mission08,
+		storage = Storage.Quest.U7_24.ThePostmanMissions.Mission08,
 		formerValue = 1,
 		newValue = 2,
 	},
@@ -66,7 +66,7 @@ local config = {
 		items = {
 			{ itemId = 3217 },
 		},
-		storage = Storage.Postman.Mission09,
+		storage = Storage.Quest.U7_24.ThePostmanMissions.Mission09,
 		formerValue = 1,
 		newValue = 2,
 	},
@@ -74,7 +74,7 @@ local config = {
 		items = {
 			{ itemId = 3218 },
 		},
-		storage = Storage.Postman.Mission05,
+		storage = Storage.Quest.U7_24.ThePostmanMissions.Mission05,
 		formerValue = 1,
 		newValue = 2,
 	},

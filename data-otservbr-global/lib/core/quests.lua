@@ -152,12 +152,12 @@ if not Quests then
 		},
 		[4] = {
 			name = "A Father's Burden",
-			startStorageId = Storage.FathersBurden.QuestLog,
+			startStorageId = Storage.Quest.U8_6.AFathersBurden.QuestLog,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Birthday Presents",
-					storageId = Storage.FathersBurden.Status,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Status,
 					missionId = 1024,
 					startValue = 1,
 					endValue = 2,
@@ -169,7 +169,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Magic Bow - Sinew",
-					storageId = Storage.FathersBurden.Sinew,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Sinew,
 					missionId = 1025,
 					startValue = 1,
 					endValue = 2,
@@ -180,7 +180,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Magic Bow - Wood",
-					storageId = Storage.FathersBurden.Wood,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Wood,
 					missionId = 1026,
 					startValue = 1,
 					endValue = 2,
@@ -192,7 +192,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "The Magic Robe - Cloth",
-					storageId = Storage.FathersBurden.Cloth,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Cloth,
 					missionId = 1027,
 					startValue = 1,
 					endValue = 2,
@@ -204,7 +204,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "The Magic Robe - Silk",
-					storageId = Storage.FathersBurden.Silk,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Silk,
 					missionId = 1028,
 					startValue = 1,
 					endValue = 2,
@@ -215,7 +215,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "The Magic Rod - Crystal",
-					storageId = Storage.FathersBurden.Crystal,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Crystal,
 					missionId = 1029,
 					startValue = 1,
 					endValue = 2,
@@ -226,7 +226,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "The Magic Rod - Root",
-					storageId = Storage.FathersBurden.Root,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Root,
 					missionId = 1030,
 					startValue = 1,
 					endValue = 2,
@@ -237,7 +237,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "The Magic Shield - Iron",
-					storageId = Storage.FathersBurden.Iron,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Iron,
 					missionId = 1031,
 					startValue = 1,
 					endValue = 2,
@@ -249,7 +249,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "The Magic Shield - Scale",
-					storageId = Storage.FathersBurden.Scale,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Scale,
 					missionId = 1032,
 					startValue = 1,
 					endValue = 2,
@@ -3488,12 +3488,12 @@ if not Quests then
 		},
 		[24] = {
 			name = "The Postman Missions",
-			startStorageId = Storage.Postman.Mission01,
+			startStorageId = Storage.Quest.U7_24.ThePostmanMissions.Mission01,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 01 - Check Postal Routes",
-					storageId = Storage.Postman.Mission01,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission01,
 					missionId = 10252,
 					startValue = 1,
 					endValue = 6,
@@ -3508,7 +3508,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 02 - Fix Mailbox",
-					storageId = Storage.Postman.Mission02,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission02,
 					missionId = 10253,
 					startValue = 1,
 					endValue = 3,
@@ -3520,7 +3520,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03 - Bill Delivery",
-					storageId = Storage.Postman.Mission03,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission03,
 					missionId = 10254,
 					startValue = 1,
 					endValue = 3,
@@ -3533,7 +3533,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 04 - Aggressive Dogs",
-					storageId = Storage.Postman.Mission04,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission04,
 					missionId = 10255,
 					startValue = 1,
 					endValue = 2,
@@ -3544,7 +3544,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 05 - Present Delivery",
-					storageId = Storage.Postman.Mission05,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission05,
 					missionId = 10256,
 					startValue = 1,
 					endValue = 4,
@@ -3558,7 +3558,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 06 - New Uniforms",
-					storageId = Storage.Postman.Mission06,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission06,
 					missionId = 10257,
 					startValue = 1,
 					endValue = 13,
@@ -3582,7 +3582,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 07 - Measurements",
-					storageId = Storage.Postman.Mission07,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission07,
 					missionId = 10258,
 					startValue = 1,
 					endValue = 9,
@@ -3599,7 +3599,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 08 - Missing Courier",
-					storageId = Storage.Postman.Mission08,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission08,
 					missionId = 10259,
 					startValue = 1,
 					endValue = 3,
@@ -3611,7 +3611,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 09 - Dear Santa",
-					storageId = Storage.Postman.Mission09,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission09,
 					missionId = 10260,
 					startValue = 1,
 					endValue = 4,
@@ -3624,7 +3624,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 10 - Mintwallin",
-					storageId = Storage.Postman.Mission10,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission10,
 					missionId = 10261,
 					startValue = 1,
 					endValue = 3,
@@ -3636,7 +3636,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Postman Rank",
-					storageId = Storage.Postman.Rank,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Rank,
 					missionId = 10262,
 					startValue = 1,
 					endValue = 5,
@@ -4382,12 +4382,12 @@ if not Quests then
 		},
 		[30] = {
 			name = "The White Raven Monastery",
-			startStorageId = Storage.WhiteRavenMonastery.QuestLog,
+			startStorageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.QuestLog,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Access to the Isle of Kings",
-					storageId = Storage.WhiteRavenMonastery.Passage,
+					storageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.Passage,
 					missionId = 10315,
 					startValue = 1,
 					endValue = 2,
@@ -4398,7 +4398,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Investigation",
-					storageId = Storage.WhiteRavenMonastery.Diary,
+					storageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.Diary,
 					missionId = 10316,
 					startValue = 1,
 					endValue = 2,
@@ -4412,12 +4412,12 @@ if not Quests then
 		},
 		[31] = {
 			name = "Tibia Tales",
-			startStorageId = Storage.TibiaTales.DefaultStart,
+			startStorageId = Storage.Quest.U8_1.TibiaTales.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "To Appease the Mighty",
-					storageId = Storage.TibiaTales.ToAppeaseTheMightyQuest,
+					storageId = Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest,
 					missionId = 10317,
 					startValue = 0,
 					endValue = 4,
@@ -4431,7 +4431,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Arito's Task",
-					storageId = Storage.TibiaTales.AritosTask,
+					storageId = Storage.Quest.U8_1.TibiaTales.AritosTask,
 					missionId = 10318,
 					startValue = 1,
 					endValue = 3,
@@ -4507,7 +4507,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Against the Spider Cult",
-					storageId = Storage.TibiaTales.AgainstTheSpiderCult,
+					storageId = Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult,
 					missionId = 10320,
 					startValue = 1,
 					endValue = 6,
@@ -4522,7 +4522,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "An Interest In Botany",
-					storageId = Storage.TibiaTales.AnInterestInBotany.Questline,
+					storageId = Storage.Quest.U8_6.AnInterestInBotany.Questline,
 					missionId = 10321,
 					startValue = 1,
 					endValue = 4,
@@ -4538,17 +4538,17 @@ if not Quests then
 				},
 				[6] = {
 					name = "Graves Sanctified - In Progress",
-					storageId = Storage.TibiaTales.RestInHallowedGround.HolyWater,
+					storageId = Storage.Quest.U8_1.RestInHallowedGround.HolyWater,
 					missionId = 10322,
 					startValue = 1,
 					endValue = 15,
 					description = function(player)
-						return string.format("You sanctified %d of 15 graves.", (math.max(player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.HolyWater), 0)))
+						return string.format("You sanctified %d of 15 graves.", (math.max(player:getStorageValue(Storage.Quest.U8_1.RestInHallowedGround.HolyWater), 0)))
 					end,
 				},
 				[7] = {
 					name = "Into the Bone Pit",
-					storageId = Storage.TibiaTales.IntoTheBonePit,
+					storageId = Storage.Quest.U8_1.TibiaTales.IntoTheBonePit,
 					missionId = 10323,
 					startValue = 1,
 					endValue = 3,
@@ -4561,7 +4561,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Rest in Hallowed Ground",
-					storageId = Storage.TibiaTales.RestInHallowedGround.Questline,
+					storageId = Storage.Quest.U8_1.RestInHallowedGround.Questline,
 					missionId = 10324,
 					startValue = 1,
 					endValue = 5,
@@ -4576,7 +4576,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "The Exterminator",
-					storageId = Storage.TibiaTales.TheExterminator,
+					storageId = Storage.Quest.U8_1.TibiaTales.TheExterminator,
 					missionId = 10325,
 					startValue = 1,
 					endValue = 3,
@@ -4590,7 +4590,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "The Ultimate Booze",
-					storageId = Storage.TibiaTales.UltimateBoozeQuest,
+					storageId = Storage.Quest.U8_1.TibiaTales.UltimateBoozeQuest,
 					missionId = 10326,
 					startValue = 1,
 					endValue = 3,
@@ -4603,7 +4603,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Jack to the Future",
-					storageId = Storage.TibiaTales.JackFutureQuest.QuestLine,
+					storageId = Storage.Quest.U8_7.JackFutureQuest.QuestLine,
 					missionId = 10327,
 					startValue = 1,
 					endValue = 11,
@@ -4675,7 +4675,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "To Outfox a Fox",
-					storageId = Storage.TibiaTales.ToOutfoxAFoxQuest,
+					storageId = Storage.Quest.U8_1.ToOutfoxAFoxQuest,
 					missionId = 10432,
 					startValue = 1,
 					endValue = 2,

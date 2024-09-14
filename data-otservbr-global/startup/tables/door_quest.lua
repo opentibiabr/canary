@@ -46,7 +46,7 @@ QuestDoorAction = {
 		itemPos = { { x = 32455, y = 31967, z = 14 } },
 	},
 	-- To Outfox a Fox Quest, mining helmet door
-	[Storage.TibiaTales.ToOutfoxAFoxQuest.Questline] = {
+	[Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline] = {
 		itemId = false,
 		itemPos = { { x = 32467, y = 31969, z = 5 } },
 	},
@@ -481,19 +481,19 @@ QuestDoorAction = {
 		itemPos = { { x = 32982, y = 31439, z = 3 } },
 	},
 	-- Postman door
-	[Storage.Postman.Mission05] = {
+	[Storage.Quest.U7_24.ThePostmanMissions.Mission05] = {
 		itemId = false,
 		itemPos = { { x = 32567, y = 32023, z = 6 } },
 	},
-	[Storage.Postman.Mission08] = {
+	[Storage.Quest.U7_24.ThePostmanMissions.Mission08] = {
 		itemId = false,
 		itemPos = { { x = 32515, y = 32248, z = 8 } },
 	},
-	[Storage.Postman.Mission09] = {
+	[Storage.Quest.U7_24.ThePostmanMissions.Mission09] = {
 		itemId = false,
 		itemPos = { { x = 32569, y = 32023, z = 6 } },
 	},
-	[Storage.Postman.Door] = {
+	[Storage.Quest.U7_24.ThePostmanMissions.Door] = {
 		itemId = false,
 		itemPos = {
 			{ x = 31921, y = 32652, z = 8 },
@@ -592,11 +592,11 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 32608, y = 31516, z = 14 } },
 	},
-	[Storage.TibiaTales.AnInterestInBotany.ChestDoor] = {
+	[Storage.Quest.U8_6.AnInterestInBotany.ChestDoor] = {
 		itemId = false,
 		itemPos = { { x = 33007, y = 31536, z = 10 } },
 	},
-	[Storage.TibiaTales.AritosTaskDoor] = {
+	[Storage.Quest.U8_1.TibiaTales.AritosTaskDoor] = {
 		itemId = false,
 		itemPos = { { x = 33247, y = 32534, z = 8 } },
 	},
@@ -656,7 +656,7 @@ QuestDoorAction = {
 		},
 	},
 	-- Fathers burden door
-	[Storage.FathersBurden.QuestLog] = {
+	[Storage.Quest.U8_6.AFathersBurden.QuestLog] = {
 		itemId = false,
 		itemPos = {
 			{ x = 31989, y = 31225, z = 7 },
@@ -678,7 +678,7 @@ QuestDoorAction = {
 		itemPos = { { x = 32316, y = 31757, z = 9 } },
 	},
 	-- White raven monastery door
-	[Storage.WhiteRavenMonastery.Door] = {
+	[Storage.Quest.U7_24.TheWhiteRavenMonastery.Door] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32171, y = 31936, z = 7 },

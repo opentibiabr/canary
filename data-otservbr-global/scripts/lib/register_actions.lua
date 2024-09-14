@@ -264,9 +264,9 @@ function onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
 	if math.random(1, 80) <= (watt and watt > 10 and watt or 10) then
 		-- Against The Spider Cult (Spider Eggs)
 		if target.itemid == 233 then
-			local eggStorage = player:getStorageValue(Storage.TibiaTales.AgainstTheSpiderCult)
+			local eggStorage = player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult)
 			if eggStorage >= 1 and eggStorage < 5 then
-				player:setStorageValue(Storage.TibiaTales.AgainstTheSpiderCult, math.max(1, eggStorage) + 1)
+				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult, math.max(1, eggStorage) + 1)
 			end
 
 			Game.createMonster("Giant Spider", Position(33181, 31869, 12))
@@ -479,7 +479,7 @@ function onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
 			end
 		end
 	elseif target.itemid == 103 and target.actionid == 4205 then
-		if player:getStorageValue(Storage.TibiaTales.IntoTheBonePit) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.IntoTheBonePit) ~= 1 then
 			return false
 		end
 
@@ -759,17 +759,17 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		target:decay()
 	elseif target.itemid == 2071 then
 		-- Jack to the Future Quest
-		if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Statue) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.Statue) ~= 1 then
 			return false
 		end
 
 		if toPosition == Position(33277, 31754, 7) then
-			if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Statue) == 1 then
+			if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.Statue) == 1 then
 				target:transform(2066)
 				toPosition:sendMagicEffect(CONST_ME_POFF)
 				player:addItem(10426, 1)
-				player:setStorageValue(Storage.TibiaTales.JackFutureQuest.Statue, 2)
-				player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) + 1)
+				player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.Statue, 2)
+				player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine, player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) + 1)
 				addEvent(revertItem, 2 * 60 * 1000, { x = 33277, y = 31754, z = 7 }, 2066, 2071)
 			end
 		end
@@ -866,8 +866,8 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 	elseif target.actionid == 100 then
 		if target.itemid == 3501 then
 			-- Postman quest
-			if player:getStorageValue(Storage.Postman.Mission02) == 1 then
-				player:setStorageValue(Storage.Postman.Mission02, 2)
+			if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission02) == 1 then
+				player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission02, 2)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			end
 		elseif target:getActionId() == 40041 and target.itemid == 4848 then

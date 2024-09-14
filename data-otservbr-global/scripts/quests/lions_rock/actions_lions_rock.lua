@@ -84,7 +84,7 @@ function lionsGetLionsMane.onUse(player, item, fromPosition, target, toPosition,
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You picked a beautiful lion's mane flower.")
 	player:addItem(21389, 1)
 	player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline), 1))
-	player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
+	player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 	item:transform(21935)
 	addEvent(function()
 		item:transform(21388)
@@ -102,7 +102,7 @@ function lionsGetHolyWater.onUse(player, item, fromPosition, target, toPosition,
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You took some holy water from the sacred well.")
 	player:addItem(21466, 1)
 	player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline), 1))
-	player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
+	player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 	return true
 end
 

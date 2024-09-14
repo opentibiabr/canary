@@ -238,8 +238,8 @@ local questTable = {
 	{ storage = Storage.Quest.U8_1.TheTravellingTrader.Mission06, storageValue = 2 },
 	{ storage = Storage.Quest.U8_1.TheTravellingTrader.Mission07, storageValue = 1 },
 	{ storage = Storage.Quest.U8_0.BarbarianArena.QuestLogGreenhorn, storageValue = 1 },
-	{ storage = Storage.TibiaTales.DefaultStart, storageValue = 1 },
-	{ storage = Storage.TibiaTales.ToAppeaseTheMightyQuest, storageValue = 1 },
+	{ storage = Storage.Quest.U8_1.TibiaTales.DefaultStart, storageValue = 1 },
+	{ storage = Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, storageValue = 1 },
 	{ storage = 12450, storageValue = 6 },
 	{ storage = 12330, storageValue = 1 },
 	{ storage = 12332, storageValue = 13 },
@@ -361,7 +361,7 @@ local questTable = {
 
 	-- Assassin Outfit quests
 	{ storage = Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos, storageValue = 0 },
-	{ storage = Storage.TibiaTales.ToOutfoxAFoxQuest.Questline, storageValue = 2 },
+	{ storage = Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline, storageValue = 2 },
 
 	-- Hunter Outfit quests
 	{ storage = Storage.Quest.U7_8.HunterOutfits.HunterMusicSheet01, storageValue = 1 },
@@ -383,10 +383,10 @@ local questTable = {
 	{ storage = Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine, storageValue = 2 },
 
 	--The White Raven Monastery
-	{ storage = Storage.WhiteRavenMonastery.QuestLog, storageValue = 1 },
-	{ storage = Storage.WhiteRavenMonastery.Passage, storageValue = 1 },
-	{ storage = Storage.WhiteRavenMonastery.Diary, storageValue = 2 },
-	{ storage = Storage.WhiteRavenMonastery.Door, storageValue = 1 },
+	{ storage = Storage.Quest.U7_24.TheWhiteRavenMonastery.QuestLog, storageValue = 1 },
+	{ storage = Storage.Quest.U7_24.TheWhiteRavenMonastery.Passage, storageValue = 1 },
+	{ storage = Storage.Quest.U7_24.TheWhiteRavenMonastery.Diary, storageValue = 2 },
+	{ storage = Storage.Quest.U7_24.TheWhiteRavenMonastery.Door, storageValue = 1 },
 }
 
 -- from Position: (33201, 31762, 1)

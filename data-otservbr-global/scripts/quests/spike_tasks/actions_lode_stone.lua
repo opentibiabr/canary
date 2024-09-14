@@ -6,7 +6,7 @@ local area = {
 local spikeTasksStone = Action()
 
 function spikeTasksStone.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local currentProgress = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main)
+	local currentProgress = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Main)
 	if currentProgress == 3 then
 		return false
 	end
@@ -24,19 +24,19 @@ function spikeTasksStone.onUse(player, item, fromPosition, target, toPosition, i
 
 	if itemId == 19207 then
 		item:transform(19216)
-		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main, 1) -- Define o progresso inicial
+		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Main, 1) -- Define o progresso inicial
 	elseif itemId == 19216 then
-		local useCount = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main)
+		local useCount = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Main)
 		if useCount == -1 then
 			useCount = 0
 		end
 
 		useCount = useCount + 1
-		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main, useCount)
+		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Main, useCount)
 
 		if useCount == 3 then -- Corrigido para checar se o uso é 3
 			item:transform(19218)
-			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Middle_Charge_Main, 3) -- Finaliza a missão
+			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Main, 3) -- Finaliza a missão
 			return true
 		end
 	end

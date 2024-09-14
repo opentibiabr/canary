@@ -2267,14 +2267,14 @@ ChestUnique = {
 		itemPos = { x = 32591, y = 31647, z = 3 },
 		reward = { { 3425, 1 } },
 		weight = 55.00,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.DwarvenShield,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.DwarvenShield,
 	},
 	[6254] = {
 		itemId = 2472,
 		itemPos = { x = 32590, y = 31647, z = 3 },
 		reward = { { 3282, 1 } },
 		weight = 54.00,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.MorningStar,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.MorningStar,
 	},
 	[6255] = {
 		itemId = 2434,
@@ -2282,7 +2282,7 @@ ChestUnique = {
 		container = 2853,
 		reward = { { 237, 1 }, { 3147, 1 }, { 3059, 1 } },
 		weight = 31.00,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.BP1,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP1,
 	},
 	[6256] = {
 		itemId = 2434,
@@ -2290,7 +2290,7 @@ ChestUnique = {
 		container = 2853,
 		reward = { { 3028, 2 }, { 3031, 100 } },
 		weight = 18.20,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.BP2,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP2,
 	},
 	-- To Outfox a Fox Quest
 	[6257] = {
@@ -2298,7 +2298,7 @@ ChestUnique = {
 		itemPos = { x = 32467, y = 31970, z = 5 },
 		reward = { { 139, 1 } },
 		weight = 7.00,
-		storage = Storage.TibiaTales.ToOutfoxAFoxQuest.MiningHelmet,
+		storage = Storage.Quest.U8_1.ToOutfoxAFoxQuest.MiningHelmet,
 	},
 	-- Waterfall Quest
 	[6258] = {
@@ -2523,7 +2523,7 @@ ChestUnique = {
 		itemPos = { x = 33004, y = 31530, z = 10 },
 		reward = { { 11699, 1 } },
 		weight = 15.00,
-		storage = Storage.TibiaTales.AnInterestInBotany.BotanyAlmanach,
+		storage = Storage.Quest.U8_6.AnInterestInBotany.BotanyAlmanach,
 	},
 	-- Wrath of the Emperor Quest
 	[6297] = {

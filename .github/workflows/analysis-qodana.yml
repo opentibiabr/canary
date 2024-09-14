@@ -60,6 +60,13 @@ jobs:
       #     jetbrains/qodana-clang:2024.1-eap \
       #     --compile-commands ./build/linux-debug/compile_commands.json
 
+      - name: Print current directory and list contents before Qodana scan
+        run: |
+          echo "Current directory before Qodana scan:"
+          pwd
+          echo "Directory contents before Qodana scan:"
+          ls -la
+
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
         with:

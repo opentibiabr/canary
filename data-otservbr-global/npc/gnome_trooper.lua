@@ -72,7 +72,7 @@ local function greetCallback(npc, creature)
 	local deliveredParcels = initializeParcelDelivery(player)
 	local parcelStatus = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)
 
-	if table.contains({-1, 4}, parcelStatus) or table.contains(deliveredParcels, npc:getId()) then
+	if table.contains({ -1, 4 }, parcelStatus) or table.contains(deliveredParcels, npc:getId()) then
 		return false
 	end
 
@@ -86,7 +86,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local deliveredParcels = initializeParcelDelivery(player)
 	local parcelStatus = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Lower_Parcel_Main)
 
-	if MsgContains(message, "something") and not table.contains({-1, 4}, parcelStatus) then
+	if MsgContains(message, "something") and not table.contains({ -1, 4 }, parcelStatus) then
 		if table.contains(deliveredParcels, npc:getId()) then
 			return true
 		end

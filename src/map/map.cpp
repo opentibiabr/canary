@@ -312,7 +312,7 @@ bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creatur
 	uint32_t flags = 0;
 	std::shared_ptr<Item> toItem = nullptr;
 
-	const auto toCylinder = tile->queryDestination(index, creature, &toItem, flags);
+	const auto toCylinder = tile->queryDestination(index, creature, toItem, flags);
 	toCylinder->internalAddThing(creature);
 
 	const Position &dest = toCylinder->getPosition();

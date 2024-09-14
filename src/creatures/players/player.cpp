@@ -3433,16 +3433,16 @@ ReturnValue Player::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t co
 	return RETURNVALUE_NOERROR;
 }
 
-std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &flags) {
+std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item> &destItem, uint32_t &flags) {
 	if (index == 0 /*drop to capacity window*/ || index == INDEX_WHEREEVER) {
-		*destItem = nullptr;
+		destItem = nullptr;
 
 		const auto &item = thing->getItem();
-		if (item == nullptr) {
+		if (!item) {
 			return getPlayer();
 		}
 
-		const bool autoStack = !((flags & FLAG_IGNOREAUTOSTACK) == FLAG_IGNOREAUTOSTACK);
+		const bool autoStack = !(flags & FLAG_IGNOREAUTOSTACK);
 		const bool isStackable = item->isStackable();
 
 		std::vector<std::shared_ptr<Container>> containers;
@@ -3450,11 +3450,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 		for (uint32_t slotIndex = CONST_SLOT_FIRST; slotIndex <= CONST_SLOT_AMMO; ++slotIndex) {
 			const auto &inventoryItem = inventory[slotIndex];
 			if (inventoryItem) {
-				if (inventoryItem == tradeItem) {
-					continue;
-				}
-
-				if (inventoryItem == item) {
+				if (inventoryItem == tradeItem || inventoryItem == item) {
 					continue;
 				}
 
@@ -3463,7 +3459,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 					if (queryAdd(slotIndex, item, item->getItemCount(), 0) == RETURNVALUE_NOERROR) {
 						if (inventoryItem->equals(item) && inventoryItem->getItemCount() < inventoryItem->getStackSize()) {
 							index = slotIndex;
-							*destItem = inventoryItem;
+							destItem = inventoryItem;
 							return getPlayer();
 						}
 					}
@@ -3476,7 +3472,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 				}
 			} else if (queryAdd(slotIndex, item, item->getItemCount(), flags) == RETURNVALUE_NOERROR) { // empty slot
 				index = slotIndex;
-				*destItem = nullptr;
+				destItem = nullptr;
 				return getPlayer();
 			}
 		}
@@ -3484,13 +3480,17 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 		size_t i = 0;
 		while (i < containers.size()) {
 			const auto &tmpContainer = containers[i++];
+			if (!tmpContainer) {
+				continue; // Verificar se tmpContainer é válido
+			}
+
 			if (!autoStack || !isStackable) {
 				// we need to find first empty container as fast as we can for non-stackable items
 				uint32_t n = tmpContainer->capacity() - tmpContainer->size();
 				while (n) {
 					if (tmpContainer->queryAdd(tmpContainer->capacity() - n, item, item->getItemCount(), flags) == RETURNVALUE_NOERROR) {
 						index = tmpContainer->capacity() - n;
-						*destItem = nullptr;
+						destItem = nullptr;
 						return tmpContainer;
 					}
 
@@ -3509,18 +3509,13 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 			uint32_t n = 0;
 
 			for (const auto &tmpItem : tmpContainer->getItemList()) {
-				if (tmpItem == tradeItem) {
+				if (tmpItem == tradeItem || tmpItem == item) {
 					continue;
 				}
 
-				if (tmpItem == item) {
-					continue;
-				}
-
-				// try find an already existing item to stack with
 				if (tmpItem->equals(item) && tmpItem->getItemCount() < tmpItem->getStackSize()) {
 					index = n;
-					*destItem = tmpItem;
+					destItem = tmpItem;
 					return tmpContainer;
 				}
 
@@ -3533,7 +3528,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 
 			if (n < tmpContainer->capacity() && tmpContainer->queryAdd(n, item, item->getItemCount(), flags) == RETURNVALUE_NOERROR) {
 				index = n;
-				*destItem = nullptr;
+				destItem = nullptr;
 				return tmpContainer;
 			}
 		}
@@ -3543,11 +3538,11 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 
 	const auto &destThing = getThing(index);
 	if (destThing) {
-		*destItem = destThing->getItem();
+		destItem = destThing->getItem();
 	}
 
 	const auto &item = thing->getItem();
-	const bool movingAmmoToQuiver = item && *destItem && (*destItem)->isQuiver() && item->isAmmo();
+	const bool movingAmmoToQuiver = item && destItem && (destItem)->isQuiver() && item->isAmmo();
 	// force shield any slot right to player cylinder
 	if (index == CONST_SLOT_RIGHT && !movingAmmoToQuiver) {
 		return getPlayer();
@@ -3556,7 +3551,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 	const auto &subCylinder = std::dynamic_pointer_cast<Cylinder>(destThing);
 	if (subCylinder) {
 		index = INDEX_WHEREEVER;
-		*destItem = nullptr;
+		destItem = nullptr;
 		return subCylinder;
 	} else {
 		return getPlayer();

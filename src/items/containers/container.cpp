@@ -608,15 +608,15 @@ ReturnValue Container::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t
 	return RETURNVALUE_NOERROR;
 }
 
-std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &flags) {
+std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item> &destItem, uint32_t &flags) {
 	if (!unlocked) {
-		*destItem = nullptr;
+		destItem = nullptr;
 		return getContainer();
 	}
 
 	if (index == 254 /*move up*/) {
 		index = INDEX_WHEREEVER;
-		*destItem = nullptr;
+		destItem = nullptr;
 
 		std::shared_ptr<Container> parentContainer = std::dynamic_pointer_cast<Container>(getParent());
 		if (parentContainer) {
@@ -627,7 +627,7 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 
 	if (index == 255 /*add wherever*/) {
 		index = INDEX_WHEREEVER;
-		*destItem = nullptr;
+		destItem = nullptr;
 	} else if (index >= static_cast<int32_t>(capacity()) && !hasPagination()) {
 		/*
 		if you have a container, maximize it to show all 20 slots
@@ -637,7 +637,7 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 		the client calculates the slot position as if the bag has 20 slots
 		*/
 		index = INDEX_WHEREEVER;
-		*destItem = nullptr;
+		destItem = nullptr;
 	}
 
 	const auto item = thing->getItem();
@@ -648,20 +648,20 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 	if (index != INDEX_WHEREEVER) {
 		std::shared_ptr<Item> itemFromIndex = getItemByIndex(index);
 		if (itemFromIndex) {
-			*destItem = itemFromIndex;
+			destItem = itemFromIndex;
 		}
 
-		std::shared_ptr<Cylinder> subCylinder = std::dynamic_pointer_cast<Cylinder>(*destItem);
+		std::shared_ptr<Cylinder> subCylinder = std::dynamic_pointer_cast<Cylinder>(destItem);
 		if (subCylinder) {
 			index = INDEX_WHEREEVER;
-			*destItem = nullptr;
+			destItem = nullptr;
 			return subCylinder;
 		}
 	}
 
 	bool autoStack = !hasBitSet(FLAG_IGNOREAUTOSTACK, flags);
 	if (autoStack && item->isStackable() && item->getParent() != getContainer()) {
-		if (*destItem && (*destItem)->equals(item) && (*destItem)->getItemCount() < (*destItem)->getStackSize()) {
+		if (destItem && (destItem)->equals(item) && (destItem)->getItemCount() < (destItem)->getStackSize()) {
 			return getContainer();
 		}
 
@@ -669,7 +669,7 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 		uint32_t n = 0;
 		for (const std::shared_ptr<Item> &listItem : itemlist) {
 			if (listItem != item && listItem->equals(item) && listItem->getItemCount() < listItem->getStackSize()) {
-				*destItem = listItem;
+				destItem = listItem;
 				index = n;
 				return getContainer();
 			}

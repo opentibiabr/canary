@@ -1572,7 +1572,7 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 	std::shared_ptr<Tile> fromCylinder = nullptr;
 	uint32_t n = 0;
 
-	while ((subCylinder = toCylinder->queryDestination(index, creature, &toItem, flags)->getTile()) != toCylinder) {
+	while ((subCylinder = toCylinder->queryDestination(index, creature, toItem, flags)->getTile()) != toCylinder) {
 		map.moveCreature(creature, subCylinder);
 
 		if (creature->getParent() != subCylinder) {
@@ -1975,7 +1975,7 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	std::shared_ptr<Cylinder> subCylinder;
 	int floorN = 0;
 
-	while ((subCylinder = toCylinder->queryDestination(index, item, &toItem, flags)) != toCylinder) {
+	while ((subCylinder = toCylinder->queryDestination(index, item, toItem, flags)) != toCylinder) {
 		toCylinder = subCylinder;
 		flags = 0;
 
@@ -2224,7 +2224,7 @@ ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, const st
 
 	std::shared_ptr<Cylinder> destCylinder = toCylinder;
 	std::shared_ptr<Item> toItem = nullptr;
-	toCylinder = toCylinder->queryDestination(index, item, &toItem, flags);
+	toCylinder = toCylinder->queryDestination(index, item, toItem, flags);
 
 	// check if we can add this item
 	ReturnValue ret = toCylinder->queryAdd(index, item, item->getItemCount(), flags);
@@ -4348,23 +4348,14 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	const auto &item = thing->getItem();
-	if (!item) {
-		return;
-	}
-
-	const auto &tile = map.getTile(item->getPosition());
-	if (!tile) {
-		return;
-	}
-
-	const auto &houseTile = tile->dynamic_self_cast<HouseTile>();
+	const auto item = thing->getItem();
+	const auto tile = map.getTile(item->getPosition());
+	const auto houseTile = tile->dynamic_self_cast<HouseTile>();
 	if (!tile->hasFlag(TILESTATE_PROTECTIONZONE) || !houseTile) {
 		player->sendCancelMessage("You may construct this only inside a house.");
 		return;
 	}
-
-	const auto &house = houseTile->getHouse();
+	const auto house = houseTile->getHouse();
 	if (!house) {
 		player->sendCancelMessage("You may construct this only inside a house.");
 		return;
@@ -4395,7 +4386,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
 			g_dispatcher().addEvent([this, playerId = player->getID(), listDir] { playerAutoWalk(playerId, listDir); }, "Game::playerAutoWalk");
 
-			const std::shared_ptr<Task> task = createPlayerTask(
+			std::shared_ptr<Task> task = createPlayerTask(
 				400, [this, playerId, pos, stackPos, itemId] { playerWrapableItem(playerId, pos, stackPos, itemId); }, "Game::playerWrapableItem"
 			);
 			player->setNextWalkActionTask(task);
@@ -4405,19 +4396,15 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	const auto &container = item->getContainer();
+	std::shared_ptr<Container> container = item->getContainer();
 	if (container && container->getItemHoldingCount() > 0) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
 
-	const auto &topItem = tile->getTopTopItem();
-	if (!topItem) {
-		return;
-	}
-
-	const bool &unwrappable = item->getHoldingPlayer() && item->getID() == ITEM_DECORATION_KIT;
-	const bool &blockedUnwrap = topItem && topItem->canReceiveAutoCarpet() && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID);
+	auto topItem = tile->getTopTopItem();
+	bool unwrappable = item->getHoldingPlayer() && item->getID() == ITEM_DECORATION_KIT;
+	bool blockedUnwrap = topItem && topItem->canReceiveAutoCarpet() && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID);
 
 	if (unwrappable || blockedUnwrap) {
 		player->sendCancelMessage("You can only wrap/unwrap on the floor.");
@@ -4425,7 +4412,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	std::string itemName = item->getName();
-	const auto &unWrapAttribute = item->getCustomAttribute("unWrapId");
+	auto unWrapAttribute = item->getCustomAttribute("unWrapId");
 	uint16_t unWrapId = 0;
 	if (unWrapAttribute != nullptr) {
 		unWrapId = static_cast<uint16_t>(unWrapAttribute->getInteger());

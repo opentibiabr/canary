@@ -871,9 +871,9 @@ ReturnValue Tile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t coun
 	return RETURNVALUE_NOERROR;
 }
 
-std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &tileFlags) {
+std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item> &destItem, uint32_t &tileFlags) {
 	std::shared_ptr<Tile> destTile = nullptr;
-	*destItem = nullptr;
+	destItem = nullptr;
 
 	if (hasFlag(TILESTATE_FLOORCHANGE_DOWN)) {
 		uint16_t dx = tilePos.x;
@@ -961,7 +961,7 @@ std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_pt
 	if (destTile) {
 		std::shared_ptr<Thing> destThing = destTile->getTopDownItem();
 		if (destThing) {
-			*destItem = destThing->getItem();
+			destItem = destThing->getItem();
 			if (thing->getItem()) {
 				auto destCylinder = destThing->getCylinder();
 				if (destCylinder && !destCylinder->getContainer()) {

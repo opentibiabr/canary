@@ -64,7 +64,7 @@ public:
 	 * this method can modify the flags
 	 * \returns Cylinder returns the destination cylinder
 	 */
-	virtual std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &flags) = 0;
+	virtual std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item> &destItem, uint32_t &flags) = 0;
 
 	/**
 	 * Add the object to the cylinder
@@ -186,7 +186,7 @@ public:
 	virtual ReturnValue queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> &actor = nullptr) override {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-	virtual std::shared_ptr<Cylinder> queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item>*, uint32_t &) override {
+	virtual std::shared_ptr<Cylinder> queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item> &, uint32_t &) override {
 		return nullptr;
 	}
 

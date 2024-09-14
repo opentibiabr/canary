@@ -105,148 +105,70 @@ OutputMessage_ptr Protocol::getOutputBuffer(int32_t size) {
 }
 
 void Protocol::XTEA_encrypt(OutputMessage &msg) const {
-	const size_t paddingBytes = msg.getLength() & 7;
+	const uint32_t delta = 0x61C88647;
+
+	// The message must be a multiple of 8
+	size_t paddingBytes = msg.getLength() & 7;
 	if (paddingBytes != 0) {
 		msg.addPaddingBytes(8 - paddingBytes);
 	}
 
 	uint8_t* buffer = msg.getOutputBuffer();
-	const auto messageLength = static_cast<int32_t>(msg.getLength());
-
-	precacheControlSumsEncrypt();
-
-	// Alocar memória alinhada usando std::unique_ptr para garantir liberação
-	const std::unique_ptr<uint8_t, AlignedFreeDeleter> alignedBuffer(
-		aligned_alloc_memory(messageLength, 32), AlignedFreeDeleter()
-	);
-
-	if (!alignedBuffer) {
-		g_logger().error("[] - Error alianhamento memory", __FUNCTION__);
-	}
-
-	// Copiar dados para buffer alinhado usando AVX2
-	simd_memcpy_avx2(alignedBuffer.get(), buffer, messageLength);
-
+	auto messageLength = static_cast<int32_t>(msg.getLength());
 	int32_t readPos = 0;
+	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
+	// TODO: refactor this for not use c-style
+	uint32_t precachedControlSum[32][2];
+	uint32_t sum = 0;
+	for (int32_t i = 0; i < 32; ++i) {
+		precachedControlSum[i][0] = (sum + newKey[sum & 3]);
+		sum -= delta;
+		precachedControlSum[i][1] = (sum + newKey[(sum >> 11) & 3]);
+	}
 	while (readPos < messageLength) {
-		// Usar prefetch otimizado com _MM_HINT_T1 para cache L2
-		_mm_prefetch(reinterpret_cast<const char*>(alignedBuffer.get() + readPos + 256), _MM_HINT_T1);
-
-		__m256i vData = is_aligned(alignedBuffer.get() + readPos, 32)
-			? _mm256_load_si256(reinterpret_cast<const __m256i*>(alignedBuffer.get() + readPos))
-			: _mm256_loadu_si256(reinterpret_cast<const __m256i*>(alignedBuffer.get() + readPos));
-
-		auto* vDataArr = reinterpret_cast<uint32_t*>(&vData);
-
-		for (int32_t i = 0; i < 32; i += 8) {
-			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[i * 2];
-			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[i * 2 + 1];
-
-			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 1) * 2];
-			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 1) * 2 + 1];
-
-			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 2) * 2];
-			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 2) * 2 + 1];
-
-			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 3) * 2];
-			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 3) * 2 + 1];
-
-			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 4) * 2];
-			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 4) * 2 + 1];
-
-			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 5) * 2];
-			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 5) * 2 + 1];
-
-			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 6) * 2];
-			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 6) * 2 + 1];
-
-			vDataArr[0] += ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsEncrypt[(i + 7) * 2];
-			vDataArr[1] += ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsEncrypt[(i + 7) * 2 + 1];
+		std::array<uint32_t, 2> vData = {};
+		memcpy(vData.data(), buffer + readPos, 8);
+		for (int32_t i = 0; i < 32; ++i) {
+			vData[0] += ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][0];
+			vData[1] += ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][1];
 		}
-
-		if (is_aligned(alignedBuffer.get() + readPos, 32)) {
-			_mm256_store_si256(reinterpret_cast<__m256i*>(alignedBuffer.get() + readPos), vData);
-		} else {
-			_mm256_storeu_si256(reinterpret_cast<__m256i*>(alignedBuffer.get() + readPos), vData);
-		}
-
+		memcpy(buffer + readPos, vData.data(), 8);
 		readPos += 8;
 	}
-
-	// Copiar de volta para o buffer original
-	simd_memcpy_avx2(buffer, alignedBuffer.get(), messageLength);
 }
 
 bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
-	const uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
+	uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
 	if ((msgLength & 7) != 0) {
 		return false;
 	}
 
+	const uint32_t delta = 0x61C88647;
+
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
-	const auto messageLength = static_cast<int32_t>(msgLength);
-
-	precacheControlSumsDecrypt();
-
-	// Alocar memória alinhada usando std::unique_ptr para garantir liberação
-	const std::unique_ptr<uint8_t, AlignedFreeDeleter> alignedBuffer(
-		aligned_alloc_memory(messageLength, 32), AlignedFreeDeleter()
-	);
-
-	if (!alignedBuffer) {
-		g_logger().error("[] - Error alianhamento memory", __FUNCTION__);
-	}
-
-	simd_memcpy_avx2(alignedBuffer.get(), buffer, messageLength);
-
+	auto messageLength = static_cast<int32_t>(msgLength);
 	int32_t readPos = 0;
+	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
+	// TODO: refactor this for not use c-style
+	uint32_t precachedControlSum[32][2];
+	uint32_t sum = 0xC6EF3720;
+	for (int32_t i = 0; i < 32; ++i) {
+		precachedControlSum[i][0] = (sum + newKey[(sum >> 11) & 3]);
+		sum += delta;
+		precachedControlSum[i][1] = (sum + newKey[sum & 3]);
+	}
 	while (readPos < messageLength) {
-		_mm_prefetch(reinterpret_cast<const char*>(alignedBuffer.get() + readPos + 256), _MM_HINT_T1);
-
-		__m256i vData = is_aligned(alignedBuffer.get() + readPos, 32)
-			? _mm256_load_si256(reinterpret_cast<const __m256i*>(alignedBuffer.get() + readPos))
-			: _mm256_loadu_si256(reinterpret_cast<const __m256i*>(alignedBuffer.get() + readPos));
-
-		auto* vDataArr = reinterpret_cast<uint32_t*>(&vData);
-
-		for (int32_t i = 0; i < 32; i += 8) {
-			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[i * 2];
-			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[i * 2 + 1];
-
-			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 1) * 2];
-			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 1) * 2 + 1];
-
-			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 2) * 2];
-			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 2) * 2 + 1];
-
-			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 3) * 2];
-			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 3) * 2 + 1];
-
-			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 4) * 2];
-			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 4) * 2 + 1];
-
-			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 5) * 2];
-			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 5) * 2 + 1];
-
-			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 6) * 2];
-			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 6) * 2 + 1];
-
-			vDataArr[1] -= ((vDataArr[0] << 4) ^ (vDataArr[0] >> 5)) + vDataArr[0] ^ cachedControlSumsDecrypt[(i + 7) * 2];
-			vDataArr[0] -= ((vDataArr[1] << 4) ^ (vDataArr[1] >> 5)) + vDataArr[1] ^ cachedControlSumsDecrypt[(i + 7) * 2 + 1];
+		std::array<uint32_t, 2> vData = {};
+		memcpy(vData.data(), buffer + readPos, 8);
+		for (int32_t i = 0; i < 32; ++i) {
+			vData[1] -= ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][0];
+			vData[0] -= ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][1];
 		}
-
-		if (is_aligned(alignedBuffer.get() + readPos, 32)) {
-			_mm256_store_si256(reinterpret_cast<__m256i*>(alignedBuffer.get() + readPos), vData);
-		} else {
-			_mm256_storeu_si256(reinterpret_cast<__m256i*>(alignedBuffer.get() + readPos), vData);
-		}
-
+		memcpy(buffer + readPos, vData.data(), 8);
 		readPos += 8;
 	}
 
-	simd_memcpy_avx2(buffer, alignedBuffer.get(), messageLength);
-
-	const auto innerLength = msg.get<uint16_t>();
+	uint16_t innerLength = msg.get<uint16_t>();
 	if (std::cmp_greater(innerLength, msgLength - 2)) {
 		return false;
 	}

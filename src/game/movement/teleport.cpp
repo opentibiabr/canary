@@ -43,7 +43,7 @@ ReturnValue Teleport::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint
 	return RETURNVALUE_NOERROR;
 }
 
-std::shared_ptr<Cylinder> Teleport::queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item>*, uint32_t &) {
+std::shared_ptr<Cylinder> Teleport::queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item> &, uint32_t &) {
 	return getTeleport();
 }
 

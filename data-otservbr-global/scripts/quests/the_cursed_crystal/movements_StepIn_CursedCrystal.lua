@@ -11,10 +11,10 @@ local function isInArea(pos, fromPos, toPos)
 end
 
 function StepInCursedCrystal.onStepIn(creature, item, position, fromPosition)
-    local player = creature:getPlayer()
-    if not player then
-        return false
-    end
+	local player = creature:getPlayer()
+	if not player then
+		return false
+	end
 
 	if item.actionid == 35001 then
 		local playerPos = player:getPosition()

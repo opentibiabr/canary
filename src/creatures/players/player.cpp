@@ -7853,7 +7853,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 
 		case OfferTypes_t::ALLBLESSINGS: {
 			for (auto bless : magic_enum::enum_values<Blessings>()) {
-				auto blessingAmount = getBlessingCount(bless);
+				auto blessingAmount = getBlessingCount(enumToValue(bless));
 				if (blessingAmount >= STORE_BLESSING_MAX_AMOUNT) {
 					canBuy = false;
 					break;
@@ -7893,7 +7893,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 
 		case OfferTypes_t::HUNTINGSLOT: {
 			const auto &thirdSlot = getTaskHuntingSlotById(PreySlot_Three);
-			if (thirdSlot->state != PreyDataState_Locked) {
+			if (thirdSlot->state != PreyTaskDataState_Locked) {
 				canBuy = false;
 			}
 

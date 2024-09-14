@@ -10257,7 +10257,7 @@ bool Game::addInfluencedMonster(std::shared_ptr<Monster> monster) {
 	return false;
 }
 
-bool Game::processHouseOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/) {
+bool Game::processHouseOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t charges /* = 0*/) {
 	std::shared_ptr<Item> decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
 	if (!decoKit) {
 		return false;
@@ -10307,7 +10307,7 @@ void Game::addPlayerUniqueLogin(std::shared_ptr<Player> player) {
 	m_uniqueLoginPlayerNames[lowercase_name] = player;
 }
 
-bool Game::processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t charges /* = 0*/, bool movable /* = false*/) {
+bool Game::processChargesOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t charges /* = 0*/, bool movable /* = false*/) {
 	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, 1);
 	if (!newItem) {
 		return false;
@@ -10346,7 +10346,7 @@ bool Game::processChargesOffer(std::shared_ptr<Player> player, uint32_t itemId, 
 	return true;
 }
 
-bool Game::processStackableOffer(std::shared_ptr<Player> player, uint32_t itemId, uint16_t amount /* = 1*/, bool movable /* = false*/) {
+bool Game::processStackableOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t amount /* = 1*/, bool movable /* = false*/) {
 	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, amount);
 	if (!newItem) {
 		return false;
@@ -10381,29 +10381,28 @@ bool Game::processStackableOffer(std::shared_ptr<Player> player, uint32_t itemId
 	return true;
 }
 
-bool Game::processNameChangeOffer(std::shared_ptr<Player> player, std::string &name) {
-	std::string newName = name;
-	trimString(newName);
+bool Game::processNameChangeOffer(const std::shared_ptr<Player> &player, std::string name) {
+	trimString(name);
 
-	auto isValidName = validateName(newName);
+	auto isValidName = validateName(name);
 	if (isValidName != VALID) {
 		return false;
 	}
 
-	capitalizeWords(newName);
+	capitalizeWords(name);
 
-	if (g_monsters().getMonsterType(newName, true)) {
+	if (g_monsters().getMonsterType(name, true)) {
 		return false;
-	} else if (getNpcByName(newName)) {
+	} else if (getNpcByName(name)) {
 		return false;
 	}
 
-	DBResult_ptr result = g_database().storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `name` = {}", g_database().escapeString(newName)));
+	DBResult_ptr result = g_database().storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `name` = {}", g_database().escapeString(name)));
 	if (result) {
 		return false;
 	}
 
-	std::string query = fmt::format("UPDATE `players` SET `name` = {} WHERE `id` = {}", g_database().escapeString(newName), player->getGUID());
+	std::string query = fmt::format("UPDATE `players` SET `name` = {} WHERE `id` = {}", g_database().escapeString(name), player->getGUID());
 	if (!g_database().executeQuery(query)) {
 		return false;
 	}
@@ -10411,7 +10410,7 @@ bool Game::processNameChangeOffer(std::shared_ptr<Player> player, std::string &n
 	return true;
 }
 
-bool Game::processTempleOffer(std::shared_ptr<Player> player) {
+bool Game::processTempleOffer(const std::shared_ptr<Player> &player) {
 	if (player->isPzLocked() || player->hasCondition(CONDITION_INFIGHT)) {
 		return false;
 	}
@@ -10858,7 +10857,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		case OfferTypes_t::HUNTINGSLOT: {
 			const auto &thirdSlot = player->getTaskHuntingSlotById(PreySlot_Three);
 
-			if (thirdSlot->state != PreyDataState_Locked) {
+			if (thirdSlot->state != PreyTaskDataState_Locked) {
 				break;
 			}
 

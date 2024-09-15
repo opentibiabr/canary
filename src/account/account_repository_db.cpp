@@ -159,7 +159,7 @@ bool AccountRepositoryDB::registerStoreTransaction(
 
 	bool successful = g_database().executeQuery(
 		fmt::format(
-			"INSERT INTO `store_history` (`account_id`, `description`, `coin_amount`, `coin_type`, `type`, `time`) VALUES ({}, {}, {}, {}, {}, {})",
+			"INSERT INTO `store_history` (`account_id`, `description`, `coin_amount`, `coin_type`, `type`, `created_at`) VALUES ({}, {}, {}, {}, {}, {})",
 			id,
 			g_database().escapeString(description),
 			amount,

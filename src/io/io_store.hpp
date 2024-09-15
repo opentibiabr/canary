@@ -116,6 +116,14 @@ struct BannerInfo {
 	uint32_t offerId;
 };
 
+struct StoreHistoryDetail {
+	uint32_t createdAt {};
+	uint64_t totalPrice {};
+	uint32_t coinAmount {};
+	std::string description {};
+	std::string playerName {};
+};
+
 class Category;
 class Offer;
 
@@ -192,6 +200,8 @@ public:
 	const std::vector<std::string> getOffersDisableReasonVector();
 
 	std::vector<Offer> getOffersContainingSubstring(const std::string &searchString);
+
+	static StoreHistoryDetail getStoreHistoryDetail(const std::string &playerName, bool fromMarket, uint32_t createdAt);
 
 private:
 	IOStore() = default;

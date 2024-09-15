@@ -35,6 +35,7 @@
 #include "items/bed.hpp"
 #include "items/weapons/weapons.hpp"
 #include "io/io_store.hpp"
+#include "io/functions/iologindata_save_player.hpp"
 #include "core.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
@@ -7781,6 +7782,25 @@ std::vector<StoreHistory> &Player::getStoreHistory() {
 
 void Player::setStoreHistory(const StoreHistory &history) {
 	storeHistoryVector.push_back(history);
+}
+
+void Player::addStoreHistory(bool fromMarket, uint64_t createdAt, MarketAction_t actionType, uint32_t coinAmount, CoinType coinType,
+							 HistoryTypes_t historyType, const std::string& description, const std::string& playerName,
+							 uint64_t totalPrice) {
+	StoreHistory storeHistory;
+	storeHistory.fromMarket = fromMarket;
+	storeHistory.createdAt = createdAt;
+	storeHistory.coinAmount = actionType == MARKETACTION_SELL ? static_cast<int32_t>(coinAmount) * -1 : coinAmount;
+	storeHistory.coinType = coinType;
+	storeHistory.historyType = historyType;
+	storeHistory.description = description;
+	storeHistory.playerName = playerName;
+	storeHistory.totalPrice = totalPrice;
+	setStoreHistory(storeHistory);
+
+	if (isOffline()) {
+		IOLoginDataSave::savePlayerStoreHistory(getPlayer());
+	}
 }
 
 bool Player::canBuyStoreOffer(const Offer* offer) {

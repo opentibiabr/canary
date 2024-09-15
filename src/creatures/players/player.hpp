@@ -94,13 +94,15 @@ struct ForgeHistory {
 };
 
 struct StoreHistory {
-	time_t createdAt = 0;
+	time_t createdAt {};
 
-	int32_t coinAmount = 0;
-	uint8_t coinType = 0;
-	uint8_t historyType = 0;
+	int32_t coinAmount {};
+	CoinType coinType {};
+	HistoryTypes_t historyType {};
+	uint32_t totalPrice {};
 
-	std::string description;
+	std::string description {};
+	std::string playerName {};
 	bool fromMarket = false;
 };
 
@@ -2673,6 +2675,9 @@ public:
 	void sendStoreError(StoreErrors_t errorType, std::string errorMessage);
 	std::vector<StoreHistory> &getStoreHistory();
 	void setStoreHistory(const StoreHistory &history);
+	void addStoreHistory(bool fromMarket, uint64_t createdAt, MarketAction_t actionType, uint32_t coinAmount, CoinType coinType,
+						 HistoryTypes_t historyType, const std::string& description, const std::string& playerName,
+						 uint64_t totalPrice);
 	bool canBuyStoreOffer(const Offer* offer);
 
 private:

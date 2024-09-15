@@ -310,6 +310,27 @@ const std::vector<std::string> IOStore::getOffersDisableReasonVector() {
 	return offersDisableReason;
 }
 
+StoreHistoryDetail IOStore::getStoreHistoryDetail(const std::string &playerName, bool fromMarket, uint32_t createdAt) {
+	StoreHistoryDetail details;
+	std::string query = fmt::format(
+		"SELECT * FROM `store_history` WHERE `player_name` = '{}' AND `created_at` = '{}' AND `show_detail` = {}",
+		playerName, createdAt, 1
+	);
+
+	DBResult_ptr result = Database::getInstance().storeQuery(query);
+	if (!result) {
+		g_logger().error("Failed to get store history details.");
+		return {};
+	}
+
+	details.createdAt = createdAt;
+	details.description = result->getString("description");
+	details.coinAmount = result->getNumber<uint32_t>("coin_amount");
+	details.playerName = result->getString("player_name");
+	details.totalPrice = result->getNumber<uint32_t>("total_price");
+	return details;
+}
+
 // Category Class functions
 const Category* Category::getFirstSubCategory() const {
 	return &subCategories.at(0);

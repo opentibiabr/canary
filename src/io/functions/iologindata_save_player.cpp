@@ -733,9 +733,10 @@ bool IOLoginDataSave::savePlayerStoreHistory(std::shared_ptr<Player> player) {
 	}
 
 	query.str("");
-	DBInsert insertQuery("INSERT INTO `store_history` (`account_id`, `description`, `coin_amount`, `coin_type`, `type`, `time`, `from_market`) VALUES");
+	DBInsert insertQuery("INSERT INTO `store_history` (`account_id`, `description`, `coin_amount`, `coin_type`, `type`, `created_at`, `player_name`, `total_price`, `show_detail`) VALUES");
 	for (const auto &historyEntry : player->getStoreHistory()) {
 		const auto descriptionString = Database::getInstance().escapeString(historyEntry.description);
+		const auto playerNameString = Database::getInstance().escapeString(historyEntry.playerName);
 		// Append query informations
 		query << player->getAccountId() << ','
 			  << descriptionString << ','
@@ -743,6 +744,8 @@ bool IOLoginDataSave::savePlayerStoreHistory(std::shared_ptr<Player> player) {
 			  << static_cast<uint16_t>(historyEntry.coinType) << ','
 			  << static_cast<uint16_t>(historyEntry.historyType) << ','
 			  << historyEntry.createdAt << ','
+			  << playerNameString << ','
+			  << historyEntry.totalPrice << ','
 			  << historyEntry.fromMarket;
 
 		if (!insertQuery.addRow(query)) {

@@ -9099,6 +9099,8 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				amount,
 				"Sold on Market"
 			);
+
+			player->addStoreHistory(true, createdAt, MARKETACTION_SELL, amount, CoinType::Transferable, HistoryTypes_t::NONE, "Sold via the Market", player->getName(), totalPrice);
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, offer.tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -9124,6 +9126,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			buyerPlayer->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
+			buyerPlayer->addStoreHistory(true, createdAt, MARKETACTION_BUY, amount, CoinType::Transferable, HistoryTypes_t::NONE, "Purchased via the Market", buyerPlayer->getName(), totalPrice);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9195,6 +9198,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
+			player->addStoreHistory(true, createdAt, MARKETACTION_BUY, amount, CoinType::Transferable, HistoryTypes_t::NONE, "Purchased via the Market", player->getName(), totalPrice);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9251,14 +9255,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			const auto &tranferable = enumToValue(CoinType::Transferable);
 			const auto &removeCoin = enumToValue(CoinTransactionType::Remove);
 			sellerPlayer->getAccount()->registerCoinTransaction(removeCoin, tranferable, amount, "Sold on Market");
-			StoreHistory storeHistory;
-			storeHistory.fromMarket = true;
-			storeHistory.createdAt = createdAt;
-			storeHistory.coinAmount = amount;
-			storeHistory.coinType = tranferable;
-			storeHistory.historyType = enumToValue(HistoryTypes_t::NONE);
-			storeHistory.description = "Purchased via the Market";
-			sellerPlayer->setStoreHistory(storeHistory);
+			sellerPlayer->addStoreHistory(true, createdAt, MARKETACTION_SELL, amount, CoinType::Transferable, HistoryTypes_t::NONE, "Sold via the Market", sellerPlayer->getName(), totalPrice);
 		}
 
 		if (it.id != ITEM_STORE_COIN) {
@@ -10592,41 +10589,14 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 		return;
 	}
 
+	auto createdAt = getTimeNow();
 	std::string historyDesc = fmt::format("{} gifted to {}", playerDonator->getName(), playerReceptor->getName());
 	playerDonator->getAccount()->removeCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
 	playerReceptor->getAccount()->addCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
-
-	StoreHistory tempHistory;
-	tempHistory.description = historyDesc;
-	tempHistory.coinType = enumToValue(CoinType::Transferable);
-	tempHistory.historyType = enumToValue(HistoryTypes_t::NONE);
-	tempHistory.coinAmount = static_cast<int32_t>(coinAmount * -1);
-	tempHistory.createdAt = getTimeNow();
-
-	playerDonator->setStoreHistory(tempHistory);
-
-	if (playerReceptor->isOffline()) {
-		std::shared_ptr<Player> newPlayerReceptor;
-		const auto playersAccountVector = getPlayersByAccount(playerReceptor->getAccount());
-		for (const auto player : playersAccountVector) {
-			if (player->isOnline()) {
-				newPlayerReceptor = player;
-			}
-		}
-
-		if (newPlayerReceptor) {
-			tempHistory.coinAmount = coinAmount;
-			newPlayerReceptor->sendCoinBalance();
-			newPlayerReceptor->setStoreHistory(tempHistory);
-		} else {
-			playerReceptor->getAccount()->registerStoreTransaction(tempHistory.historyType, coinAmount, tempHistory.coinType, historyDesc, tempHistory.createdAt);
-		}
-	} else {
-		tempHistory.coinAmount = coinAmount;
-		playerReceptor->sendCoinBalance();
-		playerReceptor->setStoreHistory(tempHistory);
-	}
-
+	
+	playerDonator->addStoreHistory(false, createdAt, MARKETACTION_SELL, coinAmount, CoinType::Transferable, HistoryTypes_t::NONE, historyDesc, playerReceptor->getName(), 0);
+	playerReceptor->addStoreHistory(false, createdAt, MARKETACTION_BUY, coinAmount, CoinType::Transferable, HistoryTypes_t::NONE, historyDesc, playerReceptor->getName(), 0);
+	playerReceptor->sendCoinBalance();
 	playerDonator->openStore();
 	playerDonator->updateUIExhausted();
 }
@@ -10931,14 +10901,11 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 			return;
 		}
 
-		StoreHistory tempHistory;
-		tempHistory.description = offer->getOfferName();
-		tempHistory.coinAmount = static_cast<int32_t>(offerPrice * -1);
-		tempHistory.createdAt = getTimeNow();
-
 		player->sendStoreSuccess(returnmessage);
 
-		player->setStoreHistory(tempHistory);
+		auto offerAmount = offer->getOfferCount();
+		g_logger().trace("[{}] offer price {}, offer ammount {}, price per item {}", __METHOD_NAME__, offerPrice, offerAmount, offerPrice / offerAmount);
+		player->addStoreHistory(true, getTimeNow(), MARKETACTION_SELL, offerPrice, CoinType::Transferable, HistoryTypes_t::NONE, offer->getOfferName(), player->getName(), offerPrice / offerAmount);
 	} else {
 		player->sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
 	}

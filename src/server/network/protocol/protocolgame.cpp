@@ -9242,10 +9242,10 @@ void ProtocolGame::sendStoreHistory(uint32_t page) {
 		for (const auto &history : historyPerPage) {
 			msg.add<uint32_t>(history.fromMarket ? history.createdAt : 0);
 			msg.add<uint32_t>(history.createdAt);
-			msg.addByte(history.historyType);
+			msg.addByte(enumToValue(history.historyType));
 			msg.add<int32_t>(history.coinAmount);
 
-			msg.addByte(history.coinType);
+			msg.addByte(enumToValue(history.coinType));
 			msg.addString(history.description);
 			msg.addByte(history.fromMarket); // Toggle details button
 		}
@@ -9626,10 +9626,29 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseStoreDetail(NetworkMessage &msg) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
 	auto createdAt = msg.get<uint32_t>();
 	if (createdAt != 0) {
-		g_logger().info("Details creation data: {}", createdAt);
+		g_logger().info("Details creation data: {}, player '{}'", createdAt, player->getName());
 		// Get the offer by creation data and send the details structure based on offer details
+		auto storeDetail = g_ioStore().getStoreHistoryDetail(player->getName(), createdAt, true);
+		g_logger().info("Store details for creation data: {}, description '{}', player '{}', coin amount '{}', total price '{}'", storeDetail.createdAt, storeDetail.description, storeDetail.playerName, storeDetail.coinAmount, storeDetail.totalPrice);
+
+		/*
+		// Send store detail structure ?
+		NetworkMessage newMsg;
+		newMsg.addByte(???);
+		newMsg.add<uint32_t>(createdData);
+		newMsg.addString(storeDetail.description);
+		newMsg.addString(storeDetail.playerName);
+		newMsg.add<uint32_t>(storeDetail.coinAmount);
+		newMsg.add<uint32_t>(storeDetail.totalPrice / storeDetail.coinAmount); // Price per coin
+		newMsg.add<uint64_t(storeDetail.totalPrice);
+		writeToOutputBuffer(newMsg);
+		*/
 	}
 }
 

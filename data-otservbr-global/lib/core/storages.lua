@@ -414,11 +414,6 @@ Storage = {
 		RewardMask = 50370,
 		RewardBackpack = 50371,
 	},
-	Grimvale = {
-		-- Reserved storage from 50380 - 50399
-		SilverVein = 50380,
-		WereHelmetEnchant = 50381,
-	},
 	HeroRathleton = {
 		-- Reserved storage from 50400 - 50419
 		QuestLine = 50400,
@@ -2463,9 +2458,11 @@ Storage = {
 			Cartography101 = {},
 			ChakoyaIcebergMiniWorldChange = {},
 			GrimvaleMineWorldChange = {},
-			Grimvale = {
+			GrimvaleQuest = {
 				AncientFeudDoors = 44956,
 				AncientFeudShortcut = 44957,
+				SilverVein = 50380,
+				WereHelmetEnchant = 50381,
 			},
 			HiveOutpostMiniWorldChange = {},
 			JungleCampMiniWorldChange = {},

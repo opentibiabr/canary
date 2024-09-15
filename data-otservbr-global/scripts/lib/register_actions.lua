@@ -602,7 +602,7 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	elseif target.itemid == 22075 then
 		-- Grimvale quest
-		if player:getStorageValue(Storage.Grimvale.SilverVein) < os.time() then
+		if player:getStorageValue(Storage.Quest.U10_80.GrimvaleQuest.SilverVein) < os.time() then
 			local chance = math.random(1, 10)
 			if chance >= 5 then
 				player:sendTextMessage(
@@ -620,7 +620,7 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 				target:transform(4464)
 				addEvent(revertItem, 10 * 60 * 1000, toPosition, 4464, 22075)
 			end
-			player:setStorageValue(Storage.Grimvale.SilverVein, os.time() + 2 * 60)
+			player:setStorageValue(Storage.Quest.U10_80.GrimvaleQuest.SilverVein, os.time() + 2 * 60)
 		else
 			player:sendTextMessage(
 				MESSAGE_EVENT_ADVANCE,

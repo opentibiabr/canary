@@ -825,7 +825,7 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 32466, y = 32494, z = 8 } },
 	},
-	[Storage.Quest.U10_80.Grimvale.AncientFeudDoors] = {
+	[Storage.Quest.U10_80.GrimvaleQuest.AncientFeudDoors] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33124, y = 32261, z = 10 },

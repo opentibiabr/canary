@@ -101,7 +101,7 @@ public:
 			if constexpr (std::is_enum_v<T>) {
 				using UnderlyingType = std::underlying_type_t<T>;
 				UnderlyingType numeric_value;
-				
+
 				if constexpr (std::is_signed_v<UnderlyingType>) {
 					if constexpr (sizeof(UnderlyingType) <= sizeof(int)) {
 						numeric_value = static_cast<UnderlyingType>(std::stoi(value));

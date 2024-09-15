@@ -10593,7 +10593,7 @@ void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint3
 	std::string historyDesc = fmt::format("{} gifted to {}", playerDonator->getName(), playerReceptor->getName());
 	playerDonator->getAccount()->removeCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
 	playerReceptor->getAccount()->addCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
-	
+
 	playerDonator->addStoreHistory(false, createdAt, MARKETACTION_SELL, coinAmount, CoinType::Transferable, HistoryTypes_t::NONE, historyDesc, playerReceptor->getName(), 0);
 	playerReceptor->addStoreHistory(false, createdAt, MARKETACTION_BUY, coinAmount, CoinType::Transferable, HistoryTypes_t::NONE, historyDesc, playerReceptor->getName(), 0);
 	playerReceptor->sendCoinBalance();

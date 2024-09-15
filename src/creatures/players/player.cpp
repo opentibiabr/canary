@@ -7784,9 +7784,7 @@ void Player::setStoreHistory(const StoreHistory &history) {
 	storeHistoryVector.push_back(history);
 }
 
-void Player::addStoreHistory(bool fromMarket, uint64_t createdAt, MarketAction_t actionType, uint32_t coinAmount, CoinType coinType,
-							 HistoryTypes_t historyType, const std::string& description, const std::string& playerName,
-							 uint64_t totalPrice) {
+void Player::addStoreHistory(bool fromMarket, uint64_t createdAt, MarketAction_t actionType, uint32_t coinAmount, CoinType coinType, HistoryTypes_t historyType, const std::string &description, const std::string &playerName, uint64_t totalPrice) {
 	StoreHistory storeHistory;
 	storeHistory.fromMarket = fromMarket;
 	storeHistory.createdAt = createdAt;

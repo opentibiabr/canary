@@ -2675,9 +2675,7 @@ public:
 	void sendStoreError(StoreErrors_t errorType, std::string errorMessage);
 	std::vector<StoreHistory> &getStoreHistory();
 	void setStoreHistory(const StoreHistory &history);
-	void addStoreHistory(bool fromMarket, uint64_t createdAt, MarketAction_t actionType, uint32_t coinAmount, CoinType coinType,
-						 HistoryTypes_t historyType, const std::string& description, const std::string& playerName,
-						 uint64_t totalPrice);
+	void addStoreHistory(bool fromMarket, uint64_t createdAt, MarketAction_t actionType, uint32_t coinAmount, CoinType coinType, HistoryTypes_t historyType, const std::string &description, const std::string &playerName, uint64_t totalPrice);
 	bool canBuyStoreOffer(const Offer* offer);
 
 private:

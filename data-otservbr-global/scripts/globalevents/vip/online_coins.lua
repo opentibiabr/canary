@@ -1,23 +1,24 @@
 local config = {
-	enabled = false,
+	enabled = true,
 	storage = Storage.VipSystem.OnlineCoinsGain,
-	checkDuplicateIps = false,
+	checkDuplicateIps = true,
+	enableGods = true,
 
-	interval = 60 * 1000,
+	interval = 60 * 1000, -- minutos * 1000
 
 	-- per hour | system will calculate how many coins will be given and when
 	-- put 0 in coinsPerHour.free to disable free from receiving coins
 	coinsPerHour = {
-		free = 1,
+		free = 3,
 		vip = 5,
 	},
 
 	-- system will distribute when the player accumulate x coins
-	awardOn = 5,
+	awardOn = 30,
 }
 
 local onlineCoinsEvent = GlobalEvent("GainCoinInterval")
-local runsPerHour = 3600 / (config.interval / 1000)
+local runsPerHour = 3600 / (config.interval / 1000) -- 60 * minutos de intervalo, next caso 60 * 60 = 3600
 
 local function coinsPerRun(coinsPerHour)
 	return coinsPerHour / runsPerHour
@@ -31,7 +32,8 @@ function onlineCoinsEvent.onThink(interval)
 
 	local checkIp = {}
 	for _, player in pairs(players) do
-		if player:getGroup():getId() > GROUP_TYPE_SENIORTUTOR or (config.coinsPerHour.free < 1 and not player:isVip()) then
+		--if player:getGroup():getId() > GROUP_TYPE_SENIORTUTOR or (config.coinsPerHour.free < 1 and not player:isVip()) then
+		if not config.enableGods and (player:getGroup():getId() > GROUP_TYPE_SENIORTUTOR) or (config.coinsPerHour.free < 1 and not player:isVip()) then
 			goto continue
 		end
 
@@ -43,8 +45,10 @@ function onlineCoinsEvent.onThink(interval)
 			player:setStorageValue(config.storage, coins * 10000000)
 			if coins >= config.awardOn then
 				local coinsMath = math.floor(coins)
-				player:addTibiaCoins(coinsMath, true)
-				player:sendTextMessage(MESSAGE_FAILURE, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), coinsMath, "tibia coins"))
+				player:addTransferableCoins(coinsMath, true)
+				--player:sendColoredMessage("{yellow|[ROULETTE WINNER]} Congratulations! You have won a {blue|rare item} and {green|5000 gold}.")
+				player:sendColoredMessage(string.format("{purple|[ONLINE REWARD]} Congratulations %s! You received {purple|%d} %s for being online.", player:getName(), coinsMath, "tibia coins"))
+				db.query(string.format("INSERT INTO `store_history`(`account_id`, `mode`, `description`, `coin_type`, `coin_amount`, `time`) VALUES (%s, %s, %s, %s, %s, %s)", player:getAccountId(), "0", db.escapeString("[ONLINE REWARD] - Reward"), "1", coinsMath, os.time()))
 				player:setStorageValue(config.storage, (coins - coinsMath) * 10000000)
 			end
 		end
@@ -58,3 +62,33 @@ if config.enabled then
 	onlineCoinsEvent:interval(config.interval)
 	onlineCoinsEvent:register()
 end
+
+-----------------------------------------------------------------------
+
+local onlineCoinsLogout = CreatureEvent("onlineCoinsLogout")
+
+function onlineCoinsLogout.onLogout(player)
+	local playerId = player:getId()
+
+	player:setStorageValue(config.storage, 0)
+
+	return true
+end
+
+onlineCoinsLogout:register()
+
+------------------------------------------------------------------------
+
+local onlineCoinsOnStartup = GlobalEvent("onlineCoinsOnStartup")
+function onlineCoinsOnStartup.onStartup()
+		--db.query("UPDATE `players` SET `posx` = 0, `posy` = 0, `posz` = 0;")
+		local exec = db.query(string.format("UPDATE `player_storage` SET `value` = %d WHERE `key` = %d", 0, config.storage))
+		if exec then
+			logger.info("[Online Reward] - Players Storage cleaned succesfully.")
+		else
+			logger.error("[Online Reward] - Players Storage problem to be cleaned. Check data-otservbr-global/scripts/globalevents/vip/online_coins.lua")
+		end
+	return true
+end
+
+onlineCoinsOnStartup:register()

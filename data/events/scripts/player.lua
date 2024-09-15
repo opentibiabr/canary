@@ -529,6 +529,31 @@ function Player:onGainExperience(target, exp, rawExp)
 		return exp
 	end
 
+	-- Online Players Experience Adjustments
+
+	local expOnlineBonus = {
+		[{2, 99}] = 5,
+		[{100, 199}] = 8,
+		[{200, 349}] = 10,
+		[{350, 449}] = 15,
+		[{450, 699}] = 20,
+		[{700}] = 30
+	}
+	table.sort(expOnlineBonus, function(a, b) return a > b end)
+
+	local players = #Game.getPlayers()
+    for range, bonus in pairs(expOnlineBonus) do
+        if players >= range[1] and (players <= (range[2] or math.huge)) then
+            exp = exp * (1 + (bonus / 100))
+            break
+        end
+    end
+
+	-- Drop Exp Bonus
+	if self:getStorageValue(90004) >= os.time() then
+        exp = exp * 1.10
+    end
+
 	-- Soul regeneration
 	local vocation = self:getVocation()
 	if self:getSoul() < vocation:getMaxSoul() and exp >= self:getLevel() then

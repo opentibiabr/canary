@@ -512,7 +512,6 @@ Storage = {
 		Ref = 50961,
 		-- Golden Outfit
 		GoldenOutfit = 51015,
-		DeeplingAnchor = 51023,
 		RoyalCostumeOutfit = 51026,
 	},
 	TheHuntForTheSeaSerpent = {

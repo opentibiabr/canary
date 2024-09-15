@@ -2467,7 +2467,6 @@ Storage = {
 			HiveOutpostMiniWorldChange = {},
 			JungleCampMiniWorldChange = {},
 			NightmareIslesMiniWorldChange = {},
-			NightmareTeddy = {},
 			PoacherCavesMiniWorldChange = {},
 			TheGreatDragonHunt = {},
 			TheTaintedSouls = {},

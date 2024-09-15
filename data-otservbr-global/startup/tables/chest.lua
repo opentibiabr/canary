@@ -2590,6 +2590,15 @@ ChestUnique = {
 		weight = 338.00,
 		storage = Storage.Quest.U10_50.DarkTrails.Reward10GlothAndBelongings,
 	},
+	-- Nightmare Teddy Quest
+	[6305] = {
+		useKV = true,
+		itemId = 2433,
+		itemPos = { x = 33444, y = 32605, z = 11 },
+		reward = { { 21982, 1 } },
+		weight = 6.00,
+		questName = "NightmareTeddyQuest",
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

@@ -21,7 +21,7 @@ class Imbuement;
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {
 	// Item(uid)
-	uint32_t id = getNumber<uint32_t>(L, 2);
+	const uint32_t id = getNumber<uint32_t>(L, 2);
 
 	const auto &item = getScriptEnv()->getItemByUID(id);
 	if (item) {
@@ -122,8 +122,8 @@ int ItemFunctions::luaItemSplit(lua_State* L) {
 		return 1;
 	}
 
-	uint16_t count = std::min<uint16_t>(getNumber<uint16_t>(L, 2, 1), item->getItemCount());
-	uint16_t diff = item->getItemCount() - count;
+	const uint16_t count = std::min<uint16_t>(getNumber<uint16_t>(L, 2, 1), item->getItemCount());
+	const uint16_t diff = item->getItemCount() - count;
 
 	const auto &splitItem = item->clone();
 	if (!splitItem) {
@@ -134,7 +134,7 @@ int ItemFunctions::luaItemSplit(lua_State* L) {
 	splitItem->setItemCount(count);
 
 	ScriptEnvironment* env = getScriptEnv();
-	uint32_t uid = env->addThing(item);
+	const uint32_t uid = env->addThing(item);
 
 	const auto &newItem = g_game().transformItem(item, item->getID(), diff);
 	if (item->isRemoved()) {
@@ -159,7 +159,7 @@ int ItemFunctions::luaItemRemove(lua_State* L) {
 	// item:remove([count = -1])
 	const auto &item = getUserdataShared<Item>(L, 1);
 	if (item) {
-		auto count = getNumber<int32_t>(L, 2, -1);
+		const auto count = getNumber<int32_t>(L, 2, -1);
 		pushBoolean(L, g_game().internalRemoveItem(item, count) == RETURNVALUE_NOERROR);
 	} else {
 		lua_pushnil(L);
@@ -186,7 +186,7 @@ int ItemFunctions::luaItemGetActionId(lua_State* L) {
 	// item:getActionId()
 	const auto &item = getUserdataShared<Item>(L, 1);
 	if (item) {
-		auto actionId = item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID);
+		const auto actionId = item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID);
 		lua_pushnumber(L, actionId);
 	} else {
 		lua_pushnil(L);
@@ -196,7 +196,7 @@ int ItemFunctions::luaItemGetActionId(lua_State* L) {
 
 int ItemFunctions::luaItemSetActionId(lua_State* L) {
 	// item:setActionId(actionId)
-	uint16_t actionId = getNumber<uint16_t>(L, 2);
+	const uint16_t actionId = getNumber<uint16_t>(L, 2);
 	const auto &item = getUserdataShared<Item>(L, 1);
 	if (item) {
 		item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
@@ -397,7 +397,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 	if (item->isAttributeInteger(attribute)) {
 		switch (attribute) {
 			case ItemAttribute_t::DECAYSTATE: {
-				if (ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
+				if (const auto decayState = getNumber<ItemDecayState_t>(L, 3);
 				    decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
 					g_decay().stopDecay(item);
 				} else {
@@ -426,7 +426,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		item->updateTileFlags();
 		pushBoolean(L, true);
 	} else if (item->isAttributeString(attribute)) {
-		auto newAttributeString = getString(L, 3);
+		const auto newAttributeString = getString(L, 3);
 		item->setAttribute(attribute, newAttributeString);
 		item->updateTileFlags();
 		pushBoolean(L, true);
@@ -517,7 +517,7 @@ int ItemFunctions::luaItemSetCustomAttribute(lua_State* L) {
 		if (std::floor(doubleValue) < doubleValue) {
 			item->setCustomAttribute(key, doubleValue);
 		} else {
-			int64_t int64 = getNumber<int64_t>(L, 3);
+			const int64_t int64 = getNumber<int64_t>(L, 3);
 			item->setCustomAttribute(key, int64);
 		}
 	} else if (isString(L, 3)) {
@@ -626,13 +626,13 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 		return 1;
 	}
 
-	auto flags = getNumber<uint32_t>(L, 3, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVABLE);
+	const auto flags = getNumber<uint32_t>(L, 3, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVABLE);
 
 	if (item->getParent() == VirtualCylinder::virtualCylinder) {
 		pushBoolean(L, g_game().internalAddItem(toCylinder, item, INDEX_WHEREEVER, flags) == RETURNVALUE_NOERROR);
 	} else {
 		std::shared_ptr<Item> moveItem = nullptr;
-		ReturnValue ret = g_game().internalMoveItem(item->getParent(), toCylinder, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, flags);
+		const ReturnValue ret = g_game().internalMoveItem(item->getParent(), toCylinder, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, flags);
 		if (moveItem) {
 			*itemPtr = moveItem;
 		}
@@ -678,7 +678,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 	}
 
 	ScriptEnvironment* env = getScriptEnv();
-	uint32_t uid = env->addThing(item);
+	const uint32_t uid = env->addThing(item);
 
 	const auto &newItem = g_game().transformItem(item, itemId, subType);
 	if (item->isRemoved()) {
@@ -713,7 +713,7 @@ int ItemFunctions::luaItemDecay(lua_State* L) {
 
 int ItemFunctions::luaItemMoveToSlot(lua_State* L) {
 	// item:moveToSlot(player, slot)
-	auto item = getUserdataShared<Item>(L, 1);
+	const auto &item = getUserdataShared<Item>(L, 1);
 	if (!item || item->isRemoved()) {
 		lua_pushnil(L);
 		return 1;
@@ -725,13 +725,9 @@ int ItemFunctions::luaItemMoveToSlot(lua_State* L) {
 		return 1;
 	}
 
-	auto slot = getNumber<Slots_t>(L, 3, CONST_SLOT_WHEREEVER);
+	const auto slot = getNumber<Slots_t>(L, 3, CONST_SLOT_WHEREEVER);
 
-	std::shared_ptr<Item> moveItem = nullptr;
-	ReturnValue ret = g_game().internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);
-	if (moveItem) {
-		item = moveItem;
-	}
+	const ReturnValue ret = g_game().internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);
 
 	pushBoolean(L, ret == RETURNVALUE_NOERROR);
 	return 1;
@@ -741,7 +737,7 @@ int ItemFunctions::luaItemGetDescription(lua_State* L) {
 	// item:getDescription(distance)
 	const auto &item = getUserdataShared<Item>(L, 1);
 	if (item) {
-		int32_t distance = getNumber<int32_t>(L, 2);
+		const int32_t distance = getNumber<int32_t>(L, 2);
 		pushString(L, item->getDescription(distance));
 	} else {
 		lua_pushnil(L);
@@ -753,7 +749,7 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	// item:hasProperty(property)
 	const auto &item = getUserdataShared<Item>(L, 1);
 	if (item) {
-		ItemProperty property = getNumber<ItemProperty>(L, 2);
+		const ItemProperty property = getNumber<ItemProperty>(L, 2);
 		pushBoolean(L, item->hasProperty(property));
 	} else {
 		lua_pushnil(L);
@@ -815,7 +811,7 @@ int ItemFunctions::luaItemSetDuration(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t minDuration = getNumber<uint32_t>(L, 2);
+	const uint32_t minDuration = getNumber<uint32_t>(L, 2);
 	uint32_t maxDuration = 0;
 	if (lua_gettop(L) > 2) {
 		maxDuration = uniform_random(minDuration, getNumber<uint32_t>(L, 3));
@@ -858,7 +854,7 @@ int ItemFunctions::luaItemIsInsideDepot(lua_State* L) {
 
 int ItemFunctions::luaItemIsContainer(lua_State* L) {
 	// item:isContainer()
-	const auto item = getUserdataShared<const Item>(L, 1);
+	const auto &item = getUserdataShared<const Item>(L, 1);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		pushBoolean(L, false);
@@ -942,7 +938,7 @@ int ItemFunctions::luaItemSetOwner(lua_State* L) {
 		return 1;
 	}
 
-	auto creatureId = getNumber<uint32_t>(L, 2);
+	const auto creatureId = getNumber<uint32_t>(L, 2);
 	if (creatureId != 0) {
 		item->setOwner(creatureId);
 		pushBoolean(L, true);
@@ -961,7 +957,7 @@ int ItemFunctions::luaItemGetOwnerId(lua_State* L) {
 		return 0;
 	}
 
-	if (auto ownerId = item->getOwnerId()) {
+	if (const auto ownerId = item->getOwnerId()) {
 		lua_pushnumber(L, ownerId);
 		return 1;
 	}
@@ -988,7 +984,7 @@ int ItemFunctions::luaItemIsOwner(lua_State* L) {
 		return 1;
 	}
 
-	auto creatureId = getNumber<uint32_t>(L, 2);
+	const auto creatureId = getNumber<uint32_t>(L, 2);
 	if (creatureId != 0) {
 		pushBoolean(L, item->isOwner(creatureId));
 		return 1;
@@ -1006,7 +1002,7 @@ int ItemFunctions::luaItemGetOwnerName(lua_State* L) {
 		return 0;
 	}
 
-	if (auto ownerName = item->getOwnerName(); !ownerName.empty()) {
+	if (const auto ownerName = item->getOwnerName(); !ownerName.empty()) {
 		pushString(L, ownerName);
 		return 1;
 	}

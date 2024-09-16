@@ -39,7 +39,7 @@ public:
 
 	bool canUse(const std::shared_ptr<Player> &player);
 
-	bool isBedComplete(const std::shared_ptr<BedItem> &nextBedItem);
+	bool isBedComplete(const std::shared_ptr<BedItem> &nextBedItem) const;
 
 	bool trySleep(const std::shared_ptr<Player> &player);
 	bool sleep(const std::shared_ptr<Player> &player);

@@ -36,7 +36,7 @@ std::shared_ptr<Cylinder> TrashHolder::queryDestination(int32_t &, const std::sh
 	return static_self_cast<TrashHolder>();
 }
 
-void TrashHolder::addThing(std::shared_ptr<Thing> thing) {
+void TrashHolder::addThing(const std::shared_ptr<Thing> &thing) {
 	return addThing(0, thing);
 }
 
@@ -56,7 +56,7 @@ void TrashHolder::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 
 	const ItemType &it = Item::items[id];
 	if (item->isHangable() && it.isGroundTile()) {
-		std::shared_ptr<Tile> tile = std::dynamic_pointer_cast<Tile>(getParent());
+		const std::shared_ptr<Tile> &tile = std::dynamic_pointer_cast<Tile>(getParent());
 		if (tile && tile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
 			return;
 		}

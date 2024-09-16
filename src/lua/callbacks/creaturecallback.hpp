@@ -23,7 +23,7 @@ public:
 
 	void pushSpecificCreature(const std::shared_ptr<Creature> &creature);
 
-	bool persistLuaState() {
+	bool persistLuaState() const {
 		return params > 0 && scriptInterface->callFunction(params);
 	}
 

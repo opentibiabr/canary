@@ -629,7 +629,7 @@ struct AugmentInfo {
 	AugmentInfo(std::string spellName, Augment_t type, int32_t value) :
 		spellName(std::move(spellName)), type(type), value(value) { }
 
-	std::string spellName;
+	std::string spellName {};
 	Augment_t type;
-	int32_t value;
+	int32_t value {};
 };

@@ -37,7 +37,7 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 
 			lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
 			pushBoolean(luaState, success);
-			auto env = getScriptEnv();
+			const auto env = getScriptEnv();
 			env->setScriptId(scriptId, &g_luaEnvironment());
 			g_luaEnvironment().callFunction(1);
 
@@ -49,7 +49,7 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 }
 
 int DBFunctions::luaDatabaseStoreQuery(lua_State* L) {
-	if (DBResult_ptr res = Database::getInstance().storeQuery(getString(L, -1))) {
+	if (const DBResult_ptr &res = Database::getInstance().storeQuery(getString(L, -1))) {
 		lua_pushnumber(L, ScriptEnvironment::addResult(res));
 	} else {
 		pushBoolean(L, false);
@@ -79,7 +79,7 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 			} else {
 				pushBoolean(luaState, false);
 			}
-			auto env = getScriptEnv();
+			const auto env = getScriptEnv();
 			env->setScriptId(scriptId, &g_luaEnvironment());
 			g_luaEnvironment().callFunction(1);
 
@@ -96,7 +96,7 @@ int DBFunctions::luaDatabaseEscapeString(lua_State* L) {
 }
 
 int DBFunctions::luaDatabaseEscapeBlob(lua_State* L) {
-	uint32_t length = getNumber<uint32_t>(L, 2);
+	const uint32_t length = getNumber<uint32_t>(L, 2);
 	pushString(L, Database::getInstance().escapeBlob(getString(L, 1).c_str(), length));
 	return 1;
 }

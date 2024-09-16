@@ -59,8 +59,8 @@ LootTypeNames lootTypeNames = {
 	{ "unassigned", ITEM_TYPE_UNASSIGNED },
 };
 
-ItemTypes_t Items::getLootType(const std::string &strValue) {
-	auto lootType = lootTypeNames.find(strValue);
+ItemTypes_t Items::getLootType(const std::string &strValue) const {
+	const auto lootType = lootTypeNames.find(strValue);
 	if (lootType != lootTypeNames.end()) {
 		return lootType->second;
 	}
@@ -122,7 +122,7 @@ bool Items::reload() {
 void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
-	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__);
+	const bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__);
 	for (uint32_t it = 0; it < g_game().m_appearancesPtr->object_size(); ++it) {
 		Appearance object = g_game().m_appearancesPtr->object(it);
 
@@ -238,14 +238,14 @@ void Items::loadFromProtobuf() {
 
 bool Items::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/items/items.xml";
-	pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	const auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/items/items.xml";
+	const pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
-	for (auto itemNode : doc.child("items").children()) {
+	for (const auto itemNode : doc.child("items").children()) {
 		if (auto idAttribute = itemNode.attribute("id")) {
 			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
@@ -266,7 +266,7 @@ bool Items::loadFromXml() {
 		}
 
 		auto id = pugi::cast<uint16_t>(fromIdAttribute.value());
-		auto toId = pugi::cast<uint16_t>(toIdAttribute.value());
+		const auto toId = pugi::cast<uint16_t>(toIdAttribute.value());
 		while (id <= toId) {
 			parseItemNode(itemNode, id++);
 		}
@@ -282,7 +282,7 @@ void Items::buildInventoryList() {
 		}
 	}
 	inventory.shrink_to_fit();
-	std::sort(inventory.begin(), inventory.end());
+	std::ranges::sort(inventory);
 }
 
 void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
@@ -301,10 +301,10 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		return;
 	}
 
-	if (std::string xmlName = itemNode.attribute("name").as_string();
+	if (const std::string xmlName = itemNode.attribute("name").as_string();
 	    !xmlName.empty() && itemType.name != xmlName) {
 		if (!itemType.name.empty()) {
-			if (auto it = std::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
+			if (const auto it = std::ranges::find_if(nameToItems, [id](const auto nameMapIt) {
 					return nameMapIt.second == id;
 				});
 			    it != nameToItems.end()) {
@@ -317,28 +317,28 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 	}
 
 	itemType.loaded = true;
-	pugi::xml_attribute articleAttribute = itemNode.attribute("article");
+	const pugi::xml_attribute articleAttribute = itemNode.attribute("article");
 	if (articleAttribute) {
 		itemType.article = articleAttribute.as_string();
 	}
 
-	pugi::xml_attribute pluralAttribute = itemNode.attribute("plural");
+	const pugi::xml_attribute pluralAttribute = itemNode.attribute("plural");
 	if (pluralAttribute) {
 		itemType.pluralName = pluralAttribute.as_string();
 	}
 
-	for (auto attributeNode : itemNode.children()) {
-		pugi::xml_attribute keyAttribute = attributeNode.attribute("key");
+	for (const auto &attributeNode : itemNode.children()) {
+		const pugi::xml_attribute keyAttribute = attributeNode.attribute("key");
 		if (!keyAttribute) {
 			continue;
 		}
 
-		pugi::xml_attribute valueAttribute = attributeNode.attribute("value");
+		const pugi::xml_attribute valueAttribute = attributeNode.attribute("value");
 		if (!valueAttribute) {
 			continue;
 		}
 
-		std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
+		const std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
 		auto parseAttribute = ItemParseAttributesMap.find(tmpStrValue);
 		if (parseAttribute != ItemParseAttributesMap.end()) {
 			ItemParse::initParse(tmpStrValue, attributeNode, valueAttribute, itemType);
@@ -368,7 +368,7 @@ const ItemType &Items::getItemType(size_t id) const {
 }
 
 uint16_t Items::getItemIdByName(const std::string &name) {
-	auto result = nameToItems.find(asLowerCaseString(name));
+	const auto result = nameToItems.find(asLowerCaseString(name));
 
 	if (result == nameToItems.end()) {
 		return 0;

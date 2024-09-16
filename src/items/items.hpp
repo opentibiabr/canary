@@ -416,7 +416,7 @@ public:
 
 	uint16_t getItemIdByName(const std::string &name);
 
-	ItemTypes_t getLootType(const std::string &strValue);
+	ItemTypes_t getLootType(const std::string &strValue) const;
 
 	bool loadFromXml();
 	void parseItemNode(const pugi::xml_node &itemNode, uint16_t id);
@@ -455,7 +455,7 @@ public:
 			Augment_t::StrongImpact,
 		};
 
-		return std::find(vector.begin(), vector.end(), augmentType) != vector.end();
+		return std::ranges::find(vector, augmentType) != vector.end();
 	}
 
 private:

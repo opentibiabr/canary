@@ -288,7 +288,7 @@ void EventCallback::creatureOnCombat(std::shared_ptr<Creature> attacker, std::sh
 }
 
 // Party
-bool EventCallback::partyOnJoin(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player) const {
+bool EventCallback::partyOnJoin(const std::shared_ptr<Party> &party, const std::shared_ptr<Player> &player) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnJoin - "
 		                 "Player {}] "
@@ -303,7 +303,7 @@ bool EventCallback::partyOnJoin(std::shared_ptr<Party> party, const std::shared_
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());
 
-	LuaScriptInterface::pushUserdata<Party>(L, std::move(party));
+	LuaScriptInterface::pushUserdata<Party>(L, party);
 	LuaScriptInterface::setMetatable(L, -1, "Party");
 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
@@ -312,7 +312,7 @@ bool EventCallback::partyOnJoin(std::shared_ptr<Party> party, const std::shared_
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::partyOnLeave(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player) const {
+bool EventCallback::partyOnLeave(const std::shared_ptr<Party> &party, const std::shared_ptr<Player> &player) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[EventCallback::partyOnLeave - "
 		                 "Player {}] "
@@ -327,7 +327,7 @@ bool EventCallback::partyOnLeave(std::shared_ptr<Party> party, const std::shared
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());
 
-	LuaScriptInterface::pushUserdata<Party>(L, std::move(party));
+	LuaScriptInterface::pushUserdata<Party>(L, party);
 	LuaScriptInterface::setMetatable(L, -1, "Party");
 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
@@ -425,10 +425,10 @@ void EventCallback::playerOnLook(const std::shared_ptr<Player> &player, const Po
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
+	if (const auto &creature = thing->getCreature()) {
 		LuaScriptInterface::pushUserdata<Creature>(L, creature);
 		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-	} else if (const auto item = thing->getItem()) {
+	} else if (const auto &item = thing->getItem()) {
 		LuaScriptInterface::pushUserdata<Item>(L, item);
 		LuaScriptInterface::setItemMetatable(L, -1, item);
 	} else {
@@ -467,7 +467,7 @@ void EventCallback::playerOnLookInBattleList(const std::shared_ptr<Player> &play
 	getScriptInterface()->callVoidFunction(3);
 }
 
-void EventCallback::playerOnLookInTrade(const std::shared_ptr<Player> &player, std::shared_ptr<Player> partner, const std::shared_ptr<Item> &item, int32_t lookDistance) const {
+void EventCallback::playerOnLookInTrade(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &partner, const std::shared_ptr<Item> &item, int32_t lookDistance) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[EventCallback::playerOnLookInTrade - "
 		                 "Player {}] "
@@ -485,7 +485,7 @@ void EventCallback::playerOnLookInTrade(const std::shared_ptr<Player> &player, s
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	LuaScriptInterface::pushUserdata<Player>(L, std::move(partner));
+	LuaScriptInterface::pushUserdata<Player>(L, partner);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	LuaScriptInterface::pushUserdata<Item>(L, item);
@@ -1012,7 +1012,7 @@ void EventCallback::playerOnInventoryUpdate(const std::shared_ptr<Player> &playe
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());
 
-	LuaScriptInterface::pushUserdata<Player>(L, std::move(player));
+	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	LuaScriptInterface::pushUserdata<Item>(L, item);
@@ -1036,7 +1036,7 @@ bool EventCallback::playerOnRotateItem(const std::shared_ptr<Player> &player, co
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());
 
-	LuaScriptInterface::pushUserdata<Player>(L, std::move(player));
+	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	LuaScriptInterface::pushUserdata<Item>(L, item);
@@ -1047,7 +1047,7 @@ bool EventCallback::playerOnRotateItem(const std::shared_ptr<Player> &player, co
 	return getScriptInterface()->callFunction(3);
 }
 
-void EventCallback::playerOnWalk(const std::shared_ptr<Player> &player, Direction &dir) const {
+void EventCallback::playerOnWalk(const std::shared_ptr<Player> &player, const Direction &dir) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[EventCallback::eventOnWalk - "
 		                 "Player {}] "
@@ -1117,7 +1117,7 @@ void EventCallback::playerOnThink(std::shared_ptr<Player> player, uint32_t inter
 }
 
 // Monster
-void EventCallback::monsterOnDropLoot(std::shared_ptr<Monster> monster, const std::shared_ptr<Container> &corpse) const {
+void EventCallback::monsterOnDropLoot(const std::shared_ptr<Monster> &monster, const std::shared_ptr<Container> &corpse) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[EventCallback::monsterOnDropLoot - "
 		                 "Monster corpse {}] "
@@ -1132,7 +1132,7 @@ void EventCallback::monsterOnDropLoot(std::shared_ptr<Monster> monster, const st
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());
 
-	LuaScriptInterface::pushUserdata<Monster>(L, std::move(monster));
+	LuaScriptInterface::pushUserdata<Monster>(L, monster);
 	LuaScriptInterface::setMetatable(L, -1, "Monster");
 
 	LuaScriptInterface::pushUserdata<Container>(L, corpse);
@@ -1141,7 +1141,7 @@ void EventCallback::monsterOnDropLoot(std::shared_ptr<Monster> monster, const st
 	return getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::monsterPostDropLoot(std::shared_ptr<Monster> monster, const std::shared_ptr<Container> &corpse) const {
+void EventCallback::monsterPostDropLoot(const std::shared_ptr<Monster> &monster, const std::shared_ptr<Container> &corpse) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[EventCallback::monsterPostDropLoot - "
 		                 "Monster corpse {}] "
@@ -1156,7 +1156,7 @@ void EventCallback::monsterPostDropLoot(std::shared_ptr<Monster> monster, const 
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());
 
-	LuaScriptInterface::pushUserdata<Monster>(L, std::move(monster));
+	LuaScriptInterface::pushUserdata<Monster>(L, monster);
 	LuaScriptInterface::setMetatable(L, -1, "Monster");
 
 	LuaScriptInterface::pushUserdata<Container>(L, corpse);
@@ -1165,7 +1165,7 @@ void EventCallback::monsterPostDropLoot(std::shared_ptr<Monster> monster, const 
 	return getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::monsterOnSpawn(std::shared_ptr<Monster> monster, const Position &position) const {
+void EventCallback::monsterOnSpawn(const std::shared_ptr<Monster> &monster, const Position &position) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("{} - "
 		                 "Position {}"
@@ -1180,7 +1180,7 @@ void EventCallback::monsterOnSpawn(std::shared_ptr<Monster> monster, const Posit
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());
 
-	LuaScriptInterface::pushUserdata<Monster>(L, std::move(monster));
+	LuaScriptInterface::pushUserdata<Monster>(L, monster);
 	LuaScriptInterface::setMetatable(L, -1, "Monster");
 	LuaScriptInterface::pushPosition(L, position);
 
@@ -1194,7 +1194,7 @@ void EventCallback::monsterOnSpawn(std::shared_ptr<Monster> monster, const Posit
 }
 
 // Npc
-void EventCallback::npcOnSpawn(std::shared_ptr<Npc> npc, const Position &position) const {
+void EventCallback::npcOnSpawn(const std::shared_ptr<Npc> &npc, const Position &position) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("{} - "
 		                 "Position {}"
@@ -1209,7 +1209,7 @@ void EventCallback::npcOnSpawn(std::shared_ptr<Npc> npc, const Position &positio
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());
 
-	LuaScriptInterface::pushUserdata<Npc>(L, std::move(npc));
+	LuaScriptInterface::pushUserdata<Npc>(L, npc);
 	LuaScriptInterface::setMetatable(L, -1, "Npc");
 	LuaScriptInterface::pushPosition(L, position);
 

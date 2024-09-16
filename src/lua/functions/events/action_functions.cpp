@@ -60,7 +60,7 @@ int ActionFunctions::luaActionItemId(lua_State* L) {
 	// action:id(ids)
 	const auto &action = getUserdataShared<Action>(L, 1);
 	if (action) {
-		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
+		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
 				action->setItemIdsVector(getNumber<uint16_t>(L, 2 + i));
@@ -80,7 +80,7 @@ int ActionFunctions::luaActionActionId(lua_State* L) {
 	// action:aid(aids)
 	const auto &action = getUserdataShared<Action>(L, 1);
 	if (action) {
-		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
+		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
 				action->setActionIdsVector(getNumber<uint16_t>(L, 2 + i));
@@ -100,7 +100,7 @@ int ActionFunctions::luaActionUniqueId(lua_State* L) {
 	// action:uid(uids)
 	const auto &action = getUserdataShared<Action>(L, 1);
 	if (action) {
-		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
+		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
 				action->setUniqueIdsVector(getNumber<uint16_t>(L, 2 + i));
@@ -129,10 +129,10 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 		return 1;
 	}
 
-	Position position = getPosition(L, 2);
+	const Position position = getPosition(L, 2);
 	// The parameter "- 1" because self is a parameter aswell, which we want to skip L 1 (UserData)
 	// isNumber(L, 2) is for skip the itemId
-	if (int parameters = lua_gettop(L) - 1;
+	if (const int parameters = lua_gettop(L) - 1;
 	    parameters > 1 && isNumber(L, 2)) {
 		for (int i = 0; i < parameters; ++i) {
 			action->setPositionsVector(getPosition(L, 2 + i));

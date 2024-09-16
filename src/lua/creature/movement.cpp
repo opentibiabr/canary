@@ -188,7 +188,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Item> &ite
 	if (item->hasAttribute(ItemAttribute_t::ACTIONID)) {
 		const auto &it = actionIdMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
 		if (it != actionIdMap.end()) {
-			std::list<std::shared_ptr<MoveEvent>> moveEventList = it->second.moveEvent[eventType];
+			const std::list<std::shared_ptr<MoveEvent>> moveEventList = it->second.moveEvent[eventType];
 			for (const auto &moveEvent : moveEventList) {
 				if ((moveEvent->getSlot() & slotp) != 0) {
 					return moveEvent;
@@ -199,7 +199,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Item> &ite
 
 	const auto &it = itemIdMap.find(item->getID());
 	if (it != itemIdMap.end()) {
-		std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
+		const std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
 		for (const auto &moveEvent : moveEventList) {
 			if ((moveEvent->getSlot() & slotp) != 0) {
 				return moveEvent;
@@ -242,7 +242,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Item> &ite
 }
 
 bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, const Position &position, std::map<Position, MoveEventList> &moveListMap) const {
-	auto it = moveListMap.find(position);
+	const auto it = moveListMap.find(position);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
 		moveEventList.moveEvent[moveEvent->getEventType()].push_back(moveEvent);
@@ -266,7 +266,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, cons
 }
 
 std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Tile> &tile, MoveEvent_t eventType) {
-	if (auto it = positionsMap.find(tile->getPosition());
+	if (const auto it = positionsMap.find(tile->getPosition());
 	    it != positionsMap.end()) {
 		std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
 		if (!moveEventList.empty()) {
@@ -287,19 +287,19 @@ uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, c
 	}
 
 	for (size_t i = tile->getFirstIndex(), j = tile->getLastIndex(); i < j; ++i) {
-		std::shared_ptr<Thing> thing = tile->getThing(i);
+		const auto &thing = tile->getThing(i);
 		if (!thing) {
 			continue;
 		}
 
-		std::shared_ptr<Item> tileItem = thing->getItem();
+		const auto &tileItem = thing->getItem();
 		if (!tileItem) {
 			continue;
 		}
 
 		moveEvent = getEvent(tileItem, eventType);
 		if (moveEvent) {
-			auto step = moveEvent->fireStepEvent(creature, tileItem, pos);
+			const auto step = moveEvent->fireStepEvent(creature, tileItem, pos);
 			// If there is any problem in the function, we will kill the loop
 			if (step == 0) {
 				break;
@@ -311,7 +311,7 @@ uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, c
 }
 
 uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck) {
-	const auto moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
+	const auto &moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}
@@ -321,7 +321,7 @@ uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const 
 }
 
 uint32_t MoveEvents::onPlayerDeEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot) {
-	const auto moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
+	const auto &moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}
@@ -354,19 +354,19 @@ uint32_t MoveEvents::onItemMove(const std::shared_ptr<Item> &item, const std::sh
 	}
 
 	for (size_t i = tile->getFirstIndex(), j = tile->getLastIndex(); i < j; ++i) {
-		std::shared_ptr<Thing> thing = tile->getThing(i);
+		const auto &thing = tile->getThing(i);
 		if (!thing) {
 			continue;
 		}
 
-		std::shared_ptr<Item> tileItem = thing->getItem();
+		const auto &tileItem = thing->getItem();
 		if (!tileItem) {
 			continue;
 		}
 
 		moveEvent = getEvent(tileItem, eventType2);
 		if (moveEvent) {
-			auto moveItem = moveEvent->fireAddRemItem(item, tileItem, tile->getPosition());
+			const auto &moveItem = moveEvent->fireAddRemItem(item, tileItem, tile->getPosition());
 			// If there is any problem in the function, we will kill the loop
 			if (moveItem == 0) {
 				break;
@@ -420,7 +420,7 @@ uint32_t MoveEvent::StepInField(const std::shared_ptr<Creature> &creature, const
 		return 0;
 	}
 
-	std::shared_ptr<MagicField> field = item->getMagicField();
+	const auto &field = item->getMagicField();
 	if (field) {
 		field->onStepInField(creature);
 		return 1;
@@ -439,8 +439,8 @@ uint32_t MoveEvent::AddItemField(const std::shared_ptr<Item> &item, const std::s
 		return 0;
 	}
 
-	if (std::shared_ptr<MagicField> field = item->getMagicField()) {
-		std::shared_ptr<Tile> tile = item->getTile();
+	if (const auto &field = item->getMagicField()) {
+		const auto &tile = item->getTile();
 		if (tile == nullptr) {
 			g_logger().debug("[MoveEvent::AddItemField] - Tile is nullptr");
 			return 0;
@@ -521,12 +521,12 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 
 	if (it.abilities) {
 		if (it.abilities->invisible) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
+			const auto &condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
 			player->addCondition(condition);
 		}
 
 		if (it.abilities->manaShield) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
+			const auto &condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
 			player->addCondition(condition);
 		}
 
@@ -538,7 +538,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 		player->sendIcons();
 
 		if (it.abilities->regeneration) {
-			std::shared_ptr<Condition> condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
+			const auto &condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
 
 			if (it.abilities->getHealthGain() != 0) {
 				condition->setParam(CONDITION_PARAM_HEALTHGAIN, it.abilities->getHealthGain());
@@ -687,7 +687,7 @@ bool MoveEvent::executeStep(const std::shared_ptr<Creature> &creature, const std
 
 	// Check if the new position is the same as the old one
 	// If it is, log a warning and either teleport the player to their temple position if item type is an teleport
-	auto fromPosition = creature->getLastPosition();
+	const auto fromPosition = creature->getLastPosition();
 	if (const auto &player = creature->getPlayer(); item && fromPosition == pos && getEventType() == MOVE_EVENT_STEP_IN) {
 		if (const ItemType &itemType = Item::items[item->getID()]; player && itemType.isTeleport()) {
 			g_logger().warn("[{}] cannot teleport player: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());

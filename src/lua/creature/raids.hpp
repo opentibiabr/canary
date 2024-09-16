@@ -62,7 +62,7 @@ public:
 		running = newRunning;
 	}
 
-	std::shared_ptr<Raid> getRaidByName(const std::string &name);
+	std::shared_ptr<Raid> getRaidByName(const std::string &name) const;
 
 	uint64_t getLastRaidEnd() const {
 		return lastRaidEnd;

@@ -26,28 +26,28 @@ bool TalkActions::registerLuaEvent(const TalkAction_ptr &talkAction) {
 }
 
 bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const {
-	auto spacePos = std::ranges::find_if(words.begin(), words.end(), ::isspace);
-	std::string firstWord = words.substr(0, spacePos - words.begin());
+	const auto spacePos = std::ranges::find_if(words.begin(), words.end(), ::isspace);
+	const std::string firstWord = words.substr(0, spacePos - words.begin());
 
 	// Check for exact equality from saying word and talkaction stored word
 	if (firstWord != word) {
 		return false;
 	}
 
-	auto groupId = player->getGroup()->id;
+	const auto groupId = player->getGroup()->id;
 	if (groupId < talkActionPtr->getGroupType()) {
 		return false;
 	}
 
 	std::string param;
-	size_t wordPos = words.find(word);
-	size_t talkactionLength = word.length();
+	const size_t wordPos = words.find(word);
+	const size_t talkactionLength = word.length();
 	if (wordPos != std::string::npos && wordPos + talkactionLength < words.length()) {
 		param = words.substr(wordPos + talkactionLength);
 		trim_left(param, ' ');
 	}
 
-	std::string separator = talkActionPtr->getSeparator();
+	const std::string separator = talkActionPtr->getSeparator();
 	if (separator != " ") {
 		if (!param.empty()) {
 			if (param != separator) {

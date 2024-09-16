@@ -46,7 +46,7 @@ public:
 	}
 
 	bool hasPosition(Position position) const {
-		if (auto it = positionsMap.find(position);
+		if (const auto it = positionsMap.find(position);
 		    it != positionsMap.end()) {
 			return true;
 		}
@@ -62,7 +62,7 @@ public:
 	}
 
 	bool hasItemId(int32_t itemId) const {
-		if (auto it = itemIdMap.find(itemId);
+		if (const auto it = itemIdMap.find(itemId);
 		    it != itemIdMap.end()) {
 			return true;
 		}
@@ -78,7 +78,7 @@ public:
 	}
 
 	bool hasUniqueId(int32_t uniqueId) const {
-		if (auto it = uniqueIdMap.find(uniqueId);
+		if (const auto it = uniqueIdMap.find(uniqueId);
 		    it != uniqueIdMap.end()) {
 			return true;
 		}
@@ -94,7 +94,7 @@ public:
 	}
 
 	bool hasActionId(int32_t actionId) const {
-		if (auto it = actionIdMap.find(actionId);
+		if (const auto it = actionIdMap.find(actionId);
 		    it != actionIdMap.end()) {
 			return true;
 		}
@@ -176,7 +176,7 @@ public:
 		return vocEquipMap;
 	}
 	void addVocEquipMap(const std::string &vocName) {
-		uint16_t vocationId = g_vocations().getVocationId(vocName);
+		const uint16_t vocationId = g_vocations().getVocationId(vocName);
 		if (vocationId != 65535) {
 			vocEquipMap[vocationId] = true;
 		}

@@ -36,7 +36,7 @@ std::shared_ptr<Cylinder> Mailbox::queryDestination(int32_t &, const std::shared
 	return getMailbox();
 }
 
-void Mailbox::addThing(std::shared_ptr<Thing> thing) {
+void Mailbox::addThing(const std::shared_ptr<Thing> &thing) {
 	return addThing(0, thing);
 }
 

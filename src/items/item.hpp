@@ -56,7 +56,7 @@ public:
 
 		return attributePtr->hasAttribute(type);
 	}
-	void removeAttribute(ItemAttribute_t type) {
+	void removeAttribute(ItemAttribute_t type) const {
 		if (attributePtr) {
 			attributePtr->removeAttribute(type);
 		}
@@ -104,7 +104,7 @@ public:
 		return !getCustomAttributeMap().empty();
 	}
 
-	bool removeCustomAttribute(const std::string &attributeName) {
+	bool removeCustomAttribute(const std::string &attributeName) const {
 		if (!attributePtr) {
 			return false;
 		}
@@ -117,7 +117,7 @@ public:
 	}
 
 	int32_t getDuration() const {
-		ItemDecayState_t decayState = getDecaying();
+		const ItemDecayState_t decayState = getDecaying();
 		if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
 			return std::max<int32_t>(0, getAttribute<int32_t>(ItemAttribute_t::DURATION_TIMESTAMP) - static_cast<int32_t>(OTSYS_TIME()));
 		} else {
@@ -265,7 +265,7 @@ public:
 		isLootTrackeable = value;
 	}
 
-	bool getIsLootTrackeable() {
+	bool getIsLootTrackeable() const {
 		return isLootTrackeable;
 	}
 
@@ -387,17 +387,17 @@ public:
 	}
 
 	int32_t getSpeed() const {
-		int32_t value = items[id].getSpeed();
+		const int32_t value = items[id].getSpeed();
 		return value;
 	}
 
 	int32_t getSkill(skills_t skill) const {
-		int32_t value = items[id].getSkill(skill);
+		const int32_t value = items[id].getSkill(skill);
 		return value;
 	}
 
 	int32_t getStat(stats_t stat) const {
-		int32_t value = items[id].getStat(stat);
+		const int32_t value = items[id].getStat(stat);
 		return value;
 	}
 
@@ -430,7 +430,7 @@ public:
 	}
 	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellNameAndType(const std::string &spellName, Augment_t augmentType) const {
 		std::vector<std::shared_ptr<AugmentInfo>> augments;
-		for (auto &augment : items[id].augments) {
+		for (const auto &augment : items[id].augments) {
 			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0 && augment->type == augmentType) {
 				augments.push_back(augment);
 			}
@@ -440,7 +440,7 @@ public:
 	}
 	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellName(const std::string &spellName) const {
 		std::vector<std::shared_ptr<AugmentInfo>> augments;
-		for (auto &augment : items[id].augments) {
+		for (const auto &augment : items[id].augments) {
 			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0) {
 				augments.push_back(augment);
 			}
@@ -612,7 +612,7 @@ public:
 	void addUniqueId(uint16_t uniqueId);
 
 	void setDefaultDuration() {
-		uint32_t duration = getDefaultDuration();
+		const uint32_t duration = getDefaultDuration();
 		if (duration != 0) {
 			setDuration(duration);
 		}
@@ -659,7 +659,7 @@ public:
 	std::shared_ptr<Cylinder> getTopParent();
 	std::shared_ptr<Tile> getTile() override;
 	bool isRemoved() override {
-		auto parent = getParent();
+		const auto parent = getParent();
 		if (parent) {
 			return parent->isRemoved();
 		}
@@ -692,7 +692,7 @@ public:
 		return setImbuement(slot, imbuementId, 0);
 	}
 	bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) const {
-		auto it = items[id].imbuementTypes.find(imbuementType);
+		const auto it = items[id].imbuementTypes.find(imbuementType);
 		if (it != items[id].imbuementTypes.end()) {
 			return (it->second >= imbuementTier);
 		}

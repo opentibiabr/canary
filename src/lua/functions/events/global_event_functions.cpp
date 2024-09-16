@@ -27,8 +27,8 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 	// globalevent:type(callback)
 	const auto &global = getUserdataShared<GlobalEvent>(L, 1);
 	if (global) {
-		std::string typeName = getString(L, 2);
-		std::string tmpStr = asLowerCaseString(typeName);
+		const std::string typeName = getString(L, 2);
+		const std::string tmpStr = asLowerCaseString(typeName);
 		if (tmpStr == "startup") {
 			global->setEventType(GLOBALEVENT_STARTUP);
 		} else if (tmpStr == "shutdown") {
@@ -93,9 +93,9 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 	const auto &globalevent = getUserdataShared<GlobalEvent>(L, 1);
 	if (globalevent) {
 		std::string timer = getString(L, 2);
-		std::vector<int32_t> params = vectorAtoi(explodeString(timer, ":"));
+		const std::vector<int32_t> params = vectorAtoi(explodeString(timer, ":"));
 
-		int32_t hour = params.front();
+		const int32_t hour = params.front();
 		if (hour < 0 || hour > 23) {
 			g_logger().error("[GlobalEventFunctions::luaGlobalEventTime] - "
 			                 "Invalid hour {} for globalevent with name: {}",
@@ -130,7 +130,7 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 			}
 		}
 
-		time_t current_time = time(nullptr);
+		const time_t current_time = time(nullptr);
 		tm* timeinfo = localtime(&current_time);
 		timeinfo->tm_hour = hour;
 		timeinfo->tm_min = min;

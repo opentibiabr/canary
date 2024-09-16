@@ -70,7 +70,7 @@ public:
 	 * Add the object to the cylinder
 	 * \param thing is the object to add
 	 */
-	virtual void addThing(std::shared_ptr<Thing> thing) = 0;
+	virtual void addThing(const std::shared_ptr<Thing> &thing) = 0;
 
 	/**
 	 * Add the object to the cylinder
@@ -190,7 +190,7 @@ public:
 		return nullptr;
 	}
 
-	virtual void addThing(std::shared_ptr<Thing>) override { }
+	virtual void addThing(const std::shared_ptr<Thing>&) override { }
 	virtual void addThing(int32_t, const std::shared_ptr<Thing> &) override { }
 	virtual void updateThing(const std::shared_ptr<Thing> &, uint16_t, uint32_t) override { }
 	virtual void replaceThing(uint32_t, const std::shared_ptr<Thing> &) override { }

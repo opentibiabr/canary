@@ -272,10 +272,10 @@ int ItemTypeFunctions::luaItemTypeGetArticle(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetDescription(lua_State* L) {
 	// itemType:getDescription([count])
-	auto itemType = getUserdata<ItemType>(L, 1);
+	const auto &itemType = getUserdata<ItemType>(L, 1);
 	if (itemType) {
-		auto count = getNumber<uint16_t>(L, 2, -1);
-		auto description = Item::getDescription(*itemType, 1, nullptr, count);
+		const auto count = getNumber<uint16_t>(L, 2, -1);
+		const auto description = Item::getDescription(*itemType, 1, nullptr, count);
 		pushString(L, description);
 	} else {
 		lua_pushnil(L);
@@ -329,7 +329,7 @@ int ItemTypeFunctions::luaItemTypeGetCapacity(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetWeight(lua_State* L) {
 	// itemType:getWeight([count = 1])
-	auto count = getNumber<uint16_t>(L, 2, 1);
+	const auto count = getNumber<uint16_t>(L, 2, 1);
 
 	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (!itemType) {
@@ -337,7 +337,7 @@ int ItemTypeFunctions::luaItemTypeGetWeight(lua_State* L) {
 		return 1;
 	}
 
-	uint64_t weight = static_cast<uint64_t>(itemType->weight) * std::max<int32_t>(1, count);
+	const uint64_t weight = static_cast<uint64_t>(itemType->weight) * std::max<int32_t>(1, count);
 	lua_pushnumber(L, weight);
 	return 1;
 }
@@ -350,7 +350,7 @@ int ItemTypeFunctions::luaItemTypeGetStackSize(lua_State* L) {
 		return 1;
 	}
 
-	auto stackSize = static_cast<uint64_t>(itemType->stackSize);
+	const auto stackSize = static_cast<uint64_t>(itemType->stackSize);
 	lua_pushnumber(L, stackSize);
 	return 1;
 }

@@ -62,7 +62,7 @@ bool Teleport::checkInfinityLoop(const std::shared_ptr<Tile> &destTile) {
 	return false;
 }
 
-void Teleport::addThing(std::shared_ptr<Thing> thing) {
+void Teleport::addThing(const std::shared_ptr<Thing> &thing) {
 	return addThing(0, thing);
 }
 

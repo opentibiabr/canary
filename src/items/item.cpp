@@ -69,7 +69,7 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 		} else if (it.isBed()) {
 			newItem = std::make_shared<BedItem>(type);
 		} else {
-			auto itemMap = ItemTransformationMap.find(static_cast<ItemID_t>(it.id));
+			const auto itemMap = ItemTransformationMap.find(static_cast<ItemID_t>(it.id));
 			if (itemMap != ItemTransformationMap.end()) {
 				newItem = std::make_shared<Item>(itemMap->second, count);
 			} else {
@@ -77,7 +77,7 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 			}
 		}
 	} else if (type > 0 && itemPosition) {
-		auto position = *itemPosition;
+		const auto position = *itemPosition;
 		g_logger().warn("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
 	} else {
 		g_logger().warn("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
@@ -88,14 +88,14 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo* imbuementInfo) const {
 	const CustomAttribute* attribute = getCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot));
-	auto info = attribute ? attribute->getAttribute<uint32_t>() : 0;
+	const auto info = attribute ? attribute->getAttribute<uint32_t>() : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;
 }
 
 void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
-	auto valueDuration = (static_cast<int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0));
+	const auto valueDuration = (static_cast<int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0));
 	setCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot), valueDuration);
 }
 
@@ -153,7 +153,7 @@ std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint
 		return nullptr;
 	}
 
-	std::shared_ptr<Container> newItem = std::make_shared<Container>(type, size);
+	auto newItem = std::make_shared<Container>(type, size);
 	return newItem;
 }
 
@@ -197,9 +197,9 @@ std::shared_ptr<Item> Item::CreateItem(uint16_t itemId, Position &itemPosition) 
 Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 	id(itemId) {
 	const ItemType &it = items[id];
-	auto itemCharges = it.charges;
+	const auto itemCharges = it.charges;
 	if (it.isFluidContainer() || it.isSplash()) {
-		auto fluidType = std::clamp<uint16_t>(itemCount, 1, FLUID_INK);
+		const auto fluidType = std::clamp<uint16_t>(itemCount, 1, FLUID_INK);
 		setAttribute(ItemAttribute_t::FLUIDTYPE, fluidType);
 	} else if (it.stackable) {
 		if (itemCount != 0) {
@@ -226,7 +226,7 @@ Item::Item(const std::shared_ptr<Item> &i) :
 }
 
 std::shared_ptr<Item> Item::clone() const {
-	const auto item = Item::CreateItem(id, count);
+	const auto &item = Item::CreateItem(id, count);
 	if (item == nullptr) {
 		g_logger().error("[{}] item is nullptr", __FUNCTION__);
 		return nullptr;
@@ -284,7 +284,7 @@ void Item::setDefaultSubtype() {
 
 	setItemCount(1);
 
-	auto itemCharges = it.charges;
+	const auto itemCharges = it.charges;
 	if (itemCharges != 0) {
 		if (it.stackable) {
 			setItemCount(static_cast<uint8_t>(itemCharges));
@@ -307,7 +307,7 @@ void Item::setID(uint16_t newid) {
 	id = newid;
 
 	const ItemType &it = Item::items[newid];
-	uint32_t newDuration = it.decayTime * 1000;
+	const uint32_t newDuration = it.decayTime * 1000;
 
 	if (newDuration == 0 && !it.stopTime && it.decayTo < 0) {
 		// We'll get called startDecay anyway so let's schedule it - actually not in all casses
@@ -342,8 +342,8 @@ bool Item::isOwner(uint32_t ownerId) const {
 }
 
 std::shared_ptr<Cylinder> Item::getTopParent() {
-	std::shared_ptr<Cylinder> aux = getParent();
-	std::shared_ptr<Cylinder> prevaux = std::dynamic_pointer_cast<Cylinder>(shared_from_this());
+	auto aux = getParent();
+	auto prevaux = std::dynamic_pointer_cast<Cylinder>(shared_from_this());
 	if (!aux) {
 		return prevaux;
 	}
@@ -360,7 +360,7 @@ std::shared_ptr<Cylinder> Item::getTopParent() {
 }
 
 std::shared_ptr<Tile> Item::getTile() {
-	std::shared_ptr<Cylinder> cylinder = getTopParent();
+	auto cylinder = getTopParent();
 	// get root cylinder
 	if (cylinder && cylinder->getParent()) {
 		cylinder = cylinder->getParent();
@@ -381,7 +381,7 @@ uint16_t Item::getSubType() const {
 }
 
 std::shared_ptr<Player> Item::getHoldingPlayer() {
-	std::shared_ptr<Cylinder> p = getParent();
+	auto p = getParent();
 	while (p) {
 		if (p->getCreature()) {
 			return p->getCreature()->getPlayer();
@@ -396,7 +396,7 @@ bool Item::isItemStorable() const {
 	if (isStoreItem() || hasOwner()) {
 		return false;
 	}
-	auto isContainerAndHasSomethingInside = (getContainer() != nullptr) && (!getContainer()->getItemList().empty());
+	const auto isContainerAndHasSomethingInside = (getContainer() != nullptr) && (!getContainer()->getItemList().empty());
 	return (isStowable() || isContainerAndHasSomethingInside);
 }
 
@@ -845,7 +845,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 bool Item::unserializeAttr(PropStream &propStream) {
 	uint8_t attr_type;
 	while (propStream.read<uint8_t>(attr_type) && attr_type != 0) {
-		Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attr_type), propStream);
+		const Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attr_type), propStream);
 		if (ret == ATTR_READ_ERROR) {
 			return false;
 		} else if (ret == ATTR_READ_END) {
@@ -861,7 +861,7 @@ bool Item::unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &pro
 
 void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 	const ItemType &it = items[id];
-	if (auto timeStamp = getAttribute<int64_t>(ItemAttribute_t::STORE)) {
+	if (const auto timeStamp = getAttribute<int64_t>(ItemAttribute_t::STORE)) {
 		propWriteStream.write<uint8_t>(ATTR_STORE);
 		propWriteStream.write<int64_t>(timeStamp);
 	}
@@ -870,13 +870,13 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint8_t>(getSubType());
 	}
 
-	if (auto charges = getAttribute<uint16_t>(ItemAttribute_t::CHARGES)) {
+	if (const auto charges = getAttribute<uint16_t>(ItemAttribute_t::CHARGES)) {
 		propWriteStream.write<uint8_t>(ATTR_CHARGES);
 		propWriteStream.write<uint16_t>(charges);
 	}
 
 	if (it.movable) {
-		if (auto actionId = getAttribute<uint16_t>(ItemAttribute_t::ACTIONID)) {
+		if (const auto actionId = getAttribute<uint16_t>(ItemAttribute_t::ACTIONID)) {
 			propWriteStream.write<uint8_t>(ATTR_ACTION_ID);
 			propWriteStream.write<uint16_t>(actionId);
 		}
@@ -910,7 +910,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<int32_t>(getDuration());
 	}
 
-	if (auto decayState = getDecaying();
+	if (const auto decayState = getDecaying();
 	    decayState == DECAYING_TRUE || decayState == DECAYING_PENDING) {
 		propWriteStream.write<uint8_t>(ATTR_DECAYING_STATE);
 		propWriteStream.write<uint8_t>(decayState);
@@ -1061,7 +1061,7 @@ std::string Item::getOwnerName() const {
 		return "";
 	}
 
-	auto creature = g_game().getCreatureByID(getOwnerId());
+	const auto &creature = g_game().getCreatureByID(getOwnerId());
 	if (creature) {
 		return creature->getName();
 	}
@@ -1125,7 +1125,7 @@ void Item::checkDecayMapItemOnMove() {
 }
 
 uint32_t Item::getWeight() const {
-	uint32_t baseWeight = getBaseWeight();
+	const uint32_t baseWeight = getBaseWeight();
 	if (isStackable()) {
 		return baseWeight * std::max<uint32_t>(1, getItemCount());
 	}
@@ -1929,7 +1929,7 @@ std::string Item::parseImbuementDescription(const std::shared_ptr<Item> &item) {
 				continue;
 			}
 
-			int minutes = imbuementInfo.duration / 60;
+			const int minutes = imbuementInfo.duration / 60;
 			int hours = minutes / 60;
 			s << fmt::format("{} {} {:02}:{:02}h", baseImbuement->name, imbuementInfo.imbuement->getName(), hours, minutes % 60);
 		}
@@ -1949,7 +1949,7 @@ SoundEffect_t Item::getMovementSound(const std::shared_ptr<Cylinder> &toCylinder
 		return SoundEffect_t::ITEM_MOVE_DEFAULT;
 	}
 
-	if (std::shared_ptr<Container> toContainer = toCylinder->getContainer();
+	if (const auto &toContainer = toCylinder->getContainer();
 	    toContainer && toContainer->getHoldingPlayer()) {
 		return SoundEffect_t::ITEM_MOVE_BACKPACK;
 	}
@@ -2045,29 +2045,29 @@ std::string Item::parseShowDuration(const std::shared_ptr<Item> &item) {
 	}
 
 	std::ostringstream description;
-	uint32_t duration = item->getDuration() / 1000;
+	const uint32_t duration = item->getDuration() / 1000;
 	if (item && item->hasAttribute(ItemAttribute_t::DURATION) && duration > 0) {
 		description << " that will expire in ";
 		if (duration >= 86400) {
-			uint16_t days = duration / 86400;
-			uint16_t hours = (duration % 86400) / 3600;
+			const uint16_t days = duration / 86400;
+			const uint16_t hours = (duration % 86400) / 3600;
 			description << days << " day" << (days != 1 ? "s" : "");
 
 			if (hours > 0) {
 				description << " and " << hours << " hour" << (hours != 1 ? "s" : "");
 			}
 		} else if (duration >= 3600) {
-			uint16_t hours = duration / 3600;
-			uint16_t minutes = (duration % 3600) / 60;
+			const uint16_t hours = duration / 3600;
+			const uint16_t minutes = (duration % 3600) / 60;
 			description << hours << " hour" << (hours != 1 ? "s" : "");
 
 			if (minutes > 0) {
 				description << " and " << minutes << " minute" << (minutes != 1 ? "s" : "");
 			}
 		} else if (duration >= 60) {
-			uint16_t minutes = duration / 60;
+			const uint16_t minutes = duration / 60;
 			description << minutes << " minute" << (minutes != 1 ? "s" : "");
-			uint16_t seconds = duration % 60;
+			const uint16_t seconds = duration % 60;
 
 			if (seconds > 0) {
 				description << " and " << seconds << " second" << (seconds != 1 ? "s" : "");
@@ -2089,7 +2089,7 @@ std::string Item::parseShowAttributesDescription(const std::shared_ptr<Item> &it
 	if (itemType.armor != 0 || (item && item->getArmor() != 0) || itemType.showAttributes) {
 		bool begin = itemType.isQuiver() ? false : true;
 
-		int32_t armor = (item ? item->getArmor() : itemType.armor);
+		const int32_t armor = (item ? item->getArmor() : itemType.armor);
 		if (armor != 0) {
 			if (begin) {
 				itemDescription << " (Arm:" << armor;
@@ -2116,7 +2116,7 @@ std::string Item::parseShowAttributesDescription(const std::shared_ptr<Item> &it
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-				auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : itemType.getSkill(static_cast<skills_t>(i));
+				const auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : itemType.getSkill(static_cast<skills_t>(i));
 				if (!skill) {
 					continue;
 				}
@@ -2322,7 +2322,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 	if (it.isRune()) {
 		if (it.runeLevel > 0 || it.runeMagLevel > 0) {
-			if (const auto rune = g_spells().getRuneSpell(it.id)) {
+			if (const auto &rune = g_spells().getRuneSpell(it.id)) {
 				int32_t tmpSubType = subType;
 				if (item) {
 					tmpSubType = item->getSubType();
@@ -3142,7 +3142,7 @@ std::string Item::getWeightDescription(uint32_t weight) const {
 }
 
 std::string Item::getWeightDescription() const {
-	uint32_t weight = getWeight();
+	const uint32_t weight = getWeight();
 	if (weight == 0) {
 		return {};
 	}
@@ -3228,9 +3228,9 @@ std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1
 		return nullptr;
 	}
 
-	std::shared_ptr<Tile> fromTile = cylinder->getTile();
+	const auto &fromTile = cylinder->getTile();
 	if (fromTile) {
-		auto it = g_game().browseFields.find(fromTile);
+		const auto it = g_game().browseFields.find(fromTile);
 		if (it != g_game().browseFields.end() && it->second.lock() == cylinder) {
 			cylinder = fromTile;
 		}
@@ -3243,8 +3243,8 @@ std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1
 		newItem = Item::CreateItem(itemId, itemCount);
 	}
 
-	int32_t itemIndex = cylinder->getThingIndex(static_self_cast<Item>());
-	auto duration = getDuration();
+	const int32_t itemIndex = cylinder->getThingIndex(static_self_cast<Item>());
+	const auto duration = getDuration();
 	if (duration > 0) {
 		newItem->setDuration(duration);
 	}
@@ -3282,16 +3282,16 @@ bool Item::hasMarketAttributes() const {
 }
 
 bool Item::isInsideDepot(bool includeInbox /* = false*/) {
-	if (std::shared_ptr<Container> thisContainer = getContainer(); thisContainer && (thisContainer->getDepotLocker() || thisContainer->isDepotChest() || (includeInbox && thisContainer->isInbox()))) {
+	if (const auto &thisContainer = getContainer(); thisContainer && (thisContainer->getDepotLocker() || thisContainer->isDepotChest() || (includeInbox && thisContainer->isInbox()))) {
 		return true;
 	}
 
-	std::shared_ptr<Cylinder> cylinder = getParent();
+	const auto &cylinder = getParent();
 	if (!cylinder) {
 		return false;
 	}
 
-	std::shared_ptr<Container> container = cylinder->getContainer();
+	auto container = cylinder->getContainer();
 	if (!container) {
 		return false;
 	}
@@ -3308,7 +3308,7 @@ bool Item::isInsideDepot(bool includeInbox /* = false*/) {
 }
 
 void Item::updateTileFlags() {
-	if (auto tile = getTile()) {
+	if (const auto &tile = getTile()) {
 		tile->updateTileFlags(static_self_cast<Item>());
 	}
 }

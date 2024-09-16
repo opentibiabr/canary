@@ -17,7 +17,7 @@ struct TierInfo {
 };
 
 // Classification class for forging system and market.
-class ItemClassification {
+class ItemClassification final {
 public:
 	ItemClassification() = default;
 	explicit ItemClassification(uint8_t id) :
@@ -33,5 +33,5 @@ public:
 	}
 
 	uint8_t id {};
-	std::map<uint8_t, TierInfo> tiers;
+	std::map<uint8_t, TierInfo> tiers{};
 };

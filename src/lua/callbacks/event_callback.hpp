@@ -31,7 +31,7 @@ class Zone;
  * registration, and execution of custom behavior tied to specific game events.
  * @note It inherits from the Script class, providing scripting capabilities.
  */
-class EventCallback : public Script {
+class EventCallback final : public Script {
 private:
 	EventCallback_t m_callbackType = EventCallback_t::none; ///< The type of the event callback.
 	std::string m_scriptTypeName; ///< The name associated with the script type.
@@ -101,8 +101,8 @@ public:
 	void creatureOnCombat(std::shared_ptr<Creature> attacker, std::shared_ptr<Creature> target, CombatDamage &damage) const;
 
 	// Party
-	bool partyOnJoin(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player) const;
-	bool partyOnLeave(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player) const;
+	bool partyOnJoin(const std::shared_ptr<Party> &party, const std::shared_ptr<Player> &player) const;
+	bool partyOnLeave(const std::shared_ptr<Party> &party, const std::shared_ptr<Player> &player) const;
 	bool partyOnDisband(const std::shared_ptr<Party> &party) const;
 	void partyOnShareExperience(const std::shared_ptr<Party> &party, uint64_t &exp) const;
 
@@ -110,7 +110,7 @@ public:
 	bool playerOnBrowseField(const std::shared_ptr<Player> &player, const Position &position) const;
 	void playerOnLook(const std::shared_ptr<Player> &player, const Position &position, const std::shared_ptr<Thing> &thing, uint8_t stackpos, int32_t lookDistance) const;
 	void playerOnLookInBattleList(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &creature, int32_t lookDistance) const;
-	void playerOnLookInTrade(const std::shared_ptr<Player> &player, std::shared_ptr<Player> partner, const std::shared_ptr<Item> &item, int32_t lookDistance) const;
+	void playerOnLookInTrade(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &partner, const std::shared_ptr<Item> &item, int32_t lookDistance) const;
 	bool playerOnLookInShop(const std::shared_ptr<Player> &player, const ItemType* itemType, uint8_t count) const;
 	bool playerOnMoveItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, const std::shared_ptr<Cylinder> &fromCylinder, const std::shared_ptr<Cylinder> &toCylinder) const;
 	void playerOnItemMoved(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, const std::shared_ptr<Cylinder> &fromCylinder, const std::shared_ptr<Cylinder> &toCylinder) const;
@@ -131,16 +131,16 @@ public:
 	void playerOnCombat(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item, CombatDamage &damage) const;
 	void playerOnInventoryUpdate(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip) const;
 	bool playerOnRotateItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &position) const;
-	void playerOnWalk(const std::shared_ptr<Player> &player, Direction &dir) const;
+	void playerOnWalk(const std::shared_ptr<Player> &player, const Direction &dir) const;
 	void playerOnThink(std::shared_ptr<Player> player, uint32_t interval) const;
 
 	// Monster
-	void monsterOnDropLoot(std::shared_ptr<Monster> monster, const std::shared_ptr<Container> &corpse) const;
-	void monsterPostDropLoot(std::shared_ptr<Monster> monster, const std::shared_ptr<Container> &corpse) const;
-	void monsterOnSpawn(std::shared_ptr<Monster> monster, const Position &position) const;
+	void monsterOnDropLoot(const std::shared_ptr<Monster> &monster, const std::shared_ptr<Container> &corpse) const;
+	void monsterPostDropLoot(const std::shared_ptr<Monster> &monster, const std::shared_ptr<Container> &corpse) const;
+	void monsterOnSpawn(const std::shared_ptr<Monster> &monster, const Position &position) const;
 
 	// Npc
-	void npcOnSpawn(std::shared_ptr<Npc> npc, const Position &position) const;
+	void npcOnSpawn(const std::shared_ptr<Npc> &npc, const Position &position) const;
 
 	// Zone
 	bool zoneBeforeCreatureEnter(const std::shared_ptr<Zone> &zone, const std::shared_ptr<Creature> &creature) const;

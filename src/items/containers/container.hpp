@@ -143,7 +143,7 @@ public:
 	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
 	std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item> &destItem, uint32_t &flags) final;
 
-	void addThing(std::shared_ptr<Thing> thing) final;
+	void addThing(const std::shared_ptr<Thing> &thing) final;
 	void addThing(int32_t index, const std::shared_ptr<Thing> &thing) final;
 	void addItemBack(const std::shared_ptr<Item> &item);
 

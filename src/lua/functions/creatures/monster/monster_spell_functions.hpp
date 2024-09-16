@@ -13,6 +13,12 @@
 
 class MonsterSpellFunctions final : LuaScriptInterface {
 public:
+	explicit MonsterSpellFunctions(lua_State* L) :
+		LuaScriptInterface("MonsterSpellFunctions") {
+		init(L);
+	}
+	~MonsterSpellFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "MonsterSpell", "", MonsterSpellFunctions::luaCreateMonsterSpell);
 

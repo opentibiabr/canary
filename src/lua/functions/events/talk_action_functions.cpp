@@ -57,7 +57,7 @@ int TalkActionFunctions::luaTalkActionGroupType(lua_State* L) {
 	}
 
 	GroupType groupType;
-	int type = lua_type(L, 2);
+	const int type = lua_type(L, 2);
 	if (type == LUA_TNUMBER) {
 		groupType = enumFromValue<GroupType>(getNumber<uint8_t>(L, 2));
 	} else if (type == LUA_TSTRING) {
@@ -75,13 +75,13 @@ int TalkActionFunctions::luaTalkActionGroupType(lua_State* L) {
 		} else if (strValue == "god") {
 			groupType = GROUP_TYPE_GOD;
 		} else {
-			auto string = fmt::format("Invalid group type string value {} for group type for script: {}", strValue, getScriptEnv()->getScriptInterface()->getLoadingScriptName());
+			const auto string = fmt::format("Invalid group type string value {} for group type for script: {}", strValue, getScriptEnv()->getScriptInterface()->getLoadingScriptName());
 			reportErrorFunc(string);
 			pushBoolean(L, false);
 			return 1;
 		}
 	} else {
-		auto string = fmt::format("Expected number or string value for group type for script: {}", getScriptEnv()->getScriptInterface()->getLoadingScriptName());
+		const auto string = fmt::format("Expected number or string value for group type for script: {}", getScriptEnv()->getScriptInterface()->getLoadingScriptName());
 		reportErrorFunc(string);
 		pushBoolean(L, false);
 		return 1;
@@ -107,7 +107,7 @@ int TalkActionFunctions::luaTalkActionRegister(lua_State* L) {
 	}
 
 	if (talkactionSharedPtr->getGroupType() == GROUP_TYPE_NONE) {
-		auto string = fmt::format("TalkAction with name {} does't have groupType", talkactionSharedPtr->getWords());
+		const auto string = fmt::format("TalkAction with name {} does't have groupType", talkactionSharedPtr->getWords());
 		reportErrorFunc(string);
 		pushBoolean(L, false);
 		return 1;

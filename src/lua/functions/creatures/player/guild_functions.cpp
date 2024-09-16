@@ -14,7 +14,7 @@
 #include "lua/functions/creatures/player/guild_functions.hpp"
 
 int GuildFunctions::luaGuildCreate(lua_State* L) {
-	uint32_t id = getNumber<uint32_t>(L, 2);
+	const uint32_t id = getNumber<uint32_t>(L, 2);
 	const auto &guild = g_game().getGuild(id);
 	if (guild) {
 		pushUserdata<Guild>(L, guild);
@@ -97,9 +97,9 @@ int GuildFunctions::luaGuildAddRank(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	uint32_t id = getNumber<uint32_t>(L, 2);
+	const uint32_t id = getNumber<uint32_t>(L, 2);
 	const std::string &name = getString(L, 3);
-	uint8_t level = getNumber<uint8_t>(L, 4);
+	const uint8_t level = getNumber<uint8_t>(L, 4);
 	guild->addRank(id, name, level);
 	pushBoolean(L, true);
 	return 1;
@@ -113,8 +113,8 @@ int GuildFunctions::luaGuildGetRankById(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t id = getNumber<uint32_t>(L, 2);
-	GuildRank_ptr rank = guild->getRankById(id);
+	const uint32_t id = getNumber<uint32_t>(L, 2);
+	const GuildRank_ptr rank = guild->getRankById(id);
 	if (rank) {
 		lua_createtable(L, 0, 3);
 		setField(L, "id", rank->id);
@@ -134,8 +134,8 @@ int GuildFunctions::luaGuildGetRankByLevel(lua_State* L) {
 		return 1;
 	}
 
-	uint8_t level = getNumber<uint8_t>(L, 2);
-	GuildRank_ptr rank = guild->getRankByLevel(level);
+	const uint8_t level = getNumber<uint8_t>(L, 2);
+	const GuildRank_ptr rank = guild->getRankByLevel(level);
 	if (rank) {
 		lua_createtable(L, 0, 3);
 		setField(L, "id", rank->id);

@@ -19,7 +19,7 @@ int MountFunctions::luaCreateMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mount = g_game().mounts.getMountByID(getNumber<uint8_t>(L, 2));
 	} else if (isString(L, 2)) {
-		std::string mountName = getString(L, 2);
+		const std::string mountName = getString(L, 2);
 		mount = g_game().mounts.getMountByName(mountName);
 	} else {
 		mount = nullptr;

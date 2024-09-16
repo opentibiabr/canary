@@ -26,7 +26,7 @@ int MoveEventFunctions::luaMoveEventType(lua_State* L) {
 	const auto &moveevent = getUserdataShared<MoveEvent>(L, 1);
 	if (moveevent) {
 		std::string typeName = getString(L, 2);
-		std::string tmpStr = asLowerCaseString(typeName);
+		const std::string tmpStr = asLowerCaseString(typeName);
 		if (tmpStr == "stepin") {
 			moveevent->setEventType(MOVE_EVENT_STEP_IN);
 			moveevent->stepFunction = moveevent->StepInField;
@@ -219,7 +219,7 @@ int MoveEventFunctions::luaMoveEventItemId(lua_State* L) {
 	// moveevent:id(ids)
 	const auto &moveevent = getUserdataShared<MoveEvent>(L, 1);
 	if (moveevent) {
-		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
+		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
 				moveevent->setItemId(getNumber<uint32_t>(L, 2 + i));
@@ -238,7 +238,7 @@ int MoveEventFunctions::luaMoveEventActionId(lua_State* L) {
 	// moveevent:aid(ids)
 	const auto &moveevent = getUserdataShared<MoveEvent>(L, 1);
 	if (moveevent) {
-		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
+		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
 				moveevent->setActionId(getNumber<uint32_t>(L, 2 + i));
@@ -257,7 +257,7 @@ int MoveEventFunctions::luaMoveEventUniqueId(lua_State* L) {
 	// moveevent:uid(ids)
 	const auto &moveevent = getUserdataShared<MoveEvent>(L, 1);
 	if (moveevent) {
-		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
+		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
 				moveevent->setUniqueId(getNumber<uint32_t>(L, 2 + i));
@@ -276,7 +276,7 @@ int MoveEventFunctions::luaMoveEventPosition(lua_State* L) {
 	// moveevent:position(positions)
 	const auto &moveevent = getUserdataShared<MoveEvent>(L, 1);
 	if (moveevent) {
-		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
+		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
 				moveevent->setPosition(getPosition(L, 2 + i));

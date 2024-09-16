@@ -15,7 +15,7 @@
 
 int ContainerFunctions::luaContainerCreate(lua_State* L) {
 	// Container(uid)
-	uint32_t id = getNumber<uint32_t>(L, 2);
+	const uint32_t id = getNumber<uint32_t>(L, 2);
 
 	const auto &container = getScriptEnv()->getContainerByUID(id);
 	if (container) {
@@ -69,10 +69,10 @@ int ContainerFunctions::luaContainerGetEmptySlots(lua_State* L) {
 	}
 
 	uint32_t slots = container->capacity() - container->size();
-	bool recursive = getBoolean(L, 2, false);
+	const bool recursive = getBoolean(L, 2, false);
 	if (recursive) {
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-			if (auto tmpContainer = (*it)->getContainer()) {
+			if (const auto &tmpContainer = (*it)->getContainer()) {
 				slots += tmpContainer->capacity() - tmpContainer->size();
 			}
 		}
@@ -100,7 +100,7 @@ int ContainerFunctions::luaContainerGetItem(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t index = getNumber<uint32_t>(L, 2);
+	const uint32_t index = getNumber<uint32_t>(L, 2);
 	const auto &item = container->getItemByIndex(index);
 	if (item) {
 		pushUserdata<Item>(L, item);
@@ -157,10 +157,10 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 		return 1;
 	}
 
-	auto index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
-	auto flags = getNumber<uint32_t>(L, 5, 0);
+	const auto index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
+	const auto flags = getNumber<uint32_t>(L, 5, 0);
 
-	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
+	const ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
@@ -191,8 +191,8 @@ int ContainerFunctions::luaContainerAddItemEx(lua_State* L) {
 		return 1;
 	}
 
-	auto index = getNumber<int32_t>(L, 3, INDEX_WHEREEVER);
-	auto flags = getNumber<uint32_t>(L, 4, 0);
+	const auto index = getNumber<int32_t>(L, 3, INDEX_WHEREEVER);
+	const auto flags = getNumber<uint32_t>(L, 4, 0);
 	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		ScriptEnvironment::removeTempItem(item);
@@ -231,7 +231,7 @@ int ContainerFunctions::luaContainerGetItemCountById(lua_State* L) {
 		}
 	}
 
-	auto subType = getNumber<int32_t>(L, 3, -1);
+	const auto subType = getNumber<int32_t>(L, 3, -1);
 	lua_pushnumber(L, container->getItemTypeCount(itemId, subType));
 	return 1;
 }
@@ -255,8 +255,8 @@ int ContainerFunctions::luaContainerGetItems(lua_State* L) {
 		return 1;
 	}
 
-	bool recursive = getBoolean(L, 2, false);
-	std::vector<std::shared_ptr<Item>> items = container->getItems(recursive);
+	const bool recursive = getBoolean(L, 2, false);
+	const std::vector<std::shared_ptr<Item>> items = container->getItems(recursive);
 
 	lua_createtable(L, static_cast<int>(items.size()), 0);
 
@@ -278,7 +278,7 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 		return 1;
 	}
 
-	int64_t rewardId = getTimeMsNow();
+	const int64_t rewardId = getTimeMsNow();
 	const auto &rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
 	rewardContainer->setAttribute(ItemAttribute_t::DATE, rewardId);
 	container->setAttribute(ItemAttribute_t::DATE, rewardId);

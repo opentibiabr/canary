@@ -41,7 +41,7 @@ ValueWrapper::ValueWrapper(const std::initializer_list<std::pair<const std::stri
 	timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
 
 std::optional<ValueWrapper> ValueWrapper::get(const std::string &key) const {
-	auto pval = std::get_if<MapType>(&data_);
+	const auto pval = std::get_if<MapType>(&data_);
 	if (!pval) {
 		return std::nullopt;
 	}
@@ -59,7 +59,7 @@ std::optional<ValueWrapper> ValueWrapper::get(const std::string &key) const {
 }
 
 std::optional<ValueWrapper> ValueWrapper::get(size_t index) const {
-	if (auto pval = std::get_if<ArrayType>(&data_)) {
+	if (const auto pval = std::get_if<ArrayType>(&data_)) {
 		if (index < pval->size()) {
 			return (*pval)[index];
 		}

@@ -214,7 +214,7 @@ public:
 
 	std::vector<std::shared_ptr<Tile>> getSurroundingTiles();
 
-	void addThing(std::shared_ptr<Thing> thing) final;
+	void addThing(const std::shared_ptr<Thing> &thing) final;
 	void addThing(int32_t index, const std::shared_ptr<Thing> &thing) override;
 
 	void updateTileFlags(const std::shared_ptr<Item> &item);

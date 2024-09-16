@@ -463,7 +463,7 @@ public:
 	bool hasOwnErrorHandler() override {
 		return true;
 	}
-	std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &, std::shared_ptr<Creature> targetCreature, const Position &, uint8_t) const override {
+	std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &, const std::shared_ptr<Creature> &targetCreature, const Position &, uint8_t) const override {
 		return targetCreature;
 	}
 

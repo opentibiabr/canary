@@ -14,7 +14,7 @@
 #include "creatures/players/player.hpp"
 
 void CreatureEvents::clear() {
-	for (auto &[name, event] : creatureEvents) {
+	for (const auto &[name, event] : creatureEvents) {
 		event->clearEvent();
 	}
 }
@@ -46,7 +46,7 @@ bool CreatureEvents::registerLuaEvent(const std::shared_ptr<CreatureEvent> &crea
 }
 
 std::shared_ptr<CreatureEvent> CreatureEvents::getEventByName(const std::string &name, bool forceLoaded /*= true*/) {
-	auto it = creatureEvents.find(name);
+	const auto it = creatureEvents.find(name);
 	if (it != creatureEvents.end()) {
 		if (!forceLoaded || it->second->isLoaded()) {
 			return it->second;

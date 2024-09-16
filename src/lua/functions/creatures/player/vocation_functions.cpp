@@ -90,8 +90,8 @@ int VocationFunctions::luaVocationGetRequiredSkillTries(lua_State* L) {
 	// vocation:getRequiredSkillTries(skillType, skillLevel)
 	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
-		skills_t skillType = getNumber<skills_t>(L, 2);
-		uint16_t skillLevel = getNumber<uint16_t>(L, 3);
+		const skills_t skillType = getNumber<skills_t>(L, 2);
+		const uint16_t skillLevel = getNumber<uint16_t>(L, 3);
 		lua_pushnumber(L, vocation->getReqSkillTries(skillType, skillLevel));
 	} else {
 		lua_pushnil(L);
@@ -103,7 +103,7 @@ int VocationFunctions::luaVocationGetRequiredManaSpent(lua_State* L) {
 	// vocation:getRequiredManaSpent(magicLevel)
 	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
-		uint32_t magicLevel = getNumber<uint32_t>(L, 2);
+		const uint32_t magicLevel = getNumber<uint32_t>(L, 2);
 		lua_pushnumber(L, vocation->getReqMana(magicLevel));
 	} else {
 		lua_pushnil(L);
@@ -251,7 +251,7 @@ int VocationFunctions::luaVocationGetDemotion(lua_State* L) {
 		return 1;
 	}
 
-	uint16_t fromId = vocation->getFromVocation();
+	const uint16_t fromId = vocation->getFromVocation();
 	if (fromId == VOCATION_NONE) {
 		lua_pushnil(L);
 		return 1;
@@ -275,7 +275,7 @@ int VocationFunctions::luaVocationGetPromotion(lua_State* L) {
 		return 1;
 	}
 
-	uint16_t promotedId = g_vocations().getPromotedVocation(vocation->getId());
+	const uint16_t promotedId = g_vocations().getPromotedVocation(vocation->getId());
 	if (promotedId == VOCATION_NONE) {
 		lua_pushnil(L);
 		return 1;

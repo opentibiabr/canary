@@ -234,7 +234,7 @@ int PartyFunctions::luaPartyIsSharedExperienceEnabled(lua_State* L) {
 
 int PartyFunctions::luaPartyShareExperience(lua_State* L) {
 	// party:shareExperience(experience)
-	uint64_t experience = getNumber<uint64_t>(L, 2);
+	const uint64_t experience = getNumber<uint64_t>(L, 2);
 	const auto &party = getUserdataShared<Party>(L, 1);
 	if (party) {
 		party->shareExperience(experience);
@@ -247,7 +247,7 @@ int PartyFunctions::luaPartyShareExperience(lua_State* L) {
 
 int PartyFunctions::luaPartySetSharedExperience(lua_State* L) {
 	// party:setSharedExperience(active)
-	bool active = getBoolean(L, 2);
+	const bool active = getBoolean(L, 2);
 	const auto &party = getUserdataShared<Party>(L, 1);
 	if (party) {
 		pushBoolean(L, party->setSharedExperience(party->getLeader(), active));

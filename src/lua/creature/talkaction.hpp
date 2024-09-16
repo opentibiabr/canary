@@ -21,7 +21,7 @@
 class TalkAction;
 using TalkAction_ptr = std::shared_ptr<TalkAction>;
 
-class TalkAction : public Script {
+class TalkAction final : public Script {
 public:
 	using Script::Script;
 

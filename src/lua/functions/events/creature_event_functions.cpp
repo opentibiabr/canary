@@ -27,7 +27,7 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 	const auto &creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
 	if (creatureEvent) {
 		std::string typeName = getString(L, 2);
-		std::string tmpStr = asLowerCaseString(typeName);
+		const std::string tmpStr = asLowerCaseString(typeName);
 		if (tmpStr == "login") {
 			creatureEvent->setEventType(CREATURE_EVENT_LOGIN);
 		} else if (tmpStr == "logout") {

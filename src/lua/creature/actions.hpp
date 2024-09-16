@@ -14,7 +14,7 @@
 #include "lua/scripts/luascript.hpp"
 
 class Action;
-class Position;
+struct Position;
 
 class Action : public Script {
 public:
@@ -102,7 +102,7 @@ public:
 		return false;
 	}
 
-	virtual std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &player, std::shared_ptr<Creature> targetCreature, const Position &toPosition, uint8_t toStackPos) const;
+	virtual std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &targetCreature, const Position &toPosition, uint8_t toStackPos) const;
 
 private:
 	std::string getScriptTypeName() const override {
@@ -110,8 +110,8 @@ private:
 	}
 
 	std::function<bool(
-		const std::shared_ptr<Player> &player, std::shared_ptr<Item> item,
-		const Position &fromPosition, std::shared_ptr<Thing> target,
+		const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item,
+		const Position &fromPosition, const std::shared_ptr<Thing> &target,
 		const Position &toPosition, bool isHotkey
 	)>
 		useFunction = nullptr;
@@ -146,9 +146,9 @@ public:
 	bool useItem(const std::shared_ptr<Player> &player, const Position &pos, uint8_t index, const std::shared_ptr<Item> &item, bool isHotkey);
 	bool useItemEx(const std::shared_ptr<Player> &player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, const std::shared_ptr<Item> &item, bool isHotkey, const std::shared_ptr<Creature> &creature = nullptr);
 
-	ReturnValue canUse(const std::shared_ptr<Player> &player, const Position &pos);
+	ReturnValue canUse(const std::shared_ptr<Player> &player, const Position &pos) const;
 	ReturnValue canUse(const std::shared_ptr<Player> &player, const Position &pos, const std::shared_ptr<Item> &item);
-	ReturnValue canUseFar(const std::shared_ptr<Creature> &creature, const Position &toPos, bool checkLineOfSight, bool checkFloor);
+	ReturnValue canUseFar(const std::shared_ptr<Creature> &creature, const Position &toPos, bool checkLineOfSight, bool checkFloor) const;
 
 	bool registerLuaItemEvent(const std::shared_ptr<Action> &action);
 	bool registerLuaUniqueEvent(const std::shared_ptr<Action> &action);
@@ -159,8 +159,8 @@ public:
 	void clear();
 
 private:
-	bool hasPosition(Position position) const {
-		if (auto it = actionPositionMap.find(position);
+	bool hasPosition(const Position &position) const {
+		if (const auto it = actionPositionMap.find(position);
 		    it != actionPositionMap.end()) {
 			return true;
 		}
@@ -171,12 +171,12 @@ private:
 		return actionPositionMap;
 	}
 
-	void setPosition(Position position, std::shared_ptr<Action> action) {
+	void setPosition(const Position &position, const std::shared_ptr<Action> &action) {
 		actionPositionMap.try_emplace(position, action);
 	}
 
 	bool hasItemId(uint16_t itemId) const {
-		if (auto it = useItemMap.find(itemId);
+		if (const auto it = useItemMap.find(itemId);
 		    it != useItemMap.end()) {
 			return true;
 		}
@@ -188,7 +188,7 @@ private:
 	}
 
 	bool hasUniqueId(uint16_t uniqueId) const {
-		if (auto it = uniqueItemMap.find(uniqueId);
+		if (const auto it = uniqueItemMap.find(uniqueId);
 		    it != uniqueItemMap.end()) {
 			return true;
 		}
@@ -200,7 +200,7 @@ private:
 	}
 
 	bool hasActionId(uint16_t actionId) const {
-		if (auto it = actionItemMap.find(actionId);
+		if (const auto it = actionItemMap.find(actionId);
 		    it != actionItemMap.end()) {
 			return true;
 		}

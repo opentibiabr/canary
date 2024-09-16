@@ -26,6 +26,7 @@
 
 class KV : public std::enable_shared_from_this<KV> {
 public:
+	virtual ~KV() = default;
 	virtual void set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) = 0;
 	virtual void set(const std::string &key, const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list) = 0;
 	virtual void set(const std::string &key, const ValueWrapper &value) = 0;
@@ -49,8 +50,8 @@ public:
 	static std::string generateUUID() {
 		std::lock_guard<std::mutex> lock(mutex_);
 
-		auto now = std::chrono::system_clock::now().time_since_epoch();
-		auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
+		const auto now = std::chrono::system_clock::now().time_since_epoch();
+		const auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
 
 		if (milliseconds != lastTimestamp_) {
 			counter_ = 0;
@@ -141,7 +142,7 @@ public:
 
 	template <typename T>
 	T get(const std::string &key, bool forceLoad = false) {
-		auto optValue = get(key, forceLoad);
+		const auto optValue = get(key, forceLoad);
 		if (optValue.has_value()) {
 			return optValue->get<T>();
 		}
@@ -152,7 +153,7 @@ public:
 		return rootKV_.saveAll();
 	}
 
-	std::shared_ptr<KV> scoped(const std::string &scope) final {
+	std::shared_ptr<KV> scoped(const std::string &scope) override {
 		logger.trace("ScopedKV::scoped({})", buildKey(scope));
 		return std::make_shared<ScopedKV>(logger, rootKV_, buildKey(scope));
 	}

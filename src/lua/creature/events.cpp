@@ -23,8 +23,8 @@ Events::Events() :
 
 bool Events::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/events/events.xml";
-	pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	const auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/events/events.xml";
+	const pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
@@ -33,18 +33,18 @@ bool Events::loadFromXml() {
 	info = {};
 
 	phmap::flat_hash_set<std::string> classes;
-	for (auto eventNode : doc.child("events").children()) {
+	for (const auto &eventNode : doc.child("events").children()) {
 		if (!eventNode.attribute("enabled").as_bool()) {
 			continue;
 		}
 
 		const std::string &className = eventNode.attribute("class").as_string();
-		auto res = classes.emplace(className);
+		const auto res = classes.emplace(className);
 		if (res.second) {
 			const std::string &lowercase = asLowerCaseString(className);
 			const std::string &scriptName = lowercase + ".lua";
 			auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
-			if (scriptInterface.loadFile(coreFolder + "/events/scripts/" + scriptName, scriptName) != 0) {
+			if (scriptInterface.loadFile(coreFolder + "/events/scripts/" += scriptName, scriptName) != 0) {
 				g_logger().warn("{} - Can not load script: {}.lua", __FUNCTION__, lowercase);
 				g_logger().warn(scriptInterface.getLastLuaError());
 			}
@@ -152,7 +152,7 @@ bool Events::loadFromXml() {
 }
 
 // Monster
-void Events::eventMonsterOnSpawn(std::shared_ptr<Monster> monster, const Position &position) {
+void Events::eventMonsterOnSpawn(const std::shared_ptr<Monster> &monster, const Position &position) {
 	// Monster:onSpawn(position) or Monster.onSpawn(self, position)
 	if (info.monsterOnSpawn == -1) {
 		return;
@@ -172,7 +172,7 @@ void Events::eventMonsterOnSpawn(std::shared_ptr<Monster> monster, const Positio
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.monsterOnSpawn);
 
-	LuaScriptInterface::pushUserdata<Monster>(L, std::move(monster));
+	LuaScriptInterface::pushUserdata<Monster>(L, monster);
 	LuaScriptInterface::setMetatable(L, -1, "Monster");
 	LuaScriptInterface::pushPosition(L, position);
 
@@ -186,7 +186,7 @@ void Events::eventMonsterOnSpawn(std::shared_ptr<Monster> monster, const Positio
 }
 
 // Npc
-void Events::eventNpcOnSpawn(std::shared_ptr<Npc> npc, const Position &position) {
+void Events::eventNpcOnSpawn(const std::shared_ptr<Npc> &npc, const Position &position) {
 	// Npc:onSpawn(position) or Npc.onSpawn(self, position)
 	if (info.npcOnSpawn == -1) {
 		return;
@@ -206,7 +206,7 @@ void Events::eventNpcOnSpawn(std::shared_ptr<Npc> npc, const Position &position)
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.npcOnSpawn);
 
-	LuaScriptInterface::pushUserdata<Npc>(L, std::move(npc));
+	LuaScriptInterface::pushUserdata<Npc>(L, npc);
 	LuaScriptInterface::setMetatable(L, -1, "Npc");
 	LuaScriptInterface::pushPosition(L, position);
 
@@ -423,7 +423,7 @@ void Events::eventCreatureOnDrainHealth(const std::shared_ptr<Creature> &creatur
 }
 
 // Party
-bool Events::eventPartyOnJoin(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player) {
+bool Events::eventPartyOnJoin(const std::shared_ptr<Party> &party, const std::shared_ptr<Player> &player) {
 	// Party:onJoin(player) or Party.onJoin(self, player)
 	if (info.partyOnJoin == -1) {
 		return true;
@@ -443,7 +443,7 @@ bool Events::eventPartyOnJoin(std::shared_ptr<Party> party, const std::shared_pt
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.partyOnJoin);
 
-	LuaScriptInterface::pushUserdata<Party>(L, std::move(party));
+	LuaScriptInterface::pushUserdata<Party>(L, party);
 	LuaScriptInterface::setMetatable(L, -1, "Party");
 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
@@ -452,7 +452,7 @@ bool Events::eventPartyOnJoin(std::shared_ptr<Party> party, const std::shared_pt
 	return scriptInterface.callFunction(2);
 }
 
-bool Events::eventPartyOnLeave(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player) {
+bool Events::eventPartyOnLeave(const std::shared_ptr<Party> &party, const std::shared_ptr<Player> &player) {
 	// Party:onLeave(player) or Party.onLeave(self, player)
 	if (info.partyOnLeave == -1) {
 		return true;
@@ -472,7 +472,7 @@ bool Events::eventPartyOnLeave(std::shared_ptr<Party> party, const std::shared_p
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.partyOnLeave);
 
-	LuaScriptInterface::pushUserdata<Party>(L, std::move(party));
+	LuaScriptInterface::pushUserdata<Party>(L, party);
 	LuaScriptInterface::setMetatable(L, -1, "Party");
 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
@@ -590,10 +590,10 @@ void Events::eventPlayerOnLook(const std::shared_ptr<Player> &player, const Posi
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
+	if (const std::shared_ptr<Creature> &creature = thing->getCreature()) {
 		LuaScriptInterface::pushUserdata<Creature>(L, creature);
 		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-	} else if (const auto item = thing->getItem()) {
+	} else if (const auto &item = thing->getItem()) {
 		LuaScriptInterface::pushUserdata<Item>(L, item);
 		LuaScriptInterface::setItemMetatable(L, -1, item);
 	} else {
@@ -637,7 +637,7 @@ void Events::eventPlayerOnLookInBattleList(const std::shared_ptr<Player> &player
 	scriptInterface.callVoidFunction(3);
 }
 
-void Events::eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, std::shared_ptr<Player> partner, const std::shared_ptr<Item> &item, int32_t lookDistance) {
+void Events::eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, const  std::shared_ptr<Player> &partner, const std::shared_ptr<Item> &item, int32_t lookDistance) {
 	// Player:onLookInTrade(partner, item, distance) or Player.onLookInTrade(self, partner, item, distance)
 	if (info.playerOnLookInTrade == -1) {
 		return;
@@ -660,7 +660,7 @@ void Events::eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, std
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	LuaScriptInterface::pushUserdata<Player>(L, std::move(partner));
+	LuaScriptInterface::pushUserdata<Player>(L, partner);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	LuaScriptInterface::pushUserdata<Item>(L, item);
@@ -1264,7 +1264,7 @@ void Events::eventPlayerOnInventoryUpdate(const std::shared_ptr<Player> &player,
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.playerOnInventoryUpdate);
 
-	LuaScriptInterface::pushUserdata<Player>(L, std::move(player));
+	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	LuaScriptInterface::pushUserdata<Item>(L, item);
@@ -1308,7 +1308,7 @@ void Events::eventOnStorageUpdate(const std::shared_ptr<Player> &player, const u
 }
 
 // Monster
-void Events::eventMonsterOnDropLoot(std::shared_ptr<Monster> monster, const std::shared_ptr<Container> &corpse) {
+void Events::eventMonsterOnDropLoot(const std::shared_ptr<Monster> &monster, const std::shared_ptr<Container> &corpse) {
 	// Monster:onDropLoot(corpse)
 	if (info.monsterOnDropLoot == -1) {
 		return;
@@ -1328,7 +1328,7 @@ void Events::eventMonsterOnDropLoot(std::shared_ptr<Monster> monster, const std:
 	lua_State* L = scriptInterface.getLuaState();
 	scriptInterface.pushFunction(info.monsterOnDropLoot);
 
-	LuaScriptInterface::pushUserdata<Monster>(L, std::move(monster));
+	LuaScriptInterface::pushUserdata<Monster>(L, monster);
 	LuaScriptInterface::setMetatable(L, -1, "Monster");
 
 	LuaScriptInterface::pushUserdata<Container>(L, corpse);

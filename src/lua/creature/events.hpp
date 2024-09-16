@@ -88,8 +88,8 @@ public:
 	void eventCreatureOnDrainHealth(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
 
 	// Party
-	bool eventPartyOnJoin(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player);
-	bool eventPartyOnLeave(std::shared_ptr<Party> party, const std::shared_ptr<Player> &player);
+	bool eventPartyOnJoin(const std::shared_ptr<Party> &party, const std::shared_ptr<Player> &player);
+	bool eventPartyOnLeave(const std::shared_ptr<Party> &party, const std::shared_ptr<Player> &player);
 	bool eventPartyOnDisband(const std::shared_ptr<Party> &party);
 	void eventPartyOnShareExperience(const std::shared_ptr<Party> &party, uint64_t &exp);
 
@@ -97,7 +97,7 @@ public:
 	bool eventPlayerOnBrowseField(const std::shared_ptr<Player> &player, const Position &position);
 	void eventPlayerOnLook(const std::shared_ptr<Player> &player, const Position &position, const std::shared_ptr<Thing> &thing, uint8_t stackpos, int32_t lookDistance);
 	void eventPlayerOnLookInBattleList(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &creature, int32_t lookDistance);
-	void eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, std::shared_ptr<Player> partner, const std::shared_ptr<Item> &item, int32_t lookDistance);
+	void eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &partner, const std::shared_ptr<Item> &item, int32_t lookDistance);
 	bool eventPlayerOnLookInShop(const std::shared_ptr<Player> &player, const ItemType* itemType, uint8_t count);
 	bool eventPlayerOnMoveItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, const std::shared_ptr<Cylinder> &fromCylinder, const std::shared_ptr<Cylinder> &toCylinder);
 	void eventPlayerOnItemMoved(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, uint16_t count, const Position &fromPosition, const Position &toPosition, const std::shared_ptr<Cylinder> &fromCylinder, const std::shared_ptr<Cylinder> &toCylinder);
@@ -119,11 +119,11 @@ public:
 	void eventPlayerOnInventoryUpdate(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool equip);
 
 	// Monster
-	void eventMonsterOnDropLoot(std::shared_ptr<Monster> monster, const std::shared_ptr<Container> &corpse);
-	void eventMonsterOnSpawn(std::shared_ptr<Monster> monster, const Position &position);
+	void eventMonsterOnDropLoot(const std::shared_ptr<Monster> &monster, const std::shared_ptr<Container> &corpse);
+	void eventMonsterOnSpawn(const std::shared_ptr<Monster> &monster, const Position &position);
 
 	// Monster
-	void eventNpcOnSpawn(std::shared_ptr<Npc> npc, const Position &position);
+	void eventNpcOnSpawn(const std::shared_ptr<Npc> &npc, const Position &position);
 
 private:
 	LuaScriptInterface scriptInterface;

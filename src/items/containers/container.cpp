@@ -679,7 +679,7 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 	return getContainer();
 }
 
-void Container::addThing(std::shared_ptr<Thing> thing) {
+void Container::addThing(const std::shared_ptr<Thing> &thing) {
 	return addThing(0, thing);
 }
 

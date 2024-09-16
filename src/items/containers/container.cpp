@@ -969,7 +969,7 @@ void ContainerIterator::advance() {
 
 	++cur;
 
-	if (cur == over.front()->itemlist.end()) {
+	if (!over.empty() && cur == over.front()->itemlist.end()) {
 		over.pop_front();
 		if (!over.empty()) {
 			cur = over.front()->itemlist.begin();

@@ -21,7 +21,7 @@ function adventurersGuildHunt.onDeath(creature, _corpse, _lastHitKiller, mostDam
 		return true
 	end
 	onDeathForParty(creature, mostDamageKiller, function(creature, player)
-		player:setStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter, math.max(0, player:getStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter)) + 1)
+		player:setStorageValue(Storage.Quest.U10_80.TheGreatDragonHunt.DragonCounter, math.max(0, player:getStorageValue(Storage.Quest.U10_80.TheGreatDragonHunt.DragonCounter)) + 1)
 	end)
 	return true
 end

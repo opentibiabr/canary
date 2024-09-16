@@ -5597,38 +5597,20 @@ if not Quests then
 				},
 			},
 		},
-		[40] = { -- FREE SLOT FOR A SIMPLE QUEST
-			name = "XXXXXXXXXXXX",
-			startStorageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
-			startStorageValue = 1,
-			missions = {
-				[1] = {
-					name = "XXXXXXXXXXXX",
-					storageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
-					missionId = 10387,
-					startValue = 1,
-					endValue = 2,
-					states = {
-						[1] = "XXXXXXXXXXXX",
-						[2] = "XXXXXXXXXXXX",
-					},
-				},
-			},
-		},
-		[41] = {
+		[40] = {
 			name = "Adventurers Guild",
 			startStorageId = Storage.AdventurersGuild.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Great Dragon Hunt",
-					storageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
+					storageId = Storage.Quest.U10_80.TheGreatDragonHunt.WarriorSkeleton,
 					missionId = 10388,
 					startValue = 0,
 					endValue = 2,
 					description = function(player)
 						return ("You are exploring the Kha'zeel Dragon Lairs. Others obviously found a terrible end here. \z
-						But the dragon hoards might justify the risks. You killed %d/50 dragons and dragon lords."):format(math.max(player:getStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter), 0))
+						But the dragon hoards might justify the risks. You killed %d/50 dragons and dragon lords."):format(math.max(player:getStorageValue(Storage.Quest.U10_80.TheGreatDragonHunt.DragonCounter), 0))
 					end,
 				},
 				[2] = {
@@ -5645,7 +5627,7 @@ if not Quests then
 				},
 			},
 		},
-		[42] = {
+		[41] = {
 			name = "Dawnport",
 			startStorageId = Storage.Quest.U10_55.Dawnport.Questline,
 			startStorageValue = 1,
@@ -5740,7 +5722,7 @@ if not Quests then
 				},
 			},
 		},
-		[43] = {
+		[42] = {
 			name = "The Rookie Guard",
 			startStorageId = Storage.Quest.U9_1.TheRookieGuard.Questline,
 			startStorageValue = 1,
@@ -5922,7 +5904,7 @@ if not Quests then
 				},
 			},
 		},
-		[44] = {
+		[43] = {
 			name = "The New Frontier",
 			startStorageId = Storage.Quest.U8_54.TheNewFrontier.Questline,
 			startStorageValue = 1,
@@ -6171,7 +6153,7 @@ if not Quests then
 				},
 			},
 		},
-		[45] = {
+		[44] = {
 			name = "Spirithunters Quest",
 			startStorageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 			startStorageValue = 1,
@@ -6211,7 +6193,7 @@ if not Quests then
 				},
 			},
 		},
-		[46] = {
+		[45] = {
 			name = "Threatened Dreams",
 			startStorageId = Storage.Quest.U11_40.ThreatenedDreams.QuestLine,
 			startStorageValue = 1,
@@ -6306,7 +6288,7 @@ if not Quests then
 				},
 			},
 		},
-		[47] = {
+		[46] = {
 			name = "Blood Brothers",
 			startStorageId = Storage.Quest.U8_4.BloodBrothers.QuestLine,
 			startStorageValue = 1,
@@ -6359,7 +6341,7 @@ if not Quests then
 				},
 			},
 		},
-		[48] = {
+		[47] = {
 			name = "Grave Danger",
 			startStorageId = Storage.Quest.U12_20.GraveDanger.QuestLine,
 			startStorageValue = 1,
@@ -6536,7 +6518,7 @@ if not Quests then
 				},
 			},
 		},
-		[49] = {
+		[48] = {
 			name = "The Outlaw Camp",
 			startStorageId = Storage.Quest.U6_4.OutlawCampQuest,
 			startStorageValue = 1,

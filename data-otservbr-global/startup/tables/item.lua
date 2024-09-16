@@ -1446,6 +1446,18 @@ ItemAction = {
 			{ x = 32788, y = 32227, z = 14 },
 		},
 	},
+	-- The Great Dragon Hunt Quest
+	[50808] = {
+		itemId = false,
+		itemPos = {
+			{ x = 33010, y = 32638, z = 5 },
+			{ x = 33039, y = 32652, z = 6 },
+			{ x = 33010, y = 32687, z = 7 },
+			{ x = 33037, y = 32662, z = 7 },
+			{ x = 33078, y = 32657, z = 6 },
+			{ x = 32994, y = 32625, z = 6 },
+		},
+	},
 	-- Roshamuul Quest
 	[55000] = {
 		itemId = false,

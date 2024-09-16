@@ -22,6 +22,13 @@ CorpseAction = {
 			{ x = 32031, y = 32914, z = 8 },
 		},
 	},
+	-- The Great Dragon Hunt Quest
+	[50806] = {
+		itemId = 21412,
+		itemPos = {
+			{ x = 32991, y = 32642, z = 8 },
+		},
+	},
 }
 
 CorpseUnique = {

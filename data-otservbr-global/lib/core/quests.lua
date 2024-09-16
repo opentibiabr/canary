@@ -5599,7 +5599,7 @@ if not Quests then
 		},
 		[40] = {
 			name = "Adventurers Guild",
-			startStorageId = Storage.AdventurersGuild.QuestLine,
+			startStorageId = Storage.Quest.U9_80.AdventurersGuild.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
@@ -5615,7 +5615,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Lost Brother",
-					storageId = Storage.AdventurersGuild.TheLostBrother,
+					storageId = Storage.Quest.U10_80.TheLostBrotherQuest,
 					missionId = 11000,
 					startValue = 1,
 					endValue = 3,

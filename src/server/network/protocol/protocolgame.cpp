@@ -9278,6 +9278,9 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage &msg) {
 	} else if (actionType == 4) {
 		uint32_t offerId = msg.get<uint32_t>();
 		auto offer = g_ioStore().getOfferById(offerId);
+		if (!offer) {
+			return;
+		}
 		auto parentName = offer->getParentName();
 		auto parentCategory = g_ioStore().findCategory(parentName);
 		if (!parentCategory) {
@@ -9293,28 +9296,34 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage &msg) {
 
 void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 	msg.addString(offer->getOfferName());
-	msg.addByte(0x01); // Offers inside an offer (?)
+	const auto relatedOffersVector = offer->getRelatedOffersVector();
+	auto offersCount = getVectorIterationIncreaseCount(relatedOffersVector);
+	msg.addByte(static_cast<uint8_t>(offersCount)); // Related Offers inside a Base Offer
 	sendOfferDescription(offer);
+	for (const auto relatedOffer : relatedOffersVector) {
+		msg.add<uint32_t>(relatedOffer.id);
+		msg.add<uint16_t>(relatedOffer.count);
 
-	msg.add<uint32_t>(offer->getOfferId());
-	msg.add<uint16_t>(offer->getOfferCount());
+		uint32_t offerPrice = relatedOffer.price;
+		if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
+			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
+		}
+		msg.add<uint32_t>(offerPrice);
+		msg.addByte(0x00); // Coin Type
 
-	uint32_t offerPrice = offer->getOfferPrice();
-	if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
-		offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
+		auto canBuyOffer = player->canBuyStoreOffer(offer);
+		msg.addByte(canBuyOffer ? 0x00 : 0x01); // Disabled (Bool)
+		if (!canBuyOffer) {
+			msg.addByte(0x01);
+			auto vectorIndex = g_ioStore().offersDisableIndex.find(offer->getOfferType());
+			if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
+				offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
+			}
+			msg.add<uint16_t>(vectorIndex->second);
+		}
+
+		msg.addByte(0x00); // Offer State
 	}
-	msg.add<uint32_t>(offerPrice);
-	msg.addByte(0x00); // Coin Type
-
-	auto canBuyOffer = player->canBuyStoreOffer(offer);
-	msg.addByte(canBuyOffer ? 0x00 : 0x01); // Disabled (Bool)
-	if (!canBuyOffer) {
-		msg.addByte(0x01);
-		auto vectorIndex = g_ioStore().offersDisableIndex.find(offer->getOfferType());
-		msg.add<uint16_t>(vectorIndex->second);
-	}
-
-	msg.addByte(0x00); // Offer State
 
 	auto offerConverType = magic_enum::enum_integer<ConverType_t>(offer->getConverType());
 	msg.addByte(offerConverType); // ConverType
@@ -9382,7 +9391,7 @@ void ProtocolGame::sendStoreHome() {
 
 	if (homeOffersCount > 0) {
 		for (const auto &homeOfferId : homeOffersVector) {
-			auto offer = g_ioStore().getOfferById(homeOfferId);
+			const Offer *offer = g_ioStore().getOfferById(homeOfferId);
 			sendOfferBytes(msg, offer);
 		}
 	}
@@ -9423,7 +9432,7 @@ void ProtocolGame::sendCategoryOffers(const Category* category, uint32_t redirec
 	uint16_t disableReasonVectorLen = disableReasonVector.size();
 	msg.add<uint16_t>(disableReasonVectorLen); // Disable Reasons Vector Length
 	if (disableReasonVectorLen > 0) {
-		for (auto reason : disableReasonVector) {
+		for (const auto reason : disableReasonVector) {
 			msg.addString(reason);
 		}
 	}
@@ -9434,7 +9443,7 @@ void ProtocolGame::sendCategoryOffers(const Category* category, uint32_t redirec
 
 	if (offersCount > 0) {
 		for (const auto &offer : offersVector) {
-			sendOfferBytes(msg, &offer);
+			sendOfferBytes(msg, offer);
 		}
 	}
 
@@ -9489,11 +9498,11 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
 	auto offerType = msg.getByte();
 	g_logger().warn("{}", offerType);
 
-	auto currentOffer = g_ioStore().getOfferById(offerId);
+	const auto *currentOffer = g_ioStore().getOfferById(offerId);
 	auto currentOfferType = currentOffer->getOfferType();
 
 	std::string stringName = "";
-	uint8_t sexId;
+	uint8_t sexId = 0;
 
 	if (currentOfferType == OfferTypes_t::NAMECHANGE
 	    || currentOfferType == OfferTypes_t::HIRELING_NAMECHANGE) {

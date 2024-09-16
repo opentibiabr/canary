@@ -124,6 +124,12 @@ struct StoreHistoryDetail {
 	std::string playerName {};
 };
 
+struct RelatedOffer {
+	uint32_t id = 0;
+	uint32_t price = 0;
+	uint16_t count = 0;
+};
+
 class Category;
 class Offer;
 
@@ -200,6 +206,7 @@ public:
 	const std::vector<std::string> getOffersDisableReasonVector();
 
 	std::vector<Offer> getOffersContainingSubstring(const std::string &searchString);
+	Offer* getOfferByName(const std::string &searchString);
 
 	static StoreHistoryDetail getStoreHistoryDetail(const std::string &playerName, bool fromMarket, uint32_t createdAt);
 
@@ -259,7 +266,7 @@ public:
 
 	const Category* getFirstSubCategory() const;
 	std::vector<Category> getSubCategoriesVector() const;
-	std::vector<Offer> getOffersVector() const;
+	std::vector<const Offer*> getOffersVector() const;
 
 private:
 	friend class IOStore;
@@ -274,10 +281,10 @@ private:
 	std::vector<Category> subCategories;
 
 	// Used when Category class is a Subcategory or a "Special Category"
-	std::vector<Offer> offers;
+	std::vector<const Offer*> offers;
 
 	void addSubCategory(Category newSubCategory);
-	void addOffer(Offer newOffer);
+	void addOffer(const Offer* newOffer);
 	void setSpecialCategory(bool state) {
 		specialCategory = state;
 	}
@@ -285,8 +292,8 @@ private:
 
 class Offer {
 public:
-	Offer(std::string parentName, std::string name, std::string icon, uint32_t id, uint32_t price, OfferTypes_t type, States_t state, uint16_t count, uint16_t duration, CoinType coin, std::string description, OutfitIds outfitIds, bool movable) :
-		parentName(parentName), offerName(name), offerIcon(icon), offerId(id), offerPrice(price), offerType(type), offerState(state), offerCount(count), validUntil(duration), coinType(coin), offerDescription(description), outfitId(outfitIds), movable(movable) { }
+	Offer(std::string parentName, std::string name, std::string icon, uint32_t id, uint32_t price, OfferTypes_t type, States_t state, uint16_t count, uint16_t duration, CoinType coin, std::string description, OutfitIds outfitIds, bool movable, std::vector<RelatedOffer> relatedOffers) :
+		parentName(parentName), offerName(name), offerIcon(icon), offerId(id), offerPrice(price), offerType(type), offerState(state), offerCount(count), validUntil(duration), coinType(coin), offerDescription(description), outfitId(outfitIds), movable(movable), relatedOffers(relatedOffers) { }
 
 	std::string getOfferName() const {
 		return offerName;
@@ -330,6 +337,8 @@ public:
 		return movable;
 	}
 
+	std::vector<RelatedOffer> getRelatedOffersVector() const;
+	void addRelatedOffer(const RelatedOffer& relatedOffer);
 private:
 	// Mandatory
 	std::string offerName;
@@ -349,6 +358,7 @@ private:
 
 	// Internal
 	std::string parentName;
+	std::vector<RelatedOffer> relatedOffers;
 };
 
 constexpr auto g_ioStore = &IOStore::getInstance;

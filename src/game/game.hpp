@@ -304,7 +304,7 @@ public:
 
 	// Store Functions
 	void playerOpenStore(uint32_t playerId);
-	void playerCoinTransfer(uint32_t playerId, std::string receptorName, uint32_t coinAmount);
+	void playerCoinTransfer(uint32_t playerId, const std::string receptorName, uint32_t coinAmount);
 	void playerOpenStoreHistory(uint32_t playerId, uint32_t page);
 	void playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::string newName, uint8_t sexId);
 	// Process Offers

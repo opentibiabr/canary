@@ -35,11 +35,9 @@ bool IOStore::loadFromXml() {
 		auto categoryName = std::string(category.attribute("name").as_string());
 		auto categoryIcon = std::string(category.attribute("icon").as_string());
 		auto categoryRookString = std::string(category.attribute("rookgaard").as_string());
-		bool categoryRook;
+		bool categoryRook = false;
 		if (categoryRookString == "yes") {
 			categoryRook = true;
-		} else {
-			categoryRook = false;
 		}
 
 		Category newCategory(categoryName, categoryIcon, categoryRook);
@@ -51,20 +49,16 @@ bool IOStore::loadFromXml() {
 				auto subCategoryIcon = std::string(subcategory.attribute("icon").as_string());
 
 				auto subCategoryRookString = std::string(category.attribute("rookgaard").as_string());
-				bool subCategoryRook;
+				bool subCategoryRook = false;
 				if (subCategoryRookString == "yes") {
 					subCategoryRook = true;
-				} else {
-					subCategoryRook = false;
 				}
 
 				auto subCategoryStateString = std::string(subcategory.attribute("state").as_string());
-				States_t subCategoryState;
+				States_t subCategoryState = States_t::NONE;
 				if (auto it = stringToOfferStateMap.find(subCategoryStateString);
 				    it != stringToOfferStateMap.end()) {
 					subCategoryState = it->second;
-				} else {
-					subCategoryState = States_t::NONE;
 				}
 
 				Category newSubCategory(subCategoryName, subCategoryIcon, subCategoryRook, subCategoryState);
@@ -117,7 +111,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	}
 
 	auto typeString = std::string(offer.attribute("type").as_string());
-	OfferTypes_t type;
+	OfferTypes_t type = OfferTypes_t::NONE;
 	if (auto it = stringToOfferTypeMap.find(typeString);
 	    it != stringToOfferTypeMap.end()) {
 		type = it->second;
@@ -166,11 +160,26 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		isMovable = bool(offer.attribute("movable").as_bool());
 	}
 
-	auto parentName = category->getCategoryName();
-	Offer newOffer(parentName, name, icon, id, price, type, state, count, validUntil, coinType, desc, outfitId, isMovable);
+	RelatedOffer relatedOffer;
+	relatedOffer.id = id;
+	relatedOffer.price = price;
+	relatedOffer.count = count;
 
-	addOffer(id, newOffer);
-	category->addOffer(newOffer);
+	auto baseOffer = getOfferByName(name);
+	if (baseOffer) {
+		baseOffer->addRelatedOffer(relatedOffer);
+	} else {
+		auto parentName = category->getCategoryName();
+		Offer newOffer(parentName, name, icon, id, price, type, state, count, validUntil, coinType, desc, outfitId, isMovable, {relatedOffer});
+		addOffer(id, newOffer);
+
+		const Offer* foundOffer = getOfferById(id);
+		if (!foundOffer) {
+			g_logger().warn("Offer {} not found.", name);
+			return false;
+		}
+		category->addOffer(foundOffer);
+	}
 
 	return true;
 }
@@ -205,7 +214,6 @@ bool IOStore::loadStoreHome(pugi::xml_node homeNode) {
 	if (homeOffersChild && std::string(homeOffersChild.name()) == "offer") {
 		for (pugi::xml_node offer : homeOffersNode.children("offer")) {
 			auto homeOfferId = static_cast<uint32_t>(offer.attribute("id").as_uint());
-
 			homeOffers.push_back(homeOfferId);
 		}
 	}
@@ -244,14 +252,12 @@ const Category* IOStore::getSubCategoryByName(std::string subCategoryName) const
 }
 
 void IOStore::addOffer(uint32_t offerId, Offer offer) {
-	if (auto it = offersMap.find(offerId);
-	    it != offersMap.end()) {
+	auto it = offersMap.find(offerId);
+	if (it != offersMap.end()) {
 		return;
 	}
 
-	offersMap.try_emplace(offerId, offer);
-	auto newOffer = std::pair<uint32_t, Offer>(offerId, offer);
-	offersMap.insert(newOffer);
+	offersMap.try_emplace(offerId, std::move(offer));
 }
 
 const Offer* IOStore::getOfferById(uint32_t offerId) const {
@@ -276,6 +282,21 @@ std::vector<Offer> IOStore::getOffersContainingSubstring(const std::string &sear
 	}
 
 	return offersVector;
+}
+
+Offer* IOStore::getOfferByName(const std::string &searchString) {
+	auto lowerSearchString = asLowerCaseString(searchString);
+
+	for (auto &offer : offersMap) {
+		auto currentOfferName = offer.second.getOfferName();
+		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
+
+		if (lowerSearchString == lowerCurrentOfferName) {
+			return &offer.second;
+		}
+	}
+
+	return nullptr;
 }
 
 std::vector<BannerInfo> IOStore::getBannersVector() const {
@@ -347,14 +368,14 @@ void Category::addSubCategory(Category newSubCategory) {
 	subCategories.push_back(newSubCategory);
 }
 
-std::vector<Offer> Category::getOffersVector() const {
+std::vector<const Offer*> Category::getOffersVector() const {
 	return offers;
 }
-void Category::addOffer(Offer newOffer) {
+void Category::addOffer(const Offer* newOffer) {
 	for (const auto &offer : offers) {
-		if (newOffer.getOfferId() == offer.getOfferId()
-		    && newOffer.getOfferName() == offer.getOfferName()
-		    && newOffer.getOfferCount() == offer.getOfferCount()) {
+		if (newOffer->getOfferId() == offer->getOfferId()
+		    && newOffer->getOfferName() == offer->getOfferName()
+		    && newOffer->getOfferCount() == offer->getOfferCount()) {
 			return;
 		}
 	}
@@ -362,6 +383,20 @@ void Category::addOffer(Offer newOffer) {
 }
 
 // Offer Functions
+std::vector<RelatedOffer> Offer::getRelatedOffersVector() const {
+	return relatedOffers;
+}
+void Offer::addRelatedOffer(const RelatedOffer& relatedOffer) {
+	for (const auto &offer : relatedOffers) {
+		if (relatedOffer.count == offer.count
+		    && relatedOffer.price == offer.price) {
+			return;
+		}
+	}
+
+	relatedOffers.push_back(relatedOffer);
+}
+
 ConverType_t Offer::getConverType() const {
 	if (offerType == OfferTypes_t::MOUNT) {
 		return ConverType_t::MOUNT;

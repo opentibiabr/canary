@@ -10562,7 +10562,7 @@ void Game::playerOpenStore(uint32_t playerId) {
 	player->openStore();
 }
 
-void Game::playerCoinTransfer(uint32_t playerId, std::string receptorName, uint32_t coinAmount) {
+void Game::playerCoinTransfer(uint32_t playerId, const std::string receptorName, uint32_t coinAmount) {
 	std::shared_ptr<Player> playerDonator = getPlayerByID(playerId);
 	if (!playerDonator) {
 		return;
@@ -10787,7 +10787,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 				break;
 			}
 
-			int32_t premiumDays = offer->getOfferId() - 3000;
+			int32_t premiumDays = static_cast<int32_t>(offer->getOfferId()) - 3000;
 			player->getAccount()->addPremiumDays(premiumDays);
 			if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
 				break;

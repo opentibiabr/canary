@@ -170,7 +170,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		baseOffer->addRelatedOffer(relatedOffer);
 	} else {
 		auto parentName = category->getCategoryName();
-		Offer newOffer(parentName, name, icon, id, price, type, state, count, validUntil, coinType, desc, outfitId, isMovable, {relatedOffer});
+		Offer newOffer(parentName, name, icon, id, price, type, state, count, validUntil, coinType, desc, outfitId, isMovable, { relatedOffer });
 		addOffer(id, newOffer);
 
 		const Offer* foundOffer = getOfferById(id);
@@ -386,7 +386,7 @@ void Category::addOffer(const Offer* newOffer) {
 std::vector<RelatedOffer> Offer::getRelatedOffersVector() const {
 	return relatedOffers;
 }
-void Offer::addRelatedOffer(const RelatedOffer& relatedOffer) {
+void Offer::addRelatedOffer(const RelatedOffer &relatedOffer) {
 	for (const auto &offer : relatedOffers) {
 		if (relatedOffer.count == offer.count
 		    && relatedOffer.price == offer.price) {

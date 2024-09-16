@@ -9391,7 +9391,7 @@ void ProtocolGame::sendStoreHome() {
 
 	if (homeOffersCount > 0) {
 		for (const auto &homeOfferId : homeOffersVector) {
-			const Offer *offer = g_ioStore().getOfferById(homeOfferId);
+			const Offer* offer = g_ioStore().getOfferById(homeOfferId);
 			sendOfferBytes(msg, offer);
 		}
 	}
@@ -9498,7 +9498,7 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
 	auto offerType = msg.getByte();
 	g_logger().warn("{}", offerType);
 
-	const auto *currentOffer = g_ioStore().getOfferById(offerId);
+	const auto* currentOffer = g_ioStore().getOfferById(offerId);
 	auto currentOfferType = currentOffer->getOfferType();
 
 	std::string stringName = "";

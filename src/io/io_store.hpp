@@ -338,7 +338,8 @@ public:
 	}
 
 	std::vector<RelatedOffer> getRelatedOffersVector() const;
-	void addRelatedOffer(const RelatedOffer& relatedOffer);
+	void addRelatedOffer(const RelatedOffer &relatedOffer);
+
 private:
 	// Mandatory
 	std::string offerName;

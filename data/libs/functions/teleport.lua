@@ -2,7 +2,7 @@ function Teleport.isTeleport(self)
 	return true
 end
 
-function SimpleTeleport(from, destination, condition)
+function SimpleTeleport(from, destination, condition, disableEffect)
 	local teleport = MoveEvent()
 
 	function teleport.onStepIn(creature, item, position, fromPosition)
@@ -16,7 +16,9 @@ function SimpleTeleport(from, destination, condition)
 		end
 
 		player:teleportTo(destination)
-		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		if not disableEffect then
+			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		end
 		return true
 	end
 

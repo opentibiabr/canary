@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -9,8 +9,9 @@
 #pragma once
 
 #include "lib/logging/logger.hpp"
+#include "BS_thread_pool.hpp"
 
-class ThreadPool {
+class ThreadPool : public BS::thread_pool {
 public:
 	explicit ThreadPool(Logger &logger);
 
@@ -20,12 +21,6 @@ public:
 
 	void start();
 	void shutdown();
-	asio::io_context &getIoContext();
-	void addLoad(const std::function<void(void)> &load);
-
-	uint16_t getNumberOfThreads() const {
-		return nThreads;
-	}
 
 	static int16_t getThreadId() {
 		static std::atomic_int16_t lastId = -1;
@@ -39,11 +34,11 @@ public:
 		return id;
 	};
 
+	bool isStopped() const {
+		return stopped;
+	}
+
 private:
 	Logger &logger;
-	asio::io_context ioService;
-	std::vector<std::jthread> threads;
-	asio::io_context::work work { ioService };
-
-	uint16_t nThreads = 0;
+	bool stopped = false;
 };

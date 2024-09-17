@@ -39,7 +39,7 @@ function outfitMemorial.onUse(player, item, fromPosition, target, toPosition, is
 	for i = 1, 3 do
 		response:addU16(#goldenOutfitCache[i])
 		for j = 1, #goldenOutfitCache[i] do
-			response:addString(goldenOutfitCache[i][j])
+			response:addString(goldenOutfitCache[i][j], "outfitMemorial.onUse - goldenOutfitCache[i][j]")
 		end
 	end
 
@@ -52,7 +52,7 @@ function outfitMemorial.onUse(player, item, fromPosition, target, toPosition, is
 	for i = 1, 3 do
 		response:addU16(#royalOutfitCache[i])
 		for j = 1, #royalOutfitCache[i] do
-			response:addString(royalOutfitCache[i][j])
+			response:addString(royalOutfitCache[i][j], "outfitMemorial.onUse - royalOutfitCache[i][j]")
 		end
 	end
 

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -9,11 +9,16 @@
 
 #pragma once
 
-#include <string>
-#include <mutex>
-#include <initializer_list>
-#include <parallel_hashmap/phmap.h>
-#include <optional>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <string>
+	#include <mutex>
+	#include <initializer_list>
+	#include <parallel_hashmap/phmap.h>
+	#include <optional>
+	#include <unordered_set>
+	#include <iomanip>
+	#include <list>
+#endif
 
 #include "lib/logging/logger.hpp"
 #include "kv/value_wrapper.hpp"
@@ -32,16 +37,43 @@ public:
 
 	virtual std::shared_ptr<KV> scoped(const std::string &scope) = 0;
 
+	virtual std::unordered_set<std::string> keys(const std::string &prefix = "") = 0;
+
 	void remove(const std::string &key);
 
 	virtual void flush() {
 		saveAll();
 	}
+
+	static std::string generateUUID() {
+		std::lock_guard<std::mutex> lock(mutex_);
+
+		auto now = std::chrono::system_clock::now().time_since_epoch();
+		auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
+
+		if (milliseconds != lastTimestamp_) {
+			counter_ = 0;
+			lastTimestamp_ = milliseconds;
+		} else {
+			++counter_;
+		}
+
+		std::stringstream ss;
+		ss << std::setw(20) << std::setfill('0') << milliseconds << "-"
+		   << std::setw(12) << std::setfill('0') << counter_;
+
+		return ss.str();
+	}
+
+private:
+	static int64_t lastTimestamp_;
+	static uint64_t counter_;
+	static std::mutex mutex_;
 };
 
 class KVStore : public KV {
 public:
-	static constexpr size_t MAX_SIZE = 10000;
+	static constexpr size_t MAX_SIZE = 1000000;
 	static KVStore &getInstance();
 
 	explicit KVStore(Logger &logger) :
@@ -60,6 +92,7 @@ public:
 	}
 
 	std::shared_ptr<KV> scoped(const std::string &scope) override final;
+	std::unordered_set<std::string> keys(const std::string &prefix = "");
 
 protected:
 	phmap::parallel_flat_hash_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> getStore() {
@@ -76,6 +109,7 @@ protected:
 
 	virtual std::optional<ValueWrapper> load(const std::string &key) = 0;
 	virtual bool save(const std::string &key, const ValueWrapper &value) = 0;
+	virtual std::vector<std::string> loadPrefix(const std::string &prefix = "") = 0;
 
 private:
 	void setLocked(const std::string &key, const ValueWrapper &value);
@@ -118,8 +152,12 @@ public:
 	}
 
 	std::shared_ptr<KV> scoped(const std::string &scope) override final {
-		logger.debug("ScopedKV::scoped({})", buildKey(scope));
+		logger.trace("ScopedKV::scoped({})", buildKey(scope));
 		return std::make_shared<ScopedKV>(logger, rootKV_, buildKey(scope));
+	}
+
+	std::unordered_set<std::string> keys(const std::string &prefix = "") override {
+		return rootKV_.keys(buildKey(prefix));
 	}
 
 private:

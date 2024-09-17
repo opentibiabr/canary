@@ -44,16 +44,17 @@ function onTargetTile(creature, pos)
 		end
 	end
 	if #creatureTable ~= nil and #creatureTable > 0 then
+		local min = 30000
+		local max = 30000
 		for r = 1, #creatureTable do
 			if creatureTable[r] ~= creature then
-				local min = 30000
-				local max = 30000
-				local player = Player(creatureTable[r])
-
-				if isPlayer(creatureTable[r]) == true and table.contains(vocation, player:getVocation():getBaseId()) then
-					doTargetCombatHealth(creature, creatureTable[r], COMBAT_ENERGYDAMAGE, -min, -max, CONST_ME_NONE)
-				elseif isMonster(creatureTable[r]) == true then
-					doTargetCombatHealth(creature, creatureTable[r], COMBAT_ENERGYDAMAGE, -min, -max, CONST_ME_NONE)
+				local creatureInTable = Creature(creatureTable[r])
+				if creatureInTable then
+					if creatureInTable:isPlayer() and table.contains(vocation, creatureInTable:getVocation():getBaseId()) then
+						doTargetCombatHealth(creature, creatureTable[r], COMBAT_ENERGYDAMAGE, -min, -max, CONST_ME_NONE)
+					elseif creatureInTable:isMonster() then
+						doTargetCombatHealth(creature, creatureTable[r], COMBAT_ENERGYDAMAGE, -min, -max, CONST_ME_NONE)
+					end
 				end
 			end
 		end
@@ -69,14 +70,14 @@ local function delayedCastSpell(cid, var)
 	if not creature then
 		return
 	end
-	creature:say("Gaz'haragoth calls down: DEATH AND DOOM!", TALKTYPE_ORANGE_2)
+	creature:say("Gaz'haragoth calls down: DEATH AND DOOM!", TALKTYPE_MONSTER_YELL)
 	return combat:execute(creature, positionToVariant(creature:getPosition()))
 end
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	creature:say("Gaz'haragoth begins to channel DEATH AND DOOM into the area! RUN!", TALKTYPE_ORANGE_2)
+	creature:say("Gaz'haragoth begins to channel DEATH AND DOOM into the area! RUN!", TALKTYPE_MONSTER_YELL)
 	addEvent(delayedCastSpell, 5000, creature:getId(), var)
 	return true
 end

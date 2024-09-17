@@ -62,8 +62,8 @@ monster.voices = {
 monster.loot = {}
 
 monster.attacks = {
-	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_ICEDAMAGE, minDamage = -325, maxDamage = -450, range = 5, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true },
-	{ name = "combat", interval = 3500, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -275, maxDamage = -400, range = 5, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_MAGIC_RED, target = true },
+	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_ICEDAMAGE, minDamage = -225, maxDamage = -400, range = 5, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true },
+	{ name = "combat", interval = 3500, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -175, maxDamage = -350, range = 5, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_MAGIC_RED, target = true },
 }
 
 monster.defenses = {

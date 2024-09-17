@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,6 +14,7 @@
 #include "io/iobestiary.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
+#include "lib/metrics/metrics.hpp"
 
 SoftSingleton IOBestiary::instanceTracker("IOBestiary");
 
@@ -26,7 +27,7 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 	if (charm->type == CHARM_OFFENSIVE) {
 		if (charm->id == CHARM_CRIPPLE) {
 			std::shared_ptr<ConditionSpeed> cripple = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
-			cripple->setFormulaVars(-1, 81, -1, 81);
+			cripple->setFormulaVars(-1, 0, -1, 0);
 			target->addCondition(cripple);
 			player->sendCancelMessage(charm->cancelMsg);
 			return false;
@@ -70,14 +71,14 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 			}
 			case CHARM_ADRENALINE: {
 				std::shared_ptr<ConditionSpeed> adrenaline = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_HASTE, 10000, 0)->static_self_cast<ConditionSpeed>();
-				adrenaline->setFormulaVars(1.5, -0, 1.5, -0);
+				adrenaline->setFormulaVars(2.5, 40, 2.5, 40);
 				player->addCondition(adrenaline);
 				player->sendCancelMessage(charm->cancelMsg);
 				return false;
 			}
 			case CHARM_NUMB: {
 				std::shared_ptr<ConditionSpeed> numb = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0)->static_self_cast<ConditionSpeed>();
-				numb->setFormulaVars(-1, 81, -1, 81);
+				numb->setFormulaVars(-1, 0, -1, 0);
 				target->addCondition(numb);
 				player->sendCancelMessage(charm->cancelMsg);
 				return false;
@@ -96,7 +97,7 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, std::share
 
 std::shared_ptr<Charm> IOBestiary::getBestiaryCharm(charmRune_t activeCharm, bool force /*= false*/) const {
 	const auto charmInternal = g_game().getCharmList();
-	for (const auto tmpCharm : charmInternal) {
+	for (const auto &tmpCharm : charmInternal) {
 		if (tmpCharm->id == activeCharm) {
 			return tmpCharm;
 		}
@@ -168,7 +169,7 @@ void IOBestiary::setCharmRuneCreature(std::shared_ptr<Player> player, const std:
 
 std::list<charmRune_t> IOBestiary::getCharmUsedRuneBitAll(std::shared_ptr<Player> player) {
 	int32_t input = player->getUsedRunesBit();
-	;
+
 	int8_t i = 0;
 	std::list<charmRune_t> rtn;
 	while (input != 0) {
@@ -190,7 +191,7 @@ uint16_t IOBestiary::getBestiaryRaceUnlocked(std::shared_ptr<Player> player, Bes
 	uint16_t count = 0;
 	std::map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
 
-	for (auto it : besty_l) {
+	for (const auto &it : besty_l) {
 		const auto mtype = g_monsters().getMonsterType(it.second);
 		if (mtype && mtype->info.bestiaryRace == race && player->getBestiaryKillCount(mtype->info.raceid) > 0) {
 			count++;
@@ -224,9 +225,9 @@ void IOBestiary::addBestiaryKill(std::shared_ptr<Player> player, const std::shar
 	player->addBestiaryKillCount(raceid, amount);
 
 	if ((curCount == 0) || // Initial kill stage
-		(curCount < mtype->info.bestiaryFirstUnlock && (curCount + amount) >= mtype->info.bestiaryFirstUnlock) || // First kill stage reached
-		(curCount < mtype->info.bestiarySecondUnlock && (curCount + amount) >= mtype->info.bestiarySecondUnlock) || // Second kill stage reached
-		(curCount < mtype->info.bestiaryToUnlock && (curCount + amount) >= mtype->info.bestiaryToUnlock)) { // Final kill stage reached
+	    (curCount < mtype->info.bestiaryFirstUnlock && (curCount + amount) >= mtype->info.bestiaryFirstUnlock) || // First kill stage reached
+	    (curCount < mtype->info.bestiarySecondUnlock && (curCount + amount) >= mtype->info.bestiarySecondUnlock) || // Second kill stage reached
+	    (curCount < mtype->info.bestiaryToUnlock && (curCount + amount) >= mtype->info.bestiaryToUnlock)) { // Final kill stage reached
 		ss << "You unlocked details for the creature '" << mtype->name << "'";
 		player->sendTextMessage(MESSAGE_STATUS, ss.str());
 		player->sendBestiaryEntryChanged(raceid);
@@ -270,7 +271,7 @@ int32_t IOBestiary::bitToggle(int32_t input, const std::shared_ptr<Charm> charm,
 		return CHARM_NONE;
 	}
 
-	int32_t returnToggle = 0;
+	int32_t returnToggle;
 	int32_t binary = charm->binary;
 	if (on) {
 		returnToggle = input | binary;
@@ -306,7 +307,7 @@ void IOBestiary::sendBuyCharmRune(std::shared_ptr<Player> player, charmRune_t ru
 		player->setUnlockedRunesBit(value);
 	} else if (action == 1) {
 		std::list<charmRune_t> usedRunes = getCharmUsedRuneBitAll(player);
-		uint16_t limitRunes = 0;
+		uint16_t limitRunes;
 
 		if (player->isPremium()) {
 			if (player->hasCharmExpansion()) {
@@ -336,12 +337,12 @@ void IOBestiary::sendBuyCharmRune(std::shared_ptr<Player> player, charmRune_t ru
 			resetCharmRuneCreature(player, charm);
 			player->sendFYIBox("You successfully removed the creature.");
 			player->BestiarysendCharms();
+			g_metrics().addCounter("balance_decrease", fee, { { "player", player->getName() }, { "context", "charm_removal" } });
 			return;
 		}
 		player->sendFYIBox("You don't have enough gold.");
 	}
 	player->BestiarysendCharms();
-	return;
 }
 
 std::map<uint8_t, int16_t> IOBestiary::getMonsterElements(const std::shared_ptr<MonsterType> mtype) const {

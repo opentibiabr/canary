@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -83,8 +83,8 @@ bool TalkAction::executeSay(std::shared_ptr<Player> player, const std::string &w
 	// onSay(player, words, param, type)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[TalkAction::executeSay - Player {} words {}] "
-						 "Call stack overflow. Too many lua script calls being nested. Script name {}",
-						 player->getName(), getWords(), getScriptInterface()->getLoadingScriptName());
+		                 "Call stack overflow. Too many lua script calls being nested. Script name {}",
+		                 player->getName(), getWords(), getScriptInterface()->getLoadingScriptName());
 		return false;
 	}
 
@@ -103,4 +103,12 @@ bool TalkAction::executeSay(std::shared_ptr<Player> player, const std::string &w
 	lua_pushnumber(L, type);
 
 	return getScriptInterface()->callFunction(4);
+}
+
+void TalkAction::setGroupType(uint8_t newGroupType) {
+	m_groupType = newGroupType;
+}
+
+const uint8_t &TalkAction::getGroupType() const {
+	return m_groupType;
 }

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -13,8 +13,7 @@
 #include "database/database.hpp"
 #include "security/argon.hpp"
 
-const std::regex Argon2::re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
-const std::string Argon2::base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+#include <argon2.h>
 
 Argon2::Argon2() {
 	updateConstants();
@@ -42,6 +41,8 @@ uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
 }
 
 bool Argon2::verifyPassword(const std::string &password, const std::string &phash) const {
+
+	const std::regex re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
 	std::smatch match;
 	if (!std::regex_search(phash, match, re)) {
 		g_logger().debug("No argon2 hash found in string");
@@ -63,6 +64,7 @@ bool Argon2::verifyPassword(const std::string &password, const std::string &phas
 }
 
 std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
+	const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	std::vector<uint8_t> ret;
 	int i = 0;
 	uint32_t val = 0;

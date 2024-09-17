@@ -267,3 +267,54 @@ end
 
 forge:groupType("god")
 forge:register()
+
+---------------- // ----------------
+-- Add dust level
+local addDustLevel = TalkAction("/adddustlevel")
+
+function addDustLevel.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
+	-- Check the first param (player name) exists
+	if param == "" then
+		player:sendCancelMessage("Player name param required.")
+		-- Distro log
+		logger.error("[addDustLevel.onSay] - Player name param not found.")
+		return true
+	end
+
+	local split = param:split(",")
+	local name = split[1]
+
+	-- Check if player is online
+	local targetPlayer = Player(name)
+	if not targetPlayer then
+		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
+		-- Distro log
+		logger.error("[addDustLevel.onSay] - Player {} is not online.", string.titleCase(name))
+		return true
+	end
+
+	local dustLevel = nil
+	if split[2] then
+		dustLevel = tonumber(split[2])
+	end
+
+	-- Check if the dustAmount is valid
+	if dustLevel <= 0 or dustLevel == nil then
+		player:sendCancelMessage("Invalid dust level.")
+		return true
+	end
+
+	targetPlayer:addForgeDustLevel(dustLevel)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Successful added %d dust level for the %s player.", dustLevel, targetPlayer:getName()))
+	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s adds %d dust level to your character.", player:getName(), dustLevel))
+	-- Distro log
+	logger.info("{} added {} dust level to {} player.", player:getName(), dustLevel, targetPlayer:getName())
+	return true
+end
+
+addDustLevel:separator(" ")
+addDustLevel:groupType("god")
+addDustLevel:register()

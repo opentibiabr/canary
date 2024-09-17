@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -46,8 +46,8 @@ private:
 		FAILED
 	};
 
-	RSA &rsa;
 	Logger &logger;
+	RSA &rsa;
 	ServiceManager &serviceManager;
 
 	std::atomic<LoaderStatus> loaderStatus = LoaderStatus::LOADING;

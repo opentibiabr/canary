@@ -46,7 +46,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost, costMessage = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost, "%d gold"
+		local cost, costMessage = (IsTravelFree() and 0) or parameters.cost, "%d gold"
 		if cost and cost > 0 then
 			if parameters.discount then
 				cost = cost - StdModule.travelDiscount(npc, player, parameters.discount)
@@ -64,8 +64,13 @@ if Modules == nil then
 			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false),
 			[TAG_TRAVELCOST] = costMessage,
 		}
+		if parameters.replacements then
+			for k, v in pairs(parameters.replacements) do
+				parseInfo[k] = v
+			end
+		end
 		if parameters.text then
-			npcHandler:say(npcHandler:parseMessage(parameters.text, parseInfo), npc, player)
+			npcHandler:say(npcHandler:parseMessage(parameters.text, parseInfo, player, message), npc, player)
 		end
 
 		if parameters.ungreet then
@@ -195,7 +200,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
+		local cost = (IsTravelFree() and 0) or parameters.cost
 		if cost and cost > 0 then
 			if parameters.discount then
 				cost = cost - StdModule.travelDiscount(npc, player, parameters.discount)
@@ -218,27 +223,31 @@ if Modules == nil then
 			npcHandler:say("First get rid of those blood stains! You are not going to ruin my vehicle!", npc, player)
 		elseif not player:removeMoneyBank(cost) then
 			npcHandler:say("You don't have enough money.", npc, player)
-		elseif os.time() < player:getStorageValue(Global.Storage.NpcExhaust) then
-			npcHandler:say("Sorry, but you need to wait three seconds before travel again.", player)
-			playerPosition:sendMagicEffect(CONST_ME_POFF)
 		else
-			npcHandler:removeInteraction(npc, player)
-			npcHandler:say(parameters.text or "Set the sails!", npc, player)
+			local hasExhaustion = player:kv():get("npc-exhaustion") or 0
+			if hasExhaustion > os.time() then
+				npcHandler:say("Sorry, but you need to wait three seconds before travel again.", player)
+				playerPosition:sendMagicEffect(CONST_ME_POFF)
+			else
+				npcHandler:removeInteraction(npc, player)
+				npcHandler:say(parameters.text or "Set the sails!", npc, player)
 
-			local destination = parameters.destination
-			if type(destination) == "function" then
-				destination = destination(player)
-			end
+				local destination = parameters.destination
+				if type(destination) == "function" then
+					destination = destination(player)
+				end
 
-			player:setStorageValue(Global.Storage.NpcExhaust, 3 + os.time())
-			player:teleportTo(destination)
-			playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
+				player:kv():set("npc-exhaustion", os.time() + 3) -- 3 seconds
+				player:teleportTo(destination)
+				playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
+				player:addAchievementProgress("Ship's Kobold", 1250)
 
-			-- What a foolish Quest - Mission 3
-			if Storage.WhatAFoolish.PieBoxTimer ~= nil then
-				if player:getStorageValue(Storage.WhatAFoolish.PieBoxTimer) > os.time() then
-					if destination ~= Position(32660, 31957, 15) then -- kazordoon steamboat
-						player:setStorageValue(Storage.WhatAFoolish.PieBoxTimer, 1)
+				-- What a foolish Quest - Mission 3
+				if Storage.Quest.U8_1.WhatAFoolishQuest.PieBoxTimer ~= nil then
+					if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBoxTimer) > os.time() then
+						if destination ~= Position(32660, 31957, 15) then -- kazordoon steamboat
+							player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBoxTimer, 1)
+						end
 					end
 				end
 			end
@@ -509,7 +518,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
+		local cost = (IsTravelFree() and 0) or parameters.cost
 
 		module.npcHandler:say(string.format("Do you want to travel to '%s' for '%d' gold coins?", keywords[1], cost), npc, player)
 		return true
@@ -523,7 +532,7 @@ if Modules == nil then
 
 		local npcHandler = module.npcHandler
 
-		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
+		local cost = (IsTravelFree() and 0) or parameters.cost
 		local destination = parameters.destination
 		local premium = parameters.premium
 

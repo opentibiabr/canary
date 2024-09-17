@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -46,11 +46,22 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		}
 
 		while (item_count--) {
+			if (auto houseTile = std::dynamic_pointer_cast<HouseTile>(tile)) {
+				const auto &house = houseTile->getHouse();
+				auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+				if (!isTransferOnRestart && house->getOwner() == 0) {
+					g_logger().trace("Skipping load item from house id: {}, position: {}, house does not have owner", house->getId(), house->getEntryPosition().toString());
+					house->clearHouseInfo(false);
+					continue;
+				}
+			}
+
 			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
 	g_logger().info("Loaded house items in {} milliseconds", bm_context.duration());
 }
+
 bool IOMapSerialize::saveHouseItems() {
 	bool success = DBTransaction::executeWithinTransaction([]() {
 		return SaveHouseItemsGuard();
@@ -128,14 +139,14 @@ bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> 
 	}
 
 	const ItemType &iType = Item::items[id];
-	if (iType.isBed() || iType.moveable || !tile || iType.isCarpet()) {
+	if (iType.isBed() || iType.movable || !tile || iType.isCarpet() || iType.isTrashHolder()) {
 		// create a new item
 		auto item = Item::CreateItem(id);
 		if (item) {
 			if (item->unserializeAttr(propStream)) {
-				// Remove only not moveable and not sleeper bed
+				// Remove only not movable and not sleeper bed
 				auto bed = item->getBed();
-				if (isHouseItem && iType.isBed() && bed && bed->getSleeper() == 0 && !iType.moveable) {
+				if (isHouseItem && iType.isBed() && bed && bed->getSleeper() == 0 && !iType.movable) {
 					return false;
 				}
 				std::shared_ptr<Container> container = item->getContainer();
@@ -230,19 +241,21 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 		return;
 	}
 
-	std::forward_list<std::shared_ptr<Item>> items;
+	std::vector<std::shared_ptr<Item>> items;
+	items.reserve(32);
+
 	uint16_t count = 0;
 	for (auto &item : *tileItems) {
 		if (item->getID() == ITEM_BATHTUB_FILLED_NOTMOVABLE) {
 			std::shared_ptr<Item> tub = Item::CreateItem(ITEM_BATHTUB_FILLED);
-			items.push_front(tub);
+			items.emplace_back(tub);
 			++count;
 			continue;
 		} else if (!item->isSavedToHouses()) {
 			continue;
 		}
 
-		items.push_front(item);
+		items.emplace_back(item);
 		++count;
 	}
 
@@ -269,7 +282,7 @@ bool IOMapSerialize::loadHouseInfo() {
 
 	do {
 		auto houseId = result->getNumber<uint32_t>("id");
-		const auto &house = g_game().map.houses.getHouse(houseId);
+		const auto house = g_game().map.houses.getHouse(houseId);
 		if (house) {
 			uint32_t owner = result->getNumber<uint32_t>("owner");
 			int32_t newOwner = result->getNumber<int32_t>("new_owner");

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -10,6 +10,7 @@
 #pragma once
 
 #include "lib/logging/logger.hpp"
+#include "lib/metrics/metrics.hpp"
 #include "server/network/connection/connection.hpp"
 #include "server/signals.hpp"
 
@@ -113,8 +114,8 @@ template <typename ProtocolType>
 bool ServiceManager::add(uint16_t port) {
 	if (port == 0) {
 		g_logger().error("[ServiceManager::add] - "
-						 "No port provided for service {}, service disabled",
-						 ProtocolType::protocol_name());
+		                 "No port provided for service {}, service disabled",
+		                 ProtocolType::protocol_name());
 		return false;
 	}
 
@@ -131,8 +132,8 @@ bool ServiceManager::add(uint16_t port) {
 
 		if (service_port->is_single_socket() || ProtocolType::SERVER_SENDS_FIRST) {
 			g_logger().error("[ServiceManager::add] - "
-							 "{} and {} cannot use the same port {}",
-							 ProtocolType::protocol_name(), service_port->get_protocol_names(), port);
+			                 "{} and {} cannot use the same port {}",
+			                 ProtocolType::protocol_name(), service_port->get_protocol_names(), port);
 			return false;
 		}
 	}

@@ -1,17 +1,9 @@
 local loginEvents = CreatureEvent("LoginEvents")
 function loginEvents.onLogin(player)
 	local events = {
-		--Others
-		"AdvanceSave",
-		"BossParticipation",
-		"DropLoot",
-		"PlayerDeath",
 		"RookgaardAdvance",
-		"FamiliarLogin",
-		"FamiliarAdvance",
 		--Quests
 		--Cults Of Tibia Quest
-		"LeidenHeal",
 		"HealthPillar",
 		"YalahariHealth",
 	}

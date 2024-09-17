@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -26,6 +26,41 @@ uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	return tier;
 }
 
+MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
+	MarketOfferList offerList;
+
+	std::string query = fmt::format(
+		"SELECT `id`, `itemtype`, `amount`, `price`, `tier`, `created`, `anonymous`, "
+		"(SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` "
+		"FROM `market_offers` WHERE `sale` = {}",
+		action
+	);
+
+	DBResult_ptr result = g_database().storeQuery(query);
+	if (!result) {
+		return offerList;
+	}
+
+	const int32_t marketOfferDuration = g_configManager().getNumber(MARKET_OFFER_DURATION, __FUNCTION__);
+
+	do {
+		MarketOffer offer;
+		offer.itemId = result->getNumber<uint16_t>("itemtype");
+		offer.amount = result->getNumber<uint16_t>("amount");
+		offer.price = result->getNumber<uint64_t>("price");
+		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
+		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
+		if (result->getNumber<uint16_t>("anonymous") == 0) {
+			offer.playerName = result->getString("player_name");
+		} else {
+			offer.playerName = "Anonymous";
+		}
+		offer.tier = getTierFromDatabaseTable(result->getString("tier"));
+		offerList.push_back(offer);
+	} while (result->next());
+	return offerList;
+}
+
 MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier) {
 	MarketOfferList offerList;
 
@@ -41,6 +76,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 
 	do {
 		MarketOffer offer;
+		offer.itemId = itemId;
 		offer.amount = result->getNumber<uint16_t>("amount");
 		offer.price = result->getNumber<uint64_t>("price");
 		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
@@ -303,9 +339,15 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state) {
 }
 
 void IOMarket::updateStatistics() {
-	std::ostringstream query;
-	query << "SELECT `sale` AS `sale`, `itemtype` AS `itemtype`, COUNT(`price`) AS `num`, MIN(`price`) AS `min`, MAX(`price`) AS `max`, SUM(`price`) AS `sum`, `tier` AS `tier` FROM `market_history` WHERE `state` = " << OFFERSTATE_ACCEPTED << " GROUP BY `itemtype`, `sale`, `tier`";
-	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+	auto query = fmt::format(
+		"SELECT sale, itemtype, COUNT(price) AS num, MIN(price) AS min, MAX(price) AS max, SUM(price) AS sum, tier "
+		"FROM market_history "
+		"WHERE state = '{}' "
+		"GROUP BY itemtype, sale, tier",
+		OFFERSTATE_ACCEPTED
+	);
+
+	DBResult_ptr result = g_database().storeQuery(query);
 	if (!result) {
 		return;
 	}

@@ -29,7 +29,7 @@ local spell = Spell("instant")
 function spell.onCastSpell(creature, var)
 	if not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) then
 		creature:addCondition(condition2)
-		creature:say("Terofar cast a greater death curse on you!", TALKTYPE_ORANGE_1)
+		creature:say("Terofar cast a greater death curse on you!", TALKTYPE_MONSTER_SAY)
 	else
 		return false
 	end

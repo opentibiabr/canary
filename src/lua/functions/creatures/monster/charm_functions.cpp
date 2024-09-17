@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -18,7 +18,7 @@ int CharmFunctions::luaCharmCreate(lua_State* L) {
 	if (isNumber(L, 2)) {
 		charmRune_t charmid = getNumber<charmRune_t>(L, 2);
 		const auto charmList = g_game().getCharmList();
-		for (const auto charm : charmList) {
+		for (const auto &charm : charmList) {
 			if (charm->id == charmid) {
 				pushUserdata<Charm>(L, charm);
 				setMetatable(L, -1, "Charm");

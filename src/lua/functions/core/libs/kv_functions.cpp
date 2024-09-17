@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -72,10 +72,48 @@ int KVFunctions::luaKVGet(lua_State* L) {
 		valueWrapper = g_kv().get(key, forceLoad);
 	}
 
-	if (valueWrapper) {
+	if (valueWrapper.has_value()) {
 		pushValueWrapper(L, *valueWrapper);
 	} else {
 		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int KVFunctions::luaKVRemove(lua_State* L) {
+	// KV.remove(key) | scopedKV:remove(key)
+	auto key = getString(L, -1);
+	if (isUserdata(L, 1)) {
+		auto scopedKV = getUserdataShared<KV>(L, 1);
+		scopedKV->remove(key);
+	} else {
+		g_kv().remove(key);
+	}
+	lua_pushnil(L);
+	return 1;
+}
+
+int KVFunctions::luaKVKeys(lua_State* L) {
+	// KV.keys([prefix = ""]) | scopedKV:keys([prefix = ""])
+	std::unordered_set<std::string> keys;
+	std::string prefix = "";
+
+	if (isString(L, -1)) {
+		prefix = getString(L, -1);
+	}
+
+	if (isUserdata(L, 1)) {
+		auto scopedKV = getUserdataShared<KV>(L, 1);
+		keys = scopedKV->keys();
+	} else {
+		keys = g_kv().keys(prefix);
+	}
+
+	int index = 0;
+	lua_createtable(L, static_cast<int>(keys.size()), 0);
+	for (const auto &key : keys) {
+		pushString(L, key);
+		lua_rawseti(L, -2, ++index);
 	}
 	return 1;
 }

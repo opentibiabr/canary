@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -131,6 +131,16 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 			return true;
 		}
 
+		case CONDITIONATTR_PERSISTENT: {
+			bool value = false;
+			if (!propStream.read<bool>(value)) {
+				return false;
+			}
+
+			m_isPersistent = value;
+			return true;
+		}
+
 		case CONDITIONATTR_END:
 			return true;
 
@@ -160,6 +170,9 @@ void Condition::serialize(PropWriteStream &propWriteStream) {
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_ADDSOUND);
 	propWriteStream.write<uint16_t>(static_cast<uint16_t>(addSound));
+
+	propWriteStream.write<uint8_t>(CONDITIONATTR_PERSISTENT);
+	propWriteStream.write<bool>(m_isPersistent);
 }
 
 void Condition::setTicks(int32_t newTicks) {
@@ -185,7 +198,7 @@ bool Condition::executeCondition(std::shared_ptr<Creature> creature, int32_t int
 	return true;
 }
 
-std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/) {
+std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/, bool isPersistent /* = false*/) {
 	switch (type) {
 		case CONDITION_POISON:
 		case CONDITION_FIRE:
@@ -241,6 +254,10 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_CHANNELMUTEDTICKS:
 		case CONDITION_YELLTICKS:
 		case CONDITION_PACIFIED:
+			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
+		case CONDITION_BAKRAGORE:
+			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId, isPersistent);
+		case CONDITION_GOSHNARTAINT:
 			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
 
 		default:
@@ -306,6 +323,10 @@ bool Condition::startCondition(std::shared_ptr<Creature>) {
 }
 
 bool Condition::isPersistent() const {
+	if (m_isPersistent) {
+		g_logger().debug("Condition {} is persistent", conditionType);
+		return true;
+	}
 	if (ticks == -1) {
 		return false;
 	}
@@ -318,19 +339,35 @@ bool Condition::isPersistent() const {
 }
 
 bool Condition::isRemovableOnDeath() const {
+	if (m_isPersistent) {
+		return false;
+	}
+
 	if (ticks == -1) {
 		return false;
 	}
 
-	if (conditionType == CONDITION_SPELLCOOLDOWN || conditionType == CONDITION_SPELLGROUPCOOLDOWN || conditionType == CONDITION_MUTED) {
+	static const std::unordered_set<ConditionType_t> nonRemovableConditions = {
+		CONDITION_SPELLCOOLDOWN,
+		CONDITION_SPELLGROUPCOOLDOWN,
+		CONDITION_MUTED,
+		CONDITION_GOSHNARTAINT
+	};
+
+	if (nonRemovableConditions.find(conditionType) != nonRemovableConditions.end()) {
 		return false;
 	}
 
 	return true;
 }
 
-uint32_t Condition::getIcons() const {
-	return isBuff ? ICON_PARTY_BUFF : 0;
+std::unordered_set<PlayerIcon> Condition::getIcons() const {
+	std::unordered_set<PlayerIcon> icons;
+	if (isBuff) {
+		icons.insert(PlayerIcon::PartyBuff);
+	}
+
+	return icons;
 }
 
 bool Condition::updateCondition(const std::shared_ptr<Condition> addCondition) {
@@ -375,22 +412,41 @@ void ConditionGeneric::addCondition(std::shared_ptr<Creature> creature, const st
 	}
 }
 
-uint32_t ConditionGeneric::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionGeneric::getIcons() const {
+	auto icons = Condition::getIcons();
 
 	switch (conditionType) {
 		case CONDITION_INFIGHT:
-			icons |= ICON_SWORDS;
+			icons.insert(PlayerIcon::Swords);
 			break;
 
 		case CONDITION_DRUNK:
-			icons |= ICON_DRUNK;
+			icons.insert(PlayerIcon::Drunk);
 			break;
 
 		case CONDITION_ROOTED:
-			icons |= ICON_ROOTED;
+			icons.insert(PlayerIcon::Rooted);
 			break;
-
+		case CONDITION_GOSHNARTAINT:
+			switch (subId) {
+				case 1:
+					icons.insert(PlayerIcon::GoshnarTaint1);
+					break;
+				case 2:
+					icons.insert(PlayerIcon::GoshnarTaint2);
+					break;
+				case 3:
+					icons.insert(PlayerIcon::GoshnarTaint3);
+					break;
+				case 4:
+					icons.insert(PlayerIcon::GoshnarTaint4);
+					break;
+				case 5:
+					icons.insert(PlayerIcon::GoshnarTaint5);
+					break;
+				default:
+					break;
+			}
 		default:
 			break;
 	}
@@ -1165,16 +1221,16 @@ bool ConditionRegeneration::executeCondition(std::shared_ptr<Creature> creature,
 	internalHealthTicks += interval;
 	internalManaTicks += interval;
 	auto player = creature->getPlayer();
-	int32_t PlayerdailyStreak = 0;
+	int32_t dailyStreak = 0;
 	if (player) {
-		PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);
+		dailyStreak = static_cast<int32_t>(player->kv()->scoped("daily-reward")->get("streak")->getNumber());
 	}
-	if (creature->getZoneType() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_HP_REGENERATION) {
+	if (creature->getZoneType() != ZONE_PROTECTION || dailyStreak >= DAILY_REWARD_HP_REGENERATION) {
 		if (internalHealthTicks >= getHealthTicks(creature)) {
 			internalHealthTicks = 0;
 
 			int32_t realHealthGain = creature->getHealth();
-			if (creature->getZoneType() == ZONE_PROTECTION && PlayerdailyStreak >= DAILY_REWARD_DOUBLE_HP_REGENERATION) {
+			if (creature->getZoneType() == ZONE_PROTECTION && dailyStreak >= DAILY_REWARD_DOUBLE_HP_REGENERATION) {
 				creature->changeHealth(healthGain * 2); // Double regen from daily reward
 			} else {
 				creature->changeHealth(healthGain);
@@ -1205,10 +1261,10 @@ bool ConditionRegeneration::executeCondition(std::shared_ptr<Creature> creature,
 		}
 	}
 
-	if (creature->getZoneType() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_MP_REGENERATION) {
+	if (creature->getZoneType() != ZONE_PROTECTION || dailyStreak >= DAILY_REWARD_MP_REGENERATION) {
 		if (internalManaTicks >= getManaTicks(creature)) {
 			internalManaTicks = 0;
-			if (creature->getZoneType() == ZONE_PROTECTION && PlayerdailyStreak >= DAILY_REWARD_DOUBLE_MP_REGENERATION) {
+			if (creature->getZoneType() == ZONE_PROTECTION && dailyStreak >= DAILY_REWARD_DOUBLE_MP_REGENERATION) {
 				creature->changeMana(manaGain * 2); // Double regen from daily reward
 			} else {
 				creature->changeMana(manaGain);
@@ -1308,7 +1364,7 @@ void ConditionManaShield::addCondition(std::shared_ptr<Creature> creature, const
 
 bool ConditionManaShield::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 	if (attr == CONDITIONATTR_MANASHIELD) {
-		return propStream.read<uint16_t>(manaShield);
+		return propStream.read<uint32_t>(manaShield);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -1317,7 +1373,7 @@ void ConditionManaShield::serialize(PropWriteStream &propWriteStream) {
 	Condition::serialize(propWriteStream);
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_MANASHIELD);
-	propWriteStream.write<uint16_t>(manaShield);
+	propWriteStream.write<uint32_t>(manaShield);
 }
 
 bool ConditionManaShield::setParam(ConditionParam_t param, int32_t value) {
@@ -1332,12 +1388,12 @@ bool ConditionManaShield::setParam(ConditionParam_t param, int32_t value) {
 	}
 }
 
-uint32_t ConditionManaShield::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionManaShield::getIcons() const {
+	auto icons = Condition::getIcons();
 	if (manaShield != 0) {
-		icons |= ICON_NEWMANASHIELD;
+		icons.insert(PlayerIcon::NewManaShield);
 	} else {
-		icons |= ICON_MANASHIELD;
+		icons.insert(PlayerIcon::ManaShield);
 	}
 	return icons;
 }
@@ -1472,7 +1528,7 @@ bool ConditionDamage::unserializeProp(ConditionAttr_t attr, PropStream &propStre
 	} else if (attr == CONDITIONATTR_OWNER) {
 		return propStream.skip(4);
 	} else if (attr == CONDITIONATTR_INTERVALDATA) {
-		IntervalInfo damageInfo;
+		IntervalInfo damageInfo {};
 		if (!propStream.read<IntervalInfo>(damageInfo)) {
 			return false;
 		}
@@ -1530,7 +1586,7 @@ bool ConditionDamage::addDamage(int32_t rounds, int32_t time, int32_t value) {
 
 	// rounds, time, damage
 	for (int32_t i = 0; i < rounds; ++i) {
-		IntervalInfo damageInfo;
+		IntervalInfo damageInfo {};
 		damageInfo.interval = time;
 		damageInfo.timeLeft = time;
 		damageInfo.value = value;
@@ -1644,7 +1700,9 @@ bool ConditionDamage::getNextDamage(int32_t &damage) {
 }
 
 bool ConditionDamage::doDamage(std::shared_ptr<Creature> creature, int32_t healthChange) {
-	if (creature->isSuppress(getType())) {
+	auto attacker = g_game().getPlayerByGUID(owner) ? g_game().getPlayerByGUID(owner)->getCreature() : g_game().getCreatureByID(owner);
+	bool isPlayer = attacker && attacker->getPlayer();
+	if (creature->isSuppress(getType(), isPlayer)) {
 		return true;
 	}
 
@@ -1653,7 +1711,6 @@ bool ConditionDamage::doDamage(std::shared_ptr<Creature> creature, int32_t healt
 	damage.primary.value = healthChange;
 	damage.primary.type = Combat::ConditionToDamageType(conditionType);
 
-	std::shared_ptr<Creature> attacker = g_game().getCreatureByID(owner);
 	if (field && creature->getPlayer() && attacker && attacker->getPlayer()) {
 		damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value / 2.));
 	}
@@ -1738,39 +1795,39 @@ int32_t ConditionDamage::getTotalDamage() const {
 	return std::abs(result);
 }
 
-uint32_t ConditionDamage::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionDamage::getIcons() const {
+	auto icons = Condition::getIcons();
 	switch (conditionType) {
 		case CONDITION_FIRE:
-			icons |= ICON_BURN;
+			icons.insert(PlayerIcon::Burn);
 			break;
 
 		case CONDITION_ENERGY:
-			icons |= ICON_ENERGY;
+			icons.insert(PlayerIcon::Energy);
 			break;
 
 		case CONDITION_DROWN:
-			icons |= ICON_DROWNING;
+			icons.insert(PlayerIcon::Drowning);
 			break;
 
 		case CONDITION_POISON:
-			icons |= ICON_POISON;
+			icons.insert(PlayerIcon::Poison);
 			break;
 
 		case CONDITION_FREEZING:
-			icons |= ICON_FREEZING;
+			icons.insert(PlayerIcon::Freezing);
 			break;
 
 		case CONDITION_DAZZLED:
-			icons |= ICON_DAZZLED;
+			icons.insert(PlayerIcon::Dazzled);
 			break;
 
 		case CONDITION_CURSED:
-			icons |= ICON_CURSED;
+			icons.insert(PlayerIcon::Cursed);
 			break;
 
 		case CONDITION_BLEEDING:
-			icons |= ICON_BLEEDING;
+			icons.insert(PlayerIcon::Bleeding);
 			break;
 
 		default:
@@ -1802,13 +1859,9 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
  *  ConditionFeared
  */
 bool ConditionFeared::isStuck(std::shared_ptr<Creature> creature, Position pos) const {
-	for (Direction dir : m_directionsVector) {
-		if (canWalkTo(creature, pos, dir)) {
-			return false;
-		}
-	}
-
-	return true;
+	return std::ranges::all_of(m_directionsVector, [&](Direction dir) {
+		return !canWalkTo(creature, pos, dir);
+	});
 }
 
 bool ConditionFeared::getRandomDirection(std::shared_ptr<Creature> creature, Position pos) {
@@ -1929,7 +1982,7 @@ bool ConditionFeared::getFleeDirection(std::shared_ptr<Creature> creature) {
 	return false;
 }
 
-bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Position &pos, stdext::arraylist<Direction> &dirList) {
+bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Position &pos, std::vector<Direction> &dirList) {
 	const std::vector<uint8_t> walkSize { 15, 9, 3, 1 };
 	bool found = false;
 	std::ptrdiff_t found_size = 0;
@@ -1994,6 +2047,8 @@ bool ConditionFeared::getFleePath(std::shared_ptr<Creature> creature, const Posi
 					futurePos.y -= wsize;
 					g_logger().debug("[{}] Trying to flee to NORTHWEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
+				case DIRECTION_NONE:
+					break;
 			}
 
 			found = creature->getPathTo(futurePos, dirList, 0, 30);
@@ -2030,7 +2085,7 @@ bool ConditionFeared::startCondition(std::shared_ptr<Creature> creature) {
 
 bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32_t interval) {
 	Position currentPos = creature->getPosition();
-	stdext::arraylist<Direction> listDir(128);
+	std::vector<Direction> listDir;
 
 	g_logger().debug("[ConditionFeared::executeCondition] Executing condition, current position is {}", currentPos.toString());
 
@@ -2040,7 +2095,11 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addEvent(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir.data()), "ConditionFeared::executeCondition");
+			g_dispatcher().addEvent([id = creature->getID(), listDir] {
+				g_game().forcePlayerAutoWalk(id, listDir);
+			},
+			                        "ConditionFeared::executeCondition");
+
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}
 	}
@@ -2051,7 +2110,7 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 void ConditionFeared::endCondition(std::shared_ptr<Creature> creature) {
 	creature->stopEventWalk();
 	/*
-	 * After a player is feared there's a 10 seconds before he can feared again.
+	 * After a player is feared there's a 10 seconds before they can can feared again.
 	 */
 	std::shared_ptr<Player> player = creature->getPlayer();
 	if (player) {
@@ -2065,11 +2124,10 @@ void ConditionFeared::addCondition(std::shared_ptr<Creature>, const std::shared_
 	}
 }
 
-uint32_t ConditionFeared::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionFeared::getIcons() const {
+	auto icons = Condition::getIcons();
 
-	icons |= ICON_FEARED;
-
+	icons.insert(PlayerIcon::Feared);
 	return icons;
 }
 
@@ -2085,8 +2143,9 @@ void ConditionSpeed::setFormulaVars(float NewMina, float NewMinb, float NewMaxa,
 }
 
 void ConditionSpeed::getFormulaValues(int32_t var, int32_t &min, int32_t &max) const {
-	min = (var * mina) + minb;
-	max = (var * maxa) + maxb;
+	int32_t difference = var - 40;
+	min = mina * difference + minb;
+	max = maxa * difference + maxb;
 }
 
 bool ConditionSpeed::setParam(ConditionParam_t param, int32_t value) {
@@ -2145,9 +2204,14 @@ bool ConditionSpeed::startCondition(std::shared_ptr<Creature> creature) {
 	}
 
 	if (speedDelta == 0) {
-		int32_t min, max;
-		getFormulaValues(creature->getBaseSpeed(), min, max);
-		speedDelta = uniform_random(min, max);
+		int32_t min;
+		int32_t max;
+		auto baseSpeed = creature->getBaseSpeed();
+		getFormulaValues(baseSpeed, min, max);
+		speedDelta = uniform_random(min, max) - baseSpeed;
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
+			speedDelta = 40 - baseSpeed;
+		}
 	}
 
 	g_game().changeSpeed(creature, speedDelta);
@@ -2173,7 +2237,7 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 
 	setTicks(addCondition->getTicks());
 
-	const std::shared_ptr<ConditionSpeed> &conditionSpeed = addCondition->static_self_cast<ConditionSpeed>();
+	const auto &conditionSpeed = addCondition->static_self_cast<ConditionSpeed>();
 	int32_t oldSpeedDelta = speedDelta;
 	speedDelta = conditionSpeed->speedDelta;
 	mina = conditionSpeed->mina;
@@ -2184,8 +2248,13 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 	if (speedDelta == 0) {
 		int32_t min;
 		int32_t max;
-		getFormulaValues(creature->getBaseSpeed(), min, max);
-		speedDelta = uniform_random(min, max);
+		auto baseSpeed = creature->getBaseSpeed();
+		getFormulaValues(baseSpeed, min, max);
+		speedDelta = uniform_random(min, max) - baseSpeed;
+
+		if (conditionType == CONDITION_PARALYZE && speedDelta < 40 - baseSpeed) {
+			speedDelta = 40 - baseSpeed;
+		}
 	}
 
 	int32_t newSpeedChange = (speedDelta - oldSpeedDelta);
@@ -2194,15 +2263,15 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 	}
 }
 
-uint32_t ConditionSpeed::getIcons() const {
-	uint32_t icons = Condition::getIcons();
+std::unordered_set<PlayerIcon> ConditionSpeed::getIcons() const {
+	auto icons = Condition::getIcons();
 	switch (conditionType) {
 		case CONDITION_HASTE:
-			icons |= ICON_HASTE;
+			icons.insert(PlayerIcon::Haste);
 			break;
 
 		case CONDITION_PARALYZE:
-			icons |= ICON_PARALYZE;
+			icons.insert(PlayerIcon::Paralyze);
 			break;
 
 		default:

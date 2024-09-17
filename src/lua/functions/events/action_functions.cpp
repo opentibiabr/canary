@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -133,7 +133,7 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 	// The parameter "- 1" because self is a parameter aswell, which we want to skip L 1 (UserData)
 	// isNumber(L, 2) is for skip the itemId
 	if (int parameters = lua_gettop(L) - 1;
-		parameters > 1 && isNumber(L, 2)) {
+	    parameters > 1 && isNumber(L, 2)) {
 		for (int i = 0; i < parameters; ++i) {
 			action->setPositionsVector(getPosition(L, 2 + i));
 		}
@@ -166,8 +166,8 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 
 		// If it is an item that can be removed, then it will be set as non-movable.
 		ItemType &itemType = Item::items.getItemType(itemId);
-		if (itemType.moveable == true) {
-			itemType.moveable = false;
+		if (itemType.movable == true) {
+			itemType.movable = false;
 		}
 
 		g_game().setCreateLuaItems(position, itemId);

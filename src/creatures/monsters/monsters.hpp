@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -30,7 +30,7 @@ struct spellBlock_t {
 	~spellBlock_t() = default;
 	spellBlock_t(const spellBlock_t &other) = delete;
 	spellBlock_t &operator=(const spellBlock_t &other) = delete;
-	spellBlock_t(spellBlock_t &&other) :
+	spellBlock_t(spellBlock_t &&other) noexcept :
 		spell(other.spell),
 		chance(other.chance),
 		speed(other.speed),
@@ -57,7 +57,7 @@ struct spellBlock_t {
 
 class MonsterType {
 	struct MonsterInfo {
-		LuaScriptInterface* scriptInterface;
+		LuaScriptInterface* scriptInterface {};
 
 		std::map<CombatType_t, int32_t> elementMap;
 		std::map<CombatType_t, int32_t> reflectMap;
@@ -66,7 +66,8 @@ class MonsterType {
 		std::vector<voiceBlock_t> voiceVector;
 
 		std::vector<LootBlock> lootItems;
-		std::vector<std::string> scripts;
+		// We need to keep the order of scripts, so we use a set isntead of an unordered_set
+		std::set<std::string> scripts;
 		std::vector<spellBlock_t> attackSpells;
 		std::vector<spellBlock_t> defenseSpells;
 		std::vector<summonBlock_t> summons;
@@ -119,7 +120,9 @@ class MonsterType {
 		int32_t creatureDisappearEvent = -1;
 		int32_t creatureMoveEvent = -1;
 		int32_t creatureSayEvent = -1;
+		int32_t monsterAttackedByPlayerEvent = -1;
 		int32_t thinkEvent = -1;
+		int32_t spawnEvent = -1;
 		int32_t targetDistance = 1;
 		int32_t runAwayHealth = 0;
 		int32_t health = 100;
@@ -154,6 +157,8 @@ class MonsterType {
 		bool canWalkOnFire = true;
 		bool canWalkOnPoison = true;
 		bool isForgeCreature = true;
+		bool isPreyable = true;
+		bool isPreyExclusive = false;
 
 		MonstersEvent_t eventType = MONSTERS_EVENT_NONE;
 	};
@@ -200,7 +205,7 @@ public:
 		return !info.bosstiaryClass.empty();
 	}
 
-	void loadLoot(const std::shared_ptr<MonsterType> monsterType, LootBlock lootblock);
+	void loadLoot(std::shared_ptr<MonsterType> monsterType, LootBlock lootblock);
 
 	bool canSpawn(const Position &pos);
 };
@@ -270,8 +275,8 @@ public:
 
 	std::shared_ptr<MonsterType> getMonsterType(const std::string &name, bool silent = false) const;
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
-	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> mType);
-	bool deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description = "");
+	bool tryAddMonsterType(const std::string &name, std::shared_ptr<MonsterType> mType);
+	bool deserializeSpell(std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description = "");
 
 	std::unique_ptr<LuaScriptInterface> scriptInterface;
 	std::map<std::string, std::shared_ptr<MonsterType>> monsters;

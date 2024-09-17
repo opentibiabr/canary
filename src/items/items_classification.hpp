@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -10,8 +10,10 @@
 #pragma once
 
 struct TierInfo {
-	uint64_t priceToUpgrade = 0;
-	uint8_t corePriceToFuse = 0;
+	uint8_t corePrice = 0;
+	uint64_t regularPrice = 0;
+	uint64_t convergenceFusionPrice = 0;
+	uint64_t convergenceTransferPrice = 0;
 };
 
 // Classification class for forging system and market.
@@ -22,10 +24,12 @@ public:
 		id(id) { }
 	virtual ~ItemClassification() = default;
 
-	void addTier(uint8_t tierId, uint64_t tierPrice, uint8_t corePrice) {
+	void addTier(uint8_t tierId, uint8_t corePrice, uint64_t regularPrice, uint64_t convergenceFusionPrice, uint64_t convergenceTransferPrice) {
 		auto &table = tiers[tierId];
-		table.priceToUpgrade = tierPrice;
-		table.corePriceToFuse = corePrice;
+		table.corePrice = corePrice;
+		table.regularPrice = regularPrice;
+		table.convergenceFusionPrice = convergenceFusionPrice;
+		table.convergenceTransferPrice = convergenceTransferPrice;
 	}
 
 	uint8_t id;

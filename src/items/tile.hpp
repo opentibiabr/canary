@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -131,6 +131,11 @@ public:
 	std::shared_ptr<Tile> getTile() override final {
 		return static_self_cast<Tile>();
 	}
+
+	std::shared_ptr<Cylinder> getCylinder() final {
+		return getTile();
+	}
+
 	std::shared_ptr<MagicField> getFieldItem() const;
 	std::shared_ptr<Teleport> getTeleportItem() const;
 	std::shared_ptr<TrashHolder> getTrashHolder() const;
@@ -144,7 +149,7 @@ public:
 	std::shared_ptr<Creature> getBottomVisibleCreature(std::shared_ptr<Creature> creature) const;
 	std::shared_ptr<Item> getTopTopItem() const;
 	std::shared_ptr<Item> getTopDownItem() const;
-	bool isMoveableBlocking() const;
+	bool isMovableBlocking() const;
 	std::shared_ptr<Thing> getTopVisibleThing(std::shared_ptr<Creature> creature);
 	std::shared_ptr<Item> getItemByTopOrder(int32_t topOrder);
 
@@ -185,13 +190,12 @@ public:
 			return ZONE_PROTECTION;
 		} else if (hasFlag(TILESTATE_NOPVPZONE)) {
 			return ZONE_NOPVP;
-		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
-			return ZONE_NOLOGOUT;
 		} else if (hasFlag(TILESTATE_PVPZONE)) {
 			return ZONE_PVP;
-		} else {
-			return ZONE_NORMAL;
+		} else if (hasFlag(TILESTATE_NOLOGOUT)) {
+			return ZONE_NOLOGOUT;
 		}
+		return ZONE_NORMAL;
 	}
 
 	bool hasHeight(uint32_t n) const;

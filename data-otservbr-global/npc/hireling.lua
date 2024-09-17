@@ -228,7 +228,7 @@ function createHirelingType(HirelingName)
 		},
 		["distance"] = {
 			{ itemName = "arrow", clientId = 3447, buy = 2 },
-			{ itemName = "bolt", clientId = 3483, buy = 4 },
+			{ itemName = "bolt", clientId = 3446, buy = 4 },
 			{ itemName = "bow", clientId = 3350, buy = 400, sell = 100 },
 			{ itemName = "crossbow", clientId = 3349, buy = 500, sell = 120 },
 			{ itemName = "crystalline arrow", clientId = 15793, buy = 450 },
@@ -366,7 +366,7 @@ function createHirelingType(HirelingName)
 	end
 	-- On sell npc shop message
 	npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+		player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 	end
 	-- On check npc shop message (look item)
 	npcType.onCheckItem = function(npc, player, clientId, subType) end
@@ -517,11 +517,11 @@ function createHirelingType(HirelingName)
 		local playerId = creature:getId()
 		local player = Player(creature)
 		local itType = ItemType(food_id)
-		local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-
+		local inbox = player:getStoreInbox()
+		local inboxItems = inbox:getItems()
 		if player:getFreeCapacity() < itType:getWeight(1) then
 			npcHandler:say("Sorry, but you don't have enough capacity.", npc, creature)
-		elseif not inbox then
+		elseif not inbox or #inboxItems >= inbox:getMaxCapacity() then
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 			npcHandler:say("Sorry, you don't have enough room on your inbox", npc, creature)
 		elseif not player:removeMoneyBank(15000) then
@@ -656,7 +656,7 @@ function createHirelingType(HirelingName)
 			end
 		elseif npcHandler:getTopic(playerId) == TOPIC.BANK then
 			enableBankSystem[playerId] = true
-		elseif npcHandler:getTopic(playerId) == TOPIC.FOOD then
+		elseif npcHandler:getTopic(playerId) == TOPIC.FOOD or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE then
 			handleFoodActions(npc, creature, message)
 		elseif npcHandler:getTopic(playerId) == TOPIC.GOODS then
 			-- Ensures players cannot access other shop categories

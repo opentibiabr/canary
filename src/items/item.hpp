@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -269,6 +269,34 @@ public:
 		return isLootTrackeable;
 	}
 
+	void setOwner(uint32_t owner) {
+		setAttribute(ItemAttribute_t::OWNER, owner);
+	}
+
+	void setOwner(std::shared_ptr<Creature> owner);
+
+	virtual uint32_t getOwnerId() const;
+
+	bool isOwner(uint32_t ownerId) const;
+
+	std::string getOwnerName() const;
+
+	bool isOwner(std::shared_ptr<Creature> owner) const;
+
+	bool hasOwner() const {
+		return getOwnerId() != 0;
+	}
+
+	bool canBeMovedToStore() const {
+		return isStoreItem() || hasOwner();
+	}
+
+	static std::string parseAugmentDescription(std::shared_ptr<Item> item, bool inspect = false) {
+		if (!item) {
+			return "";
+		}
+		return items[item->getID()].parseAugmentDescription(inspect);
+	}
 	static std::string parseImbuementDescription(std::shared_ptr<Item> item);
 	static std::string parseShowDurationSpeed(int32_t speed, bool &begin);
 	static std::string parseShowDuration(std::shared_ptr<Item> item);
@@ -292,7 +320,7 @@ public:
 	virtual void serializeAttr(PropWriteStream &propWriteStream) const;
 
 	bool isPushable() override final {
-		return isMoveable();
+		return isMovable();
 	}
 	int32_t getThrowRange() const override final {
 		return (isPickupable() ? 15 : 2);
@@ -358,6 +386,21 @@ public:
 		return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
 	}
 
+	int32_t getSpeed() const {
+		int32_t value = items[id].getSpeed();
+		return value;
+	}
+
+	int32_t getSkill(skills_t skill) const {
+		int32_t value = items[id].getSkill(skill);
+		return value;
+	}
+
+	int32_t getStat(stats_t stat) const {
+		int32_t value = items[id].getStat(stat);
+		return value;
+	}
+
 	int32_t getAttack() const {
 		if (hasAttribute(ItemAttribute_t::ATTACK)) {
 			return getAttribute<int32_t>(ItemAttribute_t::ATTACK);
@@ -381,6 +424,29 @@ public:
 			return getAttribute<int32_t>(ItemAttribute_t::EXTRADEFENSE);
 		}
 		return items[id].extraDefense;
+	}
+	std::vector<std::shared_ptr<AugmentInfo>> getAugments() const {
+		return items[id].augments;
+	}
+	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellNameAndType(std::string spellName, Augment_t augmentType) const {
+		std::vector<std::shared_ptr<AugmentInfo>> augments;
+		for (auto &augment : items[id].augments) {
+			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0 && augment->type == augmentType) {
+				augments.push_back(augment);
+			}
+		}
+
+		return augments;
+	}
+	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellName(std::string spellName) const {
+		std::vector<std::shared_ptr<AugmentInfo>> augments;
+		for (auto &augment : items[id].augments) {
+			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0) {
+				augments.push_back(augment);
+			}
+		}
+
+		return augments;
 	}
 	uint8_t getImbuementSlot() const {
 		if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
@@ -425,8 +491,8 @@ public:
 	bool isWrapContainer() const {
 		return items[id].wrapContainer;
 	}
-	bool isMoveable() const {
-		return items[id].moveable;
+	bool isMovable() const {
+		return items[id].movable;
 	}
 	bool isCorpse() const {
 		return items[id].isCorpse;
@@ -449,6 +515,12 @@ public:
 	bool isWrapable() const {
 		return items[id].wrapable && items[id].wrapableTo;
 	}
+	bool isRing() const {
+		return items[id].isRing();
+	}
+	bool isAmulet() const {
+		return items[id].isAmulet();
+	}
 	bool isAmmo() const {
 		return items[id].isAmmo();
 	}
@@ -457,6 +529,12 @@ public:
 	}
 	bool isQuiver() const {
 		return items[id].isQuiver();
+	}
+	bool isShield() const {
+		return items[id].isShield();
+	}
+	bool isWand() const {
+		return items[id].isWand();
 	}
 	bool isSpellBook() const {
 		return items[id].isSpellBook();
@@ -472,6 +550,9 @@ public:
 	}
 	bool canReceiveAutoCarpet() const {
 		return isBlocking() && isAlwaysOnTop() && !items[id].hasHeight;
+	}
+	bool canBeUsedByGuests() const {
+		return isDummy() || items[id].m_canBeUsedByGuests;
 	}
 
 	bool isDecayDisabled() const {
@@ -629,25 +710,52 @@ public:
 		return false;
 	}
 
-	double_t getDodgeChance() const {
+	double getDodgeChance() const {
 		if (getTier() == 0) {
 			return 0;
 		}
-		return (0.0307576 * getTier() * getTier()) + (0.440697 * getTier()) + 0.026;
+		return quadraticPoly(
+			g_configManager().getFloat(RUSE_CHANCE_FORMULA_A, __FUNCTION__),
+			g_configManager().getFloat(RUSE_CHANCE_FORMULA_B, __FUNCTION__),
+			g_configManager().getFloat(RUSE_CHANCE_FORMULA_C, __FUNCTION__),
+			getTier()
+		);
 	}
 
-	double_t getFatalChance() const {
+	double getFatalChance() const {
 		if (getTier() == 0) {
 			return 0;
 		}
-		return 0.5 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		return quadraticPoly(
+			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_A, __FUNCTION__),
+			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_B, __FUNCTION__),
+			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_C, __FUNCTION__),
+			getTier()
+		);
 	}
 
-	double_t getMomentumChance() const {
+	double getMomentumChance() const {
 		if (getTier() == 0) {
 			return 0;
 		}
-		return 2 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		return quadraticPoly(
+			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_A, __FUNCTION__),
+			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_B, __FUNCTION__),
+			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_C, __FUNCTION__),
+			getTier()
+		);
+	}
+
+	double getTranscendenceChance() const {
+		if (getTier() == 0) {
+			return 0;
+		}
+		return quadraticPoly(
+			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_A, __FUNCTION__),
+			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_B, __FUNCTION__),
+			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_C, __FUNCTION__),
+			getTier()
+		);
 	}
 
 	uint8_t getTier() const {

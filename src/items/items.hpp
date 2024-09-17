@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -125,6 +125,9 @@ public:
 	bool isFluidContainer() const {
 		return group == ITEM_GROUP_FLUID;
 	}
+	bool isShield() const {
+		return type == ITEM_TYPE_SHIELD && !isSpellBook();
+	}
 	bool isSpellBook() const {
 		return spellbook;
 	}
@@ -174,6 +177,12 @@ public:
 	bool isQuiver() const {
 		return (type == ITEM_TYPE_QUIVER);
 	}
+	bool isRing() const {
+		return (type == ITEM_TYPE_RING);
+	}
+	bool isAmulet() const {
+		return (type == ITEM_TYPE_AMULET);
+	}
 	bool isAmmo() const {
 		return (type == ITEM_TYPE_AMMO);
 	}
@@ -189,11 +198,17 @@ public:
 	bool isWeapon() const {
 		return weaponType != WEAPON_NONE && weaponType != WEAPON_SHIELD && weaponType != WEAPON_AMMO;
 	}
+	bool isWand() const {
+		return weaponType == WEAPON_WAND;
+	}
 	bool isArmor() const {
 		return slotPosition & SLOTP_ARMOR;
 	}
 	bool isHelmet() const {
 		return slotPosition & SLOTP_HEAD;
+	}
+	bool isLegs() const {
+		return slotPosition & SLOTP_LEGS;
 	}
 	bool isRanged() const {
 		return weaponType == WEAPON_DISTANCE && weaponType != WEAPON_NONE;
@@ -207,6 +222,18 @@ public:
 			abilities = std::make_unique<Abilities>();
 		}
 		return *abilities;
+	}
+
+	int32_t getSpeed() const {
+		return abilities ? abilities->speed : 0;
+	}
+
+	int32_t getSkill(skills_t skill) const {
+		return abilities ? abilities->skills[skill] : 0;
+	}
+
+	int32_t getStat(stats_t stat) const {
+		return abilities ? abilities->stats[stat] : 0;
 	}
 
 	std::string getPluralName() const {
@@ -223,6 +250,14 @@ public:
 		str.assign(name);
 		str += 's';
 		return str;
+	}
+
+	std::string parseAugmentDescription(bool inspect = false) const;
+	std::string getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const;
+
+	void addAugment(std::string spellName, Augment_t augmentType, int32_t value) {
+		auto augmentInfo = std::make_shared<AugmentInfo>(spellName, augmentType, value);
+		augments.emplace_back(augmentInfo);
 	}
 
 	void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {
@@ -304,6 +339,8 @@ public:
 
 	int8_t hitChance = 0;
 
+	std::vector<std::shared_ptr<AugmentInfo>> augments;
+
 	// 12.90
 	bool wearOut = false;
 	bool clockExpire = false;
@@ -326,7 +363,7 @@ public:
 	bool wrapable = false;
 	bool wrapContainer = false;
 	bool multiUse = false;
-	bool moveable = false;
+	bool movable = false;
 	bool canReadText = false;
 	bool canWriteText = false;
 	bool isVertical = false;
@@ -342,6 +379,7 @@ public:
 	bool loaded = false;
 	bool spellbook = false;
 	bool isWrapKit = false;
+	bool m_canBeUsedByGuests = false;
 };
 
 class Items {
@@ -405,6 +443,18 @@ public:
 	}
 	const std::unordered_map<uint16_t, uint16_t> &getDummys() const {
 		return dummys;
+	}
+
+	static const std::string getAugmentNameByType(Augment_t augmentType);
+
+	static bool isAugmentWithoutValueDescription(Augment_t augmentType) {
+		static std::vector<Augment_t> vector = {
+			Augment_t::IncreasedDamage,
+			Augment_t::PowerfulImpact,
+			Augment_t::StrongImpact,
+		};
+
+		return std::find(vector.begin(), vector.end(), augmentType) != vector.end();
 	}
 
 private:

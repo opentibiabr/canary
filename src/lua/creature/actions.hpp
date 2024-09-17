@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -161,7 +161,7 @@ public:
 private:
 	bool hasPosition(Position position) const {
 		if (auto it = actionPositionMap.find(position);
-			it != actionPositionMap.end()) {
+		    it != actionPositionMap.end()) {
 			return true;
 		}
 		return false;
@@ -177,7 +177,7 @@ private:
 
 	bool hasItemId(uint16_t itemId) const {
 		if (auto it = useItemMap.find(itemId);
-			it != useItemMap.end()) {
+		    it != useItemMap.end()) {
 			return true;
 		}
 		return false;
@@ -189,7 +189,7 @@ private:
 
 	bool hasUniqueId(uint16_t uniqueId) const {
 		if (auto it = uniqueItemMap.find(uniqueId);
-			it != uniqueItemMap.end()) {
+		    it != uniqueItemMap.end()) {
 			return true;
 		}
 		return false;
@@ -201,7 +201,7 @@ private:
 
 	bool hasActionId(uint16_t actionId) const {
 		if (auto it = actionItemMap.find(actionId);
-			it != actionItemMap.end()) {
+		    it != actionItemMap.end()) {
 			return true;
 		}
 		return false;

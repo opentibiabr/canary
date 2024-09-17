@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -61,7 +61,18 @@ int CanaryServer::run() {
 				loadConfigLua();
 
 				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) ? " and 10x allowed!" : "");
-
+#ifdef FEATURE_METRICS
+				metrics::Options metricsOptions;
+				metricsOptions.enablePrometheusExporter = g_configManager().getBoolean(METRICS_ENABLE_PROMETHEUS, __FUNCTION__);
+				if (metricsOptions.enablePrometheusExporter) {
+					metricsOptions.prometheusOptions.url = g_configManager().getString(METRICS_PROMETHEUS_ADDRESS, __FUNCTION__);
+				}
+				metricsOptions.enableOStreamExporter = g_configManager().getBoolean(METRICS_ENABLE_OSTREAM, __FUNCTION__);
+				if (metricsOptions.enableOStreamExporter) {
+					metricsOptions.ostreamOptions.export_interval_millis = std::chrono::milliseconds(g_configManager().getNumber(METRICS_OSTREAM_INTERVAL, __FUNCTION__));
+				}
+				g_metrics().init(metricsOptions);
+#endif
 				rsa.start();
 				initializeDatabase();
 				loadModules();
@@ -82,8 +93,8 @@ int CanaryServer::run() {
 #ifndef _WIN32
 				if (getuid() == 0 || geteuid() == 0) {
 					logger.warn("{} has been executed as root user, "
-								"please consider running it as a normal user",
-								ProtocolStatus::SERVER_NAME);
+				                "please consider running it as a normal user",
+				                ProtocolStatus::SERVER_NAME);
 				}
 #endif
 
@@ -92,10 +103,10 @@ int CanaryServer::run() {
 				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE, __FUNCTION__)) {
 					g_game().setGameState(GAME_STATE_CLOSED);
 					g_logger().warn("Initialized in maintain mode!");
-					g_webhook().sendMessage("Server is now online", "The server is now online. Access is currently restricted to administrators only.", WEBHOOK_COLOR_ONLINE);
+					g_webhook().sendMessage(":yellow_square: Server is now **online** _(access restricted to staff)_");
 				} else {
 					g_game().setGameState(GAME_STATE_NORMAL);
-					g_webhook().sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
+					g_webhook().sendMessage(":green_circle: Server is now **online**");
 				}
 
 				loaderStatus = LoaderStatus::LOADED;
@@ -202,13 +213,13 @@ void CanaryServer::logInfos() {
 
 	logger.info("A server developed by: {}", ProtocolStatus::SERVER_DEVELOPERS);
 	logger.info("Visit our website for updates, support, and resources: "
-				"https://docs.opentibiabr.com/");
+	            "https://docs.opentibiabr.com/");
 }
 
 /**
  *It is preferable to keep the close button off as it closes the server without saving (this can cause the player to lose items from houses and others informations, since windows automatically closes the process in five seconds, when forcing the close)
  * Choose to use "CTROL + C" or "CTROL + BREAK" for security close
- * To activate/desactivate window;
+ * To activate/deactivate window;
  * \param MF_GRAYED Disable the "x" (force close) button
  * \param MF_ENABLED Enable the "x" (force close) button
  */
@@ -223,7 +234,7 @@ void CanaryServer::toggleForceCloseButton() {
 void CanaryServer::badAllocationHandler() {
 	// Use functions that only use stack allocation
 	g_logger().error("Allocation failed, server out of memory, "
-					 "decrease the size of your map or compile in 64 bits mode");
+	                 "decrease the size of your map or compile in 64 bits mode");
 
 	if (isatty(STDIN_FILENO)) {
 		getchar();
@@ -307,7 +318,7 @@ void CanaryServer::initializeDatabase() {
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE, __FUNCTION__)
-		&& !DatabaseManager::optimizeTables()) {
+	    && !DatabaseManager::optimizeTables()) {
 		logger.debug("No tables were optimized");
 	}
 }
@@ -316,7 +327,7 @@ void CanaryServer::loadModules() {
 	// If "USE_ANY_DATAPACK_FOLDER" is set to true then you can choose any datapack folder for your server
 	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER, __FUNCTION__);
 	auto datapackName = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	if (!useAnyDatapack && (datapackName != "data-canary" && datapackName != "data-otservbr-global" || datapackName != "data-otservbr-global" && datapackName != "data-canary")) {
+	if (!useAnyDatapack && datapackName != "data-canary" && datapackName != "data-otservbr-global") {
 		throw FailedToInitializeCanary(fmt::format(
 			"The datapack folder name '{}' is wrong, please select valid "
 			"datapack name 'data-canary' or 'data-otservbr-global "
@@ -331,26 +342,29 @@ void CanaryServer::loadModules() {
 	}
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
-	// Load items dependencies
+	// Load appearances.dat first
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
-	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
-	const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	logger.debug("Loading core scripts on folder: {}/", coreFolder);
-	// Load first core Lua libs
-	modulesLoadHelper((g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
-	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), "/data/scripts");
-
-	// Second XML scripts
+	// Load XML folder dependencies (order matters)
 	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
 	modulesLoadHelper(g_storages().loadFromXML(), "XML/storages.xml");
-	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
-	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
+
+	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
+
+	const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+	logger.debug("Loading core scripts on folder: {}/", coreFolder);
+	// Load first core Lua libs
+	modulesLoadHelper((g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
+	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false), coreFolder + "/scripts/libs");
+	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), coreFolder + "/scripts");
 	modulesLoadHelper((g_npcs().load(true, false)), "npclib");
+
+	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
+	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
 
 	logger.debug("Loading datapack scripts on folder: {}/", datapackName);
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false), datapackFolder + "/scripts/libs");
@@ -363,6 +377,7 @@ void CanaryServer::loadModules() {
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();
 	g_ioprey().initializeTaskHuntOptions();
+	g_game().logCyclopediaStats();
 }
 
 void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
@@ -373,6 +388,8 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
 }
 
 void CanaryServer::shutdown() {
-	inject<ThreadPool>().shutdown();
 	g_dispatcher().shutdown();
+	g_metrics().shutdown();
+	inject<ThreadPool>().shutdown();
+	std::exit(0);
 }

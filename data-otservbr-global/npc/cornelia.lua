@@ -66,19 +66,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({ "addon", "armor" }, message) then
-		if player:getStorageValue(Storage.OutfitQuest.WarriorShoulderAddon) == 5 then
-			player:setStorageValue(Storage.OutfitQuest.WarriorShoulderAddon, 6)
-			player:setStorageValue(Storage.OutfitQuest.WarriorShoulderTimer, os.time() + (player:getSex() == PLAYERSEX_FEMALE and 1768 or 7200))
+	if table.contains({ "addon", "armour" }, message) then
+		if player:getStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderAddon) == 5 then
+			player:setStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderAddon, 6)
+			player:setStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderTimer, os.time() + (player:getSex() == PLAYERSEX_FEMALE and 3600 or 7200)) -- 1 hours female/2 hours male
 			npcHandler:say("Ah, you must be the hero Trisha talked about. I'll prepare the shoulder spikes for you. Please give me some time to finish.", npc, creature)
-		elseif player:getStorageValue(Storage.OutfitQuest.WarriorShoulderAddon) == 6 then
-			if player:getStorageValue(Storage.OutfitQuest.WarriorShoulderTimer) > os.time() then
+		elseif player:getStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderAddon) == 6 then
+			if player:getStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderTimer) > os.time() then
 				npcHandler:say("I'm not done yet. Please be as patient as you are courageous.", npc, creature)
-			elseif player:getStorageValue(Storage.OutfitQuest.WarriorShoulderTimer) > 0 and player:getStorageValue(Storage.OutfitQuest.WarriorShoulderTimer) < os.time() then
+			elseif player:getStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderTimer) > 0 and player:getStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderTimer) < os.time() then
 				player:addOutfitAddon(142, 1)
 				player:addOutfitAddon(134, 1)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				player:setStorageValue(Storage.OutfitQuest.WarriorShoulderAddon, 7)
+				player:setStorageValue(Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderAddon, 7)
 				player:addAchievementProgress("Wild Warrior", 2)
 				npcHandler:say("Finished! Since you are a man, I thought you probably wanted two. Men always want that little extra status symbol. <giggles>", npc, creature)
 			else
@@ -136,7 +136,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

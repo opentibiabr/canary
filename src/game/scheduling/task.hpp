@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -13,15 +13,9 @@
 
 class Task {
 public:
-	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
-		func(std::move(f)), context(context), utime(OTSYS_TIME()), expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
-		assert(!this->context.empty() && "Context cannot be empty!");
-	}
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context);
 
-	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true) :
-		func(std::move(f)), context(context), utime(OTSYS_TIME() + delay), delay(delay), cycle(cycle), log(log) {
-		assert(!this->context.empty() && "Context cannot be empty!");
-	}
+	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true);
 
 	~Task() = default;
 
@@ -75,31 +69,30 @@ private:
 	}
 
 	bool hasTraceableContext() const {
-		const static auto tasksContext = std::unordered_set<std::string_view>({
-			"Creature::checkCreatureWalk",
-			"Decay::checkDecay",
-			"Dispatcher::asyncEvent",
-			"Game::checkCreatureAttack",
-			"Game::checkCreatures",
-			"Game::checkImbuements",
-			"Game::checkLight",
-			"Game::createFiendishMonsters",
-			"Game::createInfluencedMonsters",
-			"Game::updateCreatureWalk",
-			"Game::updateForgeableMonsters",
-			"GlobalEvents::think",
-			"LuaEnvironment::executeTimerEvent",
-			"Modules::executeOnRecvbyte",
-			"OutputMessagePool::sendAll",
-			"ProtocolGame::addGameTask",
-			"ProtocolGame::parsePacketFromDispatcher",
-			"Raids::checkRaids",
-			"SpawnMonster::checkSpawnMonster",
-			"SpawnMonster::scheduleSpawn",
-			"SpawnNpc::checkSpawnNpc",
-			"Webhook::run",
-			"Protocol::sendRecvMessageCallback",
-		});
+		const static auto tasksContext = std::unordered_set<std::string_view>({ "Decay::checkDecay",
+		                                                                        "Dispatcher::asyncEvent",
+		                                                                        "Game::checkCreatureAttack",
+		                                                                        "Game::checkCreatureWalk",
+		                                                                        "Game::checkCreatures",
+		                                                                        "Game::checkImbuements",
+		                                                                        "Game::checkLight",
+		                                                                        "Game::createFiendishMonsters",
+		                                                                        "Game::createInfluencedMonsters",
+		                                                                        "Game::updateCreatureWalk",
+		                                                                        "Game::updateForgeableMonsters",
+		                                                                        "GlobalEvents::think",
+		                                                                        "LuaEnvironment::executeTimerEvent",
+		                                                                        "Modules::executeOnRecvbyte",
+		                                                                        "OutputMessagePool::sendAll",
+		                                                                        "ProtocolGame::addGameTask",
+		                                                                        "ProtocolGame::parsePacketFromDispatcher",
+		                                                                        "Raids::checkRaids",
+		                                                                        "SpawnMonster::checkSpawnMonster",
+		                                                                        "SpawnMonster::scheduleSpawn",
+		                                                                        "SpawnMonster::startup",
+		                                                                        "SpawnNpc::checkSpawnNpc",
+		                                                                        "Webhook::run",
+		                                                                        "Protocol::sendRecvMessageCallback" });
 
 		return tasksContext.contains(context);
 	}
@@ -111,7 +104,7 @@ private:
 	};
 
 	std::function<void(void)> func = nullptr;
-	std::string_view context;
+	std::string context;
 
 	int64_t utime = 0;
 	int64_t expiration = 0;

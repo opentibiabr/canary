@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -99,6 +99,38 @@ int MonsterTypeFunctions::luaMonsterTypeIsSummonable(lua_State* L) {
 			pushBoolean(L, monsterType->info.isSummonable);
 		} else {
 			monsterType->info.isSummonable = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeIsPreyExclusive(lua_State* L) {
+	// get: monsterType:isPreyExclusive() set: monsterType:isPreyExclusive(bool)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.isPreyExclusive);
+		} else {
+			monsterType->info.isPreyExclusive = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeIsPreyable(lua_State* L) {
+	// get: monsterType:isPreyable() set: monsterType:isPreyable(bool)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.isPreyable);
+		} else {
+			monsterType->info.isPreyable = getBoolean(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -681,8 +713,8 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 		combatType = COMBAT_NEUTRALDAMAGE;
 	} else {
 		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
-						"Unknown immunity name {} for monster: {}",
-						immunity, monsterType->name);
+		                "Unknown immunity name {} for monster: {}",
+		                immunity, monsterType->name);
 		lua_pushnil(L);
 	}
 
@@ -739,8 +771,8 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 		conditionType = CONDITION_BLEEDING;
 	} else {
 		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeConditionImmunities] - "
-						"Unknown immunity name: {} for monster: {}",
-						immunity, monsterType->name);
+		                "Unknown immunity name: {} for monster: {}",
+		                immunity, monsterType->name);
 		lua_pushnil(L);
 	}
 
@@ -1004,7 +1036,7 @@ int MonsterTypeFunctions::luaMonsterTypeRegisterEvent(lua_State* L) {
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
 		auto eventName = getString(L, 2);
-		monsterType->info.scripts.push_back(eventName);
+		monsterType->info.scripts.insert(eventName);
 		for (const auto &[_, monster] : g_game().getMonsters()) {
 			if (monster->getMonsterType() == monsterType) {
 				monster->registerCreatureEvent(eventName);
@@ -1023,6 +1055,8 @@ int MonsterTypeFunctions::luaMonsterTypeEventOnCallback(lua_State* L) {
 	// monsterType:onDisappear(callback)
 	// monsterType:onMove(callback)
 	// monsterType:onSay(callback)
+	// monsterType:onPlayerAttack(callback)
+	// monsterType:onSpawn(callback)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
 		if (monsterType->loadCallback(&g_scripts().getScriptInterface())) {
@@ -1195,8 +1229,8 @@ int MonsterTypeFunctions::luaMonsterTypeRace(lua_State* L) {
 				monsterType->info.race = RACE_INK;
 			} else {
 				g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeRace] - "
-								"Unknown race type {}",
-								race);
+				                "Unknown race type {}",
+				                race);
 				lua_pushnil(L);
 				return 1;
 			}
@@ -1570,7 +1604,7 @@ int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
 	} else {
 		auto raceId = getNumber<uint16_t>(L, 2, 0);
 		monsterType->info.raceid = raceId;
-		g_ioBosstiary().addBosstiaryMonster(raceId, monsterType->name);
+		g_ioBosstiary().addBosstiaryMonster(raceId, monsterType->typeName);
 		pushBoolean(L, true);
 	}
 

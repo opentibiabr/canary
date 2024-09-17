@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -8,37 +8,6 @@
  */
 
 #pragma once
-
-// Enums
-enum Icons_t {
-	ICON_POISON = 1 << 0,
-	ICON_BURN = 1 << 1,
-	ICON_ENERGY = 1 << 2,
-	ICON_DRUNK = 1 << 3,
-	ICON_MANASHIELD = 1 << 4,
-	ICON_PARALYZE = 1 << 5,
-	ICON_HASTE = 1 << 6,
-	ICON_SWORDS = 1 << 7,
-	ICON_DROWNING = 1 << 8,
-	ICON_FREEZING = 1 << 9,
-	ICON_DAZZLED = 1 << 10,
-	ICON_CURSED = 1 << 11,
-	ICON_PARTY_BUFF = 1 << 12,
-	ICON_REDSWORDS = 1 << 13,
-	ICON_PIGEON = 1 << 14,
-	ICON_BLEEDING = 1 << 15,
-	ICON_LESSERHEX = 1 << 16,
-	ICON_INTENSEHEX = 1 << 17,
-	ICON_GREATERHEX = 1 << 18,
-	ICON_ROOTED = 1 << 19,
-	ICON_FEARED = 1 << 20,
-	ICON_GOSHNAR1 = 1 << 21,
-	ICON_GOSHNAR2 = 1 << 22,
-	ICON_GOSHNAR3 = 1 << 23,
-	ICON_GOSHNAR4 = 1 << 24,
-	ICON_GOSHNAR5 = 1 << 25,
-	ICON_NEWMANASHIELD = 1 << 26,
-};
 
 enum WieldInfo_t {
 	WIELDINFO_NONE = 0,
@@ -236,7 +205,9 @@ enum MagicEffectClasses : uint16_t {
 
 	CONST_ME_AGONY = 249,
 
-	CONST_ME_LAST = CONST_ME_AGONY
+	CONST_ME_LOOT_HIGHLIGHT = 252,
+
+	CONST_ME_LAST
 };
 
 enum ShootType_t : uint8_t {
@@ -338,7 +309,7 @@ enum MessageClasses : uint8_t {
 	/* Red message in the console*/ /* TALKTYPE_BROADCAST */
 
 	MESSAGE_LOGIN = 17, /* White message at the bottom of the game window and in the console*/
-	MESSAGE_ADMINISTRADOR = 18, /* Red message in game window and in the console*/
+	MESSAGE_ADMINISTRATOR = 18, /* Red message in game window and in the console*/
 	MESSAGE_EVENT_ADVANCE = 19, /* White message in game window and in the console*/
 	MESSAGE_GAME_HIGHLIGHT = 20, /* Red message in game window and in the console*/
 	MESSAGE_FAILURE = 21, /* White message at the bottom of the game window"*/
@@ -377,23 +348,25 @@ enum Fluids_t : uint8_t {
 	FLUID_NONE = 0, /* Blue */
 	FLUID_WATER = 1, /* Blue */
 	FLUID_WINE = 2, /* Purple */
-	FLUID_BEER = 3, /* Brown */
-	FLUID_MUD = 4, /* Brown */
+	FLUID_BEER = 3, /* Orange */
+	FLUID_MUD = 4, /* Orange */
 	FLUID_BLOOD = 5, /* Red */
 	FLUID_SLIME = 6, /* Green */
-	FLUID_OIL = 7, /* Brown */
+	FLUID_OIL = 7, /* Orange */
 	FLUID_URINE = 8, /* Yellow */
 	FLUID_MILK = 9, /* White */
 	FLUID_MANA = 10, /* Purple */
 	FLUID_LIFE = 11, /* Red */
 	FLUID_LEMONADE = 12, /* Yellow */
-	FLUID_RUM = 13, /* Brown */
+	FLUID_RUM = 13, /* Orange */
 	FLUID_FRUITJUICE = 14, /* Yellow */
 	FLUID_COCONUTMILK = 15, /* White */
-	FLUID_MEAD = 16, /* Brown */
-	FLUID_TEA = 17, /* Brown */
-	FLUID_INK = 18 /* Black */
-	// 12.85 last fluid is 18, 19+ is a loop from 0 to 18 over and over again
+	FLUID_MEAD = 16, /* Orange */
+	FLUID_TEA = 17, /* Orange */
+	FLUID_INK = 18, /* Black */
+	FLUID_CANDY = 19, /* Red with white pieces */
+	FLUID_CHOCOLATE = 20, /* Brown */
+	// 13.40 last fluid is 20, 21+ is a loop from 0 to 20 over and over again
 };
 
 enum SquareColor_t : uint8_t {
@@ -661,20 +634,6 @@ enum ItemID_t : uint16_t {
 	ITEM_NONE = 0
 };
 
-// A map which contains items that, when on creating, should be transformed to the default type.
-const phmap::flat_hash_map<ItemID_t, ItemID_t> ItemTransformationMap = {
-	{ ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING },
-	{ ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING },
-	{ ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING },
-	{ ITEM_RING_HEALING_ACTIVATED, ITEM_RING_HEALING },
-	{ ITEM_STEALTH_RING_ACTIVATED, ITEM_STEALTH_RING },
-	{ ITEM_TIME_RING_ACTIVATED, ITEM_TIME_RING },
-	{ ITEM_PAIR_SOFT_BOOTS_ACTIVATED, ITEM_PAIR_SOFT_BOOTS },
-	{ ITEM_DEATH_RING_ACTIVATED, ITEM_DEATH_RING },
-	{ ITEM_PRISMATIC_RING_ACTIVATED, ITEM_PRISMATIC_RING },
-	{ ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW },
-};
-
 enum class PlayerFlags_t : uint8_t {
 	CannotUseCombat,
 	CannotAttackPlayer,
@@ -721,28 +680,6 @@ enum class PlayerFlags_t : uint8_t {
 	FlagLast
 };
 
-enum Blessings_t : uint8_t {
-	TWIST_OF_FATE = 1,
-	WISDOM_OF_SOLITUDE = 2,
-	SPARK_OF_THE_PHOENIX = 3,
-	FIRE_OF_THE_SUNS = 4,
-	SPIRITUAL_SHIELDING = 5,
-	EMBRACE_OF_TIBIA = 6,
-	BLOOD_OF_THE_MOUNTAIN = 7,
-	HEARTH_OF_THE_MOUNTAIN = 8,
-};
-
-const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
-	{ TWIST_OF_FATE, "Twist of Fate" },
-	{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
-	{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
-	{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
-	{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
-	{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
-	{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
-	{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
-};
-
 enum BedItemPart_t : uint8_t {
 	BED_NONE_PART,
 	BED_PILLOW_PART,
@@ -784,4 +721,21 @@ enum Concoction_t : uint16_t {
 	HolyAmplification = 36740,
 	DeathAmplification = 36741,
 	PhysicalAmplification = 36742,
+};
+
+enum Screenshot_t : uint8_t {
+	SCREENSHOT_TYPE_NONE = 0,
+	SCREENSHOT_TYPE_ACHIEVEMENT = 1,
+	SCREENSHOT_TYPE_BESTIARYENTRYCOMPLETED = 2,
+	SCREENSHOT_TYPE_BESTIARYENTRYUNLOCKED = 3,
+	SCREENSHOT_TYPE_BOSSDEFEATED = 4,
+	SCREENSHOT_TYPE_DEATHPVE = 5,
+	SCREENSHOT_TYPE_DEATHPVP = 6,
+	SCREENSHOT_TYPE_LEVELUP = 7,
+	SCREENSHOT_TYPE_PLAYERKILLASSIST = 8,
+	SCREENSHOT_TYPE_PLAYERKILL = 9,
+	SCREENSHOT_TYPE_PLAYERATTACKING = 10,
+	SCREENSHOT_TYPE_TREASUREFOUND = 11,
+	SCREENSHOT_TYPE_SKILLUP = 12,
+	SCREENSHOT_TYPE_GIFTOFLIFE = 13,
 };

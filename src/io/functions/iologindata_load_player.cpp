@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -10,8 +10,13 @@
 #include "pch.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
+#include "enums/object_category.hpp"
+#include "enums/account_coins.hpp"
+#include "enums/account_errors.hpp"
+#include "utils/tools.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const std::shared_ptr<Player> &player) {
 	try {
@@ -61,7 +66,7 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 	}
 
 	player->setGUID(result->getNumber<uint32_t>("id"));
-	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
+	const auto &group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
 		g_logger().error("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
 		return false;
@@ -74,16 +79,16 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 		return false;
 	}
 
-	auto [coins, error] = player->account->getCoins(account::CoinType::COIN);
-	if (error != account::ERROR_NO) {
+	auto [coins, error] = player->account->getCoins(enumToValue(CoinType::Normal));
+	if (error != enumToValue(AccountErrors_t::Ok)) {
 		g_logger().error("Failed to get coins for player {}, error {}", player->name, static_cast<uint8_t>(error));
 		return false;
 	}
 
 	player->coinBalance = coins;
 
-	auto [transferableCoins, errorT] = player->account->getCoins(account::CoinType::TRANSFERABLE);
-	if (errorT != account::ERROR_NO) {
+	auto [transferableCoins, errorT] = player->account->getCoins(enumToValue(CoinType::Transferable));
+	if (errorT != enumToValue(AccountErrors_t::Ok)) {
 		g_logger().error("Failed to get transferable coins for player {}, error {}", player->name, static_cast<uint8_t>(errorT));
 		return false;
 	}
@@ -113,7 +118,7 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 		player->setAccount(result->getNumber<uint32_t>("account_id"));
 	}
 
-	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
+	const auto &group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
 		g_logger().error("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
 		return false;
@@ -172,11 +177,13 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 	}
 
 	player->staminaMinutes = result->getNumber<uint16_t>("stamina");
-	player->setStoreXpBoost(result->getNumber<uint16_t>("xpboost_value"));
-	player->setExpBoostStamina(result->getNumber<uint16_t>("xpboost_stamina"));
+	player->setXpBoostPercent(result->getNumber<uint16_t>("xpboost_value"));
+	player->setXpBoostTime(result->getNumber<uint16_t>("xpboost_stamina"));
 
-	player->setManaShield(result->getNumber<uint16_t>("manashield"));
-	player->setMaxManaShield(result->getNumber<uint16_t>("max_manashield"));
+	player->setManaShield(result->getNumber<uint32_t>("manashield"));
+	player->setMaxManaShield(result->getNumber<uint32_t>("max_manashield"));
+
+	player->setMarriageSpouse(result->getNumber<int32_t>("marriage_spouse"));
 	return true;
 }
 
@@ -210,9 +217,7 @@ void IOLoginDataLoad::loadPlayerBlessings(std::shared_ptr<Player> player, DBResu
 	}
 
 	for (int i = 1; i <= 8; i++) {
-		std::ostringstream ss;
-		ss << "blessings" << i;
-		player->addBlessing(static_cast<uint8_t>(i), static_cast<uint8_t>(result->getNumber<uint16_t>(ss.str())));
+		player->addBlessing(static_cast<uint8_t>(i), static_cast<uint8_t>(result->getNumber<uint16_t>(fmt::format("blessings{}", i))));
 	}
 }
 
@@ -230,7 +235,7 @@ void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBRes
 	auto condition = Condition::createCondition(propStream);
 	while (condition) {
 		if (condition->unserialize(propStream)) {
-			player->storedConditionList.push_front(condition);
+			player->storedConditionList.emplace_back(condition);
 		}
 		condition = Condition::createCondition(propStream);
 	}
@@ -460,7 +465,7 @@ void IOLoginDataLoad::loadPlayerInstantSpellList(std::shared_ptr<Player> player,
 	query << "SELECT `player_id`, `name` FROM `player_spells` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
-			player->learnedInstantSpellList.emplace_front(result->getString("name"));
+			player->learnedInstantSpellList.emplace_back(result->getString("name"));
 		} while (result->next());
 	}
 }
@@ -516,11 +521,15 @@ void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, D
 							openContainersList.emplace_back(std::make_pair(cid, itemContainer));
 						}
 					}
-					if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
-						auto flags = item->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
-						for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
-							if (hasBitSet(1 << category, static_cast<uint32_t>(flags))) {
-								player->setLootContainer(static_cast<ObjectCategory_t>(category), itemContainer, true);
+					for (bool isLootContainer : { true, false }) {
+						auto checkAttribute = isLootContainer ? ItemAttribute_t::QUICKLOOTCONTAINER : ItemAttribute_t::OBTAINCONTAINER;
+						if (item->hasAttribute(checkAttribute)) {
+							auto flags = item->getAttribute<uint32_t>(checkAttribute);
+
+							for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
+								if (hasBitSet(1 << category, flags)) {
+									player->refreshManagedContainer(static_cast<ObjectCategory_t>(category), itemContainer, isLootContainer, true);
+								}
 							}
 						}
 					}
@@ -669,12 +678,34 @@ void IOLoginDataLoad::loadPlayerVip(std::shared_ptr<Player> player, DBResult_ptr
 		return;
 	}
 
+	uint32_t accountId = player->getAccountId();
+
 	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccountId();
-	if ((result = db.storeQuery(query.str()))) {
+	std::string query = fmt::format("SELECT `player_id` FROM `account_viplist` WHERE `account_id` = {}", accountId);
+	if ((result = db.storeQuery(query))) {
 		do {
-			player->addVIPInternal(result->getNumber<uint32_t>("player_id"));
+			player->vip()->addInternal(result->getNumber<uint32_t>("player_id"));
+		} while (result->next());
+	}
+
+	query = fmt::format("SELECT `id`, `name`, `customizable` FROM `account_vipgroups` WHERE `account_id` = {}", accountId);
+	if ((result = db.storeQuery(query))) {
+		do {
+			player->vip()->addGroupInternal(
+				result->getNumber<uint8_t>("id"),
+				result->getString("name"),
+				result->getNumber<uint8_t>("customizable") == 0 ? false : true
+			);
+		} while (result->next());
+	}
+
+	query = fmt::format("SELECT `player_id`, `vipgroup_id` FROM `account_vipgrouplist` WHERE `account_id` = {}", accountId);
+	if ((result = db.storeQuery(query))) {
+		do {
+			player->vip()->addGuidToGroupInternal(
+				result->getNumber<uint8_t>("vipgroup_id"),
+				result->getNumber<uint32_t>("player_id")
+			);
 		} while (result->next());
 	}
 }
@@ -786,7 +817,7 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
 	if (result = Database::getInstance().storeQuery(query.str())) {
 		do {
-			auto actionEnum = magic_enum::enum_value<ForgeConversion_t>(result->getNumber<uint16_t>("action_type"));
+			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getNumber<uint16_t>("action_type"));
 			ForgeHistory history;
 			history.actionType = actionEnum;
 			history.description = result->getString("description");
@@ -798,7 +829,12 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 }
 
 void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResult_ptr result) {
-	if (!result || !player) {
+	if (!result) {
+		g_logger().warn("[IOLoginData::loadPlayer] - Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
+	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
 	}
@@ -878,6 +914,11 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player)
 	// Wheel loading
 	player->wheel()->loadDBPlayerSlotPointsOnLogin();
 	player->wheel()->initializePlayerData();
+
+	player->achiev()->loadUnlockedAchievements();
+	player->badge()->checkAndUpdateNewBadges();
+	player->title()->checkAndUpdateNewTitles();
+	player->cyclopedia()->loadSummaryData();
 
 	player->initializePrey();
 	player->initializeTaskHunting();

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
+#include "lib/metrics/metrics.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {
@@ -60,7 +61,10 @@ bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
+	metrics::lock_latency measureLock("database");
 	databaseLock.lock();
+	measureLock.stop();
+
 	return true;
 }
 
@@ -95,6 +99,10 @@ bool Database::commit() {
 	return true;
 }
 
+bool Database::isRecoverableError(unsigned int error) const {
+	return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
+}
+
 bool Database::retryQuery(const std::string_view &query, int retries) {
 	while (retries > 0 && mysql_query(handle, query.data()) != 0) {
 		g_logger().error("Query: {}", query.substr(0, 256));
@@ -121,11 +129,14 @@ bool Database::executeQuery(const std::string_view &query) {
 
 	g_logger().trace("Executing Query: {}", query);
 
+	metrics::lock_latency measureLock("database");
 	std::scoped_lock lock { databaseLock };
+	measureLock.stop();
 
+	metrics::query_latency measure(query.substr(0, 50));
 	bool success = retryQuery(query, 10);
-
 	mysql_free_result(mysql_store_result(handle));
+
 	return success;
 }
 
@@ -136,8 +147,11 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 	}
 	g_logger().trace("Storing Query: {}", query);
 
+	metrics::lock_latency measureLock("database");
 	std::scoped_lock lock { databaseLock };
+	measureLock.stop();
 
+	metrics::query_latency measure(query.substr(0, 50));
 retry:
 	if (mysql_query(handle, query.data()) != 0) {
 		g_logger().error("Query: {}", query);

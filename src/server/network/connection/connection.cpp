@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -26,101 +26,109 @@ void ConnectionManager::releaseConnection(const Connection_ptr &connection) {
 }
 
 void ConnectionManager::closeAll() {
-	connections.for_each([](const Connection_ptr &connection) {
-		try {
-			std::error_code error;
-			connection->socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
-		} catch (const std::system_error &systemError) {
-			g_logger().error("[ConnectionManager::closeAll] - Failed to close connection, system error code {}", systemError.what());
+	connections.for_each([&](const Connection_ptr &connection) {
+		if (connection->socket.is_open()) {
+			try {
+				std::error_code error;
+				connection->socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
+				if (error) {
+					g_logger().error("[ConnectionManager::closeAll] - Failed to close connection, system error code {}", error.message());
+				}
+			} catch (const std::system_error &systemError) {
+				g_logger().error("[ConnectionManager::closeAll] - Exception caught: {}", systemError.what());
+			}
 		}
 	});
 
 	connections.clear();
 }
 
-// Connection
-// Constructor
 Connection::Connection(asio::io_service &initIoService, ConstServicePort_ptr initservicePort) :
 	readTimer(initIoService),
 	writeTimer(initIoService),
 	service_port(std::move(initservicePort)),
 	socket(initIoService) {
-	timeConnected = time(nullptr);
 }
-// Constructor end
 
 void Connection::close(bool force) {
-	// any thread
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
-	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock lock(connectionLock);
 	ip = 0;
+
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 	connectionState = CONNECTION_STATE_CLOSED;
 
 	if (protocol) {
-		g_dispatcher().addEvent(std::bind_front(&Protocol::release, protocol), "Protocol::release", 1000);
+		g_dispatcher().addEvent([protocol = protocol] { protocol->release(); }, "Protocol::release", std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 	}
 
 	if (messageQueue.empty() || force) {
 		closeSocket();
-	} else {
-		// will be closed by the destructor or onWriteOperation
 	}
 }
 
 void Connection::closeSocket() {
-	if (socket.is_open()) {
-		try {
-			readTimer.cancel();
-			writeTimer.cancel();
-			std::error_code error;
-			socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
-			socket.close(error);
-		} catch (const std::system_error &e) {
-			g_logger().error("[Connection::closeSocket] - error: {}", e.what());
+	if (!socket.is_open()) {
+		return;
+	}
+
+	try {
+		readTimer.cancel();
+		writeTimer.cancel();
+		socket.cancel();
+
+		std::error_code error;
+		socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
+		if (error && error != asio::error::not_connected) {
+			g_logger().error("[Connection::closeSocket] - Failed to shutdown socket: {}", error.message());
 		}
+
+		socket.close(error);
+		if (error && error != asio::error::not_connected) {
+			g_logger().error("[Connection::closeSocket] - Failed to close socket: {}", error.message());
+		}
+	} catch (const std::system_error &e) {
+		g_logger().error("[Connection::closeSocket] - error closeSocket: {}", e.what());
 	}
 }
 
 void Connection::accept(Protocol_ptr protocolPtr) {
-	this->connectionState = CONNECTION_STATE_IDENTIFYING;
-	this->protocol = protocolPtr;
-	g_dispatcher().addEvent(std::bind_front(&Protocol::onConnect, protocolPtr), "Protocol::onConnect", 1000);
+	connectionState = CONNECTION_STATE_IDENTIFYING;
+	protocol = std::move(protocolPtr);
+	g_dispatcher().addEvent([protocol = protocol] { protocol->onConnect(); }, "Protocol::onConnect", std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 
-	// Call second accept for not duplicate code
-	accept(false);
+	acceptInternal(false);
 }
 
-void Connection::accept(bool toggleParseHeader /* = true */) {
-	try {
-		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
+void Connection::acceptInternal(bool toggleParseHeader) {
+	readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
+	readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
-		// If toggleParseHeader is true, execute the parseHeader, if not, execute parseProxyIdentification
-		if (toggleParseHeader) {
-			// Read size of the first packet
-			asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
-		} else {
-			// Read header bytes to identify if it is proxy identification
-			asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), std::bind(&Connection::parseProxyIdentification, shared_from_this(), std::placeholders::_1));
-		}
+	try {
+		asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this(), toggleParseHeader](const std::error_code &error, std::size_t N) {
+			if (toggleParseHeader) {
+				self->parseHeader(error);
+			} else {
+				self->parseProxyIdentification(error);
+			}
+		});
 	} catch (const std::system_error &e) {
-		g_logger().error("[Connection::accept] - error: {}", e.what());
+		g_logger().error("[Connection::acceptInternal] - Exception in async_read: {}", e.what());
 		close(FORCE_CLOSE);
 	}
 }
-
 void Connection::parseProxyIdentification(const std::error_code &error) {
-	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();
 
-	if (error) {
+	if (error || connectionState == CONNECTION_STATE_CLOSED) {
+		if (error != asio::error::operation_aborted && error != asio::error::eof && error != asio::error::connection_reset) {
+			g_logger().error("[Connection::parseProxyIdentification] - Read error: {}", error.message());
+		}
 		close(FORCE_CLOSE);
-		return;
-	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 
@@ -139,10 +147,10 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 				connectionState = CONNECTION_STATE_READINGS;
 				try {
 					readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-					readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
+					readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 					// Read the remainder of proxy identification
-					asio::async_read(socket, asio::buffer(msg.getBuffer(), remainder), std::bind(&Connection::parseProxyIdentification, shared_from_this(), std::placeholders::_1));
+					asio::async_read(socket, asio::buffer(msg.getBuffer(), remainder), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parseProxyIdentification(error); });
 				} catch (const std::system_error &e) {
 					g_logger().error("Connection::parseProxyIdentification] - error: {}", e.what());
 					close(FORCE_CLOSE);
@@ -163,14 +171,17 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 		}
 	}
 
-	accept(true);
+	acceptInternal(true);
 }
 
 void Connection::parseHeader(const std::error_code &error) {
-	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();
 
 	if (error) {
+		if (error != asio::error::operation_aborted && error != asio::error::eof && error != asio::error::connection_reset) {
+			g_logger().debug("[Connection::parseHeader] - Read error: {}", error.message());
+		}
 		close(FORCE_CLOSE);
 		return;
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {
@@ -179,7 +190,7 @@ void Connection::parseHeader(const std::error_code &error) {
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND, __FUNCTION__))) {
-		g_logger().warn("{} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
+		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
 		close();
 		return;
 	}
@@ -197,11 +208,12 @@ void Connection::parseHeader(const std::error_code &error) {
 
 	try {
 		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
+		readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 		// Read packet content
 		msg.setLength(size + HEADER_LENGTH);
-		asio::async_read(socket, asio::buffer(msg.getBodyBuffer(), size), std::bind(&Connection::parsePacket, shared_from_this(), std::placeholders::_1));
+		// Read the remainder of proxy identification
+		asio::async_read(socket, asio::buffer(msg.getBodyBuffer(), size), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parsePacket(error); });
 	} catch (const std::system_error &e) {
 		g_logger().error("[Connection::parseHeader] - error: {}", e.what());
 		close(FORCE_CLOSE);
@@ -209,13 +221,14 @@ void Connection::parseHeader(const std::error_code &error) {
 }
 
 void Connection::parsePacket(const std::error_code &error) {
-	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();
 
-	if (error) {
+	if (error || connectionState == CONNECTION_STATE_CLOSED) {
+		if (error) {
+			g_logger().error("[Connection::parsePacket] - Read error: {}", error.message());
+		}
 		close(FORCE_CLOSE);
-		return;
-	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 
@@ -228,7 +241,7 @@ void Connection::parsePacket(const std::error_code &error) {
 			// Check packet checksum
 			uint32_t checksum;
 			if (int32_t len = msg.getLength() - msg.getBufferPosition() - CHECKSUM_LENGTH;
-				len > 0) {
+			    len > 0) {
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition() + CHECKSUM_LENGTH, len);
 			} else {
 				checksum = 0;
@@ -262,11 +275,11 @@ void Connection::parsePacket(const std::error_code &error) {
 
 	try {
 		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
+		readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 		if (!skipReadingNextPacket) {
 			// Wait to the next packet
-			asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
+			asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parseHeader(error); });
 		}
 	} catch (const std::system_error &e) {
 		g_logger().error("[Connection::parsePacket] - error: {}", e.what());
@@ -275,91 +288,104 @@ void Connection::parsePacket(const std::error_code &error) {
 }
 
 void Connection::resumeWork() {
-	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
+	readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
+	readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 	try {
-		// Wait to the next packet
-		asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
+		asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parseHeader(error); });
 	} catch (const std::system_error &e) {
-		g_logger().error("[Connection::resumeWork] - error: {}", e.what());
+		g_logger().error("[Connection::resumeWork] - Exception in async_read: {}", e.what());
 		close(FORCE_CLOSE);
 	}
 }
 
 void Connection::send(const OutputMessage_ptr &outputMessage) {
-	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
+	std::scoped_lock lock(connectionLock);
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 
 	bool noPendingWrite = messageQueue.empty();
 	messageQueue.emplace_back(outputMessage);
+
 	if (noPendingWrite) {
-		// Make asio thread handle xtea encryption instead of dispatcher
-		try {
-			asio::post(socket.get_executor(), std::bind(&Connection::internalWorker, shared_from_this()));
-		} catch (const std::system_error &e) {
-			g_logger().error("[Connection::send] - error: {}", e.what());
-			messageQueue.clear();
+		if (socket.is_open()) {
+			try {
+				asio::post(socket.get_executor(), [self = shared_from_this()] { self->internalWorker(); });
+			} catch (const std::system_error &e) {
+				g_logger().error("[Connection::send] - Exception in posting write operation: {}", e.what());
+				close(FORCE_CLOSE);
+			}
+		} else {
+			g_logger().error("[Connection::send] - Socket is not open for writing.");
 			close(FORCE_CLOSE);
 		}
 	}
 }
 
 void Connection::internalWorker() {
-	std::unique_lock<std::recursive_mutex> lockClass(connectionLock);
-	if (!messageQueue.empty()) {
-		const OutputMessage_ptr &outputMessage = messageQueue.front();
-		lockClass.unlock();
-		protocol->onSendMessage(outputMessage);
-		lockClass.lock();
-		internalSend(outputMessage);
-	} else if (connectionState == CONNECTION_STATE_CLOSED) {
-		closeSocket();
+	std::unique_lock lock(connectionLock);
+	if (messageQueue.empty()) {
+		if (connectionState == CONNECTION_STATE_CLOSED) {
+			closeSocket();
+		}
+		return;
 	}
+
+	const auto &outputMessage = messageQueue.front();
+	lock.unlock();
+	protocol->onSendMessage(outputMessage);
+	lock.lock();
+
+	internalSend(outputMessage);
 }
 
 uint32_t Connection::getIP() {
-	if (ip != 1) {
-		return ip;
+	std::scoped_lock lock(connectionLock);
+
+	if (ip == 1) {
+		std::error_code error;
+		asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
+		if (error) {
+			g_logger().error("[Connection::getIP] - Failed to get remote endpoint: {}", error.message());
+			ip = 0;
+		} else {
+			ip = htonl(endpoint.address().to_v4().to_uint());
+		}
 	}
-
-	std::scoped_lock<std::recursive_mutex> lockClass(connectionLock);
-
-	// IP-address is expressed in network byte order
-	std::error_code error;
-	const asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
-	ip = error ? 0 : htonl(endpoint.address().to_v4().to_uint());
 	return ip;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
-	try {
-		writeTimer.expires_from_now(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));
-		writeTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
+	writeTimer.expires_from_now(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));
+	writeTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
-		asio::async_write(socket, asio::buffer(outputMessage->getOutputBuffer(), outputMessage->getLength()), std::bind(&Connection::onWriteOperation, shared_from_this(), std::placeholders::_1));
+	try {
+		asio::async_write(socket, asio::buffer(outputMessage->getOutputBuffer(), outputMessage->getLength()), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->onWriteOperation(error); });
 	} catch (const std::system_error &e) {
-		g_logger().error("[Connection::internalSend] - error: {}", e.what());
+		g_logger().error("[Connection::internalSend] - Exception in async_write: {}", e.what());
+		close(FORCE_CLOSE);
 	}
 }
 
 void Connection::onWriteOperation(const std::error_code &error) {
-	std::unique_lock<std::recursive_mutex> lockClass(connectionLock);
+	std::unique_lock lock(connectionLock);
 	writeTimer.cancel();
-	messageQueue.pop_front();
 
 	if (error) {
+		g_logger().error("[Connection::onWriteOperation] - Write error: {}", error.message());
 		messageQueue.clear();
 		close(FORCE_CLOSE);
 		return;
 	}
 
+	messageQueue.pop_front();
+
 	if (!messageQueue.empty()) {
-		const OutputMessage_ptr &outputMessage = messageQueue.front();
-		lockClass.unlock();
+		const auto &outputMessage = messageQueue.front();
+		lock.unlock();
 		protocol->onSendMessage(outputMessage);
-		lockClass.lock();
+		lock.lock();
 		internalSend(outputMessage);
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		closeSocket();
@@ -368,11 +394,15 @@ void Connection::onWriteOperation(const std::error_code &error) {
 
 void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::error_code &error) {
 	if (error == asio::error::operation_aborted) {
-		// The timer has been manually cancelled
 		return;
 	}
 
 	if (auto connection = connectionWeak.lock()) {
+		if (!error) {
+			g_logger().debug("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
+		} else {
+			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
+		}
 		connection->close(FORCE_CLOSE);
 	}
 }

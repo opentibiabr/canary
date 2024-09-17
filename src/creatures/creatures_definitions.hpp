@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -9,8 +9,18 @@
 
 #pragma once
 
-// Enum
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <string>
+	#include <vector>
+	#include <map>
+	#include <list>
+	#include <utility>
+	#include <cstdint>
+	#include <memory>
+	#include <cmath>
+#endif
 
+// Enum
 enum SkillsId_t {
 	SKILLVALUE_LEVEL = 0,
 	SKILLVALUE_TRIES = 1,
@@ -61,6 +71,7 @@ enum ConditionAttr_t {
 	CONDITIONATTR_ABSORBS,
 	CONDITIONATTR_INCREASES,
 	CONDITIONATTR_CHARM_CHANCE_MODIFIER,
+	CONDITIONATTR_PERSISTENT,
 
 	// reserved for serialization
 	CONDITIONATTR_END = 254,
@@ -102,15 +113,30 @@ enum ConditionType_t : uint8_t {
 	CONDITION_LESSERHEX = 31,
 	CONDITION_INTENSEHEX = 32,
 	CONDITION_GREATERHEX = 33,
-	CONDITION_GOSHNAR1 = 34,
-	CONDITION_GOSHNAR2 = 35,
-	CONDITION_GOSHNAR3 = 36,
-	CONDITION_GOSHNAR4 = 37,
-	CONDITION_GOSHNAR5 = 38,
+	CONDITION_BAKRAGORE = 34,
+	CONDITION_GOSHNARTAINT = 35,
 
 	// Need the last ever
-	CONDITION_COUNT = 39
+	CONDITION_COUNT
 };
+
+// constexpr definiting suppressible conditions
+constexpr bool IsConditionSuppressible(ConditionType_t condition) {
+	constexpr std::array suppressibleConditions = {
+		CONDITION_POISON,
+		CONDITION_FIRE,
+		CONDITION_ENERGY,
+		CONDITION_BLEEDING,
+		CONDITION_PARALYZE,
+		CONDITION_DROWN,
+		CONDITION_FREEZING,
+		CONDITION_CURSED,
+	};
+
+	return std::ranges::any_of(suppressibleConditions, [condition](const auto &suppressibleCondition) {
+		return condition == suppressibleCondition;
+	});
+}
 
 enum ConditionParam_t {
 	CONDITION_PARAM_OWNER = 1,
@@ -295,40 +321,6 @@ enum MarketOfferState_t {
 	OFFERSTATE_ACCEPTEDEX = 255,
 };
 
-enum ObjectCategory_t {
-	OBJECTCATEGORY_NONE = 0,
-	OBJECTCATEGORY_ARMORS = 1,
-	OBJECTCATEGORY_NECKLACES = 2,
-	OBJECTCATEGORY_BOOTS = 3,
-	OBJECTCATEGORY_CONTAINERS = 4,
-	OBJECTCATEGORY_DECORATION = 5,
-	OBJECTCATEGORY_FOOD = 6,
-	OBJECTCATEGORY_HELMETS = 7,
-	OBJECTCATEGORY_LEGS = 8,
-	OBJECTCATEGORY_OTHERS = 9,
-	OBJECTCATEGORY_POTIONS = 10,
-	OBJECTCATEGORY_RINGS = 11,
-	OBJECTCATEGORY_RUNES = 12,
-	OBJECTCATEGORY_SHIELDS = 13,
-	OBJECTCATEGORY_TOOLS = 14,
-	OBJECTCATEGORY_VALUABLES = 15,
-	OBJECTCATEGORY_AMMO = 16,
-	OBJECTCATEGORY_AXES = 17,
-	OBJECTCATEGORY_CLUBS = 18,
-	OBJECTCATEGORY_DISTANCEWEAPONS = 19,
-	OBJECTCATEGORY_SWORDS = 20,
-	OBJECTCATEGORY_WANDS = 21,
-	OBJECTCATEGORY_PREMIUMSCROLLS = 22, // not used in quickloot
-	OBJECTCATEGORY_TIBIACOINS = 23, // not used in quickloot
-	OBJECTCATEGORY_CREATUREPRODUCTS = 24,
-	OBJECTCATEGORY_STASHRETRIEVE = 27,
-	OBJECTCATEGORY_GOLD = 30,
-	OBJECTCATEGORY_DEFAULT = 31, // unassigned loot
-
-	OBJECTCATEGORY_FIRST = OBJECTCATEGORY_ARMORS,
-	OBJECTCATEGORY_LAST = OBJECTCATEGORY_DEFAULT,
-};
-
 enum RespawnPeriod_t {
 	RESPAWNPERIOD_ALL,
 	RESPAWNPERIOD_DAY,
@@ -496,12 +488,14 @@ enum BestiaryType_t : uint8_t {
 };
 
 enum MonstersEvent_t : uint8_t {
-	MONSTERS_EVENT_NONE = 0,
-	MONSTERS_EVENT_THINK = 1,
-	MONSTERS_EVENT_APPEAR = 2,
-	MONSTERS_EVENT_DISAPPEAR = 3,
-	MONSTERS_EVENT_MOVE = 4,
-	MONSTERS_EVENT_SAY = 5,
+	MONSTERS_EVENT_NONE,
+	MONSTERS_EVENT_THINK,
+	MONSTERS_EVENT_APPEAR,
+	MONSTERS_EVENT_DISAPPEAR,
+	MONSTERS_EVENT_MOVE,
+	MONSTERS_EVENT_SAY,
+	MONSTERS_EVENT_ATTACKED_BY_PLAYER,
+	MONSTERS_EVENT_ON_SPAWN,
 };
 
 enum NpcsEvent_t : uint8_t {
@@ -720,11 +714,11 @@ enum ChannelEvent_t : uint8_t {
 	CHANNELEVENT_EXCLUDE = 3,
 };
 
-enum VipStatus_t : uint8_t {
-	VIPSTATUS_OFFLINE = 0,
-	VIPSTATUS_ONLINE = 1,
-	VIPSTATUS_PENDING = 2,
-	VIPSTATUS_TRAINING = 3
+enum class VipStatus_t : uint8_t {
+	Offline = 0,
+	Online = 1,
+	Pending = 2,
+	Training = 3
 };
 
 enum Vocation_t : uint16_t {
@@ -1403,38 +1397,35 @@ struct CreatureIcon {
 struct Position;
 
 struct VIPEntry {
-	VIPEntry(uint32_t initGuid, std::string initName, std::string initDescription, uint32_t initIcon, bool initNotify) :
+	VIPEntry(uint32_t initGuid, const std::string &initName, const std::string &initDescription, uint32_t initIcon, bool initNotify) :
 		guid(initGuid),
 		name(std::move(initName)),
 		description(std::move(initDescription)),
 		icon(initIcon),
 		notify(initNotify) { }
 
-	uint32_t guid;
-	std::string name;
-	std::string description;
-	uint32_t icon;
-	bool notify;
+	uint32_t guid = 0;
+	std::string name = "";
+	std::string description = "";
+	uint32_t icon = 0;
+	bool notify = false;
 };
 
-struct OutfitEntry {
-	constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
-		lookType(initLookType), addons(initAddons) { }
+struct VIPGroupEntry {
+	VIPGroupEntry(uint8_t initId, const std::string &initName, bool initCustomizable) :
+		id(initId),
+		name(std::move(initName)),
+		customizable(initCustomizable) { }
 
-	uint16_t lookType;
-	uint8_t addons;
-};
-
-struct FamiliarEntry {
-	constexpr explicit FamiliarEntry(uint16_t initLookType) :
-		lookType(initLookType) { }
-	uint16_t lookType;
+	uint8_t id = 0;
+	std::string name = "";
+	bool customizable = false;
 };
 
 struct Skill {
 	uint64_t tries = 0;
 	uint16_t level = 10;
-	double_t percent = 0;
+	double percent = 0;
 };
 
 struct Kill {
@@ -1533,26 +1524,13 @@ using StashItemList = std::map<uint16_t, uint32_t>;
 
 using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
 /*
-	> ItemsTierCountList structure:
-	|- [itemID]
-		|- [itemTier]
-			|- Count
-		| ...
-	| ...
+    > ItemsTierCountList structure:
+    |- [itemID]
+        |- [itemTier]
+            |- Count
+        | ...
+    | ...
 */
-
-struct Familiar {
-	Familiar(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initType) :
-		name(initName), lookType(initLookType),
-		premium(initPremium), unlocked(initUnlocked),
-		type(initType) { }
-
-	std::string name;
-	uint16_t lookType;
-	bool premium;
-	bool unlocked;
-	std::string type;
-};
 
 struct ProtocolFamiliars {
 	ProtocolFamiliars(const std::string &initName, uint16_t initLookType) :
@@ -1656,18 +1634,11 @@ struct ShopBlock {
 	int32_t itemStorageValue;
 
 	std::vector<ShopBlock> childShop;
-	ShopBlock() {
-		itemId = 0;
-		itemName = "";
-		itemSubType = 0;
-		itemBuyPrice = 0;
-		itemSellPrice = 0;
-		itemStorageKey = 0;
-		itemStorageValue = 0;
-	}
+	ShopBlock() :
+		itemId(0), itemName(""), itemSubType(0), itemBuyPrice(0), itemSellPrice(0), itemStorageKey(0), itemStorageValue(0) { }
 
-	explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "") :
-		itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) { }
+	explicit ShopBlock(uint16_t newItemId, std::string newName = "", int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0) :
+		itemId(newItemId), itemName(std::move(newName)), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue) { }
 
 	bool operator==(const ShopBlock &other) const {
 		return itemId == other.itemId && itemName == other.itemName && itemSubType == other.itemSubType && itemBuyPrice == other.itemBuyPrice && itemSellPrice == other.itemSellPrice && itemStorageKey == other.itemStorageKey && itemStorageValue == other.itemStorageValue && childShop == other.childShop;

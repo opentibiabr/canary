@@ -50,6 +50,12 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function endConversationWithDelay(npcHandler, npc, creature)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
+end
+
 local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local fire = player:getCondition(CONDITION_FIRE)
@@ -57,6 +63,8 @@ local function greetCallback(npc, creature)
 	if fire and (player:hasOutfit(156) or player:hasOutfit(152)) then
 		return true
 	end
+
+	endConversationWithDelay(npcHandler, npc, creature)
 	return false
 end
 
@@ -76,7 +84,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				doPlayerRemoveItem(creature, 5804, 1)
 				doPlayerRemoveItem(creature, 5930, 1)
 				doPlayerAddOutfit(creature, getPlayerSex(creature) == 0 and 156 or 152, 2)
-				setPlayerStorageValue(creature, Storage.Atrad, 2) -- exaust
+				setPlayerStorageValue(creature, Storage.Atrad, 2)
+				setPlayerStorageValue(creature, Storage.Quest.U7_8.AssassinOutfits.AssassinSecondAddon, 2)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("You don't have it...", npc, creature)
@@ -90,6 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say("Good. Come back then you have BOTH. Should be clear where to get a behemoth claw from. There's a horned fox who wears a nose ring. Good luck.", npc, creature)
 			setPlayerStorageValue(creature, Storage.Atrad, 1)
+			setPlayerStorageValue(creature, Storage.Quest.U7_8.AssassinOutfits.AssassinSecondAddon, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
@@ -110,7 +120,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

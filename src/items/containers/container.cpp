@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -18,9 +18,15 @@
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
 	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM, __FUNCTION__));
-	if (getID() == ITEM_GOLD_POUCH || isStoreInbox()) {
+	if (getID() == ITEM_GOLD_POUCH) {
 		pagination = true;
-		m_maxItems = 2000;
+		m_maxItems = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT, __FUNCTION__);
+		maxSize = 32;
+	}
+
+	if (isStoreInbox()) {
+		pagination = true;
+		m_maxItems = g_configManager().getNumber(STOREINBOX_MAXLIMIT, __FUNCTION__);
 		maxSize = 32;
 	}
 }
@@ -44,7 +50,7 @@ std::shared_ptr<Container> Container::create(std::shared_ptr<Tile> tile) {
 	TileItemVector* itemVector = tile->getItemList();
 	if (itemVector) {
 		for (auto &item : *itemVector) {
-			if (((item->getContainer() || item->hasProperty(CONST_PROP_MOVEABLE)) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVEABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) && !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+			if (((item->getContainer() || item->hasProperty(CONST_PROP_MOVABLE)) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) && !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 				container->itemlist.push_front(item);
 				item->setParent(container);
 			}
@@ -57,6 +63,10 @@ std::shared_ptr<Container> Container::create(std::shared_ptr<Tile> tile) {
 
 Container::~Container() {
 	if (getID() == ITEM_BROWSEFIELD) {
+		if (getParent() && getParent()->getTile()) {
+			g_game().browseFields.erase(getParent()->getTile());
+		}
+
 		for (std::shared_ptr<Item> item : itemlist) {
 			item->setParent(getParent());
 		}
@@ -212,7 +222,7 @@ std::string Container::getContentDescription(bool oldProtocol) {
 	return getContentDescription(os, oldProtocol).str();
 }
 
-std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool oldProtocol) {
+std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool sendColoredMessage) {
 	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		std::shared_ptr<Item> item = *it;
@@ -228,10 +238,10 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 			os << ", ";
 		}
 
-		if (oldProtocol) {
-			os << item->getNameDescription();
-		} else {
+		if (sendColoredMessage) {
 			os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
+		} else {
+			os << item->getNameDescription();
 		}
 	}
 
@@ -239,6 +249,10 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 		os << "nothing";
 	}
 	return os;
+}
+
+uint32_t Container::getMaxCapacity() const {
+	return m_maxItems;
 }
 
 bool Container::isStoreInbox() const {
@@ -373,7 +387,7 @@ bool Container::isInsideContainerWithId(const uint16_t id) {
 }
 
 bool Container::isAnyKindOfRewardChest() {
-	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER && getParent() && getParent()->getContainer() && getParent()->getContainer()->getID() == ITEM_REWARD_CHEST || isBrowseFieldAndHoldsRewardChest();
+	return getID() == ITEM_REWARD_CHEST || (getID() == ITEM_REWARD_CONTAINER && getParent() && getParent()->getContainer() && getParent()->getContainer()->getID() == ITEM_REWARD_CHEST) || isBrowseFieldAndHoldsRewardChest();
 }
 
 bool Container::isAnyKindOfRewardContainer() {
@@ -450,6 +464,18 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 	if (item == getItem()) {
 		return RETURNVALUE_THISISIMPOSSIBLE;
 	}
+	if (item->hasOwner()) {
+		// a non-owner can move the item around but not pick it up
+		auto toPlayer = getTopParent()->getPlayer();
+		if (toPlayer && !item->isOwner(toPlayer)) {
+			return RETURNVALUE_ITEMISNOTYOURS;
+		}
+
+		// a container cannot have items of different owners
+		if (hasOwner() && getOwnerId() != item->getOwnerId()) {
+			return RETURNVALUE_ITEMISNOTYOURS;
+		}
+	}
 
 	std::shared_ptr<Cylinder> cylinder = getParent();
 	auto noLimit = hasBitSet(FLAG_NOLIMIT, flags);
@@ -473,8 +499,8 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
-	if (std::shared_ptr<Container> topParentContainer = getTopParentContainer()) {
-		if (std::shared_ptr<Container> addContainer = item->getContainer()) {
+	if (const auto topParentContainer = getTopParentContainer()) {
+		if (const auto addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
 			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
@@ -485,10 +511,10 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 			if (addItemCount + topParentContainer->getItemHoldingCount() > m_maxItems) {
 				return RETURNVALUE_CONTAINERISFULL;
 			}
-		}
-
-		if (topParentContainer->getItemHoldingCount() + 1 > m_maxItems) {
-			return RETURNVALUE_CONTAINERISFULL;
+		} else {
+			if (topParentContainer->getItemHoldingCount() + 1 > m_maxItems) {
+				return RETURNVALUE_CONTAINERISFULL;
+			}
 		}
 	}
 
@@ -571,9 +597,9 @@ ReturnValue Container::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if (!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags)) {
-		g_logger().debug("{} - Item is not moveable", __FUNCTION__);
-		return RETURNVALUE_NOTMOVEABLE;
+	if (!item->isMovable() && !hasBitSet(FLAG_IGNORENOTMOVABLE, flags)) {
+		g_logger().debug("{} - Item is not movable", __FUNCTION__);
+		return RETURNVALUE_NOTMOVABLE;
 	}
 	std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(getTopParent());
 	if (houseTile) {
@@ -949,4 +975,18 @@ void ContainerIterator::advance() {
 			cur = over.front()->itemlist.begin();
 		}
 	}
+}
+
+uint32_t Container::getOwnerId() const {
+	uint32_t ownerId = Item::getOwnerId();
+	if (ownerId > 0) {
+		return ownerId;
+	}
+	for (const auto &item : itemlist) {
+		ownerId = item->getOwnerId();
+		if (ownerId > 0) {
+			return ownerId;
+		}
+	}
+	return 0;
 }

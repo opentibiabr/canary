@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,12 +15,15 @@
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "lib/metrics/metrics.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_errors.hpp"
 
-bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol) {
-	account::Account account(accountDescriptor);
+bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol, const uint32_t ip) {
+	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
-	if (account::ERROR_NO != account.load()) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
 		g_logger().error("Couldn't load account [{}].", account.getDescriptor());
 		return false;
 	}
@@ -35,13 +38,18 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		}
 	}
 
-	if (account::ERROR_NO != account.load()) {
+	if (!g_accountRepository().getCharacterByAccountIdAndName(account.getID(), characterName)) {
+		g_logger().warn("IP [{}] trying to connect into another account character", convertIPToString(ip));
+		return false;
+	}
+
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
 		g_logger().error("Failed to load account [{}]", accountDescriptor);
 		return false;
 	}
 
 	auto [players, result] = account.getAccountPlayers();
-	if (account::ERROR_NO != result) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
 		g_logger().error("Failed to load account [{}] players", accountDescriptor);
 		return false;
 	}
@@ -56,34 +64,37 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 	return true;
 }
 
-account::AccountType IOLoginData::getAccountType(uint32_t accountId) {
+uint8_t IOLoginData::getAccountType(uint32_t accountId) {
 	std::ostringstream query;
 	query << "SELECT `type` FROM `accounts` WHERE `id` = " << accountId;
 	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
 	if (!result) {
-		return account::ACCOUNT_TYPE_NORMAL;
+		return ACCOUNT_TYPE_NORMAL;
 	}
-	return static_cast<account::AccountType>(result->getNumber<uint16_t>("type"));
+
+	return result->getNumber<uint8_t>("type");
 }
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 	static phmap::flat_hash_map<uint32_t, bool> updateOnline;
-	if (login && updateOnline.find(guid) != updateOnline.end() || guid <= 0) {
+	if ((login && updateOnline.find(guid) != updateOnline.end()) || guid <= 0) {
 		return;
 	}
 
 	std::ostringstream query;
 	if (login) {
+		g_metrics().addUpDownCounter("players_online", 1);
 		query << "INSERT INTO `players_online` VALUES (" << guid << ')';
 		updateOnline[guid] = true;
 	} else {
+		g_metrics().addUpDownCounter("players_online", -1);
 		query << "DELETE FROM `players_online` WHERE `player_id` = " << guid;
 		updateOnline.erase(guid);
 	}
 	Database::getInstance().executeQuery(query.str());
 }
 
-// The boolean "disableIrrelevantInfo" will desactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
+// The boolean "disableIrrelevantInfo" will deactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
 bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
@@ -165,6 +176,9 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 
 		// Load task hunting class
 		IOLoginDataLoad::loadPlayerTaskHuntingClass(player, result);
+
+		// Load instant spells list
+		IOLoginDataLoad::loadPlayerInstantSpellList(player, result);
 
 		if (disableIrrelevantInfo) {
 			return true;
@@ -340,16 +354,14 @@ bool IOLoginData::hasBiddedOnHouse(uint32_t guid) {
 	return db.storeQuery(query.str()).get() != nullptr;
 }
 
-std::forward_list<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
-	std::forward_list<VIPEntry> entries;
+std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
+	std::string query = fmt::format("SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = {}", accountId);
+	std::vector<VIPEntry> entries;
 
-	std::ostringstream query;
-	query << "SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = " << accountId;
-
-	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
-	if (result) {
+	if (const auto &result = Database::getInstance().storeQuery(query)) {
+		entries.reserve(result->countResults());
 		do {
-			entries.emplace_front(
+			entries.emplace_back(
 				result->getNumber<uint32_t>("player_id"),
 				result->getString("name"),
 				result->getString("description"),
@@ -358,31 +370,75 @@ std::forward_list<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 			);
 		} while (result->next());
 	}
+
 	return entries;
 }
 
 void IOLoginData::addVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
-	Database &db = Database::getInstance();
-
-	std::ostringstream query;
-	query << "INSERT INTO `account_viplist` (`account_id`, `player_id`, `description`, `icon`, `notify`) VALUES (" << accountId << ',' << guid << ',' << db.escapeString(description) << ',' << icon << ',' << notify << ')';
-	if (!db.executeQuery(query.str())) {
-		g_logger().error("Failed to add VIP entry for account %u. QUERY: %s", accountId, query.str().c_str());
+	std::string query = fmt::format("INSERT INTO `account_viplist` (`account_id`, `player_id`, `description`, `icon`, `notify`) VALUES ({}, {}, {}, {}, {})", accountId, guid, g_database().escapeString(description), icon, notify);
+	if (!g_database().executeQuery(query)) {
+		g_logger().error("Failed to add VIP entry for account {}. QUERY: {}", accountId, query.c_str());
 	}
 }
 
 void IOLoginData::editVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify) {
-	Database &db = Database::getInstance();
-
-	std::ostringstream query;
-	query << "UPDATE `account_viplist` SET `description` = " << db.escapeString(description) << ", `icon` = " << icon << ", `notify` = " << notify << " WHERE `account_id` = " << accountId << " AND `player_id` = " << guid;
-	if (!db.executeQuery(query.str())) {
-		g_logger().error("Failed to edit VIP entry for account %u. QUERY: %s", accountId, query.str().c_str());
+	std::string query = fmt::format("UPDATE `account_viplist` SET `description` = {}, `icon` = {}, `notify` = {} WHERE `account_id` = {} AND `player_id` = {}", g_database().escapeString(description), icon, notify, accountId, guid);
+	if (!g_database().executeQuery(query)) {
+		g_logger().error("Failed to edit VIP entry for account {}. QUERY: {}", accountId, query.c_str());
 	}
 }
 
 void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
-	std::ostringstream query;
-	query << "DELETE FROM `account_viplist` WHERE `account_id` = " << accountId << " AND `player_id` = " << guid;
-	Database::getInstance().executeQuery(query.str());
+	std::string query = fmt::format("DELETE FROM `account_viplist` WHERE `account_id` = {} AND `player_id` = {}", accountId, guid);
+	g_database().executeQuery(query);
+}
+
+std::vector<VIPGroupEntry> IOLoginData::getVIPGroupEntries(uint32_t accountId, uint32_t guid) {
+	std::string query = fmt::format("SELECT `id`, `name`, `customizable` FROM `account_vipgroups` WHERE `account_id` = {}", accountId);
+
+	std::vector<VIPGroupEntry> entries;
+
+	if (const auto &result = g_database().storeQuery(query)) {
+		entries.reserve(result->countResults());
+
+		do {
+			entries.emplace_back(
+				result->getNumber<uint8_t>("id"),
+				result->getString("name"),
+				result->getNumber<uint8_t>("customizable") == 0 ? false : true
+			);
+		} while (result->next());
+	}
+	return entries;
+}
+
+void IOLoginData::addVIPGroupEntry(uint8_t groupId, uint32_t accountId, const std::string &groupName, bool customizable) {
+	std::string query = fmt::format("INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`) VALUES ({}, {}, {}, {})", groupId, accountId, g_database().escapeString(groupName), customizable);
+	if (!g_database().executeQuery(query)) {
+		g_logger().error("Failed to add VIP Group entry for account {} and group {}. QUERY: {}", accountId, groupId, query.c_str());
+	}
+}
+
+void IOLoginData::editVIPGroupEntry(uint8_t groupId, uint32_t accountId, const std::string &groupName, bool customizable) {
+	std::string query = fmt::format("UPDATE `account_vipgroups` SET `name` = {}, `customizable` = {} WHERE `id` = {} AND `account_id` = {}", g_database().escapeString(groupName), customizable, groupId, accountId);
+	if (!g_database().executeQuery(query)) {
+		g_logger().error("Failed to update VIP Group entry for account {} and group {}. QUERY: {}", accountId, groupId, query.c_str());
+	}
+}
+
+void IOLoginData::removeVIPGroupEntry(uint8_t groupId, uint32_t accountId) {
+	std::string query = fmt::format("DELETE FROM `account_vipgroups` WHERE `id` = {} AND `account_id` = {}", groupId, accountId);
+	g_database().executeQuery(query);
+}
+
+void IOLoginData::addGuidVIPGroupEntry(uint8_t groupId, uint32_t accountId, uint32_t guid) {
+	std::string query = fmt::format("INSERT INTO `account_vipgrouplist` (`account_id`, `player_id`, `vipgroup_id`) VALUES ({}, {}, {})", accountId, guid, groupId);
+	if (!g_database().executeQuery(query)) {
+		g_logger().error("Failed to add guid VIP Group entry for account {}, player {} and group {}. QUERY: {}", accountId, guid, groupId, query.c_str());
+	}
+}
+
+void IOLoginData::removeGuidVIPGroupEntry(uint32_t accountId, uint32_t guid) {
+	std::string query = fmt::format("DELETE FROM `account_vipgrouplist` WHERE `account_id` = {} AND `player_id` = {}", accountId, guid);
+	g_database().executeQuery(query);
 }

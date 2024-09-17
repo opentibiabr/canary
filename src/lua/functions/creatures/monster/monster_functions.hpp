@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -56,11 +56,20 @@ private:
 		registerMethod(L, "Monster", "isForgeable", MonsterFunctions::luaMonsterIsForgeable);
 
 		registerMethod(L, "Monster", "getName", MonsterFunctions::luaMonsterGetName);
+		registerMethod(L, "Monster", "setName", MonsterFunctions::luaMonsterSetName);
 
 		registerMethod(L, "Monster", "hazard", MonsterFunctions::luaMonsterHazard);
 		registerMethod(L, "Monster", "hazardCrit", MonsterFunctions::luaMonsterHazardCrit);
 		registerMethod(L, "Monster", "hazardDodge", MonsterFunctions::luaMonsterHazardDodge);
 		registerMethod(L, "Monster", "hazardDamageBoost", MonsterFunctions::luaMonsterHazardDamageBoost);
+		registerMethod(L, "Monster", "hazardDefenseBoost", MonsterFunctions::luaMonsterHazardDefenseBoost);
+
+		registerMethod(L, "Monster", "addReflectElement", MonsterFunctions::luaMonsterAddReflectElement);
+		registerMethod(L, "Monster", "addDefense", MonsterFunctions::luaMonsterAddDefense);
+		registerMethod(L, "Monster", "getDefense", MonsterFunctions::luaMonsterGetDefense);
+
+		registerMethod(L, "Monster", "isDead", MonsterFunctions::luaMonsterIsDead);
+		registerMethod(L, "Monster", "immune", MonsterFunctions::luaMonsterImmune);
 
 		CharmFunctions::init(L);
 		LootFunctions::init(L);
@@ -115,11 +124,19 @@ private:
 	static int luaMonsterIsForgeable(lua_State* L);
 
 	static int luaMonsterGetName(lua_State* L);
+	static int luaMonsterSetName(lua_State* L);
 
 	static int luaMonsterHazard(lua_State* L);
 	static int luaMonsterHazardCrit(lua_State* L);
 	static int luaMonsterHazardDodge(lua_State* L);
 	static int luaMonsterHazardDamageBoost(lua_State* L);
+	static int luaMonsterHazardDefenseBoost(lua_State* L);
+	static int luaMonsterAddReflectElement(lua_State* L);
+	static int luaMonsterAddDefense(lua_State* L);
+	static int luaMonsterGetDefense(lua_State* L);
+
+	static int luaMonsterIsDead(lua_State* L);
+	static int luaMonsterImmune(lua_State* L);
 
 	friend class CreatureFunctions;
 };

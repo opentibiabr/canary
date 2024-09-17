@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -13,6 +13,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
+#include "lua/global/lua_timer_event_descr.hpp"
 
 bool LuaEnvironment::shuttingDown = false;
 
@@ -173,8 +174,8 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
 		callFunction(timerEventDesc.parameters.size());
 	} else {
 		g_logger().error("[LuaEnvironment::executeTimerEvent - Lua file {}] "
-						 "Call stack overflow. Too many lua script calls being nested",
-						 getLoadingFile());
+		                 "Call stack overflow. Too many lua script calls being nested",
+		                 getLoadingFile());
 	}
 
 	// free resources

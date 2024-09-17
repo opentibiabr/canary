@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -25,7 +25,7 @@ public:
 
 class NpcType : public SharedObject {
 	struct NpcInfo {
-		LuaScriptInterface* scriptInterface;
+		LuaScriptInterface* scriptInterface {};
 
 		Outfit_t outfit = {};
 		RespawnType respawnType = {};
@@ -66,7 +66,8 @@ class NpcType : public SharedObject {
 		std::vector<SoundEffect_t> soundVector;
 
 		std::vector<voiceBlock_t> voiceVector;
-		std::vector<std::string> scripts;
+		// We need to keep the order of scripts, so we use a set isntead of an unordered_set
+		std::set<std::string> scripts;
 		std::vector<ShopBlock> shopItemVector;
 
 		NpcsEvent_t eventType = NPCS_EVENT_NONE;

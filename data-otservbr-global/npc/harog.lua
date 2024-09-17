@@ -25,7 +25,7 @@ npcConfig.flags = {
 npcConfig.shop = {
 	{ name = "metal fitting", clientId = 9115, buy = 500 },
 	{ name = "nail", clientId = 953, sell = 10 },
-	{ name = "flask of rust remover", clientId = 9016, buy = 50, storageKey = Storage.HiddenCityOfBeregar.JusticeForAll, storageValue = 6 },
+	{ name = "flask of rust remover", clientId = 9016, buy = 50, storageKey = Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll, storageValue = 6 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -33,7 +33,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -23,7 +23,17 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.hpp"
 #include "items/items_classification.hpp"
-#include "protobuf/appearances.pb.h"
+#include "modal_window/modal_window.hpp"
+#include "enums/object_category.hpp"
+
+// Forward declaration for protobuf class
+namespace Canary {
+	namespace protobuf {
+		namespace appearances {
+			class Appearances;
+		} // namespace appearances
+	} // namespace protobuf
+} // namespace Canary
 
 class ServiceManager;
 class Creature;
@@ -37,6 +47,11 @@ class ItemClassification;
 class Guild;
 class Mounts;
 class Spectators;
+
+struct Achievement;
+struct HighscoreCategory;
+struct Badge;
+struct Title;
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
@@ -83,6 +98,8 @@ public:
 	void start(ServiceManager* manager);
 
 	void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
+
+	void logCyclopediaStats();
 
 	/**
 	 * Load the main map
@@ -152,7 +169,7 @@ public:
 
 	std::shared_ptr<Player> getPlayerByID(uint32_t id, bool allowOffline = false);
 
-	std::shared_ptr<Player> getPlayerByName(const std::string &s, bool allowOffline = false);
+	std::shared_ptr<Player> getPlayerByName(const std::string &s, bool allowOffline = false, bool isNewName = false);
 
 	std::shared_ptr<Player> getPlayerByGUID(const uint32_t &guid, bool allowOffline = false);
 
@@ -160,7 +177,7 @@ public:
 
 	ReturnValue getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player);
 
-	std::shared_ptr<Player> getPlayerByAccount(uint32_t acc);
+	std::vector<std::shared_ptr<Player>> getPlayersByAccount(std::shared_ptr<Account> acc, bool allowOffline = false);
 
 	bool internalPlaceCreature(std::shared_ptr<Creature> creature, const Position &pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
 
@@ -183,9 +200,6 @@ public:
 	}
 	uint32_t getPlayersRecord() const {
 		return playersRecord;
-	}
-	uint16_t getItemsPriceCount() const {
-		return itemsSaleCount;
 	}
 
 	void addItemsClassification(ItemClassification* itemsClassification) {
@@ -236,13 +250,14 @@ public:
 
 	std::shared_ptr<Item> transformItem(std::shared_ptr<Item> item, uint16_t newId, int32_t newCount = -1);
 
-	ReturnValue internalTeleport(std::shared_ptr<Thing> thing, const Position &newPos, bool pushMove = true, uint32_t flags = 0);
+	ReturnValue internalTeleport(const std::shared_ptr<Thing> &thing, const Position &newPos, bool pushMove = true, uint32_t flags = 0);
 
 	bool internalCreatureTurn(std::shared_ptr<Creature> creature, Direction dir);
 
 	bool internalCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, bool ghostMode, Spectators* spectatorsPtr = nullptr, const Position* pos = nullptr);
 
 	ObjectCategory_t getObjectCategory(const std::shared_ptr<Item> item);
+	ObjectCategory_t getObjectCategory(const ItemType &it);
 
 	uint64_t getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
 
@@ -262,18 +277,23 @@ public:
 	void playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, uint8_t button, uint8_t choice);
 	void playerForgeFuseItems(
 		uint32_t playerId,
-		uint16_t itemId,
+		ForgeAction_t actionType,
+		uint16_t firstItemId,
 		uint8_t tier,
+		uint16_t secondItemId,
 		bool usedCore,
-		bool reduceTierLoss
+		bool reduceTierLoss,
+		bool convergence
 	);
 	void playerForgeTransferItemTier(
 		uint32_t playerId,
+		ForgeAction_t actionType,
 		uint16_t donorItemId,
 		uint8_t tier,
-		uint16_t receiveItemId
+		uint16_t receiveItemId,
+		bool convergence
 	);
-	void playerForgeResourceConversion(uint32_t playerId, uint8_t action);
+	void playerForgeResourceConversion(uint32_t playerId, ForgeAction_t actionType);
 	void playerBrowseForgeHistory(uint32_t playerId, uint8_t page);
 
 	void playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId);
@@ -288,9 +308,12 @@ public:
 
 	void playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
 
+	void playerFriendSystemAction(std::shared_ptr<Player> player, uint8_t type, uint8_t titleId);
+
 	void playerCyclopediaCharacterInfo(std::shared_ptr<Player> player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
 	void playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
+	static std::string getSkillNameById(uint8_t &skill);
 
 	void updatePlayerSaleItems(uint32_t playerId);
 
@@ -352,12 +375,12 @@ public:
 	void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
 	void playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos, uint8_t stackPos);
 	void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
+	void playerQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse, const Position &position);
 	void playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, std::shared_ptr<Item> defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
 	void playerLootAllCorpses(std::shared_ptr<Player> player, const Position &pos, bool lootAllCorpses);
-	void playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos);
-	void playerClearLootContainer(uint32_t playerId, ObjectCategory_t category);
-	;
-	void playerOpenLootContainer(uint32_t playerId, ObjectCategory_t category);
+	void playerSetManagedContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos, bool isLootContainer);
+	void playerClearManagedContainer(uint32_t playerId, ObjectCategory_t category, bool isLootContainer);
+	void playerOpenManagedContainer(uint32_t playerId, ObjectCategory_t category, bool isLootContainer);
 	void playerSetQuickLootFallback(uint32_t playerId, bool fallback);
 	void playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t filter, const std::vector<uint16_t> itemIds);
 
@@ -370,7 +393,7 @@ public:
 
 	void playerRequestAddVip(uint32_t playerId, const std::string &name);
 	void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
-	void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);
+	void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify, std::vector<uint8_t> vipGroupsId);
 	void playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm);
 	void playerClearImbuement(uint32_t playerid, uint8_t slot);
 	void playerCloseImbuementWindow(uint32_t playerid);
@@ -399,12 +422,12 @@ public:
 
 	void playerOpenWheel(uint32_t playerId, uint32_t ownerId);
 	void playerSaveWheel(uint32_t playerId, NetworkMessage &msg);
+	void playerWheelGemAction(uint32_t playerId, NetworkMessage &msg);
 
 	void updatePlayerHelpers(std::shared_ptr<Player> player);
 
-	void cleanup();
 	void shutdown();
-	void dieSafely(std::string errorMsg);
+	void dieSafely(const std::string &errorMsg);
 	void addBestiaryList(uint16_t raceid, std::string name);
 	const std::map<uint16_t, std::string> &getBestiaryList() const {
 		return BestiaryList;
@@ -419,7 +442,7 @@ public:
 		return boostedCreature;
 	}
 
-	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
+	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight = SightLine_CheckSightLine, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor);
 
 	void changeSpeed(std::shared_ptr<Creature> creature, int32_t varSpeedDelta);
@@ -481,6 +504,7 @@ public:
 	void addPlayerMana(const std::shared_ptr<Player> target);
 	void addPlayerVocation(const std::shared_ptr<Player> target);
 	void addMagicEffect(const Position &pos, uint16_t effect);
+	static void addMagicEffect(const std::vector<std::shared_ptr<Player>> &players, const Position &pos, uint16_t effect);
 	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
 	void removeMagicEffect(const Position &pos, uint16_t effect);
 	static void removeMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
@@ -491,7 +515,7 @@ public:
 		return lightHour;
 	}
 
-	bool loadItemsPrice();
+	void loadItemsPrice();
 
 	void loadMotdNum();
 	void saveMotdNum() const;
@@ -557,10 +581,12 @@ public:
 	bool hasDistanceEffect(uint16_t effectId);
 
 	Groups groups;
+	Familiars familiars;
 	Map map;
 	Mounts mounts;
+	Outfits outfits;
 	Raids raids;
-	Canary::protobuf::appearances::Appearances appearances;
+	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 
 	auto getTilesToClean() const {
 		return tilesToClean;
@@ -669,7 +695,7 @@ public:
 	/**
 	 * @brief Attemtps to retrieve an item from the stash.
 	 *
-	 * @details This function leverages the internalCollectLootItems function with the OBJECTCATEGORY_STASHRETRIEVE category
+	 * @details This function leverages the internalCollectManagedItems function with the OBJECTCATEGORY_STASHRETRIEVE category
 	 * to determine if the player is capable of retrieving the stash items.
 	 *
 	 * @param player Pointer to the player object.
@@ -687,7 +713,45 @@ public:
 	void setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId);
 	void transferHouseItemsToDepot();
 
+	const std::unordered_map<uint8_t, std::string> &getHighscoreCategoriesName() const;
+
+	const std::vector<HighscoreCategory> &getHighscoreCategories() const;
+
+	void registerAchievement(uint16_t id, std::string name, std::string description, bool secret, uint8_t grade, uint8_t points);
+	Achievement getAchievementById(uint16_t id);
+	Achievement getAchievementByName(std::string name);
+	std::vector<Achievement> getSecretAchievements();
+	std::vector<Achievement> getPublicAchievements();
+	std::map<uint16_t, Achievement> getAchievements();
+
+	std::unordered_set<Badge> getBadges();
+	Badge getBadgeById(uint8_t id);
+	Badge getBadgeByName(const std::string &name);
+
+	std::unordered_set<Title> getTitles();
+	Title getTitleById(uint8_t id);
+	Title getTitleByName(const std::string &name);
+
+	const std::string &getSummaryKeyByType(uint8_t type);
+
+	const std::map<uint8_t, std::string> &getBlessingNames();
+	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();
+	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
+
 private:
+	std::map<uint16_t, Achievement> m_achievements;
+	std::map<std::string, uint16_t> m_achievementsNameToId;
+
+	std::unordered_set<Badge> m_badges;
+	std::unordered_set<Title> m_titles;
+
+	std::vector<HighscoreCategory> m_highscoreCategories;
+	std::unordered_map<uint8_t, std::string> m_highscoreCategoriesNames;
+
+	std::unordered_map<uint8_t, std::string> m_summaryCategories;
+	std::unordered_map<uint16_t, std::string> m_hirelingSkills;
+	std::unordered_map<uint16_t, std::string> m_hirelingOutfits;
+
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
 	std::unordered_set<uint32_t> fiendishMonsters;
 	std::unordered_set<uint32_t> influencedMonsters;
@@ -700,25 +764,18 @@ private:
 	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, std::string context) const;
 
 	/**
-	 * Player wants to loot a corpse
-	 * \param player Player pointer
-	 * \param corpse Container pointer to be looted
-	 */
-	void internalQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse);
-
-	/**
-	 * @brief Finds the container for loot based on the given parameters.
+	 * @brief Finds the managed container for loot or obtain based on the given parameters.
 	 *
 	 * @param player Pointer to the player object.
 	 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
 	 * @param category The category of the object.
 	 *
 	 * @note If it's enabled in config.lua to use the gold pouch to store any item, then the system will check whether the player has a loot pouch.
-	 * @note If the player does have one, the loot pouch will be used instead of the loot containers.
+	 * @note If the player does have one, the loot pouch will be used instead of the managed containers.
 	 *
-	 * @return Pointer to the loot container or nullptr if not found.
+	 * @return Pointer to the managed container or nullptr if not found.
 	 */
-	std::shared_ptr<Container> findLootContainer(std::shared_ptr<Player> player, bool &fallbackConsumed, ObjectCategory_t category);
+	std::shared_ptr<Container> findManagedContainer(std::shared_ptr<Player> player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer);
 
 	/**
 	 * @brief Finds the next available sub-container within a container.
@@ -764,14 +821,14 @@ private:
 	ReturnValue processLootItems(std::shared_ptr<Player> player, std::shared_ptr<Container> lootContainer, std::shared_ptr<Item> item, bool &fallbackConsumed);
 
 	/**
-	 * @brief Internally collects loot items from a given item and places them into the loot container.
+	 * @brief Internally collects loot or obtain items from a given item and places them into the managed container.
 	 *
 	 * @param player Pointer to the player object.
-	 * @param item Pointer to the item being looted.
+	 * @param item Pointer to the item being collected.
 	 * @param category Category of the item (default is OBJECTCATEGORY_DEFAULT).
 	 * @return Return value indicating success or error.
 	 */
-	ReturnValue internalCollectLootItems(std::shared_ptr<Player> player, std::shared_ptr<Item> item, ObjectCategory_t category = OBJECTCATEGORY_DEFAULT);
+	ReturnValue internalCollectManagedItems(std::shared_ptr<Player> player, std::shared_ptr<Item> item, ObjectCategory_t category = OBJECTCATEGORY_DEFAULT, bool isLootContainer = true);
 
 	/**
 	 * @brief Collects items from the reward chest.
@@ -791,7 +848,6 @@ private:
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
 	phmap::flat_hash_map<uint16_t, std::shared_ptr<Item>> uniqueItems;
 	phmap::parallel_flat_hash_map<uint32_t, std::string> m_playerNameCache;
-	std::map<uint32_t, uint32_t> stages;
 
 	/* Items stored from the lua scripts positions
 	 * For example: ActionFunctions::luaActionPosition
@@ -812,7 +868,7 @@ private:
 	size_t lastBucket = 0;
 	size_t lastImbuedBucket = 0;
 
-	WildcardTreeNode wildcardTree { false };
+	std::shared_ptr<WildcardTreeNode> wildcardTree;
 
 	std::map<uint32_t, std::shared_ptr<Npc>> npcs;
 	std::map<uint32_t, std::shared_ptr<Monster>> monsters;
@@ -860,7 +916,6 @@ private:
 	uint32_t motdNum = 0;
 
 	std::map<uint16_t, std::map<uint8_t, uint64_t>> itemsPriceMap;
-	uint16_t itemsSaleCount;
 
 	std::vector<ItemClassification*> itemsClassifications;
 

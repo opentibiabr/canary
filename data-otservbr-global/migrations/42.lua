@@ -1,3 +1,10 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	logger.info("Updating database to version 43 (fix guildwar_kills_unique)")
+
+	db.query([[
+		ALTER TABLE `guildwar_kills`
+		DROP INDEX `guildwar_kills_unique`
+	]])
+
+	return true
 end

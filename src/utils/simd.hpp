@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -13,7 +13,7 @@
 
 #if defined(__DISABLE_VECTORIZATION__)
 	// You might want to disable vectorization on some compilers
-	// it can just get buggy and the engine will crashes
+    // it can just get buggy and the engine will crashes
 	#undef __NEON__
 	#undef __ARM_NEON__
 	#undef __ARM_FEATURE_SIMD32

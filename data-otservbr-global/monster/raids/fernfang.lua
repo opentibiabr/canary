@@ -66,7 +66,7 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "You desacrated this place!", yell = false },
+	{ text = "You desecrated this place!", yell = false },
 	{ text = "Yoooohuuuu!", yell = false },
 	{ text = "I will cleanse this isle!", yell = false },
 	{ text = "Grrrrrrr", yell = false },

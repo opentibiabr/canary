@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -74,7 +74,6 @@ public:
 	void removeItemByUID(uint32_t uid);
 
 private:
-	using VariantVector = std::vector<const LuaVariant*>;
 	using StorageMap = std::map<uint32_t, int32_t>;
 	using DBResultMap = std::map<uint32_t, DBResult_ptr>;
 

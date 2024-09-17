@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -10,8 +10,14 @@
 #include "pch.hpp"
 
 #include "items/decay/decay.hpp"
+
+#include "lib/di/container.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+
+Decay &Decay::getInstance() {
+	return inject<Decay>();
+}
 
 void Decay::startDecay(std::shared_ptr<Item> item) {
 	if (!item) {
@@ -41,11 +47,15 @@ void Decay::startDecay(std::shared_ptr<Item> item) {
 
 		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
-			eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+			eventId = g_dispatcher().scheduleEvent(
+				std::max<int32_t>(SCHEDULER_MINTICKS, duration), [this] { checkDecay(); }, "Decay::checkDecay"
+			);
 		} else {
 			if (timestamp < decayMap.begin()->first) {
 				g_dispatcher().stopEvent(eventId);
-				eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+				eventId = g_dispatcher().scheduleEvent(
+					std::max<int32_t>(SCHEDULER_MINTICKS, duration), [this] { checkDecay(); }, "Decay::checkDecay"
+				);
 			}
 		}
 
@@ -132,7 +142,9 @@ void Decay::checkDecay() {
 	}
 
 	if (it != end) {
-		eventId = g_dispatcher().scheduleEvent(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this), "Decay::checkDecay");
+		eventId = g_dispatcher().scheduleEvent(
+			std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), [this] { checkDecay(); }, "Decay::checkDecay"
+		);
 	}
 }
 
@@ -144,8 +156,8 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 		auto player = item->getHoldingPlayer();
 		if (player) {
 			g_logger().error("[{}] - internalDecayItem failed to player {}, item id is same from transform equip/deequip, "
-							 " item id: {}, equip to id: '{}', deequip to id '{}'",
-							 __FUNCTION__, player->getName(), it.id, it.transformEquipTo, it.transformDeEquipTo);
+			                 " item id: {}, equip to id: '{}', deequip to id '{}'",
+			                 __FUNCTION__, player->getName(), it.id, it.transformEquipTo, it.transformDeEquipTo);
 		}
 		return;
 	}
@@ -155,9 +167,9 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 		if (player) {
 			bool needUpdateSkills = false;
 			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-				if (it.abilities && it.abilities->skills[i] != 0) {
+				if (it.abilities && item->getSkill(static_cast<skills_t>(i)) != 0) {
 					needUpdateSkills = true;
-					player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
+					player->setVarSkill(static_cast<skills_t>(i), -item->getSkill(static_cast<skills_t>(i)));
 				}
 			}
 
@@ -167,10 +179,10 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 
 			bool needUpdateStats = false;
 			for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-				if (it.abilities && it.abilities->stats[s] != 0) {
+				if (item->getStat(static_cast<stats_t>(s)) != 0) {
 					needUpdateStats = true;
 					needUpdateSkills = true;
-					player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
+					player->setVarStats(static_cast<stats_t>(s), -item->getStat(static_cast<stats_t>(s)));
 				}
 				if (it.abilities && it.abilities->statsPercent[s] != 0) {
 					needUpdateStats = true;
@@ -195,8 +207,8 @@ void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 		ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
 			g_logger().error("[Decay::internalDecayItem] - internalDecayItem failed, "
-							 "error code: {}, item id: {}",
-							 static_cast<uint32_t>(ret), item->getID());
+			                 "error code: {}, item id: {}",
+			                 static_cast<uint32_t>(ret), item->getID());
 		}
 	}
 }

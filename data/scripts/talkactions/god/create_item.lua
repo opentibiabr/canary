@@ -20,7 +20,7 @@ function createItem.onSay(player, words, param)
 	end
 
 	local charges = itemType:getCharges()
-	local count = tonumber(split[2])
+	local count = tonumber(split[2] or 1)
 	if count then
 		if itemType:isStackable() then
 			local mainContainer = player:getSlotItem(CONST_SLOT_BACKPACK)

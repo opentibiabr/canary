@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,8 +11,12 @@
 
 #include "items/functions/item/item_parse.hpp"
 #include "items/items.hpp"
+#include "items/weapons/weapons.hpp"
+#include "lua/creature/movement.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"
+
+#include <appearances.pb.h>
 
 Items::Items() = default;
 
@@ -21,6 +25,8 @@ void Items::clear() {
 	ladders.clear();
 	dummys.clear();
 	nameToItems.clear();
+	g_moveEvents().clear(true);
+	g_weapons().clear(true);
 }
 
 using LootTypeNames = phmap::flat_hash_map<std::string, ItemTypes_t>;
@@ -61,6 +67,47 @@ ItemTypes_t Items::getLootType(const std::string &strValue) {
 	return ITEM_TYPE_NONE;
 }
 
+const std::string Items::getAugmentNameByType(Augment_t augmentType) {
+	std::string augmentTypeName = magic_enum::enum_name(augmentType).data();
+	augmentTypeName = toStartCaseWithSpace(augmentTypeName);
+	if (!isAugmentWithoutValueDescription(augmentType)) {
+		toLowerCaseString(augmentTypeName);
+	}
+	return augmentTypeName;
+}
+
+std::string ItemType::parseAugmentDescription(bool inspect /*= false*/) const {
+	if (augments.empty()) {
+		return "";
+	}
+
+	std::vector<std::string> descriptions;
+	for (const auto &augment : augments) {
+		descriptions.push_back(getFormattedAugmentDescription(augment));
+	}
+
+	if (inspect) {
+		return fmt::format("{}.", fmt::join(descriptions.begin(), descriptions.end(), ", "));
+	} else {
+		return fmt::format("\nAugments: ({}).", fmt::join(descriptions.begin(), descriptions.end(), ", "));
+	}
+}
+
+std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const {
+	const std::string augmentName = Items::getAugmentNameByType(augmentInfo->type);
+	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
+	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");
+
+	char signal = augmentInfo->value > 0 ? '-' : '+';
+
+	if (Items::isAugmentWithoutValueDescription(augmentInfo->type)) {
+		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
+	} else if (augmentInfo->type == Augment_t::Cooldown) {
+		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
+	}
+	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
+}
+
 bool Items::reload() {
 	clear();
 	loadFromProtobuf();
@@ -76,8 +123,8 @@ void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
 	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__);
-	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
-		Appearance object = g_game().appearances.object(it);
+	for (uint32_t it = 0; it < g_game().m_appearancesPtr->object_size(); ++it) {
+		Appearance object = g_game().m_appearancesPtr->object(it);
 
 		// This scenario should never happen but on custom assets this can break the loader.
 		if (!object.has_flags()) {
@@ -166,7 +213,7 @@ void Items::loadFromProtobuf() {
 			iType.wrapable = true;
 		}
 		iType.multiUse = object.flags().multiuse();
-		iType.moveable = object.flags().unmove() == false;
+		iType.movable = object.flags().unmove() == false;
 		iType.canReadText = (object.flags().has_lenshelp() && object.flags().lenshelp().id() == 1112) || (object.flags().has_write() && object.flags().write().max_text_length() != 0) || (object.flags().has_write_once() && object.flags().write_once().max_text_length_once() != 0);
 		iType.canReadText = object.flags().has_write() || object.flags().has_write_once();
 		iType.isVertical = object.flags().has_hook() && object.flags().hook().direction() == HOOK_TYPE_SOUTH;
@@ -182,8 +229,7 @@ void Items::loadFromProtobuf() {
 		iType.isWrapKit = object.flags().wrapkit();
 
 		if (!iType.name.empty()) {
-			nameToItems.insert({ asLowerCaseString(iType.name),
-								 iType.id });
+			nameToItems.insert({ asLowerCaseString(iType.name), iType.id });
 		}
 	}
 
@@ -214,8 +260,8 @@ bool Items::loadFromXml() {
 		auto toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
 			g_logger().warn("[Items::loadFromXml] - "
-							"tag fromid: {} without toid",
-							fromIdAttribute.value());
+			                "tag fromid: {} without toid",
+			                fromIdAttribute.value());
 			continue;
 		}
 
@@ -256,19 +302,18 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 	}
 
 	if (std::string xmlName = itemNode.attribute("name").as_string();
-		!xmlName.empty() && itemType.name != xmlName) {
+	    !xmlName.empty() && itemType.name != xmlName) {
 		if (!itemType.name.empty()) {
 			if (auto it = std::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
 					return nameMapIt.second == id;
 				});
-				it != nameToItems.end()) {
+			    it != nameToItems.end()) {
 				nameToItems.erase(it);
 			}
 		}
 
 		itemType.name = xmlName;
-		nameToItems.insert({ asLowerCaseString(itemType.name),
-							 id });
+		nameToItems.insert({ asLowerCaseString(itemType.name), id });
 	}
 
 	itemType.loaded = true;

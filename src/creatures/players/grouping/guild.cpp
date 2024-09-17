@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,7 +14,7 @@
 
 void Guild::addMember(const std::shared_ptr<Player> &player) {
 	membersOnline.push_back(player);
-	for (auto member : getMembersOnline()) {
+	for (const auto &member : getMembersOnline()) {
 		g_game().updatePlayerHelpers(member);
 	}
 }

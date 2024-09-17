@@ -14,7 +14,6 @@ monster.outfit = {
 }
 
 monster.events = {
-	"LeidenHeal",
 	"CultsOfTibiaBossDeath",
 }
 

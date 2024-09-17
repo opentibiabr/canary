@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -191,11 +191,12 @@ int NetworkMessageFunctions::luaNetworkMessageAdd64(lua_State* L) {
 }
 
 int NetworkMessageFunctions::luaNetworkMessageAddString(lua_State* L) {
-	// networkMessage:addString(string)
+	// networkMessage:addString(string, function)
 	const std::string &string = getString(L, 2);
+	const std::string &function = getString(L, 3);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
-		message->addString(string);
+		message->addString(string, function);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -231,7 +232,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddDouble(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddItem(lua_State* L) {
 	// networkMessage:addItem(item, player)
-	const auto &item = getUserdataShared<Item>(L, 2);
+	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 2);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		lua_pushnil(L);
@@ -288,7 +289,7 @@ int NetworkMessageFunctions::luaNetworkMessageSendToPlayer(lua_State* L) {
 		return 1;
 	}
 
-	const auto &player = getPlayer(L, 2);
+	std::shared_ptr<Player> player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;

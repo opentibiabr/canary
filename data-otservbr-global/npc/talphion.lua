@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("CHESS? I DONT PLAY CHESS!", npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			elseif npcHandler:getTopic(playerId) == 3 then
-				npcHandler:say("A PATTERN IN THIS MESS?? HEY DON'T INSULT MY MACHINEHALL!", npc, creature)
+				npcHandler:say("A PATTERN IN THIS MESS?? HEY DON'T INSULT MY MACHINE HALL!", npc, creature)
 				npcHandler:setTopic(playerId, 4)
 			elseif npcHandler:getTopic(playerId) == 4 then
 				npcHandler:say("AH YES! I WORKED ON THE DRESS PATTERN FOR THOSE UNIFORMS. STAINLESS TROUSERES, STEAM DRIVEN BOOTS! ANOTHERMARVEL TO BEHOLD! I'LL SENT A COPY TO KEVIN IMEDIATELY!", npc, creature)
@@ -94,7 +94,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

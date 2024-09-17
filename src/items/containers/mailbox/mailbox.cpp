@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -138,5 +138,5 @@ bool Mailbox::getReceiver(std::shared_ptr<Item> item, std::string &name) const {
 }
 
 bool Mailbox::canSend(std::shared_ptr<Item> item) {
-	return item->getID() == ITEM_PARCEL || item->getID() == ITEM_LETTER;
+	return !item->hasOwner() && (item->getID() == ITEM_PARCEL || item->getID() == ITEM_LETTER);
 }

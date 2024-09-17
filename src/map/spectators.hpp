@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include "pch.hpp"
 #include "creatures/creature.hpp"
 
 class Player;
@@ -17,12 +16,10 @@ class Monster;
 class Npc;
 struct Position;
 
-using SpectatorList = std::vector<std::shared_ptr<Creature>>;
-
 struct SpectatorsCache {
 	struct FloorData {
-		std::optional<SpectatorList> floor;
-		std::optional<SpectatorList> multiFloor;
+		std::optional<CreatureVector> floor;
+		std::optional<CreatureVector> multiFloor;
 	};
 
 	int32_t minRangeX { 0 };
@@ -49,55 +46,38 @@ public:
 		requires std::is_base_of_v<Creature, T>
 	Spectators filter();
 
-	bool contains(const std::shared_ptr<Creature> &creature) {
-		return creatures.contains(creature);
+	Spectators insert(const std::shared_ptr<Creature> &creature);
+	Spectators insertAll(const CreatureVector &list);
+	Spectators join(const Spectators &anotherSpectators) {
+		return insertAll(anotherSpectators.creatures);
+	}
+
+	bool contains(const std::shared_ptr<Creature> &creature) const {
+		return std::ranges::find(creatures, creature) != creatures.end();
 	}
 
 	bool erase(const std::shared_ptr<Creature> &creature) {
-		return creatures.erase(creature);
-	}
-
-	template <class F>
-	bool erase_if(F fnc) {
-		return std::erase_if(creatures, std::move(fnc)) > 0;
-	}
-
-	Spectators insert(const std::shared_ptr<Creature> &creature) {
-		if (creature) {
-			creatures.emplace(creature);
-		}
-		return *this;
-	}
-
-	Spectators insertAll(const SpectatorList &list) {
-		if (!list.empty()) {
-			creatures.insertAll(list);
-		}
-		return *this;
-	}
-
-	Spectators join(Spectators &anotherSpectators) {
-		return insertAll(anotherSpectators.creatures.data());
+		return std::erase(creatures, creature) > 0;
 	}
 
 	bool empty() const noexcept {
 		return creatures.empty();
 	}
 
-	size_t size() noexcept {
+	size_t size() const noexcept {
 		return creatures.size();
 	}
 
-	auto begin() noexcept {
+	auto begin() const noexcept {
 		return creatures.begin();
 	}
 
-	auto end() noexcept {
+	auto end() const noexcept {
 		return creatures.end();
 	}
 
-	const auto &data() noexcept {
-		return creatures.data();
+	const auto &data() const noexcept {
+		return creatures;
 	}
 
 private:
@@ -106,7 +86,7 @@ private:
 	Spectators find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
 	bool checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY);
 
-	stdext::vector_set<std::shared_ptr<Creature>> creatures;
+	CreatureVector creatures;
 };
 
 template <typename T>

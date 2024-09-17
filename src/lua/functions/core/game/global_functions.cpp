@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -16,8 +16,10 @@
 #include "lua/functions/core/game/global_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
+#include "lua/global/globalevent.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "lua/global/lua_timer_event_descr.hpp"
 
 class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
@@ -93,24 +95,6 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	return 1;
 }
 
-int GlobalFunctions::luaDoSetCreatureLight(lua_State* L) {
-	// doSetCreatureLight(cid, lightLevel, lightColor, time)
-	std::shared_ptr<Creature> creature = getCreature(L, 1);
-	if (!creature) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		pushBoolean(L, false);
-		return 1;
-	}
-
-	uint16_t level = getNumber<uint16_t>(L, 2);
-	uint16_t color = getNumber<uint16_t>(L, 3);
-	uint32_t time = getNumber<uint32_t>(L, 4);
-	std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_LIGHT, time, level | (color << 8));
-	creature->addCondition(condition);
-	pushBoolean(L, true);
-	return 1;
-}
-
 int GlobalFunctions::luaIsValidUID(lua_State* L) {
 	// isValidUID(uid)
 	pushBoolean(L, getScriptEnv()->getThingByUID(getNumber<uint32_t>(L, -1)) != nullptr);
@@ -124,8 +108,8 @@ int GlobalFunctions::luaIsDepot(lua_State* L) {
 	return 1;
 }
 
-int GlobalFunctions::luaIsMoveable(lua_State* L) {
-	// isMoveable(uid)
+int GlobalFunctions::luaIsMovable(lua_State* L) {
+	// isMovable(uid)
 	// isMovable(uid)
 	std::shared_ptr<Thing> thing = getScriptEnv()->getThingByUID(getNumber<uint32_t>(L, -1));
 	pushBoolean(L, thing && thing->isPushable());
@@ -234,7 +218,7 @@ int GlobalFunctions::luaGetWorldLight(lua_State* L) {
 
 int GlobalFunctions::luaGetWorldUpTime(lua_State* L) {
 	// getWorldUpTime()
-	uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
+	uint64_t uptime = (OTSYS_TIME(true) - ProtocolStatus::start) / 1000;
 	lua_pushnumber(L, uptime);
 	return 1;
 }
@@ -460,7 +444,7 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 	if (area || areaId == 0) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint16_t>(L, 5);
-		params.conditionList.emplace_front(condition);
+		params.conditionList.emplace_back(condition);
 		Combat::doCombatCondition(creature, getPosition(L, 2), area, params);
 		pushBoolean(L, true);
 	} else {
@@ -495,7 +479,7 @@ int GlobalFunctions::luaDoTargetCombatCondition(lua_State* L) {
 
 	CombatParams params;
 	params.impactEffect = getNumber<uint16_t>(L, 4);
-	params.conditionList.emplace_front(condition->clone());
+	params.conditionList.emplace_back(condition->clone());
 	Combat::doCombatCondition(creature, target, params);
 	pushBoolean(L, true);
 	return 1;
@@ -681,7 +665,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	auto &lastTimerEventId = g_luaEnvironment().lastEventTimerId;
 	eventDesc.eventId = g_dispatcher().scheduleEvent(
 		delay,
-		std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment(), lastTimerEventId),
+		[lastTimerEventId] { g_luaEnvironment().executeTimerEvent(lastTimerEventId); },
 		"LuaEnvironment::executeTimerEvent"
 	);
 
@@ -723,13 +707,14 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 }
 
 int GlobalFunctions::luaSaveServer(lua_State* L) {
+	g_globalEvents().save();
 	g_saveManager().scheduleAll();
 	pushBoolean(L, true);
 	return 1;
 }
 
 int GlobalFunctions::luaCleanMap(lua_State* L) {
-	lua_pushnumber(L, Map::clean());
+	lua_pushnumber(L, g_game().map.clean());
 	return 1;
 }
 

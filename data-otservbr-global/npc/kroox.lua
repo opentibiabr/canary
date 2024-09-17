@@ -58,16 +58,16 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "sam sent me") or MsgContains(message, "sam send me") then
-		if player:getStorageValue(Storage.SamsOldBackpack) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc) == 1 then
 			npcHandler:say({
 				"Oh, so its you, he wrote me about? Sadly I have no dwarven armor in stock. But I give you the permission to retrive one from the mines. ...",
 				"The problem is, some giant spiders made the tunnels where the storage is their new home. Good luck.",
 			}, npc, creature)
-			player:setStorageValue(Storage.SamsOldBackpack, 2)
-			player:setStorageValue(Storage.SamsOldBackpackDoor, 1)
+			player:setStorageValue(Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc, 2)
+			player:setStorageValue(Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackDoor, 1)
 		end
-	elseif MsgContains(message, "measurements") then
-		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and player:getStorageValue(Storage.Postman.MeasurementsKroox) ~= 1 then
+	elseif message == "lokurs measurements" then
+		if player:getStorageValue(Storage.Postman.Mission07) >= 7 and player:getStorageValue(Storage.Postman.MeasurementsKroox) ~= 1 then
 			npcHandler:say("Hm, well I guess its ok to tell you ... <tells you about Lokurs measurements> ", npc, creature)
 			player:setStorageValue(Storage.Postman.Mission07, player:getStorageValue(Storage.Postman.Mission07) + 1)
 			player:setStorageValue(Storage.Postman.MeasurementsKroox, 1)
@@ -79,6 +79,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, "Welcome to Kroox Quality Armor, |PLAYERNAME|! Wanna take a look, ask me for a trade.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
@@ -128,7 +129,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -50,7 +50,7 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 				protocol->parsePacket(msg);
 				protocolConnection->resumeWork();
 			}
-		} }, __FUNCTION__);
+		} }, "Protocol::sendRecvMessageCallback");
 
 	return true;
 }
@@ -78,7 +78,7 @@ bool Protocol::onRecvMessage(NetworkMessage &msg) {
 		} else {
 			uint32_t checksum;
 			if (int32_t len = msg.getLength() - msg.getBufferPosition();
-				len > 0) {
+			    len > 0) {
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition(), len);
 			} else {
 				checksum = 0;

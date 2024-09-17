@@ -26,12 +26,51 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = "Health potions to refill your health in combat!" },
-	{ text = "Potions! Wand! Runes! Get them here!" },
+	{ text = "That's the spirit!" },
+	{ text = "Potions! Wands! Runes! Get them here!" },
+	{ text = "You levelled up but your wand is old? Come and buy a new one here!" },
+	{ text = "Ran out of mana or a little kablooie? Come to me to resupply!" },
+	{ text = "Low on magic and need a little extra? Get yourself a rune!" },
 	{ text = "Pack of monsters give you trouble? Throw an area rune at them!" },
+	{ text = "Health potions to refill your health in combat!" },
+	{ text = "Taking back empty potion flasks! Get your deposit back here!" },
 	{ text = "Careful with that! That's a highly reactive potion you have there!" },
-	{ text = "Run out of mana or a little kablooie? Come to me to resupply!" },
+	{ text = "Mana potions to refill your magic power!" },
 }
+
+local itemsTable = {
+	["potions"] = {
+		{ itemName = "health potion", clientId = 266, buy = 50 },
+		{ itemName = "mana potion", clientId = 268, buy = 56 },
+		{ itemName = "small health potion", clientId = 7876, buy = 20 },
+	},
+	["runes"] = {
+		{ itemName = "blank rune", clientId = 3147, buy = 10 },
+		{ itemName = "cure poison rune", clientId = 3153, buy = 65 },
+		{ itemName = "destroy field rune", clientId = 3148, buy = 15 },
+		{ itemName = "energy field rune", clientId = 3164, buy = 38 },
+		{ itemName = "fire field rune", clientId = 3188, buy = 28 },
+		{ itemName = "intense healing rune", clientId = 3152, buy = 95 },
+		{ itemName = "light stone shower rune", clientId = 21351, buy = 25 },
+		{ itemName = "lightest missile rune", clientId = 21352, buy = 20 },
+		{ itemName = "poison field rune", clientId = 3172, buy = 21 },
+	},
+	["wands"] = {
+		{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
+		{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },
+		{ itemName = "snakebite rod", clientId = 3066, buy = 500 },
+		{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
+		{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
+		{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
+	},
+}
+
+npcConfig.shop = {}
+for _, categoryTable in pairs(itemsTable) do
+	for _, itemTable in ipairs(categoryTable) do
+		table.insert(npcConfig.shop, itemTable)
+	end
+end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -123,6 +162,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
+	local formattedCategoryNames = {}
+	for categoryName, _ in pairs(itemsTable) do
+		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
+	end
+
+	local categoryTable = itemsTable[message:lower()]
 	if MsgContains(message, "dawnport") then
 		npcHandler:say({
 			"Small and deceptively friendly-looking island. Well, I used to study the plants and herbs here for my potions.",
@@ -145,48 +190,31 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Anyway, whatever he was before he joined, Tybald now fits the bill of the legendary hero. \z
 				He even has a crush on lady Oressa. Cute. <chuckles>",
 		}, npc, creature, 200)
+	elseif categoryTable then
+		npcHandler:say("Take your pick!", npc, player)
+		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
 end
 
+npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(
 	MESSAGE_GREET,
 	"Hi there, fellow adventurer. \z
-	What's your need? Say {trade} and we'll soon get you fixed up. Or ask me about potions, wands, or runes."
+	What's your need? Say {trade} and we'll soon get you fixed up. Or ask me about {potions}, {wands}, or {runes}."
 )
 npcHandler:setMessage(MESSAGE_FAREWELL, "Use your runes wisely!")
-
-npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Use your runes wisely!")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Take your pick! Or maybe you want to look only at {potions}, {wands} or {runes}?")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "blank rune", clientId = 3147, buy = 10 },
-	{ itemName = "cure poison rune", clientId = 3153, buy = 65 },
-	{ itemName = "destroy field rune", clientId = 3148, buy = 15 },
-	{ itemName = "energy field rune", clientId = 3164, buy = 38 },
-	{ itemName = "fire field rune", clientId = 3188, buy = 28 },
-	{ itemName = "health potion", clientId = 266, buy = 50 },
-	{ itemName = "intense healing rune", clientId = 3152, buy = 95 },
-	{ itemName = "light stone shower rune", clientId = 21351, buy = 25 },
-	{ itemName = "lightest missile rune", clientId = 21352, buy = 20 },
-	{ itemName = "mana potion", clientId = 268, buy = 56 },
-	{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
-	{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },
-	{ itemName = "poison field rune", clientId = 3172, buy = 21 },
-	{ itemName = "small health potion", clientId = 7876, buy = 20 },
-	{ itemName = "snakebite rod", clientId = 3066, buy = 500 },
-	{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
-	{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
-	{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
-}
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

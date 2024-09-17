@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -105,10 +105,10 @@ public:
 	void reloadPrices();
 
 	std::shared_ptr<PartyAnalyzer> getPlayerPartyAnalyzerStruct(uint32_t playerId) const {
-		if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const std::shared_ptr<PartyAnalyzer> preyIt) {
+		if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const std::shared_ptr<PartyAnalyzer> &preyIt) {
 				return preyIt->id == playerId;
 			});
-			it != membersData.end()) {
+		    it != membersData.end()) {
 			return *it;
 		}
 
@@ -133,6 +133,7 @@ private:
 	uint32_t getLowestLevel();
 	uint32_t getMinLevel();
 	uint32_t getMaxLevel();
+	float shareRangeMultiplier() const;
 
 	std::map<uint32_t, int64_t> ticksMap;
 

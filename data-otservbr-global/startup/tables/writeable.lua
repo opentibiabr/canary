@@ -855,9 +855,66 @@ Not mine!
 		itemPos = { x = 33044, y = 32067, z = 12 },
 		text = "DO NOT ENTER!",
 	},
-	[16] = {
-		itemId = 12783,
-		itemPos = { x = 32205, y = 32883, z = 7 },
-		text = "DANGER. Quara sighted below. Experienced adventurers only! Do not swim into a water channel unless you are prepared to meet your death!",
+	-- Barbarian Arena Quest
+	[27] = {
+		itemId = 2015,
+		itemPos = { x = 32221, y = 31088, z = 7 },
+		text = "Exit",
+	},
+	-- The Ancient Tombs Quest
+	[17] = {
+		itemId = 2023,
+		itemPos = { x = 33071, y = 32637, z = 15 },
+		text = "endless",
+	},
+	[18] = {
+		itemId = 2023,
+		itemPos = { x = 33074, y = 32633, z = 15 },
+		text = "pale-faced",
+	},
+	[19] = {
+		itemId = 2023,
+		itemPos = { x = 33071, y = 32629, z = 15 },
+		text = "deceased",
+	},
+	[20] = {
+		itemId = 2023,
+		itemPos = { x = 33077, y = 32625, z = 15 },
+		text = "unholy",
+	},
+	[21] = {
+		itemId = 2023,
+		itemPos = { x = 33077, y = 32621, z = 15 },
+		text = "doomed",
+	},
+	[22] = {
+		itemId = 2023,
+		itemPos = { x = 33071, y = 32617, z = 15 },
+		text = "righteous",
+	},
+	[23] = {
+		itemId = 2023,
+		itemPos = { x = 33077, y = 32613, z = 15 },
+		text = "sharpened",
+	},
+	[24] = {
+		itemId = 2023,
+		itemPos = { x = 33071, y = 32609, z = 15 },
+		text = "mortal",
+	},
+	-- Dreamers Challenge Quest
+	[25] = {
+		itemId = 1982,
+		itemPos = { x = 32761, y = 32290, z = 14 },
+		text = "Pull us and let the fun begin!",
+	},
+	-- The Pits of Inferno Quest
+	[26] = {
+		itemId = 2015,
+		itemPos = { x = 32855, y = 32334, z = 12 },
+		text = [[
+Emergency Exit
+
+Will only work if the way is blocked]],
 	},
 }

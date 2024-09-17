@@ -44,16 +44,17 @@ function onTargetTile(creature, pos)
 		end
 	end
 	if #creatureTable ~= nil and #creatureTable > 0 then
+		local min = 4000
+		local max = 6000
 		for r = 1, #creatureTable do
 			if creatureTable[r] ~= creature then
-				local min = 4000
-				local max = 6000
-				local player = Player(creatureTable[r])
-
-				if isPlayer(creatureTable[r]) == true and table.contains(vocation, player:getVocation():getBaseId()) then
-					doTargetCombatHealth(creature, creatureTable[r], COMBAT_FIREDAMAGE, -min, -max, CONST_ME_NONE)
-				elseif isMonster(creatureTable[r]) == true then
-					doTargetCombatHealth(creature, creatureTable[r], COMBAT_FIREDAMAGE, -min, -max, CONST_ME_NONE)
+				local creatureInTable = Creature(creatureTable[r])
+				if creatureInTable then
+					if creatureInTable:isPlayer() == true and table.contains(vocation, creatureInTable:getVocation():getBaseId()) then
+						doTargetCombatHealth(creature, creatureTable[r], COMBAT_FIREDAMAGE, -min, -max, CONST_ME_NONE)
+					elseif creatureInTable:isMonster() == true then
+						doTargetCombatHealth(creature, creatureTable[r], COMBAT_FIREDAMAGE, -min, -max, CONST_ME_NONE)
+					end
 				end
 			end
 		end

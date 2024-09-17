@@ -60,8 +60,8 @@ local function greetCallback(npc, creature)
 	local playerId = creature:getId()
 	local player = Player(creature)
 
-	if player:getStorageValue(Storage.SecretService.AVINMission01) == 1 and player:getItemCount(402) > 0 then
-		player:setStorageValue(Storage.SecretService.AVINMission01, 2)
+	if player:getStorageValue(Storage.Quest.U8_1.SecretService.AVINMission01) == 1 and player:getItemCount(402) > 0 then
+		player:setStorageValue(Storage.Quest.U8_1.SecretService.AVINMission01, 2)
 		npcHandler:say("I don't like the way you look. Help me boys!", npc, creature)
 		for i = 1, 2 do
 			Game.createMonster("Bandit", npc:getPosition())
@@ -82,14 +82,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "letter") then
-		if player:getStorageValue(Storage.SecretService.AVINMission01) == 2 then
+		if player:getStorageValue(Storage.Quest.U8_1.SecretService.AVINMission01) == 2 then
 			npcHandler:say("You have a letter for me?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:removeItem(402, 1) then
-				player:setStorageValue(Storage.SecretService.AVINMission01, 3)
+				player:setStorageValue(Storage.Quest.U8_1.SecretService.AVINMission01, 3)
 				npcHandler:say("Oh well. I guess I am still on the hook. Tell your 'uncle' I will proceed as he suggested.", npc, creature)
 			else
 				npcHandler:say("You don't have any letter!", npc, creature)
@@ -166,7 +166,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

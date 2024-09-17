@@ -65,7 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "package for rashid") then
-		if player:getStorageValue(Storage.TravellingTrader.Mission02) >= 1 and player:getStorageValue(Storage.TravellingTrader.Mission02) < 3 then
+		if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02) >= 1 and player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02) < 3 then
 			npcHandler:say({
 				"Oooh, damn, I completely forgot about that. I was supposed to pick it up from the Outlaw Camp. ...",
 				"I can't leave my shop here right now, please go and talk to Snake Eye about that package... I promise he won't make any trouble. ...",
@@ -76,7 +76,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Thank you, I appreciate it. Don't forget to mention the package to Snake.", npc, creature)
-			player:setStorageValue(Storage.TravellingTrader.Mission02, player:getStorageValue(Storage.TravellingTrader.Mission02) + 1)
+			player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02, player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02) + 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
@@ -207,7 +207,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

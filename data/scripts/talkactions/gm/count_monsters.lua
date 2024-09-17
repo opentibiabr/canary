@@ -24,13 +24,18 @@ function count_monsters.onSay(player, words, param)
 		end
 	end
 
-	writing_file:write("--- Total of monsters on server ---\n")
-
+	writing_file:write("--- Monsters on Server ---\n")
+	local total = 0
 	for monster, count in pairsByKeys(monsters) do
 		writing_file:write(monster .. " - " .. count .. "\n")
+		total = total + count
 	end
+	local outputMsg = "Total of monsters on server: " .. total
+	writing_file:write("\n" .. outputMsg .. "\n------------------------")
 
 	writing_file:close()
+
+	logger.info(outputMsg)
 
 	return true
 end

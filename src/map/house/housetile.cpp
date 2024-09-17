@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -95,9 +95,9 @@ std::shared_ptr<Cylinder> HouseTile::queryDestination(int32_t &index, const std:
 				std::shared_ptr<Tile> destTile = g_game().map.getTile(entryPos);
 				if (!destTile) {
 					g_logger().error("[HouseTile::queryDestination] - "
-									 "Entry not correct for house name: {} "
-									 "with id: {} not found tile: {}",
-									 house->getName(), house->getId(), entryPos.toString());
+					                 "Entry not correct for house name: {} "
+					                 "with id: {} not found tile: {}",
+					                 house->getName(), house->getId(), entryPos.toString());
 					destTile = g_game().map.getTile(player->getTemplePosition());
 					if (!destTile) {
 						destTile = Tile::nullptr_tile;
@@ -125,7 +125,7 @@ ReturnValue HouseTile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t
 		if (house && !house->isInvited(actorPlayer)) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		} else if (house && house->getHouseAccessLevel(actorPlayer) == HOUSE_GUEST) {
-			return RETURNVALUE_NOTMOVEABLE;
+			return RETURNVALUE_NOTMOVABLE;
 		}
 	}
 	return Tile::queryRemove(thing, count, flags);

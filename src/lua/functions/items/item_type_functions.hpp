@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -25,6 +25,7 @@ public:
 		registerMethod(L, "ItemType", "isMovable", ItemTypeFunctions::luaItemTypeIsMovable);
 		registerMethod(L, "ItemType", "isRune", ItemTypeFunctions::luaItemTypeIsRune);
 		registerMethod(L, "ItemType", "isStackable", ItemTypeFunctions::luaItemTypeIsStackable);
+		registerMethod(L, "ItemType", "isStowable", ItemTypeFunctions::luaItemTypeIsStowable);
 		registerMethod(L, "ItemType", "isReadable", ItemTypeFunctions::luaItemTypeIsReadable);
 		registerMethod(L, "ItemType", "isWritable", ItemTypeFunctions::luaItemTypeIsWritable);
 		registerMethod(L, "ItemType", "isBlocking", ItemTypeFunctions::luaItemTypeIsBlocking);
@@ -91,6 +92,7 @@ private:
 	static int luaItemTypeIsMovable(lua_State* L);
 	static int luaItemTypeIsRune(lua_State* L);
 	static int luaItemTypeIsStackable(lua_State* L);
+	static int luaItemTypeIsStowable(lua_State* L);
 	static int luaItemTypeIsReadable(lua_State* L);
 	static int luaItemTypeIsWritable(lua_State* L);
 	static int luaItemTypeIsBlocking(lua_State* L);

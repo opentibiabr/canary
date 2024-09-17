@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -28,6 +28,7 @@ public:
 		registerMethod(L, "Game", "loadMap", GameFunctions::luaGameLoadMap);
 		registerMethod(L, "Game", "loadMapChunk", GameFunctions::luaGameloadMapChunk);
 
+		registerMethod(L, "Game", "getExperienceForLevel", GameFunctions::luaGameGetExperienceForLevel);
 		registerMethod(L, "Game", "getMonsterCount", GameFunctions::luaGameGetMonsterCount);
 		registerMethod(L, "Game", "getPlayerCount", GameFunctions::luaGameGetPlayerCount);
 		registerMethod(L, "Game", "getNpcCount", GameFunctions::luaGameGetNpcCount);
@@ -81,6 +82,13 @@ public:
 
 		registerMethod(L, "Game", "getTalkActions", GameFunctions::luaGameGetTalkActions);
 		registerMethod(L, "Game", "getEventCallbacks", GameFunctions::luaGameGetEventCallbacks);
+
+		registerMethod(L, "Game", "registerAchievement", GameFunctions::luaGameRegisterAchievement);
+		registerMethod(L, "Game", "getAchievementInfoById", GameFunctions::luaGameGetAchievementInfoById);
+		registerMethod(L, "Game", "getAchievementInfoByName", GameFunctions::luaGameGetAchievementInfoByName);
+		registerMethod(L, "Game", "getSecretAchievements", GameFunctions::luaGameGetSecretAchievements);
+		registerMethod(L, "Game", "getPublicAchievements", GameFunctions::luaGameGetPublicAchievements);
+		registerMethod(L, "Game", "getAchievements", GameFunctions::luaGameGetAchievements);
 	}
 
 private:
@@ -96,6 +104,7 @@ private:
 	static int luaGameLoadMap(lua_State* L);
 	static int luaGameloadMapChunk(lua_State* L);
 
+	static int luaGameGetExperienceForLevel(lua_State* L);
 	static int luaGameGetMonsterCount(lua_State* L);
 	static int luaGameGetPlayerCount(lua_State* L);
 	static int luaGameGetNpcCount(lua_State* L);
@@ -150,4 +159,11 @@ private:
 
 	static int luaGameGetTalkActions(lua_State* L);
 	static int luaGameGetEventCallbacks(lua_State* L);
+
+	static int luaGameRegisterAchievement(lua_State* L);
+	static int luaGameGetAchievementInfoById(lua_State* L);
+	static int luaGameGetAchievementInfoByName(lua_State* L);
+	static int luaGameGetSecretAchievements(lua_State* L);
+	static int luaGameGetPublicAchievements(lua_State* L);
+	static int luaGameGetAchievements(lua_State* L);
 };

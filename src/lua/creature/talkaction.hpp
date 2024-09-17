@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -36,6 +36,14 @@ public:
 		}
 	}
 
+	const std::string &getDescription() const {
+		return m_description;
+	}
+
+	void setDescription(const std::string &stringDescription) {
+		m_description = stringDescription;
+	}
+
 	std::string getSeparator() const {
 		return separator;
 	}
@@ -47,13 +55,8 @@ public:
 	bool executeSay(std::shared_ptr<Player> player, const std::string &words, const std::string &param, SpeakClasses type) const;
 	//
 
-	void setGroupType(account::GroupType newGroupType) {
-		m_groupType = newGroupType;
-	}
-
-	const account::GroupType &getGroupType() const {
-		return m_groupType;
-	}
+	void setGroupType(uint8_t newGroupType);
+	const uint8_t &getGroupType() const;
 
 private:
 	std::string getScriptTypeName() const override {
@@ -61,8 +64,9 @@ private:
 	}
 
 	std::string m_word;
+	std::string m_description;
 	std::string separator = "\"";
-	account::GroupType m_groupType = account::GROUP_TYPE_NONE;
+	uint8_t m_groupType = 0;
 };
 
 class TalkActions final : public Scripts {

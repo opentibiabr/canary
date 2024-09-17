@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -150,6 +150,14 @@ public:
 		moveLocked = locked;
 	}
 
+	bool isDirectionLocked() const {
+		return directionLocked;
+	}
+
+	void setDirectionLocked(bool locked) {
+		directionLocked = locked;
+	}
+
 	int32_t getThrowRange() const override final {
 		return 1;
 	}
@@ -201,19 +209,19 @@ public:
 		return mana;
 	}
 
-	uint16_t getManaShield() const {
+	uint32_t getManaShield() const {
 		return manaShield;
 	}
 
-	void setManaShield(uint16_t value) {
+	void setManaShield(uint32_t value) {
 		manaShield = value;
 	}
 
-	uint16_t getMaxManaShield() const {
+	uint32_t getMaxManaShield() const {
 		return maxManaShield;
 	}
 
-	void setMaxManaShield(uint16_t value) {
+	void setMaxManaShield(uint32_t value) {
 		maxManaShield = value;
 	}
 
@@ -247,6 +255,10 @@ public:
 		return creatureIcons.at(key);
 	}
 
+	bool hasIcon(const std::string &key) const {
+		return creatureIcons.contains(key);
+	}
+
 	void setIcon(const std::string &key, CreatureIcon icon) {
 		creatureIcons[key] = icon;
 		iconChanged();
@@ -272,6 +284,10 @@ public:
 	}
 	const Outfit_t getDefaultOutfit() const {
 		return defaultOutfit;
+	}
+	bool isWearingSupportOutfit() const {
+		auto outfit = currentOutfit.lookType;
+		return outfit == 75 || outfit == 266 || outfit == 302;
 	}
 	bool isInvisible() const;
 	ZoneType_t getZoneType() {
@@ -380,8 +396,8 @@ public:
 		return SPEECHBUBBLE_NONE;
 	}
 
-	bool addCondition(std::shared_ptr<Condition> condition);
-	bool addCombatCondition(std::shared_ptr<Condition> condition);
+	bool addCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
+	bool addCombatCondition(std::shared_ptr<Condition> condition, bool attackerPlayer = false);
 	void removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force = false);
 	void removeCondition(ConditionType_t type);
 	void removeCondition(std::shared_ptr<Condition> condition);
@@ -392,13 +408,13 @@ public:
 	void executeConditions(uint32_t interval);
 	bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
 
-	virtual bool isImmune(CombatType_t type) const {
+	virtual bool isImmune([[maybe_unused]] CombatType_t type) const {
 		return false;
 	}
-	virtual bool isImmune(ConditionType_t type) const {
+	virtual bool isImmune([[maybe_unused]] ConditionType_t type) const {
 		return false;
 	}
-	virtual bool isSuppress(ConditionType_t type) const {
+	virtual bool isSuppress([[maybe_unused]] ConditionType_t type, [[maybe_unused]] bool attackerPlayer) const {
 		return false;
 	};
 
@@ -416,7 +432,7 @@ public:
 	virtual void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage);
 	virtual void drainMana(std::shared_ptr<Creature> attacker, int32_t manaLoss);
 
-	virtual bool challengeCreature(std::shared_ptr<Creature>, int targetChangeCooldown) {
+	virtual bool challengeCreature(std::shared_ptr<Creature>, [[maybe_unused]] int targetChangeCooldown) {
 		return false;
 	}
 
@@ -440,15 +456,16 @@ public:
 	 * @deprecated -- This is here to trigger the deprecated onKill events in lua
 	 */
 	bool deprecatedOnKilledCreature(std::shared_ptr<Creature> target, bool lastHit);
-	virtual bool onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit) {
+	virtual bool onKilledPlayer([[maybe_unused]] const std::shared_ptr<Player> &target, [[maybe_unused]] bool lastHit) {
 		return false;
 	};
-	virtual bool onKilledMonster(const std::shared_ptr<Monster> &target) {
+	virtual bool onKilledMonster([[maybe_unused]] const std::shared_ptr<Monster> &target) {
 		return false;
 	};
 	virtual void onGainExperience(uint64_t gainExp, std::shared_ptr<Creature> target);
 	virtual void onAttackedCreatureBlockHit(BlockType_t) { }
 	virtual void onBlockHit() { }
+	virtual void onTakeDamage(std::shared_ptr<Creature>, int32_t) { }
 	virtual void onChangeZone(ZoneType_t zone);
 	virtual void onAttackedCreatureChangeZone(ZoneType_t zone);
 	virtual void onIdleStatus();
@@ -571,8 +588,8 @@ public:
 
 	double getDamageRatio(std::shared_ptr<Creature> attacker) const;
 
-	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, const FindPathParams &fpp);
-	bool getPathTo(const Position &targetPos, stdext::arraylist<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
+	bool getPathTo(const Position &targetPos, std::vector<Direction> &dirList, const FindPathParams &fpp);
+	bool getPathTo(const Position &targetPos, std::vector<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7);
 
 	struct CountBlock_t {
 		int32_t total;
@@ -596,7 +613,7 @@ public:
 	 * @param useCharges Indicates whether charges should be considered.
 	 * @return The reflection percentage for the specified combat type.
 	 */
-	virtual int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
+	virtual double_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
 
 	/**
 	 * @brief Retrieves the flat reflection value for a given combat type.
@@ -694,6 +711,10 @@ protected:
 		return false;
 	}
 
+	virtual bool isDead() const {
+		return false;
+	}
+
 	static constexpr int32_t mapWalkWidth = MAP_MAX_VIEW_PORT_X * 2 + 1;
 	static constexpr int32_t mapWalkHeight = MAP_MAX_VIEW_PORT_Y * 2 + 1;
 	static constexpr int32_t maxWalkCacheWidth = (mapWalkWidth - 1) / 2;
@@ -707,7 +728,7 @@ protected:
 	CreatureEventList eventsList;
 	ConditionList conditions;
 
-	std::deque<Direction> listWalkDir;
+	std::vector<Direction> listWalkDir;
 
 	std::weak_ptr<Tile> m_tile;
 	std::weak_ptr<Creature> m_attackedCreature;
@@ -773,6 +794,7 @@ protected:
 	bool floorChange = false;
 	bool canUseDefense = true;
 	bool moveLocked = false;
+	bool directionLocked = false;
 	bool hasFollowPath = false;
 	int8_t charmChanceModifier = 0;
 

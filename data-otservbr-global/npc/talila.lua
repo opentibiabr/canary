@@ -64,9 +64,9 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "May enlightenment be your path, |PLAYER
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "amber", clientId = 32626, sell = 20000 },
 	{ itemName = "amber with a bug", clientId = 32624, sell = 41000 },
 	{ itemName = "amber with a dragonfly", clientId = 32625, sell = 56000 },
+	{ itemName = "amber", clientId = 32626, sell = 20000 },
 	{ itemName = "ancient coin", clientId = 24390, sell = 350 },
 	{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
 	{ itemName = "avalanche rune", clientId = 3161, buy = 57 },
@@ -121,10 +121,15 @@ npcConfig.shop = {
 	{ itemName = "great health potion", clientId = 239, buy = 225 },
 	{ itemName = "great mana potion", clientId = 238, buy = 144 },
 	{ itemName = "great spirit potion", clientId = 7642, buy = 228 },
+	{ itemName = "greater guardian gem", clientId = 44604, sell = 10000 },
+	{ itemName = "greater marksman gem", clientId = 44607, sell = 10000 },
+	{ itemName = "greater mystic gem", clientId = 44613, sell = 10000 },
+	{ itemName = "greater sage gem", clientId = 44610, sell = 10000 },
 	{ itemName = "green crystal fragment", clientId = 16127, sell = 800 },
 	{ itemName = "green crystal shard", clientId = 16121, sell = 1500 },
 	{ itemName = "green crystal splinter", clientId = 16122, sell = 400 },
 	{ itemName = "green giant shimmering pearl", clientId = 281, sell = 3000 },
+	{ itemName = "guardian gem", clientId = 44603, sell = 5000 },
 	{ itemName = "health potion", clientId = 266, buy = 50 },
 	{ itemName = "heavy magic missile rune", clientId = 3198, buy = 12 },
 	{ itemName = "hexagonal ruby", clientId = 30180, sell = 30000 },
@@ -133,12 +138,18 @@ npcConfig.shop = {
 	{ itemName = "icicle rune", clientId = 3158, buy = 30 },
 	{ itemName = "intense healing rune", clientId = 3152, buy = 95 },
 	{ itemName = "leaf star", clientId = 25735, sell = 50 },
+	{ itemName = "lesser guardian gem", clientId = 44602, sell = 1000 },
+	{ itemName = "lesser marksman gem", clientId = 44605, sell = 1000 },
+	{ itemName = "lesser mystic gem", clientId = 44611, sell = 1000 },
+	{ itemName = "lesser sage gem", clientId = 44608, sell = 1000 },
 	{ itemName = "light magic missile rune", clientId = 3174, buy = 4 },
 	{ itemName = "lion figurine", clientId = 33781, sell = 10000 },
 	{ itemName = "magic wall rune", clientId = 3180, buy = 116 },
 	{ itemName = "mana potion", clientId = 268, buy = 56 },
 	{ itemName = "mandrake", clientId = 5014, sell = 5000 },
+	{ itemName = "marksman gem", clientId = 44606, sell = 5000 },
 	{ itemName = "moonstone", clientId = 32771, sell = 13000 },
+	{ itemName = "mystic gem", clientId = 44612, sell = 5000 },
 	{ itemName = "onyx chip", clientId = 22193, sell = 500 },
 	{ itemName = "opal", clientId = 22194, sell = 500 },
 	{ itemName = "ornate locket", clientId = 30056, sell = 18000 },
@@ -153,6 +164,7 @@ npcConfig.shop = {
 	{ itemName = "red crystal fragment", clientId = 16126, sell = 800 },
 	{ itemName = "red rose", clientId = 3658, sell = 10 },
 	{ itemName = "ruby necklace", clientId = 3016, buy = 3560 },
+	{ itemName = "sage gem", clientId = 44609, sell = 5000 },
 	{ itemName = "shimmering beetles", clientId = 25693, sell = 150 },
 	{ itemName = "silver goblet", clientId = 5806, buy = 3000 },
 	{ itemName = "skull coin", clientId = 32583, sell = 12000 },
@@ -197,13 +209,14 @@ npcConfig.shop = {
 	{ itemName = "wood cape", clientId = 3575, sell = 5000 },
 	{ itemName = "wooden spellbook", clientId = 25699, sell = 12000 },
 }
+
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

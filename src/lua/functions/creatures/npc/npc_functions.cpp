@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -354,7 +354,6 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 		return 1;
 	}
 
-	npc->addShopPlayer(player);
 	pushBoolean(L, player->openShopWindow(npc));
 	return 1;
 }
@@ -384,7 +383,6 @@ int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
 	lua_pushnil(L);
 	while (lua_next(L, 3) != 0) {
 		const auto tableIndex = lua_gettop(L);
-		ShopBlock item;
 
 		auto itemId = getField<uint16_t>(L, tableIndex, "clientId");
 		auto subType = getField<int32_t>(L, tableIndex, "subType");
@@ -397,18 +395,16 @@ int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
 		auto sellPrice = getField<uint32_t>(L, tableIndex, "sell");
 		auto storageKey = getField<int32_t>(L, tableIndex, "storageKey");
 		auto storageValue = getField<int32_t>(L, tableIndex, "storageValue");
-		auto realName = getFieldString(L, tableIndex, "name");
-		g_logger().debug("[{}] item '{}' sell price '{}', buyprice '{}'", __FUNCTION__, realName, sellPrice, buyPrice);
-
-		items.emplace_back(itemId, subType, buyPrice, sellPrice, storageKey, storageValue, std::move(realName));
+		auto itemName = getFieldString(L, tableIndex, "itemName");
+		if (itemName.empty()) {
+			itemName = Item::items[itemId].name;
+		}
+		items.emplace_back(itemId, itemName, subType, buyPrice, sellPrice, storageKey, storageValue);
 		lua_pop(L, 8);
 	}
 	lua_pop(L, 3);
 
-	// Close any eventual other shop window currently open.
-	player->closeShopWindow(true);
-	npc->addShopPlayer(player, items);
-	pushBoolean(L, player->openShopWindow(npc));
+	pushBoolean(L, player->openShopWindow(npc, items));
 	return 1;
 }
 
@@ -429,7 +425,7 @@ int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 	}
 
 	if (player->getShopOwner() == npc) {
-		player->closeShopWindow(true);
+		player->closeShopWindow();
 	}
 
 	pushBoolean(L, true);
@@ -577,7 +573,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	}
 
 	uint64_t pricePerUnit = 0;
-	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector(player->getGUID());
+	const auto &shopVector = npc->getShopItemVector(player->getGUID());
 	for (ShopBlock shopBlock : shopVector) {
 		if (itemId == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			pricePerUnit = shopBlock.itemBuyPrice;

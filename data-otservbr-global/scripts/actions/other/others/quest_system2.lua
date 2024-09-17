@@ -1,9 +1,9 @@
 local config = {
-	[2285] = {
+	[2285] = { -- The Djinn War Quest - lamp
 		items = {
 			{ itemId = 3243 },
 		},
-		storage = Storage.DjinnWar.EfreetFaction.Mission03,
+		storage = Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03,
 		formerValue = 1,
 		newValue = 2,
 		needItem = { itemId = 3231 },
@@ -14,12 +14,6 @@ local config = {
 			{ itemId = 3205 },
 		},
 		storage = Storage.QuestChests.FamilyBrooch,
-	},
-	[3002] = {
-		items = {
-			{ itemId = 3030, count = 6 },
-		},
-		storage = Storage.QuestChests.SixRubiesQuest,
 	},
 	[3018] = {
 		items = {
@@ -33,7 +27,7 @@ local config = {
 		items = {
 			{ itemId = 145 },
 		},
-		storage = Storage.TravellingTrader.Mission02,
+		storage = Storage.Quest.U8_1.TheTravellingTrader.Mission02,
 		formerValue = 3,
 		newValue = 4,
 	},
@@ -41,44 +35,32 @@ local config = {
 		items = {
 			{ itemId = 3243 },
 		},
-		storage = Storage.DjinnWar.MaridFaction.Mission03,
+		storage = Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03,
 		formerValue = 1,
 		newValue = 2,
 		needItem = { itemId = 3231 },
 		effect = CONST_ME_MAGIC_RED,
 	},
-	[3062] = {
-		items = {
-			{ itemId = 7528 },
-		},
-		storage = Storage.QuestChests.KosheiAmulet1,
-	},
-	[3064] = {
-		items = {
-			{ itemId = 7530 },
-		},
-		storage = Storage.QuestChests.KosheiAmulet2,
-	},
 	[3084] = {
 		items = {
 			{ itemId = 8829 },
 		},
-		storage = Storage.InServiceofYalahar.MatrixReward,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.MatrixReward,
 	},
 	[3085] = {
 		items = {
 			{ itemId = 8828 },
 		},
-		storage = Storage.InServiceofYalahar.MatrixReward,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.MatrixReward,
 	},
 	[3112] = {
 		items = {
 			{ itemId = 2820, text = "<the paper is old and tattered, you can only make out a signature:> Tylaf, apprentice of Hjaern" },
 		},
-		storage = Storage.TheIceIslands.Questline,
+		storage = Storage.Quest.U8_0.TheIceIslands.Questline,
 		formerValue = 35,
 		newValue = 36,
-		missionStorage = { key = Storage.TheIceIslands.Mission09, value = 2 },
+		missionStorage = { key = Storage.Quest.U8_0.TheIceIslands.Mission09, value = 2 },
 	},
 	[3116] = {
 		items = {
@@ -100,41 +82,17 @@ local config = {
 		items = {
 			{ itemId = 637 },
 		},
-		storage = Storage.ChildrenoftheRevolution.Questline,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline,
 		formerValue = 1,
 		newValue = 2,
 		say = "A batch of documents has been stashed in the shelf. These might be of interest to Zalamon.",
 		effect = CONST_ME_POFF,
 	},
-	[3311] = {
-		items = {
-			{ itemId = 2970, actionId = 3301 },
-		},
-		storage = Storage.QuestChests.OutlawCampKey1,
-	},
-	[3312] = {
-		items = {
-			{ itemId = 2969, actionId = 3302 },
-		},
-		storage = Storage.QuestChests.OutlawCampKey2,
-	},
-	[3313] = {
-		items = {
-			{ itemId = 2970, actionId = 3303 },
-		},
-		storage = Storage.QuestChests.OutlawCampKey3,
-	},
 	[4010] = {
 		items = {
 			{ itemId = 4832 },
 		},
-		storage = Storage.TheApeCity.HolyApeHair,
-	},
-	[5556] = {
-		items = {
-			{ itemId = 3357 },
-		},
-		storage = Storage.GhostShipQuest,
+		storage = Storage.Quest.U7_6.TheApeCity.HolyApeHair,
 	},
 	[9136] = {
 		items = {
@@ -142,40 +100,33 @@ local config = {
 		},
 		storage = Storage.QuestChests.DeeperFibulaKey,
 	},
-	[9185] = {
-		items = {
-			{ itemId = 3017 },
-			{ itemId = 3030, count = 2 },
-			{ itemId = 3028, count = 3 },
-		},
-		storage = Storage.QuestChests.SilverBrooch,
-	},
 	[9226] = {
 		items = {
 			{ itemId = 3397 },
 		},
-		storage = Storage.SamsOldBackpack,
+		storage = Storage.Quest.U7_5.SamsOldBackpack.SamsOldBackpackNpc,
 		formerValue = 2,
 		newValue = 3,
 	},
+	-- Hydra Egg Quest
 	[9255] = {
 		items = {
 			{ itemId = 4839 },
 		},
-		storage = Storage.HydraEggQuest,
+		storage = Storage.Quest.U7_6.HydraEggQuest,
 	},
 	[9256] = {
 		items = {
 			{ itemId = 4829, decay = true },
 		},
-		storage = Storage.TheApeCity.WitchesCapSpot,
+		storage = Storage.Quest.U7_6.TheApeCity.WitchesCapSpot,
 		time = true,
 	},
 	[9259] = {
 		items = {
 			{ itemId = 10159 },
 		},
-		storage = Storage.UnnaturalSelection.Mission01,
+		storage = Storage.Quest.U8_54.UnnaturalSelection.Mission01,
 		formerValue = 1,
 		newValue = 2,
 		say = "You dig out a skull from the pile of bones. That must be the skull Lazaran talked about.",
@@ -184,7 +135,7 @@ local config = {
 		items = {
 			{ itemId = 7936 },
 		},
-		storage = Storage.ThievesGuild.Mission06,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.Mission06,
 		formerValue = 2,
 		newValue = 3,
 		say = "To buy some time you replace the fish with a piece of carrot.",
@@ -193,25 +144,19 @@ local config = {
 		items = {
 			{ itemId = 652 },
 		},
-		storage = Storage.SecretService.RottenTree,
-	},
-	[50032] = {
-		items = {
-			{ itemId = 3734 },
-		},
-		storage = Storage.BloodHerbQuest,
+		storage = Storage.Quest.U8_1.SecretService.RottenTree,
 	},
 	[50112] = {
 		items = {
 			{ itemId = 3725, count = 10 },
 		},
-		storage = Storage.HiddenCityOfBeregar.BrownMushrooms,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.BrownMushrooms,
 	},
 	[50125] = {
 		items = {
 			{ itemId = 8777 },
 		},
-		storage = Storage.HiddenCityOfBeregar.JusticeForAll,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll,
 		formerValue = 3,
 		newValue = 4,
 	},
@@ -220,30 +165,6 @@ local config = {
 			{ itemId = 2968, actionId = 3980 },
 		},
 		storage = 857440,
-	},
-	[65202] = {
-		items = {
-			{ itemId = 2969, actionId = 3610 },
-		},
-		storage = 857441,
-	},
-	[65204] = {
-		items = {
-			{ itemId = 3269, count = 1 },
-		},
-		storage = 857442,
-	},
-	[65205] = {
-		items = {
-			{ itemId = 3356, count = 1 },
-		},
-		storage = 857443,
-	},
-	[65206] = {
-		items = {
-			{ itemId = 3029, count = 4 },
-		},
-		storage = 857444,
 	},
 	[65207] = {
 		items = {
@@ -257,29 +178,11 @@ local config = {
 		},
 		storage = 857446,
 	},
-	[65209] = {
-		items = {
-			{ itemId = 3054, count = 1 },
-		},
-		storage = 857447,
-	},
 	[65210] = {
 		items = {
 			{ itemId = 3147, count = 3 },
 		},
 		storage = 857448,
-	},
-	[65211] = {
-		items = {
-			{ itemId = 3028, count = 1 },
-		},
-		storage = 857449,
-	},
-	[65212] = {
-		items = {
-			{ itemId = 2969, actionId = 3667 },
-		},
-		storage = 857450,
 	},
 	[14037] = {
 		items = {
@@ -306,7 +209,7 @@ So they decided to recruit Augur on their own. This way most of our forefathers 
 				name = "History of the Augur, Part I",
 			},
 		},
-		storage = Storage.InServiceofYalahar.NotesPalimuth,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.NotesPalimuth,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -337,7 +240,7 @@ To some extent, we have to work like a gardener. The rotten parts have to be cut
 				name = "Manifest of the Yalahari, Part I",
 			},
 		},
-		storage = Storage.InServiceofYalahar.NotesAzerus,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.NotesAzerus,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -345,7 +248,7 @@ To some extent, we have to work like a gardener. The rotten parts have to be cut
 		items = {
 			{ itemId = 8818 },
 		},
-		storage = Storage.InServiceofYalahar.AlchemistFormula,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.AlchemistFormula,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -383,7 +286,7 @@ Gromward Hammerfist]],
 				name = "Tunnelling Guide",
 			},
 		},
-		storage = Storage.HiddenCityOfBeregar.TunnellingGuide,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.TunnellingGuide,
 	},
 	[20003] = {
 		items = {
@@ -396,12 +299,6 @@ The map shows the original floor plan of this mine. You recognise your position 
 			},
 		},
 		storage = Storage.QuestChests.FormorgarMinesHoistSkeleton,
-	},
-	[20004] = {
-		items = {
-			{ itemId = 3266 },
-		},
-		storage = Storage.BattleAxeQuest,
 	},
 	[14041] = {
 		items = {

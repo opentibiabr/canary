@@ -1,11 +1,8 @@
-local callback = EventCallback()
+local callback = EventCallback("MonsterPostDropLootAnalyzer")
 
 function callback.monsterPostDropLoot(monster, corpse)
 	local player = Player(corpse:getCorpseOwner())
-	if not player then
-		return
-	end
-	if player:getStamina() <= 840 then
+	if not player or not player:canReceiveLoot() then
 		return
 	end
 	local mType = monster:getType()

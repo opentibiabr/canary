@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -57,6 +57,13 @@ public:
 		registerMethod(L, "Item", "getCustomAttribute", ItemFunctions::luaItemGetCustomAttribute);
 		registerMethod(L, "Item", "setCustomAttribute", ItemFunctions::luaItemSetCustomAttribute);
 		registerMethod(L, "Item", "removeCustomAttribute", ItemFunctions::luaItemRemoveCustomAttribute);
+		registerMethod(L, "Item", "canBeMoved", ItemFunctions::luaItemCanBeMoved);
+
+		registerMethod(L, "Item", "setOwner", ItemFunctions::luaItemSetOwner);
+		registerMethod(L, "Item", "getOwnerId", ItemFunctions::luaItemGetOwnerId);
+		registerMethod(L, "Item", "isOwner", ItemFunctions::luaItemIsOwner);
+		registerMethod(L, "Item", "getOwnerName", ItemFunctions::luaItemGetOwnerName);
+		registerMethod(L, "Item", "hasOwner", ItemFunctions::luaItemHasOwner);
 
 		registerMethod(L, "Item", "moveTo", ItemFunctions::luaItemMoveTo);
 		registerMethod(L, "Item", "transform", ItemFunctions::luaItemTransform);
@@ -128,6 +135,7 @@ private:
 	static int luaItemGetCustomAttribute(lua_State* L);
 	static int luaItemSetCustomAttribute(lua_State* L);
 	static int luaItemRemoveCustomAttribute(lua_State* L);
+	static int luaItemCanBeMoved(lua_State* L);
 
 	static int luaItemMoveTo(lua_State* L);
 	static int luaItemTransform(lua_State* L);
@@ -153,4 +161,10 @@ private:
 	static int luaItemGetClassification(lua_State* L);
 
 	static int luaItemCanReceiveAutoCarpet(lua_State* L);
+
+	static int luaItemSetOwner(lua_State* L);
+	static int luaItemGetOwnerId(lua_State* L);
+	static int luaItemIsOwner(lua_State* L);
+	static int luaItemGetOwnerName(lua_State* L);
+	static int luaItemHasOwner(lua_State* L);
 };

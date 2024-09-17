@@ -108,7 +108,7 @@ do
 	local function EventCallbackNewIndex(self, key, value)
 		local func = eventCallbacks[key]
 		if func and type(func) == "function" then
-			logger.debug("[Registering EventCallback: {}", key)
+			logger.trace("[Registering EventCallback: {}", key)
 			func(self, value)
 			self:type(key)
 		else
@@ -233,6 +233,10 @@ do
 			self:type("periodchange")
 			self:onPeriodChange(value)
 			return
+		elseif key == "onSave" then
+			self:type("save")
+			self:onSave(value)
+			return
 		end
 		rawset(self, key, value)
 	end
@@ -285,6 +289,14 @@ do
 		elseif key == "onSay" then
 			self:eventType(MONSTERS_EVENT_SAY)
 			self:onSay(value)
+			return
+		elseif key == "onPlayerAttack" then
+			self:eventType(MONSTERS_EVENT_ATTACKED_BY_PLAYER)
+			self:onPlayerAttack(value)
+			return
+		elseif key == "onSpawn" then
+			self:eventType(MONSTERS_EVENT_ON_SPAWN)
+			self:onSpawn(value)
 			return
 		end
 		rawset(self, key, value)

@@ -1,12 +1,4 @@
 local savingEvent = 0
-function saveLoop(delay)
-	saveServer()
-	SaveHirelings()
-	logger.info("Saved Hirelings")
-	if delay > 0 then
-		savingEvent = addEvent(saveLoop, delay, delay)
-	end
-end
 
 local save = TalkAction("/save")
 
@@ -16,13 +8,17 @@ function save.onSay(player, words, param)
 
 	if isNumber(param) then
 		stopEvent(savingEvent)
-		saveLoop(tonumber(param) * 60 * 1000)
+		local delay = tonumber(param) * 60 * 1000
+		savingEvent = addEvent(function()
+			saveServer()
+			SaveHirelings()
+		end, delay, delay)
 	else
 		saveServer()
 		SaveHirelings()
-		logger.info("Saved Hirelings")
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is saved ...")
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Server has been saved.")
 	end
+	return true
 end
 
 save:separator(" ")

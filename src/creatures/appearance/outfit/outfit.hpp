@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,9 +12,19 @@
 #include "declarations.hpp"
 #include "lib/di/container.hpp"
 
+class Player;
+
+struct OutfitEntry {
+	constexpr explicit OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
+		lookType(initLookType), addons(initAddons) { }
+
+	uint16_t lookType;
+	uint8_t addons;
+};
+
 struct Outfit {
 	Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :
-		name(initName), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(initFrom) { }
+		name(std::move(initName)), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(std::move(initFrom)) { }
 
 	std::string name;
 	uint16_t lookType;
@@ -34,17 +44,24 @@ struct ProtocolOutfit {
 
 class Outfits {
 public:
-	static Outfits &getInstance() {
-		return inject<Outfits>();
-	}
+	static Outfits &getInstance();
 
-	std::shared_ptr<Outfit> getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType);
-
+	bool reload();
 	bool loadFromXml();
 
-	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
+	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit = false) const;
 	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const {
 		return outfits[sex];
+	}
+
+	std::shared_ptr<Outfit> getOutfitByName(PlayerSex_t sex, const std::string &name) const {
+		for (const auto &outfit : outfits[sex]) {
+			if (outfit->name == name) {
+				return outfit;
+			}
+		}
+
+		return nullptr;
 	}
 
 private:

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -177,6 +177,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	// First, an UPDATE query to write the player itself
 	query.str("");
 	query << "UPDATE `players` SET ";
+	query << "`name` = " << db.escapeString(player->name) << ",";
 	query << "`level` = " << player->level << ",";
 	query << "`group_id` = " << player->group->id << ",";
 	query << "`vocation` = " << player->getVocationId() << ",";
@@ -291,8 +292,8 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	query << "`skill_mana_leech_amount_tries` = " << player->skills[SKILL_MANA_LEECH_AMOUNT].tries << ",";
 	query << "`manashield` = " << player->getManaShield() << ",";
 	query << "`max_manashield` = " << player->getMaxManaShield() << ",";
-	query << "`xpboost_value` = " << player->getStoreXpBoost() << ",";
-	query << "`xpboost_stamina` = " << player->getExpBoostStamina() << ",";
+	query << "`xpboost_value` = " << player->getXpBoostPercent() << ",";
+	query << "`xpboost_stamina` = " << player->getXpBoostTime() << ",";
 	query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ",";
 
 	if (!player->isOffline()) {
@@ -326,15 +327,18 @@ bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 		return false;
 	}
 
+	query.str("");
+
+	DBInsert stashQuery("INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES ");
 	for (const auto &[itemId, itemCount] : player->getStashItems()) {
-		query.str("");
-		query << "INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES (";
-		query << player->getGUID() << ", ";
-		query << itemId << ", ";
-		query << itemCount << ")";
-		if (!db.executeQuery(query.str())) {
+		query << player->getGUID() << ',' << itemId << ',' << itemCount;
+		if (!stashQuery.addRow(query)) {
 			return false;
 		}
+	}
+
+	if (!stashQuery.execute()) {
+		return false;
 	}
 	return true;
 }
@@ -432,7 +436,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(std::shared_ptr<Player> player) {
 	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
 
 	PropWriteStream propBestiaryStream;
-	for (const auto trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
+	for (const auto &trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
 		propBestiaryStream.write<uint16_t>(trackedType->info.raceid);
 	}
 	size_t trackerSize;
@@ -733,7 +737,7 @@ bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 
 	// Bosstiary tracker
 	PropWriteStream stream;
-	for (const auto monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
+	for (const auto &monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
 		if (!monsterType) {
 			continue;
 		}

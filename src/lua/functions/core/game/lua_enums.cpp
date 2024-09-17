@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,12 +11,15 @@
 
 #include "lua/functions/core/game/lua_enums.hpp"
 
+#include "creatures/players/wheel/wheel_gems.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
 
 #define registerMagicEnum(luaState, enumClassType)               \
 	{                                                            \
@@ -137,7 +140,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, FLAG_CHILDISOWNER);
 	registerEnum(L, FLAG_PATHFINDING);
 	registerEnum(L, FLAG_IGNOREFIELDDAMAGE);
-	registerEnum(L, FLAG_IGNORENOTMOVEABLE);
+	registerEnum(L, FLAG_IGNORENOTMOVABLE);
 	registerEnum(L, FLAG_IGNOREAUTOSTACK);
 
 	// Use with house:getAccessList, house:setAccessList
@@ -148,7 +151,6 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, LIGHT_STATE_SUNSET);
 	registerEnum(L, LIGHT_STATE_SUNRISE);
 	registerEnum(L, STORAGEVALUE_EMOTE);
-	registerEnum(L, STORAGEVALUE_AUTO_LOOT);
 
 	registerEnum(L, IMMOVABLE_ACTION_ID);
 
@@ -212,21 +214,36 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, WEAPON_WAND);
 	registerEnum(L, WEAPON_AMMO);
 	registerEnum(L, WEAPON_MISSILE);
+
+	registerEnum(L, SCREENSHOT_TYPE_NONE);
+	registerEnum(L, SCREENSHOT_TYPE_ACHIEVEMENT);
+	registerEnum(L, SCREENSHOT_TYPE_BESTIARYENTRYCOMPLETED);
+	registerEnum(L, SCREENSHOT_TYPE_BESTIARYENTRYUNLOCKED);
+	registerEnum(L, SCREENSHOT_TYPE_BOSSDEFEATED);
+	registerEnum(L, SCREENSHOT_TYPE_DEATHPVE);
+	registerEnum(L, SCREENSHOT_TYPE_DEATHPVP);
+	registerEnum(L, SCREENSHOT_TYPE_LEVELUP);
+	registerEnum(L, SCREENSHOT_TYPE_PLAYERKILLASSIST);
+	registerEnum(L, SCREENSHOT_TYPE_PLAYERKILL);
+	registerEnum(L, SCREENSHOT_TYPE_PLAYERATTACKING);
+	registerEnum(L, SCREENSHOT_TYPE_TREASUREFOUND);
+	registerEnum(L, SCREENSHOT_TYPE_SKILLUP);
+	registerEnum(L, SCREENSHOT_TYPE_GIFTOFLIFE);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {
-	registerEnum(L, account::ACCOUNT_TYPE_NORMAL);
-	registerEnum(L, account::ACCOUNT_TYPE_TUTOR);
-	registerEnum(L, account::ACCOUNT_TYPE_SENIORTUTOR);
-	registerEnum(L, account::ACCOUNT_TYPE_GAMEMASTER);
-	registerEnum(L, account::ACCOUNT_TYPE_GOD);
+	registerEnum(L, ACCOUNT_TYPE_NORMAL);
+	registerEnum(L, ACCOUNT_TYPE_TUTOR);
+	registerEnum(L, ACCOUNT_TYPE_SENIORTUTOR);
+	registerEnum(L, ACCOUNT_TYPE_GAMEMASTER);
+	registerEnum(L, ACCOUNT_TYPE_GOD);
 
-	registerEnum(L, account::GROUP_TYPE_NORMAL);
-	registerEnum(L, account::GROUP_TYPE_TUTOR);
-	registerEnum(L, account::GROUP_TYPE_SENIORTUTOR);
-	registerEnum(L, account::GROUP_TYPE_GAMEMASTER);
-	registerEnum(L, account::GROUP_TYPE_COMMUNITYMANAGER);
-	registerEnum(L, account::GROUP_TYPE_GOD);
+	registerEnum(L, GROUP_TYPE_NORMAL);
+	registerEnum(L, GROUP_TYPE_TUTOR);
+	registerEnum(L, GROUP_TYPE_SENIORTUTOR);
+	registerEnum(L, GROUP_TYPE_GAMEMASTER);
+	registerEnum(L, GROUP_TYPE_COMMUNITYMANAGER);
+	registerEnum(L, GROUP_TYPE_GOD);
 }
 
 void LuaEnums::initDailyRewardEnums(lua_State* L) {
@@ -314,37 +331,9 @@ void LuaEnums::initFactionEnums(lua_State* L) {
 }
 
 void LuaEnums::initConditionEnums(lua_State* L) {
-	registerEnum(L, CONDITION_NONE);
-	registerEnum(L, CONDITION_POISON);
-	registerEnum(L, CONDITION_FIRE);
-	registerEnum(L, CONDITION_ENERGY);
-	registerEnum(L, CONDITION_BLEEDING);
-	registerEnum(L, CONDITION_HASTE);
-	registerEnum(L, CONDITION_PARALYZE);
-	registerEnum(L, CONDITION_OUTFIT);
-	registerEnum(L, CONDITION_INVISIBLE);
-	registerEnum(L, CONDITION_LIGHT);
-	registerEnum(L, CONDITION_MANASHIELD);
-	registerEnum(L, CONDITION_INFIGHT);
-	registerEnum(L, CONDITION_DRUNK);
-	registerEnum(L, CONDITION_EXHAUST);
-	registerEnum(L, CONDITION_REGENERATION);
-	registerEnum(L, CONDITION_SOUL);
-	registerEnum(L, CONDITION_DROWN);
-	registerEnum(L, CONDITION_MUTED);
-	registerEnum(L, CONDITION_CHANNELMUTEDTICKS);
-	registerEnum(L, CONDITION_YELLTICKS);
-	registerEnum(L, CONDITION_ATTRIBUTES);
-	registerEnum(L, CONDITION_FREEZING);
-	registerEnum(L, CONDITION_DAZZLED);
-	registerEnum(L, CONDITION_CURSED);
-	registerEnum(L, CONDITION_EXHAUST_COMBAT);
-	registerEnum(L, CONDITION_EXHAUST_HEAL);
-	registerEnum(L, CONDITION_PACIFIED);
-	registerEnum(L, CONDITION_SPELLCOOLDOWN);
-	registerEnum(L, CONDITION_SPELLGROUPCOOLDOWN);
-	registerEnum(L, CONDITION_ROOTED);
-	registerEnum(L, CONDITION_FEARED);
+	for (auto value : magic_enum::enum_values<ConditionType_t>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initConditionIdEnums(lua_State* L) {
@@ -687,7 +676,7 @@ void LuaEnums::initConstPropEnums(lua_State* L) {
 	registerEnum(L, CONST_PROP_BLOCKPATH);
 	registerEnum(L, CONST_PROP_ISVERTICAL);
 	registerEnum(L, CONST_PROP_ISHORIZONTAL);
-	registerEnum(L, CONST_PROP_MOVEABLE);
+	registerEnum(L, CONST_PROP_MOVABLE);
 	registerEnum(L, CONST_PROP_IMMOVABLEBLOCKSOLID);
 	registerEnum(L, CONST_PROP_IMMOVABLEBLOCKPATH);
 	registerEnum(L, CONST_PROP_IMMOVABLENOFIELDBLOCKPATH);
@@ -740,7 +729,7 @@ void LuaEnums::initGameStateEnums(lua_State* L) {
 void LuaEnums::initMessageEnums(lua_State* L) {
 	registerEnum(L, MESSAGE_GAMEMASTER_CONSOLE);
 	registerEnum(L, MESSAGE_LOGIN);
-	registerEnum(L, MESSAGE_ADMINISTRADOR);
+	registerEnum(L, MESSAGE_ADMINISTRATOR);
 	registerEnum(L, MESSAGE_EVENT_ADVANCE);
 	registerEnum(L, MESSAGE_GAME_HIGHLIGHT);
 	registerEnum(L, MESSAGE_FAILURE);
@@ -864,6 +853,7 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_REWARD_CONTAINER);
 	registerEnum(L, ITEM_AMULETOFLOSS);
 	registerEnum(L, ITEM_PARCEL);
+	registerEnum(L, ITEM_PARCEL_STAMPED);
 	registerEnum(L, ITEM_LABEL);
 	registerEnum(L, ITEM_FIREFIELD_PVP_FULL);
 	registerEnum(L, ITEM_FIREFIELD_PVP_MEDIUM);
@@ -1122,6 +1112,9 @@ void LuaEnums::initMapMarkEnums(lua_State* L) {
 // Use with Game.getReturnMessage
 void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOERROR);
+	registerEnum(L, RETURNVALUE_NOTBOUGHTINSTORE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDTHERE);
+	registerEnum(L, RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH);
 	registerEnum(L, RETURNVALUE_NOTPOSSIBLE);
 	registerEnum(L, RETURNVALUE_NOTENOUGHROOM);
 	registerEnum(L, RETURNVALUE_PLAYERISPZLOCKED);
@@ -1130,7 +1123,7 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_THEREISNOWAY);
 	registerEnum(L, RETURNVALUE_DESTINATIONOUTOFREACH);
 	registerEnum(L, RETURNVALUE_CREATUREBLOCK);
-	registerEnum(L, RETURNVALUE_NOTMOVEABLE);
+	registerEnum(L, RETURNVALUE_NOTMOVABLE);
 	registerEnum(L, RETURNVALUE_DROPTWOHANDEDITEM);
 	registerEnum(L, RETURNVALUE_BOTHHANDSNEEDTOBEFREE);
 	registerEnum(L, RETURNVALUE_CANONLYUSEONEWEAPON);
@@ -1200,6 +1193,8 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOTENOUGHFISHLEVEL);
 	registerEnum(L, RETURNVALUE_REWARDCHESTISEMPTY);
 	registerEnum(L, RETURNVALUE_CONTACTADMINISTRATOR);
+	registerEnum(L, RETURNVALUE_ITEMISNOTYOURS);
+	registerEnum(L, RETURNVALUE_ITEMUNTRADEABLE);
 }
 
 // Reload
@@ -1211,11 +1206,9 @@ void LuaEnums::initReloadTypeEnums(lua_State* L) {
 
 void LuaEnums::initCreaturesEventEnums(lua_State* L) {
 	// Monsters
-	registerEnum(L, MONSTERS_EVENT_THINK);
-	registerEnum(L, MONSTERS_EVENT_APPEAR);
-	registerEnum(L, MONSTERS_EVENT_DISAPPEAR);
-	registerEnum(L, MONSTERS_EVENT_MOVE);
-	registerEnum(L, MONSTERS_EVENT_SAY);
+	for (auto value : magic_enum::enum_values<MonstersEvent_t>()) {
+		registerMagicEnum(L, value);
+	}
 
 	// Npcs
 	registerEnum(L, NPCS_EVENT_THINK);
@@ -1237,10 +1230,10 @@ void LuaEnums::initForgeEnums(lua_State* L) {
 
 // Webhook default colors
 void LuaEnums::initWebhookEnums(lua_State* L) {
-	registerEnum(L, WEBHOOK_COLOR_ONLINE);
-	registerEnum(L, WEBHOOK_COLOR_OFFLINE);
-	registerEnum(L, WEBHOOK_COLOR_WARNING);
-	registerEnum(L, WEBHOOK_COLOR_RAID);
+	registerEnum(L, WEBHOOK_COLOR_GREEN);
+	registerEnum(L, WEBHOOK_COLOR_RED);
+	registerEnum(L, WEBHOOK_COLOR_YELLOW);
+	registerEnum(L, WEBHOOK_COLOR_BLUE);
 }
 
 void LuaEnums::initBosstiaryEnums(lua_State* L) {

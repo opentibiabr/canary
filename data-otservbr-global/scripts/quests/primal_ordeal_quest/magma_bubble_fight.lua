@@ -270,8 +270,7 @@ theEndOfDaysHealth:register()
 
 local magmaCrystalDeath = CreatureEvent("fight.magma-bubble.MagmaCrystalDeath")
 function magmaCrystalDeath.onDeath()
-	-- The monster count is only updated AFTER the event is called, so we need to subtract 1
-	local crystals = encounter:countMonsters("magma crystal") - 1
+	local crystals = encounter:countMonsters("magma crystal")
 	if crystals == 0 then
 		encounter:nextStage()
 	else
@@ -283,8 +282,7 @@ magmaCrystalDeath:register()
 
 local endOfDaysDeath = CreatureEvent("fight.magma-bubble.TheEndOfDaysDeath")
 function endOfDaysDeath.onDeath()
-	-- The monster count is only updated AFTER the event is called, so we need to subtract 1
-	local monsters = encounter:countMonsters("the end of days") - 1
+	local monsters = encounter:countMonsters("the end of days")
 	if monsters == 0 then
 		encounter:nextStage()
 	end

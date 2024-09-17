@@ -56,6 +56,12 @@ local dolls = {
 		"My dark magic lies on tibialatina.wikia.com",
 	},
 	[21962] = { "Hail Tibia Brasileiros! (União&Força)" },
+	[32918] = {
+		"COME HERE! FREE ITEMS FOR EVERYONE!",
+		"DON'T BE AFRAID! I AM COMING IN PEACE!",
+		"BOW TO THE POWER OF THE RUTHLESS SEVEN!",
+		"Slay your friends and I will spare you!",
+	},
 }
 
 local doll = Action()

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -88,7 +88,7 @@ bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
 
 		// Check if file start with "#"
 		if (std::string disable("#");
-			file.front() == disable.front()) {
+		    file.front() == disable.front()) {
 			// Send log of disabled script
 			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS, __FUNCTION__)) {
 				g_logger().info("[script]: {} [disabled]", realPath.filename().string());

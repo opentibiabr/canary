@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Mazoran")
 local monster = {}
 
 monster.description = "Mazoran"
-monster.experience = 50000
+monster.experience = 500000
 monster.outfit = {
 	lookType = 842,
 	lookHead = 77,
@@ -47,7 +47,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = true,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,

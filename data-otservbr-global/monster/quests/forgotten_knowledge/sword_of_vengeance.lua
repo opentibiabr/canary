@@ -62,7 +62,7 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -242 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_MANADRAIN, minDamage = -40, maxDamage = -160, radius = 6, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "berserk", interval = 2000, chance = 15, minDamage = -40, maxDamage = -160, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -40, maxDamage = -100, length = 4, spread = 3, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -40, maxDamage = -100, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -26,7 +26,7 @@ struct spawnBlockNpc_t {
 class SpawnNpc : public SharedObject {
 public:
 	SpawnNpc(Position initPos, int32_t initRadius) :
-		centerPos(std::move(initPos)), radius(initRadius) { }
+		centerPos(initPos), radius(initRadius) { }
 	~SpawnNpc();
 
 	// non-copyable
@@ -91,15 +91,15 @@ public:
 	}
 
 	std::string setFileName(std::string setName) {
-		return fileName = setName;
+		return fileName = std::move(setName);
 	}
 
-	std::forward_list<std::shared_ptr<SpawnNpc>> &getSpawnNpcList() {
+	std::vector<std::shared_ptr<SpawnNpc>> &getSpawnNpcList() {
 		return spawnNpcList;
 	}
 
 private:
-	std::forward_list<std::shared_ptr<SpawnNpc>> spawnNpcList;
+	std::vector<std::shared_ptr<SpawnNpc>> spawnNpcList;
 	std::string fileName;
 	bool loaded = false;
 	bool started = false;

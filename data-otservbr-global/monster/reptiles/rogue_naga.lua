@@ -5,10 +5,10 @@ monster.description = "a rogue naga"
 monster.experience = 4510
 monster.outfit = {
 	lookType = 1543,
-	lookHead = 55,
-	lookBody = 6,
-	lookLegs = 0,
-	lookFeet = 78,
+	lookHead = 75,
+	lookBody = 13,
+	lookLegs = 95,
+	lookFeet = 109,
 	lookAddons = 3,
 	lookMount = 0,
 }
@@ -16,7 +16,7 @@ monster.outfit = {
 monster.health = 6200
 monster.maxHealth = 6200
 monster.race = "blood"
-monster.corpse = 0
+monster.corpse = 39221
 monster.speed = 182
 monster.manaCost = 0
 
@@ -64,15 +64,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Platinum Coin", chance = 85600, minCount = 1, maxCount = 12 },
-	{ name = "Rogue Naga Scales", chance = 15450 },
-	{ name = "Green Crystal Shard", chance = 14400, minCount = 1, maxCount = 2 },
+	{ name = "rogue naga scales", chance = 15450 },
 }
 
 monster.attacks = {
-	{ name = "combat", interval = 2000, chance = 100, minDamage = -300, maxDamage = -600, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, target = true },
-	{ name = "combat", interval = 2000, chance = 47, type = COMBAT_PHYSICALDAMAGE, minDamage = -350, maxDamage = -400, effect = CONST_ME_BIG_SCRATCH, target = true },
-	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -380, maxDamage = -470, length = 5, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = -95, maxDamage = -390, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, range = 6, target = true }, -- basic_attack
+	{ name = "nagadeathattack", interval = 2500, chance = 20, minDamage = -430, maxDamage = -505, range = 6, target = true }, -- death_strike
+	{ name = "nagadeath", interval = 3000, chance = 20, minDamage = -380, maxDamage = -470, target = false }, -- short_death_wave
+	{ name = "death chain", interval = 3500, chance = 20, minDamage = -460, maxDamage = -520, range = 6, target = true }, -- death_chain
+	{ name = "combat", interval = 4000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -85, maxDamage = -190, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, range = 6, target = true }, -- explosion_strike
 }
 
 monster.defenses = {

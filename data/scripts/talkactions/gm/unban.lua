@@ -18,8 +18,8 @@ function unban.onSay(player, words, param)
 	db.asyncQuery("DELETE FROM `ip_bans` WHERE `ip` = " .. Result.getNumber(resultId, "lastip"))
 	Result.free(resultId)
 	local text = param .. " has been unbanned."
-	player:sendTextMessage(MESSAGE_ADMINISTRADOR, text)
-	Webhook.sendMessage("Player Unbanned", text .. " (by: " .. player:getName() .. ")", WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
+	player:sendTextMessage(MESSAGE_ADMINISTRATOR, text)
+	Webhook.sendMessage("Player Unbanned", text .. " (by: " .. player:getName() .. ")", WEBHOOK_COLOR_YELLOW, announcementChannels["serverAnnouncements"])
 	return true
 end
 

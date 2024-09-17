@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -54,7 +54,7 @@ int CreatureFunctions::luaCreatureGetEvents(lua_State* L) {
 	lua_createtable(L, static_cast<int>(eventList.size()), 0);
 
 	int index = 0;
-	for (const auto eventPtr : eventList) {
+	for (const auto &eventPtr : eventList) {
 		pushString(L, eventPtr->getName());
 		lua_rawseti(L, -2, ++index);
 	}
@@ -581,6 +581,29 @@ int CreatureFunctions::luaCreatureSetMoveLocked(lua_State* L) {
 	return 1;
 }
 
+int CreatureFunctions::luaCreatureIsDirectionLocked(lua_State* L) {
+	// creature:isDirectionLocked()
+	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
+	if (creature) {
+		pushBoolean(L, creature->isDirectionLocked());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureSetDirectionLocked(lua_State* L) {
+	// creature:setDirectionLocked(directionLocked)
+	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
+	if (creature) {
+		creature->setDirectionLocked(getBoolean(L, 2));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int CreatureFunctions::luaCreatureGetSkull(lua_State* L) {
 	// creature:getSkull()
 	std::shared_ptr<Creature> creature = getUserdataShared<Creature>(L, 1);
@@ -682,7 +705,11 @@ int CreatureFunctions::luaCreatureRemoveCondition(lua_State* L) {
 	const std::shared_ptr<Condition> condition = creature->getCondition(conditionType, conditionId, subId);
 	if (condition) {
 		bool force = getBoolean(L, 5, false);
-		creature->removeCondition(conditionType, conditionId, force);
+		if (subId == 0) {
+			creature->removeCondition(conditionType, conditionId, force);
+		} else {
+			creature->removeCondition(condition);
+		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -766,7 +793,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 
 	const Position oldPosition = creature->getPosition();
 	if (auto ret = g_game().internalTeleport(creature, position, pushMovement);
-		ret != RETURNVALUE_NOERROR) {
+	    ret != RETURNVALUE_NOERROR) {
 		g_logger().debug("[{}] Failed to teleport creature {}, on position {}, error code: {}", __FUNCTION__, creature->getName(), oldPosition.toString(), getReturnMessage(ret));
 		pushBoolean(L, false);
 		return 1;
@@ -911,7 +938,7 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 	fpp.clearSight = getBoolean(L, 6, fpp.clearSight);
 	fpp.maxSearchDist = getNumber<int32_t>(L, 7, fpp.maxSearchDist);
 
-	stdext::arraylist<Direction> dirList(128);
+	std::vector<Direction> dirList;
 	if (creature->getPathTo(position, dirList, fpp)) {
 		lua_newtable(L);
 
@@ -993,11 +1020,11 @@ int CreatureFunctions::luaCreatureSetIcon(lua_State* L) {
 		return 1;
 	}
 	const auto key = getString(L, 2);
-	auto category = getNumber<CreatureIconCategory_t>(L, 3);
-	auto count = getNumber<uint16_t>(L, 5, 0);
+	const auto category = getNumber<CreatureIconCategory_t>(L, 3);
+	const auto count = getNumber<uint16_t>(L, 5, 0);
 	CreatureIcon creatureIcon;
 	if (category == CreatureIconCategory_t::Modifications) {
-		auto icon = getNumber<CreatureIconModifications_t>(L, 5);
+		auto icon = getNumber<CreatureIconModifications_t>(L, 4);
 		creatureIcon = CreatureIcon(icon, count);
 	} else {
 		auto icon = getNumber<CreatureIconQuests_t>(L, 4);

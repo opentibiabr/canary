@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
+
 # *****************************************************************************
 # CMake Features
 # *****************************************************************************
@@ -29,8 +31,11 @@ find_package(ZLIB REQUIRED)
 find_package(absl CONFIG REQUIRED)
 find_package(asio CONFIG REQUIRED)
 find_package(eventpp CONFIG REQUIRED)
-find_package(jsoncpp CONFIG REQUIRED)
 find_package(magic_enum CONFIG REQUIRED)
+if(FEATURE_METRICS)
+    find_package(opentelemetry-cpp CONFIG REQUIRED)
+    find_package(prometheus-cpp CONFIG REQUIRED)
+endif()
 find_package(mio REQUIRED)
 find_package(pugixml CONFIG REQUIRED)
 find_package(spdlog REQUIRED)
@@ -67,6 +72,30 @@ option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
 option(BUILD_STATIC_LIBRARY "Build using static libraries" OFF)
 option(SPEED_UP_BUILD_UNITY "Compile using build unity for speed up build" ON)
+option(USE_PRECOMPILED_HEADER "Compile using precompiled header" ON)
+
+# === TOGGLE_BIN_FOLDER ===
+if(TOGGLE_BIN_FOLDER)
+    log_option_enabled("TOGGLE_BIN_FOLDER")
+else()
+    log_option_disabled("TOGGLE_BIN_FOLDER")
+endif(TOGGLE_BIN_FOLDER)
+
+# === TOGGLE_BIN_FOLDER ===
+if(OPTIONS_ENABLE_OPENMP)
+    log_option_enabled("OPTIONS_ENABLE_OPENMP")
+else()
+    log_option_disabled("OPTIONS_ENABLE_OPENMP")
+endif(OPTIONS_ENABLE_OPENMP)
+
+# === DEBUG LOG ===
+# cmake -DDEBUG_LOG=ON ..
+if(DEBUG_LOG)
+    add_definitions(-DDEBUG_LOG=ON)
+    log_option_enabled("DEBUG LOG")
+else()
+    log_option_disabled("DEBUG LOG")
+endif(DEBUG_LOG)
 
 # === ASAN ===
 if(ASAN_ENABLED)
@@ -81,7 +110,7 @@ else()
     log_option_disabled("asan")
 endif()
 
-# Build static libs
+# === BUILD_STATIC_LIBRARY ===
 if(BUILD_STATIC_LIBRARY)
     log_option_enabled("STATIC_LIBRARY")
 
@@ -96,14 +125,19 @@ else()
     log_option_disabled("STATIC_LIBRARY")
 endif()
 
-# === DEBUG LOG ===
-# cmake -DDEBUG_LOG=ON ..
-if(DEBUG_LOG)
-    add_definitions(-DDEBUG_LOG=ON)
-    log_option_enabled("DEBUG LOG")
+# === SPEED_UP_BUILD_UNITY ===
+if(SPEED_UP_BUILD_UNITY)
+    log_option_enabled("SPEED_UP_BUILD_UNITY")
 else()
-    log_option_disabled("DEBUG LOG")
-endif(DEBUG_LOG)
+    log_option_disabled("SPEED_UP_BUILD_UNITY")
+endif(SPEED_UP_BUILD_UNITY)
+
+# === USE_PRECOMPILED_HEADER ===
+if(USE_PRECOMPILED_HEADER)
+    log_option_enabled("USE_PRECOMPILED_HEADER")
+else()
+    log_option_disabled("USE_PRECOMPILED_HEADER")
+endif(USE_PRECOMPILED_HEADER)
 
 # *****************************************************************************
 # Compiler Options
@@ -115,7 +149,9 @@ if (MSVC)
     endforeach(type)
 
     add_compile_options(/MP /FS /Zf /EHsc)
-endif (MSVC)
+else()
+    add_compile_options(-Wno-unused-parameter -Wno-sign-compare -Wno-switch -Wno-implicit-fallthrough -Wno-extra)
+endif()
 
 ## Link compilation files to build/bin folder, else link to the main dir
 function(set_output_directory target_name)

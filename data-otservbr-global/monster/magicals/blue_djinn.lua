@@ -34,7 +34,7 @@ monster.speed = 110
 monster.manaCost = 0
 
 monster.faction = FACTION_MARID
-monster.enemyFactions = { FACTION_EFREET, FACTION_PLAYER }
+monster.enemyFactions = { FACTION_PLAYER, FACTION_EFREET }
 
 monster.changeTarget = {
 	interval = 4000,

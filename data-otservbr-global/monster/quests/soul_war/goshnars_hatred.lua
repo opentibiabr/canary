@@ -14,7 +14,8 @@ monster.outfit = {
 }
 
 monster.events = {
-	"SoulwarsBossDeath",
+	"GoshnarsHatredBuff",
+	"SoulWarBossesDeath",
 }
 
 monster.health = 300000
@@ -67,14 +68,6 @@ monster.light = {
 	color = 0,
 }
 
-monster.summon = {
-	maxSummons = 4,
-	summons = {
-		{ name = "dreadful harvester", chance = 10, interval = 1000, count = 2 },
-		{ name = "hateful soul", chance = 10, interval = 1000, count = 2 },
-	},
-}
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,
@@ -109,7 +102,7 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5000 },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_DEATHDAMAGE, minDamage = -1350, maxDamage = -1700, range = 7, radius = 5, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_GROUNDSHAKER, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -1400, maxDamage = -2200, length = 8, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -1400, maxDamage = -2200, length = 8, spread = 0, effect = CONST_ME_GROUNDSHAKER, target = false },
 	{ name = "singlecloudchain", interval = 6000, chance = 40, minDamage = -1700, maxDamage = -2500, range = 6, effect = CONST_ME_ENERGYHIT, target = true },
 }
 
@@ -143,13 +136,26 @@ monster.immunities = {
 
 mType.onThink = function(monster, interval) end
 
-mType.onAppear = function(monster, creature)
+mType.onAppear = function(monster, creature) end
+
+mType.onSpawn = function(monster)
 	if monster:getType():isRewardBoss() then
 		monster:setReward(true)
 	end
+
+	monster:resetHatredDamageMultiplier()
 end
 
-mType.onDisappear = function(monster, creature) end
+mType.onDisappear = function(monster, creature)
+	if creature:getName() == "Goshnar's Hatred" then
+		for _, monsterName in pairs(SoulWarQuest.burningHatredMonsters) do
+			local ashesCreature = Creature(monsterName)
+			if ashesCreature then
+				ashesCreature:remove()
+			end
+		end
+	end
+end
 
 mType.onMove = function(monster, creature, fromPosition, toPosition) end
 

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -47,8 +47,8 @@ int MoveEventFunctions::luaMoveEventType(lua_State* L) {
 			moveevent->moveFunction = moveevent->RemoveItemField;
 		} else {
 			g_logger().error("[MoveEventFunctions::luaMoveEventType] - "
-							 "No valid event name: {}",
-							 typeName);
+			                 "No valid event name: {}",
+			                 typeName);
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -126,8 +126,8 @@ int MoveEventFunctions::luaMoveEventSlot(lua_State* L) {
 			moveevent->setSlot(SLOTP_AMMO);
 		} else {
 			g_logger().warn("[MoveEventFunctions::luaMoveEventSlot] - "
-							"Unknown slot type: {}",
-							slotName);
+			                "Unknown slot type: {}",
+			                slotName);
 			pushBoolean(L, false);
 			return 1;
 		}

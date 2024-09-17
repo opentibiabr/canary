@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -170,7 +170,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetConditionType(lua_State* L) {
 	const auto spell = getUserdataShared<MonsterSpell>(L, 1);
 	if (spell) {
 		auto conditionType = getNumber<uint8_t>(L, 2);
-		if (conditionType == -1) {
+		if (conditionType == 254) {
 			g_logger().error("[{}] trying to register condition type none for monster: {}", __FUNCTION__, spell->name);
 			reportErrorFunc(fmt::format("trying to register condition type none for monster: {}", spell->name));
 			pushBoolean(L, false);

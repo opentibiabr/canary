@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -84,23 +84,21 @@ void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBl
 	}
 
 	// Check if the item already exists in the shop vector and ignore it
-	for (auto shopIterator = npcType->info.shopItemVector.begin(); shopIterator != npcType->info.shopItemVector.end(); ++shopIterator) {
-		if (*shopIterator == shopBlock) {
-			return;
-		}
+	if (std::any_of(npcType->info.shopItemVector.begin(), npcType->info.shopItemVector.end(), [&shopBlock](const auto &shopIterator) {
+			return shopIterator == shopBlock;
+		})) {
+		return;
 	}
 
 	if (shopBlock.childShop.empty()) {
 		bool isContainer = iType.isContainer();
 		if (isContainer) {
-			for (ShopBlock child : shopBlock.childShop) {
+			for (const ShopBlock &child : shopBlock.childShop) {
 				shopBlock.childShop.push_back(child);
 			}
 		}
-		npcType->info.shopItemVector.push_back(shopBlock);
-	} else {
-		npcType->info.shopItemVector.push_back(shopBlock);
 	}
+	npcType->info.shopItemVector.push_back(shopBlock);
 
 	info.speechBubble = SPEECHBUBBLE_TRADE;
 }

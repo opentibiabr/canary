@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -30,8 +30,9 @@ public:
 
 	void run();
 
-	void sendMessage(const std::string payload, std::string url);
-	void sendMessage(const std::string title, const std::string message, int color, std::string url = "");
+	void sendPayload(const std::string &payload, std::string url);
+	void sendMessage(const std::string &title, const std::string &message, int color, std::string url = "", bool embed = true);
+	void sendMessage(const std::string &message, std::string url = "");
 
 private:
 	std::mutex taskLock;
@@ -43,7 +44,7 @@ private:
 
 	int sendRequest(const char* url, const char* payload, std::string* response_body) const;
 	static size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp);
-	std::string getPayload(const std::string title, const std::string message, int color) const;
+	std::string getPayload(const std::string &title, const std::string &message, int color, bool embed = true) const;
 };
 
 constexpr auto g_webhook = Webhook::getInstance;

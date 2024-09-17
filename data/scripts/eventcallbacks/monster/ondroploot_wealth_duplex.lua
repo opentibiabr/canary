@@ -1,18 +1,12 @@
-local callback = EventCallback()
+local callback = EventCallback("MonsterOnDropLootWealthDuplex")
 
 function callback.monsterOnDropLoot(monster, corpse)
-	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then
+	local player = Player(corpse:getCorpseOwner())
+	if not player or not player:canReceiveLoot() then
 		return
 	end
 	local mType = monster:getType()
-	if mType:isRewardBoss() then
-		return
-	end
-	local player = Player(corpse:getCorpseOwner())
-	if not player then
-		return
-	end
-	if player:getStamina() <= 840 then
+	if not mType then
 		return
 	end
 
@@ -65,7 +59,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 
 	local lootTable = {}
 	for _ = 1, rolls do
-		lootTable = mType:generateLootRoll({ factor = factor, gut = false }, lootTable)
+		lootTable = mType:generateLootRoll({ factor = factor, gut = false }, lootTable, player)
 	end
 	corpse:addLoot(lootTable)
 

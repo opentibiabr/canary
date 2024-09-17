@@ -76,18 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 73130, maxCount = 30 },
+	{ name = "platinum coin", chance = 73130, maxCount = 25 },
 	{ name = "harpy feathers", chance = 6720 },
 	{ name = "violet crystal shard", chance = 4690 },
 	{ name = "blue crystal shard", chance = 4530 },
 	{ name = "great spirit potion", chance = 2970, maxCount = 3 },
-	{ name = "violet gem", chance = 2500 },
 	{ name = "gold ring", chance = 1720 },
 	{ name = "wand of defiance", chance = 1720 },
 	{ name = "focus cape", chance = 1560 },
-	{ name = "ornate crossbow", chance = 1410 },
-	{ name = "magic plate armor", chance = 940 },
+	{ name = "violet gem", chance = 1200 },
+	{ name = "ornate crossbow", chance = 500 },
 	{ name = "shockwave amulet", chance = 470 },
+	{ name = "magic plate armor", chance = 440 },
 }
 
 monster.attacks = {

@@ -13,20 +13,20 @@ function talkaction.onSay(player, words, param)
 
 	if not kills or kills < 1 then
 		player:sendCancelMessage("Invalid kill count.")
-		return false
+		return true
 	end
 
 	local target = targetName ~= "" and Player(targetName) or player
 	if not target then
 		player:sendCancelMessage("Target player not found.")
-		return false
+		return true
 	end
 
 	local message = "Added received kills: " .. kills .. ", for boss: " .. monsterName
 	if target == player then
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, message .. " to yourself.")
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, message .. " to yourself.")
 	else
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, message .. " to player: " .. targetName)
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, message .. " to player: " .. targetName)
 		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received kills: " .. kills .. ", to boss: " .. monsterName)
 	end
 	target:addBosstiaryKill(monsterName, kills)

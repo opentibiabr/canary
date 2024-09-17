@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,7 +15,32 @@
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/movement.hpp"
 
-void MoveEvents::clear() {
+void MoveEvents::clear(bool isFromXML /*= false*/) {
+	if (isFromXML) {
+		int numRemoved = 0;
+		for (auto &pair : itemIdMap) {
+			MoveEventList &moveEventList = pair.second;
+
+			for (int moveEventType = 0; moveEventType < MOVE_EVENT_LAST; ++moveEventType) {
+				auto &eventList = moveEventList.moveEvent[moveEventType];
+
+				eventList.remove_if([&](const std::shared_ptr<MoveEvent> &moveEvent) {
+					bool removed = moveEvent && moveEvent->isFromXML();
+					if (removed) {
+						g_logger().debug("MoveEvent with id '{}' is from XML and will be removed.", pair.first);
+						++numRemoved;
+					}
+					return removed;
+				});
+			}
+		}
+
+		if (numRemoved > 0) {
+			g_logger().debug("Removed '{}' MoveEvent from XML.", numRemoved);
+		}
+		return;
+	}
+
 	uniqueIdMap.clear();
 	actionIdMap.clear();
 	itemIdMap.clear();
@@ -108,9 +133,9 @@ bool MoveEvents::registerLuaPositionEvent(const std::shared_ptr<MoveEvent> moveE
 bool MoveEvents::registerLuaEvent(const std::shared_ptr<MoveEvent> moveEvent) {
 	// Check if event is correct
 	if (registerLuaItemEvent(moveEvent)
-		|| registerLuaUniqueEvent(moveEvent)
-		|| registerLuaActionEvent(moveEvent)
-		|| registerLuaPositionEvent(moveEvent)) {
+	    || registerLuaUniqueEvent(moveEvent)
+	    || registerLuaActionEvent(moveEvent)
+	    || registerLuaPositionEvent(moveEvent)) {
 		return true;
 	} else {
 		g_logger().warn(
@@ -267,7 +292,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> moveEvent, const
 
 std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Tile> &tile, MoveEvent_t eventType) {
 	if (auto it = positionsMap.find(tile->getPosition());
-		it != positionsMap.end()) {
+	    it != positionsMap.end()) {
 		std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
 		if (!moveEventList.empty()) {
 			return *moveEventList.begin();
@@ -478,10 +503,6 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		return 0;
 	}
 
-	if (player->isItemAbilityEnabled(slot)) {
-		return 1;
-	}
-
 	if (!player->hasFlag(PlayerFlags_t::IgnoreWeaponCheck) && moveEvent->getWieldInfo() != 0) {
 		if (player->getLevel() < moveEvent->getReqLevel() || player->getMagicLevel() < moveEvent->getReqMagLv()) {
 			return 0;
@@ -504,9 +525,14 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 	const ItemType &it = Item::items[item->getID()];
 	if (it.transformEquipTo != 0) {
 		g_game().transformItem(item, it.transformEquipTo);
-	} else {
-		player->setItemAbility(slot, true);
 	}
+
+	if (player->isItemAbilityEnabled(slot)) {
+		g_logger().debug("[{}] item ability is already enabled", __FUNCTION__);
+		return 1;
+	}
+
+	player->setItemAbility(slot, true);
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
@@ -529,8 +555,8 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 			player->addCondition(condition);
 		}
 
-		if (it.abilities->speed != 0) {
-			g_game().changePlayerSpeed(player, it.abilities->speed);
+		if (item->getSpeed() != 0) {
+			g_game().changePlayerSpeed(player, item->getSpeed());
 		}
 
 		player->addConditionSuppressions(it.abilities->conditionSuppressions);
@@ -560,20 +586,26 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 
 		// Skill and stats modifiers
 		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-			if (it.abilities->skills[i]) {
-				player->setVarSkill(static_cast<skills_t>(i), it.abilities->skills[i]);
+			if (item->getSkill(static_cast<skills_t>(i)) != 0) {
+				player->setVarSkill(static_cast<skills_t>(i), item->getSkill(static_cast<skills_t>(i)));
 			}
 		}
 
 		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-			if (it.abilities->stats[s]) {
-				player->setVarStats(static_cast<stats_t>(s), it.abilities->stats[s]);
+			if (item->getStat(static_cast<stats_t>(s)) != 0) {
+				player->setVarStats(static_cast<stats_t>(s), item->getStat(static_cast<stats_t>(s)));
 			}
 
 			if (it.abilities->statsPercent[s]) {
 				player->setVarStats(static_cast<stats_t>(s), static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
 			}
 		}
+	}
+
+	// Updates the main backpack as unasigned if there is no item equipped
+	if (slot == CONST_SLOT_BACKPACK) {
+		g_logger().debug("[{}] does not have backpack, trying to add new container as unasigned", __FUNCTION__);
+		player->setMainBackpackUnassigned(item->getContainer());
 	}
 
 	player->sendStats();
@@ -593,15 +625,12 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 	}
 
 	if (!player->isItemAbilityEnabled(slot)) {
+		g_logger().debug("[{}] item ability is not enabled", __FUNCTION__);
 		return 1;
 	}
 
-	player->setItemAbility(slot, false);
-
 	const ItemType &it = Item::items[item->getID()];
-	if (it.transformDeEquipTo != 0) {
-		g_game().transformItem(item, it.transformDeEquipTo);
-	}
+	player->setItemAbility(slot, false);
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
@@ -622,33 +651,38 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 			player->removeCondition(CONDITION_MANASHIELD, static_cast<ConditionId_t>(slot));
 		}
 
-		if (it.abilities->speed != 0) {
-			g_game().changePlayerSpeed(player, -it.abilities->speed);
-		}
-
-		player->removeConditionSuppressions();
-		player->sendIcons();
-
 		if (it.abilities->regeneration) {
 			player->removeCondition(CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));
 		}
 
-		// Skill and stats modifiers
-		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-			if (it.abilities->skills[i] != 0) {
-				player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
-			}
-		}
-
 		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-			if (it.abilities->stats[s]) {
-				player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
-			}
-
 			if (it.abilities->statsPercent[s]) {
 				player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
 			}
 		}
+	}
+
+	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
+		if (item->getSkill(static_cast<skills_t>(i)) != 0) {
+			player->setVarSkill(static_cast<skills_t>(i), -item->getSkill(static_cast<skills_t>(i)));
+		}
+	}
+
+	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
+		if (item->getStat(static_cast<stats_t>(s))) {
+			player->setVarStats(static_cast<stats_t>(s), -item->getStat(static_cast<stats_t>(s)));
+		}
+	}
+
+	if (item->getSpeed() != 0) {
+		g_game().changePlayerSpeed(player, -item->getSpeed());
+	}
+
+	player->removeConditionSuppressions();
+	player->sendIcons();
+
+	if (it.transformDeEquipTo != 0) {
+		g_game().transformItem(item, it.transformDeEquipTo);
 	}
 
 	player->sendStats();
@@ -693,12 +727,12 @@ bool MoveEvent::executeStep(const std::shared_ptr<Creature> &creature, std::shar
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		if (item != nullptr) {
 			g_logger().error("[MoveEvent::executeStep - Creature {} item {}, position {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 creature->getName(), item->getName(), pos.toString());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 creature->getName(), item->getName(), pos.toString());
 		} else {
 			g_logger().error("[MoveEvent::executeStep - Creature {}, position {}] "
-							 "Call stack overflow. Too many lua script calls being nested.",
-							 creature->getName(), pos.toString());
+			                 "Call stack overflow. Too many lua script calls being nested.",
+			                 creature->getName(), pos.toString());
 		}
 		return false;
 	}
@@ -736,8 +770,8 @@ bool MoveEvent::executeEquip(const std::shared_ptr<Player> &player, const std::s
 	// onDeEquip(player, item, slot, isCheck)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[MoveEvent::executeEquip - Player {} item {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName(), item->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 player->getName(), item->getName());
 		return false;
 	}
 
@@ -769,9 +803,9 @@ bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const std::
 	// onRemoveItem(moveitem, tileitem, pos)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[MoveEvent::executeAddRemItem - "
-						 "Item {} item on tile x: {} y: {} z: {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 item->getName(), pos.getX(), pos.getY(), pos.getZ());
+		                 "Item {} item on tile x: {} y: {} z: {}] "
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 item->getName(), pos.getX(), pos.getY(), pos.getZ());
 		return false;
 	}
 
@@ -801,9 +835,9 @@ bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const Posit
 	// onRemoveItem(moveitem, pos)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[MoveEvent::executeAddRemItem - "
-						 "Item {} item on tile x: {} y: {} z: {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 item->getName(), pos.getX(), pos.getY(), pos.getZ());
+		                 "Item {} item on tile x: {} y: {} z: {}] "
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 item->getName(), pos.getX(), pos.getY(), pos.getZ());
 		return false;
 	}
 

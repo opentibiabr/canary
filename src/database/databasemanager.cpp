@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -89,8 +89,8 @@ void DatabaseManager::updateDatabase() {
 		ss << g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/migrations/" << version << ".lua";
 		if (luaL_dofile(L, ss.str().c_str()) != 0) {
 			g_logger().error("DatabaseManager::updateDatabase - Version: {}"
-							 "] {}",
-							 version, lua_tostring(L, -1));
+			                 "] {}",
+			                 version, lua_tostring(L, -1));
 			break;
 		}
 

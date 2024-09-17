@@ -96,6 +96,19 @@ string.splitTrimmed = function(str, sep)
 	return res
 end
 
+-- Function that splits a string into parts using a separator
+-- @param str (string) - the string to be split, sep (string) - the separator to be used
+-- @return a table containing the separated parts of the string
+function string.splitFirst(str, delimiter)
+	local start, finish = string.find(str, delimiter)
+	if start == nil then
+		return str, nil
+	end
+	local firstPart = string.sub(str, 1, start - 1)
+	local secondPart = string.sub(str, finish + 1)
+	return firstPart:trim(), secondPart:trim()
+end
+
 --- Function that removes whitespace from the beginning and end of a string
 -- @param str (string) - the string to be modified
 -- @return the string without whitespace at the beginning and end

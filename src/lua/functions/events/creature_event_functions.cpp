@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -54,8 +54,8 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 			creatureEvent->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
 		} else {
 			g_logger().error("[CreatureEventFunctions::luaCreatureEventType] - "
-							 "Invalid type for creature event: {}",
-							 typeName);
+			                 "Invalid type for creature event: {}",
+			                 typeName);
 			pushBoolean(L, false);
 		}
 		creatureEvent->setLoaded(true);

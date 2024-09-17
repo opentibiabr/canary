@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -46,23 +46,34 @@ public:
 	static EventsCallbacks &getInstance();
 
 	/**
+	 * @brief Checks if an event callback is already registered.
+	 *
+	 * @details Determines if the game state is at startup and if a callback with the same name already exists.
+	 * @details If both conditions are met, logs an error and indicates the callback is already registered.
+	 *
+	 * @param callback Shared pointer to the event callback being checked.
+	 * @return True if the callback already exists during the game startup state, otherwise false.
+	 */
+	bool isCallbackRegistered(const std::shared_ptr<EventCallback> &callback);
+
+	/**
 	 * @brief Adds a new event callback to the list.
 	 * @param callback Pointer to the EventCallback object to add.
 	 */
-	void addCallback(const std::shared_ptr<EventCallback> callback);
+	void addCallback(const std::shared_ptr<EventCallback> &callback);
 
 	/**
 	 * @brief Gets all registered event callbacks.
 	 * @return Vector of pointers to EventCallback objects.
 	 */
-	std::vector<std::shared_ptr<EventCallback>> getCallbacks() const;
+	std::unordered_map<std::string, std::shared_ptr<EventCallback>> getCallbacks() const;
 
 	/**
 	 * @brief Gets event callbacks by their type.
 	 * @param type The type of callbacks to retrieve.
 	 * @return Vector of pointers to EventCallback objects of the specified type.
 	 */
-	std::vector<std::shared_ptr<EventCallback>> getCallbacksByType(EventCallback_t type) const;
+	std::unordered_map<std::string, std::shared_ptr<EventCallback>> getCallbacksByType(EventCallback_t type) const;
 
 	/**
 	 * @brief Clears all registered event callbacks.
@@ -77,7 +88,7 @@ public:
 	 */
 	template <typename CallbackFunc, typename... Args>
 	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
-		for (const auto &callback : getCallbacksByType(eventType)) {
+		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
 			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
 				std::apply(
@@ -86,8 +97,35 @@ public:
 					},
 					argsCopy
 				);
+				g_logger().trace("Executed callback: {}", name);
 			}
 		}
+	}
+	/**
+	 * @brief Checks if all registered callbacks of the specified event type succeed.
+	 * @param eventType The type of event to check.
+	 * @param callbackFunc Function pointer to the callback method.
+	 * @param args Variadic arguments to pass to the callback function.
+	 * @return ReturnValue enum.
+	 */
+	template <typename CallbackFunc, typename... Args>
+	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
+		ReturnValue res = RETURNVALUE_NOERROR;
+		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
+			auto argsCopy = std::make_tuple(args...);
+			if (callback && callback->isLoadedCallback()) {
+				ReturnValue callbackResult = std::apply(
+					[&callback, &callbackFunc](auto &&... args) {
+						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
+					},
+					argsCopy
+				);
+				if (callbackResult != RETURNVALUE_NOERROR) {
+					return callbackResult;
+				}
+			}
+		}
+		return res;
 	}
 
 	/**
@@ -101,7 +139,7 @@ public:
 	bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		bool allCallbacksSucceeded = true;
 
-		for (const auto &callback : getCallbacksByType(eventType)) {
+		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
 			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
 				bool callbackResult = std::apply(
@@ -118,7 +156,7 @@ public:
 
 private:
 	// Container for storing registered event callbacks.
-	std::vector<std::shared_ptr<EventCallback>> m_callbacks;
+	std::unordered_map<std::string, std::shared_ptr<EventCallback>> m_callbacks;
 };
 
 constexpr auto g_callbacks = EventsCallbacks::getInstance;

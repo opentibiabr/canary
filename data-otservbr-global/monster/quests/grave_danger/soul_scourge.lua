@@ -62,8 +62,8 @@ monster.voices = {
 monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -700 },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -500, maxDamage = -750, range = 5, shootEffect = CONST_ANI_SUDDENDEATH, target = true },
+	{ name = "melee", interval = 2000, chance = 80, minDamage = 0, maxDamage = -500 },
+	{ name = "combat", interval = 3500, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -300, maxDamage = -500, range = 5, shootEffect = CONST_ANI_SUDDENDEATH, target = true },
 }
 
 monster.defenses = {

@@ -34,7 +34,7 @@ monster.speed = 155
 monster.manaCost = 0
 
 monster.faction = FACTION_DEATHLING
-monster.enemyFactions = { FACTION_DEEPLING, FACTION_PLAYER }
+monster.enemyFactions = { FACTION_PLAYER, FACTION_DEEPLING }
 
 monster.changeTarget = {
 	interval = 4000,

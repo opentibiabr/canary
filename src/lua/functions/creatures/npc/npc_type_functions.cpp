@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -258,7 +258,7 @@ int NpcTypeFunctions::luaNpcTypeRegisterEvent(lua_State* L) {
 	// npcType:registerEvent(name)
 	const auto &npcType = getUserdataShared<NpcType>(L, 1);
 	if (npcType) {
-		npcType->info.scripts.push_back(getString(L, 2));
+		npcType->info.scripts.insert(getString(L, 2));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

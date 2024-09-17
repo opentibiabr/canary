@@ -1,6 +1,6 @@
 local storeItemID = {
 	-- registered item ids here are not tradable with players
-	-- these items can be set to moveable at items.xml
+	-- these items can be set to movable at items.xml
 	-- 500 charges exercise weapons
 	28552, -- exercise sword
 	28553, -- exercise axe
@@ -140,8 +140,8 @@ local function useStaminaXpBoost(player)
 		return false
 	end
 
-	local staminaMinutes = player:getExpBoostStamina() / 60
-	if staminaMinutes == 0 then
+	local xpBoostMinutes = player:getXpBoostTime() / 60
+	if xpBoostMinutes == 0 then
 		return
 	end
 
@@ -156,18 +156,26 @@ local function useStaminaXpBoost(player)
 		return
 	end
 
+	local xpBoostLeftMinutesByDailyReward = player:kv():get("daily-reward-xp-boost") or 0
 	if timePassed > 60 then
-		if staminaMinutes > 2 then
-			staminaMinutes = staminaMinutes - 2
+		if xpBoostMinutes > 2 then
+			xpBoostMinutes = xpBoostMinutes - 2
+			if xpBoostLeftMinutesByDailyReward > 2 then
+				player:kv():set("daily-reward-xp-boost", xpBoostLeftMinutesByDailyReward - 2)
+			end
 		else
-			staminaMinutes = 0
+			xpBoostMinutes = 0
+			player:kv():remove("daily-reward-xp-boost")
 		end
 		_G.NextUseXpStamina[playerId] = currentTime + 120
 	else
-		staminaMinutes = staminaMinutes - 1
+		xpBoostMinutes = xpBoostMinutes - 1
+		if xpBoostLeftMinutesByDailyReward > 0 then
+			player:kv():set("daily-reward-xp-boost", xpBoostLeftMinutesByDailyReward - 1)
+		end
 		_G.NextUseXpStamina[playerId] = currentTime + 60
 	end
-	player:setExpBoostStamina(staminaMinutes * 60)
+	player:setXpBoostTime(xpBoostMinutes * 60)
 end
 
 local function useConcoctionTime(player)
@@ -206,8 +214,9 @@ function Player:onLookInBattleList(creature, distance)
 		local master = creature:getMaster()
 		local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }
 		if master and table.contains(summons, creature:getName():lower()) then
+			local familiarSummonTime = master:kv():get("familiar-summon-time") or 0
 			description = description .. " (Master: " .. master:getName() .. "). \z
-				It will disappear in " .. getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
+				It will disappear in " .. getTimeInWords(familiarSummonTime - os.time())
 		end
 	end
 	if self:getGroup():getAccess() then
@@ -518,14 +527,14 @@ function Player:onGainExperience(target, exp, rawExp)
 		self:addCondition(soulCondition)
 	end
 
-	-- Store Bonus
-	useStaminaXpBoost(self) -- Use store boost stamina
+	-- XP Boost Bonus
+	useStaminaXpBoost(self) -- Use stamina XP boost (store or daily reward)
 
-	local Boost = self:getExpBoostStamina()
-	local stillHasBoost = Boost > 0
-	local storeXpBoostAmount = stillHasBoost and self:getStoreXpBoost() or 0
+	local xpBoostTimeLeft = self:getXpBoostTime()
+	local stillHasXpBoost = xpBoostTimeLeft > 0
+	local xpBoostPercent = stillHasXpBoost and self:getXpBoostPercent() or 0
 
-	self:setStoreXpBoost(storeXpBoostAmount)
+	self:setXpBoostPercent(xpBoostPercent)
 
 	-- Stamina Bonus
 	local staminaBonusXp = 1
@@ -563,7 +572,7 @@ function Player:onGainExperience(target, exp, rawExp)
 	local lowLevelBonuxExp = self:getFinalLowLevelBonus()
 	local baseRate = self:getFinalBaseRateExperience()
 
-	return (exp + (exp * (storeXpBoostAmount / 100) + (exp * (lowLevelBonuxExp / 100)))) * staminaBonusXp * baseRate
+	return (exp + (exp * (xpBoostPercent / 100) + (exp * (lowLevelBonuxExp / 100)))) * staminaBonusXp * baseRate
 end
 
 function Player:onLoseExperience(exp)
@@ -638,22 +647,18 @@ function Player:onChangeZone(zone)
 				if stamina < 2520 then
 					if not event then
 						local delay = configManager.getNumber(configKeys.STAMINA_ORANGE_DELAY)
-						if stamina > 2400 and stamina <= 2520 then
+						if stamina > 2340 and stamina <= 2520 then
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 
-						local message = string.format("In protection zone. Every %i minutes, gain %i stamina.", delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN))
-						self:sendTextMessage(MESSAGE_STATUS, message)
+						local message = string.format("In protection zone. Recharging %i stamina every %i minutes.", configManager.getNumber(configKeys.STAMINA_PZ_GAIN), delay)
+						self:sendTextMessage(MESSAGE_FAILURE, message)
 						staminaBonus.eventsPz[self:getId()] = addEvent(addStamina, delay * 60 * 1000, nil, self:getId(), delay * 60 * 1000)
 					end
 				end
 			else
 				if event then
-					self:sendTextMessage(
-						MESSAGE_STATUS,
-						"You are no longer refilling stamina, \z
-                                         since you left a regeneration zone."
-					)
+					self:sendTextMessage(MESSAGE_FAILURE, "You are no longer refilling stamina, since you left a regeneration zone.")
 					stopEvent(event)
 					staminaBonus.eventsPz[self:getId()] = nil
 				end
@@ -665,3 +670,24 @@ function Player:onChangeZone(zone)
 end
 
 function Player:onInventoryUpdate(item, slot, equip) end
+
+function Player:getURL()
+	local playerLink = string.gsub(self:getName(), "%s+", "+")
+	local serverURL = configManager.getString(configKeys.URL)
+	return serverURL .. "/characters/" .. playerLink
+end
+
+function Player:getMarkdownLink()
+	local vocation = self:vocationAbbrev()
+	local emoji = ":school_satchel:"
+	if self:isKnight() then
+		emoji = ":crossed_swords:"
+	elseif self:isPaladin() then
+		emoji = ":bow_and_arrow:"
+	elseif self:isDruid() then
+		emoji = ":herb:"
+	elseif self:isSorcerer() then
+		emoji = ":crystal_ball:"
+	end
+	return "**[" .. self:getName() .. "](" .. self:getURL() .. ")** " .. emoji .. " [_" .. vocation .. "_]"
+end

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,6 +12,7 @@
 #include "mapcache.hpp"
 
 #include "game/movement/teleport.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "items/bed.hpp"
 #include "io/iologindata.hpp"
 #include "items/item.hpp"
@@ -70,7 +71,7 @@ void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, std::s
 	}
 
 	/* if (BasicItem.description != 0)
-		item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
+	    item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
 }
 
 std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position) {
@@ -103,8 +104,9 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 
 std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
 	const auto cachedTile = floor->getTileCache(x, y);
+	const auto oldTile = floor->getTile(x, y);
 	if (!cachedTile) {
-		return floor->getTile(x, y);
+		return oldTile;
 	}
 
 	std::unique_lock l(floor->getMutex());
@@ -112,6 +114,15 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	const uint8_t z = floor->getZ();
 
 	auto map = static_cast<Map*>(this);
+
+	std::vector<std::shared_ptr<Creature>> oldCreatureList;
+	if (oldTile) {
+		if (CreatureVector* creatures = oldTile->getCreatures()) {
+			for (const auto &creature : *creatures) {
+				oldCreatureList.emplace_back(creature);
+			}
+		}
+	}
 
 	std::shared_ptr<Tile> tile = nullptr;
 	if (cachedTile->isHouse()) {
@@ -126,6 +137,10 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 
 	auto pos = Position(x, y, z);
 
+	for (const auto &creature : oldCreatureList) {
+		tile->internalAddThing(creature);
+	}
+
 	if (cachedTile->ground != nullptr) {
 		tile->internalAddThing(createItem(cachedTile->ground, pos));
 	}
@@ -135,9 +150,13 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	}
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
-	for (const auto &zone : Zone::getZones(pos)) {
-		tile->addZone(zone);
-	}
+
+	// add zone synchronously
+	g_dispatcher().context().tryAddEvent([tile, pos] {
+		for (const auto &zone : Zone::getZones(pos)) {
+			tile->addZone(zone);
+		}
+	});
 
 	floor->setTile(x, y, tile);
 
@@ -154,15 +173,55 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared
 	}
 
 	const auto tile = static_tryGetTileFromCache(newTile);
-	if (const auto leaf = QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y)) {
-		leaf->createFloor(z)->setTileCache(x, y, tile);
+	if (const auto sector = getMapSector(x, y)) {
+		sector->createFloor(z)->setTileCache(x, y, tile);
 	} else {
-		root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, tile);
+		getBestMapSector(x, y)->createFloor(z)->setTileCache(x, y, tile);
 	}
 }
 
 std::shared_ptr<BasicItem> MapCache::tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref) {
 	return static_tryGetItemFromCache(ref);
+}
+
+MapSector* MapCache::createMapSector(const uint32_t x, const uint32_t y) {
+	const uint32_t index = x / SECTOR_SIZE | y / SECTOR_SIZE << 16;
+	const auto it = mapSectors.find(index);
+	if (it != mapSectors.end()) {
+		return &it->second;
+	}
+
+	MapSector::newSector = true;
+	return &mapSectors[index];
+}
+
+MapSector* MapCache::getBestMapSector(uint32_t x, uint32_t y) {
+	MapSector::newSector = false;
+	const auto sector = createMapSector(x, y);
+
+	if (MapSector::newSector) {
+		// update north sector
+		if (const auto northSector = getMapSector(x, y - SECTOR_SIZE)) {
+			northSector->sectorS = sector;
+		}
+
+		// update west sector
+		if (const auto westSector = getMapSector(x - SECTOR_SIZE, y)) {
+			westSector->sectorE = sector;
+		}
+
+		// update south sector
+		if (const auto southSector = getMapSector(x, y + SECTOR_SIZE)) {
+			sector->sectorS = southSector;
+		}
+
+		// update east sector
+		if (const auto eastSector = getMapSector(x + SECTOR_SIZE, y)) {
+			sector->sectorE = eastSector;
+		}
+	}
+
+	return sector;
 }
 
 void BasicTile::hash(size_t &h) const {

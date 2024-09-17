@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -23,6 +23,9 @@ ReturnValue DepotChest::queryAdd(int32_t index, const std::shared_ptr<Thing> &th
 	std::shared_ptr<Item> item = thing->getItem();
 	if (item == nullptr) {
 		return RETURNVALUE_NOTPOSSIBLE;
+	}
+	if (actor && item->hasOwner() && !item->isOwner(actor)) {
+		return RETURNVALUE_ITEMISNOTYOURS;
 	}
 
 	bool skipLimit = hasBitSet(FLAG_NOLIMIT, flags);

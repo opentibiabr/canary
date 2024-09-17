@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -29,9 +29,9 @@ class FrozenPathingConditionCall;
  * Map class.
  * Holds all the actual map-data
  */
-class Map : protected MapCache {
+class Map : public MapCache {
 public:
-	static uint32_t clean();
+	uint32_t clean();
 
 	std::filesystem::path getPath() const {
 		return path;
@@ -108,8 +108,7 @@ public:
 	 *	\param checkLineOfSight checks if there is any blocking objects in the way
 	 *	\returns The result if you can throw there or not
 	 */
-	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
-
+	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight = SightLine_CheckSightLine, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 	/**
 	 * Checks if path is clear from fromPos to toPos
 	 * Notice: This only checks a straight line if the path is clear, for path finding use getPathTo.
@@ -119,21 +118,19 @@ public:
 	 *	\returns The result if there is no obstacles
 	 */
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck);
-	bool checkSightLine(const Position &fromPos, const Position &toPos);
+	bool checkSightLine(Position start, Position destination);
 
 	std::shared_ptr<Tile> canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos);
 
-	bool getPathMatching(const std::shared_ptr<Creature> &creature, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatching(const std::shared_ptr<Creature> &creature, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatching(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatchingCond(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
-	bool getPathMatching(const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	bool getPathMatching(const Position &startPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 		return getPathMatching(nullptr, startPos, dirList, pathCondition, fpp);
 	}
 
 	std::map<std::string, Position> waypoints;
-
-	QTreeLeafNode* getQTNode(uint16_t x, uint16_t y) {
-		return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);
-	}
 
 	// Storage made by "loadFromXML" of houses, monsters and npcs for main map
 	SpawnsMonster spawnsMonster;
@@ -147,8 +144,6 @@ public:
 	Houses housesCustomMaps[50];
 
 private:
-	bool getPathMatching(const std::shared_ptr<Creature> &creature, const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
-
 	/**
 	 * Set a single tile.
 	 */

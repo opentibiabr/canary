@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -22,7 +22,7 @@
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
 
-bool GameReload::init(Reload_t reloadTypes) const {
+bool GameReload::init(Reload_t reloadTypes) {
 	switch (reloadTypes) {
 		case Reload_t::RELOAD_TYPE_ALL:
 			return reloadAll();
@@ -32,33 +32,48 @@ bool GameReload::init(Reload_t reloadTypes) const {
 			return reloadConfig();
 		case Reload_t::RELOAD_TYPE_EVENTS:
 			return reloadEvents();
-		case Reload_t::RELOAD_TYPE_CORE:
-			return reloadCore();
-		case Reload_t::RELOAD_TYPE_IMBUEMENTS:
-			return reloadImbuements();
-		case Reload_t::RELOAD_TYPE_ITEMS:
-			return reloadItems();
 		case Reload_t::RELOAD_TYPE_MODULES:
 			return reloadModules();
-		case Reload_t::RELOAD_TYPE_MONSTERS:
-			return reloadMonsters();
+		case Reload_t::RELOAD_TYPE_OUTFITS:
+			return reloadOutfits();
 		case Reload_t::RELOAD_TYPE_MOUNTS:
 			return reloadMounts();
+		case Reload_t::RELOAD_TYPE_FAMILIARS:
+			return reloadFamiliars();
+		case Reload_t::RELOAD_TYPE_IMBUEMENTS:
+			return reloadImbuements();
+		case Reload_t::RELOAD_TYPE_VOCATIONS:
+			return reloadVocations();
+		case Reload_t::RELOAD_TYPE_CORE:
+			return reloadCore();
+		case Reload_t::RELOAD_TYPE_GROUPS:
+			return reloadGroups();
+		case Reload_t::RELOAD_TYPE_SCRIPTS:
+			return reloadScripts();
+		case Reload_t::RELOAD_TYPE_ITEMS:
+			return reloadItems();
+		case Reload_t::RELOAD_TYPE_MONSTERS:
+			return reloadMonsters();
 		case Reload_t::RELOAD_TYPE_NPCS:
 			return reloadNpcs();
 		case Reload_t::RELOAD_TYPE_RAIDS:
 			return reloadRaids();
-		case Reload_t::RELOAD_TYPE_SCRIPTS:
-			return reloadScripts();
-		case Reload_t::RELOAD_TYPE_GROUPS:
-			return reloadGroups();
 		default:
 			return false;
 	}
 }
 
-uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) const {
+uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) {
 	return magic_enum::enum_integer(reloadTypes);
+}
+
+// Helper function for logging reload status
+void logReloadStatus(const std::string &name, bool result) {
+	if (result) {
+		g_logger().info("Reloaded: {}", name);
+	} else {
+		g_logger().error("Failed to reload: {}", name);
+	}
 }
 
 /*
@@ -67,102 +82,147 @@ uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) const {
  * If it is necessary to call elsewhere, seriously think about creating a function that calls this
  * Changing this to public may cause some unexpected behavior or bug
  */
-bool GameReload::reloadAll() const {
+bool GameReload::reloadAll() {
 	std::vector<bool> reloadResults;
 	reloadResults.reserve(magic_enum::enum_count<Reload_t>());
 
 	for (auto value : magic_enum::enum_values<Reload_t>()) {
-		if (value == Reload_t::RELOAD_TYPE_ALL) {
-			continue;
+		const auto name = magic_enum::enum_name(value);
+		g_logger().info("Reloading: {}", name);
+		if (value != Reload_t::RELOAD_TYPE_ALL) {
+			reloadResults.push_back(init(value));
 		}
-
-		reloadResults.push_back(init(value));
 	}
 
 	return std::ranges::any_of(reloadResults, [](bool result) { return result; });
 }
 
-bool GameReload::reloadChat() const {
-	return g_chat().load();
+bool GameReload::reloadChat() {
+	const bool result = g_chat().load();
+	logReloadStatus("Chat", result);
+	return result;
 }
 
-bool GameReload::reloadConfig() const {
-	return g_configManager().reload();
+bool GameReload::reloadConfig() {
+	const bool result = g_configManager().reload();
+	logReloadStatus("Config", result);
+	return result;
 }
 
-bool GameReload::reloadEvents() const {
-	return g_events().loadFromXml();
+bool GameReload::reloadEvents() {
+	const bool result = g_events().loadFromXml();
+	logReloadStatus("Events", result);
+	return result;
 }
 
-bool GameReload::reloadCore() const {
-	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
-		g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0) {
-		// Reload scripts lib
-		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-		if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
-			return false;
+bool GameReload::reloadModules() {
+	const bool result = g_modules().reload();
+	logReloadStatus("Modules", result);
+	return result;
+}
+
+bool GameReload::reloadOutfits() {
+	const bool result = g_game().outfits.reload();
+	logReloadStatus("Outfits", result);
+	return result;
+}
+
+bool GameReload::reloadMounts() {
+	const bool result = g_game().mounts.reload();
+	logReloadStatus("Mounts", result);
+	return result;
+}
+
+bool GameReload::reloadFamiliars() {
+	const bool result = g_game().familiars.reload();
+	logReloadStatus("Familiars", result);
+	return result;
+}
+
+bool GameReload::reloadImbuements() {
+	const bool result = g_imbuements().reload();
+	logReloadStatus("Imbuements", result);
+	return result;
+}
+
+bool GameReload::reloadVocations() {
+	const bool result = g_vocations().reload();
+	reloadScripts();
+	logReloadStatus("Vocations", result);
+	return result;
+}
+
+bool GameReload::reloadCore() {
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	const bool coreLoaded = g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
+
+	if (coreLoaded) {
+		const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
+		if (scriptsLoaded) {
+			return true;
 		}
-
-		return true;
 	}
+
+	logReloadStatus("Core", false);
 	return false;
 }
 
-bool GameReload::reloadImbuements() const {
-	return g_imbuements().reload();
+bool GameReload::reloadGroups() {
+	const bool result = g_game().groups.reload();
+	logReloadStatus("Groups", result);
+	return result;
 }
 
-bool GameReload::reloadItems() const {
-	return Item::items.reload();
-}
-
-bool GameReload::reloadModules() const {
-	return g_modules().reload();
-}
-
-bool GameReload::reloadMonsters() const {
-	// Clear registered MonsterType vector
-	g_monsters().clear();
-	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
-	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
-		return false;
-	}
-
-	if (g_scripts().loadScripts(datapackFolder + "/monster", false, true) && g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, true)) {
-		return true;
-	}
-	return false;
-}
-
-bool GameReload::reloadMounts() const {
-	return g_game().mounts.reload();
-}
-
-bool GameReload::reloadNpcs() const {
-	return g_npcs().reload();
-}
-
-bool GameReload::reloadRaids() const {
-	return g_game().raids.reload() && g_game().raids.startup();
-}
-
-bool GameReload::reloadScripts() const {
+bool GameReload::reloadScripts() {
 	g_scripts().clearAllScripts();
 	Zone::clearZones();
-	// Reset scripts lib to prevent the objects from being incorrectly cleared from memory
-	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false);
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+
+	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+
+	g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
 	g_scripts().loadScripts(datapackFolder + "/scripts", false, true);
 	g_scripts().loadScripts(coreFolder + "/scripts", false, true);
 
 	// It should come last, after everything else has been cleaned up.
 	reloadMonsters();
 	reloadNpcs();
+	reloadItems();
+	logReloadStatus("Scripts", true);
 	return true;
 }
 
-bool GameReload::reloadGroups() const {
-	return g_game().groups.reload();
+bool GameReload::reloadItems() {
+	const bool result = Item::items.reload();
+	logReloadStatus("Items", result);
+	return result;
+}
+
+bool GameReload::reloadMonsters() {
+	g_monsters().clear();
+	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+
+	const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
+	const bool monsterScriptsLoaded = g_scripts().loadScripts(datapackFolder + "/monster", false, true);
+
+	if (scriptsLoaded && monsterScriptsLoaded) {
+		logReloadStatus("Monsters", true);
+		return true;
+	} else {
+		logReloadStatus("Monsters", false);
+		return false;
+	}
+}
+
+bool GameReload::reloadNpcs() {
+	const bool result = g_npcs().reload();
+	logReloadStatus("NPCs", result);
+	return result;
+}
+
+bool GameReload::reloadRaids() {
+	const bool result = g_game().raids.reload() && g_game().raids.startup();
+	logReloadStatus("Raids", result);
+	return result;
 }

@@ -33,7 +33,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission09)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission09)
 	-- Skip if not was started or finished
 	if missionState == -1 or missionState > 7 then
 		return true
@@ -49,7 +49,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 			end
 		end
 		if missionTile.newState then
-			player:setStorageValue(Storage.TheRookieGuard.Mission09, missionTile.newState)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission09, missionTile.newState)
 		end
 	end
 	return true
@@ -69,7 +69,7 @@ function tunnelHole.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission09)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission09)
 	if missionState == -1 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have no business down there.")
 		player:teleportTo(fromPosition, true)
@@ -104,19 +104,19 @@ local chests = {
 local trunkChest = Action()
 
 function trunkChest.onUse(player, item, frompos, itemEx, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission09)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission09)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
 	end
 	if missionState >= 2 then
 		local chest = chests[item.uid]
-		local chestsState = player:getStorageValue(Storage.TheRookieGuard.TrollChests)
+		local chestsState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.TrollChests)
 		local hasOpenedChest = testFlag(chestsState, chest.id)
 		if not hasOpenedChest then
 			local reward = Game.createItem(chest.itemId, 1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found " .. reward:getArticle() .. " " .. reward:getName() .. ".")
-			player:setStorageValue(Storage.TheRookieGuard.TrollChests, chestsState + chest.id)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.TrollChests, chestsState + chest.id)
 			player:addItemEx(reward, true, CONST_SLOT_WHEREEVER)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. item:getName() .. " is empty.")
@@ -148,10 +148,10 @@ local tunnelPillars = {
 
 -- /data/scripts/lib/register_actions.lua (onUsePick)
 function onUsePickAtTunnelPillar(player, item, fromPosition, itemEx, toPosition)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission09)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission09)
 	local pillarId = tunnelPillars[itemEx.uid]
 	if missionState >= 2 and missionState <= 7 and pillarId then
-		local pillarsState = player:getStorageValue(Storage.TheRookieGuard.TunnelPillars)
+		local pillarsState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.TunnelPillars)
 		local hasDamagedPillar = testFlag(pillarsState, pillarId)
 		if not hasDamagedPillar then
 			local newMissionState = missionState + 1
@@ -163,8 +163,8 @@ function onUsePickAtTunnelPillar(player, item, fromPosition, itemEx, toPosition)
 			end
 			player:say("<crack>", TALKTYPE_MONSTER_SAY, false, player, toPosition)
 			toPosition:sendMagicEffect(CONST_ME_HITAREA)
-			player:setStorageValue(Storage.TheRookieGuard.Mission09, newMissionState)
-			player:setStorageValue(Storage.TheRookieGuard.TunnelPillars, pillarsState + pillarId)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission09, newMissionState)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.TunnelPillars, pillarsState + pillarId)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've already weakened this beam. Better leave it alone now so it won't collapse before you are out of here.")
 		end

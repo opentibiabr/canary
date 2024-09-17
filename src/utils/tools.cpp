@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -470,12 +470,12 @@ std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
-std::time_t getTimeMsNow() {
+int64_t getTimeMsNow() {
 	auto duration = std::chrono::system_clock::now().time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }
 
-std::time_t getTimeUsNow() {
+int64_t getTimeUsNow() {
 	auto duration = std::chrono::system_clock::now().time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
 }
@@ -1077,6 +1077,47 @@ std::string getWeaponName(WeaponType_t weaponType) {
 	}
 }
 
+WeaponType_t getWeaponType(const std::string &name) {
+	static const std::unordered_map<std::string, WeaponType_t> type_mapping = {
+		{ "none", WeaponType_t::WEAPON_NONE },
+		{ "sword", WeaponType_t::WEAPON_SWORD },
+		{ "club", WeaponType_t::WEAPON_CLUB },
+		{ "axe", WeaponType_t::WEAPON_AXE },
+		{ "shield", WeaponType_t::WEAPON_SHIELD },
+		{ "distance", WeaponType_t::WEAPON_DISTANCE },
+		{ "wand", WeaponType_t::WEAPON_WAND },
+		{ "ammo", WeaponType_t::WEAPON_AMMO },
+		{ "missile", WeaponType_t::WEAPON_MISSILE }
+	};
+
+	auto it = type_mapping.find(name);
+	if (it != type_mapping.end()) {
+		return it->second;
+	}
+
+	return WEAPON_NONE;
+}
+
+MoveEvent_t getMoveEventType(const std::string &name) {
+	static const std::unordered_map<std::string, MoveEvent_t> move_event_type_mapping = {
+		{ "stepin", MOVE_EVENT_STEP_IN },
+		{ "stepout", MOVE_EVENT_STEP_OUT },
+		{ "equip", MOVE_EVENT_EQUIP },
+		{ "deequip", MOVE_EVENT_DEEQUIP },
+		{ "additem", MOVE_EVENT_ADD_ITEM },
+		{ "removeitem", MOVE_EVENT_REMOVE_ITEM },
+		{ "additemitemtile", MOVE_EVENT_ADD_ITEM_ITEMTILE },
+		{ "removeitemitemtile", MOVE_EVENT_REMOVE_ITEM_ITEMTILE }
+	};
+
+	auto it = move_event_type_mapping.find(name);
+	if (it != move_event_type_mapping.end()) {
+		return it->second;
+	}
+
+	return MOVE_EVENT_NONE;
+}
+
 std::string getCombatName(CombatType_t combatType) {
 	auto combatName = combatTypeNames.find(combatType);
 	if (combatName != combatTypeNames.end()) {
@@ -1203,13 +1244,22 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_NOERROR:
 			return "No error.";
 
+		case RETURNVALUE_NOTBOUGHTINSTORE:
+			return "You cannot move this item into your store inbox as it was not bought in the store.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH:
+			return "This item cannot be moved there. You can only place gold, platinum and crystal coins in your gold pouch.";
+
+		case RETURNVALUE_ITEMCANNOTBEMOVEDTHERE:
+			return "This item cannot be moved there.";
+
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
 
 		case RETURNVALUE_DESTINATIONOUTOFREACH:
 			return "Destination is out of reach.";
 
-		case RETURNVALUE_NOTMOVEABLE:
+		case RETURNVALUE_NOTMOVABLE:
 			return "You cannot move this object.";
 
 		case RETURNVALUE_DROPTWOHANDEDITEM:
@@ -1448,6 +1498,12 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_CONTACTADMINISTRATOR:
 			return "An error has occurred, please contact your administrator.";
 
+		case RETURNVALUE_ITEMISNOTYOURS:
+			return "This item is not yours.";
+
+		case RETURNVALUE_ITEMUNTRADEABLE:
+			return "This item is untradeable.";
+
 		// Any unhandled ReturnValue will go enter here
 		default:
 			return "Unknown error.";
@@ -1459,7 +1515,10 @@ void UPDATE_OTSYS_TIME() {
 	OTSYSTIME = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-int64_t OTSYS_TIME() {
+int64_t OTSYS_TIME(bool useTime) {
+	if (useTime) {
+		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	}
 	return OTSYSTIME;
 }
 
@@ -1502,6 +1561,21 @@ void capitalizeWords(std::string &source) {
 	}
 }
 
+void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore) {
+	toLowerCaseString(source);
+	auto size = static_cast<uint8_t>(source.size());
+	auto indexFound = source.find(stringToIgnore);
+
+	for (uint8_t i = 0; i < size; i++) {
+		if (indexFound != std::string::npos && indexFound > 0 && std::cmp_greater(i, static_cast<uint8_t>(indexFound - 1)) && i < (indexFound + stringToIgnore.size())) {
+			continue;
+		}
+		if (i == 0 || source[i - 1] == ' ' || source[i - 1] == '\'') {
+			source[i] = static_cast<char>(std::toupper(source[i]));
+		}
+	}
+}
+
 /**
  * @details
  * Prevents the console from closing so there is time to read the error information
@@ -1525,7 +1599,7 @@ NameEval_t validateName(const std::string &name) {
 	std::istream_iterator<std::string> end;
 	std::copy(begin, end, std::back_inserter(toks));
 
-	if (name.length() < 3 || name.length() > 14) {
+	if (name.length() < 3 || name.length() > 18) {
 		return INVALID_LENGTH;
 	}
 
@@ -1598,8 +1672,6 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 			return "Tibia Coins";
 		case OBJECTCATEGORY_CREATUREPRODUCTS:
 			return "Creature Products";
-		case OBJECTCATEGORY_STASHRETRIEVE:
-			return "Stash Retrieve";
 		case OBJECTCATEGORY_GOLD:
 			return "Gold";
 		case OBJECTCATEGORY_DEFAULT:
@@ -1607,6 +1679,39 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 		default:
 			return std::string();
 	}
+}
+
+bool isValidObjectCategory(ObjectCategory_t category) {
+	static std::unordered_set<ObjectCategory_t> valid = {
+		OBJECTCATEGORY_NONE,
+		OBJECTCATEGORY_ARMORS,
+		OBJECTCATEGORY_NECKLACES,
+		OBJECTCATEGORY_BOOTS,
+		OBJECTCATEGORY_CONTAINERS,
+		OBJECTCATEGORY_DECORATION,
+		OBJECTCATEGORY_FOOD,
+		OBJECTCATEGORY_HELMETS,
+		OBJECTCATEGORY_LEGS,
+		OBJECTCATEGORY_OTHERS,
+		OBJECTCATEGORY_POTIONS,
+		OBJECTCATEGORY_RINGS,
+		OBJECTCATEGORY_RUNES,
+		OBJECTCATEGORY_SHIELDS,
+		OBJECTCATEGORY_TOOLS,
+		OBJECTCATEGORY_VALUABLES,
+		OBJECTCATEGORY_AMMO,
+		OBJECTCATEGORY_AXES,
+		OBJECTCATEGORY_CLUBS,
+		OBJECTCATEGORY_DISTANCEWEAPONS,
+		OBJECTCATEGORY_SWORDS,
+		OBJECTCATEGORY_WANDS,
+		OBJECTCATEGORY_PREMIUMSCROLLS,
+		OBJECTCATEGORY_TIBIACOINS,
+		OBJECTCATEGORY_CREATUREPRODUCTS,
+		OBJECTCATEGORY_GOLD,
+		OBJECTCATEGORY_DEFAULT,
+	};
+	return valid.contains(category);
 }
 
 uint8_t forgeBonus(int32_t number) {
@@ -1732,11 +1837,36 @@ std::string getVerbForPronoun(PlayerPronoun_t pronoun, bool pastTense) {
 	return pastTense ? "was" : "is";
 }
 
-std::vector<std::string> split(const std::string &str) {
+std::string formatWithArticle(const std::string &value, bool withSpace) {
+	if (value.empty()) {
+		return "";
+	}
+
+	auto removeArticle = [](const std::string &str) -> std::string {
+		const std::string articles[] = { "a ", "an " };
+		for (const auto &article : articles) {
+			if (str.size() > article.size() && std::equal(article.begin(), article.end(), str.begin(), [](char a, char b) { return std::tolower(a) == std::tolower(b); })) {
+				return str.substr(article.size());
+			}
+		}
+		return str;
+	};
+
+	std::string modifiedValue = removeArticle(value);
+	if (modifiedValue.empty()) {
+		return "";
+	}
+
+	const char &character = std::tolower(modifiedValue.front());
+	auto article = character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u' ? "an" : "a";
+	return fmt::format("{}{} {}.", withSpace ? " " : "", article, modifiedValue);
+}
+
+std::vector<std::string> split(const std::string &str, char delimiter /* = ','*/) {
 	std::vector<std::string> tokens;
 	std::string token;
 	std::istringstream tokenStream(str);
-	while (std::getline(tokenStream, token, ',')) {
+	while (std::getline(tokenStream, token, delimiter)) {
 		auto trimedToken = token;
 		trimString(trimedToken);
 		tokens.push_back(trimedToken);
@@ -1773,6 +1903,11 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 	return output.str();
 }
 
+unsigned int getNumberOfCores() {
+	static auto cores = std::thread::hardware_concurrency();
+	return cores;
+}
+
 /**
  * @brief Formats a number to a string with commas
  * @param number The number to format
@@ -1802,4 +1937,20 @@ std::string toKey(const std::string &str) {
 	std::replace(key.begin(), key.end(), ' ', '-');
 	key.erase(std::remove_if(key.begin(), key.end(), [](char c) { return std::isspace(c); }), key.end());
 	return key;
+}
+
+uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
+	switch (affinity) {
+		case 0:
+			return 1;
+		case 1:
+			return 3;
+		case 2:
+			return 0;
+		case 3:
+			return 2;
+		default:
+			g_logger().error("Failed to get gem affinity {}", affinity);
+			return 0;
+	}
 }

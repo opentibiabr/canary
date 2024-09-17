@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,6 +15,7 @@
 #include "game/game.hpp"
 #include "creatures/combat/spells.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "enums/account_group_type.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;
@@ -202,7 +203,7 @@ ReturnValue Actions::canUseFar(std::shared_ptr<Creature> creature, const Positio
 		return RETURNVALUE_TOOFARAWAY;
 	}
 
-	if (checkLineOfSight && !g_game().canThrowObjectTo(creaturePos, toPos)) {
+	if (checkLineOfSight && !g_game().canThrowObjectTo(creaturePos, toPos, checkFloor ? SightLine_CheckSightLineAndFloor : SightLine_CheckSightLine)) {
 		return RETURNVALUE_CANNOTTHROW;
 	}
 
@@ -230,11 +231,11 @@ std::shared_ptr<Action> Actions::getAction(std::shared_ptr<Item> item) {
 	}
 
 	if (auto iteratePositions = actionPositionMap.find(item->getPosition());
-		iteratePositions != actionPositionMap.end()) {
+	    iteratePositions != actionPositionMap.end()) {
 		if (std::shared_ptr<Tile> tile = item->getTile();
-			tile) {
+		    tile) {
 			if (std::shared_ptr<Player> player = item->getHoldingPlayer();
-				player && item->getTopParent() == player) {
+			    player && item->getTopParent() == player) {
 				g_logger().debug("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
 				return nullptr;
 			}
@@ -344,7 +345,7 @@ ReturnValue Actions::internalUseItem(std::shared_ptr<Player> player, const Posit
 		uint32_t corpseOwner = container->getCorpseOwner();
 		if (container->isRewardCorpse()) {
 			// only players who participated in the fight can open the corpse
-			if (player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER) {
+			if (player->getGroup()->id >= GROUP_TYPE_GAMEMASTER) {
 				return RETURNVALUE_YOUCANTOPENCORPSEADM;
 			}
 			auto reward = player->getReward(rewardId, false);
@@ -514,8 +515,8 @@ bool Action::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> it
 	// onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[Action::executeUse - Player {}, on item {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName(), item->getName());
+		                 "Call stack overflow. Too many lua script calls being nested.",
+		                 player->getName(), item->getName());
 		return false;
 	}
 

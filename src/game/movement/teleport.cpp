@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -80,8 +80,8 @@ void Teleport::addThing(int32_t, std::shared_ptr<Thing> thing) {
 	if (checkInfinityLoop(destTile)) {
 		const Position &pos = getPosition();
 		g_logger().warn("[Teleport:addThing] - "
-						"Infinity loop teleport at position: {}",
-						pos.toString());
+		                "Infinity loop teleport at position: {}",
+		                pos.toString());
 		return;
 	}
 

@@ -2,8 +2,8 @@ local deathListEnabled = true
 
 local playerDeath = CreatureEvent("PlayerDeath")
 function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
-	if player:getStorageValue(Storage.SvargrondArena.PitDoor) > 0 then
-		player:setStorageValue(Storage.SvargrondArena.PitDoor, 0)
+	if player:getStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor) > 0 then
+		player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor, 0)
 	end
 
 	if not deathListEnabled then
@@ -44,6 +44,12 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 		mostDamageName = "field item"
 	end
 
+	player:takeScreenshot(byPlayer and SCREENSHOT_TYPE_DEATHPVP or SCREENSHOT_TYPE_DEATHPVE)
+
+	if mostDamageKiller and mostDamageKiller:isPlayer() then
+		mostDamageKiller:takeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)
+	end
+
 	local playerGuid = player:getGuid()
 	db.query(
 		"INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) VALUES ("
@@ -68,16 +74,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	)
 	local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
 	-- Start Webhook Player Death
-	local playerName = player:getName()
-	local playerLevel = player:getLevel()
-	local killerLink = string.gsub(killerName, "%s+", "+")
-	local playerLink = string.gsub(playerName, "%s+", "+")
-	local serverURL = getConfigInfo("url")
-	if killer and killer:isPlayer() then
-		Webhook.sendMessage(playerName .. " just got killed!", "**[" .. playerName .. "](" .. serverURL .. "/?characters/" .. playerLink .. ")** got killed at level " .. playerLevel .. " by **[" .. killerName .. "](" .. serverURL .. "/?characters/" .. killerLink .. ")**", WEBHOOK_COLOR_OFFLINE, announcementChannels["player-kills"])
-	else
-		Webhook.sendMessage(playerName .. " has just died!", "**[" .. playerName .. "](" .. serverURL .. "/?characters/" .. playerLink .. ")** died at level " .. playerLevel .. " by " .. killerName, WEBHOOK_COLOR_WARNING, announcementChannels["player-kills"])
-	end
+	Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. player:getLevel() .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
 	-- End Webhook Player Death
 
 	local deathRecords = 0
@@ -92,25 +89,54 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	end
 
 	if byPlayer == 1 then
+		killer:takeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)
 		local targetGuild = player:getGuild()
-		targetGuild = targetGuild and targetGuild:getId() or 0
-		if targetGuild ~= 0 then
+		local targetGuildId = targetGuild and targetGuild:getId() or 0
+		if targetGuildId ~= 0 then
 			local killerGuild = killer:getGuild()
-			killerGuild = killerGuild and killerGuild:getId() or 0
-			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(player:getId(), killer.uid) then
+			local killerGuildId = killerGuild and killerGuild:getId() or 0
+			if killerGuildId ~= 0 and targetGuildId ~= killerGuildId and isInWar(player:getId(), killer:getId()) then
 				local warId = false
 				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND \z
-					((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR \z
-					(`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
-				if resultId ~= false then
+					((`guild1` = " .. killerGuildId .. " AND `guild2` = " .. targetGuildId .. ") OR \z
+					(`guild1` = " .. targetGuildId .. " AND `guild2` = " .. killerGuildId .. "))")
+				if resultId then
 					warId = Result.getNumber(resultId, "id")
 					Result.free(resultId)
 				end
 
-				if warId ~= false then
+				if warId then
+					local playerName = player:getName()
 					db.asyncQuery("INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) \z
-					VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(player:getName()) .. ", " .. killerGuild .. ", \z
-					" .. targetGuild .. ", " .. os.time() .. ", " .. warId .. ")")
+						VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(playerName) .. ", " .. killerGuildId .. ", \z
+						" .. targetGuildId .. ", " .. os.time() .. ", " .. warId .. ")")
+
+					resultId = db.storeQuery("SELECT `guild_wars`.`id`, `guild_wars`.`frags_limit`, (SELECT COUNT(1) FROM `guildwar_kills` \z
+						WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild1`) AS guild1_kills, \z
+						(SELECT COUNT(1) FROM `guildwar_kills` WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild2`) AS guild2_kills \z
+						FROM `guild_wars` WHERE (`guild1` = " .. killerGuildId .. " OR `guild2` = " .. killerGuildId .. ") AND `status` = 1 AND `id` = " .. warId)
+
+					if resultId then
+						local guild1_kills = Result.getNumber(resultId, "guild1_kills")
+						local guild2_kills = Result.getNumber(resultId, "guild2_kills")
+						local frags_limit = Result.getNumber(resultId, "frags_limit")
+						Result.free(resultId)
+
+						local members = killerGuild:getMembersOnline()
+						for i = 1, #members do
+							members[i]:sendChannelMessage(members[i], string.format("%s was killed by %s. The new score is: %s %d:%d %s (frags limit: %d)", playerName, killerName, targetGuild:getName(), guild1_kills, guild2_kills, killerGuild:getName(), frags_limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
+						end
+
+						local enemyMembers = targetGuild:getMembersOnline()
+						for i = 1, #enemyMembers do
+							enemyMembers[i]:sendChannelMessage(enemyMembers[i], string.format("%s was killed by %s. The new score is: %s %d:%d %s (frags limit: %d)", playerName, killerName, targetGuild:getName(), guild1_kills, guild2_kills, killerGuild:getName(), frags_limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
+						end
+
+						if guild1_kills >= frags_limit or guild2_kills >= frags_limit then
+							db.query("UPDATE `guild_wars` SET `status` = 4, `ended` = " .. os.time() .. " WHERE `status` = 1 AND `id` = " .. warId)
+							Game.broadcastMessage(string.format("%s has just won the war against %s.", killerGuild:getName(), targetGuild:getName()))
+						end
+					end
 				end
 			end
 		end

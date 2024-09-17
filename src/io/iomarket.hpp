@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,8 +14,6 @@
 #include "lib/di/container.hpp"
 
 class IOMarket {
-	using StatisticsMap = std::map<uint16_t, std::map<uint8_t, MarketStatistics>>;
-
 public:
 	IOMarket() = default;
 
@@ -23,6 +21,7 @@ public:
 		return inject<IOMarket>();
 	}
 
+	static MarketOfferList getActiveOffers(MarketAction_t action);
 	static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);
 	static MarketOfferList getOwnOffers(MarketAction_t action, uint32_t playerId);
 	static HistoryMarketOfferList getOwnHistory(MarketAction_t action, uint32_t playerId);
@@ -42,10 +41,11 @@ public:
 
 	void updateStatistics();
 
-	StatisticsMap getPurchaseStatistics() const {
+	using StatisticsMap = std::map<uint16_t, std::map<uint8_t, MarketStatistics>>;
+	const StatisticsMap &getPurchaseStatistics() const {
 		return purchaseStatistics;
 	}
-	StatisticsMap getSaleStatistics() const {
+	const StatisticsMap &getSaleStatistics() const {
 		return saleStatistics;
 	}
 

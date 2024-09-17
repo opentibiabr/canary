@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -27,7 +27,6 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
 
 	// Keep track of loaded scripts to check for duplicates
-	int count = 0;
 	phmap::flat_hash_set<std::string_view> loadedScripts;
 	std::map<std::string, EventRates> eventsOnSameDay;
 	for (const auto &eventNode : doc.child("events").children()) {
@@ -74,6 +73,12 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 				g_eventsScheduler().setLootSchedule(lootrate);
 			}
 
+			if (ingameNode.attribute("bosslootrate")) {
+				uint16_t bosslootrate = static_cast<uint16_t>(ingameNode.attribute("bosslootrate").as_uint());
+				currentEventRates.bosslootrate = bosslootrate;
+				g_eventsScheduler().setBossLootSchedule(bosslootrate);
+			}
+
 			if (ingameNode.attribute("spawnrate")) {
 				uint16_t spawnrate = static_cast<uint16_t>(ingameNode.attribute("spawnrate").as_uint());
 				currentEventRates.spawnrate = spawnrate;
@@ -95,6 +100,9 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 			}
 			if (rates.lootrate != 100 && currentEventRates.lootrate != 100 && rates.lootrate == currentEventRates.lootrate) {
 				modifiedRates.emplace_back("lootrate");
+			}
+			if (rates.bosslootrate != 100 && currentEventRates.bosslootrate != 100 && rates.bosslootrate == currentEventRates.bosslootrate) {
+				modifiedRates.emplace_back("bosslootrate");
 			}
 			if (rates.spawnrate != 100 && currentEventRates.spawnrate != 100 && rates.spawnrate == currentEventRates.spawnrate) {
 				modifiedRates.emplace_back("spawnrate");

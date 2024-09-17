@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -26,6 +26,10 @@
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 #include "map/spectators.hpp"
 
 // Game
@@ -188,6 +192,17 @@ int GameFunctions::luaGameloadMapChunk(lua_State* L) {
 	return 0;
 }
 
+int GameFunctions::luaGameGetExperienceForLevel(lua_State* L) {
+	// Game.getExperienceForLevel(level)
+	const uint32_t level = getNumber<uint32_t>(L, 1);
+	if (level == 0) {
+		reportErrorFunc("Level must be greater than 0.");
+	} else {
+		lua_pushnumber(L, Player::getExpForLevel(level));
+	}
+	return 1;
+}
+
 int GameFunctions::luaGameGetMonsterCount(lua_State* L) {
 	// Game.getMonsterCount()
 	lua_pushnumber(L, g_game().getMonstersOnline());
@@ -211,7 +226,7 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	const auto type = g_monsters().monsters;
 	lua_createtable(L, type.size(), 0);
 
-	for (const auto [typeName, mType] : type) {
+	for (const auto &[typeName, mType] : type) {
 		pushUserdata<MonsterType>(L, mType);
 		setMetatable(L, -1, "MonsterType");
 		lua_setfield(L, -2, typeName.c_str());
@@ -434,6 +449,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	if (g_game().placeCreature(monster, position, extended, force)) {
 		g_events().eventMonsterOnSpawn(monster, position);
 		g_callbacks().executeCallback(EventCallback_t::monsterOnSpawn, &EventCallback::monsterOnSpawn, monster, position);
+		monster->onSpawn();
 		const auto &mtype = monster->getMonsterType();
 		if (mtype && mtype->info.raceid > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
 			for (const auto &spectator : Spectators().find<Player>(monster->getPosition(), true)) {
@@ -514,7 +530,7 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 	lua_createtable(L, c_list.size(), 0);
 
 	int index = 0;
-	for (const auto charmPtr : c_list) {
+	for (const auto &charmPtr : c_list) {
 		pushUserdata<Charm>(L, charmPtr);
 		setMetatable(L, -1, "Charm");
 		lua_rawseti(L, -2, ++index);
@@ -611,13 +627,23 @@ int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
-	uint32_t playerId = getNumber<uint32_t>(L, 1);
-
-	auto offlinePlayer = std::make_shared<Player>(nullptr);
-	if (!IOLoginData::loadPlayerById(offlinePlayer, playerId)) {
+	// Game.getOfflinePlayer(name or id)
+	std::shared_ptr<Player> player = nullptr;
+	if (isNumber(L, 1)) {
+		uint32_t id = getNumber<uint32_t>(L, 1);
+		if (id >= Player::getFirstID() && id <= Player::getLastID()) {
+			player = g_game().getPlayerByID(id, true);
+		} else {
+			player = g_game().getPlayerByGUID(id, true);
+		}
+	} else if (isString(L, 1)) {
+		auto name = getString(L, 1);
+		player = g_game().getPlayerByName(name, true);
+	}
+	if (!player) {
 		lua_pushnil(L);
 	} else {
-		pushUserdata<Player>(L, offlinePlayer);
+		pushUserdata<Player>(L, player);
 		setMetatable(L, -1, "Player");
 	}
 
@@ -625,9 +651,10 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
-	// Game.getNormalizedPlayerName(name)
+	// Game.getNormalizedPlayerName(name[, isNewName = false])
 	auto name = getString(L, 1);
-	std::shared_ptr<Player> player = g_game().getPlayerByName(name, true);
+	auto isNewName = getBoolean(L, 2, false);
+	std::shared_ptr<Player> player = g_game().getPlayerByName(name, true, isNewName);
 	if (player) {
 		pushString(L, player->getName());
 	} else {
@@ -685,7 +712,7 @@ int GameFunctions::luaGameGetInfluencedMonsters(lua_State* L) {
 
 int GameFunctions::luaGameGetLadderIds(lua_State* L) {
 	// Game.getLadderIds()
-	const auto ladders = Item::items.getLadders();
+	const auto &ladders = Item::items.getLadders();
 	lua_createtable(L, static_cast<int>(ladders.size()), 0);
 	int index = 0;
 	for (const auto ladderId : ladders) {
@@ -703,11 +730,11 @@ int GameFunctions::luaGameGetDummies(lua_State* L) {
 	 * @details This function provides a table containing two sub-tables: one for free dummies and one for house (or premium) dummies.
 
 	* @note usage on lua:
-		local dummies = Game.getDummies()
-		local rate = dummies[1] -- Retrieve dummy rate
+	    local dummies = Game.getDummies()
+	    local rate = dummies[1] -- Retrieve dummy rate
 	*/
 
-	const auto dummies = Item::items.getDummys();
+	const auto &dummies = Item::items.getDummys();
 	lua_createtable(L, dummies.size(), 0);
 	for (const auto &[dummyId, rate] : dummies) {
 		lua_pushnumber(L, static_cast<lua_Number>(rate));
@@ -780,5 +807,115 @@ int GameFunctions::luaGameGetEventCallbacks(lua_State* L) {
 	}
 	// Pop the function
 	lua_pop(L, 1);
+	return 1;
+}
+
+int GameFunctions::luaGameRegisterAchievement(lua_State* L) {
+	// Game.registerAchievement(id, name, description, secret, grade, points)
+	if (lua_gettop(L) < 6) {
+		reportErrorFunc("Achievement can only be registered with all params.");
+		return 1;
+	}
+
+	uint16_t id = getNumber<uint16_t>(L, 1);
+	std::string name = getString(L, 2);
+	std::string description = getString(L, 3);
+	bool secret = getBoolean(L, 4);
+	uint8_t grade = getNumber<uint8_t>(L, 5);
+	uint8_t points = getNumber<uint8_t>(L, 6);
+	g_game().registerAchievement(id, name, description, secret, grade, points);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int GameFunctions::luaGameGetAchievementInfoById(lua_State* L) {
+	// Game.getAchievementInfoById(id)
+	uint16_t id = getNumber<uint16_t>(L, 1);
+	Achievement achievement = g_game().getAchievementById(id);
+	if (achievement.id == 0) {
+		reportErrorFunc("Achievement id is wrong");
+		return 1;
+	}
+
+	lua_createtable(L, 0, 6);
+	setField(L, "id", achievement.id);
+	setField(L, "name", achievement.name);
+	setField(L, "description", achievement.description);
+	setField(L, "points", achievement.points);
+	setField(L, "grade", achievement.grade);
+	setField(L, "secret", achievement.secret);
+	return 1;
+}
+
+int GameFunctions::luaGameGetAchievementInfoByName(lua_State* L) {
+	// Game.getAchievementInfoByName(name)
+	std::string name = getString(L, 1);
+	Achievement achievement = g_game().getAchievementByName(name);
+	if (achievement.id == 0) {
+		reportErrorFunc("Achievement name is wrong");
+		return 1;
+	}
+
+	lua_createtable(L, 0, 6);
+	setField(L, "id", achievement.id);
+	setField(L, "name", achievement.name);
+	setField(L, "description", achievement.description);
+	setField(L, "points", achievement.points);
+	setField(L, "grade", achievement.grade);
+	setField(L, "secret", achievement.secret);
+	return 1;
+}
+
+int GameFunctions::luaGameGetSecretAchievements(lua_State* L) {
+	// Game.getSecretAchievements()
+	const std::vector<Achievement> &achievements = g_game().getSecretAchievements();
+	int index = 0;
+	lua_createtable(L, achievements.size(), 0);
+	for (const auto &achievement : achievements) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement.id);
+		setField(L, "name", achievement.name);
+		setField(L, "description", achievement.description);
+		setField(L, "points", achievement.points);
+		setField(L, "grade", achievement.grade);
+		setField(L, "secret", achievement.secret);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetPublicAchievements(lua_State* L) {
+	// Game.getPublicAchievements()
+	const std::vector<Achievement> &achievements = g_game().getPublicAchievements();
+	int index = 0;
+	lua_createtable(L, achievements.size(), 0);
+	for (const auto &achievement : achievements) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement.id);
+		setField(L, "name", achievement.name);
+		setField(L, "description", achievement.description);
+		setField(L, "points", achievement.points);
+		setField(L, "grade", achievement.grade);
+		setField(L, "secret", achievement.secret);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetAchievements(lua_State* L) {
+	// Game.getAchievements()
+	const std::map<uint16_t, Achievement> &achievements = g_game().getAchievements();
+	int index = 0;
+	lua_createtable(L, achievements.size(), 0);
+	for (const auto &achievement_it : achievements) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement_it.first);
+		setField(L, "name", achievement_it.second.name);
+		setField(L, "description", achievement_it.second.description);
+		setField(L, "points", achievement_it.second.points);
+		setField(L, "grade", achievement_it.second.grade);
+		setField(L, "secret", achievement_it.second.secret);
+		lua_rawseti(L, -2, ++index);
+	}
 	return 1;
 }

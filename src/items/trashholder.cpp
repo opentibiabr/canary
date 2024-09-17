@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,7 +12,14 @@
 #include "items/trashholder.hpp"
 #include "game/game.hpp"
 
-ReturnValue TrashHolder::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature>) {
+ReturnValue TrashHolder::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, std::shared_ptr<Creature> actor) {
+	std::shared_ptr<Item> item = thing->getItem();
+	if (item == nullptr) {
+		return RETURNVALUE_NOERROR;
+	}
+	if (item->hasOwner() && !item->isOwner(actor)) {
+		return RETURNVALUE_ITEMISNOTYOURS;
+	}
 	return RETURNVALUE_NOERROR;
 }
 
@@ -43,7 +50,7 @@ void TrashHolder::addThing(int32_t, std::shared_ptr<Thing> thing) {
 		return;
 	}
 
-	if (item.get() == this || !item->hasProperty(CONST_PROP_MOVEABLE)) {
+	if (item.get() == this || !item->hasProperty(CONST_PROP_MOVABLE)) {
 		return;
 	}
 

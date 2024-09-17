@@ -59,14 +59,17 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "marlin") then
-		if player:getItemCount(901) > 0 then
-			npcHandler:say("WOW! You have a marlin!! I could make a nice decoration for your wall from it. May I have it?", npc, creature)
-			npcHandler:setTopic(playerId, 1)
+		if player:getStorageValue(Storage.Quest.U7_8.MarlinTrophy) < 1 then
+			if player:getItemCount(901) > 0 then
+				npcHandler:say("WOW! You have a marlin!! I could make a nice decoration for your wall from it. May I have it?", npc, creature)
+				npcHandler:setTopic(playerId, 1)
+			end
 		end
-	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 and player:getStorageValue(Storage.Quest.U7_8.MarlinTrophy) < 1 then
 		if player:removeItem(901, 1) then
 			npcHandler:say("Yeah! Now let's see... <fumble fumble> There you go, I hope you like it!", npc, creature)
 			player:addItem(902, 1)
+			player:setStorageValue(Storage.Quest.U7_8.MarlinTrophy, 1)
 		else
 			npcHandler:say("You don't have the fish.", npc, creature)
 		end
@@ -120,7 +123,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

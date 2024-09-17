@@ -10,7 +10,7 @@ local maxsummons = 4
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	creature:say("Out of the dark I call you, fiend in the night!", TALKTYPE_ORANGE_1)
+	creature:say("Out of the dark I call you, fiend in the night!", TALKTYPE_MONSTER_SAY)
 	local summoncount = creature:getSummons()
 	if #summoncount < 4 then
 		for i = 1, maxsummons - #summoncount do

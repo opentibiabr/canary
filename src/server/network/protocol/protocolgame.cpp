@@ -1267,7 +1267,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			parseInspectionObject(msg);
 			break;
 		case 0xD2:
-			g_game().playerRequestOutfit(player->getID());
+			parseGetOutfit(msg);
 			break;
 		case 0xD3:
 			parseSetOutfit(msg);
@@ -1664,6 +1664,26 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 	}
 
 	g_game().playerAutoWalk(player->getID(), path);
+}
+
+void ProtocolGame::parseGetOutfit(NetworkMessage &msg) {
+	auto eventType = msg.getByte();
+	if (eventType == 1) {
+		auto tryOnId = msg.get<uint16_t>();
+		const auto outfit = Outfits::getInstance().getOutfitByLookType(player, tryOnId);
+		if (outfit) {
+			g_game().playerRequestOutfit(player->getID(), tryOnId, 0);
+			return;
+		}
+
+		const auto mount = g_game().mounts.getMountByClientID(tryOnId);
+		if (mount) {
+			g_game().playerRequestOutfit(player->getID(), 0, tryOnId);
+			return;
+		}
+	}
+
+	g_game().playerRequestOutfit(player->getID());
 }
 
 void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
@@ -7030,7 +7050,7 @@ void ProtocolGame::sendHouseWindow(uint32_t windowTextId, const std::string &tex
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendOutfitWindow() {
+void ProtocolGame::sendOutfitWindow(uint16_t tryOutfit, uint16_t tryMount) {
 	NetworkMessage msg;
 	msg.addByte(0xC8);
 
@@ -7038,8 +7058,18 @@ void ProtocolGame::sendOutfitWindow() {
 	auto isSupportOutfit = player->isWearingSupportOutfit();
 	bool mounted = false;
 
+	if (tryOutfit != 0) {
+		currentOutfit.lookType = tryOutfit;
+		currentOutfit.lookAddons = tryOutfit >= 962 && tryOutfit <= 975 ? 0 : 3;
+	}
+
 	if (!isSupportOutfit) {
-		const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
+		std::shared_ptr<Mount> currentMount;
+		if (tryMount == 0) {
+			currentMount = g_game().mounts.getMountByID(player->getLastMount());
+		} else {
+			currentMount = g_game().mounts.getMountByClientID(tryMount);
+		}
 		if (currentMount) {
 			mounted = (currentOutfit.lookMount == currentMount->clientId);
 			currentOutfit.lookMount = currentMount->clientId;
@@ -7127,34 +7157,31 @@ void ProtocolGame::sendOutfitWindow() {
 
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
-		if (player->getOutfitAddons(outfit, addons)) {
+		if (tryOutfit == 0 && player->getOutfitAddons(outfit, addons)) {
 			msg.add<uint16_t>(outfit->lookType);
 			msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
 			msg.addByte(addons);
 			msg.addByte(0x00);
 			++outfitSize;
 		} else if (outfit->lookType == 1210 || outfit->lookType == 1211) {
-			if (player->canWear(1210, 0) || player->canWear(1211, 0)) {
-				msg.add<uint16_t>(outfit->lookType);
-				msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
-				msg.addByte(3);
-				msg.addByte(0x02);
-				++outfitSize;
-			}
+			msg.add<uint16_t>(outfit->lookType);
+			msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
+			msg.addByte(3);
+			msg.addByte(0x02);
+			++outfitSize;
 		} else if (outfit->lookType == 1456 || outfit->lookType == 1457) {
-			if (player->canWear(1456, 0) || player->canWear(1457, 0)) {
-				msg.add<uint16_t>(outfit->lookType);
-				msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
-				msg.addByte(3);
-				msg.addByte(0x03);
-				++outfitSize;
-			}
+			msg.add<uint16_t>(outfit->lookType);
+			msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
+			msg.addByte(3);
+			msg.addByte(0x03);
+			++outfitSize;
 		} else if (outfit->from == "store") {
 			msg.add<uint16_t>(outfit->lookType);
 			msg.addString(outfit->name, "ProtocolGame::sendOutfitWindow - outfit->name");
 			msg.addByte(outfit->lookType >= 962 && outfit->lookType <= 975 ? 0 : 3);
 			msg.addByte(0x01);
-			msg.add<uint32_t>(0x00);
+			uint32_t offerId = player->getSex() == 1 ? outfit->lookType : (outfit->lookType - 1);
+			msg.add<uint32_t>(offerId);
 			++outfitSize;
 		}
 
@@ -7184,7 +7211,7 @@ void ProtocolGame::sendOutfitWindow() {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name, "ProtocolGame::sendOutfitWindow - mount->name");
 			msg.addByte(0x01);
-			msg.add<uint32_t>(0x00);
+			msg.add<uint32_t>(mount->id);
 			++mountSize;
 		}
 
@@ -7223,11 +7250,21 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.add<uint16_t>(familiarSize);
 	msg.setBufferPosition(endFamiliars);
 
-	msg.addByte(0x00); // Try outfit
+	 // Try on
+	if (tryOutfit != 0) {
+		msg.addByte(0x01);
+	} else if (tryMount != 0) {
+		msg.addByte(0x02);
+	} else {
+		msg.addByte(0x00);
+	}
+
 	msg.addByte(mounted ? 0x01 : 0x00);
 
-	// Version 12.81 - Random mount 'bool'
-	msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
+	// // Version 12.81 - Random mount 'bool'
+	if (tryOutfit == 0 && tryMount == 0) {
+		msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
+	}
 
 	writeToOutputBuffer(msg);
 }
@@ -9325,13 +9362,16 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 		msg.addByte(0x00); // Offer State
 	}
 
+	uint8_t tryOn = 0;
 	auto offerConverType = magic_enum::enum_integer<ConverType_t>(offer->getConverType());
+
 	msg.addByte(offerConverType); // ConverType
 	if (offerConverType == 0) { // Normal
 		msg.addString(offer->getOfferIcon());
 	} else if (offerConverType == 1) { // Mount
 		auto offerMount = g_game().mounts.getMountByID(offer->getOfferId());
 		msg.add<uint16_t>(offerMount->clientId);
+		tryOn = 1;
 	} else if (offerConverType == 2) { // Outfit
 		auto playerSex = player->getSex();
 		auto offerOutfitIds = offer->getOutfitIds();
@@ -9341,9 +9381,10 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 		msg.addByte(playerOutfit.lookBody);
 		msg.addByte(playerOutfit.lookLegs);
 		msg.addByte(playerOutfit.lookFeet);
+		tryOn = 1;
 	} else if (offerConverType == 3) { // Item
 		msg.add<uint16_t>(static_cast<uint16_t>(offer->getOfferId()));
-	} else if (offerConverType == 4) { // Hireling
+	} else if (offerConverType == 4) { // Male/Female Outfit
 		auto playerSex = player->getSex();
 		auto offerOutfitIds = offer->getOutfitIds();
 		msg.addByte(playerSex == PLAYERSEX_FEMALE ? 2 : 1);
@@ -9354,9 +9395,10 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 		msg.addByte(playerOutfit.lookBody);
 		msg.addByte(playerOutfit.lookLegs);
 		msg.addByte(playerOutfit.lookFeet);
+		tryOn = 1;
 	}
 
-	msg.addByte(0x00); // Try on Type
+	msg.addByte(tryOn); // Try on Type
 	msg.add<uint16_t>(0x00); // Collection
 	msg.add<uint16_t>(0x00); // Popularity Score
 	msg.add<uint32_t>(0x00); // State New Until

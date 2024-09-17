@@ -44,7 +44,8 @@ enum class OfferTypes_t : uint8_t {
 	HIRELING_NAMECHANGE = 21,
 	HIRELING_SEXCHANGE = 22,
 	HIRELING_SKILL = 23,
-	HIRELING_OUTFIT = 24
+	HIRELING_OUTFIT = 24,
+	LOOKTYPE = 25
 };
 
 enum class States_t : uint8_t {
@@ -58,9 +59,9 @@ enum class States_t : uint8_t {
 enum class ConverType_t : uint8_t {
 	NONE = 0,
 	MOUNT = 1,
-	OUTFIT = 2,
+	LOOKTYPE = 2,
 	ITEM = 3,
-	HIRELING = 4
+	OUTFIT = 4
 };
 
 enum class SubActions_t : uint8_t {
@@ -150,6 +151,7 @@ public:
 		{ "item", OfferTypes_t::ITEM },
 		{ "stackable", OfferTypes_t::STACKABLE },
 		{ "charges", OfferTypes_t::CHARGES },
+		{ "looktype", OfferTypes_t::LOOKTYPE },
 		{ "outfit", OfferTypes_t::OUTFIT },
 		{ "mount", OfferTypes_t::MOUNT },
 		{ "nameChange", OfferTypes_t::NAMECHANGE },

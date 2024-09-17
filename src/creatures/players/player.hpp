@@ -1585,9 +1585,9 @@ public:
 			client->sendExperienceTracker(rawExp, finalExp);
 		}
 	}
-	void sendOutfitWindow() {
+	void sendOutfitWindow(uint16_t tryOutfit = 0, uint16_t tryMount = 0) {
 		if (client) {
-			client->sendOutfitWindow();
+			client->sendOutfitWindow(tryOutfit, tryMount);
 		}
 	}
 	// Imbuements

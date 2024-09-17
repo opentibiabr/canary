@@ -124,6 +124,10 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	if (type == OfferTypes_t::OUTFIT || type == OfferTypes_t::HIRELING) {
 		auto femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
 		auto maleId = static_cast<uint16_t>(offer.attribute("male").as_uint());
+		if (id != maleId) {
+			g_logger().warn("Offer Id {} should be equal to Male {}.", id, maleId);
+			return false;
+		}
 		outfitId.femaleId = femaleId;
 		outfitId.maleId = maleId;
 	}
@@ -400,12 +404,12 @@ void Offer::addRelatedOffer(const RelatedOffer &relatedOffer) {
 ConverType_t Offer::getConverType() const {
 	if (offerType == OfferTypes_t::MOUNT) {
 		return ConverType_t::MOUNT;
-	} else if (offerType == OfferTypes_t::OUTFIT) {
-		return ConverType_t::OUTFIT;
+	} else if (offerType == OfferTypes_t::LOOKTYPE) {
+		return ConverType_t::LOOKTYPE;
 	} else if (offerType == OfferTypes_t::ITEM || offerType == OfferTypes_t::STACKABLE || offerType == OfferTypes_t::HOUSE || offerType == OfferTypes_t::CHARGES || offerType == OfferTypes_t::POUCH) {
 		return ConverType_t::ITEM;
-	} else if (offerType == OfferTypes_t::HIRELING) {
-		return ConverType_t::HIRELING;
+	} else if (offerType == OfferTypes_t::OUTFIT || offerType == OfferTypes_t::HIRELING) {
+		return ConverType_t::OUTFIT;
 	}
 
 	return ConverType_t::NONE;

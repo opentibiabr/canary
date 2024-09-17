@@ -103,6 +103,7 @@ private:
 
 	// Parse methods
 	void parseAutoWalk(NetworkMessage &msg);
+	void parseGetOutfit(NetworkMessage &msg);
 	void parseSetOutfit(NetworkMessage &msg);
 	void parseSay(NetworkMessage &msg);
 	void parseLookAt(NetworkMessage &msg);
@@ -381,7 +382,7 @@ private:
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendTextWindow(uint32_t windowTextId, std::shared_ptr<Item> item, uint16_t maxlen, bool canWrite);
 	void sendHouseWindow(uint32_t windowTextId, const std::string &text);
-	void sendOutfitWindow();
+	void sendOutfitWindow(uint16_t tryOutfit, uint16_t tryMount);
 	void sendPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackpos);
 
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);

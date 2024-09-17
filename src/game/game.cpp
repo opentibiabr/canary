@@ -5918,7 +5918,7 @@ void Game::playerTurn(uint32_t playerId, Direction dir) {
 	internalCreatureTurn(player, dir);
 }
 
-void Game::playerRequestOutfit(uint32_t playerId) {
+void Game::playerRequestOutfit(uint32_t playerId, uint16_t tryOutfit /* = 0*/, uint16_t tryMount /* = 0*/) {
 	if (!g_configManager().getBoolean(ALLOW_CHANGEOUTFIT, __FUNCTION__)) {
 		return;
 	}
@@ -5928,7 +5928,7 @@ void Game::playerRequestOutfit(uint32_t playerId) {
 		return;
 	}
 
-	player->sendOutfitWindow();
+	player->sendOutfitWindow(tryOutfit, tryMount);
 }
 
 void Game::playerToggleMount(uint32_t playerId, bool mount) {

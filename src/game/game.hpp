@@ -408,7 +408,7 @@ public:
 	void playerClearImbuement(uint32_t playerid, uint8_t slot);
 	void playerCloseImbuementWindow(uint32_t playerid);
 	void playerTurn(uint32_t playerId, Direction dir);
-	void playerRequestOutfit(uint32_t playerId);
+	void playerRequestOutfit(uint32_t playerId, uint16_t tryOutfit = 0, uint16_t tryMount = 0);
 	void playerShowQuestLog(uint32_t playerId);
 	void playerShowQuestLine(uint32_t playerId, uint16_t questId);
 	void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text);

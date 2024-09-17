@@ -7250,7 +7250,7 @@ void ProtocolGame::sendOutfitWindow(uint16_t tryOutfit, uint16_t tryMount) {
 	msg.add<uint16_t>(familiarSize);
 	msg.setBufferPosition(endFamiliars);
 
-	 // Try on
+	// Try on
 	if (tryOutfit != 0) {
 		msg.addByte(0x01);
 	} else if (tryMount != 0) {

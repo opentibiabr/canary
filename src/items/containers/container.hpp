@@ -26,7 +26,7 @@ public:
 	}
 
 	void advance();
-	std::shared_ptr<Item> operator*();
+	std::shared_ptr<Item> operator*() const;
 
 private:
 	std::list<std::shared_ptr<Container>> over;
@@ -59,7 +59,7 @@ public:
 		return static_self_cast<Container>();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() override final {
+	std::shared_ptr<Cylinder> getCylinder() final {
 		return getContainer();
 	}
 
@@ -112,7 +112,7 @@ public:
 		return itemlist.rend();
 	}
 
-	bool countsToLootAnalyzerBalance();
+	bool countsToLootAnalyzerBalance() const;
 	bool hasParent();
 	void addItem(const std::shared_ptr<Item> &item);
 	StashContainerList getStowableItems() const;
@@ -127,7 +127,7 @@ public:
 
 	uint32_t getItemHoldingCount();
 	uint32_t getContainerHoldingCount();
-	uint16_t getFreeSlots();
+	uint16_t getFreeSlots() const;
 	uint32_t getWeight() const final;
 
 	bool isUnlocked() const {
@@ -148,7 +148,7 @@ public:
 	void addItemBack(const std::shared_ptr<Item> &item);
 
 	void updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) final;
-	void replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) override final;
+	void replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) final;
 
 	void removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) final;
 
@@ -169,7 +169,7 @@ public:
 	void startDecaying() override;
 	void stopDecaying() override;
 
-	virtual void removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient = false);
+	virtual void removeItem(const std::shared_ptr<Thing> &thing, bool sendUpdateToClient = false);
 
 	uint32_t getOwnerId() const final;
 

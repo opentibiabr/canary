@@ -29,21 +29,21 @@ ReturnValue DepotLocker::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint3
 }
 
 void DepotLocker::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t) {
-	auto parentLocked = m_parent.lock();
+	const auto &parentLocked = m_parent.lock();
 	if (parentLocked) {
 		parentLocked->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
 void DepotLocker::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
-	auto parentLocked = m_parent.lock();
+	const auto &parentLocked = m_parent.lock();
 	if (parentLocked) {
 		parentLocked->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
 
 void DepotLocker::removeInbox(const std::shared_ptr<Inbox> &inbox) {
-	auto cit = std::find(itemlist.begin(), itemlist.end(), inbox);
+	const auto cit = std::ranges::find(itemlist, inbox);
 	if (cit == itemlist.end()) {
 		return;
 	}

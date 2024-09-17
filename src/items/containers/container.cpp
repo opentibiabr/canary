@@ -47,9 +47,9 @@ std::shared_ptr<Container> Container::create(uint16_t type, uint16_t size, bool 
 
 std::shared_ptr<Container> Container::create(const std::shared_ptr<Tile> &tile) {
 	auto container = std::make_shared<Container>(ITEM_BROWSEFIELD, 30, false, true);
-	TileItemVector* itemVector = tile->getItemList();
+	const TileItemVector* itemVector = tile->getItemList();
 	if (itemVector) {
-		for (auto &item : *itemVector) {
+		for (const auto &item : *itemVector) {
 			if (((item->getContainer() || item->hasProperty(CONST_PROP_MOVABLE)) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) && !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 				container->itemlist.push_front(item);
 				item->setParent(container);
@@ -74,7 +74,7 @@ Container::~Container() {
 }
 
 std::shared_ptr<Item> Container::clone() const {
-	std::shared_ptr<Container> clone = std::static_pointer_cast<Container>(Item::clone());
+	const std::shared_ptr<Container> &clone = std::static_pointer_cast<Container>(Item::clone());
 	for (const std::shared_ptr<Item> &item : itemlist) {
 		clone->addItem(item->clone());
 	}
@@ -83,7 +83,7 @@ std::shared_ptr<Item> Container::clone() const {
 }
 
 std::shared_ptr<Container> Container::getParentContainer() {
-	std::shared_ptr<Thing> thing = getParent();
+	const std::shared_ptr<Thing> &thing = getParent();
 	if (!thing) {
 		return nullptr;
 	}
@@ -114,12 +114,12 @@ std::shared_ptr<Container> Container::getRootContainer() {
 }
 
 bool Container::hasParent() {
-	auto parent = getParent();
+	const auto &parent = getParent();
 	if (!parent) {
 		return false;
 	}
-	auto creature = parent->getCreature();
-	bool isPlayer = creature && creature->getPlayer() != nullptr;
+	const auto &creature = parent->getCreature();
+	const bool &isPlayer = creature && creature->getPlayer() != nullptr;
 	return getID() != ITEM_BROWSEFIELD && !isPlayer;
 }
 
@@ -132,9 +132,9 @@ StashContainerList Container::getStowableItems() const {
 	StashContainerList toReturnList;
 	for (const auto &item : itemlist) {
 		if (item->getContainer() != nullptr) {
-			auto subContainer = item->getContainer()->getStowableItems();
+			const auto &subContainer = item->getContainer()->getStowableItems();
 			for (const auto &key : subContainer | std::views::keys) {
-				std::shared_ptr<Item> containerItem = key;
+				const auto &containerItem = key;
 				toReturnList.emplace_back(containerItem, static_cast<uint32_t>(containerItem->getItemCount()));
 			}
 		} else if (item->isItemStorable()) {
@@ -156,12 +156,12 @@ Attr_ReadValue Container::readAttr(AttrTypes_t attr, PropStream &propStream) {
 }
 
 bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) {
-	bool ret = Item::unserializeItemNode(loader, node, propStream, itemPosition);
+	const bool ret = Item::unserializeItemNode(loader, node, propStream, itemPosition);
 	if (!ret) {
 		return false;
 	}
 
-	for (auto &itemNode : node.children) {
+	for (const auto &itemNode : node.children) {
 		// load container items
 		if (itemNode.type != OTBM_ITEM) {
 			// unknown type
@@ -178,7 +178,7 @@ bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 			return false;
 		}
 
-		const auto item = Item::CreateItem(id, itemPosition);
+		const auto &item = Item::CreateItem(id, itemPosition);
 		if (!item) {
 			continue;
 		}
@@ -193,7 +193,7 @@ bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 	return true;
 }
 
-bool Container::countsToLootAnalyzerBalance() {
+bool Container::countsToLootAnalyzerBalance() const {
 	if (isCorpse()) {
 		return true;
 	}
@@ -227,7 +227,7 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		const auto item = *it;
 
-		std::shared_ptr<Container> container = item->getContainer();
+		const auto &container = item->getContainer();
 		if (container && !container->empty()) {
 			continue;
 		}
@@ -260,7 +260,7 @@ bool Container::isStoreInbox() const {
 }
 
 bool Container::isStoreInboxFiltered() const {
-	auto attribute = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+	const auto attribute = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
 	if (isStoreInbox() && !attribute.empty() && attribute != "All") {
 		return true;
 	}
@@ -274,8 +274,8 @@ std::deque<std::shared_ptr<Item>> Container::getStoreInboxFilteredItems() const 
 	if (isStoreInboxFiltered()) {
 		for (const std::shared_ptr<Item> &item : getItemList()) {
 			auto itemId = item->getID();
-			auto attribute = item->getCustomAttribute("unWrapId");
-			uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+			const auto attribute = item->getCustomAttribute("unWrapId");
+			const uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
 			if (unWrapId != 0) {
 				itemId = unWrapId;
 			}
@@ -296,8 +296,8 @@ std::vector<ContainerCategory_t> Container::getStoreInboxValidCategories() const
 	stdext::vector_set<ContainerCategory_t> validCategories;
 	for (const auto &item : itemlist) {
 		auto itemId = item->getID();
-		auto attribute = item->getCustomAttribute("unWrapId");
-		uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+		const auto attribute = item->getCustomAttribute("unWrapId");
+		const uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
 		if (unWrapId != 0) {
 			itemId = unWrapId;
 		}
@@ -315,14 +315,14 @@ std::vector<ContainerCategory_t> Container::getStoreInboxValidCategories() const
 }
 
 std::shared_ptr<Item> Container::getFilteredItemByIndex(size_t index) const {
-	const auto filteredItems = getStoreInboxFilteredItems();
+	const auto &filteredItems = getStoreInboxFilteredItems();
 	if (index >= filteredItems.size()) {
 		return nullptr;
 	}
 
 	const auto &item = filteredItems[index];
 
-	auto it = std::find(itemlist.begin(), itemlist.end(), item);
+	const auto it = std::ranges::find(itemlist, item);
 	if (it == itemlist.end()) {
 		return nullptr;
 	}
@@ -367,7 +367,7 @@ bool Container::isHoldingItem(const std::shared_ptr<Item> &item) {
 
 bool Container::isHoldingItemWithId(const uint16_t id) {
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		const auto item = *it;
+		const auto &item = *it;
 		if (item->getID() == id) {
 			return true;
 		}
@@ -399,7 +399,7 @@ bool Container::isBrowseFieldAndHoldsRewardChest() {
 }
 
 void Container::onAddContainerItem(const std::shared_ptr<Item> &item) {
-	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
+	const auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send to client
 	for (const auto &spectator : spectators) {
@@ -413,7 +413,7 @@ void Container::onAddContainerItem(const std::shared_ptr<Item> &item) {
 }
 
 void Container::onUpdateContainerItem(uint32_t index, const std::shared_ptr<Item> &oldItem, const std::shared_ptr<Item> &newItem) {
-	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
+	const auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send to client
 	for (const auto &spectator : spectators) {
@@ -427,7 +427,7 @@ void Container::onUpdateContainerItem(uint32_t index, const std::shared_ptr<Item
 }
 
 void Container::onRemoveContainerItem(uint32_t index, const std::shared_ptr<Item> &item) {
-	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
+	const auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send change to client
 	for (const auto &spectator : spectators) {
@@ -441,7 +441,7 @@ void Container::onRemoveContainerItem(uint32_t index, const std::shared_ptr<Item
 }
 
 ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &addThing, uint32_t addCount, uint32_t flags, const std::shared_ptr<Creature> &actor /* = nullptr*/) {
-	bool childIsOwner = hasBitSet(FLAG_CHILDISOWNER, flags);
+	const bool childIsOwner = hasBitSet(FLAG_CHILDISOWNER, flags);
 	if (childIsOwner) {
 		// a child container is querying, since we are the top container (not carried by a player)
 		// just return with no error.
@@ -466,7 +466,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 	}
 	if (item->hasOwner()) {
 		// a non-owner can move the item around but not pick it up
-		auto toPlayer = getTopParent()->getPlayer();
+		const auto &toPlayer = getTopParent()->getPlayer();
 		if (toPlayer && !item->isOwner(toPlayer)) {
 			return RETURNVALUE_ITEMISNOTYOURS;
 		}
@@ -478,16 +478,16 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 	}
 
 	std::shared_ptr<Cylinder> cylinder = getParent();
-	auto noLimit = hasBitSet(FLAG_NOLIMIT, flags);
+	const auto noLimit = hasBitSet(FLAG_NOLIMIT, flags);
 	while (cylinder) {
 		if (cylinder == addThing) {
 			return RETURNVALUE_THISISIMPOSSIBLE;
 		}
-		std::shared_ptr<Container> container = cylinder->getContainer();
+		const std::shared_ptr<Container> &container = cylinder->getContainer();
 		if (!noLimit && container && container->isInbox()) {
 			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 		}
-		std::shared_ptr<Cylinder> parent = cylinder->getParent();
+		const std::shared_ptr<Cylinder> &parent = cylinder->getParent();
 		if (cylinder == parent) {
 			g_logger().error("Container::queryAdd: parent == cylinder. Preventing infinite loop.");
 			return RETURNVALUE_NOTPOSSIBLE;
@@ -499,15 +499,15 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
-	if (const auto topParentContainer = getTopParentContainer()) {
-		if (const auto addContainer = item->getContainer()) {
-			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
-			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
+	if (const auto &topParentContainer = getTopParentContainer()) {
+		if (const auto &addContainer = item->getContainer()) {
+			const uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
+			const uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
 				return RETURNVALUE_CONTAINERISFULL;
 			}
 
-			uint32_t addItemCount = addContainer->getItemHoldingCount() + 1;
+			const uint32_t addItemCount = addContainer->getItemHoldingCount() + 1;
 			if (addItemCount + topParentContainer->getItemHoldingCount() > m_maxItems) {
 				return RETURNVALUE_CONTAINERISFULL;
 			}
@@ -522,7 +522,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 		return RETURNVALUE_ONLYAMMOINQUIVER;
 	}
 
-	std::shared_ptr<Cylinder> topParent = getTopParent();
+	const std::shared_ptr<Cylinder> &topParent = getTopParent();
 	if (topParent != getContainer()) {
 		return topParent->queryAdd(INDEX_WHEREEVER, item, addCount, flags | FLAG_CHILDISOWNER, actor);
 	} else {
@@ -531,7 +531,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 }
 
 ReturnValue Container::queryMaxCount(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) {
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item == nullptr) {
 		maxQueryCount = 0;
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -542,7 +542,7 @@ ReturnValue Container::queryMaxCount(int32_t index, const std::shared_ptr<Thing>
 		return RETURNVALUE_NOERROR;
 	}
 
-	int32_t freeSlots = std::max<int32_t>(capacity() - size(), 0);
+	const int32_t freeSlots = std::max<int32_t>(capacity() - size(), 0);
 
 	if (item->isStackable()) {
 		uint32_t n = 0;
@@ -550,16 +550,16 @@ ReturnValue Container::queryMaxCount(int32_t index, const std::shared_ptr<Thing>
 		if (index == INDEX_WHEREEVER) {
 			// Iterate through every item and check how much free stackable slots there is.
 			uint32_t slotIndex = 0;
-			for (const std::shared_ptr<Item> &containerItem : itemlist) {
+			for (const auto &containerItem : itemlist) {
 				if (containerItem != item && containerItem->equals(item) && containerItem->getItemCount() < containerItem->getStackSize()) {
-					uint32_t remainder = (containerItem->getStackSize() - containerItem->getItemCount());
+					const uint32_t remainder = (containerItem->getStackSize() - containerItem->getItemCount());
 					if (queryAdd(slotIndex++, item, remainder, flags) == RETURNVALUE_NOERROR) {
 						n += remainder;
 					}
 				}
 			}
 		} else {
-			std::shared_ptr<Item> destItem = getItemByIndex(index);
+			const auto &destItem = getItemByIndex(index);
 			if (item->equals(destItem) && destItem->getItemCount() < destItem->getStackSize()) {
 				n = destItem->getStackSize() - destItem->getItemCount();
 			}
@@ -580,13 +580,13 @@ ReturnValue Container::queryMaxCount(int32_t index, const std::shared_ptr<Thing>
 }
 
 ReturnValue Container::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor /*= nullptr */) {
-	int32_t index = getThingIndex(thing);
+	const int32_t index = getThingIndex(thing);
 	if (index == -1) {
 		g_logger().debug("{} - Failed to get thing index", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item == nullptr) {
 		g_logger().debug("{} - Item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -601,7 +601,7 @@ ReturnValue Container::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t
 		g_logger().debug("{} - Item is not movable", __FUNCTION__);
 		return RETURNVALUE_NOTMOVABLE;
 	}
-	std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(getTopParent());
+	const std::shared_ptr<HouseTile> &houseTile = std::dynamic_pointer_cast<HouseTile>(getTopParent());
 	if (houseTile) {
 		return houseTile->queryRemove(thing, count, flags, actor);
 	}
@@ -618,7 +618,7 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 		index = INDEX_WHEREEVER;
 		destItem = nullptr;
 
-		std::shared_ptr<Container> parentContainer = std::dynamic_pointer_cast<Container>(getParent());
+		const auto &parentContainer = std::dynamic_pointer_cast<Container>(getParent());
 		if (parentContainer) {
 			return parentContainer;
 		}
@@ -646,12 +646,12 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 	}
 
 	if (index != INDEX_WHEREEVER) {
-		std::shared_ptr<Item> itemFromIndex = getItemByIndex(index);
+		const auto &itemFromIndex = getItemByIndex(index);
 		if (itemFromIndex) {
 			destItem = itemFromIndex;
 		}
 
-		std::shared_ptr<Cylinder> subCylinder = std::dynamic_pointer_cast<Cylinder>(destItem);
+		const auto &subCylinder = std::dynamic_pointer_cast<Cylinder>(destItem);
 		if (subCylinder) {
 			index = INDEX_WHEREEVER;
 			destItem = nullptr;
@@ -659,7 +659,7 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 		}
 	}
 
-	bool autoStack = !hasBitSet(FLAG_IGNOREAUTOSTACK, flags);
+	const bool autoStack = !hasBitSet(FLAG_IGNOREAUTOSTACK, flags);
 	if (autoStack && item->isStackable() && item->getParent() != getContainer()) {
 		if (destItem && (destItem)->equals(item) && (destItem)->getItemCount() < (destItem)->getStackSize()) {
 			return getContainer();
@@ -667,7 +667,7 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 
 		// try find a suitable item to stack with
 		uint32_t n = 0;
-		for (const std::shared_ptr<Item> &listItem : itemlist) {
+		for (const auto &listItem : itemlist) {
 			if (listItem != item && listItem->equals(item) && listItem->getItemCount() < listItem->getStackSize()) {
 				destItem = listItem;
 				index = n;
@@ -692,7 +692,7 @@ void Container::addThing(int32_t index, const std::shared_ptr<Thing> &thing) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
 
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item == nullptr) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
@@ -718,7 +718,7 @@ void Container::addItemBack(const std::shared_ptr<Item> &item) {
 }
 
 void Container::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) {
-	int32_t index = getThingIndex(thing);
+	const int32_t index = getThingIndex(thing);
 	if (index == -1) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
@@ -745,7 +745,7 @@ void Container::replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
 
-	std::shared_ptr<Item> replacedItem = getItemByIndex(index);
+	const auto &replacedItem = getItemByIndex(index);
 	if (!replacedItem) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
@@ -763,18 +763,18 @@ void Container::replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing
 }
 
 void Container::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) {
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item == nullptr) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
 
-	int32_t index = getThingIndex(thing);
+	const int32_t index = getThingIndex(thing);
 	if (index == -1) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
 
 	if (item->isStackable() && count != item->getItemCount()) {
-		uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count));
+		const uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count));
 		const int32_t oldWeight = item->getWeight();
 		item->setItemCount(newCount);
 		updateItemWeight(-oldWeight + item->getWeight());
@@ -851,7 +851,7 @@ ItemVector Container::getItems(bool recursive /*= false*/) {
 }
 
 void Container::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t) {
-	std::shared_ptr<Cylinder> topParent = getTopParent();
+	const std::shared_ptr<Cylinder> &topParent = getTopParent();
 	if (topParent->getCreature()) {
 		topParent->postAddNotification(thing, oldParent, index, LINK_TOPPARENT);
 	} else if (topParent == getContainer()) {
@@ -865,7 +865,7 @@ void Container::postAddNotification(const std::shared_ptr<Thing> &thing, const s
 }
 
 void Container::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
-	std::shared_ptr<Cylinder> topParent = getTopParent();
+	const std::shared_ptr<Cylinder> &topParent = getTopParent();
 	if (topParent->getCreature()) {
 		topParent->postRemoveNotification(thing, newParent, index, LINK_TOPPARENT);
 	} else if (topParent == getContainer()) {
@@ -887,7 +887,7 @@ void Container::internalAddThing(uint32_t, const std::shared_ptr<Thing> &thing) 
 		return;
 	}
 
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item == nullptr) {
 		return;
 	}
@@ -911,7 +911,7 @@ void Container::stopDecaying() {
 	}
 }
 
-uint16_t Container::getFreeSlots() {
+uint16_t Container::getFreeSlots() const {
 	uint16_t counter = std::max<uint16_t>(0, capacity() - size());
 
 	for (const auto &item : itemlist) {
@@ -932,20 +932,20 @@ ContainerIterator Container::iterator() {
 	return cit;
 }
 
-void Container::removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient /* = false*/) {
+void Container::removeItem(const std::shared_ptr<Thing> &thing, bool sendUpdateToClient /* = false*/) {
 	if (thing == nullptr) {
 		return;
 	}
 
-	auto itemToRemove = thing->getItem();
+	const auto &itemToRemove = thing->getItem();
 	if (itemToRemove == nullptr) {
 		return;
 	}
 
-	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
+	const auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
 	if (it != itemlist.end()) {
 		// Send change to client
-		if (auto thingIndex = getThingIndex(thing); sendUpdateToClient && thingIndex != -1 && getParent()) {
+		if (const auto thingIndex = getThingIndex(thing); sendUpdateToClient && thingIndex != -1 && getParent()) {
 			onRemoveContainerItem(thingIndex, itemToRemove);
 		}
 
@@ -954,13 +954,13 @@ void Container::removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient
 	}
 }
 
-std::shared_ptr<Item> ContainerIterator::operator*() {
+std::shared_ptr<Item> ContainerIterator::operator*() const {
 	return *cur;
 }
 
 void ContainerIterator::advance() {
-	if (std::shared_ptr<Item> i = *cur) {
-		if (std::shared_ptr<Container> c = i->getContainer()) {
+	if (const auto &i = *cur) {
+		if (const auto &c = i->getContainer()) {
 			if (!c->empty()) {
 				over.push_back(c);
 			}

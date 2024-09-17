@@ -20,7 +20,7 @@ DepotChest::DepotChest(uint16_t type) :
 }
 
 ReturnValue DepotChest::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor /* = nullptr*/) {
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item == nullptr) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -28,7 +28,7 @@ ReturnValue DepotChest::queryAdd(int32_t index, const std::shared_ptr<Thing> &th
 		return RETURNVALUE_ITEMISNOTYOURS;
 	}
 
-	bool skipLimit = hasBitSet(FLAG_NOLIMIT, flags);
+	const bool skipLimit = hasBitSet(FLAG_NOLIMIT, flags);
 	if (!skipLimit) {
 		int32_t addCount = 0;
 
@@ -37,14 +37,14 @@ ReturnValue DepotChest::queryAdd(int32_t index, const std::shared_ptr<Thing> &th
 		}
 
 		if (item->getTopParent().get() != this) {
-			if (std::shared_ptr<Container> container = item->getContainer()) {
+			if (const std::shared_ptr<Container> &container = item->getContainer()) {
 				addCount = container->getItemHoldingCount() + 1;
 			} else {
 				addCount = 1;
 			}
 		}
 
-		if (std::shared_ptr<Cylinder> localParent = getRealParent()) {
+		if (const std::shared_ptr<Cylinder> &localParent = getRealParent()) {
 			if (localParent->getContainer()->getItemHoldingCount() + addCount > maxDepotItems) {
 				return RETURNVALUE_DEPOTISFULL;
 			}
@@ -57,21 +57,21 @@ ReturnValue DepotChest::queryAdd(int32_t index, const std::shared_ptr<Thing> &th
 }
 
 void DepotChest::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t) {
-	std::shared_ptr<Cylinder> localParent = getParent();
+	const std::shared_ptr<Cylinder> &localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
 void DepotChest::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
-	std::shared_ptr<Cylinder> localParent = getParent();
+	const std::shared_ptr<Cylinder> &localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
 
 std::shared_ptr<Cylinder> DepotChest::getParent() {
-	auto parentLocked = m_parent.lock();
+	const auto &parentLocked = m_parent.lock();
 	if (parentLocked && parentLocked->getParent()) {
 		return parentLocked->getParent()->getParent();
 	}

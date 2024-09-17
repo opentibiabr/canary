@@ -16,7 +16,7 @@
 #include "map/spectators.hpp"
 
 ReturnValue Mailbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, const std::shared_ptr<Creature> &) {
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item && Mailbox::canSend(item)) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -45,7 +45,7 @@ void Mailbox::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 		return;
 	}
 
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item && Mailbox::canSend(item)) {
 		sendItem(item);
 	}
@@ -99,7 +99,7 @@ bool Mailbox::sendItem(const std::shared_ptr<Item> &item) const {
 	}
 	if (player && item) {
 		if (g_game().internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
-			auto newItem = g_game().transformItem(item, item->getID() + 1);
+			const auto &newItem = g_game().transformItem(item, item->getID() + 1);
 			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && !writer.empty()) {
 				newItem->setAttribute(ItemAttribute_t::WRITER, writer);
 				newItem->setAttribute(ItemAttribute_t::DATE, date);
@@ -117,7 +117,7 @@ bool Mailbox::sendItem(const std::shared_ptr<Item> &item) const {
 }
 
 bool Mailbox::getReceiver(const std::shared_ptr<Item> &item, std::string &name) const {
-	std::shared_ptr<Container> container = item->getContainer();
+	const std::shared_ptr<Container> &container = item->getContainer();
 	if (container) {
 		for (const std::shared_ptr<Item> &containerItem : container->getItemList()) {
 			if (containerItem->getID() == ITEM_LABEL && getReceiver(containerItem, name)) {

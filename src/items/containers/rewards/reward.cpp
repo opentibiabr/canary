@@ -19,11 +19,11 @@ Reward::Reward() :
 }
 
 ReturnValue Reward::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, const std::shared_ptr<Creature> &actor /* = nullptr*/) {
-	if (actor) {
+	if (actor || !thing) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (!item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -40,14 +40,14 @@ ReturnValue Reward::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint3
 }
 
 void Reward::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t) {
-	std::shared_ptr<Cylinder> localParent = getParent();
+	const std::shared_ptr<Cylinder> &localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
 void Reward::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
-	std::shared_ptr<Cylinder> localParent = getParent();
+	const std::shared_ptr<Cylinder> &localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}

@@ -21,7 +21,7 @@ public:
 		return static_self_cast<Mailbox>();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() final {
+	std::shared_ptr<Cylinder> getCylinder() override {
 		return getMailbox();
 	}
 

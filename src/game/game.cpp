@@ -3909,7 +3909,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 	}
 
 	const std::shared_ptr<Monster> monster = creature->getMonster();
-	if (monster && monster->isFamiliar() && creature->getMaster()->getPlayer() == player && (it.isRune() || it.type == ITEM_TYPE_POTION)) {
+	if (monster && monster->isFamiliar() && creature->getMaster() && creature->getMaster()->getPlayer() == player && (it.isRune() || it.type == ITEM_TYPE_POTION)) {
 		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
 
 		if (it.isMultiUse()) {

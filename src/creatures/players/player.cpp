@@ -7784,13 +7784,13 @@ void Player::setStoreHistory(const StoreHistory &history) {
 	storeHistoryVector.push_back(history);
 }
 
-void Player::addStoreHistory(bool fromMarket, uint64_t createdAt, MarketAction_t actionType, uint32_t coinAmount, CoinType coinType, HistoryTypes_t historyType, const std::string &description, const std::string &playerName, uint64_t totalPrice) {
+void Player::addStoreHistory(bool fromMarket, uint64_t createdAt, uint32_t coinAmount, HistoryTypes_t historyType, const std::string &description, const std::string &playerName, uint64_t totalPrice /* = 0*/) {
 	StoreHistory storeHistory;
 	storeHistory.fromMarket = fromMarket;
 	storeHistory.createdAt = createdAt;
-	storeHistory.coinAmount = actionType == MARKETACTION_SELL ? static_cast<int32_t>(coinAmount) * -1 : coinAmount;
-	storeHistory.coinType = coinType;
-	storeHistory.historyType = historyType;
+	storeHistory.coinAmount = historyType == HistoryTypes_t::GIFT ? static_cast<int32_t>(coinAmount) * -1 : coinAmount;
+	storeHistory.coinType = CoinType::Transferable;
+	storeHistory.historyType = HistoryTypes_t::NONE;
 	storeHistory.description = description;
 	storeHistory.playerName = playerName;
 	storeHistory.totalPrice = totalPrice;

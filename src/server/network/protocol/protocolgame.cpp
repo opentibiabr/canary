@@ -9333,11 +9333,11 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage &msg) {
 
 void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 	msg.addString(offer->getOfferName());
-	const auto relatedOffersVector = offer->getRelatedOffersVector();
+	const auto &relatedOffersVector = offer->getRelatedOffersVector();
 	auto offersCount = getVectorIterationIncreaseCount(relatedOffersVector);
 	msg.addByte(static_cast<uint8_t>(offersCount)); // Related Offers inside a Base Offer
 	sendOfferDescription(offer);
-	for (const auto relatedOffer : relatedOffersVector) {
+	for (const auto &relatedOffer : relatedOffersVector) {
 		msg.add<uint32_t>(relatedOffer.id);
 		msg.add<uint16_t>(relatedOffer.count);
 
@@ -9683,24 +9683,30 @@ void ProtocolGame::parseStoreDetail(NetworkMessage &msg) {
 
 	auto createdAt = msg.get<uint32_t>();
 	if (createdAt != 0) {
-		g_logger().info("Details creation data: {}, player '{}'", createdAt, player->getName());
-		// Get the offer by creation data and send the details structure based on offer details
+		// Get the offer by creation data
 		auto storeDetail = g_ioStore().getStoreHistoryDetail(player->getName(), createdAt, true);
-		g_logger().info("Store details for creation data: {}, description '{}', player '{}', coin amount '{}', total price '{}'", storeDetail.createdAt, storeDetail.description, storeDetail.playerName, storeDetail.coinAmount, storeDetail.totalPrice);
+		if (storeDetail.createdAt != createdAt) {
+			g_logger().error("Store detail not found for creation data: {}, player '{}'", createdAt, player->getName());
+			return;
+		}
 
-		/*
-		// Send store detail structure ?
-		NetworkMessage newMsg;
-		newMsg.addByte(???);
-		newMsg.add<uint32_t>(createdData);
-		newMsg.addString(storeDetail.description);
-		newMsg.addString(storeDetail.playerName);
-		newMsg.add<uint32_t>(storeDetail.coinAmount);
-		newMsg.add<uint32_t>(storeDetail.totalPrice / storeDetail.coinAmount); // Price per coin
-		newMsg.add<uint64_t(storeDetail.totalPrice);
-		writeToOutputBuffer(newMsg);
-		*/
+		sendStoreDetail(storeDetail);
 	}
+}
+
+void ProtocolGame::sendStoreDetail(const StoreHistoryDetail &storeDetail) {
+	auto pricePerCoin = storeDetail.totalPrice ? storeDetail.totalPrice / storeDetail.coinAmount : 0;
+
+	NetworkMessage newMsg;
+	newMsg.addByte(0xCB);
+	newMsg.add<uint32_t>(storeDetail.createdAt);
+	newMsg.addByte(enumToValue(storeDetail.historyType));
+	newMsg.addString(storeDetail.description);
+	newMsg.addString(storeDetail.playerName);
+	newMsg.add<int32_t>(storeDetail.coinAmount);
+	newMsg.add<uint64_t>(pricePerCoin);
+	newMsg.add<int64_t>(storeDetail.totalPrice);
+	writeToOutputBuffer(newMsg);
 }
 
 void ProtocolGame::sendDisableLoginMusic() {

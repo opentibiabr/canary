@@ -335,11 +335,10 @@ const std::vector<std::string> IOStore::getOffersDisableReasonVector() {
 	return offersDisableReason;
 }
 
-StoreHistoryDetail IOStore::getStoreHistoryDetail(const std::string &playerName, bool fromMarket, uint32_t createdAt) {
-	StoreHistoryDetail details;
+StoreHistoryDetail IOStore::getStoreHistoryDetail(const std::string &playerName, uint32_t createdAt, bool hasDetail) {
 	std::string query = fmt::format(
-		"SELECT * FROM `store_history` WHERE `player_name` = '{}' AND `created_at` = '{}' AND `show_detail` = {}",
-		playerName, createdAt, 1
+		"SELECT * FROM `store_history` WHERE `player_name` = {} AND `created_at` = {} AND `show_detail` = {}",
+		g_database().escapeString(playerName), createdAt, static_cast<uint8_t>(hasDetail)
 	);
 
 	DBResult_ptr result = Database::getInstance().storeQuery(query);
@@ -348,12 +347,16 @@ StoreHistoryDetail IOStore::getStoreHistoryDetail(const std::string &playerName,
 		return {};
 	}
 
-	details.createdAt = createdAt;
-	details.description = result->getString("description");
-	details.coinAmount = result->getNumber<uint32_t>("coin_amount");
-	details.playerName = result->getString("player_name");
-	details.totalPrice = result->getNumber<uint32_t>("total_price");
-	return details;
+	StoreHistoryDetail storeDetail;
+	storeDetail.historyType = result->getNumber<HistoryTypes_t>("type");
+	storeDetail.createdAt = createdAt;
+	storeDetail.coinAmount = result->getNumber<int32_t>("coin_amount");
+	storeDetail.description = result->getString("description");
+	storeDetail.playerName = result->getString("player_name");
+	storeDetail.totalPrice = result->getNumber<uint32_t>("total_price");
+
+	g_logger().debug("Store details for creation data: {}, description '{}', player '{}', coin amount '{}', total price '{}'", storeDetail.createdAt, storeDetail.description, storeDetail.playerName, storeDetail.coinAmount, storeDetail.totalPrice);
+	return storeDetail;
 }
 
 // Category Class functions
@@ -387,7 +390,7 @@ void Category::addOffer(const Offer* newOffer) {
 }
 
 // Offer Functions
-std::vector<RelatedOffer> Offer::getRelatedOffersVector() const {
+const std::vector<RelatedOffer> &Offer::getRelatedOffersVector() const {
 	return relatedOffers;
 }
 void Offer::addRelatedOffer(const RelatedOffer &relatedOffer) {

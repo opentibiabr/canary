@@ -118,9 +118,10 @@ struct BannerInfo {
 };
 
 struct StoreHistoryDetail {
+	HistoryTypes_t historyType {};
 	uint32_t createdAt {};
+	int32_t coinAmount {};
 	uint64_t totalPrice {};
-	uint32_t coinAmount {};
 	std::string description {};
 	std::string playerName {};
 };
@@ -210,7 +211,7 @@ public:
 	std::vector<Offer> getOffersContainingSubstring(const std::string &searchString);
 	Offer* getOfferByName(const std::string &searchString);
 
-	static StoreHistoryDetail getStoreHistoryDetail(const std::string &playerName, bool fromMarket, uint32_t createdAt);
+	static StoreHistoryDetail getStoreHistoryDetail(const std::string &playerName, uint32_t createdAt, bool hasDetail);
 
 private:
 	IOStore() = default;
@@ -339,7 +340,7 @@ public:
 		return movable;
 	}
 
-	std::vector<RelatedOffer> getRelatedOffersVector() const;
+	const std::vector<RelatedOffer> &getRelatedOffersVector() const;
 	void addRelatedOffer(const RelatedOffer &relatedOffer);
 
 private:

@@ -36,6 +36,7 @@ struct ModalWindow;
 struct Achievement;
 struct Badge;
 struct Title;
+struct StoreHistoryDetail;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
@@ -504,6 +505,7 @@ private:
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 	void parseStoreDetail(NetworkMessage &msg);
+	void sendStoreDetail(const StoreHistoryDetail &storeDetail);
 
 	friend class Player;
 	friend class PlayerWheel;

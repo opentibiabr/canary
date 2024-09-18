@@ -3,7 +3,7 @@ version: "1.0"
 profile:
   name: qodana.recommended
 
-linter: "jetbrains/qodana-clang"
+linter: jetbrains/qodana-clang:latest
 
 bootstrap: |
   set -e

@@ -640,9 +640,8 @@ void Spell::getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &d
 					continue;
 				}
 				if (
-					augment->type == Augment_t::IncreasedDamage || augment->type == Augment_t::PowerfulImpact ||
-					augment->type == Augment_t::StrongImpact || augment->type == Augment_t::Base
-					) {
+					augment->type == Augment_t::IncreasedDamage || augment->type == Augment_t::PowerfulImpact || augment->type == Augment_t::StrongImpact || augment->type == Augment_t::Base
+				) {
 					const float augmentPercent = augment->value / 100.0;
 					damage.primary.value += static_cast<int32_t>(damage.primary.value * augmentPercent);
 					damage.secondary.value += static_cast<int32_t>(damage.secondary.value * augmentPercent);

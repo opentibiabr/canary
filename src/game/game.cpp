@@ -9100,7 +9100,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				"Sold on Market"
 			);
 
-			player->addStoreHistory(true, createdAt, amount, HistoryTypes_t::GIFT, "Transferred via the Market", player->getName(), totalPrice);
+			player->addStoreHistory(true, player->getName(), createdAt, amount, HistoryTypes_t::GIFT, "Transferred via the Market", totalPrice);
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, offer.tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -9126,7 +9126,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			buyerPlayer->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
-			buyerPlayer->addStoreHistory(true, createdAt, amount, HistoryTypes_t::REFUND, "Purchased via the Market", buyerPlayer->getName(), totalPrice);
+			buyerPlayer->addStoreHistory(true, buyerPlayer->getName(), createdAt, amount, HistoryTypes_t::REFUND, "Purchased via the Market", totalPrice);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9198,7 +9198,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
-			player->addStoreHistory(true, createdAt, amount, HistoryTypes_t::REFUND, "Purchased via the Market", player->getName(), totalPrice);
+			player->addStoreHistory(true, player->getName(), createdAt, amount, HistoryTypes_t::REFUND, "Purchased via the Market", totalPrice);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9255,7 +9255,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			const auto &tranferable = enumToValue(CoinType::Transferable);
 			const auto &removeCoin = enumToValue(CoinTransactionType::Remove);
 			sellerPlayer->getAccount()->registerCoinTransaction(removeCoin, tranferable, amount, "Sold on Market");
-			sellerPlayer->addStoreHistory(true, createdAt, amount, HistoryTypes_t::GIFT, "Transferred via the Market", sellerPlayer->getName(), totalPrice);
+			sellerPlayer->addStoreHistory(true, sellerPlayer->getName(), createdAt, amount, HistoryTypes_t::GIFT, "Transferred via the Market", totalPrice);
 		}
 
 		if (it.id != ITEM_STORE_COIN) {
@@ -10594,8 +10594,8 @@ void Game::playerCoinTransfer(uint32_t playerId, const std::string &receptorName
 	playerDonator->getAccount()->removeCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
 	playerReceptor->getAccount()->addCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
 
-	playerDonator->addStoreHistory(false, createdAt, coinAmount, HistoryTypes_t::GIFT, historyDesc, playerReceptor->getName());
-	playerReceptor->addStoreHistory(false, createdAt, coinAmount, HistoryTypes_t::NONE, historyDesc, playerReceptor->getName());
+	playerDonator->addStoreHistory(false, playerDonator->getName(), createdAt, coinAmount, HistoryTypes_t::GIFT, historyDesc);
+	playerReceptor->addStoreHistory(false, playerReceptor->getName(), createdAt, coinAmount, HistoryTypes_t::NONE, historyDesc);
 	playerReceptor->sendCoinBalance();
 	playerDonator->openStore();
 	playerDonator->updateUIExhausted();
@@ -10757,7 +10757,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::BLESSINGS: {
 			auto blessId = offer->getOfferId();
-			if (!magic_enum::enum_contains<Blessings>(static_cast<Blessings>(blessId))) {
+			if (!magic_enum::enum_contains<Blessings>(blessId)) {
 				player->sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
 				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, player->getName());
 				break;
@@ -10815,7 +10815,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::PREYBONUS: {
 			auto cardsAmount = offer->getOfferCount();
-			if (player->getPreyCards() + cardsAmount >= 50) {
+			if (player->getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT, __FUNCTION__)) {
 				break;
 			}
 
@@ -10855,9 +10855,10 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::INSTANT_REWARD_ACCESS: {
 			auto offerInstantAmount = offer->getOfferCount();
-			auto playerInstantAmount = player->getStorageValue(STORAGEVALUE_REWARD_ACCESS);
+			auto playerInstantAmount = static_cast<uint16_t>(player->getStorageValue(STORAGEVALUE_REWARD_ACCESS));
 
-			if (playerInstantAmount + offerInstantAmount >= 90) {
+			auto instantLimit = static_cast<uint16_t>(g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT, __FUNCTION__));
+			if (playerInstantAmount + offerInstantAmount >= instantLimit) {
 				break;
 			}
 
@@ -10906,7 +10907,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		auto offerAmount = offer->getOfferCount();
 		auto pricePerItem = offerPrice ? offerPrice / offerAmount : 0;
 		g_logger().trace("[{}] offer price {}, offer ammount {}, price per item {}", __METHOD_NAME__, offerPrice, offerAmount, pricePerItem);
-		player->addStoreHistory(false, getTimeNow(), offerPrice, HistoryTypes_t::GIFT, offer->getOfferName(), player->getName());
+		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, HistoryTypes_t::GIFT, offer->getOfferName());
 	} else {
 		player->sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
 	}

@@ -99,7 +99,7 @@ struct StoreHistory {
 	int32_t coinAmount {};
 	CoinType coinType {};
 	HistoryTypes_t historyType {};
-	uint32_t totalPrice {};
+	uint64_t totalPrice {};
 
 	std::string description {};
 	std::string playerName {};
@@ -2672,10 +2672,10 @@ public:
 	void openStore();
 	void sendStoreHistory(uint32_t page) const;
 	void sendStoreSuccess(const std::string &successMessage);
-	void sendStoreError(StoreErrors_t errorType, std::string errorMessage);
+	void sendStoreError(StoreErrors_t errorType, const std::string &errorMessage);
 	std::vector<StoreHistory> &getStoreHistory();
 	void setStoreHistory(const StoreHistory &history);
-	void addStoreHistory(bool fromMarket, uint64_t createdAt, uint32_t coinAmount, HistoryTypes_t historyType, const std::string &description, const std::string &playerName, uint64_t totalPrice = 0);
+	void addStoreHistory(bool fromMarket, const std::string &playerName, time_t createdAt, uint32_t coinAmount, HistoryTypes_t historyType, const std::string &description, uint64_t totalPrice = 0);
 	bool canBuyStoreOffer(const Offer* offer);
 
 private:

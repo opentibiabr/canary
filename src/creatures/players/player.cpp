@@ -7770,7 +7770,7 @@ void Player::sendStoreSuccess(const std::string &successMessage) {
 	}
 }
 
-void Player::sendStoreError(StoreErrors_t errorType, std::string errorMessage) {
+void Player::sendStoreError(StoreErrors_t errorType, const std::string &errorMessage) {
 	if (client) {
 		client->sendStoreError(errorType, errorMessage);
 	}
@@ -7784,11 +7784,12 @@ void Player::setStoreHistory(const StoreHistory &history) {
 	storeHistoryVector.push_back(history);
 }
 
-void Player::addStoreHistory(bool fromMarket, uint64_t createdAt, uint32_t coinAmount, HistoryTypes_t historyType, const std::string &description, const std::string &playerName, uint64_t totalPrice /* = 0*/) {
+void Player::addStoreHistory(bool fromMarket, const std::string &playerName, time_t createdAt, uint32_t coinAmount, HistoryTypes_t historyType, const std::string &description, uint64_t totalPrice /* = 0*/) {
+	auto coinConverted = static_cast<int32_t>(coinAmount);
 	StoreHistory storeHistory;
 	storeHistory.fromMarket = fromMarket;
 	storeHistory.createdAt = createdAt;
-	storeHistory.coinAmount = historyType == HistoryTypes_t::GIFT ? static_cast<int32_t>(coinAmount) * -1 : coinAmount;
+	storeHistory.coinAmount = historyType == HistoryTypes_t::GIFT ? coinConverted * -1 : coinConverted;
 	storeHistory.coinType = CoinType::Transferable;
 	storeHistory.historyType = HistoryTypes_t::NONE;
 	storeHistory.description = description;
@@ -7797,7 +7798,9 @@ void Player::addStoreHistory(bool fromMarket, uint64_t createdAt, uint32_t coinA
 	setStoreHistory(storeHistory);
 
 	if (isOffline()) {
-		IOLoginDataSave::savePlayerStoreHistory(getPlayer());
+		if (!IOLoginDataSave::savePlayerStoreHistory(getPlayer())) {
+			g_logger().error("[{}] Failed to save store history for player {}", __FUNCTION__, getName());
+		}
 	}
 }
 
@@ -7809,7 +7812,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		case OfferTypes_t::OUTFIT: {
 			auto offerOutfitId = offer->getOutfitIds();
 			auto playerLookType = (getSex() == PLAYERSEX_FEMALE ? offerOutfitId.femaleId : offerOutfitId.maleId);
-			auto addons = playerLookType >= 962 && playerLookType <= 975 ? 0 : 3;
+			uint8_t addons = playerLookType >= 962 && playerLookType <= 975 ? 0u : 3u;
 
 			if (canWear(playerLookType, addons)) {
 				canBuy = false;
@@ -7847,7 +7850,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 
 		case OfferTypes_t::PREYBONUS: {
 			auto cardsAmount = offer->getOfferCount();
-			if (getPreyCards() + cardsAmount >= 50) {
+			if (getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT, __FUNCTION__)) {
 				canBuy = false;
 			}
 
@@ -7856,7 +7859,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 
 		case OfferTypes_t::BLESSINGS: {
 			auto blessId = offer->getOfferId();
-			if (!magic_enum::enum_contains<Blessings>(static_cast<Blessings>(blessId))) {
+			if (!magic_enum::enum_contains<Blessings>(blessId)) {
 				sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
 				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, getName());
 				break;
@@ -7894,7 +7897,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 			auto offerInstantAmount = offer->getOfferCount();
 			auto playerInstantAmount = getStorageValue(STORAGEVALUE_REWARD_ACCESS);
 
-			if (playerInstantAmount + offerInstantAmount >= 90) {
+			if (playerInstantAmount + offerInstantAmount >= g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT, __FUNCTION__)) {
 				canBuy = false;
 			}
 
@@ -8268,7 +8271,7 @@ std::shared_ptr<Container> Player::getLootPouch() {
 	if (inventoryItems.empty()) {
 		return nullptr;
 	}
-	auto containerItem = inventoryItems.front();
+	const auto &containerItem = inventoryItems.front();
 	if (!containerItem) {
 		return nullptr;
 	}

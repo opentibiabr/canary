@@ -70,7 +70,7 @@ OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 	}
 
 	return { rawPtr, [&allocator](OutputMessage*&ptr) mutable {
-				if (ptr) {
+				if (ptr != nullptr) {
 					ptr->~OutputMessage();
 					allocator.deallocate(ptr, 1);
 				}

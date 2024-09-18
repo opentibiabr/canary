@@ -235,7 +235,7 @@ void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBRes
 	auto condition = Condition::createCondition(propStream);
 	while (condition) {
 		if (condition->unserialize(propStream)) {
-			player->storedConditionList.push_front(condition);
+			player->storedConditionList.emplace_back(condition);
 		}
 		condition = Condition::createCondition(propStream);
 	}
@@ -465,7 +465,7 @@ void IOLoginDataLoad::loadPlayerInstantSpellList(std::shared_ptr<Player> player,
 	query << "SELECT `player_id`, `name` FROM `player_spells` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
-			player->learnedInstantSpellList.emplace_front(result->getString("name"));
+			player->learnedInstantSpellList.emplace_back(result->getString("name"));
 		} while (result->next());
 	}
 }
@@ -829,7 +829,12 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 }
 
 void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResult_ptr result) {
-	if (!result || !player) {
+	if (!result) {
+		g_logger().warn("[IOLoginData::loadPlayer] - Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
+	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
 		return;
 	}

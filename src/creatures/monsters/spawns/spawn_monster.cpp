@@ -61,8 +61,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 			continue;
 		}
 
-		spawnMonsterList.emplace_front(centerPos, radius);
-		SpawnMonster &spawnMonster = spawnMonsterList.front();
+		SpawnMonster &spawnMonster = spawnMonsterList.emplace_back(centerPos, radius);
 
 		for (auto childMonsterNode : spawnMonsterNode.children()) {
 			if (strcasecmp(childMonsterNode.name(), "monster") == 0) {
@@ -178,7 +177,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 			return false;
 		}
 	} else {
-		g_logger().debug("[SpawnMonster] Spawning {} at {}", monsterType->name, sb.pos.toString());
+		g_logger().trace("[SpawnMonster] Spawning {} at {}", monsterType->name, sb.pos.toString());
 		if (!g_game().placeCreature(monster, sb.pos, false, true)) {
 			return false;
 		}
@@ -191,6 +190,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 	spawnedMonsterMap[spawnMonsterId] = monster;
 	sb.lastSpawn = OTSYS_TIME();
 	g_events().eventMonsterOnSpawn(monster, sb.pos);
+	monster->onSpawn();
 	g_callbacks().executeCallback(EventCallback_t::monsterOnSpawn, &EventCallback::monsterOnSpawn, monster, sb.pos);
 	return true;
 }

@@ -41,6 +41,7 @@
 #include "enums/account_errors.hpp"
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
+#include "enums/player_blessings.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -466,41 +467,36 @@ float Player::getDefenseFactor() const {
 	}
 }
 
-uint32_t Player::getClientIcons() {
-	uint32_t icons = 0;
+std::unordered_set<PlayerIcon> Player::getClientIcons() {
+	std::unordered_set<PlayerIcon> icons;
+
 	for (const auto &condition : conditions) {
 		if (!isSuppress(condition->getType(), false)) {
-			icons |= condition->getIcons();
+			auto conditionIcons = condition->getIcons();
+			icons.insert(conditionIcons.begin(), conditionIcons.end());
+			if (icons.size() == 9) {
+				return icons;
+			}
 		}
 	}
 
-	if (pzLocked) {
-		icons |= ICON_REDSWORDS;
+	if (pzLocked && icons.size() < 9) {
+		icons.insert(PlayerIcon::RedSwords);
 	}
 
 	auto tile = getTile();
 	if (tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-		icons |= ICON_PIGEON;
+		if (icons.size() < 9) {
+			icons.insert(PlayerIcon::Pigeon);
+		}
 		client->sendRestingStatus(1);
 
-		// Don't show ICON_SWORDS if player is in protection zone.
-		if (hasBitSet(ICON_SWORDS, icons)) {
-			icons &= ~ICON_SWORDS;
-		}
+		icons.erase(PlayerIcon::Swords);
 	} else {
 		client->sendRestingStatus(0);
 	}
 
-	// Game client debugs with 10 or more icons
-	// so let's prevent that from happening.
-	std::bitset<32> icon_bitset(static_cast<uint64_t>(icons));
-	for (size_t pos = 0, bits_set = icon_bitset.count(); bits_set >= 10; ++pos) {
-		if (icon_bitset[pos]) {
-			icon_bitset.reset(pos);
-			--bits_set;
-		}
-	}
-	return icon_bitset.to_ulong();
+	return icons;
 }
 
 void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {
@@ -681,7 +677,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), skill, count);
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), skill, count);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), std::ref(skill), std::ref(count));
 	if (count == 0) {
 		return;
 	}
@@ -2240,6 +2236,8 @@ void Player::onThink(uint32_t interval) {
 
 	// Wheel of destiny major spells
 	wheel()->onThink();
+
+	g_callbacks().executeCallback(EventCallback_t::playerOnThink, &EventCallback::playerOnThink, getPlayer(), interval);
 }
 
 uint32_t Player::isMuted() const {
@@ -2373,7 +2371,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		return;
 	}
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, &EventCallback::playerOnGainExperience, getPlayer(), target, exp, rawExp);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, &EventCallback::playerOnGainExperience, getPlayer(), target, std::ref(exp), std::ref(rawExp));
 
 	g_events().eventPlayerOnGainExperience(static_self_cast<Player>(), target, exp, rawExp);
 	if (exp == 0) {
@@ -2489,7 +2487,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 	}
 
 	g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), exp);
-	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), exp);
+	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), std::ref(exp));
 	if (exp == 0) {
 		return;
 	}
@@ -5289,12 +5287,12 @@ double Player::getLostPercent() const {
 
 void Player::learnInstantSpell(const std::string &spellName) {
 	if (!hasLearnedInstantSpell(spellName)) {
-		learnedInstantSpellList.push_front(spellName);
+		learnedInstantSpellList.emplace_back(spellName);
 	}
 }
 
 void Player::forgetInstantSpell(const std::string &spellName) {
-	learnedInstantSpellList.remove(spellName);
+	std::erase(learnedInstantSpellList, spellName);
 }
 
 bool Player::hasLearnedInstantSpell(const std::string &spellName) const {
@@ -5568,15 +5566,15 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 	return result;
 }
 
-int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
-	int32_t result = reflectPercent[combatTypeToIndex(combat)];
-	for (const auto &item : getEquippedItems()) {
+double_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
+	double_t result = reflectPercent[combatTypeToIndex(combat)];
+	for (const auto item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
 		}
 
-		int32_t reflectPercent = itemType.abilities->reflectPercent[combatTypeToIndex(combat)];
+		double_t reflectPercent = itemType.abilities->reflectPercent[combatTypeToIndex(combat)];
 		if (reflectPercent != 0) {
 			result += reflectPercent;
 			uint16_t charges = item->getCharges();
@@ -5700,12 +5698,12 @@ bool Player::addPartyInvitation(std::shared_ptr<Party> newParty) {
 		return false;
 	}
 
-	invitePartyList.push_front(newParty);
+	invitePartyList.emplace_back(newParty);
 	return true;
 }
 
 void Player::removePartyInvitation(std::shared_ptr<Party> remParty) {
-	invitePartyList.remove(remParty);
+	std::erase(invitePartyList, remParty);
 }
 
 void Player::clearPartyInvitations() {
@@ -5823,6 +5821,10 @@ uint8_t Player::getRandomMountId() const {
 bool Player::toggleMount(bool mount) {
 	if ((OTSYS_TIME() - lastToggleMount) < 3000 && !wasMounted) {
 		sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
+	if (isWearingSupportOutfit()) {
 		return false;
 	}
 
@@ -5991,7 +5993,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 
 		g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), SKILL_MAGLEVEL, tries);
-		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, tries);
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, std::ref(tries));
 
 		uint32_t currMagLevel = magLevel;
 		while ((manaSpent + tries) >= nextReqMana) {
@@ -6124,7 +6126,7 @@ bool Player::hasModalWindowOpen(uint32_t modalWindowId) const {
 }
 
 void Player::onModalWindowHandled(uint32_t modalWindowId) {
-	modalWindows.remove(modalWindowId);
+	std::erase(modalWindows, modalWindowId);
 }
 
 void Player::sendModalWindow(const ModalWindow &modalWindow) {
@@ -6132,7 +6134,7 @@ void Player::sendModalWindow(const ModalWindow &modalWindow) {
 		return;
 	}
 
-	modalWindows.push_front(modalWindow.id);
+	modalWindows.emplace_back(modalWindow.id);
 	client->sendModalWindow(modalWindow);
 }
 
@@ -6172,6 +6174,54 @@ void Player::sendClosePrivate(uint16_t channelId) {
 
 	if (client) {
 		client->sendClosePrivate(channelId);
+	}
+}
+
+void Player::sendIcons() {
+	if (!client) {
+		return;
+	}
+
+	// Iterates over the Bakragore icons to check if the player has any
+	IconBakragore iconBakragore = IconBakragore::None;
+	for (auto icon : magic_enum::enum_values<IconBakragore>()) {
+		if (icon == IconBakragore::None) {
+			continue;
+		}
+
+		const auto &condition = getCondition(CONDITION_BAKRAGORE, CONDITIONID_DEFAULT, magic_enum::enum_integer(icon));
+		if (condition) {
+			g_logger().debug("[{}] found active condition Bakragore with subId {}", __FUNCTION__, magic_enum::enum_integer(icon));
+			iconBakragore = icon;
+		}
+	}
+
+	// Remove the last icon so that Bakragore's is added
+	auto iconSet = getClientIcons();
+	if (iconSet.size() >= 9 && iconBakragore != IconBakragore::None) {
+		iconSet.erase(std::prev(iconSet.end()));
+	}
+
+	client->sendIcons(iconSet, iconBakragore);
+}
+
+void Player::sendIconBakragore(const IconBakragore icon) {
+	if (client) {
+		client->sendIconBakragore(icon);
+	}
+}
+
+void Player::removeBakragoreIcons() {
+	for (auto icon : magic_enum::enum_values<IconBakragore>()) {
+		if (hasCondition(CONDITION_BAKRAGORE, enumToValue(icon))) {
+			removeCondition(CONDITION_BAKRAGORE, CONDITIONID_DEFAULT, true);
+		}
+	}
+}
+
+void Player::removeBakragoreIcon(const IconBakragore icon) {
+	if (hasCondition(CONDITION_BAKRAGORE, enumToValue(icon))) {
+		removeCondition(CONDITION_BAKRAGORE, CONDITIONID_DEFAULT, true);
 	}
 }
 
@@ -6251,8 +6301,10 @@ size_t Player::getMaxDepotItems() const {
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT, __FUNCTION__);
 }
 
-std::forward_list<std::shared_ptr<Condition>> Player::getMuteConditions() const {
-	std::forward_list<std::shared_ptr<Condition>> muteConditions;
+std::vector<std::shared_ptr<Condition>> Player::getMuteConditions() const {
+	std::vector<std::shared_ptr<Condition>> muteConditions;
+	muteConditions.reserve(conditions.size());
+
 	for (const std::shared_ptr<Condition> &condition : conditions) {
 		if (condition->getTicks() <= 0) {
 			continue;
@@ -6263,7 +6315,7 @@ std::forward_list<std::shared_ptr<Condition>> Player::getMuteConditions() const 
 			continue;
 		}
 
-		muteConditions.push_front(condition);
+		muteConditions.emplace_back(condition);
 	}
 	return muteConditions;
 }
@@ -6614,33 +6666,24 @@ void Player::initializeTaskHunting() {
 }
 
 std::string Player::getBlessingsName() const {
-	uint8_t count = 0;
-	std::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
-		if (amount != 0) {
-			count++;
+	std::vector<std::string> blessingNames;
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (hasBlessing(enumToValue(bless))) {
+			std::string name = toStartCaseWithSpace(magic_enum::enum_name(bless).data());
+			blessingNames.emplace_back(name);
 		}
-	});
+	}
 
-	auto BlessingNames = g_game().getBlessingNames();
 	std::ostringstream os;
-	for (uint8_t i = 1; i <= 8; i++) {
-		if (hasBlessing(i)) {
-			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i));
-			    blessName != BlessingNames.end()) {
-				os << (*blessName).second;
-			} else {
-				continue;
-			}
-
-			--count;
-			if (count > 1) {
-				os << ", ";
-			} else if (count == 1) {
-				os << " and ";
-			} else {
-				os << ".";
-			}
+	if (!blessingNames.empty()) {
+		// Join all elements but the last with ", " and add the last one with " and "
+		for (size_t i = 0; i < blessingNames.size() - 1; ++i) {
+			os << blessingNames[i] << ", ";
 		}
+		if (blessingNames.size() > 1) {
+			os << "and ";
+		}
+		os << blessingNames.back() << ".";
 	}
 
 	return os.str();
@@ -7812,9 +7855,9 @@ SoundEffect_t Player::getAttackSoundEffect() const {
 bool Player::canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay /* = 500*/) {
 	if (!Position::areInRange<1, 1>(getPosition(), toPosition)) {
 		// Check if can walk to the toPosition and send event to use function
-		stdext::arraylist<Direction> listDir(128);
+		std::vector<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([creatureId = getID(), dirs = listDir.data()] { g_game().playerAutoWalk(creatureId, dirs); }, __FUNCTION__);
+			g_dispatcher().addEvent([creatureId = getID(), listDir] { g_game().playerAutoWalk(creatureId, listDir); }, __FUNCTION__);
 
 			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);

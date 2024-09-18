@@ -22,7 +22,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission11)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission11)
 	-- Skip if not was started or finished
 	if missionState == -1 or missionState > 1 then
 		return true
@@ -38,7 +38,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 			end
 		end
 		if missionTile.newState then
-			player:setStorageValue(Storage.TheRookieGuard.Mission11, missionTile.newState)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission11, missionTile.newState)
 		end
 	end
 	return true
@@ -54,10 +54,10 @@ missionGuide:register()
 local specialFlask = Action()
 
 function specialFlask.onUse(player, item, frompos, item2, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission11)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission11)
 	if missionState == 2 and item2.itemid == 5989 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You carefully gather some of the wasp poison. Bring it back to Vascalir.")
-		player:setStorageValue(Storage.TheRookieGuard.Mission11, 3)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission11, 3)
 		player:removeItem(12785, 1)
 		player:addItemEx(Game.createItem(12784, 1), true, CONST_SLOT_WHEREEVER)
 	end

@@ -70,12 +70,21 @@ int ConfigFunctions::luaConfigManagerGetBoolean(lua_State* L) {
 }
 
 int ConfigFunctions::luaConfigManagerGetFloat(lua_State* L) {
-	auto key = getNumber<ConfigKey_t>(L, -1);
+	// configManager.getFloat(key, shouldRound = true)
+
+	// Ensure the first argument (key) is provided and is a valid enum
+	auto key = getNumber<ConfigKey_t>(L, 1);
 	if (!key) {
 		reportErrorFunc("Wrong enum");
 		return 1;
 	}
 
-	lua_pushnumber(L, g_configManager().getFloat(key, __FUNCTION__));
+	// Check if the second argument (shouldRound) is provided and is a boolean; default to true if not provided
+	bool shouldRound = getBoolean(L, 2, true);
+	float value = g_configManager().getFloat(key, __FUNCTION__);
+	double finalValue = shouldRound ? static_cast<double>(std::round(value * 100.0) / 100.0) : value;
+
+	g_logger().debug("[{}] key: {}, finalValue: {}, shouldRound: {}", __METHOD_NAME__, magic_enum::enum_name(key), finalValue, shouldRound);
+	lua_pushnumber(L, finalValue);
 	return 1;
 }

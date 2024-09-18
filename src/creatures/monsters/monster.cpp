@@ -108,13 +108,55 @@ bool Monster::canWalkOnFieldType(CombatType_t combatType) const {
 	}
 }
 
-int32_t Monster::getReflectPercent(CombatType_t reflectType, bool useCharges) const {
-	int32_t result = Creature::getReflectPercent(reflectType, useCharges);
+double_t Monster::getReflectPercent(CombatType_t reflectType, bool useCharges) const {
+	// Monster type reflect
+	auto result = Creature::getReflectPercent(reflectType, useCharges);
+	if (result != 0) {
+		g_logger().debug("[{}] before mtype reflect element {}, percent {}", __FUNCTION__, fmt::underlying(reflectType), result);
+	}
 	auto it = mType->info.reflectMap.find(reflectType);
 	if (it != mType->info.reflectMap.end()) {
 		result += it->second;
 	}
+
+	if (result != 0) {
+		g_logger().debug("[{}] after mtype reflect element {}, percent {}", __FUNCTION__, fmt::underlying(reflectType), result);
+	}
+
+	// Monster reflect
+	auto monsterReflectIt = m_reflectElementMap.find(reflectType);
+	if (monsterReflectIt != m_reflectElementMap.end()) {
+		result += monsterReflectIt->second;
+	}
+
+	if (result != 0) {
+		g_logger().debug("[{}] (final) after monster reflect element {}, percent {}", __FUNCTION__, fmt::underlying(reflectType), result);
+	}
+
 	return result;
+}
+
+void Monster::addReflectElement(CombatType_t combatType, int32_t percent) {
+	g_logger().debug("[{}] added reflect element {}, percent {}", __FUNCTION__, fmt::underlying(combatType), percent);
+	m_reflectElementMap[combatType] += percent;
+}
+
+int32_t Monster::getDefense() const {
+	auto mtypeDefense = mType->info.defense;
+	if (mtypeDefense != 0) {
+		g_logger().trace("[{}] old defense {}", __FUNCTION__, mtypeDefense);
+	}
+	mtypeDefense += m_defense;
+	if (mtypeDefense != 0) {
+		g_logger().trace("[{}] new defense {}", __FUNCTION__, mtypeDefense);
+	}
+	return mtypeDefense * getDefenseMultiplier();
+}
+
+void Monster::addDefense(int32_t defense) {
+	g_logger().trace("[{}] adding defense {}", __FUNCTION__, defense);
+	m_defense += defense;
+	g_logger().trace("[{}] new defense {}", __FUNCTION__, m_defense);
 }
 
 uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {
@@ -312,6 +354,57 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 		LuaScriptInterface::pushString(L, text);
 
 		scriptInterface->callVoidFunction(4);
+	}
+}
+
+void Monster::onAttackedByPlayer(std::shared_ptr<Player> attackerPlayer) {
+	if (mType->info.monsterAttackedByPlayerEvent != -1) {
+		// onPlayerAttack(self, attackerPlayer)
+		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
+		if (!scriptInterface->reserveScriptEnv()) {
+			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
+			                 "script calls being nested.",
+			                 getName(), this->getName());
+			return;
+		}
+
+		ScriptEnvironment* env = scriptInterface->getScriptEnv();
+		env->setScriptId(mType->info.monsterAttackedByPlayerEvent, scriptInterface);
+
+		lua_State* L = scriptInterface->getLuaState();
+		scriptInterface->pushFunction(mType->info.monsterAttackedByPlayerEvent);
+
+		LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
+		LuaScriptInterface::setMetatable(L, -1, "Monster");
+
+		LuaScriptInterface::pushUserdata<Player>(L, attackerPlayer);
+		LuaScriptInterface::setMetatable(L, -1, "Player");
+
+		scriptInterface->callVoidFunction(2);
+	}
+}
+
+void Monster::onSpawn() {
+	if (mType->info.spawnEvent != -1) {
+		// onSpawn(self)
+		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
+		if (!scriptInterface->reserveScriptEnv()) {
+			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
+			                 "script calls being nested.",
+			                 getName(), this->getName());
+			return;
+		}
+
+		ScriptEnvironment* env = scriptInterface->getScriptEnv();
+		env->setScriptId(mType->info.spawnEvent, scriptInterface);
+
+		lua_State* L = scriptInterface->getLuaState();
+		scriptInterface->pushFunction(mType->info.spawnEvent);
+
+		LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
+		LuaScriptInterface::setMetatable(L, -1, "Monster");
+
+		scriptInterface->callVoidFunction(1);
 	}
 }
 
@@ -1133,27 +1226,23 @@ void Monster::pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirecti
 	// We can not use iterators here since we can push the item to another tile
 	// which will invalidate the iterator.
 	// start from the end to minimize the amount of traffic
-	TileItemVector* items;
-	if (!(items = tile->getItemList())) {
-		return;
-	}
-	uint32_t moveCount = 0;
-	uint32_t removeCount = 0;
-	auto it = items->begin();
-	while (it != items->end()) {
-		std::shared_ptr<Item> item = *it;
-		if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
-			if (moveCount < 20 && pushItem(item, nextDirection)) {
-				++moveCount;
-			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
-				++removeCount;
+	if (const auto items = tile->getItemList()) {
+		uint32_t moveCount = 0;
+		uint32_t removeCount = 0;
+		int32_t downItemSize = tile->getDownItemCount();
+		for (int32_t i = downItemSize; --i >= 0;) {
+			const auto &item = items->at(i);
+			if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
+				if (moveCount < 20 && pushItem(item, nextDirection)) {
+					++moveCount;
+				} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
+					++removeCount;
+				}
 			}
-		} else {
-			it++;
 		}
-	}
-	if (removeCount > 0) {
-		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		if (removeCount > 0) {
+			g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		}
 	}
 }
 
@@ -1273,12 +1362,12 @@ void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result
 			return;
 		}
 
-		stdext::arraylist<Direction> listDir(128);
+		std::vector<Direction> listDir;
 		if (!getPathTo(masterPos, listDir, 0, std::max<int32_t>(0, distance - 5), true, true, distance)) {
 			isWalkingBack = false;
 			return;
 		}
-		startAutoWalk(listDir.data());
+		startAutoWalk(listDir);
 	}
 }
 
@@ -1956,6 +2045,8 @@ void Monster::death(std::shared_ptr<Creature>) {
 	if (mType) {
 		g_game().sendSingleSoundEffect(static_self_cast<Monster>()->getPosition(), mType->info.deathSound, getMonster());
 	}
+
+	setDead(true);
 }
 
 std::shared_ptr<Item> Monster::getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature) {
@@ -2157,11 +2248,11 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 }
 
 bool Monster::isImmune(ConditionType_t conditionType) const {
-	return mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
+	return m_isImmune || mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
 }
 
 bool Monster::isImmune(CombatType_t combatType) const {
-	return mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
+	return m_isImmune || mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
 }
 
 void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) {

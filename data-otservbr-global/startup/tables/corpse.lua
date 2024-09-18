@@ -18,6 +18,11 @@ CorpseAction = {
 }
 
 CorpseUnique = {
+	-- The Ice Island Quest - Skeleton
+	[3112] = {
+		itemId = 4024,
+		itemPos = { x = 32258, y = 31098, z = 10 },
+	},
 	-- Dark trails (Quandon corpse)
 	-- Path: data\scripts\actions\quests\dark_trails\corpse.lua
 	[20001] = {
@@ -30,10 +35,12 @@ CorpseUnique = {
 		itemId = 6082,
 		itemPos = { x = 33146, y = 32341, z = 8 },
 	},
+	-- The Ice Island Quest - Formorgar Mines Hoist - Skeleton
 	[20003] = {
 		itemId = 4285,
 		itemPos = { x = 32211, y = 31273, z = 10 },
 	},
+	-- Thais
 	[20004] = {
 		itemId = 4285,
 		itemPos = { x = 32305, y = 32254, z = 9 },

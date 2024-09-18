@@ -17,7 +17,7 @@ using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 
 class IOLoginData {
 public:
-	static bool gameWorldAuthentication(const std::string &accountDescriptor, const std::string &sessionOrPassword, std::string &characterName, uint32_t &accountId, bool oldProcotol);
+	static bool gameWorldAuthentication(const std::string &accountDescriptor, const std::string &sessionOrPassword, std::string &characterName, uint32_t &accountId, bool oldProcotol, const uint32_t ip);
 	static uint8_t getAccountType(uint32_t accountId);
 	static void updateOnlineStatus(uint32_t guid, bool login);
 	static bool loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disableIrrelevantInfo = true);
@@ -31,12 +31,12 @@ public:
 	static void increaseBankBalance(uint32_t guid, uint64_t bankBalance);
 	static bool hasBiddedOnHouse(uint32_t guid);
 
-	static std::forward_list<VIPEntry> getVIPEntries(uint32_t accountId);
+	static std::vector<VIPEntry> getVIPEntries(uint32_t accountId);
 	static void addVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);
 	static void editVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);
 	static void removeVIPEntry(uint32_t accountId, uint32_t guid);
 
-	static std::forward_list<VIPGroupEntry> getVIPGroupEntries(uint32_t accountId, uint32_t guid);
+	static std::vector<VIPGroupEntry> getVIPGroupEntries(uint32_t accountId, uint32_t guid);
 	static void addVIPGroupEntry(uint8_t groupId, uint32_t accountId, const std::string &groupName, bool customizable);
 	static void editVIPGroupEntry(uint8_t groupId, uint32_t accountId, const std::string &groupName, bool customizable);
 	static void removeVIPGroupEntry(uint8_t groupId, uint32_t accountId);

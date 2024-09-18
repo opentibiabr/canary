@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "exit") then
-		if player:getStorageValue(Storage.WrathoftheEmperor.ZumtahStatus) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.ZumtahStatus) ~= 1 then
 			if npcHandler:getTopic(playerId) < 1 then
 				npcHandler:say("You are searching for the way out? Do you want to go home? Are you homesick, nostalgic, allergic? I am sorry. You will stay. Muhahahaha. Haha. Are you giving up then?", npc, creature)
 				npcHandler:setTopic(playerId, 1)
@@ -66,7 +66,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("A what? I don't even know what you're talking about, human. If you aren't just giving up - will you kindly change the topic please?", npc, creature)
 				npcHandler:setTopic(playerId, 4)
 			elseif npcHandler:getTopic(playerId) == 6 then
-				npcHandler:say("I'm not sure, there is an entry, though. Muhahaha. And isn't that enough after all?", npc, creature)
+				npcHandler:say("Haha, no! No. Why don't you just stop asking me that and start enjoying your stay here?", npc, creature)
 				npcHandler:setTopic(playerId, 7)
 			elseif npcHandler:getTopic(playerId) == 10 then
 				npcHandler:say("Oh, you mean - if I have ever been out of here in those 278 years? Well, I - I can't remember. No, I can't remember. Sorry.", npc, creature)
@@ -87,13 +87,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif npcHandler:getTopic(playerId) == 14 then
 				npcHandler:say({ "Alright, as I said you are free now. There will not be an outside for the next three centuries, but you - go. ...", "Oh and I recovered the strange crate you where hiding in, it will wait for you at the exit since you can't carry it as... a beetle, muhaha. Yes, you shall now crawl through the passage as a beetle. There you go." }, npc, creature)
 				npcHandler:setTopic(playerId, 0)
-				player:setStorageValue(Storage.WrathoftheEmperor.ZumtahStatus, 1)
-				player:setStorageValue(Storage.WrathoftheEmperor.PrisonReleaseStatus, 1)
+				player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.ZumtahStatus, 1)
+				player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.PrisonReleaseStatus, 1)
 				player:addCondition(condition)
 			end
 		else
 			npcHandler:say("It's you, why did they throw you in here again? Anyway, I will just transform you once more. I also recovered your crate which will wait for you at the exit. There, feel free to go.", npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.PrisonReleaseStatus, 1)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.PrisonReleaseStatus, 1)
 			player:addCondition(condition)
 		end
 	elseif MsgContains(message, "no") then

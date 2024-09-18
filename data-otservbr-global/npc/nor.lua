@@ -59,11 +59,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "crystal") then
-		if player:getStorageValue(Storage.TheIceIslands.Mission08) == 2 then
+		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission08) == 2 then
 			npcHandler:say("Here, take the memory crystal and leave immediately.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:addItem(7281, 1)
-			player:setStorageValue(Storage.TheIceIslands.Mission08, 3) -- Questlog The Ice Islands Quest, The Contact
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission08, 3) -- Questlog The Ice Islands Quest, The Contact
 		end
 	end
 	return true

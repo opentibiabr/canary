@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <items>
 	<!-- Liquids -->
-	<!-- Fluid type 0 is same as water (id="1") -->
-	<item id="1" name="water"/>
-	<item id="2" name="wine"/>
-	<item id="3" name="beer"/>
-	<item id="4" name="mud"/>
-	<item id="5" name="blood"/>
-	<item id="6" name="slime"/>
-	<item id="7" name="oil"/>
-	<item id="8" name="urine"/>
-	<item id="9" name="milk"/>
-	<item id="10" name="manafluid"/>
-	<item id="11" name="lifefluid"/>
-	<item id="12" name="lemonade"/>
-	<item id="13" name="rum"/>
-	<item id="14" name="fruit juice"/>
-	<item id="15" name="coconut milk"/>
-	<item id="16" name="mead"/>
-	<item id="17" name="tea"/>
-	<item id="18" name="ink"/>
-	<!-- 12.85 last fluid is 18, 19+ is a loop from 0 to 18 over and over again -->
+    <!-- Fluid type 0 is same as water (id="1") -->
+    <item id="1" name="water"/>
+    <item id="2" name="wine"/>
+    <item id="3" name="beer"/>
+    <item id="4" name="mud"/>
+    <item id="5" name="blood"/>
+    <item id="6" name="slime"/>
+    <item id="7" name="oil"/>
+    <item id="8" name="urine"/>
+    <item id="9" name="milk"/>
+    <item id="10" name="manafluid"/>
+    <item id="11" name="lifefluid"/>
+    <item id="12" name="lemonade"/>
+    <item id="13" name="rum"/>
+    <item id="14" name="fruit juice"/>
+    <item id="15" name="coconut milk"/>
+    <item id="16" name="mead"/>
+    <item id="17" name="tea"/>
+    <item id="18" name="ink"/>
+    <item id="19" name="candyfluid"/>
+    <item id="20" name="chocolate"/>
+    <!-- 13.40 last fluid is 20, 21+ is a loop from 0 to 20 over and over again -->
 
 	<item id="100" name="void"/>
 	<item id="101" name="earth"/>
@@ -4025,6 +4027,9 @@
 			<attribute key="count" value="2"/>
 			<attribute key="damage" value="20"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="2001" article="an" name="unlit campfire">
 		<attribute key="primarytype" value="illumination"/>
@@ -4340,6 +4345,9 @@
 		</attribute>
 		<attribute key="duration" value="120"/>
 		<attribute key="decayTo" value="2132"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="2132" article="a" name="fire field">
 		<attribute key="type" value="magicfield"/>
@@ -20588,6 +20596,9 @@
 		<attribute key="field" value="fire">
 			<attribute key="damage" value="300"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
 	<item fromid="7474" toid="7475" article="a" name="sarcophagus">
@@ -26308,6 +26319,9 @@
 			<attribute key="count" value="7"/>
 			<attribute key="damage" value="10"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
 	<item id="10070" article="a" name="fire field">
@@ -26317,6 +26331,9 @@
 			<attribute key="count" value="7"/>
 			<attribute key="damage" value="10"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
 	<item id="10071" article="a" name="fire field">
@@ -26325,6 +26342,9 @@
 			<attribute key="ticks" value="10000"/>
 			<attribute key="count" value="7"/>
 			<attribute key="damage" value="10"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
@@ -45772,12 +45792,18 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="23366" article="an" name="energy trap">
 		<attribute key="type" value="magicfield"/>
 		<attribute key="field" value="energy">
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 	</item>
 	<item id="23367" article="a" name="toxic trap">
@@ -45786,6 +45812,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="23368" article="a" name="poison trap">
 		<attribute key="type" value="magicfield"/>
@@ -45793,6 +45822,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="5000"/>
 			<attribute key="damage" value="100"/>
 			<attribute key="start" value="5"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 	</item>
 	<item id="23369" article="a" name="blade trap"/>
@@ -58243,6 +58275,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="31381" name="nothing">
 		<attribute key="primarytype" value="natural tiles"/>
@@ -62030,9 +62065,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	<item id="32767" article="a" name="unknown">
 		<attribute key="weight" value="500"/>
 	</item>
-	<item id="32768" article="a" name="unknown">
-		<attribute key="weight" value="500"/>
-	</item>
+	<item id="32768" article="a" name="sandtimer"/>
 	<item id="32769" article="a" name="white gem">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="showCount" value="1"/>
@@ -62474,6 +62507,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="type" value="teleport"/>
 		<attribute key="effect" value="teleport"/>
 	</item>
+	<item fromid="33018" toid="33025" name="shrine" editorsuffix="(soul war quest)"/>
 	<item fromid="33026" toid="33027" name="heart lamp">
 		<attribute key="primarytype" value="light sources"/>
 		<attribute key="wrapableto" value="23398"/>
@@ -62889,28 +62923,25 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="950"/>
 	</item>
-	<item id="33783" article="a" name="broken mirror"/>
+	<item id="33783" article="a" name="broken mirror">
+		<attribute key="duration" value="30"/>
+		<attribute key="decayTo" value="33782"/>
+	</item>
 	<item id="33784" article="a" name="mirror">
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="950"/>
 	</item>
 	<item id="33785" article="a" name="broken mirror"/>
 	<item fromid="33788" toid="33789" article="a" name="wall"/>
-	<item id="33790" article="a" name="large crystal teleporter">
-		<attribute key="primarytype" value="teleporters"/>
-		<attribute key="type" value="teleport"/>
-		<attribute key="effect" value="teleport"/>
+	<item id="33790" article="a" name="inactive vortex">
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="33791"/>
 	</item>
-	<item id="33791" article="a" name="water vortex">
-		<attribute key="primarytype" value="teleporters"/>
-	</item>
-	<item id="33792" article="a" name="sulphur puddle">
-		<attribute key="primarytype" value="fields"/>
-		<attribute key="weight" value="60"/>
-	</item>
+	<item id="33791" article="a" name="active spirit vortex"/>
+	<item id="33792" article="a" name="condensed remorse"/>
 	<item id="33793" article="a" name="sorrow">
 		<attribute key="primarytype" value="quest items"/>
-		<attribute key="weight" value="60"/>
+		<attribute key="weight" value="50"/>
 	</item>
 	<item id="33794" article="a" name="dead bony sea devil">
 		<attribute key="duration" value="600"/>
@@ -63064,6 +63095,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="decayTo" value="33824"/>
 		<attribute key="containersize" value="48"/>
 	</item>
+	<item id="33854" article="the" name="blood of cloak of Terror">
+		<attribute key="duration" value="600"/>
+		<attribute key="decayTo" value="34006"/>
+	</item>
 	<item id="33856" article="a" name="dead goshnar's cruelty">
 		<attribute key="duration" value="600"/>
 		<attribute key="decayTo" value="0"/>
@@ -63159,6 +63194,11 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="decayTo" value="33874"/>
 		<attribute key="containersize" value="48"/>
 	</item>
+	<item id="33876" article="a" name="dead weeping soul">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="33877" article="a" name="searing fire"/>
 	<item id="33886" article="a" name="dead goshnars megalomania">
 		<attribute key="duration" value="600"/>
 		<attribute key="decayTo" value="0"/>
@@ -63178,6 +63218,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="decayTo" value="33888"/>
 		<attribute key="containersize" value="48"/>
 	</item>
+	<item id="33890" article="a" name="greedy maw"/>
 	<item id="33891" article="a" name="some mortal essence"/>
 	<item id="33892" name="love elixir">
 		<attribute key="primarytype" value="fansite items"/>
@@ -63377,6 +63418,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="A goblin zombie is stuffed into it"/>
 		<attribute key="weight" value="5500"/>
 	</item>
+	<item id="33949" name="dead aspect of power">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
 	<item id="33950" name="cleansed sanity">
 		<attribute key="description" value="Can be used to douse Goshnar's madness"/>
 		<attribute key="weight" value="101"/>
@@ -63522,6 +63567,19 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="33982" name="crawler's essence" plural="crawler's essences">
 		<attribute key="weight" value="45"/>
+	</item>
+	<item id="33984" article="a" name="necromantic remains">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="34005" name="pulsating energy"/>
+	<item id="34006" article="the" name="blood of cloak of Terror">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="34007"/>
+	</item>
+	<item id="34007" article="the" name="blood of cloak of Terror">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="34008" name="white silk flower">
 		<attribute key="primarytype" value="plants and herbs"/>
@@ -64260,7 +64318,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	<item id="34109" article="a" name="bag you desire">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="description" value="It contains the most powerful artifacts from the depths of Zarganash's darkest realms"/>
-		<attribute key="weight" value="30"/>
+		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="34110" article="a" name="sandstone statue">
 		<attribute key="primarytype" value="statues"/>
@@ -74748,12 +74806,31 @@ Granted by TibiaGoals.com"/>
 		<attribute key="transformOnUse" value="42367"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
+	<item id="42390" name="stairs"/>
+	<item id="42391" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="42392" name="stairs"/>
+	<item id="42393" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="42394" name="stairs"/>
+	<item id="42395" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="42396" name="stairs"/>
+	<item id="42397" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item id="42618" name="stairs"/>
 	<item id="42619" name="stairs">
 		<attribute key="floorchange" value="north"/>
 	</item>
+	<item id="42620" name="stairs"/>
 	<item id="42621" name="stairs">
 		<attribute key="floorchange" value="west"/>
 	</item>
+	<item id="42622" name="stairs"/>
 	<item id="42623" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
@@ -74788,6 +74865,22 @@ Granted by TibiaGoals.com"/>
 	<item id="42632" name="stairs">
 		<attribute key="floorchange" value="east"/>
 	</item>
+	<item id="42964" name="stairs"/>
+	<item id="42965" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="42966" name="stairs"/>
+	<item id="42967" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="42968" name="stairs"/>
+	<item id="42969" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="42970" name="stairs"/>
+	<item id="42971" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
 	<item id="43952" article="a" name="closed door">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
@@ -74806,6 +74899,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="type" value="door"/>
 		<attribute key="transformOnUse" value="43953"/>
 	</item>
+	<item id="43129" name="stairs"/>
+	<item id="43130" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="43131" name="stairs"/>
+	<item id="43132" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="43133" name="stairs"/>
 	<item id="43134" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
@@ -76118,23 +76220,137 @@ Granted by TibiaGoals.com"/>
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
 		</attribute>
 	</item>
-	<item id="44753" article="a" name="heralds insignia">
-        <attribute key="description" value="The insignia of the Draccoons herald!" />
-        <attribute key="loottype" value="valuable" />
-        <attribute key="primarytype" value="valuables" />
-        <attribute key="weight" value="1250" />
-    </item>
-    <item id="44754" article="a" name="heralds wings">
-        <attribute key="description" value="The wings of the Draccoons herald!" />
-        <attribute key="loottype" value="valuable" />
-        <attribute key="primarytype" value="valuables" />
-        <attribute key="weight" value="1250" />
-    </item>
-    <item id="44750" article="a" name="exalted seal">
-        <attribute key="description" value="The exhalted seal of Nimmersatt." />
-        <attribute key="loottype" value="valuable" />
-        <attribute key="primarytype" value="valuables" />
-        <attribute key="weight" value="20" />
-    </item>
+	<item id="44651" article="a" name="dead dragolisk">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44652"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44652" article="a" name="dead dragolisk">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44653"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44653" article="a" name="dead dragolisk">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44654" article="a" name="dead dragolisk">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44651"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44656" article="a" name="dead wardragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44657"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44657" article="a" name="dead wardragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44658"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44658" article="a" name="dead wardragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44659"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44659" article="a" name="dead wardragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44660" article="a" name="dead mega dragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44661" article="a" name="dead mega dragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44660"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44662" article="a" name="dead mega dragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44661"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44663" article="a" name="dead mega dragon">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44662"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44743" article="a" name="Nimmersatt's seal">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44744" article="a" name="molten dragon essence">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44745" article="a" name="mega dragon heart">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44746" article="a" name="dragolisk eye">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44747" article="a" name="dragolisk poison gland">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44748" article="a" name="wardragon claw">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44749" article="a" name="wardragon tooth">
+		<attribute key="loottype" value="creature products" />
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="44750" name="exalted seal">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44751" name="gold-scaled sentinel">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44752" name="crystallized blood">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44753" name="herald's insignia ">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44754" name="herald's wings">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="44758" name="dragon hoard">
+		<attribute key="duration" value="60"/>
+		<attribute key="containersize" value="10"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
 </items>
 

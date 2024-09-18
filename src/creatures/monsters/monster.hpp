@@ -77,9 +77,9 @@ public:
 	int32_t getArmor() const override {
 		return mType->info.armor * getDefenseMultiplier();
 	}
-	int32_t getDefense() const override {
-		return mType->info.defense * getDefenseMultiplier();
-	}
+	int32_t getDefense() const override;
+
+	void addDefense(int32_t defense);
 
 	Faction_t getFaction() const override {
 		auto master = getMaster();
@@ -140,8 +140,10 @@ public:
 		this->spawnMonster = newSpawnMonster;
 	}
 
-	int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const override;
+	double_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const override;
 	uint32_t getHealingCombatValue(CombatType_t healingType) const;
+
+	void addReflectElement(CombatType_t combatType, int32_t percent);
 
 	bool canWalkOnFieldType(CombatType_t combatType) const;
 	void onAttackedCreatureDisappear(bool isLogout) override;
@@ -150,6 +152,8 @@ public:
 	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
 	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) override;
+	void onAttackedByPlayer(std::shared_ptr<Player> attackerPlayer);
+	void onSpawn();
 
 	void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) override;
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
@@ -339,6 +343,12 @@ public:
 
 	bool isImmune(ConditionType_t conditionType) const override;
 	bool isImmune(CombatType_t combatType) const override;
+	void setImmune(bool immune) {
+		m_isImmune = immune;
+	}
+	bool isImmune() const {
+		return m_isImmune;
+	}
 
 	float getAttackMultiplier() const {
 		float multiplier = mType->getAttackMultiplier();
@@ -351,6 +361,14 @@ public:
 	float getDefenseMultiplier() const {
 		float multiplier = mType->getDefenseMultiplier();
 		return multiplier * std::pow(1.02f, getForgeStack());
+	}
+
+	bool isDead() const override {
+		return m_isDead;
+	}
+
+	void setDead(bool isDead) {
+		m_isDead = isDead;
 	}
 
 private:
@@ -378,6 +396,8 @@ private:
 
 	int64_t lastMeleeAttack = 0;
 
+	uint16_t totalPlayersOnScreen = 0;
+
 	uint32_t attackTicks = 0;
 	uint32_t targetChangeTicks = 0;
 	uint32_t defenseTicks = 0;
@@ -391,8 +411,10 @@ private:
 	int32_t stepDuration = 0;
 	int32_t targetDistance = 1;
 	int32_t challengeMeleeDuration = 0;
-	uint16_t totalPlayersOnScreen = 0;
 	int32_t runAwayHealth = 0;
+	int32_t m_defense = 0;
+
+	std::unordered_map<CombatType_t, int32_t> m_reflectElementMap;
 
 	Position masterPos;
 
@@ -408,6 +430,9 @@ private:
 	bool hazardDodge = false;
 	bool hazardDamageBoost = false;
 	bool hazardDefenseBoost = false;
+
+	bool m_isDead = false;
+	bool m_isImmune = false;
 
 	void onCreatureEnter(std::shared_ptr<Creature> creature);
 	void onCreatureLeave(std::shared_ptr<Creature> creature);

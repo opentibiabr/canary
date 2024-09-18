@@ -5740,12 +5740,12 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			ss << static_cast<uint16_t>(it.shootRange) << " fields";
 		}
 		msg.addString(ss.str(), "ProtocolGame::sendMarketDetail - ss.str()");
-	} else if (!it.isRanged() && it.attack != 0) {
+	} else if (!it.isRanged()) {
 		if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 			std::ostringstream ss;
 			ss << it.attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 			msg.addString(ss.str(), "ProtocolGame::sendMarketDetail - ss.str()");
-		} else {
+		} else if (it.attack != 0) {
 			msg.addString(std::to_string(it.attack), "ProtocolGame::sendMarketDetail - std::to_string(it.attack)");
 		}
 	} else {

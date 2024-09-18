@@ -75124,7 +75124,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75150,9 +75152,11 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 			<attribute key="intense wound cleansing" value="cooldown">
-				<attribute key="value" value="120000" />
+				<attribute key="value" value="120000"/>
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
@@ -75179,7 +75183,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75205,7 +75211,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75231,7 +75239,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75257,7 +75267,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75285,7 +75297,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75312,7 +75326,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75339,7 +75355,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75366,7 +75384,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75393,7 +75413,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75420,7 +75442,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75473,7 +75497,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="strong impact" />
+			<attribute key="divine caldera" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75503,7 +75529,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="powerful impact" />
+			<attribute key="divine caldera" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75533,7 +75561,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="strong impact" />
+			<attribute key="divine caldera" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75563,7 +75593,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="powerful impact" />
+			<attribute key="divine caldera" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75612,8 +75644,12 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="hell's core" value="strong impact" />
-			<attribute key="energy wave" value="strong impact" />
+			<attribute key="hell's core" value="base">
+				<attribute key="value" value="3"/>
+			</attribute>
+			<attribute key="energy wave" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75645,8 +75681,12 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="hell's core" value="powerful impact" />
-			<attribute key="energy wave" value="powerful impact" />
+			<attribute key="hell's core" value="base">
+				<attribute key="value" value="6"/>
+			</attribute>
+			<attribute key="energy wave" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75707,8 +75747,12 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="eternal winter" value="strong impact" />
-			<attribute key="terra wave" value="strong impact" />
+			<attribute key="eternal winter" value="base">
+				<attribute key="value" value="3"/>
+			</attribute>
+			<attribute key="terra wave" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75740,8 +75784,12 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="eternal winter" value="powerful impact" />
-			<attribute key="terra wave" value="powerful impact" />
+			<attribute key="eternal winter" value="base">
+				<attribute key="value" value="6"/>
+			</attribute>
+			<attribute key="terra wave" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75938,7 +75986,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="elemental protection holy" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="wrath of nature" value="strong impact" />
+			<attribute key="wrath of nature" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250"/>
@@ -76101,7 +76151,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="2"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine missile" value="strong impact" />
+			<attribute key="divine missile" value="base">
+				<attribute key="value" value="6"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250"/>
@@ -76145,7 +76197,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="absorbpercentenergy" value="2"/>
 		<attribute key="weight" value="5100"/>
 		<attribute key="augments" value="1">
-			<attribute key="intense wound cleansing" value="strong impact" />
+			<attribute key="intense wound cleansing" value="base">
+				<attribute key="value" value="50"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250"/>
@@ -76160,8 +76214,12 @@ Granted by TibiaGoals.com"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="weight" value="3400"/>
 		<attribute key="augments" value="1">
-			<attribute key="great energy beam" value="increased damage" />
-			<attribute key="great death beam" value="increased damage" />
+			<attribute key="great energy beam" value="base">
+				<attribute key="value" value="7"/>
+			</attribute>
+			<attribute key="great death beam" value="base">
+				<attribute key="value" value="7"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250"/>

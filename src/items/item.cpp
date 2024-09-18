@@ -1181,12 +1181,12 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				ss << static_cast<uint16_t>(shootRange) << " fields";
 			}
 			descriptions.emplace_back("Attack", ss.str());
-		} else if (!it.isRanged() && attack != 0) {
+		} else if (!it.isRanged()) {
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 				ss.str("");
 				ss << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				descriptions.emplace_back("Attack", ss.str());
-			} else {
+			} else if (it.attack != 0) {
 				descriptions.emplace_back("Attack", std::to_string(attack));
 			}
 		}
@@ -1594,12 +1594,12 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				ss << static_cast<uint16_t>(shootRange) << " fields";
 			}
 			descriptions.emplace_back("Attack", ss.str());
-		} else if (!it.isRanged() && attack != 0) {
+		} else if (!it.isRanged()) {
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 				ss.str("");
 				ss << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				descriptions.emplace_back("Attack", ss.str());
-			} else {
+			} else if (it.attack != 0) {
 				descriptions.emplace_back("Attack", std::to_string(attack));
 			}
 		}
@@ -2642,13 +2642,12 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					s << "Vol:" << volume;
 				}
 			}
-			if (attack != 0) {
+			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
+				begin = false;
+				s << " (Atk:" << attack << " physical + " << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
+			} else if (attack != 0) {
 				begin = false;
 				s << " (Atk:" << attack;
-
-				if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
-					s << " physical + " << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
-				}
 			}
 
 			if (defense != 0 || extraDefense != 0 || it.isMissile()) {

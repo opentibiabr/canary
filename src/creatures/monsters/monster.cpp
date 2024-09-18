@@ -1339,11 +1339,11 @@ void Monster::doRandomStep(Direction &nextDirection, bool &result) {
 void Monster::walkTo(const Position &walkToPosition) {
 	randomStepping = false;
 	isWalkingTo = true;
-	stdext::arraylist<Direction> listDir(128);
+	std::vector<Direction> listDir;
 	if (!getPathTo(walkToPosition, listDir, 1, 1, true, true, 25)) {
 		return;
 	}
-	startAutoWalk(listDir.data(), true);
+	startAutoWalk(listDir, true);
 }
 
 void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result) {

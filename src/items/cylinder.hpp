@@ -190,7 +190,7 @@ public:
 		return nullptr;
 	}
 
-	virtual void addThing(const std::shared_ptr<Thing>&) override { }
+	virtual void addThing(const std::shared_ptr<Thing> &) override { }
 	virtual void addThing(int32_t, const std::shared_ptr<Thing> &) override { }
 	virtual void updateThing(const std::shared_ptr<Thing> &, uint16_t, uint32_t) override { }
 	virtual void replaceThing(uint32_t, const std::shared_ptr<Thing> &) override { }

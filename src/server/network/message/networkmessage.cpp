@@ -85,11 +85,11 @@ void NetworkMessage::addBytes(const char* bytes, size_t size) {
 }
 
 void NetworkMessage::addPaddingBytes(size_t n) {
-	#define canAdd(size) ((size + info.position) < NETWORKMESSAGE_MAXSIZE)
+#define canAdd(size) ((size + info.position) < NETWORKMESSAGE_MAXSIZE)
 	if (!canAdd(n)) {
 		return;
 	}
-	#undef canAdd
+#undef canAdd
 
 	memset(buffer + info.position, 0x33, n);
 	info.length += n;

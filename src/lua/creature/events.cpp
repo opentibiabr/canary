@@ -637,7 +637,7 @@ void Events::eventPlayerOnLookInBattleList(const std::shared_ptr<Player> &player
 	scriptInterface.callVoidFunction(3);
 }
 
-void Events::eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, const  std::shared_ptr<Player> &partner, const std::shared_ptr<Item> &item, int32_t lookDistance) {
+void Events::eventPlayerOnLookInTrade(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &partner, const std::shared_ptr<Item> &item, int32_t lookDistance) {
 	// Player:onLookInTrade(partner, item, distance) or Player.onLookInTrade(self, partner, item, distance)
 	if (info.playerOnLookInTrade == -1) {
 		return;

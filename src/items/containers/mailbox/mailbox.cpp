@@ -32,7 +32,7 @@ ReturnValue Mailbox::queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint3
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-std::shared_ptr<Cylinder> Mailbox::queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item>&, uint32_t &) {
+std::shared_ptr<Cylinder> Mailbox::queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item> &, uint32_t &) {
 	return getMailbox();
 }
 

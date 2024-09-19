@@ -33,5 +33,5 @@ public:
 	}
 
 	uint8_t id {};
-	std::map<uint8_t, TierInfo> tiers{};
+	std::map<uint8_t, TierInfo> tiers {};
 };

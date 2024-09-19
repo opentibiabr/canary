@@ -339,7 +339,7 @@ public:
 	void configureWeapon(const ItemType &it) override;
 
 	int32_t getWeaponDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item, bool maxDamage = false) const override;
-	int32_t getElementDamage(const std::shared_ptr<Player> &, const std::shared_ptr<Creature>&, const std::shared_ptr<Item>&) const override {
+	int32_t getElementDamage(const std::shared_ptr<Player> &, const std::shared_ptr<Creature> &, const std::shared_ptr<Item> &) const override {
 		return 0;
 	}
 	CombatType_t getElementType() const override {

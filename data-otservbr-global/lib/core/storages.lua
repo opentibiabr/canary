@@ -2517,7 +2517,6 @@ Storage = {
 				VampireTeeth = 45273,
 			},
 			Krailos = {},
-			RiftWarriorOutfits = {},
 		},
 		U10_94 = { -- update 10.94 - Reserved Storages 45351 - 45450
 			HeartOfDestruction = {},

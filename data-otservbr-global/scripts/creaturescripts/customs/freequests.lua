@@ -310,12 +310,12 @@ local questTable = {
 	{ storage = Storage.CultsOfTibia.Misguided.AccessDoor, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.FinalBoss.AccessDoor, storageValue = 1 },
 
-	{ storage = Storage.FerumbrasAscension.FirstDoor, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.MonsterDoor, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.TarbazDoor, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.HabitatsAccess, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.TheLordOfTheLiceAccess, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.Statue, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.FirstDoor, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.MonsterDoor, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.TarbazDoor, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.HabitatsAccess, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.TheLordOfTheLiceAccess, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.Statue, storageValue = 1 },
 
 	{ storage = Storage.Quest.U12_00.TheDreamCourts.AndrewDoor, storageValue = 1 },
 

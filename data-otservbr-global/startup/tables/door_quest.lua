@@ -258,15 +258,15 @@ QuestDoorAction = {
 		itemPos = { { x = 33452, y = 32241, z = 7 } },
 	},
 	-- Ferumbras ascension door
-	[Storage.FerumbrasAscension.FirstDoor] = {
+	[Storage.Quest.U10_90.FerumbrasAscension.FirstDoor] = {
 		itemId = false,
 		itemPos = { { x = 33479, y = 32782, z = 11 } },
 	},
-	[Storage.FerumbrasAscension.MonsterDoor] = {
+	[Storage.Quest.U10_90.FerumbrasAscension.MonsterDoor] = {
 		itemId = false,
 		itemPos = { { x = 33482, y = 32786, z = 11 } },
 	},
-	[Storage.FerumbrasAscension.TarbazDoor] = {
+	[Storage.Quest.U10_90.FerumbrasAscension.TarbazDoor] = {
 		itemId = false,
 		itemPos = { { x = 33470, y = 32786, z = 11 } },
 	},
@@ -831,6 +831,13 @@ QuestDoorAction = {
 			{ x = 33124, y = 32261, z = 10 },
 			{ x = 33123, y = 32230, z = 12 },
 			{ x = 33159, y = 32322, z = 12 },
+		},
+	},
+	[Storage.Quest.U10_90.FerumbrasAscension.TarbazDoor] = {
+		itemId = 22508,
+		itemPos = {
+			{ x = 33476, y = 32791, z = 11 },
+			{ x = 33470, y = 32786, z = 11 },
 		},
 	},
 	[Storage.Kilmaresh.AccessDoor] = {

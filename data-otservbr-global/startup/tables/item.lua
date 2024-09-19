@@ -824,6 +824,67 @@ ItemAction = {
 			{ x = 32741, y = 32382, z = 15 },
 		},
 	},
+	-- Ferumbras' Ascension Quest
+	[24837] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33317, y = 32315, z = 13 },
+		},
+	},
+	[24838] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33275, y = 32388, z = 8 },
+		},
+	},
+	[24839] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33482, y = 32775, z = 12 },
+		},
+	},
+	[24840] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33432, y = 32332, z = 14 },
+		},
+	},
+	[24841] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33199, y = 31439, z = 13 },
+		},
+	},
+	[24842] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33402, y = 32406, z = 15 },
+		},
+	},
+	[24843] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33662, y = 32682, z = 10 },
+		},
+	},
+	[24844] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33677, y = 32689, z = 13 },
+		},
+	},
+	[24845] = {
+		itemId = 8280,
+		itemPos = {
+			{ x = 33477, y = 32698, z = 14 },
+		},
+	},
+	[24846] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33324, y = 31372, z = 14 },
+		},
+	},
 	-- The Cursed Crystal
 	[25018] = {
 		itemId = false,
@@ -992,6 +1053,26 @@ ItemAction = {
 		itemId = 6123,
 		itemPos = {
 			{ x = 32406, y = 32794, z = 9 },
+		},
+	},
+	-- Ferumbras' Ascension Quest
+	[34313] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33637, y = 32650, z = 12 },
+		},
+	},
+	[34314] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33629, y = 32739, z = 12 },
+		},
+	},
+	[34323] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33666, y = 32624, z = 11 },
+			{ x = 33629, y = 32621, z = 11 },
 		},
 	},
 	-- The Pits of Inferno
@@ -1458,6 +1539,40 @@ ItemAction = {
 			{ x = 32994, y = 32625, z = 6 },
 		},
 	},
+	-- Ferumbras' Ascension Quest
+	[53803] = {
+		itemId = 22872,
+		itemPos = {
+			{ x = 33388, y = 32358, z = 11 },
+		},
+	},
+	[53805] = {
+		itemId = false,
+		itemPos = {
+			{ x = 33421, y = 32383, z = 12 },
+			{ x = 33422, y = 32383, z = 12 },
+			{ x = 33422, y = 32384, z = 12 },
+			{ x = 33421, y = 32384, z = 12 },
+		},
+	},
+	[53812] = {
+		itemId = 8646,
+		itemPos = {
+			{ x = 33626, y = 32621, z = 13 },
+		},
+	},
+	[53813] = {
+		itemId = 8647,
+		itemPos = {
+			{ x = 33635, y = 32682, z = 13 },
+		},
+	},
+	[53814] = {
+		itemId = 8649,
+		itemPos = {
+			{ x = 33660, y = 32627, z = 13 },
+		},
+	},
 	-- Roshamuul Quest
 	[55000] = {
 		itemId = false,
@@ -1497,6 +1612,11 @@ ItemUnique = {
 	[1015] = {
 		itemId = 8821,
 		itemPos = { x = 32682, y = 31242, z = 6 },
+	},
+	-- Ferumbras' Ascension Quest
+	[1035] = {
+		itemId = 4073,
+		itemPos = { x = 33388, y = 31409, z = 14 },
 	},
 	-- The Ice Islands Quest
 	[1061] = {

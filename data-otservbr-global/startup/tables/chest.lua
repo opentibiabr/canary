@@ -2599,6 +2599,28 @@ ChestUnique = {
 		weight = 6.00,
 		questName = "NightmareTeddyQuest",
 	},
+	-- Ferumbras' Ascension Quest
+	[6306] = {
+		itemId = 1983,
+		itemPos = { x = 33384, y = 32323, z = 12 },
+		reward = { { 22160, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.TheRiteOfEternalNight,
+	},
+	[6307] = {
+		itemId = 1986,
+		itemPos = { x = 33393, y = 32373, z = 11 },
+		reward = { { 22158, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.StoneCoffinsBones,
+	},
+	[6309] = {
+		itemId = 21818,
+		itemPos = { x = 33408, y = 32396, z = 11 },
+		reward = { { 9685, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.VampireTeeth,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

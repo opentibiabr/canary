@@ -44187,7 +44187,7 @@ Awarded by TibiaMisterios.com.br"/>
 		<attribute key="primarytype" value="event creatures"/>
 		<attribute key="weight" value="1500"/>
 	</item>
-	<item id="22160" article="the" name="Rite of Eternal Night">
+	<item id="22160" article="the" name="rite of eternal night">
 		<attribute key="description" value="It is a disturbing invocation of dark and heinous powers"/>
 		<attribute key="weight" value="50"/>
 	</item>
@@ -44202,7 +44202,7 @@ Awarded by TibiaMisterios.com.br"/>
 	<item fromid="22166" toid="22169" article="a" name="fountain">
 		<attribute key="primarytype" value="constructions"/>
 	</item>
-	<item id="22170" article="a" name="House Silversun's signet ring">
+	<item id="22170" article="a" name="house silversun's signet ring">
 		<attribute key="description" value="It depicts a small silver sun with many rays of light"/>
 		<attribute key="weight" value="450"/>
 		<attribute key="script" value="moveevent">
@@ -45274,8 +45274,10 @@ Awarded by TibiaMisterios.com.br"/>
 		</attribute>
 	</item>
 	<item id="22761" article="a" name="vortex">
+		<attribute key="primarytype" value="teleporters"/>
 		<attribute key="type" value="teleport"/>
 		<attribute key="description" value="It draws you nearer."/>
+		<attribute key="effect" value="teleport"/>
 	</item>
 	<item id="22762" article="a" name="maimer">
 		<attribute key="primarytype" value="club weapons"/>

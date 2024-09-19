@@ -215,27 +215,13 @@ local cutItems = {
 
 -- Ferumbras ascendant ring reward
 local function addFerumbrasAscendantReward(player, target, toPosition)
-	local stonePos = Position(32648, 32134, 10)
-	if toPosition == stonePos then
-		local tile = Tile(stonePos)
-		local stone = tile:getItemById(1772)
-		if stone then
-			stone:remove(1)
-			toPosition:sendMagicEffect(CONST_ME_POFF)
-			addEvent(function()
-				Game.createItem(1772, 1, stonePos)
-			end, 20000)
-			return true
-		end
-	end
-
 	if target.itemid == 22872 and target.actionid == 53803 then
-		if player:getStorageValue(Storage.FerumbrasAscension.Ring) >= 1 then
+		if player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Ring) >= 1 then
 			return false
 		end
 
 		player:addItem(22170, 1)
-		player:setStorageValue(Storage.FerumbrasAscension.Ring, 1)
+		player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Ring, 1)
 	end
 end
 

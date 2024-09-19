@@ -391,17 +391,16 @@ local function transformArea()
 end
 
 local function resetFerumbrasAscendantHabitats(player)
-    player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Roshamuul, -1)
-    player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Grass, -1)
-    player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Mushroom, -1)
-    player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Desert, -1)
-    player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Venom, -1)
-    player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Ice, -1)
-    player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Corrupted, -1)
-    player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Dimension, -1)
-    player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.AllHabitats, 0)
+	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Roshamuul, -1)
+	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Grass, -1)
+	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Mushroom, -1)
+	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Desert, -1)
+	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Venom, -1)
+	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Ice, -1)
+	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Corrupted, -1)
+	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.Dimension, -1)
+	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Habitats.AllHabitats, 0)
 end
-
 
 local ferumbrasAscendantHabitatMushroom = Action()
 

@@ -80,13 +80,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Yet even he deemed this so-called '{godbreaker}' too dangerous, and split it into seven parts. These were at some point entrusted to his powerful minions, known as the Ruthless Seven. ...",
 			"Ancient, forbidden texts hinted at a hellish place where the seven built deadly dungeons, and placed some of their most fearsome and terrible minions as guards, before they sealed the place off. ...",
 			"I'm confident that I can prepare a matching ritual that will breach their protection and allow someone to enter their realm; but I'm in no way suited to handle the horrors to be encountered there. ...",
-			"Therefore I have to ask you, if you are willing to retrieve the parts of the godbreaker, and face the threat of the ascending Ferumbras?"
+			"Therefore I have to ask you, if you are willing to retrieve the parts of the godbreaker, and face the threat of the ascending Ferumbras?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "short") then
 		npcHandler:say({
 			"My studies indicate that without all doubt Ferumbras the fiendish is in the process of accumulating nearly godlike powers. We have to stop him.",
-			"Therefore I need you to enter a hellish dimension and acquire the parts of a weapon, the {godbreaker}, powerful enough to stop him once and for all. Are you willing to help me in this dire mission?"
+			"Therefore I need you to enter a hellish dimension and acquire the parts of a weapon, the {godbreaker}, powerful enough to stop him once and for all. Are you willing to help me in this dire mission?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 2 and player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Access) < 1 then
@@ -115,7 +115,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"However, it has to be assumed that in the end the sheer power of his creation scared Zathroth, who had to fear the weapon could one day be used against him. So he disassembled it. ...",
 			"He kept the parts hidden and guarded, and if the resources can be trusted and my interpretation is right, moved them again and again, never satisfied with a hiding place. In the end he entrusted the parts to the {Ruthless Seven}. ...",
 			"Knowing that they would never, ever allow one of their own to come in possession of all parts. Since then, the parts have been hidden in a {demi-plane} shared by the Seven.",
-			"Well, I need 30 {demonic essences} to exchange for a passage so you can access."
+			"Well, I need 30 {demonic essences} to exchange for a passage so you can access.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "Ruthless Seven") or MsgContains(message, "ruthless seven") then
@@ -124,7 +124,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "demi-plane") then
 		npcHandler:say({
 			"It is a place, so to say, not completely of this world. It is separate of, yet strongly connected to, our own world. I would imagine it is quite limited in size and its laws of physics and magic should be roughly the same as ours. ...",
-			"Being home to a host of demons for a while, I expect it to be a hostile and dangerous environment."
+			"Being home to a host of demons for a while, I expect it to be a hostile and dangerous environment.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "ascension") then
@@ -133,7 +133,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Probably born out of desperation, they extensively researched ways to acquire godhood themselves. ...",
 			"Some of them at least even met with moderate success. But the process is complicated at best, and may vary from race to race or even from one individual to another. ...",
 			"The theories differ vastly and waxed and waned in popularity over the centuries if not aeons. Even today and in human society there are a number of obscure ascension cults. ...",
-			"Some of them claim that humans are most suitable for ascension because they already own a bit of divinity through Banor's godly spark."
+			"Some of them claim that humans are most suitable for ascension because they already own a bit of divinity through Banor's godly spark.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "ferumbras") then
@@ -142,7 +142,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"His whole existence seems to be centred on becoming a name that strikes fear into the heart of men and to become a persistent figure in the minds of humanity. ...",
 			"This gives him a hold in reality and a kind of mould to fill with his power and conscience. It's also obvious that this kind of belief of the people alone won't be enough to empower him sufficiently. ...",
 			"Therefore he has to tap into other, probably even more sinister power sources. I can't tell what these sources are, but my scrying revealed that he has reached massive amounts of power. He has probably been infusing himself since years. ...",
-			"By now he is apparently reaching the end circle of his ascension and could make his final move any day."
+			"By now he is apparently reaching the end circle of his ascension and could make his final move any day.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "bozarn") then
@@ -160,13 +160,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "kazordoon") then
 		npcHandler:say({
 			"The dwarves are leftovers from a time long gone by. They have outlived their usefulness to the gods and seem to have come to terms with that. ...",
-			"They are as unchanging as rock and no greatness awaits them any more. They missed their chance, if they ever had any."
+			"They are as unchanging as rock and no greatness awaits them any more. They missed their chance, if they ever had any.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "ab'dendriel") then
 		npcHandler:say({
 			"The elves are like lost children. Their potential might be great, but they lack focus and dedication to truly improve. If their myths are true, some of the more early elves might have accomplished ascension. ...",
-			"Yet even if hints strongly suggest those stories are true, the sheer inaction of those assumedly ascended beings is disturbing. Perhaps what those legendary elves achieved was something completely different."
+			"Yet even if hints strongly suggest those stories are true, the sheer inaction of those assumedly ascended beings is disturbing. Perhaps what those legendary elves achieved was something completely different.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "edron") then
@@ -175,7 +175,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "demons") then
 		npcHandler:say({
 			"With all their powers and vast magic knowledge they are still more pawns than anything else. Given their resources, ascension might seem within reach. ...",
-			"The absence of any ascendant demon might prove that they are no true beings at all and literally damned to be stuck in their accursed forms."
+			"The absence of any ascendant demon might prove that they are no true beings at all and literally damned to be stuck in their accursed forms.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "venore") then

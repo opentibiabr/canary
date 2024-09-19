@@ -21,16 +21,26 @@ class Reward;
 
 class ContainerIterator {
 public:
-	bool hasNext() const {
-		return !over.empty();
-	}
+	ContainerIterator(const std::shared_ptr<Container> &container, size_t maxDepth = 1000);
+	bool hasNext() const;
 
 	void advance();
-	std::shared_ptr<Item> operator*();
+	std::shared_ptr<Item> operator*() const;
 
 private:
-	std::list<std::shared_ptr<Container>> over;
-	ItemDeque::const_iterator cur;
+	struct IteratorState {
+		std::shared_ptr<Container> container;
+		size_t index;
+		size_t depth;
+
+		IteratorState(std::shared_ptr<Container> c, size_t i, size_t d) :
+			container(c), index(i), depth(d) { }
+	};
+
+	mutable std::stack<IteratorState> states;
+	mutable std::unordered_set<std::shared_ptr<Container>> visitedContainers;
+
+	size_t maxTraversalDepth = 0;
 
 	friend class Container;
 };

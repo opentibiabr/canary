@@ -922,12 +922,7 @@ uint16_t Container::getFreeSlots() {
 }
 
 ContainerIterator Container::iterator() {
-	ContainerIterator cit;
-	if (!itemlist.empty()) {
-		cit.over.push_back(getContainer());
-		cit.cur = itemlist.begin();
-	}
-	return cit;
+	return { getContainer() };
 }
 
 void Container::removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient /* = false*/) {
@@ -952,29 +947,6 @@ void Container::removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient
 	}
 }
 
-std::shared_ptr<Item> ContainerIterator::operator*() {
-	return *cur;
-}
-
-void ContainerIterator::advance() {
-	if (std::shared_ptr<Item> i = *cur) {
-		if (std::shared_ptr<Container> c = i->getContainer()) {
-			if (!c->empty()) {
-				over.push_back(c);
-			}
-		}
-	}
-
-	++cur;
-
-	if (cur == over.front()->itemlist.end()) {
-		over.pop_front();
-		if (!over.empty()) {
-			cur = over.front()->itemlist.begin();
-		}
-	}
-}
-
 uint32_t Container::getOwnerId() const {
 	uint32_t ownerId = Item::getOwnerId();
 	if (ownerId > 0) {
@@ -987,4 +959,74 @@ uint32_t Container::getOwnerId() const {
 		}
 	}
 	return 0;
+}
+
+/**
+ * ContainerIterator
+ * @brief Iterator for iterating over the items in a container
+ */
+ContainerIterator::ContainerIterator(const std::shared_ptr<Container> &container, size_t maxDepth) :
+	maxTraversalDepth(maxDepth) {
+	if (container) {
+		(void)states.emplace(container, 0, 1);
+		(void)visitedContainers.insert(container);
+	}
+}
+
+bool ContainerIterator::hasNext() const {
+	while (!states.empty()) {
+		auto &top = states.top();
+		if (top.index < top.container->itemlist.size()) {
+			return true;
+		} else {
+			states.pop();
+		}
+	}
+	return false;
+}
+
+void ContainerIterator::advance() {
+	if (states.empty()) {
+		return;
+	}
+
+	auto &top = states.top();
+	if (top.index >= top.container->itemlist.size()) {
+		states.pop();
+		return;
+	}
+
+	auto currentItem = top.container->itemlist[top.index];
+	if (currentItem) {
+		auto subContainer = currentItem->getContainer();
+		if (subContainer && !subContainer->itemlist.empty()) {
+			size_t newDepth = top.depth + 1;
+			if (newDepth <= maxTraversalDepth) {
+				// Check if we have already visited this container to avoid cycles
+				if (visitedContainers.find(subContainer) == visitedContainers.end()) {
+					(void)states.emplace(subContainer, 0, newDepth);
+					(void)visitedContainers.insert(subContainer);
+				} else {
+					// Cycle detection
+					g_logger().error("[{}] Cycle detected in container: {}", __FUNCTION__, subContainer->getName());
+				}
+			} else {
+				g_logger().error("[{}] Maximum iteration depth reached", __FUNCTION__);
+			}
+		}
+	}
+
+	++top.index;
+}
+
+std::shared_ptr<Item> ContainerIterator::operator*() const {
+	if (states.empty()) {
+		return nullptr;
+	}
+
+	auto &top = states.top();
+	if (top.index < top.container->itemlist.size()) {
+		return top.container->itemlist[top.index];
+	}
+	return nullptr;
 }

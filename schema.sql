@@ -253,11 +253,11 @@ CREATE TABLE IF NOT EXISTS `account_vipgrouplist` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table structure `active_casters`
-CREATE TABLE IF NOT EXISTS `active_casters` (
+-- Table structure `active_livestream_casters`
+CREATE TABLE IF NOT EXISTS `active_livestream_casters` (
     `caster_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `cast_viewers` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
-    `cast_status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+    `livestream_viewers` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
+    `livestream_status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
     PRIMARY KEY (`caster_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

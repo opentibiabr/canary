@@ -44,7 +44,9 @@
 #include "enums/player_blessings.hpp"
 
 #include "creatures/players/highscore_category.hpp"
-#include "creatures/players/cast/livestream.hpp"
+#if FEATURE_LIVESTREAM > 0
+	#include "creatures/players/livestream/livestream.hpp"
+#endif
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
@@ -459,17 +461,19 @@ void ProtocolGame::AddItem(NetworkMessage &msg, std::shared_ptr<Item> item) {
 void ProtocolGame::release() {
 	// dispatcher thread
 	if (player && player->client) {
-		if (!m_isCastViewer) {
-			if (player->client->isCastBroadcasting()) {
+#if FEATURE_LIVESTREAM > 0
+		if (!m_isLivestreamViewer) {
+			if (player->client->isLivestreamBroadcasting()) {
 				player->client->clear(true);
 			}
 
-			if (player->client->getCastOwner() == shared_from_this()) {
-				player->client->resetCastOwner();
+			if (player->client->getLivestreamOwner() == shared_from_this()) {
+				player->client->resetLivestreamOwner();
 			}
-		} else if (player->client->isCastBroadcasting()) {
+		} else if (player->client->isLivestreamBroadcasting()) {
 			player->client->removeViewer(getThis());
 		}
+#endif
 
 		if (player->hasClientOwner()) {
 			player->getClient().reset();
@@ -675,13 +679,17 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	player->setOperatingSystem(operatingSystem);
 	player->isConnecting = false;
 
-	player->client->setCastOwner(getThis());
 	player->openPlayerContainers();
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 	player->resetIdleTime();
 	acceptPackets = true;
+
+// Livestream system login for old protocols
+#if FEATURE_LIVESTREAM > 0
+	player->client->setLivestreamOwner(getThis());
+#endif
 }
 
 void ProtocolGame::logout(bool displayEffect, bool forced) {
@@ -689,7 +697,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced) {
 		return;
 	}
 
-	if (m_isCastViewer) {
+	if (m_isLivestreamViewer) {
 		sendSessionEndInformation(SESSION_END_LOGOUT);
 		return;
 	}
@@ -805,7 +813,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	std::string characterName = msg.getString();
 
 	std::shared_ptr<Player> foundPlayer = g_game().getPlayerUniqueLogin(characterName);
-	if (foundPlayer && foundPlayer->getClient() && accountDescriptor != "@cast") {
+	if (foundPlayer && foundPlayer->getClient() && accountDescriptor != "@livestream") {
 		if (foundPlayer->getProtocolVersion() != getVersion() && foundPlayer->isOldProtocol() != oldProtocol) {
 			disconnectClient(fmt::format("You are already logged in using protocol '{}'. Please log out from the other session to connect here.", foundPlayer->getProtocolVersion()));
 			return;
@@ -861,11 +869,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
-	// Cast system login (show casting players)
-	if (accountDescriptor == "@cast") {
+#if FEATURE_LIVESTREAM > 0
+	// Livestream system login (show casters players)
+	if (accountDescriptor == "@livestream") {
 		g_dispatcher().addEvent([self = getThis(), characterName, password] { self->castViewerLogin(characterName, password); }, "ProtocolGame::castViewerLogin");
 		return;
 	}
+#endif
 
 	uint32_t accountId;
 	if (!IOLoginData::gameWorldAuthentication(accountDescriptor, password, characterName, accountId, oldProtocol, getIP())) {
@@ -956,7 +966,7 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 	}
 
 	// Modules system
-	if (player && recvbyte != 0xD3 && !m_isCastViewer) {
+	if (player && recvbyte != 0xD3 && !m_isLivestreamViewer) {
 		g_modules().executeOnRecvbyte(player->getID(), msg, recvbyte);
 	}
 
@@ -1020,7 +1030,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		return;
 	}
 
-	if (m_isCastViewer) {
+#if FEATURE_LIVESTREAM > 0
+	if (m_isLivestreamViewer) {
 		switch (recvbyte) {
 			case 0x14:
 				logout(true, false);
@@ -1060,6 +1071,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		}
 		return;
 	}
+#endif
 
 	switch (recvbyte) {
 		case 0x14:
@@ -1978,12 +1990,14 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 		return;
 	}
 
-	if (m_isCastViewer) {
+#if FEATURE_LIVESTREAM > 0
+	if (m_isLivestreamViewer) {
 		g_dispatcher().addEvent(
 			[client = player->client, self = getThis(), text, channelId] { client->handle(self, text, channelId); }, "Livestream::handle"
 		);
 		return;
 	}
+#endif
 
 	g_game().playerSay(player->getID(), channelId, type, receiver, text);
 }
@@ -4948,7 +4962,7 @@ void ProtocolGame::sendGameNews() {
 }
 
 void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/, uint64_t forgeDust /*= 0*/, uint64_t forgeSliver /*= 0*/, uint64_t forgeCores /*= 0*/) {
-	if (m_isCastViewer) {
+	if (m_isLivestreamViewer) {
 		return;
 	}
 
@@ -9324,43 +9338,44 @@ void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
 	writeToOutputBuffer(msg);
 }
 
-std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> ProtocolGame::liveCasts;
+#if FEATURE_LIVESTREAM > 0
+std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> ProtocolGame::m_livestreamCasters;
 
-void ProtocolGame::insertCaster() {
-	const auto &cast = liveCasts.find(player);
-	if (cast != liveCasts.end()) {
+void ProtocolGame::insertLivestreamCaster() {
+	const auto &cast = m_livestreamCasters.find(player);
+	if (cast != m_livestreamCasters.end()) {
 		return;
 	}
 
-	liveCasts.insert(std::make_pair(player, this));
+	m_livestreamCasters.insert(std::make_pair(player, this));
 }
 
-void ProtocolGame::removeCaster() {
+void ProtocolGame::removeLivestreamCaster() {
 	for (const auto &it : getLiveCasts()) {
 		if (it.first == player) {
-			liveCasts.erase(player);
+			m_livestreamCasters.erase(player);
 			break;
 		}
 	}
 }
 
-void ProtocolGame::sendCastViewerAppear(std::shared_ptr<Player> foundPlayer) {
+void ProtocolGame::sendLivestreamViewerAppear(std::shared_ptr<Player> foundPlayer) {
 	if (!foundPlayer) {
 		return;
 	}
 
 	player = foundPlayer;
 	sendAddCreature(player, player->getPosition(), 0, true);
-	syncCastViewerOpenContainers(player);
+	syncLivestreamViewerOpenContainers(player);
 	player->client->addViewer(getThis());
 	sendMagicEffect(player->getPosition(), CONST_ME_TELEPORT);
 	acceptPackets = true;
 
-	if (player->client->isCastBroadcasting()) {
-		std::string welcomeMessage = fmt::format("{} is broadcasting for {} people.\nLivestream time: {}", player->getName(), player->client->getViewers().size(), player->client->getCastBroadcastTimeString());
+	if (player->client->isLivestreamBroadcasting()) {
+		std::string welcomeMessage = fmt::format("{} is broadcasting for {} people.\nLivestream time: {}", player->getName(), player->client->getLivestreamViewers().size(), player->client->getLivestreamBroadcastTimeString());
 		sendTextMessage(TextMessage(MESSAGE_LOOK, welcomeMessage));
 
-		const std::string &description = player->client->getCastDescription();
+		const std::string &description = player->client->getLivestreamDescription();
 		if (!description.empty()) {
 			sendCreatureSay(player, TALKTYPE_SAY, description);
 		}
@@ -9377,49 +9392,18 @@ void ProtocolGame::sendCastViewerAppear(std::shared_ptr<Player> foundPlayer) {
 
 void ProtocolGame::castViewerLogin(const std::string &name, const std::string &password) {
 	std::shared_ptr<Player> foundPlayer = g_game().getPlayerByName(name);
-	if (!foundPlayer) {
-		disconnectClient("Livestream unavailable.");
+	if (!canWatchCast(foundPlayer, password)) {
 		return;
 	}
 
-	if (foundPlayer->isRemoved()) {
-		disconnectClient("This player is no longer broadcasting.");
-		return;
-	}
-
-	if (!foundPlayer->client->isCastBroadcasting()) {
-		disconnectClient("This player has ended the livestream.");
-		return;
-	}
-
-	if (!foundPlayer->hasClientOwner()) {
-		disconnectClient("This player is not currently streaming.");
-		return;
-	}
-
-	if (foundPlayer->client->checkBannedIP(getIP())) {
-		disconnectClient("Access denied: You are banned from viewing this livestream.");
-		return;
-	}
-
-	if (!foundPlayer->client->checkPassword(password)) {
-		disconnectClient("Incorrect password. Access to this livestream is protected.");
-		return;
-	}
-
-	if (static_cast<int32_t>(foundPlayer->client->getViewers().size()) >= g_configManager().getNumber(CAST_MAXIMUM_VIEWERS, __FUNCTION__)) {
-		disconnectClient("Livestream viewer limit reached. Please try again later.");
-		return;
-	}
-
-	m_isCastViewer = true;
+	m_isLivestreamViewer = true;
 	acceptPackets = true;
 
-	sendCastViewerAppear(foundPlayer);
+	sendLivestreamViewerAppear(foundPlayer);
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 }
 
-void ProtocolGame::syncCastViewerOpenContainers(std::shared_ptr<Player> foundPlayer) {
+void ProtocolGame::syncLivestreamViewerOpenContainers(std::shared_ptr<Player> foundPlayer) {
 	if (!foundPlayer) {
 		return;
 	}
@@ -9435,7 +9419,7 @@ void ProtocolGame::syncCastViewerOpenContainers(std::shared_ptr<Player> foundPla
 	}
 }
 
-void ProtocolGame::syncCastViewerCloseContainers() {
+void ProtocolGame::syncLivestreamViewerCloseContainers() {
 	const auto &openContainers = player->getOpenContainers();
 	if (!openContainers.empty()) {
 		for (const auto &it : openContainers) {
@@ -9444,22 +9428,63 @@ void ProtocolGame::syncCastViewerCloseContainers() {
 	}
 }
 
-bool ProtocolGame::canWatchCast(std::shared_ptr<Player> foundPlayer) const {
-	if (!foundPlayer || foundPlayer->isRemoved() || !foundPlayer->hasClientOwner() || !foundPlayer->client->isCastBroadcasting()) {
+bool ProtocolGame::canWatchCast(const std::shared_ptr<Player> &foundPlayer, const std::string &password) const {
+	if (!foundPlayer) {
+		disconnectClient("Livestream unavailable.");
+		return false;
+	}
+
+	if (foundPlayer->isRemoved()) {
+		disconnectClient("This player is no longer broadcasting.");
+		return false;
+	}
+
+	if (!foundPlayer->client->isLivestreamBroadcasting()) {
+		disconnectClient("This player has ended the livestream.");
+		return false;
+	}
+
+	if (!foundPlayer->hasClientOwner()) {
+		disconnectClient("This player is not currently streaming.");
 		return false;
 	}
 
 	if (foundPlayer->client->checkBannedIP(getIP())) {
+		disconnectClient("Access denied: You are banned from viewing this livestream.");
 		return false;
 	}
 
-	if (!foundPlayer->client->checkPassword(std::string())) {
+	if (!foundPlayer->client->checkPassword(password)) {
+		disconnectClient("Incorrect password. Access to this livestream is protected.");
 		return false;
 	}
 
-	if (static_cast<int32_t>(foundPlayer->client->getViewers().size()) >= g_configManager().getNumber(CAST_MAXIMUM_VIEWERS, __FUNCTION__)) {
+	auto playersByIP = foundPlayer->client->getLivestreamViewersByIP(getIP());
+	int32_t maxViewersPerIP = g_configManager().getNumber(LIVESTREAM_MAXIMUM_VIEWERS_PER_IP, __FUNCTION__);
+	if (static_cast<int32_t>(playersByIP.size()) >= maxViewersPerIP) {
+		disconnectClient("Livestream viewer limit per IP reached. Please try again later.");
+		return false;
+	}
+
+	// Get the base viewer limit from configManager for regular accounts
+	int32_t baseMaxViewers = g_configManager().getNumber(LIVESTREAM_MAXIMUM_VIEWERS, __FUNCTION__);
+	// Get the viewer limit for premium accounts from configManager
+	int32_t premiumMaxViewers = g_configManager().getNumber(LIVESTREAM_PREMIUM_MAXIMUM_VIEWERS, __FUNCTION__);
+	// Determine the allowed number of viewers based on whether the player has a premium account
+	int32_t maxViewersAllowed = foundPlayer->isPremium() ? premiumMaxViewers : baseMaxViewers;
+	// Check if the current number of viewers exceeds the allowed limit
+	if (static_cast<int32_t>(foundPlayer->client->getLivestreamViewers().size()) >= maxViewersAllowed) {
+		disconnectClient("Livestream viewer limit reached. Please try again later.");
+		return false;
+	}
+
+	// Check caster's minimum level requirement
+	int32_t casterMinLevel = g_configManager().getNumber(LIVESTREAM_CASTER_MIN_LEVEL, __FUNCTION__);
+	if (foundPlayer->getLevel() < casterMinLevel) {
+		disconnectClient("The caster does not meet the minimum level requirement to broadcast.");
 		return false;
 	}
 
 	return true;
 }
+#endif

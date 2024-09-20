@@ -169,17 +169,20 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	std::string password = msg.getString();
+// Livestream system login for old protocols
+#if FEATURE_LIVESTREAM > 0
 	// Cast system login (show casting players on old protocol)
-	if (accountDescriptor == "@cast") {
+	if (accountDescriptor == "@livestream") {
 		if (!ProtocolGame::getLiveCasts().size()) {
 			disconnectClient("There are no players with the cast on.");
 			return;
 		}
 
 		auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-		g_dispatcher().addEvent(std::bind(&ProtocolLogin::getCastViewersList, thisPtr, password), "ProtocolLogin::getCastViewersList");
+		g_dispatcher().addEvent(std::bind(&ProtocolLogin::getLivestreamViewersList, thisPtr, password), "ProtocolLogin::getLivestreamViewersList");
 		return;
 	}
+#endif
 
 	if (password.empty()) {
 		disconnectClient("Invalid password.");
@@ -192,22 +195,23 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	                        "ProtocolLogin::getCharacterList");
 }
 
-void ProtocolLogin::getCastViewersList(const std::string &password) {
+#if FEATURE_LIVESTREAM > 0
+void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
 	auto output = OutputMessagePool::getOutputMessage();
 	output->addByte(0x14);
-	output->addString(fmt::format("{}\nWelcome to Cast System!", normal_random(1, 100)), "ProtocolLogin::getCastViewersList - fmt::format('{}\nWelcome to Cast System!', normal_random(1, 100))");
+	output->addString(fmt::format("{}\nWelcome to Cast System!", normal_random(1, 100)), "ProtocolLogin::getLivestreamViewersList - fmt::format('{}\nWelcome to Cast System!', normal_random(1, 100))");
 
 	// Add session key
 	output->addByte(0x28);
-	output->addString(fmt::format("@cast\n{}", password), "ProtocolLogin::getCharacterList - accountDescriptor + password");
+	output->addString(fmt::format("@livestream\n{}", password), "ProtocolLogin::getCharacterList - accountDescriptor + password");
 
 	output->addByte(0x64);
 
 	output->addByte(1); // number of worlds
 
 	output->addByte(0); // world id
-	output->addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolLogin::getCastViewersList - _configManager().getString(SERVER_NAME)");
-	output->addString(g_configManager().getString(IP, __FUNCTION__), "ProtocolLogin::getCastViewersList - g_configManager().getString(IP)");
+	output->addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolLogin::getLivestreamViewersList - _configManager().getString(SERVER_NAME)");
+	output->addString(g_configManager().getString(IP, __FUNCTION__), "ProtocolLogin::getLivestreamViewersList - g_configManager().getString(IP)");
 
 	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__));
 
@@ -217,7 +221,7 @@ void ProtocolLogin::getCastViewersList(const std::string &password) {
 
 	for (const auto &it : ProtocolGame::getLiveCasts()) {
 		std::shared_ptr<Player> player = it.first;
-		if (!password.empty() && password != player->client->getCastPassword()) {
+		if (!password.empty() && password != player->client->getLivestreamPassword()) {
 			continue;
 		}
 		players.emplace_back(player);
@@ -225,11 +229,11 @@ void ProtocolLogin::getCastViewersList(const std::string &password) {
 
 	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
 	output->addByte(size);
-	std::sort(players.begin(), players.end(), Player::sortByCastViewerCount);
+	std::sort(players.begin(), players.end(), Player::sortByLivestreamViewerCount);
 
 	for (const auto &player : players) {
 		output->addByte(0);
-		output->addString(player->getName(), "ProtocolLogin::getCastViewersList - player->getName()");
+		output->addString(player->getName(), "ProtocolLogin::getLivestreamViewersList - player->getName()");
 	}
 
 	// Add premium days
@@ -242,3 +246,4 @@ void ProtocolLogin::getCastViewersList(const std::string &password) {
 	send(std::move(output));
 	disconnect();
 }
+#endif

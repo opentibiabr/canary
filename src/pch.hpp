@@ -171,6 +171,9 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<
 
 #include "lua/global/shared_object.hpp"
 
+// Features
+#include "features.hpp"
+
 constexpr std::string_view methodName(const char* s) {
 	std::string_view prettyFunction(s);
 	size_t bracket = prettyFunction.rfind('(');

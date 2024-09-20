@@ -263,6 +263,11 @@ bool ConfigManager::load() {
 	loadIntConfig(L, HOUSE_LOSE_AFTER_INACTIVITY, "houseLoseAfterInactivity", 0);
 	loadIntConfig(L, HOUSE_PRICE_PER_SQM, "housePriceEachSQM", 1000);
 	loadIntConfig(L, KICK_AFTER_MINUTES, "kickIdlePlayerAfterMinutes", 15);
+	loadFloatConfig(L, LIVESTREAM_EXPERIENCE_MULTIPLIER, "livestreamExperienceMultiplier", 1.15);
+	loadIntConfig(L, LIVESTREAM_MAXIMUM_VIEWERS_PER_IP, "livestreamMaximumViewersPerIP", 2);
+	loadIntConfig(L, LIVESTREAM_MAXIMUM_VIEWERS, "livestreamMaximumViewers", 10);
+	loadIntConfig(L, LIVESTREAM_PREMIUM_MAXIMUM_VIEWERS, "livestreamPremiumMaximumViewers", 20);
+	loadIntConfig(L, LIVESTREAM_CASTER_MIN_LEVEL, "livestreamCasterMinLevel", 200);
 	loadIntConfig(L, LOOTPOUCH_MAXLIMIT, "lootPouchMaxLimit", 2000);
 	loadIntConfig(L, LOW_LEVEL_BONUS_EXP, "lowLevelBonusExp", 50);
 	loadIntConfig(L, LOYALTY_POINTS_PER_CREATION_DAY, "loyaltyPointsPerCreationDay", 1);
@@ -280,8 +285,6 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MAX_PLAYERS_PER_ACCOUNT, "maxPlayersOnlinePerAccount", 1);
 	loadIntConfig(L, MAX_PLAYERS, "maxPlayers", 0);
 	loadIntConfig(L, MAX_SPEED_ATTACKONFIST, "maxSpeedOnFist", 500);
-	loadFloatConfig(L, CAST_EXPERIENCE_MULTIPLIER, "castExperienceMultiplier", 1.15);
-	loadIntConfig(L, CAST_MAXIMUM_VIEWERS, "maximumViewersPerCast", 50);
 	loadIntConfig(L, METRICS_OSTREAM_INTERVAL, "metricsOstreamInterval", 1000);
 	loadIntConfig(L, MIN_DELAY_BETWEEN_CONDITIONS, "minDelayBetweenConditions", 0);
 	loadIntConfig(L, MIN_ELEMENTAL_RESISTANCE, "minElementalResistance", -200);

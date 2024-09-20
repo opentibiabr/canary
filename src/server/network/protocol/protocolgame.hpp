@@ -83,13 +83,6 @@ public:
 		return player;
 	}
 
-	static const std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> &getLiveCasts() {
-		return liveCasts;
-	}
-
-	void insertCaster();
-	void removeCaster();
-
 private:
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());
@@ -493,19 +486,29 @@ private:
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 
-	// Cast Viewer
+#if FEATURE_LIVESTREAM > 0
 	void castViewerLogin(const std::string &name, const std::string &password);
-	void sendCastViewerAppear(std::shared_ptr<Player> foundPlayer);
-	void syncCastViewerOpenContainers(std::shared_ptr<Player> foundPlayer);
-	void syncCastViewerCloseContainers();
-	bool canWatchCast(std::shared_ptr<Player> foundPlayer) const;
+	void sendLivestreamViewerAppear(std::shared_ptr<Player> foundPlayer);
+	void syncLivestreamViewerOpenContainers(std::shared_ptr<Player> foundPlayer);
+	void syncLivestreamViewerCloseContainers();
+	bool canWatchCast(const std::shared_ptr<Player> &foundPlayer, const std::string &password) const;
+
+	static const std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> &getLiveCasts() {
+		return m_livestreamCasters;
+	}
+
+	void insertLivestreamCaster();
+	void removeLivestreamCaster();
+
+	static std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> m_livestreamCasters;
+
+	friend class Livestream;
+#endif
 
 	friend class Player;
 	friend class PlayerWheel;
 	friend class PlayerVIP;
-	friend class Livestream;
-
-	static std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> liveCasts;
+	friend class ProtocolLogin;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
@@ -528,10 +531,17 @@ private:
 	uint16_t otclientV8 = 0;
 	bool isOTC = false;
 
-	// Cast Viewer
-	bool m_isCastViewer = false;
-	int64_t m_castCooldownTime = 0;
-	uint32_t m_castCount = 0;
+	// Since it is false by default, we can leave it enabled to avoid directives of "FEATURE_LIVESTREAM" in the code
+	bool m_isLivestreamViewer = false;
+#if FEATURE_LIVESTREAM == 0
+	bool isOldProtocol() {
+		return oldProtocol;
+	}
+
+#else
+	int64_t m_livestreamMessageCooldownTime = 0;
+	uint32_t m_livestreamMessageCount = 0;
+#endif
 
 	void sendInventory();
 	void sendOpenStash();

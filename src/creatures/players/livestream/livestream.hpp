@@ -38,34 +38,35 @@ public:
 	void clear(bool full);
 	bool checkPassword(const std::string &_password);
 	void handle(std::shared_ptr<ProtocolGame> client, const std::string &text, uint16_t channelId);
-	uint32_t getCastViewerCount();
-	std::vector<std::string> getViewers() const;
+	uint32_t getLivestreamViewerCount();
+	std::vector<std::string> getLivestreamViewers() const;
+	std::vector<std::shared_ptr<Player>> getLivestreamViewersByIP(uint32_t ip) const;
 	void setKickViewer(std::vector<std::string> list);
-	const std::vector<std::string> &getMuteCastList() const;
+	const std::vector<std::string> &getLivrestreamMutes() const;
 	void setMuteViewer(std::vector<std::string> _mutes);
-	const std::map<std::string, uint32_t> &getBanCastList() const;
+	const std::map<std::string, uint32_t> &getLivestreamBans() const;
 	void setBanViewer(std::vector<std::string> _bans);
 	bool checkBannedIP(uint32_t ip) const;
-	std::shared_ptr<ProtocolGame> getCastOwner() const;
-	void setCastOwner(std::shared_ptr<ProtocolGame> client);
-	void resetCastOwner();
-	std::string getCastPassword() const;
-	void setCastPassword(const std::string &value);
-	bool isCastBroadcasting() const;
-	void setCastBroadcast(bool value);
-	std::string getCastBroadcastTimeString() const;
+	std::shared_ptr<ProtocolGame> getLivestreamOwner() const;
+	void setLivestreamOwner(std::shared_ptr<ProtocolGame> client);
+	void resetLivestreamOwner();
+	std::string getLivestreamPassword() const;
+	void setLivestreamPassword(const std::string &value);
+	bool isLivestreamBroadcasting() const;
+	void setLivestreamBroadcasting(bool value);
+	std::string getLivestreamBroadcastTimeString() const;
 	void addViewer(std::shared_ptr<ProtocolGame> client, bool spy = false);
 	void removeViewer(std::shared_ptr<ProtocolGame> client, bool spy = false);
-	int64_t getCastBroadcastTime() const;
-	void setCastBroadcastTime(int64_t time);
-	uint32_t getCastLiveRecord() const;
-	void setCastLiveRecord(uint32_t value);
-	std::string getCastDescription() const;
-	void setCastDescription(const std::string &desc);
+	int64_t getLivestreamBroadcastTime() const;
+	void setLivestreamBroadcastingTime(int64_t time);
+	uint32_t getLivestreamLiveRecord() const;
+	void setLivestreamLiveRecord(uint32_t value);
+	std::string getLivestreamDescription() const;
+	void setLivestreamDescription(const std::string &desc);
 	uint32_t getViewerId(std::shared_ptr<ProtocolGame> client) const;
 	// inherited
-	void insertCaster();
-	void removeCaster();
+	void insertLivestreamCaster();
+	void removeLivestreamCaster();
 	bool canSee(const Position &pos) const;
 	uint32_t getIP() const;
 	void sendStats();
@@ -247,8 +248,8 @@ public:
 	void disconnectClient(const std::string &message) const;
 
 	bool isOldProtocol();
-	bool isCastViewer() const {
-		return m_owner->m_isCastViewer;
+	bool isLivestreamViewer() const {
+		return m_owner->m_isLivestreamViewer;
 	}
 
 private:
@@ -257,11 +258,11 @@ private:
 	std::vector<std::string> m_mutes;
 	std::map<std::string, uint32_t> m_bans;
 	std::shared_ptr<ProtocolGame> m_owner = nullptr;
-	std::string m_castPassword;
-	std::string m_castDescription;
-	bool m_castBroadcast = false;
-	int64_t m_castBroadcastTime = 0;
-	uint16_t m_castLiveRecord = 0;
-	uint32_t m_id = 0;
+	std::string m_livestreamCasterPassword;
+	std::string m_livestreamCasterDescription;
+	bool m_livestreamCasterBroadcast = false;
+	int64_t m_livestreamCasterBroadcastTime = 0;
+	uint16_t m_livestreamCasterLiveRecord = 0;
+	uint32_t m_viewerId = 0;
 	uint32_t m_viewerCounter = 0;
 };

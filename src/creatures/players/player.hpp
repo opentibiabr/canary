@@ -40,7 +40,10 @@
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/vip/player_vip.hpp"
-#include "creatures/players/cast/livestream.hpp"
+
+#if FEATURE_LIVESTREAM > 0
+	#include "creatures/players/livestream/livestream.hpp"
+#endif
 
 class House;
 class NetworkMessage;
@@ -511,11 +514,7 @@ public:
 		return getIP() == 0;
 	}
 
-	bool hasClientOwner() const;
-
 	ProtocolGame_ptr getClient() const;
-
-	static bool sortByCastViewerCount(std::shared_ptr<Player> lhs, std::shared_ptr<Player> rhs);
 
 	void addContainer(uint8_t cid, std::shared_ptr<Container> container);
 	void closeContainer(uint8_t cid);
@@ -2831,7 +2830,6 @@ private:
 	std::shared_ptr<Npc> shopOwner = nullptr;
 	std::shared_ptr<Party> m_party = nullptr;
 	std::shared_ptr<Player> tradePartner = nullptr;
-	std::shared_ptr<Livestream> client = nullptr;
 	std::shared_ptr<Task> walkTask;
 	std::shared_ptr<Town> town;
 	std::shared_ptr<Vocation> vocation = nullptr;
@@ -3027,13 +3025,21 @@ private:
 		return m_isDead;
 	}
 
-	bool isCastViewer() const {
-		return client && client->isCastViewer();
-	}
-
 	void triggerMomentum();
 	void clearCooldowns();
 	void triggerTranscendance();
+
+	bool hasClientOwner() const;
+#if FEATURE_LIVESTREAM == 0
+	std::shared_ptr<ProtocolGame> client = nullptr;
+#else
+	bool isLivestreamViewer() const;
+	static bool sortByLivestreamViewerCount(std::shared_ptr<Player> lhs, std::shared_ptr<Player> rhs);
+
+	std::shared_ptr<Livestream> client = nullptr;
+
+	friend class Livestream;
+#endif
 
 	friend class Game;
 	friend class SaveManager;
@@ -3055,7 +3061,6 @@ private:
 	friend class PlayerTitle;
 	friend class PlayerVIP;
 	friend class ProtocolLogin;
-	friend class Livestream;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;

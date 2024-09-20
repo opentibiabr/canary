@@ -1,33 +1,50 @@
-local experienceMultiplier = configManager.getFloat(configKeys.CAST_EXPERIENCE_MULTIPLIER)
+local experienceMultiplier = configManager.getFloat(configKeys.LIVESTREAM_EXPERIENCE_MULTIPLIER)
 local bonusPercent = (experienceMultiplier - 1.0) * 100
 
-local playersCasting = {}
+local playersStreaming = {}
 
 local helpMessages = {
 	"Available commands:\n",
-	"!cast on - enables the stream",
-	"!cast off - disables the stream",
-	"!cast desc, description (or empty for remove) - sets description about your cast",
-	"!cast desc, remove/delete - removes description",
-	"!cast desc - removes description",
-	"!cast password, password - sets a password on the stream",
-	"!cast password off - disables the password protection",
-	"!cast kick, name - kick a spectator from your stream",
-	"!cast ban, name - locks spectator IP from joining your stream",
-	"!cast unban, name - removes banishment lock",
-	"!cast bans - shows banished spectators list",
-	"!cast mute, name - mutes selected spectator from chat",
-	"!cast unmute, name - removes mute",
-	"!cast mutes - shows muted spectators list",
-	"!cast show - displays the amount and nicknames of current spectators",
-	"!cast status - displays stream status",
+	"!livestream on - enables the stream",
+	"!livestream off - disables the stream",
+	"!livestream desc, description (or empty for remove) - sets description about your livestream",
+	"!livestream desc, remove/delete - removes description",
+	"!livestream desc - removes description",
+	"!livestream password, password - sets a password on the stream",
+	"!livestream password off - disables the password protection",
+	"!livestream kick, name - kick a spectator from your stream",
+	"!livestream ban, name - locks spectator IP from joining your stream",
+	"!livestream unban, name - removes banishment lock",
+	"!livestream bans - shows banished spectators list",
+	"!livestream mute, name - mutes selected spectator from chat",
+	"!livestream unmute, name - removes mute",
+	"!livestream mutes - shows muted spectators list",
+	"!livestream show - displays the amount and nicknames of current spectators",
+	"!livestream status - displays stream status",
 }
 
-local talkaction = TalkAction("!cast")
+local talkaction = TalkAction("!livestream")
 
 function talkaction.onSay(player, words, param)
+	if FEATURE_LIVESTREAM == 0 then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Livestream system is disabled.")
+		return false
+	end
+
+	local minLevelToLivestream = configManager.getNumber(configKeys.LIVESTREAM_CASTER_MIN_LEVEL)
+	if player:getLevel() < minLevelToLivestream then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to be at least level " .. minLevelToLivestream .. " to use this command.")
+		return false
+	end
+
+	local maximumViewers = configManager.getNumber(configKeys.LIVESTREAM_MAXIMUM_VIEWERS)
+	if maximumViewers == 0 and not player:isPremium() then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to be a premium account to use this command.")
+		return false
+	end
+
 	local split = param:splitTrimmed(",")
-	local data = player:getCastViewers()
+	local data = player:getLivestreamViewers()
 
 	if table.contains({ "help" }, split[1]) then
 		player:popupFYI(table.concat(helpMessages, "\n"))
@@ -38,13 +55,13 @@ function talkaction.onSay(player, words, param)
 		end
 		data.mutes = {}
 		data.broadcast = false
-		db.query("UPDATE `active_casters` SET `cast_status` = 0, `cast_viewers` = 0 WHERE `caster_id` = " .. player:getGuid())
+		db.query("UPDATE `active_livestream_casters` SET `livestream_status` = 0, `livestream_viewers` = 0 WHERE `caster_id` = " .. player:getGuid())
 		player:sendTextMessage(MESSAGE_STATUS, "Your stream is currently disabled.")
 		if experienceMultiplier > 1.0 then
 			player:sendTextMessage(MESSAGE_LOOK, "Experience bonus deactivated: -" .. experienceMultiplier .. "%")
-			player:kv():scoped("cast-system"):remove("experience-bonus")
+			player:kv():scoped("livestream-system"):remove("experience-bonus")
 		end
-		playersCasting[player:getGuid()] = nil
+		playersStreaming[player:getGuid()] = nil
 	elseif table.contains({ "on", "yes", "enable" }, split[1]) then
 		if data.broadcast then
 			player:sendTextMessage(MESSAGE_STATUS, "You already have the live stream open.")
@@ -52,13 +69,12 @@ function talkaction.onSay(player, words, param)
 		end
 		data.broadcast = true
 		player:sendTextMessage(MESSAGE_STATUS, "You have started live broadcast.")
-		db.query("INSERT INTO `active_casters` (`caster_id`, `cast_status`) VALUES (" .. player:getGuid() .. ", 1) ON DUPLICATE KEY UPDATE `cast_status` = 1")
+		db.query("INSERT INTO `active_livestream_casters` (`caster_id`, `livestream_status`) VALUES (" .. player:getGuid() .. ", 1) ON DUPLICATE KEY UPDATE `livestream_status` = 1")
 		if experienceMultiplier and experienceMultiplier > 1.0 then
 			player:sendTextMessage(MESSAGE_LOOK, "Experience bonus activated: +" .. bonusPercent .. "%")
-			player:kv():scoped("cast-system"):set("experience-bonus", true)
+			player:kv():scoped("livestream-system"):set("experience-bonus", true)
 		end
-		playersCasting[player:getGuid()] = true
-		player:setExhaustion("cast-system-exhaustion", 20)
+		playersStreaming[player:getGuid()] = true
 	elseif table.contains({ "show", "count", "see" }, split[1]) then
 		if data.broadcast then
 			local count = table.maxn(data.names)
@@ -142,7 +158,7 @@ function talkaction.onSay(player, words, param)
 
 				if found > 0 then
 					table.remove(data.bans, found)
-					player:kv():scoped("cast-system"):remove("ban")
+					player:kv():scoped("livestream-system"):remove("ban")
 					player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. split[2] .. " has been unbanned.")
 				else
 					player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. split[2] .. " not found.")
@@ -177,7 +193,7 @@ function talkaction.onSay(player, words, param)
 
 				if found then
 					table.insert(data.mutes, split[2])
-					player:kv():scoped("cast-system"):set("mute", split[2])
+					player:kv():scoped("livestream-system"):set("mute", split[2])
 					player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. split[2] .. " has been muted.")
 				else
 					player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. split[2] .. " not found.")
@@ -203,7 +219,7 @@ function talkaction.onSay(player, words, param)
 
 				if found > 0 then
 					table.remove(data.mutes, found)
-					player:kv():scoped("cast-system"):remove("mute")
+					player:kv():scoped("livestream-system"):remove("mute")
 					player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. split[2] .. " has been unmuted.")
 				else
 					player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. split[2] .. " not found.")
@@ -228,27 +244,27 @@ function talkaction.onSay(player, words, param)
 	elseif table.contains({ "password", "guard" }, split[1]) then
 		if not split[2] or split[2]:trim() == "" or table.contains({ "off", "no", "disable" }, split[2]) then
 			if data.password:len() ~= 0 then
-				db.query("UPDATE `active_casters` SET `cast_status` = 1 WHERE `caster_id` = " .. player:getGuid())
+				db.query("UPDATE `active_livestream_casters` SET `livestream_status` = 1 WHERE `caster_id` = " .. player:getGuid())
 			end
 
 			data.password = ""
-			player:kv():scoped("cast-system"):remove("password")
+			player:kv():scoped("livestream-system"):remove("password")
 			player:sendTextMessage(MESSAGE_STATUS, "You have removed password for your stream.")
 			if experienceMultiplier > 1.0 then
 				player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. experienceMultiplier .. "% was reactivated.")
-				player:kv():scoped("cast-system"):set("experience-bonus", true)
+				player:kv():scoped("livestream-system"):set("experience-bonus", true)
 			end
 		else
 			data.password = string.trim(split[2])
 			if data.password:len() ~= 0 then
-				db.query("UPDATE `active_casters` SET `cast_status` = 3 WHERE `caster_id` = " .. player:getGuid())
+				db.query("UPDATE `active_livestream_casters` SET `livestream_status` = 3 WHERE `caster_id` = " .. player:getGuid())
 			end
 			player:sendTextMessage(MESSAGE_STATUS, "You have set new password for your stream.")
 			if experienceMultiplier > 1.0 then
 				player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. experienceMultiplier .. "% was deactivated.")
-				player:kv():scoped("cast-system"):remove("experience-bonus")
+				player:kv():scoped("livestream-system"):remove("experience-bonus")
 			end
-			player:kv():scoped("cast-system"):set("password", data.password)
+			player:kv():scoped("livestream-system"):set("password", data.password)
 		end
 
 		if data.password ~= "" then
@@ -259,7 +275,7 @@ function talkaction.onSay(player, words, param)
 	elseif table.contains({ "desc", "description" }, split[1]) then
 		if not split[2] or split[2]:trim() == "" or table.contains({ "remove", "delete" }, split[2]) then
 			data.description = ""
-			player:kv():scoped("cast-system"):remove("description")
+			player:kv():scoped("livestream-system"):remove("description")
 			player:sendTextMessage(MESSAGE_STATUS, "You have removed description for your stream.")
 		else
 			if split[2]:match("[%a%d%s%u%l]+") ~= split[2] then
@@ -268,19 +284,19 @@ function talkaction.onSay(player, words, param)
 			end
 			if split[2]:len() > 0 and split[2]:len() <= 50 then
 				data.description = split[2]
-				player:kv():scoped("cast-system"):set("description", split[2])
+				player:kv():scoped("livestream-system"):set("description", split[2])
 			else
 				player:sendTextMessage(MESSAGE_STATUS, "Your description max length 50 characters.")
 				return false
 			end
-			player:sendTextMessage(MESSAGE_STATUS, "Cast description was set to: " .. split[2] .. ".")
+			player:sendTextMessage(MESSAGE_STATUS, "Livestream description was set to: " .. split[2] .. ".")
 		end
 	elseif table.contains({ "status", "info" }, split[1]) then
 		player:sendTextMessage(MESSAGE_STATUS, "Your stream is currently " .. (data.broadcast and "enabled" or "disabled") .. ".")
 	else
 		player:popupFYI(table.concat(helpMessages, "\n"))
 	end
-	player:setCastViewers(data)
+	player:setLivestreamViewers(data)
 
 	return true
 end
@@ -289,35 +305,35 @@ talkaction:separator(" ")
 talkaction:groupType("normal")
 talkaction:register()
 
-local creaturescript = CreatureEvent("CastLogout")
+local creaturescript = CreatureEvent("LivestreamLogout")
 
 function creaturescript.onLogout(player)
-	db.query("UPDATE `active_casters` SET `cast_status` = 0, `cast_viewers` = 0 WHERE `caster_id` = " .. player:getGuid())
+	db.query("UPDATE `active_livestream_casters` SET `livestream_status` = 0, `livestream_viewers` = 0 WHERE `caster_id` = " .. player:getGuid())
 	return true
 end
 
 creaturescript:register()
 
-creaturescript = CreatureEvent("CastLogin")
+creaturescript = CreatureEvent("LivestreamLogin")
 
 function creaturescript.onLogin(player)
-	player:registerEvent("CastLogout")
-	db.query("UPDATE `active_casters` SET `cast_status` = 0, `cast_viewers` = 0 WHERE `caster_id` = " .. player:getGuid())
-	player:kv():scoped("cast-system"):remove("experience-bonus")
+	player:registerEvent("LivestreamLogout")
+	db.query("UPDATE `active_livestream_casters` SET `livestream_status` = 0, `livestream_viewers` = 0 WHERE `caster_id` = " .. player:getGuid())
+	player:kv():scoped("livestream-system"):remove("experience-bonus")
 	return true
 end
 
 creaturescript:register()
 
-local globalevent = GlobalEvent("CastThink")
+local globalevent = GlobalEvent("LivestreamThink")
 
 function globalevent.onThink(interval)
-	for playerGuid in pairs(playersCasting) do
+	for playerGuid in pairs(playersStreaming) do
 		local player = Player(playerGuid)
 		if player then
-			db.query("UPDATE `active_casters` SET `cast_viewers` = " .. player:getCastViewersCount() .. " WHERE `caster_id` = " .. player:getGuid())
+			db.query("UPDATE `active_livestream_casters` SET `livestream_viewers` = " .. player:getLivestreamViewersCount() .. " WHERE `caster_id` = " .. player:getGuid())
 		else
-			playersCasting[playerGuid] = nil
+			playersStreaming[playerGuid] = nil
 		end
 	end
 	return true
@@ -326,22 +342,22 @@ end
 globalevent:interval(10000)
 globalevent:register()
 
-local castOnStartup = GlobalEvent("CastOnStartup")
+local livestreamOnStartup = GlobalEvent("LivestreamOnStartup")
 
-function castOnStartup.onStartup()
-	db.query("UPDATE `active_casters` SET `cast_status` = 0, `cast_viewers` = 0")
+function livestreamOnStartup.onStartup()
+	db.query("UPDATE `active_livestream_casters` SET `livestream_status` = 0, `livestream_viewers` = 0")
 	return true
 end
 
-castOnStartup:register()
+livestreamOnStartup:register()
 
-local gainExperience = EventCallback("CastSystemGainExperience")
+local gainExperience = EventCallback("LivestreamSystemGainExperience")
 
 function gainExperience.playerOnGainExperience(player, target, exp, rawExp)
-	local castStatus = player:kv():scoped("cast-system"):get("experience-bonus") and 1 or 0
-	if experienceMultiplier > 1.0 and castStatus > 0 then
+	local livestreamStatus = player:kv():scoped("livestream-system"):get("experience-bonus") and 1 or 0
+	if experienceMultiplier > 1.0 and livestreamStatus > 0 then
 		exp = exp * experienceMultiplier
-		logger.debug("Original exp: {}, casting exp: {} for creature {}", rawExp, exp, target:getName())
+		logger.debug("Original exp: {}, livestream exp: {} for creature {}", rawExp, exp, target:getName())
 	end
 
 	return exp

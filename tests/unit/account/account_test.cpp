@@ -592,4 +592,32 @@ suite<"account"> accountTest = [] {
 		expect(acc.load() == enumToValue(AccountErrors_t::Ok));
 		expect(acc.authenticate());
 	};
+
+	test("Account::getCharacterByAccountIdAndName using an account with the given character.") = [&injectionFixture] {
+		auto [accountRepository] = injectionFixture.get<AccountRepository>();
+
+		Account acc { 1 };
+		accountRepository.addAccount(
+			"session-key",
+			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", 1 }, { "Canary2", 2 } }, false, getTimeNow() + 24 * 60 * 60 * 1000 }
+		);
+
+		const auto hasCharacter = accountRepository.getCharacterByAccountIdAndName(1, "Canary");
+
+		expect(hasCharacter);
+	};
+
+	test("Account::getCharacterByAccountIdAndName using an account without the given character.") = [&injectionFixture] {
+		auto [accountRepository] = injectionFixture.get<AccountRepository>();
+
+		Account acc { 1 };
+		accountRepository.addAccount(
+			"session-key",
+			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", 1 }, { "Canary2", 2 } }, false, getTimeNow() + 24 * 60 * 60 * 1000 }
+		);
+
+		const auto hasCharacter = accountRepository.getCharacterByAccountIdAndName(1, "Invalid");
+
+		expect(!hasCharacter);
+	};
 };

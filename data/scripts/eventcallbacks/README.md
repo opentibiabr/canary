@@ -18,6 +18,7 @@ Event callbacks are available for several categories of game entities, such as `
 - `(ReturnValue)` `creatureOnTargetCombat`
 - `(void)` `creatureOnHear`
 - `(void)` `creatureOnDrainHealth`
+- `(void)` `creatureOnCombat`
 - `(bool)` `partyOnJoin`
 - `(bool)` `partyOnLeave`
 - `(bool)` `partyOnDisband`
@@ -62,7 +63,7 @@ Below are examples for each category of game entities:
 ### Creature Callback
 
 ```lua
-local callback = EventCallback()
+local callback = EventCallback("UniqueCallbackName")
 
 function callback.creatureOnAreaCombat(creature, tile, isAggressive)
 	-- custom behavior when a creature enters combat area
@@ -75,7 +76,7 @@ callback:register()
 ### Player Callback
 
 ```lua
-local callback = EventCallback()
+local callback = EventCallback("UniqueCallbackName")
 
 function callback.playerOnLook(player, position, thing, stackpos, lookDistance)
 	-- custom behavior when a player looks at something
@@ -87,7 +88,7 @@ callback:register()
 ### Party Callback
 
 ```lua
-local callback = EventCallback()
+local callback = EventCallback("UniqueCallbackName")
 
 function callback.partyOnJoin(party, player)
 	-- custom behavior when a player joins a party
@@ -99,7 +100,7 @@ callback:register()
 ### Monster Callback
 
 ```lua
-local callback = EventCallback()
+local callback = EventCallback("UniqueCallbackName")
 
 function callback.monsterOnSpawn(monster, position)
 	-- custom behavior when a monster spawns
@@ -111,7 +112,7 @@ callback:register()
 ### Npc Callback
 
 ```lua
-local callback = EventCallback()
+local callback = EventCallback("UniqueCallbackName")
 
 function callback.npcOnSpawn(npc, position)
 	-- custom behavior when a npc spawns
@@ -129,7 +130,7 @@ If the callback returns `false`, the execution of the associated function on the
 Here is an example of a boolean event callback:
 
 ```lua
-local callback = EventCallback()
+local callback = EventCallback("UniqueCallbackName")
 
 function callback.playerOnMoveItem(player, item, count, fromPos, toPos, fromCylinder, toCylinder)
 	if item:getId() == ITEM_PARCEL then
@@ -180,7 +181,7 @@ Here is an example of defining multiple callbacks for the creatureOnAreaCombat e
 #### Example 1
 
 ```lua
-local example1 = EventCallback()
+local example1 = EventCallback("UniqueCallbackName")
 
 function example1.creatureOnAreaCombat(creature, tile, isAggressive)
 	-- custom behavior 1 when a creature enters combat area
@@ -192,7 +193,7 @@ example1:register()
 #### Example 2
 
 ```lua
-local example2 = EventCallback()
+local example2 = EventCallback("UniqueCallbackName")
 
 function example2.creatureOnAreaCombat(creature, tile, isAggressive)
 	-- custom behavior 2 when a creature enters combat area

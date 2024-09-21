@@ -173,13 +173,17 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 #if FEATURE_LIVESTREAM > 0
 	// Cast system login (show casting players on old protocol)
 	if (accountDescriptor == "@livestream") {
-		if (!ProtocolGame::getLiveCasts().size()) {
-			disconnectClient("There are no players with the cast on.");
+		if (ProtocolGame::getLiveStreamCasters().empty()) {
+			disconnectClient("There are no players with the livestream on.");
 			return;
 		}
 
 		auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-		g_dispatcher().addEvent(std::bind(&ProtocolLogin::getLivestreamViewersList, thisPtr, password), "ProtocolLogin::getLivestreamViewersList");
+		g_dispatcher().addEvent([thisPtr, password]() {
+			thisPtr->getLivestreamViewersList(password);
+		},
+		                        "ProtocolLogin::getLivestreamViewersList");
+
 		return;
 	}
 #endif
@@ -197,29 +201,33 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 
 #if FEATURE_LIVESTREAM > 0
 void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
-	auto output = OutputMessagePool::getOutputMessage();
-	output->addByte(0x14);
-	output->addString(fmt::format("{}\nWelcome to Cast System!", normal_random(1, 100)), "ProtocolLogin::getLivestreamViewersList - fmt::format('{}\nWelcome to Cast System!', normal_random(1, 100))");
+	constexpr uint8_t HEADER_BYTE = 0x14;
+	constexpr uint8_t SESSION_KEY_BYTE = 0x28;
+	constexpr uint8_t NUMBER_OF_WORLDS = 1;
+	constexpr int32_t MIN_RANDOM_VALUE = 1;
+	constexpr int32_t MAX_RANDOM_VALUE = 100;
 
-	// Add session key
-	output->addByte(0x28);
+	auto output = OutputMessagePool::getOutputMessage();
+	output->addByte(HEADER_BYTE);
+	output->addString(fmt::format("{}\nWelcome to Cast System!", normal_random(MIN_RANDOM_VALUE, MAX_RANDOM_VALUE)), "ProtocolLogin::getLivestreamViewersList - Welcome to Cast System!')");
+
+	output->addByte(SESSION_KEY_BYTE);
 	output->addString(fmt::format("@livestream\n{}", password), "ProtocolLogin::getCharacterList - accountDescriptor + password");
 
-	output->addByte(0x64);
+	output->addByte(uint8_t());
+	output->addByte(NUMBER_OF_WORLDS);
 
-	output->addByte(1); // number of worlds
-
-	output->addByte(0); // world id
+	output->addByte(uint8_t());
 	output->addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolLogin::getLivestreamViewersList - _configManager().getString(SERVER_NAME)");
 	output->addString(g_configManager().getString(IP, __FUNCTION__), "ProtocolLogin::getLivestreamViewersList - g_configManager().getString(IP)");
 
 	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__));
 
-	output->addByte(0);
+	output->addByte(uint8_t());
 
 	std::vector<std::shared_ptr<Player>> players;
 
-	for (const auto &it : ProtocolGame::getLiveCasts()) {
+	for (const auto &it : ProtocolGame::getLiveStreamCasters()) {
 		std::shared_ptr<Player> player = it.first;
 		if (!password.empty() && password != player->client->getLivestreamPassword()) {
 			continue;
@@ -232,17 +240,15 @@ void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
 	std::sort(players.begin(), players.end(), Player::sortByLivestreamViewerCount);
 
 	for (const auto &player : players) {
-		output->addByte(0);
+		output->addByte(uint8_t());
 		output->addString(player->getName(), "ProtocolLogin::getLivestreamViewersList - player->getName()");
 	}
 
-	// Add premium days
-	output->addByte(0);
+	output->addByte(uint8_t());
+	output->addByte(uint8_t());
+	output->add<uint32_t>(uint32_t());
+	output->add<uint16_t>(uint32_t());
 
-	output->addByte(0);
-	output->add<uint32_t>(0);
-
-	output->add<uint16_t>(0);
 	send(std::move(output));
 	disconnect();
 }

@@ -8194,7 +8194,7 @@ void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
+void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, const std::string &target) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -8446,7 +8446,7 @@ void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
 	g_game().playerRequestInventoryImbuements(player->getID(), isTrackerOpen);
 }
 
-void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> items) {
+void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items) {
 	if (oldProtocol) {
 		return;
 	}
@@ -9351,7 +9351,7 @@ void ProtocolGame::insertLivestreamCaster() {
 }
 
 void ProtocolGame::removeLivestreamCaster() {
-	for (const auto &it : getLiveCasts()) {
+	for (const auto &it : getLiveStreamCasters()) {
 		if (it.first == player) {
 			m_livestreamCasters.erase(player);
 			break;
@@ -9359,7 +9359,7 @@ void ProtocolGame::removeLivestreamCaster() {
 	}
 }
 
-void ProtocolGame::sendLivestreamViewerAppear(std::shared_ptr<Player> foundPlayer) {
+void ProtocolGame::sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer) {
 	if (!foundPlayer) {
 		return;
 	}
@@ -9403,7 +9403,7 @@ void ProtocolGame::castViewerLogin(const std::string &name, const std::string &p
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 }
 
-void ProtocolGame::syncLivestreamViewerOpenContainers(std::shared_ptr<Player> foundPlayer) {
+void ProtocolGame::syncLivestreamViewerOpenContainers(const std::shared_ptr<Player> &foundPlayer) {
 	if (!foundPlayer) {
 		return;
 	}

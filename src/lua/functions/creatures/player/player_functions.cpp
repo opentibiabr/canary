@@ -4490,23 +4490,22 @@ int PlayerFunctions::luaPlayerGetLivestreamViewers(lua_State* L) {
 	setField(L, "password", player->client->getLivestreamPassword());
 
 	createCastTable(L, "names");
-	auto viwers = player->client->getLivestreamViewers();
+	auto viewers = player->client->getLivestreamViewers();
 
-	StringVector::const_iterator it = viwers.begin();
-	for (uint32_t i = 1; it != viwers.end(); ++it, ++i) {
-		lua_pushnumber(L, i);
-		lua_pushstring(L, (*it).c_str());
+	auto it = viewers.begin();
+	for (std::size_t i = 1; it != viewers.end(); ++it, ++i) {
+		lua_pushnumber(L, static_cast<lua_Number>(i));
+		lua_pushstring(L, it->c_str());
 		lua_settable(L, -3);
 	}
 
 	lua_settable(L, -3);
 	createCastTable(L, "mutes");
-	const auto &mute = player->client->getLivrestreamMutes();
-
-	it = mute.begin();
-	for (uint32_t i = 1; it != mute.end(); ++it, ++i) {
-		lua_pushnumber(L, i);
-		lua_pushstring(L, (*it).c_str());
+	const auto &mute = player->client->getLivestreamMutes();
+	auto mute_it = mute.begin();
+	for (std::size_t i = 1; mute_it != mute.end(); ++mute_it, ++i) {
+		lua_pushnumber(L, static_cast<lua_Number>(i));
+		lua_pushstring(L, mute_it->c_str());
 		lua_settable(L, -3);
 	}
 
@@ -4514,10 +4513,10 @@ int PlayerFunctions::luaPlayerGetLivestreamViewers(lua_State* L) {
 	createCastTable(L, "bans");
 	const auto &banList = player->client->getLivestreamBans();
 
-	std::map<std::string, uint32_t>::const_iterator _it = banList.begin();
-	for (uint32_t i = 1; _it != banList.end(); ++_it, ++i) {
-		lua_pushnumber(L, i);
-		lua_pushstring(L, _it->first.c_str());
+	auto ban_it = banList.begin();
+	for (std::size_t i = 1; ban_it != banList.end(); ++ban_it, ++i) {
+		lua_pushnumber(L, static_cast<lua_Number>(i));
+		lua_pushstring(L, ban_it->first.c_str());
 		lua_settable(L, -3);
 	}
 
@@ -4534,12 +4533,15 @@ int PlayerFunctions::luaPlayerSetLivestreamViewers(lua_State* L) {
 	std::string password = getCastFieldString(L, "password");
 	bool broadcast = getCastFieldBool(L, "broadcast");
 
-	StringVector kickedVector, mutedVector, banedVector;
+	StringVector kickedVector;
+	StringVector mutedVector;
+	StringVector banedVector;
+
 	lua_pushstring(L, "mutes");
 	lua_gettable(L, -2);
 
 	lua_pushnil(L);
-	while (lua_next(L, -2)) {
+	while (lua_next(L, -2) != 0) {
 		mutedVector.push_back(asLowerCaseString(lua_tostring(L, -1)));
 		lua_pop(L, 1);
 	}
@@ -4549,7 +4551,7 @@ int PlayerFunctions::luaPlayerSetLivestreamViewers(lua_State* L) {
 	lua_gettable(L, -2);
 
 	lua_pushnil(L);
-	while (lua_next(L, -2)) {
+	while (lua_next(L, -2) != 0) {
 		banedVector.push_back(asLowerCaseString(lua_tostring(L, -1)));
 		lua_pop(L, 1);
 	}
@@ -4559,7 +4561,7 @@ int PlayerFunctions::luaPlayerSetLivestreamViewers(lua_State* L) {
 	lua_gettable(L, -2);
 
 	lua_pushnil(L);
-	while (lua_next(L, -2)) {
+	while (lua_next(L, -2) != 0) {
 		kickedVector.push_back(asLowerCaseString(lua_tostring(L, -1)));
 		lua_pop(L, 1);
 	}

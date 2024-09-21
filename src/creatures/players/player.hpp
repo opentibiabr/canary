@@ -127,7 +127,7 @@ public:
 		const std::shared_ptr<Player> &player;
 	};
 
-	explicit Player(ProtocolGame_ptr p);
+	explicit Player(const ProtocolGame_ptr &protocolGamePtr);
 	~Player();
 
 	// non-copyable
@@ -1891,13 +1891,10 @@ public:
 		return it != quickLootListItemIds.end();
 	}
 
-	bool sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &playerName, const Outfit_t creatureOutfit) const {
+	void sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &playerName, const Outfit_t creatureOutfit) const {
 		if (hasClientOwner()) {
 			client->sendKillTrackerUpdate(corpse, playerName, creatureOutfit);
-			return true;
 		}
-
-		return false;
 	}
 
 	void updatePartyTrackerAnalyzer() const {
@@ -1910,7 +1907,7 @@ public:
 	void updateSupplyTracker(std::shared_ptr<Item> item);
 	void updateImpactTracker(CombatType_t type, int32_t amount) const;
 
-	void updateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
+	void updateInputAnalyzer(CombatType_t type, int32_t amount, const std::string &target) {
 		if (hasClientOwner()) {
 			client->sendUpdateInputAnalyzer(type, amount, target);
 		}
@@ -2530,7 +2527,7 @@ public:
 		}
 	}
 
-	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> items) const {
+	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items) const {
 		if (hasClientOwner()) {
 			client->sendInventoryImbuements(items);
 		}
@@ -3034,7 +3031,7 @@ private:
 	std::shared_ptr<ProtocolGame> client = nullptr;
 #else
 	bool isLivestreamViewer() const;
-	static bool sortByLivestreamViewerCount(std::shared_ptr<Player> lhs, std::shared_ptr<Player> rhs);
+	static bool sortByLivestreamViewerCount(const std::shared_ptr<Player> &lhs, const std::shared_ptr<Player> &rhs);
 
 	std::shared_ptr<Livestream> client = nullptr;
 

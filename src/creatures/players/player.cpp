@@ -45,15 +45,15 @@
 
 MuteCountMap Player::muteCountMap;
 
-Player::Player(ProtocolGame_ptr p) :
+Player::Player(const ProtocolGame_ptr &protocolGamePtr) :
 	Creature(),
 	lastPing(OTSYS_TIME()),
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 #if FEATURE_LIVESTREAM == 0
-	client(p)
+	client(protocolGamePtr)
 #else
-	client(std::make_unique<Livestream>(p))
+	client(std::make_unique<Livestream>(protocolGamePtr))
 #endif
 {
 	m_playerVIP = std::make_unique<PlayerVIP>(*this);
@@ -6257,7 +6257,7 @@ void Player::removeBakragoreIcon(const IconBakragore icon) {
 
 void Player::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
 	if (hasClientOwner()) {
-		client->sendCyclopediaCharacterAchievements(secretsUnlocked, achievementsUnlocked);
+		client->sendCyclopediaCharacterAchievements(secretsUnlocked, std::move(achievementsUnlocked));
 	}
 }
 
@@ -8269,7 +8269,7 @@ ProtocolGame_ptr Player::getClient() const {
 	return client ? client->getLivestreamOwner() : nullptr;
 }
 
-bool Player::sortByLivestreamViewerCount(std::shared_ptr<Player> lhs, std::shared_ptr<Player> rhs) {
+bool Player::sortByLivestreamViewerCount(const std::shared_ptr<Player> &lhs, const std::shared_ptr<Player> &rhs) {
 	return lhs->client->getLivestreamViewerCount() > rhs->client->getLivestreamViewerCount();
 }
 bool Player::isLivestreamViewer() const {

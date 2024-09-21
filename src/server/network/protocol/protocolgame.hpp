@@ -429,7 +429,7 @@ private:
 	void sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &name, const Outfit_t creatureOutfit);
 	void sendUpdateSupplyTracker(std::shared_ptr<Item> item);
 	void sendUpdateImpactTracker(CombatType_t type, int32_t amount);
-	void sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target);
+	void sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, const std::string &target);
 
 	// Hotkey equip/dequip item
 	void parseHotkeyEquip(NetworkMessage &msg);
@@ -473,7 +473,7 @@ private:
 	void sendFeatures();
 
 	void parseInventoryImbuements(NetworkMessage &msg);
-	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> items);
+	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);
 
 	// reloadCreature
 	void reloadCreature(std::shared_ptr<Creature> creature);
@@ -488,12 +488,12 @@ private:
 
 #if FEATURE_LIVESTREAM > 0
 	void castViewerLogin(const std::string &name, const std::string &password);
-	void sendLivestreamViewerAppear(std::shared_ptr<Player> foundPlayer);
-	void syncLivestreamViewerOpenContainers(std::shared_ptr<Player> foundPlayer);
+	void sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer);
+	void syncLivestreamViewerOpenContainers(const std::shared_ptr<Player> &foundPlayer);
 	void syncLivestreamViewerCloseContainers();
 	bool canWatchCast(const std::shared_ptr<Player> &foundPlayer, const std::string &password) const;
 
-	static const std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> &getLiveCasts() {
+	static const std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> &getLiveStreamCasters() {
 		return m_livestreamCasters;
 	}
 

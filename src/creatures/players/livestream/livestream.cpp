@@ -21,11 +21,10 @@
 	#include "creatures/players/achievement/player_achievement.hpp"
 
 Livestream::Livestream(std::shared_ptr<ProtocolGame> client) :
-	m_owner(client) { }
+	m_owner(std::move(client)) { }
+Livestream::~Livestream() = default;
 
-Livestream::~Livestream() { }
-
-void Livestream::clear(bool full) {
+void Livestream::clear(bool clearAll) {
 	for (const auto &[client, _] : m_viewers) {
 		client->sendSessionEndInformation(SESSION_END_LOGOUT);
 	}
@@ -36,7 +35,7 @@ void Livestream::clear(bool full) {
 
 	m_viewerId = 0;
 	m_viewerCounter = 0;
-	if (!full) {
+	if (!clearAll) {
 		return;
 	}
 
@@ -62,59 +61,50 @@ bool Livestream::checkPassword(const std::string &_password) {
 	return std::ranges::equal(t, m_livestreamCasterPassword);
 }
 
-void Livestream::setKickViewer(std::vector<std::string> list) {
+void Livestream::setKickViewer(const std::vector<std::string> &list) {
 	for (const auto &it : list) {
 		for (const auto &[client, clientInfo] : m_viewers) {
-			if (asLowerCaseString(clientInfo.first) == it) {
+			if (asLowerCaseString(clientInfo.name) == it) {
 				client->sendSessionEndInformation(SESSION_END_LOGOUT);
 			}
 		}
 	}
 }
 
-const std::vector<std::string> &Livestream::getLivrestreamMutes() const {
+const std::vector<std::string> &Livestream::getLivestreamMutes() const {
 	return m_mutes;
 }
 
 void Livestream::setMuteViewer(std::vector<std::string> mutes) {
-	m_mutes = mutes;
+	m_mutes = std::move(mutes);
 }
 
 const std::map<std::string, uint32_t> &Livestream::getLivestreamBans() const {
 	return m_bans;
 }
 
-void Livestream::setBanViewer(std::vector<std::string> bans) {
-	std::vector<std::string>::const_iterator it;
-	for (auto bit = m_bans.begin(); bit != m_bans.end();) {
-		it = std::find(bans.begin(), bans.end(), bit->first);
-		if (it == bans.end()) {
-			m_bans.erase(bit++);
-		} else {
-			++bit;
-		}
-	}
+void Livestream::setBanViewer(const std::vector<std::string> &bans) {
+	// Remove banned viewers not in the new bans list
+	std::erase_if(m_bans, [&bans](const auto &ban) {
+		return std::find(bans.begin(), bans.end(), ban.first) == bans.end();
+	});
 
-	for (it = bans.begin(); it != bans.end(); ++it) {
+	// Add new bans to the list and disconnect clients
+	for (const auto &ban : bans) {
 		for (const auto &[client, clientInfo] : m_viewers) {
-			if (asLowerCaseString(clientInfo.first) != *it) {
-				continue;
+			if (asLowerCaseString(clientInfo.name) == ban) {
+				m_bans[ban] = client->getIP();
+				client->sendSessionEndInformation(SESSION_END_LOGOUT);
 			}
-
-			m_bans[*it] = client->getIP();
-			client->sendSessionEndInformation(SESSION_END_LOGOUT);
 		}
 	}
 }
 
 bool Livestream::checkBannedIP(uint32_t ip) const {
-	for (const auto &it : m_bans) {
-		if (it.second == ip) {
-			return true;
-		}
-	}
-
-	return false;
+	// Check if any banned IP matches the given IP
+	return std::ranges::any_of(m_bans, [ip](const auto &it) {
+		return it.second == ip;
+	});
 }
 
 std::shared_ptr<ProtocolGame> Livestream::getLivestreamOwner() const {
@@ -122,7 +112,7 @@ std::shared_ptr<ProtocolGame> Livestream::getLivestreamOwner() const {
 }
 
 void Livestream::setLivestreamOwner(std::shared_ptr<ProtocolGame> client) {
-	m_owner = client;
+	m_owner = std::move(client);
 }
 
 void Livestream::resetLivestreamOwner() {
@@ -146,11 +136,14 @@ void Livestream::setLivestreamBroadcasting(bool value) {
 }
 
 std::string Livestream::getLivestreamBroadcastTimeString() const {
-	int64_t seconds = getLivestreamBroadcastTime() / 1000;
-	uint16_t hour = floor(seconds / 60 / 60 % 24);
-	uint16_t minute = floor(seconds / 60 % 60);
-	uint16_t second = floor(seconds % 60);
+	// Convert broadcast time from milliseconds to seconds
+	auto seconds = getLivestreamBroadcastTime() / MILLISECONDS_TO_SECONDS;
 
+	auto hour = seconds / SECONDS_IN_MINUTE / MINUTES_IN_HOUR % HOURS_IN_DAY;
+	auto minute = seconds / SECONDS_IN_MINUTE % SECONDS_IN_MINUTE;
+	auto second = seconds % SECONDS_IN_MINUTE;
+
+	// Return formatted time string
 	return fmt::format("{} hours, {} minutes and {} seconds", hour, minute, second);
 }
 
@@ -178,10 +171,10 @@ void Livestream::setLivestreamDescription(const std::string &desc) {
 	m_livestreamCasterDescription = desc;
 }
 
-uint32_t Livestream::getViewerId(std::shared_ptr<ProtocolGame> client) const {
+uint32_t Livestream::getViewerId(const std::shared_ptr<ProtocolGame> &client) const {
 	auto it = m_viewers.find(client);
 	if (it != m_viewers.end()) {
-		return it->second.second;
+		return it->second.id;
 	}
 	return 0;
 }
@@ -241,7 +234,7 @@ void Livestream::logout(bool displayEffect, bool forceLogout) {
 	}
 }
 
-void Livestream::sendAddContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> item) {
+void Livestream::sendAddContainerItem(uint8_t cid, uint16_t slot, const std::shared_ptr<Item> &item) {
 	if (m_owner) {
 		m_owner->sendAddContainerItem(cid, slot, item);
 
@@ -251,7 +244,7 @@ void Livestream::sendAddContainerItem(uint8_t cid, uint16_t slot, std::shared_pt
 	}
 }
 
-void Livestream::sendUpdateContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> item) {
+void Livestream::sendUpdateContainerItem(uint8_t cid, uint16_t slot, const std::shared_ptr<Item> &item) {
 	if (m_owner) {
 		m_owner->sendUpdateContainerItem(cid, slot, item);
 
@@ -261,7 +254,7 @@ void Livestream::sendUpdateContainerItem(uint8_t cid, uint16_t slot, std::shared
 	}
 }
 
-void Livestream::sendRemoveContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> lastItem) {
+void Livestream::sendRemoveContainerItem(uint8_t cid, uint16_t slot, const std::shared_ptr<Item> &lastItem) {
 	if (m_owner) {
 		m_owner->sendRemoveContainerItem(cid, slot, lastItem);
 
@@ -325,7 +318,7 @@ void Livestream::sendCreatureSkull(const std::shared_ptr<Creature> &creature) co
 	}
 }
 
-void Livestream::sendAddTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item) {
+void Livestream::sendAddTileItem(const Position &pos, uint32_t stackpos, const std::shared_ptr<Item> &item) {
 	if (m_owner) {
 		m_owner->sendAddTileItem(pos, stackpos, item);
 
@@ -335,7 +328,7 @@ void Livestream::sendAddTileItem(const Position &pos, uint32_t stackpos, std::sh
 	}
 }
 
-void Livestream::sendUpdateTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item) {
+void Livestream::sendUpdateTileItem(const Position &pos, uint32_t stackpos, const std::shared_ptr<Item> &item) {
 	if (m_owner) {
 		m_owner->sendUpdateTileItem(pos, stackpos, item);
 
@@ -355,7 +348,7 @@ void Livestream::sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 	}
 }
 
-void Livestream::sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> creature) {
+void Livestream::sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->sendUpdateTileCreature(pos, stackpos, creature);
 
@@ -365,7 +358,7 @@ void Livestream::sendUpdateTileCreature(const Position &pos, uint32_t stackpos, 
 	}
 }
 
-void Livestream::sendUpdateTile(std::shared_ptr<Tile> tile, const Position &pos) {
+void Livestream::sendUpdateTile(const std::shared_ptr<Tile> &tile, const Position &pos) {
 	if (m_owner) {
 		m_owner->sendUpdateTile(tile, pos);
 
@@ -385,7 +378,7 @@ void Livestream::sendChannelMessage(const std::string &author, const std::string
 	}
 }
 
-void Livestream::sendMoveCreature(std::shared_ptr<Creature> creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) {
+void Livestream::sendMoveCreature(const std::shared_ptr<Creature> &creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) {
 	if (m_owner) {
 		m_owner->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
 
@@ -395,7 +388,7 @@ void Livestream::sendMoveCreature(std::shared_ptr<Creature> creature, const Posi
 	}
 }
 
-void Livestream::sendCreatureTurn(std::shared_ptr<Creature> creature, int32_t stackpos) {
+void Livestream::sendCreatureTurn(const std::shared_ptr<Creature> &creature, int32_t stackpos) {
 	if (m_owner) {
 		m_owner->sendCreatureTurn(creature, stackpos);
 
@@ -411,13 +404,13 @@ void Livestream::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, 
 	}
 }
 
-void Livestream::sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text) {
+void Livestream::sendPrivateMessage(const std::shared_ptr<Player> &speaker, SpeakClasses type, const std::string &text) {
 	if (m_owner) {
 		m_owner->sendPrivateMessage(speaker, type, text);
 	}
 }
 
-void Livestream::sendCreatureSquare(std::shared_ptr<Creature> creature, SquareColor_t color) {
+void Livestream::sendCreatureSquare(const std::shared_ptr<Creature> &creature, SquareColor_t color) {
 	if (m_owner) {
 		m_owner->sendCreatureSquare(creature, color);
 
@@ -427,7 +420,7 @@ void Livestream::sendCreatureSquare(std::shared_ptr<Creature> creature, SquareCo
 	}
 }
 
-void Livestream::sendCreatureOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) {
+void Livestream::sendCreatureOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit) {
 	if (m_owner) {
 		m_owner->sendCreatureOutfit(creature, outfit);
 
@@ -437,7 +430,7 @@ void Livestream::sendCreatureOutfit(std::shared_ptr<Creature> creature, const Ou
 	}
 }
 
-void Livestream::sendCreatureLight(std::shared_ptr<Creature> creature) {
+void Livestream::sendCreatureLight(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->sendCreatureLight(creature);
 
@@ -447,7 +440,7 @@ void Livestream::sendCreatureLight(std::shared_ptr<Creature> creature) {
 	}
 }
 
-void Livestream::sendCreatureWalkthrough(std::shared_ptr<Creature> creature, bool walkthrough) {
+void Livestream::sendCreatureWalkthrough(const std::shared_ptr<Creature> &creature, bool walkthrough) {
 	if (m_owner) {
 		m_owner->sendCreatureWalkthrough(creature, walkthrough);
 
@@ -457,7 +450,7 @@ void Livestream::sendCreatureWalkthrough(std::shared_ptr<Creature> creature, boo
 	}
 }
 
-void Livestream::sendCreatureShield(std::shared_ptr<Creature> creature) {
+void Livestream::sendCreatureShield(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->sendCreatureShield(creature);
 
@@ -467,7 +460,7 @@ void Livestream::sendCreatureShield(std::shared_ptr<Creature> creature) {
 	}
 }
 
-void Livestream::sendContainer(uint8_t cid, std::shared_ptr<Container> container, bool hasParent, uint16_t firstIndex) {
+void Livestream::sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) {
 	if (m_owner) {
 		m_owner->sendContainer(cid, container, hasParent, firstIndex);
 
@@ -477,7 +470,7 @@ void Livestream::sendContainer(uint8_t cid, std::shared_ptr<Container> container
 	}
 }
 
-void Livestream::sendInventoryItem(Slots_t slot, std::shared_ptr<Item> item) {
+void Livestream::sendInventoryItem(Slots_t slot, const std::shared_ptr<Item> &item) {
 	if (m_owner) {
 		m_owner->sendInventoryItem(slot, item);
 
@@ -517,7 +510,7 @@ void Livestream::sendCancelWalk() const {
 	}
 }
 
-void Livestream::sendChangeSpeed(std::shared_ptr<Creature> creature, uint32_t newSpeed) const {
+void Livestream::sendChangeSpeed(const std::shared_ptr<Creature> &creature, uint16_t newSpeed) const {
 	if (m_owner) {
 		m_owner->sendChangeSpeed(creature, newSpeed);
 
@@ -527,7 +520,7 @@ void Livestream::sendChangeSpeed(std::shared_ptr<Creature> creature, uint32_t ne
 	}
 }
 
-void Livestream::sendCreatureHealth(std::shared_ptr<Creature> creature) const {
+void Livestream::sendCreatureHealth(const std::shared_ptr<Creature> &creature) const {
 	if (m_owner) {
 		m_owner->sendCreatureHealth(creature);
 
@@ -568,7 +561,7 @@ void Livestream::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const 
 }
 
 void Livestream::sendIconBakragore(const IconBakragore icon) {
-	if (!m_owner) {
+	if (m_owner == nullptr) {
 		return;
 	}
 
@@ -617,7 +610,7 @@ void Livestream::sendReLoginWindow(uint8_t unfairFightReduction) {
 	}
 }
 
-void Livestream::sendTextWindow(uint32_t windowTextId, std::shared_ptr<Item> item, uint16_t maxlen, bool canWrite) const {
+void Livestream::sendTextWindow(uint32_t windowTextId, const std::shared_ptr<Item> &item, uint16_t maxlen, bool canWrite) const {
 	if (m_owner) {
 		m_owner->sendTextWindow(windowTextId, item, maxlen, canWrite);
 	}
@@ -629,7 +622,7 @@ void Livestream::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const st
 	}
 }
 
-void Livestream::sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId) {
+void Livestream::sendToChannel(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text, uint16_t channelId) {
 	if (m_owner) {
 		m_owner->sendToChannel(creature, type, text, channelId);
 		for (const auto &it : m_viewers) {
@@ -656,7 +649,7 @@ void Livestream::sendCloseShop() const {
 	}
 }
 
-void Livestream::sendTradeItemRequest(const std::string &traderName, std::shared_ptr<Item> item, bool ack) const {
+void Livestream::sendTradeItemRequest(const std::string &traderName, const std::shared_ptr<Item> &item, bool ack) const {
 	if (m_owner) {
 		m_owner->sendTradeItemRequest(traderName, item, ack);
 	}
@@ -740,7 +733,7 @@ void Livestream::writeToOutputBuffer(const NetworkMessage &message) {
 	}
 }
 
-void Livestream::sendAddCreature(std::shared_ptr<Creature> creature, const Position &pos, int32_t stackpos, bool isLogin) {
+void Livestream::sendAddCreature(const std::shared_ptr<Creature> &creature, const Position &pos, int32_t stackpos, bool isLogin) {
 	if (m_owner) {
 		m_owner->sendAddCreature(creature, pos, stackpos, isLogin);
 
@@ -768,7 +761,7 @@ void Livestream::sendBestiaryCharms() {
 	}
 }
 
-void Livestream::sendImbuementResult(const std::string message) {
+void Livestream::sendImbuementResult(const std::string &message) {
 	if (m_owner) {
 		m_owner->sendImbuementResult(message);
 	}
@@ -780,25 +773,25 @@ void Livestream::closeImbuementWindow() {
 	}
 }
 
-void Livestream::sendPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
+void Livestream::sendPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
 	if (m_owner) {
 		m_owner->sendPodiumWindow(podium, position, itemId, stackpos);
 	}
 }
 
-void Livestream::sendCreatureIcon(std::shared_ptr<Creature> creature) {
+void Livestream::sendCreatureIcon(const std::shared_ptr<Creature> &creature) {
 	if (m_owner && !m_owner->oldProtocol) {
 		m_owner->sendCreatureIcon(creature);
 	}
 }
 
-void Livestream::sendUpdateCreature(std::shared_ptr<Creature> creature) {
+void Livestream::sendUpdateCreature(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->sendUpdateCreature(creature);
 	}
 }
 
-void Livestream::sendCreatureType(std::shared_ptr<Creature> creature, uint8_t creatureType) {
+void Livestream::sendCreatureType(const std::shared_ptr<Creature> &creature, uint8_t creatureType) {
 	if (m_owner) {
 		m_owner->sendCreatureType(creature, creatureType);
 	}
@@ -822,7 +815,7 @@ void Livestream::sendUseItemCooldown(uint32_t time) {
 	}
 }
 
-void Livestream::reloadCreature(std::shared_ptr<Creature> creature) {
+void Livestream::reloadCreature(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->reloadCreature(creature);
 	}
@@ -880,7 +873,7 @@ void Livestream::sendBlessStatus() {
 	}
 }
 
-void Livestream::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> party) {
+void Livestream::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party) {
 	if (m_owner && party) {
 		m_owner->updatePartyTrackerAnalyzer(party);
 	}
@@ -971,7 +964,7 @@ void Livestream::sendCreatureEmblem(const std::shared_ptr<Creature> &creature) c
 	}
 }
 
-void Livestream::sendItemInspection(uint16_t itemId, uint8_t itemCount, std::shared_ptr<Item> item, bool cyclopedia) {
+void Livestream::sendItemInspection(uint16_t itemId, uint8_t itemCount, const std::shared_ptr<Item> &item, bool cyclopedia) {
 	if (m_owner) {
 		m_owner->sendItemInspection(itemId, itemCount, item, cyclopedia);
 	}
@@ -1043,9 +1036,9 @@ void Livestream::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t p
 	}
 }
 
-void Livestream::sendCyclopediaCharacterAchievements(int16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
+void Livestream::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
 	if (m_owner) {
-		m_owner->sendCyclopediaCharacterAchievements(secretsUnlocked, achievementsUnlocked);
+		m_owner->sendCyclopediaCharacterAchievements(secretsUnlocked, std::move(achievementsUnlocked));
 	}
 }
 
@@ -1097,7 +1090,7 @@ void Livestream::sendHighscores(const std::vector<HighscoreCharacter> &character
 	}
 }
 
-void Livestream::sendMonsterPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
+void Livestream::sendMonsterPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
 	if (m_owner) {
 		m_owner->sendMonsterPodiumWindow(podium, position, itemId, stackpos);
 	}
@@ -1109,7 +1102,7 @@ void Livestream::sendBosstiaryEntryChanged(uint32_t bossid) {
 	}
 }
 
-void Livestream::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> items) {
+void Livestream::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items) {
 	if (m_owner) {
 		m_owner->sendInventoryImbuements(items);
 
@@ -1143,7 +1136,7 @@ void Livestream::sendForgingData() {
 	}
 }
 
-void Livestream::sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &name, const Outfit_t creatureOutfit) {
+void Livestream::sendKillTrackerUpdate(const std::shared_ptr<Container> &corpse, const std::string &name, const Outfit_t creatureOutfit) {
 	if (m_owner) {
 		m_owner->sendKillTrackerUpdate(corpse, name, creatureOutfit);
 	}
@@ -1209,49 +1202,49 @@ void Livestream::sendTakeScreenshot(Screenshot_t screenshotType) {
 	}
 }
 
-void Livestream::sendPartyCreatureUpdate(std::shared_ptr<Creature> creature) {
+void Livestream::sendPartyCreatureUpdate(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureUpdate(creature);
 	}
 }
 
-void Livestream::sendPartyCreatureShield(std::shared_ptr<Creature> creature) {
+void Livestream::sendPartyCreatureShield(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureShield(creature);
 	}
 }
 
-void Livestream::sendPartyCreatureSkull(std::shared_ptr<Creature> creature) {
+void Livestream::sendPartyCreatureSkull(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureSkull(creature);
 	}
 }
 
-void Livestream::sendPartyCreatureHealth(std::shared_ptr<Creature> creature, uint8_t healthPercent) {
+void Livestream::sendPartyCreatureHealth(const std::shared_ptr<Creature> &creature, uint8_t healthPercent) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureHealth(creature, healthPercent);
 	}
 }
 
-void Livestream::sendPartyPlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent) {
+void Livestream::sendPartyPlayerMana(const std::shared_ptr<Player> &player, uint8_t manaPercent) {
 	if (m_owner) {
 		m_owner->sendPartyPlayerMana(player, manaPercent);
 	}
 }
 
-void Livestream::sendPartyCreatureShowStatus(std::shared_ptr<Creature> creature, bool showStatus) {
+void Livestream::sendPartyCreatureShowStatus(const std::shared_ptr<Creature> &creature, bool showStatus) {
 	if (m_owner) {
 		m_owner->sendPartyCreatureShowStatus(creature, showStatus);
 	}
 }
 
-void Livestream::sendPartyPlayerVocation(std::shared_ptr<Player> player) {
+void Livestream::sendPartyPlayerVocation(const std::shared_ptr<Player> &player) {
 	if (m_owner) {
 		m_owner->sendPartyPlayerVocation(player);
 	}
 }
 
-void Livestream::sendPlayerVocation(std::shared_ptr<Player> player) {
+void Livestream::sendPlayerVocation(const std::shared_ptr<Player> &player) {
 	if (m_owner) {
 		m_owner->sendPlayerVocation(player);
 	}
@@ -1269,13 +1262,13 @@ void Livestream::sendResourcesBalance(uint64_t money, uint64_t bank, uint64_t pr
 	}
 }
 
-void Livestream::sendCreatureReload(std::shared_ptr<Creature> creature) {
+void Livestream::sendCreatureReload(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->reloadCreature(creature);
 	}
 }
 
-void Livestream::sendCreatureChangeOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit) {
+void Livestream::sendCreatureChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit) {
 	if (m_owner) {
 		m_owner->sendCreatureOutfit(creature, outfit);
 	}
@@ -1305,7 +1298,7 @@ void Livestream::sendTibiaTime(int32_t time) {
 	}
 }
 
-void Livestream::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
+void Livestream::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, const std::string &target) {
 	if (m_owner) {
 		m_owner->sendUpdateInputAnalyzer(type, amount, target);
 	}
@@ -1317,7 +1310,7 @@ void Livestream::sendRestingStatus(uint8_t protection) {
 	}
 }
 
-void Livestream::AddItem(NetworkMessage &msg, std::shared_ptr<Item> item) {
+void Livestream::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &item) {
 	if (m_owner) {
 		m_owner->AddItem(msg, item);
 	}
@@ -1341,13 +1334,13 @@ void Livestream::parseSendBosstiarySlots() {
 	}
 }
 
-void Livestream::sendLootStats(std::shared_ptr<Item> item, uint8_t count) {
+void Livestream::sendLootStats(const std::shared_ptr<Item> &item, uint8_t count) {
 	if (m_owner) {
 		m_owner->sendLootStats(item, count);
 	}
 }
 
-void Livestream::sendUpdateSupplyTracker(std::shared_ptr<Item> item) {
+void Livestream::sendUpdateSupplyTracker(const std::shared_ptr<Item> &item) {
 	if (m_owner) {
 		m_owner->sendUpdateSupplyTracker(item);
 	}
@@ -1359,7 +1352,7 @@ void Livestream::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
 	}
 }
 
-void Livestream::openImbuementWindow(std::shared_ptr<Item> item) {
+void Livestream::openImbuementWindow(const std::shared_ptr<Item> &item) {
 	if (m_owner) {
 		m_owner->openImbuementWindow(item);
 	}
@@ -1399,7 +1392,7 @@ void Livestream::sendOpenWheelWindow(uint32_t ownerId) {
 	}
 }
 
-void Livestream::sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, const Position* pos) {
+void Livestream::sendCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text, const Position* pos) {
 	if (m_owner) {
 		m_owner->sendCreatureSay(creature, type, text, pos);
 
@@ -1419,7 +1412,7 @@ void Livestream::disconnectClient(const std::string &message) const {
 	}
 }
 
-void Livestream::addViewer(ProtocolGame_ptr client, bool spy) {
+void Livestream::addViewer(const ProtocolGame_ptr &client, bool spy) {
 	if (m_viewers.find(client) != m_viewers.end()) {
 		return;
 	}
@@ -1428,7 +1421,7 @@ void Livestream::addViewer(ProtocolGame_ptr client, bool spy) {
 
 	std::string guestString = fmt::format("Viewer-{}", viewerId);
 
-	m_viewers[client] = std::make_pair(guestString, m_viewerId);
+	m_viewers[client] = ViewerInfo(guestString, m_viewerId);
 
 	if (!spy) {
 		sendChannelEvent(CHANNEL_CAST, guestString, CHANNELEVENT_JOIN);
@@ -1436,32 +1429,32 @@ void Livestream::addViewer(ProtocolGame_ptr client, bool spy) {
 		if (m_viewers.size() > m_livestreamCasterLiveRecord) {
 			m_livestreamCasterLiveRecord = m_viewers.size();
 			if (m_owner->player) {
-				m_owner->player->kv()->scoped("livestream-system")->set("live-record", m_livestreamCasterLiveRecord);
+				m_owner->player->kv()->scoped("livestream-system")->set("live-record", static_cast<uint16_t>(m_livestreamCasterLiveRecord));
 			}
 			m_owner->sendTextMessage(TextMessage(MESSAGE_LOOK, fmt::format("New record: {} people are watching your livestream now.", std::to_string(m_livestreamCasterLiveRecord))));
 		}
 	}
 }
 
-void Livestream::removeViewer(ProtocolGame_ptr client, bool spy) {
+void Livestream::removeViewer(const ProtocolGame_ptr &client, bool spy) {
 	auto it = m_viewers.find(client);
 	if (it == m_viewers.end()) {
 		return;
 	}
 
-	auto mit = std::find(m_mutes.begin(), m_mutes.end(), it->second.first);
+	auto mit = std::find(m_mutes.begin(), m_mutes.end(), it->second.name);
 	if (mit != m_mutes.end()) {
 		m_mutes.erase(mit);
 	}
 
 	if (!spy) {
-		sendChannelEvent(CHANNEL_CAST, it->second.first, CHANNELEVENT_LEAVE);
+		sendChannelEvent(CHANNEL_CAST, it->second.name, CHANNELEVENT_LEAVE);
 	}
 
 	m_viewers.erase(it);
 }
 
-void Livestream::handle(ProtocolGame_ptr client, const std::string &text, uint16_t channelId) {
+void Livestream::handle(const ProtocolGame_ptr &client, const std::string &text, uint16_t channelId) {
 	if (!m_owner) {
 		return;
 	}
@@ -1472,83 +1465,118 @@ void Livestream::handle(ProtocolGame_ptr client, const std::string &text, uint16
 	}
 
 	const int64_t &now = OTSYS_STEADY_TIME();
-	if (client->m_livestreamMessageCooldownTime + 5000 < now) {
-		client->m_livestreamMessageCooldownTime = now, client->m_livestreamMessageCount = 0;
-	} else if (client->m_livestreamMessageCount++ >= 3) {
-		client->sendTextMessage(TextMessage(MESSAGE_STATUS, fmt::format("Please wait {} seconds to send another message.", ((client->m_livestreamMessageCooldownTime + 5000 - now) / 1000) + 1)));
+	if (client->m_livestreamMessageCooldownTime + MESSAGE_COOLDOWN_MS < now) {
+		client->m_livestreamMessageCooldownTime = now;
+		client->m_livestreamMessageCount = 0;
+	} else if (client->m_livestreamMessageCount++ >= MESSAGE_LIMIT) {
+		client->sendTextMessage(TextMessage(MESSAGE_STATUS, fmt::format("Please wait {} seconds to send another message.", ((client->m_livestreamMessageCooldownTime + MESSAGE_COOLDOWN_MS - now) / SECONDS_IN_MS) + 1)));
 		return;
 	}
 
 	bool isCastChannel = channelId == CHANNEL_CAST;
 	if (text[0] == '/') {
-		std::vector<std::string> CommandParam = explodeString(text.substr(1, text.length()), " ", 1);
-		if (strcasecmp(CommandParam[0].c_str(), "show") == 0) {
-			auto viewersNames = std::views::transform(m_viewers, [](const auto &pair) {
-				return pair.second.first;
-			});
-			std::string messageViewer = fmt::format("{} spectator{}, {}.", m_viewers.size(), m_viewers.size() > 1 ? "s" : "", fmt::join(viewersNames.begin(), viewersNames.end(), ", "));
-
-			client->sendTextMessage(TextMessage(MESSAGE_STATUS, messageViewer));
-		} else if (strcasecmp(CommandParam[0].c_str(), "name") == 0) {
-			if (CommandParam.size() > 1) {
-				if (CommandParam[1].length() > 2) {
-					if (CommandParam[1].length() < 18) {
-						bool found = false;
-						for (auto it = m_viewers.begin(); it != m_viewers.end(); ++it) {
-							if (strcasecmp(it->second.first.c_str(), CommandParam[1].c_str()) != 0) {
-								continue;
-							}
-
-							found = true;
-							break;
-						}
-
-						if (!found) {
-							if (isCastChannel) {
-								sendChannelMessage("", fmt::format("{} was renamed to {}.", sit->second.first, CommandParam[1]), TALKTYPE_CHANNEL_O, CHANNEL_CAST);
-							}
-
-							auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.first));
-							if (mit != m_mutes.end()) {
-								(*mit) = asLowerCaseString(CommandParam[1]);
-							}
-
-							sit->second.first = CommandParam[1];
-						} else {
-							client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "There is already someone with that name."));
-						}
-					} else {
-						client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Name must be shorter than 18 letters."));
-					}
-				} else {
-					client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Name must be longer than 2 letters."));
-				}
-			}
-		} else {
-			client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Available commands: /name, /show."));
-		}
-
+		processCommand(client, text, sit, isCastChannel);
 		return;
 	}
 
-	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.first));
+	handleChatMessage(client, sit, text, isCastChannel);
+}
+
+void Livestream::processCommand(const ProtocolGame_ptr &client, const std::string &text, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, bool isCastChannel) {
+	std::vector<std::string> CommandParam = explodeString(text.substr(1), " ", 1);
+	if (strcasecmp(CommandParam[0].c_str(), "show") == 0) {
+		showViewers(client);
+	} else if (strcasecmp(CommandParam[0].c_str(), "name") == 0) {
+		changeViewerName(client, CommandParam, sit, isCastChannel);
+	} else {
+		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Available commands: /name, /show."));
+	}
+}
+
+void Livestream::showViewers(const ProtocolGame_ptr &client) {
+	auto viewersNames = std::views::transform(m_viewers, [](const auto &pair) {
+		return pair.second.name;
+	});
+	std::string messageViewer = fmt::format("{} spectator{}, {}.", m_viewers.size(), m_viewers.size() > 1 ? "s" : "", fmt::join(viewersNames.begin(), viewersNames.end(), ", "));
+	client->sendTextMessage(TextMessage(MESSAGE_STATUS, messageViewer));
+}
+
+void Livestream::changeViewerName(const ProtocolGame_ptr &client, const std::vector<std::string> &CommandParam, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, bool isCastChannel) {
+	// Check if the command has enough parameters
+	if (CommandParam.size() <= 1) {
+		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Please provide a new name."));
+		return;
+	}
+
+	const std::string &newName = CommandParam[1];
+
+	// Check if the new name is within the allowed length range
+	if (!isNameLengthValid(newName)) {
+		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, fmt::format("Name must be between {} and {} letters.", MIN_NAME_LENGTH, MAX_NAME_LENGTH)));
+		return;
+	}
+
+	// Check if the new name is available
+	if (!isNameAvailable(newName)) {
+		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "There is already someone with that name."));
+		return;
+	}
+
+	// Update the viewer's name
+	updateViewerName(client, sit, newName, isCastChannel);
+}
+
+bool Livestream::isNameLengthValid(const std::string &name) const {
+	return name.length() > MIN_NAME_LENGTH && name.length() < MAX_NAME_LENGTH;
+}
+
+void Livestream::updateViewerName(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &newName, bool isCastChannel) {
+	// If the viewer is a cast channel, notify others about the name change
+	if (isCastChannel) {
+		sendChannelMessage("", fmt::format("{} was renamed to {}.", sit->second.name, newName), TALKTYPE_CHANNEL_O, CHANNEL_CAST);
+	}
+
+	// Update the muted list with the new name if necessary
+	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.name));
+	if (mit != m_mutes.end()) {
+		(*mit) = asLowerCaseString(newName);
+	}
+
+	// Set the new name for the viewer
+	sit->second.name = newName;
+
+	// Notify the client of the successful name change
+	client->sendTextMessage(TextMessage(MESSAGE_STATUS, fmt::format("Name changed to '{}'.", newName)));
+}
+
+bool Livestream::isNameAvailable(const std::string &name) const {
+	for (const auto &it : m_viewers) {
+		if (strcasecmp(it.second.name.c_str(), name.c_str()) == 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void Livestream::handleChatMessage(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &text, bool isCastChannel) {
+	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.name));
 	if (mit == m_mutes.end()) {
 		if (isCastChannel) {
-			sendChannelMessage(sit->second.first, text, TALKTYPE_CHANNEL_Y, CHANNEL_CAST);
+			sendChannelMessage(sit->second.name, text, TALKTYPE_CHANNEL_Y, CHANNEL_CAST);
 		}
 	} else {
 		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "You are muted."));
 	}
 }
 
-uint32_t Livestream::getLivestreamViewerCount() {
+size_t Livestream::getLivestreamViewerCount() {
 	return m_viewers.size();
 }
 
 std::vector<std::string> Livestream::getLivestreamViewers() const {
 	std::vector<std::string> players;
 	for (const auto &it : m_viewers) {
-		players.push_back(it.second.first);
+		players.push_back(it.second.name);
 	}
 	return players;
 }
@@ -1556,7 +1584,7 @@ std::vector<std::string> Livestream::getLivestreamViewers() const {
 std::vector<std::shared_ptr<Player>> Livestream::getLivestreamViewersByIP(uint32_t ip) const {
 	std::vector<std::shared_ptr<Player>> players;
 	for (const auto &[client, clientInfo] : m_viewers) {
-		if (client->player) {
+		if (client->player && client->player->getIP() == ip) {
 			players.push_back(client->player);
 		}
 	}
@@ -1565,6 +1593,10 @@ std::vector<std::shared_ptr<Player>> Livestream::getLivestreamViewersByIP(uint32
 
 bool Livestream::isOldProtocol() {
 	return m_owner->oldProtocol;
+}
+
+bool Livestream::isLivestreamViewer() const {
+	return m_owner->m_isLivestreamViewer;
 }
 
 #endif // FEATURE_LIVESTREAM

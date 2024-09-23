@@ -75594,7 +75594,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="divine caldera" value="base">
-				<attribute key="value" value="4"/>
+				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">

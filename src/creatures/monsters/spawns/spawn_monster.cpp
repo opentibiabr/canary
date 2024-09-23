@@ -284,16 +284,9 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, cons
 }
 
 void SpawnMonster::cleanup() {
-	std::vector<uint32_t> removeList;
-	for (const auto &[spawnMonsterId, monster] : spawnedMonsterMap) {
-		if (monster == nullptr || monster->isRemoved()) {
-			removeList.push_back(spawnMonsterId);
-		}
-	}
-	for (const auto &spawnMonsterId : removeList) {
-		spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
-		spawnedMonsterMap.erase(spawnMonsterId);
-	}
+    std::erase_if(spawnedMonsterMap, [](const auto &pair) {
+        return pair.second == nullptr || pair.second->isRemoved();
+    });
 }
 
 bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval, uint32_t weight /*= 1*/) {

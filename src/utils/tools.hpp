@@ -221,3 +221,5 @@ template <typename EnumType, typename UnderlyingType = std::underlying_type_t<En
 EnumType enumFromValue(UnderlyingType value) {
 	return static_cast<EnumType>(value);
 }
+
+bool isNameLengthValid(const std::string &name);

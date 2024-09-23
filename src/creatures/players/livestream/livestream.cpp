@@ -85,9 +85,11 @@ const std::map<std::string, uint32_t> &Livestream::getLivestreamBans() const {
 
 void Livestream::setBanViewer(const std::vector<std::string> &bans) {
 	// Remove banned viewers not in the new bans list
-	std::erase_if(m_bans, [&bans](const auto &ban) {
+	auto removedCount = std::erase_if(m_bans, [&bans](const auto &ban) {
 		return std::find(bans.begin(), bans.end(), ban.first) == bans.end();
 	});
+
+	g_logger().debug("[{}] removed {} banned viewers", __METHOD_NAME__, removedCount);
 
 	// Add new bans to the list and disconnect clients
 	for (const auto &ban : bans) {
@@ -631,7 +633,7 @@ void Livestream::sendToChannel(const std::shared_ptr<Creature> &creature, SpeakC
 	}
 }
 
-void Livestream::sendShop(std::shared_ptr<Npc> npc) const {
+void Livestream::sendShop(const std::shared_ptr<Npc> &npc) const {
 	if (m_owner) {
 		m_owner->sendShop(npc);
 	}
@@ -1427,7 +1429,7 @@ void Livestream::addViewer(const ProtocolGame_ptr &client, bool spy) {
 		sendChannelEvent(CHANNEL_CAST, guestString, CHANNELEVENT_JOIN);
 
 		if (m_viewers.size() > m_livestreamCasterLiveRecord) {
-			m_livestreamCasterLiveRecord = m_viewers.size();
+			m_livestreamCasterLiveRecord = static_cast<uint32_t>(m_viewers.size());
 			if (m_owner->player) {
 				m_owner->player->kv()->scoped("livestream-system")->set("live-record", static_cast<uint16_t>(m_livestreamCasterLiveRecord));
 			}
@@ -1455,7 +1457,7 @@ void Livestream::removeViewer(const ProtocolGame_ptr &client, bool spy) {
 }
 
 void Livestream::handle(const ProtocolGame_ptr &client, const std::string &text, uint16_t channelId) {
-	if (!m_owner) {
+	if (m_owner == nullptr) {
 		return;
 	}
 
@@ -1468,9 +1470,11 @@ void Livestream::handle(const ProtocolGame_ptr &client, const std::string &text,
 	if (client->m_livestreamMessageCooldownTime + MESSAGE_COOLDOWN_MS < now) {
 		client->m_livestreamMessageCooldownTime = now;
 		client->m_livestreamMessageCount = 0;
-	} else if (client->m_livestreamMessageCount++ >= MESSAGE_LIMIT) {
-		client->sendTextMessage(TextMessage(MESSAGE_STATUS, fmt::format("Please wait {} seconds to send another message.", ((client->m_livestreamMessageCooldownTime + MESSAGE_COOLDOWN_MS - now) / SECONDS_IN_MS) + 1)));
-		return;
+	} else {
+		if (client->m_livestreamMessageCount++ >= MESSAGE_LIMIT) {
+			client->sendTextMessage(TextMessage(MESSAGE_STATUS, fmt::format("Please wait {} seconds to send another message.", ((client->m_livestreamMessageCooldownTime + MESSAGE_COOLDOWN_MS - now) / SECONDS_IN_MS) + 1)));
+			return;
+		}
 	}
 
 	bool isCastChannel = channelId == CHANNEL_CAST;
@@ -1526,10 +1530,6 @@ void Livestream::changeViewerName(const ProtocolGame_ptr &client, const std::vec
 	updateViewerName(client, sit, newName, isCastChannel);
 }
 
-bool Livestream::isNameLengthValid(const std::string &name) const {
-	return name.length() > MIN_NAME_LENGTH && name.length() < MAX_NAME_LENGTH;
-}
-
 void Livestream::updateViewerName(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &newName, bool isCastChannel) {
 	// If the viewer is a cast channel, notify others about the name change
 	if (isCastChannel) {
@@ -1550,12 +1550,9 @@ void Livestream::updateViewerName(const ProtocolGame_ptr &client, std::map<Proto
 }
 
 bool Livestream::isNameAvailable(const std::string &name) const {
-	for (const auto &it : m_viewers) {
-		if (strcasecmp(it.second.name.c_str(), name.c_str()) == 0) {
-			return false;
-		}
-	}
-	return true;
+	return std::ranges::none_of(m_viewers, [&](const auto &it) {
+		return strcasecmp(it.second.name.c_str(), name.c_str()) == 0;
+	});
 }
 
 void Livestream::handleChatMessage(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &text, bool isCastChannel) {

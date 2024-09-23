@@ -4471,7 +4471,7 @@ int PlayerFunctions::luaPlayerGetLivestreamViewersCount(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L, player->client->getLivestreamViewerCount());
+	lua_pushnumber(L, static_cast<lua_Number>(player->client->getLivestreamViewerCount()));
 	return 1;
 }
 
@@ -4491,32 +4491,31 @@ int PlayerFunctions::luaPlayerGetLivestreamViewers(lua_State* L) {
 
 	createCastTable(L, "names");
 	auto viewers = player->client->getLivestreamViewers();
-
-	auto it = viewers.begin();
-	for (std::size_t i = 1; it != viewers.end(); ++it, ++i) {
+	std::size_t i = 1;
+	for (const auto &viewer : viewers) {
 		lua_pushnumber(L, static_cast<lua_Number>(i));
-		lua_pushstring(L, it->c_str());
+		lua_pushstring(L, viewer.c_str());
 		lua_settable(L, -3);
+		++i;
 	}
 
 	lua_settable(L, -3);
 	createCastTable(L, "mutes");
-	const auto &mute = player->client->getLivestreamMutes();
-	auto mute_it = mute.begin();
-	for (std::size_t i = 1; mute_it != mute.end(); ++mute_it, ++i) {
+	const auto &mutes = player->client->getLivestreamMutes();
+	i = 1;
+	for (const auto &mute : mutes) {
 		lua_pushnumber(L, static_cast<lua_Number>(i));
-		lua_pushstring(L, mute_it->c_str());
+		lua_pushstring(L, mute.c_str());
 		lua_settable(L, -3);
 	}
 
 	lua_settable(L, -3);
 	createCastTable(L, "bans");
-	const auto &banList = player->client->getLivestreamBans();
-
-	auto ban_it = banList.begin();
-	for (std::size_t i = 1; ban_it != banList.end(); ++ban_it, ++i) {
+	const auto &bans = player->client->getLivestreamBans();
+	i = 1;
+	for (const auto &[name, id] : bans) {
 		lua_pushnumber(L, static_cast<lua_Number>(i));
-		lua_pushstring(L, ban_it->first.c_str());
+		lua_pushstring(L, name.c_str());
 		lua_settable(L, -3);
 	}
 

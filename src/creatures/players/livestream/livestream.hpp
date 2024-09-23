@@ -43,7 +43,7 @@ public:
 
 	void clear(bool clearAll);
 	bool checkPassword(const std::string &_password);
-	void handle(const ProtocolGame_ptr &client, const std::string &text, uint16_t channelId);
+	void handle(const std::shared_ptr<ProtocolGame> &client, const std::string &text, uint16_t channelId);
 	size_t getLivestreamViewerCount();
 	std::vector<std::string> getLivestreamViewers() const;
 	std::vector<std::shared_ptr<Player>> getLivestreamViewersByIP(uint32_t ip) const;
@@ -62,7 +62,7 @@ public:
 	void setLivestreamBroadcasting(bool value);
 	std::string getLivestreamBroadcastTimeString() const;
 	void addViewer(const std::shared_ptr<ProtocolGame> &client, bool spy = false);
-	void removeViewer(const ProtocolGame_ptr &client, bool spy = false);
+	void removeViewer(const std::shared_ptr<ProtocolGame> &client, bool spy = false);
 	int64_t getLivestreamBroadcastTime() const;
 	void setLivestreamBroadcastingTime(int64_t time);
 	uint32_t getLivestreamLiveRecord() const;
@@ -123,7 +123,7 @@ public:
 	void sendTextWindow(uint32_t windowTextId, const std::shared_ptr<Item> &item, uint16_t maxlen, bool canWrite) const;
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text) const;
 	void sendToChannel(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text, uint16_t channelId);
-	void sendShop(std::shared_ptr<Npc> npc) const;
+	void sendShop(const std::shared_ptr<Npc> &npc) const;
 	void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap);
 	void sendCloseShop() const;
 	void sendTradeItemRequest(const std::string &traderName, const std::shared_ptr<Item> &item, bool ack) const;
@@ -257,13 +257,12 @@ public:
 	bool isLivestreamViewer() const;
 
 private:
-	void processCommand(const ProtocolGame_ptr &client, const std::string &text, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, bool isCastChannel);
-	void showViewers(const ProtocolGame_ptr &client);
-	void changeViewerName(const ProtocolGame_ptr &client, const std::vector<std::string> &CommandParam, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, bool isCastChannel);
+	void processCommand(const std::shared_ptr<ProtocolGame> &client, const std::string &text, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit, bool isCastChannel);
+	void showViewers(const std::shared_ptr<ProtocolGame> &client);
+	void changeViewerName(const std::shared_ptr<ProtocolGame> &client, const std::vector<std::string> &CommandParam, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit, bool isCastChannel);
 	bool isNameAvailable(const std::string &name) const;
-	void handleChatMessage(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &text, bool isCastChannel);
-	bool isNameLengthValid(const std::string &name) const;
-	void updateViewerName(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &newName, bool isCastChannel);
+	void handleChatMessage(const std::shared_ptr<ProtocolGame> &client, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit, const std::string &text, bool isCastChannel);
+	void updateViewerName(const std::shared_ptr<ProtocolGame> &client, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit, const std::string &newName, bool isCastChannel);
 
 	friend class Player;
 	std::map<std::shared_ptr<ProtocolGame>, ViewerInfo> m_viewers;

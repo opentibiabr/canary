@@ -4889,7 +4889,7 @@ void ProtocolGame::sendLootStats(std::shared_ptr<Item> item, uint8_t count) {
 	lootedItem = nullptr;
 }
 
-void ProtocolGame::sendShop(std::shared_ptr<Npc> npc) {
+void ProtocolGame::sendShop(const std::shared_ptr<Npc> &npc) {
 	Benchmark brenchmark;
 	NetworkMessage msg;
 	msg.addByte(0x7A);
@@ -7958,7 +7958,7 @@ void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) c
 
 	msg.addByte(imbuement->isPremium() ? 0x01 : 0x00);
 
-	const auto items = imbuement->getItems();
+	const auto &items = imbuement->getItems();
 	msg.addByte(items.size());
 
 	for (const auto &itm : items) {
@@ -8009,7 +8009,7 @@ void ProtocolGame::openImbuementWindow(std::shared_ptr<Item> item) {
 	for (const Imbuement* imbuement : imbuements) {
 		addImbuementInfo(msg, imbuement->getID());
 
-		const auto items = imbuement->getItems();
+		const auto &items = imbuement->getItems();
 		for (const auto &itm : items) {
 			if (!needItems.count(itm.first)) {
 				needItems[itm.first] = player->getItemTypeCount(itm.first);
@@ -9339,21 +9339,24 @@ void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
 }
 
 #if FEATURE_LIVESTREAM > 0
-std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> ProtocolGame::m_livestreamCasters;
+std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> &ProtocolGame::getLivestreamCasters() {
+	static std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> livestreamCasters;
+	return livestreamCasters;
+}
 
 void ProtocolGame::insertLivestreamCaster() {
-	const auto &cast = m_livestreamCasters.find(player);
-	if (cast != m_livestreamCasters.end()) {
+	const auto &cast = getLivestreamCasters().find(player);
+	if (cast != getLivestreamCasters().end()) {
 		return;
 	}
 
-	m_livestreamCasters.insert(std::make_pair(player, this));
+	getLivestreamCasters().insert(std::make_pair(player, this));
 }
 
 void ProtocolGame::removeLivestreamCaster() {
-	for (const auto &it : getLiveStreamCasters()) {
+	for (const auto &it : getLivestreamCasters()) {
 		if (it.first == player) {
-			m_livestreamCasters.erase(player);
+			getLivestreamCasters().erase(player);
 			break;
 		}
 	}

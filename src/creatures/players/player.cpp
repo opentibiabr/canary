@@ -1460,7 +1460,7 @@ void Player::onApplyImbuement(Imbuement* imbuement, std::shared_ptr<Item> item, 
 		return;
 	}
 
-	const auto items = imbuement->getItems();
+	const auto &items = imbuement->getItems();
 	for (auto &[key, value] : items) {
 		const ItemType &itemType = Item::items[key];
 		if (static_self_cast<Player>()->getItemTypeCount(key) + this->getStashItemCount(itemType.id) < value) {
@@ -1750,7 +1750,7 @@ void Player::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) 
 		auto livestreamLiveRecord = kv()->scoped("livestream-system")->get("live-record");
 		if (livestreamLiveRecord) {
 			g_logger().trace("Loading cast live record: {}", livestreamLiveRecord->getNumber());
-			client->setLivestreamLiveRecord(livestreamLiveRecord->getNumber());
+			client->setLivestreamLiveRecord(static_cast<uint32_t>(livestreamLiveRecord->getNumber()));
 		}
 #endif
 

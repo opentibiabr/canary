@@ -173,7 +173,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 #if FEATURE_LIVESTREAM > 0
 	// Cast system login (show casting players on old protocol)
 	if (accountDescriptor == "@livestream") {
-		if (ProtocolGame::getLiveStreamCasters().empty()) {
+		if (ProtocolGame::getLivestreamCasters().empty()) {
 			disconnectClient("There are no players with the livestream on.");
 			return;
 		}
@@ -227,7 +227,7 @@ void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
 
 	std::vector<std::shared_ptr<Player>> players;
 
-	for (const auto &it : ProtocolGame::getLiveStreamCasters()) {
+	for (const auto &it : ProtocolGame::getLivestreamCasters()) {
 		std::shared_ptr<Player> player = it.first;
 		if (!password.empty() && password != player->client->getLivestreamPassword()) {
 			continue;
@@ -247,7 +247,7 @@ void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
 	output->addByte(uint8_t());
 	output->addByte(uint8_t());
 	output->add<uint32_t>(uint32_t());
-	output->add<uint16_t>(uint32_t());
+	output->add<uint16_t>(uint16_t());
 
 	send(std::move(output));
 	disconnect();

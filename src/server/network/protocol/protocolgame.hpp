@@ -341,7 +341,7 @@ private:
 	void sendCreatureSkull(std::shared_ptr<Creature> creature);
 	void sendCreatureType(std::shared_ptr<Creature> creature, uint8_t creatureType);
 
-	void sendShop(std::shared_ptr<Npc> npc);
+	void sendShop(const std::shared_ptr<Npc> &npc);
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
@@ -493,14 +493,10 @@ private:
 	void syncLivestreamViewerCloseContainers();
 	bool canWatchCast(const std::shared_ptr<Player> &foundPlayer, const std::string &password) const;
 
-	static const std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> &getLiveStreamCasters() {
-		return m_livestreamCasters;
-	}
+	static std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> &getLivestreamCasters();
 
 	void insertLivestreamCaster();
 	void removeLivestreamCaster();
-
-	static std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> m_livestreamCasters;
 
 	friend class Livestream;
 #endif

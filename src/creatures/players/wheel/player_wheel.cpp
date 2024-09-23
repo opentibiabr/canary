@@ -1005,7 +1005,7 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 }
 
 void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const {
-	if (m_player.client && m_player.client->isOldProtocol()) {
+	if (!m_player.hasClientOwner() || m_player.client != nullptr && m_player.client->isOldProtocol()) {
 		return;
 	}
 
@@ -1037,7 +1037,7 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 }
 
 void PlayerWheel::sendGiftOfLifeCooldown() const {
-	if (!m_player.client || m_player.client->isOldProtocol()) {
+	if (!m_player.hasClientOwner() || m_player.client != nullptr && m_player.client->isOldProtocol()) {
 		return;
 	}
 
@@ -1088,7 +1088,7 @@ void PlayerWheel::saveSlotPointsHandleRetryErrors(std::vector<SlotInfo> &retryTa
 }
 
 void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
-	if (m_player.client && m_player.client->isOldProtocol()) {
+	if (!m_player.hasClientOwner() || m_player.client != nullptr && m_player.client->isOldProtocol()) {
 		return;
 	}
 
@@ -1350,7 +1350,7 @@ void PlayerWheel::resetPlayerBonusData() {
 }
 
 void PlayerWheel::initializePlayerData() {
-	if (m_player.client && m_player.client->isOldProtocol()) {
+	if (!m_player.hasClientOwner() || m_player.client != nullptr && m_player.client->isOldProtocol()) {
 		return;
 	}
 
@@ -3015,9 +3015,11 @@ void PlayerWheel::decreaseGiftOfCooldown(int32_t value) {
 }
 
 void PlayerWheel::sendOpenWheelWindow(uint32_t ownerId) const {
-	if (m_player.client) {
-		m_player.client->sendOpenWheelWindow(ownerId);
+	if (!m_player.hasClientOwner() || m_player.client == nullptr) {
+		return;
 	}
+
+	m_player.client->sendOpenWheelWindow(ownerId);
 }
 
 uint16_t PlayerWheel::getPointsBySlotType(uint8_t slotType) const {

@@ -1958,3 +1958,7 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 			return 0;
 	}
 }
+
+bool isNameLengthValid(const std::string &name) {
+	return name.length() > MIN_NAME_LENGTH && name.length() < MAX_NAME_LENGTH;
+}

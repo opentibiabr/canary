@@ -20,12 +20,12 @@
 #endif
 
 namespace ConfigDefaultValues {
-	constexpr auto LIVESTREAM_EXPERIENCE_MULTIPLIER = 1.15f;
+	constexpr auto LIVESTREAM_EXPERIENCE_MULTIPLIER = 1.15F;
 	constexpr auto LIVESTREAM_MAX_VIEWERS = 10;
 	constexpr auto LIVESTREAM_MAXIMUM_VIEWERS_PER_IP = 10;
 	constexpr auto LIVESTREAM_PREMIUM_MAX_VIEWERS = 20;
 	constexpr auto LIVESTREAM_CASTER_MIN_LEVEL = 200;
-}
+} // namespace ConfigDefaultValues
 
 ConfigManager &ConfigManager::getInstance() {
 	return inject<ConfigManager>();

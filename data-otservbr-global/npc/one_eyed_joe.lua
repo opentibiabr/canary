@@ -56,8 +56,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-math.randomseed(os.time())
-
 local function greetCallback(npc, creature)
 	local player = creature:getPlayer()
 	if not player then

@@ -542,6 +542,9 @@ function Player:onGainExperience(target, exp, rawExp)
 		self:setStaminaXpBoost(staminaBonusXp * 100)
 	end
 
+	-- Concoction System
+	useConcoctionTime(self)
+
 	-- Apply Boosted Creature Bonus
 	if target:getName():lower() == Game.getBoostedCreature():lower() then
 		exp = exp * 2

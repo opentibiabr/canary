@@ -94,7 +94,7 @@ public:
 	void sendRemoveTileThing(const Position &pos, int32_t stackpos);
 	void sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> &creature);
 	void sendUpdateTile(const std::shared_ptr<Tile> &tile, const Position &pos);
-	void sendChannelMessage(const std::string &author, const std::string &message, SpeakClasses type, uint16_t channel);
+	void sendChannelMessage(const std::string &author, uint16_t playerLevel, const std::string &message, SpeakClasses type, uint16_t channel);
 	void sendMoveCreature(const std::shared_ptr<Creature> &creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport);
 	void sendCreatureTurn(const std::shared_ptr<Creature> &creature, int32_t stackpos);
 	void sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence) const;
@@ -257,12 +257,12 @@ public:
 	bool isLivestreamViewer() const;
 
 private:
-	void processCommand(const std::shared_ptr<ProtocolGame> &client, const std::string &text, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit, bool isCastChannel);
+	void processCommand(const std::shared_ptr<ProtocolGame> &client, const std::string &text, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit);
 	void showViewers(const std::shared_ptr<ProtocolGame> &client);
-	void changeViewerName(const std::shared_ptr<ProtocolGame> &client, const std::vector<std::string> &CommandParam, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit, bool isCastChannel);
+	void changeViewerName(const std::shared_ptr<ProtocolGame> &client, const std::vector<std::string> &CommandParam, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit);
 	bool isNameAvailable(const std::string &name) const;
-	void handleChatMessage(const std::shared_ptr<ProtocolGame> &client, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit, const std::string &text, bool isCastChannel);
-	void updateViewerName(const std::shared_ptr<ProtocolGame> &client, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit, const std::string &newName, bool isCastChannel);
+	void handleChatMessage(const std::string &playerName, const std::shared_ptr<ProtocolGame> &client, const std::string &text);
+	void updateViewerName(const std::shared_ptr<ProtocolGame> &client, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit, const std::string &newName);
 
 	friend class Player;
 	std::map<std::shared_ptr<ProtocolGame>, ViewerInfo> m_viewers;

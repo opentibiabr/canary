@@ -1100,9 +1100,9 @@ public:
 		}
 	}
 
-	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel) {
+	void sendChannelMessage(const std::string &author, uint16_t playerLevel, const std::string &text, SpeakClasses type, uint16_t channel) {
 		if (hasClientOwner()) {
-			client->sendChannelMessage(author, text, type, channel);
+			client->sendChannelMessage(author, playerLevel, text, type, channel);
 		}
 	}
 	void sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent) {

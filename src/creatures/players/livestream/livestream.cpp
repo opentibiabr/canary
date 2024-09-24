@@ -370,12 +370,12 @@ void Livestream::sendUpdateTile(const std::shared_ptr<Tile> &tile, const Positio
 	}
 }
 
-void Livestream::sendChannelMessage(const std::string &author, const std::string &message, SpeakClasses type, uint16_t channel) {
+void Livestream::sendChannelMessage(const std::string &author, uint16_t playerLevel, const std::string &message, SpeakClasses type, uint16_t channel) {
 	if (m_owner) {
-		m_owner->sendChannelMessage(author, message, type, channel);
+		m_owner->sendChannelMessage(author, playerLevel, message, type, channel);
 
 		for (const auto &it : m_viewers) {
-			it.first->sendChannelMessage(author, message, type, channel);
+			it.first->sendChannelMessage(author, playerLevel, message, type, channel);
 		}
 	}
 }
@@ -1457,7 +1457,12 @@ void Livestream::removeViewer(const ProtocolGame_ptr &client, bool spy) {
 }
 
 void Livestream::handle(const ProtocolGame_ptr &client, const std::string &text, uint16_t channelId) {
-	if (m_owner == nullptr) {
+	if (m_owner == nullptr || client == nullptr || client->player == nullptr) {
+		return;
+	}
+
+	if (m_owner == client) {
+		sendChannelMessage(client->player->getName(), client->player->getLevel(), text, TALKTYPE_CHANNEL_R1, CHANNEL_CAST);
 		return;
 	}
 
@@ -1477,21 +1482,20 @@ void Livestream::handle(const ProtocolGame_ptr &client, const std::string &text,
 		}
 	}
 
-	bool isCastChannel = channelId == CHANNEL_CAST;
 	if (text[0] == '/') {
-		processCommand(client, text, sit, isCastChannel);
+		processCommand(client, text, sit);
 		return;
 	}
 
-	handleChatMessage(client, sit, text, isCastChannel);
+	handleChatMessage(sit->second.name, client, text);
 }
 
-void Livestream::processCommand(const ProtocolGame_ptr &client, const std::string &text, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, bool isCastChannel) {
+void Livestream::processCommand(const ProtocolGame_ptr &client, const std::string &text, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit) {
 	std::vector<std::string> CommandParam = explodeString(text.substr(1), " ", 1);
 	if (strcasecmp(CommandParam[0].c_str(), "show") == 0) {
 		showViewers(client);
 	} else if (strcasecmp(CommandParam[0].c_str(), "name") == 0) {
-		changeViewerName(client, CommandParam, sit, isCastChannel);
+		changeViewerName(client, CommandParam, sit);
 	} else {
 		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Available commands: /name, /show."));
 	}
@@ -1505,7 +1509,7 @@ void Livestream::showViewers(const ProtocolGame_ptr &client) {
 	client->sendTextMessage(TextMessage(MESSAGE_STATUS, messageViewer));
 }
 
-void Livestream::changeViewerName(const ProtocolGame_ptr &client, const std::vector<std::string> &CommandParam, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, bool isCastChannel) {
+void Livestream::changeViewerName(const ProtocolGame_ptr &client, const std::vector<std::string> &CommandParam, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit) {
 	// Check if the command has enough parameters
 	if (CommandParam.size() <= 1) {
 		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Please provide a new name."));
@@ -1527,14 +1531,12 @@ void Livestream::changeViewerName(const ProtocolGame_ptr &client, const std::vec
 	}
 
 	// Update the viewer's name
-	updateViewerName(client, sit, newName, isCastChannel);
+	updateViewerName(client, sit, newName);
 }
 
-void Livestream::updateViewerName(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &newName, bool isCastChannel) {
+void Livestream::updateViewerName(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &newName) {
 	// If the viewer is a cast channel, notify others about the name change
-	if (isCastChannel) {
-		sendChannelMessage("", fmt::format("{} was renamed to {}.", sit->second.name, newName), TALKTYPE_CHANNEL_O, CHANNEL_CAST);
-	}
+	sendChannelMessage("", 0, fmt::format("{} was renamed to {}.", sit->second.name, newName), TALKTYPE_CHANNEL_O, CHANNEL_CAST);
 
 	// Update the muted list with the new name if necessary
 	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.name));
@@ -1555,12 +1557,10 @@ bool Livestream::isNameAvailable(const std::string &name) const {
 	});
 }
 
-void Livestream::handleChatMessage(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &text, bool isCastChannel) {
-	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.name));
+void Livestream::handleChatMessage(const std::string &playerName, const ProtocolGame_ptr &client, const std::string &text) {
+	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(playerName));
 	if (mit == m_mutes.end()) {
-		if (isCastChannel) {
-			sendChannelMessage(sit->second.name, text, TALKTYPE_CHANNEL_Y, CHANNEL_CAST);
-		}
+		sendChannelMessage(playerName, 0, text, TALKTYPE_CHANNEL_Y, CHANNEL_CAST);
 	} else {
 		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "You are muted."));
 	}

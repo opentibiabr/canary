@@ -237,7 +237,7 @@ private:
 	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
 	// Send functions
-	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
+	void sendChannelMessage(const std::string &author, uint16_t playerLevel, const std::string &text, SpeakClasses type, uint16_t channel);
 	void sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent);
 	void sendClosePrivate(uint16_t channelId);
 	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName);

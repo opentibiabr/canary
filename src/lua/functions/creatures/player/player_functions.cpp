@@ -2177,11 +2177,12 @@ int PlayerFunctions::luaPlayerSendChannelMessage(lua_State* L) {
 		return 1;
 	}
 
+	uint16_t level = getNumber<uint16_t>(L, 6);
 	uint16_t channelId = getNumber<uint16_t>(L, 5);
 	SpeakClasses type = getNumber<SpeakClasses>(L, 4);
 	const std::string &text = getString(L, 3);
 	const std::string &author = getString(L, 2);
-	player->sendChannelMessage(author, text, type, channelId);
+	player->sendChannelMessage(author, level, text, type, channelId);
 	pushBoolean(L, true);
 	return 1;
 }

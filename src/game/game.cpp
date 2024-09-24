@@ -10895,8 +10895,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		std::string returnmessage;
 		if (offer->getOfferType() == OfferTypes_t::NAMECHANGE) {
-			returnmessage = 
-				"Thank you for your purchase! To finalise the Character Name Change, please start your client anew. Note that you cannot enter houses or open doors anymore which are still labelled with your old character name until the responsible character invited you with your new name.";
+			returnmessage = "Thank you for your purchase! To finalise the Character Name Change, please start your client anew. Note that you cannot enter houses or open doors anymore which are still labelled with your old character name until the responsible character invited you with your new name.";
 		} else {
 			returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getOfferName(), offerPrice);
 		}

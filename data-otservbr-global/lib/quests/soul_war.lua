@@ -1112,9 +1112,9 @@ function MonsterType:calculateBagYouDesireChance(player, itemChance)
 		itemChance = itemChance + (playerTaintLevel * SoulWarQuest.bagYouDesireChancePerTaint)
 	end
 
-	logger.info("Player {} killed {} with {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, itemChance)
+	logger.debug("Player {} killed {} with {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, itemChance)
 
-	if math.random(1, 100000) <= totalChance then
+	if math.random(1, 100000) <= itemChance then
 		logger.debug("Player {} killed {} and got a bag you desire with drop chance {}", player:getName(), monsterName, itemChance)
 		if monsterName == "Goshnar's Megalomania" then
 			-- Reset kill count on successful drop

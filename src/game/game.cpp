@@ -988,7 +988,7 @@ std::shared_ptr<Player> Game::getPlayerByName(const std::string &s, bool allowOf
 			return nullptr;
 		}
 		std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
-		if (!IOLoginData::loadPlayerByName(tmpPlayer, s)) {
+		if (!IOLoginData::loadPlayerByName(tmpPlayer, s, allowOffline)) {
 			if (!isNewName) {
 				g_logger().error("Failed to load player {} from database", s);
 			} else {

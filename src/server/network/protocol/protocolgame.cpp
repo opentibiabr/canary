@@ -1991,11 +1991,17 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 	}
 
 #if FEATURE_LIVESTREAM > 0
-	bool isCastChannel = channelId == CHANNEL_CAST;
-	if (isCastChannel) {
+	bool isLivestreamChannel = channelId == CHANNEL_LIVESTREAM;
+	if (isLivestreamChannel) {
 		g_dispatcher().addEvent(
 			[client = player->client, self = getThis(), text, channelId] { client->handle(self, text, channelId); }, "Livestream::handle"
 		);
+		return;
+	}
+
+	// Block message sending to other channels if player is a viewer
+	if (m_isLivestreamViewer) {
+		sendTextMessage(TextMessage(MESSAGE_LOOK, "You only can talk in the Livestream channel."));
 		return;
 	}
 #endif
@@ -9391,7 +9397,7 @@ void ProtocolGame::sendLivestreamViewerAppear(const std::shared_ptr<Player> &fou
 		iconSet.insert(PlayerIcon::Rooted);
 		sendIcons(iconSet, IconBakragore::None);
 
-		sendChannel(CHANNEL_CAST, "Livestream", nullptr, nullptr);
+		sendChannel(CHANNEL_LIVESTREAM, "Livestream", nullptr, nullptr);
 		sendTextMessage(TextMessage(MESSAGE_EVENT_ADVANCE, "Available commands: \n/name newname\n/show"));
 	}
 }

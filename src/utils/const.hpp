@@ -20,7 +20,7 @@ static constexpr int32_t INPUTMESSAGE_MAXSIZE = 4096;
 static constexpr int32_t CHANNEL_GUILD = 0x00;
 static constexpr int32_t CHANNEL_PARTY = 0x01;
 static constexpr int32_t CHANNEL_PRIVATE = 0xFFFF;
-static constexpr uint16_t CHANNEL_CAST = 0xFFFE;
+static constexpr uint16_t CHANNEL_LIVESTREAM = 0xFFFE;
 
 constexpr int64_t MESSAGE_COOLDOWN_MS = 5000;
 constexpr int64_t SECONDS_IN_MS = 1000;

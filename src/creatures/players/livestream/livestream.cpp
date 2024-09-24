@@ -1426,7 +1426,7 @@ void Livestream::addViewer(const ProtocolGame_ptr &client, bool spy) {
 	m_viewers[client] = ViewerInfo(guestString, m_viewerId);
 
 	if (!spy) {
-		sendChannelEvent(CHANNEL_CAST, guestString, CHANNELEVENT_JOIN);
+		sendChannelEvent(CHANNEL_LIVESTREAM, guestString, CHANNELEVENT_JOIN);
 
 		if (m_viewers.size() > m_livestreamCasterLiveRecord) {
 			m_livestreamCasterLiveRecord = static_cast<uint32_t>(m_viewers.size());
@@ -1450,7 +1450,7 @@ void Livestream::removeViewer(const ProtocolGame_ptr &client, bool spy) {
 	}
 
 	if (!spy) {
-		sendChannelEvent(CHANNEL_CAST, it->second.name, CHANNELEVENT_LEAVE);
+		sendChannelEvent(CHANNEL_LIVESTREAM, it->second.name, CHANNELEVENT_LEAVE);
 	}
 
 	m_viewers.erase(it);
@@ -1462,7 +1462,7 @@ void Livestream::handle(const ProtocolGame_ptr &client, const std::string &text,
 	}
 
 	if (m_owner == client) {
-		sendChannelMessage(client->player->getName(), client->player->getLevel(), text, TALKTYPE_CHANNEL_R1, CHANNEL_CAST);
+		sendChannelMessage(client->player->getName(), client->player->getLevel(), text, TALKTYPE_CHANNEL_R1, CHANNEL_LIVESTREAM);
 		return;
 	}
 
@@ -1536,7 +1536,7 @@ void Livestream::changeViewerName(const ProtocolGame_ptr &client, const std::vec
 
 void Livestream::updateViewerName(const ProtocolGame_ptr &client, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit, const std::string &newName) {
 	// If the viewer is a cast channel, notify others about the name change
-	sendChannelMessage("", 0, fmt::format("{} was renamed to {}.", sit->second.name, newName), TALKTYPE_CHANNEL_O, CHANNEL_CAST);
+	sendChannelMessage("", 0, fmt::format("{} was renamed to {}.", sit->second.name, newName), TALKTYPE_CHANNEL_O, CHANNEL_LIVESTREAM);
 
 	// Update the muted list with the new name if necessary
 	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.name));
@@ -1560,7 +1560,7 @@ bool Livestream::isNameAvailable(const std::string &name) const {
 void Livestream::handleChatMessage(const std::string &playerName, const ProtocolGame_ptr &client, const std::string &text) {
 	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(playerName));
 	if (mit == m_mutes.end()) {
-		sendChannelMessage(playerName, 0, text, TALKTYPE_CHANNEL_Y, CHANNEL_CAST);
+		sendChannelMessage(playerName, 0, text, TALKTYPE_CHANNEL_Y, CHANNEL_LIVESTREAM);
 	} else {
 		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "You are muted."));
 	}

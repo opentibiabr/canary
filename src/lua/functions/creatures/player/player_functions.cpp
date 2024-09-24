@@ -4595,7 +4595,7 @@ int PlayerFunctions::luaPlayerSetLivestreamViewers(lua_State* L) {
 
 	if (broadcast) {
 		player->client->insertLivestreamCaster();
-		player->sendChannel(CHANNEL_CAST, "Livestream", nullptr, nullptr);
+		player->sendChannel(CHANNEL_LIVESTREAM, "Livestream", nullptr, nullptr);
 	}
 
 	player->client->setLivestreamDescription(description);

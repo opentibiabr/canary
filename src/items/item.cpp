@@ -1260,6 +1260,10 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				skillBoost = true;
 			}
 
+			if (it.abilities->regeneration) {
+				ss << ", faster regeneration";
+			}
+
 			if (it.abilities->stats[STAT_MAGICPOINTS]) {
 				if (skillBoost) {
 					ss << ", ";
@@ -2697,6 +2701,17 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					}
 
 					s << getSkillName(i) << ' ' << std::showpos << it.abilities->skills[i] << std::noshowpos;
+				}
+
+				if (it.abilities->regeneration) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "faster regeneration";
 				}
 
 				for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {

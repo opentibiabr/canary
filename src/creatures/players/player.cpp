@@ -1974,7 +1974,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, __FUNCTION__);
 	}
 
 	if (creature != getPlayer()) {
@@ -4311,7 +4311,7 @@ bool Player::updateSaleShopList(std::shared_ptr<Item> item) {
 		return true;
 	}
 
-	g_dispatcher().addEvent([creatureId = getID()] { g_game().updatePlayerSaleItems(creatureId); }, "Game::updatePlayerSaleItems");
+	g_dispatcher().addEvent([creatureId = getID()] { g_game().updatePlayerSaleItems(creatureId); }, __FUNCTION__);
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -4382,7 +4382,7 @@ bool Player::setAttackedCreature(std::shared_ptr<Creature> creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
 	}
 	return true;
 }
@@ -4444,7 +4444,8 @@ void Player::doAttacking(uint32_t) {
 
 		const auto &task = createPlayerTask(
 			std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
-			[playerId = getID()] { g_game().checkCreatureAttack(playerId); }, "Game::checkCreatureAttack"
+			[playerId = getID()] { g_game().checkCreatureAttack(playerId); },
+			__FUNCTION__
 		);
 
 		if (!classicSpeed) {
@@ -6815,7 +6816,7 @@ void Player::triggerTranscendance() {
 					player->sendBasicData();
 				}
 			},
-			"Player::triggerTranscendance"
+			__FUNCTION__
 		);
 		g_dispatcher().scheduleEvent(task);
 
@@ -7888,8 +7889,7 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		std::vector<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
 			g_dispatcher().addEvent([creatureId = getID(), listDir] { g_game().playerAutoWalk(creatureId, listDir); }, __FUNCTION__);
-
-			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
+			const auto &task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);
 			return true;
 		} else {

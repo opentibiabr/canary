@@ -64,7 +64,7 @@ end)
 stakeKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Argh... my heart aches! Alright... a promise is a promise. Here - take this wooden stake, and now get lost.", ungreet = true }, function(player)
 	return player:getMoney() + player:getBankBalance() >= 5000
 end, function(player)
-	player:removeMoneyBank(5000)
+	player:removeTotalMoney(5000)
 	player:addItem(5941, 1)
 end)
 

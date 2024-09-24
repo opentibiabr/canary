@@ -97,7 +97,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			if player:removeMoneyBank(ARENA[arenaId].price) then
+			if player:removeTotalMoney(ARENA[arenaId].price) then
 				player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor, 1)
 				npcHandler:say("As you wish! You can pass the door now and enter the teleporter to the pits.", npc, creature)
 

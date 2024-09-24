@@ -874,7 +874,7 @@ jobKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, 
 	return player:getMoney() < 50
 end)
 jobKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Thank you very much. I will have a drink or two on your health!", reset = true }, nil, function(player)
-	if player:removeMoneyBank(50) then
+	if player:removeTotalMoney(50) then
 	end
 end)
 jobKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "Well, perhaps later.", reset = true })
@@ -884,7 +884,7 @@ magicKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler
 	return player:getMoney() < 200
 end)
 magicKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Here you are, I already lessened your load.", reset = true }, nil, function(player)
-	if player:removeMoneyBank(200) then
+	if player:removeTotalMoney(200) then
 	end
 end)
 magicKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "You don't know what offer you are missing!", reset = true })
@@ -895,7 +895,7 @@ weaponKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandle
 	return player:getMoney() < 250
 end)
 weaponKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "And here it is, it suits you well!", reset = true }, nil, function(player)
-	if player:removeMoneyBank(250) then
+	if player:removeTotalMoney(250) then
 		player:addItem(3473, 1)
 	end
 end)

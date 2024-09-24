@@ -79,7 +79,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 4 then
-				if player:removeMoneyBank(80) then
+				if player:removeTotalMoney(80) then
 					npcHandler:say("Here. Don't take it into the city though.", npc, creature)
 					player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 5)
 					player:addItem(6106, 1)

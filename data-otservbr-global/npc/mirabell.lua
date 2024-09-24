@@ -87,7 +87,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Excellent. Now I can start baking the pies. As you helped me, I will make you a good price for them.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			if not player:removeMoneyBank(240) then
+			if not player:removeTotalMoney(240) then
 				npcHandler:say("You don't have enough money, don't try to fool me.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true

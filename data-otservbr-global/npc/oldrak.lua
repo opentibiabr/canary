@@ -134,7 +134,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 2 then
 		if player:getStorageValue(Storage.Quest.U8_2.TheDemonOak.Progress) == 2 then
 			if player:getMoney() + player:getBankBalance() >= 1000 then
-				if player:removeItem(3274, 1) and player:removeMoneyBank(1000) then
+				if player:removeItem(3274, 1) and player:removeTotalMoney(1000) then
 					npcHandler:say("Let's see....<mumbles a prayer>....here we go. The blessing on this axe will be absorbed by all the demonic energy around here. I presume it will not last very long, so better hurry. Actually, I can refresh the blessing as often as you like.", npc, creature)
 					player:addItem(919, 1)
 					npc:getPosition():sendMagicEffect(CONST_ME_YELLOWENERGY)

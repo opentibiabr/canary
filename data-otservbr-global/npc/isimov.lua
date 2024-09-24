@@ -80,7 +80,7 @@ local stoneKeyword = keywordHandler:addKeyword({ "adventurer stone" }, StdModule
 stoneKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Here you are. Take care.", reset = true }, function(player)
 	return player:getMoney() + player:getBankBalance() >= 30
 end, function(player)
-	if player:removeMoneyBank(30) then
+	if player:removeTotalMoney(30) then
 		player:addItem(16277, 1)
 	end
 end)

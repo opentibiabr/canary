@@ -198,19 +198,20 @@ function Player.withdrawMoney(self, amount)
 	return Bank.withdraw(self, amount)
 end
 
-function Player.removeMoneyBank(self, amount)
+function Player.removeTotalMoney(self, amount)
 	local inventoryMoney = self:getMoney()
 	local bankBalance = self:getBankBalance()
 
 	if amount <= inventoryMoney then
 		self:removeMoney(amount)
+
 		if amount > 0 then
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from inventory."):format(amount))
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from inventory."):format(FormatNumber(amount)))
 		end
 		return true
 	end
 
-	if amount <= (inventoryMoney + bankBalance) then
+	if amount <= inventoryMoney + bankBalance then
 		local remainingAmount = amount
 
 		if inventoryMoney > 0 then
@@ -219,9 +220,14 @@ function Player.removeMoneyBank(self, amount)
 		end
 
 		Bank.debit(self, remainingAmount)
+		bankBalance = bankBalance - remainingAmount
+		self:setBankBalance(bankBalance)
 
-		self:setBankBalance(bankBalance - remainingAmount)
-		self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount - remainingAmount), FormatNumber(remainingAmount), FormatNumber(self:getBankBalance())))
+		if inventoryMoney == 0 then
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(remainingAmount), FormatNumber(bankBalance)))
+		else
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount - remainingAmount), FormatNumber(remainingAmount), FormatNumber(bankBalance)))
+		end
 		return true
 	end
 	return false

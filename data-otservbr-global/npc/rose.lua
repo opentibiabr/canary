@@ -64,7 +64,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:getMoney() + player:getBankBalance() >= 100 then
-				player:removeMoneyBank(100)
+				player:removeTotalMoney(100)
 				npcHandler:say("Here you are. A Hydra Tongue!", npc, creature)
 				player:addItem(7250, 1)
 				npcHandler:setTopic(playerId, 0)

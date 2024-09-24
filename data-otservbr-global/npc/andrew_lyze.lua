@@ -114,7 +114,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 		if player:getMoney() + player:getBankBalance() >= 5000 then
-			player:removeMoneyBank(5000)
+			player:removeTotalMoney(5000)
 			player:addItem(10302, 1)
 		end
 		npcHandler:setTopic(playerId, 0)

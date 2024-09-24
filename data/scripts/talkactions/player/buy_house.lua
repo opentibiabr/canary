@@ -46,7 +46,7 @@ function buyHouse.onSay(player, words, param)
 	end
 
 	local price = house:getPrice()
-	if not player:removeMoneyBank(price) then
+	if not player:removeTotalMoney(price) then
 		player:sendCancelMessage("You do not have enough money.")
 		return true
 	end

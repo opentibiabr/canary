@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Hmmm, would you like to play for {money} or for a chance to win your own {dice}?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 4 then
-			if not player:removeMoneyBank(100) then
+			if not player:removeTotalMoney(100) then
 				npcHandler:say("I am sorry, but you don't have so much money.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return false
@@ -109,7 +109,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return false
 		end
 
-		if not player:removeMoneyBank(amount) then
+		if not player:removeTotalMoney(amount) then
 			npcHandler:say("I am sorry, but you don't have so much money.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			return false

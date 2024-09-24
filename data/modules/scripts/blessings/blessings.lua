@@ -360,7 +360,7 @@ Blessings.BuyAllBlesses = function(player)
 		totalCost = totalCost + PvPBlessCost
 	end
 
-	if player:removeMoneyBank(totalCost) then
+	if player:removeTotalMoney(totalCost) then
 		metrics.addCounter("balance_decrease", remainsPrice, {
 			player = player:getName(),
 			context = "blessings",

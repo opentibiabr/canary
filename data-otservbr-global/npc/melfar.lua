@@ -112,7 +112,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			if player:removeMoneyBank(100) then
+			if player:removeTotalMoney(100) then
 				player:addItem(9843, 1)
 				npcHandler:say("Here you go.", npc, creature)
 				npcHandler:setTopic(playerId, 0)

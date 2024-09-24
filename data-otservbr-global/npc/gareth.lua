@@ -85,7 +85,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if (player:getMoney() + player:getBankBalance()) >= valor then
 				npcHandler:say({ "This is a very wise decision. You won't regret it. Congratulations! As your first task I like you to investigate the crime scene of a theft wich occurred last night. ...", "A very varuable artefact has been stolen. I open the door for you. You can find the room on the same floor as we are right now." }, npc, creature)
 				npcHandler:setTopic(playerId, 3)
-				player:removeMoneyBank(valor)
+				player:removeTotalMoney(valor)
 				player:addItem(25689, 1)
 				player:setStorageValue(Storage.CultsOfTibia.MotA.Mission, 2)
 				player:setStorageValue(Storage.CultsOfTibia.MotA.AccessDoorInvestigation, 1)

@@ -92,7 +92,7 @@ function addItemsToShoppingBag(npc, player)
 			shoppingBag:addItem(item.itemId, item.count)
 		end
 
-		player:removeMoneyBank(moneyRequired)
+		player:removeTotalMoney(moneyRequired)
 
 		return true
 	end

@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.AccessToNargor) == 1 then
-				if player:removeMoneyBank(50) then
+				if player:removeTotalMoney(50) then
 					npcHandler:say("Set the sails!", npc, creature)
 					player:teleportTo(Position(32024, 32813, 7))
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

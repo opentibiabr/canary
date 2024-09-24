@@ -145,7 +145,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if player:getMoney() + player:getBankBalance() >= 25 then
-				player:removeMoneyBank(25)
+				player:removeTotalMoney(25)
 				npcHandler:say("Here you are. A waterskin!", npc, creature)
 				player:addItem(7286, 1)
 			else

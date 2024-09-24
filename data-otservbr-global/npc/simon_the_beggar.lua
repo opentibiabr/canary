@@ -158,7 +158,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:isPremium() then
 				if player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarFirstAddonDoor) == -1 then
 					if player:getItemCount(5883) >= 100 and player:getMoney() + player:getBankBalance() >= 20000 then
-						if player:removeItem(5883, 100) and player:removeMoneyBank(20000) then
+						if player:removeItem(5883, 100) and player:removeTotalMoney(20000) then
 							npcHandler:say("Ahh! Very good. I will start mixing the potion immediately. Come back later. Bye bye.", npc, creature)
 							player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, 8)
 							if player:getSex() == PLAYERSEX_MALE then
@@ -258,7 +258,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif npcHandler:getTopic(playerId) == 9 then
-			if not player:removeMoneyBank(100) then
+			if not player:removeTotalMoney(100) then
 				npcHandler:say("You haven't got enough money for me.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
@@ -266,7 +266,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Thank you very much. Can you spare 500 more gold pieces for me? I will give you a nice hint.", npc, creature)
 			npcHandler:setTopic(playerId, 10)
 		elseif npcHandler:getTopic(playerId) == 10 then
-			if not player:removeMoneyBank(500) then
+			if not player:removeTotalMoney(500) then
 				npcHandler:say("Sorry, that's not enough.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
@@ -277,7 +277,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 11)
 		elseif npcHandler:getTopic(playerId) == 11 then
-			if not player:removeMoneyBank(200) then
+			if not player:removeTotalMoney(200) then
 				npcHandler:say("Pah! I said 200 gold. You don't have that much.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true

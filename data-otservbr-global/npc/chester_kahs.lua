@@ -144,7 +144,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("I already heard that our little trick worked quite well. Several officials of Carlin are already on their way to repair the damage done to their diplomatic efforts. It will not only cost them much money but also quite some time.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 12 then
-			if player:removeMoneyBank(1000) then
+			if player:removeTotalMoney(1000) then
 				player:addItem(397, 1)
 				npcHandler:say("Here you are. Better don't loose it again.", npc, creature)
 			else

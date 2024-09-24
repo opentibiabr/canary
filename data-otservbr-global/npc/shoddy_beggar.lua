@@ -81,7 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			if not player:removeMoneyBank(1) then
+			if not player:removeTotalMoney(1) then
 				npcHandler:say(player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) ~= 1 and "Is that all you have? That would be less than I have... *mumbles*" or "Mh, it seems you don't have any coins.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
@@ -94,7 +94,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			if not player:removeMoneyBank(1) then
+			if not player:removeTotalMoney(1) then
 				npcHandler:say("Well, if that is all you can spare... better keep it.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true

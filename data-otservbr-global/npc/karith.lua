@@ -245,7 +245,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.TownsCounter, player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.TownsCounter) + 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 11 then
-			if player:removeMoneyBank(160) then
+			if player:removeTotalMoney(160) then
 				npcHandler:say("Set the sails!", npc, creature)
 				doTeleportThing(creature, Position(32734, 31668, 6))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -255,7 +255,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 12 then
-			if player:removeMoneyBank(210) then
+			if player:removeTotalMoney(210) then
 				npcHandler:say("Set the sails!", npc, creature)
 				doTeleportThing(creature, Position(33289, 32480, 6))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -265,7 +265,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 13 then
-			if player:removeMoneyBank(185) then
+			if player:removeTotalMoney(185) then
 				npcHandler:say("Set the sails!", npc, creature)
 				doTeleportThing(creature, Position(32954, 32022, 6))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -275,7 +275,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 14 then
-			if player:removeMoneyBank(230) then
+			if player:removeTotalMoney(230) then
 				npcHandler:say("Set the sails!", npc, creature)
 				doTeleportThing(creature, Position(33092, 32883, 6))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -285,7 +285,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 15 then
-			if player:removeMoneyBank(260) then
+			if player:removeTotalMoney(260) then
 				npcHandler:say("Set the sails!", npc, creature)
 				doTeleportThing(creature, Position(32527, 32784, 6))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -295,7 +295,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 16 then
-			if player:removeMoneyBank(200) then
+			if player:removeTotalMoney(200) then
 				npcHandler:say("Set the sails!", npc, creature)
 				doTeleportThing(creature, Position(32310, 32210, 6))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -305,7 +305,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 17 then
-			if player:removeMoneyBank(275) then
+			if player:removeTotalMoney(275) then
 				npcHandler:say("Set the sails!", npc, creature)
 				doTeleportThing(creature, Position(32285, 32892, 6))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -315,7 +315,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 18 then
-			if player:removeMoneyBank(185) then
+			if player:removeTotalMoney(185) then
 				npcHandler:say("Set the sails!", npc, creature)
 				doTeleportThing(creature, Position(32387, 31820, 6))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

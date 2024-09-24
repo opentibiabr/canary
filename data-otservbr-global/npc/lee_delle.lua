@@ -131,7 +131,7 @@ local footballKeyword = keywordHandler:addKeyword({ "football" }, StdModule.say,
 footballKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Here you go.", reset = true }, function(player)
 	return player:getMoney() + player:getBankBalance() >= 111
 end, function(player)
-	if player:removeMoneyBank(111) then
+	if player:removeTotalMoney(111) then
 		player:addItem(2990, 1)
 	end
 end)

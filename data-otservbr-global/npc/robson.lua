@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		local player = Player(creature)
 		if npcHandler:getTopic(playerId) == 1 then
-			if not player:removeMoneyBank(15) then
+			if not player:removeTotalMoney(15) then
 				npcHandler:say("Sorry, that's only dust in your purse.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
@@ -79,7 +79,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Fine.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			if not player:removeMoneyBank(1) then
+			if not player:removeTotalMoney(1) then
 				npcHandler:say("Sorry, that's only dust in your purse.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true

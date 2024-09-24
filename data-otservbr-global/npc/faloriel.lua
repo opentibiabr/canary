@@ -70,7 +70,7 @@ potionTalk:addChildKeyword({ "yes" }, StdModule.say, {
 }, function(player)
 	return player:getMoney() + player:getBankBalance() >= 1000
 end, function(player)
-	player:removeMoneyBank(1000)
+	player:removeTotalMoney(1000)
 	player:addItem(31350, 1) -- flask of hallucinogen
 end)
 

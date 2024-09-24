@@ -78,7 +78,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Here it is.", npc, creature)
 				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission04, 2)
 				player:addItem(227, 1)
-				player:removeMoneyBank(1000)
+				player:removeTotalMoney(1000)
 			else
 				npcHandler:say("You don't have enought money.", npc, creature)
 			end

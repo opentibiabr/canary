@@ -113,7 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") then
 		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.HuskyKillStatus) == 1 and player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8 then
-			if player:removeMoneyBank(player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.HuskyKill) * 1500) then
+			if player:removeTotalMoney(player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.HuskyKill) * 1500) then
 				npcHandler:say("Alright, we are even!", npc, creature)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.HuskyKillStatus, 0)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.HuskyKill, 0)

@@ -98,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 
-		if not player:removeMoneyBank(10000) then
+		if not player:removeTotalMoney(10000) then
 			npcHandler:say("Sorry, you don't have enough gold.", npc, creature)
 			return true
 		end

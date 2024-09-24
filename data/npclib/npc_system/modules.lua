@@ -106,7 +106,7 @@ if Modules == nil then
 				npcHandler:say("You are already promoted!", npc, player)
 			elseif player:getLevel() < parameters.level then
 				npcHandler:say(string.format("I am sorry, but I can only promote you once you have reached level %d.", parameters.level), npc, player)
-			elseif not player:removeMoneyBank(parameters.cost) then
+			elseif not player:removeTotalMoney(parameters.cost) then
 				npcHandler:say("You do not have enough money!", npc, player)
 			else
 				npcHandler:say(parameters.text, npc, player)
@@ -135,7 +135,7 @@ if Modules == nil then
 				npcHandler:say("You already know this spell.", npc, player)
 			elseif not player:canLearnSpell(parameters.spellName) then
 				npcHandler:say("You cannot learn this spell.", npc, player)
-			elseif not player:removeMoneyBank(parameters.price) then
+			elseif not player:removeTotalMoney(parameters.price) then
 				npcHandler:say(string.format("You do not have enough money, this spell costs %s gold.", parameters.price), npc, player)
 			else
 				npcHandler:say(string.format("You have learned '%s'.", parameters.spellName), npc, player)
@@ -175,7 +175,7 @@ if Modules == nil then
 				npc,
 				player
 			)
-		elseif not player:removeMoneyBank(type(parameters.cost) == "string" and npcHandler:parseMessage(parameters.cost, parseInfo) or parameters.cost) then
+		elseif not player:removeTotalMoney(type(parameters.cost) == "string" and npcHandler:parseMessage(parameters.cost, parseInfo) or parameters.cost) then
 			npcHandler:say("Oh. You do not have enough money.", npc, player)
 		else
 			npcHandler:say(parameters.text or "You have been blessed by one of the seven gods!", npc, player)
@@ -221,7 +221,7 @@ if Modules == nil then
 			npcHandler:say("You must reach level " .. parameters.level .. " before I can let you go there.", npc, player)
 		elseif player:isPzLocked() then
 			npcHandler:say("First get rid of those blood stains! You are not going to ruin my vehicle!", npc, player)
-		elseif not player:removeMoneyBank(cost) then
+		elseif not player:removeTotalMoney(cost) then
 			npcHandler:say("You don't have enough money.", npc, player)
 		else
 			local hasExhaustion = player:kv():get("npc-exhaustion") or 0
@@ -537,7 +537,7 @@ if Modules == nil then
 		local premium = parameters.premium
 
 		if player:isPremium() or not premium then
-			if not player:removeMoneyBank(cost) then
+			if not player:removeTotalMoney(cost) then
 				npcHandler:say("You do not have enough money!", npc, player)
 			elseif player:isPzLocked(player) then
 				npcHandler:say("Get out of there with this blood.", npc, player)
@@ -584,7 +584,7 @@ if Modules == nil then
 		local destination = Position(parameters.destination)
 
 		if player:isPremium() or not parameters.premium then
-			if player:removeMoneyBank(cost) then
+			if player:removeTotalMoney(cost) then
 				local position = player:getPosition()
 				player:teleportTo(destination)
 

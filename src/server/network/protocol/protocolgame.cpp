@@ -5746,13 +5746,13 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			attackDescription = fmt::format("{} {}", it.abilities->elementDamage, getCombatName(it.abilities->elementType));
 		}
 
-		if (it.attack != 0) {
+		if (it.attack != 0 && !attackDescription.empty()) {
 			attackDescription = fmt::format("{} physical + {}", it.attack, attackDescription);
+		} else if (it.attack != 0 && attackDescription.empty()) {
+			attackDescription = std::to_string(it.attack);
 		}
 
-		if (!attackDescription.empty()) {
-			msg.addString(attackDescription, "ProtocolGame::sendMarketDetail - attackDescription");
-		}
+		msg.addString(attackDescription, "ProtocolGame::sendMarketDetail - attackDescription");
 	} else {
 		msg.add<uint16_t>(0x00);
 	}

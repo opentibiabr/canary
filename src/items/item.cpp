@@ -1187,8 +1187,10 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				attackDescription = fmt::format("{} {}", it.abilities->elementDamage, getCombatName(it.abilities->elementType));
 			}
 
-			if (it.attack != 0) {
+			if (attack != 0 && !attackDescription.empty()) {
 				attackDescription = fmt::format("{} physical + {}", attack, attackDescription);
+			} else if (attack != 0 && attackDescription.empty()) {
+				attackDescription = std::to_string(attack);
 			}
 
 			if (!attackDescription.empty()) {
@@ -1605,8 +1607,10 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				attackDescription = fmt::format("{} {}", it.abilities->elementDamage, getCombatName(it.abilities->elementType));
 			}
 
-			if (it.attack != 0) {
+			if (attack != 0 && !attackDescription.empty()) {
 				attackDescription = fmt::format("{} physical + {}", attack, attackDescription);
+			} else if (attack != 0 && attackDescription.empty()) {
+				attackDescription = std::to_string(attack);
 			}
 
 			if (!attackDescription.empty()) {

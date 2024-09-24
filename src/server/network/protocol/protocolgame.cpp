@@ -9538,7 +9538,6 @@ void ProtocolGame::sendOfferDescription(const Offer* offer) {
 void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
 	auto offerId = msg.get<uint32_t>();
 	auto offerType = msg.getByte();
-	g_logger().warn("{}", offerType);
 
 	const auto* currentOffer = g_ioStore().getOfferById(offerId);
 	auto currentOfferType = currentOffer->getOfferType();

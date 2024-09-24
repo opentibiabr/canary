@@ -166,6 +166,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 		setItemMetatable(L, -1, item);
 	} else {
 		reportErrorFunc(fmt::format("Cannot add item to container, error code: '{}'", getReturnMessage(ret)));
+		pushBoolean(L, false);
 	}
 	return 1;
 }

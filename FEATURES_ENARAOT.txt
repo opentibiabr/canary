@@ -5,4 +5,6 @@
 - Online Coins - Every 6h 30 coins (VIP)
 - Drop Exp Boost from monsters
 - Lottery System
-- 
+- EVENTS
+    - Monster Hunt
+    - 

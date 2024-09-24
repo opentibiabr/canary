@@ -12,3 +12,5 @@ dofile(DATA_DIRECTORY .. "/lib/tables/load.lua")
 
 -- Custom LIB
 dofile(DATA_DIRECTORY .. "/lib/custom/load.lua")
+dofile(DATA_DIRECTORY .. "/lib/custom/monsterHunter.lua")
+dofile(DATA_DIRECTORY .. "/lib/custom/city_war.lua")

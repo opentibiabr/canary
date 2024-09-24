@@ -31,5 +31,5 @@ function animatedTextsEvent.onThink(interval)
 end
 
 -- Register the event and set the interval between onThink calls to 20 seconds
-animatedTextsEvent:interval(20 * 1000)
+animatedTextsEvent:interval(4 * 1000)
 animatedTextsEvent:register()

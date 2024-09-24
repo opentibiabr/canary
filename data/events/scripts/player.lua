@@ -550,8 +550,9 @@ function Player:onGainExperience(target, exp, rawExp)
     end
 
 	-- Drop Exp Bonus
-	if self:getStorageValue(90004) >= os.time() then
-        exp = exp * 1.10
+	if self:getStorageValue(6000) >= os.time() then
+        exp = exp * (1 + (10 / 100))
+		--self:sendTextMessage(MESSAGE_LOOT, string.format("{%d|%s} You have won {%d|%s} more experience. TEST: {%d|%s}", MESSAGE_COLOR_YELLOW, "[EXP BONUS]", MESSAGE_COLOR_YELLOW, "10%", MESSAGE_COLOR_PURPLE, exp))
     end
 
 	-- Soul regeneration

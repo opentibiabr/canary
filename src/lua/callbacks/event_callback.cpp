@@ -825,7 +825,8 @@ void EventCallback::playerOnGainExperience(std::shared_ptr<Player> player, std::
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		if (lua_isnumber(L, -1)) {
-			exp = LuaScriptInterface::getNumber<uint64_t>(L, -1);
+			exp = LuaScriptInterface::getNumber<double>(L, -1);
+			g_logger().debug("[EventCallback::playerOnGainExperience - Player '{}' target '{}'] Lua callback returned experience value: {}", player->getName(), target->getName(), exp);
 		} else {
 			// Log warning if the return value is not a number
 			reportErrorFunc(fmt::format("[EventCallback::playerOnGainExperience - "

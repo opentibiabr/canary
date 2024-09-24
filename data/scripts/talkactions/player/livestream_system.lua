@@ -58,7 +58,7 @@ function talkaction.onSay(player, words, param)
 		db.query("UPDATE `active_livestream_casters` SET `livestream_status` = 0, `livestream_viewers` = 0 WHERE `caster_id` = " .. player:getGuid())
 		player:sendTextMessage(MESSAGE_STATUS, "Your stream is currently disabled.")
 		if experienceMultiplier > 1.0 then
-			player:sendTextMessage(MESSAGE_LOOK, "Experience bonus deactivated: -" .. experienceMultiplier .. "%")
+			player:sendTextMessage(MESSAGE_LOOK, "Experience bonus deactivated: -" .. bonusPercent .. "%")
 			player:kv():scoped("livestream-system"):remove("experience-bonus")
 		end
 		playersStreaming[player:getGuid()] = nil
@@ -261,7 +261,7 @@ function talkaction.onSay(player, words, param)
 			end
 			player:sendTextMessage(MESSAGE_STATUS, "You have set new password for your stream.")
 			if experienceMultiplier > 1.0 then
-				player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. experienceMultiplier .. "% was deactivated.")
+				player:sendTextMessage(MESSAGE_LOOK, "Your experience bonus of : " .. bonusPercent .. "% was deactivated.")
 				player:kv():scoped("livestream-system"):remove("experience-bonus")
 			end
 			player:kv():scoped("livestream-system"):set("password", data.password)
@@ -356,7 +356,7 @@ local gainExperience = EventCallback("LivestreamSystemGainExperience")
 function gainExperience.playerOnGainExperience(player, target, exp, rawExp)
 	local livestreamStatus = player:kv():scoped("livestream-system"):get("experience-bonus") and 1 or 0
 	if experienceMultiplier > 1.0 and livestreamStatus > 0 then
-		exp = exp * experienceMultiplier
+		exp = math.floor(exp * experienceMultiplier + 0.5)
 		logger.debug("Original exp: {}, livestream exp: {} for creature {}", rawExp, exp, target:getName())
 	end
 

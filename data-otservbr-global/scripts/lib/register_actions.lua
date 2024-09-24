@@ -1,106 +1,12 @@
-local holeId = {
-	294,
-	369,
-	370,
-	385,
-	394,
-	411,
-	412,
-	413,
-	432,
-	433,
-	435,
-	8709,
-	594,
-	595,
-	615,
-	609,
-	610,
-	615,
-	1156,
-	482,
-	483,
-	868,
-	874,
-	4824,
-	7768,
-	433,
-	432,
-	413,
-	7767,
-	411,
-	370,
-	369,
-	7737,
-	7755,
-	7768,
-	7767,
-	7515,
-	7516,
-	7517,
-	7518,
-	7519,
-	7520,
-	7521,
-	7522,
-	7762,
-	8144,
-	8690,
-	8709,
-	12203,
-	12961,
-	17239,
-	19220,
-	23364,
-}
-
-local Itemsgrinder = {
+local holeId = { 294, 369, 370, 385, 394, 411, 412, 413, 432, 433, 435, 482, 483, 594, 595, 609, 610, 615, 868, 874, 1156, 4824, 7515, 7516, 7517, 7518, 7519, 7520, 7521, 7522, 7737, 7755, 7762, 7767, 7768, 8144, 8690, 8709, 12203, 12961, 17239, 19220, 23364 }
+local itemsGrinder = {
 	[675] = { item_id = 30004, effect = CONST_ME_BLUE_FIREWORKS }, -- Sapphire dust
 	[16122] = { item_id = 21507, effect = CONST_ME_GREENSMOKE }, -- Pinch of crystal dust
 }
-
-local holes = {
-	593,
-	606,
-	608,
-	867,
-	21341,
-}
-
-local JUNGLE_GRASS = {
-	3696,
-	3702,
-	17153,
-}
-local WILD_GROWTH = {
-	2130,
-	2130,
-	2982,
-	2524,
-	2030,
-	2029,
-	10182,
-}
-
-local fruits = {
-	3584,
-	3585,
-	3586,
-	3587,
-	3588,
-	3589,
-	3590,
-	3591,
-	3592,
-	3593,
-	3595,
-	3596,
-	5096,
-	8011,
-	8012,
-	8013,
-}
-
+local holes = { 593, 606, 608, 867, 21341 }
+local jungleGrass = { 3696, 3702, 17153 }
+local wildGrowth = { 2130, 3635, 30224 }
+local fruits = { 3584, 3585, 3586, 3587, 3588, 3589, 3590, 3591, 3592, 3593, 3595, 3596, 5096, 8011, 8012, 8013 }
 local lava = {
 	Position(32808, 32336, 11),
 	Position(32809, 32336, 11),
@@ -867,13 +773,13 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
 function onUseMachete(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains(JUNGLE_GRASS, target.itemid) then
+	if table.contains(jungleGrass, target.itemid) then
 		target:transform(target.itemid == 17153 and 17151 or target.itemid - 1)
 		target:decay()
 		return true
 	end
 
-	if table.contains(WILD_GROWTH, target.itemid) then
+	if table.contains(wildGrowth, target.itemid) then
 		toPosition:sendMagicEffect(CONST_ME_POFF)
 		target:remove()
 		return true
@@ -1035,14 +941,17 @@ function onUseScythe(player, item, fromPosition, target, toPosition, isHotkey)
 		target:transform(5463)
 		target:decay()
 		Game.createItem(5466, 1, toPosition)
+		return true
 	elseif target.itemid == 3653 then -- wheat
 		target:transform(3651)
 		target:decay()
 		Game.createItem(3605, 1, toPosition)
+		return true
 	elseif target.itemid == 30623 then -- reed
 		target:transform(30624)
 		target:decay()
 		Game.createItem(30975, 1, toPosition)
+		return true
 		-- The secret library
 	elseif toPosition == Position(32177, 31925, 7) then
 		player:teleportTo({ x = 32515, y = 32535, z = 12 })
@@ -1135,7 +1044,7 @@ function onGrindItem(player, item, fromPosition, target, toPosition)
 	if not (target.itemid == 21573) then
 		return false
 	end
-	for index, value in pairs(Itemsgrinder) do
+	for index, value in pairs(itemsGrinder) do
 		if item.itemid == index then
 			local topParent = item:getTopParent()
 			if topParent.isItem and (not topParent:isItem() or topParent.itemid ~= 470) then

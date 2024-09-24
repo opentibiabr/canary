@@ -108,7 +108,7 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 	return descriptionText
 end
 
-local callback = EventCallback()
+local callback = EventCallback("PlayerOnLookBaseEvent")
 
 function callback.playerOnLook(player, inspectedThing, inspectedPosition, lookDistance)
 	local descriptionText

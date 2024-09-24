@@ -10628,6 +10628,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		return;
 	}
 
+	std::string errorMessage = "An error has occurred, please contact your administrator.";
 	bool success = false;
 	auto offerType = offer->getOfferType();
 	switch (offerType) {
@@ -10678,7 +10679,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 			auto addons = playerLookType >= 962 && playerLookType <= 975 ? 0 : 3;
 
 			if (!player->canWear(playerLookType, addons)) {
-				player->sendStoreError(StoreErrors_t::PURCHASE, "You already own this outfit.");
+				errorMessage = "You already own this outfit.";
 				break;
 			}
 
@@ -10691,17 +10692,15 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		case OfferTypes_t::MOUNT: {
 			auto mount = g_game().mounts.getMountByID(offer->getOfferId());
 			if (!mount) {
-				player->sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
 				break;
 			}
 
 			if (player->hasMount(mount)) {
-				player->sendStoreError(StoreErrors_t::PURCHASE, "You already own this mount.");
+				errorMessage = "You already own this mount.";
 				break;
 			}
 
 			if (!player->tameMount(mount->id)) {
-				player->sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
 				break;
 			}
 
@@ -10711,6 +10710,9 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::NAMECHANGE: {
 			success = processNameChangeOffer(player, newName);
+			if (!success) {
+				errorMessage = "This name is not available.";
+			}
 			break;
 		}
 
@@ -10755,7 +10757,6 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		case OfferTypes_t::BLESSINGS: {
 			auto blessId = offer->getOfferId();
 			if (!magic_enum::enum_contains<Blessings>(blessId)) {
-				player->sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
 				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, player->getName());
 				break;
 			}
@@ -10892,7 +10893,13 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST) - 1);
 		}
 
-		std::string returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getOfferName(), offerPrice);
+		std::string returnmessage;
+		if (offer->getOfferType() == OfferTypes_t::NAMECHANGE) {
+			returnmessage = 
+				"Thank you for your purchase! To finalise the Character Name Change, please start your client anew. Note that you cannot enter houses or open doors anymore which are still labelled with your old character name until the responsible character invited you with your new name.";
+		} else {
+			returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getOfferName(), offerPrice);
+		}
 		uint8_t result = player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), offerPrice, returnmessage);
 		if (result == enumToValue(AccountErrors_t::RemoveCoins)) {
 			player->sendStoreError(StoreErrors_t::PURCHASE, "You don't have enough coins.");
@@ -10906,7 +10913,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		g_logger().trace("[{}] offer price {}, offer ammount {}, price per item {}", __METHOD_NAME__, offerPrice, offerAmount, pricePerItem);
 		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, HistoryTypes_t::GIFT, offer->getOfferName());
 	} else {
-		player->sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
+		player->sendStoreError(StoreErrors_t::PURCHASE, errorMessage);
 	}
 
 	player->updateUIExhausted();

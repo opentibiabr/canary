@@ -174,10 +174,18 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 		return db.executeQuery(query.str());
 	}
 
+	// Change Name Store
+	std::string playerName;
+	if (!player->newName.empty()) {
+		playerName = player->newName;
+	} else {
+		playerName = player->name;
+	}
+
 	// First, an UPDATE query to write the player itself
 	query.str("");
 	query << "UPDATE `players` SET ";
-	query << "`name` = " << db.escapeString(player->name) << ",";
+	query << "`name` = " << db.escapeString(playerName) << ",";
 	query << "`level` = " << player->level << ",";
 	query << "`group_id` = " << player->group->id << ",";
 	query << "`vocation` = " << player->getVocationId() << ",";

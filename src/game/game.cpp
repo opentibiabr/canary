@@ -10410,10 +10410,7 @@ bool Game::processNameChangeOffer(const std::shared_ptr<Player> &player, std::st
 		return false;
 	}
 
-	std::string query = fmt::format("UPDATE `players` SET `name` = {} WHERE `id` = {}", g_database().escapeString(name), player->getGUID());
-	if (!g_database().executeQuery(query)) {
-		return false;
-	}
+	player->setNewName(name);
 
 	return true;
 }

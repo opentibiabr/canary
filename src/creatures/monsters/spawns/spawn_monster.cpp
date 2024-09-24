@@ -226,7 +226,7 @@ void SpawnMonster::startup(bool delayed) {
 			continue;
 		}
 		if (delayed) {
-			g_dispatcher().addEvent([this, spawnMonsterId, &sb, mType] { scheduleSpawn(spawnMonsterId, sb, mType, 0, true); }, "SpawnMonster::startup");
+			g_dispatcher().addEvent([this, spawnMonsterId, &sb, mType] { scheduleSpawn(spawnMonsterId, sb, mType, 0, true); }, __FUNCTION__);
 		} else {
 			scheduleSpawn(spawnMonsterId, sb, mType, 0, true);
 		}

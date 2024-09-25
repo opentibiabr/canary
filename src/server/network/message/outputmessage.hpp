@@ -24,7 +24,7 @@ public:
 	OutputMessage &operator=(const OutputMessage &) = delete;
 
 	uint8_t* getOutputBuffer() {
-		return buffer + outputBufferStart;
+		return buffer.data() + outputBufferStart;
 	}
 
 	void writeMessageLength() {
@@ -41,14 +41,14 @@ public:
 
 	void append(const NetworkMessage &msg) {
 		auto msgLen = msg.getLength();
-		memcpy(buffer + info.position, msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		memcpy(buffer.data() + info.position, msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 		info.length += msgLen;
 		info.position += msgLen;
 	}
 
 	void append(const OutputMessage_ptr &msg) {
 		auto msgLen = msg->getLength();
-		memcpy(buffer + info.position, msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		memcpy(buffer.data() + info.position, msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 		info.length += msgLen;
 		info.position += msgLen;
 	}
@@ -63,7 +63,7 @@ private:
 
 		assert(outputBufferStart >= sizeof(T));
 		outputBufferStart -= sizeof(T);
-		memcpy(buffer + outputBufferStart, &addHeader, sizeof(T));
+		memcpy(buffer.data() + outputBufferStart, &addHeader, sizeof(T));
 		// added header size to the message size
 		info.length += sizeof(T);
 	}

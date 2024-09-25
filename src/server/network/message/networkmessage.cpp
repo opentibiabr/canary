@@ -24,10 +24,16 @@ std::string NetworkMessage::getString(uint16_t stringLen /* = 0*/) {
 	}
 
 	if (!canRead(stringLen)) {
-		return std::string();
+		g_logger().error("Not enough data to read string of length: {}", stringLen);
+		return {};
 	}
 
-	char* v = reinterpret_cast<char*>(buffer) + info.position; // does not break strict aliasing
+	if (stringLen > NETWORKMESSAGE_MAXSIZE) {
+		g_logger().error("[NetworkMessage::addString] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, stringLen);
+		return {};
+	}
+
+	const char* v = reinterpret_cast<const char*>(buffer.data() + info.position);
 	info.position += stringLen;
 	return std::string(v, stringLen);
 }
@@ -54,15 +60,17 @@ void NetworkMessage::addString(const std::string &value, const std::string &func
 		return;
 	}
 
-	add<uint16_t>(stringLen);
-	memcpy(buffer + info.position, value.c_str(), stringLen);
+	uint16_t len = static_cast<uint16_t>(stringLen);
+	add<uint16_t>(len);
+	memcpy(buffer.data() + info.position, value.c_str(), stringLen);
 	info.position += stringLen;
 	info.length += stringLen;
 }
 
-void NetworkMessage::addDouble(double value, uint8_t precision /* = 2*/) {
+void NetworkMessage::addDouble(double value, uint8_t precision /*= 2*/) {
 	addByte(precision);
-	add<uint32_t>((value * std::pow(static_cast<float>(10), precision)) + std::numeric_limits<int32_t>::max());
+	uint32_t scaledValue = static_cast<uint32_t>((value * std::pow(10.0, precision)) + static_cast<float>(std::numeric_limits<int32_t>::max()));
+	add<uint32_t>(scaledValue);
 }
 
 void NetworkMessage::addBytes(const char* bytes, size_t size) {
@@ -79,19 +87,19 @@ void NetworkMessage::addBytes(const char* bytes, size_t size) {
 		return;
 	}
 
-	memcpy(buffer + info.position, bytes, size);
+	memcpy(buffer.data() + info.position, bytes, size);
 	info.position += size;
 	info.length += size;
 }
 
 void NetworkMessage::addPaddingBytes(size_t n) {
-#define canAdd(size) ((size + info.position) < NETWORKMESSAGE_MAXSIZE)
 	if (!canAdd(n)) {
+		g_logger().error("[NetworkMessage::addPaddingBytes] - Cannot add padding bytes, buffer overflow");
 		return;
 	}
-#undef canAdd
 
-	memset(buffer + info.position, 0x33, n);
+	memset(buffer.data() + info.position, 0x33, n);
+	info.position += n;
 	info.length += n;
 }
 

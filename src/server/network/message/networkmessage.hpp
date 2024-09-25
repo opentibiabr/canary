@@ -27,7 +27,7 @@ public:
 	// 2 bytes for encrypted message size
 	static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
 
-	NetworkMessage() = default;
+	NetworkMessage() : buffer(NETWORKMESSAGE_MAXSIZE, 0) {}
 
 	void reset() {
 		info = {};
@@ -43,17 +43,21 @@ public:
 	}
 
 	uint8_t getPreviousByte() {
+		if (info.position == 0) {
+			g_logger().error("Attempted to get previous byte at position 0");
+			return 0;
+		}
 		return buffer[--info.position];
 	}
 
 	template <typename T>
 	T get() {
 		if (!canRead(sizeof(T))) {
-			return 0;
+			return T();
 		}
 
 		T v;
-		memcpy(&v, buffer + info.position, sizeof(T));
+		memcpy(&v, buffer.data() + info.position, sizeof(T));
 		info.position += sizeof(T);
 		return v;
 	}
@@ -69,6 +73,7 @@ public:
 	// simply write functions for outgoing message
 	void addByte(uint8_t value) {
 		if (!canAdd(1)) {
+			g_logger().error("Cannot add byte, buffer overflow");
 			return;
 		}
 
@@ -79,10 +84,11 @@ public:
 	template <typename T>
 	void add(T value) {
 		if (!canAdd(sizeof(T))) {
+			g_logger().error("Cannot add value of size {}, buffer overflow", sizeof(T));
 			return;
 		}
 
-		memcpy(buffer + info.position, &value, sizeof(T));
+		memcpy(buffer.data() + info.position, &value, sizeof(T));
 		info.position += sizeof(T);
 		info.length += sizeof(T);
 	}
@@ -137,16 +143,16 @@ public:
 	}
 
 	uint8_t* getBuffer() {
-		return buffer;
+		return buffer.data();
 	}
 
 	const uint8_t* getBuffer() const {
-		return buffer;
+		return buffer.data();
 	}
 
 	uint8_t* getBodyBuffer() {
 		info.position = 2;
-		return buffer + HEADER_LENGTH;
+		return buffer.data() + HEADER_LENGTH;
 	}
 
 protected:
@@ -155,11 +161,7 @@ protected:
 	}
 
 	bool canRead(int32_t size) {
-		if ((info.position + size) > (info.length + 8) || size >= (NETWORKMESSAGE_MAXSIZE - info.position)) {
-			info.overrun = true;
-			return false;
-		}
-		return true;
+		return size <= (info.length - (info.position - INITIAL_BUFFER_POSITION));
 	}
 
 	struct NetworkMessageInfo {
@@ -169,5 +171,5 @@ protected:
 	};
 
 	NetworkMessageInfo info;
-	uint8_t buffer[NETWORKMESSAGE_MAXSIZE];
+	std::vector<uint8_t> buffer;
 };

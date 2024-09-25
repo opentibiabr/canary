@@ -96,7 +96,7 @@ private:
 
 	// we have all the parse methods
 	void parsePacket(NetworkMessage &msg) override;
-	void parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte);
+	void parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte);
 	void onRecvFirstMessage(NetworkMessage &msg) override;
 	void onConnect() override;
 

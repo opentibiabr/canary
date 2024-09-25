@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/management/ban.hpp"
 #include "core.hpp"
 #include "declarations.hpp"
@@ -984,7 +982,7 @@ void ProtocolGame::addBless() {
 	player->checkAndShowBlessingMessage();
 }
 
-void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte) {
+void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte) {
 	if (!acceptPackets || g_game().getGameState() == GAME_STATE_SHUTDOWN) {
 		return;
 	}
@@ -1660,12 +1658,12 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 		return;
 	}
 
-	uint16_t startBufferPosition = msg.getBufferPosition();
 	Module* outfitModule = g_modules().getEventByRecvbyte(0xD3, false);
 	if (outfitModule) {
 		outfitModule->executeOnRecvbyte(player, msg);
 	}
 
+	uint16_t startBufferPosition = msg.getBufferPosition();
 	if (msg.getBufferPosition() == startBufferPosition) {
 		uint8_t outfitType = !oldProtocol ? msg.getByte() : 0;
 		Outfit_t newOutfit;

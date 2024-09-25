@@ -859,7 +859,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
-	g_dispatcher().addEvent([self = getThis(), characterName, accountId, operatingSystem] { self->login(characterName, accountId, operatingSystem); }, "ProtocolGame::login");
+	g_dispatcher().addEvent([self = getThis(), characterName, accountId, operatingSystem] { self->login(characterName, accountId, operatingSystem); }, __FUNCTION__);
 }
 
 void ProtocolGame::onConnect() {
@@ -5044,18 +5044,20 @@ void ProtocolGame::updateCoinBalance() {
 		return;
 	}
 
-	g_dispatcher().addEvent([playerId = player->getID()] {
-		const auto &threadPlayer = g_game().getPlayerByID(playerId);
-		if (threadPlayer && threadPlayer->getAccount()) {
-			const auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Normal));
-			const auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+	g_dispatcher().addEvent(
+		[playerId = player->getID()] {
+			const auto &threadPlayer = g_game().getPlayerByID(playerId);
+			if (threadPlayer && threadPlayer->getAccount()) {
+				const auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Normal));
+				const auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Transferable));
 
-			threadPlayer->coinBalance = coins;
-			threadPlayer->coinTransferableBalance = transferCoins;
-			threadPlayer->sendCoinBalance();
-		}
-	},
-	                        "ProtocolGame::updateCoinBalance");
+				threadPlayer->coinBalance = coins;
+				threadPlayer->coinTransferableBalance = transferCoins;
+				threadPlayer->sendCoinBalance();
+			}
+		},
+		__FUNCTION__
+	);
 }
 
 void ProtocolGame::sendMarketLeave() {
@@ -5372,7 +5374,8 @@ void ProtocolGame::sendForgingData() {
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
-	std::map<int32_t, std::map<uint16_t, std::map<uint8_t, uint16_t>>> convergenceItemsMap;
+	std::map<int32_t, std::map<uint16_t, std::map<uint8_t, uint16_t>>> convergenceFusionItemsMap;
+	std::map<int32_t, std::map<uint16_t, std::map<uint8_t, uint16_t>>> convergenceTransferItemsMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
 
@@ -5407,7 +5410,12 @@ void ProtocolGame::sendOpenForge() {
 				getForgeInfoMap(item, receiveTierItemMap);
 			}
 			if (itemClassification == 4) {
-				getForgeInfoMap(item, convergenceItemsMap[item->getClassification()]);
+				auto slotPosition = item->getSlotPosition();
+				if ((slotPosition & SLOTP_TWO_HAND) != 0) {
+					slotPosition = SLOTP_HAND;
+				}
+				getForgeInfoMap(item, convergenceFusionItemsMap[slotPosition]);
+				getForgeInfoMap(item, convergenceTransferItemsMap[item->getClassification()]);
 			}
 		}
 	}
@@ -5415,7 +5423,7 @@ void ProtocolGame::sendOpenForge() {
 	// Checking size of map to send in the addByte (total fusion items count)
 	uint8_t fusionTotalItemsCount = 0;
 	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
-		for (const auto [itemTier, itemCount] : tierAndCountMap) {
+		for (const auto &[itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
 				fusionTotalItemsCount++;
 			}
@@ -5432,7 +5440,7 @@ void ProtocolGame::sendOpenForge() {
 
 	msg.add<uint16_t>(fusionTotalItemsCount);
 	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
-		for (const auto [itemTier, itemCount] : tierAndCountMap) {
+		for (const auto &[itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
 				msg.addByte(0x01); // Number of friend items?
 				msg.add<uint16_t>(itemId);
@@ -5454,12 +5462,12 @@ void ProtocolGame::sendOpenForge() {
 	    1 byte: tier
 	    2 bytes: count
 	*/
-	for (const auto &[slot, itemMap] : convergenceItemsMap) {
+	for (const auto &[slot, itemMap] : convergenceFusionItemsMap) {
 		uint8_t totalItemsCount = 0;
 		auto totalItemsCountPosition = msg.getBufferPosition();
 		msg.skipBytes(1); // Total items count
 		for (const auto &[itemId, tierAndCountMap] : itemMap) {
-			for (const auto [tier, itemCount] : tierAndCountMap) {
+			for (const auto &[tier, itemCount] : tierAndCountMap) {
 				if (tier >= maxConfigTier) {
 					continue;
 				}
@@ -5490,11 +5498,15 @@ void ProtocolGame::sendOpenForge() {
 			// Let's access the itemType to check the item's (donator of tier) classification level
 			// Must be the same as the item that will receive the tier
 			const ItemType &donorType = Item::items[itemId];
+			auto donorSlotPosition = donorType.slotPosition;
+			if ((donorSlotPosition & SLOTP_TWO_HAND) != 0) {
+				donorSlotPosition = SLOTP_HAND;
+			}
 
 			// Total count of item (donator of tier)
 			auto donorTierTotalItemsCount = getIterationIncreaseCount(tierAndCountMap);
 			msg.add<uint16_t>(donorTierTotalItemsCount);
-			for (const auto [donorItemTier, donorItemCount] : tierAndCountMap) {
+			for (const auto &[donorItemTier, donorItemCount] : tierAndCountMap) {
 				msg.add<uint16_t>(itemId);
 				msg.addByte(donorItemTier);
 				msg.add<uint16_t>(donorItemCount);
@@ -5504,7 +5516,11 @@ void ProtocolGame::sendOpenForge() {
 			for (const auto &[iteratorItemId, unusedTierAndCountMap] : receiveTierItemMap) {
 				// Let's access the itemType to check the item's (receiver of tier) classification level
 				const ItemType &receiveType = Item::items[iteratorItemId];
-				if (donorType.upgradeClassification == receiveType.upgradeClassification) {
+				auto receiveSlotPosition = receiveType.slotPosition;
+				if ((receiveSlotPosition & SLOTP_TWO_HAND) != 0) {
+					receiveSlotPosition = SLOTP_HAND;
+				}
+				if (donorType.upgradeClassification == receiveType.upgradeClassification && donorSlotPosition == receiveSlotPosition) {
 					receiveTierTotalItemCount++;
 				}
 			}
@@ -5515,8 +5531,12 @@ void ProtocolGame::sendOpenForge() {
 				for (const auto &[receiveItemId, receiveTierAndCountMap] : receiveTierItemMap) {
 					// Let's access the itemType to check the item's (receiver of tier) classification level
 					const ItemType &receiveType = Item::items[receiveItemId];
-					if (donorType.upgradeClassification == receiveType.upgradeClassification) {
-						for (const auto [receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
+					auto receiveSlotPosition = receiveType.slotPosition;
+					if ((receiveSlotPosition & SLOTP_TWO_HAND) != 0) {
+						receiveSlotPosition = SLOTP_HAND;
+					}
+					if (donorType.upgradeClassification == receiveType.upgradeClassification && donorSlotPosition == receiveSlotPosition) {
+						for (const auto &[receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
 							msg.add<uint16_t>(receiveItemId);
 							msg.add<uint16_t>(receiveItemCount);
 						}
@@ -5542,7 +5562,7 @@ void ProtocolGame::sendOpenForge() {
 	        2 bytes: item id
 	        2 bytes: count
 	*/
-	for (const auto &[slot, itemMap] : convergenceItemsMap) {
+	for (const auto &[slot, itemMap] : convergenceTransferItemsMap) {
 		uint16_t donorCount = 0;
 		uint16_t receiverCount = 0;
 		auto donorCountPosition = msg.getBufferPosition();

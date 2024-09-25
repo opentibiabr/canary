@@ -122,6 +122,10 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 		// Experience load
 		IOLoginDataLoad::loadPlayerExperience(player, result);
 
+		if (disableIrrelevantInfo) {
+			return true;
+		}
+
 		// Blessings load
 		IOLoginDataLoad::loadPlayerBlessings(player, result);
 
@@ -178,10 +182,6 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 
 		// Load instant spells list
 		IOLoginDataLoad::loadPlayerInstantSpellList(player, result);
-
-		if (disableIrrelevantInfo) {
-			return true;
-		}
 
 		// load forge history
 		IOLoginDataLoad::loadPlayerForgeHistory(player, result);

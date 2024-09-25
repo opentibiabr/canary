@@ -5569,7 +5569,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 
 double_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 	double_t result = reflectPercent[combatTypeToIndex(combat)];
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;

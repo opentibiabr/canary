@@ -27,8 +27,6 @@ public:
 	// 2 bytes for encrypted message size
 	static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
 
-	NetworkMessage() : buffer(NETWORKMESSAGE_MAXSIZE, 0) {}
-
 	void reset() {
 		info = {};
 	}
@@ -52,14 +50,21 @@ public:
 
 	template <typename T>
 	T get() {
+		static_assert(!std::is_same_v<T, double>, "Error: get<double>() is not allowed. Use getDouble() instead.");
+		static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
 		if (!canRead(sizeof(T))) {
 			return T();
 		}
 
-		T v;
-		memcpy(&v, buffer.data() + info.position, sizeof(T));
+		// Create a temporary byte array to store the value read from the buffer.
+		std::array<unsigned char, sizeof(T)> tempBuffer;
+		// Copy data from the buffer to the temporary array using std::ranges::copy
+		std::span<const unsigned char> sourceSpan(buffer.data() + info.position, sizeof(T));
+		std::ranges::copy(sourceSpan, tempBuffer.begin());
+		// Update the read position in the buffer
 		info.position += sizeof(T);
-		return v;
+		// Convert the byte array to type T using std::bit_cast and return the result
+		return std::bit_cast<T>(tempBuffer);
 	}
 
 	std::string getString(uint16_t stringLen = 0, const std::source_location &location = std::source_location::current());
@@ -71,24 +76,25 @@ public:
 	}
 
 	// simply write functions for outgoing message
-	void addByte(uint8_t value) {
-		if (!canAdd(1)) {
-			g_logger().error("Cannot add byte, buffer overflow");
-			return;
-		}
-
-		buffer[info.position++] = value;
-		info.length++;
-	}
+	void addByte(uint8_t value, std::source_location location = std::source_location::current());
 
 	template <typename T>
-	void add(T value) {
+	void add(T value, std::source_location location = std::source_location::current()) {
 		if (!canAdd(sizeof(T))) {
 			g_logger().error("Cannot add value of size {}, buffer overflow", sizeof(T));
 			return;
 		}
 
-		memcpy(buffer.data() + info.position, &value, sizeof(T));
+		g_logger().trace("[{}] called line '{}:{}' in '{}'", __FUNCTION__, location.line(), location.column(), location.function_name());
+
+		// Ensure that T is trivially copyable
+		static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
+		// Convert the value to an array of unsigned char using std::bit_cast
+		auto byteArray = std::bit_cast<std::array<unsigned char, sizeof(T)>>(value);
+		// Create a span from the byte array
+		std::span<const unsigned char> byteSpan(byteArray);
+		// Copy the bytes into the buffer
+		std::ranges::copy(byteSpan.begin(), byteSpan.end(), buffer.begin() + info.position);
 		info.position += sizeof(T);
 		info.length += sizeof(T);
 	}
@@ -130,6 +136,7 @@ public:
 	void addString(const std::string &value, const std::source_location &location = std::source_location::current(), const std::string &function = "");
 
 	void addDouble(double value, uint8_t precision = 2);
+	double getDouble();
 
 	// write functions for complex types
 	void addPosition(const Position &pos);
@@ -173,7 +180,6 @@ public:
 		return buffer.data() + HEADER_LENGTH;
 	}
 
-protected:
 	bool canAdd(size_t size) const {
 		return (size + info.position) < MAX_BODY_LENGTH;
 	}
@@ -182,6 +188,9 @@ protected:
 		return size <= (info.length - (info.position - INITIAL_BUFFER_POSITION));
 	}
 
+	void append(const NetworkMessage& other);
+
+protected:
 	struct NetworkMessageInfo {
 		MsgSize_t length = 0;
 		MsgSize_t position = INITIAL_BUFFER_POSITION;
@@ -189,5 +198,5 @@ protected:
 	};
 
 	NetworkMessageInfo info;
-	std::vector<uint8_t> buffer;
+	std::array<uint8_t, NETWORKMESSAGE_MAXSIZE> buffer = {};
 };

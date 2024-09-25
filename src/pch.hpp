@@ -47,6 +47,7 @@
 #include <mutex>
 #include <stack>
 #include <source_location>
+#include <span>
 
 // --------------------
 // System Includes

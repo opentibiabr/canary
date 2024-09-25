@@ -9975,10 +9975,6 @@ uint32_t Game::makeInfluencedMonster() {
 		return 0;
 	}
 
-	if (forgeableMonsters.empty()) {
-		return 0;
-	}
-
 	auto maxTries = forgeableMonsters.size();
 	uint16_t tries = 0;
 	std::shared_ptr<Monster> monster = nullptr;
@@ -10191,15 +10187,18 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	forgeableMonsters.clear();
-	for (const auto &[monsterId, monster] : monsters) {
-		const auto &monsterTile = monster->getTile();
-		if (!monsterTile) {
-			continue;
-		}
+	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT, __FUNCTION__);
+	forgeableMonsters.size() < influencedLimit * 1.2) {
+		forgeableMonsters.clear();
+		for (const auto &[monsterId, monster] : monsters) {
+			const auto &monsterTile = monster->getTile();
+			if (!monsterTile) {
+				continue;
+			}
 
-		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
-			forgeableMonsters.emplace_back(monster->getID());
+			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
+				forgeableMonsters.emplace_back(monster->getID());
+			}
 		}
 	}
 
@@ -10251,6 +10250,8 @@ void Game::createInfluencedMonsters() {
 
 		created++;
 	}
+
+	print_stack_trace();
 }
 
 void Game::checkForgeEventId(uint32_t monsterId) {

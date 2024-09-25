@@ -35,35 +35,48 @@ template <typename T, size_t CAPACITY>
 class LockfreePoolingAllocator {
 public:
 	using value_type = T;
+	using pointer = T*;
+	using const_pointer = const T*;
+	using void_pointer = void*;
+	using const_void_pointer = const void*;
+	using size_type = std::size_t;
+	using difference_type = std::ptrdiff_t;
 
-	LockfreePoolingAllocator() = default;
+	template <typename U>
+	struct rebind {
+		using other = LockfreePoolingAllocator<U, CAPACITY>;
+	};
+
+	LockfreePoolingAllocator() noexcept = default;
 
 	template <typename U>
 	explicit LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY> &) noexcept { }
 
-	T* allocate(size_t n) {
-		auto &freeList = LockfreeFreeList<T, CAPACITY>::get();
+	~LockfreePoolingAllocator() = default;
+
+	pointer allocate(size_type n) {
 		if (n == 1) {
-			T* p;
-			if (freeList.try_pop(p)) {
+			pointer p;
+			if (LockfreeFreeList<T, CAPACITY>::get().try_pop(p)) {
 				return p;
 			}
 		}
-		return static_cast<T*>(::operator new(n * sizeof(T), static_cast<std::align_val_t>(alignof(T))));
+		return static_cast<pointer>(::operator new(n * sizeof(T), static_cast<std::align_val_t>(alignof(T))));
 	}
 
-	void deallocate(T* p, size_t n) noexcept {
+	void deallocate(pointer p, size_type n) noexcept {
 		if (n == 1) {
-			auto &freeList = LockfreeFreeList<T, CAPACITY>::get();
-			if (freeList.try_push(p)) {
+			if (LockfreeFreeList<T, CAPACITY>::get().try_push(p)) {
 				return;
 			}
 		}
 		::operator delete(p, static_cast<std::align_val_t>(alignof(T)));
 	}
 
-	template <typename U>
-	struct rebind {
-		using other = LockfreePoolingAllocator<U, CAPACITY>;
-	};
+	bool operator==(const LockfreePoolingAllocator &) const noexcept {
+		return true;
+	}
+	bool operator!=(const LockfreePoolingAllocator &other) const noexcept {
+		return !(*this == other);
+	}
 };

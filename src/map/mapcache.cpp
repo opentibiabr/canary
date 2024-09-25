@@ -102,17 +102,14 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 	return item;
 }
 
-std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
+std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y) {
 	const auto &cachedTile = floor->getTileCache(x, y);
 	const auto oldTile = floor->getTile(x, y);
 	if (!cachedTile) {
 		return oldTile;
 	}
 
-	std::unique_lock l(floor->getMutex());
-
 	const uint8_t z = floor->getZ();
-
 	const auto map = dynamic_cast<Map*>(this);
 
 	std::vector<std::shared_ptr<Creature>> oldCreatureList;
@@ -125,6 +122,7 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	}
 
 	std::shared_ptr<Tile> tile = nullptr;
+
 	if (cachedTile->isHouse()) {
 		const auto &house = map->houses.getHouse(cachedTile->houseId);
 		tile = std::make_shared<HouseTile>(x, y, z, house);

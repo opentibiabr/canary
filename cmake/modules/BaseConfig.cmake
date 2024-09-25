@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 # *****************************************************************************
 # CMake Features
 # *****************************************************************************
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(GNUCXX_MINIMUM_VERSION 11)
 set(MSVC_MINIMUM_VERSION "19.32")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,6 +17,14 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # Generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Verifique se o compilador suporta RTTI
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
+        CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -frtti")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR")
+endif()
 
 # *****************************************************************************
 # Packages / Libs

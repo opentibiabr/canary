@@ -111,7 +111,7 @@ public:
 	}
 
 protected:
-	std::shared_ptr<Tile> getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y);
+	std::shared_ptr<Tile> getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y);
 
 	std::unordered_map<uint32_t, MapSector> mapSectors;
 

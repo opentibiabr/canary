@@ -344,13 +344,7 @@ void Connection::internalWorker() {
 	}
 
 	protocol->onSendMessage(outputMessage);
-
-	try {
-		asio::post(socket.get_executor(), [self = shared_from_this(), outputMessage] { self->internalSend(outputMessage); });
-	} catch (std::system_error &e) {
-		g_logger().error("[Connection::internalWorker] - Exception: {}", e.what());
-		close(FORCE_CLOSE);
-	}
+	internalSend(outputMessage);
 }
 
 uint32_t Connection::getIP() {
@@ -403,12 +397,7 @@ void Connection::onWriteOperation(const std::error_code &error) {
 	OutputMessage_ptr outputMessage;
 	if (messageQueue.try_pop(outputMessage)) {
 		protocol->onSendMessage(outputMessage);
-		try {
-			asio::post(socket.get_executor(), [self = shared_from_this(), outputMessage] { self->internalSend(outputMessage); });
-		} catch (std::system_error &e) {
-			g_logger().error("[Connection::onWriteOperation] - error: {}", e.what());
-			close(FORCE_CLOSE);
-		}
+		internalSend(outputMessage);
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		closeSocket(); // Fechar o socket se a conexão estiver fechada
 	}

@@ -391,7 +391,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 			continue;
 		}
 
-		if(!item->hasMarketAttributes()){
+		if (!item->hasMarketAttributes()) {
 			continue;
 		}
 

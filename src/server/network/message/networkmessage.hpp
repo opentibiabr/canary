@@ -62,7 +62,7 @@ public:
 		return v;
 	}
 
-	std::string getString(uint16_t stringLen = 0);
+	std::string getString(uint16_t stringLen = 0, const std::source_location &location = std::source_location::current());
 	Position getPosition();
 
 	// skips count unknown/unused bytes in an incoming message
@@ -100,16 +100,34 @@ public:
 	 * Adds a string to the network message buffer.
 	 *
 	 * @param value The string value to be added to the message buffer.
-	 * @param function * @param function An optional parameter that specifies the function name from which `addString` is invoked.
-	 * Including this enhances logging by adding the function name to the debug and error log messages.
-	 * This helps in debugging by indicating the context when issues occur, such as attempting to add an
-	 * empty string or when there are message size errors.
 	 *
-	 * When the function parameter is used, it aids in identifying the context in log messages,
-	 * making it easier to diagnose issues related to network message construction,
-	 * especially in complex systems where the same method might be called from multiple places.
+	 * @param location An optional parameter that captures the location from which `addString` is invoked.
+	 * This enhances logging by including the file name, line number, and function name
+	 * in debug and error log messages. It helps in debugging by indicating the context when issues occur,
+	 * such as attempting to add an empty string or when there are message size errors.
+	 *
+	 * Using `std::source_location` automatically captures the caller context, making it easier
+	 * to diagnose issues related to network message construction, especially in complex systems
+	 * where the same method might be called from multiple places.
+	 *
+	 * @param function An optional string parameter provided from Lua that specifies the name of the Lua
+	 * function or context from which `addString` is called. When this parameter is not empty,
+	 * it overrides the information captured by `std::source_location` in log messages.
+	 * This allows for more precise and meaningful logging in scenarios where `addString` is invoked
+	 * directly from Lua scripts, enabling developers to trace the origin of network messages
+	 * back to specific Lua functions or contexts.
+	 *
+	 * This dual-parameter approach ensures flexibility:
+	 * - When called from C++ without specifying `function`, `std::source_location` provides the necessary
+	 *   context for logging.
+	 * - When called from Lua with a `function` name, the provided string offers clearer insight into
+	 *   the Lua-side invocation, enhancing the ability to debug and maintain Lua-C++ integrations.
+	 *
+	 * @note It is recommended to use the `function` parameter when invoking `addString` from Lua to ensure
+	 * that log messages accurately reflect the Lua context. When invoking from C++, omitting the `function`
+	 * parameter allows `std::source_location` to automatically capture the C++ context.
 	 */
-	void addString(const std::string &value, const std::string &function = "");
+	void addString(const std::string &value, const std::source_location &location = std::source_location::current(), const std::string &function = "");
 
 	void addDouble(double value, uint8_t precision = 2);
 

@@ -287,12 +287,9 @@ void SpawnMonster::cleanup() {
 	for (auto it = spawnedMonsterMap.begin(); it != spawnedMonsterMap.end(); ) {
 		auto &monster = it->second;
 		if (monster == nullptr || monster->isRemoved()) {
-			if (monster) {
-				monster->lastSpawn = OTSYS_TIME();
-			}
 			it = spawnedMonsterMap.erase(it);
 		} else {
-			++it;
+			++it;  // Avança o iterador
 		}
 	}
 }

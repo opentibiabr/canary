@@ -26,9 +26,7 @@ local targetIdList = {
 local flasks = Action()
 
 function flasks.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or not target:getItem() then
-		return false
-	end
+
 
 	local charges = target:getCharges()
 	local itemCount = item:getCount()

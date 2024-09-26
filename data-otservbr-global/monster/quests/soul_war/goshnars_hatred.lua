@@ -67,6 +67,11 @@ monster.light = {
 	color = 0,
 }
 
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
 monster.voices = {
 	interval = 5000,
 	chance = 10,

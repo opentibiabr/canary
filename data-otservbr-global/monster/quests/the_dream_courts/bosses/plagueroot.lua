@@ -91,7 +91,7 @@ monster.loot = {
 	{ name = "berserk potion", chance = 20000 },
 	{ name = "gold ingot", chance = 20000 },
 	{ name = "violet gem", chance = 20000 },
-	{ name = "pomegranate", chance = 20000 },
+	{ name = "pomegranate", chance = 400 },
 	{ name = "blue gem", chance = 20000 },
 	{ id = 282, chance = 20000 }, -- giant shimmering pearl
 	{ name = "plagueroot offshoot", chance = 20000 },

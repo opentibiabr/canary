@@ -100,6 +100,7 @@ monster.loot = {
 	{ name = "platinum amulet", chance = 130 },
 	{ id = 3098, chance = 200 }, -- ring of healing
 	{ name = "werewolf amulet", chance = 50 },
+    { id = 22083, chance = 600 }, -- moonlight crystals
 	{ id = 27706, chance = 30 }, -- werefox trophy
 }
 

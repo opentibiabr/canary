@@ -67,6 +67,10 @@ monster.light = {
 	color = 0,
 }
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 monster.voices = {
 	interval = 5000,
 	chance = 10,
@@ -95,6 +99,7 @@ monster.loot = {
 	{ name = "figurine of cruelty", chance = 400 },
 	{ name = "spectral saddle", chance = 400 },
 	{ name = "spectral horse tack", chance = 400 },
+	{ name = "the skull of a beast", chance = 400 },
 	{ name = "bag you desire", chance = 100 },
 }
 

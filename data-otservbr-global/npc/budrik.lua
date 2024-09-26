@@ -75,11 +75,16 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.TibiaTales.ToOutfoxAFoxQuest.Questline) == 2 and player:getLevel() <= 40 and player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos) < 0 then
 			npcHandler:say({
 				"I am so angry I could spit grit! That damn {Horned Fox} and his attacks! Let's show those bull-heads that they have messed with the wrong people....",
-				"I want you to kill 5000 minotaurs - no matter where - for me and all the dwarfs of Kazordoon! Are you willing to do that?",
+				"I want you to kill 1000 minotaurs - no matter where - for me and all the dwarfs of Kazordoon! Are you willing to do that?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
+<<<<<<< Updated upstream
 		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount) >= 5000 then
+=======
+		elseif player:getStorageValue(Storage.KillingInTheNameOf.BudrikMinos) == 0 then
+			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount) >= 1000 then
+>>>>>>> Stashed changes
 				npcHandler:say({
 					"By all that is holy! You are a truly great warrior! With much patience! I have just found out the location the hideout of The Horned Fox! I have marked the spot on your map so you can find it. Go there and slay him!! ...",
 					"BUT, you will have only this ONE chance to catch him! Good luck!",
@@ -87,7 +92,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos, 1)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.FoxCount, 0)
 			else
-				npcHandler:say("Come back when you have slain {5000 minotaurs!}", npc, creature)
+				npcHandler:say("Come back when you have slain {1000 minotaurs!}", npc, creature)
 			end
 		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos) == 2 and player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.FoxCount) == 1 then
 			npcHandler:say("It was very decent of you to help me, and I am thankful, really I am, but now I have to get back to my duties as a foreman.", npc, creature)

@@ -93,7 +93,7 @@ monster.loot = {
 	{ id = 22085, chance = 200 }, -- fur armor
 	{ id = 22102, chance = 200 }, -- wereboar trophy
 	{ id = 22060, chance = 200 }, -- werewolf amulet
-	{ id = 22083, chance = 200 }, -- moonlight crystals
+	{ id = 22083, chance = 600 }, -- moonlight crystals
 }
 
 monster.attacks = {

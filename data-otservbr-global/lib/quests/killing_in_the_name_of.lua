@@ -100,7 +100,7 @@ tasks = {
 			},
 		},
 		[3] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Rotworms",
 			level = { 20, 39 },
 			premium = true,
@@ -114,7 +114,7 @@ tasks = {
 			},
 		},
 		[4] = {
-			killsRequired = 500,
+			killsRequired = 200,
 			raceName = "Cyclops",
 			level = { 30, 59 },
 			premium = true,
@@ -131,7 +131,7 @@ tasks = {
 	},
 	Gabel = {
 		[1] = {
-			killsRequired = 500,
+			killsRequired = 200,
 			raceName = "Green Djinns or Efreets",
 			level = { 1, 9999 },
 			premium = true,
@@ -147,7 +147,7 @@ tasks = {
 	},
 	Malor = {
 		[1] = {
-			killsRequired = 500,
+			killsRequired = 200,
 			raceName = "Blue Djinns or Marids",
 			level = { 1, 9999 },
 			premium = true,
@@ -163,7 +163,7 @@ tasks = {
 	},
 	RaymondStriker = {
 		[1] = {
-			killsRequired = 3000,
+			killsRequired = 1000,
 			raceName = "Pirates",
 			level = { 1, 9999 },
 			premium = true,
@@ -181,7 +181,7 @@ tasks = {
 	},
 	Budrik = {
 		[1] = {
-			killsRequired = 5000,
+			killsRequired = 1000,
 			raceName = "Minotaurs",
 			level = { 1, 40 },
 			norepeatable = true,
@@ -196,7 +196,7 @@ tasks = {
 	},
 	Lugri = {
 		[1] = {
-			killsRequired = 4000,
+			killsRequired = 100,
 			raceName = "Necromancers and Priestesses",
 			level = { 60, 9999 },
 			norepeatable = true,
@@ -212,7 +212,7 @@ tasks = {
 	},
 	GrizzlyAdams = {
 		[1] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Crocodiles",
 			bossName = "Snapper",
 			level = { 6, 49 },
@@ -229,7 +229,7 @@ tasks = {
 			},
 		},
 		[2] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Badgers",
 			level = { 6, 49 },
 			premium = true,
@@ -242,7 +242,7 @@ tasks = {
 			},
 		},
 		[3] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Tarantulas",
 			bossName = "Hide",
 			level = { 6, 49 },
@@ -276,7 +276,7 @@ tasks = {
 			},
 		},
 		[5] = {
-			killsRequired = 200,
+			killsRequired = 100,
 			raceName = "Stone Golems",
 			level = { 6, 49 },
 			premium = true,
@@ -289,7 +289,7 @@ tasks = {
 			},
 		},
 		[6] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Mammoths",
 			bossName = "Bloodtusk",
 			level = { 6, 49 },
@@ -306,7 +306,7 @@ tasks = {
 			},
 		},
 		[7] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Gnarlhounds",
 			level = { 6, 49 },
 			premium = true,
@@ -319,7 +319,7 @@ tasks = {
 			},
 		},
 		[8] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Terramites",
 			level = { 6, 49 },
 			premium = true,
@@ -347,7 +347,7 @@ tasks = {
 			},
 		},
 		[10] = {
-			killsRequired = 300,
+			killsRequired = 150,
 			raceName = "Thornback Tortoises",
 			level = { 6, 49 },
 			premium = true,
@@ -360,7 +360,7 @@ tasks = {
 			},
 		},
 		[11] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Gargoyles",
 			level = { 6, 49 },
 			premium = true,
@@ -372,7 +372,7 @@ tasks = {
 			},
 		},
 		[12] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Ice Golems",
 			bossName = "Shardhead",
 			level = { 50, 79 },
@@ -406,7 +406,7 @@ tasks = {
 			},
 		},
 		[14] = {
-			killsRequired = 400,
+			killsRequired = 200,
 			raceName = "Mutated Rats",
 			bossName = "Esmeralda",
 			level = { 50, 79 },
@@ -440,7 +440,7 @@ tasks = {
 			},
 		},
 		[16] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Wyverns",
 			level = { 50, 79 },
 			premium = true,
@@ -453,7 +453,7 @@ tasks = {
 			},
 		},
 		[17] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Lancer Beetles",
 			level = { 50, 79 },
 			premium = true,
@@ -466,7 +466,7 @@ tasks = {
 			},
 		},
 		[18] = {
-			killsRequired = 400,
+			killsRequired = 100,
 			raceName = "Wailing Widows",
 			level = { 50, 79 },
 			premium = true,
@@ -479,7 +479,7 @@ tasks = {
 			},
 		},
 		[19] = {
-			killsRequired = 250,
+			killsRequired = 100,
 			raceName = "Killer Caimans",
 			level = { 50, 79 },
 			premium = true,
@@ -492,7 +492,7 @@ tasks = {
 			},
 		},
 		[20] = {
-			killsRequired = 300,
+			killsRequired = 100,
 			raceName = "Bonebeasts",
 			bossName = "Ribstride",
 			level = { 50, 79 },
@@ -509,7 +509,7 @@ tasks = {
 			},
 		},
 		[21] = {
-			killsRequired = 300,
+			killsRequired = 150,
 			raceName = "Crystal Spiders",
 			bossName = "Bloodweb",
 			level = { 50, 79 },
@@ -526,7 +526,7 @@ tasks = {
 			},
 		},
 		[22] = {
-			killsRequired = 300,
+			killsRequired = 200,
 			raceName = "Mutated Tigers",
 			level = { 50, 79 },
 			premium = true,
@@ -539,7 +539,7 @@ tasks = {
 			},
 		},
 		[23] = {
-			killsRequired = 600,
+			killsRequired = 300,
 			raceName = "Underwater Quara",
 			bossName = "Thul",
 			level = { 80, 129 },
@@ -560,7 +560,7 @@ tasks = {
 			},
 		},
 		[24] = {
-			killsRequired = 500,
+			killsRequired = 250,
 			raceName = "Giant Spiders",
 			bossName = "Old Widow",
 			level = { 80, 129 },
@@ -577,7 +577,7 @@ tasks = {
 			},
 		},
 		[25] = {
-			killsRequired = 300,
+			killsRequired = 200,
 			raceName = "Werewolves",
 			bossName = "Hemming",
 			level = { 80, 129 },
@@ -594,7 +594,7 @@ tasks = {
 			},
 		},
 		[26] = {
-			killsRequired = 400,
+			killsRequired = 300,
 			raceName = "Nightmares",
 			bossName = "Tormentor",
 			level = { 80, 129 },
@@ -612,7 +612,7 @@ tasks = {
 			},
 		},
 		[27] = {
-			killsRequired = 600,
+			killsRequired = 250,
 			raceName = "Hellspawns",
 			bossName = "Flameborn",
 			level = { 80, 129 },
@@ -628,7 +628,7 @@ tasks = {
 			},
 		},
 		[28] = {
-			killsRequired = 800,
+			killsRequired = 400,
 			raceName = "High Class Lizards",
 			bossName = "Fazzrah",
 			level = { 80, 129 },
@@ -649,7 +649,7 @@ tasks = {
 			},
 		},
 		[29] = {
-			killsRequired = 600,
+			killsRequired = 200,
 			raceName = "Stampors",
 			bossName = "Tromphonyte",
 			level = { 80, 129 },
@@ -666,7 +666,7 @@ tasks = {
 			},
 		},
 		[30] = {
-			killsRequired = 500,
+			killsRequired = 200,
 			raceName = "Brimstone Bugs",
 			bossName = "Sulphur Scuttler",
 			level = { 80, 129 },
@@ -683,7 +683,7 @@ tasks = {
 			},
 		},
 		[31] = {
-			killsRequired = 400,
+			killsRequired = 200,
 			raceName = "Mutated Bats",
 			bossName = "Bruise Payne",
 			level = { 80, 129 },
@@ -700,7 +700,7 @@ tasks = {
 			},
 		},
 		[32] = {
-			killsRequired = 650,
+			killsRequired = 250,
 			raceName = "Hydras",
 			bossName = "Many",
 			level = { 130, 9999 },
@@ -718,7 +718,7 @@ tasks = {
 			},
 		},
 		[33] = {
-			killsRequired = 800,
+			killsRequired = 250,
 			raceName = "Serpent Spawns",
 			bossName = "Noxious Spawn",
 			level = { 130, 9999 },
@@ -736,7 +736,7 @@ tasks = {
 			},
 		},
 		[34] = {
-			killsRequired = 500,
+			killsRequired = 250,
 			raceName = "Medusae",
 			bossName = "Gorgo",
 			level = { 130, 9999 },
@@ -754,7 +754,7 @@ tasks = {
 			},
 		},
 		[35] = {
-			killsRequired = 700,
+			killsRequired = 250,
 			raceName = "Behemoths",
 			bossName = "Stonecracker",
 			level = { 130, 9999 },
@@ -772,7 +772,7 @@ tasks = {
 			},
 		},
 		[36] = {
-			killsRequired = 900,
+			killsRequired = 300,
 			raceName = "Sea Serpents",
 			bossName = "Leviathan",
 			level = { 130, 9999 },
@@ -791,7 +791,7 @@ tasks = {
 			},
 		},
 		[37] = {
-			killsRequired = 250,
+			killsRequired = 150,
 			raceName = "Hellhounds",
 			bossName = "Kerberos",
 			level = { 130, 9999 },
@@ -809,7 +809,7 @@ tasks = {
 			},
 		},
 		[38] = {
-			killsRequired = 500,
+			killsRequired = 200,
 			raceName = "Ghastly Dragons",
 			bossName = "Ethershreck",
 			level = { 130, 9999 },
@@ -827,7 +827,7 @@ tasks = {
 			},
 		},
 		[39] = {
-			killsRequired = 900,
+			killsRequired = 400,
 			raceName = "Drakens",
 			bossName = "Paiz the Pauperizer",
 			level = { 130, 9999 },
@@ -848,7 +848,7 @@ tasks = {
 			},
 		},
 		[40] = {
-			killsRequired = 650,
+			killsRequired = 250,
 			raceName = "Destroyers",
 			bossName = "Bretzecutioner",
 			level = { 130, 9999 },
@@ -866,7 +866,7 @@ tasks = {
 			},
 		},
 		[41] = {
-			killsRequired = 400,
+			killsRequired = 200,
 			raceName = "Undead Dragons",
 			bossName = "Zanakeph",
 			level = { 130, 9999 },
@@ -884,7 +884,7 @@ tasks = {
 			},
 		},
 		[42] = {
-			killsRequired = 6666,
+			killsRequired = 1666,
 			raceName = "Demons",
 			level = { 130, 9999 },
 			rank = RANK_ELITEHUNTER,

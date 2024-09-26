@@ -110,17 +110,28 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Hrm. So you had the guts to enter that room. Well, it's all fake magic anyway and no real threat. ...",
 				"What are you looking at me for? Waiting for something? I told you that there was no reward. Despite being allowed to stand before me without being squashed like a bug. Get out of my sight!",
 			}, npc, creature)
+<<<<<<< Updated upstream
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers, 4)
 		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers) == 3 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount) >= 1000 then
+=======
+			player:setStorageValue(Storage.KillingInTheNameOf.LugriNecromancers, 4)
+		elseif player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) == 3 then
+			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount) >= 100 then
+>>>>>>> Stashed changes
 				npcHandler:say("Good job!", npc, creature)
 				player:addExperience(40000, true)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers, 4)
 			else
-				npcHandler:say("Come back when you have slain 1000 necromancers and priestesses!", npc, creature)
+				npcHandler:say("Come back when you have slain 100 necromancers and priestesses!", npc, creature)
 			end
+<<<<<<< Updated upstream
 		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.LugriNecromancers) == 4 then
 			npcHandler:say("You can't live without serving, can you? Although you are quite annoying, you're still somewhat useful. Continue killing Necromancers and Priestesses for me. 1000 are enough this time. What do you say?", npc, creature)
+=======
+		elseif player:getStorageValue(Storage.KillingInTheNameOf.LugriNecromancers) == 4 then
+			npcHandler:say("You can't live without serving, can you? Although you are quite annoying, you're still somewhat useful. Continue killing Necromancers and Priestesses for me. 100 are enough this time. What do you say?", npc, creature)
+>>>>>>> Stashed changes
 			npcHandler:setTopic(playerId, 8)
 		end
 	elseif MsgContains(message, "yes") then

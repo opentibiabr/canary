@@ -94,6 +94,7 @@ monster.loot = {
 	{ name = "sacred tree amulet", chance = 127 },
 	{ name = "golden mask", chance = 63 },
 	{ name = "mercenary sword", chance = 63 },
+	{ name = "tagralt-inlaid scabbard", chance = 252 },
 }
 
 monster.attacks = {

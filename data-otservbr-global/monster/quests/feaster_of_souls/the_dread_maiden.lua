@@ -94,8 +94,8 @@ monster.loot = {
 	{ id = 32595, chance = 4000 }, -- jagged sickle
 	{ id = 32591, chance = 4000 }, -- soulforged lantern
 	{ id = 32619, chance = 730 }, -- pair of nightmare boots
-	{ id = 32631, chance = 730 }, -- ghost claw
-	{ id = 32630, chance = 730 }, -- spooky hood
+	{ id = 32631, chance = 700 }, -- ghost claw
+	{ id = 32630, chance = 700 }, -- spooky hood
 }
 
 monster.attacks = {

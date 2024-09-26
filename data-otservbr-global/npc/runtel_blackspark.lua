@@ -54,6 +54,10 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
 	{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
+	{ itemName = "blue quiver", clientId = 35848, buy = 400 },
+	{ itemName = "diamond arrow", clientId = 35901, buy = 100 },
+	{ itemName = "spectral bolt", clientId = 35902, buy = 70 },
+	{ itemName = "magic shield potion", clientId = 35563, buy = 2000 },
 	{ itemName = "avalanche rune", clientId = 3161, buy = 57 },
 	{ itemName = "blank rune", clientId = 3147, buy = 10 },
 	{ itemName = "chameleon rune", clientId = 3178, buy = 210 },
@@ -98,6 +102,18 @@ npcConfig.shop = {
 	{ itemName = "ultimate mana potion", clientId = 23373, buy = 438 },
 	{ itemName = "ultimate spirit potion", clientId = 23374, buy = 438 },
 	{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
+	{ itemName = "durable exercise rod", clientId = 35283, buy = 1250000, count = 1800 },
+	{ itemName = "durable exercise wand", clientId = 35284, buy = 1250000, count = 1800 },
+	{ itemName = "durable exercise club", clientId = 35281, buy = 1250000, count = 1800 },
+	{ itemName = "durable exercise sword", clientId = 35279, buy = 1250000, count = 1800 },
+	{ itemName = "durable exercise axe", clientId = 35280, buy = 1250000, count = 1800 },
+	{ itemName = "durable exercise bow", clientId = 35282, buy = 1250000, count = 1800 },
+	{ itemName = "lasting exercise axe", clientId = 35286, buy = 8000000, count = 14400 },
+	{ itemName = "lasting exercise bow", clientId = 35288, buy = 8000000, count = 14400 },
+	{ itemName = "lasting exercise club", clientId = 35287, buy = 8000000, count = 14400 },
+	{ itemName = "lasting exercise sword", clientId = 35285, buy = 8000000, count = 14400 },
+	{ itemName = "lasting exercise rod", clientId = 35289, buy = 8000000, count = 14400 },
+	{ itemName = "lasting exercise wand", clientId = 35290, buy = 8000000, count = 14400 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -105,7 +121,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

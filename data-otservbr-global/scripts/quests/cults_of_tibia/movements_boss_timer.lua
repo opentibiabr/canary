@@ -33,6 +33,9 @@ local setting = {
 
 local bossTimer = MoveEvent()
 
+-- Define the cooldown duration in seconds
+local cooldownDuration = 28,800  -- 8 horas en segundos
+
 function bossTimer.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
 	if not player then
@@ -40,11 +43,21 @@ function bossTimer.onStepIn(creature, item, position, fromPosition)
 	end
 	for b = 1, #setting do
 		if player:getPosition() == Position(setting[b].tpPos) then
-			if not player:canFightBoss(setting[b].boss) then
-				player:sendCancelMessage("You need to wait for 20 hours to face this boss again.")
+			local lastFightTime = player:getBossCooldown(setting[b].boss)
+			local currentTime = os.time()
+
+			if lastFightTime and (currentTime - lastFightTime < cooldownDuration) then
+				local remainingTime = cooldownDuration - (currentTime - lastFightTime)
+				local hours = math.floor(remainingTime / 3600)
+				local minutes = math.floor((remainingTime % 3600) / 60)
+				player:sendCancelMessage(string.format("You need to wait for %02d:%02d to face this boss again.", hours, minutes, seconds))
 				player:teleportTo(fromPosition)
 				return false
 			end
+
+			-- Set the new cooldown time
+			player:setBossCooldown(setting[b].boss, os.time())
+
 			player:teleportTo(Position(setting[b].tpDestination))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		end

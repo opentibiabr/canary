@@ -90,7 +90,7 @@ monster.loot = {
 	{ id = 3449, chance = 5360, maxCount = 3 }, -- burst arrow
 	{ name = "orange", chance = 20300, maxCount = 2 },
 	{ name = "roll", chance = 11370, maxCount = 2 },
-	{ name = "sniper gloves", chance = 540 },
+	{ name = "sniper gloves", chance = 740 },
 	{ name = "slingshot", chance = 120 },
 	{ id = 7394, chance = 190 }, -- wolf trophy
 	{ id = 7397, chance = 520 }, -- deer trophy

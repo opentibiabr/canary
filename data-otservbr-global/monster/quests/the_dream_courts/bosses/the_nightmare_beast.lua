@@ -100,7 +100,7 @@ monster.loot = {
 	{ name = "gold token", chance = 64150 },
 	{ name = "green gem", chance = 19350 },
 	{ name = "huge chunk of crude iron", chance = 38710 },
-	{ name = "ice shield", chance = 9680 },
+	{ name = "ice shield", chance = 550 },
 	{ name = "magic sulphur", chance = 8490 },
 	{ name = "mastermind potion", chance = 12900, maxCount = 18 },
 	{ name = "mysterious remains", chance = 93400 },

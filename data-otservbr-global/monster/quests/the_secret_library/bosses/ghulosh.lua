@@ -98,7 +98,7 @@ monster.loot = {
 	{ id = 28341, chance = 1000 }, -- tessellated wall
 	{ name = "slightly rusted shield", chance = 5880 },
 	{ name = "slightly rusted helmet", chance = 35290 },
-	{ name = "epaulette", chance = 500 },
+	{ name = "epaulette", chance = 800 },
 	{ name = "giant emerald", chance = 500 },
 	{ name = "unliving demonbone", chance = 500 },
 }

@@ -62,6 +62,11 @@ monster.light = {
 	color = 0,
 }
 
+<<<<<<< Updated upstream:data-otservbr-global/monster/quests/soul_war/goshnar's_megalomania_blue.lua
+=======
+
+
+>>>>>>> Stashed changes:data-otservbr-global/monster/quests/soul_war/goshnars_megalomania.lua
 monster.voices = {
 	interval = 5000,
 	chance = 10,

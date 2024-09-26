@@ -90,6 +90,7 @@ monster.loot = {
 	{ name = "calopteryx cape", chance = 1280 },
 	{ name = "carapace shield", chance = 1170 },
 	{ name = "hive scythe", chance = 1390 },
+	{ id = 14753, chance = 330 }, --dung ball quest addon
 }
 
 monster.attacks = {

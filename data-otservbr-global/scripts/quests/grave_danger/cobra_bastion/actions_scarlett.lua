@@ -2,6 +2,7 @@ local armorId = 31482
 local armorPos = Position(33398, 32640, 6)
 local metalWallId = 31449
 
+
 local function createArmor(id, amount, pos)
 	local armor = Game.createItem(id, amount, pos)
 	if armor then
@@ -18,6 +19,7 @@ local config = {
 			return scarlett
 		end,
 	},
+	requiredLevel = 250,
 	playerPositions = {
 		{ pos = Position(33395, 32661, 6), teleport = Position(33396, 32651, 6) },
 		{ pos = Position(33394, 32662, 6), teleport = Position(33396, 32651, 6) },

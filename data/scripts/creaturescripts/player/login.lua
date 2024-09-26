@@ -181,7 +181,11 @@ function playerLoginGlobal.onLogin(player)
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
+<<<<<<< Updated upstream
 	player:registerEvent("UpdatePlayerOnAdvancedLevel")
+=======
+	player:registerEvent("killMonsterCreatePortal")
+>>>>>>> Stashed changes
 	return true
 end
 

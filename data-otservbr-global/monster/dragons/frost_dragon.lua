@@ -92,7 +92,7 @@ monster.loot = {
 	{ name = "small sapphire", chance = 1790 },
 	{ name = "strange helmet", chance = 890 },
 	{ name = "life crystal", chance = 890 },
-	{ name = "shard", chance = 520 },
+	{ name = "shard", chance = 900 },
 	{ name = "ice rapier", chance = 310 },
 	{ name = "tower shield", chance = 290 },
 	{ name = "royal helmet", chance = 230 },

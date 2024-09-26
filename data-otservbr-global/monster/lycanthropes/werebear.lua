@@ -98,7 +98,7 @@ monster.loot = {
 	{ id = 7452, chance = 300 }, -- spiked squelcher
 	{ id = 3053, chance = 400 }, -- time ring
 	{ id = 22103, chance = 200 }, -- werebear trophy
-	{ id = 22083, chance = 200 }, -- moonlight crystals
+	{ id = 22083, chance = 600 }, -- moonlight crystals
 }
 
 monster.attacks = {

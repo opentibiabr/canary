@@ -51,27 +51,30 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Travel
-local function addTravelKeyword(keyword, text, cost, destination, condition)
-	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Do you seek a passage to " .. (text or keyword:titleCase()) .. " for |TRAVELCOST|?", cost = cost }, condition and function(player)
-		return player:getPawAndFurRank() >= 3
-	end or nil)
+local function addTravelKeyword(keyword, cost, destination)
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Do you seek a passage to the " .. keyword .. " end for |TRAVELCOST|?", cost = cost })
 	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, destination = destination })
 	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "Maybe another time.", reset = true })
 end
 
 addTravelKeyword("west", "the west end of Port Hope", 7, Position(32558, 32780, 7))
 addTravelKeyword("centre", "the centre of Port Hope", 7, Position(32628, 32771, 7))
-addTravelKeyword("darama", nil, 30, Position(32987, 32729, 7))
+addTravelKeyword("darama", 30, Position(32987, 32729, 7))
 addTravelKeyword("center", "the centre of Port Hope", 0, Position(32628, 32771, 7))
-addTravelKeyword("chor", nil, 30, Position(32968, 32799, 7), true)
-addTravelKeyword("banuta", nil, 30, Position(32826, 32631, 7), true)
-addTravelKeyword("mountain", nil, 30, Position(32987, 32729, 7), true)
-addTravelKeyword("mountain pass", nil, 30, Position(32987, 32729, 7), true)
+addTravelKeyword("chor", 30, Position(32968, 32799, 7))
+addTravelKeyword("banuta", 30, Position(32826, 32631, 7))
+addTravelKeyword("mountain", 30, Position(32987, 32729, 7))
+addTravelKeyword("mountain pass", 30, Position(32987, 32729, 7))
+
+
 -- Basic
-keywordHandler:addKeyword({ "ferumbras" }, StdModule.say, { npcHandler = npcHandler, text = "I heard he is some scary magician or so." })
-keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "I can travel you to west, centre, darama, chor or banuta." })
+keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "I can bring you either to the east end of Port Hope or to the west end of the town, where would you like to go?" })
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table
 npcType:register(npcConfig)
+
+
+
+

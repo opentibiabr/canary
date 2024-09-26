@@ -1,4 +1,5 @@
 local config = {
+requiredLevel = 250,
 	boss = {
 		name = "Grand Master Oberon",
 		position = Position(33364, 31317, 9),

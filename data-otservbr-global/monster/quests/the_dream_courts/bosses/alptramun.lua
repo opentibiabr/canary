@@ -102,7 +102,7 @@ monster.loot = {
 	{ name = "pair of dreamwalkers", chance = 5000 },
 	{ name = "piggy bank", chance = 92500 },
 	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ name = "pomegranate", chance = 22500 },
+	{ name = "pomegranate", chance = 400 },
 	{ name = "purple tendril lantern", chance = 2500 },
 	{ name = "ring of the sky", chance = 5000 },
 	{ name = "royal star", chance = 60000, maxCount = 194 },

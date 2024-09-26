@@ -23,8 +23,8 @@ monster.bosstiary = {
 	bossRace = RARITY_ARCHFOE,
 }
 
-monster.health = 450000
-monster.maxHealth = 450000
+monster.health = 250000
+monster.maxHealth = 250000
 monster.race = "undead"
 monster.corpse = 36847
 monster.speed = 0
@@ -94,8 +94,8 @@ monster.loot = {
 	{ id = 39186, chance = 250 }, -- name = "charged arboreal ring"
 	{ id = 39180, chance = 250 }, -- name = "charged alicorn ring"
 	{ id = 39177, chance = 250 }, -- name = "charged spiritthorn ring"
-	{ name = "portable flame", chance = 250 },
-	{ name = "firefighting axe", chance = 250 },
+	{ name = "portable flame", chance = 240 },
+	{ name = "firefighting axe", chance = 241 },
 }
 
 monster.attacks = {

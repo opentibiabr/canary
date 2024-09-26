@@ -77,7 +77,7 @@ monster.loot = {
 	{ name = "belted cape", chance = 500 },
 	{ name = "ultimate health potion", chance = 500, maxCount = 2 },
 	{ name = "throwing star", chance = 500, maxCount = 18 },
-	{ name = "knight axe", chance = 250 },
+	{ name = "knight axe", chance = 450 },
 	{ id = 3307, chance = 500 }, -- scimitar
 	{ name = "protection amulet", chance = 250 },
 	{ name = "hunting spear", chance = 250 },
@@ -89,7 +89,7 @@ monster.loot = {
 	{ name = "two handed sword", chance = 250 },
 	{ name = "great health potion", chance = 250, maxCount = 2 },
 	{ id = 3049, chance = 230 }, -- stealth ring
-	{ name = "crusader helmet", chance = 150 },
+	{ name = "crusader helmet", chance = 450 },
 	{ name = "relic sword", chance = 150 },
 }
 

@@ -1,4 +1,5 @@
 local crystals = {
+	-- Aquí se definen las posiciones y almacenamiento global de los cristales
 	[1] = { fromPosition = Position(33389, 31467, 14), toPosition = Position(33391, 31469, 14), crystalPosition = Position(33390, 31468, 14), globalStorage = GlobalStorage.FerumbrasAscendant.Crystals.Crystal1 },
 	[2] = { fromPosition = Position(33393, 31467, 14), toPosition = Position(33395, 31469, 14), crystalPosition = Position(33394, 31468, 14), globalStorage = GlobalStorage.FerumbrasAscendant.Crystals.Crystal2 },
 	[3] = { fromPosition = Position(33396, 31470, 14), toPosition = Position(33398, 31472, 14), crystalPosition = Position(33397, 31471, 14), globalStorage = GlobalStorage.FerumbrasAscendant.Crystals.Crystal3 },
@@ -13,12 +14,21 @@ local config = AscendingFerumbrasConfig
 
 local riftInvaderDeath = CreatureEvent("RiftInvaderDeath")
 function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
-	local pos = Position(33392 + math.random(-10, 10), 31473 + math.random(-10, 10), 14)
+	local pos = Position(33392 + math.random(-5, 5), 31473 + math.random(-5, 5), 14)
 	local name = creature:getName():lower()
-	if name ~= "rift invader" then
-		return true
+
+	-- Función para revertir la transformación del ítem después de un retraso
+	local function revertCrystalTransformation(crystalPosition, delay)
+		addEvent(function()
+			local tile = Tile(crystalPosition)
+			if tile then
+				local item = tile:getItemById(14961)
+				if item then
+					item:transform(14955)
+				end
+			end
+		end, delay)
 	end
-	Game.createMonster(name, pos)
 
 	for i = 1, #crystals do
 		local crystal = crystals[i]
@@ -29,6 +39,10 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 					return true
 				end
 				item:transform(14961)
+				
+				-- Revertir la transformación después de 10 segundos (10000 ms)
+				revertCrystalTransformation(crystal.crystalPosition, 900000)
+				
 				Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Crystals.AllCrystals, Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Crystals.AllCrystals) + 1)
 			end
 			if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Crystals.AllCrystals) == 8 then
@@ -37,7 +51,7 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 				creature:say("FERUMBRAS BURSTS INTO SOUL SPLINTERS!", TALKTYPE_MONSTER_YELL, nil, nil, Position(33392, 31475, 14))
 				creature:remove()
 				for a = 1, #crystals do
-					local crystalEffect = crystals[i]
+					local crystalEffect = crystals[a]
 					crystalEffect.crystalPosition:sendMagicEffect(CONST_ME_FERUMBRAS)
 					Game.createMonster("Ferumbras Soul Splinter", Position(33392, 31473, 14), false, true)
 				end

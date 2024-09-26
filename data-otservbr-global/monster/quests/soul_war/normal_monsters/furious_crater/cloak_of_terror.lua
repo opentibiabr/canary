@@ -98,7 +98,11 @@ monster.loot = {
 	{ name = "blue gem", chance = 1490 },
 	{ name = "brooch of embracement", chance = 1490 },
 	{ name = "wand of defiance", chance = 990 },
+<<<<<<< Updated upstream:data-otservbr-global/monster/quests/soul_war/normal_monsters/furious_crater/cloak_of_terror.lua
 	{ name = "bag you desire", chance = 15 },
+=======
+	{ id = 34109, chance = 0.5 }, -- bag you desire
+>>>>>>> Stashed changes:data-otservbr-global/monster/plants/cloak_of_terror.lua
 }
 
 monster.attacks = {
@@ -106,7 +110,7 @@ monster.attacks = {
 	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -1100, maxDamage = -1350, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true },
 	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -1150, maxDamage = -1300, range = 7, radius = 4, effect = CONST_ME_ENERGYHIT, target = true },
 	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_HOLYDAMAGE, minDamage = -1000, maxDamage = -1300, range = 7, shootEffect = CONST_ANI_SPECTRALBOLT, effect = CONST_ME_HOLYDAMAGE, target = true },
-	{ name = "combat", interval = 2000, chance = 24, type = COMBAT_HOLYDAMAGE, minDamage = -800, maxDamage = -1200, range = 7, radius = 3, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_YELLOW_ENERGY_SPARK, target = true },
+	--{ name = "combat", interval = 2000, chance = 24, type = COMBAT_HOLYDAMAGE, minDamage = -800, maxDamage = -1200, range = 7, radius = 3, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_YELLOW_ENERGY_SPARK, target = true },
 	{ name = "destroy magic walls", interval = 1000, chance = 30 },
 }
 

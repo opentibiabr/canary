@@ -102,7 +102,7 @@ monster.loot = {
 	{ name = "mysterious remains", chance = 93750 },
 	{ name = "piggy bank", chance = 93750 },
 	{ name = "platinum coin", chance = 100000, maxCount = 9 },
-	{ name = "pomegranate", chance = 16670 },
+	{ name = "pomegranate", chance = 400 },
 	{ name = "ring of the sky", chance = 12500 },
 	{ name = "royal star", chance = 50000, maxCount = 199 },
 	{ name = "silver token", chance = 100000, maxCount = 2 },

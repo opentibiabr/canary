@@ -96,13 +96,17 @@ monster.loot = {
 	{ name = "stone skin amulet", chance = 910 },
 	{ name = "nightmare blade", chance = 1190 },
 	{ name = "demonrage sword", chance = 600 },
+<<<<<<< Updated upstream:data-otservbr-global/monster/quests/soul_war/normal_monsters/furious_crater/courage_leech.lua
 	{ name = "bag you desire", chance = 15 },
+=======
+	{ id = 34109, chance = 0.5 }, -- bag you desire
+>>>>>>> Stashed changes:data-otservbr-global/monster/extra_dimensional/courage_leech.lua
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -700 },
 	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_ENERGYDAMAGE, minDamage = -1100, maxDamage = -1400, radius = 4, shootEffect = CONST_ANI_ETHEREALSPEAR, effect = CONST_ME_ENERGYAREA, target = true },
-	{ name = "combat", interval = 3000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -1100, maxDamage = -1400, radius = 4, effect = CONST_ME_ENERGYHIT, target = false },
+--	{ name = "combat", interval = 3000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -1100, maxDamage = -1400, radius = 4, effect = CONST_ME_ENERGYHIT, target = false },
 	{ name = "combat", interval = 3000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -900, maxDamage = -1100, length = 7, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -1100, maxDamage = -1300, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = true },
 	{ name = "energy chain", interval = 2000, chance = 20, minDamage = -900, maxDamage = -1000, range = 3, target = true },

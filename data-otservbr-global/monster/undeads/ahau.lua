@@ -18,8 +18,8 @@ monster.bosstiary = {
 	bossRace = RARITY_ARCHFOE,
 }
 
-monster.health = 9000
-monster.maxHealth = 9000
+monster.health = 15000
+monster.maxHealth = 15000
 monster.race = "blood"
 monster.corpse = 42069
 monster.speed = 350
@@ -75,7 +75,7 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "the living idol of tukh", chance = 100000 },
+	{ name = "the living idol of tukh", chance = 300 },
 	{ name = "rotten feather", chance = 50000 },
 	{ name = "great health potion", chance = 40000, maxCount = 5 },
 	{ name = "great spirit potion", chance = 25530, maxCount = 1 },
@@ -90,10 +90,11 @@ monster.loot = {
 	{ id = 23544, chance = 3500 }, --collar of red plasma
 	{ id = 23542, chance = 3500 }, --collar of blue plasma
 	{ id = 23543, chance = 3500 }, --collar of green plasma
-	{ name = "broken iks headpiece", chance = 1000 },
-	{ name = "broken macuahuitl", chance = 1000 },
-	{ name = "broken iks faulds", chance = 1000 },
-	{ name = "broken iks cuirass", chance = 1000 },
+	{ name = "broken iks headpiece", chance = 90 },
+	{ name = "broken macuahuitl", chance = 900 },
+	{ name = "broken iks faulds", chance = 95 },
+	{ name = "broken iks sandals", chance = 800 },
+	{ name = "broken iks cuirass", chance = 800 },
 }
 
 monster.attacks = {

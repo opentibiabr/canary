@@ -2676,6 +2676,16 @@ Storage = {
 				QuestReward = 47223,
 				OutfitReward = 47224,
 				MountReward = 47225,
+				MurcionKilled = 47226,
+				VemiathKilled = 47227,
+				ChagorzKilled = 47228,
+				IchgahalKilled = 47229,
+				BakragoreAccess = 47230,
+				BakragoreKilled = 47231,
+				RottenQuestReward = 47232,
+				RottenOutfitReward = 47233,
+				SerpentCrestReward = 47234,
+				WorldDevourerKilled = 47235,
 			},
 		},
 		U12_60 = { -- update 12.60 - Reserved Storages 47501 - 47600
@@ -2888,6 +2898,11 @@ GlobalStorage = {
 	IceCrack = 65016,
 	UglyMonster = 65017,
 	KeysUpdate = 40000, -- Reserved storage from 40000 - 40000
+		Podium = {
+		One = 70991,
+		Two = 70992,
+		Three = 70993
+	}
 }
 
 startupGlobalStorages = {

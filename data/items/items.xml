@@ -7212,11 +7212,13 @@
 		<attribute key="primarytype" value="dolls and bears"/>
 		<attribute key="weight" value="490"/>
 	</item>
-	<item id="3079" name="boots of haste">
-		<attribute key="showAttributes" value="1"/>
+    <item id="3079" name="boots of haste">
+		<attribute key="showAttributes" value="1"/> 
 		<attribute key="speed" value="20"/>
 		<attribute key="weight" value="750"/>
-		<attribute key="imbuementslot" value="1"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3"/>
+		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet"/>
 		</attribute>
@@ -8058,9 +8060,9 @@
 		<attribute key="description" value="It is Fa'hradin's enchanted lamp"/>
 		<attribute key="weight" value="1300"/>
 	</item>
-	<item id="3232" article="a" name="spyreport">
+	<item id="3232" article="a" name="Exp Scroll">
 		<attribute key="primarytype" value="documents and papers"/>
-		<attribute key="description" value="The report is written in some coded language"/>
+		<attribute key="description" value="65% Extra Exp"/>
 		<attribute key="weight" value="150"/>
 	</item>
 	<item id="3233" article="a" name="tear of daraman">
@@ -11052,9 +11054,9 @@
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="manaticks" value="6000"/>
-		<attribute key="managain" value="12"/>
+		<attribute key="managain" value="24"/>
 		<attribute key="healthticks" value="6000"/>
-		<attribute key="healthgain" value="3"/>
+		<attribute key="healthgain" value="6"/>
 		<attribute key="duration" value="14400"/>
 		<attribute key="transformdeequipto" value="6529"/>
 		<attribute key="decayTo" value="6530"/>
@@ -15544,10 +15546,17 @@
 	<item fromid="5779" toid="5784" article="a" name="stuck arrow">
 		<attribute key="primarytype" value="tools (objects)"/>
 	</item>
-	<item id="5785" article="a" name="medal of honour">
+	<item id="5785" article="a" name="veteran badge">
 		<attribute key="writeable" value="1"/>
+		<attribute key="showAttributes" value="1"/>
 		<attribute key="maxtextlen" value="99"/>
+		<attribute key="criticalhitdamage" value="600"/>
+		<attribute key="criticalhitchance" value="500"/>
+		<attribute key="absorbpercentphysical" value="6"/>
 		<attribute key="weight" value="1000"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
 	<item id="5786" article="a" name="wooden whistle">
 		<attribute key="primarytype" value="musical instruments"/>
@@ -17929,10 +17938,10 @@
 		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
-	<item id="6526" article="a" name="christmas token">
+	<item id="6526" article="a" name="online token" plural="online tokens">
 		<attribute key="primarytype" value="valuables"/>
-		<attribute key="description" value="Collect enough of these to trade them for valuable prizes"/>
-		<attribute key="weight" value="5"/>
+		<attribute key="description" value="Cambialos por items o tibiadrome pots en el templo de Thais"/>
+		<attribute key="weight" value="1"/>
 	</item>
 	<item id="6527" article="the" name="avenger">
 		<attribute key="description" value="This holy blade was forged of shattered dreams"/>
@@ -22663,9 +22672,9 @@
 		<attribute key="description" value="Your name is carved on this mighty sword"/>
 		<attribute key="weight" value="1200"/>
 	</item>
-	<item id="8153" article="a" name="golden newspaper">
+	<item id="8153" article="a" name="Premium Exp Scroll">
 		<attribute key="primarytype" value="documents and papers"/>
-		<attribute key="description" value="Tibia's most amazing news can be read in it. It was awarded for winning a TibiaNews contest"/>
+		<attribute key="description" value="80% Extra Exp"/>
 		<attribute key="weight" value="2400"/>
 	</item>
 	<item id="8154" article="a" name="norseman doll">
@@ -22707,11 +22716,10 @@
 		<attribute key="description" value="It is a token of honour granted only by TibiaBR"/>
 		<attribute key="weight" value="2000"/>
 	</item>
-	<item id="8176" article="a" name="golden newspaper">
+	<item id="8176" article="a" name="Golden Newspaper">
 		<attribute key="primarytype" value="documents and papers"/>
-		<attribute key="description" value="Tibia's most amazing news can be read in it. It was awarded for winning a TibiaNews contest"/>
+		<attribute key="description" value="Golden Newspaper"/>
 		<attribute key="duration" value="5"/>
-		<attribute key="decayTo" value="8153"/>
 		<attribute key="weight" value="2400"/>
 	</item>
 	<item id="8177" article="a" name="yummy gummy worm" plural="yummy gummy worms">
@@ -24686,11 +24694,21 @@
 		<attribute key="maxtextlen" value="199"/>
 		<attribute key="weight" value="1600"/>
 	</item>
-	<item id="9209" article="a" name="golden warrior trophy">
+	<item id="9209" article="a" name="fierce trophy">
 		<attribute key="primarytype" value="contest prizes"/>
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="199"/>
 		<attribute key="weight" value="1900"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="skillsword" value="10"/>
+		<attribute key="skillaxe" value="10"/>
+		<attribute key="skillclub" value="10"/>
+		<attribute key="skillshield" value="10"/>
+		<attribute key="magiclevelpoints" value="2"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
 	<item id="9210" article="a" name="silver warrior trophy">
 		<attribute key="primarytype" value="contest prizes"/>
@@ -24724,8 +24742,10 @@
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="149"/>
 		<attribute key="weight" value="1240"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="criticalhitdamage" value="1500"/>
 		<attribute key="script" value="moveevent">
-			<attribute key="slot" value="necklace"/>
+			<attribute key="slot" value="ammo"/>
 		</attribute>
 	</item>
 	<item id="9216" article="a" name="silver medal">
@@ -24733,8 +24753,10 @@
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="149"/>
 		<attribute key="weight" value="1220"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="script" value="moveevent">
-			<attribute key="slot" value="necklace"/>
+			<attribute key="slot" value="ammo"/>
 		</attribute>
 	</item>
 	<item id="9217" article="a" name="bronze medal">
@@ -24746,42 +24768,77 @@
 			<attribute key="slot" value="necklace"/>
 		</attribute>
 	</item>
-	<item id="9218" article="a" name="badge of glory">
-		<attribute key="writeable" value="1"/>
+	<item id="9218" article="a" name="sharpshoot badge">
+		<attribute key="writeable" value="0"/>
 		<attribute key="maxtextlen" value="149"/>
 		<attribute key="weight" value="1550"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="skilldist" value="7"/>
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
-	<item id="9219" article="an" name="arcane insignia">
+	<item id="9219" article="an" name="arcane badge">
 		<attribute key="primarytype" value="contest prizes"/>
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="149"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="absorbpercentenergy" value="8"/>
+		<attribute key="absorbpercentfire" value="8"/>
+		<attribute key="absorbpercentearth" value="8"/>
+		<attribute key="absorbpercentice" value="8"/>
+		<attribute key="absorbpercentholy" value="8"/>
+		<attribute key="absorbpercentdeath" value="8"/>
 		<attribute key="weight" value="1350"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
-	<item id="9220" article="a" name="hero's medal">
+	<item id="9220" article="a" name="blood badge">
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="149"/>
 		<attribute key="weight" value="1670"/>
-	</item>
-	<item id="9221" article="a" name="laurel wreath">
-		<attribute key="primarytype" value="helmets"/>
-		<attribute key="writeable" value="1"/>
-		<attribute key="maxtextlen" value="149"/>
-		<attribute key="weight" value="900"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="lifeleechamount" value="2000"/>
 		<attribute key="script" value="moveevent">
-			<attribute key="slot" value="head"/>
+			<attribute key="slot" value="ammo"/>
 		</attribute>
 	</item>
-	<item id="9222" article="a" name="royal medal">
+	<item id="9221" article="a" name="sage badge">
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="magiclevelpoints" value="5"/>
+		<attribute key="energymagiclevelpoints" value="1"/>
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="weight" value="900"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo"/>
+		</attribute>
+	</item>
+	<item id="9222" article="a" name="void badge">
 		<attribute key="primarytype" value="contest prizes"/>
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="149"/>
 		<attribute key="weight" value="1600"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="manaleechamount" value="1200"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
-	<item id="9223" article="a" name="heavy medal">
+	<item id="9223" article="a" name="elder badge">
 		<attribute key="primarytype" value="contest prizes"/>
-		<attribute key="writeable" value="1"/>
-		<attribute key="maxtextlen" value="149"/>
 		<attribute key="weight" value="5500"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="icemagiclevelpoints" value="1"/>
+		<attribute key="earthmagiclevelpoints" value="1"/>
+	    <attribute key="magiclevelpoints" value="5"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
 	<item id="9224" article="an" name="elven trophy">
 		<attribute key="primarytype" value="contest prizes"/>
@@ -30578,18 +30635,14 @@
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item fromid="12666" toid="12668" name="water pump"/>
-	<item id="12669" article="a" name="star ring">
+	<item id="12669" article="a" name="nebula ring">
 		<attribute key="primarytype" value="rings"/>
-		<attribute key="description" value="If you wear it on your ring slot, it will boost your health regeneration when you're not hungry"/>
-		<attribute key="stopduration" value="1"/>
-		<attribute key="showduration" value="1"/>
+		<attribute key="description" value="It can be wielded properly by all vocations."/>
+		<attribute key="criticalhitdamage" value="1000"/>
+		<attribute key="criticalhitchance" value="500"/>
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="transformequipto" value="12670"/>
+		<attribute key="script" value="moveevent"/>
 		<attribute key="weight" value="80"/>
-		<attribute key="script" value="moveevent">
-			<attribute key="slot" value="ring"/>
-			<attribute key="vocation" value="None;true"/>
-		</attribute>
 	</item>
 	<item id="12670" article="a" name="star ring">
 		<attribute key="primarytype" value="rings"/>
@@ -32711,7 +32764,7 @@
 	<item id="14674" article="an" name="anniversary backpack">
 		<attribute key="primarytype" value="containers"/>
 		<attribute key="description" value="It was awarded during the festivities of Tibia's 15th anniversary"/>
-		<attribute key="containersize" value="15"/>
+		<attribute key="containersize" value="30"/>
 		<attribute key="weight" value="1500"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase capacity" value="3"/>
@@ -32806,9 +32859,9 @@
 	<item id="14757" article="a" name="dragon's nest">
 		<attribute key="description" value="Young dragons will hatch soon."/>
 	</item>
-	<item id="14758" article="a" name="premium scroll">
+	<item id="14758" article="a" name="koliseum ticket">
 		<attribute key="primarytype" value="documents and papers"/>
-		<attribute key="description" value="Using this scroll will add 30 days of premium time to your account once."/>
+		<attribute key="description" value="Da acceso una sola vez al Death Portal del Koliseum."/>
 		<attribute key="weight" value="0"/>
 	</item>
 	<item id="14759" article="a" name="surprise nest">
@@ -41593,7 +41646,7 @@
 	</item>
 	<item fromid="21121" toid="21122" name="RESERVED SPRITE"/>
 	<item id="21123" article="a" name="dead body of Quandon"/>
-	<item id="21124" article="a" name="necrometer">
+	<item id="21124" article="a" name="Forge Device">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="weight" value="800"/>
 	</item>
@@ -45032,7 +45085,7 @@ Awarded by TibiaMisterios.com.br"/>
 	</item>
 	<item id="22720" article="an" name="iron token" plural="iron tokens">
 		<attribute key="primarytype" value="valuables"/>
-		<attribute key="weight" value="20"/>
+		<attribute key="weight" value="1"/>
 	</item>
 	<item id="22721" article="a" name="gold token" plural="gold tokens">
 		<attribute key="primarytype" value="valuables"/>
@@ -45046,7 +45099,7 @@ Awarded by TibiaMisterios.com.br"/>
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="20"/>
 	</item>
-	<item id="22724" article="a" name="titanium token" plural="titanium tokens">
+	<item id="22724" article="a" name="koliseum token" plural="koliseum tokens">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="20"/>
 	</item>
@@ -46313,9 +46366,14 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="This barrel is highly explosive."/>
 		<attribute key="weight" value="280"/>
 	</item>
-	<item id="23487" article="an" name="arena badge">
+	<item id="23487" article="an" name="swift badge">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="weight" value="100"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="speed" value="80"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo"/>
+		</attribute>
 	</item>
 	<item id="23488" article="a" name="surprise cube">
 		<attribute key="primarytype" value="valuables"/>
@@ -46974,8 +47032,8 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="850"/>
 	</item>
-	<item id="23721" article="a" name="gold pouch">
-		<attribute key="description" value="A infinity bag where you can hold coins."/>
+	<item id="23721" article="a" name="loot pouch">
+		<attribute key="description" value="A infinity bag where you can hold loot."/>
 		<attribute key="containersize" value="20"/>
 		<attribute key="movable" value="0"/>
 	</item>
@@ -47360,7 +47418,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	<item id="24395" article="a" name="birthday backpack">
 		<attribute key="primarytype" value="containers"/>
 		<attribute key="description" value="It was awarded during the festivities of Tibia's 20th anniversary"/>
-		<attribute key="containersize" value="20"/>
+		<attribute key="containersize" value="25"/>
 		<attribute key="weight" value="1500"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase capacity" value="3"/>
@@ -50431,13 +50489,15 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="26016" article="an" name="ornate remedy blade">
 		<attribute key="primarytype" value="sword weapons"/>
-		<attribute key="description" value="This replica looks overcharged"/>
-		<attribute key="attack" value="5"/>
-		<attribute key="defense" value="5"/>
-		<attribute key="weight" value="5000"/>
-		<attribute key="script" value="moveevent;weapon">
+		<attribute key="description" value="This looks overcharged"/>
+		<attribute key="elementfire" value="11"/>
+		<attribute key="attack" value="24"/>
+		    <attribute key="script" value="moveevent;weapon"/>
 			<attribute key="weaponType" value="sword"/>
-			<attribute key="slot" value="hand"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="2"/>
+			<attribute key="mana leech" value="2"/>
+			<attribute key="critical hit" value="2"/>
 		</attribute>
 	</item>
 	<item id="26017" article="a" name="plain remedy slayer">
@@ -50497,13 +50557,15 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="26022" article="an" name="ornate remedy axe">
 		<attribute key="primarytype" value="axe weapons"/>
-		<attribute key="description" value="This replica looks overcharged"/>
-		<attribute key="attack" value="5"/>
-		<attribute key="defense" value="5"/>
-		<attribute key="weight" value="5000"/>
-		<attribute key="script" value="moveevent;weapon">
+		<attribute key="description" value="This looks overcharged"/>
+		<attribute key="elementfire" value="11"/>
+		<attribute key="attack" value="24"/>
+		    <attribute key="script" value="moveevent;weapon"/>
 			<attribute key="weaponType" value="axe"/>
-			<attribute key="slot" value="hand"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="2"/>
+			<attribute key="mana leech" value="2"/>
+			<attribute key="critical hit" value="2"/>
 		</attribute>
 	</item>
 	<item id="26023" article="a" name="plain remedy chopper">
@@ -50563,13 +50625,15 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="26028" article="an" name="ornate remedy mace">
 		<attribute key="primarytype" value="club weapons"/>
-		<attribute key="description" value="This replica looks overcharged"/>
-		<attribute key="attack" value="5"/>
-		<attribute key="defense" value="5"/>
-		<attribute key="weight" value="5000"/>
-		<attribute key="script" value="moveevent;weapon">
+		<attribute key="description" value="This looks overcharged"/>
+		<attribute key="elementfire" value="11"/>
+		<attribute key="attack" value="24"/>
+		    <attribute key="script" value="moveevent;weapon"/>
 			<attribute key="weaponType" value="club"/>
-			<attribute key="slot" value="hand"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="2"/>
+			<attribute key="mana leech" value="2"/>
+			<attribute key="critical hit" value="2"/>
 		</attribute>
 	</item>
 	<item id="26029" article="a" name="plain remedy hammer">
@@ -50619,10 +50683,21 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="26034" article="an" name="ornate remedy bow">
 		<attribute key="primarytype" value="distance weapons"/>
-		<attribute key="description" value="This replica looks overcharged"/>
+		<attribute key="description" value="This bow looks charged"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="hitchance" value="1"/>
 		<attribute key="range" value="6"/>
-		<attribute key="weight" value="5500"/>
-	</item>
+		<attribute key="weight" value="2500"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="elemental damage" value="2"/>
+			<attribute key="life leech" value="2"/>
+			<attribute key="mana leech" value="2"/>
+			<attribute key="critical hit" value="2"/>
+			<attribute key="skillboost distance" value="2"/>
+		</attribute>
+		</item>
 	<item id="26035" article="a" name="plain remedy crossbow">
 		<attribute key="primarytype" value="distance weapons"/>
 		<attribute key="description" value="This replica looks charged"/>
@@ -50654,10 +50729,18 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="weight" value="3500"/>
 	</item>
 	<item id="26040" article="an" name="ornate remedy wand">
-		<attribute key="primarytype" value="wands"/>
-		<attribute key="description" value="This replica looks overcharged"/>
-		<attribute key="range" value="3"/>
-		<attribute key="weight" value="3500"/>
+		<attribute key="description" value="It contains the everblazing fire"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="fire"/>
+		<attribute key="magiclevelpoints" value="1"/>
+		<attribute key="range" value="6"/>
+		<attribute key="weight" value="3700"/>
+				<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="2"/>
+			<attribute key="mana leech" value="2"/>
+			<attribute key="critical hit" value="2"/>
+
+		</attribute>
 	</item>
 	<item id="26041" article="a" name="plain remedy rod">
 		<attribute key="primarytype" value="rods"/>
@@ -50672,10 +50755,18 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="weight" value="3500"/>
 	</item>
 	<item id="26043" article="an" name="ornate remedy rod">
-		<attribute key="primarytype" value="rods"/>
-		<attribute key="description" value="This replica looks overcharged"/>
-		<attribute key="range" value="3"/>
-		<attribute key="weight" value="3500"/>
+		<attribute key="description" value="It contains the everblazing fire"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="fire"/>
+		<attribute key="magiclevelpoints" value="1"/>
+		<attribute key="range" value="6"/>
+		<attribute key="weight" value="3700"/>
+				<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="2"/>
+			<attribute key="mana leech" value="2"/>
+			<attribute key="critical hit" value="2"/>
+
+		</attribute>
 	</item>
 	<item id="26044" article="a" name="plain carving blade">
 		<attribute key="primarytype" value="sword weapons"/>
@@ -52822,9 +52913,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="A banner with the colours and heraldic animal of the Falcon Order."/>
 	</item>
 	<item fromid="27843" toid="27844" name="RESERVED SPRITE"/>
-	<item fromid="27845" toid="27846" article="a" name="Citizen Doll">
+	<item fromid="27845" toid="27846" article="a" name="Mounts Doll">
 		<attribute key="primarytype" value="dolls and bears"/>
-		<attribute key="description" value="This doll carries the story of all Tibians in their legendary citizen outfit. Awarded by TibiaTV.com.br"/>
+		<attribute key="description" value="Use !mountsdoll para obtener una mount gratis"/>
 		<attribute key="weight" value="2200"/>
 	</item>
 	<item id="27847" article="a" name="bony rod">
@@ -53217,36 +53308,42 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="primarytype" value="training weapons"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="charges" value="50"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="28541" article="a" name="training axe">
 		<attribute key="primarytype" value="training weapons"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="charges" value="50"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="28542" article="a" name="training club">
 		<attribute key="primarytype" value="training weapons"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="charges" value="50"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="28543" article="a" name="training bow">
 		<attribute key="primarytype" value="training weapons"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="charges" value="50"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="28544" article="a" name="training rod">
 		<attribute key="primarytype" value="training weapons"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="charges" value="50"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="28545" article="a" name="training wand">
 		<attribute key="primarytype" value="training weapons"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="charges" value="50"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="28546" toid="28551" name="RESERVED SPRITE"/>
@@ -54672,7 +54769,6 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
-			<attribute key="critical hit" value="3"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
@@ -57348,7 +57444,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="shootType" value="smallearth"/>
 		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="lifeleechamount" value="1800"/>
-		<attribute key="lifeleechchance" value="100"/>
+		<attribute key="lifeleechchance" value="10000"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2500"/>
 		<attribute key="imbuementslot" value="2">
@@ -59647,7 +59743,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="primarytype" value="creature products"/>
 		<attribute key="weight" value="118"/>
 	</item>
-	<item id="31726" article="a" name="box with balm">
+	<item id="31726" article="a" name="stamina refill">
 		<attribute key="weight" value="240"/>
 	</item>
 	<item fromid="31727" toid="31731" name="RESERVED SPRITE"/>
@@ -64105,7 +64201,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="absorbpercentdeath" value="12"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="criticalhitdamage" value="1000"/>
-		<attribute key="criticalhitdamage" value="1000"/>
+		<attribute key="criticalhitchance" value="1000"/>
 		<attribute key="range" value="6"/>
 		<attribute key="weight" value="1900"/>
 		<attribute key="imbuementslot" value="2">
@@ -64526,6 +64622,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
+<<<<<<< Updated upstream
+=======
+			<attribute key="life leech" value="3"/>
+>>>>>>> Stashed changes
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
@@ -69644,7 +69744,7 @@ Granted by TibiaGoals.com"/>
 	<item id="37313" article="a" name="palette and brushes">
 		<attribute key="weight" value="350"/>
 	</item>
-	<item id="37317" article="a" name="Tibia Coin"/>
+	<item id="37317" article="a" name="Roulette Coin"/>
 	<item id="37321" article="a" name="Halls of Hope picture">
 		<attribute key="weight" value="100"/>
 	</item>
@@ -73292,7 +73392,7 @@ Granted by TibiaGoals.com"/>
 	</item>
 	<item id="39693" article="a" name="25 years backpack">
 		<attribute key="primarytype" value="containers"/>
-		<attribute key="containersize" value="25"/>
+		<attribute key="containersize" value="40"/>
 		<attribute key="description" value="It could be bought for Theons after the festivities of Tibia's 25th anniversary"/>
 		<attribute key="weight" value="1700"/>
 		<attribute key="imbuementslot" value="1">
@@ -75116,6 +75216,8 @@ Granted by TibiaGoals.com"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillsword" value="5"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="manaleechamount" value="300"/>
 		<attribute key="weight" value="6100"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="life leech" value="3"/>
@@ -75765,7 +75867,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="1700"/>
 		<attribute key="imbuementslot" value="1">
-			<attribute key="increase speed" value="10"/>
+		<attribute key="increase speed" value="10"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="avatar of nature" value="cooldown">
@@ -75830,6 +75932,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="training weapons"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="charges" value="50"/>
+		<attribute key="movable" value="0"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="44065" article="an" name="exercise shield">
@@ -75922,6 +76025,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="valuables" />
 		<attribute key="weight" value="120" />
 	</item>
+<<<<<<< Updated upstream
 	<item id="44619" name="stoic iks cuirass">
 		<attribute key="primarytype" value="armors"/>
 		<attribute key="armor" value="15"/>
@@ -76211,6 +76315,121 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="feet"/>
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
 		</attribute>
+=======
+	<item id="43828" article="a" name="dead wandering pillar">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43567" article="a" name="dead converter">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43563" article="a" name="dead darklight construct">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43583" article="a" name="dead darklight emitter">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43571" article="a" name="dead darklight matter">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43840" article="a" name="dead darklight source">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43844" article="a" name="dead darklight striker">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43559" article="a" name="dead meandering mushroom">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43555" article="a" name="dead mycobiontic beetle">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43579" article="a" name="dead oozing carcass">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43575" article="a" name="dead oozing corpus">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43820" article="a" name="dead rotten man-maggot">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43832" article="a" name="dead sopping carcass">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43836" article="a" name="dead sopping corpus">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43824" article="a" name="dead walking pillar">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43771" article="a" name="dead white tiger">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43762" article="a" name="dead white weretiger">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="40"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="43959" article="a" name="dead cunning werepanther">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43755"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43750" article="a" name="dead weretiger">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43755"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+>>>>>>> Stashed changes
 	</item>
 	<item id="44651" article="a" name="dead dragolisk">
 		<attribute key="fluidsource" value="blood"/>
@@ -76284,6 +76503,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="decayTo" value="44662"/>
 		<attribute key="containersize" value="10"/>
 	</item>
+<<<<<<< Updated upstream
 	<item id="44743" article="a" name="Nimmersatt's seal">
 		<attribute key="loottype" value="creature products" />
 		<attribute key="primarytype" value="creature products" />
@@ -76344,5 +76564,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="containersize" value="10"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
+=======
+>>>>>>> Stashed changes
 </items>
 

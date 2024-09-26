@@ -161,7 +161,7 @@ local towns = {
 		canBeSailed = true,
 		isPremium = false,
 		message = "So it's Thais, the oldest of the human kingdoms you chose as your new home?",
-		destination = { x = 32310, y = 32210, z = 6 },
+		destination = { x = 32369, y = 32241, z = 7 },
 	},
 	[TOWNS_LIST.VENORE] = {
 		name = "Venore",

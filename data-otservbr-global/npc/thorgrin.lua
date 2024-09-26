@@ -60,7 +60,7 @@ end
 
 addTravelKeyword("kazordoon", 210, Position(32659, 31957, 15))
 addTravelKeyword("cormaya", 110, Position(33310, 31988, 15))
-addTravelKeyword("gnomprona", { "Would you like to travel to Gnomprona for |TRAVELCOST|?", "Full steam ahead!", "Then not." }, 200, "postman", Position(33516, 32856, 14))
+addTravelKeyword("gnomprona", 200, Position(33516, 32856, 14))
 
 keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "Do you want me take you to {Cormaya}, {Kazordoon} or {Gnomprona}?" })
 

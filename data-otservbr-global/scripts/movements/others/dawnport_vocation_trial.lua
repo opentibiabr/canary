@@ -116,7 +116,7 @@ local vocationTrials = {
 			},
 		},
 		items = {
-			{ id = 3267, amount = 1, slot = CONST_SLOT_LEFT }, -- Dagger
+			{ id = 3285, amount = 1, slot = CONST_SLOT_LEFT }, -- longsword
 			{ id = 3412, amount = 1, slot = CONST_SLOT_RIGHT }, -- Wooden shield
 			{ id = 7876, amount = 10, storage = Storage.Dawnport.KnightHealthPotion, limit = 1 }, -- Health potion
 			{ id = 268, amount = 2, storage = Storage.Dawnport.KnightManaPotion, limit = 1 }, -- Mana potion

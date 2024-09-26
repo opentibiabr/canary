@@ -56,11 +56,11 @@ monster.loot = {
 	{ name = "bullseye potion", chance = 14810, maxCount = 10 },
 	{ name = "ultimate spirit potion", chance = 14810, maxCount = 6 },
 	{ name = "moonstone", chance = 14810 },
-	{ name = "spooky hood", chance = 8520 },
+	{ name = "spooky hood", chance = 450 },
 	{ name = "silver hand mirror", chance = 7410 },
 	{ name = "amber with a dragonfly", chance = 7410 },
 	{ name = "phantasmal axe", chance = 3700 },
-	{ name = "ghost claw", chance = 3700 },
+	{ name = "ghost claw", chance = 450 },
 	{ name = "giant amethyst", chance = 3700 },
 	{ id = 32621, chance = 3200 }, -- ring of souls
 }

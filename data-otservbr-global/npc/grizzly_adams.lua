@@ -132,8 +132,13 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
+<<<<<<< Updated upstream
 	if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.QuestLogEntry) ~= 0 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hi there, do you want to to {join} the 'Paw and Fur - Hunting Elite'?")
+=======
+	if player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry) ~= 0 then
+		npcHandler:setMessage(MESSAGE_GREET, "Hi there, do you want to to {join} the 'Paw and Fur - Hunting Elite', Los Tasks Fueron reducidos en cantidad, no hagas caso al contador del Quest Tracker?")
+>>>>>>> Stashed changes
 	elseif
 		player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank) < 0 and player:getStorageValue(POINTSSTORAGE) >= 10 and player:getLevel() >= 6 -- to Huntsman Rank
 		or player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PawAndFurRank) == 0 and player:getStorageValue(POINTSSTORAGE) >= 20 and player:getLevel() >= 6 -- to Ranger Rank
@@ -143,7 +148,7 @@ local function greetCallback(npc, creature)
 	then -- to Elite Hunter Rank
 		npcHandler:setMessage(MESSAGE_GREET, "Good to see you again |PLAYERNAME|. You gained " .. player:getStorageValue(POINTSSTORAGE) .. " points for our society. Ask me for {promotion} to advance your rank!")
 	else
-		npcHandler:setMessage(MESSAGE_GREET, "Welcome to the 'Paw and Fur - Hunting Elite' |PLAYERNAME|. Feel free to do {tasks} for us.")
+		npcHandler:setMessage(MESSAGE_GREET, "Welcome to the 'Paw and Fur - Hunting Elite' |PLAYERNAME|.Recuerda que los Tasks fueron reducidos, no hagas caso al contador del Quest Tracker, Quieres {tasks} ?.")
 	end
 	return true
 end
@@ -258,49 +263,49 @@ local tier = {
 	},
 }
 local messageStartTask = {
-	["crocodiles"] = "They are a nuisance! You'll find them here in the jungle near the river. Hunt 300 crocodiles and you'll get a nice reward. Interested?",
-	["badgers"] = "You'll find them in the surrounding of Svargrond. Hunt 300 badgers and you'll get a reward. Interested?",
-	["tarantulas"] = "There is a veritable plague of tarantulas living in the caves north of the river to the east. Can you squish 300 tarantulas for the Hunting Elite. What do you say?",
-	["stone golems"] = "They can be found all over Tibia. You'll find them in mountain caves or rocky dungeons. Hunt 200 stone golems of them and come back to me. Understood?",
-	["mammoths"] = "This particular species is found in Svargrond. Impressive beasts, but you wouldn't want one in your backyard. Hunt 300 mammoths of them. Alright?",
-	["gnarlhounds"] = "This particular species is found in Zao Steppe. Hunt 300 gnarlhounds of them. Understood?",
-	["terramites"] = "This particular species can be found beneath Zao Steppe. Hunt 300 terramites of them. Understood?",
+	["crocodiles"] = "They are a nuisance! You'll find them here in the jungle near the river. Hunt 100 crocodiles and you'll get a nice reward. Interested?",
+	["badgers"] = "You'll find them in the surrounding of Svargrond. Hunt 100 badgers and you'll get a reward. Interested?",
+	["tarantulas"] = "There is a veritable plague of tarantulas living in the caves north of the river to the east. Can you squish 100 tarantulas for the Hunting Elite. What do you say?",
+	["stone golems"] = "They can be found all over Tibia. You'll find them in mountain caves or rocky dungeons. Hunt 100 stone golems of them and come back to me. Understood?",
+	["mammoths"] = "This particular species is found in Svargrond. Impressive beasts, but you wouldn't want one in your backyard. Hunt 100 mammoths of them. Alright?",
+	["gnarlhounds"] = "This particular species is found in Zao Steppe. Hunt 100 gnarlhounds of them. Understood?",
+	["terramites"] = "This particular species can be found beneath Zao Steppe. Hunt 100 terramites of them. Understood?",
 	["apes"] = "You'll find the apes deeper in the jungle. Hunt 300 merlkins, kongras or sibangs to complete this task. Alright?",
-	["thornback tortoises"] = "You'll find them on the Laguna Islands. Hunt 300 thornback tortoises of them. Interested?",
-	["gargoyles"] = "They can be found all over Tibia. Hunt 300 gargoyles of them. Interested?",
-	["ice golems"] = "The ice golems on the glacier of Hrodmir are becoming a threat to the civilians in Svargrond. Travel to the Ice Islands and hunt 300 ice golems. Do you accept this task?",
+	["thornback tortoises"] = "You'll find them on the Laguna Islands. Hunt 150 thornback tortoises of them. Interested?",
+	["gargoyles"] = "They can be found all over Tibia. Hunt 100 gargoyles of them. Interested?",
+	["ice golems"] = "The ice golems on the glacier of Hrodmir are becoming a threat to the civilians in Svargrond. Travel to the Ice Islands and hunt 100 ice golems. Do you accept this task?",
 	["quara scouts"] = "The {scouts} can be found on Malada, one of the Shattered Isles. Your task is to kill 400 quara scouts. I accept quara constrictor scouts, quara hydromancer scouts, quara mantassin scouts, quara pincher scouts and quara predator scouts, are you in?",
-	["mutated rats"] = "Recently, I heard of a disturbing development in Yalahar - a plague of monstrous Mutated rats! If they were to spread to the rest of Tibia.. <shudders> My task for you is to contain their numbers in Yalahar. Hunt 400 mutated rats of them. What do you say?",
+	["mutated rats"] = "Recently, I heard of a disturbing development in Yalahar - a plague of monstrous Mutated rats! If they were to spread to the rest of Tibia.. <shudders> My task for you is to contain their numbers in Yalahar. Hunt 200 mutated rats of them. What do you say?",
 	["ancient scarabs"] = "They can be found in tombs beneath the desert around Ankrahmun. Hunt 250 ancient scarabs of them. Interested?",
-	["wyverns"] = "They can be found all over Tibia. Hunt 300 wyverns. Interested?",
-	["lancer beetles"] = "Lancer beetle populations can be found on the landmass of Zao. Hunt down 300 of this crawlers for this task. Alright?",
-	["wailing widows"] = "Wailing widow populations can be found on the landmass of Zao. Hunt down 400 of them. Alright?",
-	["killer caimans"] = "Killer caiman populations can be found on the landmass of Zao. Hunt down 250 of them for this task. Interested?",
-	["bonebeasts"] = "In this task you must defeat 300 bonebeasts. Are you sure that you want to start this task?",
-	["crystal spiders"] = "In this task you must defeat 300 crystal spiders. Are you sure that you want to start this task?",
-	["mutated tigers"] = "In this task you must defeat 300 mutated tigers. Are you sure that you want to start this task?",
-	["underwater quara"] = "As you wish. Seek out a quara settlement and hunt 600 underwater quara, it doesn't matter which type you hunt. Alright?",
-	["giant spiders"] = "Never liked spiders. Simply too many legs. And I always find them in my bath! Those nasty creepy-crawlies are a threat to the hygiene of every living being in Tibia. Hunt 500 of them. Okay?",
-	["werewolves"] = "Those nasty creatures can be found on the island of Vengoth. Hunt 300 of them. Are you in?",
-	["nightmares"] = "Nightmares and nightmare scions can be found all over Tibia. For this task kill 400 of them. Interested?",
-	["hellspawns"] = "Recently, I heard of a disturbing development - hellspawns. If they spread to the rest of Tibia... <shudders> My task for you is to contain their numbers. Hunt 600 of them. What do you say?",
-	["high class lizards"] = "I want you to decrease the number of high class lizards on the Zaoan landmass. Hunt 800 of them. I accept lizard chosens, lizard dragon priests, lizard high guards, lizard legionnaires and lizard zaoguns. Are you interested?",
-	["stampors"] = "Stampors can be found in a dungeon on the Zaoan landmass. Hunt 600 of them. Are you interested?",
-	["brimstone bugs"] = "You can find them on the Zaoan landmass. Kill 500 brimstone bugs to complete this task. Are you in?",
-	["mutated bats"] = "Recently, I heard of a disturbing development in Yalahar - a plague of monstrous mutated bats! If they were to spread to the rest of Tibia... <shudders> My task for you is to contain their numbers in Yalahar. Hunt 400 of them. What do you say?",
-	["hydras"] = "The hydras are located in the eastern jungle of Tiquanda and there are several mountain caves that are inhabited by them. Your task is to hunt a mere 650 hydras. Are you willing to do that?",
-	["serpent spawns"] = "Very dangerous, nasty and slimy creatures. They live deep in the old ruins of Banuta. I think a mere 800 serpent spawns should do the trick. What do you say?",
-	["medusae"] = "They live deep in the old ruins of Banuta and they are nasty! I think a mere 500 medusae should do the trick. What do you say?",
-	["behemoths"] = "Behemoths must be kept away from the settlements at all costs. You'll find them east of here in the taboo-area or under Cyclopolis in Edron. Go there and hunt a few of them - shall we say... 700? Are you up for that?",
+	["wyverns"] = "They can be found all over Tibia. Hunt 100 wyverns. Interested?",
+	["lancer beetles"] = "Lancer beetle populations can be found on the landmass of Zao. Hunt down 100 of this crawlers for this task. Alright?",
+	["wailing widows"] = "Wailing widow populations can be found on the landmass of Zao. Hunt down 100 of them. Alright?",
+	["killer caimans"] = "Killer caiman populations can be found on the landmass of Zao. Hunt down 100 of them for this task. Interested?",
+	["bonebeasts"] = "In this task you must defeat 100 bonebeasts. Are you sure that you want to start this task?",
+	["crystal spiders"] = "In this task you must defeat 150 crystal spiders. Are you sure that you want to start this task?",
+	["mutated tigers"] = "In this task you must defeat 200 mutated tigers. Are you sure that you want to start this task?",
+	["underwater quara"] = "As you wish. Seek out a quara settlement and hunt 300 underwater quara, it doesn't matter which type you hunt. Alright?",
+	["giant spiders"] = "Never liked spiders. Simply too many legs. And I always find them in my bath! Those nasty creepy-crawlies are a threat to the hygiene of every living being in Tibia. Hunt 250 of them. Okay?",
+	["werewolves"] = "Those nasty creatures can be found on the island of Vengoth. Hunt 200 of them. Are you in?",
+	["nightmares"] = "Nightmares and nightmare scions can be found all over Tibia. For this task kill 300 of them. Interested?",
+	["hellspawns"] = "Recently, I heard of a disturbing development - hellspawns. If they spread to the rest of Tibia... <shudders> My task for you is to contain their numbers. Hunt 250 of them. What do you say?",
+	["high class lizards"] = "I want you to decrease the number of high class lizards on the Zaoan landmass. Hunt 400 of them. I accept lizard chosens, lizard dragon priests, lizard high guards, lizard legionnaires and lizard zaoguns. Are you interested?",
+	["stampors"] = "Stampors can be found in a dungeon on the Zaoan landmass. Hunt 200 of them. Are you interested?",
+	["brimstone bugs"] = "You can find them on the Zaoan landmass. Kill 200 brimstone bugs to complete this task. Are you in?",
+	["mutated bats"] = "Recently, I heard of a disturbing development in Yalahar - a plague of monstrous mutated bats! If they were to spread to the rest of Tibia... <shudders> My task for you is to contain their numbers in Yalahar. Hunt 200 of them. What do you say?",
+	["hydras"] = "The hydras are located in the eastern jungle of Tiquanda and there are several mountain caves that are inhabited by them. Your task is to hunt a mere 250 hydras. Are you willing to do that?",
+	["serpent spawns"] = "Very dangerous, nasty and slimy creatures. They live deep in the old ruins of Banuta. I think a mere 250 serpent spawns should do the trick. What do you say?",
+	["medusae"] = "They live deep in the old ruins of Banuta and they are nasty! I think a mere 250 medusae should do the trick. What do you say?",
+	["behemoths"] = "Behemoths must be kept away from the settlements at all costs. You'll find them east of here in the taboo-area or under Cyclopolis in Edron. Go there and hunt a few of them - shall we say... 250? Are you up for that?",
 	["sea serpents"] = {
 		"The sea serpent threat increases! Captain Haba knows where to find them. ...",
-		"Go to Svargrond and talk to him. 900 sea serpents, including the young ones, should be enough to reduce the threat. Got it?",
+		"Go to Svargrond and talk to him. 300 sea serpents, including the young ones, should be enough to reduce the threat. Got it?",
 	},
-	["hellhounds"] = "These harbingers of darkness can be found in many deep dungeons all over Tibia. Kill 250 of them. Are you in?",
-	["ghastly dragons"] = "Ghastly dragons are devastating creatures which can be found in many dangerous places all over Tibia. Kill 500 of them. Are you in?",
-	["undead dragons"] = "You are a thrill seeker? Undead dragons belong to one of the most powerful races that can be found in Tibia. Kill 400 of them. Are you in?",
-	["drakens"] = "Go to the Zaoan landmass and reduce their number! Kill 900 drakens, I'll accept: draken abomination, draken elite, draken spellweaver and draken warmaster. Are you in?",
-	["destroyers"] = "You can find those dark creatures on several places all over Tibia. For this task I want you to kill 650 destroyers. Are you in?",
+	["hellhounds"] = "These harbingers of darkness can be found in many deep dungeons all over Tibia. Kill 150 of them. Are you in?",
+	["ghastly dragons"] = "Ghastly dragons are devastating creatures which can be found in many dangerous places all over Tibia. Kill 200 of them. Are you in?",
+	["undead dragons"] = "You are a thrill seeker? Undead dragons belong to one of the most powerful races that can be found in Tibia. Kill 200 of them. Are you in?",
+	["drakens"] = "Go to the Zaoan landmass and reduce their number! Kill 400 drakens, I'll accept: draken abomination, draken elite, draken spellweaver and draken warmaster. Are you in?",
+	["destroyers"] = "You can find those dark creatures on several places all over Tibia. For this task I want you to kill 250 destroyers. Are you in?",
 }
 local messageStartTaskAlt = {
 	["crocodile"] = messageStartTask["crocodiles"],

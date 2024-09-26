@@ -10,14 +10,14 @@ dofile(CORE_DIRECTORY .. "/modules/scripts/gamestore/init.lua")
 -- Config
 
 HomeBanners = {
-	images = { "home/banner_armouredarcher.png", "home/banner_podiumoftenacity.png" },
-	delay = 10,
+	images = { "home/banner_exercisedummies.png", "home/banner_podiumofrenown.png", "home/banner_arbalester.png" },
+	delay = 3,
 }
 
 local premiumCategoryName = "Premium Time"
 local premiumOfferName = "Premium Time"
 if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
-	premiumCategoryName = "VIP Shop"
+	premiumCategoryName = "VIP Time"
 	premiumOfferName = "VIP"
 end
 
@@ -63,7 +63,7 @@ GameStore.Categories = {
 			{
 				icons = { "Premium_Time_30.png" },
 				name = string.format("30 Days of %s", premiumOfferName),
-				price = 250,
+				price = 400,
 				id = 3030,
 				validUntil = 30,
 				description = premiumDescription,
@@ -72,7 +72,7 @@ GameStore.Categories = {
 			{
 				icons = { "Premium_Time_90.png" },
 				name = string.format("90 Days of %s", premiumOfferName),
-				price = 750,
+				price = 900,
 				id = 3090,
 				validUntil = 90,
 				description = premiumDescription,
@@ -90,7 +90,7 @@ GameStore.Categories = {
 			{
 				icons = { "Premium_Time_360.png" },
 				name = string.format("360 Days of %s", premiumOfferName),
-				price = 3000,
+				price = 2200,
 				id = 3360,
 				validUntil = 360,
 				description = premiumDescription,
@@ -98,6 +98,234 @@ GameStore.Categories = {
 			},
 		},
 	},
+	
+	--- Vip Items
+	{
+		icons = { "Category_PremiumTime.png" },
+		name = "Items Vip",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
+		offers = {
+			{
+				icons = { "Gold_Pouch.png" },
+				name = "Loot Pouch",
+				price = 900,
+				itemtype = 23721,
+				count = 1,
+				description = "<i>Carries as many loot as your capacity allows, however.</i>\n\n{character}\n{storeinbox}\n{once}\n{useicon} use it to open it\n{info} always placed on the first position of your Store inbox",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE,
+				home = true,
+			},
+			{
+				icons = { "latin_cube.png" },
+				name = "Nebula Cube",
+				price = 500,
+				itemtype = 31633,
+				count = 1,
+				description = "\n\n&#8226; Teleport to Cities and Bosses.",
+				state = GameStore.States.STATE_NEW,
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE,
+				home = true,
+			},	
+			{
+				icons = { "latin_cube.png" },
+				name = "Roulette Coin",
+				price = 60,
+				itemtype = 37317,
+				count = 1,
+				description = "\n\n&#8226; Usala en la Ruleta en Thais temple.",
+				state = GameStore.States.STATE_NEW,
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+				home = true,
+			},		
+			{
+				icons = { "cheesy_key.png" },
+				name = "Cheesy Key",
+				price = 600,
+				itemtype = 35508,
+				count = 1,
+				description = "\n\n&#8226; Obten una skin para tu Familiar dependiendo tu vocacion.",
+				state = GameStore.States.STATE_NEW,
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE,
+				home = true,
+			},	
+			{
+				icons = { "premium_scroll.png" },
+				name = "Koliseum Ticket",
+				price = 500,
+				itemtype = 14758,
+				count = 1,
+				description = "\n\n&#8226; Da acceso una sola vez al Death Portal del Koliseum.",
+				state = GameStore.States.STATE_NEW,
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+				home = true,
+			},		
+			{
+				icons = { "forge_device.png" },
+				name = "Forge Device ",
+				price = 600,
+				itemtype = 21124,
+				count = 1,
+				description = "\n\n&#8226; Usalo para abrir la Forja en cualquier lugar.",
+				state = GameStore.States.STATE_NEW,
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE,
+				home = true,
+			},	
+		},
+	},
+	
+	
+	
+	--Destruction items
+
+	    -- Utilities
+	{
+		icons = { "Category_Extras.png" },
+		name = "Utilites",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
+		offers = {
+		{
+				icons = { "Blueberry_cupcake.png" },
+				name = "Blueberry Cupcake",
+				price = 150,
+				itemtype = 28484,
+				count = 1,
+				description = "\n\n&#8226; Refill your mana on use\n\n&#8226; 10 minutes cooldown.",
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "Blessed_steak.png" },
+				name = "Blessed Steak",
+				price = 150,
+				itemtype = 9086,
+				count = 1,
+				description = "Refill your mana, no cooldown with cupcakes",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+			},
+			{
+				icons = { "Strawberry_cupcake.png" },
+				name = "Strawberry Cupcake",
+				price = 150,
+				itemtype = 28485,
+				count = 1,
+				description = "\n\n&#8226; Refill your hp on use\n\n&#8226; 10 minutes cooldown.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+			},
+			{
+				icons = { "Music_box.png" },
+				name = "Music Box",
+				price = 700,
+				itemtype = 16244,
+				count = 1,
+				description = "Used to tame certain creatures without failing.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+			},
+			{
+				icons = { "red_skull.png" },
+				name = "Skull Remover",
+				price = 400,
+				itemtype = 37338,
+				count = 1,
+				description = "Remove Red or Black Skull.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+			},
+			{
+				icons = { "box_with_balm.png" },
+				name = "Stamina Refill",
+				price = 100,
+				itemtype = 31726,
+				count = 1,
+				description = "Regenera 2Hr Stamina, No tiene Cooldown.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+			},
+			{
+				icons = { "Hydra_tongue_salad.png" },
+				name = "Hydra Tongue Salad",
+				price = 30,
+				itemtype = 9080,
+				count = 1,
+				description = "It will cure you of most negative conditions, but it does not remove the Rooted and Feared conditions.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+			},
+			{
+				icons = { "Rotworm_Stew.png" },
+				name = "Rotworm Stew",
+				price = 150,
+				itemtype = 9079,
+				count = 1,
+				description = "\n\n&#8226; Only for Knights\n\n&#8226; Refill your hp on youse\n\n&#8226; 10 minutes cooldown\n\n&#8226; Doesn't share cooldown with cupcakes.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+			},
+			{
+				icons = { "Whacking_Driller_of_Fate.png" },
+				name = "Whacking Driller of Fate",
+				price = 200,
+				itemtype = 9598,
+				count = 1,
+				description = "\n\n&#8226; Can be used as Rope, Shovel, Pick, Machete, Crowbar and Kitchen Knife.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE,
+			},
+			{
+				icons = { "Squeezing_Gear_of_Girlpower.png" },
+				name = "Squeezing Gear of Girlpower",
+				price = 200,
+				itemtype = 9596,
+				count = 1,
+				description = "\n\n&#8226; Can be used as Rope, Shovel, Pick, Machete, Scythe and Sickle.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE,
+			},
+			{
+				icons = { "Sneaky_Stabber_of_Eliteness.png" },
+				name = "Sneaky Stabber of Eliteness",
+				price = 200,
+				itemtype = 9594,
+				count = 1,
+				description = "\n\n&#8226; Can be used as Rope, Shovel, Pick, Machete, Spoon and Kitchen Knife.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE,
+			},
+			{
+				icons = { "Gold_token.png" },
+				name = "Gold Token",
+				price = 200,
+				itemtype = 22721,
+				count = 25,
+				description = "  You see 25 gold tokens. They weigh 0.25 oz.",
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "silver_token.png" },
+				name = "Silver Token",
+				price = 200,
+				itemtype = 22516,
+				count = 25,
+				description = "  You see 25 silver tokens. They weigh 0.25 oz.",
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "exalted_core.png" },
+				name = "Exalted Core",
+				price = 400,
+				itemtype = 37110,
+				count = 1,
+				description = " You see an exalted core. It weighs 2.60 oz. Use this item to enhance your chances at the exaltation forge.",
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+			{
+				icons = { "dust.png" },
+				name = "Store Dust",
+				price = 30,
+				itemtype = 21089,
+				count = 1,
+				description = " You see a store dust. Use this item to obtain 25 dusts to use at the exaltation forge.",
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+			},
+		},
+	},
+	
+	
+	
+	
 	-- Consumables
 	{
 		icons = { "Category_Consumables.png" },
@@ -1187,6 +1415,14 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
+				icons = { "Glooth Glider.png" },
+				name = "Glooth Glider",
+				price = 870,
+				id = 682,
+				description = "{character}\n{speedboost}\n\n<i>Enjoy the little train.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
 				icons = { "Boreal_Owl.png" },
 				name = "Boreal Owl",
 				price = 870,
@@ -1274,7 +1510,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If the Coralripper moves its fins, it generates enough air pressure that it can even float over land. Its numerous eyes allow it to quickly detect dangers even in confusing situations and eliminate them with one powerful bite. If you watch your fingers, you are going to be good friends.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			--[[{
+			{
 				icons = { "Corpsefire_Skull.png" },
 				name = "Corpsefire Skull",
 				price = 750,
@@ -1283,7 +1519,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 				state = GameStore.States.STATE_NEW,
 				home = true,
-			},]]
+			},
 			{
 				icons = { "Cranium_Spider.png" },
 				name = "Cranium Spider",
@@ -1299,6 +1535,15 @@ GameStore.Categories = {
 				id = 33,
 				description = "{character}\n{speedboost}\n\n<i>Have you ever dreamed of gliding through the air on the back of a winged creature? With its deep red wings, the majestic Crimson Ray is a worthy mount for courageous heroes. Feel like a king on its back as you ride into your next adventure.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
+				icons = { "gorgon_hydra.png" },
+				name = "Gorgon Hydra",
+				price = 900,
+				id = 223,
+				description = "{character}\n{speedboost}\n\n<i>Gorgon Hydra, puedes cambiar el color de la cabeza.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+				home = true,
 			},
 			{
 				icons = { "Cunning_Hyaena.png" },
@@ -1348,7 +1593,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Its roaring is piercing marrow and bone and can be heard over ten miles away. The Desert King is the undisputed ruler of its territory and no one messes with this animal. Show no fear and prove yourself worthy of its trust and you will get yourself a valuable companion for your adventures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			--[[{
+			{
 				icons = { "Doom_Skull.png" },
 				name = "Doom Skull",
 				price = 750,
@@ -1357,7 +1602,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 				state = GameStore.States.STATE_NEW,
 				home = true,
-			},]]
+			},
 			{
 				icons = { "Doombringer.png" },
 				name = "Doombringer",
@@ -1734,7 +1979,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Magic Carpet is the perfect mount for those who are too busy to take care of an animal mount or simply like to travel on a beautiful, magic hand-woven carpet.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			--[[{
+			{
 				icons = { "Magma_Skull.png" },
 				name = "Magma Skull",
 				price = 750,
@@ -1743,7 +1988,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 				state = GameStore.States.STATE_NEW,
 				home = true,
-			},]]
+			},
 			{
 				icons = { "Marsh_Toad.png" },
 				name = "Marsh Toad",
@@ -2287,12 +2532,11 @@ GameStore.Categories = {
 			{
 				icons = { "Outfit_Armoured_Archer_Male_Addon_3.png", "Outfit_Armoured_Archer_Female_Addon_3.png" },
 				name = "Full Armoured Archer Outfit",
-				price = 600,
+				price = 870,
 				sexId = { female = 1619, male = 1618 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Armoured Archers are the epitome of invisible danger. Silently and nimbly, they advance in the background. For hours, they wait patiently, almost motionless, for the decisive moment. Just to be perfectly present in a deadly second.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
-				home = true,
 			},
 			{
 				icons = { "Outfit_Beastmaster_Male_Addon_3.png", "Outfit_Beastmaster_Female_Addon_3.png" },
@@ -2396,11 +2640,12 @@ GameStore.Categories = {
 			{
 				icons = { "Outfit_Flamefury_Mage_Male_Addon_3.png", "Outfit_Flamefury_Mage_Female_Addon_3.png" },
 				name = "Full Flamefury Mage Outfit",
-				price = 870,
+				price = 900,
 				sexId = { female = 1681, male = 1680 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Flame fury mages not only embraced the fury to fire, they became it! Relishing in purging destruction they don't just want to see the world burn, but be an active part in it. They just love the smell of sulphur in the morning!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+				home = true,
 			},
 			{
 				icons = { "Outfit_Forest_Warden_Male_Addon_3.png", "Outfit_Forest_Warden_Female_Addon_3.png" },
@@ -2713,6 +2958,34 @@ GameStore.Categories = {
 				price = 870,
 				sexId = { female = 973, male = 972 },
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>Whenever you pick up your bow and spears, you walk down memory lane and think of your early days? Treat yourself with the fashionable Retro Hunter outfit and hunt some good old monsters from your childhood.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+			{
+				icons = { "Outfit_Golden.png", "Outfit_Golden_Female.png" },
+				name = "Golden Outfit",
+				price = 5000,
+				sexId = { female = 1211, male = 1210 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>An armor made of gold.</i> \n<i>+200 Buffpoints.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+				home = true,
+			},
+			{
+				icons = { "Outfit_Royal_Costume.png", "Outfit_Royal_Costume_Female.png" },
+				name = "Royal Costume",
+				price = 5000,
+				sexId = { female = 1456, male = 1457 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>An armor made of diamonds.</i> \n<i>+200 Buffpoints.</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},	
+			{
+				icons = { "Outfit_Darklight_evoker.png", "Outfit_darklight_evoker_Female.png" },
+				name = "Darklight Evoker",
+				price = 900,
+				sexId = { female = 1676, male = 1675 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>Darklight Evoker.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
 			{
@@ -5971,15 +6244,6 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
 			},
 			{
-				icons = { "Opulent_Kline.png" },
-				name = "Opulent Kline",
-				price = 120,
-				itemtype = { 42359, 42360 },
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
 				icons = { "Ornate_Bed.png" },
 				name = "Ornate Bed",
 				price = 180,
@@ -6322,6 +6586,25 @@ GameStore.Categories = {
 				description = "<i>Purchase a boost that increases the experience points your character gains from hunting by 50%!</i>\n\n{character}\n{info} lasts for 1 hour hunting time\n{info} paused if stamina falls under 14 hours\n{info} can be purchased up to 5 times between 2 server saves\n{info} price increases with every purchase\n{info} cannot be purchased if an XP boost is already active",
 				type = GameStore.OfferTypes.OFFER_TYPE_EXPBOOST,
 			},
+		    {
+				icons = { "Golden_Newspaper.png" },
+				name = "Premium Exp Scroll",
+				price = 400,
+				itemtype = 8153,
+				count = 1,
+				description = "\n\n&#8226; +80% Extra Exp 1 Hora. \n\n&#8226; Maximo uso 2 al dia.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+			},
+			{
+				icons = { "Spyreport.png" },
+				name = "Exp Scroll",
+				price = 150,
+				itemtype = 3232,
+				count = 1,
+				description = "\n\n&#8226; +65% Extra Exp 1 Hora. \n\n&#8226; Maximo uso 2 al dia.",
+				type = GameStore.OfferTypes.OFFER_TYPE_ITEM,
+			},
+			
 		},
 	},
 	-- Extras
@@ -6342,7 +6625,6 @@ GameStore.Categories = {
 			{
 				icons = { "Name_Change.png" },
 				name = "Character Name Change",
-				home = true,
 				price = 250,
 				id = 65002,
 				description = "<i>Tired of your current character name? Purchase a new one!</i>\n\n{character}\n{info} relog required after purchase to finalise the name change",
@@ -6395,7 +6677,7 @@ GameStore.Categories = {
 			{
 				icons = { "Permanent_Prey_Slot.png" },
 				name = "Permanent Prey Slot",
-				price = 900,
+				price = 600,
 				id = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT,
 				description = "<i>Get an additional prey slot to activate additional prey!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Prey dialog",
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT,
@@ -6418,15 +6700,6 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
-				icons = { "Gold_Pouch.png" },
-				name = "Gold Pouch",
-				price = 900,
-				itemtype = 23721,
-				count = 1,
-				description = "<i>Carries as many gold, platinum or crystal coins as your capacity allows, however, no other items.</i>\n\n{character}\n{storeinbox}\n{once}\n{useicon} use it to open it\n{info} always placed on the first position of your Store inbox",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE,
-			},
-			{
 				icons = { "Magic_Gold_Converter.png" },
 				name = "Magic Gold Converter",
 				price = 15,
@@ -6438,7 +6711,7 @@ GameStore.Categories = {
 			{
 				icons = { "Prey_Bonus_Reroll.png" },
 				name = "Prey Wildcard",
-				price = 50,
+				price = 150,
 				count = 20,
 				description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS,
@@ -6453,31 +6726,11 @@ GameStore.Categories = {
 		},
 	},
 	-- Tournament
-	{
-		icons = { "Category_Tournament.png" },
-		name = "Tournament",
-		rookgaard = true,
-		subclasses = { "Tickets", "Exclusive Offers" },
-	},
 	-- Tournament ~ Tickets
-	{
-		icons = { "Category_Tickets.png" },
-		parent = "Tournament",
-		name = "Tickets",
-		rookgaard = true,
-		offers = {
-			{
-				icons = { "Tournament_Restricted.png" },
-				name = "Restricted Tournament Ticket",
-				price = 500,
-			},
-		},
-	},
 	-- Tournament ~ Exclusive Offers
 	{
 		icons = { "Category_ExclusiveOffers.png" },
 		name = "Exclusive Offers",
-		parent = "Tournament",
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
@@ -6531,7 +6784,7 @@ GameStore.Categories = {
 				name = "Cerberus Champion",
 				price = 1250,
 				id = 146,
-				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>A fierce and grim guardian of the underworld has risen to fight side by side with the bravest warriors in order to send evil creatures into the realm of the dead. The three headed Cerberus Champion is constantly baying for blood and using its sharp fangs it easily rips apart even the strongest armour and shield.",
+				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>A fierce and grim guardian of the underworld has risen to fight.</i> \n<i>+60 Buffpoints.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
@@ -6594,7 +6847,7 @@ GameStore.Categories = {
 				price = 5000,
 				sexId = { female = 1289, male = 1288 },
 				addon = 3,
-				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The souls of countless slain dragons have been fused over the years with this armour, wrought from the impervious scales of the ancestors of those very same beings, wicked and wise, winged and wild. The Dragon Slayer Outfit has seen an unfathomable amount of bloodshed, but it pales in comparison to the untold lives lost in the strife over the armour itself. Only the mightiest warriors can even begin to dream of ever owning this exceedingly rare token of power.</i>",
+				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually.</i> \n<i>+200 Buffpoints.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
 			{
@@ -6605,7 +6858,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
 			},
 			{
 				icons = { "Gilded_Crown.png" },
@@ -6615,7 +6867,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
 			},
 			{
 				icons = { "Gilded_Horned_Helmet.png" },
@@ -6625,7 +6876,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
 			},
 			{
 				icons = { "Gilded_Magic_Longsword.png" },
@@ -6635,7 +6885,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
 			},
 			{
 				icons = { "Gilded_Warlord_Sword.png" },
@@ -6645,7 +6894,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				home = true,
 			},
 			{
 				icons = { "Guzzlemaw_Grub.png" },
@@ -6661,7 +6909,7 @@ GameStore.Categories = {
 				name = "Jousting Eagle",
 				price = 1250,
 				id = 145,
-				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>High above the clouds far away from dry land, the training of giant eagles takes place. Only the cream of the crop is able to survive in such harsh environment long enough to call themselves Jousting Eagles while the weaklings find themselves at the bottom of the sea. The tough ones become noble and graceful mounts that are well known for their agility and endurance.</i>",
+				description = "{info} usable by all characters of the account\n{speedboost}\n\n<i>High above the clouds far away from dry land, the training of giant eagles takes place.</i> \n<i>+60 Buffpoints.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
@@ -6679,7 +6927,7 @@ GameStore.Categories = {
 				price = 1750,
 				sexId = { female = 1207, male = 1206 },
 				addon = 3,
-				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The Lion of War has fought on countless battlefields and never lost once. Enemies tremble with fear when he batters his sword against his almighty shield. Realising that a Lion of War knows no mercy, his opponents often surrender before the battle even begins.</i>",
+				description = "{info} usable by all characters of the account\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually.</i> \n<i>+70 Buffpoints.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
 			{

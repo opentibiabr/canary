@@ -102,6 +102,7 @@ monster.loot = {
 	{ name = "hive scythe", chance = 1650 },
 	{ name = "gooey mass", chance = 13000, maxCount = 2 },
 	{ name = "hive bow", chance = 830 },
+	{ id = 14753, chance = 810 }, --dung ball quest addon
 }
 
 monster.attacks = {

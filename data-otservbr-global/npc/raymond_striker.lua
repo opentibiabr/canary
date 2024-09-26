@@ -150,16 +150,26 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U7_8.PirateOutfits.PirateBaseOutfit, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
+<<<<<<< Updated upstream
 	elseif MsgContains(message, "task") and player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.RaysMission4) == 5 then
 		if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PirateTask) < 0 then
+=======
+	elseif MsgContains(message, "task") then
+		if player:getStorageValue(Storage.KillingInTheNameOf.PirateTask) < 0 then
+>>>>>>> Stashed changes
 			npcHandler:say({
 				"The pirates on Nargor are becoming more and more of a threat to us each day. I wish someone could get rid of them once and for all, but unfortunately they just keep coming! ...",
 				"Only a dead pirate is a good pirate. I think killing a large number of them would definitely help us to make Sabrehaven a safer place. ...",
-				"It doesn't matter how long it takes, but... would you be willing to kill 3000 pirates for us?",
+				"It doesn't matter how long it takes, but... would you be willing to kill 1000 pirates for us? Solo son 10000 NO 3000",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
+<<<<<<< Updated upstream
 		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PirateTask) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.PirateCount) >= 3000 then
+=======
+		elseif player:getStorageValue(Storage.KillingInTheNameOf.PirateTask) == 0 then
+			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.PirateCount) >= 1000 then
+>>>>>>> Stashed changes
 				if player:getStorageValue(REPEATSTORAGE_BASE + #tasks.GrizzlyAdams + 1) <= 2 then
 					npcHandler:say({
 						"Hey, great. You've done well! As a small reward I give you some coins from our treasure box. Also, let me tell you an interesting piece of information. ...",

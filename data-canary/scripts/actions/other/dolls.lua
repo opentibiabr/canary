@@ -36,12 +36,6 @@ local dollsTable = {
 		"I own, god owns, perfect match!",
 		"Hug me! Feed me! Hail me!",
 	},
-	[8153] = {
-		"It's news to me.",
-		"News, updated as infrequently as possible!",
-		"Extra! Extra! Read all about it!",
-		"Fresh off the press!",
-	},
 	[8154] = {
 		"Hail!",
 		"So cold.",

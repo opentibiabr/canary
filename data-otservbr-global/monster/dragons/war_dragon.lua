@@ -76,16 +76,30 @@ monster.voices = {
 }
 
 monster.loot = {
+<<<<<<< Updated upstream
 	{ name = "Platinum Coin", chance = 52560, minCount = 1, maxCount = 45 },
+=======
+	{ name = "Platinum Coin", chance = 52560, minCount = 1, maxCount = 25 },
+>>>>>>> Stashed changes
 	{ name = "Wardragon Claw", chance = 14420 },
 	{ name = "Nimmersatt's Seal", chance = 10620 },
 	{ name = "Dragon Tongue", chance = 8450 },
 	{ name = "Wardragon Tooth", chance = 6330 },
+<<<<<<< Updated upstream
 	{ name = "Gold Ingot", chance = 6007 },
 	{ name = "Onyx Chip", chance = 4650, minCount = 1, maxCount = 2 },
 	{ name = "Black Pearl", chance = 4000 },
 	{ name = "White Gem", chance = 1000 },
 	{ name = "Dragonbone Staff", chance = 740 },
+=======
+	{ name = "Gold Ingot", chance = 2007 },
+	{ name = "Onyx Chip", chance = 4650, minCount = 1, maxCount = 2 },
+	{ name = "Black Pearl", chance = 4000 },
+	{ name = "White Gem", chance = 1000 },
+	{ name = "Dragonbone Staff", chance = 1740 },
+		{ name = "Green Dragon Scale", chance = 700 },
+	{ name = "Green Dragon Leather", chance = 800 },
+>>>>>>> Stashed changes
 }
 
 monster.attacks = {

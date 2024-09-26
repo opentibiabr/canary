@@ -95,16 +95,22 @@ monster.loot = {
 	{ name = "stone skin amulet", chance = 740 },
 	{ name = "terra mantle", chance = 510 },
 	{ name = "rubber cap", chance = 430 },
+<<<<<<< Updated upstream:data-otservbr-global/monster/quests/soul_war/normal_monsters/rotten_golem.lua
 	{ name = "bag you desire", chance = 15 },
+=======
+	{ id = 34109, chance = 0.5 }, -- bag you desire
+>>>>>>> Stashed changes:data-otservbr-global/monster/constructs/rotten_golem.lua
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -950 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HOLYDAMAGE, minDamage = -1200, maxDamage = -1450, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYAREA, target = true },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -900, maxDamage = -1400, radius = 5, effect = CONST_ME_BIGPLANTS, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HOLYDAMAGE, minDamage = -900, maxDamage = -1150, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYAREA, target = true },
+--	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -900, maxDamage = -1400, radius = 5, effect = CONST_ME_BIGPLANTS, target = false },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -1100, maxDamage = -1300, radius = 7, effect = CONST_ME_BIGPLANTS, target = false },
 	{ name = "poison chain", interval = 2000, chance = 20, minDamage = -1050, maxDamage = -1200, radius = 7, effect = CONST_ME_BIGPLANTS, target = false },
 	{ name = "root", interval = 2000, chance = 1, target = true },
+	{ name = "destroy magic walls", interval = 1000, chance = 30 },
+
 }
 
 monster.defenses = {

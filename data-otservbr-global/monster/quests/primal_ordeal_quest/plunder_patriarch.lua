@@ -79,18 +79,18 @@ monster.loot = {
 	{ name = "giant topaz", chance = 2041 },
 	{ name = "amber with a bug", chance = 2450 },
 	{ name = "amber with a dragonfly", chance = 2150 },
-	{ name = "arboreal tome", chance = 100 },
-	{ name = "arboreal crown", chance = 100 },
-	{ name = "spiritthorn armor", id = 39147, chance = 100 },
-	{ name = "spiritthorn helmet", id = 39148, chance = 100 },
-	{ name = "alicorn headguard", chance = 100 },
-	{ name = "alicorn quiver", chance = 100 },
-	{ name = "arcanomancer regalia", chance = 100 },
-	{ name = "arcanomancer folio", chance = 100 },
-	{ id = 39183, chance = 100 }, -- name = "charged arcanomancer sigil"
-	{ id = 39186, chance = 100 }, -- name = "charged arboreal ring"
-	{ id = 39180, chance = 100 }, -- name = "charged alicorn ring"
-	{ id = 39177, chance = 100 }, -- name = "charged spiritthorn ring"
+	{ name = "arboreal tome", chance = 50 },
+	{ name = "arboreal crown", chance = 50 },
+	{ name = "spiritthorn armor", id = 39147, chance = 50 },
+	{ name = "spiritthorn helmet", id = 39148, chance = 50 },
+	{ name = "alicorn headguard", chance = 50 },
+	{ name = "alicorn quiver", chance = 50 },
+	{ name = "arcanomancer regalia", chance = 50 },
+	{ name = "arcanomancer folio", chance = 50 },
+	{ id = 39183, chance = 50 }, -- name = "charged arcanomancer sigil"
+	{ id = 39186, chance = 50 }, -- name = "charged arboreal ring"
+	{ id = 39180, chance = 50 }, -- name = "charged alicorn ring"
+	{ id = 39177, chance = 50 }, -- name = "charged spiritthorn ring"
 }
 
 monster.attacks = {

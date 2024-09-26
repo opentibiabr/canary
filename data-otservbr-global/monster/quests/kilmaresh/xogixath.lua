@@ -82,6 +82,8 @@ monster.loot = {
 	{ id = 31369, chance = 6500 }, -- gryphon mask
 	{ name = "fire axe", chance = 34000 },
 	{ id = 31557, chance = 520 }, -- blister ring
+		{ id = 30402, chance = 1000 }, -- theurgic
+
 }
 
 monster.attacks = {

@@ -100,6 +100,7 @@ monster.loot = {
 	{ name = "ultimate health potion", chance = 2400 },
 	{ id = 8895, chance = 210 }, -- rusted armor
 	{ id = 22052, chance = 15000 }, -- werewolf fangs
+    { id = 22083, chance = 600 }, -- moonlight crystals
 	{ name = "werewolf fur", chance = 10650 },
 }
 

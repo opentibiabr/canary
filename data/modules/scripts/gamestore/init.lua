@@ -1690,37 +1690,78 @@ function GameStore.processHouseRelatedPurchase(player, offer)
 end
 
 function GameStore.processOutfitPurchase(player, offerSexIdTable, addon)
-	local looktype
-	local _addon = addon and addon or 0
+    local looktype
+    local _addon = addon and addon or 0
 
-	if player:getSex() == PLAYERSEX_MALE then
-		looktype = offerSexIdTable.male
-	elseif player:getSex() == PLAYERSEX_FEMALE then
-		looktype = offerSexIdTable.female
-	end
+    if player:getSex() == PLAYERSEX_MALE then
+        looktype = offerSexIdTable.male
+    elseif player:getSex() == PLAYERSEX_FEMALE then
+        looktype = offerSexIdTable.female
+    end
 
-	if not looktype then
-		return error({ code = 0, message = "This outfit seems not to suit your sex, we are sorry for that!" })
-	elseif (not player:hasOutfit(looktype, 0)) and (_addon == 1 or _addon == 2) then
-		return error({ code = 0, message = "You must own the outfit before you can buy its addon." })
-	elseif player:hasOutfit(looktype, _addon) then
-		return error({ code = 0, message = "You already own this outfit." })
-	else
-		if not player:addOutfitAddon(looktype, _addon) or not player:hasOutfit(looktype, _addon) then
-			error({ code = 0, message = "There has been an issue with your outfit purchase. Your purchase has been cancelled." })
-		else
-			player:addOutfitAddon(offerSexIdTable.male, _addon)
-			player:addOutfitAddon(offerSexIdTable.female, _addon)
-		end
-	end
+    if not looktype then
+        return error({ code = 0, message = "This outfit seems not to suit your sex, we are sorry for that!" })
+    elseif (not player:hasOutfit(looktype, 0)) and (_addon == 1 or _addon == 2) then
+        return error({ code = 0, message = "You must own the outfit before you can buy its addon." })
+    elseif player:hasOutfit(looktype, _addon) then
+        return error({ code = 0, message = "You already own this outfit." })
+    else    
+        if 
+            not player:addOutfitAddon(looktype, _addon) 
+            or not player:hasOutfit(looktype, _addon) then
+            error({ code = 0, message = "There has been an issue with your outfit purchase. Your purchase has been cancelled." })
+        else
+            -- Agregar el outfit según el sexo del jugador
+            player:addOutfitAddon(offerSexIdTable.male, _addon)
+            player:addOutfitAddon(offerSexIdTable.female, _addon)
+            
+            -- Definir puntos específicos según el looktype (outfit)
+            local puntosOutfit = {
+                [1211] = 200,                  -- golden
+                [1210] = 200,				-- golden
+                [1288] = 200,				-- dragonslayer
+                [1289] = 200,				-- dragonslayer
+                [1206] = 70,				-- lion of war
+                [1207] = 70,				-- lion of war
+                [1456] = 200,				-- royal costume
+                [1457] = 200,				-- royal costume
+            
+            }
+            
+            -- Obtener los puntos correspondientes o asignar el valor por defecto de 30
+            local puntosbuffos = puntosOutfit[looktype] or 30
+            
+            -- Actualizar buffpoints en la base de datos
+            local query = string.format("UPDATE players SET buffpoints = buffpoints + %d WHERE id = %d", puntosbuffos, player:getGuid())
+            db.storeQuery(query)
+        end
+    end
 end
 
-function GameStore.processMountPurchase(player, offerId)
-	if player:hasMount(offerId) then
-		return error({ code = 0, message = "You already own this mount." })
-	end
 
-	player:addMount(offerId)
+function GameStore.processMountPurchase(player, offerId)
+    if player:hasMount(offerId) then
+        return error({ code = 0, message = "You already own this mount." })
+    end
+
+    -- Agregar la montura al jugador
+    player:addMount(offerId)
+
+    -- Definir puntos específicos según el ID de la montura
+    local puntosMount = {
+        [146] = 60,  -- jousting eagle
+        [145] = 60,  --cerberus champion
+        -- Puedes agregar más monturas aquí con sus respectivos puntos
+    }
+
+    -- Verificar si la montura está en la lista para otorgar puntos
+    if puntosMount[offerId] then
+        local puntosbuffos = puntosMount[offerId]
+
+        -- Actualizar buffpoints en la base de datos solo si la montura está en la lista
+        local query = string.format("UPDATE players SET buffpoints = buffpoints + %d WHERE id = %d", puntosbuffos, player:getGuid())
+        db.storeQuery(query)
+    end
 end
 
 function GameStore.processNameChangePurchase(player, offer, productType, newName)

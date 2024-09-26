@@ -105,6 +105,7 @@ monster.loot = {
 	{ name = "steel boots", chance = 1000 },
 	{ name = "stone skin amulet", chance = 1000 },
 	{ name = "wand of cosmic Energy", chance = 1000 },
+	{ name = "sturdy book", chance = 800 },
 	{ name = "yellow gem", chance = 1000 },
 }
 

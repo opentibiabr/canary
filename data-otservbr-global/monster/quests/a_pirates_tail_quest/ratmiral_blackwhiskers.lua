@@ -93,8 +93,8 @@ monster.loot = {
 	{ id = 35579, chance = 3570 }, -- golden dustbin
 	{ id = 32626, chance = 2680 }, -- amber
 	{ id = 35581, chance = 2680 }, -- golden cheese wedge
-	{ id = 35595, chance = 2680 }, -- soap
-	{ id = 35695, chance = 1790 }, -- scrubbing brush
+	{ id = 35595, chance = 260 }, -- soap
+	{ id = 35695, chance = 255 }, -- scrubbing brush
 	{ id = 35614, chance = 890 }, -- cheesy membership card
 	{ id = 35523, chance = 890 }, -- exotic amulet
 	{ id = 35515, chance = 890 }, -- throwing axe

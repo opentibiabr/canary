@@ -76,9 +76,15 @@ monster.voices = {
 }
 
 monster.loot = {
+<<<<<<< Updated upstream
 	{ name = "Platinum Coin", chance = 50780, minCount = 1, maxCount = 48 },
 	{ name = "Nimmersatt's Seal", chance = 8670 },
 	{ id = 3039, chance = 10090 },
+=======
+	{ name = "Platinum Coin", chance = 50780, minCount = 1, maxCount = 28 },
+	{ name = "Nimmersatt's Seal", chance = 4670 },
+	{ id = 3039, chance = 2090 },
+>>>>>>> Stashed changes
 	{ name = "Molten Dragon Essence", chance = 4720 },
 	{ name = "Prismatic Quartz", chance = 4460 },
 	{ name = "Rainbow Quartz", chance = 4430, minCount = 1, maxCount = 2 },
@@ -86,6 +92,11 @@ monster.loot = {
 	{ name = "Mega Dragon Heart", chance = 1850 },
 	{ name = "Violet Gem", chance = 1470 },
 	{ name = "Dragon Slayer", chance = 130 },
+<<<<<<< Updated upstream
+=======
+		{ name = "Red Dragon Scale", chance = 700 },
+	{ name = "Red Dragon Leather", chance = 600 },
+>>>>>>> Stashed changes
 }
 
 monster.attacks = {

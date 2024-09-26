@@ -1,6 +1,6 @@
 local deathEvent = CreatureEvent("EnergizedRagingMageDeath")
 function deathEvent.onDeath(creature)
-	if getGlobalStorageValue(673003) < 2000 then
+	if getGlobalStorageValue(673003) < 250 then
 		return true
 	end
 

@@ -129,8 +129,13 @@ keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 }, function(player)
 	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 4
 end, function(player)
+<<<<<<< Updated upstream
 	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04, 5)
 	player:addItemEx(Game.createItem(12669, 1), true, CONST_SLOT_BACKPACK)
+=======
+	player:setStorageValue(Storage.TheRookieGuard.Mission04, 5)
+	player:addItemEx(Game.createItem(8014, 1), true, CONST_SLOT_BACKPACK)
+>>>>>>> Stashed changes
 end)
 
 -- Mission 4: Decline (First reward)

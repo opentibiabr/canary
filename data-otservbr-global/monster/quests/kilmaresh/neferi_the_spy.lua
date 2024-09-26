@@ -89,6 +89,7 @@ monster.loot = {
 	{ id = 3049, chance = 149 }, -- stealth ring
 	{ name = "violet gem", chance = 149 },
 	{ name = "golden mask", chance = 75 },
+	{ name = "tagralt-inlaid scabbard", chance = 252 },
 }
 
 monster.attacks = {

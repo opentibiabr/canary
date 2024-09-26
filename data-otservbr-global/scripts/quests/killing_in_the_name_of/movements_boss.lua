@@ -352,8 +352,13 @@ local bosses = {
 		flamePosition = Position(33070, 31029, 12),
 	},
 	{
+<<<<<<< Updated upstream:data-otservbr-global/scripts/quests/killing_in_the_name_of/movements_boss.lua
 		bossName = { "Brutus Bloodbeard", "Deadeye Devious", "lethal lissy", "Ron The Ripper" },
 		storage = Storage.Quest.U8_5.KillingInTheNameOf.PirateTask,
+=======
+		bossName = "Ron The Ripper", "Lethal Lissy", "Brutus Bloodbeard", "Deadeye Devious",
+		storage = Storage.KillingInTheNameOf.PirateTask,
+>>>>>>> Stashed changes:data-otservbr-global/scripts/movements/quests/killing_in_the_name_of/boss.lua
 		teleportPosition = { x = 31978, y = 32853, z = 1 },
 		playerPosition = Position(31976, 32896, 0),
 		bossPosition = Position(31983, 32897, 0),
@@ -385,42 +390,64 @@ local bosses = {
 		flamePosition = Position(32807, 31117, 2),
 	},
 }
+local bosses = {
+    -- ... (otros bosses) ...
+
+    {
+        bossName = { "Ron The Ripper", "Lethal Lissy", "Brutus Bloodbeard", "Deadeye Devious" },
+        storage = Storage.KillingInTheNameOf.PirateTask,
+        teleportPosition = { x = 31978, y = 32853, z = 1 },
+        playerPosition = Position(31976, 32896, 0),
+        bossPosition = Position(31983, 32897, 0),
+        centerPosition = Position(31982, 32897, 0),
+        rangeX = 5,
+        rangeY = 8,
+        flamePosition = Position(31987, 32896, 0),
+    },
+
+    -- ... (otros bosses) ...
+}
 
 local boss = MoveEvent()
 
 function boss.onStepIn(creature, item, position, fromPosition)
-	local player = creature:getPlayer()
-	if not player then
-		return true
-	end
-	for a = 1, #bosses do
-		if player:getPosition() == Position(bosses[a].teleportPosition) then
-			if player:getStorageValue(bosses[a].storage) ~= 1 or roomIsOccupied(bosses[a].centerPosition, true, bosses[a].rangeX, bosses[a].rangeY) then
-				player:teleportTo(fromPosition)
-				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				return true
-			end
-			player:setStorageValue(bosses[a].storage, 2)
-			player:teleportTo(bosses[a].playerPosition)
-			bosses[a].playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
-			local monster
-			if player:getPosition() == Position({ x = 31978, y = 32853, z = 1 }) then
-				local randomBoss = math.random(4)
-				monster = Game.createMonster(bosses[a].bossName[randomBoss], bosses[a].bossPosition)
-			else
-				monster = Game.createMonster(bosses[a].bossName, bosses[a].bossPosition)
-			end
-			if not monster then
-				return true
-			end
-			addEvent(clearBossRoom, 60 * 10 * 1000, player.uid, bosses[a].centerPosition, false, bosses[a].rangeX, bosses[a].rangeY, fromPosition)
-			player:say("You have ten minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.", TALKTYPE_MONSTER_SAY)
-		end
-	end
-	return true
+    local player = creature:getPlayer()
+    if not player then
+        return true
+    end
+    for a = 1, #bosses do
+        if player:getPosition() == Position(bosses[a].teleportPosition) then
+            if player:getStorageValue(bosses[a].storage) ~= 1 or roomIsOccupied(bosses[a].centerPosition, true, bosses[a].rangeX, bosses[a].rangeY) then
+                player:teleportTo(fromPosition)
+                player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+                return true
+            end
+            player:setStorageValue(bosses[a].storage, 2)
+            player:teleportTo(bosses[a].playerPosition)
+            bosses[a].playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
+
+            local monster
+            if type(bosses[a].bossName) == "table" then
+                -- bossName es una tabla, selecciona un jefe aleatorio
+                local randomIndex = math.random(#bosses[a].bossName)
+                monster = Game.createMonster(bosses[a].bossName[randomIndex], bosses[a].bossPosition)
+            else
+                -- bossName no es una tabla, crea el jefe especificado
+                monster = Game.createMonster(bosses[a].bossName, bosses[a].bossPosition)
+            end
+
+            if not monster then
+                return true
+            end
+
+            addEvent(clearBossRoom, 60 * 10 * 1000, player.uid, bosses[a].centerPosition, false, bosses[a].rangeX, bosses[a].rangeY, fromPosition)
+            player:say("You have ten minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.", TALKTYPE_MONSTER_SAY)
+        end
+    end
+    return true
 end
 
 for index = 1, #bosses do
-	boss:position(bosses[index].teleportPosition)
+    boss:position(bosses[index].teleportPosition)
 end
 boss:register()

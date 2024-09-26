@@ -18,10 +18,10 @@ monster.bosstiary = {
 	bossRace = RARITY_NEMESIS,
 }
 
-monster.health = 25000
-monster.maxHealth = 25000
+monster.health = 350000
+monster.maxHealth = 350000
 monster.race = "venom"
-monster.corpse = 0
+monster.corpse = 37589
 monster.speed = 225
 monster.manaCost = 0
 
@@ -92,19 +92,20 @@ monster.loot = {
 	{ id = 828, chance = 8000 }, -- lightning headband
 	{ id = 23533, chance = 8000 }, -- ring of red plasma
 	{ id = 3036, chance = 8000 }, -- violet gem
-	{ id = 23474, chance = 6000, unique = true }, -- tiara of power
-	{ id = 23477, chance = 6000, unique = true }, -- void boots
-	{ id = 23686, chance = 4000, unique = true }, -- devourer core
-	{ id = 23684, chance = 2000, unique = true }, -- crackling egg
+	{ id = 23474, chance = 1200 }, -- tiara of power
+	{ id = 23477, chance = 3000 }, -- void boots
+	{ id = 23686, chance = 800, unique = true }, -- devourer core
+	{ id = 23684, chance = 1000, unique = true }, -- crackling egg
+	{ id = 23685, chance = 300, unique = true }, -- menacing egg
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1600 },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -400, maxDamage = -800, length = 10, spread = 0, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -800, radius = 4, effect = CONST_ME_SMALLCLOUDS, target = true },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -800, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_YELLOWENERGY, target = true },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -600, maxDamage = -1200, length = 10, spread = 0, effect = CONST_ME_LOSEENERGY, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, radius = 8, effect = CONST_ME_MAGIC_RED, target = false },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -400, maxDamage = -800, length = 10, spread = 0, effect = CONST_ME_MAGIC_RED, target = false },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -800, radius = 4, effect = CONST_ME_SMALLCLOUDS, target = true },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -800, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_YELLOWENERGY, target = true },
+	{ name = "combat", interval = 1000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -600, maxDamage = -1200, length = 10, spread = 0, effect = CONST_ME_LOSEENERGY, target = false },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_LIFEDRAIN, radius = 8, effect = CONST_ME_MAGIC_RED, target = false },
 	{ name = "anomaly break", interval = 2000, chance = 40, target = false },
 	{ name = "devourer summon", interval = 2000, chance = 25, target = false },
 }

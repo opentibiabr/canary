@@ -157,7 +157,7 @@ local function dreamFirst(npc, creature, message, keywords, parameters, node)
 
 	if player:isPremium() then
 		if player:getStorageValue(storage + 1) < 1 then
-			if player:getItemCount(20276) > 0 then
+			if player:getItemCount(20276) > 10 then
 				if player:removeItem(20276, 1) then
 					npcHandler:say(newaddon, npc, creature)
 					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
@@ -182,7 +182,7 @@ local function dreamSecond(npc, creature, message, keywords, parameters, node)
 
 	if player:isPremium() then
 		if player:getStorageValue(storage) < 1 then
-			if player:getItemCount(20275) > 0 then
+			if player:getItemCount(20275) > 10 then
 				if player:removeItem(20275, 1) then
 					npcHandler:say(newaddon, npc, creature)
 					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
@@ -445,7 +445,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 		npcHandler:removeInteraction(npc, creature)
-		npcHandler:resetNpc()
 	end
 end
 
@@ -464,9 +463,6 @@ keywordHandler:addGreetKeyword({ "ashari" }, { npcHandler = npcHandler, text = "
 keywordHandler:addFarewellKeyword({ "asgha thrazi" }, { npcHandler = npcHandler, text = "Goodbye, |PLAYERNAME|." })
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-
-npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye!")
-
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

@@ -26,6 +26,7 @@ local reward = {
 			{ id = 3552, amount = 1 }, -- Leather boots
 			{ id = 3074, amount = 1 }, -- Wand of vortex
 			{ id = 3059, amount = 1 }, -- Spellbook
+			{ id = 3725, amount = 10 }, -- brown mushroom
 		},
 		-- Druid
 		[14026] = {
@@ -35,6 +36,7 @@ local reward = {
 			{ id = 3552, amount = 1 }, -- Leather boots
 			{ id = 3066, amount = 1 }, -- Snakebite rod
 			{ id = 3059, amount = 1 }, -- Spellbook
+			{ id = 3725, amount = 10 }, -- brown mushroom
 		},
 		-- Paladin
 		[14027] = {
@@ -46,6 +48,7 @@ local reward = {
 			{ id = 3277, amount = 1 }, -- Spear
 			{ id = 35562, amount = 1 }, -- Quiver
 			{ id = 3447, amount = 100 }, -- Arrows
+			{ id = 3725, amount = 10 }, -- brown mushroom
 		},
 		-- Knight
 		[14028] = {
@@ -56,7 +59,8 @@ local reward = {
 			{ id = 7774, amount = 1 }, -- Jagged sword
 			{ id = 17824, amount = 1 }, -- Swampling club
 			{ id = 7773, amount = 1 }, -- steel axe
-			{ id = 3409, amount = 1 }, -- Steel shield
+			{ id = 3429, amount = 1 }, -- black shield
+			{ id = 3725, amount = 10 }, -- brown mushroom
 		},
 	},
 }

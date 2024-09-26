@@ -1,4 +1,5 @@
 function onUpdateDatabase()
+<<<<<<< Updated upstream
 	logger.info("Updating database to version 46 (feat: vip groups)")
 
 	db.query([[
@@ -54,3 +55,24 @@ function onUpdateDatabase()
 
 	return true
 end
+=======
+	logger.info("Updating database to version 47 (task system)")
+	
+	db.query([[
+		CREATE TABLE `player_bonus_info` (
+			`id` int(11) UNSIGNED NOT NULL,
+			`player_id` int(11) UNSIGNED NOT NULL,
+			`task_points` int(11) NOT NULL DEFAULT 0
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+	]])
+	db.query([[
+		ALTER TABLE `bounty_hunter_system`
+		ADD PRIMARY KEY (`id`);
+	]])
+	db.query([[
+			ALTER TABLE `players`
+				ADD `task_points` int(11) DEFAULT 0;
+		]])
+	return true
+end
+>>>>>>> Stashed changes

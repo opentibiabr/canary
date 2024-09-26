@@ -90,13 +90,13 @@ monster.loot = {
 	{ id = 3097, chance = 208 }, -- dwarven ring
 	{ name = "golden mask", chance = 208 },
 	{ name = "terra hood", chance = 208 },
-	{ name = "eye-embroidered veil", chance = 156 },
+	{ name = "eye-embroidered veil", chance = 186 },
 	{ id = 23531, chance = 156 }, -- ring of green plasma
 	{ name = "terra boots", chance = 156 },
 	{ name = "yellow gem", chance = 156 },
 	{ name = "lightning legs", chance = 104 },
 	{ name = "sea horse figurine", chance = 104 },
-	{ name = "tagralt-inlaid scabbard", chance = 52 },
+	{ name = "tagralt-inlaid scabbard", chance = 252 },
 }
 
 monster.attacks = {

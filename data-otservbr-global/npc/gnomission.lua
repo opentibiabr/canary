@@ -208,7 +208,7 @@ npcConfig.shop = {
 	{ itemName = "red tome", clientId = 2852, sell = 2000 },
 	{ itemName = "runed sword", clientId = 7417, sell = 45000 },
 	{ itemName = "sea serpent trophy", clientId = 9613, sell = 10000 },
-	{ itemName = "silkweaver bow", clientId = 8029, sell = 12000 },
+	{ itemName = "silkweaver bow", clientId = 8029, sell = 1200 },
 	{ itemName = "silver fafnar trophy", clientId = 9627, sell = 1000 },
 	{ itemName = "silver rune emblem explosion", clientId = 11607, sell = 5000 },
 	{ itemName = "silver rune emblem heavy magic missile", clientId = 11605, sell = 5000 },

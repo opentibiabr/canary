@@ -91,6 +91,8 @@ monster.loot = {
 	{ id = 5912, chance = 1000, maxCount = 2 }, -- blue piece of cloth
 	{ id = 5913, chance = 5000, maxCount = 2 }, -- brown piece of cloth
 	{ id = 5914, chance = 2000, maxCount = 2 }, -- yellow piece of cloth
+	{ id = 5909, chance = 900, maxCount = 2 }, -- white piece of cloth
+	{ id = 5910, chance = 900, maxCount = 2 }, -- green piece of cloth
 	{ id = 3079, chance = 230 }, -- boots of haste
 	{ id = 239, chance = 7000 }, -- great health potion
 	{ id = 3284, chance = 1000 }, -- ice rapier

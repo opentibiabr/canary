@@ -99,7 +99,7 @@ monster.loot = {
 	{ name = "mysterious remains", chance = 88890 },
 	{ name = "piggy bank", chance = 97220 },
 	{ name = "platinum coin", chance = 100000, maxCount = 8 },
-	{ name = "pomegranate", chance = 16670 },
+	{ name = "pomegranate", chance = 400 },
 	{ name = "resizer", chance = 2780 },
 	{ id = 23533, chance = 5560 }, -- ring of red plasma
 	{ name = "ring of the sky", chance = 2780 },

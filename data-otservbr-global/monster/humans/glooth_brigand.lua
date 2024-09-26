@@ -79,10 +79,9 @@ monster.loot = {
 	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
 	{ id = 3035, chance = 100000, maxCount = 3 }, -- platinum coin
 	{ id = 21203, chance = 9090 }, -- glooth bag
-	{ id = 21816, chance = 7692 }, -- tainted glooth capsule
 	{ id = 238, chance = 5882 }, -- great mana potion
 	{ id = 21143, chance = 4000 }, -- glooth sandwich
-	{ id = 21814, chance = 3030 }, -- glooth capsule
+	{ id = 21814, chance = 1000 }, -- glooth capsule
 	{ id = 7642, chance = 2500 }, -- great spirit potion
 	{ id = 21146, chance = 2000 }, -- glooth steak
 	{ id = 7643, chance = 2000 }, -- ultimate health potion

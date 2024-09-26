@@ -540,6 +540,9 @@
 	<npc centerx="33170" centery="31807" centerz="6" radius="1">
 		<npc name="Tereban" x="0" y="0" z="6" spawntime="60" />
 	</npc>
+	<npc centerx="33173" centery="31810" centerz="6" radius="1">
+		<npc name="Cambio items por Old Cape" x="0" y="0" z="6" spawntime="60" />
+	</npc>
 	<npc centerx="33213" centery="31812" centerz="6" radius="1">
 		<npc name="Rudolph" x="0" y="0" z="6" spawntime="60" />
 	</npc>
@@ -1713,6 +1716,9 @@
 	<npc centerx="32050" centery="32206" centerz="7" radius="1">
 		<npc name="Billy" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="32269" centery="32208" centerz="7" radius="1">
+		<npc name="Vincent" x="0" y="0" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="32379" centery="32208" centerz="7" radius="3">
 		<npc name="Walter Jaeger" x="0" y="-1" z="7" spawntime="60" />
 	</npc>
@@ -1721,6 +1727,9 @@
 	</npc>
 	<npc centerx="32645" centery="32213" centerz="7" radius="2">
 		<npc name="H.L." x="0" y="-1" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32269" centery="32214" centerz="7" radius="1">
+		<npc name="Runtel Blackspark" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32368" centery="32214" centerz="7" radius="1">
 		<npc name="Aruda" x="0" y="0" z="7" spawntime="60" />
@@ -1731,11 +1740,17 @@
 	<npc centerx="32097" centery="32218" centerz="7" radius="1">
 		<npc name="Cipfried" x="0" y="0" z="7" spawntime="60" />
 	</npc>
-	<npc centerx="32349" centery="32219" centerz="7" radius="1">
-		<npc name="Benjamin" x="0" y="0" z="7" spawntime="60" />
+	<npc centerx="32350" centery="32218" centerz="7" radius="1">
+		<npc name="Runtel Blackspark" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32362" centery="32219" centerz="7" radius="1">
+		<npc name="Loot Trader" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32390" centery="32219" centerz="7" radius="1">
 		<npc name="Quero" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32341" centery="32220" centerz="7" radius="1">
+		<npc name="Benjamin" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32381" centery="32220" centerz="7" radius="1">
 		<npc name="Oswald" x="0" y="0" z="7" spawntime="60" />
@@ -1745,6 +1760,9 @@
 	</npc>
 	<npc centerx="32398" centery="32222" centerz="7" radius="1">
 		<npc name="Xodet" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32353" centery="32223" centerz="7" radius="1">
+		<npc name="Addoner" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32066" centery="32225" centerz="7" radius="1">
 		<npc name="Lily" x="0" y="0" z="7" spawntime="60" />
@@ -1761,8 +1779,17 @@
 	<npc centerx="32389" centery="32229" centerz="7" radius="1">
 		<npc name="Donald Mcronald" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="32365" centery="32232" centerz="7" radius="1">
+		<npc name="John Tokensforge" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32373" centery="32232" centerz="7" radius="1">
+		<npc name="Jane Tokensdrome" x="0" y="0" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="32401" centery="32232" centerz="7" radius="1">
 		<npc name="Pig" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="32358" centery="32234" centerz="7" radius="1">
+		<npc name="Imbuement Assistant" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32342" centery="32235" centerz="7" radius="1">
 		<npc name="Elane" x="0" y="0" z="7" spawntime="60" />
@@ -1962,6 +1989,9 @@
 	<npc centerx="32324" centery="32599" centerz="7" radius="1">
 		<npc name="Morgan" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="32506" centery="32600" centerz="7" radius="1">
+		<npc name="Koliseum Trader" x="0" y="0" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="33021" centery="32604" centerz="7" radius="1">
 		<npc name="The Blind Prophet" x="0" y="0" z="7" spawntime="60" />
 	</npc>
@@ -1970,9 +2000,6 @@
 	</npc>
 	<npc centerx="32349" centery="32624" centerz="7" radius="1">
 		<npc name="Sebastian" x="0" y="0" z="7" spawntime="60" />
-	</npc>
-	<npc centerx="33037" centery="32626" centerz="7" radius="1">
-		<npc name="Rata'Mari" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32759" centery="32632" centerz="7" radius="1">
 		<npc name="Andrew Lyze" x="0" y="0" z="7" spawntime="60" />
@@ -2842,7 +2869,7 @@
 	<npc centerx="33033" centery="31543" centerz="14" radius="1">
 		<npc name="Pompan" x="0" y="0" z="14" spawntime="60" />
 	</npc>
-	<npc centerx="33024" centery="31554" centerz="14" radius="1">
+	<npc centerx="33025" centery="31553" centerz="14" radius="1">
 		<npc name="Thorgrin" x="0" y="0" z="14" spawntime="60" />
 	</npc>
 	<npc centerx="32260" centery="31866" centerz="14" radius="1">

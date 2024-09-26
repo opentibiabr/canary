@@ -35,7 +35,7 @@ local rewardBags = {
 		{ id = 39186, name = "charged arboreal ring" },
 	},
 
-	[BAG_YOU_COVET] = {
+	[43860] = {
 		{ id = 43864, name = "sanguine blade" },
 		{ id = 43866, name = "sanguine cudgel" },
 		{ id = 43868, name = "sanguine hatchet" },

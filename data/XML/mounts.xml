@@ -70,7 +70,7 @@
 	<mount id="68" clientid="691" name="Ringtail Waccoon" speed="10" premium="no" type="store" />
 	<mount id="69" clientid="692" name="Night Waccoon" speed="10" premium="no" type="store" />
 	<mount id="70" clientid="693" name="Emerald Waccoon" speed="10" premium="no" type="store" />
-	<mount id="71" clientid="682" name="Glooth Glider" speed="10" premium="yes" type="quest" />
+	<mount id="71" clientid="682" name="Glooth Glider" speed="10" premium="yes" type="store" />
 	<mount id="72" clientid="685" name="Shadow Hart" speed="10" premium="no" type="store" />
 	<mount id="73" clientid="686" name="Black Stag" speed="10" premium="no" type="store" />
 	<mount id="74" clientid="687" name="Emperor Deer" speed="10" premium="no" type="store" />

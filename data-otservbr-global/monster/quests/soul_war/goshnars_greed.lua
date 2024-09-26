@@ -66,9 +66,13 @@ monster.light = {
 	color = 0,
 }
 
+<<<<<<< Updated upstream
 monster.summon = {
 	maxSummons = 1,
 }
+=======
+
+>>>>>>> Stashed changes
 
 monster.voices = {
 	interval = 5000,

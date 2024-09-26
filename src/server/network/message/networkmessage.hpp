@@ -188,7 +188,7 @@ public:
 		return size <= (info.length - (info.position - INITIAL_BUFFER_POSITION));
 	}
 
-	void append(const NetworkMessage& other);
+	void append(const NetworkMessage &other);
 
 protected:
 	struct NetworkMessageInfo {

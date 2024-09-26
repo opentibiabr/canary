@@ -113,20 +113,18 @@ void NetworkMessage::addString(const std::string &value, const std::source_locat
 
 void NetworkMessage::addDouble(double value, uint8_t precision /*= 2*/) {
 	addByte(precision);
-
-	// Scale the double value by the specified precision factor and cast it to int64_t
-	auto scaledValue = static_cast<int64_t>(value * std::pow(SCALING_BASE, precision));
-	// Add the scaled value to the buffer
-	add<int64_t>(scaledValue);
+	add<uint32_t>((value * std::pow(static_cast<float>(SCALING_BASE), precision)) + std::numeric_limits<int32_t>::max());
 }
 
 double NetworkMessage::getDouble() {
 	// Retrieve the precision byte from the buffer
 	uint8_t precision = getByte();
-	// Retrieve the scaled int64_t value from the buffer
-	int64_t scaledValue = get<int64_t>();
+	// Retrieve the scaled uint32_t value from the buffer
+	uint32_t scaledValue = get<uint32_t>();
 	// Convert the scaled value back to double using the precision factor
-	return static_cast<double>(scaledValue) / std::pow(SCALING_BASE, precision);
+	double adjustedValue = static_cast<double>(scaledValue) - std::numeric_limits<int32_t>::max();
+	// Convert back to the original double value using the precision factor
+	return adjustedValue / std::pow(static_cast<double>(SCALING_BASE), precision);
 }
 
 void NetworkMessage::addByte(uint8_t value, std::source_location location /*= std::source_location::current()*/) {
@@ -180,7 +178,7 @@ void NetworkMessage::addPosition(const Position &pos) {
 	addByte(pos.z);
 }
 
-void NetworkMessage::append(const NetworkMessage& other) {
+void NetworkMessage::append(const NetworkMessage &other) {
 	size_t otherLength = other.getLength();
 	size_t otherStartPos = NetworkMessage::INITIAL_BUFFER_POSITION; // Always start copying from the initial buffer position
 

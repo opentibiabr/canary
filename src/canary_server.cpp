@@ -123,7 +123,7 @@ int CanaryServer::run() {
 
 			loaderStatus.notify_one();
 		},
-		"CanaryServer::run"
+		__FUNCTION__
 	);
 
 	loaderStatus.wait(LoaderStatus::LOADING);

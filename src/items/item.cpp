@@ -3160,16 +3160,17 @@ void Item::addUniqueId(uint16_t uniqueId) {
 }
 
 bool Item::canDecay() {
-	if (isRemoved() || isDecayDisabled()) {
-		return false;
-	}
-
 	const ItemType &it = Item::items[id];
-	if (it.decayTo < 0 || it.decayTime == 0) {
+	if (it.decayTo < 0 || it.decayTime == 0 || isDecayDisabled()) {
 		return false;
 	}
 
 	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
+		return false;
+	}
+
+	// In certain conditions, such as depth nested containers, this can overload the CPU, so it is left last.
+	if (isRemoved()) {
 		return false;
 	}
 

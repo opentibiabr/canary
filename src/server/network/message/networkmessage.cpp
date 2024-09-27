@@ -16,7 +16,7 @@ int32_t NetworkMessage::decodeHeader() {
 	// Ensure there are enough bytes to read the header (2 bytes)
 	if (!canRead(2)) {
 		g_logger().error("[{}] Not enough data to decode header. Current position: {}, Length: {}", __FUNCTION__, info.position, info.length);
-		return 0;
+		return {};
 	}
 
 	// Log the current position and buffer content before decoding
@@ -32,15 +32,10 @@ int32_t NetworkMessage::decodeHeader() {
 	if (info.position + 1 < buffer.size()) {
 		// Create a span view for safety
 		std::span<uint8_t> bufferSpan(buffer.data(), buffer.size());
-
-		// Extract header bytes safely using std::bit_cast
-		uint16_t header = static_cast<uint16_t>(bufferSpan[info.position]) | (static_cast<uint16_t>(bufferSpan[info.position + 1]) << 8);
-
+		auto decodedHeader = bufferSpan[info.position] | (bufferSpan[info.position + 1] << 8);
 		// Update position after reading the header
-		info.position += sizeof(header);
-
-		// Return the decoded header
-		return header;
+		info.position += sizeof(decodedHeader);
+		return decodedHeader;
 	} else {
 		g_logger().warn("Index out of bounds when trying to access buffer with position: {}", info.position);
 	}

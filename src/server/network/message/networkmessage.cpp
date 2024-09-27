@@ -39,6 +39,23 @@ int32_t NetworkMessage::decodeHeader() {
 	return 0;
 }
 
+// Simply read functions for incoming message
+uint8_t NetworkMessage::getByte() {
+	if (!canRead(1)) {
+		return 0;
+	}
+
+	return buffer[info.position++];
+}
+
+uint8_t NetworkMessage::getPreviousByte() {
+	if (info.position == 0) {
+		g_logger().error("Attempted to get previous byte at position 0");
+		return 0;
+	}
+	return buffer[--info.position];
+}
+
 std::string NetworkMessage::getString(uint16_t stringLen /* = 0*/, const std::source_location &location) {
 	if (stringLen == 0) {
 		stringLen = get<uint16_t>();
@@ -68,6 +85,11 @@ Position NetworkMessage::getPosition() {
 	pos.y = get<uint16_t>();
 	pos.z = getByte();
 	return pos;
+}
+
+// Skips count unknown/unused bytes in an incoming message
+void NetworkMessage::skipBytes(int16_t count) {
+	info.position += count;
 }
 
 void NetworkMessage::addString(const std::string &value, const std::source_location &location /*= std::source_location::current()*/, const std::string &function /* = ""*/) {
@@ -181,6 +203,51 @@ void NetworkMessage::addPosition(const Position &pos) {
 	add<uint16_t>(pos.x);
 	add<uint16_t>(pos.y);
 	addByte(pos.z);
+}
+
+NetworkMessage::MsgSize_t NetworkMessage::getLength() const {
+	return info.length;
+}
+
+void NetworkMessage::setLength(NetworkMessage::MsgSize_t newLength) {
+	info.length = newLength;
+}
+
+NetworkMessage::MsgSize_t NetworkMessage::getBufferPosition() const {
+	return info.position;
+}
+
+void NetworkMessage::setBufferPosition(NetworkMessage::MsgSize_t newPosition) {
+	info.position = newPosition;
+}
+
+uint16_t NetworkMessage::getLengthHeader() const {
+	return static_cast<uint16_t>(buffer[0] | buffer[1] << 8);
+}
+
+bool NetworkMessage::isOverrun() const {
+	return info.overrun;
+}
+
+uint8_t* NetworkMessage::getBuffer() {
+	return buffer.data();
+}
+
+const uint8_t* NetworkMessage::getBuffer() const {
+	return buffer.data();
+}
+
+uint8_t* NetworkMessage::getBodyBuffer() {
+	info.position = 2;
+	return buffer.data() + HEADER_LENGTH;
+}
+
+bool NetworkMessage::canAdd(size_t size) const {
+	return (size + info.position) < MAX_BODY_LENGTH;
+}
+
+bool NetworkMessage::canRead(int32_t size) {
+	return size <= (info.length - (info.position - INITIAL_BUFFER_POSITION));
 }
 
 void NetworkMessage::append(const NetworkMessage &other) {

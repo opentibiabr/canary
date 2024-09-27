@@ -27,26 +27,16 @@ public:
 	// 2 bytes for encrypted message size
 	static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
 
+	int32_t decodeHeader();
+
 	void reset() {
 		info = {};
 	}
 
 	// simply read functions for incoming message
-	uint8_t getByte() {
-		if (!canRead(1)) {
-			return 0;
-		}
+	uint8_t getByte();
 
-		return buffer[info.position++];
-	}
-
-	uint8_t getPreviousByte() {
-		if (info.position == 0) {
-			g_logger().error("Attempted to get previous byte at position 0");
-			return 0;
-		}
-		return buffer[--info.position];
-	}
+	uint8_t getPreviousByte();
 
 	template <typename T>
 	T get() {
@@ -72,9 +62,7 @@ public:
 	Position getPosition();
 
 	// skips count unknown/unused bytes in an incoming message
-	void skipBytes(int16_t count) {
-		info.position += count;
-	}
+	void skipBytes(int16_t count);
 
 	// simply write functions for outgoing message
 	void addByte(uint8_t value, std::source_location location = std::source_location::current());
@@ -143,52 +131,27 @@ public:
 	// write functions for complex types
 	void addPosition(const Position &pos);
 
-	MsgSize_t getLength() const {
-		return info.length;
-	}
+	MsgSize_t getLength() const;
 
-	void setLength(MsgSize_t newLength) {
-		info.length = newLength;
-	}
+	void setLength(MsgSize_t newLength);
 
-	MsgSize_t getBufferPosition() const {
-		return info.position;
-	}
+	MsgSize_t getBufferPosition() const;
 
-	void setBufferPosition(MsgSize_t newPosition) {
-		info.position = newPosition;
-	}
+	void setBufferPosition(MsgSize_t newPosition);
 
-	uint16_t getLengthHeader() const {
-		return static_cast<uint16_t>(buffer[0] | buffer[1] << 8);
-	}
+	uint16_t getLengthHeader() const;
 
-	int32_t decodeHeader();
+	bool isOverrun() const;
 
-	bool isOverrun() const {
-		return info.overrun;
-	}
+	uint8_t* getBuffer();
 
-	uint8_t* getBuffer() {
-		return buffer.data();
-	}
+	const uint8_t* getBuffer() const;
 
-	const uint8_t* getBuffer() const {
-		return buffer.data();
-	}
+	uint8_t* getBodyBuffer();
 
-	uint8_t* getBodyBuffer() {
-		info.position = 2;
-		return buffer.data() + HEADER_LENGTH;
-	}
+	bool canAdd(size_t size) const;
 
-	bool canAdd(size_t size) const {
-		return (size + info.position) < MAX_BODY_LENGTH;
-	}
-
-	bool canRead(int32_t size) {
-		return size <= (info.length - (info.position - INITIAL_BUFFER_POSITION));
-	}
+	bool canRead(int32_t size);
 
 	void append(const NetworkMessage &other);
 

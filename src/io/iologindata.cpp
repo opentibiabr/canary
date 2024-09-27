@@ -94,7 +94,7 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 	Database::getInstance().executeQuery(query.str());
 }
 
-// The boolean "disableIrrelevantInfo" will deactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
+// The boolean "loadBasicInfoOnly" will deactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
 bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool loadBasicInfoOnly /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;

@@ -66,7 +66,7 @@ uint8_t NetworkMessage::getByte() {
 
 	try {
 		// Decrement position safely and return the byte
-		return buffer.at(--info.position);
+		return buffer.at(info.position++);
 	} catch (const std::out_of_range &e) {
 		g_logger().error("[{}] Out of range error: {}. Position: {}, Buffer size: {}", __FUNCTION__, e.what(), info.position, buffer.size());
 	}

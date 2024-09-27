@@ -3041,7 +3041,7 @@ void ProtocolGame::parseGreet(NetworkMessage &msg) {
 
 void ProtocolGame::parseOfferDescription(NetworkMessage &msg) {
 	auto offerId = msg.get<uint32_t>();
-	g_logger().warn("[{}] offer id: {}", __FUNCTION__, offerId);
+	g_logger().debug("[{}] offer id: {}", __FUNCTION__, offerId);
 }
 
 void ProtocolGame::parsePreyAction(NetworkMessage &msg) {

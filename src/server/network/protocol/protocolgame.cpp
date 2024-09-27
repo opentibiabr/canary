@@ -1317,7 +1317,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			parseWheelGemAction(msg);
 			break;
 		case 0xE8:
-			parseDebugAssert(msg);
+			parseOfferDescription(msg);
 			break;
 		case 0xEB:
 			parsePreyAction(msg);
@@ -3039,18 +3039,9 @@ void ProtocolGame::parseGreet(NetworkMessage &msg) {
 	g_game().playerNpcGreet(player->getID(), npcId);
 }
 
-void ProtocolGame::parseDebugAssert(NetworkMessage &msg) {
-	if (debugAssertSent) {
-		return;
-	}
-
-	debugAssertSent = true;
-
-	std::string assertLine = msg.getString();
-	std::string date = msg.getString();
-	std::string description = msg.getString();
-	std::string comment = msg.getString();
-	g_game().playerDebugAssert(player->getID(), assertLine, date, description, comment);
+void ProtocolGame::parseOfferDescription(NetworkMessage &msg) {
+	auto offerId = msg.get<uint32_t>();
+	g_logger().warn("[{}] offer id: {}", __FUNCTION__, offerId);
 }
 
 void ProtocolGame::parsePreyAction(NetworkMessage &msg) {

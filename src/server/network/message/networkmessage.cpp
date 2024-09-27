@@ -22,38 +22,74 @@ int32_t NetworkMessage::decodeHeader() {
 	// Log the current position and buffer content before decoding
 	g_logger().debug("[{}] Decoding header at position: {}", __FUNCTION__, info.position);
 	g_logger().debug("[{}] Buffer content: ", __FUNCTION__);
-	for (size_t i = 0; i < 10; ++i) {
-		g_logger().debug("[{}] Buffer content: {}", __FUNCTION__, buffer[i]);
+
+	// Log only up to 10 bytes of the buffer or until the end of the buffer
+	for (size_t i = 0; i < 10 && i < buffer.size(); ++i) {
+		g_logger().debug("[{}] Buffer[{}]: {}", __FUNCTION__, i, buffer[i]);
 	}
 
-	if (info.position + sizeof(uint16_t) <= buffer.size()) {
-		// Creating a std::array with the bytes
-		std::array<uint8_t, 2> headerBytes = { buffer[info.position], buffer[info.position + 1] };
-		uint16_t header = std::bit_cast<uint16_t>(headerBytes);
-		info.position += sizeof(header); // Update position
+	// Check if there are enough bytes in the buffer for the header
+	if (info.position + 1 < buffer.size()) {
+		// Create a span view for safety
+		std::span<uint8_t> bufferSpan(buffer.data(), buffer.size());
+
+		// Extract header bytes safely using std::bit_cast
+		uint16_t header = static_cast<uint16_t>(bufferSpan[info.position]) | (static_cast<uint16_t>(bufferSpan[info.position + 1]) << 8);
+
+		// Update position after reading the header
+		info.position += sizeof(header);
+
+		// Return the decoded header
 		return header;
+	} else {
+		g_logger().warn("Index out of bounds when trying to access buffer with position: {}", info.position);
 	}
 
 	// Handle buffer overflow error here
-	g_logger().error("[NetworkMessage::decodeHeader] - Attempted to read beyond buffer limits at position: {}", info.position);
-	return 0;
+	g_logger().error("[{}] attempted to read beyond buffer limits at position: {}", __FUNCTION__, info.position);
+	return {};
 }
 
 // Simply read functions for incoming message
 uint8_t NetworkMessage::getByte() {
+	// Check if there is at least 1 byte to read
 	if (!canRead(1)) {
-		return 0;
+		g_logger().error("[{}] Not enough data to read a byte. Current position: {}, Length: {}", __FUNCTION__, info.position, info.length);
+		return {};
 	}
 
-	return buffer[info.position++];
+	// Ensure that position is within bounds before decrementing
+	if (info.position == 0) {
+		g_logger().error("[{}] Position is at the beginning of the buffer. Cannot decrement.", __FUNCTION__);
+		return {};
+	}
+
+	try {
+		// Decrement position safely and return the byte
+		return buffer.at(--info.position);
+	} catch (const std::out_of_range &e) {
+		g_logger().error("[{}] Out of range error: {}. Position: {}, Buffer size: {}", __FUNCTION__, e.what(), info.position, buffer.size());
+	}
+
+	return {};
 }
 
 uint8_t NetworkMessage::getPreviousByte() {
+	// Check if position is at the beginning of the buffer
 	if (info.position == 0) {
-		g_logger().error("Attempted to get previous byte at position 0");
-		return 0;
+		g_logger().error("[{}] Attempted to get previous byte at position 0", __FUNCTION__);
+		return {}; // Return default value (0) when at the start of the buffer
 	}
-	return buffer[--info.position];
+
+	try {
+		// Safely decrement position and access the previous byte using 'at()'
+		return buffer.at(--info.position);
+	} catch (const std::out_of_range &e) {
+		// Log the out-of-range exception if accessing outside buffer limits
+		g_logger().error("[{}] Out of range error: {}. Position: {}, Buffer size: {}", __FUNCTION__, e.what(), info.position, buffer.size());
+	}
+
+	return {};
 }
 
 std::string NetworkMessage::getString(uint16_t stringLen /* = 0*/, const std::source_location &location) {
@@ -128,7 +164,7 @@ void NetworkMessage::addString(const std::string &value, const std::source_locat
 		g_logger().trace("[{}] called line '{}:{}' in '{}'", __FUNCTION__, location.line(), location.column(), location.function_name());
 	}
 
-	uint16_t len = static_cast<uint16_t>(stringLen);
+	auto len = static_cast<uint16_t>(stringLen);
 	add<uint16_t>(len);
 	// Using to copy the string into the buffer
 	auto it = std::ranges::copy(value, buffer.begin() + info.position);
@@ -146,9 +182,9 @@ double NetworkMessage::getDouble() {
 	// Retrieve the precision byte from the buffer
 	uint8_t precision = getByte();
 	// Retrieve the scaled uint32_t value from the buffer
-	uint32_t scaledValue = get<uint32_t>();
+	auto scaledValue = get<uint32_t>();
 	// Convert the scaled value back to double using the precision factor
-	double adjustedValue = static_cast<double>(scaledValue) - std::numeric_limits<int32_t>::max();
+	double adjustedValue = static_cast<double>(scaledValue) - static_cast<double>(std::numeric_limits<int32_t>::max());
 	// Convert back to the original double value using the precision factor
 	return adjustedValue / std::pow(static_cast<double>(SCALING_BASE), precision);
 }
@@ -239,14 +275,16 @@ const uint8_t* NetworkMessage::getBuffer() const {
 
 uint8_t* NetworkMessage::getBodyBuffer() {
 	info.position = 2;
-	return buffer.data() + HEADER_LENGTH;
+	// Return the pointer to the body of the buffer starting after the header
+	// Convert HEADER_LENGTH to uintptr_t to ensure safe pointer arithmetic with enum type
+	return buffer.data() + static_cast<std::uintptr_t>(HEADER_LENGTH);
 }
 
 bool NetworkMessage::canAdd(size_t size) const {
 	return (size + info.position) < MAX_BODY_LENGTH;
 }
 
-bool NetworkMessage::canRead(int32_t size) {
+bool NetworkMessage::canRead(int32_t size) const {
 	return size <= (info.length - (info.position - INITIAL_BUFFER_POSITION));
 }
 

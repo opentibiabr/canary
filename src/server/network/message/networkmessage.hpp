@@ -151,7 +151,7 @@ public:
 
 	bool canAdd(size_t size) const;
 
-	bool canRead(int32_t size);
+	bool canRead(int32_t size) const;
 
 	void append(const NetworkMessage &other);
 

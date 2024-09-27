@@ -7,7 +7,7 @@ if [ ! -d "build" ]; then
 	mkdir build
 fi
 cd build || exit
-cmake -DCMAKE_BUILD_TYPE=Debug -DPACKAGE_TESTS=On .. ; make -j$(nproc)
+cmake -DCMAKE_BUILD_TYPE=Debug -DPACKAGE_TESTS=On .. ; make -j"$(nproc)"
 ./tests/unit/canary_ut --reporter compact --success
 cd  ..
 cd tests || exit

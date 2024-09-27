@@ -58,9 +58,10 @@ public:
 
 		// Create a temporary byte array to store the value read from the buffer.
 		std::array<unsigned char, sizeof(T)> tempBuffer;
-		// Copy data from the buffer to the temporary array using std::ranges::copy
+		// Copy data from the buffer to the temporary array
 		std::span<const unsigned char> sourceSpan(buffer.data() + info.position, sizeof(T));
-		std::ranges::copy(sourceSpan, tempBuffer.begin());
+		auto it = std::ranges::copy(sourceSpan, tempBuffer.begin());
+		g_logger().trace("First value copied from sourceSpan: {}, second value copied from sourceSpan: {}", *it.in, *it.out);
 		// Update the read position in the buffer
 		info.position += sizeof(T);
 		// Convert the byte array to type T using std::bit_cast and return the result
@@ -94,7 +95,8 @@ public:
 		// Create a span from the byte array
 		std::span<const unsigned char> byteSpan(byteArray);
 		// Copy the bytes into the buffer
-		std::ranges::copy(byteSpan.begin(), byteSpan.end(), buffer.begin() + info.position);
+		auto it = std::ranges::copy(byteSpan.begin(), byteSpan.end(), buffer.begin() + info.position);
+		g_logger().trace("First value copied from sourceSpan: {}, second value copied from sourceSpan: {}", *it.in, *it.out);
 		info.position += sizeof(T);
 		info.length += sizeof(T);
 	}

@@ -10,7 +10,9 @@
 #include "pch.hpp"
 
 #include "io/functions/iologindata_save_player.hpp"
+
 #include "game/game.hpp"
+#include "io/io_store.hpp"
 
 bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {

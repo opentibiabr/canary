@@ -69,6 +69,7 @@ struct Badge;
 struct Title;
 struct VIPGroup;
 struct StoreDetail;
+struct StoreHistory;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;

@@ -14,8 +14,7 @@
 #include "kv/kv.hpp"
 
 std::string StoreDetail::toString() const {
-	return fmt::format("Description: {}, Coin Amount: {}, CreatedAt: {}, Is Gold: {}",
-					   description, coinAmount, createdAt, isGold);
+	return fmt::format("Description: {}, Coin Amount: {}, CreatedAt: {}, Is Gold: {}", description, coinAmount, createdAt, isGold);
 }
 
 ValueWrapper StoreDetail::serialize() const {

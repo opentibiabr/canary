@@ -13,6 +13,8 @@
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
+#include "io/io_store.hpp"
+
 #include "enums/object_category.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
@@ -834,9 +836,8 @@ void IOLoginDataLoad::loadPlayerStoreHistory(std::shared_ptr<Player> player, DBR
 		return;
 	}
 
-	std::ostringstream query;
-	query << "SELECT * FROM `store_history` WHERE `account_id` = " << player->getAccountId();
-	if (result = Database::getInstance().storeQuery(query.str())) {
+	std::string query = fmt::format("SELECT * FROM `store_history` WHERE `account_id` = {}", player->getAccountId());
+	if (result = Database::getInstance().storeQuery(query)) {
 		do {
 			StoreHistory history;
 			history.description = result->getString("description");

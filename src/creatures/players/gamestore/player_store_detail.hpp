@@ -14,12 +14,12 @@
 class ValueWrapper;
 
 #ifndef USE_PRECOMPILED_HEADERS
-#include <string>
-#include <cstdint>
+	#include <string>
+	#include <cstdint>
 #endif
 
 struct StoreDetail {
-	std::string description; 
+	std::string description;
 	int32_t coinAmount {};
 	int createdAt {};
 	bool isGold {};

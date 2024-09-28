@@ -14,31 +14,6 @@
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
 
-#include <charconv>
-
-template <typename T>
-T convertTo(const char* value) {
-	if constexpr (std::is_enum_v<T>) {
-		using UnderlyingType = std::underlying_type_t<T>;
-		UnderlyingType numeric_value;
-
-		auto result = std::from_chars(value, value + std::strlen(value), numeric_value);
-		if (result.ec != std::errc()) {
-			g_logger().error("Invalid numeric value");
-			return {};
-		}
-
-		auto enum_value = magic_enum::enum_cast<T>(numeric_value);
-		if (!enum_value.has_value()) {
-			g_logger().error("Invalid enum value");
-			return {};
-		}
-		return enum_value.value();
-	}
-
-	return {};
-}
-
 Database::~Database() {
 	if (handle != nullptr) {
 		mysql_close(handle);

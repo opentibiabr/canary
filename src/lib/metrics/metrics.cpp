@@ -8,7 +8,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+	#include "pch.hpp"
 
 	#include "metrics.hpp"
 	#include "lib/di/container.hpp"

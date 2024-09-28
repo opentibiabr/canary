@@ -11,7 +11,6 @@
 
 #include "server/network/message/networkmessage.hpp"
 #include "server/network/connection/connection.hpp"
-#include "utils/tools.hpp"
 
 class Protocol;
 
@@ -40,14 +39,14 @@ public:
 	}
 
 	void append(const NetworkMessage &msg) {
-		auto msgLen = msg.getLength();
+		const auto msgLen = msg.getLength();
 		memcpy(buffer + info.position, msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 		info.length += msgLen;
 		info.position += msgLen;
 	}
 
 	void append(const OutputMessage_ptr &msg) {
-		auto msgLen = msg->getLength();
+		const auto msgLen = msg->getLength();
 		memcpy(buffer + info.position, msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 		info.length += msgLen;
 		info.position += msgLen;
@@ -88,7 +87,7 @@ public:
 
 	static OutputMessage_ptr getOutputMessage();
 
-	void addProtocolToAutosend(Protocol_ptr protocol);
+	void addProtocolToAutosend(const Protocol_ptr &protocol);
 	void removeProtocolFromAutosend(const Protocol_ptr &protocol);
 
 private:

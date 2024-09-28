@@ -284,12 +284,16 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, cons
 }
 
 void SpawnMonster::cleanup() {
-	for (auto it = spawnedMonsterMap.begin(); it != spawnedMonsterMap.end(); ) {
-		auto &monster = it->second;
-		if (monster == nullptr || monster->isRemoved()) {
+	for (auto it = spawnedMonsterMap.begin(); it != spawnedMonsterMap.end();) {
+		const auto &monster = it->second;
+		if (!monster || monster->isRemoved()) {
+			auto spawnIt = spawnMonsterMap.find(it->first);
+			if (spawnIt != spawnMonsterMap.end()) {
+				spawnIt->second.lastSpawn = OTSYS_TIME();
+			}
 			it = spawnedMonsterMap.erase(it);
 		} else {
-			++it;  // Avança o iterador
+			++it;
 		}
 	}
 }

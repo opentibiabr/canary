@@ -23,11 +23,10 @@ add_subdirectory(utils)
 target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
 
 # Add public pre compiler header to lib, to pass down to related targets
-if (NOT SPEED_UP_BUILD_UNITY)
-    target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
-endif()
+target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
 
-if(NOT SPEED_UP_BUILD_UNITY AND USE_PRECOMPILED_HEADERS)
+
+if(USE_PRECOMPILED_HEADERS)
     target_compile_definitions(${PROJECT_NAME}_lib PUBLIC -DUSE_PRECOMPILED_HEADERS)
 endif()
 

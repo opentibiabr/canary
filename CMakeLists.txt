@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.30)
 
 # CMAKE
 # apt install build-essential git
@@ -28,9 +28,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Project canary
 # *****************************************************************************
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    project(canary-debug)
+    project(canary-debug LANGUAGES CXX)
 else()
-    project(canary)
+    project(canary LANGUAGES CXX)
 endif()
 
 

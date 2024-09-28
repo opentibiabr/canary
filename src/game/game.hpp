@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+import game_movement;
+
 #pragma once
 
 #include "account/account.hpp"
@@ -17,7 +19,7 @@
 #include "items/item.hpp"
 #include "map/map.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "movement/position.hpp"
+#include "enums/direction.hpp"
 #include "creatures/players/player.hpp"
 #include "lua/creature/raids.hpp"
 #include "creatures/players/grouping/team_finder.hpp"

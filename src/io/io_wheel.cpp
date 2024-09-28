@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#include "pch.hpp"
-
 #include "io/io_wheel.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"

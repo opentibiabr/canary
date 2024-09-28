@@ -2,6 +2,22 @@
 add_library(${PROJECT_NAME}_lib)
 setup_target(${PROJECT_NAME}_lib)
 
+
+# Define module sources
+set(MODULE_SOURCES
+    test.cppm
+    position.cppm
+)
+
+# Create a static library for the module sources
+add_library(my_module_lib STATIC)
+target_sources(my_module_lib
+    PUBLIC
+        FILE_SET cxx_modules TYPE CXX_MODULES FILES ${MODULE_SOURCES}
+)
+
+set_target_properties(my_module_lib PROPERTIES UNITY_BUILD ON)
+
 # Add subdirectories
 add_subdirectory(account)
 add_subdirectory(config)
@@ -23,11 +39,9 @@ add_subdirectory(utils)
 target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
 
 # Add public pre compiler header to lib, to pass down to related targets
-if (NOT SPEED_UP_BUILD_UNITY)
-    target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
-endif()
+target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
 
-if(NOT SPEED_UP_BUILD_UNITY AND USE_PRECOMPILED_HEADERS)
+if(USE_PRECOMPILED_HEADERS)
     target_compile_definitions(${PROJECT_NAME}_lib PUBLIC -DUSE_PRECOMPILED_HEADERS)
 endif()
 
@@ -36,6 +50,11 @@ endif()
 # *****************************************************************************
 if (CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wno-deprecated-declarations)
+endif()
+
+if (MSVC)
+    target_compile_options(${PROJECT_NAME}_lib PRIVATE /MT$<$<CONFIG:Debug>:d>)
+    target_compile_options(my_module_lib PRIVATE /MT$<$<CONFIG:Debug>:d>)
 endif()
 
 # Sets the NDEBUG macro for RelWithDebInfo and Release configurations.
@@ -106,6 +125,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         unofficial::libmariadb
         unofficial::mariadbclient
         protobuf
+        my_module_lib
 )
 
 if(FEATURE_METRICS)
@@ -143,12 +163,4 @@ else()
 endif (MSVC)
 
 # === OpenMP ===
-if(OPTIONS_ENABLE_OPENMP)
-    log_option_enabled("openmp")
-    find_package(OpenMP)
-    if(OpenMP_CXX_FOUND)
-        target_link_libraries(${PROJECT_NAME}_lib PUBLIC OpenMP::OpenMP_CXX)
-    endif()
-else()
-    log_option_disabled("openmp")
-endif()
+setup_open_mp(${PROJECT_NAME}_lib)

@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+import game_movement;
+
 #pragma once
 
 #include "lua/scripts/scripts.hpp"
@@ -14,7 +16,6 @@
 #include "lua/scripts/luascript.hpp"
 
 class Action;
-class Position;
 
 class Action : public Script {
 public:

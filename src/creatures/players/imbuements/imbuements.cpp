@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+//#include "pch.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/creature/events.hpp"
 #include "utils/pugicast.hpp"

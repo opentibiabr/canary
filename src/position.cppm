@@ -1,31 +1,45 @@
-/**
- * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
- * Repository: https://github.com/opentibiabr/canary
- * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
- * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.com/
- */
+module; // important to be before includes
 
-#pragma once
+#include <cmath>
+#include <cstdint>
+#include <iostream>
+#include <map>
+#include <random>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <iterator>
+#include <array>
 
-enum Direction : uint8_t {
-	DIRECTION_NORTH = 0,
-	DIRECTION_EAST = 1,
-	DIRECTION_SOUTH = 2,
-	DIRECTION_WEST = 3,
+export module game_movement;
 
-	DIRECTION_DIAGONAL_MASK = 4,
-	DIRECTION_SOUTHWEST = DIRECTION_DIAGONAL_MASK | 0,
-	DIRECTION_SOUTHEAST = DIRECTION_DIAGONAL_MASK | 1,
-	DIRECTION_NORTHWEST = DIRECTION_DIAGONAL_MASK | 2,
-	DIRECTION_NORTHEAST = DIRECTION_DIAGONAL_MASK | 3,
+enum class Direction : uint8_t {
+	North = 0,
+	East = 1,
+	South = 2,
+	West = 3,
 
-	DIRECTION_LAST = DIRECTION_NORTHEAST,
-	DIRECTION_NONE = 8,
+	DiagonalMask = 4,
+	SouthWest = DiagonalMask | 0,
+	SouthEast = DiagonalMask | 1,
+	NorthWest = DiagonalMask | 2,
+	NorthEast = DiagonalMask | 3,
+
+	Last = NorthEast,
+	None = 8,
 };
 
-struct Position {
+export constexpr uint8_t directionToValue(Direction type) {
+	return static_cast<uint8_t>(type);
+}
+
+export constexpr Direction directionFromValue(uint8_t value) {
+	return static_cast<Direction>(value);
+}
+
+export struct Position {
 	constexpr Position() = default;
 	constexpr Position(uint16_t initX, uint16_t initY, uint8_t initZ) :
 		x(initX), y(initY), z(initZ) { }
@@ -114,9 +128,25 @@ struct Position {
 	int_fast16_t getZ() const {
 		return z;
 	}
+
+    static inline std::vector<Direction> getDirectionVector() {
+        static std::vector<Direction> directionVector {
+            Direction::North,
+            Direction::NorthEast,
+            Direction::East,
+            Direction::SouthEast,
+            Direction::South,
+            Direction::SouthWest,
+            Direction::West,
+            Direction::NorthWest
+        };
+
+        return directionVector;
+    }
+
 };
 
-namespace std {
+export namespace std {
 	template <>
 	struct hash<Position> {
 		std::size_t operator()(const Position &p) const {
@@ -125,5 +155,55 @@ namespace std {
 	};
 }
 
-std::ostream &operator<<(std::ostream &, const Position &);
-std::ostream &operator<<(std::ostream &, const Direction &);
+export std::ostream &operator<<(std::ostream &, const Position &);
+export std::ostream &operator<<(std::ostream &, const Direction &);
+
+namespace {
+std::mt19937 &getRandomGenerator() {
+	static std::random_device rd;
+	static std::mt19937 generator(rd());
+	return generator;
+}
+} // namespace
+
+double Position::getEuclideanDistance(const Position &p1, const Position &p2) {
+	int32_t dx = Position::getDistanceX(p1, p2);
+	int32_t dy = Position::getDistanceY(p1, p2);
+	return std::sqrt(dx * dx + dy * dy);
+}
+
+Direction Position::getRandomDirection() {
+	static std::vector<Direction> dirList {
+		Direction::North,
+		Direction::West,
+		Direction::East,
+		Direction::South
+	};
+	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+
+	return dirList.front();
+}
+
+export std::ostream &operator<<(std::ostream &os, const Position &pos) {
+	return os << pos.toString();
+}
+
+export std::ostream &operator<<(std::ostream &os, const Direction &dir) {
+	static const std::map<Direction, std::string> directionStrings = {
+		{ Direction::North, "North" },
+		{ Direction::East, "East" },
+		{ Direction::West, "West" },
+		{ Direction::South, "South" },
+		{ Direction::SouthWest, "South-West" },
+		{ Direction::SouthEast, "South-East" },
+		{ Direction::NorthWest, "North-West" },
+		{ Direction::NorthEast, "North-East" }
+	};
+
+	auto it = directionStrings.find(dir);
+	if (it != directionStrings.end()) {
+		return os << it->second;
+	}
+
+	return os;
+}

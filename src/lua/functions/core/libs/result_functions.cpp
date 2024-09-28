@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/functions/core/libs/result_functions.hpp"
 
 int ResultFunctions::luaResultGetNumber(lua_State* L) {

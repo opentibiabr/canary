@@ -7,9 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include <utility>
-
-#include "pch.hpp"
+import game_movement;
 
 #include "creatures/players/grouping/party.hpp"
 #include "game/game.hpp"

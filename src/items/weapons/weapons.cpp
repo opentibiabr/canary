@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+import game_movement;
 
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"

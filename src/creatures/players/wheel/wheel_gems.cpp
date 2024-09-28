@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/wheel/player_wheel.hpp"
 
 void GemModifierResistanceStrategy::execute() {

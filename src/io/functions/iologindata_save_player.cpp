@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+import game_movement;
 
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"

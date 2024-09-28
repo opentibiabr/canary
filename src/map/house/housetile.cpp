@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+import game_movement;
 
 #include "items/tile.hpp"
 #include "creatures/monsters/monster.hpp"

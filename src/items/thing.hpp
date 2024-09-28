@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "game/movement/position.hpp"
+#include "enums/direction.hpp"
 
 class Tile;
 class Cylinder;
@@ -17,6 +17,8 @@ class Item;
 class Creature;
 class Container;
 class Player;
+
+struct Position;
 
 class Thing {
 public:

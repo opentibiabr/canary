@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+import game_movement;
 
 #include "server/network/message/networkmessage.hpp"
 #include "items/containers/container.hpp"

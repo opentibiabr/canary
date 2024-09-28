@@ -1393,9 +1393,6 @@ struct CreatureIcon {
 	}
 };
 
-// Structs
-struct Position;
-
 struct VIPEntry {
 	VIPEntry(uint32_t initGuid, const std::string &initName, const std::string &initDescription, uint32_t initIcon, bool initNotify) :
 		guid(initGuid),

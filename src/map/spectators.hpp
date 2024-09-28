@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+import game_movement;
+
 #pragma once
 
 #include "creatures/creature.hpp"

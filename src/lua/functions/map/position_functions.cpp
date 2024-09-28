@@ -7,10 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+import game_movement;
 
 #include "game/game.hpp"
-#include "game/movement/position.hpp"
+#include "enums/direction.hpp"
 #include "lua/functions/map/position_functions.hpp"
 #include "map/spectators.hpp"
 

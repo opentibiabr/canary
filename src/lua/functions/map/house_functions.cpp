@@ -7,11 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+import game_movement;
 
 #include "items/bed.hpp"
 #include "game/game.hpp"
-#include "game/movement/position.hpp"
+#include "enums/direction.hpp"
 #include "io/iologindata.hpp"
 #include "lua/functions/map/house_functions.hpp"
 #include "map/house/house.hpp"

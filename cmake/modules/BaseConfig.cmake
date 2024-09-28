@@ -1,16 +1,22 @@
-cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.30)
 
 # *****************************************************************************
 # CMake Features
 # *****************************************************************************
-set(CMAKE_CXX_STANDARD 20)
-set(GNUCXX_MINIMUM_VERSION 11)
-set(MSVC_MINIMUM_VERSION "19.32")
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS NO)
+set(GNUCXX_MINIMUM_VERSION 14)
+set(CLANG_MINIMUM_VERSION 18)
+set(MSVC_MINIMUM_VERSION "19.32")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(Boost_NO_WARN_NEW_VERSIONS ON)
+set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDYNAPI ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /external:W0 /external:anglebrackets /external:templates-")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp")
 
 # Make will print more details
 set(CMAKE_VERBOSE_MAKEFILE OFF)
@@ -60,6 +66,14 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     message("-- Compiler: Visual Studio - Version: ${CMAKE_CXX_COMPILER_VERSION}")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS MSVC_MINIMUM_VERSION)
         message(FATAL_ERROR "Visual Studio version must be at least ${MSVC_MINIMUM_VERSION}")
+    endif()
+endif()
+
+# === Minimum required version for clang ===
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    message("-- Compiler: Clang - Version: ${CMAKE_CXX_COMPILER_VERSION}")
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS CLANG_MINIMUM_VERSION)
+        message(FATAL_ERROR "Clang version must be at least ${CLANG_MINIMUM_VERSION}!")
     endif()
 endif()
 
@@ -150,7 +164,7 @@ if (MSVC)
 
     add_compile_options(/MP /FS /Zf /EHsc)
 else()
-    add_compile_options(-Wno-unused-parameter -Wno-sign-compare -Wno-switch -Wno-implicit-fallthrough -Wno-extra)
+    add_compile_options(-Wno-unused-parameter -Wno-sign-compare -Wno-switch -Wno-implicit-fallthrough -Wno-extra -fmodules-ts)
 endif()
 
 ## Link compilation files to build/bin folder, else link to the main dir
@@ -172,6 +186,19 @@ endfunction()
 function(setup_target TARGET_NAME)
     if (MSVC AND BUILD_STATIC_LIBRARY)
         set_property(TARGET ${TARGET_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    endif()
+endfunction()
+
+# === OpenMP ===
+function(setup_open_mp target_name)
+    if(OPTIONS_ENABLE_OPENMP)
+        log_option_enabled("openmp")
+        find_package(OpenMP)
+        if(OpenMP_CXX_FOUND)
+            target_link_libraries(${target_name} PUBLIC OpenMP::OpenMP_CXX)
+        endif()
+    else()
+        log_option_disabled("openmp")
     endif()
 endfunction()
 

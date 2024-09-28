@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#include "pch.hpp"
+import game_movement;
 
 #include "creatures/players/wheel/player_wheel.hpp"
 

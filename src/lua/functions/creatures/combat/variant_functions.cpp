@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+import game_movement;
 
 #include "items/cylinder.hpp"
 #include "lua/functions/creatures/combat/variant_functions.hpp"

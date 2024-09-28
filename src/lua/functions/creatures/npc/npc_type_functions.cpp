@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+import game_movement;
 
 #include "creatures/npcs/npcs.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"

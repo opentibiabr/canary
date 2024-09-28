@@ -15,7 +15,7 @@
 class Map;
 class Tile;
 class Item;
-class Position;
+struct Position;
 class FileStream;
 
 #pragma pack(1)

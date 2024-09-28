@@ -1,5 +1,3 @@
-#include "pch.hpp"
-
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "io/iologindata.hpp"

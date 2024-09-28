@@ -124,7 +124,7 @@ int CanaryServer::run() {
 
 			loaderStatus.notify_one();
 		},
-		"CanaryServer::run"
+		__FUNCTION__
 	);
 
 	loaderStatus.wait(LoaderStatus::LOADING);
@@ -369,6 +369,7 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
 
 	logger.debug("Loading datapack scripts on folder: {}/", datapackName);
+	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false), datapackFolder + "/scripts/libs");
 	// Load scripts
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts", false, false), datapackFolder + "/scripts");
 	// Load monsters

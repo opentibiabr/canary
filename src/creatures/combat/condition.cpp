@@ -257,6 +257,8 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
 		case CONDITION_BAKRAGORE:
 			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId, isPersistent);
+		case CONDITION_GOSHNARTAINT:
+			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
 
 		default:
 			return nullptr;
@@ -345,7 +347,14 @@ bool Condition::isRemovableOnDeath() const {
 		return false;
 	}
 
-	if (conditionType == CONDITION_SPELLCOOLDOWN || conditionType == CONDITION_SPELLGROUPCOOLDOWN || conditionType == CONDITION_MUTED) {
+	static const std::unordered_set<ConditionType_t> nonRemovableConditions = {
+		CONDITION_SPELLCOOLDOWN,
+		CONDITION_SPELLGROUPCOOLDOWN,
+		CONDITION_MUTED,
+		CONDITION_GOSHNARTAINT
+	};
+
+	if (nonRemovableConditions.find(conditionType) != nonRemovableConditions.end()) {
 		return false;
 	}
 
@@ -418,7 +427,26 @@ std::unordered_set<PlayerIcon> ConditionGeneric::getIcons() const {
 		case CONDITION_ROOTED:
 			icons.insert(PlayerIcon::Rooted);
 			break;
-
+		case CONDITION_GOSHNARTAINT:
+			switch (subId) {
+				case 1:
+					icons.insert(PlayerIcon::GoshnarTaint1);
+					break;
+				case 2:
+					icons.insert(PlayerIcon::GoshnarTaint2);
+					break;
+				case 3:
+					icons.insert(PlayerIcon::GoshnarTaint3);
+					break;
+				case 4:
+					icons.insert(PlayerIcon::GoshnarTaint4);
+					break;
+				case 5:
+					icons.insert(PlayerIcon::GoshnarTaint5);
+					break;
+				default:
+					break;
+			}
 		default:
 			break;
 	}
@@ -2067,10 +2095,12 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addEvent([id = creature->getID(), listDir] {
-				g_game().forcePlayerAutoWalk(id, listDir);
-			},
-			                        "ConditionFeared::executeCondition");
+			g_dispatcher().addEvent(
+				[id = creature->getID(), listDir] {
+					g_game().forcePlayerAutoWalk(id, listDir);
+				},
+				__FUNCTION__
+			);
 
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}

@@ -681,7 +681,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), skill, count);
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), skill, count);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), std::ref(skill), std::ref(count));
 	if (count == 0) {
 		return;
 	}
@@ -1950,7 +1950,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, __FUNCTION__);
 	}
 
 	if (creature != getPlayer()) {
@@ -2240,6 +2240,8 @@ void Player::onThink(uint32_t interval) {
 
 	// Wheel of destiny major spells
 	wheel()->onThink();
+
+	g_callbacks().executeCallback(EventCallback_t::playerOnThink, &EventCallback::playerOnThink, getPlayer(), interval);
 }
 
 uint32_t Player::isMuted() const {
@@ -2373,7 +2375,7 @@ void Player::addExperience(std::shared_ptr<Creature> target, uint64_t exp, bool 
 		return;
 	}
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, &EventCallback::playerOnGainExperience, getPlayer(), target, exp, rawExp);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, &EventCallback::playerOnGainExperience, getPlayer(), target, std::ref(exp), std::ref(rawExp));
 
 	g_events().eventPlayerOnGainExperience(static_self_cast<Player>(), target, exp, rawExp);
 	if (exp == 0) {
@@ -2489,7 +2491,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 	}
 
 	g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), exp);
-	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), exp);
+	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), std::ref(exp));
 	if (exp == 0) {
 		return;
 	}
@@ -4285,7 +4287,7 @@ bool Player::updateSaleShopList(std::shared_ptr<Item> item) {
 		return true;
 	}
 
-	g_dispatcher().addEvent([creatureId = getID()] { g_game().updatePlayerSaleItems(creatureId); }, "Game::updatePlayerSaleItems");
+	g_dispatcher().addEvent([creatureId = getID()] { g_game().updatePlayerSaleItems(creatureId); }, __FUNCTION__);
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -4356,7 +4358,7 @@ bool Player::setAttackedCreature(std::shared_ptr<Creature> creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
 	}
 	return true;
 }
@@ -4418,7 +4420,8 @@ void Player::doAttacking(uint32_t) {
 
 		const auto &task = createPlayerTask(
 			std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
-			[playerId = getID()] { g_game().checkCreatureAttack(playerId); }, "Game::checkCreatureAttack"
+			[playerId = getID()] { g_game().checkCreatureAttack(playerId); },
+			__FUNCTION__
 		);
 
 		if (!classicSpeed) {
@@ -5568,15 +5571,15 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 	return result;
 }
 
-int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
-	int32_t result = reflectPercent[combatTypeToIndex(combat)];
-	for (const auto &item : getEquippedItems()) {
+double_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
+	double_t result = reflectPercent[combatTypeToIndex(combat)];
+	for (const auto item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
 		}
 
-		int32_t reflectPercent = itemType.abilities->reflectPercent[combatTypeToIndex(combat)];
+		double_t reflectPercent = itemType.abilities->reflectPercent[combatTypeToIndex(combat)];
 		if (reflectPercent != 0) {
 			result += reflectPercent;
 			uint16_t charges = item->getCharges();
@@ -5995,7 +5998,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 
 		g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), SKILL_MAGLEVEL, tries);
-		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, tries);
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, std::ref(tries));
 
 		uint32_t currMagLevel = magLevel;
 		while ((manaSpent + tries) >= nextReqMana) {
@@ -6210,6 +6213,20 @@ void Player::sendIcons() {
 void Player::sendIconBakragore(const IconBakragore icon) {
 	if (client) {
 		client->sendIconBakragore(icon);
+	}
+}
+
+void Player::removeBakragoreIcons() {
+	for (auto icon : magic_enum::enum_values<IconBakragore>()) {
+		if (hasCondition(CONDITION_BAKRAGORE, enumToValue(icon))) {
+			removeCondition(CONDITION_BAKRAGORE, CONDITIONID_DEFAULT, true);
+		}
+	}
+}
+
+void Player::removeBakragoreIcon(const IconBakragore icon) {
+	if (hasCondition(CONDITION_BAKRAGORE, enumToValue(icon))) {
+		removeCondition(CONDITION_BAKRAGORE, CONDITIONID_DEFAULT, true);
 	}
 }
 
@@ -6773,7 +6790,7 @@ void Player::triggerTranscendance() {
 					player->sendBasicData();
 				}
 			},
-			"Player::triggerTranscendance"
+			__FUNCTION__
 		);
 		g_dispatcher().scheduleEvent(task);
 
@@ -8075,8 +8092,7 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		std::vector<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
 			g_dispatcher().addEvent([creatureId = getID(), listDir] { g_game().playerAutoWalk(creatureId, listDir); }, __FUNCTION__);
-
-			std::shared_ptr<Task> task = createPlayerTask(delay, function, __FUNCTION__);
+			const auto &task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);
 			return true;
 		} else {

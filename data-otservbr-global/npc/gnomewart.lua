@@ -59,21 +59,21 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "endurance") then
-		if player:getStorageValue(Storage.BigfootBurden.QuestLine) == 15 then
+		if player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine) == 15 then
 			npcHandler:say({
 				"Ah, the test is a piece of mushroomcake! Just take the teleporter over there in the south and follow the hallway. ...",
 				"You'll need to run quite a bit. It is important that you don't give up! Just keep running and running and running and ... I guess you got the idea. ...",
 				"At the end of the hallway you'll find a teleporter. Step on it and you are done! I'm sure you'll do a true gnomerun! Afterwards talk to me.",
 			}, npc, creature)
-			player:setStorageValue(Storage.BigfootBurden.QuestLine, 17)
-		elseif player:getStorageValue(Storage.BigfootBurden.QuestLine) == 17 then
+			player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine, 17)
+		elseif player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine) == 17 then
 			npcHandler:say("Just take the teleporter over there to the south and follow the hallway. At the end of the hallway you'll find a teleporter. Step on it and you are done!", npc, creature)
-		elseif player:getStorageValue(Storage.BigfootBurden.QuestLine) == 18 then
+		elseif player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine) == 18 then
 			npcHandler:say("You have passed the test and are ready to create your soul melody. Talk to Gnomelvis in the east about it.", npc, creature)
-			player:setStorageValue(Storage.BigfootBurden.QuestLine, 19)
-		elseif player:getStorageValue(Storage.BigfootBurden.QuestLine) < 15 then
+			player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine, 19)
+		elseif player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine) < 15 then
 			npcHandler:say("Your endurance will be tested here when the time comes. For the moment please continue with the other phases of your recruitment.", npc, creature)
-		elseif player:getStorageValue(Storage.BigfootBurden.QuestLine) >= 19 then
+		elseif player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.QuestLine) >= 19 then
 			npcHandler:say("You have passed the test. If you consider what huge feet you have to move it's quite impressive.", npc, creature)
 		end
 	end

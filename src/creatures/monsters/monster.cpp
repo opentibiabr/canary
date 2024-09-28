@@ -108,13 +108,55 @@ bool Monster::canWalkOnFieldType(CombatType_t combatType) const {
 	}
 }
 
-int32_t Monster::getReflectPercent(CombatType_t reflectType, bool useCharges) const {
-	int32_t result = Creature::getReflectPercent(reflectType, useCharges);
+double_t Monster::getReflectPercent(CombatType_t reflectType, bool useCharges) const {
+	// Monster type reflect
+	auto result = Creature::getReflectPercent(reflectType, useCharges);
+	if (result != 0) {
+		g_logger().debug("[{}] before mtype reflect element {}, percent {}", __FUNCTION__, fmt::underlying(reflectType), result);
+	}
 	auto it = mType->info.reflectMap.find(reflectType);
 	if (it != mType->info.reflectMap.end()) {
 		result += it->second;
 	}
+
+	if (result != 0) {
+		g_logger().debug("[{}] after mtype reflect element {}, percent {}", __FUNCTION__, fmt::underlying(reflectType), result);
+	}
+
+	// Monster reflect
+	auto monsterReflectIt = m_reflectElementMap.find(reflectType);
+	if (monsterReflectIt != m_reflectElementMap.end()) {
+		result += monsterReflectIt->second;
+	}
+
+	if (result != 0) {
+		g_logger().debug("[{}] (final) after monster reflect element {}, percent {}", __FUNCTION__, fmt::underlying(reflectType), result);
+	}
+
 	return result;
+}
+
+void Monster::addReflectElement(CombatType_t combatType, int32_t percent) {
+	g_logger().debug("[{}] added reflect element {}, percent {}", __FUNCTION__, fmt::underlying(combatType), percent);
+	m_reflectElementMap[combatType] += percent;
+}
+
+int32_t Monster::getDefense() const {
+	auto mtypeDefense = mType->info.defense;
+	if (mtypeDefense != 0) {
+		g_logger().trace("[{}] old defense {}", __FUNCTION__, mtypeDefense);
+	}
+	mtypeDefense += m_defense;
+	if (mtypeDefense != 0) {
+		g_logger().trace("[{}] new defense {}", __FUNCTION__, mtypeDefense);
+	}
+	return mtypeDefense * getDefenseMultiplier();
+}
+
+void Monster::addDefense(int32_t defense) {
+	g_logger().trace("[{}] adding defense {}", __FUNCTION__, defense);
+	m_defense += defense;
+	g_logger().trace("[{}] new defense {}", __FUNCTION__, m_defense);
 }
 
 uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {
@@ -312,6 +354,57 @@ void Monster::onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses typ
 		LuaScriptInterface::pushString(L, text);
 
 		scriptInterface->callVoidFunction(4);
+	}
+}
+
+void Monster::onAttackedByPlayer(std::shared_ptr<Player> attackerPlayer) {
+	if (mType->info.monsterAttackedByPlayerEvent != -1) {
+		// onPlayerAttack(self, attackerPlayer)
+		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
+		if (!scriptInterface->reserveScriptEnv()) {
+			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
+			                 "script calls being nested.",
+			                 getName(), this->getName());
+			return;
+		}
+
+		ScriptEnvironment* env = scriptInterface->getScriptEnv();
+		env->setScriptId(mType->info.monsterAttackedByPlayerEvent, scriptInterface);
+
+		lua_State* L = scriptInterface->getLuaState();
+		scriptInterface->pushFunction(mType->info.monsterAttackedByPlayerEvent);
+
+		LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
+		LuaScriptInterface::setMetatable(L, -1, "Monster");
+
+		LuaScriptInterface::pushUserdata<Player>(L, attackerPlayer);
+		LuaScriptInterface::setMetatable(L, -1, "Player");
+
+		scriptInterface->callVoidFunction(2);
+	}
+}
+
+void Monster::onSpawn() {
+	if (mType->info.spawnEvent != -1) {
+		// onSpawn(self)
+		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
+		if (!scriptInterface->reserveScriptEnv()) {
+			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
+			                 "script calls being nested.",
+			                 getName(), this->getName());
+			return;
+		}
+
+		ScriptEnvironment* env = scriptInterface->getScriptEnv();
+		env->setScriptId(mType->info.spawnEvent, scriptInterface);
+
+		lua_State* L = scriptInterface->getLuaState();
+		scriptInterface->pushFunction(mType->info.spawnEvent);
+
+		LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
+		LuaScriptInterface::setMetatable(L, -1, "Monster");
+
+		scriptInterface->callVoidFunction(1);
 	}
 }
 
@@ -699,7 +792,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
+			g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
 		}
 	}
 	return setFollowCreature(creature);
@@ -1921,6 +2014,8 @@ void Monster::death(std::shared_ptr<Creature>) {
 	if (mType) {
 		g_game().sendSingleSoundEffect(static_self_cast<Monster>()->getPosition(), mType->info.deathSound, getMonster());
 	}
+
+	setDead(true);
 }
 
 std::shared_ptr<Item> Monster::getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature) {
@@ -2122,11 +2217,11 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 }
 
 bool Monster::isImmune(ConditionType_t conditionType) const {
-	return mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
+	return m_isImmune || mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
 }
 
 bool Monster::isImmune(CombatType_t combatType) const {
-	return mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
+	return m_isImmune || mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
 }
 
 void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) {

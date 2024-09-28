@@ -7213,7 +7213,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 			}
 
 			for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
-				if (mapTier == firstForgingItem->getTier()) {
+				if (mapTier == firstForgingItem->getTier() + 1) {
 					cost = mapPrice.convergenceFusionPrice;
 					break;
 				}

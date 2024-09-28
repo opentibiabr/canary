@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "server/network/message/outputmessage.hpp"
 #include "server/server.hpp"
 #include "config/configmanager.hpp"

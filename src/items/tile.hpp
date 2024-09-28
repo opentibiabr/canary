@@ -7,14 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "items/cylinder.hpp"
 #include "declarations.hpp"
 #include "items/item.hpp"
 #include "utils/tools.hpp"
+
+import game_movement;
 
 class Creature;
 class Teleport;

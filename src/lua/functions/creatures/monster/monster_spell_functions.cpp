@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "lua/functions/creatures/monster/monster_spell_functions.hpp"
 #include "creatures/monsters/monsters.hpp"
 

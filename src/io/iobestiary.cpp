@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "declarations.hpp"
 #include "game/game.hpp"
@@ -15,6 +15,8 @@ import game_movement;
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "lib/metrics/metrics.hpp"
+
+import game_movement;
 
 SoftSingleton IOBestiary::instanceTracker("IOBestiary");
 

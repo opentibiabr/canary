@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "lua/callbacks/event_callback.hpp"
 
@@ -15,6 +15,8 @@ import game_movement;
 #include "items/item.hpp"
 #include "creatures/players/player.hpp"
 #include "game/zones/zone.hpp"
+
+import game_movement;
 
 /**
  * @class EventCallback

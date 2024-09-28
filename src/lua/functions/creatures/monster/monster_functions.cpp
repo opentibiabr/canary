@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "game/game.hpp"
 #include "creatures/creature.hpp"
@@ -16,6 +16,8 @@ import game_movement;
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 #include "map/spectators.hpp"
 #include "game/scheduling/events_scheduler.hpp"
+
+import game_movement;
 
 int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	// Monster(id or userdata)

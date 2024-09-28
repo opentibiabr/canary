@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "mapcache.hpp"
@@ -16,6 +14,8 @@ import game_movement;
 #include "map/house/house.hpp"
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/spawns/spawn_npc.hpp"
+
+import game_movement;
 
 class Creature;
 class Player;

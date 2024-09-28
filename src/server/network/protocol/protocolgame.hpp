@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
@@ -18,6 +16,8 @@ import game_movement;
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
+
+import game_movement;
 
 class NetworkMessage;
 class Player;

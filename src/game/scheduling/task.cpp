@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "task.hpp"
 
 #include "lib/logging/log_with_spd_log.hpp"

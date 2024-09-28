@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "declarations.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/functions/lua_functions_loader.hpp"

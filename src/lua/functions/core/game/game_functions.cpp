@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "core.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -31,6 +31,8 @@ import game_movement;
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "map/spectators.hpp"
+
+import game_movement;
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {

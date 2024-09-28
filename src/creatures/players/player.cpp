@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "creatures/combat/combat.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"

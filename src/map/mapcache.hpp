@@ -12,10 +12,11 @@
 #include "items/items_definitions.hpp"
 #include "utils/mapsector.hpp"
 
+import game_movement;
+
 class Map;
 class Tile;
 class Item;
-struct Position;
 class FileStream;
 
 #pragma pack(1)

@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "kv/value_wrapper_proto.hpp"
 
 #include "kv/value_wrapper.hpp"

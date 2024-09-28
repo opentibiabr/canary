@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "core.hpp"
 
 #include "server/network/protocol/protocolstatus.hpp"

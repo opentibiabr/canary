@@ -7,11 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "items/tile.hpp"
+
+import game_movement;
 
 class Teleport final : public Item, public Cylinder {
 public:

@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "creatures/npcs/npcs.hpp"
 #include "lua/functions/creatures/npc/shop_functions.hpp"
 

@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "creatures/players/vip/player_vip.hpp"
 
 #include "io/iologindata.hpp"

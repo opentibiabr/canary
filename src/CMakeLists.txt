@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.29)
+
 # Base configurations and settings for the project
 include(BaseConfig)
 include(GNUInstallDirs)
@@ -7,19 +9,12 @@ include(CanaryLib)
 
 if(MSVC)
     add_compile_options(/experimental:module)
-    set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "TRUE") # Habilita suporte experimental a módulos no CMake para MSVC
+    set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "TRUE")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     add_compile_options(-std=c++23 -fmodules-ts)
 endif()
 
 add_executable(${PROJECT_NAME} main.cpp)
-
-if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /experimental:module)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    target_compile_options(${PROJECT_NAME} PRIVATE -fmodules-ts)
-endif()
-
 
 if(MSVC)
     # Add executable icon for Windows

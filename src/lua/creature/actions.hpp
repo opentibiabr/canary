@@ -7,13 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "lua/scripts/scripts.hpp"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.hpp"
+
+import game_movement;
 
 class Action;
 

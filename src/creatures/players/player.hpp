@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "items/containers/container.hpp"
@@ -42,6 +40,8 @@ import game_movement;
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/vip/player_vip.hpp"
+
+import game_movement;
 
 class House;
 class NetworkMessage;

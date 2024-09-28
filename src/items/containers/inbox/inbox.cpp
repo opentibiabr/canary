@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "items/containers/inbox/inbox.hpp"
 #include "utils/tools.hpp"
 

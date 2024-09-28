@@ -7,12 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "enums/direction.hpp"
 #include "items/tile.hpp"
+
+import game_movement;
 
 class Npc;
 class NpcType;

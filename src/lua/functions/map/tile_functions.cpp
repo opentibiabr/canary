@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "game/game.hpp"
 #include "lua/functions/map/tile_functions.hpp"
 

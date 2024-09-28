@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "utils/utils_definitions.hpp"
@@ -16,6 +14,8 @@ import game_movement;
 #include "enums/item_attribute.hpp"
 #include "enums/direction.hpp"
 #include "enums/object_category.hpp"
+
+import game_movement;
 
 namespace pugi {
 	class xml_parse_result;

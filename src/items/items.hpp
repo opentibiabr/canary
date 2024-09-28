@@ -7,14 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "config/configmanager.hpp"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "enums/direction.hpp"
+
+import game_movement;
 
 struct Abilities {
 public:

@@ -7,13 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "enums/direction.hpp"
 #include "items/item.hpp"
 #include "creatures/creature.hpp"
+
+import game_movement;
 
 class Tile;
 class Creature;

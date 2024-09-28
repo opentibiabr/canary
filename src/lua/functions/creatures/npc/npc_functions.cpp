@@ -7,13 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "game/game.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
 #include "map/spectators.hpp"
+
+import game_movement;
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {
 	// Npc([id or name or userdata])

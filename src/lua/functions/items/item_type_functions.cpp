@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "items/item.hpp"
 #include "items/items.hpp"
 #include "lua/functions/items/item_type_functions.hpp"

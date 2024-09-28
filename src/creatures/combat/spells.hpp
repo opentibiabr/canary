@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "lua/scripts/luascript.hpp"
@@ -17,6 +15,8 @@ import game_movement;
 #include "lua/creature/actions.hpp"
 #include "lua/creature/talkaction.hpp"
 #include "lua/scripts/scripts.hpp"
+
+import game_movement;
 
 class InstantSpell;
 class RuneSpell;

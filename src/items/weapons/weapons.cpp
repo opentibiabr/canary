@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
@@ -15,6 +15,8 @@ import game_movement;
 #include "items/weapons/weapons.hpp"
 
 #include "lua/global/lua_variant.hpp"
+
+import game_movement;
 
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;

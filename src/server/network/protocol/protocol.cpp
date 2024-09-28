@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "server/network/protocol/protocol.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "security/rsa.hpp"

@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "creatures/players/vocations/vocation.hpp"
 #include "lua/functions/creatures/player/vocation_functions.hpp"
 

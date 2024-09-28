@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "creatures/players/management/waitlist.hpp"
 #include "game/game.hpp"
 

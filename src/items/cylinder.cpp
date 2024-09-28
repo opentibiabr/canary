@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "items/cylinder.hpp"
 
 std::shared_ptr<VirtualCylinder> VirtualCylinder::virtualCylinder = std::make_shared<VirtualCylinder>();

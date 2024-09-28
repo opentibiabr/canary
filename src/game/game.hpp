@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "account/account.hpp"
@@ -27,6 +25,8 @@ import game_movement;
 #include "items/items_classification.hpp"
 #include "modal_window/modal_window.hpp"
 #include "enums/object_category.hpp"
+
+import game_movement;
 
 // Forward declaration for protobuf class
 namespace Canary {

@@ -11,14 +11,14 @@
 
 #include "enums/direction.hpp"
 
+import game_movement;
+
 class Tile;
 class Cylinder;
 class Item;
 class Creature;
 class Container;
 class Player;
-
-struct Position;
 
 class Thing {
 public:

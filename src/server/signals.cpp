@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"

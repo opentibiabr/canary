@@ -9,9 +9,10 @@
 
 #pragma once
 
-struct Position;
 class Creature;
 class Tile;
+
+import game_movement;
 
 struct AStarNode {
 	AStarNode* parent;

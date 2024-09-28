@@ -7,10 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
+
+import game_movement;
 
 bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {

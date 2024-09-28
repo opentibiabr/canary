@@ -19,8 +19,6 @@ class DepotLocker;
 class RewardChest;
 class Reward;
 
-struct Position;
-
 class ContainerIterator {
 public:
 	bool hasNext() const {

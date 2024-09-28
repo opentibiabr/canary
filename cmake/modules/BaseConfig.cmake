@@ -14,9 +14,12 @@ set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(Boost_NO_WARN_NEW_VERSIONS ON)
 set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDYNAPI ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /external:W0 /external:anglebrackets /external:templates-")
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp")
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /external:W0 /external:anglebrackets /external:templates-")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp")
+endif()
 
 # Make will print more details
 set(CMAKE_VERBOSE_MAKEFILE OFF)
@@ -164,7 +167,7 @@ if (MSVC)
 
     add_compile_options(/MP /FS /Zf /EHsc)
 else()
-    add_compile_options(-Wno-unused-parameter -Wno-sign-compare -Wno-switch -Wno-implicit-fallthrough -Wno-extra -fmodules-ts)
+    add_compile_options(-Wno-unused-parameter -Wno-sign-compare -Wno-switch -Wno-implicit-fallthrough -Wno-extra)
 endif()
 
 ## Link compilation files to build/bin folder, else link to the main dir

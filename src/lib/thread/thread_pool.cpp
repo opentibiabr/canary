@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "lib/thread/thread_pool.hpp"
 
 #include "game/game.hpp"

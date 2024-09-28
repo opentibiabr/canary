@@ -7,13 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "io/io_bosstiary.hpp"
 #include "creatures/creature.hpp"
 #include "declarations.hpp"
+
+import game_movement;
 
 class Loot {
 public:

@@ -1,4 +1,3 @@
-// #include "pch.hpp"
 #include "lua/functions/core/game/bank_functions.hpp"
 #include "game/bank/bank.hpp"
 #include "game/game.hpp"

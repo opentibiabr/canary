@@ -7,14 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "lua/global/baseevents.hpp"
 #include "creatures/combat/condition.hpp"
 #include "declarations.hpp"
 #include "map/map.hpp"
+
+import game_movement;
 
 class Condition;
 class Creature;

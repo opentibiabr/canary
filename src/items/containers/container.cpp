@@ -7,13 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "items/containers/container.hpp"
 #include "items/decay/decay.hpp"
 #include "io/iomap.hpp"
 #include "game/game.hpp"
 #include "map/spectators.hpp"
+
+import game_movement;
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {

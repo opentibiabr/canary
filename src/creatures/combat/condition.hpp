@@ -7,13 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "declarations.hpp"
 
 #include "enums/player_icons.hpp"
+
+import game_movement;
 
 class Creature;
 class Player;

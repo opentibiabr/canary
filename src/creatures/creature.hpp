@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "declarations.hpp"
@@ -18,6 +16,8 @@ import game_movement;
 #include "map/map.hpp"
 #include "enums/direction.hpp"
 #include "items/tile.hpp"
+
+import game_movement;
 
 using ConditionList = std::list<std::shared_ptr<Condition>>;
 using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;

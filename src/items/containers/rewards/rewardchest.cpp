@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "items/containers/rewards/rewardchest.hpp"
 
 RewardChest::RewardChest(uint16_t type) :

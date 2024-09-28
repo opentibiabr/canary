@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "lua/callbacks/creaturecallback.hpp"
 
 bool CreatureCallback::startScriptInterface(int32_t scriptId) {

@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "creatures/creature.hpp"
 #include "declarations.hpp"
@@ -17,6 +17,8 @@ import game_movement;
 #include "game/zones/zone.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+
+import game_movement;
 
 Creature::Creature() {
 	onIdleStatus();

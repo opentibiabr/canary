@@ -7,10 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "server/network/message/networkmessage.hpp"
 #include "items/containers/container.hpp"
+
+import game_movement;
 
 int32_t NetworkMessage::decodeHeader() {
 	int32_t newSize = buffer[0] | buffer[1] << 8;

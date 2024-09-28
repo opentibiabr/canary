@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
@@ -17,6 +17,8 @@ import game_movement;
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
 #include "utils/tools.hpp"
+
+import game_movement;
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const std::shared_ptr<Player> &player) {
 	try {

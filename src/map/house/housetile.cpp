@@ -7,13 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "items/tile.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "map/house/housetile.hpp"
 #include "map/house/house.hpp"
 #include "game/game.hpp"
+
+import game_movement;
 
 HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, std::shared_ptr<House> initHouse) :
 	DynamicTile(initX, initY, initZ), house(initHouse) { }

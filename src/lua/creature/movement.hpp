@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "declarations.hpp"
@@ -16,6 +14,8 @@ import game_movement;
 #include "lua/functions/events/move_event_functions.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "creatures/players/vocations/vocation.hpp"
+
+import game_movement;
 
 class MoveEvent;
 

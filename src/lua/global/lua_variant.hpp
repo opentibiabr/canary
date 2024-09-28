@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "enums/lua_variant_type.hpp"
@@ -18,6 +16,8 @@ import game_movement;
 	#include <cstdint>
 	#include <string>
 #endif
+
+import game_movement;
 
 struct LuaVariant {
 	LuaVariantType_t type = VARIANT_NONE;

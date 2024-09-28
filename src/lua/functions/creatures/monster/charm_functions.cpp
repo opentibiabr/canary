@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "game/game.hpp"
 #include "io/iobestiary.hpp"
 #include "lua/functions/creatures/monster/charm_functions.hpp"

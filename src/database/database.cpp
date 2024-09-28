@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "lib/di/container.hpp"

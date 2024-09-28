@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "player_badge.hpp"
 
 #include "creatures/players/player.hpp"

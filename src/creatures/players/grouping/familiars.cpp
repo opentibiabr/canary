@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "creatures/players/grouping/familiars.hpp"
 #include "lib/di/container.hpp"
 #include "config/configmanager.hpp"

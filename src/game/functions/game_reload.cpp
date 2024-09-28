@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "game/functions/game_reload.hpp"
 
 #include "config/configmanager.hpp"

@@ -7,13 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "creatures/players/grouping/party.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+
+import game_movement;
 
 std::shared_ptr<Party> Party::create(std::shared_ptr<Player> leader) {
 	auto party = std::make_shared<Party>();

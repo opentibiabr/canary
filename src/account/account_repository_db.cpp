@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "account/account_repository_db.hpp"
 
 #include "database/database.hpp"

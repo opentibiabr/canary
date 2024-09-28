@@ -7,11 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "items/cylinder.hpp"
 #include "lua/functions/creatures/combat/variant_functions.hpp"
 #include "lua/global/lua_variant.hpp"
+
+import game_movement;
 
 int VariantFunctions::luaVariantCreate(lua_State* L) {
 	// Variant(number or string or position or thing)

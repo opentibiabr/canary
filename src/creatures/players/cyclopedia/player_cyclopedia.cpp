@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "player_cyclopedia.hpp"
 
 #include "database/databasetasks.hpp"

@@ -5,18 +5,17 @@ setup_target(${PROJECT_NAME}_lib)
 
 # Define module sources
 set(MODULE_SOURCES
-    test.cppm
     position.cppm
 )
 
 # Create a static library for the module sources
-add_library(my_module_lib STATIC)
-target_sources(my_module_lib
+add_library(ModuleLib STATIC)
+target_sources(ModuleLib
     PUBLIC
         FILE_SET cxx_modules TYPE CXX_MODULES FILES ${MODULE_SOURCES}
 )
 
-set_target_properties(my_module_lib PROPERTIES UNITY_BUILD ON)
+set_target_properties(ModuleLib PROPERTIES UNITY_BUILD ON)
 
 # Add subdirectories
 add_subdirectory(account)
@@ -36,7 +35,9 @@ add_subdirectory(server)
 add_subdirectory(utils)
 
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
-target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
+if(NOT TARGET my_module_lib)
+    target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
+endif()
 
 # Add public pre compiler header to lib, to pass down to related targets
 target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
@@ -54,7 +55,7 @@ endif()
 
 if (MSVC)
     target_compile_options(${PROJECT_NAME}_lib PRIVATE /MT$<$<CONFIG:Debug>:d>)
-    target_compile_options(my_module_lib PRIVATE /MT$<$<CONFIG:Debug>:d>)
+    target_compile_options(ModuleLib PRIVATE /MT$<$<CONFIG:Debug>:d>)
 endif()
 
 # Sets the NDEBUG macro for RelWithDebInfo and Release configurations.
@@ -69,19 +70,20 @@ target_compile_definitions(${PROJECT_NAME}_lib PUBLIC
 if(MSVC)
     target_compile_options(${PROJECT_NAME}_lib PRIVATE "/GL")
     set_target_properties(${PROJECT_NAME}_lib PROPERTIES
-            STATIC_LINKER_FLAGS "/LTCG"
-            SHARED_LINKER_FLAGS "/LTCG"
-            MODULE_LINKER_FLAGS "/LTCG"
-            EXE_LINKER_FLAGS "/LTCG")
+        STATIC_LINKER_FLAGS "/LTCG"
+        SHARED_LINKER_FLAGS "/LTCG"
+        MODULE_LINKER_FLAGS "/LTCG"
+        EXE_LINKER_FLAGS "/LTCG")
 else()
     include(CheckIPOSupported)
-    check_ipo_supported(RESULT result)
+    check_ipo_supported(RESULT result LANGUAGES CXX OUTPUT output)
     if(result)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto=auto")
-        message(STATUS "IPO/LTO enabled with -flto=auto for non-MSVC compiler.")
+        message(STATUS "IPO/LTO enabled for non-MSVC C++ compiler with -flto=auto.")
         set_property(TARGET ${PROJECT_NAME}_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
     else()
-        message(WARNING "IPO/LTO is not supported: ${output}")
+        message(WARNING "IPO/LTO is not supported for the C++ compiler: ${output}")
+        set_property(TARGET ${PROJECT_NAME}_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION FALSE)
     endif()
 endif()
 
@@ -125,7 +127,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         unofficial::libmariadb
         unofficial::mariadbclient
         protobuf
-        my_module_lib
+        ModuleLib
 )
 
 if(FEATURE_METRICS)
@@ -159,7 +161,7 @@ if (MSVC)
 
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})
 else()
-    target_link_libraries(${PROJECT_NAME}_lib PUBLIC Threads::Threads)
+    target_link_libraries(${PROJECT_NAME}_lib PRIVATE Threads::Threads)
 endif (MSVC)
 
 # === OpenMP ===

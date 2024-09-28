@@ -7,12 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "items/tile.hpp"
 #include "enums/direction.hpp"
+
+import game_movement;
 
 class Monster;
 class MonsterType;

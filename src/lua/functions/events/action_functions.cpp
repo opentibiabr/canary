@@ -7,12 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "lua/creature/actions.hpp"
 #include "lua/functions/events/action_functions.hpp"
 #include "game/game.hpp"
 #include "items/item.hpp"
+
+import game_movement;
 
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()

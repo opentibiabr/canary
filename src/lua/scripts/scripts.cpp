@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/global/globalevent.hpp"
 #include "items/weapons/weapons.hpp"

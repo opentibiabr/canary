@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "declarations.hpp"
@@ -20,6 +18,8 @@ import game_movement;
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/spawns/spawn_npc.hpp"
 #include "game/zones/zone.hpp"
+
+import game_movement;
 
 class IOMap {
 public:

@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "kv/kv.hpp"
 #include "lib/di/container.hpp"
 

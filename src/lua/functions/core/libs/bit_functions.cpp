@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "lua/functions/core/libs/bit_functions.hpp"
 
 #ifndef LUAJIT_VERSION

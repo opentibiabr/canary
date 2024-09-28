@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "lua/global/baseevents.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "utils/tools.hpp"

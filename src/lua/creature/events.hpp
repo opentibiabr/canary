@@ -18,8 +18,6 @@ class ItemType;
 class Tile;
 class Imbuements;
 
-struct Position;
-
 class Events {
 	struct EventsInfo {
 		// Creature

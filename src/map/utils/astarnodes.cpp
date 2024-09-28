@@ -7,11 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "astarnodes.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/combat/combat.hpp"
+
+import game_movement;
 
 AStarNodes::AStarNodes(uint32_t x, uint32_t y, int_fast32_t extraCost) :
 	openNodes(), nodes() {

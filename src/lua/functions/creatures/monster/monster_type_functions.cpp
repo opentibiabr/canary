@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "game/game.hpp"
 #include "io/io_bosstiary.hpp"
@@ -16,6 +16,8 @@ import game_movement;
 #include "creatures/monsters/monster.hpp"
 #include "lua/functions/creatures/monster/monster_type_functions.hpp"
 #include "lua/scripts/scripts.hpp"
+
+import game_movement;
 
 void MonsterTypeFunctions::createMonsterTypeLootLuaTable(lua_State* L, const std::vector<LootBlock> &lootList) {
 	lua_createtable(L, lootList.size(), 0);

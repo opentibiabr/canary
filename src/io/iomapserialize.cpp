@@ -7,12 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
+#include "pch.hpp"
 
 #include "io/iomapserialize.hpp"
 #include "io/iologindata.hpp"
 #include "game/game.hpp"
 #include "items/bed.hpp"
+
+import game_movement;
 
 void IOMapSerialize::loadHouseItems(Map* map) {
 	Benchmark bm_context;

@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "game/scheduling/dispatcher.hpp"

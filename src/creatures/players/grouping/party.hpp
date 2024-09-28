@@ -23,7 +23,6 @@ enum SharedExpStatus_t : uint8_t {
 
 class Player;
 class Party;
-struct Position;
 
 class Party : public SharedObject {
 public:

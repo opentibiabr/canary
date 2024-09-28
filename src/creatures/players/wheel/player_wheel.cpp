@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-import game_movement;
-
 #include "creatures/players/wheel/player_wheel.hpp"
 
 #include "io/io_wheel.hpp"
@@ -18,6 +16,8 @@ import game_movement;
 #include "creatures/combat/spells.hpp"
 
 #include "config/configmanager.hpp"
+
+import game_movement;
 
 const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot1Allowed = {
 	WheelGemBasicModifier_t::General_FireResistance,

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-import game_movement;
-
 #pragma once
 
 #include "creatures/npcs/npcs.hpp"
@@ -16,6 +14,8 @@ import game_movement;
 #include "declarations.hpp"
 #include "items/tile.hpp"
 #include "lib/di/container.hpp"
+
+import game_movement;
 
 class Creature;
 class Game;

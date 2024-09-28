@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "kv/kv_sql.hpp"
 #include "kv/value_wrapper_proto.hpp"
 #include "utils/tools.hpp"

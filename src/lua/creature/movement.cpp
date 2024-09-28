@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"

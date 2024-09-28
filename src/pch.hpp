@@ -81,13 +81,14 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/args.h>
+#include <fmt/ranges.h>
 
 // FMT Custom Formatter for Enums
 template <typename E>
-struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<std::underlying_type_t<E>> {
+struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : fmt::formatter<std::underlying_type_t<E>> {
 	template <typename FormatContext>
-	auto format(E e, FormatContext &ctx) {
-		return formatter<std::underlying_type_t<E>>::format(
+	auto format(E e, FormatContext &ctx) const {
+		return fmt::formatter<std::underlying_type_t<E>>::format(
 			static_cast<std::underlying_type_t<E>>(e), ctx
 		);
 	}

@@ -14,6 +14,8 @@
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
 
+#include <creatures/players/wheel/wheel_gems.hpp>
+
 Vocations &Vocations::getInstance() {
 	return inject<Vocations>();
 }
@@ -292,6 +294,12 @@ uint64_t Vocation::getReqMana(uint32_t magLevel) {
 	return reqMana;
 }
 
+template <>
+struct magic_enum::customize::enum_range<WheelGemSupremeModifier_t> {
+	static constexpr int min = 0;
+	static constexpr int max = static_cast<int>(WheelGemSupremeModifier_t::Druid_RevelationMastery_TwinBursts);
+};
+
 std::vector<WheelGemSupremeModifier_t> Vocation::getSupremeGemModifiers() {
 	if (!m_supremeGemModifiers.empty()) {
 		return m_supremeGemModifiers;
@@ -300,6 +308,7 @@ std::vector<WheelGemSupremeModifier_t> Vocation::getSupremeGemModifiers() {
 	auto vocationName = asLowerCaseString(baseVocation->getVocName());
 	auto allModifiers = magic_enum::enum_entries<WheelGemSupremeModifier_t>();
 	g_logger().debug("Loading supreme gem modifiers for vocation: {}", vocationName);
+
 	for (const auto &[value, modifierName] : allModifiers) {
 		std::string targetVocation(modifierName.substr(0, modifierName.find('_')));
 		toLowerCaseString(targetVocation);

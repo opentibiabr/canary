@@ -262,12 +262,12 @@ if not Quests then
 		},
 		[5] = {
 			name = "Bigfoot's Burden",
-			startStorageId = Storage.BigfootBurden.QuestLine,
+			startStorageId = Storage.Quest.U9_60.BigfootsBurden.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Looking for Gnomerik",
-					storageId = Storage.BigfootBurden.QuestLine,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.QuestLine,
 					missionId = 1033,
 					startValue = 1,
 					endValue = 2,
@@ -277,7 +277,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "A New Recruit",
-					storageId = Storage.BigfootBurden.QuestLine,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.QuestLine,
 					missionId = 1034,
 					startValue = 3,
 					endValue = 4,
@@ -285,7 +285,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Recruitment: A Test in Gnomology",
-					storageId = Storage.BigfootBurden.QuestLine,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.QuestLine,
 					missionId = 1035,
 					startValue = 5,
 					endValue = 7,
@@ -298,7 +298,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Recruitment: Medical Examination",
-					storageId = Storage.BigfootBurden.QuestLine,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.QuestLine,
 					missionId = 1036,
 					startValue = 8,
 					endValue = 9,
@@ -306,7 +306,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Recruitment: Ear Examination",
-					storageId = Storage.BigfootBurden.QuestLine,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.QuestLine,
 					missionId = 1037,
 					startValue = 10,
 					endValue = 12,
@@ -319,7 +319,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Recruitment: Gnomish Warfare",
-					storageId = Storage.BigfootBurden.Shooting,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.Shooting,
 					missionId = 1038,
 					startValue = 0,
 					endValue = 5,
@@ -327,13 +327,13 @@ if not Quests then
 						return string.format(
 							"Hit five targets in a row. \z
 						Don't hit an innocent target as it will reset your hit counter. %d / 5",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.Shooting), 0))
+							(math.max(player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Shooting), 0))
 						)
 					end,
 				},
 				[7] = {
 					name = "Recruitment: Gnomish Warfare",
-					storageId = Storage.BigfootBurden.QuestLine,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.QuestLine,
 					missionId = 1039,
 					startValue = 15,
 					endValue = 16,
@@ -341,7 +341,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Recruitment: Endurance Test",
-					storageId = Storage.BigfootBurden.QuestLine,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.QuestLine,
 					missionId = 1040,
 					startValue = 17,
 					endValue = 20,
@@ -353,7 +353,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Recruitment: Soul Melody",
-					storageId = Storage.BigfootBurden.QuestLine,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.QuestLine,
 					missionId = 1041,
 					startValue = 21,
 					endValue = 23,
@@ -365,7 +365,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Recruitment",
-					storageId = Storage.BigfootBurden.QuestLineComplete,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.QuestLineComplete,
 					missionId = 1042,
 					startValue = 1,
 					endValue = 2,
@@ -373,7 +373,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Gnome Reputation",
-					storageId = Storage.BigfootBurden.Rank,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.Rank,
 					missionId = 1043,
 					startValue = 0,
 					endValue = 999999,
@@ -381,13 +381,13 @@ if not Quests then
 						return string.format(
 							"Your reputation in the eyes of gnomekind is %d.\nYour standing rises at: \z
 						\nReputation   30 - I \nReputation  120 - II \nReputation  480 - III \nReputation 1440 - IV \n",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.Rank), 0))
+							(math.max(player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.Rank), 0))
 						)
 					end,
 				},
 				[12] = {
 					name = "Daily Minor: Crystal Keeper",
-					storageId = Storage.BigfootBurden.RepairedCrystalCount,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.RepairedCrystalCount,
 					missionId = 1044,
 					startValue = 0,
 					endValue = 5,
@@ -395,13 +395,13 @@ if not Quests then
 						return string.format(
 							"Use the repair crystal to repair five damaged blue crystals in the crystal caves. \z
 						Damaged crystals will not glow.\n%d / 5",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.RepairedCrystalCount), 0))
+							(math.max(player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.RepairedCrystalCount), 0))
 						)
 					end,
 				},
 				[13] = {
 					name = "Daily Minor: Raiders of the Lost Spark",
-					storageId = Storage.BigfootBurden.ExtractedCount,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.ExtractedCount,
 					missionId = 1045,
 					startValue = 0,
 					endValue = 7,
@@ -409,23 +409,23 @@ if not Quests then
 						return string.format(
 							"Kill crystal crushers and use the discharger item on the corpse to collect their charges. \z
 						Gather 7 charges and report back. %d / 7",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.ExtractedCount), 0))
+							(math.max(player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.ExtractedCount), 0))
 						)
 					end,
 				},
 				[14] = {
 					name = "Daily Minor Plus: Exterminators",
-					storageId = Storage.BigfootBurden.ExterminatedCount,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.ExterminatedCount,
 					missionId = 1046,
 					startValue = 0,
 					endValue = 10,
 					description = function(player)
-						return string.format("Kill 10 of the wigglers for the gnomes. Then report back. %d / 10", (math.max(player:getStorageValue(Storage.BigfootBurden.ExterminatedCount), 0)))
+						return string.format("Kill 10 of the wigglers for the gnomes. Then report back. %d / 10", (math.max(player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.ExterminatedCount), 0)))
 					end,
 				},
 				[15] = {
 					name = "Daily Minor Plus: Mushroom Digger",
-					storageId = Storage.BigfootBurden.MushroomCount,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.MushroomCount,
 					missionId = 1047,
 					startValue = 0,
 					endValue = 3,
@@ -434,13 +434,13 @@ if not Quests then
 							"Find a truffle sniffing pig and lure it around. \z
 						Occasionally it will unearth some truffles. Use the baby pig on the truffles to feed it 3 times. \z
 						Then report back to the gnomes. %d / 3",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.MushroomCount), 0))
+							(math.max(player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.MushroomCount), 0))
 						)
 					end,
 				},
 				[16] = {
 					name = "Daily Major: Matchmaker",
-					storageId = Storage.BigfootBurden.MatchmakerStatus,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.MatchmakerStatus,
 					missionId = 1048,
 					startValue = 0,
 					endValue = 1,
@@ -452,7 +452,7 @@ if not Quests then
 				},
 				[17] = {
 					name = "Daily Major: The Tinker's Bell",
-					storageId = Storage.BigfootBurden.GolemCount,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.GolemCount,
 					missionId = 1049,
 					startValue = 0,
 					endValue = 4,
@@ -460,13 +460,13 @@ if not Quests then
 						return string.format(
 							"Use the harmonic bell on the mad golems in the golem workshop so that they will \z
 						automatically be teleported to the gnomish workshops. Then report back to the gnomes. %d / 4",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.GolemCount), 0))
+							(math.max(player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.GolemCount), 0))
 						)
 					end,
 				},
 				[18] = {
 					name = "Daily Major Advanced: Spores",
-					storageId = Storage.BigfootBurden.SporeCount,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.SporeCount,
 					missionId = 1050,
 					startValue = 0,
 					endValue = 4,
@@ -475,7 +475,7 @@ if not Quests then
 				},
 				[19] = {
 					name = "Daily Major Advanced: Yet Another Grinding",
-					storageId = Storage.BigfootBurden.GrindstoneStatus,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.GrindstoneStatus,
 					missionId = 1051,
 					startValue = 0,
 					endValue = 2,
@@ -483,7 +483,7 @@ if not Quests then
 				},
 				[20] = {
 					name = "Gnomish War Hero (Warzone 1)",
-					storageId = Storage.BigfootBurden.Warzone1Access,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.Warzone1Access,
 					missionId = 1052,
 					startValue = 1,
 					endValue = 2,
@@ -494,7 +494,7 @@ if not Quests then
 				},
 				[21] = {
 					name = "Gnomish War Hero (Warzone 2)",
-					storageId = Storage.BigfootBurden.Warzone2Access,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.Warzone2Access,
 					missionId = 1053,
 					startValue = 1,
 					endValue = 2,
@@ -505,7 +505,7 @@ if not Quests then
 				},
 				[22] = {
 					name = "Gnomish War Hero (Warzone 3)",
-					storageId = Storage.BigfootBurden.Warzone3Access,
+					storageId = Storage.Quest.U9_60.BigfootsBurden.Warzone3Access,
 					missionId = 1054,
 					startValue = 1,
 					endValue = 2,
@@ -5742,12 +5742,12 @@ if not Quests then
 		},
 		[43] = {
 			name = "The Rookie Guard",
-			startStorageId = Storage.TheRookieGuard.Questline,
+			startStorageId = Storage.Quest.U9_1.TheRookieGuard.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 01: A Taste of Things to Come",
-					storageId = Storage.TheRookieGuard.Mission01,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission01,
 					missionId = 10397,
 					startValue = 1,
 					endValue = 1,
@@ -5757,7 +5757,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 02: Defence!",
-					storageId = Storage.TheRookieGuard.Mission02,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission02,
 					missionId = 10398,
 					startValue = 1,
 					endValue = 5,
@@ -5771,7 +5771,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03: A Rational Request",
-					storageId = Storage.TheRookieGuard.RatKills,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.RatKills,
 					missionId = 10399,
 					startValue = 0,
 					endValue = 5,
@@ -5779,13 +5779,13 @@ if not Quests then
 						return string.format(
 							"Vascalir sent you to the Rookgaard sewers to kill 5 rats. You have already killed %d/5. \z
 						Return to Vascalir once you're done.",
-							(math.max(player:getStorageValue(Storage.TheRookieGuard.RatKills), 0))
+							(math.max(player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.RatKills), 0))
 						)
 					end,
 				},
 				[4] = {
 					name = "Mission 04: Home-Brewed",
-					storageId = Storage.TheRookieGuard.Mission04,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission04,
 					missionId = 10400,
 					startValue = 1,
 					endValue = 6,
@@ -5800,7 +5800,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 05: Web of Terror",
-					storageId = Storage.TheRookieGuard.Mission05,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission05,
 					missionId = 10401,
 					startValue = 1,
 					endValue = 6,
@@ -5815,7 +5815,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 06: Run Like a Wolf",
-					storageId = Storage.TheRookieGuard.Mission06,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission06,
 					missionId = 10402,
 					startValue = 1,
 					endValue = 7,
@@ -5831,7 +5831,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 07: Attack!",
-					storageId = Storage.TheRookieGuard.Mission07,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission07,
 					missionId = 10403,
 					startValue = 1,
 					endValue = 2,
@@ -5842,7 +5842,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 08: Less Risk - More Fun",
-					storageId = Storage.TheRookieGuard.Mission08,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission08,
 					missionId = 10404,
 					startValue = 1,
 					endValue = 2,
@@ -5853,7 +5853,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 09: Rock 'n Troll",
-					storageId = Storage.TheRookieGuard.Mission09,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission09,
 					missionId = 10405,
 					startValue = 1,
 					endValue = 10,
@@ -5872,7 +5872,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 10: Tomb Raiding",
-					storageId = Storage.TheRookieGuard.Mission10,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission10,
 					missionId = 10406,
 					startValue = 1,
 					endValue = 3,
@@ -5884,7 +5884,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Mission 11: Sweet Poison",
-					storageId = Storage.TheRookieGuard.Mission11,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission11,
 					missionId = 10407,
 					startValue = 1,
 					endValue = 5,
@@ -5898,7 +5898,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "Mission 12: Into The Fortress",
-					storageId = Storage.TheRookieGuard.Mission12,
+					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission12,
 					missionId = 10408,
 					startValue = 1,
 					endValue = 15,

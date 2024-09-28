@@ -11,13 +11,13 @@ function bigfootCrystal.onUse(player, item, fromPosition, target, toPosition, is
 		return false
 	end
 
-	local repairedCount = player:getStorageValue(Storage.BigfootBurden.RepairedCrystalCount)
-	if repairedCount == 5 or player:getStorageValue(Storage.BigfootBurden.MissionCrystalKeeper) ~= 1 then
+	local repairedCount = player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.RepairedCrystalCount)
+	if repairedCount == 5 or player:getStorageValue(Storage.Quest.U9_60.BigfootsBurden.MissionCrystalKeeper) ~= 1 then
 		return false
 	end
 
 	if target.itemid == 15796 or target.itemid == 15712 then
-		player:setStorageValue(Storage.BigfootBurden.RepairedCrystalCount, repairedCount + 1)
+		player:setStorageValue(Storage.Quest.U9_60.BigfootsBurden.RepairedCrystalCount, repairedCount + 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have repaired a damaged crystal!")
 		addEvent(returnCrystal, math.random(50, 140) * 1000, toPosition, target.itemid)
 		target:transform(15800)

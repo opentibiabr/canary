@@ -45,13 +45,13 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission10)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission10)
 	-- Skip if not was started or finished
 	if missionState == -1 or missionState > 1 then
 		return true
 	end
 	local missionTile = missionTiles[item.actionid]
-	local sarcophagusState = player:getStorageValue(Storage.TheRookieGuard.Sarcophagus)
+	local sarcophagusState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Sarcophagus)
 	-- Check mission state cases for the tile
 	for i = 1, #missionTile do
 		-- Check if the tile is active
@@ -79,17 +79,17 @@ missionGuide:register()
 local sarcophagus = Action()
 
 function sarcophagus.onUse(player, item, frompos, item2, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission10)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission10)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
 	end
 	if missionState >= 1 then
-		local sarcophagusState = player:getStorageValue(Storage.TheRookieGuard.Sarcophagus)
+		local sarcophagusState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Sarcophagus)
 		if sarcophagusState == -1 then
 			local reward = Game.createItem(12674, 1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found " .. reward:getArticle() .. " " .. reward:getName() .. ".")
-			player:setStorageValue(Storage.TheRookieGuard.Sarcophagus, 1)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Sarcophagus, 1)
 			player:addItemEx(reward, true, CONST_SLOT_WHEREEVER)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. item:getName() .. " is empty.")
@@ -128,13 +128,13 @@ local chests = {
 local unholyCryptChests = Action()
 
 function unholyCryptChests.onUse(player, item, frompos, item2, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission10)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission10)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
 	end
 	local chest = chests[item.uid]
-	local chestsState = player:getStorageValue(Storage.TheRookieGuard.UnholyCryptChests)
+	local chestsState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.UnholyCryptChests)
 	local hasOpenedChest = testFlag(chestsState, chest.id)
 	if not hasOpenedChest then
 		local reward = Game.createItem(chest.item.id, chest.item.amount)
@@ -143,7 +143,7 @@ function unholyCryptChests.onUse(player, item, frompos, item2, topos)
 		elseif reward:getCount() > 1 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found " .. reward:getCount() .. " " .. reward:getPluralName() .. ".")
 		end
-		player:setStorageValue(Storage.TheRookieGuard.UnholyCryptChests, chestsState + chest.id)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.UnholyCryptChests, chestsState + chest.id)
 		player:addItemEx(reward, true, CONST_SLOT_WHEREEVER)
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. item:getName() .. " is empty.")

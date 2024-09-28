@@ -842,11 +842,11 @@ void IOLoginDataLoad::loadPlayerStoreHistory(std::shared_ptr<Player> player, DBR
 			history.description = result->getString("description");
 			history.coinAmount = result->getNumber<int32_t>("coin_amount");
 			history.coinType = result->getNumber<CoinType>("coin_type");
-			history.historyType = result->getNumber<HistoryTypes_t>("type");
+			history.type = result->getNumber<StoreDetailType>("type");
 			history.createdAt = result->getNumber<time_t>("created_at");
 			history.playerName = result->getString("player_name");
-			history.totalPrice = result->getNumber<int32_t>("total_price");
-			history.fromMarket = result->getNumber<uint32_t>("show_detail");
+			history.totalPrice = result->getNumber<int64_t>("total_price");
+			history.fromMarket = result->getNumber<bool>("show_detail");
 			player->setStoreHistory(history);
 		} while (result->next());
 	}

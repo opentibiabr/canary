@@ -34,6 +34,7 @@
 #include "server/network/protocol/protocolgame.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/combat/spells.hpp"
+#include "creatures/players/gamestore/player_store_detail.hpp"
 #include "utils/tools.hpp"
 #include "creatures/players/management/waitlist.hpp"
 #include "items/weapons/weapons.hpp"
@@ -9279,7 +9280,7 @@ void ProtocolGame::sendStoreHistory(uint32_t page) {
 		for (const auto &history : historyPerPage) {
 			msg.add<uint32_t>(history.fromMarket ? history.createdAt : 0);
 			msg.add<uint32_t>(history.createdAt);
-			msg.addByte(enumToValue(history.historyType));
+			msg.addByte(uint8_t()); // HistoryType_t enum
 			msg.add<int32_t>(history.coinAmount);
 
 			msg.addByte(enumToValue(history.coinType));
@@ -9693,18 +9694,64 @@ void ProtocolGame::parseStoreDetail(NetworkMessage &msg) {
 	}
 }
 
-void ProtocolGame::sendStoreDetail(const StoreHistoryDetail &storeDetail) {
-	auto pricePerCoin = storeDetail.totalPrice ? storeDetail.totalPrice / storeDetail.coinAmount : 0;
+void ProtocolGame::sendStoreDetail(const StoreHistoryDetail &storeHistoryDetail) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	auto pricePerCoin = storeHistoryDetail.totalPrice ? storeHistoryDetail.totalPrice / storeHistoryDetail.coinAmount : 0;
 
 	NetworkMessage newMsg;
 	newMsg.addByte(0xCB);
-	newMsg.add<uint32_t>(storeDetail.createdAt);
-	newMsg.addByte(enumToValue(storeDetail.historyType));
-	newMsg.addString(storeDetail.description);
-	newMsg.addString(storeDetail.playerName);
-	newMsg.add<int32_t>(storeDetail.coinAmount);
-	newMsg.add<uint64_t>(pricePerCoin);
-	newMsg.add<int64_t>(storeDetail.totalPrice);
+	newMsg.add<uint32_t>(storeHistoryDetail.createdAt); // Offer id (We will use the creation date as there will only be one for each offer)
+	newMsg.addByte(enumToValue(storeHistoryDetail.type)); // Type (0 = buy, 1 = created)
+	if (storeHistoryDetail.type == StoreDetailType::Finished) {
+		newMsg.add<uint32_t>(storeHistoryDetail.createdAt); // Creation data
+		newMsg.addString(storeHistoryDetail.description);
+		newMsg.addString(storeHistoryDetail.playerName);
+		newMsg.add<int32_t>(storeHistoryDetail.coinAmount);
+		newMsg.add<uint64_t>(pricePerCoin);
+		newMsg.add<int64_t>(storeHistoryDetail.totalPrice);
+	} else {
+		auto storeDetailScoped = player->getStoreDetailScope(storeHistoryDetail.createdAt);
+		auto coinAmountOpt = storeDetailScoped->get("sold-coin-amount");
+		int32_t coinAmount = 0;
+		if (coinAmountOpt) {
+			coinAmount = coinAmountOpt->getNumber();
+		}
+
+		auto receivedGoldAmountOpt = storeDetailScoped->get("received-gold-amount");
+		int64_t receivedGoldAmount = 0;
+		if (receivedGoldAmountOpt) {
+			receivedGoldAmount = receivedGoldAmountOpt->getNumber();
+		}
+
+		uint32_t stillInMarket = std::abs(storeHistoryDetail.coinAmount) - coinAmount;
+		newMsg.addString(storeHistoryDetail.playerName); // Character name
+		newMsg.add<int32_t>(storeHistoryDetail.coinAmount); // Total offer coin amount
+		newMsg.add<int32_t>(coinAmount); // Sold tibia coins
+		newMsg.add<uint32_t>(stillInMarket); // Tibia coins still in market
+		newMsg.add<uint64_t>(pricePerCoin); // Piece price
+		newMsg.add<int64_t>(receivedGoldAmount); // Received gold coins
+		// Obter todos os detalhes do histórico para a oferta específica
+		auto details = player->getStoreHistoryDetails(storeHistoryDetail.createdAt);
+		// Add the sorted details to the NetworkMessage
+		newMsg.add<uint16_t>(details.size()); // Number of details
+		for (const auto &entry : details) {
+			const std::string &createdAt = entry.first;
+			const StoreDetail &detail = entry.second;
+
+			newMsg.add<uint32_t>(static_cast<uint32_t>(std::stoll(createdAt))); // Creation date
+			newMsg.addString(detail.description);
+			newMsg.addByte(detail.isGold); // Enum 0 - 1 (0 = tibia coin, 1 = gold coin)
+			newMsg.add<int64_t>(detail.coinAmount);
+
+			// Log the sent action
+			g_logger().debug("[{}] - player: {}, {}", __FUNCTION__, player->getName(), detail.toString());
+		}
+	}
+
+	g_logger().debug("sendStoreDetail: CreatedAt: {}, Type: {}, Description: {}, PlayerName: {}, CoinAmount: {}, TotalPrice: {}", storeHistoryDetail.createdAt, storeHistoryDetail.type, storeHistoryDetail.description, storeHistoryDetail.playerName, storeHistoryDetail.coinAmount, storeHistoryDetail.totalPrice);
 	writeToOutputBuffer(newMsg);
 }
 

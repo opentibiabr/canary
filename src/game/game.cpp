@@ -41,6 +41,7 @@
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/gamestore/player_store_detail.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "server/network/protocol/protocollogin.hpp"
@@ -8857,7 +8858,9 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	// Make sure everything is ok before the create market offer starts
 	if (!checkCanInitCreateMarketOffer(player, type, it, amount, price, offerStatus)) {
-		g_logger().error("{} - Player {} had an error on init offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+		if (!offerStatus.str().empty()) {
+			g_logger().error("{} - Player {} had an error on init offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+		}
 		return;
 	}
 
@@ -8865,6 +8868,9 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	uint64_t minFee = std::min<uint64_t>(100000, calcFee);
 	uint64_t fee = std::max<uint64_t>(20, minFee);
 
+	uint64_t totalPrice = price * amount;
+	// Store the timestamp to ensure consistency across multiple calls, avoiding slight differences in time
+	auto createdAt = getTimeNow();
 	if (type == MARKETACTION_SELL) {
 		if (fee > (player->getBankBalance() + player->getMoney())) {
 			offerStatus << "Fee is greater than player money";
@@ -8887,6 +8893,12 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 			// Do not register a transaction for coins creating an offer
 			player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(amount), "");
+
+			player->addStoreHistory(true, player->getName(), createdAt, amount, StoreDetailType::Created, MARKETACTION_SELL, "Sell Offer Placed in The Market", totalPrice);
+			auto description = "Sell Offer Placed in the Market";
+			player->addStoreDetail(description, -amount, createdAt);
+
+			g_logger().info("[{}] Player {} created a sell offer for {} coins", __FUNCTION__, player->getName(), amount);
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8897,7 +8909,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		g_game().removeMoney(player, fee, 0, true);
 		g_metrics().addCounter("balance_decrease", fee, { { "player", player->getName() }, { "context", "market_fee" } });
 	} else {
-		uint64_t totalPrice = price * amount;
 		totalPrice += fee;
 		if (totalPrice > (player->getMoney() + player->getBankBalance())) {
 			offerStatus << "Fee is greater than player money (buy offer)";
@@ -8954,9 +8965,11 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
+	uint64_t totalPrice = offer.price * offer.amount;
+	auto createdAt = getTimeNow();
 	if (offer.type == MARKETACTION_BUY) {
-		player->setBankBalance(player->getBankBalance() + offer.price * offer.amount);
-		g_metrics().addCounter("balance_decrease", offer.price * offer.amount, { { "player", player->getName() }, { "context", "market_purchase" } });
+		player->setBankBalance(player->getBankBalance() + totalPrice);
+		g_metrics().addCounter("balance_decrease", totalPrice, { { "player", player->getName() }, { "context", "market_purchase" } });
 		// Send market window again for update stats
 		player->sendMarketEnter(player->getLastDepotId());
 	} else {
@@ -8968,6 +8981,9 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			// Do not register a transaction for coins upon cancellation
 			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), offer.amount, "");
+
+			auto description = "Sell Offer Cancelled or Expired";
+			player->addStoreDetail(description, offer.amount, offer.timestamp);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
@@ -9055,7 +9071,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	// Store the timestamp to ensure consistency across multiple calls, avoiding slight differences in time
 	auto createdAt = getTimeNow();
-
 	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
@@ -9100,7 +9115,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				"Sold on Market"
 			);
 
-			player->addStoreHistory(true, player->getName(), createdAt, amount, HistoryTypes_t::GIFT, "Transferred via the Market", totalPrice);
+			player->addStoreHistory(true, player->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_SELL, "Transferred via the Market", totalPrice);
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, offer.tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -9126,7 +9141,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			buyerPlayer->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
-			buyerPlayer->addStoreHistory(true, buyerPlayer->getName(), createdAt, amount, HistoryTypes_t::REFUND, "Purchased via the Market", totalPrice);
+			buyerPlayer->addStoreHistory(true, buyerPlayer->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_BUY, "Purchased via the Market", totalPrice);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9198,7 +9213,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
-			player->addStoreHistory(true, player->getName(), createdAt, amount, HistoryTypes_t::REFUND, "Purchased via the Market", totalPrice);
+			player->addStoreHistory(true, player->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_BUY, "Purchased via the Market", totalPrice);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9255,7 +9270,23 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			const auto &tranferable = enumToValue(CoinType::Transferable);
 			const auto &removeCoin = enumToValue(CoinTransactionType::Remove);
 			sellerPlayer->getAccount()->registerCoinTransaction(removeCoin, tranferable, amount, "Sold on Market");
-			sellerPlayer->addStoreHistory(true, sellerPlayer->getName(), createdAt, amount, HistoryTypes_t::GIFT, "Transferred via the Market", totalPrice);
+			sellerPlayer->addStoreHistory(true, sellerPlayer->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_SELL, "Transferred via the Market", totalPrice);
+			// Add store detail for seller
+			auto description = fmt::format("Sold {} Tibia Coins", amount);
+			sellerPlayer->addStoreDetail(description, totalPrice, offer.timestamp, true);
+
+			// Check and update the sold coin amount for the seller player
+			auto storeHistoryScope = sellerPlayer->getStoreDetailScope(offer.timestamp);
+			auto soldCoinAmountOpt = storeHistoryScope->get("sold-coin-amount");
+			auto soldCoinAmount = soldCoinAmountOpt ? soldCoinAmountOpt->getNumber() : 0;
+			storeHistoryScope->set("sold-coin-amount", soldCoinAmount + amount);
+
+			// Check and update the received gold amount for the seller player
+			auto receivedGoldAmountOpt = storeHistoryScope->get("received-gold-amount");
+			auto receivedGoldAmount = receivedGoldAmountOpt ? receivedGoldAmountOpt->getNumber() : 0;
+			storeHistoryScope->set("received-gold-amount", receivedGoldAmount + totalPrice);
+
+			g_logger().info("Offer timestamp: {}, sold coin amount: {}, received gold amount: {}", offer.timestamp, soldCoinAmount + amount, receivedGoldAmount + totalPrice);
 		}
 
 		if (it.id != ITEM_STORE_COIN) {
@@ -10591,8 +10622,8 @@ void Game::playerCoinTransfer(uint32_t playerId, const std::string &receptorName
 	playerDonator->getAccount()->removeCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
 	playerReceptor->getAccount()->addCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
 
-	playerDonator->addStoreHistory(false, playerDonator->getName(), createdAt, coinAmount, HistoryTypes_t::GIFT, historyDesc);
-	playerReceptor->addStoreHistory(false, playerReceptor->getName(), createdAt, coinAmount, HistoryTypes_t::NONE, historyDesc);
+	playerDonator->addStoreHistory(false, playerDonator->getName(), createdAt, coinAmount, StoreDetailType::Finished, MARKETACTION_SELL, historyDesc);
+	playerReceptor->addStoreHistory(false, playerReceptor->getName(), createdAt, coinAmount, StoreDetailType::Finished, MARKETACTION_BUY, historyDesc);
 	playerReceptor->sendCoinBalance();
 	playerDonator->openStore();
 	playerDonator->updateUIExhausted();
@@ -10910,7 +10941,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		auto offerAmount = offer->getOfferCount();
 		auto pricePerItem = offerPrice ? offerPrice / offerAmount : 0;
 		g_logger().trace("[{}] offer price {}, offer ammount {}, price per item {}", __METHOD_NAME__, offerPrice, offerAmount, pricePerItem);
-		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, HistoryTypes_t::GIFT, offer->getOfferName());
+		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, StoreDetailType::Finished, MARKETACTION_BUY, offer->getOfferName());
 	} else {
 		player->sendStoreError(StoreErrors_t::PURCHASE, errorMessage);
 	}

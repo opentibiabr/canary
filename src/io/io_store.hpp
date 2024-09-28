@@ -89,6 +89,11 @@ enum class HistoryTypes_t : uint8_t {
 	REFUND = 2
 };
 
+enum class StoreDetailType : uint8_t {
+	Finished = 0,
+	Created = 1,
+};
+
 enum class StoreErrors_t : uint8_t {
 	PURCHASE = 0,
 	NETWORK = 1,
@@ -118,10 +123,10 @@ struct BannerInfo {
 };
 
 struct StoreHistoryDetail {
-	HistoryTypes_t historyType {};
+	StoreDetailType type {};
 	uint32_t createdAt {};
 	int32_t coinAmount {};
-	uint64_t totalPrice {};
+	int64_t totalPrice {};
 	std::string description {};
 	std::string playerName {};
 };
@@ -130,6 +135,19 @@ struct RelatedOffer {
 	uint32_t id = 0;
 	uint32_t price = 0;
 	uint16_t count = 0;
+};
+
+struct StoreHistory {
+	time_t createdAt {};
+
+	int32_t coinAmount {};
+	CoinType coinType {};
+	StoreDetailType type {};
+	int64_t totalPrice {};
+
+	std::string description {};
+	std::string playerName {};
+	bool fromMarket = false;
 };
 
 class Category;

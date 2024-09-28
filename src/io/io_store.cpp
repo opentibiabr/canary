@@ -348,12 +348,12 @@ StoreHistoryDetail IOStore::getStoreHistoryDetail(const std::string &playerName,
 	}
 
 	StoreHistoryDetail storeDetail;
-	storeDetail.historyType = result->getNumber<HistoryTypes_t>("type");
+	storeDetail.type = result->getNumber<StoreDetailType>("type");
 	storeDetail.createdAt = createdAt;
 	storeDetail.coinAmount = result->getNumber<int32_t>("coin_amount");
 	storeDetail.description = result->getString("description");
 	storeDetail.playerName = result->getString("player_name");
-	storeDetail.totalPrice = result->getNumber<uint32_t>("total_price");
+	storeDetail.totalPrice = result->getNumber<int64_t>("total_price");
 
 	g_logger().debug("Store details for creation data: {}, description '{}', player '{}', coin amount '{}', total price '{}'", storeDetail.createdAt, storeDetail.description, storeDetail.playerName, storeDetail.coinAmount, storeDetail.totalPrice);
 	return storeDetail;

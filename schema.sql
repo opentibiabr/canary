@@ -787,7 +787,10 @@ CREATE TABLE IF NOT EXISTS `store_history` (
     `coin_amount` int(12) NOT NULL,
     `coin_type` tinyint(1) NOT NULL DEFAULT '0',
     `type` smallint(2) NOT NULL DEFAULT '0',
-    `time` bigint(20) UNSIGNED NOT NULL,
+    `show_detail` smallint(2) UNSIGNED NOT NULL DEFAULT '0',
+    `player_name` varchar(255) DEFAULT NULL,
+    `total_price` bigint NOT NULL DEFAULT '0',
+    `created_at` bigint UNSIGNED NOT NULL DEFAULT '0',
     INDEX `account_id` (`account_id`),
     CONSTRAINT `store_history_pk` PRIMARY KEY (`id`),
     CONSTRAINT `store_history_account_fk`

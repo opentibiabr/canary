@@ -750,7 +750,7 @@ bool IOLoginDataSave::savePlayerStoreHistory(std::shared_ptr<Player> player) {
 			  << descriptionString << ','
 			  << historyEntry.coinAmount << ','
 			  << static_cast<uint16_t>(historyEntry.coinType) << ','
-			  << static_cast<uint16_t>(historyEntry.historyType) << ','
+			  << static_cast<uint16_t>(historyEntry.type) << ','
 			  << historyEntry.createdAt << ','
 			  << playerNameString << ','
 			  << historyEntry.totalPrice << ','

@@ -61,12 +61,14 @@ class PlayerTitle;
 class PlayerVIP;
 class Spectators;
 class Account;
+class ValueWrapper;
 
 struct ModalWindow;
 struct Achievement;
 struct Badge;
 struct Title;
 struct VIPGroup;
+struct StoreDetail;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -91,19 +93,6 @@ struct ForgeHistory {
 	std::string description;
 	std::string firstItemName;
 	std::string secondItemName;
-};
-
-struct StoreHistory {
-	time_t createdAt {};
-
-	int32_t coinAmount {};
-	CoinType coinType {};
-	HistoryTypes_t historyType {};
-	uint64_t totalPrice {};
-
-	std::string description {};
-	std::string playerName {};
-	bool fromMarket = false;
 };
 
 struct OpenContainer {
@@ -2678,7 +2667,11 @@ public:
 	void sendStoreError(StoreErrors_t errorType, const std::string &errorMessage);
 	std::vector<StoreHistory> &getStoreHistory();
 	void setStoreHistory(const StoreHistory &history);
-	void addStoreHistory(bool fromMarket, const std::string &playerName, time_t createdAt, uint32_t coinAmount, HistoryTypes_t historyType, const std::string &description, uint64_t totalPrice = 0);
+	void addStoreHistory(bool fromMarket, const std::string &playerName, time_t createdAt, uint32_t coinAmount, StoreDetailType type, MarketAction_t action, const std::string &description, uint64_t totalPrice = 0);
+	void addStoreDetail(const std::string &description, int32_t coinAmount, int createdAt, bool isGold = false) const;
+	std::vector<std::pair<std::string, StoreDetail>> getStoreHistoryDetails(int32_t createdAt) const;
+	std::shared_ptr<KV> getStoreHistoryScope(int32_t createdAt) const;
+	std::shared_ptr<KV> getStoreDetailScope(int32_t createdAt) const;
 	bool canBuyStoreOffer(const Offer* offer);
 
 private:

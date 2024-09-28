@@ -9,11 +9,22 @@ bootstrap: |
   set -e
   sudo apt-get update && sudo apt-get -y dist-upgrade
   sudo apt-get purge -y libclang*
-  sudo apt-get install -y cmake git unzip build-essential ca-certificates curl zip unzip tar pkg-config ninja-build autoconf automake libtool python3
+  sudo apt-get install -y git unzip build-essential ca-certificates curl zip tar pkg-config ninja-build autoconf automake libtool python3
+
+  CMAKE_VERSION=3.29.2
+  cd ~
+  wget https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION.tar.gz
+  tar -xzvf cmake-$CMAKE_VERSION.tar.gz
+  cd cmake-$CMAKE_VERSION
+  ./bootstrap -- -DCMAKE_USE_OPENSSL=OFF
+  make -j$(nproc)
+  sudo make install
+
   cd ~
   git clone https://github.com/Microsoft/vcpkg.git
   cd vcpkg
   ./bootstrap-vcpkg.sh
+
   cd /data/project
   rm -rf build
   mkdir -p build
@@ -21,6 +32,7 @@ bootstrap: |
   export CC=/usr/bin/cc
   export CXX=/usr/bin/c++
   cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-debug || true
+
   sudo apt-get install -y clang-16 clang-format-16 clang-tidy-16 clang-tools-16 libclang-common-16-dev libclang-cpp16 libclang-rt-16-dev libclang1-16 llvm-16-dev
 
 

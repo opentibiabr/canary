@@ -4120,6 +4120,12 @@ std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uin
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
 	for (const auto &item : getAllInventoryItems(false, true)) {
+		if (const auto &container = item->getContainer()) {
+			if (container->size() > 0) {
+				continue;
+			}
+		}
+
 		countMap[item->getID()] += item->getItemCount();
 	}
 
@@ -7213,7 +7219,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 			}
 
 			for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
-				if (mapTier == firstForgingItem->getTier()) {
+				if (mapTier == firstForgingItem->getTier() + 1) {
 					cost = mapPrice.convergenceFusionPrice;
 					break;
 				}

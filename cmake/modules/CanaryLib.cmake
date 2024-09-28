@@ -35,9 +35,7 @@ add_subdirectory(server)
 add_subdirectory(utils)
 
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
-if(NOT TARGET my_module_lib)
-    target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
-endif()
+target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
 
 # Add public pre compiler header to lib, to pass down to related targets
 target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)

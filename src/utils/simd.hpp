@@ -62,5 +62,5 @@ __forceinline unsigned int mm_ctz(unsigned int value) {
 	return static_cast<unsigned int>(i);
 }
 #else
-	#define _mm_ctz __builtin_ctz
+	#define mm_ctz __builtin_ctz
 #endif

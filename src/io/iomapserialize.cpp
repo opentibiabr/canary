@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/iomapserialize.hpp"
 #include "io/iologindata.hpp"
 #include "game/game.hpp"

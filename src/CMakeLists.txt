@@ -7,13 +7,6 @@ include(GNUInstallDirs)
 # Import configurations, source definitions, and linker settings
 include(CanaryLib)
 
-if(MSVC)
-    add_compile_options(/experimental:module)
-    set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "TRUE")
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    add_compile_options(-std=c++23 -fmodules-ts)
-endif()
-
 add_executable(${PROJECT_NAME} main.cpp)
 
 if(MSVC)

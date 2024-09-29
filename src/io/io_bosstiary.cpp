@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/io_bosstiary.hpp"
 
 #include "creatures/monsters/monsters.hpp"

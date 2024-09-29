@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/global/globalevent.hpp"
 #include "utils/tools.hpp"
 #include "game/game.hpp"

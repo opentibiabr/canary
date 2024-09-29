@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "canary_server.hpp"
 #include "lib/di/container.hpp"
 

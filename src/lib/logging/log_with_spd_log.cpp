@@ -6,8 +6,6 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-
-#include "pch.hpp"
 #include <spdlog/spdlog.h>
 
 #include "lib/di/container.hpp"

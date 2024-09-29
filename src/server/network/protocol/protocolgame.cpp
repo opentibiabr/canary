@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/management/ban.hpp"
 #include "core.hpp"
 #include "declarations.hpp"

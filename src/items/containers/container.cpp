@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/containers/container.hpp"
 #include "items/decay/decay.hpp"
 #include "io/iomap.hpp"

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/tile.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "map/house/housetile.hpp"

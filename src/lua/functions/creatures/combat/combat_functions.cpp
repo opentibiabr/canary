@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
 #include "lua/functions/creatures/combat/combat_functions.hpp"

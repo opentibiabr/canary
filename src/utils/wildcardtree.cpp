@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "utils/wildcardtree.hpp"
 
 std::shared_ptr<WildcardTreeNode> WildcardTreeNode::getChild(char ch) {

@@ -2,21 +2,6 @@
 add_library(${PROJECT_NAME}_lib)
 setup_target(${PROJECT_NAME}_lib)
 
-
-# Define module sources
-set(MODULE_SOURCES
-    position.cppm
-)
-
-# Create a static library for the module sources
-add_library(ModuleLib STATIC)
-target_sources(ModuleLib
-    PUBLIC
-        FILE_SET cxx_modules TYPE CXX_MODULES FILES ${MODULE_SOURCES}
-)
-
-set_target_properties(ModuleLib PROPERTIES UNITY_BUILD ON)
-
 # Add subdirectories
 add_subdirectory(account)
 add_subdirectory(config)
@@ -29,6 +14,7 @@ add_subdirectory(lib)
 add_subdirectory(kv)
 add_subdirectory(lua)
 add_subdirectory(map)
+add_subdirectory(modules)
 add_subdirectory(protobuf)
 add_subdirectory(security)
 add_subdirectory(server)
@@ -53,7 +39,6 @@ endif()
 
 if (MSVC)
     target_compile_options(${PROJECT_NAME}_lib PRIVATE /MT$<$<CONFIG:Debug>:d>)
-    target_compile_options(ModuleLib PRIVATE /MT$<$<CONFIG:Debug>:d>)
 endif()
 
 # Sets the NDEBUG macro for RelWithDebInfo and Release configurations.

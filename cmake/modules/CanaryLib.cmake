@@ -38,7 +38,9 @@ add_subdirectory(utils)
 target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
 
 # Add public pre compiler header to lib, to pass down to related targets
-target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
+if(NOT TARGET ModuleLib)
+    target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
+endif()
 
 if(USE_PRECOMPILED_HEADERS)
     target_compile_definitions(${PROJECT_NAME}_lib PUBLIC -DUSE_PRECOMPILED_HEADERS)

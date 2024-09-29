@@ -89,7 +89,7 @@ option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
 option(BUILD_STATIC_LIBRARY "Build using static libraries" OFF)
 option(SPEED_UP_BUILD_UNITY "Compile using build unity for speed up build" ON)
-option(USE_PRECOMPILED_HEADER "Compile using precompiled header" ON)
+option(USE_PRECOMPILED_HEADERS "Compile using precompiled header" ON)
 
 # === TOGGLE_BIN_FOLDER ===
 if(TOGGLE_BIN_FOLDER)
@@ -149,12 +149,12 @@ else()
     log_option_disabled("SPEED_UP_BUILD_UNITY")
 endif(SPEED_UP_BUILD_UNITY)
 
-# === USE_PRECOMPILED_HEADER ===
-if(USE_PRECOMPILED_HEADER)
-    log_option_enabled("USE_PRECOMPILED_HEADER")
+# === USE_PRECOMPILED_HEADERS ===
+if(USE_PRECOMPILED_HEADERS)
+    log_option_enabled("USE_PRECOMPILED_HEADERS")
 else()
-    log_option_disabled("USE_PRECOMPILED_HEADER")
-endif(USE_PRECOMPILED_HEADER)
+    log_option_disabled("USE_PRECOMPILED_HEADERS")
+endif(USE_PRECOMPILED_HEADERS)
 
 # *****************************************************************************
 # Compiler Options

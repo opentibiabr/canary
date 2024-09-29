@@ -1915,5 +1915,5 @@ void Creature::sendAsyncTasks() {
 			creature->asyncTasks.clear();
 			creature->m_flagAsyncTask = 0;
 		}
-	});
+	}, TaskGroup::WalkParallel);
 }

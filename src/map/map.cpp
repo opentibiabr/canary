@@ -321,7 +321,7 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 }
 
 void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport /* = false*/) {
-	if (!creature || !newTile) {
+	if (!creature || creature->isRemoved() || !newTile) {
 		return;
 	}
 
@@ -425,13 +425,19 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	// onCreatureMove for monster is asynchronous, so we need to defer the actions.
-	g_dispatcher().addEvent([=] {
+	auto events = [=] {
 		oldTile->postRemoveNotification(creature, newTile, 0);
 		newTile->postAddNotification(creature, oldTile, 0);
 		g_game().afterCreatureZoneChange(creature, fromZones, toZones);
-	},
-	                        "Map::moveCreature");
+	};
+
+	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+		// onCreatureMove for monster is asynchronous, so we need to defer the actions.
+		g_dispatcher().addEvent(std::move(events), "Map::moveCreature");
+	} else {
+		events();
+	}
+
 }
 
 bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, const SightLines_t lineOfSight /*= SightLine_CheckSightLine*/, const int32_t rangex /*= Map::maxClientViewportX*/, const int32_t rangey /*= Map::maxClientViewportY*/) {

@@ -203,8 +203,13 @@ void Monster::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin)
 	}
 
 	if (creature.get() == this) {
-		addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList(); });
-		addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
+		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+			addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList(); });
+			addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
+		} else {
+			updateTargetList();
+			updateIdleStatus();
+		}
 	} else {
 		onCreatureEnter(creature);
 	}
@@ -284,11 +289,18 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		}
 	}
 
+
 	if (creature.get() == this) {
-		addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList(); });
-		addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
+		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) { 
+			addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList(); });
+			addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
+		}
+		else {
+			updateTargetList();
+			updateIdleStatus();
+		}
 	} else {
-		addAsyncTask([this, newPos, oldPos, creature] {
+		auto action = [this, newPos, oldPos, creature] {
 			bool canSeeNewPos = canSee(newPos);
 			bool canSeeOldPos = canSee(oldPos);
 
@@ -323,7 +335,13 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 					selectTarget(creature);
 				}
 			}
-		});
+		};
+
+		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+			addAsyncTask(std::move(action));
+		} else {
+			action();
+		}
 	}
 }
 
@@ -1320,7 +1338,9 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 			}
 
 			if (canPushCreatures()) {
-				Monster::pushCreatures(posTile);
+				g_dispatcher().addWalkEvent([=] {
+					Monster::pushCreatures(posTile);
+				});
 			}
 		}
 	}

@@ -25,8 +25,7 @@
       "displayName": "Windows - Release",
       "description": "Windows Release Build",
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
-        "SPEED_UP_BUILD_UNITY": "OFF"
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static"
       },
       "architecture": {
         "value": "x64",

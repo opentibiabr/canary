@@ -898,5 +898,5 @@ private:
 		walk.recache();
 	}
 
-		uint8_t m_flagAsyncTask = 0;
+	uint8_t m_flagAsyncTask = 0;
 };

@@ -261,7 +261,8 @@ void Creature::addEventWalk(bool firstStep) {
 			static_cast<uint32_t>(ticks),
 			[creatureId = self->getID()] { g_game().checkCreatureWalk(creatureId); }, "Game::checkCreatureWalk"
 		);
-	}, "addEventWalk");
+	},
+	                                     "addEventWalk");
 }
 
 void Creature::stopEventWalk() {
@@ -1053,7 +1054,7 @@ void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
 		g_dispatcher().context().addEvent(std::move(onComplete), "goToFollowCreature_async");
 	}
 
-	addAsyncTask(PATHFINDER, [this] {	goToFollowCreature(); });
+	addAsyncTask(PATHFINDER, [this] { goToFollowCreature(); });
 }
 
 void Creature::goToFollowCreature() {
@@ -1906,7 +1907,7 @@ void Creature::sendAsyncTasks() {
 	setAsyncTaskFlag(ASYNC_TASK_RUNNING, true);
 	g_dispatcher().asyncEvent([self = std::weak_ptr<Creature>(getCreature())] {
 		if (const auto &creature = self.lock()) {
-			if (!creature->isRemoved()) { 
+			if (!creature->isRemoved()) {
 				for (const auto &task : creature->asyncTasks) {
 					task();
 				}

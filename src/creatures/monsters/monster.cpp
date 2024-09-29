@@ -203,7 +203,7 @@ void Monster::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin)
 	}
 
 	if (creature.get() == this) {
-		addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList();});
+		addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList(); });
 		addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
 	} else {
 		onCreatureEnter(creature);

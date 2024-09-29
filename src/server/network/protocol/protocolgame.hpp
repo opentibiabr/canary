@@ -143,7 +143,7 @@ private:
 
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
-	void parseDebugAssert(NetworkMessage &msg);
+	void parseOfferDescription(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
 	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);

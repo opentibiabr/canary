@@ -196,7 +196,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddString(lua_State* L) {
 	const std::string &function = getString(L, 3);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
-		message->addString(string, function);
+		message->addString(string, std::source_location::current(), function);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

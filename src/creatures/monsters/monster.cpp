@@ -203,8 +203,8 @@ void Monster::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin)
 	}
 
 	if (creature.get() == this) {
-		updateTargetList_async();
-		updateIdleStatus_async();
+		addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList();});
+		addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
 	} else {
 		onCreatureEnter(creature);
 	}
@@ -285,42 +285,42 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 	}
 
 	if (creature.get() == this) {
-		updateTargetList_async();
-		updateIdleStatus_async();
+		addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList(); });
+		addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
 	} else {
-		addAsyncTask([self = getMonster(), newPos, oldPos, creature] {
-			bool canSeeNewPos = self->canSee(newPos);
-			bool canSeeOldPos = self->canSee(oldPos);
+		addAsyncTask([this, newPos, oldPos, creature] {
+			bool canSeeNewPos = canSee(newPos);
+			bool canSeeOldPos = canSee(oldPos);
 
 			if (canSeeNewPos && !canSeeOldPos) {
-				self->onCreatureEnter(creature);
+				onCreatureEnter(creature);
 			} else if (!canSeeNewPos && canSeeOldPos) {
-				self->onCreatureLeave(creature);
+				onCreatureLeave(creature);
 			}
 
-			self->updateIdleStatus();
+			updateIdleStatus();
 
-			if (!self->isSummon()) {
-				if (const auto &followCreature = self->getFollowCreature()) {
+			if (!isSummon()) {
+				if (const auto &followCreature = getFollowCreature()) {
 					const Position &followPosition = followCreature->getPosition();
-					const Position &pos = self->getPosition();
+					const Position &pos = getPosition();
 
 					int32_t offset_x = Position::getDistanceX(followPosition, pos);
 					int32_t offset_y = Position::getDistanceY(followPosition, pos);
-					if ((offset_x > 1 || offset_y > 1) && self->mType->info.changeTargetChance > 0) {
+					if ((offset_x > 1 || offset_y > 1) && mType->info.changeTargetChance > 0) {
 						Direction dir = getDirectionTo(pos, followPosition);
 						const auto &checkPosition = getNextPosition(dir, pos);
 
 						if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
 							const auto &topCreature = nextTile->getTopCreature();
-							if (followCreature != topCreature && self->isOpponent(topCreature)) {
-								self->selectTarget(topCreature);
+							if (followCreature != topCreature && isOpponent(topCreature)) {
+								selectTarget(topCreature);
 							}
 						}
 					}
-				} else if (self->isOpponent(creature)) {
+				} else if (isOpponent(creature)) {
 					// we have no target lets try pick this one
-					self->selectTarget(creature);
+					selectTarget(creature);
 				}
 			}
 		});
@@ -810,7 +810,8 @@ void Monster::setIdle(bool idle) {
 	if (!isIdle) {
 		g_dispatcher().context().tryAddEvent([self = static_self_cast<Monster>()] {
 			g_game().addCreatureCheck(self);
-		});
+		},
+		                                     "setIdle");
 	} else {
 		onIdleStatus();
 		clearTargetList();
@@ -2324,26 +2325,4 @@ std::vector<std::pair<int8_t, int8_t>> Monster::getPushItemLocationOptions(const
 	}
 
 	return {};
-}
-
-void Monster::updateTargetList_async() {
-	m_updateTargetList = true;
-	sendAsyncTasks();
-}
-
-void Monster::updateIdleStatus_async() {
-	m_updateIdleStatus = true;
-	sendAsyncTasks();
-}
-
-void Monster::callAsyncTasks() {
-	if (m_updateTargetList) {
-		updateTargetList();
-		m_updateTargetList = false;
-	}
-
-	if (m_updateIdleStatus) {
-		updateIdleStatus();
-		m_updateIdleStatus = false;
-	}
 }

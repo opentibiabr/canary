@@ -707,6 +707,13 @@ public:
 	}
 
 protected:
+	enum FLAG_ASYNC_TASKS : uint8_t {
+		ASYNC_TASK_RUNNING = 1 << 0,
+		UPDATE_TARGET_LIST = 1 << 1,
+		UPDATE_IDDLE_STATUS = 1 << 2,
+		PATHFINDER = 1 << 3
+	};
+
 	virtual bool useCacheMap() const {
 		return false;
 	}
@@ -835,19 +842,34 @@ protected:
 	friend class CreatureFunctions;
 
 	// async
-	void sendAsyncTasks();
-	virtual void callAsyncTasks() {};
-	std::atomic_bool asyncTasksRunning = false;
-	bool m_goToFollowCreature = false;
+	void addAsyncTask(FLAG_ASYNC_TASKS taskFlag, std::function<void()> &&fnc) {
+		if (!hasAsyncTaskFlag(taskFlag)) {
+			addAsyncTask(std::move(fnc));
+			setAsyncTaskFlag(taskFlag, true);
+		}
+	}
 
 	void addAsyncTask(std::function<void()> &&fnc) {
 		asyncTasks.emplace_back(std::move(fnc));
 		sendAsyncTasks();
 	}
 
+	bool hasAsyncTaskFlag(FLAG_ASYNC_TASKS prop) const {
+		return (m_flagAsyncTask & prop);
+	}
+
+	void setAsyncTaskFlag(FLAG_ASYNC_TASKS taskFlag, bool v) {
+		if (v) {
+			m_flagAsyncTask |= taskFlag;
+		} else {
+			m_flagAsyncTask &= ~taskFlag;
+		}
+	}
+
 private:
 	bool canFollowMaster();
 	bool isLostSummon();
+	void sendAsyncTasks();
 	void handleLostSummon(bool teleportSummons);
 
 	std::vector<std::function<void()>> asyncTasks;
@@ -875,4 +897,6 @@ private:
 
 		walk.recache();
 	}
+
+		uint8_t m_flagAsyncTask = 0;
 };

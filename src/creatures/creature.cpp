@@ -261,7 +261,7 @@ void Creature::addEventWalk(bool firstStep) {
 			static_cast<uint32_t>(ticks),
 			[creatureId = self->getID()] { g_game().checkCreatureWalk(creatureId); }, "Game::checkCreatureWalk"
 		);
-	});
+	}, "addEventWalk");
 }
 
 void Creature::stopEventWalk() {
@@ -1049,12 +1049,11 @@ void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathPa
 }
 
 void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
-	if (!m_goToFollowCreature && onComplete) {
-		g_dispatcher().context().addEvent(std::move(onComplete));
+	if (!hasAsyncTaskFlag(PATHFINDER) && onComplete) {
+		g_dispatcher().context().addEvent(std::move(onComplete), "goToFollowCreature_async");
 	}
 
-	m_goToFollowCreature = true;
-	sendAsyncTasks();
+	addAsyncTask(PATHFINDER, [this] {	goToFollowCreature(); });
 }
 
 void Creature::goToFollowCreature() {
@@ -1796,7 +1795,7 @@ void Creature::handleLostSummon(bool teleportSummons) {
 	g_game().addMagicEffect(getPosition(), CONST_ME_POFF);
 }
 
-int32_t Creature::getReflectPercent(CombatType_t combatType, bool useCharges /*= false*/) const {
+double_t Creature::getReflectPercent(CombatType_t combatType, bool useCharges /*= false*/) const {
 	try {
 		return reflectPercent.at(combatTypeToIndex(combatType));
 	} catch (const std::out_of_range &e) {
@@ -1900,27 +1899,20 @@ void Creature::iconChanged() {
 }
 
 void Creature::sendAsyncTasks() {
-	if (asyncTasksRunning.load()) {
+	if (hasAsyncTaskFlag(ASYNC_TASK_RUNNING)) {
 		return;
 	}
 
-	asyncTasksRunning.store(true);
-	g_dispatcher().asyncEvent([self = getCreature()] {
-		if (!self || self->isRemoved()) {
-			return;
+	setAsyncTaskFlag(ASYNC_TASK_RUNNING, true);
+	g_dispatcher().asyncEvent([self = std::weak_ptr<Creature>(getCreature())] {
+		if (const auto &creature = self.lock()) {
+			if (!creature->isRemoved()) { 
+				for (const auto &task : creature->asyncTasks) {
+					task();
+				}
+			}
+			creature->asyncTasks.clear();
+			creature->m_flagAsyncTask = 0;
 		}
-
-		self->callAsyncTasks();
-		for (const auto &task : self->asyncTasks) {
-			task();
-		}
-		self->asyncTasks.clear();
-
-		if (self->m_goToFollowCreature) {
-			self->goToFollowCreature();
-			self->m_goToFollowCreature = false;
-		}
-
-		self->asyncTasksRunning.store(false);
 	});
 }

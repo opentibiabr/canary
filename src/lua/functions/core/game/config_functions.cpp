@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/functions/core/game/config_functions.hpp"
 
 #include "config/configmanager.hpp"

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "utils/pugicast.hpp"
 #include "map/house/house.hpp"
 #include "io/iologindata.hpp"

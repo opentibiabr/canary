@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/combat/combat.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -6206,7 +6204,9 @@ void Player::sendIcons() {
 	// Remove the last icon so that Bakragore's is added
 	auto iconSet = getClientIcons();
 	if (iconSet.size() >= 9 && iconBakragore != IconBakragore::None) {
-		iconSet.erase(std::prev(iconSet.end()));
+		std::vector<PlayerIcon> tempVector(iconSet.begin(), iconSet.end());
+		tempVector.pop_back();
+		iconSet = std::unordered_set<PlayerIcon>(tempVector.begin(), tempVector.end());
 	}
 
 	client->sendIcons(iconSet, iconBakragore);

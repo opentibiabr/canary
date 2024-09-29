@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/bed.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"

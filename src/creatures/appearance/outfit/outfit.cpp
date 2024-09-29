@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/appearance/outfit/outfit.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"

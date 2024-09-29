@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/storages/storages.hpp"
 
 #include "config/configmanager.hpp"

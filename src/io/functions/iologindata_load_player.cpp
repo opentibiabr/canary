@@ -718,7 +718,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
-		if (result = db.storeQuery(query.str())) {
+		if ((result = db.storeQuery(query.str()))) {
 			do {
 				auto slot = std::make_unique<PreySlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
 				auto state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
@@ -765,7 +765,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
-		if (result = db.storeQuery(query.str())) {
+		if ((result = db.storeQuery(query.str()))) {
 			do {
 				auto slot = std::make_unique<TaskHuntingSlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
 				auto state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));

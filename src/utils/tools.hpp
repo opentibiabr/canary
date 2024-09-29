@@ -221,19 +221,17 @@ EnumType enumFromValue(UnderlyingType value) {
 	return static_cast<EnumType>(value);
 }
 
-#define WIN32_WINNT 0x0501
-#include <dbghelp.h>
+#ifdef _WIN32
+	#define WIN32_WINNT 0x0501
+	#include <dbghelp.h>
 
-// Linkar as bibliotecas necessárias
-#pragma comment(lib, "Dbghelp.lib") // Link contra Dbghelp.lib
+	#pragma comment(lib, "Dbghelp.lib")
 
 inline void print_stack_trace() {
 	const HANDLE process = GetCurrentProcess();
 
-	// Configurar opções do manipulador de símbolos
 	SymSetOptions(SYMOPT_LOAD_LINES | SYMOPT_UNDNAME);
 
-	// Inicializar o manipulador de símbolos
 	if (!SymInitialize(process, nullptr, TRUE)) {
 		const DWORD error = GetLastError();
 		std::cerr << "SymInitialize falhou com o erro " << error << std::endl;
@@ -245,21 +243,17 @@ inline void print_stack_trace() {
 	symbol->MaxNameLen = MAX_SYM_NAME;
 	symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
 
-	// Preparar para obter informações de linha
 	auto* line = static_cast<IMAGEHLP_LINE64*>(malloc(sizeof(IMAGEHLP_LINE64)));
 	line->SizeOfStruct = sizeof(IMAGEHLP_LINE64);
 	DWORD displacement_line = 0;
 
 	const unsigned short frames = CaptureStackBackTrace(0, 100, stack, nullptr);
 
-	// Capturar o timestamp atual
 	const auto now = std::chrono::system_clock::now();
 	const std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 
-	// Obter o ID da thread atual
 	const DWORD threadId = GetCurrentThreadId();
 
-	// Calcular o número de frames a serem exibidos
 	unsigned int framesToDisplay;
 	if (frames > 10) {
 		framesToDisplay = frames - 5;
@@ -267,22 +261,18 @@ inline void print_stack_trace() {
 		framesToDisplay = frames;
 	}
 
-	// Exibir informações sobre o stack trace
 	std::cout << std::endl
 			  << "Stack trace capturado em " << std::ctime(&now_c)
 			  << "Thread ID: " << threadId
 			  << " - Total de frames: " << framesToDisplay << std::endl;
 
-	// Loop para exibir os frames
 	for (unsigned int i = 0; i < framesToDisplay; i++) {
 		const auto address = reinterpret_cast<DWORD64>(stack[i]);
 		if (SymFromAddr(process, address, nullptr, symbol)) {
-			// Desembaraçar o nome da função
 			char undecoratedName[256];
 			UnDecorateSymbolName(symbol->Name, undecoratedName, sizeof(undecoratedName), UNDNAME_COMPLETE);
 
 			if (SymGetLineFromAddr64(process, address, &displacement_line, line)) {
-				// Formatar e imprimir a informação
 				std::cout << std::setw(2) << i << " : "
 						  << std::left << std::setw(60) << undecoratedName
 						  << " at " << line->FileName << ":" << line->LineNumber
@@ -301,5 +291,47 @@ inline void print_stack_trace() {
 
 	free(symbol);
 	free(line);
-	SymCleanup(process); // Limpar o manipulador de símbolos
+	SymCleanup(process);
 }
+
+#elif defined(__linux__)
+	#include <execinfo.h>
+
+inline void print_stack_trace() {
+	const int max_frames = 100;
+	void* addrlist[max_frames + 1];
+
+	int frames = backtrace(addrlist, sizeof(addrlist) / sizeof(void*));
+
+	if (frames == 0) {
+		std::cout << "Nenhum frame de pilha capturado." << std::endl;
+		return;
+	}
+
+	char** symbollist = backtrace_symbols(addrlist, frames);
+
+	auto now = std::chrono::system_clock::now();
+	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+
+	std::cout << "\nStack trace capturado em " << std::ctime(&now_c)
+			  << "Total de frames: " << frames << std::endl;
+
+	int framesToDisplay;
+	if (frames > 10) {
+		framesToDisplay = frames - 5;
+	} else {
+		framesToDisplay = frames;
+	}
+
+	for (int i = 0; i < framesToDisplay; i++) {
+		std::cout << symbollist[i] << std::endl;
+	}
+
+	free(symbollist);
+}
+
+#else
+inline void print_stack_trace() {
+	std::cout << "Stack trace não suportado nesta plataforma." << std::endl;
+}
+#endif

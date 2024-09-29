@@ -9,8 +9,6 @@
 
 #include <utility>
 
-#include "pch.hpp"
-
 #include "creatures/players/grouping/party.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"

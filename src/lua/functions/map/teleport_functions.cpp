@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/movement/teleport.hpp"
 #include "items/item.hpp"
 #include "lua/functions/map/teleport_functions.hpp"

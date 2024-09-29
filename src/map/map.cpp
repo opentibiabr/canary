@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "map.hpp"
 #include "utils/astarnodes.hpp"
 

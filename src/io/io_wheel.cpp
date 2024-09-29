@@ -7,14 +7,12 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#include "pch.hpp"
-
 #include "io/io_wheel.hpp"
 
+#include "kv/kv.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/combat/spells.hpp"
-
 #include "utils/tools.hpp"
 
 #define MITIGATION_INCREASE 0.03

@@ -10,7 +10,7 @@
 
 #include "account/account_repository_db.hpp"
 #include "lib/di/injector.hpp"
-#include "lib/logging/log_with_spd_log.hpp"
+#include "lib/logging/logger.hpp"
 #include "kv/kv_sql.hpp"
 
 namespace di = boost::di;
@@ -21,7 +21,7 @@ private:
 	const inline static auto defaultContainer = di::make_injector(
 		di::bind<AccountRepository>().to<AccountRepositoryDB>().in(di::singleton),
 		di::bind<KVStore>().to<KVSQL>().in(di::singleton),
-		di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
+		di::bind<Logger>().to<Logger>().in(di::singleton)
 	);
 
 public:

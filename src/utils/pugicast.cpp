@@ -7,7 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 #include "pch.hpp"
-#include "lib/logging/log_with_spd_log.hpp"
 
 namespace pugi {
 	void logError(const std::string &str) {

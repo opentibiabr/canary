@@ -9,7 +9,7 @@
 #pragma once
 
 #include <iostream>
-#include "lib/logging/log_with_spd_log.hpp"
+#include "lib/logging/logger.hpp"
 
 class SoftSingleton {
 public:

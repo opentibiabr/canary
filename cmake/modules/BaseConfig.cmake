@@ -92,6 +92,7 @@ endif(OPTIONS_ENABLE_OPENMP)
 # cmake -DDEBUG_LOG=ON ..
 if(DEBUG_LOG)
     add_definitions(-DDEBUG_LOG=ON)
+    add_definitions(-DSPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE)
     log_option_enabled("DEBUG LOG")
 else()
     log_option_disabled("DEBUG LOG")

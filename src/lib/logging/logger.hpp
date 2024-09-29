@@ -8,105 +8,103 @@
  */
 #pragma once
 
-#ifndef USE_PRECOMPILED_HEADERS
-	#include <fmt/format.h>
-#endif
-
-#define LOG_LEVEL_TRACE \
-	std::string {       \
-		"trace"         \
-	}
-#define LOG_LEVEL_DEBUG \
-	std::string {       \
-		"debug"         \
-	}
-#define LOG_LEVEL_INFO \
-	std::string {      \
-		"info"         \
-	}
-#define LOG_LEVEL_WARNING \
-	std::string {         \
-		"warning"         \
-	}
-#define LOG_LEVEL_ERROR \
-	std::string {       \
-		"error"         \
-	}
-#define LOG_LEVEL_CRITICAL \
-	std::string {          \
-		"critical"         \
-	}
+namespace spdlog {
+	class logger; // Forward declaration da classe logger
+}
 
 class Logger {
 public:
-	Logger() = default;
-	virtual ~Logger() = default;
+	Logger();
+	~Logger() = default;
 
-	// Ensures that we don't accidentally copy it
-	Logger(const Logger &) = delete;
-	virtual Logger &operator=(const Logger &) = delete;
+	static Logger &getInstance();
 
-	virtual void setLevel(const std::string &name) = 0;
-	[[nodiscard]] virtual std::string getLevel() const = 0;
-	virtual void log(const std::string &lvl, fmt::basic_string_view<char> msg) const = 0;
+	void setLevel(const std::string &name) const;
+	std::string getLevel() const;
 
-	template <typename... Args>
-	void trace(const fmt::format_string<Args...> &fmt, Args &&... args) {
-		trace(fmt::format(fmt, std::forward<Args>(args)...));
+	void logProfile(const std::string &name, double duration_ms) const;
+	void cleanOldLogs(const std::string &logDirectory, int days) const;
+
+	void info(const std::string &msg) const;
+	void warn(const std::string &msg) const;
+	void error(const std::string &msg) const;
+	void critical(const std::string &msg) const;
+
+	template <typename Func>
+	auto profile(const std::string &name, Func func) -> decltype(func()) {
+		const auto start = std::chrono::high_resolution_clock::now();
+		auto result = func();
+		const auto end = std::chrono::high_resolution_clock::now();
+
+		const std::chrono::duration<double, std::milli> duration = end - start;
+		logProfile(name, duration.count());
+		info("Function {} executed in {} ms", name, duration.count());
+
+		return result;
 	}
 
+#if defined(DEBUG_LOG)
+	void debug(const std::string &msg) const;
+
 	template <typename... Args>
-	void debug(const fmt::format_string<Args...> &fmt, Args &&... args) {
+	void debug(const fmt::format_string<Args...> &fmt, Args &&... args) const {
 		debug(fmt::format(fmt, std::forward<Args>(args)...));
 	}
 
+	void trace(const std::string &msg) const;
+
 	template <typename... Args>
-	void info(fmt::format_string<Args...> fmt, Args &&... args) {
+	void trace(const fmt::format_string<Args...> &fmt, Args &&... args) const {
+		trace(fmt::format(fmt, std::forward<Args>(args)...));
+	}
+#else
+	void debug(const std::string &) const { }
+
+	template <typename... Args>
+	void debug(const fmt::format_string<Args...> &, Args &&...) const { }
+
+	void trace(const std::string &) const { }
+
+	template <typename... Args>
+	void trace(const fmt::format_string<Args...> &, Args &&...) const { }
+#endif
+
+	template <typename... Args>
+	void info(const fmt::format_string<Args...> &fmt, Args &&... args) const {
 		info(fmt::format(fmt, std::forward<Args>(args)...));
 	}
 
 	template <typename... Args>
-	void warn(const fmt::format_string<Args...> &fmt, Args &&... args) {
+	void warn(const fmt::format_string<Args...> &fmt, Args &&... args) const {
 		warn(fmt::format(fmt, std::forward<Args>(args)...));
 	}
 
 	template <typename... Args>
-	void error(const fmt::format_string<Args...> fmt, Args &&... args) {
+	void error(const fmt::format_string<Args...> &fmt, Args &&... args) const {
 		error(fmt::format(fmt, std::forward<Args>(args)...));
 	}
 
 	template <typename... Args>
-	void critical(const fmt::format_string<Args...> fmt, Args &&... args) {
+	void critical(const fmt::format_string<Args...> &fmt, Args &&... args) const {
 		critical(fmt::format(fmt, std::forward<Args>(args)...));
 	}
 
-	template <typename T>
-	void trace(const T &msg) {
-		log(LOG_LEVEL_TRACE, msg);
-	}
+private:
+	mutable std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> profile_loggers_;
 
-	template <typename T>
-	void debug(const T &msg) {
-		log(LOG_LEVEL_DEBUG, msg);
-	}
+	std::tm get_local_time() const {
+		const auto now = std::chrono::system_clock::now();
+		std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+		std::tm local_tm {};
 
-	template <typename T>
-	void info(const T &msg) {
-		log(LOG_LEVEL_INFO, msg);
-	}
+#if defined(_WIN32) || defined(_WIN64)
+		localtime_s(&local_tm, &now_time);
+#else
+		localtime_r(&now_time, &local_tm);
+#endif
 
-	template <typename T>
-	void warn(const T &msg) {
-		log(LOG_LEVEL_WARNING, msg);
-	}
-
-	template <typename T>
-	void error(const T &msg) {
-		log(LOG_LEVEL_ERROR, msg);
-	}
-
-	template <typename T>
-	void critical(const T &msg) {
-		log(LOG_LEVEL_CRITICAL, msg);
+		return local_tm;
 	}
 };
+
+constexpr auto g_logger = Logger::getInstance;

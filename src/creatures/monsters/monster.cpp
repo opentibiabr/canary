@@ -1341,14 +1341,15 @@ void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result
 		updateMapCache();
 	}
 
+	// Return if the distance is less than or equal to 10
 	int32_t distance = std::max(Position::getDistanceX(position, masterPos), Position::getDistanceY(position, masterPos));
-	if (distance == 0 || !spawnMonster) {
+	if (distance <= 10 || !spawnMonster) {
 		isWalkingBack = false;
 		return;
 	}
 
 	std::vector<Direction> listDir;
-	if (getPathTo(masterPos, listDir, 0, std::max(0, distance - 5), true, true, distance)) {
+	if (getPathTo(masterPos, listDir, 0, distance - 10, true, true, distance)) {
 		startAutoWalk(listDir);
 	} else {
 		isWalkingBack = false;

@@ -1,6 +1,7 @@
 #include <boost/ut.hpp>
 
 #include "account/account_repository_db.hpp"
+#include "database/database.hpp"
 #include "lib/logging/in_memory_logger.hpp"
 #include "utils/tools.hpp"
 #include "enums/account_type.hpp"

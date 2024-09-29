@@ -11,16 +11,14 @@
 
 #include "kv/kv.hpp"
 
-#include "database/database.hpp"
-#include "lib/logging/logger.hpp"
-
 class Database;
+class Logger;
+class DBInsert;
+class ValueWrapper;
 
 class KVSQL final : public KVStore {
 public:
-	explicit KVSQL(Database &db, Logger &logger) :
-		KVStore(logger),
-		db(db) { }
+	explicit KVSQL(Database &db, Logger &logger);
 
 	bool saveAll() override;
 
@@ -30,11 +28,7 @@ private:
 	bool save(const std::string &key, const ValueWrapper &value) override;
 	bool prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update);
 
-	DBInsert dbUpdate() {
-		auto insert = DBInsert("INSERT INTO `kv_store` (`key_name`, `timestamp`, `value`) VALUES");
-		insert.upsert({ "key_name", "timestamp", "value" });
-		return insert;
-	}
+	DBInsert dbUpdate();
 
 	Database &db;
 };

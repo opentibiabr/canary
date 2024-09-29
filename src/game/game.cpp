@@ -1480,7 +1480,7 @@ void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Cr
 			player->sendCancelMessage(ret);
 		}
 		player->setLastPosition(player->getPosition());
-		});
+	});
 }
 
 ReturnValue Game::internalMoveCreature(std::shared_ptr<Creature> creature, Direction direction, uint32_t flags /*= 0*/) {
@@ -6350,8 +6350,9 @@ void Game::checkCreatureWalk(uint32_t creatureId) {
 	const auto &creature = getCreatureByID(creatureId);
 	if (creature && creature->getHealth() > 0) {
 		g_dispatcher().addWalkEvent([creature] {
-			if (!creature->isRemoved())
+			if (!creature->isRemoved()) {
 				creature->onCreatureWalk();
+			}
 		});
 	}
 }

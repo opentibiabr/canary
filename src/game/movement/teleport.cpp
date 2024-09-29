@@ -13,7 +13,6 @@
 #include "game/movement/teleport.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
-
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_TELE_DEST) {
 		if (!propStream.read<uint16_t>(destPos.x) || !propStream.read<uint16_t>(destPos.y) || !propStream.read<uint8_t>(destPos.z)) {

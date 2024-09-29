@@ -289,13 +289,11 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		}
 	}
 
-
 	if (creature.get() == this) {
-		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) { 
+		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
 			addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList(); });
 			addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
-		}
-		else {
+		} else {
 			updateTargetList();
 			updateIdleStatus();
 		}

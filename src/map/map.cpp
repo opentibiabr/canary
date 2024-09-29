@@ -437,7 +437,6 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	} else {
 		events();
 	}
-
 }
 
 bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, const SightLines_t lineOfSight /*= SightLine_CheckSightLine*/, const int32_t rangex /*= Map::maxClientViewportX*/, const int32_t rangey /*= Map::maxClientViewportY*/) {

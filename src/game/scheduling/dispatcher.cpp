@@ -16,6 +16,11 @@
 
 thread_local DispatcherContext Dispatcher::dispacherContext;
 
+// set a maximum time to execute scheduled tasks.
+// If this time is exceeded, the next scheduled tasks will be executed in the next cycle,
+// thus executing the waiting events, thus causing less lag.
+constexpr auto MAX_PROCESSING_TIME_FOR_SCHEDULEDTASK = 100; // MS	(0 to disable)
+
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }
@@ -49,6 +54,8 @@ void Dispatcher::executeSerialEvents(std::vector<Task> &tasks) {
 		if (task.execute()) {
 			++dispatcherCycle;
 		}
+
+		outputMsg.try_flush();
 	}
 	tasks.clear();
 
@@ -122,10 +129,12 @@ void Dispatcher::executeEvents(const TaskGroup startGroup) {
 void Dispatcher::executeScheduledEvents() {
 	auto &threadScheduledTasks = getThreadTask()->scheduledTasks;
 
+	const auto time_to_quit = MAX_PROCESSING_TIME_FOR_SCHEDULEDTASK > 0 ? OTSYS_TIME(true) + MAX_PROCESSING_TIME_FOR_SCHEDULEDTASK : 0;
+
 	auto it = scheduledTasks.begin();
 	while (it != scheduledTasks.end()) {
 		const auto &task = *it;
-		if (task->getTime() > OTSYS_TIME()) {
+		if (task->getTime() > OTSYS_TIME(true)) {
 			break;
 		}
 
@@ -140,7 +149,13 @@ void Dispatcher::executeScheduledEvents() {
 			scheduledTasksRef.erase(task->getId());
 		}
 
+		outputMsg.try_flush();
+
 		++it;
+
+		if (time_to_quit > 0 && OTSYS_TIME(true) > time_to_quit) {
+			break;
+		}
 	}
 
 	if (it != scheduledTasks.begin()) {
@@ -191,14 +206,14 @@ void Dispatcher::mergeEvents() {
 
 std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() const {
 	constexpr auto CHRONO_0 = std::chrono::milliseconds(0);
-	constexpr auto CHRONO_MILI_MAX = std::chrono::milliseconds::max();
+	constexpr auto CHRONO_MILI_MAX = std::chrono::milliseconds(SCHEDULER_MINTICKS);
 
 	if (scheduledTasks.empty()) {
 		return CHRONO_MILI_MAX;
 	}
 
 	const auto &task = *scheduledTasks.begin();
-	const auto timeRemaining = std::chrono::milliseconds(task->getTime() - OTSYS_TIME());
+	const auto timeRemaining = std::chrono::milliseconds(task->getTime() - OTSYS_TIME(true));
 	return std::max<std::chrono::milliseconds>(timeRemaining, CHRONO_0);
 }
 

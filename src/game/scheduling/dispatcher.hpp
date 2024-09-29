@@ -11,6 +11,7 @@
 
 #include "task.hpp"
 #include "lib/thread/thread_pool.hpp"
+#include "server/network/message/outputmessage.hpp"
 
 static constexpr uint16_t DISPATCHER_TASK_EXPIRATION = 2000;
 static constexpr uint16_t SCHEDULER_MINTICKS = 50;
@@ -82,8 +83,8 @@ private:
  */
 class Dispatcher {
 public:
-	explicit Dispatcher(ThreadPool &threadPool) :
-		threadPool(threadPool) {
+	explicit Dispatcher(ThreadPool &threadPool, OutputMessagePool &outputMsg) :
+		threadPool(threadPool), outputMsg(outputMsg) {
 		threads.reserve(threadPool.get_thread_count() + 1);
 		for (uint_fast16_t i = 0; i < threads.capacity(); ++i) {
 			threads.emplace_back(std::make_unique<ThreadTask>());
@@ -193,6 +194,8 @@ private:
 	uint_fast64_t dispatcherCycle = 0;
 
 	ThreadPool &threadPool;
+	OutputMessagePool &outputMsg;
+
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
 	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.

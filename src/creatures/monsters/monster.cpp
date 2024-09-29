@@ -1331,27 +1331,27 @@ void Monster::doRandomStep(Direction &nextDirection, bool &result) {
 }
 
 void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result) {
-	result = Creature::getNextStep(nextDirection, flags);
-	if (result) {
+	if ((result = Creature::getNextStep(nextDirection, flags))) {
 		flags |= FLAG_PATHFINDING;
-	} else {
-		if (ignoreFieldDamage) {
-			ignoreFieldDamage = false;
-			updateMapCache();
-		}
+		return;
+	}
 
-		int32_t distance = std::max<int32_t>(Position::getDistanceX(position, masterPos), Position::getDistanceY(position, masterPos));
-		if (distance == 0) {
-			isWalkingBack = false;
-			return;
-		}
+	if (ignoreFieldDamage) {
+		ignoreFieldDamage = false;
+		updateMapCache();
+	}
 
-		std::vector<Direction> listDir;
-		if (!getPathTo(masterPos, listDir, 0, std::max<int32_t>(0, distance - 5), true, true, distance)) {
-			isWalkingBack = false;
-			return;
-		}
+	int32_t distance = std::max(Position::getDistanceX(position, masterPos), Position::getDistanceY(position, masterPos));
+	if (distance == 0 || !spawnMonster) {
+		isWalkingBack = false;
+		return;
+	}
+
+	std::vector<Direction> listDir;
+	if (getPathTo(masterPos, listDir, 0, std::max(0, distance - 5), true, true, distance)) {
 		startAutoWalk(listDir);
+	} else {
+		isWalkingBack = false;
 	}
 }
 

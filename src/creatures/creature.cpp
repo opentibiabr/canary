@@ -614,7 +614,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 	}
 
 	const auto &followCreature = getFollowCreature();
-	if (followCreature && (creature == getCreature() || creature == followCreature)) {
+	if (followCreature && (creature.get() == this || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
 			g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
@@ -626,7 +626,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 	}
 
 	const auto &attackedCreature = getAttackedCreature();
-	if (attackedCreature && (creature == attackedCreature || creature == getCreature())) {
+	if (attackedCreature && (creature == attackedCreature || creature.get() == this)) {
 		if (newPos.z != oldPos.z || !canSee(attackedCreature->getPosition())) {
 			onCreatureDisappear(attackedCreature, false);
 		} else {

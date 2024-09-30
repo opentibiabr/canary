@@ -895,13 +895,6 @@ void Container::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
 	updateItemWeight(item->getWeight());
 }
 
-void Container::startDecaying() {
-	g_decay().startDecay(getContainer());
-	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_decay().startDecay(*it);
-	}
-}
-
 void Container::stopDecaying() {
 	g_decay().stopDecay(getContainer());
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {

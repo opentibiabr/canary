@@ -88,10 +88,6 @@ private:
 	asio::high_resolution_timer readTimer;
 	asio::high_resolution_timer writeTimer;
 
-	std::recursive_mutex connectionLock;
-
-	std::list<OutputMessage_ptr> messageQueue;
-
 	ConstServicePort_ptr service_port;
 	Protocol_ptr protocol;
 
@@ -105,6 +101,45 @@ private:
 
 	std::underlying_type_t<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
 	bool receivedFirst = false;
+
+	// deque lockfree for two-threads
+	struct {
+		auto empty() {
+			locked.wait(true);
+			return list.empty();
+		}
+		auto front() {
+			locked.wait(true);
+			return list.front();
+		}
+		auto emplace_back(OutputMessage_ptr obj) {
+			lock();
+			list.emplace_back(obj);
+			unlock();
+		}
+		void pop_front() {
+			lock();
+			list.pop_front();
+			unlock();
+		}
+		void clear() {
+			lock();
+			list.clear();
+			unlock();
+		}
+
+	private:
+		void lock() {
+			locked.wait(true);
+			locked.store(true);
+		}
+		void unlock() {
+			locked.store(false);
+			locked.notify_one();
+		}
+		std::deque<OutputMessage_ptr> list;
+		std::atomic_bool locked = false;
+	} messageQueue;
 
 	friend class ServicePort;
 	friend class ConnectionManager;

@@ -59,7 +59,6 @@ Connection::Connection(asio::io_service &initIoService, ConstServicePort_ptr ini
 void Connection::close(bool force) {
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
-	std::scoped_lock lock(connectionLock);
 	ip = 0;
 
 	if (connectionState == CONNECTION_STATE_CLOSED) {
@@ -127,7 +126,6 @@ void Connection::acceptInternal(bool toggleParseHeader) {
 	}
 }
 void Connection::parseProxyIdentification(const std::error_code &error) {
-	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();
 
 	if (error || connectionState == CONNECTION_STATE_CLOSED) {
@@ -181,7 +179,6 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 }
 
 void Connection::parseHeader(const std::error_code &error) {
-	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();
 
 	if (error) {
@@ -227,7 +224,6 @@ void Connection::parseHeader(const std::error_code &error) {
 }
 
 void Connection::parsePacket(const std::error_code &error) {
-	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();
 
 	if (error || connectionState == CONNECTION_STATE_CLOSED) {
@@ -306,7 +302,6 @@ void Connection::resumeWork() {
 }
 
 void Connection::send(const OutputMessage_ptr &outputMessage) {
-	std::scoped_lock lock(connectionLock);
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
@@ -330,7 +325,6 @@ void Connection::send(const OutputMessage_ptr &outputMessage) {
 }
 
 void Connection::internalWorker() {
-	std::unique_lock lock(connectionLock);
 	if (messageQueue.empty()) {
 		if (connectionState == CONNECTION_STATE_CLOSED) {
 			closeSocket();
@@ -339,16 +333,12 @@ void Connection::internalWorker() {
 	}
 
 	const auto &outputMessage = messageQueue.front();
-	lock.unlock();
 	protocol->onSendMessage(outputMessage);
-	lock.lock();
 
 	internalSend(outputMessage);
 }
 
 uint32_t Connection::getIP() {
-	std::scoped_lock lock(connectionLock);
-
 	if (ip == 1) {
 		std::error_code error;
 		asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
@@ -375,7 +365,6 @@ void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
 }
 
 void Connection::onWriteOperation(const std::error_code &error) {
-	std::unique_lock lock(connectionLock);
 	writeTimer.cancel();
 
 	if (error) {
@@ -389,9 +378,7 @@ void Connection::onWriteOperation(const std::error_code &error) {
 
 	if (!messageQueue.empty()) {
 		const auto &outputMessage = messageQueue.front();
-		lock.unlock();
 		protocol->onSendMessage(outputMessage);
-		lock.lock();
 		internalSend(outputMessage);
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		closeSocket();

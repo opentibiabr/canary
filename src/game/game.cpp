@@ -2418,8 +2418,8 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 			}
 			// If it failed to add to the autoContainer, or it's not set, use the current logic
 			if (!addedToAutoContainer) {
-				//ret = internalCollectManagedItems(player, item, g_game().getObjectCategory(item), false);
-				// If it can't place in the player's backpacks, add normally
+				// ret = internalCollectManagedItems(player, item, g_game().getObjectCategory(item), false);
+				//  If it can't place in the player's backpacks, add normally
 				if (ret != RETURNVALUE_NOERROR) {
 					ret = internalAddItem(destination, item, CONST_SLOT_WHEREEVER, flags, false, remainderCount);
 				}

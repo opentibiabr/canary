@@ -166,7 +166,6 @@ public:
 
 	void internalAddThing(std::shared_ptr<Thing> thing) override final;
 	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
-	void startDecaying() override;
 	void stopDecaying() override;
 
 	virtual void removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient = false);

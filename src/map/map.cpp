@@ -332,6 +332,10 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	const auto &oldPos = oldTile->getPosition();
 	const auto &newPos = newTile->getPosition();
 
+	if (oldPos == newPos) {
+		return;
+	}
+
 	const auto &fromZones = oldTile->getZones();
 	const auto &toZones = newTile->getZones();
 

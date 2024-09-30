@@ -1334,9 +1334,13 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 			}
 
 			if (canPushCreatures()) {
-				g_dispatcher().addWalkEvent([=] {
+				if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
 					Monster::pushCreatures(posTile);
-				});
+				} else {
+					g_dispatcher().addWalkEvent([=] {
+						Monster::pushCreatures(posTile);
+					});
+				}
 			}
 		}
 	}

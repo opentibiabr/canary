@@ -13,22 +13,25 @@ suite<"ContainerIteratorTest"> containerIteratorTest = [] {
     DI::setTestContainer(&InMemoryLogger::install(injector));
     auto& logger = dynamic_cast<InMemoryLogger&>(injector.create<Logger&>());
 
-    auto createNestedContainers = [](size_t depth, size_t itemsPerContainer) -> std::shared_ptr<Container> {
-        if (depth == 0) {
-            return std::make_shared<Container>(ITEM_SHOPPING_BAG);
-        }
+    std::function<std::shared_ptr<Container>(size_t, size_t)> createNestedContainers =
+        [&](size_t depth, size_t itemsPerContainer) -> std::shared_ptr<Container> {
+            if (depth == 0) {
+                return std::make_shared<Container>(ITEM_SHOPPING_BAG);
+            }
 
-        auto container = std::make_shared<Container>(ITEM_SHOPPING_BAG);
-        for (size_t i = 0; i < itemsPerContainer; ++i) {
-            auto item = Item::CreateItem(ITEM_GOLD_COIN, 1);
-            container->addItem(item);
-        }
+            auto container = std::make_shared<Container>(ITEM_SHOPPING_BAG);
+            for (size_t i = 0; i < itemsPerContainer; ++i) {
+                auto item = Item::CreateItem(ITEM_GOLD_COIN, 1);
+                container->addItem(item);
+            }
 
-        auto nestedContainer = createNestedContainers(depth - 1, itemsPerContainer);
-        container->addItem(nestedContainer);
+            // Recursive call
+            auto nestedContainer = createNestedContainers(depth - 1, itemsPerContainer);
+            container->addItem(nestedContainer);
 
-        return container;
-    };
+            return container;
+        };
+
 
     test("ContainerIterator performance com contêineres profundamente aninhados") = [&]() {
         size_t depth = 100;

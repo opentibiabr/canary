@@ -63,6 +63,9 @@ public:
 
 	bool hasReachedMaxDepth() const;
 
+	std::shared_ptr<Container> getCurrentContainer() const;
+	size_t getCurrentIndex() const;
+
 private:
 	/**
 	 * @brief Represents the state of the iterator at a given point in time.

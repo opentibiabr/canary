@@ -1046,3 +1046,19 @@ std::shared_ptr<Item> ContainerIterator::operator*() const {
 bool ContainerIterator::hasReachedMaxDepth() const {
 	return m_maxDepthReached;
 }
+
+std::shared_ptr<Container> ContainerIterator::getCurrentContainer() const {
+	if (states.empty()) {
+		return nullptr;
+	}
+	const auto &top = states.back();
+	return top.container.lock();
+}
+
+size_t ContainerIterator::getCurrentIndex() const {
+	if (states.empty()) {
+		return 0;
+	}
+	const auto &top = states.back();
+	return top.index;
+}

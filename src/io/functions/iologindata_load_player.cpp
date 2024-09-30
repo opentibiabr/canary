@@ -539,7 +539,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, D
 		}
 
 		// Now that all items and containers have been added and parent chain is established, start decay
-		for (const auto& item : itemsToStartDecaying) {
+		for (const auto &item : itemsToStartDecaying) {
 			item->startDecaying();
 		}
 

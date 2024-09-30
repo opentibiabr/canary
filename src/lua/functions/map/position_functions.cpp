@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
 #include "lua/functions/map/position_functions.hpp"

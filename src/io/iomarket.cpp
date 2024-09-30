@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/iomarket.hpp"
 #include "database/databasetasks.hpp"
 #include "io/iologindata.hpp"

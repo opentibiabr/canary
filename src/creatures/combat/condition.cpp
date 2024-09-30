@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/combat/condition.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -2095,10 +2093,12 @@ bool ConditionFeared::executeCondition(std::shared_ptr<Creature> creature, int32
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addEvent([id = creature->getID(), listDir] {
-				g_game().forcePlayerAutoWalk(id, listDir);
-			},
-			                        "ConditionFeared::executeCondition");
+			g_dispatcher().addEvent(
+				[id = creature->getID(), listDir] {
+					g_game().forcePlayerAutoWalk(id, listDir);
+				},
+				__FUNCTION__
+			);
 
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}

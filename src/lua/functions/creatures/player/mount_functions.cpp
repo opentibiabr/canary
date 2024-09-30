@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "game/game.hpp"
 #include "lua/functions/creatures/player/mount_functions.hpp"

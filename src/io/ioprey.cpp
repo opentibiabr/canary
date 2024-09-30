@@ -7,14 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "io/ioprey.hpp"
 
+#include "lib/di/container.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/player.hpp"
 #include "config/configmanager.hpp"
 #include "game/game.hpp"
-#include "io/ioprey.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "server/network/message/networkmessage.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 
 // Prey class
 PreySlot::PreySlot(PreySlot_t id) :
@@ -243,6 +245,10 @@ void TaskHuntingSlot::reloadReward() {
 	} else {
 		rarity = 1;
 	}
+}
+
+IOPrey &IOPrey::getInstance() {
+	return inject<IOPrey>();
 }
 
 // Prey/Task hunting global class
@@ -595,7 +601,11 @@ void IOPrey::initializeTaskHuntOptions() {
 		msg.add<uint16_t>(option->secondKills);
 		msg.add<uint16_t>(option->secondReward);
 	});
-	baseDataMessage = msg;
+	m_baseDataMessage = msg;
+}
+
+NetworkMessage IOPrey::getTaskHuntingBaseDate() const {
+	return m_baseDataMessage;
 }
 
 const std::unique_ptr<TaskHuntingOption> &IOPrey::getTaskRewardOption(const std::unique_ptr<TaskHuntingSlot> &slot) const {

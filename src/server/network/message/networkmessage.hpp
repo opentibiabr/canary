@@ -71,15 +71,13 @@ public:
 	void add(T value, std::source_location location = std::source_location::current()) {
 		// Check if there is enough space to add the value to the buffer
 		if (!canAdd(sizeof(T))) {
-			g_logger().error("Cannot add value of size {}, buffer overflow. Called at line '{}:{}' in '{}'",
-							sizeof(T), buffer.size(), location.line(), location.column(), location.function_name());
+			g_logger().error("Cannot add value of size {}, buffer overflow. Called at line '{}:{}' in '{}'", sizeof(T), buffer.size(), location.line(), location.column(), location.function_name());
 			return;
 		}
 
 		// Verify if the buffer has enough space to accommodate the value
 		if (info.position + sizeof(T) > buffer.size()) {
-			g_logger().error("Buffer overflow detected, current position: {}, value size: {}, buffer size: {}. Called at line '{}:{}' in '{}'",
-							info.position, sizeof(T), buffer.size(), location.line(), location.column(), location.function_name());
+			g_logger().error("Buffer overflow detected, current position: {}, value size: {}, buffer size: {}. Called at line '{}:{}' in '{}'", info.position, sizeof(T), buffer.size(), location.line(), location.column(), location.function_name());
 			return;
 		}
 
@@ -94,8 +92,7 @@ public:
 
 		// Check if the size of byteSpan can fit into the buffer
 		if (byteSpan.size() > (buffer.size() - info.position)) {
-			g_logger().error("Buffer overflow during span copy. Source span size: {}, buffer available space: {}",
-							byteSpan.size(), buffer.size() - info.position);
+			g_logger().error("Buffer overflow during span copy. Source span size: {}, buffer available space: {}", byteSpan.size(), buffer.size() - info.position);
 			return;
 		}
 

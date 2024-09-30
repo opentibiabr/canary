@@ -156,8 +156,8 @@ private:
 	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Walk);
 	inline void executeScheduledEvents();
 
-	inline void executeSerialEvents(std::vector<Task> &tasks, const uint8_t groupId);
-	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId);
+	inline void executeSerialEvents(const uint8_t groupId);
+	inline void executeParallelEvents(const uint8_t groupId);
 	inline std::chrono::milliseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {

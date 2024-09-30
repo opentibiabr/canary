@@ -803,6 +803,7 @@ protected:
 	bool moveLocked = false;
 	bool directionLocked = false;
 	bool hasFollowPath = false;
+	bool checkingWalkCreature = false;
 	int8_t charmChanceModifier = 0;
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;

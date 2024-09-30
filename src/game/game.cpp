@@ -6351,11 +6351,7 @@ bool Game::internalCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses 
 void Game::checkCreatureWalk(uint32_t creatureId) {
 	const auto &creature = getCreatureByID(creatureId);
 	if (creature && creature->getHealth() > 0) {
-		g_dispatcher().addWalkEvent([creature] {
-			if (!creature->isRemoved()) {
-				creature->onCreatureWalk();
-			}
-		});
+		creature->onCreatureWalk();
 	}
 }
 

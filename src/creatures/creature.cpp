@@ -159,39 +159,53 @@ void Creature::onIdleStatus() {
 }
 
 void Creature::onCreatureWalk() {
+	if (checkingWalkCreature) {
+		return;
+	}
+
+	checkingWalkCreature = true;
+
 	metrics::method_latency measure(__METHOD_NAME__);
-	if (getWalkDelay() <= 0) {
-		Direction dir;
-		uint32_t flags = FLAG_IGNOREFIELDDAMAGE;
-		if (getNextStep(dir, flags)) {
-			ReturnValue ret = g_game().internalMoveCreature(static_self_cast<Creature>(), dir, flags);
-			if (ret != RETURNVALUE_NOERROR) {
-				if (std::shared_ptr<Player> player = getPlayer()) {
-					player->sendCancelMessage(ret);
-					player->sendCancelWalk();
+
+	g_dispatcher().addWalkEvent([self = getCreature(), this] {
+		checkingWalkCreature = false;
+		if (isRemoved()) {
+			return;
+		}
+
+		if (getWalkDelay() <= 0) {
+			Direction dir;
+			uint32_t flags = FLAG_IGNOREFIELDDAMAGE;
+			if (getNextStep(dir, flags)) {
+				ReturnValue ret = g_game().internalMoveCreature(static_self_cast<Creature>(), dir, flags);
+				if (ret != RETURNVALUE_NOERROR) {
+					if (std::shared_ptr<Player> player = getPlayer()) {
+						player->sendCancelMessage(ret);
+						player->sendCancelWalk();
+					}
+
+					forceUpdateFollowPath = true;
+				}
+			} else {
+				if (listWalkDir.empty()) {
+					onWalkComplete();
 				}
 
-				forceUpdateFollowPath = true;
+				stopEventWalk();
 			}
-		} else {
-			if (listWalkDir.empty()) {
-				onWalkComplete();
-			}
-
-			stopEventWalk();
 		}
-	}
 
-	if (cancelNextWalk) {
-		listWalkDir.clear();
-		onWalkAborted();
-		cancelNextWalk = false;
-	}
+		if (cancelNextWalk) {
+			listWalkDir.clear();
+			onWalkAborted();
+			cancelNextWalk = false;
+		}
 
-	if (eventWalk != 0) {
-		eventWalk = 0;
-		addEventWalk();
-	}
+		if (eventWalk != 0) {
+			eventWalk = 0;
+			addEventWalk();
+		}
+	});
 }
 
 void Creature::onWalk(Direction &dir) {

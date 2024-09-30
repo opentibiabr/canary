@@ -38,7 +38,12 @@ void Dispatcher::init() {
 	});
 }
 
-void Dispatcher::executeSerialEvents(std::vector<Task> &tasks, const uint8_t groupId) {
+void Dispatcher::executeSerialEvents(const uint8_t groupId) {
+	auto &tasks = m_tasks[groupId];
+	if (tasks.empty()) {
+		return;
+	}
+
 	dispacherContext.group = static_cast<TaskGroup>(groupId);
 	dispacherContext.type = DispatcherType::Event;
 
@@ -53,7 +58,12 @@ void Dispatcher::executeSerialEvents(std::vector<Task> &tasks, const uint8_t gro
 	dispacherContext.reset();
 }
 
-void Dispatcher::executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId) {
+void Dispatcher::executeParallelEvents(const uint8_t groupId) {
+	auto &tasks = m_tasks[groupId];
+	if (tasks.empty()) {
+		return;
+	}
+
 	asyncWait(tasks.size(), [groupId, &tasks](size_t i) {
 		dispacherContext.type = DispatcherType::AsyncEvent;
 		dispacherContext.group = static_cast<TaskGroup>(groupId);
@@ -103,17 +113,14 @@ void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f
 
 void Dispatcher::executeEvents(const TaskGroup startGroup) {
 	for (uint_fast8_t groupId = static_cast<uint8_t>(startGroup); groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
-		auto &tasks = m_tasks[groupId];
-		if (tasks.empty()) {
-			continue;
-		}
+		const auto isWalk = groupId == static_cast<uint8_t>(TaskGroup::Walk);
 
-		if (groupId == static_cast<uint8_t>(TaskGroup::Serial) || groupId == static_cast<uint8_t>(TaskGroup::Walk)) {
+		if (groupId == static_cast<uint8_t>(TaskGroup::Serial) || isWalk) {
 			mergeEvents();
-			executeSerialEvents(tasks, groupId);
+			executeSerialEvents(groupId);
 			mergeAsyncEvents();
 		} else {
-			executeParallelEvents(tasks, groupId);
+			executeParallelEvents(groupId);
 		}
 	}
 }

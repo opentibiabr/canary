@@ -497,8 +497,8 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
-	if (const auto topParentContainer = getTopParentContainer()) {
-		if (const auto addContainer = item->getContainer()) {
+	if (const auto &topParentContainer = getTopParentContainer()) {
+		if (const auto &addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
 			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
@@ -922,7 +922,7 @@ uint16_t Container::getFreeSlots() {
 }
 
 ContainerIterator Container::iterator() {
-	return { getContainer() };
+	return { getContainer(), static_cast<size_t>(g_configManager().getNumber(MAX_CONTAINER_DEPTH, __FUNCTION__)) };
 }
 
 void Container::removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient /* = false*/) {
@@ -968,18 +968,24 @@ uint32_t Container::getOwnerId() const {
 ContainerIterator::ContainerIterator(const std::shared_ptr<Container> &container, size_t maxDepth) :
 	maxTraversalDepth(maxDepth) {
 	if (container) {
-		(void)states.emplace(container, 0, 1);
+		states.reserve(maxDepth);
+		visitedContainers.reserve(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
+		(void)states.emplace_back(container, 0, 1);
 		(void)visitedContainers.insert(container);
 	}
 }
 
 bool ContainerIterator::hasNext() const {
 	while (!states.empty()) {
-		auto &top = states.top();
-		if (top.index < top.container->itemlist.size()) {
+		const auto &top = states.back();
+		const auto &container = top.container.lock();
+		if (!container) {
+			// Container has been deleted
+			states.pop_back();
+		} else if (top.index < container->itemlist.size()) {
 			return true;
 		} else {
-			states.pop();
+			states.pop_back();
 		}
 	}
 	return false;
@@ -990,28 +996,39 @@ void ContainerIterator::advance() {
 		return;
 	}
 
-	auto &top = states.top();
-	if (top.index >= top.container->itemlist.size()) {
-		states.pop();
+	auto &top = states.back();
+	const auto &container = top.container.lock();
+	if (!container) {
+		// Container has been deleted
+		states.pop_back();
 		return;
 	}
 
-	auto currentItem = top.container->itemlist[top.index];
+	if (top.index >= container->itemlist.size()) {
+		states.pop_back();
+		return;
+	}
+
+	auto currentItem = container->itemlist[top.index];
 	if (currentItem) {
 		auto subContainer = currentItem->getContainer();
 		if (subContainer && !subContainer->itemlist.empty()) {
 			size_t newDepth = top.depth + 1;
 			if (newDepth <= maxTraversalDepth) {
-				// Check if we have already visited this container to avoid cycles
 				if (visitedContainers.find(subContainer) == visitedContainers.end()) {
-					(void)states.emplace(subContainer, 0, newDepth);
-					(void)visitedContainers.insert(subContainer);
+					states.emplace_back(subContainer, 0, newDepth);
+					visitedContainers.insert(subContainer);
 				} else {
-					// Cycle detection
-					g_logger().error("[{}] Cycle detected in container: {}", __FUNCTION__, subContainer->getName());
+					if (!m_cycleDetected) {
+						// g_logger().debug("[{}] Cycle detected in container: {}", __FUNCTION__, subContainer->getName());
+						m_cycleDetected = true;
+					}
 				}
 			} else {
-				g_logger().error("[{}] Maximum iteration depth reached", __FUNCTION__);
+				if (!m_maxDepthReached) {
+					// g_logger().debug("[{}] Maximum iteration depth reached", __FUNCTION__);
+					m_maxDepthReached = true;
+				}
 			}
 		}
 	}
@@ -1024,9 +1041,15 @@ std::shared_ptr<Item> ContainerIterator::operator*() const {
 		return nullptr;
 	}
 
-	auto &top = states.top();
-	if (top.index < top.container->itemlist.size()) {
-		return top.container->itemlist[top.index];
+	const auto &top = states.back();
+	if (const auto &container = top.container.lock()) {
+		if (top.index < container->itemlist.size()) {
+			return container->itemlist[top.index];
+		}
 	}
 	return nullptr;
+}
+
+bool ContainerIterator::hasReachedMaxDepth() const {
+	return m_maxDepthReached;
 }

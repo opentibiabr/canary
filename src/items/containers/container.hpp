@@ -30,7 +30,7 @@ public:
 	 * @param container The root container to start iterating from.
 	 * @param maxDepth The maximum depth of nested containers to traverse.
 	 */
-	ContainerIterator(const std::shared_ptr<Container> &container, size_t maxDepth = 1000);
+	ContainerIterator(const std::shared_ptr<Container> &container, size_t maxDepth);
 
 	/**
 	 * @brief Checks if there are more items to iterate over in the container.
@@ -61,6 +61,8 @@ public:
 	 */
 	std::shared_ptr<Item> operator*() const;
 
+	bool hasReachedMaxDepth() const;
+
 private:
 	/**
 	 * @brief Represents the state of the iterator at a given point in time.
@@ -75,7 +77,7 @@ private:
 		/**
 		 * @brief The container being iterated over.
 		 */
-		std::shared_ptr<Container> container;
+		std::weak_ptr<Container> container;
 
 		/**
 		 * @brief The current index within the container's item list.
@@ -106,7 +108,7 @@ private:
 	 * used to traverse containers and their nested sub-containers in a depth-first manner.
 	 * Each element in the stack represents a different level in the container hierarchy.
 	 */
-	mutable std::stack<IteratorState> states;
+	mutable std::vector<IteratorState> states;
 
 	/**
 	 * @brief Set of containers that have already been visited during the iteration.
@@ -118,6 +120,9 @@ private:
 	 */
 	mutable std::unordered_set<std::shared_ptr<Container>> visitedContainers;
 	size_t maxTraversalDepth = 0;
+
+	bool m_maxDepthReached = false;
+	bool m_cycleDetected = false;
 
 	friend class Container;
 };

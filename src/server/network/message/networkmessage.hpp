@@ -50,8 +50,7 @@ public:
 		std::array<unsigned char, sizeof(T)> tempBuffer;
 		// Copy data from the buffer to the temporary array
 		std::span<const unsigned char> sourceSpan(buffer.data() + info.position, sizeof(T));
-		auto it = std::ranges::copy(sourceSpan, tempBuffer.begin());
-		g_logger().trace("First value copied from sourceSpan: {}, second value copied from sourceSpan: {}", *it.in, *it.out);
+		std::ranges::copy(sourceSpan, tempBuffer.begin());
 		// Update the read position in the buffer
 		info.position += sizeof(T);
 		// Convert the byte array to type T using std::bit_cast and return the result
@@ -69,20 +68,18 @@ public:
 
 	template <typename T>
 	void add(T value, std::source_location location = std::source_location::current()) {
-		// Check if there is enough space to add the value to the buffer
-		if (!canAdd(sizeof(T))) {
-			g_logger().error("Cannot add value of size {}, buffer overflow. Called at line '{}:{}' in '{}'", sizeof(T), buffer.size(), location.line(), location.column(), location.function_name());
-			return;
-		}
-
-		// Verify if the buffer has enough space to accommodate the value
-		if (info.position + sizeof(T) > buffer.size()) {
-			g_logger().error("Buffer overflow detected, current position: {}, value size: {}, buffer size: {}. Called at line '{}:{}' in '{}'", info.position, sizeof(T), buffer.size(), location.line(), location.column(), location.function_name());
-			return;
-		}
-
-		// Ensure that T is trivially copyable
+		static_assert(!std::is_same_v<T, double>, "Error: get<double>() is not allowed. Use addDouble() instead.");
 		static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
+
+		if (!canAdd(sizeof(T))) {
+			g_logger().error("Cannot add value of size '{}', buffer size: '{}' overflow. Called at line '{}:{}' in '{}'", sizeof(T), buffer.size(), location.line(), location.column(), location.function_name());
+			return;
+		}
+
+		if (info.position + sizeof(T) > buffer.size()) {
+			g_logger().error("Buffer overflow detected, current position: '{}', value size: '{}', buffer size: '{}'. Called at line '{}:{}' in '{}'", info.position, sizeof(T), buffer.size(), location.line(), location.column(), location.function_name());
+			return;
+		}
 
 		// Convert the value to an array of unsigned char using std::bit_cast
 		auto byteArray = std::bit_cast<std::array<unsigned char, sizeof(T)>>(value);
@@ -98,7 +95,6 @@ public:
 
 		g_logger().trace("[{}] called at line '{}:{}' in '{}'", __FUNCTION__, location.line(), location.column(), location.function_name());
 
-		// Copy the bytes into the buffer at the correct position
 		std::ranges::copy(byteSpan, buffer.begin() + info.position);
 
 		info.position += sizeof(T);

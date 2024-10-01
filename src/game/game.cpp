@@ -5823,7 +5823,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(attackCreature);
-	g_dispatcher().addEvent([this, plyerId = player->getID()] { updateCreatureWalk(plyerId); }, __FUNCTION__);
+	updateCreatureWalk(player->getID()); // is Async
 }
 
 void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
@@ -5833,7 +5833,7 @@ void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(nullptr);
-	g_dispatcher().addEvent([this, plyerId = player->getID()] { updateCreatureWalk(plyerId); }, __FUNCTION__);
+	updateCreatureWalk(player->getID()); // is Async
 	player->setFollowCreature(getCreatureByID(creatureId));
 }
 

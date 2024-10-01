@@ -617,7 +617,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 	if (followCreature && (creature.get() == this || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
+			g_game().updateCreatureWalk(getID()); // is async
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {

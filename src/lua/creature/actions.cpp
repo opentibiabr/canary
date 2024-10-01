@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/creature/actions.hpp"
 #include "items/bed.hpp"
 #include "items/containers/container.hpp"

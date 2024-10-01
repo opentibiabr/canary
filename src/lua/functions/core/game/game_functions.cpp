@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "core.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "game/functions/game_reload.hpp"

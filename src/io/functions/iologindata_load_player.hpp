@@ -13,7 +13,7 @@
 
 class IOLoginDataLoad : public IOLoginData {
 public:
-	static bool loadPlayerFirst(std::shared_ptr<Player> player, DBResult_ptr result);
+	static bool loadPlayerBasicInfo(std::shared_ptr<Player> player, DBResult_ptr result);
 	static bool preLoadPlayer(std::shared_ptr<Player> player, const std::string &name);
 	static void loadPlayerExperience(std::shared_ptr<Player> player, DBResult_ptr result);
 	static void loadPlayerBlessings(std::shared_ptr<Player> player, DBResult_ptr result);

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/vocations/vocation.hpp"
 
 #include "utils/pugicast.hpp"

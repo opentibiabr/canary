@@ -1926,7 +1926,6 @@ void Creature::sendAsyncTasks() {
 			}
 			creature->asyncTasks.clear();
 			creature->m_flagAsyncTask = 0;
-			creature->setAsyncTaskFlag(ASYNC_TASK_RUNNING, false);
 		}
 	},
 	                          TaskGroup::WalkParallel);

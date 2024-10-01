@@ -2557,7 +2557,7 @@ std::shared_ptr<Item> Game::findItemOfType(const std::shared_ptr<Cylinder> &cyli
 	size_t i = 0;
 	while (i < containers.size()) {
 		std::shared_ptr<Container> container = containers[i++];
-		for (const auto item : container->getItemList()) {
+		for (const auto &item : container->getItemList()) {
 			if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
 				return item;
 			}

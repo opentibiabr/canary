@@ -12,6 +12,8 @@
 #include "creatures/players/grouping/familiars.hpp"
 #include "lib/di/container.hpp"
 #include "config/configmanager.hpp"
+#include "utils/pugicast.hpp"
+#include "utils/tools.hpp"
 
 Familiars &Familiars::getInstance() {
 	return inject<Familiars>();

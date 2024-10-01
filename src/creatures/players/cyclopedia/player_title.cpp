@@ -14,6 +14,7 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
+#include "enums/account_group_type.hpp"
 
 PlayerTitle::PlayerTitle(Player &player) :
 	m_player(player) { }

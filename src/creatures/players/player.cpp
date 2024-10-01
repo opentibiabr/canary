@@ -3437,7 +3437,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 	if (index == 0 /*drop to capacity window*/ || index == INDEX_WHEREEVER) {
 		destItem = nullptr;
 
-		const auto &item = thing->getItem();
+		const auto item = thing->getItem();
 		if (!item) {
 			return getPlayer();
 		}
@@ -3448,9 +3448,13 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 		std::vector<std::shared_ptr<Container>> containers;
 
 		for (uint32_t slotIndex = CONST_SLOT_FIRST; slotIndex <= CONST_SLOT_AMMO; ++slotIndex) {
-			const auto &inventoryItem = inventory[slotIndex];
+			std::shared_ptr<Item> inventoryItem = inventory[slotIndex];
 			if (inventoryItem) {
-				if (inventoryItem == tradeItem || inventoryItem == item) {
+				if (inventoryItem == tradeItem) {
+					continue;
+				}
+
+				if (inventoryItem == item) {
 					continue;
 				}
 
@@ -3479,11 +3483,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 
 		size_t i = 0;
 		while (i < containers.size()) {
-			const auto &tmpContainer = containers[i++];
-			if (!tmpContainer) {
-				continue; // Verificar se tmpContainer é válido
-			}
-
+			std::shared_ptr<Container> tmpContainer = containers[i++];
 			if (!autoStack || !isStackable) {
 				// we need to find first empty container as fast as we can for non-stackable items
 				uint32_t n = tmpContainer->capacity() - tmpContainer->size();
@@ -3508,11 +3508,16 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 
 			uint32_t n = 0;
 
-			for (const auto &tmpItem : tmpContainer->getItemList()) {
-				if (tmpItem == tradeItem || tmpItem == item) {
+			for (const std::shared_ptr<Item> &tmpItem : tmpContainer->getItemList()) {
+				if (tmpItem == tradeItem) {
 					continue;
 				}
 
+				if (tmpItem == item) {
+					continue;
+				}
+
+				// try find an already existing item to stack with
 				if (tmpItem->equals(item) && tmpItem->getItemCount() < tmpItem->getStackSize()) {
 					index = n;
 					destItem = tmpItem;
@@ -3536,19 +3541,19 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 		return getPlayer();
 	}
 
-	const auto &destThing = getThing(index);
+	std::shared_ptr<Thing> destThing = getThing(index);
 	if (destThing) {
 		destItem = destThing->getItem();
 	}
 
-	const auto &item = thing->getItem();
-	const bool movingAmmoToQuiver = item && destItem && (destItem)->isQuiver() && item->isAmmo();
+	std::shared_ptr<Item> item = thing->getItem();
+	bool movingAmmoToQuiver = item && destItem && (destItem)->isQuiver() && item->isAmmo();
 	// force shield any slot right to player cylinder
 	if (index == CONST_SLOT_RIGHT && !movingAmmoToQuiver) {
 		return getPlayer();
 	}
 
-	const auto &subCylinder = std::dynamic_pointer_cast<Cylinder>(destThing);
+	std::shared_ptr<Cylinder> subCylinder = std::dynamic_pointer_cast<Cylinder>(destThing);
 	if (subCylinder) {
 		index = INDEX_WHEREEVER;
 		destItem = nullptr;
@@ -5561,7 +5566,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 
 double_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 	double_t result = reflectPercent[combatTypeToIndex(combat)];
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;

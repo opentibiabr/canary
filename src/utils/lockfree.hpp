@@ -55,28 +55,42 @@ public:
 	~LockfreePoolingAllocator() = default;
 
 	pointer allocate(size_type n) {
-		if (n == 1) {
+		if (n == 1 && std::is_same_v<value_type, OutputMessage>) {
 			pointer p;
-			if (LockfreeFreeList<T, CAPACITY>::get().try_pop(p)) {
+			if (LockfreeFreeList<value_type, CAPACITY>::get().try_pop(p)) {
 				return p;
 			}
 		}
-		return static_cast<pointer>(::operator new(n * sizeof(T), static_cast<std::align_val_t>(alignof(T))));
+		return static_cast<pointer>(::operator new(n * sizeof(value_type)));
 	}
 
 	void deallocate(pointer p, size_type n) noexcept {
-		if (n == 1) {
-			if (LockfreeFreeList<T, CAPACITY>::get().try_push(p)) {
+		if (n == 1 && std::is_same_v<value_type, OutputMessage>) {
+			destroy(p);
+			if (LockfreeFreeList<value_type, CAPACITY>::get().try_push(p)) {
 				return;
 			}
 		}
-		::operator delete(p, static_cast<std::align_val_t>(alignof(T)));
+		::operator delete(p);
 	}
 
-	bool operator==(const LockfreePoolingAllocator &) const noexcept {
+	template <typename U, typename... Args>
+	void construct(U* p, Args &&... args) {
+		::new ((void*)p) U(std::forward<Args>(args)...);
+	}
+
+	template <typename U>
+	void destroy(U* p) noexcept {
+		p->~U();
+	}
+
+	template <typename U>
+	bool operator==(const LockfreePoolingAllocator<U, CAPACITY> &) const noexcept {
 		return true;
 	}
-	bool operator!=(const LockfreePoolingAllocator &other) const noexcept {
-		return !(*this == other);
+
+	template <typename U>
+	bool operator!=(const LockfreePoolingAllocator<U, CAPACITY> &) const noexcept {
+		return false;
 	}
 };

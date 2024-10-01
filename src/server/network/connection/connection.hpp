@@ -109,6 +109,8 @@ private:
 
 	bool receivedFirst = false;
 
+	mutable std::mutex socketMutex;
+
 	friend class ServicePort;
 	friend class ConnectionManager;
 };

@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "declarations.hpp"
+
 class Player;
 
 struct OutfitEntry {

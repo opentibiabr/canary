@@ -72,6 +72,7 @@ void Connection::close(bool force) {
 }
 
 void Connection::closeSocket() {
+	std::lock_guard<std::mutex> lock(socketMutex);
 	if (!socket.is_open()) {
 		return;
 	}
@@ -79,20 +80,24 @@ void Connection::closeSocket() {
 	try {
 		readTimer.cancel();
 		writeTimer.cancel();
-		socket.cancel();
+		std::error_code ec;
 
-		std::error_code error;
-		socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
-		if (error && error != asio::error::not_connected) {
-			g_logger().error("[Connection::closeSocket] - Failed to shutdown socket: {}", error.message());
+		socket.cancel(ec);
+		if (ec) {
+			g_logger().error("[Connection::closeSocket] - Failed to cancel socket: {}", ec.message());
 		}
 
-		socket.close(error);
-		if (error && error != asio::error::not_connected) {
-			g_logger().error("[Connection::closeSocket] - Failed to close socket: {}", error.message());
+		socket.shutdown(asio::ip::tcp::socket::shutdown_both, ec);
+		if (ec && ec != asio::error::not_connected) {
+			g_logger().error("[Connection::closeSocket] - Failed to shutdown socket: {}", ec.message());
+		}
+
+		socket.close(ec);
+		if (ec && ec != asio::error::not_connected) {
+			g_logger().error("[Connection::closeSocket] - Failed to close socket: {}", ec.message());
 		}
 	} catch (const std::system_error &e) {
-		g_logger().error("[Connection::closeSocket] - error closeSocket: {}", e.what());
+		g_logger().error("[Connection::closeSocket] - Exception in closeSocket: {}", e.what());
 	}
 }
 

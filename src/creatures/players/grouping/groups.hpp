@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "declarations.hpp"
+
 struct Group {
 	std::string name;
 	std::array<bool, magic_enum::enum_integer(PlayerFlags_t::FlagLast)> flags { false };

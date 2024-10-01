@@ -166,9 +166,16 @@ void Dispatcher::mergeAsyncEvents() {
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
 		for (const auto group : groups) {
-			if (!thread->tasks[group].empty()) {
-				m_tasks[group].insert(m_tasks[group].end(), make_move_iterator(thread->tasks[group].begin()), make_move_iterator(thread->tasks[group].end()));
-				thread->tasks[group].clear();
+			auto &threadTasks = thread->tasks[group];
+			auto &tasks = m_tasks[group];
+
+			if (threadTasks.size() > tasks.size()) {
+				tasks.swap(threadTasks);
+			}
+
+			if (!threadTasks.empty()) {
+				tasks.insert(tasks.end(), make_move_iterator(threadTasks.begin()), make_move_iterator(threadTasks.end()));
+				threadTasks.clear();
 			}
 		}
 	}

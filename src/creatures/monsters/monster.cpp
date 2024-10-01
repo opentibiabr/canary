@@ -201,15 +201,12 @@ void Monster::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin)
 	}
 
 	if (creature.get() == this) {
-		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
-			addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList(); });
-			addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
-		} else {
-			updateTargetList();
-			updateIdleStatus();
-		}
+		updateTargetList();
+		updateIdleStatus();
 	} else {
-		onCreatureEnter(creature);
+		addAsyncTask([this, creature] {
+			onCreatureEnter(creature);
+		});
 	}
 }
 
@@ -288,13 +285,8 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 	}
 
 	if (creature.get() == this) {
-		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
-			addAsyncTask(UPDATE_TARGET_LIST, [this] { updateTargetList(); });
-			addAsyncTask(UPDATE_IDDLE_STATUS, [this] { updateIdleStatus(); });
-		} else {
-			updateTargetList();
-			updateIdleStatus();
-		}
+		updateTargetList();
+		updateIdleStatus();
 	} else {
 		auto action = [this, newPos, oldPos, creature] {
 			bool canSeeNewPos = canSee(newPos);
@@ -487,6 +479,11 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::updateTargetList() {
+	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+		setAsyncTaskFlag(UPDATE_TARGET_LIST, true);
+		return;
+	}
+
 	std::erase_if(friendList, [this](const auto &it) {
 		const auto &target = it.second.lock();
 		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
@@ -822,10 +819,8 @@ void Monster::setIdle(bool idle) {
 	isIdle = idle;
 
 	if (!isIdle) {
-		g_dispatcher().context().tryAddEvent([self = static_self_cast<Monster>()] {
-			g_game().addCreatureCheck(self);
-		},
-		                                     "setIdle");
+		g_game().addCreatureCheck(getMonster());
+
 	} else {
 		onIdleStatus();
 		clearTargetList();
@@ -835,6 +830,11 @@ void Monster::setIdle(bool idle) {
 }
 
 void Monster::updateIdleStatus() {
+	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+		setAsyncTaskFlag(UPDATE_IDDLE_STATUS, true);
+		return;
+	}
+
 	bool idle = false;
 	if (conditions.empty()) {
 		if (!isSummon() && targetList.empty()) {
@@ -2345,4 +2345,14 @@ std::vector<std::pair<int8_t, int8_t>> Monster::getPushItemLocationOptions(const
 	}
 
 	return {};
+}
+
+void Monster::onExecuteAsyncTasks() {
+	if (hasAsyncTaskFlag(UPDATE_TARGET_LIST)) {
+		updateTargetList();
+	}
+
+	if (hasAsyncTaskFlag(UPDATE_IDDLE_STATUS)) {
+		updateIdleStatus();
+	}
 }

@@ -6378,7 +6378,11 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 	}
 
 	creature->inCheckCreaturesVector = true;
-	checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
+
+	g_dispatcher().context().tryAddEvent([this, creature] {
+		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
+	},
+	                                     "addCreatureCheck");
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {

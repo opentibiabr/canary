@@ -842,14 +842,6 @@ protected:
 	friend class Map;
 	friend class CreatureFunctions;
 
-	// async
-	void addAsyncTask(FLAG_ASYNC_TASKS taskFlag, std::function<void()> &&fnc) {
-		if (!hasAsyncTaskFlag(taskFlag)) {
-			addAsyncTask(std::move(fnc));
-			setAsyncTaskFlag(taskFlag, true);
-		}
-	}
-
 	void addAsyncTask(std::function<void()> &&fnc) {
 		asyncTasks.emplace_back(std::move(fnc));
 		sendAsyncTasks();
@@ -862,10 +854,13 @@ protected:
 	void setAsyncTaskFlag(FLAG_ASYNC_TASKS taskFlag, bool v) {
 		if (v) {
 			m_flagAsyncTask |= taskFlag;
+			sendAsyncTasks();
 		} else {
 			m_flagAsyncTask &= ~taskFlag;
 		}
 	}
+
+  virtual void onExecuteAsyncTasks() {};
 
 private:
 	bool canFollowMaster();

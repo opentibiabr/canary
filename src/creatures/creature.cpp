@@ -1066,7 +1066,7 @@ void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
 		g_dispatcher().context().addEvent(std::move(onComplete), "goToFollowCreature_async");
 	}
 
-	addAsyncTask(PATHFINDER, [this] { goToFollowCreature(); });
+    setAsyncTaskFlag(PATHFINDER, true);
 }
 
 void Creature::goToFollowCreature() {
@@ -1925,6 +1925,11 @@ void Creature::sendAsyncTasks() {
 				}
 			}
 			creature->asyncTasks.clear();
+			if (creature->hasAsyncTaskFlag(PATHFINDER)) {
+				creature->goToFollowCreature();
+			}
+
+			creature->onExecuteAsyncTasks();
 			creature->m_flagAsyncTask = 0;
 		}
 	},

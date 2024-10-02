@@ -1923,13 +1923,15 @@ void Creature::sendAsyncTasks() {
 				for (const auto &task : creature->asyncTasks) {
 					task();
 				}
+
+				if (creature->hasAsyncTaskFlag(PATHFINDER)) {
+					creature->goToFollowCreature();
+				}
+
+				creature->onExecuteAsyncTasks();
 			}
 			creature->asyncTasks.clear();
-			if (creature->hasAsyncTaskFlag(PATHFINDER)) {
-				creature->goToFollowCreature();
-			}
 
-			creature->onExecuteAsyncTasks();
 			creature->m_flagAsyncTask = 0;
 		}
 	},

@@ -238,8 +238,8 @@ local questTable = {
 	{ storage = Storage.Quest.U8_1.TheTravellingTrader.Mission06, storageValue = 2 },
 	{ storage = Storage.Quest.U8_1.TheTravellingTrader.Mission07, storageValue = 1 },
 	{ storage = Storage.Quest.U8_0.BarbarianArena.QuestLogGreenhorn, storageValue = 1 },
-	{ storage = Storage.TibiaTales.DefaultStart, storageValue = 1 },
-	{ storage = Storage.TibiaTales.ToAppeaseTheMightyQuest, storageValue = 1 },
+	{ storage = Storage.Quest.U8_1.TibiaTales.DefaultStart, storageValue = 1 },
+	{ storage = Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, storageValue = 1 },
 	{ storage = 12450, storageValue = 6 },
 	{ storage = 12330, storageValue = 1 },
 	{ storage = 12332, storageValue = 13 },
@@ -263,8 +263,8 @@ local questTable = {
 	{ storage = Storage.Quest.U7_6.TheApeCity.Started, storageValue = 1 },
 	{ storage = Storage.Quest.U7_6.TheApeCity.Questline, storageValue = 18 },
 	{ storage = Storage.BanutaSecretTunnel.DeeperBanutaShortcut, storageValue = 1 },
-	{ storage = Storage.Oramond.QuestLine, storageValue = 1 },
-	{ storage = Storage.Oramond.MissionToTakeRoots, storageValue = 3000 },
+	{ storage = Storage.Quest.U10_50.OramondQuest.QuestLine, storageValue = 1 },
+	{ storage = Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission, storageValue = 3000 },
 	{ storage = Storage.DangerousDepths.Questline, storageValue = 1 },
 	{ storage = Storage.DangerousDepths.Dwarves.Home, storageValue = 2 },
 	{ storage = Storage.DangerousDepths.Dwarves.Subterranean, storageValue = 2 },
@@ -276,10 +276,10 @@ local questTable = {
 	{ storage = Storage.Quest.U11_40.ThreatenedDreams.QuestLine, storageValue = 1 },
 	{ storage = Storage.Quest.U11_40.ThreatenedDreams.Mission01[1], storageValue = 16 },
 	{ storage = Storage.Quest.U11_40.ThreatenedDreams.Mission02.KroazurAccess, storageValue = 1 },
-	{ storage = Storage.AdventurersGuild.QuestLine, storageValue = 1 },
-	{ storage = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton, storageValue = 1 },
-	{ storage = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton, storageValue = 2 },
-	{ storage = Storage.AdventurersGuild.TheLostBrother, storageValue = 3 },
+	{ storage = Storage.Quest.U9_80.AdventurersGuild.QuestLine, storageValue = 1 },
+	{ storage = Storage.Quest.U10_80.TheGreatDragonHunt.WarriorSkeleton, storageValue = 1 },
+	{ storage = Storage.Quest.U10_80.TheGreatDragonHunt.WarriorSkeleton, storageValue = 2 },
+	{ storage = Storage.Quest.U10_80.TheLostBrotherQuest, storageValue = 3 },
 	{ storage = Storage.Quest.U10_55.Dawnport.Questline, storageValue = 1 },
 	{ storage = Storage.Quest.U10_55.Dawnport.GoMain, storageValue = 1 },
 	{ storage = Storage.ForgottenKnowledge.AccessDeath, storageValue = 1 },
@@ -288,8 +288,8 @@ local questTable = {
 	{ storage = Storage.ForgottenKnowledge.AccessFire, storageValue = 1 },
 	{ storage = Storage.ForgottenKnowledge.AccessIce, storageValue = 1 },
 	{ storage = Storage.ForgottenKnowledge.AccessGolden, storageValue = 1 },
-	{ storage = Storage.Quest.U10_80.Grimvale.AncientFeudDoors, storageValue = 1 },
-	{ storage = Storage.Quest.U10_80.Grimvale.AncientFeudShortcut, storageValue = 1 },
+	{ storage = Storage.Quest.U10_80.GrimvaleQuest.AncientFeudDoors, storageValue = 1 },
+	{ storage = Storage.Quest.U10_80.GrimvaleQuest.AncientFeudShortcut, storageValue = 1 },
 	{ storage = Storage.Kilmaresh.AccessDoor, storageValue = 1 },
 	{ storage = Storage.Kilmaresh.CatacombDoors, storageValue = 1 },
 	{ storage = Storage.Quest.U12_00.TheDreamCourts.AccessDoors, storageValue = 1 },
@@ -310,12 +310,12 @@ local questTable = {
 	{ storage = Storage.CultsOfTibia.Misguided.AccessDoor, storageValue = 1 },
 	{ storage = Storage.CultsOfTibia.FinalBoss.AccessDoor, storageValue = 1 },
 
-	{ storage = Storage.FerumbrasAscension.FirstDoor, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.MonsterDoor, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.TarbazDoor, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.HabitatsAccess, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.TheLordOfTheLiceAccess, storageValue = 1 },
-	{ storage = Storage.FerumbrasAscension.Statue, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.FirstDoor, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.MonsterDoor, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.TarbazDoor, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.HabitatsAccess, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.TheLordOfTheLiceAccess, storageValue = 1 },
+	{ storage = Storage.Quest.U10_90.FerumbrasAscension.Statue, storageValue = 1 },
 
 	{ storage = Storage.Quest.U12_00.TheDreamCourts.AndrewDoor, storageValue = 1 },
 
@@ -361,7 +361,7 @@ local questTable = {
 
 	-- Assassin Outfit quests
 	{ storage = Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos, storageValue = 0 },
-	{ storage = Storage.TibiaTales.ToOutfoxAFoxQuest.Questline, storageValue = 2 },
+	{ storage = Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline, storageValue = 2 },
 
 	-- Hunter Outfit quests
 	{ storage = Storage.Quest.U7_8.HunterOutfits.HunterMusicSheet01, storageValue = 1 },
@@ -383,10 +383,10 @@ local questTable = {
 	{ storage = Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine, storageValue = 2 },
 
 	--The White Raven Monastery
-	{ storage = Storage.WhiteRavenMonastery.QuestLog, storageValue = 1 },
-	{ storage = Storage.WhiteRavenMonastery.Passage, storageValue = 1 },
-	{ storage = Storage.WhiteRavenMonastery.Diary, storageValue = 2 },
-	{ storage = Storage.WhiteRavenMonastery.Door, storageValue = 1 },
+	{ storage = Storage.Quest.U7_24.TheWhiteRavenMonastery.QuestLog, storageValue = 1 },
+	{ storage = Storage.Quest.U7_24.TheWhiteRavenMonastery.Passage, storageValue = 1 },
+	{ storage = Storage.Quest.U7_24.TheWhiteRavenMonastery.Diary, storageValue = 2 },
+	{ storage = Storage.Quest.U7_24.TheWhiteRavenMonastery.Door, storageValue = 1 },
 }
 
 -- from Position: (33201, 31762, 1)

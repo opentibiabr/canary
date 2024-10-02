@@ -62,31 +62,31 @@ local jackToTheFuture_Kits = {
 		itemId = 2374,
 		kitMessage = "The red cushioned chair looks quite comfy in that corner.",
 		jackSay = "Jack: Yeah uhm... impressive chair. Now would you please remove it? Thanks.",
-		storage = Storage.TibiaTales.JackFutureQuest.Furniture01,
+		storage = Storage.Quest.U8_7.JackFutureQuest.Furniture01,
 	},
 	[2797] = {
 		itemId = 2979,
 		kitMessage = "A globe like this should be in every household.",
 		jackSay = "Jack: What the... what do I need a 'globe' for? Take this away.",
-		storage = Storage.TibiaTales.JackFutureQuest.Furniture02,
+		storage = Storage.Quest.U8_7.JackFutureQuest.Furniture02,
 	},
 	[2799] = {
 		itemId = 3485,
 		kitMessage = "The telescope just looks like it was the one thing missing from this room.",
 		jackSay = "Jack: Nice, a... what is this actually?",
-		storage = Storage.TibiaTales.JackFutureQuest.Furniture03,
+		storage = Storage.Quest.U8_7.JackFutureQuest.Furniture03,
 	},
 	[2800] = {
 		itemId = 2998,
 		kitMessage = "What a cute horse - and just the right thing to place into this cute room.",
 		jackSay = "Jack: A rocking horse? What's wrong with you.",
-		storage = Storage.TibiaTales.JackFutureQuest.Furniture04,
+		storage = Storage.Quest.U8_7.JackFutureQuest.Furniture04,
 	},
 	[2805] = {
 		itemId = 2904,
 		kitMessage = "There seems to be no better place for this amphora than right here.",
 		jackSay = "Jack: Trying to get rid of your junk in my house? Do I look like I need such a... 'vase'?",
-		storage = Storage.TibiaTales.JackFutureQuest.Furniture05,
+		storage = Storage.Quest.U8_7.JackFutureQuest.Furniture05,
 	},
 }
 
@@ -99,7 +99,7 @@ local constructionKit = Action()
 
 function constructionKit.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getPosition():isInRange(jackToTheFuture_House.beginPos, jackToTheFuture_House.finalPos) then
-		if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 3 then
+		if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 3 then
 			local setting = jackToTheFuture_Kits[item.itemid]
 			if setting then
 				if player:getStorageValue(setting.storage) < 1 then

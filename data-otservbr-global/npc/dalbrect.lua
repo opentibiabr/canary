@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "brooch") then
-		if player:getStorageValue(Storage.WhiteRavenMonastery.Passage) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_24.TheWhiteRavenMonastery.Passage) == 1 then
 			npcHandler:say("You have recovered my brooch! I shall forever be in your debt, my friend!", npc, creature)
 			return true
 		end
@@ -94,8 +94,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				npc,
 				creature
 			)
-			player:setStorageValue(Storage.WhiteRavenMonastery.QuestLog, 1) -- Quest log
-			player:setStorageValue(Storage.WhiteRavenMonastery.Passage, 1)
+			player:setStorageValue(Storage.Quest.U7_24.TheWhiteRavenMonastery.QuestLog, 1) -- Quest log
+			player:setStorageValue(Storage.Quest.U7_24.TheWhiteRavenMonastery.Passage, 1)
 		end
 	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) == 1 then
@@ -113,7 +113,7 @@ keywordHandler:addKeyword({ "passage" }, StdModule.say, {
 	text = "I have only sailed to the isle of the kings once or twice. \z
 				I dare not anger the monks by bringing travelers there without their permission.",
 }, function(player)
-	return player:getStorageValue(Storage.WhiteRavenMonastery.Passage) ~= 1
+	return player:getStorageValue(Storage.Quest.U7_24.TheWhiteRavenMonastery.Passage) ~= 1
 end)
 
 local travelNode = keywordHandler:addKeyword({ "passage" }, StdModule.say, {

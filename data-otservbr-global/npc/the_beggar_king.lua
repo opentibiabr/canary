@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.DarkTrails.Mission01) == 2 and player:getStorageValue(Storage.DarkTrails.Mission02) == 1 then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission01) == 2 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission02) == 1 and player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Door) == 1 then
 			npcHandler:say("So I guess you are the one that the magistrate is sending to look after us, eh? ", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
@@ -93,8 +93,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"But since you are investigating on their behalf, you might work out some agreement with them, if you're mad enough to enter the sewers at all. ... ",
 				"However, you will have to talk to one of the Glooth Brothers who are responsible for the sewer system's maintenance. You'll find them somewhere down there.",
 			}, npc, creature, 10)
-			player:setStorageValue(Storage.DarkTrails.Mission02, 2) -- Mission 2 end
-			player:setStorageValue(Storage.DarkTrails.Mission03, 1) -- Mission 3 start
+			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission02, 2)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

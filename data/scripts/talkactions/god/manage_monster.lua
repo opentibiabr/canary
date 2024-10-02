@@ -13,7 +13,7 @@ local function createCreaturesAround(player, maxRadius, creatureName, creatureCo
         local maxX = position.x + radius
         local minY = position.y - radius
         local maxY = position.y + radius
-        
+
         for dx = minX, maxX do
             for dy = minY, maxY do
                 if (dx == minX or dx == maxX or dy == minY or dy == maxY) and createdCount < creatureCount then

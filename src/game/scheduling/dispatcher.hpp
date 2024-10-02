@@ -153,6 +153,8 @@ private:
 
 	inline void mergeAsyncEvents();
 	inline void mergeEvents();
+	inline void __mergeEvents(const std::array<uint8_t, 2>& groups, const bool mergeScheduledEvents);
+
 	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Walk);
 	inline void executeScheduledEvents();
 

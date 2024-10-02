@@ -159,32 +159,7 @@ void Dispatcher::executeScheduledEvents() {
 	executeEvents(TaskGroup::GenericParallel); // execute async events requested by scheduled events
 }
 
-// Merge only async thread events with main dispatch events
-void Dispatcher::mergeAsyncEvents() {
-	static constexpr std::array<uint8_t, 2> groups = { static_cast<uint8_t>(TaskGroup::WalkParallel), static_cast<uint8_t>(TaskGroup::GenericParallel) };
-
-	for (const auto &thread : threads) {
-		std::scoped_lock lock(thread->mutex);
-		for (const auto group : groups) {
-			auto &threadTasks = thread->tasks[group];
-			auto &tasks = m_tasks[group];
-
-			if (threadTasks.size() > tasks.size()) {
-				tasks.swap(threadTasks);
-			}
-
-			if (!threadTasks.empty()) {
-				tasks.insert(tasks.end(), make_move_iterator(threadTasks.begin()), make_move_iterator(threadTasks.end()));
-				threadTasks.clear();
-			}
-		}
-	}
-}
-
-// Merge thread events with main dispatch events
-void Dispatcher::mergeEvents() {
-	static constexpr std::array<uint8_t, 2> groups = { static_cast<uint8_t>(TaskGroup::Walk), static_cast<uint8_t>(TaskGroup::Serial) };
-
+void Dispatcher::__mergeEvents(const std::array<uint8_t, 2> &groups, const bool mergeScheduledEvents) {
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
 		for (const auto group : groups) {
@@ -201,12 +176,23 @@ void Dispatcher::mergeEvents() {
 			}
 		}
 
-		if (!thread->scheduledTasks.empty()) {
+		if (mergeScheduledEvents && !thread->scheduledTasks.empty()) {
 			scheduledTasks.insert(make_move_iterator(thread->scheduledTasks.begin()), make_move_iterator(thread->scheduledTasks.end()));
 			thread->scheduledTasks.clear();
 		}
 	}
+}
 
+// Merge only async thread events with main dispatch events
+void Dispatcher::mergeAsyncEvents() {
+	static constexpr auto groups = std::to_array({ static_cast<uint8_t>(TaskGroup::WalkParallel), static_cast<uint8_t>(TaskGroup::GenericParallel) });
+	__mergeEvents(groups, false);
+}
+
+// Merge thread events with main dispatch events
+void Dispatcher::mergeEvents() {
+	static constexpr auto groups = std::to_array({ static_cast<uint8_t>(TaskGroup::Walk), static_cast<uint8_t>(TaskGroup::Serial) });
+	__mergeEvents(groups, true);
 	checkPendingTasks();
 }
 

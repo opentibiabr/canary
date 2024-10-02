@@ -1930,8 +1930,8 @@ void Creature::sendAsyncTasks() {
 
 				creature->onExecuteAsyncTasks();
 			}
-			creature->asyncTasks.clear();
 
+			creature->asyncTasks.clear();
 			creature->m_flagAsyncTask = 0;
 		}
 	},

@@ -63,73 +63,73 @@ local createMonster = TalkAction("/m")
 -- @param: the last param is by default "false", if add "," or any value it's set to true
 -- @return true if the command is executed successfully, false otherwise.
 function createMonster.onSay(player, words, param)
-	-- create Log of the command usage.
-	logCommand(player, words, param)
+    -- create Log of the command usage.
+    logCommand(player, words, param)
 
-	-- Check if parameters were passed.
-	if param == "" then
-		player:sendCancelMessage("Monster name param required.")
-		logger.error("[createMonster.onSay] - Monster name param not found.")
-		return true
-	end
+    -- Check if parameters were passed.
+    if param == "" then
+        player:sendCancelMessage("Monster name param required.")
+        logger.error("[createMonster.onSay] - Monster name param not found.")
+        return true
+    end
 
-	local position = player:getPosition()
-	local split = param:split(",")
-	local monsterName = split[1]:trimSpace()
-	
+    local position = player:getPosition()
+    local split = param:split(",")
+    local monsterName = split[1]:trimSpace()
+    
     local monsterType = MonsterType(monsterName)
     if not monsterType then
         player:sendCancelMessage("Invalid monster name!")
         return true
     end
 
-	local monsterCount = tonumber(split[2]) or 1
-	if monsterCount < 1 or monsterCount > 100 then
-    	if monsterCount > 100 then
-        	monsterCount = 100
-        	player:sendCancelMessage("You can only create up to 100 monsters at a time due to server stability concerns!")
-        	return false
-    	end
-	end
+    local monsterCount = tonumber(split[2]) or 1
+    if monsterCount < 1 or monsterCount > 100 then
+        if monsterCount > 100 then
+            monsterCount = 100
+            player:sendCancelMessage("You can only create up to 100 monsters at a time due to server stability concerns!")
+            return false
+        end
+    end
 
-	local monsterForge = split[3] and split[3]:trimSpace() or nil
-	local influencedLevel = tonumber(split[3]) or 0
+    local monsterForge = split[3] and split[3]:trimSpace() or nil
+    local influencedLevel = tonumber(split[3]) or 0
 
-	if influencedLevel < 0 or influencedLevel > 5 then
-    	player:sendCancelMessage("Influenced level must be between 0 and 5.")
-    	return true
-	end
-	
-	local spawnRadius = tonumber(split[4]) or 5
-	local forceCreate = split[5] and split[5]:lower() == "true"
+    if influencedLevel < 0 or influencedLevel > 5 then
+        player:sendCancelMessage("Influenced level must be between 0 and 5.")
+        return true
+    end
 
-	if monsterCount > 1 then
-		createCreaturesAround(player, spawnRadius, monsterName, monsterCount, monsterForge, forceCreate)
-	else
-		local monster = Game.createMonster(monsterName, position)
-		if monster then
-			local canSetFiendish, canSetInfluenced, influencedLevel = CheckDustLevel(monsterForge, player)
-			monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			position:sendMagicEffect(CONST_ME_MAGIC_RED)
-			if monsterForge and not monster:isForgeable() then
-				player:sendCancelMessage("Only allowed monsters can be fiendish or influenced!")
-				return true
-			end
+    local spawnRadius = tonumber(split[4]) or 5
+    local forceCreate = split[5] and split[5]:lower() == "true"
 
-			local monsterType = monster:getType()
-			if canSetFiendish then
-				SetFiendish(monsterType, position, player, monster)
-			end
-			if canSetInfluenced then
-				SetInfluenced(monsterType, monster, player, influencedLevel)
-			end
-		else
-			player:sendCancelMessage("There is not enough room.")
-			position:sendMagicEffect(CONST_ME_POFF)
-		end
-	end
+    if monsterCount > 1 then
+        createCreaturesAround(player, spawnRadius, monsterName, monsterCount, monsterForge, forceCreate)
+    else
+        local monster = Game.createMonster(monsterName, position)
+        if monster then
+            local canSetFiendish, canSetInfluenced, influencedLevel = CheckDustLevel(monsterForge, player)
+            monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+            position:sendMagicEffect(CONST_ME_MAGIC_RED)
+            if monsterForge and not monster:isForgeable() then
+                player:sendCancelMessage("Only allowed monsters can be fiendish or influenced!")
+                return true
+            end
 
-	return true
+            local monsterType = monster:getType()
+            if canSetFiendish then
+                SetFiendish(monsterType, position, player, monster)
+            end
+            if canSetInfluenced then
+                SetInfluenced(monsterType, monster, player, influencedLevel)
+            end
+        else
+            player:sendCancelMessage("There is not enough room.")
+            position:sendMagicEffect(CONST_ME_POFF)
+        end
+    end
+
+    return true
 end
 
 createMonster:separator(" ")

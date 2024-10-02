@@ -1944,7 +1944,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_game().updateCreatureWalk(getID()); // is async
+		g_game().updateCreatureWalk(getID()); // internally uses addEventWalk.
 	}
 
 	if (creature != getPlayer()) {

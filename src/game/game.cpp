@@ -5823,7 +5823,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(attackCreature);
-	updateCreatureWalk(player->getID()); // is Async
+	updateCreatureWalk(player->getID()); // internally uses addEventWalk.
 }
 
 void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
@@ -5833,7 +5833,7 @@ void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(nullptr);
-	updateCreatureWalk(player->getID()); // is Async
+	updateCreatureWalk(player->getID()); // internally uses addEventWalk.
 	player->setFollowCreature(getCreatureByID(creatureId));
 }
 

@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "measurements") then
-		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and player:getStorageValue(Storage.Postman.MeasurementsOlrik) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07) >= 1 and player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.MeasurementsOlrik) ~= 1 then
 			npcHandler:say("My measurements? Listen, lets make that a bit more exciting ... No, no, not what you think! I mean let's gamble. I will roll a dice. If I roll a 6 you win and I'll tell you what you need to know, else I win and get 5 gold. Deal? ", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
@@ -74,8 +74,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Ok, here we go ... " .. number .. "! You lose! Try again.", npc, creature)
 			else
 				npcHandler:say("Ok, here we go ... " .. number .. "! You have won! How lucky you are! So listen ...<tells you what you need to know> ", npc, creature)
-				player:setStorageValue(Storage.Postman.Mission07, player:getStorageValue(Storage.Postman.Mission07) + 1)
-				player:setStorageValue(Storage.Postman.MeasurementsOlrik, 1)
+				player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07, player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07) + 1)
+				player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.MeasurementsOlrik, 1)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end

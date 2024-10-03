@@ -147,6 +147,9 @@
 	<npc centerx="33266" centery="31847" centerz="4" radius="1">
 		<npc name="Zoltan" x="0" y="0" z="4" spawntime="60" />
 	</npc>
+	<npc centerx="33632" centery="31881" centerz="4" radius="3">
+		<npc name="Barnabas Dee" x="-1" y="0" z="4" spawntime="60" />
+	</npc>
 	<npc centerx="32059" centery="31882" centerz="4" radius="1">
 		<npc name="Garamond" x="0" y="0" z="4" spawntime="60" />
 	</npc>
@@ -587,6 +590,9 @@
 	</npc>
 	<npc centerx="32190" centery="31957" centerz="6" radius="1">
 		<npc name="Captain Jack" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="33640" centery="31957" centerz="6" radius="4">
+		<npc name="Doubleday" x="1" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="32097" centery="31964" centerz="6" radius="1">
 		<npc name="Captain Kurt" x="0" y="0" z="6" spawntime="60" />
@@ -2252,6 +2258,9 @@
 	</npc>
 	<npc centerx="33355" centery="31991" centerz="8" radius="1">
 		<npc name="A Majestic Warwolf" x="0" y="0" z="8" spawntime="60" />
+	</npc>
+	<npc centerx="33446" centery="32036" centerz="8" radius="4">
+		<npc name="Quandons Ghost" x="1" y="0" z="8" spawntime="60" />
 	</npc>
 	<npc centerx="32450" centery="32039" centerz="8" radius="1">
 		<npc name="Skjaar" x="0" y="0" z="8" spawntime="60" />

@@ -58,21 +58,21 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if table.contains({ "mission", "quest" }, message:lower()) then
-		if player:getStorageValue(Storage.TibiaTales.ToOutfoxAFoxQuest.Questline) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline) < 1 then
 			npcHandler:say({
 				"Funny that you are asking me for a mission! There is indeed something you can do for me. Ever heard about The Horned Fox? Anyway, yesterday his gang has stolen my mining helmet during a raid. ...",
 				"It belonged to my father and before that to my grandfather. That helmet is at least 600 years old! I need it back. Are you willing to help me?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.TibiaTales.ToOutfoxAFoxQuest.Questline) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline) == 1 then
 			if player:removeItem(139, 1) then
-				player:setStorageValue(Storage.TibiaTales.ToOutfoxAFoxQuest.Questline, 2)
+				player:setStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline, 2)
 				player:addItem(875, 1)
 				npcHandler:say("As I was just saying to the others, 'this brave fellow will bring me my mining helmet back' and here you are with it!! Here take my spare helmet, I don't need it anymore!", npc, creature)
 			else
 				npcHandler:say("We presume the hideout of The Horned Fox is somewhere in the south-west near the coast, good luck finding my mining helmet!", npc, creature)
 			end
-		elseif player:getStorageValue(Storage.TibiaTales.ToOutfoxAFoxQuest.Questline) == 2 and player:getLevel() <= 40 and player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos) < 0 then
+		elseif player:getStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline) == 2 and player:getLevel() <= 40 and player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos) < 0 then
 			npcHandler:say({
 				"I am so angry I could spit grit! That damn {Horned Fox} and his attacks! Let's show those bull-heads that they have messed with the wrong people....",
 				"I want you to kill 5000 minotaurs - no matter where - for me and all the dwarfs of Kazordoon! Are you willing to do that?",
@@ -100,10 +100,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("I knew you have the guts for that task! We presume the hideout of The Horned Fox somewhere in the south-west near the coast. Good luck!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			if player:getStorageValue(Storage.TibiaTales.DefaultStart) <= 0 then
-				player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) <= 0 then
+				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 			end
-			player:setStorageValue(Storage.TibiaTales.ToOutfoxAFoxQuest.Questline, 1)
+			player:setStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline, 1)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Hussah! Let's bring war to those hoof-legged, dirt-necked, bull-headed minotaurs!! Come back to me when you are done with your {mission}.", npc, creature)
 			player:setStorageValue(JOIN_STOR, 1)

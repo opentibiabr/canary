@@ -79,7 +79,7 @@ addTravelKeyword("svargrond", "You know a town nicer than this? NICER DICER! Apr
 end, function()
 	return math.random(5) > 1
 end, function(player)
-	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) < 8
+	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8
 end, function(player)
 	return player:getItemCount(3097) > 0
 end, function(player)
@@ -90,7 +90,7 @@ addTravelKeyword("okolnir", "It's nice there. Except of the ice dragons which ar
 end, function()
 	return math.random(5) > 1
 end, function(player)
-	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) < 8
+	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8
 end, function(player)
 	return player:getItemCount(3097) > 0
 end, function(player)
@@ -101,7 +101,7 @@ addTravelKeyword("tyrsung", "*HICKS* Big, big island east of here. Venorian hunt
 end, function()
 	return math.random(5) > 1
 end, function(player)
-	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) < 8
+	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8
 end, function(player)
 	return player:getItemCount(3097) > 0
 end, function(player)
@@ -112,7 +112,7 @@ addTravelKeyword("camp", "Both of you look like you could defend yourself! If yo
 end, function()
 	return math.random(5) > 1
 end, function(player)
-	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) < 8
+	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8
 end, function(player)
 	return player:getItemCount(3097) > 0
 end, function(player)

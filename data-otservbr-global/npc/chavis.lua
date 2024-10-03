@@ -60,36 +60,45 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- START TASK
 	if MsgContains(message, "food") then
-		if player:getStorageValue(Storage.Oramond.MissionToTakeRoots) <= 0 then
+		if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission) < 1 then
 			npcHandler:say({
 				"Hey there, just to let you know - I am not a man of many words. I prefer 'deeds', you see? The poor of this city will not feed themselves. ...",
 				"So in case you've got nothing better to do - and it sure looks that way judging by how long you're already loitering around in front of my nose - please help us. ...",
 				"If you can find some of the nutritious, juicy {roots} in the outskirts of Rathleton, bring them here. We will gladly take bundles of five roots each, and hey - helping us, helps you in the long term, trust me.",
 			}, npc, creature, 10)
-			if player:getStorageValue(Storage.Oramond.QuestLine) <= 0 then
-				player:setStorageValue(Storage.Oramond.QuestLine, 1)
+			if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.QuestLine) < 1 then
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.QuestLine, 1)
 			end
-			player:setStorageValue(Storage.Oramond.MissionToTakeRoots, 1)
+			player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission, 1)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.Oramond.MissionToTakeRoots) == 1 then
-			if player:getStorageValue(Storage.Oramond.HarvestedRootCount) < 5 then
+		elseif player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission) == 1 then
+			if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count) < 5 then
 				npcHandler:say("I am sorry, you didn't harvest enough roots. You need to harvest a bundle of at least five roots - and please try doing it yourself.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
-			elseif player:getStorageValue(Storage.Oramond.HarvestedRootCount) >= 5 then
+			elseif player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count) >= 5 then
 				npcHandler:say("Yes? You brought some juicy roots? How nice of you - that's one additional voice in the {magistrate} of {Rathleton} for you! ...", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			end
 		end
-	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
-		npcHandler:say("Spend it wisely, though, put in a word for the poor, will ye? Sure you will.", npc, creature)
-		player:setStorageValue(Storage.Oramond.VotingPoints, player:getStorageValue(Storage.Oramond.VotingPoints) + 1)
-
-		player:setStorageValue(Storage.Oramond.HarvestedRootCount, player:getStorageValue(Storage.Oramond.HarvestedRootCount) - 5)
-		player:removeItem(21291, 5)
-
-		player:setStorageValue(Storage.Oramond.MissionToTakeRoots, 0)
-		player:setStorageValue(Storage.Oramond.DoorBeggarKing, 1)
-		npcHandler:setTopic(playerId, 0)
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 1 and player:removeItem(21291, 5) then
+			npcHandler:say("Spend it wisely, though, put in a word for the poor, will ye? Sure you will.", npc, creature)
+			player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count, player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Count) - 5)
+			player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission, -1)
+			if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Door) < 1 then
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Door, 1)
+			end
+			local currentVotingPoints = player:getStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints)
+			if currentVotingPoints == -1 then
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints, 1)
+			else
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints, currentVotingPoints + 1)
+			end
+			npcHandler:setTopic(playerId, 0)
+		else
+			npcHandler:say("You don't have enough items.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
+		end
 	elseif MsgContains(message, "root") then
 		npcHandler:say("They are nutritious, cost nothing and are good for the body hair. If you can bring us bundles of five juicy roots each - we will make it worth your while for the {magistrate}.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
@@ -102,6 +111,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		}, npc, creature, 10)
 		npcHandler:setTopic(playerId, 0)
 	end
+
 	return true
 end
 

@@ -54,19 +54,25 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	-- Missing script for complete the mission 16 of dark trails
-	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.DarkTrails.Mission16) == 1 then
-			npcHandler:say("Ahhhhhhhh! Find and investigate the hideout, the mission 17", npc, creature)
-			setPlayerStorageValue(creature, Storage.DarkTrails.Mission17, 1)
-			setPlayerStorageValue(creature, Storage.DarkTrails.DoorHideout, 1)
+	if MsgContains(message, "manway") then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission16) == 1 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission17) < 1 then
+			npcHandler:say("I'm not allowed to let just anyone pass. If you have proven your willingness and effort to participate in the fighting, I'm allowed to let you pass.", npc, creature)
+			npcHandler:setTopic(playerId, 1)
+		else
+			npcHandler:say("Ahhhhhhhh! ", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
-	else
-		npcHandler:say("Ahhhhhhhh! ", npc, creature)
+	elseif MsgContains(message, "effort") and npcHandler:getTopic(playerId) == 1 then
+		npcHandler:say("You fought hard enough against the minotaurs. Since you've shown so much effort in our war, I'll let you pass through the gate.", npc, creature)
+		player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission17, 1)
+		player:setStorageValue(Storage.Quest.U10_50.DarkTrails.DoorHideout, 1)
+		npcHandler:setTopic(playerId, 0)
 	end
+
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, " Hey there, you are surely interested in helping the Rathleton city guard, right? Right - especially now since the dreaded minotaurs gain more ground every day.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

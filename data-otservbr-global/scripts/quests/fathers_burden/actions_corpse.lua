@@ -1,6 +1,6 @@
 local config = {
-	[11589] = { itemId = 11550, storage = Storage.FathersBurden.Corpse.Scale, text = "Glitterscale's scale." },
-	[11590] = { itemId = 11548, storage = Storage.FathersBurden.Corpse.Sinew, text = "Heoni's sinew" },
+	[11589] = { itemId = 11550, storage = Storage.Quest.U8_6.AFathersBurden.Corpse.Scale, text = "Glitterscale's scale." },
+	[11590] = { itemId = 11548, storage = Storage.Quest.U8_6.AFathersBurden.Corpse.Sinew, text = "Heoni's sinew" },
 }
 
 local fatherCorpse = Action()

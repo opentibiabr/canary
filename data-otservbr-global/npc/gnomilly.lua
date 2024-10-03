@@ -87,50 +87,50 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if talkState[playerId] == "report" then
 		if MsgContains(message, "pacifiers") then
-			if player:getStorageValue(SPIKE_UPPER_PACIFIER_MAIN) == -1 then
+			if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Main) == -1 then
 				npcHandler:say("You have not started that mission.", npc, creature)
-			elseif player:getStorageValue(SPIKE_UPPER_PACIFIER_MAIN) == 7 then
+			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Main) == 7 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(1000, true)
-				player:setStorageValue(SPIKE_UPPER_PACIFIER_MAIN, -1)
-				player:setStorageValue(SPIKE_UPPER_PACIFIER_DAILY, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Main, -1)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Take the resonance charger and use it on seven of the pacifiers in the cave.", npc, creature)
 			end
 		elseif MsgContains(message, "release") then
-			if player:getStorageValue(SPIKE_UPPER_MOUND_MAIN) == -1 then
+			if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Mound_Main) == -1 then
 				npcHandler:say("You have not started that mission.", npc, creature)
-			elseif player:getStorageValue(SPIKE_UPPER_MOUND_MAIN) == 4 then
+			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Mound_Main) == 1 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(1000, true)
-				player:setStorageValue(SPIKE_UPPER_MOUND_MAIN, -1)
-				player:setStorageValue(SPIKE_UPPER_MOUND_DAILY, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Mound_Main, -1)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Mound_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Take the spirit shovel use it on four graves in the cave system.", npc, creature)
 			end
 		elseif MsgContains(message, "tracking") then
-			if player:getStorageValue(SPIKE_UPPER_TRACK_MAIN) == -1 then
+			if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Main) == -1 then
 				npcHandler:say("You have not started that mission.", npc, creature)
-			elseif player:getStorageValue(SPIKE_UPPER_TRACK_MAIN) == 3 then
+			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Main) == 3 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(1000, true)
-				player:setStorageValue(SPIKE_UPPER_TRACK_MAIN, -1)
-				player:setStorageValue(SPIKE_UPPER_TRACK_DAILY, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Main, -1)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Take the tracking device in the caves and locate the residual spirit energy.", npc, creature)
 			end
 		elseif MsgContains(message, "killing") then
-			if player:getStorageValue(SPIKE_UPPER_KILL_MAIN) == -1 then
+			if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Kill_Main) == -1 then
 				npcHandler:say("You have not started that mission.", npc, creature)
-			elseif player:getStorageValue(SPIKE_UPPER_KILL_MAIN) == 7 then
+			elseif player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Kill_Main) == 7 then
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(1000, true)
-				player:setStorageValue(SPIKE_UPPER_KILL_MAIN, -1)
-				player:setStorageValue(SPIKE_UPPER_KILL_DAILY, 86400)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Kill_Main, -1)
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Kill_Daily, os.time() + 72000)
 			else
 				npcHandler:say("Gnowful! Just go out to the caves and kill at least seven demon skeletons.", npc, creature)
 			end
@@ -145,15 +145,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	////GHOST PACIFIERS////
 	/////////////////////]]
 	if MsgContains(message, "pacifiers") then
-		if player:getStorageValue(SPIKE_UPPER_PACIFIER_DAILY) >= os.time() then
-			return npcHandler:say("Sorry, you have to wait " .. string.diff(player:getStorageValue(SPIKE_UPPER_PACIFIER_DAILY) - os.time()) .. " before this task gets available again.", npc, creature)
+		if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Daily) >= os.time() then
+			return npcHandler:say("Sorry, you have to wait " .. string.diff(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Daily) - os.time()) .. " before this task gets available again.", npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
 			return npcHandler:say("Sorry, you are not on the required range of levels [" .. levels[1] .. "-" .. levels[2] .. "].", npc, creature)
 		end
 
-		if player:getStorageValue(SPIKE_UPPER_PACIFIER_MAIN) == -1 then
+		if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Main) == -1 then
 			npcHandler:say({ "We need you to recharge our ghost pacifiers. They are placed at several strategic points in the caves around us and should be easy to find. Your mission would be to charge seven of them.", "If you are interested, I can give you some more {information} about it. Are you willing to accept this mission?" }, npc, creature)
 			talkState[playerId] = "pacifiers"
 		else
@@ -164,7 +164,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if talkState[playerId] == "pacifiers" then
 		if MsgContains(message, "yes") then
 			player:addItem(19204, 1)
-			player:setStorageValue(SPIKE_UPPER_PACIFIER_MAIN, 0)
+			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Main, 0)
 			npcHandler:say("Gnometastic! Take this resonance charger and use it on seven of the pacifiers in the cave. If you lose the charger, you'll have to bring your own. Gnomux sells all the equipment that is required for our missions.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
@@ -177,15 +177,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	////SPIRIT RELEASE/////
 	/////////////////////]]
 	if MsgContains(message, "release") then
-		if player:getStorageValue(SPIKE_UPPER_MOUND_DAILY) >= os.time() then
-			return npcHandler:say("Sorry, you have to wait " .. string.diff(player:getStorageValue(SPIKE_UPPER_MOUND_DAILY) - os.time()) .. " before this task gets available again.", npc, creature)
+		if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Mound_Daily) >= os.time() then
+			return npcHandler:say("Sorry, you have to wait " .. string.diff(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Mound_Daily) - os.time()) .. " before this task gets available again.", npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
 			return npcHandler:say("Sorry, you are not on the required range of levels [" .. levels[1] .. "-" .. levels[2] .. "].", npc, creature)
 		end
 
-		if player:getStorageValue(SPIKE_UPPER_MOUND_MAIN) == -1 then
+		if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Mound_Main) == -1 then
 			npcHandler:say("Your task would be to use a spirit shovel to release some spirit's anger from graves that can be found all around here. If you are interested, I can give you some more information about it. Are you willing to accept this mission?", npc, creature)
 			talkState[playerId] = "release"
 		else
@@ -196,7 +196,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if talkState[playerId] == "release" then
 		if MsgContains(message, "yes") then
 			player:addItem(19203, 1)
-			player:setStorageValue(SPIKE_UPPER_MOUND_MAIN, 0)
+			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Mound_Main, 0)
 			npcHandler:say("Gnometastic! Take this spirit shovel and use it on four graves in the cave system. If you lose the shovel you'll have to bring your own. Gnomux sells all the equipment that is required for our missions.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
@@ -209,15 +209,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	////TRACK GHOSTS/////
 	///////////////////]]
 	if MsgContains(message, "track") then
-		if player:getStorageValue(SPIKE_UPPER_TRACK_DAILY) >= os.time() then
-			return npcHandler:say("Sorry, you have to wait " .. string.diff(player:getStorageValue(SPIKE_UPPER_TRACK_DAILY) - os.time()) .. " before this task gets available again.", npc, creature)
+		if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Daily) >= os.time() then
+			return npcHandler:say("Sorry, you have to wait " .. string.diff(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Daily) - os.time()) .. " before this task gets available again.", npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
 			return npcHandler:say("Sorry, you are not on the required range of levels [" .. levels[1] .. "-" .. levels[2] .. "].", npc, creature)
 		end
 
-		if player:getStorageValue(SPIKE_UPPER_TRACK_MAIN) == -1 then
+		if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Main) == -1 then
 			npcHandler:say(
 				{ "You'd be given the highly important task to track down an enormously malevolent spiritual presence in the cave system. Use your tracking device to find out how close you are to the presence.", "Use that information to find the residual energy and use the tracker there. If you are interested, I can give you some more information about it. Are you willing to accept this mission?" },
 				npc,
@@ -233,7 +233,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, "yes") then
 			GHOST_DETECTOR_MAP[player:getGuid()] = Position.getFreeSand()
 			player:addItem(19205, 1)
-			player:setStorageValue(SPIKE_UPPER_TRACK_MAIN, 0)
+			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Main, 0)
 			npcHandler:say("Gnometastic! Use this tracking device in the caves and locate the residual spirit energy. If you lose the tracking device, you'll have to bring your own. Gnomux sells all the equipment that is required for our missions.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
@@ -246,15 +246,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	////KILL/////
 	///////////]]
 	if MsgContains(message, "kill") then
-		if player:getStorageValue(SPIKE_UPPER_KILL_DAILY) >= os.time() then
-			return npcHandler:say("Sorry, you have to wait " .. string.diff(player:getStorageValue(SPIKE_UPPER_KILL_DAILY) - os.time()) .. " before this task gets available again.", npc, creature)
+		if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Kill_Daily) >= os.time() then
+			return npcHandler:say("Sorry, you have to wait " .. string.diff(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Kill_Daily) - os.time()) .. " before this task gets available again.", npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
 			return npcHandler:say("Sorry, you are not on the required range of levels [" .. levels[1] .. "-" .. levels[2] .. "].", npc, creature)
 		end
 
-		if player:getStorageValue(SPIKE_UPPER_KILL_MAIN) == -1 then
+		if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Kill_Main) == -1 then
 			npcHandler:say("We need someone to reduce the steadily growing number of demon skeletons in the caves. If you are interested, I can give you some more information about it. Are you willing to accept this mission?", npc, creature)
 			talkState[playerId] = "kill"
 		else
@@ -264,7 +264,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if talkState[playerId] == "kill" then
 		if MsgContains(message, "yes") then
-			player:setStorageValue(SPIKE_UPPER_KILL_MAIN, 0)
+			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Kill_Main, 0)
 			npcHandler:say("Gnometastic! Just go out and kill them. You should find more of them than you like.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
@@ -275,6 +275,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, "Hi!")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

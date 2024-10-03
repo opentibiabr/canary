@@ -81,7 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "research") and player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 11 then
+	if MsgContains(message, "research") and player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 11 then
 		local qStorage = player:getStorageValue(Storage.Quest.U8_7.SpiritHunters.Mission01)
 		local tombsStorage = player:getStorageValue(Storage.Quest.U8_7.SpiritHunters.TombUse)
 		if qStorage == -1 then
@@ -164,22 +164,22 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:say("Do you have the mirror crystal? Unbelievable! Alright I will extract the crystal from the device myself, would you please give me the device with the crystal and step back?", npc, creature)
 			npcHandler:setTopic(playerId, 7)
-		elseif (player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) == 10) and (player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) < 1) then
+		elseif (player:getStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline) == 10) and (player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) < 1) then
 			npcHandler:say("After the debacle with the crystal, I started focussing on other things. There are also some {tasks} that still need to be done. If you can spare the time to continue helping me, it shall not be to your disadvantage. So are you in for another mission?", npc, creature)
 			npcHandler:setTopic(playerId, 27)
-		elseif player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 2 then
+		elseif player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 2 then
 			npcHandler:say("So you found him? Have you talked to {Jack} yet?", npc, creature)
 			npcHandler:setTopic(playerId, 30)
-		elseif player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 4 then
+		elseif player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 4 then
 			npcHandler:say("You're back from {Jack}! Mh, by the looks of your face I doubt our little redecoration project yielded any success. But I had an even better idea while you were gone - ready to give it another try?", npc, creature)
 			npcHandler:setTopic(playerId, 32)
-		elseif player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 6 then
+		elseif player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 6 then
 			npcHandler:say("So, did you talk to his family? Were you able to convince them?", npc, creature)
 			npcHandler:setTopic(playerId, 33)
-		elseif player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 8 then
+		elseif player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 8 then
 			npcHandler:say("Did you find out what hobby {Jack} has? Did you separate him from this activity? Only if he has a free mind, he can truly get back to his former self! Now all you need to do is talk to him again!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 9 then
+		elseif player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 9 then
 			npcHandler:say({
 				"Oh you are back already. Hm... I doubt it worked, did it? It DID? Oh well... good job. Really! Now... the thing is - the actual {Jack} wrote. No, no wait. Calm down first. ...",
 				"You remember me explaining the fold in time, causing a tiny disturbance in infinity? Well, as I already told you, {Jack} was indeed not transported to the future... but to the past. ...",
@@ -191,7 +191,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Anyway you did a great job and I thank you for... putting your hands into my fire Player... once again.",
 			}, npc, creature)
 			player:addExperience(6000, true)
-			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 10)
+			player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine, 10)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "yes") then
@@ -308,8 +308,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"I will mark his current location on your map, just ask him about me and see what happens - good luck.",
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline, 11)
-			player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
-			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 30 then
 			npcHandler:say("Yes? And he didn't remember anything? Not even me? That's not good. Then we will have to do everything ourselves. Are you ready to continue?", npc, creature)
@@ -320,7 +320,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"I know that he used to have a very comfy red cushioned chair and an old globe which sat near the middle of the room. He also used a smaller telescope and he had that extremely large amphora in a corner. And... there was one other thing. ...",
 				"A rocking horse. He just loved it! Find these items, buy them if you need to and place them where {Jack} lives. Ask him about the furniture and don't forget to tell me about his reaction!",
 			}, npc, creature)
-			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 3)
+			player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine, 3)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 32 then
 			npcHandler:say({
@@ -329,7 +329,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Hm... that's strange, I don't even recall his family. Never knew he had a mother and a sister. Tell them the truth about him - maybe they will understand and even help him getting this over with. ...",
 				"But be careful, the {dimensional} shift could mean that they will not even know what you're talking about since they are more closely linked to him than anyone else.",
 			}, npc, creature)
-			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 5)
+			player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine, 5)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 33 then
 			npcHandler:say({
@@ -337,11 +337,11 @@ local function creatureSayCallback(npc, creature, type, message)
 				"A hobby or something! Yes, ask him about his hobbies! Convince him somehow that anything he is doing there does not match his true self - he didn't have any hobbies except a healthy interest in science - you MUST convince him, no matter what! ...",
 				"Or everything we achieved would be in vain. We can still save Jack! Now go and do what you must do.",
 			}, npc, creature)
-			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 7)
+			player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine, 7)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "jack") then
-		if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 10 then
+		if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 10 then
 			npcHandler:say({
 				"Well you know Jack - after all you talked to him in person. He will get over it. As for the real Jack, my former intern... I am glad that nothing serious happened to him. ...",
 				"According to his letter, he did just fine so many years ago. He somehow managed to make a name of himself when he cast some magic we enhanced through our research - of course no one back then had ever seen such spells. ...",

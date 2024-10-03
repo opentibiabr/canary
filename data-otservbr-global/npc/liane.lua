@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "measurements") then
-		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and player:getStorageValue(Storage.Postman.MeasurementsLiane) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07) >= 1 and player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.MeasurementsLiane) ~= 1 then
 			npcHandler:say("I have more urgent problem to attend then that. Those hawks are hunting my carrier pigeons. Bring me 12 arrows and I'll see if I have the time for this nonsense. Do you have 12 arrows with you? ", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
@@ -79,8 +79,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:removeItem(3447, 12) then
 				npcHandler:say("Great! Now I'll teach them a lesson ... For those measurements ... <tells you her measurements> ", npc, creature)
-				player:setStorageValue(Storage.Postman.Mission07, player:getStorageValue(Storage.Postman.Mission07) + 1)
-				player:setStorageValue(Storage.Postman.MeasurementsLiane, 1)
+				player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07, player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07) + 1)
+				player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.MeasurementsLiane, 1)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("Oh, you don't have it.", npc, creature)

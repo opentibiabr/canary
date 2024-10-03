@@ -81,7 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "mission") and player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) < 1 then
+	if MsgContains(message, "mission") and player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) < 1 then
 		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor) < 1 and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor) < 1 then
 			npcHandler:say("Do you know the location of the djinn fortresses in the mountains south of here?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
@@ -97,14 +97,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Very good. I hope you are able to convince one of the fractions to stand on our side. If you haven't done yet, you should first go and look for old Melchior in Ankrahmun. ...",
 			"He knows many things about the djinn race and he may have some hints for you.",
 		}, npc, creature)
-		if player:getStorageValue(Storage.TibiaTales.DefaultStart) <= 0 then
-			player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
+		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) <= 0 then
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 		end
-		player:setStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest, 1)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, 1)
 		-- Entregando
-	elseif player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) == 3 then
+	elseif player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) == 3 then
 		npcHandler:say("Well, I don't blame you for that. I am sure you did your best. Now we can just hope that peace remains. Here, take this small gratification for your effort to help and Daraman may bless you!", npc, creature)
-		player:setStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) + 1)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) + 1)
 		player:addItem(3035, 20)
 	end
 

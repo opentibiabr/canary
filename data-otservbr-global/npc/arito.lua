@@ -51,7 +51,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local function greetCallback(npc, player)
-	if player:getStorageValue(Storage.TibiaTales.AritosTask) == 2 then
+	if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask) == 2 then
 		npcHandler:setMessage(MESSAGE_GREET, "Thank god you are back!! Did you find....err...what we were talking about??")
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Be mourned, pilgrim in flesh. Be mourned in my tavern.")
@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local AritosTask = player:getStorageValue(Storage.TibiaTales.AritosTask)
+	local AritosTask = player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask)
 
 	-- Check if the message contains "nomads"
 	if MsgContains(message, "nomads") then
@@ -90,10 +90,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				"The entrance to their hideout will be revealed in front of you. I don't know who is in charge there right now but please tell him that I won't spoil their secret...",
 				"... well, I just told you but anyway .... I won't tell it to anybody else. Now hurry up before they get here!!",
 			}, npc, creature)
-			if player:getStorageValue(Storage.TibiaTales.DefaultStart) <= 0 then
-				player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) <= 0 then
+				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 			end
-			player:setStorageValue(Storage.TibiaTales.AritosTask, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask, 1)
 		elseif AritosTask == 2 then
 			npcHandler:say("And what did they say?? Do I have to give up everything here? Come on tell me!!", npc, creature)
 			npcHandler:setTopic(playerId, 2)
@@ -101,7 +101,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		-- Check if the message contains "Acquitted" and topic is 2
 	elseif MsgContains(message, "Acquitted") and npcHandler:getTopic(playerId) == 2 then
 		npcHandler:say("These are great news!! Thank you for your help! I don't have much, but without you I wouldn't have anything so please take this as a reward.", npc, creature)
-		player:setStorageValue(Storage.TibiaTales.AritosTask, 3)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask, 3)
 		player:addItem(3035, 100)
 	end
 

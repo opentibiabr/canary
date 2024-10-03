@@ -151,7 +151,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 		if npcHandler:getTopic(playerId) == 2 then
 			--if (Set storage if player can enchant helmet(need Grim Vale quest)) then
-			player:setStorageValue(Storage.Grimvale.WereHelmetEnchant, vocations[helmet])
+			player:setStorageValue(Storage.Quest.U10_80.GrimvaleQuest.WereHelmetEnchant, vocations[helmet])
 			npcHandler:say("So this is your choice. If you want to change it, you will have to come to me again.", npc, creature)
 			--else
 			--npcHandler:say("Message when player do not have quest.", npc, creature)
@@ -164,7 +164,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return false
 		else
 			--if (Set storage if player can enchant helmet(need Grim Vale quest)) then
-			player:setStorageValue(Storage.Grimvale.WereHelmetEnchant, vocations[knightChoice[playerId]][weapontype])
+			player:setStorageValue(Storage.Quest.U10_80.GrimvaleQuest.WereHelmetEnchant, vocations[knightChoice[playerId]][weapontype])
 			npcHandler:say("So this is your choice. If you want to change it, you will have to come to me again.", npc, creature)
 			--else
 			--npcHandler:say("Message when player do not have quest.", npc, creature)

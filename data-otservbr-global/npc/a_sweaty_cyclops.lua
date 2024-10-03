@@ -70,8 +70,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Me need gift for woman. We dance, so me want to give her bast skirt. But she big is. So I need many to make big one. Bring three okay? Me wait.", npc, creature)
-			if player:getStorageValue(Storage.OutfitQuest.FriendsandTraders.DefaultStart) ~= 1 then
-				player:setStorageValue(Storage.OutfitQuest.FriendsandTraders.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.DefaultStart) ~= 1 then
+				player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.DefaultStart, 1)
 			end
 			player:setStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops, 1)
 			npcHandler:setTopic(playerId, 3)
@@ -101,8 +101,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Me need gift for woman. We dance, so me want to give her bast skirt. But she big is. So I need many to make big one. Bring three okay? Me wait.", npc, creature)
-			if player:getStorageValue(Storage.OutfitQuest.FriendsandTraders.DefaultStart) ~= 1 then
-				player:setStorageValue(Storage.OutfitQuest.FriendsandTraders.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.DefaultStart) ~= 1 then
+				player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.DefaultStart, 1)
 			end
 			player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops, 1)
 			npcHandler:setTopic(playerId, 3)

@@ -2,11 +2,11 @@ local othersEctoplasm = Action()
 
 function othersEctoplasm.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if target.actionid == 4206 then
-		if player:getStorageValue(Storage.TibiaTales.IntoTheBonePit) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.IntoTheBonePit) ~= 1 then
 			return false
 		end
 
-		player:setStorageValue(Storage.TibiaTales.IntoTheBonePit, 2)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.IntoTheBonePit, 2)
 		item:transform(131)
 		target:remove()
 		toPosition:sendMagicEffect(CONST_ME_POFF)

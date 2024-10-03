@@ -68,10 +68,10 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "measurements") then
 		local player = Player(creature)
-		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and player:getStorageValue(Storage.Postman.MeasurementsBenjamin) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07) >= 1 and player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.MeasurementsBenjamin) ~= 1 then
 			npcHandler:say("Oh they don't change that much since in the old days as... <tells a boring and confusing story about a cake, a parcel, himself and two squirrels, at least he tells you his measurements in the end> ", npc, creature)
-			player:setStorageValue(Storage.Postman.Mission07, player:getStorageValue(Storage.Postman.Mission07) + 1)
-			player:setStorageValue(Storage.Postman.MeasurementsBenjamin, 1)
+			player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07, player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07) + 1)
+			player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.MeasurementsBenjamin, 1)
 			npcHandler:setTopic(playerId, 0)
 		else
 			npcHandler:say("...", npc, creature)

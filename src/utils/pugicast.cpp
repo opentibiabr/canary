@@ -6,7 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#include "pch.hpp"
+
 #include "lib/logging/log_with_spd_log.hpp"
 
 namespace pugi {

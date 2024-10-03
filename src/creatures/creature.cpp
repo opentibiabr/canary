@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/creature.hpp"
 #include "declarations.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -811,7 +809,7 @@ bool Creature::dropCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared
 				auto monster = getMonster();
 				if (monster && !monster->isRewardBoss()) {
 					std::ostringstream lootMessage;
-					auto collorMessage = player->getProtocolVersion() > 1200 && player->getOperatingSystem() < CLIENTOS_OTCLIENT_LINUX;
+					auto collorMessage = player->getProtocolVersion() > 1200;
 					lootMessage << "Loot of " << getNameDescription() << ": " << corpseContainer->getContentDescription(collorMessage) << ".";
 					auto suffix = corpseContainer->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
 					if (!suffix.empty()) {

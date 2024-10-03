@@ -7,17 +7,16 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/wheel/player_wheel.hpp"
 
+#include "config/configmanager.hpp"
 #include "io/io_wheel.hpp"
-
 #include "game/game.hpp"
+#include "server/network/message/networkmessage.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/combat/spells.hpp"
-
-#include "config/configmanager.hpp"
+#include "kv/kv.hpp"
+#include "creatures/players/wheel/wheel_gems.hpp"
 
 const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot1Allowed = {
 	WheelGemBasicModifier_t::General_FireResistance,
@@ -3152,4 +3151,47 @@ WheelGemBasicModifier_t PlayerWheel::selectBasicModifier2(WheelGemBasicModifier_
 		modifier = wheelGemBasicSlot2Allowed[uniform_random(0, wheelGemBasicSlot2Allowed.size() - 1)];
 	}
 	return modifier;
+}
+
+void PlayerWheelGem::save(const std::shared_ptr<KV> &kv) const {
+	kv->scoped("revealed")->set(uuid, serialize());
+}
+void PlayerWheelGem::remove(const std::shared_ptr<KV> &kv) const {
+	kv->scoped("revealed")->remove(uuid);
+}
+
+PlayerWheelGem PlayerWheelGem::load(const std::shared_ptr<KV> &kv, const std::string &uuid) {
+	auto val = kv->scoped("revealed")->get(uuid);
+	if (!val || !val.has_value()) {
+		return {};
+	}
+	return deserialize(uuid, val.value());
+}
+
+ValueWrapper PlayerWheelGem::serialize() const {
+	return {
+		{ "uuid", uuid },
+		{ "locked", locked },
+		{ "affinity", static_cast<IntType>(affinity) },
+		{ "quality", static_cast<IntType>(quality) },
+		{ "basicModifier1", static_cast<IntType>(basicModifier1) },
+		{ "basicModifier2", static_cast<IntType>(basicModifier2) },
+		{ "supremeModifier", static_cast<IntType>(supremeModifier) }
+	};
+}
+
+PlayerWheelGem PlayerWheelGem::deserialize(const std::string &uuid, const ValueWrapper &val) {
+	auto map = val.get<MapType>();
+	if (map.empty()) {
+		return {};
+	}
+	return {
+		uuid,
+		map["locked"]->get<BooleanType>(),
+		static_cast<WheelGemAffinity_t>(map["affinity"]->get<IntType>()),
+		static_cast<WheelGemQuality_t>(map["quality"]->get<IntType>()),
+		static_cast<WheelGemBasicModifier_t>(map["basicModifier1"]->get<IntType>()),
+		static_cast<WheelGemBasicModifier_t>(map["basicModifier2"]->get<IntType>()),
+		static_cast<WheelGemSupremeModifier_t>(map["supremeModifier"]->get<IntType>())
+	};
 }

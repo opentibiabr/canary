@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "declarations.hpp"
 #include "game/game.hpp"
 #include "io/iobestiary.hpp"

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/functions/core/game/lua_enums.hpp"
 
 #include "creatures/players/wheel/wheel_gems.hpp"

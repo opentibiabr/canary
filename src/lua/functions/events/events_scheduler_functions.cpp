@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/scheduling/events_scheduler.hpp"
 #include "lua/functions/events/events_scheduler_functions.hpp"
 

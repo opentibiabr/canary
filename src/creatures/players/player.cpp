@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/combat/combat.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -4148,6 +4146,12 @@ std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uin
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
 	for (const auto &item : getAllInventoryItems(false, true)) {
+		if (const auto &container = item->getContainer()) {
+			if (container->size() > 0) {
+				continue;
+			}
+		}
+
 		countMap[item->getID()] += item->getItemCount();
 	}
 
@@ -5597,7 +5601,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 
 double_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 	double_t result = reflectPercent[combatTypeToIndex(combat)];
-	for (const auto item : getEquippedItems()) {
+	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
 			continue;
@@ -6228,7 +6232,9 @@ void Player::sendIcons() {
 	// Remove the last icon so that Bakragore's is added
 	auto iconSet = getClientIcons();
 	if (iconSet.size() >= 9 && iconBakragore != IconBakragore::None) {
-		iconSet.erase(std::prev(iconSet.end()));
+		std::vector<PlayerIcon> tempVector(iconSet.begin(), iconSet.end());
+		tempVector.pop_back();
+		iconSet = std::unordered_set<PlayerIcon>(tempVector.begin(), tempVector.end());
 	}
 
 	client->sendIcons(iconSet, iconBakragore);
@@ -7243,7 +7249,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 			}
 
 			for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
-				if (mapTier == firstForgingItem->getTier()) {
+				if (mapTier == firstForgingItem->getTier() + 1) {
 					cost = mapPrice.convergenceFusionPrice;
 					break;
 				}

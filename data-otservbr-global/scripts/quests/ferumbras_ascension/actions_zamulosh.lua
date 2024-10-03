@@ -29,6 +29,18 @@ local config = {
 local leverZamulosh = Action()
 
 function leverZamulosh.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	local cooldownTime = player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.ZamuloshTime)
+	if cooldownTime > os.time() then
+		local remainingTime = cooldownTime - os.time()
+		local hours = math.floor(remainingTime / 3600)
+		local minutes = math.floor((remainingTime % 3600) / 60)
+
+		player:sendCancelMessage("You must wait " .. hours .. " hours and " .. minutes .. " minutes to challenge again.")
+		player:teleportTo(fromPosition)
+		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		return true
+	end
+
 	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
 	for _, spec in pairs(spectators) do
 		if spec:isPlayer() then

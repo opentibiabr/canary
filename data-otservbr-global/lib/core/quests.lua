@@ -5250,22 +5250,22 @@ if not Quests then
 		},
 		[37] = {
 			name = "The First Dragon",
-			startStorageId = Storage.FirstDragon.Questline,
+			startStorageId = Storage.Quest.U11_02.TheFirstDragon.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Power",
-					storageId = Storage.FirstDragon.DragonCounter,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.DragonCounter,
 					missionId = 10368,
 					startValue = 0,
 					endValue = 200,
 					description = function(player)
-						return ("You already hunted %d/200 dragons."):format(player:getStorageValue(Storage.FirstDragon.DragonCounter))
+						return ("You already hunted %d/200 dragons."):format(player:getStorageValue(Storage.Quest.U11_02.TheFirstDragon.DragonCounter))
 					end,
 				},
 				[2] = {
 					name = "Treasure",
-					storageId = Storage.FirstDragon.ChestCounter,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.ChestCounter,
 					missionId = 10369,
 					startValue = 0,
 					endValue = 20,
@@ -5274,7 +5274,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Knowledge",
-					storageId = Storage.FirstDragon.GelidrazahAccess,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.GelidrazahAccess,
 					missionId = 10370,
 					startValue = 0,
 					endValue = 1,
@@ -5283,7 +5283,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Life",
-					storageId = Storage.FirstDragon.SecretsCounter,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.SecretsCounter,
 					missionId = 10371,
 					startValue = 0,
 					endValue = 3,

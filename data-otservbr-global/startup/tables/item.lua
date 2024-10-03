@@ -1623,6 +1623,11 @@ ItemUnique = {
 		itemId = 2576,
 		itemPos = { x = 32455, y = 31166, z = 12 },
 	},
+	-- The First Dragon
+	[1066] = {
+		itemId = 3657,
+		itemPos = { x = 33608, y = 31022, z = 14 },
+	},
 	-- The Pits of Inferno Quest
 	[2000] = {
 		itemId = 599,

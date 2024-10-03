@@ -6,6 +6,10 @@ local config = {
 	timeToDefeat = 17 * 60, -- 17 minutes in seconds
 	playerPositions = {
 		{ pos = Position(33680, 32741, 11), teleport = Position(33644, 32760, 11), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33680, 32742, 11), teleport = Position(33644, 32760, 11), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33680, 32743, 11), teleport = Position(33644, 32760, 11), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33680, 32744, 11), teleport = Position(33644, 32760, 11), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33680, 32745, 11), teleport = Position(33644, 32760, 11), effect = CONST_ME_TELEPORT },
 	},
 	specPos = {
 		from = Position(33632, 32747, 11),

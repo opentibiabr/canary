@@ -20,8 +20,8 @@ public:
 	virtual std::shared_ptr<Player> getPlayer() {
 		return nullptr;
 	}
-	virtual bool isGuild() {
-		return false;
+	virtual std::shared_ptr<Guild> getGuild() {
+		return nullptr;
 	}
 	virtual void setOnline(bool online) = 0;
 	[[nodiscard]] virtual bool isOnline() const = 0;

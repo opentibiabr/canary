@@ -20,18 +20,16 @@ Bank::Bank(const std::shared_ptr<Bankable> bankable) :
 
 Bank::~Bank() {
 	auto bankable = getBankable();
-	if (bankable == nullptr || bankable->isOnline()) {
+	if (!bankable || bankable->isOnline()) {
 		return;
 	}
-	std::shared_ptr<Player> player = bankable->getPlayer();
-	if (player && !player->isOnline()) {
-		g_saveManager().savePlayer(player);
 
-		return;
-	}
-	if (bankable->isGuild()) {
-		const auto guild = static_self_cast<Guild>(bankable);
-		if (guild && !guild->isOnline()) {
+	if (auto player = bankable->getPlayer()) {
+		if (!player->isOnline()) {
+			g_saveManager().savePlayer(player);
+		}
+	} else if (auto guild = bankable->getGuild()) {
+		if (!guild->isOnline()) {
 			g_saveManager().saveGuild(guild);
 		}
 	}
@@ -42,27 +40,25 @@ bool Bank::credit(uint64_t amount) {
 }
 
 bool Bank::debit(uint64_t amount) {
-	if (!hasBalance(amount)) {
-		return false;
+	if (hasBalance(amount)) {
+		return balance(balance() - amount);
 	}
-	return balance(balance() - amount);
+	return false;
 }
 
 bool Bank::balance(uint64_t amount) const {
-	auto bankable = getBankable();
-	if (!bankable) {
-		return 0;
+	if (auto bankable = getBankable()) {
+		bankable->setBankBalance(amount);
+		return true;
 	}
-	bankable->setBankBalance(amount);
-	return true;
+	return false;
 }
 
 uint64_t Bank::balance() {
-	auto bankable = getBankable();
-	if (!bankable) {
-		return 0;
+	if (auto bankable = getBankable()) {
+		return bankable->getBankBalance();
 	}
-	return bankable->getBankBalance();
+	return 0;
 }
 
 bool Bank::hasBalance(const uint64_t amount) {
@@ -98,7 +94,6 @@ bool Bank::transferTo(const std::shared_ptr<Bank> &destination, const uint64_t a
 
 	const auto &destinationPlayer = destinationBankable->getPlayer();
 	const auto &bankablePlayer = bankable->getPlayer();
-
 	if (destinationPlayer && bankablePlayer) {
 		auto name = asLowerCaseString(destinationPlayer->getName());
 		replaceString(name, " ", "");
@@ -123,18 +118,17 @@ bool Bank::transferTo(const std::shared_ptr<Bank> &destination, const uint64_t a
 		}
 	}
 
-	if (!(debit(amount) && destination->credit(amount))) {
+	auto transactionSuccessfully = debit(amount) && destination->credit(amount);
+	if (!transactionSuccessfully) {
 		return false;
 	}
 
 	if (destinationPlayer) {
 		g_metrics().addCounter("balance_increase", amount, { { "player", destinationPlayer->getName() }, { "context", "bank_transfer" } });
 	}
-
 	if (bankablePlayer) {
 		g_metrics().addCounter("balance_decrease", amount, { { "player", bankablePlayer->getName() }, { "context", "bank_transfer" } });
 	}
-
 	return true;
 }
 
@@ -143,12 +137,12 @@ bool Bank::withdraw(std::shared_ptr<Player> player, uint64_t amount) {
 		return false;
 	}
 
-	if (!debit(amount)) {
-		return false;
+	if (debit(amount)) {
+		g_game().addMoney(player, amount);
+		g_metrics().addCounter("balance_decrease", amount, { { "player", player->getName() }, { "context", "bank_withdraw" } });
+		return true;
 	}
-	g_game().addMoney(player, amount);
-	g_metrics().addCounter("balance_decrease", amount, { { "player", player->getName() }, { "context", "bank_withdraw" } });
-	return true;
+	return false;
 }
 
 bool Bank::deposit(const std::shared_ptr<Bank> destination) {
@@ -156,10 +150,13 @@ bool Bank::deposit(const std::shared_ptr<Bank> destination) {
 	if (!bankable) {
 		return false;
 	}
-	if (bankable->getPlayer() == nullptr) {
+
+	const auto &bankablePlayer = bankable->getPlayer();
+	if (!bankablePlayer) {
 		return false;
 	}
-	auto amount = bankable->getPlayer()->getMoney();
+
+	auto amount = bankablePlayer->getMoney();
 	return deposit(destination, amount);
 }
 
@@ -167,15 +164,22 @@ bool Bank::deposit(const std::shared_ptr<Bank> destination, uint64_t amount) {
 	if (!destination) {
 		return false;
 	}
+
 	auto bankable = getBankable();
 	if (!bankable) {
 		return false;
 	}
-	if (!g_game().removeMoney(bankable->getPlayer(), amount)) {
+
+	const auto &bankablePlayer = bankable->getPlayer();
+	if (!bankablePlayer) {
 		return false;
 	}
-	if (bankable->getPlayer() != nullptr) {
-		g_metrics().addCounter("balance_decrease", amount, { { "player", bankable->getPlayer()->getName() }, { "context", "bank_deposit" } });
+
+	auto successfullyRemovedMoney = g_game().removeMoney(bankablePlayer, amount);
+	if (!successfullyRemovedMoney) {
+		return false;
 	}
+
+	g_metrics().addCounter("balance_decrease", amount, { { "player", bankablePlayer->getName() }, { "context", "bank_deposit" } });
 	return destination->credit(amount);
 }

@@ -61,7 +61,7 @@ local config = {
 	clearArea = {
 		from = Position(33566, 31006, 14),
 		to = Position(33626, 31032, 14),
-	}
+	},
 }
 
 local function clearMonstersInArea(fromPos, toPos)

@@ -146,7 +146,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-
 npcHandler:setMessage(MESSAGE_GREET, "Hello, my sparring buddy. We should have another fight sometimes. I think you may have earned a little reward.")
 
 keywordHandler:addKeyword({ "times" }, StdModule.say, { npcHandler = npcHandler, text = "Times have changed <sigh>. In the past dragons were feared and respected. Only the {demons} rivalled our notoriety." })

@@ -5,9 +5,7 @@ local function isDateWithinEvent()
 	local startDate = { day = 14, month = 1 }
 	local endDate = { day = 12, month = 2 }
 
-	if (currentDate.month == startDate.month and currentDate.day >= startDate.day) or
-	   (currentDate.month == endDate.month and currentDate.day <= endDate.day) or
-	   (currentDate.month > startDate.month and currentDate.month < endDate.month) then
+	if (currentDate.month == startDate.month and currentDate.day >= startDate.day) or (currentDate.month == endDate.month and currentDate.day <= endDate.day) or (currentDate.month > startDate.month and currentDate.month < endDate.month) then
 		return true
 	end
 	return false
@@ -19,7 +17,7 @@ function lastTeleport.onStepIn(creature, item, position, fromPosition)
 		return
 	end
 
-	local destination = {x = 33585, y = 30990, z = 14}
+	local destination = { x = 33585, y = 30990, z = 14 }
 
 	if not isDateWithinEvent() then
 		player:teleportTo(fromPosition, true)

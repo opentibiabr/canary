@@ -123,4 +123,3 @@ for index, value in pairs(UniqueTable) do
 end
 
 treasureChest:register()
-

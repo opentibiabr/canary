@@ -47,9 +47,7 @@ local function isDateWithinEvent()
 	local startDate = { day = 14, month = 1 }
 	local endDate = { day = 12, month = 2 }
 
-	if (currentDate.month == startDate.month and currentDate.day >= startDate.day) or
-	   (currentDate.month == endDate.month and currentDate.day <= endDate.day) or
-	   (currentDate.month > startDate.month and currentDate.month < endDate.month) then
+	if (currentDate.month == startDate.month and currentDate.day >= startDate.day) or (currentDate.month == endDate.month and currentDate.day <= endDate.day) or (currentDate.month > startDate.month and currentDate.month < endDate.month) then
 		return true
 	end
 	return false

@@ -60,6 +60,7 @@ local createMonster = TalkAction("/m")
 -- @param param: String containing the command parameters.
 -- Format: "/m monstername, monstercount, [fiendish/influenced level], [forceCreate]"
 -- Example: "/m rat, 10, fiendish"
+-- Note that creating fiendish monsters requires more performance than influenced ones. A maximum of 25 per time is recommended.
 -- @param: the last param is by default "false", if add "," or any value it's set to true
 -- @return true if the command is executed successfully, false otherwise.
 function createMonster.onSay(player, words, param)

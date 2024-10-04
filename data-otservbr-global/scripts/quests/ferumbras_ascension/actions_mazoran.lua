@@ -26,10 +26,7 @@ function leverMazoran.onUse(player, item, fromPosition, target, toPosition, isHo
 		local remainingTime = cooldownTime - os.time()
 		local hours = math.floor(remainingTime / 3600)
 		local minutes = math.floor((remainingTime % 3600) / 60)
-
 		player:sendCancelMessage("You must wait " .. hours .. " hours and " .. minutes .. " minutes to challenge again.")
-		player:teleportTo(fromPosition)
-		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		return true
 	end
 

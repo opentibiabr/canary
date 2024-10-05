@@ -21,54 +21,54 @@ local config = {
 local leverMazoran = Action()
 
 function leverMazoran.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-    local players = {}
-    local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
+	local players = {}
+	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
 
-    for i = 1, #config.playerPositions do
-        local pos = config.playerPositions[i].pos
-        local creature = Tile(pos):getTopCreature()
+	for i = 1, #config.playerPositions do
+		local pos = config.playerPositions[i].pos
+		local creature = Tile(pos):getTopCreature()
 
-        if not creature or not creature:isPlayer() then
-            player:sendCancelMessage("You need " .. #config.playerPositions .. " players to challenge " .. config.boss.name .. ".")
-            return true
-        end
+		if not creature or not creature:isPlayer() then
+			player:sendCancelMessage("You need " .. #config.playerPositions .. " players to challenge " .. config.boss.name .. ".")
+			return true
+		end
 
-        local cooldownTime = creature:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.MazoranTime)
-        if cooldownTime > os.time() then
-            local remainingTime = cooldownTime - os.time()
-            local hours = math.floor(remainingTime / 3600)
-            local minutes = math.floor((remainingTime % 3600) / 60)
-            player:sendCancelMessage(creature:getName() .. " must wait " .. hours .. " hours and " .. minutes .. " minutes to challenge again.")
-            return true
-        end
+		local cooldownTime = creature:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.MazoranTime)
+		if cooldownTime > os.time() then
+			local remainingTime = cooldownTime - os.time()
+			local hours = math.floor(remainingTime / 3600)
+			local minutes = math.floor((remainingTime % 3600) / 60)
+			player:sendCancelMessage(creature:getName() .. " must wait " .. hours .. " hours and " .. minutes .. " minutes to challenge again.")
+			return true
+		end
 
-        if creature:getLevel() < config.requiredLevel then
-            player:sendCancelMessage(creature:getName() .. " needs to be at least level " .. config.requiredLevel .. " to challenge " .. config.boss.name .. ".")
-            return true
-        end
+		if creature:getLevel() < config.requiredLevel then
+			player:sendCancelMessage(creature:getName() .. " needs to be at least level " .. config.requiredLevel .. " to challenge " .. config.boss.name .. ".")
+			return true
+		end
 
-        table.insert(players, creature)
-    end
+		table.insert(players, creature)
+	end
 
-    for _, spec in pairs(spectators) do
-        if spec:isPlayer() then
-            player:say("Someone is already inside the room.", TALKTYPE_MONSTER_SAY)
-            return true
-        end
-    end
+	for _, spec in pairs(spectators) do
+		if spec:isPlayer() then
+			player:say("Someone is already inside the room.", TALKTYPE_MONSTER_SAY)
+			return true
+		end
+	end
 
-    if isBossInRoom(config.specPos.from, config.specPos.to, config.boss.name) then
-        player:say("The room is being cleared. Please wait a moment.", TALKTYPE_MONSTER_SAY)
-        return true
-    end
+	if isBossInRoom(config.specPos.from, config.specPos.to, config.boss.name) then
+		player:say("The room is being cleared. Please wait a moment.", TALKTYPE_MONSTER_SAY)
+		return true
+	end
 
-    for i = 1, #players do
-        local playerToTeleport = players[i]
-        local teleportPos = config.playerPositions[i].teleport
-        local effect = config.playerPositions[i].effect
-        playerToTeleport:teleportTo(teleportPos)
-        teleportPos:sendMagicEffect(effect)
-    end
+	for i = 1, #players do
+		local playerToTeleport = players[i]
+		local teleportPos = config.playerPositions[i].teleport
+		local effect = config.playerPositions[i].effect
+		playerToTeleport:teleportTo(teleportPos)
+		teleportPos:sendMagicEffect(effect)
+	end
 
 	local boss = Game.createMonster(config.boss.name, config.boss.position)
 

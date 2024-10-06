@@ -67,7 +67,7 @@ public:
 		return inject<Modules>();
 	}
 
-	void executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const;
+	bool executeOnRecvbyte(const uint32_t playerId, NetworkMessage &msg, const uint8_t byte) const;
 	Module* getEventByRecvbyte(uint8_t recvbyte, bool force);
 
 protected:

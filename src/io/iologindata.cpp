@@ -214,16 +214,22 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		throw DatabaseException("[" + std::string(__FUNCTION__) + "] - Failed to save player first: " + player->getName());
 	}
 
-	if (!IOLoginDataSave::savePlayerStash(player)) {
-		throw DatabaseException("[IOLoginDataSave::savePlayerFirst] - Failed to save player stash: " + player->getName());
+	if (player->hasSaveStash()) {
+		if (!IOLoginDataSave::savePlayerStash(player)) {
+			throw DatabaseException("[IOLoginDataSave::savePlayerFirst] - Failed to save player stash: " + player->getName());
+		}
 	}
 
-	if (!IOLoginDataSave::savePlayerSpells(player)) {
-		throw DatabaseException("[IOLoginDataSave::savePlayerSpells] - Failed to save player spells: " + player->getName());
+	if (player->hasSaveSpells()) {
+		if (!IOLoginDataSave::savePlayerSpells(player)) {
+			throw DatabaseException("[IOLoginDataSave::savePlayerSpells] - Failed to save player spells: " + player->getName());
+		}
 	}
 
-	if (!IOLoginDataSave::savePlayerKills(player)) {
-		throw DatabaseException("IOLoginDataSave::savePlayerKills] - Failed to save player kills: " + player->getName());
+	if (player->hasSaveUnjustifiedKills()) {
+		if (!IOLoginDataSave::savePlayerKills(player)) {
+			throw DatabaseException("IOLoginDataSave::savePlayerKills] - Failed to save player kills: " + player->getName());
+		}
 	}
 
 	if (!IOLoginDataSave::savePlayerBestiarySystem(player)) {
@@ -254,12 +260,16 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerTaskHuntingClass] - Failed to save player task hunting class: " + player->getName());
 	}
 
-	if (!IOLoginDataSave::savePlayerForgeHistory(player)) {
-		throw DatabaseException("[IOLoginDataSave::savePlayerForgeHistory] - Failed to save player forge history: " + player->getName());
+	if (player->hasSaveForgeHistory()) {
+		if (!IOLoginDataSave::savePlayerForgeHistory(player)) {
+			throw DatabaseException("[IOLoginDataSave::savePlayerForgeHistory] - Failed to save player forge history: " + player->getName());
+		}
 	}
 
-	if (!IOLoginDataSave::savePlayerBosstiary(player)) {
-		throw DatabaseException("[IOLoginDataSave::savePlayerBosstiary] - Failed to save player bosstiary: " + player->getName());
+	if (player->hasSaveBosstiary()) {
+		if (!IOLoginDataSave::savePlayerBosstiary(player)) {
+			throw DatabaseException("[IOLoginDataSave::savePlayerBosstiary] - Failed to save player bosstiary: " + player->getName());
+		}
 	}
 
 	if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {

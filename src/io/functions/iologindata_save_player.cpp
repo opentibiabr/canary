@@ -338,6 +338,8 @@ bool IOLoginDataSave::savePlayerStash(std::shared_ptr<Player> player) {
 	if (!stashQuery.execute()) {
 		return false;
 	}
+
+	player->setSaveStash(false);
 	return true;
 }
 
@@ -367,6 +369,8 @@ bool IOLoginDataSave::savePlayerSpells(std::shared_ptr<Player> player) {
 	if (!spellsQuery.execute()) {
 		return false;
 	}
+
+	player->setSaveSpells(false);
 	return true;
 }
 
@@ -396,6 +400,8 @@ bool IOLoginDataSave::savePlayerKills(std::shared_ptr<Player> player) {
 	if (!killsQuery.execute()) {
 		return false;
 	}
+
+	player->setSaveUnjustifiedKills(false);
 	return true;
 }
 
@@ -715,6 +721,8 @@ bool IOLoginDataSave::savePlayerForgeHistory(std::shared_ptr<Player> player) {
 	if (!insertQuery.execute()) {
 		return false;
 	}
+
+	player->setForgeHistory(false);
 	return true;
 }
 
@@ -759,6 +767,7 @@ bool IOLoginDataSave::savePlayerBosstiary(std::shared_ptr<Player> player) {
 		return false;
 	}
 
+	player->setSaveBosstiary(false);
 	return true;
 }
 

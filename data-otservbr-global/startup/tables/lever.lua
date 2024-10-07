@@ -102,6 +102,19 @@ LeverAction = {
 			{ x = 32576, y = 31862, z = 14 },
 		},
 	},
+	-- Forgotten Knowledge Quest
+	[26663] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 32792, y = 32820, z = 13 },
+		},
+	},
+	[26664] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 32840, y = 32820, z = 13 },
+		},
+	},
 	-- Dawnport bridge lever
 	-- Path: data\scripts\actions\dawnport\lever.lua
 	[30001] = {

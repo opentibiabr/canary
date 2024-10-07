@@ -2621,6 +2621,31 @@ ChestUnique = {
 		weight = 1.00,
 		storage = Storage.Quest.U10_90.FerumbrasAscension.VampireTeeth,
 	},
+	-- Forgotten Knowledge Quest
+	[6310] = {
+		useKV = true,
+		itemId = 23736,
+		itemPos = { x = 32825, y = 31664, z = 9 },
+		reward = { { 23734, 1 } },
+		weight = 6.00,
+		questName = "GhostsilverLanternQuest",
+	},
+	[6311] = {
+		useKV = true,
+		itemId = 21858,
+		itemPos = { x = 32883, y = 31686, z = 10 },
+		reward = { { 23732, 1 } },
+		weight = 4.00,
+		questName = "PaintingOfAGirlQuest",
+	},
+	[6311] = {
+		useKV = true,
+		itemId = 9253,
+		itemPos = { x = 33026, y = 31662, z = 14 },
+		reward = { { 24964, 1 } },
+		weight = 3.00,
+		questName = "ImbuingCrystalQuest",
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

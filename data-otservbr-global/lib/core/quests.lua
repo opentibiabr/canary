@@ -5169,12 +5169,12 @@ if not Quests then
 		},
 		[36] = {
 			name = "Forgotten Knowledge",
-			startStorageId = Storage.ForgottenKnowledge.Tomes,
+			startStorageId = Storage.Quest.U11_02.ForgottenKnowledge.Tomes,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Circle of the Black Sphinx",
-					storageId = Storage.ForgottenKnowledge.LadyTenebrisKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisKilled,
 					missionId = 10361,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5184,7 +5184,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Bane of the Cosmic Force",
-					storageId = Storage.ForgottenKnowledge.LloydKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LloydKilled,
 					missionId = 10362,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5195,7 +5195,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Desecrated Glade",
-					storageId = Storage.ForgottenKnowledge.ThornKnightKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightKilled,
 					missionId = 10363,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5206,7 +5206,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "The Unwary Mage",
-					storageId = Storage.ForgottenKnowledge.DragonkingKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled,
 					missionId = 10364,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5217,7 +5217,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Dragon in Distress",
-					storageId = Storage.ForgottenKnowledge.HorrorKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled,
 					missionId = 10365,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5227,7 +5227,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Time is a Window",
-					storageId = Storage.ForgottenKnowledge.TimeGuardianKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled,
 					missionId = 10366,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5238,7 +5238,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Final Fight",
-					storageId = Storage.ForgottenKnowledge.LastLoreKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LastLoreKilled,
 					missionId = 10367,
 					startValue = 0,
 					endValue = 1522018605,

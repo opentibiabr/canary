@@ -27,6 +27,27 @@ TeleportAction = {
 }
 
 TeleportUnique = {
+	-- Forgotten Knowledge Quest
+	[1067] = {
+		itemId = 1949,
+		itemPos = { x = 32915, y = 31637, z = 14 },
+	},
+	[1068] = {
+		itemId = 1949,
+		itemPos = { x = 32676, y = 32888, z = 14 },
+	},
+	[1070] = {
+		itemId = 1949,
+		itemPos = { x = 32316, y = 31093, z = 14 },
+	},
+	[1071] = {
+		itemId = 1949,
+		itemPos = { x = 32849, y = 32689, z = 15 },
+	},
+	[1072] = {
+		itemId = 1949,
+		itemPos = { x = 32033, y = 32859, z = 14 },
+	},
 	-- Issavi town teleport
 	[9515] = {
 		itemId = 1949,

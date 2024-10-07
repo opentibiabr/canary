@@ -885,6 +885,19 @@ ItemAction = {
 			{ x = 33324, y = 31372, z = 14 },
 		},
 	},
+	-- Forgotten Knowledge Quest
+	[24875] = {
+		itemId = 23730,
+		itemPos = { x = 32860, y = 31644, z = 10 },
+	},
+	[24876] = {
+		itemId = 1503,
+		itemPos = { x = 32891, y = 31619, z = 10 },
+	},
+	[24877] = {
+		itemId = 1503,
+		itemPos = { x = 32924, y = 31636, z = 14 },
+	},
 	-- The Cursed Crystal
 	[25018] = {
 		itemId = false,

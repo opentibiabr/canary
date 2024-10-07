@@ -75,28 +75,27 @@ local function creatureSayCallback(npc, creature, type, message)
 			"But beware, as far as we know, some of them have been claimed by other ancient beings and there is now way for us to prepare you what lies beyond any of those gates.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
-    elseif MsgContains(message, "father") and npcHandler:getTopic(playerId) == 1 then
-        if player:getStorageValue(Storage.Quest.U8_54.TheNewFrontier.Questline) == 29 then
-            npcHandler:say({
-                "Papa- my father has recently started an adventure on his own. His name is Silus; he is a member of the Edron academy. ...",
-                "Ever since he joined what he called a 'special research division', he went on and on about Zao and how venturing there would help him get ahead. ...",
-                "You must know he lives for science, especially concerning faraway lands and cultures. He talked about the importance of practical field studies but, frankly, he isn't particularly cut out for that. ...",
-                "I know he has to focus to get his research done right now, and I simply cannot leave my duties in the temple. You seem like a person who travels a lot; would you be willing to help me?",
-            }, npc, creature)
-            npcHandler:setTopic(playerId, 2)
-        elseif player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Ivalisse) == 1 or
-               player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Chalice) == 1 then
-            npcHandler:say("Well, I hope you like it here. We tried to rebuild in the Shaper's will. I am a bit preoccupied at the moment because of the absence of my father. I may not be the best of help currently, sorry.", npc, creature)
-            npcHandler:setTopic(playerId, 0)
-        elseif player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled) >= 1 and player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Ivalisse) < 1 then
-            npcHandler:say({
-                "What? You're telling me you found father? How is he? What did papa say? A chalice? As a disguise? The whole time? ...",
-                "Well, I am not as much surprised as I am happy to hear that he's alright. You know, after the incident with the duck and the umbrella—it doesn't get to me that easily anymore. ...",
-                "Thank you very much for doing all this for me; I will be forever grateful. I have nothing to repay you with, but you are already blessed to have been able to lay eyes on the sacred Shaper ruins.",
-            }, npc, creature)
-            player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Ivalisse, 1)
-            npcHandler:setTopic(playerId, 0)
-        end
+	elseif MsgContains(message, "father") and npcHandler:getTopic(playerId) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_54.TheNewFrontier.Questline) == 29 then
+			npcHandler:say({
+				"Papa- my father has recently started an adventure on his own. His name is Silus; he is a member of the Edron academy. ...",
+				"Ever since he joined what he called a 'special research division', he went on and on about Zao and how venturing there would help him get ahead. ...",
+				"You must know he lives for science, especially concerning faraway lands and cultures. He talked about the importance of practical field studies but, frankly, he isn't particularly cut out for that. ...",
+				"I know he has to focus to get his research done right now, and I simply cannot leave my duties in the temple. You seem like a person who travels a lot; would you be willing to help me?",
+			}, npc, creature)
+			npcHandler:setTopic(playerId, 2)
+		elseif player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Ivalisse) == 1 or player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Chalice) == 1 then
+			npcHandler:say("Well, I hope you like it here. We tried to rebuild in the Shaper's will. I am a bit preoccupied at the moment because of the absence of my father. I may not be the best of help currently, sorry.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
+		elseif player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled) >= 1 and player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Ivalisse) < 1 then
+			npcHandler:say({
+				"What? You're telling me you found father? How is he? What did papa say? A chalice? As a disguise? The whole time? ...",
+				"Well, I am not as much surprised as I am happy to hear that he's alright. You know, after the incident with the duck and the umbrella—it doesn't get to me that easily anymore. ...",
+				"Thank you very much for doing all this for me; I will be forever grateful. I have nothing to repay you with, but you are already blessed to have been able to lay eyes on the sacred Shaper ruins.",
+			}, npc, creature)
+			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Ivalisse, 1)
+			npcHandler:setTopic(playerId, 0)
+		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say({
@@ -109,10 +108,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 3 then
-				npcHandler:say("You would? That's great! Thank you! If you can find my father, tell him I understand and that I really miss him!", npc, creature)
-				player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AccessFire, 1)
-				player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Chalice, 1)
-				npcHandler:setTopic(playerId, 0)
+			npcHandler:say("You would? That's great! Thank you! If you can find my father, tell him I understand and that I really miss him!", npc, creature)
+			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AccessFire, 1)
+			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Chalice, 1)
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "no") then
 		npcHandler:say("Oh nevermind, I am sorry I asked you for this.", npc, creature)

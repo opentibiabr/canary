@@ -85,7 +85,8 @@ function entranceTeleport.onStepIn(creature, item, position, fromPosition)
 	end
 	if item.itemid == 10840 then
 		if player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AccessLast) < 1 then
-			if player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisKilled) >= 1
+			if
+				player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisKilled) >= 1
 				and player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.LloydKilled) >= 1
 				and player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightKilled) >= 1
 				and player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled) >= 1

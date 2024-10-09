@@ -61,8 +61,8 @@ jobs:
         id: vcpkg-step
         run: |
           vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ')
-          echo "vcpkg commit ID: $vcpkgCommitId"
-          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> $GITHUB_ENV
+          echo "vcpkg commit ID: \"$vcpkgCommitId\""
+          echo "VCPKG_GIT_COMMIT_ID=\"$vcpkgCommitId\"" >> $GITHUB_ENV
 
       - name: Get vcpkg commit id from vcpkg.json
         uses: lukka/run-vcpkg@main

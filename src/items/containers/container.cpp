@@ -917,7 +917,7 @@ uint16_t Container::getFreeSlots() {
 }
 
 ContainerIterator Container::iterator() {
-	return { getContainer(), static_cast<size_t>(g_configManager().getNumber(MAX_CONTAINER_DEPTH, __FUNCTION__)) };
+	return { getContainer(), static_cast<size_t>(g_configManager().getNumber(MAX_CONTAINER_DEPTH)) };
 }
 
 void Container::removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient /* = false*/) {
@@ -964,7 +964,7 @@ ContainerIterator::ContainerIterator(const std::shared_ptr<Container> &container
 	maxTraversalDepth(maxDepth) {
 	if (container) {
 		states.reserve(maxDepth);
-		visitedContainers.reserve(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
+		visitedContainers.reserve(g_configManager().getNumber(MAX_CONTAINER));
 		(void)states.emplace_back(container, 0, 1);
 		(void)visitedContainers.insert(container);
 	}

@@ -70,11 +70,11 @@ Container::~Container() {
 					g_game().browseFields.erase(browseField);
 				}
 			}
-		}
 
-		for (auto &item : itemlist) {
-			if (item) {
-				item->setParent(parent);
+			for (auto &item : itemlist) {
+				if (item) {
+					item->setParent(parent);
+				}
 			}
 		}
 	}

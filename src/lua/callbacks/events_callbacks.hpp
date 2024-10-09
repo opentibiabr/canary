@@ -90,14 +90,8 @@ public:
 	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
 			if (callback && callback->isLoadedCallback()) {
-				auto argsCopy = std::make_tuple(args...);
-				std::apply(
-					[callback, &callbackFunc](auto &&... args) {
-						((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
-					},
-					argsCopy
-				);
-				g_logger().trace("Executed callback: {}", name);
+				std::invoke(callbackFunc, *callback, std::forward<Args>(args)...);
+				// g_logger().trace("Executed callback: {}", name);
 			}
 		}
 	}
@@ -111,22 +105,15 @@ public:
 	 */
 	template <typename CallbackFunc, typename... Args>
 	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
-		ReturnValue res = RETURNVALUE_NOERROR;
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
-			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
-				ReturnValue callbackResult = std::apply(
-					[&callback, &callbackFunc](auto &&... args) {
-						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
-					},
-					argsCopy
-				);
+				ReturnValue callbackResult = std::invoke(callbackFunc, *callback, std::forward<Args>(args)...);
 				if (callbackResult != RETURNVALUE_NOERROR) {
 					return callbackResult;
 				}
 			}
 		}
-		return res;
+		return RETURNVALUE_NOERROR;
 	}
 
 	/**
@@ -139,17 +126,10 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		bool allCallbacksSucceeded = true;
-
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
-			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
-				bool callbackResult = std::apply(
-					[&callback, &callbackFunc](auto &&... args) {
-						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
-					},
-					argsCopy
-				);
-				allCallbacksSucceeded = allCallbacksSucceeded && callbackResult;
+				bool callbackResult = std::invoke(callbackFunc, *callback, std::forward<Args>(args)...);
+				allCallbacksSucceeded &= callbackResult;
 			}
 		}
 		return allCallbacksSucceeded;

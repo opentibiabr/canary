@@ -141,10 +141,10 @@ public:
 		bool allCallbacksSucceeded = true;
 
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
-			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
+				auto argsCopy = std::make_tuple(args...);
 				bool callbackResult = std::apply(
-					[&callback, &callbackFunc](auto &&... args) {
+					[callback, &callbackFunc](auto &&... args) {
 						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
 					},
 					argsCopy

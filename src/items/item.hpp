@@ -719,9 +719,9 @@ public:
 			return 0;
 		}
 		return quadraticPoly(
-			g_configManager().getFloat(RUSE_CHANCE_FORMULA_A, __FUNCTION__),
-			g_configManager().getFloat(RUSE_CHANCE_FORMULA_B, __FUNCTION__),
-			g_configManager().getFloat(RUSE_CHANCE_FORMULA_C, __FUNCTION__),
+			g_configManager().getFloat(RUSE_CHANCE_FORMULA_A),
+			g_configManager().getFloat(RUSE_CHANCE_FORMULA_B),
+			g_configManager().getFloat(RUSE_CHANCE_FORMULA_C),
 			getTier()
 		);
 	}
@@ -731,9 +731,9 @@ public:
 			return 0;
 		}
 		return quadraticPoly(
-			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_A, __FUNCTION__),
-			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_B, __FUNCTION__),
-			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_C, __FUNCTION__),
+			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_A),
+			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_B),
+			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_C),
 			getTier()
 		);
 	}
@@ -743,9 +743,9 @@ public:
 			return 0;
 		}
 		return quadraticPoly(
-			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_A, __FUNCTION__),
-			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_B, __FUNCTION__),
-			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_C, __FUNCTION__),
+			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_A),
+			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_B),
+			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_C),
 			getTier()
 		);
 	}
@@ -755,9 +755,9 @@ public:
 			return 0;
 		}
 		return quadraticPoly(
-			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_A, __FUNCTION__),
-			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_B, __FUNCTION__),
-			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_C, __FUNCTION__),
+			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_A),
+			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_B),
+			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_C),
 			getTier()
 		);
 	}
@@ -768,7 +768,7 @@ public:
 		}
 
 		auto tier = getAttribute<uint8_t>(ItemAttribute_t::TIER);
-		if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER, __FUNCTION__)) {
+		if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
 			g_logger().error("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
 			return 0;
 		}
@@ -776,7 +776,7 @@ public:
 		return tier;
 	}
 	void setTier(uint8_t tier) {
-		auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER, __FUNCTION__);
+		auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
 		if (tier > configTier) {
 			g_logger().error("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
 			return;

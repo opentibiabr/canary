@@ -57,19 +57,19 @@ public:
 	}
 
 	uint32_t getManaGainTicks() const {
-		return gainManaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED, __FUNCTION__);
+		return gainManaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
 	}
 
 	uint32_t getManaGainAmount() const {
-		return gainManaAmount * g_configManager().getFloat(RATE_MANA_REGEN, __FUNCTION__);
+		return gainManaAmount * g_configManager().getFloat(RATE_MANA_REGEN);
 	}
 
 	uint32_t getHealthGainTicks() const {
-		return gainHealthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED, __FUNCTION__);
+		return gainHealthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
 	}
 
 	uint32_t getHealthGainAmount() const {
-		return gainHealthAmount * g_configManager().getFloat(RATE_HEALTH_REGEN, __FUNCTION__);
+		return gainHealthAmount * g_configManager().getFloat(RATE_HEALTH_REGEN);
 	}
 
 	uint8_t getSoulMax() const {
@@ -77,7 +77,7 @@ public:
 	}
 
 	uint32_t getSoulGainTicks() const {
-		return gainSoulTicks / g_configManager().getFloat(RATE_SOUL_REGEN_SPEED, __FUNCTION__);
+		return gainSoulTicks / g_configManager().getFloat(RATE_SOUL_REGEN_SPEED);
 	}
 
 	uint32_t getBaseAttackSpeed() const {
@@ -85,7 +85,7 @@ public:
 	}
 
 	uint32_t getAttackSpeed() const {
-		return attackSpeed / g_configManager().getFloat(RATE_ATTACK_SPEED, __FUNCTION__);
+		return attackSpeed / g_configManager().getFloat(RATE_ATTACK_SPEED);
 	}
 
 	uint32_t getBaseSpeed() const {

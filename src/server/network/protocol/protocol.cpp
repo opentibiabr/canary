@@ -265,7 +265,7 @@ bool Protocol::compression(OutputMessage &outputMessage) const {
 }
 
 Protocol::ZStream::ZStream() noexcept {
-	const int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL, __FUNCTION__);
+	const int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
 	if (compressionLevel <= 0) {
 		return;
 	}

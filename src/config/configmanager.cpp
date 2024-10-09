@@ -370,7 +370,7 @@ bool ConfigManager::load() {
 
 bool ConfigManager::reload() {
 	const bool result = load();
-	if (transformToSHA1(getString(SERVER_MOTD, __FUNCTION__)) != g_game().getMotdHash()) {
+	if (transformToSHA1(getString(SERVER_MOTD)) != g_game().getMotdHash()) {
 		g_game().incrementMotdNum();
 	}
 	return result;
@@ -432,35 +432,35 @@ float ConfigManager::loadFloatConfig(lua_State* L, const ConfigKey_t &key, const
 	return value;
 }
 
-const std::string &ConfigManager::getString(const ConfigKey_t &key, std::string_view context) const {
+const std::string &ConfigManager::getString(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
 	static const std::string dummyStr;
 	if (configs.contains(key) && std::holds_alternative<std::string>(configs.at(key))) {
 		return std::get<std::string>(configs.at(key));
 	}
-	g_logger().warn("[ConfigManager::getString] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return dummyStr;
 }
 
-int32_t ConfigManager::getNumber(const ConfigKey_t &key, std::string_view context) const {
+int32_t ConfigManager::getNumber(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
 	if (configs.contains(key) && std::holds_alternative<int32_t>(configs.at(key))) {
 		return std::get<int32_t>(configs.at(key));
 	}
-	g_logger().warn("[ConfigManager::getNumber] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return 0;
 }
 
-bool ConfigManager::getBoolean(const ConfigKey_t &key, std::string_view context) const {
+bool ConfigManager::getBoolean(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
 	if (configs.contains(key) && std::holds_alternative<bool>(configs.at(key))) {
 		return std::get<bool>(configs.at(key));
 	}
-	g_logger().warn("[ConfigManager::getBoolean] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return false;
 }
 
-float ConfigManager::getFloat(const ConfigKey_t &key, std::string_view context) const {
+float ConfigManager::getFloat(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
 	if (configs.contains(key) && std::holds_alternative<float>(configs.at(key))) {
 		return std::get<float>(configs.at(key));
 	}
-	g_logger().warn("[ConfigManager::getFloat] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return 0.0f;
 }

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/monsters/monster.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
@@ -723,7 +721,7 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 
 float Monster::getMitigation() const {
 	float mitigation = mType->info.mitigation * getDefenseMultiplier();
-	if (g_configManager().getBoolean(DISABLE_MONSTER_ARMOR, __FUNCTION__)) {
+	if (g_configManager().getBoolean(DISABLE_MONSTER_ARMOR)) {
 		mitigation += std::ceil(static_cast<float>(getDefense() + getArmor()) / 100.f) * getDefenseMultiplier() * 2.f;
 	}
 	return std::min<float>(mitigation, 30.f);
@@ -2134,8 +2132,8 @@ void Monster::dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creatu
 		if (ForgeClassifications_t classification = getMonsterForgeClassification();
 		    // Condition
 		    classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
-			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS, __FUNCTION__);
-			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS, __FUNCTION__);
+			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS);
+			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS);
 
 			auto sliverCount = static_cast<uint16_t>(uniform_random(minSlivers, maxSlivers));
 
@@ -2144,7 +2142,7 @@ void Monster::dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creatu
 				corpse->internalAddThing(sliver);
 			}
 		}
-		if (!this->isRewardBoss() && g_configManager().getNumber(RATE_LOOT, __FUNCTION__) > 0) {
+		if (!this->isRewardBoss() && g_configManager().getNumber(RATE_LOOT) > 0) {
 			g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, getMonster(), corpse);
 			g_callbacks().executeCallback(EventCallback_t::monsterPostDropLoot, &EventCallback::monsterPostDropLoot, getMonster(), corpse);
 		}

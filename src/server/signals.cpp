@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
@@ -120,7 +118,7 @@ void Signals::sighupHandler() {
 	g_chat().load();
 	g_logger().info("Reloaded chatchannels");
 
-	g_luaEnvironment().loadFile(g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/core.lua", "core.lua");
+	g_luaEnvironment().loadFile(g_configManager().getString(CORE_DIRECTORY) + "/core.lua", "core.lua");
 	g_logger().info("Reloaded core.lua");
 
 	lua_gc(g_luaEnvironment().getLuaState(), LUA_GCCOLLECT, 0);

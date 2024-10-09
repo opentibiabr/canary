@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/containers/container.hpp"
 #include "items/decay/decay.hpp"
 #include "io/iomap.hpp"
@@ -17,16 +15,16 @@
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
-	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM, __FUNCTION__));
+	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM));
 	if (getID() == ITEM_GOLD_POUCH) {
 		pagination = true;
-		m_maxItems = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT, __FUNCTION__);
+		m_maxItems = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT);
 		maxSize = 32;
 	}
 
 	if (isStoreInbox()) {
 		pagination = true;
-		m_maxItems = g_configManager().getNumber(STOREINBOX_MAXLIMIT, __FUNCTION__);
+		m_maxItems = g_configManager().getNumber(STOREINBOX_MAXLIMIT);
 		maxSize = 32;
 	}
 }
@@ -63,12 +61,21 @@ std::shared_ptr<Container> Container::create(std::shared_ptr<Tile> tile) {
 
 Container::~Container() {
 	if (getID() == ITEM_BROWSEFIELD) {
-		if (getParent() && getParent()->getTile()) {
-			g_game().browseFields.erase(getParent()->getTile());
-		}
+		auto parent = getParent();
+		if (parent) {
+			auto tile = parent->getTile();
+			if (tile) {
+				auto browseField = g_game().browseFields.find(tile);
+				if (browseField != g_game().browseFields.end()) {
+					g_game().browseFields.erase(browseField);
+				}
+			}
 
-		for (std::shared_ptr<Item> item : itemlist) {
-			item->setParent(getParent());
+			for (auto &item : itemlist) {
+				if (item) {
+					item->setParent(parent);
+				}
+			}
 		}
 	}
 }
@@ -502,7 +509,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 	if (const auto topParentContainer = getTopParentContainer()) {
 		if (const auto addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
-			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
+			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
 				return RETURNVALUE_CONTAINERISFULL;
 			}
@@ -895,20 +902,6 @@ void Container::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
 	item->setParent(getContainer());
 	itemlist.push_front(item);
 	updateItemWeight(item->getWeight());
-}
-
-void Container::startDecaying() {
-	g_decay().startDecay(getContainer());
-	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_decay().startDecay(*it);
-	}
-}
-
-void Container::stopDecaying() {
-	g_decay().stopDecay(getContainer());
-	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_decay().stopDecay(*it);
-	}
 }
 
 uint16_t Container::getFreeSlots() {

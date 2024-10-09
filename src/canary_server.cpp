@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "canary_server.hpp"
 
 #include "declarations.hpp"
@@ -61,16 +59,16 @@ int CanaryServer::run() {
 			try {
 				loadConfigLua();
 
-				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) ? " and 10x allowed!" : "");
+				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
 #ifdef FEATURE_METRICS
 				metrics::Options metricsOptions;
-				metricsOptions.enablePrometheusExporter = g_configManager().getBoolean(METRICS_ENABLE_PROMETHEUS, __FUNCTION__);
+				metricsOptions.enablePrometheusExporter = g_configManager().getBoolean(METRICS_ENABLE_PROMETHEUS);
 				if (metricsOptions.enablePrometheusExporter) {
-					metricsOptions.prometheusOptions.url = g_configManager().getString(METRICS_PROMETHEUS_ADDRESS, __FUNCTION__);
+					metricsOptions.prometheusOptions.url = g_configManager().getString(METRICS_PROMETHEUS_ADDRESS);
 				}
-				metricsOptions.enableOStreamExporter = g_configManager().getBoolean(METRICS_ENABLE_OSTREAM, __FUNCTION__);
+				metricsOptions.enableOStreamExporter = g_configManager().getBoolean(METRICS_ENABLE_OSTREAM);
 				if (metricsOptions.enableOStreamExporter) {
-					metricsOptions.ostreamOptions.export_interval_millis = std::chrono::milliseconds(g_configManager().getNumber(METRICS_OSTREAM_INTERVAL, __FUNCTION__));
+					metricsOptions.ostreamOptions.export_interval_millis = std::chrono::milliseconds(g_configManager().getNumber(METRICS_OSTREAM_INTERVAL));
 				}
 				g_metrics().init(metricsOptions);
 #endif
@@ -101,7 +99,7 @@ int CanaryServer::run() {
 
 				g_game().start(&serviceManager);
 				g_game().setGameState(GAME_STATE_NORMAL);
-				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE, __FUNCTION__)) {
+				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE)) {
 					g_game().setGameState(GAME_STATE_CLOSED);
 					g_logger().warn("Initialized in maintain mode!");
 					g_webhook().sendMessage(":yellow_square: Server is now **online** _(access restricted to staff)_");
@@ -135,7 +133,7 @@ int CanaryServer::run() {
 		return EXIT_FAILURE;
 	}
 
-	logger.info("{} {}", g_configManager().getString(SERVER_NAME, __FUNCTION__), "server online!");
+	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
 
 	serviceManager.run();
 
@@ -144,7 +142,7 @@ int CanaryServer::run() {
 }
 
 void CanaryServer::setWorldType() {
-	const std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE, __FUNCTION__));
+	const std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE));
 	if (worldType == "pvp") {
 		g_game().setWorldType(WORLD_TYPE_PVP);
 	} else if (worldType == "no-pvp") {
@@ -155,7 +153,7 @@ void CanaryServer::setWorldType() {
 		throw FailedToInitializeCanary(
 			fmt::format(
 				"Unknown world type: {}, valid world types are: pvp, no-pvp and pvp-enforced",
-				g_configManager().getString(WORLD_TYPE, __FUNCTION__)
+				g_configManager().getString(WORLD_TYPE)
 			)
 		);
 	}
@@ -165,11 +163,11 @@ void CanaryServer::setWorldType() {
 
 void CanaryServer::loadMaps() const {
 	try {
-		g_game().loadMainMap(g_configManager().getString(MAP_NAME, __FUNCTION__));
+		g_game().loadMainMap(g_configManager().getString(MAP_NAME));
 
 		// If "mapCustomEnabled" is true on config.lua, then load the custom map
-		if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM, __FUNCTION__)) {
-			g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/world/custom/");
+		if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
+			g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/");
 		}
 		Zone::refreshAll();
 	} catch (const std::exception &err) {
@@ -179,7 +177,7 @@ void CanaryServer::loadMaps() const {
 
 void CanaryServer::setupHousesRent() {
 	RentPeriod_t rentPeriod;
-	std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD, __FUNCTION__));
+	std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
 
 	if (strRentPeriod == "yearly") {
 		rentPeriod = RENTPERIOD_YEARLY;
@@ -292,7 +290,7 @@ void CanaryServer::loadConfigLua() {
 	modulesLoadHelper(g_configManager().load(), g_configManager().getConfigFileLua());
 
 #ifdef _WIN32
-	const std::string &defaultPriority = g_configManager().getString(DEFAULT_PRIORITY, __FUNCTION__);
+	const std::string &defaultPriority = g_configManager().getString(DEFAULT_PRIORITY);
 	if (strcasecmp(defaultPriority.c_str(), "high") == 0) {
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	} else if (strcasecmp(defaultPriority.c_str(), "above-normal") == 0) {
@@ -318,7 +316,7 @@ void CanaryServer::initializeDatabase() {
 
 	DatabaseManager::updateDatabase();
 
-	if (g_configManager().getBoolean(OPTIMIZE_DATABASE, __FUNCTION__)
+	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
 	    && !DatabaseManager::optimizeTables()) {
 		logger.debug("No tables were optimized");
 	}
@@ -326,8 +324,8 @@ void CanaryServer::initializeDatabase() {
 
 void CanaryServer::loadModules() {
 	// If "USE_ANY_DATAPACK_FOLDER" is set to true then you can choose any datapack folder for your server
-	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER, __FUNCTION__);
-	auto datapackName = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER);
+	auto datapackName = g_configManager().getString(DATA_DIRECTORY);
 	if (!useAnyDatapack && datapackName != "data-canary" && datapackName != "data-otservbr-global") {
 		throw FailedToInitializeCanary(fmt::format(
 			"The datapack folder name '{}' is wrong, please select valid "
@@ -342,7 +340,7 @@ void CanaryServer::loadModules() {
 		g_luaEnvironment().initState();
 	}
 
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	// Load appearances.dat first
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 
@@ -357,7 +355,7 @@ void CanaryServer::loadModules() {
 
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
-	const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+	const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	logger.debug("Loading core scripts on folder: {}/", coreFolder);
 	// Load first core Lua libs
 	modulesLoadHelper((g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");

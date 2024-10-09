@@ -7,12 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "server/network/protocol/protocol.hpp"
+
+#include "config/configmanager.hpp"
+#include "server/network/connection/connection.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
+
+Protocol::Protocol(Connection_ptr initConnection) :
+	connectionPtr(initConnection) { }
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
@@ -109,17 +113,29 @@ OutputMessage_ptr Protocol::getOutputBuffer(int32_t size) {
 	return outputBuffer;
 }
 
-void Protocol::XTEA_encrypt(OutputMessage &msg) const {
+void Protocol::send(OutputMessage_ptr msg) const {
+	if (auto connection = getConnection()) {
+		connection->send(msg);
+	}
+}
+
+void Protocol::disconnect() const {
+	if (auto connection = getConnection()) {
+		connection->close();
+	}
+}
+
+void Protocol::XTEA_encrypt(OutputMessage &outputMessage) const {
 	const uint32_t delta = 0x61C88647;
 
 	// The message must be a multiple of 8
-	size_t paddingBytes = msg.getLength() & 7;
+	size_t paddingBytes = outputMessage.getLength() & 7;
 	if (paddingBytes != 0) {
-		msg.addPaddingBytes(8 - paddingBytes);
+		outputMessage.addPaddingBytes(8 - paddingBytes);
 	}
 
-	uint8_t* buffer = msg.getOutputBuffer();
-	auto messageLength = static_cast<int32_t>(msg.getLength());
+	uint8_t* buffer = outputMessage.getOutputBuffer();
+	auto messageLength = static_cast<int32_t>(outputMessage.getLength());
 	int32_t readPos = 0;
 	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
 	// TODO: refactor this for not use c-style
@@ -193,6 +209,14 @@ bool Protocol::RSA_decrypt(NetworkMessage &msg) {
 	return (msg.getByte() == 0);
 }
 
+bool Protocol::isConnectionExpired() const {
+	return connectionPtr.expired();
+}
+
+Connection_ptr Protocol::getConnection() const {
+	return connectionPtr.lock();
+}
+
 uint32_t Protocol::getIP() const {
 	if (auto protocolConnection = getConnection()) {
 		return protocolConnection->getIP();
@@ -201,7 +225,7 @@ uint32_t Protocol::getIP() const {
 	return 0;
 }
 
-bool Protocol::compression(OutputMessage &msg) const {
+bool Protocol::compression(OutputMessage &outputMessage) const {
 	if (checksumMethod != CHECKSUM_METHOD_SEQUENCE) {
 		return false;
 	}
@@ -211,13 +235,13 @@ bool Protocol::compression(OutputMessage &msg) const {
 		return false;
 	}
 
-	const auto outputMessageSize = msg.getLength();
+	const auto outputMessageSize = outputMessage.getLength();
 	if (outputMessageSize > NETWORKMESSAGE_MAXSIZE) {
 		g_logger().error("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
 		return false;
 	}
 
-	compress->stream->next_in = msg.getOutputBuffer();
+	compress->stream->next_in = outputMessage.getOutputBuffer();
 	compress->stream->avail_in = outputMessageSize;
 	compress->stream->next_out = reinterpret_cast<Bytef*>(compress->buffer.data());
 	compress->stream->avail_out = NETWORKMESSAGE_MAXSIZE;
@@ -234,8 +258,25 @@ bool Protocol::compression(OutputMessage &msg) const {
 		return false;
 	}
 
-	msg.reset();
-	msg.addBytes(compress->buffer.data(), totalSize);
+	outputMessage.reset();
+	outputMessage.addBytes(compress->buffer.data(), totalSize);
 
 	return true;
+}
+
+Protocol::ZStream::ZStream() noexcept {
+	const int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
+	if (compressionLevel <= 0) {
+		return;
+	}
+
+	stream = std::make_unique<z_stream>();
+	stream->zalloc = nullptr;
+	stream->zfree = nullptr;
+	stream->opaque = nullptr;
+
+	if (deflateInit2(stream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
+		stream.reset();
+		g_logger().error("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (stream->msg ? stream->msg : " unknown error"));
+	}
 }

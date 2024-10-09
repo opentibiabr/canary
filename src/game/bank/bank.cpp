@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "bank.hpp"
 #include "game/game.hpp"
 #include "creatures/players/player.hpp"
@@ -112,7 +110,7 @@ bool Bank::transferTo(const std::shared_ptr<Bank> &destination, const uint64_t a
 
 		const auto destinationTownId = destinationPlayer->getTown()->getID();
 		const auto bankableTownId = bankablePlayer->getTown()->getID();
-		const auto minTownIdToTransferFromMain = g_configManager().getNumber(MIN_TOWN_ID_TO_BANK_TRANSFER_FROM_MAIN, __FUNCTION__);
+		const auto minTownIdToTransferFromMain = g_configManager().getNumber(MIN_TOWN_ID_TO_BANK_TRANSFER_FROM_MAIN);
 
 		if (destinationTownId < minTownIdToTransferFromMain && bankableTownId >= minTownIdToTransferFromMain) {
 			g_logger().warn("[{}] Player {} is from main town, trying to transfer money to player {} in {} town.", __FUNCTION__, bankablePlayer->getName(), destinationPlayer->getName(), destinationTownId);

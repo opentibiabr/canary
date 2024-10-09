@@ -1,8 +1,17 @@
-#include "pch.hpp"
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
+
+#include "game/scheduling/save_manager.hpp"
 
 #include "game/game.hpp"
-#include "game/scheduling/save_manager.hpp"
 #include "io/iologindata.hpp"
+#include "kv/kv.hpp"
 
 SaveManager::SaveManager(ThreadPool &threadPool, KVStore &kvStore, Logger &logger, Game &game) :
 	threadPool(threadPool), kv(kvStore), logger(logger), game(game) { }
@@ -36,7 +45,7 @@ void SaveManager::scheduleAll() {
 	m_scheduledAt = scheduledAt;
 
 	// Disable save async if the config is set to false
-	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC)) {
 		saveAll();
 		return;
 	}
@@ -58,7 +67,7 @@ void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
 	}
 
 	// Disable save async if the config is set to false
-	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC)) {
 		if (g_game().getGameState() == GAME_STATE_NORMAL) {
 			logger.debug("Saving player {}.", playerToSave->getName());
 		}

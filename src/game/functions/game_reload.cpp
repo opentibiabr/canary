@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/functions/game_reload.hpp"
 
 #include "config/configmanager.hpp"
@@ -153,7 +151,7 @@ bool GameReload::reloadVocations() {
 }
 
 bool GameReload::reloadCore() {
-	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	const bool coreLoaded = g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
 
 	if (coreLoaded) {
@@ -177,8 +175,8 @@ bool GameReload::reloadScripts() {
 	g_scripts().clearAllScripts();
 	Zone::clearZones();
 
-	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY);
 
 	g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
 	g_scripts().loadScripts(datapackFolder + "/scripts", false, true);
@@ -200,8 +198,8 @@ bool GameReload::reloadItems() {
 
 bool GameReload::reloadMonsters() {
 	g_monsters().clear();
-	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY);
 
 	const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
 	const bool monsterScriptsLoaded = g_scripts().loadScripts(datapackFolder + "/monster", false, true);

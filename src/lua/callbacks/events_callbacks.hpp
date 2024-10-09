@@ -89,10 +89,10 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
-			auto argsCopy = std::make_tuple(args...);
 			if (callback && callback->isLoadedCallback()) {
+				auto argsCopy = std::make_tuple(args...);
 				std::apply(
-					[&callback, &callbackFunc](auto &&... args) {
+					[callback, &callbackFunc](auto &&... args) {
 						((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
 					},
 					argsCopy
@@ -101,6 +101,7 @@ public:
 			}
 		}
 	}
+
 	/**
 	 * @brief Checks if all registered callbacks of the specified event type succeed.
 	 * @param eventType The type of event to check.

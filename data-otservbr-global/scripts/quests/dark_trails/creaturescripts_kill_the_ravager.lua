@@ -15,8 +15,8 @@ function theRavager.onDeath(creature)
 		item:setDestination(Position(33459, 32083, 8))
 	end
 	onDeathForDamagingPlayers(creature, function(creature, player)
-		if player:getStorageValue(Storage.DarkTrails.Mission11) < 1 then
-			player:setStorageValue(Storage.DarkTrails.Mission11, 1)
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission11) < 1 then
+			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission11, 1)
 		end
 	end)
 	addEvent(removeTeleport, 5 * 60 * 1000, position)

@@ -182,9 +182,6 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(std::shared_ptr<Player> player, DBResu
 	player->setMaxManaShield(result->getNumber<uint32_t>("max_manashield"));
 
 	player->setMarriageSpouse(result->getNumber<int32_t>("marriage_spouse"));
-
-	// Experience load
-	IOLoginDataLoad::loadPlayerExperience(player, result);
 	return true;
 }
 
@@ -478,7 +475,6 @@ void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, D
 	}
 
 	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) && player->getProtocolVersion() < 1200;
-	Database &db = Database::getInstance();
 	auto query = fmt::format("SELECT pid, sid, itemtype, count, attributes FROM player_items WHERE player_id = {} ORDER BY sid DESC", player->getGUID());
 
 	ItemsMap inventoryItems;
@@ -486,7 +482,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, D
 	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
 
 	try {
-		if ((result = db.storeQuery(query))) {
+		if ((result = g_database().storeQuery(query))) {
 			loadItems(inventoryItems, result, player);
 
 			for (ItemsMap::const_reverse_iterator it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
@@ -594,11 +590,10 @@ void IOLoginDataLoad::loadPlayerDepotItems(std::shared_ptr<Player> player, DBRes
 		return;
 	}
 
-	Database &db = Database::getInstance();
 	ItemsMap depotItems;
-	std::ostringstream query;
-	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_depotitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
-	if ((result = db.storeQuery(query.str()))) {
+	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
+	auto query = fmt::format("SELECT pid, sid, itemtype, count, attributes FROM player_depotitems WHERE player_id = {} ORDER BY sid DESC", player->getGUID());
+	if ((result = g_database().storeQuery(query))) {
 		loadItems(depotItems, result, player);
 		for (ItemsMap::const_reverse_iterator it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
 			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
@@ -620,10 +615,16 @@ void IOLoginDataLoad::loadPlayerDepotItems(std::shared_ptr<Player> player, DBRes
 				std::shared_ptr<Container> container = it2->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
-					item->startDecaying();
+					// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
+					itemsToStartDecaying.emplace_back(item);
 				}
 			}
 		}
+	}
+
+	// Now that all items and containers have been added and parent chain is established, start decay
+	for (const auto &item : itemsToStartDecaying) {
+		item->startDecaying();
 	}
 }
 
@@ -633,10 +634,9 @@ void IOLoginDataLoad::loadPlayerInboxItems(std::shared_ptr<Player> player, DBRes
 		return;
 	}
 
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
-	if ((result = db.storeQuery(query.str()))) {
+	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
+	auto query = fmt::format("SELECT pid, sid, itemtype, count, attributes FROM player_inboxitems WHERE player_id = {} ORDER BY sid DESC", player->getGUID());
+	if ((result = g_database().storeQuery(query))) {
 		ItemsMap inboxItems;
 		loadItems(inboxItems, result, player);
 
@@ -656,10 +656,15 @@ void IOLoginDataLoad::loadPlayerInboxItems(std::shared_ptr<Player> player, DBRes
 				std::shared_ptr<Container> container = it2->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
-					item->startDecaying();
+					itemsToStartDecaying.emplace_back(item);
 				}
 			}
 		}
+	}
+
+	// Now that all items and containers have been added and parent chain is established, start decay
+	for (const auto &item : itemsToStartDecaying) {
+		item->startDecaying();
 	}
 }
 

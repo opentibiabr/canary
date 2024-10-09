@@ -14,13 +14,13 @@
 
 // Structs
 struct OutfitIds {
-	uint16_t maleId;
-	uint16_t femaleId;
+	uint16_t maleId {};
+	uint16_t femaleId {};
 };
 
 struct BannerInfo {
 	std::string bannerName;
-	uint32_t offerId;
+	uint32_t offerId {};
 };
 
 struct StoreHistoryDetail {
@@ -33,9 +33,9 @@ struct StoreHistoryDetail {
 };
 
 struct RelatedOffer {
-	uint32_t id = 0;
-	uint32_t price = 0;
-	uint16_t count = 0;
+	uint32_t id {};
+	uint32_t price {};
+	uint16_t count {};
 };
 
 struct StoreHistory {

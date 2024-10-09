@@ -1,4 +1,4 @@
-local callback = EventCallback()
+local callback = EventCallback("PlayerOnRotateItemBaseEvent")
 
 function callback.playerOnRotateItem(player, item, position)
 	if item:getActionId() == IMMOVABLE_ACTION_ID then

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/interactions/chat.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"

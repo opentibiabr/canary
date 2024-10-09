@@ -9,8 +9,6 @@
 
 #include <utility>
 
-#include "pch.hpp"
-
 #include "creatures/players/grouping/party.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
@@ -454,7 +452,7 @@ void Party::shareExperience(uint64_t experience, std::shared_ptr<Creature> targe
 
 	uint64_t shareExperience = experience;
 	g_events().eventPartyOnShareExperience(getParty(), shareExperience);
-	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, &EventCallback::partyOnShareExperience, getParty(), shareExperience);
+	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, &EventCallback::partyOnShareExperience, getParty(), std::ref(shareExperience));
 
 	for (const auto &member : getMembers()) {
 		member->onGainSharedExperience(shareExperience, target);

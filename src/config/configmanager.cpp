@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
 #include "game/game.hpp"
@@ -283,7 +281,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, METRICS_OSTREAM_INTERVAL, "metricsOstreamInterval", 1000);
 	loadIntConfig(L, MIN_DELAY_BETWEEN_CONDITIONS, "minDelayBetweenConditions", 0);
 	loadIntConfig(L, MIN_ELEMENTAL_RESISTANCE, "minElementalResistance", -200);
-	loadIntConfig(L, MIN_TOWN_ID_TO_BANK_TRANSFER, "minTownIdToBankTransfer", 3);
+	loadIntConfig(L, MIN_TOWN_ID_TO_BANK_TRANSFER_FROM_MAIN, "minTownIdToBankTransferFromMain", 4);
 	loadIntConfig(L, MONTH_KILLS_TO_RED, "monthKillsToRedSkull", 10);
 	loadIntConfig(L, MULTIPLIER_ATTACKONFIST, "multiplierSpeedOnFist", 5);
 	loadIntConfig(L, ORANGE_SKULL_DURATION, "orangeSkullDuration", 7);
@@ -379,7 +377,7 @@ bool ConfigManager::reload() {
 }
 
 void ConfigManager::missingConfigWarning(const char* identifier) {
-	g_logger().warn("[{}]: Missing configuration for identifier: {}", __FUNCTION__, identifier);
+	g_logger().debug("[{}]: Missing configuration for identifier: {}", __FUNCTION__, identifier);
 }
 
 std::string ConfigManager::loadStringConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const std::string &defaultValue) {

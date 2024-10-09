@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "utils/pugicast.hpp"
 #include "map/house/house.hpp"
 #include "io/iologindata.hpp"
@@ -871,7 +869,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 				}
 
 				std::ostringstream ss;
-				ss << "Warning! \nThe " << period << " rent of " << house->getRent() << " gold for your house \"" << house->getName() << "\" is payable. Have it within " << daysLeft << " days or you will lose static_self_cast<HouseTransferItem>() house.";
+				ss << "Warning! \nThe " << period << " rent of " << house->getRent() << " gold for your house \"" << house->getName() << "\" is payable. Have it within " << daysLeft << " days or you will lose this house.";
 				letter->setAttribute(ItemAttribute_t::TEXT, ss.str());
 				g_game().internalAddItem(player->getInbox(), letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
 				house->setPayRentWarnings(house->getPayRentWarnings() + 1);

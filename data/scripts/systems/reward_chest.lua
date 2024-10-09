@@ -103,9 +103,9 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				end
 
 				local playerLoot = creature:generateGemAtelierLoot()
-				playerLoot = monsterType:getBossReward(lootFactor, _ == 1, false, playerLoot)
+				playerLoot = monsterType:getBossReward(lootFactor, _ == 1, false, playerLoot, player)
 				for _ = 2, rolls do
-					playerLoot = monsterType:getBossReward(lootFactor, false, true, playerLoot)
+					playerLoot = monsterType:getBossReward(lootFactor, false, true, playerLoot, player)
 				end
 
 				-- Add droped items to reward container

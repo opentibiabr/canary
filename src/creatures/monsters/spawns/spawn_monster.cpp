@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -177,7 +175,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 			return false;
 		}
 	} else {
-		g_logger().debug("[SpawnMonster] Spawning {} at {}", monsterType->name, sb.pos.toString());
+		g_logger().trace("[SpawnMonster] Spawning {} at {}", monsterType->name, sb.pos.toString());
 		if (!g_game().placeCreature(monster, sb.pos, false, true)) {
 			return false;
 		}
@@ -190,6 +188,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 	spawnedMonsterMap[spawnMonsterId] = monster;
 	sb.lastSpawn = OTSYS_TIME();
 	g_events().eventMonsterOnSpawn(monster, sb.pos);
+	monster->onSpawn();
 	g_callbacks().executeCallback(EventCallback_t::monsterOnSpawn, &EventCallback::monsterOnSpawn, monster, sb.pos);
 	return true;
 }
@@ -225,7 +224,7 @@ void SpawnMonster::startup(bool delayed) {
 			continue;
 		}
 		if (delayed) {
-			g_dispatcher().addEvent([this, spawnMonsterId, &sb, mType] { scheduleSpawn(spawnMonsterId, sb, mType, 0, true); }, "SpawnMonster::startup");
+			g_dispatcher().addEvent([this, spawnMonsterId, &sb, mType] { scheduleSpawn(spawnMonsterId, sb, mType, 0, true); }, __FUNCTION__);
 		} else {
 			scheduleSpawn(spawnMonsterId, sb, mType, 0, true);
 		}

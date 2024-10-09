@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
 
@@ -91,7 +89,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 		}
 
 		// Loop through items in container
-		for (std::shared_ptr<Item> item : container->getItemList()) {
+		for (auto &item : container->getItemList()) {
 			if (!item) {
 				continue; // Check for null item
 			}
@@ -99,7 +97,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 			++runningId;
 
 			// Update sub-container attributes if necessary
-			std::shared_ptr<Container> subContainer = item->getContainer();
+			const auto &subContainer = item->getContainer();
 			if (subContainer) {
 				queue.emplace_back(subContainer, runningId);
 				if (subContainer->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
@@ -123,6 +121,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 			try {
 				propWriteStream.clear();
 				item->serializeAttr(propWriteStream);
+				item->stopDecaying();
 			} catch (...) {
 				g_logger().error("Error serializing item attributes in container.");
 				return false;

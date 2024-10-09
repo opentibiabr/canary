@@ -64,20 +64,20 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 
-		if player:getStorageValue(Storage.TibiaTales.IntoTheBonePit) == -1 then
+		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.IntoTheBonePit) == -1 then
 			npcHandler:say({
 				"Indeed, there is something you can do for me. You must know I am researching for a new spell against the undead. ...",
 				"To achieve that I need a desecrated bone. There is a cursed bone pit somewhere in the dungeons north of Thais where the dead never rest. ...",
 				"Find that pit, dig for a well-preserved human skeleton and conserve a sample in a special container which you receive from me. Are you going to help me?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.TibiaTales.IntoTheBonePit) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U8_1.TibiaTales.IntoTheBonePit) == 1 then
 			npcHandler:say({
 				"The rotworms dug deep into the soil north of Thais. Rumours say that you can access a place of endless moaning from there. ...",
 				"No one knows how old that common grave is but the people who died there are cursed and never come to rest. A bone from that pit would be perfect for my studies.",
 			}, npc, creature)
-		elseif player:getStorageValue(Storage.TibiaTales.IntoTheBonePit) == 2 then
-			player:setStorageValue(Storage.TibiaTales.IntoTheBonePit, 3)
+		elseif player:getStorageValue(Storage.Quest.U8_1.TibiaTales.IntoTheBonePit) == 2 then
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.IntoTheBonePit, 3)
 			if player:removeItem(131, 1) then
 				player:addItem(6299, 1)
 				npcHandler:say("Excellent! Now I can try to put my theoretical thoughts into practice and find a cure for the symptoms of undead. Here, take this for your efforts.", npc, creature)
@@ -97,7 +97,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"If you lose it, you can buy a new one from the explorer's society in North Port or Port Hope. Ask me about the mission when you come back.",
 			}, npc, creature)
 			player:addItem(4852, 1)
-			player:setStorageValue(Storage.TibiaTales.IntoTheBonePit, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.IntoTheBonePit, 1)
 		end
 	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) == 1 then

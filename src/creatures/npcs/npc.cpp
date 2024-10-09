@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
 #include "declarations.hpp"
@@ -234,8 +232,8 @@ void Npc::onPlayerBuyItem(std::shared_ptr<Player> player, uint16_t itemId, uint8
 		return;
 	}
 
-	// Check if the player not have empty slots
-	if (!ignore && player->getFreeBackpackSlots() == 0) {
+	// Check if the player not have empty slots or the item is not a container
+	if (!ignore && (player->getFreeBackpackSlots() == 0 && (player->getInventoryItem(CONST_SLOT_BACKPACK) || (!Item::items[itemId].isContainer() || !(Item::items[itemId].slotPosition & SLOTP_BACKPACK))))) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}
@@ -385,6 +383,13 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	for (const auto &item : player->getInventoryItemsFromId(itemId, ignore)) {
 		if (!item || item->getTier() > 0 || item->hasImbuements()) {
 			continue;
+		}
+
+		if (const auto &container = item->getContainer()) {
+			if (container->size() > 0) {
+				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must empty the container before selling it.");
+				continue;
+			}
 		}
 
 		if (parent && item->getParent() != parent) {

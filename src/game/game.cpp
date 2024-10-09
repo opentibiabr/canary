@@ -1027,7 +1027,7 @@ std::string Game::getPlayerNameByGUID(const uint32_t &guid) {
 	if (m_playerNameCache.contains(guid)) {
 		return m_playerNameCache.at(guid);
 	}
-	auto player = getPlayerByGUID(guid, true);
+	const auto &player = getPlayerByGUID(guid, true);
 	auto name = player ? player->getName() : "";
 	if (!name.empty()) {
 		m_playerNameCache[guid] = name;
@@ -1068,7 +1068,7 @@ std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(std::shared_ptr<A
 	}
 	std::vector<std::shared_ptr<Player>> ret;
 	for (const auto &[name, _] : accountPlayers) {
-		auto player = getPlayerByName(name, allowOffline);
+		const auto &player = getPlayerByName(name, allowOffline);
 		if (player) {
 			ret.push_back(player);
 		}

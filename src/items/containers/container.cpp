@@ -895,13 +895,6 @@ void Container::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
 	updateItemWeight(item->getWeight());
 }
 
-void Container::stopDecaying() {
-	g_decay().stopDecay(getContainer());
-	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_decay().stopDecay(*it);
-	}
-}
-
 uint16_t Container::getFreeSlots() {
 	uint16_t counter = std::max<uint16_t>(0, capacity() - size());
 

@@ -7927,7 +7927,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 
 		case OfferTypes_t::PREYBONUS: {
 			auto cardsAmount = offer->getOfferCount();
-			if (getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT, __FUNCTION__)) {
+			if (getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT)) {
 				canBuy = false;
 			}
 
@@ -7974,7 +7974,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 			auto offerInstantAmount = offer->getOfferCount();
 			auto playerInstantAmount = getStorageValue(STORAGEVALUE_REWARD_ACCESS);
 
-			if (playerInstantAmount + offerInstantAmount >= g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT, __FUNCTION__)) {
+			if (playerInstantAmount + offerInstantAmount >= g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT)) {
 				canBuy = false;
 			}
 

@@ -3070,11 +3070,6 @@ void ProtocolGame::parseGreet(NetworkMessage &msg) {
 	g_game().playerNpcGreet(player->getID(), npcId);
 }
 
-void ProtocolGame::parseOfferDescription(NetworkMessage &msg) {
-	auto offerId = msg.get<uint32_t>();
-	g_logger().debug("[{}] offer id: {}", __FUNCTION__, offerId);
-}
-
 void ProtocolGame::parsePreyAction(NetworkMessage &msg) {
 	int8_t index = -1;
 	uint8_t slot = msg.getByte();

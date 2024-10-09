@@ -10902,7 +10902,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::PREYBONUS: {
 			auto cardsAmount = offer->getOfferCount();
-			if (player->getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT, __FUNCTION__)) {
+			if (player->getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT)) {
 				break;
 			}
 
@@ -10944,7 +10944,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 			auto offerInstantAmount = offer->getOfferCount();
 			auto playerInstantAmount = static_cast<uint16_t>(player->getStorageValue(STORAGEVALUE_REWARD_ACCESS));
 
-			auto instantLimit = static_cast<uint16_t>(g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT, __FUNCTION__));
+			auto instantLimit = static_cast<uint16_t>(g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT));
 			if (playerInstantAmount + offerInstantAmount >= instantLimit) {
 				break;
 			}

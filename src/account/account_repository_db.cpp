@@ -85,7 +85,7 @@ bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password)
 
 bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint32_t &coins) {
 	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
-		g_logger().error("[{}]: invalid coin type:[{}]", __FUNCTION__, type);
+		g_logger().error("Invalid coin type:[{}]", type);
 		return false;
 	}
 
@@ -106,7 +106,7 @@ bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint
 
 bool AccountRepositoryDB::setCoins(const uint32_t &id, const uint8_t &type, const uint32_t &amount) {
 	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
-		g_logger().error("[{}]: invalid coin type:[{}]", __FUNCTION__, type);
+		g_logger().error("Invalid coin type:[{}]", type);
 		return false;
 	}
 

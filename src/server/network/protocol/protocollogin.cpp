@@ -209,19 +209,19 @@ void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
 
 	auto output = OutputMessagePool::getOutputMessage();
 	output->addByte(HEADER_BYTE);
-	output->addString(fmt::format("{}\nWelcome to Cast System!", normal_random(MIN_RANDOM_VALUE, MAX_RANDOM_VALUE)), "ProtocolLogin::getLivestreamViewersList - Welcome to Cast System!')");
+	output->addString(fmt::format("{}\nWelcome to Cast System!", normal_random(MIN_RANDOM_VALUE, MAX_RANDOM_VALUE)));
 
 	output->addByte(SESSION_KEY_BYTE);
-	output->addString(fmt::format("@livestream\n{}", password), "ProtocolLogin::getCharacterList - accountDescriptor + password");
+	output->addString(fmt::format("@livestream\n{}", password));
 
 	output->addByte(uint8_t());
 	output->addByte(NUMBER_OF_WORLDS);
 
 	output->addByte(uint8_t());
-	output->addString(g_configManager().getString(SERVER_NAME, __FUNCTION__), "ProtocolLogin::getLivestreamViewersList - _configManager().getString(SERVER_NAME)");
-	output->addString(g_configManager().getString(IP, __FUNCTION__), "ProtocolLogin::getLivestreamViewersList - g_configManager().getString(IP)");
+	output->addString(g_configManager().getString(SERVER_NAME));
+	output->addString(g_configManager().getString(IP));
 
-	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT, __FUNCTION__));
+	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT));
 
 	output->addByte(uint8_t());
 
@@ -241,7 +241,7 @@ void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
 
 	for (const auto &player : players) {
 		output->addByte(uint8_t());
-		output->addString(player->getName(), "ProtocolLogin::getLivestreamViewersList - player->getName()");
+		output->addString(player->getName());
 	}
 
 	output->addByte(uint8_t());

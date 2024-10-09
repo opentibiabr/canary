@@ -1046,9 +1046,6 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 			case 0xCA:
 				parseUpdateContainer(msg);
 				break;
-			case 0xE8:
-				parseDebugAssert(msg);
-				break;
 			case 0xA1:
 				sendCancelTarget();
 				break;
@@ -9472,16 +9469,16 @@ bool ProtocolGame::canWatchCast(const std::shared_ptr<Player> &foundPlayer, cons
 	}
 
 	auto playersByIP = foundPlayer->client->getLivestreamViewersByIP(getIP());
-	int32_t maxViewersPerIP = g_configManager().getNumber(LIVESTREAM_MAXIMUM_VIEWERS_PER_IP, __FUNCTION__);
+	int32_t maxViewersPerIP = g_configManager().getNumber(LIVESTREAM_MAXIMUM_VIEWERS_PER_IP);
 	if (static_cast<int32_t>(playersByIP.size()) >= maxViewersPerIP) {
 		disconnectClient("Livestream viewer limit per IP reached. Please try again later.");
 		return false;
 	}
 
 	// Get the base viewer limit from configManager for regular accounts
-	int32_t baseMaxViewers = g_configManager().getNumber(LIVESTREAM_MAXIMUM_VIEWERS, __FUNCTION__);
+	int32_t baseMaxViewers = g_configManager().getNumber(LIVESTREAM_MAXIMUM_VIEWERS);
 	// Get the viewer limit for premium accounts from configManager
-	int32_t premiumMaxViewers = g_configManager().getNumber(LIVESTREAM_PREMIUM_MAXIMUM_VIEWERS, __FUNCTION__);
+	int32_t premiumMaxViewers = g_configManager().getNumber(LIVESTREAM_PREMIUM_MAXIMUM_VIEWERS);
 	// Determine the allowed number of viewers based on whether the player has a premium account
 	int32_t maxViewersAllowed = foundPlayer->isPremium() ? premiumMaxViewers : baseMaxViewers;
 	// Check if the current number of viewers exceeds the allowed limit
@@ -9491,7 +9488,7 @@ bool ProtocolGame::canWatchCast(const std::shared_ptr<Player> &foundPlayer, cons
 	}
 
 	// Check caster's minimum level requirement
-	int32_t casterMinLevel = g_configManager().getNumber(LIVESTREAM_CASTER_MIN_LEVEL, __FUNCTION__);
+	int32_t casterMinLevel = g_configManager().getNumber(LIVESTREAM_CASTER_MIN_LEVEL);
 	if (foundPlayer->getLevel() < casterMinLevel) {
 		disconnectClient("The caster does not meet the minimum level requirement to broadcast.");
 		return false;

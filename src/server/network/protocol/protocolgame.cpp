@@ -9350,7 +9350,9 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
 		}
 		msg.add<uint32_t>(offerPrice);
-		msg.addByte(0x00); // Coin Type
+
+		auto offerCoinType = magic_enum::enum_integer<CoinType>(offer->getCoinType());
+		msg.addByte(offerCoinType); // Coin Type
 
 		auto canBuyOffer = player->canBuyStoreOffer(offer);
 		msg.addByte(canBuyOffer ? 0x00 : 0x01); // Disabled (Bool)

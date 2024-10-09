@@ -1883,7 +1883,7 @@ void ProtocolGame::parseQuickLootBlackWhitelist(NetworkMessage &msg) {
 
 void ProtocolGame::parseSay(NetworkMessage &msg) {
 	std::string receiver;
-	uint16_t channelId;
+	uint16_t channelId {};
 
 	SpeakClasses type = static_cast<SpeakClasses>(msg.getByte());
 	switch (type) {

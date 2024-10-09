@@ -1015,13 +1015,13 @@ void ContainerIterator::advance() {
 					visitedContainers.insert(subContainer);
 				} else {
 					if (!m_cycleDetected) {
-						// g_logger().debug("[{}] Cycle detected in container: {}", __FUNCTION__, subContainer->getName());
+						g_logger().trace("[{}] Cycle detected in container: {}", __FUNCTION__, subContainer->getName());
 						m_cycleDetected = true;
 					}
 				}
 			} else {
 				if (!m_maxDepthReached) {
-					// g_logger().debug("[{}] Maximum iteration depth reached", __FUNCTION__);
+					g_logger().trace("[{}] Maximum iteration depth reached", __FUNCTION__);
 					m_maxDepthReached = true;
 				}
 			}

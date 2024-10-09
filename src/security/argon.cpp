@@ -25,17 +25,30 @@ void Argon2::updateConstants() {
 }
 
 uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
-	std::stringstream ss(bitShiftStr);
-	int base;
-	int shift;
-	char op1;
-	char op2;
+	static const std::regex pattern(R"(^\s*(\d+)\s*<<\s*(\d+)\s*$)");
+	std::smatch match;
 
-	if (!(ss >> base >> op1 >> op2 >> shift) || op1 != '<' || op2 != '<') {
-		g_logger().warn("Invalid bit shift string");
+	if (!std::regex_match(bitShiftStr, match, pattern)) {
+		g_logger().warn("Invalid bit shift string format: '{}'", bitShiftStr);
+		return 0;
 	}
 
-	return base << shift;
+	int base = 0;
+	int shift = 0;
+	try {
+		base = std::stoi(match[1].str());
+		shift = std::stoi(match[2].str());
+	} catch (const std::exception &e) {
+		g_logger().warn("Error parsing bit shift string: '{}'", e.what());
+		return 0;
+	}
+
+	if (shift < 0 || shift >= 32) {
+		g_logger().warn("Shift value out of bounds: '{}'", shift);
+		return 0;
+	}
+
+	return static_cast<uint32_t>(base) << shift;
 }
 
 bool Argon2::verifyPassword(const std::string &password, const std::string &phash) const {

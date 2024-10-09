@@ -182,9 +182,6 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(std::shared_ptr<Player> player, DBResu
 	player->setMaxManaShield(result->getNumber<uint32_t>("max_manashield"));
 
 	player->setMarriageSpouse(result->getNumber<int32_t>("marriage_spouse"));
-
-	// Experience load
-	IOLoginDataLoad::loadPlayerExperience(player, result);
 	return true;
 }
 

@@ -103,9 +103,9 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 	return true;
 }
 
-bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_ptr result) {
+bool IOLoginDataLoad::loadPlayerBasicInfo(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return false;
 	}
 
@@ -182,12 +182,15 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 	player->setMaxManaShield(result->getNumber<uint32_t>("max_manashield"));
 
 	player->setMarriageSpouse(result->getNumber<int32_t>("marriage_spouse"));
+
+	// Experience load
+	IOLoginDataLoad::loadPlayerExperience(player, result);
 	return true;
 }
 
 void IOLoginDataLoad::loadPlayerExperience(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -210,7 +213,7 @@ void IOLoginDataLoad::loadPlayerExperience(std::shared_ptr<Player> player, DBRes
 
 void IOLoginDataLoad::loadPlayerBlessings(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -221,7 +224,7 @@ void IOLoginDataLoad::loadPlayerBlessings(std::shared_ptr<Player> player, DBResu
 
 void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -241,13 +244,13 @@ void IOLoginDataLoad::loadPlayerConditions(std::shared_ptr<Player> player, DBRes
 
 void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
 	player->defaultOutfit.lookType = result->getNumber<uint16_t>("looktype");
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
-		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
+		g_logger().warn("[{}] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", __FUNCTION__, player->defaultOutfit.lookType);
 		return;
 	}
 
@@ -263,7 +266,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
 
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
-		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookFamiliarsType);
+		g_logger().warn("[{}] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", __FUNCTION__, player->defaultOutfit.lookFamiliarsType);
 		return;
 	}
 
@@ -272,7 +275,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 
 void IOLoginDataLoad::loadPlayerSkullSystem(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -294,7 +297,7 @@ void IOLoginDataLoad::loadPlayerSkullSystem(std::shared_ptr<Player> player, DBRe
 
 void IOLoginDataLoad::loadPlayerSkill(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -316,7 +319,7 @@ void IOLoginDataLoad::loadPlayerSkill(std::shared_ptr<Player> player, DBResult_p
 
 void IOLoginDataLoad::loadPlayerKills(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -335,7 +338,7 @@ void IOLoginDataLoad::loadPlayerKills(std::shared_ptr<Player> player, DBResult_p
 
 void IOLoginDataLoad::loadPlayerGuild(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -385,7 +388,7 @@ void IOLoginDataLoad::loadPlayerGuild(std::shared_ptr<Player> player, DBResult_p
 
 void IOLoginDataLoad::loadPlayerStashItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -401,7 +404,7 @@ void IOLoginDataLoad::loadPlayerStashItems(std::shared_ptr<Player> player, DBRes
 
 void IOLoginDataLoad::loadPlayerBestiaryCharms(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -454,7 +457,7 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(std::shared_ptr<Player> player, D
 
 void IOLoginDataLoad::loadPlayerInstantSpellList(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -470,7 +473,7 @@ void IOLoginDataLoad::loadPlayerInstantSpellList(std::shared_ptr<Player> player,
 
 void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -552,7 +555,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, D
 
 void IOLoginDataLoad::loadPlayerStoreInbox(std::shared_ptr<Player> player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -563,7 +566,7 @@ void IOLoginDataLoad::loadPlayerStoreInbox(std::shared_ptr<Player> player) {
 
 void IOLoginDataLoad::loadRewardItems(std::shared_ptr<Player> player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -581,7 +584,7 @@ void IOLoginDataLoad::loadRewardItems(std::shared_ptr<Player> player) {
 
 void IOLoginDataLoad::loadPlayerDepotItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -620,7 +623,7 @@ void IOLoginDataLoad::loadPlayerDepotItems(std::shared_ptr<Player> player, DBRes
 
 void IOLoginDataLoad::loadPlayerInboxItems(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -656,7 +659,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(std::shared_ptr<Player> player, DBRes
 
 void IOLoginDataLoad::loadPlayerStorageMap(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -672,7 +675,7 @@ void IOLoginDataLoad::loadPlayerStorageMap(std::shared_ptr<Player> player, DBRes
 
 void IOLoginDataLoad::loadPlayerVip(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -710,7 +713,7 @@ void IOLoginDataLoad::loadPlayerVip(std::shared_ptr<Player> player, DBResult_ptr
 
 void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -757,7 +760,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 
 void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -807,7 +810,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 
 void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -828,12 +831,12 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 
 void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResult_ptr result) {
 	if (!result) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Result nullptr", __FUNCTION__);
 		return;
 	}
 
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -865,7 +868,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResu
 
 void IOLoginDataLoad::bindRewardBag(std::shared_ptr<Player> player, ItemsMap &rewardItemsMap) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -905,7 +908,7 @@ void IOLoginDataLoad::insertItemsIntoRewardBag(const ItemsMap &rewardItemsMap) {
 
 void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -924,7 +927,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(std::shared_ptr<Player> player)
 
 void IOLoginDataLoad::loadPlayerUpdateSystem(std::shared_ptr<Player> player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 

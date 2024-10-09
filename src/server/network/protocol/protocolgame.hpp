@@ -47,10 +47,10 @@ struct TextMessage {
 	MessageClasses type = MESSAGE_STATUS;
 	std::string text;
 	Position position;
-	uint16_t channelId;
+	uint16_t channelId {};
 	struct
 	{
-		int32_t value = 0;
+		int32_t value {};
 		TextColor_t color = TEXTCOLOR_NONE;
 	} primary, secondary;
 };

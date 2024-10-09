@@ -208,7 +208,7 @@ namespace {
 
 		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 			damageModifiers[i] -= 100 * player->getAbsorbPercent(indexToCombatType(i));
-			if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
+			if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 				damageModifiers[i] -= player->wheel()->getResistance(indexToCombatType(i));
 			}
 
@@ -531,7 +531,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
 			g_game().removePlayerUniqueLogin(player);
-			auto maintainMessage = g_configManager().getString(MAINTAIN_MODE_MESSAGE, __FUNCTION__);
+			auto maintainMessage = g_configManager().getString(MAINTAIN_MODE_MESSAGE);
 			if (!maintainMessage.empty()) {
 				disconnectClient(maintainMessage);
 			} else {
@@ -540,14 +540,14 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT, __FUNCTION__) && !player->isPremium() && (player->getGroup()->id < GROUP_TYPE_GAMEMASTER || player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER)) {
+		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT) && !player->isPremium() && (player->getGroup()->id < GROUP_TYPE_GAMEMASTER || player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER)) {
 			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Your premium time for this account is out.\n\nTo play please buy additional premium time from our website");
 			return;
 		}
 
 		auto onlineCount = g_game().getPlayersByAccount(player->getAccount()).size();
-		auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
+		auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT);
 		if (player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && onlineCount >= maxOnline) {
 			g_game().removePlayerUniqueLogin(player);
 			disconnectClient(fmt::format("You may only login with {} character{}\nof your account at the same time.", maxOnline, maxOnline > 1 ? "s" : ""));
@@ -594,7 +594,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (!IOLoginData::loadPlayerById(player, player->getGUID())) {
+		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false)) {
 			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Your character could not be loaded.");
 			g_logger().warn("Player {} could not be loaded", player->getName());
@@ -606,7 +606,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		const auto tile = g_game().map.getOrCreateTile(player->getLoginPosition());
 		// moving from a pz tile to a non-pz tile
 		if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-			auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
+			auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT);
 			auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
 			int countOutsizePZ = 0;
 			for (const auto &accountPlayer : accountPlayers) {
@@ -632,7 +632,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 		acceptPackets = true;
 	} else {
-		if (eventConnect != 0 || !g_configManager().getBoolean(REPLACE_KICK_ON_LOGIN, __FUNCTION__)) {
+		if (eventConnect != 0 || !g_configManager().getBoolean(REPLACE_KICK_ON_LOGIN)) {
 			// Already trying to connect
 			disconnectClient("You are already logged in.");
 			return;
@@ -739,7 +739,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	g_logger().trace("Protocol version: {}", version);
 
 	// Old protocol support
-	oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) && version <= 1100;
+	oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && version <= 1100;
 
 	if (oldProtocol) {
 		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
@@ -779,7 +779,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	auto isGameMaster = static_cast<bool>(msg.getByte()); // gamemaster flag
 	g_logger().trace("Is Game Master: {}", isGameMaster);
 
-	std::string authType = g_configManager().getString(AUTH_TYPE, __FUNCTION__);
+	std::string authType = g_configManager().getString(AUTH_TYPE);
 	std::ostringstream ss;
 	std::string sessionKey = msg.getString();
 	std::string accountDescriptor = sessionKey;
@@ -836,7 +836,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	if (!oldProtocol && clientVersion != CLIENT_VERSION) {
 		ss.str(std::string());
 		ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER;
-		if (g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__)) {
+		if (g_configManager().getBoolean(OLD_PROTOCOL)) {
 			ss << " or 11.00";
 		}
 		ss << " allowed!";
@@ -1963,7 +1963,7 @@ void ProtocolGame::parseQuickLootBlackWhitelist(NetworkMessage &msg) {
 
 void ProtocolGame::parseSay(NetworkMessage &msg) {
 	std::string receiver;
-	uint16_t channelId;
+	uint16_t channelId {};
 
 	SpeakClasses type = static_cast<SpeakClasses>(msg.getByte());
 	switch (type) {
@@ -2272,7 +2272,7 @@ void ProtocolGame::parseTaskHuntingAction(NetworkMessage &msg) {
 	bool upgrade = msg.getByte() != 0;
 	uint16_t raceId = msg.get<uint16_t>();
 
-	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		return;
 	}
 
@@ -2300,7 +2300,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0x00); // All data available
 
 	msg.addByte(1); // Worlds
-	auto serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__);
+	auto serverName = g_configManager().getString(SERVER_NAME);
 	msg.addString(serverName); // First World
 	msg.addString(serverName); // Selected World
 
@@ -2509,10 +2509,10 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 				break;
 		}
 
-		newmsg.add<uint16_t>(g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY, __FUNCTION__) || shouldAddItem == true ? loot.id : 0);
+		newmsg.add<uint16_t>(g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY) || shouldAddItem == true ? loot.id : 0);
 		newmsg.addByte(difficult);
 		newmsg.addByte(0); // 1 if special event - 0 if regular loot (?)
-		if (g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY, __FUNCTION__) || shouldAddItem == true) {
+		if (g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY) || shouldAddItem == true) {
 			newmsg.addString(loot.name);
 			newmsg.addByte(loot.countmax > 0 ? 0x1 : 0x0);
 		}
@@ -3152,7 +3152,7 @@ void ProtocolGame::parsePreyAction(NetworkMessage &msg) {
 		raceId = msg.get<uint16_t>();
 	}
 
-	if (!g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(PREY_ENABLED)) {
 		return;
 	}
 
@@ -3274,12 +3274,12 @@ void ProtocolGame::parseRewardChestCollect(NetworkMessage &msg) {
 	auto stackPosition = msg.getByte();
 
 	// Block collect reward
-	auto useCollect = g_configManager().getBoolean(REWARD_CHEST_COLLECT_ENABLED, __FUNCTION__);
+	auto useCollect = g_configManager().getBoolean(REWARD_CHEST_COLLECT_ENABLED);
 	if (!useCollect) {
 		return;
 	}
 
-	auto maxCollectItems = g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS, __FUNCTION__);
+	auto maxCollectItems = g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS);
 	g_game().playerRewardChestCollect(player->getID(), position, itemId, stackPosition, maxCollectItems);
 }
 
@@ -3742,7 +3742,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
 	// Wheel of destiny mitigation
-	if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
+	if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		msg.addDouble(player->getMitigation());
 	} else {
 		msg.addDouble(0);
@@ -4456,7 +4456,7 @@ void ProtocolGame::sendBlessStatus() {
 	if (oldProtocol) {
 		msg.add<uint16_t>(blessCount >= 5 ? 0x01 : 0x00);
 	} else {
-		bool glow = player->getVocationId() > VOCATION_NONE && ((g_configManager().getBoolean(INVENTORY_GLOW, __FUNCTION__) && blessCount >= 5) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__));
+		bool glow = player->getVocationId() > VOCATION_NONE && ((g_configManager().getBoolean(INVENTORY_GLOW) && blessCount >= 5) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL));
 		msg.add<uint16_t>(glow ? 1 : 0); // Show up the glowing effect in items if you have all blesses or adventurer's blessing
 		msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	}
@@ -4465,7 +4465,7 @@ void ProtocolGame::sendBlessStatus() {
 }
 
 void ProtocolGame::sendPremiumTrigger() {
-	if (!g_configManager().getBoolean(FREE_PREMIUM, __FUNCTION__) && !g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(FREE_PREMIUM) && !g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
 		NetworkMessage msg;
 		msg.addByte(0x9E);
 		msg.addByte(16);
@@ -5419,31 +5419,31 @@ void ProtocolGame::sendForgingData() {
 	}
 
 	// (conversion) (left column top) Cost to make 1 bottom item - 20
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER)));
 	// (conversion) (left column bottom) How many items to make - 3
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT)));
 	// (conversion) (middle column top) Cost to make 1 - 50
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CORE_COST, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CORE_COST)));
 	// (conversion) (right column top) Current stored dust limit minus this number = cost to increase stored dust limit - 75
 	msg.addByte(75);
 	// (conversion) (right column bottom) Starting stored dust limit
 	msg.add<uint16_t>(player->getForgeDustLevel());
 	// (conversion) (right column bottom) Max stored dust limit - 325
-	msg.add<uint16_t>(g_configManager().getNumber(FORGE_MAX_DUST, __FUNCTION__));
+	msg.add<uint16_t>(g_configManager().getNumber(FORGE_MAX_DUST));
 	// (normal fusion) dust cost - 100
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST)));
 	// (convergence fusion) dust cost - 130
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_FUSION_DUST_COST, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_FUSION_DUST_COST)));
 	// (normal transfer) dust cost - 100
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST)));
 	// (convergence transfer) dust cost - 160
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_TRANSFER_DUST_COST, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_TRANSFER_DUST_COST)));
 	// (fusion) Base success rate - 50
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE)));
 	// (fusion) Bonus success rate - 15
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)));
 	// (fusion) Tier loss chance after reduction - 50
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION, __FUNCTION__)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION)));
 
 	// Update player resources
 	parseSendResourceBalance();
@@ -5459,7 +5459,7 @@ void ProtocolGame::sendOpenForge() {
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
 
-	auto maxConfigTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER, __FUNCTION__);
+	auto maxConfigTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
 
 	/*
 	 *Start - Parsing items informations
@@ -6832,8 +6832,8 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 	msg.addByte(0x00); // can change pvp framing option
 	msg.addByte(0x00); // expert mode button enabled
 
-	msg.addString(g_configManager().getString(STORE_IMAGES_URL, __FUNCTION__));
-	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET, __FUNCTION__)));
+	msg.addString(g_configManager().getString(STORE_IMAGES_URL));
+	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
 
 	if (!oldProtocol) {
 		msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
@@ -6917,7 +6917,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 	sendLootContainers();
 	sendBasicData();
 	// Wheel of destiny cooldown
-	if (!oldProtocol && g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
+	if (!oldProtocol && g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		player->wheel()->sendGiftOfLifeCooldown();
 	}
 
@@ -7201,7 +7201,7 @@ void ProtocolGame::sendOutfitWindow() {
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
 
-	if (player->isAccessPlayer() && g_configManager().getBoolean(ENABLE_SUPPORT_OUTFIT, __FUNCTION__)) {
+	if (player->isAccessPlayer() && g_configManager().getBoolean(ENABLE_SUPPORT_OUTFIT)) {
 		msg.add<uint16_t>(75);
 		msg.addString("Gamemaster");
 		msg.addByte(0);
@@ -7669,12 +7669,12 @@ void ProtocolGame::sendPreyPrices() {
 	msg.addByte(0xE9);
 	msg.add<uint32_t>(player->getPreyRerollPrice());
 	if (!oldProtocol) {
-		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE, __FUNCTION__)));
-		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE, __FUNCTION__)));
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE)));
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE)));
 		msg.add<uint32_t>(player->getTaskHuntingRerollPrice());
 		msg.add<uint32_t>(player->getTaskHuntingRerollPrice());
-		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_SELECTION_LIST_PRICE, __FUNCTION__)));
-		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE, __FUNCTION__)));
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_SELECTION_LIST_PRICE)));
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
 	}
 
 	writeToOutputBuffer(msg);
@@ -8591,7 +8591,7 @@ void ProtocolGame::sendOpenStash() {
 		msg.add<uint16_t>(item.first);
 		msg.add<uint32_t>(item.second);
 	}
-	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STASH_ITEMS, __FUNCTION__) - getStashSize(list)));
+	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STASH_ITEMS) - getStashSize(list)));
 	writeToOutputBuffer(msg);
 }
 
@@ -9012,14 +9012,14 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		bossesUnlockedSize--;
 	}
 
-	bool isTodaySlotUnlocked = g_configManager().getBoolean(BOOSTED_BOSS_SLOT, __FUNCTION__);
+	bool isTodaySlotUnlocked = g_configManager().getBoolean(BOOSTED_BOSS_SLOT);
 	msg.addByte(isTodaySlotUnlocked ? 1 : 0);
 	msg.add<uint32_t>(boostedBossId);
 	if (isTodaySlotUnlocked && boostedBossId != 0) {
 		auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
-		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS, __FUNCTION__));
-		auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER, __FUNCTION__));
-		auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS, __FUNCTION__));
+		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
+		auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
+		auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
 		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(boostedBossRace), boostedBossKillCount, boostedLootBonus, bosstiaryMultiplier + boostedKillBonus, 0, 0);
 	}
 
@@ -9275,7 +9275,7 @@ void ProtocolGame::sendDoubleSoundEffect(
 }
 
 void ProtocolGame::parseOpenWheel(NetworkMessage &msg) {
-	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		return;
 	}
 
@@ -9284,7 +9284,7 @@ void ProtocolGame::parseOpenWheel(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseWheelGemAction(NetworkMessage &msg) {
-	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		return;
 	}
 
@@ -9292,7 +9292,7 @@ void ProtocolGame::parseWheelGemAction(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendOpenWheelWindow(uint32_t ownerId) {
-	if (!player || oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
+	if (!player || oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		return;
 	}
 
@@ -9302,7 +9302,7 @@ void ProtocolGame::sendOpenWheelWindow(uint32_t ownerId) {
 }
 
 void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
-	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM, __FUNCTION__)) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		return;
 	}
 

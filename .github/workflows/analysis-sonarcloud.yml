@@ -2,11 +2,8 @@
 name: Analysis - SonarCloud
 
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened]
-    paths:
-      - "src/**"
   pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - "src/**"
   push:

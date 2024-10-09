@@ -9,17 +9,11 @@ local config = {
 		needItem = { itemId = 3231 },
 		effect = CONST_ME_MAGIC_BLUE,
 	},
-	[2286] = {
-		items = {
-			{ itemId = 3205 },
-		},
-		storage = Storage.QuestChests.FamilyBrooch,
-	},
 	[3018] = {
 		items = {
 			{ itemId = 3219 },
 		},
-		storage = Storage.Postman.Mission08,
+		storage = Storage.Quest.U7_24.ThePostmanMissions.Mission08,
 		formerValue = 1,
 		newValue = 2,
 	},
@@ -66,7 +60,7 @@ local config = {
 		items = {
 			{ itemId = 3217 },
 		},
-		storage = Storage.Postman.Mission09,
+		storage = Storage.Quest.U7_24.ThePostmanMissions.Mission09,
 		formerValue = 1,
 		newValue = 2,
 	},
@@ -74,7 +68,7 @@ local config = {
 		items = {
 			{ itemId = 3218 },
 		},
-		storage = Storage.Postman.Mission05,
+		storage = Storage.Quest.U7_24.ThePostmanMissions.Mission05,
 		formerValue = 1,
 		newValue = 2,
 	},
@@ -98,7 +92,7 @@ local config = {
 		items = {
 			{ itemId = 2972, actionId = 3980 },
 		},
-		storage = Storage.QuestChests.DeeperFibulaKey,
+		storage = Storage.Quest.U5_0.DeeperFibulaKey,
 	},
 	[9226] = {
 		items = {
@@ -298,7 +292,7 @@ The map shows the original floor plan of this mine. You recognise your position 
 (In the lower right corner someone scribbled a note how to use the hoist on the first mine floor.)]],
 			},
 		},
-		storage = Storage.QuestChests.FormorgarMinesHoistSkeleton,
+		storage = Storage.Quest.U8_0.TheIceIslands.FormorgarMinesHoistSkeleton,
 	},
 	[14041] = {
 		items = {
@@ -357,7 +351,7 @@ the parchment is destroyed. It seems
 that is was torn by a big paw ...]],
 			},
 		},
-		storage = Storage.LionsRock.OuterSanctum.Skeleton,
+		storage = Storage.Quest.U10_70.LionsRock.OuterSanctum.Skeleton,
 	},
 	-- 65203 reservado
 }

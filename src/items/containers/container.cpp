@@ -61,12 +61,21 @@ std::shared_ptr<Container> Container::create(std::shared_ptr<Tile> tile) {
 
 Container::~Container() {
 	if (getID() == ITEM_BROWSEFIELD) {
-		if (getParent() && getParent()->getTile()) {
-			g_game().browseFields.erase(getParent()->getTile());
-		}
+		auto parent = getParent();
+		if (parent) {
+			auto tile = parent->getTile();
+			if (tile) {
+				auto browseField = g_game().browseFields.find(tile);
+				if (browseField != g_game().browseFields.end()) {
+					g_game().browseFields.erase(browseField);
+				}
+			}
 
-		for (std::shared_ptr<Item> item : itemlist) {
-			item->setParent(getParent());
+			for (auto &item : itemlist) {
+				if (item) {
+					item->setParent(parent);
+				}
+			}
 		}
 	}
 }

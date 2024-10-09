@@ -15,7 +15,7 @@ function pythiusBossTeleport.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if item.actionid == 50126 then
-		if player:getStorageValue(Storage.QuestChests.FirewalkerBoots) == 1 or roomIsOccupied() then
+		if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.FirewalkerBoots) == 1 or roomIsOccupied() then
 			player:teleportTo(fromPosition, true)
 			fromPosition:sendMagicEffect(CONST_ME_TELEPORT)
 			return true

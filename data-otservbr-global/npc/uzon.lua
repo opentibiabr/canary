@@ -78,8 +78,8 @@ addTravelKeyword("zao", "Do you seek a ride to Farmine for |TRAVELCOST|?", 60, P
 	return player:getStorageValue(TheNewFrontier.Mission10[1]) ~= 2
 end)
 addTravelKeyword("edron", "Do you seek a ride to Edron for |TRAVELCOST|?", 60, Position(33193, 31783, 3), nil, function(player)
-	if player:getStorageValue(Storage.Postman.Mission01) == 2 then
-		player:setStorageValue(Storage.Postman.Mission01, 3)
+	if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission01) == 2 then
+		player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission01, 3)
 	end
 end)
 addTravelKeyword("darashia", "Do you seek a ride to Darashia on Darama for |TRAVELCOST|?", 60, Position(33270, 32441, 6))

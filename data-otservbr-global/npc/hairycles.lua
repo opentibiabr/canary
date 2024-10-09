@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("These are dire times for our people. Problems plenty are in this times. But me people not grant trust easy. Are you willing to prove you friend of ape people?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif questProgress == 1 then
-			if player:getStorageValue(Storage.QuestChests.WhisperMoss) == 1 then
+			if player:getStorageValue(Storage.Quest.U7_6.WhisperMoss) == 1 then
 				npcHandler:say("Oh, you brought me whisper moss? Good hairless ape you are! Can me take it?", npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			else
@@ -195,7 +195,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("No more missions await you right now, friend. Perhaps you want to check me offers for special friends... or shamanic powers.", npc, creature)
 		end
 	elseif MsgContains(message, "background") then
-		if questProgress == 1 and player:getStorageValue(Storage.QuestChests.WhisperMoss) ~= 1 then
+		if questProgress == 1 and player:getStorageValue(Storage.Quest.U7_6.WhisperMoss) ~= 1 then
 			npcHandler:say({
 				"So listen, little ape was struck by plague. Hairycles not does know what plague it is. That is strange. Hairycles should know. But Hairycles learnt lots and lots ...",
 				"Me sure to make cure so strong to drive away all plague. But to create great cure me need powerful components ...",
@@ -268,7 +268,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, "yes") then
 			if not player:removeItem(4827, 1) then
 				npcHandler:say("Stupid, you no have the moss me need. Go get it. It's somewhere in dworc lair. If you lost it, they might restocked it meanwhile. If you need to hear background of all again, ask Hairycles for {background}.", npc, creature)
-				player:setStorageValue(Storage.QuestChests.WhisperMoss, -1)
+				player:setStorageValue(Storage.Quest.U7_6.WhisperMoss, -1)
 				return true
 			end
 
@@ -321,7 +321,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 7 then
 		if MsgContains(message, "yes") then
 			if not player:removeItem(4831, 1) then
-				if player:getStorageValue(Storage.QuestChests.OldParchment) == 1 then
+				if player:getStorageValue(Storage.Quest.U7_6.OldParchment) == 1 then
 					npcHandler:say("That's bad news. If you lost it, only way to get other is to kill holy serpents. But you can't go there so you must ask adventurers who can.", npc, creature)
 				else
 					npcHandler:say("No! That not scroll me looking for. Silly hairless ape you are. Go to village of lizards and get it there on your own!", npc, creature)

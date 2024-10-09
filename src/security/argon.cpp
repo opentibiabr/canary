@@ -33,8 +33,15 @@ uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
 		return 0;
 	}
 
-	int base = std::stoi(match[1].str());
-	int shift = std::stoi(match[2].str());
+	int base = 0;
+	int shift = 0;
+	try {
+		base = std::stoi(match[1].str());
+		shift = std::stoi(match[2].str());
+	} catch (const std::exception &e) {
+		g_logger().warn("Error parsing bit shift string: '{}'", e.what());
+		return 0;
+	}
 
 	if (shift < 0 || shift >= 32) {
 		g_logger().warn("Shift value out of bounds: '{}'", shift);

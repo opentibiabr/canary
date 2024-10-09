@@ -87,11 +87,11 @@ public:
 	 * @param args Variadic arguments to pass to the callback function.
 	 */
 	template <typename CallbackFunc, typename... Args>
-	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args&&... args) {
+	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
 			if (callback && callback->isLoadedCallback()) {
 				std::invoke(callbackFunc, *callback, std::forward<Args>(args)...);
-				//g_logger().trace("Executed callback: {}", name);
+				// g_logger().trace("Executed callback: {}", name);
 			}
 		}
 	}
@@ -124,7 +124,7 @@ public:
 	 * @return True if all callbacks succeed, false otherwise.
 	 */
 	template <typename CallbackFunc, typename... Args>
-	bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args&&... args) {
+	bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		bool allCallbacksSucceeded = true;
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
 			if (callback && callback->isLoadedCallback()) {

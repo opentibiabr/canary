@@ -1012,7 +1012,6 @@ std::shared_ptr<Player> Game::getPlayerByGUID(const uint32_t &guid, bool allowOf
 	if (!allowOffline) {
 		return nullptr;
 	}
-
 	std::shared_ptr<Player> tmpPlayer = std::make_shared<Player>(nullptr);
 	if (!IOLoginData::loadPlayerById(tmpPlayer, guid)) {
 		return nullptr;
@@ -1028,8 +1027,6 @@ std::string Game::getPlayerNameByGUID(const uint32_t &guid) {
 	if (m_playerNameCache.contains(guid)) {
 		return m_playerNameCache.at(guid);
 	}
-
-	// This player need read-only purposes and never saved
 	const auto &player = getPlayerByGUID(guid, true);
 	auto name = player ? player->getName() : "";
 	if (!name.empty()) {
@@ -1069,7 +1066,6 @@ std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(std::shared_ptr<A
 	if (error != enumToValue(AccountErrors_t::Ok)) {
 		return {};
 	}
-
 	std::vector<std::shared_ptr<Player>> ret;
 	for (const auto &[name, _] : accountPlayers) {
 		const auto &player = getPlayerByName(name, allowOffline);

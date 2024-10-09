@@ -15,16 +15,16 @@
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
-	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM, __FUNCTION__));
+	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM));
 	if (getID() == ITEM_GOLD_POUCH) {
 		pagination = true;
-		m_maxItems = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT, __FUNCTION__);
+		m_maxItems = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT);
 		maxSize = 32;
 	}
 
 	if (isStoreInbox()) {
 		pagination = true;
-		m_maxItems = g_configManager().getNumber(STOREINBOX_MAXLIMIT, __FUNCTION__);
+		m_maxItems = g_configManager().getNumber(STOREINBOX_MAXLIMIT);
 		maxSize = 32;
 	}
 }
@@ -500,7 +500,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 	if (const auto topParentContainer = getTopParentContainer()) {
 		if (const auto addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
-			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
+			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
 				return RETURNVALUE_CONTAINERISFULL;
 			}

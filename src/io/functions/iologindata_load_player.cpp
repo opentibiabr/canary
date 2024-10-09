@@ -96,9 +96,9 @@ bool IOLoginDataLoad::preLoadPlayer(std::shared_ptr<Player> player, const std::s
 	uint32_t premiumDays = player->getAccount()->getPremiumRemainingDays();
 	uint32_t premiumDaysPurchased = player->getAccount()->getPremiumDaysPurchased();
 
-	player->loyaltyPoints = player->getAccount()->getAccountAgeInDays() * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY, __FUNCTION__)
-		+ (premiumDaysPurchased - premiumDays) * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT, __FUNCTION__)
-		+ premiumDaysPurchased * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED, __FUNCTION__);
+	player->loyaltyPoints = player->getAccount()->getAccountAgeInDays() * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY)
+		+ (premiumDaysPurchased - premiumDays) * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT)
+		+ premiumDaysPurchased * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED);
 
 	return true;
 }
@@ -249,7 +249,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	}
 
 	player->defaultOutfit.lookType = result->getNumber<uint16_t>("looktype");
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
 		g_logger().warn("[{}] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", __FUNCTION__, player->defaultOutfit.lookType);
 		return;
 	}
@@ -265,7 +265,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	player->defaultOutfit.lookMountFeet = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountfeet"));
 	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
 
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
 		g_logger().warn("[{}] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", __FUNCTION__, player->defaultOutfit.lookFamiliarsType);
 		return;
 	}
@@ -329,7 +329,7 @@ void IOLoginDataLoad::loadPlayerKills(std::shared_ptr<Player> player, DBResult_p
 	if ((result = db.storeQuery(query.str()))) {
 		do {
 			time_t killTime = result->getNumber<time_t>("time");
-			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME, __FUNCTION__)) {
+			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
 				player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
 			}
 		} while (result->next());
@@ -477,7 +477,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(std::shared_ptr<Player> player, D
 		return;
 	}
 
-	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) && player->getProtocolVersion() < 1200;
+	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && player->getProtocolVersion() < 1200;
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_items` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
@@ -717,7 +717,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 		return;
 	}
 
-	if (g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__)) {
+	if (g_configManager().getBoolean(PREY_ENABLED)) {
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
@@ -764,7 +764,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 		return;
 	}
 
-	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED, __FUNCTION__)) {
+	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();

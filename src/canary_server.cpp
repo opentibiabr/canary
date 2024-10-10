@@ -18,6 +18,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "io/iomarket.hpp"
+#include "io/io_store.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"
@@ -349,6 +350,7 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
+	modulesLoadHelper(g_ioStore().loadFromXml(), "XML/store.xml");
 	modulesLoadHelper(g_storages().loadFromXML(), "XML/storages.xml");
 
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");

@@ -1510,11 +1510,12 @@ struct MarketOfferEx {
 };
 
 struct HistoryMarketOffer {
-	uint32_t timestamp;
-	uint64_t price;
-	uint16_t itemId;
-	uint16_t amount;
-	uint8_t tier;
+	uint32_t createdAt {};
+	uint32_t timestamp {};
+	uint64_t price {};
+	uint16_t itemId {};
+	uint16_t amount {};
+	uint8_t tier {};
 	MarketOfferState_t state;
 };
 

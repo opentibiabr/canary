@@ -11,6 +11,8 @@
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
+#include "io/io_store.hpp"
+
 #include "enums/object_category.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
@@ -836,6 +838,29 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 			history.createdAt = result->getNumber<time_t>("done_at");
 			history.success = result->getNumber<bool>("is_success");
 			player->setForgeHistory(history);
+		} while (result->next());
+	}
+}
+
+void IOLoginDataLoad::loadPlayerStoreHistory(std::shared_ptr<Player> player, DBResult_ptr result) {
+	if (!result || !player) {
+		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
+	std::string query = fmt::format("SELECT * FROM `store_history` WHERE `account_id` = {}", player->getAccountId());
+	if (result = Database::getInstance().storeQuery(query)) {
+		do {
+			StoreHistory history;
+			history.description = result->getString("description");
+			history.coinAmount = result->getNumber<int32_t>("coin_amount");
+			history.coinType = result->getNumber<CoinType>("coin_type");
+			history.type = result->getNumber<StoreDetailType>("type");
+			history.createdAt = result->getNumber<time_t>("created_at");
+			history.playerName = result->getString("player_name");
+			history.totalPrice = result->getNumber<int64_t>("total_price");
+			history.fromMarket = result->getNumber<bool>("show_detail");
+			player->setStoreHistory(history);
 		} while (result->next());
 	}
 }

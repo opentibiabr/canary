@@ -88,60 +88,87 @@ public:
 		auto it = listNames.find(s);
 		if (it == listNames.end()) {
 			g_logger().error("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
-			return T();
+			return {};
 		}
 
-		if (row[it->second] == nullptr) {
-			return T();
+		auto value = row[it->second];
+		if (value == nullptr) {
+			return {};
 		}
 
-		T data = 0;
+		T data {};
 		try {
+			if constexpr (std::is_enum_v<T>) {
+				using UnderlyingType = std::underlying_type_t<T>;
+				UnderlyingType numeric_value;
+
+				if constexpr (std::is_signed_v<UnderlyingType>) {
+					if constexpr (sizeof(UnderlyingType) <= sizeof(int)) {
+						numeric_value = static_cast<UnderlyingType>(std::stoi(value));
+					} else if constexpr (sizeof(UnderlyingType) <= sizeof(long)) {
+						numeric_value = static_cast<UnderlyingType>(std::stol(value));
+					} else if constexpr (sizeof(UnderlyingType) <= sizeof(long long)) {
+						numeric_value = static_cast<UnderlyingType>(std::stoll(value));
+					}
+				} else { // unsigned
+					if constexpr (sizeof(UnderlyingType) <= sizeof(unsigned int)) {
+						numeric_value = static_cast<UnderlyingType>(std::stoul(value));
+					} else if constexpr (sizeof(UnderlyingType) <= sizeof(unsigned long)) {
+						numeric_value = static_cast<UnderlyingType>(std::stoul(value));
+					} else if constexpr (sizeof(UnderlyingType) <= sizeof(unsigned long long)) {
+						numeric_value = static_cast<UnderlyingType>(std::stoull(value));
+					}
+				}
+
+				auto enum_value = magic_enum::enum_cast<T>(numeric_value);
+				if (!enum_value.has_value()) {
+					throw std::invalid_argument("Invalid enum numeric value");
+				}
+				return enum_value.value();
+			}
 			// Check if the type T is signed or unsigned
 			if constexpr (std::is_signed_v<T>) {
 				// Check if the type T is int8_t or int16_t
 				if constexpr (std::is_same_v<T, int8_t> || std::is_same_v<T, int16_t>) {
 					// Use std::stoi to convert string to int8_t
-					data = static_cast<T>(std::stoi(row[it->second]));
+					data = static_cast<T>(std::stoi(value));
 				}
 				// Check if the type T is int32_t
 				else if constexpr (std::is_same_v<T, int32_t>) {
 					// Use std::stol to convert string to int32_t
-					data = static_cast<T>(std::stol(row[it->second]));
+					data = static_cast<T>(std::stol(value));
 				}
 				// Check if the type T is int64_t
 				else if constexpr (std::is_same_v<T, int64_t>) {
 					// Use std::stoll to convert string to int64_t
-					data = static_cast<T>(std::stoll(row[it->second]));
+					data = static_cast<T>(std::stoll(value));
 				} else {
 					// Throws exception indicating that type T is invalid
 					g_logger().error("Invalid signed type T");
 				}
 			} else if (std::is_same<T, bool>::value) {
-				data = static_cast<T>(std::stoi(row[it->second]));
+				data = static_cast<T>(std::stoi(value));
 			} else {
 				// Check if the type T is uint8_t or uint16_t or uint32_t
 				if constexpr (std::is_same_v<T, uint8_t> || std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>) {
 					// Use std::stoul to convert string to uint8_t
-					data = static_cast<T>(std::stoul(row[it->second]));
+					data = static_cast<T>(std::stoul(value));
 				}
 				// Check if the type T is uint64_t
 				else if constexpr (std::is_same_v<T, uint64_t>) {
 					// Use std::stoull to convert string to uint64_t
-					data = static_cast<T>(std::stoull(row[it->second]));
+					data = static_cast<T>(std::stoull(value));
 				} else {
 					// Send log indicating that type T is invalid
-					g_logger().error("Column '{}' has an invalid unsigned T is invalid", s);
+					g_logger().error("Column '{}' has an invalid unsigned", s);
 				}
 			}
 		} catch (std::invalid_argument &e) {
 			// Value of string is invalid
 			g_logger().error("Column '{}' has an invalid value set, error code: {}", s, e.what());
-			data = T();
 		} catch (std::out_of_range &e) {
 			// Value of string is too large to fit the range allowed by type T
 			g_logger().error("Column '{}' has a value out of range, error code: {}", s, e.what());
-			data = T();
 		}
 
 		return data;

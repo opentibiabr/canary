@@ -104,6 +104,7 @@ augmentStrongImpactPercent = 10
 -- NOTE: preyFreeRerollTime: Time in seconds that players will have to wait to get a new free prey list.
 preySystemEnabled = true
 preyFreeThirdSlot = false
+preyMaxCardsAmount = 50
 preyRerollPricePerLevel = 200
 preySelectListPrice = 5
 preyBonusRerollPrice = 1
@@ -281,6 +282,7 @@ startStreakLevel = 0
 showLootsInBestiary = false
 minTownIdToBankTransferFromMain = 4
 enableSupportOutfit = true
+instantDailyRewardAccessAmount = 90
 
 -- Teleport summon
 -- Set to true will never remove the summon

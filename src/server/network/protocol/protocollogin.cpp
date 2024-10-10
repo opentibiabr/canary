@@ -236,7 +236,7 @@ void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
 
 	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
 	output->addByte(size);
-	std::ranges::sort(players.begin(), players.end(), Player::sortByLivestreamViewerCount);
+	std::ranges::sort(players, Player::sortByLivestreamViewerCount);
 
 	for (const auto &player : players) {
 		output->addByte(uint8_t());

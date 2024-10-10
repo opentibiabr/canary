@@ -85,7 +85,7 @@ const std::map<std::string, uint32_t, std::less<>> &Livestream::getLivestreamBan
 void Livestream::setBanViewer(const std::vector<std::string> &bans) {
 	// Remove banned viewers not in the new bans list
 	auto removedCount = std::erase_if(m_bans, [&bans](const auto &ban) {
-		return std::ranges::find(bans.begin(), bans.end(), ban.first) == bans.end();
+		return std::ranges::find(bans, ban.first) == bans.end();
 	});
 
 	g_logger().debug("[{}] removed {} banned viewers", __METHOD_NAME__, removedCount);
@@ -1444,7 +1444,7 @@ void Livestream::removeViewer(const ProtocolGame_ptr &client, bool spy) {
 		return;
 	}
 
-	auto mit = std::ranges::find(m_mutes.begin(), m_mutes.end(), it->second.name);
+	auto mit = std::ranges::find(m_mutes, it->second.name);
 	if (mit != m_mutes.end()) {
 		m_mutes.erase(mit);
 	}
@@ -1539,7 +1539,7 @@ void Livestream::updateViewerName(const ProtocolGame_ptr &client, std::map<Proto
 	sendChannelMessage("", 0, fmt::format("{} was renamed to {}.", sit->second.name, newName), TALKTYPE_CHANNEL_O, CHANNEL_LIVESTREAM);
 
 	// Update the muted list with the new name if necessary
-	auto mit = std::ranges::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.name));
+	auto mit = std::ranges::find(m_mutes, asLowerCaseString(sit->second.name));
 	if (mit != m_mutes.end()) {
 		(*mit) = asLowerCaseString(newName);
 	}
@@ -1558,7 +1558,7 @@ bool Livestream::isNameAvailable(const std::string &name) const {
 }
 
 void Livestream::handleChatMessage(const std::string &playerName, const ProtocolGame_ptr &client, const std::string &text) {
-	auto mit = std::ranges::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(playerName));
+	auto mit = std::ranges::find(m_mutes, asLowerCaseString(playerName));
 	if (mit == m_mutes.end()) {
 		sendChannelMessage(playerName, 0, text, TALKTYPE_CHANNEL_Y, CHANNEL_LIVESTREAM);
 	} else {

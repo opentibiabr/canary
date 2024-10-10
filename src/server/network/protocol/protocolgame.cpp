@@ -1989,7 +1989,7 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 	bool isLivestreamChannel = channelId == CHANNEL_LIVESTREAM;
 	if (isLivestreamChannel) {
 		g_dispatcher().addEvent(
-			[client = player->client, self = getThis(), text, channelId] { client->handle(self, text); }, "Livestream::handle"
+			[client = player->client, self = getThis(), text] { client->handle(self, text); }, "Livestream::handle"
 		);
 		return;
 	}
@@ -9359,12 +9359,10 @@ void ProtocolGame::insertLivestreamCaster() {
 }
 
 void ProtocolGame::removeLivestreamCaster() {
-	for (const auto &it : getLivestreamCasters()) {
-		if (it.first == player) {
-			getLivestreamCasters().erase(player);
-			break;
-		}
-	}
+	auto &livestreamCasters = getLivestreamCasters();
+	std::erase_if(livestreamCasters, [this](const auto &caster) {
+		return caster.first == player;
+	});
 }
 
 void ProtocolGame::sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer) {

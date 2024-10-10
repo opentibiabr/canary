@@ -322,7 +322,7 @@ void IOLoginDataLoad::loadPlayerKills(std::shared_ptr<Player> player, DBResult_p
 	if ((result = db.storeQuery(query.str()))) {
 		do {
 			time_t killTime = result->getTime("time");
-			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME, __FUNCTION__)) {
+			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
 				player->unjustifiedKills.emplace_back(result->getU32("target"), killTime, result->getBool("unavenged"));
 			}
 		} while (result->next());

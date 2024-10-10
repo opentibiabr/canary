@@ -144,6 +144,10 @@
       "configurePreset": "windows-release"
     },
     {
+      "name": "windows-release-static",
+      "configurePreset": "windows-release-static"
+    },
+    {
       "name": "windows-release-asan",
       "configurePreset": "windows-release-asan"
     },

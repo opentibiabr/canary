@@ -219,26 +219,41 @@ bool Database::retryQuery(const std::string &query, int retries) {
 		g_logger().error("Database not initialized!");
 		return false;
 	}
-
+	int attempt = 0;
 	while (retries > 0) {
 		try {
-			mysqlx::SqlResult result = m_databaseSession->sql(std::string(query)).execute();
+			mysqlx::SqlResult result = m_databaseSession->sql(query).execute();
 			g_logger().debug("Successfully executed query: '{}'", query);
 			return true;
 		} catch (const mysqlx::Error &err) {
 			g_logger().error("[Database::retryQuery] query: {}", query);
-			g_logger().error("[MySQL X DevAPI error: {}", err.what());
-			std::this_thread::sleep_for(std::chrono::seconds(1));
+			g_logger().error("MySQL X DevAPI error: {}", err.what());
+			attempt++;
 			retries--;
-			return false;
+			if (retries == 0) {
+				g_logger().error("[Database::retryQuery] All retries exhausted for query: {}", query);
+				return false;
+			} else {
+				int wait_time = std::pow(2, attempt); // Exponential backoff
+				g_logger().info("[Database::retryQuery] Retrying query in {} seconds, attempts left: {}", wait_time, retries);
+				std::this_thread::sleep_for(std::chrono::seconds(wait_time));
+			}
 		} catch (const std::exception &ex) {
 			g_logger().error("[Database::retryQuery] query: {}", query);
 			g_logger().error("Standard exception during query execution: {}", ex.what());
-			return false;
+			attempt++;
+			retries--;
+			if (retries == 0) {
+				g_logger().error("[Database::retryQuery] All retries exhausted due to standard exception for query: {}", query);
+				return false;
+			} else {
+				int wait_time = std::pow(2, attempt);
+				g_logger().info("[Database::retryQuery] Retrying query due to exception in {} seconds, attempts left: {}", wait_time, retries);
+				std::this_thread::sleep_for(std::chrono::seconds(wait_time));
+			}
 		}
 	}
-
-	g_logger().error("[Database::retryQuery] retries is zero, query: {}", query);
+	g_logger().error("[Database::retryQuery] All retries exhausted, query failed: {}", query);
 	return false;
 }
 
@@ -446,7 +461,7 @@ mysqlx::Schema Database::getDatabaseSchema() {
 		throw std::runtime_error("Database session is not initialized.");
 	}
 
-	return m_databaseSession->getSchema(g_configManager().getString(MYSQL_DB, __FUNCTION__));
+	return m_databaseSession->getSchema(g_configManager().getString(MYSQL_DB));
 }
 
 mysqlx::Table Database::getTable(const std::string &tableName) {

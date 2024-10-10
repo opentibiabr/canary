@@ -131,7 +131,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 
 		case CONDITIONATTR_PERSISTENT: {
 			bool value = false;
-			if (!propStream.read<bool>(value)) {
+			if (!propStream.readBool(value)) {
 				return false;
 			}
 

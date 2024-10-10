@@ -162,8 +162,11 @@ public:
 	void setName(const std::string &name) {
 		this->name = name;
 	}
+	const std::string &getNewName() const {
+		return m_newName;
+	}
 	void setNewName(const std::string &newName) {
-		this->newName = newName;
+		this->m_newName = newName;
 	}
 	const std::string &getTypeName() const override {
 		return name;
@@ -2791,7 +2794,7 @@ private:
 	std::unordered_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
 
 	std::string name;
-	std::string newName;
+	std::string m_newName;
 	std::string guildNick;
 	std::string loyaltyTitle;
 

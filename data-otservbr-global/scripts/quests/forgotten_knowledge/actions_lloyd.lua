@@ -1,26 +1,33 @@
 local config = {
 	boss = {
-		name = "Razzagorn",
-		position = Position(33422, 32467, 14),
+		name = "Lloyd",
+		position = Position(32799, 32827, 14),
 	},
-	timeToDefeat = 17 * 60, -- 17 minutes in seconds
+	requiredLevel = 250,
+	timeToDefeat = 10 * 60,
 	playerPositions = {
-		{ pos = Position(33386, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33387, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33388, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33389, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33390, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32759, 32868, 14), teleport = Position(32800, 32831, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32759, 32869, 14), teleport = Position(32800, 32831, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32759, 32870, 14), teleport = Position(32800, 32831, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32759, 32871, 14), teleport = Position(32800, 32831, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32759, 32872, 14), teleport = Position(32800, 32831, 14), effect = CONST_ME_TELEPORT },
+	},
+	monsters = {
+		{ name = "cosmic energy prism a invu", pos = Position(32801, 32827, 14) },
+		{ name = "cosmic energy prism b invu", pos = Position(32798, 32827, 14) },
+		{ name = "cosmic energy prism c invu", pos = Position(32803, 32826, 14) },
+		{ name = "cosmic energy prism d invu", pos = Position(32796, 32826, 14) },
 	},
 	specPos = {
-		from = Position(33407, 32453, 14),
-		to = Position(33439, 32481, 14),
+		from = Position(32785, 32813, 14),
+		to = Position(32812, 32838, 14),
 	},
-	exit = Position(33319, 32318, 13),
+	exit = Position(32815, 32873, 13),
 }
 
-local leverRazzagorn = Action()
+local leverLloyd = Action()
 
-function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function leverLloyd.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local players = {}
 	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
 
@@ -33,7 +40,7 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 			return true
 		end
 
-		local cooldownTime = creature:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.RazzagornTime)
+		local cooldownTime = creature:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.LloydKilled)
 		if cooldownTime > os.time() then
 			local remainingTime = cooldownTime - os.time()
 			local hours = math.floor(remainingTime / 3600)
@@ -71,6 +78,9 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 	end
 
 	Game.createMonster(config.boss.name, config.boss.position)
+	for _, monster in pairs(config.monsters) do
+		Game.createMonster(monster.name, monster.pos)
+	end
 
 	addEvent(clearBossRoom, config.timeToDefeat * 1000, config.specPos.from, config.specPos.to, config.exit)
 
@@ -115,5 +125,5 @@ function isBossInRoom(fromPos, toPos, bossName)
 	return monstersRemoved
 end
 
-leverRazzagorn:uid(1024)
-leverRazzagorn:register()
+leverLloyd:position(Position(32759, 32867, 14))
+leverLloyd:register()

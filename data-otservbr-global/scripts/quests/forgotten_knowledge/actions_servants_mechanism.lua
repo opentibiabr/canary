@@ -1,19 +1,19 @@
 local config = {
-	[26663] = { storage = GlobalStorage.ForgottenKnowledge.MechanismDiamond, counter = GlobalStorage.ForgottenKnowledge.DiamondServant, msg = "5 diamond entities are consuming too much raw energy for the cosmic chamber to awaken, it will be put to rest again in 10 minutes." },
-	[26664] = { storage = GlobalStorage.ForgottenKnowledge.MechanismGolden, counter = GlobalStorage.ForgottenKnowledge.GoldenServant, msg = "5 golden entities are consuming too much raw energy for the cosmic chamber to awaken, it will be put to rest again in 10 minutes." },
+	[26663] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.MechanismDiamond, counter = Storage.Quest.U11_02.ForgottenKnowledge.DiamondServant, msg = "5 diamond entities are consuming too much raw energy for the cosmic chamber to awaken, it will be put to rest again in 10 minutes." },
+	[26664] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.MechanismGolden, counter = Storage.Quest.U11_02.ForgottenKnowledge.GoldenServant, msg = "5 golden entities are consuming too much raw energy for the cosmic chamber to awaken, it will be put to rest again in 10 minutes." },
 }
 
 local function clearGolems()
 	local specs, spec = Game.getSpectators(Position(32815, 32874, 13), false, false, 63, 63, 63, 63)
 	for i = 1, #specs do
 		spec = specs[i]
-		if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismDiamond) < 1 then
+		if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.MechanismDiamond) < 1 then
 			if spec:isMonster() and spec:getName():lower() == "diamond servant replica" then
 				spec:getPosition():sendMagicEffect(CONST_ME_POFF)
 				spec:remove()
 			end
 		end
-		if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismGolden) < 1 then
+		if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.MechanismGolden) < 1 then
 			if spec:isMonster() and spec:getName():lower() == "golden servant replica" then
 				spec:getPosition():sendMagicEffect(CONST_ME_POFF)
 				spec:remove()

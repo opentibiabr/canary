@@ -1,26 +1,34 @@
 local config = {
 	boss = {
-		name = "Razzagorn",
-		position = Position(33422, 32467, 14),
+		name = "The Enraged Thorn Knight",
+		createFunction = function()
+			return Game.createMonster("Mounted Thorn Knight", Position(32624, 32880, 14), true, true)
+		end,
 	},
-	timeToDefeat = 17 * 60, -- 17 minutes in seconds
+	requiredLevel = 250,
+	timeToDefeat = 15 * 60,
 	playerPositions = {
-		{ pos = Position(33386, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33387, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33388, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33389, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33390, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32657, 32877, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32657, 32878, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32657, 32879, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32657, 32880, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32657, 32881, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
 	},
 	specPos = {
-		from = Position(33407, 32453, 14),
-		to = Position(33439, 32481, 14),
+		from = Position(32613, 32869, 14),
+		to = Position(32636, 32892, 14),
 	},
-	exit = Position(33319, 32318, 13),
+	exit = Position(32678, 32888, 14),
+	onUseExtra = function(player)
+		for d = 1, 6 do
+			Game.createMonster("possessed tree", Position(math.random(32619, 32629), math.random(32877, 32884), 14), true, true)
+		end
+	end,
 }
 
-local leverRazzagorn = Action()
+local leverThornKnight = Action()
 
-function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function leverThornKnight.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local players = {}
 	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
 
@@ -33,7 +41,7 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 			return true
 		end
 
-		local cooldownTime = creature:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.RazzagornTime)
+		local cooldownTime = creature:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightKilled)
 		if cooldownTime > os.time() then
 			local remainingTime = cooldownTime - os.time()
 			local hours = math.floor(remainingTime / 3600)
@@ -70,7 +78,9 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 		teleportPos:sendMagicEffect(effect)
 	end
 
-	Game.createMonster(config.boss.name, config.boss.position)
+	config.boss.createFunction()
+
+	config.onUseExtra(player)
 
 	addEvent(clearBossRoom, config.timeToDefeat * 1000, config.specPos.from, config.specPos.to, config.exit)
 
@@ -115,5 +125,5 @@ function isBossInRoom(fromPos, toPos, bossName)
 	return monstersRemoved
 end
 
-leverRazzagorn:uid(1024)
-leverRazzagorn:register()
+leverThornKnight:position(Position(32657, 32876, 14))
+leverThornKnight:register()

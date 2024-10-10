@@ -172,6 +172,13 @@ local config = {
 		},
 		effect = CONST_ME_CRAPS,
 	},
+	[26186] = { -- mystery box
+		chances = {
+			{ from = 0, to = 5001, itemId = 25361 }, -- blood of the mountain
+			{ from = 5002, to = 10001, itemId = 25360 }, -- heart of the mountain
+		},
+		effect = CONST_ME_CRAPS,
+	},
 	[27654] = { -- surprise jar
 		chances = {
 			{ from = 0, to = 2500, itemId = 3041 },

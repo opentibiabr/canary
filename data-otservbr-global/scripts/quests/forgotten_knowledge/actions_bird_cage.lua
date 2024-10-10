@@ -15,10 +15,10 @@ function forgottenKnowledgeBird.onUse(player, item, fromPosition, target, toPosi
 		end
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You open the cage and let the cave parrot roam free!")
 		item:transform(23812)
-		if player:getStorageValue(Storage.ForgottenKnowledge.BirdCounter) < 0 then
-			player:setStorageValue(Storage.ForgottenKnowledge.BirdCounter, 0)
+		if player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BirdCounter) < 0 then
+			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BirdCounter, 0)
 		end
-		player:setStorageValue(Storage.ForgottenKnowledge.BirdCounter, player:getStorageValue(Storage.ForgottenKnowledge.BirdCounter) + 1)
+		player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BirdCounter, player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BirdCounter) + 1)
 	end
 	player:getPosition():sendMagicEffect(CONST_ME_HEARTS)
 	return true

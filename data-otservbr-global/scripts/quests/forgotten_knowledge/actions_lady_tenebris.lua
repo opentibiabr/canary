@@ -1,26 +1,32 @@
 local config = {
 	boss = {
-		name = "Razzagorn",
-		position = Position(33422, 32467, 14),
+		name = "Lady Tenebris",
+		position = Position(32912, 31599, 14),
 	},
-	timeToDefeat = 17 * 60, -- 17 minutes in seconds
+	requiredLevel = 250,
+	timeToDefeat = 15 * 60,
 	playerPositions = {
-		{ pos = Position(33386, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33387, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33388, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33389, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33390, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32902, 31623, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32902, 31624, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32902, 31625, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32902, 31626, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32902, 31627, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
+	},
+	monsters = {
+		{ name = "shadow tentacle", pos = Position(32910, 31599, 14) },
+		{ name = "shadow tentacle", pos = Position(32912, 31597, 14) },
+		{ name = "shadow tentacle", pos = Position(32914, 31599, 14) },
 	},
 	specPos = {
-		from = Position(33407, 32453, 14),
-		to = Position(33439, 32481, 14),
+		from = Position(32899, 31587, 14),
+		to = Position(32923, 31612, 14),
 	},
-	exit = Position(33319, 32318, 13),
+	exit = Position(32902, 31629, 14),
 }
 
-local leverRazzagorn = Action()
+local leverLadyTenebris = Action()
 
-function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function leverLadyTenebris.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local players = {}
 	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
 
@@ -33,7 +39,7 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 			return true
 		end
 
-		local cooldownTime = creature:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.RazzagornTime)
+		local cooldownTime = creature:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisKilled)
 		if cooldownTime > os.time() then
 			local remainingTime = cooldownTime - os.time()
 			local hours = math.floor(remainingTime / 3600)
@@ -71,6 +77,9 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 	end
 
 	Game.createMonster(config.boss.name, config.boss.position)
+	for _, monster in pairs(config.monsters) do
+		Game.createMonster(monster.name, monster.pos)
+	end
 
 	addEvent(clearBossRoom, config.timeToDefeat * 1000, config.specPos.from, config.specPos.to, config.exit)
 
@@ -115,5 +124,5 @@ function isBossInRoom(fromPos, toPos, bossName)
 	return monstersRemoved
 end
 
-leverRazzagorn:uid(1024)
-leverRazzagorn:register()
+leverLadyTenebris:position(Position(32902, 31622, 14))
+leverLadyTenebris:register()

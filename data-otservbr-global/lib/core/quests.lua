@@ -5169,12 +5169,12 @@ if not Quests then
 		},
 		[36] = {
 			name = "Forgotten Knowledge",
-			startStorageId = Storage.ForgottenKnowledge.Tomes,
+			startStorageId = Storage.Quest.U11_02.ForgottenKnowledge.Tomes,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Circle of the Black Sphinx",
-					storageId = Storage.ForgottenKnowledge.LadyTenebrisKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisKilled,
 					missionId = 10361,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5184,7 +5184,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Bane of the Cosmic Force",
-					storageId = Storage.ForgottenKnowledge.LloydKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LloydKilled,
 					missionId = 10362,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5195,7 +5195,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Desecrated Glade",
-					storageId = Storage.ForgottenKnowledge.ThornKnightKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightKilled,
 					missionId = 10363,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5206,7 +5206,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "The Unwary Mage",
-					storageId = Storage.ForgottenKnowledge.DragonkingKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled,
 					missionId = 10364,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5217,7 +5217,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Dragon in Distress",
-					storageId = Storage.ForgottenKnowledge.HorrorKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled,
 					missionId = 10365,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5227,7 +5227,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Time is a Window",
-					storageId = Storage.ForgottenKnowledge.TimeGuardianKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled,
 					missionId = 10366,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5238,7 +5238,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Final Fight",
-					storageId = Storage.ForgottenKnowledge.LastLoreKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LastLoreKilled,
 					missionId = 10367,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5250,22 +5250,22 @@ if not Quests then
 		},
 		[37] = {
 			name = "The First Dragon",
-			startStorageId = Storage.FirstDragon.Questline,
+			startStorageId = Storage.Quest.U11_02.TheFirstDragon.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Power",
-					storageId = Storage.FirstDragon.DragonCounter,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.DragonCounter,
 					missionId = 10368,
 					startValue = 0,
 					endValue = 200,
 					description = function(player)
-						return ("You already hunted %d/200 dragons."):format(player:getStorageValue(Storage.FirstDragon.DragonCounter))
+						return ("You already hunted %d/200 dragons."):format(player:getStorageValue(Storage.Quest.U11_02.TheFirstDragon.DragonCounter))
 					end,
 				},
 				[2] = {
 					name = "Treasure",
-					storageId = Storage.FirstDragon.ChestCounter,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.ChestCounter,
 					missionId = 10369,
 					startValue = 0,
 					endValue = 20,
@@ -5274,7 +5274,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Knowledge",
-					storageId = Storage.FirstDragon.GelidrazahAccess,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.GelidrazahAccess,
 					missionId = 10370,
 					startValue = 0,
 					endValue = 1,
@@ -5283,7 +5283,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Life",
-					storageId = Storage.FirstDragon.SecretsCounter,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.SecretsCounter,
 					missionId = 10371,
 					startValue = 0,
 					endValue = 3,
@@ -5294,23 +5294,23 @@ if not Quests then
 		},
 		[38] = {
 			name = "Cults of Tibia",
-			startStorageId = Storage.CultsOfTibia.Questline,
+			startStorageId = Storage.Quest.U11_40.CultsOfTibia.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Strengthtening of the Minotaurs",
-					storageId = Storage.CultsOfTibia.Minotaurs.JamesfrancisTask,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Minotaurs.JamesfrancisTask,
 					missionId = 10372,
 					startValue = 0,
 					endValue = 50,
 					description = function(player)
 						return ("James asked you to enter the cave for hunting 50 empowered minotaurs. \z
-						Then he will be able to continue his research.\nMinotaurs killed: %d/50"):format(player:getStorageValue(Storage.CultsOfTibia.Minotaurs.JamesfrancisTask))
+						Then he will be able to continue his research.\nMinotaurs killed: %d/50"):format(player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Minotaurs.JamesfrancisTask))
 					end,
 				},
 				[2] = {
 					name = "The Strengthtening of the Minotaurs",
-					storageId = Storage.CultsOfTibia.Minotaurs.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Minotaurs.Mission,
 					missionId = 10373,
 					startValue = 1,
 					endValue = 5,
@@ -5326,7 +5326,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Patron of Arts",
-					storageId = Storage.CultsOfTibia.MotA.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.MotA.Mission,
 					missionId = 10374,
 					startValue = 1,
 					endValue = 15,
@@ -5359,7 +5359,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Barkless",
-					storageId = Storage.CultsOfTibia.Barkless.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission,
 					missionId = 10375,
 					startValue = 1,
 					endValue = 7,
@@ -5371,7 +5371,7 @@ if not Quests then
 						The hardest part, however, is yet to come. Give your life to the ice... to become true and purified.",
 						[3] = function(player)
 							return ("You survived the Trial. Barkless now have the right to see the cult leader but a \z
-							powerful relic is sealing the path. Barkless markings broken to reverse the power of the cult object: \z %d of 10"):format(math.max(player:getStorageValue(Storage.CultsOfTibia.Barkless.Objects), 0))
+							powerful relic is sealing the path. Barkless markings broken to reverse the power of the cult object: \z %d of 10"):format(math.max(player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Objects), 0))
 						end,
 						[4] = "You broke enough Barkless markings to now reverse the seal \z
 						held up by the cult object in the ritual chamber. \z
@@ -5387,7 +5387,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Misguided",
-					storageId = Storage.CultsOfTibia.Misguided.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission,
 					missionId = 10376,
 					startValue = 1,
 					endValue = 5,
@@ -5397,7 +5397,7 @@ if not Quests then
 						hinted at something weird going on in a cave. He seemed too confused to decide whether to stop you.",
 						[3] = function(player)
 							return ("While rubbish, the amulet you equipe emits a strange aura of splendour. \z
-							You feel an urge to fulfill the amulets hunger for especific deaths... Exorcisms: %d/5 "):format(math.max(player:getStorageValue(Storage.CultsOfTibia.Misguided.Exorcisms), 0))
+							You feel an urge to fulfill the amulets hunger for especific deaths... Exorcisms: %d/5 "):format(math.max(player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Exorcisms), 0))
 						end,
 						[4] = "You defeated the cult leader of Misguided by uncovering the true master to pull his strings \z
 						and freeing this world from its malicious existance. Return to Gerimor to tell him about the victory.",
@@ -5406,7 +5406,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "The Orc Idol",
-					storageId = Storage.CultsOfTibia.Orcs.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Orcs.Mission,
 					missionId = 10377,
 					startValue = 1,
 					endValue = 3,
@@ -5420,7 +5420,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "The Secret of the Sandy Cave",
-					storageId = Storage.CultsOfTibia.Life.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Life.Mission,
 					missionId = 10378,
 					startValue = 1,
 					endValue = 10,
@@ -5445,7 +5445,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Zathroth Remmants",
-					storageId = Storage.CultsOfTibia.Humans.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Humans.Mission,
 					missionId = 10379,
 					startValue = 1,
 					endValue = 3,

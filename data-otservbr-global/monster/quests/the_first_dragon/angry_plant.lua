@@ -20,6 +20,10 @@ monster.corpse = 2983
 monster.speed = 55
 monster.manaCost = 0
 
+monster.events = {
+	"AngryPlantDeath",
+}
+
 monster.changeTarget = {
 	interval = 2000,
 	chance = 5,

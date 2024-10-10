@@ -1,4 +1,4 @@
-function fallFloor(pid, id)
+local function fallFloor(pid, id)
 	local player = Player(pid)
 	if not player then
 		return true
@@ -10,10 +10,11 @@ function fallFloor(pid, id)
 	end
 
 	local chance = math.random(0, 100)
-	if chance <= 1 then
+	if chance <= 2 then
 		amulet:moveTo(player:getPosition())
 	end
 	addEvent(fallFloor, 10000, player:getId(), id)
+
 	return true
 end
 
@@ -24,19 +25,15 @@ function beginTask.onEquip(player, item, slot, isCheck)
 		return true
 	end
 
-	if player:getStorageValue(Storage.CultsOfTibia.Misguided.Mission) >= 2 and player:getStorageValue(Storage.CultsOfTibia.Misguided.Mission) <= 3 then
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission) >= 2 and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission) <= 3 then
 		local equippedBefore = item:getCustomAttribute("task") or 0
-		if equippedBefore ~= player:getGuid() and player:getStorageValue(Storage.CultsOfTibia.Misguided.Monsters) < 10 then
-			player:setStorageValue(Storage.CultsOfTibia.Misguided.Monsters, 0)
+		if equippedBefore ~= player:getGuid() and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Monsters) < 10 then
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Monsters, 0)
 			item:setCustomAttribute("task", player:getGuid())
 		end
-		if player:getStorageValue(Storage.CultsOfTibia.Misguided.Mission) == 2 then
-			player:setStorageValue(Storage.CultsOfTibia.Misguided.Mission, 3)
-			player:sendTextMessage(
-				MESSAGE_EVENT_ADVANCE,
-				"The amulet burns your skin. \z
-			It hungers for energy right now, gather a large amount of energy as fast as possible to charge it. "
-			)
+		if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission) == 2 then
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission, 3)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The amulet burns your skin. It hungers for energy right now, gather a large amount of energy as fast as possible to charge it.")
 		end
 	end
 	addEvent(fallFloor, 10000, player:getId(), item:getId())

@@ -1,26 +1,46 @@
 local config = {
 	boss = {
-		name = "Razzagorn",
-		position = Position(33422, 32467, 14),
+		name = "The Last Lore Keeper",
+		position = Position(31987, 32839, 14),
 	},
-	timeToDefeat = 17 * 60, -- 17 minutes in seconds
+	requiredLevel = 250,
+	timeToDefeat = 17 * 60,
 	playerPositions = {
-		{ pos = Position(33386, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33387, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33388, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33389, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33390, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32018, 32844, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32019, 32844, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32020, 32844, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32018, 32845, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32019, 32845, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32020, 32845, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32018, 32846, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32019, 32846, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32020, 32846, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32018, 32847, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32019, 32847, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32020, 32847, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32018, 32848, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32019, 32848, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32020, 32848, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
+	},
+	monsters = {
+		{ name = "bound astral power", pos = Position(31973, 32840, 15) },
+		{ name = "bound astral power", pos = Position(31973, 32856, 15) },
+		{ name = "bound astral power", pos = Position(31989, 32856, 15) },
+		{ name = "bound astral power", pos = Position(31989, 32840, 15) },
+		{ name = "a shielded astral glyph", pos = Position(31986, 32840, 14) },
+		{ name = "the distorted astral source", pos = Position(31986, 32823, 15) },
+		{ name = "an astral glyph", pos = Position(31989, 32823, 15) },
 	},
 	specPos = {
-		from = Position(33407, 32453, 14),
-		to = Position(33439, 32481, 14),
+		from = Position(31968, 32821, 14),
+		to = Position(32004, 32865, 15),
 	},
-	exit = Position(33319, 32318, 13),
+	exit = Position(32035, 32859, 14),
 }
 
-local leverRazzagorn = Action()
+local leverLoreKeeper = Action()
 
-function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function leverLoreKeeper.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local players = {}
 	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
 
@@ -33,7 +53,7 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 			return true
 		end
 
-		local cooldownTime = creature:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.RazzagornTime)
+		local cooldownTime = creature:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.LastLoreKilled)
 		if cooldownTime > os.time() then
 			local remainingTime = cooldownTime - os.time()
 			local hours = math.floor(remainingTime / 3600)
@@ -71,6 +91,10 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 	end
 
 	Game.createMonster(config.boss.name, config.boss.position)
+
+	for _, monster in pairs(config.monsters) do
+		Game.createMonster(monster.name, monster.pos)
+	end
 
 	addEvent(clearBossRoom, config.timeToDefeat * 1000, config.specPos.from, config.specPos.to, config.exit)
 
@@ -115,5 +139,5 @@ function isBossInRoom(fromPos, toPos, bossName)
 	return monstersRemoved
 end
 
-leverRazzagorn:uid(1024)
-leverRazzagorn:register()
+leverLoreKeeper:position(Position(32019, 32843, 14))
+leverLoreKeeper:register()

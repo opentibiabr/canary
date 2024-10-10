@@ -1,26 +1,31 @@
 local config = {
 	boss = {
-		name = "Razzagorn",
-		position = Position(33422, 32467, 14),
+		name = "The Time Guardian",
+		position = Position(32977, 31662, 14),
 	},
-	timeToDefeat = 17 * 60, -- 17 minutes in seconds
+	requiredLevel = 250,
+	timeToDefeat = 15 * 60,
 	playerPositions = {
-		{ pos = Position(33386, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33387, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33388, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33389, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33390, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33010, 31660, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33010, 31661, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33010, 31662, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33010, 31663, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33010, 31664, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
+	},
+	monsters = {
+		{ name = "The Freezing Time Guardian", pos = Position(32975, 31664, 13) },
+		{ name = "The Blazing Time Guardian", pos = Position(32980, 31664, 13) },
 	},
 	specPos = {
-		from = Position(33407, 32453, 14),
-		to = Position(33439, 32481, 14),
+		from = Position(32967, 31654, 14),
+		to = Position(32989, 31677, 14),
 	},
-	exit = Position(33319, 32318, 13),
+	exit = Position(32870, 32724, 14),
 }
 
-local leverRazzagorn = Action()
+local leverTimeGuardian = Action()
 
-function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function leverTimeGuardian.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local players = {}
 	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
 
@@ -33,7 +38,7 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 			return true
 		end
 
-		local cooldownTime = creature:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.RazzagornTime)
+		local cooldownTime = creature:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled)
 		if cooldownTime > os.time() then
 			local remainingTime = cooldownTime - os.time()
 			local hours = math.floor(remainingTime / 3600)
@@ -71,6 +76,10 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 	end
 
 	Game.createMonster(config.boss.name, config.boss.position)
+
+	for _, monster in pairs(config.monsters) do
+		Game.createMonster(monster.name, monster.pos)
+	end
 
 	addEvent(clearBossRoom, config.timeToDefeat * 1000, config.specPos.from, config.specPos.to, config.exit)
 
@@ -115,5 +124,5 @@ function isBossInRoom(fromPos, toPos, bossName)
 	return monstersRemoved
 end
 
-leverRazzagorn:uid(1024)
-leverRazzagorn:register()
+leverTimeGuardian:position(Position(33010, 31659, 14))
+leverTimeGuardian:register()

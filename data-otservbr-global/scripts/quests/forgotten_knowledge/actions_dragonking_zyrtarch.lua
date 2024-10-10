@@ -1,26 +1,34 @@
 local config = {
 	boss = {
-		name = "Razzagorn",
-		position = Position(33422, 32467, 14),
+		name = "soul of dragonking zyrtarch",
+		position = Position(33359, 31182, 12),
 	},
-	timeToDefeat = 17 * 60, -- 17 minutes in seconds
+	requiredLevel = 250,
+	timeToDefeat = 15 * 60,
 	playerPositions = {
-		{ pos = Position(33386, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33387, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33388, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33389, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33390, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33391, 31178, 10), teleport = Position(33359, 31186, 10), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33391, 31179, 10), teleport = Position(33359, 31186, 10), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33391, 31180, 10), teleport = Position(33359, 31186, 10), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33391, 31181, 10), teleport = Position(33359, 31186, 10), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33391, 31182, 10), teleport = Position(33359, 31186, 10), effect = CONST_ME_TELEPORT },
+	},
+	monsters = {
+		{ name = "soulcatcher", pos = Position(33352, 31187, 10) },
+		{ name = "soulcatcher", pos = Position(33363, 31187, 10) },
+		{ name = "soulcatcher", pos = Position(33353, 31176, 10) },
+		{ name = "soulcatcher", pos = Position(33363, 31176, 10) },
+		{ name = "dragonking zyrtarch", pos = Position(33357, 31182, 10) },
 	},
 	specPos = {
-		from = Position(33407, 32453, 14),
-		to = Position(33439, 32481, 14),
+		from = Position(33348, 31172, 10),
+		to = Position(33368, 31190, 12),
 	},
-	exit = Position(33319, 32318, 13),
+	exit = Position(33407, 31172, 10),
 }
 
-local leverRazzagorn = Action()
+local leverZyrtarch = Action()
 
-function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function leverZyrtarch.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local players = {}
 	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
 
@@ -33,7 +41,7 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 			return true
 		end
 
-		local cooldownTime = creature:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.RazzagornTime)
+		local cooldownTime = creature:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled)
 		if cooldownTime > os.time() then
 			local remainingTime = cooldownTime - os.time()
 			local hours = math.floor(remainingTime / 3600)
@@ -71,6 +79,9 @@ function leverRazzagorn.onUse(player, item, fromPosition, target, toPosition, is
 	end
 
 	Game.createMonster(config.boss.name, config.boss.position)
+	for _, monster in pairs(config.monsters) do
+		Game.createMonster(monster.name, monster.pos)
+	end
 
 	addEvent(clearBossRoom, config.timeToDefeat * 1000, config.specPos.from, config.specPos.to, config.exit)
 
@@ -115,5 +126,5 @@ function isBossInRoom(fromPos, toPos, bossName)
 	return monstersRemoved
 end
 
-leverRazzagorn:uid(1024)
-leverRazzagorn:register()
+leverZyrtarch:position(Position(33391, 31177, 10))
+leverZyrtarch:register()

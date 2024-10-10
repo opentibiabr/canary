@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/containers/mailbox/mailbox.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"

@@ -3,8 +3,8 @@ if not GHOST_DETECTOR_MAP then
 end
 
 ghost_detector_area = {
-	from = Position(32008, 32522, 8),
-	to = Position(32365, 32759, 10),
+	from = Position(32171, 32512, 8),
+	to = Position(32352, 32671, 10),
 }
 
 local function getSearchString(fromPos, toPos)
@@ -65,7 +65,7 @@ end
 
 local spikeTasksGhost = Action()
 function spikeTasksGhost.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local stat = player:getStorageValue(SPIKE_UPPER_TRACK_MAIN)
+	local stat = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Main)
 
 	if table.contains({ -1, 3 }, stat) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
@@ -73,22 +73,30 @@ function spikeTasksGhost.onUse(player, item, fromPosition, target, toPosition, i
 
 	local current = GHOST_DETECTOR_MAP[player:getGuid()]
 	if not current then
-		local random = Position.getFreeSand()
+		local levelZ = 8 + stat
+		local random = Position(math.random(32171, 32352), math.random(32512, 32671), levelZ)
 		GHOST_DETECTOR_MAP[player:getGuid()] = random
 		current = random
 	end
 
-	if player:getPosition():compare(current) then
+	local playerPos = player:getPosition()
+	local dx = math.abs(playerPos.x - current.x)
+	local dy = math.abs(playerPos.y - current.y)
+	local dz = math.abs(playerPos.z - current.z)
+
+	if dx <= 4 and dy <= 4 and dz == 0 then
 		if stat == 2 then
 			item:remove()
 			GHOST_DETECTOR_MAP[player:getGuid()] = nil
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Report the task to Gnomilly.")
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found a malignant presence, the glowing detector signals that it does not need any further data.")
 		else
-			GHOST_DETECTOR_MAP[player:getGuid()] = getFreeSand()
+			local levelZ = 8 + (stat + 1) % 3
+			local random = Position(math.random(32171, 32352), math.random(32512, 32671), levelZ)
+			GHOST_DETECTOR_MAP[player:getGuid()] = random
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found a malignant presence, the glowing detector signals another presence nearby.")
 		end
-		player:setStorageValue(SPIKE_UPPER_TRACK_MAIN, stat + 1)
+		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Track_Main, stat + 1)
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The detector points " .. getSearchString(player:getPosition(), current) .. ".")
 	end

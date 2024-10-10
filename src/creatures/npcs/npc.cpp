@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
 #include "declarations.hpp"
@@ -37,7 +35,7 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 	npcType(npcType) {
 	defaultOutfit = npcType->info.outfit;
 	currentOutfit = npcType->info.outfit;
-	float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH, __FUNCTION__);
+	float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH);
 	health = npcType->info.health * multiplier;
 	healthMax = npcType->info.healthMax * multiplier;
 	baseSpeed = npcType->info.baseSpeed;
@@ -387,6 +385,13 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 			continue;
 		}
 
+		if (const auto &container = item->getContainer()) {
+			if (container->size() > 0) {
+				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must empty the container before selling it.");
+				continue;
+			}
+		}
+
 		if (parent && item->getParent() != parent) {
 			continue;
 		}
@@ -410,7 +415,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	if (totalRemoved > 0 && totalCost > 0) {
 		if (getCurrency() == ITEM_GOLD_COIN) {
 			totalPrice += totalCost;
-			if (g_configManager().getBoolean(AUTOBANK, __FUNCTION__)) {
+			if (g_configManager().getBoolean(AUTOBANK)) {
 				player->setBankBalance(player->getBankBalance() + totalCost);
 			} else {
 				g_game().addMoney(player, totalCost);

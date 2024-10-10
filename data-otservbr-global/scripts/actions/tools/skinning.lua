@@ -150,13 +150,13 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			player:say("You carve a solid bowl of the chunk of wood.", TALKTYPE_MONSTER_SAY)
 			return true
 			-- An Interest In Botany Quest
-		elseif target.itemid == 10735 and player:getItemCount(11699) > 0 and player:getStorageValue(Storage.TibiaTales.AnInterestInBotany.Questline) == 1 then
+		elseif target.itemid == 10735 and player:getItemCount(11699) > 0 and player:getStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline) == 1 then
 			player:say("The plant feels cold but dry and very soft. You streak the plant gently with your knife and put a fragment in the almanach.", TALKTYPE_MONSTER_SAY)
-			player:setStorageValue(Storage.TibiaTales.AnInterestInBotany.Questline, 2)
+			player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline, 2)
 			return true
-		elseif target.itemid == 10697 and player:getItemCount(11699) > 0 and player:getStorageValue(Storage.TibiaTales.AnInterestInBotany.Questline) == 2 then
+		elseif target.itemid == 10697 and player:getItemCount(11699) > 0 and player:getStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline) == 2 then
 			player:say("You cut a leaf from a branch and put it in the almanach. It smells strangely sweet and awfully bitter at the same time.", TALKTYPE_MONSTER_SAY)
-			player:setStorageValue(Storage.TibiaTales.AnInterestInBotany.Questline, 3)
+			player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline, 3)
 			return true
 		elseif target.itemid == 8181 and player:getStorageValue(789100) <= 1 then
 			player:say("You got Neutral matter.", TALKTYPE_MONSTER_SAY)

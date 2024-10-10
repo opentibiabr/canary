@@ -14,7 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"ShargonDeath",
+	"DeathPriestShargonDeath",
 }
 
 monster.bosstiary = {
@@ -59,10 +59,6 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-}
-
-monster.events = {
-	"ShargonKill",
 }
 
 monster.light = {

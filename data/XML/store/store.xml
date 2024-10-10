@@ -19,7 +19,7 @@
 		<offer name="360 days" icon="Premium_Time_360.png" offerId="3360" price="3000" type="premium" state="none" description="<i>Enhance your gaming experience by gaining additional abilities and advantages:</i><br /><br />• access to Premium areas<br />• use Tibia&#39;s transport system (ships, carpet)<br />• more spells<br />• rent houses<br />• found guilds<br />• offline training<br />• larger depots<br />• and many more<br /><br />{usablebyallicon} valid for all characters on this account<br />{activated}"/>
 	</category>
 
-	<category name="Consumables" icon="Category_Consumables.png" rookgaard="yes">
+	<category name="Consumables" icon="Category_Consumables.png" rookgaard="no">
 		<subcategory name="Blessings" icon="Category_Blessings.png" rookgaard="yes" state="none">
 			<offer name="All regular Blessings" icon="All_PvE_Blessings.png" offerId="7236922" price="130" type="allblessings" state="none" count="1" description="<i>Reduces your character&#39;s chance to lose any items as well as the amount of your character&#39;s experience and skill loss upon death:</i><br /><br />• 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection<br />• 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection<br />• 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection<br />• 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection<br />• 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection<br />• 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection<br />• 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection<br /><br />{character}<br />{limit|5}<br />{info} added directly to the Record of Blessings<br />{info} characters with a red or black skull will always lose all equipment upon death"/>
 			<offer name="All regular Blessings" icon="All_PvE_Blessings.png" offerId="7236937" price="650" type="allblessings" state="none" count="5" description="<i>Reduces your character&#39;s chance to lose any items as well as the amount of your character&#39;s experience and skill loss upon death:</i><br /><br />• 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection<br />• 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection<br />• 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection<br />• 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection<br />• 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection<br />• 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection<br />• 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection<br /><br />{character}<br />{limit|5}<br />{info} added directly to the Record of Blessings<br />{info} characters with a red or black skull will always lose all equipment upon death"/>
@@ -310,7 +310,7 @@
 		</subcategory>
 	</category>
 
-	<category name="Houses" icon="Category_HouseTools.png" rookgaard="yes">
+	<category name="Houses" icon="Category_HouseTools.png" rookgaard="no">
 		<subcategory name="Decorations" icon="Category_HouseDecorations.png" rookgaard="yes" state="none" >
 			<!-- <offer name="Seafood Bucket" offerId="3030" price="60" type="house" state="none" count="1"/>
 			<offer name="Seashell Lamp" offerId="3030" price="80" type="house" state="none" count="1"/>
@@ -771,7 +771,7 @@
 			<offer name="Sex Change" icon="Sex_Change.png" offerId="250000" price="120" type="sexChange" state="none" description="<i>Turns your female character into a male one - or vice versa.</i><br /><br />{character}<br />{activated}<br />{info} you will keep all outfits you have purchased or earned in quest"/>
 			<offer name="Name Change" icon="Name_Change.png" offerId="120000" price="250" type="nameChange" state="none" description="<i>Tired of your current character name? Purchase a new one!</i><br /><br />{character}<br />{info} relog required after purchase to finalise the name change"/>
 		</subcategory>
-		<subcategory name="Useful Things" icon="Category_UsefulThings.png" rookgaard="yes" state="none" >
+		<subcategory name="Useful Things" icon="Category_UsefulThings.png" rookgaard="no" state="none" >
 			<offer name="Magic Gold Converter" offerId="28525" price="15" type="item" state="none" description="<i>Changes automatically either a stack of 100 gold pieces into 1 platinum coin, or a stack of 100 platinum coins into 1 crystal coin!</i><br /><br />{character}<br />{storeinbox}<br />{useicon} use it to activate or deactivate the automatic conversion<br />{info} converts all stacks of 100 gold or platinum in the inventory whenever it is activated<br />{info} deactivated upon purchase<br />{info} usable for 500 conversions a piece"/>
 			<offer name="Charm Expansion" icon="Charm_Expansion_Offer.png" offerId="13" price="450" type="charmExpansion" state="none" description="<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i><br /><br />{character}<br />{once}"/>
 			<offer name="Instant Reward Access" icon="Instant_Reward_Access.png" offerId="16" price="100" type="instantReward" state="none" count="30" description="<i>No matter where you are in Tibia, claim your daily reward on the spot!</i><br /><br />{character}<br />{info} added to your reward wall<br />{limit|90}"/>

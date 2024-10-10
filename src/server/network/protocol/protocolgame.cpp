@@ -9179,7 +9179,7 @@ void ProtocolGame::parseOpenStore() {
 }
 
 void ProtocolGame::openStore() {
-	if (oldProtocol) {
+	if (!player || oldProtocol) {
 		return;
 	}
 
@@ -9191,8 +9191,12 @@ void ProtocolGame::openStore() {
 	msg.skipBytes(2);
 
 	auto storeCategories = g_ioStore().getCategoryVector();
+	auto playerVocationId = player->getVocationId();
 	// Categories Bytes
 	for (const auto &category : storeCategories) {
+		if (!category.getRookgaardAccess() && playerVocationId == 0) {
+			continue;
+		}
 		msg.addString(category.getCategoryName());
 
 		auto categoryState = magic_enum::enum_integer<States_t>(category.getCategoryState());
@@ -9210,6 +9214,9 @@ void ProtocolGame::openStore() {
 		if (!category.isSpecialCategory()) {
 			auto internalSubCatVector = category.getSubCategoriesVector();
 			for (const auto &subCategory : internalSubCatVector) {
+				if (!subCategory.getRookgaardAccess() && playerVocationId == 0) {
+					continue;
+				}
 				msg.addString(subCategory.getCategoryName());
 
 				auto subCategoryState = magic_enum::enum_integer<States_t>(subCategory.getCategoryState());

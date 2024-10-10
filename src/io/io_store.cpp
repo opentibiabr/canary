@@ -48,7 +48,7 @@ bool IOStore::loadFromXml() {
 				auto subCategoryName = std::string(subcategory.attribute("name").as_string());
 				auto subCategoryIcon = std::string(subcategory.attribute("icon").as_string());
 
-				auto subCategoryRookString = std::string(category.attribute("rookgaard").as_string());
+				auto subCategoryRookString = std::string(subcategory.attribute("rookgaard").as_string());
 				bool subCategoryRook = false;
 				if (subCategoryRookString == "yes") {
 					subCategoryRook = true;

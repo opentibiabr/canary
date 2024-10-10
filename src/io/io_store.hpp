@@ -56,12 +56,12 @@ class Offer;
 
 class IOStore {
 public:
-	IOStore(const IOStore&) = delete;
-	IOStore& operator=(const IOStore&) = delete;
-	IOStore(IOStore&&) = delete;
-	IOStore& operator=(IOStore&&) = delete;
+	IOStore(const IOStore &) = delete;
+	IOStore &operator=(const IOStore &) = delete;
+	IOStore(IOStore &&) = delete;
+	IOStore &operator=(IOStore &&) = delete;
 
-	static IOStore& getInstance() {
+	static IOStore &getInstance() {
 		static IOStore instance;
 		return instance;
 	}
@@ -72,19 +72,19 @@ public:
 	static const std::map<OfferTypes_t, uint16_t> offersDisableIndex;
 	static const std::map<std::string, States_t> stringToOfferStateMap;
 
-	const std::vector<Category>& getCategoryVector() const;
-	const Category* getCategoryByName(const std::string& categoryName) const;
-	const Category* getSubCategoryByName(const std::string& subCategoryName) const;
+	const std::vector<Category> &getCategoryVector() const;
+	const Category* getCategoryByName(const std::string &categoryName) const;
+	const Category* getSubCategoryByName(const std::string &subCategoryName) const;
 	const Offer* getOfferById(uint32_t offerId) const;
 
-	const std::vector<BannerInfo>& getBannersVector() const;
-	const std::vector<uint32_t>& getHomeOffersVector() const;
+	const std::vector<BannerInfo> &getBannersVector() const;
+	const std::vector<uint32_t> &getHomeOffersVector() const;
 	uint32_t getBannerDelay() const;
 	void setBannerDelay(uint8_t delay);
 
-	const Category* findCategory(const std::string& categoryName);
+	const Category* findCategory(const std::string &categoryName);
 
-	const std::vector<std::string>& getOffersDisableReasonVector() const;
+	const std::vector<std::string> &getOffersDisableReasonVector() const;
 
 	std::vector<Offer> getOffersContainingSubstring(const std::string &searchString);
 	Offer* getOfferByName(const std::string &searchString);
@@ -129,10 +129,10 @@ public:
 	Category(const std::string &name, const std::string &icon, bool rookgaard, States_t state = States_t::NONE) :
 		m_categoryName(name), m_categoryIcon(icon), m_canRookgaardAccess(rookgaard), m_categoryState(state) { }
 
-	const std::string& getCategoryName() const {
+	const std::string &getCategoryName() const {
 		return m_categoryName;
 	}
-	const std::string& getCategoryIcon() const {
+	const std::string &getCategoryIcon() const {
 		return m_categoryIcon;
 	}
 	States_t getCategoryState() const {
@@ -146,8 +146,8 @@ public:
 	}
 
 	const Category* getFirstSubCategory() const;
-	const std::vector<Category>& getSubCategoriesVector() const;
-	const std::vector<const Offer*>& getOffersVector() const;
+	const std::vector<Category> &getSubCategoriesVector() const;
+	const std::vector<const Offer*> &getOffersVector() const;
 
 private:
 	friend class IOStore;
@@ -164,7 +164,7 @@ private:
 	// Used when Category class is a Subcategory or a "Special Category"
 	std::vector<const Offer*> m_offers;
 
-	void addSubCategory(const Category& newSubCategory);
+	void addSubCategory(const Category &newSubCategory);
 	void addOffer(const Offer* newOffer);
 	void setSpecialCategory(bool state) {
 		m_specialCategory = state;
@@ -173,13 +173,13 @@ private:
 
 class Offer {
 public:
-	Offer(const std::string& parentName, const std::string& name, const std::string& icon, uint32_t id, uint32_t price, OfferTypes_t type, States_t state, uint16_t count, uint16_t duration, CoinType coin, const std::string& description, OutfitIds outfitIds, bool movable, std::vector<RelatedOffer> relatedOffers)
-	: m_parentName(parentName), m_offerName(name), m_offerIcon(icon), m_offerId(id), m_offerPrice(price), m_offerType(type), m_offerState(state), m_offerCount(count), m_validUntil(duration), m_coinType(coin), m_offerDescription(description), m_outfitId(outfitIds), m_movable(movable), m_relatedOffers(relatedOffers) { }
+	Offer(const std::string &parentName, const std::string &name, const std::string &icon, uint32_t id, uint32_t price, OfferTypes_t type, States_t state, uint16_t count, uint16_t duration, CoinType coin, const std::string &description, OutfitIds outfitIds, bool movable, std::vector<RelatedOffer> relatedOffers) :
+		m_parentName(parentName), m_offerName(name), m_offerIcon(icon), m_offerId(id), m_offerPrice(price), m_offerType(type), m_offerState(state), m_offerCount(count), m_validUntil(duration), m_coinType(coin), m_offerDescription(description), m_outfitId(outfitIds), m_movable(movable), m_relatedOffers(relatedOffers) { }
 
-	const std::string& getOfferName() const {
+	const std::string &getOfferName() const {
 		return m_offerName;
 	}
-	const std::string& getOfferIcon() const {
+	const std::string &getOfferIcon() const {
 		return m_offerIcon;
 	}
 	uint32_t getOfferId() const {

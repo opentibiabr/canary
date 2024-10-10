@@ -273,7 +273,7 @@ bool IOStore::loadStoreHome(pugi::xml_node homeNode) {
 	return true;
 }
 
-const std::vector<Category>& IOStore::getCategoryVector() const {
+const std::vector<Category> &IOStore::getCategoryVector() const {
 	return m_categoryVector;
 }
 void IOStore::addCategory(const Category &newCategory) {
@@ -285,7 +285,7 @@ void IOStore::addCategory(const Category &newCategory) {
 	m_categoryVector.push_back(newCategory);
 }
 
-const Category* IOStore::getCategoryByName(const std::string& categoryName) const {
+const Category* IOStore::getCategoryByName(const std::string &categoryName) const {
 	for (const auto &category : m_categoryVector) {
 		if (categoryName == category.getCategoryName()) {
 			return &category;
@@ -294,7 +294,7 @@ const Category* IOStore::getCategoryByName(const std::string& categoryName) cons
 	return nullptr;
 }
 
-const Category* IOStore::getSubCategoryByName(const std::string& subCategoryName) const {
+const Category* IOStore::getSubCategoryByName(const std::string &subCategoryName) const {
 	for (const auto &subCategory : m_subCategoryVector) {
 		if (subCategoryName == subCategory.getCategoryName()) {
 			return &subCategory;
@@ -351,10 +351,10 @@ Offer* IOStore::getOfferByName(const std::string &searchString) {
 	return nullptr;
 }
 
-const std::vector<BannerInfo>& IOStore::getBannersVector() const {
+const std::vector<BannerInfo> &IOStore::getBannersVector() const {
 	return m_banners;
 }
-const std::vector<uint32_t>& IOStore::getHomeOffersVector() const {
+const std::vector<uint32_t> &IOStore::getHomeOffersVector() const {
 	return m_homeOffers;
 }
 uint32_t IOStore::getBannerDelay() const {
@@ -364,7 +364,7 @@ void IOStore::setBannerDelay(uint8_t delay) {
 	m_bannerDelay = delay;
 }
 
-const Category* IOStore::findCategory(const std::string& categoryName) {
+const Category* IOStore::findCategory(const std::string &categoryName) {
 	auto currentCategory = getCategoryByName(categoryName);
 	if (!currentCategory) {
 		currentCategory = getSubCategoryByName(categoryName);
@@ -379,7 +379,7 @@ const Category* IOStore::findCategory(const std::string& categoryName) {
 	return subCat;
 }
 
-const std::vector<std::string>& IOStore::getOffersDisableReasonVector() const {
+const std::vector<std::string> &IOStore::getOffersDisableReasonVector() const {
 	return m_offersDisableReason;
 }
 
@@ -411,10 +411,10 @@ StoreHistoryDetail IOStore::getStoreHistoryDetail(const std::string &playerName,
 const Category* Category::getFirstSubCategory() const {
 	return &m_subCategories.at(0);
 }
-const std::vector<Category>& Category::getSubCategoriesVector() const {
+const std::vector<Category> &Category::getSubCategoriesVector() const {
 	return m_subCategories;
 }
-void Category::addSubCategory(const Category& newSubCategory) {
+void Category::addSubCategory(const Category &newSubCategory) {
 	for (const auto &subCategory : m_subCategories) {
 		if (newSubCategory.getCategoryName() == subCategory.getCategoryName()) {
 			return;
@@ -423,7 +423,7 @@ void Category::addSubCategory(const Category& newSubCategory) {
 	m_subCategories.push_back(newSubCategory);
 }
 
-const std::vector<const Offer*>& Category::getOffersVector() const {
+const std::vector<const Offer*> &Category::getOffersVector() const {
 	return m_offers;
 }
 void Category::addOffer(const Offer* newOffer) {

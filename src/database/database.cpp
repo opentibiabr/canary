@@ -31,13 +31,13 @@
  * @return The value of the column converted to type T. Returns default-constructed T on any error or if the column does not exist.
  *
  * @note The specific handling for int8_t and uint8_t types is necessary due to their limited range:
- *	   - int8_t: Valid range from -128 to 127. Any value outside this range causes overflow.
- *	   - uint8_t: Valid range from 0 to 255. Any value outside this range causes overflow.
- *	   This function checks if the values are within these ranges before attempting a conversion to prevent data corruption.
- *	   For other types, boost::lexical_cast is used which provides safe conversions but does not inherently check for overflow.
+ * - int8_t: Valid range from -128 to 127. Any value outside this range causes overflow.
+ * - uint8_t: Valid range from 0 to 255. Any value outside this range causes overflow.
+ * This function checks if the values are within these ranges before attempting a conversion to prevent data corruption.
+ * For other types, boost::lexical_cast is used which provides safe conversions but does not inherently check for overflow.
  *
  * @details If the fetched data type does not match the expected template type T or if the data is out of range for the specified type T,
- *		  the function logs an error and returns a default value of type T. This function throws no exceptions but catches and logs them.
+ * the function logs an error and returns a default value of type T. This function throws no exceptions but catches and logs them.
  */
 namespace InternalDatabase {
 	template <typename T>
@@ -57,7 +57,7 @@ namespace InternalDatabase {
 		try {
 			auto type = columnData.getType();
 			T data = 0;
-			g_logger().trace("[DBResult::getNumber] Column '{}' type: {}", columnName, type);
+			g_logger().trace("[DBResult::getNumber] Column '{}' type: {}", columnName, static_cast<int>(type));
 			switch (type) {
 				case mysqlx::Value::Type::INT64: {
 					//
@@ -100,7 +100,7 @@ namespace InternalDatabase {
 					break;
 				default:
 					g_logger().error("[DBResult::getNumber] query: {}", query.data());
-					g_logger().error("Unsupported conversion for data type: {}", type);
+					g_logger().error("Unsupported conversion for data type: {}", static_cast<int>(type));
 					break;
 			}
 

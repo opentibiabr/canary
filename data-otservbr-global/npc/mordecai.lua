@@ -143,15 +143,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local formattedCategoryNames = {}
-	for categoryName, _ in pairs(itemsTable) do
-		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
-	end
-
 	local categoryTable = itemsTable[message:lower()]
 
 	if categoryTable then
-		npcHandler:say("Choose wisely!", npc, player)
+		local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+		npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
 		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
@@ -161,7 +157,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to the magic emporium, child. Ask me for a trade if you need {runes}, {wands}, or spellbooks.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Take care, child.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Ah, the impetuosity of youth.")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Choose wisely! Or maybe you want to look only at {wands} or {runes}?")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Choose wisely! Or maybe you want to look only at " .. GetFormattedShopCategoryNames(itemsTable) .. ".")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- On buy npc shop message

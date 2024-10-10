@@ -37,6 +37,25 @@ int ItemFunctions::luaItemIsItem(lua_State* L) {
 	return 1;
 }
 
+int ItemFunctions::luaItemGetContainer(lua_State* L) {
+	// item:getContainer()
+	const auto &item = getUserdataShared<Item>(L, 1);
+	if (!item) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &container = item->getContainer();
+	if (!container) {
+		g_logger().trace("Item {} is not a container", item->getName());
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushUserdata(L, container);
+	return 1;
+}
+
 int ItemFunctions::luaItemGetParent(lua_State* L) {
 	// item:getParent()
 	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 1);

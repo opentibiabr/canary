@@ -9194,7 +9194,7 @@ void ProtocolGame::openStore() {
 	auto playerVocationId = player->getVocationId();
 	// Categories Bytes
 	for (const auto &category : storeCategories) {
-		if (!category.getRookgaardAccess() && playerVocationId == 0) {
+		if (!category.canRookgaardAccess() && playerVocationId == 0) {
 			continue;
 		}
 		msg.addString(category.getCategoryName());
@@ -9214,7 +9214,7 @@ void ProtocolGame::openStore() {
 		if (!category.isSpecialCategory()) {
 			auto internalSubCatVector = category.getSubCategoriesVector();
 			for (const auto &subCategory : internalSubCatVector) {
-				if (!subCategory.getRookgaardAccess() && playerVocationId == 0) {
+				if (!subCategory.canRookgaardAccess() && playerVocationId == 0) {
 					continue;
 				}
 				msg.addString(subCategory.getCategoryName());

@@ -15,6 +15,53 @@
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 
+const std::map<std::string, OfferTypes_t> IOStore::stringToOfferTypeMap = {
+	{ "none", OfferTypes_t::NONE },
+	{ "item", OfferTypes_t::ITEM },
+	{ "stackable", OfferTypes_t::STACKABLE },
+	{ "charges", OfferTypes_t::CHARGES },
+	{ "looktype", OfferTypes_t::LOOKTYPE },
+	{ "outfit", OfferTypes_t::OUTFIT },
+	{ "mount", OfferTypes_t::MOUNT },
+	{ "nameChange", OfferTypes_t::NAMECHANGE },
+	{ "sexChange", OfferTypes_t::SEXCHANGE },
+	{ "house", OfferTypes_t::HOUSE },
+	{ "expBoost", OfferTypes_t::EXPBOOST },
+	{ "preySlot", OfferTypes_t::PREYSLOT },
+	{ "preyBonus", OfferTypes_t::PREYBONUS },
+	{ "temple", OfferTypes_t::TEMPLE },
+	{ "blessings", OfferTypes_t::BLESSINGS },
+	{ "allblessings", OfferTypes_t::ALLBLESSINGS },
+	{ "premium", OfferTypes_t::PREMIUM },
+	{ "pouch", OfferTypes_t::POUCH },
+	{ "instantReward", OfferTypes_t::INSTANT_REWARD_ACCESS },
+	{ "charmExpansion", OfferTypes_t::CHARM_EXPANSION },
+	{ "huntingSlot", OfferTypes_t::HUNTINGSLOT },
+	{ "hireling", OfferTypes_t::HIRELING },
+	{ "hirelingNameChange", OfferTypes_t::HIRELING_NAMECHANGE },
+	{ "hirelingSexChange", OfferTypes_t::HIRELING_SEXCHANGE },
+	{ "hirelingSkill", OfferTypes_t::HIRELING_SKILL },
+	{ "hirelingOutfit", OfferTypes_t::HIRELING_OUTFIT }
+};
+
+const std::map<OfferTypes_t, uint16_t> IOStore::offersDisableIndex = {
+	{ OfferTypes_t::OUTFIT, 0 },
+	{ OfferTypes_t::MOUNT, 1 },
+	{ OfferTypes_t::EXPBOOST, 2 },
+	{ OfferTypes_t::PREYSLOT, 3 },
+	{ OfferTypes_t::HUNTINGSLOT, 3 },
+	{ OfferTypes_t::PREYBONUS, 4 },
+	{ OfferTypes_t::BLESSINGS, 5 },
+	{ OfferTypes_t::ALLBLESSINGS, 6 },
+	{ OfferTypes_t::POUCH, 7 },
+	{ OfferTypes_t::INSTANT_REWARD_ACCESS, 8 },
+	{ OfferTypes_t::CHARM_EXPANSION, 9 }
+};
+
+const std::map<std::string, States_t> IOStore::stringToOfferStateMap = {
+	{ "none", States_t::NONE }, { "new", States_t::NEW }, { "sale", States_t::SALE }, { "timed", States_t::TIMED }
+};
+
 bool IOStore::loadFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/store/store.xml";
@@ -68,7 +115,7 @@ bool IOStore::loadFromXml() {
 						return false;
 					}
 				}
-				subCategoryVector.push_back(newSubCategory);
+				m_subCategoryVector.push_back(newSubCategory);
 				newCategory.addSubCategory(newSubCategory);
 			}
 		} else if (child && std::string(child.name()) == "offer") {
@@ -208,7 +255,7 @@ bool IOStore::loadStoreHome(pugi::xml_node homeNode) {
 				return false;
 			}
 
-			banners.push_back(tempBanner);
+			m_banners.push_back(tempBanner);
 		}
 	} else {
 		return false;
@@ -219,27 +266,27 @@ bool IOStore::loadStoreHome(pugi::xml_node homeNode) {
 	if (homeOffersChild && std::string(homeOffersChild.name()) == "offer") {
 		for (pugi::xml_node offer : homeOffersNode.children("offer")) {
 			auto homeOfferId = static_cast<uint32_t>(offer.attribute("id").as_uint());
-			homeOffers.push_back(homeOfferId);
+			m_homeOffers.push_back(homeOfferId);
 		}
 	}
 
 	return true;
 }
 
-std::vector<Category> IOStore::getCategoryVector() const {
-	return categoryVector;
+const std::vector<Category>& IOStore::getCategoryVector() const {
+	return m_categoryVector;
 }
-void IOStore::addCategory(Category newCategory) {
-	for (const auto &category : categoryVector) {
+void IOStore::addCategory(const Category &newCategory) {
+	for (const auto &category : m_categoryVector) {
 		if (newCategory.getCategoryName() == category.getCategoryName()) {
 			return;
 		}
 	}
-	categoryVector.push_back(newCategory);
+	m_categoryVector.push_back(newCategory);
 }
 
-const Category* IOStore::getCategoryByName(std::string categoryName) const {
-	for (const auto &category : categoryVector) {
+const Category* IOStore::getCategoryByName(const std::string& categoryName) const {
+	for (const auto &category : m_categoryVector) {
 		if (categoryName == category.getCategoryName()) {
 			return &category;
 		}
@@ -247,8 +294,8 @@ const Category* IOStore::getCategoryByName(std::string categoryName) const {
 	return nullptr;
 }
 
-const Category* IOStore::getSubCategoryByName(std::string subCategoryName) const {
-	for (const auto &subCategory : subCategoryVector) {
+const Category* IOStore::getSubCategoryByName(const std::string& subCategoryName) const {
+	for (const auto &subCategory : m_subCategoryVector) {
 		if (subCategoryName == subCategory.getCategoryName()) {
 			return &subCategory;
 		}
@@ -257,17 +304,17 @@ const Category* IOStore::getSubCategoryByName(std::string subCategoryName) const
 }
 
 void IOStore::addOffer(uint32_t offerId, Offer offer) {
-	auto it = offersMap.find(offerId);
-	if (it != offersMap.end()) {
+	auto it = m_offersMap.find(offerId);
+	if (it != m_offersMap.end()) {
 		return;
 	}
 
-	offersMap.try_emplace(offerId, std::move(offer));
+	m_offersMap.try_emplace(offerId, std::move(offer));
 }
 
 const Offer* IOStore::getOfferById(uint32_t offerId) const {
-	if (auto it = offersMap.find(offerId);
-	    it != offersMap.end()) {
+	if (auto it = m_offersMap.find(offerId);
+	    it != m_offersMap.end()) {
 		return &it->second;
 	}
 	return nullptr;
@@ -277,12 +324,12 @@ std::vector<Offer> IOStore::getOffersContainingSubstring(const std::string &sear
 	std::vector<Offer> offersVector;
 	auto lowerSearchString = asLowerCaseString(searchString);
 
-	for (const auto &offer : offersMap) {
-		auto currentOfferName = offer.second.getOfferName();
+	for (const auto &[id, offer] : m_offersMap) {
+		auto currentOfferName = offer.getOfferName();
 		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
 
 		if (lowerCurrentOfferName.find(lowerSearchString) != std::string::npos) {
-			offersVector.push_back(offer.second);
+			offersVector.push_back(offer);
 		}
 	}
 
@@ -292,32 +339,32 @@ std::vector<Offer> IOStore::getOffersContainingSubstring(const std::string &sear
 Offer* IOStore::getOfferByName(const std::string &searchString) {
 	auto lowerSearchString = asLowerCaseString(searchString);
 
-	for (auto &offer : offersMap) {
-		auto currentOfferName = offer.second.getOfferName();
+	for (auto &[id, offer] : m_offersMap) {
+		auto currentOfferName = offer.getOfferName();
 		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
 
 		if (lowerSearchString == lowerCurrentOfferName) {
-			return &offer.second;
+			return &offer;
 		}
 	}
 
 	return nullptr;
 }
 
-std::vector<BannerInfo> IOStore::getBannersVector() const {
-	return banners;
+const std::vector<BannerInfo>& IOStore::getBannersVector() const {
+	return m_banners;
 }
-std::vector<uint32_t> IOStore::getHomeOffersVector() const {
-	return homeOffers;
+const std::vector<uint32_t>& IOStore::getHomeOffersVector() const {
+	return m_homeOffers;
 }
 uint32_t IOStore::getBannerDelay() const {
-	return bannerDelay;
+	return m_bannerDelay;
 }
 void IOStore::setBannerDelay(uint8_t delay) {
-	bannerDelay = delay;
+	m_bannerDelay = delay;
 }
 
-const Category* IOStore::findCategory(std::string categoryName) {
+const Category* IOStore::findCategory(const std::string& categoryName) {
 	auto currentCategory = getCategoryByName(categoryName);
 	if (!currentCategory) {
 		currentCategory = getSubCategoryByName(categoryName);
@@ -332,8 +379,8 @@ const Category* IOStore::findCategory(std::string categoryName) {
 	return subCat;
 }
 
-const std::vector<std::string> IOStore::getOffersDisableReasonVector() {
-	return offersDisableReason;
+const std::vector<std::string>& IOStore::getOffersDisableReasonVector() const {
+	return m_offersDisableReason;
 }
 
 StoreHistoryDetail IOStore::getStoreHistoryDetail(const std::string &playerName, uint32_t createdAt, bool hasDetail) {
@@ -362,57 +409,57 @@ StoreHistoryDetail IOStore::getStoreHistoryDetail(const std::string &playerName,
 
 // Category Class functions
 const Category* Category::getFirstSubCategory() const {
-	return &subCategories.at(0);
+	return &m_subCategories.at(0);
 }
-std::vector<Category> Category::getSubCategoriesVector() const {
-	return subCategories;
+const std::vector<Category>& Category::getSubCategoriesVector() const {
+	return m_subCategories;
 }
-void Category::addSubCategory(Category newSubCategory) {
-	for (const auto &subCategory : subCategories) {
+void Category::addSubCategory(const Category& newSubCategory) {
+	for (const auto &subCategory : m_subCategories) {
 		if (newSubCategory.getCategoryName() == subCategory.getCategoryName()) {
 			return;
 		}
 	}
-	subCategories.push_back(newSubCategory);
+	m_subCategories.push_back(newSubCategory);
 }
 
-std::vector<const Offer*> Category::getOffersVector() const {
-	return offers;
+const std::vector<const Offer*>& Category::getOffersVector() const {
+	return m_offers;
 }
 void Category::addOffer(const Offer* newOffer) {
-	for (const auto &offer : offers) {
+	for (const auto &offer : m_offers) {
 		if (newOffer->getOfferId() == offer->getOfferId()
 		    && newOffer->getOfferName() == offer->getOfferName()
 		    && newOffer->getOfferCount() == offer->getOfferCount()) {
 			return;
 		}
 	}
-	offers.push_back(newOffer);
+	m_offers.push_back(newOffer);
 }
 
 // Offer Functions
 const std::vector<RelatedOffer> &Offer::getRelatedOffersVector() const {
-	return relatedOffers;
+	return m_relatedOffers;
 }
 void Offer::addRelatedOffer(const RelatedOffer &relatedOffer) {
-	for (const auto &offer : relatedOffers) {
+	for (const auto &offer : m_relatedOffers) {
 		if (relatedOffer.count == offer.count
 		    && relatedOffer.price == offer.price) {
 			return;
 		}
 	}
 
-	relatedOffers.push_back(relatedOffer);
+	m_relatedOffers.push_back(relatedOffer);
 }
 
 ConverType_t Offer::getConverType() const {
-	if (offerType == OfferTypes_t::MOUNT) {
+	if (m_offerType == OfferTypes_t::MOUNT) {
 		return ConverType_t::MOUNT;
-	} else if (offerType == OfferTypes_t::LOOKTYPE) {
+	} else if (m_offerType == OfferTypes_t::LOOKTYPE) {
 		return ConverType_t::LOOKTYPE;
-	} else if (offerType == OfferTypes_t::ITEM || offerType == OfferTypes_t::STACKABLE || offerType == OfferTypes_t::HOUSE || offerType == OfferTypes_t::CHARGES || offerType == OfferTypes_t::POUCH) {
+	} else if (m_offerType == OfferTypes_t::ITEM || m_offerType == OfferTypes_t::STACKABLE || m_offerType == OfferTypes_t::HOUSE || m_offerType == OfferTypes_t::CHARGES || m_offerType == OfferTypes_t::POUCH) {
 		return ConverType_t::ITEM;
-	} else if (offerType == OfferTypes_t::OUTFIT || offerType == OfferTypes_t::HIRELING) {
+	} else if (m_offerType == OfferTypes_t::OUTFIT || m_offerType == OfferTypes_t::HIRELING) {
 		return ConverType_t::OUTFIT;
 	}
 
@@ -420,7 +467,7 @@ ConverType_t Offer::getConverType() const {
 }
 
 bool Offer::getUseConfigure() const {
-	if (offerType == OfferTypes_t::NAMECHANGE || offerType == OfferTypes_t::HIRELING || offerType == OfferTypes_t::HIRELING_NAMECHANGE) {
+	if (m_offerType == OfferTypes_t::NAMECHANGE || m_offerType == OfferTypes_t::HIRELING || m_offerType == OfferTypes_t::HIRELING_NAMECHANGE) {
 		return true;
 	}
 

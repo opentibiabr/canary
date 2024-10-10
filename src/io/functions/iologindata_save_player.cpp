@@ -176,11 +176,9 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	}
 
 	// Change Name Store
-	std::string playerName;
-	if (!player->newName.empty()) {
-		playerName = player->newName;
-	} else {
-		playerName = player->name;
+	std::string playerName = player->getNewName();
+	if (playerName.empty()) {
+		playerName = player->getName();
 	}
 
 	// First, an UPDATE query to write the player itself

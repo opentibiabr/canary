@@ -1,4 +1,5 @@
 local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
+
 local config = {
 	[25029] = {
 		bossName = "Kroazur", -- boss name

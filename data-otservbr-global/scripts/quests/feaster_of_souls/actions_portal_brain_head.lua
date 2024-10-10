@@ -124,7 +124,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 	if timeLeft > 0 then
 		player:teleportTo(config.exitPosition, true)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. getTimeInWords(timeLeft) .. " to face " .. config.bossName .. " again!")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. Game.getTimeInWords(timeLeft) .. " to face " .. config.bossName .. " again!")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end

@@ -30,6 +30,7 @@ class ProtocolGame;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
+class Livestream;
 
 struct ModalWindow;
 struct Achievement;
@@ -76,6 +77,10 @@ public:
 
 	uint16_t getVersion() const {
 		return version;
+	}
+
+	std::shared_ptr<Player> getPlayer() const {
+		return player;
 	}
 
 private:
@@ -150,7 +155,7 @@ private:
 
 	void parseBestiarysendRaces();
 	void parseBestiarysendCreatures(NetworkMessage &msg);
-	void BestiarysendCharms();
+	void sendBestiaryCharms();
 	void sendBestiaryEntryChanged(uint16_t raceid);
 	void refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerSet, bool isBoss);
 	void sendTeamFinderList();
@@ -232,7 +237,7 @@ private:
 	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
 	// Send functions
-	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
+	void sendChannelMessage(const std::string &author, uint16_t playerLevel, const std::string &text, SpeakClasses type, uint16_t channel);
 	void sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent);
 	void sendClosePrivate(uint16_t channelId);
 	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName);
@@ -336,7 +341,7 @@ private:
 	void sendCreatureSkull(std::shared_ptr<Creature> creature);
 	void sendCreatureType(std::shared_ptr<Creature> creature, uint8_t creatureType);
 
-	void sendShop(std::shared_ptr<Npc> npc);
+	void sendShop(const std::shared_ptr<Npc> &npc);
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
@@ -424,7 +429,7 @@ private:
 	void sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &name, const Outfit_t creatureOutfit);
 	void sendUpdateSupplyTracker(std::shared_ptr<Item> item);
 	void sendUpdateImpactTracker(CombatType_t type, int32_t amount);
-	void sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target);
+	void sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, const std::string &target);
 
 	// Hotkey equip/dequip item
 	void parseHotkeyEquip(NetworkMessage &msg);
@@ -468,7 +473,7 @@ private:
 	void sendFeatures();
 
 	void parseInventoryImbuements(NetworkMessage &msg);
-	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> items);
+	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);
 
 	// reloadCreature
 	void reloadCreature(std::shared_ptr<Creature> creature);
@@ -481,9 +486,25 @@ private:
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 
+#if FEATURE_LIVESTREAM > 0
+	void castViewerLogin(const std::string &name, const std::string &password);
+	void sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer);
+	void syncLivestreamViewerOpenContainers(const std::shared_ptr<Player> &foundPlayer);
+	void syncLivestreamViewerCloseContainers();
+	bool canWatchCast(const std::shared_ptr<Player> &foundPlayer, const std::string &password) const;
+
+	static std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> &getLivestreamCasters();
+
+	void insertLivestreamCaster();
+	void removeLivestreamCaster();
+
+	friend class Livestream;
+#endif
+
 	friend class Player;
 	friend class PlayerWheel;
 	friend class PlayerVIP;
+	friend class ProtocolLogin;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
@@ -505,6 +526,18 @@ private:
 
 	uint16_t otclientV8 = 0;
 	bool isOTC = false;
+
+	// Since it is false by default, we can leave it enabled to avoid directives of "FEATURE_LIVESTREAM" in the code
+	bool m_isLivestreamViewer = false;
+#if FEATURE_LIVESTREAM == 0
+	bool isOldProtocol() const {
+		return oldProtocol;
+	}
+
+#else
+	int64_t m_livestreamMessageCooldownTime = 0;
+	uint32_t m_livestreamMessageCount = 0;
+#endif
 
 	void sendInventory();
 	void sendOpenStash();

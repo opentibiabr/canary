@@ -167,6 +167,25 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	std::string password = msg.getString();
+// Livestream system login for old protocols
+#if FEATURE_LIVESTREAM > 0
+	// Cast system login (show casting players on old protocol)
+	if (accountDescriptor == "@livestream") {
+		if (ProtocolGame::getLivestreamCasters().empty()) {
+			disconnectClient("There are no players with the livestream on.");
+			return;
+		}
+
+		auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
+		g_dispatcher().addEvent([thisPtr, password]() {
+			thisPtr->getLivestreamViewersList(password);
+		},
+		                        "ProtocolLogin::getLivestreamViewersList");
+
+		return;
+	}
+#endif
+
 	if (password.empty()) {
 		disconnectClient("Invalid password.");
 		return;
@@ -179,3 +198,57 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		__FUNCTION__
 	);
 }
+
+#if FEATURE_LIVESTREAM > 0
+void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
+	constexpr uint8_t HEADER_BYTE = 0x14;
+	constexpr uint8_t SESSION_KEY_BYTE = 0x28;
+	constexpr uint8_t NUMBER_OF_WORLDS = 1;
+	constexpr int32_t MIN_RANDOM_VALUE = 1;
+	constexpr int32_t MAX_RANDOM_VALUE = 100;
+
+	auto output = OutputMessagePool::getOutputMessage();
+	output->addByte(HEADER_BYTE);
+	output->addString(fmt::format("{}\nWelcome to Cast System!", normal_random(MIN_RANDOM_VALUE, MAX_RANDOM_VALUE)));
+
+	output->addByte(SESSION_KEY_BYTE);
+	output->addString(fmt::format("@livestream\n{}", password));
+
+	output->addByte(uint8_t());
+	output->addByte(NUMBER_OF_WORLDS);
+
+	output->addByte(uint8_t());
+	output->addString(g_configManager().getString(SERVER_NAME));
+	output->addString(g_configManager().getString(IP));
+
+	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT));
+
+	output->addByte(uint8_t());
+
+	std::vector<std::shared_ptr<Player>> players;
+
+	for (const auto &[player, _] : ProtocolGame::getLivestreamCasters()) {
+		if (!password.empty() && password != player->client->getLivestreamPassword()) {
+			continue;
+		}
+		players.emplace_back(player);
+	}
+
+	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
+	output->addByte(size);
+	std::ranges::sort(players, Player::sortByLivestreamViewerCount);
+
+	for (const auto &player : players) {
+		output->addByte(uint8_t());
+		output->addString(player->getName());
+	}
+
+	output->addByte(uint8_t());
+	output->addByte(uint8_t());
+	output->add<uint32_t>(uint32_t());
+	output->add<uint16_t>(uint16_t());
+
+	send(std::move(output));
+	disconnect();
+}
+#endif

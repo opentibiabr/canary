@@ -130,7 +130,11 @@ void LuaFunctionsLoader::reportError(const char* function, const std::string &er
 	if (function && strcmp(function, "N/A") != 0) {
 		logMsg << "Function: " << function << "\n";
 	}
-	logMsg << "Error Description: " << error_desc << "\n";
+
+	// Only add error description if stack_trace is false, to avoid duplicate messages
+	if (!stack_trace) {
+		logMsg << "Error Description: " << error_desc << "\n";
+	}
 	if (stack_trace && scriptInterface) {
 		std::string stackTrace = scriptInterface->getStackTrace(error_desc);
 		if (!stackTrace.empty() && stackTrace != "N/A") {
@@ -793,4 +797,48 @@ int LuaFunctionsLoader::validateDispatcherContext(std::string_view fncName) {
 	}
 
 	return 0;
+}
+
+void LuaFunctionsLoader::createCastTable(lua_State* L, const char* index) {
+	lua_pushstring(L, index);
+	lua_newtable(L);
+}
+
+void LuaFunctionsLoader::createCastTable(lua_State* L, const char* index, int32_t narr, int32_t nrec) {
+	lua_pushstring(L, index);
+	lua_createtable(L, narr, nrec);
+}
+
+void LuaFunctionsLoader::createCastTable(lua_State* L, int32_t index) {
+	lua_pushnumber(L, index);
+	lua_newtable(L);
+}
+
+void LuaFunctionsLoader::createCastTable(lua_State* L, int32_t index, int32_t narr, int32_t nrec) {
+	lua_pushnumber(L, index);
+	lua_createtable(L, narr, nrec);
+}
+
+void LuaFunctionsLoader::setCastFieldBool(lua_State* L, const char* index, bool val) {
+	lua_pushstring(L, index);
+	lua_pushboolean(L, val);
+	lua_settable(L, -3);
+}
+
+bool LuaFunctionsLoader::getCastFieldBool(lua_State* L, const char* key) {
+	lua_pushstring(L, key);
+	lua_gettable(L, -2); // get table[key]
+
+	bool result = (lua_toboolean(L, -1) != 0);
+	lua_pop(L, 1); // remove number and key
+	return result;
+}
+
+std::string LuaFunctionsLoader::getCastFieldString(lua_State* L, const char* key) {
+	lua_pushstring(L, key);
+	lua_gettable(L, -2); // get table[key]
+
+	std::string result = lua_tostring(L, -1);
+	lua_pop(L, 1); // remove number and key
+	return result;
 }

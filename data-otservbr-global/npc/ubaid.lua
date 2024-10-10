@@ -99,7 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	-- To Appease the Mighty Quest
-	if MsgContains(message, "mission") and player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) == 2 then
+	if MsgContains(message, "mission") and player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) == 2 then
 		npcHandler:say({
 			"You have the smell of the Marid on you. Tell me who sent you?",
 		}, npc, creature)
@@ -109,7 +109,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"And he is sending a worm like you to us!?! The mighty Efreet!! Tell him that we won't be part in his 'great' plans and now LEAVE!! ...",
 			"...or do you want to join us and fight those stinking Marid who claim themselves to be noble and righteous?!? Just let me know.",
 		}, npc, creature)
-		player:setStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) + 1)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) + 1)
 	end
 
 	if MsgContains(message, "passage") then

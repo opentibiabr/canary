@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/callbacks/events_callbacks.hpp"
 
 #include "lua/callbacks/event_callback.hpp"

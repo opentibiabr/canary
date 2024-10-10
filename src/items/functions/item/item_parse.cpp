@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/functions/item/item_parse.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
@@ -127,8 +125,8 @@ void ItemParse::parseDescription(const std::string &tmpStrValue, pugi::xml_attri
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "description") {
 		itemType.description = valueAttribute.as_string();
-		if (g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY, __FUNCTION__) && itemType.id == ITEM_GOLD_POUCH) {
-			auto pouchLimit = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT, __FUNCTION__);
+		if (g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY) && itemType.id == ITEM_GOLD_POUCH) {
+			auto pouchLimit = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT);
 			itemType.description = fmt::format("A bag with {} slots where you can hold your loots.", pouchLimit);
 			itemType.name = "loot pouch";
 		}
@@ -899,7 +897,7 @@ void ItemParse::parseAugment(const std::string &tmpStrValue, pugi::xml_node attr
 				if (hasValueDescrition) {
 					const auto it = AugmentWithoutValueDescriptionDefaultKeys.find(augmentType);
 					if (it != AugmentWithoutValueDescriptionDefaultKeys.end()) {
-						augmentValue = g_configManager().getNumber(it->second, __FUNCTION__);
+						augmentValue = g_configManager().getNumber(it->second);
 					}
 				}
 

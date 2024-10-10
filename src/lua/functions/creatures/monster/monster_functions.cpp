@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/game.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -371,7 +369,7 @@ int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
 	monster->setMasterPos(pos);
 
 	SpawnMonster &spawnMonster = g_game().map.spawnsMonster.getspawnMonsterList().emplace_back(pos, 5);
-	uint32_t interval = getNumber<uint32_t>(L, 2, 90) * 1000 * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN, __FUNCTION__) * eventschedule));
+	uint32_t interval = getNumber<uint32_t>(L, 2, 90) * 1000 * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN) * eventschedule));
 	spawnMonster.addMonster(monster->mType->typeName, pos, DIRECTION_NORTH, static_cast<uint32_t>(interval));
 	spawnMonster.startSpawnMonsterCheck();
 

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/game.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/npcs/npc.hpp"
@@ -354,6 +352,7 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 		return 1;
 	}
 
+	player->closeShopWindow();
 	pushBoolean(L, player->openShopWindow(npc));
 	return 1;
 }
@@ -404,6 +403,7 @@ int NpcFunctions::luaNpcOpenShopWindowTable(lua_State* L) {
 	}
 	lua_pop(L, 3);
 
+	player->closeShopWindow();
 	pushBoolean(L, player->openShopWindow(npc, items));
 	return 1;
 }

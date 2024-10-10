@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/vocations/vocation.hpp"
 
 #include "utils/pugicast.hpp"
@@ -21,7 +19,7 @@ bool Vocations::reload() {
 
 bool Vocations::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/vocations.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/vocations.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);

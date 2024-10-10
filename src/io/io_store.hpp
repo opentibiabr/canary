@@ -167,8 +167,8 @@ private:
 
 class Category { // We're gonna use the same class for Category and Subcategory
 public:
-	Category(const std::string& name, const std::string& icon, bool rookgaard, States_t state = States_t::NONE)
-	: categoryName(name), categoryIcon(icon), canRookgaardAccess(rookgaard), categoryState(state) { }
+	Category(const std::string &name, const std::string &icon, bool rookgaard, States_t state = States_t::NONE) :
+		categoryName(name), categoryIcon(icon), canRookgaardAccess(rookgaard), categoryState(state) { }
 
 	std::string getCategoryName() const {
 		return categoryName;

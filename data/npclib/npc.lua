@@ -28,6 +28,30 @@ function MsgFind(message, keyword)
 	return string.find(lowerMessage, lowerKeyword) and string.find(lowerMessage, lowerKeyword .. "(%w+)") and string.find(lowerMessage, "(%w+)" .. lowerKeyword)
 end
 
+function GetFormattedShopCategoryNames(itemsTable)
+	local formattedCategoryNames = {}
+	for categoryName, _ in pairs(itemsTable) do
+		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
+	end
+
+	if #formattedCategoryNames > 1 then
+		local lastCategory = table.remove(formattedCategoryNames)
+		return table.concat(formattedCategoryNames, ", ") .. " and " .. lastCategory
+	else
+		return formattedCategoryNames[1] or ""
+	end
+end
+
+function Npc:getRemainingShopCategories(selectedCategory, itemsTable)
+	local remainingCategories = {}
+	for categoryName, _ in pairs(itemsTable) do
+		if categoryName ~= selectedCategory then
+			table.insert(remainingCategories, "{" .. categoryName .. "}")
+		end
+	end
+	return table.concat(remainingCategories, " or ")
+end
+
 -- Npc talk
 -- npc:talk({text, text2}) or npc:talk(text)
 function Npc:talk(player, text)

@@ -1888,7 +1888,7 @@ bool Player::openShopWindow(std::shared_ptr<Npc> npc, const std::vector<ShopBloc
 		return false;
 	}
 
-	if (npc->isShopPlayer(getGUID())) {
+	if (npc->isShopPlayer(getGUID()) && npc->getShopItemVector(getGUID()).size() == shopItems.size()) {
 		g_logger().debug("[Player::openShopWindow] - Player {} is already in shop window", getName());
 		return false;
 	}

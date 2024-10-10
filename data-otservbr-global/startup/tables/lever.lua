@@ -15,6 +15,25 @@ LeverAction = {
 			{ x = 32972, y = 32412, z = 11 },
 		},
 	},
+	-- Cults of Tibia Quest
+	[5500] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33095, y = 31942, z = 15 },
+		},
+	},
+	[5501] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33138, y = 31952, z = 15 },
+		},
+	},
+	[5520] = {
+		itemId = 9110,
+		itemPos = {
+			{ x = 33299, y = 32144, z = 10 },
+		},
+	},
 	-- The Pits of Inferno Quest
 	[7799] = {
 		itemId = 431,

@@ -9,6 +9,19 @@ TeleportAction = {
 			{ x = 32210, y = 32292, z = 6 },
 		},
 	},
+	-- Cults of Tibia Quest
+	[5517] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33459, y = 32267, z = 10 },
+		},
+	},
+	[5518] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33449, y = 32241, z = 7 },
+		},
+	},
 	-- Barbarian Test - Temple Citizen Svargrond
 	[30032] = {
 		itemId = 1949,

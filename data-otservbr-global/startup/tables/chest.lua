@@ -2638,13 +2638,22 @@ ChestUnique = {
 		weight = 4.00,
 		questName = "PaintingOfAGirlQuest",
 	},
-	[6311] = {
+	[6312] = {
 		useKV = true,
 		itemId = 9253,
 		itemPos = { x = 33026, y = 31662, z = 14 },
 		reward = { { 24964, 1 } },
 		weight = 3.00,
 		questName = "ImbuingCrystalQuest",
+	},
+	-- Cults of Tibia Quest
+	[6313] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32739, y = 31426, z = 8 },
+		reward = { { 10420, 5 } },
+		weight = 8.00,
+		questName = "PetrifiedScreamQuest",
 	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest

@@ -203,57 +203,59 @@ QuestDoorAction = {
 		itemPos = { { x = 32067, y = 31896, z = 3 } },
 	},
 	-- Cults of tibia door
-	[Storage.CultsOfTibia.Minotaurs.EntranceAccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Minotaurs.BossAccessDoor] = {
+		itemId = false,
+		itemPos = {  { x = 31957, y = 32468, z = 9 } },
+	},
+	[Storage.Quest.U11_40.CultsOfTibia.Minotaurs.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 31950, y = 32501, z = 8 } },
 	},
-	[Storage.CultsOfTibia.Minotaurs.AccessDoor] = {
-		itemId = false,
-		itemPos = { { x = 31957, y = 32468, z = 9 } },
-	},
-	[Storage.CultsOfTibia.MotA.AccessDoorInvestigation] = {
+	[Storage.Quest.U11_40.CultsOfTibia.MotA.AccessDoorInvestigation] = {
 		itemId = false,
 		itemPos = { { x = 33273, y = 32172, z = 8 } },
 	},
-	[Storage.CultsOfTibia.MotA.AccessDoorGareth] = {
+	[Storage.Quest.U11_40.CultsOfTibia.MotA.AccessDoorGareth] = {
 		itemId = false,
 		itemPos = { { x = 33220, y = 32147, z = 9 } },
 	},
-	[Storage.CultsOfTibia.MotA.AccessDoorDenominator] = {
+	[Storage.Quest.U11_40.CultsOfTibia.MotA.AccessDoorDenominator] = {
 		itemId = false,
 		itemPos = { { x = 33220, y = 32149, z = 9 } },
 	},
-	[Storage.CultsOfTibia.Barkless.TrialAccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.TrialAccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 32688, y = 31543, z = 9 } },
 	},
-	[Storage.CultsOfTibia.Barkless.TarAccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.TarAccessDoor] = {
 		itemId = false,
-		itemPos = {
-			{ x = 32747, y = 31462, z = 8 },
-			{ x = 32678, y = 31506, z = 8 },
-		},
+		itemPos = {	{ x = 32747, y = 31462, z = 8 }	},
 	},
-	[Storage.CultsOfTibia.Barkless.AccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.SulphurAccessDoor] = {
+		itemId = false,
+		itemPos = {	{ x = 32678, y = 31506, z = 8 }	},
+	},
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.AccessDoor] = {
 		itemId = false,
 		itemPos = {
-			{ x = 32742, y = 31408, z = 8 },
 			{ x = 32686, y = 31430, z = 8 },
+			{ x = 32746, y = 31423, z = 8 },
+			{ x = 32754, y = 31442, z = 8 },
 		},
 	},
-	[Storage.CultsOfTibia.Barkless.BossAccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.BossAccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 32672, y = 31543, z = 9 } },
 	},
-	[Storage.CultsOfTibia.Life.AccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Life.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 33295, y = 32271, z = 12 } },
 	},
-	[Storage.CultsOfTibia.Misguided.AccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Misguided.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 32508, y = 32370, z = 9 } },
 	},
-	[Storage.CultsOfTibia.FinalBoss.AccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.FinalBoss.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 33452, y = 32241, z = 7 } },
 	},

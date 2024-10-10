@@ -1989,7 +1989,7 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 	bool isLivestreamChannel = channelId == CHANNEL_LIVESTREAM;
 	if (isLivestreamChannel) {
 		g_dispatcher().addEvent(
-			[client = player->client, self = getThis(), text, channelId] { client->handle(self, text, channelId); }, "Livestream::handle"
+			[client = player->client, self = getThis(), text, channelId] { client->handle(self, text); }, "Livestream::handle"
 		);
 		return;
 	}
@@ -9351,12 +9351,11 @@ std::unordered_map<std::shared_ptr<Player>, ProtocolGame*> &ProtocolGame::getLiv
 }
 
 void ProtocolGame::insertLivestreamCaster() {
-	const auto &cast = getLivestreamCasters().find(player);
-	if (cast != getLivestreamCasters().end()) {
+	if (getLivestreamCasters().contains(player)) {
 		return;
 	}
 
-	getLivestreamCasters().insert(std::make_pair(player, this));
+	getLivestreamCasters().try_emplace(player, this);
 }
 
 void ProtocolGame::removeLivestreamCaster() {
@@ -9419,11 +9418,10 @@ void ProtocolGame::syncLivestreamViewerOpenContainers(const std::shared_ptr<Play
 
 	const auto &openContainers = foundPlayer->getOpenContainers();
 	if (!openContainers.empty()) {
-		for (const auto &it : openContainers) {
-			auto openContainer = it.second;
+		for (const auto &[cid, openContainer] : openContainers) {
 			auto opcontainer = openContainer.container;
 			bool hasParent = (opcontainer->getParent() != nullptr);
-			sendContainer(it.first, opcontainer, hasParent, openContainer.index);
+			sendContainer(cid, opcontainer, hasParent, openContainer.index);
 		}
 	}
 }
@@ -9431,8 +9429,8 @@ void ProtocolGame::syncLivestreamViewerOpenContainers(const std::shared_ptr<Play
 void ProtocolGame::syncLivestreamViewerCloseContainers() {
 	const auto &openContainers = player->getOpenContainers();
 	if (!openContainers.empty()) {
-		for (const auto &it : openContainers) {
-			sendCloseContainer(it.first);
+		for (const auto &[cid, openContainer] : openContainers) {
+			sendCloseContainer(cid);
 		}
 	}
 }

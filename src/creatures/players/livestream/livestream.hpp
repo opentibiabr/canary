@@ -38,26 +38,25 @@ struct ViewerInfo {
 
 class Livestream {
 public:
-	Livestream(std::shared_ptr<ProtocolGame> client);
-	virtual ~Livestream();
+	explicit Livestream(std::shared_ptr<ProtocolGame> client);
 
 	void clear(bool clearAll);
 	bool checkPassword(const std::string &_password);
-	void handle(const std::shared_ptr<ProtocolGame> &client, const std::string &text, uint16_t channelId);
+	void handle(const std::shared_ptr<ProtocolGame> &client, const std::string &text);
 	size_t getLivestreamViewerCount();
 	std::vector<std::string> getLivestreamViewers() const;
 	std::vector<std::shared_ptr<Player>> getLivestreamViewersByIP(uint32_t ip) const;
 	void setKickViewer(const std::vector<std::string> &list);
 	const std::vector<std::string> &getLivestreamMutes() const;
 	void setMuteViewer(std::vector<std::string> mutes);
-	const std::map<std::string, uint32_t> &getLivestreamBans() const;
+	const std::map<std::string, uint32_t, std::less<>> &getLivestreamBans() const;
 	void setBanViewer(const std::vector<std::string> &bans);
 	bool checkBannedIP(uint32_t ip) const;
 	std::shared_ptr<ProtocolGame> getLivestreamOwner() const;
 	void setLivestreamOwner(std::shared_ptr<ProtocolGame> client);
 	void resetLivestreamOwner();
 	std::string getLivestreamPassword() const;
-	void setLivestreamPassword(const std::string &value);
+	void setLivestreamPassword(std::string_view value);
 	bool isLivestreamBroadcasting() const;
 	void setLivestreamBroadcasting(bool value);
 	std::string getLivestreamBroadcastTimeString() const;
@@ -68,7 +67,7 @@ public:
 	uint32_t getLivestreamLiveRecord() const;
 	void setLivestreamLiveRecord(uint32_t value);
 	std::string getLivestreamDescription() const;
-	void setLivestreamDescription(const std::string &desc);
+	void setLivestreamDescription(std::string_view description);
 	uint32_t getViewerId(const std::shared_ptr<ProtocolGame> &client) const;
 	// inherited
 	void insertLivestreamCaster();
@@ -257,7 +256,7 @@ public:
 	bool isLivestreamViewer() const;
 
 private:
-	void processCommand(const std::shared_ptr<ProtocolGame> &client, const std::string &text, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit);
+	void processCommand(const std::shared_ptr<ProtocolGame> &client, std::string_view text, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit);
 	void showViewers(const std::shared_ptr<ProtocolGame> &client);
 	void changeViewerName(const std::shared_ptr<ProtocolGame> &client, const std::vector<std::string> &CommandParam, std::map<std::shared_ptr<ProtocolGame>, ViewerInfo>::iterator sit);
 	bool isNameAvailable(const std::string &name) const;
@@ -267,7 +266,7 @@ private:
 	friend class Player;
 	std::map<std::shared_ptr<ProtocolGame>, ViewerInfo> m_viewers;
 	std::vector<std::string> m_mutes;
-	std::map<std::string, uint32_t> m_bans;
+	std::map<std::string, uint32_t, std::less<>> m_bans;
 	std::shared_ptr<ProtocolGame> m_owner = nullptr;
 	std::string m_livestreamCasterPassword;
 	std::string m_livestreamCasterDescription;

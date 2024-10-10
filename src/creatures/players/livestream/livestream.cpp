@@ -22,7 +22,6 @@
 
 Livestream::Livestream(std::shared_ptr<ProtocolGame> client) :
 	m_owner(std::move(client)) { }
-Livestream::~Livestream() = default;
 
 void Livestream::clear(bool clearAll) {
 	for (const auto &[client, _] : m_viewers) {
@@ -79,14 +78,14 @@ void Livestream::setMuteViewer(std::vector<std::string> mutes) {
 	m_mutes = std::move(mutes);
 }
 
-const std::map<std::string, uint32_t> &Livestream::getLivestreamBans() const {
+const std::map<std::string, uint32_t, std::less<>> &Livestream::getLivestreamBans() const {
 	return m_bans;
 }
 
 void Livestream::setBanViewer(const std::vector<std::string> &bans) {
 	// Remove banned viewers not in the new bans list
 	auto removedCount = std::erase_if(m_bans, [&bans](const auto &ban) {
-		return std::find(bans.begin(), bans.end(), ban.first) == bans.end();
+		return std::ranges::find(bans.begin(), bans.end(), ban.first) == bans.end();
 	});
 
 	g_logger().debug("[{}] removed {} banned viewers", __METHOD_NAME__, removedCount);
@@ -125,7 +124,7 @@ std::string Livestream::getLivestreamPassword() const {
 	return m_livestreamCasterPassword;
 }
 
-void Livestream::setLivestreamPassword(const std::string &value) {
+void Livestream::setLivestreamPassword(std::string_view value) {
 	m_livestreamCasterPassword = value;
 }
 
@@ -169,8 +168,8 @@ std::string Livestream::getLivestreamDescription() const {
 	return m_livestreamCasterDescription;
 }
 
-void Livestream::setLivestreamDescription(const std::string &desc) {
-	m_livestreamCasterDescription = desc;
+void Livestream::setLivestreamDescription(std::string_view description) {
+	m_livestreamCasterDescription = description;
 }
 
 uint32_t Livestream::getViewerId(const std::shared_ptr<ProtocolGame> &client) const {
@@ -214,8 +213,8 @@ void Livestream::sendStats() {
 	if (m_owner) {
 		m_owner->sendStats();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendStats();
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendStats();
 		}
 	}
 }
@@ -224,8 +223,8 @@ void Livestream::sendPing() {
 	if (m_owner) {
 		m_owner->sendPing();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendPing();
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendPing();
 		}
 	}
 }
@@ -240,8 +239,8 @@ void Livestream::sendAddContainerItem(uint8_t cid, uint16_t slot, const std::sha
 	if (m_owner) {
 		m_owner->sendAddContainerItem(cid, slot, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendAddContainerItem(cid, slot, item);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendAddContainerItem(cid, slot, item);
 		}
 	}
 }
@@ -250,8 +249,8 @@ void Livestream::sendUpdateContainerItem(uint8_t cid, uint16_t slot, const std::
 	if (m_owner) {
 		m_owner->sendUpdateContainerItem(cid, slot, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUpdateContainerItem(cid, slot, item);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendUpdateContainerItem(cid, slot, item);
 		}
 	}
 }
@@ -260,8 +259,8 @@ void Livestream::sendRemoveContainerItem(uint8_t cid, uint16_t slot, const std::
 	if (m_owner) {
 		m_owner->sendRemoveContainerItem(cid, slot, lastItem);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendRemoveContainerItem(cid, slot, lastItem);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendRemoveContainerItem(cid, slot, lastItem);
 		}
 	}
 }
@@ -314,8 +313,8 @@ void Livestream::sendCreatureSkull(const std::shared_ptr<Creature> &creature) co
 	if (m_owner) {
 		m_owner->sendCreatureSkull(creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureSkull(creature);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCreatureSkull(creature);
 		}
 	}
 }
@@ -324,8 +323,8 @@ void Livestream::sendAddTileItem(const Position &pos, uint32_t stackpos, const s
 	if (m_owner) {
 		m_owner->sendAddTileItem(pos, stackpos, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendAddTileItem(pos, stackpos, item);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendAddTileItem(pos, stackpos, item);
 		}
 	}
 }
@@ -334,8 +333,8 @@ void Livestream::sendUpdateTileItem(const Position &pos, uint32_t stackpos, cons
 	if (m_owner) {
 		m_owner->sendUpdateTileItem(pos, stackpos, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUpdateTileItem(pos, stackpos, item);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendUpdateTileItem(pos, stackpos, item);
 		}
 	}
 }
@@ -344,8 +343,8 @@ void Livestream::sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 	if (m_owner) {
 		m_owner->sendRemoveTileThing(pos, stackpos);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendRemoveTileThing(pos, stackpos);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendRemoveTileThing(pos, stackpos);
 		}
 	}
 }
@@ -354,8 +353,8 @@ void Livestream::sendUpdateTileCreature(const Position &pos, uint32_t stackpos, 
 	if (m_owner) {
 		m_owner->sendUpdateTileCreature(pos, stackpos, creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUpdateTileCreature(pos, stackpos, creature);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendUpdateTileCreature(pos, stackpos, creature);
 		}
 	}
 }
@@ -364,8 +363,8 @@ void Livestream::sendUpdateTile(const std::shared_ptr<Tile> &tile, const Positio
 	if (m_owner) {
 		m_owner->sendUpdateTile(tile, pos);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUpdateTile(tile, pos);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendUpdateTile(tile, pos);
 		}
 	}
 }
@@ -374,8 +373,8 @@ void Livestream::sendChannelMessage(const std::string &author, uint16_t playerLe
 	if (m_owner) {
 		m_owner->sendChannelMessage(author, playerLevel, message, type, channel);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendChannelMessage(author, playerLevel, message, type, channel);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendChannelMessage(author, playerLevel, message, type, channel);
 		}
 	}
 }
@@ -384,8 +383,8 @@ void Livestream::sendMoveCreature(const std::shared_ptr<Creature> &creature, con
 	if (m_owner) {
 		m_owner->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
 		}
 	}
 }
@@ -394,8 +393,8 @@ void Livestream::sendCreatureTurn(const std::shared_ptr<Creature> &creature, int
 	if (m_owner) {
 		m_owner->sendCreatureTurn(creature, stackpos);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureTurn(creature, stackpos);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCreatureTurn(creature, stackpos);
 		}
 	}
 }
@@ -416,8 +415,8 @@ void Livestream::sendCreatureSquare(const std::shared_ptr<Creature> &creature, S
 	if (m_owner) {
 		m_owner->sendCreatureSquare(creature, color);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureSquare(creature, color);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCreatureSquare(creature, color);
 		}
 	}
 }
@@ -426,8 +425,8 @@ void Livestream::sendCreatureOutfit(const std::shared_ptr<Creature> &creature, c
 	if (m_owner) {
 		m_owner->sendCreatureOutfit(creature, outfit);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureOutfit(creature, outfit);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCreatureOutfit(creature, outfit);
 		}
 	}
 }
@@ -436,8 +435,8 @@ void Livestream::sendCreatureLight(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->sendCreatureLight(creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureLight(creature);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCreatureLight(creature);
 		}
 	}
 }
@@ -446,8 +445,8 @@ void Livestream::sendCreatureWalkthrough(const std::shared_ptr<Creature> &creatu
 	if (m_owner) {
 		m_owner->sendCreatureWalkthrough(creature, walkthrough);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureWalkthrough(creature, walkthrough);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCreatureWalkthrough(creature, walkthrough);
 		}
 	}
 }
@@ -456,8 +455,8 @@ void Livestream::sendCreatureShield(const std::shared_ptr<Creature> &creature) {
 	if (m_owner) {
 		m_owner->sendCreatureShield(creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureShield(creature);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCreatureShield(creature);
 		}
 	}
 }
@@ -466,8 +465,8 @@ void Livestream::sendContainer(uint8_t cid, const std::shared_ptr<Container> &co
 	if (m_owner) {
 		m_owner->sendContainer(cid, container, hasParent, firstIndex);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendContainer(cid, container, hasParent, firstIndex);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendContainer(cid, container, hasParent, firstIndex);
 		}
 	}
 }
@@ -476,8 +475,8 @@ void Livestream::sendInventoryItem(Slots_t slot, const std::shared_ptr<Item> &it
 	if (m_owner) {
 		m_owner->sendInventoryItem(slot, item);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendInventoryItem(slot, item);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendInventoryItem(slot, item);
 		}
 	}
 }
@@ -486,8 +485,8 @@ void Livestream::sendCancelMessage(const std::string &msg) const {
 	if (m_owner) {
 		m_owner->sendTextMessage(TextMessage(MESSAGE_FAILURE, msg));
 
-		for (const auto &it : m_viewers) {
-			it.first->sendTextMessage(TextMessage(MESSAGE_FAILURE, msg));
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendTextMessage(TextMessage(MESSAGE_FAILURE, msg));
 		}
 	}
 }
@@ -496,8 +495,8 @@ void Livestream::sendCancelTarget() const {
 	if (m_owner) {
 		m_owner->sendCancelTarget();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCancelTarget();
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCancelTarget();
 		}
 	}
 }
@@ -506,8 +505,8 @@ void Livestream::sendCancelWalk() const {
 	if (m_owner) {
 		m_owner->sendCancelWalk();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCancelWalk();
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCancelWalk();
 		}
 	}
 }
@@ -516,8 +515,8 @@ void Livestream::sendChangeSpeed(const std::shared_ptr<Creature> &creature, uint
 	if (m_owner) {
 		m_owner->sendChangeSpeed(creature, newSpeed);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendChangeSpeed(creature, newSpeed);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendChangeSpeed(creature, newSpeed);
 		}
 	}
 }
@@ -526,8 +525,8 @@ void Livestream::sendCreatureHealth(const std::shared_ptr<Creature> &creature) c
 	if (m_owner) {
 		m_owner->sendCreatureHealth(creature);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureHealth(creature);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCreatureHealth(creature);
 		}
 	}
 }
@@ -536,8 +535,8 @@ void Livestream::sendDistanceShoot(const Position &from, const Position &to, uns
 	if (m_owner) {
 		m_owner->sendDistanceShoot(from, to, type);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendDistanceShoot(from, to, type);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendDistanceShoot(from, to, type);
 		}
 	}
 }
@@ -552,12 +551,12 @@ void Livestream::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const 
 	if (m_owner) {
 		m_owner->sendIcons(iconSet, iconBakragore);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendIcons(iconSet, iconBakragore);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendIcons(iconSet, iconBakragore);
 
-			std::unordered_set<PlayerIcon> iconSet;
-			iconSet.insert(PlayerIcon::Rooted);
-			it.first->sendIcons(iconSet, IconBakragore::None);
+			std::unordered_set<PlayerIcon> rootedSet;
+			rootedSet.insert(PlayerIcon::Rooted);
+			client->sendIcons(rootedSet, IconBakragore::None);
 		}
 	}
 }
@@ -574,8 +573,8 @@ void Livestream::sendMagicEffect(const Position &pos, uint8_t type) const {
 	if (m_owner) {
 		m_owner->sendMagicEffect(pos, type);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendMagicEffect(pos, type);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendMagicEffect(pos, type);
 		}
 	}
 }
@@ -590,8 +589,8 @@ void Livestream::sendTextMessage(MessageClasses mclass, const std::string &messa
 	if (m_owner) {
 		m_owner->sendTextMessage(TextMessage(mclass, message));
 
-		for (const auto &it : m_viewers) {
-			it.first->sendTextMessage(TextMessage(mclass, message));
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendTextMessage(TextMessage(mclass, message));
 		}
 	}
 }
@@ -600,8 +599,8 @@ void Livestream::sendTextMessage(const TextMessage &message) const {
 	if (m_owner) {
 		m_owner->sendTextMessage(message);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendTextMessage(message);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendTextMessage(message);
 		}
 	}
 }
@@ -627,8 +626,8 @@ void Livestream::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const st
 void Livestream::sendToChannel(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text, uint16_t channelId) {
 	if (m_owner) {
 		m_owner->sendToChannel(creature, type, text, channelId);
-		for (const auto &it : m_viewers) {
-			it.first->sendToChannel(creature, type, text, channelId);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendToChannel(creature, type, text, channelId);
 		}
 	}
 }
@@ -667,8 +666,8 @@ void Livestream::sendWorldLight(const LightInfo &lightInfo) {
 	if (m_owner) {
 		m_owner->sendWorldLight(lightInfo);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendWorldLight(lightInfo);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendWorldLight(lightInfo);
 		}
 	}
 }
@@ -695,8 +694,8 @@ void Livestream::sendCloseContainer(uint8_t cid) {
 	if (m_owner) {
 		m_owner->sendCloseContainer(cid);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCloseContainer(cid);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCloseContainer(cid);
 		}
 	}
 }
@@ -729,8 +728,8 @@ void Livestream::writeToOutputBuffer(const NetworkMessage &message) {
 	if (m_owner) {
 		m_owner->writeToOutputBuffer(message);
 
-		for (const auto &it : m_viewers) {
-			it.first->writeToOutputBuffer(message);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->writeToOutputBuffer(message);
 		}
 	}
 }
@@ -739,8 +738,8 @@ void Livestream::sendAddCreature(const std::shared_ptr<Creature> &creature, cons
 	if (m_owner) {
 		m_owner->sendAddCreature(creature, pos, stackpos, isLogin);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendAddCreature(creature, pos, stackpos, isLogin);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendAddCreature(creature, pos, stackpos, isLogin);
 		}
 	}
 }
@@ -857,8 +856,8 @@ void Livestream::sendPingBack() {
 	if (m_owner) {
 		m_owner->sendPingBack();
 
-		for (const auto &it : m_viewers) {
-			it.first->sendPingBack();
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendPingBack();
 		}
 	}
 }
@@ -1108,8 +1107,8 @@ void Livestream::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr
 	if (m_owner) {
 		m_owner->sendInventoryImbuements(items);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendInventoryImbuements(items);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendInventoryImbuements(items);
 		}
 	}
 }
@@ -1370,8 +1369,8 @@ void Livestream::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t
 	if (m_owner) {
 		m_owner->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, skullDuration);
 
-		for (const auto &it : m_viewers) {
-			it.first->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, skullDuration);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, skullDuration);
 		}
 	}
 }
@@ -1402,8 +1401,8 @@ void Livestream::sendCreatureSay(const std::shared_ptr<Creature> &creature, Spea
 			return;
 		}
 
-		for (const auto &it : m_viewers) {
-			it.first->sendCreatureSay(creature, type, text, pos);
+		for (const auto &[client, viewerInfo] : m_viewers) {
+			client->sendCreatureSay(creature, type, text, pos);
 		}
 	}
 }
@@ -1415,11 +1414,12 @@ void Livestream::disconnectClient(const std::string &message) const {
 }
 
 void Livestream::addViewer(const ProtocolGame_ptr &client, bool spy) {
-	if (m_viewers.find(client) != m_viewers.end()) {
+	if (m_viewers.contains(client)) {
 		return;
 	}
 
-	auto viewerId = ++m_viewerCounter;
+	++m_viewerCounter;
+	auto viewerId = m_viewerCounter;
 
 	std::string guestString = fmt::format("Viewer-{}", viewerId);
 
@@ -1444,7 +1444,7 @@ void Livestream::removeViewer(const ProtocolGame_ptr &client, bool spy) {
 		return;
 	}
 
-	auto mit = std::find(m_mutes.begin(), m_mutes.end(), it->second.name);
+	auto mit = std::ranges::find(m_mutes.begin(), m_mutes.end(), it->second.name);
 	if (mit != m_mutes.end()) {
 		m_mutes.erase(mit);
 	}
@@ -1456,7 +1456,7 @@ void Livestream::removeViewer(const ProtocolGame_ptr &client, bool spy) {
 	m_viewers.erase(it);
 }
 
-void Livestream::handle(const ProtocolGame_ptr &client, const std::string &text, uint16_t channelId) {
+void Livestream::handle(const ProtocolGame_ptr &client, const std::string &text) {
 	if (m_owner == nullptr || client == nullptr || client->player == nullptr) {
 		return;
 	}
@@ -1490,7 +1490,7 @@ void Livestream::handle(const ProtocolGame_ptr &client, const std::string &text,
 	handleChatMessage(sit->second.name, client, text);
 }
 
-void Livestream::processCommand(const ProtocolGame_ptr &client, const std::string &text, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit) {
+void Livestream::processCommand(const ProtocolGame_ptr &client, std::string_view text, std::map<ProtocolGame_ptr, ViewerInfo>::iterator sit) {
 	std::vector<std::string> CommandParam = explodeString(text.substr(1), " ", 1);
 	if (strcasecmp(CommandParam[0].c_str(), "show") == 0) {
 		showViewers(client);
@@ -1539,7 +1539,7 @@ void Livestream::updateViewerName(const ProtocolGame_ptr &client, std::map<Proto
 	sendChannelMessage("", 0, fmt::format("{} was renamed to {}.", sit->second.name, newName), TALKTYPE_CHANNEL_O, CHANNEL_LIVESTREAM);
 
 	// Update the muted list with the new name if necessary
-	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.name));
+	auto mit = std::ranges::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(sit->second.name));
 	if (mit != m_mutes.end()) {
 		(*mit) = asLowerCaseString(newName);
 	}
@@ -1558,7 +1558,7 @@ bool Livestream::isNameAvailable(const std::string &name) const {
 }
 
 void Livestream::handleChatMessage(const std::string &playerName, const ProtocolGame_ptr &client, const std::string &text) {
-	auto mit = std::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(playerName));
+	auto mit = std::ranges::find(m_mutes.begin(), m_mutes.end(), asLowerCaseString(playerName));
 	if (mit == m_mutes.end()) {
 		sendChannelMessage(playerName, 0, text, TALKTYPE_CHANNEL_Y, CHANNEL_LIVESTREAM);
 	} else {
@@ -1572,8 +1572,8 @@ size_t Livestream::getLivestreamViewerCount() {
 
 std::vector<std::string> Livestream::getLivestreamViewers() const {
 	std::vector<std::string> players;
-	for (const auto &it : m_viewers) {
-		players.push_back(it.second.name);
+	for (const auto &[client, viewerInfo] : m_viewers) {
+		players.push_back(viewerInfo.name);
 	}
 	return players;
 }

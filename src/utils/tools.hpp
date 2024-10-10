@@ -49,7 +49,7 @@ std::string toStartCaseWithSpace(const std::string &str);
 using StringVector = std::vector<std::string>;
 using IntegerVector = std::vector<int32_t>;
 
-StringVector explodeString(const std::string &inString, const std::string &separator, int32_t limit = -1);
+StringVector explodeString(std::string_view inString, std::string_view separator, int32_t limit = -1);
 IntegerVector vectorAtoi(const StringVector &stringVector);
 constexpr bool hasBitSet(uint32_t flag, uint32_t flags) {
 	return (flags & flag) != 0;

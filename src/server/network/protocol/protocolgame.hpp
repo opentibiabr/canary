@@ -530,7 +530,7 @@ private:
 	// Since it is false by default, we can leave it enabled to avoid directives of "FEATURE_LIVESTREAM" in the code
 	bool m_isLivestreamViewer = false;
 #if FEATURE_LIVESTREAM == 0
-	bool isOldProtocol() {
+	bool isOldProtocol() const {
 		return oldProtocol;
 	}
 

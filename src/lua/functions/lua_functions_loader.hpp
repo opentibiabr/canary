@@ -60,30 +60,24 @@ public:
 	static void setCreatureMetatable(lua_State* L, int32_t index, std::shared_ptr<Creature> creature);
 
 	template <typename T>
-	static typename std::enable_if<std::is_enum<T>::value, T>::type
-	getNumber(lua_State* L, int32_t arg) {
-		return static_cast<T>(static_cast<int64_t>(lua_tonumber(L, arg)));
-	}
-	template <typename T>
-	static typename std::enable_if<std::is_integral<T>::value || std::is_floating_point<T>::value, T>::type getNumber(lua_State* L, int32_t arg) {
-		auto number = lua_tonumber(L, arg);
-		// If there is overflow, we return the value 0
-		if constexpr (std::is_integral_v<T> && std::is_unsigned_v<T>) {
-			if (number < 0) {
-				g_logger().debug("[{}] overflow, setting to default signed value (0)", __FUNCTION__);
-				number = T(0);
-			}
-		}
-
-		return static_cast<T>(number);
-	}
-	template <typename T>
-	static T getNumber(lua_State* L, int32_t arg, T defaultValue) {
+	static T getNumber(lua_State* L, int32_t arg, T defaultValue = T {}) {
 		const auto parameters = lua_gettop(L);
 		if (parameters == 0 || arg > parameters) {
 			return defaultValue;
 		}
-		return getNumber<T>(L, arg);
+
+		auto number = lua_tonumber(L, arg);
+
+		if constexpr (std::is_enum_v<T>) {
+			return static_cast<T>(static_cast<int64_t>(number));
+		} else if constexpr (std::is_integral_v<T> && std::is_unsigned_v<T>) {
+			if (number < 0) {
+				g_logger().debug("[{}] overflow, setting to default signed value (0)", __FUNCTION__);
+				return T { 0 };
+			}
+		}
+
+		return static_cast<T>(number);
 	}
 	template <class T>
 	static T* getUserdata(lua_State* L, int32_t arg) {

@@ -366,16 +366,16 @@ std::string toStartCaseWithSpace(const std::string &str) {
 	return result;
 }
 
-StringVector explodeString(const std::string &inString, const std::string &separator, int32_t limit /* = -1*/) {
+StringVector explodeString(std::string_view inString, std::string_view separator, int32_t limit /*= -1*/) {
 	StringVector returnVector;
-	std::string::size_type start = 0, end = 0;
+	std::string_view::size_type start = 0, end = 0;
 
-	while (--limit != -1 && (end = inString.find(separator, start)) != std::string::npos) {
-		returnVector.push_back(inString.substr(start, end - start));
+	while (--limit != -1 && (end = inString.find(separator, start)) != std::string_view::npos) {
+		returnVector.emplace_back(inString.substr(start, end - start));
 		start = end + separator.size();
 	}
 
-	returnVector.push_back(inString.substr(start));
+	returnVector.emplace_back(inString.substr(start));
 	return returnVector;
 }
 

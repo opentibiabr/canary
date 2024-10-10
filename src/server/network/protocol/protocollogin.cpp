@@ -227,8 +227,7 @@ void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
 
 	std::vector<std::shared_ptr<Player>> players;
 
-	for (const auto &it : ProtocolGame::getLivestreamCasters()) {
-		std::shared_ptr<Player> player = it.first;
+	for (const auto &[player, _] : ProtocolGame::getLivestreamCasters()) {
 		if (!password.empty() && password != player->client->getLivestreamPassword()) {
 			continue;
 		}
@@ -237,7 +236,7 @@ void ProtocolLogin::getLivestreamViewersList(const std::string &password) {
 
 	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
 	output->addByte(size);
-	std::sort(players.begin(), players.end(), Player::sortByLivestreamViewerCount);
+	std::ranges::sort(players.begin(), players.end(), Player::sortByLivestreamViewerCount);
 
 	for (const auto &player : players) {
 		output->addByte(uint8_t());

@@ -1,157 +1,166 @@
 local function createCreaturesAround(player, maxRadius, creatureName, creatureCount, creatureForge, boolForceCreate)
-	local position = player:getPosition()
-	local createdCount = 0
-	local sendMessage = false
-	local canSetFiendish, canSetInfluenced, influencedLevel = CheckDustLevel(creatureForge, player)
-	for radius = 1, maxRadius do
-		if createdCount >= creatureCount then
-			break
-		end
+    local position = player:getPosition()
+    local createdCount = 0
+    local sendMessage = false
+    local canSetFiendish, canSetInfluenced, influencedLevel = CheckDustLevel(creatureForge, player)
 
-		local minX = position.x - radius
-		local maxX = position.x + radius
-		local minY = position.y - radius
-		local maxY = position.y + radius
-		for dx = minX, maxX do
-			for dy = minY, maxY do
-				if (dx == minX or dx == maxX or dy == minY or dy == maxY) and createdCount < creatureCount then
-					local checkPosition = Position(dx, dy, position.z)
-					local tile = Tile(checkPosition)
-					if tile and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) then
-						local monster = Game.createMonster(creatureName, checkPosition, false, boolForceCreate)
-						if monster then
-							createdCount = createdCount + 1
-							monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-							position:sendMagicEffect(CONST_ME_MAGIC_RED)
-							if creatureForge ~= nil and monster:isForgeable() then
-								local monsterType = monster:getType()
-								if canSetFiendish then
-									SetFiendish(monsterType, position, player, monster)
-								end
-								if canSetInfluenced then
-									SetInfluenced(monsterType, monster, player, influencedLevel)
-								end
-							elseif notSendMessage then
-								sendMessage = true
-							end
-						end
-					end
-				end
-			end
-		end
-	end
-	if sendMessage == true then
-		player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
-	end
+    for radius = 1, maxRadius do
+        if createdCount >= creatureCount then
+            break
+        end
 
-	logger.info("Player {} created '{}' monsters", player:getName(), createdCount)
+        local minX = position.x - radius
+        local maxX = position.x + radius
+        local minY = position.y - radius
+        local maxY = position.y + radius
+
+        for dx = minX, maxX do
+            for dy = minY, maxY do
+                if (dx == minX or dx == maxX or dy == minY or dy == maxY) and createdCount < creatureCount then
+                    local checkPosition = Position(dx, dy, position.z)
+                    local tile = Tile(checkPosition)
+
+                    if tile and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) then
+                        local monster = Game.createMonster(creatureName, checkPosition, false, boolForceCreate)
+                        if monster then
+                            createdCount = createdCount + 1
+                            monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+                            position:sendMagicEffect(CONST_ME_MAGIC_RED)
+
+                            if creatureForge ~= nil and monster:isForgeable() then
+                                local monsterType = monster:getType()
+                                if canSetFiendish then
+                                    SetFiendish(monsterType, position, player, monster)
+                                end
+                                if canSetInfluenced then
+                                    SetInfluenced(monsterType, monster, player, influencedLevel)
+                                end
+                            else
+                                sendMessage = true
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    if sendMessage then
+        player:sendCancelMessage("Only allowed monsters can be fiendish or influenced!")
+    end
+
+    logger.info("Player {} created '{}' monsters", player:getName(), createdCount)
 end
 
 local createMonster = TalkAction("/m")
-
 -- @function createMonster.onSay
 -- @desc TalkAction to create monsters with multiple options.
 -- @param player: The player executing the command.
 -- @param words: Command words.
 -- @param param: String containing the command parameters.
--- Format: "/m monstername, monstercount, [fiendish/influenced level], spawnRadius, [forceCreate]"
--- Example: "/m rat, 10, fiendish, 5, true"
+-- Format: "/m monstername, monstercount, [fiendish/influenced level], [forceCreate]"
+-- Example: "/m rat, 10, fiendish"
+-- Note that creating fiendish monsters requires more performance than influenced ones. A maximum of 25 per time is recommended.
 -- @param: the last param is by default "false", if add "," or any value it's set to true
 -- @return true if the command is executed successfully, false otherwise.
 function createMonster.onSay(player, words, param)
-	-- create log
-	logCommand(player, words, param)
-	if param == "" then
-		player:sendCancelMessage("Monster name param required.")
-		logger.error("[createMonster.onSay] - Monster name param not found.")
-		return true
-	end
+    -- create Log of the command usage.
+    logCommand(player, words, param)
 
-	local position = player:getPosition()
+    -- Check if parameters were passed.
+    if param == "" then
+        player:sendCancelMessage("Monster name param required.")
+        logger.error("[createMonster.onSay] - Monster name param not found.")
+        return true
+    end
 
-	local split = param:split(",")
-	local monsterName = split[1]
-	local monsterCount = 0
-	if split[2] then
-		split[2] = split[2]:trimSpace()
-		monsterCount = tonumber(split[2])
-	end
+    local position = player:getPosition()
+    local split = param:split(",")
+    local monsterName = split[1]:trimSpace()
+    
+    local monsterType = MonsterType(monsterName)
+    if not monsterType then
+        player:sendCancelMessage("Invalid monster name!")
+        return true
+    end
 
-	local monsterForge = nil
-	if split[3] then
-		split[3] = split[3]:trimSpace()
-		monsterForge = split[3]
-	end
+    local monsterCount = tonumber(split[2]) or 1
+    if monsterCount < 1 or monsterCount > 100 then
+        if monsterCount > 100 then
+            monsterCount = 100
+            player:sendCancelMessage("You can only create up to 100 monsters at a time due to server stability concerns!")
+            return false
+        end
+    end
 
-	if monsterCount > 1 then
-		local spawnRadius = 5
-		if split[4] then
-			split[4] = split[4]:trimSpace()
-			spawnRadius = split[4]
-			print(spawnRadius)
-		end
+    local monsterForge = split[3] and split[3]:trimSpace() or nil
+    local influencedLevel = tonumber(split[3]) or 0
 
-		local forceCreate = false
-		if split[5] then
-			forceCreate = true
-		end
+    if influencedLevel < 0 or influencedLevel > 5 then
+        player:sendCancelMessage("Influenced level must be between 0 and 5.")
+        return true
+    end
 
-		createCreaturesAround(player, spawnRadius, monsterName, monsterCount, monsterForge, forceCreate)
-		return true
-	end
+    local spawnRadius = tonumber(split[4]) or 5
+    local forceCreate = split[5] and split[5]:lower() == "true"
 
-	local monster = Game.createMonster(monsterName, position)
-	if monster then
-		local canSetFiendish, canSetInfluenced, influencedLevel = CheckDustLevel(monsterForge, player)
-		monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-		position:sendMagicEffect(CONST_ME_MAGIC_RED)
-		if monsterForge ~= nil and not monster:isForgeable() then
-			player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
-			return true
-		end
+    if monsterCount > 1 then
+        createCreaturesAround(player, spawnRadius, monsterName, monsterCount, monsterForge, forceCreate)
+    else
+        local monster = Game.createMonster(monsterName, position)
+        if monster then
+            local canSetFiendish, canSetInfluenced, influencedLevel = CheckDustLevel(monsterForge, player)
+            monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+            position:sendMagicEffect(CONST_ME_MAGIC_RED)
+            if monsterForge and not monster:isForgeable() then
+                player:sendCancelMessage("Only allowed monsters can be fiendish or influenced!")
+                return true
+            end
 
-		local monsterType = monster:getType()
-		if canSetFiendish then
-			SetFiendish(monsterType, position, player, monster)
-		end
-		if canSetInfluenced then
-			SetInfluenced(monsterType, monster, player, influencedLevel)
-		end
-	else
-		player:sendCancelMessage("There is not enough room.")
-		position:sendMagicEffect(CONST_ME_POFF)
-	end
-	return true
+            local monsterType = monster:getType()
+            if canSetFiendish then
+                SetFiendish(monsterType, position, player, monster)
+            end
+            if canSetInfluenced then
+                SetInfluenced(monsterType, monster, player, influencedLevel)
+            end
+        else
+            player:sendCancelMessage("There is not enough room.")
+            position:sendMagicEffect(CONST_ME_POFF)
+        end
+    end
+
+    return true
 end
 
 createMonster:separator(" ")
 createMonster:groupType("god")
 createMonster:register()
 
------------------ Rename monster name -----------------
+-- Command to rename monsters within a radius
+-- @function setMonsterName.onSay
+-- @desc TalkAction to rename nearby monsters within a radius of 4 sqms.
+-- Format: "/setmonstername newName"
 local setMonsterName = TalkAction("/setmonstername")
 
--- @function setMonsterName.onSay
--- @desc TalkAction to rename nearby monsters within a radius of 4 sqm.
--- Format: "/setmonstername newName"
 function setMonsterName.onSay(player, words, param)
-	if param == "" then
-		player:sendCancelMessage("Command param required.")
-		return true
-	end
+    if param == "" then
+        player:sendCancelMessage("Command param required.")
+        return true
+    end
 
-	local split = param:split(",")
-	local monsterNewName = split[1]
+    local newName = param:trimSpace()
+    local position = player:getPosition()
 
-	local spectators, spectator = Game.getSpectators(player:getPosition(), false, false, 4, 4, 4, 4)
-	for i = 1, #spectators do
-		spectator = spectators[i]
-		if spectator:isMonster() then
-			spectator:setName(monsterNewName)
-		end
-	end
+    local spectators = Game.getSpectators(position, false, false, 4, 4, 4, 4)
 
-	return true
+    for _, spectator in ipairs(spectators) do
+        if spectator:isMonster() then
+            spectator:setName(newName)
+        end
+    end
+
+    return true
 end
 
 setMonsterName:separator(" ")

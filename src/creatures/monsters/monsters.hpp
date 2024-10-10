@@ -190,15 +190,15 @@ public:
 	}
 
 	float getHealthMultiplier() const {
-		return isBoss() ? g_configManager().getFloat(RATE_BOSS_HEALTH, __FUNCTION__) : g_configManager().getFloat(RATE_MONSTER_HEALTH, __FUNCTION__);
+		return isBoss() ? g_configManager().getFloat(RATE_BOSS_HEALTH) : g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	}
 
 	float getAttackMultiplier() const {
-		return isBoss() ? g_configManager().getFloat(RATE_BOSS_ATTACK, __FUNCTION__) : g_configManager().getFloat(RATE_MONSTER_ATTACK, __FUNCTION__);
+		return isBoss() ? g_configManager().getFloat(RATE_BOSS_ATTACK) : g_configManager().getFloat(RATE_MONSTER_ATTACK);
 	}
 
 	float getDefenseMultiplier() const {
-		return isBoss() ? g_configManager().getFloat(RATE_BOSS_DEFENSE, __FUNCTION__) : g_configManager().getFloat(RATE_MONSTER_DEFENSE, __FUNCTION__);
+		return isBoss() ? g_configManager().getFloat(RATE_BOSS_DEFENSE) : g_configManager().getFloat(RATE_MONSTER_DEFENSE);
 	}
 
 	bool isBoss() const {

@@ -7,14 +7,26 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "astarnodes.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/combat/combat.hpp"
 
 AStarNodes::AStarNodes(uint32_t x, uint32_t y, int_fast32_t extraCost) :
-	openNodes(), nodes() {
+#if defined(__AVX2__) || defined(__SSE2__)
+	nodesTable(), // 1. nodesTable
+	calculatedNodes(), // 2. calculatedNodes
+	nodes(), // 3. nodes
+	closedNodes(0), // 4. closedNodes
+	curNode(0), // 5. curNode
+	openNodes() // 6. openNodes
+#else
+	nodes(), // 1. nodes
+	nodesTable(), // 2. nodesTable
+	closedNodes(0), // 3. closedNodes
+	curNode(0), // 4. curNode
+	openNodes() // 5. openNodes
+#endif
+{
 #if defined(__AVX2__)
 	__m256i defaultCost = _mm256_set1_epi32(std::numeric_limits<int32_t>::max());
 	for (int32_t i = 0; i < MAX_NODES; i += 32) {
@@ -47,7 +59,7 @@ AStarNodes::AStarNodes(uint32_t x, uint32_t y, int_fast32_t extraCost) :
 	startNode.g = 0;
 	startNode.c = extraCost;
 	nodesTable[0] = (x << 16) | y;
-#if defined(__SSE2__)
+#if defined(__SSE2__) || defined(__AVX2__)
 	calculatedNodes[0] = 0;
 #endif
 }
@@ -265,9 +277,9 @@ int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position &neighbo
 int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile) {
 	int_fast32_t cost = 0;
 
-	if (creature) {
+	if (creature && tile) {
+		// Destroy creature cost
 		if (tile->getTopVisibleCreature(creature) != nullptr) {
-			// destroy creature cost
 			cost += MAP_NORMALWALKCOST * 4;
 		}
 		if (const auto &field = tile->getFieldItem()) {

@@ -196,16 +196,12 @@ local itemsTable = {
 }
 
 local function creatureSayCallback(npc, player, type, message)
-	local formattedCategoryNames = {}
-	for categoryName, _ in pairs(itemsTable) do
-		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
-	end
-
 	local categoryTable = itemsTable[message:lower()]
 	if MsgContains(message, "shop options") then
-		npcHandler:say("I sell a selection of " .. table.concat(formattedCategoryNames, ", "), npc, player)
+		npcHandler:say("I sell a selection of " .. npc:getFormattedCategoryNames(itemsTable), npc, player)
 	elseif categoryTable then
-		npcHandler:say("Here are the items for the category " .. message, npc, player)
+		local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+		npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
 		npc:openShopWindowTable(player, categoryTable)
 	end
 end
@@ -213,6 +209,7 @@ end
 npcHandler:setMessage(MESSAGE_GREET, "It is good to see you. I'm always at your {shop options}")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, |PLAYERNAME|, I'll be here if you need me again.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Come back soon!")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. Or do you want to look only at " .. GetFormattedShopCategoryNames(itemsTable) .. ".")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

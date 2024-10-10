@@ -91,7 +91,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 					weight = pugi::cast<uint32_t>(weightAttribute.value());
 				}
 
-				uint32_t scheduleInterval = g_configManager().getNumber(DEFAULT_RESPAWN_TIME, __FUNCTION__);
+				uint32_t scheduleInterval = g_configManager().getNumber(DEFAULT_RESPAWN_TIME);
 
 				try {
 					scheduleInterval = pugi::cast<uint32_t>(childMonsterNode.attribute("spawntime").value());
@@ -194,7 +194,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 }
 
 void SpawnMonster::startup(bool delayed) {
-	if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN, __FUNCTION__)) {
+	if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN)) {
 		for (auto it = spawnMonsterMap.begin(); it != spawnMonsterMap.end(); ++it) {
 			auto &[spawnMonsterId, sb] = *it;
 			for (auto &[monsterType, weight] : sb.monsterTypes) {
@@ -315,7 +315,7 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 		boostedrate = 2;
 	}
 	// eventschedule is a whole percentage, so we need to multiply by 100 to match the order of magnitude of the other values
-	scheduleInterval = scheduleInterval * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN, __FUNCTION__) * boostedrate * eventschedule));
+	scheduleInterval = scheduleInterval * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN) * boostedrate * eventschedule));
 	if (scheduleInterval < MONSTER_MINSPAWN_INTERVAL) {
 		g_logger().warn("[SpawnsMonster::addMonster] - {} {} spawntime cannot be less than {} seconds, set to {} by default.", name, pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000, MONSTER_MINSPAWN_INTERVAL / 1000);
 		scheduleInterval = MONSTER_MINSPAWN_INTERVAL;

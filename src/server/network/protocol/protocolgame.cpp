@@ -9546,6 +9546,11 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
 	auto offerType = msg.getByte();
 
 	const auto* currentOffer = g_ioStore().getOfferById(offerId);
+	if (!currentOffer) {
+		g_logger().error("Offer with id {} was not found returning nullptr", offerId);
+		return;
+	}
+
 	auto currentOfferType = currentOffer->getOfferType();
 
 	std::string stringName = "";

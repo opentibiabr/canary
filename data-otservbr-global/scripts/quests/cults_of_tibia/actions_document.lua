@@ -12,7 +12,7 @@ function cultsOfTibiaDocument.onUse(player, item, fromPosition, target, toPositi
 			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission, 3)
 		end
 	end
-	
+
 	return true
 end
 

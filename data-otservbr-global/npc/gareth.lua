@@ -86,7 +86,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if (player:getMoney() + player:getBankBalance()) >= value then
 				npcHandler:say({
 					"This is a very wise decision. You won't regret it. Congratulations! As your first task I like you to investigate the crime scene of a theft wich occurred last night. ...",
-					"A very varuable artefact has been stolen. I open the door for you. You can find the room on the same floor as we are right now."
+					"A very varuable artefact has been stolen. I open the door for you. You can find the room on the same floor as we are right now.",
 				}, npc, creature)
 				player:removeMoneyBank(value)
 				player:addItem(25689, 1)
@@ -117,7 +117,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "mission") and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission) == 11 then
 		npcHandler:say({
 			"You're back, nice. Angelo's team hasn't found an artefact yet? I thought the progress would be faster. Anyway thanks for you efforts. ...",
-			"I have no work for you right now. If you like to, you can have a look at the last floor. I open the door for you."
+			"I have no work for you right now. If you like to, you can have a look at the last floor. I open the door for you.",
 		}, npc, creature)
 		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission, 12)
 		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.AccessDoorGareth, 1)
@@ -152,7 +152,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "bone") and player:getStorageValue(Storage.TheSecretLibrary.Mota) == 2 then
 		npcHandler:say({
 			"Hmm, interesting. Several years ago I have read some books dealing with strange locking mechanisms. I think what you have found here is a bone lever of category 3. ...",
-			"Normally this is not used because it is not secure. The production failed and the lever can always be activated as follows: back, back, up, right, left. Just have a try, it should work."
+			"Normally this is not used because it is not secure. The production failed and the lever can always be activated as follows: back, back, up, right, left. Just have a try, it should work.",
 		}, npc, creature)
 		player:setStorageValue(Storage.TheSecretLibrary.Mota, 3)
 		npcHandler:setTopic(playerId, 14)
@@ -161,7 +161,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "extension") and player:getStorageValue(Storage.TheSecretLibrary.Mota) == 11 then
 		npcHandler:say({
 			"You have found an inscription I would like to translate for you. The tibianus cipher was used: ...",
-			"Those who are accorded the honour to visit this exclusive place will smash their blindness and face the truth. ...", "Astonishingly, Dedoras from Cormaya has recently asked me for these kinds of inscriptions. For sure he is able to bring light into the darkness. You should visit him. "
+			"Those who are accorded the honour to visit this exclusive place will smash their blindness and face the truth. ...",
+			"Astonishingly, Dedoras from Cormaya has recently asked me for these kinds of inscriptions. For sure he is able to bring light into the darkness. You should visit him. ",
 		}, npc, creature)
 		player:setStorageValue(Storage.TheSecretLibrary.Mota, 12)
 		player:setStorageValue(Storage.TheSecretLibrary.TheLament, 1)

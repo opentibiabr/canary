@@ -29,7 +29,6 @@ npcConfig.voices = {
 	{ text = "Don't enter this area if you are an inexperienced fighter! It would be your end!" },
 }
 
-
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 

@@ -10,13 +10,13 @@ function cultsOfTibiaLeverMota.onUse(player, item, fromPosition, itemEx, toPosit
 	local stonePos2 = Position()
 	local stonePos3 = Position()
 	local stoneId = 15487
-	
+
 	local missionStatus = player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission)
 	if missionStatus ~= 12 and missionStatus ~= 13 then
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
-	
+
 	for i = 33300, 33305 do
 		local newpos = Position(i, 32144, 10)
 		if Tile(newpos):getItemCountById(stoneId) == 1 then
@@ -31,11 +31,11 @@ function cultsOfTibiaLeverMota.onUse(player, item, fromPosition, itemEx, toPosit
 			stonePos3 = newpos
 		end
 	end
-	
+
 	local stone1 = math.random(0, 5)
 	local stone2 = math.random(0, 5)
 	local stone3 = math.random(0, 5)
-	
+
 	local itstone1 = Tile(stonePos1):getItemById(stoneId)
 	local newpos = { x = 33300 + stone1, y = itstone1:getPosition().y, z = itstone1:getPosition().z }
 	itstone1:moveTo(newpos)
@@ -55,11 +55,11 @@ function cultsOfTibiaLeverMota.onUse(player, item, fromPosition, itemEx, toPosit
 	player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone2, stone2)
 	player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone3, stone3)
 	player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.AccessDoorGareth, -1)
-	
+
 	if missionStatus == 12 then
 		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission, 13)
 	end
-	
+
 	item:transform(transformid[item:getId()])
 	return true
 end

@@ -205,7 +205,7 @@ QuestDoorAction = {
 	-- Cults of tibia door
 	[Storage.Quest.U11_40.CultsOfTibia.Minotaurs.BossAccessDoor] = {
 		itemId = false,
-		itemPos = {  { x = 31957, y = 32468, z = 9 } },
+		itemPos = { { x = 31957, y = 32468, z = 9 } },
 	},
 	[Storage.Quest.U11_40.CultsOfTibia.Minotaurs.AccessDoor] = {
 		itemId = false,
@@ -229,11 +229,11 @@ QuestDoorAction = {
 	},
 	[Storage.Quest.U11_40.CultsOfTibia.Barkless.TarAccessDoor] = {
 		itemId = false,
-		itemPos = {	{ x = 32747, y = 31462, z = 8 }	},
+		itemPos = { { x = 32747, y = 31462, z = 8 } },
 	},
 	[Storage.Quest.U11_40.CultsOfTibia.Barkless.SulphurAccessDoor] = {
 		itemId = false,
-		itemPos = {	{ x = 32678, y = 31506, z = 8 }	},
+		itemPos = { { x = 32678, y = 31506, z = 8 } },
 	},
 	[Storage.Quest.U11_40.CultsOfTibia.Barkless.AccessDoor] = {
 		itemId = false,

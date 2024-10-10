@@ -14,7 +14,7 @@ local function fallFloor(pid, id)
 		amulet:moveTo(player:getPosition())
 	end
 	addEvent(fallFloor, 10000, player:getId(), id)
-	
+
 	return true
 end
 

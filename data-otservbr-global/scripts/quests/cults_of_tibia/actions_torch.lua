@@ -6,7 +6,7 @@ local cultsOfTibiaTouch = Action()
 
 function cultsOfTibiaTouch.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local wallItem
-	
+
 	if Game.getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Humans.WallDecaying) >= os.time() then
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 	else
@@ -21,7 +21,7 @@ function cultsOfTibiaTouch.onUse(player, item, fromPosition, target, toPosition,
 			end
 		end
 	end
-	
+
 	return true
 end
 

@@ -272,7 +272,7 @@ local config = {
 			},
 			completeText = {
 				"Thanks a lot. As I already supposed the museum is just a disguise. ...",
-				"You found out the true meaning. As you have described their cult object the AM on the floor might stand for \"Aurea Manus\". Here is your reward for your effort.",
+				'You found out the true meaning. As you have described their cult object the AM on the floor might stand for "Aurea Manus". Here is your reward for your effort.',
 			},
 			storage = Storage.Quest.U11_40.CultsOfTibia.MotA.Mission,
 			value = 14,
@@ -357,21 +357,22 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.FinalBoss.Mission) > 2 then
 			npcHandler:say("You have already fulfilled your job to my full satisfaction. The cults are investigated and the final boss is eliminated. I have nothing more for you to do. Fare you well!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			elseif player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Minotaurs.Mission) == 6
-				and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Life.Mission) == 10
-				and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission) == 15
-				and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission) == 7
-				and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission) == 5
-				and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Orcs.Mission) == 3
-				and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Humans.Mission) == 3
-				and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.FinalBoss.Mission) < 2
-			then
-				npcHandler:say({
-					"Your actions have weakened the worldly anchors of the enemy and unveiled the source they use to strengthen their cults. ...",
-					"Our circle has used this opportunity to breach their protective shroud and aim a teleporter to this source. I would like to ask you to use it, to travel to this source and destroy it. ...",
-					"But be warned, you will need a group twice as great compared to those with which you defeated the cults. Go now, with my blessings.",
-				}, npc, creature)
-				npcHandler:setTopic(playerId, 0)
+		elseif
+			player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Minotaurs.Mission) == 6
+			and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Life.Mission) == 10
+			and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission) == 15
+			and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission) == 7
+			and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission) == 5
+			and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Orcs.Mission) == 3
+			and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Humans.Mission) == 3
+			and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.FinalBoss.Mission) < 2
+		then
+			npcHandler:say({
+				"Your actions have weakened the worldly anchors of the enemy and unveiled the source they use to strengthen their cults. ...",
+				"Our circle has used this opportunity to breach their protective shroud and aim a teleporter to this source. I would like to ask you to use it, to travel to this source and destroy it. ...",
+				"But be warned, you will need a group twice as great compared to those with which you defeated the cults. Go now, with my blessings.",
+			}, npc, creature)
+			npcHandler:setTopic(playerId, 0)
 			if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.FinalBoss.Mission) < 1 then
 				player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.FinalBoss.Mission, 1)
 				player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.FinalBoss.AccessDoor, 1)
@@ -418,29 +419,29 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 2)
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
-				local vocationRewards = {
-					[VOCATION.BASE_ID.SORCERER] = {itemId = 26190, itemName = "reflecting crown"},
-					[VOCATION.BASE_ID.DRUID] = {itemId = 26187, itemName = "leaf crown"},
-					[VOCATION.BASE_ID.PALADIN] = {itemId = 26189, itemName = "incandescent crown"},
-					[VOCATION.BASE_ID.KNIGHT] = {itemId = 26188, itemName = "iron crown"}
-				}
-				local vocationId = player:getVocation():getBaseId()
-				local reward = vocationRewards[vocationId]
-				local item = ""
-				if reward then
-					player:addItem(reward.itemId)
-					item = reward.itemName
-				end
-				player:addExperience(50000)
-				player:addItem(26186)
-				player:addAchievement("Corruption Contained")
-				player:sendTextMessage(MESSAGE_EXPERIENCE, "You gained 50000 experience points.")
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You gained a mystery box.")
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You gained a " .. item .. ".")
-				player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.FinalBoss.Mission, 3)
-				npcHandler:say("Here's your reward. Thank you and farewell!", npc, creature)
-				npcHandler:setTopic(playerId, 0)
+			local vocationRewards = {
+				[VOCATION.BASE_ID.SORCERER] = { itemId = 26190, itemName = "reflecting crown" },
+				[VOCATION.BASE_ID.DRUID] = { itemId = 26187, itemName = "leaf crown" },
+				[VOCATION.BASE_ID.PALADIN] = { itemId = 26189, itemName = "incandescent crown" },
+				[VOCATION.BASE_ID.KNIGHT] = { itemId = 26188, itemName = "iron crown" },
+			}
+			local vocationId = player:getVocation():getBaseId()
+			local reward = vocationRewards[vocationId]
+			local item = ""
+			if reward then
+				player:addItem(reward.itemId)
+				item = reward.itemName
 			end
+			player:addExperience(50000)
+			player:addItem(26186)
+			player:addAchievement("Corruption Contained")
+			player:sendTextMessage(MESSAGE_EXPERIENCE, "You gained 50000 experience points.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You gained a mystery box.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You gained a " .. item .. ".")
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.FinalBoss.Mission, 3)
+			npcHandler:say("Here's your reward. Thank you and farewell!", npc, creature)
+			npcHandler:setTopic(playerId, 0)
+		end
 	elseif MsgContains(message, "no") then
 		npcHandler:say("What a pitty! You can come back, when ever you want, if you have changed your opinion.", npc, creature)
 		npcHandler:setTopic(playerId, 0)

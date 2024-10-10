@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "database/database.hpp"
-
 class DatabaseManager {
 public:
 	static bool tableExists(const std::string &table);

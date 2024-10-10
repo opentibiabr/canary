@@ -8,6 +8,8 @@
  */
 
 #include "io/iomapserialize.hpp"
+
+#include "database/database.hpp"
 #include "io/iologindata.hpp"
 #include "game/game.hpp"
 #include "items/bed.hpp"
@@ -21,15 +23,11 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 	}
 
 	do {
-		unsigned long attrSize;
-		const char* attr = result->getStream("data", attrSize);
-
-		PropStream propStream;
-		propStream.init(attr, attrSize);
-
+		auto attributes = result->getStream("data");
+		PropStream propStream(attributes);
 		uint16_t x, y;
 		uint8_t z;
-		if (!propStream.read<uint16_t>(x) || !propStream.read<uint16_t>(y) || !propStream.read<uint8_t>(z)) {
+		if (!propStream.readU16(x) || !propStream.readU16(y) || !propStream.readU8(z)) {
 			continue;
 		}
 
@@ -39,7 +37,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		}
 
 		uint32_t item_count;
-		if (!propStream.read<uint32_t>(item_count)) {
+		if (!propStream.readU32(item_count)) {
 			continue;
 		}
 
@@ -81,31 +79,31 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 		return false;
 	}
 
-	DBInsert stmt("INSERT INTO `tile_store` (`house_id`, `data`) VALUES ");
+	bool updateSuccess = true;
 
-	PropWriteStream stream;
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
-		// save house items
-		for (const auto &tile : house->getTiles()) {
-			saveTile(stream, tile);
+		// Check if the house has valid data to update
+		if (!house->getTiles().empty()) {
+			PropWriteStream stream;
+			for (const auto &tile : house->getTiles()) {
+				saveTile(stream, tile);
+			}
 
 			size_t attributesSize;
 			const char* attributes = stream.getStream(attributesSize);
+
 			if (attributesSize > 0) {
-				query << house->getId() << ',' << db.escapeBlob(attributes, attributesSize);
-				if (!stmt.addRow(query)) {
-					return false;
+				// Update blob data in the database for each house
+				if (!db.updateBlobData("tile_store", "data", house->getId(), attributes, attributesSize, "house_id")) {
+					g_logger().error("Failed to update tile data for house ID {}", house->getId());
+					updateSuccess = false;
+					break;
 				}
-				stream.clear();
 			}
 		}
 	}
 
-	if (!stmt.execute()) {
-		return false;
-	}
-
-	return true;
+	return updateSuccess;
 }
 
 bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Container> container) {
@@ -118,7 +116,7 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Conta
 	}
 
 	uint8_t endAttr;
-	if (!propStream.read<uint8_t>(endAttr) || endAttr != 0) {
+	if (!propStream.readU8(endAttr) || endAttr != 0) {
 		g_logger().warn("Deserialization error for container item: {}", container->getID());
 		return false;
 	}
@@ -127,7 +125,7 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Conta
 
 bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> parent, bool isHouseItem /*= false*/) {
 	uint16_t id;
-	if (!propStream.read<uint16_t>(id)) {
+	if (!propStream.readU16(id)) {
 		return false;
 	}
 
@@ -279,11 +277,11 @@ bool IOMapSerialize::loadHouseInfo() {
 	}
 
 	do {
-		auto houseId = result->getNumber<uint32_t>("id");
+		auto houseId = result->getU32("id");
 		const auto house = g_game().map.houses.getHouse(houseId);
 		if (house) {
-			uint32_t owner = result->getNumber<uint32_t>("owner");
-			int32_t newOwner = result->getNumber<int32_t>("new_owner");
+			uint32_t owner = result->getU32("owner");
+			int32_t newOwner = result->getI64("new_owner");
 			// Transfer house owner
 			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 			if (isTransferOnRestart && newOwner >= 0) {
@@ -298,17 +296,17 @@ bool IOMapSerialize::loadHouseInfo() {
 			} else {
 				house->setOwner(owner, false);
 			}
-			house->setPaidUntil(result->getNumber<time_t>("paid"));
-			house->setPayRentWarnings(result->getNumber<uint32_t>("warnings"));
+			house->setPaidUntil(result->getTime("paid"));
+			house->setPayRentWarnings(result->getU32("warnings"));
 		}
 	} while (result->next());
 
 	result = db.storeQuery("SELECT `house_id`, `listid`, `list` FROM `house_lists`");
 	if (result) {
 		do {
-			const auto &house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("house_id"));
+			const auto &house = g_game().map.houses.getHouse(result->getU32("house_id"));
 			if (house) {
-				house->setAccessList(result->getNumber<uint32_t>("listid"), result->getString("list"));
+				house->setAccessList(result->getU32("listid"), result->getString("list"));
 			}
 		} while (result->next());
 	}

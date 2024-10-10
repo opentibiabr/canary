@@ -9,9 +9,11 @@
 
 #pragma once
 
-#include "database/database.hpp"
 #include "declarations.hpp"
 #include "lib/di/container.hpp"
+
+class DBResult;
+using DBResult_ptr = std::shared_ptr<DBResult>;
 
 class IOMarket {
 public:

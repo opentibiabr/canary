@@ -9,6 +9,7 @@
 
 #include "io/io_bosstiary.hpp"
 
+#include "database/database.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
@@ -25,7 +26,7 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
-	uint16_t date = result->getNumber<uint16_t>("date");
+	uint16_t date = result->getU16("date");
 	auto timeNow = getTimeNow();
 	auto time = localtime(&timeNow);
 	auto today = time->tm_mday;
@@ -40,7 +41,7 @@ void IOBosstiary::loadBoostedBoss() {
 	uint16_t bossId = 0;
 	if (date == today) {
 		bossName = result->getString("boostname");
-		bossId = result->getNumber<uint16_t>("raceid");
+		bossId = result->getU16("raceid");
 		setBossBoostedName(bossName);
 		setBossBoostedId(bossId);
 		g_logger().info("Boosted boss: {}", bossName);
@@ -64,7 +65,7 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
-	uint16_t oldBossRace = result->getNumber<uint16_t>("raceid");
+	uint16_t oldBossRace = result->getU16("raceid");
 	while (true) {
 		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
 		auto it = std::next(bossInfo.begin(), randomIndex);

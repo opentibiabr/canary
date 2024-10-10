@@ -7,8 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "config/configmanager.hpp"
 #include "database/databasemanager.hpp"
+
+#include "config/configmanager.hpp"
+#include "database/database.hpp"
 #include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.hpp"
 
@@ -127,7 +129,7 @@ bool DatabaseManager::getDatabaseConfig(const std::string &config, int32_t &valu
 		return false;
 	}
 
-	value = result->getNumber<int32_t>("value");
+	value = result->getI32("value");
 	return true;
 }
 

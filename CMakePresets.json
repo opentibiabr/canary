@@ -25,6 +25,19 @@
       "displayName": "Windows - Release",
       "description": "Windows Release Build",
       "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      },
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "windows-release-static",
+      "inherits": "base",
+      "displayName": "Windows - Release Static",
+      "description": "Windows Release Static Build",
+      "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x64-windows-static"
       },
       "architecture": {
@@ -68,7 +81,9 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "RUN_TESTS_AFTER_BUILD": "OFF"
+        "RUN_TESTS_AFTER_BUILD": "OFF",
+        "BUILD_STATIC_LIBRARY": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-linux"
       },
       "condition": {
         "type": "equals",
@@ -85,7 +100,8 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "DEBUG_LOG": "ON",
-        "SPEED_UP_BUILD_UNITY": "OFF"
+        "SPEED_UP_BUILD_UNITY": "OFF",
+        "BUILD_STATIC_LIBRARY": "OFF"
       }
     },
     {
@@ -126,6 +142,10 @@
     {
       "name": "windows-release",
       "configurePreset": "windows-release"
+    },
+    {
+      "name": "windows-release-static",
+      "configurePreset": "windows-release-static"
     },
     {
       "name": "windows-release-asan",

@@ -83,6 +83,7 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/args.h>
+#include <fmt/ranges.h>
 
 // FMT Custom Formatter for Enums
 template <typename E>
@@ -94,6 +95,12 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<
 		);
 	}
 };
+
+template <typename E>
+std::enable_if_t<std::is_enum_v<E>, std::underlying_type_t<E>>
+format_as(E e) {
+	return static_cast<std::underlying_type_t<E>>(e);
+}
 
 // GMP
 #include <gmp.h>
@@ -123,15 +130,6 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<
 
 // Memory Mapped File
 #include <mio/mmap.hpp>
-
-// MySQL
-#if __has_include("<mysql.h>")
-	#include <mysql.h>
-#else
-	#include <mysql/mysql.h>
-#endif
-
-#include <mysql/errmsg.h>
 
 // Parallel Hash Map
 #include <parallel_hashmap/phmap.h>

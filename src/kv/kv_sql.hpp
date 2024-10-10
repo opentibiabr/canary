@@ -10,8 +10,8 @@
 #pragma once
 
 #include "kv/kv.hpp"
+#include "database/database.hpp"
 
-class Database;
 class Logger;
 class DBInsert;
 class ValueWrapper;

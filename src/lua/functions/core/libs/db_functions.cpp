@@ -7,9 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/core/libs/db_functions.hpp"
+
+#include "database/database.hpp"
 #include "database/databasemanager.hpp"
 #include "database/databasetasks.hpp"
-#include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 
 int DBFunctions::luaDatabaseExecute(lua_State* L) {
@@ -90,17 +92,6 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 
 int DBFunctions::luaDatabaseEscapeString(lua_State* L) {
 	pushString(L, Database::getInstance().escapeString(getString(L, -1)));
-	return 1;
-}
-
-int DBFunctions::luaDatabaseEscapeBlob(lua_State* L) {
-	uint32_t length = getNumber<uint32_t>(L, 2);
-	pushString(L, Database::getInstance().escapeBlob(getString(L, 1).c_str(), length));
-	return 1;
-}
-
-int DBFunctions::luaDatabaseLastInsertId(lua_State* L) {
-	lua_pushnumber(L, Database::getInstance().getLastInsertId());
 	return 1;
 }
 

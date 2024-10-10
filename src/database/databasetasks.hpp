@@ -9,8 +9,11 @@
 
 #pragma once
 
-#include "database/database.hpp"
 #include "lib/thread/thread_pool.hpp"
+
+class Database;
+class DBResult;
+using DBResult_ptr = std::shared_ptr<DBResult>;
 
 class DatabaseTasks {
 public:

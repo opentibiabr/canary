@@ -9,6 +9,8 @@
 
 #include "game/game.hpp"
 
+#include "database/database.hpp"
+
 #include "lua/creature/actions.hpp"
 #include "items/bed.hpp"
 #include "creatures/creature.hpp"
@@ -418,7 +420,7 @@ void Game::loadBoostedCreature() {
 		return;
 	}
 
-	const uint16_t date = result->getNumber<uint16_t>("date");
+	const uint16_t date = result->getU16("date");
 	const time_t now = time(0);
 	tm* ltm = localtime(&now);
 
@@ -427,7 +429,7 @@ void Game::loadBoostedCreature() {
 		return;
 	}
 
-	const uint16_t oldRace = result->getNumber<uint16_t>("raceid");
+	const uint16_t oldRace = result->getU16("raceid");
 	const auto monsterlist = getBestiaryList();
 
 	struct MonsterRace {
@@ -630,6 +632,10 @@ void Game::loadItemsPrice() {
 	for (const auto &[itemId, itemStats] : stats) {
 		std::map<uint8_t, uint64_t> tierToPrice;
 		for (const auto &[tier, tierStats] : itemStats) {
+			if (tierStats.numTransactions == 0) {
+				continue;
+			}
+
 			auto averagePrice = tierStats.totalPrice / tierStats.numTransactions;
 			tierToPrice[tier] = averagePrice;
 		}
@@ -8136,7 +8142,7 @@ void Game::loadMotdNum() {
 
 	DBResult_ptr result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num'");
 	if (result) {
-		motdNum = result->getNumber<uint32_t>("value");
+		motdNum = result->getU32("value");
 	} else {
 		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('motd_num', '0')");
 	}
@@ -8190,7 +8196,7 @@ void Game::loadPlayersRecord() {
 
 	DBResult_ptr result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'players_record'");
 	if (result) {
-		playersRecord = result->getNumber<uint32_t>("value");
+		playersRecord = result->getU32("value");
 	} else {
 		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('players_record', '0')");
 	}
@@ -8488,8 +8494,8 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 		return;
 	}
 
-	uint16_t page = result->getNumber<uint16_t>("page");
-	uint32_t pages = result->getNumber<uint32_t>("entries");
+	uint16_t page = result->getU16("page");
+	uint32_t pages = result->getU32("entries");
 	pages += entriesPerPage - 1;
 	pages /= entriesPerPage;
 
@@ -8511,10 +8517,10 @@ void Game::processHighscoreResults(DBResult_ptr result, uint32_t playerID, uint8
 		characters.reserve(result->countResults());
 		if (result) {
 			do {
-				const auto &voc = g_vocations().getVocation(result->getNumber<uint16_t>("vocation"));
+				const auto &voc = g_vocations().getVocation(result->getU16("vocation"));
 				uint8_t characterVocation = voc ? voc->getClientId() : 0;
 				std::string loyaltyTitle = ""; // todo get loyalty title from player
-				characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation, loyaltyTitle);
+				characters.emplace_back(std::move(result->getString("name")), result->getU64("points"), result->getU32("id"), result->getU32("rank"), result->getU16("level"), characterVocation, loyaltyTitle);
 			} while (result->next());
 		}
 

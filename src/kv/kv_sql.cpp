@@ -9,10 +9,11 @@
 
 #include "kv/kv_sql.hpp"
 
-#include "database/database.hpp"
 #include "lib/logging/logger.hpp"
 #include "kv/value_wrapper_proto.hpp"
 #include "utils/tools.hpp"
+
+#include "database/database.hpp"
 
 #include <kv.pb.h>
 
@@ -20,34 +21,41 @@ KVSQL::KVSQL(Database &db, Logger &logger) :
 	KVStore(logger), db(db) { }
 
 std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
-	auto query = fmt::format("SELECT `key_name`, `timestamp`, `value` FROM `kv_store` WHERE `key_name` = {}", db.escapeString(key));
-	auto result = db.storeQuery(query);
-	if (result == nullptr) {
+	auto query = "SELECT `key_name`, `timestamp`, `value` FROM `kv_store` WHERE `key_name` = ?";
+	auto stmt = g_database().prepare(query);
+	if (!stmt) {
+		g_logger().error("Failed to prepare statement for key: '{}'", key);
 		return std::nullopt;
 	}
 
-	unsigned long size;
-	auto data = result->getStream("value", size);
-	if (data == nullptr) {
-		return std::nullopt;
-	}
+	if (stmt->executeWithParams(key)) {
+		auto attributes = stmt->getStream("value");
+		if (attributes.empty()) {
+			g_logger().error("Failed to load value for key: '{}'", key);
+			return std::nullopt;
+		}
 
-	ValueWrapper valueWrapper;
-	auto timestamp = result->getNumber<uint64_t>("timestamp");
-	Canary::protobuf::kv::ValueWrapper protoValue;
-	if (protoValue.ParseFromArray(data, static_cast<int>(size))) {
+		auto timestamp = stmt->getU64("timestamp");
+		Canary::protobuf::kv::ValueWrapper protoValue;
+		if (!protoValue.ParseFromArray(attributes.data(), static_cast<int>(attributes.size()))) {
+			g_logger().error("Failed to deserialize value for key {}", key);
+			return std::nullopt;
+		}
+
+		ValueWrapper valueWrapper;
 		valueWrapper = ProtoSerializable::fromProto(protoValue, timestamp);
+		g_logger().trace("[{}] loaded data for key: '{}', valueSize: '{}', timeStamp: '{}'", __METHOD_NAME__, key, attributes.size(), timestamp);
 		return valueWrapper;
 	}
-	logger.error("Failed to deserialize value for key {}", key);
+
 	return std::nullopt;
 }
 
 std::vector<std::string> KVSQL::loadPrefix(const std::string &prefix /* = ""*/) {
 	std::vector<std::string> keys;
-	std::string keySearch = db.escapeString(prefix + "%");
+	std::string keySearch = g_database().escapeString(prefix + "%");
 	auto query = fmt::format("SELECT `key_name` FROM `kv_store` WHERE `key_name` LIKE {}", keySearch);
-	auto result = db.storeQuery(query);
+	auto result = g_database().storeQuery(query);
 	if (result == nullptr) {
 		return keys;
 	}
@@ -69,16 +77,43 @@ bool KVSQL::save(const std::string &key, const ValueWrapper &value) {
 
 bool KVSQL::prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update) {
 	auto protoValue = ProtoSerializable::toProto(value);
-	std::string data;
-	if (!protoValue.SerializeToString(&data)) {
+	std::vector<uint8_t> data(protoValue.ByteSizeLong());
+	if (!protoValue.SerializeToArray(data.data(), data.size())) {
+		g_logger().error("Failed to serialize protoValue for key: {}", key);
 		return false;
 	}
+
 	if (value.isDeleted()) {
-		auto query = fmt::format("DELETE FROM `kv_store` WHERE `key_name` = {}", db.escapeString(key));
-		return db.executeQuery(query);
+		try {
+			mysqlx::Table tbl = g_database().getTable("kv_store");
+			mysqlx::Result result = tbl.remove().where("key_name = :key").bind("key", key).execute();
+			return true;
+		} catch (const mysqlx::Error &err) {
+			g_logger().error("KVStore remove, database error: {}", err.what());
+			return false;
+		} catch (const std::exception &ex) {
+			g_logger().error("KVStore remove, standard exception: {}", ex.what());
+			return false;
+		}
 	}
 
-	update.addRow(fmt::format("{}, {}, {}", db.escapeString(key), value.getTimestamp(), db.escapeString(data)));
+	static std::vector<std::string> columns = {
+		"key_name",
+		"timestamp",
+		"value"
+	};
+
+	std::vector<mysqlx::Value> values = {
+		key,
+		value.getTimestamp(),
+		mysqlx::Value(mysqlx::bytes(data.data(), data.size()))
+	};
+
+	if (!g_database().updateTable("kv_store", columns, values, "key_name", key)) {
+		g_logger().error("Failed to update key {}", key);
+		return false;
+	}
+
 	return true;
 }
 

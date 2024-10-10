@@ -12,6 +12,7 @@
 #include "database/databasetasks.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "database/database.hpp"
 #include "kv/kv.hpp"
 
 #include "enums/player_blessings.hpp"
@@ -29,7 +30,7 @@ void PlayerCyclopedia::loadSummaryData() {
 	DBResult_ptr result = g_database().storeQuery(fmt::format("SELECT COUNT(*) as `count` FROM `player_hirelings` WHERE `player_id` = {}", m_player.getGUID()));
 	auto kvScoped = m_player.kv()->scoped("summary")->scoped(g_game().getSummaryKeyByType(static_cast<uint8_t>(Summary_t::HIRELINGS)));
 	if (result && !kvScoped->get("amount").has_value()) {
-		kvScoped->set("amount", result->getNumber<int16_t>("count"));
+		kvScoped->set("amount", result->getI16("count"));
 	}
 }
 
@@ -51,7 +52,7 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 			return;
 		}
 
-		auto pages = result->getNumber<uint32_t>("entries");
+		auto pages = result->getU32("entries");
 		pages += entriesPerPage - 1;
 		pages /= entriesPerPage;
 
@@ -61,7 +62,7 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 			std::string killed_by = result->getString("killed_by");
 			std::string mostdamage_by = result->getString("mostdamage_by");
 
-			std::string cause = fmt::format("Died at Level {}", result->getNumber<uint32_t>("level"));
+			std::string cause = fmt::format("Died at Level {}", result->getU32("level"));
 
 			if (!killed_by.empty()) {
 				cause.append(fmt::format(" by{}", formatWithArticle(killed_by)));
@@ -71,7 +72,7 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 				cause.append(fmt::format("{}{}", !killed_by.empty() ? " and" : "", formatWithArticle(mostdamage_by)));
 			}
 
-			entries.emplace_back(cause, result->getNumber<uint32_t>("time"));
+			entries.emplace_back(cause, result->getU32("time"));
 		} while (result->next());
 		player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
 	};
@@ -101,7 +102,7 @@ void PlayerCyclopedia::loadRecentKills(uint16_t page, uint16_t entriesPerPage) {
 			return;
 		}
 
-		auto pages = result->getNumber<uint32_t>("entries");
+		auto pages = result->getU32("entries");
 		pages += entriesPerPage - 1;
 		pages /= entriesPerPage;
 
@@ -114,16 +115,16 @@ void PlayerCyclopedia::loadRecentKills(uint16_t page, uint16_t entriesPerPage) {
 
 			uint8_t status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_JUSTIFIED;
 			if (player->getName() == cause1) {
-				if (result->getNumber<uint32_t>("unjustified") == 1) {
+				if (result->getU32("unjustified") == 1) {
 					status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
 				}
 			} else if (player->getName() == cause2) {
-				if (result->getNumber<uint32_t>("mostdamage_unjustified") == 1) {
+				if (result->getU32("mostdamage_unjustified") == 1) {
 					status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
 				}
 			}
 
-			entries.emplace_back(fmt::format("Killed {}.", name), result->getNumber<uint32_t>("time"), status);
+			entries.emplace_back(fmt::format("Killed {}.", name), result->getU32("time"), status);
 		} while (result->next());
 		player->sendCyclopediaCharacterRecentPvPKills(page, static_cast<uint16_t>(pages), entries);
 	};

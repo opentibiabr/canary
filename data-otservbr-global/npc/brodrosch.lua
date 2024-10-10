@@ -123,8 +123,8 @@ end, function(player)
 end)
 
 addTravelKeyword("cormaya", { "Do you seek a ride to Cormaya for |TRAVELCOST|?", "Full steam ahead!", "We would like to serve you some time." }, 160, { "postman" }, Position(33311, 31989, 15), function(player)
-	if player:getStorageValue(Storage.Postman.Mission01) == 4 then
-		player:setStorageValue(Storage.Postman.Mission01, 5)
+	if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission01) == 4 then
+		player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission01, 5)
 	end
 end)
 

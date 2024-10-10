@@ -44,16 +44,16 @@ int32_t NetworkMessage::decodeHeader() {
 }
 
 // Simply read functions for incoming message
-uint8_t NetworkMessage::getByte() {
+uint8_t NetworkMessage::getByte(const std::source_location &location /*= std::source_location::current()*/) {
 	// Check if there is at least 1 byte to read
 	if (!canRead(1)) {
-		g_logger().error("[{}] Not enough data to read a byte. Current position: {}, Length: {}", __FUNCTION__, info.position, info.length);
+		g_logger().error("[{}] Not enough data to read a byte. Current position: {}, Length: {}. Called line {}:{} in {}", __FUNCTION__, info.position, info.length, location.line(), location.column(), location.function_name());
 		return {};
 	}
 
 	// Ensure that position is within bounds before decrementing
 	if (info.position == 0) {
-		g_logger().error("[{}] Position is at the beginning of the buffer. Cannot decrement.", __FUNCTION__);
+		g_logger().error("[{}] Position is at the beginning of the buffer. Cannot decrement. Called line {}:{} in {}", __FUNCTION__, location.line(), location.column(), location.function_name());
 		return {};
 	}
 
@@ -61,7 +61,7 @@ uint8_t NetworkMessage::getByte() {
 		// Decrement position safely and return the byte
 		return buffer.at(info.position++);
 	} catch (const std::out_of_range &e) {
-		g_logger().error("[{}] Out of range error: {}. Position: {}, Buffer size: {}", __FUNCTION__, e.what(), info.position, buffer.size());
+		g_logger().error("[{}] Out of range error: {}. Position: {}, Buffer size: {}. Called line {}:{} in {}", __FUNCTION__, e.what(), info.position, buffer.size(), location.line(), location.column(), location.function_name());
 	}
 
 	return {};

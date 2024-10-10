@@ -45,7 +45,7 @@ void SaveManager::scheduleAll() {
 	m_scheduledAt = scheduledAt;
 
 	// Disable save async if the config is set to false
-	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC)) {
 		saveAll();
 		return;
 	}
@@ -67,7 +67,7 @@ void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
 	}
 
 	// Disable save async if the config is set to false
-	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC)) {
 		if (g_game().getGameState() == GAME_STATE_NORMAL) {
 			logger.debug("Saving player {}.", playerToSave->getName());
 		}

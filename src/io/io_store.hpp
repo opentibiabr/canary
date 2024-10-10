@@ -167,8 +167,8 @@ private:
 
 class Category { // We're gonna use the same class for Category and Subcategory
 public:
-	Category(std::string name, std::string icon, bool rookgaard, States_t state = States_t::NONE) :
-		categoryName(name), categoryIcon(icon), canRookgaardAcess(rookgaard), categoryState(state) { }
+	Category(const std::string& name, const std::string& icon, bool rookgaard, States_t state = States_t::NONE)
+	: categoryName(name), categoryIcon(icon), canRookgaardAccess(rookgaard), categoryState(state) { }
 
 	std::string getCategoryName() const {
 		return categoryName;
@@ -179,8 +179,8 @@ public:
 	States_t getCategoryState() const {
 		return categoryState;
 	}
-	bool getRookgaardAcess() const {
-		return canRookgaardAcess;
+	bool getRookgaardAccess() const {
+		return canRookgaardAccess;
 	}
 	bool isSpecialCategory() const {
 		return specialCategory;
@@ -195,7 +195,7 @@ private:
 
 	std::string categoryName;
 	std::string categoryIcon;
-	bool canRookgaardAcess;
+	bool canRookgaardAccess;
 	States_t categoryState = States_t::NONE;
 	bool specialCategory = false;
 

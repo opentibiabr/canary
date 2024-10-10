@@ -7,19 +7,23 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/combat/condition.hpp"
 #include "game/game.hpp"
 #include "lua/functions/creatures/combat/condition_functions.hpp"
 
 int ConditionFunctions::luaConditionCreate(lua_State* L) {
-	// Condition(conditionType[, conditionId = CONDITIONID_COMBAT[, subid = 0]])
+	// Condition(conditionType, conditionId = CONDITIONID_COMBAT, subid = 0, isPersistent = false)
 	ConditionType_t conditionType = getNumber<ConditionType_t>(L, 2);
+	if (conditionType == CONDITION_NONE) {
+		reportErrorFunc("Invalid condition type");
+		return 1;
+	}
+
 	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, CONDITIONID_COMBAT);
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
+	bool isPersistent = getBoolean(L, 5, false);
 
-	std::shared_ptr<Condition> condition = Condition::createCondition(conditionId, conditionType, 0, 0, false, subId);
+	std::shared_ptr<Condition> condition = Condition::createCondition(conditionId, conditionType, 0, 0, false, subId, isPersistent);
 	if (condition) {
 		pushUserdata<Condition>(L, condition);
 		setMetatable(L, -1, "Condition");
@@ -75,7 +79,13 @@ int ConditionFunctions::luaConditionGetIcons(lua_State* L) {
 	// condition:getIcons()
 	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 1);
 	if (condition) {
-		lua_pushnumber(L, condition->getIcons());
+		auto icons = condition->getIcons();
+		lua_newtable(L); // Creates a new table on the Lua stack
+		int index = 1;
+		for (const auto &icon : icons) {
+			lua_pushstring(L, magic_enum::enum_name(icon).data()); // Converts the enum to a string
+			lua_rawseti(L, -2, index++); // Inserts into the Lua table array
+		}
 	} else {
 		lua_pushnil(L);
 	}

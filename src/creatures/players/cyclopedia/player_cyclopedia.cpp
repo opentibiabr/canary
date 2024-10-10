@@ -7,14 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "player_cyclopedia.hpp"
 
 #include "database/databasetasks.hpp"
 #include "creatures/players/player.hpp"
-#include "player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "database/database.hpp"
 #include "kv/kv.hpp"
+
+#include "enums/player_blessings.hpp"
 
 PlayerCyclopedia::PlayerCyclopedia(Player &player) :
 	m_player(player) { }
@@ -140,8 +141,8 @@ void PlayerCyclopedia::updateStoreSummary(uint8_t type, uint16_t amount, const s
 			insertValue(type, amount, id);
 			break;
 		case Summary_t::ALL_BLESSINGS:
-			for (int i = 1; i < 8; ++i) {
-				insertValue(static_cast<uint8_t>(Summary_t::BLESSINGS), amount, fmt::format("{}", i));
+			for (auto blessIt : magic_enum::enum_values<Blessings>()) {
+				insertValue(static_cast<uint8_t>(Summary_t::BLESSINGS), amount, fmt::format("{}", blessIt));
 			}
 			break;
 		default:

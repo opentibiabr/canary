@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/functions/iologindata_save_player.hpp"
 
 #include "database/database.hpp"
@@ -100,7 +98,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 		}
 
 		// Loop through items in container
-		for (std::shared_ptr<Item> item : container->getItemList()) {
+		for (auto &item : container->getItemList()) {
 			if (!item) {
 				continue;
 			}
@@ -108,7 +106,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 			++runningId;
 
 			// Update sub-container attributes if necessary
-			std::shared_ptr<Container> subContainer = item->getContainer();
+			const auto &subContainer = item->getContainer();
 			if (subContainer) {
 				queue.emplace_back(subContainer, runningId);
 				if (subContainer->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
@@ -132,6 +130,7 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 			try {
 				propWriteStream.clear();
 				item->serializeAttr(propWriteStream);
+				item->stopDecaying();
 			} catch (...) {
 				g_logger().error("Error serializing item attributes in container.");
 				return false;
@@ -651,11 +650,11 @@ bool IOLoginDataSave::savePlayerInbox(std::shared_ptr<Player> player) {
 
 bool IOLoginDataSave::savePlayerPreyClass(std::shared_ptr<Player> player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return false;
 	}
 
-	if (g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__)) {
+	if (g_configManager().getBoolean(PREY_ENABLED)) {
 		static std::vector<std::string> columns = {
 			"player_id", "slot", "state", "raceid", "option", "bonus_type",
 			"bonus_rarity", "bonus_percentage", "bonus_time", "free_reroll", "monster_list"
@@ -710,7 +709,7 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(std::shared_ptr<Player> player)
 	}
 
 	Database &db = Database::getInstance();
-	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED, __FUNCTION__)) {
+	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		std::ostringstream query;
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			if (const auto &slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId))) {

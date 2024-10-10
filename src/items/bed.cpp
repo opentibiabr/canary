@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/bed.hpp"
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
@@ -250,8 +248,8 @@ void BedItem::regeneratePlayer(std::shared_ptr<Player> player) const {
 			regen = sleptTime / 30;
 		}
 
-		player->changeHealth(regen * g_configManager().getFloat(RATE_HEALTH_REGEN, __FUNCTION__), false);
-		player->changeMana(regen * g_configManager().getFloat(RATE_MANA_REGEN, __FUNCTION__));
+		player->changeHealth(regen * g_configManager().getFloat(RATE_HEALTH_REGEN), false);
+		player->changeMana(regen * g_configManager().getFloat(RATE_MANA_REGEN));
 	}
 
 	const int32_t soulRegen = sleptTime / (60 * 15); // RATE_SOUL_REGEN_SPEED?

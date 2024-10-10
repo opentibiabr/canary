@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "kv/kv_sql.hpp"
 
 #include "lib/logging/logger.hpp"
@@ -19,8 +17,8 @@
 
 #include <kv.pb.h>
 
-KVSQL::KVSQL(Logger &logger) :
-	KVStore(logger) { }
+KVSQL::KVSQL(Database &db, Logger &logger) :
+	KVStore(logger), db(db) { }
 
 std::optional<ValueWrapper> KVSQL::load(const std::string &key) {
 	auto query = "SELECT `key_name`, `timestamp`, `value` FROM `kv_store` WHERE `key_name` = ?";

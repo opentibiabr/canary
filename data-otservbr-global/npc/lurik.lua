@@ -102,21 +102,22 @@ local function creatureSayCallback(npc, creature, type, message)
 				"We need you to recover this crystal. Travel to the southern camp of the raiders and find our contact man there. Get the memory crystal and bring ithere. The society and the shamans will then decide our next steps. Do you think you can do this?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 33 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 33 then
 			npcHandler:say("Have you retrieved the memory crystal?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 34 and player:getStorageValue(Storage.TheIceIslands.MemoryCrystal) > os.time() then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 34 and player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.MemoryCrystal) > os.time() then
 			npcHandler:say("Give me some more time!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 34 and player:getStorageValue(Storage.TheIceIslands.MemoryCrystal) < os.time() then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 34 and player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.MemoryCrystal) < os.time() then
 			npcHandler:say({
 				"The information was quite useful. What worries me most are not the raiders but those that have driven them from the old mines...",
 				"We need to investigate the mines. Most entrances collapsed due to the lack of maintenance but there should be some possibilities to get in ...",
 				"In case you find a door, Ill tell you the old trick of the Carlin mining company to open it <whisper> <whisper>. Find some hint or someone who is willing to talk about what is going on there.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 35)
-			player:setStorageValue(Storage.TheIceIslands.Mission09, 1) -- Questlog The Ice Islands Quest, Formorgar Mines 1: The Mission
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 35)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission09, 1) -- Questlog The Ice Islands Quest, Formorgar Mines 1: The Mission
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.FormorgarMinesDoor, 1)
 		end
 	elseif MsgContains(message, "yes") then
 		-- ISLAND OF DRAGONS
@@ -133,15 +134,15 @@ local function creatureSayCallback(npc, creature, type, message)
 			-- ISLAND OF DRAGONS
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Excellent. Just report about your mission when you got the memory crystal.", npc, creature)
-			player:setStorageValue(Storage.TheIceIslands.Questline, 33)
-			player:setStorageValue(Storage.TheIceIslands.Mission08, 2) -- Questlog The Ice Islands Quest, The Contact
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 33)
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission08, 2) -- Questlog The Ice Islands Quest, The Contact
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(7281, 1) then
 				npcHandler:say("Ah, great. Please give me some time to evaluate the information. Then talk to me again about your mission. ", npc, creature)
-				player:setStorageValue(Storage.TheIceIslands.Questline, 34)
-				player:setStorageValue(Storage.TheIceIslands.Mission08, 4) -- Questlog The Ice Islands Quest, The Contact
-				player:setStorageValue(Storage.TheIceIslands.MemoryCrystal, os.time() + 5 * 60)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 34)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission08, 4) -- Questlog The Ice Islands Quest, The Contact
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.MemoryCrystal, os.time() + 5 * 60)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end

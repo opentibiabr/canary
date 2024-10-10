@@ -55,7 +55,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 	if message == "cookie" then
-		if player:getStorageValue(BloodBrothers.Mission02) == 1 and player:getItemCount(8199) > 0 and player:getStorageValue(BloodBrothers.Cookies.Ortheus) < 0 then
+		if player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission02) == 1 and player:getItemCount(8199) > 0 and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Ortheus) < 0 then
 			npcHandler:say("A cookie? Well... I have to admit I haven't had one for ages. Can I have it?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
@@ -64,7 +64,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif message == "yes" then
 		if npcHandler:getTopic(playerId) == 1 and player:removeItem(8199, 1) then -- garlic cookie
 			npcHandler:say("Well thanks, it looks tasty, I'll just take a bi - COUGH! Are you trying to poison me?? Get out of here before I forget myself!", npc, creature)
-			player:setStorageValue(BloodBrothers.Cookies.Ortheus, 1)
+			player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Cookies.Ortheus, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if player:removeItem(2880, 17) then -- mug of tea
@@ -100,7 +100,7 @@ keywordHandler:addKeyword({ "serafin" }, StdModule.say, { npcHandler = npcHandle
 keywordHandler:addKeyword({ "yalahar" }, StdModule.say, { npcHandler = npcHandler, text = "Though the city has seen better days, the quality of life is still much better than in most other cities." })
 keywordHandler:addKeyword({ "quarter" }, StdModule.say, { npcHandler = npcHandler, text = "I can't imagine a better place to live" })
 keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHandler, text = "Whatever that's supposed to mean." }, function(player)
-	return player:getStorageValue(BloodBrothers.Mission03) == 1
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission03) == 1
 end)
 keywordHandler:addKeyword({ "reward" }, StdModule.say, { npcHandler = npcHandler, text = "I don't have anything that I could give you as a reward. Guess you aren't so selfless after all, huh?" })
 keywordHandler:addKeyword({ "augur" }, StdModule.say, { npcHandler = npcHandler, text = "They try to protect the city and do a decent job. Well - no, a poor job, I mean a poor job." })

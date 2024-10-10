@@ -414,9 +414,10 @@
     <ClCompile Include="..\src\utils\wildcardtree.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\pch.hpp">
+    <ClCompile Include="..\src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -508,7 +509,7 @@
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeaderFile />
+      <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
       <SupportJustMyCode>true</SupportJustMyCode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -517,6 +518,7 @@
       <LanguageStandard_C>Default</LanguageStandard_C>
       <AdditionalOptions>/Zc:__cplusplus /fsanitize=address %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>_DISABLE_VECTOR_ANNOTATION;_DISABLE_STRING_ANNOTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -544,7 +546,7 @@
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeaderFile />
+      <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
       <SupportJustMyCode>true</SupportJustMyCode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -552,6 +554,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>_DISABLE_VECTOR_ANNOTATION;_DISABLE_STRING_ANNOTATION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -594,9 +597,11 @@
     <ItemGroup>
       <ClCompile Include="generated\%(ProtoFiles.Filename).pb.cc">
         <IncludeInUnityFile>false</IncludeInUnityFile>
+        <PrecompiledHeader>NotUsing</PrecompiledHeader>
       </ClCompile>
       <ClInclude Include="generated\%(ProtoFiles.Filename).pb.h">
         <IncludeInUnityFile>false</IncludeInUnityFile>
+        <PrecompiledHeader>NotUsing</PrecompiledHeader>
       </ClInclude>
     </ItemGroup>
   </Target>
@@ -604,4 +609,3 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>
-

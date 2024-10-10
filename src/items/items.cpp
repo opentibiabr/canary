@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/functions/item/item_parse.hpp"
 #include "items/items.hpp"
 #include "items/weapons/weapons.hpp"
@@ -122,7 +120,7 @@ bool Items::reload() {
 void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
-	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__);
+	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL);
 	for (uint32_t it = 0; it < g_game().m_appearancesPtr->object_size(); ++it) {
 		Appearance object = g_game().m_appearancesPtr->object(it);
 
@@ -238,7 +236,7 @@ void Items::loadFromProtobuf() {
 
 bool Items::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/items/items.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/items/items.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);

@@ -65,22 +65,22 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 	if MsgContains(message, "mission") or MsgContains(message, "quest") then
-		if player:getStorageValue(mission.Questline) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_2.TrollSabotageQuest.Questline) < 1 then
 			npcHandler:say({
 				"I'm not sure but I suppose that an evil troll lives in the mountains here! I saw him rummaging in the ruins of my house. ...",
 				"I took a closer look and found my family casket ripped open. It contained a precious necklace. If I had it back, I could sell it and start over! ...",
 				"Could you look for this mean beast, find out why he did and either get me some money ormy necklace to rebuild my business?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(mission.Questline) == 2 and player:removeItem(7754, 1) then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TrollSabotageQuest.Questline) == 2 and player:removeItem(7754, 1) then
 			npcHandler:say("Thank you sooo much <sniffs>. Well, you know I lost everything, but recently I found this strange rope here. I don't need it, here take it!", npc, creature)
-			player:setStorageValue(mission.Questline, 3)
+			player:setStorageValue(Storage.Quest.U8_2.TrollSabotageQuest.Questline, 3)
 			player:addItem(646, 1)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Great! Finally, some light at the end of the tunnel! Come back and ask me for the quest when you solved this mystery!", npc, creature)
-			player:setStorageValue(mission.Questline, 1)
+			player:setStorageValue(Storage.Quest.U8_2.TrollSabotageQuest.Questline, 1)
 		end
 	end
 	return true

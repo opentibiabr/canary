@@ -7,11 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
-#include "lua/functions/core/libs/db_functions.hpp"
-
-#include "database/database.hpp"
 #include "database/databasemanager.hpp"
 #include "database/databasetasks.hpp"
 #include "lua/scripts/lua_environment.hpp"

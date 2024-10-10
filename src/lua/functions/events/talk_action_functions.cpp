@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "account/account.hpp"
 #include "lua/creature/talkaction.hpp"
 #include "lua/functions/events/talk_action_functions.hpp"
@@ -141,6 +139,33 @@ int TalkActionFunctions::luaTalkActionGetName(lua_State* L) {
 	}
 
 	pushString(L, talkactionSharedPtr->getWords());
+	return 1;
+}
+
+int TalkActionFunctions::luaTalkActionGetDescription(lua_State* L) {
+	// local description = talkAction:getDescription()
+	const auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	if (!talkactionSharedPtr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushString(L, talkactionSharedPtr->getDescription());
+	return 1;
+}
+
+int TalkActionFunctions::luaTalkActionSetDescription(lua_State* L) {
+	// local description = talkAction:setDescription()
+	auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	if (!talkactionSharedPtr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	talkactionSharedPtr->setDescription(getString(L, 2));
+	pushBoolean(L, true);
 	return 1;
 }
 

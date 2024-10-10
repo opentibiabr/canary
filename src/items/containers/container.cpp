@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/containers/container.hpp"
 #include "items/decay/decay.hpp"
 #include "io/iomap.hpp"
@@ -17,16 +15,16 @@
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
-	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM, __FUNCTION__));
+	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM));
 	if (getID() == ITEM_GOLD_POUCH) {
 		pagination = true;
-		m_maxItems = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT, __FUNCTION__);
+		m_maxItems = g_configManager().getNumber(LOOTPOUCH_MAXLIMIT);
 		maxSize = 32;
 	}
 
 	if (isStoreInbox()) {
 		pagination = true;
-		m_maxItems = g_configManager().getNumber(STOREINBOX_MAXLIMIT, __FUNCTION__);
+		m_maxItems = g_configManager().getNumber(STOREINBOX_MAXLIMIT);
 		maxSize = 32;
 	}
 }
@@ -63,12 +61,21 @@ std::shared_ptr<Container> Container::create(std::shared_ptr<Tile> tile) {
 
 Container::~Container() {
 	if (getID() == ITEM_BROWSEFIELD) {
-		if (getParent() && getParent()->getTile()) {
-			g_game().browseFields.erase(getParent()->getTile());
-		}
+		auto parent = getParent();
+		if (parent) {
+			auto tile = parent->getTile();
+			if (tile) {
+				auto browseField = g_game().browseFields.find(tile);
+				if (browseField != g_game().browseFields.end()) {
+					g_game().browseFields.erase(browseField);
+				}
+			}
 
-		for (std::shared_ptr<Item> item : itemlist) {
-			item->setParent(getParent());
+			for (auto &item : itemlist) {
+				if (item) {
+					item->setParent(parent);
+				}
+			}
 		}
 	}
 }
@@ -499,10 +506,10 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
-	if (const auto topParentContainer = getTopParentContainer()) {
-		if (const auto addContainer = item->getContainer()) {
+	if (const auto &topParentContainer = getTopParentContainer()) {
+		if (const auto &addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
-			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER, __FUNCTION__));
+			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
 				return RETURNVALUE_CONTAINERISFULL;
 			}
@@ -897,20 +904,6 @@ void Container::internalAddThing(uint32_t, std::shared_ptr<Thing> thing) {
 	updateItemWeight(item->getWeight());
 }
 
-void Container::startDecaying() {
-	g_decay().startDecay(getContainer());
-	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_decay().startDecay(*it);
-	}
-}
-
-void Container::stopDecaying() {
-	g_decay().stopDecay(getContainer());
-	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_decay().stopDecay(*it);
-	}
-}
-
 uint16_t Container::getFreeSlots() {
 	uint16_t counter = std::max<uint16_t>(0, capacity() - size());
 
@@ -924,12 +917,7 @@ uint16_t Container::getFreeSlots() {
 }
 
 ContainerIterator Container::iterator() {
-	ContainerIterator cit;
-	if (!itemlist.empty()) {
-		cit.over.push_back(getContainer());
-		cit.cur = itemlist.begin();
-	}
-	return cit;
+	return { getContainer(), static_cast<size_t>(g_configManager().getNumber(MAX_CONTAINER_DEPTH)) };
 }
 
 void Container::removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient /* = false*/) {
@@ -954,29 +942,6 @@ void Container::removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient
 	}
 }
 
-std::shared_ptr<Item> ContainerIterator::operator*() {
-	return *cur;
-}
-
-void ContainerIterator::advance() {
-	if (std::shared_ptr<Item> i = *cur) {
-		if (std::shared_ptr<Container> c = i->getContainer()) {
-			if (!c->empty()) {
-				over.push_back(c);
-			}
-		}
-	}
-
-	++cur;
-
-	if (cur == over.front()->itemlist.end()) {
-		over.pop_front();
-		if (!over.empty()) {
-			cur = over.front()->itemlist.begin();
-		}
-	}
-}
-
 uint32_t Container::getOwnerId() const {
 	uint32_t ownerId = Item::getOwnerId();
 	if (ownerId > 0) {
@@ -989,4 +954,113 @@ uint32_t Container::getOwnerId() const {
 		}
 	}
 	return 0;
+}
+
+/**
+ * ContainerIterator
+ * @brief Iterator for iterating over the items in a container
+ */
+ContainerIterator::ContainerIterator(const std::shared_ptr<Container> &container, size_t maxDepth) :
+	maxTraversalDepth(maxDepth) {
+	if (container) {
+		states.reserve(maxDepth);
+		visitedContainers.reserve(g_configManager().getNumber(MAX_CONTAINER));
+		(void)states.emplace_back(container, 0, 1);
+		(void)visitedContainers.insert(container);
+	}
+}
+
+bool ContainerIterator::hasNext() const {
+	while (!states.empty()) {
+		const auto &top = states.back();
+		const auto &container = top.container.lock();
+		if (!container) {
+			// Container has been deleted
+			states.pop_back();
+		} else if (top.index < container->itemlist.size()) {
+			return true;
+		} else {
+			states.pop_back();
+		}
+	}
+	return false;
+}
+
+void ContainerIterator::advance() {
+	if (states.empty()) {
+		return;
+	}
+
+	auto &top = states.back();
+	const auto &container = top.container.lock();
+	if (!container) {
+		// Container has been deleted
+		states.pop_back();
+		return;
+	}
+
+	if (top.index >= container->itemlist.size()) {
+		states.pop_back();
+		return;
+	}
+
+	auto currentItem = container->itemlist[top.index];
+	if (currentItem) {
+		auto subContainer = currentItem->getContainer();
+		if (subContainer && !subContainer->itemlist.empty()) {
+			size_t newDepth = top.depth + 1;
+			if (newDepth <= maxTraversalDepth) {
+				if (visitedContainers.find(subContainer) == visitedContainers.end()) {
+					states.emplace_back(subContainer, 0, newDepth);
+					visitedContainers.insert(subContainer);
+				} else {
+					if (!m_cycleDetected) {
+						g_logger().trace("[{}] Cycle detected in container: {}", __FUNCTION__, subContainer->getName());
+						m_cycleDetected = true;
+					}
+				}
+			} else {
+				if (!m_maxDepthReached) {
+					g_logger().trace("[{}] Maximum iteration depth reached", __FUNCTION__);
+					m_maxDepthReached = true;
+				}
+			}
+		}
+	}
+
+	++top.index;
+}
+
+std::shared_ptr<Item> ContainerIterator::operator*() const {
+	if (states.empty()) {
+		return nullptr;
+	}
+
+	const auto &top = states.back();
+	if (const auto &container = top.container.lock()) {
+		if (top.index < container->itemlist.size()) {
+			return container->itemlist[top.index];
+		}
+	}
+	return nullptr;
+}
+
+bool ContainerIterator::hasReachedMaxDepth() const {
+	return m_maxDepthReached;
+}
+
+std::shared_ptr<Container> ContainerIterator::getCurrentContainer() const {
+	if (states.empty()) {
+		return nullptr;
+	}
+	const auto &top = states.back();
+	return top.container.lock();
+}
+
+size_t ContainerIterator::getCurrentIndex() const {
+	if (states.empty()) {
+		return 0;
+	}
+	const auto &top = states.back();
+	return top.index;
 }

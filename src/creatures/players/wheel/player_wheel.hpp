@@ -9,16 +9,17 @@
 
 #pragma once
 
-#include "io/io_wheel.hpp"
 #include "utils/utils_definitions.hpp"
-#include "kv/kv.hpp"
-#include "wheel_gems.hpp"
+#include "enums/player_wheel.hpp"
+#include "creatures/players/wheel/wheel_definitions.hpp"
+#include "kv/kv_definitions.hpp"
 
 class Spell;
 class Player;
 class Creature;
 class NetworkMessage;
-class IOWheel;
+class KV;
+class WheelModifierContext;
 
 struct PlayerWheelGem {
 	std::string uuid;
@@ -33,50 +34,16 @@ struct PlayerWheelGem {
 		return fmt::format("[PlayerWheelGem] uuid: {}, locked: {}, affinity: {}, quality: {}, basicModifier1: {}, basicModifier2: {}, supremeModifier: {}", uuid, locked, static_cast<IntType>(affinity), static_cast<IntType>(quality), static_cast<IntType>(basicModifier1), static_cast<IntType>(basicModifier2), static_cast<IntType>(supremeModifier));
 	}
 
-	void save(const std::shared_ptr<KV> &kv) const {
-		kv->scoped("revealed")->set(uuid, serialize());
-	}
+	void save(const std::shared_ptr<KV> &kv) const;
 
-	void remove(const std::shared_ptr<KV> &kv) const {
-		kv->scoped("revealed")->remove(uuid);
-	}
+	void remove(const std::shared_ptr<KV> &kv) const;
 
-	static PlayerWheelGem load(const std::shared_ptr<KV> &kv, const std::string &uuid) {
-		auto val = kv->scoped("revealed")->get(uuid);
-		if (!val || !val.has_value()) {
-			return {};
-		}
-		return deserialize(uuid, val.value());
-	}
+	static PlayerWheelGem load(const std::shared_ptr<KV> &kv, const std::string &uuid);
 
 private:
-	ValueWrapper serialize() const {
-		return {
-			{ "uuid", uuid },
-			{ "locked", locked },
-			{ "affinity", static_cast<IntType>(affinity) },
-			{ "quality", static_cast<IntType>(quality) },
-			{ "basicModifier1", static_cast<IntType>(basicModifier1) },
-			{ "basicModifier2", static_cast<IntType>(basicModifier2) },
-			{ "supremeModifier", static_cast<IntType>(supremeModifier) }
-		};
-	}
+	ValueWrapper serialize() const;
 
-	static PlayerWheelGem deserialize(const std::string &uuid, const ValueWrapper &val) {
-		auto map = val.get<MapType>();
-		if (map.empty()) {
-			return {};
-		}
-		return {
-			uuid,
-			map["locked"]->get<BooleanType>(),
-			static_cast<WheelGemAffinity_t>(map["affinity"]->get<IntType>()),
-			static_cast<WheelGemQuality_t>(map["quality"]->get<IntType>()),
-			static_cast<WheelGemBasicModifier_t>(map["basicModifier1"]->get<IntType>()),
-			static_cast<WheelGemBasicModifier_t>(map["basicModifier2"]->get<IntType>()),
-			static_cast<WheelGemSupremeModifier_t>(map["supremeModifier"]->get<IntType>())
-		};
-	}
+	static PlayerWheelGem deserialize(const std::string &uuid, const ValueWrapper &val);
 };
 
 class PlayerWheel {
@@ -386,14 +353,14 @@ public:
 	 * @return The calculated mitigation value.
 	 */
 	float calculateMitigation() const;
-	PlayerWheelGem getGem(uint8_t index) const;
+	PlayerWheelGem getGem(uint16_t index) const;
 	PlayerWheelGem getGem(const std::string &uuid) const;
-	uint8_t getGemIndex(const std::string &uuid) const;
+	uint16_t getGemIndex(const std::string &uuid) const;
 	void revealGem(WheelGemQuality_t quality);
-	void destroyGem(uint8_t index);
-	void switchGemDomain(uint8_t index);
-	void toggleGemLock(uint8_t index);
-	void setActiveGem(WheelGemAffinity_t affinity, uint8_t index);
+	void destroyGem(uint16_t index);
+	void switchGemDomain(uint16_t index);
+	void toggleGemLock(uint16_t index);
+	void setActiveGem(WheelGemAffinity_t affinity, uint16_t index);
 	void removeActiveGem(WheelGemAffinity_t affinity);
 	void addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points) {
 		m_bonusRevelationPoints[static_cast<size_t>(affinity)] += points;

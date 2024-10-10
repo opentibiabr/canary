@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/creature/creatureevent.hpp"
 #include "utils/tools.hpp"
 #include "creatures/players/player.hpp"
@@ -231,7 +229,7 @@ bool CreatureEvent::executeOnThink(std::shared_ptr<Creature> creature, uint32_t 
 	return getScriptInterface()->callFunction(2);
 }
 
-bool CreatureEvent::executeOnPrepareDeath(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> killer) const {
+bool CreatureEvent::executeOnPrepareDeath(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> killer, int realDamage) const {
 	// onPrepareDeath(creature, killer)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CreatureEvent::executeOnPrepareDeath - Creature {} killer {}"
@@ -257,7 +255,9 @@ bool CreatureEvent::executeOnPrepareDeath(std::shared_ptr<Creature> creature, st
 		lua_pushnil(L);
 	}
 
-	return getScriptInterface()->callFunction(2);
+	lua_pushnumber(L, realDamage);
+
+	return getScriptInterface()->callFunction(3);
 }
 
 bool CreatureEvent::executeOnDeath(std::shared_ptr<Creature> creature, std::shared_ptr<Item> corpse, std::shared_ptr<Creature> killer, std::shared_ptr<Creature> mostDamageKiller, bool lastHitUnjustified, bool mostDamageUnjustified) const {

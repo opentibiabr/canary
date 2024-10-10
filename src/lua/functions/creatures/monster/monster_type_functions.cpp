@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/game.hpp"
 #include "io/io_bosstiary.hpp"
 #include "creatures/combat/spells.hpp"
@@ -99,6 +97,38 @@ int MonsterTypeFunctions::luaMonsterTypeIsSummonable(lua_State* L) {
 			pushBoolean(L, monsterType->info.isSummonable);
 		} else {
 			monsterType->info.isSummonable = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeIsPreyExclusive(lua_State* L) {
+	// get: monsterType:isPreyExclusive() set: monsterType:isPreyExclusive(bool)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.isPreyExclusive);
+		} else {
+			monsterType->info.isPreyExclusive = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeIsPreyable(lua_State* L) {
+	// get: monsterType:isPreyable() set: monsterType:isPreyable(bool)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.isPreyable);
+		} else {
+			monsterType->info.isPreyable = getBoolean(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -1023,6 +1053,8 @@ int MonsterTypeFunctions::luaMonsterTypeEventOnCallback(lua_State* L) {
 	// monsterType:onDisappear(callback)
 	// monsterType:onMove(callback)
 	// monsterType:onSay(callback)
+	// monsterType:onPlayerAttack(callback)
+	// monsterType:onSpawn(callback)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
 		if (monsterType->loadCallback(&g_scripts().getScriptInterface())) {
@@ -1159,7 +1191,7 @@ int MonsterTypeFunctions::luaMonsterTypeOutfit(lua_State* L) {
 			pushOutfit(L, monsterType->info.outfit);
 		} else {
 			Outfit_t outfit = getOutfit(L, 2);
-			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
 				g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 				lua_pushnil(L);
 			} else {
@@ -1570,7 +1602,7 @@ int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
 	} else {
 		auto raceId = getNumber<uint16_t>(L, 2, 0);
 		monsterType->info.raceid = raceId;
-		g_ioBosstiary().addBosstiaryMonster(raceId, monsterType->name);
+		g_ioBosstiary().addBosstiaryMonster(raceId, monsterType->typeName);
 		pushBoolean(L, true);
 	}
 

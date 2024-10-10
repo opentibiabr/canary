@@ -54,6 +54,16 @@ public:
 		return outfits[sex];
 	}
 
+	std::shared_ptr<Outfit> getOutfitByName(PlayerSex_t sex, const std::string &name) const {
+		for (const auto &outfit : outfits[sex]) {
+			if (outfit->name == name) {
+				return outfit;
+			}
+		}
+
+		return nullptr;
+	}
+
 private:
 	std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
 };

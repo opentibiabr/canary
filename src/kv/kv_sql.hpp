@@ -11,12 +11,15 @@
 
 #include "kv/kv.hpp"
 
+class Database;
 class Logger;
 class DBInsert;
+class ValueWrapper;
 
 class KVSQL final : public KVStore {
 public:
-	explicit KVSQL(Logger &logger);
+	explicit KVSQL(Database &db, Logger &logger);
+
 	bool saveAll() override;
 
 private:
@@ -26,4 +29,6 @@ private:
 	bool prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update);
 
 	DBInsert dbUpdate();
+
+	Database &db;
 };

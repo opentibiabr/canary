@@ -18,7 +18,7 @@ bool BaseEvents::loadFromXml() {
 	}
 
 	std::string scriptsName = getScriptBaseName();
-	std::string basePath = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/" + scriptsName + "/";
+	std::string basePath = g_configManager().getString(CORE_DIRECTORY) + "/" + scriptsName + "/";
 	if (getScriptInterface().loadFile(
 			basePath + "lib/" + scriptsName + ".lua",
 			scriptsName + ".lua"

@@ -22,26 +22,41 @@ npcConfig.outfit = {
 npcConfig.flags = {
 	floorchange = false,
 }
-npcConfig.shop = {
-	{ itemName = "backpack", clientId = 2854, buy = 10, count = 1 },
-	{ itemName = "bag", clientId = 2853, buy = 4, count = 1 },
-	{ itemName = "bread", clientId = 3600, buy = 3, count = 1 },
-	{ itemName = "carrot", clientId = 3595, buy = 1, count = 1 },
-	{ itemName = "cheese", clientId = 3607, sell = 2, count = 1 },
-	{ itemName = "cherry", clientId = 3590, buy = 1, count = 1 },
-	{ itemName = "egg", clientId = 3606, buy = 1, count = 1 },
-	{ itemName = "fishing rod", clientId = 3483, sell = 30, count = 1 },
-	{ itemName = "ham", clientId = 3582, buy = 8, count = 1 },
-	{ itemName = "machete", clientId = 3308, buy = 6, count = 1 },
-	{ itemName = "meat", clientId = 3577, sell = 2, count = 1 },
-	{ itemName = "pick", clientId = 3456, buy = 15, count = 1 },
-	{ itemName = "rope", clientId = 3003, sell = 8, count = 1 },
-	{ itemName = "salmon", clientId = 3579, buy = 2, count = 1 },
-	{ itemName = "scroll", clientId = 2815, buy = 5, count = 1 },
-	{ itemName = "shovel", clientId = 3457, sell = 2, count = 1 },
-	{ itemName = "torch", clientId = 2920, buy = 2, count = 1 },
-	{ itemName = "worm", clientId = 3492, buy = 1, count = 1 },
+local itemsTable = {
+	["containers"] = {
+		{ itemName = "backpack", clientId = 2854, buy = 10, count = 1 },
+		{ itemName = "bag", clientId = 2853, buy = 4, count = 1 },
+	},
+	["food"] = {
+		{ itemName = "bread", clientId = 3600, buy = 3, count = 1 },
+		{ itemName = "carrot", clientId = 3595, buy = 1, count = 1 },
+		{ itemName = "cheese", clientId = 3607, sell = 2, count = 1 },
+		{ itemName = "cherry", clientId = 3590, buy = 1, count = 1 },
+		{ itemName = "egg", clientId = 3606, buy = 1, count = 1 },
+		{ itemName = "ham", clientId = 3582, buy = 8, count = 1 },
+		{ itemName = "meat", clientId = 3577, sell = 2, count = 1 },
+		{ itemName = "salmon", clientId = 3579, buy = 2, count = 1 },
+	},
+	["equipment"] = {
+		{ itemName = "fishing rod", clientId = 3483, sell = 30, count = 1 },
+		{ itemName = "machete", clientId = 3308, buy = 6, count = 1 },
+		{ itemName = "pick", clientId = 3456, buy = 15, count = 1 },
+		{ itemName = "rope", clientId = 3003, sell = 8, count = 1 },
+		{ itemName = "shovel", clientId = 3457, sell = 2, count = 1 },
+		{ itemName = "torch", clientId = 2920, buy = 2, count = 1 },
+	},
+	["others"] = {
+		{ itemName = "scroll", clientId = 2815, buy = 5, count = 1 },
+		{ itemName = "worm", clientId = 3492, buy = 1, count = 1 },
+	},
 }
+
+npcConfig.shop = {}
+for _, category in pairs(itemsTable) do
+	for _, item in ipairs(category) do
+		table.insert(npcConfig.shop, item)
+	end
+end
 
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -103,6 +118,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
+	local categoryTable = itemsTable[message:lower()]
 	if MsgContains(message, "job") then
 		npcHandler:say({
 			"I was a carpenter, back on Main. Wanted my own little shop. Didn't sit with the old man. \z
@@ -114,9 +130,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({
 			"Only the best quality, I assure you. A rope in need is a friend indeed! Imagine you stumble into a rat \z
 					hole without a rope - heh, your bones will be gnawed clean before someone finds ya!",
-			"Now, about that rope - ask me for equipment to see my wares. <winks>",
+			"Now, about that rope - ask me for {equipment} to see my wares. <winks>",
 		}, npc, creature, 10)
 		npcHandler:setTopic(playerId, 0)
+	elseif categoryTable then
+		local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+		npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
+		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
 end
@@ -178,11 +198,7 @@ keywordHandler:addKeyword({ "hamish" }, StdModule.say, {
 })
 
 npcHandler:setMessage(MESSAGE_GREET, "Hello there, mate. Here for a {trade}? My stock's just been refilled.")
-npcHandler:setMessage(
-	MESSAGE_SENDTRADE,
-	"Of course, just browse through my wares. \z
-	You can also have a look at food or {equipment} only."
-)
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. Or do you want to look only at " .. GetFormattedShopCategoryNames(itemsTable) .. ".")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Have fun!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

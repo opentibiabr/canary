@@ -90,8 +90,7 @@ public:
 	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
 			if (callback && callback->isLoadedCallback()) {
-				std::invoke(callbackFunc, *callback, std::forward<Args>(args)...);
-				// g_logger().trace("Executed callback: {}", name);
+				std::invoke(callbackFunc, *callback, args...);
 			}
 		}
 	}
@@ -107,7 +106,7 @@ public:
 	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
 			if (callback && callback->isLoadedCallback()) {
-				ReturnValue callbackResult = std::invoke(callbackFunc, *callback, std::forward<Args>(args)...);
+				ReturnValue callbackResult = std::invoke(callbackFunc, *callback, args...);
 				if (callbackResult != RETURNVALUE_NOERROR) {
 					return callbackResult;
 				}
@@ -128,7 +127,7 @@ public:
 		bool allCallbacksSucceeded = true;
 		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
 			if (callback && callback->isLoadedCallback()) {
-				bool callbackResult = std::invoke(callbackFunc, *callback, std::forward<Args>(args)...);
+				bool callbackResult = std::invoke(callbackFunc, *callback, args...);
 				allCallbacksSucceeded &= callbackResult;
 			}
 		}

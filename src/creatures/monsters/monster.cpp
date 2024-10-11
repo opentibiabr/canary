@@ -314,12 +314,28 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 						if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
 							const auto &topCreature = nextTile->getTopCreature();
 							if (followCreature != topCreature && isOpponent(topCreature)) {
-								selectTarget(topCreature);
+								g_dispatcher().addEvent([selfWeak = std::weak_ptr(getMonster()), topCreatureWeak = std::weak_ptr(topCreature)] {
+									const auto &self = selfWeak.lock();
+									const auto &topCreature = topCreatureWeak.lock();
+									if (self && topCreature) {
+										self->selectTarget(topCreature);
+									}
+								},
+								                        "Monster::onCreatureMove");
 							}
 						}
 					}
 				} else if (isOpponent(creature)) {
 					// we have no target lets try pick this one
+					g_dispatcher().addEvent([selfWeak = std::weak_ptr(getMonster()), creatureWeak = std::weak_ptr(creature)] {
+						const auto &self = selfWeak.lock();
+						const auto &creature = creatureWeak.lock();
+						if (self && creature) {
+							self->selectTarget(creature);
+						}
+					},
+					                        "Monster::onCreatureMove");
+
 					selectTarget(creature);
 				}
 			}

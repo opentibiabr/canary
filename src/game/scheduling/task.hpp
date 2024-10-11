@@ -83,6 +83,7 @@ private:
 		                                                                        "GlobalEvents::think",
 		                                                                        "LuaEnvironment::executeTimerEvent",
 		                                                                        "Modules::executeOnRecvbyte",
+		                                                                        "Monster::onCreatureMove",
 		                                                                        "OutputMessagePool::sendAll",
 		                                                                        "ProtocolGame::addGameTask",
 		                                                                        "ProtocolGame::parsePacketFromDispatcher",

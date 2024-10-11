@@ -335,8 +335,6 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 						}
 					},
 					                        "Monster::onCreatureMove");
-
-					selectTarget(creature);
 				}
 			}
 		};

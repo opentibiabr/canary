@@ -771,12 +771,18 @@ std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 	if (unlockedGemUUIDs.empty()) {
 		return unlockedGems;
 	}
+
 	std::vector<std::string> sortedUnlockedGemGUIDs;
 	for (const auto &uuid : unlockedGemUUIDs) {
 		sortedUnlockedGemGUIDs.push_back(uuid);
 	}
+
 	std::sort(sortedUnlockedGemGUIDs.begin(), sortedUnlockedGemGUIDs.end(), [](const std::string &a, const std::string &b) {
-		return std::stoull(a) < std::stoull(b);
+		if (std::all_of(a.begin(), a.end(), ::isdigit) && std::all_of(b.begin(), b.end(), ::isdigit)) {
+			return std::stoull(a) < std::stoull(b);
+		} else {
+			return a < b;
+		}
 	});
 
 	for (const auto &uuid : sortedUnlockedGemGUIDs) {

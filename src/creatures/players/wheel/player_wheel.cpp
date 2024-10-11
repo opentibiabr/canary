@@ -778,7 +778,7 @@ std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 	}
 
 	std::sort(sortedUnlockedGemGUIDs.begin(), sortedUnlockedGemGUIDs.end(), [](const std::string &a, const std::string &b) {
-		if (std::all_of(a.begin(), a.end(), ::isdigit) && std::all_of(b.begin(), b.end(), ::isdigit)) {
+		if (std::ranges::all_of(a, ::isdigit) && std::ranges::all_of(b, ::isdigit)) {
 			return std::stoull(a) < std::stoull(b);
 		} else {
 			return a < b;

@@ -69,6 +69,8 @@ bool AccountRepositoryDB::getCharacterByAccountIdAndName(const uint32_t &id, con
 		return false;
 	}
 
+	auto countResults = result->countResults();
+	g_logger().trace("[{}] character: [{}] from account: [{}] found: [{}]", __FUNCTION__, name, id, countResults ? "true" : "false");
 	return result->countResults() == 1;
 }
 

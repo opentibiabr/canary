@@ -16,16 +16,6 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 
-uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
-	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
-	if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
-		g_logger().error("{} - Failed to get number value {} for tier table result", __FUNCTION__, tier);
-		return 0;
-	}
-
-	return tier;
-}
-
 MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
 	MarketOfferList offerList;
 
@@ -55,7 +45,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
 		} else {
 			offer.playerName = "Anonymous";
 		}
-		offer.tier = getTierFromDatabaseTable(result->getString("tier"));
+		offer.tier = result->getU8("tier");
 		offerList.push_back(offer);
 	} while (result->next());
 	return offerList;
@@ -86,7 +76,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 		} else {
 			offer.playerName = "Anonymous";
 		}
-		offer.tier = getTierFromDatabaseTable(result->getString("tier"));
+		offer.tier = result->getU8("tier");
 		offerList.push_back(offer);
 	} while (result->next());
 	return offerList;
@@ -112,7 +102,7 @@ MarketOfferList IOMarket::getOwnOffers(MarketAction_t action, uint32_t playerId)
 		offer.timestamp = result->getU32("created") + marketOfferDuration;
 		offer.counter = result->getU32("id") & 0xFFFF;
 		offer.itemId = result->getU16("itemtype");
-		offer.tier = getTierFromDatabaseTable(result->getString("tier"));
+		offer.tier = result->getU8("tier");
 		offerList.push_back(offer);
 	} while (result->next());
 	return offerList;
@@ -135,7 +125,7 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 		offer.amount = result->getU16("amount");
 		offer.price = result->getU64("price");
 		offer.timestamp = result->getU32("expires_at");
-		offer.tier = getTierFromDatabaseTable(result->getString("tier"));
+		offer.tier = result->getU8("tier");
 
 		MarketOfferState_t offerState = static_cast<MarketOfferState_t>(result->getU16("state"));
 		if (offerState == OFFERSTATE_ACCEPTEDEX) {
@@ -161,7 +151,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool) {
 
 		const uint32_t playerId = result->getU32("player_id");
 		const uint16_t amount = result->getU16("amount");
-		auto tier = getTierFromDatabaseTable(result->getString("tier"));
+		auto tier = result->getU8("tier");
 		if (result->getU16("sale") == 1) {
 			const ItemType &itemType = Item::items[result->getU16("itemtype")];
 			if (itemType.id == 0) {
@@ -274,7 +264,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter) 
 	offer.price = result->getU64("price");
 	offer.itemId = result->getU16("itemtype");
 	offer.playerId = result->getU32("player_id");
-	offer.tier = getTierFromDatabaseTable(result->getString("tier"));
+	offer.tier = result->getU8("tier");
 	if (result->getU16("anonymous") == 0) {
 		offer.playerName = result->getString("player_name");
 	} else {
@@ -333,7 +323,8 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state) {
 		result->getU16("amount"),
 		result->getU64("price"),
 		getTimeNow(),
-		getTierFromDatabaseTable(result->getString("tier")), state
+		result->getU8("tier"),
+		state
 	);
 	return true;
 }
@@ -354,7 +345,7 @@ void IOMarket::updateStatistics() {
 
 	do {
 		MarketStatistics* statistics = nullptr;
-		const auto tier = getTierFromDatabaseTable(result->getString("tier"));
+		const auto tier = result->getU8("tier");
 		auto itemId = result->getU16("itemtype");
 		if (result->getU16("sale") == MARKETACTION_BUY) {
 			statistics = &purchaseStatistics[itemId][tier];

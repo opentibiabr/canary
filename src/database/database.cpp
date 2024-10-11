@@ -291,7 +291,7 @@ bool Database::executeQuery(const std::string &query) {
 	return false;
 }
 
-DBResult_ptr Database::storeQuery(const std::string &query) {
+DBResult_ptr Database::storeQuery(std::string_view query) {
 	if (!m_databaseSession) {
 		g_logger().error("Database not initialized!");
 		return nullptr;
@@ -305,13 +305,13 @@ DBResult_ptr Database::storeQuery(const std::string &query) {
 
 	metrics::query_latency measure(query.substr(0, 50));
 	try {
-		mysqlx::SqlResult result = m_databaseSession->sql(std::string(query)).execute();
+		mysqlx::SqlResult result = m_databaseSession->sql(query.data()).execute();
 		if (!result.hasData()) {
 			g_logger().error("[{}] no data returned from query: {}", __METHOD_NAME__, query);
 			return nullptr;
 		}
 
-		auto dbResult = std::make_shared<DBResult>(std::move(result), std::move(query), *m_databaseSession);
+		auto dbResult = std::make_shared<DBResult>(std::move(result), query, *m_databaseSession);
 		if (!dbResult->hasNext()) {
 			return nullptr;
 		}
@@ -527,10 +527,11 @@ std::string Database::escapeBlob(const char* s, uint32_t length) const {
 	return oss.str();
 }
 
-DBResult::DBResult(mysqlx::SqlResult &&result, const std::string &query, mysqlx::Session &session) :
-	m_result(std::move(result)), m_hasMoreRows(result.hasData()), m_query(std::move(query.data())), m_session(session) {
+DBResult::DBResult(mysqlx::SqlResult &&result, std::string_view query, mysqlx::Session &session) :
+	m_result(std::move(result)), m_hasMoreRows(result.hasData()), m_query(query), m_session(session) {
 	// Fetch the first row to start processing
 	if (m_hasMoreRows) {
+		m_resultCount = m_result.count();
 		m_currentRow = m_result.fetchOne();
 	}
 
@@ -672,7 +673,7 @@ const std::vector<uint8_t> DBResult::getStream(const std::string &columnName) co
 }
 
 size_t DBResult::countResults() {
-	return m_result.count();
+	return m_resultCount;
 }
 
 bool DBResult::hasNext() const {

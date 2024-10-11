@@ -51,8 +51,6 @@ public:
 		return saleStatistics;
 	}
 
-	static uint8_t getTierFromDatabaseTable(const std::string &string);
-
 private:
 	// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
 	StatisticsMap purchaseStatistics;

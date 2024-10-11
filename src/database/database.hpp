@@ -47,7 +47,7 @@ public:
 	bool retryQuery(const std::string &query, int retries);
 	bool executeQuery(const std::string &query);
 
-	DBResult_ptr storeQuery(const std::string &query);
+	DBResult_ptr storeQuery(std::string_view query);
 	std::shared_ptr<DBResult> prepare(const std::string &query);
 
 	std::string escapeString(const std::string &s) const;
@@ -136,7 +136,7 @@ constexpr auto g_database = Database::getInstance;
 
 class DBResult {
 public:
-	explicit DBResult(mysqlx::SqlResult &&result, const std::string &query, mysqlx::Session &session);
+	explicit DBResult(mysqlx::SqlResult &&result, std::string_view query, mysqlx::Session &session);
 	explicit DBResult(mysqlx::Session &session, const std::string &query);
 
 	~DBResult();
@@ -205,6 +205,8 @@ private:
 	mysqlx::SqlResult m_result;
 	mysqlx::Row m_currentRow;
 	mysqlx::col_count_t m_columnCount;
+	mysqlx::row_count_t m_resultCount;
+
 	std::unordered_map<std::string, size_t> listNames;
 	bool m_hasMoreRows = false;
 

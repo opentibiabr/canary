@@ -35,7 +35,7 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 	npcType(npcType) {
 	defaultOutfit = npcType->info.outfit;
 	currentOutfit = npcType->info.outfit;
-	float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH, __FUNCTION__);
+	float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH);
 	health = npcType->info.health * multiplier;
 	healthMax = npcType->info.healthMax * multiplier;
 	baseSpeed = npcType->info.baseSpeed;
@@ -415,7 +415,7 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	if (totalRemoved > 0 && totalCost > 0) {
 		if (getCurrency() == ITEM_GOLD_COIN) {
 			totalPrice += totalCost;
-			if (g_configManager().getBoolean(AUTOBANK, __FUNCTION__)) {
+			if (g_configManager().getBoolean(AUTOBANK)) {
 				player->setBankBalance(player->getBankBalance() + totalCost);
 			} else {
 				g_game().addMoney(player, totalCost);

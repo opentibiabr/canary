@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
   otdb-test:
     container_name: otdb-test

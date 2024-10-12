@@ -44,26 +44,6 @@ target_compile_definitions(${PROJECT_NAME}_lib PUBLIC
     $<$<CONFIG:Release>:NDEBUG>
 )
 
-# === IPO ===
-if(MSVC)
-    target_compile_options(${PROJECT_NAME}_lib PRIVATE "/GL")
-    set_target_properties(${PROJECT_NAME}_lib PROPERTIES
-            STATIC_LINKER_FLAGS "/LTCG"
-            SHARED_LINKER_FLAGS "/LTCG"
-            MODULE_LINKER_FLAGS "/LTCG"
-            EXE_LINKER_FLAGS "/LTCG")
-else()
-    include(CheckIPOSupported)
-    check_ipo_supported(RESULT result)
-    if(result)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto=auto")
-        message(STATUS "IPO/LTO enabled with -flto=auto for non-MSVC compiler.")
-        set_property(TARGET ${PROJECT_NAME}_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-    else()
-        message(WARNING "IPO/LTO is not supported: ${output}")
-    endif()
-endif()
-
 # === UNITY BUILD (compile time reducer) ===
 if(SPEED_UP_BUILD_UNITY)
     set_target_properties(${PROJECT_NAME}_lib PROPERTIES UNITY_BUILD ON)

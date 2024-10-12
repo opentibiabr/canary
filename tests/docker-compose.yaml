@@ -12,3 +12,4 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     ports:
       - "3306:3306"
+      - "33060:33060"

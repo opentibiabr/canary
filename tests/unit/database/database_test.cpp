@@ -28,9 +28,9 @@ suite<"database"> databaseTest = [] {
 	test("Database::connect should establish a connection") = [&]() {
 		// Configurações de teste
 		std::string host = "localhost";
-		std::string user = "test_user";
-		std::string password = "test_pass";
-		std::string database = "test_db";
+		std::string user = "otserver";
+		std::string password = "otserver";
+		std::string database = "otserver";
 		uint32_t port = 33060;
 		std::string sock = "";
 

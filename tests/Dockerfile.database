@@ -1,4 +1,6 @@
-FROM mariadb:10
+FROM mysql:8.4
+
+RUN microdnf install -y mysql-shell
 
 WORKDIR /docker-entrypoint-initdb.d
 COPY schema.sql ./

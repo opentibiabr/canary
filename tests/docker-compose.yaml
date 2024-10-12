@@ -1,15 +1,15 @@
 services:
   otdb-test:
     container_name: otdb-test
+    image: mysql:8
     build:
       context: ../
       dockerfile: ./tests/Dockerfile.database
     restart: unless-stopped
     environment:
-      - MYSQL_DATABASE=otserver
+      - MYSQL_ROOT_PASSWORD=otserver
+      - MYSQL_DATABASE=otservbr-global
       - MYSQL_USER=otserver
       - MYSQL_PASSWORD=otserver
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
     ports:
-      - "3306:3306"
       - "33060:33060"

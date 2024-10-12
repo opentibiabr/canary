@@ -392,7 +392,7 @@ DBResult_ptr Database::storeQuery(std::string_view query) {
 	return nullptr;
 }
 
-std::optional<mysqlx::SqlResult> getResult(std::string_view query) {
+std::optional<mysqlx::SqlResult> Database::getResult(std::string_view query) {
 	try {
 		auto &session = g_database().getSession();
 		mysqlx::SqlResult result = session.sql(query.data()).execute();

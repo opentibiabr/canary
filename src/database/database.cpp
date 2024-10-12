@@ -532,7 +532,7 @@ std::string Database::escapeBlob(const char* s, uint32_t length) const {
 }
 
 DBResult::DBResult(mysqlx::SqlResult &&result, std::string_view query, mysqlx::Session &session) :
-	m_result(std::move(result)), m_hasMoreRows(result.hasData()), m_query(query), m_session(session) {
+	m_session(session), m_query(query), m_result(std::move(result)), m_hasMoreRows(result.hasData()) {
 	// Fetch the first row to start processing
 	if (m_hasMoreRows) {
 		m_resultCount = m_result.count();

@@ -163,6 +163,20 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	return true;
 }
 
+bool Database::transactionalExecute(std::function<bool(Database&)> transactionFunc) {
+	if (!beginTransaction()) {
+		return false;
+	}
+
+	bool success = transactionFunc(*this);
+	if (success) {
+		return commit();
+	} else {
+		rollback();
+	return false;
+	}
+}
+
 bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;

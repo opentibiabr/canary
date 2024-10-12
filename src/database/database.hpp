@@ -123,6 +123,8 @@ public:
 
 	mysqlx::Table getTable(const std::string &tableName);
 
+	bool transactionalExecute(std::function<bool(Database&)> transactionFunc);
+
 private:
 	bool beginTransaction();
 	bool rollback();

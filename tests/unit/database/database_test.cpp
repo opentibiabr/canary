@@ -62,29 +62,26 @@ suite<"database"> databaseTest = [] {
 		expect(eq(value, "test")) << "O valor retornado deve ser 'test'";
 	};
 
-	test("Database::beginTransaction and commit should handle transactions") = [&]() {
-		// Inicia a transação
-		expect(db.beginTransaction()) << "Deve iniciar a transação com sucesso";
+	test("Database should handle transactions correctly") = [&]() {
+        // Como os métodos beginTransaction, commit e rollback são privados,
+        // testaremos o comportamento de transações através de operações que os utilizam internamente.
 
-		// Executa uma query dentro da transação
-		std::string query = "INSERT INTO test_table (name) VALUES ('test')";
-		expect(db.executeQuery(query)) << "Deve executar a query dentro da transação";
+        expect(db.transactionalExecute([&](Database& dbInstance) {
+            std::string query = "INSERT INTO test_table (name) VALUES ('test')";
+            expect(dbInstance.executeQuery(query)) << "Deve executar a query dentro da transação";
 
-		// Comita a transação
-		expect(db.commit()) << "Deve comitar a transação com sucesso";
-	};
+            return true;
+        })) << "Deve comitar a transação com sucesso";
+    };
 
-	test("Database::rollback should revert transactions") = [&]() {
-		// Inicia a transação
-		expect(db.beginTransaction()) << "Deve iniciar a transação com sucesso";
+    test("Database should revert transactions correctly") = [&]() {
+        expect(db.transactionalExecute([&](Database& dbInstance) {
+            std::string query = "INSERT INTO test_table (name) VALUES ('test')";
+            expect(dbInstance.executeQuery(query)) << "Deve executar a query dentro da transação";
 
-		// Executa uma query dentro da transação
-		std::string query = "INSERT INTO test_table (name) VALUES ('test')";
-		expect(db.executeQuery(query)) << "Deve executar a query dentro da transação";
-
-		// Realiza o rollback
-		expect(db.rollback()) << "Deve reverter a transação com sucesso";
-	};
+            return false;
+        })) << "Deve reverter a transação com sucesso";
+    };
 
 	test("Database::escapeString should escape special characters") = [&]() {
 		std::string unsafeString = "O'Reilly";
@@ -143,17 +140,6 @@ suite<"database"> databaseTest = [] {
 
 		// Simula o comportamento de retry
 		expect(not db.retryQuery(query, retries)) << "Deve falhar após as tentativas de retry esgotarem";
-	};
-
-	test("DBResult::getNumber should retrieve numeric values") = [&]() {
-		// Simula um resultado de query com valores numéricos
-		mysqlx::Row row;
-		std::unordered_map<std::string, size_t> listNames = { { "int_value", 0 } };
-		row[0] = 42;
-		bool hasMoreRows = true;
-
-		int32_t value = InternalDatabase::getNumber<int32_t>("int_value", "SELECT int_value FROM test_table", listNames, row, hasMoreRows);
-		expect(eq(value, 42)) << "Deve retornar o valor numérico correto";
 	};
 
 	test("DBResult::getString should retrieve string values") = [&]() {

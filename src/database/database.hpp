@@ -173,20 +173,20 @@ public:
 		}
 	}
 
-	uint8_t getU8(const std::string &columnName) const;
-	uint16_t getU16(const std::string &columnName) const;
-	uint32_t getU32(const std::string &columnName) const;
-	uint64_t getU64(const std::string &columnName) const;
+	uint8_t getU8(std::string_view columnName) const;
+	uint16_t getU16(std::string_view columnName) const;
+	uint32_t getU32(std::string_view columnName) const;
+	uint64_t getU64(std::string_view columnName) const;
 
-	int8_t getI8(const std::string &columnName) const;
-	int16_t getI16(const std::string &columnName) const;
-	int32_t getI32(const std::string &columnName) const;
-	int64_t getI64(const std::string &columnName) const;
+	int8_t getI8(std::string_view columnName) const;
+	int16_t getI16(std::string_view columnName) const;
+	int32_t getI32(std::string_view columnName) const;
+	int64_t getI64(std::string_view columnName) const;
 
-	time_t getTime(const std::string &columnName) const;
-	float getFloat(const std::string &columnName) const;
-	double getDouble(const std::string &columnName) const;
-	bool getBool(const std::string &columnName) const;
+	time_t getTime(std::string_view columnName) const;
+	float getFloat(std::string_view columnName) const;
+	double getDouble(std::string_view columnName) const;
+	bool getBool(std::string_view columnName) const;
 
 	std::string getString(const std::string &columnName) const;
 	const std::vector<uint8_t> getStream(const std::string &columnName) const;

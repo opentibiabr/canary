@@ -41,7 +41,7 @@
  */
 namespace InternalDatabase {
 	template <typename T>
-	T getNumber(const std::string &columnName, const std::string &query, const std::unordered_map<std::string, size_t> &listNames, const mysqlx::Row &currentRow, bool hasMoreRows) {
+	T getNumber(std::string_view columnName, std::string_view query, const std::unordered_map<std::string, size_t> &listNames, const mysqlx::Row &currentRow, bool hasMoreRows) {
 		const auto it = listNames.find(columnName.data());
 		if (it == listNames.end()) {
 			g_logger().error("[DBResult::getNumber] Column '{}' doesn't exist in the result set", columnName.data());
@@ -572,51 +572,51 @@ DBResult::DBResult(mysqlx::Session &session, const std::string &query) :
 
 DBResult::~DBResult() = default;
 
-uint8_t DBResult::getU8(const std::string &columnName) const {
+uint8_t DBResult::getU8(std::string_view columnName) const {
 	return InternalDatabase::getNumber<uint8_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-uint16_t DBResult::getU16(const std::string &columnName) const {
+uint16_t DBResult::getU16(std::string_view columnName) const {
 	return InternalDatabase::getNumber<uint16_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-uint32_t DBResult::getU32(const std::string &columnName) const {
+uint32_t DBResult::getU32(std::string_view columnName) const {
 	return InternalDatabase::getNumber<uint32_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-uint64_t DBResult::getU64(const std::string &columnName) const {
+uint64_t DBResult::getU64(std::string_view columnName) const {
 	return InternalDatabase::getNumber<uint64_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-int8_t DBResult::getI8(const std::string &columnName) const {
+int8_t DBResult::getI8(std::string_view columnName) const {
 	return InternalDatabase::getNumber<int8_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-int16_t DBResult::getI16(const std::string &columnName) const {
+int16_t DBResult::getI16(std::string_view columnName) const {
 	return InternalDatabase::getNumber<int16_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-int32_t DBResult::getI32(const std::string &columnName) const {
+int32_t DBResult::getI32(std::string_view columnName) const {
 	return InternalDatabase::getNumber<int32_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-int64_t DBResult::getI64(const std::string &columnName) const {
+int64_t DBResult::getI64(std::string_view columnName) const {
 	return InternalDatabase::getNumber<int64_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-time_t DBResult::getTime(const std::string &columnName) const {
+time_t DBResult::getTime(std::string_view columnName) const {
 	return InternalDatabase::getNumber<time_t>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-float DBResult::getFloat(const std::string &columnName) const {
+float DBResult::getFloat(std::string_view columnName) const {
 	return InternalDatabase::getNumber<float>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-double DBResult::getDouble(const std::string &columnName) const {
+double DBResult::getDouble(std::string_view columnName) const {
 	return InternalDatabase::getNumber<double>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 
-bool DBResult::getBool(const std::string &columnName) const {
+bool DBResult::getBool(std::string_view columnName) const {
 	return InternalDatabase::getNumber<bool>(columnName, m_query, listNames, m_currentRow, m_hasMoreRows);
 }
 

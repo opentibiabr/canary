@@ -81,9 +81,7 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "RUN_TESTS_AFTER_BUILD": "OFF",
-        "BUILD_STATIC_LIBRARY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-linux"
+        "RUN_TESTS_AFTER_BUILD": "OFF"
       },
       "condition": {
         "type": "equals",
@@ -100,8 +98,7 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "DEBUG_LOG": "ON",
-        "SPEED_UP_BUILD_UNITY": "OFF",
-        "BUILD_STATIC_LIBRARY": "OFF"
+        "SPEED_UP_BUILD_UNITY": "OFF"
       }
     },
     {

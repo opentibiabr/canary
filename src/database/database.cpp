@@ -163,7 +163,7 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	return true;
 }
 
-bool Database::transactionalExecute(std::function<bool(Database&)> transactionFunc) {
+bool Database::transactionalExecute(std::function<bool(Database &)> transactionFunc) {
 	if (!beginTransaction()) {
 		return false;
 	}
@@ -173,7 +173,7 @@ bool Database::transactionalExecute(std::function<bool(Database&)> transactionFu
 		return commit();
 	} else {
 		rollback();
-	return false;
+		return false;
 	}
 }
 

@@ -456,6 +456,10 @@ bool Database::updateTable(const std::string &tableName, const std::vector<std::
 	}
 }
 
+bool Database::isValidSession() const {
+	return m_databaseSession != nullptr;
+}
+
 mysqlx::Session &Database::getSession() {
 	return *m_databaseSession;
 }

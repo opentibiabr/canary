@@ -117,6 +117,7 @@ public:
 		return maxPacketSize;
 	}
 
+	bool isValidSession() const;
 	mysqlx::Session &getSession();
 	mysqlx::Schema getDatabaseSchema();
 

@@ -71,7 +71,7 @@ bool AccountRepositoryDB::getCharacterByAccountIdAndName(const uint32_t &id, con
 
 	auto countResults = result->countResults();
 	g_logger().trace("[{}] character: [{}] from account: [{}] found: [{}]", __FUNCTION__, name, id, countResults ? "true" : "false");
-	return result->countResults() == 1;
+	return countResults == 1;
 }
 
 bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password) {

@@ -553,6 +553,7 @@ DBResult::DBResult(mysqlx::SqlResult &&result, std::string_view query, mysqlx::S
 	m_session(session), m_query(query), m_result(std::move(result)), m_hasMoreRows(result.hasData()) {
 	// Fetch the first row to start processing
 	if (m_hasMoreRows) {
+		initializeColumnMap();
 		m_resultCount = m_result.count();
 		m_currentRow = m_result.fetchOne();
 	}
@@ -561,10 +562,16 @@ DBResult::DBResult(mysqlx::SqlResult &&result, std::string_view query, mysqlx::S
 		g_logger().trace("[DBResult::DBResult] query: {}", m_query);
 		g_logger().trace("Initial row fetch resulted in a null row, no data available.");
 		m_hasMoreRows = false;
-		return;
 	}
+}
 
-	initializeColumnMap();
+void DBResult::initializeColumnMap() {
+	listNames.clear();
+	auto columnCount = m_result.getColumnCount();
+	for (size_t i = 0; i < columnCount; ++i) {
+		listNames[m_result.getColumn(i).getColumnName()] = i;
+		g_logger().debug("Column '{}' mapped to index {}", std::string(m_result.getColumn(i).getColumnName()), i);
+	}
 }
 
 DBResult::DBResult(mysqlx::Session &session, const std::string &query) :

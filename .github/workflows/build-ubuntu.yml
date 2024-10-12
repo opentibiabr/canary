@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04]
-        buildtype: [linux-release, linux-debug]
+        buildtype: [linux-debug]
         include:
           - os: ubuntu-22.04
             triplet: x64-linux

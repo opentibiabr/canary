@@ -196,13 +196,7 @@ public:
 	bool next();
 
 private:
-	void initializeColumnMap() {
-		listNames.clear();
-		for (unsigned int i = 0; i < m_result.getColumnCount(); ++i) {
-			listNames[m_result.getColumn(i).getColumnName()] = i;
-			g_logger().debug("Column '{}' mapped to index {}", std::string(m_result.getColumn(i).getColumnName()), i);
-		}
-	}
+	void initializeColumnMap();
 
 	mysqlx::Session &m_session;
 	std::string m_query;

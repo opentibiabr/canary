@@ -338,24 +338,32 @@ void IOMarket::updateStatistics() {
 		OFFERSTATE_ACCEPTED
 	);
 
-	DBResult_ptr result = g_database().storeQuery(query);
-	if (!result) {
-		return;
-	}
+	try {
+		auto &session = g_database().getSession();
+		mysqlx::SqlResult result = session.sql(query).execute();
 
-	do {
-		MarketStatistics* statistics = nullptr;
-		const auto tier = result->getU8("tier");
-		auto itemId = result->getU16("itemtype");
-		if (result->getU16("sale") == MARKETACTION_BUY) {
-			statistics = &purchaseStatistics[itemId][tier];
-		} else {
-			statistics = &saleStatistics[itemId][tier];
+		if (!result.hasData()) {
+			return;
 		}
 
-		statistics->numTransactions = result->getU32("num");
-		statistics->lowestPrice = result->getU64("min");
-		statistics->totalPrice = result->getU64("sum");
-		statistics->highestPrice = result->getU64("max");
-	} while (result->next());
+		for (mysqlx::Row row : result.fetchAll()) {
+			MarketStatistics* statistics = nullptr;
+			uint16_t sale = row[0].get<uint32_t>(); // `sale` is at index 0
+			uint16_t itemId = row[1].get<uint32_t>(); // `itemtype` is at index 1
+			uint8_t tier = row[6].get<uint32_t>(); // `tier` is at index 6
+
+			if (sale == MARKETACTION_BUY) {
+				statistics = &purchaseStatistics[itemId][tier];
+			} else {
+				statistics = &saleStatistics[itemId][tier];
+			}
+
+			statistics->numTransactions = row[2].get<uint32_t>(); // `num` is at index 2
+			statistics->lowestPrice = row[3].get<uint64_t>(); // `min` is at index 3
+			statistics->highestPrice = row[4].get<uint64_t>(); // `max` is at index 4
+			statistics->totalPrice = row[5].get<double>(); // `sum` is at index 5
+		}
+	} catch (const mysqlx::Error& err) {
+		g_logger().error("Failed to update market statistics: {}", err.what());
+	}
 }

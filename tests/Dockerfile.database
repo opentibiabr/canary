@@ -1,6 +1,6 @@
 FROM mysql:8.4
 
-RUN microdnf install -y mysql-shell
+RUN microdnf install -y mysql-shell && microdnf clean all
 
 WORKDIR /docker-entrypoint-initdb.d
 COPY schema.sql ./

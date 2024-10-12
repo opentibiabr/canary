@@ -127,22 +127,22 @@ public:
 
 	bool transactionalExecute(std::function<bool(Database &)> transactionFunc);
 
-	static uint8_t getU8(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static uint16_t getU16(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static uint32_t getU32(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static uint64_t getU64(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static int8_t getI8(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static int16_t getI16(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static int32_t getI32(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static int64_t getI64(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static double getDouble(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static float getFloat(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static bool getBool(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
-	static std::string getString(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static uint8_t getU8(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static uint16_t getU16(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static uint32_t getU32(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static uint64_t getU64(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static int8_t getI8(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static int16_t getI16(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static int32_t getI32(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static int64_t getI64(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static double getDouble(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static float getFloat(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static bool getBool(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
+	static std::string getString(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
 
 private:
-	template<typename T>
-	static T extract(const mysqlx::Value& val, const std::source_location &location) {
+	template <typename T>
+	static T extract(const mysqlx::Value &val, const std::source_location &location) {
 		if (val.isNull()) {
 			g_logger().error("Value is null, called line: {}:{}, in {}", location.line(), location.column(), location.function_name());
 			return {};

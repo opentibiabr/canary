@@ -338,32 +338,27 @@ void IOMarket::updateStatistics() {
 		OFFERSTATE_ACCEPTED
 	);
 
-	try {
-		auto &session = g_database().getSession();
-		mysqlx::SqlResult result = session.sql(query).execute();
+	auto resultOpt = g_database().getResult(query);
+	if (!resultOpt.has_value()) {
+		return;
+	}
 
-		if (!result.hasData()) {
-			return;
+	mysqlx::SqlResult &result = resultOpt.value();
+	for (mysqlx::Row row : result.fetchAll()) {
+		MarketStatistics* statistics = nullptr;
+		auto sale = Database::getU32(row[0]); // `sale` is at index 0
+		uint16_t itemId = Database::getU32(row[1]); // `itemtype` is at index 1
+		uint8_t tier = Database::getU8(row[6]); // `tier` is at index 6
+
+		if (sale == MARKETACTION_BUY) {
+			statistics = &purchaseStatistics[itemId][tier];
+		} else {
+			statistics = &saleStatistics[itemId][tier];
 		}
 
-		for (mysqlx::Row row : result.fetchAll()) {
-			MarketStatistics* statistics = nullptr;
-			uint16_t sale = row[0].get<uint32_t>(); // `sale` is at index 0
-			uint16_t itemId = row[1].get<uint32_t>(); // `itemtype` is at index 1
-			uint8_t tier = row[6].get<uint32_t>(); // `tier` is at index 6
-
-			if (sale == MARKETACTION_BUY) {
-				statistics = &purchaseStatistics[itemId][tier];
-			} else {
-				statistics = &saleStatistics[itemId][tier];
-			}
-
-			statistics->numTransactions = row[2].get<uint32_t>(); // `num` is at index 2
-			statistics->lowestPrice = row[3].get<uint64_t>(); // `min` is at index 3
-			statistics->highestPrice = row[4].get<uint64_t>(); // `max` is at index 4
-			statistics->totalPrice = row[5].get<double>(); // `sum` is at index 5
-		}
-	} catch (const mysqlx::Error &err) {
-		g_logger().error("Failed to update market statistics: {}", err.what());
+		statistics->numTransactions = Database::getU32(row[2]); // `num` is at index 2
+		statistics->lowestPrice = Database::getU64(row[3]); // `min` is at index 3
+		statistics->highestPrice = Database::getU64(row[4]); // `max` is at index 4
+		statistics->totalPrice = Database::getDouble(row[5]); // `sum` is at index 5
 	}
 }

@@ -177,6 +177,54 @@ bool Database::transactionalExecute(std::function<bool(Database &)> transactionF
 	}
 }
 
+uint8_t Database::getU8(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<uint8_t>(val, location);
+}
+
+uint16_t Database::getU16(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<uint16_t>(val, location);
+}
+
+uint32_t Database::getU32(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<uint32_t>(val, location);
+}
+
+uint64_t Database::getU64(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<uint64_t>(val, location);
+}
+
+int8_t Database::getI8(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<int8_t>(val, location);
+}
+
+int16_t Database::getI16(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<int16_t>(val, location);
+}
+
+int32_t Database::getI32(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<int32_t>(val, location);
+}
+
+int64_t Database::getI64(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<int64_t>(val, location);
+}
+
+double Database::getDouble(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<double>(val, location);
+}
+
+float Database::getFloat(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<float>(val, location);
+}
+
+bool Database::getBool(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<bool>(val, location);
+}
+
+std::string Database::getString(const mysqlx::Value& val, const std::source_location &location) {
+	return extract<std::string>(val, location);
+}
+
 bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
@@ -342,6 +390,24 @@ DBResult_ptr Database::storeQuery(std::string_view query) {
 		return nullptr;
 	}
 	return nullptr;
+}
+
+std::optional<mysqlx::SqlResult> getResult(std::string_view query) {
+	try {
+		auto& session = g_database().getSession();
+		mysqlx::SqlResult result = session.sql(query.data()).execute();
+
+		if (!result.hasData()) {
+			g_logger().warn("Query '{}' returned no data.", query);
+			return std::nullopt;
+		}
+		return result;
+	} catch (const mysqlx::Error& err) {
+		g_logger().error("Failed to execute query '{}': {}", query, err.what());
+	} catch (const std::exception& e) {
+		g_logger().error("Standard exception during query execution '{}': {}", query, e.what());
+		return std::nullopt;
+	}
 }
 
 bool Database::updateBlobData(const std::string &tableName, const std::string &columnName, uint32_t recordId, const char* blobData, size_t size, const std::string &idColumnName) {

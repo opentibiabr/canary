@@ -50,6 +50,8 @@ public:
 	DBResult_ptr storeQuery(std::string_view query);
 	std::shared_ptr<DBResult> prepare(const std::string &query);
 
+	std::optional<mysqlx::SqlResult> getResult(std::string_view query);
+
 	std::string escapeString(const std::string &s) const;
 
 	std::string escapeBlob(const char* s, uint32_t length) const;
@@ -125,7 +127,50 @@ public:
 
 	bool transactionalExecute(std::function<bool(Database &)> transactionFunc);
 
+	static uint8_t getU8(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static uint16_t getU16(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static uint32_t getU32(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static uint64_t getU64(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static int8_t getI8(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static int16_t getI16(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static int32_t getI32(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static int64_t getI64(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static double getDouble(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static float getFloat(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static bool getBool(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+	static std::string getString(const mysqlx::Value& val, const std::source_location &location = std::source_location::current());
+
 private:
+	template<typename T>
+	static T extract(const mysqlx::Value& val, const std::source_location &location) {
+		if (val.isNull()) {
+			g_logger().error("Value is null, called line: {}:{}, in {}", location.line(), location.column(), location.function_name());
+			return {};
+		}
+
+		try {
+			switch (val.getType()) {
+				case mysqlx::Value::Type::INT64:
+					return boost::lexical_cast<T>(val.get<int64_t>());
+				case mysqlx::Value::Type::UINT64:
+					return boost::lexical_cast<T>(val.get<uint64_t>());
+				case mysqlx::Value::Type::FLOAT:
+				case mysqlx::Value::Type::DOUBLE:
+					return boost::lexical_cast<T>(val.get<double>());
+				case mysqlx::Value::Type::STRING:
+					return boost::lexical_cast<T>(val.get<std::string>());
+				case mysqlx::Value::Type::BOOL:
+					return boost::lexical_cast<T>(val.get<bool>());
+				default:
+					g_logger().error("Failed to extract value type: {}, called line: {}:{}, in {}", static_cast<int>(val.getType()), location.line(), location.column(), location.function_name());
+			}
+		} catch (const mysqlx::Error &err) {
+			g_logger().error("Failed to extract value type: {}, error: {}, called line: {}:{}, in {}", static_cast<int>(val.getType()), err.what(), location.line(), location.column(), location.function_name());
+		}
+
+		return {};
+	}
+
 	bool beginTransaction();
 	bool rollback();
 	bool commit();

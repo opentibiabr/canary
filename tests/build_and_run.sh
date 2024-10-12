@@ -36,11 +36,11 @@ cd build || exit
 
 # Install project dependencies via vcpkg
 echo "Installing project dependencies via vcpkg..."
-$VCPKG_ROOT/vcpkg install
+"$VCPKG_ROOT"/vcpkg install
 
 # Configure the build using vcpkg and compile the project with multiple threads
 echo "Configuring and building the project..."
-cmake -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug -DPACKAGE_TESTS=On .. 
+cmake -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT"/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug -DPACKAGE_TESTS=On .. 
 make -j"$(nproc)"
 
 # Run unit tests after compilation

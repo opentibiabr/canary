@@ -117,7 +117,7 @@ public:
 		return maxPacketSize;
 	}
 
-	mysqlx::Session& getSession();
+	mysqlx::Session &getSession();
 	mysqlx::Schema getDatabaseSchema();
 
 	mysqlx::Table getTable(const std::string &tableName);

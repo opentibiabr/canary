@@ -456,7 +456,7 @@ bool Database::updateTable(const std::string &tableName, const std::vector<std::
 	}
 }
 
-mysqlx::Session& Database::getSession() {
+mysqlx::Session &Database::getSession() {
 	return *m_databaseSession;
 }
 

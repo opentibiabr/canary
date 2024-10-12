@@ -376,7 +376,7 @@ std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 				a.account_id = ?
 		)");
 
-		stmt.bind(accountId);  // Correctly bind accountId with the placeholder '?'
+		stmt.bind(accountId); // Correctly bind accountId with the placeholder '?'
 
 		mysqlx::SqlResult result = stmt.execute();
 		entries.reserve(result.count());
@@ -389,9 +389,9 @@ std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 
 			entries.emplace_back(playerId, name, description, icon, notify);
 		}
-	} catch (const mysqlx::Error& err) {
+	} catch (const mysqlx::Error &err) {
 		g_logger().error("[{}] Error fetching VIP entries: {}", __FUNCTION__, err.what());
-	} catch (const std::exception& ex) {
+	} catch (const std::exception &ex) {
 		g_logger().error("[{}] standard exception: {}", __FUNCTION__, ex.what());
 	}
 

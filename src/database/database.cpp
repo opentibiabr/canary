@@ -456,6 +456,10 @@ bool Database::updateTable(const std::string &tableName, const std::vector<std::
 	}
 }
 
+mysqlx::Session& Database::getSession() {
+	return *m_databaseSession;
+}
+
 mysqlx::Schema Database::getDatabaseSchema() {
 	if (!m_databaseSession) {
 		throw std::runtime_error("Database session is not initialized.");

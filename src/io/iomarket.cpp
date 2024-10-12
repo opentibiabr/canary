@@ -363,7 +363,7 @@ void IOMarket::updateStatistics() {
 			statistics->highestPrice = row[4].get<uint64_t>(); // `max` is at index 4
 			statistics->totalPrice = row[5].get<double>(); // `sum` is at index 5
 		}
-	} catch (const mysqlx::Error& err) {
+	} catch (const mysqlx::Error &err) {
 		g_logger().error("Failed to update market statistics: {}", err.what());
 	}
 }

@@ -29,8 +29,8 @@ local function checkPos(item)
 			local player = Player(stgBarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -42,8 +42,8 @@ local function checkPos(item)
 			local player = Player(stgBarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -55,8 +55,8 @@ local function checkPos(item)
 			local player = Player(stgBarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -68,8 +68,8 @@ local function checkPos(item)
 			local player = Player(stgBarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -81,8 +81,8 @@ local function checkPos(item)
 			local player = Player(stgBarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -96,21 +96,21 @@ local function explode(item)
 	local c = Game.getPlayers()[1]
 
 	addEvent(function()
-	for x = fromPosition.x, toPosition.x do
-		for y = fromPosition.y, toPosition.y do
-			for z = fromPosition.z, toPosition.z do
-				if Tile(Position(x, y, z)) then
+		for x = fromPosition.x, toPosition.x do
+			for y = fromPosition.y, toPosition.y do
+				for z = fromPosition.z, toPosition.z do
 					if Tile(Position(x, y, z)) then
-						local posEffect = Tile(Position(x, y, z)):getPosition()
-						local creature = Tile(Position(x, y, z)):getTopCreature()
-						posEffect:sendMagicEffect(CONST_ME_FIREAREA)
+						if Tile(Position(x, y, z)) then
+							local posEffect = Tile(Position(x, y, z)):getPosition()
+							local creature = Tile(Position(x, y, z)):getTopCreature()
+							posEffect:sendMagicEffect(CONST_ME_FIREAREA)
+						end
 					end
 				end
 			end
 		end
-	end
-	checkPos(item)
-	c:say("KABOOM!!", TALKTYPE_MONSTER_SAY, false, false, position)
+		checkPos(item)
+		c:say("KABOOM!!", TALKTYPE_MONSTER_SAY, false, false, position)
 		if item then
 			item:remove()
 		end
@@ -139,7 +139,7 @@ function dangerousDepthLever.onUse(player, item)
 				if Barrel then
 					explode(Barrel)
 				end
-			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelTimer, 0)
+				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelTimer, 0)
 			end, 2 * 60 * 1000)
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.BarrelTimer, os.time() + 2 * 60)
 		end

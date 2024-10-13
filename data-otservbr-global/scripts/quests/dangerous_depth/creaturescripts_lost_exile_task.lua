@@ -5,45 +5,44 @@ local radius = 10
 local lostExileKill = CreatureEvent("LastExileDeath")
 
 function lostExileKill.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
-    local function isMakeshiftHomeNearby(creature)
-        local creaturePosition = creature:getPosition()
-        local spectators = Game.getSpectators(creaturePosition, false, false, radius, radius, radius, radius) -- Busca criaturas em torno da posição da morte
+	local function isMakeshiftHomeNearby(creature)
+		local creaturePosition = creature:getPosition()
+		local spectators = Game.getSpectators(creaturePosition, false, false, radius, radius, radius, radius) -- Busca criaturas em torno da posição da morte
 
-        for _, spectator in ipairs(spectators) do
-            if spectator:isMonster() and spectator:getName():lower() == "makeshift home" then
-                return true
-            end
-        end
-        return false
-    end
+		for _, spectator in ipairs(spectators) do
+			if spectator:isMonster() and spectator:getName():lower() == "makeshift home" then
+				return true
+			end
+		end
+		return false
+	end
 
-    onDeathForParty(creature, mostDamageKiller, function(creature, player)
-        if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Home) ~= 1 then
-            return
-        end
+	onDeathForParty(creature, mostDamageKiller, function(creature, player)
+		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Home) ~= 1 then
+			return
+		end
 
-        if not creature:getPosition():isInRange(fromPos, toPos) then
-            return
-        end
+		if not creature:getPosition():isInRange(fromPos, toPos) then
+			return
+		end
 
-        if isMakeshiftHomeNearby(creature) then
-            return
-        end
+		if isMakeshiftHomeNearby(creature) then
+			return
+		end
 
-        local storage = player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.LostExiles)
-        if storage < 20 then
-            if storage < 0 then
-                player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.LostExiles, 1)
-            end
-            player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.LostExiles, storage + 1)
-        end
-    end)
+		local storage = player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.LostExiles)
+		if storage < 20 then
+			if storage < 0 then
+				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.LostExiles, 1)
+			end
+			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.LostExiles, storage + 1)
+		end
+	end)
 
-    return true
+	return true
 end
 
 lostExileKill:register()
-
 
 local wormKill = CreatureEvent("WarzoneWormDeath")
 

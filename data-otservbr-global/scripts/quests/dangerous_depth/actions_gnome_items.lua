@@ -18,7 +18,7 @@ function dangerousDepthItems.onUse(player, item)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "It is empty.")
 		end
 	end
-	
+
 	return true
 end
 

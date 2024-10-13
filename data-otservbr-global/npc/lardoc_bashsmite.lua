@@ -256,7 +256,6 @@ keywordHandler:addKeyword({ "job" }, StdModule.say, {
 })
 keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Bashsmite. That's all you need to know." })
 
-
 npcHandler:setMessage(MESSAGE_GREET, "Since you are obviously not one of my relatives who pays me a long overdue visit, we should get {work} right away. We'll see if you can prove your {worth} to our alliance.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 

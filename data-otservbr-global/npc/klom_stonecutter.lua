@@ -79,14 +79,14 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Subterranean) == 2 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.TimeTaskSubterranean) <= 0 then
 			npcHandler:say({
 				"Vermin. Everywhere. We get a lot of strange four-legged crawlers and worms down here lately. It's getting out of hand and... well, I need a real killer for this. ",
-				"Prepared to get rid of some seriously foul creepers for us?"
+				"Prepared to get rid of some seriously foul creepers for us?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Subterranean) < 1 then
 			npcHandler:say({
 				"Vermin. Everywhere. We get a lot of strange four-legged crawlers and worms down here lately. It's getting out of hand and... well, I need a real killer for this. ",
-				"Prepared to get rid of some seriously foul creepers for us?"
+				"Prepared to get rid of some seriously foul creepers for us?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif (player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Subterranean) == 1) and (player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Organisms) < 50) then
@@ -118,14 +118,16 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Home) == 2 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.TimeTaskHome) <= 0 then
 			npcHandler:say({
 				"We need to find a way to drive off the exiles from these caves. Countless makeshift homes are popping up at every corner. Destroy them and get the Lost out of hiding to eliminate them. ... ",
-				"If you can capture a few of them, you'll receive a bonus. Just bring 'em to the border of our outpost and we will take care of the rest. ... ", "Are you ready for that? "
+				"If you can capture a few of them, you'll receive a bonus. Just bring 'em to the border of our outpost and we will take care of the rest. ... ",
+				"Are you ready for that? ",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 22)
 		end
 		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Home) < 1 then
 			npcHandler:say({
 				"We need to find a way to drive off the exiles from these caves. Countless makeshift homes are popping up at every corner. Destroy them and get the Lost out of hiding to eliminate them. ... ",
-				"If you can capture a few of them, you'll receive a bonus. Just bring 'em to the border of our outpost and we will take care of the rest. ... ", "Are you ready for that? "
+				"If you can capture a few of them, you'll receive a bonus. Just bring 'em to the border of our outpost and we will take care of the rest. ... ",
+				"Are you ready for that? ",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 22)
 		elseif (player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Home) == 1) and (player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.LostExiles) < 20 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Prisoners) < 3) then
@@ -243,14 +245,14 @@ keywordHandler:addKeyword({ "counterattacks" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"I welcome a fine battle as any dwarf worth his beard should do. As long as it's a battle against something I can hit with my trusty axe. ...",
-		"But here the true {enemy} eludes us. We fight wave after wave of their lackeys and if the gnomes are right the true enemy is up to something far more sinister. "
+		"But here the true {enemy} eludes us. We fight wave after wave of their lackeys and if the gnomes are right the true enemy is up to something far more sinister. ",
 	},
 })
 keywordHandler:addKeyword({ "enemy" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"I have no idea what kind of creeps are behind all this. Even the gnomes don't and they have handled that stuff way more often. ...",
-		"But even if we knew nothing more about them, the fact alone that they employ the help of those mockeries of all things dwarfish, marks them as an enemy of the dwarves and it's our obligation to annihilate them."
+		"But even if we knew nothing more about them, the fact alone that they employ the help of those mockeries of all things dwarfish, marks them as an enemy of the dwarves and it's our obligation to annihilate them.",
 	},
 })
 keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Klom Stonecutter's the name. " })

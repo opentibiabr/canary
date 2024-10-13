@@ -88,7 +88,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.Measurements) == 1 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.LocationCount) == 5 then
 			npcHandler:say({
 				"Excellent, you returned with more data! Let me see... hmm. ...",
-				"Well, we need more data on this but first I will have to show this to our grand horticulturist. Thank you for getting this for us!"
+				"Well, we need more data on this but first I will have to show this to our grand horticulturist. Thank you for getting this for us!",
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.TimeTaskMeasurements, os.time() + time)
 			player:addItem(27654, 1)
@@ -100,7 +100,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({
 			"How fortunate! There are some trignometres lying around next to that device behind me. Take one and hold it next to high temperature heat sources. ...",
 			"If you gathered enough data, you will actually smell it from the device. ...",
-			"Return to me with the results afterwards. Best of luck, we count on you!"
+			"Return to me with the results afterwards. Best of luck, we count on you!",
 		}, npc, creature)
 		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Questline) < 1 then
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Questline, 1)
@@ -147,7 +147,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.CrawlersCount) >= 3 then
 				npcHandler:say({
 					"AMAZING! Not only did you salve all our friends - you also rescued the animals! Here is your reward and bonus! ...",
-					"The other are already telling stories about you. Please return to me later if you want to help out some more!"
+					"The other are already telling stories about you. Please return to me later if you want to help out some more!",
 				}, npc, creature)
 				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.TimeTaskOrdnance, os.time() + time)
 				player:addItem(27654, 2)
@@ -165,7 +165,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 22 and MsgContains(message, "yes") then
 		npcHandler:say({
 			"Excellent, just follow the path to east until you reach a dead end, there is a hole that leads to a small cave underneath which will bring you right to the old trail. ...",
-			"Help whoever you can and return them to the save cave exit - oh, and while you're at it... some of them will have pack animals. If you can rescue those as well, I'll hand you a bonus. Good luck!"
+			"Help whoever you can and return them to the save cave exit - oh, and while you're at it... some of them will have pack animals. If you can rescue those as well, I'll hand you a bonus. Good luck!",
 		}, npc, creature)
 		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Questline) < 1 then
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Questline, 1)
@@ -317,18 +317,16 @@ keywordHandler:addKeyword({ "worthy" }, StdModule.say, {
 		"If you can aquire any, return them to me and I make sure to tell the others of your generosity. Return to me afterwards to check on your current {status}.",
 	},
 })
-keywordHandler:addKeyword({ "base" }, StdModule.say, { npcHandler = npcHandler,
-	text = {
-		"Gnomish supplies and ingenuity have helped to establish and fortify this outpost. ...",
-		"Our knowledge of the enemy and it's tactics would be of more use if the dwarves would listen to us somewhat more. But gnomes have learned to live with the imperfection of the other races."
-	},
-})
+keywordHandler:addKeyword({ "base" }, StdModule.say, { npcHandler = npcHandler, text = {
+	"Gnomish supplies and ingenuity have helped to establish and fortify this outpost. ...",
+	"Our knowledge of the enemy and it's tactics would be of more use if the dwarves would listen to us somewhat more. But gnomes have learned to live with the imperfection of the other races.",
+} })
 keywordHandler:addKeyword({ "efforts" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
 		"Our surveys of the area showed us some spikes in heat and seismic activity at very specific places. ...",
 		"We conclude this is no coincidence and the enemy is using devices to pump up the lava to flood the area. We have seen it before and had to retreat each time. ...",
-		"This time though we might have a counter prepared - given me manage to pierce their defences."
+		"This time though we might have a counter prepared - given me manage to pierce their defences.",
 	},
 })
 keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Gnomus." })

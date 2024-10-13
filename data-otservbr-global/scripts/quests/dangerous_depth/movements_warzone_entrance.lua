@@ -6,7 +6,7 @@ function warzoneEntrance.onStepIn(creature, item, position, fromPosition, toPosi
 		return true
 	end
 
-	local warzoneVI = Position(33367, 32307, 15)	
+	local warzoneVI = Position(33367, 32307, 15)
 	if item:getPosition() == Position(33829, 32128, 14) then
 		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.LavaPumpWarzoneVI) == 1 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.TimerWarzoneVI) <= os.time() then
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.LavaPumpWarzoneVI, 0)
@@ -15,14 +15,14 @@ function warzoneEntrance.onStepIn(creature, item, position, fromPosition, toPosi
 			player:teleportTo(warzoneVI)
 		elseif player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.LavaPumpWarzoneVI) ~= 1 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.TimerWarzoneVI) <= os.time() then
 			player:teleportTo(Position(fromPosition.x + 1, fromPosition.y, fromPosition.z))
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,"You cannot enter this warzone. The enemy still pumps lava into this area. Find a way to stop the pumps!")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot enter this warzone. The enemy still pumps lava into this area. Find a way to stop the pumps!")
 		elseif player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.TimerWarzoneVI) > os.time() then
 			player:teleportTo(warzoneVI)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Entering the warzone.")
 		end
 	end
-	
-	local warzoneV = Position(33208, 32119, 15)	
+
+	local warzoneV = Position(33208, 32119, 15)
 	if item:getPosition() == Position(33777, 32192, 14) then
 		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.LavaPumpWarzoneV) == 1 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.TimerWarzoneV) <= os.time() then
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.LavaPumpWarzoneV, 0)
@@ -37,8 +37,8 @@ function warzoneEntrance.onStepIn(creature, item, position, fromPosition, toPosi
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Entering the warzone.")
 		end
 	end
-	
-	local warzoneIV = Position(33534, 32184, 15)	
+
+	local warzoneIV = Position(33534, 32184, 15)
 	if item:getPosition() == Position(33827, 32172, 14) then
 		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.LavaPumpWarzoneIV) == 1 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.TimerWarzoneIV) <= os.time() then
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Access.LavaPumpWarzoneIV, 0)
@@ -53,9 +53,9 @@ function warzoneEntrance.onStepIn(creature, item, position, fromPosition, toPosi
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Entering the warzone.")
 		end
 	end
-	
+
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-	
+
 	return true
 end
 

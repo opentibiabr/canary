@@ -21,16 +21,111 @@ class Reward;
 
 class ContainerIterator {
 public:
-	bool hasNext() const {
-		return !over.empty();
-	}
+	/**
+	 * @brief Constructs a ContainerIterator with a specified container and maximum traversal depth.
+	 *
+	 * This constructor initializes the iterator to start iterating over the specified container
+	 * and ensures that it will not traverse deeper than the specified maxDepth.
+	 *
+	 * @param container The root container to start iterating from.
+	 * @param maxDepth The maximum depth of nested containers to traverse.
+	 */
+	ContainerIterator(const std::shared_ptr<Container> &container, size_t maxDepth);
 
+	/**
+	 * @brief Checks if there are more items to iterate over in the container.
+	 *
+	 * This function checks if there are more items to iterate over in the current container or
+	 * in any of the nested sub-containers. If no items are left, the function will return false.
+	 *
+	 * @return true if there are more items to iterate over; false otherwise.
+	 */
+	bool hasNext() const;
+
+	/**
+	 * @brief Advances the iterator to the next item in the container.
+	 *
+	 * This function moves the iterator to the next item. If the current item is a sub-container,
+	 * it adds that sub-container to the stack to iterate over its items as well.
+	 * It also handles maximum depth and cycle detection to prevent infinite loops.
+	 */
 	void advance();
-	std::shared_ptr<Item> operator*();
+
+	/**
+	 * @brief Returns the current item pointed to by the iterator.
+	 *
+	 * This function returns the current item in the container that the iterator points to.
+	 * If there are no more items to iterate over, it returns nullptr.
+	 *
+	 * @return A shared pointer to the current item, or nullptr if no items are left.
+	 */
+	std::shared_ptr<Item> operator*() const;
+
+	bool hasReachedMaxDepth() const;
+
+	std::shared_ptr<Container> getCurrentContainer() const;
+	size_t getCurrentIndex() const;
 
 private:
-	std::list<std::shared_ptr<Container>> over;
-	ItemDeque::const_iterator cur;
+	/**
+	 * @brief Represents the state of the iterator at a given point in time.
+	 *
+	 * This structure is used to keep track of the current container,
+	 * the index of the current item within that container, and the depth
+	 * of traversal for nested containers. It is primarily used in the
+	 * ContainerIterator to manage the state of the iteration as it traverses
+	 * through containers and their sub-containers.
+	 */
+	struct IteratorState {
+		/**
+		 * @brief The container being iterated over.
+		 */
+		std::weak_ptr<Container> container;
+
+		/**
+		 * @brief The current index within the container's item list.
+		 */
+		size_t index;
+
+		/**
+		 * @brief The depth of traversal, indicating how deep the iteration is
+		 * within nested sub-containers.
+		 */
+		size_t depth;
+
+		/**
+		 * @brief Constructs an IteratorState with the given container, index, and depth.
+		 *
+		 * @param c The container to iterate over.
+		 * @param i The starting index within the container.
+		 * @param d The depth of traversal.
+		 */
+		IteratorState(std::shared_ptr<Container> c, size_t i, size_t d) :
+			container(c), index(i), depth(d) { }
+	};
+
+	/**
+	 * @brief Stack of IteratorState objects representing the state of the iteration.
+	 *
+	 * This stack keeps track of the current position in each container and is
+	 * used to traverse containers and their nested sub-containers in a depth-first manner.
+	 * Each element in the stack represents a different level in the container hierarchy.
+	 */
+	mutable std::vector<IteratorState> states;
+
+	/**
+	 * @brief Set of containers that have already been visited during the iteration.
+	 *
+	 * This set is used to keep track of all containers that have been visited
+	 * to avoid revisiting them and causing infinite loops or cycles. It ensures
+	 * that each container is processed only once, preventing redundant processing
+	 * and potential crashes due to cyclic references.
+	 */
+	mutable std::unordered_set<std::shared_ptr<Container>> visitedContainers;
+	size_t maxTraversalDepth = 0;
+
+	bool m_maxDepthReached = false;
+	bool m_cycleDetected = false;
 
 	friend class Container;
 };
@@ -166,8 +261,6 @@ public:
 
 	void internalAddThing(std::shared_ptr<Thing> thing) override final;
 	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
-	void startDecaying() override;
-	void stopDecaying() override;
 
 	virtual void removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient = false);
 

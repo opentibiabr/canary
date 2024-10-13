@@ -11,7 +11,7 @@ function(setup_test TARGET_NAME DIR)
 
     if(SPEED_UP_BUILD_UNITY AND (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release"))
         set_target_properties(${TARGET_NAME} PROPERTIES UNITY_BUILD ON)
-        log_option_enabled("Build unity for speed up compilation")
+        log_option_enabled("Build unity for speed up compilation for target ${TARGET_NAME}")
     else()
         log_option_disabled("Build unity")
     endif()

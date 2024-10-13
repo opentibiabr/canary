@@ -9211,23 +9211,25 @@ void ProtocolGame::openStore() {
 
 	// Subcategories Bytes
 	for (const auto &category : storeCategories) {
-		if (!category.isSpecialCategory()) {
-			const auto &internalSubCatVector = category.getSubCategoriesVector();
-			for (const auto &subCategory : internalSubCatVector) {
-				if (!subCategory.canRookgaardAccess() && playerVocationId == 0) {
-					continue;
-				}
-				msg.addString(subCategory.getCategoryName());
+		if (category.isSpecialCategory()) {
+			continue;
+		}
 
-				auto subCategoryState = magic_enum::enum_integer<States_t>(subCategory.getCategoryState());
-				msg.addByte(subCategoryState);
-
-				msg.addByte(0x01); // Category Icons Amounts
-				msg.addString(subCategory.getCategoryIcon());
-
-				msg.addString(category.getCategoryName()); // Parent
-				++totalCategories;
+		const auto &internalSubCatVector = category.getSubCategoriesVector();
+		for (const auto &subCategory : internalSubCatVector) {
+			if (!subCategory.canRookgaardAccess() && playerVocationId == 0) {
+				continue;
 			}
+			msg.addString(subCategory.getCategoryName());
+
+			auto subCategoryState = magic_enum::enum_integer<States_t>(subCategory.getCategoryState());
+			msg.addByte(subCategoryState);
+
+			msg.addByte(0x01); // Category Icons Amounts
+			msg.addString(subCategory.getCategoryIcon());
+
+			msg.addString(category.getCategoryName()); // Parent
+			++totalCategories;
 		}
 	}
 	msg.setBufferPosition(startCategories);

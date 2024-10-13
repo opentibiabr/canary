@@ -151,7 +151,7 @@ function(configure_linking target_name)
 
         if(ipo_supported)
             set_property(TARGET ${target_name} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-            log_option_enabled(STATUS "IPO/LTO enabled for target ${target_name}.")
+            log_option_enabled("IPO/LTO enabled for target ${target_name}.")
 
             if(MSVC)
                 target_compile_options(${target_name} PRIVATE /GL)
@@ -160,17 +160,19 @@ function(configure_linking target_name)
                 # Check if it's running on Linux, using GCC 14, and in Debug mode
                 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND
                         CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
-                        GCC_VERSION VERSION_GREATER_EQUAL "14" AND
-                        GCC_VERSION VERSION_LESS "15" AND
+                        GCC_VERSION VERSION_EQUAL "14" AND
                         CMAKE_BUILD_TYPE STREQUAL "Debug")
-                    log_option_disabled(WARNING "LTO disabled for GCC 14 in Debug mode on Linux for target ${target_name}.")
+                    log_option_disabled("LTO disabled for GCC 14 in Debug mode on Linux for target ${target_name}.")
+                    # Disable LTO for Debug builds with GCC 14
+                    target_compile_options(${target_name} PRIVATE -fno-lto)
+                    target_link_options(${target_name} PRIVATE -fno-lto)
                 else()
-                    target_compile_options(${target_name} PRIVATE -flto)
-                    target_link_options(${target_name} PRIVATE -flto)
+                    target_compile_options(${target_name} PRIVATE -flto=auto)
+                    target_link_options(${target_name} PRIVATE -flto=auto)
                 endif()
             endif()
         else()
-            log_option_disabled(WARNING "IPO/LTO is not supported for target ${target_name}: ${ipo_output}")
+            log_option_disabled("IPO/LTO is not supported for target ${target_name}: ${ipo_output}")
         endif()
     endif()
 endfunction()

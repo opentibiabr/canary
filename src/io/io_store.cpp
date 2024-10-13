@@ -124,7 +124,7 @@ Category IOStore::loadCategoryFromXml(pugi::xml_node category, bool isSubCategor
 		auto subCategoryStateString = std::string(category.attribute("state").as_string());
 		States_t subCategoryState = States_t::NONE;
 		if (auto it = stringToOfferStateMap.find(subCategoryStateString);
-			it != stringToOfferStateMap.end()) {
+		    it != stringToOfferStateMap.end()) {
 			subCategoryState = it->second;
 		}
 

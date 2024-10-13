@@ -136,8 +136,19 @@ endif()
 # === IPO Configuration ===
 function(configure_linking target_name)
     if(OPTIONS_ENABLE_IPO)
+        # Check if IPO/LTO is supported
         include(CheckIPOSupported)
         check_ipo_supported(RESULT ipo_supported OUTPUT ipo_output LANGUAGES CXX)
+
+        # Get the GCC compiler version, if applicable
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+            execute_process(
+                    COMMAND ${CMAKE_CXX_COMPILER} -dumpversion
+                    OUTPUT_VARIABLE GCC_VERSION
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+            )
+        endif()
+
         if(ipo_supported)
             set_property(TARGET ${target_name} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
             message(STATUS "IPO/LTO enabled for target ${target_name}.")
@@ -146,8 +157,17 @@ function(configure_linking target_name)
                 target_compile_options(${target_name} PRIVATE /GL)
                 target_link_options(${target_name} PRIVATE /LTCG)
             elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-                target_compile_options(${target_name} PRIVATE -flto)
-                target_link_options(${target_name} PRIVATE -flto)
+                # Check if it's running on Linux, using GCC 14, and in Debug mode
+                if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND
+                        CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+                        GCC_VERSION VERSION_GREATER_EQUAL "14" AND
+                        GCC_VERSION VERSION_LESS "15" AND
+                        CMAKE_BUILD_TYPE STREQUAL "Debug")
+                    message(WARNING "LTO disabled for GCC 14 in Debug mode on Linux for target ${target_name}.")
+                else()
+                    target_compile_options(${target_name} PRIVATE -flto)
+                    target_link_options(${target_name} PRIVATE -flto)
+                endif()
             endif()
         else()
             message(WARNING "IPO/LTO is not supported for target ${target_name}: ${ipo_output}")

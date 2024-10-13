@@ -10,57 +10,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-
-#include "pch.hpp"
 #include "lib/di/container.hpp"
-
-Logger::Logger() {
-	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [%^%l%$] %v ");
-
-#ifdef DEBUG_LOG
-	spdlog::set_level(spdlog::level::trace);
-	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [thread %t] [%^%l%$] %v ");
-#endif
-
-	const std::tm local_tm = get_local_time();
-
-	std::ostringstream oss;
-	oss << std::put_time(&local_tm, "%Y-%m-%d_%H-%M-%S");
-	std::string filename = "log/server_log_" + oss.str() + ".txt";
-
-	try {
-		// Limpar logs antigos
-		cleanOldLogs("log", 2);
-
-		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-		auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(filename, true);
-
-		const auto combined_logger = std::make_shared<spdlog::logger>(
-			"",
-			spdlog::sinks_init_list { console_sink, file_sink }
-		);
-
-		combined_logger->set_level(spdlog::get_level());
-
-		combined_logger->set_pattern("[%Y-%d-%m %H:%M:%S.%e] [%^%l%$] %v ");
-
-#ifdef DEBUG_LOG
-		combined_logger->set_pattern("[%Y-%d-%m %H:%M:%S.%e] [thread %t] [%^%l%$] %v ");
-#endif
-
-		combined_logger->flush_on(spdlog::level::info);
-
-		set_default_logger(combined_logger);
-
-		info("Logger initialized and configured for console and file output.");
-	} catch (const spdlog::spdlog_ex &ex) {
-		std::cerr << "Log initialization failed: " << ex.what() << std::endl;
-	}
-}
-
-Logger &Logger::getInstance() {
-	return inject<Logger>();
-}
 
 void Logger::setLevel(const std::string &name) const {
 	debug("Setting log level to: {}.", name);

@@ -14,21 +14,23 @@ namespace spdlog {
 
 class Logger {
 public:
-	Logger();
-	~Logger() = default;
+	Logger() = default;
+	virtual ~Logger() = default;
 
-	static Logger &getInstance();
+	// Ensures that we don't accidentally copy it
+	Logger(const Logger &) = delete;
+	virtual Logger &operator=(const Logger &) = delete;
 
-	void setLevel(const std::string &name) const;
-	std::string getLevel() const;
+	virtual void setLevel(const std::string &name) const = 0;
+	virtual std::string getLevel() const = 0;
 
 	void logProfile(const std::string &name, double duration_ms) const;
 	void cleanOldLogs(const std::string &logDirectory, int days) const;
 
-	void info(const std::string &msg) const;
-	void warn(const std::string &msg) const;
-	void error(const std::string &msg) const;
-	void critical(const std::string &msg) const;
+	virtual void info(const std::string &msg) const;
+	virtual void warn(const std::string &msg) const;
+	virtual void error(const std::string &msg) const;
+	virtual void critical(const std::string &msg) const;
 
 	template <typename Func>
 	auto profile(const std::string &name, Func func) -> decltype(func()) {
@@ -44,26 +46,26 @@ public:
 	}
 
 #if defined(DEBUG_LOG)
-	void debug(const std::string &msg) const;
+	virtual void debug(const std::string &msg) const;
 
 	template <typename... Args>
 	void debug(const fmt::format_string<Args...> &fmt, Args &&... args) const {
 		debug(fmt::format(fmt, std::forward<Args>(args)...));
 	}
 
-	void trace(const std::string &msg) const;
+	virtual void trace(const std::string &msg) const;
 
 	template <typename... Args>
 	void trace(const fmt::format_string<Args...> &fmt, Args &&... args) const {
 		trace(fmt::format(fmt, std::forward<Args>(args)...));
 	}
 #else
-	void debug(const std::string &) const { }
+	virtual void debug(const std::string &) const { }
 
 	template <typename... Args>
 	void debug(const fmt::format_string<Args...> &, Args &&...) const { }
 
-	void trace(const std::string &) const { }
+	virtual void trace(const std::string &) const { }
 
 	template <typename... Args>
 	void trace(const fmt::format_string<Args...> &, Args &&...) const { }
@@ -106,5 +108,3 @@ private:
 		return local_tm;
 	}
 };
-
-constexpr auto g_logger = Logger::getInstance;

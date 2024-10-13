@@ -10,7 +10,6 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "lib/logging/logger.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <mysql/mysql.h>

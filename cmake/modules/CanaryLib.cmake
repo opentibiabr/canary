@@ -84,7 +84,6 @@ target_link_libraries(${PROJECT_NAME}_lib
         spdlog::spdlog
         unofficial::argon2::libargon2
         unofficial::libmariadb
-        unofficial::mariadbclient
         protobuf
 )
 

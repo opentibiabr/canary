@@ -104,6 +104,7 @@ private:
 	std::vector<Category> m_subCategoryVector;
 	std::map<uint32_t, Offer> m_offersMap;
 
+	Category loadCategoryFromXml(pugi::xml_node offer, bool isSubCategory = false);
 	bool loadOfferFromXml(Category* category, pugi::xml_node offer);
 	bool loadStoreHome(pugi::xml_node homeNode);
 
@@ -173,8 +174,8 @@ private:
 
 class Offer {
 public:
-	Offer(const std::string &parentName, const std::string &name, const std::string &icon, uint32_t id, uint32_t price, OfferTypes_t type, States_t state, uint16_t count, uint16_t duration, CoinType coin, const std::string &description, OutfitIds outfitIds, bool movable, std::vector<RelatedOffer> relatedOffers) :
-		m_parentName(parentName), m_offerName(name), m_offerIcon(icon), m_offerId(id), m_offerPrice(price), m_offerType(type), m_offerState(state), m_offerCount(count), m_validUntil(duration), m_coinType(coin), m_offerDescription(description), m_outfitId(outfitIds), m_movable(movable), m_relatedOffers(relatedOffers) { }
+	Offer(const std::string &name, uint32_t id, uint32_t price, OfferTypes_t type, const std::string &icon, States_t state, uint16_t count, uint16_t duration, CoinType coin, const std::string &description, OutfitIds outfitIds, bool movable, const std::string &parentName, std::vector<RelatedOffer> relatedOffers) :
+		m_offerName(name), m_offerId(id), m_offerPrice(price), m_offerType(type), m_offerIcon(icon), m_offerState(state), m_offerCount(count), m_validUntil(duration), m_coinType(coin), m_offerDescription(description), m_outfitId(outfitIds), m_movable(movable), m_parentName(parentName), m_relatedOffers(relatedOffers) { }
 
 	const std::string &getOfferName() const {
 		return m_offerName;

@@ -79,36 +79,13 @@ bool IOStore::loadFromXml() {
 	}
 
 	for (pugi::xml_node category : storeNode.children("category")) {
-		auto categoryName = std::string(category.attribute("name").as_string());
-		auto categoryIcon = std::string(category.attribute("icon").as_string());
-		auto categoryRookString = std::string(category.attribute("rookgaard").as_string());
-		bool categoryRook = false;
-		if (categoryRookString == "yes") {
-			categoryRook = true;
-		}
-
-		Category newCategory(categoryName, categoryIcon, categoryRook);
+		auto newCategory = loadCategoryFromXml(category);
 
 		pugi::xml_node child = category.first_child();
 		if (child && std::string(child.name()) == "subcategory") {
 			for (pugi::xml_node subcategory : category.children("subcategory")) {
-				auto subCategoryName = std::string(subcategory.attribute("name").as_string());
-				auto subCategoryIcon = std::string(subcategory.attribute("icon").as_string());
+				auto newSubCategory = loadCategoryFromXml(category, true);
 
-				auto subCategoryRookString = std::string(subcategory.attribute("rookgaard").as_string());
-				bool subCategoryRook = false;
-				if (subCategoryRookString == "yes") {
-					subCategoryRook = true;
-				}
-
-				auto subCategoryStateString = std::string(subcategory.attribute("state").as_string());
-				States_t subCategoryState = States_t::NONE;
-				if (auto it = stringToOfferStateMap.find(subCategoryStateString);
-				    it != stringToOfferStateMap.end()) {
-					subCategoryState = it->second;
-				}
-
-				Category newSubCategory(subCategoryName, subCategoryIcon, subCategoryRook, subCategoryState);
 				for (pugi::xml_node offer : subcategory.children("offer")) {
 					auto thisOffer = loadOfferFromXml(&newSubCategory, offer);
 					if (!thisOffer) {
@@ -131,6 +108,32 @@ bool IOStore::loadFromXml() {
 	}
 
 	return true;
+}
+
+Category IOStore::loadCategoryFromXml(pugi::xml_node category, bool isSubCategory /* = false*/) {
+	auto categoryName = std::string(category.attribute("name").as_string());
+	auto categoryIcon = std::string(category.attribute("icon").as_string());
+
+	auto categoryRookString = std::string(category.attribute("rookgaard").as_string());
+	bool categoryRook = false;
+	if (categoryRookString == "yes") {
+		categoryRook = true;
+	}
+
+	if (isSubCategory) {
+		auto subCategoryStateString = std::string(category.attribute("state").as_string());
+		States_t subCategoryState = States_t::NONE;
+		if (auto it = stringToOfferStateMap.find(subCategoryStateString);
+			it != stringToOfferStateMap.end()) {
+			subCategoryState = it->second;
+		}
+
+		Category newSubCategory(categoryName, categoryIcon, categoryRook, subCategoryState);
+		return newSubCategory;
+	}
+
+	Category newCategory(categoryName, categoryIcon, categoryRook);
+	return newCategory;
 }
 
 bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
@@ -198,8 +201,8 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 
 	CoinType coinType = CoinType::Normal;
 	if (offer.attribute("coinType")) {
-		auto typeString = std::string(offer.attribute("coinType").as_string());
-		coinType = typeString == "normal" ? CoinType::Normal : CoinType::Transferable;
+		auto coinTypeString = std::string(offer.attribute("coinType").as_string());
+		coinType = coinTypeString == "normal" ? CoinType::Normal : CoinType::Transferable;
 	}
 
 	std::string desc = "";
@@ -222,7 +225,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		baseOffer->addRelatedOffer(relatedOffer);
 	} else {
 		const auto &parentName = category->getCategoryName();
-		Offer newOffer(parentName, name, icon, id, price, type, state, count, validUntil, coinType, desc, outfitId, isMovable, { relatedOffer });
+		Offer newOffer(name, id, price, type, icon, state, count, validUntil, coinType, desc, outfitId, isMovable, parentName, { relatedOffer });
 		addOffer(id, newOffer);
 
 		const Offer* foundOffer = getOfferById(id);

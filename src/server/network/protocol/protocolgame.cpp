@@ -9434,7 +9434,7 @@ void ProtocolGame::sendStoreHome() {
 	uint16_t disableReasonVectorLen = disableReasonVector.size();
 	msg.add<uint16_t>(disableReasonVectorLen); // Disable Reasons Vector Length
 	if (disableReasonVectorLen > 0) {
-		for (const auto reason : disableReasonVector) {
+		for (const auto &reason : disableReasonVector) {
 			msg.addString(reason);
 		}
 	}
@@ -9754,10 +9754,7 @@ void ProtocolGame::sendStoreDetail(const StoreHistoryDetail &storeHistoryDetail)
 		auto details = player->getStoreHistoryDetails(storeHistoryDetail.createdAt);
 		// Add the sorted details to the NetworkMessage
 		newMsg.add<uint16_t>(details.size()); // Number of details
-		for (const auto &entry : details) {
-			const std::string &createdAt = entry.first;
-			const StoreDetail &detail = entry.second;
-
+		for (const auto &[createdAt, detail] : details) {
 			newMsg.add<uint32_t>(static_cast<uint32_t>(std::stoll(createdAt))); // Creation date
 			newMsg.addString(detail.description);
 			newMsg.addByte(detail.isGold); // Enum 0 - 1 (0 = tibia coin, 1 = gold coin)

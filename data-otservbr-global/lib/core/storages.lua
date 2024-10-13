@@ -2621,7 +2621,6 @@ Storage = {
 				CorymRescued08 = 45987,
 				CorymRescueMission = 45988,
 			},
-			MakeshiftWarriorOutfits = {},
 		},
 		U11_80 = { -- update 11.80 - Reserved Storages 46001 - 46300
 			BattleMageOutfits = {},

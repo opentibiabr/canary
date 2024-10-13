@@ -325,7 +325,7 @@ std::vector<Offer> IOStore::getOffersContainingSubstring(const std::string &sear
 	auto lowerSearchString = asLowerCaseString(searchString);
 
 	for (const auto &[id, offer] : m_offersMap) {
-		const auto& currentOfferName = offer.getOfferName();
+		const auto &currentOfferName = offer.getOfferName();
 		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
 
 		if (lowerCurrentOfferName.find(lowerSearchString) != std::string::npos) {

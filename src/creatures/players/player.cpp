@@ -2903,6 +2903,7 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 				++it;
 			}
 		}
+		despawn();
 	} else {
 		setSkillLoss(true);
 
@@ -2928,7 +2929,6 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		sendStats();
 	}
 
-	despawn();
 }
 
 bool Player::spawn() {

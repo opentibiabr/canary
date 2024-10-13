@@ -47,7 +47,7 @@ configure_linking(${PROJECT_NAME}_lib)
 # === UNITY BUILD (compile time reducer) ===
 if(SPEED_UP_BUILD_UNITY)
     set_target_properties(${PROJECT_NAME}_lib PROPERTIES UNITY_BUILD ON)
-    log_option_enabled("Build unity for speed up compilation")
+    log_option_enabled("Build unity for speed up compilation for taget ${PROJECT_NAME}_lib")
 else()
     log_option_disabled("Build unity")
 endif()

@@ -37,6 +37,15 @@ TeleportAction = {
 			{ x = 32177, y = 31869, z = 15 },
 		},
 	},
+	-- Dangerous Depths Quest
+	[57230] = {
+		itemId = 1949,
+		itemPos = {
+			{x = 33827, y = 32172, z = 14},
+			{x = 33829, y = 32128, z = 14},
+			{x = 33777, y = 32192, z = 14},
+		},
+	},
 }
 
 TeleportUnique = {

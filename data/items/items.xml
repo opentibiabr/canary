@@ -51874,6 +51874,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="27489" article="a" name="silver nugget"/>
 	<item id="27490" article="a" name="unknown corpse (skeleton)"/>
+	<item id="27491" article="an" name="explosive barrel">
+		<attribute key="primarytype" value="containers"/>
+		<attribute key="description" value="This dwarven barrel is highly explosive and instable. It's literally only a matter of time until it goes off."/>
+	</item>
 	<item id="27492" article="an" name="explosive barrel">
 		<attribute key="primarytype" value="containers"/>
 		<attribute key="description" value="This dwarven barrel is highly explosive and instable. It's literally only a matter of time until it goes off."/>

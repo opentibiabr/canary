@@ -262,9 +262,12 @@ LeverAction = {
 	-- The Pits of Inferno Quest
 	[50160] = {
 		itemId = 2772,
-		itemPos = {
-			{ x = 32853, y = 32318, z = 9 },
-		},
+		itemPos = { x = 32853, y = 32318, z = 9 },
+	},
+	-- The Pits of Inferno Quest
+	[57234] = {
+		itemId = 2772,
+		itemPos = { x = 33841, y = 32080, z = 14 },
 	},
 }
 

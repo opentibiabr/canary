@@ -227,107 +227,6 @@ Storage = {
 		Obujos = 50077,
 		DeeplingStatus = 50078,
 	},
-	DangerousDepths = {
-		-- Reserved storage from 50080 - 50199
-		Questline = 50080,
-		Dwarves = {
-			Status = 50081,
-			Home = 50082, -- Mission
-			Subterranean = 50083, -- Mission
-			LostExiles = 50084,
-			Prisoners = 50085,
-			Organisms = 50086,
-			TimeTaskHome = 50087,
-			TimeTaskSubterranean = 50088,
-		},
-		Scouts = {
-			Status = 50090,
-			Diremaw = 50091, -- Mission
-			Growth = 50092, -- Mission
-			DiremawsCount = 50093,
-			GnomishChest = 50094,
-			BarrelCount = 50095,
-			FirstBarrel = 50096,
-			SecondBarrel = 50097,
-			ThirdBarrel = 50098,
-			FourthBarrel = 50099,
-			FifthBarrel = 50100,
-			TimeTaskDiremaws = 50101,
-			TimeTaskGrowth = 50102,
-			Barrel = 50103,
-			BarrelTimer = 50104,
-		},
-		Gnomes = {
-			Status = 50115,
-			Ordnance = 50116, -- Mission
-			Measurements = 50117, -- Mission
-			Charting = 50118, -- Mission
-			GnomeChartChest = 50119, -- Measurements
-			GnomeChartPaper = 50120, -- Charting
-			GnomesCount = 50121, -- Ordnance
-			CrawlersCount = 50122, -- Ordnance
-			LocationA = 50123, -- Measurements
-			LocationB = 50124, -- Measurements
-			LocationC = 50125, -- Measurements
-			LocationD = 50126, -- Measurements
-			LocationE = 50127, -- Measurements
-			LocationCount = 50128, -- Measurements
-			OldGate = 50129, -- Charting
-			TheGaze = 50130, -- Charting
-			LostRuin = 50131, -- Charting
-			Outpost = 50132, -- Charting
-			Bastion = 50133,
-			-- Charting
-			BrokenTower = 50134, -- Charting
-			ChartingCount = 50135, -- Contador
-			TimeTaskOrdnance = 50136,
-			TimeTaskMeasurements = 50137,
-			TimeTaskCharting = 50138,
-		},
-		Access = {
-			LavaPumpWarzoneVI = 50139,
-			TimerWarzoneVI = 50140,
-			LavaPumpWarzoneV = 50141,
-			TimerWarzoneV = 50142,
-			LavaPumpWarzoneIV = 50143,
-			TimerWarzoneIV = 50144,
-		},
-		Crystals = {
-			WarzoneVI = {
-				BigCrystal1 = 50155,
-				BigCrystal2 = 50156,
-				MediumCrystal1 = 50157,
-				MediumCrystal2 = 50158,
-				SmallCrystal1 = 50159,
-				SmallCrystal2 = 50160,
-			},
-			WarzoneV = {
-				BigCrystal1 = 50165,
-				BigCrystal2 = 50166,
-				MediumCrystal1 = 50167,
-				MediumCrystal2 = 50168,
-				SmallCrystal1 = 50169,
-				SmallCrystal2 = 50170,
-			},
-			WarzoneIV = {
-				BigCrystal1 = 50175,
-				BigCrystal2 = 50176,
-				MediumCrystal1 = 50177,
-				MediumCrystal2 = 50178,
-				SmallCrystal1 = 50179,
-				SmallCrystal2 = 50180,
-			},
-		},
-		Bosses = {
-			TheCountOfTheCore = 50185,
-			TheDukeOfTheDepths = 50186,
-			TheBaronFromBelow = 50187,
-			TheCountOfTheCoreAchiev = 50188,
-			TheDukeOfTheDepthsAchiev = 50189,
-			TheBaronFromBelowAchiev = 50190,
-			LastAchievement = 50191,
-		},
-	},
 	HeroRathleton = {
 		-- Reserved storage from 50400 - 50419
 		QuestLine = 50400,
@@ -2596,7 +2495,110 @@ Storage = {
 			},
 		},
 		U11_50 = { -- update 11.50 - Reserved Storages 45851 - 46000
-			DangerousDepths = {},
+			DangerousDepths = {
+				Questline = 45851,
+				Dwarves = {
+					Points = 50081,
+					Home = 50082,
+					Subterranean = 50083,
+					LostExiles = 50084,
+					Prisoners = 50085,
+					Organisms = 50086,
+					TimeTaskHome = 50087,
+					TimeTaskSubterranean = 50088,
+				},
+				Scouts = {
+					Points = 50090,
+					Diremaw = 50091,
+					Growth = 50092,
+					DiremawsCount = 50093,
+					GnomishChest = 50094,
+					BarrelCount = 50095,
+					FirstBarrel = 50096,
+					SecondBarrel = 50097,
+					ThirdBarrel = 50098,
+					FourthBarrel = 50099,
+					FifthBarrel = 50100,
+					TimeTaskDiremaws = 50101,
+					TimeTaskGrowth = 50102,
+					Barrel = 50103,
+					BarrelTimer = 50104,
+				},
+				Gnomes = {
+					Points = 50115,
+					Ordnance = 50116,
+					Measurements = 50117,
+					Charting = 50118,
+					GnomeChartChest = 50119,
+					GnomeChartPaper = 50120,
+					GnomesCount = 50121,
+					CrawlersCount = 50122,
+					LocationA = 50123,
+					LocationB = 50124,
+					LocationC = 50125,
+					LocationD = 50126,
+					LocationE = 50127,
+					LocationCount = 50128,
+					OldGate = 50129,
+					TheGaze = 50130,
+					LostRuin = 50131,
+					Outpost = 50132,
+					Bastion = 50133,
+					BrokenTower = 50134,
+					ChartingCount = 50135,
+					TimeTaskOrdnance = 50136,
+					TimeTaskMeasurements = 50137,
+					TimeTaskCharting = 50138,
+				},
+				Access = {
+					LavaPumpWarzoneVI = 50139,
+					TimerWarzoneVI = 50140,
+					LavaPumpWarzoneV = 50141,
+					TimerWarzoneV = 50142,
+					LavaPumpWarzoneIV = 50143,
+					TimerWarzoneIV = 50144,
+				},
+				Crystals = {
+					WarzoneVI = {
+						BigCrystal1 = 50155,
+						BigCrystal2 = 50156,
+						MediumCrystal1 = 50157,
+						MediumCrystal2 = 50158,
+						SmallCrystal1 = 50159,
+						SmallCrystal2 = 50160,
+					},
+					WarzoneV = {
+						BigCrystal1 = 50165,
+						BigCrystal2 = 50166,
+						MediumCrystal1 = 50167,
+						MediumCrystal2 = 50168,
+						SmallCrystal1 = 50169,
+						SmallCrystal2 = 50170,
+					},
+					WarzoneIV = {
+						BigCrystal1 = 50175,
+						BigCrystal2 = 50176,
+						MediumCrystal1 = 50177,
+						MediumCrystal2 = 50178,
+						SmallCrystal1 = 50179,
+						SmallCrystal2 = 50180,
+					},
+				},
+				Bosses = {
+					TheCountOfTheCore = 50185,
+					TheDukeOfTheDepths = 50186,
+					TheBaronFromBelow = 50187,
+					TheCountOfTheCoreAchiev = 50188,
+					TheDukeOfTheDepthsAchiev = 50189,
+					TheBaronFromBelowAchiev = 50190,
+					LastAchievement = 50191,
+				},
+				Geodes = {
+					WarzoneVI = 60001,
+					WarzoneV = 60002,
+					WarzoneIV = 60003,
+				},
+			},
 			HiddenThreats = {
 				QuestLine = 45971,
 				RatterDoor = 45972,
@@ -2818,14 +2820,6 @@ Storage = {
 }
 
 GlobalStorage = {
-	DangerousDepths = {
-		-- Reserved storage from 60001 - 60009
-		Geodes = {
-			WarzoneVI = 60001,
-			WarzoneV = 60002,
-			WarzoneIV = 60003,
-		},
-	},
 	Feroxa = {
 		-- Reserved storage from 60020 - 60029
 		Chance = 60020,

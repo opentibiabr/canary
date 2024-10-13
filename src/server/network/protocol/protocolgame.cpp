@@ -9212,7 +9212,7 @@ void ProtocolGame::openStore() {
 	// Subcategories Bytes
 	for (const auto &category : storeCategories) {
 		if (!category.isSpecialCategory()) {
-			auto internalSubCatVector = category.getSubCategoriesVector();
+			const auto &internalSubCatVector = category.getSubCategoriesVector();
 			for (const auto &subCategory : internalSubCatVector) {
 				if (!subCategory.canRookgaardAccess() && playerVocationId == 0) {
 					continue;
@@ -9434,7 +9434,7 @@ void ProtocolGame::sendStoreHome() {
 	uint16_t disableReasonVectorLen = disableReasonVector.size();
 	msg.add<uint16_t>(disableReasonVectorLen); // Disable Reasons Vector Length
 	if (disableReasonVectorLen > 0) {
-		for (auto reason : disableReasonVector) {
+		for (const auto reason : disableReasonVector) {
 			msg.addString(reason);
 		}
 	}
@@ -9487,7 +9487,7 @@ void ProtocolGame::sendCategoryOffers(const Category* category, uint32_t redirec
 	uint16_t disableReasonVectorLen = disableReasonVector.size();
 	msg.add<uint16_t>(disableReasonVectorLen); // Disable Reasons Vector Length
 	if (disableReasonVectorLen > 0) {
-		for (const auto reason : disableReasonVector) {
+		for (const auto &reason : disableReasonVector) {
 			msg.addString(reason);
 		}
 	}

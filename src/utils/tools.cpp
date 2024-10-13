@@ -1628,7 +1628,7 @@ bool isExerciseWeapon(uint16_t itemId) {
 	return (itemId >= ITEM_EXERCISE_START && itemId <= ITEM_EXERCISE_END) || (itemId >= ITEM_NEW_EXERCISE_START && itemId <= ITEM_NEW_EXERCISE_END);
 }
 
-const uint32_t calculateBoostPrice(int32_t boostCounter) {
+uint32_t calculateBoostPrice(int32_t boostCounter) {
 	if (boostCounter > 5) {
 		return 360;
 	}

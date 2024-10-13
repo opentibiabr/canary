@@ -221,7 +221,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	if (baseOffer) {
 		baseOffer->addRelatedOffer(relatedOffer);
 	} else {
-		auto parentName = category->getCategoryName();
+		const auto &parentName = category->getCategoryName();
 		Offer newOffer(parentName, name, icon, id, price, type, state, count, validUntil, coinType, desc, outfitId, isMovable, { relatedOffer });
 		addOffer(id, newOffer);
 
@@ -285,7 +285,7 @@ void IOStore::addCategory(const Category &newCategory) {
 	m_categoryVector.push_back(newCategory);
 }
 
-const Category* IOStore::getCategoryByName(const std::string &categoryName) const {
+const Category* IOStore::getCategoryByName(std::string_view categoryName) const {
 	for (const auto &category : m_categoryVector) {
 		if (categoryName == category.getCategoryName()) {
 			return &category;
@@ -294,7 +294,7 @@ const Category* IOStore::getCategoryByName(const std::string &categoryName) cons
 	return nullptr;
 }
 
-const Category* IOStore::getSubCategoryByName(const std::string &subCategoryName) const {
+const Category* IOStore::getSubCategoryByName(std::string_view subCategoryName) const {
 	for (const auto &subCategory : m_subCategoryVector) {
 		if (subCategoryName == subCategory.getCategoryName()) {
 			return &subCategory;
@@ -325,7 +325,7 @@ std::vector<Offer> IOStore::getOffersContainingSubstring(const std::string &sear
 	auto lowerSearchString = asLowerCaseString(searchString);
 
 	for (const auto &[id, offer] : m_offersMap) {
-		auto currentOfferName = offer.getOfferName();
+		const auto& currentOfferName = offer.getOfferName();
 		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
 
 		if (lowerCurrentOfferName.find(lowerSearchString) != std::string::npos) {

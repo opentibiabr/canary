@@ -73,8 +73,8 @@ public:
 	static const std::map<std::string, States_t> stringToOfferStateMap;
 
 	const std::vector<Category> &getCategoryVector() const;
-	const Category* getCategoryByName(const std::string &categoryName) const;
-	const Category* getSubCategoryByName(const std::string &subCategoryName) const;
+	const Category* getCategoryByName(std::string_view categoryName) const;
+	const Category* getSubCategoryByName(std::string_view subCategoryName) const;
 	const Offer* getOfferById(uint32_t offerId) const;
 
 	const std::vector<BannerInfo> &getBannersVector() const;

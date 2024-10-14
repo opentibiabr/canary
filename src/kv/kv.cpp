@@ -7,10 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "kv/kv.hpp"
+
 #include "lib/di/container.hpp"
+#include "database/database.hpp"
 
 int64_t KV::lastTimestamp_ = 0;
 uint64_t KV::counter_ = 0;

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/decay/decay.hpp"
 
 #include "lib/di/container.hpp"
@@ -19,7 +17,7 @@ Decay &Decay::getInstance() {
 	return inject<Decay>();
 }
 
-void Decay::startDecay(std::shared_ptr<Item> item) {
+void Decay::startDecay(const std::shared_ptr<Item> &item) {
 	if (!item) {
 		return;
 	}
@@ -33,6 +31,8 @@ void Decay::startDecay(std::shared_ptr<Item> item) {
 	if (!item->canDecay() || decayState == DECAYING_TRUE) {
 		return;
 	}
+
+	g_logger().trace("Try decay item {}", item->getName());
 
 	const auto duration = item->getAttribute<int64_t>(ItemAttribute_t::DURATION);
 	if (duration <= 0 && item->hasAttribute(ItemAttribute_t::DURATION)) {
@@ -65,7 +65,10 @@ void Decay::startDecay(std::shared_ptr<Item> item) {
 	}
 }
 
-void Decay::stopDecay(std::shared_ptr<Item> item) {
+void Decay::stopDecay(const std::shared_ptr<Item> &item) {
+	if (!item) {
+		return;
+	}
 	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
 		auto timestamp = item->getAttribute<int64_t>(ItemAttribute_t::DURATION_TIMESTAMP);
 		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
@@ -148,7 +151,11 @@ void Decay::checkDecay() {
 	}
 }
 
-void Decay::internalDecayItem(std::shared_ptr<Item> item) {
+void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
+	if (!item) {
+		return;
+	}
+
 	const ItemType &it = Item::items[item->getID()];
 	// Remove the item and halt the decay process if a player triggers a bug where the item's decay ID matches its equip or de-equip transformation ID
 	if (it.id == it.transformEquipTo || it.id == it.transformDeEquipTo) {

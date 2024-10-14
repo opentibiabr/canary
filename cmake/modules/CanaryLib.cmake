@@ -22,13 +22,10 @@ add_subdirectory(utils)
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
 target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
 
-# Add public pre compiler header to lib, to pass down to related targets
-if (NOT SPEED_UP_BUILD_UNITY)
+# Conditional Precompiled Headers
+if(USE_PRECOMPILED_HEADER)
     target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
-endif()
-
-if(NOT SPEED_UP_BUILD_UNITY AND USE_PRECOMPILED_HEADERS)
-    target_compile_definitions(${PROJECT_NAME}_lib PUBLIC -DUSE_PRECOMPILED_HEADERS)
+    target_compile_definitions(${PROJECT_NAME}_lib PUBLIC USE_PRECOMPILED_HEADERS)
 endif()
 
 # *****************************************************************************
@@ -38,38 +35,21 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wno-deprecated-declarations)
 endif()
 
-# Sets the NDEBUG macro for RelWithDebInfo and Release configurations.
-# This disables assertions in these configurations, optimizing the code for performance
-# and reducing debugging overhead, while keeping debug information available for diagnostics.
+# Sets the NDEBUG macro for Release and RelWithDebInfo configurations.
 target_compile_definitions(${PROJECT_NAME}_lib PUBLIC
-    $<$<CONFIG:RelWithDebInfo>:NDEBUG>
-    $<$<CONFIG:Release>:NDEBUG>
+        $<$<CONFIG:Release>:NDEBUG>
+        $<$<CONFIG:RelWithDebInfo>:NDEBUG>
 )
 
-# === IPO ===
-if(MSVC)
-    target_compile_options(${PROJECT_NAME}_lib PRIVATE "/GL")
-    set_target_properties(${PROJECT_NAME}_lib PROPERTIES
-            STATIC_LINKER_FLAGS "/LTCG"
-            SHARED_LINKER_FLAGS "/LTCG"
-            MODULE_LINKER_FLAGS "/LTCG"
-            EXE_LINKER_FLAGS "/LTCG")
-else()
-    include(CheckIPOSupported)
-    check_ipo_supported(RESULT result)
-    if(result)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto=auto")
-        message(STATUS "IPO/LTO enabled with -flto=auto for non-MSVC compiler.")
-        set_property(TARGET ${PROJECT_NAME}_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-    else()
-        message(WARNING "IPO/LTO is not supported: ${output}")
-    endif()
-endif()
+# Configurar IPO e Linkagem Incremental
+configure_linking(${PROJECT_NAME}_lib)
 
 # === UNITY BUILD (compile time reducer) ===
 if(SPEED_UP_BUILD_UNITY)
     set_target_properties(${PROJECT_NAME}_lib PROPERTIES UNITY_BUILD ON)
-    log_option_enabled("Build unity for speed up compilation")
+    log_option_enabled("Build unity for speed up compilation for taget ${PROJECT_NAME}_lib")
+else()
+    log_option_disabled("Build unity")
 endif()
 
 # *****************************************************************************
@@ -82,13 +62,13 @@ target_include_directories(${PROJECT_NAME}_lib
         ${GMP_INCLUDE_DIRS}
         ${LUAJIT_INCLUDE_DIRS}
         ${PARALLEL_HASHMAP_INCLUDE_DIRS}
-        )
+)
 
 # *****************************************************************************
 # Target links to external dependencies
 # *****************************************************************************
 target_link_libraries(${PROJECT_NAME}_lib
-    PUBLIC
+        PUBLIC
         ${GMP_LIBRARIES}
         ${LUAJIT_LIBRARIES}
         CURL::libcurl
@@ -104,13 +84,11 @@ target_link_libraries(${PROJECT_NAME}_lib
         spdlog::spdlog
         unofficial::argon2::libargon2
         unofficial::libmariadb
-        unofficial::mariadbclient
         protobuf
 )
 
 if(FEATURE_METRICS)
     add_definitions(-DFEATURE_METRICS)
-
     target_link_libraries(${PROJECT_NAME}_lib
             PUBLIC
             opentelemetry-cpp::common
@@ -136,11 +114,10 @@ if (MSVC)
     else()
         set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
     endif()
-
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})
 else()
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC Threads::Threads)
-endif (MSVC)
+endif()
 
 # === OpenMP ===
 if(OPTIONS_ENABLE_OPENMP)
@@ -151,4 +128,13 @@ if(OPTIONS_ENABLE_OPENMP)
     endif()
 else()
     log_option_disabled("openmp")
+endif()
+
+# === Optimization Flags ===
+if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(${PROJECT_NAME}_lib PRIVATE -O3 -march=native)
+    elseif(MSVC)
+        target_compile_options(${PROJECT_NAME}_lib PRIVATE /O2)
+    endif()
 endif()

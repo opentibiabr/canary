@@ -10,7 +10,12 @@
 #pragma once
 
 #include "lib/thread/thread_pool.hpp"
-#include "kv/kv.hpp"
+
+class KVStore;
+class Logger;
+class Game;
+class Player;
+class Guild;
 
 class SaveManager {
 public:

@@ -68,8 +68,8 @@ local function addTravelKeyword(keyword, cost, destination, action, condition)
 end
 
 addTravelKeyword("carlin", 110, Position(32387, 31820, 6), function(player)
-	if player:getStorageValue(Storage.Postman.Mission01) == 1 then
-		player:setStorageValue(Storage.Postman.Mission01, 2)
+	if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission01) == 1 then
+		player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission01, 2)
 	end
 end)
 

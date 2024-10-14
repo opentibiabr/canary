@@ -22659,7 +22659,7 @@
 		<attribute key="maxtextlen" value="99"/>
 		<attribute key="weight" value="1000"/>
 	</item>
-	<item id="8152" article="the" name="Mexcalibur">
+	<item id="8152" article="the" name="mexcalibur">
 		<attribute key="description" value="Your name is carved on this mighty sword"/>
 		<attribute key="weight" value="1200"/>
 	</item>
@@ -39137,7 +39137,7 @@
 			<attribute key="slot" value="necklace"/>
 		</attribute>
 	</item>
-	<item id="19154" article="the" name="Mexcalibur">
+	<item id="19154" article="the" name="mexcalibur">
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="1200"/>
 	</item>
@@ -42064,7 +42064,12 @@
 		<attribute key="weight" value="400"/>
 	</item>
 	<item fromid="21205" toid="21207" name="RESERVED SPRITE"/>
-	<item fromid="21208" toid="21211" name="active probing device">
+	<item id="21208" article="a" name="strange probing device">
+		<attribute key="primarytype" value="quest items"/>
+		<attribute key="description" value="There is no evidence this thing even works. Even slightest movement may trigger its mechanisms."/>
+		<attribute key="weight" value="800"/>
+	</item>
+	<item fromid="21209" toid="21211" name="active probing device">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="description" value="This thing looks highly instable, you better find a place to deploy it soon"/>
 		<attribute key="weight" value="800"/>
@@ -44200,7 +44205,7 @@ Awarded by TibiaMisterios.com.br"/>
 		<attribute key="primarytype" value="event creatures"/>
 		<attribute key="weight" value="1500"/>
 	</item>
-	<item id="22160" article="the" name="Rite of Eternal Night">
+	<item id="22160" article="the" name="rite of eternal night">
 		<attribute key="description" value="It is a disturbing invocation of dark and heinous powers"/>
 		<attribute key="weight" value="50"/>
 	</item>
@@ -44215,7 +44220,7 @@ Awarded by TibiaMisterios.com.br"/>
 	<item fromid="22166" toid="22169" article="a" name="fountain">
 		<attribute key="primarytype" value="constructions"/>
 	</item>
-	<item id="22170" article="a" name="House Silversun's signet ring">
+	<item id="22170" article="a" name="house silversun's signet ring">
 		<attribute key="description" value="It depicts a small silver sun with many rays of light"/>
 		<attribute key="weight" value="450"/>
 		<attribute key="script" value="moveevent">
@@ -45287,8 +45292,10 @@ Awarded by TibiaMisterios.com.br"/>
 		</attribute>
 	</item>
 	<item id="22761" article="a" name="vortex">
+		<attribute key="primarytype" value="teleporters"/>
 		<attribute key="type" value="teleport"/>
 		<attribute key="description" value="It draws you nearer."/>
+		<attribute key="effect" value="teleport"/>
 	</item>
 	<item id="22762" article="a" name="maimer">
 		<attribute key="primarytype" value="club weapons"/>
@@ -64905,7 +64912,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="A fine but practically ancient wine. It's absolutely not advised to actually drink it"/>
 		<attribute key="weight" value="100"/>
 	</item>
-	<item id="34210" article="a" name="Goromaphone">
+	<item id="34210" article="a" name="goromaphone">
 		<attribute key="primarytype" value="fansite items"/>
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="6659"/>
@@ -74917,15 +74924,15 @@ Granted by TibiaGoals.com"/>
 	<item id="43374" name="vine">
 		<attribute key="type" value="ladder"/>
 	</item>
-	<item id="43510" name="tibiora's box replica">
+	<item id="43510" name="tibiora's box">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="4200"/>
 	</item>
-	<item id="43511" article="a" name="citizen doll replica">
+	<item id="43511" article="a" name="citizen doll">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="2200"/>
 	</item>
-	<item id="43517" article="a" name="shield of destiny replica">
+	<item id="43517" article="a" name="shield of destiny">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="6800"/>
 	</item>

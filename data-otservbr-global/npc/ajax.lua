@@ -132,12 +132,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 11)
 		end
 	elseif MsgContains(message, "axe") then
-		if player:getStorageValue(Storage.OutfitQuest.BarbarianAddon) == 16 and player:getStorageValue(Storage.OutfitQuest.BarbarianAddonWaitTimer) < os.time() then
+		if player:getStorageValue(Storage.Quest.U7_8.BarbarianOutfits.BarbarianAddon) == 16 and player:getStorageValue(Storage.Quest.U7_8.BarbarianOutfits.BarbarianAddonWaitTimer) < os.time() then
 			npcHandler:say("Axe is done! For you. Take. Wear like me.", npc, creature)
 			player:addOutfitAddon(147, 1)
 			player:addOutfitAddon(143, 1)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			player:setStorageValue(Storage.OutfitQuest.BarbarianAddon, 17)
+			player:setStorageValue(Storage.Quest.U7_8.BarbarianOutfits.BarbarianAddon, 17)
 			player:addAchievement("Brutal Politeness")
 		else
 			npcHandler:say("Axe is not done yet!", npc, creature)

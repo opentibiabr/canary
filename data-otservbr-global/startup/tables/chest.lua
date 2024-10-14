@@ -1064,14 +1064,14 @@ ChestUnique = {
 		itemPos = { x = 32782, y = 32910, z = 8 },
 		reward = { { 4827, 1 } },
 		weight = 0.20,
-		storage = Storage.QuestChests.WhisperMoss,
+		storage = Storage.Quest.U7_6.WhisperMoss,
 	},
 	[6103] = { -- Ape city
 		itemId = 2473,
 		itemPos = { x = 32935, y = 32886, z = 7 },
 		reward = { { 4831, 1 } },
 		weight = 2.00,
-		storage = Storage.QuestChests.OldParchment,
+		storage = Storage.Quest.U7_6.OldParchment,
 	},
 	[6104] = {
 		itemId = 2472,
@@ -1770,20 +1770,22 @@ ChestUnique = {
 	},
 	-- Witch House Quest
 	[6188] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32867, y = 31909, z = 8 },
 		weight = 23.30,
 		container = 2853,
 		reward = { { 3027, 2 }, { 3008, 1 }, { 3031, 100 } },
-		storage = Storage.QuestChests.WitchHouseQuest,
+		questName = "WitchHouseQuest",
 	},
 	-- Simon The Beggar's Favorite Staff
 	[6189] = {
+		useKV = true,
 		itemId = 2482,
 		itemPos = { x = 33167, y = 31600, z = 15 },
 		weight = 38.00,
 		reward = { { 6107, 1 } },
-		storage = Storage.QuestChests.SimonTheBeggarsFavoriteStaff,
+		questName = "SimonTheBeggarsFavoriteStaff",
 	},
 	-- Druid Outfit Quest - Wolf Tooth Chain
 	[6190] = {
@@ -2267,14 +2269,14 @@ ChestUnique = {
 		itemPos = { x = 32591, y = 31647, z = 3 },
 		reward = { { 3425, 1 } },
 		weight = 55.00,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.DwarvenShield,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.DwarvenShield,
 	},
 	[6254] = {
 		itemId = 2472,
 		itemPos = { x = 32590, y = 31647, z = 3 },
 		reward = { { 3282, 1 } },
 		weight = 54.00,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.MorningStar,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.MorningStar,
 	},
 	[6255] = {
 		itemId = 2434,
@@ -2282,7 +2284,7 @@ ChestUnique = {
 		container = 2853,
 		reward = { { 237, 1 }, { 3147, 1 }, { 3059, 1 } },
 		weight = 31.00,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.BP1,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP1,
 	},
 	[6256] = {
 		itemId = 2434,
@@ -2290,7 +2292,7 @@ ChestUnique = {
 		container = 2853,
 		reward = { { 3028, 2 }, { 3031, 100 } },
 		weight = 18.20,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.BP2,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP2,
 	},
 	-- To Outfox a Fox Quest
 	[6257] = {
@@ -2298,7 +2300,7 @@ ChestUnique = {
 		itemPos = { x = 32467, y = 31970, z = 5 },
 		reward = { { 139, 1 } },
 		weight = 7.00,
-		storage = Storage.TibiaTales.ToOutfoxAFoxQuest.MiningHelmet,
+		storage = Storage.Quest.U8_1.ToOutfoxAFoxQuest.MiningHelmet,
 	},
 	-- Waterfall Quest
 	[6258] = {
@@ -2523,7 +2525,7 @@ ChestUnique = {
 		itemPos = { x = 33004, y = 31530, z = 10 },
 		reward = { { 11699, 1 } },
 		weight = 15.00,
-		storage = Storage.TibiaTales.AnInterestInBotany.BotanyAlmanach,
+		storage = Storage.Quest.U8_6.AnInterestInBotany.BotanyAlmanach,
 	},
 	-- Wrath of the Emperor Quest
 	[6297] = {
@@ -2563,6 +2565,61 @@ ChestUnique = {
 		itemPos = { x = 32138, y = 32171, z = 3 },
 		reward = { { 3725, 5 } },
 		questName = "Rookgaard05BrownMushrooms",
+	},
+	-- Dark Trails Quest
+	[6302] = {
+		itemId = 2469,
+		itemPos = { x = 33457, y = 32073, z = 8 },
+		reward = { { 11450, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U10_50.DarkTrails.RewardSmallNotebook,
+	},
+	[6303] = {
+		itemId = 2478,
+		itemPos = { x = 33468, y = 32083, z = 8 },
+		container = 2853,
+		reward = { { 21203, 5 }, { 21333, 1 } },
+		weight = 189.00,
+		storage = Storage.Quest.U10_50.DarkTrails.Reward05GlothAndBelongings,
+	},
+	[6304] = {
+		itemId = 2478,
+		itemPos = { x = 33487, y = 32085, z = 9 },
+		container = 2853,
+		reward = { { 21203, 10 }, { 21334, 1 } },
+		weight = 338.00,
+		storage = Storage.Quest.U10_50.DarkTrails.Reward10GlothAndBelongings,
+	},
+	-- Nightmare Teddy Quest
+	[6305] = {
+		useKV = true,
+		itemId = 2433,
+		itemPos = { x = 33444, y = 32605, z = 11 },
+		reward = { { 21982, 1 } },
+		weight = 6.00,
+		questName = "NightmareTeddyQuest",
+	},
+	-- Ferumbras' Ascension Quest
+	[6306] = {
+		itemId = 1983,
+		itemPos = { x = 33384, y = 32323, z = 12 },
+		reward = { { 22160, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.TheRiteOfEternalNight,
+	},
+	[6307] = {
+		itemId = 1986,
+		itemPos = { x = 33393, y = 32373, z = 11 },
+		reward = { { 22158, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.StoneCoffinsBones,
+	},
+	[6309] = {
+		itemId = 21818,
+		itemPos = { x = 33408, y = 32396, z = 11 },
+		reward = { { 9685, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.VampireTeeth,
 	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest

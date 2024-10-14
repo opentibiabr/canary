@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "declarations.hpp"
 #include "creatures/combat/combat.hpp"
 #include "lua/creature/events.hpp"
@@ -289,7 +287,7 @@ bool Combat::isInPvpZone(std::shared_ptr<Creature> attacker, std::shared_ptr<Cre
 }
 
 bool Combat::isProtected(std::shared_ptr<Player> attacker, std::shared_ptr<Player> target) {
-	uint32_t protectionLevel = g_configManager().getNumber(PROTECTION_LEVEL, __FUNCTION__);
+	uint32_t protectionLevel = g_configManager().getNumber(PROTECTION_LEVEL);
 	if (target->getLevel() < protectionLevel || attacker->getLevel() < protectionLevel) {
 		return true;
 	}
@@ -1008,17 +1006,17 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 		setParam(COMBAT_PARAM_BLOCKARMOR, true);
 	};
 
-	setChainCallback(g_configManager().getNumber(COMBAT_CHAIN_TARGETS, __FUNCTION__), 1, true);
+	setChainCallback(g_configManager().getNumber(COMBAT_CHAIN_TARGETS), 1, true);
 
 	switch (weaponType) {
 		case WEAPON_SWORD:
-			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_SWORD, __FUNCTION__), MELEE_ATK_SWORD, CONST_ME_SLASH);
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_SWORD), MELEE_ATK_SWORD, CONST_ME_SLASH);
 			break;
 		case WEAPON_CLUB:
-			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_CLUB, __FUNCTION__), MELEE_ATK_CLUB, CONST_ME_BLACK_BLOOD);
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_CLUB), MELEE_ATK_CLUB, CONST_ME_BLACK_BLOOD);
 			break;
 		case WEAPON_AXE:
-			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_AXE, __FUNCTION__), MELEE_ATK_AXE, CONST_ANI_WHIRLWINDAXE);
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_AXE), MELEE_ATK_AXE, CONST_ANI_WHIRLWINDAXE);
 			break;
 	}
 
@@ -1061,7 +1059,7 @@ bool Combat::doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Cre
 	int i = 0;
 	for (const auto &[from, toVector] : targets) {
 		auto combat = this;
-		auto delay = i * std::max<int32_t>(50, g_configManager().getNumber(COMBAT_CHAIN_DELAY, __FUNCTION__));
+		auto delay = i * std::max<int32_t>(50, g_configManager().getNumber(COMBAT_CHAIN_DELAY));
 		++i;
 		for (auto to : toVector) {
 			auto nextTarget = g_game().getCreatureByID(to);

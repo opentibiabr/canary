@@ -113,7 +113,7 @@ local function playerAddContainerItem(params, item)
 	else
 		local rewardItem = reward:addItem(params.itemid, params.count)
 		local attribute = AttributeTable[item.uid]
-		if attribute then
+		if attribute and rewardItem then
 			rewardItem:setAttribute(ITEM_ATTRIBUTE_TEXT, attribute.text)
 		end
 	end

@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/game.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -60,7 +58,8 @@ int MonsterFunctions::luaMonsterGetType(lua_State* L) {
 }
 
 int MonsterFunctions::luaMonsterSetType(lua_State* L) {
-	// monster:setType(name or raceid)
+	// monster:setType(name or raceid, restoreHealth = false)
+	bool restoreHealth = getBoolean(L, 3, false);
 	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);
 	if (monster) {
 		std::shared_ptr<MonsterType> mType = nullptr;
@@ -81,8 +80,14 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		monster->defaultOutfit = mType->info.outfit;
 		monster->currentOutfit = mType->info.outfit;
 		monster->skull = mType->info.skull;
-		monster->health = mType->info.health * mType->getHealthMultiplier();
-		monster->healthMax = mType->info.healthMax * mType->getHealthMultiplier();
+		if (restoreHealth) {
+			auto multiplier = mType->getHealthMultiplier();
+			monster->health = mType->info.health * multiplier;
+			monster->healthMax = mType->info.healthMax * multiplier;
+		} else {
+			monster->health = monster->getHealth();
+			monster->healthMax = monster->getMaxHealth();
+		}
 		monster->baseSpeed = mType->getBaseSpeed();
 		monster->internalLight = mType->info.light;
 		monster->hiddenHealth = mType->info.hiddenHealth;
@@ -364,7 +369,7 @@ int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
 	monster->setMasterPos(pos);
 
 	SpawnMonster &spawnMonster = g_game().map.spawnsMonster.getspawnMonsterList().emplace_back(pos, 5);
-	uint32_t interval = getNumber<uint32_t>(L, 2, 90) * 1000 * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN, __FUNCTION__) * eventschedule));
+	uint32_t interval = getNumber<uint32_t>(L, 2, 90) * 1000 * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN) * eventschedule));
 	spawnMonster.addMonster(monster->mType->typeName, pos, DIRECTION_NORTH, static_cast<uint32_t>(interval));
 	spawnMonster.startSpawnMonsterCheck();
 
@@ -628,5 +633,78 @@ int MonsterFunctions::luaMonsterHazardDefenseBoost(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterAddReflectElement(lua_State* L) {
+	// monster:addReflectElement(type, percent)
+	const auto &monster = getUserdataShared<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	CombatType_t element = getNumber<CombatType_t>(L, 2);
+	monster->addReflectElement(element, getNumber<int32_t>(L, 3));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterAddDefense(lua_State* L) {
+	// monster:addDefense(defense)
+	const auto &monster = getUserdataShared<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->addDefense(getNumber<int32_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterGetDefense(lua_State* L) {
+	// monster:getDefense(defense)
+	const auto &monster = getUserdataShared<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushnumber(L, monster->getDefense());
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterIsDead(lua_State* L) {
+	// monster:isDead()
+	const auto &monster = getUserdataShared<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushBoolean(L, monster->isDead());
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterImmune(lua_State* L) {
+	// to get: isImmune = monster:immune()
+	// to set and get: newImmuneBool = monster:immune(newImmuneBool)
+	const auto &monster = getUserdataShared<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	if (lua_gettop(L) > 1) {
+		monster->setImmune(getBoolean(L, 2));
+	}
+
+	pushBoolean(L, monster->isImmune());
 	return 1;
 }

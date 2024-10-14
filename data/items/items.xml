@@ -4027,6 +4027,9 @@
 			<attribute key="count" value="2"/>
 			<attribute key="damage" value="20"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="2001" article="an" name="unlit campfire">
 		<attribute key="primarytype" value="illumination"/>
@@ -4342,6 +4345,9 @@
 		</attribute>
 		<attribute key="duration" value="120"/>
 		<attribute key="decayTo" value="2132"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="2132" article="a" name="fire field">
 		<attribute key="type" value="magicfield"/>
@@ -20590,6 +20596,9 @@
 		<attribute key="field" value="fire">
 			<attribute key="damage" value="300"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
 	<item fromid="7474" toid="7475" article="a" name="sarcophagus">
@@ -22650,7 +22659,7 @@
 		<attribute key="maxtextlen" value="99"/>
 		<attribute key="weight" value="1000"/>
 	</item>
-	<item id="8152" article="the" name="Mexcalibur">
+	<item id="8152" article="the" name="mexcalibur">
 		<attribute key="description" value="Your name is carved on this mighty sword"/>
 		<attribute key="weight" value="1200"/>
 	</item>
@@ -26310,6 +26319,9 @@
 			<attribute key="count" value="7"/>
 			<attribute key="damage" value="10"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
 	<item id="10070" article="a" name="fire field">
@@ -26319,6 +26331,9 @@
 			<attribute key="count" value="7"/>
 			<attribute key="damage" value="10"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
 	<item id="10071" article="a" name="fire field">
@@ -26327,6 +26342,9 @@
 			<attribute key="ticks" value="10000"/>
 			<attribute key="count" value="7"/>
 			<attribute key="damage" value="10"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 		<attribute key="replaceable" value="0"/>
 	</item>
@@ -39119,7 +39137,7 @@
 			<attribute key="slot" value="necklace"/>
 		</attribute>
 	</item>
-	<item id="19154" article="the" name="Mexcalibur">
+	<item id="19154" article="the" name="mexcalibur">
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="1200"/>
 	</item>
@@ -42046,7 +42064,12 @@
 		<attribute key="weight" value="400"/>
 	</item>
 	<item fromid="21205" toid="21207" name="RESERVED SPRITE"/>
-	<item fromid="21208" toid="21211" name="active probing device">
+	<item id="21208" article="a" name="strange probing device">
+		<attribute key="primarytype" value="quest items"/>
+		<attribute key="description" value="There is no evidence this thing even works. Even slightest movement may trigger its mechanisms."/>
+		<attribute key="weight" value="800"/>
+	</item>
+	<item fromid="21209" toid="21211" name="active probing device">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="description" value="This thing looks highly instable, you better find a place to deploy it soon"/>
 		<attribute key="weight" value="800"/>
@@ -44182,7 +44205,7 @@ Awarded by TibiaMisterios.com.br"/>
 		<attribute key="primarytype" value="event creatures"/>
 		<attribute key="weight" value="1500"/>
 	</item>
-	<item id="22160" article="the" name="Rite of Eternal Night">
+	<item id="22160" article="the" name="rite of eternal night">
 		<attribute key="description" value="It is a disturbing invocation of dark and heinous powers"/>
 		<attribute key="weight" value="50"/>
 	</item>
@@ -44197,7 +44220,7 @@ Awarded by TibiaMisterios.com.br"/>
 	<item fromid="22166" toid="22169" article="a" name="fountain">
 		<attribute key="primarytype" value="constructions"/>
 	</item>
-	<item id="22170" article="a" name="House Silversun's signet ring">
+	<item id="22170" article="a" name="house silversun's signet ring">
 		<attribute key="description" value="It depicts a small silver sun with many rays of light"/>
 		<attribute key="weight" value="450"/>
 		<attribute key="script" value="moveevent">
@@ -45269,8 +45292,10 @@ Awarded by TibiaMisterios.com.br"/>
 		</attribute>
 	</item>
 	<item id="22761" article="a" name="vortex">
+		<attribute key="primarytype" value="teleporters"/>
 		<attribute key="type" value="teleport"/>
 		<attribute key="description" value="It draws you nearer."/>
+		<attribute key="effect" value="teleport"/>
 	</item>
 	<item id="22762" article="a" name="maimer">
 		<attribute key="primarytype" value="club weapons"/>
@@ -45774,12 +45799,18 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="23366" article="an" name="energy trap">
 		<attribute key="type" value="magicfield"/>
 		<attribute key="field" value="energy">
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 	</item>
 	<item id="23367" article="a" name="toxic trap">
@@ -45788,6 +45819,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="23368" article="a" name="poison trap">
 		<attribute key="type" value="magicfield"/>
@@ -45795,6 +45829,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="5000"/>
 			<attribute key="damage" value="100"/>
 			<attribute key="start" value="5"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
 		</attribute>
 	</item>
 	<item id="23369" article="a" name="blade trap"/>
@@ -58245,6 +58282,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 			<attribute key="ticks" value="10000"/>
 			<attribute key="damage" value="25"/>
 		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="eventType" value="stepin"/>
+		</attribute>
 	</item>
 	<item id="31381" name="nothing">
 		<attribute key="primarytype" value="natural tiles"/>
@@ -62032,9 +62072,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	<item id="32767" article="a" name="unknown">
 		<attribute key="weight" value="500"/>
 	</item>
-	<item id="32768" article="a" name="unknown">
-		<attribute key="weight" value="500"/>
-	</item>
+	<item id="32768" article="a" name="sandtimer"/>
 	<item id="32769" article="a" name="white gem">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="showCount" value="1"/>
@@ -62476,6 +62514,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="type" value="teleport"/>
 		<attribute key="effect" value="teleport"/>
 	</item>
+	<item fromid="33018" toid="33025" name="shrine" editorsuffix="(soul war quest)"/>
 	<item fromid="33026" toid="33027" name="heart lamp">
 		<attribute key="primarytype" value="light sources"/>
 		<attribute key="wrapableto" value="23398"/>
@@ -62891,28 +62930,25 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="950"/>
 	</item>
-	<item id="33783" article="a" name="broken mirror"/>
+	<item id="33783" article="a" name="broken mirror">
+		<attribute key="duration" value="30"/>
+		<attribute key="decayTo" value="33782"/>
+	</item>
 	<item id="33784" article="a" name="mirror">
 		<attribute key="primarytype" value="tools"/>
 		<attribute key="weight" value="950"/>
 	</item>
 	<item id="33785" article="a" name="broken mirror"/>
 	<item fromid="33788" toid="33789" article="a" name="wall"/>
-	<item id="33790" article="a" name="large crystal teleporter">
-		<attribute key="primarytype" value="teleporters"/>
-		<attribute key="type" value="teleport"/>
-		<attribute key="effect" value="teleport"/>
+	<item id="33790" article="a" name="inactive vortex">
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="33791"/>
 	</item>
-	<item id="33791" article="a" name="water vortex">
-		<attribute key="primarytype" value="teleporters"/>
-	</item>
-	<item id="33792" article="a" name="sulphur puddle">
-		<attribute key="primarytype" value="fields"/>
-		<attribute key="weight" value="60"/>
-	</item>
+	<item id="33791" article="a" name="active spirit vortex"/>
+	<item id="33792" article="a" name="condensed remorse"/>
 	<item id="33793" article="a" name="sorrow">
 		<attribute key="primarytype" value="quest items"/>
-		<attribute key="weight" value="60"/>
+		<attribute key="weight" value="50"/>
 	</item>
 	<item id="33794" article="a" name="dead bony sea devil">
 		<attribute key="duration" value="600"/>
@@ -63066,6 +63102,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="decayTo" value="33824"/>
 		<attribute key="containersize" value="48"/>
 	</item>
+	<item id="33854" article="the" name="blood of cloak of Terror">
+		<attribute key="duration" value="600"/>
+		<attribute key="decayTo" value="34006"/>
+	</item>
 	<item id="33856" article="a" name="dead goshnar's cruelty">
 		<attribute key="duration" value="600"/>
 		<attribute key="decayTo" value="0"/>
@@ -63161,6 +63201,11 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="decayTo" value="33874"/>
 		<attribute key="containersize" value="48"/>
 	</item>
+	<item id="33876" article="a" name="dead weeping soul">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="33877" article="a" name="searing fire"/>
 	<item id="33886" article="a" name="dead goshnars megalomania">
 		<attribute key="duration" value="600"/>
 		<attribute key="decayTo" value="0"/>
@@ -63180,6 +63225,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="decayTo" value="33888"/>
 		<attribute key="containersize" value="48"/>
 	</item>
+	<item id="33890" article="a" name="greedy maw"/>
 	<item id="33891" article="a" name="some mortal essence"/>
 	<item id="33892" name="love elixir">
 		<attribute key="primarytype" value="fansite items"/>
@@ -63379,6 +63425,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="A goblin zombie is stuffed into it"/>
 		<attribute key="weight" value="5500"/>
 	</item>
+	<item id="33949" name="dead aspect of power">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
 	<item id="33950" name="cleansed sanity">
 		<attribute key="description" value="Can be used to douse Goshnar's madness"/>
 		<attribute key="weight" value="101"/>
@@ -63524,6 +63574,19 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="33982" name="crawler's essence" plural="crawler's essences">
 		<attribute key="weight" value="45"/>
+	</item>
+	<item id="33984" article="a" name="necromantic remains">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="34005" name="pulsating energy"/>
+	<item id="34006" article="the" name="blood of cloak of Terror">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="34007"/>
+	</item>
+	<item id="34007" article="the" name="blood of cloak of Terror">
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="34008" name="white silk flower">
 		<attribute key="primarytype" value="plants and herbs"/>
@@ -64262,7 +64325,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	<item id="34109" article="a" name="bag you desire">
 		<attribute key="primarytype" value="valuables"/>
 		<attribute key="description" value="It contains the most powerful artifacts from the depths of Zarganash's darkest realms"/>
-		<attribute key="weight" value="30"/>
+		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="34110" article="a" name="sandstone statue">
 		<attribute key="primarytype" value="statues"/>
@@ -64849,7 +64912,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="A fine but practically ancient wine. It's absolutely not advised to actually drink it"/>
 		<attribute key="weight" value="100"/>
 	</item>
-	<item id="34210" article="a" name="Goromaphone">
+	<item id="34210" article="a" name="goromaphone">
 		<attribute key="primarytype" value="fansite items"/>
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="6659"/>
@@ -74750,12 +74813,31 @@ Granted by TibiaGoals.com"/>
 		<attribute key="transformOnUse" value="42367"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
+	<item id="42390" name="stairs"/>
+	<item id="42391" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="42392" name="stairs"/>
+	<item id="42393" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="42394" name="stairs"/>
+	<item id="42395" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="42396" name="stairs"/>
+	<item id="42397" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item id="42618" name="stairs"/>
 	<item id="42619" name="stairs">
 		<attribute key="floorchange" value="north"/>
 	</item>
+	<item id="42620" name="stairs"/>
 	<item id="42621" name="stairs">
 		<attribute key="floorchange" value="west"/>
 	</item>
+	<item id="42622" name="stairs"/>
 	<item id="42623" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
@@ -74790,6 +74872,22 @@ Granted by TibiaGoals.com"/>
 	<item id="42632" name="stairs">
 		<attribute key="floorchange" value="east"/>
 	</item>
+	<item id="42964" name="stairs"/>
+	<item id="42965" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="42966" name="stairs"/>
+	<item id="42967" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="42968" name="stairs"/>
+	<item id="42969" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="42970" name="stairs"/>
+	<item id="42971" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
 	<item id="43952" article="a" name="closed door">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
@@ -74808,6 +74906,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="type" value="door"/>
 		<attribute key="transformOnUse" value="43953"/>
 	</item>
+	<item id="43129" name="stairs"/>
+	<item id="43130" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="43131" name="stairs"/>
+	<item id="43132" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="43133" name="stairs"/>
 	<item id="43134" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
@@ -74817,15 +74924,15 @@ Granted by TibiaGoals.com"/>
 	<item id="43374" name="vine">
 		<attribute key="type" value="ladder"/>
 	</item>
-	<item id="43510" name="tibiora's box replica">
+	<item id="43510" name="tibiora's box">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="4200"/>
 	</item>
-	<item id="43511" article="a" name="citizen doll replica">
+	<item id="43511" article="a" name="citizen doll">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="2200"/>
 	</item>
-	<item id="43517" article="a" name="shield of destiny replica">
+	<item id="43517" article="a" name="shield of destiny">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="6800"/>
 	</item>

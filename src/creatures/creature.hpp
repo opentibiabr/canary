@@ -255,6 +255,10 @@ public:
 		return creatureIcons.at(key);
 	}
 
+	bool hasIcon(const std::string &key) const {
+		return creatureIcons.contains(key);
+	}
+
 	void setIcon(const std::string &key, CreatureIcon icon) {
 		creatureIcons[key] = icon;
 		iconChanged();
@@ -609,7 +613,7 @@ public:
 	 * @param useCharges Indicates whether charges should be considered.
 	 * @return The reflection percentage for the specified combat type.
 	 */
-	virtual int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
+	virtual double_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
 
 	/**
 	 * @brief Retrieves the flat reflection value for a given combat type.
@@ -707,6 +711,10 @@ protected:
 		return false;
 	}
 
+	virtual bool isDead() const {
+		return false;
+	}
+
 	static constexpr int32_t mapWalkWidth = MAP_MAX_VIEW_PORT_X * 2 + 1;
 	static constexpr int32_t mapWalkHeight = MAP_MAX_VIEW_PORT_Y * 2 + 1;
 	static constexpr int32_t maxWalkCacheWidth = (mapWalkWidth - 1) / 2;
@@ -752,8 +760,8 @@ protected:
 	int32_t health = 1000;
 	int32_t healthMax = 1000;
 
-	uint16_t manaShield = 0;
-	uint16_t maxManaShield = 0;
+	uint32_t manaShield = 0;
+	uint32_t maxManaShield = 0;
 	int32_t varBuffs[BUFF_LAST + 1] = { 100, 100, 100 };
 
 	std::array<int32_t, COMBAT_COUNT> reflectPercent = { 0 };

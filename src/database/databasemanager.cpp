@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "config/configmanager.hpp"
 #include "database/databasemanager.hpp"
 #include "lua/functions/core/libs/core_libs_functions.hpp"
@@ -18,7 +16,7 @@ bool DatabaseManager::optimizeTables() {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 
-	query << "SELECT `TABLE_NAME` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB, __FUNCTION__)) << " AND `DATA_FREE` > 0";
+	query << "SELECT `TABLE_NAME` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB)) << " AND `DATA_FREE` > 0";
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
 		return false;
@@ -47,14 +45,14 @@ bool DatabaseManager::tableExists(const std::string &tableName) {
 	Database &db = Database::getInstance();
 
 	std::ostringstream query;
-	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB, __FUNCTION__)) << " AND `TABLE_NAME` = " << db.escapeString(tableName) << " LIMIT 1";
+	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB)) << " AND `TABLE_NAME` = " << db.escapeString(tableName) << " LIMIT 1";
 	return db.storeQuery(query.str()).get() != nullptr;
 }
 
 bool DatabaseManager::isDatabaseSetup() {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
-	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB, __FUNCTION__));
+	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB));
 	return db.storeQuery(query.str()).get() != nullptr;
 }
 
@@ -86,7 +84,7 @@ void DatabaseManager::updateDatabase() {
 	int32_t version = getDatabaseVersion();
 	do {
 		std::ostringstream ss;
-		ss << g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/migrations/" << version << ".lua";
+		ss << g_configManager().getString(DATA_DIRECTORY) + "/migrations/" << version << ".lua";
 		if (luaL_dofile(L, ss.str().c_str()) != 0) {
 			g_logger().error("DatabaseManager::updateDatabase - Version: {}"
 			                 "] {}",

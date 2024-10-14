@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/functions/items/weapon_functions.hpp"
 
 #include "game/game.hpp"

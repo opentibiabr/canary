@@ -417,7 +417,7 @@ public:
 		magicShieldCapacityPercent += value;
 	}
 
-	int32_t getReflectPercent(CombatType_t combat, bool useCharges = false) const override;
+	double_t getReflectPercent(CombatType_t combat, bool useCharges = false) const override;
 
 	int32_t getReflectFlat(CombatType_t combat, bool useCharges = false) const override;
 
@@ -627,7 +627,7 @@ public:
 	time_t getPremiumLastDay() const;
 
 	bool isVip() const {
-		return g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && (getPremiumDays() > 0 || getPremiumLastDay() > getTimeNow());
+		return g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && (getPremiumDays() > 0 || getPremiumLastDay() > getTimeNow());
 	}
 
 	void setTibiaCoins(int32_t v);
@@ -1422,6 +1422,8 @@ public:
 	void sendClosePrivate(uint16_t channelId);
 	void sendIcons();
 	void sendIconBakragore(const IconBakragore icon);
+	void removeBakragoreIcons();
+	void removeBakragoreIcon(const IconBakragore icon);
 	void sendClientCheck() const {
 		if (client) {
 			client->sendClientCheck();
@@ -2145,13 +2147,13 @@ public:
 	}
 
 	void sendPreyTimeLeft(const std::unique_ptr<PreySlot> &slot) const {
-		if (g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__) && client) {
+		if (g_configManager().getBoolean(PREY_ENABLED) && client) {
 			client->sendPreyTimeLeft(slot);
 		}
 	}
 
 	void reloadPreySlot(PreySlot_t slotid) {
-		if (g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__) && client) {
+		if (g_configManager().getBoolean(PREY_ENABLED) && client) {
 			client->sendPreyData(getPreySlotById(slotid));
 			client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
 		}
@@ -2201,7 +2203,7 @@ public:
 	}
 
 	uint32_t getPreyRerollPrice() const {
-		return getLevel() * g_configManager().getNumber(PREY_REROLL_PRICE_LEVEL, __FUNCTION__);
+		return getLevel() * g_configManager().getNumber(PREY_REROLL_PRICE_LEVEL);
 	}
 
 	std::vector<uint16_t> getPreyBlackList() const {
@@ -2221,7 +2223,7 @@ public:
 	}
 
 	const std::unique_ptr<PreySlot> &getPreyWithMonster(uint16_t raceId) const {
-		if (!g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__)) {
+		if (!g_configManager().getBoolean(PREY_ENABLED)) {
 			return PreySlotNull;
 		}
 
@@ -2249,7 +2251,7 @@ public:
 	}
 
 	void reloadTaskSlot(PreySlot_t slotid) {
-		if (g_configManager().getBoolean(TASK_HUNTING_ENABLED, __FUNCTION__) && client) {
+		if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
 			client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));
 			client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
 		}
@@ -2317,11 +2319,11 @@ public:
 	}
 
 	uint32_t getTaskHuntingRerollPrice() const {
-		return getLevel() * g_configManager().getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL, __FUNCTION__);
+		return getLevel() * g_configManager().getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL);
 	}
 
 	const std::unique_ptr<TaskHuntingSlot> &getTaskHuntingWithCreature(uint16_t raceId) const {
-		if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED, __FUNCTION__)) {
+		if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 			return TaskHuntingSlotNull;
 		}
 
@@ -2569,10 +2571,10 @@ public:
 	}
 
 	bool checkAutoLoot(bool isBoss) const {
-		if (!g_configManager().getBoolean(AUTOLOOT, __FUNCTION__)) {
+		if (!g_configManager().getBoolean(AUTOLOOT)) {
 			return false;
 		}
-		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED, __FUNCTION__) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY, __FUNCTION__) && !isVip()) {
+		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY) && !isVip()) {
 			return false;
 		}
 
@@ -2740,7 +2742,7 @@ private:
 	std::map<uint8_t, uint16_t> maxValuePerSkill = {
 		{ SKILL_LIFE_LEECH_CHANCE, 100 },
 		{ SKILL_MANA_LEECH_CHANCE, 100 },
-		{ SKILL_CRITICAL_HIT_CHANCE, 100 * g_configManager().getNumber(CRITICALCHANCE, "std::map::maxValuePerSkill") }
+		{ SKILL_CRITICAL_HIT_CHANCE, 100 * g_configManager().getNumber(CRITICALCHANCE) }
 	};
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
@@ -2942,7 +2944,7 @@ private:
 	bool marketMenu = false; // Menu option 'show in market'
 	bool exerciseTraining = false;
 	bool moved = false;
-	bool dead = false;
+	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
 
 	// Hazard system
@@ -2980,14 +2982,13 @@ private:
 
 	bool isPromoted() const;
 
-	bool onFistAttackSpeed = g_configManager().getBoolean(TOGGLE_ATTACK_SPEED_ONFIST, "Player.hpp::onFistAttackSpeed");
-	uint32_t MAX_ATTACK_SPEED = g_configManager().getNumber(MAX_SPEED_ATTACKONFIST, "Player.hpp::MAX_ATTACK_SPEED");
-
 	uint32_t getAttackSpeed() const {
+		bool onFistAttackSpeed = g_configManager().getBoolean(TOGGLE_ATTACK_SPEED_ONFIST);
+		uint32_t MAX_ATTACK_SPEED = g_configManager().getNumber(MAX_SPEED_ATTACKONFIST);
 		if (onFistAttackSpeed) {
 			uint32_t baseAttackSpeed = vocation->getAttackSpeed();
 			uint32_t skillLevel = getSkillLevel(SKILL_FIST);
-			uint32_t attackSpeed = baseAttackSpeed - (skillLevel * g_configManager().getNumber(MULTIPLIER_ATTACKONFIST, __FUNCTION__));
+			uint32_t attackSpeed = baseAttackSpeed - (skillLevel * g_configManager().getNumber(MULTIPLIER_ATTACKONFIST));
 
 			if (attackSpeed < MAX_ATTACK_SPEED) {
 				attackSpeed = MAX_ATTACK_SPEED;
@@ -3012,10 +3013,10 @@ private:
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 
 	void setDead(bool isDead) {
-		dead = isDead;
+		m_isDead = isDead;
 	}
-	bool isDead() const {
-		return dead;
+	bool isDead() const override {
+		return m_isDead;
 	}
 
 	void triggerMomentum();

@@ -50,6 +50,16 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function greetCallback(npc, player)
+	if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask) == 2 then
+		npcHandler:setMessage(MESSAGE_GREET, "Thank god you are back!! Did you find....err...what we were talking about??")
+	else
+		npcHandler:setMessage(MESSAGE_GREET, "Be mourned, pilgrim in flesh. Be mourned in my tavern.")
+	end
+
+	return true
+end
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -58,28 +68,44 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local AritosTask = player:getStorageValue(Storage.TibiaTales.AritosTask)
-	-- START TASK
+	local AritosTask = player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask)
+
+	-- Check if the message contains "nomads"
 	if MsgContains(message, "nomads") then
-		if player:getStorageValue(Storage.TibiaTales.AritosTask) <= 0 and player:getItemCount(7533) >= 0 then
+		if AritosTask <= 0 and player:getItemCount(7533) > 0 then
 			npcHandler:say({
 				"What?? My name on a deathlist which you retrieved from a nomad?? Show me!! ...",
-				"Oh my god! They found me! You must help me! Please !!!!",
+				"Oh my god! They found me! You must help me! Please !!!! Are you willing to do that?",
 			}, npc, creature)
-			if player:getStorageValue(Storage.TibiaTales.DefaultStart) <= 0 then
-				player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
-			end
-			player:setStorageValue(Storage.TibiaTales.AritosTask, 1)
-			-- END TASK
-		elseif player:getStorageValue(Storage.TibiaTales.AritosTask) == 2 then
-			npcHandler:say({
-				"These are great news!! Thank you for your help! I don't have much, but without you I wouldn't have anything so please take this as a reward.",
-			}, npc, creature)
-			player:setStorageValue(Storage.TibiaTales.AritosTask, 3)
-			player:addItem(3035, 50)
+			npcHandler:setTopic(playerId, 1)
 		end
-		return true
+		-- Check if the message contains "yes"
+	elseif MsgContains(message, "yes") then
+		local topic = npcHandler:getTopic(playerId)
+		if topic == 1 then
+			npcHandler:say({
+				"Thank you thousand times! Well, I think I start telling you what I think they are after...",
+				"You have to know, I was one of them before I opened that shop here. Sure they fear about their hideout being revealed by me. Please go to the north, there is a small cave in the mountains with a rock in the middle. ...",
+				"If you stand in front of it, place a scimitar - which is the weapon of the nomads - left of you and make a sacrifice to the earth by pouring some water on the floor to your right. ...",
+				"The entrance to their hideout will be revealed in front of you. I don't know who is in charge there right now but please tell him that I won't spoil their secret...",
+				"... well, I just told you but anyway .... I won't tell it to anybody else. Now hurry up before they get here!!",
+			}, npc, creature)
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) <= 0 then
+				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			end
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask, 1)
+		elseif AritosTask == 2 then
+			npcHandler:say("And what did they say?? Do I have to give up everything here? Come on tell me!!", npc, creature)
+			npcHandler:setTopic(playerId, 2)
+		end
+		-- Check if the message contains "Acquitted" and topic is 2
+	elseif MsgContains(message, "Acquitted") and npcHandler:getTopic(playerId) == 2 then
+		npcHandler:say("These are great news!! Thank you for your help! I don't have much, but without you I wouldn't have anything so please take this as a reward.", npc, creature)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask, 3)
+		player:addItem(3035, 100)
 	end
+
+	return true
 end
 
 npcConfig.voices = {
@@ -88,11 +114,13 @@ npcConfig.voices = {
 	{ text = "Come in, have a drink and something to eat." },
 }
 
-npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:setMessage(MESSAGE_GREET, "Be mourned, pilgrim in flesh. Be mourned in my tavern.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Do visit us again.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Do visit us again.")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Sure, browse through my offers.")
+
+npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+npcHandler:setCallback(CALLBACK_GREET, greetCallback)
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

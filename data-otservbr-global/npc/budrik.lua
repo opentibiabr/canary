@@ -58,40 +58,40 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if table.contains({ "mission", "quest" }, message:lower()) then
-		if player:getStorageValue(Storage.ToOutfoxAFoxQuest) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline) < 1 then
 			npcHandler:say({
 				"Funny that you are asking me for a mission! There is indeed something you can do for me. Ever heard about The Horned Fox? Anyway, yesterday his gang has stolen my mining helmet during a raid. ...",
 				"It belonged to my father and before that to my grandfather. That helmet is at least 600 years old! I need it back. Are you willing to help me?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.ToOutfoxAFoxQuest) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline) == 1 then
 			if player:removeItem(139, 1) then
-				player:setStorageValue(Storage.ToOutfoxAFoxQuest, 2)
+				player:setStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline, 2)
 				player:addItem(875, 1)
 				npcHandler:say("As I was just saying to the others, 'this brave fellow will bring me my mining helmet back' and here you are with it!! Here take my spare helmet, I don't need it anymore!", npc, creature)
 			else
 				npcHandler:say("We presume the hideout of The Horned Fox is somewhere in the south-west near the coast, good luck finding my mining helmet!", npc, creature)
 			end
-		elseif player:getStorageValue(Storage.ToOutfoxAFoxQuest) == 2 and player:getLevel() <= 40 and player:getStorageValue(Storage.KillingInTheNameOf.BudrikMinos) < 0 then
+		elseif player:getStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline) == 2 and player:getLevel() <= 40 and player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos) < 0 then
 			npcHandler:say({
 				"I am so angry I could spit grit! That damn {Horned Fox} and his attacks! Let's show those bull-heads that they have messed with the wrong people....",
 				"I want you to kill 5000 minotaurs - no matter where - for me and all the dwarfs of Kazordoon! Are you willing to do that?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif player:getStorageValue(Storage.KillingInTheNameOf.BudrikMinos) == 0 then
+		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount) >= 5000 then
 				npcHandler:say({
 					"By all that is holy! You are a truly great warrior! With much patience! I have just found out the location the hideout of The Horned Fox! I have marked the spot on your map so you can find it. Go there and slay him!! ...",
 					"BUT, you will have only this ONE chance to catch him! Good luck!",
 				}, npc, creature)
-				player:setStorageValue(Storage.KillingInTheNameOf.BudrikMinos, 1)
+				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos, 1)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.FoxCount, 0)
 			else
 				npcHandler:say("Come back when you have slain {5000 minotaurs!}", npc, creature)
 			end
-		elseif player:getStorageValue(Storage.KillingInTheNameOf.BudrikMinos) == 2 and player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.FoxCount) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos) == 2 and player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.FoxCount) == 1 then
 			npcHandler:say("It was very decent of you to help me, and I am thankful, really I am, but now I have to get back to my duties as a foreman.", npc, creature)
-		elseif player:getLevel() > 40 and player:getStorageValue(Storage.KillingInTheNameOf.BudrikMinos) < 0 then
+		elseif player:getLevel() > 40 and player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos) < 0 then
 			npcHandler:say("Well, I could need help with that damn Horned Fox and his gang, but I guess since you are rather experienced, killing minotaurs would bore you to death. I'll wait for someone else. But thanks!", npc, creature)
 		else
 			npcHandler:say("Hum... what, {task}?", npc, creature)
@@ -100,11 +100,14 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("I knew you have the guts for that task! We presume the hideout of The Horned Fox somewhere in the south-west near the coast. Good luck!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			player:setStorageValue(Storage.ToOutfoxAFoxQuest, 1)
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) <= 0 then
+				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			end
+			player:setStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline, 1)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Hussah! Let's bring war to those hoof-legged, dirt-necked, bull-headed minotaurs!! Come back to me when you are done with your {mission}.", npc, creature)
 			player:setStorageValue(JOIN_STOR, 1)
-			player:setStorageValue(Storage.KillingInTheNameOf.BudrikMinos, 0)
+			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurGuardCount, 0)

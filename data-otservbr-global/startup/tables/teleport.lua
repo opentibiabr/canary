@@ -9,13 +9,11 @@ TeleportAction = {
 			{ x = 32210, y = 32292, z = 6 },
 		},
 	},
-	[35001] = { -- The Cursed Crystal teleports
-		itemId = 19387,
+	-- Barbarian Test - Temple Citizen Svargrond
+	[30032] = {
+		itemId = 1949,
 		itemPos = {
-			{ x = 31973, y = 32905, z = 10 },
-			{ x = 31973, y = 32905, z = 11 },
-			{ x = 32009, y = 32928, z = 10 },
-			{ x = 32009, y = 32928, z = 9 },
+			{ x = 32208, y = 31134, z = 7 },
 		},
 	},
 	-- Path: data\scripts\movements\quests\the_queen_of_the_banshees\movement(2)-second_seal_pearl.lua

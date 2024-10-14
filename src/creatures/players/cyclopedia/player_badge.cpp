@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "player_badge.hpp"
 
 #include "creatures/players/player.hpp"
@@ -116,7 +114,7 @@ bool PlayerBadge::loyalty(uint8_t amount) {
 }
 
 bool PlayerBadge::accountAllLevel(uint8_t amount) {
-	const auto &players = g_game().getPlayersByAccount(m_player.getAccount(), true);
+	auto players = g_game().getPlayersByAccount(m_player.getAccount(), true);
 	uint16_t total = std::accumulate(players.begin(), players.end(), 0, [](uint16_t sum, const std::shared_ptr<Player> &player) {
 		return sum + player->getLevel();
 	});

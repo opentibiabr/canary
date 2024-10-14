@@ -59,12 +59,12 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local FishForASerpent = Storage.Quest.U8_2.FishForASerpent
+local FishForASerpent = Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent
 local TheHuntForTheSeaSerpent = Storage.Quest.U8_2.TheHuntForTheSeaSerpent
 local function greetCallback(npc, creature)
 	local player = Player(creature)
 
-	if player:getStorageValue(TheHuntForTheSeaSerpent.QuestLine) == 2 then
+	if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine) == 2 then
 		npcHandler:setMessage(MESSAGE_GREET, "Harrr, landlubber wha'd ya want? Askin' for a {passage}?")
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Harrr, landlubber wha'd ya want?")
@@ -82,57 +82,57 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if table.contains({ "mission", "hunt", "passage" }, message:lower()) then
 		if MsgContains(message, "passage") then
-			if player:getStorageValue(FishForASerpent.QuestLine) < 5 then
+			if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent) < 5 then
 				npcHandler:say("Hold your horses! First we need to get more {bait} fo' the sea serpent. Bring me the fish I requested and we can set sails immediately.", npc, creature)
 				return true
 			end
 		end
-		if player:getStorageValue(FishForASerpent.QuestLine) < 0 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent) < 0 then
 			npcHandler:say("Ya wanna join the hunt fo' the {sea serpent}? Be warned ya may pay with ya life! Are ya in to it?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(FishForASerpent.QuestLine) < 5 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent) < 5 then
 			npcHandler:say("You got any {baits} for me?", npc, creature)
-		elseif player:getStorageValue(FishForASerpent.QuestLine) >= 5 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent) >= 5 then
 			npcHandler:say("A'right, wanna put out to sea?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("A'right, we are here to resupply our stock of baits to catch the sea serpent. Your first task is to bring me 5 fish they are easy to catch. When you got them ask me for the {bait} again.", npc, creature)
-			player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
-			player:setStorageValue(FishForASerpent.QuestLine, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Let's go fo' a {hunt} and bring the beast down!", npc, creature) --test
 			player:teleportTo(Position(31942, 31047, 6))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			if player:getStorageValue(TheHuntForTheSeaSerpent.QuestLine) < 0 then
-				player:setStorageValue(TheHuntForTheSeaSerpent.QuestLine, 1)
+			if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine) < 0 then
+				player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.QuestLine, 1)
 			end
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "bait") then
-		if player:getStorageValue(FishForASerpent.QuestLine) == 1 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent) == 1 then
 			if player:removeItem(3578, 5) then
 				npcHandler:say("Excellent, now bring me 5 northern pike.", npc, creature)
-				player:setStorageValue(FishForASerpent.QuestLine, 2)
+				player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent, 2)
 			end
-		elseif player:getStorageValue(FishForASerpent.QuestLine) == 2 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent) == 2 then
 			if player:removeItem(3580, 5) then
 				npcHandler:say("Excellent, now bring me 5 green perch.", npc, creature)
-				player:setStorageValue(FishForASerpent.QuestLine, 3)
+				player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent, 3)
 			end
-		elseif player:getStorageValue(FishForASerpent.QuestLine) == 3 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent) == 3 then
 			if player:removeItem(7159, 5) then
 				npcHandler:say("Excellent, now bring me 5 rainbow trout.", npc, creature)
-				player:setStorageValue(FishForASerpent.QuestLine, 4)
+				player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent, 4)
 			end
-		elseif player:getStorageValue(FishForASerpent.QuestLine) == 4 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent) == 4 then
 			if player:removeItem(7158, 5) then
 				npcHandler:say("Excellent, that should be enough fish to make the bait. Tell me when ya're ready fo' the {hunt}.", npc, creature)
-				player:setStorageValue(FishForASerpent.QuestLine, 5)
+				player:setStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent, 5)
 			end
-		elseif player:getStorageValue(FishForASerpent.QuestLine) >= 5 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheHuntForTheSeaSerpent.FishForASerpent) >= 5 then
 			npcHandler:say("The bait is ready, tell me if ya're ready to start the hunt.", npc, creature)
 		end
 	end

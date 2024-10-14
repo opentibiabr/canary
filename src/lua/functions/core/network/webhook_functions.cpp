@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/functions/core/network/webhook_functions.hpp"
 #include "server/network/webhook/webhook.hpp"
 

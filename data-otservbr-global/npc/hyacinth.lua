@@ -54,9 +54,9 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.TheRookieGuard.Mission04) == 2 then
+	if player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 2 then
 		npcHandler:setMessage(MESSAGE_GREET, "Greetings, traveller |PLAYERNAME|. You must be the one sent by Lily. Do you have a sack of {herbs} for me?")
-	elseif player:getStorageValue(Storage.TheRookieGuard.Mission04) == 3 or player:getStorageValue(Storage.TheRookieGuard.Mission04) == 4 then
+	elseif player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 3 or player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 4 then
 		npcHandler:setMessage(MESSAGE_GREET, "Greetings, traveller |PLAYERNAME|. I still have a present for you! Would you like to have it now?")
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Greetings, traveller |PLAYERNAME|. As you have found the way to my hut, how can I {help} you?")
@@ -71,9 +71,9 @@ keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Thank you so much! I'm just too old to walk into the village each day, and the herbs must be fresh. Say, would you like to have a sample of my potions as reward?",
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 2 and player:getItemCount(12671) >= 1
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 2 and player:getItemCount(12671) >= 1
 end, function(player)
-	player:setStorageValue(Storage.TheRookieGuard.Mission04, 3)
+	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04, 3)
 	player:removeItem(12671, 1)
 end)
 keywordHandler:addAliasKeyword({ "herbs" })
@@ -83,7 +83,7 @@ local mission4LostHerbs = keywordHandler:addKeyword({ "no" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Well, then I must have mistaken you with someone else. Or did you lose it on the way?",
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 2
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 2
 end)
 
 -- Mission 4: Confirm (Lost herbs)
@@ -110,9 +110,9 @@ keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 		"Oh, and I also have another present for you! Do you still have some space in your inventory?",
 	},
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 3
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 3
 end, function(player)
-	player:setStorageValue(Storage.TheRookieGuard.Mission04, 4)
+	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04, 4)
 	player:addItemEx(Game.createItem(7876, 2), true, CONST_SLOT_BACKPACK)
 end)
 
@@ -127,9 +127,9 @@ keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 		"Anyway, this old man has taken enough of your time. Why don't you go back to the village and talk to Vascalir? If you stay on the path, you should be safe. Don't forget your potions!",
 	},
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 4
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 4
 end, function(player)
-	player:setStorageValue(Storage.TheRookieGuard.Mission04, 5)
+	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04, 5)
 	player:addItemEx(Game.createItem(12669, 1), true, CONST_SLOT_BACKPACK)
 end)
 
@@ -138,7 +138,7 @@ keywordHandler:addKeyword({ "no" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Oh, but I insist! After all you made the long way. Please, take my reward!",
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 3
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 3
 end)
 
 -- Mission 4: Decline (Second reward)
@@ -146,7 +146,7 @@ keywordHandler:addKeyword({ "no" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Well, make some space and then talk to me again. I give you something really useful.",
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission04) == 4
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04) == 4
 end)
 
 -- Basic Keywords

@@ -2,8 +2,8 @@ local deathListEnabled = true
 
 local playerDeath = CreatureEvent("PlayerDeath")
 function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
-	if player:getStorageValue(Storage.SvargrondArena.PitDoor) > 0 then
-		player:setStorageValue(Storage.SvargrondArena.PitDoor, 0)
+	if player:getStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor) > 0 then
+		player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor, 0)
 	end
 
 	if not deathListEnabled then

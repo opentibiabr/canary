@@ -62,7 +62,7 @@ local function greetCallback(npc, creature)
 	local playerId = creature:getId()
 	local player = Player(creature)
 	-- Mission 8: The Rookie Guard Quest
-	if player:getStorageValue(Storage.TheRookieGuard.Mission08) == 1 then
+	if player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission08) == 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Welcome |PLAYERNAME|! Special newcomer offer, today only! Deposit some money - or {deposit ALL} of your money! - and get 50 gold for free!")
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Yes? What may I do for you, |PLAYERNAME|? Bank business, perhaps?")
@@ -158,12 +158,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, "yes") then
-			if player:getStorageValue(Storage.TheRookieGuard.Mission08) == 1 then
+			if player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission08) == 1 then
 				player:depositMoney(count[playerId])
 				Bank.credit(player, 50)
 				npcHandler:say("Alright, we have added the amount of " .. count[playerId] .. " +50 gold to your {balance} - that is the money you deposited plus a bonus of 50 gold. \z
 				Thank you! You can withdraw your money anytime.", npc, creature)
-				player:setStorageValue(Storage.TheRookieGuard.Mission08, 2)
+				player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission08, 2)
 				npcHandler:setTopic(playerId, 0)
 				return false
 			end

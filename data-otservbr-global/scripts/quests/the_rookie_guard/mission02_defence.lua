@@ -42,7 +42,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission02)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission02)
 	-- Skip if not was started or finished
 	if missionState == -1 or missionState >= 4 then
 		return true
@@ -51,7 +51,7 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 	-- Check if the tile has bound a catapult(s)
 	local hasUsedCatapult = missionTile.catapults ~= nil or false
 	if hasUsedCatapult then
-		local catapultsState = player:getStorageValue(Storage.TheRookieGuard.Catapults)
+		local catapultsState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Catapults)
 		for i = 1, #missionTile.catapults do
 			-- Check if the catapult was used
 			hasUsedCatapult = testFlag(catapultsState, missionTile.catapults[i])
@@ -83,18 +83,18 @@ missionGuide:register()
 local stonePile = Action()
 
 function stonePile.onUse(player, item, frompos, item2, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission02)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission02)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
 	end
 	if missionState <= 3 then
 		if missionState == 1 then
-			player:setStorageValue(Storage.TheRookieGuard.Mission02, 2)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission02, 2)
 		end
 		-- Gather delay
-		if player:getStorageValue(Storage.TheRookieGuard.StonePileTimer) - os.time() <= 0 then
-			player:setStorageValue(Storage.TheRookieGuard.StonePileTimer, os.time() + 2 * 60)
+		if player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.StonePileTimer) - os.time() <= 0 then
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.StonePileTimer, os.time() + 2 * 60)
 			player:addItemEx(Game.createItem(12724, 1), true, CONST_SLOT_WHEREEVER)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait a few minutes before you can pick up a new stone.")
@@ -120,9 +120,9 @@ local catapults = {
 local heavyStone = Action()
 
 function heavyStone.onUse(player, item, frompos, item2, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission02)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission02)
 	if missionState >= 2 and missionState <= 3 and catapults[item2.actionid] then
-		local catapultsState = player:getStorageValue(Storage.TheRookieGuard.Catapults)
+		local catapultsState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Catapults)
 		local hasUsedCatapult = testFlag(catapultsState, catapults[item2.actionid])
 		if not hasUsedCatapult then
 			if missionState == 2 then
@@ -130,8 +130,8 @@ function heavyStone.onUse(player, item, frompos, item2, topos)
 			elseif missionState == 3 then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You loaded the last stone on the catapults. Time to return to Vascalir.")
 			end
-			player:setStorageValue(Storage.TheRookieGuard.Mission02, missionState + 1)
-			player:setStorageValue(Storage.TheRookieGuard.Catapults, catapultsState + catapults[item2.actionid])
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission02, missionState + 1)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Catapults, catapultsState + catapults[item2.actionid])
 			player:addExperience(5, true)
 			player:removeItem(12724, 1)
 		else

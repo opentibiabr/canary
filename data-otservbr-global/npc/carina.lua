@@ -81,7 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.WhatAFoolish.ScaredCarina, 1)
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.ScaredCarina, 1)
 			npcHandler:say("IIIEEEEEK!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
@@ -93,6 +93,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Welcome, |PLAYERNAME|. I am looking forward to trade with you.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

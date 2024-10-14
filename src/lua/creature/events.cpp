@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/creature/events.hpp"
 #include "utils/tools.hpp"
 #include "items/item.hpp"
@@ -21,7 +19,7 @@ Events::Events() :
 
 bool Events::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/events/events.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/events/events.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
@@ -41,7 +39,7 @@ bool Events::loadFromXml() {
 		if (res.second) {
 			const std::string &lowercase = asLowerCaseString(className);
 			const std::string &scriptName = lowercase + ".lua";
-			auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+			auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 			if (scriptInterface.loadFile(coreFolder + "/events/scripts/" + scriptName, scriptName) != 0) {
 				g_logger().warn("{} - Can not load script: {}.lua", __FUNCTION__, lowercase);
 				g_logger().warn(scriptInterface.getLastLuaError());
@@ -1159,7 +1157,7 @@ void Events::eventPlayerOnCombat(std::shared_ptr<Player> player, std::shared_ptr
 
 	if (target) {
 		LuaScriptInterface::pushUserdata<Creature>(L, target);
-		LuaScriptInterface::setMetatable(L, -1, "Creature");
+		LuaScriptInterface::setCreatureMetatable(L, -1, target);
 	} else {
 		lua_pushnil(L);
 	}

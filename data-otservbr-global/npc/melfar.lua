@@ -100,8 +100,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
-				"So take this beaver bait. It will work best on dwarf trees. I'll mark the three trees on your map. Here .. here .. and here! So now mark those trees with the beaver bait. ... ",
-				"If you're unlucky enough to meet one of the giant beavers, try to stay calm. Don't do any hectic moves, don't yell, don't draw any weapon, and if you should carry anything wooden on you, throw it away as far as you can. ",
+				"So take this beaver bait. It will work best on dwarf trees. I'll mark the three trees on your map. Here .. here .. and here! So now mark those trees with the beaver bait. ...",
+				"If you're unlucky enough to meet one of the giant beavers, try to stay calm. Don't do any hectic moves, don't yell, don't draw any weapon, and if you should carry anything wooden on you, throw it away as far as you can.",
+				"Just great, another disturbance. Just what I need.",
 			}, npc, creature)
 			player:setStorageValue(TheNewFrontier.Questline, 5)
 			player:setStorageValue(TheNewFrontier.Mission02[1], 2) --Questlog, The New Frontier Quest "Mission 02: From Kazordoon With Love"
@@ -130,6 +131,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Just great, another disturbance. Just what I need.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

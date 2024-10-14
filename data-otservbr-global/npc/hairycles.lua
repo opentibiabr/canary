@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("These are dire times for our people. Problems plenty are in this times. But me people not grant trust easy. Are you willing to prove you friend of ape people?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		elseif questProgress == 1 then
-			if player:getStorageValue(Storage.QuestChests.WhisperMoss) == 1 then
+			if player:getStorageValue(Storage.Quest.U7_6.WhisperMoss) == 1 then
 				npcHandler:say("Oh, you brought me whisper moss? Good hairless ape you are! Can me take it?", npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			else
@@ -195,7 +195,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("No more missions await you right now, friend. Perhaps you want to check me offers for special friends... or shamanic powers.", npc, creature)
 		end
 	elseif MsgContains(message, "background") then
-		if questProgress == 1 and player:getStorageValue(Storage.QuestChests.WhisperMoss) ~= 1 then
+		if questProgress == 1 and player:getStorageValue(Storage.Quest.U7_6.WhisperMoss) ~= 1 then
 			npcHandler:say({
 				"So listen, little ape was struck by plague. Hairycles not does know what plague it is. That is strange. Hairycles should know. But Hairycles learnt lots and lots ...",
 				"Me sure to make cure so strong to drive away all plague. But to create great cure me need powerful components ...",
@@ -203,6 +203,11 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Me know they hoard some in their underground lair. My people raided dworcs often before humans came. So we know the moss is hidden in east of upper level of dworc lair ...",
 				"You go there and take good moss from evil dworcs. Talk with me about mission when having moss.",
 			}, npc, creature)
+		end
+	elseif MsgContains(message, "cookie") then
+		if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 31 and player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.Hairycles) ~= 1 then
+			npcHandler:say("Oh you bring cookie for old Hairycles?", npc, creature)
+			npcHandler:setTopic(playerId, 19)
 		end
 	elseif MsgContains(message, "outfit") or MsgContains(message, "shamanic") then
 		if questProgress == 18 then
@@ -263,7 +268,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, "yes") then
 			if not player:removeItem(4827, 1) then
 				npcHandler:say("Stupid, you no have the moss me need. Go get it. It's somewhere in dworc lair. If you lost it, they might restocked it meanwhile. If you need to hear background of all again, ask Hairycles for {background}.", npc, creature)
-				player:setStorageValue(Storage.QuestChests.WhisperMoss, -1)
+				player:setStorageValue(Storage.Quest.U7_6.WhisperMoss, -1)
 				return true
 			end
 
@@ -316,7 +321,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 7 then
 		if MsgContains(message, "yes") then
 			if not player:removeItem(4831, 1) then
-				if player:getStorageValue(Storage.QuestChests.OldParchment) == 1 then
+				if player:getStorageValue(Storage.Quest.U7_6.OldParchment) == 1 then
 					npcHandler:say("That's bad news. If you lost it, only way to get other is to kill holy serpents. But you can't go there so you must ask adventurers who can.", npc, creature)
 				else
 					npcHandler:say("No! That not scroll me looking for. Silly hairless ape you are. Go to village of lizards and get it there on your own!", npc, creature)
@@ -461,7 +466,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.Hairycles, 1)
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.Hairycles, 1)
 			if player:getCookiesDelivered() == 10 then
 				player:addAchievement("Allow Cookies?")
 			end

@@ -50,7 +50,7 @@ end
 
 local function greetCallback(npc, creature)
 	local player = Player(creature)
-	local SPIKE_STORAGE = player:getStorageValue(SPIKE_LOWER_UNDERCOVER_MAIN)
+	local SPIKE_STORAGE = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Undercover_Main)
 
 	if table.contains({ -1, 3 }, SPIKE_STORAGE) then
 		npcHandler:setMessage(MESSAGE_GREET, "Pssst! Keep it down! <gives you an elaborate report on monster activity>")
@@ -66,7 +66,7 @@ local function greetCallback(npc, creature)
 		return true
 	end
 
-	player:setStorageValue(SPIKE_LOWER_UNDERCOVER_MAIN, SPIKE_STORAGE + 1)
+	player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Undercover_Main, SPIKE_STORAGE + 1)
 	table.insert(UNDERCOVER_CONTACTED[player:getGuid()], npc:getId())
 	npcHandler:removeInteraction(npc, creature)
 	npcHandler:setMessage(MESSAGE_GREET, "Pssst! Keep it down! <gives you an elaborate report on monster activity>")

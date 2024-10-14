@@ -8,6 +8,14 @@ LeverAction = {
 			{ x = 32848, y = 32277, z = 9 },
 		},
 	},
+	-- The Gravedigger of Drefia Quest
+	[4650] = {
+		itemId = 9110,
+		itemPos = {
+			{ x = 32972, y = 32412, z = 11 },
+		},
+	},
+	-- The Pits of Inferno Quest
 	[7799] = {
 		itemId = 431,
 		itemPos = {
@@ -163,6 +171,62 @@ LeverAction = {
 			{ x = 32600, y = 32105, z = 14 },
 		},
 	},
+	-- Ferumbras' Ascension Quest
+	[34305] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32665, z = 12 },
+		},
+	},
+	[34306] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33631, y = 32665, z = 12 },
+		},
+	},
+	[34307] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32683, z = 12 },
+		},
+	},
+	[34308] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33631, y = 32683, z = 12 },
+		},
+	},
+	[34309] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32701, z = 12 },
+		},
+	},
+	[34310] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33631, y = 32701, z = 12 },
+		},
+	},
+	[34311] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32719, z = 12 },
+		},
+	},
+	[34312] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33631, y = 32719, z = 12 },
+		},
+	},
+	[34324] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32616, z = 11 },
+			{ x = 33671, y = 32623, z = 11 },
+		},
+	},
 	-- The Pits of Inferno Quest
 	[50160] = {
 		itemId = 2772,
@@ -194,6 +258,63 @@ LeverUnique = {
 	[1017] = {
 		itemId = 2772,
 		itemPos = { x = 33172, y = 31896, z = 8 },
+	},
+	-- Ferumbras' Ascension Quest
+	[1021] = {
+		itemId = 8911,
+		itemPos = { x = 33270, y = 31476, z = 14 },
+	},
+	[1022] = {
+		itemId = 8911,
+		itemPos = { x = 33229, y = 31499, z = 13 },
+	},
+	[1023] = {
+		itemId = 8911,
+		itemPos = { x = 33455, y = 32356, z = 13 },
+	},
+	[1024] = {
+		itemId = 8911,
+		itemPos = { x = 33385, y = 32455, z = 14 },
+	},
+	[1025] = {
+		itemId = 8911,
+		itemPos = { x = 33593, y = 32643, z = 14 },
+	},
+	[1026] = {
+		itemId = 8911,
+		itemPos = { x = 33680, y = 32740, z = 11 },
+	},
+	[1027] = {
+		itemId = 8911,
+		itemPos = { x = 33418, y = 32848, z = 11 },
+	},
+	[1028] = {
+		itemId = 8911,
+		itemPos = { x = 33434, y = 32784, z = 13 },
+	},
+	[1029] = {
+		itemId = 8911,
+		itemPos = { x = 33402, y = 32465, z = 13 },
+	},
+	[1030] = {
+		itemId = 8911,
+		itemPos = { x = 33202, y = 31475, z = 11 },
+	},
+	[1031] = {
+		itemId = 8911,
+		itemPos = { x = 33385, y = 32410, z = 14 },
+	},
+	[1032] = {
+		itemId = 8911,
+		itemPos = { x = 33403, y = 32391, z = 14 },
+	},
+	[1033] = {
+		itemId = 8911,
+		itemPos = { x = 33410, y = 32441, z = 14 },
+	},
+	[1034] = {
+		itemId = 8911,
+		itemPos = { x = 33430, y = 32418, z = 14 },
 	},
 	-- The Pits of Inferno
 	[1037] = {

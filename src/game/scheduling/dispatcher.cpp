@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
@@ -236,17 +234,17 @@ void Dispatcher::stopEvent(uint64_t eventId) {
 	}
 }
 
-void DispatcherContext::addEvent(std::function<void(void)> &&f) const {
-	g_dispatcher().addEvent(std::move(f), taskName);
+void DispatcherContext::addEvent(std::function<void(void)> &&f, std::string_view context) const {
+	g_dispatcher().addEvent(std::move(f), context);
 }
 
-void DispatcherContext::tryAddEvent(std::function<void(void)> &&f) const {
+void DispatcherContext::tryAddEvent(std::function<void(void)> &&f, std::string_view context) const {
 	if (!f) {
 		return;
 	}
 
 	if (isAsync()) {
-		g_dispatcher().addEvent(std::move(f), taskName);
+		g_dispatcher().addEvent(std::move(f), context);
 	} else {
 		f();
 	}

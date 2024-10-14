@@ -1,4 +1,12 @@
-#include "pch.hpp"
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
+
 #include "lua/functions/core/game/bank_functions.hpp"
 #include "game/bank/bank.hpp"
 #include "game/game.hpp"
@@ -57,37 +65,36 @@ int BankFunctions::luaBankHasBalance(lua_State* L) {
 
 int BankFunctions::luaBankTransfer(lua_State* L) {
 	// Bank.transfer(fromPlayerOrGuild, toPlayerOrGuild, amount)
-	auto source = getBank(L, 1);
+	const auto &source = getBank(L, 1);
 	if (source == nullptr) {
 		g_logger().debug("BankFunctions::luaBankTransfer: source is null");
 		reportErrorFunc("Bank is nullptr");
 		return 1;
 	}
-	std::shared_ptr<Bank> destination = getBank(L, 2);
+	const auto &destination = getBank(L, 2);
 	if (destination == nullptr) {
 		g_logger().debug("BankFunctions::luaBankTransfer: destination is null");
 		reportErrorFunc("Bank is nullptr");
 		return 1;
 	}
-	uint64_t amount = getNumber<uint64_t>(L, 3);
+	const uint64_t amount = getNumber<uint64_t>(L, 3);
 	pushBoolean(L, source->transferTo(destination, amount));
 	return 1;
 }
 
 int BankFunctions::luaBankTransferToGuild(lua_State* L) {
 	// Bank.transfer(fromPlayerOrGuild, toGuild, amount)
-	auto source = getBank(L, 1);
+	const auto &source = getBank(L, 1);
 	if (source == nullptr) {
 		reportErrorFunc("Source is nullptr");
 		return 1;
 	}
-
-	std::shared_ptr<Bank> destination = getBank(L, 2, true /* isGuild */);
+	const auto &destination = getBank(L, 2, true /* isGuild */);
 	if (destination == nullptr) {
 		reportErrorFunc("Destination is nullptr");
 		return 1;
 	}
-	uint64_t amount = getNumber<uint64_t>(L, 3);
+	const uint64_t amount = getNumber<uint64_t>(L, 3);
 	pushBoolean(L, source->transferTo(destination, amount));
 	return 1;
 }

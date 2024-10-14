@@ -103,7 +103,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	-- To Appease the Mighty Quest
-	if MsgContains(message, "mission") and player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) == 1 then
+	if MsgContains(message, "mission") and player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) == 1 then
 		npcHandler:say({
 			"I should go and tell Fa'hradin. ...",
 			"I am impressed you know our address of welcome! I honour that. So tell me who sent you on a mission to our fortress?",
@@ -114,7 +114,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"How dare you lie to me?!? The caliph should choose his envoys more carefully. We will not accept his peace-offering ...",
 			"...but we are always looking for support in our fight against the evil Efreets. Tell me if you would like to join our fight.",
 		}, npc, creature)
-		player:setStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) + 1)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) + 1)
 	end
 
 	if MsgContains(message, "passage") then

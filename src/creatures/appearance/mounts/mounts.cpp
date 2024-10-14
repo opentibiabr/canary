@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"
@@ -21,7 +19,7 @@ bool Mounts::reload() {
 
 bool Mounts::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/mounts.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/mounts.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
@@ -30,7 +28,7 @@ bool Mounts::loadFromXml() {
 
 	for (auto mountNode : doc.child("mounts").children()) {
 		auto lookType = pugi::cast<uint16_t>(mountNode.attribute("clientid").value());
-		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
+		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
 			g_logger().warn("{} - An unregistered creature mount with id '{}' was blocked to prevent client crash.", __FUNCTION__, lookType);
 			continue;
 		}

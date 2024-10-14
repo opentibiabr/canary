@@ -46,10 +46,10 @@ struct TextMessage {
 	MessageClasses type = MESSAGE_STATUS;
 	std::string text;
 	Position position;
-	uint16_t channelId;
+	uint16_t channelId {};
 	struct
 	{
-		int32_t value = 0;
+		int32_t value {};
 		TextColor_t color = TEXTCOLOR_NONE;
 	} primary, secondary;
 };
@@ -96,7 +96,7 @@ private:
 
 	// we have all the parse methods
 	void parsePacket(NetworkMessage &msg) override;
-	void parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte);
+	void parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte);
 	void onRecvFirstMessage(NetworkMessage &msg) override;
 	void onConnect() override;
 
@@ -143,7 +143,7 @@ private:
 
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
-	void parseDebugAssert(NetworkMessage &msg);
+	void parseOfferDescription(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
 	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);

@@ -1,3 +1,8 @@
+local teleportDestinations = {
+	[4541] = { position = Position(33017, 32419, 11), storageKey = Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission74 },
+	[4542] = { position = Position(33018, 32425, 11), storageKey = Storage.Quest.U10_10.TheGravediggerOfDrefia.Mission75 },
+}
+
 local sacrificeTeleport = MoveEvent()
 
 function sacrificeTeleport.onStepIn(creature, item, position, fromPosition)
@@ -6,16 +11,19 @@ function sacrificeTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if item.actionid == 4541 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission73) == 1 then
-		player:teleportTo(Position(33015, 32422, 11))
+	local destination = teleportDestinations[item.actionid]
+	if destination and player:getStorageValue(destination.storageKey) == 1 then
+		player:teleportTo(destination.position)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-	else
-		player:teleportTo(Position(33021, 32419, 11))
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 	end
+
 	return true
 end
 
 sacrificeTeleport:type("stepin")
-sacrificeTeleport:aid(4536)
+
+for actionId in pairs(teleportDestinations) do
+	sacrificeTeleport:aid(actionId)
+end
+
 sacrificeTeleport:register()

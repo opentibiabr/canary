@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/tile.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/combat/combat.hpp"
@@ -392,7 +390,7 @@ void Tile::onAddTileItem(std::shared_ptr<Item> item) {
 		spectator->onAddTileItem(static_self_cast<Tile>(), cylinderMapPos);
 	}
 
-	if ((!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES, __FUNCTION__))
+	if ((!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES))
 	    && item->isCleanable()) {
 		if (!this->getHouse()) {
 			g_game().addTileToClean(static_self_cast<Tile>());
@@ -509,7 +507,7 @@ void Tile::onRemoveTileItem(const CreatureVector &spectators, const std::vector<
 		spectator->onRemoveTileItem(static_self_cast<Tile>(), cylinderMapPos, iType, item);
 	}
 
-	if (!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES, __FUNCTION__)) {
+	if (!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES)) {
 		auto items = getItemList();
 		if (!items || items->empty()) {
 			g_game().removeTileToClean(static_self_cast<Tile>());
@@ -680,9 +678,9 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			const auto playerTile = player->getTile();
 			// moving from a pz tile to a non-pz tile
 			if (playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-				auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
+				auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT);
 				if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && !hasFlag(TILESTATE_PROTECTIONZONE)) {
-					auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
+					auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT);
 					auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
 					int countOutsizePZ = 0;
 					for (const auto &accountPlayer : accountPlayers) {

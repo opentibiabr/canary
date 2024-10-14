@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/functions/creatures/player/player_functions.hpp"
 
 #include "creatures/combat/spells.hpp"
@@ -1866,6 +1864,8 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 			if (!hasTable) {
 				lua_pushnil(L);
 			}
+
+			player->sendCancelMessage(ret);
 			return 1;
 		}
 

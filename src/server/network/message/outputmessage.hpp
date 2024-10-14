@@ -24,7 +24,7 @@ public:
 	OutputMessage &operator=(const OutputMessage &) = delete;
 
 	uint8_t* getOutputBuffer() {
-		return buffer + outputBufferStart;
+		return buffer.data() + outputBufferStart;
 	}
 
 	void writeMessageLength() {
@@ -41,14 +41,18 @@ public:
 
 	void append(const NetworkMessage &msg) {
 		auto msgLen = msg.getLength();
-		memcpy(buffer + info.position, msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		std::span<const unsigned char> sourceSpan(msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
+		std::ranges::copy(sourceSpan, destSpan.begin());
 		info.length += msgLen;
 		info.position += msgLen;
 	}
 
 	void append(const OutputMessage_ptr &msg) {
 		auto msgLen = msg->getLength();
-		memcpy(buffer + info.position, msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		std::span<const unsigned char> sourceSpan(msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
+		std::ranges::copy(sourceSpan, destSpan.begin());
 		info.length += msgLen;
 		info.position += msgLen;
 	}
@@ -61,10 +65,20 @@ private:
 			return;
 		}
 
+		// Ensure at runtime that outputBufferStart >= sizeof(T)
 		assert(outputBufferStart >= sizeof(T));
+		// Move the buffer position back to make space for the header
 		outputBufferStart -= sizeof(T);
-		memcpy(buffer + outputBufferStart, &addHeader, sizeof(T));
-		// added header size to the message size
+
+		static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
+
+		// Convert the header to an array of unsigned char using std::bit_cast
+		auto byteArray = std::bit_cast<std::array<unsigned char, sizeof(T)>>(addHeader);
+
+		std::span<const unsigned char> byteSpan(byteArray);
+		// Copy the bytes into the buffer
+		std::ranges::copy(byteSpan, buffer.begin() + outputBufferStart);
+		// Update the message size
 		info.length += sizeof(T);
 	}
 
@@ -79,9 +93,7 @@ public:
 	OutputMessagePool(const OutputMessagePool &) = delete;
 	OutputMessagePool &operator=(const OutputMessagePool &) = delete;
 
-	static OutputMessagePool &getInstance() {
-		return inject<OutputMessagePool>();
-	}
+	static OutputMessagePool &getInstance();
 
 	void sendAll();
 	void scheduleSendAll();

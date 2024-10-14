@@ -1858,7 +1858,7 @@ ReturnValue Game::checkMoveItemToCylinder(std::shared_ptr<Player> player, std::s
 
 		const auto containerToStow = isTryingToStow(toPos, toCylinder);
 
-		if (containerID == ITEM_GOLD_POUCH) {
+		if (containerID == ITEM_GOLD_POUCH && !containerToStow) {
 			if (g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY)) {
 				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 			}

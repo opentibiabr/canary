@@ -181,15 +181,15 @@ ChestUnique = {
 		reward = { { 2970, 1 } },
 		storage = Storage.Quest.Key.ID3899,
 	},
-	[5012] = {
+	--[[ [5012] = {
 		isKey = true,
 		itemId = 23740,
 		itemPos = { x = 33377, y = 31321, z = 1 },
 		reward = { { 2969, 1 } },
 		storage = Storage.Quest.Key.ID0909,
-		timerStorage = Storage.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
+		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
 		time = 24, -- hour
-	},
+	}, ]]
 	-- Bear Room Quest (rookgaard) key 4601
 	[5013] = {
 		isKey = true,
@@ -1080,7 +1080,7 @@ ChestUnique = {
 		weight = 15.00,
 		storage = Storage.Quest.U8_54.TomesOfKnowledge.TopTower,
 	},
-	[6105] = {
+	--[[[6105] = {
 		itemId = 23741,
 		itemPos = { x = 33352, y = 31318, z = 7 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
@@ -1127,7 +1127,7 @@ ChestUnique = {
 		reward = { { nil, nil } },
 		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.UndergroundBastion,
 		time = 24, -- hour
-	},
+	}, ]]
 	-- Blood Herb Quest
 	[6111] = {
 		useKV = true,

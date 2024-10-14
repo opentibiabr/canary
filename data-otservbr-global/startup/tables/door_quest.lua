@@ -71,7 +71,7 @@ QuestDoorAction = {
 		},
 	},
 	-- Secret library quest door
-	[Storage.TheSecretLibrary.Mota] = {
+	--[[[Storage.TheSecretLibrary.Mota] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33208, y = 32071, z = 8 },
@@ -89,7 +89,7 @@ QuestDoorAction = {
 	[Storage.TheSecretLibrary.SkullDoor] = {
 		itemId = false,
 		itemPos = { { x = 33344, y = 32120, z = 10 } },
-	},
+	}, ]]
 	-- Koshei the deathless quest door
 	[Storage.Quest.U8_1.KosheiTheDeathless.RewardDoor] = {
 		itemId = false,
@@ -796,18 +796,19 @@ QuestDoorAction = {
 			{ x = 32012, y = 31565, z = 7 },
 		},
 	},
-	[Storage.TheSecretLibrary.MiniBosses.PreceptorLazare] = {
+	-- Secret library quest door
+	--[[ [Storage.Quest.U11_80.TheSecretLibrary.MiniBosses.PreceptorLazare] = {
 		itemId = 6260,
 		itemPos = { { x = 33376, y = 31335, z = 3 } },
 	},
-	[Storage.TheSecretLibrary.LowerBastionAccess] = {
+	[Storage.Quest.U11_80.TheSecretLibrary.LowerBastionAccess] = {
 		itemId = 6260,
 		itemPos = {
 			{ x = 33371, y = 31349, z = 4 },
 			{ x = 33375, y = 31346, z = 5 },
 		},
 	},
-	[Storage.TheSecretLibrary.UndergroundBastionAccess] = {
+	[Storage.Quest.U11_80.TheSecretLibrary.UndergroundBastionAccess] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33366, y = 31343, z = 7 },
@@ -815,13 +816,13 @@ QuestDoorAction = {
 			{ x = 32191, y = 31823, z = 8 },
 		},
 	},
-	[Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosDoor] = {
-		itemId = false,
-		itemPos = { { x = 32173, y = 31922, z = 8 } },
-	},
 	[Storage.Quest.U11_80.TheSecretLibrary.ScourgeOfOblivionDoor] = {
 		itemId = false,
 		itemPos = { { x = 32480, y = 32591, z = 15 } },
+	}, ]]
+	[Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosDoor] = {
+		itemId = false,
+		itemPos = { { x = 32173, y = 31922, z = 8 } },
 	},
 	[Storage.Quest.U12_70.AdventuresOfGalthen.AccessDoor] = {
 		itemId = false,

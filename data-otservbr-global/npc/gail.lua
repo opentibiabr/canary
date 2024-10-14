@@ -76,9 +76,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "daughter") and player:getStorageValue(Storage.TheSecretLibrary.Peacock) == 1 then
+	if MsgContains(message, "daughter") and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Peacock) == 1 then
 		npcHandler:say({ "I always feared that I lost her. And yet, all those years, I still had a gleam of hope. I'm devastated to learn about her fate - but at least I have certainty now. Thank you for telling me." }, npc, creature)
-		player:setStorageValue(Storage.TheSecretLibrary.Peacock, 2)
+		player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Peacock, 2)
 		npcHandler:setTopic(playerId, 1)
 		npcHandler:setTopic(playerId, 1)
 	end

@@ -427,7 +427,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 25 then
 		if npcHandler:getTopic(playerId) == 25 then
 			npcHandler:say("Excellent, excellent. The rumours pointed to the north of Tiquanda, a sunken temple probably half drowned in water. Return to me if you find anything interesting!", npc, creature)
-			player:setStorageValue(Storage.TheSecretLibrary.LiquidDeath, 1)
+			player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

@@ -127,8 +127,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 0)
 	end
 
-	if MsgContains(message, "extension") and player:getStorageValue(Storage.TheSecretLibrary.LiquidDeath) == 11 then
-		if player:getStorageValue(Storage.TheSecretLibrary.LiquidDeath) == 11 then
+	if MsgContains(message, "extension") and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath) == 11 then
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath) == 11 then
 			npcHandler:say("It is planned to extend the MOTA. But this will take time, because our workers have faced a little problem.", npc, creature)
 			npcHandler:setTopic(playerId, 11)
 		end
@@ -143,29 +143,29 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 12 then
 		if npcHandler:getTopic(playerId) == 12 then
 			npcHandler:say("You are a true patron of the arts! I have opened the construction site for you. Start your work right now!", npc, creature)
-			player:setStorageValue(Storage.TheSecretLibrary.Mota, 1)
-			player:setStorageValue(Storage.TheSecretLibrary.LiquidDeath, 12)
+			player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Mota, 1)
+			player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath, 12)
 			npcHandler:setTopic(playerId, 13)
 		end
 	end
 
-	if MsgContains(message, "bone") and player:getStorageValue(Storage.TheSecretLibrary.Mota) == 2 then
+	if MsgContains(message, "bone") and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Mota) == 2 then
 		npcHandler:say({
 			"Hmm, interesting. Several years ago I have read some books dealing with strange locking mechanisms. I think what you have found here is a bone lever of category 3. ...",
 			"Normally this is not used because it is not secure. The production failed and the lever can always be activated as follows: back, back, up, right, left. Just have a try, it should work.",
 		}, npc, creature)
-		player:setStorageValue(Storage.TheSecretLibrary.Mota, 3)
+		player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Mota, 3)
 		npcHandler:setTopic(playerId, 14)
 	end
 
-	if MsgContains(message, "extension") and player:getStorageValue(Storage.TheSecretLibrary.Mota) == 11 then
+	if MsgContains(message, "extension") and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Mota) == 11 then
 		npcHandler:say({
 			"You have found an inscription I would like to translate for you. The tibianus cipher was used: ...",
 			"Those who are accorded the honour to visit this exclusive place will smash their blindness and face the truth. ...",
 			"Astonishingly, Dedoras from Cormaya has recently asked me for these kinds of inscriptions. For sure he is able to bring light into the darkness. You should visit him. ",
 		}, npc, creature)
-		player:setStorageValue(Storage.TheSecretLibrary.Mota, 12)
-		player:setStorageValue(Storage.TheSecretLibrary.TheLament, 1)
+		player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Mota, 12)
+		player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.TheLament, 1)
 		npcHandler:setTopic(playerId, 15)
 	end
 

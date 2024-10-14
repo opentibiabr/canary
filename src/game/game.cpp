@@ -1604,7 +1604,7 @@ void Game::playerMoveItemByPlayerID(uint32_t playerId, const Position &fromPos, 
 }
 
 void Game::playerMoveItem(std::shared_ptr<Player> player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, std::shared_ptr<Item> item, std::shared_ptr<Cylinder> toCylinder) {
-		if (!player->canDoAction()) {
+	if (!player->canDoAction()) {
 		const uint32_t delay = player->getNextActionTime();
 		const auto &task = createPlayerTask(
 			delay,

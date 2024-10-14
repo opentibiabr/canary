@@ -32,8 +32,8 @@ public:
 	void addMember(const std::shared_ptr<Player> &player);
 	void removeMember(const std::shared_ptr<Player> &player);
 
-	bool isGuild() override {
-		return true;
+	std::shared_ptr<Guild> getGuild() override {
+		return static_self_cast<Guild>();
 	}
 
 	void setOnline(bool value) override {

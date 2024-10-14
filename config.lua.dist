@@ -66,8 +66,6 @@ serverMotd = "Welcome to the OTServBR-Global!"
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
 maxPacketsPerSecond = 25
-maxItem = 2000
-maxContainer = 100
 maxPlayersOnlinePerAccount = 1
 maxPlayersOutsidePZPerAccount = 1
 
@@ -80,6 +78,12 @@ packetCompressionLevel = 6
 freeDepotLimit = 2000
 premiumDepotLimit = 10000
 depotBoxes = 20
+
+-- Item and containers limit
+-- NOTE: 'maxContainerDepth' defines the maximum depth to which containers can be nested
+maxItem = 5000
+maxContainer = 500
+maxContainerDepth = 200
 
 -- Augments System (Get more info in: https://github.com/opentibiabr/canary/pull/2602)
 -- NOTE: the following values are for all weapons and equipments that have type of "increase damage", "powerful impact" and "strong impact".

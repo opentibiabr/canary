@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/iomapserialize.hpp"
 #include "io/iologindata.hpp"
 #include "game/game.hpp"
@@ -48,7 +46,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		while (item_count--) {
 			if (auto houseTile = std::dynamic_pointer_cast<HouseTile>(tile)) {
 				const auto &house = houseTile->getHouse();
-				auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+				auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 				if (!isTransferOnRestart && house->getOwner() == 0) {
 					g_logger().trace("Skipping load item from house id: {}, position: {}, house does not have owner", house->getId(), house->getEntryPosition().toString());
 					house->clearHouseInfo(false);
@@ -287,7 +285,7 @@ bool IOMapSerialize::loadHouseInfo() {
 			uint32_t owner = result->getNumber<uint32_t>("owner");
 			int32_t newOwner = result->getNumber<int32_t>("new_owner");
 			// Transfer house owner
-			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 			if (isTransferOnRestart && newOwner >= 0) {
 				g_game().setTransferPlayerHouseItems(houseId, owner);
 				if (newOwner == 0) {

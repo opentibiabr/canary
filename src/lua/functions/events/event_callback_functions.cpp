@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/functions/events/event_callback_functions.hpp"
 
 #include "lua/callbacks/event_callback.hpp"
@@ -34,7 +32,14 @@ void EventCallbackFunctions::init(lua_State* luaState) {
 }
 
 int EventCallbackFunctions::luaEventCallbackCreate(lua_State* luaState) {
-	const auto eventCallback = std::make_shared<EventCallback>(getScriptEnv()->getScriptInterface());
+	const auto &callbackName = getString(luaState, 2);
+	if (callbackName.empty()) {
+		reportErrorFunc("Invalid callback name");
+		return 1;
+	}
+
+	bool skipDuplicationCheck = getBoolean(luaState, 3, false);
+	const auto eventCallback = std::make_shared<EventCallback>(getScriptEnv()->getScriptInterface(), callbackName, skipDuplicationCheck);
 	pushUserdata<EventCallback>(luaState, eventCallback);
 	setMetatable(luaState, -1, "EventCallback");
 	return 1;
@@ -79,6 +84,11 @@ int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
 	}
 
 	if (!callback->isLoadedCallback()) {
+		return 0;
+	}
+
+	if (g_callbacks().isCallbackRegistered(callback)) {
+		reportErrorFunc(fmt::format("EventCallback is duplicated for event with name: {}", callback->getName()));
 		return 0;
 	}
 

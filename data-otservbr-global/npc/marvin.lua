@@ -55,14 +55,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "funding") then
-		if player:setStorageValue(Storage.DarkTrails.Mission07) == 1 then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission07) == 1 and player:getStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints) >= 1 then
 			npcHandler:say({
 				"So far you earned x votes. Each single vote can be spent on a different topic or you're also able to cast all your votes on one voting. ...",
 				"Well in the topic b you have the possibility to vote for the funding of the {archives}, import of bug {milk} or street {repairs}.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
-			npcHandler:say("You cant vote yet.", npc, creature)
+			npcHandler:say("You can't vote yet.", npc, creature)
 		end
 	elseif MsgContains(message, "archives") then
 		if npcHandler:getTopic(playerId) == 1 then
@@ -71,18 +71,25 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "1") then
 		if npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say("Did I get that right: You want to cast 1 of your votes on funding the {archives?}", npc, creature)
+			npcHandler:say("Did I get that right: You want to cast 1 of your votes on funding the {archives}?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 3 then
-			player:setStorageValue(Storage.DarkTrails.Mission08, 1)
+			local currentVotes = player:getStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints)
+			if currentVotes > 0 then
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints, currentVotes - 1)
+			end
+			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission08, 1)
 			npcHandler:say("Thanks, you successfully cast your vote. Feel free to continue gathering votes by helping the city! Farewell.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
+
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Ah, you come just in time for the special voting about the most recent {funding} project. I guess you want to participate in it.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

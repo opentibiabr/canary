@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
 #include "game/game.hpp"
@@ -271,6 +269,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MAX_ALLOWED_ON_A_DUMMY, "maxAllowedOnADummy", 1);
 	loadIntConfig(L, MAX_CONTAINER_ITEM, "maxItem", 5000);
 	loadIntConfig(L, MAX_CONTAINER, "maxContainer", 500);
+	loadIntConfig(L, MAX_CONTAINER_DEPTH, "maxContainerDepth", 200);
 	loadIntConfig(L, MAX_DAMAGE_REFLECTION, "maxDamageReflection", 200);
 	loadIntConfig(L, MAX_ELEMENTAL_RESISTANCE, "maxElementalResistance", 200);
 	loadIntConfig(L, MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER, "maxMarketOffersAtATimePerPlayer", 100);
@@ -283,7 +282,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, METRICS_OSTREAM_INTERVAL, "metricsOstreamInterval", 1000);
 	loadIntConfig(L, MIN_DELAY_BETWEEN_CONDITIONS, "minDelayBetweenConditions", 0);
 	loadIntConfig(L, MIN_ELEMENTAL_RESISTANCE, "minElementalResistance", -200);
-	loadIntConfig(L, MIN_TOWN_ID_TO_BANK_TRANSFER, "minTownIdToBankTransfer", 3);
+	loadIntConfig(L, MIN_TOWN_ID_TO_BANK_TRANSFER_FROM_MAIN, "minTownIdToBankTransferFromMain", 4);
 	loadIntConfig(L, MONTH_KILLS_TO_RED, "monthKillsToRedSkull", 10);
 	loadIntConfig(L, MULTIPLIER_ATTACKONFIST, "multiplierSpeedOnFist", 5);
 	loadIntConfig(L, ORANGE_SKULL_DURATION, "orangeSkullDuration", 7);
@@ -372,14 +371,14 @@ bool ConfigManager::load() {
 
 bool ConfigManager::reload() {
 	const bool result = load();
-	if (transformToSHA1(getString(SERVER_MOTD, __FUNCTION__)) != g_game().getMotdHash()) {
+	if (transformToSHA1(getString(SERVER_MOTD)) != g_game().getMotdHash()) {
 		g_game().incrementMotdNum();
 	}
 	return result;
 }
 
 void ConfigManager::missingConfigWarning(const char* identifier) {
-	g_logger().warn("[{}]: Missing configuration for identifier: {}", __FUNCTION__, identifier);
+	g_logger().debug("[{}]: Missing configuration for identifier: {}", __FUNCTION__, identifier);
 }
 
 std::string ConfigManager::loadStringConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const std::string &defaultValue) {
@@ -434,35 +433,35 @@ float ConfigManager::loadFloatConfig(lua_State* L, const ConfigKey_t &key, const
 	return value;
 }
 
-const std::string &ConfigManager::getString(const ConfigKey_t &key, std::string_view context) const {
+const std::string &ConfigManager::getString(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
 	static const std::string dummyStr;
 	if (configs.contains(key) && std::holds_alternative<std::string>(configs.at(key))) {
 		return std::get<std::string>(configs.at(key));
 	}
-	g_logger().warn("[ConfigManager::getString] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return dummyStr;
 }
 
-int32_t ConfigManager::getNumber(const ConfigKey_t &key, std::string_view context) const {
+int32_t ConfigManager::getNumber(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
 	if (configs.contains(key) && std::holds_alternative<int32_t>(configs.at(key))) {
 		return std::get<int32_t>(configs.at(key));
 	}
-	g_logger().warn("[ConfigManager::getNumber] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return 0;
 }
 
-bool ConfigManager::getBoolean(const ConfigKey_t &key, std::string_view context) const {
+bool ConfigManager::getBoolean(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
 	if (configs.contains(key) && std::holds_alternative<bool>(configs.at(key))) {
 		return std::get<bool>(configs.at(key));
 	}
-	g_logger().warn("[ConfigManager::getBoolean] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return false;
 }
 
-float ConfigManager::getFloat(const ConfigKey_t &key, std::string_view context) const {
+float ConfigManager::getFloat(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
 	if (configs.contains(key) && std::holds_alternative<float>(configs.at(key))) {
 		return std::get<float>(configs.at(key));
 	}
-	g_logger().warn("[ConfigManager::getFloat] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return 0.0f;
 }

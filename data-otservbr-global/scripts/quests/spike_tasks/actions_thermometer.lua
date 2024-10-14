@@ -16,7 +16,7 @@ end
 
 local spikeTasksThermometer = Action()
 function spikeTasksThermometer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local status = player:getStorageValue(SPIKE_LOWER_LAVA_MAIN)
+	local status = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Lava_Main)
 
 	if table.contains({ -1, 1 }, status) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
@@ -25,7 +25,7 @@ function spikeTasksThermometer.onUse(player, item, fromPosition, target, toPosit
 	if player:getPosition():isInRange(hot_lava_pools[SPIKE_LOWER_HOTTEST_POOL][1], hot_lava_pools[SPIKE_LOWER_HOTTEST_POOL][2]) then
 		item:remove()
 		player:getPosition():sendMagicEffect(16)
-		player:setStorageValue(SPIKE_LOWER_LAVA_MAIN, 1)
+		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Lava_Main, 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Whew! That was that hot, it melted the thermometer! At least you've found the hot spot!")
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This is not the hot spot!")

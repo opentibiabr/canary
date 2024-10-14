@@ -30,7 +30,7 @@ function movements_falcon_bossEntrance.onStepIn(creature, item, position, fromPo
 			Position(33328, 31352, 7),
 			Position(33373, 31309, 7),
 			Position(33381, 31294, 7),
-			Position(33344, 31348, 7)
+			Position(33344, 31348, 7),
 		}
 		if creature then
 			if isInArray(blockedPositions, position) then
@@ -40,7 +40,7 @@ function movements_falcon_bossEntrance.onStepIn(creature, item, position, fromPo
 					creature:teleportTo(Position(33359, 31340, 9), true)
 				else
 					creature:teleportTo(fromPosition, true)
-					creature:sendCancelMessage('You are still exhausted from your last battle.')
+					creature:sendCancelMessage("You are still exhausted from your last battle.")
 				end
 			end
 		end

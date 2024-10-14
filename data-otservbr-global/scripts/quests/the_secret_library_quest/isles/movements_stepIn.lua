@@ -5,22 +5,22 @@ local raxias = {
 	storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.RaxiasTimer,
 	exit = Position(33462, 32159, 7),
 	toPosition = Position(33466, 32156, 8),
-	bossName = 'Raxias',
-	bossPos = Position(33466, 32161, 8)
+	bossName = "Raxias",
+	bossPos = Position(33466, 32161, 8),
 }
 
 local turtle = {
 	fromPosition = Position(32460, 32928, 7),
 	toPosition = Position(32316, 32701, 7),
-	storageTimer = GlobalStorage.secretLibrary.SmallIslands.Turtle
+	storageTimer = GlobalStorage.secretLibrary.SmallIslands.Turtle,
 }
 
 local svargrond = {
 	fromPosition = Position(32119, 31734, 7),
-	toPosition = Position(32127, 31665, 7)
+	toPosition = Position(32127, 31665, 7),
 }
 
-local defaultMessage = 'You have ten minutes to kill and loot this monster, else you will lose that chance and will be kicked out.'
+local defaultMessage = "You have ten minutes to kill and loot this monster, else you will lose that chance and will be kicked out."
 
 local function resetRoom(position)
 	local spec = Game.getSpectators(position, false, false, 5, 5, 5, 5)
@@ -61,7 +61,7 @@ function movements_isle_stepIn.onStepIn(creature, item, position, fromPosition)
 		if Game.getStorageValue(turtle.storageTimer) > os.time() then
 			player:teleportTo(turtle.toPosition)
 		else
-			player:say('The turtle is hungry... You must feed it.', TALKTYPE_MONSTER_SAY)
+			player:say("The turtle is hungry... You must feed it.", TALKTYPE_MONSTER_SAY)
 			player:teleportTo(fromPosition, true)
 		end
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -72,7 +72,7 @@ function movements_isle_stepIn.onStepIn(creature, item, position, fromPosition)
 		if resetRoom(raxias.bossPos) then
 			if player:getStorageValue(raxias.storage) < os.time() then
 				startBattle(player:getId(), raxias.toPosition, raxias.bossName, raxias.bossPos)
-				player:setStorageValue(raxias.storage, os.time() + 20*60*60)
+				player:setStorageValue(raxias.storage, os.time() + 20 * 60 * 60)
 				addEvent(function(cid)
 					local p = Player(cid)
 					if p then
@@ -80,13 +80,13 @@ function movements_isle_stepIn.onStepIn(creature, item, position, fromPosition)
 							p:teleportTo(raxias.exit)
 						end
 					end
-				end, 10*1000*60, player:getId())
+				end, 10 * 1000 * 60, player:getId())
 			else
-				player:sendCancelMessage('You are still exhausted from your last battle.')
+				player:sendCancelMessage("You are still exhausted from your last battle.")
 				player:teleportTo(fromPosition, true)
 			end
 		else
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You must wait. Someone is challenging '.. raxias.bossName ..' now.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must wait. Someone is challenging " .. raxias.bossName .. " now.")
 			player:teleportTo(fromPosition, true)
 		end
 	end

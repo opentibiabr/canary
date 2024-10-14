@@ -1,6 +1,6 @@
 local outfit = createConditionObject(CONDITION_OUTFIT)
-setConditionParam(outfit, CONDITION_PARAM_TICKS, 30*1000)
-addOutfitCondition(outfit, {lookType = 1065})
+setConditionParam(outfit, CONDITION_PARAM_TICKS, 30 * 1000)
+addOutfitCondition(outfit, { lookType = 1065 })
 
 local movements_library_mazzinor = MoveEvent()
 

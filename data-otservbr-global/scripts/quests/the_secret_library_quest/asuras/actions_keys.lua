@@ -1,6 +1,6 @@
 local doors = {
-	[1] = {key = 28476, position = Position(32813, 32813, 9)},
-	[2] = {key = 28477, position = Position(32864, 32810, 9)}
+	[1] = { key = 28476, position = Position(32813, 32813, 9) },
+	[2] = { key = 28477, position = Position(32864, 32810, 9) },
 }
 
 local locked = 23874
@@ -20,7 +20,7 @@ function actions_asura_keys.onUse(player, item, fromPosition, target, toPosition
 		if item.itemid == k.key then
 			if toPosition == k.position and target.itemid == locked then
 				target:transform(opened)
-				addEvent(revert, 10*1000, target:getPosition())
+				addEvent(revert, 10 * 1000, target:getPosition())
 			end
 		end
 	end

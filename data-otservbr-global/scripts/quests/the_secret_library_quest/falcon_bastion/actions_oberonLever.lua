@@ -16,19 +16,19 @@ function actions_falcon_oberon_lever.onUse(player, item, fromPosition, itemEx, t
 					nplayer:teleportTo(Position(33365, 31323, 9), true)
 					nplayer:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 					table.insert(playersTable, nplayer:getId())
-					nplayer:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.OberonTimer, os.time() + 20*60*60)
+					nplayer:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.OberonTimer, os.time() + 20 * 60 * 60)
 				end
 			end
 			local oberon = Game.createMonster("Grand Master Oberon", Position(33365, 31318, 9))
 			if oberon then
 				oberon:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.OberonHeal, 0)
 			end
-			Game.setStorageValue(GlobalStorage.secretLibrary.FalconBastion.OberonSay, - 1)
+			Game.setStorageValue(GlobalStorage.secretLibrary.FalconBastion.OberonSay, -1)
 			Game.createNpc("Oberon's Spite", Position(33363, 31321, 9))
 			Game.createNpc("Oberon's Ire", Position(33368, 31321, 9))
 			Game.createNpc("Oberon's Bile", Position(33363, 31317, 9))
 			Game.createNpc("Oberon's Hate", Position(33368, 31317, 9))
-			addEvent(kickPlayersAfterTime, 30*60*1000, playersTable, fromPosition_, toPosition_, exitPosition)
+			addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, fromPosition_, toPosition_, exitPosition)
 		end
 	end
 

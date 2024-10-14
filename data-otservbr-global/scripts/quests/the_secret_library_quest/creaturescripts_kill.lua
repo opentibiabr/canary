@@ -12,14 +12,14 @@ function creaturescripts_library_bosses.onKill(player, creature)
 	end
 
 	local monsterStorages = {
-		["grand commander soeren"] = {stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 1},
-		["preceptor lazare"] = {stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 2},
-		["grand chaplain gaunder"] = {stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 3},
-		["grand canon dominus"] = {stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 4},
-		["dazzled leaf golem"] = {stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 5},
-		["grand master oberon"] = {stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 6, achievements = {'Millennial Falcon', 'Master Debater'}, lastBoss = true},
-		["brokul"] = {stg = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, value = 7},
-		["the flaming orchid"] = {stg = Storage.Quest.U11_80.TheSecretLibrary.Asuras.flammingOrchid, value = 1},
+		["grand commander soeren"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 1 },
+		["preceptor lazare"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 2 },
+		["grand chaplain gaunder"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 3 },
+		["grand canon dominus"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 4 },
+		["dazzled leaf golem"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 5 },
+		["grand master oberon"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 6, achievements = { "Millennial Falcon", "Master Debater" }, lastBoss = true },
+		["brokul"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, value = 7 },
+		["the flaming orchid"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.Asuras.flammingOrchid, value = 1 },
 	}
 
 	local monsterName = creature:getName():lower()
@@ -49,7 +49,6 @@ function creaturescripts_library_bosses.onKill(player, creature)
 end
 
 creaturescripts_library_bosses:register()
-
 
 local creaturescripts_library_bosses_oberon = CreatureEvent("oberonImmune")
 

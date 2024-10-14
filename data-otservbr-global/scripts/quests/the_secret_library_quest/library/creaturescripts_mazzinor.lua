@@ -14,13 +14,12 @@ function creaturescripts_library_mazzinor.onDeath(creature, corpse, killer, most
 				if item then
 					item:remove()
 				end
-			end, 1*1000*60, cPos)
+			end, 1 * 1000 * 60, cPos)
 		end
 	end
 end
 
 creaturescripts_library_mazzinor:register()
-
 
 local creaturescripts_library_mazzinor = CreatureEvent("mazzinorHealth")
 

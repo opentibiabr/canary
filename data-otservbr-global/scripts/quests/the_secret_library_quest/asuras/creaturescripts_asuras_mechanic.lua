@@ -1,5 +1,16 @@
 local redItems = {
-	3566, 3379, 3388, 8039, 8053, 8064, 22534, 3381, 7991, 3380, 10439, 3564
+	3566,
+	3379,
+	3388,
+	8039,
+	8053,
+	8064,
+	22534,
+	3381,
+	7991,
+	3380,
+	10439,
+	3564,
 }
 
 local creaturescripts_asuras_mechanic = CreatureEvent("AsurasMechanic")
@@ -10,7 +21,7 @@ function creaturescripts_asuras_mechanic.onHealthChange(creature, attacker, prim
 	end
 
 	if attacker:isPlayer() then
-		if creature:getName():lower() == 'the diamond blossom' then
+		if creature:getName():lower() == "the diamond blossom" then
 			local slot = attacker:getSlotItem(CONST_SLOT_ARMOR)
 			if slot then
 				for i = 1, #redItems do
@@ -19,13 +30,13 @@ function creaturescripts_asuras_mechanic.onHealthChange(creature, attacker, prim
 					end
 				end
 			end
-		elseif creature:getName():lower() == 'the blazing rose' then
+		elseif creature:getName():lower() == "the blazing rose" then
 			local slot = attacker:getSlotItem(CONST_SLOT_RIGHT)
 			if slot and slot.itemid == 28494 then
 				return primaryDamage, primaryType, secondaryDamage, secondaryType
 			end
-		elseif creature:getName():lower() == 'the lily of night' then
-			if attacker:getStorageValue('fragrance') > os.time() then
+		elseif creature:getName():lower() == "the lily of night" then
+			if attacker:getStorageValue("fragrance") > os.time() then
 				return primaryDamage, primaryType, secondaryDamage, secondaryType
 			end
 		end

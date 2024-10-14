@@ -1,7 +1,7 @@
 local basins = {
-	[1] = {position = Position(33219, 32100, 9), item = 27868, storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.YellowGem},
-	[2] = {position = Position(33260, 32084, 9), item = 27867, storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.GreenGem},
-	[3] = {position = Position(33318, 32090, 9), item = 27869, storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.RedGem},
+	[1] = { position = Position(33219, 32100, 9), item = 27868, storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.YellowGem },
+	[2] = { position = Position(33260, 32084, 9), item = 27867, storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.GreenGem },
+	[3] = { position = Position(33318, 32090, 9), item = 27869, storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.RedGem },
 }
 
 local actions_museum_gems = Action()
@@ -25,4 +25,3 @@ for _, gem in pairs(basins) do
 end
 
 actions_museum_gems:register()
-

@@ -1,6 +1,6 @@
 local teleports = {
-	[1] = {fromPos = Position(33246, 32107, 8), toPos = Position(33246, 32096, 8), storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, nivel = 2, nextValue = 3},
-	[2] = {fromPos = Position(33246, 32098, 8), toPos = Position(33246, 32109, 8), storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, nivel = 2},
+	[1] = { fromPos = Position(33246, 32107, 8), toPos = Position(33246, 32096, 8), storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, nivel = 2, nextValue = 3 },
+	[2] = { fromPos = Position(33246, 32098, 8), toPos = Position(33246, 32109, 8), storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, nivel = 2 },
 }
 
 local lastroom_enter = Position(33344, 32117, 10)
@@ -24,7 +24,7 @@ function movements_museum_teleportTo.onStepIn(creature, item, position, fromPosi
 
 	if item.actionid == 4905 then
 		for _, p in pairs(teleports) do
-			if (position == p.fromPos) then
+			if position == p.fromPos then
 				if player:getStorageValue(p.storage) >= p.nivel then
 					player:teleportTo(p.toPos)
 					sendFire(p.toPos)
@@ -39,8 +39,7 @@ function movements_museum_teleportTo.onStepIn(creature, item, position, fromPosi
 	elseif item.actionid == 4906 then
 		local hasPermission = false
 
-		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.YellowGem) >= 1 and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.GreenGem) >= 1
-		and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.RedGem) >= 1 then
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.YellowGem) >= 1 and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.GreenGem) >= 1 and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.RedGem) >= 1 then
 			hasPermission = true
 		end
 
@@ -50,14 +49,14 @@ function movements_museum_teleportTo.onStepIn(creature, item, position, fromPosi
 	elseif item.actionid == 4907 then
 		if position == lastroom_enter then
 			player:teleportTo(Position(33363, 32146, 10))
-		elseif position == lastroom_exit and player:getStorageValue('trialTimer') < os.time() then
+		elseif position == lastroom_exit and player:getStorageValue("trialTimer") < os.time() then
 			player:teleportTo(Position(33336, 32117, 10))
 		-- Trial
 		else
 			if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline) < 6 then
-				player:setStorageValue('trialTimer', os.time() + 3*60)
+				player:setStorageValue("trialTimer", os.time() + 3 * 60)
 				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, 6)
-				player:say('rkawdmawfjawkjnfjkawnkjnawkdjawkfmalkwmflkmawkfnzxc', TALKTYPE_MONSTER_SAY)
+				player:say("rkawdmawfjawkjnfjkawnkjnawkdjawkfmalkwmflkmawkfnzxc", TALKTYPE_MONSTER_SAY)
 			end
 		end
 	end

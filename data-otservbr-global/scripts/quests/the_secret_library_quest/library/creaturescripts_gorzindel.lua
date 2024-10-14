@@ -29,12 +29,12 @@ function creaturescripts_gorzindel.onDeath(creature, corpse, killer, mostDamageK
 							c:getPosition():sendMagicEffect(CONST_ME_POFF)
 							c:remove()
 						elseif c:getName():lower() == "gorzindel" then
-							c:unregisterEvent('gorzindelHealth')
+							c:unregisterEvent("gorzindelHealth")
 						end
 					end
 				end
 			end
-		end, 1*1000)
+		end, 1 * 1000)
 	elseif creature:getName():lower() == "stolen tome of portals" then
 		local portal = Game.createItem(1949, 1, cPos)
 		if portal then
@@ -45,13 +45,12 @@ function creaturescripts_gorzindel.onDeath(creature, corpse, killer, mostDamageK
 				if sqm then
 					sqm:remove(1)
 				end
-			end, 10*1000)
+			end, 10 * 1000)
 		end
 	end
 end
 
 creaturescripts_gorzindel:register()
-
 
 local creaturescripts_gorzindel = CreatureEvent("gorzindelHealth")
 

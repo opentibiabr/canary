@@ -4,22 +4,21 @@
 --]]
 
 local entrances = {
-	[1] = {position = Position(32858, 32795, 11), storage = false, toPosition = Position(32889, 32772, 9)},
-	[2] = {position = Position(32857, 32766, 10), fromPos = Position(32856, 32740, 11), toPos = Position(32868, 32752, 11), storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.DiamondTimer, exit = Position(32857, 32768, 10), toPosition = Position(32881, 32789, 11), bossName = 'The Diamond Blossom', bossPos = Position(32881, 32792, 11)},
-	[3] = {position = Position(32817, 32777, 11), fromPos = Position(32875, 32786, 11), toPos = Position(32887, 32798, 11), storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.DarkTimer, exit = Position(32817, 32779, 11), toPosition = Position(32862, 32743, 11), bossName = 'The Lily of Night', bossPos = Position(32862, 32746, 11)},
-	[4] = {position = Position(32854, 32737, 10), fromPos = Position(32856, 32768, 11), toPos = Position(32868, 32780, 11), storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.BlazingTimer, exit = Position(32854, 32739, 10), toPosition = Position(32862, 32771, 11), bossName = 'The Blazing Rose', bossPos = Position(32862, 32774, 11)},
-
+	[1] = { position = Position(32858, 32795, 11), storage = false, toPosition = Position(32889, 32772, 9) },
+	[2] = { position = Position(32857, 32766, 10), fromPos = Position(32856, 32740, 11), toPos = Position(32868, 32752, 11), storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.DiamondTimer, exit = Position(32857, 32768, 10), toPosition = Position(32881, 32789, 11), bossName = "The Diamond Blossom", bossPos = Position(32881, 32792, 11) },
+	[3] = { position = Position(32817, 32777, 11), fromPos = Position(32875, 32786, 11), toPos = Position(32887, 32798, 11), storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.DarkTimer, exit = Position(32817, 32779, 11), toPosition = Position(32862, 32743, 11), bossName = "The Lily of Night", bossPos = Position(32862, 32746, 11) },
+	[4] = { position = Position(32854, 32737, 10), fromPos = Position(32856, 32768, 11), toPos = Position(32868, 32780, 11), storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.BlazingTimer, exit = Position(32854, 32739, 10), toPosition = Position(32862, 32771, 11), bossName = "The Blazing Rose", bossPos = Position(32862, 32774, 11) },
 }
 
 local exites = {
-	[1] = {position = Position(32862, 32741, 11), toPosition = Position(32817, 32779, 11)},
-	[2] = {position = Position(32862, 32769, 11), toPosition = Position(32854, 32739, 10)},
-	[3] = {position = Position(32881, 32787, 11), toPosition = Position(32857, 32768, 10)},
-	[4] = {position = Position(32887, 32772, 9), toPosition = Position(32858, 32797, 11)},
-	[5] = {position = Position(32880, 32828, 11), toPosition = Position(32810, 32765, 10)},
+	[1] = { position = Position(32862, 32741, 11), toPosition = Position(32817, 32779, 11) },
+	[2] = { position = Position(32862, 32769, 11), toPosition = Position(32854, 32739, 10) },
+	[3] = { position = Position(32881, 32787, 11), toPosition = Position(32857, 32768, 10) },
+	[4] = { position = Position(32887, 32772, 9), toPosition = Position(32858, 32797, 11) },
+	[5] = { position = Position(32880, 32828, 11), toPosition = Position(32810, 32765, 10) },
 }
 
-local defaultMessage = 'You have ten minutes to kill and loot this monster, else you will lose that chance and will be kicked out.'
+local defaultMessage = "You have ten minutes to kill and loot this monster, else you will lose that chance and will be kicked out."
 
 local function resetRoom(position)
 	local spec = Game.getSpectators(position, false, false, 5, 5, 5, 5)
@@ -63,7 +62,7 @@ function movements_asura_elemental_portals.onStepIn(creature, item, position, fr
 			if player:getStorageValue(quest) >= 5 then
 				player:teleportTo(toPosition_l)
 			else
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You can not use this portal yet.')
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can not use this portal yet.")
 				player:teleportTo(fromPosition, true)
 			end
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -74,7 +73,7 @@ function movements_asura_elemental_portals.onStepIn(creature, item, position, fr
 				if k.storage then
 					if resetRoom(k.bossPos) then
 						if player:getStorageValue(k.storage) < os.time() then
-							player:setStorageValue(k.storage, os.time() + 20*60*60)
+							player:setStorageValue(k.storage, os.time() + 20 * 60 * 60)
 							startBattle(player:getId(), k.toPosition, k.bossName, k.bossPos)
 							addEvent(function(cid)
 								local p = Player(cid)
@@ -83,13 +82,13 @@ function movements_asura_elemental_portals.onStepIn(creature, item, position, fr
 										p:teleportTo(k.exit)
 									end
 								end
-							end, 10*1000*60, player:getId())
+							end, 10 * 1000 * 60, player:getId())
 						else
-							player:sendCancelMessage('You are still exhausted from your last battle.')
+							player:sendCancelMessage("You are still exhausted from your last battle.")
 							player:teleportTo(fromPosition, true)
 						end
 					else
-						player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You must wait. Someone is challenging '..k.bossName..' now.')
+						player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must wait. Someone is challenging " .. k.bossName .. " now.")
 						player:teleportTo(fromPosition, true)
 					end
 				else
@@ -102,7 +101,7 @@ function movements_asura_elemental_portals.onStepIn(creature, item, position, fr
 		if position == hiddenMap then
 			if player:getStorageValue(quest) == 5 then
 				player:addItem(28908, 1)
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have discovered an old writing desk that contains an ancient map.')
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have discovered an old writing desk that contains an ancient map.")
 				player:setStorageValue(quest, 6)
 			end
 		end

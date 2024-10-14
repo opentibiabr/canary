@@ -1,7 +1,7 @@
 local color = {
-	[1] = {itemid = 4858, position = Position(32945, 32288, 10), value = 2, storage = Storage.Quest.U11_80.TheSecretLibrary.Darashia.RedColor},
-	[2] = {itemid = 5581, position = Position(32948, 32288, 10), value = 1, storage = Storage.Quest.U11_80.TheSecretLibrary.Darashia.GreenColor},
-	[3] = {itemid = 8695, position = Position(32951, 32288, 10), value = 3, storage = Storage.Quest.U11_80.TheSecretLibrary.Darashia.BlueColor},
+	[1] = { itemid = 4858, position = Position(32945, 32288, 10), value = 2, storage = Storage.Quest.U11_80.TheSecretLibrary.Darashia.RedColor },
+	[2] = { itemid = 5581, position = Position(32948, 32288, 10), value = 1, storage = Storage.Quest.U11_80.TheSecretLibrary.Darashia.GreenColor },
+	[3] = { itemid = 8695, position = Position(32951, 32288, 10), value = 3, storage = Storage.Quest.U11_80.TheSecretLibrary.Darashia.BlueColor },
 }
 
 local movements_desert_color_puzzle = MoveEvent()
@@ -27,10 +27,9 @@ function movements_desert_color_puzzle.onStepIn(creature, item, position, fromPo
 					end
 				end
 			end
-			if player:getStorageValue(color[1].storage) == color[1].value and player:getStorageValue(color[2].storage) == color[2].value
-			and	player:getStorageValue(color[3].storage) == color[3].value then
+			if player:getStorageValue(color[1].storage) == color[1].value and player:getStorageValue(color[2].storage) == color[2].value and player:getStorageValue(color[3].storage) == color[3].value then
 				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.ColorPuzzle, 1)
-				player:say('Access granted!', TALKTYPE_MONSTER_SAY)
+				player:say("Access granted!", TALKTYPE_MONSTER_SAY)
 			end
 		end
 	end

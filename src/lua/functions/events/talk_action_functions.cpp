@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "account/account.hpp"
 #include "lua/creature/talkaction.hpp"
 #include "lua/functions/events/talk_action_functions.hpp"

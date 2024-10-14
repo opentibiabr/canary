@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "dress pattern") then
-		if player:getStorageValue(Storage.Postman.Mission06) == 3 then
+		if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission06) == 3 then
 			if npcHandler:getTopic(playerId) < 1 then
 				npcHandler:say("DRESS FLATTEN? WHO WANTS ME TO FLATTEN A DRESS?", npc, creature)
 				npcHandler:setTopic(playerId, 1)
@@ -73,7 +73,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 4)
 			elseif npcHandler:getTopic(playerId) == 4 then
 				npcHandler:say("AH YES! I WORKED ON THE DRESS PATTERN FOR THOSE UNIFORMS. STAINLESS TROUSERES, STEAM DRIVEN BOOTS! ANOTHERMARVEL TO BEHOLD! I'LL SENT A COPY TO KEVIN IMEDIATELY!", npc, creature)
-				player:setStorageValue(Storage.Postman.Mission06, 4)
+				player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission06, 4)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end

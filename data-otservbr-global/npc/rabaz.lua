@@ -140,14 +140,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local formattedCategoryNames = {}
-	for categoryName, _ in pairs(itemsTable) do
-		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
-	end
-
 	local categoryTable = itemsTable[message:lower()]
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TibiaTales.AnInterestInBotany.Questline) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline) < 1 then
 			npcHandler:setTopic(playerId, 1)
 			npcHandler:say({
 				"Why yes, there is indeed some minor issue I could need your help with. I was always a friend of nature and it was not recently I discovered the joys of plants, growths, of all the flora around us. ...",
@@ -160,15 +155,15 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Once you find what I need, best use a knife to carefully cut and gather a leaf or a scrap of their integument and press it directly under their appropriate entry into my botanical almanach. ...",
 				"Simply return to me after you have done that and we will discuss your reward. What do you say, are you in?",
 			}, npc, creature)
-		elseif player:getStorageValue(Storage.TibiaTales.AnInterestInBotany.Questline) == 3 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline) == 3 then
 			npcHandler:setTopic(playerId, 2)
 			npcHandler:say("Well fantastic work, you gathered both samples! Now I can continue my work on the almanach, thank you very much for your help indeed. Can I take a look at my book please?", npc, creature)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
-			player:setStorageValue(Storage.TibiaTales.AnInterestInBotany.Questline, 1)
-			player:setStorageValue(Storage.TibiaTales.AnInterestInBotany.ChestDoor, 0)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline, 1)
+			player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.ChestDoor, 0)
 			npcHandler:say("Yes? Yes! That's the enthusiasm I need! Remember to bring a sharp knife to gather the samples, plants - even mutated deformed plants - are very sensitive you know. Off you go and be careful out there, Zao is no place for the feint hearted mind you.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
@@ -176,7 +171,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addItem(11700, 1)
 				player:addItem(3035, 10)
 				player:addExperience(3000, true)
-				player:setStorageValue(Storage.TibiaTales.AnInterestInBotany.Questline, 4)
+				player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline, 4)
 				npcHandler:say({
 					"Ah, thank you. Now look at that texture and fine colour, simply marvellous. ...",
 					"I hope the sun in the steppe did not exhaust you too much? Shellshock. A dangerous foe in the world of field science and exploration. ...",
@@ -189,7 +184,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif categoryTable then
-		npcHandler:say("Have a look.", npc, player)
+		local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+		npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
 		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
@@ -199,7 +195,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_GREET, "Ah, a customer! Please feel free to browse my wares, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Have a look. But perhaps you just want to see my {potions}, {wands} or {runes}?")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Have a look. But perhaps you just want to see my " .. GetFormattedShopCategoryNames(itemsTable) .. ".")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- On buy npc shop message

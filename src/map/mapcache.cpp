@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "mapcache.hpp"
 
 #include "game/movement/teleport.hpp"
@@ -95,7 +93,9 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 		item->setItemCount(1);
 	}
 
-	item->startDecaying();
+	if (item->canDecay()) {
+		item->startDecaying();
+	}
 	item->loadedFromMap = true;
 	item->decayDisabled = Item::items[item->getID()].decayTo != -1;
 
@@ -152,11 +152,14 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::unique_ptr<F
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
 	// add zone synchronously
-	g_dispatcher().context().tryAddEvent([tile, pos] {
-		for (const auto &zone : Zone::getZones(pos)) {
-			tile->addZone(zone);
-		}
-	});
+	g_dispatcher().context().tryAddEvent(
+		[tile, pos] {
+			for (const auto &zone : Zone::getZones(pos)) {
+				tile->addZone(zone);
+			}
+		},
+		"Zone::getZones"
+	);
 
 	floor->setTile(x, y, tile);
 

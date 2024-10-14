@@ -66,8 +66,6 @@ serverMotd = "Welcome to the OTServBR-Global!"
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
 maxPacketsPerSecond = 25
-maxItem = 2000
-maxContainer = 100
 maxPlayersOnlinePerAccount = 1
 maxPlayersOutsidePZPerAccount = 1
 
@@ -80,6 +78,12 @@ packetCompressionLevel = 6
 freeDepotLimit = 2000
 premiumDepotLimit = 10000
 depotBoxes = 20
+
+-- Item and containers limit
+-- NOTE: 'maxContainerDepth' defines the maximum depth to which containers can be nested
+maxItem = 5000
+maxContainer = 500
+maxContainerDepth = 200
 
 -- Augments System (Get more info in: https://github.com/opentibiabr/canary/pull/2602)
 -- NOTE: the following values are for all weapons and equipments that have type of "increase damage", "powerful impact" and "strong impact".
@@ -254,7 +258,7 @@ onlyPremiumAccount = false
 -- NOTE: enablePlayerPutItemInAmmoSlot = true, will enable players to put any items on ammo slot, more used in custom shopping system
 -- NOTE: startStreakLevel will make a reward streak level for new players who never logged in
 -- NOTE: if showLootsInBestiary is true, will cause all loots to be shown in the bestiary even if the player has not reached the required number of kills
--- NOTE: minTownIdToBankTransfer blocks towns less than defined from receiving money transfers
+-- NOTE: minTownIdToBankTransferFromMain blocks towns less than defined from receiving money transfers
 -- NOTE: enableSupportOutfit enable GODS and GMS to select support outfit (gamemaster, customer support or community manager)
 stashMoving = false
 stashItemCount = 5000
@@ -275,7 +279,7 @@ storeInboxMaxLimit = 2000
 enablePlayerPutItemInAmmoSlot = false
 startStreakLevel = 0
 showLootsInBestiary = false
-minTownIdToBankTransfer = 3
+minTownIdToBankTransferFromMain = 4
 enableSupportOutfit = true
 
 -- Teleport summon

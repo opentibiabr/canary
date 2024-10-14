@@ -16,15 +16,6 @@ TeleportAction = {
 			{ x = 32208, y = 31134, z = 7 },
 		},
 	},
-	[35001] = { -- The Cursed Crystal teleports
-		itemId = 19387,
-		itemPos = {
-			{ x = 31973, y = 32905, z = 10 },
-			{ x = 31973, y = 32905, z = 11 },
-			{ x = 32009, y = 32928, z = 10 },
-			{ x = 32009, y = 32928, z = 9 },
-		},
-	},
 	-- Path: data\scripts\movements\quests\the_queen_of_the_banshees\movement(2)-second_seal_pearl.lua
 	[35002] = {
 		itemId = 1949,

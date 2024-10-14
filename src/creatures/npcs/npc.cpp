@@ -396,6 +396,10 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 			continue;
 		}
 
+		if (!item->hasMarketAttributes()) {
+			continue;
+		}
+
 		auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
 
 		if (g_game().internalRemoveItem(item, removeCount) != RETURNVALUE_NOERROR) {
@@ -410,6 +414,10 @@ void Npc::onPlayerSellItem(std::shared_ptr<Player> player, uint16_t itemId, uint
 	}
 
 	auto totalRemoved = amount - toRemove;
+	if (totalRemoved == 0) {
+		return;
+	}
+
 	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
 	g_logger().debug("[Npc::onPlayerSellItem] - Removing items from player {} amount {} of items with id {} on shop for npc {}", player->getName(), toRemove, itemId, getName());
 	if (totalRemoved > 0 && totalCost > 0) {

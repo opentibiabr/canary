@@ -55,38 +55,42 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.Oramond.PeppermoonBell) < 1 then
+		if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ThePowderOfTheStars.Mission) == 1 then
+			npcHandler:say("Do you already have 15 units of blue pollen with you?", npc, creature)
+			npcHandler:setTopic(playerId, 1)
+		elseif player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ThePowderOfTheStars.Mission) < 1 then
 			npcHandler:say({
 				"I am afraid my supplies of peppermoon bell powder have gone flat again. Please provide me with the pollen of this flower. ...",
-				"It only blooms underground in a cavern to the northwest. I will need 15 units of pollen. Bring them to me and we shall conduct a séance.",
+				"It only blooms underground in a cavern to the northwest. I will need 15 units of pollen. Bring them to me and we shall conduct a seance.",
 			}, npc, creature)
-			player:setStorageValue(Storage.Oramond.PeppermoonBell, 1)
-			player:setStorageValue(Storage.Oramond.PeppermoonBellCount, 0)
-			npcHandler:setTopic(playerId, 0)
-			if player:getStorageValue(Storage.Oramond.QuestLine) < 1 then
-				player:setStorageValue(Storage.Oramond.QuestLine, 1)
+			player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ThePowderOfTheStars.Mission, 1)
+			if player:getStorageValue(Storage.Quest.U10_50.OramondQuest.QuestLine) < 1 then
+				player:setStorageValue(Storage.Quest.U10_50.OramondQuest.QuestLine, 1)
 			end
-		elseif player:getStorageValue(Storage.Oramond.PeppermoonBell) == 1 then
-			npcHandler:say("Ah! Did you bring me the peppermoon bell pollen I asked for?", npc, creature)
-			npcHandler:setTopic(playerId, 1)
+			npcHandler:setTopic(playerId, 0)
 		end
-	end
-	if MsgContains(message, "yes") then
+	elseif MsgContains(message, "seance") and player:getStorageValue(Storage.Quest.U10_50.OramondQuest.ThePowderOfTheStars.Mission) == 1 and player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission16) < 1 then
+		npcHandler:say("Ah! Did you bring me the peppermoon bell pollen I asked for?", npc, creature)
+		npcHandler:setTopic(playerId, 1)
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			if player:getStorageValue(Storage.Oramond.PeppermoonBellCount) >= 15 then
-				if player:getStorageValue(Storage.DarkTrails.Mission15) == 1 then
+			if player:getItemCount(21089) >= 15 then
+				if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission15) == 1 then
 					npcHandler:say("Ah! Well done! Now we shall proceed with the seance, yes?", npc, creature)
-					player:setStorageValue(Storage.Oramond.PeppermoonBell, -1)
-					player:setStorageValue(Storage.Oramond.PeppermoonBellCount, -15)
-					player:setStorageValue(Storage.DarkTrails.Mission15, 2)
+					player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ThePowderOfTheStars.Mission, -1)
+					player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission15, 2)
 					player:removeItem(21089, 15)
 					npcHandler:setTopic(playerId, 2)
 				else
 					npcHandler:say("Ah! Well done! These 15 doses will suffice for now. Here, take this vote for your effort.", npc, creature)
-					player:setStorageValue(Storage.Oramond.PeppermoonBell, -1)
-					player:setStorageValue(Storage.Oramond.PeppermoonBellCount, -15)
-					player:setStorageValue(Storage.Oramond.VotingPoints, player:getStorageValue(Storage.Oramond.VotingPoints) + 1)
+					player:setStorageValue(Storage.Quest.U10_50.OramondQuest.ThePowderOfTheStars.Mission, -1)
 					player:removeItem(21089, 15)
+					local currentVotingPoints = player:getStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints)
+					if currentVotingPoints == -1 then
+						player:setStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints, 1)
+					else
+						player:setStorageValue(Storage.Quest.U10_50.OramondQuest.VotingPoints, currentVotingPoints + 1)
+					end
 					npcHandler:setTopic(playerId, 0)
 				end
 			else
@@ -111,17 +115,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 5)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			npcHandler:say("Ahhhhhhhh! ", npc, creature)
-			player:setStorageValue(Storage.DarkTrails.Mission15, 3)
-			player:teleportTo(Position(33490, 32037, 8))
+			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission15, 3)
+			player:teleportTo(Position(33467, 32048, 8))
 			player:getPosition():sendMagicEffect(CONST_ME_ENERGYHIT)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, "seance") then
-		if player:getStorageValue(Storage.DarkTrails.Mission15) == 3 then
-			npcHandler:say("Splendid. Let me make the final preparations... There. Are you ready, too?", npc, creature)
-			npcHandler:setTopic(playerId, 3)
-		end
 	end
+
 	return true
 end
 

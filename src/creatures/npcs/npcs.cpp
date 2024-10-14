@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "declarations.hpp"
 #include "creatures/combat/combat.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -105,11 +103,11 @@ void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBl
 
 bool Npcs::load(bool loadLibs /* = true*/, bool loadNpcs /* = true*/, bool reloading /* = false*/) const {
 	if (loadLibs) {
-		auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 		return g_luaEnvironment().loadFile(coreFolder + "/npclib/load.lua", "load.lua") == 0;
 	}
 	if (loadNpcs) {
-		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
+		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 		return g_scripts().loadScripts(datapackFolder + "/npc", false, reloading);
 	}
 	return false;

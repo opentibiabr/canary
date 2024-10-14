@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/global/globalevent.hpp"
 #include "items/weapons/weapons.hpp"
@@ -35,7 +33,7 @@ void Scripts::clearAllScripts() const {
 }
 
 bool Scripts::loadEventSchedulerScripts(const std::string &fileName) {
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	const auto dir = std::filesystem::current_path() / coreFolder / "events" / "scripts" / "scheduler";
 	if (!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
 		g_logger().warn("{} - Can not load folder 'scheduler' on {}/events/scripts'", __FUNCTION__, coreFolder);
@@ -90,7 +88,7 @@ bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
 		if (std::string disable("#");
 		    file.front() == disable.front()) {
 			// Send log of disabled script
-			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS, __FUNCTION__)) {
+			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
 				g_logger().info("[script]: {} [disabled]", realPath.filename().string());
 			}
 			// Skip for next loop and ignore disabled file
@@ -100,7 +98,7 @@ bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
 		// If the file is a library file or if the file's parent directory is not "lib" or "events"
 		if (isLib || (fileFolderView != "lib" && fileFolderView != "events")) {
 			// If console logs are enabled and the file is not a library file
-			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS, __FUNCTION__)) {
+			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
 				// If the current directory is different from the last directory that was logged
 				if (lastDirectory.empty() || lastDirectory != scriptFolderView) {
 					// Update the last directory variable and log the directory name
@@ -118,7 +116,7 @@ bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
 			}
 		}
 
-		if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS, __FUNCTION__)) {
+		if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
 			if (!reload) {
 				g_logger().info("[script loaded]: {}", realPath.filename().string());
 			} else {

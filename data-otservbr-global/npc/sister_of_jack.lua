@@ -68,8 +68,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "jack") then
-		if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 5 then
-			if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Mother == 1) and (player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Sister)) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 5 then
+			if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.Mother == 1) and (player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.Sister)) < 1 then
 				npcHandler:say("Why are you asking, he didn't get himself into something again did he?", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			end
@@ -95,8 +95,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Wait till mother hears that! Oh he will be in for a surprise, I can tell you that. Ma!! Maaaaa!!",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.Sister, 1)
-			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 6)
+			player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.Sister, 1)
+			player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine, 6)
 		end
 	end
 	return true

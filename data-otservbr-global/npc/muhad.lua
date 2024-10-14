@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local AritosTask = player:getStorageValue(Storage.TibiaTales.AritosTask)
+	local AritosTask = player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask)
 
 	-- Check if the message contains "arito"
 	if MsgContains(message, "arito") then
@@ -96,8 +96,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Try to sneak in undetectedly and bring back our treasure as soon as you obtain it. May Daraman hold his protective hand over you on your mission. I wish you good luck. ...",
 				"One last thing before you leave. Take the path behind me and you will get out of our hideout unharmed.",
 			}, npc, creature)
-			player:setStorageValue(Storage.TibiaTales.AritosTask, 2)
-			player:setStorageValue(Storage.TibiaTales.AritosTaskDoor, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask, 2)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTaskDoor, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

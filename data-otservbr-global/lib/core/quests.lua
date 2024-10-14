@@ -115,49 +115,49 @@ if not Quests then
 		},
 		[3] = {
 			name = "Spike Task",
-			startStorageId = Storage.SpikeTaskQuest.QuestLine,
+			startStorageId = Storage.Quest.U10_20.SpikeTaskQuest.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "First Task",
-					storageId = Storage.SpikeTaskQuest.Gnomilly,
+					storageId = Storage.Quest.U10_20.SpikeTaskQuest.Gnomilly,
 					missionId = 1021,
 					startValue = 0,
 					endValue = 100,
 					description = function(player)
-						return string.format("You have %d points of task. You need 100 points to take Cave Explorer outfit.", (math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnomilly), 0)))
+						return string.format("You have %d points of task. You need 100 points to take Cave Explorer outfit.", (math.max(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomilly), 0)))
 					end,
 				},
 				[2] = {
 					name = "Second Task",
-					storageId = Storage.SpikeTaskQuest.Gnombold.Points,
+					storageId = Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points,
 					missionId = 1022,
 					startValue = 0,
 					endValue = 100,
 					description = function(player)
-						return string.format("You have %d points of task. You need 100 points to take first addon.", (math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnombold.Points), 0)))
+						return string.format("You have %d points of task. You need 100 points to take first addon.", (math.max(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points), 0)))
 					end,
 				},
 				[3] = {
 					name = "Third Task",
-					storageId = Storage.SpikeTaskQuest.Gnomargery.Points,
+					storageId = Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points,
 					missionId = 1023,
 					startValue = 0,
 					endValue = 100,
 					description = function(player)
-						return string.format("You have %d points of task. You need 100 points to take second addon.", (math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnomargery.Points), 0)))
+						return string.format("You have %d points of task. You need 100 points to take second addon.", (math.max(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points), 0)))
 					end,
 				},
 			},
 		},
 		[4] = {
 			name = "A Father's Burden",
-			startStorageId = Storage.FathersBurden.QuestLog,
+			startStorageId = Storage.Quest.U8_6.AFathersBurden.QuestLog,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Birthday Presents",
-					storageId = Storage.FathersBurden.Status,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Status,
 					missionId = 1024,
 					startValue = 1,
 					endValue = 2,
@@ -169,7 +169,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Magic Bow - Sinew",
-					storageId = Storage.FathersBurden.Sinew,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Sinew,
 					missionId = 1025,
 					startValue = 1,
 					endValue = 2,
@@ -180,7 +180,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Magic Bow - Wood",
-					storageId = Storage.FathersBurden.Wood,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Wood,
 					missionId = 1026,
 					startValue = 1,
 					endValue = 2,
@@ -192,7 +192,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "The Magic Robe - Cloth",
-					storageId = Storage.FathersBurden.Cloth,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Cloth,
 					missionId = 1027,
 					startValue = 1,
 					endValue = 2,
@@ -204,7 +204,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "The Magic Robe - Silk",
-					storageId = Storage.FathersBurden.Silk,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Silk,
 					missionId = 1028,
 					startValue = 1,
 					endValue = 2,
@@ -215,7 +215,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "The Magic Rod - Crystal",
-					storageId = Storage.FathersBurden.Crystal,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Crystal,
 					missionId = 1029,
 					startValue = 1,
 					endValue = 2,
@@ -226,7 +226,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "The Magic Rod - Root",
-					storageId = Storage.FathersBurden.Root,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Root,
 					missionId = 1030,
 					startValue = 1,
 					endValue = 2,
@@ -237,7 +237,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "The Magic Shield - Iron",
-					storageId = Storage.FathersBurden.Iron,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Iron,
 					missionId = 1031,
 					startValue = 1,
 					endValue = 2,
@@ -249,7 +249,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "The Magic Shield - Scale",
-					storageId = Storage.FathersBurden.Scale,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Scale,
 					missionId = 1032,
 					startValue = 1,
 					endValue = 2,
@@ -3111,7 +3111,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Pythius the Rotten",
-					storageId = Storage.QuestChests.FirewalkerBoots,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.FirewalkerBoots,
 					missionId = 10230,
 					startValue = 1,
 					endValue = 1,
@@ -3488,12 +3488,12 @@ if not Quests then
 		},
 		[24] = {
 			name = "The Postman Missions",
-			startStorageId = Storage.Postman.Mission01,
+			startStorageId = Storage.Quest.U7_24.ThePostmanMissions.Mission01,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 01 - Check Postal Routes",
-					storageId = Storage.Postman.Mission01,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission01,
 					missionId = 10252,
 					startValue = 1,
 					endValue = 6,
@@ -3508,7 +3508,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 02 - Fix Mailbox",
-					storageId = Storage.Postman.Mission02,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission02,
 					missionId = 10253,
 					startValue = 1,
 					endValue = 3,
@@ -3520,7 +3520,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03 - Bill Delivery",
-					storageId = Storage.Postman.Mission03,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission03,
 					missionId = 10254,
 					startValue = 1,
 					endValue = 3,
@@ -3533,7 +3533,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 04 - Aggressive Dogs",
-					storageId = Storage.Postman.Mission04,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission04,
 					missionId = 10255,
 					startValue = 1,
 					endValue = 2,
@@ -3544,7 +3544,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 05 - Present Delivery",
-					storageId = Storage.Postman.Mission05,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission05,
 					missionId = 10256,
 					startValue = 1,
 					endValue = 4,
@@ -3558,7 +3558,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 06 - New Uniforms",
-					storageId = Storage.Postman.Mission06,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission06,
 					missionId = 10257,
 					startValue = 1,
 					endValue = 13,
@@ -3582,7 +3582,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 07 - Measurements",
-					storageId = Storage.Postman.Mission07,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission07,
 					missionId = 10258,
 					startValue = 1,
 					endValue = 9,
@@ -3599,7 +3599,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 08 - Missing Courier",
-					storageId = Storage.Postman.Mission08,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission08,
 					missionId = 10259,
 					startValue = 1,
 					endValue = 3,
@@ -3611,7 +3611,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 09 - Dear Santa",
-					storageId = Storage.Postman.Mission09,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission09,
 					missionId = 10260,
 					startValue = 1,
 					endValue = 4,
@@ -3624,7 +3624,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 10 - Mintwallin",
-					storageId = Storage.Postman.Mission10,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission10,
 					missionId = 10261,
 					startValue = 1,
 					endValue = 3,
@@ -3636,7 +3636,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Postman Rank",
-					storageId = Storage.Postman.Rank,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Rank,
 					missionId = 10262,
 					startValue = 1,
 					endValue = 5,
@@ -4382,12 +4382,12 @@ if not Quests then
 		},
 		[30] = {
 			name = "The White Raven Monastery",
-			startStorageId = Storage.WhiteRavenMonastery.QuestLog,
+			startStorageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.QuestLog,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Access to the Isle of Kings",
-					storageId = Storage.WhiteRavenMonastery.Passage,
+					storageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.Passage,
 					missionId = 10315,
 					startValue = 1,
 					endValue = 2,
@@ -4398,7 +4398,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Investigation",
-					storageId = Storage.WhiteRavenMonastery.Diary,
+					storageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.Diary,
 					missionId = 10316,
 					startValue = 1,
 					endValue = 2,
@@ -4412,12 +4412,12 @@ if not Quests then
 		},
 		[31] = {
 			name = "Tibia Tales",
-			startStorageId = Storage.TibiaTales.DefaultStart,
+			startStorageId = Storage.Quest.U8_1.TibiaTales.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "To Appease the Mighty",
-					storageId = Storage.TibiaTales.ToAppeaseTheMightyQuest,
+					storageId = Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest,
 					missionId = 10317,
 					startValue = 0,
 					endValue = 4,
@@ -4431,7 +4431,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Arito's Task",
-					storageId = Storage.TibiaTales.AritosTask,
+					storageId = Storage.Quest.U8_1.TibiaTales.AritosTask,
 					missionId = 10318,
 					startValue = 1,
 					endValue = 3,
@@ -4443,7 +4443,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Lion's Rock",
-					storageId = Storage.LionsRock.Questline,
+					storageId = Storage.Quest.U10_70.LionsRock.Questline,
 					missionId = 10319,
 					startValue = 1,
 					endValue = 11,
@@ -4451,25 +4451,25 @@ if not Quests then
 						[1] = function(player)
 							return string.format(
 								"You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsStrength), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsBeauty), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsTears), 0))
 							)
 						end,
 						[2] = function(player)
 							return string.format(
 								"You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsStrength), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsBeauty), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsTears), 0))
 							)
 						end,
 						[3] = function(player)
 							return string.format(
 								"You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsStrength), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsBeauty), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsTears), 0))
 							)
 						end,
 						[4] = "You have passed the three tests of Lion's Rock and thus lit the three mystical pyramids. You may enter the inner sanctum now. - What other secrets could be hidden down there?",
@@ -4477,28 +4477,28 @@ if not Quests then
 						[6] = function(player)
 							return string.format(
 								"lions' enemies in this area of the temple. What could be the resolution?\n\nblood %d/1\negg %d/1\neye %d/1\npoison %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.SnakeSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.LizardSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.ScorpionSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.HyenaSign), 0))
 							)
 						end,
 						[7] = function(player)
 							return string.format(
 								"lions' enemies in this area of the temple. What could be the resolution?\n\nblood %d/1\negg %d/1\neye %d/1\npoison %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.SnakeSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.LizardSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.ScorpionSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.HyenaSign), 0))
 							)
 						end,
 						[8] = function(player)
 							return string.format(
 								"lions' enemies in this area of the temple. What could be the resolution?\n\nblood %d/1\negg %d/1\neye %d/1\npoison %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.SnakeSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.LizardSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.ScorpionSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.HyenaSign), 0))
 							)
 						end,
 						[9] = 'In the north-west area of the Inner Sanctum, find the southern rectangular room to the south-west. In this room you will find 4 "sun" floor inscriptions as well as a rock in the center. The sun inscriptions represent gem slots.',
@@ -4507,7 +4507,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Against the Spider Cult",
-					storageId = Storage.TibiaTales.AgainstTheSpiderCult,
+					storageId = Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult,
 					missionId = 10320,
 					startValue = 1,
 					endValue = 6,
@@ -4522,7 +4522,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "An Interest In Botany",
-					storageId = Storage.TibiaTales.AnInterestInBotany.Questline,
+					storageId = Storage.Quest.U8_6.AnInterestInBotany.Questline,
 					missionId = 10321,
 					startValue = 1,
 					endValue = 4,
@@ -4538,17 +4538,17 @@ if not Quests then
 				},
 				[6] = {
 					name = "Graves Sanctified - In Progress",
-					storageId = Storage.TibiaTales.RestInHallowedGround.HolyWater,
+					storageId = Storage.Quest.U8_1.RestInHallowedGround.HolyWater,
 					missionId = 10322,
 					startValue = 1,
 					endValue = 15,
 					description = function(player)
-						return string.format("You sanctified %d of 15 graves.", (math.max(player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.HolyWater), 0)))
+						return string.format("You sanctified %d of 15 graves.", (math.max(player:getStorageValue(Storage.Quest.U8_1.RestInHallowedGround.HolyWater), 0)))
 					end,
 				},
 				[7] = {
 					name = "Into the Bone Pit",
-					storageId = Storage.TibiaTales.IntoTheBonePit,
+					storageId = Storage.Quest.U8_1.TibiaTales.IntoTheBonePit,
 					missionId = 10323,
 					startValue = 1,
 					endValue = 3,
@@ -4561,7 +4561,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Rest in Hallowed Ground",
-					storageId = Storage.TibiaTales.RestInHallowedGround.Questline,
+					storageId = Storage.Quest.U8_1.RestInHallowedGround.Questline,
 					missionId = 10324,
 					startValue = 1,
 					endValue = 5,
@@ -4576,7 +4576,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "The Exterminator",
-					storageId = Storage.TibiaTales.TheExterminator,
+					storageId = Storage.Quest.U8_1.TibiaTales.TheExterminator,
 					missionId = 10325,
 					startValue = 1,
 					endValue = 3,
@@ -4590,7 +4590,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "The Ultimate Booze",
-					storageId = Storage.TibiaTales.UltimateBoozeQuest,
+					storageId = Storage.Quest.U8_1.TibiaTales.UltimateBoozeQuest,
 					missionId = 10326,
 					startValue = 1,
 					endValue = 3,
@@ -4603,7 +4603,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Jack to the Future",
-					storageId = Storage.TibiaTales.JackFutureQuest.QuestLine,
+					storageId = Storage.Quest.U8_7.JackFutureQuest.QuestLine,
 					missionId = 10327,
 					startValue = 1,
 					endValue = 11,
@@ -4636,7 +4636,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "The Cursed Crystal",
-					storageId = Storage.TibiaTales.TheCursedCrystal.Questline,
+					storageId = Storage.Quest.U10_70.TheCursedCrystal.Questline,
 					missionId = 10328,
 					startValue = 0,
 					endValue = 4,
@@ -4675,7 +4675,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "To Outfox a Fox",
-					storageId = Storage.TibiaTales.ToOutfoxAFoxQuest,
+					storageId = Storage.Quest.U8_1.ToOutfoxAFoxQuest,
 					missionId = 10432,
 					startValue = 1,
 					endValue = 2,
@@ -5153,12 +5153,12 @@ if not Quests then
 		},
 		[35] = {
 			name = "Oramond",
-			startStorageId = Storage.Oramond.QuestLine,
+			startStorageId = Storage.Quest.U10_50.OramondQuest.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "To Take Roots",
-					storageId = Storage.Oramond.MissionToTakeRoots,
+					storageId = Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission,
 					missionId = 10360,
 					startValue = 1,
 					endValue = 3000,
@@ -5597,43 +5597,25 @@ if not Quests then
 				},
 			},
 		},
-		[40] = { -- FREE SLOT FOR A SIMPLE QUEST
-			name = "XXXXXXXXXXXX",
-			startStorageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
-			startStorageValue = 1,
-			missions = {
-				[1] = {
-					name = "XXXXXXXXXXXX",
-					storageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
-					missionId = 10387,
-					startValue = 1,
-					endValue = 2,
-					states = {
-						[1] = "XXXXXXXXXXXX",
-						[2] = "XXXXXXXXXXXX",
-					},
-				},
-			},
-		},
-		[41] = {
+		[40] = {
 			name = "Adventurers Guild",
-			startStorageId = Storage.AdventurersGuild.QuestLine,
+			startStorageId = Storage.Quest.U9_80.AdventurersGuild.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Great Dragon Hunt",
-					storageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
+					storageId = Storage.Quest.U10_80.TheGreatDragonHunt.WarriorSkeleton,
 					missionId = 10388,
 					startValue = 0,
 					endValue = 2,
 					description = function(player)
 						return ("You are exploring the Kha'zeel Dragon Lairs. Others obviously found a terrible end here. \z
-						But the dragon hoards might justify the risks. You killed %d/50 dragons and dragon lords."):format(math.max(player:getStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter), 0))
+						But the dragon hoards might justify the risks. You killed %d/50 dragons and dragon lords."):format(math.max(player:getStorageValue(Storage.Quest.U10_80.TheGreatDragonHunt.DragonCounter), 0))
 					end,
 				},
 				[2] = {
 					name = "The Lost Brother",
-					storageId = Storage.AdventurersGuild.TheLostBrother,
+					storageId = Storage.Quest.U10_80.TheLostBrotherQuest,
 					missionId = 11000,
 					startValue = 1,
 					endValue = 3,
@@ -5645,7 +5627,7 @@ if not Quests then
 				},
 			},
 		},
-		[42] = {
+		[41] = {
 			name = "Dawnport",
 			startStorageId = Storage.Quest.U10_55.Dawnport.Questline,
 			startStorageValue = 1,
@@ -5740,7 +5722,7 @@ if not Quests then
 				},
 			},
 		},
-		[43] = {
+		[42] = {
 			name = "The Rookie Guard",
 			startStorageId = Storage.Quest.U9_1.TheRookieGuard.Questline,
 			startStorageValue = 1,
@@ -5922,7 +5904,7 @@ if not Quests then
 				},
 			},
 		},
-		[44] = {
+		[43] = {
 			name = "The New Frontier",
 			startStorageId = Storage.Quest.U8_54.TheNewFrontier.Questline,
 			startStorageValue = 1,
@@ -6171,7 +6153,7 @@ if not Quests then
 				},
 			},
 		},
-		[45] = {
+		[44] = {
 			name = "Spirithunters Quest",
 			startStorageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 			startStorageValue = 1,
@@ -6211,7 +6193,7 @@ if not Quests then
 				},
 			},
 		},
-		[46] = {
+		[45] = {
 			name = "Threatened Dreams",
 			startStorageId = Storage.Quest.U11_40.ThreatenedDreams.QuestLine,
 			startStorageValue = 1,
@@ -6306,7 +6288,7 @@ if not Quests then
 				},
 			},
 		},
-		[47] = {
+		[46] = {
 			name = "Blood Brothers",
 			startStorageId = Storage.Quest.U8_4.BloodBrothers.QuestLine,
 			startStorageValue = 1,
@@ -6359,7 +6341,7 @@ if not Quests then
 				},
 			},
 		},
-		[48] = {
+		[47] = {
 			name = "Grave Danger",
 			startStorageId = Storage.Quest.U12_20.GraveDanger.QuestLine,
 			startStorageValue = 1,
@@ -6536,14 +6518,14 @@ if not Quests then
 				},
 			},
 		},
-		[49] = {
+		[48] = {
 			name = "The Outlaw Camp",
-			startStorageId = Storage.QuestChests.OutlawCamp,
+			startStorageId = Storage.Quest.U6_4.OutlawCampQuest,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Outlaw Treasure",
-					storageId = Storage.QuestChests.OutlawCamp,
+					storageId = Storage.Quest.U6_4.OutlawCampQuest,
 					missionId = 10451,
 					startValue = 1,
 					endValue = 1,

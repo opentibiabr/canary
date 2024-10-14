@@ -12,7 +12,7 @@ local rewards = {
 
 local tests = {
 	{
-		storage = Storage.LionsRock.OuterSanctum.LionsStrength,
+		storage = Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsStrength,
 		itemPosition = { x = 33137, y = 32291, z = 8 },
 		pagodaPosition = { x = 33134, y = 32289, z = 8 },
 		item = 9634,
@@ -20,7 +20,7 @@ local tests = {
 		effect = CONST_ME_BLOCKHIT,
 	},
 	{
-		storage = Storage.LionsRock.OuterSanctum.LionsBeauty,
+		storage = Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsBeauty,
 		itemPosition = { x = 33138, y = 32369, z = 8 },
 		pagodaPosition = { x = 33136, y = 32369, z = 8 },
 		item = 21389,
@@ -28,7 +28,7 @@ local tests = {
 		effect = CONST_ME_REDSMOKE,
 	},
 	{
-		storage = Storage.LionsRock.OuterSanctum.LionsTears,
+		storage = Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsTears,
 		itemPosition = { x = 33154, y = 32279, z = 8 },
 		pagodaPosition = { x = 33156, y = 32279, z = 8 },
 		item = 21466,
@@ -58,11 +58,11 @@ function lionsRockSacrificesTest.onUse(player, item, fromPosition, target, toPos
 					pagoda:transform(2075)
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, setting.message)
 					player:setStorageValue(setting.storage, 1)
-					if player:getStorageValue(Storage.LionsRock.Questline) < 1 then
-						player:setStorageValue(Storage.LionsRock.Questline, math.max(player:getStorageValue(Storage.LionsRock.Questline), 1))
-						player:setStorageValue(Storage.LionsRock.Questline, player:getStorageValue(Storage.LionsRock.Questline) + 1)
+					if player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline) < 1 then
+						player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline), 1))
+						player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline) + 1)
 					else
-						player:setStorageValue(Storage.LionsRock.Questline, player:getStorageValue(Storage.LionsRock.Questline) + 1)
+						player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline) + 1)
 					end
 					player:removeItem(setting.item, 1)
 					toPosition:sendMagicEffect(setting.effect)
@@ -83,8 +83,8 @@ local lionsGetLionsMane = Action()
 function lionsGetLionsMane.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You picked a beautiful lion's mane flower.")
 	player:addItem(21389, 1)
-	player:setStorageValue(Storage.LionsRock.Questline, math.max(player:getStorageValue(Storage.LionsRock.Questline), 1))
-	player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
+	player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline), 1))
+	player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 	item:transform(21935)
 	addEvent(function()
 		item:transform(21388)
@@ -101,8 +101,8 @@ local lionsGetHolyWater = Action()
 function lionsGetHolyWater.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You took some holy water from the sacred well.")
 	player:addItem(21466, 1)
-	player:setStorageValue(Storage.LionsRock.Questline, math.max(player:getStorageValue(Storage.LionsRock.Questline), 1))
-	player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
+	player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline), 1))
+	player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 	return true
 end
 
@@ -116,7 +116,7 @@ function lionsRockFountain.onUse(player, item, fromPosition, target, toPosition,
 	if item:getId() ~= 6389 then
 		return false
 	end
-	if player:getStorageValue(Storage.LionsRock.Time) < os.time() then
+	if player:getStorageValue(Storage.Quest.U10_70.LionsRock.Time) < os.time() then
 		local reward = ""
 		if player:hasMount(40) then
 			repeat
@@ -131,8 +131,8 @@ function lionsRockFountain.onUse(player, item, fromPosition, target, toPosition,
 		player:addAchievement("Lion's Den Explorer")
 		item:transform(lionsRockSanctuaryRockId)
 		player:addItem(rewards[reward], 1)
-		player:setStorageValue(Storage.LionsRock.Time, os.time() + 24 * 60 * 60)
-		player:setStorageValue(Storage.LionsRock.Questline, 11)
+		player:setStorageValue(Storage.Quest.U10_70.LionsRock.Time, os.time() + 24 * 60 * 60)
+		player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, 11)
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "At the moment there is neither a treasure nor anything else in the fountain. Perhaps you might return later.")
 	end

@@ -176,7 +176,7 @@ function addStamina(playerId, ...)
 
 		local actualStamina = player:getStamina()
 
-		if actualStamina > 2400 and actualStamina < 2520 then
+		if actualStamina > 2340 and actualStamina < 2520 then
 			delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY) * 60 * 1000 -- Stamina Green 12 min.
 		elseif actualStamina == 2520 then
 			player:sendTextMessage(

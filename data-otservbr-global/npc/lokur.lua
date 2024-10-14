@@ -95,9 +95,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("No then.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "measurements") then
-		if player:getStorageValue(Storage.Postman.Mission07) >= 6 and player:getStorageValue(Storage.Postman.MeasurementsKroox) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07) >= 6 and player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.MeasurementsKroox) ~= 1 then
 			npcHandler:say("Come on, I have no clue what they are. Better ask my armorer Kroox for such nonsense.Go and ask him for good ol' Lokurs measurements, he'll know.", npc, creature)
-			player:setStorageValue(Storage.Postman.Mission07, player:getStorageValue(Storage.Postman.Mission07) + 1)
+			player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07, player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission07) + 1)
 		else
 			npcHandler:say("...", npc, creature)
 			npcHandler:setTopic(playerId, 0)

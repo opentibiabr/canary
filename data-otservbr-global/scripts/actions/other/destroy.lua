@@ -25,7 +25,7 @@ function destroy.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if toPosition == Position(scimitarPos.x, scimitarPos.y, scimitarPos.z) then
 			local scimitarPlaced = Tile(scimitarPos):getItemById(placedSimitarItemId)
 			if not scimitarPlaced then
-				if player:getStorageValue(Storage.TibiaTales.AritosTask) >= 0 then
+				if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask) >= 0 then
 					item:remove()
 					Game.createItem(placedSimitarItemId, 1, scimitarPos)
 					addEvent(removeEntrance, 1 * 60 * 1000)

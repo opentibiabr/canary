@@ -90,7 +90,6 @@ function Player.addManaSpent(...)
 end
 
 -- Functions From OTServBR-Global
-
 function Player.depositMoney(self, amount)
 	return Bank.deposit(self, amount)
 end

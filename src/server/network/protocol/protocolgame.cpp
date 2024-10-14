@@ -5756,7 +5756,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			attackDescription = std::to_string(it.attack);
 		}
 
-		msg.addString(attackDescription, "ProtocolGame::sendMarketDetail - attackDescription");
+		msg.addString(attackDescription);
 	} else {
 		msg.add<uint16_t>(0x00);
 	}

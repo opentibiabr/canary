@@ -30,7 +30,7 @@ function creaturescripts_library_ghulosh.onThink(creature, interval)
 	local percentageHealth = (cHealth / creature:getMaxHealth()) * 100
 
 	if percentageHealth <= stage then
-		local monster = Game.createMonster("ghulosh' deathgaze", position, true)
+		local monster = Game.createMonster("ghulosh" deathgaze", position, true)
 		nextStage(info.stg)
 		creature:remove()
 		if monster then

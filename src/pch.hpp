@@ -143,6 +143,8 @@ format_as(E e) {
 
 #include <boost/di.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 // -------------------------
 // GIT Metadata Includes
 // -------------------------

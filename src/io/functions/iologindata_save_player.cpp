@@ -12,6 +12,8 @@
 #include "database/database.hpp"
 #include "game/game.hpp"
 
+#include "enums/player_blessings.hpp"
+
 bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
@@ -333,8 +335,9 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	}
 
 	// Blessings
-	for (uint8_t i = 1; i <= 8; i++) {
-		values.push_back(mysqlx::Value(player->getBlessingCount(i)));
+	for (const auto& bless : magic_enum::enum_values<Blessings>()) {
+		uint8_t blessId = static_cast<uint8_t>(bless);
+		values.push_back(mysqlx::Value(player->getBlessingCount(blessId)));
 	}
 
 	if (!g_database().updateTable("players", columns, values, "id", player->getGUID())) {

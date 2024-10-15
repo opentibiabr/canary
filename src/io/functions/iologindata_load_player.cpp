@@ -15,6 +15,7 @@
 #include "enums/object_category.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
+#include "enums/player_blessings.hpp"
 #include "utils/tools.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const std::shared_ptr<Player> &player) {
@@ -145,15 +146,15 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(std::shared_ptr<Player> player, DBResu
 	player->magLevelPercent = Player::getPercentLevel(player->manaSpent, nextManaCount);
 	player->health = result->getI64("health");
 	player->healthMax = result->getI64("healthmax");
-	player->isDailyReward = static_cast<uint8_t>(result->getU16("isreward"));
+	player->isDailyReward = result->getU8("isreward");
 	player->loginPosition.x = result->getU16("posx");
 	player->loginPosition.y = result->getU16("posy");
-	player->loginPosition.z = static_cast<uint8_t>(result->getU16("posz"));
+	player->loginPosition.z = result->getU8("posz");
 	player->addPreyCards(result->getU64("prey_wildcard"));
 	player->addTaskHuntingPoints(result->getU64("task_points"));
 	player->addForgeDusts(result->getU64("forge_dusts"));
 	player->addForgeDustLevel(result->getU64("forge_dust_level"));
-	player->setRandomMount(static_cast<uint8_t>(result->getU16("randomize_mount")));
+	player->setRandomMount(result->getU8("randomize_mount"));
 	player->addBossPoints(result->getU32("boss_points"));
 	player->lastLoginSaved = result->getTime("lastlogin");
 	player->lastLogout = result->getTime("lastlogout");
@@ -211,8 +212,11 @@ void IOLoginDataLoad::loadPlayerBlessings(std::shared_ptr<Player> player, DBResu
 		return;
 	}
 
-	for (int i = 1; i <= 8; i++) {
-		player->addBlessing(static_cast<uint8_t>(i), static_cast<uint8_t>(result->getU16(fmt::format("blessings{}", i))));
+	for (const auto& bless : magic_enum::enum_values<Blessings>()) {
+		uint8_t blessId = static_cast<uint8_t>(bless);
+		std::string columName = fmt::format("blessings{}", blessId);
+		g_logger().trace("[{}] - Player {}, loading blessing: {}, id: {}", __FUNCTION__, player->getName(), columName, blessId);
+		player->addBlessing(blessId, result->getU8(columName));
 	}
 }
 
@@ -247,15 +251,15 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 		return;
 	}
 
-	player->defaultOutfit.lookHead = static_cast<uint8_t>(result->getU16("lookhead"));
-	player->defaultOutfit.lookBody = static_cast<uint8_t>(result->getU16("lookbody"));
-	player->defaultOutfit.lookLegs = static_cast<uint8_t>(result->getU16("looklegs"));
-	player->defaultOutfit.lookFeet = static_cast<uint8_t>(result->getU16("lookfeet"));
-	player->defaultOutfit.lookAddons = static_cast<uint8_t>(result->getU16("lookaddons"));
-	player->defaultOutfit.lookMountHead = static_cast<uint8_t>(result->getU16("lookmounthead"));
-	player->defaultOutfit.lookMountBody = static_cast<uint8_t>(result->getU16("lookmountbody"));
-	player->defaultOutfit.lookMountLegs = static_cast<uint8_t>(result->getU16("lookmountlegs"));
-	player->defaultOutfit.lookMountFeet = static_cast<uint8_t>(result->getU16("lookmountfeet"));
+	player->defaultOutfit.lookHead = result->getU8("lookhead");
+	player->defaultOutfit.lookBody = result->getU8("lookbody");
+	player->defaultOutfit.lookLegs = result->getU8("looklegs");
+	player->defaultOutfit.lookFeet = result->getU8("lookfeet");
+	player->defaultOutfit.lookAddons = result->getU8("lookaddons");
+	player->defaultOutfit.lookMountHead = result->getU8("lookmounthead");
+	player->defaultOutfit.lookMountBody = result->getU8("lookmountbody");
+	player->defaultOutfit.lookMountLegs = result->getU8("lookmountlegs");
+	player->defaultOutfit.lookMountFeet = result->getU8("lookmountfeet");
 	player->defaultOutfit.lookFamiliarsType = result->getU16("lookfamiliarstype");
 
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
@@ -357,7 +361,7 @@ void IOLoginDataLoad::loadPlayerGuild(std::shared_ptr<Player> player, DBResult_p
 				query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `id` = " << playerRankId;
 
 				if ((result = db.storeQuery(query.str()))) {
-					guild->addRank(result->getU32("id"), result->getString("name"), static_cast<uint8_t>(result->getU16("level")));
+					guild->addRank(result->getU32("id"), result->getString("name"), result->getU8("level"));
 				}
 
 				rank = guild->getRankById(playerRankId);
@@ -741,7 +745,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(std::shared_ptr<Player> player, DBResu
 				slot->selectedRaceId = result->getU16("raceid");
 				slot->option = static_cast<PreyOption_t>(result->getU16("option"));
 				slot->bonus = static_cast<PreyBonus_t>(result->getU16("bonus_type"));
-				slot->bonusRarity = static_cast<uint8_t>(result->getU16("bonus_rarity"));
+				slot->bonusRarity = result->getU8("bonus_rarity");
 				slot->bonusPercentage = result->getU16("bonus_percentage");
 				slot->bonusTimeLeft = result->getU16("bonus_time");
 				slot->freeRerollTimeStamp = result->getI64("free_reroll");
@@ -784,7 +788,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(std::shared_ptr<Player> player,
 				}
 				slot->selectedRaceId = result->getU16("raceid");
 				slot->upgrade = result->getBool("upgrade");
-				slot->rarity = static_cast<uint8_t>(result->getU16("rarity"));
+				slot->rarity = result->getU8("rarity");
 				slot->currentKills = result->getU16("kills");
 				slot->disabledUntilTimeStamp = result->getI64("disabled_time");
 				slot->freeRerollTimeStamp = result->getI64("free_reroll");

@@ -17,7 +17,6 @@
 #endif
 
 #include <mysqlx/xdevapi.h>
-#include <boost/lexical_cast.hpp>
 
 class DBResult;
 class PreparedStatement;
@@ -141,36 +140,6 @@ public:
 	static std::string getString(const mysqlx::Value &val, const std::source_location &location = std::source_location::current());
 
 private:
-	template <typename T>
-	static T extract(const mysqlx::Value &val, const std::source_location &location) {
-		if (val.isNull()) {
-			g_logger().error("Value is null, called line: {}:{}, in {}", location.line(), location.column(), location.function_name());
-			return {};
-		}
-
-		try {
-			switch (val.getType()) {
-				case mysqlx::Value::Type::INT64:
-					return boost::lexical_cast<T>(val.get<int64_t>());
-				case mysqlx::Value::Type::UINT64:
-					return boost::lexical_cast<T>(val.get<uint64_t>());
-				case mysqlx::Value::Type::FLOAT:
-				case mysqlx::Value::Type::DOUBLE:
-					return boost::lexical_cast<T>(val.get<double>());
-				case mysqlx::Value::Type::STRING:
-					return boost::lexical_cast<T>(val.get<std::string>());
-				case mysqlx::Value::Type::BOOL:
-					return boost::lexical_cast<T>(val.get<bool>());
-				default:
-					g_logger().error("Failed to extract value type: {}, called line: {}:{}, in {}", static_cast<int>(val.getType()), location.line(), location.column(), location.function_name());
-			}
-		} catch (const mysqlx::Error &err) {
-			g_logger().error("Failed to extract value type: {}, error: {}, called line: {}:{}, in {}", static_cast<int>(val.getType()), err.what(), location.line(), location.column(), location.function_name());
-		}
-
-		return {};
-	}
-
 	bool beginTransaction();
 	bool rollback();
 	bool commit();
@@ -236,7 +205,7 @@ public:
 	std::string getString(const std::string &columnName) const;
 	const std::vector<uint8_t> getStream(const std::string &columnName) const;
 
-	size_t countResults();
+	size_t countResults() const;
 	bool hasNext() const;
 	bool next();
 
@@ -263,7 +232,7 @@ class DBInsert {
 public:
 	explicit DBInsert(const std::string &query);
 	void upsert(const std::vector<std::string> &columns);
-	bool addRow(const std::string_view row);
+	bool addRow(std::string_view row);
 	bool addRow(std::ostringstream &row);
 	bool execute();
 

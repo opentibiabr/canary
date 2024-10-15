@@ -41,6 +41,36 @@
  */
 namespace InternalDatabase {
 	template <typename T>
+	static T extract(const mysqlx::Value &val, const std::source_location &location) {
+		if (val.isNull()) {
+			g_logger().error("Value is null, called line: {}:{}, in {}", location.line(), location.column(), location.function_name());
+			return {};
+		}
+
+		try {
+			switch (val.getType()) {
+				case mysqlx::Value::Type::INT64:
+					return boost::lexical_cast<T>(val.get<int64_t>());
+				case mysqlx::Value::Type::UINT64:
+					return boost::lexical_cast<T>(val.get<uint64_t>());
+				case mysqlx::Value::Type::FLOAT:
+				case mysqlx::Value::Type::DOUBLE:
+					return boost::lexical_cast<T>(val.get<double>());
+				case mysqlx::Value::Type::STRING:
+					return boost::lexical_cast<T>(val.get<std::string>());
+				case mysqlx::Value::Type::BOOL:
+					return boost::lexical_cast<T>(val.get<bool>());
+				default:
+					g_logger().error("Failed to extract value type: {}, called line: {}:{}, in {}", static_cast<int>(val.getType()), location.line(), location.column(), location.function_name());
+			}
+		} catch (const mysqlx::Error &err) {
+			g_logger().error("Failed to extract value type: {}, error: {}, called line: {}:{}, in {}", static_cast<int>(val.getType()), err.what(), location.line(), location.column(), location.function_name());
+		}
+
+		return {};
+	}
+
+	template <typename T>
 	T getNumber(std::string_view columnName, std::string_view query, const std::unordered_map<std::string, size_t> &listNames, const mysqlx::Row &currentRow, bool hasMoreRows) {
 		const auto it = listNames.find(columnName.data());
 		if (it == listNames.end()) {
@@ -178,51 +208,51 @@ bool Database::transactionalExecute(std::function<bool(Database &)> transactionF
 }
 
 uint8_t Database::getU8(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<uint8_t>(val, location);
+	return InternalDatabase::extract<uint8_t>(val, location);
 }
 
 uint16_t Database::getU16(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<uint16_t>(val, location);
+	return InternalDatabase::extract<uint16_t>(val, location);
 }
 
 uint32_t Database::getU32(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<uint32_t>(val, location);
+	return InternalDatabase::extract<uint32_t>(val, location);
 }
 
 uint64_t Database::getU64(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<uint64_t>(val, location);
+	return InternalDatabase::extract<uint64_t>(val, location);
 }
 
 int8_t Database::getI8(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<int8_t>(val, location);
+	return InternalDatabase::extract<int8_t>(val, location);
 }
 
 int16_t Database::getI16(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<int16_t>(val, location);
+	return InternalDatabase::extract<int16_t>(val, location);
 }
 
 int32_t Database::getI32(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<int32_t>(val, location);
+	return InternalDatabase::extract<int32_t>(val, location);
 }
 
 int64_t Database::getI64(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<int64_t>(val, location);
+	return InternalDatabase::extract<int64_t>(val, location);
 }
 
 double Database::getDouble(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<double>(val, location);
+	return InternalDatabase::extract<double>(val, location);
 }
 
 float Database::getFloat(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<float>(val, location);
+	return InternalDatabase::extract<float>(val, location);
 }
 
 bool Database::getBool(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<bool>(val, location);
+	return InternalDatabase::extract<bool>(val, location);
 }
 
 std::string Database::getString(const mysqlx::Value &val, const std::source_location &location) {
-	return extract<std::string>(val, location);
+	return InternalDatabase::extract<std::string>(val, location);
 }
 
 bool Database::beginTransaction() {
@@ -767,7 +797,7 @@ const std::vector<uint8_t> DBResult::getStream(const std::string &columnName) co
 	}
 }
 
-size_t DBResult::countResults() {
+size_t DBResult::countResults() const {
 	return m_resultCount;
 }
 
@@ -790,7 +820,7 @@ DBInsert::DBInsert(const std::string &insertQuery) :
 	this->length = this->query.length();
 }
 
-bool DBInsert::addRow(const std::string_view row) {
+bool DBInsert::addRow(std::string_view row) {
 	const size_t rowLength = row.length();
 	length += rowLength;
 	auto max_packet_size = g_database().getMaxPacketSize();

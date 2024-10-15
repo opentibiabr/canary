@@ -23,7 +23,7 @@ function actions_falcon_oberon_lever.onUse(player, item, fromPosition, itemEx, t
 			if oberon then
 				oberon:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.OberonHeal, 0)
 			end
-			Game.setStorageValue(GlobalStorage.secretLibrary.FalconBastion.OberonSay, -1)
+			Game.setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.OberonSay, -1)
 			Game.createNpc("Oberon's Spite", Position(33363, 31321, 9))
 			Game.createNpc("Oberon's Ire", Position(33368, 31321, 9))
 			Game.createNpc("Oberon's Bile", Position(33363, 31317, 9))

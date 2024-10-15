@@ -16,7 +16,7 @@ function creaturescripts_library_bosses.onKill(player, creature)
 		["preceptor lazare"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 2 },
 		["grand chaplain gaunder"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 3 },
 		["grand canon dominus"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 4 },
-		["dazzled leaf golem"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 5 },
+		["dazed leaf golem"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 5 },
 		["grand master oberon"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.killingBosses, value = 6, achievements = { "Millennial Falcon", "Master Debater" }, lastBoss = true },
 		["brokul"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, value = 7 },
 		["the flaming orchid"] = { stg = Storage.Quest.U11_80.TheSecretLibrary.Asuras.flammingOrchid, value = 1 },

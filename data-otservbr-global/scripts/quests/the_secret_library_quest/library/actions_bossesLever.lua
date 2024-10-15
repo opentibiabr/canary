@@ -56,13 +56,12 @@ local lokathmorSummons = {
 	},
 }
 
-local bossNames = { "mazzinor", "supercharged mazzinor", "lokathmor", "ghulosh", "ghuloshz" deathgaze", "gorzindel", "stolen tome of portals" }
+local bossNames = { "mazzinor", "supercharged mazzinor", "lokathmor", "ghulosh", "ghuloshz' deathgaze", "gorzindel", "stolen tome of portals" }
 
 local function spawnSummons(k, monsterName, eventName, timing, positionTable, middlePosition, isGorzindel)
 	local spectators = Game.getSpectators(middlePosition, false, false, 12, 12, 12, 12)
 	local hasPlayer = false
 
-	-- It must block spawn flooding
 	for _, c in pairs(spectators) do
 		if c and c:isPlayer() then
 			hasPlayer = true
@@ -105,7 +104,6 @@ local function spawnSummons(k, monsterName, eventName, timing, positionTable, mi
 		end
 	end
 end
--- Mazzinor info ending
 
 local leverInfo = {
 	[1] = { bossName = "Mazzinor", storage = Storage.Quest.U11_80.TheSecretLibrary.Library.MazzinorTime, exit = Position(32616, 32532, 13), position = Position(32720, 32773, 10), type = "x", bossPosition = Position(32724, 32720, 10), teleportTo = Position(32724, 32726, 10), fromPosition = Position(32715, 32712, 10), toPosition = Position(32733, 32729, 10) },
@@ -147,7 +145,7 @@ function actions_library_bossesLever.onUse(player, item, fromPosition, itemEx, t
 					elseif lever.bossName:lower() == "ghulosh" then
 						addEvent(spawnSummons, 4 * 1000, 1, ghuloshSummons.name, ghuloshSummons.eventName, ghuloshSummons.timing, ghuloshSummons.positions, ghuloshSummons.middlePosition, false)
 						local book = Game.createMonster("The Book of Death", Position(32755, 32716, 10))
-						Game.setStorageValue(GlobalStorage.secretLibrary.Library.Ghulosh, 1)
+						Game.setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Library.Ghulosh, 1)
 					elseif lever.bossName:lower() == "gorzindel" then
 						addEvent(spawnSummons, 4 * 1000, 1, gorzindelSummons.name, gorzindelSummons.eventName, gorzindelSummons.timing, gorzindelSummons.positions, gorzindelSummons.middlePosition, true)
 						addEvent(spawnSummons, 4 * 1000, 1, gorzindelSummons.name2, gorzindelSummons.eventName, gorzindelSummons.timing, gorzindelSummons.positions2, gorzindelSummons.middlePosition, true)

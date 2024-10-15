@@ -12,7 +12,7 @@ local raxias = {
 local turtle = {
 	fromPosition = Position(32460, 32928, 7),
 	toPosition = Position(32316, 32701, 7),
-	storageTimer = GlobalStorage.secretLibrary.SmallIslands.Turtle,
+	storageTimer = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Turtle,
 }
 
 local svargrond = {
@@ -29,11 +29,13 @@ local function resetRoom(position)
 			return false
 		end
 	end
+
 	for _, c in pairs(spec) do
 		if c then
 			c:remove()
 		end
 	end
+
 	return true
 end
 

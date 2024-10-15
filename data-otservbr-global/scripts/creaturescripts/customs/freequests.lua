@@ -328,7 +328,7 @@ local questTable = {
 	{ storage = Storage.Quest.U8_6.WrathOfTheEmperor.TeleportAccess.Zizzle, storageValue = 1 },
 	{ storage = Storage.Quest.U8_6.WrathOfTheEmperor.TeleportAccess.Zlak, storageValue = 1 },
 
-	{ storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionAccess, storageValue = 1 },
+	--[[ { storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionAccess, storageValue = 1 },
 	{ storage = Storage.Quest.U11_80.TheSecretLibrary.LowerBastionAccess, storageValue = 1 },
 	{ storage = Storage.Quest.U11_80.TheSecretLibrary.UndergroundBastionAccess, storageValue = 1 },
 	{ storage = Storage.Quest.U11_80.TheSecretLibrary.ShortcutToBastion, storageValue = 1 },
@@ -341,7 +341,7 @@ local questTable = {
 	{ storage = Storage.Quest.U11_80.TheSecretLibrary.MiniBosses.GrandCanonDominus, storageValue = 1 },
 	{ storage = Storage.Quest.U11_80.TheSecretLibrary.MiniBosses.GrandChaplainGaunder, storageValue = 1 },
 	{ storage = Storage.Quest.U11_80.TheSecretLibrary.MiniBosses.GrandCommanderSoeren, storageValue = 1 },
-	{ storage = Storage.Quest.U11_80.TheSecretLibrary.MiniBosses.DazedLeafGolem, storageValue = 1 },
+	{ storage = Storage.Quest.U11_80.TheSecretLibrary.MiniBosses.DazedLeafGolem, storageValue = 1 }, ]]
 
 	{ storage = Storage.Quest.U7_4.DjinnWar.EfreetFaction.DoorToLamp, storageValue = 1 },
 	{ storage = Storage.Quest.U7_4.DjinnWar.EfreetFaction.DoorToMaridTerritory, storageValue = 1 },

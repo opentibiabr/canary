@@ -858,7 +858,7 @@ private:
 		const auto stepSpeed = getStepSpeed();
 		walk.calculatedStepSpeed = 1;
 		if (stepSpeed > -Creature::speedB) {
-			const auto formula = std::floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + .5);
+			const auto formula = std::floor((Creature::speedA * std::log(stepSpeed + Creature::speedB) + Creature::speedC) + .5);
 			walk.calculatedStepSpeed = static_cast<uint16_t>(std::max(formula, 1.));
 		}
 

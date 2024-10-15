@@ -3,9 +3,7 @@ cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 # *****************************************************************************
 # CMake Features
 # *****************************************************************************
-set(CMAKE_CXX_STANDARD 20)
-set(GNUCXX_MINIMUM_VERSION 11)
-set(MSVC_MINIMUM_VERSION "19.32")
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
@@ -14,9 +12,6 @@ set(Boost_NO_WARN_NEW_VERSIONS ON)
 
 # Make will print more details
 set(CMAKE_VERBOSE_MAKEFILE OFF)
-
-# Generate compile_commands.json
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # *****************************************************************************
 # Packages / Libs
@@ -50,21 +45,21 @@ find_path(BOOST_DI_INCLUDE_DIRS "boost/di.hpp")
 # === GCC Minimum Version ===
 if (CMAKE_COMPILER_IS_GNUCXX)
     message("-- Compiler: GCC - Version: ${CMAKE_CXX_COMPILER_VERSION}")
-    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS GNUCXX_MINIMUM_VERSION)
-        message(FATAL_ERROR "GCC version must be at least ${GNUCXX_MINIMUM_VERSION}!")
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 11)
+        message(FATAL_ERROR "GCC version must be at least 11!")
     endif()
 endif()
 
 # === Minimum required version for visual studio ===
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     message("-- Compiler: Visual Studio - Version: ${CMAKE_CXX_COMPILER_VERSION}")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS MSVC_MINIMUM_VERSION)
-        message(FATAL_ERROR "Visual Studio version must be at least ${MSVC_MINIMUM_VERSION}")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.32")
+        message(FATAL_ERROR "Visual Studio version must be at least 19.32")
     endif()
 endif()
 
 # *****************************************************************************
-# Sanity Checks
+# Options
 # *****************************************************************************
 option(TOGGLE_BIN_FOLDER "Use build/bin folder for generate compilation files" ON)
 option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
@@ -79,14 +74,14 @@ if(TOGGLE_BIN_FOLDER)
     log_option_enabled("TOGGLE_BIN_FOLDER")
 else()
     log_option_disabled("TOGGLE_BIN_FOLDER")
-endif(TOGGLE_BIN_FOLDER)
+endif()
 
-# === TOGGLE_BIN_FOLDER ===
+# === OPTIONS_ENABLE_OPENMP ===
 if(OPTIONS_ENABLE_OPENMP)
     log_option_enabled("OPTIONS_ENABLE_OPENMP")
 else()
     log_option_disabled("OPTIONS_ENABLE_OPENMP")
-endif(OPTIONS_ENABLE_OPENMP)
+endif()
 
 # === DEBUG LOG ===
 # cmake -DDEBUG_LOG=ON ..
@@ -95,7 +90,7 @@ if(DEBUG_LOG)
     log_option_enabled("DEBUG LOG")
 else()
     log_option_disabled("DEBUG LOG")
-endif(DEBUG_LOG)
+endif()
 
 # === ASAN ===
 if(ASAN_ENABLED)
@@ -113,7 +108,6 @@ endif()
 # === BUILD_STATIC_LIBRARY ===
 if(BUILD_STATIC_LIBRARY)
     log_option_enabled("STATIC_LIBRARY")
-
     if(MSVC)
         set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
     elseif(UNIX AND NOT APPLE)
@@ -130,14 +124,58 @@ if(SPEED_UP_BUILD_UNITY)
     log_option_enabled("SPEED_UP_BUILD_UNITY")
 else()
     log_option_disabled("SPEED_UP_BUILD_UNITY")
-endif(SPEED_UP_BUILD_UNITY)
+endif()
 
 # === USE_PRECOMPILED_HEADER ===
 if(USE_PRECOMPILED_HEADER)
     log_option_enabled("USE_PRECOMPILED_HEADER")
 else()
     log_option_disabled("USE_PRECOMPILED_HEADER")
-endif(USE_PRECOMPILED_HEADER)
+endif()
+
+# === IPO Configuration ===
+function(configure_linking target_name)
+    if(OPTIONS_ENABLE_IPO)
+        # Check if IPO/LTO is supported
+        include(CheckIPOSupported)
+        check_ipo_supported(RESULT ipo_supported OUTPUT ipo_output LANGUAGES CXX)
+
+        # Get the GCC compiler version, if applicable
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+            execute_process(
+                    COMMAND ${CMAKE_CXX_COMPILER} -dumpversion
+                    OUTPUT_VARIABLE GCC_VERSION
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+            )
+        endif()
+
+        if(ipo_supported)
+            set_property(TARGET ${target_name} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+            log_option_enabled("IPO/LTO enabled for target ${target_name}.")
+
+            if(MSVC)
+                target_compile_options(${target_name} PRIVATE /GL)
+                target_link_options(${target_name} PRIVATE /LTCG)
+            elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+                # Check if it's running on Linux, using GCC 14, and in Debug mode
+                if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND
+                        CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+                        GCC_VERSION VERSION_EQUAL "14" AND
+                        CMAKE_BUILD_TYPE STREQUAL "Debug")
+                    log_option_disabled("LTO disabled for GCC 14 in Debug mode on Linux for target ${target_name}.")
+                    # Disable LTO for Debug builds with GCC 14
+                    target_compile_options(${target_name} PRIVATE -fno-lto)
+                    target_link_options(${target_name} PRIVATE -fno-lto)
+                else()
+                    target_compile_options(${target_name} PRIVATE -flto=auto)
+                    target_link_options(${target_name} PRIVATE -flto=auto)
+                endif()
+            endif()
+        else()
+            log_option_disabled("IPO/LTO is not supported for target ${target_name}: ${ipo_output}")
+        endif()
+    endif()
+endfunction()
 
 # *****************************************************************************
 # Compiler Options
@@ -147,39 +185,38 @@ if (MSVC)
         string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_${type} "${CMAKE_CXX_FLAGS_${type}}")
         string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_${type} "${CMAKE_C_FLAGS_${type}}")
     endforeach(type)
-
     add_compile_options(/MP /FS /Zf /EHsc)
 else()
     add_compile_options(-Wno-unused-parameter -Wno-sign-compare -Wno-switch -Wno-implicit-fallthrough -Wno-extra)
 endif()
 
-## Link compilation files to build/bin folder, else link to the main dir
+# === Compiler Features ===
+add_library(project_options INTERFACE)
+target_compile_features(project_options INTERFACE cxx_std_23)
+
+# *****************************************************************************
+# Output Directory Function
+# *****************************************************************************
 function(set_output_directory target_name)
     if (TOGGLE_BIN_FOLDER)
         set_target_properties(${target_name}
                 PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-                )
+        )
     else()
         set_target_properties(${target_name}
                 PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/"
-                )
+        )
     endif()
 endfunction()
 
-## Setup shared target basic configurations
+# *****************************************************************************
+# Setup Target Function
+# *****************************************************************************
 function(setup_target TARGET_NAME)
     if (MSVC AND BUILD_STATIC_LIBRARY)
         set_property(TARGET ${TARGET_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif()
+    target_link_libraries(${TARGET_NAME} PUBLIC project_options)
 endfunction()
-
-# *****************************************************************************
-# DEBUG: Print cmake variables
-# *****************************************************************************
-#get_cmake_property(_variableNames VARIABLES)
-#list (SORT _variableNames)
-#foreach (_variableName ${_variableNames})
-#	message(STATUS "${_variableName}=${${_variableName}}")
-#endforeach()

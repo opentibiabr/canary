@@ -143,7 +143,7 @@ npcConfig.shop = {
 	{ itemName = "shiver arrow", clientId = 762, buy = 5 },
 	{ itemName = "shovel", clientId = 3457, buy = 50, sell = 8 },
 	{ itemName = "sniper arrow", clientId = 7364, buy = 5 },
-	{ itemName = "spear", clientId = 3277, buy = 10, sell = 10 },
+	{ itemName = "spear", clientId = 3277, buy = 9, sell = 3 },
 	{ itemName = "spectral bolt", clientId = 35902, buy = 70 },
 	{ itemName = "tarsal arrow", clientId = 14251, buy = 6 },
 	{ itemName = "throwing star", clientId = 3287, buy = 42 },

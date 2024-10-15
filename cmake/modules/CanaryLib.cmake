@@ -22,11 +22,10 @@ add_subdirectory(utils)
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
 target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
 
-# Add public pre compiler header to lib, to pass down to related targets
-target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
-
-if(NOT SPEED_UP_BUILD_UNITY AND USE_PRECOMPILED_HEADERS)
-    target_compile_definitions(${PROJECT_NAME}_lib PUBLIC -DUSE_PRECOMPILED_HEADERS)
+# Conditional Precompiled Headers
+if(USE_PRECOMPILED_HEADER)
+    target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
+    target_compile_definitions(${PROJECT_NAME}_lib PUBLIC USE_PRECOMPILED_HEADERS)
 endif()
 
 # *****************************************************************************
@@ -36,18 +35,21 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wno-deprecated-declarations)
 endif()
 
-# Sets the NDEBUG macro for RelWithDebInfo and Release configurations.
-# This disables assertions in these configurations, optimizing the code for performance
-# and reducing debugging overhead, while keeping debug information available for diagnostics.
+# Sets the NDEBUG macro for Release and RelWithDebInfo configurations.
 target_compile_definitions(${PROJECT_NAME}_lib PUBLIC
-    $<$<CONFIG:RelWithDebInfo>:NDEBUG>
-    $<$<CONFIG:Release>:NDEBUG>
+        $<$<CONFIG:Release>:NDEBUG>
+        $<$<CONFIG:RelWithDebInfo>:NDEBUG>
 )
+
+# Configure IPO and Incremental Linking
+configure_linking(${PROJECT_NAME}_lib)
 
 # === UNITY BUILD (compile time reducer) ===
 if(SPEED_UP_BUILD_UNITY)
     set_target_properties(${PROJECT_NAME}_lib PROPERTIES UNITY_BUILD ON)
-    log_option_enabled("Build unity for speed up compilation")
+    log_option_enabled("Build unity for speed up compilation for taget ${PROJECT_NAME}_lib")
+else()
+    log_option_disabled("Build unity")
 endif()
 
 # *****************************************************************************
@@ -61,7 +63,7 @@ target_include_directories(${PROJECT_NAME}_lib
         ${GMP_INCLUDE_DIRS}
         ${LUAJIT_INCLUDE_DIRS}
         ${PARALLEL_HASHMAP_INCLUDE_DIRS}
-        )
+)
 
 # *****************************************************************************
 # Target links to external dependencies
@@ -79,7 +81,7 @@ target_include_directories(${PROJECT_NAME}_lib
 #message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
 
 target_link_libraries(${PROJECT_NAME}_lib
-    PUBLIC
+        PUBLIC
         ${GMP_LIBRARIES}
         ${LUAJIT_LIBRARIES}
         CURL::libcurl
@@ -100,7 +102,6 @@ target_link_libraries(${PROJECT_NAME}_lib
 
 if(FEATURE_METRICS)
     add_definitions(-DFEATURE_METRICS)
-
     target_link_libraries(${PROJECT_NAME}_lib
             PUBLIC
             opentelemetry-cpp::common
@@ -142,4 +143,13 @@ if(OPTIONS_ENABLE_OPENMP)
     endif()
 else()
     log_option_disabled("openmp")
+endif()
+
+# === Optimization Flags ===
+if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(${PROJECT_NAME}_lib PRIVATE -O3 -march=native)
+    elseif(MSVC)
+        target_compile_options(${PROJECT_NAME}_lib PRIVATE /O2)
+    endif()
 endif()

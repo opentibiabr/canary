@@ -42,7 +42,7 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	bool reconnect = true;
 	mysql_options(handle, MYSQL_OPT_RECONNECT, &reconnect);
 
-    // remove ssl verification
+	// remove ssl verification
 	bool ssl_enabled = false;
 	mysql_options(handle, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &ssl_enabled);
 

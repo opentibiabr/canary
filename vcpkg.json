@@ -9,6 +9,7 @@
     "bext-ut",
     "curl",
     "eventpp",
+    "libmariadb",
     "luajit",
     "magic-enum",
     "mio",
@@ -24,12 +25,6 @@
       "features": ["otlp-http", "prometheus"]
     },
     {
-      "name": "libmariadb",
-      "features": [
-        "mariadbclient"
-      ]
-    },
-    {
       "name": "gmp",
       "platform": "linux"
     },
@@ -38,5 +33,5 @@
       "platform": "windows"
     }
   ],
-  "builtin-baseline": "095ee06e7f60dceef7d713e3f8b1c2eb10d650d7"
+  "builtin-baseline": "9558037875497b9db8cf38fcd7db68ec661bffe7"
 }

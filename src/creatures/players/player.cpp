@@ -2928,7 +2928,6 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		onIdleStatus();
 		sendStats();
 	}
-
 }
 
 bool Player::spawn() {

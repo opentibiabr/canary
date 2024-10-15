@@ -9,26 +9,27 @@
 
 #include "canary_server.hpp"
 #include "lib/di/container.hpp"
-// Define um conceito para garantir que a função só aceite contêineres de números
+
+// Defines a concept to ensure the function only accepts containers of numbers
 template <typename T>
 concept NumberContainer = requires(T a) {
 	typename T::value_type;
 	requires std::integral<typename T::value_type> || std::floating_point<typename T::value_type>;
 };
 
-// Função que calcula a média de um contêiner de números
+// Function that calculates the average of a container of numbers
 auto calculateAverage(const NumberContainer auto &container) {
-	// Utiliza ranges e std::views para processar o contêiner
+	// Uses ranges and std::views to process the container
 	return std::accumulate(container.begin(), container.end(), 0.0) / std::ranges::distance(container);
 }
 
 int main() {
 	std::vector<int> numbers = { 1, 2, 3, 4, 5 };
 
-	// Calcula a média usando a função com suporte a C++23
+	// Calculates the average using the function with support for C++23
 	double average = calculateAverage(numbers);
 
-	std::cout << "Average: " << average << std::endl;
+	g_logger().trace("Average: {}", average);
 
 	return inject<CanaryServer>().run();
 }

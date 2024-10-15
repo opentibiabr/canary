@@ -212,7 +212,7 @@ void IOLoginDataLoad::loadPlayerBlessings(std::shared_ptr<Player> player, DBResu
 		return;
 	}
 
-	for (const auto& bless : magic_enum::enum_values<Blessings>()) {
+	for (const auto &bless : magic_enum::enum_values<Blessings>()) {
 		uint8_t blessId = static_cast<uint8_t>(bless);
 		std::string columName = fmt::format("blessings{}", blessId);
 		g_logger().trace("[{}] - Player {}, loading blessing: {}, id: {}", __FUNCTION__, player->getName(), columName, blessId);

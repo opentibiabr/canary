@@ -335,7 +335,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	}
 
 	// Blessings
-	for (const auto& bless : magic_enum::enum_values<Blessings>()) {
+	for (const auto &bless : magic_enum::enum_values<Blessings>()) {
 		uint8_t blessId = static_cast<uint8_t>(bless);
 		values.push_back(mysqlx::Value(player->getBlessingCount(blessId)));
 	}

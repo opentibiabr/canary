@@ -741,7 +741,7 @@ std::string DBResult::getString(const std::string &columnName) const {
 	if (columnData.isNull()) {
 		g_logger().debug("[DBResult::getString] query: {}", m_query);
 		g_logger().debug("Column '{}' is null", columnName);
-		return nullptr;
+		return {};
 	}
 
 	g_logger().trace("[DBResult::getString] query: {}", m_query);

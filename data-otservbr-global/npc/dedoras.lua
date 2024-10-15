@@ -169,20 +169,16 @@ keywordHandler:addKeyword(
 		"So I have to look elsewhere to handle this new {threat}.",
 	} }
 )
-keywordHandler:addKeyword(
-	{ "background" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = {
-			"The goodbreaker was created in ancient times, when the war between the gods and their minions was on its height. Its creation took aeons and incredible sacrifices. ...",
-			"Each part had to be crafted perfectly, to emulate the gods, so it would share 'the same place' with them. ...",
-			"Mere mortals can not even perceive it in his whole but only recognize the part of it that is the physical representation in our world. ...",
-			"If it was meant to be used as an actual weapon, as the ultimate threat, or if Zathroth was just tempted to use his knowledge in the ultimate way - to create something that could undo himself - we don't know. ...",
-			"However in the end even Zathroth deemed it too much of a threat but instead of destroying the contraption once and for all, it was {disassembled} and hidden away.",
-		},
-	}
-)
+keywordHandler:addKeyword({ "background" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"The goodbreaker was created in ancient times, when the war between the gods and their minions was on its height. Its creation took aeons and incredible sacrifices. ...",
+		"Each part had to be crafted perfectly, to emulate the gods, so it would share 'the same place' with them. ...",
+		"Mere mortals can not even perceive it in his whole but only recognize the part of it that is the physical representation in our world. ...",
+		"If it was meant to be used as an actual weapon, as the ultimate threat, or if Zathroth was just tempted to use his knowledge in the ultimate way - to create something that could undo himself - we don't know. ...",
+		"However in the end even Zathroth deemed it too much of a threat but instead of destroying the contraption once and for all, it was {disassembled} and hidden away.",
+	},
+})
 keywordHandler:addKeyword(
 	{ "parts" },
 	StdModule.say,
@@ -192,33 +188,25 @@ keywordHandler:addKeyword(
 		"The only thing they are still lacking is the knowledge to assemble and operate the {godbreaker}.",
 	} }
 )
-keywordHandler:addKeyword(
-	{ "godbreaker" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = {
-			"The godbreaker is a complex artifact. Incantation woven into incantation. The powers bound into it are so immense that the slightest mishandling could prove disastrous. ...",
-			"o figure out how it works, let alone how it can be operated safely, could require several centuries of tireless study. And even then this information would be only partial. ...",
-			"Yet the creation and operation of the godbreaker is just the kind of forbidden {knowledge} Zathroth values most, so it was compiled and stored.",
-		},
-	}
-)
+keywordHandler:addKeyword({ "godbreaker" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"The godbreaker is a complex artifact. Incantation woven into incantation. The powers bound into it are so immense that the slightest mishandling could prove disastrous. ...",
+		"o figure out how it works, let alone how it can be operated safely, could require several centuries of tireless study. And even then this information would be only partial. ...",
+		"Yet the creation and operation of the godbreaker is just the kind of forbidden {knowledge} Zathroth values most, so it was compiled and stored.",
+	},
+})
 keywordHandler:addKeyword({ "knowledge" }, StdModule.say, { npcHandler = npcHandler, text = {
 	"Of course the dangers of such knowledge were obvious. It was hidden in a sacred place devoted to Zathroth and dangerous knowledge. ...",
 	"The hidden library, the forbidden hoard, the shrouded trove of knowledge or the veiled hoard of forbidden knowledge, the place has many names in many {myths}.",
 } })
-keywordHandler:addKeyword(
-	{ "myths" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = {
-			"The myths agree that the place is well hidden, extremely guarded and contains some of the most powerful pieces of knowledge in this world and probably beyond. ...",
-			"However the knowledge about the godbreaker now poses a threat to all existence. In the hands of Variphor it can cause disaster in previously unknown ways. The gods themselves are in {peril}.",
-		},
-	}
-)
+keywordHandler:addKeyword({ "myths" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"The myths agree that the place is well hidden, extremely guarded and contains some of the most powerful pieces of knowledge in this world and probably beyond. ...",
+		"However the knowledge about the godbreaker now poses a threat to all existence. In the hands of Variphor it can cause disaster in previously unknown ways. The gods themselves are in {peril}.",
+	},
+})
 keywordHandler:addKeyword({ "peril" }, StdModule.say, { npcHandler = npcHandler, text = {
 	"Regardless of the dangers, the cult of Zathroth refused to destroy the knowledge of the godbreaker for good. ...",
 	"They {value} dangerous knowledge that much, that they are unable to part from it, even when faced with the utter destruction of creation.",
@@ -236,18 +224,14 @@ keywordHandler:addKeyword({ "reach" }, StdModule.say, { npcHandler = npcHandler,
 	"I'd recommend to follow the few leads me and my associates could gather so far. ...",
 	"Old myths, some {rumors} about old texts and other pieces of knowledge that I could use to figure out where to locate the hidden library and how to enter it.",
 } })
-keywordHandler:addKeyword(
-	{ "rumors" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = {
-			"Hints about the shrouded hoard are numerous, though most are general mentions in texts that deal with Zathroth. But there are other sources. ...",
-			"Like texts about ancient liturgies of Zathroth and historical documents that might give us clues. I already compiled everything of value from the sources that were openly available. ...",
-			"To gather the more {obscure} parts of knowledge, however, I'll need your help.",
-		},
-	}
-)
+keywordHandler:addKeyword({ "rumors" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"Hints about the shrouded hoard are numerous, though most are general mentions in texts that deal with Zathroth. But there are other sources. ...",
+		"Like texts about ancient liturgies of Zathroth and historical documents that might give us clues. I already compiled everything of value from the sources that were openly available. ...",
+		"To gather the more {obscure} parts of knowledge, however, I'll need your help.",
+	},
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings seekers of knowledge. You seem to be just the person I'm {looking} for.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")

@@ -24,7 +24,6 @@ monster.events = {
 	"gorzindelDeath",
 }
 
-
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8,

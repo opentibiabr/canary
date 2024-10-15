@@ -56,7 +56,7 @@ local lokathmorSummons = {
 	},
 }
 
-local bossNames = { "mazzinor", "supercharged mazzinor", "lokathmor", "ghulosh", "ghuloshz' deathgaze", "gorzindel", "stolen tome of portals" }
+local bossNames = { "mazzinor", "supercharged mazzinor", "lokathmor", "ghulosh", "ghuloshz" deathgaze", "gorzindel", "stolen tome of portals" }
 
 local function spawnSummons(k, monsterName, eventName, timing, positionTable, middlePosition, isGorzindel)
 	local spectators = Game.getSpectators(middlePosition, false, false, 12, 12, 12, 12)

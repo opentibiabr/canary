@@ -4,8 +4,10 @@ function movements_isle_color_puzzle.onStepIn(creature, item, position, fromPosi
 	if not creature:isPlayer() then
 		return false
 	end
+
 	local player = Player(creature:getId())
 	local boatStage = player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.BoatStages)
+
 	if item.actionid == 4936 then
 		if boatStage < 1 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You see the scattered parts of a wrecked ship. Miraculously the ship telescope survived the wreckm it seems still to be intact.")

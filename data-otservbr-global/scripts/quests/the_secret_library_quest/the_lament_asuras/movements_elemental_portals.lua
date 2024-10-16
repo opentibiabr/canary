@@ -67,7 +67,7 @@ function movements_asura_elemental_portals.onStepIn(creature, item, position, fr
 			end
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		end
-		-- for bosses!!
+
 		for _, k in pairs(entrances) do
 			if position == k.position then
 				if k.storage then
@@ -105,6 +105,7 @@ function movements_asura_elemental_portals.onStepIn(creature, item, position, fr
 				player:setStorageValue(quest, 6)
 			end
 		end
+
 		for _, k in pairs(exites) do
 			if position == k.position then
 				player:teleportTo(k.toPosition)
@@ -112,6 +113,7 @@ function movements_asura_elemental_portals.onStepIn(creature, item, position, fr
 			end
 		end
 	end
+	
 	return true
 end
 

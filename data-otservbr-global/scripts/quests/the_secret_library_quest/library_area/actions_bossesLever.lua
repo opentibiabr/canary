@@ -1,4 +1,3 @@
--- Mazzinor info start
 local mazzinorSummons = {
 	name = "Wild Knowledge",
 	eventName = "mazzinorDeath",

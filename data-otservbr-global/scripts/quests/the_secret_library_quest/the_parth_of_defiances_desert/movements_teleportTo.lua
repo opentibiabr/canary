@@ -74,16 +74,19 @@ end
 
 local function resetRoom(position, name)
 	local spec = Game.getSpectators(position, false, false, 5, 5, 5, 5)
+
 	for _, c in pairs(spec) do
 		if c and c:isPlayer() then
 			return false
 		end
 	end
+
 	for _, c in pairs(spec) do
 		if c and c:getName():lower() == name then
 			c:remove()
 		end
 	end
+
 	return true
 end
 
@@ -93,7 +96,9 @@ function movements_desert_teleportTo.onStepIn(creature, item, position, fromPosi
 	if not creature:isPlayer() then
 		return false
 	end
+
 	local player = Player(creature:getId())
+
 	if player then
 		if item.actionid == 4930 then
 			if position == lastTeleport then
@@ -164,6 +169,7 @@ function movements_desert_teleportTo.onStepIn(creature, item, position, fromPosi
 			end
 		end
 	end
+
 	return true
 end
 

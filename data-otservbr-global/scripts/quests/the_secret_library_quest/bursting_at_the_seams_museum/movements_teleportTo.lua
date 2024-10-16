@@ -1,6 +1,6 @@
 local teleports = {
-	[1] = { fromPos = Position(33246, 32107, 8), toPos = Position(33246, 32096, 8), storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, nivel = 2, nextValue = 3 },
-	[2] = { fromPos = Position(33246, 32098, 8), toPos = Position(33246, 32109, 8), storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, nivel = 2 },
+	[1] = { fromPos = Position(33246, 32107, 8), toPos = Position(33246, 32096, 8), storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, storage_value = 2, nextValue = 3 },
+	[2] = { fromPos = Position(33246, 32098, 8), toPos = Position(33246, 32109, 8), storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, storage_value = 2 },
 }
 
 local lastroom_enter = Position(33344, 32117, 10)
@@ -25,7 +25,7 @@ function movements_museum_teleportTo.onStepIn(creature, item, position, fromPosi
 	if item.actionid == 4905 then
 		for _, p in pairs(teleports) do
 			if position == p.fromPos then
-				if player:getStorageValue(p.storage) >= p.nivel then
+				if player:getStorageValue(p.storage) >= p.storage_value then
 					player:teleportTo(p.toPos)
 					sendFire(p.toPos)
 					if p.nextValue and player:getStorageValue(p.storage) < p.nextValue then

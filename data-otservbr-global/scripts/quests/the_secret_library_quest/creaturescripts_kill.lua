@@ -2,7 +2,7 @@ local defaultTime = 20
 
 local creaturescripts_library_bosses = CreatureEvent("killingLibrary")
 
-function creaturescripts_library_bosses.onKill(player, creature)
+function creaturescripts_library_bosses.onDeath(player, creature)
 	if not player:isPlayer() then
 		return true
 	end

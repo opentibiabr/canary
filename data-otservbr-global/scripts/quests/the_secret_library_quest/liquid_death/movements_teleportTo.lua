@@ -1,6 +1,6 @@
 local config = {
 	teleports = {
-		[1] = { fromPos = Position(32873, 32512, 7), toPos = Position(32881, 32471, 9), storage = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, value = 2, effect = CONST_ME_WATERSPLASH, achievementName = "Spectulation" },
+		[1] = { fromPos = Position(32871, 32510, 7), toPos = Position(32881, 32471, 9), storage = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, value = 1, effect = CONST_ME_WATERSPLASH, achievementName = "Spectulation" },
 		[2] = { fromPos = Position(32881, 32473, 9), toPos = Position(32871, 32513, 7), effect = CONST_ME_WATERSPLASH },
 		[3] = { fromPos = Position(33584, 31388, 13), toPos = Position(33584, 31391, 13), storage = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, value = 4, effect = CONST_ME_TELEPORT, message = "You squeeze through an ancient small passage. There are small symbols carved deep into the coral you cannot read." },
 		[4] = { fromPos = Position(33560, 31395, 13), toPos = Position(33561, 31391, 13), effect = CONST_ME_TELEPORT },

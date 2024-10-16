@@ -6555,7 +6555,7 @@ if not Quests then
 					storageId = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline,
 					missionId = 10452,
 					startValue = 1,
-					endValue = 7,
+					endValue = 8,
 					states = {
 						[1] = "Dedoras has sent you to Spectulus in the Edron Academy. Rumors of strange fishmen in the Tiquanda region may be connected to some of the research the scholar conducted.",
 						[2] = "Spectulus asked you to check out the rumors of strange fishmen in the jungles of northern Tiquanda. A small sunken temple is said to be overrun by strange fish-like creatures.",
@@ -6564,6 +6564,7 @@ if not Quests then
 						[5] = "Part V",
 						[6] = "Part VI",
 						[7] = "Brokul has been defeated and now you can talk with Spectulus or Dedoras what you found about the fishmen.",
+						[8] = "Congratulations you completed this mission.",
 					},
 				},
 				[3] = {

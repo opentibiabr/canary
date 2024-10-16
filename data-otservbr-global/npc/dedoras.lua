@@ -96,42 +96,50 @@ local function creatureSayCallback(npc, creature, type, message)
 			"I gathered some lore on my own, but I desperately need more information that you might provide me. ...",
 			"My leads are the {museum} in thais, something strange in the darashian {desert}, rumors about {fishmen}, an ancient {order}, the mysterious {asuri}, or a lost {isle}?",
 		}, npc, creature)
-		npcHandler:setTopic(playerId, 2)
-	elseif npcHandler:getTopic(playerId) == 2 then
-		if MsgContains(message, "museum") then
-			npcHandler:say("I have heard that it was recently planned to expand the Museum of Tibian Arts. In the course of these activities unexpected difficulties occurred.", npc, creature)
-			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, 1)
-		elseif MsgContains(message, "desert") then
-			npcHandler:say("There are rumors of a mysterious statue in the desert next to Darashia. Nobody really knows the meaning of it.", npc, creature)
-			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline, 1)
-		elseif MsgContains(message, "fishmen") then
+	elseif MsgContains(message, "museum") then
+		npcHandler:say("I have heard that it was recently planned to expand the Museum of Tibian Arts. In the course of these activities unexpected difficulties occurred.", npc, creature)
+		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, 1)
+	elseif MsgContains(message, "desert") then
+		npcHandler:say("There are rumors of a mysterious statue in the desert next to Darashia. Nobody really knows the meaning of it.", npc, creature)
+		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline, 1)
+	elseif MsgContains(message, "fishmen") then
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline) == 7 then
+			npcHandler:say("You brought incredible news. This book proves an invaluable clue!", npc, creature)
+			local currentStorage = player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission)
+			if currentStorage < 0 then
+				currentStorage = 0
+			end
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, currentStorage + 1)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, 8)
+		elseif player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline) < 1 then
 			npcHandler:say({
 				"Sightings of strange fishmen in Tiquanda are stirring up the region. You should be careful when investigating this. ...",
 				"As far as I know a scholar in Edron already dealt with fish-like creatures before.",
 			}, npc, creature)
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, 1)
-		elseif MsgContains(message, "order") then
-			npcHandler:say({
-				"Our world has seen many noble knights and orders throughout the centuries. Most of them vanished a long time ago but only few under such mysterious circumstances as the Order of the Falcon. ...",
-				"This noble alliance of honourable knights once resided in Edron to serve the king. Legend has it they vanished practically over night. Rumor has it their disappearance is connected to a forbidden book.",
-			}, npc, creature)
-			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline, 1)
-		elseif MsgContains(message, "asuri") then
-			npcHandler:say({
-				"There's a beautiful but very dangerous palace in the Tiquandan jungle. The young women who live there are actually demons and they are luring unsuspecting mortals in there. ...",
-				"A lucky survivor told me about a portal at the very top of the palace that may lead to another asuri hideout.",
-			}, npc, creature)
-			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, 1)
-		elseif MsgContains(message, "isle") then
-			npcHandler:say("Talk to Captain Charles in Port Hope. He told me that he once ran ashore on a small island where he discovered a small ruin. The architecture was like nothing he had seen before.", npc, creature)
-			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, 1)
 		end
-	elseif MsgContains(message, "progress") and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.libraryPermission) < 1 then
+	elseif MsgContains(message, "order") then
 		npcHandler:say({
-			"About what of your mission s do you want to report? The {museum}, the darashian {desert}, the rumors about strange {fishmen}, the ancient {order}, the mysterious {asuri}, or the lost {isle}? ...",
-			"Or shall me {check} how much information we acquired?",
+			"Our world has seen many noble knights and orders throughout the centuries. Most of them vanished a long time ago but only few under such mysterious circumstances as the Order of the Falcon. ...",
+			"This noble alliance of honourable knights once resided in Edron to serve the king. Legend has it they vanished practically over night. Rumor has it their disappearance is connected to a forbidden book.",
 		}, npc, creature)
-		npcHandler:setTopic(playerId, 3)
+		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline, 1)
+	elseif MsgContains(message, "asuri") then
+		npcHandler:say({
+			"There's a beautiful but very dangerous palace in the Tiquandan jungle. The young women who live there are actually demons and they are luring unsuspecting mortals in there. ...",
+			"A lucky survivor told me about a portal at the very top of the palace that may lead to another asuri hideout.",
+		}, npc, creature)
+		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, 1)
+	elseif MsgContains(message, "isle") then
+		npcHandler:say("Talk to Captain Charles in Port Hope. He told me that he once ran ashore on a small island where he discovered a small ruin. The architecture was like nothing he had seen before.", npc, creature)
+		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, 1)
+	elseif MsgContains(message, "progress") then
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission) < 6 then
+			npcHandler:say({
+				"About what of your mission s do you want to report? The {museum}, the darashian {desert}, the rumors about strange {fishmen}, the ancient {order}, the mysterious {asuri}, or the lost {isle}? ...",
+				"Or shall me {check} how much information we acquired?",
+			}, npc, creature)
+		end
 	elseif npcHandler:getTopic(playerId) == 3 then
 		if MsgContains(message, "check") then
 			if isQuestDone(player:getId()) then
@@ -140,7 +148,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"There, use an ordinary scythe on the right of the two monuments, while concentrating on this glyph here and chant the words: Chamek Athra Thull Zathroth ...",
 					"Hurry now my friend. Time is of essence!",
 				}, npc, creature)
-				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.libraryPermission, 1)
+				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, 1)
 				player:addAchievement("Battle Mage")
 				player:addOutfit(1069, 1)
 				player:addOutfit(1070, 1)

@@ -15,6 +15,13 @@ LeverAction = {
 			{ x = 32972, y = 32412, z = 11 },
 		},
 	},
+	-- The Secret Library Quest
+	[4901] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 33522, y = 31464, z = 15 },
+		},
+	},
 	-- Cults of Tibia Quest
 	[5500] = {
 		itemId = 8911,

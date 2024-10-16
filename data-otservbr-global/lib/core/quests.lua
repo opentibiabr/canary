@@ -6558,9 +6558,9 @@ if not Quests then
 						[1] = "Dedoras has sent you to Spectulus in the Edron Academy. Rumors of strange fishmen in the Tiquanda region may be connected to some of the research the scholar conducted.",
 						[2] = "Spectulus asked you to check out the rumors of strange fishmen in the jungles of northern Tiquanda. A small sunken temple is said to be overrun by strange fish-like creatures.",
 						[3] = "You found a sunken temple deep in the Tiquanda jungle. Spectulus will help you enter the vortex at the entrance. Find out what happened there and take care of the fish-like aggressors...",
-						[4] = "Parte IV",
-						[5] = "Parte V",
-						[6] = "Parte VI",
+						[4] = "Part IV",
+						[5] = "Part V",
+						[6] = "Part VI",
 						[7] = "Brokul has been defeated and now you can talk with Spectulus or Dedoras what you found about the fishmen.",
 					},
 				},
@@ -6595,13 +6595,13 @@ if not Quests then
 					endvalue = 8,
 					states = {
 						[1] = "Go to Darashia and find out about the mysterious statue.",
-						[2] = "After you have been swallowed by a sand vortex you have entered a hidden desert area. A voice of unknown origin has informed you that you will have to face some challenges.", -- entrou
-						[3] = "Parte III", -- passou do labirinto
-						[4] = "Parte IV", -- abriu primeiro bau
-						[5] = "Parte V", -- abriu segundo bau
-						[6] = "Parte VI", -- fez puzzle
-						[7] = "Parte VII", -- abriu terceiro bau
-						[8] = "You have found a book page in a chest. It seems to contain very useful information, but you are not capable to read it. At this point you have to speak with an expert.", -- entrou na sala do quarto bau
+						[2] = "After you have been swallowed by a sand vortex you have entered a hidden desert area. A voice of unknown origin has informed you that you will have to face some challenges.",
+						[3] = "Part III",
+						[4] = "Part IV",
+						[5] = "Part V",
+						[6] = "Part VI",
+						[7] = "Part VII",
+						[8] = "You have found a book page in a chest. It seems to contain very useful information, but you are not capable to read it. At this point you have to speak with an expert.",
 					},
 				},
 				[6] = {
@@ -6612,9 +6612,9 @@ if not Quests then
 					states = {
 						[1] = "Dedoras told you where to search for leads to the Veiled Hoard: the museum in Thais, a fishmen temple in Tiquanda, an order fortress in Edron, the Asuri Palace and a deserted isle.",
 						[2] = "You talked with Gareth and now you may pass trougth the door.",
-						[3] = "Parte III",
-						[4] = "Parte IV",
-						[5] = "Parte V",
+						[3] = "Part III",
+						[4] = "Part IV",
+						[5] = "Part V",
 						[6] = "You successfully entered the Veiled Hoard of Zathroth. However, countless secret and vast knowledge still lie ahead.",
 						[7] = "You have reported Gareth about the enigmatic inscription you have found in the chamber of doom. He was able to decipher it for you and referred to Dedoras in Cormaya for further assistance.",
 					},

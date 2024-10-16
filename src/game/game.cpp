@@ -10230,7 +10230,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT, __FUNCTION__);
+	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
 	    forgeableMonsters.size() < influencedLimit * 1.2) {
 		forgeableMonsters.clear();
 		for (const auto &[monsterId, monster] : monsters) {

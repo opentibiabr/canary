@@ -145,7 +145,7 @@ std::vector<std::shared_ptr<Player>> PlayerBadge::getPlayersInfoByAccount(const 
 	return players;
 }
 
-bool PlayerBadge::accountAllLevel(uint8_t amount) {
+bool PlayerBadge::accountAllLevel(uint8_t amount) const {
 	auto players = getPlayersInfoByAccount(m_player.getAccount());
 	uint16_t total = std::accumulate(players.begin(), players.end(), 0, [](uint16_t sum, const std::shared_ptr<Player> &player) {
 		return sum + player->getLevel();

@@ -23,7 +23,7 @@ public:
 	bool argon(const std::string &password_attempt, const std::string &hashed_password) const;
 
 private:
-	static uint32_t parseBitShift(const std::string &bitShiftStr);
+	uint32_t parseBitShift(const std::string &bitShiftStr) const;
 	bool verifyPassword(const std::string &password, const std::string &phash) const;
 	static std::vector<uint8_t> base64_decode(const std::string &input);
 

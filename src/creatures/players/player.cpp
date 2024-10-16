@@ -1744,7 +1744,7 @@ void Player::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool is
 		}
 
 		g_game().checkPlayersRecord();
-		if (getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL, __FUNCTION__) && getVocationId() > VOCATION_NONE) {
+		if (getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL) && getVocationId() > VOCATION_NONE) {
 			for (uint8_t i = 2; i <= 6; i++) {
 				if (!hasBlessing(i)) {
 					addBlessing(i, 1);
@@ -2707,7 +2707,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 }
 
 void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
-	if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && isMounted()) {
+	if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ) && isMounted()) {
 		dismount();
 		g_game().internalCreatureChangeOutfit(getPlayer(), defaultOutfit);
 	}
@@ -4455,7 +4455,7 @@ void Player::doAttacking(uint32_t) {
 uint64_t Player::getGainedExperience(const std::shared_ptr<Creature> &attacker) const {
 	if (g_configManager().getBoolean(EXPERIENCE_FROM_PLAYERS)) {
 		const auto &attackerPlayer = attacker->getPlayer();
-		if (attackerPlayer && attackerPlayer.get() != this && skillLoss && std::abs(static_cast<int32_t>(attackerPlayer->getLevel() - level)) <= g_configManager().getNumber(EXP_FROM_PLAYERS_LEVEL_RANGE, __FUNCTION__)) {
+		if (attackerPlayer && attackerPlayer.get() != this && skillLoss && std::abs(static_cast<int32_t>(attackerPlayer->getLevel() - level)) <= g_configManager().getNumber(EXP_FROM_PLAYERS_LEVEL_RANGE)) {
 			return std::max<uint64_t>(0, std::floor(getLostExperience() * getDamageRatio(attacker) * 0.75));
 		}
 	}
@@ -5146,7 +5146,7 @@ Skulls_t Player::getSkullClient(const std::shared_ptr<Creature> &creature) {
 	if (player && player->getSkull() == SKULL_NONE) {
 		if (player.get() == this) {
 			if (std::ranges::any_of(unjustifiedKills, [&](const auto &kill) {
-					return kill.unavenged && (getTimeNow() - kill.time) < g_configManager().getNumbe (ORANGE_SKULL_DURATION) * 24 * 60 * 60;
+					return kill.unavenged && (getTimeNow() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60;
 				})) {
 				return SKULL_ORANGE;
 			}
@@ -5841,7 +5841,7 @@ bool Player::toggleMount(bool mount) {
 		}
 
 		const auto &tile = getTile();
-		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ, __FUNCTION__) && !group->access && tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ) && !group->access && tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
 			return false;
 		}
@@ -7456,7 +7456,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(configKey));
 	}
 
-	setForgeDusts(getForgeDusts() - g_configManager().getNumber(configKey, __FUNCTION__));
+	setForgeDusts(getForgeDusts() - g_configManager().getNumber(configKey));
 
 	if (convergence) {
 		newReceiveItem->setTier(tier);

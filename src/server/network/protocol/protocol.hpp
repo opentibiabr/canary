@@ -21,8 +21,7 @@ class NetworkMessage;
 
 class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
-	explicit Protocol(const Connection_ptr &initConnection) :
-		connectionPtr(initConnection) { }
+	explicit Protocol(const Connection_ptr &initConnection);
 
 	virtual ~Protocol() = default;
 

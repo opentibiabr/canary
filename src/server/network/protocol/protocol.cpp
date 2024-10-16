@@ -15,7 +15,7 @@
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
-Protocol::Protocol(Connection_ptr initConnection) :
+Protocol::Protocol(const Connection_ptr &initConnection) :
 	connectionPtr(initConnection) { }
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {

@@ -21,7 +21,7 @@ ConnectionManager &ConnectionManager::getInstance() {
 	return inject<ConnectionManager>();
 }
 
-Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
+Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, const ConstServicePort_ptr &servicePort) {
 	auto connection = std::make_shared<Connection>(io_service, servicePort);
 	connections.emplace(connection);
 	return connection;
@@ -50,12 +50,11 @@ void ConnectionManager::closeAll() {
 }
 
 Connection::Connection(asio::io_service &initIoService, ConstServicePort_ptr initservicePort) :
-	msg(),
 	readTimer(initIoService),
 	writeTimer(initIoService),
 	service_port(std::move(initservicePort)),
-	socket(initIoService), m_msg() {
-}
+	socket(initIoService),
+	m_msg() { }
 
 void Connection::close(bool force) {
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
@@ -162,7 +161,7 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 						Connection::handleTimeout(self, error);
 					});
 
-					asio::async_read(socket, asio::buffer(msg.getBuffer(), remainder), [self = shared_from_this()](const std::error_code &error, std::size_t N) {
+					asio::async_read(socket, asio::buffer(m_msg.getBuffer(), remainder), [self = shared_from_this()](const std::error_code &error, std::size_t N) {
 						self->parseProxyIdentification(error);
 					});
 				} catch (const std::system_error &e) {
@@ -226,9 +225,9 @@ void Connection::parseHeader(const std::error_code &error) {
 		});
 
 		// Read packet content
-		msg.setLength(size + HEADER_LENGTH);
+		m_msg.setLength(size + HEADER_LENGTH);
 
-		asio::async_read(socket, asio::buffer(msg.getBodyBuffer(), size), [self = shared_from_this()](const std::error_code &error, std::size_t N) {
+		asio::async_read(socket, asio::buffer(m_msg.getBodyBuffer(), size), [self = shared_from_this()](const std::error_code &error, std::size_t N) {
 			self->parsePacket(error);
 		});
 	} catch (const std::system_error &e) {
@@ -298,7 +297,7 @@ void Connection::parsePacket(const std::error_code &error) {
 
 		if (!skipReadingNextPacket) {
 			// Wait to the next packet
-			asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this()](const std::error_code &error, std::size_t N) {
+			asio::async_read(socket, asio::buffer(m_msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this()](const std::error_code &error, std::size_t N) {
 				self->parseHeader(error);
 			});
 		}

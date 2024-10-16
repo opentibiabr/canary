@@ -338,13 +338,12 @@ void IOMarket::updateStatistics() {
 		OFFERSTATE_ACCEPTED
 	);
 
-	auto resultOpt = g_database().getResult(query);
-	if (!resultOpt.has_value()) {
+	auto result = g_database().getResult(query);
+	if (!result) {
 		return;
 	}
 
-	mysqlx::SqlResult &result = resultOpt.value();
-	for (mysqlx::Row row : result.fetchAll()) {
+	for (mysqlx::Row row : result->fetchAll()) {
 		MarketStatistics* statistics = nullptr;
 		auto sale = Database::getU32(row[0]); // `sale` is at index 0
 		uint16_t itemId = Database::getU32(row[1]); // `itemtype` is at index 1

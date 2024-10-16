@@ -422,22 +422,23 @@ DBResult_ptr Database::storeQuery(std::string_view query) {
 	return nullptr;
 }
 
-std::optional<mysqlx::SqlResult> Database::getResult(std::string_view query) {
+std::unique_ptr<mysqlx::SqlResult> Database::getResult(std::string_view query) {
 	try {
 		auto &session = g_database().getSession();
-		mysqlx::SqlResult result = session.sql(query.data()).execute();
+		auto result = std::make_unique<mysqlx::SqlResult>(session.sql(std::string(query)).execute());
 
-		if (!result.hasData()) {
+		if (!result->hasData()) {
 			g_logger().warn("Query '{}' returned no data.", query);
-			return std::nullopt;
+			return nullptr;
 		}
 		return result;
 	} catch (const mysqlx::Error &err) {
 		g_logger().error("Failed to execute query '{}': {}", query, err.what());
 	} catch (const std::exception &e) {
 		g_logger().error("Standard exception during query execution '{}': {}", query, e.what());
-		return std::nullopt;
 	}
+
+	return nullptr;
 }
 
 bool Database::updateBlobData(const std::string &tableName, const std::string &columnName, uint32_t recordId, const char* blobData, size_t size, const std::string &idColumnName) {

@@ -49,7 +49,7 @@ public:
 	DBResult_ptr storeQuery(std::string_view query);
 	std::shared_ptr<DBResult> prepare(const std::string &query);
 
-	std::optional<mysqlx::SqlResult> getResult(std::string_view query);
+	std::unique_ptr<mysqlx::SqlResult> getResult(std::string_view query);
 
 	std::string escapeString(const std::string &s) const;
 

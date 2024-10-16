@@ -260,6 +260,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	player->defaultOutfit.lookMountBody = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountbody"));
 	player->defaultOutfit.lookMountLegs = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountlegs"));
 	player->defaultOutfit.lookMountFeet = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountfeet"));
+	player->defaultOutfit.currentMount = result->getNumber<uint16_t>("currentmount");
 	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
 
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
@@ -268,6 +269,22 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(std::shared_ptr<Player> player, DB
 	}
 
 	player->currentOutfit = player->defaultOutfit;
+
+	// load outfits & addons
+	auto result2 = g_database().storeQuery(fmt::format("SELECT `outfit_id`, `addons` FROM `player_outfits` WHERE `player_id` = {:d}", player->getGUID()));
+	if (result2) {
+		do {
+			player->outfitsMap.emplace_back(result2->getNumber<uint16_t>("outfit_id"), result2->getNumber<uint8_t>("addons"));
+		} while (result2->next());
+	}
+
+	// load mounts
+	auto result3 = g_database().storeQuery(fmt::format("SELECT `mount_id` FROM `player_mounts` WHERE `player_id` = {:d}", player->getGUID()));
+	if (result3) {
+		do {
+			player->mountsMap.emplace(result3->getNumber<uint16_t>("mount_id"));
+		} while (result3->next());
+	}
 }
 
 void IOLoginDataLoad::loadPlayerSkullSystem(std::shared_ptr<Player> player, DBResult_ptr result) {

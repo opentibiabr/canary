@@ -171,25 +171,25 @@ public:
 		return CREATURETYPE_PLAYER;
 	}
 
-	uint8_t getLastMount() const;
-	uint8_t getCurrentMount() const;
-	void setCurrentMount(uint8_t mountId);
+	uint16_t getLastMount() const;
+	uint16_t getCurrentMount() const;
+	void setCurrentMount(uint16_t mountId);
 	bool isMounted() const {
 		return defaultOutfit.lookMount != 0;
 	}
 	bool toggleMount(bool mount);
-	bool tameMount(uint8_t mountId);
-	bool untameMount(uint8_t mountId);
+	bool tameMount(uint16_t mountId);
+	bool untameMount(uint16_t mountId);
 	bool hasMount(const std::shared_ptr<Mount> mount) const;
 	bool hasAnyMount() const;
-	uint8_t getRandomMountId() const;
+	uint16_t getRandomMountId() const;
 	void dismount();
 	uint16_t getDodgeChance() const;
 
-	uint8_t isRandomMounted() const {
+	uint16_t isRandomMounted() const {
 		return randomMount;
 	}
-	void setRandomMount(uint8_t isMountRandomized) {
+	void setRandomMount(uint16_t isMountRandomized) {
 		randomMount = isMountRandomized;
 	}
 
@@ -2755,7 +2755,8 @@ private:
 
 	std::vector<uint16_t> quickLootListItemIds;
 
-	std::vector<OutfitEntry> outfits;
+	std::vector<OutfitEntry> outfitsMap;
+	std::unordered_set<uint16_t> mountsMap;
 	std::vector<FamiliarEntry> familiars;
 
 	std::vector<std::unique_ptr<PreySlot>> preys;

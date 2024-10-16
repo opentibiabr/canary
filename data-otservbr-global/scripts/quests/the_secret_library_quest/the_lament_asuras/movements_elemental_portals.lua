@@ -113,7 +113,7 @@ function movements_asura_elemental_portals.onStepIn(creature, item, position, fr
 			end
 		end
 	end
-	
+
 	return true
 end
 

@@ -1163,7 +1163,6 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 		size_t i = 0;
 		for (const auto &spectator : playersSpectators) {
 			if (const auto &player = spectator->getPlayer()) {
-				player->sendMagicEffect(tilePosition, CONST_ME_POFF);
 				player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
 			}
 		}

@@ -36,10 +36,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-22.04, ubuntu-24.04]
         buildtype: [linux-release, linux-debug]
         include:
           - os: ubuntu-22.04
+            triplet: x64-linux
+          - os: ubuntu-24.04
             triplet: x64-linux
 
     steps:
@@ -48,14 +50,23 @@ jobs:
 
       - name: Install Linux Dependencies
         run: >
-          sudo apt-get update && sudo apt-get install ccache linux-headers-$(uname -r)
+          sudo apt-get update && sudo apt-get install ccache linux-headers-"$(uname -r)"
 
-      - name: Switch to gcc-11
-        if: matrix.os == 'ubuntu-20.04'
+      - name: Switch to gcc-12 on Ubuntu 22.04
+        if: matrix.os == 'ubuntu-22.04'
         run: |
-          sudo apt install gcc-11 g++-11
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
-          sudo update-alternatives --set gcc /usr/bin/gcc-11
+          sudo apt install gcc-12 g++-12
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100 --slave /usr/bin/g++ g++ /usr/bin/g++-12 --slave /usr/bin/gcov gcov /usr/bin/gcov-12
+          sudo update-alternatives --set gcc /usr/bin/gcc-12
+
+      - name: Switch to gcc-14 on Ubuntu 24.04
+        if: matrix.os == 'ubuntu-24.04'
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          sudo apt-get update
+          sudo apt-get install gcc-14 g++-14 -y
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 --slave /usr/bin/g++ g++ /usr/bin/g++-14 --slave /usr/bin/gcov gcov /usr/bin/gcov-14
+          sudo update-alternatives --set gcc /usr/bin/gcc-14
 
       - name: CCache
         uses: hendrikmuhs/ccache-action@main
@@ -70,7 +81,7 @@ jobs:
         run: |
           vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ')
           echo "vcpkg commit ID: $vcpkgCommitId"
-          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> $GITHUB_ENV
+          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> "$GITHUB_ENV"
 
       - name: Get vcpkg commit id from vcpkg.json
         uses: lukka/run-vcpkg@main

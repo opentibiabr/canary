@@ -136,8 +136,11 @@ void SpawnNpc::startSpawnNpcCheck() {
 }
 
 SpawnNpc::~SpawnNpc() {
-	for (const auto &[fst, snd] : spawnedNpcMap) {
-		const auto &npc = snd;
+	for (const auto &[spawnId, npc] : spawnedNpcMap) {
+		if (spawnId == 0) {
+			continue;
+		}
+
 		npc->setSpawnNpc(nullptr);
 	}
 }
@@ -179,9 +182,12 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, const std::shared_ptr<NpcType> &npcTyp
 }
 
 void SpawnNpc::startup() {
-	for (const auto &[fst, snd] : spawnNpcMap) {
-		const uint32_t spawnId = fst;
-		const auto &[pos, npcType, lastSpawnNpc, interval, direction] = snd;
+	for (const auto &[spawnId, npcInfo] : spawnNpcMap) {
+		if (spawnId == 0) {
+			continue;
+		}
+
+		const auto &[pos, npcType, lastSpawnNpc, interval, direction] = npcInfo;
 		spawnNpc(spawnId, npcType, pos, direction, true);
 	}
 }
@@ -191,25 +197,24 @@ void SpawnNpc::checkSpawnNpc() {
 
 	cleanup();
 
-	for (auto &[fst, snd] : spawnNpcMap) {
-		uint32_t spawnId = fst;
+	for (auto &[spawnId, npcInfo] : spawnNpcMap) {
 		if (spawnedNpcMap.contains(spawnId)) {
 			continue;
 		}
 
-		spawnBlockNpc_t &sb = snd;
-		if (!sb.npcType->canSpawn(sb.pos)) {
-			sb.lastSpawnNpc = OTSYS_TIME();
+		auto &[pos, npcType, lastSpawnNpc, interval, direction] = npcInfo;
+		if (!npcType->canSpawn(pos)) {
+			lastSpawnNpc = OTSYS_TIME();
 			continue;
 		}
 
-		if (OTSYS_TIME() >= sb.lastSpawnNpc + sb.interval) {
-			if (findPlayer(sb.pos)) {
-				sb.lastSpawnNpc = OTSYS_TIME();
+		if (OTSYS_TIME() >= lastSpawnNpc + interval) {
+			if (findPlayer(pos)) {
+				lastSpawnNpc = OTSYS_TIME();
 				continue;
 			}
 
-			scheduleSpawnNpc(spawnId, sb, 3 * NONBLOCKABLE_SPAWN_NPC_INTERVAL);
+			scheduleSpawnNpc(spawnId, npcInfo, 3 * NONBLOCKABLE_SPAWN_NPC_INTERVAL);
 		}
 	}
 

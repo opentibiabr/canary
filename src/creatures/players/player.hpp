@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <utility>
-
 #include "items/containers/container.hpp"
 #include "creatures/creature.hpp"
 #include "items/cylinder.hpp"
@@ -67,7 +65,6 @@ struct ModalWindow;
 struct Achievement;
 struct Badge;
 struct Title;
-class VIPGroup;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -994,9 +991,9 @@ public:
 	uint64_t getGainedExperience(const std::shared_ptr<Creature> &attacker) const override;
 
 	// combat event functions
-	void onAddCondition(const ConditionType_t &type) override;
-	void onAddCombatCondition(const ConditionType_t &type) override;
-	void onEndCondition(const ConditionType_t &type) override;
+	void onAddCondition(ConditionType_t type) override;
+	void onAddCombatCondition(ConditionType_t type) override;
+	void onEndCondition(ConditionType_t type) override;
 	void onCombatRemoveCondition(const std::shared_ptr<Condition> &condition) override;
 	void onAttackedCreature(const std::shared_ptr<Creature> &target) override;
 	void onAttacked() override;

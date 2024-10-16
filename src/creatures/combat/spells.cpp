@@ -140,8 +140,8 @@ bool Spells::registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instan
 bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
 	if (rune) {
 		uint16_t id = rune->getRuneItemId();
-		const auto &[fst, snd] = runes.emplace(rune->getRuneItemId(), rune);
-		if (!snd) {
+		const auto &[iter, inserted] = runes.emplace(rune->getRuneItemId(), rune);
+		if (!inserted) {
 			g_logger().warn(
 				"[{}] duplicate registered rune with id: {}, for script: {}",
 				__FUNCTION__,
@@ -149,7 +149,7 @@ bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
 				rune->getScriptInterface()->getLoadingScriptName()
 			);
 		}
-		return snd;
+		return inserted;
 	}
 
 	return false;
@@ -158,13 +158,13 @@ bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
 std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) const {
 	std::list<uint16_t> spellsList;
 
-	for (const auto &[fst, snd] : instants) {
-		const VocSpellMap &vocSpells = snd->getVocMap();
+	for (const auto &[name, spell] : instants) {
+		const VocSpellMap &vocSpells = spell->getVocMap();
 		const auto &vocSpellsIt = vocSpells.find(vocationId);
 
 		if (vocSpellsIt != vocSpells.end()
 		    && vocSpellsIt->second) {
-			spellsList.emplace_back(snd->getSpellId());
+			spellsList.emplace_back(spell->getSpellId());
 		}
 	}
 
@@ -180,22 +180,17 @@ std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) const {
 }
 
 std::shared_ptr<RuneSpell> Spells::getRuneSpell(uint16_t id) {
-	const auto &it = runes.find(id);
-	if (it == runes.end()) {
-		for (const auto &[fst, snd] : runes) {
-			if (snd->getRuneItemId() == id) {
-				return snd;
-			}
-		}
-		return nullptr;
+	const auto it = runes.find(id);
+	if (it != runes.end()) {
+		return it->second;
 	}
-	return it->second;
-}
 
+	return nullptr;
+}
 std::shared_ptr<RuneSpell> Spells::getRuneSpellByName(const std::string &name) const {
-	for (const auto &[fst, snd] : runes) {
-		if (strcasecmp(snd->getName().c_str(), name.c_str()) == 0) {
-			return snd;
+	for (const auto &[runeId, runeSpell] : runes) {
+		if (caseInsensitiveCompare(runeSpell->getName(), name)) {
+			return runeSpell;
 		}
 	}
 	return nullptr;
@@ -204,12 +199,17 @@ std::shared_ptr<RuneSpell> Spells::getRuneSpellByName(const std::string &name) c
 std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) const {
 	std::shared_ptr<InstantSpell> result = nullptr;
 
-	for (const auto &[fst, snd] : instants) {
-		const std::string &instantSpellWords = snd->getWords();
+	for (const auto &[spellName, instantSpell] : instants) {
+		const std::string &instantSpellWords = instantSpell->getWords();
 		const size_t spellLen = instantSpellWords.length();
-		if (strncasecmp(instantSpellWords.c_str(), words.c_str(), spellLen) == 0) {
+
+		if (words.length() < spellLen) {
+			continue;
+		}
+
+		if (caseInsensitiveCompare(instantSpellWords, words, spellLen)) {
 			if (!result || spellLen > result->getWords().length()) {
-				result = snd;
+				result = instantSpell;
 				if (words.length() == spellLen) {
 					break;
 				}
@@ -230,24 +230,24 @@ std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) 
 				return nullptr;
 			}
 		}
-		return result;
 	}
-	return nullptr;
+
+	return result;
 }
 
 std::shared_ptr<InstantSpell> Spells::getInstantSpellById(uint16_t spellId) const {
-	for (const auto &[fst, snd] : instants) {
-		if (snd->getSpellId() == spellId) {
-			return snd;
+	for (const auto &[spellName, instantSpell] : instants) {
+		if (instantSpell->getSpellId() == spellId) {
+			return instantSpell;
 		}
 	}
 	return nullptr;
 }
 
 std::shared_ptr<InstantSpell> Spells::getInstantSpellByName(const std::string &name) const {
-	for (const auto &[fst, snd] : instants) {
-		if (strcasecmp(snd->getName().c_str(), name.c_str()) == 0) {
-			return snd;
+	for (const auto &[spellName, instantSpell] : instants) {
+		if (caseInsensitiveCompare(instantSpell->getName(), name)) {
+			return instantSpell;
 		}
 	}
 	return nullptr;

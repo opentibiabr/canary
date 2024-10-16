@@ -309,28 +309,28 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 		return RETURNVALUE_NOERROR;
 	}
 
-	const auto targetPlayer = target ? target->getPlayer() : nullptr;
+	const auto &targetPlayer = target ? target->getPlayer() : nullptr;
 	if (target) {
 		const std::shared_ptr<Tile> &tile = target->getTile();
 		if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 			return RETURNVALUE_NOTENOUGHROOM;
 		}
-		if (tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-			const auto permittedOnPz = targetPlayer ? targetPlayer->hasPermittedConditionInPZ() : false;
+		if (targetPlayer && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			const auto permittedOnPz = targetPlayer->hasPermittedConditionInPZ();
 			return permittedOnPz ? RETURNVALUE_NOERROR : RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 		}
 	}
 
 	if (attacker) {
 		const auto &attackerMaster = attacker->getMaster();
+		const auto &attackerPlayer = attacker->getPlayer();
 		if (targetPlayer) {
 			if (targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 			}
 
 			const auto &targetPlayerTile = targetPlayer->getTile();
-
-			if (const auto &attackerPlayer = attacker->getPlayer()) {
+			if (attackerPlayer) {
 				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 				}
@@ -340,7 +340,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 				}
 
 				// nopvp-zone
-				const auto attackerTile = attackerPlayer->getTile();
+				const auto &attackerTile = attackerPlayer->getTile();
 				if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
@@ -379,7 +379,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 				return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 			}
 
-			if (const auto &attackerPlayer = attacker->getPlayer()) {
+			if (attackerPlayer) {
 				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackMonster)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 				}
@@ -501,7 +501,7 @@ bool Combat::setParam(CombatParam_t param, uint32_t value) {
 	return false;
 }
 
-bool Combat::setCallback(const CallBackParam_t &key) {
+bool Combat::setCallback(CallBackParam_t key) {
 	switch (key) {
 		case CALLBACK_PARAM_LEVELMAGICVALUE: {
 			params.valueCallback = std::make_unique<ValueCallback>(COMBAT_FORMULA_LEVELMAGIC);

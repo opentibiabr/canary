@@ -740,7 +740,7 @@ void Party::addPlayerLoot(const std::shared_ptr<Player> &player, const std::shar
 		return;
 	}
 
-	auto playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	std::shared_ptr<PartyAnalyzer> playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = std::make_shared<PartyAnalyzer>(player->getID(), player->getName());
 		membersData.emplace_back(playerAnalyzer);
@@ -768,7 +768,7 @@ void Party::addPlayerSupply(const std::shared_ptr<Player> &player, const std::sh
 		return;
 	}
 
-	auto playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	std::shared_ptr<PartyAnalyzer> playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = std::make_shared<PartyAnalyzer>(player->getID(), player->getName());
 		membersData.emplace_back(playerAnalyzer);
@@ -790,7 +790,7 @@ void Party::addPlayerSupply(const std::shared_ptr<Player> &player, const std::sh
 }
 
 void Party::addPlayerDamage(const std::shared_ptr<Player> &player, uint64_t amount) {
-	auto playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	std::shared_ptr<PartyAnalyzer> playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = std::make_shared<PartyAnalyzer>(player->getID(), player->getName());
 		membersData.emplace_back(playerAnalyzer);
@@ -801,7 +801,7 @@ void Party::addPlayerDamage(const std::shared_ptr<Player> &player, uint64_t amou
 }
 
 void Party::addPlayerHealing(const std::shared_ptr<Player> &player, uint64_t amount) {
-	auto playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	std::shared_ptr<PartyAnalyzer> playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = std::make_shared<PartyAnalyzer>(player->getID(), player->getName());
 		membersData.emplace_back(playerAnalyzer);

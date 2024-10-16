@@ -442,9 +442,9 @@ public:
 	bool hasBeenAttacked(uint32_t attackerId);
 
 	// combat event functions
-	virtual void onAddCondition(const ConditionType_t &type);
-	virtual void onAddCombatCondition(const ConditionType_t &type);
-	virtual void onEndCondition(const ConditionType_t &type);
+	virtual void onAddCondition(ConditionType_t type);
+	virtual void onAddCombatCondition(ConditionType_t type);
+	virtual void onEndCondition(ConditionType_t type);
 	void onTickCondition(ConditionType_t type, bool &bRemove);
 	virtual void onCombatRemoveCondition(const std::shared_ptr<Condition> &condition);
 	virtual void onAttackedCreature(const std::shared_ptr<Creature> &) { }

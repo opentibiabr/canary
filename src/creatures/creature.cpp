@@ -653,9 +653,17 @@ void Creature::onDeath() {
 	int32_t mostDamage = 0;
 	std::map<std::shared_ptr<Creature>, uint64_t> experienceMap;
 	std::unordered_set<std::shared_ptr<Player>> killers;
-	for (const auto &[fst, snd] : damageMap) {
-		if (auto attacker = g_game().getCreatureByID(fst)) {
-			const auto [total, ticks] = snd;
+	for (const auto &[creatureId, damageInfo] : damageMap) {
+		if (creatureId == 0) {
+			continue;
+		}
+
+		if (auto attacker = g_game().getCreatureByID(creatureId)) {
+			const auto &[total, ticks] = damageInfo;
+			if (total == 0 || ticks == 0) {
+				continue;
+			}
+
 			if ((total > mostDamage && (timeNow - ticks <= inFightTicks))) {
 				mostDamage = total;
 				mostDamageCreature = attacker;
@@ -690,8 +698,8 @@ void Creature::onDeath() {
 		}
 	}
 
-	for (const auto &[fst, snd] : experienceMap) {
-		fst->onGainExperience(snd, getCreature());
+	for (const auto &[creature, experience] : experienceMap) {
+		creature->onGainExperience(experience, getCreature());
 	}
 
 	mostDamageCreature = mostDamageCreature && mostDamageCreature->getMaster() ? mostDamageCreature->getMaster() : mostDamageCreature;
@@ -1166,11 +1174,15 @@ double Creature::getDamageRatio(const std::shared_ptr<Creature> &attacker) const
 	uint32_t totalDamage = 0;
 	uint32_t attackerDamage = 0;
 
-	for (const auto &[fst, snd] : damageMap) {
-		const auto &[total, ticks] = snd;
-		totalDamage += total;
-		if (fst == attacker->getID()) {
-			attackerDamage += total;
+	for (const auto &[attackerId, damageInfo] : damageMap) {
+		const auto &[totalDamageValue, ticks] = damageInfo;
+		if (attackerId == 0 || totalDamageValue == 0) {
+			continue;
+		}
+
+		totalDamage += totalDamageValue;
+		if (attackerId == attacker->getID()) {
+			attackerDamage += totalDamageValue;
 		}
 	}
 
@@ -1206,7 +1218,7 @@ void Creature::addDamagePoints(const std::shared_ptr<Creature> &attacker, int32_
 	lastHitCreatureId = attackerId;
 }
 
-void Creature::onAddCondition(const ConditionType_t &type) {
+void Creature::onAddCondition(ConditionType_t type) {
 	if (type == CONDITION_PARALYZE && hasCondition(CONDITION_HASTE)) {
 		removeCondition(CONDITION_HASTE);
 	} else if (type == CONDITION_HASTE && hasCondition(CONDITION_PARALYZE)) {
@@ -1214,11 +1226,11 @@ void Creature::onAddCondition(const ConditionType_t &type) {
 	}
 }
 
-void Creature::onAddCombatCondition(const ConditionType_t &) {
+void Creature::onAddCombatCondition(ConditionType_t) {
 	//
 }
 
-void Creature::onEndCondition(const ConditionType_t &) {
+void Creature::onEndCondition(ConditionType_t) {
 	//
 }
 

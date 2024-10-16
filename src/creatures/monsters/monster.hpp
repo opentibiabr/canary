@@ -447,8 +447,8 @@ private:
 		return isIdle;
 	}
 
-	void onAddCondition(const ConditionType_t &type) override;
-	void onEndCondition(const ConditionType_t &type) override;
+	void onAddCondition(ConditionType_t type) override;
+	void onEndCondition(ConditionType_t type) override;
 
 	bool canUseAttack(const Position &pos, const std::shared_ptr<Creature> &target) const;
 	bool canUseSpell(const Position &pos, const Position &targetPos, const spellBlock_t &sb, uint32_t interval, bool &inRange, bool &resetTicks);

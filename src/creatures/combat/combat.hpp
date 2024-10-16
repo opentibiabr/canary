@@ -306,7 +306,7 @@ public:
 	bool doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, int affected = 1) const;
 	bool doCombat(const std::shared_ptr<Creature> &caster, const Position &pos) const;
 
-	bool setCallback(const CallBackParam_t &key);
+	bool setCallback(CallBackParam_t key);
 	void setChainCallback(uint8_t chainTargets, uint8_t chainDistance, bool backtracking);
 	CallBack* getCallback(CallBackParam_t key) const;
 

@@ -82,14 +82,14 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 
-			auto [fst, snd] = imbuementMap.emplace(std::piecewise_construct, std::forward_as_tuple(runningid), std::forward_as_tuple(runningid, baseid));
+			auto [imbuementInfo, inserted] = imbuementMap.emplace(std::piecewise_construct, std::forward_as_tuple(runningid), std::forward_as_tuple(runningid, baseid));
 
-			if (!snd) {
+			if (!inserted) {
 				g_logger().warn("Duplicate imbuement of Base ID: '{}' ignored", baseid);
 				continue;
 			}
 
-			Imbuement &imbuement = fst->second;
+			Imbuement &imbuement = imbuementInfo->second;
 
 			pugi::xml_attribute iconBase = baseNode.attribute("iconid");
 			if (!iconBase) {

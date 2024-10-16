@@ -39,7 +39,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 
 	std::string boostedNameGet = g_game().getBoostedMonsterName();
 
-	spawnMonsterList.reserve(10000);
+	spawnMonsterList.reserve(100000);
 	for (const auto &spawnMonsterNode : doc.child("monsters").children()) {
 		Position centerPos(
 			pugi::cast<uint16_t>(spawnMonsterNode.attribute("centerx").value()),
@@ -110,6 +110,9 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 			}
 		}
 	}
+
+	// Clears unused memory that has been reserved
+	spawnMonsterList.shrink_to_fit();
 	return true;
 }
 
@@ -385,9 +388,13 @@ void SpawnMonster::removeMonsters() {
 }
 
 void SpawnMonster::setMonsterVariant(const std::string &variant) {
-	for (auto &[fst, snd] : spawnMonsterMap) {
+	for (auto &[monsterId, monsterInfo] : spawnMonsterMap) {
+		if (monsterId == 0) {
+			continue;
+		}
+
 		std::unordered_map<std::shared_ptr<MonsterType>, uint32_t> monsterTypes;
-		for (const auto &[monsterType, weight] : snd.monsterTypes) {
+		for (const auto &[monsterType, weight] : monsterInfo.monsterTypes) {
 			if (!monsterType || monsterType->typeName.empty()) {
 				continue;
 			}
@@ -397,7 +404,7 @@ void SpawnMonster::setMonsterVariant(const std::string &variant) {
 				monsterTypes.emplace(variantType, weight);
 			}
 		}
-		snd.monsterTypes = monsterTypes;
+		monsterInfo.monsterTypes = monsterTypes;
 	}
 }
 

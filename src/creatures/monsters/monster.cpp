@@ -838,7 +838,7 @@ bool Monster::isInSpawnLocation() const {
 	return position == masterPos || masterPos == Position();
 }
 
-void Monster::onAddCondition(const ConditionType_t &type) {
+void Monster::onAddCondition(ConditionType_t type) {
 	onConditionStatusChange(type);
 }
 
@@ -849,7 +849,7 @@ void Monster::onConditionStatusChange(const ConditionType_t &type) {
 	updateIdleStatus();
 }
 
-void Monster::onEndCondition(const ConditionType_t &type) {
+void Monster::onEndCondition(ConditionType_t type) {
 	onConditionStatusChange(type);
 }
 
@@ -1118,8 +1118,8 @@ void Monster::onThinkDefense(uint32_t interval) {
 	}
 
 	if (!isSummon() && m_summons.size() < mType->info.maxSummons && hasFollowPath) {
-		for (const auto &[name, chance, speed, count, force] : mType->info.summons) {
-			if (speed > defenseTicks) {
+		for (const auto &[summonName, summonChance, summonSpeed, summonCount, summonForce] : mType->info.summons) {
+			if (summonSpeed > defenseTicks) {
 				resetTicks = false;
 				continue;
 			}
@@ -1128,29 +1128,29 @@ void Monster::onThinkDefense(uint32_t interval) {
 				continue;
 			}
 
-			if (defenseTicks % speed >= interval) {
+			if (defenseTicks % summonSpeed >= interval) {
 				// already used this spell for this round
 				continue;
 			}
 
-			uint32_t summonCount = 0;
+			uint32_t summonsCount = 0;
 			for (const auto &summon : m_summons) {
-				if (summon && summon->getName() == name) {
-					++summonCount;
+				if (summon && summon->getName() == summonName) {
+					++summonsCount;
 				}
 			}
 
-			if (summonCount >= count) {
+			if (summonsCount >= summonCount) {
 				continue;
 			}
 
-			if (chance < static_cast<uint32_t>(uniform_random(1, 100))) {
+			if (summonChance < static_cast<uint32_t>(uniform_random(1, 100))) {
 				continue;
 			}
 
 			const auto &summon = Monster::createMonster(name);
 			if (summon) {
-				if (g_game().placeCreature(summon, getPosition(), false, force)) {
+				if (g_game().placeCreature(summon, getPosition(), false, summonForce)) {
 					summon->setMaster(static_self_cast<Monster>(), true);
 					g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
 					g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);

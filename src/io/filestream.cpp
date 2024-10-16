@@ -81,7 +81,7 @@ bool FileStream::read(T &ret, bool escape) {
 		if (i < size) {
 			dst[i] = array[i];
 		}
-#elif
+#else
 		memcpy(&ret, array.data(), size);
 #endif
 	} else {
@@ -130,7 +130,7 @@ bool FileStream::read(T &ret, bool escape) {
 		if (remaining == 1) {
 			*dst = *src;
 		}
-#elif
+#else
 		memcpy(&ret, &m_data[m_pos], size);
 #endif
 

@@ -32,6 +32,8 @@
 #include "io/iologindata.hpp"
 #include "items/bed.hpp"
 #include "items/weapons/weapons.hpp"
+#include "io/io_store.hpp"
+#include "io/functions/iologindata_save_player.hpp"
 #include "core.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
@@ -40,6 +42,8 @@
 #include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/player_blessings.hpp"
+#include "creatures/creatures_definitions.hpp"
+#include "creatures/players/gamestore/player_store_detail.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -7775,6 +7779,235 @@ void Player::closeAllExternalContainers() {
 	}
 }
 
+// Store functions
+void Player::openStore() {
+	if (client) {
+		client->openStore();
+	}
+}
+
+void Player::sendStoreHistory(uint32_t page) const {
+	if (client) {
+		client->sendStoreHistory(page);
+	}
+}
+
+void Player::sendStoreSuccess(const std::string &successMessage) {
+	if (client) {
+		client->sendStoreSuccess(successMessage);
+	}
+}
+
+void Player::sendStoreError(StoreErrors_t errorType, const std::string &errorMessage) {
+	if (client) {
+		client->sendStoreError(errorType, errorMessage);
+	}
+}
+
+std::vector<StoreHistory> &Player::getStoreHistory() {
+	return storeHistoryVector;
+}
+
+void Player::setStoreHistory(const StoreHistory &history) {
+	storeHistoryVector.push_back(history);
+}
+
+void Player::addStoreHistory(bool fromMarket, const std::string &playerName, time_t createdAt, uint32_t coinAmount, StoreDetailType type, MarketAction_t action, const std::string &description, uint64_t totalPrice /* = 0*/) {
+	StoreHistory storeHistory;
+	storeHistory.fromMarket = fromMarket;
+	storeHistory.createdAt = createdAt;
+	storeHistory.coinAmount = action == MARKETACTION_SELL ? -static_cast<int32_t>(coinAmount) : static_cast<int32_t>(coinAmount);
+	storeHistory.type = type;
+	storeHistory.description = description;
+	storeHistory.playerName = playerName;
+	storeHistory.totalPrice = action == MARKETACTION_SELL ? static_cast<int64_t>(totalPrice) : -static_cast<int64_t>(totalPrice);
+
+	if (!IOLoginDataSave::savePlayerStoreHistory(getPlayer())) {
+		g_logger().error("[{}] Failed to save store history for player {}", __FUNCTION__, getName());
+	}
+
+	setStoreHistory(storeHistory);
+}
+
+void Player::addStoreDetail(const std::string &description, int32_t coinAmount, int createdAt, bool isGold /* = false*/) const {
+	auto detailCreatedAt = getTimeNow();
+	StoreDetail detail;
+	detail.description = description;
+	detail.coinAmount = coinAmount;
+	detail.createdAt = detailCreatedAt;
+	detail.isGold = isGold;
+
+	// Store the serialized StoreDetail in the KV
+	getStoreHistoryScope(createdAt)->set(std::to_string(detailCreatedAt), detail.serialize());
+
+	g_logger().debug("Player: {}, {}", getName(), detail.toString());
+}
+
+std::vector<std::pair<std::string, StoreDetail>> Player::getStoreHistoryDetails(int32_t createdAt) const {
+	// Vector to hold StoreDetail objects along with their keys
+	std::vector<std::pair<std::string, StoreDetail>> details;
+
+	// Get the scoped KV for the specific store history
+	auto historyScoped = getStoreHistoryScope(createdAt);
+	// Retrieve all details and store them in the container
+	for (const auto &createdAtKey : historyScoped->keys()) {
+		auto valueWrapper = historyScoped->get(createdAtKey);
+		if (!valueWrapper) {
+			g_logger().error("Failed to retrieve StoreDetail for ActionTimestamp={}", createdAtKey);
+			continue;
+		}
+
+		// Deserialize the ValueWrapper into StoreDetail
+		StoreDetail detail = StoreDetail::deserialize(valueWrapper.value());
+
+		// Store the detail along with its creation date as a pair
+		details.emplace_back(createdAtKey, detail);
+	}
+
+	// Sort the details by the createdAt field in ascending order
+	std::sort(details.begin(), details.end(), [](const auto &lhs, const auto &rhs) {
+		return lhs.second.createdAt < rhs.second.createdAt;
+	});
+
+	return details;
+}
+
+std::shared_ptr<KV> Player::getStoreHistoryScope(int32_t createdAt) const {
+	// Access the complete KV scope for store history
+	return getStoreDetailScope(createdAt)->scoped("history");
+}
+
+std::shared_ptr<KV> Player::getStoreDetailScope(int32_t createdAt) const {
+	// Access the complete KV scope for store detail
+	auto storeDetailScope = kv()->scoped("store-detail");
+	auto createdAtScope = storeDetailScope->scoped(std::to_string(createdAt));
+	return createdAtScope;
+}
+
+bool Player::canBuyStoreOffer(const Offer* offer) {
+	auto offerType = offer->getOfferType();
+	auto canBuy = true;
+
+	switch (offerType) {
+		case OfferTypes_t::OUTFIT: {
+			auto offerOutfitId = offer->getOutfitIds();
+			auto playerLookType = (getSex() == PLAYERSEX_FEMALE ? offerOutfitId.femaleId : offerOutfitId.maleId);
+			uint8_t addons = playerLookType >= 962 && playerLookType <= 975 ? 0u : 3u;
+
+			if (canWear(playerLookType, addons)) {
+				canBuy = false;
+			}
+			break;
+		}
+
+		case OfferTypes_t::MOUNT: {
+			auto mount = g_game().mounts.getMountByID(offer->getOfferId());
+
+			if (hasMount(mount)) {
+				canBuy = false;
+			}
+			break;
+		}
+
+		case OfferTypes_t::EXPBOOST: {
+			auto expBoostCount = getStorageValue(STORAGEVALUE_EXPBOOST);
+
+			if (expBoostCount >= 6 || getXpBoostTime() > 0) {
+				canBuy = false;
+			}
+			break;
+		}
+
+		case OfferTypes_t::PREYSLOT: {
+			const auto &thirdSlot = getPreySlotById(PreySlot_Three);
+
+			if (thirdSlot->state != PreyDataState_Locked) {
+				canBuy = false;
+			}
+
+			break;
+		}
+
+		case OfferTypes_t::PREYBONUS: {
+			auto cardsAmount = offer->getOfferCount();
+			if (getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT)) {
+				canBuy = false;
+			}
+
+			break;
+		}
+
+		case OfferTypes_t::BLESSINGS: {
+			auto blessId = offer->getOfferId();
+			if (!magic_enum::enum_contains<Blessings>(blessId)) {
+				sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
+				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, getName());
+				break;
+			}
+
+			auto blessingAmount = getBlessingCount(blessId);
+			if (blessingAmount >= STORE_BLESSING_MAX_AMOUNT) {
+				canBuy = false;
+			}
+			break;
+		}
+
+		case OfferTypes_t::ALLBLESSINGS: {
+			for (auto bless : magic_enum::enum_values<Blessings>()) {
+				auto blessingAmount = getBlessingCount(enumToValue(bless));
+				if (blessingAmount >= STORE_BLESSING_MAX_AMOUNT) {
+					canBuy = false;
+					break;
+				}
+			}
+			break;
+		}
+
+		case OfferTypes_t::POUCH: {
+			auto pouchStorageValue = getStorageValue(STORAGEVALUE_POUCH);
+
+			if (pouchStorageValue == 1) {
+				canBuy = false;
+			}
+
+			break;
+		}
+
+		case OfferTypes_t::INSTANT_REWARD_ACCESS: {
+			auto offerInstantAmount = offer->getOfferCount();
+			auto playerInstantAmount = getStorageValue(STORAGEVALUE_REWARD_ACCESS);
+
+			if (playerInstantAmount + offerInstantAmount >= g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT)) {
+				canBuy = false;
+			}
+
+			break;
+		}
+
+		case OfferTypes_t::CHARM_EXPANSION: {
+			if (hasCharmExpansion()) {
+				canBuy = false;
+			}
+
+			break;
+		}
+
+		case OfferTypes_t::HUNTINGSLOT: {
+			const auto &thirdSlot = getTaskHuntingSlotById(PreySlot_Three);
+			if (thirdSlot->state != PreyTaskDataState_Locked) {
+				canBuy = false;
+			}
+
+			break;
+		}
+
+		default:
+			break;
+	}
+
+	return canBuy;
+}
+
 SoundEffect_t Player::getHitSoundEffect() const {
 	// Distance sound effects
 	std::shared_ptr<Item> tool = getWeapon();
@@ -8117,7 +8350,7 @@ std::shared_ptr<Container> Player::getLootPouch() {
 	if (inventoryItems.empty()) {
 		return nullptr;
 	}
-	auto containerItem = inventoryItems.front();
+	const auto &containerItem = inventoryItems.front();
 	if (!containerItem) {
 		return nullptr;
 	}

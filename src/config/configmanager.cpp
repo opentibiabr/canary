@@ -260,6 +260,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, HOUSE_BUY_LEVEL, "houseBuyLevel", 0);
 	loadIntConfig(L, HOUSE_LOSE_AFTER_INACTIVITY, "houseLoseAfterInactivity", 0);
 	loadIntConfig(L, HOUSE_PRICE_PER_SQM, "housePriceEachSQM", 1000);
+	loadIntConfig(L, INSTANT_DAILY_REWARD_ACCESS_AMOUNT, "instantDailyRewardAccessAmount", 90);
 	loadIntConfig(L, KICK_AFTER_MINUTES, "kickIdlePlayerAfterMinutes", 15);
 	loadIntConfig(L, LOOTPOUCH_MAXLIMIT, "lootPouchMaxLimit", 2000);
 	loadIntConfig(L, LOW_LEVEL_BONUS_EXP, "lowLevelBonusExp", 50);
@@ -291,6 +292,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, PREY_BONUS_REROLL_PRICE, "preyBonusRerollPrice", 1);
 	loadIntConfig(L, PREY_BONUS_TIME, "preyBonusTime", 7200);
 	loadIntConfig(L, PREY_FREE_REROLL_TIME, "preyFreeRerollTime", 72000);
+	loadIntConfig(L, PREY_MAX_CARDS_AMOUNT, "preyMaxCardsAmount", 50);
 	loadIntConfig(L, PREY_REROLL_PRICE_LEVEL, "preyRerollPricePerLevel", 200);
 	loadIntConfig(L, PREY_SELECTION_LIST_PRICE, "preySelectListPrice", 5);
 	loadIntConfig(L, PROTECTION_LEVEL, "protectionLevel", 1);

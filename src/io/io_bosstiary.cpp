@@ -194,7 +194,7 @@ void IOBosstiary::addBosstiaryKill(std::shared_ptr<Player> player, const std::sh
 
 	int32_t value = player->getStorageValue(STORAGEVALUE_PODIUM);
 	if (value != 1 && newBossLevel == 2) {
-		auto returnValue = g_game().addItemStoreInbox(player, ITEM_PODIUM_OF_VIGOUR);
+		auto returnValue = g_game().processHouseOffer(player, ITEM_PODIUM_OF_VIGOUR);
 		if (!returnValue) {
 			return;
 		}

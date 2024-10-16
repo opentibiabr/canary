@@ -9,6 +9,7 @@
     "bext-ut",
     "curl",
     "eventpp",
+    "libmariadb",
     "luajit",
     "magic-enum",
     "mio",
@@ -19,12 +20,6 @@
     "zlib",
     "bshoshany-thread-pool",
     "atomic-queue",
-    {
-      "name": "libmariadb",
-      "features": [
-        "mariadbclient"
-      ]
-    },
     {
       "name": "gmp",
       "platform": "linux"

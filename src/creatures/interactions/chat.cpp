@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/interactions/chat.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"
@@ -270,7 +268,7 @@ Chat::Chat() :
 
 bool Chat::load() {
 	pugi::xml_document doc;
-	const auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	const auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	const auto folder = coreFolder + "/chatchannels/chatchannels.xml";
 	const pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {

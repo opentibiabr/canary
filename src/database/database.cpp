@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
@@ -25,7 +23,7 @@ Database &Database::getInstance() {
 }
 
 bool Database::connect() {
-	return connect(&g_configManager().getString(MYSQL_HOST, __FUNCTION__), &g_configManager().getString(MYSQL_USER, __FUNCTION__), &g_configManager().getString(MYSQL_PASS, __FUNCTION__), &g_configManager().getString(MYSQL_DB, __FUNCTION__), g_configManager().getNumber(SQL_PORT, __FUNCTION__), &g_configManager().getString(MYSQL_SOCK, __FUNCTION__));
+	return connect(&g_configManager().getString(MYSQL_HOST), &g_configManager().getString(MYSQL_USER), &g_configManager().getString(MYSQL_PASS), &g_configManager().getString(MYSQL_DB), g_configManager().getNumber(SQL_PORT), &g_configManager().getString(MYSQL_SOCK));
 }
 
 bool Database::connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock) {
@@ -43,6 +41,10 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	// automatic reconnect
 	bool reconnect = true;
 	mysql_options(handle, MYSQL_OPT_RECONNECT, &reconnect);
+
+	// Remove ssl verification
+	bool ssl_enabled = false;
+	mysql_options(handle, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &ssl_enabled);
 
 	// connects to database
 	if (!mysql_real_connect(handle, host->c_str(), user->c_str(), password->c_str(), database->c_str(), port, sock->c_str(), 0)) {

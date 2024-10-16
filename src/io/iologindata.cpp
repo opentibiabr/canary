@@ -7,10 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include <utility>
-
-#include "pch.hpp"
-
 #include "io/iologindata.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "io/functions/iologindata_save_player.hpp"
@@ -30,7 +26,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		return false;
 	}
 
-	if (g_configManager().getString(AUTH_TYPE, __FUNCTION__) == "session") {
+	if (g_configManager().getString(AUTH_TYPE) == "session") {
 		if (!account.authenticate()) {
 			return false;
 		}
@@ -40,7 +36,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		}
 	}
 
-	if (!g_accountRepository().getCharacterByNameAndAccountId(account.getID(), characterName)) {
+	if (!g_accountRepository().getCharacterByAccountIdAndName(account.getID(), characterName)) {
 		g_logger().warn("IP [{}] trying to connect into another account character", convertIPToString(ip));
 		return false;
 	}
@@ -101,7 +97,7 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 
 	try {
 		// First
-		IOLoginDataLoad::loadPlayerFirst(player, result);
+		IOLoginDataLoad::loadPlayerBasicInfo(player, result);
 
 		// Experience load
 		IOLoginDataLoad::loadPlayerExperience(player, result);

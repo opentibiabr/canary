@@ -27,7 +27,7 @@ public:
 	virtual bool loadBySession(const std::string &email, AccountInfo &acc) = 0;
 	virtual bool save(const AccountInfo &accInfo) = 0;
 
-	virtual bool getCharacterByNameAndAccountId(const uint32_t &id, const std::string &name) = 0;
+	virtual bool getCharacterByAccountIdAndName(const uint32_t &id, const std::string &name) = 0;
 
 	virtual bool getPassword(const uint32_t &id, std::string &password) = 0;
 

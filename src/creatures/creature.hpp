@@ -760,8 +760,8 @@ protected:
 	int32_t health = 1000;
 	int32_t healthMax = 1000;
 
-	uint16_t manaShield = 0;
-	uint16_t maxManaShield = 0;
+	uint32_t manaShield = 0;
+	uint32_t maxManaShield = 0;
 	int32_t varBuffs[BUFF_LAST + 1] = { 100, 100, 100 };
 
 	std::array<int32_t, COMBAT_COUNT> reflectPercent = { 0 };

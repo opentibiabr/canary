@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
 #include "declarations.hpp"
@@ -37,7 +35,7 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 	npcType(npcType) {
 	defaultOutfit = npcType->info.outfit;
 	currentOutfit = npcType->info.outfit;
-	const float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH, __FUNCTION__);
+	const float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH);
 	health = npcType->info.health * multiplier;
 	healthMax = npcType->info.healthMax * multiplier;
 	baseSpeed = npcType->info.baseSpeed;
@@ -387,11 +385,22 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 			continue;
 		}
 
+		if (const auto &container = item->getContainer()) {
+			if (container->size() > 0) {
+				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must empty the container before selling it.");
+				continue;
+			}
+		}
+
 		if (parent && item->getParent() != parent) {
 			continue;
 		}
 
-		const auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
+		if (!item->hasMarketAttributes()) {
+			continue;
+		}
+
+		auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
 
 		if (g_game().internalRemoveItem(item, removeCount) != RETURNVALUE_NOERROR) {
 			g_logger().error("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
@@ -404,13 +413,17 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		}
 	}
 
-	const auto totalRemoved = amount - toRemove;
-	const auto totalCost = sellPrice * totalRemoved;
+	auto totalRemoved = amount - toRemove;
+	if (totalRemoved == 0) {
+		return;
+	}
+
+	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
 	g_logger().debug("[Npc::onPlayerSellItem] - Removing items from player {} amount {} of items with id {} on shop for npc {}", player->getName(), toRemove, itemId, getName());
 	if (totalRemoved > 0 && totalCost > 0) {
 		if (getCurrency() == ITEM_GOLD_COIN) {
 			totalPrice += totalCost;
-			if (g_configManager().getBoolean(AUTOBANK, __FUNCTION__)) {
+			if (g_configManager().getBoolean(AUTOBANK)) {
 				player->setBankBalance(player->getBankBalance() + totalCost);
 			} else {
 				g_game().addMoney(player, totalCost);

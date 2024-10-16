@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
 
@@ -82,24 +80,24 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 	// Loop through containers in queue
 	while (!queue.empty()) {
 		const ContainerBlock &cb = queue.front();
-		std::shared_ptr<Container> container = cb.first;
+		const std::shared_ptr<Container> &container = cb.first;
 		int32_t parentId = cb.second;
 		queue.pop_front();
 
 		if (!container) {
-			continue; // Check for null container
+			continue;
 		}
 
 		// Loop through items in container
-		for (const std::shared_ptr<Item> &item : container->getItemList()) {
+		for (auto &item : container->getItemList()) {
 			if (!item) {
-				continue; // Check for null item
+				continue;
 			}
 
 			++runningId;
 
 			// Update sub-container attributes if necessary
-			std::shared_ptr<Container> subContainer = item->getContainer();
+			const auto &subContainer = item->getContainer();
 			if (subContainer) {
 				queue.emplace_back(subContainer, runningId);
 				if (subContainer->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
@@ -123,6 +121,7 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 			try {
 				propWriteStream.clear();
 				item->serializeAttr(propWriteStream);
+				item->stopDecaying();
 			} catch (...) {
 				g_logger().error("Error serializing item attributes in container.");
 				return false;
@@ -587,7 +586,7 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 	}
 
 	Database &db = Database::getInstance();
-	if (g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__)) {
+	if (g_configManager().getBoolean(PREY_ENABLED)) {
 		std::ostringstream query;
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId))) {
@@ -641,7 +640,7 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 	}
 
 	Database &db = Database::getInstance();
-	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED, __FUNCTION__)) {
+	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		std::ostringstream query;
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			if (const auto &slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId))) {

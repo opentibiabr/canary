@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "items/containers/depot/depotlocker.hpp"
 
 DepotLocker::DepotLocker(uint16_t type, uint16_t size) :

@@ -20,7 +20,7 @@ public:
 	bool loadBySession(const std::string &esseionKey, AccountInfo &acc) override;
 	bool save(const AccountInfo &accInfo) override;
 
-	bool getCharacterByNameAndAccountId(const uint32_t &id, const std::string &name) override;
+	bool getCharacterByAccountIdAndName(const uint32_t &id, const std::string &name) override;
 
 	bool getPassword(const uint32_t &id, std::string &password) override;
 

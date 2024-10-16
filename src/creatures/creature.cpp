@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/creature.hpp"
 #include "declarations.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -251,18 +249,23 @@ void Creature::addEventWalk(bool firstStep) {
 		return;
 	}
 
-	g_dispatcher().context().tryAddEvent([ticks, self = getCreature()]() {
-		// Take first step right away, but still queue the next
-		if (ticks == 1) {
-			g_game().checkCreatureWalk(self->getID());
-		}
+	g_dispatcher().context().tryAddEvent(
+		[ticks, self = getCreature()]() {
+			// Take first step right away, but still queue the next
+			if (ticks == 1) {
+				g_game().checkCreatureWalk(self->getID());
+			}
 
-		self->eventWalk = g_dispatcher().scheduleEvent(
-			static_cast<uint32_t>(ticks),
-			[creatureId = self->getID()] { g_game().checkCreatureWalk(creatureId); }, "Game::checkCreatureWalk"
-		);
-	},
-	                                     __FUNCTION__);
+			self->eventWalk = g_dispatcher().scheduleEvent(
+				static_cast<uint32_t>(ticks),
+				[creatureId = self->getID()] {
+					g_game().checkCreatureWalk(creatureId);
+				},
+				"Game::checkCreatureWalk"
+			);
+		},
+		"Game::checkCreatureWalk"
+	);
 }
 
 void Creature::stopEventWalk() {
@@ -485,7 +488,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 			stopEventWalk();
 		}
 
-		bool configTeleportSummons = g_configManager().getBoolean(TELEPORT_SUMMONS, __FUNCTION__);
+		bool configTeleportSummons = g_configManager().getBoolean(TELEPORT_SUMMONS);
 		checkSummonMove(newPos, configTeleportSummons);
 		if (isLostSummon()) {
 			handleLostSummon(configTeleportSummons);
@@ -601,7 +604,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 	if (followCreature && (creature == getCreature() || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, "Game::updateCreatureWalk");
+			g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, __FUNCTION__);
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -616,7 +619,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 		} else {
 			if (hasExtraSwing()) {
 				// our target is moving lets see if we can get in hit
-				g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
+				g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
 			}
 
 			if (newTile->getZoneType() != oldTile->getZoneType()) {
@@ -646,7 +649,7 @@ void Creature::onDeath() {
 	std::shared_ptr<Creature> mostDamageCreature = nullptr;
 
 	const int64_t timeNow = OTSYS_TIME();
-	const uint32_t inFightTicks = g_configManager().getNumber(PZ_LOCKED, __FUNCTION__);
+	const uint32_t inFightTicks = g_configManager().getNumber(PZ_LOCKED);
 	int32_t mostDamage = 0;
 	std::map<std::shared_ptr<Creature>, uint64_t> experienceMap;
 	std::unordered_set<std::shared_ptr<Player>> killers;
@@ -806,7 +809,7 @@ bool Creature::dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, cons
 				const auto &monster = getMonster();
 				if (monster && !monster->isRewardBoss()) {
 					std::ostringstream lootMessage;
-					const auto collorMessage = player->getProtocolVersion() > 1200 && player->getOperatingSystem() < CLIENTOS_OTCLIENT_LINUX;
+					auto collorMessage = player->getProtocolVersion() > 1200;
 					lootMessage << "Loot of " << getNameDescription() << ": " << corpseContainer->getContentDescription(collorMessage) << ".";
 					const auto suffix = corpseContainer->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
 					if (!suffix.empty()) {
@@ -826,10 +829,12 @@ bool Creature::dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, cons
 				const auto isReachable = g_game().map.getPathMatching(player->getPosition(), dirList, FrozenPathingConditionCall(corpse->getPosition()), fpp);
 
 				if (player->checkAutoLoot(monster->isRewardBoss()) && isReachable) {
-					g_dispatcher().addEvent([player, corpseContainer, corpsePosition = corpse->getPosition()] {
-						g_game().playerQuickLootCorpse(player, corpseContainer, corpsePosition);
-					},
-					                        "Game::playerQuickLootCorpse");
+					g_dispatcher().addEvent(
+						[player, corpseContainer, corpsePosition = corpse->getPosition()] {
+							g_game().playerQuickLootCorpse(player, corpseContainer, corpsePosition);
+						},
+						__FUNCTION__
+					);
 				}
 			}
 		}
@@ -850,7 +855,7 @@ bool Creature::hasBeenAttacked(uint32_t attackerId) {
 	if (it == damageMap.end()) {
 		return false;
 	}
-	return (OTSYS_TIME() - it->second.ticks) <= g_configManager().getNumber(PZ_LOCKED, __FUNCTION__);
+	return (OTSYS_TIME() - it->second.ticks) <= g_configManager().getNumber(PZ_LOCKED);
 }
 
 std::shared_ptr<Item> Creature::getCorpse(const std::shared_ptr<Creature> &, const std::shared_ptr<Creature> &) {
@@ -873,7 +878,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(static_self_cast<Creature>());
 	}
 	if (health <= 0) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().executeDeath(creatureId); }, "Game::executeDeath");
+		g_dispatcher().addEvent([creatureId = getID()] { g_game().executeDeath(creatureId); }, __FUNCTION__);
 	}
 }
 
@@ -949,7 +954,7 @@ BlockType_t Creature::blockHit(const std::shared_ptr<Creature> &attacker, const 
 	// Apply skills 12.72 absorbs damage
 	applyAbsorbDamageModifications(attacker, damage, combatType);
 
-	if (getMonster() && g_configManager().getBoolean(DISABLE_MONSTER_ARMOR, __FUNCTION__)) {
+	if (getMonster() && g_configManager().getBoolean(DISABLE_MONSTER_ARMOR)) {
 		checkDefense = false;
 		checkArmor = false;
 	}

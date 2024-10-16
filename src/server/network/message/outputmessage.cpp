@@ -7,15 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "outputmessage.hpp"
+
+#include "lib/di/container.hpp"
 #include "server/network/protocol/protocol.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "utils/lockfree.hpp"
 
 constexpr uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
 constexpr std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
+
+OutputMessagePool &OutputMessagePool::getInstance() {
+	return inject<OutputMessagePool>();
+}
 
 void OutputMessagePool::scheduleSendAll() {
 	g_dispatcher().scheduleEvent(

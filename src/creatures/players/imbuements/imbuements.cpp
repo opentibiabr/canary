@@ -7,7 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/creature/events.hpp"
 #include "utils/pugicast.hpp"
@@ -27,8 +26,8 @@ Imbuement* Imbuements::getImbuement(uint16_t id) {
 
 bool Imbuements::loadFromXml(bool /* reloading */) {
 	pugi::xml_document doc;
-	const auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/imbuements.xml";
-	const pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/imbuements.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
@@ -346,7 +345,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> 
 		}
 
 		// Parse the storages for each imbuement in imbuements.xml and config.lua (enable/disable storage)
-		if (g_configManager().getBoolean(TOGGLE_IMBUEMENT_SHRINE_STORAGE, __FUNCTION__)
+		if (g_configManager().getBoolean(TOGGLE_IMBUEMENT_SHRINE_STORAGE)
 		    && imbuement->getStorage() != 0
 		    && player->getStorageValue(imbuement->getStorage() == -1)
 		    && imbuement->getBaseID() >= 1 && imbuement->getBaseID() <= 3) {

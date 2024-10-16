@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/functions/core/libs/logger_functions.hpp"
 
 void LoggerFunctions::init(lua_State* L) {

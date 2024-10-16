@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "io/functions/iologindata_load_player.hpp"
@@ -98,16 +96,16 @@ bool IOLoginDataLoad::preLoadPlayer(const std::shared_ptr<Player> &player, const
 	uint32_t premiumDays = player->getAccount()->getPremiumRemainingDays();
 	uint32_t premiumDaysPurchased = player->getAccount()->getPremiumDaysPurchased();
 
-	player->loyaltyPoints = player->getAccount()->getAccountAgeInDays() * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY, __FUNCTION__)
-		+ (premiumDaysPurchased - premiumDays) * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT, __FUNCTION__)
-		+ premiumDaysPurchased * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED, __FUNCTION__);
+	player->loyaltyPoints = player->getAccount()->getAccountAgeInDays() * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY)
+		+ (premiumDaysPurchased - premiumDays) * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT)
+		+ premiumDaysPurchased * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED);
 
 	return true;
 }
 
-bool IOLoginDataLoad::loadPlayerFirst(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
+bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return false;
 	}
 
@@ -189,7 +187,7 @@ bool IOLoginDataLoad::loadPlayerFirst(const std::shared_ptr<Player> &player, con
 
 void IOLoginDataLoad::loadPlayerExperience(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -212,7 +210,7 @@ void IOLoginDataLoad::loadPlayerExperience(const std::shared_ptr<Player> &player
 
 void IOLoginDataLoad::loadPlayerBlessings(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -223,7 +221,7 @@ void IOLoginDataLoad::loadPlayerBlessings(const std::shared_ptr<Player> &player,
 
 void IOLoginDataLoad::loadPlayerConditions(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -243,13 +241,13 @@ void IOLoginDataLoad::loadPlayerConditions(const std::shared_ptr<Player> &player
 
 void IOLoginDataLoad::loadPlayerDefaultOutfit(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
 	player->defaultOutfit.lookType = result->getNumber<uint16_t>("looktype");
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
-		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
+		g_logger().warn("[{}] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", __FUNCTION__, player->defaultOutfit.lookType);
 		return;
 	}
 
@@ -264,8 +262,8 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(const std::shared_ptr<Player> &pla
 	player->defaultOutfit.lookMountFeet = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountfeet"));
 	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
 
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
-		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookFamiliarsType);
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
+		g_logger().warn("[{}] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", __FUNCTION__, player->defaultOutfit.lookFamiliarsType);
 		return;
 	}
 
@@ -274,7 +272,7 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(const std::shared_ptr<Player> &pla
 
 void IOLoginDataLoad::loadPlayerSkullSystem(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -296,7 +294,7 @@ void IOLoginDataLoad::loadPlayerSkullSystem(const std::shared_ptr<Player> &playe
 
 void IOLoginDataLoad::loadPlayerSkill(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -318,7 +316,7 @@ void IOLoginDataLoad::loadPlayerSkill(const std::shared_ptr<Player> &player, con
 
 void IOLoginDataLoad::loadPlayerKills(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -328,7 +326,7 @@ void IOLoginDataLoad::loadPlayerKills(const std::shared_ptr<Player> &player, DBR
 	if ((result = db.storeQuery(query.str()))) {
 		do {
 			auto killTime = result->getNumber<time_t>("time");
-			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME, __FUNCTION__)) {
+			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
 				player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
 			}
 		} while (result->next());
@@ -337,7 +335,7 @@ void IOLoginDataLoad::loadPlayerKills(const std::shared_ptr<Player> &player, DBR
 
 void IOLoginDataLoad::loadPlayerGuild(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -387,7 +385,7 @@ void IOLoginDataLoad::loadPlayerGuild(const std::shared_ptr<Player> &player, DBR
 
 void IOLoginDataLoad::loadPlayerStashItems(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -403,7 +401,7 @@ void IOLoginDataLoad::loadPlayerStashItems(const std::shared_ptr<Player> &player
 
 void IOLoginDataLoad::loadPlayerBestiaryCharms(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -456,7 +454,7 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(const std::shared_ptr<Player> &pl
 
 void IOLoginDataLoad::loadPlayerInstantSpellList(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -472,31 +470,29 @@ void IOLoginDataLoad::loadPlayerInstantSpellList(const std::shared_ptr<Player> &
 
 void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
-	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__) && player->getProtocolVersion() < 1200;
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_items` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
+	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && player->getProtocolVersion() < 1200;
+	auto query = fmt::format("SELECT pid, sid, itemtype, count, attributes FROM player_items WHERE player_id = {} ORDER BY sid DESC", player->getGUID());
 
 	ItemsMap inventoryItems;
 	std::vector<std::pair<uint8_t, std::shared_ptr<Container>>> openContainersList;
+	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
 
 	try {
-		if ((result = db.storeQuery(query.str()))) {
+		if ((result = g_database().storeQuery(query))) {
 			loadItems(inventoryItems, result, player);
 
 			for (auto it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
 				const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
-				const auto item = pair.first;
+				const auto &item = pair.first;
 				if (!item) {
 					continue;
 				}
 
 				int32_t pid = pair.second;
-
 				if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
 					player->internalAddThing(pid, item);
 					item->startDecaying();
@@ -506,14 +502,15 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 						continue;
 					}
 
-					std::shared_ptr<Container> container = it2->second.first->getContainer();
+					const std::shared_ptr<Container> &container = it2->second.first->getContainer();
 					if (container) {
 						container->internalAddThing(item);
-						item->startDecaying();
+						// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
+						itemsToStartDecaying.emplace_back(item);
 					}
 				}
 
-				std::shared_ptr<Container> itemContainer = item->getContainer();
+				const std::shared_ptr<Container> &itemContainer = item->getContainer();
 				if (itemContainer) {
 					if (!oldProtocol) {
 						auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
@@ -537,6 +534,11 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 			}
 		}
 
+		// Now that all items and containers have been added and parent chain is established, start decay
+		for (const auto &item : itemsToStartDecaying) {
+			item->startDecaying();
+		}
+
 		if (!oldProtocol) {
 			std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, std::shared_ptr<Container>> &left, const std::pair<uint8_t, std::shared_ptr<Container>> &right) {
 				return left.first < right.first;
@@ -547,14 +549,15 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 				player->onSendContainer(it.second);
 			}
 		}
+
 	} catch (const std::exception &e) {
-		g_logger().error("[IOLoginDataLoad::loadPlayerInventoryItems] - Exceção durante o carregamento do inventário: {}", e.what());
+		g_logger().error("[IOLoginDataLoad::loadPlayerInventoryItems] - Exception during inventory loading: {}", e.what());
 	}
 }
 
 void IOLoginDataLoad::loadPlayerStoreInbox(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -565,7 +568,7 @@ void IOLoginDataLoad::loadPlayerStoreInbox(const std::shared_ptr<Player> &player
 
 void IOLoginDataLoad::loadRewardItems(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -583,15 +586,14 @@ void IOLoginDataLoad::loadRewardItems(const std::shared_ptr<Player> &player) {
 
 void IOLoginDataLoad::loadPlayerDepotItems(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
-	Database &db = Database::getInstance();
 	ItemsMap depotItems;
-	std::ostringstream query;
-	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_depotitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
-	if ((result = db.storeQuery(query.str()))) {
+	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
+	auto query = fmt::format("SELECT pid, sid, itemtype, count, attributes FROM player_depotitems WHERE player_id = {} ORDER BY sid DESC", player->getGUID());
+	if ((result = g_database().storeQuery(query))) {
 		loadItems(depotItems, result, player);
 		for (auto it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
 			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
@@ -613,23 +615,28 @@ void IOLoginDataLoad::loadPlayerDepotItems(const std::shared_ptr<Player> &player
 				std::shared_ptr<Container> container = it2->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
-					item->startDecaying();
+					// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
+					itemsToStartDecaying.emplace_back(item);
 				}
 			}
 		}
+	}
+
+	// Now that all items and containers have been added and parent chain is established, start decay
+	for (const auto &item : itemsToStartDecaying) {
+		item->startDecaying();
 	}
 }
 
 void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
-	if ((result = db.storeQuery(query.str()))) {
+	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
+	auto query = fmt::format("SELECT pid, sid, itemtype, count, attributes FROM player_inboxitems WHERE player_id = {} ORDER BY sid DESC", player->getGUID());
+	if ((result = g_database().storeQuery(query))) {
 		ItemsMap inboxItems;
 		loadItems(inboxItems, result, player);
 
@@ -649,16 +656,21 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 				std::shared_ptr<Container> container = it2->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
-					item->startDecaying();
+					itemsToStartDecaying.emplace_back(item);
 				}
 			}
 		}
+	}
+
+	// Now that all items and containers have been added and parent chain is established, start decay
+	for (const auto &item : itemsToStartDecaying) {
+		item->startDecaying();
 	}
 }
 
 void IOLoginDataLoad::loadPlayerStorageMap(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -674,7 +686,7 @@ void IOLoginDataLoad::loadPlayerStorageMap(const std::shared_ptr<Player> &player
 
 void IOLoginDataLoad::loadPlayerVip(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -712,11 +724,11 @@ void IOLoginDataLoad::loadPlayerVip(const std::shared_ptr<Player> &player, DBRes
 
 void IOLoginDataLoad::loadPlayerPreyClass(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
-	if (g_configManager().getBoolean(PREY_ENABLED, __FUNCTION__)) {
+	if (g_configManager().getBoolean(PREY_ENABLED)) {
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
@@ -759,11 +771,11 @@ void IOLoginDataLoad::loadPlayerPreyClass(const std::shared_ptr<Player> &player,
 
 void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
-	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED, __FUNCTION__)) {
+	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
@@ -809,7 +821,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 
 void IOLoginDataLoad::loadPlayerForgeHistory(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result || !player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -830,12 +842,12 @@ void IOLoginDataLoad::loadPlayerForgeHistory(const std::shared_ptr<Player> &play
 
 void IOLoginDataLoad::loadPlayerBosstiary(const std::shared_ptr<Player> &player, DBResult_ptr result) {
 	if (!result) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Result nullptr", __FUNCTION__);
 		return;
 	}
 
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -867,7 +879,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(const std::shared_ptr<Player> &player,
 
 void IOLoginDataLoad::bindRewardBag(const std::shared_ptr<Player> &player, ItemsMap &rewardItemsMap) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -907,7 +919,7 @@ void IOLoginDataLoad::insertItemsIntoRewardBag(const ItemsMap &rewardItemsMap) {
 
 void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -926,7 +938,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 
 void IOLoginDataLoad::loadPlayerUpdateSystem(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 

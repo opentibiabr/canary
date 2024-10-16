@@ -7,10 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include <utility>
-
-#include "pch.hpp"
-
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
@@ -247,7 +243,7 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 		}
 
-		if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM, __FUNCTION__) && params.chainCallback) {
+		if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM) && params.chainCallback) {
 			m_combat->doCombatChain(player, target, params.aggressive);
 			g_logger().debug("Weapon::internalUseWeapon - Chain callback executed.");
 		} else {
@@ -288,7 +284,7 @@ void Weapon::onUsedWeapon(const std::shared_ptr<Player> &player, const std::shar
 		player->addManaSpent(manaCost);
 		player->changeMana(-static_cast<int32_t>(manaCost));
 
-		if (g_configManager().getBoolean(REFUND_BEGINNING_WEAPON_MANA, __FUNCTION__) && (item->getName() == "wand of vortex" || item->getName() == "snakebite rod")) {
+		if (g_configManager().getBoolean(REFUND_BEGINNING_WEAPON_MANA) && (item->getName() == "wand of vortex" || item->getName() == "snakebite rod")) {
 			player->changeMana(static_cast<int32_t>(manaCost));
 		}
 	}
@@ -302,7 +298,7 @@ void Weapon::onUsedWeapon(const std::shared_ptr<Player> &player, const std::shar
 		player->changeSoul(-static_cast<int32_t>(soul));
 	}
 
-	const bool skipRemoveBeginningWeaponAmmo = !g_configManager().getBoolean(REMOVE_BEGINNING_WEAPON_AMMO, __FUNCTION__) && (item->getName() == "arrow" || item->getName() == "bolt" || item->getName() == "spear");
+	bool skipRemoveBeginningWeaponAmmo = !g_configManager().getBoolean(REMOVE_BEGINNING_WEAPON_AMMO) && (item->getName() == "arrow" || item->getName() == "bolt" || item->getName() == "spear");
 	if (!skipRemoveBeginningWeaponAmmo && breakChance != 0 && uniform_random(1, 100) <= breakChance) {
 		Weapon::decrementItemCount(item);
 		player->updateSupplyTracker(item);
@@ -311,14 +307,14 @@ void Weapon::onUsedWeapon(const std::shared_ptr<Player> &player, const std::shar
 
 	switch (action) {
 		case WEAPONACTION_REMOVECOUNT:
-			if (!skipRemoveBeginningWeaponAmmo && g_configManager().getBoolean(REMOVE_WEAPON_AMMO, __FUNCTION__)) {
+			if (!skipRemoveBeginningWeaponAmmo && g_configManager().getBoolean(REMOVE_WEAPON_AMMO)) {
 				Weapon::decrementItemCount(item);
 				player->updateSupplyTracker(item);
 			}
 			break;
 
 		case WEAPONACTION_REMOVECHARGE: {
-			if (const uint16_t charges = item->getCharges() != 0 && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES, __FUNCTION__)) {
+			if (uint16_t charges = item->getCharges() != 0 && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
 				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 			break;
@@ -884,7 +880,7 @@ void WeaponWand::configureWeapon(const ItemType &it) {
 }
 
 int32_t WeaponWand::getWeaponDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &, const std::shared_ptr<Item> &, bool maxDamage /* = false*/) const {
-	if (!g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM)) {
 		// Returns maximum damage or a random value between minChange and maxChange
 		return maxDamage ? -maxChange : -normal_random(minChange, maxChange);
 	}

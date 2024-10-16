@@ -67,7 +67,7 @@ public:
 	}
 
 	uint32_t getHealthGain() const {
-		return healthGain * g_configManager().getFloat(RATE_HEALTH_REGEN, __FUNCTION__);
+		return healthGain * g_configManager().getFloat(RATE_HEALTH_REGEN);
 	}
 
 	void setHealthTicks(uint32_t value) {
@@ -75,7 +75,7 @@ public:
 	}
 
 	uint32_t getHealthTicks() const {
-		return healthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED, __FUNCTION__);
+		return healthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
 	}
 
 	void setManaGain(uint32_t value) {
@@ -83,7 +83,7 @@ public:
 	}
 
 	uint32_t getManaGain() const {
-		return manaGain * g_configManager().getFloat(RATE_MANA_REGEN, __FUNCTION__);
+		return manaGain * g_configManager().getFloat(RATE_MANA_REGEN);
 	}
 
 	void setManaTicks(uint32_t value) {
@@ -91,7 +91,7 @@ public:
 	}
 
 	uint32_t getManaTicks() const {
-		return manaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED, __FUNCTION__);
+		return manaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
 	}
 
 private:

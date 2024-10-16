@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "account/account_repository_db.hpp"
 
 #include "database/database.hpp"
@@ -64,6 +62,16 @@ bool AccountRepositoryDB::save(const AccountInfo &accInfo) {
 }
 
 bool AccountRepositoryDB::getCharacterByNameAndAccountId(const uint32_t &id, const std::string &name) {
+	auto result = g_database().storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `account_id` = {} AND `name` = {}", id, g_database().escapeString(name)));
+	if (!result) {
+		g_logger().error("Failed to get character: [{}] from account: [{}]!", name, id);
+		return false;
+	}
+
+	return result->countResults() == 1;
+}
+
+bool AccountRepositoryDB::getCharacterByAccountIdAndName(const uint32_t &id, const std::string &name) {
 	auto result = g_database().storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `account_id` = {} AND `name` = {}", id, g_database().escapeString(name)));
 	if (!result) {
 		g_logger().error("Failed to get character: [{}] from account: [{}]!", name, id);

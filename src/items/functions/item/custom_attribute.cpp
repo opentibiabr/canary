@@ -7,10 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include <utility>
-
-#include "pch.hpp"
-
 #include "items/functions/item/custom_attribute.hpp"
 
 #include "lua/scripts/luascript.hpp"

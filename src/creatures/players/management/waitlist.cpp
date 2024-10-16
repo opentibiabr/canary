@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/management/waitlist.hpp"
 #include "game/game.hpp"
 
@@ -68,7 +66,7 @@ bool WaitingList::clientLogin(const std::shared_ptr<Player> &player) const {
 		return true;
 	}
 
-	const auto maxPlayers = static_cast<uint32_t>(g_configManager().getNumber(MAX_PLAYERS, __FUNCTION__));
+	auto maxPlayers = static_cast<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
 	if (maxPlayers == 0 || (info->priorityWaitList.empty() && info->waitList.empty() && g_game().getPlayersOnline() < maxPlayers)) {
 		return true;
 	}

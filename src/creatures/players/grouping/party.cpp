@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/grouping/party.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
@@ -19,7 +17,7 @@ std::shared_ptr<Party> Party::create(const std::shared_ptr<Player> &leader) {
 	auto party = std::make_shared<Party>();
 	party->m_leader = leader;
 	leader->setParty(party);
-	if (g_configManager().getBoolean(PARTY_AUTO_SHARE_EXPERIENCE, __FUNCTION__)) {
+	if (g_configManager().getBoolean(PARTY_AUTO_SHARE_EXPERIENCE)) {
 		party->setSharedExperience(leader, true);
 	}
 	return party;
@@ -491,7 +489,7 @@ SharedExpStatus_t Party::getMemberSharedExperienceStatus(const std::shared_ptr<P
 }
 
 float Party::shareRangeMultiplier() const {
-	return g_configManager().getFloat(PARTY_SHARE_RANGE_MULTIPLIER, __FUNCTION__);
+	return g_configManager().getFloat(PARTY_SHARE_RANGE_MULTIPLIER);
 }
 
 uint32_t Party::getHighestLevel() {
@@ -618,7 +616,7 @@ void Party::updatePlayerStatus(const std::shared_ptr<Player> &player) {
 		return;
 	}
 
-	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
+	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	for (const auto &member : getMembers()) {
 		const bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
 		if (condition) {
@@ -641,7 +639,7 @@ void Party::updatePlayerStatus(const std::shared_ptr<Player> &player, const Posi
 		return;
 	}
 
-	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
+	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	if (maxDistance != 0) {
 		for (const auto &member : getMembers()) {
 			const bool condition1 = Position::getDistanceX(oldPos, member->getPosition()) <= maxDistance && Position::getDistanceY(oldPos, member->getPosition()) <= maxDistance;
@@ -669,7 +667,7 @@ void Party::updatePlayerHealth(const std::shared_ptr<Player> &player, const std:
 		return;
 	}
 
-	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
+	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	const auto playerPosition = player->getPosition();
 	const auto leaderPosition = leader->getPosition();
 	for (const auto &member : getMembers()) {
@@ -691,7 +689,7 @@ void Party::updatePlayerMana(const std::shared_ptr<Player> &player, uint8_t mana
 		return;
 	}
 
-	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
+	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	for (const auto &member : getMembers()) {
 		const bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
 		if (condition) {
@@ -710,7 +708,7 @@ void Party::updatePlayerVocation(const std::shared_ptr<Player> &player) {
 		return;
 	}
 
-	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE, __FUNCTION__);
+	const int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	for (const auto &member : getMembers()) {
 		const bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
 		if (condition) {

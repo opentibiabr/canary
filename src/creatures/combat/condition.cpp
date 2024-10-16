@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/combat/condition.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -1304,7 +1302,7 @@ uint32_t ConditionRegeneration::getHealthTicks(const std::shared_ptr<Creature> &
 	const auto &player = creature->getPlayer();
 
 	if (player != nullptr && isBuff) {
-		return healthTicks / g_configManager().getFloat(RATE_SPELL_COOLDOWN, __FUNCTION__);
+		return healthTicks / g_configManager().getFloat(RATE_SPELL_COOLDOWN);
 	}
 
 	return healthTicks;
@@ -1314,7 +1312,7 @@ uint32_t ConditionRegeneration::getManaTicks(const std::shared_ptr<Creature> &cr
 	const auto &player = creature->getPlayer();
 
 	if (player != nullptr && isBuff) {
-		return manaTicks / g_configManager().getFloat(RATE_SPELL_COOLDOWN, __FUNCTION__);
+		return manaTicks / g_configManager().getFloat(RATE_SPELL_COOLDOWN);
 	}
 
 	return manaTicks;
@@ -2098,10 +2096,12 @@ bool ConditionFeared::executeCondition(const std::shared_ptr<Creature> &creature
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addEvent([id = creature->getID(), listDir] {
-				g_game().forcePlayerAutoWalk(id, listDir);
-			},
-			                        "ConditionFeared::executeCondition");
+			g_dispatcher().addEvent(
+				[id = creature->getID(), listDir] {
+					g_game().forcePlayerAutoWalk(id, listDir);
+				},
+				__FUNCTION__
+			);
 
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}
@@ -2329,7 +2329,7 @@ void ConditionOutfit::serialize(PropWriteStream &propWriteStream) {
 }
 
 bool ConditionOutfit::startCondition(std::shared_ptr<Creature> creature) {
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
 		g_logger().warn("[ConditionOutfit::startCondition] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 		return false;
 	}
@@ -2361,7 +2361,7 @@ void ConditionOutfit::endCondition(std::shared_ptr<Creature> creature) {
 }
 
 void ConditionOutfit::addCondition(std::shared_ptr<Creature> creature, const std::shared_ptr<Condition> addCondition) {
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
 		g_logger().warn("[ConditionOutfit::addCondition] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 		return;
 	}

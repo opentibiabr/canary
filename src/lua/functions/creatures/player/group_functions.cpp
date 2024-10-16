@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/players/grouping/groups.hpp"
 #include "game/game.hpp"
 #include "lua/functions/creatures/player/group_functions.hpp"

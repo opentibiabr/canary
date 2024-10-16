@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/monsters/monsters.hpp"
 #include "lua/functions/creatures/monster/loot_functions.hpp"
 

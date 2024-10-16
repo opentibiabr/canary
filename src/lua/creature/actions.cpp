@@ -7,10 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include <utility>
-
-#include "pch.hpp"
-
 #include "lua/creature/actions.hpp"
 #include "items/bed.hpp"
 #include "items/containers/container.hpp"
@@ -410,14 +406,14 @@ bool Actions::useItem(const std::shared_ptr<Player> &player, const Position &pos
 	}
 
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
-		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
 	} else {
-		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
 	}
 
 	// only send cooldown icon if it's an multi use item
 	if (it.isMultiUse()) {
-		player->sendUseItemCooldown(g_configManager().getNumber(ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+		player->sendUseItemCooldown(g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
 	}
 	return true;
 }
@@ -463,13 +459,13 @@ bool Actions::useItemEx(const std::shared_ptr<Player> &player, const Position &f
 	}
 
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
-		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
 	} else {
-		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
 	}
 
 	if (it.isMultiUse()) {
-		player->sendUseItemCooldown(g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL, __FUNCTION__));
+		player->sendUseItemCooldown(g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
 	}
 	return true;
 }

@@ -7,15 +7,21 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "server/network/connection/connection.hpp"
+
+#include "config/configmanager.hpp"
+#include "lib/di/container.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "server/network/protocol/protocol.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "server/network/message/networkmessage.hpp"
 #include "server/server.hpp"
 
-Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, const ConstServicePort_ptr &servicePort) {
+ConnectionManager &ConnectionManager::getInstance() {
+	return inject<ConnectionManager>();
+}
+
+Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
 	auto connection = std::make_shared<Connection>(io_service, servicePort);
 	connections.emplace(connection);
 	return connection;
@@ -48,7 +54,7 @@ Connection::Connection(asio::io_service &initIoService, ConstServicePort_ptr ini
 	readTimer(initIoService),
 	writeTimer(initIoService),
 	service_port(std::move(initservicePort)),
-	socket(initIoService) {
+	socket(initIoService), m_msg() {
 }
 
 void Connection::close(bool force) {
@@ -62,7 +68,7 @@ void Connection::close(bool force) {
 	}
 
 	if (protocol) {
-		g_dispatcher().addEvent([protocol = protocol] { protocol->release(); }, "Protocol::release", std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
+		g_dispatcher().addEvent([protocol = protocol] { protocol->release(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 	}
 
 	// Verificamos se a fila está vazia usando a fila lock-free
@@ -104,7 +110,7 @@ void Connection::closeSocket() {
 void Connection::accept(Protocol_ptr protocolPtr) {
 	connectionState = CONNECTION_STATE_IDENTIFYING;
 	protocol = std::move(protocolPtr);
-	g_dispatcher().addEvent([protocol = protocol] { protocol->onConnect(); }, "Protocol::onConnect", std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
+	g_dispatcher().addEvent([protocol = protocol] { protocol->onConnect(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 
 	acceptInternal(false);
 }
@@ -114,7 +120,7 @@ void Connection::acceptInternal(bool toggleParseHeader) {
 	readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 	try {
-		asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this(), toggleParseHeader](const std::error_code &error, std::size_t N) {
+		asio::async_read(socket, asio::buffer(m_msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this(), toggleParseHeader](const std::error_code &error, std::size_t N) {
 			if (toggleParseHeader) {
 				self->parseHeader(error);
 			} else {
@@ -138,10 +144,9 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 		return;
 	}
 
-	uint8_t* msgBuffer = msg.getBuffer();
-	const auto charData = static_cast<char*>(static_cast<void*>(msgBuffer));
-	const std::string serverName = g_configManager().getString(SERVER_NAME, __FUNCTION__) + "\n";
-
+	uint8_t* msgBuffer = m_msg.getBuffer();
+	auto charData = static_cast<char*>(static_cast<void*>(msgBuffer));
+	std::string serverName = g_configManager().getString(SERVER_NAME) + "\n";
 	if (connectionState.load(std::memory_order_relaxed) == CONNECTION_STATE_IDENTIFYING) {
 		if (msgBuffer[1] == 0x00 || strncasecmp(charData, &serverName[0], 2) != 0) {
 			connectionState.store(CONNECTION_STATE_OPEN, std::memory_order_relaxed);
@@ -196,8 +201,8 @@ void Connection::parseHeader(const std::error_code &error) {
 		return;
 	}
 
-	const uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
-	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND, __FUNCTION__))) {
+	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
+	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
 		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
 		close();
 		return;
@@ -208,7 +213,7 @@ void Connection::parseHeader(const std::error_code &error) {
 		packetsSent = 0;
 	}
 
-	const uint16_t size = msg.getLengthHeader();
+	uint16_t size = m_msg.getLengthHeader();
 	if (size == 0 || size > INPUTMESSAGE_MAXSIZE) {
 		close(FORCE_CLOSE);
 		return;
@@ -252,21 +257,21 @@ void Connection::parsePacket(const std::error_code &error) {
 		if (!protocol) {
 			// Check packet checksum
 			uint32_t checksum;
-			if (const int32_t len = msg.getLength() - msg.getBufferPosition() - CHECKSUM_LENGTH;
+			if (int32_t len = m_msg.getLength() - m_msg.getBufferPosition() - CHECKSUM_LENGTH;
 			    len > 0) {
-				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition() + CHECKSUM_LENGTH, len);
+				checksum = adlerChecksum(m_msg.getBuffer() + m_msg.getBufferPosition() + CHECKSUM_LENGTH, len);
 			} else {
 				checksum = 0;
 			}
 
-			const auto recvChecksum = msg.get<uint32_t>();
+			uint32_t recvChecksum = m_msg.get<uint32_t>();
 			if (recvChecksum != checksum) {
 				// it might not have been the checksum, step back
-				msg.skipBytes(-CHECKSUM_LENGTH);
+				m_msg.skipBytes(-CHECKSUM_LENGTH);
 			}
 
 			// Game protocol has already been created at this point
-			protocol = service_port->make_protocol(recvChecksum == checksum, msg, shared_from_this());
+			protocol = service_port->make_protocol(recvChecksum == checksum, m_msg, shared_from_this());
 			if (!protocol) {
 				close(FORCE_CLOSE);
 				return;
@@ -274,15 +279,15 @@ void Connection::parsePacket(const std::error_code &error) {
 		} else {
 			// It is rather hard to detect if we have checksum or sequence method here so let's skip checksum check
 			// it doesn't generate any problem because olders protocol don't use 'server sends first' feature
-			msg.get<uint32_t>();
+			m_msg.get<uint32_t>();
 			// Skip protocol ID
-			msg.skipBytes(1);
+			m_msg.skipBytes(1);
 		}
 
-		protocol->onRecvFirstMessage(msg);
+		protocol->onRecvFirstMessage(m_msg);
 	} else {
 		// Send the packet to the current protocol
-		skipReadingNextPacket = protocol->onRecvMessage(msg);
+		skipReadingNextPacket = protocol->onRecvMessage(m_msg);
 	}
 
 	try {
@@ -308,7 +313,7 @@ void Connection::resumeWork() {
 	readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 	try {
-		asio::async_read(socket, asio::buffer(msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parseHeader(error); });
+		asio::async_read(socket, asio::buffer(m_msg.getBuffer(), HEADER_LENGTH), [self = shared_from_this()](const std::error_code &error, std::size_t N) { self->parseHeader(error); });
 	} catch (const std::system_error &e) {
 		g_logger().error("[Connection::resumeWork] - Exception in async_read: {}", e.what());
 		close(FORCE_CLOSE);

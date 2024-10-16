@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -94,7 +92,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 					weight = pugi::cast<uint32_t>(weightAttribute.value());
 				}
 
-				uint32_t scheduleInterval = g_configManager().getNumber(DEFAULT_RESPAWN_TIME, __FUNCTION__);
+				uint32_t scheduleInterval = g_configManager().getNumber(DEFAULT_RESPAWN_TIME);
 
 				pugi::xml_attribute spawnTimeAttr = childMonsterNode.attribute("spawntime");
 				if (spawnTimeAttr) {
@@ -203,7 +201,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 }
 
 void SpawnMonster::startup(bool delayed) {
-	if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN, __FUNCTION__)) {
+	if (g_configManager().getBoolean(RANDOM_MONSTER_SPAWN)) {
 		for (auto it = spawnMonsterMap.begin(); it != spawnMonsterMap.end(); ++it) {
 			auto &[spawnMonsterId, sb] = *it;
 			for (auto &[monsterType, weight] : sb.monsterTypes) {
@@ -233,7 +231,7 @@ void SpawnMonster::startup(bool delayed) {
 			continue;
 		}
 		if (delayed) {
-			g_dispatcher().addEvent([this, spawnMonsterId, &sb, mType] { scheduleSpawn(spawnMonsterId, sb, mType, 0, true); }, "SpawnMonster::startup");
+			g_dispatcher().addEvent([this, spawnMonsterId, &sb, mType] { scheduleSpawn(spawnMonsterId, sb, mType, 0, true); }, __FUNCTION__);
 		} else {
 			scheduleSpawn(spawnMonsterId, sb, mType, 0, true);
 		}
@@ -291,16 +289,17 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, cons
 }
 
 void SpawnMonster::cleanup() {
-	std::vector<uint32_t> removeList;
-	for (const auto &[spawnMonsterId, monster] : spawnedMonsterMap) {
-		if (monster == nullptr || monster->isRemoved()) {
-			removeList.emplace_back(spawnMonsterId);
+	std::erase_if(spawnedMonsterMap, [this](const auto &entry) {
+		const auto &monster = entry.second;
+		if (!monster || monster->isRemoved()) {
+			auto spawnIt = spawnMonsterMap.find(entry.first);
+			if (spawnIt != spawnMonsterMap.end()) {
+				spawnIt->second.lastSpawn = OTSYS_TIME();
+			}
+			return true;
 		}
-	}
-	for (const auto &spawnMonsterId : removeList) {
-		spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
-		spawnedMonsterMap.erase(spawnMonsterId);
-	}
+		return false;
+	});
 }
 
 bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval, uint32_t weight /*= 1*/) {
@@ -323,8 +322,9 @@ bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Dire
 	if (name == boostedMonster) {
 		boostedrate = 2;
 	}
+	auto rateSpawn = g_configManager().getNumber(RATE_SPAWN);
 	// eventschedule is a whole percentage, so we need to multiply by 100 to match the order of magnitude of the other values
-	scheduleInterval = scheduleInterval * 100 / std::max(static_cast<uint32_t>(1), (g_configManager().getNumber(RATE_SPAWN, __FUNCTION__) * boostedrate * eventschedule));
+	scheduleInterval = scheduleInterval * 100 / std::max(static_cast<uint32_t>(1), (rateSpawn * boostedrate * eventschedule));
 	if (scheduleInterval < MONSTER_MINSPAWN_INTERVAL) {
 		g_logger().warn("[SpawnsMonster::addMonster] - {} {} spawntime cannot be less than {} seconds, set to {} by default.", name, pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000, MONSTER_MINSPAWN_INTERVAL / 1000);
 		scheduleInterval = MONSTER_MINSPAWN_INTERVAL;

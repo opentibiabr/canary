@@ -19,16 +19,7 @@
 #include <iterator>
 #include <type_traits>
 
-class ValueWrapper;
-
-using StringType = std::string;
-using BooleanType = bool;
-using IntType = int;
-using DoubleType = double;
-using ArrayType = std::vector<ValueWrapper>;
-using MapType = phmap::flat_hash_map<std::string, std::shared_ptr<ValueWrapper>>;
-
-using ValueVariant = std::variant<StringType, BooleanType, IntType, DoubleType, ArrayType, MapType>;
+#include "kv/kv_definitions.hpp"
 
 class ValueWrapper {
 public:
@@ -178,7 +169,7 @@ inline bool ValueWrapper::operator==(const ValueWrapper &rhs) const {
 
 inline bool operator==(const ValueVariant &lhs, const ValueVariant &rhs) {
 	return std::visit(
-		[](const auto &a, const auto &b) {
+		[](const auto &a, const auto &b) -> bool {
 			using A = std::decay_t<decltype(a)>;
 			using B = std::decay_t<decltype(b)>;
 
@@ -199,6 +190,8 @@ inline bool operator==(const ValueVariant &lhs, const ValueVariant &rhs) {
 			if constexpr (std::is_same_v<A, B>) {
 				return a == b;
 			}
+
+			return false;
 		},
 		lhs, rhs
 	);

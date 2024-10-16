@@ -17,6 +17,14 @@
 	#define lua_strlen lua_rawlen
 #endif
 
+namespace ConfigDefaultValues {
+	constexpr auto LIVESTREAM_EXPERIENCE_MULTIPLIER = 1.15F;
+	constexpr auto LIVESTREAM_MAX_VIEWERS = 10;
+	constexpr auto LIVESTREAM_MAXIMUM_VIEWERS_PER_IP = 10;
+	constexpr auto LIVESTREAM_PREMIUM_MAX_VIEWERS = 20;
+	constexpr auto LIVESTREAM_CASTER_MIN_LEVEL = 200;
+} // namespace ConfigDefaultValues
+
 ConfigManager &ConfigManager::getInstance() {
 	return inject<ConfigManager>();
 }
@@ -261,6 +269,11 @@ bool ConfigManager::load() {
 	loadIntConfig(L, HOUSE_LOSE_AFTER_INACTIVITY, "houseLoseAfterInactivity", 0);
 	loadIntConfig(L, HOUSE_PRICE_PER_SQM, "housePriceEachSQM", 1000);
 	loadIntConfig(L, KICK_AFTER_MINUTES, "kickIdlePlayerAfterMinutes", 15);
+	loadIntConfig(L, LIVESTREAM_CASTER_MIN_LEVEL, "livestreamCasterMinLevel", ConfigDefaultValues::LIVESTREAM_CASTER_MIN_LEVEL);
+	loadFloatConfig(L, LIVESTREAM_EXPERIENCE_MULTIPLIER, "livestreamExperienceMultiplier", ConfigDefaultValues::LIVESTREAM_EXPERIENCE_MULTIPLIER);
+	loadIntConfig(L, LIVESTREAM_MAXIMUM_VIEWERS_PER_IP, "livestreamMaximumViewersPerIP", ConfigDefaultValues::LIVESTREAM_MAXIMUM_VIEWERS_PER_IP);
+	loadIntConfig(L, LIVESTREAM_MAXIMUM_VIEWERS, "livestreamMaximumViewers", ConfigDefaultValues::LIVESTREAM_MAX_VIEWERS);
+	loadIntConfig(L, LIVESTREAM_PREMIUM_MAXIMUM_VIEWERS, "livestreamPremiumMaximumViewers", ConfigDefaultValues::LIVESTREAM_PREMIUM_MAX_VIEWERS);
 	loadIntConfig(L, LOOTPOUCH_MAXLIMIT, "lootPouchMaxLimit", 2000);
 	loadIntConfig(L, LOW_LEVEL_BONUS_EXP, "lowLevelBonusExp", 50);
 	loadIntConfig(L, LOYALTY_POINTS_PER_CREATION_DAY, "loyaltyPointsPerCreationDay", 1);

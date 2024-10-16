@@ -34,5 +34,9 @@ private:
 
 	void getCharacterList(const std::string &accountDescriptor, const std::string &password);
 
+#if FEATURE_LIVESTREAM > 0
+	void getLivestreamViewersList(const std::string &password);
+#endif
+
 	bool oldProtocol = false;
 };

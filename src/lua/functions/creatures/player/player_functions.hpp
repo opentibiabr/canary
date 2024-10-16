@@ -364,6 +364,13 @@ private:
 		registerMethod(L, "Player", "addAchievementPoints", PlayerFunctions::luaPlayerAddAchievementPoints);
 		registerMethod(L, "Player", "removeAchievementPoints", PlayerFunctions::luaPlayerRemoveAchievementPoints);
 
+#if FEATURE_LIVESTREAM > 0
+		registerMethod(L, "Player", "getLivestreamViewersCount", PlayerFunctions::luaPlayerGetLivestreamViewersCount);
+		registerMethod(L, "Player", "getLivestreamViewers", PlayerFunctions::luaPlayerGetLivestreamViewers);
+		registerMethod(L, "Player", "setLivestreamViewers", PlayerFunctions::luaPlayerSetLivestreamViewers);
+		registerMethod(L, "Player", "isLivestreamViewer", PlayerFunctions::luaPlayerIsLivestreamViewer);
+#endif
+
 		// Badge Functions
 		registerMethod(L, "Player", "addBadge", PlayerFunctions::luaPlayerAddBadge);
 
@@ -745,6 +752,13 @@ private:
 	static int luaPlayerTakeScreenshot(lua_State* L);
 	static int luaPlayerSendIconBakragore(lua_State* L);
 	static int luaPlayerRemoveIconBakragore(lua_State* L);
+
+#if FEATURE_LIVESTREAM > 0
+	static int luaPlayerGetLivestreamViewersCount(lua_State* L);
+	static int luaPlayerGetLivestreamViewers(lua_State* L);
+	static int luaPlayerSetLivestreamViewers(lua_State* L);
+	static int luaPlayerIsLivestreamViewer(lua_State* L);
+#endif
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
 

@@ -37,7 +37,7 @@ uint8_t PlayerVIP::getMaxGroupEntries() const {
 }
 
 void PlayerVIP::notifyStatusChange(std::shared_ptr<Player> loginPlayer, VipStatus_t status, bool message) const {
-	if (!m_player.client) {
+	if (!m_player.hasClientOwner()) {
 		return;
 	}
 
@@ -84,7 +84,7 @@ bool PlayerVIP::add(uint32_t vipGuid, const std::string &vipName, VipStatus_t st
 		IOLoginData::addVIPEntry(m_player.account->getID(), vipGuid, "", 0, false);
 	}
 
-	if (m_player.client) {
+	if (m_player.hasClientOwner()) {
 		m_player.client->sendVIP(vipGuid, vipName, "", 0, false, status);
 	}
 
@@ -169,7 +169,7 @@ void PlayerVIP::removeGroup(uint8_t groupId) {
 		IOLoginData::removeVIPGroupEntry(groupId, m_player.account->getID());
 	}
 
-	if (m_player.client) {
+	if (m_player.hasClientOwner()) {
 		m_player.client->sendVIPGroups();
 	}
 }
@@ -193,7 +193,7 @@ void PlayerVIP::addGroup(const std::string &name, bool customizable /*= true */)
 		IOLoginData::addVIPGroupEntry(vipGroup->id, m_player.account->getID(), vipGroup->name, vipGroup->customizable);
 	}
 
-	if (m_player.client) {
+	if (m_player.hasClientOwner()) {
 		m_player.client->sendVIPGroups();
 	}
 }
@@ -212,7 +212,7 @@ void PlayerVIP::editGroup(uint8_t groupId, const std::string &newName, bool cust
 		IOLoginData::editVIPGroupEntry(vipGroup->id, m_player.account->getID(), vipGroup->name, vipGroup->customizable);
 	}
 
-	if (m_player.client) {
+	if (m_player.hasClientOwner()) {
 		m_player.client->sendVIPGroups();
 	}
 }

@@ -30,6 +30,10 @@
 #include "enums/account_type.hpp"
 #include "enums/account_coins.hpp"
 
+#if FEATURE_LIVESTREAM > 0
+	#include "creatures/players/livestream/livestream.hpp"
+#endif
+
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
 	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 1);
@@ -110,7 +114,7 @@ int PlayerFunctions::luaPlayerUpdateKillTracker(lua_State* L) {
 		return 1;
 	}
 
-	player->updateKillTracker(corpse, monster->getName(), monster->getCurrentOutfit());
+	player->sendKillTrackerUpdate(corpse, monster->getName(), monster->getCurrentOutfit());
 	pushBoolean(L, true);
 
 	return 1;
@@ -2173,11 +2177,12 @@ int PlayerFunctions::luaPlayerSendChannelMessage(lua_State* L) {
 		return 1;
 	}
 
+	uint16_t level = getNumber<uint16_t>(L, 6);
 	uint16_t channelId = getNumber<uint16_t>(L, 5);
 	SpeakClasses type = getNumber<SpeakClasses>(L, 4);
 	const std::string &text = getString(L, 3);
 	const std::string &author = getString(L, 2);
-	player->sendChannelMessage(author, text, type, channelId);
+	player->sendChannelMessage(author, level, text, type, channelId);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -4457,3 +4462,158 @@ int PlayerFunctions::luaPlayerSendCreatureAppear(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+#if FEATURE_LIVESTREAM > 0
+int PlayerFunctions::luaPlayerGetLivestreamViewersCount(lua_State* L) {
+	// player:getLivestreamViewersCount()
+	auto player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	lua_pushnumber(L, static_cast<lua_Number>(player->client->getLivestreamViewerCount()));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLivestreamViewers(lua_State* L) {
+	// player:getLivestreamViewers()
+	auto player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_newtable(L);
+	setField(L, "description", player->client->getLivestreamDescription());
+	setCastFieldBool(L, "broadcast", player->client->isLivestreamBroadcasting());
+	setField(L, "password", player->client->getLivestreamPassword());
+
+	createCastTable(L, "names");
+	auto viewers = player->client->getLivestreamViewers();
+	std::size_t i = 1;
+	for (const auto &viewer : viewers) {
+		lua_pushnumber(L, static_cast<lua_Number>(i));
+		lua_pushstring(L, viewer.c_str());
+		lua_settable(L, -3);
+		++i;
+	}
+
+	lua_settable(L, -3);
+	createCastTable(L, "mutes");
+	const auto &mutes = player->client->getLivestreamMutes();
+	i = 1;
+	for (const auto &mute : mutes) {
+		lua_pushnumber(L, static_cast<lua_Number>(i));
+		lua_pushstring(L, mute.c_str());
+		lua_settable(L, -3);
+	}
+
+	lua_settable(L, -3);
+	createCastTable(L, "bans");
+	const auto &bans = player->client->getLivestreamBans();
+	i = 1;
+	for (const auto &[name, id] : bans) {
+		lua_pushnumber(L, static_cast<lua_Number>(i));
+		lua_pushstring(L, name.c_str());
+		lua_settable(L, -3);
+	}
+
+	lua_settable(L, -3);
+	createCastTable(L, "kick");
+	lua_settable(L, -3);
+
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetLivestreamViewers(lua_State* L) {
+	// player:setLivestreamViewers()
+	std::string description = getCastFieldString(L, "description");
+	std::string password = getCastFieldString(L, "password");
+	bool broadcast = getCastFieldBool(L, "broadcast");
+
+	StringVector kickedVector;
+	StringVector mutedVector;
+	StringVector banedVector;
+
+	lua_pushstring(L, "mutes");
+	lua_gettable(L, -2);
+
+	lua_pushnil(L);
+	while (lua_next(L, -2) != 0) {
+		mutedVector.push_back(asLowerCaseString(lua_tostring(L, -1)));
+		lua_pop(L, 1);
+	}
+
+	lua_pop(L, 1);
+	lua_pushstring(L, "bans");
+	lua_gettable(L, -2);
+
+	lua_pushnil(L);
+	while (lua_next(L, -2) != 0) {
+		banedVector.push_back(asLowerCaseString(lua_tostring(L, -1)));
+		lua_pop(L, 1);
+	}
+
+	lua_pop(L, 1);
+	lua_pushstring(L, "kick");
+	lua_gettable(L, -2);
+
+	lua_pushnil(L);
+	while (lua_next(L, -2) != 0) {
+		kickedVector.push_back(asLowerCaseString(lua_tostring(L, -1)));
+		lua_pop(L, 1);
+	}
+
+	lua_pop(L, 2);
+	auto player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (player->client->getLivestreamPassword() != password && !password.empty()) {
+		player->client->clear(false);
+	}
+
+	player->client->setLivestreamPassword(password);
+	if (!broadcast && player->client->isLivestreamBroadcasting()) {
+		player->client->clear(false);
+	}
+
+	player->client->setKickViewer(kickedVector);
+	player->client->setMuteViewer(mutedVector);
+	player->client->setBanViewer(banedVector);
+
+	if (!player->client->isLivestreamBroadcasting()) {
+		player->client->setLivestreamBroadcastingTime(OTSYS_TIME());
+	}
+
+	player->client->setLivestreamBroadcasting(broadcast);
+
+	if (broadcast) {
+		player->client->insertLivestreamCaster();
+		player->sendChannel(CHANNEL_LIVESTREAM, "Livestream", nullptr, nullptr);
+	}
+
+	player->client->setLivestreamDescription(description);
+	pushBoolean(L, true);
+
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsLivestreamViewer(lua_State* L) {
+	// player:isLivestreamViewer()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, player->isLivestreamViewer());
+	return 1;
+}
+#endif

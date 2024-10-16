@@ -119,7 +119,7 @@ bool ChatChannel::hasUser(const std::shared_ptr<Player> &player) {
 
 void ChatChannel::sendToAll(const std::string &message, SpeakClasses type) const {
 	for (const auto &it : users) {
-		it.second->sendChannelMessage("", message, type, id);
+		it.second->sendChannelMessage("", 0, message, type, id);
 	}
 }
 

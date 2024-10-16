@@ -460,6 +460,16 @@ combatChainSkillFormulaAxe = 0.9
 combatChainSkillFormulaClub = 0.7
 combatChainSkillFormulaSword = 1.1
 
+-- Livestream system
+-- NOTE: set experience to 1.0 to deactivate the bonus, example of use: 1.15 (15% of bonus)
+-- NOTE: disable this system in the file "features.hpp" setting directive 'FEATURE_LIVESTREAM' to 0
+-- NOTE: set "livestreamMaximumViewers" to 0 for enable system only to premium accounts
+livestreamExperienceMultiplier = 1.15
+livestreamMaximumViewersPerIP = 2
+livestreamMaximumViewers = 10
+livestreamPremiumMaximumViewers = 20
+livestreamCasterMinLevel = 200
+
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes
 globalServerSaveNotifyMessage = true

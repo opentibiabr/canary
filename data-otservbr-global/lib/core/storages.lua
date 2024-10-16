@@ -2772,6 +2772,21 @@ Storage = {
 				},
 			},
 		},
+		U13_30 = { -- update 13.30 - Reserved Storages 47952 - 48002
+			TwentyYearsACook = {
+				QuestLine = 47952,
+				TheRestOfRathaDoor = 47953,
+				FlaskBox = 47954,
+				AxeBox = 47955,
+				GhostDusterDamage = 47956,
+				RathaConditionsApplied = 47957,
+				DraccoonOutfits = {
+					Outfit = 47998,
+					Outfit = 47999,
+					Outfit = 48000,
+				},
+			},
+		},
 	},
 	-- Reserved storage from 63951 - 63999
 	ThaisExhibition = {

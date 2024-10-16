@@ -71,6 +71,8 @@ private:
 		registerMethod(L, "Monster", "isDead", MonsterFunctions::luaMonsterIsDead);
 		registerMethod(L, "Monster", "immune", MonsterFunctions::luaMonsterImmune);
 
+		registerMethod(L, "Monster", "walkTo", MonsterFunctions::luaMonsterWalkTo);
+
 		CharmFunctions::init(L);
 		LootFunctions::init(L);
 		MonsterSpellFunctions::init(L);
@@ -137,6 +139,8 @@ private:
 
 	static int luaMonsterIsDead(lua_State* L);
 	static int luaMonsterImmune(lua_State* L);
+
+	static int luaMonsterWalkTo(lua_State* L);
 
 	friend class CreatureFunctions;
 };

@@ -82,7 +82,6 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 		const ContainerBlock &cb = queue.front();
 		std::shared_ptr<Container> container = cb.first;
 		int32_t parentId = cb.second;
-		queue.pop_front();
 
 		if (!container) {
 			continue; // Check for null container
@@ -137,6 +136,9 @@ bool IOLoginDataSave::saveItems(std::shared_ptr<Player> player, const ItemBlockL
 				return false;
 			}
 		}
+
+		// Removes the object after processing everything, avoiding memory usage after freeing
+		queue.pop_front();
 	}
 
 	// Execute query

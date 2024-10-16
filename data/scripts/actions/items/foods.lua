@@ -136,11 +136,13 @@ function food.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return true
 	end
 
-	-- The Secret Library Quest
-	if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.eatenFood) ~= 1 then
-		if player:getPosition():isInRange(Position(32961, 32280, 10), Position(32964, 32286, 10)) then
-			player:say("Fames est optimus coquus", TALKTYPE_MONSTER_SAY)
-			player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.eatenFood, 1)
+	if IsRunningGlobalDatapack() then
+		-- The Secret Library Quest
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.eatenFood) ~= 1 then
+			if player:getPosition():isInRange(Position(32961, 32280, 10), Position(32964, 32286, 10)) then
+				player:say("Fames est optimus coquus", TALKTYPE_MONSTER_SAY)
+				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.eatenFood, 1)
+			end
 		end
 	end
 

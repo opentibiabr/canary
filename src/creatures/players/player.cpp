@@ -1892,7 +1892,7 @@ bool Player::openShopWindow(std::shared_ptr<Npc> npc, const std::vector<ShopBloc
 		return false;
 	}
 
-	if (npc->isShopPlayer(getGUID())) {
+	if (npc->isShopPlayer(getGUID()) && npc->getShopItemVector(getGUID()).size() == shopItems.size()) {
 		g_logger().debug("[Player::openShopWindow] - Player {} is already in shop window", getName());
 		return false;
 	}
@@ -2907,6 +2907,7 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 				++it;
 			}
 		}
+		despawn();
 	} else {
 		setSkillLoss(true);
 
@@ -2931,8 +2932,6 @@ void Player::death(std::shared_ptr<Creature> lastHitCreature) {
 		onIdleStatus();
 		sendStats();
 	}
-
-	despawn();
 }
 
 bool Player::spawn() {
@@ -4122,6 +4121,10 @@ std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uin
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
 	for (const auto &item : getAllInventoryItems(false, true)) {
+		if (!item->hasMarketAttributes()) {
+			continue;
+		}
+
 		if (const auto &container = item->getContainer()) {
 			if (container->size() > 0) {
 				continue;

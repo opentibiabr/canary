@@ -615,6 +615,9 @@ public:
 	uint32_t getLevel() const {
 		return level;
 	}
+	void setLevel(uint32_t newLevel) {
+		level = newLevel;
+	}
 	uint8_t getLevelPercent() const {
 		return levelPercent;
 	}

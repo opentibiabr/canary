@@ -6534,19 +6534,26 @@ if not Quests then
 			},
 		},
 		[49] = {
-		name = "The Secret Library", startstorageid = Storage.Quest.U11_80.TheSecretLibrary.Questlog, startstoragevalue = 1,
+			name = "The Secret Library",
+			startstorageid = Storage.Quest.U11_80.TheSecretLibrary.Questlog,
+			startstoragevalue = 1,
 			missions = {
 				[1] = {
-					name = "High and Dry", storageid = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, startvalue = 1, endvalue = 3,
+					name = "High and Dry",
+					storageid = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline,
+					startvalue = 1,
+					endvalue = 3,
 					states = {
 						[1] = "Dedoras asked for you to talk to Charles, he knows about a small island.",
 						[2] = "You got stucked on this island. You must discover how to leave.",
 						[3] = "You successfully built a raft and used the starts to navigate your way through the waves. At least you found something of interest on the deserted island.",
-
 					},
 				},
 				[2] = {
-					name = "Liquid Death", storageid = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, startvalue = 1, endvalue = 7,
+					name = "Liquid Death",
+					storageid = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline,
+					startvalue = 1,
+					endvalue = 7,
 					states = {
 						[1] = "Dedoras has sent you to Spectulus in the Edron Academy. Rumors of strange fishmen in the Tiquanda region may be connected to some of the research the scholar conducted.",
 						[2] = "Spectulus asked you to check out the rumors of strange fishmen in the jungles of northern Tiquanda. A small sunken temple is said to be overrun by strange fish-like creatures.",
@@ -6558,7 +6565,10 @@ if not Quests then
 					},
 				},
 				[3] = {
-					name = "Asuri - The Lament", storageid = Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, startvalue = 1, endvalue = 6,
+					name = "Asuri - The Lament",
+					storageid = Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline,
+					startvalue = 1,
+					endvalue = 6,
 					states = {
 						[1] = "Go to Asuri Palace in Port Hope.",
 						[2] = "You were able to assemble an instrument with the objects found. That should work for something.",
@@ -6569,14 +6579,20 @@ if not Quests then
 					},
 				},
 				[4] = {
-					name = "The Order of the Falcon", storageid = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline, startvalue = 1, endvalue = 2,
+					name = "The Order of the Falcon",
+					storageid = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline,
+					startvalue = 1,
+					endvalue = 2,
 					states = {
 						[1] = "It is said that an ancient order of knights once resided in Edron. The knights disappeared a long time ago but their abandoned outpost is still there. The place may yet hold some surprises.",
 						[2] = "You defeated Grand Master Oberon in mortal combat. The Falcon Order may have lost its glory a long time ago but you are just getting started.",
 					},
 				},
 				[5] = {
-					name = "The Path of Defiances", storageid = Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline, startvalue = 1, endvalue = 8,
+					name = "The Path of Defiances",
+					storageid = Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline,
+					startvalue = 1,
+					endvalue = 8,
 					states = {
 						[1] = "Go to Darashia and find out about the mysterious statue.",
 						[2] = "After you have been swallowed by a sand vortex you have entered a hidden desert area. A voice of unknown origin has informed you that you will have to face some challenges.", -- entrou
@@ -6589,7 +6605,10 @@ if not Quests then
 					},
 				},
 				[6] = {
-					name = "The Veiled Hoard of Zathroth", storageid = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, startvalue = 1, endvalue = 7,
+					name = "The Veiled Hoard of Zathroth",
+					storageid = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline,
+					startvalue = 1,
+					endvalue = 7,
 					states = {
 						[1] = "Dedoras told you where to search for leads to the Veiled Hoard: the museum in Thais, a fishmen temple in Tiquanda, an order fortress in Edron, the Asuri Palace and a deserted isle.",
 						[2] = "You talked with Gareth and now you may pass trougth the door.",
@@ -6600,7 +6619,7 @@ if not Quests then
 						[7] = "You have reported Gareth about the enigmatic inscription you have found in the chamber of doom. He was able to decipher it for you and referred to Dedoras in Cormaya for further assistance.",
 					},
 				},
-			}
+			},
 		},
 	}
 end

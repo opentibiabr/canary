@@ -220,3 +220,5 @@ template <typename EnumType, typename UnderlyingType = std::underlying_type_t<En
 EnumType enumFromValue(UnderlyingType value) {
 	return static_cast<EnumType>(value);
 }
+
+bool caseInsensitiveCompare(std::string_view str1, std::string_view str2, size_t length = std::string_view::npos);

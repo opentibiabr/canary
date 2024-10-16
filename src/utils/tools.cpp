@@ -1991,3 +1991,18 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 			return 0;
 	}
 }
+
+bool caseInsensitiveCompare(std::string_view str1, std::string_view str2, size_t length /*= std::string_view::npos*/) {
+	if (length == std::string_view::npos) {
+		if (str1.size() != str2.size()) {
+			return false;
+		}
+		length = str1.size();
+	} else {
+		length = std::min({ length, str1.size(), str2.size() });
+	}
+
+	return std::equal(str1.begin(), str1.begin() + length, str2.begin(), [](char c1, char c2) {
+		return std::tolower(static_cast<unsigned char>(c1)) == std::tolower(static_cast<unsigned char>(c2));
+	});
+}

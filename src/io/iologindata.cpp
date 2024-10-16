@@ -183,15 +183,23 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 }
 
 bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {
-	bool success = DBTransaction::executeWithinTransaction([player]() {
-		return savePlayerGuard(player);
-	});
+	try {
+		bool success = DBTransaction::executeWithinTransaction([player]() {
+			return savePlayerGuard(player);
+		});
 
-	if (!success) {
-		g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
+		if (!success) {
+			g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
+		}
+
+		return success;
+	} catch (const DatabaseException &e) {
+		g_logger().error("[{}] Exception occurred: {}", __FUNCTION__, e.what());
+	} catch (const std::exception &e) {
+		g_logger().error("[{}] Standard exception occurred: {}", __FUNCTION__, e.what());
 	}
 
-	return success;
+	return false;
 }
 
 bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {

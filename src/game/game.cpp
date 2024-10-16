@@ -54,7 +54,6 @@
 #include "enums/account_errors.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/player_blessings.hpp"
-#include "utils/counter_pointer.hpp"
 
 #include <appearances.pb.h>
 
@@ -537,14 +536,6 @@ void Game::start(ServiceManager* manager) {
 	g_dispatcher().cycleEvent(
 		UPDATE_PLAYERS_ONLINE_DB, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline"
 	);
-
-	// g_dispatcher().cycleEvent(
-	// 	5000, [this] { teste(); }, "Calling GC"
-	// );
-}
-
-void Game::teste() const {
-	g_beats().countAllReferencesAndClean();
 }
 
 GameState_t Game::getGameState() const {
@@ -4448,10 +4439,10 @@ std::shared_ptr<Item> Game::wrapItem(const std::shared_ptr<Item> &item, const st
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
 	newItem->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
 	if (hiddenCharges > 0) {
-		newItem->setAttribute(DATE, hiddenCharges);
+		newItem->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
 	}
 	if (amount > 0) {
-		newItem->setAttribute(AMOUNT, amount);
+		newItem->setAttribute(ItemAttribute_t::AMOUNT, amount);
 	}
 	newItem->startDecaying();
 	return newItem;
@@ -4462,13 +4453,13 @@ void Game::unwrapItem(const std::shared_ptr<Item> &item, uint16_t unWrapId, cons
 		player->sendCancelMessage(RETURNVALUE_ITEMISNOTYOURS);
 		return;
 	}
-	auto hiddenCharges = item->getAttribute<uint16_t>(DATE);
+	auto hiddenCharges = item->getAttribute<uint16_t>(ItemAttribute_t::DATE);
 	const ItemType &newiType = Item::items.getItemType(unWrapId);
 	if (player != nullptr && house != nullptr && newiType.isBed() && house->getMaxBeds() > -1 && house->getBedCount() >= house->getMaxBeds()) {
 		player->sendCancelMessage("You reached the maximum beds in this house");
 		return;
 	}
-	auto amount = item->getAttribute<uint16_t>(AMOUNT);
+	auto amount = item->getAttribute<uint16_t>(ItemAttribute_t::AMOUNT);
 	if (!amount) {
 		amount = 1;
 	}
@@ -4481,7 +4472,7 @@ void Game::unwrapItem(const std::shared_ptr<Item> &item, uint16_t unWrapId, cons
 			newItem->setSubType(hiddenCharges);
 		}
 		newItem->removeCustomAttribute("unWrapId");
-		newItem->removeAttribute(DESCRIPTION);
+		newItem->removeAttribute(ItemAttribute_t::DESCRIPTION);
 		newItem->startDecaying();
 	}
 }
@@ -10242,16 +10233,12 @@ void Game::createInfluencedMonsters() {
 			break;
 		}
 
-		if (auto ret = makeInfluencedMonster();
-		    // If condition
-		    ret == 0) {
+		if (makeInfluencedMonster() == 0) {
 			return;
 		}
 
 		created++;
 	}
-
-	print_stack_trace();
 }
 
 void Game::checkForgeEventId(uint32_t monsterId) {

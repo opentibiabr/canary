@@ -428,13 +428,12 @@ void trimString(std::string &str) {
 }
 
 std::string convertIPToString(uint32_t ip) {
-	char buffer[16]; // 16 bytes: suficiente para 'xxx.xxx.xxx.xxx' + '\0'
-	auto result = fmt::format_to_n(buffer, sizeof(buffer) - 1, "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
+	std::array<char, 16> buffer;
+	auto result = fmt::format_to_n(buffer.data(), buffer.size() - 1, "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
 
-	// Garantir que o buffer esteja nulo-terminado
-	buffer[std::min(result.size, sizeof(buffer) - 1)] = '\0';
+	buffer[std::min(result.size, buffer.size() - 1)] = '\0';
 
-	return std::string(buffer);
+	return std::string(buffer.data());
 }
 
 std::string formatDate(time_t time) {

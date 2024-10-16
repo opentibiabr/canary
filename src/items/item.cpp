@@ -773,7 +773,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				return ATTR_READ_ERROR;
 			}
 
-			setAttribute(AMOUNT, amount);
+			setAttribute(ItemAttribute_t::AMOUNT, amount);
 			break;
 		}
 
@@ -821,7 +821,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				return ATTR_READ_ERROR;
 			}
 
-			setAttribute(OWNER, ownerId);
+			setAttribute(ItemAttribute_t::OWNER, ownerId);
 			break;
 		}
 
@@ -991,17 +991,17 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint8_t>(getTier());
 	}
 
-	if (hasAttribute(AMOUNT)) {
+	if (hasAttribute(ItemAttribute_t::AMOUNT)) {
 		propWriteStream.write<uint8_t>(ATTR_AMOUNT);
-		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(AMOUNT));
+		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(ItemAttribute_t::AMOUNT));
 	}
 
-	if (hasAttribute(STORE_INBOX_CATEGORY)) {
+	if (hasAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY)) {
 		propWriteStream.write<uint8_t>(ATTR_STORE_INBOX_CATEGORY);
 		propWriteStream.writeString(getString(ItemAttribute_t::STORE_INBOX_CATEGORY));
 	}
 
-	if (hasAttribute(OWNER)) {
+	if (hasAttribute(ItemAttribute_t::OWNER)) {
 		propWriteStream.write<uint8_t>(ATTR_OWNER);
 		propWriteStream.write<uint32_t>(getAttribute<uint32_t>(ItemAttribute_t::OWNER));
 	}

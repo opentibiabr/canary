@@ -974,7 +974,6 @@ private:
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
 	void updatePlayersOnline() const;
-	void teste() const;
 };
 
 constexpr auto g_game = Game::getInstance;

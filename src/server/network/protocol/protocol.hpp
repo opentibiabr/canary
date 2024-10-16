@@ -122,9 +122,9 @@ private:
 		void operator()(uint8_t* ptr) const {
 			if (ptr) {
 #ifdef _WIN32
-				_aligned_free(ptr); // Liberar memória no Windows
+				_aligned_free(ptr);
 #else
-				std::free(ptr); // Liberar memória no Linux/Unix
+				std::free(ptr);
 #endif
 			}
 		}
@@ -136,51 +136,41 @@ private:
 #else
 		uint8_t* originalMemory = nullptr;
 
-		// Tenta alocar memória alinhada com posix_memalign
 		if (posix_memalign(reinterpret_cast<void**>(&originalMemory), alignment, size) != 0) {
-			return nullptr; // Alocação falhou
+			return nullptr;
 		}
 
-		// Verifique se a memória está alinhada
 		if (!is_aligned(originalMemory, alignment)) {
-			// A memória não está devidamente alinhada, ajustar manualmente
 			uintptr_t address = reinterpret_cast<uintptr_t>(originalMemory);
 			uintptr_t alignedAddress = (address + alignment - 1) & ~(alignment - 1);
 			return reinterpret_cast<uint8_t*>(alignedAddress);
 		}
 
-		return originalMemory; // A memória já está alinhada
+		return originalMemory;
 #endif
 	}
 
-	// Função para verificar o alinhamento usando SIMD
 	inline bool is_aligned(const void* ptr, size_t alignment) const {
 		return _mm_testz_si128(_mm_set1_epi64x(reinterpret_cast<uintptr_t>(ptr)), _mm_set1_epi64x(alignment - 1));
 	}
 
-	// Função de cópia usando AVX2 com verificação de alinhamento
 	inline void simd_memcpy_avx2(uint8_t* __restrict dest, const uint8_t* __restrict src, size_t len) const {
 		size_t i = 0;
 
-		// Verifica se src e dest estão ambos alinhados para 32 bytes
 		const bool src_aligned = is_aligned(src, 32);
 		const bool dest_aligned = is_aligned(dest, 32);
 
 		if (src_aligned && dest_aligned) {
-			// Alinhado: Usar as instruções AVX2 alinhadas
 			for (; i + 32 <= len; i += 32) {
 				const __m256i data = _mm256_load_si256(reinterpret_cast<const __m256i*>(src + i));
 				_mm256_store_si256(reinterpret_cast<__m256i*>(dest + i), data);
 			}
 		} else {
-			// Desalinhado: Usar as instruções AVX2 desalinhadas
 			for (; i + 32 <= len; i += 32) {
 				const __m256i data = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(src + i));
 				_mm256_storeu_si256(reinterpret_cast<__m256i*>(dest + i), data);
 			}
 		}
-
-		// Copiar os bytes restantes
 		for (; i < len; ++i) {
 			dest[i] = src[i];
 		}

@@ -1,10 +1,13 @@
-#pragma once
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
 
-#include <iostream>
-#include <memory>
-#include <unordered_map>
-#include <string>
-#include "lib/di/container.hpp"
+#pragma once
 
 class SharedPtrManager {
 public:
@@ -15,33 +18,15 @@ public:
 	SharedPtrManager(const SharedPtrManager &) = delete;
 	SharedPtrManager &operator=(const SharedPtrManager &) = delete;
 
-	static SharedPtrManager &getInstance() {
-		return inject<SharedPtrManager>();
-	}
+	static SharedPtrManager &getInstance();
 
-	// Função para armazenar o shared_ptr
 	template <typename T>
-	void store(const std::string &name, const std::shared_ptr<T> &ptr) {
-		sharedPtrMap[name] = ptr;
-	}
+	void store(const std::string &name, const std::shared_ptr<T> &ptr);
 
-	// Função para contar as referências de todos os shared_ptr armazenados e limpar os destruídos
-	void countAllReferencesAndClean() {
-		for (auto it = sharedPtrMap.begin(); it != sharedPtrMap.end();) {
-			const auto &sptr = it->second.lock();
-			if (sptr) {
-				std::cout << "Contagem de referências do shared_ptr (" << it->first << "): "
-						  << sptr.use_count() << std::endl;
-				++it;
-			} else {
-				std::cout << "Objeto " << it->first << " foi destruído e será removido do mapa." << std::endl;
-				it = sharedPtrMap.erase(it); // Remove o item do mapa e avança o iterador
-			}
-		}
-	}
+	void countAllReferencesAndClean();
 
 private:
-	std::unordered_map<std::string, std::weak_ptr<void>> sharedPtrMap;
+	std::unordered_map<std::string, std::weak_ptr<void>> m_sharedPtrMap;
 };
 
-constexpr auto g_beats = SharedPtrManager::getInstance;
+constexpr auto g_counterPointer = SharedPtrManager::getInstance;

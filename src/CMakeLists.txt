@@ -9,8 +9,7 @@ include(GNUInstallDirs)
 include(CanaryLib)
 
 # Define main executable target, set it up and link to main library
-add_executable(${PROJECT_NAME} main.cpp
-        utils/counter_pointer.hpp)
+add_executable(${PROJECT_NAME} main.cpp)
 
 if(MSVC)
     # Add executable icon for Windows

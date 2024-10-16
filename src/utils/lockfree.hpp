@@ -8,6 +8,7 @@
  */
 
 #pragma once
+
 #include <atomic_queue/atomic_queue.h>
 
 template <typename T, size_t CAPACITY>
@@ -35,12 +36,6 @@ template <typename T, size_t CAPACITY>
 class LockfreePoolingAllocator {
 public:
 	using value_type = T;
-	using pointer = T*;
-	using const_pointer = const T*;
-	using void_pointer = void*;
-	using const_void_pointer = const void*;
-	using size_type = std::size_t;
-	using difference_type = std::ptrdiff_t;
 
 	template <typename U>
 	struct rebind {
@@ -50,47 +45,26 @@ public:
 	LockfreePoolingAllocator() noexcept = default;
 
 	template <typename U>
-	explicit LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY> &) noexcept { }
+	LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY> &) noexcept { }
 
 	~LockfreePoolingAllocator() = default;
 
-	pointer allocate(size_type n) {
-		if (n == 1 && std::is_same_v<value_type, OutputMessage>) {
-			pointer p;
-			if (LockfreeFreeList<value_type, CAPACITY>::get().try_pop(p)) {
+	T* allocate(std::size_t n) {
+		if (n == 1) {
+			T* p;
+			if (LockfreeFreeList<T, CAPACITY>::get().try_pop(p)) {
 				return p;
 			}
 		}
-		return static_cast<pointer>(::operator new(n * sizeof(value_type)));
+		return static_cast<T*>(::operator new(n * sizeof(T)));
 	}
 
-	void deallocate(pointer p, size_type n) noexcept {
-		if (n == 1 && std::is_same_v<value_type, OutputMessage>) {
-			destroy(p);
-			if (LockfreeFreeList<value_type, CAPACITY>::get().try_push(p)) {
+	void deallocate(T* p, std::size_t n) noexcept {
+		if (n == 1) {
+			if (LockfreeFreeList<T, CAPACITY>::get().try_push(p)) {
 				return;
 			}
 		}
 		::operator delete(p);
-	}
-
-	template <typename U, typename... Args>
-	void construct(U* p, Args &&... args) {
-		::new ((void*)p) U(std::forward<Args>(args)...);
-	}
-
-	template <typename U>
-	void destroy(U* p) noexcept {
-		p->~U();
-	}
-
-	template <typename U>
-	bool operator==(const LockfreePoolingAllocator<U, CAPACITY> &) const noexcept {
-		return true;
-	}
-
-	template <typename U>
-	bool operator!=(const LockfreePoolingAllocator<U, CAPACITY> &) const noexcept {
-		return false;
 	}
 };

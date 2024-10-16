@@ -196,7 +196,7 @@ inline void Protocol::precacheControlSumsEncrypt() const {
 
 inline void Protocol::precacheControlSumsDecrypt() const {
 	if (cacheDecryptInitialized) {
-		return; // Cache já está pronto para descriptografia
+		return;
 	}
 
 	constexpr uint32_t delta = 0x61C88647;

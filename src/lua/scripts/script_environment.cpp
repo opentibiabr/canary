@@ -71,9 +71,9 @@ uint32_t ScriptEnvironment::addThing(const std::shared_ptr<Thing> &thing) {
 		return item->getAttribute<uint32_t>(ItemAttribute_t::UNIQUEID);
 	}
 
-	for (const auto &[fst, snd] : localMap) {
-		if (snd == item) {
-			return fst;
+	for (const auto &[itemId, itemPtr] : localMap) {
+		if (itemPtr == item) {
+			return itemId;
 		}
 	}
 

@@ -11,6 +11,9 @@
 #include "items/item.hpp"
 #include "utils/tools.hpp"
 
+#include "absl/debugging/stacktrace.h"
+#include "absl/debugging/symbolize.h"
+
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
 
@@ -187,8 +190,8 @@ std::string transformToSHA1(const std::string &input) {
 
 uint16_t getStashSize(const StashItemList &itemList) {
 	uint16_t size = 0;
-	for (const auto &[fst, snd] : itemList) {
-		size += ceil(snd / static_cast<float_t>(Item::items[fst].stackSize));
+	for (const auto &[itemId, itemCount] : itemList) {
+		size += ceil(itemCount / static_cast<float_t>(Item::items[itemId].stackSize));
 	}
 	return size;
 }
@@ -2005,4 +2008,24 @@ bool caseInsensitiveCompare(std::string_view str1, std::string_view str2, size_t
 	return std::equal(str1.begin(), str1.begin() + length, str2.begin(), [](char c1, char c2) {
 		return std::tolower(static_cast<unsigned char>(c1)) == std::tolower(static_cast<unsigned char>(c2));
 	});
+}
+
+void printStackTrace() {
+	if (g_logger().getLevel() == "info") {
+		return;
+	}
+
+	constexpr int kMaxFrames = 64;
+	std::array<void*, kMaxFrames> stack;
+	int numFrames = absl::GetStackTrace(stack.data(), kMaxFrames, 0);
+	absl::InitializeSymbolizer("");
+	g_logger().info("Stack trace captured:");
+	for (int i = 0; i < numFrames; ++i) {
+		char symbolBuffer[1024];
+		if (absl::Symbolize(stack[i], symbolBuffer, sizeof(symbolBuffer))) {
+			g_logger().info("{}: {}", i, symbolBuffer);
+		} else {
+			g_logger().info("{}: [Unknown function]", i);
+		}
+	}
 }

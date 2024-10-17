@@ -18,8 +18,13 @@ Modules::Modules() :
 
 void Modules::clear() {
 	// clear recvbyte list
-	for (const auto &[fst, snd] : recvbyteList) {
-		snd->clearEvent();
+	for (const auto &[moduleId, modulePtr] : recvbyteList) {
+		if (moduleId == 0) {
+			g_logger().error("Invalid module id 0.");
+			continue;
+		}
+
+		modulePtr->clearEvent();
 	}
 
 	// clear lua state
@@ -82,8 +87,11 @@ void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t 
 		return;
 	}
 
-	for (const auto &[fst, snd] : recvbyteList) {
-		auto &module = snd;
+	for (const auto &[moduleId, module] : recvbyteList) {
+		if (moduleId == 0) {
+			g_logger().error("Invalid module id 0.");
+			continue;
+		}
 		if (module->getEventType() == MODULE_TYPE_RECVBYTE && module->getRecvbyte() == byte && player->canRunModule(module->getRecvbyte())) {
 			player->setModuleDelay(module->getRecvbyte(), module->getDelay());
 			module->executeOnRecvbyte(player, msg);

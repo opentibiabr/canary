@@ -1253,6 +1253,10 @@ uint16_t PlayerWheel::getExtraPoints() const {
 
 	uint16_t totalBonus = 0;
 	for (const auto &[itemId, name, extraPoints] : WheelOfDestinyPromotionScrolls) {
+		if (itemId == 0) {
+			continue;
+		}
+
 		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
 		if (!scrollKv) {
 			continue;
@@ -1420,6 +1424,11 @@ void PlayerWheel::registerPlayerBonusData() {
 	auto activeGems = getActiveGems();
 	std::string playerName = m_player.getName();
 	for (const auto &[uuid, locked, affinity, quality, basicModifier1, basicModifier2, supremeModifier] : activeGems) {
+		if (uuid.empty()) {
+			g_logger().error("[{}] Player {} has an empty gem uuid", __FUNCTION__, playerName);
+			continue;
+		}
+
 		auto count = m_playerBonusData.unlockedVesselResonances[static_cast<uint8_t>(affinity)];
 		if (count >= 1) {
 			std::string modifierName(magic_enum::enum_name(basicModifier1));

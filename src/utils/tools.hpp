@@ -222,3 +222,5 @@ EnumType enumFromValue(UnderlyingType value) {
 }
 
 bool caseInsensitiveCompare(std::string_view str1, std::string_view str2, size_t length = std::string_view::npos);
+
+void printStackTrace();

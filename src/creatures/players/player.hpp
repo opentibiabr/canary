@@ -29,7 +29,6 @@
 #include "server/network/protocol/protocolgame.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
-#include "map/town.hpp"
 #include "vocations/vocation.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "game/bank/bank.hpp"
@@ -60,6 +59,7 @@ class PlayerTitle;
 class PlayerVIP;
 class Spectators;
 class Account;
+class Town;
 
 struct ModalWindow;
 struct Achievement;
@@ -687,12 +687,8 @@ public:
 
 		return town->getTemplePosition();
 	}
-	std::shared_ptr<Town> getTown() const {
-		return town;
-	}
-	void setTown(const std::shared_ptr<Town> &newTown) {
-		this->town = newTown;
-	}
+	std::shared_ptr<Town> getTown() const;
+	void setTown(const std::shared_ptr<Town> &newTown);
 
 	void clearModalWindows();
 	bool hasModalWindowOpen(uint32_t modalWindowId) const;

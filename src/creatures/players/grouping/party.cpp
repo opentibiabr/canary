@@ -842,13 +842,13 @@ void Party::reloadPrices() const {
 		}
 
 		analyzer->lootPrice = 0;
-		for (const auto &[fst, snd] : analyzer->lootMap) {
-			analyzer->lootPrice += leader->getItemCustomPrice(fst) * snd;
+		for (const auto &[itemId, price] : analyzer->lootMap) {
+			analyzer->lootPrice += leader->getItemCustomPrice(itemId) * price;
 		}
 
 		analyzer->supplyPrice = 0;
-		for (const auto &[fst, snd] : analyzer->supplyMap) {
-			analyzer->supplyPrice += leader->getItemCustomPrice(fst, true) * snd;
+		for (const auto &[itemId, price] : analyzer->supplyMap) {
+			analyzer->supplyPrice += leader->getItemCustomPrice(itemId, true) * price;
 		}
 	}
 }

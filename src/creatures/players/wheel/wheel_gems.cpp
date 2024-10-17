@@ -10,7 +10,6 @@
 #include "creatures/players/wheel/wheel_gems.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "enums/player_wheel.hpp"
 
 void GemModifierResistanceStrategy::execute() {
 	m_wheel.addResistance(m_combatType, m_resistance);

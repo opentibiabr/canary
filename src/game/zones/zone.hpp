@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <utility>
-
 #include "game/movement/position.hpp"
 #include "items/item.hpp"
 #include "creatures/creature.hpp"

@@ -8,7 +8,10 @@
  */
 
 #include "creatures/players/vocations/vocation.hpp"
+
+#include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
+#include "items/item.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
 
@@ -208,20 +211,19 @@ std::shared_ptr<Vocation> Vocations::getVocation(uint16_t id) {
 	}
 	return it->second;
 }
-
 uint16_t Vocations::getVocationId(const std::string &name) const {
-	for (const auto &[fst, snd] : vocationsMap) {
-		if (strcasecmp(snd->name.c_str(), name.c_str()) == 0) {
-			return fst;
+	for (const auto &[vocationId, vocationPtr] : vocationsMap) {
+		if (caseInsensitiveCompare(vocationPtr->name, name)) {
+			return vocationId;
 		}
 	}
-	return -1;
+	return VOCATION_NONE;
 }
 
 uint16_t Vocations::getPromotedVocation(uint16_t vocationId) const {
-	for (const auto &[fst, snd] : vocationsMap) {
-		if (snd->fromVocation == vocationId && fst != vocationId) {
-			return fst;
+	for (const auto &[currentVocationId, vocationPtr] : vocationsMap) {
+		if (vocationPtr->fromVocation == vocationId && currentVocationId != vocationId) {
+			return currentVocationId;
 		}
 	}
 	return VOCATION_NONE;
@@ -292,6 +294,30 @@ uint64_t Vocation::getReqMana(uint32_t magLevel) {
 	return reqMana;
 }
 
+uint32_t Vocation::getManaGainTicks() const {
+	return gainManaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
+}
+
+uint32_t Vocation::getManaGainAmount() const {
+	return gainManaAmount * g_configManager().getFloat(RATE_MANA_REGEN);
+}
+
+uint32_t Vocation::getHealthGainTicks() const {
+	return gainHealthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
+}
+
+uint32_t Vocation::getHealthGainAmount() const {
+	return gainHealthAmount * g_configManager().getFloat(RATE_HEALTH_REGEN);
+}
+
+uint32_t Vocation::getSoulGainTicks() const {
+	return gainSoulTicks / g_configManager().getFloat(RATE_SOUL_REGEN_SPEED);
+}
+
+uint32_t Vocation::getAttackSpeed() const {
+	return attackSpeed / g_configManager().getFloat(RATE_ATTACK_SPEED);
+}
+
 template <>
 struct magic_enum::customize::enum_range<WheelGemSupremeModifier_t> {
 	static constexpr int min = 0;
@@ -316,4 +342,12 @@ std::vector<WheelGemSupremeModifier_t> Vocation::getSupremeGemModifiers() {
 		}
 	}
 	return m_supremeGemModifiers;
+}
+
+uint16_t Vocation::getWheelGemId(WheelGemQuality_t quality) {
+	if (!wheelGems.contains(quality)) {
+		return 0;
+	}
+	const auto &name = wheelGems[quality];
+	return Item::items.getItemIdByName(name);
 }

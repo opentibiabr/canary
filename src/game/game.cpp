@@ -55,8 +55,6 @@
 
 #include <appearances.pb.h>
 
-#include <utility>
-
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
 		if (blockType == BLOCK_DEFENSE) {

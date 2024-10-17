@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <utility>
-
 #include "database/database.hpp"
 #include "declarations.hpp"
 

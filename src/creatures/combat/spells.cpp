@@ -275,20 +275,24 @@ bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature) {
 		LuaVariant var;
 		var.type = VARIANT_POSITION;
 
-		if (needDirection) {
-			var.pos = Spells::getCasterPosition(creature, creature->getDirection());
-		} else {
-			var.pos = creature->getPosition();
+		if (creature) {
+			if (needDirection) {
+				var.pos = Spells::getCasterPosition(creature, creature->getDirection());
+			} else {
+				var.pos = creature->getPosition();
+			}
 		}
 
 		return executeCastSpell(creature, var);
 	}
 
 	Position pos;
-	if (needDirection) {
-		pos = Spells::getCasterPosition(creature, creature->getDirection());
-	} else {
-		pos = creature->getPosition();
+	if (creature) {
+		if (needDirection) {
+			pos = Spells::getCasterPosition(creature, creature->getDirection());
+		} else {
+			pos = creature->getPosition();
+		}
 	}
 
 	const auto &combat = getCombat();
@@ -319,12 +323,14 @@ bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature, const std
 		if (combat->hasArea()) {
 			var.type = VARIANT_POSITION;
 
-			if (needTarget) {
+			if (needTarget && target) {
 				var.pos = target->getPosition();
-			} else if (needDirection) {
+			} else if (needDirection && creature) {
 				var.pos = Spells::getCasterPosition(creature, creature->getDirection());
 			} else {
-				var.pos = creature->getPosition();
+				if (creature) {
+					var.pos = creature->getPosition();
+				}
 			}
 		} else {
 			var.type = VARIANT_NUMBER;
@@ -343,7 +349,7 @@ bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature, const std
 	}
 
 	if (combat->hasArea()) {
-		if (needTarget) {
+		if (needTarget && target) {
 			combat->doCombat(creature, target->getPosition());
 		} else {
 			return castSpell(creature);

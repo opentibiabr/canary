@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <utility>
-
 #include "mapcache.hpp"
 #include "map/town.hpp"
 #include "map/house/house.hpp"

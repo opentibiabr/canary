@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <utility>
-
 #include "creatures/creatures_definitions.hpp"
 
 class Player;

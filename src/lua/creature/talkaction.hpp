@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <utility>
-
 #include "account/account.hpp"
 #include "lua/global/baseevents.hpp"
 #include "utils/utils_definitions.hpp"

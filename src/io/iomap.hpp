@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <utility>
-
 #include "declarations.hpp"
 
 #include "config/configmanager.hpp"

@@ -31,10 +31,12 @@
 #include "lua/creature/movement.hpp"
 #include "io/iologindata.hpp"
 #include "items/bed.hpp"
+#include "map/town.hpp"
 #include "items/weapons/weapons.hpp"
 #include "core.hpp"
 #include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+
 #include "enums/object_category.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_type.hpp"
@@ -2648,28 +2650,6 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 				continue;
 			}
 
-			const ItemType &it = Item::items[item->getID()];
-			if (it.abilities) {
-				const int16_t &absorbPercent = it.abilities->absorbPercent[combatTypeToIndex(combatType)];
-				const auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
-				if (absorbPercent != 0) {
-					damage -= std::round(damage * (absorbPercent / 100.));
-					if (charges != 0) {
-						g_game().transformItem(item, item->getID(), charges - 1);
-					}
-				}
-
-				if (field) {
-					const int16_t &fieldAbsorbPercent = it.abilities->fieldAbsorbPercent[combatTypeToIndex(combatType)];
-					if (fieldAbsorbPercent != 0) {
-						damage -= std::round(damage * (fieldAbsorbPercent / 100.));
-						if (charges != 0) {
-							g_game().transformItem(item, item->getID(), charges - 1);
-						}
-					}
-				}
-			}
-
 			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 				ImbuementInfo imbuementInfo;
 				if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
@@ -2680,6 +2660,32 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 
 				if (imbuementAbsorbPercent != 0) {
 					damage -= std::ceil(damage * (imbuementAbsorbPercent / 100.));
+				}
+			}
+
+			//
+			const ItemType &it = Item::items[item->getID()];
+			if (it.abilities) {
+				int totalAbsorbPercent = 0;
+				const int16_t &absorbPercent = it.abilities->absorbPercent[combatTypeToIndex(combatType)];
+				if (absorbPercent != 0) {
+					totalAbsorbPercent += absorbPercent;
+				}
+
+				if (field) {
+					const int16_t &fieldAbsorbPercent = it.abilities->fieldAbsorbPercent[combatTypeToIndex(combatType)];
+					if (fieldAbsorbPercent != 0) {
+						totalAbsorbPercent += fieldAbsorbPercent;
+					}
+				}
+
+				if (totalAbsorbPercent > 0) {
+					damage -= std::round(damage * (totalAbsorbPercent / 100.0));
+
+					const auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
+					if (charges != 0) {
+						g_game().transformItem(item, item->getID(), charges - 1);
+					}
 				}
 			}
 		}
@@ -6137,6 +6143,13 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 	return sendUpdate;
 }
 
+std::shared_ptr<Town> Player::getTown() const {
+	return town;
+}
+void Player::setTown(const std::shared_ptr<Town> &newTown) {
+	this->town = newTown;
+}
+
 bool Player::hasModalWindowOpen(uint32_t modalWindowId) const {
 	return std::ranges::find(modalWindows, modalWindowId) != modalWindows.end();
 }
@@ -6624,9 +6637,9 @@ void Player::openPlayerContainers() {
 		return left.first < right.first;
 	});
 
-	for (const auto &[fst, snd] : openContainersList) {
-		addContainer(fst - 1, snd);
-		onSendContainer(snd);
+	for (const auto &[containerId, container] : openContainersList) {
+		addContainer(containerId - 1, container);
+		onSendContainer(container);
 	}
 }
 

@@ -272,8 +272,8 @@ bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creatur
 			std::ranges::shuffle(relList, getRandomGenerator());
 		}
 
-		for (const auto &[fst, snd] : relList) {
-			Position tryPos(centerPos.x + fst, centerPos.y + snd, centerPos.z);
+		for (const auto &[xOffset, yOffset] : relList) {
+			Position tryPos(centerPos.x + xOffset, centerPos.y + yOffset, centerPos.z);
 
 			tile = getTile(tryPos.x, tryPos.y, tryPos.z);
 			if (!tile || (placeInPZ && !tile->hasFlag(TILESTATE_PROTECTIONZONE))) {

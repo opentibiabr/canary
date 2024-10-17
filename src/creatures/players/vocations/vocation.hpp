@@ -9,9 +9,7 @@
 
 #pragma once
 
-#include "config/configmanager.hpp"
 #include "creatures/creatures_definitions.hpp"
-#include "items/item.hpp"
 
 enum class WheelGemSupremeModifier_t : uint8_t;
 enum class WheelGemQuality_t : uint8_t;
@@ -58,37 +56,25 @@ public:
 		return gainCap;
 	}
 
-	uint32_t getManaGainTicks() const {
-		return gainManaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
-	}
+	uint32_t getManaGainTicks() const;
 
-	uint32_t getManaGainAmount() const {
-		return gainManaAmount * g_configManager().getFloat(RATE_MANA_REGEN);
-	}
+	uint32_t getManaGainAmount() const;
 
-	uint32_t getHealthGainTicks() const {
-		return gainHealthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
-	}
+	uint32_t getHealthGainTicks() const;
 
-	uint32_t getHealthGainAmount() const {
-		return gainHealthAmount * g_configManager().getFloat(RATE_HEALTH_REGEN);
-	}
+	uint32_t getHealthGainAmount() const;
 
 	uint8_t getSoulMax() const {
 		return soulMax;
 	}
 
-	uint32_t getSoulGainTicks() const {
-		return gainSoulTicks / g_configManager().getFloat(RATE_SOUL_REGEN_SPEED);
-	}
+	uint32_t getSoulGainTicks() const;
 
 	uint32_t getBaseAttackSpeed() const {
 		return attackSpeed;
 	}
 
-	uint32_t getAttackSpeed() const {
-		return attackSpeed / g_configManager().getFloat(RATE_ATTACK_SPEED);
-	}
+	uint32_t getAttackSpeed() const;
 
 	uint32_t getBaseSpeed() const {
 		return baseSpeed;
@@ -119,13 +105,7 @@ public:
 
 	std::vector<WheelGemSupremeModifier_t> getSupremeGemModifiers();
 
-	uint16_t getWheelGemId(WheelGemQuality_t quality) {
-		if (!wheelGems.contains(quality)) {
-			return 0;
-		}
-		const auto &name = wheelGems[quality];
-		return Item::items.getItemIdByName(name);
-	}
+	uint16_t getWheelGemId(WheelGemQuality_t quality);
 
 private:
 	friend class Vocations;

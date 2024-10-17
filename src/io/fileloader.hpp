@@ -22,9 +22,9 @@ namespace OTB {
 		Node &operator=(const Node &) = delete;
 
 		std::list<Node> children;
-		mio::mmap_source::const_iterator propsBegin;
-		mio::mmap_source::const_iterator propsEnd;
-		uint8_t type;
+		mio::mmap_source::const_iterator propsBegin {};
+		mio::mmap_source::const_iterator propsEnd {};
+		uint8_t type {};
 		enum NodeChar : uint8_t {
 			ESCAPE = 0xFD,
 			START = 0xFE,
@@ -67,12 +67,19 @@ public:
 
 	template <typename T>
 	bool read(T &ret) {
+		static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
+
 		if (size() < sizeof(T)) {
 			return false;
 		}
 
-		memcpy(&ret, p, sizeof(T));
+		std::span<const unsigned char> sourceSpan(reinterpret_cast<const unsigned char*>(p), sizeof(T));
+		std::array<unsigned char, sizeof(T)> tempBuffer;
+		std::ranges::copy(sourceSpan, tempBuffer.begin());
+		ret = std::bit_cast<T>(tempBuffer);
+
 		p += sizeof(T);
+
 		return true;
 	}
 
@@ -86,12 +93,13 @@ public:
 			return false;
 		}
 
-		char* str = new char[strLen + 1];
-		memcpy(str, p, strLen);
-		str[strLen] = 0;
-		ret.assign(str, strLen);
-		delete[] str;
+		std::vector<unsigned char> tempBuffer(strLen);
+		std::span<const unsigned char> sourceSpan(reinterpret_cast<const unsigned char*>(p), strLen);
+		std::ranges::copy(sourceSpan, tempBuffer.begin());
+		ret.assign(reinterpret_cast<const char*>(tempBuffer.data()), strLen);
+
 		p += strLen;
+
 		return true;
 	}
 
@@ -129,7 +137,8 @@ public:
 	template <typename T>
 	void write(T add) {
 		char* addr = reinterpret_cast<char*>(&add);
-		std::copy(addr, addr + sizeof(T), std::back_inserter(buffer));
+		std::span<const char> sourceSpan(addr, sizeof(T));
+		std::ranges::copy(sourceSpan, std::back_inserter(buffer));
 	}
 
 	void writeString(const std::string &str) {
@@ -140,7 +149,7 @@ public:
 		}
 
 		write(static_cast<uint16_t>(strLength));
-		std::copy(str.begin(), str.end(), std::back_inserter(buffer));
+		std::ranges::copy(str, std::back_inserter(buffer));
 	}
 
 private:

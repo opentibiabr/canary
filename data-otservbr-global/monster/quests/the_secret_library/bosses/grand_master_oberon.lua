@@ -25,6 +25,11 @@ monster.corpse = 28625
 monster.speed = 115
 monster.manaCost = 0
 
+monster.events = {
+	"killingLibrary",
+	"oberonImmune",
+}
+
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10,

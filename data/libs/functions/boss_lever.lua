@@ -146,10 +146,22 @@ end
 function BossLever:onUse(player)
 	local monsterName = MonsterType(self.name):getName()
 	local isParticipant = false
-	for _, v in ipairs(self.playerPositions) do
-		if Position(v.pos) == player:getPosition() then
+	local players = {}
+
+	for i = 1, #self.playerPositions do
+		local pos = self.playerPositions[i].pos
+		local creature = Tile(pos):getTopCreature()
+
+		if not creature or not creature:isPlayer() then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need " .. #self.playerPositions .. " players to challenge " .. self.name .. ".")
+			return true
+		end
+
+		if pos == player:getPosition() then
 			isParticipant = true
 		end
+
+		table.insert(players, creature)
 	end
 	if not isParticipant then
 		return false

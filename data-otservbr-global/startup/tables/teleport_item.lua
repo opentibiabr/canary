@@ -49,17 +49,95 @@ TeleportItemAction = {
 			{ x = 32172, y = 32439, z = 7 },
 		},
 	},
-	-- Teleports Thais
+	-- Forgotten Knowledge Quest - Teleports Thais
 	[24873] = {
-		itemId = false,
+		itemId = 25047,
 		itemPos = {
 			{ x = 32325, y = 32087, z = 7 },
+		},
+	},
+	[24873] = {
+		itemId = 25051,
+		itemPos = {
 			{ x = 32328, y = 32087, z = 7 },
+		},
+	},
+	[24873] = {
+		itemId = 25049,
+		itemPos = {
 			{ x = 32331, y = 32087, z = 7 },
+		},
+	},
+	[24873] = {
+		itemId = 25053,
+		itemPos = {
 			{ x = 32334, y = 32087, z = 7 },
+		},
+	},
+	[24873] = {
+		itemId = 25057,
+		itemPos = {
 			{ x = 32337, y = 32087, z = 7 },
+		},
+	},
+	[24873] = {
+		itemId = 25055,
+		itemPos = {
 			{ x = 32340, y = 32087, z = 7 },
+		},
+	},
+	[24873] = {
+		itemId = 10840,
+		itemPos = {
 			{ x = 32332, y = 32094, z = 7 },
+		},
+	},
+	[24873] = {
+		itemId = 25048,
+		itemPos = {
+			{ x = 32805, y = 31657, z = 8 },
+		},
+	},
+	[24873] = {
+		itemId = 25052,
+		itemPos = {
+			{ x = 32786, y = 32818, z = 13 },
+		},
+	},
+	[24873] = {
+		itemId = 25050,
+		itemPos = {
+			{ x = 32637, y = 32255, z = 7 },
+		},
+	},
+	[24873] = {
+		itemId = 25054,
+		itemPos = {
+			{ x = 33341, y = 31167, z = 7 },
+		},
+	},
+	[24873] = {
+		itemId = 25058,
+		itemPos = {
+			{ x = 32205, y = 31036, z = 10 },
+		},
+	},
+	[24873] = {
+		itemId = 25056,
+		itemPos = {
+			{ x = 32780, y = 32684, z = 14 },
+		},
+	},
+	[24873] = {
+		itemId = 10842,
+		itemPos = {
+			{ x = 32906, y = 32846, z = 13 },
+		},
+	},
+	[26668] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33396, y = 31129, z = 9 },
 		},
 	},
 }

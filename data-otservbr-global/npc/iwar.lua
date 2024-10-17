@@ -49,12 +49,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local function greetCallback(npc, creature)
-	local playerId = creature:getId()
-
-	local player = Player(creature)
-	return true
-end
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -63,23 +57,22 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local valorPicture = 10000
+	local valuePicture = 10000
 
-	-- Começou a quest
-	if MsgContains(message, "has the cat got your tongue?") and player:getStorageValue(Storage.CultsOfTibia.MotA.Mission) == 4 then
-		npcHandler:say({ "Nice. You like your picture, haa? Give me 10,000 gold and I will deliver it to the museum. Do you {pay}?" }, npc, creature)
+	if MsgContains(message, "has the cat got your tongue?") and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission) == 4 then
+		npcHandler:say("Nice. You like your picture, haa? Give me 10,000 gold and I will deliver it to the museum. Do you {pay}?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "pay") or MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 2 then
-			if (player:getMoney() + player:getBankBalance()) >= valorPicture then
-				npcHandler:say({ "Well done. The picture will be delivered to the museum as last as possible." }, npc, creature)
+			if (player:getMoney() + player:getBankBalance()) >= valuePicture then
+				npcHandler:say("Well done. The picture will be delivered to the museum as last as possible.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				npcHandler:setTopic(playerId, 0)
-				player:removeMoneyBank(valorPicture)
-				player:setStorageValue(Storage.CultsOfTibia.MotA.Mission, 5)
+				player:removeMoneyBank(valuePicture)
+				player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission, 5)
 			else
-				npcHandler:say({ "You don't have enough money." }, npc, creature)
+				npcHandler:say("You don't have enough money.", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 				npcHandler:setTopic(playerId, 1)
 			end
@@ -88,12 +81,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, "Hiho Storm Killer! Welcome to Kazordoon furniture store.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)
 
-npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

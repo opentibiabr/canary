@@ -20,6 +20,10 @@ monster.corpse = 0
 monster.speed = 39
 monster.manaCost = 0
 
+monster.events = {
+	"ghuloshDeath",
+}
+
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8,

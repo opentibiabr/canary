@@ -16,12 +16,11 @@ local config = {
 
 local cultsOfTibiaCult = Action()
 function cultsOfTibiaCult.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local stg = math.max(player:getStorageValue(Storage.CultsOfTibia.Barkless.Objects), 0)
+	local stg = math.max(player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Objects), 0)
 	if stg >= 10 then
-		if player:getStorageValue(Storage.CultsOfTibia.Barkless.Mission) >= 4 then
-			-- continue
+		if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission) >= 4 then
 		else
-			player:setStorageValue(Storage.CultsOfTibia.Barkless.Mission, 4)
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission, 4)
 		end
 		return false
 	end
@@ -32,19 +31,19 @@ function cultsOfTibiaCult.onUse(player, item, fromPosition, target, toPosition, 
 			break
 		end
 	end
-	local stgTemp = math.max(player:getStorageValue(Storage.CultsOfTibia.Barkless.Temp), 0)
+	local stgTemp = math.max(player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Temp), 0)
 	local manchaMeta = NewBit(stgTemp)
 	local base = bit.lshift(1, mancha.base)
 	if manchaMeta:hasFlag(base) then
 		return false
 	end
 	manchaMeta:updateFlag(base)
-	player:setStorageValue(Storage.CultsOfTibia.Barkless.Temp, manchaMeta:getNumber())
-	player:setStorageValue(Storage.CultsOfTibia.Barkless.Objects, stg + 1)
-	if player:getStorageValue(Storage.CultsOfTibia.Barkless.Objects) >= 10 then
-		player:setStorageValue(Storage.CultsOfTibia.Barkless.Mission, 4)
+	player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Temp, manchaMeta:getNumber())
+	player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Objects, stg + 1)
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Objects) >= 10 then
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission, 4)
 	end
-	local msg = (player:getStorageValue(Storage.CultsOfTibia.Barkless.Objects) < 10 and "Your body reacts to this strange green substance as you reach out to touch it. You feel an urge for more of this energy." or "You gathered an impressive amount of power from simply touching the strange green symbols of the Barkless. But how...?")
+	local msg = (player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Objects) < 10 and "Your body reacts to this strange green substance as you reach out to touch it. You feel an urge for more of this energy." or "You gathered an impressive amount of power from simply touching the strange green symbols of the Barkless. But how...?")
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, msg)
 	return true
 end

@@ -7,9 +7,9 @@ local positions = {
 
 local astralPower = CreatureEvent("BoundAstralPowerDeath")
 function astralPower.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
-	Game.setStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter, Game.getStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter) + 1)
-	if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter) >= 4 then
-		Game.setStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter, 1)
+	Game.setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AstralPowerCounter, Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AstralPowerCounter) + 1)
+	if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AstralPowerCounter) >= 4 then
+		Game.setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AstralPowerCounter, 1)
 	end
 
 	local msg = "The destruction of the power source gained you more time until the glyph is powered up!"
@@ -21,8 +21,8 @@ function astralPower.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller
 		if player:getPosition():getDistance(positions[i].pos) < 7 then
 			creature:say(msg, TALKTYPE_MONSTER_SAY, false, nil, positions[i].pos)
 			Game.createMonster("bound astral power", positions[i].nextPos, true, true)
-			Game.setStorageValue(GlobalStorage.ForgottenKnowledge.AstralGlyph, 1)
-			addEvent(Game.setStorageValue, 1 * 60 * 1000, GlobalStorage.ForgottenKnowledge.AstralGlyph, 0)
+			Game.setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AstralGlyph, 1)
+			addEvent(Game.setStorageValue, 1 * 60 * 1000, Storage.Quest.U11_02.ForgottenKnowledge.AstralGlyph, 0)
 		end
 	end
 	return true

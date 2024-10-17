@@ -181,15 +181,15 @@ ChestUnique = {
 		reward = { { 2970, 1 } },
 		storage = Storage.Quest.Key.ID3899,
 	},
-	[5012] = {
+	--[[ [5012] = {
 		isKey = true,
 		itemId = 23740,
 		itemPos = { x = 33377, y = 31321, z = 1 },
 		reward = { { 2969, 1 } },
 		storage = Storage.Quest.Key.ID0909,
-		timerStorage = Storage.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
+		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
 		time = 24, -- hour
-	},
+	}, ]]
 	-- Bear Room Quest (rookgaard) key 4601
 	[5013] = {
 		isKey = true,
@@ -1080,7 +1080,7 @@ ChestUnique = {
 		weight = 15.00,
 		storage = Storage.Quest.U8_54.TomesOfKnowledge.TopTower,
 	},
-	[6105] = {
+	--[[[6105] = {
 		itemId = 23741,
 		itemPos = { x = 33352, y = 31318, z = 7 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
@@ -1127,7 +1127,7 @@ ChestUnique = {
 		reward = { { nil, nil } },
 		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.UndergroundBastion,
 		time = 24, -- hour
-	},
+	}, ]]
 	-- Blood Herb Quest
 	[6111] = {
 		useKV = true,
@@ -2620,6 +2620,62 @@ ChestUnique = {
 		reward = { { 9685, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U10_90.FerumbrasAscension.VampireTeeth,
+	},
+	-- Forgotten Knowledge Quest
+	[6310] = {
+		useKV = true,
+		itemId = 23736,
+		itemPos = { x = 32825, y = 31664, z = 9 },
+		reward = { { 23734, 1 } },
+		weight = 6.00,
+		questName = "GhostsilverLanternQuest",
+	},
+	[6311] = {
+		useKV = true,
+		itemId = 21858,
+		itemPos = { x = 32883, y = 31686, z = 10 },
+		reward = { { 23732, 1 } },
+		weight = 4.00,
+		questName = "PaintingOfAGirlQuest",
+	},
+	[6312] = {
+		useKV = true,
+		itemId = 9253,
+		itemPos = { x = 33026, y = 31662, z = 14 },
+		reward = { { 24964, 1 } },
+		weight = 3.00,
+		questName = "ImbuingCrystalQuest",
+	},
+	-- Cults of Tibia Quest
+	[6313] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32739, y = 31426, z = 8 },
+		reward = { { 10420, 5 } },
+		weight = 8.00,
+		questName = "PetrifiedScreamQuest",
+	},
+	-- The Secret Library Quest
+	[6314] = {
+		itemId = 2472,
+		itemPos = { x = 33231, y = 32017, z = 8 },
+		reward = { { 27874, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.SampleBlood,
+	},
+	[6315] = {
+		itemId = 2472,
+		itemPos = { x = 33212, y = 32081, z = 9 },
+		reward = { { 27847, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.BonyRod,
+	},
+	[6316] = {
+		itemId = 2472,
+		itemPos = { x = 33342, y = 32120, z = 10 },
+		reward = { { 25746, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.BrokenCompass,
 	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest

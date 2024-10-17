@@ -50,13 +50,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
--- Don't forget npcHandler = npcHandler in the parameters. It is required for all StdModule functions!
-keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = " My name is now known only to the wind and it shall remain like this until I will return to my kin." })
-keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I was a guardian of this glade. I am the last one... everyone had to leave." })
-keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "This glade's time is growing short if nothing will be done soon." })
-keywordHandler:addKeyword({ "forest fury" }, StdModule.say, { npcHandler = npcHandler, text = "Take care, guardian." })
-keywordHandler:addKeyword({ "orclops" }, StdModule.say, { npcHandler = npcHandler, text = "Cruel beings. Large and monstrous, with a single eye, staring at their prey. " })
-
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -81,59 +74,62 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Indeed, you will. Take one of these cages, which have been crafted generations ago to rob a creature of its freedom for that it may earn it again truthfully. Return the birds back to their home in the glade. ...",
 				"You will find {phials} for water near this sacred well which will take you safely to the glade. No seeds are left, they are in the hands of the intruders now. Have faith in yourself, guardian.",
 			}, npc, creature)
-			player:setStorageValue(Storage.ForgottenKnowledge.BirdCage, 1)
+			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BirdCage, 1)
 			player:addItem(23812, 1)
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "seeds") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				"Seeds to give life to strong trees, blooming and proud. The {intruders} robbed us from them.",
-			}, npc, creature)
+			npcHandler:say("Seeds to give life to strong trees, blooming and proud. The {intruders} robbed us from them.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "intruders") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				"The intruders appeared in the blink of an eye. Out of thin air, as if they came from nowhere. They overrun the glade within ours and drove away what was remaining from us within the day.",
-			}, npc, creature)
+			npcHandler:say("The intruders appeared in the blink of an eye. Out of thin air, as if they came from nowhere. They overrun the glade within ours and drove away what was remaining from us within the day.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "water") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				"The purest water flows through this well. For centuries we concealed it, for other beings to not lay their eyes on it.",
-			}, npc, creature)
+			npcHandler:say("The purest water flows through this well. For centuries we concealed it, for other beings to not lay their eyes on it.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "birds") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				"Take care, guardian.",
-			}, npc, creature)
+			npcHandler:say("Take care, guardian.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "phials") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				"Phials for the purest water from our sacred well. They are finely crafted and very fragile. We keep a small supply up here around the well. Probably the only thing the intruders did not care for.",
-			}, npc, creature)
+			npcHandler:say("Phials for the purest water from our sacred well. They are finely crafted and very fragile. We keep a small supply up here around the well. Probably the only thing the intruders did not care for.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
-	end
-	if MsgContains(message, "cages") and player:getStorageValue(Storage.ForgottenKnowledge.BirdCage) == 1 then
+	elseif MsgContains(message, "cages") and player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BirdCage) == 1 then
 		npcHandler:say({
 			"Crafted generations ago to rob a creature of its freedom for that it may earn it again truthfully. You will need them if you plan on returning the birds to their rightful home in the glade. ... ",
 			"Are you in need of another one? ",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	end
-	if MsgContains(message, "yes") then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say({
-				"I already handed a cage to you. If you are in need of another one, you will have to return to me later.",
-			}, npc, creature)
+			npcHandler:say("I already handed a cage to you. If you are in need of another one, you will have to return to me later.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
 	end
+
 	return true
 end
 
-npcHandler:setCallback(CALLBACK_GREET, greetCallback)
+npcHandler:setMessage(MESSAGE_GREET, "I greet you, human. This is a time of distress, more than ever are we in need of guardians to protect us and our world.")
+
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+
+-- Don't forget npcHandler = npcHandler in the parameters. It is required for all StdModule functions!
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is now known only to the wind and it shall remain like this until I will return to my kin." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I was a guardian of this glade. I am the last one... everyone had to leave." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "This glade's time is growing short if nothing will be done soon." })
+keywordHandler:addKeyword({ "forest fury" }, StdModule.say, { npcHandler = npcHandler, text = "Take care, guardian." })
+keywordHandler:addKeyword({ "orclops" }, StdModule.say, { npcHandler = npcHandler, text = "Cruel beings. Large and monstrous, with a single eye, staring at their prey. " })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

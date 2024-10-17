@@ -72,7 +72,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "Svir") and npcHandler:getTopic(playerId) == 4 then
 		npcHandler:say("That is correct. You satisfactorily answered all questions. You may pass and enter Gelidrazah's lair.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
-		player:setStorageValue(Storage.FirstDragon.GelidrazahAccess, 1)
+		player:setStorageValue(Storage.Quest.U11_02.TheFirstDragon.GelidrazahAccess, 1)
 	else
 		npcHandler:say("I don't know what you are talking about.", npc, creature)
 	end

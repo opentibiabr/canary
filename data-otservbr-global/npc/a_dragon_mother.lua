@@ -54,16 +54,16 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.ForgottenKnowledge.BabyDragon) < 1 then
+	if player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BabyDragon) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Greetings humans! Consider yourselfs lucky, I'm in need of {help}.")
 		npcHandler:setTopic(playerId, 1)
 		return true
-	elseif player:getStorageValue(Storage.ForgottenKnowledge.AccessMachine) == 1 then
+	elseif player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AccessMachine) == 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Grrr.")
 		return true
-	elseif player:getStorageValue(Storage.ForgottenKnowledge.HorrorKilled) >= 1 then
+	elseif player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled) >= 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "You have done me a favour and the knowledge you are seeking shall be yours. I melted the ice for you, you can pass now.")
-		player:setStorageValue(Storage.ForgottenKnowledge.AccessMachine, 1)
+		player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AccessMachine, 1)
 	end
 	return true
 end
@@ -95,7 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"So return to the upper tunnels where cultists and ice golems dwell. Somewhere in these tunnels you will find a small prison haunted by a ghost. South of this prison cell there is a tunnel that will lead you eastwards. ...",
 				"Follow the tunnel until you reach a small cave. Step down and down until you see a blue energy field. It will lead you to my egg. It is sealed so that not everyone may enter the room. But you have the permission now.",
 			}, npc, creature)
-			player:setStorageValue(Storage.ForgottenKnowledge.BabyDragon, 1)
+			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BabyDragon, 1)
 			npcHandler:setTopic(playerId, 4)
 		end
 	elseif MsgContains(message, "no") then
@@ -113,7 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"As I told you, fiendish ice creatures dragged my egg into the lower caves. ...",
 				" Without enough heat the egg will die soon. Venture there and save my hatchling and the knowledge you seeek shall be yours!",
 			}, npc, creature)
-			player:setStorageValue(Storage.ForgottenKnowledge.BabyDragon, 1)
+			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BabyDragon, 1)
 		end
 	end
 	return true

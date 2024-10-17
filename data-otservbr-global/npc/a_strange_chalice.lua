@@ -57,10 +57,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "chalice") and player:getStorageValue(Storage.ForgottenKnowledge.Chalice) == 1 then
-		npcHandler:say({
-			"Finally. That's what I... oh wait, you're still talking to me - you will blow my cover! What do you want? Oh wait, did my {daughter} send you? It has been some time now, indeed.",
-		}, npc, creature)
+	if MsgContains(message, "chalice") and player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.Chalice) == 1 then
+		npcHandler:say("Finally. That's what I... oh wait, you're still talking to me - you will blow my cover! What do you want? Oh wait, did my {daughter} send you? It has been some time now, indeed.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	end
 
@@ -111,10 +109,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			" I already know how to enter it, you need to step in and yell 'zzubaran'. Unfortunately they never took me with them. ...",
 			" I heard them say it once, when a seemingly drunk guard yelled it in front of a wall mounted torch, hitting his head against it afterwards. He spilt all my contents on the floor, hmpf.",
 		}, npc, creature)
-		player:setStorageValue(Storage.ForgottenKnowledge.AccessLavaTeleport, 1)
+		player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.AccessLavaTeleport, 1)
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Hi? What do you mean 'hi' - can't you see I am a... I have to lower my voice. Did it occur to you, that this 'chalice' does not want to be disturbed?! Leave me alone!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

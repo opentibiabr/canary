@@ -6,7 +6,7 @@ function teleportTree.onStepIn(creature, item, position, fromPosition)
 		return
 	end
 
-	if player:getStorageValue(Storage.ForgottenKnowledge.PlantCounter) < 5 or player:getStorageValue(Storage.ForgottenKnowledge.BirdCounter) < 3 then
+	if player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.PlantCounter) < 5 or player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BirdCounter) < 3 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You don't help in anything to enter here")
 		player:teleportTo(Position(32737, 32117, 10))
 		position:sendMagicEffect(CONST_ME_TELEPORT)

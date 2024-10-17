@@ -78,7 +78,7 @@ addTravelKeyword("thais", 160, Position(32310, 32210, 6))
 addTravelKeyword("liberty bay", 50, Position(32285, 32892, 6))
 addTravelKeyword("carlin", 120, Position(32387, 31820, 6))
 addTravelKeyword("shortcut", 100, Position(32029, 32466, 7), function(player)
-	return player:getStorageValue(Storage.TheSecretLibrary.PinkTel) == 2 and player:getStorageValue(Storage.TheSecretLibrary.Mota) == 12
+	return player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.PinkTel) == 2 and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Mota) == 12
 end)
 
 -- Kick

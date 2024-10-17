@@ -65,8 +65,9 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 	// Disabling prey system if the server have less then 36 registered monsters on bestiary because:
 	// - Impossible to generate random lists without duplications on slots.
 	// - Stress the server with unnecessary loops.
-	std::map<uint16_t, std::string> bestiary = g_game().getBestiaryList();
+	const std::map<uint16_t, std::string> &bestiary = g_game().getBestiaryList();
 	if (bestiary.size() < 36) {
+		g_logger().error("[PreySlot::reloadMonsterGrid] - Bestiary size is less than 36, disabling prey system.");
 		return;
 	}
 
@@ -106,6 +107,8 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 		if (std::count(blackList.begin(), blackList.end(), raceId) != 0) {
 			continue;
 		}
+
+		g_logger().info("Adding raceId: {}", raceId);
 
 		blackList.push_back(raceId);
 		const auto mtype = g_monsters().getMonsterTypeByRaceId(raceId);
@@ -348,10 +351,12 @@ void IOPrey::parsePreyAction(const std::shared_ptr<Player> &player, PreySlot_t s
 			slot->reloadBonusValue();
 		}
 
-		slot->state = PreyDataState_Active;
-		slot->selectedRaceId = raceId;
-		slot->removeMonsterType(raceId);
-		slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
+		if (mtype) {
+			slot->state = PreyDataState_Active;
+			slot->selectedRaceId = raceId;
+			slot->removeMonsterType(raceId);
+			slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
+		}
 	} else if (action == PreyAction_BonusReroll) {
 		if (!slot->isOccupied()) {
 			player->sendMessageDialog("You don't have any active monster on this prey slot.");
@@ -383,6 +388,7 @@ void IOPrey::parsePreyAction(const std::shared_ptr<Player> &player, PreySlot_t s
 		slot->state = PreyDataState_Active;
 		slot->selectedRaceId = slot->raceIdList[index];
 		slot->removeMonsterType(slot->selectedRaceId);
+		g_logger().info("prey slot {} selected raceId {}", slotId, slot->selectedRaceId);
 		slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 	} else if (action == PreyAction_Option) {
 		if (option == PreyOption_AutomaticReroll && player->getPreyCards() < static_cast<uint64_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE))) {

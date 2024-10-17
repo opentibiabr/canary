@@ -67,17 +67,19 @@ public:
 
 	template <typename T>
 	bool read(T &ret) {
+		static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
+
 		if (size() < sizeof(T)) {
 			return false;
 		}
 
-		const char* src = p;
-		char* dst = reinterpret_cast<char*>(&ret);
-		size_t remaining = sizeof(T);
-
-		memcpy(dst, src, remaining);
+		std::span<const unsigned char> sourceSpan(reinterpret_cast<const unsigned char*>(p), sizeof(T));
+		std::array<unsigned char, sizeof(T)> tempBuffer;
+		std::ranges::copy(sourceSpan, tempBuffer.begin());
+		ret = std::bit_cast<T>(tempBuffer);
 
 		p += sizeof(T);
+
 		return true;
 	}
 
@@ -91,17 +93,13 @@ public:
 			return false;
 		}
 
-		char* str = new char[strLen + 1];
-		const char* src = p;
-		char* dst = str;
-		size_t remaining = strLen;
+		std::vector<unsigned char> tempBuffer(strLen);
+		std::span<const unsigned char> sourceSpan(reinterpret_cast<const unsigned char*>(p), strLen);
+		std::ranges::copy(sourceSpan, tempBuffer.begin());
+		ret.assign(reinterpret_cast<const char*>(tempBuffer.data()), strLen);
 
-		memcpy(dst, src, remaining);
-
-		str[strLen] = 0; // Null-terminate the string
-		ret.assign(str, strLen);
-		delete[] str;
 		p += strLen;
+
 		return true;
 	}
 
@@ -139,13 +137,8 @@ public:
 	template <typename T>
 	void write(T add) {
 		char* addr = reinterpret_cast<char*>(&add);
-		size_t remaining = sizeof(T);
-		size_t pos = buffer.size();
-		buffer.resize(pos + remaining);
-
-		char* dst = buffer.data() + pos;
-
-		std::copy(addr, addr + remaining, std::back_inserter(buffer));
+		std::span<const char> sourceSpan(addr, sizeof(T));
+		std::ranges::copy(sourceSpan, std::back_inserter(buffer));
 	}
 
 	void writeString(const std::string &str) {
@@ -156,14 +149,7 @@ public:
 		}
 
 		write(static_cast<uint16_t>(strLength));
-
-		const char* src = str.data();
-		size_t remaining = strLength;
-		size_t pos = buffer.size();
-		buffer.resize(pos + remaining);
-
-		char* dst = buffer.data() + pos;
-		std::copy(src, src + remaining, std::back_inserter(buffer));
+		std::ranges::copy(str, std::back_inserter(buffer));
 	}
 
 private:

@@ -2203,16 +2203,16 @@ public:
 
 	std::vector<uint16_t> getPreyBlackList() const {
 		std::vector<uint16_t> rt;
-		for (const std::unique_ptr<PreySlot> &slot : preys) {
+		std::ranges::for_each(preys, [&rt](const std::unique_ptr<PreySlot> &slot) {
 			if (slot) {
 				if (slot->isOccupied()) {
 					rt.emplace_back(slot->selectedRaceId);
 				}
-				for (uint16_t raceId : slot->raceIdList) {
+				std::ranges::for_each(slot->raceIdList, [&rt](uint16_t raceId) {
 					rt.emplace_back(raceId);
-				}
+				});
 			}
-		}
+		});
 
 		return rt;
 	}

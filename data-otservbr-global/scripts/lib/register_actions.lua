@@ -67,11 +67,11 @@ local secret_library = {
 		[5] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal5, position = Position(33260, 32103, 9) },
 		[6] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal6, position = Position(33260, 32103, 9) },
 		[7] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal7, position = Position(33260, 32103, 9) },
-		[8] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal8, position = Position(33260, 32103, 9) }
+		[8] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal8, position = Position(33260, 32103, 9) },
 	},
 	timer = "tsl_crystaltimer",
 	exhaustMessage = "Digging crystal is exhausting. You're still weary from your last prospect.",
-	items = {27867,27868,27869}
+	items = { 27867, 27868, 27869 },
 }
 
 local function revertItem(position, itemId, transformId)
@@ -525,11 +525,11 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 	for _, j in pairs(secret_library.crystals) do
 		if tPos == j.position then
 			if player:getStorageValue(j.storage) < os.time() then
-				local r = math.random(1,3)
+				local r = math.random(1, 3)
 				local item_id = secret_library.items[r]
 				player:addItem(item_id, 1)
 				player:say("You have found a " .. ItemType(item_id):getName() .. ".", TALKTYPE_MONSTER_SAY)
-				player:setStorageValue(j.storage, os.time() + 2*60)
+				player:setStorageValue(j.storage, os.time() + 2 * 60)
 			else
 				player:say(secret_library.exhaustMessage, TALKTYPE_MONSTER_SAY)
 			end
@@ -1009,11 +1009,11 @@ function onUseKitchenKnife(player, item, fromPosition, target, toPosition, isHot
 	for _, j in pairs(secret_library.crystals) do
 		if tPos == j.position then
 			if player:getStorageValue(j.storage) < os.time() then
-				local r = math.random(1,3)
+				local r = math.random(1, 3)
 				local item_id = secret_library.items[r]
 				player:addItem(item_id, 1)
 				player:say("You have found a " .. ItemType(item_id):getName() .. ".", TALKTYPE_MONSTER_SAY)
-				player:setStorageValue(j.storage, os.time() + 2*60)
+				player:setStorageValue(j.storage, os.time() + 2 * 60)
 			else
 				player:say(secret_library.exhaustMessage, TALKTYPE_MONSTER_SAY)
 			end

@@ -69,7 +69,7 @@ void Teleport::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 		return;
 	}
 
-	std::shared_ptr<Tile> destTile = g_game().map.getTile(destPos);
+	const std::shared_ptr<Tile> &destTile = g_game().map.getTile(destPos);
 	if (!destTile) {
 		return;
 	}
@@ -85,7 +85,7 @@ void Teleport::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 
 	const MagicEffectClasses effect = Item::items[id].magicEffect;
 
-	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
+	if (const std::shared_ptr<Creature> &creature = thing->getCreature()) {
 		Position origPos = creature->getPosition();
 		g_game().internalCreatureTurn(creature, origPos.x > destPos.x ? DIRECTION_WEST : DIRECTION_EAST);
 		g_game().map.moveCreature(creature, destTile);
@@ -93,7 +93,7 @@ void Teleport::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 			g_game().addMagicEffect(origPos, effect);
 			g_game().addMagicEffect(destTile->getPosition(), effect);
 		}
-	} else if (const auto item = thing->getItem()) {
+	} else if (const auto &item = thing->getItem()) {
 		if (effect != CONST_ME_NONE) {
 			g_game().addMagicEffect(destTile->getPosition(), effect);
 			g_game().addMagicEffect(item->getPosition(), effect);

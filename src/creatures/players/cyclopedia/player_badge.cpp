@@ -23,7 +23,7 @@ bool PlayerBadge::hasBadge(uint8_t id) const {
 		return false;
 	}
 
-	if (const auto &it = std::ranges::find_if(m_badgesUnlocked, [id](auto badge_it) {
+	if (auto it = std::ranges::find_if(m_badgesUnlocked, [id](auto badge_it) {
 			return badge_it.first.m_id == id;
 		});
 	    it != m_badgesUnlocked.end()) {

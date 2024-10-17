@@ -8,9 +8,8 @@
  */
 
 #pragma once
-#include "utils/tools.hpp"
-#include <unordered_set>
-#include <source_location>
+
+class Dispatcher;
 
 class Task {
 public:
@@ -67,9 +66,7 @@ public:
 private:
 	static std::atomic_uint_fast64_t LAST_EVENT_ID;
 
-	void updateTime() {
-		utime = OTSYS_TIME() + delay;
-	}
+	void updateTime();
 
 	bool hasTraceableContext() const {
 		const static std::unordered_set<std::string_view> tasksContext = {

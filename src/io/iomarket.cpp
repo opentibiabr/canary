@@ -175,7 +175,7 @@ void IOMarket::processExpiredOffers(const DBResult_ptr &result, bool) {
 				uint16_t tmpAmount = amount;
 				while (tmpAmount > 0) {
 					uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
-					const auto item = Item::CreateItem(itemType.id, stackCount);
+					const auto &item = Item::CreateItem(itemType.id, stackCount);
 					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 						g_logger().error("[{}] Ocurred an error to add item with id {} to player {}", __FUNCTION__, itemType.id, player->getName());
 
@@ -197,7 +197,7 @@ void IOMarket::processExpiredOffers(const DBResult_ptr &result, bool) {
 				}
 
 				for (uint16_t i = 0; i < amount; ++i) {
-					const auto item = Item::CreateItem(itemType.id, subType);
+					const auto &item = Item::CreateItem(itemType.id, subType);
 					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 						break;
 					}

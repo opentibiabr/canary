@@ -60,16 +60,7 @@ protected:
 	}
 	void setXTEAKey(const uint32_t* newKey) {
 		uint32_t* dst = this->key.data();
-
-#if defined(__AVX2__)
-		const __m128i avx_key = _mm_loadu_si128(reinterpret_cast<const __m128i*>(newKey));
-		_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), avx_key);
-#elif defined(__SSE2__)
-		__m128i sse_key = _mm_loadu_si128(reinterpret_cast<const __m128i*>(newKey));
-		_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), sse_key);
-#else
 		memcpy(dst, newKey, sizeof(uint32_t) * 4);
-#endif
 	}
 
 	void setChecksumMethod(ChecksumMethods_t method) {
@@ -96,71 +87,6 @@ private:
 		std::array<char, NETWORKMESSAGE_MAXSIZE> buffer {};
 	};
 
-	struct AlignedFreeDeleter {
-		void operator()(uint8_t* ptr) const {
-			if (ptr) {
-#ifdef _WIN32
-				_aligned_free(ptr);
-#else
-				std::free(ptr);
-#endif
-			}
-		}
-	};
-
-	inline uint8_t* aligned_alloc_memory(size_t size, size_t alignment) const {
-#ifdef _WIN32
-		return static_cast<uint8_t*>(_aligned_malloc(size, alignment));
-#else
-		uint8_t* originalMemory = nullptr;
-
-		if (posix_memalign(reinterpret_cast<void**>(&originalMemory), alignment, size) != 0) {
-			return nullptr;
-		}
-
-		if (!is_aligned(originalMemory, alignment)) {
-			uintptr_t address = reinterpret_cast<uintptr_t>(originalMemory);
-			uintptr_t alignedAddress = (address + alignment - 1) & ~(alignment - 1);
-			return reinterpret_cast<uint8_t*>(alignedAddress);
-		}
-
-		return originalMemory;
-#endif
-	}
-
-	inline bool is_aligned(const void* ptr, size_t alignment) const {
-		return _mm_testz_si128(_mm_set1_epi64x(reinterpret_cast<uintptr_t>(ptr)), _mm_set1_epi64x(alignment - 1));
-	}
-
-	inline void simd_memcpy_avx2(uint8_t* __restrict dest, const uint8_t* __restrict src, size_t len) const {
-		size_t i = 0;
-
-		const bool src_aligned = is_aligned(src, 32);
-		const bool dest_aligned = is_aligned(dest, 32);
-
-		if (src_aligned && dest_aligned) {
-			for (; i + 32 <= len; i += 32) {
-				const __m256i data = _mm256_load_si256(reinterpret_cast<const __m256i*>(src + i));
-				_mm256_store_si256(reinterpret_cast<__m256i*>(dest + i), data);
-			}
-		} else {
-			for (; i + 32 <= len; i += 32) {
-				const __m256i data = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(src + i));
-				_mm256_storeu_si256(reinterpret_cast<__m256i*>(dest + i), data);
-			}
-		}
-		for (; i < len; ++i) {
-			dest[i] = src[i];
-		}
-	}
-
-	void precacheControlSumsEncrypt() const;
-	void precacheControlSumsDecrypt() const;
-
-	mutable std::array<uint32_t, 32 * 2> cachedControlSumsEncrypt {};
-	mutable std::array<uint32_t, 32 * 2> cachedControlSumsDecrypt {};
-	mutable bool cacheEncryptInitialized = false;
-	mutable bool cacheDecryptInitialized = false;
 	mutable std::array<uint32_t, 4> key {};
 
 	void XTEA_encrypt(OutputMessage &msg) const;

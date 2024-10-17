@@ -275,13 +275,13 @@ protected:
 	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol);
 
 	uint32_t m_maxItems {};
-	uint32_t maxSize;
-	uint32_t totalWeight = 0;
+	uint32_t maxSize {};
+	uint32_t totalWeight {};
 	ItemDeque itemlist;
-	uint32_t serializationCount = 0;
+	uint32_t serializationCount = {};
 
-	bool unlocked;
-	bool pagination;
+	bool unlocked {};
+	bool pagination {};
 
 	friend class MapCache;
 

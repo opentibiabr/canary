@@ -98,7 +98,7 @@ bool Groups::load() {
 }
 
 std::shared_ptr<Group> Groups::getGroup(uint16_t id) const {
-	if (const auto &it = std::ranges::find_if(groups_vector, [id](auto group_it) {
+	if (auto it = std::ranges::find_if(groups_vector, [id](auto group_it) {
 			return group_it->id == id;
 		});
 	    it != groups_vector.end()) {

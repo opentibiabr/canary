@@ -113,7 +113,7 @@ std::shared_ptr<Charm> IOBestiary::getBestiaryCharm(charmRune_t activeCharm, boo
 }
 
 std::map<uint16_t, std::string> IOBestiary::findRaceByName(const std::string &race, bool Onlystring /*= true*/, BestiaryType_t raceNumber /*= BESTY_RACE_NONE*/) const {
-	std::map<uint16_t, std::string> best_list = g_game().getBestiaryList();
+	const std::map<uint16_t, std::string> &best_list = g_game().getBestiaryList();
 	std::map<uint16_t, std::string> race_list;
 
 	if (Onlystring) {

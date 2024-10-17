@@ -126,7 +126,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 	const bool name = getBoolean(L, 2, false);
 
 	if (lua_gettop(L) <= 2) {
-		const std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+		const std::map<uint16_t, std::string> &mtype_list = g_game().getBestiaryList();
 		for (const auto &ita : mtype_list) {
 			if (name) {
 				pushString(L, ita.second);
@@ -342,7 +342,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 			subType -= stackCount;
 		}
 
-		const auto item = Item::CreateItem(itemId, stackCount);
+		const auto &item = Item::CreateItem(itemId, stackCount);
 		if (!item) {
 			if (!hasTable) {
 				lua_pushnil(L);

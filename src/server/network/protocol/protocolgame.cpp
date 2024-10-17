@@ -1827,32 +1827,32 @@ void ProtocolGame::parseLootContainer(NetworkMessage &msg) {
 
 	uint8_t action = msg.getByte();
 	if (action == 0) {
-		auto category = (ObjectCategory_t)msg.getByte();
+		auto category = static_cast<ObjectCategory_t>(msg.getByte());
 		Position pos = msg.getPosition();
 		auto itemId = msg.get<uint16_t>();
 		uint8_t stackpos = msg.getByte();
 		g_game().playerSetManagedContainer(player->getID(), category, pos, itemId, stackpos, true);
 	} else if (action == 1) {
-		auto category = (ObjectCategory_t)msg.getByte();
+		auto category = static_cast<ObjectCategory_t>(msg.getByte());
 		g_game().playerClearManagedContainer(player->getID(), category, true);
 	} else if (action == 2) {
-		auto category = (ObjectCategory_t)msg.getByte();
+		auto category = static_cast<ObjectCategory_t>(msg.getByte());
 		g_game().playerOpenManagedContainer(player->getID(), category, true);
 	} else if (action == 3) {
 		bool useMainAsFallback = msg.getByte() == 1;
 		g_game().playerSetQuickLootFallback(player->getID(), useMainAsFallback);
 	} else if (action == 4) {
-		auto category = (ObjectCategory_t)msg.getByte();
+		auto category = static_cast<ObjectCategory_t>(msg.getByte());
 		Position pos = msg.getPosition();
 		auto itemId = msg.get<uint16_t>();
 		uint8_t stackpos = msg.getByte();
 		g_logger().debug("[{}] action {}, category {}, pos {}, itemId {}, stackPos {}", __FUNCTION__, action, static_cast<uint8_t>(category), pos.toString(), itemId, stackpos);
 		g_game().playerSetManagedContainer(player->getID(), category, pos, itemId, stackpos, false);
 	} else if (action == 5) {
-		auto category = (ObjectCategory_t)msg.getByte();
+		auto category = static_cast<ObjectCategory_t>(msg.getByte());
 		g_game().playerClearManagedContainer(player->getID(), category, false);
 	} else if (action == 6) {
-		auto category = (ObjectCategory_t)msg.getByte();
+		auto category = static_cast<ObjectCategory_t>(msg.getByte());
 		g_game().playerOpenManagedContainer(player->getID(), category, false);
 	}
 
@@ -8724,7 +8724,7 @@ void ProtocolGame::sendForgeSkillStats(NetworkMessage &msg) const {
 	std::vector<Slots_t> slots { CONST_SLOT_LEFT, CONST_SLOT_ARMOR, CONST_SLOT_HEAD, CONST_SLOT_LEGS };
 	for (const auto &slot : slots) {
 		double_t skill = 0;
-		if (const auto item = player->getInventoryItem(slot); item) {
+		if (const auto &item = player->getInventoryItem(slot); item) {
 			const ItemType &it = Item::items[item->getID()];
 			if (it.isWeapon()) {
 				skill = item->getFatalChance() * 100;
@@ -9068,7 +9068,7 @@ void ProtocolGame::parseSetMonsterPodium(NetworkMessage &msg) const {
 	}
 
 	// For some reason the cip sends uint32_t, but we use uint16_t, so let's just ignore that
-	auto monsterRaceId = (uint16_t)msg.get<uint32_t>();
+	auto monsterRaceId = static_cast<uint16_t>(msg.get<uint32_t>());
 	Position pos = msg.getPosition();
 	auto itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();

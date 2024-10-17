@@ -496,5 +496,5 @@ private:
 	void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
 	void doRandomStep(Direction &nextDirection, bool &result);
 
-	void onConditionStatusChange(const ConditionType_t &type);
+	void onConditionStatusChange(ConditionType_t type);
 };

@@ -31,7 +31,7 @@ void WaitingList::cleanupList(WaitList &list) const {
 	auto it = list.begin();
 	while (it != list.end()) {
 		const auto timeout = static_cast<int64_t>(it->timeout);
-		g_logger().debug("time: {}", timeout - time);
+		g_logger().debug("[{}] time: {}", __FUNCTION__, timeout - time);
 		if ((timeout - time) <= 0) {
 			info->playerReferences.erase(it->playerGUID);
 			it = list.erase(it);
@@ -76,7 +76,7 @@ bool WaitingList::clientLogin(const std::shared_ptr<Player> &player) const {
 
 	addPlayerToList(player);
 
-	const auto &it = info->playerReferences.find(player->getGUID());
+	auto it = info->playerReferences.find(player->getGUID());
 	const std::size_t slot = it->second.second;
 	if ((g_game().getPlayersOnline() + slot) <= maxPlayers) {
 		// should be able to login now
@@ -88,7 +88,7 @@ bool WaitingList::clientLogin(const std::shared_ptr<Player> &player) const {
 }
 
 void WaitingList::addPlayerToList(const std::shared_ptr<Player> &player) const {
-	const auto &it = info->playerReferences.find(player->getGUID());
+	auto it = info->playerReferences.find(player->getGUID());
 	if (it != info->playerReferences.end()) {
 		std::size_t slot;
 		if (player->isPremium()) {
@@ -114,7 +114,7 @@ void WaitingList::addPlayerToList(const std::shared_ptr<Player> &player) const {
 }
 
 std::size_t WaitingList::getClientSlot(const std::shared_ptr<Player> &player) const {
-	const auto &it = info->playerReferences.find(player->getGUID());
+	auto it = info->playerReferences.find(player->getGUID());
 	if (it == info->playerReferences.end()) {
 		return 0;
 	}

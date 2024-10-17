@@ -202,7 +202,7 @@ bool Vocations::loadFromXml() {
 }
 
 std::shared_ptr<Vocation> Vocations::getVocation(uint16_t id) {
-	const auto &it = vocationsMap.find(id);
+	auto it = vocationsMap.find(id);
 	if (it == vocationsMap.end()) {
 		g_logger().warn("[Vocations::getVocation] - "
 		                "Vocation {} not found",
@@ -237,7 +237,7 @@ absl::uint128 Vocation::getTotalSkillTries(uint8_t skill, uint16_t level) {
 		return 0;
 	}
 
-	const auto &it = cacheSkillTotal[skill].find(level);
+	auto it = cacheSkillTotal[skill].find(level);
 	if (it != cacheSkillTotal[skill].end()) {
 		return it->second;
 	}
@@ -255,7 +255,7 @@ uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level) {
 		return 0;
 	}
 
-	const auto &it = cacheSkill[skill].find(level);
+	auto it = cacheSkill[skill].find(level);
 	if (it != cacheSkill[skill].end()) {
 		return it->second;
 	}
@@ -269,7 +269,7 @@ absl::uint128 Vocation::getTotalMana(uint32_t magLevel) {
 	if (magLevel == 0) {
 		return 0;
 	}
-	const auto &it = cacheManaTotal.find(magLevel);
+	auto it = cacheManaTotal.find(magLevel);
 	if (it != cacheManaTotal.end()) {
 		return it->second;
 	}
@@ -284,7 +284,7 @@ uint64_t Vocation::getReqMana(uint32_t magLevel) {
 	if (magLevel == 0) {
 		return 0;
 	}
-	const auto &it = cacheMana.find(magLevel);
+	auto it = cacheMana.find(magLevel);
 	if (it != cacheMana.end()) {
 		return it->second;
 	}

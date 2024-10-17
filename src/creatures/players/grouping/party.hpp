@@ -105,7 +105,7 @@ public:
 	void reloadPrices() const;
 
 	std::shared_ptr<PartyAnalyzer> getPlayerPartyAnalyzerStruct(uint32_t playerId) const {
-		if (const auto &it = std::ranges::find_if(membersData, [playerId](const std::shared_ptr<PartyAnalyzer> &preyIt) {
+		if (auto it = std::ranges::find_if(membersData, [playerId](const std::shared_ptr<PartyAnalyzer> &preyIt) {
 				return preyIt->id == playerId;
 			});
 		    it != membersData.end()) {

@@ -88,7 +88,7 @@ bool Mailbox::sendItem(const std::shared_ptr<Item> &item) const {
 
 	const auto &player = g_game().getPlayerByName(receiver, true);
 	std::string writer;
-	time_t date = time(nullptr);
+	time_t date = getTimeNow();
 	std::string text;
 	if (item && item->getID() == ITEM_LETTER && !item->getAttribute<std::string>(ItemAttribute_t::WRITER).empty()) {
 		writer = item->getAttribute<std::string>(ItemAttribute_t::WRITER);

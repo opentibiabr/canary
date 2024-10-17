@@ -37,7 +37,7 @@
     </CANARY_LIBDEPS_D>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(FEATURE_METRICS_DEFINED)' == 'true'">
+  <PropertyGroup Condition="'$(FEATURE_METRICS)' == 'true'">
     <OPENTELEMETRY_LIBS>
       opentelemetry_common.lib;
       opentelemetry_exporter_in_memory.lib;

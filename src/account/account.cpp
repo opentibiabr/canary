@@ -10,8 +10,6 @@
 #include "account/account.hpp"
 
 #include "account/account_repository_db.hpp"
-#include "config/configmanager.hpp"
-#include "utils/definitions.hpp"
 #include "security/argon.hpp"
 #include "utils/tools.hpp"
 #include "lib/logging/log_with_spd_log.hpp"
@@ -64,7 +62,7 @@ uint8_t Account::reload() {
 	return load();
 }
 
-uint8_t Account::save() {
+uint8_t Account::save() const {
 	if (!m_accLoaded) {
 		return enumToValue(AccountErrors_t::NotInitialized);
 	}
@@ -162,7 +160,7 @@ void Account::registerCoinTransaction(const uint8_t &transactionType, const uint
 
 [[nodiscard]] uint32_t Account::getID() const {
 	return m_account.id;
-};
+}
 
 std::string Account::getDescriptor() const {
 	return m_descriptor;
@@ -183,8 +181,8 @@ std::string Account::getPassword() {
 }
 
 void Account::addPremiumDays(const int32_t &days) {
-	auto timeLeft = std::max(0, static_cast<int>((m_account.premiumLastDay - getTimeNow()) % 86400));
-	setPremiumDays(m_account.premiumRemainingDays + days);
+	const auto timeLeft = std::max(0, static_cast<int>((m_account.premiumLastDay - getTimeNow()) % 86400));
+	setPremiumDays(static_cast<int32_t>(m_account.premiumRemainingDays) + days);
 	m_account.premiumDaysPurchased += days;
 
 	if (timeLeft > 0) {
@@ -220,13 +218,13 @@ uint8_t Account::setAccountType(const uint8_t &accountType) {
 }
 
 void Account::updatePremiumTime() {
-	time_t lastDay = m_account.premiumLastDay;
-	uint32_t remainingDays = m_account.premiumRemainingDays;
+	const time_t lastDay = m_account.premiumLastDay;
+	const uint32_t remainingDays = m_account.premiumRemainingDays;
 
-	time_t currentTime = getTimeNow();
+	const time_t currentTime = getTimeNow();
 
-	auto daysLeft = static_cast<int32_t>((lastDay - currentTime) / 86400);
-	auto timeLeft = static_cast<int32_t>((lastDay - currentTime) % 86400);
+	const auto daysLeft = static_cast<int32_t>((lastDay - currentTime) / 86400);
+	const auto timeLeft = static_cast<int32_t>((lastDay - currentTime) % 86400);
 
 	m_account.premiumRemainingDays = daysLeft > 0 ? daysLeft : 0;
 
@@ -278,7 +276,7 @@ bool Account::authenticateSession() {
 }
 
 bool Account::authenticatePassword(const std::string &password) {
-	if (Argon2 {}.argon(password.c_str(), getPassword())) {
+	if (Argon2().argon(password, getPassword())) {
 		return true;
 	}
 

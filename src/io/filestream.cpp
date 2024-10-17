@@ -43,17 +43,23 @@ bool FileStream::read(T &ret, bool escape) {
 		throw std::ios_base::failure("Read failed");
 	}
 
-	std::array<uint8_t, sizeof(T)> array;
 	if (escape) {
-		for (int_fast8_t i = -1; ++i < size;) {
+		std::array<uint8_t, sizeof(T)> array;
+		size_t i = 0;
+		while (i < size) {
 			if (m_data[m_pos] == OTB::Node::ESCAPE) {
 				++m_pos;
 			}
 			array[i] = m_data[m_pos];
 			++m_pos;
+			++i;
 		}
+		uint8_t* dst = reinterpret_cast<uint8_t*>(&ret);
 		memcpy(&ret, array.data(), size);
 	} else {
+		uint8_t* dst = reinterpret_cast<uint8_t*>(&ret);
+		const uint8_t* src = &m_data[m_pos];
+		size_t remaining = size;
 		memcpy(&ret, &m_data[m_pos], size);
 		m_pos += size;
 	}

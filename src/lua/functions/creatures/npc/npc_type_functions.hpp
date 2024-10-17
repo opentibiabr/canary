@@ -13,6 +13,12 @@
 
 class NpcTypeFunctions final : LuaScriptInterface {
 public:
+	explicit NpcTypeFunctions(lua_State* L) :
+		LuaScriptInterface("NpcTypeFunctions") {
+		init(L);
+	}
+	~NpcTypeFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "NpcType", "", NpcTypeFunctions::luaNpcTypeCreate);
 		registerMetaMethod(L, "NpcType", "__eq", NpcTypeFunctions::luaUserdataCompare);

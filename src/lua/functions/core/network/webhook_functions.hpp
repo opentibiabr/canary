@@ -13,6 +13,12 @@
 
 class WebhookFunctions final : LuaScriptInterface {
 public:
+	explicit WebhookFunctions(lua_State* L) :
+		LuaScriptInterface("WebhookFunctions") {
+		init(L);
+	}
+	~WebhookFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerTable(L, "Webhook");
 		registerMethod(L, "Webhook", "sendMessage", WebhookFunctions::luaWebhookSendMessage);

@@ -21,7 +21,7 @@ class NetworkMessage;
 
 class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
-	explicit Protocol(Connection_ptr initConnection);
+	explicit Protocol(const Connection_ptr &initConnection);
 
 	virtual ~Protocol() = default;
 
@@ -59,8 +59,10 @@ protected:
 		encryptionEnabled = true;
 	}
 	void setXTEAKey(const uint32_t* newKey) {
-		memcpy(this->key.data(), newKey, sizeof(*newKey) * 4);
+		uint32_t* dst = this->key.data();
+		memcpy(dst, newKey, sizeof(uint32_t) * 4);
 	}
+
 	void setChecksumMethod(ChecksumMethods_t method) {
 		checksumMethod = method;
 	}
@@ -85,6 +87,8 @@ private:
 		std::array<char, NETWORKMESSAGE_MAXSIZE> buffer {};
 	};
 
+	mutable std::array<uint32_t, 4> key {};
+
 	void XTEA_encrypt(OutputMessage &msg) const;
 	bool XTEA_decrypt(NetworkMessage &msg) const;
 	bool compression(OutputMessage &msg) const;
@@ -92,7 +96,6 @@ private:
 	OutputMessage_ptr outputBuffer;
 
 	const ConnectionWeak_ptr connectionPtr;
-	std::array<uint32_t, 4> key = {};
 	uint32_t serverSequenceNumber = 0;
 	uint32_t clientSequenceNumber = 0;
 	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;

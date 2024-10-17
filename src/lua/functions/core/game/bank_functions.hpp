@@ -15,6 +15,12 @@ class Bank;
 
 class BankFunctions final : LuaScriptInterface {
 public:
+	explicit BankFunctions(lua_State* L) :
+		LuaScriptInterface("BankFunctions") {
+		init(L);
+	}
+	~BankFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerTable(L, "Bank");
 		registerMethod(L, "Bank", "credit", BankFunctions::luaBankCredit);

@@ -31,7 +31,7 @@ std::shared_ptr<Guild> IOGuild::loadGuild(uint32_t guildId) {
 	return nullptr;
 }
 
-void IOGuild::saveGuild(const std::shared_ptr<Guild> guild) {
+void IOGuild::saveGuild(const std::shared_ptr<Guild> &guild) {
 	if (!guild) {
 		return;
 	}
@@ -66,7 +66,7 @@ void IOGuild::getWarList(uint32_t guildId, GuildWarVector &guildWarVector) {
 	}
 
 	do {
-		uint32_t guild1 = result->getNumber<uint32_t>("guild1");
+		auto guild1 = result->getNumber<uint32_t>("guild1");
 		if (guildId != guild1) {
 			guildWarVector.push_back(guild1);
 		} else {

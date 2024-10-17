@@ -25,37 +25,37 @@ bool Outfits::reload() {
 
 bool Outfits::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/outfits.xml";
-	pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	const auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/outfits.xml";
+	const pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
-	for (auto outfitNode : doc.child("outfits").children()) {
+	for (const auto &outfitNode : doc.child("outfits").children()) {
 		pugi::xml_attribute attr;
-		if ((attr = outfitNode.attribute("enabled")) && !attr.as_bool()) {
+		if (((attr = outfitNode.attribute("enabled"))) && !attr.as_bool()) {
 			continue;
 		}
 
-		if (!(attr = outfitNode.attribute("type"))) {
+		if (!((attr = outfitNode.attribute("type")))) {
 			g_logger().warn("[Outfits::loadFromXml] - Missing outfit type");
 			continue;
 		}
 
-		auto type = pugi::cast<uint16_t>(attr.value());
+		const auto type = pugi::cast<uint16_t>(attr.value());
 		if (type > PLAYERSEX_LAST) {
 			g_logger().warn("[Outfits::loadFromXml] - Invalid outfit type {}", type);
 			continue;
 		}
 
-		pugi::xml_attribute lookTypeAttribute = outfitNode.attribute("looktype");
+		const pugi::xml_attribute lookTypeAttribute = outfitNode.attribute("looktype");
 		if (!lookTypeAttribute) {
 			g_logger().warn("[Outfits::loadFromXml] - Missing looktype on outfit");
 			continue;
 		}
 
-		if (auto lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
+		if (const auto lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
 		    g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
 		    && !g_game().isLookTypeRegistered(lookType)) {
 			g_logger().warn("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was ignored to prevent client crash.", lookType);
@@ -92,7 +92,7 @@ std::shared_ptr<Outfit> Outfits::getOutfitByLookType(const std::shared_ptr<const
 		sex = (sex == PLAYERSEX_MALE) ? PLAYERSEX_FEMALE : PLAYERSEX_MALE;
 	}
 
-	auto it = std::ranges::find_if(outfits[sex], [&lookType](const auto &outfit) {
+	const auto it = std::ranges::find_if(outfits[sex], [&lookType](const auto &outfit) {
 		return outfit->lookType == lookType;
 	});
 

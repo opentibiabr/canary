@@ -13,6 +13,12 @@
 
 class TalkActionFunctions final : LuaScriptInterface {
 public:
+	explicit TalkActionFunctions(lua_State* L) :
+		LuaScriptInterface("TalkActionFunctions") {
+		init(L);
+	}
+	~TalkActionFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "TalkAction", "", TalkActionFunctions::luaCreateTalkAction);
 		registerMethod(L, "TalkAction", "onSay", TalkActionFunctions::luaTalkActionOnSay);

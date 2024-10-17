@@ -23,18 +23,18 @@ struct spawnBlockNpc_t {
 	Direction direction;
 };
 
-class SpawnNpc : public SharedObject {
+class SpawnNpc final : public SharedObject {
 public:
 	SpawnNpc(Position initPos, int32_t initRadius) :
 		centerPos(initPos), radius(initRadius) { }
-	~SpawnNpc();
+	~SpawnNpc() override;
 
 	// non-copyable
 	SpawnNpc(const SpawnNpc &) = delete;
 	SpawnNpc &operator=(const SpawnNpc &) = delete;
 
 	bool addNpc(const std::string &name, const Position &pos, Direction dir, uint32_t interval);
-	void removeNpc(std::shared_ptr<Npc> npc);
+	void removeNpc(const std::shared_ptr<Npc> &npc);
 
 	uint32_t getInterval() const {
 		return interval;
@@ -44,7 +44,7 @@ public:
 	void startSpawnNpcCheck();
 	void stopEvent();
 
-	bool isInSpawnNpcZone(const Position &pos);
+	bool isInSpawnNpcZone(const Position &pos) const;
 	void cleanup();
 
 private:

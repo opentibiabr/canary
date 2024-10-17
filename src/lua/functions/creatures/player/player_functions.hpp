@@ -17,7 +17,12 @@
 #include "lua/functions/creatures/player/vocation_functions.hpp"
 
 class PlayerFunctions final : LuaScriptInterface {
-private:
+	explicit PlayerFunctions(lua_State* L) :
+		LuaScriptInterface("PlayerFunctions") {
+		init(L);
+	}
+	~PlayerFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Player", "Creature", PlayerFunctions::luaPlayerCreate);
 		registerMetaMethod(L, "Player", "__eq", PlayerFunctions::luaUserdataCompare);

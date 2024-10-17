@@ -13,6 +13,7 @@
 
 class Player;
 class KV;
+class Account;
 
 struct Badge {
 	uint8_t m_id = 0;
@@ -52,6 +53,7 @@ public:
 	// Badge Calculate Functions
 	bool accountAge(uint8_t amount);
 	bool loyalty(uint8_t amount);
+	std::vector<std::shared_ptr<Player>> getPlayersInfoByAccount(std::shared_ptr<Account> acc) const;
 	bool accountAllLevel(uint8_t amount);
 	bool accountAllVocations(uint8_t amount);
 	[[nodiscard]] bool tournamentParticipation(uint8_t skill);

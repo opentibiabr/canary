@@ -6091,16 +6091,17 @@ void ProtocolGame::sendTradeItemRequest(const std::string &traderName, std::shar
 		std::list<std::shared_ptr<Container>> listContainer { tradeContainer };
 		std::list<std::shared_ptr<Item>> itemList { tradeContainer };
 		while (!listContainer.empty()) {
-			std::shared_ptr<Container> container = listContainer.front();
-			listContainer.pop_front();
-
-			for (const std::shared_ptr<Item> &containerItem : container->getItemList()) {
-				std::shared_ptr<Container> tmpContainer = containerItem->getContainer();
+			const auto &container = listContainer.front();
+			for (const auto &containerItem : container->getItemList()) {
+				const auto &tmpContainer = containerItem->getContainer();
 				if (tmpContainer) {
 					listContainer.push_back(tmpContainer);
 				}
 				itemList.push_back(containerItem);
 			}
+
+			// Removes the object after processing everything, avoiding memory usage after freeing
+			listContainer.pop_front();
 		}
 
 		msg.addByte(itemList.size());

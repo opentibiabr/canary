@@ -203,7 +203,7 @@ void CanaryServer::logInfos() {
 	logger.info("{} - Version {}", ProtocolStatus::SERVER_NAME, SERVER_RELEASE_VERSION);
 #endif
 
-	logger.debug("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, getPlatform());
+	logger.debug("Compiled with {}, on {} {}, for platform {}", getCompiler(), __DATE__, __TIME__, getPlatform());
 
 #if defined(LUAJIT_VERSION)
 	logger.debug("Linked with {} for Lua support", LUAJIT_VERSION);

@@ -20,7 +20,6 @@
 	#include <list>
 #endif
 
-#include "lib/logging/logger.hpp"
 #include "kv/value_wrapper.hpp"
 
 class KV : public std::enable_shared_from_this<KV> {

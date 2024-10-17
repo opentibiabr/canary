@@ -1640,7 +1640,7 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 
 	bool resetTypeBit = true;
 
-	std::erase_if(eventsList, [&](const auto& curEvent) {
+	std::erase_if(eventsList, [&](const auto &curEvent) {
 		if (curEvent == event) {
 			return true;
 		}

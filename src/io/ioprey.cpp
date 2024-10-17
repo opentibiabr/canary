@@ -108,8 +108,6 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 			continue;
 		}
 
-		g_logger().info("Adding raceId: {}", raceId);
-
 		blackList.push_back(raceId);
 		const auto mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 		if (!mtype || mtype->info.experience == 0 || !mtype->info.isPreyable || mtype->info.isPreyExclusive) {
@@ -341,7 +339,7 @@ void IOPrey::parsePreyAction(const std::shared_ptr<Player> &player, PreySlot_t s
 		} else if (player->getPreyWithMonster(raceId)) {
 			player->sendMessageDialog("This creature is already selected on another slot.");
 			return;
-		} else if (!mtype->info.isPreyable) {
+		} else if (mtype && !mtype->info.isPreyable) {
 			player->sendMessageDialog("This creature can't be select on prey. Please choose another one.");
 			return;
 		}
@@ -351,12 +349,10 @@ void IOPrey::parsePreyAction(const std::shared_ptr<Player> &player, PreySlot_t s
 			slot->reloadBonusValue();
 		}
 
-		if (mtype) {
-			slot->state = PreyDataState_Active;
-			slot->selectedRaceId = raceId;
-			slot->removeMonsterType(raceId);
-			slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
-		}
+		slot->state = PreyDataState_Active;
+		slot->selectedRaceId = raceId;
+		slot->removeMonsterType(raceId);
+		slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 	} else if (action == PreyAction_BonusReroll) {
 		if (!slot->isOccupied()) {
 			player->sendMessageDialog("You don't have any active monster on this prey slot.");
@@ -388,7 +384,6 @@ void IOPrey::parsePreyAction(const std::shared_ptr<Player> &player, PreySlot_t s
 		slot->state = PreyDataState_Active;
 		slot->selectedRaceId = slot->raceIdList[index];
 		slot->removeMonsterType(slot->selectedRaceId);
-		g_logger().info("prey slot {} selected raceId {}", slotId, slot->selectedRaceId);
 		slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 	} else if (action == PreyAction_Option) {
 		if (option == PreyOption_AutomaticReroll && player->getPreyCards() < static_cast<uint64_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE))) {

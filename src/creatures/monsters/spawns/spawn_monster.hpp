@@ -25,7 +25,7 @@ struct spawnBlock_t {
 	bool hasBoss() const;
 };
 
-class SpawnMonster {
+class SpawnMonster : public SharedObject {
 public:
 	SpawnMonster(Position initPos, int32_t initRadius) :
 		centerPos(initPos), radius(initRadius) { }
@@ -108,12 +108,12 @@ public:
 	bool isLoaded() const {
 		return loaded;
 	}
-	std::vector<SpawnMonster> &getspawnMonsterList() {
+	std::vector<std::shared_ptr<SpawnMonster>> &getspawnMonsterList() {
 		return spawnMonsterList;
 	}
 
 private:
-	std::vector<SpawnMonster> spawnMonsterList;
+	std::vector<std::shared_ptr<SpawnMonster>> spawnMonsterList;
 	std::string filemonstername;
 	bool loaded = false;
 	bool started = false;

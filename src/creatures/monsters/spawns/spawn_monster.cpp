@@ -60,8 +60,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 			continue;
 		}
 
-		SpawnMonster &spawnMonster = spawnMonsterList.emplace_back(centerPos, radius);
-
+		const auto &spawnMonster = spawnMonsterList.emplace_back(std::make_shared<SpawnMonster>(centerPos, radius));
 		for (const auto &childMonsterNode : spawnMonsterNode.children()) {
 			if (strcasecmp(childMonsterNode.name(), "monster") == 0) {
 				pugi::xml_attribute nameAttribute = childMonsterNode.attribute("name");
@@ -106,7 +105,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 					g_logger().warn("Missing spawntime attribute for monster '{}'. Setting to default respawn time: {}", nameAttribute.value(), scheduleInterval);
 				}
 
-				spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, scheduleInterval * 1000, weight);
+				spawnMonster->addMonster(nameAttribute.as_string(), pos, dir, scheduleInterval * 1000, weight);
 			}
 		}
 	}
@@ -121,16 +120,16 @@ void SpawnsMonster::startup() {
 		return;
 	}
 
-	for (SpawnMonster &spawnMonster : spawnMonsterList) {
-		spawnMonster.startup();
+	for (const auto &spawnMonster : spawnMonsterList) {
+		spawnMonster->startup();
 	}
 
 	started = true;
 }
 
 void SpawnsMonster::clear() {
-	for (SpawnMonster &spawnMonster : spawnMonsterList) {
-		spawnMonster.stopEvent();
+	for (const auto &spawnMonster : spawnMonsterList) {
+		spawnMonster->stopEvent();
 	}
 	spawnMonsterList.clear();
 
@@ -192,7 +191,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 	}
 
 	monster->setDirection(sb.direction);
-	monster->setSpawnMonster(this);
+	monster->setSpawnMonster(static_self_cast<SpawnMonster>());
 	monster->setMasterPos(sb.pos);
 
 	spawnedMonsterMap[spawnMonsterId] = monster;

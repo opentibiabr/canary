@@ -130,7 +130,7 @@ public:
 	RespawnType getRespawnType() const {
 		return mType->info.respawnType;
 	}
-	void setSpawnMonster(SpawnMonster* newSpawnMonster) {
+	void setSpawnMonster(const std::shared_ptr<SpawnMonster> &newSpawnMonster) {
 		this->spawnMonster = newSpawnMonster;
 	}
 
@@ -386,7 +386,7 @@ private:
 	std::string nameDescription;
 
 	std::shared_ptr<MonsterType> mType;
-	SpawnMonster* spawnMonster = nullptr;
+	std::shared_ptr<SpawnMonster> spawnMonster = nullptr;
 
 	int64_t lastMeleeAttack = 0;
 

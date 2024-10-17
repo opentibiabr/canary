@@ -385,7 +385,7 @@ void Creature::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool 
 void Creature::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	onCreatureDisappear(creature, true);
-	if (creature != getCreature() && isMapLoaded) {
+	if (creature && creature != getCreature() && isMapLoaded) {
 		if (creature->getPosition().z == getPosition().z) {
 			updateTileCache(creature->getTile(), creature->getPosition());
 		}

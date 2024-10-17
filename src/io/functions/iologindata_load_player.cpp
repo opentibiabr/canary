@@ -835,7 +835,7 @@ void IOLoginDataLoad::loadPlayerForgeHistory(std::shared_ptr<Player> player, DBR
 
 	std::ostringstream query;
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if (result = Database::getInstance().storeQuery(query.str())) {
+	if ((result = Database::getInstance().storeQuery(query.str()))) {
 		do {
 			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getNumber<uint16_t>("action_type"));
 			ForgeHistory history;
@@ -861,7 +861,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(std::shared_ptr<Player> player, DBResu
 
 	std::ostringstream query;
 	query << "SELECT * FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
-	if (result = Database::getInstance().storeQuery(query.str())) {
+	if ((result = Database::getInstance().storeQuery(query.str()))) {
 		do {
 			player->setSlotBossId(1, result->getNumber<uint16_t>("bossIdSlotOne"));
 			player->setSlotBossId(2, result->getNumber<uint16_t>("bossIdSlotTwo"));

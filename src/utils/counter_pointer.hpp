@@ -21,7 +21,9 @@ public:
 	static SharedPtrManager &getInstance();
 
 	template <typename T>
-	void store(const std::string &name, const std::shared_ptr<T> &ptr);
+	void store(const std::string &name, const std::shared_ptr<T> &ptr) {
+		m_sharedPtrMap[name] = ptr;
+	}
 
 	void countAllReferencesAndClean();
 

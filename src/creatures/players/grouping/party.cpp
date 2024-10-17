@@ -120,7 +120,7 @@ bool Party::leaveParty(const std::shared_ptr<Player> &player) {
 	}
 
 	// since we already passed the leadership, we remove the player from the list
-	const auto &it = std::ranges::find(memberList, player);
+	auto it = std::ranges::find(memberList, player);
 	if (it != memberList.end()) {
 		memberList.erase(it);
 	}
@@ -166,7 +166,7 @@ bool Party::passPartyLeadership(const std::shared_ptr<Player> &player) {
 	}
 
 	// Remove it before to broadcast the message correctly
-	const auto &it = std::ranges::find(memberList, player);
+	auto it = std::ranges::find(memberList, player);
 	if (it != memberList.end()) {
 		memberList.erase(it);
 	}
@@ -214,7 +214,7 @@ bool Party::joinParty(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
-	const auto &it = std::ranges::find(inviteList, player);
+	auto it = std::ranges::find(inviteList, player);
 	if (it == inviteList.end()) {
 		return false;
 	}
@@ -263,7 +263,7 @@ bool Party::removeInvite(const std::shared_ptr<Player> &player, bool removeFromP
 		return false;
 	}
 
-	const auto &it = std::ranges::find(inviteList, player);
+	auto it = std::ranges::find(inviteList, player);
 	if (it == inviteList.end()) {
 		return false;
 	}
@@ -530,7 +530,7 @@ uint32_t Party::getMaxLevel() {
 }
 
 bool Party::isPlayerActive(const std::shared_ptr<Player> &player) {
-	const auto &it = ticksMap.find(player->getID());
+	auto it = ticksMap.find(player->getID());
 	if (it == ticksMap.end()) {
 		return false;
 	}
@@ -565,7 +565,7 @@ void Party::updatePlayerTicks(const std::shared_ptr<Player> &player, uint32_t po
 }
 
 void Party::clearPlayerPoints(const std::shared_ptr<Player> &player) {
-	const auto &it = ticksMap.find(player->getID());
+	auto it = ticksMap.find(player->getID());
 	if (it != ticksMap.end()) {
 		ticksMap.erase(it);
 		updateSharedExperience();
@@ -747,7 +747,7 @@ void Party::addPlayerLoot(const std::shared_ptr<Player> &player, const std::shar
 	}
 
 	uint32_t count = std::max<uint32_t>(1, item->getItemCount());
-	if (const auto &it = playerAnalyzer->lootMap.find(item->getID()); it != playerAnalyzer->lootMap.end()) {
+	if (auto it = playerAnalyzer->lootMap.find(item->getID()); it != playerAnalyzer->lootMap.end()) {
 		it->second += count;
 	} else {
 		playerAnalyzer->lootMap.insert({ item->getID(), count });
@@ -774,7 +774,7 @@ void Party::addPlayerSupply(const std::shared_ptr<Player> &player, const std::sh
 		membersData.emplace_back(playerAnalyzer);
 	}
 
-	if (const auto &it = playerAnalyzer->supplyMap.find(item->getID()); it != playerAnalyzer->supplyMap.end()) {
+	if (auto it = playerAnalyzer->supplyMap.find(item->getID()); it != playerAnalyzer->supplyMap.end()) {
 		it->second += 1;
 	} else {
 		playerAnalyzer->supplyMap.insert({ item->getID(), 1 });

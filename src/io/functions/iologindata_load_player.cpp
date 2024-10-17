@@ -29,7 +29,7 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, 
 			propStream.init(attr, attrSize);
 
 			try {
-				const auto item = Item::CreateItem(type, count);
+				const auto &item = Item::CreateItem(type, count);
 				if (item) {
 					if (!item->unserializeAttr(propStream)) {
 						g_logger().warn("[{}] - Failed to deserialize item attributes {}, from player {}, from account id {}", __FUNCTION__, item->getID(), player->getName(), player->getAccountId());
@@ -597,22 +597,25 @@ void IOLoginDataLoad::loadPlayerDepotItems(const std::shared_ptr<Player> &player
 		loadItems(depotItems, result, player);
 		for (auto it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
 			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
-			const auto item = pair.first;
+			const auto &item = pair.first;
+			if (!item) {
+				continue;
+			}
 
 			int32_t pid = pair.second;
 			if (pid >= 0 && pid < 100) {
-				std::shared_ptr<DepotChest> depotChest = player->getDepotChest(pid, true);
+				const std::shared_ptr<DepotChest> &depotChest = player->getDepotChest(pid, true);
 				if (depotChest) {
 					depotChest->internalAddThing(item);
 					item->startDecaying();
 				}
 			} else {
-				ItemsMap::const_iterator it2 = depotItems.find(pid);
-				if (it2 == depotItems.end()) {
+				auto depotIt = depotItems.find(pid);
+				if (depotIt == depotItems.end()) {
 					continue;
 				}
 
-				std::shared_ptr<Container> container = it2->second.first->getContainer();
+				const std::shared_ptr<Container> &container = depotIt->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
 					// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
@@ -642,18 +645,22 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 
 		for (auto it = inboxItems.rbegin(), end = inboxItems.rend(); it != end; ++it) {
 			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
-			const auto item = pair.first;
+			const auto &item = pair.first;
+			if (!item) {
+				continue;
+			}
+
 			int32_t pid = pair.second;
 			if (pid >= 0 && pid < 100) {
 				player->getInbox()->internalAddThing(item);
 				item->startDecaying();
 			} else {
-				ItemsMap::const_iterator it2 = inboxItems.find(pid);
-				if (it2 == inboxItems.end()) {
+				auto inboxIt = inboxItems.find(pid);
+				if (inboxIt == inboxItems.end()) {
 					continue;
 				}
 
-				std::shared_ptr<Container> container = it2->second.first->getContainer();
+				const std::shared_ptr<Container> &container = inboxIt->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
 					itemsToStartDecaying.emplace_back(item);
@@ -907,18 +914,22 @@ void IOLoginDataLoad::bindRewardBag(const std::shared_ptr<Player> &player, Items
 void IOLoginDataLoad::insertItemsIntoRewardBag(const ItemsMap &rewardItemsMap) {
 	for (const auto &it : std::views::reverse(rewardItemsMap)) {
 		const std::pair<std::shared_ptr<Item>, int32_t> &pair = it.second;
-		const auto item = pair.first;
+		const auto &item = pair.first;
+		if (!item) {
+			continue;
+		}
+
 		int32_t pid = pair.second;
 		if (pid == 0) {
 			break;
 		}
 
-		auto it2 = rewardItemsMap.find(pid);
-		if (it2 == rewardItemsMap.end()) {
+		auto rewardIt = rewardItemsMap.find(pid);
+		if (rewardIt == rewardItemsMap.end()) {
 			continue;
 		}
 
-		std::shared_ptr<Container> container = it2->second.first->getContainer();
+		const std::shared_ptr<Container> &container = rewardIt->second.first->getContainer();
 		if (container) {
 			container->internalAddThing(item);
 		}

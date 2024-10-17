@@ -184,7 +184,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Item> &ite
 	}
 
 	if (item->hasAttribute(ItemAttribute_t::ACTIONID)) {
-		const auto &it = actionIdMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
+		auto it = actionIdMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
 		if (it != actionIdMap.end()) {
 			const std::list<std::shared_ptr<MoveEvent>> moveEventList = it->second.moveEvent[eventType];
 			for (const auto &moveEvent : moveEventList) {
@@ -195,7 +195,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Item> &ite
 		}
 	}
 
-	const auto &it = itemIdMap.find(item->getID());
+	auto it = itemIdMap.find(item->getID());
 	if (it != itemIdMap.end()) {
 		const std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
 		for (const auto &moveEvent : moveEventList) {

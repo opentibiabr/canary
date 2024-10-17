@@ -101,7 +101,7 @@ bool PlayerVIP::addInternal(uint32_t vipGuid) {
 }
 
 bool PlayerVIP::edit(uint32_t vipGuid, const std::string &description, uint32_t icon, bool notify, const std::vector<uint8_t> &groupsId) const {
-	const auto &it = vipGuids.find(vipGuid);
+	auto it = vipGuids.find(vipGuid);
 	if (it == vipGuids.end()) {
 		return false; // player is not in VIP
 	}
@@ -124,7 +124,7 @@ bool PlayerVIP::edit(uint32_t vipGuid, const std::string &description, uint32_t 
 }
 
 std::shared_ptr<VIPGroup> PlayerVIP::getGroupByID(uint8_t groupId) const {
-	const auto &it = std::ranges::find_if(vipGroups, [groupId](const auto &vipGroup) {
+	auto it = std::ranges::find_if(vipGroups, [groupId](const auto &vipGroup) {
 		return vipGroup->id == groupId;
 	});
 
@@ -133,7 +133,7 @@ std::shared_ptr<VIPGroup> PlayerVIP::getGroupByID(uint8_t groupId) const {
 
 std::shared_ptr<VIPGroup> PlayerVIP::getGroupByName(const std::string &name) const {
 	const auto groupName = name.c_str();
-	const auto &it = std::ranges::find_if(vipGroups, [groupName](const auto &vipGroup) {
+	auto it = std::ranges::find_if(vipGroups, [groupName](const auto &vipGroup) {
 		return strcmp(groupName, vipGroup->name.c_str()) == 0;
 	});
 
@@ -156,7 +156,7 @@ void PlayerVIP::addGroupInternal(uint8_t groupId, const std::string &name, bool 
 }
 
 void PlayerVIP::removeGroup(uint8_t groupId) {
-	const auto &it = std::ranges::find_if(vipGroups, [groupId](const auto &vipGroup) {
+	auto it = std::ranges::find_if(vipGroups, [groupId](const auto &vipGroup) {
 		return vipGroup->id == groupId;
 	});
 

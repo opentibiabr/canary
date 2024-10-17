@@ -97,7 +97,7 @@ public:
 
 	const std::vector<ShopBlock> &getShopItemVector(uint32_t playerGUID) const {
 		if (playerGUID != 0) {
-			const auto &it = shopPlayers.find(playerGUID);
+			auto it = shopPlayers.find(playerGUID);
 			if (it != shopPlayers.end() && !it->second.empty()) {
 				return it->second;
 			}
@@ -137,7 +137,7 @@ public:
 	}
 
 	bool isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
-		const auto &it = playerInteractions.find(playerId);
+		auto it = playerInteractions.find(playerId);
 		if (it == playerInteractions.end()) {
 			return false;
 		}

@@ -25,16 +25,21 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 	int32_t runningId = 100;
 
 	// Loop through each item in itemList
-	const auto openContainers = player->getOpenContainers();
+	const auto &openContainers = player->getOpenContainers();
 	for (const auto &it : itemList) {
+		const auto &item = it.second;
+		if (!item) {
+			continue;
+		}
+
 		int32_t pid = it.first;
-		const auto item = it.second;
+
 		++runningId;
 
 		// Update container attributes if necessary
-		if (std::shared_ptr<Container> container = item->getContainer()) {
+		if (const std::shared_ptr<Container> &container = item->getContainer()) {
 			if (!container) {
-				continue; // Check for null container
+				continue;
 			}
 
 			if (container->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
@@ -58,13 +63,8 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 		}
 
 		// Serialize item attributes
-		try {
-			propWriteStream.clear();
-			item->serializeAttr(propWriteStream);
-		} catch (...) {
-			g_logger().error("Error serializing item attributes.");
-			return false;
-		}
+		propWriteStream.clear();
+		item->serializeAttr(propWriteStream);
 
 		size_t attributesSize;
 		const char* attributes = propWriteStream.getStream(attributesSize);
@@ -81,11 +81,11 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 	while (!queue.empty()) {
 		const ContainerBlock &cb = queue.front();
 		const std::shared_ptr<Container> &container = cb.first;
-		int32_t parentId = cb.second;
-
 		if (!container) {
 			continue;
 		}
+
+		int32_t parentId = cb.second;
 
 		// Loop through items in container
 		for (auto &item : container->getItemList()) {
@@ -117,14 +117,9 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 			}
 
 			// Serialize item attributes
-			try {
-				propWriteStream.clear();
-				item->serializeAttr(propWriteStream);
-				item->stopDecaying();
-			} catch (...) {
-				g_logger().error("Error serializing item attributes in container.");
-				return false;
-			}
+			propWriteStream.clear();
+			item->serializeAttr(propWriteStream);
+			item->stopDecaying();
 
 			size_t attributesSize;
 			const char* attributes = propWriteStream.getStream(attributesSize);
@@ -471,7 +466,7 @@ bool IOLoginDataSave::savePlayerItem(const std::shared_ptr<Player> &player) {
 
 	ItemBlockList itemList;
 	for (int32_t slotId = CONST_SLOT_FIRST; slotId <= CONST_SLOT_LAST; ++slotId) {
-		const auto item = player->inventory[slotId];
+		const auto &item = player->inventory[slotId];
 		if (item) {
 			itemList.emplace_back(slotId, item);
 		}

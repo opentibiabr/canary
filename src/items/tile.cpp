@@ -451,7 +451,6 @@ void Tile::onUpdateTileItem(const std::shared_ptr<Item> &oldItem, const ItemType
 		if (it != g_game().browseFields.end()) {
 			const auto &lockedCylinder = it->second.lock();
 			if (lockedCylinder) {
-				// TODO verificar
 				const auto &oldParent = oldItem->getParent();
 				lockedCylinder->removeThing(oldItem, oldItem->getItemCount());
 				oldItem->setParent(oldParent);
@@ -509,7 +508,7 @@ void Tile::onRemoveTileItem(const CreatureVector &spectators, const std::vector<
 	}
 
 	if (!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES)) {
-		const auto items = getItemList();
+		const auto &items = getItemList();
 		if (!items || items->empty()) {
 			g_game().removeTileToClean(static_self_cast<Tile>());
 			return;
@@ -758,7 +757,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 				}
 			}
 		}
-	} else if (const auto item = thing->getItem()) {
+	} else if (const auto &item = thing->getItem()) {
 		const TileItemVector* items = getItemList();
 		if (items && items->size() >= 0x3E8) {
 			return RETURNVALUE_NOTPOSSIBLE;
@@ -1067,7 +1066,7 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 			if (itemType.isMagicField()) {
 				// remove old field item if exists
 				if (items) {
-					for (ItemVector::const_iterator it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
+					for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
 						const auto &oldField = (*it)->getMagicField();
 						if (oldField) {
 							if (oldField->isReplaceable()) {
@@ -1339,10 +1338,10 @@ int32_t Tile::getClientIndexOfCreature(const std::shared_ptr<Player> &player, co
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const auto &it : std::ranges::reverse_view(*creatures)) {
-			if (it == creature) {
+		for (const auto &reverseCreature : std::ranges::reverse_view(*creatures)) {
+			if (reverseCreature == creature) {
 				return n;
-			} else if (player->canSeeCreature(it)) {
+			} else if (player->canSeeCreature(reverseCreature)) {
 				++n;
 			}
 		}
@@ -1367,10 +1366,10 @@ int32_t Tile::getStackposOfCreature(const std::shared_ptr<Player> &player, const
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const auto &it : std::ranges::reverse_view(*creatures)) {
-			if (it == creature) {
+		for (const auto &reverseCreature : std::ranges::reverse_view(*creatures)) {
+			if (reverseCreature == creature) {
 				return n;
-			} else if (player->canSeeCreature(it)) {
+			} else if (player->canSeeCreature(reverseCreature)) {
 				if (++n >= 10) {
 					return -1;
 				}

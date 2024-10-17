@@ -72,7 +72,7 @@ bool Familiars::loadFromXml() {
 }
 
 std::shared_ptr<Familiar> Familiars::getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const {
-	if (const auto &it = std::ranges::find_if(familiars[vocation], [lookType](const auto &familiar_it) {
+	if (auto it = std::ranges::find_if(familiars[vocation], [lookType](const auto &familiar_it) {
 			return familiar_it->lookType == lookType;
 		});
 	    it != familiars[vocation].end()) {

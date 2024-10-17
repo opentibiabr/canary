@@ -1104,7 +1104,7 @@ public:
 			return;
 		}
 
-		const auto tile = creature->getTile();
+		const auto &tile = creature->getTile();
 		if (!tile) {
 			return;
 		}
@@ -1123,7 +1123,7 @@ public:
 			return;
 		}
 
-		const auto tile = creature->getTile();
+		const auto &tile = creature->getTile();
 		if (!tile) {
 			return;
 		}
@@ -1876,7 +1876,7 @@ public:
 			return false;
 		}
 
-		const auto &it = std::ranges::find(quickLootListItemIds, item->getID());
+		auto it = std::ranges::find(quickLootListItemIds, item->getID());
 		return it != quickLootListItemIds.end();
 	}
 
@@ -2155,7 +2155,7 @@ public:
 	}
 
 	const std::unique_ptr<PreySlot> &getPreySlotById(PreySlot_t slotid) {
-		if (const auto &it = std::ranges::find_if(preys, [slotid](const std::unique_ptr<PreySlot> &preyIt) {
+		if (auto it = std::ranges::find_if(preys, [slotid](const std::unique_ptr<PreySlot> &preyIt) {
 				return preyIt->id == slotid;
 			});
 		    it != preys.end()) {
@@ -2222,7 +2222,7 @@ public:
 			return PreySlotNull;
 		}
 
-		if (const auto &it = std::ranges::find_if(preys, [raceId](const std::unique_ptr<PreySlot> &it) {
+		if (auto it = std::ranges::find_if(preys, [raceId](const std::unique_ptr<PreySlot> &it) {
 				return it->selectedRaceId == raceId;
 			});
 		    it != preys.end()) {
@@ -2253,7 +2253,7 @@ public:
 	}
 
 	const std::unique_ptr<TaskHuntingSlot> &getTaskHuntingSlotById(PreySlot_t slotid) {
-		if (const auto &it = std::ranges::find_if(taskHunting, [slotid](const std::unique_ptr<TaskHuntingSlot> &itTask) {
+		if (auto it = std::ranges::find_if(taskHunting, [slotid](const std::unique_ptr<TaskHuntingSlot> &itTask) {
 				return itTask->id == slotid;
 			});
 		    it != taskHunting.end()) {
@@ -2322,7 +2322,7 @@ public:
 			return TaskHuntingSlotNull;
 		}
 
-		if (const auto &it = std::ranges::find_if(taskHunting, [raceId](const std::unique_ptr<TaskHuntingSlot> &itTask) {
+		if (auto it = std::ranges::find_if(taskHunting, [raceId](const std::unique_ptr<TaskHuntingSlot> &itTask) {
 				return itTask->selectedRaceId == raceId;
 			});
 		    it != taskHunting.end()) {

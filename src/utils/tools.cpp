@@ -1641,7 +1641,7 @@ NameEval_t validateName(const std::string &name) {
 		return INVALID_LENGTH;
 	}
 
-	if (!std::regex_match(name, regexValidChars)) { // invalid chars in name
+	if (!std::regex_match(name, regexValidChars)) {
 		return INVALID_CHARACTER;
 	}
 
@@ -1650,7 +1650,7 @@ NameEval_t validateName(const std::string &name) {
 			return INVALID_TOKEN_LENGTH;
 		}
 
-		if (std::ranges::find(prohibitedWords, str) != prohibitedWords.end()) { // searching for prohibited words
+		if (std::ranges::find(prohibitedWords, str) != prohibitedWords.end()) {
 			return INVALID_FORBIDDEN;
 		}
 	}

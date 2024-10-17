@@ -867,7 +867,7 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 			}
 		}
 
-		const auto item = Item::CreateItem(itemId);
+		const auto &item = Item::CreateItem(itemId);
 		if (caster) {
 			item->setOwner(caster);
 		}

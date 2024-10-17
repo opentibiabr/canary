@@ -12,6 +12,8 @@
 #include "lib/logging/log_with_spd_log.hpp"
 #include "lib/metrics/metrics.hpp"
 
+#include "utils/tools.hpp"
+
 std::atomic_uint_fast64_t Task::LAST_EVENT_ID = 0;
 
 Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context, const std::source_location &location) :
@@ -57,4 +59,8 @@ bool Task::execute() const {
 
 	func();
 	return true;
+}
+
+void Task::updateTime() {
+	utime = OTSYS_TIME() + delay;
 }

@@ -930,7 +930,7 @@ int32_t Player::getStorageValueByName(const std::string &storageName) const {
 }
 
 void Player::addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin /* = false*/) {
-	const auto &it = g_storages().getStorageMap().find(storageName);
+	auto it = g_storages().getStorageMap().find(storageName);
 	if (it == g_storages().getStorageMap().end()) {
 		g_logger().error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
 		return;
@@ -1045,7 +1045,7 @@ void Player::onReceiveMail() {
 std::shared_ptr<Container> Player::refreshManagedContainer(ObjectCategory_t category, const std::shared_ptr<Container> &container, bool isLootContainer, bool loading /* = false*/) {
 	std::shared_ptr<Container> previousContainer = nullptr;
 	const auto toSetAttribute = isLootContainer ? ItemAttribute_t::QUICKLOOTCONTAINER : ItemAttribute_t::OBTAINCONTAINER;
-	if (const auto &it = m_managedContainers.find(category); it != m_managedContainers.end() && !loading) {
+	if (auto it = m_managedContainers.find(category); it != m_managedContainers.end() && !loading) {
 		previousContainer = isLootContainer ? it->second.first : it->second.second;
 		if (previousContainer) {
 			auto flags = previousContainer->getAttribute<uint32_t>(toSetAttribute);
@@ -3542,7 +3542,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 	}
 
 	std::shared_ptr<Item> item = thing->getItem();
-	bool movingAmmoToQuiver = item && destItem && (destItem)->isQuiver() && item->isAmmo();
+	bool movingAmmoToQuiver = item && destItem && destItem->isQuiver() && item->isAmmo();
 	// force shield any slot right to player cylinder
 	if (index == CONST_SLOT_RIGHT && !movingAmmoToQuiver) {
 		return getPlayer();
@@ -4300,7 +4300,8 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 		}
 	}
 }
-// i will keep this function so it can be reviewed
+
+// TODO: review this function
 bool Player::updateSaleShopList(const std::shared_ptr<Item> &item) {
 	const uint16_t itemId = item->getID();
 	if (!itemId || !item) {
@@ -4860,6 +4861,10 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 		return false;
 	}
 	const auto &mType = monster->getMonsterType();
+	if (mType == nullptr) {
+		g_logger().error("[{}] Monster type is null.", __FUNCTION__);
+		return false;
+	}
 	addHuntingTaskKill(mType);
 	addBestiaryKill(mType);
 	addBosstiaryKill(mType);
@@ -5500,7 +5505,7 @@ int32_t Player::getCleavePercent(bool useCharges) const {
 
 int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 	int32_t result = 0;
-	const auto &it = perfectShot.find(range);
+	auto it = perfectShot.find(range);
 	if (it != perfectShot.end()) {
 		result = it->second;
 	}
@@ -5717,7 +5722,7 @@ void Player::sendPlayerPartyIcons(const std::shared_ptr<Player> &player) const {
 }
 
 bool Player::addPartyInvitation(const std::shared_ptr<Party> &newParty) {
-	const auto &it = std::ranges::find(invitePartyList, newParty);
+	auto it = std::ranges::find(invitePartyList, newParty);
 	if (it != invitePartyList.end()) {
 		return false;
 	}
@@ -6411,7 +6416,7 @@ bool Player::isImmuneFear() const {
 }
 
 uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice /* = false*/) const {
-	const auto &it = itemPriceMap.find(itemId);
+	auto it = itemPriceMap.find(itemId);
 	if (it != itemPriceMap.end()) {
 		return it->second;
 	}
@@ -6764,6 +6769,11 @@ void Player::clearCooldowns() {
 	auto it = conditions.begin();
 	while (it != conditions.end()) {
 		const auto &condItem = *it;
+		if (!condItem) {
+			++it;
+			continue;
+		}
+
 		const ConditionType_t type = condItem->getType();
 		constexpr auto maxu16 = std::numeric_limits<uint16_t>::max();
 		const auto checkSpellId = condItem->getSubId();
@@ -6965,6 +6975,10 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 
 	ReturnValue ret = RETURNVALUE_NOERROR;
 	for (const auto &item : itemsVector) {
+		if (!item) {
+			continue;
+		}
+
 		// First lets try to retrieve the item to the stash retrieve container.
 		if (g_game().tryRetrieveStashItems(static_self_cast<Player>(), item)) {
 			continue;
@@ -8177,6 +8191,10 @@ bool Player::hasPermittedConditionInPZ() const {
 
 	bool hasPermittedCondition = false;
 	for (const auto &condition : allowedConditions) {
+		if (!condition) {
+			continue;
+		}
+
 		if (getCondition(condition)) {
 			hasPermittedCondition = true;
 			break;

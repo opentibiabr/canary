@@ -197,40 +197,6 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	return true;
 }
 
-inline void Protocol::precacheControlSumsEncrypt() const {
-	if (cacheEncryptInitialized) {
-		return; // Cache já está pronto para criptografia
-	}
-
-	constexpr uint32_t delta = 0x61C88647;
-	uint32_t sum = 0;
-
-	for (int32_t i = 0; i < 32; ++i) {
-		cachedControlSumsEncrypt[i * 2] = sum + key[sum & 3];
-		sum -= delta;
-		cachedControlSumsEncrypt[i * 2 + 1] = sum + key[(sum >> 11) & 3];
-	}
-
-	cacheEncryptInitialized = true;
-}
-
-inline void Protocol::precacheControlSumsDecrypt() const {
-	if (cacheDecryptInitialized) {
-		return;
-	}
-
-	constexpr uint32_t delta = 0x61C88647;
-	uint32_t sum = 0xC6EF3720;
-
-	for (int32_t i = 0; i < 32; ++i) {
-		cachedControlSumsDecrypt[i * 2] = sum + key[(sum >> 11) & 3];
-		sum += delta;
-		cachedControlSumsDecrypt[i * 2 + 1] = sum + key[sum & 3];
-	}
-
-	cacheDecryptInitialized = true;
-}
-
 bool Protocol::RSA_decrypt(NetworkMessage &msg) {
 	if ((msg.getLength() - msg.getBufferPosition()) < 128) {
 		return false;

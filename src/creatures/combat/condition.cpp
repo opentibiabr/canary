@@ -1876,7 +1876,7 @@ bool ConditionFeared::getRandomDirection(const std::shared_ptr<Creature> &creatu
 
 	std::ranges::shuffle(directions, getRandomGenerator());
 
-	const auto &it = std::ranges::find_if(directions, [&](Direction dir) {
+	auto it = std::ranges::find_if(directions, [&](Direction dir) {
 		return canWalkTo(creature, pos, dir);
 	});
 

@@ -3281,7 +3281,8 @@ bool Item::hasMarketAttributes() const {
 }
 
 bool Item::isInsideDepot(bool includeInbox /* = false*/) {
-	if (const auto &thisContainer = getContainer(); thisContainer && (thisContainer->getDepotLocker() || thisContainer->isDepotChest() || (includeInbox && thisContainer->isInbox()))) {
+	const auto &thisContainer = getContainer();
+	if (thisContainer && (thisContainer->getDepotLocker() || thisContainer->isDepotChest() || (includeInbox && thisContainer->isInbox()))) {
 		return true;
 	}
 

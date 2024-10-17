@@ -407,7 +407,7 @@ void House::addDoor(const std::shared_ptr<Door> &door) {
 }
 
 void House::removeDoor(const std::shared_ptr<Door> &door) {
-	const auto &it = std::ranges::find(doorList, door);
+	auto it = std::ranges::find(doorList, door);
 	if (it != doorList.end()) {
 		doorList.erase(it);
 	}

@@ -22,7 +22,7 @@ bool PlayerTitle::isTitleUnlocked(uint8_t id) const {
 		return false;
 	}
 
-	if (const auto &it = std::ranges::find_if(m_titlesUnlocked, [id](auto title_it) {
+	if (auto it = std::ranges::find_if(m_titlesUnlocked, [id](auto title_it) {
 			return title_it.first.m_id == id;
 		});
 	    it != m_titlesUnlocked.end()) {
@@ -64,7 +64,7 @@ void PlayerTitle::remove(const Title &title) {
 		return;
 	}
 
-	const auto &it = std::ranges::find_if(m_titlesUnlocked, [id](auto title_it) {
+	auto it = std::ranges::find_if(m_titlesUnlocked, [id](auto title_it) {
 		return title_it.first.m_id == id;
 	});
 

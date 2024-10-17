@@ -1041,6 +1041,11 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	addGems(msg);
 	// TODO: read items from inventory
 	const auto &voc = m_player.getVocation();
+	if (!voc) {
+		g_logger().error("[{}] Failed to get vocation for player {}", __FUNCTION__, m_player.getName());
+		return;
+	}
+
 	m_player.client->sendResourceBalance(RESOURCE_BANK, m_player.getBankBalance());
 	m_player.client->sendResourceBalance(RESOURCE_INVENTORY_MONEY, m_player.getMoney());
 	m_player.client->sendResourceBalance(RESOURCE_LESSER_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Lesser)));
@@ -3160,9 +3165,6 @@ void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatT
 float PlayerWheel::calculateMitigation() const {
 	const int32_t skill = m_player.getSkillLevel(SKILL_SHIELD);
 	int32_t defenseValue = 0;
-	const auto &weapon = m_player.inventory[CONST_SLOT_LEFT];
-	const auto &shield = m_player.inventory[CONST_SLOT_RIGHT];
-
 	float fightFactor = 1.0f;
 	float shieldFactor = 1.0f;
 	float distanceFactor = 1.0f;
@@ -3183,6 +3185,7 @@ float PlayerWheel::calculateMitigation() const {
 			break;
 	}
 
+	const auto &shield = m_player.inventory[CONST_SLOT_RIGHT];
 	if (shield) {
 		if (shield->isSpellBook() || shield->isQuiver()) {
 			distanceFactor = m_player.vocation->mitigationSecondaryShield;
@@ -3196,6 +3199,7 @@ float PlayerWheel::calculateMitigation() const {
 		}
 	}
 
+	const auto &weapon = m_player.inventory[CONST_SLOT_LEFT];
 	if (weapon) {
 		if (weapon->getAmmoType() == AMMO_BOLT || weapon->getAmmoType() == AMMO_ARROW) {
 			distanceFactor = m_player.vocation->mitigationSecondaryShield;

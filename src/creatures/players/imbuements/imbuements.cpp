@@ -16,7 +16,7 @@ Imbuement* Imbuements::getImbuement(uint16_t id) {
 		return nullptr;
 	}
 
-	const auto &it = imbuementMap.find(id);
+	auto it = imbuementMap.find(id);
 	if (it == imbuementMap.end()) {
 		g_logger().warn("Imbuement {} not found", id);
 		return nullptr;

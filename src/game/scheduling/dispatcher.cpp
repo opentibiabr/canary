@@ -227,7 +227,7 @@ void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
 }
 
 void Dispatcher::stopEvent(uint64_t eventId) {
-	const auto &it = scheduledTasksRef.find(eventId);
+	auto it = scheduledTasksRef.find(eventId);
 	if (it != scheduledTasksRef.end()) {
 		it->second->cancel();
 		scheduledTasksRef.erase(it);

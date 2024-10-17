@@ -309,7 +309,7 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 
 std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name, bool silent /* = false*/) const {
 	std::string lowerCaseName = asLowerCaseString(name);
-	if (const auto &it = monsters.find(lowerCaseName);
+	if (auto it = monsters.find(lowerCaseName);
 	    it != monsters.end()
 	    // We will only return the MonsterType if it match the exact name of the monster
 	    && it->first.find(lowerCaseName) != std::basic_string<char>::npos) {
@@ -328,7 +328,7 @@ std::shared_ptr<MonsterType> Monsters::getMonsterTypeByRaceId(uint16_t raceId, b
 	}
 
 	const auto &monster_race_map = g_game().getBestiaryList();
-	const auto &it = monster_race_map.find(raceId);
+	auto it = monster_race_map.find(raceId);
 	if (it == monster_race_map.end()) {
 		return nullptr;
 	}

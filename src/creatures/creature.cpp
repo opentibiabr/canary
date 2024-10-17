@@ -1362,7 +1362,7 @@ bool Creature::setMaster(const std::shared_ptr<Creature> &newMaster, bool reload
 	m_master = newMaster;
 
 	if (oldMaster) {
-		const auto &it = std::ranges::find(oldMaster->m_summons, self);
+		auto it = std::ranges::find(oldMaster->m_summons, self);
 		if (it != oldMaster->m_summons.end()) {
 			oldMaster->m_summons.erase(it);
 		}
@@ -1640,20 +1640,17 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 
 	bool resetTypeBit = true;
 
-	auto it = eventsList.begin();
-	const auto end = eventsList.end();
-	while (it != end) {
-		const auto &curEvent = *it;
+	std::erase_if(eventsList, [&](const auto &curEvent) {
 		if (curEvent == event) {
-			it = eventsList.erase(it);
-			continue;
+			return true;
 		}
 
 		if (curEvent->getEventType() == type) {
 			resetTypeBit = false;
 		}
-		++it;
-	}
+
+		return false;
+	});
 
 	if (resetTypeBit) {
 		scriptEventsBitField &= ~(static_cast<uint32_t>(1) << type);

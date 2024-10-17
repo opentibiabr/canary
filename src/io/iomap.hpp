@@ -11,6 +11,7 @@
 
 #include "declarations.hpp"
 
+// TODO: move to .cpp for avoid circular dependencies
 #include "config/configmanager.hpp"
 #include "map/house/house.hpp"
 #include "items/item.hpp"

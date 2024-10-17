@@ -131,7 +131,7 @@ bool Npcs::reload() {
 
 std::shared_ptr<NpcType> Npcs::getNpcType(const std::string &name, bool create /* = false*/) {
 	const std::string key = asLowerCaseString(name);
-	const auto &it = npcs.find(key);
+	auto it = npcs.find(key);
 
 	if (it != npcs.end()) {
 		return it->second;

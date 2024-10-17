@@ -111,7 +111,7 @@ double_t Monster::getReflectPercent(CombatType_t reflectType, bool useCharges) c
 	if (result != 0) {
 		g_logger().debug("[{}] before mtype reflect element {}, percent {}", __FUNCTION__, fmt::underlying(reflectType), result);
 	}
-	const auto &it = mType->info.reflectMap.find(reflectType);
+	auto it = mType->info.reflectMap.find(reflectType);
 	if (it != mType->info.reflectMap.end()) {
 		result += it->second;
 	}
@@ -157,7 +157,7 @@ void Monster::addDefense(int32_t defense) {
 }
 
 uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {
-	const auto &it = mType->info.healingMap.find(healingType);
+	auto it = mType->info.healingMap.find(healingType);
 	if (it != mType->info.healingMap.end()) {
 		return it->second;
 	}
@@ -430,7 +430,7 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 
 	assert(creature != getMonster());
 
-	const auto &it = getTargetIterator(creature);
+	auto it = getTargetIterator(creature);
 	if (it != targetList.end()) {
 		return false;
 	}
@@ -453,7 +453,7 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	const auto &it = getTargetIterator(creature);
+	auto it = getTargetIterator(creature);
 	if (it == targetList.end()) {
 		return false;
 	}
@@ -781,7 +781,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	const auto &it = getTargetIterator(creature);
+	auto it = getTargetIterator(creature);
 	if (it == targetList.end()) {
 		// Target not found in our target list.
 		return false;
@@ -842,7 +842,7 @@ void Monster::onAddCondition(ConditionType_t type) {
 	onConditionStatusChange(type);
 }
 
-void Monster::onConditionStatusChange(const ConditionType_t &type) {
+void Monster::onConditionStatusChange(ConditionType_t type) {
 	if (type == CONDITION_FIRE || type == CONDITION_ENERGY || type == CONDITION_POISON) {
 		updateMapCache();
 	}

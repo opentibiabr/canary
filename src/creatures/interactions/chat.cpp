@@ -605,7 +605,7 @@ std::shared_ptr<ChatChannel> Chat::getChannel(const std::shared_ptr<Player> &pla
 		case CHANNEL_GUILD: {
 			const auto &guild = player->getGuild();
 			if (guild != nullptr) {
-				const auto &it = guildChannels.find(guild->getId());
+				auto it = guildChannels.find(guild->getId());
 				if (it != guildChannels.end()) {
 					return it->second;
 				}
@@ -616,7 +616,7 @@ std::shared_ptr<ChatChannel> Chat::getChannel(const std::shared_ptr<Player> &pla
 		case CHANNEL_PARTY: {
 			const auto &party = player->getParty();
 			if (party != nullptr) {
-				const auto &it = partyChannels.find(party);
+				auto it = partyChannels.find(party);
 				if (it != partyChannels.end()) {
 					return it->second;
 				}
@@ -625,7 +625,7 @@ std::shared_ptr<ChatChannel> Chat::getChannel(const std::shared_ptr<Player> &pla
 		}
 
 		default: {
-			const auto &it = normalChannels.find(channelId);
+			auto it = normalChannels.find(channelId);
 			if (it != normalChannels.end()) {
 				const auto &channel = it->second;
 				if (!channel->executeCanJoinEvent(player)) {
@@ -645,7 +645,7 @@ std::shared_ptr<ChatChannel> Chat::getChannel(const std::shared_ptr<Player> &pla
 }
 
 std::shared_ptr<ChatChannel> Chat::getGuildChannelById(uint32_t guildId) {
-	const auto &it = guildChannels.find(guildId);
+	auto it = guildChannels.find(guildId);
 	if (it == guildChannels.end()) {
 		return nullptr;
 	}
@@ -653,7 +653,7 @@ std::shared_ptr<ChatChannel> Chat::getGuildChannelById(uint32_t guildId) {
 }
 
 std::shared_ptr<ChatChannel> Chat::getChannelById(uint16_t channelId) {
-	const auto &it = normalChannels.find(channelId);
+	auto it = normalChannels.find(channelId);
 	if (it == normalChannels.end()) {
 		return nullptr;
 	}

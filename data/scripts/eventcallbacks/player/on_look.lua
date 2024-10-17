@@ -44,7 +44,7 @@ local function handleCreatureDescription(inspectedThing, lookDistance)
 		local monsterMaster = inspectedThing:getMaster()
 		if monsterMaster and table.contains({ "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }, inspectedThing:getName():lower()) then
 			local summonTimeRemaining = monsterMaster:kv():get("familiar-summon-time") or 0
-			descriptionText = string.format("%s (Master: %s). It will disappear in %s", descriptionText, monsterMaster:getName(), getTimeInWords(summonTimeRemaining - os.time()))
+			descriptionText = string.format("%s (Master: %s). It will disappear in %s", descriptionText, monsterMaster:getName(), Game.getTimeInWords(summonTimeRemaining - os.time()))
 		end
 	end
 

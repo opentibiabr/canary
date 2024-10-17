@@ -514,6 +514,7 @@ void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType
 		}
 
 		client->refreshCyclopediaMonsterTracker(tracker, isBoss);
+		setSaveBosstiary(true);
 	}
 }
 
@@ -535,6 +536,7 @@ void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType>
 		}
 
 		client->refreshCyclopediaMonsterTracker(tracker, isBoss);
+		setSaveBosstiary(true);
 	}
 }
 
@@ -5206,6 +5208,7 @@ void Player::addUnjustifiedDead(std::shared_ptr<Player> attacked) {
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, "Warning! The murder of " + attacked->getName() + " was not justified.");
 
 	unjustifiedKills.emplace_back(attacked->getGUID(), time(nullptr), true);
+	setSaveUnjustifiedKills(true);
 
 	uint8_t dayKills = 0;
 	uint8_t weekKills = 0;
@@ -5296,11 +5299,13 @@ double Player::getLostPercent() const {
 void Player::learnInstantSpell(const std::string &spellName) {
 	if (!hasLearnedInstantSpell(spellName)) {
 		learnedInstantSpellList.emplace_back(spellName);
+		setSaveSpells(true);
 	}
 }
 
 void Player::forgetInstantSpell(const std::string &spellName) {
 	std::erase(learnedInstantSpellList, spellName);
+	setSaveSpells(true);
 }
 
 bool Player::hasLearnedInstantSpell(const std::string &spellName) const {

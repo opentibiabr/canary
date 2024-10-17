@@ -73,9 +73,12 @@ public:
 			return false;
 		}
 
-		std::span<const unsigned char> sourceSpan(reinterpret_cast<const unsigned char*>(p), sizeof(T));
-		std::array<unsigned char, sizeof(T)> tempBuffer;
-		std::ranges::copy(sourceSpan, tempBuffer.begin());
+		std::span<const char> charSpan { p, sizeof(T) };
+		auto byteSpan = std::as_bytes(charSpan);
+
+		std::array<std::byte, sizeof(T)> tempBuffer;
+		std::ranges::copy(byteSpan, tempBuffer.begin());
+
 		ret = std::bit_cast<T>(tempBuffer);
 
 		p += sizeof(T);
@@ -93,10 +96,11 @@ public:
 			return false;
 		}
 
-		std::vector<unsigned char> tempBuffer(strLen);
-		std::span<const unsigned char> sourceSpan(reinterpret_cast<const unsigned char*>(p), strLen);
+		std::vector<char> tempBuffer(strLen);
+		std::span<const char> sourceSpan(p, strLen);
 		std::ranges::copy(sourceSpan, tempBuffer.begin());
-		ret.assign(reinterpret_cast<const char*>(tempBuffer.data()), strLen);
+
+		ret.assign(tempBuffer.begin(), tempBuffer.end());
 
 		p += strLen;
 

@@ -4122,7 +4122,7 @@ std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t
 		}
 
 		if (const auto &container = item->getContainer()) {
-			if (container->size() > 0) {
+			if (!container->empty() && container->getID() != ITEM_GOLD_POUCH) {
 				continue;
 			}
 		}

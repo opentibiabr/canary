@@ -2669,6 +2669,9 @@ Storage = {
 					RedGem = 46067,
 					FinalBasin = 46068,
 					SkullSample = 46069,
+					TakenRod = 46070,
+					TrialTimer = 46071,
+					MuseumTimer = 46071,
 				},
 				SmallIslands = {
 					Questline = 46070,

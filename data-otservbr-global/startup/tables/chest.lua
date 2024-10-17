@@ -2655,6 +2655,28 @@ ChestUnique = {
 		weight = 8.00,
 		questName = "PetrifiedScreamQuest",
 	},
+	-- The Secret Library Quest
+	[6314] = {
+		itemId = 2472,
+		itemPos = { x = 33231, y = 32017, z = 8 },
+		reward = { { 27874, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.SampleBlood,
+	},
+	[6315] = {
+		itemId = 2472,
+		itemPos = { x = 33212, y = 32081, z = 9 },
+		reward = { { 27847, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.BonyRod,
+	},
+	[6316] = {
+		itemId = 2472,
+		itemPos = { x = 33342, y = 32120, z = 10 },
+		reward = { { 25746, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.BrokenCompass,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

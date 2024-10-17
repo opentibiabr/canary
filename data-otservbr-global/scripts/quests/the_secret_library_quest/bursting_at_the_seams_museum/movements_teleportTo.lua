@@ -49,12 +49,11 @@ function movements_museum_teleportTo.onStepIn(creature, item, position, fromPosi
 	elseif item.actionid == 4907 then
 		if position == lastroom_enter then
 			player:teleportTo(Position(33363, 32146, 10))
-		elseif position == lastroom_exit and player:getStorageValue("trialTimer") < os.time() then
+		elseif position == lastroom_exit and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.TrialTimer) < os.time() then
 			player:teleportTo(Position(33336, 32117, 10))
-		-- Trial
 		else
 			if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline) < 6 then
-				player:setStorageValue("trialTimer", os.time() + 3 * 60)
+				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.TrialTimer, os.time() + 3 * 60)
 				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, 6)
 				player:say("rkawdmawfjawkjnfjkawnkjnawkdjawkfmalkwmflkmawkfnzxc", TALKTYPE_MONSTER_SAY)
 			end

@@ -6611,11 +6611,11 @@ if not Quests then
 					},
 				},
 				[6] = {
-					name = "The Veiled Hoard of Zathroth",
+					name = "Bursting at the Seams",
 					storageId = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline,
 					missionId = 10456,
 					startValue = 1,
-					endValue = 7,
+					endValue = 8,
 					states = {
 						[1] = "Dedoras told you where to search for leads to the Veiled Hoard: the museum in Thais, a fishmen temple in Tiquanda, an order fortress in Edron, the Asuri Palace and a deserted isle.",
 						[2] = "You talked with Gareth and now you may pass trougth the door.",
@@ -6624,6 +6624,7 @@ if not Quests then
 						[5] = "Part V",
 						[6] = "You successfully entered the Veiled Hoard of Zathroth. However, countless secret and vast knowledge still lie ahead.",
 						[7] = "You have reported Gareth about the enigmatic inscription you have found in the chamber of doom. He was able to decipher it for you and referred to Dedoras in Cormaya for further assistance.",
+						[8] = "Congratulations you completed this mission.",
 					},
 				},
 			},

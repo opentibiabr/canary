@@ -7,6 +7,7 @@ function actions_museum_bony_rod.onUse(player, item, fromPosition, target, toPos
 	if item.itemid == 28709 then
 		if target.itemid == 27847 then
 			item:remove(1)
+			target:remove(1)
 			player:addItem(28708, 1)
 		end
 	elseif item.itemid == 28708 then

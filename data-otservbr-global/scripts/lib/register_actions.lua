@@ -58,6 +58,22 @@ local lava = {
 	Position(32813, 32333, 11),
 }
 
+local secret_library = {
+	crystals = {
+		[1] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal1, position = Position(33216, 32108, 9) },
+		[2] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal2, position = Position(33242, 32100, 9) },
+		[3] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal3, position = Position(33226, 32103, 9) },
+		[4] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal4, position = Position(33236, 32084, 9) },
+		[5] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal5, position = Position(33260, 32103, 9) },
+		[6] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal6, position = Position(33260, 32103, 9) },
+		[7] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal7, position = Position(33260, 32103, 9) },
+		[8] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal8, position = Position(33260, 32103, 9) }
+	},
+	timer = "tsl_crystaltimer",
+	exhaustMessage = "Digging crystal is exhausting. You're still weary from your last prospect.",
+	items = {27867,27868,27869}
+}
+
 local function revertItem(position, itemId, transformId)
 	local item = Tile(position):getItemById(itemId)
 	if item then
@@ -500,6 +516,23 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 			addEvent(function()
 				Game.createItem(1772, 1, stonePos)
 			end, 20000)
+			return true
+		end
+	end
+
+	-- The Secret Library Quest
+	local tPos = toPosition
+	for _, j in pairs(secret_library.crystals) do
+		if tPos == j.position then
+			if player:getStorageValue(j.storage) < os.time() then
+				local r = math.random(1,3)
+				local item_id = secret_library.items[r]
+				player:addItem(item_id, 1)
+				player:say("You have found a " .. ItemType(item_id):getName() .. ".", TALKTYPE_MONSTER_SAY)
+				player:setStorageValue(j.storage, os.time() + 2*60)
+			else
+				player:say(secret_library.exhaustMessage, TALKTYPE_MONSTER_SAY)
+			end
 			return true
 		end
 	end
@@ -969,6 +1002,23 @@ end
 function onUseKitchenKnife(player, item, fromPosition, target, toPosition, isHotkey)
 	if not table.contains({ 3469, 9594, 9598 }, item.itemid) then
 		return false
+	end
+
+	-- The Secret Library Quest
+	local tPos = toPosition
+	for _, j in pairs(secret_library.crystals) do
+		if tPos == j.position then
+			if player:getStorageValue(j.storage) < os.time() then
+				local r = math.random(1,3)
+				local item_id = secret_library.items[r]
+				player:addItem(item_id, 1)
+				player:say("You have found a " .. ItemType(item_id):getName() .. ".", TALKTYPE_MONSTER_SAY)
+				player:setStorageValue(j.storage, os.time() + 2*60)
+			else
+				player:say(secret_library.exhaustMessage, TALKTYPE_MONSTER_SAY)
+			end
+			return true
+		end
 	end
 
 	local targetId = target:getId()

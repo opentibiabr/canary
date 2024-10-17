@@ -1569,21 +1569,3 @@ function Creature:applyZoneEffect(var, combat, zoneName)
 
 	return true
 end
-
-function string.toPosition(str)
-	local patterns = {
-		-- table format
-		"{%s*x%s*=%s*(%d+)%s*,%s*y%s*=%s*(%d+)%s*,%s*z%s*=%s*(%d+)%s*}",
-		-- Position format
-		"Position%s*%((%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*%)",
-		-- x, y, z format
-		"(%d+)%s*,%s*(%d+)%s*,%s*(%d+)",
-	}
-
-	for _, pattern in ipairs(patterns) do
-		local x, y, z = string.match(str, pattern)
-		if x and y and z then
-			return Position(tonumber(x), tonumber(y), tonumber(z))
-		end
-	end
-end

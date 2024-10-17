@@ -129,3 +129,19 @@ end
 string.capitalize = function(str)
 	return str:gsub("%f[%a].", string.upper)
 end
+
+function string.toPosition(inputString)
+	local positionPatterns = {
+		"{%s*x%s*=%s*(%d+)%s*,%s*y%s*=%s*(%d+)%s*,%s*z%s*=%s*(%d+)%s*}",
+		"Position%s*%((%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*%)",
+		"(%d+)%s*,%s*(%d+)%s*,%s*(%d+)",
+	}
+
+	for _, pattern in ipairs(positionPatterns) do
+		local posX, posY, posZ = string.match(inputString, pattern)
+		if posX and posY and posZ then
+			return Position(tonumber(posX), tonumber(posY), tonumber(posZ))
+		end
+	end
+	return nil
+end

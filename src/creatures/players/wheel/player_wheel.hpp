@@ -12,6 +12,7 @@
 #include "utils/utils_definitions.hpp"
 #include "enums/player_wheel.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
+#include "creatures/players/wheel/wheel_gems.hpp"
 #include "kv/kv_definitions.hpp"
 
 class Spell;
@@ -19,7 +20,6 @@ class Player;
 class Creature;
 class NetworkMessage;
 class KV;
-class WheelModifierContext;
 
 struct PlayerWheelGem {
 	std::string uuid;

@@ -497,14 +497,14 @@ void Tile::onRemoveTileItem(const CreatureVector &spectators, const std::vector<
 
 	// send to client
 	size_t i = 0;
-	for (const std::shared_ptr<Creature> &spectator : spectators) {
+	for (const auto &spectator : spectators) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendRemoveTileThing(cylinderMapPos, oldStackPosVector[i++]);
 		}
 	}
 
 	// event methods
-	for (const std::shared_ptr<Creature> &spectator : spectators) {
+	for (const auto &spectator : spectators) {
 		spectator->onRemoveTileItem(static_self_cast<Tile>(), cylinderMapPos, iType, item);
 	}
 
@@ -679,10 +679,10 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			const auto playerTile = player->getTile();
 			// moving from a pz tile to a non-pz tile
 			if (playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-				auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT);
+				const auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT);
 				if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && !hasFlag(TILESTATE_PROTECTIONZONE)) {
-					auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT);
-					auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
+					const auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT);
+					const auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
 					int countOutsizePZ = 0;
 					for (const auto &accountPlayer : accountPlayers) {
 						if (accountPlayer == player || accountPlayer->isOffline()) {
@@ -850,7 +850,7 @@ ReturnValue Tile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t coun
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item == nullptr) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -997,98 +997,100 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 		creature->setParent(static_self_cast<Tile>());
 
 		CreatureVector* creatures = makeCreatures();
-		if (creatures) {
-			creatures->insert(creatures->begin(), creature);
+		creatures->insert(creatures->begin(), creature);
+	} else {
+		const auto &item = thing->getItem();
+		if (item == nullptr) {
+			return /*RETURNVALUE_NOTPOSSIBLE*/;
 		}
-		return;
-	}
 
-	const auto &item = thing->getItem();
-	if (!item) {
-		return; // RETURNVALUE_NOTPOSSIBLE
-	}
-
-	TileItemVector* items = getItemList();
-	if (items && items->size() >= 0xFFFF) {
-		return; // RETURNVALUE_NOTPOSSIBLE
-	}
-
-	item->setParent(static_self_cast<Tile>());
-
-	const ItemType &itemType = Item::items[item->getID()];
-
-	if (itemType.isGroundTile()) {
-		if (!ground) {
-			ground = item;
-			onAddTileItem(item);
-		} else {
-			const ItemType &oldType = Item::items[ground->getID()];
-			const auto &oldGround = ground;
-			ground->resetParent();
-			ground = item;
-			resetTileFlags(oldGround);
-			setTileFlags(item);
-			onUpdateTileItem(oldGround, oldType, item, itemType);
-			postRemoveNotification(oldGround, nullptr, 0);
+		TileItemVector* items = getItemList();
+		if (items && items->size() >= 0xFFFF) {
+			return /*RETURNVALUE_NOTPOSSIBLE*/;
 		}
-		return;
-	}
 
-	if (item->isAlwaysOnTop()) {
-		if (itemType.isSplash() && items) {
-			for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
-				const auto &oldSplash = *it;
-				if (Item::items[oldSplash->getID()].isSplash()) {
-					postRemoveNotification(oldSplash, nullptr, 0);
+		item->setParent(static_self_cast<Tile>());
+
+		const ItemType &itemType = Item::items[item->getID()];
+		if (itemType.isGroundTile()) {
+			if (ground == nullptr) {
+				ground = item;
+				onAddTileItem(item);
+			} else {
+				const ItemType &oldType = Item::items[ground->getID()];
+
+				const auto &oldGround = ground;
+				ground->resetParent();
+				ground = item;
+				resetTileFlags(oldGround);
+				setTileFlags(item);
+				onUpdateTileItem(oldGround, oldType, item, itemType);
+				postRemoveNotification(oldGround, nullptr, 0);
+			}
+		} else if (item->isAlwaysOnTop()) {
+			if (itemType.isSplash() && items) {
+				// remove old splash if exists
+				for (ItemVector::const_iterator it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
+					const auto &oldSplash = *it;
+					if (!Item::items[oldSplash->getID()].isSplash()) {
+						continue;
+					}
+
 					removeThing(oldSplash, 1);
+					postRemoveNotification(oldSplash, nullptr, 0);
 					oldSplash->resetParent();
 					break;
 				}
 			}
-		}
 
-		if (!items) {
-			items = makeItemList();
-		}
+			bool isInserted = false;
 
-		const auto &it = std::find_if(items->getBeginTopItem(), items->getEndTopItem(), [&](const auto &i) {
-			return itemType.alwaysOnTopOrder <= Item::items[i->getID()].alwaysOnTopOrder;
-		});
-
-		if (it != items->getEndTopItem()) {
-			items->insert(it, item);
-		} else {
-			items->push_back(item);
-		}
-
-		onAddTileItem(item);
-		return;
-	}
-
-	if (itemType.isMagicField() && items) {
-		for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
-			const auto &oldField = (*it)->getMagicField();
-			if (oldField) {
-				if (oldField->isReplaceable()) {
-					postRemoveNotification(oldField, nullptr, 0);
-					removeThing(oldField, 1);
-					oldField->resetParent();
-					break;
+			if (items) {
+				for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
+					// Note: this is different from internalAddThing
+					if (itemType.alwaysOnTopOrder <= Item::items[(*it)->getID()].alwaysOnTopOrder) {
+						items->insert(it, item);
+						isInserted = true;
+						break;
+					}
 				}
-
-				item->resetParent();
-				return;
+			} else {
+				items = makeItemList();
 			}
+
+			if (!isInserted) {
+				items->push_back(item);
+			}
+
+			onAddTileItem(item);
+		} else {
+			if (itemType.isMagicField()) {
+				// remove old field item if exists
+				if (items) {
+					for (ItemVector::const_iterator it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
+						const auto &oldField = (*it)->getMagicField();
+						if (oldField) {
+							if (oldField->isReplaceable()) {
+								removeThing(oldField, 1);
+								postRemoveNotification(oldField, nullptr, 0);
+								oldField->resetParent();
+								break;
+							} else {
+								// This magic field cannot be replaced.
+								item->resetParent();
+								return;
+							}
+						}
+					}
+				}
+			}
+
+			items = makeItemList();
+			items->insert(items->getBeginDownItem(), item);
+			items->increaseDownItemCount();
+			onAddTileItem(item);
 		}
 	}
-
-	if (!items) {
-		items = makeItemList();
-	}
-
-	items->insert(items->getBeginDownItem(), item);
-	items->increaseDownItemCount();
-	onAddTileItem(item);
 }
 
 void Tile::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) {
@@ -1097,7 +1099,7 @@ void Tile::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uin
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
 
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item == nullptr) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
@@ -1235,9 +1237,9 @@ void Tile::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) {
 			}
 		}
 
-		item->resetParent();
 		items->erase(it);
 		onRemoveTileItem(spectators.data(), oldStackPosVector, item);
+		item->resetParent();
 	} else {
 		const auto it = std::find(items->getBeginDownItem(), items->getEndDownItem(), item);
 		if (it == items->getEndDownItem()) {
@@ -1254,7 +1256,7 @@ void Tile::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) {
 
 			const auto spectators = Spectators().find<Creature>(getPosition(), true);
 			for (const auto &spectator : spectators) {
-				if (spectator->getPlayer()) {
+				if (const auto &tmpPlayer = spectator->getPlayer()) {
 					oldStackPosVector.push_back(getStackposOfItem(spectator->getPlayer(), item));
 				}
 			}
@@ -1525,10 +1527,6 @@ void Tile::postAddNotification(const std::shared_ptr<Thing> &thing, const std::s
 }
 
 void Tile::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
-	if (!thing) {
-		return;
-	}
-
 	const auto spectators = Spectators().find<Player>(getPosition(), true);
 
 	if (getThingCount() > 8) {

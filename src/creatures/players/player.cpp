@@ -2886,13 +2886,13 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 
 		auto it = conditions.begin(), end = conditions.end();
 		while (it != end) {
-			const auto &condition = *it;
+			auto condition = *it;
 			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
 			if (condition->isPersistent() && condition->isRemovableOnDeath()) {
+				it = conditions.erase(it);
+
 				condition->endCondition(static_self_cast<Player>());
 				onEndCondition(condition->getType());
-
-				it = conditions.erase(it);
 			} else {
 				++it;
 			}
@@ -2902,12 +2902,12 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 
 		auto it = conditions.begin(), end = conditions.end();
 		while (it != end) {
-			const auto &condition = *it;
+			auto condition = *it;
 			if (condition->isPersistent()) {
+				it = conditions.erase(it);
+
 				condition->endCondition(static_self_cast<Player>());
 				onEndCondition(condition->getType());
-
-				it = conditions.erase(it);
 			} else {
 				++it;
 			}

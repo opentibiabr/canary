@@ -1750,7 +1750,7 @@ bool FrozenPathingConditionCall::operator()(const Position &startPos, const Posi
 		if (testDist == fpp.maxTargetDist) {
 			bestMatchDist = 0;
 			return true;
-		} else if (testDist > bestMatchDist) {			// not quite what we want, but the best so far
+		} else if (testDist > bestMatchDist) { // not quite what we want, but the best so far
 			bestMatchDist = testDist;
 			return true;
 		}

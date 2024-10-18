@@ -3584,7 +3584,6 @@ void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listD
 	}
 
 	player->resetIdleTime();
-	player->setNextWalkTask(nullptr);
 	player->startAutoWalk(listDir, false);
 }
 
@@ -3600,7 +3599,6 @@ void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &
 	player->setFollowCreature(nullptr);
 
 	player->resetIdleTime();
-	player->setNextWalkTask(nullptr);
 
 	player->startAutoWalk(listDir, true);
 }

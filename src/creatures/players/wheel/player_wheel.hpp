@@ -297,7 +297,7 @@ public:
 	int32_t getResistance(CombatType_t type) const;
 	int32_t getMajorStatConditional(const std::string &instant, WheelMajor_t major) const;
 	int64_t getOnThinkTimer(WheelOnThink_t type) const;
-	bool getInstant(const std::string &name) const;
+	bool getInstant(std::string_view name) const;
 	double getMitigationMultiplier() const;
 
 	// Wheel of destiny - Specific functions

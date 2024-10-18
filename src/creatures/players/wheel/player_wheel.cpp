@@ -2972,27 +2972,28 @@ int64_t PlayerWheel::getOnThinkTimer(WheelOnThink_t type) const {
 	return 0;
 }
 
-bool PlayerWheel::getInstant(const std::string &name) const {
+bool PlayerWheel::getInstant(std::string_view name) const {
+	using enum WheelInstant_t;
 	if (name == "Battle Instinct") {
-		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_INSTINCT);
+		return PlayerWheel::getInstant(BATTLE_INSTINCT);
 	}
 	if (name == "Battle Healing") {
-		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_HEALING);
+		return PlayerWheel::getInstant(BATTLE_HEALING);
 	}
 	if (name == "Positional Tatics") {
-		return PlayerWheel::getInstant(WheelInstant_t::POSITIONAL_TATICS);
+		return PlayerWheel::getInstant(POSITIONAL_TATICS);
 	}
 	if (name == "Ballistic Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::BALLISTIC_MASTERY);
+		return PlayerWheel::getInstant(BALLISTIC_MASTERY);
 	}
 	if (name == "Healing Link") {
-		return PlayerWheel::getInstant(WheelInstant_t::HEALING_LINK);
+		return PlayerWheel::getInstant(HEALING_LINK);
 	}
 	if (name == "Runic Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::RUNIC_MASTERY);
+		return PlayerWheel::getInstant(RUNIC_MASTERY);
 	}
 	if (name == "Focus Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::FOCUS_MASTERY);
+		return PlayerWheel::getInstant(FOCUS_MASTERY);
 	}
 	if (name == "Beam Mastery") {
 		return PlayerWheel::getStage(WheelStage_t::BEAM_MASTERY);

@@ -65,43 +65,6 @@ function getTitle(uid)
 	return false
 end
 
-function getTimeInWords(secsParam)
-	local secs = tonumber(secsParam)
-	local days = math.floor(secs / (24 * 3600))
-	secs = secs - (days * 24 * 3600)
-	local hours, minutes, seconds = getHours(secs), getMinutes(secs), getSeconds(secs)
-	local timeStr = ""
-
-	if days > 0 then
-		timeStr = days .. (days > 1 and " days" or " day")
-	end
-
-	if hours > 0 then
-		if timeStr ~= "" then
-			timeStr = timeStr .. ", "
-		end
-
-		timeStr = timeStr .. hours .. (hours > 1 and " hours" or " hour")
-	end
-
-	if minutes > 0 then
-		if timeStr ~= "" then
-			timeStr = timeStr .. ", "
-		end
-
-		timeStr = timeStr .. minutes .. (minutes > 1 and " minutes" or " minute")
-	end
-
-	if seconds > 0 then
-		if timeStr ~= "" then
-			timeStr = timeStr .. " and "
-		end
-
-		timeStr = timeStr .. seconds .. (seconds > 1 and " seconds" or " second")
-	end
-	return timeStr
-end
-
 function getLootRandom(modifier)
 	local multi = (configManager.getNumber(configKeys.RATE_LOOT) * SCHEDULE_LOOT_RATE) * (modifier or 1)
 	return math.random(0, MAX_LOOTCHANCE) * 100 / math.max(1, multi)
@@ -947,31 +910,6 @@ function SetInfluenced(monsterType, monster, player, influencedLevel)
 	end
 	Game.addInfluencedMonster(monster)
 	monster:setForgeStack(influencedLevel)
-end
-
-function getHours(seconds)
-	return math.floor((seconds / 60) / 60)
-end
-
-function getMinutes(seconds)
-	return math.floor(seconds / 60) % 60
-end
-
-function getSeconds(seconds)
-	return seconds % 60
-end
-
-function getTime(seconds)
-	local hours, minutes = getHours(seconds), getMinutes(seconds)
-	if minutes > 59 then
-		minutes = minutes - hours * 60
-	end
-
-	if minutes < 10 then
-		minutes = "0" .. minutes
-	end
-
-	return hours .. ":" .. minutes .. "h"
 end
 
 function ReloadDataEvent(cid)

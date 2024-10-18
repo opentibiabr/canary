@@ -25,7 +25,7 @@ void Argon2::updateConstants() {
 }
 
 uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
-	static const std::regex pattern(R"(^\s*(\d+)\s*<<\s*(\d+)\s*$)");
+	static const std::regex pattern(R"(^\s*(\d+)\s*<<\s*(\d+)\s*$)", std::regex_constants::ECMAScript | std::regex_constants::icase);
 	std::smatch match;
 
 	if (!std::regex_match(bitShiftStr, match, pattern)) {

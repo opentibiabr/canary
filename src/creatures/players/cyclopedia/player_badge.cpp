@@ -13,6 +13,8 @@
 #include "game/game.hpp"
 #include "kv/kv.hpp"
 
+#include "enums/account_errors.hpp"
+
 PlayerBadge::PlayerBadge(Player &player) :
 	m_player(player) { }
 
@@ -113,8 +115,38 @@ bool PlayerBadge::loyalty(uint8_t amount) {
 	return m_player.getLoyaltyPoints() >= amount;
 }
 
+std::vector<std::shared_ptr<Player>> PlayerBadge::getPlayersInfoByAccount(std::shared_ptr<Account> acc) const {
+	auto [accountPlayers, error] = acc->getAccountPlayers();
+	if (error != enumToValue(AccountErrors_t::Ok) || accountPlayers.empty()) {
+		return {};
+	}
+
+	std::string namesList;
+	for (const auto &[name, _] : accountPlayers) {
+		if (!namesList.empty()) {
+			namesList += ", ";
+		}
+		namesList += fmt::format("'{}'", name);
+	}
+
+	auto query = fmt::format("SELECT name, level, vocation FROM players WHERE name IN ({})", namesList);
+	std::vector<std::shared_ptr<Player>> players;
+	DBResult_ptr result = g_database().storeQuery(query);
+	if (result) {
+		do {
+			auto player = std::make_shared<Player>(nullptr);
+			player->setName(result->getString("name"));
+			player->setLevel(result->getNumber<uint32_t>("level"));
+			player->setVocation(result->getNumber<uint16_t>("vocation"));
+			players.push_back(player);
+		} while (result->next());
+	}
+
+	return players;
+}
+
 bool PlayerBadge::accountAllLevel(uint8_t amount) {
-	auto players = g_game().getPlayersByAccount(m_player.getAccount(), true);
+	auto players = getPlayersInfoByAccount(m_player.getAccount());
 	uint16_t total = std::accumulate(players.begin(), players.end(), 0, [](uint16_t sum, const std::shared_ptr<Player> &player) {
 		return sum + player->getLevel();
 	});
@@ -126,7 +158,7 @@ bool PlayerBadge::accountAllVocations(uint8_t amount) {
 	auto paladin = false;
 	auto druid = false;
 	auto sorcerer = false;
-	for (const auto &player : g_game().getPlayersByAccount(m_player.getAccount(), true)) {
+	for (const auto &player : getPlayersInfoByAccount(m_player.getAccount())) {
 		if (player->getLevel() >= amount) {
 			auto vocationEnum = player->getPlayerVocationEnum();
 			if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {

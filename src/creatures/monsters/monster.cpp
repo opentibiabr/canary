@@ -1148,7 +1148,7 @@ void Monster::onThinkDefense(uint32_t interval) {
 				continue;
 			}
 
-			const auto &summon = Monster::createMonster(name);
+			const auto &summon = Monster::createMonster(summonName);
 			if (summon) {
 				if (g_game().placeCreature(summon, getPosition(), false, summonForce)) {
 					summon->setMaster(static_self_cast<Monster>(), true);

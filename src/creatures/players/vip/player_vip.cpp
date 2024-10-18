@@ -37,7 +37,7 @@ uint8_t PlayerVIP::getMaxGroupEntries() const {
 	return 0;
 }
 
-void PlayerVIP::notifyStatusChange(const std::shared_ptr<Player> &loginPlayer, VipStatus_t status, bool message) const {
+void PlayerVIP::notifyStatusChange(const std::shared_ptr<Player> &loginPlayer, VipStatus_t vipStatus, bool message) const {
 	if (!m_player.client) {
 		return;
 	}
@@ -46,12 +46,12 @@ void PlayerVIP::notifyStatusChange(const std::shared_ptr<Player> &loginPlayer, V
 		return;
 	}
 
-	m_player.client->sendUpdatedVIPStatus(loginPlayer->getGUID(), status);
+	m_player.client->sendUpdatedVIPStatus(loginPlayer->getGUID(), vipStatus);
 
 	if (message) {
-		if (status == VipStatus_t::Online) {
+		if (vipStatus == VipStatus_t::Online) {
 			m_player.sendTextMessage(TextMessage(MESSAGE_FAILURE, fmt::format("{} has logged in.", loginPlayer->getName())));
-		} else if (status == VipStatus_t::Offline) {
+		} else if (vipStatus == VipStatus_t::Offline) {
 			m_player.sendTextMessage(TextMessage(MESSAGE_FAILURE, fmt::format("{} has logged out.", loginPlayer->getName())));
 		}
 	}

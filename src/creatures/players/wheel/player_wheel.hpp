@@ -289,7 +289,7 @@ public:
 	// Wheel of destiny - Header get:
 	bool getInstant(WheelInstant_t type) const;
 	bool getHealingLinkUpgrade(const std::string &spell) const;
-	uint8_t getStage(const std::string &name) const;
+	uint8_t getStage(std::string_view name) const;
 	uint8_t getStage(WheelStage_t type) const;
 	WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 	int32_t getMajorStat(WheelMajor_t type) const;
@@ -434,11 +434,11 @@ private:
 	PlayerWheelMethodsBonusData m_playerBonusData;
 	std::unique_ptr<WheelModifierContext> m_modifierContext;
 
-	std::array<uint8_t, static_cast<size_t>(WheelStage_t::TOTAL_COUNT)> m_stages = { 0 };
+	std::array<uint8_t, static_cast<size_t>(WheelStage_t::STAGE_COUNT)> m_stages = { 0 };
 	std::array<int64_t, static_cast<size_t>(WheelOnThink_t::TOTAL_COUNT)> m_onThink = { 0 };
 	std::array<int32_t, static_cast<size_t>(WheelStat_t::TOTAL_COUNT)> m_stats = { 0 };
 	std::array<int32_t, static_cast<size_t>(WheelMajor_t::TOTAL_COUNT)> m_majorStats = { 0 };
-	std::array<bool, static_cast<size_t>(WheelInstant_t::TOTAL_COUNT)> m_instant = { false };
+	std::array<bool, static_cast<size_t>(WheelInstant_t::INSTANT_COUNT)> m_instant = { false };
 	std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
 	int32_t m_creaturesNearby = 0;

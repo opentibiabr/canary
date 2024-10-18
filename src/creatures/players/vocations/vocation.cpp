@@ -348,6 +348,6 @@ uint16_t Vocation::getWheelGemId(WheelGemQuality_t quality) {
 	if (!wheelGems.contains(quality)) {
 		return 0;
 	}
-	const auto &name = wheelGems[quality];
-	return Item::items.getItemIdByName(name);
+	const auto &gemName = wheelGems[quality];
+	return Item::items.getItemIdByName(gemName);
 }

@@ -2573,7 +2573,7 @@ void PlayerWheel::resetUpgradedSpells() {
 	for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 		setMajorStat(static_cast<WheelMajor_t>(i), 0);
 	}
-	for (int i = 0; i < static_cast<int>(WheelStage_t::TOTAL_COUNT); i++) {
+	for (int i = 0; i < static_cast<int>(WheelStage_t::STAGE_COUNT); i++) {
 		setStage(static_cast<WheelStage_t>(i), 0);
 	}
 	setOnThinkTimer(WheelOnThink_t::FOCUS_MASTERY, 0);
@@ -2827,66 +2827,68 @@ bool PlayerWheel::getInstant(WheelInstant_t type) const {
 	return false;
 }
 
-uint8_t PlayerWheel::getStage(const std::string &name) const {
+uint8_t PlayerWheel::getStage(std::string_view name) const {
+	using enum WheelInstant_t;
+	using enum WheelStage_t;
 	if (name == "Battle Instinct") {
-		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_INSTINCT);
+		return PlayerWheel::getInstant(BATTLE_INSTINCT);
 	}
 	if (name == "Battle Healing") {
-		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_HEALING);
+		return PlayerWheel::getInstant(BATTLE_HEALING);
 	}
 	if (name == "Positional Tatics") {
-		return PlayerWheel::getInstant(WheelInstant_t::POSITIONAL_TATICS);
+		return PlayerWheel::getInstant(POSITIONAL_TATICS);
 	}
 	if (name == "Ballistic Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::BALLISTIC_MASTERY);
+		return PlayerWheel::getInstant(BALLISTIC_MASTERY);
 	}
 	if (name == "Healing Link") {
-		return PlayerWheel::getInstant(WheelInstant_t::HEALING_LINK);
+		return PlayerWheel::getInstant(HEALING_LINK);
 	}
 	if (name == "Runic Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::RUNIC_MASTERY);
+		return PlayerWheel::getInstant(RUNIC_MASTERY);
 	}
 	if (name == "Focus Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::FOCUS_MASTERY);
+		return PlayerWheel::getInstant(FOCUS_MASTERY);
 	}
 	if (name == "Beam Mastery") {
-		return PlayerWheel::getStage(WheelStage_t::BEAM_MASTERY);
+		return PlayerWheel::getStage(BEAM_MASTERY);
 	}
 	if (name == "Combat Mastery") {
-		return PlayerWheel::getStage(WheelStage_t::COMBAT_MASTERY);
+		return PlayerWheel::getStage(COMBAT_MASTERY);
 	}
 	if (name == "Gift of Life") {
-		return PlayerWheel::getStage(WheelStage_t::GIFT_OF_LIFE);
+		return PlayerWheel::getStage(GIFT_OF_LIFE);
 	}
 	if (name == "Blessing of the Grove") {
-		return PlayerWheel::getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
+		return PlayerWheel::getStage(BLESSING_OF_THE_GROVE);
 	}
 	if (name == "Drain Body") {
-		return PlayerWheel::getStage(WheelStage_t::DRAIN_BODY);
+		return PlayerWheel::getStage(DRAIN_BODY);
 	}
 	if (name == "Divine Empowerment") {
-		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
+		return PlayerWheel::getStage(DIVINE_EMPOWERMENT);
 	}
 	if (name == "Divine Grenade") {
-		return PlayerWheel::getStage(WheelStage_t::DIVINE_GRENADE);
+		return PlayerWheel::getStage(DIVINE_GRENADE);
 	}
 	if (name == "Twin Burst") {
-		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
+		return PlayerWheel::getStage(TWIN_BURST);
 	}
 	if (name == "Executioner's Throw") {
-		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
+		return PlayerWheel::getStage(EXECUTIONERS_THROW);
 	}
 	if (name == "Avatar of Light") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);
+		return PlayerWheel::getStage(AVATAR_OF_LIGHT);
 	}
 	if (name == "Avatar of Nature") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_NATURE);
+		return PlayerWheel::getStage(AVATAR_OF_NATURE);
 	}
 	if (name == "Avatar of Steel") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STEEL);
+		return PlayerWheel::getStage(AVATAR_OF_STEEL);
 	}
 	if (name == "Avatar of Storm") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STORM);
+		return PlayerWheel::getStage(AVATAR_OF_STORM);
 	}
 
 	return false;

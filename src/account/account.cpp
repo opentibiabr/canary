@@ -63,18 +63,18 @@ uint8_t Account::reload() {
 }
 
 uint8_t Account::save() const {
+	using enum AccountErrors_t;
+
 	if (!m_accLoaded) {
-		return enumToValue(AccountErrors_t::NotInitialized);
+		return enumToValue(NotInitialized);
 	}
-
 	if (!g_accountRepository().save(m_account)) {
-		return enumToValue(AccountErrors_t::Storage);
+		return enumToValue(Storage);
 	}
-
-	return enumToValue(AccountErrors_t::Ok);
+	return enumToValue(Ok);
 }
 
-std::tuple<uint32_t, uint8_t> Account::getCoins(const uint8_t &type) const {
+std::tuple<uint32_t, uint8_t> Account::getCoins(CoinType type) const {
 	if (!m_accLoaded) {
 		return { 0, enumToValue(AccountErrors_t::NotInitialized) };
 	}
@@ -87,7 +87,7 @@ std::tuple<uint32_t, uint8_t> Account::getCoins(const uint8_t &type) const {
 	return { coins, enumToValue(AccountErrors_t::Ok) };
 }
 
-uint8_t Account::addCoins(const uint8_t &type, const uint32_t &amount, const std::string &detail) {
+uint8_t Account::addCoins(CoinType type, const uint32_t &amount, const std::string &detail) {
 	if (!m_accLoaded) {
 		return enumToValue(AccountErrors_t::NotInitialized);
 	}
@@ -106,12 +106,12 @@ uint8_t Account::addCoins(const uint8_t &type, const uint32_t &amount, const std
 		return enumToValue(AccountErrors_t::Storage);
 	}
 
-	registerCoinTransaction(enumToValue(CoinTransactionType::Add), type, amount, detail);
+	registerCoinTransaction(CoinTransactionType::Add, type, amount, detail);
 
 	return enumToValue(AccountErrors_t::Ok);
 }
 
-uint8_t Account::removeCoins(const uint8_t &type, const uint32_t &amount, const std::string &detail) {
+uint8_t Account::removeCoins(CoinType type, const uint32_t &amount, const std::string &detail) {
 	if (!m_accLoaded) {
 		return enumToValue(AccountErrors_t::NotInitialized);
 	}
@@ -135,12 +135,12 @@ uint8_t Account::removeCoins(const uint8_t &type, const uint32_t &amount, const 
 		return enumToValue(AccountErrors_t::Storage);
 	}
 
-	registerCoinTransaction(enumToValue(CoinTransactionType::Remove), type, amount, detail);
+	registerCoinTransaction(CoinTransactionType::Remove, type, amount, detail);
 
 	return enumToValue(AccountErrors_t::Ok);
 }
 
-void Account::registerCoinTransaction(const uint8_t &transactionType, const uint8_t &type, const uint32_t &amount, const std::string &detail) {
+void Account::registerCoinTransaction(CoinTransactionType transactionType, CoinType type, const uint32_t &amount, const std::string &detail) {
 	if (!m_accLoaded) {
 		return;
 	}

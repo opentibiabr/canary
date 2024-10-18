@@ -11,6 +11,9 @@
 
 #include "account/account_info.hpp"
 
+enum class CoinType : uint8_t;
+enum class CoinTransactionType : uint8_t;
+
 class Account {
 public:
 	explicit Account(const uint32_t &id);
@@ -24,7 +27,7 @@ public:
 	 * @return uint32_t Number of coins
 	 * @return AccountErrors_t AccountErrors_t::Ok(0) Success, otherwise Fail.
 	 */
-	[[nodiscard]] std::tuple<uint32_t, uint8_t> getCoins(const uint8_t &type) const;
+	[[nodiscard]] std::tuple<uint32_t, uint8_t> getCoins(CoinType type) const;
 
 	/**
 	 * @brief Add coins to the account.
@@ -33,7 +36,7 @@ public:
 	 * @param amount Amount of coins to be added
 	 * @return AccountErrors_t AccountErrors_t::Ok(0) Success, otherwise Fail.
 	 */
-	uint8_t addCoins(const uint8_t &type, const uint32_t &amount, const std::string &detail = "ADD Coins");
+	uint8_t addCoins(CoinType type, const uint32_t &amount, const std::string &detail = "ADD Coins");
 
 	/**
 	 * @brief Removes coins from the account.
@@ -42,7 +45,7 @@ public:
 	 * @param amount Amount of coins to be removed
 	 * @return AccountErrors_t AccountErrors_t::Ok(0) Success, otherwise Fail.
 	 */
-	uint8_t removeCoins(const uint8_t &type, const uint32_t &amount, const std::string &detail = "REMOVE Coins");
+	uint8_t removeCoins(CoinType type, const uint32_t &amount, const std::string &detail = "REMOVE Coins");
 
 	/**
 	 * @brief Registers a coin transaction.
@@ -51,7 +54,7 @@ public:
 	 * @param amount Amount of coins to be added
 	 * @param detail Detail of the transaction
 	 */
-	void registerCoinTransaction(const uint8_t &transactionType, const uint8_t &type, const uint32_t &amount, const std::string &detail);
+	void registerCoinTransaction(CoinTransactionType transactionType, CoinType type, const uint32_t &amount, const std::string &detail);
 
 	/***************************************************************************
 	 * Account Load/Save

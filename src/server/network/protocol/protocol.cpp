@@ -126,66 +126,103 @@ void Protocol::disconnect() const {
 }
 
 void Protocol::XTEA_encrypt(OutputMessage &outputMessage) const {
-	const uint32_t delta = 0x61C88647;
+	constexpr uint32_t delta = 0x61C88647;
 
-	// The message must be a multiple of 8
-	size_t paddingBytes = outputMessage.getLength() & 7;
+	// Ensure the message length is a multiple of 8
+	size_t paddingBytes = outputMessage.getLength() % 8;
 	if (paddingBytes != 0) {
 		outputMessage.addPaddingBytes(8 - paddingBytes);
 	}
 
 	uint8_t* buffer = outputMessage.getOutputBuffer();
-	auto messageLength = static_cast<int32_t>(outputMessage.getLength());
-	int32_t readPos = 0;
-	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
-	// TODO: refactor this for not use c-style
-	uint32_t precachedControlSum[32][2];
+	const size_t messageLength = outputMessage.getLength();
+	size_t readPos = 0;
+	const std::array<uint32_t, 4> newKey = key;
+	std::array<std::array<uint32_t, 2>, 32> precachedControlSum;
 	uint32_t sum = 0;
-	for (int32_t i = 0; i < 32; ++i) {
-		precachedControlSum[i][0] = (sum + newKey[sum & 3]);
+	for (size_t i = 0; i < 32; ++i) {
+		precachedControlSum[i][0] = sum + newKey[sum & 3];
 		sum -= delta;
-		precachedControlSum[i][1] = (sum + newKey[(sum >> 11) & 3]);
+		precachedControlSum[i][1] = sum + newKey[(sum >> 11) & 3];
 	}
+
 	while (readPos < messageLength) {
-		std::array<uint32_t, 2> vData = {};
-		memcpy(vData.data(), buffer + readPos, 8);
-		for (int32_t i = 0; i < 32; ++i) {
-			vData[0] += ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][0];
-			vData[1] += ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][1];
+		std::array<uint8_t, 8> tempBuffer;
+		std::ranges::copy_n(buffer + readPos, 8, tempBuffer.begin());
+
+		// Convert bytes to uint32_t considering little-endian order
+		std::array<uint8_t, 4> bytes0;
+		std::array<uint8_t, 4> bytes1;
+
+		std::copy_n(tempBuffer.begin(), 4, bytes0.begin());
+		std::copy_n(tempBuffer.begin() + 4, 4, bytes1.begin());
+
+		uint32_t vData0 = std::bit_cast<uint32_t>(bytes0);
+		uint32_t vData1 = std::bit_cast<uint32_t>(bytes1);
+
+		for (size_t i = 0; i < 32; ++i) {
+			vData0 += ((vData1 << 4 ^ vData1 >> 5) + vData1) ^ precachedControlSum[i][0];
+			vData1 += ((vData0 << 4 ^ vData0 >> 5) + vData0) ^ precachedControlSum[i][1];
 		}
-		memcpy(buffer + readPos, vData.data(), 8);
+
+		// Convert vData back to bytes
+		bytes0 = std::bit_cast<std::array<uint8_t, 4>>(vData0);
+		bytes1 = std::bit_cast<std::array<uint8_t, 4>>(vData1);
+
+		// Copy encrypted bytes back to buffer
+		std::copy_n(bytes0.begin(), 4, buffer + readPos);
+		std::copy_n(bytes1.begin(), 4, buffer + readPos + 4);
+
 		readPos += 8;
 	}
 }
 
-bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
+bool Protocol::XTEA_decrypt(NetworkMessage& msg) const {
 	uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
-	if ((msgLength & 7) != 0) {
+	if ((msgLength % 8) != 0) {
 		return false;
 	}
 
-	const uint32_t delta = 0x61C88647;
-
+	constexpr uint32_t delta = 0x61C88647;
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
-	auto messageLength = static_cast<int32_t>(msgLength);
-	int32_t readPos = 0;
-	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
-	// TODO: refactor this for not use c-style
-	uint32_t precachedControlSum[32][2];
+	size_t messageLength = msgLength;
+	size_t readPos = 0;
+	const std::array<uint32_t, 4> newKey = key; // Assuming 'key' is a std::array<uint32_t, 4>
+
+	std::array<std::array<uint32_t, 2>, 32> precachedControlSum;
 	uint32_t sum = 0xC6EF3720;
-	for (int32_t i = 0; i < 32; ++i) {
+	for (size_t i = 0; i < 32; ++i) {
 		precachedControlSum[i][0] = (sum + newKey[(sum >> 11) & 3]);
 		sum += delta;
 		precachedControlSum[i][1] = (sum + newKey[sum & 3]);
 	}
+
 	while (readPos < messageLength) {
-		std::array<uint32_t, 2> vData = {};
-		memcpy(vData.data(), buffer + readPos, 8);
-		for (int32_t i = 0; i < 32; ++i) {
-			vData[1] -= ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][0];
-			vData[0] -= ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][1];
+		std::array<uint8_t, 8> tempBuffer;
+		std::ranges::copy_n(buffer + readPos, 8, tempBuffer.begin());
+
+		std::array<uint8_t, 4> bytes0;
+		std::array<uint8_t, 4> bytes1;
+
+		std::copy_n(tempBuffer.begin(), 4, bytes0.begin());
+		std::copy_n(tempBuffer.begin() + 4, 4, bytes1.begin());
+
+		uint32_t vData0 = std::bit_cast<uint32_t>(bytes0);
+		uint32_t vData1 = std::bit_cast<uint32_t>(bytes1);
+
+		for (size_t i = 0; i < 32; ++i) {
+			vData1 -= ((vData0 << 4 ^ vData0 >> 5) + vData0) ^ precachedControlSum[i][0];
+			vData0 -= ((vData1 << 4 ^ vData1 >> 5) + vData1) ^ precachedControlSum[i][1];
 		}
-		memcpy(buffer + readPos, vData.data(), 8);
+
+		// Convert vData back to bytes
+		bytes0 = std::bit_cast<std::array<uint8_t, 4>>(vData0);
+		bytes1 = std::bit_cast<std::array<uint8_t, 4>>(vData1);
+
+		// Copy decrypted bytes back to buffer
+		std::copy_n(bytes0.begin(), 4, buffer + readPos);
+		std::copy_n(bytes1.begin(), 4, buffer + readPos + 4);
+
 		readPos += 8;
 	}
 

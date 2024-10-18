@@ -741,6 +741,10 @@ void IOLoginDataLoad::loadPlayerPreyClass(const std::shared_ptr<Player> &player,
 		query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
 		if ((result = db.storeQuery(query.str()))) {
 			do {
+				auto selectedRaceId = result->getNumber<uint16_t>("raceid");
+				if (selectedRaceId == 0) {
+					continue;
+				}
 				auto slot = std::make_unique<PreySlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
 				auto state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
 				if (slot->id == PreySlot_Two && state == PreyDataState_Locked) {
@@ -752,7 +756,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(const std::shared_ptr<Player> &player,
 				} else {
 					slot->state = state;
 				}
-				slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
+				slot->selectedRaceId = selectedRaceId;
 				slot->option = static_cast<PreyOption_t>(result->getNumber<uint16_t>("option"));
 				slot->bonus = static_cast<PreyBonus_t>(result->getNumber<uint16_t>("bonus_type"));
 				slot->bonusRarity = static_cast<uint8_t>(result->getNumber<uint16_t>("bonus_rarity"));
@@ -788,6 +792,10 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 		query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
 		if ((result = db.storeQuery(query.str()))) {
 			do {
+				auto selectedRaceId = result->getNumber<uint16_t>("raceid");
+				if (selectedRaceId == 0) {
+					continue;
+				}
 				auto slot = std::make_unique<TaskHuntingSlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
 				auto state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
 				if (slot->id == PreySlot_Two && state == PreyTaskDataState_Locked) {
@@ -799,7 +807,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 				} else {
 					slot->state = state;
 				}
-				slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
+				slot->selectedRaceId = selectedRaceId;
 				slot->upgrade = result->getNumber<bool>("upgrade");
 				slot->rarity = static_cast<uint8_t>(result->getNumber<uint16_t>("rarity"));
 				slot->currentKills = result->getNumber<uint16_t>("kills");

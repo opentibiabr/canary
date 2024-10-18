@@ -65,11 +65,10 @@ Player::~Player() {
 		}
 	}
 
-	for (const auto& it : depotLockerMap) {
+	for (const auto &it : depotLockerMap) {
 		if (it.second) {
-			it.second->removeInbox(inbox);		
+			it.second->removeInbox(inbox);
 			it.second->stopDecaying();
-			it.second->decrementReferenceCounter();
 		}
 	}
 

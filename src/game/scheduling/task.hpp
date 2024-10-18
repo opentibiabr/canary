@@ -45,9 +45,7 @@ public:
 		return utime;
 	}
 
-	[[nodiscard]] bool hasExpired() const {
-		return expiration != 0 && expiration < OTSYS_TIME();
-	}
+	[[nodiscard]] bool hasExpired() const;
 
 	[[nodiscard]] bool isCycle() const {
 		return cycle;

@@ -5113,7 +5113,7 @@ void Player::addFamiliar(uint16_t lookType) {
 
 bool Player::removeFamiliar(uint16_t lookType) {
 	const auto initialSize = familiars.size();
-	std::erase_if(familiars, [&](const FamiliarEntry &entry) {
+	std::erase_if(familiars, [lookType](const FamiliarEntry &entry) {
 		return entry.lookType == lookType;
 	});
 	return familiars.size() != initialSize;
@@ -6267,8 +6267,17 @@ void Player::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, const
 }
 
 uint64_t Player::getMoney() const {
-	std::vector<std::shared_ptr<Container>> containers;
 	uint64_t moneyCount = 0;
+
+	auto countMoneyInContainer = [&](const auto& self, const std::shared_ptr<Container>& container) -> void {
+		for (const auto& item : container->getItemList()) {
+			if (const auto &tmpContainer = item->getContainer()) {
+				self(self, tmpContainer);
+			} else {
+				moneyCount += item->getWorth();
+			}
+		}
+	};
 
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
 		const auto &item = inventory[i];
@@ -6276,26 +6285,13 @@ uint64_t Player::getMoney() const {
 			continue;
 		}
 
-		const auto &container = item->getContainer();
-		if (container) {
-			containers.emplace_back(container);
+		if (const auto &container = item->getContainer()) {
+			countMoneyInContainer(countMoneyInContainer, container);
 		} else {
 			moneyCount += item->getWorth();
 		}
 	}
 
-	size_t i = 0;
-	while (i < containers.size()) {
-		const auto &container = containers[i++];
-		for (const auto &item : container->getItemList()) {
-			const auto &tmpContainer = item->getContainer();
-			if (tmpContainer) {
-				containers.emplace_back(tmpContainer);
-			} else {
-				moneyCount += item->getWorth();
-			}
-		}
-	}
 	return moneyCount;
 }
 

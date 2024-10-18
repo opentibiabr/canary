@@ -140,7 +140,9 @@ private:
 	bool premium = false;
 	uint32_t storage = 0;
 	uint16_t id, baseid, category = 0;
-	std::string name, description, subgroup;
+	std::string name;
+	std::string description;
+	std::string subgroup;
 
 	std::vector<std::pair<uint16_t, uint16_t>> items;
 };

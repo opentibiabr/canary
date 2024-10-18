@@ -74,70 +74,73 @@ uint8_t Account::save() const {
 	return enumToValue(Ok);
 }
 
-std::tuple<uint32_t, uint8_t> Account::getCoins(CoinType type) const {
+std::tuple<uint32_t, AccountErrors_t> Account::getCoins(CoinType type) const {
+	using enum AccountErrors_t;
 	if (!m_accLoaded) {
-		return { 0, enumToValue(AccountErrors_t::NotInitialized) };
+		return { 0, NotInitialized };
 	}
 
 	uint32_t coins = 0;
 	if (!g_accountRepository().getCoins(m_account.id, type, coins)) {
-		return { 0, enumToValue(AccountErrors_t::Storage) };
+		return { 0, Storage };
 	}
 
-	return { coins, enumToValue(AccountErrors_t::Ok) };
+	return { coins, Ok };
 }
 
-uint8_t Account::addCoins(CoinType type, const uint32_t &amount, const std::string &detail) {
+AccountErrors_t Account::addCoins(CoinType type, const uint32_t &amount, const std::string &detail) {
+	using enum AccountErrors_t;
 	if (!m_accLoaded) {
-		return enumToValue(AccountErrors_t::NotInitialized);
+		return NotInitialized;
 	}
 
 	if (amount == 0) {
-		return enumToValue(AccountErrors_t::Ok);
+		return Ok;
 	}
 
 	auto [coins, result] = getCoins(type);
 
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
+	if (Ok != result) {
 		return result;
 	}
 
 	if (!g_accountRepository().setCoins(m_account.id, type, coins + amount)) {
-		return enumToValue(AccountErrors_t::Storage);
+		return Storage;
 	}
 
 	registerCoinTransaction(CoinTransactionType::Add, type, amount, detail);
 
-	return enumToValue(AccountErrors_t::Ok);
+	return Ok;
 }
 
-uint8_t Account::removeCoins(CoinType type, const uint32_t &amount, const std::string &detail) {
+AccountErrors_t Account::removeCoins(CoinType type, const uint32_t &amount, const std::string &detail) {
+	using enum AccountErrors_t;
 	if (!m_accLoaded) {
-		return enumToValue(AccountErrors_t::NotInitialized);
+		return NotInitialized;
 	}
 
 	if (amount == 0) {
-		return enumToValue(AccountErrors_t::Ok);
+		return AccountErrors_t::Ok;
 	}
 
 	auto [coins, result] = getCoins(type);
 
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
+	if (Ok != result) {
 		return result;
 	}
 
 	if (coins < amount) {
 		g_logger().info("Account doesn't have enough coins! current[{}], remove:[{}]", coins, amount);
-		return enumToValue(AccountErrors_t::RemoveCoins);
+		return RemoveCoins;
 	}
 
 	if (!g_accountRepository().setCoins(m_account.id, type, coins - amount)) {
-		return enumToValue(AccountErrors_t::Storage);
+		return Storage;
 	}
 
 	registerCoinTransaction(CoinTransactionType::Remove, type, amount, detail);
 
-	return enumToValue(AccountErrors_t::Ok);
+	return Ok;
 }
 
 void Account::registerCoinTransaction(CoinTransactionType transactionType, CoinType type, const uint32_t &amount, const std::string &detail) {

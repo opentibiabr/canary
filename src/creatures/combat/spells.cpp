@@ -140,7 +140,7 @@ bool Spells::registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instan
 bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
 	if (rune) {
 		uint16_t id = rune->getRuneItemId();
-		const auto &[iter, inserted] = runes.emplace(rune->getRuneItemId(), rune);
+		const auto &[iter, inserted] = runes.try_emplace(rune->getRuneItemId(), rune);
 		if (!inserted) {
 			g_logger().warn(
 				"[{}] duplicate registered rune with id: {}, for script: {}",

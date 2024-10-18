@@ -664,7 +664,7 @@ void Creature::onDeath() {
 				continue;
 			}
 
-			if ((total > mostDamage && (timeNow - ticks <= inFightTicks))) {
+			if (total > mostDamage && timeNow - ticks <= inFightTicks) {
 				mostDamage = total;
 				mostDamageCreature = attacker;
 			}
@@ -1640,7 +1640,7 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 
 	bool resetTypeBit = true;
 
-	std::erase_if(eventsList, [&](const auto &curEvent) {
+	std::erase_if(eventsList, [event, type, &resetTypeBit](const auto &curEvent) {
 		if (curEvent == event) {
 			return true;
 		}

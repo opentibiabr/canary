@@ -187,7 +187,7 @@ void SpawnNpc::startup() {
 			continue;
 		}
 
-		const auto &[pos, npcType, lastSpawnNpc, interval, direction] = npcInfo;
+		const auto &[pos, npcType, lastSpawnNpc, _, direction] = npcInfo;
 		spawnNpc(spawnId, npcType, pos, direction, true);
 	}
 }
@@ -202,13 +202,13 @@ void SpawnNpc::checkSpawnNpc() {
 			continue;
 		}
 
-		auto &[pos, npcType, lastSpawnNpc, interval, direction] = npcInfo;
+		auto &[pos, npcType, lastSpawnNpc, mapInterval, direction] = npcInfo;
 		if (!npcType->canSpawn(pos)) {
 			lastSpawnNpc = OTSYS_TIME();
 			continue;
 		}
 
-		if (OTSYS_TIME() >= lastSpawnNpc + interval) {
+		if (OTSYS_TIME() >= lastSpawnNpc + mapInterval) {
 			if (findPlayer(pos)) {
 				lastSpawnNpc = OTSYS_TIME();
 				continue;

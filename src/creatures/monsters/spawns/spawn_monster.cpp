@@ -155,11 +155,7 @@ void SpawnMonster::startSpawnMonsterCheck() {
 }
 
 SpawnMonster::~SpawnMonster() {
-	for (const auto &[_, monster] : spawnedMonsterMap) {
-		monster->setSpawnMonster(nullptr);
-	}
 	stopEvent();
-	spawnMonsterMap.clear();
 }
 
 bool SpawnMonster::findPlayer(const Position &pos) {

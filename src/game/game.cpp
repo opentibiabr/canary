@@ -9136,7 +9136,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			auto [transferableCoins, error] = player->getAccount()->getCoins(CoinType::Transferable);
 
-			if (error != enumToValue(AccountErrors_t::Ok)) {
+			if (error != AccountErrors_t::Ok) {
 				offerStatus << "Failed to load transferable coins for player " << player->getName();
 				return;
 			}

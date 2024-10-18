@@ -2222,10 +2222,11 @@ public:
 			return PreySlotNull;
 		}
 
-		if (auto it = std::ranges::find_if(preys, [raceId](const std::unique_ptr<PreySlot> &it) {
-				return it->selectedRaceId == raceId;
-			});
-		    it != preys.end()) {
+		auto it = std::ranges::find_if(preys, [raceId](const std::unique_ptr<PreySlot>& preySlot) {
+			return preySlot->selectedRaceId == raceId;
+		});
+
+		if (it != preys.end()) {
 			return *it;
 		}
 

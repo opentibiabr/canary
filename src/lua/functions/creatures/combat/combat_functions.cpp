@@ -151,6 +151,10 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	}
 
 	const auto &creature = getCreature(L, 2);
+	if (!creature) {
+		pushBoolean(L, false);
+		return 1;
+	}
 
 	const LuaVariant &variant = getVariant(L, 3);
 	combat->setInstantSpellName(variant.instantName);

@@ -24,7 +24,7 @@ bool PrivateChatChannel::removeInvite(uint32_t guid) {
 }
 
 void PrivateChatChannel::invitePlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &invitePlayer) {
-	auto [iter, inserted] = invites.emplace(invitePlayer->getGUID(), invitePlayer);
+	auto [iter, inserted] = invites.try_emplace(invitePlayer->getGUID(), invitePlayer);
 	if (!inserted) {
 		return;
 	}
@@ -38,7 +38,7 @@ void PrivateChatChannel::invitePlayer(const std::shared_ptr<Player> &player, con
 	player->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
 	for (const auto &[playerUserId, playerUser] : users) {
-		if (playerUserId == 0) {
+		if (playerUserId == 0 || !playerUser) {
 			continue;
 		}
 
@@ -366,7 +366,7 @@ std::shared_ptr<ChatChannel> Chat::createChannel(const std::shared_ptr<Player> &
 		case CHANNEL_GUILD: {
 			const auto &guild = player->getGuild();
 			if (guild != nullptr) {
-				auto [iter, inserted] = guildChannels.emplace(std::make_pair(guild->getId(), std::make_shared<ChatChannel>(channelId, guild->getName())));
+				auto [iter, inserted] = guildChannels.try_emplace(guild->getId(), std::make_shared<ChatChannel>(channelId, guild->getName()));
 				if (inserted) {
 					return iter->second;
 				}
@@ -377,7 +377,7 @@ std::shared_ptr<ChatChannel> Chat::createChannel(const std::shared_ptr<Player> &
 		case CHANNEL_PARTY: {
 			const auto &party = player->getParty();
 			if (party != nullptr) {
-				auto [iter, inserted] = partyChannels.emplace(std::make_pair(party, std::make_shared<ChatChannel>(channelId, "Party")));
+				auto [iter, inserted] = partyChannels.try_emplace(party, std::make_shared<ChatChannel>(channelId, "Party"));
 				if (inserted) {
 					return iter->second;
 				}
@@ -393,7 +393,7 @@ std::shared_ptr<ChatChannel> Chat::createChannel(const std::shared_ptr<Player> &
 
 			// find a free private channel slot
 			for (uint16_t i = 100; i < 10000; ++i) {
-				auto [iter, inserted] = privateChannels.emplace(std::make_pair(i, std::make_shared<PrivateChatChannel>(i, player->getName() + "'s Channel")));
+				auto [iter, inserted] = privateChannels.try_emplace(i, std::make_shared<PrivateChatChannel>(i, player->getName() + "'s Channel"));
 				if (inserted) {
 					const auto &newChannel = iter->second;
 					newChannel->setOwner(player->getGUID());
@@ -661,7 +661,7 @@ std::shared_ptr<ChatChannel> Chat::getChannelById(uint16_t channelId) {
 }
 
 std::shared_ptr<PrivateChatChannel> Chat::getPrivateChannel(const std::shared_ptr<Player> &player) const {
-	auto it = std::find_if(privateChannels.begin(), privateChannels.end(), [&player](const auto &channelPair) {
+	auto it = std::ranges::find_if(privateChannels, [&player](const auto &channelPair) {
 		const auto &[channelId, channel] = channelPair;
 		return channel->getOwner() == player->getGUID();
 	});

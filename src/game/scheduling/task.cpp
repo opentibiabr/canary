@@ -38,6 +38,10 @@ Task::Task(std::function<void(void)> &&f, std::string_view context, uint32_t del
 	assert(!this->context.empty() && "Context cannot be empty!");
 }
 
+[[nodiscard]] bool Task::hasExpired() const {
+	return expiration != 0 && expiration < OTSYS_TIME();
+}
+
 bool Task::execute() const {
 	metrics::task_latency measure(context);
 	if (isCanceled()) {

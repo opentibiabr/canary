@@ -34,11 +34,11 @@ bool Outfits::loadFromXml() {
 
 	for (const auto &outfitNode : doc.child("outfits").children()) {
 		pugi::xml_attribute attr;
-		if (((attr = outfitNode.attribute("enabled"))) && !attr.as_bool()) {
+		if (attr = outfitNode.attribute("enabled"); !attr.as_bool()) {
 			continue;
 		}
 
-		if (!((attr = outfitNode.attribute("type")))) {
+		if (!(attr = outfitNode.attribute("type"))) {
 			g_logger().warn("[Outfits::loadFromXml] - Missing outfit type");
 			continue;
 		}

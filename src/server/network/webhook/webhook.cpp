@@ -147,7 +147,7 @@ void Webhook::sendWebhook() {
 		return;
 	}
 
-	auto task = webhooks.front();
+	const auto &task = webhooks.front();
 
 	std::string response_body;
 	auto response_code = sendRequest(task->url.c_str(), task->payload.c_str(), &response_body);
@@ -162,8 +162,6 @@ void Webhook::sendWebhook() {
 		return;
 	}
 
-	webhooks.pop_front();
-
 	if (response_code >= 300) {
 		g_logger().error(
 			"Failed to send webhook message, error code: {} response body: {} request body: {}",
@@ -176,4 +174,7 @@ void Webhook::sendWebhook() {
 	}
 
 	g_logger().debug("Webhook successfully sent to {}", task->url);
+
+	// Removes the object after processing everything, avoiding memory usage after freeing
+	webhooks.pop_front();
 }

@@ -10,7 +10,6 @@
 #include "kv/kv_sql.hpp"
 
 #include "database/database.hpp"
-#include "lib/logging/logger.hpp"
 #include "kv/value_wrapper_proto.hpp"
 #include "utils/tools.hpp"
 

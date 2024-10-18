@@ -1394,7 +1394,7 @@ bool Monster::getRandomStep(const Position &creaturePos, Direction &moveDirectio
 }
 
 bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection, bool keepAttack /*= true*/, bool keepDistance /*= true*/) {
-	const auto &attackedCreature = getAttackedCreature();
+	auto attackedCreature = getAttackedCreature();
 	if (!attackedCreature) {
 		return false;
 	}

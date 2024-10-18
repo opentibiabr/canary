@@ -21,13 +21,9 @@ using MapType = phmap::flat_hash_map<std::string, std::shared_ptr<ValueWrapper>>
 using ValueVariant = std::variant<StringType, BooleanType, IntType, DoubleType, ArrayType, MapType>;
 
 // Forward declaration for protobuf class
-namespace Canary {
-	namespace protobuf {
-		namespace kv {
-			class ValueWrapper;
-		} // namespace kv
-	} // namespace protobuf
-} // namespace Canary
+namespace Canary::protobuf::kv {
+	class ValueWrapper;
+}
 
 struct ProtoSerializable {
 	static Canary::protobuf::kv::ValueWrapper toProto(const ValueWrapper &obj);

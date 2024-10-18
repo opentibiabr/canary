@@ -26,7 +26,7 @@ protected:
 	PlayerWheel &m_wheel;
 };
 
-class GemModifierResistanceStrategy : public GemModifierStrategy {
+class GemModifierResistanceStrategy final : public GemModifierStrategy {
 public:
 	explicit GemModifierResistanceStrategy(PlayerWheel &wheel, CombatType_t combatType, int32_t resistance) :
 		GemModifierStrategy(wheel),
@@ -40,7 +40,7 @@ private:
 	int32_t m_resistance;
 };
 
-class GemModifierStatStrategy : public GemModifierStrategy {
+class GemModifierStatStrategy final : public GemModifierStrategy {
 public:
 	explicit GemModifierStatStrategy(PlayerWheel &wheel, WheelStat_t stat, int32_t value) :
 		GemModifierStrategy(wheel),
@@ -54,7 +54,7 @@ private:
 	int32_t m_value;
 };
 
-class GemModifierRevelationStrategy : public GemModifierStrategy {
+class GemModifierRevelationStrategy final : public GemModifierStrategy {
 public:
 	explicit GemModifierRevelationStrategy(PlayerWheel &wheel, WheelGemAffinity_t affinity, [[maybe_unused]] uint16_t value) :
 		GemModifierStrategy(wheel),
@@ -64,12 +64,12 @@ public:
 
 private:
 	WheelGemAffinity_t m_affinity;
-	uint16_t m_value;
+	uint16_t m_value {};
 };
 
-class GemModifierSpellBonusStrategy : public GemModifierStrategy {
+class GemModifierSpellBonusStrategy final : public GemModifierStrategy {
 public:
-	explicit GemModifierSpellBonusStrategy(PlayerWheel &wheel, std::string spellName, WheelSpells::Bonus bonus) :
+	explicit GemModifierSpellBonusStrategy(PlayerWheel &wheel, std::string spellName, const WheelSpells::Bonus &bonus) :
 		GemModifierStrategy(wheel),
 		m_spellName(std::move(spellName)),
 		m_bonus(bonus) { }
@@ -93,7 +93,7 @@ public:
 		m_strategies.clear();
 	}
 
-	void executeStrategies();
+	void executeStrategies() const;
 
 private:
 	std::vector<std::unique_ptr<GemModifierStrategy>> m_strategies;
@@ -168,9 +168,9 @@ private:
 		},
 	};
 
-	auto modifierIt = stats.find(modifier);
+	const auto modifierIt = stats.find(modifier);
 	if (modifierIt != stats.end()) {
-		auto vocationIt = modifierIt->second.find(vocation);
+		const auto vocationIt = modifierIt->second.find(vocation);
 		if (vocationIt != modifierIt->second.end()) {
 			return vocationIt->second;
 		}
@@ -244,9 +244,9 @@ private:
 		}
 	};
 
-	auto modifierIt = stats.find(modifier);
+	const auto modifierIt = stats.find(modifier);
 	if (modifierIt != stats.end()) {
-		auto vocationIt = modifierIt->second.find(vocation);
+		const auto vocationIt = modifierIt->second.find(vocation);
 		if (vocationIt != modifierIt->second.end()) {
 			return vocationIt->second;
 		}
@@ -318,9 +318,9 @@ private:
 		}
 	};
 
-	auto modifierIt = stats.find(modifier);
+	const auto modifierIt = stats.find(modifier);
 	if (modifierIt != stats.end()) {
-		auto vocationIt = modifierIt->second.find(vocation);
+		const auto vocationIt = modifierIt->second.find(vocation);
 		if (vocationIt != modifierIt->second.end()) {
 			return vocationIt->second;
 		}

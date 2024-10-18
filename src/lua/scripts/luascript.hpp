@@ -58,12 +58,12 @@ public:
 		return luaState;
 	}
 
-	bool pushFunction(int32_t functionId);
+	bool pushFunction(int32_t functionId) const;
 
-	bool callFunction(int params);
-	void callVoidFunction(int params);
+	bool callFunction(int params) const;
+	void callVoidFunction(int params) const;
 
-	std::string getStackTrace(const std::string &error_desc);
+	std::string getStackTrace(const std::string &error_desc) const;
 
 protected:
 	virtual bool closeState();
@@ -73,7 +73,7 @@ protected:
 	std::map<int32_t, std::string> cacheFiles;
 
 private:
-	std::string getMetricsScope();
+	std::string getMetricsScope() const;
 
 	std::string lastLuaError;
 	std::string interfaceName;

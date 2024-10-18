@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include <ctime>
 #include <cstdint>
 #include <chrono>
 
@@ -74,7 +73,7 @@ public:
 	}
 
 private:
-	int64_t time() const noexcept {
+	static int64_t time() noexcept {
 		return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	}
 

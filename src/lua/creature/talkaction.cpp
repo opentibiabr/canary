@@ -23,29 +23,29 @@ bool TalkActions::registerLuaEvent(const TalkAction_ptr &talkAction) {
 	return inserted;
 }
 
-bool TalkActions::checkWord(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const {
-	auto spacePos = std::ranges::find_if(words.begin(), words.end(), ::isspace);
-	std::string firstWord = words.substr(0, spacePos - words.begin());
+bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const {
+	const auto spacePos = std::ranges::find_if(words.begin(), words.end(), ::isspace);
+	const std::string firstWord = words.substr(0, spacePos - words.begin());
 
 	// Check for exact equality from saying word and talkaction stored word
 	if (firstWord != word) {
 		return false;
 	}
 
-	auto groupId = player->getGroup()->id;
+	const auto groupId = player->getGroup()->id;
 	if (groupId < talkActionPtr->getGroupType()) {
 		return false;
 	}
 
 	std::string param;
-	size_t wordPos = words.find(word);
-	size_t talkactionLength = word.length();
+	const size_t wordPos = words.find(word);
+	const size_t talkactionLength = word.length();
 	if (wordPos != std::string::npos && wordPos + talkactionLength < words.length()) {
 		param = words.substr(wordPos + talkactionLength);
 		trim_left(param, ' ');
 	}
 
-	std::string separator = talkActionPtr->getSeparator();
+	const std::string separator = talkActionPtr->getSeparator();
 	if (separator != " ") {
 		if (!param.empty()) {
 			if (param != separator) {
@@ -59,7 +59,7 @@ bool TalkActions::checkWord(std::shared_ptr<Player> player, SpeakClasses type, c
 	return talkActionPtr->executeSay(player, words, param, type);
 }
 
-TalkActionResult_t TalkActions::checkPlayerCanSayTalkAction(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words) const {
+TalkActionResult_t TalkActions::checkPlayerCanSayTalkAction(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words) const {
 	for (const auto &[talkactionWords, talkActionPtr] : talkActions) {
 		if (talkactionWords.find(',') != std::string::npos) {
 			auto wordsList = split(talkactionWords);
@@ -77,16 +77,16 @@ TalkActionResult_t TalkActions::checkPlayerCanSayTalkAction(std::shared_ptr<Play
 	return TALKACTION_CONTINUE;
 }
 
-bool TalkAction::executeSay(std::shared_ptr<Player> player, const std::string &words, const std::string &param, SpeakClasses type) const {
+bool TalkAction::executeSay(const std::shared_ptr<Player> &player, const std::string &words, const std::string &param, SpeakClasses type) const {
 	// onSay(player, words, param, type)
-	if (!getScriptInterface()->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[TalkAction::executeSay - Player {} words {}] "
 		                 "Call stack overflow. Too many lua script calls being nested. Script name {}",
 		                 player->getName(), getWords(), getScriptInterface()->getLoadingScriptName());
 		return false;
 	}
 
-	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	ScriptEnvironment* scriptEnvironment = LuaScriptInterface::getScriptEnv();
 	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();

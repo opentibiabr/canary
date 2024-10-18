@@ -13,6 +13,12 @@
 
 class VocationFunctions final : LuaScriptInterface {
 public:
+	explicit VocationFunctions(lua_State* L) :
+		LuaScriptInterface("VocationFunctions") {
+		init(L);
+	}
+	~VocationFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Vocation", "", VocationFunctions::luaVocationCreate);
 		registerMetaMethod(L, "Vocation", "__eq", VocationFunctions::luaUserdataCompare);

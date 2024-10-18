@@ -19,6 +19,12 @@
 
 class CoreLibsFunctions final : LuaScriptInterface {
 public:
+	explicit CoreLibsFunctions(lua_State* L) :
+		LuaScriptInterface("CoreLibsFunctions") {
+		init(L);
+	}
+	~CoreLibsFunctions() override = default;
+
 	static void init(lua_State* L) {
 		BitFunctions::init(L);
 		DBFunctions::init(L);

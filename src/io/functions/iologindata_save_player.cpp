@@ -195,6 +195,7 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	query << "`lookmountfeet` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountFeet) << ",";
 	query << "`lookmounthead` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountHead) << ",";
 	query << "`lookmountlegs` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountLegs) << ",";
+	query << "`currentmount` = " << static_cast<uint32_t>(player->defaultOutfit.currentMount) << ",";
 	query << "`lookfamiliarstype` = " << player->defaultOutfit.lookFamiliarsType << ",";
 	query << "`isreward` = " << static_cast<uint16_t>(player->isDailyReward) << ",";
 	query << "`maglevel` = " << player->magLevel << ",";
@@ -791,6 +792,54 @@ bool IOLoginDataSave::savePlayerStorage(std::shared_ptr<Player> player) {
 	}
 
 	if (!storageQuery.execute()) {
+		return false;
+	}
+	return true;
+}
+
+bool IOLoginDataSave::savePlayerOutfits(std::shared_ptr<Player> player) {
+	if (!player) {
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
+	if (!g_database().executeQuery(fmt::format("DELETE FROM `player_outfits` WHERE `player_id` = {:d}", player->getGUID()))) {
+		return false;
+	}
+
+	DBInsert outfitQuery("INSERT INTO `player_outfits` (`player_id`, `outfit_id`, `addons`) VALUES ");
+
+	for (const auto &outfit : player->outfitsMap) {
+		if (!outfitQuery.addRow(fmt::format("{:d}, {:d}, {:d}", player->getGUID(), outfit.lookType, outfit.addons))) {
+			return false;
+		}
+	}
+
+	if (!outfitQuery.execute()) {
+		return false;
+	}
+	return true;
+}
+
+bool IOLoginDataSave::savePlayerMounts(std::shared_ptr<Player> player) {
+	if (!player) {
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
+	if (!g_database().executeQuery(fmt::format("DELETE FROM `player_mounts` WHERE `player_id` = {:d}", player->getGUID()))) {
+		return false;
+	}
+
+	DBInsert mountQuery("INSERT INTO `player_mounts` (`player_id`, `mount_id`) VALUES ");
+
+	for (const auto &mountId : player->mountsMap) {
+		if (!mountQuery.addRow(fmt::format("{:d}, {:d}", player->getGUID(), mountId))) {
+			return false;
+		}
+	}
+
+	if (!mountQuery.execute()) {
 		return false;
 	}
 	return true;

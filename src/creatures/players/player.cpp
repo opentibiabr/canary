@@ -6269,8 +6269,8 @@ void Player::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, const
 uint64_t Player::getMoney() const {
 	uint64_t moneyCount = 0;
 
-	auto countMoneyInContainer = [&](const auto& self, const std::shared_ptr<Container>& container) -> void {
-		for (const auto& item : container->getItemList()) {
+	auto countMoneyInContainer = [&](const auto &self, const std::shared_ptr<Container> &container) -> void {
+		for (const auto &item : container->getItemList()) {
 			if (const auto &tmpContainer = item->getContainer()) {
 				self(self, tmpContainer);
 			} else {

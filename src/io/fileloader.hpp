@@ -73,9 +73,12 @@ public:
 			return false;
 		}
 
-		std::span<const unsigned char> sourceSpan(reinterpret_cast<const unsigned char*>(p), sizeof(T));
-		std::array<unsigned char, sizeof(T)> tempBuffer;
-		std::ranges::copy(sourceSpan, tempBuffer.begin());
+		std::span<const char> charSpan { p, sizeof(T) };
+		auto byteSpan = std::as_bytes(charSpan);
+
+		std::array<std::byte, sizeof(T)> tempBuffer;
+		std::ranges::copy(byteSpan, tempBuffer.begin());
+
 		ret = std::bit_cast<T>(tempBuffer);
 
 		p += sizeof(T);
@@ -93,10 +96,11 @@ public:
 			return false;
 		}
 
-		std::vector<unsigned char> tempBuffer(strLen);
-		std::span<const unsigned char> sourceSpan(reinterpret_cast<const unsigned char*>(p), strLen);
+		std::vector<char> tempBuffer(strLen);
+		std::span<const char> sourceSpan(p, strLen);
 		std::ranges::copy(sourceSpan, tempBuffer.begin());
-		ret.assign(reinterpret_cast<const char*>(tempBuffer.data()), strLen);
+
+		ret.assign(tempBuffer.begin(), tempBuffer.end());
 
 		p += strLen;
 
@@ -136,9 +140,11 @@ public:
 
 	template <typename T>
 	void write(T add) {
-		char* addr = reinterpret_cast<char*>(&add);
-		std::span<const char> sourceSpan(addr, sizeof(T));
-		std::ranges::copy(sourceSpan, std::back_inserter(buffer));
+		static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
+
+		auto byteArray = std::bit_cast<std::array<char, sizeof(T)>>(add);
+		std::span<const char> charSpan(byteArray);
+		std::ranges::copy(charSpan, std::back_inserter(buffer));
 	}
 
 	void writeString(const std::string &str) {

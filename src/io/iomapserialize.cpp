@@ -258,13 +258,15 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 	}
 
 	if (!items.empty()) {
+		std::reverse(items.begin(), items.end());
+
 		const Position &tilePosition = tile->getPosition();
 		stream.write<uint16_t>(tilePosition.x);
 		stream.write<uint16_t>(tilePosition.y);
 		stream.write<uint8_t>(tilePosition.z);
 
 		stream.write<uint32_t>(count);
-		for (std::shared_ptr<Item> item : items) {
+		for (const std::shared_ptr<Item> &item : items) {
 			saveItem(stream, item);
 		}
 	}

@@ -160,6 +160,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool) {
 		const uint32_t playerId = result->getNumber<uint32_t>("player_id");
 		const uint16_t amount = result->getNumber<uint16_t>("amount");
 		auto tier = getTierFromDatabaseTable(result->getString("tier"));
+		auto timestamp = result->getNumber<uint32_t>("created");
 		if (result->getNumber<uint16_t>("sale") == 1) {
 			const ItemType &itemType = Item::items[result->getNumber<uint16_t>("itemtype")];
 			if (itemType.id == 0) {
@@ -208,6 +209,11 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool) {
 				}
 			}
 
+			if (itemType.id == ITEM_STORE_COIN) {
+				auto description = "Sell Offer Cancelled or Expired";
+				player->addStoreDetail(description, amount, timestamp);
+			}
+
 			if (player->isOffline()) {
 				g_saveManager().savePlayer(player);
 			}
@@ -228,7 +234,7 @@ void IOMarket::checkExpiredOffers() {
 	const time_t lastExpireDate = getTimeNow() - g_configManager().getNumber(MARKET_OFFER_DURATION);
 
 	std::ostringstream query;
-	query << "SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale`, `tier` FROM `market_offers` WHERE `created` <= " << lastExpireDate;
+	query << "SELECT * FROM `market_offers` WHERE `created` <= " << lastExpireDate;
 	g_databaseTasks().store(query.str(), IOMarket::processExpiredOffers);
 
 	int32_t checkExpiredMarketOffersEachMinutes = g_configManager().getNumber(CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES);

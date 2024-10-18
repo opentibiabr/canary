@@ -1616,8 +1616,37 @@ NameEval_t validateName(const std::string &name) {
 	return VALID;
 }
 
+bool isKegItem(uint16_t itemId) {
+	return itemId >= ITEM_KEG_START && itemId <= ITEM_KEG_END;
+}
+
 bool isCaskItem(uint16_t itemId) {
 	return (itemId >= ITEM_HEALTH_CASK_START && itemId <= ITEM_HEALTH_CASK_END) || (itemId >= ITEM_MANA_CASK_START && itemId <= ITEM_MANA_CASK_END) || (itemId >= ITEM_SPIRIT_CASK_START && itemId <= ITEM_SPIRIT_CASK_END);
+}
+
+bool isExerciseWeapon(uint16_t itemId) {
+	return (itemId >= ITEM_EXERCISE_START && itemId <= ITEM_EXERCISE_END) || (itemId >= ITEM_NEW_EXERCISE_START && itemId <= ITEM_NEW_EXERCISE_END);
+}
+
+uint32_t calculateBoostPrice(int32_t boostCounter) {
+	if (boostCounter > 5) {
+		return 360;
+	}
+
+	switch (boostCounter) {
+		case 1:
+			return 30;
+		case 2:
+			return 45;
+		case 3:
+			return 90;
+		case 4:
+			return 180;
+		case 5:
+			return 360;
+		default:
+			return 30;
+	}
 }
 
 std::string getObjectCategoryName(ObjectCategory_t category) {

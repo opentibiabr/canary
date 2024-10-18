@@ -302,7 +302,17 @@ public:
 
 	void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
 
-	bool addItemStoreInbox(std::shared_ptr<Player> player, uint32_t itemId);
+	// Store Functions
+	void playerOpenStore(uint32_t playerId);
+	void playerCoinTransfer(uint32_t playerId, const std::string &receptorName, uint32_t coinAmount);
+	void playerOpenStoreHistory(uint32_t playerId, uint32_t page);
+	void playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::string newName, uint8_t sexId);
+	// Process Offers
+	bool processChargesOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t charges = 0, bool movable = false);
+	bool processStackableOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t amount = 1, bool movable = false);
+	bool processHouseOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t charges = 0);
+	bool processNameChangeOffer(const std::shared_ptr<Player> &player, std::string name);
+	bool processTempleOffer(const std::shared_ptr<Player> &player);
 
 	void playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems = 0);
 
@@ -398,7 +408,7 @@ public:
 	void playerClearImbuement(uint32_t playerid, uint8_t slot);
 	void playerCloseImbuementWindow(uint32_t playerid);
 	void playerTurn(uint32_t playerId, Direction dir);
-	void playerRequestOutfit(uint32_t playerId);
+	void playerRequestOutfit(uint32_t playerId, uint16_t tryOutfit = 0, uint16_t tryMount = 0);
 	void playerShowQuestLog(uint32_t playerId);
 	void playerShowQuestLine(uint32_t playerId, uint16_t questId);
 	void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text);

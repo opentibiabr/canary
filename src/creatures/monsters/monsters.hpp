@@ -31,7 +31,7 @@ struct spellBlock_t {
 	spellBlock_t(const spellBlock_t &other) = delete;
 	spellBlock_t &operator=(const spellBlock_t &other) = delete;
 	spellBlock_t(spellBlock_t &&other) noexcept :
-		spell(other.spell),
+		spell(std::move(other.spell)),
 		chance(other.chance),
 		speed(other.speed),
 		range(other.range),
@@ -166,7 +166,7 @@ class MonsterType {
 public:
 	MonsterType() = default;
 	explicit MonsterType(const std::string &initName) :
-		name(initName), typeName(initName), nameDescription(initName), variantName("") {};
+		name(initName), typeName(initName), nameDescription(initName) { }
 
 	// non-copyable
 	MonsterType(const MonsterType &) = delete;
@@ -205,9 +205,9 @@ public:
 		return !info.bosstiaryClass.empty();
 	}
 
-	void loadLoot(std::shared_ptr<MonsterType> monsterType, LootBlock lootblock);
+	void loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootblock) const;
 
-	bool canSpawn(const Position &pos);
+	bool canSpawn(const Position &pos) const;
 };
 
 class MonsterSpell {
@@ -217,8 +217,8 @@ public:
 	MonsterSpell(const MonsterSpell &) = delete;
 	MonsterSpell &operator=(const MonsterSpell &) = delete;
 
-	std::string name = "";
-	std::string scriptName = "";
+	std::string name;
+	std::string scriptName;
 
 	uint8_t chance = 100;
 	uint8_t range = 0;
@@ -246,7 +246,7 @@ public:
 	bool isMelee = false;
 
 	Outfit_t outfit = {};
-	std::string outfitMonster = "";
+	std::string outfitMonster;
 	uint16_t outfitItem = 0;
 
 	ShootType_t shoot = CONST_ANI_NONE;
@@ -275,14 +275,14 @@ public:
 
 	std::shared_ptr<MonsterType> getMonsterType(const std::string &name, bool silent = false) const;
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
-	bool tryAddMonsterType(const std::string &name, std::shared_ptr<MonsterType> mType);
-	bool deserializeSpell(std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description = "");
+	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType);
+	bool deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description = "") const;
 
 	std::unique_ptr<LuaScriptInterface> scriptInterface;
 	std::map<std::string, std::shared_ptr<MonsterType>> monsters;
 
 private:
-	std::shared_ptr<ConditionDamage> getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
+	std::shared_ptr<ConditionDamage> getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) const;
 };
 
 constexpr auto g_monsters = Monsters::getInstance;

@@ -22,7 +22,7 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 	if (lua_gettop(L) > 1) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
-		callback = [ref, scriptId](DBResult_ptr, bool success) {
+		callback = [ref, scriptId](const DBResult_ptr &, bool success) {
 			lua_State* luaState = g_luaEnvironment().getLuaState();
 			if (!luaState) {
 				return;
@@ -35,7 +35,7 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 
 			lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
 			pushBoolean(luaState, success);
-			auto env = getScriptEnv();
+			const auto env = getScriptEnv();
 			env->setScriptId(scriptId, &g_luaEnvironment());
 			g_luaEnvironment().callFunction(1);
 
@@ -47,7 +47,7 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 }
 
 int DBFunctions::luaDatabaseStoreQuery(lua_State* L) {
-	if (DBResult_ptr res = Database::getInstance().storeQuery(getString(L, -1))) {
+	if (const DBResult_ptr &res = Database::getInstance().storeQuery(getString(L, -1))) {
 		lua_pushnumber(L, ScriptEnvironment::addResult(res));
 	} else {
 		pushBoolean(L, false);
@@ -60,7 +60,7 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 	if (lua_gettop(L) > 1) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
-		callback = [ref, scriptId](DBResult_ptr result, bool) {
+		callback = [ref, scriptId](const DBResult_ptr &result, bool) {
 			lua_State* luaState = g_luaEnvironment().getLuaState();
 			if (!luaState) {
 				return;
@@ -77,7 +77,7 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 			} else {
 				pushBoolean(luaState, false);
 			}
-			auto env = getScriptEnv();
+			const auto env = getScriptEnv();
 			env->setScriptId(scriptId, &g_luaEnvironment());
 			g_luaEnvironment().callFunction(1);
 
@@ -94,7 +94,7 @@ int DBFunctions::luaDatabaseEscapeString(lua_State* L) {
 }
 
 int DBFunctions::luaDatabaseEscapeBlob(lua_State* L) {
-	uint32_t length = getNumber<uint32_t>(L, 2);
+	const uint32_t length = getNumber<uint32_t>(L, 2);
 	pushString(L, Database::getInstance().escapeBlob(getString(L, 1).c_str(), length));
 	return 1;
 }

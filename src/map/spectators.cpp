@@ -79,7 +79,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	minRangeY = (minRangeY == 0 ? -MAP_MAX_VIEW_PORT_Y : -minRangeY);
 	maxRangeY = (maxRangeY == 0 ? MAP_MAX_VIEW_PORT_Y : maxRangeY);
 
-	const auto &it = spectatorsCache.find(centerPos);
+	auto it = spectatorsCache.find(centerPos);
 	const bool cacheFound = it != spectatorsCache.end();
 	if (cacheFound) {
 		auto &cache = it->second;

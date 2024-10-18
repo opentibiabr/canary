@@ -13,6 +13,12 @@
 
 class ShopFunctions final : LuaScriptInterface {
 public:
+	explicit ShopFunctions(lua_State* L) :
+		LuaScriptInterface("ShopFunctions") {
+		init(L);
+	}
+	~ShopFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Shop", "", ShopFunctions::luaCreateShop);
 		registerMethod(L, "Shop", "setId", ShopFunctions::luaShopSetId);

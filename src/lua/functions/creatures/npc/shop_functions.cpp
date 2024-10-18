@@ -40,7 +40,7 @@ int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 	const auto &shop = getUserdataShared<Shop>(L, 1);
 	if (shop && isString(L, 2)) {
 		auto name = getString(L, 2);
-		auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
+		const auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
 
 		if (ids.first == Item::items.nameToItems.cend()) {
 			g_logger().warn("[ShopFunctions::luaShopSetIdFromName] - "

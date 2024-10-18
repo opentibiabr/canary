@@ -44,7 +44,7 @@ public:
 
 	template <typename T>
 		requires std::is_base_of_v<Creature, T>
-	Spectators filter();
+	Spectators filter() const;
 
 	Spectators insert(const std::shared_ptr<Creature> &creature);
 	Spectators insertAll(const CreatureVector &list);
@@ -91,7 +91,7 @@ private:
 
 template <typename T>
 	requires std::is_base_of_v<Creature, T>
-Spectators Spectators::filter() {
+Spectators Spectators::filter() const {
 	auto specs = Spectators();
 	specs.creatures.reserve(creatures.size());
 

@@ -140,9 +140,11 @@ public:
 
 	template <typename T>
 	void write(T add) {
-		char* addr = reinterpret_cast<char*>(&add);
-		std::span<const char> sourceSpan(addr, sizeof(T));
-		std::ranges::copy(sourceSpan, std::back_inserter(buffer));
+		static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
+
+		auto byteArray = std::bit_cast<std::array<char, sizeof(T)>>(add);
+		std::span<const char> charSpan(byteArray);
+		std::ranges::copy(charSpan, std::back_inserter(buffer));
 	}
 
 	void writeString(const std::string &str) {

@@ -37,16 +37,16 @@ public:
 		return inject<Spells>();
 	}
 
-	std::shared_ptr<Spell> getSpellByName(const std::string &name);
+	std::shared_ptr<Spell> getSpellByName(const std::string &name) const;
 	std::shared_ptr<RuneSpell> getRuneSpell(uint16_t id);
-	std::shared_ptr<RuneSpell> getRuneSpellByName(const std::string &name);
+	std::shared_ptr<RuneSpell> getRuneSpellByName(const std::string &name) const;
 
-	std::shared_ptr<InstantSpell> getInstantSpell(const std::string &words);
-	std::shared_ptr<InstantSpell> getInstantSpellByName(const std::string &name);
+	std::shared_ptr<InstantSpell> getInstantSpell(const std::string &words) const;
+	std::shared_ptr<InstantSpell> getInstantSpellByName(const std::string &name) const;
 
-	std::shared_ptr<InstantSpell> getInstantSpellById(uint16_t spellId);
+	std::shared_ptr<InstantSpell> getInstantSpellById(uint16_t spellId) const;
 
-	TalkActionResult_t playerSaySpell(std::shared_ptr<Player> player, std::string &words);
+	TalkActionResult_t playerSaySpell(const std::shared_ptr<Player> &player, std::string &words) const;
 
 	static Position getCasterPosition(std::shared_ptr<Creature> creature, Direction dir);
 

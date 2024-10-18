@@ -85,6 +85,7 @@ private:
 		std::array<char, NETWORKMESSAGE_MAXSIZE> buffer {};
 	};
 
+	void XTEA_transform(uint8_t* buffer, size_t messageLength, bool encrypt) const;
 	void XTEA_encrypt(OutputMessage &msg) const;
 	bool XTEA_decrypt(NetworkMessage &msg) const;
 	bool compression(OutputMessage &msg) const;

@@ -319,7 +319,7 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 }
 
 void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport /* = false*/) {
-	if (!creature || !newTile) {
+	if (!creature || creature->isRemoved() || !newTile) {
 		return;
 	}
 
@@ -331,6 +331,10 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 
 	const auto &oldPos = oldTile->getPosition();
 	const auto &newPos = newTile->getPosition();
+
+	if (oldPos == newPos) {
+		return;
+	}
 
 	const auto &fromZones = oldTile->getZones();
 	const auto &toZones = newTile->getZones();
@@ -360,10 +364,10 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 			++minRangeX;
 		}
 
-		spectators.find<Creature>(oldPos, true, minRangeX, maxRangeX, minRangeY, maxRangeY);
+		spectators.find<Creature>(oldPos, true, minRangeX, maxRangeX, minRangeY, maxRangeY, false);
 	} else {
-		spectators.find<Creature>(oldPos, true);
-		spectators.find<Creature>(newPos, true);
+		spectators.find<Creature>(oldPos, true, 0, 0, 0, 0, false);
+		spectators.find<Creature>(newPos, true, 0, 0, 0, 0, false);
 	}
 
 	auto playersSpectators = spectators.filter<Player>();
@@ -423,9 +427,18 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	oldTile->postRemoveNotification(creature, newTile, 0);
-	newTile->postAddNotification(creature, oldTile, 0);
-	g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+	auto events = [=] {
+		oldTile->postRemoveNotification(creature, newTile, 0);
+		newTile->postAddNotification(creature, oldTile, 0);
+		g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+	};
+
+	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+		// onCreatureMove for monster is asynchronous, so we need to defer the actions.
+		g_dispatcher().addEvent(std::move(events), "Map::moveCreature");
+	} else {
+		events();
+	}
 }
 
 bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, const SightLines_t lineOfSight /*= SightLine_CheckSightLine*/, const int32_t rangex /*= Map::maxClientViewportX*/, const int32_t rangey /*= Map::maxClientViewportY*/) {

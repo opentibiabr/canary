@@ -197,7 +197,7 @@ void Protocol::XTEA_encrypt(OutputMessage &outputMessage) const {
 	XTEA_transform(buffer, messageLength, true);
 }
 
-bool Protocol::XTEA_decrypt(NetworkMessage& msg) const {
+bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
 	if ((msgLength % 8) != 0) {
 		return false;

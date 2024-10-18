@@ -19,7 +19,7 @@ public:
 	ThreadPool(const ThreadPool &) = delete;
 	ThreadPool operator=(const ThreadPool &) = delete;
 
-	void start();
+	void start() const;
 	void shutdown();
 
 	static int16_t getThreadId() {

@@ -48,7 +48,7 @@ namespace stdext {
 		bool erase(const T &v) {
 			update();
 
-			const auto &it = std::ranges::find(backContainer, v);
+			auto it = std::ranges::find(backContainer, v);
 			if (it == backContainer.end()) {
 				return false;
 			}

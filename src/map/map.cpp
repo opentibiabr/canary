@@ -163,7 +163,7 @@ std::shared_ptr<Tile> Map::getLoadedTile(uint16_t x, uint16_t y, uint8_t z) {
 		return nullptr;
 	}
 
-	const auto leaf = getMapSector(x, y);
+	const auto &leaf = getMapSector(x, y);
 	if (!leaf) {
 		return nullptr;
 	}
@@ -173,7 +173,7 @@ std::shared_ptr<Tile> Map::getLoadedTile(uint16_t x, uint16_t y, uint8_t z) {
 		return nullptr;
 	}
 
-	const auto tile = floor->getTile(x, y);
+	const auto &tile = floor->getTile(x, y);
 	return tile;
 }
 
@@ -182,7 +182,7 @@ std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 		return nullptr;
 	}
 
-	const auto sector = getMapSector(x, y);
+	const auto &sector = getMapSector(x, y);
 	if (!sector) {
 		return nullptr;
 	}
@@ -196,7 +196,7 @@ std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 }
 
 void Map::refreshZones(uint16_t x, uint16_t y, uint8_t z) {
-	const auto tile = getLoadedTile(x, y, z);
+	const auto &tile = getLoadedTile(x, y, z);
 	if (!tile) {
 		return;
 	}
@@ -208,21 +208,21 @@ void Map::refreshZones(uint16_t x, uint16_t y, uint8_t z) {
 	}
 }
 
-void Map::setTile(uint16_t x, uint16_t y, uint8_t z, std::shared_ptr<Tile> newTile) {
+void Map::setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile> &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
 		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 
-	if (const auto sector = getMapSector(x, y)) {
+	if (const auto &sector = getMapSector(x, y)) {
 		sector->createFloor(z)->setTile(x, y, newTile);
 	} else {
 		getBestMapSector(x, y)->createFloor(z)->setTile(x, y, newTile);
 	}
 }
 
-bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
-	auto monster = creature->getMonster();
+bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creature> &creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
+	const auto &monster = creature->getMonster();
 	if (monster) {
 		monster->ignoreFieldDamage = true;
 	}
@@ -230,10 +230,10 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 	bool foundTile;
 	bool placeInPZ;
 
-	std::shared_ptr<Tile> tile = getTile(centerPos.x, centerPos.y, centerPos.z);
+	auto tile = getTile(centerPos.x, centerPos.y, centerPos.z);
 	if (tile) {
 		placeInPZ = tile->hasFlag(TILESTATE_PROTECTIONZONE);
-		ReturnValue ret = tile->queryAdd(0, creature, 1, FLAG_IGNOREBLOCKITEM | FLAG_IGNOREFIELDDAMAGE);
+		const ReturnValue ret = tile->queryAdd(0, creature, 1, FLAG_IGNOREBLOCKITEM | FLAG_IGNOREFIELDDAMAGE);
 		foundTile = forceLogin || ret == RETURNVALUE_NOERROR || ret == RETURNVALUE_PLAYERISNOTINVITED;
 		if (monster) {
 			monster->ignoreFieldDamage = false;
@@ -269,11 +269,11 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 			std::shuffle(relList.begin(), relList.begin() + 4, getRandomGenerator());
 			std::shuffle(relList.begin() + 4, relList.end(), getRandomGenerator());
 		} else {
-			std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
+			std::ranges::shuffle(relList, getRandomGenerator());
 		}
 
-		for (const auto &it : relList) {
-			Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
+		for (const auto &[xOffset, yOffset] : relList) {
+			Position tryPos(centerPos.x + xOffset, centerPos.y + yOffset, centerPos.z);
 
 			tile = getTile(tryPos.x, tryPos.y, tryPos.z);
 			if (!tile || (placeInPZ && !tile->hasFlag(TILESTATE_PROTECTIONZONE))) {
@@ -310,7 +310,7 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 	uint32_t flags = 0;
 	std::shared_ptr<Item> toItem = nullptr;
 
-	auto toCylinder = tile->queryDestination(index, creature, &toItem, flags);
+	const auto toCylinder = tile->queryDestination(index, creature, toItem, flags);
 	toCylinder->internalAddThing(creature);
 
 	const Position &dest = toCylinder->getPosition();
@@ -335,11 +335,11 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	const auto &fromZones = oldTile->getZones();
 	const auto &toZones = newTile->getZones();
 
-	if (auto ret = g_game().beforeCreatureZoneChange(creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
+	if (const auto &ret = g_game().beforeCreatureZoneChange(creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
 		return;
 	}
 
-	bool teleport = forceTeleport || !newTile->getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
+	const bool teleport = forceTeleport || !newTile->getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
 
 	Spectators spectators;
 	if (!teleport && oldPos.z == newPos.z) {
@@ -366,7 +366,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectators.find<Creature>(newPos, true);
 	}
 
-	auto playersSpectators = spectators.filter<Player>();
+	const auto playersSpectators = spectators.filter<Player>();
 
 	std::vector<int32_t> oldStackPosVector;
 	oldStackPosVector.reserve(playersSpectators.size());
@@ -411,7 +411,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	size_t i = 0;
 	for (const auto &spectator : playersSpectators) {
 		// Use the correct stackpos
-		int32_t stackpos = oldStackPosVector[i++];
+		const int32_t stackpos = oldStackPosVector[i++];
 		if (stackpos != -1) {
 			const auto &player = spectator->getPlayer();
 			player->sendCreatureMove(creature, newPos, newTile->getStackposOfCreature(player, creature), oldPos, stackpos, teleport);
@@ -436,7 +436,7 @@ bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, const
 		return false;
 	}
 
-	int32_t deltaz = Position::getDistanceZ(fromPos, toPos);
+	const int32_t deltaz = Position::getDistanceZ(fromPos, toPos);
 	if (deltaz > MAP_LAYER_VIEW_LIMIT) {
 		return false;
 	}
@@ -638,7 +638,7 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 	return tile;
 }
 
-bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &__targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &_targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 	static int_fast32_t allNeighbors[8][2] = {
 		{ -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 }, { -1, 1 }
 	};
@@ -656,7 +656,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 
 	const bool withoutCreature = creature == nullptr;
 
-	Position pos = withoutCreature ? __targetPos : creature->getPosition();
+	Position pos = withoutCreature ? _targetPos : creature->getPosition();
 	Position endPos;
 
 	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
@@ -664,14 +664,14 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 	int32_t bestMatch = 0;
 
 	const auto &startPos = pos;
-	const auto &targetPos = withoutCreature ? pathCondition.getTargetPos() : __targetPos;
+	const auto &targetPos = withoutCreature ? pathCondition.getTargetPos() : _targetPos;
 
 	const int_fast32_t sX = std::abs(targetPos.getX() - pos.getX());
 	const int_fast32_t sY = std::abs(targetPos.getY() - pos.getY());
 
 	uint_fast16_t cntDirs = 0;
 
-	AStarNode* found = nullptr;
+	const AStarNode* found = nullptr;
 	do {
 		AStarNode* n = nodes.getBestNode();
 		if (!n) {
@@ -785,8 +785,8 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 		pos.x = found->x;
 		pos.y = found->y;
 
-		int_fast32_t dx = pos.getX() - prevx;
-		int_fast32_t dy = pos.getY() - prevy;
+		const int_fast32_t dx = pos.getX() - prevx;
+		const int_fast32_t dy = pos.getY() - prevy;
 
 		prevx = pos.x;
 		prevy = pos.y;
@@ -851,7 +851,7 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 
 	uint_fast16_t cntDirs = 0;
 
-	AStarNode* found = nullptr;
+	const AStarNode* found = nullptr;
 	do {
 		AStarNode* n = nodes.getBestNode();
 		if (!n) {
@@ -973,8 +973,8 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 		pos.x = found->x;
 		pos.y = found->y;
 
-		int_fast32_t dx = pos.getX() - prevx;
-		int_fast32_t dy = pos.getY() - prevy;
+		const int_fast32_t dx = pos.getX() - prevx;
+		const int_fast32_t dy = pos.getY() - prevy;
 
 		prevx = pos.x;
 		prevy = pos.y;
@@ -1005,8 +1005,8 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 	return true;
 }
 
-uint32_t Map::clean() {
-	uint64_t start = OTSYS_TIME();
+uint32_t Map::clean() const {
+	const uint64_t start = OTSYS_TIME();
 	size_t qntTiles = 0;
 
 	if (g_game().getGameState() == GAME_STATE_NORMAL) {
@@ -1021,7 +1021,7 @@ uint32_t Map::clean() {
 			continue;
 		}
 
-		if (const auto items = tile->getItemList()) {
+		if (const auto &items = tile->getItemList()) {
 			++qntTiles;
 			for (const auto &item : *items) {
 				if (item->isCleanable()) {
@@ -1042,7 +1042,7 @@ uint32_t Map::clean() {
 		g_game().setGameState(GAME_STATE_NORMAL);
 	}
 
-	uint64_t end = OTSYS_TIME();
+	const uint64_t end = OTSYS_TIME();
 	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), qntTiles, (qntTiles != 1 ? "s" : ""), (end - start) / (1000.f));
 	return count;
 }

@@ -1,8 +1,8 @@
 #pragma once
 
 namespace stdext {
-	template <class _Kty>
-	using hash = phmap::Hash<_Kty>;
+	template <class Kty>
+	using hash = phmap::Hash<Kty>;
 
 	// Robin Hood lib
 	inline size_t hash_int(uint64_t x) noexcept {
@@ -17,19 +17,19 @@ namespace stdext {
 		seed ^= h + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 	}
 
-	void hash_combine(size_t &seed, uint64_t v) {
+	inline void hash_combine(size_t &seed, uint64_t v) {
 		hash_union(seed, hash_int(v));
 	}
 
-	void hash_combine(size_t &seed, uint32_t v) {
+	inline void hash_combine(size_t &seed, uint32_t v) {
 		hash_union(seed, hash_int(v));
 	}
 
-	void hash_combine(size_t &seed, uint16_t v) {
+	inline void hash_combine(size_t &seed, uint16_t v) {
 		hash_union(seed, hash_int(v));
 	}
 
-	void hash_combine(size_t &seed, uint8_t v) {
+	inline void hash_combine(size_t &seed, uint8_t v) {
 		hash_union(seed, hash_int(v));
 	}
 

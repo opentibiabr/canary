@@ -147,7 +147,7 @@ PlayerWheel::PlayerWheel(Player &initPlayer) :
 }
 
 bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) const {
-	auto playerPoints = getWheelPoints();
+	const auto playerPoints = getWheelPoints();
 	// Green quadrant
 	if (slot == WheelSlots_t::SLOT_GREEN_200) {
 		if (playerPoints < 375u) {
@@ -681,19 +681,22 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 }
 
 bool PlayerWheel::getSpellAdditionalArea(const std::string &spellName) const {
-	auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
+	const auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
 	if (stage == 0) {
 		return false;
 	}
 
-	auto vocationEnum = m_player.getPlayerVocationEnum();
+	const auto vocationEnum = m_player.getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
-	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+	}
+	if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.paladin, spellName, stage);
-	} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+	}
+	if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.druid, spellName, stage);
-	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+	}
+	if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.sorcerer, spellName, stage);
 	}
 
@@ -701,19 +704,22 @@ bool PlayerWheel::getSpellAdditionalArea(const std::string &spellName) const {
 }
 
 int PlayerWheel::getSpellAdditionalTarget(const std::string &spellName) const {
-	auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
+	const auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
 	if (stage == 0) {
 		return 0;
 	}
 
-	auto vocationEnum = m_player.getPlayerVocationEnum();
+	const auto vocationEnum = m_player.getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
-	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+	}
+	if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.paladin, spellName, stage);
-	} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+	}
+	if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.druid, spellName, stage);
-	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+	}
+	if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.sorcerer, spellName, stage);
 	}
 
@@ -721,19 +727,22 @@ int PlayerWheel::getSpellAdditionalTarget(const std::string &spellName) const {
 }
 
 int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const {
-	auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
+	const auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
 	if (stage == 0) {
 		return 0;
 	}
 
-	auto vocationEnum = m_player.getPlayerVocationEnum();
+	const auto vocationEnum = m_player.getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
-	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+	}
+	if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.paladin, spellName, stage);
-	} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+	}
+	if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.druid, spellName, stage);
-	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+	}
+	if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.sorcerer, spellName, stage);
 	}
 
@@ -743,15 +752,15 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
 	std::vector<uint16_t> unlockedScrolls;
 
-	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
+	for (const auto &[itemId, name, extraPoints] : WheelOfDestinyPromotionScrolls) {
 		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
 		if (!scrollKv) {
 			continue;
 		}
 
-		auto scrollOpt = scrollKv->get(scroll.name);
+		const auto scrollOpt = scrollKv->get(name);
 		if (scrollOpt && scrollOpt->get<bool>()) {
-			unlockedScrolls.push_back(scroll.itemId);
+			unlockedScrolls.emplace_back(itemId);
 		}
 	}
 
@@ -767,14 +776,14 @@ std::shared_ptr<KV> PlayerWheel::gemsKV() const {
 
 std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 	std::vector<PlayerWheelGem> unlockedGems;
-	auto unlockedGemUUIDs = gemsKV()->scoped("revealed")->keys();
+	const auto unlockedGemUUIDs = gemsKV()->scoped("revealed")->keys();
 	if (unlockedGemUUIDs.empty()) {
 		return unlockedGems;
 	}
 
 	std::vector<std::string> sortedUnlockedGemGUIDs;
 	for (const auto &uuid : unlockedGemUUIDs) {
-		sortedUnlockedGemGUIDs.push_back(uuid);
+		sortedUnlockedGemGUIDs.emplace_back(uuid);
 	}
 
 	std::sort(sortedUnlockedGemGUIDs.begin(), sortedUnlockedGemGUIDs.end(), [](const std::string &a, const std::string &b) {
@@ -786,18 +795,18 @@ std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 	});
 
 	for (const auto &uuid : sortedUnlockedGemGUIDs) {
-		auto gem = PlayerWheelGem::load(gemsKV(), uuid);
+		const auto &gem = PlayerWheelGem::load(gemsKV(), uuid);
 		if (gem.uuid.empty()) {
 			continue;
 		}
-		unlockedGems.push_back(gem);
+		unlockedGems.emplace_back(gem);
 	}
 	return unlockedGems;
 }
 
 std::vector<PlayerWheelGem> PlayerWheel::getActiveGems() const {
 	std::vector<PlayerWheelGem> activeGems;
-	for (auto affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
 		std::string key(magic_enum::enum_name(affinity));
 		auto uuidKV = gemsKV()->scoped("active")->get(key);
 		if (!uuidKV.has_value()) {
@@ -812,7 +821,7 @@ std::vector<PlayerWheelGem> PlayerWheel::getActiveGems() const {
 		if (gem.uuid.empty()) {
 			continue;
 		}
-		activeGems.push_back(gem);
+		activeGems.emplace_back(gem);
 	}
 	return activeGems;
 }
@@ -853,7 +862,7 @@ uint64_t PlayerWheel::getGemRevealCost(WheelGemQuality_t quality) {
 	return static_cast<uint64_t>(g_configManager().getNumber(key));
 }
 
-void PlayerWheel::revealGem(WheelGemQuality_t quality) {
+void PlayerWheel::revealGem(WheelGemQuality_t quality) const {
 	uint16_t gemId = m_player.getVocation()->getWheelGemId(quality);
 	if (gemId == 0) {
 		g_logger().error("[{}] Failed to get gem id for quality {} and vocation {}", __FUNCTION__, fmt::underlying(quality), m_player.getVocation()->getVocName());
@@ -872,7 +881,7 @@ void PlayerWheel::revealGem(WheelGemQuality_t quality) {
 		g_logger().error("[{}] Failed to remove gem with id {} from player with name {}", __FUNCTION__, gemId, m_player.getName());
 		return;
 	}
-	auto supremeModifiers = m_player.getVocation()->getSupremeGemModifiers();
+	const auto supremeModifiers = m_player.getVocation()->getSupremeGemModifiers();
 	PlayerWheelGem gem;
 	gem.uuid = KV::generateUUID();
 	gem.locked = false;
@@ -911,7 +920,7 @@ PlayerWheelGem PlayerWheel::getGem(const std::string &uuid) const {
 }
 
 uint16_t PlayerWheel::getGemIndex(const std::string &uuid) const {
-	auto gems = getRevealedGems();
+	const auto gems = getRevealedGems();
 	for (uint16_t i = 0; i < gems.size(); ++i) {
 		if (gems[i].uuid == uuid) {
 			return i;
@@ -921,8 +930,8 @@ uint16_t PlayerWheel::getGemIndex(const std::string &uuid) const {
 	return 0xFF;
 }
 
-void PlayerWheel::destroyGem(uint16_t index) {
-	auto gem = getGem(index);
+void PlayerWheel::destroyGem(uint16_t index) const {
+	const auto gem = getGem(index);
 	if (gem.locked) {
 		g_logger().error("[{}] Player {} trying to destroy locked gem with index {}", __FUNCTION__, m_player.getName(), index);
 		return;
@@ -931,7 +940,7 @@ void PlayerWheel::destroyGem(uint16_t index) {
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::switchGemDomain(uint16_t index) {
+void PlayerWheel::switchGemDomain(uint16_t index) const {
 	auto gem = getGem(index);
 	if (gem.locked) {
 		g_logger().error("[{}] Player {} trying to destroy locked gem with index {}", __FUNCTION__, m_player.getName(), index);
@@ -949,15 +958,15 @@ void PlayerWheel::switchGemDomain(uint16_t index) {
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::toggleGemLock(uint16_t index) {
+void PlayerWheel::toggleGemLock(uint16_t index) const {
 	auto gem = getGem(index);
 	gem.locked = !gem.locked;
 	gem.save(gemsKV());
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
-	auto gem = getGem(index);
+void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) const {
+	const auto gem = getGem(index);
 	if (gem.uuid.empty()) {
 		g_logger().error("[{}] Failed to load gem with index {}", __FUNCTION__, index);
 		return;
@@ -966,17 +975,17 @@ void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
 		g_logger().error("[{}] Gem with index {} has affinity {} but trying to set it to {}", __FUNCTION__, index, fmt::underlying(gem.affinity), fmt::underlying(affinity));
 		return;
 	}
-	std::string key(magic_enum::enum_name(affinity));
+	const std::string key(magic_enum::enum_name(affinity));
 	gemsKV()->scoped("active")->set(key, gem.uuid);
 }
 
-void PlayerWheel::removeActiveGem(WheelGemAffinity_t affinity) {
-	std::string key(magic_enum::enum_name(affinity));
+void PlayerWheel::removeActiveGem(WheelGemAffinity_t affinity) const {
+	const std::string key(magic_enum::enum_name(affinity));
 	gemsKV()->scoped("active")->remove(key);
 }
 
 void PlayerWheel::addGems(NetworkMessage &msg) const {
-	auto activeGems = getActiveGems();
+	const auto activeGems = getActiveGems();
 	msg.addByte(activeGems.size());
 	g_logger().debug("[{}] Player {} has {} active gems", __FUNCTION__, m_player.getName(), activeGems.size());
 	for (const auto &gem : activeGems) {
@@ -985,7 +994,7 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 		msg.add<uint16_t>(getGemIndex(gem.uuid));
 	}
 
-	auto revealedGems = getRevealedGems();
+	const auto revealedGems = getRevealedGems();
 	msg.add<uint16_t>(revealedGems.size());
 	uint16_t index = 0;
 	for (const auto &gem : revealedGems) {
@@ -1013,7 +1022,7 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	}
 
 	msg.addByte(0x5F);
-	bool canUse = canOpenWheel();
+	const bool canUse = canOpenWheel();
 	msg.add<uint32_t>(ownerId); // Player ID
 	msg.addByte(canUse ? 1 : 0); // Can Use
 	if (!canUse) {
@@ -1031,7 +1040,12 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	addPromotionScrolls(msg);
 	addGems(msg);
 	// TODO: read items from inventory
-	auto voc = m_player.getVocation();
+	const auto &voc = m_player.getVocation();
+	if (!voc) {
+		g_logger().error("[{}] Failed to get vocation for player {}", __FUNCTION__, m_player.getName());
+		return;
+	}
+
 	m_player.client->sendResourceBalance(RESOURCE_BANK, m_player.getBankBalance());
 	m_player.client->sendResourceBalance(RESOURCE_INVENTORY_MONEY, m_player.getMoney());
 	m_player.client->sendResourceBalance(RESOURCE_LESSER_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Lesser)));
@@ -1068,7 +1082,7 @@ bool PlayerWheel::checkSavePointsBySlotType(WheelSlots_t slotType, uint16_t poin
 
 	setPointsBySlotType(static_cast<uint8_t>(slotType), 0);
 
-	auto unusedPoints = getUnusedPoints();
+	const auto unusedPoints = getUnusedPoints();
 	if (points > unusedPoints) {
 		return false;
 	}
@@ -1080,7 +1094,7 @@ bool PlayerWheel::checkSavePointsBySlotType(WheelSlots_t slotType, uint16_t poin
 void PlayerWheel::saveSlotPointsHandleRetryErrors(std::vector<SlotInfo> &retryTable, int &errors) {
 	std::vector<SlotInfo> temporaryTable;
 	for (const auto &data : retryTable) {
-		auto saved = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
+		const auto saved = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
 		if (saved) {
 			errors--;
 		} else {
@@ -1114,13 +1128,13 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 			return;
 		}
 
-		auto order = g_game().getIOWheel()->getSlotPrioritaryOrder(static_cast<WheelSlots_t>(slot));
+		const auto order = g_game().getIOWheel()->getSlotPrioritaryOrder(static_cast<WheelSlots_t>(slot));
 		if (order == -1) {
 			continue;
 		}
 
 		// The slot information is then added to the vector in order.
-		sortedTable.push_back({ order, slot, slotPoints });
+		sortedTable.emplace_back(order, slot, slotPoints);
 	}
 
 	// After iterating over all slots, the vector is sorted according to the slot order.
@@ -1133,7 +1147,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 
 	// Processes the vector in the correct order. If it is not possible to save points for a slot,
 	for (const auto &data : sortedTable) {
-		auto canSave = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
+		const auto canSave = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
 		if (!canSave) {
 			sortedTableRetry.emplace_back(data);
 			errors++;
@@ -1157,13 +1171,13 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	}
 
 	// Gem Vessels
-	for (auto affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
-		bool hasGem = msg.getByte();
+	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+		const bool hasGem = msg.getByte();
 		if (!hasGem) {
 			removeActiveGem(affinity);
 			continue;
 		}
-		uint16_t gemIndex = msg.get<uint16_t>();
+		const auto gemIndex = msg.get<uint16_t>();
 		setActiveGem(affinity, gemIndex);
 	}
 
@@ -1179,15 +1193,15 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
  * Functions for load and save player database informations
  */
 void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
-	auto resultString = fmt::format("SELECT `slot` FROM `player_wheeldata` WHERE `player_id` = {}", m_player.getGUID());
-	DBResult_ptr result = Database::getInstance().storeQuery(resultString);
+	const auto resultString = fmt::format("SELECT `slot` FROM `player_wheeldata` WHERE `player_id` = {}", m_player.getGUID());
+	const DBResult_ptr result = Database::getInstance().storeQuery(resultString);
 	// Ignore if player not have nothing inserted in the table
 	if (!result) {
 		return;
 	}
 
 	unsigned long size;
-	auto attribute = result->getStream("slot", size);
+	const auto attribute = result->getStream("slot", size);
 	PropStream propStream;
 	propStream.init(attribute, size);
 	for (size_t i = 0; i < size; i++) {
@@ -1201,7 +1215,7 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 }
 
 bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
-	Database &db = Database::getInstance();
+	const Database &db = Database::getInstance();
 	std::ostringstream query;
 	DBInsert insertWheelData("INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES ");
 	insertWheelData.upsert({ "slot" });
@@ -1221,7 +1235,7 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	size_t attributesSize;
 	const char* attributes = stream.getStream(attributesSize);
 	if (attributesSize > 0) {
-		query << m_player.getGUID() << ',' << db.escapeBlob(attributes, (uint32_t)attributesSize);
+		query << m_player.getGUID() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
 		if (!insertWheelData.addRow(query)) {
 			g_logger().debug("[{}] failed to insert row data", __FUNCTION__);
 			return false;
@@ -1243,15 +1257,19 @@ uint16_t PlayerWheel::getExtraPoints() const {
 	}
 
 	uint16_t totalBonus = 0;
-	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
+	for (const auto &[itemId, name, extraPoints] : WheelOfDestinyPromotionScrolls) {
+		if (itemId == 0) {
+			continue;
+		}
+
 		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
 		if (!scrollKv) {
 			continue;
 		}
 
-		auto scrollKV = scrollKv->get(scroll.name);
+		const auto scrollKV = scrollKv->get(name);
 		if (scrollKV && scrollKV->get<bool>()) {
-			totalBonus += scroll.extraPoints;
+			totalBonus += extraPoints;
 		}
 	}
 
@@ -1259,7 +1277,7 @@ uint16_t PlayerWheel::getExtraPoints() const {
 }
 
 uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const {
-	uint32_t level = m_player.getLevel();
+	const uint32_t level = m_player.getLevel();
 	auto totalPoints = std::max(0u, (level - m_minLevelToStartCountPoints)) * m_pointsPerLevel;
 
 	if (includeExtraPoints) {
@@ -1304,7 +1322,7 @@ uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {
 
 	// Check if is in the temple range (we assume the temple is within the range of 10 sqms)
 	if (m_player.getZoneType() == ZONE_PROTECTION) {
-		for (auto [townid, town] : g_game().map.towns.getTowns()) {
+		for (const auto &[townid, town] : g_game().map.towns.getTowns()) {
 			if (Position::areInRange<1, 10>(town->getTemplePosition(), m_player.getPosition())) {
 				return 1;
 			}
@@ -1377,7 +1395,7 @@ void PlayerWheel::setPlayerCombatStats(CombatType_t type, int32_t leechAmount) {
 	}
 }
 
-void PlayerWheel::reloadPlayerData() {
+void PlayerWheel::reloadPlayerData() const {
 	// Maybe it's not really necessary, but it doesn't hurt to validate
 	if (!m_player.getTile()) {
 		return;
@@ -1410,22 +1428,27 @@ void PlayerWheel::registerPlayerBonusData() {
 
 	auto activeGems = getActiveGems();
 	std::string playerName = m_player.getName();
-	for (const auto &gem : activeGems) {
-		auto count = m_playerBonusData.unlockedVesselResonances[static_cast<uint8_t>(gem.affinity)];
+	for (const auto &[uuid, locked, affinity, quality, basicModifier1, basicModifier2, supremeModifier] : activeGems) {
+		if (uuid.empty()) {
+			g_logger().error("[{}] Player {} has an empty gem uuid", __FUNCTION__, playerName);
+			continue;
+		}
+
+		auto count = m_playerBonusData.unlockedVesselResonances[static_cast<uint8_t>(affinity)];
 		if (count >= 1) {
-			std::string modifierName(magic_enum::enum_name(gem.basicModifier1));
-			g_logger().debug("[{}] Adding basic modifier 1 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
-			m_modifierContext->addStrategies(gem.basicModifier1);
+			std::string modifierName(magic_enum::enum_name(basicModifier1));
+			g_logger().debug("[{}] Adding basic modifier 1 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
+			m_modifierContext->addStrategies(basicModifier1);
 		}
-		if (count >= 2 && gem.quality >= WheelGemQuality_t::Regular) {
-			std::string modifierName(magic_enum::enum_name(gem.basicModifier2));
-			g_logger().debug("[{}] Adding basic modifier 2 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
-			m_modifierContext->addStrategies(gem.basicModifier2);
+		if (count >= 2 && quality >= WheelGemQuality_t::Regular) {
+			std::string modifierName(magic_enum::enum_name(basicModifier2));
+			g_logger().debug("[{}] Adding basic modifier 2 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
+			m_modifierContext->addStrategies(basicModifier2);
 		}
-		if (count >= 3 && gem.quality >= WheelGemQuality_t::Greater) {
-			std::string modifierName(magic_enum::enum_name(gem.supremeModifier));
-			g_logger().debug("[{}] Adding supreme modifier {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
-			m_modifierContext->addStrategies(gem.supremeModifier);
+		if (count >= 3 && quality >= WheelGemQuality_t::Greater) {
+			std::string modifierName(magic_enum::enum_name(supremeModifier));
+			g_logger().debug("[{}] Adding supreme modifier {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
+			m_modifierContext->addStrategies(supremeModifier);
 		}
 	}
 	m_modifierContext->executeStrategies();
@@ -1667,12 +1690,12 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 
 	g_logger().debug("Vessel Resonance:");
 	for (size_t i = 0; i < bonusData.unlockedVesselResonances.size(); ++i) {
-		auto count = bonusData.unlockedVesselResonances[i];
+		const auto count = bonusData.unlockedVesselResonances[i];
 		if (count == 0) {
 			continue;
 		}
 
-		WheelGemAffinity_t affinity = static_cast<WheelGemAffinity_t>(i);
+		const auto affinity = static_cast<WheelGemAffinity_t>(i);
 		std::string affinityName(magic_enum::enum_name(affinity));
 		g_logger().debug("  Affinity: {} count: {}", affinityName, bonusData.unlockedVesselResonances[i]);
 	}
@@ -1780,13 +1803,13 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 void PlayerWheel::loadDedicationAndConvictionPerks() {
 	using VocationBonusFunction = std::function<void(const std::shared_ptr<Player> &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
 	auto wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
-	auto vocationCipId = m_player.getPlayerVocationEnum();
+	const auto vocationCipId = m_player.getPlayerVocationEnum();
 	if (vocationCipId < VOCATION_KNIGHT_CIP || vocationCipId > VOCATION_DRUID_CIP) {
 		return;
 	}
 
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
-		uint16_t points = getPointsBySlotType(static_cast<WheelSlots_t>(i));
+		const uint16_t points = getPointsBySlotType(static_cast<WheelSlots_t>(i));
 		if (points > 0) {
 			VocationBonusFunction internalData = nullptr;
 			auto it = wheelFunctions.find(static_cast<WheelSlots_t>(i));
@@ -1820,8 +1843,8 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.damage += statsDamage;
 		m_playerBonusData.stats.healing += statsHealing;
 
-		auto redStageValue = static_cast<uint8_t>(redStageEnum);
-		auto vocationEnum = m_player.getPlayerVocationEnum();
+		const auto redStageValue = static_cast<uint8_t>(redStageEnum);
+		const auto vocationEnum = m_player.getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 			m_playerBonusData.stages.blessingOfTheGrove = redStageValue;
 		} else if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
@@ -1848,8 +1871,8 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.damage += statsDamage;
 		m_playerBonusData.stats.healing += statsHealing;
 
-		auto purpleStage = static_cast<uint8_t>(purpleStageEnum);
-		auto vocationEnum = m_player.getPlayerVocationEnum();
+		const auto purpleStage = static_cast<uint8_t>(purpleStageEnum);
+		const auto vocationEnum = m_player.getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 			m_playerBonusData.avatar.steel = purpleStage;
 			for (uint8_t i = 0; i < purpleStage; ++i) {
@@ -1879,8 +1902,8 @@ void PlayerWheel::loadRevelationPerks() {
 		m_playerBonusData.stats.damage += statsDamage;
 		m_playerBonusData.stats.healing += statsHealing;
 
-		auto blueStage = static_cast<uint8_t>(blueStageEnum);
-		auto vocationEnum = m_player.getPlayerVocationEnum();
+		const auto blueStage = static_cast<uint8_t>(blueStageEnum);
+		const auto vocationEnum = m_player.getPlayerVocationEnum();
 		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 			m_playerBonusData.stages.combatMastery = blueStage;
 		} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
@@ -1906,7 +1929,7 @@ void PlayerWheel::loadRevelationPerks() {
 
 WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) const {
 	std::vector<WheelSlots_t> slots;
-	WheelGemAffinity_t affinity = WheelGemAffinity_t::Green;
+	auto affinity = WheelGemAffinity_t::Green;
 	if (color == "green") {
 		affinity = WheelGemAffinity_t::Green;
 		slots = {
@@ -1971,9 +1994,11 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 
 	if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::THREE)) {
 		return WheelStageEnum_t::THREE;
-	} else if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::TWO)) {
+	}
+	if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::TWO)) {
 		return WheelStageEnum_t::TWO;
-	} else if (totalPoints >= static_cast<uint8_t>(WheelStagePointsEnum_t::ONE)) {
+	}
+	if (totalPoints >= static_cast<uint8_t>(WheelStagePointsEnum_t::ONE)) {
 		return WheelStageEnum_t::ONE;
 	}
 
@@ -2020,12 +2045,12 @@ bool PlayerWheel::checkBattleInstinct() {
 				m_player.getPosition().y + offsetY,
 				m_player.getPosition().z
 			);
-			std::shared_ptr<Tile> tile = g_game().map.getTile(playerPositionOffSet);
+			const auto &tile = g_game().map.getTile(playerPositionOffSet);
 			if (!tile) {
 				continue;
 			}
 
-			std::shared_ptr<Creature> creature = tile->getTopVisibleCreature(m_player.getPlayer());
+			const auto &creature = tile->getTopVisibleCreature(m_player.getPlayer());
 			if (!creature || creature == m_player.getPlayer() || (creature->getMaster() && creature->getMaster()->getPlayer() == m_player.getPlayer())) {
 				continue;
 			}
@@ -2037,8 +2062,8 @@ bool PlayerWheel::checkBattleInstinct() {
 	if (creaturesNearby >= 5) {
 		m_creaturesNearby = creaturesNearby;
 		creaturesNearby -= 4;
-		uint16_t meleeSkill = 1 * creaturesNearby;
-		uint16_t shieldSkill = 6 * creaturesNearby;
+		const uint16_t meleeSkill = 1 * creaturesNearby;
+		const uint16_t shieldSkill = 6 * creaturesNearby;
 		if (getMajorStat(WheelMajor_t::MELEE) != meleeSkill || getMajorStat(WheelMajor_t::SHIELD) != shieldSkill) {
 			setMajorStat(WheelMajor_t::MELEE, meleeSkill);
 			setMajorStat(WheelMajor_t::SHIELD, shieldSkill);
@@ -2068,12 +2093,12 @@ bool PlayerWheel::checkPositionalTatics() {
 				m_player.getPosition().y + offsetY,
 				m_player.getPosition().z
 			);
-			std::shared_ptr<Tile> tile = g_game().map.getTile(playerPositionOffSet);
+			const auto &tile = g_game().map.getTile(playerPositionOffSet);
 			if (!tile) {
 				continue;
 			}
 
-			std::shared_ptr<Creature> creature = tile->getTopVisibleCreature(m_player.getPlayer());
+			const auto &creature = tile->getTopVisibleCreature(m_player.getPlayer());
 			if (!creature || creature == m_player.getPlayer() || !creature->getMonster() || (creature->getMaster() && creature->getMaster()->getPlayer())) {
 				continue;
 			}
@@ -2082,8 +2107,8 @@ bool PlayerWheel::checkPositionalTatics() {
 			break;
 		}
 	}
-	uint16_t magicSkill = 3;
-	uint16_t distanceSkill = 3;
+	constexpr uint16_t magicSkill = 3;
+	constexpr uint16_t distanceSkill = 3;
 	if (creaturesNearby == 0) {
 		m_creaturesNearby = creaturesNearby;
 		if (getMajorStat(WheelMajor_t::DISTANCE) != distanceSkill) {
@@ -2111,11 +2136,11 @@ bool PlayerWheel::checkPositionalTatics() {
 bool PlayerWheel::checkBallisticMastery() {
 	setOnThinkTimer(WheelOnThink_t::BALLISTIC_MASTERY, OTSYS_TIME() + 2000);
 	bool updateClient = false;
-	int32_t newCritical = 1000;
-	uint16_t newHolyBonus = 2; // 2%
-	uint16_t newPhysicalBonus = 2; // 2%
+	constexpr int32_t newCritical = 1000;
+	constexpr uint16_t newHolyBonus = 2; // 2%
+	constexpr uint16_t newPhysicalBonus = 2; // 2%
 
-	std::shared_ptr<Item> item = m_player.getWeapon();
+	const auto &item = m_player.getWeapon();
 	if (item && item->getAmmoType() == AMMO_BOLT) {
 		if (getMajorStat(WheelMajor_t::CRITICAL_DMG) != newCritical) {
 			setMajorStat(WheelMajor_t::CRITICAL_DMG, newCritical);
@@ -2154,9 +2179,9 @@ bool PlayerWheel::checkBallisticMastery() {
 bool PlayerWheel::checkCombatMastery() {
 	setOnThinkTimer(WheelOnThink_t::COMBAT_MASTERY, OTSYS_TIME() + 2000);
 	bool updateClient = false;
-	uint8_t stage = getStage(WheelStage_t::COMBAT_MASTERY);
+	const uint8_t stage = getStage(WheelStage_t::COMBAT_MASTERY);
 
-	std::shared_ptr<Item> item = m_player.getWeapon();
+	const auto &item = m_player.getWeapon();
 	if (item && item->getSlotPosition() & SLOTP_TWO_HAND) {
 		int32_t criticalSkill = 0;
 		if (stage >= 3) {
@@ -2201,12 +2226,12 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	bool updateClient = false;
 	setOnThinkTimer(WheelOnThink_t::DIVINE_EMPOWERMENT, OTSYS_TIME() + 1000);
 
-	const auto tile = m_player.getTile();
+	const auto &tile = m_player.getTile();
 	if (!tile) {
 		return updateClient;
 	}
 
-	const auto items = tile->getItemList();
+	const auto &items = tile->getItemList();
 	if (!items) {
 		return updateClient;
 	}
@@ -2221,7 +2246,7 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	}
 
 	if (isOwner) {
-		uint8_t stage = getStage(WheelStage_t::DIVINE_EMPOWERMENT);
+		const uint8_t stage = getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 		if (stage >= 3) {
 			damageBonus = 7;
 		} else if (stage >= 2) {
@@ -2239,13 +2264,13 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	return updateClient;
 }
 
-int32_t PlayerWheel::checkDivineGrenade(std::shared_ptr<Creature> target) const {
+int32_t PlayerWheel::checkDivineGrenade(const std::shared_ptr<Creature> &target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
 	int32_t damageBonus = 0;
-	uint8_t stage = getStage(WheelStage_t::DIVINE_GRENADE);
+	const uint8_t stage = getStage(WheelStage_t::DIVINE_GRENADE);
 
 	if (stage >= 3) {
 		damageBonus = 100;
@@ -2267,7 +2292,7 @@ void PlayerWheel::checkGiftOfLife() {
 	g_game().addMagicEffect(m_player.getPosition(), CONST_ME_WATER_DROP);
 	g_game().combatChangeHealth(m_player.getPlayer(), m_player.getPlayer(), giftDamage);
 	// Condition cooldown reduction
-	uint16_t reductionTimer = 60000;
+	constexpr uint16_t reductionTimer = 60000;
 	reduceAllSpellsCooldownTimer(reductionTimer);
 
 	// Set cooldown
@@ -2275,14 +2300,14 @@ void PlayerWheel::checkGiftOfLife() {
 	sendGiftOfLifeCooldown();
 }
 
-int32_t PlayerWheel::checkBlessingGroveHealingByTarget(std::shared_ptr<Creature> target) const {
+int32_t PlayerWheel::checkBlessingGroveHealingByTarget(const std::shared_ptr<Creature> &target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
 	int32_t healingBonus = 0;
-	uint8_t stage = getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
-	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
+	const uint8_t stage = getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
+	const int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
 	if (healthPercent <= 30) {
 		if (stage >= 3) {
 			healingBonus = 24;
@@ -2304,14 +2329,14 @@ int32_t PlayerWheel::checkBlessingGroveHealingByTarget(std::shared_ptr<Creature>
 	return healingBonus;
 }
 
-int32_t PlayerWheel::checkTwinBurstByTarget(std::shared_ptr<Creature> target) const {
+int32_t PlayerWheel::checkTwinBurstByTarget(const std::shared_ptr<Creature> &target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
 	int32_t damageBonus = 0;
-	uint8_t stage = getStage(WheelStage_t::TWIN_BURST);
-	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
+	const uint8_t stage = getStage(WheelStage_t::TWIN_BURST);
+	const int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
 	if (healthPercent > 60) {
 		if (stage >= 3) {
 			damageBonus = 60;
@@ -2325,14 +2350,14 @@ int32_t PlayerWheel::checkTwinBurstByTarget(std::shared_ptr<Creature> target) co
 	return damageBonus;
 }
 
-int32_t PlayerWheel::checkExecutionersThrow(std::shared_ptr<Creature> target) const {
+int32_t PlayerWheel::checkExecutionersThrow(const std::shared_ptr<Creature> &target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
 	int32_t damageBonus = 0;
-	uint8_t stage = getStage(WheelStage_t::EXECUTIONERS_THROW);
-	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
+	const uint8_t stage = getStage(WheelStage_t::EXECUTIONERS_THROW);
+	const int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
 	if (healthPercent <= 30) {
 		if (stage >= 3) {
 			damageBonus = 150;
@@ -2348,7 +2373,7 @@ int32_t PlayerWheel::checkExecutionersThrow(std::shared_ptr<Creature> target) co
 
 int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	int32_t damageBoost = 0;
-	uint8_t stage = getStage(WheelStage_t::BEAM_MASTERY);
+	const uint8_t stage = getStage(WheelStage_t::BEAM_MASTERY);
 	if (stage >= 3) {
 		damageBoost = 14;
 	} else if (stage >= 2) {
@@ -2360,12 +2385,12 @@ int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	return damageBoost;
 }
 
-int32_t PlayerWheel::checkDrainBodyLeech(std::shared_ptr<Creature> target, skills_t skill) const {
+int32_t PlayerWheel::checkDrainBodyLeech(const std::shared_ptr<Creature> &target, skills_t skill) const {
 	if (!target || !target->getMonster() || target->getWheelOfDestinyDrainBodyDebuff() == 0) {
 		return 0;
 	}
 
-	uint8_t stage = target->getWheelOfDestinyDrainBodyDebuff();
+	const uint8_t stage = target->getWheelOfDestinyDrainBodyDebuff();
 	if (target->getBuff(BUFF_DAMAGERECEIVED) > 100 && skill == SKILL_MANA_LEECH_AMOUNT) {
 		int32_t manaLeechSkill = 0;
 		if (stage >= 3) {
@@ -2394,14 +2419,14 @@ int32_t PlayerWheel::checkDrainBodyLeech(std::shared_ptr<Creature> target, skill
 }
 
 int32_t PlayerWheel::checkBattleHealingAmount() const {
-	double amount = (double)m_player.getSkillLevel(SKILL_SHIELD) * 0.2;
-	uint8_t healthPercent = (m_player.getHealth() * 100) / m_player.getMaxHealth();
+	double amount = static_cast<double>(m_player.getSkillLevel(SKILL_SHIELD)) * 0.2;
+	const uint8_t healthPercent = (m_player.getHealth() * 100) / m_player.getMaxHealth();
 	if (healthPercent <= 30) {
 		amount *= 3;
 	} else if (healthPercent <= 60) {
 		amount *= 2;
 	}
-	return (int32_t)amount;
+	return static_cast<int32_t>(amount);
 }
 
 int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
@@ -2429,9 +2454,11 @@ int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
 	if (skill == WheelAvatarSkill_t::DAMAGE_REDUCTION) {
 		if (stage >= 3) {
 			return 15;
-		} else if (stage >= 2) {
+		}
+		if (stage >= 2) {
 			return 10;
-		} else if (stage >= 1) {
+		}
+		if (stage >= 1) {
 			return 5;
 		}
 	} else if (skill == WheelAvatarSkill_t::CRITICAL_CHANCE) {
@@ -2439,9 +2466,11 @@ int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
 	} else if (skill == WheelAvatarSkill_t::CRITICAL_DAMAGE) {
 		if (stage >= 3) {
 			return 1500;
-		} else if (stage >= 2) {
+		}
+		if (stage >= 2) {
 			return 1000;
-		} else if (stage >= 1) {
+		}
+		if (stage >= 1) {
 			return 500;
 		}
 	}
@@ -2520,7 +2549,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	}
 }
 
-void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) {
+void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) const {
 	for (const auto &condition : m_player.getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
 		if (condition->getTicks() <= value) {
 			m_player.sendSpellCooldown(condition->getSubId(), 0);
@@ -2544,7 +2573,7 @@ void PlayerWheel::resetUpgradedSpells() {
 	for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 		setMajorStat(static_cast<WheelMajor_t>(i), 0);
 	}
-	for (int i = 0; i < static_cast<int>(WheelStage_t::TOTAL_COUNT); i++) {
+	for (int i = 0; i < static_cast<int>(WheelStage_t::STAGE_COUNT); i++) {
 		setStage(static_cast<WheelStage_t>(i), 0);
 	}
 	setOnThinkTimer(WheelOnThink_t::FOCUS_MASTERY, 0);
@@ -2576,7 +2605,7 @@ void PlayerWheel::downgradeSpell(const std::string &name) {
 
 std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 	std::shared_ptr<Spell> spell = nullptr;
-	WheelSpellGrade_t spellGrade = WheelSpellGrade_t::NONE;
+	auto spellGrade = WheelSpellGrade_t::NONE;
 	if (!(damage.instantSpellName).empty()) {
 		spellGrade = getSpellUpgrade(damage.instantSpellName);
 		spell = g_spells().getInstantSpellByName(damage.instantSpellName);
@@ -2798,47 +2827,68 @@ bool PlayerWheel::getInstant(WheelInstant_t type) const {
 	return false;
 }
 
-uint8_t PlayerWheel::getStage(const std::string name) const {
+uint8_t PlayerWheel::getStage(std::string_view name) const {
+	using enum WheelInstant_t;
+	using enum WheelStage_t;
 	if (name == "Battle Instinct") {
-		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_INSTINCT);
-	} else if (name == "Battle Healing") {
-		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_HEALING);
-	} else if (name == "Positional Tatics") {
-		return PlayerWheel::getInstant(WheelInstant_t::POSITIONAL_TATICS);
-	} else if (name == "Ballistic Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::BALLISTIC_MASTERY);
-	} else if (name == "Healing Link") {
-		return PlayerWheel::getInstant(WheelInstant_t::HEALING_LINK);
-	} else if (name == "Runic Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::RUNIC_MASTERY);
-	} else if (name == "Focus Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::FOCUS_MASTERY);
-	} else if (name == "Beam Mastery") {
-		return PlayerWheel::getStage(WheelStage_t::BEAM_MASTERY);
-	} else if (name == "Combat Mastery") {
-		return PlayerWheel::getStage(WheelStage_t::COMBAT_MASTERY);
-	} else if (name == "Gift of Life") {
-		return PlayerWheel::getStage(WheelStage_t::GIFT_OF_LIFE);
-	} else if (name == "Blessing of the Grove") {
-		return PlayerWheel::getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
-	} else if (name == "Drain Body") {
-		return PlayerWheel::getStage(WheelStage_t::DRAIN_BODY);
-	} else if (name == "Divine Empowerment") {
-		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
-	} else if (name == "Divine Grenade") {
-		return PlayerWheel::getStage(WheelStage_t::DIVINE_GRENADE);
-	} else if (name == "Twin Burst") {
-		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
-	} else if (name == "Executioner's Throw") {
-		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
-	} else if (name == "Avatar of Light") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);
-	} else if (name == "Avatar of Nature") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_NATURE);
-	} else if (name == "Avatar of Steel") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STEEL);
-	} else if (name == "Avatar of Storm") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STORM);
+		return PlayerWheel::getInstant(BATTLE_INSTINCT);
+	}
+	if (name == "Battle Healing") {
+		return PlayerWheel::getInstant(BATTLE_HEALING);
+	}
+	if (name == "Positional Tatics") {
+		return PlayerWheel::getInstant(POSITIONAL_TATICS);
+	}
+	if (name == "Ballistic Mastery") {
+		return PlayerWheel::getInstant(BALLISTIC_MASTERY);
+	}
+	if (name == "Healing Link") {
+		return PlayerWheel::getInstant(HEALING_LINK);
+	}
+	if (name == "Runic Mastery") {
+		return PlayerWheel::getInstant(RUNIC_MASTERY);
+	}
+	if (name == "Focus Mastery") {
+		return PlayerWheel::getInstant(FOCUS_MASTERY);
+	}
+	if (name == "Beam Mastery") {
+		return PlayerWheel::getStage(BEAM_MASTERY);
+	}
+	if (name == "Combat Mastery") {
+		return PlayerWheel::getStage(COMBAT_MASTERY);
+	}
+	if (name == "Gift of Life") {
+		return PlayerWheel::getStage(GIFT_OF_LIFE);
+	}
+	if (name == "Blessing of the Grove") {
+		return PlayerWheel::getStage(BLESSING_OF_THE_GROVE);
+	}
+	if (name == "Drain Body") {
+		return PlayerWheel::getStage(DRAIN_BODY);
+	}
+	if (name == "Divine Empowerment") {
+		return PlayerWheel::getStage(DIVINE_EMPOWERMENT);
+	}
+	if (name == "Divine Grenade") {
+		return PlayerWheel::getStage(DIVINE_GRENADE);
+	}
+	if (name == "Twin Burst") {
+		return PlayerWheel::getStage(TWIN_BURST);
+	}
+	if (name == "Executioner's Throw") {
+		return PlayerWheel::getStage(EXECUTIONERS_THROW);
+	}
+	if (name == "Avatar of Light") {
+		return PlayerWheel::getStage(AVATAR_OF_LIGHT);
+	}
+	if (name == "Avatar of Nature") {
+		return PlayerWheel::getStage(AVATAR_OF_NATURE);
+	}
+	if (name == "Avatar of Steel") {
+		return PlayerWheel::getStage(AVATAR_OF_STEEL);
+	}
+	if (name == "Avatar of Storm") {
+		return PlayerWheel::getStage(AVATAR_OF_STORM);
 	}
 
 	return false;
@@ -2922,46 +2972,66 @@ int64_t PlayerWheel::getOnThinkTimer(WheelOnThink_t type) const {
 	return 0;
 }
 
-bool PlayerWheel::getInstant(const std::string name) const {
+bool PlayerWheel::getInstant(std::string_view name) const {
+	using enum WheelInstant_t;
 	if (name == "Battle Instinct") {
-		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_INSTINCT);
-	} else if (name == "Battle Healing") {
-		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_HEALING);
-	} else if (name == "Positional Tatics") {
-		return PlayerWheel::getInstant(WheelInstant_t::POSITIONAL_TATICS);
-	} else if (name == "Ballistic Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::BALLISTIC_MASTERY);
-	} else if (name == "Healing Link") {
-		return PlayerWheel::getInstant(WheelInstant_t::HEALING_LINK);
-	} else if (name == "Runic Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::RUNIC_MASTERY);
-	} else if (name == "Focus Mastery") {
-		return PlayerWheel::getInstant(WheelInstant_t::FOCUS_MASTERY);
-	} else if (name == "Beam Mastery") {
+		return PlayerWheel::getInstant(BATTLE_INSTINCT);
+	}
+	if (name == "Battle Healing") {
+		return PlayerWheel::getInstant(BATTLE_HEALING);
+	}
+	if (name == "Positional Tatics") {
+		return PlayerWheel::getInstant(POSITIONAL_TATICS);
+	}
+	if (name == "Ballistic Mastery") {
+		return PlayerWheel::getInstant(BALLISTIC_MASTERY);
+	}
+	if (name == "Healing Link") {
+		return PlayerWheel::getInstant(HEALING_LINK);
+	}
+	if (name == "Runic Mastery") {
+		return PlayerWheel::getInstant(RUNIC_MASTERY);
+	}
+	if (name == "Focus Mastery") {
+		return PlayerWheel::getInstant(FOCUS_MASTERY);
+	}
+	if (name == "Beam Mastery") {
 		return PlayerWheel::getStage(WheelStage_t::BEAM_MASTERY);
-	} else if (name == "Combat Mastery") {
+	}
+	if (name == "Combat Mastery") {
 		return PlayerWheel::getStage(WheelStage_t::COMBAT_MASTERY);
-	} else if (name == "Gift of Life") {
+	}
+	if (name == "Gift of Life") {
 		return PlayerWheel::getStage(WheelStage_t::GIFT_OF_LIFE);
-	} else if (name == "Blessing of the Grove") {
+	}
+	if (name == "Blessing of the Grove") {
 		return PlayerWheel::getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
-	} else if (name == "Drain Body") {
+	}
+	if (name == "Drain Body") {
 		return PlayerWheel::getStage(WheelStage_t::DRAIN_BODY);
-	} else if (name == "Divine Empowerment") {
+	}
+	if (name == "Divine Empowerment") {
 		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
-	} else if (name == "Divine Grenade") {
+	}
+	if (name == "Divine Grenade") {
 		return PlayerWheel::getStage(WheelStage_t::DIVINE_GRENADE);
-	} else if (name == "Twin Burst") {
+	}
+	if (name == "Twin Burst") {
 		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
-	} else if (name == "Executioner's Throw") {
+	}
+	if (name == "Executioner's Throw") {
 		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
-	} else if (name == "Avatar of Light") {
+	}
+	if (name == "Avatar of Light") {
 		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);
-	} else if (name == "Avatar of Nature") {
+	}
+	if (name == "Avatar of Nature") {
 		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_NATURE);
-	} else if (name == "Avatar of Steel") {
+	}
+	if (name == "Avatar of Steel") {
 		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STEEL);
-	} else if (name == "Avatar of Storm") {
+	}
+	if (name == "Avatar of Storm") {
 		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STORM);
 	}
 
@@ -2972,9 +3042,11 @@ bool PlayerWheel::getInstant(const std::string name) const {
 uint32_t PlayerWheel::getGiftOfLifeTotalCooldown() const {
 	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 1) {
 		return 1 * 60 * 60 * 30;
-	} else if (getStage(WheelStage_t::GIFT_OF_LIFE) == 2) {
+	}
+	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 2) {
 		return 1 * 60 * 60 * 20;
-	} else if (getStage(WheelStage_t::GIFT_OF_LIFE) == 3) {
+	}
+	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 3) {
 		return 1 * 60 * 60 * 10;
 	}
 	return 0;
@@ -2983,9 +3055,11 @@ uint32_t PlayerWheel::getGiftOfLifeTotalCooldown() const {
 uint8_t PlayerWheel::getGiftOfLifeValue() const {
 	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 1) {
 		return 20;
-	} else if (getStage(WheelStage_t::GIFT_OF_LIFE) == 2) {
+	}
+	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 2) {
 		return 25;
-	} else if (getStage(WheelStage_t::GIFT_OF_LIFE) == 3) {
+	}
+	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 3) {
 		return 30;
 	}
 
@@ -2993,7 +3067,7 @@ uint8_t PlayerWheel::getGiftOfLifeValue() const {
 }
 
 int32_t PlayerWheel::getGiftOfCooldown() const {
-	int32_t value = m_player.getStorageValue(STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD);
+	const int32_t value = m_player.getStorageValue(STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD);
 	if (value <= 0) {
 		return 0;
 	}
@@ -3008,7 +3082,7 @@ void PlayerWheel::setGiftOfCooldown(int32_t value, bool isOnThink) {
 }
 
 void PlayerWheel::decreaseGiftOfCooldown(int32_t value) {
-	int32_t cooldown = getGiftOfCooldown() - value;
+	const int32_t cooldown = getGiftOfCooldown() - value;
 	if (cooldown <= 0) {
 		setOnThinkTimer(WheelOnThink_t::GIFT_OF_LIFE, OTSYS_TIME() + 3600000);
 		return;
@@ -3083,7 +3157,7 @@ void PlayerWheel::healIfBattleHealingActive() const {
 }
 
 void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatType_t combatType) const {
-	int32_t wheelOfDestinyElementAbsorb = getResistance(combatType);
+	const int32_t wheelOfDestinyElementAbsorb = getResistance(combatType);
 	if (wheelOfDestinyElementAbsorb > 0) {
 		damage -= std::ceil((damage * wheelOfDestinyElementAbsorb) / 10000.);
 	}
@@ -3092,11 +3166,8 @@ void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatT
 }
 
 float PlayerWheel::calculateMitigation() const {
-	int32_t skill = m_player.getSkillLevel(SKILL_SHIELD);
+	const int32_t skill = m_player.getSkillLevel(SKILL_SHIELD);
 	int32_t defenseValue = 0;
-	std::shared_ptr<Item> weapon = m_player.inventory[CONST_SLOT_LEFT];
-	std::shared_ptr<Item> shield = m_player.inventory[CONST_SLOT_RIGHT];
-
 	float fightFactor = 1.0f;
 	float shieldFactor = 1.0f;
 	float distanceFactor = 1.0f;
@@ -3117,6 +3188,7 @@ float PlayerWheel::calculateMitigation() const {
 			break;
 	}
 
+	const auto &shield = m_player.inventory[CONST_SLOT_RIGHT];
 	if (shield) {
 		if (shield->isSpellBook() || shield->isQuiver()) {
 			distanceFactor = m_player.vocation->mitigationSecondaryShield;
@@ -3130,6 +3202,7 @@ float PlayerWheel::calculateMitigation() const {
 		}
 	}
 
+	const auto &weapon = m_player.inventory[CONST_SLOT_LEFT];
 	if (weapon) {
 		if (weapon->getAmmoType() == AMMO_BOLT || weapon->getAmmoType() == AMMO_ARROW) {
 			distanceFactor = m_player.vocation->mitigationSecondaryShield;
@@ -3142,8 +3215,8 @@ float PlayerWheel::calculateMitigation() const {
 		}
 	}
 
-	float mitigation = std::ceil(((((skill * m_player.vocation->mitigationFactor) + (shieldFactor * (float)defenseValue)) / 100.0f) * fightFactor * distanceFactor) * 100.0f) / 100.0f;
-	mitigation += (mitigation * (float)getMitigationMultiplier()) / 100.f;
+	float mitigation = std::ceil(((((skill * m_player.vocation->mitigationFactor) + (shieldFactor * static_cast<float>(defenseValue))) / 100.0f) * fightFactor * distanceFactor) * 100.0f) / 100.0f;
+	mitigation += (mitigation * static_cast<float>(getMitigationMultiplier())) / 100.f;
 	return mitigation;
 }
 

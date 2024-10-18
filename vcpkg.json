@@ -19,11 +19,7 @@
     "spdlog",
     "zlib",
     "bshoshany-thread-pool",
-    {
-      "name": "opentelemetry-cpp",
-      "default-features": true,
-      "features": ["otlp-http", "prometheus"]
-    },
+    "atomic-queue",
     {
       "name": "gmp",
       "platform": "linux"
@@ -33,5 +29,17 @@
       "platform": "windows"
     }
   ],
-  "builtin-baseline": "9558037875497b9db8cf38fcd7db68ec661bffe7"
+  "features": {
+    "metrics": {
+      "description": "Enable OpenTelemetry support",
+      "dependencies": [
+        {
+          "name": "opentelemetry-cpp",
+          "default-features": true,
+          "features": ["otlp-http", "prometheus"]
+        }
+      ]
+    }
+  },
+  "builtin-baseline": "d07689ef165f033de5c0710e4f67c193a85373e1"
 }

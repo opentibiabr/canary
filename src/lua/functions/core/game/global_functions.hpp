@@ -13,6 +13,12 @@
 
 class GlobalFunctions final : LuaScriptInterface {
 public:
+	explicit GlobalFunctions(lua_State* L) :
+		LuaScriptInterface("GlobalFunctions") {
+		init(L);
+	}
+	~GlobalFunctions() override = default;
+
 	static void init(lua_State* L) {
 		lua_register(L, "addEvent", GlobalFunctions::luaAddEvent);
 		lua_register(L, "cleanMap", GlobalFunctions::luaCleanMap);

@@ -10,6 +10,7 @@
 #pragma once
 
 #include "config/configmanager.hpp"
+#include "config/config_enums.hpp"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "game/movement/position.hpp"
@@ -110,7 +111,7 @@ public:
 	ItemType(const ItemType &other) = delete;
 	ItemType &operator=(const ItemType &other) = delete;
 
-	ItemType(ItemType &&other) = default;
+	ItemType(ItemType &&other) noexcept = default;
 	ItemType &operator=(ItemType &&other) = default;
 
 	bool isGroundTile() const {
@@ -255,7 +256,7 @@ public:
 	std::string parseAugmentDescription(bool inspect = false) const;
 	std::string getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const;
 
-	void addAugment(std::string spellName, Augment_t augmentType, int32_t value) {
+	void addAugment(const std::string &spellName, Augment_t augmentType, int32_t value) {
 		auto augmentInfo = std::make_shared<AugmentInfo>(spellName, augmentType, value);
 		augments.emplace_back(augmentInfo);
 	}
@@ -415,7 +416,7 @@ public:
 
 	uint16_t getItemIdByName(const std::string &name);
 
-	ItemTypes_t getLootType(const std::string &strValue);
+	ItemTypes_t getLootType(const std::string &strValue) const;
 
 	bool loadFromXml();
 	void parseItemNode(const pugi::xml_node &itemNode, uint16_t id);
@@ -445,7 +446,7 @@ public:
 		return dummys;
 	}
 
-	static const std::string getAugmentNameByType(Augment_t augmentType);
+	static std::string getAugmentNameByType(Augment_t augmentType);
 
 	static bool isAugmentWithoutValueDescription(Augment_t augmentType) {
 		static std::vector<Augment_t> vector = {
@@ -454,7 +455,7 @@ public:
 			Augment_t::StrongImpact,
 		};
 
-		return std::find(vector.begin(), vector.end(), augmentType) != vector.end();
+		return std::ranges::find(vector, augmentType) != vector.end();
 	}
 
 private:

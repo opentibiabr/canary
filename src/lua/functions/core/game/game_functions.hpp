@@ -13,6 +13,12 @@
 
 class GameFunctions final : LuaScriptInterface {
 public:
+	explicit GameFunctions(lua_State* L) :
+		LuaScriptInterface("GameFunctions") {
+		init(L);
+	}
+	~GameFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerTable(L, "Game");
 

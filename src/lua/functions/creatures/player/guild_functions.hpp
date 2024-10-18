@@ -13,6 +13,12 @@
 
 class GuildFunctions final : LuaScriptInterface {
 public:
+	explicit GuildFunctions(lua_State* L) :
+		LuaScriptInterface("GuildFunctions") {
+		init(L);
+	}
+	~GuildFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Guild", "", GuildFunctions::luaGuildCreate);
 		registerMetaMethod(L, "Guild", "__eq", GuildFunctions::luaUserdataCompare);

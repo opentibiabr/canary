@@ -189,7 +189,7 @@ int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
 		return 1;
 	}
 
-	auto shop = getUserdataShared<Shop>(L, 2);
+	const auto &shop = getUserdataShared<Shop>(L, 2);
 	if (shop) {
 		npcType->loadShop(npcType, shop->shopBlock);
 		pushBoolean(L, true);

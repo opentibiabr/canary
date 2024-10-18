@@ -15,17 +15,17 @@
 
 int KVFunctions::luaKVScoped(lua_State* L) {
 	// KV.scoped(key) | KV:scoped(key)
-	auto key = getString(L, -1);
+	const auto key = getString(L, -1);
 
 	if (isUserdata(L, 1)) {
-		auto scopedKV = getUserdataShared<KV>(L, 1);
-		auto newScope = scopedKV->scoped(key);
+		const auto &scopedKV = getUserdataShared<KV>(L, 1);
+		const auto &newScope = scopedKV->scoped(key);
 		pushUserdata<KV>(L, newScope);
 		setMetatable(L, -1, "KV");
 		return 1;
 	}
 
-	auto scopedKV = g_kv().scoped(key);
+	const auto &scopedKV = g_kv().scoped(key);
 	pushUserdata<KV>(L, scopedKV);
 	setMetatable(L, -1, "KV");
 	return 1;
@@ -33,8 +33,8 @@ int KVFunctions::luaKVScoped(lua_State* L) {
 
 int KVFunctions::luaKVSet(lua_State* L) {
 	// KV.set(key, value) | scopedKV:set(key, value)
-	auto key = getString(L, -2);
-	auto valueWrapper = getValueWrapper(L);
+	const auto key = getString(L, -2);
+	const auto &valueWrapper = getValueWrapper(L);
 
 	if (!valueWrapper) {
 		g_logger().warn("[{}] invalid param type", __FUNCTION__);
@@ -43,7 +43,7 @@ int KVFunctions::luaKVSet(lua_State* L) {
 	}
 
 	if (isUserdata(L, 1)) {
-		auto scopedKV = getUserdataShared<KV>(L, 1);
+		const auto &scopedKV = getUserdataShared<KV>(L, 1);
 		scopedKV->set(key, valueWrapper.value());
 		pushBoolean(L, true);
 		return 1;
@@ -64,7 +64,7 @@ int KVFunctions::luaKVGet(lua_State* L) {
 		key = getString(L, -2);
 	}
 	if (isUserdata(L, 1)) {
-		auto scopedKV = getUserdataShared<KV>(L, 1);
+		const auto &scopedKV = getUserdataShared<KV>(L, 1);
 		valueWrapper = scopedKV->get(key, forceLoad);
 	} else {
 		valueWrapper = g_kv().get(key, forceLoad);
@@ -80,9 +80,9 @@ int KVFunctions::luaKVGet(lua_State* L) {
 
 int KVFunctions::luaKVRemove(lua_State* L) {
 	// KV.remove(key) | scopedKV:remove(key)
-	auto key = getString(L, -1);
+	const auto key = getString(L, -1);
 	if (isUserdata(L, 1)) {
-		auto scopedKV = getUserdataShared<KV>(L, 1);
+		const auto &scopedKV = getUserdataShared<KV>(L, 1);
 		scopedKV->remove(key);
 	} else {
 		g_kv().remove(key);
@@ -94,14 +94,14 @@ int KVFunctions::luaKVRemove(lua_State* L) {
 int KVFunctions::luaKVKeys(lua_State* L) {
 	// KV.keys([prefix = ""]) | scopedKV:keys([prefix = ""])
 	std::unordered_set<std::string> keys;
-	std::string prefix = "";
+	std::string prefix;
 
 	if (isString(L, -1)) {
 		prefix = getString(L, -1);
 	}
 
 	if (isUserdata(L, 1)) {
-		auto scopedKV = getUserdataShared<KV>(L, 1);
+		const auto &scopedKV = getUserdataShared<KV>(L, 1);
 		keys = scopedKV->keys();
 	} else {
 		keys = g_kv().keys(prefix);
@@ -131,7 +131,7 @@ std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
 		ArrayType array;
 		for (int i = 1; i <= lua_objlen(L, -1); ++i) {
 			lua_rawgeti(L, -1, i);
-			auto value = getValueWrapper(L);
+			const auto &value = getValueWrapper(L);
 			if (!value) {
 				g_logger().warn("[{}] invalid param type", __FUNCTION__);
 				return std::nullopt;
@@ -146,7 +146,7 @@ std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
 		MapType map;
 		lua_pushnil(L);
 		while (lua_next(L, -2) != 0) {
-			auto value = getValueWrapper(L);
+			const auto &value = getValueWrapper(L);
 			if (!value) {
 				g_logger().warn("[{}] invalid param type", __FUNCTION__);
 				return std::nullopt;

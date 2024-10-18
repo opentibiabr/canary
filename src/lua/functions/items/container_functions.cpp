@@ -13,9 +13,9 @@
 
 int ContainerFunctions::luaContainerCreate(lua_State* L) {
 	// Container(uid)
-	uint32_t id = getNumber<uint32_t>(L, 2);
+	const uint32_t id = getNumber<uint32_t>(L, 2);
 
-	std::shared_ptr<Container> container = getScriptEnv()->getContainerByUID(id);
+	const auto &container = getScriptEnv()->getContainerByUID(id);
 	if (container) {
 		pushUserdata(L, container);
 		setMetatable(L, -1, "Container");
@@ -27,7 +27,7 @@ int ContainerFunctions::luaContainerCreate(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetSize(lua_State* L) {
 	// container:getSize()
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (container) {
 		lua_pushnumber(L, container->size());
 	} else {
@@ -49,7 +49,7 @@ int ContainerFunctions::luaContainerGetMaxCapacity(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetCapacity(lua_State* L) {
 	// container:getCapacity()
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (container) {
 		lua_pushnumber(L, container->capacity());
 	} else {
@@ -60,17 +60,17 @@ int ContainerFunctions::luaContainerGetCapacity(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetEmptySlots(lua_State* L) {
 	// container:getEmptySlots([recursive = false])
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
 	}
 
 	uint32_t slots = container->capacity() - container->size();
-	bool recursive = getBoolean(L, 2, false);
+	const bool recursive = getBoolean(L, 2, false);
 	if (recursive) {
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-			if (std::shared_ptr<Container> tmpContainer = (*it)->getContainer()) {
+			if (const auto &tmpContainer = (*it)->getContainer()) {
 				slots += tmpContainer->capacity() - tmpContainer->size();
 			}
 		}
@@ -81,7 +81,7 @@ int ContainerFunctions::luaContainerGetEmptySlots(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetItemHoldingCount(lua_State* L) {
 	// container:getItemHoldingCount()
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (container) {
 		lua_pushnumber(L, container->getItemHoldingCount());
 	} else {
@@ -92,14 +92,14 @@ int ContainerFunctions::luaContainerGetItemHoldingCount(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetItem(lua_State* L) {
 	// container:getItem(index)
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	uint32_t index = getNumber<uint32_t>(L, 2);
-	std::shared_ptr<Item> item = container->getItemByIndex(index);
+	const uint32_t index = getNumber<uint32_t>(L, 2);
+	const auto &item = container->getItemByIndex(index);
 	if (item) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
@@ -111,8 +111,8 @@ int ContainerFunctions::luaContainerGetItem(lua_State* L) {
 
 int ContainerFunctions::luaContainerHasItem(lua_State* L) {
 	// container:hasItem(item)
-	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 2);
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &item = getUserdataShared<Item>(L, 2);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (container) {
 		pushBoolean(L, container->isHoldingItem(item));
 	} else {
@@ -123,7 +123,7 @@ int ContainerFunctions::luaContainerHasItem(lua_State* L) {
 
 int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 	// container:addItem(itemId[, count/subType = 1[, index = INDEX_WHEREEVER[, flags = 0]]])
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (!container) {
 		lua_pushnil(L);
 		reportErrorFunc("Container is nullptr");
@@ -142,23 +142,23 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 		}
 	}
 
-	uint32_t count = getNumber<uint32_t>(L, 3, 1);
+	auto count = getNumber<uint32_t>(L, 3, 1);
 	const ItemType &it = Item::items[itemId];
 	if (it.stackable) {
 		count = std::min<uint16_t>(count, it.stackSize);
 	}
 
-	std::shared_ptr<Item> item = Item::CreateItem(itemId, count);
+	const auto &item = Item::CreateItem(itemId, count);
 	if (!item) {
 		lua_pushnil(L);
 		reportErrorFunc("Item is nullptr");
 		return 1;
 	}
 
-	int32_t index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
-	uint32_t flags = getNumber<uint32_t>(L, 5, 0);
+	const auto index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
+	const auto flags = getNumber<uint32_t>(L, 5, 0);
 
-	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
+	const ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
@@ -171,13 +171,13 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 
 int ContainerFunctions::luaContainerAddItemEx(lua_State* L) {
 	// container:addItemEx(item[, index = INDEX_WHEREEVER[, flags = 0]])
-	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 2);
+	const auto &item = getUserdataShared<Item>(L, 2);
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
@@ -189,8 +189,8 @@ int ContainerFunctions::luaContainerAddItemEx(lua_State* L) {
 		return 1;
 	}
 
-	int32_t index = getNumber<int32_t>(L, 3, INDEX_WHEREEVER);
-	uint32_t flags = getNumber<uint32_t>(L, 4, 0);
+	const auto index = getNumber<int32_t>(L, 3, INDEX_WHEREEVER);
+	const auto flags = getNumber<uint32_t>(L, 4, 0);
 	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		ScriptEnvironment::removeTempItem(item);
@@ -201,7 +201,7 @@ int ContainerFunctions::luaContainerAddItemEx(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetCorpseOwner(lua_State* L) {
 	// container:getCorpseOwner()
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (container) {
 		lua_pushnumber(L, container->getCorpseOwner());
 	} else {
@@ -212,7 +212,7 @@ int ContainerFunctions::luaContainerGetCorpseOwner(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetItemCountById(lua_State* L) {
 	// container:getItemCountById(itemId[, subType = -1])
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
@@ -229,14 +229,14 @@ int ContainerFunctions::luaContainerGetItemCountById(lua_State* L) {
 		}
 	}
 
-	int32_t subType = getNumber<int32_t>(L, 3, -1);
+	const auto subType = getNumber<int32_t>(L, 3, -1);
 	lua_pushnumber(L, container->getItemTypeCount(itemId, subType));
 	return 1;
 }
 
 int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
 	// container:getContentDescription([oldProtocol])
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (container) {
 		pushString(L, container->getContentDescription(getBoolean(L, 2, false)));
 	} else {
@@ -247,19 +247,19 @@ int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetItems(lua_State* L) {
 	// container:getItems([recursive = false])
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	bool recursive = getBoolean(L, 2, false);
-	std::vector<std::shared_ptr<Item>> items = container->getItems(recursive);
+	const bool recursive = getBoolean(L, 2, false);
+	const std::vector<std::shared_ptr<Item>> items = container->getItems(recursive);
 
 	lua_createtable(L, static_cast<int>(items.size()), 0);
 
 	int index = 0;
-	for (std::shared_ptr<Item> item : items) {
+	for (const auto &item : items) {
 		index++;
 		pushUserdata(L, item);
 		setItemMetatable(L, -1, item);
@@ -270,14 +270,14 @@ int ContainerFunctions::luaContainerGetItems(lua_State* L) {
 
 int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 	// container:registerReward()
-	std::shared_ptr<Container> container = getUserdataShared<Container>(L, 1);
+	const auto &container = getUserdataShared<Container>(L, 1);
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	int64_t rewardId = getTimeMsNow();
-	std::shared_ptr<Item> rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
+	const int64_t rewardId = getTimeMsNow();
+	const auto &rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
 	rewardContainer->setAttribute(ItemAttribute_t::DATE, rewardId);
 	container->setAttribute(ItemAttribute_t::DATE, rewardId);
 	container->internalAddThing(rewardContainer);

@@ -19,7 +19,7 @@ namespace pugi {
 		T value;
 
 		// Set the last character to parse
-		std::string_view string(str);
+		const std::string_view string(str);
 		const auto last = str + string.size();
 
 		// Convert the string to the specified type

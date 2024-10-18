@@ -40,7 +40,7 @@ bool Scripts::loadEventSchedulerScripts(const std::string &fileName) {
 		return false;
 	}
 
-	std::filesystem::recursive_directory_iterator endit;
+	const std::filesystem::recursive_directory_iterator endit;
 	for (std::filesystem::recursive_directory_iterator it(dir); it != endit; ++it) {
 		if (std::filesystem::is_regular_file(*it) && it->path().extension() == ".lua") {
 			if (it->path().filename().string() == fileName) {
@@ -70,13 +70,13 @@ bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
 	// Recursive iterate through all entries in the directory
 	for (const auto &entry : std::filesystem::recursive_directory_iterator(dir)) {
 		// Get the filename of the entry as a string
-		const auto realPath = entry.path();
+		const auto &realPath = entry.path();
 		std::string fileFolder = realPath.parent_path().filename().string();
 		// Script folder, example: "actions"
 		std::string scriptFolder = realPath.parent_path().string();
 		// Create a string_view for the fileFolder and scriptFolder strings
-		std::string_view fileFolderView(fileFolder);
-		std::string_view scriptFolderView(scriptFolder);
+		const std::string_view fileFolderView(fileFolder);
+		const std::string_view scriptFolderView(scriptFolder);
 		// Filename, example: "demon.lua"
 		std::string file(realPath.filename().string());
 		if (!std::filesystem::is_regular_file(entry) || realPath.extension() != ".lua") {

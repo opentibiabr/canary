@@ -14,7 +14,7 @@
 
 class Logger;
 
-class FailedToInitializeCanary : public std::exception {
+class FailedToInitializeCanary final : public std::exception {
 private:
 	std::string message;
 
@@ -52,7 +52,7 @@ private:
 
 	std::atomic<LoaderStatus> loaderStatus = LoaderStatus::LOADING;
 
-	void logInfos();
+	void logInfos() const;
 	static void toggleForceCloseButton();
 	static void badAllocationHandler();
 	static void shutdown();
@@ -60,11 +60,11 @@ private:
 	static std::string getCompiler();
 	static std::string getPlatform();
 
-	void loadConfigLua();
-	void initializeDatabase();
-	void loadModules();
-	void setWorldType();
+	void loadConfigLua() const;
+	void initializeDatabase() const;
+	void loadModules() const;
+	void setWorldType() const;
 	void loadMaps() const;
-	void setupHousesRent();
-	void modulesLoadHelper(bool loaded, std::string moduleName);
+	void setupHousesRent() const;
+	void modulesLoadHelper(bool loaded, std::string moduleName) const;
 };

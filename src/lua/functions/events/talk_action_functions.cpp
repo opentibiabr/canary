@@ -21,7 +21,7 @@ int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
 		wordsVector.push_back(getString(L, i));
 	}
 
-	auto talkactionSharedPtr = std::make_shared<TalkAction>(getScriptEnv()->getScriptInterface());
+	const auto talkactionSharedPtr = std::make_shared<TalkAction>(getScriptEnv()->getScriptInterface());
 	talkactionSharedPtr->setWords(wordsVector);
 	pushUserdata<TalkAction>(L, talkactionSharedPtr);
 	setMetatable(L, -1, "TalkAction");
@@ -30,7 +30,7 @@ int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
 
 int TalkActionFunctions::luaTalkActionOnSay(lua_State* L) {
 	// talkAction:onSay(callback)
-	auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	const auto &talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
 	if (!talkactionSharedPtr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
 		pushBoolean(L, false);
@@ -47,7 +47,7 @@ int TalkActionFunctions::luaTalkActionOnSay(lua_State* L) {
 
 int TalkActionFunctions::luaTalkActionGroupType(lua_State* L) {
 	// talkAction:groupType(GroupType = GROUP_TYPE_NORMAL)
-	auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	const auto &talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
 	if (!talkactionSharedPtr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
 		pushBoolean(L, false);
@@ -55,7 +55,7 @@ int TalkActionFunctions::luaTalkActionGroupType(lua_State* L) {
 	}
 
 	GroupType groupType;
-	int type = lua_type(L, 2);
+	const int type = lua_type(L, 2);
 	if (type == LUA_TNUMBER) {
 		groupType = enumFromValue<GroupType>(getNumber<uint8_t>(L, 2));
 	} else if (type == LUA_TSTRING) {
@@ -73,13 +73,13 @@ int TalkActionFunctions::luaTalkActionGroupType(lua_State* L) {
 		} else if (strValue == "god") {
 			groupType = GROUP_TYPE_GOD;
 		} else {
-			auto string = fmt::format("Invalid group type string value {} for group type for script: {}", strValue, getScriptEnv()->getScriptInterface()->getLoadingScriptName());
+			const auto string = fmt::format("Invalid group type string value {} for group type for script: {}", strValue, getScriptEnv()->getScriptInterface()->getLoadingScriptName());
 			reportErrorFunc(string);
 			pushBoolean(L, false);
 			return 1;
 		}
 	} else {
-		auto string = fmt::format("Expected number or string value for group type for script: {}", getScriptEnv()->getScriptInterface()->getLoadingScriptName());
+		const auto string = fmt::format("Expected number or string value for group type for script: {}", getScriptEnv()->getScriptInterface()->getLoadingScriptName());
 		reportErrorFunc(string);
 		pushBoolean(L, false);
 		return 1;
@@ -92,7 +92,7 @@ int TalkActionFunctions::luaTalkActionGroupType(lua_State* L) {
 
 int TalkActionFunctions::luaTalkActionRegister(lua_State* L) {
 	// talkAction:register()
-	auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	const auto &talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
 	if (!talkactionSharedPtr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
 		pushBoolean(L, false);
@@ -105,7 +105,7 @@ int TalkActionFunctions::luaTalkActionRegister(lua_State* L) {
 	}
 
 	if (talkactionSharedPtr->getGroupType() == GROUP_TYPE_NONE) {
-		auto string = fmt::format("TalkAction with name {} does't have groupType", talkactionSharedPtr->getWords());
+		const auto string = fmt::format("TalkAction with name {} does't have groupType", talkactionSharedPtr->getWords());
 		reportErrorFunc(string);
 		pushBoolean(L, false);
 		return 1;
@@ -117,7 +117,7 @@ int TalkActionFunctions::luaTalkActionRegister(lua_State* L) {
 
 int TalkActionFunctions::luaTalkActionSeparator(lua_State* L) {
 	// talkAction:separator(sep)
-	auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	const auto &talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
 	if (!talkactionSharedPtr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
 		pushBoolean(L, false);
@@ -131,7 +131,7 @@ int TalkActionFunctions::luaTalkActionSeparator(lua_State* L) {
 
 int TalkActionFunctions::luaTalkActionGetName(lua_State* L) {
 	// local name = talkAction:getName()
-	const auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	const auto &talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
 	if (!talkactionSharedPtr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
 		pushBoolean(L, false);
@@ -144,7 +144,7 @@ int TalkActionFunctions::luaTalkActionGetName(lua_State* L) {
 
 int TalkActionFunctions::luaTalkActionGetDescription(lua_State* L) {
 	// local description = talkAction:getDescription()
-	const auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	const auto &talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
 	if (!talkactionSharedPtr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
 		pushBoolean(L, false);
@@ -157,7 +157,7 @@ int TalkActionFunctions::luaTalkActionGetDescription(lua_State* L) {
 
 int TalkActionFunctions::luaTalkActionSetDescription(lua_State* L) {
 	// local description = talkAction:setDescription()
-	auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	const auto &talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
 	if (!talkactionSharedPtr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
 		pushBoolean(L, false);
@@ -171,7 +171,7 @@ int TalkActionFunctions::luaTalkActionSetDescription(lua_State* L) {
 
 int TalkActionFunctions::luaTalkActionGetGroupType(lua_State* L) {
 	// local groupType = talkAction:getGroupType()
-	const auto talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
+	const auto &talkactionSharedPtr = getUserdataShared<TalkAction>(L, 1);
 	if (!talkactionSharedPtr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
 		pushBoolean(L, false);

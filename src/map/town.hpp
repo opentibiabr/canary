@@ -10,6 +10,7 @@
 #pragma once
 
 #include "game/movement/position.hpp"
+#include "utils/tools.hpp"
 
 class Town {
 public:
@@ -55,16 +56,20 @@ public:
 	}
 
 	std::shared_ptr<Town> getTown(const std::string &townName) const {
-		for (const auto &it : townMap) {
-			if (strcasecmp(townName.c_str(), it.second->getName().c_str()) == 0) {
-				return it.second;
+		for (const auto &[townId, town] : townMap) {
+			if (townId == 0) {
+				continue;
+			}
+
+			if (caseInsensitiveCompare(townName, town->getName())) {
+				return town;
 			}
 		}
 		return nullptr;
 	}
 
 	std::shared_ptr<Town> getTown(uint32_t townId) const {
-		auto it = townMap.find(townId);
+		const auto it = townMap.find(townId);
 		if (it == townMap.end()) {
 			return nullptr;
 		}

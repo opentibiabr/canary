@@ -20,7 +20,7 @@ public:
 		return static_self_cast<DepotLocker>();
 	}
 
-	void removeInbox(std::shared_ptr<Inbox> inbox);
+	void removeInbox(const std::shared_ptr<Inbox> &inbox);
 
 	// serialization
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
@@ -33,10 +33,10 @@ public:
 	}
 
 	// cylinder implementations
-	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
+	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
 
-	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
 	bool canRemove() const override {
 		return false;

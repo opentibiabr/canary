@@ -28,7 +28,7 @@ ThreadPool::ThreadPool(Logger &logger) :
 	start();
 }
 
-void ThreadPool::start() {
+void ThreadPool::start() const {
 	logger.info("Running with {} threads.", get_thread_count());
 }
 

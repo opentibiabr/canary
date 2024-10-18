@@ -26,7 +26,7 @@ private:
 	std::vector<std::string> loadPrefix(const std::string &prefix = "") override;
 	std::optional<ValueWrapper> load(const std::string &key) override;
 	bool save(const std::string &key, const ValueWrapper &value) override;
-	bool prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update);
+	bool prepareSave(const std::string &key, const ValueWrapper &value, DBInsert &update) const;
 
 	DBInsert dbUpdate();
 

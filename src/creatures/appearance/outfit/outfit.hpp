@@ -10,20 +10,19 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "lib/di/container.hpp"
 
 class Player;
 
 struct OutfitEntry {
-	constexpr explicit OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
+	constexpr explicit OutfitEntry(const uint16_t initLookType, const uint8_t initAddons) :
 		lookType(initLookType), addons(initAddons) { }
 
-	uint16_t lookType;
-	uint8_t addons;
+	uint16_t lookType {};
+	uint8_t addons {};
 };
 
 struct Outfit {
-	Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :
+	Outfit(std::string initName, const uint16_t initLookType, const bool initPremium, const bool initUnlocked, std::string initFrom) :
 		name(std::move(initName)), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(std::move(initFrom)) { }
 
 	std::string name;
@@ -34,7 +33,7 @@ struct Outfit {
 };
 
 struct ProtocolOutfit {
-	ProtocolOutfit(const std::string &initName, uint16_t initLookType, uint8_t initAddons) :
+	ProtocolOutfit(const std::string &initName, const uint16_t initLookType, const uint8_t initAddons) :
 		name(initName), lookType(initLookType), addons(initAddons) { }
 
 	const std::string &name;
@@ -50,7 +49,7 @@ public:
 	bool loadFromXml();
 
 	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit = false) const;
-	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const {
+	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(const PlayerSex_t &sex) const {
 		return outfits[sex];
 	}
 

@@ -34,7 +34,7 @@ function spell.onCastSpell(creature, var)
 		cooldown = 22
 	end
 
-	var.instantName = "Twin Burst"
+	--var.instantName = "Twin Burst"
 	if combat:execute(creature, var) then
 		-- Ice cooldown
 		local condition1 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 262)

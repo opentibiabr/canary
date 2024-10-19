@@ -345,10 +345,8 @@ void CanaryServer::loadModules() {
 	}
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
-// Load items dependencies
-#if CLIENT_VERSION < 1100
-	modulesLoadHelper(Item::items.loadFromOtb("data/items/items.otb"), "items.otb");
-#else
+	// Load items dependencies
+	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 #endif
 

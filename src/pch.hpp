@@ -20,6 +20,7 @@
 #include "utils/vectorset.hpp"
 #include "utils/arraylist.hpp"
 #include "utils/vectorsort.hpp"
+#include "utils/CPUinfo.hpp"
 
 // --------------------
 // STL Includes

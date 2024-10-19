@@ -8,6 +8,7 @@
     "bext-di",
     "bext-ut",
     "curl",
+    "cpuinfo",
     "eventpp",
     "libmariadb",
     "luajit",

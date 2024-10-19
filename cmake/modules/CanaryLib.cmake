@@ -85,6 +85,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         unofficial::argon2::libargon2
         unofficial::libmariadb
         protobuf
+        cpuinfo::cpuinfo
 )
 
 if(FEATURE_METRICS)

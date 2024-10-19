@@ -93,7 +93,8 @@ private:
 		                                                                        "SpawnMonster::startup",
 		                                                                        "SpawnNpc::checkSpawnNpc",
 		                                                                        "Webhook::run",
-		                                                                        "Protocol::sendRecvMessageCallback" });
+		                                                                        "Protocol::sendRecvMessageCallback",
+		                                                                        "Player::addInFightTicks" });
 
 		return tasksContext.contains(context);
 	}

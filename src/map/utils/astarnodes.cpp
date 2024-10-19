@@ -93,7 +93,11 @@ AStarNode* AStarNodes::getBestNode() {
 		__m512i indices = _mm512_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 		__m512i minindices = indices;
 		__m512i minvalues = _mm512_load_si512(reinterpret_cast<const void*>(calculatedNodes));
+
 		for (int32_t pos = 16; pos < curNode; pos += 16) {
+			// Prefetch the next block of data to minimize cache misses
+			_mm_prefetch(reinterpret_cast<const char*>(&calculatedNodes[pos + 16]), _MM_HINT_T0);
+
 			const __m512i values = _mm512_load_si512(reinterpret_cast<const void*>(&calculatedNodes[pos]));
 			indices = _mm512_add_epi32(indices, increment);
 			minindices = _mm512_mask_blend_epi32(_mm512_cmplt_epi32_mask(values, minvalues), minindices, indices);
@@ -109,8 +113,10 @@ AStarNode* AStarNodes::getBestNode() {
 		int32_t best_node_f = values_array[0];
 		for (int32_t i = 1; i < 16; ++i) {
 			int32_t total_cost = values_array[i];
-			best_node = (total_cost < best_node_f ? indices_array[i] : best_node);
-			best_node_f = (total_cost < best_node_f ? total_cost : best_node_f);
+			if (total_cost < best_node_f) {
+				best_node_f = total_cost;
+				best_node = indices_array[i];
+			}
 		}
 		return (openNodes[best_node] ? &nodes[best_node] : nullptr);
 	} else if (g_cpuinfo().hasAVX2()) {
@@ -118,41 +124,62 @@ AStarNode* AStarNodes::getBestNode() {
 		__m256i indices = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
 		__m256i minindices = indices;
 		__m256i minvalues = _mm256_load_si256(reinterpret_cast<const __m256i*>(calculatedNodes));
+
 		for (int32_t pos = 8; pos < curNode; pos += 8) {
+			// Prefetch the next block of data to minimize cache misses
+			_mm_prefetch(reinterpret_cast<const char*>(&calculatedNodes[pos + 8]), _MM_HINT_T0);
+
 			const __m256i values = _mm256_load_si256(reinterpret_cast<const __m256i*>(&calculatedNodes[pos]));
 			indices = _mm256_add_epi32(indices, increment);
 			minindices = _mm256_blendv_epi8(minindices, indices, _mm256_cmpgt_epi32(minvalues, values));
 			minvalues = _mm256_min_epi32(values, minvalues);
 		}
 
-		__m256i res = _mm256_min_epi32(minvalues, _mm256_shuffle_epi32(minvalues, _MM_SHUFFLE(2, 3, 0, 1))); // Calculate horizontal minimum
-		res = _mm256_min_epi32(res, _mm256_shuffle_epi32(res, _MM_SHUFFLE(0, 1, 2, 3))); // Calculate horizontal minimum
-		res = _mm256_min_epi32(res, _mm256_permutevar8x32_epi32(res, _mm256_set_epi32(0, 1, 2, 3, 4, 5, 6, 7))); // Calculate horizontal minimum
-
+		alignas(32) int32_t values_array[8];
 		alignas(32) int32_t indices_array[8];
+		_mm256_store_si256(reinterpret_cast<__m256i*>(values_array), minvalues);
 		_mm256_store_si256(reinterpret_cast<__m256i*>(indices_array), minindices);
 
-		int32_t best_node = indices_array[(_mm_ctz(_mm256_movemask_epi8(_mm256_cmpeq_epi32(minvalues, res))) >> 2)];
+		int32_t best_node = indices_array[0];
+		int32_t best_node_f = values_array[0];
+		for (int32_t i = 1; i < 8; ++i) {
+			int32_t total_cost = values_array[i];
+			if (total_cost < best_node_f) {
+				best_node_f = total_cost;
+				best_node = indices_array[i];
+			}
+		}
 		return (openNodes[best_node] ? &nodes[best_node] : nullptr);
 	} else if (g_cpuinfo().hasSSE4_1()) {
 		const __m128i increment = _mm_set1_epi32(4);
 		__m128i indices = _mm_setr_epi32(0, 1, 2, 3);
 		__m128i minindices = indices;
 		__m128i minvalues = _mm_load_si128(reinterpret_cast<const __m128i*>(calculatedNodes));
+
 		for (int32_t pos = 4; pos < curNode; pos += 4) {
+			// Prefetch the next block of data to minimize cache misses
+			_mm_prefetch(reinterpret_cast<const char*>(&calculatedNodes[pos + 4]), _MM_HINT_T0);
+
 			const __m128i values = _mm_load_si128(reinterpret_cast<const __m128i*>(&calculatedNodes[pos]));
 			indices = _mm_add_epi32(indices, increment);
 			minindices = _mm_blendv_epi8(minindices, indices, _mm_cmplt_epi32(values, minvalues));
 			minvalues = _mm_min_epi32(values, minvalues);
 		}
 
-		__m128i res = _mm_min_epi32(minvalues, _mm_shuffle_epi32(minvalues, _MM_SHUFFLE(2, 3, 0, 1))); // Calculate horizontal minimum
-		res = _mm_min_epi32(res, _mm_shuffle_epi32(res, _MM_SHUFFLE(0, 1, 2, 3))); // Calculate horizontal minimum
-
+		alignas(16) int32_t values_array[4];
 		alignas(16) int32_t indices_array[4];
+		_mm_store_si128(reinterpret_cast<__m128i*>(values_array), minvalues);
 		_mm_store_si128(reinterpret_cast<__m128i*>(indices_array), minindices);
 
-		int32_t best_node = indices_array[(_mm_ctz(_mm_movemask_epi8(_mm_cmpeq_epi32(minvalues, res))) >> 2)];
+		int32_t best_node = indices_array[0];
+		int32_t best_node_f = values_array[0];
+		for (int32_t i = 1; i < 4; ++i) {
+			int32_t total_cost = values_array[i];
+			if (total_cost < best_node_f) {
+				best_node_f = total_cost;
+				best_node = indices_array[i];
+			}
+		}
 		return (openNodes[best_node] ? &nodes[best_node] : nullptr);
 	} else if (g_cpuinfo().hasSSE2()) {
 		auto _mm_sse2_min_epi32 = [](const __m128i a, const __m128i b) {
@@ -169,20 +196,31 @@ AStarNode* AStarNodes::getBestNode() {
 		__m128i indices = _mm_setr_epi32(0, 1, 2, 3);
 		__m128i minindices = indices;
 		__m128i minvalues = _mm_load_si128(reinterpret_cast<const __m128i*>(calculatedNodes));
+
 		for (int32_t pos = 4; pos < curNode; pos += 4) {
+			// Prefetch the next block of data to minimize cache misses
+			_mm_prefetch(reinterpret_cast<const char*>(&calculatedNodes[pos + 4]), _MM_HINT_T0);
+
 			const __m128i values = _mm_load_si128(reinterpret_cast<const __m128i*>(&calculatedNodes[pos]));
 			indices = _mm_add_epi32(indices, increment);
 			minindices = _mm_sse2_blendv_epi8(minindices, indices, _mm_cmplt_epi32(values, minvalues));
 			minvalues = _mm_sse2_min_epi32(values, minvalues);
 		}
 
-		__m128i res = _mm_sse2_min_epi32(minvalues, _mm_shuffle_epi32(minvalues, _MM_SHUFFLE(2, 3, 0, 1))); // Calculate horizontal minimum
-		res = _mm_sse2_min_epi32(res, _mm_shuffle_epi32(res, _MM_SHUFFLE(0, 1, 2, 3))); // Calculate horizontal minimum
-
+		alignas(16) int32_t values_array[4];
 		alignas(16) int32_t indices_array[4];
+		_mm_store_si128(reinterpret_cast<__m128i*>(values_array), minvalues);
 		_mm_store_si128(reinterpret_cast<__m128i*>(indices_array), minindices);
 
-		int32_t best_node = indices_array[(_mm_ctz(_mm_movemask_epi8(_mm_cmpeq_epi32(minvalues, res))) >> 2)];
+		int32_t best_node = indices_array[0];
+		int32_t best_node_f = values_array[0];
+		for (int32_t i = 1; i < 4; ++i) {
+			int32_t total_cost = values_array[i];
+			if (total_cost < best_node_f) {
+				best_node_f = total_cost;
+				best_node = indices_array[i];
+			}
+		}
 		return (openNodes[best_node] ? &nodes[best_node] : nullptr);
 	} else {
 		int32_t best_node_f = std::numeric_limits<int32_t>::max();
@@ -193,8 +231,10 @@ AStarNode* AStarNodes::getBestNode() {
 			}
 
 			int32_t total_cost = nodes[pos].f + nodes[pos].g;
-			best_node = (total_cost < best_node_f ? pos : best_node);
-			best_node_f = (total_cost < best_node_f ? total_cost : best_node_f);
+			if (total_cost < best_node_f) {
+				best_node_f = total_cost;
+				best_node = pos;
+			}
 		}
 		return (best_node != -1 ? &nodes[best_node] : nullptr);
 	}
@@ -226,12 +266,52 @@ int32_t AStarNodes::getClosedNodes() const {
 
 AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
 	const uint32_t xy = (x << 16) | y;
-	if (g_cpuinfo().hasSSE2()) {
-		const __m128i key = _mm_set1_epi32(xy);
-
+	if (g_cpuinfo().hasAVX512F()) {
+		const __m512i key = _mm512_set1_epi32(xy);
 		int32_t pos = 0;
-		int32_t curRound = curNode - 16;
+		const int32_t curRound = curNode - 16;
+
 		for (; pos <= curRound; pos += 16) {
+			_mm_prefetch(reinterpret_cast<const char*>(&nodesTable[pos + 16]), _MM_HINT_T0);
+			const uint16_t mask = _mm512_cmpeq_epi32_mask(_mm512_load_si512(reinterpret_cast<const __m512i*>(&nodesTable[pos])), key);
+			if (mask != 0) {
+				return &nodes[pos + _tzcnt_u32(mask)];
+			}
+		}
+		for (; pos < curNode; ++pos) {
+			if (nodesTable[pos] == xy) {
+				return &nodes[pos];
+			}
+		}
+		return nullptr;
+	} else if (g_cpuinfo().hasAVX2()) {
+		const __m256i key = _mm256_set1_epi32(xy);
+		int32_t pos = 0;
+		const int32_t curRound = curNode - 8;
+
+		for (; pos <= curRound; pos += 8) {
+			_mm_prefetch(reinterpret_cast<const char*>(&nodesTable[pos + 8]), _MM_HINT_T0);
+			const __m256i v = _mm256_cmpeq_epi32(_mm256_load_si256(reinterpret_cast<const __m256i*>(&nodesTable[pos])), key);
+			const uint32_t mask = _mm256_movemask_epi8(v);
+			if (mask != 0) {
+				return &nodes[pos + (_tzcnt_u32(mask) >> 2)];
+			}
+		}
+
+		for (; pos < curNode; ++pos) {
+			if (nodesTable[pos] == xy) {
+				return &nodes[pos];
+			}
+		}
+		return nullptr;
+	} else if (g_cpuinfo().hasSSE2()) {
+		const __m128i key = _mm_set1_epi32(xy);
+		int32_t pos = 0;
+		const int32_t curRound = curNode - 16;
+
+		for (; pos <= curRound; pos += 16) {
+			_mm_prefetch(reinterpret_cast<const char*>(&nodesTable[pos + 16]), _MM_HINT_T0);
+
 			__m128i v[4];
 			v[0] = _mm_cmpeq_epi32(_mm_load_si128(reinterpret_cast<const __m128i*>(&nodesTable[pos])), key);
 			v[1] = _mm_cmpeq_epi32(_mm_load_si128(reinterpret_cast<const __m128i*>(&nodesTable[pos + 4])), key);
@@ -242,17 +322,7 @@ AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
 				return &nodes[pos + _mm_ctz(mask)];
 			}
 		}
-		curRound = curNode - 8;
-		if (pos <= curRound) {
-			__m128i v[2];
-			v[0] = _mm_cmpeq_epi32(_mm_load_si128(reinterpret_cast<const __m128i*>(&nodesTable[pos])), key);
-			v[1] = _mm_cmpeq_epi32(_mm_load_si128(reinterpret_cast<const __m128i*>(&nodesTable[pos + 4])), key);
-			const uint32_t mask = _mm_movemask_epi8(_mm_packs_epi32(v[0], v[1]));
-			if (mask != 0) {
-				return &nodes[pos + (_mm_ctz(mask) >> 1)];
-			}
-			pos += 8;
-		}
+
 		for (; pos < curNode; ++pos) {
 			if (nodesTable[pos] == xy) {
 				return &nodes[pos];
@@ -265,7 +335,7 @@ AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
 				return &nodes[i];
 			}
 		}
-		return (nodesTable[0] == xy ? &nodes[0] : nullptr); // The first node is very unlikely to be the "neighbor" so leave it for end
+		return (nodesTable[0] == xy ? &nodes[0] : nullptr);
 	}
 }
 

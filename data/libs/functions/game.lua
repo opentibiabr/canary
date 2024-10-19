@@ -133,3 +133,37 @@ function Game.setStorageValue(key, value)
 
 	globalStorageTable[key] = value
 end
+
+function Game.getTimeInWords(seconds)
+	local days = math.floor(seconds / (24 * 3600))
+	seconds = seconds % (24 * 3600)
+	local hours = math.floor(seconds / 3600)
+	seconds = seconds % 3600
+	local minutes = math.floor(seconds / 60)
+	seconds = seconds % 60
+
+	local timeParts = {}
+
+	if days > 0 then
+		table.insert(timeParts, days .. (days > 1 and " days" or " day"))
+	end
+
+	if hours > 0 then
+		table.insert(timeParts, hours .. (hours > 1 and " hours" or " hour"))
+	end
+
+	if minutes > 0 then
+		table.insert(timeParts, minutes .. (minutes > 1 and " minutes" or " minute"))
+	end
+
+	if seconds > 0 or #timeParts == 0 then
+		table.insert(timeParts, seconds .. (seconds > 1 and " seconds" or " second"))
+	end
+
+	local timeStr = table.concat(timeParts, ", ")
+	local lastComma = timeStr:find(", [%a%d]+$")
+	if lastComma then
+		timeStr = timeStr:sub(1, lastComma - 1) .. " and" .. timeStr:sub(lastComma + 1)
+	end
+	return timeStr
+end

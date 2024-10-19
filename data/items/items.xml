@@ -53154,6 +53154,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="28494" article="a" name="silver chimes">
 		<attribute key="primarytype" value="shields"/>
+		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="280"/>
 	</item>
 	<item id="28495" article="a" name="perfume flacon">

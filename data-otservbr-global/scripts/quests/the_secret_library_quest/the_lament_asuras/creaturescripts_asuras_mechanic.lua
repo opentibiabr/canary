@@ -36,7 +36,7 @@ function creaturescripts_asuras_mechanic.onHealthChange(creature, attacker, prim
 				return primaryDamage, primaryType, secondaryDamage, secondaryType
 			end
 		elseif creature:getName():lower() == "the lily of night" then
-			if attacker:getStorageValue("fragrance") > os.time() then
+			if attacker:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Asuras.Fragrance) > os.time() then
 				return primaryDamage, primaryType, secondaryDamage, secondaryType
 			end
 		end

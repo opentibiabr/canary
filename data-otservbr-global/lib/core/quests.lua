@@ -6572,7 +6572,7 @@ if not Quests then
 					storageId = Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline,
 					missionId = 10453,
 					startValue = 1,
-					endValue = 6,
+					endValue = 7,
 					states = {
 						[1] = "Go to Asuri Palace in Port Hope.",
 						[2] = "You were able to assemble an instrument with the objects found. That should work for something.",
@@ -6580,6 +6580,7 @@ if not Quests then
 						[4] = "With a heavy heart you used a piece of ebony as well as the skull and hair of an unfortunate maiden to create a bone fiddle. By playing the Peacock Ballad you should be able to open the viollet portal.",
 						[5] = "You may enter the viollet portal. Check if there is something useful there.",
 						[6] = "In a secret room of the Asura Palace you discovered an old writing desk that contains an ancient map. This must be a hint to the secret library you are searching for.",
+						[7] = "Congratulations you completed this mission.",
 					},
 				},
 				[4] = {

@@ -138,11 +138,22 @@ local function creatureSayCallback(npc, creature, type, message)
 		}, npc, creature)
 		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline, 1)
 	elseif MsgContains(message, "asuri") then
-		npcHandler:say({
-			"There's a beautiful but very dangerous palace in the Tiquandan jungle. The young women who live there are actually demons and they are luring unsuspecting mortals in there. ...",
-			"A lucky survivor told me about a portal at the very top of the palace that may lead to another asuri hideout.",
-		}, npc, creature)
-		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, 1)
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline) == 6 then
+			npcHandler:say("This is incredible! Thank you so much for digging out that hint!", npc, creature)
+			local currentStorage = player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission)
+			if currentStorage < 0 then
+				currentStorage = 0
+			end
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, currentStorage + 1)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, 7)
+		elseif player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline) < 1 then
+			npcHandler:say({
+				"There's a beautiful but very dangerous palace in the Tiquandan jungle. The young women who live there are actually demons and they are luring unsuspecting mortals in there. ...",
+				"A lucky survivor told me about a portal at the very top of the palace that may lead to another asuri hideout.",
+			}, npc, creature)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, 1)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.FlammingOrchid, 1)
+		end
 	elseif MsgContains(message, "isle") then
 		npcHandler:say("Talk to Captain Charles in Port Hope. He told me that he once ran ashore on a small island where he discovered a small ruin. The architecture was like nothing he had seen before.", npc, creature)
 		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, 1)

@@ -2594,7 +2594,7 @@ Storage = {
 				Questlog = 46001,
 				Asuras = {
 					Questline = 46002,
-					flammingOrchid = 46003,
+					FlammingOrchid = 46003,
 					SkeletonNotes = 46004,
 					StrandHair = 46005,
 					LotusKey = 46006,
@@ -2607,6 +2607,7 @@ Storage = {
 					DiamondTimer = 46013,
 					BlazingTimer = 46014,
 					DarkTimer = 46015,
+					Fragrance = 46016,
 				},
 				FalconBastion = {
 					Questline = 46016,

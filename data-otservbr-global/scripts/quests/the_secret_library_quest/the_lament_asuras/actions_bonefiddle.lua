@@ -3,7 +3,7 @@ local actions_asura_bonefiddle = Action()
 function actions_asura_bonefiddle.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline) < 2 then
 		if item.itemid == 28491 then
-			if target.itemid == 28490 then
+			if target.itemid == 28489 then
 				item:remove(1)
 				target:remove(1)
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You attach the ebony wood to the skull. This should meet the requirements of a fingerboard.")

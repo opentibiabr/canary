@@ -3,7 +3,7 @@ local doors = {
 	[2] = { key = 28477, position = Position(32864, 32810, 9) },
 }
 
-local locked = 23874
+local locked = 23873
 local opened = 23877
 
 local function revert(position)

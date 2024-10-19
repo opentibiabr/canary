@@ -1526,6 +1526,10 @@ void Tile::postAddNotification(const std::shared_ptr<Thing> &thing, const std::s
 }
 
 void Tile::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
+	if (!thing) {
+		return;
+	}
+
 	const auto spectators = Spectators().find<Player>(getPosition(), true);
 
 	if (getThingCount() > 8) {

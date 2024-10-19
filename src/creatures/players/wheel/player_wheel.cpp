@@ -2602,7 +2602,6 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 		damage.lifeLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH_CHANCE);
 
 		g_logger().debug("Spell has {} bonus damage for spell", damage.damageMultiplier, spell->getName());
-
 	}
 
 	return spell;

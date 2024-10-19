@@ -272,6 +272,7 @@ enum ImbuementTypes_t : int64_t {
 
 enum class Augment_t : uint8_t {
 	None,
+	Base,
 	PowerfulImpact,
 	StrongImpact,
 	IncreasedDamage,

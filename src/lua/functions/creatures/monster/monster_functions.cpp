@@ -708,3 +708,17 @@ int MonsterFunctions::luaMonsterImmune(lua_State* L) {
 	pushBoolean(L, monster->isImmune());
 	return 1;
 }
+
+int MonsterFunctions::luaMonsterWalkTo(lua_State* L) {
+	// monster:walkTo(position)
+	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);
+	Position position = getPosition(L, 2);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->walkTo(position);
+	return 1;
+}

@@ -153,7 +153,8 @@ void Protocol::XTEA_transform(uint8_t* buffer, size_t messageLength, bool encryp
 		std::ranges::copy_n(buffer + readPos, 8, tempBuffer.begin());
 
 		// Convert bytes to uint32_t considering little-endian order
-		std::array<uint8_t, 4> bytes0, bytes1;
+		std::array<uint8_t, 4> bytes0;
+		std::array<uint8_t, 4> bytes1;
 		std::copy_n(tempBuffer.begin(), 4, bytes0.begin());
 		std::copy_n(tempBuffer.begin() + 4, 4, bytes1.begin());
 

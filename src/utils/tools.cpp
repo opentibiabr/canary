@@ -999,21 +999,88 @@ uint32_t adlerChecksum(const uint8_t* data, size_t length) {
 		return 0;
 	}
 
-	const uint16_t adler = 65521;
+	constexpr uint32_t adler = 65521;
+
+	// Prefetch for large data to improve cache access
+	if (length > 128) {
+		_mm_prefetch(reinterpret_cast<const char*>(data), _MM_HINT_T0);
+	}
 
 	uint32_t a = 1, b = 0;
 
-	while (length > 0) {
-		size_t tmp = length > 5552 ? 5552 : length;
-		length -= tmp;
+	if (g_cpuinfo().hasSSE2()) {
+		const __m128i h16 = _mm_setr_epi16(16, 15, 14, 13, 12, 11, 10, 9);
+		const __m128i h8 = _mm_setr_epi16(8, 7, 6, 5, 4, 3, 2, 1);
+		const __m128i zeros = _mm_setzero_si128();
 
-		do {
-			a += *data++;
-			b += a;
-		} while (--tmp);
+		// Process chunks of 5552 bytes (standard block size for Adler-32) with SIMD
+		while (length > 0) {
+			size_t tmp = length > 5552 ? 5552 : length;
+			length -= tmp;
 
-		a %= adler;
-		b %= adler;
+			while (tmp >= 16) {
+				__m128i vdata = _mm_loadu_si128(reinterpret_cast<const __m128i*>(data));
+				__m128i v = _mm_sad_epu8(vdata, zeros);
+				__m128i v32 = _mm_add_epi32(_mm_madd_epi16(_mm_unpacklo_epi8(vdata, zeros), h16), _mm_madd_epi16(_mm_unpackhi_epi8(vdata, zeros), h8));
+
+				v32 = _mm_add_epi32(v32, _mm_shuffle_epi32(v32, _MM_SHUFFLE(2, 3, 0, 1)));
+				v32 = _mm_add_epi32(v32, _mm_shuffle_epi32(v32, _MM_SHUFFLE(0, 1, 2, 3)));
+				v = _mm_add_epi32(v, _mm_shuffle_epi32(v, _MM_SHUFFLE(1, 0, 3, 2)));
+
+				b += (a << 4) + _mm_cvtsi128_si32(v32);
+				a += _mm_cvtsi128_si32(v);
+
+				data += 16;
+				tmp -= 16;
+			}
+
+			// Process any remaining bytes after processing chunks of 16 bytes
+			while (tmp--) {
+				a += *data++;
+				b += a;
+			}
+
+			a %= adler;
+			b %= adler;
+		}
+	} else {
+		// Fallback for CPUs without SSE2
+		while (length > 0) {
+			size_t tmp = length > 5552 ? 5552 : length;
+			length -= tmp;
+
+			// Unroll the loop to improve performance
+			while (tmp >= 8) {
+				a += data[0];
+				b += a;
+				a += data[1];
+				b += a;
+				a += data[2];
+				b += a;
+				a += data[3];
+				b += a;
+				a += data[4];
+				b += a;
+				a += data[5];
+				b += a;
+				a += data[6];
+				b += a;
+				a += data[7];
+				b += a;
+
+				data += 8;
+				tmp -= 8;
+			}
+
+			// Process remaining bytes
+			while (tmp--) {
+				a += *data++;
+				b += a;
+			}
+
+			a %= adler;
+			b %= adler;
+		}
 	}
 
 	return (b << 16) | a;

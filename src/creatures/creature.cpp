@@ -514,7 +514,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 				if (oldPos.y > newPos.y) { // north
 					// shift y south
 					for (int32_t y = mapWalkHeight - 1; --y >= 0;) {
-						memcpy(localMapCache[y + 1], localMapCache[y], sizeof(localMapCache[y]));
+						std::ranges::copy(std::span(localMapCache[y]), localMapCache[y + 1]);
 					}
 
 					// update 0
@@ -525,7 +525,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 				} else if (oldPos.y < newPos.y) { // south
 					// shift y north
 					for (int32_t y = 0; y <= mapWalkHeight - 2; ++y) {
-						memcpy(localMapCache[y], localMapCache[y + 1], sizeof(localMapCache[y]));
+						std::ranges::copy(std::span(localMapCache[y + 1]), localMapCache[y]);
 					}
 
 					// update mapWalkHeight - 1

@@ -18,8 +18,14 @@
  * @details This class encapsulates the Lua binding functions related to event callbacks,
  * allowing for interaction between the C++ codebase and Lua scripts.
  */
-class EventCallbackFunctions : public LuaScriptInterface {
+class EventCallbackFunctions final : public LuaScriptInterface {
 public:
+	explicit EventCallbackFunctions(lua_State* L) :
+		LuaScriptInterface("EventCallbackFunctions") {
+		init(L);
+	}
+	~EventCallbackFunctions() override = default;
+
 	/**
 	 * @brief Initializes the Lua state with the event callback functions.
 	 *

@@ -13,6 +13,12 @@
 
 class ConditionFunctions final : LuaScriptInterface {
 public:
+	explicit ConditionFunctions(lua_State* L) :
+		LuaScriptInterface("ConditionFunctions") {
+		init(L);
+	}
+	~ConditionFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Condition", "", ConditionFunctions::luaConditionCreate);
 		registerMetaMethod(L, "Condition", "__eq", ConditionFunctions::luaUserdataCompare);

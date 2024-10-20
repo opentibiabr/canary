@@ -19,7 +19,7 @@
 class TalkAction;
 using TalkAction_ptr = std::shared_ptr<TalkAction>;
 
-class TalkAction : public Script {
+class TalkAction final : public Script {
 public:
 	using Script::Script;
 
@@ -48,11 +48,11 @@ public:
 		return separator;
 	}
 	void setSeparator(std::string sep) {
-		separator = sep;
+		separator = std::move(sep);
 	}
 
 	// scripting
-	bool executeSay(std::shared_ptr<Player> player, const std::string &words, const std::string &param, SpeakClasses type) const;
+	bool executeSay(const std::shared_ptr<Player> &player, const std::string &words, const std::string &param, SpeakClasses type) const;
 	//
 
 	void setGroupType(uint8_t newGroupType);
@@ -82,8 +82,8 @@ public:
 		return inject<TalkActions>();
 	}
 
-	bool checkWord(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const;
-	TalkActionResult_t checkPlayerCanSayTalkAction(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words) const;
+	bool checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const;
+	TalkActionResult_t checkPlayerCanSayTalkAction(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words) const;
 
 	bool registerLuaEvent(const TalkAction_ptr &talkAction);
 	void clear();

@@ -13,6 +13,12 @@
 
 class PartyFunctions final : LuaScriptInterface {
 public:
+	explicit PartyFunctions(lua_State* L) :
+		LuaScriptInterface("PartyFunctions") {
+		init(L);
+	}
+	~PartyFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Party", "", PartyFunctions::luaPartyCreate);
 		registerMetaMethod(L, "Party", "__eq", PartyFunctions::luaUserdataCompare);

@@ -13,6 +13,12 @@
 
 class CharmFunctions final : LuaScriptInterface {
 public:
+	explicit CharmFunctions(lua_State* L) :
+		LuaScriptInterface("CharmFunctions") {
+		init(L);
+	}
+	~CharmFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Charm", "", CharmFunctions::luaCharmCreate);
 		registerMetaMethod(L, "Charm", "__eq", CharmFunctions::luaUserdataCompare);

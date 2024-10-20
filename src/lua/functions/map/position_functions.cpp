@@ -25,9 +25,9 @@ int PositionFunctions::luaPositionCreate(lua_State* L) {
 		const Position &position = getPosition(L, 2, stackpos);
 		pushPosition(L, position, stackpos);
 	} else {
-		uint16_t x = getNumber<uint16_t>(L, 2, 0);
-		uint16_t y = getNumber<uint16_t>(L, 3, 0);
-		uint8_t z = getNumber<uint8_t>(L, 4, 0);
+		const auto x = getNumber<uint16_t>(L, 2, 0);
+		const auto y = getNumber<uint16_t>(L, 3, 0);
+		const auto z = getNumber<uint8_t>(L, 4, 0);
 		stackpos = getNumber<int32_t>(L, 5, 0);
 
 		pushPosition(L, Position(x, y, z), stackpos);
@@ -100,7 +100,7 @@ int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 		lua_newtable(L);
 
 		int index = 0;
-		for (Direction dir : dirList) {
+		for (const Direction dir : dirList) {
 			lua_pushnumber(L, dir);
 			lua_rawseti(L, -2, ++index);
 		}
@@ -112,7 +112,7 @@ int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 
 int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 	// position:isSightClear(positionEx[, sameFloor = true])
-	bool sameFloor = getBoolean(L, 3, true);
+	const bool sameFloor = getBoolean(L, 3, true);
 	const Position &positionEx = getPosition(L, 2);
 	const Position &position = getPosition(L, 1);
 	pushBoolean(L, g_game().isSightClear(position, positionEx, sameFloor));
@@ -129,13 +129,13 @@ int PositionFunctions::luaPositionGetTile(lua_State* L) {
 int PositionFunctions::luaPositionGetZones(lua_State* L) {
 	// position:getZones()
 	const Position &position = getPosition(L, 1);
-	auto tile = g_game().map.getTile(position);
+	const auto &tile = g_game().map.getTile(position);
 	if (tile == nullptr) {
 		lua_pushnil(L);
 		return 1;
 	}
 	int index = 0;
-	for (auto zone : tile->getZones()) {
+	for (const auto &zone : tile->getZones()) {
 		index++;
 		pushUserdata<Zone>(L, zone);
 		setMetatable(L, -1, "Zone");
@@ -219,7 +219,7 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 		spectators.emplace_back(player);
 	}
 
-	ShootType_t distanceEffect = getNumber<ShootType_t>(L, 3);
+	const ShootType_t distanceEffect = getNumber<ShootType_t>(L, 3);
 	const Position &positionEx = getPosition(L, 2);
 	const Position &position = getPosition(L, 1);
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game().isDistanceEffectRegistered(distanceEffect)) {
@@ -240,8 +240,8 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 int PositionFunctions::luaPositionSendSingleSoundEffect(lua_State* L) {
 	// position:sendSingleSoundEffect(soundId[, actor = nullptr])
 	const Position &position = getPosition(L, 1);
-	SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
-	std::shared_ptr<Creature> actor = getCreature(L, 3);
+	const SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
+	const auto actor = getCreature(L, 3);
 
 	g_game().sendSingleSoundEffect(position, soundEffect, actor);
 	pushBoolean(L, true);
@@ -251,9 +251,9 @@ int PositionFunctions::luaPositionSendSingleSoundEffect(lua_State* L) {
 int PositionFunctions::luaPositionSendDoubleSoundEffect(lua_State* L) {
 	// position:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = nullptr])
 	const Position &position = getPosition(L, 1);
-	SoundEffect_t mainSoundEffect = getNumber<SoundEffect_t>(L, 2);
-	SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
-	std::shared_ptr<Creature> actor = getCreature(L, 4);
+	const SoundEffect_t mainSoundEffect = getNumber<SoundEffect_t>(L, 2);
+	const SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
+	const auto &actor = getCreature(L, 4);
 
 	g_game().sendDoubleSoundEffect(position, mainSoundEffect, secondarySoundEffect, actor);
 	pushBoolean(L, true);

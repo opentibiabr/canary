@@ -60,11 +60,11 @@ public:
 	uint16_t getBoostedBossId() const;
 	std::shared_ptr<MonsterType> getMonsterTypeByBossRaceId(uint16_t raceId) const;
 
-	void addBosstiaryKill(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype, uint32_t amount = 1) const;
+	void addBosstiaryKill(const std::shared_ptr<Player> &player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount = 1) const;
 	uint16_t calculateLootBonus(uint32_t bossPoints) const;
 	uint32_t calculateBossPoints(uint16_t lootBonus) const;
 	std::vector<uint16_t> getBosstiaryFinished(const std::shared_ptr<Player> &player, uint8_t level = 1) const;
-	uint8_t getBossCurrentLevel(std::shared_ptr<Player> player, uint16_t bossId) const;
+	uint8_t getBossCurrentLevel(const std::shared_ptr<Player> &player, uint16_t bossId) const;
 	uint32_t calculteRemoveBoss(uint8_t removeTimes) const;
 	const std::vector<LevelInfo> &getBossRaceKillStages(BosstiaryRarity_t race) const;
 

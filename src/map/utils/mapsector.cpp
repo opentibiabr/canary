@@ -20,7 +20,7 @@ void MapSector::addCreature(const std::shared_ptr<Creature> &c) {
 }
 
 void MapSector::removeCreature(const std::shared_ptr<Creature> &c) {
-	auto iter = std::find(creature_list.begin(), creature_list.end(), c);
+	auto iter = std::ranges::find(creature_list, c);
 	if (iter == creature_list.end()) {
 		g_logger().error("[{}]: Creature not found in creature_list!", __FUNCTION__);
 		return;
@@ -31,7 +31,7 @@ void MapSector::removeCreature(const std::shared_ptr<Creature> &c) {
 	creature_list.pop_back();
 
 	if (c->getPlayer()) {
-		iter = std::find(player_list.begin(), player_list.end(), c);
+		iter = std::ranges::find(player_list, c);
 		if (iter == player_list.end()) {
 			g_logger().error("[{}]: Player not found in player_list!", __FUNCTION__);
 			return;

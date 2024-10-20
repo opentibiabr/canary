@@ -28,7 +28,7 @@ namespace extension {
 
 #if !defined(BOOST_DI_NOT_THREAD_SAFE)
 				//<<lock mutex so that move will be synchronized>>
-				explicit scope(scope &&other) noexcept :
+				scope(scope &&other) noexcept :
 					scope(std::move(other), std::scoped_lock<std::mutex>(other.mutex_)) { }
 				//<<synchronized move constructor>>
 				scope(scope &&other, const std::scoped_lock<std::mutex> &) noexcept :

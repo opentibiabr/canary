@@ -13,6 +13,12 @@
 
 class MountFunctions final : LuaScriptInterface {
 public:
+	explicit MountFunctions(lua_State* L) :
+		LuaScriptInterface("MountFunctions") {
+		init(L);
+	}
+	~MountFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Mount", "", MountFunctions::luaCreateMount);
 		registerMetaMethod(L, "Mount", "__eq", MountFunctions::luaUserdataCompare);

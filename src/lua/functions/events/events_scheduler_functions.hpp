@@ -13,6 +13,12 @@
 
 class EventsSchedulerFunctions final : private LuaScriptInterface {
 public:
+	explicit EventsSchedulerFunctions(lua_State* L) :
+		LuaScriptInterface("EventsSchedulerFunctions") {
+		init(L);
+	}
+	~EventsSchedulerFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerTable(L, "EventsScheduler");
 

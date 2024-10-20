@@ -19,6 +19,12 @@
 
 class CoreGameFunctions final : LuaScriptInterface {
 public:
+	explicit CoreGameFunctions(lua_State* L) :
+		LuaScriptInterface("CoreGameFunctions") {
+		init(L);
+	}
+	~CoreGameFunctions() override = default;
+
 	static void init(lua_State* L) {
 		ConfigFunctions::init(L);
 		GameFunctions::init(L);

@@ -86,7 +86,7 @@ int NetworkMessageFunctions::luaNetworkMessageGetPosition(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddByte(lua_State* L) {
 	// networkMessage:addByte(number)
-	uint8_t number = getNumber<uint8_t>(L, 2);
+	const uint8_t number = getNumber<uint8_t>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->addByte(number);
@@ -99,7 +99,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddByte(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddU16(lua_State* L) {
 	// networkMessage:addU16(number)
-	uint16_t number = getNumber<uint16_t>(L, 2);
+	const uint16_t number = getNumber<uint16_t>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->add<uint16_t>(number);
@@ -112,7 +112,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddU16(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddU32(lua_State* L) {
 	// networkMessage:addU32(number)
-	uint32_t number = getNumber<uint32_t>(L, 2);
+	const uint32_t number = getNumber<uint32_t>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->add<uint32_t>(number);
@@ -125,7 +125,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddU32(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddU64(lua_State* L) {
 	// networkMessage:addU64(number)
-	uint64_t number = getNumber<uint64_t>(L, 2);
+	const uint64_t number = getNumber<uint64_t>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->add<uint64_t>(number);
@@ -138,7 +138,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddU64(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAdd8(lua_State* L) {
 	// networkMessage:add8(number)
-	auto number = getNumber<int8_t>(L, 2);
+	const auto number = getNumber<int8_t>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->add<int8_t>(number);
@@ -151,7 +151,7 @@ int NetworkMessageFunctions::luaNetworkMessageAdd8(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAdd16(lua_State* L) {
 	// networkMessage:add16(number)
-	auto number = getNumber<int16_t>(L, 2);
+	const auto number = getNumber<int16_t>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->add<int16_t>(number);
@@ -164,7 +164,7 @@ int NetworkMessageFunctions::luaNetworkMessageAdd16(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAdd32(lua_State* L) {
 	// networkMessage:add32(number)
-	auto number = getNumber<int32_t>(L, 2);
+	const auto number = getNumber<int32_t>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->add<int32_t>(number);
@@ -177,7 +177,7 @@ int NetworkMessageFunctions::luaNetworkMessageAdd32(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAdd64(lua_State* L) {
 	// networkMessage:add64(number)
-	auto number = getNumber<int64_t>(L, 2);
+	const auto number = getNumber<int64_t>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->add<int64_t>(number);
@@ -217,7 +217,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddPosition(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddDouble(lua_State* L) {
 	// networkMessage:addDouble(number)
-	double number = getNumber<double>(L, 2);
+	const double number = getNumber<double>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->addDouble(number);
@@ -230,14 +230,14 @@ int NetworkMessageFunctions::luaNetworkMessageAddDouble(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddItem(lua_State* L) {
 	// networkMessage:addItem(item, player)
-	std::shared_ptr<Item> item = getUserdataShared<Item>(L, 2);
+	const auto &item = getUserdataShared<Item>(L, 2);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		lua_pushnil(L);
 		return 1;
 	}
 
-	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 3);
+	const auto &player = getUserdataShared<Player>(L, 3);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		lua_pushnil(L);
@@ -268,7 +268,7 @@ int NetworkMessageFunctions::luaNetworkMessageReset(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageSkipBytes(lua_State* L) {
 	// networkMessage:skipBytes(number)
-	int16_t number = getNumber<int16_t>(L, 2);
+	const int16_t number = getNumber<int16_t>(L, 2);
 	const auto &message = getUserdataShared<NetworkMessage>(L, 1);
 	if (message) {
 		message->skipBytes(number);
@@ -287,7 +287,7 @@ int NetworkMessageFunctions::luaNetworkMessageSendToPlayer(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Player> player = getPlayer(L, 2);
+	const auto &player = getPlayer(L, 2);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;

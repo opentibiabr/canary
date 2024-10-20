@@ -13,6 +13,12 @@
 
 class TownFunctions final : LuaScriptInterface {
 public:
+	explicit TownFunctions(lua_State* L) :
+		LuaScriptInterface("TownFunctions") {
+		init(L);
+	}
+	~TownFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Town", "", TownFunctions::luaTownCreate);
 		registerMetaMethod(L, "Town", "__eq", TownFunctions::luaUserdataCompare);
@@ -24,7 +30,6 @@ public:
 
 private:
 	static int luaTownCreate(lua_State* L);
-
 	static int luaTownGetId(lua_State* L);
 	static int luaTownGetName(lua_State* L);
 	static int luaTownGetTemplePosition(lua_State* L);

@@ -16,7 +16,7 @@ RewardChest::RewardChest(uint16_t type) :
 	pagination = true;
 }
 
-ReturnValue RewardChest::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature> actor /* = nullptr*/) {
+ReturnValue RewardChest::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> &actor /* = nullptr*/) {
 	if (actor) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -24,32 +24,32 @@ ReturnValue RewardChest::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint3
 	return RETURNVALUE_NOERROR;
 }
 
-void RewardChest::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t) {
-	auto parentLocked = m_parent.lock();
+void RewardChest::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t) {
+	const auto &parentLocked = m_parent.lock();
 	if (parentLocked) {
 		parentLocked->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
-void RewardChest::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t) {
-	auto parentLocked = m_parent.lock();
+void RewardChest::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
+	const auto &parentLocked = m_parent.lock();
 	if (parentLocked) {
 		parentLocked->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
 
 // Second argument is disabled by default because not need to send to client in the RewardChest
-void RewardChest::removeItem(std::shared_ptr<Thing> thing, bool /* sendToClient = false*/) {
+void RewardChest::removeItem(const std::shared_ptr<Thing> &thing, bool /* sendToClient = false*/) {
 	if (thing == nullptr) {
 		return;
 	}
 
-	auto itemToRemove = thing->getItem();
+	const auto &itemToRemove = thing->getItem();
 	if (itemToRemove == nullptr) {
 		return;
 	}
 
-	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
+	const auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
 	if (it != itemlist.end()) {
 		itemlist.erase(it);
 		itemToRemove->resetParent();

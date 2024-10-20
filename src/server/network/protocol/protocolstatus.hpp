@@ -22,13 +22,13 @@ public:
 		return "status protocol";
 	}
 
-	explicit ProtocolStatus(Connection_ptr conn) :
+	explicit ProtocolStatus(const Connection_ptr &conn) :
 		Protocol(conn) { }
 
 	void onRecvFirstMessage(NetworkMessage &msg) override;
 
 	void sendStatusString();
-	void sendInfo(uint16_t requestedInfo, const std::string &characterName);
+	void sendInfo(uint16_t requestedInfo, const std::string &characterName) const;
 
 	static const uint64_t start;
 

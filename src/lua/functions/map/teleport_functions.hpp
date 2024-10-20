@@ -13,6 +13,12 @@
 
 class TeleportFunctions final : LuaScriptInterface {
 public:
+	explicit TeleportFunctions(lua_State* L) :
+		LuaScriptInterface("TeleportFunctions") {
+		init(L);
+	}
+	~TeleportFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Teleport", "Item", TeleportFunctions::luaTeleportCreate);
 		registerMetaMethod(L, "Teleport", "__eq", TeleportFunctions::luaUserdataCompare);

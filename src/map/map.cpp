@@ -222,7 +222,7 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile>
 }
 
 bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creature> &creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
-	const auto &monster = creature->getMonster();
+	const auto &monster = creature ? creature->getMonster() : nullptr;
 	if (monster) {
 		monster->ignoreFieldDamage = true;
 	}
@@ -310,11 +310,13 @@ bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creatur
 	uint32_t flags = 0;
 	std::shared_ptr<Item> toItem = nullptr;
 
-	const auto toCylinder = tile->queryDestination(index, creature, toItem, flags);
-	toCylinder->internalAddThing(creature);
+	if (tile) {
+		const auto toCylinder = tile->queryDestination(index, creature, toItem, flags);
+		toCylinder->internalAddThing(creature);
 
-	const Position &dest = toCylinder->getPosition();
-	getMapSector(dest.x, dest.y)->addCreature(creature);
+		const Position &dest = toCylinder->getPosition();
+		getMapSector(dest.x, dest.y)->addCreature(creature);
+	}
 	return true;
 }
 

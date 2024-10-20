@@ -14,6 +14,7 @@
 #include "server/network/message/outputmessage.hpp"
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "utils/tools.hpp"
 
 Protocol::Protocol(const Connection_ptr &initConnection) :
 	connectionPtr(initConnection) { }

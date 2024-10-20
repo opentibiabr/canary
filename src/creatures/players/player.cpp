@@ -4228,7 +4228,7 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 }
 
 void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/) {
-	if (!thing || !newParent) {
+	if (!thing) {
 		return;
 	}
 
@@ -4243,7 +4243,7 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 	bool requireListUpdate = true;
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
-		const auto &item = copyNewParent->getItem();
+		const auto &item = copyNewParent ? copyNewParent->getItem();
 		const auto &container = item ? item->getContainer() : nullptr;
 		if (container) {
 			requireListUpdate = container->getHoldingPlayer() != getPlayer();

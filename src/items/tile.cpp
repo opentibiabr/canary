@@ -361,6 +361,11 @@ std::shared_ptr<Thing> Tile::getTopVisibleThing(const std::shared_ptr<Creature> 
 }
 
 void Tile::onAddTileItem(const std::shared_ptr<Item> &item) {
+	if (!item) {
+		g_logger().error("Tile::onAddTileItem: item is nullptr");
+		return;
+	}
+
 	if ((item->hasProperty(CONST_PROP_MOVABLE) || item->getContainer()) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) {
 		const auto it = g_game().browseFields.find(static_self_cast<Tile>());
 		if (it != g_game().browseFields.end()) {
@@ -434,6 +439,11 @@ void Tile::onAddTileItem(const std::shared_ptr<Item> &item) {
 }
 
 void Tile::onUpdateTileItem(const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) {
+	if (!oldItem || !newItem) {
+		g_logger().error("Tile::onUpdateTileItem: oldItem or newItem is nullptr");
+		return;
+	}
+
 	if ((newItem->hasProperty(CONST_PROP_MOVABLE) || newItem->getContainer()) || (newItem->isWrapable() && newItem->hasProperty(CONST_PROP_MOVABLE) && !oldItem->hasProperty(CONST_PROP_BLOCKPATH))) {
 		const auto it = g_game().browseFields.find(getTile());
 		if (it != g_game().browseFields.end()) {
@@ -476,6 +486,11 @@ void Tile::onUpdateTileItem(const std::shared_ptr<Item> &oldItem, const ItemType
 }
 
 void Tile::onRemoveTileItem(const CreatureVector &spectators, const std::vector<int32_t> &oldStackPosVector, const std::shared_ptr<Item> &item) {
+	if (!item) {
+		g_logger().error("Tile::onRemoveTileItem: item is nullptr");
+		return;
+	}
+
 	if ((item->hasProperty(CONST_PROP_MOVABLE) || item->getContainer()) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) {
 		const auto it = g_game().browseFields.find(getTile());
 		if (it != g_game().browseFields.end()) {
@@ -568,6 +583,10 @@ void Tile::onUpdateTile(const CreatureVector &spectators) {
 }
 
 ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t tileFlags, const std::shared_ptr<Creature> &) {
+	if (!thing) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
 	if (hasBitSet(FLAG_NOLIMIT, tileFlags)) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -844,6 +863,10 @@ ReturnValue Tile::queryMaxCount(int32_t, const std::shared_ptr<Thing> &, uint32_
 }
 
 ReturnValue Tile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t tileFlags, const std::shared_ptr<Creature> & /*= nullptr */) {
+	if (!thing) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
 	const int32_t index = getThingIndex(thing);
 	if (index == -1) {
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -956,7 +979,7 @@ std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_pt
 		const auto &destThing = destTile->getTopDownItem();
 		if (destThing) {
 			destItem = destThing->getItem();
-			if (thing->getItem()) {
+			if (thing && thing->getItem()) {
 				const auto &destCylinder = destThing->getCylinder();
 				if (destCylinder && !destCylinder->getContainer()) {
 					return destThing->getCylinder();
@@ -1093,6 +1116,10 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 }
 
 void Tile::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) {
+	if (!thing) {
+		return /*RETURNVALUE_NOTPOSSIBLE*/;
+	}
+
 	const int32_t index = getThingIndex(thing);
 	if (index == -1) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -1113,6 +1140,10 @@ void Tile::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uin
 }
 
 void Tile::replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) {
+	if (!thing) {
+		return;
+	}
+
 	int32_t pos = index;
 
 	const auto &item = thing->getItem();
@@ -1184,6 +1215,10 @@ void Tile::replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) {
 }
 
 void Tile::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) {
+	if (!thing) {
+		return;
+	}
+
 	const auto &creature = thing->getCreature();
 	if (creature) {
 		CreatureVector* creatures = getCreatures();
@@ -1269,11 +1304,19 @@ void Tile::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) {
 }
 
 void Tile::removeCreature(const std::shared_ptr<Creature> &creature) {
+	if (!creature) {
+		return;
+	}
+
 	g_game().map.getMapSector(tilePos.x, tilePos.y)->removeCreature(creature);
 	removeThing(creature, 0);
 }
 
 int32_t Tile::getThingIndex(const std::shared_ptr<Thing> &thing) const {
+	if (!thing) {
+		return -1;
+	}
+
 	int32_t n = -1;
 	if (ground) {
 		if (ground == thing) {
@@ -1485,6 +1528,10 @@ std::shared_ptr<Thing> Tile::getThing(size_t index) const {
 }
 
 void Tile::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/) {
+	if (!thing) {
+		return;
+	}
+
 	for (const auto &spectator : Spectators().find<Player>(getPosition(), true)) {
 		spectator->getPlayer()->postAddNotification(thing, oldParent, index, LINK_NEAR);
 	}
@@ -1530,7 +1577,7 @@ void Tile::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std
 		return;
 	}
 
-	const auto spectators = Spectators().find<Player>(getPosition(), true);
+	auto spectators = Spectators().find<Player>(getPosition(), true);
 
 	if (getThingCount() > 8) {
 		onUpdateTile(spectators.data());
@@ -1839,6 +1886,10 @@ std::shared_ptr<Item> Tile::getDoorItem() const {
 }
 
 void Tile::addZone(const std::shared_ptr<Zone> &zone) {
+	if (!zone) {
+		return;
+	}
+
 	zones.emplace(zone);
 	const auto &items = getItemList();
 	if (items) {

@@ -11,6 +11,10 @@
 #include "game/game.hpp"
 
 ReturnValue TrashHolder::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, const std::shared_ptr<Creature> &actor) {
+	if (!thing) {
+		return RETURNVALUE_NOERROR;
+	}
+
 	const auto item = thing->getItem();
 	if (item == nullptr) {
 		return RETURNVALUE_NOERROR;

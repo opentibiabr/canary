@@ -49,7 +49,6 @@ public:
 	 * \param thing the object to move/remove
 	 * \param count is the amount that we want to remove
 	 * \param flags optional flags to modify the default behaviour
-	 * \param
 	 * \returns ReturnValue holds the return value
 	 */
 	virtual ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) = 0;

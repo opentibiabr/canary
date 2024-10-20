@@ -4243,7 +4243,7 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 	bool requireListUpdate = true;
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
-		const auto &item = copyNewParent ? copyNewParent->getItem();
+		const auto &item = copyNewParent ? copyNewParent->getItem() : nullptr;
 		const auto &container = item ? item->getContainer() : nullptr;
 		if (container) {
 			requireListUpdate = container->getHoldingPlayer() != getPlayer();

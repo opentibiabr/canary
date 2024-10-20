@@ -175,5 +175,5 @@ protected:
 	};
 
 	NetworkMessageInfo info;
-	std::array<uint8_t, NETWORKMESSAGE_MAXSIZE> buffer = {};
+	alignas(64) std::array<uint8_t, NETWORKMESSAGE_MAXSIZE> buffer = {};
 };

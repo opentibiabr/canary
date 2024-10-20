@@ -126,34 +126,203 @@ void Protocol::disconnect() const {
 }
 
 void Protocol::XTEA_encrypt(OutputMessage &outputMessage) const {
-	const uint32_t delta = 0x61C88647;
-
-	// The message must be a multiple of 8
 	size_t paddingBytes = outputMessage.getLength() & 7;
 	if (paddingBytes != 0) {
 		outputMessage.addPaddingBytes(8 - paddingBytes);
 	}
 
 	uint8_t* buffer = outputMessage.getOutputBuffer();
-	auto messageLength = static_cast<int32_t>(outputMessage.getLength());
-	int32_t readPos = 0;
-	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
-	// TODO: refactor this for not use c-style
-	uint32_t precachedControlSum[32][2];
-	uint32_t sum = 0;
-	for (int32_t i = 0; i < 32; ++i) {
-		precachedControlSum[i][0] = (sum + newKey[sum & 3]);
-		sum -= delta;
-		precachedControlSum[i][1] = (sum + newKey[(sum >> 11) & 3]);
+	int32_t messageLength;
+
+	const bool hasAVX512 = g_cpuinfo().hasAVX512F();
+	const bool hasAVX2 = g_cpuinfo().hasAVX2();
+	const bool hasSSE2 = g_cpuinfo().hasSSE2();
+
+	if (hasAVX512) {
+		messageLength = static_cast<int32_t>(outputMessage.getLength()) - 256;
+	} else if (hasAVX2) {
+		messageLength = static_cast<int32_t>(outputMessage.getLength()) - 128;
+	} else if (hasSSE2) {
+		messageLength = static_cast<int32_t>(outputMessage.getLength()) - 64;
+	} else {
+		messageLength = static_cast<int32_t>(outputMessage.getLength());
 	}
-	while (readPos < messageLength) {
-		std::array<uint32_t, 2> vData = {};
-		memcpy(vData.data(), buffer + readPos, 8);
-		for (int32_t i = 0; i < 32; ++i) {
-			vData[0] += ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][0];
-			vData[1] += ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][1];
+
+	int32_t readPos = 0;
+
+	// Garantir que o cache de somas de controle está pronto para criptografia
+	precacheControlSumsEncrypt();
+
+	// Utilizando as somas de controle pré-calculadas de `cachedControlSumsEncrypt`
+	_mm_prefetch(reinterpret_cast<const char*>(buffer), _MM_HINT_T0);
+	_mm_prefetch(reinterpret_cast<const char*>(buffer + 64), _MM_HINT_T0);
+
+	if (hasAVX512) {
+		while (readPos <= messageLength) {
+			const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_PERM_DBCA);
+			const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_PERM_DBCA);
+			const __m512i data3 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 128)), _MM_PERM_DBCA);
+			const __m512i data4 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 192)), _MM_PERM_DBCA);
+
+			__m512i vdata0 = _mm512_unpacklo_epi64(data0, data1);
+			__m512i vdata1 = _mm512_unpackhi_epi64(data0, data1);
+			__m512i vdata3 = _mm512_unpacklo_epi64(data3, data4);
+			__m512i vdata4 = _mm512_unpackhi_epi64(data3, data4);
+
+			for (int i = 0; i < 32; ++i) {
+				vdata0 = _mm512_add_epi32(vdata0, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata1, 4), _mm512_srli_epi32(vdata1, 5)), vdata1), _mm512_set1_epi32(cachedControlSumsEncrypt[i * 2])));
+				vdata1 = _mm512_add_epi32(vdata1, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata0, 4), _mm512_srli_epi32(vdata0, 5)), vdata0), _mm512_set1_epi32(cachedControlSumsEncrypt[i * 2 + 1])));
+				vdata3 = _mm512_add_epi32(vdata3, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata4, 4), _mm512_srli_epi32(vdata4, 5)), vdata4), _mm512_set1_epi32(cachedControlSumsEncrypt[i * 2])));
+				vdata4 = _mm512_add_epi32(vdata4, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata3, 4), _mm512_srli_epi32(vdata3, 5)), vdata3), _mm512_set1_epi32(cachedControlSumsEncrypt[i * 2 + 1])));
+			}
+
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpacklo_epi32(vdata0, vdata1));
+			readPos += 64;
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpackhi_epi32(vdata0, vdata1));
+			readPos += 64;
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpacklo_epi32(vdata3, vdata4));
+			readPos += 64;
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpackhi_epi32(vdata3, vdata4));
+			readPos += 64;
 		}
-		memcpy(buffer + readPos, vData.data(), 8);
+
+		messageLength += 128;
+		if (readPos <= messageLength) {
+			const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_PERM_DBCA);
+			const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_PERM_DBCA);
+			__m512i vdata0 = _mm512_unpacklo_epi64(data0, data1);
+			__m512i vdata1 = _mm512_unpackhi_epi64(data0, data1);
+
+			for (int i = 0; i < 32; ++i) {
+				vdata0 = _mm512_add_epi32(vdata0, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata1, 4), _mm512_srli_epi32(vdata1, 5)), vdata1), _mm512_set1_epi32(cachedControlSumsEncrypt[i * 2])));
+				vdata1 = _mm512_add_epi32(vdata1, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata0, 4), _mm512_srli_epi32(vdata0, 5)), vdata0), _mm512_set1_epi32(cachedControlSumsEncrypt[i * 2 + 1])));
+			}
+
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpacklo_epi32(vdata0, vdata1));
+			readPos += 64;
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpackhi_epi32(vdata0, vdata1));
+			readPos += 64;
+		}
+		messageLength += 64;
+	}
+
+	if (hasAVX2) {
+		if (!hasAVX512) {
+			while (readPos <= messageLength) {
+				_mm_prefetch(reinterpret_cast<const char*>(buffer + readPos), _MM_HINT_T1);
+				_mm_prefetch(reinterpret_cast<const char*>(buffer + readPos + 32), _MM_HINT_T1);
+
+				const __m256i data0 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m256i data1 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m256i data2 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos + 64)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m256i data3 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos + 96)), _MM_SHUFFLE(3, 1, 2, 0));
+
+				__m256i vdata0 = _mm256_unpacklo_epi64(data0, data1);
+				__m256i vdata1 = _mm256_unpackhi_epi64(data0, data1);
+				__m256i vdata2 = _mm256_unpacklo_epi64(data2, data3);
+				__m256i vdata3 = _mm256_unpackhi_epi64(data2, data3);
+
+				for (int i = 0; i < 32; ++i) {
+					vdata0 = _mm256_add_epi32(vdata0, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata1, 4), _mm256_srli_epi32(vdata1, 5)), vdata1), _mm256_set1_epi32(cachedControlSumsEncrypt[i * 2])));
+					vdata1 = _mm256_add_epi32(vdata1, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata0, 4), _mm256_srli_epi32(vdata0, 5)), vdata0), _mm256_set1_epi32(cachedControlSumsEncrypt[i * 2 + 1])));
+					vdata2 = _mm256_add_epi32(vdata2, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata3, 4), _mm256_srli_epi32(vdata3, 5)), vdata3), _mm256_set1_epi32(cachedControlSumsEncrypt[i * 2])));
+					vdata3 = _mm256_add_epi32(vdata3, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata2, 4), _mm256_srli_epi32(vdata2, 5)), vdata2), _mm256_set1_epi32(cachedControlSumsEncrypt[i * 2 + 1])));
+				}
+
+				_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpacklo_epi32(vdata0, vdata1));
+				readPos += 32;
+				_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpackhi_epi32(vdata0, vdata1));
+				readPos += 32;
+				_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpacklo_epi32(vdata2, vdata3));
+				readPos += 32;
+				_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpackhi_epi32(vdata2, vdata3));
+				readPos += 32;
+			}
+			messageLength += 64;
+		}
+
+		if (readPos <= messageLength) {
+			const __m256i data0 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+			const __m256i data1 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
+
+			__m256i vdata0 = _mm256_unpacklo_epi64(data0, data1);
+			__m256i vdata1 = _mm256_unpackhi_epi64(data0, data1);
+
+			for (int i = 0; i < 32; ++i) {
+				vdata0 = _mm256_add_epi32(vdata0, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata1, 4), _mm256_srli_epi32(vdata1, 5)), vdata1), _mm256_set1_epi32(cachedControlSumsEncrypt[i * 2])));
+				vdata1 = _mm256_add_epi32(vdata1, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata0, 4), _mm256_srli_epi32(vdata0, 5)), vdata0), _mm256_set1_epi32(cachedControlSumsEncrypt[i * 2 + 1])));
+			}
+
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpacklo_epi32(vdata0, vdata1));
+			readPos += 32;
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpackhi_epi32(vdata0, vdata1));
+			readPos += 32;
+		}
+		messageLength += 32;
+	}
+
+	if (hasSSE2) {
+		if (!hasAVX2) {
+			while (readPos <= messageLength) {
+				_mm_prefetch(reinterpret_cast<const char*>(buffer + readPos), _MM_HINT_T1);
+				_mm_prefetch(reinterpret_cast<const char*>(buffer + readPos + 16), _MM_HINT_T1);
+
+				const __m128i data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m128i data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m128i data3 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m128i data4 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 48)), _MM_SHUFFLE(3, 1, 2, 0));
+
+				__m128i vdata0 = _mm_unpacklo_epi64(data0, data1);
+				__m128i vdata1 = _mm_unpackhi_epi64(data0, data1);
+				__m128i vdata3 = _mm_unpacklo_epi64(data3, data4);
+				__m128i vdata4 = _mm_unpackhi_epi64(data3, data4);
+
+				for (int i = 0; i < 32; ++i) {
+					vdata0 = _mm_add_epi32(vdata0, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata1, 4), _mm_srli_epi32(vdata1, 5)), vdata1), _mm_set1_epi32(cachedControlSumsEncrypt[i * 2])));
+					vdata1 = _mm_add_epi32(vdata1, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata0, 4), _mm_srli_epi32(vdata0, 5)), vdata0), _mm_set1_epi32(cachedControlSumsEncrypt[i * 2 + 1])));
+					vdata3 = _mm_add_epi32(vdata3, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata4, 4), _mm_srli_epi32(vdata4, 5)), vdata4), _mm_set1_epi32(cachedControlSumsEncrypt[i * 2])));
+					vdata4 = _mm_add_epi32(vdata4, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata3, 4), _mm_srli_epi32(vdata3, 5)), vdata3), _mm_set1_epi32(cachedControlSumsEncrypt[i * 2 + 1])));
+				}
+
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpacklo_epi32(vdata0, vdata1));
+				readPos += 16;
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpackhi_epi32(vdata0, vdata1));
+				readPos += 16;
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpacklo_epi32(vdata3, vdata4));
+				readPos += 16;
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpackhi_epi32(vdata3, vdata4));
+				readPos += 16;
+			}
+			messageLength += 32;
+		}
+
+		if (readPos <= messageLength) {
+			const __m128i data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+			const __m128i data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
+
+			__m128i vdata0 = _mm_unpacklo_epi64(data0, data1);
+			__m128i vdata1 = _mm_unpackhi_epi64(data0, data1);
+
+			for (int i = 0; i < 32; ++i) {
+				vdata0 = _mm_add_epi32(vdata0, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata1, 4), _mm_srli_epi32(vdata1, 5)), vdata1), _mm_set1_epi32(cachedControlSumsEncrypt[i * 2])));
+				vdata1 = _mm_add_epi32(vdata1, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata0, 4), _mm_srli_epi32(vdata0, 5)), vdata0), _mm_set1_epi32(cachedControlSumsEncrypt[i * 2 + 1])));
+			}
+
+			_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpacklo_epi32(vdata0, vdata1));
+			readPos += 16;
+			_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpackhi_epi32(vdata0, vdata1));
+			readPos += 16;
+		}
+		messageLength += 32;
+	}
+
+	while (readPos < messageLength) {
+		auto* vData = reinterpret_cast<uint32_t*>(buffer + readPos);
+
+		for (int i = 0; i < 32; ++i) {
+			vData[0] += ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ cachedControlSumsEncrypt[i * 2];
+			vData[1] += ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ cachedControlSumsEncrypt[i * 2 + 1];
+		}
 		readPos += 8;
 	}
 }
@@ -164,38 +333,242 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 		return false;
 	}
 
-	const uint32_t delta = 0x61C88647;
+	precacheControlSumsDecrypt();
 
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
-	auto messageLength = static_cast<int32_t>(msgLength);
-	int32_t readPos = 0;
-	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
-	// TODO: refactor this for not use c-style
-	uint32_t precachedControlSum[32][2];
-	uint32_t sum = 0xC6EF3720;
-	for (int32_t i = 0; i < 32; ++i) {
-		precachedControlSum[i][0] = (sum + newKey[(sum >> 11) & 3]);
-		sum += delta;
-		precachedControlSum[i][1] = (sum + newKey[sum & 3]);
+	int32_t messageLength;
+
+	const bool hasAVX512 = g_cpuinfo().hasAVX512F();
+	const bool hasAVX2 = g_cpuinfo().hasAVX2();
+	const bool hasSSE2 = g_cpuinfo().hasSSE2();
+
+	if (hasAVX512) {
+		messageLength = static_cast<int32_t>(msgLength) - 256;
+	} else if (hasAVX2) {
+		messageLength = static_cast<int32_t>(msgLength) - 128;
+	} else if (hasSSE2) {
+		messageLength = static_cast<int32_t>(msgLength) - 64;
+	} else {
+		messageLength = static_cast<int32_t>(msgLength);
 	}
-	while (readPos < messageLength) {
-		std::array<uint32_t, 2> vData = {};
-		memcpy(vData.data(), buffer + readPos, 8);
-		for (int32_t i = 0; i < 32; ++i) {
-			vData[1] -= ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][0];
-			vData[0] -= ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][1];
+
+	int32_t readPos = 0;
+
+	_mm_prefetch(reinterpret_cast<const char*>(buffer), _MM_HINT_T0);
+	_mm_prefetch(reinterpret_cast<const char*>(buffer + 64), _MM_HINT_T0);
+
+	if (hasAVX512) {
+		while (readPos <= messageLength) {
+			const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_PERM_DBCA);
+			const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_PERM_DBCA);
+			const __m512i data2 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 128)), _MM_PERM_DBCA);
+			const __m512i data3 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 192)), _MM_PERM_DBCA);
+
+			__m512i vdata0 = _mm512_unpacklo_epi64(data0, data1);
+			__m512i vdata1 = _mm512_unpackhi_epi64(data0, data1);
+			__m512i vdata2 = _mm512_unpacklo_epi64(data2, data3);
+			__m512i vdata3 = _mm512_unpackhi_epi64(data2, data3);
+
+			for (int32_t i = 0; i < 32; ++i) {
+				vdata1 = _mm512_sub_epi32(vdata1, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata0, 4), _mm512_srli_epi32(vdata0, 5)), vdata0), _mm512_set1_epi32(cachedControlSumsDecrypt[i * 2])));
+				vdata0 = _mm512_sub_epi32(vdata0, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata1, 4), _mm512_srli_epi32(vdata1, 5)), vdata1), _mm512_set1_epi32(cachedControlSumsDecrypt[i * 2 + 1])));
+				vdata3 = _mm512_sub_epi32(vdata3, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata2, 4), _mm512_srli_epi32(vdata2, 5)), vdata2), _mm512_set1_epi32(cachedControlSumsDecrypt[i * 2])));
+				vdata2 = _mm512_sub_epi32(vdata2, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata3, 4), _mm512_srli_epi32(vdata3, 5)), vdata3), _mm512_set1_epi32(cachedControlSumsDecrypt[i * 2 + 1])));
+			}
+
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpacklo_epi32(vdata0, vdata1));
+			readPos += 64;
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpackhi_epi32(vdata0, vdata1));
+			readPos += 64;
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpacklo_epi32(vdata2, vdata3));
+			readPos += 64;
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpackhi_epi32(vdata2, vdata3));
+			readPos += 64;
 		}
-		memcpy(buffer + readPos, vData.data(), 8);
+
+		messageLength += 128;
+		if (readPos <= messageLength) {
+			const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_PERM_DBCA);
+			const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_PERM_DBCA);
+			__m512i vdata0 = _mm512_unpacklo_epi64(data0, data1);
+			__m512i vdata1 = _mm512_unpackhi_epi64(data0, data1);
+
+			for (int32_t i = 0; i < 32; ++i) {
+				vdata1 = _mm512_sub_epi32(vdata1, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata0, 4), _mm512_srli_epi32(vdata0, 5)), vdata0), _mm512_set1_epi32(cachedControlSumsDecrypt[i * 2])));
+				vdata0 = _mm512_sub_epi32(vdata0, _mm512_xor_si512(_mm512_add_epi32(_mm512_xor_si512(_mm512_slli_epi32(vdata1, 4), _mm512_srli_epi32(vdata1, 5)), vdata1), _mm512_set1_epi32(cachedControlSumsDecrypt[i * 2 + 1])));
+			}
+
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpacklo_epi32(vdata0, vdata1));
+			readPos += 64;
+			_mm512_storeu_si512(reinterpret_cast<void*>(buffer + readPos), _mm512_unpackhi_epi32(vdata0, vdata1));
+			readPos += 64;
+		}
+		messageLength += 64;
+	}
+
+	if (hasAVX2) {
+		if (!hasAVX512) {
+			while (readPos <= messageLength) {
+				_mm_prefetch(reinterpret_cast<const char*>(buffer + readPos), _MM_HINT_T1);
+				_mm_prefetch(reinterpret_cast<const char*>(buffer + readPos + 32), _MM_HINT_T1);
+
+				const __m256i data0 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m256i data1 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m256i data2 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos + 64)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m256i data3 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos + 96)), _MM_SHUFFLE(3, 1, 2, 0));
+
+				__m256i vdata0 = _mm256_unpacklo_epi64(data0, data1);
+				__m256i vdata1 = _mm256_unpackhi_epi64(data0, data1);
+				__m256i vdata2 = _mm256_unpacklo_epi64(data2, data3);
+				__m256i vdata3 = _mm256_unpackhi_epi64(data2, data3);
+
+				for (int32_t i = 0; i < 32; ++i) {
+					vdata1 = _mm256_sub_epi32(vdata1, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata0, 4), _mm256_srli_epi32(vdata0, 5)), vdata0), _mm256_set1_epi32(cachedControlSumsDecrypt[i * 2])));
+					vdata0 = _mm256_sub_epi32(vdata0, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata1, 4), _mm256_srli_epi32(vdata1, 5)), vdata1), _mm256_set1_epi32(cachedControlSumsDecrypt[i * 2 + 1])));
+					vdata3 = _mm256_sub_epi32(vdata3, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata2, 4), _mm256_srli_epi32(vdata2, 5)), vdata2), _mm256_set1_epi32(cachedControlSumsDecrypt[i * 2])));
+					vdata2 = _mm256_sub_epi32(vdata2, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata3, 4), _mm256_srli_epi32(vdata3, 5)), vdata3), _mm256_set1_epi32(cachedControlSumsDecrypt[i * 2 + 1])));
+				}
+
+				_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpacklo_epi32(vdata0, vdata1));
+				readPos += 32;
+				_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpackhi_epi32(vdata0, vdata1));
+				readPos += 32;
+				_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpacklo_epi32(vdata2, vdata3));
+				readPos += 32;
+				_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpackhi_epi32(vdata2, vdata3));
+				readPos += 32;
+			}
+			messageLength += 64;
+		}
+
+		if (readPos <= messageLength) {
+			const __m256i data0 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+			const __m256i data1 = _mm256_shuffle_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
+
+			__m256i vdata0 = _mm256_unpacklo_epi64(data0, data1);
+			__m256i vdata1 = _mm256_unpackhi_epi64(data0, data1);
+
+			for (int32_t i = 0; i < 32; ++i) {
+				vdata1 = _mm256_sub_epi32(vdata1, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata0, 4), _mm256_srli_epi32(vdata0, 5)), vdata0), _mm256_set1_epi32(cachedControlSumsDecrypt[i * 2])));
+				vdata0 = _mm256_sub_epi32(vdata0, _mm256_xor_si256(_mm256_add_epi32(_mm256_xor_si256(_mm256_slli_epi32(vdata1, 4), _mm256_srli_epi32(vdata1, 5)), vdata1), _mm256_set1_epi32(cachedControlSumsDecrypt[i * 2 + 1])));
+			}
+
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpacklo_epi32(vdata0, vdata1));
+			readPos += 32;
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(buffer + readPos), _mm256_unpackhi_epi32(vdata0, vdata1));
+			readPos += 32;
+		}
+		messageLength += 32;
+	}
+
+	if (hasSSE2) {
+		if (!hasAVX2) {
+			while (readPos <= messageLength) {
+				_mm_prefetch(reinterpret_cast<const char*>(buffer + readPos), _MM_HINT_T1);
+				_mm_prefetch(reinterpret_cast<const char*>(buffer + readPos + 16), _MM_HINT_T1);
+
+				const __m128i data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m128i data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m128i data2 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
+				const __m128i data3 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 48)), _MM_SHUFFLE(3, 1, 2, 0));
+
+				__m128i vdata0 = _mm_unpacklo_epi64(data0, data1);
+				__m128i vdata1 = _mm_unpackhi_epi64(data0, data1);
+				__m128i vdata2 = _mm_unpacklo_epi64(data2, data3);
+				__m128i vdata3 = _mm_unpackhi_epi64(data2, data3);
+
+				for (int32_t i = 0; i < 32; ++i) {
+					vdata1 = _mm_sub_epi32(vdata1, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata0, 4), _mm_srli_epi32(vdata0, 5)), vdata0), _mm_set1_epi32(cachedControlSumsDecrypt[i * 2])));
+					vdata0 = _mm_sub_epi32(vdata0, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata1, 4), _mm_srli_epi32(vdata1, 5)), vdata1), _mm_set1_epi32(cachedControlSumsDecrypt[i * 2 + 1])));
+					vdata3 = _mm_sub_epi32(vdata3, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata2, 4), _mm_srli_epi32(vdata2, 5)), vdata2), _mm_set1_epi32(cachedControlSumsDecrypt[i * 2])));
+					vdata2 = _mm_sub_epi32(vdata2, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata3, 4), _mm_srli_epi32(vdata3, 5)), vdata3), _mm_set1_epi32(cachedControlSumsDecrypt[i * 2 + 1])));
+				}
+
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpacklo_epi32(vdata0, vdata1));
+				readPos += 16;
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpackhi_epi32(vdata0, vdata1));
+				readPos += 16;
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpacklo_epi32(vdata2, vdata3));
+				readPos += 16;
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpackhi_epi32(vdata2, vdata3));
+				readPos += 16;
+			}
+			messageLength += 32;
+		}
+
+		if (readPos <= messageLength) {
+			const __m128i data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+			const __m128i data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
+
+			__m128i vdata0 = _mm_unpacklo_epi64(data0, data1);
+			__m128i vdata1 = _mm_unpackhi_epi64(data0, data1);
+
+			for (int32_t i = 0; i < 32; ++i) {
+				vdata1 = _mm_sub_epi32(vdata1, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata0, 4), _mm_srli_epi32(vdata0, 5)), vdata0), _mm_set1_epi32(cachedControlSumsDecrypt[i * 2])));
+				vdata0 = _mm_sub_epi32(vdata0, _mm_xor_si128(_mm_add_epi32(_mm_xor_si128(_mm_slli_epi32(vdata1, 4), _mm_srli_epi32(vdata1, 5)), vdata1), _mm_set1_epi32(cachedControlSumsDecrypt[i * 2 + 1])));
+			}
+
+			_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpacklo_epi32(vdata0, vdata1));
+			readPos += 16;
+			_mm_storeu_si128(reinterpret_cast<__m128i*>(buffer + readPos), _mm_unpackhi_epi32(vdata0, vdata1));
+			readPos += 16;
+		}
+		messageLength += 32;
+	}
+
+	// Fallback para CPUs sem AVX/SSE2
+	while (readPos < messageLength) {
+		auto* vData = reinterpret_cast<uint32_t*>(buffer + readPos);
+
+		for (int32_t i = 0; i < 32; ++i) {
+			vData[1] -= ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ cachedControlSumsDecrypt[i * 2];
+			vData[0] -= ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ cachedControlSumsDecrypt[i * 2 + 1];
+		}
+
 		readPos += 8;
 	}
 
-	uint16_t innerLength = msg.get<uint16_t>();
-	if (std::cmp_greater(innerLength, msgLength - 2)) {
+	auto innerLength = msg.get<uint16_t>();
+	if (innerLength > msgLength - 2) {
 		return false;
 	}
 
 	msg.setLength(innerLength);
 	return true;
+}
+
+inline void Protocol::precacheControlSumsEncrypt() const {
+	if (cacheEncryptInitialized) {
+		return;
+	}
+
+	constexpr uint32_t delta = 0x61C88647;
+	uint32_t sum = 0;
+
+	for (int32_t i = 0; i < 32; ++i) {
+		cachedControlSumsEncrypt[i * 2] = sum + key[sum & 3];
+		sum -= delta;
+		cachedControlSumsEncrypt[i * 2 + 1] = sum + key[(sum >> 11) & 3];
+	}
+
+	cacheEncryptInitialized = true;
+}
+
+inline void Protocol::precacheControlSumsDecrypt() const {
+	if (cacheDecryptInitialized) {
+		return;
+	}
+
+	constexpr uint32_t delta = 0x61C88647;
+	uint32_t sum = 0xC6EF3720;
+
+	for (int32_t i = 0; i < 32; ++i) {
+		cachedControlSumsDecrypt[i * 2] = sum + key[(sum >> 11) & 3];
+		sum += delta;
+		cachedControlSumsDecrypt[i * 2 + 1] = sum + key[sum & 3];
+	}
+
+	cacheDecryptInitialized = true;
 }
 
 bool Protocol::RSA_decrypt(NetworkMessage &msg) {

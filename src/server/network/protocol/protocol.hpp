@@ -92,7 +92,13 @@ private:
 	OutputMessage_ptr outputBuffer;
 
 	const ConnectionWeak_ptr connectionPtr;
-	std::array<uint32_t, 4> key = {};
+	void precacheControlSumsEncrypt() const;
+	void precacheControlSumsDecrypt() const;
+	mutable bool cacheEncryptInitialized = false;
+	mutable bool cacheDecryptInitialized = false;
+	alignas(64) mutable std::array<uint32_t, 32 * 2> cachedControlSumsEncrypt {};
+	alignas(64) mutable std::array<uint32_t, 32 * 2> cachedControlSumsDecrypt {};
+	alignas(64) std::array<uint32_t, 4> key = {};
 	uint32_t serverSequenceNumber = 0;
 	uint32_t clientSequenceNumber = 0;
 	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;

@@ -8,6 +8,7 @@
  */
 
 #include "utils/CPUinfo.hpp"
+#include "lib/di/container.hpp"
 #include <cpuinfo.h>
 
 CPUInfo &CPUInfo::getInstance() {

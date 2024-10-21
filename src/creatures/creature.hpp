@@ -707,6 +707,13 @@ public:
 	}
 
 protected:
+	enum FLAG_ASYNC_TASKS : uint8_t {
+		ASYNC_TASK_RUNNING = 1 << 0,
+		UPDATE_TARGET_LIST = 1 << 1,
+		UPDATE_IDDLE_STATUS = 1 << 2,
+		PATHFINDER = 1 << 3
+	};
+
 	virtual bool useCacheMap() const {
 		return false;
 	}
@@ -780,12 +787,13 @@ protected:
 	Direction direction = DIRECTION_SOUTH;
 	Skulls_t skull = SKULL_NONE;
 
+	std::atomic_bool creatureCheck = false;
+	std::atomic_bool inCheckCreaturesVector = false;
+
 	bool localMapCache[mapWalkHeight][mapWalkWidth] = { { false } };
 	bool isInternalRemoved = false;
 	bool isMapLoaded = false;
 	bool isUpdatingPath = false;
-	bool creatureCheck = false;
-	bool inCheckCreaturesVector = false;
 	bool skillLoss = true;
 	bool lootDrop = true;
 	bool cancelNextWalk = false;
@@ -796,11 +804,10 @@ protected:
 	bool moveLocked = false;
 	bool directionLocked = false;
 	bool hasFollowPath = false;
+	bool checkingWalkCreature = false;
 	int8_t charmChanceModifier = 0;
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;
-
-	std::atomic_bool pathfinderRunning = false;
 
 	// use map here instead of phmap to keep the keys in a predictable order
 	std::map<std::string, CreatureIcon> creatureIcons = {};
@@ -836,10 +843,33 @@ protected:
 	friend class Map;
 	friend class CreatureFunctions;
 
+	void addAsyncTask(std::function<void()> &&fnc) {
+		asyncTasks.emplace_back(std::move(fnc));
+		sendAsyncTasks();
+	}
+
+	bool hasAsyncTaskFlag(FLAG_ASYNC_TASKS prop) const {
+		return (m_flagAsyncTask & prop);
+	}
+
+	void setAsyncTaskFlag(FLAG_ASYNC_TASKS taskFlag, bool v) {
+		if (v) {
+			m_flagAsyncTask |= taskFlag;
+			sendAsyncTasks();
+		} else {
+			m_flagAsyncTask &= ~taskFlag;
+		}
+	}
+
+	virtual void onExecuteAsyncTasks() {};
+
 private:
 	bool canFollowMaster();
 	bool isLostSummon();
+	void sendAsyncTasks();
 	void handleLostSummon(bool teleportSummons);
+
+	std::vector<std::function<void()>> asyncTasks;
 
 	struct {
 		uint16_t groundSpeed { 0 };
@@ -864,4 +894,6 @@ private:
 
 		walk.recache();
 	}
+
+	uint8_t m_flagAsyncTask = 0;
 };

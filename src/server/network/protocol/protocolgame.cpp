@@ -5596,13 +5596,22 @@ void ProtocolGame::parseForgeEnter(NetworkMessage &msg) {
 
 	// 0xBF -> 0 = fusion, 1 = transfer, 2 = dust to sliver, 3 = sliver to core, 4 = increase dust limit
 	auto actionType = static_cast<ForgeAction_t>(msg.getByte());
-	bool convergence = msg.getByte();
-	uint16_t firstItem = msg.get<uint16_t>();
-	uint8_t tier = msg.getByte();
-	uint16_t secondItem = msg.get<uint16_t>();
-	bool usedCore = msg.getByte();
-	bool reduceTierLoss = msg.getByte();
+
+	bool convergence = false;
+	uint16_t firstItem = 0;
+	uint8_t tier = 0;
+	uint16_t secondItem = 0;
+
+	if (actionType == ForgeAction_t::FUSION || actionType == ForgeAction_t::TRANSFER) {
+		convergence = msg.getByte();
+		firstItem = msg.get<uint16_t>();
+		tier = msg.getByte();
+		secondItem = msg.get<uint16_t>();
+	}
+
 	if (actionType == ForgeAction_t::FUSION) {
+		bool usedCore = convergence ? false : msg.getByte();
+		bool reduceTierLoss = convergence ? false : msg.getByte();
 		g_game().playerForgeFuseItems(player->getID(), actionType, firstItem, tier, secondItem, usedCore, reduceTierLoss, convergence);
 	} else if (actionType == ForgeAction_t::TRANSFER) {
 		g_game().playerForgeTransferItemTier(player->getID(), actionType, firstItem, tier, secondItem, convergence);

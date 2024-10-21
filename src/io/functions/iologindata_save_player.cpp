@@ -197,7 +197,9 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	query << "`manamax` = " << player->manaMax << ",";
 	query << "`manaspent` = " << player->manaSpent << ",";
 	query << "`soul` = " << static_cast<uint16_t>(player->soul) << ",";
-	query << "`town_id` = " << player->town->getID() << ",";
+	if (player->town) {
+		query << "`town_id` = " << player->town->getID() << ",";
+	}
 
 	const Position &loginPosition = player->getLoginPosition();
 	query << "`posx` = " << loginPosition.getX() << ",";

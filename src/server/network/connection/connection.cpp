@@ -16,6 +16,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/message/networkmessage.hpp"
 #include "server/server.hpp"
+#include "utils/tools.hpp"
 
 ConnectionManager &ConnectionManager::getInstance() {
 	return inject<ConnectionManager>();

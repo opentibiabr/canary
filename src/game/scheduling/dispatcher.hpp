@@ -31,9 +31,7 @@ enum class DispatcherType : uint8_t {
 };
 
 struct DispatcherContext {
-	static bool isOn() {
-		return OTSYS_TIME() != 0;
-	}
+	static bool isOn();
 
 	bool isGroup(const TaskGroup _group) const {
 		return group == _group;

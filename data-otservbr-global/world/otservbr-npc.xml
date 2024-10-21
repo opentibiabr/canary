@@ -2818,6 +2818,9 @@
 	<npc centerx="32232" centery="32684" centerz="13" radius="1">
 		<npc name="A Drillworm" x="0" y="0" z="13" spawntime="60" />
 	</npc>
+	<npc centerx="33597" centery="30991" centerz="14" radius="5">
+		<npc name="Kizar" x="-1" y="0" z="14" spawntime="60" />
+	</npc>
 	<npc centerx="32207" centery="31377" centerz="14" radius="1">
 		<npc name="Messenger Of Heaven" x="0" y="0" z="14" spawntime="60" />
 	</npc>

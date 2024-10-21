@@ -14,9 +14,9 @@ function cultsOfTibiaAnalyser.onUse(player, item, fromPosition, target, toPositi
 		return false
 	end
 
-	if player:getStorageValue(Storage.CultsOfTibia.Life.Mission) == 4 then
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Life.Mission) == 4 then
 		if target:getPosition() == sqm or target:getPosition() == Position(sqm.x, sqm.y + 1, sqm.z) or target:getPosition() == Position(sqm.x, sqm.y + 2, sqm.z) then
-			player:setStorageValue(Storage.CultsOfTibia.Life.Mission, 5)
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Life.Mission, 5)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Well done! The water is analyzed.")
 		end
 	end

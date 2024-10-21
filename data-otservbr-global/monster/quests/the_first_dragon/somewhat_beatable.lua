@@ -53,7 +53,7 @@ monster.flags = {
 }
 
 monster.events = {
-	"Somewhat Beatable Death",
+	"SomewhatBeatableDeath",
 }
 
 monster.light = {

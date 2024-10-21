@@ -1,12 +1,12 @@
 local setting = {
 	[32415] = {
-		storage = Storage.CultsOfTibia.Humans.Decaying,
+		storage = Storage.Quest.U11_40.CultsOfTibia.Humans.Decaying,
 		max = 10,
 		text = "You absorb the energetic remains of this decaying soul. Its power is very fragile and fleeting",
 		effect = CONST_ME_GREEN_ENERGY_SPARK,
 	},
 	[32414] = {
-		storage = Storage.CultsOfTibia.Humans.Vaporized,
+		storage = Storage.Quest.U11_40.CultsOfTibia.Humans.Vaporized,
 		max = 10,
 		text = "You absorb the energetic remains of this whitering soul. Its power is very fragile and fleeting.",
 		effect = CONST_ME_BLUE_ENERGY_SPARK,
@@ -21,11 +21,11 @@ function taskTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.CultsOfTibia.Questline) < 1 then
-		player:setStorageValue(Storage.CultsOfTibia.Questline, 1)
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Questline) < 1 then
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Questline, 1)
 	end
-	if player:getStorageValue(Storage.CultsOfTibia.Humans.Mission) < 1 then
-		player:setStorageValue(Storage.CultsOfTibia.Humans.Mission, 1)
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Humans.Mission) < 1 then
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Humans.Mission, 1)
 	end
 
 	for index, value in pairs(setting) do

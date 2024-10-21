@@ -181,15 +181,15 @@ ChestUnique = {
 		reward = { { 2970, 1 } },
 		storage = Storage.Quest.Key.ID3899,
 	},
-	[5012] = {
+	--[[ [5012] = {
 		isKey = true,
 		itemId = 23740,
 		itemPos = { x = 33377, y = 31321, z = 1 },
 		reward = { { 2969, 1 } },
 		storage = Storage.Quest.Key.ID0909,
-		timerStorage = Storage.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
+		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
 		time = 24, -- hour
-	},
+	}, ]]
 	-- Bear Room Quest (rookgaard) key 4601
 	[5013] = {
 		isKey = true,
@@ -1080,7 +1080,7 @@ ChestUnique = {
 		weight = 15.00,
 		storage = Storage.Quest.U8_54.TomesOfKnowledge.TopTower,
 	},
-	[6105] = {
+	--[[[6105] = {
 		itemId = 23741,
 		itemPos = { x = 33352, y = 31318, z = 7 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
@@ -1127,7 +1127,7 @@ ChestUnique = {
 		reward = { { nil, nil } },
 		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.UndergroundBastion,
 		time = 24, -- hour
-	},
+	}, ]]
 	-- Blood Herb Quest
 	[6111] = {
 		useKV = true,
@@ -2620,6 +2620,125 @@ ChestUnique = {
 		reward = { { 9685, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U10_90.FerumbrasAscension.VampireTeeth,
+	},
+	-- Forgotten Knowledge Quest
+	[6310] = {
+		useKV = true,
+		itemId = 23736,
+		itemPos = { x = 32825, y = 31664, z = 9 },
+		reward = { { 23734, 1 } },
+		weight = 6.00,
+		questName = "GhostsilverLanternQuest",
+	},
+	[6311] = {
+		useKV = true,
+		itemId = 21858,
+		itemPos = { x = 32883, y = 31686, z = 10 },
+		reward = { { 23732, 1 } },
+		weight = 4.00,
+		questName = "PaintingOfAGirlQuest",
+	},
+	[6312] = {
+		useKV = true,
+		itemId = 9253,
+		itemPos = { x = 33026, y = 31662, z = 14 },
+		reward = { { 24964, 1 } },
+		weight = 3.00,
+		questName = "ImbuingCrystalQuest",
+	},
+	-- Cults of Tibia Quest
+	[6313] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32739, y = 31426, z = 8 },
+		reward = { { 10420, 5 } },
+		weight = 8.00,
+		questName = "PetrifiedScreamQuest",
+	},
+	-- The Secret Library Quest
+	[6314] = {
+		itemId = 2472,
+		itemPos = { x = 33231, y = 32017, z = 8 },
+		reward = { { 27874, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.SampleBlood,
+	},
+	[6315] = {
+		itemId = 2472,
+		itemPos = { x = 33212, y = 32081, z = 9 },
+		reward = { { 27847, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.BonyRod,
+	},
+	[6316] = {
+		itemId = 2472,
+		itemPos = { x = 33342, y = 32120, z = 10 },
+		reward = { { 25746, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.BrokenCompass,
+	},
+	[6317] = {
+		itemId = 28517,
+		itemPos = { x = 32826, y = 32772, z = 10 },
+		reward = { { 28518, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.SkeletonNotes,
+	},
+	[6318] = {
+		itemId = 28522,
+		itemPos = { x = 32828, y = 32772, z = 10 },
+		reward = { { 28490, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.StrandHair,
+	},
+	[6319] = {
+		itemId = 1992,
+		itemPos = { x = 32874, y = 32760, z = 10 },
+		reward = { { 28476, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.LotusKey,
+	},
+	[6320] = {
+		itemId = 27490,
+		itemPos = { x = 32836, y = 32820, z = 10 },
+		reward = { { 28477, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.EyeKey,
+	},
+	[6321] = {
+		itemId = 6560,
+		itemPos = { x = 32872, y = 32817, z = 10 },
+		reward = { { 28515, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.ScribbledNotes,
+	},
+	[6322] = {
+		itemId = 4077,
+		itemPos = { x = 32877, y = 32795, z = 11 },
+		reward = { { 28491, 1 } },
+		weight = 9.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.EbonyPiece,
+	},
+	[6323] = {
+		itemId = 23741,
+		itemPos = { x = 32833, y = 32759, z = 11 },
+		reward = { { 28710, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.PeacockBallad,
+	},
+	[6324] = {
+		itemId = 9794,
+		itemPos = { x = 32890, y = 32768, z = 9 },
+		reward = { { 28494, 1 } },
+		weight = 3.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.SilverChimes,
+	},
+	[6325] = {
+		itemId = 23741,
+		itemPos = { x = 32852, y = 32744, z = 11 },
+		reward = { { 28489, 1 } },
+		weight = 20.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.BlackSkull,
 	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest

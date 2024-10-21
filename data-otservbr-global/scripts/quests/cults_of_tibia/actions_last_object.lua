@@ -14,16 +14,17 @@ local config = {
 }
 
 local cultsOfTibiaLastObject = Action()
+
 function cultsOfTibiaLastObject.onUse(player, item)
-	if player:getStorageValue(Storage.CultsOfTibia.Barkless.Mission) == 4 then
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission) == 4 then
 		for i, position in pairs(config) do
 			position:sendMagicEffect(CONST_ME_YELLOWENERGY)
 		end
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The strange symbol in the wall in the back glows violently.")
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The cult object just lies there quietly. The dangerous area around it has been all but dissolved.")
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "As you reach out to touch the cult object, a surge of energy burst from the skull. You banished its power.")
-		player:setStorageValue(Storage.CultsOfTibia.Barkless.Mission, 5)
-		player:setStorageValue(Storage.CultsOfTibia.Barkless.BossAccessDoor, 1)
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission, 5)
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.BossAccessDoor, 1)
 	end
 	return true
 end

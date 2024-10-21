@@ -5595,7 +5595,7 @@ void ProtocolGame::parseForgeEnter(NetworkMessage &msg) {
 	}
 
 	// 0xBF -> 0 = fusion, 1 = transfer, 2 = dust to sliver, 3 = sliver to core, 4 = increase dust limit
-	auto actionType = static_cast<ForgeAction_t>(msg.getByte());
+	const auto actionType = static_cast<ForgeAction_t>(msg.getByte());
 
 	bool convergence = false;
 	uint16_t firstItem = 0;
@@ -5610,8 +5610,8 @@ void ProtocolGame::parseForgeEnter(NetworkMessage &msg) {
 	}
 
 	if (actionType == ForgeAction_t::FUSION) {
-		bool usedCore = convergence ? false : msg.getByte();
-		bool reduceTierLoss = convergence ? false : msg.getByte();
+		const bool usedCore = convergence ? false : msg.getByte();
+		const bool reduceTierLoss = convergence ? false : msg.getByte();
 		g_game().playerForgeFuseItems(player->getID(), actionType, firstItem, tier, secondItem, usedCore, reduceTierLoss, convergence);
 	} else if (actionType == ForgeAction_t::TRANSFER) {
 		g_game().playerForgeTransferItemTier(player->getID(), actionType, firstItem, tier, secondItem, convergence);

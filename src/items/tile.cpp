@@ -1054,15 +1054,17 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 				// remove old splash if exists
 				for (ItemVector::const_iterator it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
 					// Need to increment the counter to avoid crash
-					auto oldSplash = *it;
-					if (!Item::items[oldSplash->getID()].isSplash()) {
-						continue;
-					}
+					const std::weak_ptr<Item> &weakSplash = *it;
+					if (const auto oldSplash = weakSplash.lock()) {
+						if (!Item::items[oldSplash->getID()].isSplash()) {
+							continue;
+						}
 
-					postRemoveNotification(oldSplash, nullptr, 0);
-					removeThing(oldSplash, 1);
-					oldSplash->resetParent();
-					break;
+						postRemoveNotification(oldSplash, nullptr, 0);
+						removeThing(oldSplash, 1);
+						oldSplash->resetParent();
+						break;
+					}
 				}
 			}
 
@@ -1091,17 +1093,20 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 				// remove old field item if exists
 				if (items) {
 					for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
-						auto oldField = (*it)->getMagicField();
-						if (oldField) {
-							if (oldField->isReplaceable()) {
-								postRemoveNotification(oldField, nullptr, 0);
-								removeThing(oldField, 1);
-								oldField->resetParent();
-								break;
-							} else {
-								// This magic field cannot be replaced.
-								item->resetParent();
-								return;
+						std::weak_ptr<Item> weakField = *it;
+						if (const auto oldField = weakField.lock()) {
+							auto magicField = oldField->getMagicField();
+							if (magicField) {
+								if (magicField->isReplaceable()) {
+									postRemoveNotification(magicField, nullptr, 0);
+									removeThing(magicField, 1);
+									magicField->resetParent();
+									break;
+								} else {
+									// This magic field cannot be replaced.
+									item->resetParent();
+									return;
+								}
 							}
 						}
 					}

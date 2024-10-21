@@ -795,7 +795,7 @@ std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 	});
 
 	for (const auto &uuid : sortedUnlockedGemGUIDs) {
-		const auto &gem = PlayerWheelGem::load(gemsKV(), uuid);
+		auto gem = PlayerWheelGem::load(gemsKV(), uuid);
 		if (gem.uuid.empty()) {
 			continue;
 		}

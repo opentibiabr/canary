@@ -154,25 +154,23 @@ bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> rune) {
 	return false;
 }
 
-std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
+std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) const {
 	std::list<uint16_t> spellsList;
-	VocSpellMap vocSpells;
-	std::map<uint16_t, bool>::const_iterator vocSpellsIt;
 
-	for (const auto &it : instants) {
-		vocSpells = it.second->getVocMap();
-		vocSpellsIt = vocSpells.find(vocationId);
+	for (const auto &[name, spell] : instants) {
+		const VocSpellMap &vocSpells = spell->getVocMap();
+		const auto &vocSpellsIt = vocSpells.find(vocationId);
 
 		if (vocSpellsIt != vocSpells.end()
 		    && vocSpellsIt->second) {
-			spellsList.push_back(it.second->getSpellId());
+			spellsList.emplace_back(spell->getSpellId());
 		}
 	}
 
 	return spellsList;
 }
 
-std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) {
+std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) const {
 	std::shared_ptr<Spell> spell = getRuneSpellByName(name);
 	if (!spell) {
 		spell = getInstantSpellByName(name);
@@ -181,36 +179,36 @@ std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) {
 }
 
 std::shared_ptr<RuneSpell> Spells::getRuneSpell(uint16_t id) {
-	auto it = runes.find(id);
-	if (it == runes.end()) {
-		for (auto &rune : runes) {
-			if (rune.second->getRuneItemId() == id) {
-				return rune.second;
-			}
-		}
-		return nullptr;
+	const auto it = runes.find(id);
+	if (it != runes.end()) {
+		return it->second;
 	}
-	return it->second;
-}
 
-std::shared_ptr<RuneSpell> Spells::getRuneSpellByName(const std::string &name) {
-	for (auto &it : runes) {
-		if (strcasecmp(it.second->getName().c_str(), name.c_str()) == 0) {
-			return it.second;
+	return nullptr;
+}
+std::shared_ptr<RuneSpell> Spells::getRuneSpellByName(const std::string &name) const {
+	for (const auto &[runeId, runeSpell] : runes) {
+		if (caseInsensitiveCompare(runeSpell->getName(), name)) {
+			return runeSpell;
 		}
 	}
 	return nullptr;
 }
 
-std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) {
+std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) const {
 	std::shared_ptr<InstantSpell> result = nullptr;
 
-	for (auto &it : instants) {
-		const std::string &instantSpellWords = it.second->getWords();
-		size_t spellLen = instantSpellWords.length();
-		if (strncasecmp(instantSpellWords.c_str(), words.c_str(), spellLen) == 0) {
+	for (const auto &[spellName, instantSpell] : instants) {
+		const std::string &instantSpellWords = instantSpell->getWords();
+		const size_t spellLen = instantSpellWords.length();
+
+		if (words.length() < spellLen) {
+			continue;
+		}
+
+		if (caseInsensitiveCompare(instantSpellWords, words, spellLen)) {
 			if (!result || spellLen > result->getWords().length()) {
-				result = it.second;
+				result = instantSpell;
 				if (words.length() == spellLen) {
 					break;
 				}
@@ -225,30 +223,30 @@ std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) 
 				return nullptr;
 			}
 
-			size_t spellLen = resultWords.length();
-			size_t paramLen = words.length() - spellLen;
+			const size_t spellLen = resultWords.length();
+			const size_t paramLen = words.length() - spellLen;
 			if (paramLen < 2 || words[spellLen] != ' ') {
 				return nullptr;
 			}
 		}
-		return result;
 	}
-	return nullptr;
+
+	return result;
 }
 
-std::shared_ptr<InstantSpell> Spells::getInstantSpellById(uint16_t spellId) {
-	for (auto &it : instants) {
-		if (it.second->getSpellId() == spellId) {
-			return it.second;
+std::shared_ptr<InstantSpell> Spells::getInstantSpellById(uint16_t spellId) const {
+	for (const auto &[spellName, instantSpell] : instants) {
+		if (instantSpell->getSpellId() == spellId) {
+			return instantSpell;
 		}
 	}
 	return nullptr;
 }
 
-std::shared_ptr<InstantSpell> Spells::getInstantSpellByName(const std::string &name) {
-	for (auto &it : instants) {
-		if (strcasecmp(it.second->getName().c_str(), name.c_str()) == 0) {
-			return it.second;
+std::shared_ptr<InstantSpell> Spells::getInstantSpellByName(const std::string &name) const {
+	for (const auto &[spellName, instantSpell] : instants) {
+		if (caseInsensitiveCompare(instantSpell->getName(), name)) {
+			return instantSpell;
 		}
 	}
 	return nullptr;

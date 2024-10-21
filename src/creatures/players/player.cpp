@@ -4117,17 +4117,18 @@ std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uin
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
 	for (const auto &item : getAllInventoryItems(false, true)) {
-		if (!item->hasMarketAttributes()) {
+		const auto itemId = item->getID();
+
+		if (itemId == ITEM_GOLD_POUCH) {
+			countMap[itemId] += item->getItemCount();
 			continue;
 		}
 
-		if (const auto &container = item->getContainer()) {
-			if (container->size() > 0) {
-				continue;
-			}
+		if (!item->hasMarketAttributes() || (const auto &container = item->getContainer()) && !container->empty()) {
+			continue;
 		}
 
-		countMap[item->getID()] += item->getItemCount();
+		countMap[itemId] += item->getItemCount();
 	}
 
 	return countMap;

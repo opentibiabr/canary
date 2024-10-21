@@ -787,12 +787,13 @@ protected:
 	Direction direction = DIRECTION_SOUTH;
 	Skulls_t skull = SKULL_NONE;
 
+	std::atomic_bool creatureCheck = false;
+	std::atomic_bool inCheckCreaturesVector = false;
+
 	bool localMapCache[mapWalkHeight][mapWalkWidth] = { { false } };
 	bool isInternalRemoved = false;
 	bool isMapLoaded = false;
 	bool isUpdatingPath = false;
-	bool creatureCheck = false;
-	bool inCheckCreaturesVector = false;
 	bool skillLoss = true;
 	bool lootDrop = true;
 	bool cancelNextWalk = false;

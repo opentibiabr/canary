@@ -249,3 +249,7 @@ void DispatcherContext::tryAddEvent(std::function<void(void)> &&f, std::string_v
 		f();
 	}
 }
+
+bool DispatcherContext::isOn() {
+	return OTSYS_TIME() != 0;
+}

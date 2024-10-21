@@ -1053,13 +1053,14 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 			if (itemType.isSplash() && items) {
 				// remove old splash if exists
 				for (ItemVector::const_iterator it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
-					const auto &oldSplash = *it;
+					// Need to increment the counter to avoid crash
+					auto oldSplash = *it;
 					if (!Item::items[oldSplash->getID()].isSplash()) {
 						continue;
 					}
 
-					removeThing(oldSplash, 1);
 					postRemoveNotification(oldSplash, nullptr, 0);
+					removeThing(oldSplash, 1);
 					oldSplash->resetParent();
 					break;
 				}
@@ -1090,11 +1091,11 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 				// remove old field item if exists
 				if (items) {
 					for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
-						const auto &oldField = (*it)->getMagicField();
+						auto oldField = (*it)->getMagicField();
 						if (oldField) {
 							if (oldField->isReplaceable()) {
-								removeThing(oldField, 1);
 								postRemoveNotification(oldField, nullptr, 0);
+								removeThing(oldField, 1);
 								oldField->resetParent();
 								break;
 							} else {

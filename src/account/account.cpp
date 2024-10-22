@@ -99,7 +99,6 @@ uint8_t Account::addCoins(CoinType type, const uint32_t &amount, const std::stri
 	}
 
 	auto [coins, result] = getCoins(type);
-
 	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
 		return result;
 	}

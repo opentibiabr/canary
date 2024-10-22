@@ -1002,7 +1002,6 @@ function onUseScythe(player, item, fromPosition, target, toPosition, isHotkey)
 		return false
 	end
 
-
 	return onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
 end
 

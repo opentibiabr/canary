@@ -6663,8 +6663,8 @@ void Player::initializePrey() {
 
 void Player::removePreySlotById(PreySlot_t slotid) {
 	const auto it = std::ranges::remove_if(preys, [slotid](const auto &preyIt) {
-		return preyIt->id == slotid;
-	}).begin();
+						return preyIt->id == slotid;
+					}).begin();
 
 	preys.erase(it, preys.end());
 }

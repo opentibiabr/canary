@@ -51,12 +51,12 @@ void EventsCallbacks::addCallback(const std::shared_ptr<EventCallback> &callback
 
 	for (const auto &entry : callbackList) {
 		if (entry.name == callback->getName() && !callback->skipDuplicationCheck()) {
-			g_logger().info("Event callback already registered: {}", callback->getName());
+			g_logger().trace("Event callback already registered: {}", callback->getName());
 			return;
 		}
 	}
 
-	g_logger().info("Registering event callback: {}", callback->getName());
+	g_logger().trace("Registering event callback: {}", callback->getName());
 	callbackList.emplace_back(EventCallbackEntry { callback->getName(), callback });
 }
 

@@ -9,22 +9,26 @@ local doors = {
 
 local boats = {
 	[1] = {
-		boatPosition = Position(33373, 31309, 7), value = 3,
-	 	toPosition = Position(33382, 31292, 7),
-		message = "A small island emerges out of the mist as you row towards a tiny light inside a dark, forehoding chapel."
+		boatPosition = Position(33373, 31309, 7),
+		value = 3,
+		toPosition = Position(33382, 31292, 7),
+		message = "A small island emerges out of the mist as you row towards a tiny light inside a dark, forehoding chapel.",
 	},
 	[2] = {
-		boatPosition = Position(33382, 31294, 7), value = 3,
+		boatPosition = Position(33382, 31294, 7),
+		value = 3,
 		toPosition = Position(33374, 31310, 7),
-		message = "Your heart lightens as you return from the gloomy isle."
+		message = "Your heart lightens as you return from the gloomy isle.",
 	},
 	[3] = {
-		boatPosition = Position(33344, 31348, 7), value = 3,
-		toPosition = Position(33326, 31352, 7)
+		boatPosition = Position(33344, 31348, 7),
+		value = 3,
+		toPosition = Position(33326, 31352, 7),
 	},
 	[4] = {
-		boatPosition = Position(33328, 31352, 7), value = 3,
-		toPosition = Position(33346, 31348, 7)
+		boatPosition = Position(33328, 31352, 7),
+		value = 3,
+		toPosition = Position(33346, 31348, 7),
 	},
 }
 

@@ -61,33 +61,33 @@ public:
 		return "DEBUG";
 	}
 
-	void info(const std::string &msg) const override {
+	virtual void info(const std::string &msg) const override {
 		logs.push_back({ "info", msg });
 	}
 
-	void warn(const std::string &msg) const override {
+	virtual void warn(const std::string &msg) const override {
 		logs.push_back({ "warn", msg });
 	}
 
-	void error(const std::string &msg) const override {
+	virtual void error(const std::string &msg) const override {
 		logs.push_back({ "error", msg });
 	}
 
-	void critical(const std::string &msg) const override {
+	virtual void critical(const std::string &msg) const override {
 		logs.push_back({ "critical", msg });
 	}
 
 #if defined(DEBUG_LOG)
-	void debug(const std::string &msg) const override {
+	virtual void debug(const std::string &msg) const override {
 		logs.push_back({ "debug", msg });
 	}
 
-	void trace(const std::string &msg) const override {
+	virtual void trace(const std::string &msg) const override {
 		logs.push_back({ "trace", msg });
 	}
 #else
-	void debug(const std::string &) const override { }
-	void trace(const std::string &) const override { }
+	virtual void debug(const std::string &) const override { }
+	virtual void trace(const std::string &) const override { }
 #endif
 	// Helper methods for testing
 	size_t logCount() const {

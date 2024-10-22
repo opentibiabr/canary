@@ -114,7 +114,7 @@ void Combat::getCombatArea(const Position &centerPos, const Position &targetPos,
 	}
 
 	if (area) {
-		area->getList(centerPos, targetPos, list);
+		area->getList(centerPos, targetPos, list, getDirectionTo(targetPos, centerPos));
 	} else {
 		list.emplace_back(g_game().map.getOrCreateTile(targetPos));
 	}
@@ -246,18 +246,14 @@ ReturnValue Combat::canTargetCreature(std::shared_ptr<Player> player, std::share
 
 ReturnValue Combat::canDoCombat(std::shared_ptr<Creature> caster, std::shared_ptr<Tile> tile, bool aggressive) {
 	if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
-		return RETURNVALUE_NOTENOUGHROOM;
+		return RETURNVALUE_CANNOTTHROW;
 	}
 	if (aggressive && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 	}
 
-	if (tile->hasFlag(TILESTATE_FLOORCHANGE)) {
-		return RETURNVALUE_NOTENOUGHROOM;
-	}
-
 	if (tile->getTeleportItem()) {
-		return RETURNVALUE_NOTENOUGHROOM;
+		return RETURNVALUE_CANNOTTHROW;
 	}
 
 	if (caster) {
@@ -1840,7 +1836,9 @@ AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	}
 }
 
-void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list) const {
+void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list, const Direction dir) const {
+	auto casterPos = getNextPosition(dir, targetPos);
+
 	const std::unique_ptr<MatrixArea> &area = getArea(centerPos, targetPos);
 	if (!area) {
 		return;
@@ -1857,10 +1855,8 @@ void AreaCombat::getList(const Position &centerPos, const Position &targetPos, s
 	Position tmpPos(targetPos.x - centerX, targetPos.y - centerY, targetPos.z);
 	for (uint32_t y = 0; y < rows; ++y, ++tmpPos.y, tmpPos.x -= cols) {
 		for (uint32_t x = 0; x < cols; ++x, ++tmpPos.x) {
-			if (area->getValue(y, x) != 0) {
-				if (g_game().isSightClear(targetPos, tmpPos, true)) {
-					list.emplace_back(g_game().map.getOrCreateTile(tmpPos));
-				}
+			if (area->getValue(y, x) != 0 && g_game().isSightClear(casterPos, tmpPos, true)) {
+				list.emplace_back(g_game().map.getOrCreateTile(tmpPos));
 			}
 		}
 	}

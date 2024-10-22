@@ -4116,23 +4116,23 @@ std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uin
 }
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
-    for (const auto &item : getAllInventoryItems(false, true)) {
-        if (item->getID() != ITEM_GOLD_POUCH) {
-            if (!item->hasMarketAttributes()) {
-                continue;
-            }
-            
-            if (const auto &container = item->getContainer()) {
-                if (!container->empty()) {
-                    continue;
-                }
-            }
-        }
+	for (const auto &item : getAllInventoryItems(false, true)) {
+		if (item->getID() != ITEM_GOLD_POUCH) {
+			if (!item->hasMarketAttributes()) {
+				continue;
+			}
 
-        countMap[item->getID()] += item->getItemCount();
-    }
+			if (const auto &container = item->getContainer()) {
+				if (!container->empty()) {
+					continue;
+				}
+			}
+		}
 
-    return countMap;
+		countMap[item->getID()] += item->getItemCount();
+	}
+
+	return countMap;
 }
 
 void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t> &countMap) const {

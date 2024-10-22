@@ -19,8 +19,8 @@ function movements_isle_color_puzzle.onStepIn(creature, item, position, fromPosi
 		if boatStage <= 1 then
 			if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Hawser) == 1 then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You use the hawser to lash up the loose planks. The raft should be seaworthy now.")
-				if player:getItemCount(33209) >= 1 then
-					player:removeItem(33209, 1)
+				if player:getItemCount(28707) >= 1 then
+					player:removeItem(28707, 1)
 				end
 				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.BoatStages, 2)
 			else
@@ -30,7 +30,7 @@ function movements_isle_color_puzzle.onStepIn(creature, item, position, fromPosi
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Witout any points of orientation you will never find your way back. Try to find a way to improve your navigation.")
 		elseif boatStage == 3 then
 			player:teleportTo(Position(32187, 32473, 7))
-			if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline) ~= 3 then
+			if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline) < 3 then
 				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, 3)
 			end
 		end

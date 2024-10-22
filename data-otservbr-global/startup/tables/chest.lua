@@ -2740,6 +2740,41 @@ ChestUnique = {
 		weight = 20.00,
 		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.BlackSkull,
 	},
+	[6326] = {
+		itemId = 28828,
+		itemPos = { x = 32013, y = 32447, z = 8 },
+		reward = { { 28650, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Parchment,
+	},
+	[6327] = {
+		itemId = 2523,
+		itemPos = { x = 32096, y = 31757, z = 8 },
+		reward = { { 675, 2 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Sapphire,
+	},
+	[6328] = {
+		itemId = 4242,
+		itemPos = { x = 32460, y = 32934, z = 8 },
+		reward = { { 3483, 1 } },
+		weight = 9.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Fishing,
+	},
+	[6329] = {
+		itemId = 6560,
+		itemPos = { x = 32460, y = 32940, z = 7 },
+		reward = { { 3457, 1 } },
+		weight = 35.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Shovel,
+	},
+	[6330] = {
+		itemId = 5951,
+		itemPos = {x = 32025, y = 32469, z = 7},
+		reward = { { 28707, 1 } },
+		weight = 6.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Hawser,
+	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest
 	-- Treasure chests (data\scripts\actions\quests\first_dragon\treasure_chests.lua)

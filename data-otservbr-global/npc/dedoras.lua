@@ -159,8 +159,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, 1)
 		end
 	elseif MsgContains(message, "isle") then
-		npcHandler:say("Talk to Captain Charles in Port Hope. He told me that he once ran ashore on a small island where he discovered a small ruin. The architecture was like nothing he had seen before.", npc, creature)
-		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, 1)
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline) == 3 then
+			npcHandler:say("Thank you so much for your efforts to provide this valuable piece of the puzzle!", npc, creature)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, currentStorage + 1)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, 4)
+		elseif player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline) < 1 then
+			npcHandler:say("Talk to Captain Charles in Port Hope. He told me that he once ran ashore on a small island where he discovered a small ruin. The architecture was like nothing he had seen before.", npc, creature)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, 1)
+		end
 	elseif MsgContains(message, "progress") then
 		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission) < 6 then
 			npcHandler:say({

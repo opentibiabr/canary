@@ -6543,11 +6543,12 @@ if not Quests then
 					storageId = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline,
 					missionId = 10451,
 					startValue = 1,
-					endValue = 3,
+					endValue = 4,
 					states = {
 						[1] = "Dedoras asked for you to talk to Charles, he knows about a small island.",
 						[2] = "You got stucked on this island. You must discover how to leave.",
 						[3] = "You successfully built a raft and used the starts to navigate your way through the waves. At least you found something of interest on the deserted island.",
+						[4] = "Congratulations you completed this mission.",
 					},
 				},
 				[2] = {

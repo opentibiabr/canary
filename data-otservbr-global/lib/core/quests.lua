@@ -6588,10 +6588,11 @@ if not Quests then
 					storageId = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline,
 					missionId = 10454,
 					startValue = 1,
-					endValue = 2,
+					endValue = 3,
 					states = {
 						[1] = "It is said that an ancient order of knights once resided in Edron. The knights disappeared a long time ago but their abandoned outpost is still there. The place may yet hold some surprises.",
 						[2] = "You defeated Grand Master Oberon in mortal combat. The Falcon Order may have lost its glory a long time ago but you are just getting started.",
+						[3] = "Congratulations you completed this mission.",
 					},
 				},
 				[5] = {

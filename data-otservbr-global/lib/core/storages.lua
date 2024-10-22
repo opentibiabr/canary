@@ -2616,6 +2616,15 @@ Storage = {
 					OberonHeal = 46019,
 					LastBossMsgInterval = 46020,
 					OberonSay = 46021,
+					ChestsTimer = {
+						Coast = 46022,
+						Island = 46023,
+						ThroneHall = 46024,
+						Shortcut = 46026,
+						LowerBastion = 46027,
+						UndergroundBastion = 46028,
+						Key0909 = 46029,
+					},
 				},
 				Darashia = {
 					Questline = 46022,

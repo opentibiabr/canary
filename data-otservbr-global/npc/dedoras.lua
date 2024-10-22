@@ -91,6 +91,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
+	local currentStorage = player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission)
+	if currentStorage < 0 then
+		currentStorage = 0
+	end
+
 	if MsgContains(message, "search") then
 		npcHandler:say({
 			"I gathered some lore on my own, but I desperately need more information that you might provide me. ...",
@@ -102,10 +107,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				"This is ...",
 				"An astonishing find to say the least! I'm certain it will help the efforts of accessing the library a lot!",
 			}, npc, creature)
-			local currentStorage = player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission)
-			if currentStorage < 0 then
-				currentStorage = 0
-			end
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, currentStorage + 1)
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, 8)
 		elseif player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline) < 1 then
@@ -118,10 +119,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "fishmen") then
 		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline) == 7 then
 			npcHandler:say("You brought incredible news. This book proves an invaluable clue!", npc, creature)
-			local currentStorage = player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission)
-			if currentStorage < 0 then
-				currentStorage = 0
-			end
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, currentStorage + 1)
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, 8)
 		elseif player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline) < 1 then
@@ -132,18 +129,20 @@ local function creatureSayCallback(npc, creature, type, message)
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, 1)
 		end
 	elseif MsgContains(message, "order") then
-		npcHandler:say({
-			"Our world has seen many noble knights and orders throughout the centuries. Most of them vanished a long time ago but only few under such mysterious circumstances as the Order of the Falcon. ...",
-			"This noble alliance of honourable knights once resided in Edron to serve the king. Legend has it they vanished practically over night. Rumor has it their disappearance is connected to a forbidden book.",
-		}, npc, creature)
-		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline, 1)
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline) == 2 then
+			npcHandler:say("You brought incredible news. This book proves an invaluable clue!", npc, creature)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, currentStorage + 1)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline, 3)
+		elseif player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline) < 1 then
+			npcHandler:say({
+				"Our world has seen many noble knights and orders throughout the centuries. Most of them vanished a long time ago but only few under such mysterious circumstances as the Order of the Falcon. ...",
+				"This noble alliance of honourable knights once resided in Edron to serve the king. Legend has it they vanished practically over night. Rumor has it their disappearance is connected to a forbidden book.",
+			}, npc, creature)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline, 1)
+		end
 	elseif MsgContains(message, "asuri") then
 		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline) == 6 then
 			npcHandler:say("This is incredible! Thank you so much for digging out that hint!", npc, creature)
-			local currentStorage = player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission)
-			if currentStorage < 0 then
-				currentStorage = 0
-			end
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, currentStorage + 1)
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, 7)
 		elseif player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline) < 1 then
@@ -152,7 +151,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				"A lucky survivor told me about a portal at the very top of the palace that may lead to another asuri hideout.",
 			}, npc, creature)
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, 1)
-			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Asuras.FlammingOrchid, 1)
 		end
 	elseif MsgContains(message, "isle") then
 		npcHandler:say("Talk to Captain Charles in Port Hope. He told me that he once ran ashore on a small island where he discovered a small ruin. The architecture was like nothing he had seen before.", npc, creature)

@@ -1,6 +1,6 @@
 local config = {
 	entrance = Position(33310, 31325, 8),
-	exit = Position(33330, 31334, 9),
+	exit = Position(33329, 31333, 9),
 }
 
 local movements_falcon_bossEntrance = MoveEvent()
@@ -29,7 +29,7 @@ function movements_falcon_bossEntrance.onStepIn(creature, item, position, fromPo
 		local blockedPositions = {
 			Position(33328, 31352, 7),
 			Position(33373, 31309, 7),
-			Position(33381, 31294, 7),
+			Position(33382, 31294, 7),
 			Position(33344, 31348, 7),
 		}
 		if creature then
@@ -37,7 +37,7 @@ function movements_falcon_bossEntrance.onStepIn(creature, item, position, fromPo
 				return true
 			else
 				if creature:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.OberonTimer) <= os.time() then
-					creature:teleportTo(Position(33359, 31340, 9), true)
+					creature:teleportTo(Position(33363, 31341, 9), true)
 				else
 					creature:teleportTo(fromPosition, true)
 					creature:sendCancelMessage("You are still exhausted from your last battle.")

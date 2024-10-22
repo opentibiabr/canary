@@ -29,6 +29,12 @@ LeverAction = {
 			{ x = 33218, y = 32096, z = 10 },
 		},
 	},
+	[4922] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 33364, y = 31343, z = 9 },
+		},
+	},
 	-- Cults of Tibia Quest
 	[5500] = {
 		itemId = 8911,

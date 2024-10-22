@@ -1,15 +1,31 @@
 local doors = {
-	[1] = { doorPosition = Position(33376, 31323, 2), value = -1 },
-	[2] = { doorPosition = Position(33376, 31335, 3), value = 1 },
+	[1] = { doorPosition = Position(33376, 31335, 3), value = 1 },
+	[2] = { doorPosition = Position(33371, 31349, 4), value = 2 },
 	[3] = { doorPosition = Position(33376, 31349, 4), value = 2 },
-	[4] = { doorPosition = Position(33363, 31346, 7), value = 4 },
+	[4] = { doorPosition = Position(33375, 31346, 5), value = 2 },
+	[5] = { doorPosition = Position(33363, 31346, 7), value = 4 },
+	[6] = { doorPosition = Position(33366, 31343, 7), value = 4 },
 }
 
 local boats = {
-	[1] = { boatPosition = Position(33373, 31309, 7), value = 3, toPosition = Position(33382, 31292, 7), message = "A small island emerges out of the mist as you row towards a tiny light inside a dark, forehoding chapel." },
-	[2] = { boatPosition = Position(33381, 31294, 7), value = 3, toPosition = Position(33374, 31309, 7), message = "Your heart lightens as you return from the gloomy isle." },
-	[3] = { boatPosition = Position(33344, 31348, 7), value = 3, toPosition = Position(33326, 31352, 7) },
-	[4] = { boatPosition = Position(33328, 31352, 7), value = 3, toPosition = Position(33346, 31348, 7) },
+	[1] = {
+		boatPosition = Position(33373, 31309, 7), value = 3,
+	 	toPosition = Position(33382, 31292, 7),
+		message = "A small island emerges out of the mist as you row towards a tiny light inside a dark, forehoding chapel."
+	},
+	[2] = {
+		boatPosition = Position(33382, 31294, 7), value = 3,
+		toPosition = Position(33374, 31310, 7),
+		message = "Your heart lightens as you return from the gloomy isle."
+	},
+	[3] = {
+		boatPosition = Position(33344, 31348, 7), value = 3,
+		toPosition = Position(33326, 31352, 7)
+	},
+	[4] = {
+		boatPosition = Position(33328, 31352, 7), value = 3,
+		toPosition = Position(33346, 31348, 7)
+	},
 }
 
 local actions_falcon_doors = Action()

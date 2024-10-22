@@ -105,10 +105,10 @@ local function spawnSummons(k, monsterName, eventName, timing, positionTable, mi
 end
 
 local leverInfo = {
-	[1] = { bossName = "Mazzinor", storage = Storage.Quest.U11_80.TheSecretLibrary.Library.MazzinorTime, exit = Position(32616, 32532, 13), position = Position(32720, 32773, 10), type = "x", bossPosition = Position(32724, 32720, 10), teleportTo = Position(32724, 32726, 10), fromPosition = Position(32715, 32712, 10), toPosition = Position(32733, 32729, 10) },
-	[2] = { bossName = "Lokathmor", storage = Storage.Quest.U11_80.TheSecretLibrary.Library.LokathmorTime, exit = Position(32467, 32654, 12), position = Position(32720, 32749, 10), type = "x", bossPosition = Position(32751, 32689, 10), teleportTo = Position(32750, 32694, 10), fromPosition = Position(32741, 32680, 10), toPosition = Position(32759, 32697, 10) },
-	[3] = { bossName = "Ghulosh", storage = Storage.Quest.U11_80.TheSecretLibrary.Library.GhuloshTime, exit = Position(32659, 32713, 13), position = Position(32746, 32773, 10), type = "x", bossPosition = Position(32756, 32721, 10), teleportTo = Position(32755, 32727, 10), fromPosition = Position(32745, 32711, 10), toPosition = Position(32768, 32730, 10) },
-	[4] = { bossName = "Gorzindel", storage = Storage.Quest.U11_80.TheSecretLibrary.Library.GorzindelTime, exit = Position(32660, 32734, 12), position = Position(32746, 32749, 10), type = "x", bossPosition = Position(32685, 32717, 10), teleportTo = Position(32687, 32724, 10), fromPosition = Position(32671, 32703, 10), toPosition = Position(32702, 32734, 10) },
+	[1] = { bossName = "Mazzinor", storage = Storage.Quest.U11_80.TheSecretLibrary.Library.MazzinorTimer, exit = Position(32616, 32532, 13), position = Position(32720, 32773, 10), type = "x", bossPosition = Position(32724, 32720, 10), teleportTo = Position(32724, 32726, 10), fromPosition = Position(32715, 32712, 10), toPosition = Position(32733, 32729, 10) },
+	[2] = { bossName = "Lokathmor", storage = Storage.Quest.U11_80.TheSecretLibrary.Library.LokathmorTimer, exit = Position(32467, 32654, 12), position = Position(32720, 32749, 10), type = "x", bossPosition = Position(32751, 32689, 10), teleportTo = Position(32750, 32694, 10), fromPosition = Position(32741, 32680, 10), toPosition = Position(32759, 32697, 10) },
+	[3] = { bossName = "Ghulosh", storage = Storage.Quest.U11_80.TheSecretLibrary.Library.GhuloshTimer, exit = Position(32659, 32713, 13), position = Position(32746, 32773, 10), type = "x", bossPosition = Position(32756, 32721, 10), teleportTo = Position(32755, 32727, 10), fromPosition = Position(32745, 32711, 10), toPosition = Position(32768, 32730, 10) },
+	[4] = { bossName = "Gorzindel", storage = Storage.Quest.U11_80.TheSecretLibrary.Library.GorzindelTimer, exit = Position(32660, 32734, 12), position = Position(32746, 32749, 10), type = "x", bossPosition = Position(32685, 32717, 10), teleportTo = Position(32687, 32724, 10), fromPosition = Position(32671, 32703, 10), toPosition = Position(32702, 32734, 10) },
 }
 
 local actions_library_bossesLever = Action()
@@ -118,7 +118,7 @@ function actions_library_bossesLever.onUse(player, item, fromPosition, itemEx, t
 
 	for _, lever in pairs(leverInfo) do
 		if toPosition == lever.position then
-			if doCheckBossRoom(player:getId(), lever.bossName, lever.fromPosition, lever.toPosition) then
+			if player:doCheckBossRoom(lever.bossName, lever.fromPosition, lever.toPosition) then
 				if lever.type == "x" then
 					local startPos = lever.position.x + 1
 					for x = startPos, startPos + 4 do

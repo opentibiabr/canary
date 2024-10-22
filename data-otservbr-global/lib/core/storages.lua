@@ -2698,9 +2698,9 @@ Storage = {
 				Library = {
 					Questline = 46080,
 					MazzinorTimer = 46081,
-					LokathmorTime = 46082,
-					GhuloshTime = 46083,
-					GorzindelTime = 46084,
+					LokathmorTimer = 46082,
+					GhuloshTimer = 46083,
+					GorzindelTimer = 46084,
 					Ghulosh = 46085,
 				},
 			},

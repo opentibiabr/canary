@@ -1062,11 +1062,11 @@ void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathPa
 }
 
 void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
-	if (!hasAsyncTaskFlag(PATHFINDER) && onComplete) {
+	if (!hasAsyncTaskFlag(Pathfinder) && onComplete) {
 		g_dispatcher().context().addEvent(std::move(onComplete), "goToFollowCreature_async");
 	}
 
-	setAsyncTaskFlag(PATHFINDER, true);
+	setAsyncTaskFlag(Pathfinder, true);
 }
 
 void Creature::goToFollowCreature() {
@@ -1912,11 +1912,11 @@ void Creature::iconChanged() {
 }
 
 void Creature::sendAsyncTasks() {
-	if (hasAsyncTaskFlag(ASYNC_TASK_RUNNING)) {
+	if (hasAsyncTaskFlag(AsyncTaskRunning)) {
 		return;
 	}
 
-	setAsyncTaskFlag(ASYNC_TASK_RUNNING, true);
+	setAsyncTaskFlag(AsyncTaskRunning, true);
 	g_dispatcher().asyncEvent([self = std::weak_ptr<Creature>(getCreature())] {
 		if (const auto &creature = self.lock()) {
 			if (!creature->isRemoved()) {
@@ -1924,7 +1924,7 @@ void Creature::sendAsyncTasks() {
 					task();
 				}
 
-				if (creature->hasAsyncTaskFlag(PATHFINDER)) {
+				if (creature->hasAsyncTaskFlag(Pathfinder)) {
 					creature->goToFollowCreature();
 				}
 

@@ -329,9 +329,9 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 					// we have no target lets try pick this one
 					g_dispatcher().addEvent([selfWeak = std::weak_ptr(getMonster()), creatureWeak = std::weak_ptr(creature)] {
 						const auto &self = selfWeak.lock();
-						const auto &creature = creatureWeak.lock();
-						if (self && creature) {
-							self->selectTarget(creature);
+						const auto &creaturePtr = creatureWeak.lock();
+						if (self && creaturePtr) {
+							self->selectTarget(creaturePtr);
 						}
 					},
 					                        "Monster::onCreatureMove");
@@ -494,7 +494,7 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 
 void Monster::updateTargetList() {
 	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
-		setAsyncTaskFlag(UPDATE_TARGET_LIST, true);
+		setAsyncTaskFlag(UpdateTargetList, true);
 		return;
 	}
 
@@ -845,7 +845,7 @@ void Monster::setIdle(bool idle) {
 
 void Monster::updateIdleStatus() {
 	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
-		setAsyncTaskFlag(UPDATE_IDDLE_STATUS, true);
+		setAsyncTaskFlag(UpdateIdleStatus, true);
 		return;
 	}
 
@@ -2362,11 +2362,11 @@ std::vector<std::pair<int8_t, int8_t>> Monster::getPushItemLocationOptions(const
 }
 
 void Monster::onExecuteAsyncTasks() {
-	if (hasAsyncTaskFlag(UPDATE_TARGET_LIST)) {
+	if (hasAsyncTaskFlag(UpdateTargetList)) {
 		updateTargetList();
 	}
 
-	if (hasAsyncTaskFlag(UPDATE_IDDLE_STATUS)) {
+	if (hasAsyncTaskFlag(UpdateIdleStatus)) {
 		updateIdleStatus();
 	}
 }

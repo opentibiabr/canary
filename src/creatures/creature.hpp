@@ -707,11 +707,11 @@ public:
 	}
 
 protected:
-	enum FLAG_ASYNC_TASKS : uint8_t {
-		ASYNC_TASK_RUNNING = 1 << 0,
-		UPDATE_TARGET_LIST = 1 << 1,
-		UPDATE_IDDLE_STATUS = 1 << 2,
-		PATHFINDER = 1 << 3
+	enum FlagAsyncClass_t : uint8_t {
+		AsyncTaskRunning = 1 << 0,
+		UpdateTargetList = 1 << 1,
+		UpdateIdleStatus = 1 << 2,
+		Pathfinder = 1 << 3
 	};
 
 	virtual bool useCacheMap() const {
@@ -848,11 +848,11 @@ protected:
 		sendAsyncTasks();
 	}
 
-	bool hasAsyncTaskFlag(FLAG_ASYNC_TASKS prop) const {
+	bool hasAsyncTaskFlag(FlagAsyncClass_t prop) const {
 		return (m_flagAsyncTask & prop);
 	}
 
-	void setAsyncTaskFlag(FLAG_ASYNC_TASKS taskFlag, bool v) {
+	void setAsyncTaskFlag(FlagAsyncClass_t taskFlag, bool v) {
 		if (v) {
 			m_flagAsyncTask |= taskFlag;
 			sendAsyncTasks();

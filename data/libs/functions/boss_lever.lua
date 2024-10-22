@@ -203,7 +203,7 @@ function BossLever:onUse(player)
 					local currentTime = os.time()
 					if lastEncounter and currentTime < lastEncounter then
 						local timeLeft = lastEncounter - currentTime
-						local timeMessage = getTimeInWords(timeLeft) .. " to face " .. self.name .. " again!"
+						local timeMessage = Game.getTimeInWords(timeLeft) .. " to face " .. self.name .. " again!"
 						local message = "You have to wait " .. timeMessage
 
 						if currentPlayer ~= player then

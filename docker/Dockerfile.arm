@@ -9,11 +9,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
 	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
-COPY vcpkg.json /opt
+COPY vcpkg.json /opt/
 
-RUN git clone https://github.com/Microsoft/vcpkg.git 
+RUN if [ ! -d "vcpkg" ]; then \
+		git clone https://github.com/Microsoft/vcpkg.git; \
+	fi
 
 WORKDIR /opt/vcpkg
+
 RUN vcpkgCommitId=$(grep '.builtin-baseline' /opt/vcpkg.json | awk -F: '{print $2}' | tr -d '," ') \
 	&& echo "vcpkg commit ID: $vcpkgCommitId" \
 	&& git checkout $vcpkgCommitId \

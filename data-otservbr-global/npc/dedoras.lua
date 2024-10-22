@@ -195,6 +195,35 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	end
 
+	if MsgContains(message, "addon") and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission) == 7 then
+		npcHandler:say("Are you interested in one or two addons to your battle mage outfit?", npc, creature)
+		npcHandler:setTopic(playerId, 1)
+	elseif MsgContains(message, "book") and npcHandler:getTopic(playerId) == 3 then
+		if player:getStorageValue(Storage.Quest.U11_80.BattleMageOutfits.Addon1) < 1 and player:getItemCount(28792) > 5 then
+			player:removeItem(28792, 5)
+			player:addOutfit(1069, 1)
+			player:addOutfit(1070, 1)
+			npcHandler:say("Very good! You gained the first addon to the battle mage outfit.", npc, creature)
+			startMission(player:getId(), Storage.Quest.U11_80.BattleMageOutfits.Addon1, 1)
+			npcHandler:setTopic(playerId, 0)
+		elseif player:getStorageValue(Storage.Quest.U11_80.BattleMageOutfits.Addon2) < 1 and player:getItemCount(28793) > 20 then
+			player:removeItem(28793, 20)
+			player:addOutfit(1069, 2)
+			player:addOutfit(1070, 2)
+			npcHandler:say("Very good! You gained the second addon to the battle mage outfit.", npc, creature)
+			startMission(player:getId(), Storage.Quest.U11_80.BattleMageOutfits.Addon2, 1)
+			npcHandler:setTopic(playerId, 0)
+		end
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 1 then
+			npcHandler:say("I provide two addons. For the first one I need you to bring me five sturdy books. For the second addon you need twenty epaulettes. Do you want one of these addons?", npc, creature)
+			npcHandler:setTopic(playerId, 2)
+		elseif npcHandler:getTopic(playerId) == 2 then
+			npcHandler:say("What do you have for me: the sturdy books or the epaulettes?", npc, creature)
+			npcHandler:setTopic(playerId, 3)
+		end
+	end
+
 	return true
 end
 

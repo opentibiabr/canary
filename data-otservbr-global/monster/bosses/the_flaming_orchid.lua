@@ -68,7 +68,7 @@ monster.voices = {
 monster.loot = {
 	{ name = "gold coin", chance = 100000, maxCount = 250 },
 	{ name = "platinum coin", chance = 9240, maxCount = 10 },
-	{ name = "red gem", chance = 18200 },
+	{ id = 3039, chance = 18200 }, -- red gem
 	{ name = "gold ingot", chance = 29700, maxCount = 5 },
 	{ name = "assassin star", chance = 29700, maxCount = 13 },
 	{ name = "demonic essence", chance = 330 },
@@ -88,17 +88,17 @@ monster.loot = {
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -25 },
-	{ name = "death", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300, shootEffect = CONST_ANI_DEATH },
+	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -700, range = 7, effect = CONST_ANI_DEATH, target = true },
 	{ name = "Ignite", interval = 2000, chance = 20, range = 7, radius = 1, target = true, shootEffect = CONST_ANI_FIRE },
 	{ name = "big death wave", interval = 4000, chance = 18, minDamage = 0, maxDamage = -500 }, -- review later
 	{ name = "aggressivelavawave", interval = 5000, chance = 19, minDamage = 0, maxDamage = -200 }, -- review later
-	{ name = "fire", interval = 6000, chance = 20, range = 5, radius = 7, target = true, minDamage = -100, maxDamage = -250, areaEffect = CONST_ME_FIREAREA },
+	{ name = "combat", interval = 6000, chance = 20, type = COMBAT_FIREDAMAGE, range = 5, radius = 7, target = true, minDamage = -100, maxDamage = -250, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 55,
 	armor = 55,
-	{ name = "healing", interval = 2000, chance = 15, minDamage = 50, maxDamage = 280, areaEffect = CONST_ME_MAGIC_BLUE },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 280, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, duration = 5000, areaEffect = CONST_ME_MAGIC_RED },
 	{ name = "invisible", interval = 1000, chance = 100, duration = 10000, areaEffect = CONST_ME_MAGIC_BLUE },
 }

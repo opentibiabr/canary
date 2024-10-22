@@ -114,11 +114,11 @@ function movements_desert_teleportTo.onStepIn(creature, item, position, fromPosi
 							end
 						end, 5 * 1000 * 60, player:getId())
 						addEvent(function(cid)
-                            local p = Player(cid)
-                            if p then
-                                p:setStorageValue(scorpionTimer, os.time() + 20 * 60 * 60)
-                            end
-                        end, 1000, player:getId())
+							local p = Player(cid)
+							if p then
+								p:setStorageValue(scorpionTimer, os.time() + 20 * 60 * 60)
+							end
+						end, 1000, player:getId())
 					else
 						player:sendCancelMessage("You are still exhausted from your last battle.")
 						player:teleportTo(fromPosition, true)

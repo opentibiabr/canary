@@ -51,12 +51,12 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local quests = {
-	[1] = { stg = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, value = 3 },
-	[2] = { stg = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, value = 7 },
-	[3] = { stg = Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, value = 6 },
-	[4] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline, value = 2 },
-	[5] = { stg = Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline, value = 8 },
-	[6] = { stg = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, value = 7 },
+	[1] = { stg = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline, value = 4 },
+	[2] = { stg = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, value = 8 },
+	[3] = { stg = Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, value = 7 },
+	[4] = { stg = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline, value = 3 },
+	[5] = { stg = Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline, value = 9 },
+	[6] = { stg = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, value = 8 },
 }
 
 local function startMission(pid, storage, value)
@@ -174,22 +174,24 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Or shall me {check} how much information we acquired?",
 			}, npc, creature)
 		end
-	elseif npcHandler:getTopic(playerId) == 3 then
-		if MsgContains(message, "check") then
-			if isQuestDone(player:getId()) then
-				npcHandler:say({
-					"As I told you: To enter the veiled library, travel to the white raven monastery on the Isle of Kings and enter its main altar room. ...",
-					"There, use an ordinary scythe on the right of the two monuments, while concentrating on this glyph here and chant the words: Chamek Athra Thull Zathroth ...",
-					"Hurry now my friend. Time is of essence!",
-				}, npc, creature)
-				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, 1)
-				player:addAchievement("Battle Mage")
-				player:addOutfit(1069, 1)
-				player:addOutfit(1070, 1)
-				npcHandler:setTopic(playerId, 1)
-			else
-				npcHandler:say("You're still searching for informations.", npc, creature)
-			end
+	elseif MsgContains(message, "check") then
+		if isQuestDone(player:getId()) and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission) == 6 then
+			npcHandler:say({
+				"Marvellous! With this information combined we have all that's needed! ...",
+				"So let me see. ...",
+				"Hmm, interesting. And we shouldn't forget about the chant! Yes, excellent! ...",
+				"So listen: To enter the veiled library, travel to the white raven monastery on the Isle of Kings and enter its main altar room. ...",
+				"There, use an ordinary scythe on the right of the two monuments, while concentrating on this glyph here and chant the words: Chamek Athra Thull Zathroth ...",
+				"Oh, and one other thing. For your efforts I want to reward you with one of my old outfits, back from my adventuring days. May it suit you well! ...",
+				"Hurry now my friend. Time is of essence!",
+			}, npc, creature)
+			player:addOutfit(1069, 0)
+			player:addOutfit(1070, 0)
+			player:addAchievement("Battle Mage")
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, 7)
+			npcHandler:setTopic(playerId, 0)
+		else
+			npcHandler:say("You're still searching for informations.", npc, creature)
 		end
 	end
 

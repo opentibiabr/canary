@@ -990,12 +990,19 @@ function onUseScythe(player, item, fromPosition, target, toPosition, isHotkey)
 		target:decay()
 		Game.createItem(30975, 1, toPosition)
 		return true
-		-- The secret library
+	-- The Secret Library Quest
 	elseif toPosition == Position(32177, 31925, 7) then
-		player:teleportTo({ x = 32515, y = 32535, z = 12 })
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission) == 7 then
+			player:teleportTo({ x = 32515, y = 32535, z = 12 })
+			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		else
+			Position(32177, 31925, 7):sendMagicEffect(CONST_ME_POFF)
+		end
 	else
 		return false
 	end
+
+
 	return onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
 end
 

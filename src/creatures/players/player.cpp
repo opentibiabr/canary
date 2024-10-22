@@ -66,8 +66,10 @@ Player::~Player() {
 	}
 
 	for (const auto &it : depotLockerMap) {
-		it.second->removeInbox(inbox);
-		it.second->stopDecaying();
+		if (it.second) {
+			it.second->removeInbox(inbox);
+			it.second->stopDecaying();
+		}
 	}
 
 	inbox->stopDecaying();

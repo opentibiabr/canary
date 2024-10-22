@@ -104,7 +104,6 @@ function movements_desert_teleportTo.onStepIn(creature, item, position, fromPosi
 			if position == lastTeleport then
 				if resetRoom(scorpionPosition, bossName) then
 					if player:getStorageValue(scorpionTimer) < os.time() then
-						player:setStorageValue(scorpionTimer, os.time() + 20 * 60 * 60)
 						startBattle(player:getId(), Position(32958, 32309, 8), bossName, scorpionPosition)
 						addEvent(function(cid)
 							local p = Player(cid)
@@ -114,6 +113,12 @@ function movements_desert_teleportTo.onStepIn(creature, item, position, fromPosi
 								end
 							end
 						end, 5 * 1000 * 60, player:getId())
+						addEvent(function(cid)
+                            local p = Player(cid)
+                            if p then
+                                p:setStorageValue(scorpionTimer, os.time() + 20 * 60 * 60)
+                            end
+                        end, 1000, player:getId())
 					else
 						player:sendCancelMessage("You are still exhausted from your last battle.")
 						player:teleportTo(fromPosition, true)
@@ -142,20 +147,25 @@ function movements_desert_teleportTo.onStepIn(creature, item, position, fromPosi
 				end
 			end
 		elseif item.actionid == 4931 then
-			for _, k in pairs(puzzle) do
-				if position == k.position then
-					if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm) < #puzzle then
-						if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm) == k.value then
-							player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm, player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm) + 1)
+			local tileItem = Tile(position):getItemById(item.itemid)
+			if tileItem and (tileItem:getId() == 231 or tileItem:getId() == 28318 or tileItem:getId() == 28319 or tileItem:getId() == 28320 or tileItem:getId() == 28322 or tileItem:getId() == 28323) then
+				for _, k in pairs(puzzle) do
+					if position == k.position then
+						local currentStep = player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm)
+						if currentStep == -1 then
+							currentStep = 0
+						end
+						if currentStep == k.value - 1 then
+							player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm, currentStep + 1)
 							player:getPosition():sendMagicEffect(CONST_ME_SOUND_WHITE)
+
+							if currentStep + 1 == #puzzle then
+								player:say("Access granted!", TALKTYPE_MONSTER_SAY)
+							end
 						else
-							player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm, 1)
+							player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm, 0)
 							player:getPosition():sendMagicEffect(CONST_ME_SOUND_RED)
 						end
-					elseif player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm) == #puzzle then
-						player:say("Access granted!", TALKTYPE_MONSTER_SAY)
-						player:getPosition():sendMagicEffect(CONST_ME_SOUND_WHITE)
-						player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm, player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.PuzzleSqm) + 1)
 					end
 				end
 			end

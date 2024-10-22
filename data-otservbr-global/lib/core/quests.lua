@@ -6600,7 +6600,7 @@ if not Quests then
 					storageId = Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline,
 					missionId = 10455,
 					startValue = 1,
-					endValue = 8,
+					endValue = 9,
 					states = {
 						[1] = "Go to Darashia and find out about the mysterious statue.",
 						[2] = "After you have been swallowed by a sand vortex you have entered a hidden desert area. A voice of unknown origin has informed you that you will have to face some challenges.",
@@ -6610,6 +6610,7 @@ if not Quests then
 						[6] = "Part VI",
 						[7] = "Part VII",
 						[8] = "You have found a book page in a chest. It seems to contain very useful information, but you are not capable to read it. At this point you have to speak with an expert.",
+						[9] = "Congratulations you completed this mission.",
 					},
 				},
 				[6] = {

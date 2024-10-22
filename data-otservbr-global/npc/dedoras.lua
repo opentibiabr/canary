@@ -114,8 +114,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline, 1)
 		end
 	elseif MsgContains(message, "desert") then
-		npcHandler:say("There are rumors of a mysterious statue in the desert next to Darashia. Nobody really knows the meaning of it.", npc, creature)
-		startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline, 1)
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline) == 8 then
+			npcHandler:say("That's simply a scientific sensation. It will provide me with lots of much needed knowledge!", npc, creature)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission, currentStorage + 1)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline, 9)
+		elseif player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline) < 1 then
+			npcHandler:say("There are rumors of a mysterious statue in the desert next to Darashia. Nobody really knows the meaning of it.", npc, creature)
+			startMission(player:getId(), Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline, 1)
+		end
 	elseif MsgContains(message, "fishmen") then
 		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline) == 7 then
 			npcHandler:say("You brought incredible news. This book proves an invaluable clue!", npc, creature)

@@ -781,8 +781,8 @@ ItemAction = {
 	[4937] = {
 		itemId = false,
 		itemPos = {
-			{x = 32034, y = 32456, z = 7},
-			{x = 32034, y = 32457, z = 7}
+			{ x = 32034, y = 32456, z = 7 },
+			{ x = 32034, y = 32457, z = 7 },
 		},
 	},
 	-- Cults of Tibia Quest

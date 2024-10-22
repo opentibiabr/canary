@@ -2770,7 +2770,7 @@ ChestUnique = {
 	},
 	[6330] = {
 		itemId = 5951,
-		itemPos = {x = 32025, y = 32469, z = 7},
+		itemPos = { x = 32025, y = 32469, z = 7 },
 		reward = { { 28707, 1 } },
 		weight = 6.00,
 		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Hawser,

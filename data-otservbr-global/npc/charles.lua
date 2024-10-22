@@ -57,17 +57,17 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local shortcuts = {
-	["thais"] = {price = 100, position = Position(32310, 32210, 6)},
-	["edron"] = {price = 90, position = Position(33173, 31764, 6)},
-	["liberty bay"] = {price = 20, position = Position(32285, 32891, 6)},
-	["yalahar"] = {price = 200, position = Position(32816, 31272, 6)}
+	["thais"] = { price = 100, position = Position(32310, 32210, 6) },
+	["edron"] = { price = 90, position = Position(33173, 31764, 6) },
+	["liberty bay"] = { price = 20, position = Position(32285, 32891, 6) },
+	["yalahar"] = { price = 200, position = Position(32816, 31272, 6) },
 }
 
 local isles = {
-	[1] = {isMission = true, position = Position(32031, 32463, 7)},
-	[2] = {isMission = false, position = Position(33454, 32160, 7)},
-	[3] = {isMission = false, position = Position(32112, 31745, 7)},
-	[4] = {isMission = false, position = Position(32457, 32937, 7)}
+	[1] = { isMission = true, position = Position(32031, 32463, 7) },
+	[2] = { isMission = false, position = Position(33454, 32160, 7) },
+	[3] = { isMission = false, position = Position(32112, 31745, 7) },
+	[4] = { isMission = false, position = Position(32457, 32937, 7) },
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -111,15 +111,17 @@ local function creatureSayCallback(npc, creature, type, message)
 	else
 		local function addTravelKeyword(keyword, cost, destination, condition)
 			if condition then
-				keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = "I'm sorry but I don't sail there."}, condition)
+				keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry but I don't sail there." }, condition)
 			end
-			local travelKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = "Do you seek a passage to " .. keyword:titleCase() .. " for |TRAVELCOST|?", cost = cost, discount = "postman"})
-			travelKeyword:addChildKeyword({"yes"}, StdModule.travel, {npcHandler = npcHandler, premium = false, cost = cost, discount = "postman", destination = destination})
-			travelKeyword:addChildKeyword({"no"}, StdModule.say, {npcHandler = npcHandler, text = "We would like to serve you some time.", reset = true})
+			local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Do you seek a passage to " .. keyword:titleCase() .. " for |TRAVELCOST|?", cost = cost, discount = "postman" })
+			travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = "postman", destination = destination })
+			travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "We would like to serve you some time.", reset = true })
 		end
 		addTravelKeyword("edron", 150, Position(33173, 31764, 6))
 		addTravelKeyword("venore", 160, Position(32954, 32022, 6))
-		addTravelKeyword("yalahar", 260, Position(32816, 31272, 6), function(player) return player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.PortHope) ~= 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.TownsCounter) < 5 end)
+		addTravelKeyword("yalahar", 260, Position(32816, 31272, 6), function(player)
+			return player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.PortHope) ~= 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.TownsCounter) < 5
+		end)
 		addTravelKeyword("ankrahmun", 110, Position(33092, 32883, 6))
 		addTravelKeyword("darashia", 180, Position(33289, 32480, 6))
 		addTravelKeyword("thais", 160, Position(32310, 32210, 6))

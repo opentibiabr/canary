@@ -39,13 +39,17 @@ jobs:
         with:
           install: true
 
-      - name: Cache vcpkg
-        uses: actions/cache@v3
+      - name: Cache vcpkg packages
+        uses: actions/cache@v2
         with:
-          path: /opt/vcpkg
-          key: vcpkg-${{ hashFiles('vcpkg.json') }}
+          path: |
+            /opt/vcpkg
+            !/opt/vcpkg/buildtrees
+            !/opt/vcpkg/packages
+            !/opt/vcpkg/downloads
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
           restore-keys: |
-            vcpkg-
+            ${{ runner.os }}-vcpkg-
 
       - name: Cache Docker layers
         uses: actions/cache@v3

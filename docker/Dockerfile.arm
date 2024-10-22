@@ -9,10 +9,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
 	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
+
+# Prepare vcpkg directory as a volume
+VOLUME /opt/vcpkg
+
 COPY vcpkg.json /opt/
 
-RUN if [ ! -d "vcpkg" ]; then \
-		git clone https://github.com/Microsoft/vcpkg.git; \
+# Clone and bootstrap vcpkg only if it's not already prepared
+RUN if [ ! -d "/opt/vcpkg" ]; then \
+		git clone https://github.com/Microsoft/vcpkg.git /opt/vcpkg; \
+		cd /opt/vcpkg; \
+		./bootstrap-vcpkg.sh; \
 	fi
 
 WORKDIR /opt/vcpkg
@@ -20,7 +27,7 @@ WORKDIR /opt/vcpkg
 RUN vcpkgCommitId=$(grep '.builtin-baseline' /opt/vcpkg.json | awk -F: '{print $2}' | tr -d '," ') \
 	&& echo "vcpkg commit ID: $vcpkgCommitId" \
 	&& git checkout $vcpkgCommitId \
-	&& ./bootstrap-vcpkg.sh
+	&& /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
 
 COPY vcpkg.json /opt/vcpkg/
 RUN VCPKG_FORCE_SYSTEM_BINARIES=1 /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install

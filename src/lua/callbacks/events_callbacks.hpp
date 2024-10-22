@@ -76,11 +76,13 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		auto it = m_callbacks.find(eventType);
-		if (it != m_callbacks.end()) {
-			for (const auto &entry : it->second) {
-				if (entry.callback && entry.callback->isLoadedCallback()) {
-					std::invoke(callbackFunc, *entry.callback, args...);
-				}
+		if (it == m_callbacks.end()) {
+			return;
+		}
+
+		for (const auto &entry : it->second) {
+			if (entry.callback && entry.callback->isLoadedCallback()) {
+				std::invoke(callbackFunc, *entry.callback, args...);
 			}
 		}
 	}
@@ -95,13 +97,15 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		auto it = m_callbacks.find(eventType);
-		if (it != m_callbacks.end()) {
-			for (const auto &entry : it->second) {
-				if (entry.callback && entry.callback->isLoadedCallback()) {
-					ReturnValue callbackResult = std::invoke(callbackFunc, *entry.callback, args...);
-					if (callbackResult != RETURNVALUE_NOERROR) {
-						return callbackResult;
-					}
+		if (it == m_callbacks.end()) {
+			return RETURNVALUE_NOERROR;
+		}
+
+		for (const auto &entry : it->second) {
+			if (entry.callback && entry.callback->isLoadedCallback()) {
+				ReturnValue callbackResult = std::invoke(callbackFunc, *entry.callback, args...);
+				if (callbackResult != RETURNVALUE_NOERROR) {
+					return callbackResult;
 				}
 			}
 		}
@@ -119,12 +123,14 @@ public:
 	bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		bool allCallbacksSucceeded = true;
 		auto it = m_callbacks.find(eventType);
-		if (it != m_callbacks.end()) {
-			for (const auto &entry : it->second) {
-				if (entry.callback && entry.callback->isLoadedCallback()) {
-					bool callbackResult = std::invoke(callbackFunc, *entry.callback, args...);
-					allCallbacksSucceeded &= callbackResult;
-				}
+		if (it == m_callbacks.end()) {
+			return allCallbacksSucceeded;
+		}
+
+		for (const auto &entry : it->second) {
+			if (entry.callback && entry.callback->isLoadedCallback()) {
+				bool callbackResult = std::invoke(callbackFunc, *entry.callback, args...);
+				allCallbacksSucceeded &= callbackResult;
 			}
 		}
 		return allCallbacksSucceeded;

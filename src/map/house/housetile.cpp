@@ -23,7 +23,7 @@ void HouseTile::addThing(int32_t index, const std::shared_ptr<Thing> &thing) {
 		return;
 	}
 
-	if (const auto item = thing->getItem()) {
+	if (const auto &item = thing->getItem()) {
 		updateHouse(item);
 	}
 }
@@ -113,7 +113,7 @@ std::shared_ptr<Cylinder> HouseTile::queryDestination(int32_t &index, const std:
 }
 
 ReturnValue HouseTile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor /*= nullptr */) {
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (!item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}

@@ -354,7 +354,7 @@ void Monster::onCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClas
 	}
 }
 
-void Monster::onAttackedByPlayer(std::shared_ptr<Player> attackerPlayer) {
+void Monster::onAttackedByPlayer(const std::shared_ptr<Player> &attackerPlayer) {
 	if (mType->info.monsterAttackedByPlayerEvent != -1) {
 		// onPlayerAttack(self, attackerPlayer)
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;

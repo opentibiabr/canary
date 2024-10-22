@@ -15,7 +15,7 @@ ReturnValue TrashHolder::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, 
 		return RETURNVALUE_NOERROR;
 	}
 
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (item == nullptr) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -47,7 +47,7 @@ void TrashHolder::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 		return;
 	}
 
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (!item) {
 		return;
 	}

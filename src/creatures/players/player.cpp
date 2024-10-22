@@ -780,10 +780,6 @@ void Player::addContainer(uint8_t cid, const std::shared_ptr<Container> &contain
 	const auto it = openContainers.find(cid);
 	if (it != openContainers.end()) {
 		OpenContainer &openContainer = it->second;
-		const auto &oldContainer = openContainer.container;
-		if (oldContainer->getID() == ITEM_BROWSEFIELD) {
-		}
-
 		openContainer.container = container;
 		openContainer.index = 0;
 	} else {
@@ -3431,7 +3427,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 	if (index == 0 /*drop to capacity window*/ || index == INDEX_WHEREEVER) {
 		destItem = nullptr;
 
-		const auto item = thing->getItem();
+		const auto &item = thing->getItem();
 		if (!item) {
 			return getPlayer();
 		}
@@ -4196,7 +4192,7 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 		sendStats();
 	}
 
-	if (const auto item = thing->getItem()) {
+	if (const auto &item = thing->getItem()) {
 		if (const auto &container = item->getContainer()) {
 			onSendContainer(container);
 		}
@@ -6667,8 +6663,8 @@ void Player::initializePrey() {
 
 void Player::removePreySlotById(PreySlot_t slotid) {
 	const auto it = std::ranges::remove_if(preys, [slotid](const auto &preyIt) {
-						return preyIt->id == slotid;
-					}).begin();
+		return preyIt->id == slotid;
+	}).begin();
 
 	preys.erase(it, preys.end());
 }

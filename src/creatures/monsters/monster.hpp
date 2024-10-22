@@ -146,7 +146,7 @@ public:
 	void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) override;
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
 	void onCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text) override;
-	void onAttackedByPlayer(std::shared_ptr<Player> attackerPlayer);
+	void onAttackedByPlayer(const std::shared_ptr<Player> &attackerPlayer);
 	void onSpawn();
 
 	void drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) override;

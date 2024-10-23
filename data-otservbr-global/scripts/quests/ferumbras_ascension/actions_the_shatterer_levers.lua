@@ -42,7 +42,7 @@ local ferumbrasAscendantTheShattererLevers = Action()
 
 function ferumbrasAscendantTheShattererLevers.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getStorageValue(Storage.FerumbrasAscension.TheShatterer) >= 1 then
-		player:sendCancelMessage('You cannot use this lever again.')
+		player:sendCancelMessage("You cannot use this lever again.")
 		return true
 	end
 
@@ -54,13 +54,13 @@ function ferumbrasAscendantTheShattererLevers.onUse(player, item, fromPosition, 
 				local bla = Tile(chain.position):getItemById(chain.itemid)
 				if bla then
 					bla:remove()
-					Game.createMonster("Fury", { x=player:getPosition().x+math.random(-3, 3), y=player:getPosition().y+math.random(-3, 3), z=player:getPosition().z })
+					Game.createMonster("Fury", { x = player:getPosition().x + math.random(-3, 3), y = player:getPosition().y + math.random(-3, 3), z = player:getPosition().z })
 				end
 			end
 			Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever, Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever) + 1)
 			if Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever) >= 4 then
 				local boss = Tile(Position(33406, 32418, 14)):getTopCreature()
-				if boss:getName():lower() == 'the shatterer' then
+				if boss:getName():lower() == "the shatterer" then
 					boss:teleportTo(Position(33400, 32415, 14))
 					boss:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 					return true
@@ -72,13 +72,13 @@ function ferumbrasAscendantTheShattererLevers.onUse(player, item, fromPosition, 
 				local bla = Tile(chain.position):getItemById(chain.itemid)
 				if bla then
 					bla:remove()
-					Game.createMonster("Destroyer", { x=player:getPosition().x+math.random(-3, 3), y=player:getPosition().y+math.random(-3, 3), z=player:getPosition().z })
+					Game.createMonster("Destroyer", { x = player:getPosition().x + math.random(-3, 3), y = player:getPosition().y + math.random(-3, 3), z = player:getPosition().z })
 				end
 			end
 			Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever, Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever) + 1)
 			if Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever) >= 4 then
 				local boss = Tile(Position(33406, 32418, 14)):getTopCreature()
-				if boss:getName():lower() == 'the shatterer' then
+				if boss:getName():lower() == "the shatterer" then
 					boss:teleportTo(Position(33400, 32415, 14))
 					boss:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 					return true
@@ -95,7 +95,7 @@ function ferumbrasAscendantTheShattererLevers.onUse(player, item, fromPosition, 
 			Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever, Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever) + 1)
 			if Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever) >= 4 then
 				local boss = Tile(Position(33406, 32418, 14)):getTopCreature()
-				if boss:getName():lower() == 'the shatterer' then
+				if boss:getName():lower() == "the shatterer" then
 					boss:teleportTo(Position(33400, 32415, 14))
 					boss:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 					return true
@@ -112,16 +112,16 @@ function ferumbrasAscendantTheShattererLevers.onUse(player, item, fromPosition, 
 			Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever, Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever) + 1)
 			if Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever) >= 4 then
 				local boss = Tile(Position(33406, 32418, 14)):getTopCreature()
-				if boss:getName():lower() == 'the shatterer' then
+				if boss:getName():lower() == "the shatterer" then
 					boss:teleportTo(Position(33400, 32415, 14))
 					boss:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 					return true
 				end
 			end
 		end
-		player:say('CLICK', TALKTYPE_MONSTER_SAY, false, nil, toPosition)
+		player:say("CLICK", TALKTYPE_MONSTER_SAY, false, nil, toPosition)
 	elseif item.itemid == 8912 then
-		player:sendCancelMessage('Sorry, not possible.')
+		player:sendCancelMessage("Sorry, not possible.")
 		return true
 	end
 

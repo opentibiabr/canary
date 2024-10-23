@@ -1,7 +1,7 @@
 local config = {
 	centerRoom = Position(33459, 32844, 11),
 	BossPosition = Position(33459, 32844, 11),
-	newPosition = Position(33459, 32848, 11)
+	newPosition = Position(33459, 32848, 11),
 }
 
 local leverTarbaz = Action()

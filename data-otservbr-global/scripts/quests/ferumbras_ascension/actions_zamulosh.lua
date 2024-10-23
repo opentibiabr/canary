@@ -8,8 +8,8 @@ local config = {
 		Position(33642, 32756, 11),
 		Position(33644, 32756, 11),
 		Position(33644, 32756, 11),
-		Position(33644, 32756, 11)
-	}
+		Position(33644, 32756, 11),
+	},
 }
 
 local leverZamulosh = Action()
@@ -34,7 +34,7 @@ function leverZamulosh.onUse(player, item, fromPosition, target, toPosition, isH
 			end
 			Game.createMonster("Zamulosh", config.BossPosition, true, true)
 			for d = 1, #config.zamuloshSummons do
-				Game.createMonster('Zamulosh3', config.zamuloshSummons[d], true, true)
+				Game.createMonster("Zamulosh3", config.zamuloshSummons[d], true, true)
 			end
 			for y = 32741, 32745 do
 				local playerTile = Tile(Position(33680, y, 11)):getTopCreature()
@@ -46,8 +46,8 @@ function leverZamulosh.onUse(player, item, fromPosition, target, toPosition, isH
 					table.insert(playersTable, playerTile:getId())
 				end
 			end
-		addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, Position(33634, 32749, 11), Position(33654, 32765, 11), Position(33319, 32318, 13))
-		item:transform(8912)
+			addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, Position(33634, 32749, 11), Position(33654, 32765, 11), Position(33319, 32318, 13))
+			item:transform(8912)
 		end
 	elseif item.itemid == 8912 then
 		item:transform(8911)

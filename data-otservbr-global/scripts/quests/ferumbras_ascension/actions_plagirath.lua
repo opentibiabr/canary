@@ -6,9 +6,9 @@ local config = {
 		Position(33229, 31501, 13),
 		Position(33229, 31502, 13),
 		Position(33229, 31503, 13),
-		Position(33229, 31504, 13)
+		Position(33229, 31504, 13),
 	},
-	newPosition = Position(33173, 31504, 13)
+	newPosition = Position(33173, 31504, 13),
 }
 
 local leverPlagirath = Action()

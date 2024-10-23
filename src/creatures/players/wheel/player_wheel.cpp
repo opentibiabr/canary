@@ -847,7 +847,7 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
 
 	for (const auto &modPosition : modsBasicPosition) {
-		const uint8_t pos = static_cast<uint8_t>(modPosition);
+		const auto pos = static_cast<uint8_t>(modPosition);
 		uint8_t grade = 0;
 		auto gradeKV = gemsGradeKV(WheelFragmentType_t::Lesser, pos)->get("grade");
 
@@ -860,7 +860,7 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 
 	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
 		for (const auto &modPosition : modsSupremeIt->second.get()) {
-			const uint8_t pos = static_cast<uint8_t>(modPosition);
+			const auto pos = static_cast<uint8_t>(modPosition);
 			uint8_t grade = 0;
 			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
 
@@ -871,7 +871,7 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 			totalPoints += grade == 3 ? 1 : 0;
 		}
 	} else {
-		g_logger().error("[{}] supreme modifications not found for vocation base id: {}", __FUNCTION__, vocationBaseId);
+		g_logger().error("[{}] supreme modifications not found for vocation base id: {}", std::source_location::current().function_name(), vocationBaseId);
 	}
 
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
@@ -1139,7 +1139,7 @@ uint16_t PlayerWheel::getGemIndex(const std::string &uuid) const {
 void PlayerWheel::destroyGem(uint16_t index) {
 	auto gem = getGem(index);
 	if (gem.locked) {
-		g_logger().error("[{}] Player {} destroyed locked gem with index {}", __FUNCTION__, m_player.getName(), index);
+		g_logger().error("[{}] Player {} destroyed locked gem with index {}", std::source_location::current().function_name(), m_player.getName(), index);
 		return;
 	}
 
@@ -1169,7 +1169,7 @@ void PlayerWheel::destroyGem(uint16_t index) {
 			m_player.sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
 			return;
 		}
-		g_logger().debug("[{}] Player {} destroyed a gem and received {} lesser fragments", __FUNCTION__, m_player.getName(), lesserFragments);
+		g_logger().debug("[{}] Player {} destroyed a gem and received {} lesser fragments", std::source_location::current().function_name(), m_player.getName(), lesserFragments);
 	}
 
 	if (greaterFragments > 0) {
@@ -1180,7 +1180,7 @@ void PlayerWheel::destroyGem(uint16_t index) {
 			m_player.sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
 			return;
 		}
-		g_logger().debug("[{}] Player {} destroyed a gem and received {} greater fragments", __FUNCTION__, m_player.getName(), greaterFragments);
+		g_logger().debug("[{}] Player {} destroyed a gem and received {} greater fragments", std::source_location::current().function_name(), m_player.getName(), greaterFragments);
 	}
 
 	gem.remove(gemsKV());
@@ -1267,7 +1267,7 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
 	msg.addByte(0x2E); // Modifiers for all Vocations
 	for (auto modPosition : modsBasicPosition) {
-		const uint8_t pos = static_cast<uint8_t>(modPosition);
+		const auto pos = static_cast<uint8_t>(modPosition);
 		msg.addByte(pos);
 		uint8_t grade = 0;
 		auto gradeKV = gemsGradeKV(WheelFragmentType_t::Lesser, pos)->get("grade");
@@ -1285,7 +1285,7 @@ void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
 
 	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
 		for (auto modPosition : modsSupremeIt->second.get()) {
-			const uint8_t pos = static_cast<uint8_t>(modPosition);
+			const auto pos = static_cast<uint8_t>(modPosition);
 			msg.addByte(pos);
 			uint8_t grade = 0;
 			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
@@ -1296,7 +1296,7 @@ void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
 			msg.addByte(grade);
 		}
 	} else {
-		g_logger().error("[{}] vocation base id: {}", __FUNCTION__, m_player.getVocation()->getBaseId());
+		g_logger().error("[{}] vocation base id: {}", std::source_location::current().function_name(), m_player.getVocation()->getBaseId());
 	}
 }
 
@@ -1323,7 +1323,7 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 			std::tie(value, quantity) = getGreaterGradeCost(grade);
 			break;
 		default:
-			g_logger().error("[{}] Invalid Fragment Type: {}", __FUNCTION__, static_cast<uint8_t>(fragmentType));
+			g_logger().error("[{}] Invalid Fragment Type: {}", std::source_location::current().function_name(), static_cast<uint8_t>(fragmentType));
 			return;
 	}
 
@@ -1333,12 +1333,12 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 	}
 
 	if (!g_game().removeMoney(m_player.getPlayer(), value, 0, true)) {
-		g_logger().error("[{}] Failed to remove {} gold from player {}", __FUNCTION__, value, m_player.getName());
+		g_logger().error("[{}] Failed to remove {} gold from player {}", std::source_location::current().function_name(), value, m_player.getName());
 		return;
 	}
 
 	if (!m_player.removeItemCountById(fragmentId, quantity, false)) {
-		g_logger().error("[{}] Failed to remove {} fragments with id {} from player {}", __FUNCTION__, quantity, fragmentId, m_player.getName());
+		g_logger().error("[{}] Failed to remove {} fragments with id {} from player {}", std::source_location::current().function_name(), quantity, fragmentId, m_player.getName());
 		return;
 	}
 
@@ -2378,7 +2378,7 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 
 	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
 		for (auto modPosition : modsSupremeIt->second.get()) {
-			const uint8_t pos = static_cast<uint8_t>(modPosition);
+			const auto pos = static_cast<uint8_t>(modPosition);
 			uint8_t grade = 0;
 			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
 
@@ -2389,7 +2389,7 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 			totalPoints += grade == 3 ? 1 : 0;
 		}
 	} else {
-		g_logger().error("[{}] supreme modifications not found for vocation base id: {}", __FUNCTION__, vocationBaseId);
+		g_logger().error("[{}] supreme modifications not found for vocation base id: {}", std::source_location::current().function_name(), vocationBaseId);
 	}
 
 	totalPoints += m_bonusRevelationPoints[static_cast<uint8_t>(affinity)];

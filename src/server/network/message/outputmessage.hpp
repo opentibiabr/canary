@@ -11,6 +11,7 @@
 
 #include "server/network/message/networkmessage.hpp"
 #include "server/network/connection/connection.hpp"
+#include "lib/thread/thread_pool.hpp"
 #include "utils/tools.hpp"
 
 class Protocol;
@@ -87,7 +88,7 @@ private:
 
 class OutputMessagePool {
 public:
-	OutputMessagePool() = default;
+	explicit OutputMessagePool(ThreadPool &threadPool) : threadPool(threadPool) {};
 
 	// non-copyable
 	OutputMessagePool(const OutputMessagePool &) = delete;
@@ -107,4 +108,5 @@ private:
 	// NOTE: A vector is used here because this container is mostly read
 	// and relatively rarely modified (only when a client connects/disconnects)
 	std::vector<Protocol_ptr> bufferedProtocols;
+	ThreadPool &threadPool;
 };

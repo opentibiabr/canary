@@ -26,12 +26,22 @@ void OutputMessagePool::scheduleSendAll() {
 }
 
 void OutputMessagePool::sendAll() {
+	std::vector<std::pair<Protocol_ptr, OutputMessage_ptr>> buffer;
+	buffer.reserve(bufferedProtocols.size());
+
 	// dispatcher thread
 	for (auto &protocol : bufferedProtocols) {
-		auto &msg = protocol->getCurrentBuffer();
-		if (msg) {
-			protocol->send(std::move(msg));
+		if (auto &msg = protocol->getCurrentBuffer()) {
+			buffer.emplace_back(std::make_pair(protocol, std::move(msg)));
 		}
+	}
+
+	if (!buffer.empty()) {
+		threadPool.detach_task([buffer = std::move(buffer)] {
+			for (auto& protocol : buffer) {
+				protocol.first->send(std::move(protocol.second));
+			}
+			});
 	}
 
 	if (!bufferedProtocols.empty()) {

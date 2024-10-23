@@ -6,8 +6,8 @@ local config = {
 		Position(33476, 32331, 13),
 		Position(33476, 32340, 13),
 		Position(33487, 32340, 13),
-		Position(33488, 32331, 13)
-	}
+		Position(33488, 32331, 13),
+	},
 }
 
 local leverRagiaz = Action()
@@ -33,7 +33,7 @@ function leverRagiaz.onUse(player, item, fromPosition, target, toPosition, isHot
 			end
 			Game.createMonster("Ragiaz", config.BossPosition, true, true)
 			for d = 1, #config.deathDragons do
-				Game.createMonster('Death Dragon', config.deathDragons[d], true, true)
+				Game.createMonster("Death Dragon", config.deathDragons[d], true, true)
 			end
 			for x = 33456, 33460 do
 				local playerTile = Tile(Position(x, 32356, 13)):getTopCreature()

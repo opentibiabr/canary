@@ -1,7 +1,7 @@
 local config = {
 	centerRoom = Position(32624, 32880, 14),
 	bossPosition = Position(32624, 32880, 14),
-	newPosition = Position(32624, 32886, 14)
+	newPosition = Position(32624, 32886, 14),
 }
 
 local leverThornKnight = Action()
@@ -17,7 +17,7 @@ function leverThornKnight.onUse(player, item, fromPosition, target, toPosition, 
 		local playersTable = {}
 		if player:doCheckBossRoom("Thorn Knight", Position(32613, 32869, 14), Position(32636, 32892, 14)) then
 			for d = 1, 6 do
-				Game.createMonster('possessed tree', Position(math.random(32619, 32629), math.random(32877, 32884), 14), true, true)
+				Game.createMonster("possessed tree", Position(math.random(32619, 32629), math.random(32877, 32884), 14), true, true)
 			end
 			Game.createMonster("mounted thorn knight", config.bossPosition, true, true)
 			for y = 32877, 32881 do
@@ -33,7 +33,7 @@ function leverThornKnight.onUse(player, item, fromPosition, target, toPosition, 
 			addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, Position(32613, 32869, 14), Position(32636, 32892, 14), Position(32678, 32888, 14))
 			item:transform(8912)
 		end
-		elseif item.itemid == 8912 then
+	elseif item.itemid == 8912 then
 		item:transform(8911)
 	end
 	return true

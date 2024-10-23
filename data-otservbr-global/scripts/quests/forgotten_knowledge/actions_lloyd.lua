@@ -1,14 +1,14 @@
 local config = {
 	centerRoom = Position(32799, 32832, 14),
 	bossPosition = Position(32799, 32827, 14),
-	newPosition = Position(32800, 32831, 14)
+	newPosition = Position(32800, 32831, 14),
 }
 
 local monsters = {
-	{cosmic = 'cosmic energy prism a', pos = Position(32801, 32827, 14)},
-	{cosmic = 'cosmic energy prism b', pos = Position(32798, 32827, 14)},
-	{cosmic = 'cosmic energy prism c', pos = Position(32803, 32826, 14)},
-	{cosmic = 'cosmic energy prism d', pos = Position(32796, 32826, 14)}
+	{ cosmic = "cosmic energy prism a", pos = Position(32801, 32827, 14) },
+	{ cosmic = "cosmic energy prism b", pos = Position(32798, 32827, 14) },
+	{ cosmic = "cosmic energy prism c", pos = Position(32803, 32826, 14) },
+	{ cosmic = "cosmic energy prism d", pos = Position(32796, 32826, 14) },
 }
 
 local leverLloyd = Action()

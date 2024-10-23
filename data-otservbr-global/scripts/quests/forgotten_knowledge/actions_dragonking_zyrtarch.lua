@@ -1,14 +1,14 @@
 local config = {
 	bossPosition = Position(33357, 31182, 10),
 	newPosition = Position(33359, 31186, 10),
-	soulPosition = Position(33359, 31182, 12)
+	soulPosition = Position(33359, 31182, 12),
 }
 
 local monsters = {
-	{position = Position(33352, 31187, 10)},
-	{position = Position(33363, 31187, 10)},
-	{position = Position(33353, 31176, 10)},
-	{position = Position(33363, 31176, 10)}
+	{ position = Position(33352, 31187, 10) },
+	{ position = Position(33363, 31187, 10) },
+	{ position = Position(33353, 31176, 10) },
+	{ position = Position(33363, 31176, 10) },
 }
 
 local leverZyrtarch = Action()
@@ -24,7 +24,7 @@ function leverZyrtarch.onUse(player, item, fromPosition, target, toPosition, isH
 		local playersTable = {}
 		if player:doCheckBossRoom("Dragonking Zyrtarch", Position(33348, 31172, 10), Position(33368, 31190, 12)) then
 			for d = 1, #monsters do
-				Game.createMonster('soulcatcher', monsters[d].position, true, true)
+				Game.createMonster("soulcatcher", monsters[d].position, true, true)
 			end
 			Game.createMonster("dragonking zyrtarch", config.bossPosition, true, true)
 			Game.createMonster("soul of dragonking zyrtarch", config.soulPosition, true, true)

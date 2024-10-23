@@ -1,7 +1,7 @@
 local config = {
 	centerRoom = Position(32912, 31599, 14),
 	bossPosition = Position(32912, 31599, 14),
-	newPosition = Position(32911, 31603, 14)
+	newPosition = Position(32911, 31603, 14),
 }
 
 local leverLadyTenebris = Action()
@@ -16,7 +16,7 @@ function leverLadyTenebris.onUse(player, item, fromPosition, target, toPosition,
 		local playersTable = {}
 		if player:doCheckBossRoom("Lady Tenebris", Position(32902, 31589, 14), Position(32924, 31610, 14)) then
 			for d = 1, 6 do
-				Game.createMonster('shadow tentacle', Position(math.random(32909, 32914), math.random(31596, 31601), 14), true, true)
+				Game.createMonster("shadow tentacle", Position(math.random(32909, 32914), math.random(31596, 31601), 14), true, true)
 			end
 			Game.createMonster("lady tenebris", config.bossPosition, true, true)
 			for y = 31623, 31627 do

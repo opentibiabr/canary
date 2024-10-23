@@ -38,10 +38,10 @@ void OutputMessagePool::sendAll() {
 
 	if (!buffer.empty()) {
 		threadPool.detach_task([buffer = std::move(buffer)] {
-			for (auto& protocol : buffer) {
+			for (auto &protocol : buffer) {
 				protocol.first->send(std::move(protocol.second));
 			}
-			});
+		});
 	}
 
 	if (!bufferedProtocols.empty()) {

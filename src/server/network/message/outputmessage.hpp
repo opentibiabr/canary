@@ -88,7 +88,8 @@ private:
 
 class OutputMessagePool {
 public:
-	explicit OutputMessagePool(ThreadPool &threadPool) : threadPool(threadPool) {};
+	explicit OutputMessagePool(ThreadPool &threadPool) :
+		threadPool(threadPool) {};
 
 	// non-copyable
 	OutputMessagePool(const OutputMessagePool &) = delete;

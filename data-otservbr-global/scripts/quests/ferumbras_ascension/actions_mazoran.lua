@@ -6,9 +6,9 @@ local config = {
 		Position(33593, 32645, 14),
 		Position(33593, 32646, 14),
 		Position(33593, 32647, 14),
-		Position(33593, 32648, 14)
+		Position(33593, 32648, 14),
 	},
-	newPosition = Position(33585, 32693, 14)
+	newPosition = Position(33585, 32693, 14),
 }
 
 local leverMazoran = Action()
@@ -52,7 +52,6 @@ function leverMazoran.onUse(player, item, fromPosition, target, toPosition, isHo
 
 	return true
 end
-
 
 leverMazoran:uid(1025)
 leverMazoran:register()

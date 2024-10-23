@@ -1,12 +1,12 @@
 local crystals = {
-	[1] = {crystalPosition = Position(33390, 31468, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal1},
-	[2] = {crystalPosition = Position(33394, 31468, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal2},
-	[3] = {crystalPosition = Position(33397, 31471, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal3},
-	[4] = {crystalPosition = Position(33397, 31475, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal4},
-	[5] = {crystalPosition = Position(33394, 31478, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal5},
-	[6] = {crystalPosition = Position(33390, 31478, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal6},
-	[7] = {crystalPosition = Position(33387, 31475, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal7},
-	[8] = {crystalPosition = Position(33387, 31471, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal8}
+	[1] = { crystalPosition = Position(33390, 31468, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal1 },
+	[2] = { crystalPosition = Position(33394, 31468, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal2 },
+	[3] = { crystalPosition = Position(33397, 31471, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal3 },
+	[4] = { crystalPosition = Position(33397, 31475, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal4 },
+	[5] = { crystalPosition = Position(33394, 31478, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal5 },
+	[6] = { crystalPosition = Position(33390, 31478, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal6 },
+	[7] = { crystalPosition = Position(33387, 31475, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal7 },
+	[8] = { crystalPosition = Position(33387, 31471, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal8 },
 }
 
 local config = {
@@ -27,9 +27,9 @@ local config = {
 		Position(33271, 31478, 14),
 		Position(33271, 31479, 14),
 		Position(33271, 31480, 14),
-		Position(33271, 31481, 14)
+		Position(33271, 31481, 14),
 	},
-	newPosition = Position(33392, 31479, 14)
+	newPosition = Position(33392, 31479, 14),
 }
 
 local leverFerumbras = Action()
@@ -45,7 +45,7 @@ function leverFerumbras.onUse(player, item, fromPosition, target, toPosition, is
 	if item.itemid == 8911 then
 		if doCheckBossRoom(player:getId(), "Ascending Ferumbras", Position(33379, 31460, 14), Position(33405, 31485, 14)) then
 			Game.createMonster("Ascending Ferumbras", config.BossPosition, true, true)
-			for b = 1,10 do
+			for b = 1, 10 do
 				local xrand = math.random(-10, 10)
 				local yrand = math.random(-10, 10)
 				local position = Position(33392 + xrand, 31473 + yrand, 14)

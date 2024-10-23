@@ -6,9 +6,9 @@ local config = {
 		Position(33434, 32786, 13),
 		Position(33434, 32787, 13),
 		Position(33434, 32788, 13),
-		Position(33434, 32789, 13)
+		Position(33434, 32789, 13),
 	},
-	newPosition = Position(33485, 32790, 13)
+	newPosition = Position(33485, 32790, 13),
 }
 
 local leverShulgrax = Action()

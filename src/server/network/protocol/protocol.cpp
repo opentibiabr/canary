@@ -14,8 +14,9 @@
 #include "server/network/message/outputmessage.hpp"
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "utils/tools.hpp"
 
-Protocol::Protocol(Connection_ptr initConnection) :
+Protocol::Protocol(const Connection_ptr &initConnection) :
 	connectionPtr(initConnection) { }
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
@@ -50,8 +51,8 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 
 	g_dispatcher().addEvent(
 		[&msg, protocolWeak = std::weak_ptr<Protocol>(shared_from_this())]() {
-			if (auto protocol = protocolWeak.lock()) {
-				if (auto protocolConnection = protocol->getConnection()) {
+			if (const auto &protocol = protocolWeak.lock()) {
+				if (const auto &protocolConnection = protocol->getConnection()) {
 					protocol->parsePacket(msg);
 					protocolConnection->resumeWork();
 				}
@@ -65,7 +66,7 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 
 bool Protocol::onRecvMessage(NetworkMessage &msg) {
 	if (checksumMethod != CHECKSUM_METHOD_NONE) {
-		uint32_t recvChecksum = msg.get<uint32_t>();
+		const auto recvChecksum = msg.get<uint32_t>();
 		if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
 			if (recvChecksum == 0) {
 				// checksum 0 indicate that the packet should be connection ping - 0x1C packet header
@@ -73,8 +74,7 @@ bool Protocol::onRecvMessage(NetworkMessage &msg) {
 				return false;
 			}
 
-			uint32_t checksum;
-			checksum = ++clientSequenceNumber;
+			const uint32_t checksum = ++clientSequenceNumber;
 			if (clientSequenceNumber >= 0x7FFFFFFF) {
 				clientSequenceNumber = 0;
 			}
@@ -85,7 +85,7 @@ bool Protocol::onRecvMessage(NetworkMessage &msg) {
 			}
 		} else {
 			uint32_t checksum;
-			if (int32_t len = msg.getLength() - msg.getBufferPosition();
+			if (const int32_t len = msg.getLength() - msg.getBufferPosition();
 			    len > 0) {
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition(), len);
 			} else {
@@ -120,7 +120,7 @@ void Protocol::send(OutputMessage_ptr msg) const {
 }
 
 void Protocol::disconnect() const {
-	if (auto connection = getConnection()) {
+	if (const auto connection = getConnection()) {
 		connection->close();
 	}
 }
@@ -223,7 +223,7 @@ bool Protocol::RSA_decrypt(NetworkMessage &msg) {
 		return false;
 	}
 
-	auto charData = static_cast<char*>(static_cast<void*>(msg.getBuffer()));
+	const auto charData = static_cast<char*>(static_cast<void*>(msg.getBuffer()));
 	// Does not break strict aliasing
 	g_RSA().decrypt(charData + msg.getBufferPosition());
 	return (msg.getByte() == 0);
@@ -238,7 +238,7 @@ Connection_ptr Protocol::getConnection() const {
 }
 
 uint32_t Protocol::getIP() const {
-	if (auto protocolConnection = getConnection()) {
+	if (const auto protocolConnection = getConnection()) {
 		return protocolConnection->getIP();
 	}
 
@@ -250,7 +250,9 @@ bool Protocol::compression(OutputMessage &outputMessage) const {
 		return false;
 	}
 
-	static const thread_local auto &compress = std::make_unique<ZStream>();
+	static thread_local auto compress_ptr = std::make_unique<ZStream>();
+	static const auto &compress = compress_ptr;
+
 	if (!compress->stream) {
 		return false;
 	}

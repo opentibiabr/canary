@@ -62,6 +62,7 @@ target_include_directories(${PROJECT_NAME}_lib
         ${GMP_INCLUDE_DIRS}
         ${LUAJIT_INCLUDE_DIRS}
         ${PARALLEL_HASHMAP_INCLUDE_DIRS}
+        ${ATOMIC_QUEUE_INCLUDE_DIRS}
 )
 
 # *****************************************************************************

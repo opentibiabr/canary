@@ -19,7 +19,7 @@ int VocationFunctions::luaVocationCreate(lua_State* L) {
 		vocationId = g_vocations().getVocationId(getString(L, 2));
 	}
 
-	std::shared_ptr<Vocation> vocation = g_vocations().getVocation(vocationId);
+	const auto &vocation = g_vocations().getVocation(vocationId);
 	if (vocation) {
 		pushUserdata<Vocation>(L, vocation);
 		setMetatable(L, -1, "Vocation");
@@ -31,7 +31,7 @@ int VocationFunctions::luaVocationCreate(lua_State* L) {
 
 int VocationFunctions::luaVocationGetId(lua_State* L) {
 	// vocation:getId()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getId());
 	} else {
@@ -42,7 +42,7 @@ int VocationFunctions::luaVocationGetId(lua_State* L) {
 
 int VocationFunctions::luaVocationGetClientId(lua_State* L) {
 	// vocation:getClientId()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getClientId());
 	} else {
@@ -53,7 +53,7 @@ int VocationFunctions::luaVocationGetClientId(lua_State* L) {
 
 int VocationFunctions::luaVocationGetBaseId(lua_State* L) {
 	// vocation:getBaseId()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getBaseId());
 	} else {
@@ -64,7 +64,7 @@ int VocationFunctions::luaVocationGetBaseId(lua_State* L) {
 
 int VocationFunctions::luaVocationGetName(lua_State* L) {
 	// vocation:getName()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		pushString(L, vocation->getVocName());
 	} else {
@@ -75,7 +75,7 @@ int VocationFunctions::luaVocationGetName(lua_State* L) {
 
 int VocationFunctions::luaVocationGetDescription(lua_State* L) {
 	// vocation:getDescription()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		pushString(L, vocation->getVocDescription());
 	} else {
@@ -86,10 +86,10 @@ int VocationFunctions::luaVocationGetDescription(lua_State* L) {
 
 int VocationFunctions::luaVocationGetRequiredSkillTries(lua_State* L) {
 	// vocation:getRequiredSkillTries(skillType, skillLevel)
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
-		skills_t skillType = getNumber<skills_t>(L, 2);
-		uint16_t skillLevel = getNumber<uint16_t>(L, 3);
+		const skills_t skillType = getNumber<skills_t>(L, 2);
+		const uint16_t skillLevel = getNumber<uint16_t>(L, 3);
 		lua_pushnumber(L, vocation->getReqSkillTries(skillType, skillLevel));
 	} else {
 		lua_pushnil(L);
@@ -99,9 +99,9 @@ int VocationFunctions::luaVocationGetRequiredSkillTries(lua_State* L) {
 
 int VocationFunctions::luaVocationGetRequiredManaSpent(lua_State* L) {
 	// vocation:getRequiredManaSpent(magicLevel)
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
-		uint32_t magicLevel = getNumber<uint32_t>(L, 2);
+		const uint32_t magicLevel = getNumber<uint32_t>(L, 2);
 		lua_pushnumber(L, vocation->getReqMana(magicLevel));
 	} else {
 		lua_pushnil(L);
@@ -111,7 +111,7 @@ int VocationFunctions::luaVocationGetRequiredManaSpent(lua_State* L) {
 
 int VocationFunctions::luaVocationGetCapacityGain(lua_State* L) {
 	// vocation:getCapacityGain()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getCapGain());
 	} else {
@@ -122,7 +122,7 @@ int VocationFunctions::luaVocationGetCapacityGain(lua_State* L) {
 
 int VocationFunctions::luaVocationGetHealthGain(lua_State* L) {
 	// vocation:getHealthGain()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getHPGain());
 	} else {
@@ -133,7 +133,7 @@ int VocationFunctions::luaVocationGetHealthGain(lua_State* L) {
 
 int VocationFunctions::luaVocationGetHealthGainTicks(lua_State* L) {
 	// vocation:getHealthGainTicks()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getHealthGainTicks());
 	} else {
@@ -144,7 +144,7 @@ int VocationFunctions::luaVocationGetHealthGainTicks(lua_State* L) {
 
 int VocationFunctions::luaVocationGetHealthGainAmount(lua_State* L) {
 	// vocation:getHealthGainAmount()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getHealthGainAmount());
 	} else {
@@ -155,7 +155,7 @@ int VocationFunctions::luaVocationGetHealthGainAmount(lua_State* L) {
 
 int VocationFunctions::luaVocationGetManaGain(lua_State* L) {
 	// vocation:getManaGain()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getManaGain());
 	} else {
@@ -166,7 +166,7 @@ int VocationFunctions::luaVocationGetManaGain(lua_State* L) {
 
 int VocationFunctions::luaVocationGetManaGainTicks(lua_State* L) {
 	// vocation:getManaGainTicks()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getManaGainTicks());
 	} else {
@@ -177,7 +177,7 @@ int VocationFunctions::luaVocationGetManaGainTicks(lua_State* L) {
 
 int VocationFunctions::luaVocationGetManaGainAmount(lua_State* L) {
 	// vocation:getManaGainAmount()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getManaGainAmount());
 	} else {
@@ -188,7 +188,7 @@ int VocationFunctions::luaVocationGetManaGainAmount(lua_State* L) {
 
 int VocationFunctions::luaVocationGetMaxSoul(lua_State* L) {
 	// vocation:getMaxSoul()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getSoulMax());
 	} else {
@@ -199,7 +199,7 @@ int VocationFunctions::luaVocationGetMaxSoul(lua_State* L) {
 
 int VocationFunctions::luaVocationGetSoulGainTicks(lua_State* L) {
 	// vocation:getSoulGainTicks()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getSoulGainTicks());
 	} else {
@@ -210,7 +210,7 @@ int VocationFunctions::luaVocationGetSoulGainTicks(lua_State* L) {
 
 int VocationFunctions::luaVocationGetBaseAttackSpeed(lua_State* L) {
 	// vocation:getBaseAttackSpeed()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getBaseAttackSpeed());
 	} else {
@@ -221,7 +221,7 @@ int VocationFunctions::luaVocationGetBaseAttackSpeed(lua_State* L) {
 
 int VocationFunctions::luaVocationGetAttackSpeed(lua_State* L) {
 	// vocation:getAttackSpeed()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getAttackSpeed());
 	} else {
@@ -232,7 +232,7 @@ int VocationFunctions::luaVocationGetAttackSpeed(lua_State* L) {
 
 int VocationFunctions::luaVocationGetBaseSpeed(lua_State* L) {
 	// vocation:getBaseSpeed()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (vocation) {
 		lua_pushnumber(L, vocation->getBaseSpeed());
 	} else {
@@ -243,19 +243,19 @@ int VocationFunctions::luaVocationGetBaseSpeed(lua_State* L) {
 
 int VocationFunctions::luaVocationGetDemotion(lua_State* L) {
 	// vocation:getDemotion()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (!vocation) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	uint16_t fromId = vocation->getFromVocation();
+	const uint16_t fromId = vocation->getFromVocation();
 	if (fromId == VOCATION_NONE) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	std::shared_ptr<Vocation> demotedVocation = g_vocations().getVocation(fromId);
+	const auto &demotedVocation = g_vocations().getVocation(fromId);
 	if (demotedVocation && demotedVocation != vocation) {
 		pushUserdata<Vocation>(L, demotedVocation);
 		setMetatable(L, -1, "Vocation");
@@ -267,19 +267,19 @@ int VocationFunctions::luaVocationGetDemotion(lua_State* L) {
 
 int VocationFunctions::luaVocationGetPromotion(lua_State* L) {
 	// vocation:getPromotion()
-	std::shared_ptr<Vocation> vocation = getUserdataShared<Vocation>(L, 1);
+	const auto &vocation = getUserdataShared<Vocation>(L, 1);
 	if (!vocation) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	uint16_t promotedId = g_vocations().getPromotedVocation(vocation->getId());
+	const uint16_t promotedId = g_vocations().getPromotedVocation(vocation->getId());
 	if (promotedId == VOCATION_NONE) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	std::shared_ptr<Vocation> promotedVocation = g_vocations().getVocation(promotedId);
+	const auto &promotedVocation = g_vocations().getVocation(promotedId);
 	if (promotedVocation && promotedVocation != vocation) {
 		pushUserdata<Vocation>(L, promotedVocation);
 		setMetatable(L, -1, "Vocation");

@@ -33,9 +33,7 @@ enum class DispatcherType : uint8_t {
 };
 
 struct DispatcherContext {
-	bool isOn() const {
-		return OTSYS_TIME() != 0;
-	}
+	static bool isOn();
 
 	bool isGroup(const TaskGroup _group) const {
 		return group == _group;
@@ -90,7 +88,9 @@ public:
 		for (uint_fast16_t i = 0; i < threads.capacity(); ++i) {
 			threads.emplace_back(std::make_unique<ThreadTask>());
 		}
-	};
+
+		scheduledTasksRef.reserve(2000);
+	}
 
 	// Ensures that we don't accidentally copy it
 	Dispatcher(const Dispatcher &) = delete;
@@ -215,12 +215,13 @@ private:
 		std::vector<std::shared_ptr<Task>> scheduledTasks;
 		std::mutex mutex;
 	};
+
 	std::vector<std::unique_ptr<ThreadTask>> threads;
 
 	// Main Events
 	std::array<std::vector<Task>, static_cast<uint8_t>(TaskGroup::Last)> m_tasks;
-	phmap::btree_multiset<std::shared_ptr<Task>, Task::Compare> scheduledTasks;
-	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef;
+	phmap::btree_multiset<std::shared_ptr<Task>, Task::Compare> scheduledTasks {};
+	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef {};
 
 	bool asyncWaitDisabled = false;
 

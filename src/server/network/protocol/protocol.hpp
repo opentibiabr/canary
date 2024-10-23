@@ -21,7 +21,7 @@ class NetworkMessage;
 
 class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
-	explicit Protocol(Connection_ptr initConnection);
+	explicit Protocol(const Connection_ptr &initConnection);
 
 	virtual ~Protocol() = default;
 
@@ -61,6 +61,7 @@ protected:
 	void setXTEAKey(const uint32_t* newKey) {
 		std::ranges::copy(newKey, newKey + 4, this->key.begin());
 	}
+
 	void setChecksumMethod(ChecksumMethods_t method) {
 		checksumMethod = method;
 	}

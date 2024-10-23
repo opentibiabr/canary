@@ -44,9 +44,9 @@ namespace extension {
 
 			template <class T, class TInitialization, class TMemory, class... TArgs>
 			auto get(const TInitialization &, const TMemory &, TArgs &&... args) const {
-				auto it = bindings_.find(std::type_index(typeid(T)));
+				const auto it = bindings_.find(std::type_index(typeid(T)));
 				if (it == bindings_.end()) {
-					return get<T>(std::integral_constant < bool, !std::is_abstract<T>::value && std::is_constructible<T, TArgs...>::value > {}, std::forward<TArgs>(args)...);
+					return get<T>(std::integral_constant < bool, !std::is_abstract_v<T> && std::is_constructible_v<T, TArgs...> > {}, std::forward<TArgs>(args)...);
 				}
 				return static_cast<T*>(it->second());
 			}
@@ -121,19 +121,19 @@ namespace extension {
 				core::injector<runtime_provider<TErrorPolicy, TScopeTraits>> { core::init {} } { }
 
 			template <class T>
-			/*non explicit*/ injector(const T &bindings) :
+			/*non explicit*/ explicit injector(const T &bindings) :
 				injector() {
 				install(bindings);
 			}
 
-			template <class T, std::enable_if_t<!std::is_base_of<core::injector_base, T>::value, int> = 0>
+			template <class T, std::enable_if_t<!std::is_base_of_v<core::injector_base, T>, int> = 0>
 			void install(const T &binding) {
 				this->cfg().bindings()[std::type_index(typeid(typename T::expected))] = [this, binding] {
 					return make<typename T::given>(binding);
 				};
 			}
 
-			template <class T, std::enable_if_t<std::is_base_of<core::injector_base, T>::value, int> = 0>
+			template <class T, std::enable_if_t<std::is_base_of_v<core::injector_base, T>, int> = 0>
 			void install(const T &injector) {
 				install(typename T::deps {}, injector, aux::identity<typename T::config> {});
 			}

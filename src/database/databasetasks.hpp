@@ -22,8 +22,8 @@ public:
 
 	static DatabaseTasks &getInstance();
 
-	void execute(const std::string &query, std::function<void(DBResult_ptr, bool)> callback = nullptr);
-	void store(const std::string &query, std::function<void(DBResult_ptr, bool)> callback = nullptr);
+	void execute(const std::string &query, const std::function<void(DBResult_ptr, bool)> &callback = nullptr);
+	void store(const std::string &query, const std::function<void(DBResult_ptr, bool)> &callback = nullptr);
 
 private:
 	Database &db;

@@ -21,12 +21,12 @@ KVStore &KVStore::getInstance() {
 }
 
 void KVStore::set(const std::string &key, const std::initializer_list<ValueWrapper> &init_list) {
-	ValueWrapper wrappedInitList(init_list);
+	const ValueWrapper wrappedInitList(init_list);
 	set(key, wrappedInitList);
 }
 
 void KVStore::set(const std::string &key, const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list) {
-	ValueWrapper wrappedInitList(init_list);
+	const ValueWrapper wrappedInitList(init_list);
 	set(key, wrappedInitList);
 }
 
@@ -37,7 +37,7 @@ void KVStore::set(const std::string &key, const ValueWrapper &value) {
 
 void KVStore::setLocked(const std::string &key, const ValueWrapper &value) {
 	logger.trace("KVStore::set({})", key);
-	auto it = store_.find(key);
+	const auto it = store_.find(key);
 	if (it != store_.end()) {
 		it->second.first = value;
 		lruQueue_.splice(lruQueue_.begin(), lruQueue_, it->second.second);

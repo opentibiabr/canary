@@ -143,8 +143,8 @@ namespace weak {
 
 class Zone {
 public:
-	explicit Zone(const std::string &name, uint32_t id = 0) :
-		name(name), id(id) { }
+	explicit Zone(std::string name, uint32_t id = 0) :
+		name(std::move(name)), id(id) { }
 	explicit Zone(uint32_t id) :
 		id(id) { }
 
@@ -199,7 +199,7 @@ public:
 	static std::shared_ptr<Zone> addZone(const std::string &name, uint32_t id = 0);
 	static std::shared_ptr<Zone> getZone(const std::string &name);
 	static std::shared_ptr<Zone> getZone(uint32_t id);
-	static std::vector<std::shared_ptr<Zone>> getZones(const Position position);
+	static std::vector<std::shared_ptr<Zone>> getZones(Position position);
 	static std::vector<std::shared_ptr<Zone>> getZones();
 	static void refreshAll() {
 		for (const auto &[_, zone] : zones) {

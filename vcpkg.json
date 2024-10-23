@@ -19,6 +19,7 @@
     "spdlog",
     "zlib",
     "bshoshany-thread-pool",
+    "atomic-queue",
     {
       "name": "opentelemetry-cpp",
       "default-features": true,

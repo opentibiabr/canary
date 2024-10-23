@@ -13,6 +13,12 @@
 
 class LootFunctions final : LuaScriptInterface {
 public:
+	explicit LootFunctions(lua_State* L) :
+		LuaScriptInterface("LootFunctions") {
+		init(L);
+	}
+	~LootFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Loot", "", LootFunctions::luaCreateLoot);
 

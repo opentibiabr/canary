@@ -13,7 +13,7 @@
 
 int ImbuementFunctions::luaCreateImbuement(lua_State* L) {
 	// Imbuement(id)
-	uint16_t imbuementId = getNumber<uint16_t>(L, 2);
+	const uint16_t imbuementId = getNumber<uint16_t>(L, 2);
 	Imbuement* imbuement = g_imbuements().getImbuement(imbuementId);
 
 	if (imbuement) {
@@ -27,7 +27,7 @@ int ImbuementFunctions::luaCreateImbuement(lua_State* L) {
 
 int ImbuementFunctions::luaImbuementGetName(lua_State* L) {
 	// imbuement:getName()
-	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
+	const auto* imbuement = getUserdata<Imbuement>(L, 1);
 	if (imbuement) {
 		pushString(L, imbuement->getName());
 	} else {
@@ -38,7 +38,7 @@ int ImbuementFunctions::luaImbuementGetName(lua_State* L) {
 
 int ImbuementFunctions::luaImbuementGetId(lua_State* L) {
 	// imbuement:getId()
-	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
+	const auto* imbuement = getUserdata<Imbuement>(L, 1);
 	if (imbuement) {
 		lua_pushnumber(L, imbuement->getID());
 	} else {
@@ -49,7 +49,7 @@ int ImbuementFunctions::luaImbuementGetId(lua_State* L) {
 
 int ImbuementFunctions::luaImbuementGetItems(lua_State* L) {
 	// imbuement:getItems()
-	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
+	const auto* imbuement = getUserdata<Imbuement>(L, 1);
 	if (!imbuement) {
 		lua_pushnil(L);
 		return 1;
@@ -70,7 +70,7 @@ int ImbuementFunctions::luaImbuementGetItems(lua_State* L) {
 
 int ImbuementFunctions::luaImbuementGetBase(lua_State* L) {
 	// imbuement:getBase()
-	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
+	const auto* imbuement = getUserdata<Imbuement>(L, 1);
 	if (!imbuement) {
 		lua_pushnil(L);
 		return 1;
@@ -95,12 +95,12 @@ int ImbuementFunctions::luaImbuementGetBase(lua_State* L) {
 
 int ImbuementFunctions::luaImbuementGetCategory(lua_State* L) {
 	// imbuement:getCategory()
-	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
+	const auto* imbuement = getUserdata<Imbuement>(L, 1);
 	if (!imbuement) {
 		lua_pushnil(L);
 		return 1;
 	}
-	uint16_t categoryId = imbuement->getCategory();
+	const uint16_t categoryId = imbuement->getCategory();
 	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(categoryId);
 
 	if (categoryImbuement) {
@@ -116,7 +116,7 @@ int ImbuementFunctions::luaImbuementGetCategory(lua_State* L) {
 
 int ImbuementFunctions::luaImbuementIsPremium(lua_State* L) {
 	// imbuement:isPremium()
-	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
+	const auto* imbuement = getUserdata<Imbuement>(L, 1);
 	if (!imbuement) {
 		lua_pushnil(L);
 		return 1;
@@ -128,7 +128,7 @@ int ImbuementFunctions::luaImbuementIsPremium(lua_State* L) {
 
 int ImbuementFunctions::luaImbuementGetElementDamage(lua_State* L) {
 	// imbuement:getElementDamage()
-	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
+	const auto* imbuement = getUserdata<Imbuement>(L, 1);
 	if (imbuement) {
 		lua_pushnumber(L, imbuement->elementDamage);
 	} else {
@@ -139,7 +139,7 @@ int ImbuementFunctions::luaImbuementGetElementDamage(lua_State* L) {
 
 int ImbuementFunctions::luaImbuementGetCombatType(lua_State* L) {
 	// imbuement:getCombatType()
-	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
+	const auto* imbuement = getUserdata<Imbuement>(L, 1);
 	if (imbuement) {
 		lua_pushnumber(L, imbuement->combatType);
 	} else {

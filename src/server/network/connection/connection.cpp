@@ -16,12 +16,13 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/message/networkmessage.hpp"
 #include "server/server.hpp"
+#include "utils/tools.hpp"
 
 ConnectionManager &ConnectionManager::getInstance() {
 	return inject<ConnectionManager>();
 }
 
-Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
+Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, const ConstServicePort_ptr &servicePort) {
 	auto connection = std::make_shared<Connection>(io_service, servicePort);
 	connections.emplace(connection);
 	return connection;
@@ -126,6 +127,7 @@ void Connection::acceptInternal(bool toggleParseHeader) {
 		close(FORCE_CLOSE);
 	}
 }
+
 void Connection::parseProxyIdentification(const std::error_code &error) {
 	std::scoped_lock lock(connectionLock);
 	readTimer.cancel();

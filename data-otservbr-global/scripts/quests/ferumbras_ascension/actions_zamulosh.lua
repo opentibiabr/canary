@@ -12,7 +12,9 @@ local config = {
 	}
 }
 
-function onUse(player, item, fromPosition, target, toPosition, isHotkey)
+local leverZamulosh = Action()
+
+function leverZamulosh.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 8911 then
 		if player:getPosition() ~= Position(33680, 32741, 11) then
 			item:transform(8912)

@@ -20,7 +20,7 @@ function leverTimeGuardian.onUse(player, item, fromPosition, target, toPosition,
 	end
 	if item.itemid == 8911 then
 		local playersTable = {}
-		if doCheckBossRoom(player:getId(), "The Time Guardian", Position(32967, 31654, 13), Position(32989, 31677, 14)) then
+		if player:doCheckBossRoom("The Time Guardian", Position(32967, 31654, 13), Position(32989, 31677, 14)) then
 			for q = 1, #bosses do
 				Game.createMonster(bosses[q].bossName, bosses[q].bossPosition, true, true)
 			end

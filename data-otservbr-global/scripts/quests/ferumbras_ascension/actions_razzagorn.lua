@@ -1,7 +1,7 @@
 local config = {
 	centerRoom = Position(33422, 32467, 14),
 	BossPosition = Position(33422, 32467, 14),
-	newPosition = Position(33419, 32467, 14)
+	newPosition = Position(33419, 32467, 14),
 }
 
 local leverRazzagorn = Action()

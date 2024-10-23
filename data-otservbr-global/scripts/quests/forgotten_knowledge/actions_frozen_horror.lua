@@ -11,9 +11,9 @@ local monsters = {
 	{ monster = "melting frozen horror", pos = Position(32267, 31071, 14) },
 }
 
-local leverZyrtarch = Action()
+local leverMeltingFrozenHorror = Action()
 
-function leverZyrtarch.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function leverMeltingFrozenHorror.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 8911 then
 		if player:getPosition() ~= Position(32302, 31088, 14) then
 			item:transform(8912)
@@ -55,5 +55,5 @@ function leverZyrtarch.onUse(player, item, fromPosition, target, toPosition, isH
 	return true
 end
 
-leverZyrtarch:position(Position(33391, 31177, 10))
-leverZyrtarch:register()
+leverMeltingFrozenHorror:position(Position(32302, 31087, 14))
+leverMeltingFrozenHorror:register()

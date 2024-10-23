@@ -849,7 +849,7 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 	for (const auto &modPosition : modsBasicPosition) {
 		const uint8_t pos = static_cast<uint8_t>(modPosition);
 		uint8_t grade = 0;
-		auto gradeKV = gemsGradeKV(WheelGemQuality_t::Lesser, pos)->get("grade");
+		auto gradeKV = gemsGradeKV(WheelFragmentType_t::Lesser, pos)->get("grade");
 
 		if (gradeKV.has_value()) {
 			grade = static_cast<uint8_t>(gradeKV->get<IntType>());
@@ -862,7 +862,7 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 		for (const auto &modPosition : modsSupremeIt->second.get()) {
 			const uint8_t pos = static_cast<uint8_t>(modPosition);
 			uint8_t grade = 0;
-			auto gradeKV = gemsGradeKV(WheelGemQuality_t::Greater, pos)->get("grade");
+			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
 
 			if (gradeKV.has_value()) {
 				grade = gradeKV->get<IntType>();
@@ -966,13 +966,13 @@ std::shared_ptr<KV> PlayerWheel::gemsKV() const {
 	return m_player.kv()->scoped("wheel-of-destiny")->scoped("gems");
 }
 
-std::shared_ptr<KV> PlayerWheel::gemsGradeKV(WheelGemQuality_t quality, uint8_t pos) const {
-	return gemsKV()->scoped(magic_enum::enum_name(quality))->scoped(std::to_string(pos));
+std::shared_ptr<KV> PlayerWheel::gemsGradeKV(WheelFragmentType_t type, uint8_t pos) const {
+	return gemsKV()->scoped(std::string(magic_enum::enum_name(type)))->scoped(std::to_string(pos));
 }
 
-uint8_t PlayerWheel::getGemGrade(WheelGemQuality_t quality, uint8_t pos) const {
+uint8_t PlayerWheel::getGemGrade(WheelFragmentType_t type, uint8_t pos) const {
 	uint8_t grade = 0;
-	auto gradeKV = gemsGradeKV(quality, pos)->get("grade");
+	auto gradeKV = gemsGradeKV(type, pos)->get("grade");
 
 	if (gradeKV.has_value()) {
 		grade = static_cast<uint8_t>(gradeKV->get<IntType>());
@@ -1270,7 +1270,7 @@ void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
 		const uint8_t pos = static_cast<uint8_t>(modPosition);
 		msg.addByte(pos);
 		uint8_t grade = 0;
-		auto gradeKV = gemsGradeKV(WheelGemQuality_t::Lesser, pos)->get("grade");
+		auto gradeKV = gemsGradeKV(WheelFragmentType_t::Lesser, pos)->get("grade");
 
 		if (gradeKV.has_value()) {
 			grade = static_cast<uint8_t>(gradeKV->get<IntType>());
@@ -1288,7 +1288,7 @@ void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
 			const uint8_t pos = static_cast<uint8_t>(modPosition);
 			msg.addByte(pos);
 			uint8_t grade = 0;
-			auto gradeKV = gemsGradeKV(WheelGemQuality_t::Greater, pos)->get("grade");
+			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
 
 			if (gradeKV.has_value()) {
 				grade = gradeKV->get<IntType>();
@@ -1306,8 +1306,7 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 	uint8_t quantity = 0;
 	uint8_t grade = 0;
 
-	const std::string scope = (fragmentType == WheelFragmentType_t::Lesser) ? "lesser" : "greater";
-	auto gradeKV = gemsGradeKV(scope, pos)->get("grade");
+	auto gradeKV = gemsGradeKV(fragmentType, pos)->get("grade");
 	if (gradeKV.has_value()) {
 		grade = gradeKV->get<IntType>();
 	}
@@ -1343,7 +1342,7 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 		return;
 	}
 
-	gemsGradeKV(scope, pos)->set("grade", grade);
+	gemsGradeKV(fragmentType, pos)->set("grade", grade);
 	registerPlayerBonusData();
 	sendOpenWheelWindow(m_player.getID());
 }
@@ -1817,19 +1816,19 @@ void PlayerWheel::registerPlayerBonusData() {
 		auto count = m_playerBonusData.unlockedVesselResonances[static_cast<uint8_t>(gem.affinity)];
 		if (count >= 1) {
 			std::string modifierName(magic_enum::enum_name(gem.basicModifier1));
-			uint8_t grade = getGemGrade(WheelGemQuality_t::Lesser, static_cast<uint8_t>(gem.basicModifier1));
+			uint8_t grade = getGemGrade(WheelFragmentType_t::Lesser, static_cast<uint8_t>(gem.basicModifier1));
 			g_logger().debug("[{}] Adding basic modifier 1 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
 			m_modifierContext->addStrategies(gem.basicModifier1, grade);
 		}
 		if (count >= 2 && gem.quality >= WheelGemQuality_t::Regular) {
 			std::string modifierName(magic_enum::enum_name(gem.basicModifier2));
-			uint8_t grade = getGemGrade(WheelGemQuality_t::Lesser, static_cast<uint8_t>(gem.basicModifier2));
+			uint8_t grade = getGemGrade(WheelFragmentType_t::Lesser, static_cast<uint8_t>(gem.basicModifier2));
 			g_logger().debug("[{}] Adding basic modifier 2 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
 			m_modifierContext->addStrategies(gem.basicModifier2, grade);
 		}
 		if (count >= 3 && gem.quality >= WheelGemQuality_t::Greater) {
 			std::string modifierName(magic_enum::enum_name(gem.supremeModifier));
-			uint8_t grade = getGemGrade(WheelGemQuality_t::Greater, static_cast<uint8_t>(gem.supremeModifier));
+			uint8_t grade = getGemGrade(WheelFragmentType_t::Greater, static_cast<uint8_t>(gem.supremeModifier));
 			g_logger().debug("[{}] Adding supreme modifier {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
 			m_modifierContext->addStrategies(gem.supremeModifier, grade);
 		}
@@ -2381,7 +2380,7 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 		for (auto modPosition : modsSupremeIt->second.get()) {
 			const uint8_t pos = static_cast<uint8_t>(modPosition);
 			uint8_t grade = 0;
-			auto gradeKV = gemsGradeKV(WheelGemQuality_t::Greater, pos)->get("grade");
+			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
 
 			if (gradeKV.has_value()) {
 				grade = gradeKV->get<IntType>();

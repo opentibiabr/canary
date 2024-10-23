@@ -10,6 +10,7 @@
 #pragma once
 
 #include "wheel_definitions.hpp"
+#include "kv/kv_definitions.hpp"
 
 class Creature;
 class IOWheel;
@@ -184,8 +185,8 @@ private:
 	uint8_t getOptions(uint32_t ownerId) const;
 
 	std::shared_ptr<KV> gemsKV() const;
-	std::shared_ptr<KV> gemsGradeKV(WheelGemQuality_t quality, uint8_t pos) const;
-	uint8_t getGemGrade(WheelGemQuality_t quality, uint8_t pos) const;
+	std::shared_ptr<KV> gemsGradeKV(WheelFragmentType_t quality, uint8_t pos) const;
+	uint8_t getGemGrade(WheelFragmentType_t quality, uint8_t pos) const;
 
 	std::vector<PlayerWheelGem> getRevealedGems() const;
 	std::vector<PlayerWheelGem> getActiveGems() const;

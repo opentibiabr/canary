@@ -109,7 +109,7 @@ int BankFunctions::luaBankWithdraw(lua_State* L) {
 
 	const uint64_t amount = getNumber<uint64_t>(L, 2);
 	if (lua_gettop(L) == 2) {
-		const auto &bank = std::make_shared<Bank>(player);
+		auto bank = std::make_shared<Bank>(player);
 		pushBoolean(L, bank->withdraw(player, amount));
 		return 1;
 	}
@@ -129,7 +129,7 @@ int BankFunctions::luaBankDeposit(lua_State* L) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		return 1;
 	}
-	const auto &bank = std::make_shared<Bank>(player);
+	auto bank = std::make_shared<Bank>(player);
 
 	uint64_t amount = 0;
 	if (lua_isnumber(L, 2)) {

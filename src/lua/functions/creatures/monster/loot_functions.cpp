@@ -12,7 +12,7 @@
 
 int LootFunctions::luaCreateLoot(lua_State* L) {
 	// Loot() will create a new loot item
-	const auto &loot = std::make_shared<Loot>();
+	auto loot = std::make_shared<Loot>();
 	pushUserdata<Loot>(L, loot);
 	setMetatable(L, -1, "Loot");
 	return 1;

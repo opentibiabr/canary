@@ -74,6 +74,175 @@ const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot2Allowed = {
 	WheelGemBasicModifier_t::General_MitigationMultiplier,
 };
 
+const static std::vector<WheelGemBasicModifier_t> modsBasicPosition = {
+	WheelGemBasicModifier_t::General_PhysicalResistance,
+	WheelGemBasicModifier_t::General_HolyResistance,
+	WheelGemBasicModifier_t::General_DeathResistance,
+	WheelGemBasicModifier_t::General_FireResistance,
+	WheelGemBasicModifier_t::General_EarthResistance,
+	WheelGemBasicModifier_t::General_IceResistance,
+	WheelGemBasicModifier_t::General_EnergyResistance,
+
+	WheelGemBasicModifier_t::General_HolyResistance_DeathWeakness,
+	WheelGemBasicModifier_t::General_DeathResistance_HolyWeakness,
+	WheelGemBasicModifier_t::General_FireResistance_EarthResistance,
+	WheelGemBasicModifier_t::General_FireResistance_IceResistance,
+	WheelGemBasicModifier_t::General_FireResistance_EnergyResistance,
+	WheelGemBasicModifier_t::General_EarthResistance_IceResistance,
+	WheelGemBasicModifier_t::General_EarthResistance_EnergyResistance,
+	WheelGemBasicModifier_t::General_IceResistance_EnergyResistance,
+
+	WheelGemBasicModifier_t::General_FireResistance_EarthWeakness,
+	WheelGemBasicModifier_t::General_FireResistance_IceWeakness,
+	WheelGemBasicModifier_t::General_FireResistance_EnergyWeakness,
+	WheelGemBasicModifier_t::General_EarthResistance_FireWeakness,
+	WheelGemBasicModifier_t::General_EarthResistance_IceWeakness,
+	WheelGemBasicModifier_t::General_EarthResistance_EnergyWeakness,
+	WheelGemBasicModifier_t::General_IceResistance_EarthWeakness,
+	WheelGemBasicModifier_t::General_IceResistance_FireWeakness,
+	WheelGemBasicModifier_t::General_IceResistance_EnergyWeakness,
+	WheelGemBasicModifier_t::General_EnergyResistance_EarthWeakness,
+	WheelGemBasicModifier_t::General_EnergyResistance_IceWeakness,
+	WheelGemBasicModifier_t::General_EnergyResistance_FireWeakness,
+	WheelGemBasicModifier_t::General_ManaDrainResistance,
+	WheelGemBasicModifier_t::General_LifeDrainResistance,
+	WheelGemBasicModifier_t::General_ManaDrainResistance_LifeDrainResistance,
+	WheelGemBasicModifier_t::General_MitigationMultiplier,
+
+	WheelGemBasicModifier_t::Vocation_Health,
+	WheelGemBasicModifier_t::Vocation_Mana_FireResistance,
+	WheelGemBasicModifier_t::Vocation_Mana_EnergyResistance,
+	WheelGemBasicModifier_t::Vocation_Mana_Earth_Resistance,
+	WheelGemBasicModifier_t::Vocation_Mana_Ice_Resistance,
+	WheelGemBasicModifier_t::Vocation_Mana,
+	WheelGemBasicModifier_t::Vocation_Health_FireResistance,
+	WheelGemBasicModifier_t::Vocation_Health_EnergyResistance,
+	WheelGemBasicModifier_t::Vocation_Health_EarthResistance,
+	WheelGemBasicModifier_t::Vocation_Health_IceResistance,
+
+	WheelGemBasicModifier_t::Vocation_Capacity_FireResistance,
+	WheelGemBasicModifier_t::Vocation_Capacity_EnergyResistance,
+	WheelGemBasicModifier_t::Vocation_Capacity_EarthResistance,
+	WheelGemBasicModifier_t::Vocation_Capacity_IceResistance,
+	WheelGemBasicModifier_t::Vocation_Capacity,
+};
+
+const static std::vector<WheelGemSupremeModifier_t> modsSupremeKnightPosition = {
+	WheelGemSupremeModifier_t::General_Dodge,
+	WheelGemSupremeModifier_t::General_CriticalDamage,
+	WheelGemSupremeModifier_t::General_LifeLeech,
+	WheelGemSupremeModifier_t::General_ManaLeech,
+	WheelGemSupremeModifier_t::General_RevelationMastery_GiftOfLife,
+
+	WheelGemSupremeModifier_t::Knight_AvatarOfSteel_Cooldown,
+	WheelGemSupremeModifier_t::Knight_ExecutionersThrow_Cooldown,
+	WheelGemSupremeModifier_t::Knight_ExecutionersThrow_DamageIncrease,
+	WheelGemSupremeModifier_t::Knight_ExecutionersThrow_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Knight_Fierce_Berserk_DamageIncrease,
+	WheelGemSupremeModifier_t::Knight_Fierce_Berserk_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Knight_Berserk_DamageIncrease,
+	WheelGemSupremeModifier_t::Knight_Berserk_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Knight_Front_Sweep_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Knight_Front_Sweep_DamageIncrease,
+	WheelGemSupremeModifier_t::Knight_Groundshaker_DamageIncrease,
+	WheelGemSupremeModifier_t::Knight_Groundshaker_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Knight_Annihilation_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Knight_Annihilation_DamageIncrease,
+	WheelGemSupremeModifier_t::Knight_FairWoundCleansing_HealingIncrease,
+	WheelGemSupremeModifier_t::Knight_RevelationMastery_AvatarOfSteel,
+	WheelGemSupremeModifier_t::Knight_RevelationMastery_ExecutionersThrow,
+	WheelGemSupremeModifier_t::Knight_RevelationMastery_CombatMastery,
+};
+
+const static std::vector<WheelGemSupremeModifier_t> modsSupremePaladinPosition = {
+	WheelGemSupremeModifier_t::General_Dodge,
+	WheelGemSupremeModifier_t::General_CriticalDamage,
+	WheelGemSupremeModifier_t::General_LifeLeech,
+	WheelGemSupremeModifier_t::General_ManaLeech,
+	WheelGemSupremeModifier_t::General_RevelationMastery_GiftOfLife,
+
+	WheelGemSupremeModifier_t::Paladin_AvatarOfLight_Cooldown,
+	WheelGemSupremeModifier_t::Paladin_DivineDazzle_Cooldown,
+	WheelGemSupremeModifier_t::Paladin_DivineGrenade_DamageIncrease,
+	WheelGemSupremeModifier_t::Paladin_DivineGrenade_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Paladin_DivineCaldera_DamageIncrease,
+	WheelGemSupremeModifier_t::Paladin_DivineCaldera_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Paladin_DivineMissile_DamageIncrease,
+	WheelGemSupremeModifier_t::Paladin_DivineMissile_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Paladin_EtherealSpear_DamageIncrease,
+	WheelGemSupremeModifier_t::Paladin_EtherealSpear_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Paladin_StrongEtherealSpear_DamageIncrease,
+	WheelGemSupremeModifier_t::Paladin_StrongEtherealSpear_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Paladin_DivineEmpowerment_Cooldown,
+	WheelGemSupremeModifier_t::Paladin_DivineGrenade_Cooldown,
+	WheelGemSupremeModifier_t::Paladin_Salvation_HealingIncrease,
+	WheelGemSupremeModifier_t::Paladin_RevelationMastery_AvatarOfLight,
+	WheelGemSupremeModifier_t::Paladin_RevelationMastery_DivineGrenade,
+	WheelGemSupremeModifier_t::Paladin_RevelationMastery_DivineEmpowerment,
+};
+
+const static std::vector<WheelGemSupremeModifier_t> modsSupremeSorcererPosition = {
+	WheelGemSupremeModifier_t::General_Dodge,
+	WheelGemSupremeModifier_t::General_CriticalDamage,
+	WheelGemSupremeModifier_t::General_LifeLeech,
+	WheelGemSupremeModifier_t::General_ManaLeech,
+	WheelGemSupremeModifier_t::SorcererDruid_UltimateHealing,
+	WheelGemSupremeModifier_t::General_RevelationMastery_GiftOfLife,
+
+	WheelGemSupremeModifier_t::Sorcerer_AvatarOfStorm_Cooldown,
+	WheelGemSupremeModifier_t::Sorcerer_EnergyWave_Cooldown,
+	WheelGemSupremeModifier_t::Sorcerer_GreatDeathBeam_DamageIncrease,
+	WheelGemSupremeModifier_t::Sorcerer_GreatDeathBeam_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Sorcerer_HellsCore_DamageIncrease,
+	WheelGemSupremeModifier_t::Sorcerer_HellsCore_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Sorcerer_EnergyWave_DamageIncrease,
+	WheelGemSupremeModifier_t::Sorcerer_EnergyWave_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Sorcerer_GreatFireWave_DamageIncrease,
+	WheelGemSupremeModifier_t::Sorcerer_GreatFireWave_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Sorcerer_RageOfTheSkies_DamageIncrease,
+	WheelGemSupremeModifier_t::Sorcerer_RageOfTheSkies_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Sorcerer_GreatEnergyBeam_DamageIncrease,
+	WheelGemSupremeModifier_t::Sorcerer_GreatEnergyBeam_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Sorcerer_RevelationMastery_AvatarOfStorm,
+	WheelGemSupremeModifier_t::Sorcerer_RevelationMastery_BeamMastery,
+	WheelGemSupremeModifier_t::Sorcerer_RevelationMastery_DrainBody,
+};
+
+const static std::vector<WheelGemSupremeModifier_t> modsSupremeDruidPosition = {
+	WheelGemSupremeModifier_t::General_Dodge,
+	WheelGemSupremeModifier_t::General_CriticalDamage,
+	WheelGemSupremeModifier_t::General_LifeLeech,
+	WheelGemSupremeModifier_t::General_ManaLeech,
+	WheelGemSupremeModifier_t::SorcererDruid_UltimateHealing,
+	WheelGemSupremeModifier_t::General_RevelationMastery_GiftOfLife,
+
+	WheelGemSupremeModifier_t::Druid_AvatarOfNature_Cooldown,
+	WheelGemSupremeModifier_t::Druid_NaturesEmbrace_Cooldown,
+	WheelGemSupremeModifier_t::Druid_TerraBurst_DamageIncrease,
+	WheelGemSupremeModifier_t::Druid_TerraBurst_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Druid_IceBurst_DamageIncrease,
+	WheelGemSupremeModifier_t::Druid_IceBurst_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Druid_EternalWinter_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Druid_EternalWinter_DamageIncrease,
+	WheelGemSupremeModifier_t::Druid_TerraWave_DamageIncrease,
+	WheelGemSupremeModifier_t::Druid_TerraWave_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Druid_StrongIceWave_DamageIncrease,
+	WheelGemSupremeModifier_t::Druid_StrongIceWave_CriticalExtraDamage,
+	WheelGemSupremeModifier_t::Druid_HealFriend_HealingIncrease,
+	WheelGemSupremeModifier_t::Druid_MassHealing_HealingIncrease,
+	WheelGemSupremeModifier_t::Druid_RevelationMastery_AvatarOfNature,
+	WheelGemSupremeModifier_t::Druid_RevelationMastery_BlessingOfTheGrove,
+	WheelGemSupremeModifier_t::Druid_RevelationMastery_TwinBursts,
+};
+
+// Using reference wrapper to avoid copying the vector to the map
+const static std::unordered_map<uint8_t, std::reference_wrapper<const std::vector<WheelGemSupremeModifier_t>>> modsSupremePositionByVocation = {
+	{ 1, std::cref(modsSupremeSorcererPosition) },
+	{ 2, std::cref(modsSupremeDruidPosition) },
+	{ 3, std::cref(modsSupremePaladinPosition) },
+	{ 4, std::cref(modsSupremeKnightPosition) }
+};
+
 // To avoid conflict in other files that might use a function with the same name
 // Here are built-in helper functions
 namespace {
@@ -669,8 +838,40 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 
 uint16_t PlayerWheel::getUnusedPoints() const {
 	auto totalPoints = getWheelPoints();
+
 	if (totalPoints == 0) {
 		return 0;
+	}
+
+	const auto vocationBaseId = m_player.getVocation()->getBaseId();
+	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
+
+	for (const auto &modPosition : modsBasicPosition) {
+		const uint8_t pos = static_cast<uint8_t>(modPosition);
+		uint8_t grade = 0;
+		auto gradeKV = gemsGradeKV(WheelGemQuality_t::Lesser, pos)->get("grade");
+
+		if (gradeKV.has_value()) {
+			grade = static_cast<uint8_t>(gradeKV->get<IntType>());
+		}
+
+		totalPoints += grade == 3 ? 1 : 0;
+	}
+
+	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
+		for (const auto &modPosition : modsSupremeIt->second.get()) {
+			const uint8_t pos = static_cast<uint8_t>(modPosition);
+			uint8_t grade = 0;
+			auto gradeKV = gemsGradeKV(WheelGemQuality_t::Greater, pos)->get("grade");
+
+			if (gradeKV.has_value()) {
+				grade = gradeKV->get<IntType>();
+			}
+
+			totalPoints += grade == 3 ? 1 : 0;
+		}
+	} else {
+		g_logger().error("[{}] supreme modifications not found for vocation base id: {}", __FUNCTION__, vocationBaseId);
 	}
 
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
@@ -763,6 +964,20 @@ void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
 
 std::shared_ptr<KV> PlayerWheel::gemsKV() const {
 	return m_player.kv()->scoped("wheel-of-destiny")->scoped("gems");
+}
+
+std::shared_ptr<KV> PlayerWheel::gemsGradeKV(WheelGemQuality_t quality, uint8_t pos) const {
+	return gemsKV()->scoped(magic_enum::enum_name(quality))->scoped(std::to_string(pos));
+}
+
+uint8_t PlayerWheel::getGemGrade(WheelGemQuality_t quality, uint8_t pos) const {
+	uint8_t grade = 0;
+	auto gradeKV = gemsGradeKV(quality, pos)->get("grade");
+
+	if (gradeKV.has_value()) {
+		grade = static_cast<uint8_t>(gradeKV->get<IntType>());
+	}
+	return grade;
 }
 
 std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
@@ -924,10 +1139,55 @@ uint16_t PlayerWheel::getGemIndex(const std::string &uuid) const {
 void PlayerWheel::destroyGem(uint16_t index) {
 	auto gem = getGem(index);
 	if (gem.locked) {
-		g_logger().error("[{}] Player {} trying to destroy locked gem with index {}", __FUNCTION__, m_player.getName(), index);
+		g_logger().error("[{}] Player {} destroyed locked gem with index {}", __FUNCTION__, m_player.getName(), index);
 		return;
 	}
+
+	auto backpack = m_player.getInventoryItem(CONST_SLOT_BACKPACK);
+	auto mainBackpack = backpack ? backpack->getContainer() : nullptr;
+
+	uint8_t lesserFragments = 0;
+	uint8_t greaterFragments = 0;
+
+	switch (gem.quality) {
+		case WheelGemQuality_t::Lesser:
+			lesserFragments = normal_random(1, 5);
+			break;
+		case WheelGemQuality_t::Regular:
+			lesserFragments = normal_random(2, 10);
+			break;
+		case WheelGemQuality_t::Greater:
+			greaterFragments = normal_random(1, 5);
+			break;
+	}
+
+	if (lesserFragments > 0) {
+		const auto fragmentsItem = Item::CreateItem(ITEM_LESSER_FRAGMENT, lesserFragments);
+		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_BACKPACK);
+		if (returnValue != RETURNVALUE_NOERROR) {
+			g_logger().error("Failed to add {} lesser fragments to player with name {}", lesserFragments, m_player.getName());
+			m_player.sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
+			return;
+		}
+		g_logger().debug("[{}] Player {} destroyed a gem and received {} lesser fragments", __FUNCTION__, m_player.getName(), lesserFragments);
+	}
+
+	if (greaterFragments > 0) {
+		const auto fragmentsItem = Item::CreateItem(ITEM_GREATER_FRAGMENT, greaterFragments);
+		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_BACKPACK);
+		if (returnValue != RETURNVALUE_NOERROR) {
+			g_logger().error("Failed to add {} greater fragments to player with name {}", greaterFragments, m_player.getName());
+			m_player.sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
+			return;
+		}
+		g_logger().debug("[{}] Player {} destroyed a gem and received {} greater fragments", __FUNCTION__, m_player.getName(), greaterFragments);
+	}
+
 	gem.remove(gemsKV());
+
+	m_player.client->sendResourceBalance(RESOURCE_LESSER_FRAGMENT, m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT));
+	m_player.client->sendResourceBalance(RESOURCE_GREATER_FRAGMENT, m_player.getItemTypeCount(ITEM_GREATER_FRAGMENT));
+
 	sendOpenWheelWindow(m_player.getID());
 }
 
@@ -1002,24 +1262,133 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 			msg.addByte(static_cast<uint8_t>(gem.supremeModifier));
 		}
 	}
-
-	msg.addByte(0); // Lesser gems
-	msg.addByte(0); // Greater gems
 }
 
-void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const {
+void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
+	msg.addByte(0x2E); // Modifiers for all Vocations
+	for (auto modPosition : modsBasicPosition) {
+		const uint8_t pos = static_cast<uint8_t>(modPosition);
+		msg.addByte(pos);
+		uint8_t grade = 0;
+		auto gradeKV = gemsGradeKV(WheelGemQuality_t::Lesser, pos)->get("grade");
+
+		if (gradeKV.has_value()) {
+			grade = static_cast<uint8_t>(gradeKV->get<IntType>());
+		}
+		msg.addByte(grade);
+	}
+
+	msg.addByte(0x17); // Modifiers for specific per Vocations
+
+	const auto vocationBaseId = m_player.getVocation()->getBaseId();
+	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
+
+	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
+		for (auto modPosition : modsSupremeIt->second.get()) {
+			const uint8_t pos = static_cast<uint8_t>(modPosition);
+			msg.addByte(pos);
+			uint8_t grade = 0;
+			auto gradeKV = gemsGradeKV(WheelGemQuality_t::Greater, pos)->get("grade");
+
+			if (gradeKV.has_value()) {
+				grade = gradeKV->get<IntType>();
+			}
+			msg.addByte(grade);
+		}
+	} else {
+		g_logger().error("[{}] vocation base id: {}", __FUNCTION__, m_player.getVocation()->getBaseId());
+	}
+}
+
+void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos) {
+	uint16_t fragmentId = 0;
+	uint32_t value = 0;
+	uint8_t quantity = 0;
+	uint8_t grade = 0;
+
+	const std::string scope = (fragmentType == WheelFragmentType_t::Lesser) ? "lesser" : "greater";
+	auto gradeKV = gemsGradeKV(scope, pos)->get("grade");
+	if (gradeKV.has_value()) {
+		grade = gradeKV->get<IntType>();
+	}
+
+	++grade;
+
+	switch (fragmentType) {
+		case WheelFragmentType_t::Lesser:
+			fragmentId = ITEM_LESSER_FRAGMENT;
+			std::tie(value, quantity) = getLesserGradeCost(grade);
+			break;
+		case WheelFragmentType_t::Greater:
+			fragmentId = ITEM_GREATER_FRAGMENT;
+			std::tie(value, quantity) = getGreaterGradeCost(grade);
+			break;
+		default:
+			g_logger().error("[{}] Invalid Fragment Type: {}", __FUNCTION__, static_cast<uint8_t>(fragmentType));
+			return;
+	}
+
+	if (!m_player.hasItemCountById(fragmentId, quantity, false)) {
+		g_logger().error("[{}] Player {} does not have the required {} fragments with id {}", __FUNCTION__, m_player.getName(), quantity, fragmentId);
+		return;
+	}
+
+	if (!g_game().removeMoney(m_player.getPlayer(), value, 0, true)) {
+		g_logger().error("[{}] Failed to remove {} gold from player {}", __FUNCTION__, value, m_player.getName());
+		return;
+	}
+
+	if (!m_player.removeItemCountById(fragmentId, quantity, false)) {
+		g_logger().error("[{}] Failed to remove {} fragments with id {} from player {}", __FUNCTION__, quantity, fragmentId, m_player.getName());
+		return;
+	}
+
+	gemsGradeKV(scope, pos)->set("grade", grade);
+	registerPlayerBonusData();
+	sendOpenWheelWindow(m_player.getID());
+}
+
+std::tuple<int, int> PlayerWheel::getLesserGradeCost(uint8_t grade) const {
+	switch (grade) {
+		case 1:
+			return std::make_tuple(2000000, 5);
+		case 2:
+			return std::make_tuple(5000000, 15);
+		case 3:
+			return std::make_tuple(30000000, 30);
+		default:
+			throw std::invalid_argument("Invalid level for Lesser Fragment.");
+	}
+}
+
+std::tuple<int, int> PlayerWheel::getGreaterGradeCost(uint8_t grade) const {
+	switch (grade) {
+		case 1:
+			return std::make_tuple(5000000, 5);
+		case 2:
+			return std::make_tuple(12000000, 15);
+		case 3:
+			return std::make_tuple(75000000, 30);
+		default:
+			throw std::invalid_argument("Invalid level for Greater Fragment.");
+	}
+}
+
+void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) {
 	if (m_player.client && m_player.client->oldProtocol) {
 		return;
 	}
 
 	msg.addByte(0x5F);
 	bool canUse = canOpenWheel();
+
 	msg.add<uint32_t>(ownerId); // Player ID
 	msg.addByte(canUse ? 1 : 0); // Can Use
 	if (!canUse) {
 		return;
 	}
 
+	addInitialGems();
 	msg.addByte(getOptions(ownerId)); // Options
 	msg.addByte(m_player.getPlayerVocationEnum()); // Vocation id
 
@@ -1030,6 +1399,7 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	}
 	addPromotionScrolls(msg);
 	addGems(msg);
+	addGradeModifiers(msg);
 	// TODO: read items from inventory
 	auto voc = m_player.getVocation();
 	m_player.client->sendResourceBalance(RESOURCE_BANK, m_player.getBankBalance());
@@ -1037,6 +1407,8 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	m_player.client->sendResourceBalance(RESOURCE_LESSER_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Lesser)));
 	m_player.client->sendResourceBalance(RESOURCE_REGULAR_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Regular)));
 	m_player.client->sendResourceBalance(RESOURCE_GREATER_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Greater)));
+	m_player.client->sendResourceBalance(RESOURCE_LESSER_FRAGMENT, m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT));
+	m_player.client->sendResourceBalance(RESOURCE_GREATER_FRAGMENT, m_player.getItemTypeCount(ITEM_GREATER_FRAGMENT));
 }
 
 void PlayerWheel::sendGiftOfLifeCooldown() const {
@@ -1270,6 +1642,35 @@ uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const 
 	return totalPoints;
 }
 
+void PlayerWheel::addInitialGems() {
+	auto initialsGems = gemsKV()->get("initialGems");
+
+	if (!initialsGems.has_value()) {
+		for (auto gemAffinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+			for (auto gemQuality : magic_enum::enum_values<WheelGemQuality_t>()) {
+				if (gemQuality == WheelGemQuality_t::Greater) {
+					continue;
+				}
+
+				PlayerWheelGem gem;
+				gem.uuid = KV::generateUUID();
+				gem.locked = false;
+				gem.affinity = gemAffinity;
+				gem.quality = gemQuality;
+
+				gem.basicModifier1 = wheelGemBasicSlot1Allowed[uniform_random(0, wheelGemBasicSlot1Allowed.size() - 1)];
+				gem.basicModifier2 = {};
+				gem.supremeModifier = {};
+				if (gemQuality >= WheelGemQuality_t::Regular) {
+					gem.basicModifier2 = selectBasicModifier2(gem.basicModifier1);
+				}
+				gem.save(gemsKV());
+			}
+		}
+		gemsKV()->set("initialGems", true);
+	}
+}
+
 bool PlayerWheel::canOpenWheel() const {
 	// Vocation check
 	if (m_player.getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
@@ -1395,6 +1796,7 @@ void PlayerWheel::registerPlayerBonusData() {
 	resetResistance();
 	resetStats();
 	resetRevelationBonus();
+	m_playerBonusData.momentum = 0;
 	if (!m_modifierContext) {
 		m_modifierContext = std::make_unique<WheelModifierContext>(*this, static_cast<Vocation_t>(m_player.getVocation()->getBaseId()));
 	}
@@ -1411,21 +1813,25 @@ void PlayerWheel::registerPlayerBonusData() {
 	auto activeGems = getActiveGems();
 	std::string playerName = m_player.getName();
 	for (const auto &gem : activeGems) {
+		/*pega a posição do mod gem.basicModifier1, gem.basicModifier2, gem.supremeModifier (sao as posiçoes) */
 		auto count = m_playerBonusData.unlockedVesselResonances[static_cast<uint8_t>(gem.affinity)];
 		if (count >= 1) {
 			std::string modifierName(magic_enum::enum_name(gem.basicModifier1));
+			uint8_t grade = getGemGrade(WheelGemQuality_t::Lesser, static_cast<uint8_t>(gem.basicModifier1));
 			g_logger().debug("[{}] Adding basic modifier 1 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
-			m_modifierContext->addStrategies(gem.basicModifier1);
+			m_modifierContext->addStrategies(gem.basicModifier1, grade);
 		}
 		if (count >= 2 && gem.quality >= WheelGemQuality_t::Regular) {
 			std::string modifierName(magic_enum::enum_name(gem.basicModifier2));
+			uint8_t grade = getGemGrade(WheelGemQuality_t::Lesser, static_cast<uint8_t>(gem.basicModifier2));
 			g_logger().debug("[{}] Adding basic modifier 2 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
-			m_modifierContext->addStrategies(gem.basicModifier2);
+			m_modifierContext->addStrategies(gem.basicModifier2, grade);
 		}
 		if (count >= 3 && gem.quality >= WheelGemQuality_t::Greater) {
 			std::string modifierName(magic_enum::enum_name(gem.supremeModifier));
+			uint8_t grade = getGemGrade(WheelGemQuality_t::Greater, static_cast<uint8_t>(gem.supremeModifier));
 			g_logger().debug("[{}] Adding supreme modifier {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
-			m_modifierContext->addStrategies(gem.supremeModifier);
+			m_modifierContext->addStrategies(gem.supremeModifier, grade);
 		}
 	}
 	m_modifierContext->executeStrategies();
@@ -1967,6 +2373,26 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 	for (const auto &slot : slots) {
 		totalPoints += getPointsBySlotType(slot);
 	}
+
+	const auto vocationBaseId = m_player.getVocation()->getBaseId();
+	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
+
+	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
+		for (auto modPosition : modsSupremeIt->second.get()) {
+			const uint8_t pos = static_cast<uint8_t>(modPosition);
+			uint8_t grade = 0;
+			auto gradeKV = gemsGradeKV(WheelGemQuality_t::Greater, pos)->get("grade");
+
+			if (gradeKV.has_value()) {
+				grade = gradeKV->get<IntType>();
+			}
+
+			totalPoints += grade == 3 ? 1 : 0;
+		}
+	} else {
+		g_logger().error("[{}] supreme modifications not found for vocation base id: {}", __FUNCTION__, vocationBaseId);
+	}
+
 	totalPoints += m_bonusRevelationPoints[static_cast<uint8_t>(affinity)];
 
 	if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::THREE)) {
@@ -2593,15 +3019,27 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 		}
 
 		if (spell->getWheelOfDestinyUpgraded()) {
-			damage.criticalDamage += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_DAMAGE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::CRITICAL_DAMAGE);
-			damage.criticalChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_CHANCE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::CRITICAL_CHANCE);
-			damage.damageMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::DAMAGE);
-			damage.damageReductionMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE_REDUCTION, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::DAMAGE_REDUCTION);
-			damage.healingMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::HEAL, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::HEAL);
-			damage.manaLeech += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::MANA_LEECH);
-			damage.manaLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH_CHANCE);
-			damage.lifeLeech += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH);
-			damage.lifeLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH_CHANCE);
+			damage.criticalDamage += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_DAMAGE, spellGrade) * 100;
+			damage.criticalChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_CHANCE, spellGrade);
+			damage.damageMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE, spellGrade);
+			damage.damageReductionMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE_REDUCTION, spellGrade);
+			damage.healingMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::HEAL, spellGrade);
+			damage.manaLeech += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH, spellGrade);
+			damage.manaLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH_CHANCE, spellGrade);
+			damage.lifeLeech += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH, spellGrade);
+			damage.lifeLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, spellGrade);
+		}
+
+		if (m_spellsBonuses.contains(spell->getName())) {
+			damage.criticalDamage += (getSpellBonus(spell->getName(), WheelSpellBoost_t::CRITICAL_DAMAGE) * 100);
+			damage.criticalChance += getSpellBonus(spell->getName(), WheelSpellBoost_t::CRITICAL_CHANCE);
+			damage.damageMultiplier += getSpellBonus(spell->getName(), WheelSpellBoost_t::DAMAGE);
+			damage.damageReductionMultiplier += getSpellBonus(spell->getName(), WheelSpellBoost_t::DAMAGE_REDUCTION);
+			damage.healingMultiplier += getSpellBonus(spell->getName(), WheelSpellBoost_t::HEAL);
+			damage.manaLeech += getSpellBonus(spell->getName(), WheelSpellBoost_t::MANA_LEECH);
+			damage.manaLeechChance += getSpellBonus(spell->getName(), WheelSpellBoost_t::MANA_LEECH_CHANCE);
+			damage.lifeLeech += getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH);
+			damage.lifeLeechChance += getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH_CHANCE);
 		}
 	}
 

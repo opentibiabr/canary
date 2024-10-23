@@ -9796,8 +9796,9 @@ void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
 		return;
 	}
 
-	auto action = msg.get<uint8_t>();
-	auto param = msg.get<uint8_t>();
+	const auto action = msg.getByte();
+	const auto param = msg.getByte();
+	const auto pos = msg.getByte();
 
 	switch (static_cast<WheelGemAction_t>(action)) {
 		case WheelGemAction_t::Destroy:
@@ -9811,6 +9812,9 @@ void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
 			break;
 		case WheelGemAction_t::ToggleLock:
 			player->wheel()->toggleGemLock(param);
+			break;
+		case WheelGemAction_t::ImproveGrade:
+			player->wheel()->improveGemGrade(static_cast<WheelFragmentType_t>(param), pos);
 			break;
 		default:
 			g_logger().error("[{}] player {} is trying to do invalid action {} on wheel", __FUNCTION__, player->getName(), action);

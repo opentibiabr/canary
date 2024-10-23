@@ -9,11 +9,12 @@
 
 #pragma once
 
-#include "creatures/creatures_definitions.hpp"
 #include "wheel_definitions.hpp"
 #include "enums/player_wheel.hpp"
 
 class PlayerWheel;
+
+enum CombatType_t : uint8_t;
 
 class GemModifierStrategy {
 public:
@@ -86,8 +87,8 @@ public:
 	explicit WheelModifierContext(PlayerWheel &wheel, Vocation_t vocation) :
 		m_wheel(wheel), m_vocation(vocation) { }
 
-	void addStrategies(WheelGemBasicModifier_t modifier);
-	void addStrategies(WheelGemSupremeModifier_t modifier);
+	void addStrategies(WheelGemBasicModifier_t modifier, uint8_t grade);
+	void addStrategies(WheelGemSupremeModifier_t modifier, uint8_t grade);
 
 	void resetStrategies() {
 		m_strategies.clear();

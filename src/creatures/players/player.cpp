@@ -6716,11 +6716,13 @@ bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> 
 
 void Player::triggerMomentum() {
 	auto item = getInventoryItem(CONST_SLOT_HEAD);
-	if (item == nullptr) {
-		return;
+
+	double_t chance = 0;
+	if (item) {
+		chance += item->getMomentumChance();
 	}
 
-	double_t chance = item->getMomentumChance();
+	chance += m_wheelPlayer->getBonusData().momentum;
 	double_t randomChance = uniform_random(0, 10000) / 100.;
 	if (getZoneType() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
 		bool triggered = false;

@@ -34,6 +34,15 @@ public:
 		const std::string &description
 	) override;
 
+	bool registerStoreTransaction(
+		const uint32_t &id,
+		uint8_t type,
+		uint32_t amount,
+		const uint8_t &coinType,
+		const std::string &description,
+		const time_t &time
+	) override;
+
 private:
 	const std::map<uint8_t, std::string> coinTypeToColumn;
 	bool load(const std::string &query, AccountInfo &acc);

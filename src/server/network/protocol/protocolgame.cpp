@@ -17,6 +17,7 @@
 #include "io/io_bosstiary.hpp"
 #include "io/iologindata.hpp"
 #include "io/iomarket.hpp"
+#include "io/io_store.hpp"
 #include "lua/modules/modules.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
@@ -32,6 +33,7 @@
 #include "server/network/protocol/protocolgame.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/combat/spells.hpp"
+#include "creatures/players/gamestore/player_store_detail.hpp"
 #include "utils/tools.hpp"
 #include "creatures/players/management/waitlist.hpp"
 #include "items/weapons/weapons.hpp"
@@ -1249,7 +1251,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xC0:
 			parseForgeBrowseHistory(msg);
 			break;
-		case 0xC9: /* update tile */
+		case 0xC9:
+			parseStoreDetail(msg);
 			break;
 		case 0xCA:
 			parseUpdateContainer(msg);
@@ -1264,7 +1267,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 			parseInspectionObject(msg);
 			break;
 		case 0xD2:
-			g_game().playerRequestOutfit(player->getID());
+			parseGetOutfit(msg);
 			break;
 		case 0xD3:
 			parseSetOutfit(msg);
@@ -1326,8 +1329,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xEE:
 			parseGreet(msg);
 			break;
-		// Premium coins transfer
-		// case 0xEF: parseCoinTransfer(msg); break;
+		case 0xEF:
+			parseCoinTransfer(msg);
+			break;
 		case 0xF0:
 			g_game().playerShowQuestLog(player->getID());
 			break;
@@ -1358,13 +1362,22 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xFF:
 			parseRewardChestCollect(msg);
 			break;
-			// case 0xFA: parseStoreOpen(msg); break;
-			// case 0xFB: parseStoreRequestOffers(msg); break;
-			// case 0xFC: parseStoreBuyOffer(msg) break;
-			// case 0xFD: parseStoreOpenTransactionHistory(msg); break;
-			// case 0xFE: parseStoreRequestTransactionHistory(msg); break;
-
-			// case 0xDF, 0xE0, 0xE1, 0xFB, 0xFC, 0xFD, 0xFE Premium Shop.
+		case 0xFA:
+			parseOpenStore();
+			break;
+		case 0xFB:
+			parseRequestStoreOffers(msg);
+			break;
+		case 0xFC:
+			parseBuyStoreOffer(msg);
+			break;
+		case 0xFD:
+			parseOpenStoreHistory(msg);
+			break;
+		case 0xFE:
+			parseRequestStoreHistory(msg);
+			break;
+			// case 0xDF, 0xE0, 0xE1
 
 		default:
 			std::string hexString = fmt::format("0x{:02x}", recvbyte);
@@ -1651,6 +1664,26 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 	}
 
 	g_game().playerAutoWalk(player->getID(), path);
+}
+
+void ProtocolGame::parseGetOutfit(NetworkMessage &msg) {
+	auto eventType = msg.getByte();
+	if (eventType == 1) {
+		auto tryOnId = msg.get<uint16_t>();
+		const auto outfit = Outfits::getInstance().getOutfitByLookType(player, tryOnId);
+		if (outfit) {
+			g_game().playerRequestOutfit(player->getID(), tryOnId, 0);
+			return;
+		}
+
+		const auto mount = g_game().mounts.getMountByClientID(tryOnId);
+		if (mount) {
+			g_game().playerRequestOutfit(player->getID(), 0, tryOnId);
+			return;
+		}
+	}
+
+	g_game().playerRequestOutfit(player->getID());
 }
 
 void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
@@ -3035,11 +3068,6 @@ void ProtocolGame::parseBugReport(NetworkMessage &msg) {
 void ProtocolGame::parseGreet(NetworkMessage &msg) {
 	uint32_t npcId = msg.get<uint32_t>();
 	g_game().playerNpcGreet(player->getID(), npcId);
-}
-
-void ProtocolGame::parseOfferDescription(NetworkMessage &msg) {
-	auto offerId = msg.get<uint32_t>();
-	g_logger().debug("[{}] offer id: {}", __FUNCTION__, offerId);
 }
 
 void ProtocolGame::parsePreyAction(NetworkMessage &msg) {
@@ -5009,11 +5037,11 @@ void ProtocolGame::sendCoinBalance() {
 	msg.addByte(0xDF);
 	msg.addByte(0x01);
 
-	msg.add<uint32_t>(player->coinBalance); // Normal Coins
+	msg.add<uint32_t>(player->coinBalance + player->coinTransferableBalance); // Total Coins (Normal Coins + Transferable Coins)
 	msg.add<uint32_t>(player->coinTransferableBalance); // Transferable Coins
 
 	if (!oldProtocol) {
-		msg.add<uint32_t>(player->coinBalance); // Reserved Auction Coins
+		msg.add<uint32_t>(0x00); // Reserved Auction Coins
 	}
 
 	writeToOutputBuffer(msg);
@@ -7029,7 +7057,7 @@ void ProtocolGame::sendHouseWindow(uint32_t windowTextId, const std::string &tex
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendOutfitWindow() {
+void ProtocolGame::sendOutfitWindow(uint16_t tryOutfit, uint16_t tryMount) {
 	NetworkMessage msg;
 	msg.addByte(0xC8);
 
@@ -7037,8 +7065,18 @@ void ProtocolGame::sendOutfitWindow() {
 	auto isSupportOutfit = player->isWearingSupportOutfit();
 	bool mounted = false;
 
+	if (tryOutfit != 0) {
+		currentOutfit.lookType = tryOutfit;
+		currentOutfit.lookAddons = tryOutfit >= 962 && tryOutfit <= 975 ? 0 : 3;
+	}
+
 	if (!isSupportOutfit) {
-		const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
+		std::shared_ptr<Mount> currentMount;
+		if (tryMount == 0) {
+			currentMount = g_game().mounts.getMountByID(player->getLastMount());
+		} else {
+			currentMount = g_game().mounts.getMountByClientID(tryMount);
+		}
 		if (currentMount) {
 			mounted = (currentOutfit.lookMount == currentMount->clientId);
 			currentOutfit.lookMount = currentMount->clientId;
@@ -7126,34 +7164,31 @@ void ProtocolGame::sendOutfitWindow() {
 
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
-		if (player->getOutfitAddons(outfit, addons)) {
+		if (tryOutfit == 0 && player->getOutfitAddons(outfit, addons)) {
 			msg.add<uint16_t>(outfit->lookType);
 			msg.addString(outfit->name);
 			msg.addByte(addons);
 			msg.addByte(0x00);
 			++outfitSize;
 		} else if (outfit->lookType == 1210 || outfit->lookType == 1211) {
-			if (player->canWear(1210, 0) || player->canWear(1211, 0)) {
-				msg.add<uint16_t>(outfit->lookType);
-				msg.addString(outfit->name);
-				msg.addByte(3);
-				msg.addByte(0x02);
-				++outfitSize;
-			}
+			msg.add<uint16_t>(outfit->lookType);
+			msg.addString(outfit->name);
+			msg.addByte(3);
+			msg.addByte(0x02);
+			++outfitSize;
 		} else if (outfit->lookType == 1456 || outfit->lookType == 1457) {
-			if (player->canWear(1456, 0) || player->canWear(1457, 0)) {
-				msg.add<uint16_t>(outfit->lookType);
-				msg.addString(outfit->name);
-				msg.addByte(3);
-				msg.addByte(0x03);
-				++outfitSize;
-			}
+			msg.add<uint16_t>(outfit->lookType);
+			msg.addString(outfit->name);
+			msg.addByte(3);
+			msg.addByte(0x03);
+			++outfitSize;
 		} else if (outfit->from == "store") {
 			msg.add<uint16_t>(outfit->lookType);
 			msg.addString(outfit->name);
 			msg.addByte(outfit->lookType >= 962 && outfit->lookType <= 975 ? 0 : 3);
 			msg.addByte(0x01);
-			msg.add<uint32_t>(0x00);
+			uint32_t offerId = player->getSex() == 1 ? outfit->lookType : (outfit->lookType - 1);
+			msg.add<uint32_t>(offerId);
 			++outfitSize;
 		}
 
@@ -7183,7 +7218,7 @@ void ProtocolGame::sendOutfitWindow() {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name);
 			msg.addByte(0x01);
-			msg.add<uint32_t>(0x00);
+			msg.add<uint32_t>(mount->id);
 			++mountSize;
 		}
 
@@ -7222,11 +7257,21 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.add<uint16_t>(familiarSize);
 	msg.setBufferPosition(endFamiliars);
 
-	msg.addByte(0x00); // Try outfit
+	// Try on
+	if (tryOutfit != 0) {
+		msg.addByte(0x01);
+	} else if (tryMount != 0) {
+		msg.addByte(0x02);
+	} else {
+		msg.addByte(0x00);
+	}
+
 	msg.addByte(mounted ? 0x01 : 0x00);
 
-	// Version 12.81 - Random mount 'bool'
-	msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
+	// // Version 12.81 - Random mount 'bool'
+	if (tryOutfit == 0 && tryMount == 0) {
+		msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
+	}
 
 	writeToOutputBuffer(msg);
 }
@@ -9130,6 +9175,447 @@ void ProtocolGame::sendBosstiaryEntryChanged(uint32_t bossid) {
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::parseOpenStore() {
+	g_game().playerOpenStore(player->getID());
+}
+
+void ProtocolGame::openStore() {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xFB);
+
+	auto startCategories = msg.getBufferPosition();
+	uint16_t totalCategories = 0;
+	msg.skipBytes(2);
+
+	auto storeCategories = g_ioStore().getCategoryVector();
+	auto playerVocationId = player->getVocationId();
+	// Categories Bytes
+	for (const auto &category : storeCategories) {
+		if (!category.canRookgaardAccess() && playerVocationId == 0) {
+			continue;
+		}
+		msg.addString(category.getCategoryName());
+
+		auto categoryState = magic_enum::enum_integer<States_t>(category.getCategoryState());
+		msg.addByte(categoryState);
+
+		msg.addByte(0x01); // Category Icons Amounts
+		msg.addString(category.getCategoryIcon());
+
+		msg.add<uint16_t>(0x00); // Parent
+		++totalCategories;
+	}
+
+	// Subcategories Bytes
+	for (const auto &category : storeCategories) {
+		if (category.isSpecialCategory()) {
+			continue;
+		}
+
+		const auto &internalSubCatVector = category.getSubCategoriesVector();
+		for (const auto &subCategory : internalSubCatVector) {
+			if (!subCategory.canRookgaardAccess() && playerVocationId == 0) {
+				continue;
+			}
+			msg.addString(subCategory.getCategoryName());
+
+			auto subCategoryState = magic_enum::enum_integer<States_t>(subCategory.getCategoryState());
+			msg.addByte(subCategoryState);
+
+			msg.addByte(0x01); // Category Icons Amounts
+			msg.addString(subCategory.getCategoryIcon());
+
+			msg.addString(category.getCategoryName()); // Parent
+			++totalCategories;
+		}
+	}
+	msg.setBufferPosition(startCategories);
+	msg.add<uint16_t>(totalCategories);
+
+	writeToOutputBuffer(msg);
+	updateCoinBalance();
+}
+
+void ProtocolGame::parseOfferDescription(NetworkMessage &msg) {
+	uint32_t offerId = msg.get<uint32_t>();
+	auto offer = g_ioStore().getOfferById(offerId);
+	if (!offer) {
+		return;
+	}
+
+	sendOfferDescription(offer);
+}
+
+void ProtocolGame::parseCoinTransfer(NetworkMessage &msg) {
+	auto receptor = msg.getString();
+	auto amount = msg.get<uint32_t>();
+
+	g_game().playerCoinTransfer(player->getID(), receptor, amount);
+}
+
+void ProtocolGame::parseOpenStoreHistory(NetworkMessage &msg) {
+	uint8_t entryPages = msg.getByte(); // Always 26?
+	g_game().playerOpenStoreHistory(player->getID(), 1);
+}
+
+void ProtocolGame::parseRequestStoreHistory(NetworkMessage &msg) {
+	uint32_t currentPage = msg.get<uint32_t>();
+	g_game().playerOpenStoreHistory(player->getID(), currentPage + 1);
+}
+
+void ProtocolGame::sendStoreHistory(uint32_t page) {
+	uint16_t entriesPerPage = 26;
+	auto historyVector = player->getStoreHistory();
+	auto historyVectorLen = getVectorIterationIncreaseCount(historyVector);
+
+	uint32_t lastPage = (1 < std::floor((historyVectorLen - 1) / entriesPerPage) + 1) ? static_cast<uint32_t>(std::floor((historyVectorLen - 1) / entriesPerPage) + 1) : 1;
+	uint32_t currentPage = (lastPage < page) ? lastPage : page;
+
+	std::vector<StoreHistory> historyPerPage;
+	uint16_t pageFirstEntry = (0 < historyVectorLen - (currentPage - 1) * entriesPerPage) ? historyVectorLen - (currentPage - 1) * entriesPerPage : 0;
+	uint16_t pageLastEntry = currentPage != lastPage ? historyVectorLen - currentPage * entriesPerPage : 0;
+	for (uint16_t entry = pageFirstEntry; entry > pageLastEntry; --entry) {
+		historyPerPage.push_back(historyVector[entry - 1]);
+	}
+	auto historyPageToSend = getVectorIterationIncreaseCount(historyPerPage);
+
+	NetworkMessage msg;
+	msg.addByte(0xFD);
+	msg.add<uint32_t>(currentPage - 1); // Current page
+	msg.add<uint32_t>(lastPage); // Last page
+	msg.addByte(static_cast<uint8_t>(historyPageToSend)); // History to send
+
+	if (historyPageToSend > 0) {
+		for (const auto &history : historyPerPage) {
+			msg.add<uint32_t>(history.fromMarket ? history.createdAt : 0);
+			msg.add<uint32_t>(history.createdAt);
+			msg.addByte(uint8_t()); // HistoryType_t enum
+			msg.add<int32_t>(history.coinAmount);
+
+			msg.addByte(enumToValue(history.coinType));
+			msg.addString(history.description);
+			msg.addByte(history.fromMarket); // Toggle details button
+		}
+	}
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseRequestStoreOffers(NetworkMessage &msg) {
+	uint8_t actionType = msg.getByte();
+
+	if (actionType == 0) {
+		sendStoreHome();
+	} else if (actionType == 1) {
+		uint8_t innerAction = msg.getByte();
+		if (innerAction == 1) {
+			auto currentCategory = g_ioStore().findCategory("Boosts");
+			if (!currentCategory) {
+				return;
+			}
+			sendCategoryOffers(currentCategory);
+		}
+	} else if (actionType == 2) {
+		std::string categoryName = msg.getString();
+		auto currentCategory = g_ioStore().findCategory(categoryName);
+		if (!currentCategory) {
+			return;
+		}
+		sendCategoryOffers(currentCategory);
+	} else if (actionType == 4) {
+		uint32_t offerId = msg.get<uint32_t>();
+		auto offer = g_ioStore().getOfferById(offerId);
+		if (!offer) {
+			return;
+		}
+		auto parentName = offer->getParentName();
+		auto parentCategory = g_ioStore().findCategory(parentName);
+		if (!parentCategory) {
+			return;
+		}
+		sendCategoryOffers(parentCategory, offerId);
+	} else if (actionType == 5) {
+		std::string searchName = msg.getString();
+		auto offersVector = g_ioStore().getOffersContainingSubstring(searchName);
+		sendFoundOffers(offersVector);
+	}
+}
+
+void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
+	msg.addString(offer->getOfferName());
+	const auto &relatedOffersVector = offer->getRelatedOffersVector();
+	auto offersCount = getVectorIterationIncreaseCount(relatedOffersVector);
+	msg.addByte(static_cast<uint8_t>(offersCount)); // Related Offers inside a Base Offer
+	sendOfferDescription(offer);
+	for (const auto &relatedOffer : relatedOffersVector) {
+		msg.add<uint32_t>(relatedOffer.id);
+		msg.add<uint16_t>(relatedOffer.count);
+
+		uint32_t offerPrice = relatedOffer.price;
+		if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
+			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
+		}
+		msg.add<uint32_t>(offerPrice);
+
+		auto offerCoinType = magic_enum::enum_integer<CoinType>(offer->getCoinType());
+		msg.addByte(offerCoinType); // Coin Type
+
+		auto canBuyOffer = player->canBuyStoreOffer(offer);
+		msg.addByte(canBuyOffer ? 0x00 : 0x01); // Disabled (Bool)
+		if (!canBuyOffer) {
+			msg.addByte(0x01);
+			auto vectorIndex = g_ioStore().offersDisableIndex.find(offer->getOfferType());
+			if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
+				offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
+			}
+			msg.add<uint16_t>(vectorIndex->second);
+		}
+
+		msg.addByte(0x00); // Offer State
+	}
+
+	uint8_t tryOn = 0;
+	auto offerConverType = magic_enum::enum_integer<ConverType_t>(offer->getConverType());
+
+	msg.addByte(offerConverType); // ConverType
+	if (offerConverType == 0) { // Normal
+		msg.addString(offer->getOfferIcon());
+	} else if (offerConverType == 1) { // Mount
+		auto offerMount = g_game().mounts.getMountByID(offer->getOfferId());
+		msg.add<uint16_t>(offerMount->clientId);
+		tryOn = 1;
+	} else if (offerConverType == 2) { // Outfit
+		auto playerSex = player->getSex();
+		auto offerOutfitIds = offer->getOutfitIds();
+		msg.add<uint16_t>(playerSex == PLAYERSEX_FEMALE ? offerOutfitIds.femaleId : offerOutfitIds.maleId);
+		auto playerOutfit = player->getCurrentOutfit();
+		msg.addByte(playerOutfit.lookHead);
+		msg.addByte(playerOutfit.lookBody);
+		msg.addByte(playerOutfit.lookLegs);
+		msg.addByte(playerOutfit.lookFeet);
+		tryOn = 1;
+	} else if (offerConverType == 3) { // Item
+		msg.add<uint16_t>(static_cast<uint16_t>(offer->getOfferId()));
+	} else if (offerConverType == 4) { // Male/Female Outfit
+		auto playerSex = player->getSex();
+		auto offerOutfitIds = offer->getOutfitIds();
+		msg.addByte(playerSex == PLAYERSEX_FEMALE ? 2 : 1);
+		msg.add<uint16_t>(offerOutfitIds.maleId);
+		msg.add<uint16_t>(offerOutfitIds.femaleId);
+		auto playerOutfit = player->getCurrentOutfit();
+		msg.addByte(playerOutfit.lookHead);
+		msg.addByte(playerOutfit.lookBody);
+		msg.addByte(playerOutfit.lookLegs);
+		msg.addByte(playerOutfit.lookFeet);
+		tryOn = 1;
+	}
+
+	msg.addByte(tryOn); // Try on Type
+	msg.add<uint16_t>(0x00); // Collection
+	msg.add<uint16_t>(0x00); // Popularity Score
+	msg.add<uint32_t>(0x00); // State New Until
+
+	msg.addByte(offer->getUseConfigure());
+	msg.add<uint16_t>(0x00); // Products Capacity
+}
+
+void ProtocolGame::sendStoreHome() {
+	NetworkMessage msg;
+	msg.addByte(0xFC);
+	msg.addString("Home");
+
+	msg.add<uint32_t>(0x00);
+	msg.addByte(0x00); // Window Type
+	msg.addByte(0x00); // Collection Size
+	msg.add<uint16_t>(0x00); // Collection Name
+
+	auto disableReasonVector = g_ioStore().getOffersDisableReasonVector();
+	uint16_t disableReasonVectorLen = disableReasonVector.size();
+	msg.add<uint16_t>(disableReasonVectorLen); // Disable Reasons Vector Length
+	if (disableReasonVectorLen > 0) {
+		for (const auto &reason : disableReasonVector) {
+			msg.addString(reason);
+		}
+	}
+
+	// Offer Bytes
+	auto homeOffersVector = g_ioStore().getHomeOffersVector();
+	auto homeOffersCount = getVectorIterationIncreaseCount(homeOffersVector);
+	msg.add<uint16_t>(homeOffersCount); // Offers Amount
+
+	if (homeOffersCount > 0) {
+		for (const auto &homeOfferId : homeOffersVector) {
+			const Offer* offer = g_ioStore().getOfferById(homeOfferId);
+			sendOfferBytes(msg, offer);
+		}
+	}
+
+	// Banner Bytes
+	auto bannersVector = g_ioStore().getBannersVector();
+
+	auto bannersVectorSize = bannersVector.size();
+	msg.addByte(bannersVectorSize); // Banners Amount
+
+	for (const auto &banner : bannersVector) {
+		msg.addString(banner.bannerName);
+		msg.addByte(0x04); // Banner Type (0x04 = Offer)
+		msg.add<uint32_t>(banner.offerId); // Offer Id
+		msg.addByte(0x00); // Unknown
+		msg.addByte(0x00); // Unknown
+	}
+
+	auto bannerDelay = g_ioStore().getBannerDelay();
+	msg.addByte(bannerDelay); // Banner Delay
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendCategoryOffers(const Category* category, uint32_t redirectId /* = 0*/) {
+	NetworkMessage msg;
+	msg.addByte(0xFC);
+
+	msg.addString(category->getCategoryName());
+
+	msg.add<uint32_t>(redirectId);
+
+	msg.addByte(0x00); // Window Type
+	msg.addByte(0x00); // Collection Size
+	msg.add<uint16_t>(0x00); // Collection Name
+
+	auto disableReasonVector = g_ioStore().getOffersDisableReasonVector();
+	uint16_t disableReasonVectorLen = disableReasonVector.size();
+	msg.add<uint16_t>(disableReasonVectorLen); // Disable Reasons Vector Length
+	if (disableReasonVectorLen > 0) {
+		for (const auto &reason : disableReasonVector) {
+			msg.addString(reason);
+		}
+	}
+
+	auto offersVector = category->getOffersVector();
+	auto offersCount = getVectorIterationIncreaseCount(offersVector);
+	msg.add<uint16_t>(offersCount);
+
+	if (offersCount > 0) {
+		for (const auto &offer : offersVector) {
+			sendOfferBytes(msg, offer);
+		}
+	}
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendFoundOffers(std::vector<Offer> foundOffers) {
+	NetworkMessage msg;
+	msg.addByte(0xFC);
+
+	msg.addString("Search");
+
+	msg.add<uint32_t>(0x00);
+	msg.addByte(0x00); // Window Type
+	msg.addByte(0x00); // Collection Size
+	msg.addString(""); // Collection Name
+
+	auto disableReasonVector = g_ioStore().getOffersDisableReasonVector();
+	uint16_t disableReasonVectorLen = disableReasonVector.size();
+	msg.add<uint16_t>(disableReasonVectorLen); // Disable Reasons Vector Length
+	if (disableReasonVectorLen > 0) {
+		for (auto reason : disableReasonVector) {
+			msg.addString(reason);
+		}
+	}
+
+	auto offersCount = getVectorIterationIncreaseCount(foundOffers);
+	msg.add<uint16_t>(offersCount);
+
+	if (offersCount > 0) {
+		for (const auto &offer : foundOffers) {
+			sendOfferBytes(msg, &offer);
+		}
+	}
+
+	msg.addByte(0x00);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendOfferDescription(const Offer* offer) {
+	NetworkMessage msg;
+	msg.addByte(0xEA);
+
+	msg.add<uint32_t>(offer->getOfferId());
+	msg.addString(offer->getOfferDescription());
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
+	auto offerId = msg.get<uint32_t>();
+	auto offerType = msg.getByte();
+
+	const auto* currentOffer = g_ioStore().getOfferById(offerId);
+	if (!currentOffer) {
+		g_logger().error("Offer with id {} was not found returning nullptr", offerId);
+		return;
+	}
+
+	auto currentOfferType = currentOffer->getOfferType();
+
+	std::string stringName = "";
+	uint8_t sexId = 0;
+
+	if (currentOfferType == OfferTypes_t::NAMECHANGE
+	    || currentOfferType == OfferTypes_t::HIRELING_NAMECHANGE) {
+		stringName = msg.getString();
+		if (stringName.empty()) {
+			requestPurchaseData(currentOffer->getOfferId(), 1);
+			return;
+		}
+	} else if (currentOfferType == OfferTypes_t::HIRELING) {
+		stringName = msg.getString();
+		sexId = msg.getByte();
+		if (stringName.empty()) {
+			requestPurchaseData(currentOffer->getOfferId(), 3);
+			return;
+		}
+	}
+
+	g_game().playerBuyStoreOffer(player->getID(), currentOffer, stringName, sexId);
+}
+
+void ProtocolGame::sendStoreSuccess(std::string successMessage) {
+	NetworkMessage msg;
+	msg.addByte(0xFE);
+
+	msg.addByte(0x00);
+	msg.addString(successMessage);
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendStoreError(StoreErrors_t errorType, std::string errorMessage) {
+	NetworkMessage msg;
+	msg.addByte(0xE0);
+
+	uint8_t errorNum = magic_enum::enum_integer(errorType);
+	msg.addByte(errorNum);
+	msg.addString(errorMessage);
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::requestPurchaseData(uint32_t offerId, uint8_t offerType) {
+	NetworkMessage msg;
+	msg.addByte(0xE1);
+
+	msg.add<uint32_t>(offerId);
+	msg.addByte(offerType); // 1 or 3
+
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
 	if (oldProtocol) {
 		return;
@@ -9208,6 +9694,82 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 	}
 
 	g_game().playerSaveWheel(player->getID(), msg);
+}
+
+void ProtocolGame::parseStoreDetail(NetworkMessage &msg) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	auto createdAt = msg.get<uint32_t>();
+	if (createdAt != 0) {
+		// Get the offer by creation data
+		auto storeDetail = g_ioStore().getStoreHistoryDetail(player->getName(), createdAt, true);
+		if (storeDetail.createdAt != createdAt) {
+			g_logger().error("Store detail not found for creation data: {}, player '{}'", createdAt, player->getName());
+			return;
+		}
+
+		sendStoreDetail(storeDetail);
+	}
+}
+
+void ProtocolGame::sendStoreDetail(const StoreHistoryDetail &storeHistoryDetail) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	auto pricePerCoin = storeHistoryDetail.totalPrice ? storeHistoryDetail.totalPrice / storeHistoryDetail.coinAmount : 0;
+
+	NetworkMessage newMsg;
+	newMsg.addByte(0xCB);
+	newMsg.add<uint32_t>(storeHistoryDetail.createdAt); // Offer id (We will use the creation date as there will only be one for each offer)
+	newMsg.addByte(enumToValue(storeHistoryDetail.type)); // Type (0 = buy, 1 = created)
+	if (storeHistoryDetail.type == StoreDetailType::Finished) {
+		newMsg.add<uint32_t>(storeHistoryDetail.createdAt); // Creation data
+		newMsg.addString(storeHistoryDetail.description);
+		newMsg.addString(storeHistoryDetail.playerName);
+		newMsg.add<int32_t>(storeHistoryDetail.coinAmount);
+		newMsg.add<uint64_t>(pricePerCoin);
+		newMsg.add<int64_t>(storeHistoryDetail.totalPrice);
+	} else {
+		auto storeDetailScoped = player->getStoreDetailScope(storeHistoryDetail.createdAt);
+		auto coinAmountOpt = storeDetailScoped->get("sold-coin-amount");
+		int32_t coinAmount = 0;
+		if (coinAmountOpt) {
+			coinAmount = coinAmountOpt->getNumber();
+		}
+
+		auto receivedGoldAmountOpt = storeDetailScoped->get("received-gold-amount");
+		int64_t receivedGoldAmount = 0;
+		if (receivedGoldAmountOpt) {
+			receivedGoldAmount = receivedGoldAmountOpt->getNumber();
+		}
+
+		uint32_t stillInMarket = std::abs(storeHistoryDetail.coinAmount) - coinAmount;
+		newMsg.addString(storeHistoryDetail.playerName); // Character name
+		newMsg.add<int32_t>(storeHistoryDetail.coinAmount); // Total offer coin amount
+		newMsg.add<int32_t>(coinAmount); // Sold tibia coins
+		newMsg.add<uint32_t>(stillInMarket); // Tibia coins still in market
+		newMsg.add<uint64_t>(pricePerCoin); // Piece price
+		newMsg.add<int64_t>(receivedGoldAmount); // Received gold coins
+		// Obter todos os detalhes do histórico para a oferta específica
+		auto details = player->getStoreHistoryDetails(storeHistoryDetail.createdAt);
+		// Add the sorted details to the NetworkMessage
+		newMsg.add<uint16_t>(details.size()); // Number of details
+		for (const auto &[createdAt, detail] : details) {
+			newMsg.add<uint32_t>(static_cast<uint32_t>(std::stoll(createdAt))); // Creation date
+			newMsg.addString(detail.description);
+			newMsg.addByte(detail.isGold); // Enum 0 - 1 (0 = tibia coin, 1 = gold coin)
+			newMsg.add<int64_t>(detail.coinAmount);
+
+			// Log the sent action
+			g_logger().debug("[{}] - player: {}, {}", __FUNCTION__, player->getName(), detail.toString());
+		}
+	}
+
+	g_logger().debug("sendStoreDetail: CreatedAt: {}, Type: {}, Description: {}, PlayerName: {}, CoinAmount: {}, TotalPrice: {}", storeHistoryDetail.createdAt, storeHistoryDetail.type, storeHistoryDetail.description, storeHistoryDetail.playerName, storeHistoryDetail.coinAmount, storeHistoryDetail.totalPrice);
+	writeToOutputBuffer(newMsg);
 }
 
 void ProtocolGame::sendDisableLoginMusic() {

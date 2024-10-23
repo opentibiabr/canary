@@ -53,6 +53,17 @@ public:
 	 */
 	void registerCoinTransaction(const uint8_t &transactionType, const uint8_t &type, const uint32_t &amount, const std::string &detail);
 
+	/**
+	 * @brief Registers a store transaction.
+	 *
+	 * @param type Type of history entry
+	 * @param coinType Type of the coin
+	 * @param amount Amount of coins to be registered
+	 * @param description Detail of the transaction
+	 * @param time Time of the transaction
+	 */
+	void registerStoreTransaction(const uint8_t &type, const uint32_t &amount, const uint8_t &coinType, const std::string &description, const time_t &time);
+
 	/***************************************************************************
 	 * Account Load/Save
 	 **************************************************************************/

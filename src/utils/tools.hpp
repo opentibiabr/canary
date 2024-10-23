@@ -142,7 +142,10 @@ void capitalizeWordsIgnoringString(std::string &source, const std::string string
 void consoleHandlerExit();
 NameEval_t validateName(const std::string &name);
 
+bool isKegItem(uint16_t itemId);
 bool isCaskItem(uint16_t itemId);
+bool isExerciseWeapon(uint16_t itemId);
+uint32_t calculateBoostPrice(int32_t boostCounter);
 
 std::string getObjectCategoryName(ObjectCategory_t category);
 bool isValidObjectCategory(ObjectCategory_t category);

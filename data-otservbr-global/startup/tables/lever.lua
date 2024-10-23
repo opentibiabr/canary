@@ -15,6 +15,45 @@ LeverAction = {
 			{ x = 32972, y = 32412, z = 11 },
 		},
 	},
+	-- The Secret Library Quest
+	[4901] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 33522, y = 31464, z = 15 },
+		},
+	},
+	[4906] = {
+		itemId = false,
+		itemPos = {
+			{ x = 33251, y = 32039, z = 8 },
+			{ x = 33218, y = 32096, z = 10 },
+		},
+	},
+	[4922] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 33364, y = 31343, z = 9 },
+		},
+	},
+	-- Cults of Tibia Quest
+	[5500] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33095, y = 31942, z = 15 },
+		},
+	},
+	[5501] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33138, y = 31952, z = 15 },
+		},
+	},
+	[5520] = {
+		itemId = 9110,
+		itemPos = {
+			{ x = 33299, y = 32144, z = 10 },
+		},
+	},
 	-- The Pits of Inferno Quest
 	[7799] = {
 		itemId = 431,
@@ -100,6 +139,19 @@ LeverAction = {
 		itemId = 2772,
 		itemPos = {
 			{ x = 32576, y = 31862, z = 14 },
+		},
+	},
+	-- Forgotten Knowledge Quest
+	[26663] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 32792, y = 32820, z = 13 },
+		},
+	},
+	[26664] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 32840, y = 32820, z = 13 },
 		},
 	},
 	-- Dawnport bridge lever
@@ -230,9 +282,12 @@ LeverAction = {
 	-- The Pits of Inferno Quest
 	[50160] = {
 		itemId = 2772,
-		itemPos = {
-			{ x = 32853, y = 32318, z = 9 },
-		},
+		itemPos = { x = 32853, y = 32318, z = 9 },
+	},
+	-- The Pits of Inferno Quest
+	[57234] = {
+		itemId = 2772,
+		itemPos = { x = 33841, y = 32080, z = 14 },
 	},
 }
 

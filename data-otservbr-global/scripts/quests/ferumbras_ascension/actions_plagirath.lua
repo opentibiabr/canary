@@ -1,101 +1,56 @@
 local config = {
-	boss = {
-		name = "Plagirath",
-		position = Position(33172, 31501, 13),
-	},
-	timeToDefeat = 17 * 60, -- 17 minutes in seconds
+	centerRoom = Position(33172, 31501, 13),
+	BossPosition = Position(33172, 31501, 13),
 	playerPositions = {
-		{ pos = Position(33229, 31500, 13), teleport = Position(33173, 31504, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33229, 31501, 13), teleport = Position(33173, 31504, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33229, 31502, 13), teleport = Position(33173, 31504, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33229, 31503, 13), teleport = Position(33173, 31504, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33229, 31504, 13), teleport = Position(33173, 31504, 13), effect = CONST_ME_TELEPORT },
+		Position(33229, 31500, 13),
+		Position(33229, 31501, 13),
+		Position(33229, 31502, 13),
+		Position(33229, 31503, 13),
+		Position(33229, 31504, 13),
 	},
-	specPos = {
-		from = Position(33159, 31488, 13),
-		to = Position(33190, 31515, 13),
-	},
-	exit = Position(33319, 32318, 13),
+	newPosition = Position(33173, 31504, 13),
 }
 
 local leverPlagirath = Action()
 
 function leverPlagirath.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
-	for _, spec in pairs(spectators) do
-		if spec:isPlayer() then
-			player:say("Someone is already inside the room.", TALKTYPE_MONSTER_SAY)
-			return true
-		end
-	end
-
-	if isBossInRoom(config.specPos.from, config.specPos.to, config.boss.name) then
-		player:say("The room is being cleared. Please wait a moment.", TALKTYPE_MONSTER_SAY)
-		return true
-	end
-
-	local players = {}
-	for i = 1, #config.playerPositions do
-		local pos = config.playerPositions[i].pos
-		local creature = Tile(pos):getTopCreature()
-		if not creature or not creature:isPlayer() then
-			player:sendCancelMessage("You need " .. #config.playerPositions .. " players to challenge " .. config.boss.name .. ".")
-			return true
-		end
-		table.insert(players, creature)
-	end
-
-	for i = 1, #players do
-		local playerToTeleport = players[i]
-		local teleportPos = config.playerPositions[i].teleport
-		local effect = config.playerPositions[i].effect
-		playerToTeleport:teleportTo(teleportPos)
-		teleportPos:sendMagicEffect(effect)
-	end
-
-	Game.createMonster(config.boss.name, config.boss.position)
-
-	addEvent(clearBossRoom, config.timeToDefeat * 1000, config.specPos.from, config.specPos.to, config.exit)
-
 	if item.itemid == 8911 then
+		if player:getPosition() ~= Position(33229, 31500, 13) then
+			item:transform(8912)
+			return true
+		end
+	end
+	if item.itemid == 8911 then
+		if Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.PlagirathTimer) >= 1 then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to wait a while, recently someone challenge Plagirath.")
+			return true
+		end
+		local specs, spec = Game.getSpectators(config.centerRoom, false, false, 15, 15, 15, 15)
+		for i = 1, #specs do
+			spec = specs[i]
+			if spec:isPlayer() then
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is fighting with Plagirath.")
+				return true
+			end
+		end
+		Game.createMonster("Plagirath", config.BossPosition, true, true)
+		for y = 31500, 31504 do
+			local playerTile = Tile(Position(33229, y, 13)):getTopCreature()
+			if playerTile and playerTile:isPlayer() then
+				playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
+				playerTile:teleportTo(config.newPosition)
+				playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+				playerTile:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.PlagirathTimer, os.time() + 60 * 60 * 24 * 2)
+			end
+		end
+		Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.PlagirathTimer, 1)
+		addEvent(clearForgotten, 30 * 60 * 1000, Position(33159, 31491, 13), Position(33185, 31513, 13), Position(33319, 32318, 13), Storage.Quest.U10_90.FerumbrasAscension.PlagirathTimer)
 		item:transform(8912)
-	else
+	elseif item.itemid == 8912 then
 		item:transform(8911)
 	end
 
 	return true
-end
-
-function clearBossRoom(fromPos, toPos, exitPos)
-	local spectators = Game.getSpectators(fromPos, false, false, 0, 0, 0, 0, toPos)
-	for _, spec in pairs(spectators) do
-		if spec:isPlayer() then
-			spec:teleportTo(exitPos)
-			exitPos:sendMagicEffect(CONST_ME_TELEPORT)
-			spec:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You took too long, the battle has ended.")
-		else
-			spec:remove()
-		end
-	end
-end
-
-function isBossInRoom(fromPos, toPos, bossName)
-	local monstersRemoved = false
-	for x = fromPos.x, toPos.x do
-		for y = fromPos.y, toPos.y do
-			for z = fromPos.z, toPos.z do
-				local tile = Tile(Position(x, y, z))
-				if tile then
-					local creature = tile:getTopCreature()
-					if creature and creature:isMonster() then
-						creature:remove()
-						monstersRemoved = true
-					end
-				end
-			end
-		end
-	end
-	return monstersRemoved
 end
 
 leverPlagirath:uid(1022)

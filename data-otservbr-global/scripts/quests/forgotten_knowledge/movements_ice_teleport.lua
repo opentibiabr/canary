@@ -1,7 +1,7 @@
 local destination = {
 	[26667] = {
 		position = Position(32273, 31053, 13),
-		storage = Storage.ForgottenKnowledge.AccessMachine,
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.AccessMachine,
 	},
 }
 

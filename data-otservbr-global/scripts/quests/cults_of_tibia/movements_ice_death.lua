@@ -1,11 +1,11 @@
 function Player.sendFakeDeathWindow(self)
-	-- consider migrating to ProtocolGame::sendDeath
 	local msg = NetworkMessage()
+	-- I found this in the function ProtocolGame::sendReLoginWindow
 	msg:addByte(0x28)
-	msg:addByte(0x01)
-	msg:addByte(2)
-	msg:addByte(0x00) -- Use death redemption
-	msg:sendToPlayer(self, false)
+	msg:addByte(0x00)
+	msg:addByte(0x00)
+	msg:addByte(0x00)
+	msg:sendToPlayer(self)
 	return true
 end
 
@@ -44,9 +44,9 @@ function iceDeath.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	if player:getStorageValue(Storage.CultsOfTibia.Barkless.Ice) == 2 then
-		player:setStorageValue(Storage.CultsOfTibia.Barkless.Ice, 3)
-		player:setStorageValue(Storage.CultsOfTibia.Barkless.Death, 1)
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Ice) == 2 then
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Ice, 3)
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Death, 1)
 		for _, conditionType in pairs(conditions) do
 			if player:getCondition(conditionType) then
 				player:removeCondition(conditionType)
@@ -58,18 +58,13 @@ function iceDeath.onStepIn(creature, item, position, fromPosition)
 		if it then
 			it:decay()
 		end
-		player:addHealth((-player:getHealth() + 1))
+		player:addHealth(-player:getHealth() + 1)
 		player:sendTextMessage(MESSAGE_BEYOND_LAST, "You were killed by something evil and others.")
-		-- TODO parse active blessings and show that you didn't lose any blessings
-		player:sendTextMessage(
-			MESSAGE_BEYOND_LAST,
-			"You are still blessed with Wisdom of Solitude, Spark of the Phoenix,Fire of the Suns, \z
-		Spiritual Shielding, Embrace of Tibia, Heart of the Mountani, Blood of the Montain and Twist of Fate."
-		)
+		player:sendTextMessage(MESSAGE_BEYOND_LAST, "You are still blessed with Wisdom of Solitude, Spark of the Phoenix, Fire of the Suns, Spiritual Shielding, Embrace of Tibia, Heart of the Mountain, Blood of the Mountain, and Twist of Fate.")
 		player:sendTextMessage(MESSAGE_BEYOND_LAST, "You lost 0 experience and 0.00% of all of your skills.")
 		player:sendTextMessage(MESSAGE_BEYOND_LAST, "You did not lose any items.")
-		player:setStorageValue(Storage.CultsOfTibia.Barkless.Mission, 3)
-		player:setStorageValue(Storage.CultsOfTibia.Barkless.AccessDoor, 1)
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission, 3)
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.AccessDoor, 1)
 		player:sendTextMessage(MESSAGE_BEYOND_LAST, "The cold has all but disappeared from your body and you're getting warmer. You need to renew all preparations for purification.")
 		player:sendFakeDeathWindow()
 	else

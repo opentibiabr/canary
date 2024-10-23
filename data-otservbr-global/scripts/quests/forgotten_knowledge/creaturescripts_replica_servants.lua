@@ -1,11 +1,11 @@
 local servants = {
 	["golden servant replica"] = {
-		storage = GlobalStorage.ForgottenKnowledge.GoldenServant,
-		playerStorage = Storage.ForgottenKnowledge.GoldenServantCounter,
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.GoldenServant,
+		playerStorage = Storage.Quest.U11_02.ForgottenKnowledge.GoldenServantCounter,
 	},
 	["diamond servant replica"] = {
-		storage = GlobalStorage.ForgottenKnowledge.DiamondServant,
-		playerStorage = Storage.ForgottenKnowledge.DiamondServantCounter,
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.DiamondServant,
+		playerStorage = Storage.Quest.U11_02.ForgottenKnowledge.DiamondServantCounter,
 	},
 }
 local replicaServant = CreatureEvent("ReplicaServantDeath")
@@ -18,7 +18,7 @@ function replicaServant.onDeath(creature, _corpse, _lastHitKiller, mostDamageKil
 		Game.setStorageValue(bossConfig.storage, 0)
 	end
 	Game.setStorageValue(bossConfig.storage, Game.getStorageValue(bossConfig.storage) + 1)
-	if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.GoldenServant) >= 5 and Game.getStorageValue(GlobalStorage.ForgottenKnowledge.DiamondServant) >= 5 then
+	if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.GoldenServant) >= 5 and Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.DiamondServant) >= 5 then
 		if not Tile(Position(32815, 32870, 13)):getItemById(10840) then
 			local teleport = Game.createItem(10840, 1, Position(32815, 32870, 13))
 			if teleport then

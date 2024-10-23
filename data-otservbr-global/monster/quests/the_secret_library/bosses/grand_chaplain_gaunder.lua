@@ -26,7 +26,7 @@ monster.speed = 105
 monster.manaCost = 0
 
 monster.events = {
-	"GrandChaplainGaunderDeath",
+	"killingLibrary",
 }
 
 monster.changeTarget = {

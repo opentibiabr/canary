@@ -5,7 +5,7 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREAREA)
 
 local combatCast = Combat()
 
-local barrelId = 23485
+local barrelId = 23486
 local bombArea = {
 	{ 0, 1, 1, 1, 0 },
 	{ 1, 1, 1, 1, 1 },

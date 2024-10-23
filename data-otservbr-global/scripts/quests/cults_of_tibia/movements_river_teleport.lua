@@ -12,12 +12,12 @@ function riverTeleport.onStepIn(creature, item, position, fromPosition)
 		return false
 	end
 
-	if player:getStorageValue(Storage.CultsOfTibia.Life.Mission) < 7 then
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Life.Mission) < 7 then
 		player:teleportTo(Position(33474, 32281, 10))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	end
 
-	if player:getStorageValue(Storage.CultsOfTibia.Life.Mission) >= 7 then
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Life.Mission) >= 7 then
 		player:teleportTo(Position(33479, 32235, 10))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	end

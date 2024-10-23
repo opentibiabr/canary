@@ -7,7 +7,7 @@ function forgottenKnowledgeSecret.onUse(player, item, fromPosition, target, toPo
 	if not player:getItemById(23738, true) then
 		return false
 	end
-	if player:getStorageValue(Storage.ForgottenKnowledge.SilverKey) < 1 or not player:getItemById(23733, true) then
+	if player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.SilverKey) < 1 or not player:getItemById(23733, true) then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You don't have the fitting key.")
 		return true
 	end

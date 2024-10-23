@@ -86,8 +86,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 	const auto &spell = getUserdataShared<Spell>(L, 1);
 	if (spell) {
 		if (spell->spellType == SPELL_INSTANT) {
-			const auto &spellBase = getUserdataShared<Spell>(L, 1);
-			const auto instant = std::static_pointer_cast<InstantSpell>(spellBase);
+			const auto &instant = std::static_pointer_cast<InstantSpell>(spell);
 			if (!instant->loadCallback()) {
 				pushBoolean(L, false);
 				return 1;
@@ -95,8 +94,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 			instant->setLoadedCallback(true);
 			pushBoolean(L, true);
 		} else if (spell->spellType == SPELL_RUNE) {
-			const auto &spellBase = getUserdataShared<Spell>(L, 1);
-			const auto &rune = std::static_pointer_cast<RuneSpell>(spellBase);
+			const auto &rune = std::static_pointer_cast<RuneSpell>(spell);
 			if (!rune->loadCallback()) {
 				pushBoolean(L, false);
 				return 1;

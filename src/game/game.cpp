@@ -1567,6 +1567,10 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 	uint32_t n = 0;
 
 	while ((subCylinder = toCylinder->queryDestination(index, creature, toItem, flags)->getTile()) != toCylinder) {
+		if (subCylinder == nullptr) {
+			break;
+		}
+
 		map.moveCreature(creature, subCylinder);
 
 		if (creature->getParent() != subCylinder) {
@@ -1971,6 +1975,10 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	int floorN = 0;
 
 	while ((subCylinder = toCylinder->queryDestination(index, item, toItem, flags)) != toCylinder) {
+		if (subCylinder == nullptr) {
+			break;
+		}
+
 		toCylinder = subCylinder;
 		flags = 0;
 

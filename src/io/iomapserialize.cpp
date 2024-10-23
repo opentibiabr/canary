@@ -215,7 +215,7 @@ bool IOMapSerialize::loadItem(PropStream &propStream, const std::shared_ptr<Cyli
 }
 
 void IOMapSerialize::saveItem(PropWriteStream &stream, const std::shared_ptr<Item> &item) {
-	std::shared_ptr<Container> container = item->getContainer();
+	const auto &container = item->getContainer();
 
 	// Write ID & props
 	stream.write<uint16_t>(item->getID());

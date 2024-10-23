@@ -663,7 +663,7 @@ public:
 	std::shared_ptr<Cylinder> getTopParent();
 	std::shared_ptr<Tile> getTile() override;
 	bool isRemoved() override {
-		const auto parent = getParent();
+		const auto &parent = getParent();
 		if (parent) {
 			return parent->isRemoved();
 		}

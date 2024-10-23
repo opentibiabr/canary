@@ -23,7 +23,7 @@ function ferumbrasAscendantRatLever.onUse(player, item, fromPosition, target, to
 
 	if item.itemid == 8911 then
 		local playersTable = {}
-		if doCheckBossRoom(player:getId(), "The Lord of the Lice", Position(33187, 31429, 12), Position(33242, 31487, 12)) then
+		if player:doCheckBossRoom("The Lord of the Lice", Position(33187, 31429, 12), Position(33242, 31487, 12)) then
 			local specs, spec = Game.getSpectators(config.centerRoom, false, false, 30, 30, 30, 30)
 			for i = 1, #specs do
 				spec = specs[i]
@@ -39,7 +39,7 @@ function ferumbrasAscendantRatLever.onUse(player, item, fromPosition, target, to
 					playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 					playerTile:teleportTo(config.newPosition)
 					playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-					playerTile:setStorageValue(Storage.FerumbrasAscension.TheLordOfTheLiceTimer, os.time() + 60 * 60 * 2 * 24)
+					playerTile:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheLordOfTheLiceTimer, os.time() + 60 * 60 * 2 * 24)
 					table.insert(playersTable, playerTile:getId())
 				end
 			end

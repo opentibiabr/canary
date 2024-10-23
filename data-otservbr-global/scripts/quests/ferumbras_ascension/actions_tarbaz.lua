@@ -15,7 +15,7 @@ function leverTarbaz.onUse(player, item, fromPosition, target, toPosition, isHot
 	end
 	if item.itemid == 8911 then
 		local playersTable = {}
-		if doCheckBossRoom(player:getId(), "Tarbaz", Position(33446, 32833, 11), Position(33515, 32875, 12)) then
+		if player:doCheckBossRoom("Tarbaz", Position(33446, 32833, 11), Position(33515, 32875, 12)) then
 			local specs, spec = Game.getSpectators(config.centerRoom, false, false, 15, 15, 15, 15)
 			for i = 1, #specs do
 				spec = specs[i]

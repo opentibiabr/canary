@@ -41,7 +41,7 @@ local chains = {
 local ferumbrasAscendantTheShattererLevers = Action()
 
 function ferumbrasAscendantTheShattererLevers.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(Storage.FerumbrasAscension.TheShatterer) >= 1 then
+	if player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShatterer) >= 1 then
 		player:sendCancelMessage("You cannot use this lever again.")
 		return true
 	end

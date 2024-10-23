@@ -22,7 +22,7 @@ function ferumbrasAscendantTheShattererLever.onUse(player, item, fromPosition, t
 	end
 	if item.itemid == 8912 then
 		local playersTable = {}
-		if doCheckBossRoom(player:getId(), "The Shatterer", Position(33377, 32390, 14), Position(33446, 32447, 14)) then
+		if player:doCheckBossRoom("The Shatterer", Position(33377, 32390, 14), Position(33446, 32447, 14)) then
 			local specs, spec = Game.getSpectators(config.centerRoom, false, false, 30, 30, 30, 30)
 			for i = 1, #specs do
 				spec = specs[i]
@@ -38,7 +38,7 @@ function ferumbrasAscendantTheShattererLever.onUse(player, item, fromPosition, t
 					playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 					playerTile:teleportTo(config.newPosition)
 					playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-					playerTile:setStorageValue(Storage.FerumbrasAscension.TheShattererTimer, os.time() + 60 * 60 * 2 * 24)
+					playerTile:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererTimer, os.time() + 60 * 60 * 2 * 24)
 					table.insert(playersTable, playerTile:getId())
 				end
 			end

@@ -43,7 +43,7 @@ function leverFerumbras.onUse(player, item, fromPosition, target, toPosition, is
 		end
 	end
 	if item.itemid == 8911 then
-		if doCheckBossRoom(player:getId(), "Ascending Ferumbras", Position(33379, 31460, 14), Position(33405, 31485, 14)) then
+		if player:doCheckBossRoom("Ascending Ferumbras", Position(33379, 31460, 14), Position(33405, 31485, 14)) then
 			Game.createMonster("Ascending Ferumbras", config.BossPosition, true, true)
 			for b = 1, 10 do
 				local xrand = math.random(-10, 10)
@@ -59,7 +59,7 @@ function leverFerumbras.onUse(player, item, fromPosition, target, toPosition, is
 						playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 						playerTile:teleportTo(config.newPosition)
 						playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-						playerTile:setStorageValue(Storage.FerumbrasAscension.FerumbrasTimer, os.time() + 60 * 60 * 20 * 24)
+						playerTile:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.FerumbrasTimer, os.time() + 60 * 60 * 20 * 24)
 						table.insert(playersTable, playerTile:getId())
 					end
 				end

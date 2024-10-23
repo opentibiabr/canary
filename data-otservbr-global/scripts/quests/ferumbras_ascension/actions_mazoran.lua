@@ -23,7 +23,7 @@ function leverMazoran.onUse(player, item, fromPosition, target, toPosition, isHo
 
 	if item.itemid == 8911 then
 		local playersTable = {}
-		if doCheckBossRoom(player:getId(), "Mazoran", Position(33572, 32679, 14), Position(33599, 32701, 14)) then
+		if player:doCheckBossRoom("Mazoran", Position(33572, 32679, 14), Position(33599, 32701, 14)) then
 			local specs, spec = Game.getSpectators(config.centerRoom, false, false, 15, 15, 15, 15)
 			for i = 1, #specs do
 				spec = specs[i]
@@ -39,7 +39,7 @@ function leverMazoran.onUse(player, item, fromPosition, target, toPosition, isHo
 					playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 					playerTile:teleportTo(config.newPosition)
 					playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-					playerTile:setStorageValue(Storage.FerumbrasAscension.MazoranTimer, os.time() + os.time() + 60 * 60 * 2 * 24)
+					playerTile:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.MazoranTimer, os.time() + os.time() + 60 * 60 * 2 * 24)
 					table.insert(playersTable, playerTile:getId())
 				end
 			end

@@ -23,7 +23,7 @@ function leverZamulosh.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 	if item.itemid == 8911 then
 		local playersTable = {}
-		if doCheckBossRoom(player:getId(), "Zamulosh", Position(33634, 32749, 11), Position(33654, 32765, 11)) then
+		if player:doCheckBossRoom("Zamulosh", Position(33634, 32749, 11), Position(33654, 32765, 11)) then
 			local specs, spec = Game.getSpectators(config.centerRoom, false, false, 15, 15, 15, 15)
 			for i = 1, #specs do
 				spec = specs[i]

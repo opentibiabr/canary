@@ -40,7 +40,7 @@ function leverPlagirath.onUse(player, item, fromPosition, target, toPosition, is
 				playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 				playerTile:teleportTo(config.newPosition)
 				playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				playerTile:setStorageValue(Storage.FerumbrasAscension.PlagirathTimer, os.time() + 60 * 60 * 24 * 2)
+				playerTile:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.PlagirathTimer, os.time() + 60 * 60 * 24 * 2)
 			end
 		end
 		Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.PlagirathTimer, 1)

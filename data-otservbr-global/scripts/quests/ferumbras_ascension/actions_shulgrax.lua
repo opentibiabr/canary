@@ -22,7 +22,7 @@ function leverShulgrax.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 	if item.itemid == 8911 then
 		local playersTable = {}
-		if doCheckBossRoom(player:getId(), "Shulgrax", Position(33473, 32776, 13), Position(33496, 32798, 13)) then
+		if player:doCheckBossRoom("Shulgrax", Position(33473, 32776, 13), Position(33496, 32798, 13)) then
 			local specs, spec = Game.getSpectators(config.centerRoom, false, false, 15, 15, 15, 15)
 			for i = 1, #specs do
 				spec = specs[i]
@@ -38,7 +38,7 @@ function leverShulgrax.onUse(player, item, fromPosition, target, toPosition, isH
 					playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 					playerTile:teleportTo(config.newPosition)
 					playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-					playerTile:setStorageValue(Storage.FerumbrasAscension.ShulgraxTimer, os.time() + 60 * 60 * 2 * 24)
+					playerTile:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.ShulgraxTimer, os.time() + 60 * 60 * 2 * 24)
 					table.insert(playersTable, playerTile:getId())
 				end
 			end

@@ -423,6 +423,14 @@ public:
 	WheelGemBasicModifier_t selectBasicModifier2(WheelGemBasicModifier_t modifier1) const;
 
 private:
+	void resetRevelationState();
+	void processActiveGems();
+	void applyStageBonuses();
+	void applyStageBonusForColor(const std::string& color);
+	void applyRedStageBonus(uint8_t stageValue, Vocation_t vocationEnum);
+	void applyPurpleStageBonus(uint8_t stageValue, Vocation_t vocationEnum);
+	void applyBlueStageBonus(uint8_t stageValue, Vocation_t vocationEnum);
+
 	friend class Player;
 	// Reference to the player
 	Player &m_player;

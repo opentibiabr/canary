@@ -57,6 +57,7 @@ npcConfig.shop = {
 	{ itemName = "candlestick", clientId = 2917, buy = 2 },
 	{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
 	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
+	{ itemName = "crusher", clientId = 46627, buy = 500 },
 	{ itemName = "fishing rod", clientId = 3483, buy = 150, sell = 40 },
 	{ itemName = "fox paw", clientId = 27462, sell = 100 },
 	{ itemName = "fur armor", clientId = 22085, sell = 5000 },

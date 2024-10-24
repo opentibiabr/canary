@@ -105,6 +105,7 @@ npcConfig.shop = {
 	{ itemName = "closed trap", clientId = 3481, buy = 280 },
 	{ itemName = "crossbow", clientId = 3349, buy = 500, sell = 500 },
 	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
+	{ itemName = "crusher", clientId = 46627, buy = 500 },
 	{ itemName = "crystalline arrow", clientId = 15793, buy = 20 },
 	{ itemName = "cup", clientId = 2884, buy = 2 },
 	{ itemName = "diamond arrow", clientId = 35901, buy = 100 },

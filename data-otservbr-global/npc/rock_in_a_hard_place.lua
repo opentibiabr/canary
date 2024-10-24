@@ -109,6 +109,7 @@ local itemsTable = {
 		{ itemName = "candlestick", clientId = 2917, buy = 2 },
 		{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
 		{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
+		{ itemName = "crusher", clientId = 46627, buy = 500 },
 		{ itemName = "deepling axe", clientId = 13991, sell = 40000 },
 		{ itemName = "deepling squelcher", clientId = 14250, sell = 7000 },
 		{ itemName = "deepling staff", clientId = 13987, sell = 4000 },

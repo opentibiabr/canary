@@ -1830,7 +1830,7 @@ void PlayerWheel::applyStageBonuses() {
 	applyStageBonusForColor("blue");
 }
 
-void PlayerWheel::applyStageBonusForColor(const std::string& color) {
+void PlayerWheel::applyStageBonusForColor(const std::string &color) {
 	WheelStageEnum_t stageEnum = getPlayerSliceStage(color);
 	if (stageEnum == WheelStageEnum_t::NONE) {
 		return;

@@ -77,6 +77,11 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. player:getLevel() .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
 	-- End Webhook Player Death
 
+	local party = player:getParty()
+	if party then
+		party:removeMember(player)
+	end
+
 	local deathRecords = 0
 	local tmpResultId = resultId
 	while tmpResultId ~= false do

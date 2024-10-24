@@ -52,7 +52,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Travel
-local function addTravelKeyword(keyword, cost, destination)
+local function addTravelKeyword(keyword, text, cost, discount, destination)
 	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Do you seek a ride to " .. keyword:titleCase() .. " for |TRAVELCOST|?", cost = cost, discount = "postman" })
 	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = "postman", destination = destination })
 	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "Then not.", reset = true })

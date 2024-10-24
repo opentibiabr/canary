@@ -1348,6 +1348,11 @@ uint8_t PlayerWheel::getMaxPointsPerSlot(WheelSlots_t slot) const {
 
 void PlayerWheel::resetPlayerBonusData() {
 	m_playerBonusData = PlayerWheelMethodsBonusData();
+
+	resetUpgradedSpells();
+	resetResistance();
+	resetStats();
+	resetRevelationState();
 }
 
 void PlayerWheel::initializePlayerData() {
@@ -1388,10 +1393,6 @@ void PlayerWheel::reloadPlayerData() {
 }
 
 void PlayerWheel::registerPlayerBonusData() {
-	resetUpgradedSpells();
-	resetResistance();
-	resetStats();
-
 	addStat(WheelStat_t::HEALTH, m_playerBonusData.stats.health);
 	addStat(WheelStat_t::MANA, m_playerBonusData.stats.mana);
 	addStat(WheelStat_t::CAPACITY, m_playerBonusData.stats.capacity * 100);
@@ -1611,8 +1612,8 @@ void PlayerWheel::loadPlayerBonusData() {
 	// Initialize the relevant IOWheel data in the PlayerWheel
 	loadDedicationAndConvictionPerks();
 
-	loadRevelationPerks();
 	registerPlayerBonusData();
+	loadRevelationPerks();
 
 	printPlayerWheelMethodsBonusData(m_playerBonusData);
 }
@@ -1777,7 +1778,6 @@ void PlayerWheel::addSpellToVector(const std::string &spellName) {
 }
 
 void PlayerWheel::loadRevelationPerks() {
-	resetRevelationState();
 	processActiveGems();
 	applyStageBonuses();
 }

@@ -106,9 +106,9 @@ int CanaryServer::run() {
 					g_webhook().sendMessage(":green_circle: Server is now **online**");
 				}
 
-			#ifndef DEBUG_LOG
+#ifndef DEBUG_LOG
 				g_logger().setLevel(g_configManager().getString(LOGLEVEL));
-			#endif
+#endif
 
 				loaderStatus = LoaderStatus::LOADED;
 			} catch (FailedToInitializeCanary &err) {

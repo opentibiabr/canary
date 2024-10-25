@@ -30,8 +30,8 @@ function christmasBundle.onUse(player, item, fromPosition, target, toPosition, i
 		player:addItem(unpack(reward))
 	end
 
-	item:remove(1)
 	player:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
+	item:remove(1)
 	return true
 end
 

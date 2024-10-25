@@ -89,7 +89,6 @@
 namespace fmt {
 	template <typename E>
 	struct formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<std::underlying_type_t<E>> {
-		// Define o formato do enum convertendo para seu tipo subjacente
 		template <typename FormatContext>
 		auto format(E e, FormatContext &ctx) const -> decltype(ctx.out()) {
 			return formatter<std::underlying_type_t<E>>::format(
@@ -170,7 +169,7 @@ namespace fmt {
 #include "lib/messaging/message.hpp"
 #include "lib/messaging/command.hpp"
 #include "lib/messaging/event.hpp"
-#include <lib/logging/log_with_spd_log.hpp>
+#include "lib/logging/log_with_spd_log.hpp"
 
 #include <eventpp/utilities/scopedremover.h>
 #include <eventpp/eventdispatcher.h>

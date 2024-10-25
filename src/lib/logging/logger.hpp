@@ -9,7 +9,7 @@
 #pragma once
 
 namespace spdlog {
-	class logger; // Forward declaration da classe logger
+	class logger;
 }
 
 class Logger {

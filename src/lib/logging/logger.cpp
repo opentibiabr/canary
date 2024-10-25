@@ -47,7 +47,6 @@ void Logger::logProfile(const std::string &name, double duration_ms) const {
 	}
 }
 
-// Função para limpar logs antigos
 void Logger::cleanOldLogs(const std::string &logDirectory, int days) const {
 	namespace fs = std::filesystem;
 

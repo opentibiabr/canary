@@ -66,7 +66,7 @@ public:
 	}
 
 	virtual void warn(const std::string &msg) const override {
-		logs.push_back({ "warn", msg });
+		logs.push_back({ "warning", msg });
 	}
 
 	virtual void error(const std::string &msg) const override {

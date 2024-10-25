@@ -8,7 +8,7 @@
  */
 #pragma once
 
-#include "logger.hpp"
+#include "lib/logging/logger.hpp"
 
 class LogWithSpdLog final : public Logger {
 public:

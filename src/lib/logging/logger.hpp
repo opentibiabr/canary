@@ -12,6 +12,8 @@ namespace spdlog {
 	class logger;
 }
 
+#include "utils/transparent_string_hash.hpp"
+
 class Logger {
 public:
 	Logger() = default;
@@ -39,7 +41,6 @@ public:
 	 * class ExampleClass {
 	 * public:
 	 *     void run() {
-	 *         // Profile the execution time of 'quickTask'
 	 *         g_logger().profile("quickTask", [this]() {
 	 *             quickTask();
 	 *         });
@@ -47,7 +48,6 @@ public:
 	 *
 	 * private:
 	 *     void quickTask() {
-	 *         // Simulate a brief operation
 	 *         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	 *     }
 	 * };
@@ -120,7 +120,12 @@ public:
 	}
 
 private:
-	mutable std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> profile_loggers_;
+	mutable std::unordered_map<
+		std::string,
+		std::shared_ptr<spdlog::logger>,
+		TransparentStringHasher,
+		std::equal_to<>
+	> profile_loggers_;
 
 	std::tm get_local_time() const {
 		const auto now = std::chrono::system_clock::now();

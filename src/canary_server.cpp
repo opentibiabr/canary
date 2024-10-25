@@ -106,8 +106,6 @@ int CanaryServer::run() {
 					g_webhook().sendMessage(":green_circle: Server is now **online**");
 				}
 
-				g_logger().setLevel(g_configManager().getString(LOGLEVEL));
-
 				loaderStatus = LoaderStatus::LOADED;
 			} catch (FailedToInitializeCanary &err) {
 				loaderStatus = LoaderStatus::FAILED;
@@ -134,6 +132,7 @@ int CanaryServer::run() {
 	}
 
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
+	g_logger().setLevel(g_configManager().getString(LOGLEVEL));
 
 	serviceManager.run();
 

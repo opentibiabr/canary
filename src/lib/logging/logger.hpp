@@ -8,11 +8,11 @@
  */
 #pragma once
 
+#include "utils/transparent_string_hash.hpp"
+
 namespace spdlog {
 	class logger;
 }
-
-#include "utils/transparent_string_hash.hpp"
 
 class Logger {
 public:

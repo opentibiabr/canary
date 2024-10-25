@@ -6404,7 +6404,7 @@ void Game::checkCreatures() {
 			creature->inCheckCreaturesVector = false;
 		}
 
-		return !creature->creatureCheck;
+		return !creature->inCheckCreaturesVector;
 	});
 
 	index = (index + 1) % EVENT_CREATURECOUNT;

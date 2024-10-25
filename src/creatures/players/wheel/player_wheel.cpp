@@ -1611,9 +1611,9 @@ void PlayerWheel::loadPlayerBonusData() {
 	resetPlayerBonusData();
 	// Initialize the relevant IOWheel data in the PlayerWheel
 	loadDedicationAndConvictionPerks();
+	loadRevelationPerks();
 
 	registerPlayerBonusData();
-	loadRevelationPerks();
 
 	printPlayerWheelMethodsBonusData(m_playerBonusData);
 }

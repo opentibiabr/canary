@@ -145,7 +145,7 @@ forgeAmountMultiplier = 3
 forgeMinSlivers = 3
 forgeMaxSlivers = 7
 forgeInfluencedLimit = 300
-forgeFiendishLimit = 3
+forgeFiendishLimit = 4
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
 

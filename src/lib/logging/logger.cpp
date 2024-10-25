@@ -47,27 +47,6 @@ void Logger::logProfile(const std::string &name, double duration_ms) const {
 	}
 }
 
-void Logger::cleanOldLogs(const std::string &logDirectory, int days) const {
-	namespace fs = std::filesystem;
-
-	const auto days_duration = std::chrono::hours(days * 24);
-
-	for (const auto &entry : fs::directory_iterator(logDirectory)) {
-		if (entry.is_regular_file()) {
-			auto ftime = fs::last_write_time(entry);
-
-			if (decltype(ftime)::clock::now() - ftime > days_duration) {
-				try {
-					fs::remove(entry.path());
-					debug("Deleted old log file: {}", entry.path().string());
-				} catch (const std::exception &e) {
-					debug("Failed to delete old log file: {}", entry.path().string());
-				}
-			}
-		}
-	}
-}
-
 void Logger::info(const std::string &msg) const {
 	SPDLOG_INFO(msg);
 }

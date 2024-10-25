@@ -24,8 +24,36 @@ public:
 	virtual void setLevel(const std::string &name) const = 0;
 	virtual std::string getLevel() const = 0;
 
+	/**
+	 * @brief Logs the execution time of a given operation to a profile log file.
+	 *
+	 * This function records the duration of a named operation in a log file specific
+	 * to that operation. If the log file doesn't exist, it creates a new one.
+	 * The log file name is derived from the provided operation name.
+	 *
+	 * @param name Name of the operation to profile.
+	 * @param duration_ms Execution duration in milliseconds.
+	 *
+	 * Example usage:
+	 * @code
+	 * class ExampleClass {
+	 * public:
+	 *     void run() {
+	 *         // Profile the execution time of 'quickTask'
+	 *         g_logger().profile("quickTask", [this]() {
+	 *             quickTask();
+	 *         });
+	 *     }
+	 *
+	 * private:
+	 *     void quickTask() {
+	 *         // Simulate a brief operation
+	 *         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	 *     }
+	 * };
+	 * @endcode
+	 */
 	void logProfile(const std::string &name, double duration_ms) const;
-	void cleanOldLogs(const std::string &logDirectory, int days) const;
 
 	virtual void info(const std::string &msg) const;
 	virtual void warn(const std::string &msg) const;

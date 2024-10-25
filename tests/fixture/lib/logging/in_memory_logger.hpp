@@ -51,7 +51,7 @@ public:
 		return false;
 	}
 
-	void setLevel(const std::string &name) override {
+	void setLevel(const std::string &name) const override {
 		// For the stub, setting a level might not have any behavior.
 		// But you can implement level filtering if you like.
 	}
@@ -61,10 +61,34 @@ public:
 		return "DEBUG";
 	}
 
-	virtual void log(const std::string &lvl, const fmt::basic_string_view<char> msg) const override {
-		logs.push_back({ lvl, { msg.data(), msg.size() } });
+	virtual void info(const std::string &msg) const override {
+		logs.push_back({ "info", msg });
 	}
 
+	virtual void warn(const std::string &msg) const override {
+		logs.push_back({ "warning", msg });
+	}
+
+	virtual void error(const std::string &msg) const override {
+		logs.push_back({ "error", msg });
+	}
+
+	virtual void critical(const std::string &msg) const override {
+		logs.push_back({ "critical", msg });
+	}
+
+#if defined(DEBUG_LOG)
+	virtual void debug(const std::string &msg) const override {
+		logs.push_back({ "debug", msg });
+	}
+
+	virtual void trace(const std::string &msg) const override {
+		logs.push_back({ "trace", msg });
+	}
+#else
+	virtual void debug(const std::string &) const override { }
+	virtual void trace(const std::string &) const override { }
+#endif
 	// Helper methods for testing
 	size_t logCount() const {
 		return logs.size();

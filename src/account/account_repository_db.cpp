@@ -10,7 +10,6 @@
 #include "account/account_repository_db.hpp"
 
 #include "database/database.hpp"
-#include "lib/logging/logger.hpp"
 #include "utils/definitions.hpp"
 #include "utils/tools.hpp"
 #include "enums/account_type.hpp"

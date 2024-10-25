@@ -6400,11 +6400,11 @@ void Game::checkCreatures() {
 			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
 			creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
-		} else {
-			creature->inCheckCreaturesVector = false;
+			return false;
 		}
 
-		return !creature->inCheckCreaturesVector;
+		creature->inCheckCreaturesVector = false;
+		return true;
 	});
 
 	index = (index + 1) % EVENT_CREATURECOUNT;

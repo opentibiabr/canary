@@ -124,8 +124,8 @@ private:
 		std::string,
 		std::shared_ptr<spdlog::logger>,
 		TransparentStringHasher,
-		std::equal_to<>
-	> profile_loggers_;
+		std::equal_to<>>
+		profile_loggers_;
 
 	std::tm get_local_time() const {
 		const auto now = std::chrono::system_clock::now();

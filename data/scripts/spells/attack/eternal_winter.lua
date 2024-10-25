@@ -4,8 +4,8 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ICETORNADO)
 combat:setArea(createCombatArea(AREA_CIRCLE5X5))
 
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 6)
-	local max = (level / 5) + (maglevel * 12)
+	local min = (level / 5) + (maglevel * 13)
+	local max = (level / 5) + (maglevel * 20)
 	return -min, -max
 end
 
@@ -24,7 +24,7 @@ spell:words("exevo gran mas frigo")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_ETERNAL_WINTER)
 spell:level(60)
 spell:mana(1050)
-spell:isPremium(true)
+spell:isPremium(false)
 spell:range(5)
 spell:isSelfTarget(true)
 spell:cooldown(40 * 1000)

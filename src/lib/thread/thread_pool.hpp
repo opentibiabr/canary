@@ -8,6 +8,7 @@
  */
 #pragma once
 
+#include "lib/logging/logger.hpp"
 #include "BS_thread_pool.hpp"
 
 class ThreadPool : public BS::thread_pool {

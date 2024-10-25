@@ -7,7 +7,7 @@ monster.outfit = {
 	lookType = 1142,
 }
 
-monster.health = 1000000
+monster.health = 100000000
 monster.maxHealth = monster.health
 monster.race = "venom"
 monster.corpse = 0
@@ -55,7 +55,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 10,
 	armor = 7,
-	{ name = "combat", type = COMBAT_HEALING, chance = 15, interval = 2000, minDamage = 10000, maxDamage = 50000, effect = CONST_ME_MAGIC_BLUE },
+	{ name = "combat", type = COMBAT_HEALING, chance = 15, interval = 200, minDamage = 10000, maxDamage = 50000, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {

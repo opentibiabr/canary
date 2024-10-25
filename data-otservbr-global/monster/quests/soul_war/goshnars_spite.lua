@@ -17,8 +17,8 @@ monster.events = {
 	"SoulWarBossesDeath",
 }
 
-monster.health = 300000
-monster.maxHealth = 300000
+monster.health = 3000000
+monster.maxHealth = 3000000
 monster.race = "undead"
 monster.corpse = 33867
 monster.speed = 150

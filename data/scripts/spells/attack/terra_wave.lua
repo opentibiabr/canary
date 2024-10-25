@@ -4,8 +4,8 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_SMALLPLANTS)
 combat:setArea(createCombatArea(AREA_SQUAREWAVE5, AREADIAGONAL_SQUAREWAVE5))
 
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 3.5)
-	local max = (level / 5) + (maglevel * 7)
+	local min = (level / 5) + (maglevel * 4.5)
+	local max = (level / 5) + (maglevel * 8)
 	return -min, -max
 end
 

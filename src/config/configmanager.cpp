@@ -35,6 +35,10 @@ bool ConfigManager::load() {
 		return false;
 	}
 
+#ifndef DEBUG_LOG
+	g_logger().setLevel(loadStringConfig(L, LOGLEVEL, "logLevel", "info"));
+#endif
+
 	// Parse config
 	// Info that must be loaded one time (unless we reset the modules involved)
 	if (!loaded) {
@@ -359,7 +363,6 @@ bool ConfigManager::load() {
 	loadStringConfig(L, TIBIADROME_CONCOCTION_TICK_TYPE, "tibiadromeConcoctionTickType", "online");
 	loadStringConfig(L, URL, "url", "");
 	loadStringConfig(L, WORLD_TYPE, "worldType", "pvp");
-	loadStringConfig(L, LOGLEVEL, "logLevel", "info");
 
 	loaded = true;
 	lua_close(L);

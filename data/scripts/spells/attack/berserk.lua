@@ -8,8 +8,8 @@ combat:setArea(createCombatArea(AREA_SQUARE1X1))
 function onGetFormulaValues(player, skill, attack, factor)
 	local level = player:getLevel()
 
-	local min = (level / 5) + (skill + attack) * 0.5
-	local max = (level / 5) + (skill + attack) * 1.5
+	local min = (level / 5) + (skill + attack) * 1.5
+	local max = (level / 5) + (skill + attack) * 2.5
 
 	return -min * 1.1, -max * 1.1 -- TODO : Use New Real Formula instead of an %
 end
@@ -29,7 +29,7 @@ spell:words("exori")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_BERSERK)
 spell:level(35)
 spell:mana(115)
-spell:isPremium(true)
+spell:isPremium(false)
 spell:needWeapon(true)
 spell:cooldown(4 * 1000)
 spell:groupCooldown(2 * 1000)

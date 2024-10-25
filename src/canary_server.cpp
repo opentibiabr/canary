@@ -97,6 +97,7 @@ int CanaryServer::run() {
 #endif
 
 				g_game().start(&serviceManager);
+				g_game().setGameState(GAME_STATE_NORMAL);
 				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE)) {
 					g_game().setGameState(GAME_STATE_CLOSED);
 					g_logger().warn("Initialized in maintain mode!");
@@ -132,7 +133,6 @@ int CanaryServer::run() {
 	}
 
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
-	g_logger().setLevel(g_configManager().getString(LOGLEVEL));
 
 	serviceManager.run();
 
@@ -203,7 +203,7 @@ void CanaryServer::logInfos() {
 	logger.info("{} - Version {}", ProtocolStatus::SERVER_NAME, SERVER_RELEASE_VERSION);
 #endif
 
-	logger.debug("Compiled with {}, on {} {}, for platform {}", getCompiler(), __DATE__, __TIME__, getPlatform());
+	logger.debug("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, getPlatform());
 
 #if defined(LUAJIT_VERSION)
 	logger.debug("Linked with {} for Lua support", LUAJIT_VERSION);

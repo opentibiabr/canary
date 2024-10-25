@@ -365,9 +365,6 @@ public:
 		m_isDead = isDead;
 	}
 
-protected:
-	void onExecuteAsyncTasks() override;
-
 private:
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
 		return std::ranges::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {

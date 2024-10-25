@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Morshabaal")
+local mType = Game.createMonsterType("NAVEGA Morshabaal")
 local monster = {}
 
-monster.description = "Morshabaal"
+monster.description = "NAVEGA Morshabaal"
 monster.experience = 3000000
 monster.outfit = {
 	lookType = 1468,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 1000000
-monster.maxHealth = 1000000
+monster.health = 100000000
+monster.maxHealth = 100000000
 monster.race = "blood"
 monster.corpse = 37704
 monster.speed = 530
@@ -73,43 +73,43 @@ monster.voices = {
 monster.summons = {}
 
 monster.loot = {
-	{ id = 3043, chance = 60000, maxCount = 35 }, -- crystal coin
-	{ id = 3035, chance = 100000, maxCount = 69 }, -- Platinum Coin
-	{ id = 23373, chance = 40000, maxCount = 100 }, -- Ultimate Mana Potion
-	{ id = 7643, chance = 30000, maxCount = 100 }, -- Ultimate Health Potion
-	{ id = 23374, chance = 30000, maxCount = 100 }, -- Ultimate Spirit Potion
+	{ id = 3043, chance = 60000, maxCount = 100 }, -- crystal coin
+	{ id = 39546, chance = 100000, maxCount = 3 }, -- primal bag
+	{ id = 34109, chance = 40000, maxCount = 3 }, -- bag you desire
+	--{ id = 7643, chance = 30000, maxCount = 100 }, -- Ultimate Health Potion
+	--{ id = 23374, chance = 30000, maxCount = 100 }, -- Ultimate Spirit Potion
 	{ id = 37810, chance = 100000 }, -- Morshabaal's Extract
-	{ id = 33780, chance = 100000 }, -- Watermelon Tourmaline (Pear)
-	{ id = 33779, chance = 100000 }, -- Watermelon Tourmaline (Slice)
+	--{ id = 33780, chance = 100000 }, -- Watermelon Tourmaline (Pear)
+	--{ id = 33779, chance = 100000 }, -- Watermelon Tourmaline (Slice)
 	{ id = 32625, chance = 40000 }, -- Amber with a Dragonfly
 	{ id = 30054, chance = 20000 }, -- Unicorn Figurine
 	{ id = 31323, chance = 20000 }, -- Sea Horse Figurine
 	{ id = 37611, chance = 10000 }, -- Morshabaal's Mask
-	{ id = 30060, chance = 10000 }, -- Giant Emerald
-	{ id = 14112, chance = 10000 }, -- Bar of Gold
-	{ id = 37613, chance = 6666 }, -- Morshabaal's Brain
-	{ id = 37608, chance = 6666 }, -- Green Demon Armor
-	{ id = 37609, chance = 6666 }, -- Green Demon Helmet
-	{ id = 37607, chance = 6666 }, -- Green Demon Legs
-	{ id = 37610, chance = 6666 }, -- Green Demon Slippers
-	{ id = 30053, chance = 6666 }, -- Dragon Figurine
-	{ id = 3309, chance = 6666 }, -- Thunder Hammer
+	--{ id = 30060, chance = 10000 }, -- Giant Emerald
+	--{ id = 14112, chance = 10000 }, -- Bar of Gold
+	--{ id = 37613, chance = 6666 }, -- Morshabaal's Brain
+	--{ id = 37608, chance = 6666 }, -- Green Demon Armor
+	--{ id = 37609, chance = 6666 }, -- Green Demon Helmet
+	--{ id = 37607, chance = 6666 }, -- Green Demon Legs
+	--{ id = 37610, chance = 6666 }, -- Green Demon Slippers
+	--{ id = 30053, chance = 6666 }, -- Dragon Figurine
+	{ id = 43895, chance = 6666 }, -- bag you covet
 }
 
 monster.attacks = {
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -5500, length = 8, spread = 0, effect = CONST_ME_WHITE_ENERGY_SPARK },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -4000, maxDamage = -30000, effect = CONST_ME_ICEATTACK },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -2500, maxDamage = -8500, length = 8, spread = 0, effect = CONST_ME_WHITE_ENERGY_SPARK },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -6000, maxDamage = -30000, effect = CONST_ME_ICEATTACK },
 	{ name = "melee", interval = 2000, chance = 100, skill = 200, attack = 250 },
-	{ name = "combat", interval = 1000, chance = 7, type = COMBAT_MANADRAIN, minDamage = -100, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_POFF, target = false },
+	{ name = "combat", interval = 1000, chance = 7, type = COMBAT_MANADRAIN, minDamage = -800, maxDamage = -1300, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_POFF, target = false },
 	{ name = "drunk", interval = 1000, chance = 7, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false },
 	{ name = "strength", interval = 1000, chance = 9, range = 7, shootEffect = CONST_ANI_LARGEROCK, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "combat", interval = 1000, chance = 13, type = COMBAT_LIFEDRAIN, minDamage = -400, maxDamage = -700, radius = 8, effect = CONST_ME_LOSEENERGY, target = false },
-	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -400, maxDamage = -700, radius = 8, effect = CONST_ME_MAGIC_GREEN, target = false },
+	{ name = "combat", interval = 1000, chance = 13, type = COMBAT_LIFEDRAIN, minDamage = -800, maxDamage = -1100, radius = 8, effect = CONST_ME_LOSEENERGY, target = false },
+	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -800, maxDamage = -1300, radius = 8, effect = CONST_ME_MAGIC_GREEN, target = false },
 	{ name = "speed", interval = 1000, chance = 12, speedChange = -1900, radius = 6, effect = CONST_ME_POISONAREA, target = false, duration = 60000 },
 	{ name = "strength", interval = 1000, chance = 8, radius = 5, effect = CONST_ME_HITAREA, target = false },
 	{ name = "outfit", interval = 1000, chance = 2, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitMonster = "demon" },
 	{ name = "outfit", interval = 1000, chance = 2, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitItem = 3058 },
-	{ name = "combat", interval = 1000, chance = 34, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -900, range = 7, radius = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
+	{ name = "combat", interval = 1000, chance = 34, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -1200, range = 7, radius = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
 	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -500, maxDamage = -850, length = 8, spread = 0, effect = CONST_ME_MAGIC_RED, target = false },
 }
 

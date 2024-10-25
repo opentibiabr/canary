@@ -14,6 +14,7 @@
 #include "utils/definitions.hpp"
 #include "security/argon.hpp"
 #include "utils/tools.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
 #include "enums/account_type.hpp"
 #include "enums/account_coins.hpp"

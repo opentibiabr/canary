@@ -83,7 +83,6 @@ private:
 		                                                                        "GlobalEvents::think",
 		                                                                        "LuaEnvironment::executeTimerEvent",
 		                                                                        "Modules::executeOnRecvbyte",
-		                                                                        "Monster::onCreatureMove",
 		                                                                        "OutputMessagePool::sendAll",
 		                                                                        "ProtocolGame::addGameTask",
 		                                                                        "ProtocolGame::parsePacketFromDispatcher",
@@ -93,8 +92,7 @@ private:
 		                                                                        "SpawnMonster::startup",
 		                                                                        "SpawnNpc::checkSpawnNpc",
 		                                                                        "Webhook::run",
-		                                                                        "Protocol::sendRecvMessageCallback",
-		                                                                        "Player::addInFightTicks" });
+		                                                                        "Protocol::sendRecvMessageCallback" });
 
 		return tasksContext.contains(context);
 	}

@@ -169,7 +169,7 @@ inline bool ValueWrapper::operator==(const ValueWrapper &rhs) const {
 
 inline bool operator==(const ValueVariant &lhs, const ValueVariant &rhs) {
 	return std::visit(
-		[](const auto &a, const auto &b) -> bool {
+		[](const auto &a, const auto &b) {
 			using A = std::decay_t<decltype(a)>;
 			using B = std::decay_t<decltype(b)>;
 
@@ -190,8 +190,6 @@ inline bool operator==(const ValueVariant &lhs, const ValueVariant &rhs) {
 			if constexpr (std::is_same_v<A, B>) {
 				return a == b;
 			}
-
-			return false;
 		},
 		lhs, rhs
 	);

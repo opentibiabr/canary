@@ -45669,14 +45669,47 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		</attribute>
 	</item>
 	<item id="22890" article="a" name="shield of destiny">
-		<attribute key="description" value="Holding the divine intellect of Uman and the merciless
-destruction instinct of Zathroth, the eternal balance remains on the
-hands of its owner. Granted by TibiaRoyal.com"/>
-		<attribute key="duration" value="3"/>
-		<attribute key="decayTo" value="22889"/>
-		<attribute key="weight" value="6800"/>
+		<attribute key="primarytype" value="shields"/>
+		<attribute key="weaponType" value="shield"/>
+		<attribute key="absorbpercentphysical" value="16"/>
+		<attribute key="absorbpercentdeath" value="18"/>
+		<attribute key="defense" value="56"/>
+		<attribute key="weight" value="5800"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection death" value="6"/>
+			<attribute key="elemental protection earth" value="6"/>
+			<attribute key="elemental protection fire" value="6"/>
+			<attribute key="elemental protection ice" value="6"/>
+			<attribute key="elemental protection energy" value="6"/>
+			<attribute key="elemental protection holy" value="6"/>
+			<attribute key="skillboost shielding" value="6"/>
+		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="shield"/>
+			<attribute key="level" value="1500"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="49283" article="a" name="Navega Shield">
+		<attribute key="primarytype" value="shields"/>
+		<attribute key="weaponType" value="shield"/>
+		<attribute key="absorbpercentphysical" value="16"/>
+		<attribute key="absorbpercentdeath" value="18"/>
+		<attribute key="defense" value="56"/>
+		<attribute key="weight" value="5800"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection death" value="6"/>
+			<attribute key="elemental protection earth" value="6"/>
+			<attribute key="elemental protection fire" value="6"/>
+			<attribute key="elemental protection ice" value="6"/>
+			<attribute key="elemental protection energy" value="6"/>
+			<attribute key="elemental protection holy" value="6"/>
+			<attribute key="skillboost shielding" value="6"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="shield"/>
+			<attribute key="level" value="1500"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
 		</attribute>
 	</item>
 	<item id="22891" name="RESERVED SPRITE"/>
@@ -71343,6 +71376,179 @@ Granted by TibiaGoals.com"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
 		</attribute>
 	</item>
+	<item id="49279" article="an" name="Navega Paladin Helmet">
+		<attribute key="primarytype" value="helmets"/>
+		<attribute key="absorbpercentphysical" value="8"/>
+		<attribute key="absorbpercentfire" value="8"/>
+		<attribute key="absorbpercentice" value="8"/>
+		<attribute key="absorbpercentpoison" value="8"/>
+		<attribute key="absorbpercentenergy" value="8"/>
+		<attribute key="absorbpercentdeath" value="8"/>
+		<attribute key="absorbpercentholy" value="8"/>
+		<attribute key="skilldist" value="6"/>
+		<attribute key="armor" value="19"/>
+		<attribute key="weight" value="3900"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="6"/>
+			<attribute key="skillboost shielding" value="5"/>
+			<attribute key="skillboost distance" value="4"/>
+			<attribute key="skillboost magic level" value="4"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="1500"/>
+			<attribute key="slot" value="head"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49280" article="an" name="Navega Paladin Legs">
+		<attribute key="primarytype" value="legs"/>
+		<attribute key="absorbpercentphysical" value="9"/>
+		<attribute key="absorbpercentenergy" value="11"/>
+		<attribute key="skilldist" value="7"/>
+		<attribute key="holymagiclevelpoints" value="3"/>
+		<attribute key="armor" value="16"/>
+		<attribute key="weight" value="3200"/>
+		<attribute key="augments" value="1">
+			<attribute key="avatar of light" value="cooldown">
+				<attribute key="value" value="900000" />
+			</attribute>
+			<attribute key="divine caldera" value="critical extra damage">
+				<attribute key="value" value="10" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="1500"/>
+			<attribute key="slot" value="legs"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49281" article="a" name="Navega Paladin Armor">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="absorbpercentphysical" value="8"/>
+		<attribute key="absorbpercentfire" value="19"/>
+		<attribute key="skilldist" value="4"/>
+		<attribute key="armor" value="25"/>
+		<attribute key="weight" value="12300"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection death" value="6"/>
+			<attribute key="elemental protection earth" value="6"/>
+			<attribute key="elemental protection ice" value="6"/>
+			<attribute key="elemental protection energy" value="6"/>
+			<attribute key="elemental protection holy" value="6"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="1500"/>
+			<attribute key="slot" value="armor"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49282" name="Navega Paladin Boots">
+		<attribute key="absorbpercentphysical" value="11"/>
+		<attribute key="skilldist" value="1"/>
+		<attribute key="speed" value="40"/>
+		<attribute key="armor" value="10"/>
+		<attribute key="weight" value="1300"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="5"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="feet"/>
+			<attribute key="level" value="1500"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49289" article="an" name="Navega Mage Book">
+		<attribute key="primarytype" value="spellbooks"/>
+		<attribute key="weaponType" value="spellbook"/>
+		<attribute key="absorbpercentphysical" value="10"/>
+		<attribute key="absorbpercentenergy" value="12"/>
+		<attribute key="magiclevelpoints" value="8"/>
+		<attribute key="healingmagiclevelpoints" value="3"/>
+		<attribute key="icemagiclevelpoints" value="3"/>
+		<attribute key="defense" value="32"/>
+		<attribute key="weight" value="2300"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="400"/>
+			<attribute key="slot" value="shield"/>
+			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid"/>
+		</attribute>
+	</item>
+	<item id="49290" article="an" name="Navega Mage Hat">
+		<attribute key="primarytype" value="helmets"/>
+		<attribute key="absorbpercentice" value="12"/>
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="magiclevelpoints" value="4"/>
+		<attribute key="healingmagiclevelpoints" value="3"/>
+		<attribute key="armor" value="15"/>
+		<attribute key="weight" value="1200"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="6"/>
+			<attribute key="skillboost shielding" value="6"/>
+			<attribute key="skillboost magic level" value="7"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="400"/>
+			<attribute key="slot" value="head"/>
+			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid"/>
+		</attribute>
+	</item>
+	<item id="49288" article="a" name="Navega Kina Helmet">
+		<attribute key="primarytype" value="helmets"/>
+		<attribute key="absorbpercentphysical" value="11"/>
+		<attribute key="absorbpercentenergy" value="13"/>
+		<attribute key="skillsword" value="5"/>
+		<attribute key="skillaxe" value="5"/>
+		<attribute key="skillclub" value="5"/>
+		<attribute key="reflectdamage" value="17"/>
+		<attribute key="armor" value="19"/>
+		<attribute key="weight" value="4400"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="5"/>
+			<attribute key="skillboost axe" value="5"/>
+			<attribute key="skillboost sword" value="5"/>
+			<attribute key="skillboost club" value="5"/>
+			<attribute key="skillboost shielding" value="5"/>
+			<attribute key="skillboost distance" value="5"/>
+			<attribute key="skillboost magic level" value="4"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="400"/>
+			<attribute key="slot" value="head"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="49295" article="a" name="Navega Kina legs">
+		<attribute key="primarytype" value="legs"/>
+		<attribute key="absorbpercentphysical" value="12"/>
+		<attribute key="absorbpercentdeath" value="12"/>
+		<attribute key="skillaxe" value="5"/>
+		<attribute key="skillclub" value="6"/>
+		<attribute key="skillsword" value="5"/>
+		<attribute key="armor" value="19"/>
+		<attribute key="weight" value="3800"/>
+		<attribute key="augments" value="1">
+			<attribute key="avatar of steel" value="cooldown">
+				<attribute key="value" value="900000" />
+			</attribute>
+			<attribute key="fierce beserk" value="critical extra damage">
+				<attribute key="value" value="8" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="500"/>
+			<attribute key="slot" value="legs"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
 	<item id="39150" article="an" name="alicorn quiver">
 		<attribute key="primarytype" value="quivers"/>
 		<attribute key="slotType" value="right-hand"/>
@@ -75144,10 +75350,10 @@ Granted by TibiaGoals.com"/>
 	<item id="43865" article="a" name="grand sanguine blade">
 		<attribute key="primarytype" value="sword weapons"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="attack" value="8"/>
-		<attribute key="elementfire" value="46"/>
-		<attribute key="extradef" value="3"/>
-		<attribute key="defense" value="32"/>
+		<attribute key="attack" value="16"/>
+		<attribute key="elementfire" value="53"/>
+		<attribute key="extradef" value="5"/>
+		<attribute key="defense" value="38"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="weight" value="6000"/>
 		<attribute key="imbuementslot" value="3">
@@ -75251,11 +75457,11 @@ Granted by TibiaGoals.com"/>
 	<item id="43869" article="a" name="grand sanguine hatchet">
 		<attribute key="primarytype" value="axe weapons"/>
 		<attribute key="weaponType" value="axe"/>
-		<attribute key="attack" value="8"/>
-		<attribute key="elementfire" value="46"/>
-		<attribute key="extradef" value="3"/>
-		<attribute key="defense" value="32"/>
-		<attribute key="skillaxe" value="5"/>
+		<attribute key="attack" value="10"/>
+		<attribute key="elementfire" value="48"/>
+		<attribute key="extradef" value="5"/>
+		<attribute key="defense" value="37"/>
+		<attribute key="skillaxe" value="7"/>
 		<attribute key="weight" value="7200"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="life leech" value="3"/>
@@ -75493,14 +75699,14 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="distance weapons"/>
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
-		<attribute key="criticalhitdamage" value="1200"/>
-		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="1800"/>
+		<attribute key="criticalhitchance" value="1600"/>
 		<attribute key="ammotype" value="arrow"/>
-		<attribute key="absorbpercentearth" value="6"/>
-		<attribute key="skilldist" value="4"/>
-		<attribute key="hitchance" value="6"/>
+		<attribute key="absorbpercentearth" value="8"/>
+		<attribute key="skilldist" value="6"/>
+		<attribute key="hitchance" value="8"/>
 		<attribute key="range" value="6"/>
-		<attribute key="attack" value="9"/>
+		<attribute key="attack" value="10"/>
 		<attribute key="weight" value="4700"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
@@ -75553,14 +75759,14 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="distance weapons"/>
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
-		<attribute key="criticalhitdamage" value="1200"/>
-		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="1900"/>
+		<attribute key="criticalhitchance" value="1200"/>
 		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentfire" value="6"/>
-		<attribute key="skilldist" value="4"/>
-		<attribute key="hitchance" value="7"/>
+		<attribute key="skilldist" value="6"/>
+		<attribute key="hitchance" value="9"/>
 		<attribute key="range" value="6"/>
-		<attribute key="attack" value="10"/>
+		<attribute key="attack" value="12"/>
 		<attribute key="weight" value="4700"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
@@ -75643,13 +75849,13 @@ Granted by TibiaGoals.com"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
 		<attribute key="range" value="6"/>
-		<attribute key="criticalhitdamage" value="1200"/>
-		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="1800"/>
+		<attribute key="criticalhitchance" value="1300"/>
 		<attribute key="weight" value="2100"/>
 		<attribute key="imbuementslot" value="2">
-			<attribute key="mana leech" value="3"/>
-			<attribute key="critical hit" value="3"/>
-			<attribute key="skillboost magic level" value="3"/>
+			<attribute key="mana leech" value="4"/>
+			<attribute key="critical hit" value="5"/>
+			<attribute key="skillboost magic level" value="6"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="hell's core" value="powerful impact" />
@@ -75659,8 +75865,8 @@ Granted by TibiaGoals.com"/>
 			<attribute key="level" value="600"/>
 			<attribute key="mana" value="21"/>
 			<attribute key="unproperly" value="true"/>
-			<attribute key="fromDamage" value="103"/>
-			<attribute key="toDamage" value="125"/>
+			<attribute key="fromDamage" value="603"/>
+			<attribute key="toDamage" value="725"/>
 			<attribute key="weaponType" value="wand"/>
 			<attribute key="wandType" value="energy"/>
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
@@ -75733,18 +75939,18 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="rods"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="earth"/>
-		<attribute key="absorbpercentdeath" value="7"/>
-		<attribute key="magiclevelpoints" value="5"/>
+		<attribute key="absorbpercentdeath" value="8"/>
+		<attribute key="magiclevelpoints" value="7"/>
 		<attribute key="earthmagiclevelpoints" value="1"/>
 		<attribute key="range" value="6"/>
-		<attribute key="icemagiclevelpoints" value="1"/>
-		<attribute key="criticalhitdamage" value="500"/>
-		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="icemagiclevelpoints" value="3"/>
+		<attribute key="criticalhitdamage" value="1800"/>
+		<attribute key="criticalhitchance" value="1300"/>
 		<attribute key="weight" value="2400"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
-			<attribute key="critical hit" value="3"/>
-			<attribute key="skillboost magic level" value="3"/>
+			<attribute key="critical hit" value="4"/>
+			<attribute key="skillboost magic level" value="5"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="eternal winter" value="powerful impact" />
@@ -75754,8 +75960,8 @@ Granted by TibiaGoals.com"/>
 			<attribute key="level" value="600"/>
 			<attribute key="mana" value="20"/>
 			<attribute key="unproperly" value="true"/>
-			<attribute key="fromDamage" value="100"/>
-			<attribute key="toDamage" value="124"/>
+			<attribute key="fromDamage" value="603"/>
+			<attribute key="toDamage" value="553"/>
 			<attribute key="weaponType" value="wand"/>
 			<attribute key="wandType" value="earth"/>
 			<attribute key="vocation" value="Druid;true, Elder Druid"/>

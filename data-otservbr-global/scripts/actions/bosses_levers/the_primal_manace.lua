@@ -15,7 +15,7 @@ local config = {
 		from = Position(33547, 32749, 15),
 		to = Position(33570, 32769, 15),
 	},
-	disableCooldown = true,
+	disableCooldown = false,
 	exit = Position(33520, 32871, 15),
 }
 

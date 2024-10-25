@@ -9,7 +9,6 @@
 
 #include "game/game.hpp"
 #include "game/movement/teleport.hpp"
-#include "game/scheduling/dispatcher.hpp"
 
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_TELE_DEST) {
@@ -89,9 +88,7 @@ void Teleport::addThing(int32_t, std::shared_ptr<Thing> thing) {
 	if (std::shared_ptr<Creature> creature = thing->getCreature()) {
 		Position origPos = creature->getPosition();
 		g_game().internalCreatureTurn(creature, origPos.x > destPos.x ? DIRECTION_WEST : DIRECTION_EAST);
-		g_dispatcher().addWalkEvent([=] {
-			g_game().map.moveCreature(creature, destTile);
-		});
+		g_game().map.moveCreature(creature, destTile);
 		if (effect != CONST_ME_NONE) {
 			g_game().addMagicEffect(origPos, effect);
 			g_game().addMagicEffect(destTile->getPosition(), effect);

@@ -1163,6 +1163,7 @@ bool Game::removeCreature(std::shared_ptr<Creature> creature, bool isLogout /* =
 		size_t i = 0;
 		for (const auto &spectator : playersSpectators) {
 			if (const auto &player = spectator->getPlayer()) {
+				player->sendMagicEffect(tilePosition, CONST_ME_POFF);
 				player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
 			}
 		}
@@ -1380,9 +1381,26 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 
 void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Creature> movingCreature, const Position &movingCreatureOrigPos, std::shared_ptr<Tile> toTile) {
 	metrics::method_latency measure(__METHOD_NAME__);
+	if (!player->canDoAction()) {
+		const auto &task = createPlayerTask(
+			600,
+			[this, player, movingCreature, toTile, movingCreatureOrigPos] {
+				playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition());
+			},
+			__FUNCTION__
+		);
 
-	g_dispatcher().addWalkEvent([=, this] {
-		if (!player->canDoAction()) {
+		player->setNextActionPushTask(task);
+		return;
+	}
+
+	player->setNextActionTask(nullptr);
+
+	if (!Position::areInRange<1, 1, 0>(movingCreatureOrigPos, player->getPosition())) {
+		// need to walk to the creature first before moving it
+		std::vector<Direction> listDir;
+		if (player->getPathTo(movingCreatureOrigPos, listDir, 0, 1, true, true)) {
+			g_dispatcher().addEvent([this, playerId = player->getID(), listDir] { playerAutoWalk(playerId, listDir); }, __FUNCTION__);
 			const auto &task = createPlayerTask(
 				600,
 				[this, player, movingCreature, toTile, movingCreatureOrigPos] {
@@ -1390,94 +1408,74 @@ void Game::playerMoveCreature(std::shared_ptr<Player> player, std::shared_ptr<Cr
 				},
 				__FUNCTION__
 			);
-
+			player->pushEvent(true);
 			player->setNextActionPushTask(task);
+		} else {
+			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+		}
+		return;
+	}
+
+	player->pushEvent(false);
+	std::shared_ptr<Monster> monster = movingCreature->getMonster();
+	bool isFamiliar = false;
+	if (monster) {
+		isFamiliar = monster->isFamiliar();
+	}
+
+	if (!isFamiliar && ((!movingCreature->isPushable() && !player->hasFlag(PlayerFlags_t::CanPushAllCreatures)) || (movingCreature->isInGhostMode() && !player->isAccessPlayer()))) {
+		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
+		return;
+	}
+
+	// check throw distance
+	const Position &movingCreaturePos = movingCreature->getPosition();
+	const Position &toPos = toTile->getPosition();
+	if ((Position::getDistanceX(movingCreaturePos, toPos) > movingCreature->getThrowRange()) || (Position::getDistanceY(movingCreaturePos, toPos) > movingCreature->getThrowRange()) || (Position::getDistanceZ(movingCreaturePos, toPos) * 4 > movingCreature->getThrowRange())) {
+		player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
+		return;
+	}
+
+	if (player != movingCreature) {
+		if (toTile->hasFlag(TILESTATE_BLOCKPATH)) {
+			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 			return;
-		}
-
-		player->setNextActionTask(nullptr);
-
-		if (!Position::areInRange<1, 1, 0>(movingCreatureOrigPos, player->getPosition())) {
-			// need to walk to the creature first before moving it
-			std::vector<Direction> listDir;
-			if (player->getPathTo(movingCreatureOrigPos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent([this, playerId = player->getID(), listDir] { playerAutoWalk(playerId, listDir); }, __FUNCTION__);
-				const auto &task = createPlayerTask(
-					600,
-					[this, player, movingCreature, toTile, movingCreatureOrigPos] {
-						playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition());
-					},
-					__FUNCTION__
-				);
-				player->pushEvent(true);
-				player->setNextActionPushTask(task);
-			} else {
-				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
-			}
+		} else if ((movingCreature->getZoneType() == ZONE_PROTECTION && !toTile->hasFlag(TILESTATE_PROTECTIONZONE)) || (movingCreature->getZoneType() == ZONE_NOPVP && !toTile->hasFlag(TILESTATE_NOPVPZONE))) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
-		}
-
-		player->pushEvent(false);
-		std::shared_ptr<Monster> monster = movingCreature->getMonster();
-		bool isFamiliar = false;
-		if (monster) {
-			isFamiliar = monster->isFamiliar();
-		}
-
-		if (!isFamiliar && ((!movingCreature->isPushable() && !player->hasFlag(PlayerFlags_t::CanPushAllCreatures)) || (movingCreature->isInGhostMode() && !player->isAccessPlayer()))) {
-			player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
-			return;
-		}
-
-		// check throw distance
-		const Position &movingCreaturePos = movingCreature->getPosition();
-		const Position &toPos = toTile->getPosition();
-		if ((Position::getDistanceX(movingCreaturePos, toPos) > movingCreature->getThrowRange()) || (Position::getDistanceY(movingCreaturePos, toPos) > movingCreature->getThrowRange()) || (Position::getDistanceZ(movingCreaturePos, toPos) * 4 > movingCreature->getThrowRange())) {
-			player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
-			return;
-		}
-
-		if (player != movingCreature) {
-			if (toTile->hasFlag(TILESTATE_BLOCKPATH)) {
-				player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
-				return;
-			} else if ((movingCreature->getZoneType() == ZONE_PROTECTION && !toTile->hasFlag(TILESTATE_PROTECTIONZONE)) || (movingCreature->getZoneType() == ZONE_NOPVP && !toTile->hasFlag(TILESTATE_NOPVPZONE))) {
-				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-				return;
-			} else {
-				if (CreatureVector* tileCreatures = toTile->getCreatures()) {
-					for (auto &tileCreature : *tileCreatures) {
-						if (!tileCreature->isInGhostMode()) {
-							player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
-							return;
-						}
+		} else {
+			if (CreatureVector* tileCreatures = toTile->getCreatures()) {
+				for (auto &tileCreature : *tileCreatures) {
+					if (!tileCreature->isInGhostMode()) {
+						player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+						return;
 					}
 				}
-
-				auto movingNpc = movingCreature->getNpc();
-				if (movingNpc && movingNpc->canInteract(toPos)) {
-					player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
-					return;
-				}
 			}
 
-			movingCreature->setLastPosition(movingCreature->getPosition());
+			auto movingNpc = movingCreature->getNpc();
+			if (movingNpc && movingNpc->canInteract(toPos)) {
+				player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+				return;
+			}
 		}
 
-		if (!g_events().eventPlayerOnMoveCreature(player, movingCreature, movingCreaturePos, toPos)) {
-			return;
-		}
+		movingCreature->setLastPosition(movingCreature->getPosition());
+	}
 
-		if (!g_callbacks().checkCallback(EventCallback_t::playerOnMoveCreature, &EventCallback::playerOnMoveCreature, player, movingCreature, movingCreaturePos, toPos)) {
-			return;
-		}
+	if (!g_events().eventPlayerOnMoveCreature(player, movingCreature, movingCreaturePos, toPos)) {
+		return;
+	}
 
-		ReturnValue ret = internalMoveCreature(movingCreature, toTile);
-		if (ret != RETURNVALUE_NOERROR) {
-			player->sendCancelMessage(ret);
-		}
-		player->setLastPosition(player->getPosition());
-	});
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnMoveCreature, &EventCallback::playerOnMoveCreature, player, movingCreature, movingCreaturePos, toPos)) {
+		return;
+	}
+
+	ReturnValue ret = internalMoveCreature(movingCreature, toTile);
+	if (ret != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(ret);
+	}
+	player->setLastPosition(player->getPosition());
 }
 
 ReturnValue Game::internalMoveCreature(std::shared_ptr<Creature> creature, Direction direction, uint32_t flags /*= 0*/) {
@@ -2854,10 +2852,7 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 			return ret;
 		}
 
-		g_dispatcher().addWalkEvent([=] {
-			g_game().map.moveCreature(creature, toTile, !pushMove);
-		});
-
+		map.moveCreature(creature, toTile, !pushMove);
 		return RETURNVALUE_NOERROR;
 	} else if (std::shared_ptr<Item> item = thing->getItem()) {
 		return internalMoveItem(item->getParent(), toTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, flags);
@@ -5818,7 +5813,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(attackCreature);
-	updateCreatureWalk(player->getID()); // internally uses addEventWalk.
+	g_dispatcher().addEvent([this, plyerId = player->getID()] { updateCreatureWalk(plyerId); }, __FUNCTION__);
 }
 
 void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
@@ -5828,7 +5823,7 @@ void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(nullptr);
-	updateCreatureWalk(player->getID()); // internally uses addEventWalk.
+	g_dispatcher().addEvent([this, plyerId = player->getID()] { updateCreatureWalk(plyerId); }, __FUNCTION__);
 	player->setFollowCreature(getCreatureByID(creatureId));
 }
 
@@ -6365,29 +6360,21 @@ void Game::checkCreatureAttack(uint32_t creatureId) {
 }
 
 void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
-	if (creature->isRemoved()) {
-		return;
-	}
+	creature->creatureCheck = true;
 
-	creature->creatureCheck.store(true);
-
-	if (creature->inCheckCreaturesVector.load()) {
+	if (creature->inCheckCreaturesVector) {
 		// already in a vector
 		return;
 	}
 
-	creature->inCheckCreaturesVector.store(true);
-
-	g_dispatcher().context().tryAddEvent([this, creature] {
-		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
-	},
-	                                     "addCreatureCheck");
+	creature->inCheckCreaturesVector = true;
+	checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
 	metrics::method_latency measure(__METHOD_NAME__);
-	if (creature->inCheckCreaturesVector.load()) {
-		creature->creatureCheck.store(false);
+	if (creature->inCheckCreaturesVector) {
+		creature->creatureCheck = false;
 	}
 }
 

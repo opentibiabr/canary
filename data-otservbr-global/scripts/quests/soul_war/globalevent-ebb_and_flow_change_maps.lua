@@ -37,7 +37,7 @@ local function loadMapEmpty()
 	SoulWarQuest.ebbAndFlow.setLoadedEmptyMap(true)
 	SoulWarQuest.ebbAndFlow.setActive(false)
 
-	local updatePlayers = EventCallback("UpdatePlayersEmptyEbbFlowMap", true)
+	local updatePlayers = EventCallback("UpdatePlayersEmptyEbbFlowMap")
 	function updatePlayers.mapOnLoad(mapPath)
 		if mapPath ~= SoulWarQuest.ebbAndFlow.mapsPath.empty then
 			return
@@ -95,7 +95,7 @@ local function loadMapInundate()
 	SoulWarQuest.ebbAndFlow.setLoadedEmptyMap(false)
 	SoulWarQuest.ebbAndFlow.setActive(true)
 
-	local updatePlayers = EventCallback("UpdatePlayersInundateEbbFlowMap", true)
+	local updatePlayers = EventCallback("UpdatePlayersInundateEbbFlowMap")
 	function updatePlayers.mapOnLoad(mapPath)
 		if mapPath ~= SoulWarQuest.ebbAndFlow.mapsPath.inundate then
 			return

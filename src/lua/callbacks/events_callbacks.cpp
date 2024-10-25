@@ -29,35 +29,39 @@ EventsCallbacks &EventsCallbacks::getInstance() {
 }
 
 bool EventsCallbacks::isCallbackRegistered(const std::shared_ptr<EventCallback> &callback) {
-	auto it = m_callbacks.find(callback->getType());
-
-	if (it == m_callbacks.end()) {
-		return false;
+	if (g_game().getGameState() == GAME_STATE_STARTUP && !callback->skipDuplicationCheck() && m_callbacks.find(callback->getName()) != m_callbacks.end()) {
+		return true;
 	}
 
-	const auto &callbacks = it->second;
-
-	auto isSameCallbackName = [&callback](const auto &pair) {
-		return pair.name == callback->getName();
-	};
-
-	auto found = std::ranges::find_if(callbacks, isSameCallbackName);
-
-	return (found != callbacks.end() && !callback->skipDuplicationCheck());
+	return false;
 }
 
 void EventsCallbacks::addCallback(const std::shared_ptr<EventCallback> &callback) {
-	auto &callbackList = m_callbacks[callback->getType()];
-
-	for (const auto &entry : callbackList) {
-		if (entry.name == callback->getName() && !callback->skipDuplicationCheck()) {
-			g_logger().trace("Event callback already registered: {}", callback->getName());
-			return;
-		}
+	if (m_callbacks.find(callback->getName()) != m_callbacks.end() && !callback->skipDuplicationCheck()) {
+		g_logger().trace("Event callback already registered: {}", callback->getName());
+		return;
 	}
 
 	g_logger().trace("Registering event callback: {}", callback->getName());
-	callbackList.emplace_back(EventCallbackEntry { callback->getName(), callback });
+
+	m_callbacks[callback->getName()] = callback;
+}
+
+std::unordered_map<std::string, std::shared_ptr<EventCallback>> EventsCallbacks::getCallbacks() const {
+	return m_callbacks;
+}
+
+std::unordered_map<std::string, std::shared_ptr<EventCallback>> EventsCallbacks::getCallbacksByType(EventCallback_t type) const {
+	std::unordered_map<std::string, std::shared_ptr<EventCallback>> eventCallbacks;
+	for (auto [name, callback] : getCallbacks()) {
+		if (callback->getType() != type) {
+			continue;
+		}
+
+		eventCallbacks[name] = callback;
+	}
+
+	return eventCallbacks;
 }
 
 void EventsCallbacks::clear() {

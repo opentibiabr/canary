@@ -1,5 +1,5 @@
 local config = {
-	enabled = false,
+	enabled = true,
 	storage = Storage.VipSystem.OnlineTokensGain,
 	checkDuplicateIps = false,
 
@@ -10,8 +10,8 @@ local config = {
 	-- per hour | system will calculate how many tokens will be given and when
 	-- put 0 in tokensPerHour.free to disable free from receiving tokens
 	tokensPerHour = {
-		free = 5,
-		vip = 10,
+		free = 1,
+		vip = 5,
 	},
 
 	awardOn = 5,

@@ -10073,7 +10073,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 		forgeableMonsters.clear();
 		// If the forgeable monsters haven't been created
 		// Then we'll create them so they don't return in the next if (forgeableMonsters.empty())
-		for (auto [monsterId, monster] : monsters) {
+		for (const auto &[monsterId, monster] : monsters) {
 			auto monsterTile = monster->getTile();
 			if (!monster || !monsterTile) {
 				continue;
@@ -10083,7 +10083,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 				forgeableMonsters.push_back(monster->getID());
 			}
 		}
-		for (const auto monsterId : getFiendishMonsters()) {
+		for (const auto &monsterId : getFiendishMonsters()) {
 			// If the fiendish is no longer on the map, we remove it from the vector
 			auto monster = getMonsterByID(monsterId);
 			if (!monster) {
@@ -10092,7 +10092,9 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 			}
 
 			// If you're trying to create a new fiendish and it's already max size, let's remove one of them
-			if (getFiendishMonsters().size() >= 3) {
+			if (auto fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT);
+			    // Condition
+			    getFiendishMonsters().size() >= fiendishLimit) {
 				monster->clearFiendishStatus();
 				removeFiendishMonster(monsterId);
 				break;

@@ -75,7 +75,7 @@ void Party::disband() {
 	membersData.clear();
 }
 
-bool Party::leaveParty(std::shared_ptr<Player> player) {
+bool Party::leaveParty(std::shared_ptr<Player> player, bool forceRemove /* = false */) {
 	if (!player) {
 		return false;
 	}
@@ -89,8 +89,9 @@ bool Party::leaveParty(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	if (!g_events().eventPartyOnLeave(getParty(), player)) {
-		return false;
+	bool canRemove = g_events().eventPartyOnLeave(getParty(), player);
+	if (!forceRemove && !canRemove) {
+	    return false;
 	}
 
 	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, &EventCallback::partyOnLeave, getParty(), player)) {

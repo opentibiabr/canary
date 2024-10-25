@@ -3009,8 +3009,10 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 		spell = g_spells().getRuneSpellByName(damage.runeSpellName);
 	}
 	if (spell) {
+		const auto spellName = spell->getName();
+
 		damage.damageMultiplier += checkFocusMasteryDamage();
-		if (getHealingLinkUpgrade(spell->getName())) {
+		if (getHealingLinkUpgrade(spellName)) {
 			damage.healingLink += 10;
 		}
 		if (spell->getSecondaryGroup() == SPELLGROUP_FOCUS && getInstant("Focus Mastery")) {
@@ -3029,16 +3031,16 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 			damage.lifeLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, spellGrade);
 		}
 
-		if (m_spellsBonuses.contains(spell->getName())) {
-			damage.criticalDamage += (getSpellBonus(spell->getName(), WheelSpellBoost_t::CRITICAL_DAMAGE) * 100);
-			damage.criticalChance += getSpellBonus(spell->getName(), WheelSpellBoost_t::CRITICAL_CHANCE);
-			damage.damageMultiplier += getSpellBonus(spell->getName(), WheelSpellBoost_t::DAMAGE);
-			damage.damageReductionMultiplier += getSpellBonus(spell->getName(), WheelSpellBoost_t::DAMAGE_REDUCTION);
-			damage.healingMultiplier += getSpellBonus(spell->getName(), WheelSpellBoost_t::HEAL);
-			damage.manaLeech += getSpellBonus(spell->getName(), WheelSpellBoost_t::MANA_LEECH);
-			damage.manaLeechChance += getSpellBonus(spell->getName(), WheelSpellBoost_t::MANA_LEECH_CHANCE);
-			damage.lifeLeech += getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH);
-			damage.lifeLeechChance += getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH_CHANCE);
+		if (m_spellsBonuses.contains(spellName)) {
+			damage.criticalDamage += (getSpellBonus(spellName, WheelSpellBoost_t::CRITICAL_DAMAGE) * 100);
+			damage.criticalChance += getSpellBonus(spellName, WheelSpellBoost_t::CRITICAL_CHANCE);
+			damage.damageMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::DAMAGE);
+			damage.damageReductionMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::DAMAGE_REDUCTION);
+			damage.healingMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::HEAL);
+			damage.manaLeech += getSpellBonus(spellName, WheelSpellBoost_t::MANA_LEECH);
+			damage.manaLeechChance += getSpellBonus(spellName, WheelSpellBoost_t::MANA_LEECH_CHANCE);
+			damage.lifeLeech += getSpellBonus(spellName, WheelSpellBoost_t::LIFE_LEECH);
+			damage.lifeLeechChance += getSpellBonus(spellName, WheelSpellBoost_t::LIFE_LEECH_CHANCE);
 		}
 	}
 

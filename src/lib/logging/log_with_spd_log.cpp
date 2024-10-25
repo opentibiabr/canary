@@ -43,11 +43,11 @@ void LogWithSpdLog::warn(const std::string &msg) const {
 }
 
 void LogWithSpdLog::error(const std::string &msg) const {
-	SPDLOG_WARN(msg);
+	SPDLOG_ERROR(msg);
 }
 
 void LogWithSpdLog::critical(const std::string &msg) const {
-	SPDLOG_WARN(msg);
+	SPDLOG_CRITICAL(msg);
 }
 
 #if defined(DEBUG_LOG)

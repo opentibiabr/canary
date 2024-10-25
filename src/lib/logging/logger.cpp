@@ -77,11 +77,11 @@ void Logger::warn(const std::string &msg) const {
 }
 
 void Logger::error(const std::string &msg) const {
-	SPDLOG_WARN(msg);
+	SPDLOG_ERROR(msg);
 }
 
 void Logger::critical(const std::string &msg) const {
-	SPDLOG_WARN(msg);
+	SPDLOG_CRITICAL(msg);
 }
 
 #if defined(DEBUG_LOG)

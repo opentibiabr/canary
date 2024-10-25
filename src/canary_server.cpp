@@ -97,7 +97,6 @@ int CanaryServer::run() {
 #endif
 
 				g_game().start(&serviceManager);
-				g_game().setGameState(GAME_STATE_NORMAL);
 				if (g_configManager().getBoolean(TOGGLE_MAINTAIN_MODE)) {
 					g_game().setGameState(GAME_STATE_CLOSED);
 					g_logger().warn("Initialized in maintain mode!");
@@ -106,6 +105,10 @@ int CanaryServer::run() {
 					g_game().setGameState(GAME_STATE_NORMAL);
 					g_webhook().sendMessage(":green_circle: Server is now **online**");
 				}
+
+			#ifndef DEBUG_LOG
+				g_logger().setLevel(g_configManager().getString(LOGLEVEL));
+			#endif
 
 				loaderStatus = LoaderStatus::LOADED;
 			} catch (FailedToInitializeCanary &err) {

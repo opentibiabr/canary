@@ -10083,7 +10083,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 				forgeableMonsters.push_back(monster->getID());
 			}
 		}
-		for (const auto &monsterId : getFiendishMonsters()) {
+		for (const auto monsterId : getFiendishMonsters()) {
 			// If the fiendish is no longer on the map, we remove it from the vector
 			auto monster = getMonsterByID(monsterId);
 			if (!monster) {
@@ -10258,7 +10258,7 @@ void Game::updateForgeableMonsters() {
 		}
 	}
 
-	for (const auto &monsterId : getFiendishMonsters()) {
+	for (const auto monsterId : getFiendishMonsters()) {
 		if (!getMonsterByID(monsterId)) {
 			removeFiendishMonster(monsterId);
 		}

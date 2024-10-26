@@ -70,7 +70,7 @@ bool Npc::isInteractingWithPlayer(uint32_t playerId) {
 		return false;
 	}
 
-	if (playerInteractions.contains(playerId)) {
+	if (!playerInteractions.contains(playerId)) {
 		return false;
 	}
 	return true;

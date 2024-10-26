@@ -23,7 +23,7 @@ enum Ammo_t : uint8_t;
 enum WeaponAction_t : uint8_t;
 enum Skulls_t : uint8_t;
 enum ImbuementTypes_t : int64_t;
-enum SpawnType_t;
+enum SpawnType_t : uint8_t;
 enum WeaponType_t : uint8_t;
 enum MoveEvent_t : uint8_t;
 enum NameEval_t : uint8_t;

@@ -2,6 +2,7 @@
 
 #include <boost/ut.hpp>
 
+#include "game/position.hpp"
 #include "utils/tools.hpp"
 
 using namespace boost::ut;

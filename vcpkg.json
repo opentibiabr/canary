@@ -5,6 +5,7 @@
     "abseil",
     "argon2",
     "asio",
+    "atomic-queue",
     "bext-di",
     "bext-ut",
     "curl",
@@ -22,7 +23,7 @@
     {
       "name": "opentelemetry-cpp",
       "default-features": true,
-      "features": ["otlp-http", "prometheus"]
+      "features": [ "otlp-http", "prometheus" ]
     },
     {
       "name": "gmp",

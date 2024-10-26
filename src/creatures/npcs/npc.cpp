@@ -65,6 +65,29 @@ bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
 	return Creature::canSee(getPosition(), pos, range, range);
 }
 
+bool Npc::isInteractingWithPlayer(uint32_t playerId) {
+	if (playerInteractions.empty()) {
+		return false;
+	}
+
+	if (playerInteractions.find(playerId) == playerInteractions.end()) {
+		return false;
+	}
+	return true;
+}
+
+bool Npc::isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
+	if (playerInteractions.empty()) {
+		return false;
+	}
+
+	auto it = playerInteractions.find(playerId);
+	if (it == playerInteractions.end()) {
+		return false;
+	}
+	return it->second == topicId;
+}
+
 void Npc::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) {
 	Creature::onCreatureAppear(creature, isLogin);
 
@@ -590,15 +613,25 @@ void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 		return;
 	}
 
-	turnToCreature(creature);
+	if (playerInteractionsOrder.empty() || std::ranges::find(playerInteractionsOrder, playerId) == playerInteractionsOrder.end()) {
+		playerInteractionsOrder.emplace_back(playerId);
+		turnToCreature(creature);
+	}
 
 	playerInteractions[playerId] = topicId;
 }
 
 void Npc::removePlayerInteraction(std::shared_ptr<Player> player) {
+	playerInteractionsOrder.erase(std::remove(playerInteractionsOrder.begin(), playerInteractionsOrder.end(), player->getID()), playerInteractionsOrder.end());
 	if (playerInteractions.contains(player->getID())) {
 		playerInteractions.erase(player->getID());
 		player->closeShopWindow();
+	}
+
+	if (!playerInteractionsOrder.empty()) {
+		if (const auto creature = g_game().getCreatureByID(playerInteractionsOrder.back()); creature) {
+			turnToCreature(creature);
+		}
 	}
 }
 
@@ -679,8 +712,11 @@ void Npc::closeAllShopWindows() {
 
 void Npc::handlePlayerMove(std::shared_ptr<Player> player, const Position &newPos) {
 	if (!canInteract(newPos)) {
-		removePlayerInteraction(player);
+		onPlayerCloseChannel(player);
+	} else if (canInteract(newPos) && !playerInteractionsOrder.empty() && playerInteractionsOrder.back() == player->getID()) {
+		turnToCreature(player);
 	}
+
 	if (canSee(newPos)) {
 		onPlayerAppear(player);
 	} else {

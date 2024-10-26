@@ -54,7 +54,7 @@ public:
 		{ BosstiaryRarity_t::RARITY_NEMESIS, { { 1, 10 }, { 3, 30 }, { 5, 60 } } }
 	};
 
-	void setBossBoostedName(const std::string_view &name);
+	void setBossBoostedName(std::string_view name);
 	std::string getBoostedBossName() const;
 	void setBossBoostedId(uint16_t raceId);
 	uint16_t getBoostedBossId() const;

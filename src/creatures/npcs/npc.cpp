@@ -70,7 +70,7 @@ bool Npc::isInteractingWithPlayer(uint32_t playerId) {
 		return false;
 	}
 
-	if (playerInteractions.find(playerId) == playerInteractions.end()) {
+	if (playerInteractions.contains(playerId)) {
 		return false;
 	}
 	return true;
@@ -622,7 +622,8 @@ void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 }
 
 void Npc::removePlayerInteraction(std::shared_ptr<Player> player) {
-	playerInteractionsOrder.erase(std::remove(playerInteractionsOrder.begin(), playerInteractionsOrder.end(), player->getID()), playerInteractionsOrder.end());
+	auto view = std::ranges::remove(playerInteractionsOrder, player->getID());
+	playerInteractionsOrder.erase(view.begin(), view.end());
 	if (playerInteractions.contains(player->getID())) {
 		playerInteractions.erase(player->getID());
 		player->closeShopWindow();

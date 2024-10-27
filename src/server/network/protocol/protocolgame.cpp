@@ -9295,10 +9295,7 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 	NetworkMessage msg;
 	msg.addByte(0xC7);
 	msg.add<uint16_t>(houses.size());
-	for (const auto &house : houses) {
-		const auto clientId = house.first;
-		const auto &houseData = house.second;
-
+	for (const auto &[clientId, houseData] : houses) {
 		msg.add<uint32_t>(clientId);
 		msg.addByte(0x01); // 0x00 = Renovation; 0x01 = Available
 

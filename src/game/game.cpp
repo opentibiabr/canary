@@ -10241,7 +10241,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT, __FUNCTION__);
+	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
 	    forgeableMonsters.size() < influencedLimit * 2) {
 		forgeableMonsters.clear();
 		for (const auto &[monsterId, monster] : monsters) {
@@ -10740,7 +10740,7 @@ const std::unordered_map<uint16_t, std::string> &Game::getHirelingOutfits() {
 	return m_hirelingOutfits;
 }
 
-void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string townName) {
+void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &townName) {
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -10756,7 +10756,7 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string tow
 				return;
 			}
 
-			const std::string houseTown = town->getName();
+			const std::string &houseTown = town->getName();
 			if (houseTown == townName) {
 				houses.emplace(house->getClientId(), house);
 			}
@@ -10781,7 +10781,7 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string tow
 }
 
 void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_t bidValue) {
-	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
 		return;
 	}
 
@@ -10846,7 +10846,7 @@ void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_
 }
 
 void Game::playerCyclopediaHouseLeave(uint32_t playerId, uint32_t houseId, uint32_t timestamp) {
-	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
 		return;
 	}
 

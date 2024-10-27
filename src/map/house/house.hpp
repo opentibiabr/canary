@@ -236,60 +236,60 @@ public:
 	void setNewOwnership();
 
 	void setClientId(uint32_t newClientId) {
-		this->clientId = newClientId;
+		this->m_clientId = newClientId;
 	}
 	uint32_t getClientId() const {
-		return clientId;
+		return m_clientId;
 	}
 
 	void setBidder(int32_t bidder) {
-		this->bidder = bidder;
+		this->m_bidder = bidder;
 	}
 	int32_t getBidder() const {
-		return bidder;
+		return m_bidder;
 	}
 
-	void setBidderName(std::string bidderName) {
-		this->bidderName = bidderName;
+	void setBidderName(const std::string &bidderName) {
+		this->m_bidderName = bidderName;
 	}
 	std::string getBidderName() const {
-		return bidderName;
+		return m_bidderName;
 	}
 
 	void setHighestBid(uint64_t bidValue) {
-		this->highestBid = bidValue;
+		this->m_highestBid = bidValue;
 	}
 	uint64_t getHighestBid() const {
-		return highestBid;
+		return m_highestBid;
 	}
 
 	void setInternalBid(uint64_t bidValue) {
-		this->internalBid = bidValue;
+		this->m_internalBid = bidValue;
 	}
 	uint64_t getInternalBid() const {
-		return internalBid;
+		return m_internalBid;
 	}
 
 	void setBidHolderLimit(uint64_t bidValue) {
-		this->bidHolderLimit = bidValue;
+		this->m_bidHolderLimit = bidValue;
 	}
 	uint64_t getBidHolderLimit() const {
-		return bidHolderLimit;
+		return m_bidHolderLimit;
 	}
 
 	void calculateBidEndDate(uint8_t daysToEnd);
 	void setBidEndDate(uint32_t bidEndDate) {
-		this->bidEndDate = bidEndDate;
+		this->m_bidEndDate = bidEndDate;
 	};
 	uint32_t getBidEndDate() const {
-		return bidEndDate;
+		return m_bidEndDate;
 	}
 
 	void setState(uint8_t state) {
-		this->state = state;
+		this->m_state = state;
 	}
 	uint8_t getState() const {
-		return state;
+		return m_state;
 	}
 
 	void setOwnerAccountId(uint32_t accountId) {
@@ -341,14 +341,14 @@ private:
 	Position posEntry = {};
 
 	// House Auction
-	uint32_t clientId;
-	int32_t bidder = 0;
-	std::string bidderName = "";
-	uint64_t highestBid = 0;
-	uint64_t internalBid = 0;
-	uint64_t bidHolderLimit = 0;
-	uint32_t bidEndDate = 0;
-	uint8_t state = 0;
+	uint32_t m_clientId;
+	int32_t m_bidder = 0;
+	std::string m_bidderName = "";
+	uint64_t m_highestBid = 0;
+	uint64_t m_internalBid = 0;
+	uint64_t m_bidHolderLimit = 0;
+	uint32_t m_bidEndDate = 0;
+	uint8_t m_state = 0;
 
 	bool isLoaded = false;
 
@@ -401,7 +401,7 @@ public:
 
 	std::shared_ptr<House> getHouseByPlayerId(uint32_t playerId);
 	std::vector<std::shared_ptr<House>> getAllHousesByPlayerId(uint32_t playerId);
-	std::shared_ptr<House> getHouseByBidderName(std::string bidderName);
+	std::shared_ptr<House> getHouseByBidderName(const std::string &bidderName);
 	uint16_t getHouseCountByAccount(uint32_t accountId);
 
 	bool loadHousesXML(const std::string &filename);

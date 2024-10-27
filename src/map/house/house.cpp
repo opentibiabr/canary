@@ -105,7 +105,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared
 	}
 
 	if (guid != 0) {
-		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD, __FUNCTION__));
+		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
 		time_t currentTime = time(nullptr);
 		if (strRentPeriod == "yearly") {
 			currentTime += 24 * 60 * 60 * 365;
@@ -140,7 +140,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, std::shared
 			owner = guid;
 			ownerName = name;
 			ownerAccountId = result->getNumber<uint32_t>("account_id");
-			state = 2;
+			m_state = 2;
 		}
 	}
 
@@ -155,14 +155,14 @@ void House::updateDoorDescription() const {
 		ss << "It belongs to house '" << houseName << "'. Nobody owns this house.";
 	}
 
-	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION, __FUNCTION__)) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
 		ss << " It is " << getSize() << " square meters.";
 		const int32_t housePrice = getPrice();
 		if (housePrice != -1) {
-			if (g_configManager().getBoolean(HOUSE_PURSHASED_SHOW_PRICE, __FUNCTION__) || owner == 0) {
+			if (g_configManager().getBoolean(HOUSE_PURSHASED_SHOW_PRICE) || owner == 0) {
 				ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
 			}
-			std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD, __FUNCTION__));
+			std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
 			if (strRentPeriod != "never") {
 				ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
 			}
@@ -484,7 +484,7 @@ void House::resetTransferItem() {
 void House::calculateBidEndDate(uint8_t daysToEnd) {
 	auto currentTimeMs = std::chrono::system_clock::now().time_since_epoch();
 
-	std::chrono::system_clock::time_point now = std::chrono::system_clock::time_point(
+	auto now = std::chrono::system_clock::time_point(
 		std::chrono::duration_cast<std::chrono::milliseconds>(currentTimeMs)
 	);
 
@@ -492,11 +492,11 @@ void House::calculateBidEndDate(uint8_t daysToEnd) {
 	days daysSinceEpoch = std::chrono::duration_cast<days>(now.time_since_epoch());
 
 	// Get today's date at 00:00:00 UTC
-	std::chrono::system_clock::time_point todayMidnight = std::chrono::system_clock::time_point(daysSinceEpoch);
+	auto todayMidnight = std::chrono::system_clock::time_point(daysSinceEpoch);
 
 	std::chrono::system_clock::time_point targetDay = todayMidnight + days(daysToEnd);
 
-	const auto serverSaveTime = g_configManager().getString(GLOBAL_SERVER_SAVE_TIME, __FUNCTION__);
+	const auto serverSaveTime = g_configManager().getString(GLOBAL_SERVER_SAVE_TIME);
 
 	std::vector<int32_t> params = vectorAtoi(explodeString(serverSaveTime, ":"));
 	int32_t hour = params.front();
@@ -513,9 +513,9 @@ void House::calculateBidEndDate(uint8_t daysToEnd) {
 
 	std::time_t resultTime = std::chrono::system_clock::to_time_t(targetTime);
 	std::tm* localTime = std::localtime(&resultTime);
-	uint32_t bidEndDate = static_cast<uint32_t>(std::mktime(localTime));
+	auto bidEndDate = static_cast<uint32_t>(std::mktime(localTime));
 
-	this->bidEndDate = bidEndDate;
+	this->m_bidEndDate = bidEndDate;
 }
 
 std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(std::shared_ptr<House> house) {
@@ -766,18 +766,18 @@ std::shared_ptr<House> Houses::getHouseByPlayerId(uint32_t playerId) {
 
 std::vector<std::shared_ptr<House>> Houses::getAllHousesByPlayerId(uint32_t playerId) {
 	std::vector<std::shared_ptr<House>> playerHouses;
-	for (const auto &it : houseMap) {
-		if (it.second->getOwner() == playerId) {
-			playerHouses.emplace_back(it.second);
+	for (const auto &[id, house] : houseMap) {
+		if (house->getOwner() == playerId) {
+			playerHouses.emplace_back(house);
 		}
 	}
 	return playerHouses;
 }
 
-std::shared_ptr<House> Houses::getHouseByBidderName(std::string bidderName) {
-	for (const auto &it : houseMap) {
-		if (it.second->getBidderName() == bidderName) {
-			return it.second;
+std::shared_ptr<House> Houses::getHouseByBidderName(const std::string &bidderName) {
+	for (const auto &[id, house] : houseMap) {
+		if (house->getBidderName() == bidderName) {
+			return house;
 		}
 	}
 	return nullptr;
@@ -785,8 +785,8 @@ std::shared_ptr<House> Houses::getHouseByBidderName(std::string bidderName) {
 
 uint16_t Houses::getHouseCountByAccount(uint32_t accountId) {
 	uint16_t count = 0;
-	for (const auto &it : houseMap) {
-		if (it.second->getOwnerAccountId() == accountId) {
+	for (const auto &[id, house] : houseMap) {
+		if (house->getOwnerAccountId() == accountId) {
 			++count;
 		}
 	}

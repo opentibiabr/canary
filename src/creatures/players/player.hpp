@@ -1584,7 +1584,7 @@ public:
 	}
 
 	BidErrorMessage canBidHouse(uint32_t houseId);
-	void sendCyclopediaHouseList(HouseMap houses) {
+	void sendCyclopediaHouseList(const HouseMap &houses) {
 		if (client) {
 			client->sendCyclopediaHouseList(houses);
 		}

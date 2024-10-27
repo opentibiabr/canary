@@ -316,7 +316,7 @@ public:
 	static std::string getSkillNameById(uint8_t &skill);
 
 	// House Auction
-	void playerCyclopediaHousesByTown(uint32_t playerId, const std::string townName);
+	void playerCyclopediaHousesByTown(uint32_t playerId, const std::string &townName);
 	void playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_t bidValue);
 	void playerCyclopediaHouseLeave(uint32_t playerId, uint32_t houseId, uint32_t timestamp);
 	bool processBankAuction(std::shared_ptr<Player> player, std::shared_ptr<House> house, uint64_t bid, bool replace = false);

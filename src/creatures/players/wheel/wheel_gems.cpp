@@ -155,66 +155,66 @@ void WheelModifierContext::addStrategies(WheelGemBasicModifier_t modifier, uint8
 			break;
 
 		case WheelGemBasicModifier_t::Vocation_Health:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, WheelGemUtils::getHealthValue(m_vocation, modifier) * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana_FireResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, WheelGemUtils::getManaValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana_EnergyResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, WheelGemUtils::getManaValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana_Earth_Resistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, WheelGemUtils::getManaValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana_Ice_Resistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, WheelGemUtils::getManaValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mana:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, WheelGemUtils::getManaValue(m_vocation, modifier) * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Health_FireResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, WheelGemUtils::getHealthValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Health_EnergyResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, WheelGemUtils::getHealthValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Health_EarthResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, WheelGemUtils::getHealthValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Health_IceResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, WheelGemUtils::getHealthValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Mixed:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, getHealthValue(m_vocation, modifier) * gradeMultiplier));
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, getManaValue(m_vocation, modifier) * gradeMultiplier));
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::HEALTH, WheelGemUtils::getHealthValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MANA, WheelGemUtils::getManaValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, WheelGemUtils::getCapacityValue(m_vocation, modifier) * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity_FireResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, WheelGemUtils::getCapacityValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_FIREDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity_EnergyResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, WheelGemUtils::getCapacityValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ENERGYDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity_EarthResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, WheelGemUtils::getCapacityValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_EARTHDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity_IceResistance:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, WheelGemUtils::getCapacityValue(m_vocation, modifier) * gradeMultiplier));
 			m_strategies.push_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_ICEDAMAGE, 100 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::Vocation_Capacity:
-			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, getCapacityValue(m_vocation, modifier) * gradeMultiplier));
+			m_strategies.push_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::CAPACITY, WheelGemUtils::getCapacityValue(m_vocation, modifier) * gradeMultiplier));
 			break;
 
 		default:
@@ -564,4 +564,231 @@ void WheelModifierContext::executeStrategies() {
 	for (auto &strategy : m_strategies) {
 		strategy->execute();
 	}
+}
+
+int32_t WheelGemUtils::getHealthValue(Vocation_t vocation, WheelGemBasicModifier_t modifier) {
+	static const std::unordered_map<WheelGemBasicModifier_t, std::unordered_map<Vocation_t, int32_t>> stats = {
+		{
+			WheelGemBasicModifier_t::Vocation_Health,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 300 },
+				{ Vocation_t::VOCATION_PALADIN, 200 },
+				{ Vocation_t::VOCATION_SORCERER, 100 },
+				{ Vocation_t::VOCATION_DRUID, 100 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Health_FireResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 150 },
+				{ Vocation_t::VOCATION_PALADIN, 100 },
+				{ Vocation_t::VOCATION_SORCERER, 50 },
+				{ Vocation_t::VOCATION_DRUID, 50 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Health_EnergyResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 150 },
+				{ Vocation_t::VOCATION_PALADIN, 100 },
+				{ Vocation_t::VOCATION_SORCERER, 50 },
+				{ Vocation_t::VOCATION_DRUID, 50 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Health_EarthResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 150 },
+				{ Vocation_t::VOCATION_PALADIN, 100 },
+				{ Vocation_t::VOCATION_SORCERER, 50 },
+				{ Vocation_t::VOCATION_DRUID, 50 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Health_IceResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 150 },
+				{ Vocation_t::VOCATION_PALADIN, 100 },
+				{ Vocation_t::VOCATION_SORCERER, 50 },
+				{ Vocation_t::VOCATION_DRUID, 50 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Mixed,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 150 },
+				{ Vocation_t::VOCATION_PALADIN, 100 },
+				{ Vocation_t::VOCATION_SORCERER, 50 },
+				{ Vocation_t::VOCATION_DRUID, 50 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Mixed2,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 150 },
+				{ Vocation_t::VOCATION_PALADIN, 100 },
+				{ Vocation_t::VOCATION_SORCERER, 50 },
+				{ Vocation_t::VOCATION_DRUID, 50 },
+			},
+		},
+	};
+
+	auto modifierIt = stats.find(modifier);
+	if (modifierIt != stats.end()) {
+		auto vocationIt = modifierIt->second.find(vocation);
+		if (vocationIt != modifierIt->second.end()) {
+			return vocationIt->second;
+		}
+	}
+	return 0;
+}
+
+int32_t WheelGemUtils::getManaValue(Vocation_t vocation, WheelGemBasicModifier_t modifier) {
+	static const std::unordered_map<WheelGemBasicModifier_t, std::unordered_map<Vocation_t, int32_t>> stats = {
+		{
+			WheelGemBasicModifier_t::Vocation_Mana_FireResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 50 },
+				{ Vocation_t::VOCATION_PALADIN, 150 },
+				{ Vocation_t::VOCATION_SORCERER, 300 },
+				{ Vocation_t::VOCATION_DRUID, 300 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Mana_EnergyResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 50 },
+				{ Vocation_t::VOCATION_PALADIN, 150 },
+				{ Vocation_t::VOCATION_SORCERER, 300 },
+				{ Vocation_t::VOCATION_DRUID, 300 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Mana_Earth_Resistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 50 },
+				{ Vocation_t::VOCATION_PALADIN, 150 },
+				{ Vocation_t::VOCATION_SORCERER, 300 },
+				{ Vocation_t::VOCATION_DRUID, 300 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Mana_Ice_Resistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 50 },
+				{ Vocation_t::VOCATION_PALADIN, 150 },
+				{ Vocation_t::VOCATION_SORCERER, 300 },
+				{ Vocation_t::VOCATION_DRUID, 300 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Mana,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 100 },
+				{ Vocation_t::VOCATION_PALADIN, 300 },
+				{ Vocation_t::VOCATION_SORCERER, 600 },
+				{ Vocation_t::VOCATION_DRUID, 600 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Mixed,
+			{
+				{ Vocation_t::VOCATION_PALADIN, 100 },
+				{ Vocation_t::VOCATION_SORCERER, 150 },
+				{ Vocation_t::VOCATION_DRUID, 150 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Capacity,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 50 },
+				{ Vocation_t::VOCATION_PALADIN, 150 },
+				{ Vocation_t::VOCATION_SORCERER, 300 },
+				{ Vocation_t::VOCATION_DRUID, 300 },
+			},
+		}
+	};
+
+	auto modifierIt = stats.find(modifier);
+	if (modifierIt != stats.end()) {
+		auto vocationIt = modifierIt->second.find(vocation);
+		if (vocationIt != modifierIt->second.end()) {
+			return vocationIt->second;
+		}
+	}
+	return 0;
+}
+
+int32_t WheelGemUtils::getCapacityValue(Vocation_t vocation, WheelGemBasicModifier_t modifier) {
+	static const std::unordered_map<WheelGemBasicModifier_t, std::unordered_map<Vocation_t, int32_t>> stats = {
+		{
+			WheelGemBasicModifier_t::Vocation_Capacity_FireResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 250 },
+				{ Vocation_t::VOCATION_PALADIN, 200 },
+				{ Vocation_t::VOCATION_SORCERER, 100 },
+				{ Vocation_t::VOCATION_DRUID, 100 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Capacity_EnergyResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 250 },
+				{ Vocation_t::VOCATION_PALADIN, 200 },
+				{ Vocation_t::VOCATION_SORCERER, 100 },
+				{ Vocation_t::VOCATION_DRUID, 100 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Capacity_EarthResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 250 },
+				{ Vocation_t::VOCATION_PALADIN, 200 },
+				{ Vocation_t::VOCATION_SORCERER, 100 },
+				{ Vocation_t::VOCATION_DRUID, 100 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Capacity_IceResistance,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 250 },
+				{ Vocation_t::VOCATION_PALADIN, 200 },
+				{ Vocation_t::VOCATION_SORCERER, 100 },
+				{ Vocation_t::VOCATION_DRUID, 100 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Capacity,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 500 },
+				{ Vocation_t::VOCATION_PALADIN, 400 },
+				{ Vocation_t::VOCATION_SORCERER, 200 },
+				{ Vocation_t::VOCATION_DRUID, 200 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Mixed,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 125 },
+			},
+		},
+		{
+			WheelGemBasicModifier_t::Vocation_Mixed2,
+			{
+				{ Vocation_t::VOCATION_KNIGHT, 250 },
+				{ Vocation_t::VOCATION_PALADIN, 200 },
+				{ Vocation_t::VOCATION_SORCERER, 100 },
+				{ Vocation_t::VOCATION_DRUID, 100 },
+			},
+		}
+	};
+
+	auto modifierIt = stats.find(modifier);
+	if (modifierIt != stats.end()) {
+		auto vocationIt = modifierIt->second.find(vocation);
+		if (vocationIt != modifierIt->second.end()) {
+			return vocationIt->second;
+		}
+	}
+	return 0;
 }

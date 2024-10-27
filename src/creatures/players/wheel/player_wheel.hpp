@@ -10,7 +10,6 @@
 #pragma once
 
 #include "wheel_definitions.hpp"
-#include "kv/kv_definitions.hpp"
 
 class Creature;
 class IOWheel;
@@ -35,9 +34,7 @@ struct PlayerWheelGem {
 	WheelGemBasicModifier_t basicModifier2;
 	WheelGemSupremeModifier_t supremeModifier;
 
-	std::string toString() const {
-		return fmt::format("[PlayerWheelGem] uuid: {}, locked: {}, affinity: {}, quality: {}, basicModifier1: {}, basicModifier2: {}, supremeModifier: {}", uuid, locked, static_cast<IntType>(affinity), static_cast<IntType>(quality), static_cast<IntType>(basicModifier1), static_cast<IntType>(basicModifier2), static_cast<IntType>(supremeModifier));
-	}
+	std::string toString() const;
 
 	void save(const std::shared_ptr<KV> &kv) const;
 

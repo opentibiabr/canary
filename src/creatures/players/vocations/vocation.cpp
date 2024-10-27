@@ -11,6 +11,7 @@
 
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
+#include "enums/player_wheel.hpp"
 
 bool Vocations::reload() {
 	vocationsMap.clear();

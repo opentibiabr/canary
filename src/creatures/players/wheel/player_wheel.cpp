@@ -9,6 +9,7 @@
 
 #include "creatures/players/wheel/player_wheel.hpp"
 
+#include "enums/player_wheel.hpp"
 #include "config/configmanager.hpp"
 #include "io/io_wheel.hpp"
 #include "game/game.hpp"
@@ -3618,6 +3619,10 @@ WheelGemBasicModifier_t PlayerWheel::selectBasicModifier2(WheelGemBasicModifier_
 		modifier = wheelGemBasicSlot2Allowed[uniform_random(0, wheelGemBasicSlot2Allowed.size() - 1)];
 	}
 	return modifier;
+}
+
+std::string PlayerWheelGem::toString() const {
+	return fmt::format("[PlayerWheelGem] uuid: {}, locked: {}, affinity: {}, quality: {}, basicModifier1: {}, basicModifier2: {}, supremeModifier: {}", uuid, locked, static_cast<IntType>(affinity), static_cast<IntType>(quality), static_cast<IntType>(basicModifier1), static_cast<IntType>(basicModifier2), static_cast<IntType>(supremeModifier));
 }
 
 void PlayerWheelGem::save(const std::shared_ptr<KV> &kv) const {

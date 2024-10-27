@@ -333,7 +333,7 @@ public:
 		return m_words;
 	}
 
-	void setWords(const std::string_view &newWord) {
+	void setWords(std::string_view newWord) {
 		m_words = newWord.data();
 	}
 
@@ -341,7 +341,7 @@ public:
 		return m_separator;
 	}
 
-	void setSeparator(const std::string_view &newSeparator) {
+	void setSeparator(std::string_view newSeparator) {
 		m_separator = newSeparator.data();
 	}
 

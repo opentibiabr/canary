@@ -6,8 +6,8 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#include <spdlog/spdlog.h>
 
+#include <spdlog/spdlog.h>
 #include "lib/di/container.hpp"
 
 LogWithSpdLog::LogWithSpdLog() {
@@ -23,17 +23,39 @@ Logger &LogWithSpdLog::getInstance() {
 	return inject<Logger>();
 }
 
-void LogWithSpdLog::setLevel(const std::string &name) {
+void LogWithSpdLog::setLevel(const std::string &name) const {
 	debug("Setting log level to: {}.", name);
-	auto level = spdlog::level::from_str(name);
+	const auto level = spdlog::level::from_str(name);
 	spdlog::set_level(level);
 }
 
 std::string LogWithSpdLog::getLevel() const {
-	auto level = spdlog::level::to_string_view(spdlog::get_level());
+	const auto level = spdlog::level::to_string_view(spdlog::get_level());
 	return std::string { level.begin(), level.end() };
 }
 
-void LogWithSpdLog::log(const std::string &lvl, const fmt::basic_string_view<char> msg) const {
-	spdlog::log(spdlog::level::from_str(lvl), msg);
+void LogWithSpdLog::info(const std::string &msg) const {
+	SPDLOG_INFO(msg);
 }
+
+void LogWithSpdLog::warn(const std::string &msg) const {
+	SPDLOG_WARN(msg);
+}
+
+void LogWithSpdLog::error(const std::string &msg) const {
+	SPDLOG_ERROR(msg);
+}
+
+void LogWithSpdLog::critical(const std::string &msg) const {
+	SPDLOG_CRITICAL(msg);
+}
+
+#if defined(DEBUG_LOG)
+void LogWithSpdLog::debug(const std::string &msg) const {
+	SPDLOG_DEBUG(msg);
+}
+
+void LogWithSpdLog::trace(const std::string &msg) const {
+	SPDLOG_TRACE(msg);
+}
+#endif

@@ -1346,7 +1346,7 @@ uint8_t PlayerWheel::getMaxPointsPerSlot(WheelSlots_t slot) const {
 	return 0u;
 }
 
-void PlayerWheel::resetPlayerBonusData() {
+void PlayerWheel::resetPlayerData() {
 	m_playerBonusData = PlayerWheelMethodsBonusData();
 
 	resetUpgradedSpells();
@@ -1608,7 +1608,7 @@ void PlayerWheel::loadPlayerBonusData() {
 	}
 
 	// Reset data to prevent stats from accumulating
-	resetPlayerBonusData();
+	resetPlayerData();
 	// Initialize the relevant IOWheel data in the PlayerWheel
 	loadDedicationAndConvictionPerks();
 	loadRevelationPerks();

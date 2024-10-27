@@ -121,8 +121,6 @@ public:
 	uint8_t getMaxPointsPerSlot(WheelSlots_t slot) const;
 	uint16_t getUnusedPoints() const;
 
-	void resetPlayerBonusData();
-
 	void setPlayerCombatStats(CombatType_t type, int32_t leechAmount);
 
 	void reloadPlayerData();
@@ -181,6 +179,8 @@ private:
 	static uint64_t getGemRotateCost(WheelGemQuality_t quality);
 
 	static uint64_t getGemRevealCost(WheelGemQuality_t quality);
+
+	void resetPlayerData();
 
 	// Members variables
 	const uint16_t m_minLevelToStartCountPoints = 50;

@@ -9,12 +9,16 @@
 
 #pragma once
 #include "creatures/creature.hpp"
+#include "lua/lua_definitions.hpp"
 
 struct spellBlock_t;
 class MonsterType;
 class Tile;
 class Creature;
 class Game;
+class SpawnMonster;
+
+using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
 class Monster final : public Creature {
 public:

@@ -89,9 +89,7 @@ public:
 	Game(const Game &) = delete;
 	Game &operator=(const Game &) = delete;
 
-	static Game &getInstance() {
-		return inject<Game>();
-	}
+	static Game &getInstance();
 
 	void resetMonsters() const;
 	void resetNpcs() const;

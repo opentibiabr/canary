@@ -8,6 +8,7 @@
  */
 
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -29,8 +30,10 @@
 #include "game/zones/zone.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/io_wheel.hpp"
+#include "io/ioguild.hpp"
 #include "io/iologindata.hpp"
 #include "io/iomarket.hpp"
+#include "io/ioprey.hpp"
 #include "items/bed.hpp"
 #include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
@@ -39,6 +42,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/actions.hpp"
+#include "lua/creature/creatureevent.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/creature/talkaction.hpp"
 #include "lua/global/globalevent.hpp"
@@ -398,6 +402,10 @@ Game::Game() {
 }
 
 Game::~Game() = default;
+
+Game &Game::getInstance() {
+	return inject<Game>();
+}
 
 void Game::resetMonsters() const {
 	for (const auto &[monsterId, monster] : getMonsters()) {

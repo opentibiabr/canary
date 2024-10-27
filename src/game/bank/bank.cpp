@@ -8,9 +8,9 @@
  */
 
 #include "bank.hpp"
-#include "game/game.hpp"
+
 #include "creatures/players/player.hpp"
-#include "io/iologindata.hpp"
+#include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "lib/metrics/metrics.hpp"
 

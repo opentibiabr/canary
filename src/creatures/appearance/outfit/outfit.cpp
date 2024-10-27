@@ -8,9 +8,10 @@
  */
 
 #include "creatures/appearance/outfit/outfit.hpp"
+#include "game/game.hpp"
+#include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
-#include "game/game.hpp"
 
 std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
 

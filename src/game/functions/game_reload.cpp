@@ -13,7 +13,9 @@
 #include "creatures/npcs/npcs.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "game/functions/game_reload.hpp"
+#include "game/game.hpp"
 #include "game/zones/zone.hpp"
+#include "lib/di/container.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -21,6 +23,10 @@
 
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
+
+GameReload &GameReload::getInstance() {
+	return inject<GameReload>();
+}
 
 bool GameReload::init(Reload_t reloadTypes) {
 	switch (reloadTypes) {

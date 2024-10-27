@@ -11,6 +11,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "lua/creature/creatureevent.hpp"
 #include "lua/creature/movement.hpp"
 #include "lua/creature/talkaction.hpp"
 #include "lua/global/globalevent.hpp"

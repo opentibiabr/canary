@@ -7,8 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/game.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/creature.hpp"
+#include "game/game.hpp"
+#include "lua/creature/creatureevent.hpp"
 #include "lua/functions/creatures/creature_functions.hpp"
 #include "map/spectators.hpp"
 

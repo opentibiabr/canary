@@ -9,6 +9,7 @@
 
 #include "creatures/players/management/waitlist.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
 
 #include "enums/account_type.hpp"
 

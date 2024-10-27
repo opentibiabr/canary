@@ -7,9 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "lua/creature/creatureevent.hpp"
-#include "utils/tools.hpp"
 #include "creatures/players/player.hpp"
+#include "lua/creature/creatureevent.hpp"
 
 void CreatureEvents::clear() {
 	for (auto &[name, event] : creatureEvents) {
@@ -51,6 +50,10 @@ std::shared_ptr<CreatureEvent> CreatureEvents::getEventByName(const std::string 
 		}
 	}
 	return nullptr;
+}
+
+CreatureEvents &CreatureEvents::getInstance() {
+	return inject<CreatureEvents>();
 }
 
 bool CreatureEvents::playerLogin(std::shared_ptr<Player> player) const {

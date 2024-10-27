@@ -9,6 +9,7 @@
 
 #include "core.hpp"
 #include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "game/functions/game_reload.hpp"
 #include "game/game.hpp"
@@ -25,8 +26,6 @@
 #include "lua/functions/events/event_callback_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "map/spectators.hpp"
-
-#include "creatures/monsters/monsters.hpp"
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {

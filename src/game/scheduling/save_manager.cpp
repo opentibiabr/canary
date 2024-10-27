@@ -9,9 +9,12 @@
 
 #include "game/scheduling/save_manager.hpp"
 
+#include "creatures/players/grouping/guild.hpp"
 #include "game/game.hpp"
+#include "io/ioguild.hpp"
 #include "io/iologindata.hpp"
 #include "kv/kv.hpp"
+#include "lib/di/container.hpp"
 
 SaveManager::SaveManager(ThreadPool &threadPool, KVStore &kvStore, Logger &logger, Game &game) :
 	threadPool(threadPool), kv(kvStore), logger(logger), game(game) { }

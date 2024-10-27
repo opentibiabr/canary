@@ -9,9 +9,8 @@
 
 #pragma once
 
-#include "creatures/creature.hpp"
-
 class Creature;
+class LuaScriptInterface;
 
 class CreatureCallback {
 public:
@@ -23,35 +22,17 @@ public:
 
 	void pushSpecificCreature(std::shared_ptr<Creature> creature);
 
-	bool persistLuaState() {
-		return params > 0 && scriptInterface->callFunction(params);
-	}
+	bool persistLuaState();
 
-	void pushCreature(std::shared_ptr<Creature> creature) {
-		params++;
-		LuaScriptInterface::pushUserdata<Creature>(L, creature);
-		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-	}
+	void pushCreature(std::shared_ptr<Creature> creature);
 
-	void pushPosition(const Position &position, int32_t stackpos = 0) {
-		params++;
-		LuaScriptInterface::pushPosition(L, position, stackpos);
-	}
+	void pushPosition(const Position &position, int32_t stackpos = 0);
 
-	void pushNumber(int32_t number) {
-		params++;
-		lua_pushnumber(L, number);
-	}
+	void pushNumber(int32_t number);
 
-	void pushString(const std::string &str) {
-		params++;
-		LuaScriptInterface::pushString(L, str);
-	}
+	void pushString(const std::string &str);
 
-	void pushBoolean(const bool str) {
-		params++;
-		LuaScriptInterface::pushBoolean(L, str);
-	}
+	void pushBoolean(const bool str);
 
 protected:
 	static std::string getCreatureClass(std::shared_ptr<Creature> creature);

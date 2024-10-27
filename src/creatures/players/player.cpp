@@ -10,6 +10,7 @@
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/combat.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
@@ -35,7 +36,9 @@
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
 #include "grouping/familiars.hpp"
+#include "grouping/guild.hpp"
 #include "io/iologindata.hpp"
+#include "io/ioprey.hpp"
 #include "items/bed.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/depot/depotlocker.hpp"
@@ -951,6 +954,10 @@ void Player::addStorageValueByName(const std::string &storageName, const int32_t
 	}
 	uint32_t key = it->second;
 	addStorageValue(key, value, isLogin);
+}
+
+std::shared_ptr<KV> Player::kv() const {
+	return g_kv().scoped("player")->scoped(fmt::format("{}", getGUID()));
 }
 
 bool Player::canSee(const Position &pos) {
@@ -3919,6 +3926,24 @@ ItemsTierCountList Player::getInventoryItemsId(bool ignoreStoreInbox /* false */
 	return itemMap;
 }
 
+bool Player::checkAutoLoot(bool isBoss) const {
+	if (!g_configManager().getBoolean(AUTOLOOT)) {
+		return false;
+	}
+	if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY) && !isVip()) {
+		return false;
+	}
+
+	auto featureKV = kv()->scoped("features")->get("autoloot");
+	auto value = featureKV.has_value() ? featureKV->getNumber() : 0;
+	if (value == 2) {
+		return true;
+	} else if (value == 1) {
+		return !isBoss;
+	}
+	return false;
+}
+
 std::vector<std::shared_ptr<Item>> Player::getInventoryItemsFromId(uint16_t itemId, bool ignore /*= true*/) const {
 	std::vector<std::shared_ptr<Item>> itemVector;
 	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
@@ -6727,6 +6752,57 @@ void Player::removePreySlotById(PreySlot_t slotid) {
 	preys.erase(it, preys.end());
 }
 
+const std::unique_ptr<PreySlot> &Player::getPreySlotById(PreySlot_t slotid) {
+	if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const std::unique_ptr<PreySlot> &preyIt) {
+			return preyIt->id == slotid;
+		});
+	    it != preys.end()) {
+		return *it;
+	}
+
+	return PreySlotNull;
+}
+
+bool Player::setPreySlotClass(std::unique_ptr<PreySlot> &slot) {
+	if (getPreySlotById(slot->id)) {
+		return false;
+	}
+
+	preys.emplace_back(std::move(slot));
+	return true;
+}
+
+std::vector<uint16_t> Player::getPreyBlackList() const {
+	std::vector<uint16_t> rt;
+	for (const std::unique_ptr<PreySlot> &slot : preys) {
+		if (slot) {
+			if (slot->isOccupied()) {
+				rt.push_back(slot->selectedRaceId);
+			}
+			for (uint16_t raceId : slot->raceIdList) {
+				rt.push_back(raceId);
+			}
+		}
+	}
+
+	return rt;
+}
+
+const std::unique_ptr<PreySlot> &Player::getPreyWithMonster(uint16_t raceId) const {
+	if (!g_configManager().getBoolean(PREY_ENABLED)) {
+		return PreySlotNull;
+	}
+
+	if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const std::unique_ptr<PreySlot> &it) {
+			return it->selectedRaceId == raceId;
+		});
+	    it != preys.end()) {
+		return *it;
+	}
+
+	return PreySlotNull;
+}
+
 void Player::initializeTaskHunting() {
 	if (taskHunting.empty()) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
@@ -6749,6 +6825,19 @@ void Player::initializeTaskHunting() {
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
 		client->writeToOutputBuffer(g_ioprey().getTaskHuntingBaseDate());
 	}
+}
+
+uint8_t Player::getBlessingCount(uint8_t index, bool storeCount) const {
+	if (!storeCount) {
+		if (index > 0 && index <= blessings.size()) {
+			return blessings[index - 1];
+		} else {
+			g_logger().error("[{}] - index outside range 0-10.", __FUNCTION__);
+			return 0;
+		}
+	}
+	auto amount = kv()->scoped("summary")->scoped("blessings")->scoped(fmt::format("{}", index))->get("amount");
+	return amount ? static_cast<uint8_t>(amount->getNumber()) : 0;
 }
 
 std::string Player::getBlessingsName() const {
@@ -6781,6 +6870,42 @@ bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> 
 	}
 
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
+}
+
+ bool Player::setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> &slot) {
+	if (getTaskHuntingSlotById(slot->id)) {
+		return false;
+	}
+
+	taskHunting.emplace_back(std::move(slot));
+	return true;
+}
+
+const std::unique_ptr<TaskHuntingSlot> &Player::getTaskHuntingSlotById(PreySlot_t slotid) {
+	if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const std::unique_ptr<TaskHuntingSlot> &itTask) {
+			return itTask->id == slotid;
+		});
+	    it != taskHunting.end()) {
+		return *it;
+	}
+
+	return TaskHuntingSlotNull;
+}
+
+std::vector<uint16_t> Player::getTaskHuntingBlackList() const {
+	std::vector<uint16_t> rt;
+
+	std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const std::unique_ptr<TaskHuntingSlot> &slot) {
+		if (slot->isOccupied()) {
+			rt.push_back(slot->selectedRaceId);
+		} else {
+			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId) {
+				rt.push_back(raceId);
+			});
+		}
+	});
+
+	return rt;
 }
 
 void Player::triggerMomentum() {
@@ -6878,6 +7003,21 @@ void Player::triggerTranscendance() {
 		wheel()->sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());
 	}
+}
+
+const std::unique_ptr<TaskHuntingSlot> &Player::getTaskHuntingWithCreature(uint16_t raceId) const {
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+		return TaskHuntingSlotNull;
+	}
+
+	if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const std::unique_ptr<TaskHuntingSlot> &itTask) {
+			return itTask->selectedRaceId == raceId;
+		});
+	    it != taskHunting.end()) {
+		return *it;
+	}
+
+	return TaskHuntingSlotNull;
 }
 
 /*******************************************************************************

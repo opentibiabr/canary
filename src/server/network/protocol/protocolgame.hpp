@@ -13,9 +13,7 @@
 #include "creatures/interactions/chat.hpp"
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"
-#include "creatures/players/cyclopedia/player_badge.hpp"
-#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
+#include "items/tile.hpp"
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
@@ -33,6 +31,7 @@ class ProtocolGame;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
+class Item;
 
 struct ModalWindow;
 struct Achievement;
@@ -40,6 +39,7 @@ struct Badge;
 struct Title;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
+using ItemVector = std::vector<std::shared_ptr<Item>>;
 
 struct TextMessage {
 	TextMessage() = default;

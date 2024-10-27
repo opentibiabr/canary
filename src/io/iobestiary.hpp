@@ -9,10 +9,10 @@
 
 #pragma once
 
+#include "creatures/players/player.hpp"
 #include "declarations.hpp"
 #include "lib/di/soft_singleton.hpp"
 #include "lua/scripts/luascript.hpp"
-#include "creatures/players/player.hpp"
 
 class Game;
 
@@ -50,9 +50,7 @@ public:
 	IOBestiary(const IOBestiary &) = delete;
 	void operator=(const IOBestiary &) = delete;
 
-	static IOBestiary &getInstance() {
-		return inject<IOBestiary>();
-	}
+	static IOBestiary &getInstance();
 
 	std::shared_ptr<Charm> getBestiaryCharm(charmRune_t activeCharm, bool force = false) const;
 	void addBestiaryKill(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype, uint32_t amount = 1);

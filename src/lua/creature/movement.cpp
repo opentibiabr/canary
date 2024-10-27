@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/combat/condition.hpp"
 #include "game/game.hpp"
-#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "lua/creature/events.hpp"
 #include "lua/creature/movement.hpp"
 
 void MoveEvents::clear(bool isFromXML /*= false*/) {

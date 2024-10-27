@@ -7,9 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "lua/functions/core/game/bank_functions.hpp"
 #include "game/bank/bank.hpp"
 #include "game/game.hpp"
+#include "lua/functions/core/game/bank_functions.hpp"
 
 int BankFunctions::luaBankCredit(lua_State* L) {
 	// Bank.credit(playerOrGuild, amount)

@@ -10,6 +10,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 
 #include "config/configmanager.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/vocations/vocation.hpp"

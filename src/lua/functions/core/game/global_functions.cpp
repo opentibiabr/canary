@@ -7,6 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/combat/condition.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"

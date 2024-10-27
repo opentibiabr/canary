@@ -13,6 +13,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/fileloader.hpp"
+#include "kv/kv.hpp"
 #include "map/spectators.hpp"
 
 /**

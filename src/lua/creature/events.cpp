@@ -11,7 +11,9 @@
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/player.hpp"
 #include "game/movement/position.hpp"
+#include "items/containers/container.hpp"
 #include "items/item.hpp"
+#include "lib/di/container.hpp"
 #include "lua/creature/events.hpp"
 #include "utils/tools.hpp"
 

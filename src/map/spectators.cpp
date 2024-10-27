@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "spectators.hpp"
+#include "creatures/creature.hpp"
 #include "game/game.hpp"
+#include "spectators.hpp"
 
 phmap::flat_hash_map<Position, SpectatorsCache> Spectators::spectatorsCache;
 

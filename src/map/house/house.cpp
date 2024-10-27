@@ -8,7 +8,9 @@
  */
 
 #include "game/game.hpp"
+
 #include "game/scheduling/save_manager.hpp"
+#include "io/ioguild.hpp"
 #include "io/iologindata.hpp"
 #include "items/bed.hpp"
 #include "items/containers/inbox/inbox.hpp"

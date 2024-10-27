@@ -13,14 +13,8 @@
 #include "enums/forge_conversion.hpp"
 #include "game/bank/bank.hpp"
 #include "grouping/guild.hpp"
-#include "io/ioguild.hpp"
-#include "io/ioprey.hpp"
-#include "items/containers/container.hpp"
+#include "items/cylinder.hpp"
 #include "server/network/protocol/protocolgame.hpp"
-
-enum class PlayerIcon : uint8_t;
-enum class IconBakragore : uint8_t;
-enum ObjectCategory_t : uint8_t;
 
 class House;
 class NetworkMessage;
@@ -50,6 +44,9 @@ class DepotChest;
 class DepotLocker;
 class Inbox;
 class Vocation;
+class Container;
+class KV;
+class BedItem;
 
 struct ModalWindow;
 struct Achievement;
@@ -63,6 +60,12 @@ struct FamiliarEntry;
 struct Familiar;
 struct Group;
 
+enum class PlayerIcon : uint8_t;
+enum class IconBakragore : uint8_t;
+enum ObjectCategory_t : uint8_t;
+enum PreySlot_t : uint8_t;
+
+using GuildWarVector = std::vector<uint32_t>;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -467,18 +470,7 @@ public:
 		return blessings[index - 1] != 0;
 	}
 
-	uint8_t getBlessingCount(uint8_t index, bool storeCount = false) const {
-		if (!storeCount) {
-			if (index > 0 && index <= blessings.size()) {
-				return blessings[index - 1];
-			} else {
-				g_logger().error("[{}] - index outside range 0-10.", __FUNCTION__);
-				return 0;
-			}
-		}
-		auto amount = kv()->scoped("summary")->scoped("blessings")->scoped(fmt::format("{}", index))->get("amount");
-		return amount ? static_cast<uint8_t>(amount->getNumber()) : 0;
-	}
+	uint8_t getBlessingCount(uint8_t index, bool storeCount = false) const;
 	std::string getBlessingsName() const;
 
 	bool isOffline() const {
@@ -514,9 +506,7 @@ public:
 	int32_t getStorageValueByName(const std::string &storageName) const;
 	void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
-	std::shared_ptr<KV> kv() const {
-		return g_kv().scoped("player")->scoped(fmt::format("{}", getGUID()));
-	}
+	std::shared_ptr<KV> kv() const;
 
 	void genReservedStorageRange();
 
@@ -2141,25 +2131,9 @@ public:
 		}
 	}
 
-	const std::unique_ptr<PreySlot> &getPreySlotById(PreySlot_t slotid) {
-		if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const std::unique_ptr<PreySlot> &preyIt) {
-				return preyIt->id == slotid;
-			});
-		    it != preys.end()) {
-			return *it;
-		}
+	const std::unique_ptr<PreySlot> &getPreySlotById(PreySlot_t slotid);
 
-		return PreySlotNull;
-	}
-
-	bool setPreySlotClass(std::unique_ptr<PreySlot> &slot) {
-		if (getPreySlotById(slot->id)) {
-			return false;
-		}
-
-		preys.emplace_back(std::move(slot));
-		return true;
-	}
+	bool setPreySlotClass(std::unique_ptr<PreySlot> &slot);
 
 	bool usePreyCards(uint16_t amount) {
 		if (preyCards < amount) {
@@ -2188,49 +2162,15 @@ public:
 		return getLevel() * g_configManager().getNumber(PREY_REROLL_PRICE_LEVEL);
 	}
 
-	std::vector<uint16_t> getPreyBlackList() const {
-		std::vector<uint16_t> rt;
-		for (const std::unique_ptr<PreySlot> &slot : preys) {
-			if (slot) {
-				if (slot->isOccupied()) {
-					rt.push_back(slot->selectedRaceId);
-				}
-				for (uint16_t raceId : slot->raceIdList) {
-					rt.push_back(raceId);
-				}
-			}
-		}
+	std::vector<uint16_t> getPreyBlackList() const;
 
-		return rt;
-	}
-
-	const std::unique_ptr<PreySlot> &getPreyWithMonster(uint16_t raceId) const {
-		if (!g_configManager().getBoolean(PREY_ENABLED)) {
-			return PreySlotNull;
-		}
-
-		if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const std::unique_ptr<PreySlot> &it) {
-				return it->selectedRaceId == raceId;
-			});
-		    it != preys.end()) {
-			return *it;
-		}
-
-		return PreySlotNull;
-	}
+	const std::unique_ptr<PreySlot> &getPreyWithMonster(uint16_t raceId) const;
 
 	// Task hunting system
 	void initializeTaskHunting();
 	bool isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> mtype) const;
 
-	bool setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> &slot) {
-		if (getTaskHuntingSlotById(slot->id)) {
-			return false;
-		}
-
-		taskHunting.emplace_back(std::move(slot));
-		return true;
-	}
+	bool setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> &slot);
 
 	void reloadTaskSlot(PreySlot_t slotid) {
 		if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
@@ -2239,32 +2179,9 @@ public:
 		}
 	}
 
-	const std::unique_ptr<TaskHuntingSlot> &getTaskHuntingSlotById(PreySlot_t slotid) {
-		if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const std::unique_ptr<TaskHuntingSlot> &itTask) {
-				return itTask->id == slotid;
-			});
-		    it != taskHunting.end()) {
-			return *it;
-		}
+	const std::unique_ptr<TaskHuntingSlot> &getTaskHuntingSlotById(PreySlot_t slotid);
 
-		return TaskHuntingSlotNull;
-	}
-
-	std::vector<uint16_t> getTaskHuntingBlackList() const {
-		std::vector<uint16_t> rt;
-
-		std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const std::unique_ptr<TaskHuntingSlot> &slot) {
-			if (slot->isOccupied()) {
-				rt.push_back(slot->selectedRaceId);
-			} else {
-				std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId) {
-					rt.push_back(raceId);
-				});
-			}
-		});
-
-		return rt;
-	}
+	std::vector<uint16_t> getTaskHuntingBlackList() const;
 
 	void sendTaskHuntingData() const {
 		if (client) {
@@ -2304,20 +2221,7 @@ public:
 		return getLevel() * g_configManager().getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL);
 	}
 
-	const std::unique_ptr<TaskHuntingSlot> &getTaskHuntingWithCreature(uint16_t raceId) const {
-		if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-			return TaskHuntingSlotNull;
-		}
-
-		if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const std::unique_ptr<TaskHuntingSlot> &itTask) {
-				return itTask->selectedRaceId == raceId;
-			});
-		    it != taskHunting.end()) {
-			return *it;
-		}
-
-		return TaskHuntingSlotNull;
-	}
+	const std::unique_ptr<TaskHuntingSlot> &getTaskHuntingWithCreature(uint16_t raceId) const;
 
 	uint32_t getLoyaltyPoints() const {
 		return loyaltyPoints;
@@ -2552,23 +2456,7 @@ public:
 		return timeLeft > 0;
 	}
 
-	bool checkAutoLoot(bool isBoss) const {
-		if (!g_configManager().getBoolean(AUTOLOOT)) {
-			return false;
-		}
-		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY) && !isVip()) {
-			return false;
-		}
-
-		auto featureKV = kv()->scoped("features")->get("autoloot");
-		auto value = featureKV.has_value() ? featureKV->getNumber() : 0;
-		if (value == 2) {
-			return true;
-		} else if (value == 1) {
-			return !isBoss;
-		}
-		return false;
-	}
+	bool checkAutoLoot(bool isBoss) const;
 
 	QuickLootFilter_t getQuickLootFilter() const {
 		return quickLootFilter;

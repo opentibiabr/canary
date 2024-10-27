@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "account/account.hpp"
-#include "declarations.hpp"
 #include "lua/scripts/luascript.hpp"
 
 class LuaEnums final : LuaScriptInterface {

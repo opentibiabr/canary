@@ -8256,7 +8256,7 @@ BidErrorMessage Player::canBidHouse(uint32_t houseId) {
 	}
 
 	if (house->isGuildhall()) {
-		if (getGuildRank() && getGuildRank()->level != 3)  {
+		if (getGuildRank() && getGuildRank()->level != 3) {
 			return BidErrorMessage::Guildhall;
 		}
 

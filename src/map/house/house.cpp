@@ -482,11 +482,11 @@ void House::resetTransferItem() {
 }
 
 void House::calculateBidEndDate(uint8_t daysToEnd) {
-    auto currentTimeMs = std::chrono::system_clock::now().time_since_epoch();
-    
-    std::chrono::system_clock::time_point now = std::chrono::system_clock::time_point(
-        std::chrono::duration_cast<std::chrono::milliseconds>(currentTimeMs)
-    );
+	auto currentTimeMs = std::chrono::system_clock::now().time_since_epoch();
+
+	std::chrono::system_clock::time_point now = std::chrono::system_clock::time_point(
+		std::chrono::duration_cast<std::chrono::milliseconds>(currentTimeMs)
+	);
 
 	// Truncate to whole days since epoch
 	days daysSinceEpoch = std::chrono::duration_cast<days>(now.time_since_epoch());
@@ -784,13 +784,13 @@ std::shared_ptr<House> Houses::getHouseByBidderName(std::string bidderName) {
 }
 
 uint16_t Houses::getHouseCountByAccount(uint32_t accountId) {
-    uint16_t count = 0;
-    for (const auto& it : houseMap) {
-        if (it.second->getOwnerAccountId() == accountId) {
-            ++count;
-        }
-    }
-    return count;
+	uint16_t count = 0;
+	for (const auto &it : houseMap) {
+		if (it.second->getOwnerAccountId() == accountId) {
+			++count;
+		}
+	}
+	return count;
 }
 
 bool Houses::loadHousesXML(const std::string &filename) {

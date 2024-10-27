@@ -363,22 +363,7 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 	houseUpdate.upsert({ "owner", "paid", "warnings", "name", "town_id", "rent", "size", "beds", "bidder", "bidder_name", "highest_bid", "internal_bid", "bid_end_date", "state" });
 
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
-		std::string values = fmt::format("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}",
-			house->getId(),
-			house->getOwner(),
-			house->getPaidUntil(),
-			house->getPayRentWarnings(),
-			db.escapeString(house->getName()),
-			house->getTownId(), house->getRent(),
-			house->getSize(),
-			house->getBedCount(),
-			house->getBidder(),
-			db.escapeString(house->getBidderName()),
-			house->getHighestBid(),
-			house->getInternalBid(),
-			house->getBidEndDate(),
-			house->getState()
-		);
+		std::string values = fmt::format("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}", house->getId(), house->getOwner(), house->getPaidUntil(), house->getPayRentWarnings(), db.escapeString(house->getName()), house->getTownId(), house->getRent(), house->getSize(), house->getBedCount(), house->getBidder(), db.escapeString(house->getBidderName()), house->getHighestBid(), house->getInternalBid(), house->getBidEndDate(), house->getState());
 
 		if (!houseUpdate.addRow(values)) {
 			return false;

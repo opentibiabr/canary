@@ -9261,7 +9261,7 @@ void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseCyclopediaHouseAuction(NetworkMessage& msg) {
+void ProtocolGame::parseCyclopediaHouseAuction(NetworkMessage &msg) {
 	if (oldProtocol) {
 		return;
 	}
@@ -9295,9 +9295,9 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 	NetworkMessage msg;
 	msg.addByte(0xC7);
 	msg.add<uint16_t>(houses.size());
-	for (const auto& house : houses) {
+	for (const auto &house : houses) {
 		const auto clientId = house.first;
-		const auto& houseData = house.second;
+		const auto &houseData = house.second;
 
 		msg.add<uint32_t>(clientId);
 		msg.addByte(0x01); // 0x00 = Renovation; 0x01 = Available
@@ -9375,9 +9375,9 @@ void ProtocolGame::sendHousesInfo() {
 	msg.addByte(0x01);
 	msg.add<uint32_t>(houseClientId);
 
-	const auto& housesList = g_game().map.houses.getHouses();
+	const auto &housesList = g_game().map.houses.getHouses();
 	msg.add<uint16_t>(housesList.size());
-	for (const auto& it : housesList) {
+	for (const auto &it : housesList) {
 		msg.add<uint32_t>(it.second->getClientId());
 	}
 

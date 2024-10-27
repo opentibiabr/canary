@@ -10242,7 +10242,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 
 void Game::updateForgeableMonsters() {
 	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT, __FUNCTION__);
-		forgeableMonsters.size() < influencedLimit * 2) {
+	    forgeableMonsters.size() < influencedLimit * 2) {
 		forgeableMonsters.clear();
 		for (const auto &[monsterId, monster] : monsters) {
 			auto monsterTile = monster->getTile();
@@ -10748,10 +10748,10 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string tow
 
 	HouseMap houses;
 	if (!townName.empty()) {
-		const auto& housesList = g_game().map.houses.getHouses();
-		for (const auto& it : housesList) {
-			const auto& house = it.second;
-			const auto& town = g_game().map.towns.getTown(house->getTownId());
+		const auto &housesList = g_game().map.houses.getHouses();
+		for (const auto &it : housesList) {
+			const auto &house = it.second;
+			const auto &town = g_game().map.towns.getTown(house->getTownId());
 			if (!town) {
 				return;
 			}
@@ -10802,7 +10802,7 @@ void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_
 	ret = BidErrorMessage::NotEnoughMoney;
 	auto retSuccess = BidSuccessMessage::BidSuccess;
 
-	if(house->getBidderName().empty()) {
+	if (house->getBidderName().empty()) {
 		if (!processBankAuction(player, house, bidValue)) {
 			player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));
 			return;
@@ -10835,7 +10835,7 @@ void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_
 		house->setBidder(player->getGUID());
 	}
 
-	const auto& town = g_game().map.towns.getTown(house->getTownId());
+	const auto &town = g_game().map.towns.getTown(house->getTownId());
 	if (!town) {
 		return;
 	}

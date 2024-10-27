@@ -9798,7 +9798,7 @@ void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
 
 	const auto action = msg.getByte();
 	const auto param = msg.getByte();
-	const auto pos = msg.getByte();
+	uint8_t pos = 0;
 
 	switch (static_cast<WheelGemAction_t>(action)) {
 		case WheelGemAction_t::Destroy:
@@ -9814,6 +9814,7 @@ void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
 			player->wheel()->toggleGemLock(param);
 			break;
 		case WheelGemAction_t::ImproveGrade:
+			pos = msg.getByte();
 			player->wheel()->improveGemGrade(static_cast<WheelFragmentType_t>(param), pos);
 			break;
 		default:

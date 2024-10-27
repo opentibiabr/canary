@@ -1163,7 +1163,7 @@ void PlayerWheel::destroyGem(uint16_t index) {
 
 	if (lesserFragments > 0) {
 		const auto fragmentsItem = Item::CreateItem(ITEM_LESSER_FRAGMENT, lesserFragments);
-		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_BACKPACK);
+		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_WHEREEVER);
 		if (returnValue != RETURNVALUE_NOERROR) {
 			g_logger().error("Failed to add {} lesser fragments to player with name {}", lesserFragments, m_player.getName());
 			m_player.sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));

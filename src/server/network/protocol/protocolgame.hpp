@@ -330,6 +330,11 @@ private:
 	void sendCyclopediaCharacterBadges();
 	void sendCyclopediaCharacterTitles();
 
+	void sendHousesInfo();
+	void parseCyclopediaHouseAuction(NetworkMessage& msg);
+	void sendCyclopediaHouseList(HouseMap houses);
+	void sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess);
+
 	void sendCreatureWalkthrough(std::shared_ptr<Creature> creature, bool walkthrough);
 	void sendCreatureShield(std::shared_ptr<Creature> creature);
 	void sendCreatureEmblem(std::shared_ptr<Creature> creature);

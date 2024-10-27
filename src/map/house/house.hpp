@@ -18,6 +18,8 @@ class House;
 class BedItem;
 class Player;
 
+using days = std::chrono::duration<int64_t, std::ratio<86400>>;
+
 class AccessList {
 public:
 	void parseList(const std::string &list);
@@ -233,6 +235,77 @@ public:
 	bool hasNewOwnership() const;
 	void setNewOwnership();
 
+	void setClientId(uint32_t newClientId) {
+		this->clientId = newClientId;
+	}
+	uint32_t getClientId() const {
+		return clientId;
+	}
+
+	void setBidder(int32_t bidder) {
+		this->bidder = bidder;
+	}
+	int32_t getBidder() const {
+		return bidder;
+	}
+
+	void setBidderName(std::string bidderName) {
+		this->bidderName = bidderName;
+	}
+	std::string getBidderName() const {
+		return bidderName;
+	}
+
+	void setHighestBid(uint64_t bidValue) {
+		this->highestBid = bidValue;
+	}
+	uint64_t getHighestBid() const {
+		return highestBid;
+	}
+
+	void setInternalBid(uint64_t bidValue) {
+		this->internalBid = bidValue;
+	}
+	uint64_t getInternalBid() const {
+		return internalBid;
+	}
+
+	void setBidHolderLimit(uint64_t bidValue) {
+		this->bidHolderLimit = bidValue;
+	}
+	uint64_t getBidHolderLimit() const {
+		return bidHolderLimit;
+	}
+
+	void calculateBidEndDate(uint8_t daysToEnd);
+	void setBidEndDate(uint32_t bidEndDate) {
+		this->bidEndDate = bidEndDate;
+	};
+	uint32_t getBidEndDate() const {
+		return bidEndDate;
+	}
+
+	void setState(uint8_t state) {
+		this->state = state;
+	}
+	uint8_t getState() const {
+		return state;
+	}
+
+	void setOwnerAccountId(uint32_t accountId) {
+		this->ownerAccountId = accountId;
+	}
+	uint32_t getOwnerAccountId() const {
+		return ownerAccountId;
+	}
+
+	void setGuildhall(bool isGuildHall) {
+		this->guildHall = isGuildHall;
+	}
+	bool isGuildhall() const {
+		return guildHall;
+	}
+
 private:
 	bool transferToDepot() const;
 
@@ -263,8 +336,19 @@ private:
 	uint32_t townId = 0;
 	uint32_t maxBeds = 4;
 	int32_t bedsCount = -1;
+	bool guildHall = false;
 
 	Position posEntry = {};
+
+	// House Auction
+	uint32_t clientId;
+	int32_t bidder = 0;
+	std::string bidderName = "";
+	uint64_t highestBid = 0;
+	uint64_t internalBid = 0;
+	uint64_t bidHolderLimit = 0;
+	uint32_t bidEndDate = 0;
+	uint8_t state = 0;
 
 	bool isLoaded = false;
 
@@ -299,7 +383,26 @@ public:
 		return it->second;
 	}
 
+	void addHouseClientId(uint32_t clientId, std::shared_ptr<House> house) {
+		if (auto it = houseMapClientId.find(clientId); it != houseMapClientId.end()) {
+			return;
+		}
+
+		houseMapClientId.emplace(clientId, house);
+	}
+
+	std::shared_ptr<House> getHouseByClientId(uint32_t clientId) {
+		auto it = houseMapClientId.find(clientId);
+		if (it == houseMapClientId.end()) {
+			return nullptr;
+		}
+		return it->second;
+	}
+
 	std::shared_ptr<House> getHouseByPlayerId(uint32_t playerId);
+	std::vector<std::shared_ptr<House>> getAllHousesByPlayerId(uint32_t playerId);
+	std::shared_ptr<House> getHouseByBidderName(std::string bidderName);
+	uint16_t getHouseCountByAccount(uint32_t accountId);
 
 	bool loadHousesXML(const std::string &filename);
 
@@ -311,4 +414,5 @@ public:
 
 private:
 	HouseMap houseMap;
+	HouseMap houseMapClientId;
 };

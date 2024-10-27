@@ -273,7 +273,7 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 bool IOMapSerialize::loadHouseInfo() {
 	Database &db = Database::getInstance();
 
-	DBResult_ptr result = db.storeQuery("SELECT `id`, `owner`, `new_owner`, `paid`, `warnings` FROM `houses`");
+	DBResult_ptr result = db.storeQuery("SELECT `id`, `owner`, `new_owner`, `bidder`, `bidder_name`, `highest_bid`, `internal_bid`, `bid_end_date`, `state` FROM `houses`");
 	if (!result) {
 		return false;
 	}
@@ -284,6 +284,13 @@ bool IOMapSerialize::loadHouseInfo() {
 		if (house) {
 			uint32_t owner = result->getNumber<uint32_t>("owner");
 			int32_t newOwner = result->getNumber<int32_t>("new_owner");
+			uint32_t bidder = result->getNumber<uint32_t>("bidder");
+			std::string bidderName = result->getString("bidder_name");
+			uint32_t highestBid = result->getNumber<uint32_t>("highest_bid");
+			uint32_t internalBid = result->getNumber<uint32_t>("internal_bid");
+			uint32_t bidEndDate = result->getNumber<uint32_t>("bid_end_date");
+			uint32_t state = result->getNumber<uint32_t>("state");
+			const auto timeNow = OTSYS_TIME(true);
 			// Transfer house owner
 			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 			if (isTransferOnRestart && newOwner >= 0) {
@@ -295,11 +302,32 @@ bool IOMapSerialize::loadHouseInfo() {
 					g_logger().debug("Setting house id '{}' owner to player GUID '{}'", houseId, newOwner);
 					house->setOwner(newOwner);
 				}
+			} else if (state == 0 && bidder > 0 && timeNow > bidEndDate) {
+				if (highestBid < internalBid) {
+					uint32_t diff = internalBid - highestBid;
+					IOLoginData::increaseBankBalance(bidder, diff);
+				}
+				g_logger().debug("Setting house id '{}' owner to player GUID '{}'", houseId, bidder);
+				house->setOwner(bidder);
+				bidder = 0;
+				bidderName = "";
+				highestBid = 0;
+				internalBid = 0;
+				bidEndDate = 0;
+			} else if (state == 2 && bidder == -1 && timeNow > bidEndDate) {
+				g_logger().debug("Removing house id '{}' owner", houseId);
+				house->setOwner(0);
+				bidEndDate = 0;
+				bidder = 0;
 			} else {
 				house->setOwner(owner, false);
 			}
-			house->setPaidUntil(result->getNumber<time_t>("paid"));
-			house->setPayRentWarnings(result->getNumber<uint32_t>("warnings"));
+			house->setBidder(bidder);
+			house->setBidderName(bidderName);
+			house->setHighestBid(highestBid);
+			house->setInternalBid(internalBid);
+			house->setBidHolderLimit(internalBid);
+			house->setBidEndDate(bidEndDate);
 		}
 	} while (result->next());
 
@@ -331,11 +359,26 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 	Database &db = Database::getInstance();
 
 	std::ostringstream query;
-	DBInsert houseUpdate("INSERT INTO `houses` (`id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`) VALUES ");
-	houseUpdate.upsert({ "owner", "paid", "warnings", "name", "town_id", "rent", "size", "beds" });
+	DBInsert houseUpdate("INSERT INTO `houses` (`id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`, `bidder`, `bidder_name`, `highest_bid`, `internal_bid`, `bid_end_date`, `state`) VALUES ");
+	houseUpdate.upsert({ "owner", "paid", "warnings", "name", "town_id", "rent", "size", "beds", "bidder", "bidder_name", "highest_bid", "internal_bid", "bid_end_date", "state" });
 
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
-		std::string values = fmt::format("{},{},{},{},{},{},{},{},{}", house->getId(), house->getOwner(), house->getPaidUntil(), house->getPayRentWarnings(), db.escapeString(house->getName()), house->getTownId(), house->getRent(), house->getSize(), house->getBedCount());
+		std::string values = fmt::format("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}",
+			house->getId(),
+			house->getOwner(),
+			house->getPaidUntil(),
+			house->getPayRentWarnings(),
+			db.escapeString(house->getName()),
+			house->getTownId(), house->getRent(),
+			house->getSize(),
+			house->getBedCount(),
+			house->getBidder(),
+			db.escapeString(house->getBidderName()),
+			house->getHighestBid(),
+			house->getInternalBid(),
+			house->getBidEndDate(),
+			house->getState()
+		);
 
 		if (!houseUpdate.addRow(values)) {
 			return false;

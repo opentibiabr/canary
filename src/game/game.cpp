@@ -10241,15 +10241,18 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	forgeableMonsters.clear();
-	for (const auto &[monsterId, monster] : monsters) {
-		auto monsterTile = monster->getTile();
-		if (!monsterTile) {
-			continue;
-		}
+	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT, __FUNCTION__);
+		forgeableMonsters.size() < influencedLimit * 2) {
+		forgeableMonsters.clear();
+		for (const auto &[monsterId, monster] : monsters) {
+			auto monsterTile = monster->getTile();
+			if (!monsterTile) {
+				continue;
+			}
 
-		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
-			forgeableMonsters.push_back(monster->getID());
+			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
+				forgeableMonsters.push_back(monster->getID());
+			}
 		}
 	}
 
@@ -10735,4 +10738,162 @@ const std::unordered_map<uint16_t, std::string> &Game::getHirelingSkills() {
 
 const std::unordered_map<uint16_t, std::string> &Game::getHirelingOutfits() {
 	return m_hirelingOutfits;
+}
+
+void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string townName) {
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	HouseMap houses;
+	if (!townName.empty()) {
+		const auto& housesList = g_game().map.houses.getHouses();
+		for (const auto& it : housesList) {
+			const auto& house = it.second;
+			const auto& town = g_game().map.towns.getTown(house->getTownId());
+			if (!town) {
+				return;
+			}
+
+			const std::string houseTown = town->getName();
+			if (houseTown == townName) {
+				houses.emplace(house->getClientId(), house);
+			}
+		}
+	} else {
+		auto playerHouses = g_game().map.houses.getAllHousesByPlayerId(player->getGUID());
+		if (playerHouses.size()) {
+			for (const auto playerHouse : playerHouses) {
+				if (!playerHouse) {
+					continue;
+				}
+				houses.emplace(playerHouse->getClientId(), playerHouse);
+			}
+		} else {
+			const auto house = g_game().map.houses.getHouseByBidderName(player->getName());
+			if (house) {
+				houses.emplace(house->getClientId(), house);
+			}
+		}
+	}
+	player->sendCyclopediaHouseList(houses);
+}
+
+void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_t bidValue) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION, __FUNCTION__)) {
+		return;
+	}
+
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return;
+	}
+
+	auto ret = player->canBidHouse(houseId);
+	if (ret != BidErrorMessage::NoError) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));
+	}
+	ret = BidErrorMessage::NotEnoughMoney;
+	auto retSuccess = BidSuccessMessage::BidSuccess;
+
+	if(house->getBidderName().empty()) {
+		if (!processBankAuction(player, house, bidValue)) {
+			player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));
+			return;
+		}
+		house->setHighestBid(0);
+		house->setInternalBid(bidValue);
+		house->setBidHolderLimit(bidValue);
+		house->setBidderName(player->getName());
+		house->setBidder(player->getGUID());
+		house->calculateBidEndDate(1);
+	} else if (house->getBidderName() == player->getName()) {
+		if (!processBankAuction(player, house, bidValue, true)) {
+			player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));
+			return;
+		}
+		house->setInternalBid(bidValue);
+		house->setBidHolderLimit(bidValue);
+	} else if (bidValue <= house->getInternalBid()) {
+		house->setHighestBid(bidValue);
+		retSuccess = BidSuccessMessage::LowerBid;
+	} else {
+		if (!processBankAuction(player, house, bidValue)) {
+			player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));
+			return;
+		}
+		house->setHighestBid(house->getInternalBid() + 1);
+		house->setInternalBid(bidValue);
+		house->setBidHolderLimit(bidValue);
+		house->setBidderName(player->getName());
+		house->setBidder(player->getGUID());
+	}
+
+	const auto& town = g_game().map.towns.getTown(house->getTownId());
+	if (!town) {
+		return;
+	}
+
+	const std::string houseTown = town->getName();
+	player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(retSuccess), true);
+	playerCyclopediaHousesByTown(playerId, houseTown);
+}
+
+void Game::playerCyclopediaHouseLeave(uint32_t playerId, uint32_t houseId, uint32_t timestamp) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION, __FUNCTION__)) {
+		return;
+	}
+
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getOwner() != player->getGUID()) {
+		return;
+	}
+
+	house->setBidEndDate(timestamp);
+	house->setBidder(-1);
+
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+bool Game::processBankAuction(std::shared_ptr<Player> player, std::shared_ptr<House> house, uint64_t bid, bool replace /* = false*/) {
+	if (!replace && player->getBankBalance() < (house->getRent() + bid)) {
+		return false;
+	}
+
+	if (player->getBankBalance() < bid) {
+		return false;
+	}
+
+	uint64_t balance = player->getBankBalance();
+	if (replace) {
+		player->setBankBalance(balance - (bid - house->getInternalBid()));
+	} else {
+		player->setBankBalance(balance - (house->getRent() + bid));
+	}
+
+	player->sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
+
+	if (house->getBidderName() != player->getName()) {
+		const auto otherPlayer = g_game().getPlayerByName(house->getBidderName());
+		if (!otherPlayer) {
+			uint32_t bidderGuid = IOLoginData::getGuidByName(house->getBidderName());
+			IOLoginData::increaseBankBalance(bidderGuid, (house->getBidHolderLimit() + house->getRent()));
+		} else {
+			otherPlayer->setBankBalance(otherPlayer->getBankBalance() + (house->getBidHolderLimit() + house->getRent()));
+			otherPlayer->sendResourceBalance(RESOURCE_BANK, otherPlayer->getBankBalance());
+		}
+	}
+
+	return true;
 }

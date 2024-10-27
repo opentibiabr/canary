@@ -1225,6 +1225,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xAC:
 			parseChannelExclude(msg);
 			break;
+		case 0xAD:
+			parseCyclopediaHouseAuction(msg);
+			break;
 		case 0xAE:
 			parseSendBosstiary();
 			break;
@@ -6826,6 +6829,7 @@ void ProtocolGame::sendAddCreature(std::shared_ptr<Creature> creature, const Pos
 
 	sendLootContainers();
 	sendBasicData();
+	sendHousesInfo();
 	// Wheel of destiny cooldown
 	if (!oldProtocol && g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		player->wheel()->sendGiftOfLifeCooldown();
@@ -9254,5 +9258,128 @@ void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
 	NetworkMessage msg;
 	msg.addByte(0x75);
 	msg.addByte(screenshotType);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseCyclopediaHouseAuction(NetworkMessage& msg) {
+	if (oldProtocol) {
+		return;
+	}
+
+	uint8_t houseActionType = msg.getByte();
+	switch (houseActionType) {
+		case 0: {
+			const auto townName = msg.getString();
+			g_game().playerCyclopediaHousesByTown(player->getID(), townName);
+			break;
+		}
+		case 1: {
+			const uint32_t houseId = msg.get<uint32_t>();
+			const uint64_t bidValue = msg.get<uint64_t>();
+			g_game().playerCyclopediaHouseBid(player->getID(), houseId, bidValue);
+			break;
+		}
+		case 2: {
+			const uint32_t houseId = msg.get<uint32_t>();
+			const uint32_t timestamp = msg.get<uint32_t>();
+			g_game().playerCyclopediaHouseLeave(player->getID(), houseId, timestamp);
+			break;
+		}
+		case 3: {
+			break;
+		}
+	}
+}
+
+void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
+	NetworkMessage msg;
+	msg.addByte(0xC7);
+	msg.add<uint16_t>(houses.size());
+	for (const auto& house : houses) {
+		const auto clientId = house.first;
+		const auto& houseData = house.second;
+
+		msg.add<uint32_t>(clientId);
+		msg.addByte(0x01); // 0x00 = Renovation; 0x01 = Available
+
+		msg.addByte(houseData->getState());
+		if (houseData->getState() == 0) { // Available
+			bool bidder = houseData->getBidderName() == player->getName();
+			msg.addString(houseData->getBidderName());
+			msg.addByte(bidder ? 1 : 0);
+			uint8_t disableIndex = enumToValue(player->canBidHouse(clientId));
+			msg.addByte(disableIndex);
+
+			if (!houseData->getBidderName().empty()) {
+				msg.add<uint32_t>(houseData->getBidEndDate());
+				msg.add<uint64_t>(houseData->getHighestBid());
+				if (bidder) {
+					msg.add<uint64_t>(houseData->getBidHolderLimit());
+				}
+			}
+		} else if (houseData->getState() == 2) { // Rented
+			auto ownerName = IOLoginData::getNameByGuid(houseData->getOwner());
+			msg.addString(ownerName);
+			msg.add<uint32_t>(houseData->getPaidUntil());
+
+			bool rented = ownerName.compare(player->getName()) == 0;
+			msg.addByte(rented);
+			if (rented) {
+				msg.addByte(0);
+				msg.addByte(0);
+			}
+		}
+	}
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess /* = false*/) {
+	NetworkMessage msg;
+	const auto typeValue = enumToValue(type);
+
+	msg.addByte(0xC3);
+	msg.add<uint32_t>(houseId);
+	msg.addByte(typeValue);
+	if (bidSuccess && typeValue == 1) {
+		msg.addByte(0x00);
+	}
+	msg.addByte(index);
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendHousesInfo() {
+	NetworkMessage msg;
+
+	uint32_t houseClientId = 0;
+	const auto accountHouseCount = g_game().map.houses.getHouseCountByAccount(player->getAccountId());
+	const auto house = g_game().map.houses.getHouseByPlayerId(player->getGUID());
+	if (house) {
+		houseClientId = house->getClientId();
+	}
+
+	msg.addByte(0xC6);
+	msg.add<uint32_t>(houseClientId);
+	msg.addByte(0x00);
+
+	msg.addByte(accountHouseCount); // Houses Account
+
+	msg.addByte(0x00);
+
+	msg.addByte(3);
+	msg.addByte(3);
+
+	msg.addByte(0x01);
+
+	msg.addByte(0x01);
+	msg.add<uint32_t>(houseClientId);
+
+	const auto& housesList = g_game().map.houses.getHouses();
+	msg.add<uint16_t>(housesList.size());
+	for (const auto& it : housesList) {
+		msg.add<uint32_t>(it.second->getClientId());
+	}
+
 	writeToOutputBuffer(msg);
 }

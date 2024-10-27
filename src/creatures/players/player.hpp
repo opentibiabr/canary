@@ -1582,6 +1582,23 @@ public:
 			client->sendOutfitWindow();
 		}
 	}
+
+	BidErrorMessage canBidHouse(uint32_t houseId);
+	void sendCyclopediaHouseList(HouseMap houses) {
+		if (client) {
+			client->sendCyclopediaHouseList(houses);
+		}
+	}
+	void sendResourceBalance(Resource_t resourceType, uint64_t value) {
+		if (client) {
+			client->sendResourceBalance(resourceType, value);
+		}
+	}
+	void sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess = false) {
+		if (client) {
+			client->sendHouseAuctionMessage(houseId, type, index, bidSuccess);
+		}
+	}
 	// Imbuements
 	void onApplyImbuement(Imbuement* imbuement, std::shared_ptr<Item> item, uint8_t slot, bool protectionCharm);
 	void onClearImbuement(std::shared_ptr<Item> item, uint8_t slot);

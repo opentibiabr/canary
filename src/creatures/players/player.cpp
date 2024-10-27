@@ -8232,3 +8232,38 @@ uint16_t Player::getPlayerVocationEnum() const {
 
 	return Vocation_t::VOCATION_NONE;
 }
+
+BidErrorMessage Player::canBidHouse(uint32_t houseId) {
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return BidErrorMessage::Internal;
+	}
+
+	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return BidErrorMessage::Rookgaard;
+	}
+
+	if (!isPremium()) {
+		return BidErrorMessage::Premium;
+	}
+
+	if (getAccount()->getHouseBidId() != 0) {
+		return BidErrorMessage::OnlyOneBid;
+	}
+
+	if (getBankBalance() < (house->getRent() + house->getHighestBid())) {
+		return BidErrorMessage::NotEnoughMoney;
+	}
+
+	if (house->isGuildhall()) {
+		if (getGuildRank() && getGuildRank()->level != 3)  {
+			return BidErrorMessage::Guildhall;
+		}
+
+		if (getGuild() && getGuild()->getBankBalance() < (house->getRent() + house->getHighestBid())) {
+			return BidErrorMessage::NotEnoughGuildMoney;
+		}
+	}
+
+	return BidErrorMessage::NoError;
+}

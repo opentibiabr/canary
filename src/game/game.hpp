@@ -315,6 +315,12 @@ public:
 	void playerHighscores(std::shared_ptr<Player> player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
 	static std::string getSkillNameById(uint8_t &skill);
 
+	// House Auction
+	void playerCyclopediaHousesByTown(uint32_t playerId, const std::string townName);
+	void playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_t bidValue);
+	void playerCyclopediaHouseLeave(uint32_t playerId, uint32_t houseId, uint32_t timestamp);
+	bool processBankAuction(std::shared_ptr<Player> player, std::shared_ptr<House> house, uint64_t bid, bool replace = false);
+
 	void updatePlayerSaleItems(uint32_t playerId);
 
 	bool internalStartTrade(std::shared_ptr<Player> player, std::shared_ptr<Player> partner, std::shared_ptr<Item> tradeItem);

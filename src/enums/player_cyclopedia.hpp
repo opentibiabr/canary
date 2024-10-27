@@ -60,3 +60,24 @@ enum class CyclopediaMapData_t : uint8_t {
 	Donations = 9,
 	SetCurrentArea = 10,
 };
+
+enum class HouseAuctionType : uint8_t {
+	Bid = 1,
+	MoveOut = 2,
+};
+
+enum class BidSuccessMessage : uint8_t {
+	BidSuccess = 0,
+	LowerBid = 1,
+};
+
+enum class BidErrorMessage : uint8_t {
+	NoError = 0,
+	Rookgaard = 3,
+	Premium = 5,
+	Guildhall = 6,
+	OnlyOneBid = 7,
+	NotEnoughMoney = 17,
+	NotEnoughGuildMoney = 21,
+	Internal = 24,
+};

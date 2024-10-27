@@ -52,20 +52,21 @@ public:
 
 private:
 	WheelStat_t m_stat;
-	int32_t m_value;
+	int32_t m_value {};
 };
 
 class GemModifierRevelationStrategy : public GemModifierStrategy {
 public:
 	explicit GemModifierRevelationStrategy(PlayerWheel &wheel, WheelGemAffinity_t affinity, [[maybe_unused]] uint16_t value) :
 		GemModifierStrategy(wheel),
-		m_affinity(affinity) { }
+		m_affinity(affinity),
+		m_value(value) { }
 
 	void execute() override;
 
 private:
 	WheelGemAffinity_t m_affinity;
-	uint16_t m_value;
+	uint16_t m_value {};
 };
 
 class GemModifierSpellBonusStrategy : public GemModifierStrategy {

@@ -7,9 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "config/configmanager.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
-#include "lua/creature/events.hpp"
+#include "creatures/players/player.hpp"
 #include "utils/pugicast.hpp"
+#include <utils/tools.hpp>
+
+Imbuements &Imbuements::getInstance() {
+	return inject<Imbuements>();
+}
 
 Imbuement* Imbuements::getImbuement(uint16_t id) {
 	if (id == 0) {
@@ -367,4 +373,44 @@ std::vector<Imbuement*> Imbuements::getImbuements(std::shared_ptr<Player> player
 	}
 
 	return imbuements;
+}
+
+ uint16_t Imbuement::getID() const {
+	return id;
+}
+
+ uint16_t Imbuement::getBaseID() const {
+	return baseid;
+}
+
+ uint32_t Imbuement::getStorage() const {
+	return storage;
+}
+
+ bool Imbuement::isPremium() {
+	return premium;
+}
+
+ std::string Imbuement::getName() const {
+	return name;
+}
+
+ std::string Imbuement::getDescription() const {
+	return description;
+}
+
+ std::string Imbuement::getSubGroup() const {
+	return subgroup;
+}
+
+ uint16_t Imbuement::getCategory() const {
+	return category;
+}
+
+ const std::vector<std::pair<uint16_t, uint16_t>> &Imbuement::getItems() const {
+	return items;
+}
+
+ uint16_t Imbuement::getIconID() {
+	return icon + (baseid - 1);
 }

@@ -9,11 +9,9 @@
 
 #pragma once
 
-#include <utility>
-
-#include "creatures/creatures_definitions.hpp"
 #include "enums/player_cyclopedia.hpp"
-#include "enums/account_group_type.hpp"
+
+enum PlayerSex_t : uint8_t;
 
 class Player;
 class KV;

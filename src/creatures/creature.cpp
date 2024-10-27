@@ -8,13 +8,14 @@
  */
 
 #include "creatures/creature.hpp"
-#include "declarations.hpp"
-#include "game/scheduling/dispatcher.hpp"
-#include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
+#include "creatures/players/grouping/party.hpp"
+#include "declarations.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
-#include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "map/spectators.hpp"
 
 Creature::Creature() {
 	onIdleStatus();

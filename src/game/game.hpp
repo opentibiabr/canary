@@ -10,21 +10,23 @@
 #pragma once
 
 #include "account/account.hpp"
+#include "creatures/appearance/outfit/outfit.hpp"
 #include "creatures/combat/combat.hpp"
-#include "items/containers/container.hpp"
-#include "creatures/players/grouping/groups.hpp"
-#include "io/iobestiary.hpp"
-#include "items/item.hpp"
-#include "map/map.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "movement/position.hpp"
-#include "creatures/players/player.hpp"
-#include "lua/creature/raids.hpp"
+#include "creatures/players/grouping/familiars.hpp"
+#include "creatures/players/grouping/groups.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
-#include "utils/wildcardtree.hpp"
-#include "items/items_classification.hpp"
-#include "modal_window/modal_window.hpp"
+#include "creatures/players/player.hpp"
 #include "enums/object_category.hpp"
+#include "io/iobestiary.hpp"
+#include "items/containers/container.hpp"
+#include "items/item.hpp"
+#include "items/items_classification.hpp"
+#include "lua/creature/raids.hpp"
+#include "map/map.hpp"
+#include "modal_window/modal_window.hpp"
+#include "movement/position.hpp"
+#include "utils/wildcardtree.hpp"
 
 // Forward declaration for protobuf class
 namespace Canary {
@@ -583,7 +585,7 @@ public:
 	Groups groups;
 	Familiars familiars;
 	Map map;
-	Mounts mounts;
+	std::unique_ptr<Mounts> mounts;
 	Outfits outfits;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;

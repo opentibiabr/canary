@@ -8,8 +8,8 @@
  */
 
 #include "config/configmanager.hpp"
-#include "lib/di/container.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
 #include "server/network/webhook/webhook.hpp"
 
 #if LUA_VERSION_NUM >= 502

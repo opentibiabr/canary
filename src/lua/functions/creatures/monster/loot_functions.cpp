@@ -9,6 +9,7 @@
 
 #include "creatures/monsters/monsters.hpp"
 #include "lua/functions/creatures/monster/loot_functions.hpp"
+#include "items/item.hpp"
 
 int LootFunctions::luaCreateLoot(lua_State* L) {
 	// Loot() will create a new loot item

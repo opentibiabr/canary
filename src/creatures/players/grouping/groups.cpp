@@ -8,8 +8,8 @@
  */
 
 #include "config/configmanager.hpp"
-#include "game/game.hpp"
 #include "creatures/players/grouping/groups.hpp"
+#include "game/game.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
 
@@ -105,4 +105,8 @@ std::shared_ptr<Group> Groups::getGroup(uint16_t id) const {
 		return *it;
 	}
 	return nullptr;
+}
+
+std::vector<std::shared_ptr<Group>> &Groups::getGroups() {
+	return groups_vector;
 }

@@ -7,39 +7,49 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "core.hpp"
+#include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "creatures/players/player.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/grouping/party.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/player.hpp"
 #include "creatures/players/storages/storages.hpp"
+#include "creatures/players/vip/player_vip.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/account_group_type.hpp"
+#include "enums/account_type.hpp"
+#include "enums/object_category.hpp"
+#include "enums/player_blessings.hpp"
+#include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/task.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "game/scheduling/task.hpp"
 #include "grouping/familiars.hpp"
-#include "lua/creature/creatureevent.hpp"
-#include "lua/creature/events.hpp"
-#include "lua/callbacks/event_callback.hpp"
-#include "lua/callbacks/events_callbacks.hpp"
-#include "lua/creature/movement.hpp"
 #include "io/iologindata.hpp"
 #include "items/bed.hpp"
+#include "items/containers/depot/depotchest.hpp"
+#include "items/containers/depot/depotlocker.hpp"
+#include "items/containers/rewards/reward.hpp"
+#include "items/containers/rewards/rewardchest.hpp"
 #include "items/weapons/weapons.hpp"
-#include "core.hpp"
-#include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
-#include "enums/object_category.hpp"
-#include "enums/account_errors.hpp"
-#include "enums/account_type.hpp"
-#include "enums/account_group_type.hpp"
-#include "enums/player_blessings.hpp"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
+#include "lua/creature/actions.hpp"
+#include "lua/creature/creatureevent.hpp"
+#include "lua/creature/events.hpp"
+#include "lua/creature/movement.hpp"
+#include "map/spectators.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -87,6 +97,10 @@ bool Player::setVocation(uint16_t vocId) {
 	updateRegeneration();
 	g_game().addPlayerVocation(static_self_cast<Player>());
 	return true;
+}
+
+uint16_t Player::getVocationId() const {
+	return vocation->getId();
 }
 
 bool Player::isPushable() {
@@ -3054,6 +3068,10 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 	                                     "Player::addInFightTicks");
 }
 
+bool Player::canSeeInvisibility() const {
+	return hasFlag(PlayerFlags_t::CanSenseInvisibility) || group->access;
+}
+
 void Player::removeList() {
 	g_game().removePlayer(static_self_cast<Player>());
 
@@ -5259,9 +5277,39 @@ void Player::checkSkullTicks(int64_t ticks) {
 	}
 }
 
+void Player::updateBaseSpeed() {
+	if (baseSpeed >= PLAYER_MAX_SPEED) {
+		return;
+	}
+
+	if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
+		baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
+	} else {
+		baseSpeed = PLAYER_MAX_SPEED;
+	}
+}
+
 bool Player::isPromoted() const {
 	uint16_t promotedVocation = g_vocations().getPromotedVocation(vocation->getId());
 	return promotedVocation == VOCATION_NONE && vocation->getId() != promotedVocation;
+}
+
+uint32_t Player::getAttackSpeed() const {
+	bool onFistAttackSpeed = g_configManager().getBoolean(TOGGLE_ATTACK_SPEED_ONFIST);
+	uint32_t MAX_ATTACK_SPEED = g_configManager().getNumber(MAX_SPEED_ATTACKONFIST);
+	if (onFistAttackSpeed) {
+		uint32_t baseAttackSpeed = vocation->getAttackSpeed();
+		uint32_t skillLevel = getSkillLevel(SKILL_FIST);
+		uint32_t attackSpeed = baseAttackSpeed - (skillLevel * g_configManager().getNumber(MULTIPLIER_ATTACKONFIST));
+
+		if (attackSpeed < MAX_ATTACK_SPEED) {
+			attackSpeed = MAX_ATTACK_SPEED;
+		}
+
+		return static_cast<uint32_t>(attackSpeed);
+	} else {
+		return vocation->getAttackSpeed();
+	}
 }
 
 double Player::getLostPercent() const {
@@ -5753,6 +5801,18 @@ GuildEmblems_t Player::getGuildEmblem(std::shared_ptr<Player> player) const {
 	return GUILDEMBLEM_NEUTRAL;
 }
 
+bool Player::hasFlag(PlayerFlags_t flag) const {
+	return group->flags[static_cast<std::size_t>(flag)];
+}
+
+void Player::setFlag(PlayerFlags_t flag) const {
+	group->flags[static_cast<std::size_t>(flag)] = true;
+}
+
+void Player::removeFlag(PlayerFlags_t flag) const {
+	group->flags[static_cast<std::size_t>(flag)] = false;
+}
+
 void Player::sendUnjustifiedPoints() {
 	if (client) {
 		double dayKills = 0;
@@ -5810,7 +5870,7 @@ void Player::setCurrentMount(uint8_t mount) {
 }
 
 bool Player::hasAnyMount() const {
-	const auto mounts = g_game().mounts.getMounts();
+	const auto mounts = g_game().mounts->getMounts();
 	for (const auto &mount : mounts) {
 		if (hasMount(mount)) {
 			return true;
@@ -5821,7 +5881,7 @@ bool Player::hasAnyMount() const {
 
 uint8_t Player::getRandomMountId() const {
 	std::vector<uint8_t> playerMounts;
-	const auto mounts = g_game().mounts.getMounts();
+	const auto mounts = g_game().mounts->getMounts();
 	for (const auto &mount : mounts) {
 		if (hasMount(mount)) {
 			playerMounts.push_back(mount->id);
@@ -5869,7 +5929,7 @@ bool Player::toggleMount(bool mount) {
 			currentMountId = getRandomMountId();
 		}
 
-		const auto currentMount = g_game().mounts.getMountByID(currentMountId);
+		const auto currentMount = g_game().mounts->getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
 		}
@@ -5912,7 +5972,7 @@ bool Player::toggleMount(bool mount) {
 }
 
 bool Player::tameMount(uint8_t mountId) {
-	if (!g_game().mounts.getMountByID(mountId)) {
+	if (!g_game().mounts->getMountByID(mountId)) {
 		return false;
 	}
 
@@ -5931,7 +5991,7 @@ bool Player::tameMount(uint8_t mountId) {
 }
 
 bool Player::untameMount(uint8_t mountId) {
-	if (!g_game().mounts.getMountByID(mountId)) {
+	if (!g_game().mounts->getMountByID(mountId)) {
 		return false;
 	}
 
@@ -5979,7 +6039,7 @@ bool Player::hasMount(const std::shared_ptr<Mount> mount) const {
 }
 
 void Player::dismount() {
-	const auto mount = g_game().mounts.getMountByID(getCurrentMount());
+	const auto mount = g_game().mounts->getMountByID(getCurrentMount());
 	if (mount && mount->speed > 0) {
 		g_game().changeSpeed(static_self_cast<Player>(), -mount->speed);
 	}
@@ -6151,6 +6211,15 @@ void Player::sendModalWindow(const ModalWindow &modalWindow) {
 
 	modalWindows.emplace_back(modalWindow.id);
 	client->sendModalWindow(modalWindow);
+}
+
+const Position &Player::getTemplePosition() const {
+	if (!town) {
+		static auto emptyPosition = Position();
+		return emptyPosition;
+	}
+
+	return town->getTemplePosition();
 }
 
 void Player::clearModalWindows() {

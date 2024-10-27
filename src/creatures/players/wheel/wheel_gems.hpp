@@ -10,8 +10,8 @@
 #pragma once
 
 #include "creatures/creatures_definitions.hpp"
-#include "wheel_definitions.hpp"
 #include "enums/player_wheel.hpp"
+#include "wheel_definitions.hpp"
 
 class PlayerWheel;
 

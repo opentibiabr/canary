@@ -7,13 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include <utility>
-
+#include "creatures/creature.hpp"
 #include "creatures/players/grouping/party.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "lua/creature/events.hpp"
+#include "game/movement/position.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "lua/creature/events.hpp"
 
 std::shared_ptr<Party> Party::create(std::shared_ptr<Player> leader) {
 	auto party = std::make_shared<Party>();
@@ -23,6 +24,39 @@ std::shared_ptr<Party> Party::create(std::shared_ptr<Player> leader) {
 		party->setSharedExperience(leader, true);
 	}
 	return party;
+}
+
+std::shared_ptr<Party> Party::getParty() {
+	return static_self_cast<Party>();
+}
+
+std::shared_ptr<Player> Party::getLeader() const {
+	return m_leader.lock();
+}
+
+std::vector<std::shared_ptr<Player>> Party::getPlayers() const {
+	std::vector<std::shared_ptr<Player>> players;
+	for (auto &member : memberList) {
+		players.push_back(member);
+	}
+	players.push_back(getLeader());
+	return players;
+}
+
+std::vector<std::shared_ptr<Player>> Party::getMembers() {
+	return memberList;
+}
+
+std::vector<std::shared_ptr<Player>> Party::getInvitees() {
+	return inviteList;
+}
+
+size_t Party::getMemberCount() const {
+	return memberList.size();
+}
+
+size_t Party::getInvitationCount() const {
+	return inviteList.size();
 }
 
 void Party::disband() {
@@ -389,6 +423,10 @@ void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string &ms
 	}
 }
 
+bool Party::empty() const {
+	return memberList.empty() && inviteList.empty();
+}
+
 void Party::updateSharedExperience() {
 	if (sharedExpActive) {
 		bool result = getSharedExperienceStatus() == SHAREDEXP_OK;
@@ -442,6 +480,14 @@ bool Party::setSharedExperience(std::shared_ptr<Player> player, bool newSharedEx
 
 	updateAllPartyIcons();
 	return true;
+}
+
+bool Party::isSharedExperienceActive() const {
+	return sharedExpActive;
+}
+
+bool Party::isSharedExperienceEnabled() const {
+	return sharedExpEnabled;
 }
 
 void Party::shareExperience(uint64_t experience, std::shared_ptr<Creature> target /* = nullptr*/) {
@@ -853,4 +899,19 @@ void Party::reloadPrices() {
 			analyzer->supplyPrice += leader->getItemCustomPrice(it.first, true) * it.second;
 		}
 	}
+}
+
+std::shared_ptr<PartyAnalyzer> Party::getPlayerPartyAnalyzerStruct(uint32_t playerId) const {
+	if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const std::shared_ptr<PartyAnalyzer> &preyIt) {
+			return preyIt->id == playerId;
+		});
+	    it != membersData.end()) {
+		return *it;
+	}
+
+	return nullptr;
+}
+
+uint32_t Party::getAnalyzerTimeNow() const {
+	return static_cast<uint32_t>(time(nullptr) - trackerTime);
 }

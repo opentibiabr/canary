@@ -10,13 +10,18 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 
 #include "config/configmanager.hpp"
-#include "io/io_wheel.hpp"
-#include "game/game.hpp"
-#include "server/network/message/networkmessage.hpp"
-#include "creatures/players/player.hpp"
 #include "creatures/combat/spells.hpp"
-#include "kv/kv.hpp"
+#include "creatures/players/player.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/wheel/wheel_gems.hpp"
+#include "enums/player_wheel.hpp"
+#include "game/game.hpp"
+#include "io/io_wheel.hpp"
+#include "kv/kv.hpp"
+#include "kv/kv_definitions.hpp"
+#include "server/network/message/networkmessage.hpp"
+
+std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
 const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot1Allowed = {
 	WheelGemBasicModifier_t::General_FireResistance,
@@ -3153,6 +3158,10 @@ WheelGemBasicModifier_t PlayerWheel::selectBasicModifier2(WheelGemBasicModifier_
 		modifier = wheelGemBasicSlot2Allowed[uniform_random(0, wheelGemBasicSlot2Allowed.size() - 1)];
 	}
 	return modifier;
+}
+
+std::string PlayerWheelGem::toString() const {
+	return fmt::format("[PlayerWheelGem] uuid: {}, locked: {}, affinity: {}, quality: {}, basicModifier1: {}, basicModifier2: {}, supremeModifier: {}", uuid, locked, static_cast<IntType>(affinity), static_cast<IntType>(quality), static_cast<IntType>(basicModifier1), static_cast<IntType>(basicModifier2), static_cast<IntType>(supremeModifier));
 }
 
 void PlayerWheelGem::save(const std::shared_ptr<KV> &kv) const {

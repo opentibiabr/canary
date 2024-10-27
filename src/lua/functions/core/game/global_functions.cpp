@@ -8,16 +8,17 @@
  */
 
 #include "creatures/interactions/chat.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "items/containers/depot/depotlocker.hpp"
 #include "lua/functions/core/game/global_functions.hpp"
+#include "lua/global/globalevent.hpp"
+#include "lua/global/lua_timer_event_descr.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
-#include "lua/global/globalevent.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
-#include "lua/global/lua_timer_event_descr.hpp"
 
 class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {

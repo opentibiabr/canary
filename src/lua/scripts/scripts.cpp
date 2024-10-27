@@ -7,13 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/imbuements/imbuements.hpp"
-#include "lua/global/globalevent.hpp"
-#include "items/weapons/weapons.hpp"
-#include "lua/creature/movement.hpp"
-#include "lua/scripts/scripts.hpp"
 #include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "items/weapons/weapons.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "lua/creature/movement.hpp"
+#include "lua/creature/talkaction.hpp"
+#include "lua/global/globalevent.hpp"
+#include "lua/scripts/scripts.hpp"
 
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {

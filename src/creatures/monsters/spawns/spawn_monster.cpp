@@ -7,17 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "game/game.hpp"
-#include "creatures/monsters/monster.hpp"
+#include "game/movement/position.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
-#include "lua/creature/events.hpp"
+#include "game/zones/zone.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "utils/pugicast.hpp"
-#include "game/zones/zone.hpp"
+#include "lua/creature/events.hpp"
 #include "map/spectators.hpp"
+#include "utils/pugicast.hpp"
 
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MONSTER_MAXSPAWN_INTERVAL = 86400000; // 1 day
@@ -129,6 +131,18 @@ void SpawnsMonster::clear() {
 	filemonstername.clear();
 }
 
+ bool SpawnsMonster::isStarted() const {
+	return started;
+}
+
+ bool SpawnsMonster::isLoaded() const {
+	return loaded;
+}
+
+ std::vector<SpawnMonster> &SpawnsMonster::getspawnMonsterList() {
+	return spawnMonsterList;
+}
+
 bool SpawnsMonster::isInZone(const Position &centerPos, int32_t radius, const Position &pos) {
 	if (radius == -1) {
 		return true;
@@ -151,6 +165,29 @@ SpawnMonster::~SpawnMonster() {
 	}
 	stopEvent();
 	spawnMonsterMap.clear();
+}
+
+// moveable
+
+SpawnMonster::SpawnMonster(SpawnMonster &&rhs) noexcept :
+	spawnedMonsterMap(std::move(rhs.spawnedMonsterMap)),
+	spawnMonsterMap(std::move(rhs.spawnMonsterMap)),
+	centerPos(rhs.centerPos),
+	radius(rhs.radius),
+	interval(rhs.interval),
+	checkSpawnMonsterEvent(rhs.checkSpawnMonsterEvent) { }
+
+SpawnMonster &SpawnMonster::operator=(SpawnMonster &&rhs) noexcept {
+	if (this != &rhs) {
+		spawnMonsterMap = std::move(rhs.spawnMonsterMap);
+		spawnedMonsterMap = std::move(rhs.spawnedMonsterMap);
+
+		checkSpawnMonsterEvent = rhs.checkSpawnMonsterEvent;
+		centerPos = rhs.centerPos;
+		radius = rhs.radius;
+		interval = rhs.interval;
+	}
+	return *this;
 }
 
 bool SpawnMonster::findPlayer(const Position &pos) {
@@ -293,6 +330,10 @@ void SpawnMonster::cleanup() {
 		}
 		return false;
 	});
+}
+
+const Position &SpawnMonster::getCenterPos() const {
+	return centerPos;
 }
 
 bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval, uint32_t weight /*= 1*/) {

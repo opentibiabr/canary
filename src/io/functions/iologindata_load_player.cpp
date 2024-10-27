@@ -7,13 +7,20 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
-#include "io/functions/iologindata_load_player.hpp"
-#include "game/game.hpp"
-#include "enums/object_category.hpp"
+#include "creatures/players/vip/player_vip.hpp"
+#include "creatures/players/vocations/vocation.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
+#include "enums/object_category.hpp"
+#include "game/game.hpp"
+#include "io/functions/iologindata_load_player.hpp"
+#include "items/containers/depot/depotchest.hpp"
+#include "items/containers/inbox/inbox.hpp"
+#include "items/containers/rewards/reward.hpp"
+#include "items/containers/rewards/rewardchest.hpp"
 #include "utils/tools.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, const std::shared_ptr<Player> &player) {

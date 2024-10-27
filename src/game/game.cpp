@@ -7,51 +7,54 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/game.hpp"
-
-#include "lua/creature/actions.hpp"
-#include "items/bed.hpp"
-#include "creatures/creature.hpp"
-#include "database/databasetasks.hpp"
-#include "lua/creature/events.hpp"
-#include "lua/callbacks/event_callback.hpp"
-#include "lua/callbacks/events_callbacks.hpp"
-#include "creatures/players/highscore_category.hpp"
-#include "game/zones/zone.hpp"
-#include "lua/global/globalevent.hpp"
-#include "io/iologindata.hpp"
-#include "io/io_wheel.hpp"
-#include "io/iomarket.hpp"
-#include "items/items.hpp"
-#include "lua/scripts/lua_environment.hpp"
-#include "creatures/monsters/monster.hpp"
-#include "lua/creature/movement.hpp"
-#include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/save_manager.hpp"
-#include "server/server.hpp"
+#include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/spells.hpp"
-#include "lua/creature/talkaction.hpp"
-#include "items/weapons/weapons.hpp"
-#include "creatures/players/imbuements/imbuements.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "creatures/npcs/npc.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
-#include "creatures/npcs/npc.hpp"
-#include "server/network/webhook/webhook.hpp"
+#include "creatures/players/grouping/party.hpp"
+#include "creatures/players/highscore_category.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/vip/player_vip.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
+#include "database/databasetasks.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
+#include "game/zones/zone.hpp"
+#include "io/io_bosstiary.hpp"
+#include "io/io_wheel.hpp"
+#include "io/iologindata.hpp"
+#include "io/iomarket.hpp"
+#include "items/bed.hpp"
+#include "items/containers/inbox/inbox.hpp"
+#include "items/containers/rewards/reward.hpp"
+#include "items/containers/rewards/rewardchest.hpp"
+#include "items/items.hpp"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
+#include "lua/creature/actions.hpp"
+#include "lua/creature/events.hpp"
+#include "lua/creature/talkaction.hpp"
+#include "lua/global/globalevent.hpp"
+#include "lua/scripts/lua_environment.hpp"
+#include "map/spectators.hpp"
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
-#include "map/spectators.hpp"
+#include "server/network/webhook/webhook.hpp"
+#include "server/server.hpp"
 #include "utils/tools.hpp"
-#include "kv/kv.hpp"
 
-#include "enums/object_category.hpp"
-#include "enums/account_type.hpp"
-#include "enums/account_group_type.hpp"
-#include "enums/account_errors.hpp"
 #include "enums/account_coins.hpp"
-#include "enums/player_blessings.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/account_group_type.hpp"
+#include "enums/account_type.hpp"
+#include "enums/object_category.hpp"
 
 #include <appearances.pb.h>
 
@@ -197,6 +200,8 @@ Game::Game() {
 	m_IOWheel = std::make_unique<IOWheel>();
 
 	wildcardTree = std::make_shared<WildcardTreeNode>(false);
+
+	mounts = std::make_unique<Mounts>();
 
 	m_badges = {
 		Badge(1, CyclopediaBadge_t::ACCOUNT_AGE, "Fledegeling Hero", 1),
@@ -568,7 +573,7 @@ void Game::setGameState(GameState_t newState) {
 			raids.loadFromXml();
 			raids.startup();
 
-			mounts.loadFromXml();
+			mounts->loadFromXml();
 
 			loadMotdNum();
 			loadPlayersRecord();
@@ -4297,7 +4302,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		outfit.lookAddons = 0;
 	}
 
-	const auto mount = mounts.getMountByClientID(outfit.lookMount);
+	const auto mount = mounts->getMountByClientID(outfit.lookMount);
 	if (!mount || !player->hasMount(mount) || player->isWearingSupportOutfit()) {
 		outfit.lookMount = 0;
 	}
@@ -6015,7 +6020,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 	player->setRandomMount(isMountRandomized);
 
 	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
-		auto randomMount = mounts.getMountByID(player->getRandomMountId());
+		auto randomMount = mounts->getMountByID(player->getRandomMountId());
 		outfit.lookMount = randomMount->clientId;
 	}
 
@@ -6025,7 +6030,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 	}
 
 	if (outfit.lookMount != 0) {
-		const auto mount = mounts.getMountByClientID(outfit.lookMount);
+		const auto mount = mounts->getMountByClientID(outfit.lookMount);
 		if (!mount) {
 			return;
 		}
@@ -6045,7 +6050,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 
 		auto deltaSpeedChange = mount->speed;
 		if (player->isMounted()) {
-			const auto prevMount = mounts.getMountByID(player->getLastMount());
+			const auto prevMount = mounts->getMountByID(player->getLastMount());
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;
 			}

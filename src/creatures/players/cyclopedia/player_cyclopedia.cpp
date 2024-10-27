@@ -8,12 +8,10 @@
  */
 
 #include "player_cyclopedia.hpp"
-
-#include "database/databasetasks.hpp"
 #include "creatures/players/player.hpp"
+#include "database/databasetasks.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
-
 #include "enums/player_blessings.hpp"
 
 PlayerCyclopedia::PlayerCyclopedia(Player &player) :

@@ -7,13 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/appearance/mounts/mounts.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
-#include "lua/scripts/lua_environment.hpp"
 #include "lua/global/globalevent.hpp"
+#include "lua/scripts/lua_environment.hpp"
 #include "server/signals.hpp"
 
 Signals::Signals(asio::io_service &service) :
@@ -109,7 +110,7 @@ void Signals::sighupHandler() {
 	Item::items.reload();
 	g_logger().info("Reloaded items");
 
-	g_game().mounts.reload();
+	g_game().mounts->reload();
 	g_logger().info("Reloaded mounts");
 
 	g_events().loadFromXml();

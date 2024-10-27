@@ -7,9 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/storages/storages.hpp"
-
 #include "config/configmanager.hpp"
+#include "creatures/players/storages/storages.hpp"
+#include "lib/di/container.hpp"
+
+Storages &Storages::getInstance() {
+	return inject<Storages>();
+}
 
 bool Storages::loadFromXML() {
 	pugi::xml_document doc;

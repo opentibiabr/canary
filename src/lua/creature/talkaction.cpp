@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/players/grouping/groups.hpp"
 #include "creatures/players/player.hpp"
-#include "lua/scripts/scripts.hpp"
 #include "lua/creature/talkaction.hpp"
+#include "lua/scripts/scripts.hpp"
 
 TalkActions::TalkActions() = default;
 TalkActions::~TalkActions() = default;

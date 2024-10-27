@@ -7,10 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/monsters/monster.hpp"
+#include "creatures/players/grouping/party.hpp"
+#include "creatures/players/player.hpp"
+#include "game/movement/position.hpp"
+#include "items/item.hpp"
 #include "lua/creature/events.hpp"
 #include "utils/tools.hpp"
-#include "items/item.hpp"
-#include "creatures/players/player.hpp"
 
 Events::Events() :
 	scriptInterface("Event Interface") {
@@ -213,6 +216,10 @@ void Events::eventNpcOnSpawn(std::shared_ptr<Npc> npc, const Position &position)
 	}
 
 	scriptInterface.resetScriptEnv();
+}
+
+Events &Events::getInstance() {
+	return inject<Events>();
 }
 
 // Creature

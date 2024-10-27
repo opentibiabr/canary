@@ -7,14 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/creature.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
-#include "declarations.hpp"
 #include "game/game.hpp"
-#include "lua/callbacks/creaturecallback.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "lua/callbacks/creaturecallback.hpp"
+#include "lua/global/shared_object.hpp"
+#include "map/spectators.hpp"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -50,8 +51,94 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 	}
 }
 
+ Npc &Npc::getInstance() {
+	return inject<Npc>();
+}
+
+ std::shared_ptr<Npc> Npc::getNpc() {
+	return static_self_cast<Npc>();
+}
+
+ std::shared_ptr<const Npc> Npc::getNpc() const {
+	return static_self_cast<Npc>();
+}
+
+ void Npc::setID() {
+	if (id == 0) {
+		id = npcAutoID++;
+	}
+}
+
 void Npc::addList() {
 	g_game().addNpc(static_self_cast<Npc>());
+}
+
+ const std::string &Npc::getName() const {
+	return npcType->name;
+}
+
+// Real npc name, set on npc creation "createNpcType(typeName)"
+ const std::string &Npc::getTypeName() const {
+	return npcType->typeName;
+}
+
+ const std::string &Npc::getNameDescription() const {
+	return npcType->nameDescription;
+}
+
+ std::string Npc::getDescription(int32_t) {
+	return strDescription + '.';
+}
+
+ void Npc::setName(std::string newName) {
+	npcType->name = std::move(newName);
+}
+
+ CreatureType_t Npc::getType() const {
+	return CREATURETYPE_NPC;
+}
+
+ const Position &Npc::getMasterPos() const {
+	return masterPos;
+}
+
+ void Npc::setMasterPos(Position pos) {
+	masterPos = pos;
+}
+
+ uint8_t Npc::getSpeechBubble() const {
+	return npcType->info.speechBubble;
+}
+
+ void Npc::setSpeechBubble(const uint8_t bubble) {
+	npcType->info.speechBubble = bubble;
+}
+
+ uint16_t Npc::getCurrency() const {
+	return npcType->info.currencyId;
+}
+
+ void Npc::setCurrency(uint16_t currency) {
+	npcType->info.currencyId = currency;
+}
+
+ const std::vector<ShopBlock> &Npc::getShopItemVector(uint32_t playerGUID) const {
+	if (playerGUID != 0) {
+		auto it = shopPlayers.find(playerGUID);
+		if (it != shopPlayers.end() && !it->second.empty()) {
+			return it->second;
+		}
+	}
+
+	return npcType->info.shopItemVector;
+}
+
+ bool Npc::isPushable() {
+	return npcType->info.pushable;
+}
+
+ bool Npc::isAttackable() const {
+	return false;
 }
 
 void Npc::removeList() {
@@ -63,6 +150,18 @@ bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
 		return false;
 	}
 	return Creature::canSee(getPosition(), pos, range, range);
+}
+
+ bool Npc::canSeeInvisibility() const {
+	return true;
+}
+
+ RespawnType Npc::getRespawnType() const {
+	return npcType->info.respawnType;
+}
+
+ void Npc::setSpawnNpc(const std::shared_ptr<SpawnNpc> &newSpawn) {
+	spawnNpc = newSpawn;
 }
 
 void Npc::onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) {
@@ -606,6 +705,21 @@ void Npc::resetPlayerInteractions() {
 	playerInteractions.clear();
 }
 
+ bool Npc::isInteractingWithPlayer(uint32_t playerId) {
+	if (playerInteractions.find(playerId) == playerInteractions.end()) {
+		return false;
+	}
+	return true;
+}
+
+ bool Npc::isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
+	auto it = playerInteractions.find(playerId);
+	if (it == playerInteractions.end()) {
+		return false;
+	}
+	return it->second == topicId;
+}
+
 bool Npc::canWalkTo(const Position &fromPos, Direction dir) {
 	if (npcType->info.walkRadius == 0) {
 		return false;
@@ -653,6 +767,10 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 		}
 	}
 	return false;
+}
+
+ void Npc::setNormalCreatureLight() {
+	internalLight = npcType->info.light;
 }
 
 bool Npc::isShopPlayer(uint32_t playerGUID) const {

@@ -12,6 +12,8 @@
 #include "utils/tools.hpp"
 #include "game/game.hpp"
 
+std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
+
 Outfits &Outfits::getInstance() {
 	return inject<Outfits>();
 }
@@ -99,5 +101,19 @@ std::shared_ptr<Outfit> Outfits::getOutfitByLookType(const std::shared_ptr<const
 	if (it != outfits[sex].end()) {
 		return *it;
 	}
+	return nullptr;
+}
+
+const std::vector<std::shared_ptr<Outfit>> &Outfits::getOutfits(PlayerSex_t sex) const {
+	return outfits[sex];
+}
+
+std::shared_ptr<Outfit> Outfits::getOutfitByName(PlayerSex_t sex, const std::string &name) const {
+	for (const auto &outfit : outfits[sex]) {
+		if (outfit->name == name) {
+			return outfit;
+		}
+	}
+
 	return nullptr;
 }

@@ -9,8 +9,7 @@
 
 #pragma once
 
-#include "enums/player_cyclopedia.hpp"
-
+enum CyclopediaBadge_t : uint8_t;
 class Player;
 class KV;
 class Account;

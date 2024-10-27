@@ -8,6 +8,7 @@
  */
 
 #include "creatures/combat/condition.hpp"
+#include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "lua/functions/creatures/combat/condition_functions.hpp"
 

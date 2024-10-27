@@ -9,10 +9,16 @@
 
 #pragma once
 
-#include "utils/utils_definitions.hpp"
-#include "enums/player_wheel.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
-#include "kv/kv_definitions.hpp"
+
+enum class WheelGemAffinity_t : uint8_t;
+enum class WheelGemQuality_t : uint8_t;
+enum class WheelGemBasicModifier_t : uint8_t;
+enum class WheelGemSupremeModifier_t : uint8_t;
+enum CombatType_t : uint8_t;
+enum skills_t : int8_t;
+
+struct CombatDamage;
 
 class Spell;
 class Player;
@@ -20,6 +26,7 @@ class Creature;
 class NetworkMessage;
 class KV;
 class WheelModifierContext;
+class ValueWrapper;
 
 struct PlayerWheelGem {
 	std::string uuid;
@@ -30,9 +37,7 @@ struct PlayerWheelGem {
 	WheelGemBasicModifier_t basicModifier2;
 	WheelGemSupremeModifier_t supremeModifier;
 
-	std::string toString() const {
-		return fmt::format("[PlayerWheelGem] uuid: {}, locked: {}, affinity: {}, quality: {}, basicModifier1: {}, basicModifier2: {}, supremeModifier: {}", uuid, locked, static_cast<IntType>(affinity), static_cast<IntType>(quality), static_cast<IntType>(basicModifier1), static_cast<IntType>(basicModifier2), static_cast<IntType>(supremeModifier));
-	}
+	std::string toString() const;
 
 	void save(const std::shared_ptr<KV> &kv) const;
 
@@ -439,7 +444,6 @@ private:
 	std::array<int32_t, static_cast<size_t>(WheelStat_t::TOTAL_COUNT)> m_stats = { 0 };
 	std::array<int32_t, static_cast<size_t>(WheelMajor_t::TOTAL_COUNT)> m_majorStats = { 0 };
 	std::array<bool, static_cast<size_t>(WheelInstant_t::TOTAL_COUNT)> m_instant = { false };
-	std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
 	int32_t m_creaturesNearby = 0;
 	std::map<std::string, WheelSpellGrade_t> m_spellsSelected;

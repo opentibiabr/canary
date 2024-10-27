@@ -9,37 +9,18 @@
 
 #pragma once
 
-#include "items/containers/container.hpp"
 #include "creatures/creature.hpp"
-#include "items/cylinder.hpp"
-#include "declarations.hpp"
-#include "items/containers/depot/depotchest.hpp"
-#include "items/containers/depot/depotlocker.hpp"
-#include "grouping/familiars.hpp"
 #include "enums/forge_conversion.hpp"
-#include "grouping/groups.hpp"
+#include "game/bank/bank.hpp"
 #include "grouping/guild.hpp"
-#include "imbuements/imbuements.hpp"
-#include "items/containers/inbox/inbox.hpp"
 #include "io/ioguild.hpp"
 #include "io/ioprey.hpp"
-#include "creatures/appearance/mounts/mounts.hpp"
-#include "creatures/appearance/outfit/outfit.hpp"
-#include "grouping/party.hpp"
+#include "items/containers/container.hpp"
 #include "server/network/protocol/protocolgame.hpp"
-#include "items/containers/rewards/reward.hpp"
-#include "items/containers/rewards/rewardchest.hpp"
-#include "map/town.hpp"
-#include "vocations/vocation.hpp"
-#include "creatures/npcs/npc.hpp"
-#include "game/bank/bank.hpp"
-#include "enums/object_category.hpp"
-#include "enums/player_cyclopedia.hpp"
-#include "enums/player_icons.hpp"
-#include "creatures/players/cyclopedia/player_badge.hpp"
-#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
-#include "creatures/players/vip/player_vip.hpp"
+
+enum class PlayerIcon : uint8_t;
+enum class IconBakragore : uint8_t;
+enum ObjectCategory_t : uint8_t;
 
 class House;
 class NetworkMessage;
@@ -61,12 +42,27 @@ class PlayerTitle;
 class PlayerVIP;
 class Spectators;
 class Account;
+class RewardChest;
+class Cylinder;
+class Town;
+class Reward;
+class DepotChest;
+class DepotLocker;
+class Inbox;
+class Vocation;
 
 struct ModalWindow;
 struct Achievement;
 struct Badge;
 struct Title;
 struct VIPGroup;
+struct Mount;
+struct OutfitEntry;
+struct Outfit;
+struct FamiliarEntry;
+struct Familiar;
+struct Group;
+
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -221,9 +217,7 @@ public:
 	uint32_t getGUID() const {
 		return guid;
 	}
-	bool canSeeInvisibility() const override {
-		return hasFlag(PlayerFlags_t::CanSenseInvisibility) || group->access;
-	}
+	bool canSeeInvisibility() const override;
 
 	void setDailyReward(uint8_t reward) {
 		this->isDailyReward = reward;
@@ -437,17 +431,11 @@ public:
 		return manaSpent;
 	}
 
-	bool hasFlag(PlayerFlags_t flag) const {
-		return group->flags[static_cast<std::size_t>(flag)];
-	}
+	bool hasFlag(PlayerFlags_t flag) const;
 
-	void setFlag(PlayerFlags_t flag) const {
-		group->flags[static_cast<std::size_t>(flag)] = true;
-	}
+	void setFlag(PlayerFlags_t flag) const;
 
-	void removeFlag(PlayerFlags_t flag) const {
-		group->flags[static_cast<std::size_t>(flag)] = false;
-	}
+	void removeFlag(PlayerFlags_t flag) const;
 
 	std::shared_ptr<BedItem> getBedItem() {
 		return bedItem;
@@ -639,9 +627,7 @@ public:
 	uint16_t getHelpers() const;
 
 	bool setVocation(uint16_t vocId);
-	uint16_t getVocationId() const {
-		return vocation->getId();
-	}
+	uint16_t getVocationId() const;
 
 	PlayerSex_t getSex() const {
 		return sex;
@@ -681,14 +667,7 @@ public:
 	const Position &getLoginPosition() const {
 		return loginPosition;
 	}
-	const Position &getTemplePosition() const {
-		if (!town) {
-			static auto emptyPosition = Position();
-			return emptyPosition;
-		}
-
-		return town->getTemplePosition();
-	}
+	const Position &getTemplePosition() const;
 	std::shared_ptr<Town> getTown() const {
 		return town;
 	}
@@ -2971,37 +2950,11 @@ private:
 	uint16_t getStepSpeed() const override {
 		return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
 	}
-	void updateBaseSpeed() {
-		if (baseSpeed >= PLAYER_MAX_SPEED) {
-			return;
-		}
-
-		if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
-			baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
-		} else {
-			baseSpeed = PLAYER_MAX_SPEED;
-		}
-	}
+	void updateBaseSpeed();
 
 	bool isPromoted() const;
 
-	uint32_t getAttackSpeed() const {
-		bool onFistAttackSpeed = g_configManager().getBoolean(TOGGLE_ATTACK_SPEED_ONFIST);
-		uint32_t MAX_ATTACK_SPEED = g_configManager().getNumber(MAX_SPEED_ATTACKONFIST);
-		if (onFistAttackSpeed) {
-			uint32_t baseAttackSpeed = vocation->getAttackSpeed();
-			uint32_t skillLevel = getSkillLevel(SKILL_FIST);
-			uint32_t attackSpeed = baseAttackSpeed - (skillLevel * g_configManager().getNumber(MULTIPLIER_ATTACKONFIST));
-
-			if (attackSpeed < MAX_ATTACK_SPEED) {
-				attackSpeed = MAX_ATTACK_SPEED;
-			}
-
-			return static_cast<uint32_t>(attackSpeed);
-		} else {
-			return vocation->getAttackSpeed();
-		}
-	}
+	uint32_t getAttackSpeed() const;
 
 	static double_t getPercentLevel(uint64_t count, uint64_t nextLevelCount);
 	double getLostPercent() const;

@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/monsters/monster.hpp"
 #include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -54,6 +55,20 @@ Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	}
 }
 
+std::shared_ptr<Monster> Monster::getMonster() {
+	return static_self_cast<Monster>();
+}
+
+std::shared_ptr<const Monster> Monster::getMonster() const {
+	return static_self_cast<Monster>();
+}
+
+void Monster::setID() {
+	if (id == 0) {
+		id = monsterAutoID++;
+	}
+}
+
 void Monster::addList() {
 	g_game().addMonster(static_self_cast<Monster>());
 }
@@ -86,11 +101,37 @@ void Monster::setName(const std::string &name) {
 	}
 }
 
+// Real monster name, set on monster creation "createMonsterType(typeName)"
+
+const std::string &Monster::getTypeName() const {
+	return mType->typeName;
+}
+
 const std::string &Monster::getNameDescription() const {
 	if (nameDescription.empty()) {
 		return mType->nameDescription;
 	}
 	return nameDescription;
+}
+
+void Monster::setNameDescription(const std::string &nameDescription) {
+	this->nameDescription = nameDescription;
+}
+
+std::string Monster::getDescription(int32_t) {
+	return nameDescription + '.';
+}
+
+CreatureType_t Monster::getType() const {
+	return CREATURETYPE_MONSTER;
+}
+
+const Position &Monster::getMasterPos() const {
+	return masterPos;
+}
+
+void Monster::setMasterPos(Position pos) {
+	masterPos = pos;
 }
 
 bool Monster::canWalkOnFieldType(CombatType_t combatType) const {
@@ -155,6 +196,70 @@ void Monster::addDefense(int32_t defense) {
 	g_logger().trace("[{}] adding defense {}", __FUNCTION__, defense);
 	m_defense += defense;
 	g_logger().trace("[{}] new defense {}", __FUNCTION__, m_defense);
+}
+
+Faction_t Monster::getFaction() const {
+	auto master = getMaster();
+	if (getMaster()) {
+		return getMaster()->getFaction();
+	}
+	return mType->info.faction;
+}
+
+bool Monster::isEnemyFaction(Faction_t faction) const {
+	auto master = getMaster();
+	if (master && master->getMonster()) {
+		return master->getMonster()->isEnemyFaction(faction);
+	}
+	return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.contains(faction);
+}
+
+bool Monster::isPushable() {
+	return mType->info.pushable && baseSpeed != 0;
+}
+
+bool Monster::isAttackable() const {
+	return mType->info.isAttackable;
+}
+
+bool Monster::canPushItems() const {
+	return mType->info.canPushItems;
+}
+
+bool Monster::canPushCreatures() const {
+	return mType->info.canPushCreatures;
+}
+
+bool Monster::isRewardBoss() const {
+	return mType->info.isRewardBoss;
+}
+
+bool Monster::isHostile() const {
+	return mType->info.isHostile;
+}
+
+bool Monster::isFamiliar() const {
+	return mType->info.isFamiliar;
+}
+
+bool Monster::canSeeInvisibility() const {
+	return isImmune(CONDITION_INVISIBLE);
+}
+
+uint16_t Monster::critChance() const {
+	return mType->info.critChance;
+}
+
+uint32_t Monster::getManaCost() const {
+	return mType->info.manaCost;
+}
+
+RespawnType Monster::getRespawnType() const {
+	return mType->info.respawnType;
+}
+
+void Monster::setSpawnMonster(SpawnMonster* newSpawnMonster) {
+	this->spawnMonster = newSpawnMonster;
 }
 
 uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {
@@ -583,6 +688,14 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 	return false;
 }
 
+uint64_t Monster::getLostExperience() const {
+	return skillLoss ? mType->info.experience : 0;
+}
+
+uint16_t Monster::getLookCorpse() const {
+	return mType->info.lookcorpse;
+}
+
 void Monster::onCreatureLeave(std::shared_ptr<Creature> creature) {
 	// update friendList
 	if (isFriend(creature)) {
@@ -748,12 +861,20 @@ void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature
 	}
 }
 
+RaceType_t Monster::getRace() const {
+	return mType->info.race;
+}
+
 float Monster::getMitigation() const {
 	float mitigation = mType->info.mitigation * getDefenseMultiplier();
 	if (g_configManager().getBoolean(DISABLE_MONSTER_ARMOR)) {
 		mitigation += std::ceil(static_cast<float>(getDefense() + getArmor()) / 100.f) * getDefenseMultiplier() * 2.f;
 	}
 	return std::min<float>(mitigation, 30.f);
+}
+
+int32_t Monster::getArmor() const {
+	return mType->info.armor * getDefenseMultiplier();
 }
 
 BlockType_t Monster::blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */) {
@@ -804,6 +925,10 @@ bool Monster::isTarget(std::shared_ptr<Creature> creature) {
 	}
 
 	return true;
+}
+
+bool Monster::isFleeing() const {
+	return !isSummon() && getHealth() <= runAwayHealth && challengeFocusDuration <= 0 && challengeMeleeDuration <= 0;
 }
 
 bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
@@ -865,6 +990,10 @@ void Monster::updateIdleStatus() {
 	}
 
 	setIdle(idle);
+}
+
+bool Monster::getIdleStatus() const {
+	return isIdle;
 }
 
 bool Monster::isInSpawnLocation() const {
@@ -1034,6 +1163,10 @@ void Monster::doAttacking(uint32_t interval) {
 	if (resetTicks) {
 		attackTicks = 0;
 	}
+}
+
+bool Monster::hasExtraSwing() {
+	return extraMeleeAttack;
 }
 
 bool Monster::canUseAttack(const Position &pos, const std::shared_ptr<Creature> &target) const {
@@ -2016,6 +2149,71 @@ bool Monster::getDistanceStep(const Position &targetPos, Direction &moveDirectio
 	return true;
 }
 
+bool Monster::isTargetNearby() const {
+	return stepDuration >= 1;
+}
+
+bool Monster::isIgnoringFieldDamage() const {
+	return ignoreFieldDamage;
+}
+
+bool Monster::israndomStepping() const {
+	return randomStepping;
+}
+
+void Monster::setIgnoreFieldDamage(bool ignore) {
+	ignoreFieldDamage = ignore;
+}
+
+bool Monster::getIgnoreFieldDamage() const {
+	return ignoreFieldDamage;
+}
+
+uint16_t Monster::getRaceId() const {
+	return mType->info.raceid;
+}
+
+// Hazard system
+bool Monster::getHazard() const {
+	return hazard;
+}
+
+void Monster::setHazard(bool value) {
+	hazard = value;
+}
+
+bool Monster::getHazardSystemCrit() const {
+	return hazardCrit;
+}
+
+void Monster::setHazardSystemCrit(bool value) {
+	hazardCrit = value;
+}
+
+bool Monster::getHazardSystemDodge() const {
+	return hazardDodge;
+}
+
+void Monster::setHazardSystemDodge(bool value) {
+	hazardDodge = value;
+}
+
+bool Monster::getHazardSystemDamageBoost() const {
+	return hazardDamageBoost;
+}
+
+void Monster::setHazardSystemDamageBoost(bool value) {
+	hazardDamageBoost = value;
+}
+
+bool Monster::getHazardSystemDefenseBoost() const {
+	return hazardDefenseBoost;
+}
+
+void Monster::setHazardSystemDefenseBoost(bool value) {
+	hazardDefenseBoost = value;
+}
+
 bool Monster::canWalkTo(Position pos, Direction moveDirection) {
 	pos = getNextPosition(moveDirection, pos);
 	if (isInSpawnRange(pos)) {
@@ -2255,12 +2453,60 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 	return true;
 }
 
+bool Monster::isChallenged() const {
+	return challengeFocusDuration > 0;
+}
+
+std::vector<CreatureIcon> Monster::getIcons() const {
+	auto creatureIcons = Creature::getIcons();
+	if (!creatureIcons.empty()) {
+		return creatureIcons;
+	}
+	if (challengeMeleeDuration > 0 && mType->info.targetDistance > targetDistance) {
+		return { CreatureIcon(CreatureIconModifications_t::TurnedMelee) };
+	} else if (varBuffs[BUFF_DAMAGERECEIVED] > 100) {
+		return { CreatureIcon(CreatureIconModifications_t::HigherDamageReceived) };
+	} else if (varBuffs[BUFF_DAMAGEDEALT] < 100) {
+		return { CreatureIcon(CreatureIconModifications_t::LowerDamageDealt) };
+	}
+	return {};
+}
+
 bool Monster::isImmune(ConditionType_t conditionType) const {
 	return m_isImmune || mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
 }
 
 bool Monster::isImmune(CombatType_t combatType) const {
 	return m_isImmune || mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
+}
+
+void Monster::setImmune(bool immune) {
+	m_isImmune = immune;
+}
+
+bool Monster::isImmune() const {
+	return m_isImmune;
+}
+
+float Monster::getAttackMultiplier() const {
+	float multiplier = mType->getAttackMultiplier();
+	if (auto stacks = getForgeStack(); stacks > 0) {
+		multiplier *= (1.35 + (stacks - 1) * 0.1);
+	}
+	return multiplier;
+}
+
+float Monster::getDefenseMultiplier() const {
+	float multiplier = mType->getDefenseMultiplier();
+	return multiplier * std::pow(1.02f, getForgeStack());
+}
+
+bool Monster::isDead() const {
+	return m_isDead;
+}
+
+void Monster::setDead(bool isDead) {
+	m_isDead = isDead;
 }
 
 void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) {
@@ -2319,6 +2565,46 @@ void Monster::configureForgeSystem() {
 	registerCreatureEvent(Eventname);
 
 	g_game().sendUpdateCreature(static_self_cast<Monster>());
+}
+
+bool Monster::canBeForgeMonster() const {
+	return getForgeStack() == 0 && !isSummon() && !isRewardBoss() && canDropLoot() && isForgeCreature() && getRaceId() > 0;
+}
+
+bool Monster::isForgeCreature() const {
+	return mType->info.isForgeCreature;
+}
+
+void Monster::setForgeMonster(bool forge) const {
+	mType->info.isForgeCreature = forge;
+}
+
+uint16_t Monster::getForgeStack() const {
+	return forgeStack;
+}
+
+void Monster::setForgeStack(uint16_t stack) {
+	forgeStack = stack;
+}
+
+ForgeClassifications_t Monster::getMonsterForgeClassification() const {
+	return monsterForgeClassification;
+}
+
+void Monster::setMonsterForgeClassification(ForgeClassifications_t classification) {
+	monsterForgeClassification = classification;
+}
+
+void Monster::setTimeToChangeFiendish(time_t time) {
+	timeToChangeFiendish = time;
+}
+
+time_t Monster::getTimeToChangeFiendish() const {
+	return timeToChangeFiendish;
+}
+
+std::shared_ptr<MonsterType> Monster::getMonsterType() const {
+	return mType;
 }
 
 void Monster::clearFiendishStatus() {

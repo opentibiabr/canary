@@ -7,41 +7,45 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/management/ban.hpp"
 #include "core.hpp"
-#include "declarations.hpp"
-#include "game/game.hpp"
-#include "creatures/players/imbuements/imbuements.hpp"
-#include "io/functions/iologindata_load_player.hpp"
-#include "io/iobestiary.hpp"
-#include "io/io_bosstiary.hpp"
-#include "io/iologindata.hpp"
-#include "io/iomarket.hpp"
-#include "lua/modules/modules.hpp"
+#include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "game/modal_window/modal_window.hpp"
-#include "server/network/message/outputmessage.hpp"
-#include "creatures/players/player.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/grouping/familiars.hpp"
-#include "server/network/protocol/protocolgame.hpp"
-#include "game/scheduling/dispatcher.hpp"
-#include "creatures/combat/spells.hpp"
-#include "utils/tools.hpp"
-#include "creatures/players/management/waitlist.hpp"
-#include "items/weapons/weapons.hpp"
-#include "enums/object_category.hpp"
-#include "enums/account_type.hpp"
-#include "enums/account_group_type.hpp"
-#include "enums/account_coins.hpp"
-#include "enums/player_blessings.hpp"
-
+#include "creatures/players/grouping/party.hpp"
 #include "creatures/players/highscore_category.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/management/ban.hpp"
+#include "creatures/players/management/waitlist.hpp"
+#include "creatures/players/player.hpp"
+#include "creatures/players/vip/player_vip.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
+#include "declarations.hpp"
+#include "enums/player_icons.hpp"
+#include "game/game.hpp"
+#include "game/modal_window/modal_window.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "io/functions/iologindata_load_player.hpp"
+#include "io/io_bosstiary.hpp"
+#include "io/iobestiary.hpp"
+#include "io/iologindata.hpp"
+#include "io/iomarket.hpp"
+#include "items/weapons/weapons.hpp"
+#include "lua/modules/modules.hpp"
+#include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/protocolgame.hpp"
+#include "utils/tools.hpp"
+
+#include "enums/account_coins.hpp"
+#include "enums/account_group_type.hpp"
+#include "enums/account_type.hpp"
+#include "enums/object_category.hpp"
+#include "enums/player_blessings.hpp"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
@@ -3916,7 +3920,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	uint16_t mountSize = 0;
 	auto startMounts = msg.getBufferPosition();
 	msg.skipBytes(2);
-	for (const auto &mount : g_game().mounts.getMounts()) {
+	for (const auto &mount : g_game().mounts->getMounts()) {
 		const std::string type = mount->type;
 		if (player->hasMount(mount)) {
 			++mountSize;
@@ -7047,7 +7051,7 @@ void ProtocolGame::sendOutfitWindow() {
 	bool mounted = false;
 
 	if (!isSupportOutfit) {
-		const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
+		const auto currentMount = g_game().mounts->getMountByID(player->getLastMount());
 		if (currentMount) {
 			mounted = (currentOutfit.lookMount == currentMount->clientId);
 			currentOutfit.lookMount = currentMount->clientId;
@@ -7083,7 +7087,7 @@ void ProtocolGame::sendOutfitWindow() {
 		}
 
 		std::vector<std::shared_ptr<Mount>> mounts;
-		for (const auto &mount : g_game().mounts.getMounts()) {
+		for (const auto &mount : g_game().mounts->getMounts()) {
 			if (player->hasMount(mount)) {
 				mounts.push_back(mount);
 			}
@@ -7181,7 +7185,7 @@ void ProtocolGame::sendOutfitWindow() {
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
 
-	const auto mounts = g_game().mounts.getMounts();
+	const auto mounts = g_game().mounts->getMounts();
 	for (const auto &mount : mounts) {
 		if (player->hasMount(mount)) {
 			msg.add<uint16_t>(mount->clientId);
@@ -7301,7 +7305,7 @@ void ProtocolGame::sendPodiumWindow(std::shared_ptr<Item> podium, const Position
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
 
-	const auto mounts = g_game().mounts.getMounts();
+	const auto mounts = g_game().mounts->getMounts();
 	for (const auto &mount : mounts) {
 		if (player->hasMount(mount)) {
 			msg.add<uint16_t>(mount->clientId);

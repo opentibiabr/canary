@@ -7,13 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "declarations.hpp"
-#include "creatures/combat/combat.hpp"
-#include "lua/scripts/lua_environment.hpp"
-#include "creatures/combat/spells.hpp"
+
 #include "creatures/npcs/npcs.hpp"
-#include "lua/scripts/scripts.hpp"
 #include "game/game.hpp"
+#include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/luascript.hpp"
+#include "lua/scripts/scripts.hpp"
 
 bool NpcType::canSpawn(const Position &pos) {
 	bool canSpawn = true;
@@ -127,6 +126,10 @@ bool Npcs::reload() {
 		return true;
 	}
 	return false;
+}
+
+Npcs &Npcs::getInstance() {
+	return inject<Npcs>();
 }
 
 std::shared_ptr<NpcType> Npcs::getNpcType(const std::string &name, bool create /* = false*/) {

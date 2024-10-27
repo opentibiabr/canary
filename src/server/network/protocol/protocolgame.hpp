@@ -17,6 +17,9 @@
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
 
+enum class PlayerIcon : uint8_t;
+enum class IconBakragore : uint8_t;
+
 class NetworkMessage;
 class Player;
 class VIPGroup;

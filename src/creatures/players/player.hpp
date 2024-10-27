@@ -15,6 +15,8 @@
 #include "grouping/guild.hpp"
 #include "items/cylinder.hpp"
 #include "server/network/protocol/protocolgame.hpp"
+#include "config/configmanager.hpp"
+#include "utils/tools.hpp"
 
 class House;
 class NetworkMessage;

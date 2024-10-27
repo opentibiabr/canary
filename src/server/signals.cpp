@@ -16,6 +16,7 @@
 #include "lua/global/globalevent.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "server/signals.hpp"
+#include "creatures/interactions/chat.hpp"
 
 Signals::Signals(asio::io_service &service) :
 	set(service) {

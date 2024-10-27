@@ -11,6 +11,7 @@
 #include "lua/functions/creatures/npc/shop_functions.hpp"
 
 #include "items/item.hpp"
+#include "utils/tools.hpp"
 
 int ShopFunctions::luaCreateShop(lua_State* L) {
 	// Shop() will create a new shop item

@@ -20,6 +20,7 @@
 #include "lua/modules/modules.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.hpp"
+#include "creatures/interactions/chat.hpp"
 
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;

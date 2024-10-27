@@ -8,6 +8,7 @@
  */
 
 #include "items/functions/item/attribute.hpp"
+#include "utils/tools.hpp"
 
 /*
 =============================

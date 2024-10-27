@@ -43,6 +43,7 @@
 #include "server/network/message/outputmessage.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "utils/tools.hpp"
+#include "creatures/interactions/chat.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_group_type.hpp"

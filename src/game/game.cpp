@@ -53,6 +53,7 @@
 #include "server/network/webhook/webhook.hpp"
 #include "server/server.hpp"
 #include "utils/tools.hpp"
+#include "creatures/interactions/chat.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"

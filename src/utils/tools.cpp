@@ -12,6 +12,8 @@
 #include "core.hpp"
 #include "items/item.hpp"
 #include "enums/object_category.hpp"
+#include "lua/lua_definitions.hpp"
+#include "utils/const.hpp"
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());

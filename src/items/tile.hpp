@@ -11,6 +11,8 @@
 
 #include "items/item.hpp"
 
+#include "items/cylinder.hpp"
+
 class Creature;
 class Teleport;
 class TrashHolder;
@@ -20,7 +22,6 @@ class BedItem;
 class House;
 class Zone;
 class Cylinder;
-class Item;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;

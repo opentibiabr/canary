@@ -10,13 +10,10 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
-#include "creatures/interactions/chat.hpp"
-#include "creatures/creature.hpp"
-#include "enums/forge_conversion.hpp"
-#include "items/tile.hpp"
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
+enum class ForgeAction_t : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -32,6 +29,9 @@ class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
 class Item;
+class Party;
+class Creature;
+class MonsterType;
 
 struct ModalWindow;
 struct Achievement;
@@ -40,6 +40,8 @@ struct Title;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;
+using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
+using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 
 struct TextMessage {
 	TextMessage() = default;

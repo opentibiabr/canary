@@ -10,6 +10,7 @@
 #include "creatures/creature.hpp"
 #include "lua/creature/movement.hpp"
 #include "lua/functions/events/move_event_functions.hpp"
+#include "utils/tools.hpp"
 
 int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {
 	// MoveEvent()

@@ -17,7 +17,7 @@ enum WieldInfo_t {
 	WIELDINFO_PREMIUM = 1 << 3,
 };
 
-enum SpawnType_t {
+enum SpawnType_t : uint8_t {
 	RESPAWN_IN_ALL = 0,
 	RESPAWN_IN_DAY = 1,
 	RESPAWN_IN_NIGHT = 2,

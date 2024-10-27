@@ -1944,7 +1944,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().updateCreatureWalk(creatureId); }, __FUNCTION__);
+		g_game().updateCreatureWalk(getID()); // internally uses addEventWalk.
 	}
 
 	if (creature != getPlayer()) {
@@ -3045,8 +3045,13 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 
 	updateImbuementTrackerStats();
 
-	std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0);
-	addCondition(condition);
+	// this method can be called asynchronously.
+	g_dispatcher().context().tryAddEvent([self = std::weak_ptr<Player>(getPlayer())] {
+		if (const auto &player = self.lock()) {
+			player->addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0));
+		}
+	},
+	                                     "Player::addInFightTicks");
 }
 
 void Player::removeList() {
@@ -4117,13 +4122,15 @@ std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uin
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
 	for (const auto &item : getAllInventoryItems(false, true)) {
-		if (!item->hasMarketAttributes()) {
-			continue;
-		}
-
-		if (const auto &container = item->getContainer()) {
-			if (container->size() > 0) {
+		if (item->getID() != ITEM_GOLD_POUCH) {
+			if (!item->hasMarketAttributes()) {
 				continue;
+			}
+
+			if (const auto &container = item->getContainer()) {
+				if (!container->empty()) {
+					continue;
+				}
 			}
 		}
 
@@ -7477,7 +7484,9 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			break;
 		}
-		auto tierPriecs = itemClassification->tiers.at(donorItem->getTier());
+
+		const uint8_t toTier = convergence ? donorItem->getTier() : donorItem->getTier() - 1;
+		auto tierPriecs = itemClassification->tiers.at(toTier);
 		cost = convergence ? tierPriecs.convergenceTransferPrice : tierPriecs.regularPrice;
 		coresAmount = tierPriecs.corePrice;
 		break;

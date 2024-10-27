@@ -121,8 +121,6 @@ public:
 	uint8_t getMaxPointsPerSlot(WheelSlots_t slot) const;
 	uint16_t getUnusedPoints() const;
 
-	void resetPlayerBonusData();
-
 	void setPlayerCombatStats(CombatType_t type, int32_t leechAmount);
 
 	void reloadPlayerData();
@@ -181,6 +179,8 @@ private:
 	static uint64_t getGemRotateCost(WheelGemQuality_t quality);
 
 	static uint64_t getGemRevealCost(WheelGemQuality_t quality);
+
+	void resetPlayerData();
 
 	// Members variables
 	const uint16_t m_minLevelToStartCountPoints = 50;
@@ -423,6 +423,14 @@ public:
 	WheelGemBasicModifier_t selectBasicModifier2(WheelGemBasicModifier_t modifier1) const;
 
 private:
+	void resetRevelationState();
+	void processActiveGems();
+	void applyStageBonuses();
+	void applyStageBonusForColor(const std::string &color);
+	void applyRedStageBonus(uint8_t stageValue, Vocation_t vocationEnum);
+	void applyPurpleStageBonus(uint8_t stageValue, Vocation_t vocationEnum);
+	void applyBlueStageBonus(uint8_t stageValue, Vocation_t vocationEnum);
+
 	friend class Player;
 	// Reference to the player
 	Player &m_player;

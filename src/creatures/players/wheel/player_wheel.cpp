@@ -1343,7 +1343,7 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 	}
 
 	gemsGradeKV(fragmentType, pos)->set("grade", grade);
-	registerPlayerBonusData();
+	loadPlayerBonusData();
 	sendOpenWheelWindow(m_player.getID());
 }
 
@@ -2135,6 +2135,10 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 		g_logger().debug("  storm: {}", bonusData.avatar.storm);
 	}
 
+	if (bonusData.momentum > 0) {
+		g_logger().debug("bonus: {}", bonusData.momentum);
+	}
+
 	if (bonusData.mitigation > 0) {
 		g_logger().debug("mitigation: {}", bonusData.mitigation);
 	}
@@ -2203,19 +2207,22 @@ void PlayerWheel::processActiveGems() {
 
 		auto count = m_playerBonusData.unlockedVesselResonances[static_cast<uint8_t>(affinity)];
 		if (count >= 1) {
+			uint8_t grade = getGemGrade(WheelFragmentType_t::Lesser, static_cast<uint8_t>(basicModifier1));
 			std::string modifierName(magic_enum::enum_name(basicModifier1));
 			g_logger().debug("[{}] Adding basic modifier 1 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
-			m_modifierContext->addStrategies(basicModifier1);
+			m_modifierContext->addStrategies(basicModifier1, grade);
 		}
 		if (count >= 2 && quality >= WheelGemQuality_t::Regular) {
+			uint8_t grade = getGemGrade(WheelFragmentType_t::Lesser, static_cast<uint8_t>(basicModifier2));
 			std::string modifierName(magic_enum::enum_name(basicModifier2));
 			g_logger().debug("[{}] Adding basic modifier 2 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
-			m_modifierContext->addStrategies(basicModifier2);
+			m_modifierContext->addStrategies(basicModifier2, grade);
 		}
 		if (count >= 3 && quality >= WheelGemQuality_t::Greater) {
+			uint8_t grade = getGemGrade(WheelFragmentType_t::Greater, static_cast<uint8_t>(supremeModifier));
 			std::string modifierName(magic_enum::enum_name(supremeModifier));
 			g_logger().info("[{}] Adding supreme modifier {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
-			m_modifierContext->addStrategies(supremeModifier);
+			m_modifierContext->addStrategies(supremeModifier, grade);
 		}
 	}
 

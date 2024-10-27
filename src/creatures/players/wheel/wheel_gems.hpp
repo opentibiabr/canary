@@ -297,10 +297,10 @@ private:
 		{
 			WheelGemBasicModifier_t::Vocation_Capacity,
 			{
-				{ Vocation_t::VOCATION_KNIGHT, 250 },
-				{ Vocation_t::VOCATION_PALADIN, 200 },
-				{ Vocation_t::VOCATION_SORCERER, 100 },
-				{ Vocation_t::VOCATION_DRUID, 100 },
+				{ Vocation_t::VOCATION_KNIGHT, 500 },
+				{ Vocation_t::VOCATION_PALADIN, 400 },
+				{ Vocation_t::VOCATION_SORCERER, 200 },
+				{ Vocation_t::VOCATION_DRUID, 200 },
 			},
 		},
 		{

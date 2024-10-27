@@ -354,7 +354,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35286,
 				charges = 14400,
-                coinType = GameStore.CoinType.Coin,
+				coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your axe fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your axe fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -364,7 +364,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35288,
 				charges = 14400,
-                                coinType = GameStore.CoinType.Coin,
+				coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your distance fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your distance fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -374,7 +374,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35287,
 				charges = 14400,
-                                coinType = GameStore.CoinType.Coin,
+				coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your club fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your club fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -384,7 +384,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35289,
 				charges = 14400,
-                                coinType = GameStore.CoinType.Coin,
+				coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -394,7 +394,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35285,
 				charges = 14400,
-                                coinType = GameStore.CoinType.Coin,
+				coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your sword fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your sword fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -404,7 +404,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35290,
 				charges = 14400,
-                                coinType = GameStore.CoinType.Coin,
+				coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -414,7 +414,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 44067,
 				charges = 14400,
-                                coinType = GameStore.CoinType.Coin,
+				coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your shielding skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your shielding skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -6624,7 +6624,7 @@ GameStore.Categories = {
 		icons = { "Category_Tournament.png" },
 		name = "Item VIP",
 		rookgaard = true,
-		subclasses = { "Weapon", "Armors","Refil" },
+		subclasses = { "Weapon", "Armors", "Refil" },
 	},
 	-- Item VIP ~ weapons
 	{
@@ -6716,7 +6716,7 @@ GameStore.Categories = {
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
-			
+
 			{
 				icons = { "Carved_Table_Centre.png" },
 				name = "Navega Paladin Helmet",
@@ -6780,7 +6780,6 @@ GameStore.Categories = {
 				description = "Elite Knight",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
-			
 		},
 	},
 	-- item VIP ~ refil
@@ -6791,7 +6790,7 @@ GameStore.Categories = {
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
-			
+
 			{
 				icons = { "Carved_Table_Centre.png" },
 				name = "Refil Stamina",
@@ -6819,8 +6818,6 @@ GameStore.Categories = {
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
-			
-			
 		},
 	},
 	-- Pontos online
@@ -6858,11 +6855,8 @@ GameStore.Categories = {
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
-			
 		},
 	},
-	
-	
 }
 
 -- Each outfit must be uniquely identified to distinguish between addons.

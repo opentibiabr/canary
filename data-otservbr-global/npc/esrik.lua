@@ -47,7 +47,7 @@ end
 
 local tomes = Storage.Quest.U8_54.TheNewFrontier.TomeofKnowledge
 npcConfig.shop = {
-	
+
 	{ itemName = "exercise axe", clientId = 28553, buy = 262500, count = 500 },
 	{ itemName = "exercise bow", clientId = 28555, buy = 262500, count = 500 },
 	{ itemName = "exercise club", clientId = 28554, buy = 262500, count = 500 },
@@ -91,11 +91,11 @@ npcConfig.shop = {
 	{ itemName = "draken boots", clientId = 4033, sell = 40000, storageKey = tomes, storageValue = 9 },
 	{ itemName = "zaoan helmet", clientId = 10385, sell = 45000, storageKey = tomes, storageValue = 9 },
 	{ itemName = "Elite Draken Mail", clientId = 11651, sell = 50000, storageKey = tomes, storageValue = 9 },
-{ itemName = "cowbell", clientId = 21204, sell = 210 },
+	{ itemName = "cowbell", clientId = 21204, sell = 210 },
 	{ itemName = "execowtioner mask", clientId = 21201, sell = 240 },
 	{ itemName = "giant pacifier", clientId = 21199, sell = 170 },
 	{ itemName = "glob of glooth", clientId = 21182, sell = 125 },
-	{ itemName = "glooth injection tube", clientId = 21103, sell = 350 },	
+	{ itemName = "glooth injection tube", clientId = 21103, sell = 350 },
 	{ itemName = "metal jaw", clientId = 21193, sell = 260 },
 	{ itemName = "metal toe", clientId = 21198, sell = 430 },
 	{ itemName = "mooh'tah shell", clientId = 21202, sell = 110 },
@@ -108,7 +108,7 @@ npcConfig.shop = {
 	{ itemName = "slime heart", clientId = 21194, sell = 160 },
 	{ itemName = "slimy leaf tentacle", clientId = 21197, sell = 320 },
 
-    --Alesar--
+	--Alesar--
 	{ itemName = "black shield", clientId = 3429, sell = 800 },
 	{ itemName = "bonebreaker", clientId = 7428, sell = 10000 },
 	{ itemName = "dragon hammer", clientId = 3322, sell = 2000 },
@@ -129,7 +129,7 @@ npcConfig.shop = {
 	{ itemName = "tower shield", clientId = 3428, sell = 8000 },
 	{ itemName = "vampire shield", clientId = 3434, sell = 15000 },
 	{ itemName = "warrior helmet", clientId = 3369, sell = 5000 },
-	
+
 	--Haroun--
 	{ itemName = "axe ring", clientId = 3092, sell = 100 },
 	{ itemName = "bronze amulet", clientId = 3056, sell = 50, count = 200 },
@@ -154,7 +154,7 @@ npcConfig.shop = {
 	{ itemName = "wand of starstorm", clientId = 8092, sell = 3600 },
 	{ itemName = "wand of voodoo", clientId = 8094, sell = 4400 },
 	{ itemName = "wand of vortex", clientId = 3074, sell = 100 },
-	
+
 	--flint--
 	{ itemName = "crest of the deep seas", clientId = 21892, sell = 10000 },
 	{ itemName = "cowtana", clientId = 21177, sell = 2500 },
@@ -175,7 +175,7 @@ npcConfig.shop = {
 	{ itemName = "heat core", clientId = 21167, sell = 10000 },
 	{ itemName = "alloy legs", clientId = 21168, sell = 11000 },
 	{ itemName = "execowtioner axe", clientId = 21176, sell = 12000 },
-	
+
 	--nah'bob--
 	{ itemName = "angelic axe", clientId = 7436, sell = 5000 },
 	{ itemName = "blue robe", clientId = 3567, sell = 10000 },
@@ -202,7 +202,7 @@ npcConfig.shop = {
 	{ itemName = "shadow sceptre", clientId = 7451, sell = 10000 },
 	{ itemName = "thaian sword", clientId = 7391, sell = 16000 },
 	{ itemName = "war hammer", clientId = 3279, sell = 1200 },
-	
+
 	--yaman--
 	{ itemName = "ankh", clientId = 3077, sell = 100 },
 	{ itemName = "dragon necklace", clientId = 3085, sell = 100, count = 200 },
@@ -226,14 +226,13 @@ npcConfig.shop = {
 	{ itemName = "terra rod", clientId = 3065, sell = 2000 },
 	{ itemName = "time ring", clientId = 3053, sell = 100 },
 	{ itemName = "underworld rod", clientId = 8082, sell = 4400 },
-	
+
 	--talila--
 	{ itemName = "butterfly ring", clientId = 25698, sell = 2000 },
 	{ itemName = "heavy blossom staff", clientId = 25700, sell = 5000 },
 	{ itemName = "wooden spellbook", clientId = 25699, sell = 12000 },
 	{ itemName = "wood cape", clientId = 3575, sell = 5000 },
 
-	
 	--esrik--
 	{ itemName = "club", clientId = 3270, sell = 1 },
 	{ itemName = "coat", clientId = 3562, sell = 1 },
@@ -268,7 +267,7 @@ npcConfig.shop = {
 	{ itemName = "studded armor", clientId = 3378, sell = 25 },
 	{ itemName = "sword", clientId = 3264, sell = 25 },
 	{ itemName = "brass helmet", clientId = 3354, sell = 30 },
-	{ itemName = "mace", clientId = 3286,  sell = 30 },
+	{ itemName = "mace", clientId = 3286, sell = 30 },
 	{ itemName = "katana", clientId = 3300, sell = 35 },
 	{ itemName = "swampling club", clientId = 17824, sell = 40 },
 	{ itemName = "plate shield", clientId = 3410, sell = 45 },
@@ -322,9 +321,9 @@ npcConfig.shop = {
 	{ itemName = "draken boots", clientId = 4033, sell = 40000 },
 	{ itemName = "zaoan helmet", clientId = 10385, sell = 45000 },
 	{ itemName = "Elite Draken Mail", clientId = 11651, sell = 50000 },
-	
+
 	--hanna--
-		{ itemName = "amber", clientId = 32626, sell = 20000 },
+	{ itemName = "amber", clientId = 32626, sell = 20000 },
 	{ itemName = "amber with a bug", clientId = 32624, sell = 41000 },
 	{ itemName = "amber with a dragonfly", clientId = 32625, sell = 56000 },
 	{ itemName = "ancient coin", clientId = 24390, sell = 350 },
@@ -386,7 +385,7 @@ npcConfig.shop = {
 	{ itemName = "wedding ring", clientId = 3004, sell = 100 },
 	{ itemName = "white pearl", clientId = 3026, sell = 160 },
 	{ itemName = "orichalcum pearl", clientId = 3026, sell = 80 },
-	
+
 	--lailene--
 	{ itemName = "batwing hat", clientId = 9103, sell = 8000 },
 	{ itemName = "ethno coat", clientId = 8064, sell = 200 },
@@ -401,9 +400,9 @@ npcConfig.shop = {
 	{ itemName = "spellbook of lost souls", clientId = 8075, sell = 19000 },
 	{ itemName = "spellbook of mind control", clientId = 8074, sell = 13000 },
 	{ itemName = "spellbook of warding", clientId = 8073, sell = 8000 },
-	
+
 	--rashid--
-		{ itemName = "abyss hammer", clientId = 7414, sell = 20000 },
+	{ itemName = "abyss hammer", clientId = 7414, sell = 20000 },
 	{ itemName = "albino plate", clientId = 19358, sell = 1500 },
 	{ itemName = "amber staff", clientId = 7426, sell = 8000 },
 	{ itemName = "ancient amulet", clientId = 3025, sell = 200 },
@@ -559,7 +558,7 @@ npcConfig.shop = {
 	{ itemName = "war horn", clientId = 2958, sell = 8000 },
 	{ itemName = "witch hat", clientId = 9653, sell = 5000 },
 	{ itemName = "wyvern fang", clientId = 7408, sell = 1500 },
-	
+
 	--rock in a hard place--
 	{ itemName = "axe", clientId = 3274, sell = 7 },
 	{ itemName = "battle axe", clientId = 3266, sell = 80 },
@@ -682,7 +681,7 @@ npcConfig.shop = {
 	{ itemName = "watch", clientId = 2906, sell = 6 },
 	{ itemName = "wooden hammer", clientId = 3459, sell = 15 },
 	{ itemName = "wooden shield", clientId = 3412, sell = 5 },
-	
+
 	--tamoril--
 	{ itemName = "blue gem", clientId = 3041, sell = 5000 },
 	{ itemName = "golden mug", clientId = 2903, sell = 250 },
@@ -693,14 +692,14 @@ npcConfig.shop = {
 	{ itemName = "yellow gem", clientId = 3037, sell = 1000 },
 
 	--fadil
-	
+
 	{ itemName = "ring of blue plasma", clientId = 23529, sell = 8000 },
 	{ itemName = "ring of green plasma", clientId = 23531, sell = 8000 },
 	{ itemName = "ring of red plasma", clientId = 23533, sell = 8000 },
 	{ itemName = "collar of blue plasma", clientId = 23542, sell = 6000 },
 	{ itemName = "collar of green plasma", clientId = 23543, sell = 6000 },
 	{ itemName = "collar of red plasma", clientId = 23544, sell = 6000 },
-	
+
 	--yasir--
 	{ itemName = "abomination's tail", clientId = 36791, sell = 700000 },
 	{ itemName = "abomination's tongue", clientId = 36793, sell = 900000 },
@@ -858,7 +857,7 @@ npcConfig.shop = {
 	{ itemName = "dark obsidian splinter", clientId = 43850, sell = 4400 },
 	{ itemName = "dark rosary", clientId = 10303, sell = 48 },
 	{ itemName = "darklight basalt chunk", clientId = 43852, sell = 3800 },
--- darklight figurine falta
+	-- darklight figurine falta
 	{ itemName = "darklight core", clientId = 43853, sell = 4100 },
 	{ itemName = "darklight matter", clientId = 43851, sell = 5500 },
 	{ itemName = "decayed finger bone", clientId = 43846, sell = 5100 },
@@ -1168,7 +1167,7 @@ npcConfig.shop = {
 	{ itemName = "protective charm", clientId = 11444, sell = 60 },
 	{ itemName = "purified soul", clientId = 32228, sell = 260 },
 	{ itemName = "purple robe", clientId = 11473, sell = 110 },
---	{ itemName = "putrefactive figurine", clientId = , sell = 3200000 },
+	--	{ itemName = "putrefactive figurine", clientId = , sell = 3200000 },
 	{ itemName = "quara bone", clientId = 11491, sell = 500 },
 	{ itemName = "quara eye", clientId = 11488, sell = 350 },
 	{ itemName = "quara pincers", clientId = 11490, sell = 410 },
@@ -1329,7 +1328,7 @@ npcConfig.shop = {
 	{ itemName = "varnished diremaw brainpan", clientId = 36781, sell = 750 },
 	{ itemName = "varnished diremaw legs", clientId = 36782, sell = 670 },
 	{ itemName = "veal", clientId = 32009, sell = 40 },
---	{ itemName = "vemiath's infused basalt", clientId = , sell = 1000000 },
+	--	{ itemName = "vemiath's infused basalt", clientId = , sell = 1000000 },
 	{ itemName = "venison", clientId = 18995, sell = 55 },
 	{ itemName = "vexclaw talon", clientId = 22728, sell = 1100 },
 	{ itemName = "vial of hatred", clientId = 33927, sell = 737000 },

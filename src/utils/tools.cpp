@@ -7,9 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "utils/tools.hpp"
+
 #include "core.hpp"
 #include "items/item.hpp"
-#include "utils/tools.hpp"
+#include "enums/object_category.hpp"
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -185,7 +187,7 @@ std::string transformToSHA1(const std::string &input) {
 	return std::string(hexstring, 40);
 }
 
-uint16_t getStashSize(StashItemList itemList) {
+uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList) {
 	uint16_t size = 0;
 	for (auto item : itemList) {
 		size += ceil(item.second / (float_t)Item::items[item.first].stackSize);
@@ -1935,6 +1937,39 @@ unsigned int getNumberOfCores() {
 	return cores;
 }
 
+Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
+	switch (combatType) {
+		case COMBAT_PHYSICALDAMAGE:
+			return CIPBIA_ELEMENTAL_PHYSICAL;
+		case COMBAT_ENERGYDAMAGE:
+			return CIPBIA_ELEMENTAL_ENERGY;
+		case COMBAT_EARTHDAMAGE:
+			return CIPBIA_ELEMENTAL_EARTH;
+		case COMBAT_FIREDAMAGE:
+			return CIPBIA_ELEMENTAL_FIRE;
+		case COMBAT_LIFEDRAIN:
+			return CIPBIA_ELEMENTAL_LIFEDRAIN;
+		case COMBAT_HEALING:
+			return CIPBIA_ELEMENTAL_HEALING;
+		case COMBAT_DROWNDAMAGE:
+			return CIPBIA_ELEMENTAL_DROWN;
+		case COMBAT_ICEDAMAGE:
+			return CIPBIA_ELEMENTAL_ICE;
+		case COMBAT_HOLYDAMAGE:
+			return CIPBIA_ELEMENTAL_HOLY;
+		case COMBAT_DEATHDAMAGE:
+			return CIPBIA_ELEMENTAL_DEATH;
+		case COMBAT_MANADRAIN:
+			return CIPBIA_ELEMENTAL_MANADRAIN;
+		case COMBAT_AGONYDAMAGE:
+			return CIPBIA_ELEMENTAL_AGONY;
+		case COMBAT_NEUTRALDAMAGE:
+			return CIPBIA_ELEMENTAL_AGONY;
+		default:
+			return CIPBIA_ELEMENTAL_UNDEFINED;
+	}
+}
+
 /**
  * @brief Formats a number to a string with commas
  * @param number The number to format
@@ -1980,4 +2015,19 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 			g_logger().error("Failed to get gem affinity {}", affinity);
 			return 0;
 	}
+}
+
+bool caseInsensitiveCompare(std::string_view str1, std::string_view str2, size_t length /*= std::string_view::npos*/) {
+	if (length == std::string_view::npos) {
+		if (str1.size() != str2.size()) {
+			return false;
+		}
+		length = str1.size();
+	} else {
+		length = std::min({ length, str1.size(), str2.size() });
+	}
+
+	return std::equal(str1.begin(), str1.begin() + length, str2.begin(), [](char c1, char c2) {
+		return std::tolower(static_cast<unsigned char>(c1)) == std::tolower(static_cast<unsigned char>(c2));
+	});
 }

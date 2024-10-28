@@ -1,91 +1,129 @@
-local callback = EventCallback("PlayerOnLookBaseEvent")
+local specialItemRanges = {
+	{ rangeStart = ITEM_HEALTH_CASK_START, rangeEnd = ITEM_HEALTH_CASK_END },
+	{ rangeStart = ITEM_MANA_CASK_START, rangeEnd = ITEM_MANA_CASK_END },
+	{ rangeStart = ITEM_SPIRIT_CASK_START, rangeEnd = ITEM_SPIRIT_CASK_END },
+	{ rangeStart = ITEM_KEG_START, rangeEnd = ITEM_KEG_END },
+}
 
-function callback.playerOnLook(player, thing, position, distance)
-	local description = "You see "
-	if thing:isItem() then
-		if thing.actionid == 5640 then
-			description = description .. "a honeyflower patch."
-		elseif thing.actionid == 5641 then
-			description = description .. "a banana palm."
-		elseif thing.itemid >= ITEM_HEALTH_CASK_START and thing.itemid <= ITEM_HEALTH_CASK_END or thing.itemid >= ITEM_MANA_CASK_START and thing.itemid <= ITEM_MANA_CASK_END or thing.itemid >= ITEM_SPIRIT_CASK_START and thing.itemid <= ITEM_SPIRIT_CASK_END or thing.itemid >= ITEM_KEG_START and thing.itemid <= ITEM_KEG_END then
-			description = description .. thing:getDescription(distance)
-			local charges = thing:getCharges()
-			if charges > 0 then
-				description = string.format("%s\nIt has %d refillings left.", description, charges)
-			end
-		else
-			description = description .. thing:getDescription(distance)
+local function isSpecialItem(itemId)
+	for _, range in ipairs(specialItemRanges) do
+		if itemId >= range.rangeStart and itemId <= range.rangeEnd then
+			return true
 		end
-		local ownerName = thing:getOwnerName()
-		if ownerName then
-			description = string.format("%s\nIt belongs to %s.", description, ownerName)
+	end
+	return false
+end
+
+local function getPositionDescription(position)
+	if position.x == 65535 then
+		return "Position: In your inventory."
+	else
+		return string.format("Position: (%d, %d, %d)", position.x, position.y, position.z)
+	end
+end
+
+local function handleItemDescription(inspectedThing, lookDistance)
+	local descriptionText = inspectedThing:getDescription(lookDistance)
+
+	if isSpecialItem(inspectedThing.itemid) then
+		local itemCharges = inspectedThing:getCharges()
+		if itemCharges > 0 then
+			return string.format("You see %s\nIt has %d refillings left.", descriptionText, itemCharges)
 		end
 	else
-		description = description .. thing:getDescription(distance)
-		if thing:isMonster() then
-			local master = thing:getMaster()
-			if master and table.contains({ "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }, thing:getName():lower()) then
-				local familiarSummonTime = master:kv():get("familiar-summon-time") or 0
-				description = string.format("%s (Master: %s). \z It will disappear in %s", description, master:getName(), getTimeInWords(familiarSummonTime - os.time()))
-			end
+		return "You see " .. descriptionText
+	end
+
+	return descriptionText
+end
+
+local function handleCreatureDescription(inspectedThing, lookDistance)
+	local descriptionText = inspectedThing:getDescription(lookDistance)
+
+	if inspectedThing:isMonster() then
+		local monsterMaster = inspectedThing:getMaster()
+		if monsterMaster and table.contains({ "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }, inspectedThing:getName():lower()) then
+			local summonTimeRemaining = monsterMaster:kv():get("familiar-summon-time") or 0
+			descriptionText = string.format("%s (Master: %s). It will disappear in %s", descriptionText, monsterMaster:getName(), Game.getTimeInWords(summonTimeRemaining - os.time()))
 		end
+	end
+
+	return "You see " .. descriptionText
+end
+
+local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosition)
+	if inspectedThing:isItem() then
+		descriptionText = string.format("%s\nClient ID: %d", descriptionText, inspectedThing:getId())
+
+		local itemActionId = inspectedThing:getActionId()
+		if itemActionId ~= 0 then
+			descriptionText = string.format("%s, Action ID: %d", descriptionText, itemActionId)
+		end
+
+		local itemUniqueId = inspectedThing:getUniqueId()
+		if itemUniqueId > 0 and itemUniqueId < 65536 then
+			descriptionText = string.format("%s, Unique ID: %d", descriptionText, itemUniqueId)
+		end
+
+		local itemType = inspectedThing:getType()
+		local transformOnEquipId = itemType:getTransformEquipId()
+		local transformOnDeEquipId = itemType:getTransformDeEquipId()
+
+		if transformOnEquipId ~= 0 then
+			descriptionText = string.format("%s\nTransforms to: %d (onEquip)", descriptionText, transformOnEquipId)
+		elseif transformOnDeEquipId ~= 0 then
+			descriptionText = string.format("%s\nTransforms to: %d (onDeEquip)", descriptionText, transformOnDeEquipId)
+		end
+
+		local itemDecayId = itemType:getDecayId()
+		if itemDecayId ~= -1 then
+			descriptionText = string.format("%s\nDecays to: %d", descriptionText, itemDecayId)
+		end
+	elseif inspectedThing:isCreature() then
+		local healthDescription, creatureId = "%s\n%s\nHealth: %d / %d"
+		if inspectedThing:isPlayer() and inspectedThing:getMaxMana() > 0 then
+			creatureId = string.format("Player ID: %i", inspectedThing:getGuid())
+			healthDescription = string.format("%s, Mana: %d / %d", healthDescription, inspectedThing:getMana(), inspectedThing:getMaxMana())
+		elseif inspectedThing:isMonster() then
+			creatureId = string.format("Monster ID: %i", inspectedThing:getId())
+		elseif inspectedThing:isNpc() then
+			creatureId = string.format("NPC ID: %i", inspectedThing:getId())
+		end
+
+		descriptionText = string.format(healthDescription, descriptionText, creatureId, inspectedThing:getHealth(), inspectedThing:getMaxHealth())
+	end
+
+	descriptionText = string.format("%s\n%s", descriptionText, getPositionDescription(inspectedPosition))
+
+	if inspectedThing:isCreature() then
+		local creatureBaseSpeed = inspectedThing:getBaseSpeed()
+		local creatureCurrentSpeed = inspectedThing:getSpeed()
+		descriptionText = string.format("%s\nSpeed Base: %d\nSpeed: %d", descriptionText, creatureBaseSpeed, creatureCurrentSpeed)
+
+		if inspectedThing:isPlayer() then
+			descriptionText = string.format("%s\nIP: %s", descriptionText, Game.convertIpToString(inspectedThing:getIp()))
+		end
+	end
+
+	return descriptionText
+end
+
+local callback = EventCallback("PlayerOnLookBaseEvent")
+
+function callback.playerOnLook(player, inspectedThing, inspectedPosition, lookDistance)
+	local descriptionText
+
+	if inspectedThing:isItem() then
+		descriptionText = handleItemDescription(inspectedThing, lookDistance)
+	elseif inspectedThing:isCreature() then
+		descriptionText = handleCreatureDescription(inspectedThing, lookDistance)
 	end
 
 	if player:getGroup():getAccess() then
-		if thing:isItem() then
-			description = string.format("%s\nClient ID: %d", description, thing:getId())
-
-			local actionId = thing:getActionId()
-			if actionId ~= 0 then
-				description = string.format("%s, Action ID: %d", description, actionId)
-			end
-
-			local uniqueId = thing:getAttribute(ITEM_ATTRIBUTE_UNIQUEID)
-			if uniqueId > 0 and uniqueId < 65536 then
-				description = string.format("%s, Unique ID: %d", description, uniqueId)
-			end
-
-			local itemType = thing:getType()
-
-			local transformEquipId = itemType:getTransformEquipId()
-			local transformDeEquipId = itemType:getTransformDeEquipId()
-			if transformEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
-			elseif transformDeEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onDeEquip)", description, transformDeEquipId)
-			end
-
-			local decayId = itemType:getDecayId()
-			if decayId ~= -1 then
-				description = string.format("%s\nDecays to: %d", description, decayId)
-			end
-		elseif thing:isCreature() then
-			local str, id = "%s\n%s\nHealth: %d / %d"
-			if thing:isPlayer() and thing:getMaxMana() > 0 then
-				id = string.format("Player ID: %i", thing:getGuid())
-				str = string.format("%s, Mana: %d / %d", str, thing:getMana(), thing:getMaxMana())
-			elseif thing:isMonster() then
-				id = string.format("Monster ID: %i", thing:getId())
-			elseif thing:isNpc() then
-				id = string.format("NPC ID: %i", thing:getId())
-			end
-			description = string.format(str, description, id, thing:getHealth(), thing:getMaxHealth())
-		end
-
-		description = string.format("%s\nPosition: (%d, %d, %d)", description, position.x, position.y, position.z)
-
-		if thing:isCreature() then
-			local speedBase = thing:getBaseSpeed()
-			local speed = thing:getSpeed()
-			description = string.format("%s\nSpeedBase: %d", description, speedBase)
-			description = string.format("%s\nSpeed: %d", description, speed)
-
-			if thing:isPlayer() then
-				description = string.format("%s\nIP: %s", description, Game.convertIpToString(thing:getIp()))
-			end
-		end
+		descriptionText = appendAdminDetails(descriptionText, inspectedThing, inspectedPosition)
 	end
-	player:sendTextMessage(MESSAGE_LOOK, description)
+
+	player:sendTextMessage(MESSAGE_LOOK, descriptionText)
 end
 
 callback:register()

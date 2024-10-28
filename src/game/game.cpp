@@ -34,6 +34,7 @@
 #include "items/weapons/weapons.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "enums/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"

@@ -9,11 +9,9 @@
 
 #pragma once
 
-class PlayerWheel;
+#include "creatures/players/wheel/wheel_definitions.hpp"
 
-namespace WheelSpells {
-	struct Bonus;
-}
+class PlayerWheel;
 
 enum CombatType_t : uint8_t;
 enum Vocation_t : uint16_t;

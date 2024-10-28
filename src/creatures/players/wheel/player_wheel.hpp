@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "wheel_definitions.hpp"
+#include "creatures/players/wheel/wheel_definitions.hpp"
 
 class Creature;
 class IOWheel;
@@ -18,6 +18,7 @@ class NetworkMessage;
 class Player;
 class Spell;
 class WheelModifierContext;
+class ValueWrapper;
 
 enum class WheelFragmentType_t : uint8_t;
 enum class WheelGemAffinity_t : uint8_t;

@@ -7484,7 +7484,9 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			break;
 		}
-		auto tierPriecs = itemClassification->tiers.at(donorItem->getTier());
+
+		const uint8_t toTier = convergence ? donorItem->getTier() : donorItem->getTier() - 1;
+		auto tierPriecs = itemClassification->tiers.at(toTier);
 		cost = convergence ? tierPriecs.convergenceTransferPrice : tierPriecs.regularPrice;
 		coresAmount = tierPriecs.corePrice;
 		break;

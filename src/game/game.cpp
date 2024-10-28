@@ -10241,18 +10241,15 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
-	    forgeableMonsters.size() < influencedLimit * 2) {
-		forgeableMonsters.clear();
-		for (const auto &[monsterId, monster] : monsters) {
-			auto monsterTile = monster->getTile();
-			if (!monsterTile) {
-				continue;
-			}
+	forgeableMonsters.clear();
+	for (const auto &[monsterId, monster] : monsters) {
+		auto monsterTile = monster->getTile();
+		if (!monsterTile) {
+			continue;
+		}
 
-			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
-				forgeableMonsters.push_back(monster->getID());
-			}
+		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
+			forgeableMonsters.push_back(monster->getID());
 		}
 	}
 

@@ -22,7 +22,7 @@
 Spells::Spells() = default;
 Spells::~Spells() = default;
 
-TalkActionResult_t Spells::playerSaySpell(std::shared_ptr<Player> player, std::string &words) {
+TalkActionResult_t Spells::playerSaySpell(std::shared_ptr<Player> player, std::string &words) const {
 	auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT);
 	auto tile = player->getTile();
 	if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {

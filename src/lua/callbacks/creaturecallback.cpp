@@ -56,28 +56,28 @@ bool CreatureCallback::persistLuaState() {
 	return params > 0 && scriptInterface->callFunction(params);
 }
 
- void CreatureCallback::pushCreature(std::shared_ptr<Creature> creature) {
+void CreatureCallback::pushCreature(std::shared_ptr<Creature> creature) {
 	params++;
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 }
 
- void CreatureCallback::pushPosition(const Position &position, int32_t stackpos) {
+void CreatureCallback::pushPosition(const Position &position, int32_t stackpos) {
 	params++;
 	LuaScriptInterface::pushPosition(L, position, stackpos);
 }
 
- void CreatureCallback::pushNumber(int32_t number) {
+void CreatureCallback::pushNumber(int32_t number) {
 	params++;
 	lua_pushnumber(L, number);
 }
 
- void CreatureCallback::pushString(const std::string &str) {
+void CreatureCallback::pushString(const std::string &str) {
 	params++;
 	LuaScriptInterface::pushString(L, str);
 }
 
- void CreatureCallback::pushBoolean(const bool str) {
+void CreatureCallback::pushBoolean(const bool str) {
 	params++;
 	LuaScriptInterface::pushBoolean(L, str);
 }

@@ -180,7 +180,7 @@ std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
 	return spellsList;
 }
 
- const std::map<std::string, std::shared_ptr<InstantSpell>> &Spells::getInstantSpells() const {
+const std::map<std::string, std::shared_ptr<InstantSpell>> &Spells::getInstantSpells() const {
 	return instants;
 }
 
@@ -287,11 +287,11 @@ bool CombatSpell::loadScriptCombat() {
 	return m_combat != nullptr;
 }
 
- std::shared_ptr<Combat> CombatSpell::getCombat() const {
+std::shared_ptr<Combat> CombatSpell::getCombat() const {
 	return m_combat;
 }
 
- std::string CombatSpell::getScriptTypeName() const {
+std::string CombatSpell::getScriptTypeName() const {
 	return "onCastSpell";
 }
 
@@ -652,21 +652,19 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 	}
 }
 
-
- const std::string &Spell::getWords() const {
+const std::string &Spell::getWords() const {
 	return m_words;
 }
 
- void Spell::setWords(std::string_view newWord) {
+void Spell::setWords(std::string_view newWord) {
 	m_words = newWord.data();
 }
 
-
- const std::string &Spell::getSeparator() const {
+const std::string &Spell::getSeparator() const {
 	return m_separator;
 }
 
- void Spell::setSeparator(std::string_view newSeparator) {
+void Spell::setSeparator(std::string_view newSeparator) {
 	m_separator = newSeparator.data();
 }
 
@@ -754,21 +752,19 @@ void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	}
 }
 
-
- const std::string &Spell::getName() const {
+const std::string &Spell::getName() const {
 	return name;
 }
 
- void Spell::setName(std::string n) {
+void Spell::setName(std::string n) {
 	name = std::move(n);
 }
 
-
- uint16_t Spell::getSpellId() const {
+uint16_t Spell::getSpellId() const {
 	return m_spellId;
 }
 
- void Spell::setSpellId(uint16_t id) {
+void Spell::setSpellId(uint16_t id) {
 	m_spellId = id;
 }
 
@@ -806,7 +802,7 @@ void Spell::postCastSpell(std::shared_ptr<Player> player, uint32_t manaCost, uin
 	}
 }
 
- bool Spell::isLearnable() const {
+bool Spell::isLearnable() const {
 	return learnable;
 }
 
@@ -837,68 +833,67 @@ uint32_t Spell::getManaCost(std::shared_ptr<Player> player) const {
 	return 0;
 }
 
-
- uint32_t Spell::getSoulCost() const {
+uint32_t Spell::getSoulCost() const {
 	return soul;
 }
 
- void Spell::setSoulCost(uint32_t s) {
+void Spell::setSoulCost(uint32_t s) {
 	soul = s;
 }
 
- uint32_t Spell::getLevel() const {
+uint32_t Spell::getLevel() const {
 	return level;
 }
 
- void Spell::setLevel(uint32_t lvl) {
+void Spell::setLevel(uint32_t lvl) {
 	level = lvl;
 }
 
- uint32_t Spell::getMagicLevel() const {
+uint32_t Spell::getMagicLevel() const {
 	return magLevel;
 }
 
- void Spell::setMagicLevel(uint32_t lvl) {
+void Spell::setMagicLevel(uint32_t lvl) {
 	magLevel = lvl;
 }
 
- uint32_t Spell::getMana() const {
+uint32_t Spell::getMana() const {
 	return mana;
 }
 
- void Spell::setMana(uint32_t m) {
+void Spell::setMana(uint32_t m) {
 	mana = m;
 }
 
- uint32_t Spell::getManaPercent() const {
+uint32_t Spell::getManaPercent() const {
 	return manaPercent;
 }
 
- void Spell::setManaPercent(uint32_t m) {
+void Spell::setManaPercent(uint32_t m) {
 	manaPercent = m;
 }
 
- bool Spell::isPremium() const {
+bool Spell::isPremium() const {
 	return premium;
 }
 
- void Spell::setPremium(bool p) {
+void Spell::setPremium(bool p) {
 	premium = p;
 }
 
- bool Spell::isEnabled() const {
+bool Spell::isEnabled() const {
 	return enabled;
 }
 
- void Spell::setEnabled(bool e) {
+void Spell::setEnabled(bool e) {
 	enabled = e;
 }
 
- const VocSpellMap &Spell::getVocMap() const {
+const VocSpellMap &Spell::getVocMap() const {
 	return vocSpellMap;
 }
 
- void Spell::addVocMap(uint16_t vocationId, bool b) {
+void Spell::addVocMap(uint16_t vocationId, bool b) {
 	if (vocationId == 0XFFFF) {
 		g_logger().error("Vocation overflow for spell: {}", getName());
 		return;
@@ -908,125 +903,123 @@ uint32_t Spell::getManaCost(std::shared_ptr<Player> player) const {
 	vocSpellMap[vocationId] = b;
 }
 
- SpellGroup_t Spell::getGroup() {
+SpellGroup_t Spell::getGroup() {
 	return group;
 }
 
- void Spell::setGroup(SpellGroup_t g) {
+void Spell::setGroup(SpellGroup_t g) {
 	group = g;
 }
 
- SpellGroup_t Spell::getSecondaryGroup() {
+SpellGroup_t Spell::getSecondaryGroup() {
 	return secondaryGroup;
 }
 
- void Spell::setSecondaryGroup(SpellGroup_t g) {
+void Spell::setSecondaryGroup(SpellGroup_t g) {
 	secondaryGroup = g;
 }
 
-
- uint32_t Spell::getCooldown() const {
+uint32_t Spell::getCooldown() const {
 	return cooldown;
 }
 
- void Spell::setCooldown(uint32_t cd) {
+void Spell::setCooldown(uint32_t cd) {
 	cooldown = cd;
 }
 
- uint32_t Spell::getSecondaryCooldown() const {
+uint32_t Spell::getSecondaryCooldown() const {
 	return secondaryGroupCooldown;
 }
 
- void Spell::setSecondaryCooldown(uint32_t cd) {
+void Spell::setSecondaryCooldown(uint32_t cd) {
 	secondaryGroupCooldown = cd;
 }
 
- uint32_t Spell::getGroupCooldown() const {
+uint32_t Spell::getGroupCooldown() const {
 	return groupCooldown;
 }
 
- void Spell::setGroupCooldown(uint32_t cd) {
+void Spell::setGroupCooldown(uint32_t cd) {
 	groupCooldown = cd;
 }
 
-
- int32_t Spell::getRange() const {
+int32_t Spell::getRange() const {
 	return range;
 }
 
- void Spell::setRange(int32_t r) {
+void Spell::setRange(int32_t r) {
 	range = r;
 }
 
- bool Spell::getNeedTarget() const {
+bool Spell::getNeedTarget() const {
 	return needTarget;
 }
 
- void Spell::setNeedTarget(bool n) {
+void Spell::setNeedTarget(bool n) {
 	needTarget = n;
 }
 
- bool Spell::getNeedWeapon() const {
+bool Spell::getNeedWeapon() const {
 	return needWeapon;
 }
 
- void Spell::setNeedWeapon(bool n) {
+void Spell::setNeedWeapon(bool n) {
 	needWeapon = n;
 }
 
- bool Spell::getNeedLearn() const {
+bool Spell::getNeedLearn() const {
 	return learnable;
 }
 
- void Spell::setNeedLearn(bool n) {
+void Spell::setNeedLearn(bool n) {
 	learnable = n;
 }
 
- bool Spell::getSelfTarget() const {
+bool Spell::getSelfTarget() const {
 	return selfTarget;
 }
 
- void Spell::setSelfTarget(bool s) {
+void Spell::setSelfTarget(bool s) {
 	selfTarget = s;
 }
 
- bool Spell::getBlockingSolid() const {
+bool Spell::getBlockingSolid() const {
 	return blockingSolid;
 }
 
- void Spell::setBlockingSolid(bool b) {
+void Spell::setBlockingSolid(bool b) {
 	blockingSolid = b;
 }
 
- bool Spell::getBlockingCreature() const {
+bool Spell::getBlockingCreature() const {
 	return blockingCreature;
 }
 
- void Spell::setBlockingCreature(bool b) {
+void Spell::setBlockingCreature(bool b) {
 	blockingCreature = b;
 }
 
- bool Spell::getAggressive() const {
+bool Spell::getAggressive() const {
 	return aggressive;
 }
 
- void Spell::setAggressive(bool a) {
+void Spell::setAggressive(bool a) {
 	aggressive = a;
 }
 
- bool Spell::getAllowOnSelf() const {
+bool Spell::getAllowOnSelf() const {
 	return allowOnSelf;
 }
 
- void Spell::setAllowOnSelf(bool s) {
+void Spell::setAllowOnSelf(bool s) {
 	allowOnSelf = s;
 }
 
- bool Spell::getLockedPZ() const {
+bool Spell::getLockedPZ() const {
 	return pzLocked;
 }
 
- void Spell::setLockedPZ(bool b) {
+void Spell::setLockedPZ(bool b) {
 	pzLocked = b;
 }
 
@@ -1161,7 +1154,7 @@ bool InstantSpell::canThrowSpell(std::shared_ptr<Creature> creature, std::shared
 	return true;
 }
 
- std::string InstantSpell::getScriptTypeName() const {
+std::string InstantSpell::getScriptTypeName() const {
 	return "onCastSpell";
 }
 
@@ -1229,49 +1222,47 @@ bool InstantSpell::executeCastSpell(std::shared_ptr<Creature> creature, const Lu
 	return getScriptInterface()->callFunction(2);
 }
 
- bool InstantSpell::isInstant() const {
+bool InstantSpell::isInstant() const {
 	return true;
 }
 
- bool InstantSpell::getHasParam() const {
+bool InstantSpell::getHasParam() const {
 	return hasParam;
 }
 
- void InstantSpell::setHasParam(bool p) {
+void InstantSpell::setHasParam(bool p) {
 	hasParam = p;
 }
 
- bool InstantSpell::getHasPlayerNameParam() const {
+bool InstantSpell::getHasPlayerNameParam() const {
 	return hasPlayerNameParam;
 }
 
- void InstantSpell::setHasPlayerNameParam(bool p) {
+void InstantSpell::setHasPlayerNameParam(bool p) {
 	hasPlayerNameParam = p;
 }
 
- bool InstantSpell::getNeedDirection() const {
+bool InstantSpell::getNeedDirection() const {
 	return needDirection;
 }
 
- void InstantSpell::setNeedDirection(bool n) {
+void InstantSpell::setNeedDirection(bool n) {
 	needDirection = n;
 }
 
-
- bool InstantSpell::getNeedCasterTargetOrDirection() const {
+bool InstantSpell::getNeedCasterTargetOrDirection() const {
 	return casterTargetOrDirection;
 }
 
- void InstantSpell::setNeedCasterTargetOrDirection(bool d) {
+void InstantSpell::setNeedCasterTargetOrDirection(bool d) {
 	casterTargetOrDirection = d;
 }
 
-
- bool InstantSpell::getBlockWalls() const {
+bool InstantSpell::getBlockWalls() const {
 	return checkLineOfSight;
 }
 
- void InstantSpell::setBlockWalls(bool w) {
+void InstantSpell::setBlockWalls(bool w) {
 	checkLineOfSight = w;
 }
 
@@ -1318,11 +1309,11 @@ ReturnValue RuneSpell::canExecuteAction(std::shared_ptr<Player> player, const Po
 	return RETURNVALUE_NOERROR;
 }
 
- bool RuneSpell::hasOwnErrorHandler() {
+bool RuneSpell::hasOwnErrorHandler() {
 	return true;
 }
 
- std::shared_ptr<Thing> RuneSpell::getTarget(std::shared_ptr<Player>, std::shared_ptr<Creature> targetCreature, const Position &, uint8_t) const {
+std::shared_ptr<Thing> RuneSpell::getTarget(std::shared_ptr<Player>, std::shared_ptr<Creature> targetCreature, const Position &, uint8_t) const {
 	return targetCreature;
 }
 
@@ -1394,7 +1385,7 @@ bool RuneSpell::castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Cr
 	return internalCastSpell(creature, var, false);
 }
 
- std::string RuneSpell::getScriptTypeName() const {
+std::string RuneSpell::getScriptTypeName() const {
 	return "onCastSpell";
 }
 
@@ -1434,23 +1425,23 @@ bool RuneSpell::executeCastSpell(std::shared_ptr<Creature> creature, const LuaVa
 	return getScriptInterface()->callFunction(3);
 }
 
- bool RuneSpell::isInstant() const {
+bool RuneSpell::isInstant() const {
 	return false;
 }
 
- uint16_t RuneSpell::getRuneItemId() const {
+uint16_t RuneSpell::getRuneItemId() const {
 	return runeId;
 }
 
- void RuneSpell::setRuneItemId(uint16_t i) {
+void RuneSpell::setRuneItemId(uint16_t i) {
 	runeId = i;
 }
 
- uint32_t RuneSpell::getCharges() const {
+uint32_t RuneSpell::getCharges() const {
 	return charges;
 }
 
- void RuneSpell::setCharges(uint32_t c) {
+void RuneSpell::setCharges(uint32_t c) {
 	if (c > 0) {
 		hasCharges = true;
 	}

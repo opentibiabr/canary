@@ -8,12 +8,12 @@
  */
 
 #include "creatures/combat/combat.hpp"
-#include"creatures/combat/condition.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "game/game.hpp"
 #include "items/weapons/weapons.hpp"
-#include"lua/scripts/luascript.hpp"
+#include "lua/scripts/luascript.hpp"
 
 void MonsterType::loadLoot(const std::shared_ptr<MonsterType> monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {

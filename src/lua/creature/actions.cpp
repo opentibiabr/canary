@@ -19,7 +19,6 @@
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
 
-
 Actions::Actions() = default;
 Actions::~Actions() = default;
 

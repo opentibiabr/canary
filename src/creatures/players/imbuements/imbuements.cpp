@@ -377,42 +377,42 @@ std::vector<Imbuement*> Imbuements::getImbuements(std::shared_ptr<Player> player
 	return imbuements;
 }
 
- uint16_t Imbuement::getID() const {
+uint16_t Imbuement::getID() const {
 	return id;
 }
 
- uint16_t Imbuement::getBaseID() const {
+uint16_t Imbuement::getBaseID() const {
 	return baseid;
 }
 
- uint32_t Imbuement::getStorage() const {
+uint32_t Imbuement::getStorage() const {
 	return storage;
 }
 
- bool Imbuement::isPremium() {
+bool Imbuement::isPremium() {
 	return premium;
 }
 
- std::string Imbuement::getName() const {
+std::string Imbuement::getName() const {
 	return name;
 }
 
- std::string Imbuement::getDescription() const {
+std::string Imbuement::getDescription() const {
 	return description;
 }
 
- std::string Imbuement::getSubGroup() const {
+std::string Imbuement::getSubGroup() const {
 	return subgroup;
 }
 
- uint16_t Imbuement::getCategory() const {
+uint16_t Imbuement::getCategory() const {
 	return category;
 }
 
- const std::vector<std::pair<uint16_t, uint16_t>> &Imbuement::getItems() const {
+const std::vector<std::pair<uint16_t, uint16_t>> &Imbuement::getItems() const {
 	return items;
 }
 
- uint16_t Imbuement::getIconID() {
+uint16_t Imbuement::getIconID() {
 	return icon + (baseid - 1);
 }

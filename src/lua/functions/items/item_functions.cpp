@@ -17,7 +17,6 @@
 #include "items/item.hpp"
 #include "utils/tools.hpp"
 
-
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {
 	// Item(uid)

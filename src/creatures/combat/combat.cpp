@@ -26,7 +26,6 @@
 #include "lua/creature/events.hpp"
 #include "map/spectators.hpp"
 
-
 int32_t Combat::getLevelFormula(std::shared_ptr<Player> player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
 		return 0;

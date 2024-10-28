@@ -117,7 +117,7 @@ public:
 	bool searchTarget(TargetSearchType_t searchType = TARGETSEARCH_DEFAULT);
 	bool selectTarget(const std::shared_ptr<Creature> &creature);
 
-	 auto getTargetList() {
+	auto getTargetList() {
 		CreatureVector list;
 		list.reserve(targetList.size());
 

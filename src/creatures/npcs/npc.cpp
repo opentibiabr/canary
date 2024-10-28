@@ -53,19 +53,19 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 	}
 }
 
- Npc &Npc::getInstance() {
+Npc &Npc::getInstance() {
 	return inject<Npc>();
 }
 
- std::shared_ptr<Npc> Npc::getNpc() {
+std::shared_ptr<Npc> Npc::getNpc() {
 	return static_self_cast<Npc>();
 }
 
- std::shared_ptr<const Npc> Npc::getNpc() const {
+std::shared_ptr<const Npc> Npc::getNpc() const {
 	return static_self_cast<Npc>();
 }
 
- void Npc::setID() {
+void Npc::setID() {
 	if (id == 0) {
 		id = npcAutoID++;
 	}
@@ -75,56 +75,56 @@ void Npc::addList() {
 	g_game().addNpc(static_self_cast<Npc>());
 }
 
- const std::string &Npc::getName() const {
+const std::string &Npc::getName() const {
 	return npcType->name;
 }
 
 // Real npc name, set on npc creation "createNpcType(typeName)"
- const std::string &Npc::getTypeName() const {
+const std::string &Npc::getTypeName() const {
 	return npcType->typeName;
 }
 
- const std::string &Npc::getNameDescription() const {
+const std::string &Npc::getNameDescription() const {
 	return npcType->nameDescription;
 }
 
- std::string Npc::getDescription(int32_t) {
+std::string Npc::getDescription(int32_t) {
 	return strDescription + '.';
 }
 
- void Npc::setName(std::string newName) {
+void Npc::setName(std::string newName) {
 	npcType->name = std::move(newName);
 }
 
- CreatureType_t Npc::getType() const {
+CreatureType_t Npc::getType() const {
 	return CREATURETYPE_NPC;
 }
 
- const Position &Npc::getMasterPos() const {
+const Position &Npc::getMasterPos() const {
 	return masterPos;
 }
 
- void Npc::setMasterPos(Position pos) {
+void Npc::setMasterPos(Position pos) {
 	masterPos = pos;
 }
 
- uint8_t Npc::getSpeechBubble() const {
+uint8_t Npc::getSpeechBubble() const {
 	return npcType->info.speechBubble;
 }
 
- void Npc::setSpeechBubble(const uint8_t bubble) {
+void Npc::setSpeechBubble(const uint8_t bubble) {
 	npcType->info.speechBubble = bubble;
 }
 
- uint16_t Npc::getCurrency() const {
+uint16_t Npc::getCurrency() const {
 	return npcType->info.currencyId;
 }
 
- void Npc::setCurrency(uint16_t currency) {
+void Npc::setCurrency(uint16_t currency) {
 	npcType->info.currencyId = currency;
 }
 
- const std::vector<ShopBlock> &Npc::getShopItemVector(uint32_t playerGUID) const {
+const std::vector<ShopBlock> &Npc::getShopItemVector(uint32_t playerGUID) const {
 	if (playerGUID != 0) {
 		auto it = shopPlayers.find(playerGUID);
 		if (it != shopPlayers.end() && !it->second.empty()) {
@@ -135,11 +135,11 @@ void Npc::addList() {
 	return npcType->info.shopItemVector;
 }
 
- bool Npc::isPushable() {
+bool Npc::isPushable() {
 	return npcType->info.pushable;
 }
 
- bool Npc::isAttackable() const {
+bool Npc::isAttackable() const {
 	return false;
 }
 
@@ -154,15 +154,15 @@ bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
 	return Creature::canSee(getPosition(), pos, range, range);
 }
 
- bool Npc::canSeeInvisibility() const {
+bool Npc::canSeeInvisibility() const {
 	return true;
 }
 
- RespawnType Npc::getRespawnType() const {
+RespawnType Npc::getRespawnType() const {
 	return npcType->info.respawnType;
 }
 
- void Npc::setSpawnNpc(const std::shared_ptr<SpawnNpc> &newSpawn) {
+void Npc::setSpawnNpc(const std::shared_ptr<SpawnNpc> &newSpawn) {
 	spawnNpc = newSpawn;
 }
 
@@ -707,14 +707,14 @@ void Npc::resetPlayerInteractions() {
 	playerInteractions.clear();
 }
 
- bool Npc::isInteractingWithPlayer(uint32_t playerId) {
+bool Npc::isInteractingWithPlayer(uint32_t playerId) {
 	if (playerInteractions.find(playerId) == playerInteractions.end()) {
 		return false;
 	}
 	return true;
 }
 
- bool Npc::isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
+bool Npc::isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
 	auto it = playerInteractions.find(playerId);
 	if (it == playerInteractions.end()) {
 		return false;
@@ -771,7 +771,7 @@ bool Npc::getRandomStep(Direction &moveDirection) {
 	return false;
 }
 
- void Npc::setNormalCreatureLight() {
+void Npc::setNormalCreatureLight() {
 	internalLight = npcType->info.light;
 }
 

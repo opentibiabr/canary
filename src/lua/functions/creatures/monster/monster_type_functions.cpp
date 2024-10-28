@@ -16,7 +16,7 @@
 #include "game/game.hpp"
 #include "io/io_bosstiary.hpp"
 #include "lua/scripts/scripts.hpp"
-#include"utils/tools.hpp"
+#include "utils/tools.hpp"
 
 void MonsterTypeFunctions::createMonsterTypeLootLuaTable(lua_State* L, const std::vector<LootBlock> &lootList) {
 	lua_createtable(L, lootList.size(), 0);

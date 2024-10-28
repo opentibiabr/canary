@@ -10,7 +10,7 @@
 #pragma once
 
 #include "creatures/creatures_definitions.hpp"
-#include"game/game_definitions.hpp"
+#include "game/game_definitions.hpp"
 #include "io/io_bosstiary.hpp"
 #include "utils/utils_definitions.hpp"
 

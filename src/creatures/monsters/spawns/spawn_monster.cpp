@@ -133,15 +133,15 @@ void SpawnsMonster::clear() {
 	filemonstername.clear();
 }
 
- bool SpawnsMonster::isStarted() const {
+bool SpawnsMonster::isStarted() const {
 	return started;
 }
 
- bool SpawnsMonster::isLoaded() const {
+bool SpawnsMonster::isLoaded() const {
 	return loaded;
 }
 
- std::vector<SpawnMonster> &SpawnsMonster::getspawnMonsterList() {
+std::vector<SpawnMonster> &SpawnsMonster::getspawnMonsterList() {
 	return spawnMonsterList;
 }
 

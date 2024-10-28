@@ -7,7 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-
 #include "creatures/npcs/npcs.hpp"
 #include "game/game.hpp"
 #include "lua/scripts/lua_environment.hpp"

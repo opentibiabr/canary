@@ -36,7 +36,6 @@ class Thing;
 class Cylinder;
 class Container;
 
-
 class Events {
 	struct EventsInfo {
 		// Creature

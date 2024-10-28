@@ -567,7 +567,7 @@ const std::unique_ptr<TeamFinder> &Game::getTeamFinder(const std::shared_ptr<Pla
 	return TeamFinderNull;
 }
 
- const std::unique_ptr<TeamFinder> &Game::getOrCreateTeamFinder(const std::shared_ptr<Player> &player) {
+const std::unique_ptr<TeamFinder> &Game::getOrCreateTeamFinder(const std::shared_ptr<Player> &player) {
 	auto it = teamFinderMap.find(player->getGUID());
 	if (it != teamFinderMap.end()) {
 		return it->second;
@@ -576,7 +576,7 @@ const std::unique_ptr<TeamFinder> &Game::getTeamFinder(const std::shared_ptr<Pla
 	return teamFinderMap[player->getGUID()] = std::make_unique<TeamFinder>();
 }
 
- void Game::removeTeamFinderListed(uint32_t leaderGuid) {
+void Game::removeTeamFinderListed(uint32_t leaderGuid) {
 	teamFinderMap.erase(leaderGuid);
 }
 

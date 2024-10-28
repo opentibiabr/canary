@@ -121,27 +121,27 @@ void SpawnsNpc::clear() {
 	fileName.clear();
 }
 
- bool SpawnsNpc::isStarted() const {
+bool SpawnsNpc::isStarted() const {
 	return started;
 }
 
- bool SpawnsNpc::setStarted(bool setStarted) {
+bool SpawnsNpc::setStarted(bool setStarted) {
 	return started = setStarted;
 }
 
- bool SpawnsNpc::isLoaded() const {
+bool SpawnsNpc::isLoaded() const {
 	return loaded;
 }
 
- bool SpawnsNpc::setLoaded(bool setLoaded) {
+bool SpawnsNpc::setLoaded(bool setLoaded) {
 	return loaded = setLoaded;
 }
 
- std::string SpawnsNpc::setFileName(std::string setName) {
+std::string SpawnsNpc::setFileName(std::string setName) {
 	return fileName = std::move(setName);
 }
 
- std::vector<std::shared_ptr<SpawnNpc>> &SpawnsNpc::getSpawnNpcList() {
+std::vector<std::shared_ptr<SpawnNpc>> &SpawnsNpc::getSpawnNpcList() {
 	return spawnNpcList;
 }
 
@@ -204,7 +204,7 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, const std::shared_ptr<NpcType> &npcTyp
 	return true;
 }
 
- uint32_t SpawnNpc::getInterval() const {
+uint32_t SpawnNpc::getInterval() const {
 	return interval;
 }
 

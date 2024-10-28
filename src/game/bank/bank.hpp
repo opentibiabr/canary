@@ -29,7 +29,6 @@ public:
 
 class Bank : public SharedObject {
 public:
-
 	explicit Bank(const std::shared_ptr<Bankable> bankable);
 	~Bank() override;
 

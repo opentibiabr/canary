@@ -6417,7 +6417,7 @@ size_t Player::getMaxDepotItems() const {
 
 // tile
 // send methods
- void Player::sendAddTileItem(std::shared_ptr<Tile> itemTile, const Position &pos, std::shared_ptr<Item> item) {
+void Player::sendAddTileItem(std::shared_ptr<Tile> itemTile, const Position &pos, std::shared_ptr<Item> item) {
 	if (client) {
 		int32_t stackpos = itemTile->getStackposOfItem(static_self_cast<Player>(), item);
 		if (stackpos != -1) {
@@ -6426,7 +6426,7 @@ size_t Player::getMaxDepotItems() const {
 	}
 }
 
- void Player::sendUpdateTileItem(std::shared_ptr<Tile> updateTile, const Position &pos, std::shared_ptr<Item> item) {
+void Player::sendUpdateTileItem(std::shared_ptr<Tile> updateTile, const Position &pos, std::shared_ptr<Item> item) {
 	if (client) {
 		int32_t stackpos = updateTile->getStackposOfItem(static_self_cast<Player>(), item);
 		if (stackpos != -1) {
@@ -6975,7 +6975,7 @@ bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> 
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
 }
 
- bool Player::setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> &slot) {
+bool Player::setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> &slot) {
 	if (getTaskHuntingSlotById(slot->id)) {
 		return false;
 	}

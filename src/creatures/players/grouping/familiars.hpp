@@ -38,5 +38,4 @@ public:
 	std::vector<std::shared_ptr<Familiar>> &getFamiliars(uint16_t vocation);
 
 	[[nodiscard]] std::shared_ptr<Familiar> getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const;
-
 };

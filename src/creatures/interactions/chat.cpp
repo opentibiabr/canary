@@ -14,15 +14,14 @@
 #include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 
-
- PrivateChatChannel::PrivateChatChannel(uint16_t channelId, std::string channelName) :
+PrivateChatChannel::PrivateChatChannel(uint16_t channelId, std::string channelName) :
 	ChatChannel(channelId, std::move(channelName)) { }
 
- uint32_t PrivateChatChannel::getOwner() const {
+uint32_t PrivateChatChannel::getOwner() const {
 	return owner;
 }
 
- void PrivateChatChannel::setOwner(uint32_t newOwner) {
+void PrivateChatChannel::setOwner(uint32_t newOwner) {
 	this->owner = newOwner;
 }
 
@@ -157,15 +156,15 @@ const UsersMap &ChatChannel::getUsers() const {
 	return users;
 }
 
- const InvitedMap* ChatChannel::getInvitedUsers() const {
+const InvitedMap* ChatChannel::getInvitedUsers() const {
 	return nullptr;
 }
 
- uint32_t ChatChannel::getOwner() const {
+uint32_t ChatChannel::getOwner() const {
 	return 0;
 }
 
- bool ChatChannel::isPublicChannel() const {
+bool ChatChannel::isPublicChannel() const {
 	return publicChannel;
 }
 

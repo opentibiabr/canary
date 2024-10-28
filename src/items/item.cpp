@@ -143,7 +143,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	return false;
 }
 
- double Item::getDodgeChance() const {
+double Item::getDodgeChance() const {
 	if (getTier() == 0) {
 		return 0;
 	}
@@ -155,7 +155,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	);
 }
 
- double Item::getFatalChance() const {
+double Item::getFatalChance() const {
 	if (getTier() == 0) {
 		return 0;
 	}
@@ -167,7 +167,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	);
 }
 
- double Item::getMomentumChance() const {
+double Item::getMomentumChance() const {
 	if (getTier() == 0) {
 		return 0;
 	}
@@ -179,7 +179,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	);
 }
 
- double Item::getTranscendenceChance() const {
+double Item::getTranscendenceChance() const {
 	if (getTier() == 0) {
 		return 0;
 	}
@@ -189,33 +189,33 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 		g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_C),
 		getTier()
 	);
- }
+}
 
-  uint8_t Item::getTier() const {
-	 if (!hasAttribute(ItemAttribute_t::TIER)) {
-		 return 0;
-	 }
+uint8_t Item::getTier() const {
+	if (!hasAttribute(ItemAttribute_t::TIER)) {
+		return 0;
+	}
 
-	 auto tier = getAttribute<uint8_t>(ItemAttribute_t::TIER);
-	 if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
-		 g_logger().error("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
-		 return 0;
-	 }
+	auto tier = getAttribute<uint8_t>(ItemAttribute_t::TIER);
+	if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
+		g_logger().error("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
+		return 0;
+	}
 
-	 return tier;
- }
+	return tier;
+}
 
-  void Item::setTier(uint8_t tier) {
-	 auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
-	 if (tier > configTier) {
-		 g_logger().error("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
-		 return;
-	 }
+void Item::setTier(uint8_t tier) {
+	auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
+	if (tier > configTier) {
+		g_logger().error("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
+		return;
+	}
 
-	 if (items[id].upgradeClassification) {
-		 setAttribute(ItemAttribute_t::TIER, tier);
-	 }
- }
+	if (items[id].upgradeClassification) {
+		setAttribute(ItemAttribute_t::TIER, tier);
+	}
+}
 
 std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint16_t size) {
 	if (const ItemType &it = Item::items[type];
@@ -1217,15 +1217,15 @@ uint32_t Item::getWeight() const {
 	return baseWeight;
 }
 
- int32_t Item::getReflectionFlat(CombatType_t combatType) const {
+int32_t Item::getReflectionFlat(CombatType_t combatType) const {
 	return items[id].abilities->reflectFlat[combatTypeToIndex(combatType)];
 }
 
- int32_t Item::getReflectionPercent(CombatType_t combatType) const {
+int32_t Item::getReflectionPercent(CombatType_t combatType) const {
 	return items[id].abilities->reflectPercent[combatTypeToIndex(combatType)];
 }
 
- int32_t Item::getSpecializedMagicLevel(CombatType_t combat) const {
+int32_t Item::getSpecializedMagicLevel(CombatType_t combat) const {
 	return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
 }
 
@@ -3410,7 +3410,6 @@ void Item::updateTileFlags() {
 		tile->updateTileFlags(static_self_cast<Item>());
 	}
 }
-
 
 // Custom Attributes
 

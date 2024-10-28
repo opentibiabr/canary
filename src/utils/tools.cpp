@@ -10,8 +10,8 @@
 #include "utils/tools.hpp"
 
 #include "core.hpp"
-#include "items/item.hpp"
 #include "enums/object_category.hpp"
+#include "items/item.hpp"
 #include "lua/lua_definitions.hpp"
 #include "utils/const.hpp"
 

@@ -7,14 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/items/item_functions.hpp"
+
 #include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "items/decay/decay.hpp"
 #include "items/item.hpp"
-#include "lua/functions/items/item_functions.hpp"
+#include "utils/tools.hpp"
 
-class Imbuement;
 
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {

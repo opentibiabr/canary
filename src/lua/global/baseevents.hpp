@@ -9,8 +9,7 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
+class LuaScriptInterface;
 class Event;
 using Event_ptr = std::unique_ptr<Event>;
 

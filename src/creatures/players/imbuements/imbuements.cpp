@@ -10,6 +10,7 @@
 #include "config/configmanager.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/player.hpp"
+#include "items/item.hpp"
 #include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 #include <utils/tools.hpp>

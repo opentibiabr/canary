@@ -7,6 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"

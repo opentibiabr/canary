@@ -9,9 +9,10 @@
 
 #include "items/decay/decay.hpp"
 
-#include "lib/di/container.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "lib/di/container.hpp"
 
 Decay &Decay::getInstance() {
 	return inject<Decay>();

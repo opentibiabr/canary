@@ -7,7 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "config/configmanager.hpp"
 #include "creatures/appearance/outfit/outfit.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"

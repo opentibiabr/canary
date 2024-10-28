@@ -7,9 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "config/configmanager.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/monsters/spawns/spawn_monster.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
 #include "game/scheduling/dispatcher.hpp"

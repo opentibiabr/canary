@@ -8,11 +8,13 @@
  */
 
 #include "player_badge.hpp"
-#include "enums/player_cyclopedia.hpp"
+
+#include "account/account.hpp"
 #include "creatures/players/player.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
-#include "enums/account_errors.hpp"
 
 PlayerBadge::PlayerBadge(Player &player) :
 	m_player(player) { }

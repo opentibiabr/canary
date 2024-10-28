@@ -7,8 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/player.hpp"
 #include "lua/creature/creatureevent.hpp"
+
+#include "creatures/players/player.hpp"
+#include "items/item.hpp"
 
 void CreatureEvents::clear() {
 	for (auto &[name, event] : creatureEvents) {

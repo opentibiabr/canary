@@ -10,6 +10,7 @@
 #include "core.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/npcs/npc.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "game/functions/game_reload.hpp"
 #include "game/game.hpp"

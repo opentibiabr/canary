@@ -8,9 +8,12 @@
  */
 
 #include "containers/rewards/rewardchest.hpp"
+#include "creatures/combat/combat.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/player.hpp"
 #include "creatures/players/vocations/vocation.hpp"
+#include "enums/object_category.hpp"
 #include "game/game.hpp"
 #include "game/movement/teleport.hpp"
 #include "items/bed.hpp"

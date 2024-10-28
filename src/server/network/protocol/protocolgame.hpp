@@ -14,6 +14,9 @@
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
 enum class ForgeAction_t : uint8_t;
+enum MessageClasses : uint8_t;
+enum ReturnValue : uint16_t;
+enum TextColor_t : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -32,11 +35,11 @@ class Item;
 class Party;
 class Creature;
 class MonsterType;
+class Npc;
 
 struct ModalWindow;
 struct Achievement;
-struct Badge;
-struct Title;
+struct Position;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;

@@ -22,6 +22,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "io/iobestiary.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"

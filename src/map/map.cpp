@@ -8,17 +8,18 @@
  */
 
 #include "map.hpp"
-#include "utils/astarnodes.hpp"
 
-#include "lua/callbacks/event_callback.hpp"
-#include "lua/callbacks/events_callbacks.hpp"
 #include "creatures/monsters/monster.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
 #include "io/iomap.hpp"
 #include "io/iomapserialize.hpp"
-#include "game/scheduling/dispatcher.hpp"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
+#include "utils/astarnodes.hpp"
 
 void Map::load(const std::string &identifier, const Position &pos) {
 	try {

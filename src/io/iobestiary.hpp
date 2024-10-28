@@ -9,12 +9,12 @@
 
 #pragma once
 
-#include "creatures/players/player.hpp"
-#include "declarations.hpp"
 #include "lib/di/soft_singleton.hpp"
-#include "lua/scripts/luascript.hpp"
 
+class Player;
 class Game;
+class SoftSingleton;
+class SoftSingletonGuard;
 
 class Charm {
 public:

@@ -7,13 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "config/configmanager.hpp"
+#include "game/game.hpp"
 #include "items/functions/item/item_parse.hpp"
 #include "items/items.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
-#include "game/game.hpp"
 #include "utils/pugicast.hpp"
-#include "config/configmanager.hpp"
 #include "utils/tools.hpp"
 
 #include <appearances.pb.h>

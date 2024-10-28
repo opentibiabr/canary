@@ -11,16 +11,18 @@
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
+#include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/grouping/party.hpp"
+#include "creatures/players/grouping/team_finder.hpp"
 #include "creatures/players/highscore_category.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/player.hpp"
 #include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "database/databasetasks.hpp"
@@ -30,6 +32,7 @@
 #include "game/zones/zone.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/io_wheel.hpp"
+#include "io/iobestiary.hpp"
 #include "io/ioguild.hpp"
 #include "io/iologindata.hpp"
 #include "io/iomarket.hpp"
@@ -39,6 +42,7 @@
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
 #include "items/items.hpp"
+#include "items/items_classification.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/actions.hpp"
@@ -53,7 +57,7 @@
 #include "server/network/webhook/webhook.hpp"
 #include "server/server.hpp"
 #include "utils/tools.hpp"
-#include "creatures/interactions/chat.hpp"
+#include "utils/wildcardtree.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
@@ -62,6 +66,8 @@
 #include "enums/object_category.hpp"
 
 #include <appearances.pb.h>
+
+std::vector<std::shared_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, std::shared_ptr<Creature> source) {
@@ -550,6 +556,28 @@ GameState_t Game::getGameState() const {
 
 void Game::setWorldType(WorldType_t type) {
 	worldType = type;
+}
+
+const std::unique_ptr<TeamFinder> &Game::getTeamFinder(const std::shared_ptr<Player> &player) const {
+	auto it = teamFinderMap.find(player->getGUID());
+	if (it != teamFinderMap.end()) {
+		return it->second;
+	}
+
+	return TeamFinderNull;
+}
+
+ const std::unique_ptr<TeamFinder> &Game::getOrCreateTeamFinder(const std::shared_ptr<Player> &player) {
+	auto it = teamFinderMap.find(player->getGUID());
+	if (it != teamFinderMap.end()) {
+		return it->second;
+	}
+
+	return teamFinderMap[player->getGUID()] = std::make_unique<TeamFinder>();
+}
+
+ void Game::removeTeamFinderListed(uint32_t leaderGuid) {
+	teamFinderMap.erase(leaderGuid);
 }
 
 void Game::setGameState(GameState_t newState) {
@@ -8043,6 +8071,22 @@ void Game::checkLight() {
 			globalEvent->executePeriodChange(lightState, lightInfo);
 		}
 	}
+}
+
+ItemClassification* Game::getItemsClassification(uint8_t id, bool create) {
+	auto it = std::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
+		return it->id == id;
+	});
+
+	if (it != itemsClassifications.end()) {
+		return *it;
+	} else if (create) {
+		ItemClassification* itemClassification = new ItemClassification(id);
+		addItemsClassification(itemClassification);
+		return itemClassification;
+	}
+
+	return nullptr;
 }
 
 LightInfo Game::getWorldLightInfo() const {

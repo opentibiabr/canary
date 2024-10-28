@@ -7,9 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/scripts/script_environment.hpp"
+
+#include "creatures/creature.hpp"
 #include "game/game.hpp"
 #include "lua/scripts/luascript.hpp"
-#include "lua/scripts/script_environment.hpp"
 
 ScriptEnvironment::ScriptEnvironment() {
 	resetEnv();

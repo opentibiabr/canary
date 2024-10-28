@@ -9,13 +9,13 @@
 
 #pragma once
 
+#include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"
 #include "game/bank/bank.hpp"
 #include "grouping/guild.hpp"
 #include "items/cylinder.hpp"
 #include "server/network/protocol/protocolgame.hpp"
-#include "config/configmanager.hpp"
 #include "utils/tools.hpp"
 
 class House;
@@ -49,11 +49,10 @@ class Vocation;
 class Container;
 class KV;
 class BedItem;
+class Npc;
 
 struct ModalWindow;
 struct Achievement;
-struct Badge;
-struct Title;
 struct VIPGroup;
 struct Mount;
 struct OutfitEntry;
@@ -68,6 +67,7 @@ enum ObjectCategory_t : uint8_t;
 enum PreySlot_t : uint8_t;
 
 using GuildWarVector = std::vector<uint32_t>;
+using StashContainerList = std::vector<std::pair<std::shared_ptr<Item>, uint32_t>>;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -1036,32 +1036,14 @@ public:
 
 	// tile
 	// send methods
-	void sendAddTileItem(std::shared_ptr<Tile> itemTile, const Position &pos, std::shared_ptr<Item> item) {
-		if (client) {
-			int32_t stackpos = itemTile->getStackposOfItem(static_self_cast<Player>(), item);
-			if (stackpos != -1) {
-				client->sendAddTileItem(pos, stackpos, item);
-			}
-		}
-	}
-	void sendUpdateTileItem(std::shared_ptr<Tile> updateTile, const Position &pos, std::shared_ptr<Item> item) {
-		if (client) {
-			int32_t stackpos = updateTile->getStackposOfItem(static_self_cast<Player>(), item);
-			if (stackpos != -1) {
-				client->sendUpdateTileItem(pos, stackpos, item);
-			}
-		}
-	}
+	void sendAddTileItem(std::shared_ptr<Tile> itemTile, const Position &pos, std::shared_ptr<Item> item);
+	void sendUpdateTileItem(std::shared_ptr<Tile> updateTile, const Position &pos, std::shared_ptr<Item> item);
 	void sendRemoveTileThing(const Position &pos, int32_t stackpos) {
 		if (stackpos != -1 && client) {
 			client->sendRemoveTileThing(pos, stackpos);
 		}
 	}
-	void sendUpdateTileCreature(const std::shared_ptr<Creature> creature) {
-		if (client) {
-			client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(static_self_cast<Player>(), creature), creature);
-		}
-	}
+	void sendUpdateTileCreature(const std::shared_ptr<Creature> creature);
 	void sendUpdateTile(std::shared_ptr<Tile> updateTile, const Position &pos) {
 		if (client) {
 			client->sendUpdateTile(updateTile, pos);
@@ -1078,42 +1060,13 @@ public:
 			client->sendChannelEvent(channelId, playerName, channelEvent);
 		}
 	}
-	void sendCreatureAppear(std::shared_ptr<Creature> creature, const Position &pos, bool isLogin) {
-		if (!creature) {
-			return;
-		}
-
-		auto tile = creature->getTile();
-		if (!tile) {
-			return;
-		}
-
-		if (client) {
-			client->sendAddCreature(creature, pos, tile->getStackposOfCreature(static_self_cast<Player>(), creature), isLogin);
-		}
-	}
+	void sendCreatureAppear(std::shared_ptr<Creature> creature, const Position &pos, bool isLogin);
 	void sendCreatureMove(std::shared_ptr<Creature> creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) {
 		if (client) {
 			client->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
 		}
 	}
-	void sendCreatureTurn(std::shared_ptr<Creature> creature) {
-		if (!creature) {
-			return;
-		}
-
-		auto tile = creature->getTile();
-		if (!tile) {
-			return;
-		}
-
-		if (client && canSeeCreature(creature)) {
-			int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
-			if (stackpos != -1) {
-				client->sendCreatureTurn(creature, stackpos);
-			}
-		}
-	}
+	void sendCreatureTurn(std::shared_ptr<Creature> creature);
 	void sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, const Position* pos = nullptr) {
 		if (client) {
 			client->sendCreatureSay(creature, type, text, pos);
@@ -1139,37 +1092,7 @@ public:
 			client->sendCreatureOutfit(creature, outfit);
 		}
 	}
-	void sendCreatureChangeVisible(std::shared_ptr<Creature> creature, bool visible) {
-		if (!client || !creature) {
-			return;
-		}
-
-		if (creature->getPlayer()) {
-			if (visible) {
-				client->sendCreatureOutfit(creature, creature->getCurrentOutfit());
-			} else {
-				static Outfit_t outfit;
-				client->sendCreatureOutfit(creature, outfit);
-			}
-		} else if (canSeeInvisibility()) {
-			client->sendCreatureOutfit(creature, creature->getCurrentOutfit());
-		} else {
-			auto tile = creature->getTile();
-			if (!tile) {
-				return;
-			}
-			int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
-			if (stackpos == -1) {
-				return;
-			}
-
-			if (visible) {
-				client->sendAddCreature(creature, creature->getPosition(), stackpos, false);
-			} else {
-				client->sendRemoveTileThing(creature->getPosition(), stackpos);
-			}
-		}
-	}
+	void sendCreatureChangeVisible(std::shared_ptr<Creature> creature, bool visible);
 	void sendCreatureLight(std::shared_ptr<Creature> creature) {
 		if (client) {
 			client->sendCreatureLight(creature);
@@ -1850,14 +1773,7 @@ public:
 	bool isUIExhausted(uint32_t exhaustionTime = 250) const;
 	void updateUIExhausted();
 
-	bool isQuickLootListedItem(std::shared_ptr<Item> item) const {
-		if (!item) {
-			return false;
-		}
-
-		auto it = std::find(quickLootListItemIds.begin(), quickLootListItemIds.end(), item->getID());
-		return it != quickLootListItemIds.end();
-	}
+	bool isQuickLootListedItem(std::shared_ptr<Item> item) const;
 
 	bool updateKillTracker(std::shared_ptr<Container> corpse, const std::string &playerName, const Outfit_t creatureOutfit) const {
 		if (client) {

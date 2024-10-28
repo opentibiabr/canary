@@ -7,13 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/game.hpp"
+#include "lua/functions/creatures/monster/monster_functions.hpp"
+
+#include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "lua/functions/creatures/monster/monster_functions.hpp"
-#include "map/spectators.hpp"
+#include "creatures/players/player.hpp"
+#include "game/game.hpp"
 #include "game/scheduling/events_scheduler.hpp"
+#include "map/spectators.hpp"
 
 int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	// Monster(id or userdata)

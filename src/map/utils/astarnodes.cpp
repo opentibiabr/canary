@@ -8,8 +8,10 @@
  */
 
 #include "astarnodes.hpp"
-#include "creatures/monsters/monster.hpp"
+
 #include "creatures/combat/combat.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "items/tile.hpp"
 
 AStarNodes::AStarNodes(uint32_t x, uint32_t y, int_fast32_t extraCost) :
 #if defined(__AVX2__) || defined(__SSE2__)

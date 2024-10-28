@@ -7,10 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "items/containers/mailbox/mailbox.hpp"
+
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "items/containers/inbox/inbox.hpp"
-#include "items/containers/mailbox/mailbox.hpp"
 #include "map/spectators.hpp"
 
 ReturnValue Mailbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, std::shared_ptr<Creature>) {

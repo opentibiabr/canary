@@ -9,16 +9,18 @@
 
 #pragma once
 
-#include "items/tile.hpp"
+#include "items/item.hpp"
 #include "lua/global/baseevents.hpp"
 
 class Condition;
 class Creature;
-class Item;
 class Spell;
 class Player;
 class MatrixArea;
 class Weapon;
+class Tile;
+
+using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
 // for luascript callback
 class ValueCallback final : public CallBack {

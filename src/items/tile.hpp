@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "items/item.hpp"
-
 #include "items/cylinder.hpp"
 
 class Creature;
@@ -22,6 +20,8 @@ class BedItem;
 class House;
 class Zone;
 class Cylinder;
+class Item;
+class ItemType;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;

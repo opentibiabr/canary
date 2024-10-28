@@ -7,7 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"

@@ -9,7 +9,10 @@
 
 #pragma once
 
-#include "items/tile.hpp"
+#include "items/cylinder.hpp"
+#include "items/item.hpp"
+
+class Tile;
 
 class Teleport final : public Item, public Cylinder {
 public:

@@ -14,7 +14,7 @@
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "BUILD_STATIC_LIBRARY": "ON",
-        "SPEED_UP_BUILD_UNITY": "OFF",
+        "SPEED_UP_BUILD_UNITY": "ON",
         "OPTIONS_ENABLE_SCCACHE": "ON",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }

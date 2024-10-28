@@ -7,7 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/creature/actions.hpp"
+
 #include "creatures/combat/spells.hpp"
+#include "creatures/players/player.hpp"
 #include "enums/account_group_type.hpp"
 #include "game/game.hpp"
 #include "items/bed.hpp"
@@ -15,7 +18,6 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
-#include "lua/creature/actions.hpp"
 
 
 Actions::Actions() = default;

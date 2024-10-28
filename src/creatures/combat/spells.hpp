@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "lua/scripts/scripts.hpp"
 #include "lua/creature/actions.hpp"
+#include "lua/scripts/scripts.hpp"
 
 enum class WheelSpellBoost_t : uint8_t;
 enum class WheelSpellGrade_t : uint8_t;

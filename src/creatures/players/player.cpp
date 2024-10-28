@@ -14,6 +14,7 @@
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/npcs/npc.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
@@ -37,6 +38,7 @@
 #include "game/scheduling/task.hpp"
 #include "grouping/familiars.hpp"
 #include "grouping/guild.hpp"
+#include "io/iobestiary.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
 #include "items/bed.hpp"
@@ -44,6 +46,7 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "lua/callbacks/event_callback.hpp"
@@ -6412,6 +6415,97 @@ size_t Player::getMaxDepotItems() const {
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT);
 }
 
+// tile
+// send methods
+ void Player::sendAddTileItem(std::shared_ptr<Tile> itemTile, const Position &pos, std::shared_ptr<Item> item) {
+	if (client) {
+		int32_t stackpos = itemTile->getStackposOfItem(static_self_cast<Player>(), item);
+		if (stackpos != -1) {
+			client->sendAddTileItem(pos, stackpos, item);
+		}
+	}
+}
+
+ void Player::sendUpdateTileItem(std::shared_ptr<Tile> updateTile, const Position &pos, std::shared_ptr<Item> item) {
+	if (client) {
+		int32_t stackpos = updateTile->getStackposOfItem(static_self_cast<Player>(), item);
+		if (stackpos != -1) {
+			client->sendUpdateTileItem(pos, stackpos, item);
+		}
+	}
+}
+
+void Player::sendUpdateTileCreature(const std::shared_ptr<Creature> creature) {
+	if (client) {
+		client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(static_self_cast<Player>(), creature), creature);
+	}
+}
+
+void Player::sendCreatureAppear(std::shared_ptr<Creature> creature, const Position &pos, bool isLogin) {
+	if (!creature) {
+		return;
+	}
+
+	auto tile = creature->getTile();
+	if (!tile) {
+		return;
+	}
+
+	if (client) {
+		client->sendAddCreature(creature, pos, tile->getStackposOfCreature(static_self_cast<Player>(), creature), isLogin);
+	}
+}
+
+void Player::sendCreatureTurn(std::shared_ptr<Creature> creature) {
+	if (!creature) {
+		return;
+	}
+
+	auto tile = creature->getTile();
+	if (!tile) {
+		return;
+	}
+
+	if (client && canSeeCreature(creature)) {
+		int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
+		if (stackpos != -1) {
+			client->sendCreatureTurn(creature, stackpos);
+		}
+	}
+}
+
+void Player::sendCreatureChangeVisible(std::shared_ptr<Creature> creature, bool visible) {
+	if (!client || !creature) {
+		return;
+	}
+
+	if (creature->getPlayer()) {
+		if (visible) {
+			client->sendCreatureOutfit(creature, creature->getCurrentOutfit());
+		} else {
+			static Outfit_t outfit;
+			client->sendCreatureOutfit(creature, outfit);
+		}
+	} else if (canSeeInvisibility()) {
+		client->sendCreatureOutfit(creature, creature->getCurrentOutfit());
+	} else {
+		auto tile = creature->getTile();
+		if (!tile) {
+			return;
+		}
+		int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
+		if (stackpos == -1) {
+			return;
+		}
+
+		if (visible) {
+			client->sendAddCreature(creature, creature->getPosition(), stackpos, false);
+		} else {
+			client->sendRemoveTileThing(creature->getPosition(), stackpos);
+		}
+	}
+}
+
 std::vector<std::shared_ptr<Condition>> Player::getMuteConditions() const {
 	std::vector<std::shared_ptr<Condition>> muteConditions;
 	muteConditions.reserve(conditions.size());
@@ -6477,6 +6571,15 @@ bool Player::isUIExhausted(uint32_t exhaustionTime /*= 250*/) const {
 
 void Player::updateUIExhausted() {
 	lastUIInteraction = OTSYS_TIME();
+}
+
+bool Player::isQuickLootListedItem(std::shared_ptr<Item> item) const {
+	if (!item) {
+		return false;
+	}
+
+	auto it = std::find(quickLootListItemIds.begin(), quickLootListItemIds.end(), item->getID());
+	return it != quickLootListItemIds.end();
 }
 
 void Player::setImmuneFear() {

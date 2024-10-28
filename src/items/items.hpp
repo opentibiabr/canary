@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include "utils/utils_definitions.hpp"
-#include "game/movement/position.hpp"
 #include "creatures/creatures_definitions.hpp"
+#include "game/movement/position.hpp"
 #include "items/items_definitions.hpp"
+#include "utils/utils_definitions.hpp"
 
 struct Abilities {
 public:

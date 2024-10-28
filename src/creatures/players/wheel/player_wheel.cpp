@@ -1144,8 +1144,8 @@ void PlayerWheel::destroyGem(uint16_t index) {
 		return;
 	}
 
-	auto backpack = m_player.getInventoryItem(CONST_SLOT_BACKPACK);
-	auto mainBackpack = backpack ? backpack->getContainer() : nullptr;
+	const auto &backpack = m_player.getInventoryItem(CONST_SLOT_BACKPACK);
+	const auto &mainBackpack = backpack ? backpack->getContainer() : nullptr;
 
 	uint8_t lesserFragments = 0;
 	uint8_t greaterFragments = 0;
@@ -1163,7 +1163,7 @@ void PlayerWheel::destroyGem(uint16_t index) {
 	}
 
 	if (lesserFragments > 0) {
-		const auto fragmentsItem = Item::CreateItem(ITEM_LESSER_FRAGMENT, lesserFragments);
+		const auto &fragmentsItem = Item::CreateItem(ITEM_LESSER_FRAGMENT, lesserFragments);
 		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_WHEREEVER);
 		if (returnValue != RETURNVALUE_NOERROR) {
 			g_logger().error("Failed to add {} lesser fragments to player with name {}", lesserFragments, m_player.getName());
@@ -1174,7 +1174,7 @@ void PlayerWheel::destroyGem(uint16_t index) {
 	}
 
 	if (greaterFragments > 0) {
-		const auto fragmentsItem = Item::CreateItem(ITEM_GREATER_FRAGMENT, greaterFragments);
+		const auto &fragmentsItem = Item::CreateItem(ITEM_GREATER_FRAGMENT, greaterFragments);
 		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_BACKPACK);
 		if (returnValue != RETURNVALUE_NOERROR) {
 			g_logger().error("Failed to add {} greater fragments to player with name {}", greaterFragments, m_player.getName());
@@ -1267,7 +1267,7 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 
 void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
 	msg.addByte(0x2E); // Modifiers for all Vocations
-	for (auto modPosition : modsBasicPosition) {
+	for (const auto &modPosition : modsBasicPosition) {
 		const auto pos = static_cast<uint8_t>(modPosition);
 		msg.addByte(pos);
 		uint8_t grade = 0;
@@ -1285,7 +1285,7 @@ void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
 	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
 
 	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
-		for (auto modPosition : modsSupremeIt->second.get()) {
+		for (const auto &modPosition : modsSupremeIt->second.get()) {
 			const auto pos = static_cast<uint8_t>(modPosition);
 			msg.addByte(pos);
 			uint8_t grade = 0;
@@ -3036,7 +3036,7 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 		spell = g_spells().getRuneSpellByName(damage.runeSpellName);
 	}
 	if (spell) {
-		const auto spellName = spell->getName();
+		const auto &spellName = spell->getName();
 
 		damage.damageMultiplier += checkFocusMasteryDamage();
 		if (getHealingLinkUpgrade(spellName)) {

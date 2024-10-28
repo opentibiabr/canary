@@ -50,7 +50,7 @@ public:
 
 	static Position getCasterPosition(std::shared_ptr<Creature> creature, Direction dir);
 
-	std::list<uint16_t> getSpellsByVocation(uint16_t vocationId);
+	std::list<uint16_t> getSpellsByVocation(uint16_t vocationId) const;
 
 	[[nodiscard]] const std::map<std::string, std::shared_ptr<InstantSpell>> &getInstantSpells() const {
 		return instants;

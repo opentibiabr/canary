@@ -630,7 +630,7 @@ void Npc::removePlayerInteraction(std::shared_ptr<Player> player) {
 	}
 
 	if (!playerInteractionsOrder.empty()) {
-		if (const auto creature = g_game().getCreatureByID(playerInteractionsOrder.back()); creature) {
+		if (const auto &creature = g_game().getCreatureByID(playerInteractionsOrder.back())) {
 			turnToCreature(creature);
 		}
 	}

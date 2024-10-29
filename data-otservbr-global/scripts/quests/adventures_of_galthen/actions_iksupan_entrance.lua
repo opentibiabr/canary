@@ -1,5 +1,5 @@
 local config = {
-	{ position = { x = 32728, y = 32875, z = 7 }, destination = { x = 34015, y = 31890, z = 8 } },
+	{ position = { x = 32728, y = 32878, z = 7 }, destination = { x = 34015, y = 31890, z = 8 } },
 }
 
 local entrance = Action()

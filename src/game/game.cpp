@@ -10073,7 +10073,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 		forgeableMonsters.clear();
 		// If the forgeable monsters haven't been created
 		// Then we'll create them so they don't return in the next if (forgeableMonsters.empty())
-		for (auto [monsterId, monster] : monsters) {
+		for (const auto &[monsterId, monster] : monsters) {
 			auto monsterTile = monster->getTile();
 			if (!monster || !monsterTile) {
 				continue;
@@ -10092,7 +10092,9 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 			}
 
 			// If you're trying to create a new fiendish and it's already max size, let's remove one of them
-			if (getFiendishMonsters().size() >= 3) {
+			if (auto fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT);
+			    // Condition
+			    getFiendishMonsters().size() >= fiendishLimit) {
 				monster->clearFiendishStatus();
 				removeFiendishMonster(monsterId);
 				break;
@@ -10212,7 +10214,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 
 		if (create) {
 			g_dispatcher().scheduleEvent(
-				200 * 1000, [this] { makeInfluencedMonster(); }, "Game::makeInfluencedMonster"
+				10 * 1000, [this] { makeInfluencedMonster(); }, "Game::makeInfluencedMonster"
 			);
 		}
 	} else {
@@ -10230,7 +10232,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 
 		if (create) {
 			g_dispatcher().scheduleEvent(
-				300 * 1000, [this] { makeFiendishMonster(0, false); }, "Game::makeFiendishMonster"
+				270 * 1000, [this] { makeFiendishMonster(0, false); }, "Game::makeFiendishMonster"
 			);
 		}
 	} else {
@@ -10241,15 +10243,18 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	forgeableMonsters.clear();
-	for (const auto &[monsterId, monster] : monsters) {
-		auto monsterTile = monster->getTile();
-		if (!monsterTile) {
-			continue;
-		}
+	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
+	    forgeableMonsters.size() < influencedLimit) {
+		forgeableMonsters.clear();
+		for (const auto &[monsterId, monster] : monsters) {
+			const auto &monsterTile = monster->getTile();
+			if (!monsterTile) {
+				continue;
+			}
 
-		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
-			forgeableMonsters.push_back(monster->getID());
+			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
+				forgeableMonsters.push_back(monster->getID());
+			}
 		}
 	}
 

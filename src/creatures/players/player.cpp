@@ -1847,7 +1847,7 @@ void Player::onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout)
 			onDeEquipInventory();
 
 			if (m_party) {
-				m_party->leaveParty(player);
+				m_party->leaveParty(player, true);
 			}
 			if (guild) {
 				guild->removeMember(player);

@@ -326,6 +326,7 @@ bool IOMapSerialize::loadHouseInfo() {
 			house->setInternalBid(internalBid);
 			house->setBidHolderLimit(internalBid);
 			house->setBidEndDate(bidEndDate);
+			house->setState(state);
 		}
 	} while (result->next());
 

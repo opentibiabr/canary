@@ -76359,5 +76359,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="containersize" value="10"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
+	<item id="46627" article="a" name="crusher">
+		<attribute key="loottype" value="tools"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="10"/>
+		<attribute key="weight" value="30"/>
+	</item>
+	<item id="46628" article="a" name="amber crusher">
+		<attribute key="loottype" value="tools"/>
+		<attribute key="weight" value="30"/>
+	</item>
 </items>
 

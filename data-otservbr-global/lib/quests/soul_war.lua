@@ -1,6 +1,7 @@
 SoulWarQuest = {
 	-- Item ids
 	-- Goshnar's Hatred
+	bagYouDesireItemId = 34109,
 	goshnarsHatredSorrowId = 33793,
 	condensedRemorseId = 33792,
 	-- Goshnar's Spite

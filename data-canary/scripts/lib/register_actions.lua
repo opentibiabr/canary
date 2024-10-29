@@ -10,6 +10,20 @@ local sandIds = { 231 } -- desert sand
 local fruits = { 3584, 3585, 3586, 3587, 3588, 3589, 3590, 3591, 3592, 3593, 3595, 3596, 5096, 8011, 8012, 8013 } -- fruits to make decorated cake with knife
 local holes = { 593, 606, 608, 867, 21341 } -- holes opened by shovel
 local ropeSpots = { 386, 421, 12935, 12936, 14238, 17238, 21501, 21965, 21966, 21967, 21968, 23363 }
+local gemFragments = { -- gem fragments workshop
+	[44602] = 46625,
+	[44605] = 46625,
+	[44608] = 46625,
+	[44611] = 46625,
+	[44603] = 46625,
+	[44606] = 46625,
+	[44609] = 46625,
+	[44612] = 46625,
+	[44604] = 46626,
+	[44607] = 46626,
+	[44610] = 46626,
+	[44613] = 46626,
+}
 
 function destroyItem(player, item, fromPosition, target, toPosition, isHotkey)
 	if type(target) ~= "userdata" or not target:isItem() then
@@ -275,5 +289,17 @@ function onUseSpoon(player, item, fromPosition, target, toPosition, isHotkey)
 	if not table.contains({ 3468, 3470 }, item.itemid) then
 		return false
 	end
+	return false
+end
+
+function onUseCrusher(player, item, fromPosition, target, toPosition, isHotkey)
+	local fragmentId = gemFragments[target.itemid]
+	if not fragmentId then
+		return false
+	end
+
+	player:addItem(fragmentId, math.random(1, 3))
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your crusher has disappeared.")
+	target:remove(1)
 	return false
 end

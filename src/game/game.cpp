@@ -34,6 +34,7 @@
 #include "items/weapons/weapons.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "enums/player_wheel.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
@@ -9785,8 +9786,9 @@ void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
 		return;
 	}
 
-	auto action = msg.get<uint8_t>();
-	auto param = msg.get<uint8_t>();
+	const auto action = msg.getByte();
+	const auto param = msg.getByte();
+	uint8_t pos = 0;
 
 	switch (static_cast<WheelGemAction_t>(action)) {
 		case WheelGemAction_t::Destroy:
@@ -9800,6 +9802,10 @@ void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
 			break;
 		case WheelGemAction_t::ToggleLock:
 			player->wheel()->toggleGemLock(param);
+			break;
+		case WheelGemAction_t::ImproveGrade:
+			pos = msg.getByte();
+			player->wheel()->improveGemGrade(static_cast<WheelFragmentType_t>(param), pos);
 			break;
 		default:
 			g_logger().error("[{}] player {} is trying to do invalid action {} on wheel", __FUNCTION__, player->getName(), action);

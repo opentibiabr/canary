@@ -9,17 +9,22 @@
 
 #pragma once
 
-#include "utils/utils_definitions.hpp"
-#include "enums/player_wheel.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
-#include "kv/kv_definitions.hpp"
 
-class Spell;
-class Player;
 class Creature;
-class NetworkMessage;
+class IOWheel;
 class KV;
+class NetworkMessage;
+class Player;
+class Spell;
 class WheelModifierContext;
+class ValueWrapper;
+
+enum class WheelFragmentType_t : uint8_t;
+enum class WheelGemAffinity_t : uint8_t;
+enum class WheelGemBasicModifier_t : uint8_t;
+enum class WheelGemQuality_t : uint8_t;
+enum class WheelGemSupremeModifier_t : uint8_t;
 
 struct PlayerWheelGem {
 	std::string uuid;
@@ -30,9 +35,7 @@ struct PlayerWheelGem {
 	WheelGemBasicModifier_t basicModifier2;
 	WheelGemSupremeModifier_t supremeModifier;
 
-	std::string toString() const {
-		return fmt::format("[PlayerWheelGem] uuid: {}, locked: {}, affinity: {}, quality: {}, basicModifier1: {}, basicModifier2: {}, supremeModifier: {}", uuid, locked, static_cast<IntType>(affinity), static_cast<IntType>(quality), static_cast<IntType>(basicModifier1), static_cast<IntType>(basicModifier2), static_cast<IntType>(supremeModifier));
-	}
+	std::string toString() const;
 
 	void save(const std::shared_ptr<KV> &kv) const;
 
@@ -81,7 +84,9 @@ public:
 	void saveSlotPointsOnPressSaveButton(NetworkMessage &msg);
 	void addPromotionScrolls(NetworkMessage &msg) const;
 	void addGems(NetworkMessage &msg) const;
-	void sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const;
+	void addGradeModifiers(NetworkMessage &msg) const;
+	void improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos);
+	void sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId);
 	void sendGiftOfLifeCooldown() const;
 
 	/*
@@ -141,9 +146,13 @@ public:
 
 	WheelStageEnum_t getPlayerSliceStage(const std::string &color) const;
 
+	std::tuple<int, int> getLesserGradeCost(uint8_t grade) const;
+	std::tuple<int, int> getGreaterGradeCost(uint8_t grade) const;
+
 	void printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonusData &bonusData) const;
 
 private:
+	void addInitialGems();
 	/*
 	 * Open wheel functions helpers
 	 */
@@ -172,6 +181,8 @@ private:
 	uint8_t getOptions(uint32_t ownerId) const;
 
 	std::shared_ptr<KV> gemsKV() const;
+	std::shared_ptr<KV> gemsGradeKV(WheelFragmentType_t quality, uint8_t pos) const;
+	uint8_t getGemGrade(WheelFragmentType_t quality, uint8_t pos) const;
 
 	std::vector<PlayerWheelGem> getRevealedGems() const;
 	std::vector<PlayerWheelGem> getActiveGems() const;

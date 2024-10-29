@@ -569,9 +569,6 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
   </ItemDefinitionGroup>
-  <Target Name="EnsureGeneratedDirectoryExists" BeforeTargets="ProtoCompile">
-    <MakeDir Directories="generated" />
-  </Target>
   <PropertyGroup>
     <RunProtoCompile>true</RunProtoCompile>
   </PropertyGroup>
@@ -593,6 +590,7 @@
     <ProtoFiles Include="$(ProtoPath)\*.proto" />
   </ItemGroup>
   <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" DependsOnTargets="VcpkgInstallManifestDependencies">
+    <MakeDir Directories="$(ProjectDir)generated" />
     <Exec Command="$(ProtocPath) --proto_path=$(ProtoPath) --cpp_out=generated %(ProtoFiles.Identity)" />
     <ItemGroup>
       <ClCompile Include="generated\%(ProtoFiles.Filename).pb.cc">

@@ -25,6 +25,9 @@ target_link_libraries(${PROJECT_NAME}
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
+# https://learn.microsoft.com/en-us/answers/questions/864574/enabling-address-sanitizer-results-in-error-lnk203
+target_compile_definitions(${PROJECT_NAME} PUBLIC _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION)
+
 message("Diretório de construção atual: ${CMAKE_CURRENT_BINARY_DIR}")
 
 if (MSVC AND BUILD_STATIC_LIBRARY)

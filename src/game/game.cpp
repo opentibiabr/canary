@@ -6395,28 +6395,17 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METHOD_NAME__);
 	static size_t index = 0;
 
-	auto &checkCreatureList = checkCreatureLists[index];
-	size_t it = 0, end = checkCreatureList.size();
-	while (it < end) {
-		auto creature = checkCreatureList[it];
-		if (creature && creature->creatureCheck) {
-			if (creature->getHealth() > 0) {
-				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
-				creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-				creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
-			} else {
-				afterCreatureZoneChange(creature, creature->getZones(), {});
-				creature->onDeath();
-			}
-			++it;
-		} else {
-			creature->inCheckCreaturesVector = false;
-
-			checkCreatureList[it] = checkCreatureList.back();
-			checkCreatureList.pop_back();
-			--end;
+	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> &creature) {
+		if (creature->creatureCheck && creature->isAlive()) {
+			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
+			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+			creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+			return false;
 		}
-	}
+
+		creature->inCheckCreaturesVector = false;
+		return true;
+	});
 
 	index = (index + 1) % EVENT_CREATURECOUNT;
 }

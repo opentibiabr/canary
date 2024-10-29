@@ -120,6 +120,24 @@ namespace tests {
 			return true;
 		}
 
+		bool registerStoreTransaction(
+			const uint32_t &id,
+			uint8_t type,
+			uint32_t amount,
+			const uint8_t &coinType,
+			const std::string &description,
+			const time_t &time
+		) final {
+			auto accountCoins = storeTransactions_.find(id);
+
+			if (accountCoins == storeTransactions_.end()) {
+				storeTransactions_[id] = std::vector<std::tuple<uint8_t, uint32_t, uint8_t, std::string, time_t>>();
+			}
+
+			storeTransactions_[id].emplace_back(type, amount, coinType, description, time);
+			return true;
+		}
+
 		bool getCharacterByAccountIdAndName(const uint32_t &id, const std::string &name) final {
 			for (auto it = accounts.begin(); it != accounts.end(); ++it) {
 				if (it->second.id == id) {
@@ -135,6 +153,7 @@ namespace tests {
 			accounts.clear();
 			coins_.clear();
 			coinsTransactions_.clear();
+			storeTransactions_.clear();
 			failSave = false;
 			failAddCoins = false;
 			failGetPassword = false;
@@ -152,6 +171,7 @@ namespace tests {
 		phmap::flat_hash_map<std::string, AccountInfo> accounts;
 		phmap::flat_hash_map<uint32_t, phmap::flat_hash_map<uint8_t, uint32_t>> coins_;
 		phmap::flat_hash_map<uint32_t, std::vector<std::tuple<uint8_t, uint32_t, uint8_t, std::string>>> coinsTransactions_;
+		phmap::flat_hash_map<uint32_t, std::vector<std::tuple<uint8_t, uint32_t, uint8_t, std::string, time_t>>> storeTransactions_;
 	};
 }
 

@@ -10,6 +10,7 @@
 #pragma once
 
 #include <atomic_queue/atomic_queue.h>
+#include <memory_resource>
 
 constexpr size_t STATIC_PREALLOCATION_SIZE = 500;
 

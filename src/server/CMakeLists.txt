@@ -1,4 +1,4 @@
-target_sources(${PROJECT_NAME}_lib PRIVATE
+target_sources(${CANARY_TARGET_NAME} PRIVATE
     network/connection/connection.cpp
     network/message/networkmessage.cpp
     network/message/outputmessage.cpp

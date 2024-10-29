@@ -1,4 +1,4 @@
-target_sources(${PROJECT_NAME}_lib PRIVATE
+target_sources(${CANARY_TARGET_NAME} PRIVATE
     game/config_functions.cpp
     game/game_functions.cpp
     game/bank_functions.cpp

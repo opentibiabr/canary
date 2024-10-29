@@ -1,4 +1,4 @@
-target_sources(${PROJECT_NAME}_lib PRIVATE
+target_sources(${CANARY_TARGET_NAME} PRIVATE
     action_functions.cpp
     creature_event_functions.cpp
     event_callback_functions.cpp

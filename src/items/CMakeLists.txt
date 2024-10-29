@@ -1,4 +1,4 @@
-target_sources(${PROJECT_NAME}_lib PRIVATE
+target_sources(${CANARY_TARGET_NAME} PRIVATE
     bed.cpp
     containers/container.cpp
     containers/depot/depotchest.cpp

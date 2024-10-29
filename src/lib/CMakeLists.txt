@@ -1,4 +1,4 @@
-target_sources(${PROJECT_NAME}_lib PRIVATE
+target_sources(${CANARY_TARGET_NAME} PRIVATE
     di/soft_singleton.cpp
     logging/logger.cpp
     logging/log_with_spd_log.cpp
@@ -6,5 +6,5 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
 )
 
 if(FEATURE_METRICS)
-    target_sources(${PROJECT_NAME}_lib PRIVATE metrics/metrics.cpp)
+    target_sources(${CANARY_TARGET_NAME} PRIVATE metrics/metrics.cpp)
 endif()

@@ -6,7 +6,7 @@ function(setup_test TARGET_NAME DIR)
     add_executable(${TARGET_NAME} main.cpp)
 
     target_compile_definitions(${TARGET_NAME} PUBLIC -DDEBUG_LOG)
-    target_link_libraries(${TARGET_NAME}  PRIVATE Boost::ut ${PROJECT_NAME}_lib)
+    target_link_libraries(${TARGET_NAME}  PRIVATE Boost::ut ${CANARY_TARGET_NAME})
     target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/tests/fixture PRIVATE ${CMAKE_SOURCE_DIR}/tests/${DIR})
 
     if(SPEED_UP_BUILD_UNITY AND (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release"))

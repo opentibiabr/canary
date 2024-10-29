@@ -1,6 +1,10 @@
-# Define and setup CanaryLib main library target
-add_library(${PROJECT_NAME}_lib)
-setup_target(${PROJECT_NAME}_lib)
+set(CANARY_TARGET_NAME ${PROJECT_NAME})
+if(ENABLE_TESTS)
+    set(CANARY_TARGET_NAME "${CANARY_TARGET_NAME}_lib")
+    # Define and setup CanaryLib main library target
+    add_library(${CANARY_TARGET_NAME})
+    setup_target(${CANARY_TARGET_NAME})
+endif()
 
 # Add subdirectories
 add_subdirectory(account)
@@ -20,34 +24,34 @@ add_subdirectory(server)
 add_subdirectory(utils)
 
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
-target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp)
+target_sources(${CANARY_TARGET_NAME} PRIVATE canary_server.cpp)
 
 # Conditional Precompiled Headers
 if(USE_PRECOMPILED_HEADER)
-    target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
-    target_compile_definitions(${PROJECT_NAME}_lib PUBLIC USE_PRECOMPILED_HEADERS)
+    target_precompile_headers(${CANARY_TARGET_NAME} PUBLIC pch.hpp)
+    target_compile_definitions(${CANARY_TARGET_NAME} PUBLIC USE_PRECOMPILED_HEADERS)
 endif()
 
 # *****************************************************************************
 # Build flags - need to be set before the links and sources
 # *****************************************************************************
 if (CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wno-deprecated-declarations)
+    target_compile_options(${CANARY_TARGET_NAME} PRIVATE -Wno-deprecated-declarations)
 endif()
 
 # Sets the NDEBUG macro for Release and RelWithDebInfo configurations.
-target_compile_definitions(${PROJECT_NAME}_lib PUBLIC
+target_compile_definitions(${CANARY_TARGET_NAME} PUBLIC
         $<$<CONFIG:Release>:NDEBUG>
         $<$<CONFIG:RelWithDebInfo>:NDEBUG>
 )
 
 # Configurar IPO e Linkagem Incremental
-configure_linking(${PROJECT_NAME}_lib)
+configure_linking(${CANARY_TARGET_NAME})
 
 # === UNITY BUILD (compile time reducer) ===
 if(SPEED_UP_BUILD_UNITY)
-    set_target_properties(${PROJECT_NAME}_lib PROPERTIES UNITY_BUILD ON)
-    log_option_enabled("Build unity for speed up compilation for taget ${PROJECT_NAME}_lib")
+    set_target_properties(${CANARY_TARGET_NAME} PROPERTIES UNITY_BUILD ON)
+    log_option_enabled("Build unity for speed up compilation for taget ${CANARY_TARGET_NAME}")
 else()
     log_option_disabled("Build unity")
 endif()
@@ -55,7 +59,7 @@ endif()
 # *****************************************************************************
 # Target include directories - to allow #include
 # *****************************************************************************
-target_include_directories(${PROJECT_NAME}_lib
+target_include_directories(${CANARY_TARGET_NAME}
         PUBLIC
         ${BOOST_DI_INCLUDE_DIRS}
         ${CMAKE_SOURCE_DIR}/src
@@ -67,7 +71,7 @@ target_include_directories(${PROJECT_NAME}_lib
 # *****************************************************************************
 # Target links to external dependencies
 # *****************************************************************************
-target_link_libraries(${PROJECT_NAME}_lib
+target_link_libraries(${CANARY_TARGET_NAME}
         PUBLIC
         ${GMP_LIBRARIES}
         ${LUAJIT_LIBRARIES}
@@ -89,7 +93,7 @@ target_link_libraries(${PROJECT_NAME}_lib
 
 if(FEATURE_METRICS)
     add_definitions(-DFEATURE_METRICS)
-    target_link_libraries(${PROJECT_NAME}_lib
+    target_link_libraries(${CANARY_TARGET_NAME}
             PUBLIC
             opentelemetry-cpp::common
             opentelemetry-cpp::metrics
@@ -103,9 +107,9 @@ if(FEATURE_METRICS)
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-    target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${ZLIB_LIBRARY_DEBUG})
+    target_link_libraries(${CANARY_TARGET_NAME} PUBLIC ${ZLIB_LIBRARY_DEBUG})
 else()
-    target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${ZLIB_LIBRARY_RELEASE})
+    target_link_libraries(${CANARY_TARGET_NAME} PUBLIC ${ZLIB_LIBRARY_RELEASE})
 endif()
 
 if (MSVC)
@@ -114,9 +118,9 @@ if (MSVC)
     else()
         set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
     endif()
-    target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})
+    target_link_libraries(${CANARY_TARGET_NAME} PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})
 else()
-    target_link_libraries(${PROJECT_NAME}_lib PUBLIC Threads::Threads)
+    target_link_libraries(${CANARY_TARGET_NAME} PUBLIC Threads::Threads)
 endif()
 
 # === OpenMP ===
@@ -124,7 +128,7 @@ if(OPTIONS_ENABLE_OPENMP)
     log_option_enabled("openmp")
     find_package(OpenMP)
     if(OpenMP_CXX_FOUND)
-        target_link_libraries(${PROJECT_NAME}_lib PUBLIC OpenMP::OpenMP_CXX)
+        target_link_libraries(${CANARY_TARGET_NAME} PUBLIC OpenMP::OpenMP_CXX)
     endif()
 else()
     log_option_disabled("openmp")
@@ -133,8 +137,8 @@ endif()
 # === Optimization Flags ===
 if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release")
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-        target_compile_options(${PROJECT_NAME}_lib PRIVATE -O3 -march=native)
+        target_compile_options(${CANARY_TARGET_NAME} PRIVATE -O3 -march=native)
     elseif(MSVC)
-        target_compile_options(${PROJECT_NAME}_lib PRIVATE /O2)
+        target_compile_options(${CANARY_TARGET_NAME} PRIVATE /O2)
     endif()
 endif()

@@ -86,12 +86,16 @@ endif()
 
 option(BUILD_TESTS "Build tests" OFF) # By default, tests will not be built
 option(RUN_TESTS_AFTER_BUILD "Run tests when building" OFF) # By default, tests will only run if requested
+set(RUN_TESTS OFF)
+if(BUILD_TESTS OR PACKAGE_TESTS)
+    set(RUN_TESTS ON)
+endif()
 
 # *****************************************************************************
 # Add project
 # *****************************************************************************
 add_subdirectory(src)
 
-if(BUILD_TESTS OR PACKAGE_TESTS)
+if(RUN_TESTS)
     add_subdirectory(tests)
 endif()

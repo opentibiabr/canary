@@ -217,7 +217,7 @@ endfunction()
 # *****************************************************************************
 function(setup_target TARGET_NAME)
     if (MSVC)
-        set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS " /time")
+        set_property(TARGET ${TARGET_NAME} APPEND_STRING PROPERTY LINK_FLAGS " /time")
         if (BUILD_STATIC_LIBRARY)
             set_property(TARGET ${TARGET_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
         endif(BUILD_STATIC_LIBRARY)

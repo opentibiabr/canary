@@ -11012,7 +11012,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		auto offerAmount = offer->getOfferCount();
 		auto pricePerItem = offerPrice ? offerPrice / offerAmount : 0;
 		g_logger().trace("[{}] offer price {}, offer ammount {}, price per item {}", __METHOD_NAME__, offerPrice, offerAmount, pricePerItem);
-		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, StoreDetailType::Finished, MARKETACTION_BUY, offer->getOfferName());
+		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, StoreDetailType::Finished, MARKETACTION_SELL, offer->getOfferName());
 	} else {
 		player->sendStoreError(StoreErrors_t::PURCHASE, errorMessage);
 	}

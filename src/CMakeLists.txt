@@ -17,9 +17,9 @@ endif()
 
 setup_target(${PROJECT_NAME})
 set_output_directory(${PROJECT_NAME})
-if(RUN_TESTS)
+if(BUILD_TESTS)
     target_link_libraries(${PROJECT_NAME} PRIVATE ${CANARY_TARGET_NAME})
-endif(RUN_TESTS)
+endif(BUILD_TESTS)
 
 # Configurar IPO e Linkagem Incremental para o executável
 configure_linking(${PROJECT_NAME})

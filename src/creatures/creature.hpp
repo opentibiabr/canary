@@ -199,6 +199,11 @@ public:
 	int32_t getHealth() const {
 		return health;
 	}
+
+	bool isAlive() const {
+		return !isDead();
+	}
+
 	virtual int32_t getMaxHealth() const {
 		return healthMax;
 	}

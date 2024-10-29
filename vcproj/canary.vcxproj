@@ -316,6 +316,7 @@
     <ClCompile Include="..\src\kv\kv_sql.cpp" />
     <ClCompile Include="..\src\kv\kv.cpp" />
     <ClCompile Include="..\src\lib\di\soft_singleton.cpp" />
+    <ClCompile Include="..\src\lib\logging\logger.cpp" />
     <ClCompile Include="..\src\lib\logging\log_with_spd_log.cpp" />
     <ClCompile Include="..\src\lib\metrics\metrics.cpp" />
     <ClCompile Include="..\src\lib\thread\thread_pool.cpp" />

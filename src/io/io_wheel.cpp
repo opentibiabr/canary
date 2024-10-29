@@ -9,6 +9,7 @@
 
 #include "io/io_wheel.hpp"
 
+#include "enums/player_wheel.hpp"
 #include "kv/kv.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/player.hpp"

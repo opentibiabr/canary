@@ -17,6 +17,7 @@ monster.raceId = 1946
 monster.Bestiary = {
 	class = "Undead",
 	race = BESTY_RACE_UNDEAD,
+	toKill = 5000,
 	FirstUnlock = 200,
 	SecondUnlock = 2000,
 	CharmsPoints = 100,

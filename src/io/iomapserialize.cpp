@@ -239,21 +239,19 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 		return;
 	}
 
-	std::vector<std::shared_ptr<Item>> items;
-	items.reserve(32);
-
+	std::list<std::shared_ptr<Item>> items;
 	uint16_t count = 0;
 	for (auto &item : *tileItems) {
 		if (item->getID() == ITEM_BATHTUB_FILLED_NOTMOVABLE) {
 			std::shared_ptr<Item> tub = Item::CreateItem(ITEM_BATHTUB_FILLED);
-			items.emplace_back(tub);
+			items.push_front(tub);
 			++count;
 			continue;
 		} else if (!item->isSavedToHouses()) {
 			continue;
 		}
 
-		items.emplace_back(item);
+		items.push_front(item);
 		++count;
 	}
 
@@ -264,7 +262,7 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 		stream.write<uint8_t>(tilePosition.z);
 
 		stream.write<uint32_t>(count);
-		for (std::shared_ptr<Item> item : items) {
+		for (const std::shared_ptr<Item> &item : items) {
 			saveItem(stream, item);
 		}
 	}

@@ -1873,12 +1873,15 @@ bool ConditionFeared::getRandomDirection(std::shared_ptr<Creature> creature, Pos
 		DIRECTION_NORTHWEST
 	};
 
-	std::ranges::shuffle(directions.begin(), directions.end(), getRandomGenerator());
-	for (Direction dir : directions) {
-		if (canWalkTo(creature, pos, dir)) {
-			this->fleeIndx = static_cast<uint8_t>(dir);
-			return true;
-		}
+	std::ranges::shuffle(directions, getRandomGenerator());
+
+	auto it = std::ranges::find_if(directions, [&](Direction dir) {
+		return canWalkTo(creature, pos, dir);
+	});
+
+	if (it != directions.end()) {
+		this->fleeIndx = static_cast<uint8_t>(*it);
+		return true;
 	}
 
 	return false;

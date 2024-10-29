@@ -91,7 +91,7 @@ bool Party::leaveParty(std::shared_ptr<Player> player, bool forceRemove /* = fal
 
 	bool canRemove = g_events().eventPartyOnLeave(getParty(), player);
 	if (!forceRemove && !canRemove) {
-	    return false;
+		return false;
 	}
 
 	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, &EventCallback::partyOnLeave, getParty(), player)) {

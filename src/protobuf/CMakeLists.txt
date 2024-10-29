@@ -25,8 +25,6 @@ target_link_libraries(${PROJECT_NAME}
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
-message("Diretório de construção atual: ${CMAKE_CURRENT_BINARY_DIR}")
-
 if (MSVC AND BUILD_STATIC_LIBRARY)
 	set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()

@@ -4,11 +4,20 @@ cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 include(BaseConfig)
 include(GNUInstallDirs)
 
+# If it is tests, we need link it static library
+if (BUILD_TESTS)
+    # Import configurations, source definitions, and linker settings
+    include(CanaryLib)
+endif()
+
 # Define main executable target, set it up and link to main library
 add_executable(${PROJECT_NAME} main.cpp)
 
-# Import configurations, source definitions, and linker settings
-include(CanaryLib)
+# If it is not tests, we can link it directly to the executable
+if (NOT BUILD_TESTS)
+    # Import configurations, source definitions, and linker settings
+    include(CanaryLib)
+endif()
 
 if(MSVC)
     # Add executable icon for Windows

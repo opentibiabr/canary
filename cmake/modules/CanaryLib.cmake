@@ -1,5 +1,5 @@
 set(CANARY_TARGET_NAME ${PROJECT_NAME})
-if(ENABLE_TESTS)
+if(BUILD_TESTS)
     set(CANARY_TARGET_NAME "${CANARY_TARGET_NAME}_lib")
     # Define and setup CanaryLib main library target
     add_library(${CANARY_TARGET_NAME})
@@ -51,7 +51,7 @@ configure_linking(${CANARY_TARGET_NAME})
 # === UNITY BUILD (compile time reducer) ===
 if(SPEED_UP_BUILD_UNITY)
     set_target_properties(${CANARY_TARGET_NAME} PROPERTIES UNITY_BUILD ON)
-    log_option_enabled("Build unity for speed up compilation for taget ${CANARY_TARGET_NAME}")
+    log_option_enabled("Build unity for speed up compilation for target ${CANARY_TARGET_NAME}")
 else()
     log_option_disabled("Build unity")
 endif()
@@ -60,7 +60,7 @@ endif()
 # Target include directories - to allow #include
 # *****************************************************************************
 target_include_directories(${CANARY_TARGET_NAME}
-        PUBLIC
+    PUBLIC
         ${BOOST_DI_INCLUDE_DIRS}
         ${CMAKE_SOURCE_DIR}/src
         ${GMP_INCLUDE_DIRS}

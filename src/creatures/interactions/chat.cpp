@@ -604,11 +604,14 @@ std::shared_ptr<ChatChannel> Chat::getChannelById(uint16_t channelId) {
 	return it->second;
 }
 
-std::shared_ptr<PrivateChatChannel> Chat::getPrivateChannel(const std::shared_ptr<Player> &player) {
-	for (auto &it : privateChannels) {
-		if (it.second->getOwner() == player->getGUID()) {
-			return it.second;
-		}
+std::shared_ptr<PrivateChatChannel> Chat::getPrivateChannel(const std::shared_ptr<Player> &player) const {
+	auto it = std::ranges::find_if(privateChannels, [&player](const auto &channelPair) {
+		const auto &[channelId, channel] = channelPair;
+		return channel->getOwner() == player->getGUID();
+	});
+
+	if (it != privateChannels.end()) {
+		return it->second;
 	}
 	return nullptr;
 }

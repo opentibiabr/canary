@@ -4072,7 +4072,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 
 		auto it = browseFields.find(tile);
 		if (it == browseFields.end() || it->second.expired()) {
-			parentContainer = Container::create(tile);
+			parentContainer = Container::createBrowseField(tile);
 			browseFields[tile] = parentContainer;
 		} else {
 			parentContainer = it->second.lock();
@@ -4626,7 +4626,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 
 	auto it = browseFields.find(tile);
 	if (it == browseFields.end() || it->second.expired()) {
-		container = Container::create(tile);
+		container = Container::createBrowseField(tile);
 		browseFields[tile] = container;
 	} else {
 		container = it->second.lock();

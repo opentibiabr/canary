@@ -281,69 +281,72 @@ bool IOMapSerialize::loadHouseInfo() {
 	do {
 		auto houseId = result->getNumber<uint32_t>("id");
 		const auto house = g_game().map.houses.getHouse(houseId);
-		if (house) {
-			auto owner = result->getNumber<uint32_t>("owner");
-			auto newOwner = result->getNumber<int32_t>("new_owner");
-			uint32_t bidder = result->getNumber<uint32_t>("bidder");
-			std::string bidderName = result->getString("bidder_name");
-			uint32_t highestBid = result->getNumber<uint32_t>("highest_bid");
-			uint32_t internalBid = result->getNumber<uint32_t>("internal_bid");
-			uint32_t bidEndDate = result->getNumber<uint32_t>("bid_end_date");
-			auto state = static_cast<CyclopediaHouseState>(result->getNumber<uint16_t>("state"));
-			auto transferStatus = result->getNumber<bool>("transfer_status");
-			const auto timeNow = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-			// Transfer house owner
-			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
-			if (isTransferOnRestart && newOwner >= 0) {
-				g_game().setTransferPlayerHouseItems(houseId, owner);
-				if (newOwner == 0) {
-					g_logger().debug("Removing house id '{}' owner", houseId);
-					house->setOwner(0);
-				} else {
-					g_logger().debug("Setting house id '{}' owner to player GUID '{}'", houseId, newOwner);
-					house->setOwner(newOwner);
-				}
-			} else if (state == CyclopediaHouseState::Available && timeNow > bidEndDate && bidder > 0) {
-				g_logger().debug("[BID] - Setting house id '{}' owner to player GUID '{}'", houseId, bidder);
-				if (highestBid < internalBid) {
-					uint32_t diff = internalBid - highestBid;
-					IOLoginData::increaseBankBalance(bidder, diff);
-				}
-				house->setOwner(bidder);
-				bidder = 0;
-				bidderName = "";
-				highestBid = 0;
-				internalBid = 0;
-				bidEndDate = 0;
-			} else if (state == CyclopediaHouseState::Transfer && timeNow > bidEndDate && bidder > 0) {
-				g_logger().debug("[TRANSFER] - Removing house id '{}' from owner GUID '{}' and transfering to new owner GUID '{}'", houseId, owner, bidder);
-				if (transferStatus) {
-					house->setOwner(bidder);
-					IOLoginData::increaseBankBalance(owner, internalBid);
-				} else {
-					house->setOwner(owner);
-				}
-				bidder = 0;
-				bidderName = "";
-				internalBid = 0;
-				bidEndDate = 0;
-				transferStatus = false;
-			} else if (state == CyclopediaHouseState::MoveOut && timeNow > bidEndDate) {
-				g_logger().debug("[MOVE OUT] - Removing house id '{}' owner", houseId);
-				house->setOwner(0);
-				bidEndDate = 0;
-			} else {
-				house->setOwner(owner, false);
-				house->setState(state);
-			}
-			house->setBidder(bidder);
-			house->setBidderName(bidderName);
-			house->setHighestBid(highestBid);
-			house->setInternalBid(internalBid);
-			house->setBidHolderLimit(internalBid);
-			house->setBidEndDate(bidEndDate);
-			house->setTransferStatus(transferStatus);
+		if (!house) {
+			continue;
 		}
+
+		auto owner = result->getNumber<uint32_t>("owner");
+		auto newOwner = result->getNumber<int32_t>("new_owner");
+		uint32_t bidder = result->getNumber<uint32_t>("bidder");
+		std::string bidderName = result->getString("bidder_name");
+		uint32_t highestBid = result->getNumber<uint32_t>("highest_bid");
+		uint32_t internalBid = result->getNumber<uint32_t>("internal_bid");
+		uint32_t bidEndDate = result->getNumber<uint32_t>("bid_end_date");
+		auto state = static_cast<CyclopediaHouseState>(result->getNumber<uint16_t>("state"));
+		auto transferStatus = result->getNumber<bool>("transfer_status");
+		const auto timeNow = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+		// Transfer house owner
+		auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
+		if (isTransferOnRestart && newOwner >= 0) {
+			g_game().setTransferPlayerHouseItems(houseId, owner);
+			if (newOwner == 0) {
+				g_logger().debug("Removing house id '{}' owner", houseId);
+				house->setOwner(0);
+			} else {
+				g_logger().debug("Setting house id '{}' owner to player GUID '{}'", houseId, newOwner);
+				house->setOwner(newOwner);
+			}
+		} else if (state == CyclopediaHouseState::Available && timeNow > bidEndDate && bidder > 0) {
+			g_logger().debug("[BID] - Setting house id '{}' owner to player GUID '{}'", houseId, bidder);
+			if (highestBid < internalBid) {
+				uint32_t diff = internalBid - highestBid;
+				IOLoginData::increaseBankBalance(bidder, diff);
+			}
+			house->setOwner(bidder);
+			bidder = 0;
+			bidderName = "";
+			highestBid = 0;
+			internalBid = 0;
+			bidEndDate = 0;
+		} else if (state == CyclopediaHouseState::Transfer && timeNow > bidEndDate && bidder > 0) {
+			g_logger().debug("[TRANSFER] - Removing house id '{}' from owner GUID '{}' and transfering to new owner GUID '{}'", houseId, owner, bidder);
+			if (transferStatus) {
+				house->setOwner(bidder);
+				IOLoginData::increaseBankBalance(owner, internalBid);
+			} else {
+				house->setOwner(owner);
+			}
+			bidder = 0;
+			bidderName = "";
+			internalBid = 0;
+			bidEndDate = 0;
+			transferStatus = false;
+		} else if (state == CyclopediaHouseState::MoveOut && timeNow > bidEndDate) {
+			g_logger().debug("[MOVE OUT] - Removing house id '{}' owner", houseId);
+			house->setOwner(0);
+			bidEndDate = 0;
+		} else {
+			house->setOwner(owner, false);
+			house->setState(state);
+		}
+		house->setBidder(bidder);
+		house->setBidderName(bidderName);
+		house->setHighestBid(highestBid);
+		house->setInternalBid(internalBid);
+		house->setBidHolderLimit(internalBid);
+		house->setBidEndDate(bidEndDate);
+		house->setTransferStatus(transferStatus);
 	} while (result->next());
 
 	result = db.storeQuery("SELECT `house_id`, `listid`, `list` FROM `house_lists`");

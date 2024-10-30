@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/vocations/vocation.hpp"
 #include "lua/functions/creatures/player/vocation_functions.hpp"
+
+#include "creatures/players/vocations/vocation.hpp"
 
 int VocationFunctions::luaVocationCreate(lua_State* L) {
 	// Vocation(id or name)

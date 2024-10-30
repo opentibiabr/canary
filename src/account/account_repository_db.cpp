@@ -8,6 +8,7 @@
  */
 
 #include "account/account_repository_db.hpp"
+
 #include "database/database.hpp"
 #include "enums/account_coins.hpp"
 #include "utils/definitions.hpp"

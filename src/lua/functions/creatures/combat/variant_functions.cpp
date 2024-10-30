@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "items/cylinder.hpp"
 #include "lua/functions/creatures/combat/variant_functions.hpp"
+
+#include "items/cylinder.hpp"
 #include "lua/global/lua_variant.hpp"
 
 int VariantFunctions::luaVariantCreate(lua_State* L) {

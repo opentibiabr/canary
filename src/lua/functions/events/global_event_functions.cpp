@@ -8,6 +8,7 @@
  */
 
 #include "lua/functions/events/global_event_functions.hpp"
+
 #include "game/game.hpp"
 #include "lua/global/globalevent.hpp"
 #include "utils/tools.hpp"

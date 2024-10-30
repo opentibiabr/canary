@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/monsters/monsters.hpp"
+
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
-#include "creatures/monsters/monsters.hpp"
 #include "game/game.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/scripts/luascript.hpp"

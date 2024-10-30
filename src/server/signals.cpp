@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "server/signals.hpp"
+
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "game/game.hpp"
@@ -16,7 +18,6 @@
 #include "lua/creature/events.hpp"
 #include "lua/global/globalevent.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "server/signals.hpp"
 
 Signals::Signals(asio::io_service &service) :
 	set(service) {

@@ -8,10 +8,10 @@
  */
 
 #include "account/account.hpp"
+
 #include "account/account_repository_db.hpp"
 #include "security/argon.hpp"
 #include "utils/tools.hpp"
-
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_type.hpp"

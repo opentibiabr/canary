@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "config/configmanager.hpp"
 #include "creatures/players/grouping/familiars.hpp"
+
+#include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"

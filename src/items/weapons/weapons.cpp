@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "items/weapons/weapons.hpp"
+
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
-#include "items/weapons/weapons.hpp"
 
 #include "lua/global/lua_variant.hpp"
 

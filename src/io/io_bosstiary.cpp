@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "io/io_bosstiary.hpp"
+
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "io/io_bosstiary.hpp"
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
 

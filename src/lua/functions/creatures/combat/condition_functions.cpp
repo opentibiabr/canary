@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/combat/condition_functions.hpp"
+
 #include "creatures/combat/condition.hpp"
 #include "enums/player_icons.hpp"
 #include "game/game.hpp"
-#include "lua/functions/creatures/combat/condition_functions.hpp"
 
 int ConditionFunctions::luaConditionCreate(lua_State* L) {
 	// Condition(conditionType, conditionId = CONDITIONID_COMBAT, subid = 0, isPersistent = false)

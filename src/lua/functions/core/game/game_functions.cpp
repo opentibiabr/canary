@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/core/game/game_functions.hpp"
+
 #include "core.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
@@ -22,7 +24,6 @@
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/creature/talkaction.hpp"
-#include "lua/functions/core/game/game_functions.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/functions/events/event_callback_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"

@@ -9,7 +9,6 @@
 
 #include "creatures/players/wheel/player_wheel.hpp"
 
-#include "enums/player_wheel.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"

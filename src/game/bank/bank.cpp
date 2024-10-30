@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "bank.hpp"
+#include "game/bank/bank.hpp"
 
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"

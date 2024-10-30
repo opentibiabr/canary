@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/combat/combat_functions.hpp"
+
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "game/game.hpp"
-#include "lua/functions/creatures/combat/combat_functions.hpp"
 #include "lua/global/lua_variant.hpp"
 #include "lua/scripts/lua_environment.hpp"
 

@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/players/cyclopedia/player_title.hpp"
+
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/player.hpp"
 #include "enums/account_group_type.hpp"
 #include "game/game.hpp"

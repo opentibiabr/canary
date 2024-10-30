@@ -8,6 +8,7 @@
  */
 
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
+
 #include "creatures/players/player.hpp"
 #include "database/databasetasks.hpp"
 #include "enums/player_blessings.hpp"

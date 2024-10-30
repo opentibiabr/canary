@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monster.hpp"
+
+#include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
@@ -200,15 +201,14 @@ void Monster::addDefense(int32_t defense) {
 }
 
 Faction_t Monster::getFaction() const {
-	auto master = getMaster();
-	if (getMaster()) {
-		return getMaster()->getFaction();
+	if (const auto &master = getMaster()) {
+		return master->getFaction();
 	}
 	return mType->info.faction;
 }
 
 bool Monster::isEnemyFaction(Faction_t faction) const {
-	auto master = getMaster();
+	const auto &master = getMaster();
 	if (master && master->getMonster()) {
 		return master->getMonster()->isEnemyFaction(faction);
 	}
@@ -572,7 +572,8 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 		targetList.emplace_back(creature);
 	}
 
-	if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+	const auto &master = getMaster();
+	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 		totalPlayersOnScreen++;
 	}
 
@@ -589,7 +590,8 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	if (!getMaster() && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+	const auto &master = getMaster();
+	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 		totalPlayersOnScreen--;
 	}
 
@@ -646,10 +648,10 @@ void Monster::onCreatureEnter(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
-	if (isSummon() && getMaster()->getPlayer()) {
-		const auto &masterPlayer = getMaster()->getPlayer();
+	const auto &master = getMaster();
+	const auto & masterPlayer = master ? master->getPlayer() : nullptr;
+	if (isSummon() && masterPlayer) {
 		auto tmpPlayer = creature->getPlayer();
-
 		if (!tmpPlayer) {
 			const auto &creatureMaster = creature->getMaster();
 			if (creatureMaster && creatureMaster->getPlayer()) {
@@ -657,7 +659,7 @@ bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
 			}
 		}
 
-		if (tmpPlayer && (tmpPlayer == getMaster() || masterPlayer->isPartner(tmpPlayer))) {
+		if (tmpPlayer && (tmpPlayer == master || masterPlayer->isPartner(tmpPlayer))) {
 			return true;
 		}
 	}
@@ -670,8 +672,10 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 		return false;
 	}
 
-	if (isSummon() && getMaster()->getPlayer()) {
-		return creature != getMaster();
+	const auto &master = getMaster();
+	const auto & masterPlayer = master ? master->getPlayer() : nullptr;
+	if (isSummon() && masterPlayer) {
+		return creature != master;
 	}
 
 	if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
@@ -682,7 +686,9 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 		return isEnemyFaction(creature->getFaction()) || creature->getFaction() == FACTION_PLAYER;
 	}
 
-	if ((creature->getPlayer()) || (creature->getMaster() && creature->getMaster()->getPlayer())) {
+	const auto &creatureMaster = creature->getMaster();
+	const auto &creaturePlayer = creatureMaster ? creatureMaster->getPlayer() : nullptr;
+	if (creature->getPlayer() || creaturePlayer) {
 		return true;
 	}
 
@@ -1078,17 +1084,18 @@ void Monster::onThink(uint32_t interval) {
 	const auto &attackedCreature = getAttackedCreature();
 	const auto &followCreature = getFollowCreature();
 	if (isSummon()) {
+		const auto &master = getMaster();
 		if (attackedCreature.get() == this) {
 			setFollowCreature(nullptr);
 		} else if (attackedCreature && followCreature != attackedCreature) {
 			// This happens just after a master orders an attack, so lets follow it aswell.
 			setFollowCreature(attackedCreature);
-		} else if (getMaster() && getMaster()->getAttackedCreature()) {
+		} else if (master && master->getAttackedCreature()) {
 			// This happens if the monster is summoned during combat
-			selectTarget(getMaster()->getAttackedCreature());
-		} else if (getMaster() != followCreature) {
+			selectTarget(master->getAttackedCreature());
+		} else if (master && master != followCreature) {
 			// Our master has not ordered us to attack anything, lets follow him around instead.
-			setFollowCreature(getMaster());
+			setFollowCreature(master);
 		}
 	} else if (!targetList.empty()) {
 		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
@@ -2520,7 +2527,8 @@ void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, Fin
 	fpp.maxTargetDist = targetDistance;
 
 	if (isSummon()) {
-		if (getMaster() == creature) {
+		const auto &master = getMaster();
+		if (master && master == creature) {
 			fpp.maxTargetDist = 2;
 			fpp.fullPathSearch = true;
 		} else if (targetDistance <= 1) {

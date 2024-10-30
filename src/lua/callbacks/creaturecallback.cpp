@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/creature.hpp"
 #include "lua/callbacks/creaturecallback.hpp"
+
+#include "creatures/creature.hpp"
 #include "lua/scripts/luascript.hpp"
 
 bool CreatureCallback::startScriptInterface(int32_t scriptId) {

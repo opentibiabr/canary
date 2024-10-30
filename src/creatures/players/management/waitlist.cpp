@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "config/configmanager.hpp"
 #include "creatures/players/management/waitlist.hpp"
+
+#include "config/configmanager.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "lib/di/container.hpp"

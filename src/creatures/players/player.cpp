@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/players/player.hpp"
+
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/combat.hpp"
@@ -15,7 +17,6 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/wheel/wheel_gems.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
@@ -24,7 +25,6 @@
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
-#include "creatures/players/player.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
@@ -6598,7 +6598,7 @@ bool Player::isQuickLootListedItem(const std::shared_ptr<Item> &item) const {
 		return false;
 	}
 
-	auto it = std::find(quickLootListItemIds.begin(), quickLootListItemIds.end(), item->getID());
+	auto it = std::ranges::find(quickLootListItemIds, item->getID());
 	return it != quickLootListItemIds.end();
 }
 
@@ -6874,7 +6874,7 @@ void Player::removePreySlotById(PreySlot_t slotid) {
 }
 
 const std::unique_ptr<PreySlot> &Player::getPreySlotById(PreySlot_t slotid) {
-	if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const std::unique_ptr<PreySlot> &preyIt) {
+	if (auto it = std::ranges::find_if(preys, [slotid](const std::unique_ptr<PreySlot> &preyIt) {
 			return preyIt->id == slotid;
 		});
 	    it != preys.end()) {
@@ -6914,7 +6914,7 @@ const std::unique_ptr<PreySlot> &Player::getPreyWithMonster(uint16_t raceId) con
 		return PreySlotNull;
 	}
 
-	if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const std::unique_ptr<PreySlot> &it) {
+	if (auto it = std::ranges::find_if(preys, [raceId](const std::unique_ptr<PreySlot> &it) {
 			return it->selectedRaceId == raceId;
 		});
 	    it != preys.end()) {
@@ -7003,7 +7003,7 @@ bool Player::setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> &slot) {
 }
 
 const std::unique_ptr<TaskHuntingSlot> &Player::getTaskHuntingSlotById(PreySlot_t slotid) {
-	if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const std::unique_ptr<TaskHuntingSlot> &itTask) {
+	if (auto it = std::ranges::find_if(taskHunting, [slotid](const std::unique_ptr<TaskHuntingSlot> &itTask) {
 			return itTask->id == slotid;
 		});
 	    it != taskHunting.end()) {
@@ -7016,11 +7016,11 @@ const std::unique_ptr<TaskHuntingSlot> &Player::getTaskHuntingSlotById(PreySlot_
 std::vector<uint16_t> Player::getTaskHuntingBlackList() const {
 	std::vector<uint16_t> rt;
 
-	std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const std::unique_ptr<TaskHuntingSlot> &slot) {
+	std::ranges::for_each(taskHunting, [&rt](const std::unique_ptr<TaskHuntingSlot> &slot) {
 		if (slot->isOccupied()) {
 			rt.push_back(slot->selectedRaceId);
 		} else {
-			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId) {
+			std::ranges::for_each(slot->raceIdList, [&rt](uint16_t raceId) {
 				rt.push_back(raceId);
 			});
 		}
@@ -7136,7 +7136,7 @@ const std::unique_ptr<TaskHuntingSlot> &Player::getTaskHuntingWithCreature(uint1
 		return TaskHuntingSlotNull;
 	}
 
-	if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const std::unique_ptr<TaskHuntingSlot> &itTask) {
+	if (auto it = std::ranges::find_if(taskHunting, [raceId](const std::unique_ptr<TaskHuntingSlot> &itTask) {
 			return itTask->selectedRaceId == raceId;
 		});
 	    it != taskHunting.end()) {

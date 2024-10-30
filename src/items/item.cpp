@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "items/item.hpp"
+
 #include "containers/rewards/rewardchest.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/spells.hpp"
@@ -21,7 +23,6 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/mailbox/mailbox.hpp"
 #include "items/decay/decay.hpp"
-#include "items/item.hpp"
 #include "items/trashholder.hpp"
 #include "lua/creature/actions.hpp"
 #include "map/house/house.hpp"

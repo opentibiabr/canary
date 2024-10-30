@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/core/game/global_functions.hpp"
+
 #include "creatures/combat/condition.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
@@ -14,7 +16,6 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "items/containers/depot/depotlocker.hpp"
-#include "lua/functions/core/game/global_functions.hpp"
 #include "lua/global/globalevent.hpp"
 #include "lua/global/lua_timer_event_descr.hpp"
 #include "lua/scripts/lua_environment.hpp"

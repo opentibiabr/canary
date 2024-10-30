@@ -7,12 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/callbacks/event_callback.hpp"
+
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/player.hpp"
 #include "game/zones/zone.hpp"
 #include "items/containers/container.hpp"
 #include "items/item.hpp"
-#include "lua/callbacks/event_callback.hpp"
 
 /**
  * @class EventCallback

@@ -7,12 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "io/iomarket.hpp"
+
 #include "database/databasetasks.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "io/iologindata.hpp"
-#include "io/iomarket.hpp"
 #include "items/containers/inbox/inbox.hpp"
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {

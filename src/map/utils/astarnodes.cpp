@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "astarnodes.hpp"
+#include "map/utils/astarnodes.hpp"
 
 #include "creatures/combat/combat.hpp"
 #include "creatures/monsters/monster.hpp"

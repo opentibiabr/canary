@@ -8,6 +8,7 @@
  */
 
 #include "account/account_repository.hpp"
+
 #include "lib/di/container.hpp"
 
 AccountRepository &AccountRepository::getInstance() {

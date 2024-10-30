@@ -7,12 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "io/iobestiary.hpp"
+
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "io/iobestiary.hpp"
 #include "lib/metrics/metrics.hpp"
 
 SoftSingleton IOBestiary::instanceTracker("IOBestiary");

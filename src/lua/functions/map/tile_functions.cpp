@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/map/tile_functions.hpp"
+
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
-#include "lua/functions/map/tile_functions.hpp"
 
 int TileFunctions::luaTileCreate(lua_State* L) {
 	// Tile(x, y, z)

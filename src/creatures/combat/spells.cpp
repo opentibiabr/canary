@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/combat/spells.hpp"
+
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
-#include "creatures/combat/spells.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"

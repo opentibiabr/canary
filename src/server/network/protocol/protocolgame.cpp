@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "server/network/protocol/protocolgame.hpp"
+
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/condition.hpp"
@@ -43,7 +45,6 @@
 #include "lua/creature/creatureevent.hpp"
 #include "lua/modules/modules.hpp"
 #include "server/network/message/outputmessage.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 #include "utils/tools.hpp"
 
 #include "enums/account_coins.hpp"

@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/combat/spell_functions.hpp"
+
 #include "creatures/combat/spells.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "items/item.hpp"
-#include "lua/functions/creatures/combat/spell_functions.hpp"
 #include "utils/tools.hpp"
 
 int SpellFunctions::luaSpellCreate(lua_State* L) {

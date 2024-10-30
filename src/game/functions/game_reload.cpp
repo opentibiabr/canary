@@ -7,13 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "game/functions/game_reload.hpp"
+
 #include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npcs.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
-#include "game/functions/game_reload.hpp"
 #include "game/game.hpp"
 #include "game/zones/zone.hpp"
 #include "lib/di/container.hpp"

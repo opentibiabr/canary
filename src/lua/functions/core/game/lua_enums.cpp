@@ -7,13 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/core/game/lua_enums.hpp"
+
 #include "creatures/players/wheel/wheel_definitions.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
 #include "enums/item_attribute.hpp"
 #include "game/functions/game_reload.hpp"
 #include "io/io_bosstiary.hpp"
-#include "lua/functions/core/game/lua_enums.hpp"
 
 constexpr const char* soundNamespace = "SOUND_EFFECT_TYPE_";
 

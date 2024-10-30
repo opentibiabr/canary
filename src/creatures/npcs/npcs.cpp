@@ -8,6 +8,7 @@
  */
 
 #include "creatures/npcs/npcs.hpp"
+
 #include "game/game.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.hpp"

@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/npcs/npc.hpp"
+
 #include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
-#include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"

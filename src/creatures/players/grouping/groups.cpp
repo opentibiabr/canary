@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "config/configmanager.hpp"
 #include "creatures/players/grouping/groups.hpp"
+
+#include "config/configmanager.hpp"
 #include "game/game.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"

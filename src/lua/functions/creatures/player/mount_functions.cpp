@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/player/mount_functions.hpp"
+
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "game/game.hpp"
-#include "lua/functions/creatures/player/mount_functions.hpp"
 
 int MountFunctions::luaCreateMount(lua_State* L) {
 	// Mount(id or name)

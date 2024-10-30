@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "io/functions/iologindata_save_player.hpp"
+
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "game/game.hpp"
-#include "io/functions/iologindata_save_player.hpp"
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/inbox/inbox.hpp"

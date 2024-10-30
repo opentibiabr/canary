@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "player_badge.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
 
 #include "account/account.hpp"
 #include "creatures/players/player.hpp"

@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "task.hpp"
+#include "game/scheduling/task.hpp"
 
 #include "lib/metrics/metrics.hpp"
 

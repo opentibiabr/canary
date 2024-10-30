@@ -7,12 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "items/bed.hpp"
+
 #include "creatures/combat/condition.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "io/iologindata.hpp"
-#include "items/bed.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {

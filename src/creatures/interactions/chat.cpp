@@ -8,6 +8,7 @@
  */
 
 #include "creatures/interactions/chat.hpp"
+
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"

@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/monster/loot_functions.hpp"
+
 #include "creatures/monsters/monsters.hpp"
 #include "items/item.hpp"
-#include "lua/functions/creatures/monster/loot_functions.hpp"
 #include "utils/tools.hpp"
 
 int LootFunctions::luaCreateLoot(lua_State* L) {

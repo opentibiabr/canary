@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "config/configmanager.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
+
+#include "config/configmanager.hpp"
 #include "creatures/players/player.hpp"
 #include "items/item.hpp"
 #include "lib/di/container.hpp"

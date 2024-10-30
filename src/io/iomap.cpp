@@ -8,6 +8,7 @@
  */
 
 #include "io/iomap.hpp"
+
 #include "game/movement/teleport.hpp"
 #include "game/game.hpp"
 #include "io/filestream.hpp"

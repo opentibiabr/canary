@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "game/game.hpp"
+
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
@@ -27,7 +29,6 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/player_wheel.hpp"
 #include "database/databasetasks.hpp"
-#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "game/zones/zone.hpp"

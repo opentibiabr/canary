@@ -7,11 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "io/ioprey.hpp"
+
 #include "config/configmanager.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "io/ioprey.hpp"
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "server/network/message/networkmessage.hpp"

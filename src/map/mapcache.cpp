@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "mapcache.hpp"
+#include "map/mapcache.hpp"
 
 #include "game/movement/teleport.hpp"
 #include "game/scheduling/dispatcher.hpp"

@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "io/functions/iologindata_load_player.hpp"
+
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
@@ -20,7 +22,6 @@
 #include "enums/account_errors.hpp"
 #include "enums/object_category.hpp"
 #include "game/game.hpp"
-#include "io/functions/iologindata_load_player.hpp"
 #include "io/ioguild.hpp"
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"

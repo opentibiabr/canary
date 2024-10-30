@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/player/player_functions.hpp"
+
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
@@ -28,7 +30,6 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/item.hpp"
-#include "lua/functions/creatures/player/player_functions.hpp"
 #include "map/spectators.hpp"
 
 #include "enums/account_coins.hpp"

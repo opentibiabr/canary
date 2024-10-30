@@ -7,10 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/combat/condition.hpp"
-
-#include "creatures/combat/combat.hpp"
 #include "creatures/creature.hpp"
+
+#include "creatures/combat/condition.hpp"
+#include "creatures/combat/combat.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "game/game.hpp"

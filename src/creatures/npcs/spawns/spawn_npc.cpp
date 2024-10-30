@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/npcs/spawns/spawn_npc.hpp"
+
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
-#include "creatures/npcs/spawns/spawn_npc.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"

@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/player/guild_functions.hpp"
+
 #include "game/game.hpp"
 #include "creatures/players/grouping/guild.hpp"
-#include "lua/functions/creatures/player/guild_functions.hpp"
 
 int GuildFunctions::luaGuildCreate(lua_State* L) {
 	const uint32_t id = getNumber<uint32_t>(L, 2);

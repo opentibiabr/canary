@@ -15,6 +15,12 @@
 
 class CoreNetworkFunctions final : LuaScriptInterface {
 public:
+	explicit CoreNetworkFunctions(lua_State* L) :
+		LuaScriptInterface("CoreNetworkFunctions") {
+		init(L);
+	}
+	~CoreNetworkFunctions() override = default;
+
 	static void init(lua_State* L) {
 		NetworkMessageFunctions::init(L);
 		WebhookFunctions::init(L);

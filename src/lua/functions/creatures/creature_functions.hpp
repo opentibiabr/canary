@@ -17,6 +17,12 @@
 
 class CreatureFunctions final : LuaScriptInterface {
 public:
+	explicit CreatureFunctions(lua_State* L) :
+		LuaScriptInterface("CreatureFunctions") {
+		init(L);
+	}
+	~CreatureFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Creature", "", CreatureFunctions::luaCreatureCreate);
 		registerMetaMethod(L, "Creature", "__eq", CreatureFunctions::luaUserdataCompare);

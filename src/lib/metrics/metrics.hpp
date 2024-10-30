@@ -54,8 +54,8 @@ namespace metrics {
 
 	class ScopedLatency {
 	public:
-		explicit ScopedLatency(const std::string_view &name, const std::string &histogramName, const std::string &scopeKey);
-		explicit ScopedLatency([[maybe_unused]] const std::string_view &name, Histogram<double> &histogram, std::map<std::string, std::string> attrs = {}, opentelemetry::context::Context context = opentelemetry::context::Context()) :
+		explicit ScopedLatency(std::string_view name, const std::string &histogramName, const std::string &scopeKey);
+		explicit ScopedLatency([[maybe_unused]] std::string_view name, Histogram<double> &histogram, std::map<std::string, std::string> attrs = {}, opentelemetry::context::Context context = opentelemetry::context::Context()) :
 			begin(std::chrono::steady_clock::now()), histogram(histogram), attrs(std::move(attrs)), context(std::move(context)) {
 		}
 
@@ -171,7 +171,7 @@ public:
 	explicit ScopedLatency([[maybe_unused]] std::string_view name, [[maybe_unused]] const std::string &histogramName, [[maybe_unused]] const std::string &scopeKey) {};
 	explicit ScopedLatency([[maybe_unused]] std::string_view name, [[maybe_unused]] std::set<double> &histogram, [[maybe_unused]] const std::map<std::string, std::string> &attrs = {}, [[maybe_unused]] const std::string &context = std::string()) {};
 
-	void stop() {};
+	void stop() const {};
 
 	~ScopedLatency() = default;
 };
@@ -203,17 +203,17 @@ namespace metrics {
 		Metrics() = default;
 		~Metrics() = default;
 
-		void init([[maybe_unused]] Options opts) {};
-		void initHistograms() {};
-		void shutdown() {};
+		void init([[maybe_unused]] Options opts) const {};
+		void initHistograms() const {};
+		void shutdown() const {};
 
 		static Metrics &getInstance() {
 			return inject<Metrics>();
 		};
 
-		void addCounter([[maybe_unused]] std::string_view name, [[maybe_unused]] double value, [[maybe_unused]] const std::map<std::string, std::string> &attrs = {}) { }
+		void addCounter([[maybe_unused]] std::string_view name, [[maybe_unused]] double value, [[maybe_unused]] const std::map<std::string, std::string> &attrs = {}) const { }
 
-		void addUpDownCounter([[maybe_unused]] std::string_view name, [[maybe_unused]] int value, [[maybe_unused]] const std::map<std::string, std::string> &attrs = {}) { }
+		void addUpDownCounter([[maybe_unused]] std::string_view name, [[maybe_unused]] int value, [[maybe_unused]] const std::map<std::string, std::string> &attrs = {}) const { }
 
 		friend class ScopedLatency;
 	};

@@ -13,6 +13,12 @@
 
 class NetworkMessageFunctions final : LuaScriptInterface {
 public:
+	explicit NetworkMessageFunctions(lua_State* L) :
+		LuaScriptInterface("NetworkMessageFunctions") {
+		init(L);
+	}
+	~NetworkMessageFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "NetworkMessage", "", NetworkMessageFunctions::luaNetworkMessageCreate);
 		registerMetaMethod(L, "NetworkMessage", "__eq", NetworkMessageFunctions::luaUserdataCompare);

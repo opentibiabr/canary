@@ -35,7 +35,7 @@ void ConfigFunctions::init(lua_State* L) {
 }
 
 int ConfigFunctions::luaConfigManagerGetString(lua_State* L) {
-	auto key = getNumber<ConfigKey_t>(L, -1);
+	const auto key = getNumber<ConfigKey_t>(L, -1);
 	if (!key) {
 		reportErrorFunc("Wrong enum");
 		return 1;
@@ -46,7 +46,7 @@ int ConfigFunctions::luaConfigManagerGetString(lua_State* L) {
 }
 
 int ConfigFunctions::luaConfigManagerGetNumber(lua_State* L) {
-	auto key = getNumber<ConfigKey_t>(L, -1);
+	const auto key = getNumber<ConfigKey_t>(L, -1);
 	if (!key) {
 		reportErrorFunc("Wrong enum");
 		return 1;
@@ -57,7 +57,7 @@ int ConfigFunctions::luaConfigManagerGetNumber(lua_State* L) {
 }
 
 int ConfigFunctions::luaConfigManagerGetBoolean(lua_State* L) {
-	auto key = getNumber<ConfigKey_t>(L, -1);
+	const auto key = getNumber<ConfigKey_t>(L, -1);
 	if (!key) {
 		reportErrorFunc("Wrong enum");
 		return 1;
@@ -71,7 +71,7 @@ int ConfigFunctions::luaConfigManagerGetFloat(lua_State* L) {
 	// configManager.getFloat(key, shouldRound = true)
 
 	// Ensure the first argument (key) is provided and is a valid enum
-	auto key = getNumber<ConfigKey_t>(L, 1);
+	const auto key = getNumber<ConfigKey_t>(L, 1);
 	if (!key) {
 		reportErrorFunc("Wrong enum");
 		return 1;

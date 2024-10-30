@@ -23,7 +23,7 @@ public:
 	ShopBlock shopBlock;
 };
 
-class NpcType : public SharedObject {
+class NpcType final : public SharedObject {
 	struct NpcInfo {
 		LuaScriptInterface* scriptInterface {};
 
@@ -90,7 +90,7 @@ public:
 	void loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBlock);
 
 	bool loadCallback(LuaScriptInterface* scriptInterface);
-	bool canSpawn(const Position &pos);
+	bool canSpawn(const Position &pos) const;
 };
 
 class Npcs {

@@ -9267,6 +9267,7 @@ void ProtocolGame::parseCyclopediaHouseAuction(NetworkMessage &msg) {
 	}
 
 	uint8_t houseActionType = msg.getByte();
+	g_logger().warn("houseActionType {}", houseActionType);
 	switch (houseActionType) {
 		case 0: {
 			const auto townName = msg.getString();
@@ -9282,10 +9283,15 @@ void ProtocolGame::parseCyclopediaHouseAuction(NetworkMessage &msg) {
 		case 2: {
 			const uint32_t houseId = msg.get<uint32_t>();
 			const uint32_t timestamp = msg.get<uint32_t>();
-			g_game().playerCyclopediaHouseLeave(player->getID(), houseId, timestamp);
+			g_game().playerCyclopediaHouseMoveOut(player->getID(), houseId, timestamp);
 			break;
 		}
 		case 3: {
+			break;
+		}
+		case 4: {
+			const uint32_t houseId = msg.get<uint32_t>();
+			g_game().playerCyclopediaHouseCancelMoveOut(player->getID(), houseId);
 			break;
 		}
 	}
@@ -9324,6 +9330,21 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 			if (rented) {
 				msg.addByte(0);
 				msg.addByte(0);
+			}
+		} else if (houseData->getState() == 4) { // Move Out
+			auto ownerName = IOLoginData::getNameByGuid(houseData->getOwner());
+			msg.addString(ownerName);
+			msg.add<uint32_t>(houseData->getPaidUntil());
+
+			bool isOwner = ownerName.compare(player->getName()) == 0;
+			msg.addByte(isOwner);
+			if (isOwner) {
+				msg.addByte(0); // ?
+				msg.addByte(0); // ?
+				msg.add<uint32_t>(houseData->getBidEndDate());
+				msg.addByte(0);
+			} else {
+				msg.add<uint32_t>(houseData->getBidEndDate());
 			}
 		}
 	}

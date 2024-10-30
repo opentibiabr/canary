@@ -10842,7 +10842,7 @@ void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_
 	playerCyclopediaHousesByTown(playerId, houseTown);
 }
 
-void Game::playerCyclopediaHouseLeave(uint32_t playerId, uint32_t houseId, uint32_t timestamp) {
+void Game::playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uint32_t timestamp) {
 	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
 		return;
 	}
@@ -10859,6 +10859,29 @@ void Game::playerCyclopediaHouseLeave(uint32_t playerId, uint32_t houseId, uint3
 
 	house->setBidEndDate(timestamp);
 	house->setBidder(-1);
+	house->setState(4);
+
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseId) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getOwner() != player->getGUID()) {
+		return;
+	}
+
+	house->setBidEndDate(0);
+	house->setBidder(0);
+	house->setState(2);
 
 	playerCyclopediaHousesByTown(playerId, "");
 }

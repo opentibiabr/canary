@@ -318,7 +318,8 @@ public:
 	// House Auction
 	void playerCyclopediaHousesByTown(uint32_t playerId, const std::string &townName);
 	void playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_t bidValue);
-	void playerCyclopediaHouseLeave(uint32_t playerId, uint32_t houseId, uint32_t timestamp);
+	void playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uint32_t timestamp);
+	void playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseId);
 	bool processBankAuction(std::shared_ptr<Player> player, std::shared_ptr<House> house, uint64_t bid, bool replace = false);
 
 	void updatePlayerSaleItems(uint32_t playerId);

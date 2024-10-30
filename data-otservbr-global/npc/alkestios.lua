@@ -61,13 +61,9 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 1 and player:getStorageValue(ThreatenedDreams.Mission01.PoacherChest) == 1 then
-			npcHandler:say({
-				"Uhmn.. Maybe Ahmet in Ankrahmun can help we to fake this book.",
-			}, npc, creature)
+			npcHandler:say("Uhmn.. Maybe Ahmet in Ankrahmun can help we to fake this book.", npc, creature)
 		elseif player:getStorageValue(ThreatenedDreams.Mission01[1]) == 2 then
-			npcHandler:say({
-				"The poachers are still chasing me. Please hurry and find a way to help me.",
-			}, npc, creature)
+			npcHandler:say("The poachers are still chasing me. Please hurry and find a way to help me.", npc, creature)
 		elseif player:getStorageValue(ThreatenedDreams.Mission01[1]) == 3 then
 			npcHandler:say({
 				"You succeeded! It seems the poachers have read your little faked story about killing white deer and the ensuing doom. They stopped chasing me. Thank you! ...",
@@ -80,13 +76,13 @@ local function creatureSayCallback(npc, creature, type, message)
 				"There are fire, ice, energy and earth shrines. If you don't know their locations you can also reach them by most temples in this world. The elemental shrines will transport you to Feyrist now that you bear the magical seal.",
 			}, npc, creature)
 			player:setStorageValue(ThreatenedDreams.Mission01[1], 16)
-		else
-			npcHandler:say({
-				"I indeed have some troubles since I'm travelling this part of the world. When I took over the body of a white deer I wasn't aware that such an animal is a sought after quarry for hunters and poachers. ...",
-				"Now I'm living in the constant danger of being caught and killed. Of course, I could just take over another animal but this deer has really grown on me. I'd like to help this beautiful stag but I need your assistance. Are you willing to help me?",
-			}, npc, creature)
-			npcHandler:setTopic(playerId, 1)
 		end
+	elseif MsgContains(message, "help") and player:getStorageValue(ThreatenedDreams.Mission01[1]) < 1 then
+		npcHandler:say({
+			"I indeed have some troubles since I'm travelling this part of the world. When I took over the body of a white deer I wasn't aware that such an animal is a sought after quarry for hunters and poachers. ...",
+			"Now I'm living in the constant danger of being caught and killed. Of course, I could just take over another animal but this deer has really grown on me. I'd like to help this beautiful stag but I need your assistance. Are you willing to help me?",
+		}, npc, creature)
+		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:getStorageValue(ThreatenedDreams.QuestLine) == 1 then
@@ -131,7 +127,7 @@ keywordHandler:addKeyword({ "fae" }, StdModule.say, {
 	},
 })
 
-npcHandler:setMessage(MESSAGE_GREET, "Nature's blessing, traveller! |PLAYERNAME|!")
+npcHandler:setMessage(MESSAGE_GREET, "Nature's blessing, traveller! May you not be affected by any sinister force.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "May your path always be even.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "May your path always be even.")
 

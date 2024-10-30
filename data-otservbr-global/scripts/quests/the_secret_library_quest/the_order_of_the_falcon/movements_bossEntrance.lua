@@ -36,7 +36,7 @@ function movements_falcon_bossEntrance.onStepIn(creature, item, position, fromPo
 			if isInArray(blockedPositions, position) then
 				return true
 			else
-				if creature:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.OberonTimer) <= os.time() then
+				if creature:canFightBoss("Grand Master Oberon") then
 					creature:teleportTo(Position(33363, 31341, 9), true)
 				else
 					creature:teleportTo(fromPosition, true)

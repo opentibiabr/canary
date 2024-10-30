@@ -154,6 +154,18 @@ bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
 	return Creature::canSee(getPosition(), pos, range, range);
 }
 
+bool Npc::canSeeInvisibility() const {
+	return true;
+}
+
+RespawnType Npc::getRespawnType() const {
+	return npcType->info.respawnType;
+}
+
+void Npc::setSpawnNpc(const std::shared_ptr<SpawnNpc> &newSpawn) {
+	spawnNpc = newSpawn;
+}
+
 bool Npc::isInteractingWithPlayer(uint32_t playerId) {
 	if (playerInteractions.empty()) {
 		return false;
@@ -727,21 +739,6 @@ void Npc::removePlayerInteraction(std::shared_ptr<Player> player) {
 
 void Npc::resetPlayerInteractions() {
 	playerInteractions.clear();
-}
-
-bool Npc::isInteractingWithPlayer(uint32_t playerId) {
-	if (playerInteractions.find(playerId) == playerInteractions.end()) {
-		return false;
-	}
-	return true;
-}
-
-bool Npc::isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
-	auto it = playerInteractions.find(playerId);
-	if (it == playerInteractions.end()) {
-		return false;
-	}
-	return it->second == topicId;
 }
 
 bool Npc::canWalkTo(const Position &fromPos, Direction dir) {

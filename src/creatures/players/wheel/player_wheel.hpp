@@ -27,6 +27,9 @@ enum class WheelGemAffinity_t : uint8_t;
 enum class WheelGemBasicModifier_t : uint8_t;
 enum class WheelGemQuality_t : uint8_t;
 enum class WheelGemSupremeModifier_t : uint8_t;
+enum CombatType_t : uint8_t;
+enum skills_t : int8_t;
+enum Vocation_t : uint16_t;
 
 struct PlayerWheelGem {
 	std::string uuid;

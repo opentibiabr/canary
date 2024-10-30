@@ -296,7 +296,7 @@ public:
 	void setTransferStatus(bool transferStatus) {
 		this->m_transferStatus = transferStatus;
 	}
-	bool getTransferStatus () const {
+	bool getTransferStatus() const {
 		return m_transferStatus;
 	}
 

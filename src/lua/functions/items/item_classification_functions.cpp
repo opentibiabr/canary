@@ -29,7 +29,7 @@ int ItemClassificationFunctions::luaItemClassificationCreate(lua_State* L) {
 
 int ItemClassificationFunctions::luaItemClassificationAddTier(lua_State* L) {
 	// itemClassification:addTier(id, core, regularPrice, convergenceFusionPrice, convergenceTransferPrice)
-	ItemClassification* itemClassification = getUserdata<ItemClassification>(L, 1);
+	auto* itemClassification = getUserdata<ItemClassification>(L, 1);
 	if (itemClassification) {
 		itemClassification->addTier(
 			getNumber<uint8_t>(L, 2),

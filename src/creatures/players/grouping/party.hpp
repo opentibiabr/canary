@@ -28,9 +28,9 @@ class Party;
 class Item;
 class Creature;
 
-class Party : public SharedObject {
+class Party final : public SharedObject {
 public:
-	static std::shared_ptr<Party> create(std::shared_ptr<Player> leader);
+	static std::shared_ptr<Party> create(const std::shared_ptr<Player> &leader);
 
 	std::shared_ptr<Party> getParty();
 
@@ -45,8 +45,8 @@ public:
 	bool invitePlayer(const std::shared_ptr<Player> &player);
 	bool joinParty(const std::shared_ptr<Player> &player);
 	void revokeInvitation(const std::shared_ptr<Player> &player);
-	bool passPartyLeadership(std::shared_ptr<Player> player);
-	bool leaveParty(std::shared_ptr<Player> player, bool forceRemove = false);
+	bool passPartyLeadership(const std::shared_ptr<Player> &player);
+	bool leaveParty(const std::shared_ptr<Player> &player, bool forceRemove = false);
 
 	bool removeInvite(const std::shared_ptr<Player> &player, bool removeFromPlayer = true);
 
@@ -56,32 +56,32 @@ public:
 	bool empty() const;
 	bool canOpenCorpse(uint32_t ownerId) const;
 
-	void shareExperience(uint64_t experience, std::shared_ptr<Creature> target = nullptr);
-	bool setSharedExperience(std::shared_ptr<Player> player, bool sharedExpActive, bool silent = false);
+	void shareExperience(uint64_t experience, const std::shared_ptr<Creature> &target = nullptr);
+	bool setSharedExperience(const std::shared_ptr<Player> &player, bool sharedExpActive, bool silent = false);
 	bool isSharedExperienceActive() const;
 	bool isSharedExperienceEnabled() const;
-	bool canUseSharedExperience(std::shared_ptr<Player> player);
-	SharedExpStatus_t getMemberSharedExperienceStatus(std::shared_ptr<Player> player);
+	bool canUseSharedExperience(const std::shared_ptr<Player> &player);
+	SharedExpStatus_t getMemberSharedExperienceStatus(const std::shared_ptr<Player> &player);
 	void updateSharedExperience();
 
-	void updatePlayerTicks(std::shared_ptr<Player> player, uint32_t points);
-	void clearPlayerPoints(std::shared_ptr<Player> player);
+	void updatePlayerTicks(const std::shared_ptr<Player> &player, uint32_t points);
+	void clearPlayerPoints(const std::shared_ptr<Player> &player);
 
-	void showPlayerStatus(std::shared_ptr<Player> player, std::shared_ptr<Player> member, bool showStatus);
-	void updatePlayerStatus(std::shared_ptr<Player> player);
-	void updatePlayerStatus(std::shared_ptr<Player> player, const Position &oldPos, const Position &newPos);
-	void updatePlayerHealth(std::shared_ptr<Player> player, std::shared_ptr<Creature> target, uint8_t healthPercent);
-	void updatePlayerMana(std::shared_ptr<Player> player, uint8_t manaPercent);
-	void updatePlayerVocation(std::shared_ptr<Player> player);
+	void showPlayerStatus(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &member, bool showStatus) const;
+	void updatePlayerStatus(const std::shared_ptr<Player> &player);
+	void updatePlayerStatus(const std::shared_ptr<Player> &player, const Position &oldPos, const Position &newPos);
+	void updatePlayerHealth(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint8_t healthPercent);
+	void updatePlayerMana(const std::shared_ptr<Player> &player, uint8_t manaPercent);
+	void updatePlayerVocation(const std::shared_ptr<Player> &player);
 
 	void updateTrackerAnalyzer();
-	void addPlayerLoot(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
-	void addPlayerSupply(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
-	void addPlayerDamage(std::shared_ptr<Player> player, uint64_t amount);
-	void addPlayerHealing(std::shared_ptr<Player> player, uint64_t amount);
+	void addPlayerLoot(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item);
+	void addPlayerSupply(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item);
+	void addPlayerDamage(const std::shared_ptr<Player> &player, uint64_t amount);
+	void addPlayerHealing(const std::shared_ptr<Player> &player, uint64_t amount);
 	void switchAnalyzerPriceType();
 	void resetAnalyzer();
-	void reloadPrices();
+	void reloadPrices() const;
 
 	std::shared_ptr<PartyAnalyzer> getPlayerPartyAnalyzerStruct(uint32_t playerId) const;
 
@@ -94,8 +94,8 @@ public:
 	std::vector<std::shared_ptr<PartyAnalyzer>> membersData;
 
 private:
-	const char* getSharedExpReturnMessage(SharedExpStatus_t value);
-	bool isPlayerActive(std::shared_ptr<Player> player);
+	const char* getSharedExpReturnMessage(SharedExpStatus_t value) const;
+	bool isPlayerActive(const std::shared_ptr<Player> &player);
 	SharedExpStatus_t getSharedExperienceStatus();
 	uint32_t getHighestLevel();
 	uint32_t getLowestLevel();

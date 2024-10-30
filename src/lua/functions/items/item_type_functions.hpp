@@ -14,6 +14,12 @@
 
 class ItemTypeFunctions final : LuaScriptInterface {
 public:
+	explicit ItemTypeFunctions(lua_State* L) :
+		LuaScriptInterface("ItemTypeFunctions") {
+		init(L);
+	}
+	~ItemTypeFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerClass(L, "ItemType", "", ItemTypeFunctions::luaItemTypeCreate);
 		registerMetaMethod(L, "ItemType", "__eq", ItemTypeFunctions::luaUserdataCompare);

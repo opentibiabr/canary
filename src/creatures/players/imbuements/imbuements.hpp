@@ -16,6 +16,8 @@ class Item;
 
 class Imbuement;
 
+constexpr int32_t maxSkillOrStatId = std::max<int32_t>(STAT_LAST, SKILL_LAST);
+
 struct BaseImbuement {
 	BaseImbuement(uint16_t initId, std::string initName, uint32_t initPrice, uint32_t initProtectionPrice, uint32_t initRemoveCost, uint32_t initDuration, uint8_t initPercent) :
 		id(initId), name(std::move(initName)), price(initPrice), protectionPrice(initProtectionPrice), removeCost(initRemoveCost), duration(initDuration), percent(initPercent) { }
@@ -55,7 +57,7 @@ public:
 
 	BaseImbuement* getBaseByID(uint16_t id);
 	CategoryImbuement* getCategoryByID(uint16_t id);
-	std::vector<Imbuement*> getImbuements(std::shared_ptr<Player> player, std::shared_ptr<Item> item);
+	std::vector<Imbuement*> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item);
 
 protected:
 	friend class Imbuement;
@@ -96,7 +98,7 @@ public:
 	uint16_t getIconID();
 
 	uint16_t icon = 1;
-	int32_t stats[STAT_LAST + 1] = {};
+	int32_t stats[maxSkillOrStatId + 1] = {};
 	int32_t skills[SKILL_LAST + 1] = {};
 	int32_t speed = 0;
 	uint32_t capacity = 0;
@@ -114,7 +116,9 @@ private:
 	bool premium = false;
 	uint32_t storage = 0;
 	uint16_t id, baseid, category = 0;
-	std::string name, description, subgroup = "";
+	std::string name;
+	std::string description;
+	std::string subgroup;
 
 	std::vector<std::pair<uint16_t, uint16_t>> items;
 };

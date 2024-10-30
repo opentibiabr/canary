@@ -29,7 +29,7 @@ int CombatFunctions::luaCombatSetParameter(lua_State* L) {
 		return 1;
 	}
 
-	CombatParam_t key = getNumber<CombatParam_t>(L, 2);
+	const CombatParam_t key = getNumber<CombatParam_t>(L, 2);
 	uint32_t value;
 	if (isBoolean(L, 3)) {
 		value = getBoolean(L, 3) ? 1 : 0;
@@ -49,11 +49,11 @@ int CombatFunctions::luaCombatSetFormula(lua_State* L) {
 		return 1;
 	}
 
-	formulaType_t type = getNumber<formulaType_t>(L, 2);
-	double mina = getNumber<double>(L, 3);
-	double minb = getNumber<double>(L, 4);
-	double maxa = getNumber<double>(L, 5);
-	double maxb = getNumber<double>(L, 6);
+	const formulaType_t type = getNumber<formulaType_t>(L, 2);
+	const double mina = getNumber<double>(L, 3);
+	const double minb = getNumber<double>(L, 4);
+	const double maxa = getNumber<double>(L, 5);
+	const double maxb = getNumber<double>(L, 6);
 	combat->setPlayerCombatValues(type, mina, minb, maxa, maxb);
 	pushBoolean(L, true);
 	return 1;
@@ -87,8 +87,8 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 
 int CombatFunctions::luaCombatSetCondition(lua_State* L) {
 	// combat:addCondition(condition)
-	std::shared_ptr<Condition> condition = getUserdataShared<Condition>(L, 2);
-	Combat* combat = getUserdata<Combat>(L, 1);
+	const std::shared_ptr<Condition> &condition = getUserdataShared<Condition>(L, 2);
+	auto* combat = getUserdata<Combat>(L, 1);
 	if (combat && condition) {
 		combat->addCondition(condition->clone());
 		pushBoolean(L, true);
@@ -106,7 +106,7 @@ int CombatFunctions::luaCombatSetCallback(lua_State* L) {
 		return 1;
 	}
 
-	CallBackParam_t key = getNumber<CallBackParam_t>(L, 2);
+	const CallBackParam_t key = getNumber<CallBackParam_t>(L, 2);
 	if (!combat->setCallback(key)) {
 		lua_pushnil(L);
 		return 1;
@@ -144,14 +144,18 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	}
 
 	if (isUserdata(L, 2)) {
-		LuaData_t type = getUserdataType(L, 2);
+		const LuaData_t type = getUserdataType(L, 2);
 		if (type != LuaData_t::Player && type != LuaData_t::Monster && type != LuaData_t::Npc) {
 			pushBoolean(L, false);
 			return 1;
 		}
 	}
 
-	std::shared_ptr<Creature> creature = getCreature(L, 2);
+	const auto &creature = getCreature(L, 2);
+	if (!creature) {
+		pushBoolean(L, false);
+		return 1;
+	}
 
 	const LuaVariant &variant = getVariant(L, 3);
 	combat->setInstantSpellName(variant.instantName);
@@ -159,7 +163,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	bool result = true;
 	switch (variant.type) {
 		case VARIANT_NUMBER: {
-			std::shared_ptr<Creature> target = g_game().getCreatureByID(variant.number);
+			const std::shared_ptr<Creature> &target = g_game().getCreatureByID(variant.number);
 			if (!target) {
 				pushBoolean(L, false);
 				return 1;
@@ -189,7 +193,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 		}
 
 		case VARIANT_STRING: {
-			std::shared_ptr<Player> target = g_game().getPlayerByName(variant.text);
+			const std::shared_ptr<Player> &target = g_game().getPlayerByName(variant.text);
 			if (!target) {
 				pushBoolean(L, false);
 				return 1;

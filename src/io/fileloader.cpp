@@ -20,7 +20,9 @@ namespace OTB {
 		}
 
 		Identifier fileIdentifier;
-		std::copy(fileContents.begin(), fileContents.begin() + fileIdentifier.size(), fileIdentifier.begin());
+
+		std::ranges::copy(fileContents | std::views::take(fileIdentifier.size()), fileIdentifier.begin());
+
 		if (fileIdentifier != acceptedIdentifier && fileIdentifier != wildcard) {
 			throw InvalidOTBFormat {};
 		}

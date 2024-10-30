@@ -14,15 +14,15 @@ class LuaScriptInterface;
 
 class CreatureCallback {
 public:
-	CreatureCallback(LuaScriptInterface* scriptInterface, std::shared_ptr<Creature> targetCreature) :
+	CreatureCallback(LuaScriptInterface* scriptInterface, const std::shared_ptr<Creature> &targetCreature) :
 		scriptInterface(scriptInterface), m_targetCreature(targetCreature) {};
-	~CreatureCallback() { }
+	~CreatureCallback() = default;
 
 	bool startScriptInterface(int32_t scriptId);
 
-	void pushSpecificCreature(std::shared_ptr<Creature> creature);
+	void pushSpecificCreature(const std::shared_ptr<Creature> &creature);
 
-	bool persistLuaState();
+	bool persistLuaState() const;
 
 	void pushCreature(std::shared_ptr<Creature> creature);
 
@@ -35,7 +35,7 @@ public:
 	void pushBoolean(const bool str);
 
 protected:
-	static std::string getCreatureClass(std::shared_ptr<Creature> creature);
+	static std::string getCreatureClass(const std::shared_ptr<Creature> &creature);
 
 private:
 	LuaScriptInterface* scriptInterface;

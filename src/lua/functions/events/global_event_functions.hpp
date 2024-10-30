@@ -13,6 +13,12 @@
 
 class GlobalEventFunctions final : LuaScriptInterface {
 public:
+	explicit GlobalEventFunctions(lua_State* L) :
+		LuaScriptInterface("GlobalEventFunctions") {
+		init(L);
+	}
+	~GlobalEventFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "GlobalEvent", "", GlobalEventFunctions::luaCreateGlobalEvent);
 		registerMethod(L, "GlobalEvent", "type", GlobalEventFunctions::luaGlobalEventType);

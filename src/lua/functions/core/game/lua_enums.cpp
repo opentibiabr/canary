@@ -330,7 +330,7 @@ void LuaEnums::initFactionEnums(lua_State* L) {
 }
 
 void LuaEnums::initConditionEnums(lua_State* L) {
-	for (auto value : magic_enum::enum_values<ConditionType_t>()) {
+	for (const auto value : magic_enum::enum_values<ConditionType_t>()) {
 		registerMagicEnum(L, value);
 	}
 }
@@ -836,7 +836,7 @@ void LuaEnums::initItemTypeEnums(lua_State* L) {
 }
 
 void LuaEnums::initFluidEnums(lua_State* L) {
-	for (auto value : magic_enum::enum_values<Fluids_t>()) {
+	for (const auto value : magic_enum::enum_values<Fluids_t>()) {
 		registerMagicEnum(L, value);
 	}
 }
@@ -908,7 +908,7 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 }
 
 void LuaEnums::initPlayerFlagEnums(lua_State* L) {
-	for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
+	for (const auto value : magic_enum::enum_values<PlayerFlags_t>()) {
 		registerMagicEnum(L, value);
 	}
 }
@@ -1198,7 +1198,7 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 
 // Reload
 void LuaEnums::initReloadTypeEnums(lua_State* L) {
-	for (auto value : magic_enum::enum_values<Reload_t>()) {
+	for (const auto value : magic_enum::enum_values<Reload_t>()) {
 		registerMagicEnum(L, value);
 	}
 }
@@ -1222,7 +1222,7 @@ void LuaEnums::initCreaturesEventEnums(lua_State* L) {
 }
 
 void LuaEnums::initForgeEnums(lua_State* L) {
-	for (auto value : magic_enum::enum_values<ForgeClassifications_t>()) {
+	for (const auto value : magic_enum::enum_values<ForgeClassifications_t>()) {
 		registerMagicEnum(L, value);
 	}
 }
@@ -1236,7 +1236,7 @@ void LuaEnums::initWebhookEnums(lua_State* L) {
 }
 
 void LuaEnums::initBosstiaryEnums(lua_State* L) {
-	for (auto value : magic_enum::enum_values<BosstiaryRarity_t>()) {
+	for (const auto value : magic_enum::enum_values<BosstiaryRarity_t>()) {
 		registerMagicEnum(L, value);
 	}
 }
@@ -1768,31 +1768,31 @@ void LuaEnums::effectsSoundEnums(lua_State* L) {
 
 void LuaEnums::initWheelEnums(lua_State* L) {
 	std::string wheelNamespace = "WHEEL_INSTANT_";
-	for (auto value : magic_enum::enum_values<WheelInstant_t>()) {
+	for (const auto value : magic_enum::enum_values<WheelInstant_t>()) {
 		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 
 	wheelNamespace = "WHEEL_STAGE_";
-	for (auto value : magic_enum::enum_values<WheelStage_t>()) {
+	for (const auto value : magic_enum::enum_values<WheelStage_t>()) {
 		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 	wheelNamespace = "WHEEL_GRADE_";
-	for (auto value : magic_enum::enum_values<WheelSpellGrade_t>()) {
+	for (const auto value : magic_enum::enum_values<WheelSpellGrade_t>()) {
 		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 
 	wheelNamespace = "WHEEL_AVATAR_SKILL_";
-	for (auto value : magic_enum::enum_values<WheelAvatarSkill_t>()) {
+	for (const auto value : magic_enum::enum_values<WheelAvatarSkill_t>()) {
 		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 
 	wheelNamespace = "WHEEL_STAT_";
-	for (auto value : magic_enum::enum_values<WheelStat_t>()) {
+	for (const auto value : magic_enum::enum_values<WheelStat_t>()) {
 		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 
 	wheelNamespace = "WHEEL_BOOST_";
-	for (auto value : magic_enum::enum_values<WheelSpellBoost_t>()) {
+	for (const auto value : magic_enum::enum_values<WheelSpellBoost_t>()) {
 		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
 }

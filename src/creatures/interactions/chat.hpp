@@ -28,9 +28,9 @@ public:
 
 	bool addUser(const std::shared_ptr<Player> &player);
 	bool removeUser(const std::shared_ptr<Player> &player);
-	bool hasUser(const std::shared_ptr<Player> &player);
+	bool hasUser(const std::shared_ptr<Player> &player) const;
 
-	bool talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses type, const std::string &text);
+	bool talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses type, const std::string &text) const;
 	void sendToAll(const std::string &message, SpeakClasses type) const;
 
 	const std::string &getName() const;
@@ -42,10 +42,10 @@ public:
 
 	bool isPublicChannel() const;
 
-	bool executeOnJoinEvent(const std::shared_ptr<Player> &player);
-	bool executeCanJoinEvent(const std::shared_ptr<Player> &player);
-	bool executeOnLeaveEvent(const std::shared_ptr<Player> &player);
-	bool executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message);
+	bool executeOnJoinEvent(const std::shared_ptr<Player> &player) const;
+	bool executeCanJoinEvent(const std::shared_ptr<Player> &player) const;
+	bool executeOnLeaveEvent(const std::shared_ptr<Player> &player) const;
+	bool executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message) const;
 
 protected:
 	UsersMap users;

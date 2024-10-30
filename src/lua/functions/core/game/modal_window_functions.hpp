@@ -13,6 +13,12 @@
 
 class ModalWindowFunctions final : LuaScriptInterface {
 public:
+	explicit ModalWindowFunctions(lua_State* L) :
+		LuaScriptInterface("ModalWindowFunctions") {
+		init(L);
+	}
+	~ModalWindowFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "ModalWindow", "", ModalWindowFunctions::luaModalWindowCreate);
 		registerMetaMethod(L, "ModalWindow", "__eq", ModalWindowFunctions::luaUserdataCompare);

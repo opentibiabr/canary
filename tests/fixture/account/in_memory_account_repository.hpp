@@ -33,10 +33,10 @@ namespace tests {
 			accounts[descriptor] = acc;
 		}
 
-		bool loadByID(const uint32_t &id, AccountInfo &acc) final {
+		bool loadByID(const uint32_t &id, std::unique_ptr<AccountInfo> &acc) final {
 			for (const auto &account : accounts) {
 				if (account.second.id == id) {
-					acc = account.second;
+					acc = std::make_unique<AccountInfo>(account.second);
 					return true;
 				}
 			}
@@ -44,29 +44,29 @@ namespace tests {
 			return false;
 		}
 
-		bool loadByEmailOrName(bool oldProtocol, const std::string &email, AccountInfo &acc) final {
+		bool loadByEmailOrName(bool oldProtocol, const std::string &email, std::unique_ptr<AccountInfo> &acc) final {
 			auto account = accounts.find(email);
 
 			if (account == accounts.end()) {
 				return false;
 			}
 
-			acc = account->second;
+			acc = std::make_unique<AccountInfo>(account->second);
 			return true;
 		}
 
-		bool loadBySession(const std::string &sessionKey, AccountInfo &acc) final {
+		bool loadBySession(const std::string &sessionKey, std::unique_ptr<AccountInfo> &acc) final {
 			auto account = accounts.find(sessionKey);
 
 			if (account == accounts.end()) {
 				return false;
 			}
 
-			acc = account->second;
+			acc = std::make_unique<AccountInfo>(account->second);
 			return true;
 		}
 
-		bool save(const AccountInfo &accInfo) final {
+		bool save(const std::unique_ptr<AccountInfo> &accInfo) final {
 			return !failSave;
 		}
 

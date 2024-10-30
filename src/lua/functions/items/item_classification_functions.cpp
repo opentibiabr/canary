@@ -7,8 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/game.hpp"
 #include "lua/functions/items/item_classification_functions.hpp"
+
+#include "game/game.hpp"
+#include "items/items_classification.hpp"
 
 int ItemClassificationFunctions::luaItemClassificationCreate(lua_State* L) {
 	// ItemClassification(id)

@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "server/network/message/outputmessage.hpp"
 #include "server/server.hpp"
+
+#include "server/network/message/outputmessage.hpp"
 #include "config/configmanager.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"

@@ -8,6 +8,7 @@
  */
 
 #include "items/containers/inbox/inbox.hpp"
+
 #include "utils/tools.hpp"
 
 Inbox::Inbox(uint16_t type) :

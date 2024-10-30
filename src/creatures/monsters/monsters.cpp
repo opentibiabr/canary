@@ -9,10 +9,13 @@
 
 #include "creatures/monsters/monsters.hpp"
 
-#include "creatures/combat/spells.hpp"
+#include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
+#include "creatures/combat/condition.hpp"
+#include "creatures/combat/spells.hpp"
 #include "game/game.hpp"
 #include "items/weapons/weapons.hpp"
+#include "lua/scripts/luascript.hpp"
 
 void MonsterType::loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootBlock) const {
 	if (lootBlock.childLoot.empty()) {
@@ -305,6 +308,38 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	}
 
 	return true;
+}
+
+uint16_t MonsterType::getBaseSpeed() const {
+	return info.baseSpeed;
+}
+
+void MonsterType::setBaseSpeed(const uint16_t initBaseSpeed) {
+	info.baseSpeed = initBaseSpeed;
+}
+
+float MonsterType::getHealthMultiplier() const {
+	return isBoss() ? g_configManager().getFloat(RATE_BOSS_HEALTH) : g_configManager().getFloat(RATE_MONSTER_HEALTH);
+}
+
+float MonsterType::getAttackMultiplier() const {
+	return isBoss() ? g_configManager().getFloat(RATE_BOSS_ATTACK) : g_configManager().getFloat(RATE_MONSTER_ATTACK);
+}
+
+float MonsterType::getDefenseMultiplier() const {
+	return isBoss() ? g_configManager().getFloat(RATE_BOSS_DEFENSE) : g_configManager().getFloat(RATE_MONSTER_DEFENSE);
+}
+
+bool MonsterType::isBoss() const {
+	return !info.bosstiaryClass.empty();
+}
+
+Monsters &Monsters::getInstance() {
+	return inject<Monsters>();
+}
+
+void Monsters::clear() {
+	monsters.clear();
 }
 
 std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name, bool silent /* = false*/) const {

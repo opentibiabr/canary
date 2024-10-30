@@ -8,13 +8,17 @@
  */
 
 #pragma once
+#include "creatures/creature.hpp"
+#include "lua/lua_definitions.hpp"
 
-#include "creatures/monsters/monsters.hpp"
-#include "declarations.hpp"
-#include "items/tile.hpp"
-
+struct spellBlock_t;
+class MonsterType;
+class Tile;
 class Creature;
 class Game;
+class SpawnMonster;
+
+using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
 class Monster final : public Creature {
 public:
@@ -28,18 +32,10 @@ public:
 	Monster(const Monster &) = delete;
 	Monster &operator=(const Monster &) = delete;
 
-	std::shared_ptr<Monster> getMonster() override {
-		return static_self_cast<Monster>();
-	}
-	std::shared_ptr<const Monster> getMonster() const override {
-		return static_self_cast<Monster>();
-	}
+	std::shared_ptr<Monster> getMonster() override;
+	std::shared_ptr<const Monster> getMonster() const override;
 
-	void setID() override {
-		if (id == 0) {
-			id = monsterAutoID++;
-		}
-	}
+	void setID() override;
 
 	void addList() override;
 	void removeList() override;
@@ -48,91 +44,40 @@ public:
 	void setName(const std::string &name);
 
 	// Real monster name, set on monster creation "createMonsterType(typeName)"
-	const std::string &getTypeName() const override {
-		return mType->typeName;
-	}
+	const std::string &getTypeName() const override;
 	const std::string &getNameDescription() const override;
-	void setNameDescription(const std::string &nameDescription) {
-		this->nameDescription = nameDescription;
-	};
-	std::string getDescription(int32_t) override {
-		return nameDescription + '.';
-	}
+	void setNameDescription(std::string_view nameDescription);
+	;
+	std::string getDescription(int32_t) override;
 
-	CreatureType_t getType() const override {
-		return CREATURETYPE_MONSTER;
-	}
+	CreatureType_t getType() const override;
 
-	const Position &getMasterPos() const {
-		return masterPos;
-	}
-	void setMasterPos(Position pos) {
-		masterPos = pos;
-	}
+	const Position &getMasterPos() const;
+	void setMasterPos(Position pos);
 
-	RaceType_t getRace() const override {
-		return mType->info.race;
-	}
+	RaceType_t getRace() const override;
 	float getMitigation() const override;
-	int32_t getArmor() const override {
-		return mType->info.armor * getDefenseMultiplier();
-	}
+	int32_t getArmor() const override;
 	int32_t getDefense() const override;
 
 	void addDefense(int32_t defense);
 
-	Faction_t getFaction() const override {
-		auto master = getMaster();
-		if (getMaster()) {
-			return getMaster()->getFaction();
-		}
-		return mType->info.faction;
-	}
+	Faction_t getFaction() const override;
 
-	bool isEnemyFaction(Faction_t faction) const {
-		const auto &master = getMaster();
-		if (master && master->getMonster()) {
-			return master->getMonster()->isEnemyFaction(faction);
-		}
-		return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.contains(faction);
-	}
+	bool isEnemyFaction(Faction_t faction) const;
 
-	bool isPushable() override {
-		return mType->info.pushable && baseSpeed != 0;
-	}
-	bool isAttackable() const override {
-		return mType->info.isAttackable;
-	}
-	bool canPushItems() const {
-		return mType->info.canPushItems;
-	}
-	bool canPushCreatures() const {
-		return mType->info.canPushCreatures;
-	}
-	bool isRewardBoss() const {
-		return mType->info.isRewardBoss;
-	}
-	bool isHostile() const {
-		return mType->info.isHostile;
-	}
-	bool isFamiliar() const {
-		return mType->info.isFamiliar;
-	}
-	bool canSeeInvisibility() const override {
-		return isImmune(CONDITION_INVISIBLE);
-	}
-	uint16_t critChance() const {
-		return mType->info.critChance;
-	}
-	uint32_t getManaCost() const {
-		return mType->info.manaCost;
-	}
-	RespawnType getRespawnType() const {
-		return mType->info.respawnType;
-	}
-	void setSpawnMonster(const std::shared_ptr<SpawnMonster> &newSpawnMonster) {
-		this->spawnMonster = newSpawnMonster;
-	}
+	bool isPushable() override;
+	bool isAttackable() const override;
+	bool canPushItems() const;
+	bool canPushCreatures() const;
+	bool isRewardBoss() const;
+	bool isHostile() const;
+	bool isFamiliar() const;
+	bool canSeeInvisibility() const override;
+	uint16_t critChance() const;
+	uint32_t getManaCost() const;
+	RespawnType getRespawnType() const;
+	void setSpawnMonster(const std::shared_ptr<SpawnMonster> &newSpawnMonster);
 
 	double_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const override;
 	uint32_t getHealingCombatValue(CombatType_t healingType) const;
@@ -159,32 +104,15 @@ public:
 	bool challengeCreature(const std::shared_ptr<Creature> &creature, int targetChangeCooldown) override;
 
 	bool changeTargetDistance(int32_t distance, uint32_t duration = 12000);
-	bool isChallenged() const {
-		return challengeFocusDuration > 0;
-	}
+	bool isChallenged() const;
 
-	std::vector<CreatureIcon> getIcons() const override {
-		auto creatureIcons = Creature::getIcons();
-		if (!creatureIcons.empty()) {
-			return creatureIcons;
-		}
-		if (challengeMeleeDuration > 0 && mType->info.targetDistance > targetDistance) {
-			return { CreatureIcon(CreatureIconModifications_t::TurnedMelee) };
-		} else if (varBuffs[BUFF_DAMAGERECEIVED] > 100) {
-			return { CreatureIcon(CreatureIconModifications_t::HigherDamageReceived) };
-		} else if (varBuffs[BUFF_DAMAGEDEALT] < 100) {
-			return { CreatureIcon(CreatureIconModifications_t::LowerDamageDealt) };
-		}
-		return {};
-	}
+	std::vector<CreatureIcon> getIcons() const override;
 
 	void setNormalCreatureLight() override;
 	bool getCombatValues(int32_t &min, int32_t &max) override;
 
 	void doAttacking(uint32_t interval) override;
-	bool hasExtraSwing() override {
-		return extraMeleeAttack;
-	}
+	bool hasExtraSwing() override;
 
 	bool searchTarget(TargetSearchType_t searchType = TARGETSEARCH_DEFAULT);
 	bool selectTarget(const std::shared_ptr<Creature> &creature);
@@ -222,64 +150,30 @@ public:
 	}
 
 	bool isTarget(const std::shared_ptr<Creature> &creature);
-	bool isFleeing() const {
-		return !isSummon() && getHealth() <= runAwayHealth && challengeFocusDuration <= 0 && challengeMeleeDuration <= 0;
-	}
+	bool isFleeing() const;
 
 	bool getDistanceStep(const Position &targetPos, Direction &direction, bool flee = false);
-	bool isTargetNearby() const {
-		return stepDuration >= 1;
-	}
-	bool isIgnoringFieldDamage() const {
-		return ignoreFieldDamage;
-	}
-	bool israndomStepping() const {
-		return randomStepping;
-	}
-	void setIgnoreFieldDamage(bool ignore) {
-		ignoreFieldDamage = ignore;
-	}
-	bool getIgnoreFieldDamage() const {
-		return ignoreFieldDamage;
-	}
-	uint16_t getRaceId() const {
-		return mType->info.raceid;
-	}
+	bool isTargetNearby() const;
+	bool isIgnoringFieldDamage() const;
+	bool israndomStepping() const;
+	void setIgnoreFieldDamage(bool ignore);
+	bool getIgnoreFieldDamage() const;
+	uint16_t getRaceId() const;
 
 	// Hazard system
-	bool getHazard() const {
-		return hazard;
-	}
-	void setHazard(bool value) {
-		hazard = value;
-	}
+	bool getHazard() const;
+	void setHazard(bool value);
 
-	bool getHazardSystemCrit() const {
-		return hazardCrit;
-	}
-	void setHazardSystemCrit(bool value) {
-		hazardCrit = value;
-	}
+	bool getHazardSystemCrit() const;
+	void setHazardSystemCrit(bool value);
 
-	bool getHazardSystemDodge() const {
-		return hazardDodge;
-	}
-	void setHazardSystemDodge(bool value) {
-		hazardDodge = value;
-	}
+	bool getHazardSystemDodge() const;
+	void setHazardSystemDodge(bool value);
 
-	bool getHazardSystemDamageBoost() const {
-		return hazardDamageBoost;
-	}
-	void setHazardSystemDamageBoost(bool value) {
-		hazardDamageBoost = value;
-	}
-	bool getHazardSystemDefenseBoost() const {
-		return hazardDefenseBoost;
-	}
-	void setHazardSystemDefenseBoost(bool value) {
-		hazardDefenseBoost = value;
-	}
+	bool getHazardSystemDamageBoost() const;
+	void setHazardSystemDamageBoost(bool value);
+	bool getHazardSystemDefenseBoost() const;
+	void setHazardSystemDefenseBoost(bool value);
 	// Hazard end
 
 	void updateTargetList();
@@ -292,81 +186,41 @@ public:
 
 	void configureForgeSystem();
 
-	bool canBeForgeMonster() const {
-		return getForgeStack() == 0 && !isSummon() && !isRewardBoss() && canDropLoot() && isForgeCreature() && getRaceId() > 0;
-	}
+	bool canBeForgeMonster() const;
 
-	bool isForgeCreature() const {
-		return mType->info.isForgeCreature;
-	}
+	bool isForgeCreature() const;
 
-	void setForgeMonster(bool forge) const {
-		mType->info.isForgeCreature = forge;
-	}
+	void setForgeMonster(bool forge) const;
 
-	uint16_t getForgeStack() const {
-		return forgeStack;
-	}
+	uint16_t getForgeStack() const;
 
-	void setForgeStack(uint16_t stack) {
-		forgeStack = stack;
-	}
+	void setForgeStack(uint16_t stack);
 
-	ForgeClassifications_t getMonsterForgeClassification() const {
-		return monsterForgeClassification;
-	}
+	ForgeClassifications_t getMonsterForgeClassification() const;
 
-	void setMonsterForgeClassification(ForgeClassifications_t classification) {
-		monsterForgeClassification = classification;
-	}
+	void setMonsterForgeClassification(ForgeClassifications_t classification);
 
-	void setTimeToChangeFiendish(time_t time) {
-		timeToChangeFiendish = time;
-	}
+	void setTimeToChangeFiendish(time_t time);
 
-	time_t getTimeToChangeFiendish() const {
-		return timeToChangeFiendish;
-	}
+	time_t getTimeToChangeFiendish() const;
 
-	std::shared_ptr<MonsterType> getMonsterType() const {
-		return mType;
-	}
+	std::shared_ptr<MonsterType> getMonsterType() const;
 
 	void clearFiendishStatus();
 	bool canDropLoot() const;
 
 	bool isImmune(ConditionType_t conditionType) const override;
 	bool isImmune(CombatType_t combatType) const override;
-	void setImmune(bool immune) {
-		m_isImmune = immune;
-	}
-	bool isImmune() const {
-		return m_isImmune;
-	}
+	void setImmune(bool immune);
+	bool isImmune() const;
 
-	float getAttackMultiplier() const {
-		float multiplier = mType->getAttackMultiplier();
-		if (auto stacks = getForgeStack(); stacks > 0) {
-			multiplier *= (1.35 + (stacks - 1) * 0.1);
-		}
-		return multiplier;
-	}
+	float getAttackMultiplier() const;
 
-	float getDefenseMultiplier() const {
-		float multiplier = mType->getDefenseMultiplier();
-		if (auto stacks = getForgeStack(); stacks > 0) {
-			multiplier *= (1 + (0.1 * stacks));
-		}
-		return multiplier;
-	}
+	float getDefenseMultiplier() const;
 
-	bool isDead() const override {
-		return m_isDead;
-	}
+	bool isDead() const override;
 
-	void setDead(bool isDead) {
-		m_isDead = isDead;
-	}
+	void setDead(bool isDead);
 
 protected:
 	void onExecuteAsyncTasks() override;
@@ -449,9 +303,7 @@ private:
 
 	void setIdle(bool idle);
 	void updateIdleStatus();
-	bool getIdleStatus() const {
-		return isIdle;
-	}
+	bool getIdleStatus() const;
 
 	void onAddCondition(ConditionType_t type) override;
 	void onEndCondition(ConditionType_t type) override;
@@ -477,12 +329,8 @@ private:
 	bool isFriend(const std::shared_ptr<Creature> &creature) const;
 	bool isOpponent(const std::shared_ptr<Creature> &creature) const;
 
-	uint64_t getLostExperience() const override {
-		return skillLoss ? mType->info.experience : 0;
-	}
-	uint16_t getLookCorpse() const override {
-		return mType->info.lookcorpse;
-	}
+	uint64_t getLostExperience() const override;
+	uint16_t getLookCorpse() const override;
 	void dropLoot(const std::shared_ptr<Container> &corpse, const std::shared_ptr<Creature> &lastHitCreature) override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 	bool useCacheMap() const override {

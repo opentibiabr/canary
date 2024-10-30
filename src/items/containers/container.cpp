@@ -8,8 +8,9 @@
  */
 
 #include "items/containers/container.hpp"
-#include "items/decay/decay.hpp"
-#include "io/iomap.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "map/spectators.hpp"
 

@@ -8,10 +8,19 @@
  */
 
 #include "creatures/combat/condition.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/combat.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/fileloader.hpp"
+#include "kv/kv.hpp"
 #include "map/spectators.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/players/player.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 
 /**
  *  Condition
@@ -313,6 +322,10 @@ std::shared_ptr<Condition> Condition::createCondition(PropStream &propStream) {
 	return createCondition(static_cast<ConditionId_t>(id), static_cast<ConditionType_t>(type), ticks, 0, buff != 0, subId);
 }
 
+Condition::Condition(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId, bool isPersistent) :
+	endTime(initTicks == -1 ? std::numeric_limits<int64_t>::max() : 0),
+	subId(initSubId), ticks(initTicks), conditionType(initType), id(initId), isBuff(initBuff), m_isPersistent(isPersistent) { }
+
 bool Condition::startCondition(std::shared_ptr<Creature>) {
 	if (ticks > 0) {
 		endTime = ticks + OTSYS_TIME();
@@ -368,6 +381,26 @@ std::unordered_set<PlayerIcon> Condition::getIcons() const {
 	return icons;
 }
 
+ConditionId_t Condition::getId() const {
+	return id;
+}
+
+uint32_t Condition::getSubId() const {
+	return subId;
+}
+
+ConditionType_t Condition::getType() const {
+	return conditionType;
+}
+
+int64_t Condition::getEndTime() const {
+	return endTime;
+}
+
+int32_t Condition::getTicks() const {
+	return ticks;
+}
+
 bool Condition::updateCondition(const std::shared_ptr<Condition> &addCondition) {
 	if (conditionType != addCondition->getType()) {
 		return false;
@@ -387,6 +420,9 @@ bool Condition::updateCondition(const std::shared_ptr<Condition> &addCondition) 
 /**
  *  ConditionGeneric
  */
+
+ConditionGeneric::ConditionGeneric(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId, bool isPersistent) :
+	Condition(initId, initType, initTicks, initBuff, initSubId, isPersistent) { }
 
 bool ConditionGeneric::startCondition(std::shared_ptr<Creature> creature) {
 	return Condition::startCondition(creature);
@@ -450,6 +486,10 @@ std::unordered_set<PlayerIcon> ConditionGeneric::getIcons() const {
 	}
 
 	return icons;
+}
+
+std::shared_ptr<Condition> ConditionGeneric::clone() const {
+	return std::make_shared<ConditionGeneric>(*this);
 }
 
 /**
@@ -580,6 +620,9 @@ void ConditionAttributes::serialize(PropWriteStream &propWriteStream) {
 	propWriteStream.write<uint8_t>(CONDITIONATTR_CHARM_CHANCE_MODIFIER);
 	propWriteStream.write<int8_t>(charmChanceModifier);
 }
+
+ConditionAttributes::ConditionAttributes(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+	ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 bool ConditionAttributes::startCondition(std::shared_ptr<Creature> creature) {
 	if (!Condition::startCondition(creature)) {
@@ -1078,6 +1121,10 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value) {
 	}
 }
 
+std::shared_ptr<Condition> ConditionAttributes::clone() const {
+	return std::make_shared<ConditionAttributes>(*this);
+}
+
 int32_t ConditionAttributes::getAbsorbByIndex(uint8_t index) const {
 	try {
 		return absorbs.at(index);
@@ -1149,6 +1196,9 @@ void ConditionAttributes::setIncreasePercent(uint8_t index, int32_t value) {
 /**
  *  ConditionRegeneration
  */
+
+ConditionRegeneration::ConditionRegeneration(ConditionId_t initId, ConditionType_t initType, int32_t iniTicks, bool initBuff, uint32_t initSubId) :
+	ConditionGeneric(initId, initType, iniTicks, initBuff, initSubId) { }
 
 bool ConditionRegeneration::startCondition(std::shared_ptr<Creature> creature) {
 	if (!Condition::startCondition(creature)) {
@@ -1317,9 +1367,16 @@ uint32_t ConditionRegeneration::getManaTicks(const std::shared_ptr<Creature> &cr
 	return manaTicks;
 }
 
+std::shared_ptr<Condition> ConditionRegeneration::clone() const {
+	return std::make_shared<ConditionRegeneration>(*this);
+}
+
 /**
  *  ConditionManaShield
  */
+
+ConditionManaShield::ConditionManaShield(ConditionId_t initId, ConditionType_t initType, int32_t iniTicks, bool initBuff, uint32_t initSubId) :
+	Condition(initId, initType, iniTicks, initBuff, initSubId) { }
 
 bool ConditionManaShield::startCondition(std::shared_ptr<Creature> creature) {
 	if (!Condition::startCondition(creature)) {
@@ -1385,6 +1442,10 @@ bool ConditionManaShield::setParam(ConditionParam_t param, int32_t value) {
 	}
 }
 
+std::shared_ptr<Condition> ConditionManaShield::clone() const {
+	return std::make_shared<ConditionManaShield>(*this);
+}
+
 std::unordered_set<PlayerIcon> ConditionManaShield::getIcons() const {
 	auto icons = Condition::getIcons();
 	if (manaShield != 0) {
@@ -1398,6 +1459,9 @@ std::unordered_set<PlayerIcon> ConditionManaShield::getIcons() const {
 /**
  *  ConditionSoul
  */
+
+ConditionSoul::ConditionSoul(ConditionId_t initId, ConditionType_t initType, int32_t iniTicks, bool initBuff, uint32_t initSubId) :
+	ConditionGeneric(initId, initType, iniTicks, initBuff, initSubId) { }
 
 void ConditionSoul::addCondition(std::shared_ptr<Creature>, const std::shared_ptr<Condition> addCondition) {
 	if (updateCondition(addCondition)) {
@@ -1458,6 +1522,10 @@ bool ConditionSoul::setParam(ConditionParam_t param, int32_t value) {
 		default:
 			return ret;
 	}
+}
+
+std::shared_ptr<Condition> ConditionSoul::clone() const {
+	return std::make_shared<ConditionSoul>(*this);
 }
 
 /**
@@ -1596,6 +1664,10 @@ bool ConditionDamage::addDamage(int32_t rounds, int32_t time, int32_t value) {
 	}
 
 	return true;
+}
+
+bool ConditionDamage::doForceUpdate() const {
+	return forceUpdate;
 }
 
 bool ConditionDamage::init() {
@@ -1832,6 +1904,13 @@ std::unordered_set<PlayerIcon> ConditionDamage::getIcons() const {
 	}
 	return icons;
 }
+
+std::shared_ptr<Condition> ConditionDamage::clone() const {
+	return std::make_shared<ConditionDamage>(*this);
+}
+
+ConditionDamage::ConditionDamage(ConditionId_t intiId, ConditionType_t initType, bool initBuff, uint32_t initSubId) :
+	Condition(intiId, initType, 0, initBuff, initSubId) { }
 
 void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::list<int32_t> &list) {
 	amount = std::abs(amount);
@@ -2076,6 +2155,9 @@ bool ConditionFeared::setPositionParam(ConditionParam_t param, const Position &p
 	return false;
 }
 
+ConditionFeared::ConditionFeared(ConditionId_t intiId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+	Condition(intiId, initType, initTicks, initBuff, initSubId) { }
+
 bool ConditionFeared::startCondition(std::shared_ptr<Creature> creature) {
 	g_logger().debug("[ConditionFeared::executeCondition] Condition started for {}", creature->getName());
 	getFleeDirection(creature);
@@ -2131,6 +2213,10 @@ std::unordered_set<PlayerIcon> ConditionFeared::getIcons() const {
 
 	icons.insert(PlayerIcon::Feared);
 	return icons;
+}
+
+std::shared_ptr<Condition> ConditionFeared::clone() const {
+	return std::make_shared<ConditionFeared>(*this);
 }
 
 /**
@@ -2199,6 +2285,9 @@ void ConditionSpeed::serialize(PropWriteStream &propWriteStream) {
 	propWriteStream.write<uint8_t>(CONDITIONATTR_FORMULA_MAXB);
 	propWriteStream.write<float>(maxb);
 }
+
+ConditionSpeed::ConditionSpeed(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId, int32_t initChangeSpeed) :
+	Condition(initId, initType, initTicks, initBuff, initSubId), speedDelta(initChangeSpeed) { }
 
 bool ConditionSpeed::startCondition(std::shared_ptr<Creature> creature) {
 	if (!Condition::startCondition(creature)) {
@@ -2282,9 +2371,16 @@ std::unordered_set<PlayerIcon> ConditionSpeed::getIcons() const {
 	return icons;
 }
 
+std::shared_ptr<Condition> ConditionSpeed::clone() const {
+	return std::make_shared<ConditionSpeed>(*this);
+}
+
 /**
  *  ConditionInvisible
  */
+
+ConditionInvisible::ConditionInvisible(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+	ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 bool ConditionInvisible::startCondition(std::shared_ptr<Creature> creature) {
 	if (!Condition::startCondition(creature)) {
@@ -2299,6 +2395,10 @@ void ConditionInvisible::endCondition(std::shared_ptr<Creature> creature) {
 	if (!creature->isInvisible()) {
 		g_game().internalCreatureChangeVisible(creature, true);
 	}
+}
+
+std::shared_ptr<Condition> ConditionInvisible::clone() const {
+	return std::make_shared<ConditionInvisible>(*this);
 }
 
 /**
@@ -2326,6 +2426,9 @@ void ConditionOutfit::serialize(PropWriteStream &propWriteStream) {
 	propWriteStream.write<uint8_t>(CONDITIONATTR_OUTFIT);
 	propWriteStream.write<Outfit_t>(outfit);
 }
+
+ConditionOutfit::ConditionOutfit(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+	Condition(initId, initType, initTicks, initBuff, initSubId) { }
 
 bool ConditionOutfit::startCondition(std::shared_ptr<Creature> creature) {
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
@@ -2385,9 +2488,16 @@ void ConditionOutfit::addCondition(std::shared_ptr<Creature> creature, const std
 	}
 }
 
+std::shared_ptr<Condition> ConditionOutfit::clone() const {
+	return std::make_shared<ConditionOutfit>(*this);
+}
+
 /**
  *  ConditionLight
  */
+
+ConditionLight::ConditionLight(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId, uint8_t initLightlevel, uint8_t initLightcolor) :
+	Condition(initId, initType, initTicks, initBuff, initSubId), lightInfo(initLightlevel, initLightcolor) { }
 
 bool ConditionLight::startCondition(std::shared_ptr<Creature> creature) {
 	if (!Condition::startCondition(creature)) {
@@ -2435,6 +2545,10 @@ void ConditionLight::addCondition(std::shared_ptr<Creature> creature, const std:
 		creature->setCreatureLight(lightInfo);
 		g_game().changeLight(creature);
 	}
+}
+
+std::shared_ptr<Condition> ConditionLight::clone() const {
+	return std::make_shared<ConditionLight>(*this);
 }
 
 bool ConditionLight::setParam(ConditionParam_t param, int32_t value) {
@@ -2518,6 +2632,13 @@ void ConditionSpellCooldown::addCondition(std::shared_ptr<Creature> creature, co
 	}
 }
 
+std::shared_ptr<Condition> ConditionSpellCooldown::clone() const {
+	return std::make_shared<ConditionSpellCooldown>(*this);
+}
+
+ConditionSpellCooldown::ConditionSpellCooldown(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+	ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
+
 bool ConditionSpellCooldown::startCondition(std::shared_ptr<Creature> creature) {
 	if (!Condition::startCondition(creature)) {
 		return false;
@@ -2548,6 +2669,13 @@ void ConditionSpellGroupCooldown::addCondition(std::shared_ptr<Creature> creatur
 		}
 	}
 }
+
+std::shared_ptr<Condition> ConditionSpellGroupCooldown::clone() const {
+	return std::make_shared<ConditionSpellGroupCooldown>(*this);
+}
+
+ConditionSpellGroupCooldown::ConditionSpellGroupCooldown(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+	ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 bool ConditionSpellGroupCooldown::startCondition(std::shared_ptr<Creature> creature) {
 	if (!Condition::startCondition(creature)) {

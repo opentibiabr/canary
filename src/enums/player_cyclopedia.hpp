@@ -71,6 +71,11 @@ enum class CyclopediaHouseState : uint8_t {
 enum class HouseAuctionType : uint8_t {
 	Bid = 1,
 	MoveOut = 2,
+	Transfer = 3,
+	CancelMoveOut = 4,
+	CancelTransfer = 5,
+	AcceptTransfer = 6,
+	RejectTransfer = 7,
 };
 
 enum class BidSuccessMessage : uint8_t {
@@ -87,4 +92,28 @@ enum class BidErrorMessage : uint8_t {
 	NotEnoughMoney = 17,
 	NotEnoughGuildMoney = 21,
 	Internal = 24,
+};
+
+// Bytes to:
+// Move Out, Transfer
+// Cancel Move Out/Transfer
+enum class TransferErrorMessage : uint8_t {
+	Success = 0,
+	NotHouseOwner = 2,
+	CharacterNotExist = 4,
+	Premium = 7,
+	Rookgaard = 16,
+	AlreadyTheOwner = 19,
+	OnlyOneBid = 25,
+	Internal = 32,
+};
+
+enum class AcceptTransferErrorMessage : uint8_t {
+	Success = 0,
+	NotNewOwner = 2,
+	AlreadyBid = 3,
+	AlreadyAccepted = 7,
+	Rookgaard = 8,
+	Premium = 9,
+	Internal = 19,
 };

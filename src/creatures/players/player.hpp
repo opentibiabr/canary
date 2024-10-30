@@ -1576,6 +1576,8 @@ public:
 	}
 
 	BidErrorMessage canBidHouse(uint32_t houseId);
+	TransferErrorMessage canTransferHouse(uint32_t houseId, uint32_t newOwnerGUID);
+	AcceptTransferErrorMessage canAcceptTransferHouse(uint32_t houseId);
 	void sendCyclopediaHouseList(const HouseMap &houses) {
 		if (client) {
 			client->sendCyclopediaHouseList(houses);

@@ -9368,7 +9368,8 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 			bool isNewOwner = player->getName() == houseData->getBidderName();
 			msg.addByte(isNewOwner);
 			if (isNewOwner) {
-				msg.addByte(0); // Accept Transfer Error
+				uint8_t disableIndex = enumToValue(player->canAcceptTransferHouse(clientId));
+				msg.addByte(disableIndex); // Accept Transfer Error
 				msg.addByte(0); // Reject Transfer Error
 			}
 

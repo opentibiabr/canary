@@ -18,7 +18,7 @@ enum CombatType_t : uint8_t;
 enum Direction : uint8_t;
 enum skills_t : int8_t;
 enum Slots_t : uint8_t;
-enum ZoneType_t;
+enum ZoneType_t : uint8_t;
 struct Position;
 struct Outfit_t;
 struct CombatDamage;

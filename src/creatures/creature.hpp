@@ -34,8 +34,8 @@ struct CreatureIcon;
 struct Position;
 
 enum CreatureType_t : uint8_t;
-enum ZoneType_t;
-enum CreatureEventType_t;
+enum ZoneType_t : uint8_t;
+enum CreatureEventType_t : uint8_t;
 
 using ConditionList = std::list<std::shared_ptr<Condition>>;
 using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;

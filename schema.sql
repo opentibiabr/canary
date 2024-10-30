@@ -461,6 +461,7 @@ CREATE TABLE IF NOT EXISTS `houses` (
     `internal_bid` int(11) NOT NULL DEFAULT '0',
     `bid_end_date` int(11) NOT NULL DEFAULT '0',
     `state` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+    `transfer_status` tinyint(1) DEFAULT '0',
     INDEX `owner` (`owner`),
     INDEX `town_id` (`town_id`),
     CONSTRAINT `houses_pk` PRIMARY KEY (`id`)

@@ -7,7 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-
 #include "map/map.hpp"
 
 #include "creatures/monsters/monster.hpp"

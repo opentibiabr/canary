@@ -649,7 +649,7 @@ void Monster::onCreatureEnter(const std::shared_ptr<Creature> &creature) {
 
 bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
 	const auto &master = getMaster();
-	const auto & masterPlayer = master ? master->getPlayer() : nullptr;
+	const auto &masterPlayer = master ? master->getPlayer() : nullptr;
 	if (isSummon() && masterPlayer) {
 		auto tmpPlayer = creature->getPlayer();
 		if (!tmpPlayer) {
@@ -673,7 +673,7 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 	}
 
 	const auto &master = getMaster();
-	const auto & masterPlayer = master ? master->getPlayer() : nullptr;
+	const auto &masterPlayer = master ? master->getPlayer() : nullptr;
 	if (isSummon() && masterPlayer) {
 		return creature != master;
 	}

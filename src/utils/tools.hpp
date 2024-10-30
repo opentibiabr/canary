@@ -29,7 +29,7 @@ enum MoveEvent_t : uint8_t;
 enum NameEval_t : uint8_t;
 enum BedItemPart_t : uint8_t;
 enum ObjectCategory_t : uint8_t;
-enum ItemAttribute_t : uint64_t;
+enum class ItemAttribute_t : uint64_t;
 enum ReturnValue : uint16_t;
 enum SpellGroup_t : uint8_t;
 enum Cipbia_Elementals_t : uint8_t;

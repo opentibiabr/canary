@@ -16,7 +16,6 @@
 #include "enums/item_attribute.hpp"
 
 struct Abilities {
-public:
 	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
 	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};
 
@@ -86,7 +85,6 @@ public:
 
 	uint32_t getManaTicks() const;
 
-private:
 	uint32_t healthGain = 0;
 	uint32_t healthTicks = 0;
 	uint32_t manaGain = 0;

@@ -95,7 +95,7 @@ public:
 
 	const std::vector<std::pair<uint16_t, uint16_t>> &getItems() const;
 
-	uint16_t getIconID();
+	uint16_t getIconID() const;
 
 	uint16_t icon = 1;
 	int32_t stats[maxSkillOrStatId + 1] = {};
@@ -113,9 +113,11 @@ protected:
 	friend class Item;
 
 private:
-	bool premium = false;
-	uint32_t storage = 0;
-	uint16_t id, baseid, category = 0;
+	bool premium {};
+	uint32_t storage {};
+	uint16_t id {};
+	uint16_t baseid {};
+	uint16_t category {};
 	std::string name;
 	std::string description;
 	std::string subgroup;

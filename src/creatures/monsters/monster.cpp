@@ -117,8 +117,8 @@ const std::string &Monster::getNameDescription() const {
 	return nameDescription;
 }
 
-void Monster::setNameDescription(const std::string &nameDescription) {
-	this->nameDescription = nameDescription;
+void Monster::setNameDescription(std::string_view newNameDescription) {
+	this->nameDescription = newNameDescription;
 }
 
 std::string Monster::getDescription(int32_t) {
@@ -2471,12 +2471,14 @@ std::vector<CreatureIcon> Monster::getIcons() const {
 	if (!creatureIcons.empty()) {
 		return creatureIcons;
 	}
+
+	using enum CreatureIconModifications_t;
 	if (challengeMeleeDuration > 0 && mType->info.targetDistance > targetDistance) {
-		return { CreatureIcon(CreatureIconModifications_t::TurnedMelee) };
+		return { CreatureIcon(TurnedMelee) };
 	} else if (varBuffs[BUFF_DAMAGERECEIVED] > 100) {
-		return { CreatureIcon(CreatureIconModifications_t::HigherDamageReceived) };
+		return { CreatureIcon(HigherDamageReceived) };
 	} else if (varBuffs[BUFF_DAMAGEDEALT] < 100) {
-		return { CreatureIcon(CreatureIconModifications_t::LowerDamageDealt) };
+		return { CreatureIcon(LowerDamageDealt) };
 	}
 	return {};
 }

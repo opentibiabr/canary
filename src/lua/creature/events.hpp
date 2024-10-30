@@ -24,7 +24,6 @@ struct Outfit_t;
 struct CombatDamage;
 class Party;
 class ItemType;
-class Tile;
 class Imbuements;
 class Monster;
 class Player;

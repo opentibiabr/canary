@@ -556,10 +556,10 @@ public:
 	bool hasDistanceEffect(uint16_t effectId);
 
 	Groups groups;
-	Familiars familiars;
+	[[no_unique_address]] Familiars familiars;
 	Map map;
 	std::unique_ptr<Mounts> mounts;
-	Outfits outfits;
+	[[no_unique_address]] Outfits outfits;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 

@@ -98,7 +98,7 @@ public:
 
 	bool setParam(ConditionParam_t param, int32_t value) final;
 
-	std::shared_ptr<Condition> clone() const final;
+	std::shared_ptr<Condition> clone() const override;
 
 	// serialization
 	void serialize(PropWriteStream &propWriteStream) final;

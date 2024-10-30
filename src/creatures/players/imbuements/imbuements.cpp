@@ -414,6 +414,6 @@ const std::vector<std::pair<uint16_t, uint16_t>> &Imbuement::getItems() const {
 	return items;
 }
 
-uint16_t Imbuement::getIconID() {
+uint16_t Imbuement::getIconID() const {
 	return icon + (baseid - 1);
 }

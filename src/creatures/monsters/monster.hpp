@@ -46,7 +46,7 @@ public:
 	// Real monster name, set on monster creation "createMonsterType(typeName)"
 	const std::string &getTypeName() const override;
 	const std::string &getNameDescription() const override;
-	void setNameDescription(const std::string &nameDescription);
+	void setNameDescription(std::string_view nameDescription);
 	;
 	std::string getDescription(int32_t) override;
 

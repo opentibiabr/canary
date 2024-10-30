@@ -27,7 +27,6 @@ class Item;
 class Tile;
 class Zone;
 class MonsterType;
-class Tile;
 class Cylinder;
 class ItemType;
 
@@ -551,9 +550,9 @@ public:
 	bool registerCreatureEvent(const std::string &name);
 	bool unregisterCreatureEvent(const std::string &name);
 
-	std::shared_ptr<Cylinder> getParent() override final;
+	std::shared_ptr<Cylinder> getParent() final;
 
-	void setParent(std::weak_ptr<Cylinder> cylinder) override final;
+	void setParent(std::weak_ptr<Cylinder> cylinder) final;
 
 	const Position &getPosition() override final {
 		return position;
@@ -801,9 +800,7 @@ protected:
 	std::map<std::string, CreatureIcon> creatureIcons = {};
 
 	// creature script events
-	bool hasEventRegistered(CreatureEventType_t event) const {
-		return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << event)));
-	}
+	bool hasEventRegistered(CreatureEventType_t event) const;
 	CreatureEventList getCreatureEvents(CreatureEventType_t type) const;
 
 	void updateMapCache();

@@ -69,6 +69,7 @@ enum PreySlot_t : uint8_t;
 enum SpeakClasses : uint8_t;
 enum ChannelEvent_t : uint8_t;
 enum SquareColor_t : uint8_t;
+enum ZoneType_t;
 
 using GuildWarVector = std::vector<uint32_t>;
 using StashContainerList = std::vector<std::pair<std::shared_ptr<Item>, uint32_t>>;

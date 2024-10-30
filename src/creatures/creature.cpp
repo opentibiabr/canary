@@ -1699,6 +1699,11 @@ void Creature::setParent(std::weak_ptr<Cylinder> cylinder) {
 	}
 }
 
+// creature script events
+bool Creature::hasEventRegistered(CreatureEventType_t event) const {
+	return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << event)));
+}
+
 CreatureEventList Creature::getCreatureEvents(CreatureEventType_t type) const {
 	CreatureEventList tmpEventList;
 

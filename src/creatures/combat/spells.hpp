@@ -209,8 +209,6 @@ public:
 	 */
 	void setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade, int32_t value);
 
-	SpellType_t spellType = SPELL_UNDEFINED;
-
 	[[nodiscard]] const std::string &getWords() const;
 
 	void setWords(std::string_view newWord);
@@ -232,6 +230,7 @@ protected:
 
 	SpellGroup_t group = SPELLGROUP_NONE;
 	SpellGroup_t secondaryGroup = SPELLGROUP_NONE;
+	SpellType_t spellType = SPELL_UNDEFINED;
 
 	uint32_t cooldown = 1000;
 	uint32_t groupCooldown = 1000;
@@ -265,6 +264,8 @@ private:
 	std::string name;
 	std::string m_words;
 	std::string m_separator;
+
+	friend class SpellFunctions;
 };
 
 class InstantSpell final : public Script, public Spell {

@@ -434,7 +434,7 @@ void Combat::setPlayerCombatValues(formulaType_t newFormulaType, double newMina,
 }
 
 void Combat::postCombatEffects(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos) const {
-	postCombatEffects(std::move(caster), origin, pos, params);
+	postCombatEffects(caster, origin, pos, params);
 }
 
 void Combat::setOrigin(CombatOrigin origin) {

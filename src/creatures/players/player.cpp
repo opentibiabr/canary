@@ -6273,7 +6273,7 @@ uint32_t Player::getAttackSpeed() const {
 			attackSpeed = MAX_ATTACK_SPEED;
 		}
 
-		return static_cast<uint32_t>(attackSpeed);
+		return attackSpeed;
 	} else {
 		return vocation->getAttackSpeed();
 	}
@@ -7381,7 +7381,7 @@ bool Player::hasAsyncOngoingTask(uint64_t flags) const {
 }
 
 void Player::resetAsyncOngoingTask(uint64_t flags) {
-	asyncOngoingTasks &= ~(flags);
+	asyncOngoingTasks &= ~flags;
 }
 
 void Player::sendEnterWorld() const {
@@ -8170,8 +8170,8 @@ const std::unique_ptr<PreySlot> &Player::getPreyWithMonster(uint16_t raceId) con
 		return PreySlotNull;
 	}
 
-	if (auto it = std::ranges::find_if(preys, [raceId](const std::unique_ptr<PreySlot> &it) {
-			return it->selectedRaceId == raceId;
+	if (auto it = std::ranges::find_if(preys, [raceId](const std::unique_ptr<PreySlot> &preyPtr) {
+			return preyPtr->selectedRaceId == raceId;
 		});
 	    it != preys.end()) {
 		return *it;
@@ -8667,7 +8667,7 @@ std::pair<std::vector<std::shared_ptr<Item>>, uint16_t> Player::getLockerItemsAn
 	return std::make_pair(lockerItems, totalCount);
 }
 
-bool Player::saySpell(SpeakClasses type, const std::string &text, bool ghostMode, const Spectators* spectatorsPtr, const Position* pos) {
+bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMode, const Spectators* spectatorsPtr, const Position* pos) {
 	if (text.empty()) {
 		g_logger().debug("{} - Spell text is empty for player {}", __FUNCTION__, getName());
 		return false;
@@ -8700,7 +8700,7 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool ghostMode
 			if (g_configManager().getBoolean(EMOTE_SPELLS)) {
 				valueEmote = tmpPlayer->getStorageValue(STORAGEVALUE_EMOTE);
 			}
-			if (!ghostMode || tmpPlayer->canSeeCreature(static_self_cast<Player>())) {
+			if (!isGhostMode || tmpPlayer->canSeeCreature(static_self_cast<Player>())) {
 				if (valueEmote == 1) {
 					tmpPlayer->sendCreatureSay(static_self_cast<Player>(), TALKTYPE_MONSTER_SAY, text, pos);
 				} else {

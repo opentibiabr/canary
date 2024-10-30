@@ -49,7 +49,6 @@ class MonsterType;
 class Npc;
 
 struct ModalWindow;
-struct Achievement;
 struct Position;
 struct Outfit_t;
 struct RecentDeathEntry;

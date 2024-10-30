@@ -10809,7 +10809,7 @@ void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_
 		house->setBidHolderLimit(bidValue);
 		house->setBidderName(player->getName());
 		house->setBidder(player->getGUID());
-		house->calculateBidEndDate(1);
+		house->calculateBidEndDate(7);
 	} else if (house->getBidderName() == player->getName()) {
 		if (!processBankAuction(player, house, bidValue, true)) {
 			player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));

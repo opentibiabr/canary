@@ -9267,7 +9267,6 @@ void ProtocolGame::parseCyclopediaHouseAuction(NetworkMessage &msg) {
 	}
 
 	uint8_t houseActionType = msg.getByte();
-	g_logger().warn("houseActionType {}", houseActionType);
 	switch (houseActionType) {
 		case 0: {
 			const auto townName = msg.getString();

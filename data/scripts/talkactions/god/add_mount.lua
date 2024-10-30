@@ -1,6 +1,6 @@
-local addMounts = TalkAction("/addmount")
+local addmount = TalkAction("/addmount")
 
-function addMounts.onSay(player, words, param)
+function addmount.onSay(player, words, param)
 	-- Create log
 	logCommand(player, words, param)
 
@@ -43,10 +43,10 @@ function addMounts.onSay(player, words, param)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have successfully added mount %d to player %s.", mountId, target:getName()))
 	end
 
-	logger.debug("[addMounts.onSay] - Player: {} has added mount: {} to the player: {}", player:getName(), mountParam, target:getName())
+	logger.debug("[addmount.onSay] - Player: {} has added mount: {} to the player: {}", player:getName(), mountParam, target:getName())
 	return true
 end
 
-addMounts:separator(" ")
-addMounts:groupType("god")
-addMounts:register()
+addmount:separator(" ")
+addmount:groupType("god")
+addmount:register()

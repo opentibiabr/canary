@@ -8361,6 +8361,10 @@ AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
 		return AcceptTransferErrorMessage::Rookgaard;
 	}
 
+	if (getBankBalance() < (house->getRent() + house->getInternalBid())) {
+		return AcceptTransferErrorMessage::Frozen;
+	}
+
 	if (house->getTransferStatus()) {
 		return AcceptTransferErrorMessage::AlreadyAccepted;
 	}

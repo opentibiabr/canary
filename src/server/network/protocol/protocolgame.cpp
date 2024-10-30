@@ -9327,7 +9327,7 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 		if (houseState == CyclopediaHouseState::Available) {
 			bool bidder = houseData->getBidderName() == player->getName();
 			msg.addString(houseData->getBidderName());
-			msg.addByte(bidder ? 1 : 0);
+			msg.addByte(bidder);
 			uint8_t disableIndex = enumToValue(player->canBidHouse(clientId));
 			msg.addByte(disableIndex);
 

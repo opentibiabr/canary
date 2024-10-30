@@ -11047,6 +11047,7 @@ void Game::playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t house
 
 	const auto house = g_game().map.houses.getHouseByClientId(houseId);
 	if (!house || house->getState() != CyclopediaHouseState::Transfer) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(AcceptTransferErrorMessage::Internal));
 		return;
 	}
 
@@ -11057,6 +11058,7 @@ void Game::playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t house
 	}
 
 	if (!processBankAuction(player, house, house->getInternalBid())) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(AcceptTransferErrorMessage::Frozen));
 		return;
 	}
 

@@ -115,5 +115,6 @@ enum class AcceptTransferErrorMessage : uint8_t {
 	AlreadyAccepted = 7,
 	Rookgaard = 8,
 	Premium = 9,
+	Frozen = 15,
 	Internal = 19,
 };

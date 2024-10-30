@@ -17,6 +17,8 @@
 constexpr uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
 constexpr std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 
+static LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY> outputMessageAllocator;
+
 OutputMessagePool &OutputMessagePool::getInstance() {
 	return inject<OutputMessagePool>();
 }
@@ -59,7 +61,5 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol)
 }
 
 OutputMessage_ptr OutputMessagePool::getOutputMessage() {
-	return std::allocate_shared<OutputMessage>(
-		LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY>()
-	);
+	return std::allocate_shared<OutputMessage>(outputMessageAllocator);
 }

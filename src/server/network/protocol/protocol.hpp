@@ -78,7 +78,9 @@ private:
 		ZStream() noexcept;
 
 		~ZStream() {
-			deflateEnd(stream.get());
+			if (stream) {
+				deflateEnd(stream.get());
+			}
 		}
 
 		std::unique_ptr<z_stream> stream;

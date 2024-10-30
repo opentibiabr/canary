@@ -23,20 +23,19 @@ struct LockfreeFreeList {
 		return freeList;
 	}
 
-	static void preallocate(size_t count, std::pmr::memory_resource* resource = std::pmr::get_default_resource()) {
+	static void preallocate(const size_t count, std::pmr::memory_resource* resource = std::pmr::get_default_resource()) {
 		auto &freeList = get();
 		for (size_t i = 0; i < count; ++i) {
 			T* p = static_cast<T*>(resource->allocate(sizeof(T), alignof(T)));
 			if (!freeList.try_push(p)) {
 				resource->deallocate(p, sizeof(T), alignof(T));
-				break;
 			}
 		}
 	}
 };
 
 template <typename T, size_t CAPACITY>
-class LockfreePoolingAllocator final : public std::pmr::memory_resource {
+class LockfreePoolingAllocator {
 public:
 	using value_type = T;
 
@@ -46,53 +45,47 @@ public:
 	};
 
 	LockfreePoolingAllocator() noexcept {
-		std::call_once(preallocationFlag, []() {
-			LockfreeFreeList<T, CAPACITY>::preallocate(STATIC_PREALLOCATION_SIZE);
-		});
+		preallocateOnce();
 	}
 
 	template <typename U>
-	explicit LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY> &) noexcept {
-		std::call_once(preallocationFlag, []() {
-			LockfreeFreeList<T, CAPACITY>::preallocate(STATIC_PREALLOCATION_SIZE);
-		});
-	}
+	explicit LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY> &) noexcept { }
 
-	~LockfreePoolingAllocator() override = default;
-
-	T* allocate(std::size_t n) noexcept {
+	T* allocate(std::size_t n) {
 		if (n == 1) {
 			T* p;
 			if (LockfreeFreeList<T, CAPACITY>::get().try_pop(p)) {
 				return p;
 			}
+			g_logger().warn("Freelist empty, using default resource allocation.");
 		}
-		return static_cast<T*>(::operator new(n * sizeof(T), static_cast<std::align_val_t>(alignof(T))));
+		return static_cast<T*>(std::pmr::get_default_resource()->allocate(n * sizeof(T), alignof(T)));
 	}
 
-	void deallocate(T* p, std::size_t n) noexcept {
+	void deallocate(T* p, std::size_t n) {
 		if (n == 1) {
 			if (LockfreeFreeList<T, CAPACITY>::get().try_push(p)) {
 				return;
 			}
+			g_logger().warn("Freelist full, using default resource deallocation.");
 		}
-		::operator delete(p, static_cast<std::align_val_t>(alignof(T)));
+		std::pmr::get_default_resource()->deallocate(p, n * sizeof(T), alignof(T));
 	}
 
-protected:
-	void* do_allocate(std::size_t bytes, std::size_t alignment) noexcept override {
-		return operator new(bytes, static_cast<std::align_val_t>(alignment));
+	bool operator==(const LockfreePoolingAllocator &) const noexcept {
+		return true;
 	}
-
-	void do_deallocate(void* p, std::size_t bytes, std::size_t alignment) noexcept override {
-		operator delete(p, static_cast<std::align_val_t>(alignment));
-	}
-
-	bool do_is_equal(const memory_resource &other) const noexcept override {
-		return this == &other;
+	bool operator!=(const LockfreePoolingAllocator &) const noexcept {
+		return false;
 	}
 
 private:
+	static void preallocateOnce() {
+		std::call_once(preallocationFlag, []() {
+			LockfreeFreeList<T, CAPACITY>::preallocate(STATIC_PREALLOCATION_SIZE);
+		});
+	}
+
 	static std::once_flag preallocationFlag;
 };
 

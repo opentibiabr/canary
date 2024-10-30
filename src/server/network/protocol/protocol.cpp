@@ -15,6 +15,8 @@
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
+#include <lib/logging/log_with_spd_log.hpp>
+
 Protocol::Protocol(Connection_ptr initConnection) :
 	connectionPtr(initConnection) { }
 
@@ -120,8 +122,9 @@ void Protocol::send(OutputMessage_ptr msg) const {
 }
 
 void Protocol::disconnect() const {
-	if (auto connection = getConnection()) {
-		connection->close();
+	auto conn = connectionPtr.lock();
+	if (conn) {
+		conn->close();
 	}
 }
 
@@ -234,7 +237,11 @@ bool Protocol::isConnectionExpired() const {
 }
 
 Connection_ptr Protocol::getConnection() const {
-	return connectionPtr.lock();
+	auto conn = connectionPtr.lock();
+	if (!conn) {
+		return nullptr;
+	}
+	return conn;
 }
 
 uint32_t Protocol::getIP() const {

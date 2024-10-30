@@ -10860,7 +10860,7 @@ void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_
 		house->setBidHolderLimit(bidValue);
 		house->setBidderName(player->getName());
 		house->setBidder(player->getGUID());
-		house->calculateBidEndDate(7);
+		house->calculateBidEndDate(g_configManager().getNumber(DAYS_TO_CLOSE_BID));
 	} else if (house->getBidderName() == player->getName()) {
 		if (!processBankAuction(player, house, bidValue, true)) {
 			player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));

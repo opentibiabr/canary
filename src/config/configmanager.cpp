@@ -254,6 +254,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_DAMAGE, "hazardPodsTimeToDamage", 2000);
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_SPAWN, "hazardPodsTimeToSpawn", 4000);
 	loadIntConfig(L, HAZARD_SPAWN_PLUNDER_MULTIPLIER, "hazardSpawnPlunderMultiplier", 25);
+	loadIntConfig(L, DAYS_TO_CLOSE_BID, "daysToCloseBid", 7);
 	loadIntConfig(L, HOUSE_BUY_LEVEL, "houseBuyLevel", 0);
 	loadIntConfig(L, HOUSE_LOSE_AFTER_INACTIVITY, "houseLoseAfterInactivity", 0);
 	loadIntConfig(L, HOUSE_PRICE_PER_SQM, "housePriceEachSQM", 1000);

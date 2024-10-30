@@ -33,7 +33,17 @@ void ThreadPool::start() const {
 }
 
 void ThreadPool::shutdown() {
+	if (stopped) {
+		return;
+	}
+
 	logger.info("Shutting down thread pool...");
-	stopped = true;
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+		stopped = true;
+		condition.notify_all();
+	}
+
 	wait();
+	logger.info("Thread pool shutdown complete.");
 }

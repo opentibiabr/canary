@@ -698,7 +698,7 @@ int GameFunctions::luaGameGetInfluencedMonsters(lua_State* L) {
 	const auto &monsters = g_game().getInfluencedMonsters();
 	lua_createtable(L, static_cast<int>(monsters.size()), 0);
 	int index = 0;
-	for (const auto &monsterId : monsters) {
+	for (const auto monsterId : monsters) {
 		++index;
 		lua_pushnumber(L, monsterId);
 		lua_rawseti(L, -2, index);
@@ -762,7 +762,7 @@ int GameFunctions::luaGameGetFiendishMonsters(lua_State* L) {
 
 	lua_createtable(L, static_cast<int>(monsters.size()), 0);
 	int index = 0;
-	for (const auto &monsterId : monsters) {
+	for (const auto monsterId : monsters) {
 		++index;
 		lua_pushnumber(L, monsterId);
 		lua_rawseti(L, -2, index);

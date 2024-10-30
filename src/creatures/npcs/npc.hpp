@@ -129,20 +129,8 @@ public:
 	void removePlayerInteraction(const std::shared_ptr<Player> &player);
 	void resetPlayerInteractions();
 
-	bool isInteractingWithPlayer(uint32_t playerId) const {
-		if (!playerInteractions.contains(playerId)) {
-			return false;
-		}
-		return true;
-	}
-
-	bool isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
-		auto it = playerInteractions.find(playerId);
-		if (it == playerInteractions.end()) {
-			return false;
-		}
-		return it->second == topicId;
-	}
+	bool isInteractingWithPlayer(uint32_t playerId);
+	bool isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId);
 
 	void onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) override;
 	void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) override;
@@ -183,6 +171,8 @@ private:
 	bool isInSpawnRange(const Position &pos) const;
 
 	std::string strDescription;
+
+	std::vector<uint32_t> playerInteractionsOrder;
 
 	std::map<uint32_t, uint16_t> playerInteractions;
 

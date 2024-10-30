@@ -14,6 +14,7 @@
 #include "items/item.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
+#include "enums/player_wheel.hpp"
 
 #include <creatures/players/wheel/wheel_gems.hpp>
 

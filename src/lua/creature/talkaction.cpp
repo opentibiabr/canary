@@ -23,7 +23,7 @@ bool TalkActions::registerLuaEvent(const TalkAction_ptr &talkAction) {
 	return inserted;
 }
 
-bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const {
+bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, std::string_view word, const TalkAction_ptr &talkActionPtr) const {
 	const auto spacePos = std::ranges::find_if(words.begin(), words.end(), ::isspace);
 	const std::string firstWord = words.substr(0, spacePos - words.begin());
 

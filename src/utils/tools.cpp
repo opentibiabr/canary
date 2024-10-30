@@ -7,9 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "utils/tools.hpp"
+
 #include "core.hpp"
 #include "items/item.hpp"
-#include "utils/tools.hpp"
+#include "enums/object_category.hpp"
 
 #include "absl/debugging/stacktrace.h"
 #include "absl/debugging/symbolize.h"
@@ -188,7 +190,7 @@ std::string transformToSHA1(const std::string &input) {
 	return std::string(hexstring, 40);
 }
 
-uint16_t getStashSize(const StashItemList &itemList) {
+uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList) {
 	uint16_t size = 0;
 	for (const auto &[itemId, itemCount] : itemList) {
 		size += ceil(itemCount / static_cast<float_t>(Item::items[itemId].stackSize));
@@ -1946,6 +1948,39 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 unsigned int getNumberOfCores() {
 	static auto cores = std::thread::hardware_concurrency();
 	return cores;
+}
+
+Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
+	switch (combatType) {
+		case COMBAT_PHYSICALDAMAGE:
+			return CIPBIA_ELEMENTAL_PHYSICAL;
+		case COMBAT_ENERGYDAMAGE:
+			return CIPBIA_ELEMENTAL_ENERGY;
+		case COMBAT_EARTHDAMAGE:
+			return CIPBIA_ELEMENTAL_EARTH;
+		case COMBAT_FIREDAMAGE:
+			return CIPBIA_ELEMENTAL_FIRE;
+		case COMBAT_LIFEDRAIN:
+			return CIPBIA_ELEMENTAL_LIFEDRAIN;
+		case COMBAT_HEALING:
+			return CIPBIA_ELEMENTAL_HEALING;
+		case COMBAT_DROWNDAMAGE:
+			return CIPBIA_ELEMENTAL_DROWN;
+		case COMBAT_ICEDAMAGE:
+			return CIPBIA_ELEMENTAL_ICE;
+		case COMBAT_HOLYDAMAGE:
+			return CIPBIA_ELEMENTAL_HOLY;
+		case COMBAT_DEATHDAMAGE:
+			return CIPBIA_ELEMENTAL_DEATH;
+		case COMBAT_MANADRAIN:
+			return CIPBIA_ELEMENTAL_MANADRAIN;
+		case COMBAT_AGONYDAMAGE:
+			return CIPBIA_ELEMENTAL_AGONY;
+		case COMBAT_NEUTRALDAMAGE:
+			return CIPBIA_ELEMENTAL_AGONY;
+		default:
+			return CIPBIA_ELEMENTAL_UNDEFINED;
+	}
 }
 
 /**

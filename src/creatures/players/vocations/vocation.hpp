@@ -11,8 +11,8 @@
 
 #include "creatures/creatures_definitions.hpp"
 
-enum class WheelGemSupremeModifier_t : uint8_t;
 enum class WheelGemQuality_t : uint8_t;
+enum class WheelGemSupremeModifier_t : uint8_t;
 
 class Vocation {
 public:

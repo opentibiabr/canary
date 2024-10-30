@@ -135,7 +135,7 @@ const std::map<uint16_t, std::string> &IOBosstiary::getBosstiaryMap() const {
 	return bosstiaryMap;
 }
 
-void IOBosstiary::setBossBoostedName(const std::string_view &name) {
+void IOBosstiary::setBossBoostedName(std::string_view name) {
 	boostedBoss = name;
 }
 

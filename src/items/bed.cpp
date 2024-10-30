@@ -169,7 +169,7 @@ bool BedItem::sleep(const std::shared_ptr<Player> &player) {
 	g_game().setBedSleeper(static_self_cast<BedItem>(), player->getGUID());
 
 	// make the player walk onto the bed
-	g_dispatcher().addWalkEvent([=] {
+	g_dispatcher().addWalkEvent([player, this] {
 		g_game().map.moveCreature(player, getTile());
 	});
 

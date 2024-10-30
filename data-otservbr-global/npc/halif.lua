@@ -60,6 +60,7 @@ npcConfig.shop = {
 	{ itemName = "candlestick", clientId = 2917, buy = 2 },
 	{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
 	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
+	{ itemName = "crusher", clientId = 46627, buy = 500 },
 	{ itemName = "cup", clientId = 2881, buy = 2 },
 	{ itemName = "document", clientId = 2818, buy = 12 },
 	{ itemName = "fishing rod", clientId = 3483, buy = 40, sell = 40 },

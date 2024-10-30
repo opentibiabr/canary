@@ -949,19 +949,19 @@ void ItemParse::parseReflectDamage(const std::string &stringValue, pugi::xml_att
 	}
 }
 
-void ItemParse::parseTransformOnUse(const std::string_view &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+void ItemParse::parseTransformOnUse(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (stringValue == "transformonuse") {
 		itemType.m_transformOnUse = pugi::cast<uint16_t>(valueAttribute.value());
 	}
 }
 
-void ItemParse::parsePrimaryType(const std::string_view &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+void ItemParse::parsePrimaryType(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (stringValue == "primarytype") {
 		itemType.m_primaryType = asLowerCaseString(valueAttribute.as_string());
 	}
 }
 
-void ItemParse::parseHouseRelated(const std::string_view &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+void ItemParse::parseHouseRelated(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (stringValue == "usedbyhouseguests") {
 		g_logger().debug("[{}] item {}, used by guests {}", __FUNCTION__, itemType.id, valueAttribute.as_bool());
 		itemType.m_canBeUsedByGuests = valueAttribute.as_bool();
@@ -1204,7 +1204,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 	}
 }
 
-void ItemParse::parseUnscriptedItems(const std::string_view &stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+void ItemParse::parseUnscriptedItems(std::string_view stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (stringValue == "script") {
 		const std::string scriptName = valueAttribute.as_string();
 		const auto tokens = split(scriptName, ';');

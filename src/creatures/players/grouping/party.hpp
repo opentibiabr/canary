@@ -61,7 +61,7 @@ public:
 	bool joinParty(const std::shared_ptr<Player> &player);
 	void revokeInvitation(const std::shared_ptr<Player> &player);
 	bool passPartyLeadership(const std::shared_ptr<Player> &player);
-	bool leaveParty(const std::shared_ptr<Player> &player);
+	bool leaveParty(const std::shared_ptr<Player> &player, bool forceRemove = false);
 
 	bool removeInvite(const std::shared_ptr<Player> &player, bool removeFromPlayer = true);
 

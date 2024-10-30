@@ -92,7 +92,7 @@ std::string Npc::getDescription(int32_t) {
 	return strDescription + '.';
 }
 
-void Npc::setName(std::string newName) {
+void Npc::setName(std::string newName) const {
 	npcType->name = std::move(newName);
 }
 
@@ -112,7 +112,7 @@ uint8_t Npc::getSpeechBubble() const {
 	return npcType->info.speechBubble;
 }
 
-void Npc::setSpeechBubble(const uint8_t bubble) {
+void Npc::setSpeechBubble(const uint8_t bubble) const {
 	npcType->info.speechBubble = bubble;
 }
 

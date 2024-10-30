@@ -24,7 +24,7 @@ public:
 
 	bool persistLuaState() const;
 
-	void pushCreature(std::shared_ptr<Creature> creature);
+	void pushCreature(const std::shared_ptr<Creature> &creature);
 
 	void pushPosition(const Position &position, int32_t stackpos = 0);
 

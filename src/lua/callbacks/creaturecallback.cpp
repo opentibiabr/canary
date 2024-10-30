@@ -51,11 +51,11 @@ void CreatureCallback::pushSpecificCreature(const std::shared_ptr<Creature> &cre
 	LuaScriptInterface::setMetatable(L, -1, getCreatureClass(creature));
 }
 
-bool CreatureCallback::persistLuaState() {
+bool CreatureCallback::persistLuaState() const {
 	return params > 0 && scriptInterface->callFunction(params);
 }
 
-void CreatureCallback::pushCreature(std::shared_ptr<Creature> creature) {
+void CreatureCallback::pushCreature(const std::shared_ptr<Creature> &creature) {
 	params++;
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);

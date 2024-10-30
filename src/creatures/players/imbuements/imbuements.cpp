@@ -389,7 +389,7 @@ uint32_t Imbuement::getStorage() const {
 	return storage;
 }
 
-bool Imbuement::isPremium() {
+bool Imbuement::isPremium() const {
 	return premium;
 }
 

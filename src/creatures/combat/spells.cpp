@@ -116,7 +116,7 @@ bool Spells::hasInstantSpell(const std::string &word) const {
 	return false;
 }
 
-void Spells::setInstantSpell(const std::string &word, const std::shared_ptr<InstantSpell> instant) {
+void Spells::setInstantSpell(const std::string &word, const std::shared_ptr<InstantSpell> &instant) {
 	instants.try_emplace(word, instant);
 }
 
@@ -1315,7 +1315,7 @@ bool RuneSpell::hasOwnErrorHandler() {
 	return true;
 }
 
-std::shared_ptr<Thing> RuneSpell::getTarget(std::shared_ptr<Player>, std::shared_ptr<Creature> targetCreature, const Position &, uint8_t) const {
+std::shared_ptr<Thing> RuneSpell::getTarget(const std::shared_ptr<Player> &, const std::shared_ptr<Creature> &targetCreature, const Position &, uint8_t) const {
 	return targetCreature;
 }
 

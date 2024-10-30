@@ -399,7 +399,7 @@ int32_t Condition::getTicks() const {
 	return ticks;
 }
 
-bool Condition::updateCondition(const std::shared_ptr<Condition> addCondition) {
+bool Condition::updateCondition(const std::shared_ptr<Condition> &addCondition) {
 	if (conditionType != addCondition->getType()) {
 		return false;
 	}

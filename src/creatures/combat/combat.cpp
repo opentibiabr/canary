@@ -431,7 +431,7 @@ void Combat::setPlayerCombatValues(formulaType_t newFormulaType, double newMina,
 	this->maxb = newMaxb;
 }
 
-void Combat::postCombatEffects(std::shared_ptr<Creature> caster, const Position &origin, const Position &pos) const {
+void Combat::postCombatEffects(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos) const {
 	postCombatEffects(std::move(caster), origin, pos, params);
 }
 
@@ -517,7 +517,7 @@ bool Combat::hasArea() const {
 	return area != nullptr;
 }
 
-void Combat::addCondition(const std::shared_ptr<Condition> condition) {
+void Combat::addCondition(const std::shared_ptr<Condition> &condition) {
 	params.conditionList.emplace_back(condition);
 }
 
@@ -1747,7 +1747,7 @@ void TargetCallback::onTargetCombat(const std::shared_ptr<Creature> &creature, c
 
 //**********************************************************//
 
-ChainCallback::ChainCallback(uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) :
+ChainCallback::ChainCallback(const uint8_t &chainTargets, const uint8_t &chainDistance, const bool &backtracking) :
 	m_chainDistance(chainDistance), m_chainTargets(chainTargets), m_backtracking(backtracking) { }
 
 void ChainCallback::getChainValues(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking) {
@@ -2347,7 +2347,7 @@ std::unique_ptr<MatrixArea> MatrixArea::clone() const {
 	return std::make_unique<MatrixArea>(*this);
 }
 
-void MatrixArea::setValue(uint32_t row, uint32_t col, bool value) {
+void MatrixArea::setValue(uint32_t row, uint32_t col, bool value) const {
 	if (row < rows && col < cols) {
 		data_[row][col] = value;
 	} else {

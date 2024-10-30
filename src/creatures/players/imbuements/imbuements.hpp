@@ -85,7 +85,7 @@ public:
 
 	uint32_t getStorage() const;
 
-	bool isPremium();
+	bool isPremium() const;
 	std::string getName() const;
 	std::string getDescription() const;
 

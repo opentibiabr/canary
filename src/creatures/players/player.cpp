@@ -5860,7 +5860,7 @@ void Player::removeFlag(PlayerFlags_t flag) const {
 	group->flags[static_cast<std::size_t>(flag)] = false;
 }
 
-void Player::sendUnjustifiedPoints() {
+void Player::sendUnjustifiedPoints() const {
 	if (client) {
 		double dayKills = 0;
 		double weekKills = 0;
@@ -5917,7 +5917,7 @@ void Player::setCurrentMount(uint8_t mount) {
 }
 
 bool Player::hasAnyMount() const {
-	const auto &mounts = g_game().mounts.getMounts();
+	const auto &mounts = g_game().mounts->getMounts();
 	return std::ranges::any_of(mounts, [&](const auto &mount) {
 		return hasMount(mount);
 	});
@@ -5973,7 +5973,7 @@ bool Player::toggleMount(bool mount) {
 			currentMountId = getRandomMountId();
 		}
 
-		const auto &currentMount = g_game().mounts.getMountByID(currentMountId);
+		const auto &currentMount = g_game().mounts->getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
 		}
@@ -6083,7 +6083,7 @@ bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
 }
 
 void Player::dismount() {
-	const auto &mount = g_game().mounts.getMountByID(getCurrentMount());
+	const auto &mount = g_game().mounts->getMountByID(getCurrentMount());
 	if (mount && mount->speed > 0) {
 		g_game().changeSpeed(static_self_cast<Player>(), -mount->speed);
 	}
@@ -6437,7 +6437,7 @@ size_t Player::getMaxDepotItems() const {
 
 // tile
 // send methods
-void Player::sendAddTileItem(std::shared_ptr<Tile> itemTile, const Position &pos, std::shared_ptr<Item> item) {
+void Player::sendAddTileItem(const std::shared_ptr<Tile> &itemTile, const Position &pos, const std::shared_ptr<Item> &item) {
 	if (client) {
 		int32_t stackpos = itemTile->getStackposOfItem(static_self_cast<Player>(), item);
 		if (stackpos != -1) {
@@ -6446,7 +6446,7 @@ void Player::sendAddTileItem(std::shared_ptr<Tile> itemTile, const Position &pos
 	}
 }
 
-void Player::sendUpdateTileItem(std::shared_ptr<Tile> updateTile, const Position &pos, std::shared_ptr<Item> item) {
+void Player::sendUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const std::shared_ptr<Item> &item) {
 	if (client) {
 		int32_t stackpos = updateTile->getStackposOfItem(static_self_cast<Player>(), item);
 		if (stackpos != -1) {
@@ -6455,13 +6455,13 @@ void Player::sendUpdateTileItem(std::shared_ptr<Tile> updateTile, const Position
 	}
 }
 
-void Player::sendUpdateTileCreature(const std::shared_ptr<Creature> creature) {
+void Player::sendUpdateTileCreature(const std::shared_ptr<Creature> &creature) {
 	if (client) {
 		client->sendUpdateTileCreature(creature->getPosition(), creature->getTile()->getClientIndexOfCreature(static_self_cast<Player>(), creature), creature);
 	}
 }
 
-void Player::sendCreatureAppear(std::shared_ptr<Creature> creature, const Position &pos, bool isLogin) {
+void Player::sendCreatureAppear(const std::shared_ptr<Creature> &creature, const Position &pos, bool isLogin) {
 	if (!creature) {
 		return;
 	}
@@ -6476,7 +6476,7 @@ void Player::sendCreatureAppear(std::shared_ptr<Creature> creature, const Positi
 	}
 }
 
-void Player::sendCreatureTurn(std::shared_ptr<Creature> creature) {
+void Player::sendCreatureTurn(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		return;
 	}
@@ -6494,7 +6494,7 @@ void Player::sendCreatureTurn(std::shared_ptr<Creature> creature) {
 	}
 }
 
-void Player::sendCreatureChangeVisible(std::shared_ptr<Creature> creature, bool visible) {
+void Player::sendCreatureChangeVisible(const std::shared_ptr<Creature> &creature, bool visible) {
 	if (!client || !creature) {
 		return;
 	}
@@ -6593,7 +6593,7 @@ void Player::updateUIExhausted() {
 	lastUIInteraction = OTSYS_TIME();
 }
 
-bool Player::isQuickLootListedItem(std::shared_ptr<Item> item) const {
+bool Player::isQuickLootListedItem(const std::shared_ptr<Item> &item) const {
 	if (!item) {
 		return false;
 	}

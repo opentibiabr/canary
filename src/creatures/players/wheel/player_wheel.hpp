@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "creatures/creatures_definitions.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
 
 class Creature;

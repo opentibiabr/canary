@@ -150,7 +150,7 @@ bool SpawnsMonster::isLoaded() const {
 	return loaded;
 }
 
-std::vector<SpawnMonster> &SpawnsMonster::getspawnMonsterList() {
+std::vector<std::shared_ptr<SpawnMonster>> &SpawnsMonster::getspawnMonsterList() {
 	return spawnMonsterList;
 }
 

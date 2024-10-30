@@ -13,7 +13,7 @@
 	#include <cstdint>
 #endif
 
-enum CyclopediaBadge_t : uint8_t {
+enum class CyclopediaBadge_t : uint8_t {
 	ACCOUNT_AGE = 1,
 	LOYALTY,
 	ACCOUNT_ALL_LEVEL,

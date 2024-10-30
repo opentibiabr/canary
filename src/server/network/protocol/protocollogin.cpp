@@ -17,8 +17,8 @@
 #include "core.hpp"
 #include "enums/account_errors.hpp"
 
-void ProtocolLogin::disconnectClient(const std::string &message) {
-	auto output = OutputMessagePool::getOutputMessage();
+void ProtocolLogin::disconnectClient(const std::string &message) const {
+	const auto output = OutputMessagePool::getOutputMessage();
 
 	output->addByte(0x0B);
 	output->addString(message);
@@ -27,7 +27,7 @@ void ProtocolLogin::disconnectClient(const std::string &message) {
 	disconnect();
 }
 
-void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const std::string &password) {
+void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const std::string &password) const {
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
@@ -105,7 +105,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 
 	msg.skipBytes(2); // client OS
 
-	uint16_t version = msg.get<uint16_t>();
+	auto version = msg.get<uint16_t>();
 
 	// Old protocol support
 	oldProtocol = version == 1100;

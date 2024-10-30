@@ -18,9 +18,9 @@ void MetricsFunctions::init(lua_State* L) {
 // Metrics
 int MetricsFunctions::luaMetricsAddCounter(lua_State* L) {
 	// metrics.addCounter(name, value, attributes)
-	auto name = getString(L, 1);
-	auto value = getNumber<double>(L, 2);
-	auto attributes = getAttributes(L, 3);
+	const auto name = getString(L, 1);
+	const auto value = getNumber<double>(L, 2);
+	const auto attributes = getAttributes(L, 3);
 	g_metrics().addCounter(name, value, attributes);
 	return 1;
 }

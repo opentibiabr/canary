@@ -27,6 +27,12 @@ struct lua_State;
 
 class KVFunctions final : LuaScriptInterface {
 public:
+	explicit KVFunctions(lua_State* L) :
+		LuaScriptInterface("KVFunctions") {
+		init(L);
+	}
+	~KVFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerTable(L, "kv");
 		registerMethod(L, "kv", "scoped", KVFunctions::luaKVScoped);

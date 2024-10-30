@@ -6,6 +6,12 @@ class Zone;
 
 class ZoneFunctions final : LuaScriptInterface {
 public:
+	explicit ZoneFunctions(lua_State* L) :
+		LuaScriptInterface("ZoneFunctions") {
+		init(L);
+	}
+	~ZoneFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Zone", "", ZoneFunctions::luaZoneCreate);
 		registerMetaMethod(L, "Zone", "__eq", ZoneFunctions::luaZoneCompare);

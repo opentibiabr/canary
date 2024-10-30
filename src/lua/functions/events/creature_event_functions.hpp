@@ -13,6 +13,12 @@
 
 class CreatureEventFunctions final : LuaScriptInterface {
 public:
+	explicit CreatureEventFunctions(lua_State* L) :
+		LuaScriptInterface("CreatureEventFunctions") {
+		init(L);
+	}
+	~CreatureEventFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "CreatureEvent", "", CreatureEventFunctions::luaCreateCreatureEvent);
 		registerMethod(L, "CreatureEvent", "type", CreatureEventFunctions::luaCreatureEventType);

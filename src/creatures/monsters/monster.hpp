@@ -22,7 +22,7 @@ public:
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
-	explicit Monster(std::shared_ptr<MonsterType> mType);
+	explicit Monster(const std::shared_ptr<MonsterType> &mType);
 
 	// non-copyable
 	Monster(const Monster &) = delete;
@@ -90,7 +90,7 @@ public:
 	}
 
 	bool isEnemyFaction(Faction_t faction) const {
-		auto master = getMaster();
+		const auto &master = getMaster();
 		if (master && master->getMonster()) {
 			return master->getMonster()->isEnemyFaction(faction);
 		}
@@ -130,7 +130,7 @@ public:
 	RespawnType getRespawnType() const {
 		return mType->info.respawnType;
 	}
-	void setSpawnMonster(SpawnMonster* newSpawnMonster) {
+	void setSpawnMonster(const std::shared_ptr<SpawnMonster> &newSpawnMonster) {
 		this->spawnMonster = newSpawnMonster;
 	}
 
@@ -142,21 +142,21 @@ public:
 	bool canWalkOnFieldType(CombatType_t combatType) const;
 	void onAttackedCreatureDisappear(bool isLogout) override;
 
-	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
-	void onRemoveCreature(std::shared_ptr<Creature> creature, bool isLogout) override;
+	void onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) override;
+	void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) override;
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
-	void onCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text) override;
-	void onAttackedByPlayer(std::shared_ptr<Player> attackerPlayer);
+	void onCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text) override;
+	void onAttackedByPlayer(const std::shared_ptr<Player> &attackerPlayer);
 	void onSpawn();
 
-	void drainHealth(std::shared_ptr<Creature> attacker, int32_t damage) override;
+	void drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) override;
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
 	bool getNextStep(Direction &direction, uint32_t &flags) override;
 	void onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) override;
 
 	void onThink(uint32_t interval) override;
 
-	bool challengeCreature(std::shared_ptr<Creature> creature, int targetChangeCooldown) override;
+	bool challengeCreature(const std::shared_ptr<Creature> &creature, int targetChangeCooldown) override;
 
 	bool changeTargetDistance(int32_t distance, uint32_t duration = 12000);
 	bool isChallenged() const {
@@ -221,7 +221,7 @@ public:
 		return list;
 	}
 
-	bool isTarget(std::shared_ptr<Creature> creature);
+	bool isTarget(const std::shared_ptr<Creature> &creature);
 	bool isFleeing() const {
 		return !isSummon() && getHealth() <= runAwayHealth && challengeFocusDuration <= 0 && challengeMeleeDuration <= 0;
 	}
@@ -286,7 +286,7 @@ public:
 	void clearTargetList();
 	void clearFriendList();
 
-	BlockType_t blockHit(std::shared_ptr<Creature> attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+	BlockType_t blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 
 	static uint32_t monsterAutoID;
 
@@ -392,7 +392,7 @@ private:
 	std::string nameDescription;
 
 	std::shared_ptr<MonsterType> mType;
-	SpawnMonster* spawnMonster = nullptr;
+	std::shared_ptr<SpawnMonster> spawnMonster = nullptr;
 
 	int64_t lastMeleeAttack = 0;
 
@@ -433,9 +433,9 @@ private:
 	bool m_isDead = false;
 	bool m_isImmune = false;
 
-	void onCreatureEnter(std::shared_ptr<Creature> creature);
-	void onCreatureLeave(std::shared_ptr<Creature> creature);
-	void onCreatureFound(std::shared_ptr<Creature> creature, bool pushFront = false);
+	void onCreatureEnter(const std::shared_ptr<Creature> &creature);
+	void onCreatureLeave(const std::shared_ptr<Creature> &creature);
+	void onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront = false);
 
 	void updateLookDirection();
 
@@ -444,8 +444,8 @@ private:
 	bool addTarget(const std::shared_ptr<Creature> &creature, bool pushFront = false);
 	bool removeTarget(const std::shared_ptr<Creature> &creature);
 
-	void death(std::shared_ptr<Creature> lastHitCreature) override;
-	std::shared_ptr<Item> getCorpse(std::shared_ptr<Creature> lastHitCreature, std::shared_ptr<Creature> mostDamageCreature) override;
+	void death(const std::shared_ptr<Creature> &lastHitCreature) override;
+	std::shared_ptr<Item> getCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature) override;
 
 	void setIdle(bool idle);
 	void updateIdleStatus();
@@ -464,10 +464,10 @@ private:
 	bool isInSpawnRange(const Position &pos) const;
 	bool canWalkTo(Position pos, Direction direction);
 
-	static bool pushItem(std::shared_ptr<Item> item, const Direction &nextDirection);
-	static void pushItems(std::shared_ptr<Tile> tile, const Direction &nextDirection);
-	static bool pushCreature(std::shared_ptr<Creature> creature);
-	static void pushCreatures(std::shared_ptr<Tile> tile);
+	static bool pushItem(const std::shared_ptr<Item> &item, const Direction &nextDirection);
+	static void pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection);
+	static bool pushCreature(const std::shared_ptr<Creature> &creature);
+	static void pushCreatures(const std::shared_ptr<Tile> &tile);
 
 	void onThinkTarget(uint32_t interval);
 	void onThinkYell(uint32_t interval);
@@ -483,7 +483,7 @@ private:
 	uint16_t getLookCorpse() const override {
 		return mType->info.lookcorpse;
 	}
-	void dropLoot(std::shared_ptr<Container> corpse, std::shared_ptr<Creature> lastHitCreature) override;
+	void dropLoot(const std::shared_ptr<Container> &corpse, const std::shared_ptr<Creature> &lastHitCreature) override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 	bool useCacheMap() const override {
 		// return !randomStepping;
@@ -502,5 +502,5 @@ private:
 	void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
 	void doRandomStep(Direction &nextDirection, bool &result);
 
-	void onConditionStatusChange(const ConditionType_t &type);
+	void onConditionStatusChange(ConditionType_t type);
 };

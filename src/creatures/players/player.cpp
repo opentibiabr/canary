@@ -36,6 +36,7 @@
 #include "enums/object_category.hpp"
 #include "enums/player_blessings.hpp"
 #include "enums/player_icons.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -2261,6 +2262,22 @@ void Player::sendExperienceTracker(int64_t rawExp, int64_t finalExp) const {
 void Player::sendOutfitWindow() const {
 	if (client) {
 		client->sendOutfitWindow();
+	}
+}
+
+void Player::sendCyclopediaHouseList(const HouseMap &houses) const {
+	if (client) {
+		client->sendCyclopediaHouseList(houses);
+	}
+}
+void Player::sendResourceBalance(Resource_t resourceType, uint64_t value) const {
+	if (client) {
+		client->sendResourceBalance(resourceType, value);
+	}
+}
+void Player::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess /* = false*/) const {
+	if (client) {
+		client->sendHouseAuctionMessage(houseId, type, index, bidSuccess);
 	}
 }
 

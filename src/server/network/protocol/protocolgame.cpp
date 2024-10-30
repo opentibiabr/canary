@@ -53,6 +53,7 @@
 #include "enums/account_type.hpp"
 #include "enums/object_category.hpp"
 #include "enums/player_blessings.hpp"
+#include "enums/player_cyclopedia.hpp"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file

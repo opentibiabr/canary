@@ -297,8 +297,8 @@ uint32_t Account::getAccountAgeInDays() const {
 }
 
 uint32_t Account::getHouseBidId() const {
-	return m_account.houseBidId;
+	return m_account->houseBidId;
 }
 void Account::setHouseBidId(uint32_t houseId) {
-	m_account.houseBidId = houseId;
+	m_account->houseBidId = houseId;
 }

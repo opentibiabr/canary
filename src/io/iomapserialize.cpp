@@ -288,6 +288,7 @@ bool IOMapSerialize::loadHouseInfo() {
 			uint32_t internalBid = result->getNumber<uint32_t>("internal_bid");
 			uint32_t bidEndDate = result->getNumber<uint32_t>("bid_end_date");
 			auto state = static_cast<CyclopediaHouseState>(result->getNumber<uint16_t>("state"));
+			auto transferStatus = result->getNumber<bool>("transfer_status");
 			const auto timeNow = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 			// Transfer house owner
 			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
@@ -314,7 +315,6 @@ bool IOMapSerialize::loadHouseInfo() {
 				bidEndDate = 0;
 			} else if (state == CyclopediaHouseState::Transfer && timeNow > bidEndDate && bidder > 0) {
 				g_logger().debug("[TRANSFER] - Removing house id '{}' from owner GUID '{}' and transfering to new owner GUID '{}'", houseId, owner, bidder);
-				auto transferStatus = result->getNumber<bool>("transfer_status");
 				if (transferStatus) {
 					house->setOwner(bidder);
 					IOLoginData::increaseBankBalance(owner, internalBid);
@@ -325,6 +325,7 @@ bool IOMapSerialize::loadHouseInfo() {
 				bidderName = "";
 				internalBid = 0;
 				bidEndDate = 0;
+				transferStatus = false;
 			} else if (state == CyclopediaHouseState::MoveOut && timeNow > bidEndDate) {
 				g_logger().debug("[MOVE OUT] - Removing house id '{}' owner", houseId);
 				house->setOwner(0);
@@ -339,6 +340,7 @@ bool IOMapSerialize::loadHouseInfo() {
 			house->setInternalBid(internalBid);
 			house->setBidHolderLimit(internalBid);
 			house->setBidEndDate(bidEndDate);
+			house->setTransferStatus(transferStatus);
 		}
 	} while (result->next());
 

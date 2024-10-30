@@ -10979,6 +10979,17 @@ void Game::playerCyclopediaHouseCancelTransfer(uint32_t playerId, uint32_t house
 		return;
 	}
 
+	if (house->getTransferStatus()) {
+		const auto &newOwner = getPlayerByGUID(house->getBidder());
+		const auto amountPaid = house->getInternalBid() + house->getRent();
+		if (newOwner) {
+			newOwner->setBankBalance(newOwner->getBankBalance() + amountPaid);
+			newOwner->sendResourceBalance(RESOURCE_BANK, newOwner->getBankBalance());
+		} else {
+			IOLoginData::increaseBankBalance(house->getBidder(), amountPaid);
+		}
+	}
+
 	house->setBidderName("");
 	house->setBidder(0);
 	house->setInternalBid(0);
@@ -11026,6 +11037,17 @@ void Game::playerCyclopediaHouseRejectTransfer(uint32_t playerId, uint32_t house
 	const auto house = g_game().map.houses.getHouseByClientId(houseId);
 	if (!house || house->getBidder() != player->getGUID() || house->getState() != CyclopediaHouseState::Transfer) {
 		return;
+	}
+
+	if (house->getTransferStatus()) {
+		const auto &newOwner = getPlayerByGUID(house->getBidder());
+		const auto amountPaid = house->getInternalBid() + house->getRent();
+		if (newOwner) {
+			newOwner->setBankBalance(newOwner->getBankBalance() + amountPaid);
+			newOwner->sendResourceBalance(RESOURCE_BANK, newOwner->getBankBalance());
+		} else {
+			IOLoginData::increaseBankBalance(house->getBidder(), amountPaid);
+		}
 	}
 
 	house->setBidderName("");

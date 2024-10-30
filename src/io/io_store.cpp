@@ -84,11 +84,10 @@ bool IOStore::loadFromXml() {
 		pugi::xml_node child = category.first_child();
 		if (child && std::string(child.name()) == "subcategory") {
 			for (pugi::xml_node subcategory : category.children("subcategory")) {
-				auto newSubCategory = loadCategoryFromXml(category, true);
+				auto newSubCategory = loadCategoryFromXml(subcategory, true);
 
 				for (pugi::xml_node offer : subcategory.children("offer")) {
-					auto thisOffer = loadOfferFromXml(&newSubCategory, offer);
-					if (!thisOffer) {
+					if (!loadOfferFromXml(&newSubCategory, offer)) {
 						return false;
 					}
 				}
@@ -98,8 +97,7 @@ bool IOStore::loadFromXml() {
 		} else if (child && std::string(child.name()) == "offer") {
 			newCategory.setSpecialCategory(true);
 			for (pugi::xml_node offer : category.children("offer")) {
-				auto thisOffer = loadOfferFromXml(&newCategory, offer);
-				if (!thisOffer) {
+				if (!loadOfferFromXml(&newCategory, offer)) {
 					return false;
 				}
 			}
@@ -113,12 +111,9 @@ bool IOStore::loadFromXml() {
 Category IOStore::loadCategoryFromXml(pugi::xml_node category, bool isSubCategory /* = false*/) {
 	auto categoryName = std::string(category.attribute("name").as_string());
 	auto categoryIcon = std::string(category.attribute("icon").as_string());
-
 	auto categoryRookString = std::string(category.attribute("rookgaard").as_string());
-	bool categoryRook = false;
-	if (categoryRookString == "yes") {
-		categoryRook = true;
-	}
+
+	bool categoryRook = categoryRookString == "yes";
 
 	if (isSubCategory) {
 		auto subCategoryStateString = std::string(category.attribute("state").as_string());

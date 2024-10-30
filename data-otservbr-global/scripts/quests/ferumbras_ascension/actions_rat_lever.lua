@@ -5,7 +5,7 @@ local config = {
 	},
 	timeToFightAgain = 2 * 24 * 60 * 60,
 	playerPositions = {
-	    { pos = Position(33201, 31475, 11), teleport = Position(33215, 31470, 12) },
+		{ pos = Position(33201, 31475, 11), teleport = Position(33215, 31470, 12) },
 		{ pos = Position(33197, 31475, 11), teleport = Position(33215, 31470, 12) },
 		{ pos = Position(33198, 31475, 11), teleport = Position(33215, 31470, 12) },
 		{ pos = Position(33199, 31475, 11), teleport = Position(33215, 31470, 12) },

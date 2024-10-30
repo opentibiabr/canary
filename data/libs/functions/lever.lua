@@ -60,9 +60,9 @@ end
 ---@param player Player
 ---@return nil
 function Lever.addPlayer(self, player)
-    if player and player:isPlayer() then
-	    table.insert(self.players, player)
-    end
+	if player and player:isPlayer() then
+		table.insert(self.players, player)
+	end
 end
 
 --[[
@@ -156,10 +156,10 @@ function Lever.checkConditions(self) -- It will check the conditions defined in 
 end
 
 function Lever.executeOnPlayers(self, func)
-    for _, player in pairs(self:getPlayers()) do
-        print(player:getName())
-        func(player)
-    end
+	for _, player in pairs(self:getPlayers()) do
+		print(player:getName())
+		func(player)
+	end
 end
 
 ---@return nil

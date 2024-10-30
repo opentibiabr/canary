@@ -12,6 +12,8 @@
 class Creature;
 class LuaScriptInterface;
 
+struct Position;
+
 class CreatureCallback {
 public:
 	CreatureCallback(LuaScriptInterface* scriptInterface, const std::shared_ptr<Creature> &targetCreature) :

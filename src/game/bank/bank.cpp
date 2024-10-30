@@ -9,6 +9,7 @@
 
 #include "game/bank/bank.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"

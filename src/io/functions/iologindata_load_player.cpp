@@ -9,6 +9,7 @@
 
 #include "io/functions/iologindata_load_player.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"

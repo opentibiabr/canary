@@ -9,6 +9,7 @@
 
 #include "creatures/monsters/monster.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"

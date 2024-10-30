@@ -9,6 +9,7 @@
 
 #include "lua/scripts/scripts.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"

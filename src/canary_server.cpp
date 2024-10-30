@@ -9,6 +9,7 @@
 
 #include "canary_server.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/npcs/npcs.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"

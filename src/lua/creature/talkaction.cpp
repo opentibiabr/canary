@@ -9,6 +9,7 @@
 
 #include "lua/creature/talkaction.hpp"
 
+#include "utils/tools.hpp"
 #include "creatures/players/grouping/groups.hpp"
 #include "creatures/players/player.hpp"
 #include "lua/scripts/scripts.hpp"

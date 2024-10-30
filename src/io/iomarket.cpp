@@ -9,6 +9,7 @@
 
 #include "io/iomarket.hpp"
 
+#include "config/configmanager.hpp"
 #include "database/databasetasks.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"

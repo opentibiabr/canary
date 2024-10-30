@@ -9,6 +9,7 @@
 
 #include "items/weapons/weapons.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"

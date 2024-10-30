@@ -21,6 +21,7 @@
 #include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "io/iobestiary.hpp"

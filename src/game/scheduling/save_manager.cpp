@@ -9,6 +9,7 @@
 
 #include "game/scheduling/save_manager.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/players/grouping/guild.hpp"
 #include "game/game.hpp"
 #include "io/ioguild.hpp"

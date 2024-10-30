@@ -9,6 +9,7 @@
 
 #include "creatures/players/grouping/party.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"

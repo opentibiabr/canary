@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "game/movement/position.hpp"
+
 enum Direction : uint8_t;
 struct Position;
 class Monster;

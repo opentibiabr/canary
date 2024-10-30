@@ -9,8 +9,8 @@
 
 #include "map/house/house.hpp"
 
+#include "config/configmanager.hpp"
 #include "game/game.hpp"
-
 #include "game/scheduling/save_manager.hpp"
 #include "io/ioguild.hpp"
 #include "io/iologindata.hpp"

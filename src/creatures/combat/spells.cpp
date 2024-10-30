@@ -9,6 +9,7 @@
 
 #include "creatures/combat/spells.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"

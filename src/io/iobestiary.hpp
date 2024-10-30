@@ -11,10 +11,14 @@
 
 #include "lib/di/soft_singleton.hpp"
 
+#include "creatures/creatures_definitions.hpp"
+
 class Player;
 class Game;
 class SoftSingleton;
 class SoftSingletonGuard;
+class MonsterType;
+class Creature;
 
 class Charm {
 public:
@@ -33,7 +37,7 @@ public:
 	std::string logMsg;
 
 	CombatType_t dmgtype = COMBAT_NONE;
-	uint16_t effect = CONST_ME_NONE;
+	uint16_t effect = 0;
 
 	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 	SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;

@@ -9,6 +9,7 @@
 
 #include "lua/creature/events.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/player.hpp"

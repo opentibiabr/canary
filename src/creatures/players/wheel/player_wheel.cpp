@@ -21,6 +21,7 @@
 #include "kv/kv.hpp"
 #include "kv/kv_definitions.hpp"
 #include "server/network/message/networkmessage.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 
 std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 

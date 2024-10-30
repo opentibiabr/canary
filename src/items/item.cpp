@@ -9,6 +9,7 @@
 
 #include "items/item.hpp"
 
+#include "config/configmanager.hpp"
 #include "containers/rewards/rewardchest.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/spells.hpp"

@@ -9,6 +9,7 @@
 
 #include "items/tile.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/monsters/monster.hpp"

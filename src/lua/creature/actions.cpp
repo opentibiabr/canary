@@ -9,6 +9,7 @@
 
 #include "lua/creature/actions.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/players/player.hpp"
 #include "enums/account_group_type.hpp"

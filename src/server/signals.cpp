@@ -9,6 +9,7 @@
 
 #include "server/signals.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "game/game.hpp"

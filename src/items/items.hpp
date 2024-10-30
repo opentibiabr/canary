@@ -13,6 +13,7 @@
 #include "game/movement/position.hpp"
 #include "items/items_definitions.hpp"
 #include "utils/utils_definitions.hpp"
+#include "enums/item_attribute.hpp"
 
 struct Abilities {
 public:

@@ -109,7 +109,7 @@ void Party::disband() {
 	membersData.clear();
 }
 
-bool Party::leaveParty(std::shared_ptr<Player> player) {
+bool Party::leaveParty(std::shared_ptr<Player> player, bool forceRemove /* = false */) {
 	if (!player) {
 		return false;
 	}
@@ -123,7 +123,8 @@ bool Party::leaveParty(std::shared_ptr<Player> player) {
 		return false;
 	}
 
-	if (!g_events().eventPartyOnLeave(getParty(), player)) {
+	bool canRemove = g_events().eventPartyOnLeave(getParty(), player);
+	if (!forceRemove && !canRemove) {
 		return false;
 	}
 

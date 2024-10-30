@@ -12,6 +12,9 @@
 #include "creatures/creatures_definitions.hpp"
 #include "creatures/players/wheel/wheel_gems.hpp"
 
+enum class WheelGemQuality_t : uint8_t;
+enum class WheelGemSupremeModifier_t : uint8_t;
+
 class Vocation {
 public:
 	explicit Vocation(uint16_t initId) :

@@ -114,7 +114,7 @@ public:
 	std::shared_ptr<ChatChannel> getChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
 	std::shared_ptr<ChatChannel> getChannelById(uint16_t channelId);
 	std::shared_ptr<ChatChannel> getGuildChannelById(uint32_t guildId);
-	std::shared_ptr<PrivateChatChannel> getPrivateChannel(const std::shared_ptr<Player> &player);
+	std::shared_ptr<PrivateChatChannel> getPrivateChannel(const std::shared_ptr<Player> &player) const;
 
 	LuaScriptInterface* getScriptInterface();
 

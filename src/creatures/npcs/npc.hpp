@@ -78,7 +78,6 @@ public:
 	void resetPlayerInteractions();
 
 	bool isInteractingWithPlayer(uint32_t playerId);
-
 	bool isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId);
 
 	void onCreatureAppear(std::shared_ptr<Creature> creature, bool isLogin) override;
@@ -118,6 +117,8 @@ private:
 	bool isInSpawnRange(const Position &pos) const;
 
 	std::string strDescription;
+
+	std::vector<uint32_t> playerInteractionsOrder;
 
 	std::map<uint32_t, uint16_t> playerInteractions;
 

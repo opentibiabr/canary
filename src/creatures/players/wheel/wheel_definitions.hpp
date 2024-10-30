@@ -251,6 +251,7 @@ struct PlayerWheelMethodsBonusData {
 	Stages stages;
 	Avatar avatar;
 
+	float momentum = 0;
 	float mitigation = 0;
 	std::vector<std::string> spells;
 };

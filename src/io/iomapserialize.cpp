@@ -300,25 +300,25 @@ bool IOMapSerialize::loadHouseInfo() {
 					g_logger().debug("Setting house id '{}' owner to player GUID '{}'", houseId, newOwner);
 					house->setOwner(newOwner);
 				}
-			} else if (state == 0 && bidder > 0 && timeNow > bidEndDate) {
+			} else if (state == 0 && timeNow > bidEndDate && bidder > 0) { // Available
+				g_logger().debug("[BID] - Setting house id '{}' owner to player GUID '{}'", houseId, bidder);
 				if (highestBid < internalBid) {
 					uint32_t diff = internalBid - highestBid;
 					IOLoginData::increaseBankBalance(bidder, diff);
 				}
-				g_logger().debug("Setting house id '{}' owner to player GUID '{}'", houseId, bidder);
 				house->setOwner(bidder);
 				bidder = 0;
 				bidderName = "";
 				highestBid = 0;
 				internalBid = 0;
 				bidEndDate = 0;
-			} else if (state == 2 && bidder == -1 && timeNow > bidEndDate) {
-				g_logger().debug("Removing house id '{}' owner", houseId);
+			} else if (state == 4 && timeNow > bidEndDate) { // Move Out
+				g_logger().debug("[MOVE OUT] - Removing house id '{}' owner", houseId);
 				house->setOwner(0);
 				bidEndDate = 0;
-				bidder = 0;
 			} else {
 				house->setOwner(owner, false);
+				house->setState(state);
 			}
 			house->setBidder(bidder);
 			house->setBidderName(bidderName);
@@ -326,7 +326,6 @@ bool IOMapSerialize::loadHouseInfo() {
 			house->setInternalBid(internalBid);
 			house->setBidHolderLimit(internalBid);
 			house->setBidEndDate(bidEndDate);
-			house->setState(state);
 		}
 	} while (result->next());
 

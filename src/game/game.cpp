@@ -10904,12 +10904,11 @@ void Game::playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uin
 	}
 
 	const auto house = g_game().map.houses.getHouseByClientId(houseId);
-	if (!house || house->getOwner() != player->getGUID()) {
+	if (!house || house->getOwner() != player->getGUID() || house->getState() != 2) {
 		return;
 	}
 
 	house->setBidEndDate(timestamp);
-	house->setBidder(-1);
 	house->setState(4);
 
 	playerCyclopediaHousesByTown(playerId, "");
@@ -10926,18 +10925,17 @@ void Game::playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseI
 	}
 
 	const auto house = g_game().map.houses.getHouseByClientId(houseId);
-	if (!house || house->getOwner() != player->getGUID()) {
+	if (!house || house->getOwner() != player->getGUID() || house->getState() != 4) {
 		return;
 	}
 
 	house->setBidEndDate(0);
-	house->setBidder(0);
 	house->setState(2);
 
 	playerCyclopediaHousesByTown(playerId, "");
 }
 
-bool Game::processBankAuction(std::shared_ptr<Player> player, std::shared_ptr<House> house, uint64_t bid, bool replace /* = false*/) {
+bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_ptr<House> &house, uint64_t bid, bool replace /* = false*/) {
 	if (!replace && player->getBankBalance() < (house->getRent() + bid)) {
 		return false;
 	}

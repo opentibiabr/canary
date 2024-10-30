@@ -2500,7 +2500,10 @@ float Monster::getAttackMultiplier() const {
 
 float Monster::getDefenseMultiplier() const {
 	float multiplier = mType->getDefenseMultiplier();
-	return multiplier * std::pow(1.02f, getForgeStack());
+	if (auto stacks = getForgeStack(); stacks > 0) {
+		multiplier *= (1 + (0.1 * stacks));
+	}
+	return multiplier;
 }
 
 bool Monster::isDead() const {

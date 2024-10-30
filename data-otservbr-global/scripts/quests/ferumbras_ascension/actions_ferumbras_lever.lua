@@ -71,9 +71,9 @@ function leverFerumbras.onUse(player, item, fromPosition, target, toPosition, is
 				local stg = crystal.globalStorage
 				local sqm = Tile(pos)
 				if sqm then
-					local item = sqm:getItemById(17586)
+					local item = sqm:getItemById(14961)
 					if item then
-						item:transform(17580)
+						item:transform(14955)
 					end
 				end
 				Game.setStorageValue(stg, 0)

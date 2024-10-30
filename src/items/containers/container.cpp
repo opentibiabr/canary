@@ -784,7 +784,7 @@ void Container::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count)
 	}
 
 	if (item->isStackable() && count != item->getItemCount()) {
-		const uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count));
+		const auto newCount = static_cast<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count));
 		const int32_t oldWeight = item->getWeight();
 		item->setItemCount(newCount);
 		updateItemWeight(-oldWeight + item->getWeight());

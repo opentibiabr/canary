@@ -3650,7 +3650,7 @@ void Player::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) {
 			item->resetParent();
 			inventory[index] = nullptr;
 		} else {
-			const uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count));
+			const auto newCount = static_cast<uint8_t>(std::max<int32_t>(0, item->getItemCount() - count));
 			item->setItemCount(newCount);
 
 			// send change to client
@@ -6274,7 +6274,7 @@ void Player::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, const
 uint64_t Player::getMoney() const {
 	uint64_t moneyCount = 0;
 
-	auto countMoneyInContainer = [&](const auto &self, const std::shared_ptr<Container> &container) -> void {
+	auto countMoneyInContainer = [&moneyCount](const auto &self, const std::shared_ptr<Container> &container) -> void {
 		for (const auto &item : container->getItemList()) {
 			if (const auto &tmpContainer = item->getContainer()) {
 				self(self, tmpContainer);

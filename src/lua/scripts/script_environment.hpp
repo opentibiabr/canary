@@ -25,7 +25,7 @@ class Game;
 class ScriptEnvironment final {
 public:
 	ScriptEnvironment();
-	virtual ~ScriptEnvironment();
+	~ScriptEnvironment();
 
 	// non-copyable
 	ScriptEnvironment(const ScriptEnvironment &) = delete;

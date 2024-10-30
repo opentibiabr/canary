@@ -20,7 +20,7 @@ public:
 		return static_self_cast<Teleport>();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() final {
+	std::shared_ptr<Cylinder> getCylinder() override {
 		return getTeleport();
 	}
 

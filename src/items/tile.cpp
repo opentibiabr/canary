@@ -285,17 +285,17 @@ std::shared_ptr<Creature> Tile::getBottomVisibleCreature(const std::shared_ptr<C
 				return getBottomCreature();
 			}
 
-			for (const auto &it : std::ranges::reverse_view(*creatures)) {
-				if (creature->canSeeCreature(it)) {
-					return it;
+			for (const auto &reverseCreature : std::ranges::reverse_view(*creatures)) {
+				if (creature->canSeeCreature(reverseCreature)) {
+					return reverseCreature;
 				}
 			}
 		} else {
-			for (const auto &creature : std::ranges::reverse_view(*creatures)) {
-				if (!creature->isInvisible()) {
-					const auto &player = creature->getPlayer();
+			for (const auto &reverseCreature : std::ranges::reverse_view(*creatures)) {
+				if (!reverseCreature->isInvisible()) {
+					const auto &player = reverseCreature->getPlayer();
 					if (!player || !player->isInGhostMode()) {
-						return creature;
+						return reverseCreature;
 					}
 				}
 			}

@@ -5911,7 +5911,7 @@ void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::str
 		return;
 	}
 
-	player->vip()->edit(guid, description, icon, notify, std::move(vipGroupsId));
+	player->vip()->edit(guid, description, icon, notify, vipGroupsId);
 }
 
 void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm) {
@@ -6938,7 +6938,7 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_pt
 		}
 
 		if (attackerPlayer->wheel()->getInstant("Blessing of the Grove")) {
-			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(std::move(target))) / 100.;
+			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100.;
 		}
 	}
 }
@@ -6983,7 +6983,7 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::s
 	}
 }
 
-int32_t Game::applyHealthChange(CombatDamage &damage, const std::shared_ptr<Creature> &target) const {
+int32_t Game::applyHealthChange(const CombatDamage &damage, const std::shared_ptr<Creature> &target) const {
 	int32_t targetHealth = target->getHealth();
 
 	// Wheel of destiny (Gift of Life)
@@ -10742,7 +10742,7 @@ const std::unordered_map<uint16_t, std::string> &Game::getHirelingOutfits() {
 
 void Game::updatePlayersOnline() const {
 	// Function to be executed within the transaction
-	auto updateOperation = [this]() -> bool {
+	auto updateOperation = [this]() {
 		const auto &m_players = getPlayers();
 		bool changesMade = false;
 

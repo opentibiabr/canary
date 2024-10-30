@@ -229,7 +229,7 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 	message.assign(transformToSHA1(oKeyPad));
 
 	// calculate hmac offset
-	const uint32_t offset = static_cast<uint32_t>(std::stol(message.substr(39, 1), nullptr, 16) & 0xF);
+	const auto offset = static_cast<uint32_t>(std::stol(message.substr(39, 1), nullptr, 16) & 0xF);
 
 	// get truncated hash
 	const uint32_t truncHash = std::stol(message.substr(2 * offset, 8), nullptr, 16) & 0x7FFFFFFF;
@@ -1135,7 +1135,7 @@ std::string getCombatName(CombatType_t combatType) {
 }
 
 CombatType_t getCombatTypeByName(const std::string &combatname) {
-	const auto it = std::ranges::find_if(combatTypeNames, [combatname](const std::pair<CombatType_t, std::string> &pair) {
+	const auto it = std::ranges::find_if(combatTypeNames, [&combatname](const std::pair<CombatType_t, std::string> &pair) {
 		return pair.second == combatname;
 	});
 
@@ -1794,9 +1794,9 @@ uint8_t forgeBonus(int32_t number) {
 }
 
 std::string formatPrice(std::string price, bool space /* = false*/) {
-	std::ranges::reverse(price.begin(), price.end());
+	std::ranges::reverse(price);
 	price = std::regex_replace(price, std::regex("000"), "k");
-	std::ranges::reverse(price.begin(), price.end());
+	std::ranges::reverse(price);
 	if (space) {
 		price = std::regex_replace(price, std::regex("k"), " k", std::regex_constants::format_first_only);
 	}
@@ -1927,9 +1927,9 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 		return output.str();
 	}
 
-	const int hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
-	const int minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
-	const int seconds = static_cast<int>(timeRemaining % 60);
+	const auto hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
+	const auto minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
+	const auto seconds = static_cast<int>(timeRemaining % 60);
 
 	if (hours == 0 && minutes == 0 && seconds > 0) {
 		output << " less than 1 minute";
@@ -2010,7 +2010,9 @@ void sleep_for(uint64_t ms) {
 std::string toKey(const std::string &str) {
 	std::string key = asLowerCaseString(str);
 	std::ranges::replace(key, ' ', '-');
-	key.erase(std::ranges::remove_if(key, [](char c) { return std::isspace(c); }).begin(), key.end());
+	std::erase_if(key, [](char c) {
+		return std::isspace(c);
+	});
 	return key;
 }
 

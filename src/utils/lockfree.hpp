@@ -23,7 +23,7 @@ struct LockfreeFreeList {
 	static void preallocate(size_t count) {
 		auto &freeList = get();
 		for (size_t i = 0; i < count; ++i) {
-			T* p = static_cast<T*>(::operator new(sizeof(T), static_cast<std::align_val_t>(alignof(T))));
+			auto p = static_cast<T*>(::operator new(sizeof(T), static_cast<std::align_val_t>(alignof(T))));
 			if (!freeList.try_push(p)) {
 				::operator delete(p, static_cast<std::align_val_t>(alignof(T)));
 				break;
@@ -45,7 +45,7 @@ public:
 	LockfreePoolingAllocator() noexcept = default;
 
 	template <typename U>
-	LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY> &) noexcept { }
+	explicit LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY> &) noexcept { }
 
 	~LockfreePoolingAllocator() = default;
 
@@ -59,11 +59,9 @@ public:
 		return static_cast<T*>(::operator new(n * sizeof(T)));
 	}
 
-	void deallocate(T* p, std::size_t n) noexcept {
-		if (n == 1) {
-			if (LockfreeFreeList<T, CAPACITY>::get().try_push(p)) {
-				return;
-			}
+	void deallocate(T* p, std::size_t n) const noexcept {
+		if (n == 1 && LockfreeFreeList<T, CAPACITY>::get().try_push(p)) {
+			return;
 		}
 		::operator delete(p);
 	}

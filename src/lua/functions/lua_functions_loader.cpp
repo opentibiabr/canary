@@ -787,7 +787,7 @@ int LuaFunctionsLoader::luaGarbageCollection(lua_State* L) {
 }
 
 int LuaFunctionsLoader::validateDispatcherContext(std::string_view fncName) {
-	if (g_dispatcher().context().isOn() && g_dispatcher().context().isAsync()) {
+	if (DispatcherContext::isOn() && g_dispatcher().context().isAsync()) {
 		g_logger().warn("[{}] The call to lua was ignored because the '{}' task is trying to communicate while in async mode.", fncName, g_dispatcher().context().getName());
 		return LUA_ERRRUN;
 	}

@@ -667,7 +667,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 		"LuaEnvironment::executeTimerEvent"
 	);
 
-	g_luaEnvironment().timerEvents.emplace(lastTimerEventId, std::move(eventDesc));
+	g_luaEnvironment().timerEvents.try_emplace(lastTimerEventId, std::move(eventDesc));
 	lua_pushnumber(L, lastTimerEventId++);
 	return 1;
 }

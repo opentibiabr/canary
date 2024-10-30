@@ -9321,7 +9321,13 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage &msg) {
 		sendStoreHome();
 	} else if (actionType == 1) {
 		uint8_t innerAction = msg.getByte();
-		if (innerAction == 1) {
+		if (innerAction == 0) {
+			auto currentCategory = g_ioStore().findCategory("Premium Time");
+			if (!currentCategory) {
+				return;
+			}
+			sendCategoryOffers(currentCategory);
+		} else if (innerAction == 1) {
 			auto currentCategory = g_ioStore().findCategory("Boosts");
 			if (!currentCategory) {
 				return;
@@ -9335,6 +9341,40 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage &msg) {
 			return;
 		}
 		sendCategoryOffers(currentCategory);
+	} else if (actionType == 3) {
+		uint8_t innerAction = msg.getByte();
+
+		std::string categoryName = "Useful Things";
+		uint32_t offerId = 0;
+
+		if (innerAction >= 4 && innerAction <= 10) {
+			categoryName = "Blessings";
+			offerId = innerAction - 2;
+		} else {
+			switch (innerAction) {
+				case 0:
+					offerId = 15;
+					break;
+				case 1:
+					offerId = 11;
+					break;
+				case 3:
+					offerId = 13;
+					break;
+				case 13:
+					offerId = 14;
+					break;
+				default:
+					offerId = 0;
+					break;
+			}
+		}
+
+		auto currentCategory = g_ioStore().findCategory(categoryName);
+		if (!currentCategory) {
+			return;
+		}
+		sendCategoryOffers(currentCategory, offerId);
 	} else if (actionType == 4) {
 		uint32_t offerId = msg.get<uint32_t>();
 		auto offer = g_ioStore().getOfferById(offerId);

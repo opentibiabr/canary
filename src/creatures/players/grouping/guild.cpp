@@ -11,7 +11,7 @@
 #include "game/game.hpp"
 
 void Guild::addMember(const std::shared_ptr<Player> &player) {
-	membersOnline.push_back(player);
+	membersOnline.emplace_back(player);
 	for (const auto &member : getMembersOnline()) {
 		g_game().updatePlayerHelpers(member);
 	}
@@ -30,8 +30,8 @@ void Guild::removeMember(const std::shared_ptr<Player> &player) {
 	}
 }
 
-GuildRank_ptr Guild::getRankById(uint32_t rankId) {
-	for (auto rank : ranks) {
+GuildRank_ptr Guild::getRankById(uint32_t rankId) const {
+	for (const auto &rank : ranks) {
 		if (rank->id == rankId) {
 			return rank;
 		}
@@ -40,7 +40,7 @@ GuildRank_ptr Guild::getRankById(uint32_t rankId) {
 }
 
 GuildRank_ptr Guild::getRankByName(const std::string &guildName) const {
-	for (auto rank : ranks) {
+	for (const auto &rank : ranks) {
 		if (rank->name == guildName) {
 			return rank;
 		}
@@ -49,7 +49,7 @@ GuildRank_ptr Guild::getRankByName(const std::string &guildName) const {
 }
 
 GuildRank_ptr Guild::getRankByLevel(uint8_t level) const {
-	for (auto rank : ranks) {
+	for (const auto &rank : ranks) {
 		if (rank->level == level) {
 			return rank;
 		}

@@ -16,10 +16,10 @@ public:
 	CustomAttribute();
 	~CustomAttribute();
 
-	CustomAttribute(const std::string &initStringKey, const int64_t initInt64Value);
-	CustomAttribute(const std::string &initStringKey, const std::string &initStringValue);
-	CustomAttribute(const std::string &initStringKey, const double initDoubleValue);
-	CustomAttribute(const std::string &initStringKey, const bool initBoolValue);
+	CustomAttribute(std::string initStringKey, int64_t initInt64Value);
+	CustomAttribute(std::string initStringKey, const std::string &initStringValue);
+	CustomAttribute(std::string initStringKey, double initDoubleValue);
+	CustomAttribute(std::string initStringKey, bool initBoolValue);
 
 	const std::string &getStringKey() const;
 

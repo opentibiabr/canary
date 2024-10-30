@@ -13,6 +13,12 @@
 
 class ResultFunctions final : LuaScriptInterface {
 public:
+	explicit ResultFunctions(lua_State* L) :
+		LuaScriptInterface("ResultFunctions") {
+		init(L);
+	}
+	~ResultFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerTable(L, "Result");
 		registerMethod(L, "Result", "getNumber", ResultFunctions::luaResultGetNumber);

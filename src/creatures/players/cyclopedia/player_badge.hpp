@@ -9,16 +9,16 @@
 
 #pragma once
 
-#include "enums/player_cyclopedia.hpp"
-
 class Player;
 class KV;
 class Account;
 
+enum class CyclopediaBadge_t : uint8_t;
+
 struct Badge {
 	uint8_t m_id = 0;
-	CyclopediaBadge_t m_type;
-	std::string m_name;
+	CyclopediaBadge_t m_type {};
+	std::string m_name {};
 	uint16_t m_amount = 0;
 
 	Badge() = default;
@@ -31,14 +31,12 @@ struct Badge {
 	}
 };
 
-namespace std {
-	template <>
-	struct hash<Badge> {
-		std::size_t operator()(const Badge &b) const {
-			return hash<uint8_t>()(b.m_id);
-		}
-	};
-}
+template <>
+struct std::hash<Badge> {
+	std::size_t operator()(const Badge &b) const noexcept {
+		return hash<uint8_t>()(b.m_id);
+	}
+};
 
 class PlayerBadge {
 public:
@@ -51,13 +49,13 @@ public:
 	const std::shared_ptr<KV> &getUnlockedKV();
 
 	// Badge Calculate Functions
-	bool accountAge(uint8_t amount);
-	bool loyalty(uint8_t amount);
-	std::vector<std::shared_ptr<Player>> getPlayersInfoByAccount(std::shared_ptr<Account> acc) const;
-	bool accountAllLevel(uint8_t amount);
-	bool accountAllVocations(uint8_t amount);
-	[[nodiscard]] bool tournamentParticipation(uint8_t skill);
-	[[nodiscard]] bool tournamentPoints(uint8_t race);
+	bool accountAge(uint8_t amount) const;
+	bool loyalty(uint8_t amount) const;
+	std::vector<std::shared_ptr<Player>> getPlayersInfoByAccount(const std::shared_ptr<Account> &acc) const;
+	bool accountAllLevel(uint8_t amount) const;
+	bool accountAllVocations(uint8_t amount) const;
+	[[nodiscard]] bool tournamentParticipation(uint8_t skill) const;
+	[[nodiscard]] bool tournamentPoints(uint8_t race) const;
 
 private:
 	// {badge ID, time when it was unlocked}

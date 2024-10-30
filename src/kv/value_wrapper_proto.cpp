@@ -31,14 +31,14 @@ namespace ProtoHelpers {
 	}
 
 	void setProtoArrayValue(Canary::protobuf::kv::ValueWrapper &protoValue, const ArrayType &arg) {
-		auto arrayValue = protoValue.mutable_array_value();
+		const auto arrayValue = protoValue.mutable_array_value();
 		for (const auto &elem : arg) {
 			*arrayValue->add_values() = ProtoSerializable::toProto(elem);
 		}
 	}
 
 	void setProtoMapValue(Canary::protobuf::kv::ValueWrapper &protoValue, const MapType &arg) {
-		auto mapValue = protoValue.mutable_map_value();
+		const auto mapValue = protoValue.mutable_map_value();
 		for (const auto &[key, value] : arg) {
 			auto* elem = mapValue->add_items();
 			elem->set_key(key);

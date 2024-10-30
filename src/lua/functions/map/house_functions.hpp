@@ -13,6 +13,12 @@
 
 class HouseFunctions final : LuaScriptInterface {
 public:
+	explicit HouseFunctions(lua_State* L) :
+		LuaScriptInterface("HouseFunctions") {
+		init(L);
+	}
+	~HouseFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "House", "", HouseFunctions::luaHouseCreate);
 		registerMetaMethod(L, "House", "__eq", HouseFunctions::luaUserdataCompare);

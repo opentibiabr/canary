@@ -13,6 +13,12 @@
 
 class BitFunctions final : LuaScriptInterface {
 public:
+	explicit BitFunctions(lua_State* L) :
+		LuaScriptInterface("BitFunctions") {
+		init(L);
+	}
+	~BitFunctions() override = default;
+
 	static void init(lua_State* L) {
 #ifndef LUAJIT_VERSION
 		registerTable(L, "bit");

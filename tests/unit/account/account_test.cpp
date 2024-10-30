@@ -19,44 +19,49 @@
 #include "enums/account_group_type.hpp"
 #include "utils/tools.hpp"
 
+using namespace boost::ut;
+using namespace std;
+
 suite<"account"> accountTest = [] {
-	InjectionFixture injectionFixture {};
+	InjectionFixture injectionFixture{};
+
 	test("Account::Account default constructors") = [] {
-		Account byId { 1 }, byDescriptor { "canary@test.com" };
+		shared_ptr<Account> byId = make_shared<Account>(1);
+		shared_ptr<Account> byDescriptor = make_shared<Account>("canary@test.com");
 
-		expect(eq(byId.getID(), 1));
-		expect(eq(byDescriptor.getID(), 0));
+		expect(eq(byId->getID(), 1));
+		expect(eq(byDescriptor->getID(), 0));
 
-		expect(byId.getDescriptor().empty());
-		expect(eq(byDescriptor.getDescriptor(), std::string { "canary@test.com" }));
+		expect(byId->getDescriptor().empty());
+		expect(eq(byDescriptor->getDescriptor(), string{"canary@test.com"}));
 
-		for (auto &account : { byId, byDescriptor }) {
+		for (auto& account : { byId, byDescriptor }) {
 			expect(
-				eq(account.getPremiumRemainingDays(), 0) and
-				eq(account.getPremiumLastDay(), 0) and
-                eq(account.getAccountType(), AccountType::ACCOUNT_TYPE_NORMAL)
+				eq(account->getPremiumRemainingDays(), 0) and
+				eq(account->getPremiumLastDay(), 0) and
+				eq(account->getAccountType(), AccountType::ACCOUNT_TYPE_NORMAL)
 			);
 		}
 	};
 
 	struct AccountLoadTestCase {
-		std::string description;
-		Account account;
+		string description;
+		shared_ptr<Account> account;
 		AccountErrors_t expectedError;
 	};
 
-	std::vector<AccountLoadTestCase> accountLoadTestCases {
-		{ "returns by id if exists", Account { 1 }, AccountErrors_t::Ok },
-		{ "returns by descriptor if exists", Account { "canary@test.com" }, AccountErrors_t::Ok },
-		{ "returns error if id is not valid", Account { 2 }, AccountErrors_t::LoadingAccount },
-		{ "returns error if descriptor is not valid", Account { "not@valid.com" }, AccountErrors_t::LoadingAccount }
+	vector<AccountLoadTestCase> accountLoadTestCases{
+		{"returns by id if exists", make_shared<Account>(1), AccountErrors_t::Ok},
+		{"returns by descriptor if exists", make_shared<Account>("canary@test.com"), AccountErrors_t::Ok},
+		{"returns error if id is not valid", make_shared<Account>(2), AccountErrors_t::LoadingAccount},
+		{"returns error if descriptor is not valid", make_shared<Account>("not@valid.com"), AccountErrors_t::LoadingAccount}
 	};
 
-	for (auto accountLoadTestCase : accountLoadTestCases) {
-		test(accountLoadTestCase.description) = [&injectionFixture, &accountLoadTestCase] {
+	for (auto& testCase : accountLoadTestCases) {
+		test(testCase.description) = [&injectionFixture, &testCase] {
 			auto [accountRepository] = injectionFixture.get<AccountRepository>();
-			accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-			expect(eq(accountLoadTestCase.account.load(), enumToValue(accountLoadTestCase.expectedError))) << accountLoadTestCase.description;
+			accountRepository.addAccount("canary@test.com", AccountInfo{1, 1, 1, AccountType::ACCOUNT_TYPE_GOD});
+			expect(eq(testCase.account->load(), enumToValue(testCase.expectedError))) << testCase.description;
 		};
 	}
 
@@ -242,9 +247,9 @@ suite<"account"> accountTest = [] {
 
 		Account acc { 1 };
 		accountRepository.failAddCoins = false;
-        accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
-        accountRepository.setCoins(1, enumToValue(CoinType::Tournament), 57);
-        accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
+		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, enumToValue(CoinType::Tournament), 57);
+		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and

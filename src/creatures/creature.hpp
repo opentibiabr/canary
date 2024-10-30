@@ -9,19 +9,16 @@
 
 #pragma once
 
-#include "declarations.hpp"
-#include "creatures/combat/condition.hpp"
-#include "utils/utils_definitions.hpp"
-#include "lua/creature/creatureevent.hpp"
-#include "map/map.hpp"
+#include "creatures/creatures_definitions.hpp"
+#include "game/game_definitions.hpp"
 #include "game/movement/position.hpp"
-#include "items/tile.hpp"
+#include "items/thing.hpp"
+#include "map/map_const.hpp"
+#include "utils/utils_definitions.hpp"
 
-using ConditionList = std::list<std::shared_ptr<Condition>>;
-using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
-
+class CreatureEvent;
+class Condition;
 class Map;
-class Thing;
 class Container;
 class Player;
 class Monster;
@@ -29,6 +26,19 @@ class Npc;
 class Item;
 class Tile;
 class Zone;
+class MonsterType;
+class Cylinder;
+class ItemType;
+
+struct CreatureIcon;
+struct Position;
+
+enum CreatureType_t : uint8_t;
+enum ZoneType_t : uint8_t;
+enum CreatureEventType_t : uint8_t;
+
+using ConditionList = std::list<std::shared_ptr<Condition>>;
+using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
 
 static constexpr uint8_t WALK_TARGET_NEARBY_EXTRA_COST = 2;
 static constexpr uint8_t WALK_FLOOR_CHANGE_EXTRA_COST = 2;
@@ -295,13 +305,7 @@ public:
 		return outfit == 75 || outfit == 266 || outfit == 302;
 	}
 	bool isInvisible() const;
-	ZoneType_t getZoneType() {
-		if (getTile()) {
-			return getTile()->getZoneType();
-		}
-
-		return ZONE_NORMAL;
-	}
+	ZoneType_t getZoneType();
 
 	std::unordered_set<std::shared_ptr<Zone>> getZones();
 
@@ -546,31 +550,9 @@ public:
 	bool registerCreatureEvent(const std::string &name);
 	bool unregisterCreatureEvent(const std::string &name);
 
-	std::shared_ptr<Cylinder> getParent() override final {
-		return getTile();
-	}
+	std::shared_ptr<Cylinder> getParent() final;
 
-	void setParent(std::weak_ptr<Cylinder> cylinder) override final {
-		const auto oldGroundSpeed = walk.groundSpeed;
-		walk.groundSpeed = 150;
-
-		if (const auto &lockedCylinder = cylinder.lock()) {
-			const auto &newParent = lockedCylinder->getTile();
-			position = newParent->getPosition();
-			m_tile = newParent;
-
-			if (newParent->getGround()) {
-				const auto &it = Item::items[newParent->getGround()->getID()];
-				if (it.speed > 0) {
-					walk.groundSpeed = it.speed;
-				}
-			}
-		}
-
-		if (walk.groundSpeed != oldGroundSpeed) {
-			walk.recache();
-		}
-	}
+	void setParent(std::weak_ptr<Cylinder> cylinder) final;
 
 	const Position &getPosition() override final {
 		return position;
@@ -818,9 +800,7 @@ protected:
 	std::map<std::string, CreatureIcon> creatureIcons = {};
 
 	// creature script events
-	bool hasEventRegistered(CreatureEventType_t event) const {
-		return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << event)));
-	}
+	bool hasEventRegistered(CreatureEventType_t event) const;
 	CreatureEventList getCreatureEvents(CreatureEventType_t type) const;
 
 	void updateMapCache();

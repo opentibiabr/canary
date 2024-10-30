@@ -8,7 +8,15 @@
  */
 
 #include "io/functions/iologindata_save_player.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/condition.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "game/game.hpp"
+#include "io/ioprey.hpp"
+#include "items/containers/depot/depotchest.hpp"
+#include "items/containers/inbox/inbox.hpp"
+#include "items/containers/rewards/reward.hpp"
 
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {

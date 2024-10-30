@@ -9,22 +9,15 @@
 
 #pragma once
 
-#include "account/account.hpp"
-#include "creatures/combat/combat.hpp"
-#include "items/containers/container.hpp"
+#include "creatures/appearance/outfit/outfit.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/grouping/groups.hpp"
-#include "io/iobestiary.hpp"
-#include "items/item.hpp"
-#include "map/map.hpp"
-#include "creatures/npcs/npc.hpp"
-#include "movement/position.hpp"
-#include "creatures/players/player.hpp"
 #include "lua/creature/raids.hpp"
-#include "creatures/players/grouping/team_finder.hpp"
-#include "utils/wildcardtree.hpp"
-#include "items/items_classification.hpp"
+#include "map/map.hpp"
 #include "modal_window/modal_window.hpp"
-#include "enums/object_category.hpp"
+#include "movement/position.hpp"
 
 // Forward declaration for protobuf class
 namespace Canary {
@@ -46,11 +39,25 @@ class ItemClassification;
 class Guild;
 class Mounts;
 class Spectators;
+class Player;
+class Account;
+class TeamFinder;
+class NetworkMessage;
+class Task;
+class Container;
+class ContainerIterator;
+class Item;
+class BedItem;
+class WildcardTreeNode;
 
 struct Achievement;
 struct HighscoreCategory;
-struct Badge;
-struct Title;
+struct TextMessage;
+
+enum ObjectCategory_t : uint8_t;
+enum class ForgeAction_t : uint8_t;
+
+using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
@@ -87,9 +94,7 @@ public:
 	Game(const Game &) = delete;
 	Game &operator=(const Game &) = delete;
 
-	static Game &getInstance() {
-		return inject<Game>();
-	}
+	static Game &getInstance();
 
 	void resetMonsters() const;
 	void resetNpcs() const;
@@ -129,27 +134,11 @@ public:
 		return teamFinderMap;
 	}
 
-	const std::unique_ptr<TeamFinder> &getTeamFinder(const std::shared_ptr<Player> &player) const {
-		const auto it = teamFinderMap.find(player->getGUID());
-		if (it != teamFinderMap.end()) {
-			return it->second;
-		}
+	const std::unique_ptr<TeamFinder> &getTeamFinder(const std::shared_ptr<Player> &player) const;
 
-		return TeamFinderNull;
-	}
+	const std::unique_ptr<TeamFinder> &getOrCreateTeamFinder(const std::shared_ptr<Player> &player);
 
-	const std::unique_ptr<TeamFinder> &getOrCreateTeamFinder(const std::shared_ptr<Player> &player) {
-		const auto it = teamFinderMap.find(player->getGUID());
-		if (it != teamFinderMap.end()) {
-			return it->second;
-		}
-
-		return teamFinderMap[player->getGUID()] = std::make_unique<TeamFinder>();
-	}
-
-	void removeTeamFinderListed(uint32_t leaderGuid) {
-		teamFinderMap.erase(leaderGuid);
-	}
+	void removeTeamFinderListed(uint32_t leaderGuid);
 
 	std::shared_ptr<Cylinder> internalGetCylinder(const std::shared_ptr<Player> &player, const Position &pos);
 	std::shared_ptr<Thing> internalGetThing(const std::shared_ptr<Player> &player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type);
@@ -205,21 +194,7 @@ public:
 	void addItemsClassification(ItemClassification* itemsClassification) {
 		itemsClassifications.push_back(itemsClassification);
 	}
-	ItemClassification* getItemsClassification(uint8_t id, bool create) {
-		const auto it = std::ranges::find_if(itemsClassifications, [id](const ItemClassification* item) {
-			return item->id == id;
-		});
-
-		if (it != itemsClassifications.end()) {
-			return *it;
-		} else if (create) {
-			auto* itemClassification = new ItemClassification(id);
-			addItemsClassification(itemClassification);
-			return itemClassification;
-		}
-
-		return nullptr;
-	}
+	ItemClassification* getItemsClassification(uint8_t id, bool create);
 
 	LightInfo getWorldLightInfo() const;
 
@@ -592,10 +567,10 @@ public:
 	bool hasDistanceEffect(uint16_t effectId);
 
 	Groups groups;
-	Familiars familiars;
+	[[no_unique_address]] Familiars familiars;
 	Map map;
-	Mounts mounts;
-	Outfits outfits;
+	std::unique_ptr<Mounts> mounts;
+	[[no_unique_address]] Outfits outfits;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 
@@ -839,7 +814,7 @@ private:
 	 * @param category Category of the item (default is OBJECTCATEGORY_DEFAULT).
 	 * @return Return value indicating success or error.
 	 */
-	ReturnValue internalCollectManagedItems(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, ObjectCategory_t category = OBJECTCATEGORY_DEFAULT, bool isLootContainer = true);
+	ReturnValue internalCollectManagedItems(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, ObjectCategory_t category, bool isLootContainer = true);
 
 	/**
 	 * @brief Collects items from the reward chest.
@@ -870,7 +845,6 @@ private:
 	std::string boostedCreature;
 
 	std::vector<std::shared_ptr<Charm>> CharmList;
-	std::vector<std::shared_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 	std::vector<uint16_t> registeredMagicEffects;
 	std::vector<uint16_t> registeredDistanceEffects;

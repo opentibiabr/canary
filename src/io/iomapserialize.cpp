@@ -8,6 +8,8 @@
  */
 
 #include "io/iomapserialize.hpp"
+
+#include "config/configmanager.hpp"
 #include "io/iologindata.hpp"
 #include "game/game.hpp"
 #include "items/bed.hpp"

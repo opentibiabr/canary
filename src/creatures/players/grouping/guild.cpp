@@ -8,6 +8,7 @@
  */
 
 #include "creatures/players/grouping/guild.hpp"
+
 #include "game/game.hpp"
 
 void Guild::addMember(const std::shared_ptr<Player> &player) {

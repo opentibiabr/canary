@@ -9,14 +9,13 @@
 
 #include "io/ioprey.hpp"
 
-#include "lib/di/container.hpp"
-#include "creatures/monsters/monster.hpp"
-#include "creatures/players/player.hpp"
 #include "config/configmanager.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "server/network/message/networkmessage.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 
 // Prey class
 PreySlot::PreySlot(PreySlot_t id) :

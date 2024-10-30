@@ -94,7 +94,7 @@ enum class HighscoreCategories_t : uint8_t {
 	SHIELDING = 6,
 	FISHING = 7,
 	MAGIC_LEVEL = 8,
-	LOYALTY = 9,
+	LOYALTY_POINTS = 9,
 	ACHIEVEMENTS = 10,
 	CHARMS = 11,
 	DROME = 12,

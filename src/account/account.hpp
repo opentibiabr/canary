@@ -9,12 +9,14 @@
 
 #pragma once
 
-#include "account/account_info.hpp"
+struct AccountInfo;
 
 class Account {
 public:
 	explicit Account(const uint32_t &id);
 	explicit Account(std::string descriptor);
+
+	~Account() = default;
 
 	/** Coins
 	 * @brief Get the amount of coins that the account has from database.
@@ -129,6 +131,6 @@ public:
 
 private:
 	std::string m_descriptor;
-	AccountInfo m_account;
+	std::unique_ptr<AccountInfo> m_account;
 	bool m_accLoaded = false;
 };

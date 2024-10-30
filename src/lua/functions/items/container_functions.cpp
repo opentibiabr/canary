@@ -7,9 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/items/container_functions.hpp"
+
 #include "game/game.hpp"
 #include "items/item.hpp"
-#include "lua/functions/items/container_functions.hpp"
+#include "utils/tools.hpp"
 
 int ContainerFunctions::luaContainerCreate(lua_State* L) {
 	// Container(uid)

@@ -8,6 +8,7 @@
  */
 
 #include "server/network/webhook/webhook.hpp"
+
 #include "config/configmanager.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "utils/tools.hpp"

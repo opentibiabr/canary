@@ -7,9 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/combat/spell_functions.hpp"
+
 #include "creatures/combat/spells.hpp"
 #include "creatures/players/vocations/vocation.hpp"
-#include "lua/functions/creatures/combat/spell_functions.hpp"
+#include "items/item.hpp"
+#include "utils/tools.hpp"
 
 int SpellFunctions::luaSpellCreate(lua_State* L) {
 	// Spell(words, name or id) to get an existing spell

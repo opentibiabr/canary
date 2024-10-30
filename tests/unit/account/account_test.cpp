@@ -22,7 +22,7 @@
 using namespace boost::ut;
 using namespace std;
 
-suite accountTest = [] {
+suite<"account"> accountTest = [] {
 	InjectionFixture injectionFixture{};
 
 	test("Account::Account default constructors") = [] {

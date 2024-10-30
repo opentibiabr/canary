@@ -1258,7 +1258,7 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 		return ItemAttribute_t::LOOTMESSAGE_SUFFIX;
 	}
 
-	g_logger().error("[{}] attribute type {} is not registered", __FUNCTION__, str);
+	g_logger().warn("[{}] attribute type {} is not registered", __FUNCTION__, str);
 	return ItemAttribute_t::NONE;
 }
 

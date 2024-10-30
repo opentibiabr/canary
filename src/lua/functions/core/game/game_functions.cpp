@@ -287,6 +287,12 @@ int GameFunctions::luaGameSetWorldType(lua_State* L) {
 	return 1;
 }
 
+int GameFunctions::luaGameGetItemAttributeByName(lua_State* L) {
+	// Game.getItemAttributeByName(name)
+	lua_pushnumber(L, static_cast<lua_Number>(stringToItemAttribute(getString(L, 1))));
+	return 1;
+}
+
 int GameFunctions::luaGameGetReturnMessage(lua_State* L) {
 	// Game.getReturnMessage(value)
 	const ReturnValue value = getNumber<ReturnValue>(L, 1);

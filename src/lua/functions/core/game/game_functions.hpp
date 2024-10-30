@@ -49,6 +49,7 @@ public:
 		registerMethod(L, "Game", "getWorldType", GameFunctions::luaGameGetWorldType);
 		registerMethod(L, "Game", "setWorldType", GameFunctions::luaGameSetWorldType);
 
+		registerMethod(L, "Game", "getItemAttributeByName", GameFunctions::luaGameGetItemAttributeByName);
 		registerMethod(L, "Game", "getReturnMessage", GameFunctions::luaGameGetReturnMessage);
 
 		registerMethod(L, "Game", "createItem", GameFunctions::luaGameCreateItem);
@@ -125,6 +126,7 @@ private:
 	static int luaGameGetWorldType(lua_State* L);
 	static int luaGameSetWorldType(lua_State* L);
 
+	static int luaGameGetItemAttributeByName(lua_State* L);
 	static int luaGameGetReturnMessage(lua_State* L);
 
 	static int luaGameCreateItem(lua_State* L);

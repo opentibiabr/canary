@@ -10,33 +10,32 @@
 #include "account/account.hpp"
 
 #include "account/account_repository_db.hpp"
-#include "config/configmanager.hpp"
-#include "utils/definitions.hpp"
 #include "security/argon.hpp"
 #include "utils/tools.hpp"
-
-#include "enums/account_type.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
+#include "enums/account_type.hpp"
 
 Account::Account(const uint32_t &id) {
 	m_descriptor.clear();
-	m_account.id = id;
-	m_account.premiumRemainingDays = 0;
-	m_account.premiumLastDay = 0;
-	m_account.accountType = ACCOUNT_TYPE_NORMAL;
+	m_account = std::make_unique<AccountInfo>();
+	m_account->id = id;
+	m_account->premiumRemainingDays = 0;
+	m_account->premiumLastDay = 0;
+	m_account->accountType = ACCOUNT_TYPE_NORMAL;
 }
 
 Account::Account(std::string descriptor) :
 	m_descriptor(std::move(descriptor)) {
-	m_account.id = 0;
-	m_account.premiumRemainingDays = 0;
-	m_account.premiumLastDay = 0;
-	m_account.accountType = ACCOUNT_TYPE_NORMAL;
+	m_account = std::make_unique<AccountInfo>();
+	m_account->id = 0;
+	m_account->premiumRemainingDays = 0;
+	m_account->premiumLastDay = 0;
+	m_account->accountType = ACCOUNT_TYPE_NORMAL;
 }
 
 uint8_t Account::load() {
-	if (m_account.id != 0 && g_accountRepository().loadByID(m_account.id, m_account)) {
+	if (m_account->id != 0 && g_accountRepository().loadByID(m_account->id, m_account)) {
 		m_accLoaded = true;
 		return enumToValue(AccountErrors_t::Ok);
 	}
@@ -81,7 +80,7 @@ std::tuple<uint32_t, uint8_t> Account::getCoins(const uint8_t &type) const {
 	}
 
 	uint32_t coins = 0;
-	if (!g_accountRepository().getCoins(m_account.id, type, coins)) {
+	if (!g_accountRepository().getCoins(m_account->id, type, coins)) {
 		return { 0, enumToValue(AccountErrors_t::Storage) };
 	}
 
@@ -103,7 +102,7 @@ uint8_t Account::addCoins(const uint8_t &type, const uint32_t &amount, const std
 		return result;
 	}
 
-	if (!g_accountRepository().setCoins(m_account.id, type, coins + amount)) {
+	if (!g_accountRepository().setCoins(m_account->id, type, coins + amount)) {
 		return enumToValue(AccountErrors_t::Storage);
 	}
 
@@ -132,7 +131,7 @@ uint8_t Account::removeCoins(const uint8_t &type, const uint32_t &amount, const 
 		return enumToValue(AccountErrors_t::RemoveCoins);
 	}
 
-	if (!g_accountRepository().setCoins(m_account.id, type, coins - amount)) {
+	if (!g_accountRepository().setCoins(m_account->id, type, coins - amount)) {
 		return enumToValue(AccountErrors_t::Storage);
 	}
 
@@ -150,17 +149,17 @@ void Account::registerCoinTransaction(const uint8_t &transactionType, const uint
 		return;
 	}
 
-	if (!g_accountRepository().registerCoinsTransaction(m_account.id, transactionType, amount, type, detail)) {
+	if (!g_accountRepository().registerCoinsTransaction(m_account->id, transactionType, amount, type, detail)) {
 		g_logger().error(
 			"Failed to register transaction: 'account:[{}], transaction "
 			"type:[{}], coins:[{}], coin type:[{}], description:[{}]",
-			m_account.id, transactionType, amount, type, detail
+			m_account->id, transactionType, amount, type, detail
 		);
 	}
 }
 
 [[nodiscard]] uint32_t Account::getID() const {
-	return m_account.id;
+	return m_account->id;
 };
 
 std::string Account::getDescriptor() const {
@@ -173,61 +172,61 @@ std::string Account::getPassword() {
 	}
 
 	std::string password;
-	if (!g_accountRepository().getPassword(m_account.id, password)) {
+	if (!g_accountRepository().getPassword(m_account->id, password)) {
 		password.clear();
-		g_logger().error("Failed to get password for account[{}]!", m_account.id);
+		g_logger().error("Failed to get password for account[{}]!", m_account->id);
 	}
 
 	return password;
 }
 
 void Account::addPremiumDays(const int32_t &days) {
-	auto timeLeft = std::max(0, static_cast<int>((m_account.premiumLastDay - getTimeNow()) % 86400));
-	setPremiumDays(m_account.premiumRemainingDays + days);
-	m_account.premiumDaysPurchased += days;
+	auto timeLeft = std::max(0, static_cast<int>((m_account->premiumLastDay - getTimeNow()) % 86400));
+	setPremiumDays(m_account->premiumRemainingDays + days);
+	m_account->premiumDaysPurchased += days;
 
 	if (timeLeft > 0) {
-		m_account.premiumLastDay += timeLeft;
+		m_account->premiumLastDay += timeLeft;
 	}
 }
 
 void Account::setPremiumDays(const int32_t &days) {
-	m_account.premiumRemainingDays = days;
-	m_account.premiumLastDay = getTimeNow() + (days * 86400);
+	m_account->premiumRemainingDays = days;
+	m_account->premiumLastDay = getTimeNow() + (days * 86400);
 
 	if (days <= 0) {
-		m_account.premiumLastDay = 0;
-		m_account.premiumRemainingDays = 0;
+		m_account->premiumLastDay = 0;
+		m_account->premiumRemainingDays = 0;
 	}
 }
 
 [[nodiscard]] uint32_t Account::getPremiumRemainingDays() const {
-	return m_account.premiumLastDay > getTimeNow() ? static_cast<uint32_t>((m_account.premiumLastDay - getTimeNow()) / 86400) : 0;
+	return m_account->premiumLastDay > getTimeNow() ? static_cast<uint32_t>((m_account->premiumLastDay - getTimeNow()) / 86400) : 0;
 }
 
 [[nodiscard]] uint32_t Account::getPremiumDaysPurchased() const {
-	return m_account.premiumDaysPurchased;
+	return m_account->premiumDaysPurchased;
 }
 
 uint8_t Account::setAccountType(const uint8_t &accountType) {
-	m_account.accountType = accountType;
+	m_account->accountType = accountType;
 	return enumToValue(AccountErrors_t::Ok);
 }
 
 [[nodiscard]] uint8_t Account::getAccountType() const {
-	return m_account.accountType;
+	return m_account->accountType;
 }
 
 void Account::updatePremiumTime() {
-	time_t lastDay = m_account.premiumLastDay;
-	uint32_t remainingDays = m_account.premiumRemainingDays;
+	time_t lastDay = m_account->premiumLastDay;
+	uint32_t remainingDays = m_account->premiumRemainingDays;
 
 	time_t currentTime = getTimeNow();
 
 	auto daysLeft = static_cast<int32_t>((lastDay - currentTime) / 86400);
 	auto timeLeft = static_cast<int32_t>((lastDay - currentTime) % 86400);
 
-	m_account.premiumRemainingDays = daysLeft > 0 ? daysLeft : 0;
+	m_account->premiumRemainingDays = daysLeft > 0 ? daysLeft : 0;
 
 	if (daysLeft == 0 && timeLeft == 0) {
 		setPremiumDays(0);
@@ -237,7 +236,7 @@ void Account::updatePremiumTime() {
 		setPremiumDays(0);
 	}
 
-	if (remainingDays == m_account.premiumRemainingDays) {
+	if (remainingDays == m_account->premiumRemainingDays) {
 		return;
 	}
 
@@ -249,14 +248,14 @@ void Account::updatePremiumTime() {
 std::tuple<phmap::flat_hash_map<std::string, uint64_t>, uint8_t>
 Account::getAccountPlayers() const {
 	auto valueToReturn = enumToValue(m_accLoaded ? AccountErrors_t::Ok : AccountErrors_t::NotInitialized);
-	return { m_account.players, valueToReturn };
+	return { m_account->players, valueToReturn };
 }
 
 void Account::setProtocolCompat(bool toggle) {
-	m_account.oldProtocol = toggle;
+	m_account->oldProtocol = toggle;
 }
 bool Account::getProtocolCompat() const {
-	return m_account.oldProtocol;
+	return m_account->oldProtocol;
 }
 
 bool Account::authenticate() {
@@ -269,8 +268,8 @@ bool Account::authenticate(const std::string &secret) {
 }
 
 bool Account::authenticateSession() {
-	if (m_account.sessionExpires < getTimeNow()) {
-		g_logger().error("Session expired for account[{}] expired at [{}] current time [{}]!", m_account.id, m_account.sessionExpires, getTimeNow());
+	if (m_account->sessionExpires < getTimeNow()) {
+		g_logger().error("Session expired for account[{}] expired at [{}] current time [{}]!", m_account->id, m_account->sessionExpires, getTimeNow());
 		return false;
 	}
 	return true;
@@ -290,9 +289,9 @@ bool Account::authenticatePassword(const std::string &password) {
 }
 
 uint32_t Account::getAccountAgeInDays() const {
-	return static_cast<uint32_t>(std::ceil((getTimeNow() - m_account.creationTime) / 86400));
+	return static_cast<uint32_t>(std::ceil((getTimeNow() - m_account->creationTime) / 86400));
 }
 
 [[nodiscard]] time_t Account::getPremiumLastDay() const {
-	return m_account.premiumLastDay;
+	return m_account->premiumLastDay;
 }

@@ -1584,8 +1584,6 @@ struct RespawnType {
 	bool underground;
 };
 
-struct LootBlock;
-
 struct LootBlock {
 	uint16_t id;
 	uint32_t countmax;

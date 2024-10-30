@@ -9,12 +9,13 @@
 
 #include "lua/functions/items/item_functions.hpp"
 
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "items/item.hpp"
-#include "items/decay/decay.hpp"
 #include "game/scheduling/save_manager.hpp"
-
-class Imbuement;
+#include "items/decay/decay.hpp"
+#include "items/item.hpp"
+#include "utils/tools.hpp"
 
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {

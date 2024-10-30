@@ -7,11 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "declarations.hpp"
-#include "game/game.hpp"
 #include "io/iobestiary.hpp"
+
+#include "creatures/combat/combat.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
+#include "game/game.hpp"
 #include "lib/metrics/metrics.hpp"
 
 SoftSingleton IOBestiary::instanceTracker("IOBestiary");
@@ -91,6 +93,10 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> &charm, const std
 	}
 	Combat::doCombatHealth(player, target, charmDamage, charmParams);
 	return false;
+}
+
+IOBestiary &IOBestiary::getInstance() {
+	return inject<IOBestiary>();
 }
 
 std::shared_ptr<Charm> IOBestiary::getBestiaryCharm(charmRune_t activeCharm, bool force /*= false*/) const {

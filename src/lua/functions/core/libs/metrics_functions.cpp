@@ -8,6 +8,7 @@
  */
 
 #include "lua/functions/core/libs/metrics_functions.hpp"
+
 #include "lib/metrics/metrics.hpp"
 
 void MetricsFunctions::init(lua_State* L) {

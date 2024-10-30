@@ -9,15 +9,21 @@
 
 #include "creatures/players/wheel/player_wheel.hpp"
 
-#include "enums/player_wheel.hpp"
 #include "config/configmanager.hpp"
-#include "io/io_wheel.hpp"
-#include "game/game.hpp"
-#include "server/network/message/networkmessage.hpp"
-#include "creatures/players/player.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
-#include "kv/kv.hpp"
+#include "creatures/players/player.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/wheel/wheel_gems.hpp"
+#include "enums/player_wheel.hpp"
+#include "game/game.hpp"
+#include "io/io_wheel.hpp"
+#include "kv/kv.hpp"
+#include "kv/kv_definitions.hpp"
+#include "server/network/message/networkmessage.hpp"
+#include "server/network/protocol/protocolgame.hpp"
+
+std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
 const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot1Allowed = {
 	WheelGemBasicModifier_t::General_FireResistance,

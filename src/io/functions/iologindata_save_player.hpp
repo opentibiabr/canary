@@ -11,6 +11,8 @@
 
 #include "io/iologindata.hpp"
 
+class PropWriteStream;
+
 class IOLoginDataSave : public IOLoginData {
 public:
 	static bool savePlayerFirst(const std::shared_ptr<Player> &player);

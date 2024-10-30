@@ -9,10 +9,11 @@
 
 #pragma once
 
-#include "utils/utils_definitions.hpp"
-#include "declarations.hpp"
-#include "game/movement/position.hpp"
 #include "lua/global/baseevents.hpp"
+#include "lua/scripts/luascript.hpp"
+#include "utils/utils_definitions.hpp"
+
+struct Position;
 
 struct MonsterSpawn {
 	MonsterSpawn(std::string initName, uint32_t initMinAmount, uint32_t initMaxAmount) :

@@ -8,6 +8,7 @@
  */
 
 #include "items/thing.hpp"
+
 #include "items/tile.hpp"
 
 const Position &Thing::getPosition() {

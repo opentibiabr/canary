@@ -8,11 +8,13 @@
  */
 
 #include "lua/creature/raids.hpp"
-#include "utils/pugicast.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/monsters/monster.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "creatures/monsters/monster.hpp"
 #include "server/network/webhook/webhook.hpp"
+#include "utils/pugicast.hpp"
 
 Raids::Raids() {
 	scriptInterface.initState();

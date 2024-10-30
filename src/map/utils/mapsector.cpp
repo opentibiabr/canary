@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "map/utils/mapsector.hpp"
+
 #include "creatures/creature.hpp"
-#include "mapsector.hpp"
 
 bool MapSector::newSector = false;
 

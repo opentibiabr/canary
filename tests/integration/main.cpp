@@ -153,11 +153,11 @@ int main() {
 
 		auto acc2 = std::make_unique<AccountInfo>();
 		accRepo.loadByID(1, acc2);
-		expect(eq(acc2.id, 1));
-		expect(eq(acc2.accountType, AccountType::ACCOUNT_TYPE_SENIORTUTOR));
-		expect(eq(acc2.premiumRemainingDays, 10));
-		expect(eq(acc2.premiumLastDay, 10));
+		expect(eq(acc2->id, 1));
+		expect(eq(acc2->accountType, AccountType::ACCOUNT_TYPE_SENIORTUTOR));
+		expect(eq(acc2->premiumRemainingDays, 10));
+		expect(eq(acc2->premiumLastDay, 10));
 		// sessionExpires is not saved
-		expect(eq(acc2.sessionExpires, 0));
+		expect(eq(acc2->sessionExpires, 0));
 	});
 }

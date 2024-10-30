@@ -5744,7 +5744,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			ss << static_cast<uint16_t>(it.shootRange) << " fields";
 		}
 		msg.addString(ss.str());
-	} else if (!it.isRanged()) {
+	} else {
 		std::string attackDescription;
 		if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 			attackDescription = fmt::format("{} {}", it.abilities->elementDamage, getCombatName(it.abilities->elementType));
@@ -5757,8 +5757,6 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		}
 
 		msg.addString(attackDescription);
-	} else {
-		msg.add<uint16_t>(0x00);
 	}
 
 	if (it.isContainer()) {

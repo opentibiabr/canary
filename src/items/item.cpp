@@ -1179,7 +1179,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				ss << static_cast<uint16_t>(shootRange) << " fields";
 			}
 			descriptions.emplace_back("Attack", ss.str());
-		} else if (!it.isRanged()) {
+		} else {
 			std::string attackDescription;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 				attackDescription = fmt::format("{} {}", it.abilities->elementDamage, getCombatName(it.abilities->elementType));
@@ -1603,7 +1603,7 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				ss << static_cast<uint16_t>(shootRange) << " fields";
 			}
 			descriptions.emplace_back("Attack", ss.str());
-		} else if (!it.isRanged()) {
+		} else {
 			std::string attackDescription;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 				attackDescription = fmt::format("{} {}", it.abilities->elementDamage, getCombatName(it.abilities->elementType));

@@ -94,7 +94,7 @@ enum class WheelStage_t : uint8_t {
 	AVATAR_OF_STORM = 11,
 	DIVINE_GRENADE = 12,
 
-	TOTAL_COUNT = 13
+	STAGE_COUNT = 13
 };
 
 enum class WheelOnThink_t : uint8_t {
@@ -156,7 +156,7 @@ enum class WheelInstant_t : uint8_t {
 	RUNIC_MASTERY = 5,
 	FOCUS_MASTERY = 6,
 
-	TOTAL_COUNT = 7
+	INSTANT_COUNT = 7
 };
 
 enum class WheelAvatarSkill_t : uint8_t {

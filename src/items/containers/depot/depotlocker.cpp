@@ -22,26 +22,26 @@ Attr_ReadValue DepotLocker::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	return Item::readAttr(attr, propStream);
 }
 
-ReturnValue DepotLocker::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, std::shared_ptr<Creature>) {
+ReturnValue DepotLocker::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> &) {
 	return RETURNVALUE_NOTENOUGHROOM;
 }
 
-void DepotLocker::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t) {
-	auto parentLocked = m_parent.lock();
+void DepotLocker::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t) {
+	const auto &parentLocked = m_parent.lock();
 	if (parentLocked) {
 		parentLocked->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
-void DepotLocker::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t) {
-	auto parentLocked = m_parent.lock();
+void DepotLocker::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
+	const auto &parentLocked = m_parent.lock();
 	if (parentLocked) {
 		parentLocked->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
 
-void DepotLocker::removeInbox(std::shared_ptr<Inbox> inbox) {
-	auto cit = std::find(itemlist.begin(), itemlist.end(), inbox);
+void DepotLocker::removeInbox(const std::shared_ptr<Inbox> &inbox) {
+	const auto cit = std::ranges::find(itemlist, inbox);
 	if (cit == itemlist.end()) {
 		return;
 	}

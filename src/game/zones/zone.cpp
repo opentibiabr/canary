@@ -253,11 +253,11 @@ void Zone::refresh() {
 void Zone::setMonsterVariant(const std::string &variant) {
 	monsterVariant = variant;
 	g_logger().debug("Zone {} monster variant set to {}", name, variant);
-	for (auto &spawnMonster : g_game().map.spawnsMonster.getspawnMonsterList()) {
-		if (!contains(spawnMonster.getCenterPos())) {
+	for (const auto &spawnMonster : g_game().map.spawnsMonster.getspawnMonsterList()) {
+		if (!contains(spawnMonster->getCenterPos())) {
 			continue;
 		}
-		spawnMonster.setMonsterVariant(variant);
+		spawnMonster->setMonsterVariant(variant);
 	}
 
 	removeMonsters();

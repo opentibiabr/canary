@@ -56,11 +56,11 @@ public:
 	std::shared_ptr<Raid> getRunning() {
 		return running;
 	}
-	void setRunning(const std::shared_ptr<Raid> newRunning) {
+	void setRunning(const std::shared_ptr<Raid> &newRunning) {
 		running = newRunning;
 	}
 
-	std::shared_ptr<Raid> getRaidByName(const std::string &name);
+	std::shared_ptr<Raid> getRaidByName(const std::string &name) const;
 
 	uint64_t getLastRaidEnd() const {
 		return lastRaidEnd;
@@ -100,7 +100,7 @@ public:
 
 	void startRaid();
 
-	void executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent);
+	void executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent);
 	void resetRaid();
 
 	std::shared_ptr<RaidEvent> getNextRaidEvent();
@@ -150,7 +150,7 @@ public:
 	}
 
 private:
-	uint32_t delay;
+	uint32_t delay {};
 };
 
 class AnnounceEvent final : public RaidEvent {
@@ -202,7 +202,7 @@ public:
 		return scriptName;
 	}
 	void setScriptName(std::string name) {
-		scriptName = name;
+		scriptName = std::move(name);
 	}
 
 	bool executeEvent() override;

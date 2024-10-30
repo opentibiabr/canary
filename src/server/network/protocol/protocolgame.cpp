@@ -39,6 +39,7 @@
 #include "enums/account_group_type.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/player_blessings.hpp"
+#include "enums/player_cyclopedia.hpp"
 
 #include "creatures/players/highscore_category.hpp"
 
@@ -9282,11 +9283,31 @@ void ProtocolGame::parseCyclopediaHouseAuction(NetworkMessage &msg) {
 			break;
 		}
 		case 3: {
+			const uint32_t houseId = msg.get<uint32_t>();
+			const uint32_t timestamp = msg.get<uint32_t>();
+			const std::string &newOwner = msg.getString();
+			const uint64_t bidValue = msg.get<uint64_t>();
+			g_game().playerCyclopediaHouseTransfer(player->getID(), houseId, timestamp, newOwner, bidValue);
 			break;
 		}
 		case 4: {
 			const uint32_t houseId = msg.get<uint32_t>();
 			g_game().playerCyclopediaHouseCancelMoveOut(player->getID(), houseId);
+			break;
+		}
+		case 5: {
+			const uint32_t houseId = msg.get<uint32_t>();
+			g_game().playerCyclopediaHouseCancelTransfer(player->getID(), houseId);
+			break;
+		}
+		case 6: {
+			const uint32_t houseId = msg.get<uint32_t>();
+			g_game().playerCyclopediaHouseAcceptTransfer(player->getID(), houseId);
+			break;
+		}
+		case 7: {
+			const uint32_t houseId = msg.get<uint32_t>();
+			g_game().playerCyclopediaHouseRejectTransfer(player->getID(), houseId);
 			break;
 		}
 	}
@@ -9300,8 +9321,10 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 		msg.add<uint32_t>(clientId);
 		msg.addByte(0x01); // 0x00 = Renovation; 0x01 = Available
 
-		msg.addByte(houseData->getState());
-		if (houseData->getState() == 0) { // Available
+		auto houseState = houseData->getState();
+		auto stateValue = magic_enum::enum_integer(houseState);
+		msg.addByte(stateValue);
+		if (houseState == CyclopediaHouseState::Available) {
 			bool bidder = houseData->getBidderName() == player->getName();
 			msg.addString(houseData->getBidderName());
 			msg.addByte(bidder ? 1 : 0);
@@ -9315,7 +9338,7 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 					msg.add<uint64_t>(houseData->getBidHolderLimit());
 				}
 			}
-		} else if (houseData->getState() == 2) { // Rented
+		} else if (houseState == CyclopediaHouseState::Rented) {
 			auto ownerName = IOLoginData::getNameByGuid(houseData->getOwner());
 			msg.addString(ownerName);
 			msg.add<uint32_t>(houseData->getPaidUntil());
@@ -9326,7 +9349,33 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 				msg.addByte(0);
 				msg.addByte(0);
 			}
-		} else if (houseData->getState() == 4) { // Move Out
+		} else if (houseState == CyclopediaHouseState::Transfer) {
+			auto ownerName = IOLoginData::getNameByGuid(houseData->getOwner());
+			msg.addString(ownerName);
+			msg.add<uint32_t>(houseData->getPaidUntil());
+
+			bool isOwner = ownerName.compare(player->getName()) == 0;
+			msg.addByte(isOwner);
+			if (isOwner) {
+				msg.addByte(0); // ?
+				msg.addByte(0); // ?
+			}
+			msg.add<uint32_t>(houseData->getBidEndDate());
+			msg.addString(houseData->getBidderName());
+			msg.addByte(0); // ?
+			msg.add<uint64_t>(houseData->getInternalBid());
+
+			bool isNewOwner = player->getName() == houseData->getBidderName();
+			msg.addByte(isNewOwner);
+			if (isNewOwner) {
+				msg.addByte(0); // Accept Transfer Error
+				msg.addByte(0); // Reject Transfer Error
+			}
+
+			if (isOwner) {
+				msg.addByte(0); // Cancel Transfer Error
+			}
+		} else if (houseState == CyclopediaHouseState::MoveOut) {
 			auto ownerName = IOLoginData::getNameByGuid(houseData->getOwner());
 			msg.addString(ownerName);
 			msg.add<uint32_t>(houseData->getPaidUntil());

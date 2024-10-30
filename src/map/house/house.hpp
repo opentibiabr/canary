@@ -13,6 +13,7 @@
 #include "declarations.hpp"
 #include "map/house/housetile.hpp"
 #include "game/movement/position.hpp"
+#include "enums/player_cyclopedia.hpp"
 
 class House;
 class BedItem;
@@ -285,11 +286,18 @@ public:
 		return m_bidEndDate;
 	}
 
-	void setState(uint8_t state) {
+	void setState(CyclopediaHouseState state) {
 		this->m_state = state;
 	}
-	uint8_t getState() const {
+	CyclopediaHouseState getState() const {
 		return m_state;
+	}
+
+	void setTransferStatus(bool transferStatus) {
+		this->m_transferStatus = transferStatus;
+	}
+	bool getTransferStatus () const {
+		return m_transferStatus;
 	}
 
 	void setOwnerAccountId(uint32_t accountId) {
@@ -348,7 +356,8 @@ private:
 	uint64_t m_internalBid = 0;
 	uint64_t m_bidHolderLimit = 0;
 	uint32_t m_bidEndDate = 0;
-	uint8_t m_state = 0;
+	CyclopediaHouseState m_state = CyclopediaHouseState::Available;
+	bool m_transferStatus = false;
 
 	bool isLoaded = false;
 

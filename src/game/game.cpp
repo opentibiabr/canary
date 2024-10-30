@@ -10818,11 +10818,11 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &to
 				}
 				houses.emplace(playerHouse->getClientId(), playerHouse);
 			}
-		} else {
-			const auto house = g_game().map.houses.getHouseByBidderName(player->getName());
-			if (house) {
-				houses.emplace(house->getClientId(), house);
-			}
+		}
+
+		const auto house = g_game().map.houses.getHouseByBidderName(player->getName());
+		if (house) {
+			houses.emplace(house->getClientId(), house);
 		}
 	}
 	player->sendCyclopediaHouseList(houses);
@@ -10904,12 +10904,12 @@ void Game::playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uin
 	}
 
 	const auto house = g_game().map.houses.getHouseByClientId(houseId);
-	if (!house || house->getOwner() != player->getGUID() || house->getState() != 2) {
+	if (!house || house->getOwner() != player->getGUID() || house->getState() != CyclopediaHouseState::Rented) {
 		return;
 	}
 
 	house->setBidEndDate(timestamp);
-	house->setState(4);
+	house->setState(CyclopediaHouseState::MoveOut);
 
 	playerCyclopediaHousesByTown(playerId, "");
 }
@@ -10925,12 +10925,115 @@ void Game::playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseI
 	}
 
 	const auto house = g_game().map.houses.getHouseByClientId(houseId);
-	if (!house || house->getOwner() != player->getGUID() || house->getState() != 4) {
+	if (!house || house->getOwner() != player->getGUID() || house->getState() != CyclopediaHouseState::MoveOut) {
 		return;
 	}
 
 	house->setBidEndDate(0);
-	house->setState(2);
+	house->setState(CyclopediaHouseState::Rented);
+
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseTransfer(uint32_t playerId, uint32_t houseId, uint32_t timestamp, const std::string &newOwnerName, uint64_t bidValue) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	const std::shared_ptr<Player> &owner = getPlayerByID(playerId);
+	if (!owner) {
+		return;
+	}
+
+	const std::shared_ptr<Player> &newOwner = getPlayerByName(newOwnerName, true);
+	if (!newOwner) {
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getOwner() != owner->getGUID() || house->getState() != CyclopediaHouseState::Rented) {
+		return;
+	}
+
+	house->setBidderName(newOwnerName);
+	house->setBidder(newOwner->getGUID());
+	house->setInternalBid(bidValue);
+	house->setBidEndDate(timestamp);
+	house->setState(CyclopediaHouseState::Transfer);
+
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseCancelTransfer(uint32_t playerId, uint32_t houseId) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getOwner() != player->getGUID() || house->getState() != CyclopediaHouseState::Transfer) {
+		return;
+	}
+
+	house->setBidderName("");
+	house->setBidder(0);
+	house->setInternalBid(0);
+	house->setBidEndDate(0);
+	house->setState(CyclopediaHouseState::Rented);
+	house->setTransferStatus(false);
+
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t houseId) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getBidder() != player->getGUID() || house->getState() != CyclopediaHouseState::Transfer) {
+		return;
+	}
+
+	if (!processBankAuction(player, house, house->getInternalBid())) {
+		return;
+	}
+
+	house->setTransferStatus(true);
+
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseRejectTransfer(uint32_t playerId, uint32_t houseId) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getBidder() != player->getGUID() || house->getState() != CyclopediaHouseState::Transfer) {
+		return;
+	}
+
+	house->setBidderName("");
+	house->setBidder(0);
+	house->setInternalBid(0);
+	house->setBidEndDate(0);
+	house->setState(CyclopediaHouseState::Rented);
+	house->setTransferStatus(false);
 
 	playerCyclopediaHousesByTown(playerId, "");
 }

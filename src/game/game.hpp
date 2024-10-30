@@ -320,6 +320,10 @@ public:
 	void playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_t bidValue);
 	void playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uint32_t timestamp);
 	void playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseId);
+	void playerCyclopediaHouseTransfer(uint32_t playerId, uint32_t houseId, uint32_t timestamp, const std::string &newOwnerName, uint64_t bidValue);
+	void playerCyclopediaHouseCancelTransfer(uint32_t playerId, uint32_t houseId);
+	void playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t houseId);
+	void playerCyclopediaHouseRejectTransfer(uint32_t playerId, uint32_t houseId);
 	bool processBankAuction(std::shared_ptr<Player> player, const std::shared_ptr<House> &house, uint64_t bid, bool replace = false);
 
 	void updatePlayerSaleItems(uint32_t playerId);

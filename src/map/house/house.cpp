@@ -90,7 +90,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::
 		Database &db = Database::getInstance();
 
 		std::ostringstream query;
-		query << "UPDATE `houses` SET `owner` = " << guid << ", `new_owner` = -1, `paid` = 0, `bidder` = 0, `bidder_name` = '', `highest_bid` = 0, `internal_bid` = 0, `bid_end_date` = 0, `state` = 0 WHERE `id` = " << id;
+		query << "UPDATE `houses` SET `owner` = " << guid << ", `new_owner` = -1, `paid` = 0, `bidder` = 0, `bidder_name` = '', `highest_bid` = 0, `internal_bid` = 0, `bid_end_date` = 0, `state` = " << (guid > 0 ? 2 : 0) << " WHERE `id` = " << id;
 		db.executeQuery(query.str());
 	}
 
@@ -140,7 +140,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::
 			owner = guid;
 			ownerName = name;
 			ownerAccountId = result->getNumber<uint32_t>("account_id");
-			m_state = 2;
+			m_state = CyclopediaHouseState::Rented;
 		}
 	}
 

@@ -61,6 +61,13 @@ enum class CyclopediaMapData_t : uint8_t {
 	SetCurrentArea = 10,
 };
 
+enum class CyclopediaHouseState : uint8_t {
+	Available = 0,
+	Rented = 2,
+	Transfer = 3,
+	MoveOut = 4,
+};
+
 enum class HouseAuctionType : uint8_t {
 	Bid = 1,
 	MoveOut = 2,

@@ -17,6 +17,7 @@ function onUpdateDatabase()
 		ADD `internal_bid` int(11) NOT NULL DEFAULT '0',
 		ADD `bid_end_date` int(11) NOT NULL DEFAULT '0',
 		ADD `state` smallint(5) UNSIGNED NOT NULL DEFAULT '0'
+		ADD `transfer_status` tinyint(1) DEFAULT '0'
 	]])
 
 	db.query([[

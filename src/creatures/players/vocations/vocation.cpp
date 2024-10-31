@@ -10,10 +10,11 @@
 #include "creatures/players/vocations/vocation.hpp"
 
 #include "config/configmanager.hpp"
-#include "lib/di/container.hpp"
 #include "items/item.hpp"
+#include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
+#include "enums/player_wheel.hpp"
 
 #include <creatures/players/wheel/wheel_gems.hpp>
 
@@ -24,6 +25,10 @@ Vocations &Vocations::getInstance() {
 bool Vocations::reload() {
 	vocationsMap.clear();
 	return loadFromXml();
+}
+
+Vocations &Vocations::getInstance() {
+	return inject<Vocations>();
 }
 
 bool Vocations::loadFromXml() {
@@ -211,6 +216,11 @@ std::shared_ptr<Vocation> Vocations::getVocation(uint16_t id) {
 	}
 	return it->second;
 }
+
+const std::map<uint16_t, std::shared_ptr<Vocation>> &Vocations::getVocations() const {
+	return vocationsMap;
+}
+
 uint16_t Vocations::getVocationId(const std::string &name) const {
 	for (const auto &[vocationId, vocationPtr] : vocationsMap) {
 		if (caseInsensitiveCompare(vocationPtr->name, name)) {
@@ -231,6 +241,14 @@ uint16_t Vocations::getPromotedVocation(uint16_t vocationId) const {
 
 uint32_t Vocation::skillBase[SKILL_LAST + 1] = { 50, 50, 50, 50, 30, 100, 20 };
 constexpr uint16_t minSkillLevel = 10;
+
+const std::string &Vocation::getVocName() const {
+	return name;
+}
+
+const std::string &Vocation::getVocDescription() const {
+	return description;
+}
 
 absl::uint128 Vocation::getTotalSkillTries(uint8_t skill, uint16_t level) {
 	if (skill > SKILL_LAST) {
@@ -294,6 +312,34 @@ uint64_t Vocation::getReqMana(uint32_t magLevel) {
 	return reqMana;
 }
 
+uint16_t Vocation::getId() const {
+	return id;
+}
+
+uint8_t Vocation::getClientId() const {
+	return clientId;
+}
+
+uint8_t Vocation::getBaseId() const {
+	return baseId;
+}
+
+uint16_t Vocation::getAvatarLookType() const {
+	return avatarLookType;
+}
+
+uint32_t Vocation::getHPGain() const {
+	return gainHP;
+}
+
+uint32_t Vocation::getManaGain() const {
+	return gainMana;
+}
+
+uint32_t Vocation::getCapGain() const {
+	return gainCap;
+}
+
 uint32_t Vocation::getManaGainTicks() const {
 	return gainManaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
 }
@@ -310,19 +356,37 @@ uint32_t Vocation::getHealthGainAmount() const {
 	return gainHealthAmount * g_configManager().getFloat(RATE_HEALTH_REGEN);
 }
 
+uint8_t Vocation::getSoulMax() const {
+	return soulMax;
+}
+
 uint32_t Vocation::getSoulGainTicks() const {
 	return gainSoulTicks / g_configManager().getFloat(RATE_SOUL_REGEN_SPEED);
+}
+
+uint32_t Vocation::getBaseAttackSpeed() const {
+	return attackSpeed;
 }
 
 uint32_t Vocation::getAttackSpeed() const {
 	return attackSpeed / g_configManager().getFloat(RATE_ATTACK_SPEED);
 }
 
-template <>
-struct magic_enum::customize::enum_range<WheelGemSupremeModifier_t> {
-	static constexpr int min = 0;
-	static constexpr int max = static_cast<int>(WheelGemSupremeModifier_t::Druid_RevelationMastery_TwinBursts);
-};
+uint32_t Vocation::getBaseSpeed() const {
+	return baseSpeed;
+}
+
+uint32_t Vocation::getFromVocation() const {
+	return fromVocation;
+}
+
+bool Vocation::getMagicShield() const {
+	return magicShield;
+}
+
+bool Vocation::canCombat() const {
+	return combat;
+}
 
 std::vector<WheelGemSupremeModifier_t> Vocation::getSupremeGemModifiers() {
 	if (!m_supremeGemModifiers.empty()) {

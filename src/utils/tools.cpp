@@ -7,9 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "core.hpp"
-#include "items/item.hpp"
 #include "utils/tools.hpp"
+
+#include "core.hpp"
+#include "enums/object_category.hpp"
+#include "items/item.hpp"
+#include "lua/lua_definitions.hpp"
+#include "utils/const.hpp"
+#include "config/configmanager.hpp"
 
 #include "absl/debugging/stacktrace.h"
 #include "absl/debugging/symbolize.h"
@@ -188,7 +193,7 @@ std::string transformToSHA1(const std::string &input) {
 	return std::string(hexstring, 40);
 }
 
-uint16_t getStashSize(const StashItemList &itemList) {
+uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList) {
 	uint16_t size = 0;
 	for (const auto &[itemId, itemCount] : itemList) {
 		size += ceil(itemCount / static_cast<float_t>(Item::items[itemId].stackSize));
@@ -227,7 +232,7 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 	message.assign(transformToSHA1(oKeyPad));
 
 	// calculate hmac offset
-	const uint32_t offset = static_cast<uint32_t>(std::stol(message.substr(39, 1), nullptr, 16) & 0xF);
+	const auto offset = static_cast<uint32_t>(std::stol(message.substr(39, 1), nullptr, 16) & 0xF);
 
 	// get truncated hash
 	const uint32_t truncHash = std::stol(message.substr(2 * offset, 8), nullptr, 16) & 0x7FFFFFFF;
@@ -1133,7 +1138,7 @@ std::string getCombatName(CombatType_t combatType) {
 }
 
 CombatType_t getCombatTypeByName(const std::string &combatname) {
-	const auto it = std::ranges::find_if(combatTypeNames, [combatname](const std::pair<CombatType_t, std::string> &pair) {
+	const auto it = std::ranges::find_if(combatTypeNames, [&combatname](const std::pair<CombatType_t, std::string> &pair) {
 		return pair.second == combatname;
 	});
 
@@ -1792,9 +1797,9 @@ uint8_t forgeBonus(int32_t number) {
 }
 
 std::string formatPrice(std::string price, bool space /* = false*/) {
-	std::ranges::reverse(price.begin(), price.end());
+	std::ranges::reverse(price);
 	price = std::regex_replace(price, std::regex("000"), "k");
-	std::ranges::reverse(price.begin(), price.end());
+	std::ranges::reverse(price);
 	if (space) {
 		price = std::regex_replace(price, std::regex("k"), " k", std::regex_constants::format_first_only);
 	}
@@ -1925,9 +1930,9 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 		return output.str();
 	}
 
-	const int hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
-	const int minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
-	const int seconds = static_cast<int>(timeRemaining % 60);
+	const auto hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
+	const auto minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
+	const auto seconds = static_cast<int>(timeRemaining % 60);
 
 	if (hours == 0 && minutes == 0 && seconds > 0) {
 		output << " less than 1 minute";
@@ -1946,6 +1951,39 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 unsigned int getNumberOfCores() {
 	static auto cores = std::thread::hardware_concurrency();
 	return cores;
+}
+
+Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
+	switch (combatType) {
+		case COMBAT_PHYSICALDAMAGE:
+			return CIPBIA_ELEMENTAL_PHYSICAL;
+		case COMBAT_ENERGYDAMAGE:
+			return CIPBIA_ELEMENTAL_ENERGY;
+		case COMBAT_EARTHDAMAGE:
+			return CIPBIA_ELEMENTAL_EARTH;
+		case COMBAT_FIREDAMAGE:
+			return CIPBIA_ELEMENTAL_FIRE;
+		case COMBAT_LIFEDRAIN:
+			return CIPBIA_ELEMENTAL_LIFEDRAIN;
+		case COMBAT_HEALING:
+			return CIPBIA_ELEMENTAL_HEALING;
+		case COMBAT_DROWNDAMAGE:
+			return CIPBIA_ELEMENTAL_DROWN;
+		case COMBAT_ICEDAMAGE:
+			return CIPBIA_ELEMENTAL_ICE;
+		case COMBAT_HOLYDAMAGE:
+			return CIPBIA_ELEMENTAL_HOLY;
+		case COMBAT_DEATHDAMAGE:
+			return CIPBIA_ELEMENTAL_DEATH;
+		case COMBAT_MANADRAIN:
+			return CIPBIA_ELEMENTAL_MANADRAIN;
+		case COMBAT_AGONYDAMAGE:
+			return CIPBIA_ELEMENTAL_AGONY;
+		case COMBAT_NEUTRALDAMAGE:
+			return CIPBIA_ELEMENTAL_AGONY;
+		default:
+			return CIPBIA_ELEMENTAL_UNDEFINED;
+	}
 }
 
 /**
@@ -1975,7 +2013,9 @@ void sleep_for(uint64_t ms) {
 std::string toKey(const std::string &str) {
 	std::string key = asLowerCaseString(str);
 	std::ranges::replace(key, ' ', '-');
-	key.erase(std::ranges::remove_if(key, [](char c) { return std::isspace(c); }).begin(), key.end());
+	std::erase_if(key, [](char c) {
+		return std::isspace(c);
+	});
 	return key;
 }
 
@@ -2028,4 +2068,14 @@ void printStackTrace() {
 			g_logger().info("{}: [Unknown function]", i);
 		}
 	}
+}
+
+const std::map<uint8_t, uint16_t> &getMaxValuePerSkill() {
+	static std::map<uint8_t, uint16_t> maxValuePerSkill = {
+		{ SKILL_LIFE_LEECH_CHANCE, 100 },
+		{ SKILL_MANA_LEECH_CHANCE, 100 },
+		{ SKILL_CRITICAL_HIT_CHANCE, 100 * g_configManager().getNumber(CRITICALCHANCE) }
+	};
+
+	return maxValuePerSkill;
 }

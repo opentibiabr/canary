@@ -9,12 +9,10 @@
 
 #pragma once
 
-#include "declarations.hpp"
-#include "lib/di/container.hpp"
-#include "lua/scripts/luascript.hpp"
 #include "lua/scripts/scripts.hpp"
 
 class CreatureEvent;
+class LuaScriptInterface;
 
 class CreatureEvent final : public Script {
 public:
@@ -73,9 +71,7 @@ public:
 	CreatureEvents(const CreatureEvents &) = delete;
 	CreatureEvents &operator=(const CreatureEvents &) = delete;
 
-	static CreatureEvents &getInstance() {
-		return inject<CreatureEvents>();
-	}
+	static CreatureEvents &getInstance();
 
 	// global events
 	bool playerLogin(const std::shared_ptr<Player> &player) const;

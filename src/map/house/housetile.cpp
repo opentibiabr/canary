@@ -7,11 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "items/tile.hpp"
-#include "creatures/monsters/monster.hpp"
 #include "map/house/housetile.hpp"
-#include "map/house/house.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "items/tile.hpp"
+#include "map/house/house.hpp"
+#include "utils/tools.hpp"
 
 HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, std::shared_ptr<House> initHouse) :
 	DynamicTile(initX, initY, initZ), house(std::move(initHouse)) { }
@@ -23,7 +27,7 @@ void HouseTile::addThing(int32_t index, const std::shared_ptr<Thing> &thing) {
 		return;
 	}
 
-	if (const auto item = thing->getItem()) {
+	if (const auto &item = thing->getItem()) {
 		updateHouse(item);
 	}
 }
@@ -113,7 +117,7 @@ std::shared_ptr<Cylinder> HouseTile::queryDestination(int32_t &index, const std:
 }
 
 ReturnValue HouseTile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor /*= nullptr */) {
-	const auto item = thing->getItem();
+	const auto &item = thing->getItem();
 	if (!item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}

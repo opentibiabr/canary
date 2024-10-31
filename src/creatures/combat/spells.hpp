@@ -9,12 +9,11 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-#include "creatures/players/player.hpp"
-#include "creatures/players/wheel/wheel_definitions.hpp"
 #include "lua/creature/actions.hpp"
-#include "lua/creature/talkaction.hpp"
 #include "lua/scripts/scripts.hpp"
+
+enum class WheelSpellBoost_t : uint8_t;
+enum class WheelSpellGrade_t : uint8_t;
 
 class InstantSpell;
 class RuneSpell;
@@ -33,9 +32,7 @@ public:
 	Spells(const Spells &) = delete;
 	Spells &operator=(const Spells &) = delete;
 
-	static Spells &getInstance() {
-		return inject<Spells>();
-	}
+	static Spells &getInstance();
 
 	std::shared_ptr<Spell> getSpellByName(const std::string &name) const;
 	std::shared_ptr<RuneSpell> getRuneSpell(uint16_t id);
@@ -46,21 +43,18 @@ public:
 
 	std::shared_ptr<InstantSpell> getInstantSpellById(uint16_t spellId) const;
 
-	TalkActionResult_t playerSaySpell(const std::shared_ptr<Player> &player, std::string &words) const;
+	TalkActionResult_t playerSaySpell(const std::shared_ptr<Player> &player, std::string &words);
 
 	static Position getCasterPosition(const std::shared_ptr<Creature> &creature, Direction dir);
 
 	std::list<uint16_t> getSpellsByVocation(uint16_t vocationId) const;
 
-	[[nodiscard]] const std::map<std::string, std::shared_ptr<InstantSpell>> &getInstantSpells() const {
-		return instants;
-	};
+	[[nodiscard]] const std::map<std::string, std::shared_ptr<InstantSpell>> &getInstantSpells() const;
+	;
 
 	[[nodiscard]] bool hasInstantSpell(const std::string &word) const;
 
-	void setInstantSpell(const std::string &word, const std::shared_ptr<InstantSpell> &instant) {
-		instants.try_emplace(word, instant);
-	}
+	void setInstantSpell(const std::string &word, const std::shared_ptr<InstantSpell> &instant);
 
 	void clear();
 	bool registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instant);
@@ -105,14 +99,10 @@ public:
 	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var) const;
 
 	bool loadScriptCombat();
-	std::shared_ptr<Combat> getCombat() const {
-		return m_combat;
-	}
+	std::shared_ptr<Combat> getCombat() const;
 
 private:
-	std::string getScriptTypeName() const override {
-		return "onCastSpell";
-	}
+	std::string getScriptTypeName() const override;
 
 	std::shared_ptr<Combat> m_combat;
 
@@ -124,176 +114,68 @@ class Spell : public BaseSpell {
 public:
 	Spell() = default;
 
-	[[nodiscard]] const std::string &getName() const {
-		return name;
-	}
-	void setName(std::string n) {
-		name = std::move(n);
-	}
-	[[nodiscard]] uint16_t getSpellId() const {
-		return m_spellId;
-	}
-	void setSpellId(uint16_t id) {
-		m_spellId = id;
-	}
+	[[nodiscard]] const std::string &getName() const;
+	void setName(std::string n);
+	[[nodiscard]] uint16_t getSpellId() const;
+	void setSpellId(uint16_t id);
 
 	void postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast = true, bool payCost = true) const;
 	static void postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCost, uint32_t soulCost);
 	[[nodiscard]] virtual bool isInstant() const = 0;
-	[[nodiscard]] bool isLearnable() const {
-		return learnable;
-	}
+	[[nodiscard]] bool isLearnable() const;
 
 	uint32_t getManaCost(const std::shared_ptr<Player> &player) const;
-	[[nodiscard]] uint32_t getSoulCost() const {
-		return soul;
-	}
-	void setSoulCost(uint32_t s) {
-		soul = s;
-	}
-	[[nodiscard]] uint32_t getLevel() const {
-		return level;
-	}
-	void setLevel(uint32_t lvl) {
-		level = lvl;
-	}
-	[[nodiscard]] uint32_t getMagicLevel() const {
-		return magLevel;
-	}
-	void setMagicLevel(uint32_t lvl) {
-		magLevel = lvl;
-	}
-	[[nodiscard]] uint32_t getMana() const {
-		return mana;
-	}
-	void setMana(uint32_t m) {
-		mana = m;
-	}
-	[[nodiscard]] uint32_t getManaPercent() const {
-		return manaPercent;
-	}
-	void setManaPercent(uint32_t m) {
-		manaPercent = m;
-	}
-	[[nodiscard]] bool isPremium() const {
-		return premium;
-	}
-	void setPremium(bool p) {
-		premium = p;
-	}
-	[[nodiscard]] bool isEnabled() const {
-		return enabled;
-	}
-	void setEnabled(bool e) {
-		enabled = e;
-	}
+	[[nodiscard]] uint32_t getSoulCost() const;
+	void setSoulCost(uint32_t s);
+	[[nodiscard]] uint32_t getLevel() const;
+	void setLevel(uint32_t lvl);
+	[[nodiscard]] uint32_t getMagicLevel() const;
+	void setMagicLevel(uint32_t lvl);
+	[[nodiscard]] uint32_t getMana() const;
+	void setMana(uint32_t m);
+	[[nodiscard]] uint32_t getManaPercent() const;
+	void setManaPercent(uint32_t m);
+	[[nodiscard]] bool isPremium() const;
+	void setPremium(bool p);
+	[[nodiscard]] bool isEnabled() const;
+	void setEnabled(bool e);
 
-	[[nodiscard]] const VocSpellMap &getVocMap() const {
-		return vocSpellMap;
-	}
-	void addVocMap(uint16_t vocationId, bool b) {
-		if (vocationId == 0XFFFF) {
-			g_logger().error("Vocation overflow for spell: {}", getName());
-			return;
-		}
+	[[nodiscard]] const VocSpellMap &getVocMap() const;
+	void addVocMap(uint16_t vocationId, bool b);
 
-		g_logger().trace("Adding spell: {} to voc id: {}", getName(), vocationId);
-		vocSpellMap[vocationId] = b;
-	}
+	SpellGroup_t getGroup();
+	void setGroup(SpellGroup_t g);
+	SpellGroup_t getSecondaryGroup();
+	void setSecondaryGroup(SpellGroup_t g);
 
-	SpellGroup_t getGroup() const {
-		return group;
-	}
-	void setGroup(SpellGroup_t g) {
-		group = g;
-	}
-	SpellGroup_t getSecondaryGroup() const {
-		return secondaryGroup;
-	}
-	void setSecondaryGroup(SpellGroup_t g) {
-		secondaryGroup = g;
-	}
+	[[nodiscard]] uint32_t getCooldown() const;
+	void setCooldown(uint32_t cd);
+	[[nodiscard]] uint32_t getSecondaryCooldown() const;
+	void setSecondaryCooldown(uint32_t cd);
+	[[nodiscard]] uint32_t getGroupCooldown() const;
+	void setGroupCooldown(uint32_t cd);
 
-	[[nodiscard]] uint32_t getCooldown() const {
-		return cooldown;
-	}
-	void setCooldown(uint32_t cd) {
-		cooldown = cd;
-	}
-	[[nodiscard]] uint32_t getSecondaryCooldown() const {
-		return secondaryGroupCooldown;
-	}
-	void setSecondaryCooldown(uint32_t cd) {
-		secondaryGroupCooldown = cd;
-	}
-	[[nodiscard]] uint32_t getGroupCooldown() const {
-		return groupCooldown;
-	}
-	void setGroupCooldown(uint32_t cd) {
-		groupCooldown = cd;
-	}
+	[[nodiscard]] int32_t getRange() const;
+	void setRange(int32_t r);
 
-	[[nodiscard]] int32_t getRange() const {
-		return range;
-	}
-	void setRange(int32_t r) {
-		range = r;
-	}
-
-	[[nodiscard]] bool getNeedTarget() const {
-		return needTarget;
-	}
-	void setNeedTarget(bool n) {
-		needTarget = n;
-	}
-	[[nodiscard]] bool getNeedWeapon() const {
-		return needWeapon;
-	}
-	void setNeedWeapon(bool n) {
-		needWeapon = n;
-	}
-	[[nodiscard]] bool getNeedLearn() const {
-		return learnable;
-	}
-	void setNeedLearn(bool n) {
-		learnable = n;
-	}
-	[[nodiscard]] bool getSelfTarget() const {
-		return selfTarget;
-	}
-	void setSelfTarget(bool s) {
-		selfTarget = s;
-	}
-	[[nodiscard]] bool getBlockingSolid() const {
-		return blockingSolid;
-	}
-	void setBlockingSolid(bool b) {
-		blockingSolid = b;
-	}
-	[[nodiscard]] bool getBlockingCreature() const {
-		return blockingCreature;
-	}
-	void setBlockingCreature(bool b) {
-		blockingCreature = b;
-	}
-	[[nodiscard]] bool getAggressive() const {
-		return aggressive;
-	}
-	void setAggressive(bool a) {
-		aggressive = a;
-	}
-	[[nodiscard]] bool getAllowOnSelf() const {
-		return allowOnSelf;
-	}
-	void setAllowOnSelf(bool s) {
-		allowOnSelf = s;
-	}
-	[[nodiscard]] bool getLockedPZ() const {
-		return pzLocked;
-	}
-	void setLockedPZ(bool b) {
-		pzLocked = b;
-	}
+	[[nodiscard]] bool getNeedTarget() const;
+	void setNeedTarget(bool n);
+	[[nodiscard]] bool getNeedWeapon() const;
+	void setNeedWeapon(bool n);
+	[[nodiscard]] bool getNeedLearn() const;
+	void setNeedLearn(bool n);
+	[[nodiscard]] bool getSelfTarget() const;
+	void setSelfTarget(bool s);
+	[[nodiscard]] bool getBlockingSolid() const;
+	void setBlockingSolid(bool b);
+	[[nodiscard]] bool getBlockingCreature() const;
+	void setBlockingCreature(bool b);
+	[[nodiscard]] bool getAggressive() const;
+	void setAggressive(bool a);
+	[[nodiscard]] bool getAllowOnSelf() const;
+	void setAllowOnSelf(bool s);
+	[[nodiscard]] bool getLockedPZ() const;
+	void setLockedPZ(bool b);
 
 	/**
 	 * @brief Get whether the wheel of destiny is upgraded.
@@ -327,23 +209,13 @@ public:
 	 */
 	void setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade, int32_t value);
 
-	SpellType_t spellType = SPELL_UNDEFINED;
+	[[nodiscard]] const std::string &getWords() const;
 
-	[[nodiscard]] const std::string &getWords() const {
-		return m_words;
-	}
+	void setWords(std::string_view newWord);
 
-	void setWords(const std::string_view &newWord) {
-		m_words = newWord.data();
-	}
+	[[nodiscard]] const std::string &getSeparator() const;
 
-	[[nodiscard]] const std::string &getSeparator() const {
-		return m_separator;
-	}
-
-	void setSeparator(const std::string_view &newSeparator) {
-		m_separator = newSeparator.data();
-	}
+	void setSeparator(std::string_view newSeparator);
 
 	void getCombatDataAugment(const std::shared_ptr<Player> &player, CombatDamage &damage) const;
 	int32_t calculateAugmentSpellCooldownReduction(const std::shared_ptr<Player> &player) const;
@@ -358,6 +230,7 @@ protected:
 
 	SpellGroup_t group = SPELLGROUP_NONE;
 	SpellGroup_t secondaryGroup = SPELLGROUP_NONE;
+	SpellType_t spellType = SPELL_UNDEFINED;
 
 	uint32_t cooldown = 1000;
 	uint32_t groupCooldown = 1000;
@@ -374,8 +247,6 @@ protected:
 	bool pzLocked = false;
 
 	bool whellOfDestinyUpgraded = false;
-	std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyRegularBoost = { 0 };
-	std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyUpgradedBoost = { 0 };
 
 private:
 	uint32_t mana = 0;
@@ -393,6 +264,8 @@ private:
 	std::string name;
 	std::string m_words;
 	std::string m_separator;
+
+	friend class SpellFunctions;
 };
 
 class InstantSpell final : public Script, public Spell {
@@ -407,46 +280,22 @@ public:
 	// Scripting spell
 	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var) const;
 
-	[[nodiscard]] bool isInstant() const override {
-		return true;
-	}
-	[[nodiscard]] bool getHasParam() const {
-		return hasParam;
-	}
-	void setHasParam(bool p) {
-		hasParam = p;
-	}
-	[[nodiscard]] bool getHasPlayerNameParam() const {
-		return hasPlayerNameParam;
-	}
-	void setHasPlayerNameParam(bool p) {
-		hasPlayerNameParam = p;
-	}
-	[[nodiscard]] bool getNeedDirection() const {
-		return needDirection;
-	}
-	void setNeedDirection(bool n) {
-		needDirection = n;
-	}
-	[[nodiscard]] bool getNeedCasterTargetOrDirection() const {
-		return casterTargetOrDirection;
-	}
-	void setNeedCasterTargetOrDirection(bool d) {
-		casterTargetOrDirection = d;
-	}
-	[[nodiscard]] bool getBlockWalls() const {
-		return checkLineOfSight;
-	}
-	void setBlockWalls(bool w) {
-		checkLineOfSight = w;
-	}
+	[[nodiscard]] bool isInstant() const override;
+	[[nodiscard]] bool getHasParam() const;
+	void setHasParam(bool p);
+	[[nodiscard]] bool getHasPlayerNameParam() const;
+	void setHasPlayerNameParam(bool p);
+	[[nodiscard]] bool getNeedDirection() const;
+	void setNeedDirection(bool n);
+	[[nodiscard]] bool getNeedCasterTargetOrDirection() const;
+	void setNeedCasterTargetOrDirection(bool d);
+	[[nodiscard]] bool getBlockWalls() const;
+	void setBlockWalls(bool w);
 	bool canCast(const std::shared_ptr<Player> &player) const;
 	bool canThrowSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const;
 
 private:
-	[[nodiscard]] std::string getScriptTypeName() const override {
-		return "onCastSpell";
-	}
+	[[nodiscard]] std::string getScriptTypeName() const override;
 
 	bool needDirection = false;
 	bool hasParam = false;
@@ -460,12 +309,8 @@ public:
 	using Action::Action;
 
 	ReturnValue canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) override;
-	bool hasOwnErrorHandler() override {
-		return true;
-	}
-	std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &, const std::shared_ptr<Creature> &targetCreature, const Position &, uint8_t) const override {
-		return targetCreature;
-	}
+	bool hasOwnErrorHandler() override;
+	std::shared_ptr<Thing> getTarget(const std::shared_ptr<Player> &, const std::shared_ptr<Creature> &targetCreature, const Position &, uint8_t) const override;
 
 	bool executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &fromPosition, const std::shared_ptr<Thing> &target, const Position &toPosition, bool isHotkey) override;
 
@@ -475,29 +320,14 @@ public:
 	// Scripting spell
 	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const;
 
-	[[nodiscard]] bool isInstant() const override {
-		return false;
-	}
-	[[nodiscard]] uint16_t getRuneItemId() const {
-		return runeId;
-	}
-	void setRuneItemId(uint16_t i) {
-		runeId = i;
-	}
-	[[nodiscard]] uint32_t getCharges() const {
-		return charges;
-	}
-	void setCharges(uint32_t c) {
-		if (c > 0) {
-			hasCharges = true;
-		}
-		charges = c;
-	}
+	[[nodiscard]] bool isInstant() const override;
+	[[nodiscard]] uint16_t getRuneItemId() const;
+	void setRuneItemId(uint16_t i);
+	[[nodiscard]] uint32_t getCharges() const;
+	void setCharges(uint32_t c);
 
 private:
-	[[nodiscard]] std::string getScriptTypeName() const override {
-		return "onCastSpell";
-	}
+	[[nodiscard]] std::string getScriptTypeName() const override;
 
 	bool internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const;
 

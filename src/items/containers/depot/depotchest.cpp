@@ -8,6 +8,7 @@
  */
 
 #include "items/containers/depot/depotchest.hpp"
+
 #include "utils/tools.hpp"
 
 DepotChest::DepotChest(uint16_t type) :

@@ -1,7 +1,7 @@
 local destination = {
 	[26668] = {
 		position = Position(33411, 31082, 10),
-		storage = Storage.ForgottenKnowledge.AccessLavaTeleport,
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.AccessLavaTeleport,
 	},
 }
 

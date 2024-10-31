@@ -51874,6 +51874,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="27489" article="a" name="silver nugget"/>
 	<item id="27490" article="a" name="unknown corpse (skeleton)"/>
+	<item id="27491" article="an" name="explosive barrel">
+		<attribute key="primarytype" value="containers"/>
+		<attribute key="description" value="This dwarven barrel is highly explosive and instable. It's literally only a matter of time until it goes off."/>
+	</item>
 	<item id="27492" article="an" name="explosive barrel">
 		<attribute key="primarytype" value="containers"/>
 		<attribute key="description" value="This dwarven barrel is highly explosive and instable. It's literally only a matter of time until it goes off."/>
@@ -53150,6 +53154,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="28494" article="a" name="silver chimes">
 		<attribute key="primarytype" value="shields"/>
+		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="280"/>
 	</item>
 	<item id="28495" article="a" name="perfume flacon">
@@ -53200,7 +53205,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="It is actually in the active state"/>
 		<attribute key="charges" value="500"/>
 	</item>
-	<item fromid="28527" toid="28534" article="a" name="ritual pedestal"/>
+	<item fromid="28527" toid="28528" article="a" name="altar of ritual sword"/>
+	<item fromid="28529" toid="28530" article="a" name="altar of exultant ritual figurine"/>
+	<item fromid="28531" toid="28532" article="a" name="altar of ritual figurine"/>
+	<item fromid="28533" toid="28534" article="a" name="altar of ritual stone tablet"/>
 	<item id="28535" article="a" name="ritual figurine">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="weight" value="150"/>
@@ -53994,7 +54002,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="It looks quite fragile"/>
 		<attribute key="weight" value="180"/>
 	</item>
-	<item id="28710" article="the" name="Peacock Ballad">
+	<item id="28710" article="the" name="peacock ballad">
 		<attribute key="weight" value="50"/>
 	</item>
 	<item fromid="28711" toid="28712" name="RESERVED SPRITE"/>
@@ -76350,6 +76358,16 @@ Granted by TibiaGoals.com"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="containersize" value="10"/>
 		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="46627" article="a" name="crusher">
+		<attribute key="loottype" value="tools"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="10"/>
+		<attribute key="weight" value="30"/>
+	</item>
+	<item id="46628" article="a" name="amber crusher">
+		<attribute key="loottype" value="tools"/>
+		<attribute key="weight" value="30"/>
 	</item>
 </items>
 

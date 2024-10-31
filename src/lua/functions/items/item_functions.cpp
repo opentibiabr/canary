@@ -9,12 +9,13 @@
 
 #include "lua/functions/items/item_functions.hpp"
 
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "items/item.hpp"
-#include "items/decay/decay.hpp"
 #include "game/scheduling/save_manager.hpp"
-
-class Imbuement;
+#include "items/decay/decay.hpp"
+#include "items/item.hpp"
+#include "utils/tools.hpp"
 
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {
@@ -744,7 +745,7 @@ int ItemFunctions::luaItemMoveToSlot(lua_State* L) {
 
 	const auto slot = getNumber<Slots_t>(L, 3, CONST_SLOT_WHEREEVER);
 
-	const ReturnValue ret = g_game().internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);
+	ReturnValue ret = g_game().internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);
 
 	pushBoolean(L, ret == RETURNVALUE_NOERROR);
 	return 1;

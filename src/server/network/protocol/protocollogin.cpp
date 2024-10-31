@@ -8,6 +8,8 @@
  */
 
 #include "server/network/protocol/protocollogin.hpp"
+
+#include "config/configmanager.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "account/account.hpp"

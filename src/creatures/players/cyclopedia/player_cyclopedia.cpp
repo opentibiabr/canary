@@ -7,14 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "player_cyclopedia.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 
-#include "database/databasetasks.hpp"
 #include "creatures/players/player.hpp"
+#include "database/databasetasks.hpp"
+#include "enums/player_blessings.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
-
-#include "enums/player_blessings.hpp"
 
 PlayerCyclopedia::PlayerCyclopedia(Player &player) :
 	m_player(player) { }

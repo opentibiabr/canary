@@ -7,12 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/monsters/monsters.hpp"
 #include "lua/functions/creatures/monster/loot_functions.hpp"
+
+#include "creatures/monsters/monsters.hpp"
+#include "items/item.hpp"
+#include "utils/tools.hpp"
 
 int LootFunctions::luaCreateLoot(lua_State* L) {
 	// Loot() will create a new loot item
-	const auto &loot = std::make_shared<Loot>();
+	auto loot = std::make_shared<Loot>();
 	pushUserdata<Loot>(L, loot);
 	setMetatable(L, -1, "Loot");
 	return 1;

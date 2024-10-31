@@ -82,7 +82,7 @@ public:
 		return inject<TalkActions>();
 	}
 
-	bool checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const;
+	bool checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, std::string_view word, const TalkAction_ptr &talkActionPtr) const;
 	TalkActionResult_t checkPlayerCanSayTalkAction(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words) const;
 
 	bool registerLuaEvent(const TalkAction_ptr &talkAction);

@@ -7,9 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "task.hpp"
+#include "game/scheduling/task.hpp"
 
-#include "lib/logging/log_with_spd_log.hpp"
 #include "lib/metrics/metrics.hpp"
 
 #include "utils/tools.hpp"

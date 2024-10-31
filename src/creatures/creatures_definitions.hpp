@@ -1584,8 +1584,6 @@ struct RespawnType {
 	bool underground;
 };
 
-struct LootBlock;
-
 struct LootBlock {
 	uint16_t id;
 	uint32_t countmax;
@@ -1626,17 +1624,16 @@ struct LootBlock {
 };
 
 struct ShopBlock {
-	uint16_t itemId;
+	uint16_t itemId {};
 	std::string itemName;
-	int32_t itemSubType;
-	uint32_t itemBuyPrice;
-	uint32_t itemSellPrice;
-	int32_t itemStorageKey;
-	int32_t itemStorageValue;
+	int32_t itemSubType {};
+	uint32_t itemBuyPrice {};
+	uint32_t itemSellPrice {};
+	int32_t itemStorageKey {};
+	int32_t itemStorageValue {};
 
 	std::vector<ShopBlock> childShop;
-	ShopBlock() :
-		itemId(0), itemSubType(0), itemBuyPrice(0), itemSellPrice(0), itemStorageKey(0), itemStorageValue(0) { }
+	ShopBlock() = default;
 
 	explicit ShopBlock(uint16_t newItemId, std::string newName = "", int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0) :
 		itemId(newItemId), itemName(std::move(newName)), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue) { }

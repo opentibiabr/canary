@@ -9,23 +9,23 @@
 
 #pragma once
 
+#include "items/item.hpp"
 #include "lua/global/baseevents.hpp"
-#include "creatures/combat/condition.hpp"
-#include "map/map.hpp"
 
 class Condition;
 class Creature;
-class Item;
 class Spell;
 class Player;
 class MatrixArea;
 class Weapon;
+class Tile;
+
+using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
 // for luascript callback
 class ValueCallback final : public CallBack {
 public:
-	explicit ValueCallback(const formulaType_t initType) :
-		type(initType) { }
+	explicit ValueCallback(formulaType_t initType);
 
 	/**
 	 * @brief Get the magic level skill for the player.
@@ -60,13 +60,10 @@ protected:
 class ChainCallback final : public CallBack {
 public:
 	ChainCallback() = default;
-	ChainCallback(const uint8_t &chainTargets, const uint8_t &chainDistance, const bool &backtracking) :
-		m_chainDistance(chainDistance), m_chainTargets(chainTargets), m_backtracking(backtracking) { }
+	ChainCallback(const uint8_t &chainTargets, const uint8_t &chainDistance, const bool &backtracking);
 
 	void getChainValues(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking);
-	void setFromLua(bool fromLua) {
-		m_fromLua = fromLua;
-	}
+	void setFromLua(bool fromLua);
 
 private:
 	void onChainCombat(const std::shared_ptr<Creature> &creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) const;
@@ -116,84 +113,28 @@ using CombatFunction = std::function<void(std::shared_ptr<Creature>, std::shared
 
 class MatrixArea {
 public:
-	MatrixArea(uint32_t initRows, uint32_t initCols) :
-		centerX(0), centerY(0), rows(initRows), cols(initCols) {
-		data_ = new bool*[rows];
+	MatrixArea(uint32_t initRows, uint32_t initCols);
 
-		for (uint32_t row = 0; row < rows; ++row) {
-			data_[row] = new bool[cols];
+	MatrixArea(const MatrixArea &rhs);
 
-			for (uint32_t col = 0; col < cols; ++col) {
-				data_[row][col] = false;
-			}
-		}
-	}
+	~MatrixArea();
 
-	MatrixArea(const MatrixArea &rhs) {
-		centerX = rhs.centerX;
-		centerY = rhs.centerY;
-		rows = rhs.rows;
-		cols = rhs.cols;
-
-		data_ = new bool*[rows];
-
-		for (uint32_t row = 0; row < rows; ++row) {
-			data_[row] = new bool[cols];
-
-			for (uint32_t col = 0; col < cols; ++col) {
-				data_[row][col] = rhs.data_[row][col];
-			}
-		}
-	}
-
-	~MatrixArea() {
-		for (uint32_t row = 0; row < rows; ++row) {
-			delete[] data_[row];
-		}
-
-		delete[] data_;
-	}
-
-	std::unique_ptr<MatrixArea> clone() const {
-		return std::make_unique<MatrixArea>(*this);
-	}
+	std::unique_ptr<MatrixArea> clone() const;
 
 	// non-assignable
 	MatrixArea &operator=(const MatrixArea &) = delete;
 
-	void setValue(uint32_t row, uint32_t col, bool value) const {
-		if (row < rows && col < cols) {
-			data_[row][col] = value;
-		} else {
-			g_logger().error("[{}] Access exceeds the upper limit of memory block");
-		}
-	}
-	bool getValue(uint32_t row, uint32_t col) const {
-		return data_[row][col];
-	}
+	void setValue(uint32_t row, uint32_t col, bool value) const;
+	bool getValue(uint32_t row, uint32_t col) const;
 
-	void setCenter(uint32_t y, uint32_t x) {
-		centerX = x;
-		centerY = y;
-	}
-	void getCenter(uint32_t &y, uint32_t &x) const {
-		x = centerX;
-		y = centerY;
-	}
+	void setCenter(uint32_t y, uint32_t x);
+	void getCenter(uint32_t &y, uint32_t &x) const;
 
-	uint32_t getRows() const {
-		return rows;
-	}
-	uint32_t getCols() const {
-		return cols;
-	}
+	uint32_t getRows() const;
+	uint32_t getCols() const;
 
-	const bool* operator[](uint32_t i) const {
-		return data_[i];
-	}
-	bool* operator[](uint32_t i) {
-		return data_[i];
-	}
+	const bool* operator[](uint32_t i) const;
+	bool* operator[](uint32_t i);
 
 private:
 	uint32_t centerX;
@@ -209,9 +150,7 @@ public:
 	AreaCombat() = default;
 
 	AreaCombat(const AreaCombat &rhs);
-	~AreaCombat() {
-		clear();
-	}
+	~AreaCombat();
 
 	// non-assignable
 	AreaCombat &operator=(const AreaCombat &) = delete;
@@ -224,43 +163,13 @@ public:
 	void setupExtArea(const std::list<uint32_t> &list, uint32_t rows);
 	void clear();
 
-	std::unique_ptr<AreaCombat> clone() const {
-		return std::make_unique<AreaCombat>(*this);
-	}
+	std::unique_ptr<AreaCombat> clone() const;
 
 private:
 	std::unique_ptr<MatrixArea> createArea(const std::list<uint32_t> &list, uint32_t rows);
 	void copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, const MatrixOperation_t &op) const;
 
-	const std::unique_ptr<MatrixArea> &getArea(const Position &centerPos, const Position &targetPos) const {
-		const int32_t dx = Position::getOffsetX(targetPos, centerPos);
-		const int32_t dy = Position::getOffsetY(targetPos, centerPos);
-
-		Direction dir;
-		if (dx < 0) {
-			dir = DIRECTION_WEST;
-		} else if (dx > 0) {
-			dir = DIRECTION_EAST;
-		} else if (dy < 0) {
-			dir = DIRECTION_NORTH;
-		} else {
-			dir = DIRECTION_SOUTH;
-		}
-
-		if (hasExtArea) {
-			if (dx < 0 && dy < 0) {
-				dir = DIRECTION_NORTHWEST;
-			} else if (dx > 0 && dy < 0) {
-				dir = DIRECTION_NORTHEAST;
-			} else if (dx < 0 && dy > 0) {
-				dir = DIRECTION_SOUTHWEST;
-			} else if (dx > 0 && dy > 0) {
-				dir = DIRECTION_SOUTHEAST;
-			}
-		}
-
-		return areas[dir];
-	}
+	const std::unique_ptr<MatrixArea> &getArea(const Position &centerPos, const Position &targetPos) const;
 
 	std::array<std::unique_ptr<MatrixArea>, Direction::DIRECTION_LAST + 1> areas {};
 	bool hasExtArea = false;
@@ -311,23 +220,13 @@ public:
 	CallBack* getCallback(CallBackParam_t key) const;
 
 	bool setParam(CombatParam_t param, uint32_t value);
-	void setArea(std::unique_ptr<AreaCombat> &newArea) {
-		this->area = std::move(newArea);
-	}
-	bool hasArea() const {
-		return area != nullptr;
-	}
-	void addCondition(const std::shared_ptr<Condition> &condition) {
-		params.conditionList.emplace_back(condition);
-	}
+	void setArea(std::unique_ptr<AreaCombat> &newArea);
+	bool hasArea() const;
+	void addCondition(const std::shared_ptr<Condition> &condition);
 	void setPlayerCombatValues(formulaType_t formulaType, double mina, double minb, double maxa, double maxb);
-	void postCombatEffects(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos) const {
-		postCombatEffects(caster, origin, pos, params);
-	}
+	void postCombatEffects(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos) const;
 
-	void setOrigin(CombatOrigin origin) {
-		params.origin = origin;
-	}
+	void setOrigin(CombatOrigin origin);
 
 	/**
 	 * @brief Sets the name of the instant spell.
@@ -412,27 +311,13 @@ private:
 
 class MagicField final : public Item {
 public:
-	explicit MagicField(uint16_t type) :
-		Item(type), createTime(OTSYS_TIME()) { }
+	explicit MagicField(uint16_t type);
 
-	std::shared_ptr<MagicField> getMagicField() override {
-		return static_self_cast<MagicField>();
-	}
+	std::shared_ptr<MagicField> getMagicField() override;
 
-	bool isReplaceable() const {
-		return Item::items[getID()].replaceable;
-	}
-	CombatType_t getCombatType() const {
-		const ItemType &it = items[getID()];
-		return it.combatType;
-	}
-	int32_t getDamage() const {
-		const ItemType &it = items[getID()];
-		if (it.conditionDamage) {
-			return it.conditionDamage->getTotalDamage();
-		}
-		return 0;
-	}
+	bool isReplaceable() const;
+	CombatType_t getCombatType() const;
+	int32_t getDamage() const;
 	void onStepInField(const std::shared_ptr<Creature> &creature);
 
 private:

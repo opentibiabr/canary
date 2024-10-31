@@ -9,7 +9,10 @@
 
 #pragma once
 
-#include "items/tile.hpp"
+#include "items/cylinder.hpp"
+#include "items/item.hpp"
+
+class Tile;
 
 class Teleport final : public Item, public Cylinder {
 public:
@@ -20,7 +23,7 @@ public:
 		return static_self_cast<Teleport>();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() final {
+	std::shared_ptr<Cylinder> getCylinder() override {
 		return getTeleport();
 	}
 

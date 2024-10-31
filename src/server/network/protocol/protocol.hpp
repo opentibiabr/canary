@@ -59,8 +59,7 @@ protected:
 		encryptionEnabled = true;
 	}
 	void setXTEAKey(const uint32_t* newKey) {
-		uint32_t* dst = this->key.data();
-		memcpy(dst, newKey, sizeof(uint32_t) * 4);
+		std::ranges::copy(newKey, newKey + 4, this->key.begin());
 	}
 
 	void setChecksumMethod(ChecksumMethods_t method) {
@@ -87,8 +86,7 @@ private:
 		std::array<char, NETWORKMESSAGE_MAXSIZE> buffer {};
 	};
 
-	mutable std::array<uint32_t, 4> key {};
-
+	void XTEA_transform(uint8_t* buffer, size_t messageLength, bool encrypt) const;
 	void XTEA_encrypt(OutputMessage &msg) const;
 	bool XTEA_decrypt(NetworkMessage &msg) const;
 	bool compression(OutputMessage &msg) const;

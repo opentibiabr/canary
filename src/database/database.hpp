@@ -10,7 +10,6 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "lib/logging/log_with_spd_log.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <mysql/mysql.h>
@@ -38,10 +37,10 @@ public:
 
 	bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
 
-	bool retryQuery(const std::string_view &query, int retries);
-	bool executeQuery(const std::string_view &query);
+	bool retryQuery(std::string_view query, int retries);
+	bool executeQuery(std::string_view query);
 
-	DBResult_ptr storeQuery(const std::string_view &query);
+	DBResult_ptr storeQuery(std::string_view query);
 
 	std::string escapeString(const std::string &s) const;
 

@@ -7,13 +7,17 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "utils/pugicast.hpp"
 #include "map/house/house.hpp"
-#include "io/iologindata.hpp"
+
+#include "config/configmanager.hpp"
 #include "game/game.hpp"
-#include "items/bed.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "io/ioguild.hpp"
+#include "io/iologindata.hpp"
+#include "items/bed.hpp"
+#include "items/containers/inbox/inbox.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "utils/pugicast.hpp"
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -475,7 +479,7 @@ void House::resetTransferItem() {
 }
 
 std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(const std::shared_ptr<House> &house) {
-	const auto &transferItem = std::make_shared<HouseTransferItem>(house);
+	auto transferItem = std::make_shared<HouseTransferItem>(house);
 	transferItem->setID(ITEM_DOCUMENT_RO);
 	transferItem->setSubType(1);
 	std::ostringstream ss;

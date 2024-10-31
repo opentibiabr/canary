@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include "creatures/players/player.hpp"
-#include "creatures/monsters/monsters.hpp"
-#include "lib/di/container.hpp"
+#include "creatures/creatures_definitions.hpp"
+
+enum MessageClasses : uint8_t;
 
 enum SharedExpStatus_t : uint8_t {
 	SHAREDEXP_OK,
@@ -21,66 +21,45 @@ enum SharedExpStatus_t : uint8_t {
 	SHAREDEXP_EMPTYPARTY
 };
 
+struct Position;
+
 class Player;
 class Party;
+class Item;
+class Creature;
 
 class Party final : public SharedObject {
 public:
 	static std::shared_ptr<Party> create(const std::shared_ptr<Player> &leader);
 
-	std::shared_ptr<Party> getParty() {
-		return static_self_cast<Party>();
-	}
+	std::shared_ptr<Party> getParty();
 
-	std::shared_ptr<Player> getLeader() const {
-		return m_leader.lock();
-	}
-	std::vector<std::shared_ptr<Player>> getPlayers() const {
-		std::vector<std::shared_ptr<Player>> players;
-		for (auto &member : memberList) {
-			players.emplace_back(member);
-		}
-		players.emplace_back(getLeader());
-		return players;
-	}
-	std::vector<std::shared_ptr<Player>> getMembers() {
-		return memberList;
-	}
-	std::vector<std::shared_ptr<Player>> getInvitees() {
-		return inviteList;
-	}
-	size_t getMemberCount() const {
-		return memberList.size();
-	}
-	size_t getInvitationCount() const {
-		return inviteList.size();
-	}
+	std::shared_ptr<Player> getLeader() const;
+	std::vector<std::shared_ptr<Player>> getPlayers() const;
+	std::vector<std::shared_ptr<Player>> getMembers();
+	std::vector<std::shared_ptr<Player>> getInvitees();
+	size_t getMemberCount() const;
+	size_t getInvitationCount() const;
 
 	void disband();
 	bool invitePlayer(const std::shared_ptr<Player> &player);
 	bool joinParty(const std::shared_ptr<Player> &player);
 	void revokeInvitation(const std::shared_ptr<Player> &player);
 	bool passPartyLeadership(const std::shared_ptr<Player> &player);
-	bool leaveParty(const std::shared_ptr<Player> &player);
+	bool leaveParty(const std::shared_ptr<Player> &player, bool forceRemove = false);
 
 	bool removeInvite(const std::shared_ptr<Player> &player, bool removeFromPlayer = true);
 
 	bool isPlayerInvited(const std::shared_ptr<Player> &player) const;
 	void updateAllPartyIcons();
 	void broadcastPartyMessage(MessageClasses msgClass, const std::string &msg, bool sendToInvitations = false);
-	bool empty() const {
-		return memberList.empty() && inviteList.empty();
-	}
+	bool empty() const;
 	bool canOpenCorpse(uint32_t ownerId) const;
 
 	void shareExperience(uint64_t experience, const std::shared_ptr<Creature> &target = nullptr);
 	bool setSharedExperience(const std::shared_ptr<Player> &player, bool sharedExpActive, bool silent = false);
-	bool isSharedExperienceActive() const {
-		return sharedExpActive;
-	}
-	bool isSharedExperienceEnabled() const {
-		return sharedExpEnabled;
-	}
+	bool isSharedExperienceActive() const;
+	bool isSharedExperienceEnabled() const;
 	bool canUseSharedExperience(const std::shared_ptr<Player> &player);
 	SharedExpStatus_t getMemberSharedExperienceStatus(const std::shared_ptr<Player> &player);
 	void updateSharedExperience();
@@ -104,20 +83,9 @@ public:
 	void resetAnalyzer();
 	void reloadPrices() const;
 
-	std::shared_ptr<PartyAnalyzer> getPlayerPartyAnalyzerStruct(uint32_t playerId) const {
-		if (auto it = std::ranges::find_if(membersData, [playerId](const std::shared_ptr<PartyAnalyzer> &preyIt) {
-				return preyIt->id == playerId;
-			});
-		    it != membersData.end()) {
-			return *it;
-		}
+	std::shared_ptr<PartyAnalyzer> getPlayerPartyAnalyzerStruct(uint32_t playerId) const;
 
-		return nullptr;
-	}
-
-	uint32_t getAnalyzerTimeNow() const {
-		return static_cast<uint32_t>(time(nullptr) - trackerTime);
-	}
+	uint32_t getAnalyzerTimeNow() const;
 
 public:
 	// Party analyzer

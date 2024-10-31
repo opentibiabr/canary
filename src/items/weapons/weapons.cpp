@@ -7,10 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "items/weapons/weapons.hpp"
+
+#include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
-#include "items/weapons/weapons.hpp"
 
 #include "lua/global/lua_variant.hpp"
 
@@ -775,7 +777,7 @@ int32_t WeaponDistance::getElementDamage(const std::shared_ptr<Player> &player, 
 	}
 
 	int32_t attackValue = elementDamage;
-	if (item->getWeaponType() == WEAPON_AMMO) {
+	if (item && player && item->getWeaponType() == WEAPON_AMMO) {
 		const auto &weapon = player->getWeapon(true);
 		if (weapon) {
 			attackValue += item->getAttack();
@@ -808,7 +810,7 @@ int32_t WeaponDistance::getWeaponDamage(const std::shared_ptr<Player> &player, c
 	int32_t attackValue = item->getAttack();
 	bool hasElement = false;
 
-	if (item->getWeaponType() == WEAPON_AMMO) {
+	if (player && item && item->getWeaponType() == WEAPON_AMMO) {
 		const auto &weapon = player->getWeapon(true);
 		if (weapon) {
 			const ItemType &it = Item::items[item->getID()];
@@ -830,7 +832,7 @@ int32_t WeaponDistance::getWeaponDamage(const std::shared_ptr<Player> &player, c
 		return -maxValue;
 	}
 
-	if (target->getPlayer()) {
+	if (target && target->getPlayer()) {
 		if (hasElement) {
 			minValue /= 4;
 		} else {
@@ -849,7 +851,7 @@ int32_t WeaponDistance::getWeaponDamage(const std::shared_ptr<Player> &player, c
 bool WeaponDistance::getSkillType(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &, skills_t &skill, uint32_t &skillpoint) const {
 	skill = SKILL_DISTANCE;
 
-	if (player->getAddAttackSkill()) {
+	if (player && player->getAddAttackSkill()) {
 		switch (player->getLastAttackBlockType()) {
 			case BLOCK_NONE: {
 				skillpoint = 2;

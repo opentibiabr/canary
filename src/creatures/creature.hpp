@@ -9,19 +9,16 @@
 
 #pragma once
 
-#include "declarations.hpp"
-#include "creatures/combat/condition.hpp"
-#include "utils/utils_definitions.hpp"
-#include "lua/creature/creatureevent.hpp"
-#include "map/map.hpp"
+#include "creatures/creatures_definitions.hpp"
+#include "game/game_definitions.hpp"
 #include "game/movement/position.hpp"
-#include "items/tile.hpp"
+#include "items/thing.hpp"
+#include "map/map_const.hpp"
+#include "utils/utils_definitions.hpp"
 
-using ConditionList = std::list<std::shared_ptr<Condition>>;
-using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
-
+class CreatureEvent;
+class Condition;
 class Map;
-class Thing;
 class Container;
 class Player;
 class Monster;
@@ -29,6 +26,19 @@ class Npc;
 class Item;
 class Tile;
 class Zone;
+class MonsterType;
+class Cylinder;
+class ItemType;
+
+struct CreatureIcon;
+struct Position;
+
+enum CreatureType_t : uint8_t;
+enum ZoneType_t : uint8_t;
+enum CreatureEventType_t : uint8_t;
+
+using ConditionList = std::list<std::shared_ptr<Condition>>;
+using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
 
 static constexpr uint8_t WALK_TARGET_NEARBY_EXTRA_COST = 2;
 static constexpr uint8_t WALK_FLOOR_CHANGE_EXTRA_COST = 2;
@@ -199,6 +209,11 @@ public:
 	int32_t getHealth() const {
 		return health;
 	}
+
+	bool isAlive() const {
+		return !isDead();
+	}
+
 	virtual int32_t getMaxHealth() const {
 		return healthMax;
 	}
@@ -290,13 +305,7 @@ public:
 		return outfit == 75 || outfit == 266 || outfit == 302;
 	}
 	bool isInvisible() const;
-	ZoneType_t getZoneType() {
-		if (getTile()) {
-			return getTile()->getZoneType();
-		}
-
-		return ZONE_NORMAL;
-	}
+	ZoneType_t getZoneType();
 
 	std::unordered_set<std::shared_ptr<Zone>> getZones();
 
@@ -541,31 +550,9 @@ public:
 	bool registerCreatureEvent(const std::string &name);
 	bool unregisterCreatureEvent(const std::string &name);
 
-	std::shared_ptr<Cylinder> getParent() final {
-		return getTile();
-	}
+	std::shared_ptr<Cylinder> getParent() final;
 
-	void setParent(std::weak_ptr<Cylinder> cylinder) final {
-		const auto oldGroundSpeed = walk.groundSpeed;
-		walk.groundSpeed = 150;
-
-		if (const auto &lockedCylinder = cylinder.lock()) {
-			const auto &newParent = lockedCylinder->getTile();
-			position = newParent->getPosition();
-			m_tile = newParent;
-
-			if (newParent->getGround()) {
-				const auto &it = Item::items[newParent->getGround()->getID()];
-				if (it.speed > 0) {
-					walk.groundSpeed = it.speed;
-				}
-			}
-		}
-
-		if (walk.groundSpeed != oldGroundSpeed) {
-			walk.recache();
-		}
-	}
+	void setParent(std::weak_ptr<Cylinder> cylinder) final;
 
 	const Position &getPosition() final {
 		return position;
@@ -707,6 +694,13 @@ public:
 	}
 
 protected:
+	enum FlagAsyncClass_t : uint8_t {
+		AsyncTaskRunning = 1 << 0,
+		UpdateTargetList = 1 << 1,
+		UpdateIdleStatus = 1 << 2,
+		Pathfinder = 1 << 3
+	};
+
 	virtual bool useCacheMap() const {
 		return false;
 	}
@@ -780,12 +774,13 @@ protected:
 	Direction direction = DIRECTION_SOUTH;
 	Skulls_t skull = SKULL_NONE;
 
+	std::atomic_bool creatureCheck = false;
+	std::atomic_bool inCheckCreaturesVector = false;
+
 	bool localMapCache[mapWalkHeight][mapWalkWidth] = { { false } };
 	bool isInternalRemoved = false;
 	bool isMapLoaded = false;
 	bool isUpdatingPath = false;
-	bool creatureCheck = false;
-	bool inCheckCreaturesVector = false;
 	bool skillLoss = true;
 	bool lootDrop = true;
 	bool cancelNextWalk = false;
@@ -796,19 +791,16 @@ protected:
 	bool moveLocked = false;
 	bool directionLocked = false;
 	bool hasFollowPath = false;
+	bool checkingWalkCreature = false;
 	int8_t charmChanceModifier = 0;
 
 	uint8_t wheelOfDestinyDrainBodyDebuff = 0;
-
-	std::atomic_bool pathfinderRunning = false;
 
 	// use map here instead of phmap to keep the keys in a predictable order
 	std::map<std::string, CreatureIcon> creatureIcons = {};
 
 	// creature script events
-	bool hasEventRegistered(CreatureEventType_t event) const {
-		return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << event)));
-	}
+	bool hasEventRegistered(CreatureEventType_t event) const;
 	CreatureEventList getCreatureEvents(CreatureEventType_t type) const;
 
 	void updateMapCache();
@@ -836,10 +828,33 @@ protected:
 	friend class Map;
 	friend class CreatureFunctions;
 
+	void addAsyncTask(std::function<void()> &&fnc) {
+		asyncTasks.emplace_back(std::move(fnc));
+		sendAsyncTasks();
+	}
+
+	bool hasAsyncTaskFlag(FlagAsyncClass_t prop) const {
+		return (m_flagAsyncTask & prop);
+	}
+
+	void setAsyncTaskFlag(FlagAsyncClass_t taskFlag, bool v) {
+		if (v) {
+			m_flagAsyncTask |= taskFlag;
+			sendAsyncTasks();
+		} else {
+			m_flagAsyncTask &= ~taskFlag;
+		}
+	}
+
+	virtual void onExecuteAsyncTasks() {};
+
 private:
 	bool canFollowMaster() const;
 	bool isLostSummon();
+	void sendAsyncTasks();
 	void handleLostSummon(bool teleportSummons);
+
+	std::vector<std::function<void()>> asyncTasks;
 
 	struct {
 		uint16_t groundSpeed { 0 };
@@ -864,4 +879,6 @@ private:
 
 		walk.recache();
 	}
+
+	uint8_t m_flagAsyncTask = 0;
 };

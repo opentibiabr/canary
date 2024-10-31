@@ -8,6 +8,7 @@
  */
 
 #include "lua/modules/modules.hpp"
+
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 
@@ -47,36 +48,34 @@ Event_ptr Modules::getEvent(const std::string &nodeName) {
 }
 
 bool Modules::registerEvent(const Event_ptr &event, const pugi::xml_node &) {
-	const auto &module = std::dynamic_pointer_cast<Module>(event);
-	if (module->getEventType() == MODULE_TYPE_NONE) {
+	const auto &modulePtr = std::dynamic_pointer_cast<Module>(event);
+	if (modulePtr->getEventType() == MODULE_TYPE_NONE) {
 		g_logger().error("Trying to register event without type!");
 		return false;
 	}
 
-	const auto oldModule = getEventByRecvbyte(module->getRecvbyte(), false);
+	const auto oldModule = getEventByRecvbyte(modulePtr->getRecvbyte(), false);
 	if (oldModule) {
-		if (!oldModule->isLoaded() && oldModule->getEventType() == module->getEventType()) {
-			oldModule->copyEvent(module);
+		if (!oldModule->isLoaded() && oldModule->getEventType() == modulePtr->getEventType()) {
+			oldModule->copyEvent(modulePtr);
 			return true;
 		}
 		return false;
 	}
 
-	const auto it = recvbyteList.find(module->getRecvbyte());
+	const auto it = recvbyteList.find(modulePtr->getRecvbyte());
 	if (it != recvbyteList.end()) {
-		it->second = module;
+		it->second = modulePtr;
 	} else {
-		recvbyteList.emplace(module->getRecvbyte(), module);
+		recvbyteList.try_emplace(modulePtr->getRecvbyte(), modulePtr);
 	}
 	return true;
 }
 
 Module_ptr Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
 	const auto it = recvbyteList.find(recvbyte);
-	if (it != recvbyteList.end()) {
-		if (!force || it->second->isLoaded()) {
-			return it->second;
-		}
+	if (it != recvbyteList.end() && (!force || it->second->isLoaded())) {
+		return it->second;
 	}
 	return nullptr;
 }
@@ -87,14 +86,14 @@ void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t 
 		return;
 	}
 
-	for (const auto &[moduleId, module] : recvbyteList) {
+	for (const auto &[moduleId, modulePtr] : recvbyteList) {
 		if (moduleId == 0) {
 			g_logger().error("Invalid module id 0.");
 			continue;
 		}
-		if (module->getEventType() == MODULE_TYPE_RECVBYTE && module->getRecvbyte() == byte && player->canRunModule(module->getRecvbyte())) {
-			player->setModuleDelay(module->getRecvbyte(), module->getDelay());
-			module->executeOnRecvbyte(player, msg);
+		if (modulePtr->getEventType() == MODULE_TYPE_RECVBYTE && modulePtr->getRecvbyte() == byte && player->canRunModule(modulePtr->getRecvbyte())) {
+			player->setModuleDelay(modulePtr->getRecvbyte(), modulePtr->getDelay());
+			modulePtr->executeOnRecvbyte(player, msg);
 			return;
 		}
 	}
@@ -145,11 +144,11 @@ std::string Module::getScriptEventName() const {
 	}
 }
 
-void Module::copyEvent(const Module_ptr &module) {
-	scriptId = module->scriptId;
-	scriptInterface = module->scriptInterface;
-	scripted = module->scripted;
-	loaded = module->loaded;
+void Module::copyEvent(const Module_ptr &modulePtr) {
+	scriptId = modulePtr->scriptId;
+	scriptInterface = modulePtr->scriptInterface;
+	scripted = modulePtr->scripted;
+	loaded = modulePtr->loaded;
 }
 
 void Module::clearEvent() {

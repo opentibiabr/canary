@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/map/teleport_functions.hpp"
+
 #include "game/movement/teleport.hpp"
 #include "items/item.hpp"
-#include "lua/functions/map/teleport_functions.hpp"
 
 // Teleport
 int TeleportFunctions::luaTeleportCreate(lua_State* L) {

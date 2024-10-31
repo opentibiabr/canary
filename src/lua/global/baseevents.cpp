@@ -8,7 +8,10 @@
  */
 
 #include "lua/global/baseevents.hpp"
+
+#include "config/configmanager.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/luascript.hpp"
 #include "utils/tools.hpp"
 
 bool BaseEvents::loadFromXml() {

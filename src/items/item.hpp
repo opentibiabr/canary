@@ -9,14 +9,11 @@
 
 #pragma once
 
-#include "items/cylinder.hpp"
-#include "items/thing.hpp"
 #include "enums/item_attribute.hpp"
-#include "items/items.hpp"
-#include "items/functions/item/attribute.hpp"
-#include "lua/scripts/luascript.hpp"
-#include "utils/tools.hpp"
 #include "io/fileloader.hpp"
+#include "items/functions/item/attribute.hpp"
+#include "items/items.hpp"
+#include "items/thing.hpp"
 
 class Creature;
 class Player;
@@ -30,6 +27,7 @@ class MagicField;
 class BedItem;
 class Imbuement;
 class Item;
+class Cylinder;
 
 // This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
 class ItemProperties {
@@ -76,13 +74,7 @@ public:
 	}
 
 	// Custom Attributes
-	const std::map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const {
-		static std::map<std::string, CustomAttribute, std::less<>> map = {};
-		if (!attributePtr) {
-			return map;
-		}
-		return attributePtr->getCustomAttributeMap();
-	}
+	const std::map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const;
 	const CustomAttribute* getCustomAttribute(const std::string &attributeName) const {
 		if (!attributePtr) {
 			return nullptr;
@@ -116,14 +108,7 @@ public:
 		return getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
 	}
 
-	int32_t getDuration() const {
-		const ItemDecayState_t decayState = getDecaying();
-		if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
-			return std::max<int32_t>(0, getAttribute<int32_t>(ItemAttribute_t::DURATION_TIMESTAMP) - static_cast<int32_t>(OTSYS_TIME()));
-		} else {
-			return getAttribute<int32_t>(ItemAttribute_t::DURATION);
-		}
-	}
+	int32_t getDuration() const;
 
 	bool isStoreItem() const {
 		return getAttribute<int64_t>(ItemAttribute_t::STORE) > 0;
@@ -366,13 +351,9 @@ public:
 		return items[id].abilities->perfectShotRange;
 	}
 
-	int32_t getReflectionFlat(CombatType_t combatType) const {
-		return items[id].abilities->reflectFlat[combatTypeToIndex(combatType)];
-	}
+	int32_t getReflectionFlat(CombatType_t combatType) const;
 
-	int32_t getReflectionPercent(CombatType_t combatType) const {
-		return items[id].abilities->reflectPercent[combatTypeToIndex(combatType)];
-	}
+	int32_t getReflectionPercent(CombatType_t combatType) const;
 
 	int16_t getMagicShieldCapacityPercent() const {
 		return items[id].abilities->magicShieldCapacityPercent;
@@ -382,9 +363,7 @@ public:
 		return items[id].abilities->magicShieldCapacityFlat;
 	}
 
-	int32_t getSpecializedMagicLevel(CombatType_t combat) const {
-		return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
-	}
+	int32_t getSpecializedMagicLevel(CombatType_t combat) const;
 
 	int32_t getSpeed() const {
 		const int32_t value = items[id].getSpeed();
@@ -662,13 +641,7 @@ public:
 	}
 	std::shared_ptr<Cylinder> getTopParent();
 	std::shared_ptr<Tile> getTile() override;
-	bool isRemoved() override {
-		const auto parent = getParent();
-		if (parent) {
-			return parent->isRemoved();
-		}
-		return true;
-	}
+	bool isRemoved() override;
 
 	bool isInsideDepot(bool includeInbox = false);
 
@@ -714,78 +687,16 @@ public:
 		return false;
 	}
 
-	double getDodgeChance() const {
-		if (getTier() == 0) {
-			return 0;
-		}
-		return quadraticPoly(
-			g_configManager().getFloat(RUSE_CHANCE_FORMULA_A),
-			g_configManager().getFloat(RUSE_CHANCE_FORMULA_B),
-			g_configManager().getFloat(RUSE_CHANCE_FORMULA_C),
-			getTier()
-		);
-	}
+	double getDodgeChance() const;
 
-	double getFatalChance() const {
-		if (getTier() == 0) {
-			return 0;
-		}
-		return quadraticPoly(
-			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_A),
-			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_B),
-			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_C),
-			getTier()
-		);
-	}
+	double getFatalChance() const;
 
-	double getMomentumChance() const {
-		if (getTier() == 0) {
-			return 0;
-		}
-		return quadraticPoly(
-			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_A),
-			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_B),
-			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_C),
-			getTier()
-		);
-	}
+	double getMomentumChance() const;
 
-	double getTranscendenceChance() const {
-		if (getTier() == 0) {
-			return 0;
-		}
-		return quadraticPoly(
-			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_A),
-			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_B),
-			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_C),
-			getTier()
-		);
-	}
+	double getTranscendenceChance() const;
 
-	uint8_t getTier() const {
-		if (!hasAttribute(ItemAttribute_t::TIER)) {
-			return 0;
-		}
-
-		auto tier = getAttribute<uint8_t>(ItemAttribute_t::TIER);
-		if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
-			g_logger().error("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
-			return 0;
-		}
-
-		return tier;
-	}
-	void setTier(uint8_t tier) {
-		auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
-		if (tier > configTier) {
-			g_logger().error("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
-			return;
-		}
-
-		if (items[id].upgradeClassification) {
-			setAttribute(ItemAttribute_t::TIER, tier);
-		}
-	}
+	uint8_t getTier() const;
+	void setTier(uint8_t tier);
 	uint8_t getClassification() const {
 		return items[id].upgradeClassification;
 	}

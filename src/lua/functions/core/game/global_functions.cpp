@@ -7,19 +7,62 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/core/game/global_functions.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/interactions/chat.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
-#include "lua/functions/core/game/global_functions.hpp"
+#include "items/containers/depot/depotlocker.hpp"
+#include "lua/global/globalevent.hpp"
+#include "lua/global/lua_timer_event_descr.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
-#include "lua/global/globalevent.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
-#include "lua/global/lua_timer_event_descr.hpp"
 
-class Creature;
+void GlobalFunctions::init(lua_State* L) {
+	lua_register(L, "addEvent", GlobalFunctions::luaAddEvent);
+	lua_register(L, "cleanMap", GlobalFunctions::luaCleanMap);
+	lua_register(L, "createCombatArea", GlobalFunctions::luaCreateCombatArea);
+	lua_register(L, "debugPrint", GlobalFunctions::luaDebugPrint);
+	lua_register(L, "doAddContainerItem", GlobalFunctions::luaDoAddContainerItem);
+	lua_register(L, "doAreaCombatCondition", GlobalFunctions::luaDoAreaCombatCondition);
+	lua_register(L, "doAreaCombatDispel", GlobalFunctions::luaDoAreaCombatDispel);
+	lua_register(L, "doAreaCombatHealth", GlobalFunctions::luaDoAreaCombatHealth);
+	lua_register(L, "doAreaCombatMana", GlobalFunctions::luaDoAreaCombatMana);
+	lua_register(L, "doChallengeCreature", GlobalFunctions::luaDoChallengeCreature);
+	lua_register(L, "doPlayerAddItem", GlobalFunctions::luaDoPlayerAddItem);
+	lua_register(L, "doTargetCombatCondition", GlobalFunctions::luaDoTargetCombatCondition);
+	lua_register(L, "doTargetCombatDispel", GlobalFunctions::luaDoTargetCombatDispel);
+	lua_register(L, "doTargetCombatHealth", GlobalFunctions::luaDoTargetCombatHealth);
+	lua_register(L, "doTargetCombatMana", GlobalFunctions::luaDoTargetCombatMana);
+	lua_register(L, "getDepotId", GlobalFunctions::luaGetDepotId);
+	lua_register(L, "getWaypointPositionByName", GlobalFunctions::luaGetWaypointPositionByName);
+	lua_register(L, "getWorldLight", GlobalFunctions::luaGetWorldLight);
+	lua_register(L, "getWorldTime", GlobalFunctions::luaGetWorldTime);
+	lua_register(L, "getWorldUpTime", GlobalFunctions::luaGetWorldUpTime);
+	lua_register(L, "isDepot", GlobalFunctions::luaIsDepot);
+	lua_register(L, "isInWar", GlobalFunctions::luaIsInWar);
+	lua_register(L, "isMovable", GlobalFunctions::luaIsMovable);
+	lua_register(L, "isValidUID", GlobalFunctions::luaIsValidUID);
+	lua_register(L, "saveServer", GlobalFunctions::luaSaveServer);
+	lua_register(L, "sendChannelMessage", GlobalFunctions::luaSendChannelMessage);
+	lua_register(L, "sendGuildChannelMessage", GlobalFunctions::luaSendGuildChannelMessage);
+	lua_register(L, "stopEvent", GlobalFunctions::luaStopEvent);
+
+	registerGlobalVariable(L, "INDEX_WHEREEVER", INDEX_WHEREEVER);
+	registerGlobalBoolean(L, "VIRTUAL_PARENT", true);
+	registerGlobalMethod(L, "isType", GlobalFunctions::luaIsType);
+	registerGlobalMethod(L, "rawgetmetatable", GlobalFunctions::luaRawGetMetatable);
+	registerGlobalMethod(L, "createTable", GlobalFunctions::luaCreateTable);
+	registerGlobalMethod(L, "systemTime", GlobalFunctions::luaSystemTime);
+	registerGlobalMethod(L, "getFormattedTimeRemaining", GlobalFunctions::luaGetFormattedTimeRemaining);
+	registerGlobalMethod(L, "reportError", GlobalFunctions::luaReportError);
+}
+
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count/subtype, <optional: default: 1> canDropOnMap)
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count, <optional: default: 1> canDropOnMap, <optional: default: 1>subtype)
@@ -667,7 +710,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 		"LuaEnvironment::executeTimerEvent"
 	);
 
-	g_luaEnvironment().timerEvents.emplace(lastTimerEventId, std::move(eventDesc));
+	g_luaEnvironment().timerEvents.try_emplace(lastTimerEventId, std::move(eventDesc));
 	lua_pushnumber(L, lastTimerEventId++);
 	return 1;
 }

@@ -9,11 +9,6 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <vector>
-#include "lib/di/container.hpp"
-
 enum class BosstiaryRarity_t : uint8_t {
 	RARITY_BANE = 0,
 	RARITY_ARCHFOE = 1,
@@ -39,9 +34,7 @@ public:
 	IOBosstiary(const IOBosstiary &) = delete;
 	void operator=(const IOBosstiary &) = delete;
 
-	static IOBosstiary &getInstance() {
-		return inject<IOBosstiary>();
-	}
+	static IOBosstiary &getInstance();
 
 	void loadBoostedBoss();
 
@@ -54,7 +47,7 @@ public:
 		{ BosstiaryRarity_t::RARITY_NEMESIS, { { 1, 10 }, { 3, 30 }, { 5, 60 } } }
 	};
 
-	void setBossBoostedName(const std::string_view &name);
+	void setBossBoostedName(std::string_view name);
 	std::string getBoostedBossName() const;
 	void setBossBoostedId(uint16_t raceId);
 	uint16_t getBoostedBossId() const;

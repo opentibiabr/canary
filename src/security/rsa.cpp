@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "lib/di/container.hpp"
 #include "security/rsa.hpp"
+
+#include "lib/di/container.hpp"
 
 RSA::RSA(Logger &logger) :
 	logger(logger) {
@@ -96,7 +97,8 @@ void RSA::decrypt(char* msg) const {
 	mpz_powm(m, c, d, n);
 
 	const size_t count = (mpz_sizeinbase(m, 2) + 7) / 8;
-	memset(msg, 0, 128 - count);
+	std::fill(msg, msg + (128 - count), 0);
+
 	mpz_export(msg + (128 - count), nullptr, 1, 1, 0, 0, m);
 
 	mpz_clear(c);
@@ -163,27 +165,27 @@ enum {
 };
 
 uint16_t RSA::decodeLength(char*&pos) const {
-	uint8_t buffer[4] = { 0 };
-	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
+	std::array<uint8_t, 4> buffer = { 0 };
+	uint16_t length = static_cast<uint8_t>(*pos++);
 	if (length & 0x80) {
-		length &= 0x7F;
-		if (length > 4) {
+		uint8_t numLengthBytes = length & 0x7F;
+		if (numLengthBytes > 4) {
 			g_logger().error("[RSA::loadPEM] - Invalid 'length'");
 			return 0;
 		}
-		switch (length) {
-			case 4:
-				buffer[3] = static_cast<uint8_t>(*pos++);
-			case 3:
-				buffer[2] = static_cast<uint8_t>(*pos++);
-			case 2:
-				buffer[1] = static_cast<uint8_t>(*pos++);
-			case 1:
-				buffer[0] = static_cast<uint8_t>(*pos++);
-			default:
-				break;
+		// Copy 'numLengthBytes' bytes from 'pos' into 'buffer', starting at the correct position
+		std::ranges::copy_n(pos, numLengthBytes, buffer.begin() + (4 - numLengthBytes));
+		pos += numLengthBytes;
+		// Reconstruct 'length' from 'buffer' (big-endian)
+		uint32_t tempLength = 0;
+		for (size_t i = 0; i < numLengthBytes; ++i) {
+			tempLength = (tempLength << 8) | buffer[4 - numLengthBytes + i];
 		}
-		std::memcpy(&length, buffer, sizeof(length));
+		if (tempLength > UINT16_MAX) {
+			g_logger().error("[RSA::loadPEM] - Length too large");
+			return 0;
+		}
+		length = static_cast<uint16_t>(tempLength);
 	}
 	return length;
 }

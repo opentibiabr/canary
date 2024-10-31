@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "config/configmanager.hpp"
 #include "database/database.hpp"
+
+#include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
 
@@ -105,7 +106,7 @@ bool Database::isRecoverableError(unsigned int error) {
 	return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
 }
 
-bool Database::retryQuery(const std::string_view &query, int retries) {
+bool Database::retryQuery(std::string_view query, int retries) {
 	while (retries > 0 && mysql_query(handle, query.data()) != 0) {
 		g_logger().error("Query: {}", query.substr(0, 256));
 		g_logger().error("MySQL error [{}]: {}", mysql_errno(handle), mysql_error(handle));
@@ -123,7 +124,7 @@ bool Database::retryQuery(const std::string_view &query, int retries) {
 	return true;
 }
 
-bool Database::executeQuery(const std::string_view &query) {
+bool Database::executeQuery(std::string_view query) {
 	if (!handle) {
 		g_logger().error("Database not initialized!");
 		return false;
@@ -142,7 +143,7 @@ bool Database::executeQuery(const std::string_view &query) {
 	return success;
 }
 
-DBResult_ptr Database::storeQuery(const std::string_view &query) {
+DBResult_ptr Database::storeQuery(std::string_view query) {
 	if (!handle) {
 		g_logger().error("Database not initialized!");
 		return nullptr;

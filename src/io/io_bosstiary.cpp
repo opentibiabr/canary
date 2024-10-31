@@ -12,8 +12,12 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
 #include "utils/tools.hpp"
-#include "items/item.hpp"
+
+IOBosstiary &IOBosstiary::getInstance() {
+	return inject<IOBosstiary>();
+}
 
 void IOBosstiary::loadBoostedBoss() {
 	Database &database = Database::getInstance();
@@ -135,7 +139,7 @@ const std::map<uint16_t, std::string> &IOBosstiary::getBosstiaryMap() const {
 	return bosstiaryMap;
 }
 
-void IOBosstiary::setBossBoostedName(const std::string_view &name) {
+void IOBosstiary::setBossBoostedName(std::string_view name) {
 	boostedBoss = name;
 }
 

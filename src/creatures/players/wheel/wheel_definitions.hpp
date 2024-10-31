@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "creatures/creatures_definitions.hpp"
-
 enum WheelSlots_t : uint8_t {
 	SLOT_GREEN_200 = 1,
 	SLOT_GREEN_TOP_150 = 2,
@@ -253,6 +251,7 @@ struct PlayerWheelMethodsBonusData {
 	Stages stages;
 	Avatar avatar;
 
+	float momentum = 0;
 	float mitigation = 0;
 	std::vector<std::string> spells;
 };

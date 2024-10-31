@@ -7,9 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "player_title.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 
+#include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
+#include "enums/account_group_type.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
 #include "enums/account_group_type.hpp"
@@ -183,7 +186,7 @@ bool PlayerTitle::checkGold(uint32_t amount) const {
 
 bool PlayerTitle::checkMount(uint32_t amount) const {
 	uint8_t total = 0;
-	for (const auto &mount : g_game().mounts.getMounts()) {
+	for (const auto &mount : g_game().mounts->getMounts()) {
 		if (m_player.hasMount(mount)) {
 			total++;
 		}

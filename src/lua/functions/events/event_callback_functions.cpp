@@ -79,7 +79,6 @@ int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
 int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
 	const auto &callback = getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
-		reportErrorFunc("EventCallback is nil, failed to register script");
 		return 0;
 	}
 
@@ -101,7 +100,6 @@ int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
 int EventCallbackFunctions::luaEventCallbackLoad(lua_State* luaState) {
 	const auto &callback = getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
-		reportErrorFunc("EventCallback is nil");
 		return 1;
 	}
 

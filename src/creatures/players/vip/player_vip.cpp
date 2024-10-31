@@ -9,10 +9,10 @@
 
 #include "creatures/players/vip/player_vip.hpp"
 
-#include "io/iologindata.hpp"
-
-#include "game/game.hpp"
+#include "creatures/players/grouping/groups.hpp"
 #include "creatures/players/player.hpp"
+#include "io/iologindata.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 
 const uint8_t PlayerVIP::firstID = 1;
 const uint8_t PlayerVIP::lastID = 8;

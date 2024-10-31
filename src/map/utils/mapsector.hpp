@@ -70,19 +70,19 @@ public:
 			g_logger().error("Attempt to create floor on invalid coordinate: {}", z);
 			return nullptr;
 		}
-		std::lock_guard<std::mutex> lock(floors_mutex);
+		std::scoped_lock lock(floors_mutex);
 		if (!floors[z]) {
 			floors[z] = std::make_shared<Floor>(static_cast<uint8_t>(z));
 		}
 		return floors[z];
 	}
 
-	std::shared_ptr<Floor> getFloor(uint8_t z) const {
+	std::shared_ptr<Floor> getFloor(uint8_t z) {
 		if (z >= MAP_MAX_LAYERS) {
 			g_logger().error("Attempt to get floor on invalid coordinate: {}", z);
 			return nullptr;
 		}
-		std::lock_guard<std::mutex> lock(floors_mutex);
+		std::scoped_lock lock(floors_mutex);
 		return floors[z];
 	}
 

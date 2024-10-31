@@ -10,9 +10,6 @@
 #pragma once
 
 #include "items/cylinder.hpp"
-#include "declarations.hpp"
-#include "items/item.hpp"
-#include "utils/tools.hpp"
 
 class Creature;
 class Teleport;
@@ -22,6 +19,9 @@ class MagicField;
 class BedItem;
 class House;
 class Zone;
+class Cylinder;
+class Item;
+class ItemType;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;
@@ -169,9 +169,7 @@ public:
 	bool hasProperty(ItemProperty prop) const;
 	bool hasProperty(const std::shared_ptr<Item> &exclude, ItemProperty prop) const;
 
-	bool hasFlag(uint32_t flag) const {
-		return hasBitSet(flag, this->flags);
-	}
+	bool hasFlag(uint32_t flag) const;
 	void setFlag(uint32_t flag) {
 		this->flags |= flag;
 	}

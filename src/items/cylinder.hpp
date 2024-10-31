@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "declarations.hpp"
+#include "items/items_definitions.hpp"
 #include "items/thing.hpp"
 
 class Item;

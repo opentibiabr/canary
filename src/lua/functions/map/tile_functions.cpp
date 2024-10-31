@@ -7,8 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/game.hpp"
 #include "lua/functions/map/tile_functions.hpp"
+
+#include "creatures/combat/combat.hpp"
+#include "game/game.hpp"
 
 int TileFunctions::luaTileCreate(lua_State* L) {
 	// Tile(x, y, z)
@@ -629,7 +631,7 @@ int TileFunctions::luaTileAddItemEx(lua_State* L) {
 	}
 
 	const auto flags = getNumber<uint32_t>(L, 3, 0);
-	const ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
+	ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		ScriptEnvironment::removeTempItem(item);
 	}

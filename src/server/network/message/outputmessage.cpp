@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "outputmessage.hpp"
+#include "server/network/message/outputmessage.hpp"
 
 #include "lib/di/container.hpp"
 #include "server/network/protocol/protocol.hpp"
@@ -51,7 +51,7 @@ void OutputMessagePool::addProtocolToAutosend(const Protocol_ptr &protocol) {
 
 void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol) {
 	// dispatcher thread
-	const auto it = std::ranges::find(bufferedProtocols.begin(), bufferedProtocols.end(), protocol);
+	const auto it = std::ranges::find(bufferedProtocols, protocol);
 	if (it != bufferedProtocols.end()) {
 		*it = bufferedProtocols.back();
 		bufferedProtocols.pop_back();

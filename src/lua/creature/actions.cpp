@@ -8,12 +8,17 @@
  */
 
 #include "lua/creature/actions.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/spells.hpp"
+#include "creatures/players/player.hpp"
+#include "enums/account_group_type.hpp"
+#include "game/game.hpp"
 #include "items/bed.hpp"
 #include "items/containers/container.hpp"
-#include "game/game.hpp"
-#include "creatures/combat/spells.hpp"
+#include "items/containers/depot/depotlocker.hpp"
+#include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
-#include "enums/account_group_type.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;
@@ -230,8 +235,7 @@ std::shared_ptr<Action> Actions::getAction(const std::shared_ptr<Item> &item) {
 
 	if (const auto iteratePositions = actionPositionMap.find(item->getPosition());
 	    iteratePositions != actionPositionMap.end()) {
-		if (const auto &tile = item->getTile();
-		    tile) {
+		if (const auto &tile = item->getTile()) {
 			if (const auto &player = item->getHoldingPlayer();
 			    player && item->getTopParent() == player) {
 				g_logger().debug("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());

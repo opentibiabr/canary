@@ -320,10 +320,10 @@ private:
 	static void parsePerfecShot(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseCleavePercent(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseReflectDamage(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
-	static void parseTransformOnUse(const std::string_view &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
-	static void parsePrimaryType(const std::string_view &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
-	static void parseHouseRelated(const std::string_view &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
-	static void parseUnscriptedItems(const std::string_view &stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parseTransformOnUse(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parsePrimaryType(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parseHouseRelated(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parseUnscriptedItems(std::string_view stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType);
 
 private:
 	// Parent of the function: static void parseField

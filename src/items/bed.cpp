@@ -8,10 +8,14 @@
  */
 
 #include "items/bed.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/condition.hpp"
 #include "game/game.hpp"
-#include "io/iologindata.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "io/iologindata.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {
@@ -169,7 +173,9 @@ bool BedItem::sleep(const std::shared_ptr<Player> &player) {
 	g_game().setBedSleeper(static_self_cast<BedItem>(), player->getGUID());
 
 	// make the player walk onto the bed
-	g_game().map.moveCreature(player, getTile());
+	g_dispatcher().addWalkEvent([player, this] {
+		g_game().map.moveCreature(player, getTile());
+	});
 
 	// display 'Zzzz'/sleep effect
 	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);

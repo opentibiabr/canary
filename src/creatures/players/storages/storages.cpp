@@ -9,7 +9,6 @@
 
 #include "creatures/players/storages/storages.hpp"
 #include "config/configmanager.hpp"
-#include "config/config_enums.hpp"
 #include "lib/di/container.hpp"
 
 Storages &Storages::getInstance() {

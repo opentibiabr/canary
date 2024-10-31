@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/lua_functions_loader.hpp"
+
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/npcs/npc.hpp"
@@ -20,7 +22,6 @@
 #include "lua/functions/creatures/creature_functions.hpp"
 #include "lua/functions/events/events_functions.hpp"
 #include "lua/functions/items/item_functions.hpp"
-#include "lua/functions/lua_functions_loader.hpp"
 #include "lua/functions/map/map_functions.hpp"
 #include "lua/functions/core/game/zone_functions.hpp"
 #include "lua/global/lua_variant.hpp"
@@ -787,7 +788,7 @@ int LuaFunctionsLoader::luaGarbageCollection(lua_State* L) {
 }
 
 int LuaFunctionsLoader::validateDispatcherContext(std::string_view fncName) {
-	if (g_dispatcher().context().isOn() && g_dispatcher().context().isAsync()) {
+	if (DispatcherContext::isOn() && g_dispatcher().context().isAsync()) {
 		g_logger().warn("[{}] The call to lua was ignored because the '{}' task is trying to communicate while in async mode.", fncName, g_dispatcher().context().getName());
 		return LUA_ERRRUN;
 	}

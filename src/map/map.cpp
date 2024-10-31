@@ -7,18 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "map.hpp"
-#include "utils/astarnodes.hpp"
+#include "map/map.hpp"
 
-#include "lua/callbacks/event_callback.hpp"
-#include "lua/callbacks/events_callbacks.hpp"
 #include "creatures/monsters/monster.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
 #include "io/iomap.hpp"
 #include "io/iomapserialize.hpp"
-#include "game/scheduling/dispatcher.hpp"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
+#include "utils/astarnodes.hpp"
 
 void Map::load(const std::string &identifier, const Position &pos) {
 	try {
@@ -222,7 +223,7 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile>
 }
 
 bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creature> &creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
-	const auto &monster = creature->getMonster();
+	const auto &monster = creature ? creature->getMonster() : nullptr;
 	if (monster) {
 		monster->ignoreFieldDamage = true;
 	}
@@ -310,16 +311,18 @@ bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creatur
 	uint32_t flags = 0;
 	std::shared_ptr<Item> toItem = nullptr;
 
-	const auto toCylinder = tile->queryDestination(index, creature, toItem, flags);
-	toCylinder->internalAddThing(creature);
+	if (tile) {
+		const auto toCylinder = tile->queryDestination(index, creature, toItem, flags);
+		toCylinder->internalAddThing(creature);
 
-	const Position &dest = toCylinder->getPosition();
-	getMapSector(dest.x, dest.y)->addCreature(creature);
+		const Position &dest = toCylinder->getPosition();
+		getMapSector(dest.x, dest.y)->addCreature(creature);
+	}
 	return true;
 }
 
 void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport /* = false*/) {
-	if (!creature || !newTile) {
+	if (!creature || creature->isRemoved() || !newTile) {
 		return;
 	}
 
@@ -331,6 +334,10 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 
 	const auto &oldPos = oldTile->getPosition();
 	const auto &newPos = newTile->getPosition();
+
+	if (oldPos == newPos) {
+		return;
+	}
 
 	const auto &fromZones = oldTile->getZones();
 	const auto &toZones = newTile->getZones();
@@ -360,10 +367,10 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 			++minRangeX;
 		}
 
-		spectators.find<Creature>(oldPos, true, minRangeX, maxRangeX, minRangeY, maxRangeY);
+		spectators.find<Creature>(oldPos, true, minRangeX, maxRangeX, minRangeY, maxRangeY, false);
 	} else {
-		spectators.find<Creature>(oldPos, true);
-		spectators.find<Creature>(newPos, true);
+		spectators.find<Creature>(oldPos, true, 0, 0, 0, 0, false);
+		spectators.find<Creature>(newPos, true, 0, 0, 0, 0, false);
 	}
 
 	const auto playersSpectators = spectators.filter<Player>();
@@ -423,9 +430,18 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	oldTile->postRemoveNotification(creature, newTile, 0);
-	newTile->postAddNotification(creature, oldTile, 0);
-	g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+	auto events = [=] {
+		oldTile->postRemoveNotification(creature, newTile, 0);
+		newTile->postAddNotification(creature, oldTile, 0);
+		g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+	};
+
+	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+		// onCreatureMove for monster is asynchronous, so we need to defer the actions.
+		g_dispatcher().addEvent(std::move(events), "Map::moveCreature");
+	} else {
+		events();
+	}
 }
 
 bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, const SightLines_t lineOfSight /*= SightLine_CheckSightLine*/, const int32_t rangex /*= Map::maxClientViewportX*/, const int32_t rangey /*= Map::maxClientViewportY*/) {

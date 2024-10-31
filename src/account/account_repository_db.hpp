@@ -18,10 +18,10 @@ class AccountRepositoryDB final : public AccountRepository {
 public:
 	AccountRepositoryDB();
 
-	bool loadByID(const uint32_t &id, AccountInfo &acc) override;
-	bool loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) override;
-	bool loadBySession(const std::string &esseionKey, AccountInfo &acc) override;
-	bool save(const AccountInfo &accInfo) override;
+	bool loadByID(const uint32_t &id, std::unique_ptr<AccountInfo> &acc) override;
+	bool loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, std::unique_ptr<AccountInfo> &acc) override;
+	bool loadBySession(const std::string &esseionKey, std::unique_ptr<AccountInfo> &acc) override;
+	bool save(const std::unique_ptr<AccountInfo> &accInfo) override;
 
 	bool getCharacterByAccountIdAndName(const uint32_t &id, const std::string &name) override;
 
@@ -38,9 +38,8 @@ public:
 	) override;
 
 private:
-	std::unordered_map<CoinType, std::string> coinTypeToColumn {};
-
-	bool load(const std::string &query, AccountInfo &acc);
-	bool loadAccountPlayers(AccountInfo &acc) const;
-	void setupLoyaltyInfo(AccountInfo &acc);
+	const std::map<uint8_t, std::string> coinTypeToColumn;
+	bool load(const std::string &query, std::unique_ptr<AccountInfo> &acc);
+	bool loadAccountPlayers(std::unique_ptr<AccountInfo> &acc);
+	void setupLoyaltyInfo(std::unique_ptr<AccountInfo> &acc);
 };

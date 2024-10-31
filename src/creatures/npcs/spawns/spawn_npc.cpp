@@ -8,14 +8,17 @@
  */
 
 #include "creatures/npcs/spawns/spawn_npc.hpp"
+
 #include "creatures/npcs/npc.hpp"
+#include "creatures/npcs/npcs.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "utils/pugicast.hpp"
+#include "lua/creature/events.hpp"
 #include "map/spectators.hpp"
+#include "utils/pugicast.hpp"
 
 static constexpr int32_t MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MAXSPAWN_INTERVAL = 86400000; // 1 day
@@ -119,6 +122,30 @@ void SpawnsNpc::clear() {
 	fileName.clear();
 }
 
+bool SpawnsNpc::isStarted() const {
+	return started;
+}
+
+bool SpawnsNpc::setStarted(bool setStarted) {
+	return started = setStarted;
+}
+
+bool SpawnsNpc::isLoaded() const {
+	return loaded;
+}
+
+bool SpawnsNpc::setLoaded(bool setLoaded) {
+	return loaded = setLoaded;
+}
+
+std::string SpawnsNpc::setFileName(std::string setName) {
+	return fileName = std::move(setName);
+}
+
+std::vector<std::shared_ptr<SpawnNpc>> &SpawnsNpc::getSpawnNpcList() {
+	return spawnNpcList;
+}
+
 bool SpawnsNpc::isInZone(const Position &centerPos, int32_t radius, const Position &pos) {
 	if (radius == -1) {
 		return true;
@@ -179,6 +206,10 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, const std::shared_ptr<NpcType> &npcTyp
 	g_events().eventNpcOnSpawn(npc, pos);
 	g_callbacks().executeCallback(EventCallback_t::npcOnSpawn, &EventCallback::npcOnSpawn, npc, pos);
 	return true;
+}
+
+uint32_t SpawnNpc::getInterval() const {
+	return interval;
 }
 
 void SpawnNpc::startup() {

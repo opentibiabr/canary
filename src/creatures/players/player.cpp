@@ -5537,7 +5537,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 }
 
 int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
-	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)];
+	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)] + m_wheelPlayer->getSpecializedMagic(combat);
 	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {

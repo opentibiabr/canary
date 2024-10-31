@@ -284,7 +284,7 @@ namespace WheelSpells {
 	struct Decrease {
 		int cooldown = 0;
 		int manaCost = 0;
-		uint8_t secondaryGroupCooldown = 0;
+		int secondaryGroupCooldown = 0;
 	};
 
 	struct Leech {

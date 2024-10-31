@@ -1254,11 +1254,6 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 		combatTileEffects(spectators.data(), caster, tile, params);
 	}
 
-	// Wheel of destiny update beam mastery damage
-	if (casterPlayer) {
-		casterPlayer->wheel()->updateBeamMasteryDamage(tmpDamage, beamAffectedTotal, beamAffectedCurrent);
-	}
-
 	postCombatEffects(caster, origin, pos, params);
 }
 

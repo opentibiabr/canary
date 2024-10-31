@@ -951,6 +951,48 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 	return 0;
 }
 
+bool PlayerWheel::handleTwinBurstsCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const {
+	bool applyCondition = false;
+	uint16_t spellId = 0;
+	if (spellName == "Terra Burst") {
+		const auto &spell = g_spells().getSpellByName("Ice Burst");
+		spellId = spell->getSpellId();
+		applyCondition = true;
+	} else if (spellName == "Ice Burst") {
+		const auto &spell = g_spells().getSpellByName("Terra Burst");
+		spellId = spell->getSpellId();
+		applyCondition = true;
+	}
+
+	if (applyCondition) {
+		const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, spellId);
+		return player->addCondition(condition);
+	}
+
+	return false;
+}
+
+bool PlayerWheel::handleBeamMasteryCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const {
+	bool applyCondition = false;
+	uint16_t spellId = 0;
+	if (spellName == "Great Death Beam") {
+		const auto &spell = g_spells().getSpellByName("Great Energy Beam");
+		spellId = spell->getSpellId();
+		applyCondition = true;
+	} else if (spellName == "Great Energy Beam") {
+		const auto &spell = g_spells().getSpellByName("Great Death Beam");
+		spellId = spell->getSpellId();
+		applyCondition = true;
+	}
+
+	if (applyCondition) {
+		const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, spellId);
+		return player->addCondition(condition);
+	}
+
+	return false;
+}
+
 void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
 	std::vector<uint16_t> unlockedScrolls;
 
@@ -972,17 +1014,17 @@ void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
 	}
 }
 
-std::shared_ptr<KV> PlayerWheel::gemsKV() const {
+const std::shared_ptr<KV> &PlayerWheel::gemsKV() const {
 	return m_player.kv()->scoped("wheel-of-destiny")->scoped("gems");
 }
 
-std::shared_ptr<KV> PlayerWheel::gemsGradeKV(WheelFragmentType_t type, uint8_t pos) const {
+const std::shared_ptr<KV> &PlayerWheel::gemsGradeKV(WheelFragmentType_t type, uint8_t pos) const {
 	return gemsKV()->scoped(std::string(magic_enum::enum_name(type)))->scoped(std::to_string(pos));
 }
 
 uint8_t PlayerWheel::getGemGrade(WheelFragmentType_t type, uint8_t pos) const {
 	uint8_t grade = 0;
-	auto gradeKV = gemsGradeKV(type, pos)->get("grade");
+	const auto gradeKV = gemsGradeKV(type, pos)->get("grade");
 
 	if (gradeKV.has_value()) {
 		grade = static_cast<uint8_t>(gradeKV->get<IntType>());
@@ -1184,7 +1226,7 @@ void PlayerWheel::destroyGem(uint16_t index) const {
 
 	if (greaterFragments > 0) {
 		const auto &fragmentsItem = Item::CreateItem(ITEM_GREATER_FRAGMENT, greaterFragments);
-		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_BACKPACK);
+		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_WHEREEVER);
 		if (returnValue != RETURNVALUE_NOERROR) {
 			g_logger().error("Failed to add {} greater fragments to player with name {}", greaterFragments, m_player.getName());
 			m_player.sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
@@ -1195,8 +1237,11 @@ void PlayerWheel::destroyGem(uint16_t index) const {
 
 	gem.remove(gemsKV());
 
-	m_player.client->sendResourceBalance(RESOURCE_LESSER_FRAGMENT, m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT));
-	m_player.client->sendResourceBalance(RESOURCE_GREATER_FRAGMENT, m_player.getItemTypeCount(ITEM_GREATER_FRAGMENT));
+	const auto totalLesserFragment = m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT) + m_player.getStashItemCount(ITEM_LESSER_FRAGMENT);
+	const auto totalGreaterFragment = m_player.getItemTypeCount(ITEM_GREATER_FRAGMENT) + m_player.getStashItemCount(ITEM_GREATER_FRAGMENT);
+
+	m_player.client->sendResourceBalance(RESOURCE_LESSER_FRAGMENT, totalLesserFragment);
+	m_player.client->sendResourceBalance(RESOURCE_GREATER_FRAGMENT, totalGreaterFragment);
 
 	sendOpenWheelWindow(m_player.getID());
 }
@@ -1243,6 +1288,65 @@ void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) cons
 void PlayerWheel::removeActiveGem(WheelGemAffinity_t affinity) const {
 	const std::string key(magic_enum::enum_name(affinity));
 	gemsKV()->scoped("active")->remove(key);
+}
+
+void PlayerWheel::addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points) {
+	m_bonusRevelationPoints[static_cast<size_t>(affinity)] += points;
+}
+
+void PlayerWheel::resetRevelationBonus() {
+	m_bonusRevelationPoints = { 0, 0, 0, 0 };
+}
+
+void PlayerWheel::addSpellBonus(const std::string &spellName, const WheelSpells::Bonus &bonus) {
+	if (m_spellsBonuses.contains(spellName)) {
+		m_spellsBonuses[spellName].decrease.cooldown += bonus.decrease.cooldown;
+		m_spellsBonuses[spellName].decrease.manaCost += bonus.decrease.manaCost;
+		m_spellsBonuses[spellName].decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
+		m_spellsBonuses[spellName].increase.aditionalTarget += bonus.increase.aditionalTarget;
+		m_spellsBonuses[spellName].increase.area = bonus.increase.area;
+		m_spellsBonuses[spellName].increase.criticalChance += bonus.increase.criticalChance;
+		m_spellsBonuses[spellName].increase.criticalDamage += bonus.increase.criticalDamage;
+		m_spellsBonuses[spellName].increase.damage += bonus.increase.damage;
+		m_spellsBonuses[spellName].increase.damageReduction += bonus.increase.damageReduction;
+		m_spellsBonuses[spellName].increase.duration += bonus.increase.duration;
+		m_spellsBonuses[spellName].increase.heal += bonus.increase.heal;
+		m_spellsBonuses[spellName].leech.life += bonus.leech.life;
+		m_spellsBonuses[spellName].leech.mana += bonus.leech.mana;
+		return;
+	}
+	m_spellsBonuses[spellName] = bonus;
+}
+
+int32_t PlayerWheel::getSpellBonus(const std::string &spellName, WheelSpellBoost_t boost) const {
+	if (!m_spellsBonuses.contains(spellName)) {
+		return 0;
+	}
+	const auto &[leech, increase, decrease] = m_spellsBonuses.at(spellName);
+	switch (boost) {
+		case WheelSpellBoost_t::COOLDOWN:
+			return decrease.cooldown;
+		case WheelSpellBoost_t::MANA:
+			return decrease.manaCost;
+		case WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN:
+			return decrease.secondaryGroupCooldown;
+		case WheelSpellBoost_t::CRITICAL_CHANCE:
+			return increase.criticalChance;
+		case WheelSpellBoost_t::CRITICAL_DAMAGE:
+			return increase.criticalDamage;
+		case WheelSpellBoost_t::DAMAGE:
+			return increase.damage;
+		case WheelSpellBoost_t::DAMAGE_REDUCTION:
+			return increase.damageReduction;
+		case WheelSpellBoost_t::HEAL:
+			return increase.heal;
+		case WheelSpellBoost_t::LIFE_LEECH:
+			return leech.life;
+		case WheelSpellBoost_t::MANA_LEECH:
+			return leech.mana;
+		default:
+			return 0;
+	}
 }
 
 void PlayerWheel::addGems(NetworkMessage &msg) const {
@@ -1337,7 +1441,7 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 			return;
 	}
 
-	if (!m_player.hasItemCountById(fragmentId, quantity, false)) {
+	if (!m_player.hasItemCountById(fragmentId, quantity, true)) {
 		g_logger().error("[{}] Player {} does not have the required {} fragments with id {}", __FUNCTION__, m_player.getName(), quantity, fragmentId);
 		return;
 	}
@@ -1347,7 +1451,7 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 		return;
 	}
 
-	if (!m_player.removeItemCountById(fragmentId, quantity, false)) {
+	if (!m_player.removeItemCountById(fragmentId, quantity, true)) {
 		g_logger().error("[{}] Failed to remove {} fragments with id {} from player {}", std::source_location::current().function_name(), quantity, fragmentId, m_player.getName());
 		return;
 	}
@@ -1408,20 +1512,23 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) {
 	addPromotionScrolls(msg);
 	addGems(msg);
 	addGradeModifiers(msg);
-	// TODO: read items from inventory
+
 	const auto &voc = m_player.getVocation();
 	if (!voc) {
 		g_logger().error("[{}] Failed to get vocation for player {}", __FUNCTION__, m_player.getName());
 		return;
 	}
 
+	const auto totalLesserFragment = m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT) + m_player.getStashItemCount(ITEM_LESSER_FRAGMENT);
+	const auto totalGreaterFragment = m_player.getItemTypeCount(ITEM_GREATER_FRAGMENT) + m_player.getStashItemCount(ITEM_GREATER_FRAGMENT);
+
 	m_player.client->sendResourceBalance(RESOURCE_BANK, m_player.getBankBalance());
 	m_player.client->sendResourceBalance(RESOURCE_INVENTORY_MONEY, m_player.getMoney());
 	m_player.client->sendResourceBalance(RESOURCE_LESSER_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Lesser)));
 	m_player.client->sendResourceBalance(RESOURCE_REGULAR_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Regular)));
 	m_player.client->sendResourceBalance(RESOURCE_GREATER_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Greater)));
-	m_player.client->sendResourceBalance(RESOURCE_LESSER_FRAGMENT, m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT));
-	m_player.client->sendResourceBalance(RESOURCE_GREATER_FRAGMENT, m_player.getItemTypeCount(ITEM_GREATER_FRAGMENT));
+	m_player.client->sendResourceBalance(RESOURCE_LESSER_FRAGMENT, totalLesserFragment);
+	m_player.client->sendResourceBalance(RESOURCE_GREATER_FRAGMENT, totalGreaterFragment);
 }
 
 void PlayerWheel::sendGiftOfLifeCooldown() const {
@@ -1563,7 +1670,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
  */
 void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 	auto resultString = fmt::format("SELECT `slot` FROM `player_wheeldata` WHERE `player_id` = {}", m_player.getGUID());
-	const DBResult_ptr &result = Database::getInstance().storeQuery(resultString);
+	const DBResult_ptr &result = g_database().storeQuery(resultString);
 	// Ignore if player not have nothing inserted in the table
 	if (!result) {
 		return;
@@ -1584,8 +1691,6 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 }
 
 bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
-	const Database &db = Database::getInstance();
-	std::ostringstream query;
 	DBInsert insertWheelData("INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES ");
 	insertWheelData.upsert({ "slot" });
 	PropWriteStream stream;
@@ -1604,7 +1709,7 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	size_t attributesSize;
 	const char* attributes = stream.getStream(attributesSize);
 	if (attributesSize > 0) {
-		query << m_player.getGUID() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
+		const auto query = fmt::format("{}, {}", m_player.getGUID(), g_database().escapeBlob(attributes, static_cast<uint32_t>(attributesSize)));
 		if (!insertWheelData.addRow(query)) {
 			g_logger().debug("[{}] failed to insert row data", __FUNCTION__);
 			return false;
@@ -1813,7 +1918,7 @@ void PlayerWheel::reloadPlayerData() const {
 void PlayerWheel::registerPlayerBonusData() {
 	addStat(WheelStat_t::HEALTH, m_playerBonusData.stats.health);
 	addStat(WheelStat_t::MANA, m_playerBonusData.stats.mana);
-	addStat(WheelStat_t::CAPACITY, m_playerBonusData.stats.capacity * 100);
+	addStat(WheelStat_t::CAPACITY, m_playerBonusData.stats.capacity);
 	addStat(WheelStat_t::MITIGATION, m_playerBonusData.mitigation * 100);
 	addStat(WheelStat_t::DAMAGE, m_playerBonusData.stats.damage);
 	addStat(WheelStat_t::HEALING, m_playerBonusData.stats.healing);
@@ -1865,14 +1970,13 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.stages.divineEmpowerment; ++i) {
 			setSpellInstant("Divine Empowerment", true);
 		}
+		WheelSpells::Bonus bonus;
+		bonus.decrease.cooldown = 4 * 1000;
+
 		if (m_playerBonusData.stages.divineEmpowerment >= 2) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 4000;
 			addSpellBonus("Divine Empowerment", bonus);
 		}
 		if (m_playerBonusData.stages.divineEmpowerment >= 3) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 4000;
 			addSpellBonus("Divine Empowerment", bonus);
 		}
 	} else {
@@ -1885,12 +1989,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.stages.divineGrenade >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 4000;
+			bonus.decrease.cooldown = 4 * 1000;
 			addSpellBonus("Divine Grenade", bonus);
 		}
 		if (m_playerBonusData.stages.divineGrenade >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 6000;
+			bonus.decrease.cooldown = 6 * 1000;
 			addSpellBonus("Divine Grenade", bonus);
 		}
 	} else {
@@ -1905,8 +2009,20 @@ void PlayerWheel::registerPlayerBonusData() {
 		setSpellInstant("Drain Body", false);
 	}
 	if (m_playerBonusData.stages.beamMastery > 0) {
+		m_beamMasterySpells.emplace("Energy Beam");
+		m_beamMasterySpells.emplace("Great Death Beam");
+		m_beamMasterySpells.emplace("Great Energy Beam");
 		for (int i = 0; i < m_playerBonusData.stages.beamMastery; ++i) {
 			setSpellInstant("Beam Mastery", true);
+		}
+		WheelSpells::Bonus deathBeamBonus;
+		deathBeamBonus.decrease.cooldown = 2 * 1000;
+		deathBeamBonus.increase.damage = 6;
+		if (m_playerBonusData.stages.beamMastery >= 2) {
+			addSpellBonus("Great Death Beam", deathBeamBonus);
+		}
+		if (m_playerBonusData.stages.beamMastery >= 3) {
+			addSpellBonus("Great Death Beam", deathBeamBonus);
 		}
 	} else {
 		setSpellInstant("Beam Mastery", false);
@@ -1915,6 +2031,17 @@ void PlayerWheel::registerPlayerBonusData() {
 	if (m_playerBonusData.stages.twinBurst > 0) {
 		for (int i = 0; i < m_playerBonusData.stages.twinBurst; ++i) {
 			setSpellInstant("Twin Burst", true);
+		}
+		WheelSpells::Bonus bonus;
+		bonus.decrease.cooldown = 4 * 1000;
+		bonus.decrease.secondaryGroupCooldown = 4 * 1000;
+		if (m_playerBonusData.stages.twinBurst >= 2) {
+			addSpellBonus("Ice Burst", bonus);
+			addSpellBonus("Terra Burst", bonus);
+		}
+		if (m_playerBonusData.stages.twinBurst >= 3) {
+			addSpellBonus("Ice Burst", bonus);
+			addSpellBonus("Terra Burst", bonus);
 		}
 	} else {
 		setSpellInstant("Twin Burst", false);
@@ -1933,14 +2060,13 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.avatar.light; ++i) {
 			setSpellInstant("Avatar of Light", true);
 		}
+		WheelSpells::Bonus bonus;
+		bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
+
 		if (m_playerBonusData.avatar.light >= 2) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Light", bonus);
 		}
 		if (m_playerBonusData.avatar.light >= 3) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Light", bonus);
 		}
 	} else {
@@ -1951,14 +2077,13 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.avatar.nature; ++i) {
 			setSpellInstant("Avatar of Nature", true);
 		}
+		WheelSpells::Bonus bonus;
+		bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
+
 		if (m_playerBonusData.avatar.nature >= 2) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Nature", bonus);
 		}
 		if (m_playerBonusData.avatar.nature >= 3) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Nature", bonus);
 		}
 	} else {
@@ -1969,14 +2094,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.avatar.steel; ++i) {
 			setSpellInstant("Avatar of Steel", true);
 		}
+		WheelSpells::Bonus bonus;
+		bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 		if (m_playerBonusData.avatar.steel >= 2) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Steel", bonus);
 		}
 		if (m_playerBonusData.avatar.steel >= 3) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Steel", bonus);
 		}
 	} else {
@@ -1987,14 +2110,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.avatar.storm; ++i) {
 			setSpellInstant("Avatar of Storm", true);
 		}
+		WheelSpells::Bonus bonus;
+		bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 		if (m_playerBonusData.avatar.storm >= 2) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Storm", bonus);
 		}
 		if (m_playerBonusData.avatar.storm >= 3) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Storm", bonus);
 		}
 	} else {
@@ -2161,10 +2282,10 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 		g_logger().debug("mitigation: {}", bonusData.mitigation);
 	}
 
-	auto &spellsVector = bonusData.spells;
+	const auto &spellsVector = bonusData.spells;
 	if (!spellsVector.empty()) {
 		g_logger().debug("Spells:");
-		for (const auto &spell : bonusData.spells) {
+		for (const auto &spell : spellsVector) {
 			g_logger().debug("  {}", spell);
 		}
 	}
@@ -2174,7 +2295,7 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 
 void PlayerWheel::loadDedicationAndConvictionPerks() {
 	using VocationBonusFunction = std::function<void(const std::shared_ptr<Player> &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
-	auto wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
+	const auto &wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
 	const auto vocationCipId = m_player.getPlayerVocationEnum();
 	if (vocationCipId < VOCATION_KNIGHT_CIP || vocationCipId > VOCATION_DRUID_CIP) {
 		return;
@@ -2239,7 +2360,7 @@ void PlayerWheel::processActiveGems() {
 		if (count >= 3 && quality >= WheelGemQuality_t::Greater) {
 			uint8_t grade = getGemGrade(WheelFragmentType_t::Greater, static_cast<uint8_t>(supremeModifier));
 			std::string modifierName(magic_enum::enum_name(supremeModifier));
-			g_logger().info("[{}] Adding supreme modifier {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
+			g_logger().debug("[{}] Adding supreme modifier {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
 			m_modifierContext->addStrategies(supremeModifier, grade);
 		}
 	}
@@ -2261,7 +2382,7 @@ void PlayerWheel::applyStageBonusForColor(const std::string &color) {
 		return;
 	}
 
-	auto [statsDamage, statsHealing] = g_game().getIOWheel()->getRevelationStatByStage(stageEnum);
+	const auto &[statsDamage, statsHealing] = g_game().getIOWheel()->getRevelationStatByStage(stageEnum);
 	m_playerBonusData.stats.damage += statsDamage;
 	m_playerBonusData.stats.healing += statsHealing;
 
@@ -2339,7 +2460,6 @@ void PlayerWheel::applyBlueStageBonus(uint8_t stageValue, Vocation_t vocationEnu
 	} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 		m_playerBonusData.stages.twinBurst = stageValue;
 		for (uint8_t i = 1; i <= stageValue; ++i) {
-			addSpellToVector("Twin Burst");
 			addSpellToVector("Terra Burst");
 			addSpellToVector("Ice Burst");
 		}
@@ -2423,7 +2543,7 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
 
 	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
-		for (auto modPosition : modsSupremeIt->second.get()) {
+		for (const auto &modPosition : modsSupremeIt->second.get()) {
 			const auto pos = static_cast<uint8_t>(modPosition);
 			uint8_t grade = 0;
 			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
@@ -2553,7 +2673,8 @@ bool PlayerWheel::checkPositionalTatics() {
 			break;
 		}
 	}
-	constexpr uint16_t magicSkill = 3;
+	constexpr uint16_t holyMagicSkill = 3;
+	constexpr uint16_t healingMagicSkill = 3;
 	constexpr uint16_t distanceSkill = 3;
 	if (creaturesNearby == 0) {
 		m_creaturesNearby = creaturesNearby;
@@ -2561,8 +2682,12 @@ bool PlayerWheel::checkPositionalTatics() {
 			setMajorStat(WheelMajor_t::DISTANCE, distanceSkill);
 			updateClient = true;
 		}
-		if (getMajorStat(WheelMajor_t::MAGIC) != 0) {
-			setMajorStat(WheelMajor_t::MAGIC, 0);
+		if (getSpecializedMagic(COMBAT_HOLYDAMAGE) != 0) {
+			setSpecializedMagic(COMBAT_HOLYDAMAGE, 0);
+			updateClient = true;
+		}
+		if (getSpecializedMagic(COMBAT_HEALING) != 0) {
+			setSpecializedMagic(COMBAT_HEALING, 0);
 			updateClient = true;
 		}
 	} else {
@@ -2570,8 +2695,12 @@ bool PlayerWheel::checkPositionalTatics() {
 			setMajorStat(WheelMajor_t::DISTANCE, 0);
 			updateClient = true;
 		}
-		if (getMajorStat(WheelMajor_t::MAGIC) != magicSkill) {
-			setMajorStat(WheelMajor_t::MAGIC, magicSkill);
+		if (getSpecializedMagic(COMBAT_HOLYDAMAGE) != holyMagicSkill) {
+			setSpecializedMagic(COMBAT_HOLYDAMAGE, holyMagicSkill);
+			updateClient = true;
+		}
+		if (getSpecializedMagic(COMBAT_HEALING) != healingMagicSkill) {
+			setSpecializedMagic(COMBAT_HEALING, healingMagicSkill);
 			updateClient = true;
 		}
 	}
@@ -2997,12 +3126,29 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 
 void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) const {
 	for (const auto &condition : m_player.getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
-		if (condition->getTicks() <= value) {
-			m_player.sendSpellCooldown(condition->getSubId(), 0);
-			condition->endCondition(m_player.getPlayer());
-		} else {
-			condition->setTicks(condition->getTicks() - value);
-			m_player.sendSpellCooldown(condition->getSubId(), condition->getTicks());
+		const auto spellId = condition->getSubId();
+		const auto &spell = g_spells().getInstantSpellById(spellId);
+		const auto spellSecondaryGroup = spell->getSecondaryGroup();
+		const auto &secondCondition = m_player.getCondition(CONDITION_SPELLGROUPCOOLDOWN, CONDITIONID_DEFAULT, spellSecondaryGroup);
+
+		if (secondCondition) {
+			if (secondCondition->getTicks() <= value) {
+				m_player.sendSpellGroupCooldown(spellSecondaryGroup, 0);
+				secondCondition->endCondition(m_player.getPlayer());
+			} else {
+				secondCondition->setTicks(secondCondition->getTicks() - value);
+				m_player.sendSpellGroupCooldown(spellSecondaryGroup, secondCondition->getTicks());
+			}
+		}
+
+		if (condition) {
+			if (condition->getTicks() <= value) {
+				m_player.sendSpellCooldown(spellId, 0);
+				condition->endCondition(m_player.getPlayer());
+			} else {
+				condition->setTicks(condition->getTicks() - value);
+				m_player.sendSpellCooldown(spellId, condition->getTicks());
+			}
 		}
 	}
 }
@@ -3016,6 +3162,7 @@ void PlayerWheel::resetUpgradedSpells() {
 	m_creaturesNearby = 0;
 	m_spellsSelected.clear();
 	m_learnedSpellsSelected.clear();
+	m_beamMasterySpells.clear();
 	for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 		setMajorStat(static_cast<WheelMajor_t>(i), 0);
 	}
@@ -3081,17 +3228,15 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 			damage.lifeLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, spellGrade);
 		}
 
-		if (m_spellsBonuses.contains(spellName)) {
-			damage.criticalDamage += (getSpellBonus(spellName, WheelSpellBoost_t::CRITICAL_DAMAGE) * 100);
-			damage.criticalChance += getSpellBonus(spellName, WheelSpellBoost_t::CRITICAL_CHANCE);
-			damage.damageMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::DAMAGE);
-			damage.damageReductionMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::DAMAGE_REDUCTION);
-			damage.healingMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::HEAL);
-			damage.manaLeech += getSpellBonus(spellName, WheelSpellBoost_t::MANA_LEECH);
-			damage.manaLeechChance += getSpellBonus(spellName, WheelSpellBoost_t::MANA_LEECH_CHANCE);
-			damage.lifeLeech += getSpellBonus(spellName, WheelSpellBoost_t::LIFE_LEECH);
-			damage.lifeLeechChance += getSpellBonus(spellName, WheelSpellBoost_t::LIFE_LEECH_CHANCE);
-		}
+		damage.criticalDamage += (getSpellBonus(spellName, WheelSpellBoost_t::CRITICAL_DAMAGE) * 100);
+		damage.criticalChance += getSpellBonus(spellName, WheelSpellBoost_t::CRITICAL_CHANCE);
+		damage.damageMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::DAMAGE);
+		damage.damageReductionMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::DAMAGE_REDUCTION);
+		damage.healingMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::HEAL);
+		damage.manaLeech += getSpellBonus(spellName, WheelSpellBoost_t::MANA_LEECH);
+		damage.manaLeechChance += getSpellBonus(spellName, WheelSpellBoost_t::MANA_LEECH_CHANCE);
+		damage.lifeLeech += getSpellBonus(spellName, WheelSpellBoost_t::LIFE_LEECH);
+		damage.lifeLeechChance += getSpellBonus(spellName, WheelSpellBoost_t::LIFE_LEECH_CHANCE);
 	}
 
 	return spell;
@@ -3120,6 +3265,15 @@ void PlayerWheel::setMajorStat(WheelMajor_t type, int32_t value) {
 	auto enumValue = static_cast<uint8_t>(type);
 	try {
 		m_majorStats.at(enumValue) = value;
+	} catch (const std::out_of_range &e) {
+		g_logger().error("[{}]. Type {} is out of range, value {}. Error message: {}", __FUNCTION__, enumValue, value, e.what());
+	}
+}
+
+void PlayerWheel::setSpecializedMagic(CombatType_t type, int32_t value) {
+	auto enumValue = static_cast<uint8_t>(type);
+	try {
+		m_specializedMagic.at(enumValue) = value;
 	} catch (const std::out_of_range &e) {
 		g_logger().error("[{}]. Type {} is out of range, value {}. Error message: {}", __FUNCTION__, enumValue, value, e.what());
 	}
@@ -3374,6 +3528,16 @@ int32_t PlayerWheel::getMajorStat(WheelMajor_t type) const {
 	return 0;
 }
 
+int32_t PlayerWheel::getSpecializedMagic(CombatType_t type) const {
+	auto enumValue = static_cast<uint8_t>(type);
+	try {
+		return m_specializedMagic.at(enumValue);
+	} catch (const std::out_of_range &e) {
+		g_logger().error("[{}]. Instant type {}. Error message: {}", __FUNCTION__, enumValue, e.what());
+	}
+	return 0;
+}
+
 int32_t PlayerWheel::getStat(WheelStat_t type) const {
 	auto enumValue = static_cast<uint8_t>(type);
 	try {
@@ -3593,7 +3757,7 @@ void PlayerWheel::setWheelBonusData(const PlayerWheelMethodsBonusData &newBonusD
 // Functions used to Manage Combat
 uint8_t PlayerWheel::getBeamAffectedTotal(const CombatDamage &tmpDamage) const {
 	uint8_t beamAffectedTotal = 0; // Removed const
-	if (tmpDamage.runeSpellName == "Beam Mastery" && getInstant("Beam Mastery")) {
+	if (m_beamMasterySpells.contains(tmpDamage.instantSpellName) && getInstant("Beam Mastery")) {
 		beamAffectedTotal = 3;
 	}
 	return beamAffectedTotal;
@@ -3602,6 +3766,7 @@ uint8_t PlayerWheel::getBeamAffectedTotal(const CombatDamage &tmpDamage) const {
 void PlayerWheel::updateBeamMasteryDamage(CombatDamage &tmpDamage, uint8_t &beamAffectedTotal, uint8_t &beamAffectedCurrent) const {
 	if (beamAffectedTotal > 0) {
 		tmpDamage.damageMultiplier += checkBeamMasteryDamage();
+		reduceAllSpellsCooldownTimer(1000); // Reduces all spell cooldown by 1 second per target hit (max 3 seconds)
 		--beamAffectedTotal;
 		beamAffectedCurrent++;
 	}

@@ -686,7 +686,10 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 		g_logger().debug("[{}] spell name: {}, spellCooldown: {}, bonus: {}, augment {}", __FUNCTION__, name, spellCooldown, player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN), augmentCooldownReduction);
 		spellCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
 		spellCooldown -= augmentCooldownReduction;
+		const int32_t halfBaseCooldown = cooldown / 2;
+		spellCooldown = halfBaseCooldown > spellCooldown ? halfBaseCooldown : spellCooldown; // The cooldown should never be reduced less than half (50%) of its base cooldown
 		if (spellCooldown > 0) {
+			player->wheel()->handleTwinBurstsCooldown(player, name, spellCooldown, rateCooldown);
 			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
 			player->addCondition(condition);
 		}
@@ -708,7 +711,9 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 		if (isUpgraded) {
 			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
 		}
+		spellSecondaryGroupCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN);
 		if (spellSecondaryGroupCooldown > 0) {
+			player->wheel()->handleBeamMasteryCooldown(player, name, spellSecondaryGroupCooldown, rateCooldown);
 			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rateCooldown, 0, false, secondaryGroup);
 			player->addCondition(condition);
 		}

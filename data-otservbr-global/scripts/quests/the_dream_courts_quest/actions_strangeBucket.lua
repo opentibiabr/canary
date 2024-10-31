@@ -25,8 +25,8 @@ function actions_strangeBucket.onUse(player, item, fromPosition, target, toPosit
 	local filled = false
 	local isInQuest = player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline)
 	local slimeCondition = createConditionObject(CONDITION_OUTFIT)
-	setConditionParam(slimeCondition, CONDITION_PARAM_TICKS, 2*60*1000)
-	addOutfitCondition(slimeCondition, {lookType = 19})
+	setConditionParam(slimeCondition, CONDITION_PARAM_TICKS, 2 * 60 * 1000)
+	addOutfitCondition(slimeCondition, { lookType = 19 })
 
 	if isInQuest >= 1 then
 		if tId == mutatedEgg then
@@ -56,7 +56,7 @@ function actions_strangeBucket.onUse(player, item, fromPosition, target, toPosit
 			end
 
 			target:transform(normalEgg)
-			addEvent(revertEgg, r*1000*60, tPos, mutatedEgg, normalEgg)
+			addEvent(revertEgg, r * 1000 * 60, tPos, mutatedEgg, normalEgg)
 		end
 		if item.itemid == fullBucket then
 			if target:isPlayer() then

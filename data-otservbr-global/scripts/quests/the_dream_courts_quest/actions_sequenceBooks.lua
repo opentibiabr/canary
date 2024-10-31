@@ -5,22 +5,22 @@ local sequence = {
 	[1] = {
 		number = 0,
 		position = Position(33613, 32515, 15),
-		msg = "The chants in this book often contain the word 'K'muuh'."
+		msg = "The chants in this book often contain the word 'K'muuh'.",
 	},
 	[2] = {
 		number = 1,
 		position = Position(33621, 32520, 15),
-		msg = "The chants in this book often contain the word 'N'ogalu'."
+		msg = "The chants in this book often contain the word 'N'ogalu'.",
 	},
 	[3] = {
 		number = 2,
 		position = Position(33616, 32520, 15),
-		msg = "The chants in this book often contain the word 'O'kteth.'."
+		msg = "The chants in this book often contain the word 'O'kteth.'.",
 	},
 	[4] = {
 		number = 3,
 		position = Position(33624, 32515, 15),
-		msg = "All chants have been sung in the right order, you are deemed worthy. You are transported away..."
+		msg = "All chants have been sung in the right order, you are deemed worthy. You are transported away...",
 	},
 }
 

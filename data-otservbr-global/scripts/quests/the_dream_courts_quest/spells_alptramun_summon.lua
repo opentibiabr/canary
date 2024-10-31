@@ -9,7 +9,7 @@ local config = {
 	[1] = { name = "unpleasant dream" },
 	[2] = { name = "horrible dream" },
 	[3] = { name = "nightmarish dream" },
-	[4] = { name = "mind-wrecking dream" }
+	[4] = { name = "mind-wrecking dream" },
 }
 
 local maxsummons = 5
@@ -39,9 +39,9 @@ function spell.onCastSpell(creature, var)
 	if #summoncount < maxsummons then
 		for i = 1, randomSummon do
 			local mid = Game.createMonster(monsterName, creature:getPosition())
-    			if not mid then
-					return
-				end
+			if not mid then
+				return
+			end
 			mid:setMaster(creature)
 			mid:registerEvent("dreamCourtsDeath")
 		end

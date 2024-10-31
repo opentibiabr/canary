@@ -22,7 +22,7 @@ function movements_spiderSummon.onStepIn(creature, item, position, fromPosition)
 		local r = math.random(1, 10)
 		Game.createMonster(spiderName, position)
 		item:setActionId(0)
-		addEvent(setActionId, r*(1000*60), item.itemid, position, 23120)
+		addEvent(setActionId, r * (1000 * 60), item.itemid, position, 23120)
 	end
 
 	return true

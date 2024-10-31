@@ -1,11 +1,11 @@
-local containers  = {
+local containers = {
 	[1] = {
 		uniqueid = 23102,
 		cPosition = Position(32736, 32282, 8),
 		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.skeletonContainer,
 		value = 1,
 		reward = 29310,
-		defaultItem = true
+		defaultItem = true,
 	},
 	[2] = {
 		uniqueid = 23103,
@@ -13,7 +13,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.Main.courtChest,
 		value = 1,
 		reward = 30146,
-		defaultItem = true
+		defaultItem = true,
 	},
 	[3] = {
 		uniqueid = 23104,
@@ -21,7 +21,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.Main.courtChest,
 		value = 1,
 		reward = 30146,
-		defaultItem = true
+		defaultItem = true,
 	},
 	[4] = {
 		uniqueid = 23105,
@@ -29,7 +29,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.fishingRod,
 		value = 1,
 		reward = 29950,
-		defaultItem = true
+		defaultItem = true,
 	},
 	[5] = {
 		uniqueid = 23106,
@@ -37,7 +37,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.barrelWord,
 		value = 1,
 		defaultItem = false,
-		text = "The inside of this barrel's lid has a word written onto it: 'O'kteth'."
+		text = "The inside of this barrel's lid has a word written onto it: 'O'kteth'.",
 	},
 	[6] = {
 		uniqueid = 23107,
@@ -45,7 +45,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.estatueWord,
 		value = 1,
 		defaultItem = false,
-		text = "This statue has a word written on her hand: 'N'ogalu'."
+		text = "This statue has a word written on her hand: 'N'ogalu'.",
 	},
 	[7] = {
 		uniqueid = 23108,
@@ -53,7 +53,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.bedWord,
 		value = 1,
 		defaultItem = false,
-		text = "This end of the bed has a stack of notes hidden under it. There is only one word on all of them: 'T'sough'."
+		text = "This end of the bed has a stack of notes hidden under it. There is only one word on all of them: 'T'sough'.",
 	},
 	[8] = {
 		uniqueid = 23109,
@@ -61,7 +61,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Rosebush,
 		value = 1,
 		reward = 29993,
-		defaultItem = true
+		defaultItem = true,
 	},
 	[9] = {
 		uniqueid = 23110,
@@ -69,7 +69,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Mushroom,
 		value = 1,
 		reward = 30009,
-		defaultItem = true
+		defaultItem = true,
 	},
 	[10] = {
 		uniqueid = 23111,
@@ -77,7 +77,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Book,
 		value = 1,
 		reward = 29991,
-		defaultItem = true
+		defaultItem = true,
 	},
 	[11] = {
 		uniqueid = 23112,
@@ -85,7 +85,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.OrcSkull,
 		value = 1,
 		reward = 29989,
-		defaultItem = true
+		defaultItem = true,
 	},
 	[12] = {
 		uniqueid = 23113,
@@ -93,7 +93,7 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Recipe,
 		value = 1,
 		reward = 30147,
-		defaultItem = true
+		defaultItem = true,
 	},
 	[13] = {
 		uniqueid = 23114,
@@ -101,15 +101,15 @@ local containers  = {
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.MinotaurSkull,
 		value = 1,
 		reward = 29988,
-		defaultItem = true
+		defaultItem = true,
 	},
-	[14] =  {
+	[14] = {
 		uniqueid = 23115,
 		cPosition = Position(32054, 31936, 13),
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.trollSkull,
 		value = 1,
 		reward = 29990,
-		defaultItem = true
+		defaultItem = true,
 	},
 }
 
@@ -122,7 +122,7 @@ function actions_containerRewards.onUse(player, item, fromPosition, target, toPo
 		if iPos == k.cPosition and item:getUniqueId() == k.uniqueid then
 			if player:getStorageValue(k.storage) < k.value then
 				if k.defaultItem then
-					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. ItemType(k.reward):getName() ..".")
+					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. ItemType(k.reward):getName() .. ".")
 					player:addItem(k.reward, 1)
 				else
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, k.text)

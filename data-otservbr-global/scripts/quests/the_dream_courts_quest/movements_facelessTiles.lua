@@ -41,7 +41,7 @@ function movements_facelessTiles.onStepIn(creature, item, position, fromPosition
 		Game.setStorageValue(storage, isImmortal + 1)
 		creature:getPosition():sendMagicEffect(CONST_ME_YELLOWENERGY)
 		item:setActionId(0)
-		addEvent(setActionId, (10*1000), item.itemid, position, 23108)
+		addEvent(setActionId, (10 * 1000), item.itemid, position, 23108)
 	end
 
 	return true

@@ -9,7 +9,7 @@ function creaturescripts_facelessBane.onThink(creature, interval)
 	end
 
 	local lifes = creature:getStorageValue(storage)
-	local percentageHealth = (creature:getHealth()/creature:getMaxHealth())*100
+	local percentageHealth = (creature:getHealth() / creature:getMaxHealth()) * 100
 
 	if lifes <= 3 then
 		if lifes < 0 then
@@ -59,7 +59,7 @@ function creaturescripts_facelessBane.onHealthChange(creature, attacker, primary
 		end
 	end
 
-    return primaryDamage, primaryType, secondaryDamage, secondaryType
+	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end
 
 creaturescripts_facelessBane:register()

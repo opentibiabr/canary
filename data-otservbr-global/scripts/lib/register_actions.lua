@@ -77,7 +77,7 @@ local secret_library = {
 local oldTable = { Position(32005, 32002, 14), Position(32005, 32003, 14), Position(32006, 32002, 14), Position(32006, 32003, 14) }
 local foundItems = {
 	{ id = 29992, quantity = 1 },
-	{ id = 953, quantity = 4 }
+	{ id = 953, quantity = 4 },
 }
 local storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Lock
 

@@ -1,10 +1,13 @@
 local transform = {
 	[9110] = 9111,
-	[9111] = 9110
+	[9111] = 9110,
 }
 
 local bossNames = {
-	"plagueroot", "izcandar the banished", "izcandar champion of summer", "izcandar champion of winter"
+	"plagueroot",
+	"izcandar the banished",
+	"izcandar champion of summer",
+	"izcandar champion of winter",
 }
 
 local leverInfo = {
@@ -22,7 +25,7 @@ local leverInfo = {
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunTimer
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunTimer,
 	},
 	[2] = {
 		byDay = "Tuesday",
@@ -38,7 +41,7 @@ local leverInfo = {
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
 	},
 	[3] = {
 		byDay = "Wednesday",
@@ -54,7 +57,7 @@ local leverInfo = {
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.malofurTimer
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.malofurTimer,
 	},
 	[4] = {
 		byDay = "Thursday",
@@ -70,7 +73,7 @@ local leverInfo = {
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
 	},
 	[5] = {
 		byDay = "Friday",
@@ -86,7 +89,7 @@ local leverInfo = {
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
 	},
 	[6] = {
 		byDay = "Saturday",
@@ -102,7 +105,7 @@ local leverInfo = {
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.plaguerootTimer
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.plaguerootTimer,
 	},
 	[7] = {
 		byDay = "Sunday",
@@ -118,7 +121,7 @@ local leverInfo = {
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
 	},
 }
 
@@ -142,14 +145,18 @@ local function spawnSummons(k, monsterName, eventName, timing, positionTable, mi
 		if k <= 4 then
 			for i = 1, #positionTable do
 				local sqm = positionTable[i]
-				if sqm then	sqm:sendMagicEffect(CONST_ME_TELEPORT)	end
+				if sqm then
+					sqm:sendMagicEffect(CONST_ME_TELEPORT)
+				end
 			end
 			k = k + 1
-			addEvent(spawnSummons, 2*1000, k, monsterName, eventName, timing, positionTable, middlePosition)
+			addEvent(spawnSummons, 2 * 1000, k, monsterName, eventName, timing, positionTable, middlePosition)
 		else
 			for i = 1, #positionTable do
 				local monster = Game.createMonster(monsterName, positionTable[i], true, true)
-				if monster and eventName then monster:registerEvent(eventName) end
+				if monster and eventName then
+					monster:registerEvent(eventName)
+				end
 			end
 			addEvent(function()
 				spawnSummons(1, monsterName, eventName, timing, positionTable, middlePosition)
@@ -181,13 +188,13 @@ local whirlingBlades = {
 	Position(32214, 32043, 14),
 	Position(32214, 32049, 14),
 	Position(32214, 32049, 14),
-	Position(32213, 32052, 14)
+	Position(32213, 32052, 14),
 }
 
 local plantAttendants = {
 	Position(32204, 32047, 14),
 	Position(32212, 32043, 14),
-	Position(32212, 32050, 14)
+	Position(32212, 32050, 14),
 }
 
 local coldOfWinter = {
@@ -251,7 +258,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 								table.insert(playersTable, c:getId())
 								c:teleportTo(lastBoss.teleportTo)
 								c:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-								c:setStorageValue(lastBoss.storageTimer, os.time() + 20*60*60)
+								c:setStorageValue(lastBoss.storageTimer, os.time() + 20 * 60 * 60)
 							end
 						end
 					end
@@ -259,12 +266,12 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 					local monster = Game.createMonster(lastBoss.bossName, lastBoss.bossPosition, true, true)
 
 					if monster then
-						monster:registerEvent('dreamCourtsDeath')
+						monster:registerEvent("dreamCourtsDeath")
 					end
 
 					Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse, 0)
 
-					addEvent(kickPlayersAfterTime, 30*60*1000, playersTable, lastBoss.roomFromPosition, lastBoss.roomToPosition, lastBoss.exitPosition)
+					addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, lastBoss.roomFromPosition, lastBoss.roomToPosition, lastBoss.exitPosition)
 				else
 					return true
 				end
@@ -282,7 +289,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 									if creature and creature:isPlayer() then
 										creature:teleportTo(leverTable.teleportTo, true)
 										creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-										creature:setStorageValue(leverTable.storageTimer, os.time() + 20*60*60)
+										creature:setStorageValue(leverTable.storageTimer, os.time() + 20 * 60 * 60)
 										table.insert(playersTable, creature:getId())
 									end
 								end
@@ -293,7 +300,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 									if creature and creature:isPlayer() then
 										creature:teleportTo(leverTable.teleportTo, true)
 										creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-										creature:setStorageValue(leverTable.storageTimer, os.time() + 20*60*60)
+										creature:setStorageValue(leverTable.storageTimer, os.time() + 20 * 60 * 60)
 										table.insert(playersTable, creature:getId())
 									end
 								end
@@ -306,7 +313,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 									local generators = {
 										Position(32205, 32048, 14),
 										Position(32210, 32045, 14),
-										Position(32210, 32051, 14)
+										Position(32210, 32051, 14),
 									}
 
 									for i = 1, #generators do
@@ -345,7 +352,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 								addEvent(startFight, 30 * 1000, leverTable.teleportTo, leverTable.bossPosition)
 							end
 
-							addEvent(kickPlayersAfterTime, 30*60*1000, playersTable, leverTable.roomFromPosition, leverTable.roomToPosition, leverTable.exitPosition)
+							addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, leverTable.roomFromPosition, leverTable.roomToPosition, leverTable.exitPosition)
 						end
 					end
 				end

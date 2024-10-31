@@ -8,19 +8,19 @@ local sequence = {
 		id = 29988,
 		number = 0,
 		position = Position(32071, 31977, 14),
-		msg = "You put the minotaur skull into the coffin within the minotaur skeleton. One of the door's locks clicks."
+		msg = "You put the minotaur skull into the coffin within the minotaur skeleton. One of the door's locks clicks.",
 	},
 	[2] = {
 		id = 29989,
 		number = 1,
 		position = Position(32074, 31977, 14),
-		msg = "You put the orc skull into the coffin within the orc skeleton. One of the door's locks clicks."
+		msg = "You put the orc skull into the coffin within the orc skeleton. One of the door's locks clicks.",
 	},
 	[3] = {
 		id = 29990,
 		number = 2,
 		position = Position(32077, 31977, 14),
-		msg = "You put the minotaur skull into the coffin within the minotaur skeleton. One of the door's locks clicks."
+		msg = "You put the minotaur skull into the coffin within the minotaur skeleton. One of the door's locks clicks.",
 	},
 }
 

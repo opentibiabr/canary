@@ -4,9 +4,9 @@ combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_SNOWBALL)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ICEATTACK)
 
 combat:setArea(createCombatArea({
-{0, 1, 0},
-{1, 3, 1},
-{0, 1, 0}
+	{ 0, 1, 0 },
+	{ 1, 3, 1 },
+	{ 0, 1, 0 },
 }))
 
 function spellCallbackColdOfWinter(param)

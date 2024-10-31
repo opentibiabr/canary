@@ -15,7 +15,7 @@ function movements_corruptedNature.onStepIn(creature, item, position, fromPositi
 		local abomination = Game.createMonster("Plant Abomination", cPos)
 
 		if abomination then
-			abomination:registerEvent('dreamCourtsDeath')
+			abomination:registerEvent("dreamCourtsDeath")
 			abomination:say("The vile energy changes the attendant horribly!", TALKTYPE_MONSTER_SAY)
 		end
 	elseif cName:lower() == "plagueroot" then

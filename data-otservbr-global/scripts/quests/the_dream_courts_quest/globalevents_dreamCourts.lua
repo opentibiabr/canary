@@ -32,7 +32,7 @@ local templeEffects = {
 local maxxeniusEffects = {
 	fromPosition = Position(32200, 32041, 14),
 	toPosition = Position(32217, 32057, 14),
-	tileId = 9192
+	tileId = 9192,
 }
 
 local globalevents_dreamCourts = GlobalEvent("earthTrap")
@@ -49,7 +49,7 @@ function globalevents_dreamCourts.onThink(interval)
 			position:sendMagicEffect(CONST_ME_SMALLPLANTS)
 			creature = Tile(position):getTopCreature()
 			if creature and creature:isPlayer() then
-				doTargetCombatHealth(0, creature, COMBAT_EARTHDAMAGE, -(creature:getHealth()*0.2), -(creature:getHealth()*0.5), CONST_ME_SMALLPLANTS)
+				doTargetCombatHealth(0, creature, COMBAT_EARTHDAMAGE, -(creature:getHealth() * 0.2), -(creature:getHealth() * 0.5), CONST_ME_SMALLPLANTS)
 			end
 		end
 	end

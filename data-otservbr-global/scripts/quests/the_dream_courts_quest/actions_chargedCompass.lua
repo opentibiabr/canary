@@ -28,7 +28,7 @@ function actions_chargedCompass.onUse(player, item, fromPosition, target, toPosi
 			target:getPosition():sendMagicEffect(CONST_ME_THUNDER)
 			target:transform(29335)
 			item:transform(29291)
-			addEvent(revertStone, 1000*30, tPos, 33828, 33827)
+			addEvent(revertStone, 1000 * 30, tPos, 33828, 33827)
 		end
 	end
 

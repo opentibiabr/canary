@@ -3,13 +3,13 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYAREA)
 
 combat:setArea(createCombatArea({
-{0, 0, 0, 1, 0, 0, 0},
-{0, 0, 1, 1, 1, 0, 0},
-{0, 1, 1, 1, 1, 1, 0},
-{1, 1, 1, 3, 1, 1, 1},
-{0, 1, 1, 1, 1, 1, 0},
-{0, 0, 1, 1, 1, 0, 0},
-{0, 0, 0, 1, 0, 0, 0}
+	{ 0, 0, 0, 1, 0, 0, 0 },
+	{ 0, 0, 1, 1, 1, 0, 0 },
+	{ 0, 1, 1, 1, 1, 1, 0 },
+	{ 1, 1, 1, 3, 1, 1, 1 },
+	{ 0, 1, 1, 1, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 0, 0 },
+	{ 0, 0, 0, 1, 0, 0, 0 },
 }))
 
 function spellCallbackGenerator(param)
@@ -17,7 +17,7 @@ function spellCallbackGenerator(param)
 
 	if sqm then
 		local monster = sqm:getTopCreature()
-		if monster and monster:getName():lower() == 'maxxenius' then
+		if monster and monster:getName():lower() == "maxxenius" then
 			doTargetCombatHealth(0, monster, COMBAT_ENERGYDAMAGE, -999, -1999, CONST_ME_ENERGYAREA)
 		end
 	end

@@ -39,11 +39,11 @@ function actions_dreamcatcher_curse.onUse(player, item, fromPosition, target, to
 	if item.itemid == 29274 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can rip off a dream catcher!")
 		item:transform(29275)
-		local newItem = Game.createItem(maskId, 1, Position(item:getPosition().x, item:getPosition().y+1, item:getPosition().z))
+		local newItem = Game.createItem(maskId, 1, Position(item:getPosition().x, item:getPosition().y + 1, item:getPosition().z))
 		if newItem then
 			newItem:getPosition():sendMagicEffect(CONST_ME_BLOCKHIT)
 		end
-		addEvent(placeMask, 10*1000, item:getPosition(), 29274, 29275)
+		addEvent(placeMask, 10 * 1000, item:getPosition(), 29274, 29275)
 	elseif item.itemid == 29276 then
 		if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse) < 1 then
 			if (target ~= player) and target:isPlayer() then

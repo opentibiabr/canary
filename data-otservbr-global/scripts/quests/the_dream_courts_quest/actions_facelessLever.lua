@@ -1,6 +1,6 @@
 local transform = {
 	[9110] = 9111,
-	[9111] = 9110
+	[9111] = 9110,
 }
 
 local leverInfo = {
@@ -17,7 +17,7 @@ local leverInfo = {
 		teleportTo = Position(33617, 32567, 13),
 		typePush = "x",
 		exitPosition = Position(33619, 32522, 15),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.facelessTimer
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.facelessTimer,
 	},
 }
 
@@ -47,20 +47,19 @@ function actions_facelessLever.onUse(player, item, fromPosition, target, toPosit
 								if creature and creature:isPlayer() then
 									creature:teleportTo(leverTable.teleportTo)
 									creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-									creature:setStorageValue(leverInfo.storageTimer, os.time() + 20*60*60)
+									creature:setStorageValue(leverInfo.storageTimer, os.time() + 20 * 60 * 60)
 									table.insert(playersTable, creature:getId())
 								end
 							end
 						elseif leverTable.typePush == "y" then
 							for i = leverTable.leverFromPos.y, leverTable.leverToPos.y do
-
 								local newPos = Position(leverTable.leverFromPos.x, i, leverTable.leverFromPos.z)
 								local creature = Tile(newPos):getTopCreature()
 
 								if creature and creature:isPlayer() then
 									creature:teleportTo(leverTable.teleportTo)
 									creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-									creature:setStorageValue(leverInfo.storageTimer, os.time() + 20*60*60)
+									creature:setStorageValue(leverInfo.storageTimer, os.time() + 20 * 60 * 60)
 									table.insert(playersTable, creature:getId())
 								end
 							end
@@ -77,7 +76,7 @@ function actions_facelessLever.onUse(player, item, fromPosition, target, toPosit
 							monster:registerEvent("dreamCourtsDeath")
 						end
 
-						addEvent(kickPlayersAfterTime, 30*60*1000, playersTable, leverTable.roomFromPosition, leverTable.roomToPosition, leverTable.exitPosition)
+						addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, leverTable.roomFromPosition, leverTable.roomToPosition, leverTable.exitPosition)
 					end
 				end
 			end

@@ -2,85 +2,86 @@ local doors = {
 	[1] = {
 		doorPosition = Position(32761, 32630, 7),
 		storage = Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.Questline,
-		value = 1
+		value = 1,
 	},
 	[2] = {
 		doorPosition = Position(32700, 32244, 9),
 		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
-		value = 1
+		value = 1,
 	},
 	[3] = {
 		doorPosition = Position(32700, 32255, 9),
 		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
-		value = 1
+		value = 1,
 	},
 	[4] = {
 		doorPosition = Position(32700, 32275, 8),
 		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
-		value = 1
+		value = 1,
 	},
 	[5] = {
 		doorPosition = Position(32719, 32264, 8),
 		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Cellar,
-		value = 1
+		value = 1,
 	},
 	[6] = {
 		doorPosition = Position(33088, 32388, 8),
 		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
-		value = 1
+		value = 1,
 	},
 	[7] = {
 		doorPosition = Position(32606, 32629, 9),
-		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Temple, value = -1,
-		help = "Tomb"
+		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Temple,
+		value = -1,
+		help = "Tomb",
 	},
 	[8] = {
 		doorPosition = Position(32671, 32652, 7),
 		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
-		value = 1
+		value = 1,
 	},
 	[9] = {
 		doorPosition = Position(33625, 32525, 14),
 		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount,
-		value = 3
+		value = 3,
 	},
 	[10] = {
 		doorPosition = Position(33640, 32551, 14),
 		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount,
-		value = 3
+		value = 3,
 	},
 	[11] = {
 		doorPosition = Position(33657, 32551, 14),
 		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount,
-		value = 3
+		value = 3,
 	},
 	[12] = {
 		doorPosition = Position(31983, 31960, 14),
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.doorMedusa,
 		value = 1,
-		help = "Medusa"
+		help = "Medusa",
 	},
 	[13] = {
 		doorPosition = Position(32051, 31998, 14),
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Mushroom,
-		value = 2
+		value = 2,
 	},
 	[14] = {
 		doorPosition = Position(32074, 31974, 14),
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.sequenceSkulls,
-		value = 3
+		value = 3,
 	},
 	[15] = {
 		doorPosition = Position(32091, 31970, 14),
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Questline,
 		value = 2,
-		help = "Lock"
+		help = "Lock",
 	},
 	[16] = {
 		doorPosition = Position(31983, 32000, 14),
 		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Questline,
 		value = 2,
-		help = "Open/Close"
+		help = "Open/Close",
 	},
 }
 
@@ -97,7 +98,7 @@ function actions_questDoors.onUse(player, item, fromPosition, target, toPosition
 	local iPos = item:getPosition()
 
 	for _, p in pairs(doors) do
-		if (iPos == p.doorPosition) and not(player:getPosition() == p.doorPosition) then
+		if (iPos == p.doorPosition) and not (player:getPosition() == p.doorPosition) then
 			if p.help == "Tomb" then
 				if player:getStorageValue(p.storage) < p.value then
 					player:teleportTo(toPosition, true)

@@ -1,13 +1,45 @@
 local arrayArea = {
-										  {0, -4},
-							    {-1, -3}, {0, -3}, {1, -3},
-					  {-2, -2}, {-1, -2}, {0, -2}, {1, -2}, {2, -2},
-			 {3, -1}, {-2, -1}, {-1, -1}, {0, -1}, {1, -1}, {2, -1}, {3, -1},
-	  {-4, 0}, {-3, 0}, {-2, 0}, {-1, 0}, {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0},
-			   {-3, 1}, {-2, 1}, {-1, 1}, {0, 1}, {1, 1}, {2, 1}, {3, 1},
-					    {-2, 2}, {-1, 2}, {0, 2}, {1, 2}, {2, 2},
-							     {-1, 3}, {0, 3}, {1, 3},
-										  {0, 4}
+	{ 0, -4 },
+	{ -1, -3 },
+	{ 0, -3 },
+	{ 1, -3 },
+	{ -2, -2 },
+	{ -1, -2 },
+	{ 0, -2 },
+	{ 1, -2 },
+	{ 2, -2 },
+	{ 3, -1 },
+	{ -2, -1 },
+	{ -1, -1 },
+	{ 0, -1 },
+	{ 1, -1 },
+	{ 2, -1 },
+	{ 3, -1 },
+	{ -4, 0 },
+	{ -3, 0 },
+	{ -2, 0 },
+	{ -1, 0 },
+	{ 0, 0 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 3, 0 },
+	{ 4, 0 },
+	{ -3, 1 },
+	{ -2, 1 },
+	{ -1, 1 },
+	{ 0, 1 },
+	{ 1, 1 },
+	{ 2, 1 },
+	{ 3, 1 },
+	{ -2, 2 },
+	{ -1, 2 },
+	{ 0, 2 },
+	{ 1, 2 },
+	{ 2, 2 },
+	{ -1, 3 },
+	{ 0, 3 },
+	{ 1, 3 },
+	{ 0, 4 },
 }
 
 local area = createCombatArea(arrayArea)
@@ -41,7 +73,7 @@ combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ENERGYBALL)
 
 local looktype = createConditionObject(CONDITION_OUTFIT)
 setConditionParam(looktype, CONDITION_PARAM_TICKS, 5000)
-addOutfitCondition(looktype, {lookType = 290})
+addOutfitCondition(looktype, { lookType = 290 })
 
 local spell = Spell("instant")
 
@@ -66,4 +98,3 @@ spell:blockWalls(true)
 spell:needTarget(true)
 spell:needLearn(true)
 spell:register()
-

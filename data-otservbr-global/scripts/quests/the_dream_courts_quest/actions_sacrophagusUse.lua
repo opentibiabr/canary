@@ -42,7 +42,7 @@ local function resetActionId(player, itemid, position, actionid, message, reward
 				end
 
 				check:setActionId(0)
-				addEvent(setActionId, 1000*30, itemid, position, actionid)
+				addEvent(setActionId, 1000 * 30, itemid, position, actionid)
 			else
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The opening of the last sarcophagus still haunts you. Wait some time for your spirits to return.")
 			end
@@ -67,7 +67,7 @@ function actions_sacrophagusUse.onUse(player, item, fromPosition, target, toPosi
 	if player:getStorageValue(storage) == 1 and isInQuest < 1 then
 		for _, k in pairs(sacrophagus) do
 			if tPos == k.hisPosition then
-				resetActionId(player:getId(), tId, tPos, 23104, "You got a "..ItemType(rewardId):getName().."!", rewardId)
+				resetActionId(player:getId(), tId, tPos, 23104, "You got a " .. ItemType(rewardId):getName() .. "!", rewardId)
 			end
 		end
 	end

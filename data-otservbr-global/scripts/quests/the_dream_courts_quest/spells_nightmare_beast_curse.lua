@@ -10,14 +10,14 @@ function spell.onCastSpell(creature, var)
 		for _, k in pairs(players) do
 			local player = Player(k)
 			if player then
-				player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse, - 1)
+				player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse, -1)
 			end
 		end
 
 		local newPlayer = Player(players[randomNumber]:getId())
 
-		newPlayer:registerEvent('nightmareCurse')
-		newPlayer:setStorageValue('nightmareCurse', 1)
+		newPlayer:registerEvent("nightmareCurse")
+		newPlayer:setStorageValue("nightmareCurse", 1)
 		newPlayer:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse, 1)
 		newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The beast laid a terrible curse on you!")
 

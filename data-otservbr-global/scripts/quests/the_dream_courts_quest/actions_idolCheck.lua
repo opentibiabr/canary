@@ -35,7 +35,7 @@ function actions_idolCheck.onUse(player, item, fromPosition, target, toPosition,
 	end
 
 	if count == 4 then
-		addEvent(cleanIdols, 1*60*1000)
+		addEvent(cleanIdols, 1 * 60 * 1000)
 
 		local spectators = Game.getSpectators(item:getPosition(), false, true, 12, 12, 12, 12)
 
@@ -47,7 +47,7 @@ function actions_idolCheck.onUse(player, item, fromPosition, target, toPosition,
 			end
 		end
 
-		player:say('REPLACING THE IDOLS FEEDS THE PORTAL BUT DOES NOT FREE ONE FROM THE SACRILEGE OF TAKING THEM AWAY FROM TUKH!', TALKTYPE_MONSTER_SAY)
+		player:say("REPLACING THE IDOLS FEEDS THE PORTAL BUT DOES NOT FREE ONE FROM THE SACRILEGE OF TAKING THEM AWAY FROM TUKH!", TALKTYPE_MONSTER_SAY)
 	end
 
 	return true

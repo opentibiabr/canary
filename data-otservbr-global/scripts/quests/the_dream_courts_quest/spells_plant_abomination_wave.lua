@@ -4,16 +4,16 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HITBYPOISON)
 combat:setParameter(COMBAT_PARAM_SHOOT, CONST_ANI_EARTH)
 
 combat:setArea(createCombatArea({
-{0, 0, 1, 0, 0},
-{0, 1, 1, 1, 0},
-{1, 1, 3, 1, 1},
-{0, 1, 1, 1, 0},
-{0, 0, 1, 0, 0}
+	{ 0, 0, 1, 0, 0 },
+	{ 0, 1, 1, 1, 0 },
+	{ 1, 1, 3, 1, 1 },
+	{ 0, 1, 1, 1, 0 },
+	{ 0, 0, 1, 0, 0 },
 }))
 
 function spellCallbackAbominationWave(param)
 	local tile = Tile(Position(param.pos))
-	
+
 	if tile then
 		if tile:getTopCreature() and tile:getTopCreature():isMonster() then
 			if tile:getTopCreature():getName():lower() == "plagueroot" then

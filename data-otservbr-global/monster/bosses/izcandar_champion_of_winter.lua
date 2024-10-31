@@ -65,7 +65,7 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Dream or nightmare?", yell = false},
+	{ text = "Dream or nightmare?", yell = false },
 }
 
 monster.loot = {
@@ -115,7 +115,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 76,
 	armor = 76,
-	{name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 310, maxDamage = 640, effect = CONST_ME_MAGIC_BLUE},
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 310, maxDamage = 640, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {

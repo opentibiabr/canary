@@ -3,11 +3,11 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HITBYFIRE)
 
 combat:setArea(createCombatArea({
-{0, 1, 0},
-{0, 1, 0},
-{0, 1, 0},
-{0, 1, 0},
-{0, 3, 0}
+	{ 0, 1, 0 },
+	{ 0, 1, 0 },
+	{ 0, 1, 0 },
+	{ 0, 1, 0 },
+	{ 0, 3, 0 },
 }))
 
 function spellCallbackHeatOfSummer(param)

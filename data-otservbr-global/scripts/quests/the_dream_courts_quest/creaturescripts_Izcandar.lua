@@ -1,17 +1,19 @@
 local sides = {
 	{ fromPosition = Position(32208, 32040, 14), toPosition = Position(32216, 32055, 14) },
-	{ fromPosition = Position(32198, 32039, 14), toPosition = Position(32207, 32055, 14) }
+	{ fromPosition = Position(32198, 32039, 14), toPosition = Position(32207, 32055, 14) },
 }
 
 local changes = {
 	[1] = "izcandar champion of winter",
-	[2] = "izcandar champion of summer"
+	[2] = "izcandar champion of summer",
 }
 
 local function transformIzcandar(cid, name, health, position)
 	local creature = Creature(cid)
 
-	if not creature then return true end
+	if not creature then
+		return true
+	end
 
 	local id = creature:getId()
 
@@ -28,7 +30,9 @@ local function transformIzcandar(cid, name, health, position)
 	addEvent(function(cid_)
 		local c = Creature(cid_)
 
-		if not c then return true end
+		if not c then
+			return true
+		end
 
 		if isInArray({ "izcandar the banished" }, c:getName():lower()) then
 			local h_ = c:getHealth()
@@ -45,7 +49,7 @@ local function transformIzcandar(cid, name, health, position)
 		else
 			return true
 		end
-	end, math.random(10, 20)*1000, id)
+	end, math.random(10, 20) * 1000, id)
 end
 
 local creaturescripts_Izcandar = CreatureEvent("izcandarThink")

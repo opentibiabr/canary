@@ -19,7 +19,6 @@ local thirdFloor = {
 	[4] = { hisPosition = Position(32789, 32613, 10) },
 }
 
-
 local function setActionId(itemid, position, aid)
 	local crystal = Tile(position):getItemById(itemid)
 
@@ -40,7 +39,7 @@ local function tryCrystal(player, itemid, position, actionid, message, rewardid)
 					player:say(message, TALKTYPE_MONSTER_SAY)
 					player:addItem(rewardid, 1)
 					crystal:setActionId(0)
-					addEvent(setActionId, 1000*30, itemid, position, actionid)
+					addEvent(setActionId, 1000 * 30, itemid, position, actionid)
 				else
 					crystal:getPosition():sendMagicEffect(CONST_ME_POFF)
 				end

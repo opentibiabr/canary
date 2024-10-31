@@ -3,9 +3,9 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_EARTHDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_SMALLPLANTS)
 
 combat:setArea(createCombatArea({
-{1, 1, 1},
-{1, 3, 1},
-{1, 1, 1}
+	{ 1, 1, 1 },
+	{ 1, 3, 1 },
+	{ 1, 1, 1 },
 }))
 
 function spellCallbackAttendantWave(param)

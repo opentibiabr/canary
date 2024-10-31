@@ -23,7 +23,7 @@ function actions_goldenIdol.onUse(player, item, fromPosition, target, toPosition
 				item:remove(1)
 				Game.createItem(blockedItem, 1, altar.position)
 				tPos:sendMagicEffect(CONST_ME_POFF)
-				player:say('**placing idol**', TALKTYPE_MONSTER_SAY)
+				player:say("**placing idol**", TALKTYPE_MONSTER_SAY)
 			else
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There is already an idol here. Try another altar.")
 			end

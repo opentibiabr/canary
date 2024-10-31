@@ -4,21 +4,21 @@ local default = {
 		toPosition = Position(32723, 32270, 8),
 		neededStorage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
 		value = 2,
-		blockedText = 'Connect all three gateways to restore the circle of energy sustaining this nexus.'
+		blockedText = "Connect all three gateways to restore the circle of energy sustaining this nexus.",
 	},
 	[2] = {
 		itemPosition = Position(32720, 32270, 8),
 		toPosition = Position(33618, 32544, 13),
 		neededStorage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
 		value = 2,
-		blockedText = 'Connect all three gateways to restore the circle of energy sustaining this nexus.'
+		blockedText = "Connect all three gateways to restore the circle of energy sustaining this nexus.",
 	},
 	[3] = {
 		itemPosition = Position(33619, 32526, 15),
 		toPosition = Position(33619, 32528, 15),
 		neededStorage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
 		value = 2,
-		msg = 'You traverse the rubble with ease but more of it falls down behind you, essentially blocking your path once again.'
+		msg = "You traverse the rubble with ease but more of it falls down behind you, essentially blocking your path once again.",
 	},
 }
 
@@ -26,37 +26,37 @@ local dreamScar = {
 	[1] = {
 		day = "Monday",
 		bossName = "Alptramun",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunTimer
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunTimer,
 	},
 	[2] = {
 		day = "Tuesday",
 		bossName = "Izcandar the Banished",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
 	},
 	[3] = {
 		day = "Wednesday",
 		bossName = "Malofur Mangrinder",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.malofurTimer
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.malofurTimer,
 	},
 	[4] = {
 		day = "Thursday",
 		bossName = "Maxxenius",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
 	},
 	[5] = {
 		day = "Friday",
 		bossName = "Izcandar the Banished",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
 	},
 	[6] = {
 		day = "Saturday",
 		bossName = "Plagueroot",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.plaguerootTimer
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.plaguerootTimer,
 	},
 	[7] = {
 		day = "Sunday",
 		bossName = "Maxxenius",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
 	},
 }
 
@@ -78,13 +78,13 @@ function movements_acessTeleports.onStepIn(creature, item, position, fromPositio
 	if item:getPosition() == nightmareTeleport then
 		if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.bossCount) >= 5 then
 			if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.nightmareTimer) > os.time() then
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have to wait to challenge The Nightmare Beast again!')
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait to challenge The Nightmare Beast again!")
 				player:teleportTo(fromPosition)
 			else
 				player:teleportTo(Position(32211, 32075, 15))
 			end
 		else
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You can not use this teleport yet.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can not use this teleport yet.")
 			player:teleportTo(fromPosition)
 		end
 	end
@@ -108,7 +108,7 @@ function movements_acessTeleports.onStepIn(creature, item, position, fromPositio
 			for i = 1, #dreamScar do
 				if os.sdate("%A") == dreamScar[i].day then
 					if player:getStorageValue(dreamScar[i].storageTimer) > os.time() then
-						player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have to wait to challenge '..dreamScar[i].bossName..' again!')
+						player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait to challenge " .. dreamScar[i].bossName .. " again!")
 						player:teleportTo(fromPosition)
 					else
 						player:teleportTo(Position(32208, 32026, 13))

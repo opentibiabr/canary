@@ -7,11 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "core.hpp"
-
 #include "server/network/protocol/protocolstatus.hpp"
 
 #include "config/configmanager.hpp"
+#include "core.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/message/outputmessage.hpp"

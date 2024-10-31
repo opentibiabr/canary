@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "lib/di/container.hpp"
 #include "security/rsa.hpp"
+
+#include "lib/di/container.hpp"
 
 RSA::RSA(Logger &logger) :
 	logger(logger) {

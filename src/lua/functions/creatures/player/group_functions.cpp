@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/player/group_functions.hpp"
+
 #include "creatures/players/grouping/groups.hpp"
 #include "game/game.hpp"
-#include "lua/functions/creatures/player/group_functions.hpp"
 
 int GroupFunctions::luaGroupCreate(lua_State* L) {
 	// Group(id)

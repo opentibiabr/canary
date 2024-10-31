@@ -8,9 +8,16 @@
  */
 
 #include "lua/creature/events.hpp"
-#include "utils/tools.hpp"
-#include "items/item.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/players/grouping/party.hpp"
 #include "creatures/players/player.hpp"
+#include "game/movement/position.hpp"
+#include "items/containers/container.hpp"
+#include "items/item.hpp"
+#include "lib/di/container.hpp"
+#include "utils/tools.hpp"
 
 Events::Events() :
 	scriptInterface("Event Interface") {
@@ -213,6 +220,10 @@ void Events::eventNpcOnSpawn(const std::shared_ptr<Npc> &npc, const Position &po
 	}
 
 	LuaScriptInterface::resetScriptEnv();
+}
+
+Events &Events::getInstance() {
+	return inject<Events>();
 }
 
 // Creature

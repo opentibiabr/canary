@@ -8,18 +8,25 @@
  */
 
 #include "items/item.hpp"
-#include "items/containers/container.hpp"
-#include "items/decay/decay.hpp"
-#include "game/movement/teleport.hpp"
-#include "items/trashholder.hpp"
-#include "items/containers/mailbox/mailbox.hpp"
-#include "map/house/house.hpp"
-#include "game/game.hpp"
-#include "items/bed.hpp"
+
+#include "config/configmanager.hpp"
 #include "containers/rewards/rewardchest.hpp"
-#include "creatures/players/imbuements/imbuements.hpp"
-#include "lua/creature/actions.hpp"
+#include "creatures/combat/combat.hpp"
 #include "creatures/combat/spells.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/player.hpp"
+#include "creatures/players/vocations/vocation.hpp"
+#include "enums/object_category.hpp"
+#include "game/game.hpp"
+#include "game/movement/teleport.hpp"
+#include "items/bed.hpp"
+#include "items/containers/container.hpp"
+#include "items/containers/depot/depotlocker.hpp"
+#include "items/containers/mailbox/mailbox.hpp"
+#include "items/decay/decay.hpp"
+#include "items/trashholder.hpp"
+#include "lua/creature/actions.hpp"
+#include "map/house/house.hpp"
 
 #define ITEM_IMBUEMENT_SLOT 500
 
@@ -136,6 +143,80 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 		}
 	}
 	return false;
+}
+
+double Item::getDodgeChance() const {
+	if (getTier() == 0) {
+		return 0;
+	}
+	return quadraticPoly(
+		g_configManager().getFloat(RUSE_CHANCE_FORMULA_A),
+		g_configManager().getFloat(RUSE_CHANCE_FORMULA_B),
+		g_configManager().getFloat(RUSE_CHANCE_FORMULA_C),
+		getTier()
+	);
+}
+
+double Item::getFatalChance() const {
+	if (getTier() == 0) {
+		return 0;
+	}
+	return quadraticPoly(
+		g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_A),
+		g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_B),
+		g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_C),
+		getTier()
+	);
+}
+
+double Item::getMomentumChance() const {
+	if (getTier() == 0) {
+		return 0;
+	}
+	return quadraticPoly(
+		g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_A),
+		g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_B),
+		g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_C),
+		getTier()
+	);
+}
+
+double Item::getTranscendenceChance() const {
+	if (getTier() == 0) {
+		return 0;
+	}
+	return quadraticPoly(
+		g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_A),
+		g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_B),
+		g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_C),
+		getTier()
+	);
+}
+
+uint8_t Item::getTier() const {
+	if (!hasAttribute(ItemAttribute_t::TIER)) {
+		return 0;
+	}
+
+	auto tier = getAttribute<uint8_t>(ItemAttribute_t::TIER);
+	if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
+		g_logger().error("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
+		return 0;
+	}
+
+	return tier;
+}
+
+void Item::setTier(uint8_t tier) {
+	auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
+	if (tier > configTier) {
+		g_logger().error("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
+		return;
+	}
+
+	if (items[id].upgradeClassification) {
+		setAttribute(ItemAttribute_t::TIER, tier);
+	}
 }
 
 std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint16_t size) {
@@ -364,6 +445,14 @@ std::shared_ptr<Tile> Item::getTile() {
 		cylinder = cylinder->getParent();
 	}
 	return std::dynamic_pointer_cast<Tile>(cylinder);
+}
+
+bool Item::isRemoved() {
+	auto parent = getParent();
+	if (parent) {
+		return parent->isRemoved();
+	}
+	return true;
 }
 
 uint16_t Item::getSubType() const {
@@ -1128,6 +1217,18 @@ uint32_t Item::getWeight() const {
 		return baseWeight * std::max<uint32_t>(1, getItemCount());
 	}
 	return baseWeight;
+}
+
+int32_t Item::getReflectionFlat(CombatType_t combatType) const {
+	return items[id].abilities->reflectFlat[combatTypeToIndex(combatType)];
+}
+
+int32_t Item::getReflectionPercent(CombatType_t combatType) const {
+	return items[id].abilities->reflectPercent[combatTypeToIndex(combatType)];
+}
+
+int32_t Item::getSpecializedMagicLevel(CombatType_t combat) const {
+	return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
 }
 
 std::vector<std::pair<std::string, std::string>>
@@ -3310,5 +3411,24 @@ bool Item::isInsideDepot(bool includeInbox /* = false*/) {
 void Item::updateTileFlags() {
 	if (const auto &tile = getTile()) {
 		tile->updateTileFlags(static_self_cast<Item>());
+	}
+}
+
+// Custom Attributes
+
+const std::map<std::string, CustomAttribute, std::less<>> &ItemProperties::getCustomAttributeMap() const {
+	static std::map<std::string, CustomAttribute, std::less<>> map = {};
+	if (!attributePtr) {
+		return map;
+	}
+	return attributePtr->getCustomAttributeMap();
+}
+
+int32_t ItemProperties::getDuration() const {
+	ItemDecayState_t decayState = getDecaying();
+	if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
+		return std::max<int32_t>(0, getAttribute<int32_t>(ItemAttribute_t::DURATION_TIMESTAMP) - static_cast<int32_t>(OTSYS_TIME()));
+	} else {
+		return getAttribute<int32_t>(ItemAttribute_t::DURATION);
 	}
 }

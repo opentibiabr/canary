@@ -7,18 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/player/mount_functions.hpp"
+
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "game/game.hpp"
-#include "lua/functions/creatures/player/mount_functions.hpp"
 
 int MountFunctions::luaCreateMount(lua_State* L) {
 	// Mount(id or name)
 	std::shared_ptr<Mount> mount;
 	if (isNumber(L, 2)) {
-		mount = g_game().mounts.getMountByID(getNumber<uint8_t>(L, 2));
+		mount = g_game().mounts->getMountByID(getNumber<uint8_t>(L, 2));
 	} else if (isString(L, 2)) {
-		const std::string mountName = getString(L, 2);
-		mount = g_game().mounts.getMountByName(mountName);
+		std::string mountName = getString(L, 2);
+		mount = g_game().mounts->getMountByName(mountName);
 	} else {
 		mount = nullptr;
 	}

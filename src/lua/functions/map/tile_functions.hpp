@@ -13,6 +13,12 @@
 
 class TileFunctions final : LuaScriptInterface {
 public:
+	explicit TileFunctions(lua_State* L) :
+		LuaScriptInterface("TileFunctions") {
+		init(L);
+	}
+	~TileFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Tile", "", TileFunctions::luaTileCreate);
 		registerMetaMethod(L, "Tile", "__eq", TileFunctions::luaUserdataCompare);

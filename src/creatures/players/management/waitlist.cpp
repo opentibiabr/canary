@@ -8,7 +8,12 @@
  */
 
 #include "creatures/players/management/waitlist.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
+#include "utils/tools.hpp"
 
 #include "enums/account_type.hpp"
 
@@ -25,13 +30,13 @@ WaitingList &WaitingList::getInstance() {
 	return inject<WaitingList>();
 }
 
-void WaitingList::cleanupList(WaitList &list) {
-	int64_t time = OTSYS_TIME();
+void WaitingList::cleanupList(WaitList &list) const {
+	const int64_t time = OTSYS_TIME();
 
 	auto it = list.begin();
 	while (it != list.end()) {
-		auto timeout = static_cast<int64_t>(it->timeout);
-		g_logger().warn("time: {}", timeout - time);
+		const auto timeout = static_cast<int64_t>(it->timeout);
+		g_logger().debug("[{}] time: {}", __FUNCTION__, timeout - time);
 		if ((timeout - time) <= 0) {
 			info->playerReferences.erase(it->playerGUID);
 			it = list.erase(it);
@@ -41,25 +46,27 @@ void WaitingList::cleanupList(WaitList &list) {
 	}
 }
 
-std::size_t WaitingList::getTimeout(std::size_t slot) {
+std::size_t WaitingList::getTimeout(std::size_t slot) const {
 	return WaitingList::getTime(slot) + TIMEOUT_EXTRA;
 }
 
 std::size_t WaitingList::getTime(std::size_t slot) {
 	if (slot < SLOT_LIMIT_ONE) {
 		return 5;
-	} else if (slot < SLOT_LIMIT_TWO) {
-		return 10;
-	} else if (slot < SLOT_LIMIT_THREE) {
-		return 20;
-	} else if (slot < SLOT_LIMIT_FOUR) {
-		return 60;
-	} else {
-		return 120;
 	}
+	if (slot < SLOT_LIMIT_TWO) {
+		return 10;
+	}
+	if (slot < SLOT_LIMIT_THREE) {
+		return 20;
+	}
+	if (slot < SLOT_LIMIT_FOUR) {
+		return 60;
+	}
+	return 120;
 }
 
-bool WaitingList::clientLogin(std::shared_ptr<Player> player) {
+bool WaitingList::clientLogin(const std::shared_ptr<Player> &player) const {
 	if (player->hasFlag(PlayerFlags_t::CanAlwaysLogin) || player->getAccountType() >= ACCOUNT_TYPE_GAMEMASTER) {
 		return true;
 	}
@@ -75,7 +82,7 @@ bool WaitingList::clientLogin(std::shared_ptr<Player> player) {
 	addPlayerToList(player);
 
 	auto it = info->playerReferences.find(player->getGUID());
-	std::size_t slot = it->second.second;
+	const std::size_t slot = it->second.second;
 	if ((g_game().getPlayersOnline() + slot) <= maxPlayers) {
 		// should be able to login now
 		info->waitList.erase(it->second.first);
@@ -85,7 +92,7 @@ bool WaitingList::clientLogin(std::shared_ptr<Player> player) {
 	return false;
 }
 
-void WaitingList::addPlayerToList(std::shared_ptr<Player> player) {
+void WaitingList::addPlayerToList(const std::shared_ptr<Player> &player) const {
 	auto it = info->playerReferences.find(player->getGUID());
 	if (it != info->playerReferences.end()) {
 		std::size_t slot;
@@ -111,7 +118,7 @@ void WaitingList::addPlayerToList(std::shared_ptr<Player> player) {
 	}
 }
 
-std::size_t WaitingList::getClientSlot(std::shared_ptr<Player> player) {
+std::size_t WaitingList::getClientSlot(const std::shared_ptr<Player> &player) const {
 	auto it = info->playerReferences.find(player->getGUID());
 	if (it == info->playerReferences.end()) {
 		return 0;

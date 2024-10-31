@@ -7,8 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/game.hpp"
 #include "lua/functions/items/item_classification_functions.hpp"
+
+#include "game/game.hpp"
+#include "items/items_classification.hpp"
 
 int ItemClassificationFunctions::luaItemClassificationCreate(lua_State* L) {
 	// ItemClassification(id)
@@ -27,7 +29,7 @@ int ItemClassificationFunctions::luaItemClassificationCreate(lua_State* L) {
 
 int ItemClassificationFunctions::luaItemClassificationAddTier(lua_State* L) {
 	// itemClassification:addTier(id, core, regularPrice, convergenceFusionPrice, convergenceTransferPrice)
-	ItemClassification* itemClassification = getUserdata<ItemClassification>(L, 1);
+	auto* itemClassification = getUserdata<ItemClassification>(L, 1);
 	if (itemClassification) {
 		itemClassification->addTier(
 			getNumber<uint8_t>(L, 2),

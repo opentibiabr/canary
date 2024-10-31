@@ -16,6 +16,12 @@
 
 class CombatFunctions final : LuaScriptInterface {
 public:
+	explicit CombatFunctions(lua_State* L) :
+		LuaScriptInterface("CombatFunctions") {
+		init(L);
+	}
+	~CombatFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Combat", "", CombatFunctions::luaCombatCreate);
 		registerMetaMethod(L, "Combat", "__eq", CombatFunctions::luaUserdataCompare);

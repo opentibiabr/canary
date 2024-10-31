@@ -9,14 +9,13 @@
 
 #include "io/ioprey.hpp"
 
-#include "lib/di/container.hpp"
-#include "creatures/monsters/monster.hpp"
-#include "creatures/players/player.hpp"
 #include "config/configmanager.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "server/network/message/networkmessage.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 
 // Prey class
 PreySlot::PreySlot(PreySlot_t id) :
@@ -253,7 +252,7 @@ IOPrey &IOPrey::getInstance() {
 }
 
 // Prey/Task hunting global class
-void IOPrey::checkPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) const {
+void IOPrey::checkPlayerPreys(const std::shared_ptr<Player> &player, uint8_t amount) const {
 	if (!player) {
 		return;
 	}
@@ -297,7 +296,7 @@ void IOPrey::checkPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) co
 	}
 }
 
-void IOPrey::parsePreyAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const {
+void IOPrey::parsePreyAction(const std::shared_ptr<Player> &player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const {
 	const auto &slot = player->getPreySlotById(slotId);
 	if (!slot || slot->state == PreyDataState_Locked) {
 		player->sendMessageDialog("To unlock this prey slot first you must buy it on store.");
@@ -403,7 +402,7 @@ void IOPrey::parsePreyAction(std::shared_ptr<Player> player, PreySlot_t slotId, 
 	player->reloadPreySlot(slotId);
 }
 
-void IOPrey::parseTaskHuntingAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const {
+void IOPrey::parseTaskHuntingAction(const std::shared_ptr<Player> &player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const {
 	const auto &slot = player->getTaskHuntingSlotById(slotId);
 	if (!slot || slot->state == PreyTaskDataState_Locked) {
 		player->sendMessageDialog("To unlock this task hunting slot first you must buy it on store.");

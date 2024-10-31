@@ -7,13 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "outputmessage.hpp"
+#include "server/network/message/outputmessage.hpp"
 
 #include "lib/di/container.hpp"
 #include "server/network/protocol/protocol.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "utils/lockfree.hpp"
 
-const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
+constexpr uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
+constexpr std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 
 OutputMessagePool &OutputMessagePool::getInstance() {
 	return inject<OutputMessagePool>();
@@ -27,7 +29,7 @@ void OutputMessagePool::scheduleSendAll() {
 
 void OutputMessagePool::sendAll() {
 	// dispatcher thread
-	for (auto &protocol : bufferedProtocols) {
+	for (const auto &protocol : bufferedProtocols) {
 		auto &msg = protocol->getCurrentBuffer();
 		if (msg) {
 			protocol->send(std::move(msg));
@@ -39,7 +41,7 @@ void OutputMessagePool::sendAll() {
 	}
 }
 
-void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol) {
+void OutputMessagePool::addProtocolToAutosend(const Protocol_ptr &protocol) {
 	// dispatcher thread
 	if (bufferedProtocols.empty()) {
 		scheduleSendAll();
@@ -49,7 +51,7 @@ void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol) {
 
 void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol) {
 	// dispatcher thread
-	auto it = std::ranges::find(bufferedProtocols.begin(), bufferedProtocols.end(), protocol);
+	const auto it = std::ranges::find(bufferedProtocols, protocol);
 	if (it != bufferedProtocols.end()) {
 		*it = bufferedProtocols.back();
 		bufferedProtocols.pop_back();
@@ -57,5 +59,5 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol)
 }
 
 OutputMessage_ptr OutputMessagePool::getOutputMessage() {
-	return std::make_shared<OutputMessage>();
+	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());
 }

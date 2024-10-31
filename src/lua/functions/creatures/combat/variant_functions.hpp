@@ -13,6 +13,12 @@
 
 class VariantFunctions final : LuaScriptInterface {
 public:
+	explicit VariantFunctions(lua_State* L) :
+		LuaScriptInterface("VariantFunctions") {
+		init(L);
+	}
+	~VariantFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerClass(L, "Variant", "", VariantFunctions::luaVariantCreate);
 

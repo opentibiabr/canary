@@ -13,6 +13,12 @@
 
 class ActionFunctions final : LuaScriptInterface {
 public:
+	explicit ActionFunctions(lua_State* L) :
+		LuaScriptInterface("ActionFunctions") {
+		init(L);
+	}
+	~ActionFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Action", "", ActionFunctions::luaCreateAction);
 		registerMethod(L, "Action", "onUse", ActionFunctions::luaActionOnUse);

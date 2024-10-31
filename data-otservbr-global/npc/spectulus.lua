@@ -424,13 +424,39 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Are you willing to help me?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 25)
-	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 25 then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 25 then
 			npcHandler:say("Excellent, excellent. The rumours pointed to the north of Tiquanda, a sunken temple probably half drowned in water. Return to me if you find anything interesting!", npc, creature)
-			player:setStorageValue(Storage.TheSecretLibrary.LiquidDeath, 1)
+			if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline) < 1 then
+				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, 1)
+			end
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
+
+	if MsgContains(message, "njey") then
+		npcHandler:say({
+			"Mh? Ah, yes yes. 'Njey' is the native-language term for a very old race of undersea creatures which ...",
+			"...hm, wait - only a select few of my colleagues even bothered studying their culture. They are a mere fantasy to the common man - is there anything of importance you want to tell me?",
+		}, npc, creature)
+		npcHandler:setTopic(playerId, 26)
+	elseif MsgContains(message, "yes") then
+		if npcHandler:getTopic(playerId) == 26 then
+			npcHandler:say({
+				"Well, if you really want to delve into this - I could use some help. So you have found my machine on that island? And you found the notes with the coordinates? Then you can find the entrance! ...",
+				"Just look for a large staircase with sprawling steps. There is an unpassable stream there that will prevent you from venturing further on. But fear not, you can indeed travel down there - with these small enhancements I created. ...",
+				"I will put this under your footgear. Here you go. And this in your nose. There. And there will be no further problems for you down there. Except- ah, well you'll find out yourself soon enough, won't you?",
+			}, npc, creature)
+			npcHandler:setTopic(playerId, 34)
+		elseif npcHandler:getTopic(playerId) == 34 then
+			npcHandler:say("Then off you go! I'm sorry that I cannot offer you any further help but I'm sure you will find support along your way. And - be careful. The sea can appear pitch black down there.", npc, creature)
+			if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline) < 4 then
+				player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline, 4)
+			end
+			npcHandler:setTopic(playerId, 0)
+		end
+	end
+
 	return true
 end
 

@@ -15,6 +15,8 @@
 #endif
 
 struct AccountInfo {
+	~AccountInfo() = default;
+
 	uint32_t id = 0;
 	uint32_t premiumRemainingDays = 0;
 	time_t premiumLastDay = 0;

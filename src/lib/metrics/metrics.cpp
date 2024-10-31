@@ -8,7 +8,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-	#include "metrics.hpp"
+	#include "lib/metrics/metrics.hpp"
+
 	#include "lib/di/container.hpp"
 
 using namespace metrics;

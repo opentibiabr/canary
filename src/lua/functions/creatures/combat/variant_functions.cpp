@@ -7,15 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "items/cylinder.hpp"
 #include "lua/functions/creatures/combat/variant_functions.hpp"
+
+#include "items/cylinder.hpp"
 #include "lua/global/lua_variant.hpp"
 
 int VariantFunctions::luaVariantCreate(lua_State* L) {
 	// Variant(number or string or position or thing)
 	LuaVariant variant;
 	if (isUserdata(L, 2)) {
-		if (std::shared_ptr<Thing> thing = getThing(L, 2)) {
+		if (const auto &thing = getThing(L, 2)) {
 			variant.type = VARIANT_TARGETPOSITION;
 			variant.pos = thing->getPosition();
 		}

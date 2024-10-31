@@ -13,6 +13,12 @@
 
 class WeaponFunctions final : LuaScriptInterface {
 public:
+	explicit WeaponFunctions(lua_State* L) :
+		LuaScriptInterface("WeaponFunctions") {
+		init(L);
+	}
+	~WeaponFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Weapon", "", WeaponFunctions::luaCreateWeapon);
 		registerMethod(L, "Weapon", "action", WeaponFunctions::luaWeaponAction);

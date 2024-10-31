@@ -29,7 +29,7 @@ public:
 
 class Bank : public SharedObject {
 public:
-	explicit Bank(const std::shared_ptr<Bankable> bankable);
+	explicit Bank(const std::shared_ptr<Bankable> &bankable);
 	~Bank() override;
 
 	// Deleted copy constructor and assignment operator.
@@ -42,10 +42,10 @@ public:
 	bool balance(uint64_t amount) const;
 	uint64_t balance();
 	bool hasBalance(uint64_t amount);
-	bool transferTo(const std::shared_ptr<Bank> &destination, const uint64_t amount);
-	bool withdraw(std::shared_ptr<Player> player, uint64_t amount);
-	bool deposit(const std::shared_ptr<Bank> destination);
-	bool deposit(const std::shared_ptr<Bank> destination, uint64_t amount);
+	bool transferTo(const std::shared_ptr<Bank> &destination, uint64_t amount);
+	bool withdraw(const std::shared_ptr<Player> &player, uint64_t amount);
+	bool deposit(const std::shared_ptr<Bank> &destination);
+	bool deposit(const std::shared_ptr<Bank> &destination, uint64_t amount);
 
 private:
 	std::shared_ptr<Bankable> getBankable() const {

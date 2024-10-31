@@ -75,7 +75,7 @@ namespace tests {
 			return !failGetPassword;
 		}
 
-		bool getCoins(const uint32_t &id, const uint8_t &type, uint32_t &coins) final {
+		bool getCoins(const uint32_t &id, CoinType type, uint32_t &coins) final {
 			auto accountCoins = coins_.find(id);
 
 			if (accountCoins == coins_.end()) {
@@ -92,11 +92,11 @@ namespace tests {
 			return true;
 		}
 
-		bool setCoins(const uint32_t &id, const uint8_t &type, const uint32_t &amount) final {
+		bool setCoins(const uint32_t &id, CoinType type, const uint32_t &amount) final {
 			auto accountCoins = coins_.find(id);
 
 			if (accountCoins == coins_.end()) {
-				coins_[id] = phmap::flat_hash_map<uint8_t, uint32_t>();
+				coins_[id] = phmap::flat_hash_map<CoinType, uint32_t>();
 			}
 
 			coins_[id][type] = amount;
@@ -105,15 +105,15 @@ namespace tests {
 
 		bool registerCoinsTransaction(
 			const uint32_t &id,
-			uint8_t type,
+			CoinTransactionType type,
 			uint32_t coins,
-			const uint8_t &coinType,
+			CoinType coinType,
 			const std::string &description
 		) final {
 			auto accountCoins = coinsTransactions_.find(id);
 
 			if (accountCoins == coinsTransactions_.end()) {
-				coinsTransactions_[id] = std::vector<std::tuple<uint8_t, uint32_t, uint8_t, std::string>>();
+				coinsTransactions_[id] = std::vector<std::tuple<CoinTransactionType, uint32_t, CoinType, std::string>>();
 			}
 
 			coinsTransactions_[id].emplace_back(type, coins, coinType, description);
@@ -150,8 +150,8 @@ namespace tests {
 		bool failAuthenticateFromSession = false;
 		std::string password_ = "123456";
 		phmap::flat_hash_map<std::string, AccountInfo> accounts;
-		phmap::flat_hash_map<uint32_t, phmap::flat_hash_map<uint8_t, uint32_t>> coins_;
-		phmap::flat_hash_map<uint32_t, std::vector<std::tuple<uint8_t, uint32_t, uint8_t, std::string>>> coinsTransactions_;
+		phmap::flat_hash_map<uint32_t, phmap::flat_hash_map<CoinType, uint32_t>> coins_;
+		phmap::flat_hash_map<uint32_t, std::vector<std::tuple<CoinTransactionType, uint32_t, CoinType, std::string>>> coinsTransactions_;
 	};
 }
 

@@ -4615,7 +4615,7 @@ void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8
 }
 
 void ProtocolGame::sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) {
-	if (!player) {
+	if (!player || !container) {
 		return;
 	}
 
@@ -5036,8 +5036,8 @@ void ProtocolGame::updateCoinBalance() {
 		[playerId = player->getID()] {
 			const auto &threadPlayer = g_game().getPlayerByID(playerId);
 			if (threadPlayer && threadPlayer->getAccount()) {
-				const auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Normal));
-				const auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+				const auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(CoinType::Normal);
+				const auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(CoinType::Transferable);
 
 				threadPlayer->coinBalance = coins;
 				threadPlayer->coinTransferableBalance = transferCoins;

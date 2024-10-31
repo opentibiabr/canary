@@ -9,14 +9,13 @@
 
 #pragma once
 
-#include "config/configmanager.hpp"
-#include "config/config_enums.hpp"
-#include "utils/utils_definitions.hpp"
-#include "declarations.hpp"
+#include "creatures/creatures_definitions.hpp"
 #include "game/movement/position.hpp"
+#include "items/items_definitions.hpp"
+#include "utils/utils_definitions.hpp"
+#include "enums/item_attribute.hpp"
 
 struct Abilities {
-public:
 	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
 	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};
 
@@ -66,35 +65,26 @@ public:
 		healthGain = value;
 	}
 
-	uint32_t getHealthGain() const {
-		return healthGain * g_configManager().getFloat(RATE_HEALTH_REGEN);
-	}
+	uint32_t getHealthGain() const;
 
 	void setHealthTicks(uint32_t value) {
 		healthTicks = value;
 	}
 
-	uint32_t getHealthTicks() const {
-		return healthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
-	}
+	uint32_t getHealthTicks() const;
 
 	void setManaGain(uint32_t value) {
 		manaGain = value;
 	}
 
-	uint32_t getManaGain() const {
-		return manaGain * g_configManager().getFloat(RATE_MANA_REGEN);
-	}
+	uint32_t getManaGain() const;
 
 	void setManaTicks(uint32_t value) {
 		manaTicks = value;
 	}
 
-	uint32_t getManaTicks() const {
-		return manaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
-	}
+	uint32_t getManaTicks() const;
 
-private:
 	uint32_t healthGain = 0;
 	uint32_t healthTicks = 0;
 	uint32_t manaGain = 0;
@@ -256,14 +246,9 @@ public:
 	std::string parseAugmentDescription(bool inspect = false) const;
 	std::string getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const;
 
-	void addAugment(const std::string &spellName, Augment_t augmentType, int32_t value) {
-		auto augmentInfo = std::make_shared<AugmentInfo>(spellName, augmentType, value);
-		augments.emplace_back(augmentInfo);
-	}
+	void addAugment(std::string spellName, Augment_t augmentType, int32_t value);
 
-	void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {
-		imbuementTypes[imbuementType] = std::min<uint16_t>(IMBUEMENT_MAX_TIER, slotMaxTier);
-	}
+	void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier);
 
 	ItemGroup_t group = ITEM_GROUP_NONE;
 	ItemTypes_t type = ITEM_TYPE_NONE;

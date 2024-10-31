@@ -8,6 +8,7 @@
  */
 
 #include "kv/value_wrapper.hpp"
+
 #include "utils/tools.hpp"
 
 ValueWrapper::ValueWrapper(uint64_t timestamp) :

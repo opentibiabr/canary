@@ -8,9 +8,12 @@
  */
 
 #include "items/functions/item/item_parse.hpp"
+
+#include "config/configmanager.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
 #include "utils/pugicast.hpp"
+#include "utils/tools.hpp"
 #include "creatures/combat/combat.hpp"
 
 void ItemParse::initParse(const std::string &stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {

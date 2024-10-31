@@ -8,6 +8,7 @@
  */
 
 #include "lua/functions/creatures/monster/monster_spell_functions.hpp"
+
 #include "creatures/monsters/monsters.hpp"
 
 int MonsterSpellFunctions::luaCreateMonsterSpell(lua_State* L) {

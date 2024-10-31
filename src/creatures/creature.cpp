@@ -8,13 +8,20 @@
  */
 
 #include "creatures/creature.hpp"
-#include "declarations.hpp"
-#include "game/scheduling/dispatcher.hpp"
-#include "game/game.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/condition.hpp"
+#include "creatures/combat/combat.hpp"
 #include "creatures/monsters/monster.hpp"
+#include "creatures/players/grouping/party.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
-#include "map/spectators.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "lua/creature/creatureevent.hpp"
+#include "map/spectators.hpp"
+#include "creatures/players/player.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 
 Creature::Creature() {
 	Creature::onIdleStatus();
@@ -1666,6 +1673,37 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 	return true;
 }
 
+std::shared_ptr<Cylinder> Creature::getParent() {
+	return getTile();
+}
+
+void Creature::setParent(std::weak_ptr<Cylinder> cylinder) {
+	const auto oldGroundSpeed = walk.groundSpeed;
+	walk.groundSpeed = 150;
+
+	if (const auto &lockedCylinder = cylinder.lock()) {
+		const auto &newParent = lockedCylinder->getTile();
+		position = newParent->getPosition();
+		m_tile = newParent;
+
+		if (newParent->getGround()) {
+			const auto &it = Item::items[newParent->getGround()->getID()];
+			if (it.speed > 0) {
+				walk.groundSpeed = it.speed;
+			}
+		}
+	}
+
+	if (walk.groundSpeed != oldGroundSpeed) {
+		walk.recache();
+	}
+}
+
+// creature script events
+bool Creature::hasEventRegistered(CreatureEventType_t event) const {
+	return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << event)));
+}
+
 CreatureEventList Creature::getCreatureEvents(CreatureEventType_t type) const {
 	CreatureEventList tmpEventList;
 
@@ -1761,6 +1799,14 @@ bool Creature::isInvisible() const {
 			   return condition->getType() == CONDITION_INVISIBLE;
 		   })
 		!= conditions.end();
+}
+
+ZoneType_t Creature::getZoneType() {
+	if (getTile()) {
+		return getTile()->getZoneType();
+	}
+
+	return ZONE_NORMAL;
 }
 
 bool Creature::getPathTo(const Position &targetPos, std::vector<Direction> &dirList, const FindPathParams &fpp) {

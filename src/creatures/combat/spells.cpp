@@ -7,17 +7,23 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/combat/combat.hpp"
 #include "creatures/combat/spells.hpp"
-#include "creatures/monsters/monster.hpp"
-#include "game/game.hpp"
-#include "lua/scripts/lua_environment.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/combat.hpp"
+#include "creatures/combat/condition.hpp"
+#include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-
-#include "lua/global/lua_variant.hpp"
-
-#include "enums/account_type.hpp"
+#include "creatures/players/wheel/wheel_definitions.hpp"
 #include "enums/account_group_type.hpp"
+#include "enums/account_type.hpp"
+#include "game/game.hpp"
+#include "lua/global/lua_variant.hpp"
+#include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/luascript.hpp"
+
+std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyRegularBoost = { 0 };
+std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyUpgradedBoost = { 0 };
 
 Spells::Spells() = default;
 Spells::~Spells() = default;
@@ -112,6 +118,10 @@ bool Spells::hasInstantSpell(const std::string &word) const {
 	return false;
 }
 
+void Spells::setInstantSpell(const std::string &word, const std::shared_ptr<InstantSpell> &instant) {
+	instants.try_emplace(word, instant);
+}
+
 bool Spells::registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instant) {
 	if (instant) {
 		// If the spell not have the "spell:words()" return a error message
@@ -171,6 +181,14 @@ std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
 	}
 
 	return spellsList;
+}
+
+const std::map<std::string, std::shared_ptr<InstantSpell>> &Spells::getInstantSpells() const {
+	return instants;
+}
+
+Spells &Spells::getInstance() {
+	return inject<Spells>();
 }
 
 std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) {
@@ -270,6 +288,14 @@ CombatSpell::CombatSpell(const std::shared_ptr<Combat> &newCombat, bool newNeedT
 bool CombatSpell::loadScriptCombat() {
 	m_combat = g_luaEnvironment().getCombatObject(g_luaEnvironment().lastCombatId);
 	return m_combat != nullptr;
+}
+
+std::shared_ptr<Combat> CombatSpell::getCombat() const {
+	return m_combat;
+}
+
+std::string CombatSpell::getScriptTypeName() const {
+	return "onCastSpell";
 }
 
 bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature) {
@@ -631,6 +657,22 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 	}
 }
 
+const std::string &Spell::getWords() const {
+	return m_words;
+}
+
+void Spell::setWords(std::string_view newWord) {
+	m_words = newWord.data();
+}
+
+const std::string &Spell::getSeparator() const {
+	return m_separator;
+}
+
+void Spell::setSeparator(std::string_view newSeparator) {
+	m_separator = newSeparator.data();
+}
+
 void Spell::getCombatDataAugment(const std::shared_ptr<Player> &player, CombatDamage &damage) const {
 	if (!(damage.instantSpellName).empty()) {
 		const auto equippedAugmentItems = player->getEquippedAugmentItems();
@@ -717,6 +759,22 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 	}
 }
 
+const std::string &Spell::getName() const {
+	return name;
+}
+
+void Spell::setName(std::string n) {
+	name = std::move(n);
+}
+
+uint16_t Spell::getSpellId() const {
+	return m_spellId;
+}
+
+void Spell::setSpellId(uint16_t id) {
+	m_spellId = id;
+}
+
 void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast /*= true*/, bool payCost /*= true*/) const {
 	if (finishedCast) {
 		if (!player->hasFlag(PlayerFlags_t::HasNoExhaustion)) {
@@ -751,6 +809,10 @@ void Spell::postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCo
 	}
 }
 
+bool Spell::isLearnable() const {
+	return learnable;
+}
+
 uint32_t Spell::getManaCost(const std::shared_ptr<Player> &player) const {
 	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 	uint32_t manaRedution = 0;
@@ -776,6 +838,196 @@ uint32_t Spell::getManaCost(const std::shared_ptr<Player> &player) const {
 	}
 
 	return 0;
+}
+
+uint32_t Spell::getSoulCost() const {
+	return soul;
+}
+
+void Spell::setSoulCost(uint32_t s) {
+	soul = s;
+}
+
+uint32_t Spell::getLevel() const {
+	return level;
+}
+
+void Spell::setLevel(uint32_t lvl) {
+	level = lvl;
+}
+
+uint32_t Spell::getMagicLevel() const {
+	return magLevel;
+}
+
+void Spell::setMagicLevel(uint32_t lvl) {
+	magLevel = lvl;
+}
+
+uint32_t Spell::getMana() const {
+	return mana;
+}
+
+void Spell::setMana(uint32_t m) {
+	mana = m;
+}
+
+uint32_t Spell::getManaPercent() const {
+	return manaPercent;
+}
+
+void Spell::setManaPercent(uint32_t m) {
+	manaPercent = m;
+}
+
+bool Spell::isPremium() const {
+	return premium;
+}
+
+void Spell::setPremium(bool p) {
+	premium = p;
+}
+
+bool Spell::isEnabled() const {
+	return enabled;
+}
+
+void Spell::setEnabled(bool e) {
+	enabled = e;
+}
+
+const VocSpellMap &Spell::getVocMap() const {
+	return vocSpellMap;
+}
+
+void Spell::addVocMap(uint16_t vocationId, bool b) {
+	if (vocationId == 0XFFFF) {
+		g_logger().error("Vocation overflow for spell: {}", getName());
+		return;
+	}
+
+	g_logger().trace("Adding spell: {} to voc id: {}", getName(), vocationId);
+	vocSpellMap[vocationId] = b;
+}
+
+SpellGroup_t Spell::getGroup() {
+	return group;
+}
+
+void Spell::setGroup(SpellGroup_t g) {
+	group = g;
+}
+
+SpellGroup_t Spell::getSecondaryGroup() {
+	return secondaryGroup;
+}
+
+void Spell::setSecondaryGroup(SpellGroup_t g) {
+	secondaryGroup = g;
+}
+
+uint32_t Spell::getCooldown() const {
+	return cooldown;
+}
+
+void Spell::setCooldown(uint32_t cd) {
+	cooldown = cd;
+}
+
+uint32_t Spell::getSecondaryCooldown() const {
+	return secondaryGroupCooldown;
+}
+
+void Spell::setSecondaryCooldown(uint32_t cd) {
+	secondaryGroupCooldown = cd;
+}
+
+uint32_t Spell::getGroupCooldown() const {
+	return groupCooldown;
+}
+
+void Spell::setGroupCooldown(uint32_t cd) {
+	groupCooldown = cd;
+}
+
+int32_t Spell::getRange() const {
+	return range;
+}
+
+void Spell::setRange(int32_t r) {
+	range = r;
+}
+
+bool Spell::getNeedTarget() const {
+	return needTarget;
+}
+
+void Spell::setNeedTarget(bool n) {
+	needTarget = n;
+}
+
+bool Spell::getNeedWeapon() const {
+	return needWeapon;
+}
+
+void Spell::setNeedWeapon(bool n) {
+	needWeapon = n;
+}
+
+bool Spell::getNeedLearn() const {
+	return learnable;
+}
+
+void Spell::setNeedLearn(bool n) {
+	learnable = n;
+}
+
+bool Spell::getSelfTarget() const {
+	return selfTarget;
+}
+
+void Spell::setSelfTarget(bool s) {
+	selfTarget = s;
+}
+
+bool Spell::getBlockingSolid() const {
+	return blockingSolid;
+}
+
+void Spell::setBlockingSolid(bool b) {
+	blockingSolid = b;
+}
+
+bool Spell::getBlockingCreature() const {
+	return blockingCreature;
+}
+
+void Spell::setBlockingCreature(bool b) {
+	blockingCreature = b;
+}
+
+bool Spell::getAggressive() const {
+	return aggressive;
+}
+
+void Spell::setAggressive(bool a) {
+	aggressive = a;
+}
+
+bool Spell::getAllowOnSelf() const {
+	return allowOnSelf;
+}
+
+void Spell::setAllowOnSelf(bool s) {
+	allowOnSelf = s;
+}
+
+bool Spell::getLockedPZ() const {
+	return pzLocked;
+}
+
+void Spell::setLockedPZ(bool b) {
+	pzLocked = b;
 }
 
 bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const {
@@ -909,6 +1161,10 @@ bool InstantSpell::canThrowSpell(const std::shared_ptr<Creature> &creature, cons
 	return true;
 }
 
+std::string InstantSpell::getScriptTypeName() const {
+	return "onCastSpell";
+}
+
 bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature) {
 	LuaVariant var;
 	var.instantName = getName();
@@ -972,6 +1228,50 @@ bool InstantSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, c
 	return getScriptInterface()->callFunction(2);
 }
 
+bool InstantSpell::isInstant() const {
+	return true;
+}
+
+bool InstantSpell::getHasParam() const {
+	return hasParam;
+}
+
+void InstantSpell::setHasParam(bool p) {
+	hasParam = p;
+}
+
+bool InstantSpell::getHasPlayerNameParam() const {
+	return hasPlayerNameParam;
+}
+
+void InstantSpell::setHasPlayerNameParam(bool p) {
+	hasPlayerNameParam = p;
+}
+
+bool InstantSpell::getNeedDirection() const {
+	return needDirection;
+}
+
+void InstantSpell::setNeedDirection(bool n) {
+	needDirection = n;
+}
+
+bool InstantSpell::getNeedCasterTargetOrDirection() const {
+	return casterTargetOrDirection;
+}
+
+void InstantSpell::setNeedCasterTargetOrDirection(bool d) {
+	casterTargetOrDirection = d;
+}
+
+bool InstantSpell::getBlockWalls() const {
+	return checkLineOfSight;
+}
+
+void InstantSpell::setBlockWalls(bool w) {
+	checkLineOfSight = w;
+}
+
 bool InstantSpell::canCast(const std::shared_ptr<Player> &player) const {
 	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
@@ -1013,6 +1313,14 @@ ReturnValue RuneSpell::canExecuteAction(const std::shared_ptr<Player> &player, c
 	}
 
 	return RETURNVALUE_NOERROR;
+}
+
+bool RuneSpell::hasOwnErrorHandler() {
+	return true;
+}
+
+std::shared_ptr<Thing> RuneSpell::getTarget(const std::shared_ptr<Player> &, const std::shared_ptr<Creature> &targetCreature, const Position &, uint8_t) const {
+	return targetCreature;
 }
 
 bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &, const std::shared_ptr<Thing> &target, const Position &toPosition, bool isHotkey) {
@@ -1083,6 +1391,10 @@ bool RuneSpell::castSpell(const std::shared_ptr<Creature> &creature, const std::
 	return internalCastSpell(creature, var, false);
 }
 
+std::string RuneSpell::getScriptTypeName() const {
+	return "onCastSpell";
+}
+
 bool RuneSpell::internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const {
 	bool result;
 	if (isLoadedCallback()) {
@@ -1117,4 +1429,27 @@ bool RuneSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, cons
 	LuaScriptInterface::pushBoolean(L, isHotkey);
 
 	return getScriptInterface()->callFunction(3);
+}
+
+bool RuneSpell::isInstant() const {
+	return false;
+}
+
+uint16_t RuneSpell::getRuneItemId() const {
+	return runeId;
+}
+
+void RuneSpell::setRuneItemId(uint16_t i) {
+	runeId = i;
+}
+
+uint32_t RuneSpell::getCharges() const {
+	return charges;
+}
+
+void RuneSpell::setCharges(uint32_t c) {
+	if (c > 0) {
+		hasCharges = true;
+	}
+	charges = c;
 }

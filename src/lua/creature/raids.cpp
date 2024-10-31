@@ -539,23 +539,23 @@ bool AreaSpawnEvent::executeEvent() {
 	for (const MonsterSpawn &spawn : spawnMonsterList) {
 		const uint32_t amount = uniform_random(spawn.minAmount, spawn.maxAmount);
 		for (uint32_t i = 0; i < amount; ++i) {
-			std::shared_ptr<Monster> monster = Monster::createMonster(spawn.name);
+			const std::shared_ptr<Monster> &monster = Monster::createMonster(spawn.name);
 			if (!monster) {
 				g_logger().error("{} - Can't create monster {}", __FUNCTION__, spawn.name);
 				return false;
 			}
 
-			bool success = false;
 			for (int32_t tries = 0; tries < MAXIMUM_TRIES_PER_MONSTER; tries++) {
 				const auto &tile = g_game().map.getTile(static_cast<uint16_t>(uniform_random(fromPos.x, toPos.x)), static_cast<uint16_t>(uniform_random(fromPos.y, toPos.y)), static_cast<uint8_t>(uniform_random(fromPos.z, toPos.z)));
-				if (tile && !tile->isMovableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && tile->getTopCreature() == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
-					success = true;
+				if (!tile) {
+					continue;
+				}
+
+				const auto &topCreature = tile->getTopCreature();
+				if (!tile->isMovableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && topCreature == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
 					monster->setForgeMonster(false);
 					break;
 				}
-			}
-
-			if (!success) {
 			}
 		}
 	}

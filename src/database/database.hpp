@@ -95,8 +95,19 @@ public:
 			return T();
 		}
 
-		T data = 0;
+		T data {};
 		try {
+			// Check if the type T is a enum
+			if constexpr (std::is_enum_v<T>) {
+				using underlying_type = typename std::underlying_type<T>::type;
+				underlying_type value = 0;
+				if constexpr (std::is_signed_v<underlying_type>) {
+					value = static_cast<underlying_type>(std::stoll(row[it->second]));
+				} else {
+					value = static_cast<underlying_type>(std::stoull(row[it->second]));
+				}
+				return static_cast<T>(value);
+			}
 			// Check if the type T is signed or unsigned
 			if constexpr (std::is_signed_v<T>) {
 				// Check if the type T is int8_t or int16_t

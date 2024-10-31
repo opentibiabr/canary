@@ -667,11 +667,6 @@ QuestDoorAction = {
 			{ x = 32169, y = 31933, z = 7 },
 		},
 	},
-	-- The dream courts door (Andrew Lyze npc)
-	[Storage.Quest.U12_00.TheDreamCourts.AndrewDoor] = {
-		itemId = 20450,
-		itemPos = { { x = 32761, y = 32630, z = 7 } },
-	},
 	-- Kilmaresh doors
 	-- [Storage.Kilmaresh.First.Title] = {
 	-- itemId = false,
@@ -817,30 +812,6 @@ QuestDoorAction = {
 	[Storage.Quest.U12_60.APiratesTail.TentuglyDoor] = {
 		itemId = false,
 		itemPos = { { x = 33793, y = 31388, z = 6 } },
-	},
-	[Storage.Quest.U12_00.TheDreamCourts.HauntedHouseAccess] = {
-		itemId = false,
-		itemPos = {
-			{ x = 32700, y = 32244, z = 9 },
-			{ x = 32700, y = 32255, z = 9 },
-			{ x = 32700, y = 32275, z = 8 },
-			{ x = 33088, y = 32388, z = 8 },
-			{ x = 32671, y = 32652, z = 7 },
-			{ x = 32606, y = 32629, z = 9 },
-		},
-	},
-	[Storage.Quest.U12_00.TheDreamCourts.BuriedCathedralAccess] = {
-		itemId = false,
-		itemPos = {
-			{ x = 32719, y = 32264, z = 8 },
-			{ x = 32728, y = 32280, z = 8 },
-		},
-	},
-	[Storage.Quest.U12_00.TheDreamCourts.DreamScarAccess] = {
-		itemId = false,
-		itemPos = {
-			{ x = 31983, y = 32000, z = 14 },
-		},
 	},
 	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide] = {
 		itemId = false,

@@ -21,6 +21,7 @@
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
+#include "creatures/players/gamestore/player_store_detail.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
@@ -1684,7 +1685,7 @@ void ProtocolGame::parseGetOutfit(NetworkMessage &msg) {
 			return;
 		}
 
-		const auto mount = g_game().mounts.getMountByClientID(tryOnId);
+		const auto mount = g_game().mounts->getMountByClientID(tryOnId);
 		if (mount) {
 			g_game().playerRequestOutfit(player->getID(), 0, tryOnId);
 			return;
@@ -9441,7 +9442,7 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 	if (offerConverType == 0) { // Normal
 		msg.addString(offer->getOfferIcon());
 	} else if (offerConverType == 1) { // Mount
-		auto offerMount = g_game().mounts.getMountByID(offer->getOfferId());
+		auto offerMount = g_game().mounts->getMountByID(offer->getOfferId());
 		msg.add<uint16_t>(offerMount->clientId);
 		tryOn = 1;
 	} else if (offerConverType == 2) { // Outfit

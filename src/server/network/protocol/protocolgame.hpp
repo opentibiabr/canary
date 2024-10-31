@@ -29,6 +29,7 @@ enum Slots_t : uint8_t;
 enum CombatType_t : uint8_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
+enum class StoreErrors_t : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -48,6 +49,7 @@ class Creature;
 class MonsterType;
 class Npc;
 class Offer;
+class Category;
 
 struct ModalWindow;
 struct Position;
@@ -60,6 +62,7 @@ struct ShopBlock;
 struct MarketOfferEx;
 struct HistoryMarketOffer;
 struct LightInfo;
+struct StoreDetail;
 struct StoreHistoryDetail;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;

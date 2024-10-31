@@ -48,6 +48,7 @@ class Container;
 class KV;
 class BedItem;
 class Npc;
+class Offer;
 
 struct ModalWindow;
 struct Achievement;
@@ -66,6 +67,8 @@ struct StoreHistory;
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
+enum class StoreErrors_t : uint8_t;
+enum class StoreDetailType : uint8_t;
 enum ObjectCategory_t : uint8_t;
 enum PreySlot_t : uint8_t;
 enum SpeakClasses : uint8_t;

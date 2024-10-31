@@ -167,11 +167,11 @@ void Account::registerStoreTransaction(const uint8_t &type, const uint32_t &amou
 		return;
 	}
 
-	if (!g_accountRepository().registerStoreTransaction(m_account.id, type, amount, coinType, description, time)) {
+	if (!g_accountRepository().registerStoreTransaction(m_account->id, type, amount, coinType, description, time)) {
 		g_logger().error(
 			"Failed to register transaction: 'account:[{}], transaction "
 			"type:[{}], coins:[{}], coin type:[{}], description:[{}], time:[{}]",
-			m_account.id, type, amount, type, description, time
+			m_account->id, type, amount, type, description, time
 		);
 	}
 }

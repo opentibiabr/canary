@@ -49,6 +49,7 @@ class ContainerIterator;
 class Item;
 class BedItem;
 class WildcardTreeNode;
+class Offer;
 
 struct Achievement;
 struct HighscoreCategory;
@@ -56,6 +57,7 @@ struct TextMessage;
 
 enum ObjectCategory_t : uint8_t;
 enum class ForgeAction_t : uint8_t;
+enum class Blessings : uint8_t;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 

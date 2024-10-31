@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#include "pch.hpp"
-
 #include "io/io_store.hpp"
 
+#include "config/configmanager.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"

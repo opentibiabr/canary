@@ -69,6 +69,7 @@
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
 #include "enums/object_category.hpp"
+#include "enums/player_blessings.hpp"
 
 #include <appearances.pb.h>
 
@@ -10860,7 +10861,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::MOUNT: {
-			auto mount = g_game().mounts.getMountByID(offer->getOfferId());
+			auto mount = g_game().mounts->getMountByID(offer->getOfferId());
 			if (!mount) {
 				break;
 			}

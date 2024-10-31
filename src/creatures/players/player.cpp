@@ -24,6 +24,7 @@
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/gamestore/player_store_detail.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/storages/storages.hpp"
@@ -45,7 +46,9 @@
 #include "grouping/guild.hpp"
 #include "io/iobestiary.hpp"
 #include "io/iologindata.hpp"
+#include "io/functions/iologindata_save_player.hpp"
 #include "io/ioprey.hpp"
+#include "io/io_store.hpp"
 #include "items/bed.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/depot/depotlocker.hpp"
@@ -61,9 +64,6 @@
 #include "lua/creature/events.hpp"
 #include "lua/creature/movement.hpp"
 #include "map/spectators.hpp"
-
-// #include "io/io_store.hpp"
-// #include "creatures/players/gamestore/player_store_detail.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -2261,9 +2261,9 @@ void Player::sendExperienceTracker(int64_t rawExp, int64_t finalExp) const {
 	}
 }
 
-void Player::sendOutfitWindow() const {
+void Player::sendOutfitWindow(uint16_t tryOutfit /* = 0*/, uint16_t tryMount /* = 0*/) const {
 	if (client) {
-		client->sendOutfitWindow();
+		client->sendOutfitWindow(tryOutfit, tryMount);
 	}
 }
 
@@ -9691,7 +9691,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::MOUNT: {
-			auto mount = g_game().mounts.getMountByID(offer->getOfferId());
+			auto mount = g_game().mounts->getMountByID(offer->getOfferId());
 
 			if (hasMount(mount)) {
 				canBuy = false;

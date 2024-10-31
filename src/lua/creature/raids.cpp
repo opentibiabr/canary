@@ -552,7 +552,7 @@ bool AreaSpawnEvent::executeEvent() {
 				}
 
 				const auto &topCreature = tile->getTopCreature();
-				if (tile && !tile->isMoveableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && topCreature == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
+				if (tile && !tile->isMovableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && topCreature == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
 					monster->setForgeMonster(false);
 					break;
 				}

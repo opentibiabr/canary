@@ -99,7 +99,7 @@ public:
 		try {
 			// Check if the type T is a enum
 			if constexpr (std::is_enum_v<T>) {
-				using underlying_type = typename std::underlying_type<T>::type;
+				using underlying_type = std::underlying_type_t<T>;
 				underlying_type value = 0;
 				if constexpr (std::is_signed_v<underlying_type>) {
 					value = static_cast<underlying_type>(std::stoll(row[it->second]));

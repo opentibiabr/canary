@@ -1,6 +1,6 @@
-local mysterybox = Action()
+local mysteryBox = Action()
 
-function mysterybox.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function mysteryBox.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local items = { 25361, 25360 }
 	local randomItem = items[math.random(#items)]
 	player:addItem(randomItem, 1)
@@ -9,5 +9,5 @@ function mysterybox.onUse(player, item, fromPosition, target, toPosition, isHotk
 	return true
 end
 
-mysterybox:id(26186)
-mysterybox:register()
+mysteryBox:id(26186)
+mysteryBox:register()

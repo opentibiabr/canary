@@ -7,8 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/npcs/npcs.hpp"
 #include "lua/functions/creatures/npc/shop_functions.hpp"
+
+#include "creatures/npcs/npcs.hpp"
+
+#include "items/item.hpp"
+#include "utils/tools.hpp"
 
 int ShopFunctions::luaCreateShop(lua_State* L) {
 	// Shop() will create a new shop item
@@ -40,7 +44,7 @@ int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 	const auto &shop = getUserdataShared<Shop>(L, 1);
 	if (shop && isString(L, 2)) {
 		auto name = getString(L, 2);
-		auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
+		const auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
 
 		if (ids.first == Item::items.nameToItems.cend()) {
 			g_logger().warn("[ShopFunctions::luaShopSetIdFromName] - "

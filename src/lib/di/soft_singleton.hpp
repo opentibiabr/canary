@@ -6,9 +6,8 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#pragma once
 
-#include <iostream>
+#pragma once
 
 class SoftSingleton {
 public:

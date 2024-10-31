@@ -7,10 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/npcs/npcs.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
-#include "lua/scripts/scripts.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/npcs/npcs.hpp"
 #include "game/game.hpp"
+#include "lua/scripts/scripts.hpp"
 
 void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector) {
 	lua_createtable(L, shopVector.size(), 0);
@@ -189,7 +191,7 @@ int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
 		return 1;
 	}
 
-	auto shop = getUserdataShared<Shop>(L, 2);
+	const auto &shop = getUserdataShared<Shop>(L, 2);
 	if (shop) {
 		npcType->loadShop(npcType, shop->shopBlock);
 		pushBoolean(L, true);

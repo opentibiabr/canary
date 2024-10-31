@@ -49,7 +49,7 @@ function lloydPrepareDeath.onPrepareDeath(creature, lastHitKiller, mostDamageKil
 		creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		creature:addHealth(300000, true)
 		creature:say("The cosmic energies in the chamber refocus on Lloyd.", TALKTYPE_MONSTER_SAY)
-		Storage.ForgottenKnowledge.LloydEvent = addEvent(revertLloyd, 10 * 1000, prismCount)
+		Storage.Quest.U11_02.ForgottenKnowledge.LloydEvent = addEvent(revertLloyd, 10 * 1000, prismCount)
 	end
 	return true
 end

@@ -297,8 +297,6 @@ function addaddon.onSay(player, words, param)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Addon %d for looktype %d set for player %s.", addonValue, looktype, target:getName()))
 		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s has added addon %d for looktype %d to you.", player:getName(), addonValue, looktype))
 	end
-
-	logger.debug("[addaddon.onSay] - Player: {} has added addon: {} for looktype: {} to the player: {}", player:getName(), addonValue, addonParam, target:getName())
 	return true
 end
 

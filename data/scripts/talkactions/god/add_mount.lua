@@ -42,8 +42,6 @@ function addmount.onSay(player, words, param)
 		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s has added a new mount for you.", player:getName()))
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have successfully added mount %d to player %s.", mountId, target:getName()))
 	end
-
-	logger.debug("[addmount.onSay] - Player: {} has added mount: {} to the player: {}", player:getName(), mountParam, target:getName())
 	return true
 end
 

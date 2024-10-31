@@ -322,6 +322,7 @@ bool IOMapSerialize::loadHouseInfo() {
 		} else if (state == CyclopediaHouseState::Transfer && timeNow > bidEndDate && bidder > 0) {
 			g_logger().debug("[TRANSFER] - Removing house id '{}' from owner GUID '{}' and transfering to new owner GUID '{}'", houseId, owner, bidder);
 			if (transferStatus) {
+				g_game().setTransferPlayerHouseItems(houseId, owner);
 				house->setOwner(bidder);
 				IOLoginData::increaseBankBalance(owner, internalBid);
 			} else {
@@ -334,6 +335,7 @@ bool IOMapSerialize::loadHouseInfo() {
 			transferStatus = false;
 		} else if (state == CyclopediaHouseState::MoveOut && timeNow > bidEndDate) {
 			g_logger().debug("[MOVE OUT] - Removing house id '{}' owner", houseId);
+			g_game().setTransferPlayerHouseItems(houseId, owner);
 			house->setOwner(0);
 			bidEndDate = 0;
 		} else {

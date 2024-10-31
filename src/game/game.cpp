@@ -7325,7 +7325,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 
 					if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 						ss.str({});
-						ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your" << attackMsg << "."; // Probar
+						ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your" << attackMsg << ".";
 
 						if (!damage.exString.empty()) {
 							ss << " (" << damage.exString << ")";

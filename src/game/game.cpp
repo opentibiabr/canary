@@ -10877,7 +10877,7 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &to
 	} else {
 		auto playerHouses = g_game().map.houses.getAllHousesByPlayerId(player->getGUID());
 		if (playerHouses.size()) {
-			for (const auto playerHouse : playerHouses) {
+			for (const auto &playerHouse : playerHouses) {
 				if (!playerHouse) {
 					continue;
 				}

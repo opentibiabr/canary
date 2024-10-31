@@ -113,7 +113,7 @@ suite<"account"> accountTest = [] {
 	};
 
 	test("Account::getCoins returns error if not yet loaded") = [&injectionFixture] {
-		expect(eq(std::get<1>(Account { 1 }.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::NotInitialized)));
+		expect(eq(std::get<1>(Account { 1 }.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::NotInitialized)));
 	};
 
 	test("Account::getCoins returns error if it fails") = [&injectionFixture] {
@@ -124,7 +124,7 @@ suite<"account"> accountTest = [] {
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Storage))
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Storage))
 		);
 	};
 
@@ -133,12 +133,12 @@ suite<"account"> accountTest = [] {
 
 		Account acc { 1 };
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
-			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 100) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
+			eq(std::get<0>(acc.getCoins(CoinType::Normal)), 100) and
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -147,15 +147,15 @@ suite<"account"> accountTest = [] {
 
 		Account acc { 2 };
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		accountRepository.addAccount("canary2@test.com", AccountInfo { 2, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(2, enumToValue(CoinType::Normal), 33);
+		accountRepository.setCoins(2, CoinType::Normal, 33);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
-			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 33) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
+			eq(std::get<0>(acc.getCoins(CoinType::Normal)), 33) and
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -164,20 +164,20 @@ suite<"account"> accountTest = [] {
 
 		Account acc { 1 };
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 		accountRepository.setCoins(1, enumToValue(CoinType::Tournament), 100);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
-			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 100) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok)) and
+			eq(std::get<0>(acc.getCoins(CoinType::Normal)), 100) and
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Tournament))), 100) and
 			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Tournament))), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
 	test("Account::addCoins returns error if not yet loaded") = [] {
-		expect(eq(Account { 1 }.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::NotInitialized)));
+		expect(eq(Account { 1 }.addCoins(CoinType::Normal, 100), enumToValue(AccountErrors_t::NotInitialized)));
 	};
 
 	test("Account::addCoins returns error if it fails") = [&injectionFixture] {
@@ -186,11 +186,11 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.failAddCoins = true;
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
-			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Storage))
+			eq(acc.addCoins(CoinType::Normal, 100), enumToValue(AccountErrors_t::Storage))
 		);
 	};
 
@@ -199,7 +199,7 @@ suite<"account"> accountTest = [] {
 
 		Account acc { 1 };
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
@@ -213,13 +213,13 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.failAddCoins = false;
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
-			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok))
-			and eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 200) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
+			eq(acc.addCoins(CoinType::Normal, 100), enumToValue(AccountErrors_t::Ok))
+			and eq(std::get<0>(acc.getCoins(CoinType::Normal)), 200) and
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -229,16 +229,16 @@ suite<"account"> accountTest = [] {
 		Account acc { 2 };
 		accountRepository.failAddCoins = false;
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		accountRepository.addAccount("canary2@test.com", AccountInfo { 2, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(2, enumToValue(CoinType::Normal), 33);
+		accountRepository.setCoins(2, CoinType::Normal, 33);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
-			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
-			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 133) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
+			eq(acc.addCoins(CoinType::Normal, 100), enumToValue(AccountErrors_t::Ok)) and
+			eq(std::get<0>(acc.getCoins(CoinType::Normal)), 133) and
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -247,15 +247,15 @@ suite<"account"> accountTest = [] {
 
 		Account acc { 1 };
 		accountRepository.failAddCoins = false;
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 		accountRepository.setCoins(1, enumToValue(CoinType::Tournament), 57);
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
-			eq(acc.addCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
-			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 200) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok)) and
+			eq(acc.addCoins(CoinType::Normal, 100), enumToValue(AccountErrors_t::Ok)) and
+			eq(std::get<0>(acc.getCoins(CoinType::Normal)), 200) and
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Tournament))), 57) and
 			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Tournament))), enumToValue(AccountErrors_t::Ok))
 		);
@@ -282,7 +282,7 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.failAddCoins = true;
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
@@ -295,7 +295,7 @@ suite<"account"> accountTest = [] {
 
 		Account acc { 1 };
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
@@ -309,13 +309,13 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.failAddCoins = false;
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
-			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 0) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
+			eq(std::get<0>(acc.getCoins(CoinType::Normal)), 0) and
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -325,16 +325,16 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.failAddCoins = false;
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 
 		accountRepository.addAccount("canary2@test.com", AccountInfo { 2, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(2, enumToValue(CoinType::Normal), 33);
+		accountRepository.setCoins(2, CoinType::Normal, 33);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
-			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 0) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok))
+			eq(std::get<0>(acc.getCoins(CoinType::Normal)), 0) and
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok))
 		);
 	};
 
@@ -344,14 +344,14 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.failAddCoins = false;
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 		accountRepository.setCoins(1, enumToValue(CoinType::Tournament), 57);
 
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok)) and
-			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 0) and
-			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok)) and
+			eq(std::get<0>(acc.getCoins(CoinType::Normal)), 0) and
+			eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok)) and
 			eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Tournament))), 57) and
 			eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Tournament))), enumToValue(AccountErrors_t::Ok))
 		);
@@ -373,19 +373,19 @@ suite<"account"> accountTest = [] {
 
 		Account acc { 1 };
 		accountRepository.failAddCoins = false;
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 1);
+		accountRepository.setCoins(1, CoinType::Normal, 1);
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::RemoveCoins))
 		);
 
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 50);
+		accountRepository.setCoins(1, CoinType::Normal, 50);
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::RemoveCoins))
 		);
 
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 100);
+		accountRepository.setCoins(1, CoinType::Normal, 100);
 		expect(
 			eq(acc.load(), enumToValue(AccountErrors_t::Ok)) and
 			eq(acc.removeCoins(enumToValue(CoinType::Normal), 100), enumToValue(AccountErrors_t::Ok))
@@ -416,13 +416,13 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 		expect(eq(acc.load(), enumToValue(AccountErrors_t::Ok)));
-		accountRepository.setCoins(1, enumToValue(CoinType::Normal), 1);
+		accountRepository.setCoins(1, CoinType::Normal, 1);
 
-		expect(eq(acc.addCoins(enumToValue(CoinType::Normal), 100, ""), enumToValue(AccountErrors_t::Ok)));
+		expect(eq(acc.addCoins(CoinType::Normal, 100, ""), enumToValue(AccountErrors_t::Ok)));
 		expect(eq(acc.removeCoins(enumToValue(CoinType::Normal), 80, ""), enumToValue(AccountErrors_t::Ok)));
 
-		expect(eq(std::get<0>(acc.getCoins(enumToValue(CoinType::Normal))), 21));
-		expect(eq(std::get<1>(acc.getCoins(enumToValue(CoinType::Normal))), enumToValue(AccountErrors_t::Ok)));
+		expect(eq(std::get<0>(acc.getCoins(CoinType::Normal)), 21));
+		expect(eq(std::get<1>(acc.getCoins(CoinType::Normal)), enumToValue(AccountErrors_t::Ok)));
 
 		acc.registerCoinTransaction(enumToValue(CoinTransactionType::Add), enumToValue(CoinType::Normal), 100, "");
 		acc.registerCoinTransaction(enumToValue(CoinTransactionType::Remove), enumToValue(CoinType::Normal), 100, "");

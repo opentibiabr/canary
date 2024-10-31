@@ -10448,103 +10448,106 @@ uint16_t Player::getPlayerVocationEnum() const {
 }
 
 BidErrorMessage Player::canBidHouse(uint32_t houseId) {
+	using enum BidErrorMessage;
 	const auto house = g_game().map.houses.getHouseByClientId(houseId);
 	if (!house) {
-		return BidErrorMessage::Internal;
+		return Internal;
 	}
 
 	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
-		return BidErrorMessage::Rookgaard;
+		return Rookgaard;
 	}
 
 	if (!isPremium()) {
-		return BidErrorMessage::Premium;
+		return Premium;
 	}
 
 	if (getAccount()->getHouseBidId() != 0) {
-		return BidErrorMessage::OnlyOneBid;
+		return OnlyOneBid;
 	}
 
 	if (getBankBalance() < (house->getRent() + house->getHighestBid())) {
-		return BidErrorMessage::NotEnoughMoney;
+		return NotEnoughMoney;
 	}
 
 	if (house->isGuildhall()) {
 		if (getGuildRank() && getGuildRank()->level != 3) {
-			return BidErrorMessage::Guildhall;
+			return Guildhall;
 		}
 
 		if (getGuild() && getGuild()->getBankBalance() < (house->getRent() + house->getHighestBid())) {
-			return BidErrorMessage::NotEnoughGuildMoney;
+			return NotEnoughGuildMoney;
 		}
 	}
 
-	return BidErrorMessage::NoError;
+	return NoError;
 }
 
 TransferErrorMessage Player::canTransferHouse(uint32_t houseId, uint32_t newOwnerGUID) {
+	using enum TransferErrorMessage;
 	const auto house = g_game().map.houses.getHouseByClientId(houseId);
 	if (!house) {
-		return TransferErrorMessage::Internal;
+		return Internal;
 	}
 
 	if (getGUID() != house->getOwner()) {
-		return TransferErrorMessage::NotHouseOwner;
+		return NotHouseOwner;
 	}
 
 	if (getGUID() == newOwnerGUID) {
-		return TransferErrorMessage::AlreadyTheOwner;
+		return AlreadyTheOwner;
 	}
 
 	const auto newOwner = g_game().getPlayerByGUID(newOwnerGUID, true);
 	if (!newOwner) {
-		return TransferErrorMessage::CharacterNotExist;
+		return CharacterNotExist;
 	}
 
 	if (newOwner->getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
-		return TransferErrorMessage::Rookgaard;
+		return Rookgaard;
 	}
 
 	if (!newOwner->isPremium()) {
-		return TransferErrorMessage::Premium;
+		return Premium;
 	}
 
 	if (newOwner->getAccount()->getHouseBidId() != 0) {
-		return TransferErrorMessage::OnlyOneBid;
+		return OnlyOneBid;
 	}
 
-	return TransferErrorMessage::Success;
+	return Success;
 }
 
 AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
+	using enum AcceptTransferErrorMessage;
 	const auto house = g_game().map.houses.getHouseByClientId(houseId);
 	if (!house) {
-		return AcceptTransferErrorMessage::Internal;
+		return Internal;
 	}
 
 	if (getGUID() != house->getBidder()) {
-		return AcceptTransferErrorMessage::NotNewOwner;
+		return NotNewOwner;
 	}
 
 	if (!isPremium()) {
-		return AcceptTransferErrorMessage::Premium;
+		return Premium;
 	}
 
 	if (getAccount()->getHouseBidId() != 0) {
-		return AcceptTransferErrorMessage::AlreadyBid;
+		return AlreadyBid;
 	}
 
 	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
-		return AcceptTransferErrorMessage::Rookgaard;
+		return Rookgaard;
 	}
 
 	if (getBankBalance() < (house->getRent() + house->getInternalBid())) {
-		return AcceptTransferErrorMessage::Frozen;
+		return Frozen;
 	}
 
 	if (house->getTransferStatus()) {
-		return AcceptTransferErrorMessage::AlreadyAccepted;
+		return AlreadyAccepted;
 	}
 
-	return AcceptTransferErrorMessage::Success;
+	return Success;
 }

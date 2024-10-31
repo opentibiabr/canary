@@ -118,7 +118,7 @@ bool PlayerBadge::loyalty(uint8_t amount) const {
 
 std::vector<std::shared_ptr<Player>> PlayerBadge::getPlayersInfoByAccount(const std::shared_ptr<Account> &acc) const {
 	const auto [accountPlayers, error] = acc->getAccountPlayers();
-	if (error != enumToValue(AccountErrors_t::Ok) || accountPlayers.empty()) {
+	if (error != AccountErrors_t::Ok || accountPlayers.empty()) {
 		return {};
 	}
 

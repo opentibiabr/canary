@@ -11,6 +11,9 @@
 
 struct AccountInfo;
 
+enum class CoinType : uint8_t;
+enum class CoinTransactionType : uint8_t;
+
 class AccountRepository {
 public:
 	AccountRepository() = default;
@@ -31,13 +34,13 @@ public:
 
 	virtual bool getPassword(const uint32_t &id, std::string &password) = 0;
 
-	virtual bool getCoins(const uint32_t &id, const uint8_t &type, uint32_t &coins) = 0;
-	virtual bool setCoins(const uint32_t &id, const uint8_t &type, const uint32_t &amount) = 0;
+	virtual bool getCoins(const uint32_t &id, CoinType coinType, uint32_t &coins) = 0;
+	virtual bool setCoins(const uint32_t &id, CoinType coinType, const uint32_t &amount) = 0;
 	virtual bool registerCoinsTransaction(
 		const uint32_t &id,
-		uint8_t type,
+		CoinTransactionType type,
 		uint32_t coins,
-		const uint8_t &coinType,
+		CoinType coinType,
 		const std::string &description
 	) = 0;
 };

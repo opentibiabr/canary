@@ -23,7 +23,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
+	if (AccountErrors_t::Ok != account.load()) {
 		g_logger().error("Couldn't load account [{}].", account.getDescriptor());
 		return false;
 	}
@@ -43,13 +43,13 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		return false;
 	}
 
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
+	if (AccountErrors_t::Ok != account.load()) {
 		g_logger().error("Failed to load account [{}]", accountDescriptor);
 		return false;
 	}
 
 	auto [players, result] = account.getAccountPlayers();
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
+	if (AccountErrors_t::Ok != result) {
 		g_logger().error("Failed to load account [{}] players", accountDescriptor);
 		return false;
 	}

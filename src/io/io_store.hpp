@@ -121,7 +121,8 @@ private:
 		"You reached the maximum amount for some blessing.",
 		"You already have a pouch.",
 		"You already have maximum of reward tokens.",
-		"You already have charm expansion."
+		"You already have charm expansion.",
+		"You cannot make this purchase as long as your characters has a logout block."
 	};
 };
 
@@ -174,7 +175,7 @@ private:
 
 class Offer {
 public:
-	Offer(const std::string &name, uint32_t id, uint32_t price, OfferTypes_t type, const std::string &icon, States_t state, uint16_t count, uint16_t duration, CoinType coin, const std::string &description, OutfitIds outfitIds, bool movable, const std::string &parentName, std::vector<RelatedOffer> relatedOffers) :
+	Offer(const std::string &name, uint32_t id, uint32_t price, OfferTypes_t type, const std::string &icon, States_t state, uint16_t count, uint16_t duration, CoinType coin, const std::string &description, OutfitIds outfitIds, bool movable, const std::string &parentName, const std::vector<RelatedOffer> &relatedOffers) :
 		m_offerName(name), m_offerId(id), m_offerPrice(price), m_offerType(type), m_offerIcon(icon), m_offerState(state), m_offerCount(count), m_validUntil(duration), m_coinType(coin), m_offerDescription(description), m_outfitId(outfitIds), m_movable(movable), m_parentName(parentName), m_relatedOffers(relatedOffers) { }
 
 	const std::string &getOfferName() const {

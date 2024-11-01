@@ -9675,9 +9675,8 @@ std::shared_ptr<KV> Player::getStoreDetailScope(int32_t createdAt) const {
 }
 
 bool Player::canBuyStoreOffer(const Offer* offer) {
-	auto offerType = offer->getOfferType();
 	auto canBuy = true;
-
+	auto offerType = offer->getOfferType();
 	switch (offerType) {
 		case OfferTypes_t::OUTFIT: {
 			auto offerOutfitId = offer->getOutfitIds();
@@ -9785,6 +9784,14 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		case OfferTypes_t::HUNTINGSLOT: {
 			const auto &thirdSlot = getTaskHuntingSlotById(PreySlot_Three);
 			if (thirdSlot->state != PreyTaskDataState_Locked) {
+				canBuy = false;
+			}
+
+			break;
+		}
+
+		case OfferTypes_t::TEMPLE: {
+			if (canLogout()) {
 				canBuy = false;
 			}
 

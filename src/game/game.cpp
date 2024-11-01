@@ -10587,17 +10587,12 @@ bool Game::processNameChangeOffer(const std::shared_ptr<Player> &player, std::st
 }
 
 bool Game::processTempleOffer(const std::shared_ptr<Player> &player) {
-	if (player->isPzLocked() || player->hasCondition(CONDITION_INFIGHT)) {
+	if (player->canLogout()) {
 		return false;
 	}
 
 	const auto &position = player->getTemplePosition();
-	const auto oldPos = player->getPosition();
-
-	if (internalTeleport(player, position, false) != RETURNVALUE_NOERROR) {
-		return false;
-	}
-
+	playerTeleport(player->getID(), position);
 	addMagicEffect(position, CONST_ME_TELEPORT);
 	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have been teleported to your hometown.");
 
@@ -10729,7 +10724,7 @@ void Game::playerOpenStore(uint32_t playerId) {
 }
 
 void Game::playerCoinTransfer(uint32_t playerId, const std::string &receptorName, uint32_t coinAmount) {
-	std::shared_ptr<Player> playerDonator = getPlayerByID(playerId);
+	const auto &playerDonator = getPlayerByID(playerId);
 	if (!playerDonator) {
 		return;
 	}
@@ -10739,7 +10734,7 @@ void Game::playerCoinTransfer(uint32_t playerId, const std::string &receptorName
 		return;
 	}
 
-	std::shared_ptr<Player> playerReceptor = getPlayerByName(receptorName, true);
+	const auto &playerReceptor = getPlayerByName(receptorName, true);
 	if (!playerReceptor) {
 		return;
 	}
@@ -10768,7 +10763,7 @@ void Game::playerCoinTransfer(uint32_t playerId, const std::string &receptorName
 }
 
 void Game::playerOpenStoreHistory(uint32_t playerId, uint32_t page) {
-	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	const auto &player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -10783,7 +10778,7 @@ void Game::playerOpenStoreHistory(uint32_t playerId, uint32_t page) {
 }
 
 void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::string newName, uint8_t sexId) {
-	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	const auto &player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -10920,6 +10915,10 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::TEMPLE: {
 			success = processTempleOffer(player);
+			if (!success) {
+				errorMessage = "You cannot make this purchase as long as your characters has a logout block.";
+			}
+
 			break;
 		}
 

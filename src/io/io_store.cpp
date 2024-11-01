@@ -54,7 +54,8 @@ const std::map<OfferTypes_t, uint16_t> IOStore::offersDisableIndex = {
 	{ OfferTypes_t::ALLBLESSINGS, 6 },
 	{ OfferTypes_t::POUCH, 7 },
 	{ OfferTypes_t::INSTANT_REWARD_ACCESS, 8 },
-	{ OfferTypes_t::CHARM_EXPANSION, 9 }
+	{ OfferTypes_t::CHARM_EXPANSION, 9 },
+	{ OfferTypes_t::TEMPLE, 10 },
 };
 
 const std::map<std::string, States_t> IOStore::stringToOfferStateMap = {

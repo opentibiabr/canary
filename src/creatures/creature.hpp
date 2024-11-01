@@ -849,7 +849,7 @@ protected:
 	virtual void onExecuteAsyncTasks() {};
 
 	// This method maintains safety in asynchronous calls, avoiding competition between threads.
-  void safeCall(std::function<void(void)> &&action);
+	void safeCall(std::function<void(void)> &&action);
 
 private:
 	bool canFollowMaster() const;

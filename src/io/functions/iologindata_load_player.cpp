@@ -92,16 +92,16 @@ bool IOLoginDataLoad::preLoadPlayer(const std::shared_ptr<Player> &player, const
 		return false;
 	}
 
-	auto [coins, error] = player->account->getCoins(enumToValue(CoinType::Normal));
-	if (error != enumToValue(AccountErrors_t::Ok)) {
+	auto [coins, error] = player->account->getCoins(CoinType::Normal);
+	if (error != AccountErrors_t::Ok) {
 		g_logger().error("Failed to get coins for player {}, error {}", player->name, static_cast<uint8_t>(error));
 		return false;
 	}
 
 	player->coinBalance = coins;
 
-	auto [transferableCoins, errorT] = player->account->getCoins(enumToValue(CoinType::Transferable));
-	if (errorT != enumToValue(AccountErrors_t::Ok)) {
+	auto [transferableCoins, errorT] = player->account->getCoins(CoinType::Transferable);
+	if (errorT != AccountErrors_t::Ok) {
 		g_logger().error("Failed to get transferable coins for player {}, error {}", player->name, static_cast<uint8_t>(errorT));
 		return false;
 	}

@@ -156,9 +156,9 @@ function Lever.checkConditions(self) -- It will check the conditions defined in 
 end
 
 function Lever.executeOnPlayers(self, func)
-    for _, player in pairs(self:getPlayers()) do
-        func(player)
-    end
+	for _, player in pairs(self:getPlayers()) do
+		func(player)
+	end
 end
 
 ---@return nil

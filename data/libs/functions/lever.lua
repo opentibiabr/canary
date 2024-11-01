@@ -157,7 +157,6 @@ end
 
 function Lever.executeOnPlayers(self, func)
     for _, player in pairs(self:getPlayers()) do
-        print(player:getName())
         func(player)
     end
 end

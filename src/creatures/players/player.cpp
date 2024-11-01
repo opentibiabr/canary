@@ -9140,7 +9140,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 
-	setForgeDusts(getForgeDusts() - g_configManager().getNumber(configKey, __FUNCTION__));
+	setForgeDusts(getForgeDusts() - g_configManager().getNumber(configKey));
 
 	if (convergence) {
 		newReceiveItem->setTier(tier);

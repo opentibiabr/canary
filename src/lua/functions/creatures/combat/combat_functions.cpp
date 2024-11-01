@@ -9,15 +9,18 @@
 
 #include "lua/functions/creatures/combat/combat_functions.hpp"
 
+#include "creatures/creature.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "game/game.hpp"
 #include "lua/global/lua_variant.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "creatures/players/player.hpp"
 
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
-	pushUserdata<Combat>(L, g_luaEnvironment().createCombatObject(getScriptEnv()->getScriptInterface()));
+	std::shared_ptr<Combat> combat = std::make_shared<Combat>();
+	pushUserdata<Combat>(L, combat);
 	setMetatable(L, -1, "Combat");
 	return 1;
 }

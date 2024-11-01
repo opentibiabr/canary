@@ -28,7 +28,6 @@ LuaScriptInterface::~LuaScriptInterface() {
 }
 
 bool LuaScriptInterface::reInitState() {
-	g_luaEnvironment().clearCombatObjects(this);
 	g_luaEnvironment().clearAreaObjects(this);
 
 	closeState();

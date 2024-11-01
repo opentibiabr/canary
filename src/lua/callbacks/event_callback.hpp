@@ -13,7 +13,6 @@
 #include "creatures/creatures_definitions.hpp"
 #include "items/items_definitions.hpp"
 #include "utils/utils_definitions.hpp"
-#include "lua/scripts/scripts.hpp"
 
 class Creature;
 class Player;
@@ -22,6 +21,25 @@ class Party;
 class ItemType;
 class Monster;
 class Zone;
+class LuaScriptInterface;
+class Thing;
+class Item;
+class Cylinder;
+class Npc;
+class Container;
+
+struct Position;
+struct CombatDamage;
+struct Outfit_t;
+
+enum Direction : uint8_t;
+enum ReturnValue : uint16_t;
+enum SpeakClasses : uint8_t;
+enum Slots_t : uint8_t;
+enum ZoneType_t : uint8_t;
+enum skills_t : int8_t;
+enum CombatType_t : uint8_t;
+enum TextColor_t : uint8_t;
 
 /**
  * @class EventCallback
@@ -31,19 +49,23 @@ class Zone;
  * registration, and execution of custom behavior tied to specific game events.
  * @note It inherits from the Script class, providing scripting capabilities.
  */
-class EventCallback final : public Script {
+class EventCallback {
 private:
 	EventCallback_t m_callbackType = EventCallback_t::none; ///< The type of the event callback.
 	std::string m_scriptTypeName; ///< The name associated with the script type.
 	std::string m_callbackName; ///< The name of the callback.
 	bool m_skipDuplicationCheck = false; ///< Whether the callback is silent error for already registered log error.
 
+	int32_t m_scriptId {};
+
 public:
-	/**
-	 * @brief Constructor that initializes the EventCallback with a given script interface.
-	 * @param scriptInterface Pointer to the LuaScriptInterface object.
-	 */
-	explicit EventCallback(LuaScriptInterface* scriptInterface, const std::string &callbackName, bool silentAlreadyRegistered);
+	explicit EventCallback(const std::string &callbackName, bool silentAlreadyRegistered);
+
+	LuaScriptInterface* getScriptInterface() const;
+	bool loadScriptId();
+	int32_t getScriptId() const;
+	void setScriptId(int32_t newScriptId);
+	bool isLoadedScriptId() const;
 
 	/**
 	 * @brief Retrieves the callback name.
@@ -61,7 +83,7 @@ public:
 	 * @brief Retrieves the script type name.
 	 * @return The script type name as a string.
 	 */
-	std::string getScriptTypeName() const override;
+	std::string getScriptTypeName() const;
 
 	/**
 	 * @brief Sets a new script type name.

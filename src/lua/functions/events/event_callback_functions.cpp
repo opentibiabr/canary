@@ -39,7 +39,7 @@ int EventCallbackFunctions::luaEventCallbackCreate(lua_State* luaState) {
 	}
 
 	bool skipDuplicationCheck = getBoolean(luaState, 3, false);
-	const auto eventCallback = std::make_shared<EventCallback>(getScriptEnv()->getScriptInterface(), callbackName, skipDuplicationCheck);
+	const auto eventCallback = std::make_shared<EventCallback>(callbackName, skipDuplicationCheck);
 	pushUserdata<EventCallback>(luaState, eventCallback);
 	setMetatable(luaState, -1, "EventCallback");
 	return 1;
@@ -82,7 +82,7 @@ int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
 		return 0;
 	}
 
-	if (!callback->isLoadedCallback()) {
+	if (!callback->isLoadedScriptId()) {
 		return 0;
 	}
 
@@ -103,12 +103,11 @@ int EventCallbackFunctions::luaEventCallbackLoad(lua_State* luaState) {
 		return 1;
 	}
 
-	if (!callback->loadCallback()) {
+	if (!callback->loadScriptId()) {
 		reportErrorFunc("Cannot load callback");
 		return 1;
 	}
 
-	callback->setLoadedCallback(true);
 	pushBoolean(luaState, true);
 	return 1;
 }

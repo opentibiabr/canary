@@ -14,7 +14,7 @@
 #include "utils/tools.hpp"
 
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
-	const auto global = std::make_shared<GlobalEvent>(getScriptEnv()->getScriptInterface());
+	const auto global = std::make_shared<GlobalEvent>();
 	global->setName(getString(L, 2));
 	global->setEventType(GLOBALEVENT_NONE);
 	pushUserdata<GlobalEvent>(L, global);
@@ -56,7 +56,7 @@ int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 	// globalevent:register()
 	const auto &globalevent = getUserdataShared<GlobalEvent>(L, 1);
 	if (globalevent) {
-		if (!globalevent->isLoadedCallback()) {
+		if (!globalevent->isLoadedScriptId()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -76,7 +76,7 @@ int GlobalEventFunctions::luaGlobalEventOnCallback(lua_State* L) {
 	// globalevent:onThink / record / etc. (callback)
 	const auto &globalevent = getUserdataShared<GlobalEvent>(L, 1);
 	if (globalevent) {
-		if (!globalevent->loadCallback()) {
+		if (!globalevent->loadScriptId()) {
 			pushBoolean(L, false);
 			return 1;
 		}

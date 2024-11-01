@@ -21,35 +21,26 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_SWORD:
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {
-			if (const auto &weaponPtr = g_luaEnvironment().createWeaponObject<WeaponMelee>(getScriptEnv()->getScriptInterface())) {
-				pushUserdata<WeaponMelee>(L, weaponPtr);
-				setMetatable(L, -1, "Weapon");
-				weaponPtr->weaponType = type;
-			} else {
-				lua_pushnil(L);
-			}
+			auto weaponPtr = std::make_shared<WeaponMelee>();
+			pushUserdata<WeaponMelee>(L, weaponPtr);
+			setMetatable(L, -1, "Weapon");
+			weaponPtr->weaponType = type;
 			break;
 		}
 		case WEAPON_MISSILE:
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
-			if (const auto &weaponPtr = g_luaEnvironment().createWeaponObject<WeaponDistance>(getScriptEnv()->getScriptInterface())) {
-				pushUserdata<WeaponDistance>(L, weaponPtr);
-				setMetatable(L, -1, "Weapon");
-				weaponPtr->weaponType = type;
-			} else {
-				lua_pushnil(L);
-			}
+			auto weaponPtr = std::make_shared<WeaponDistance>();
+			pushUserdata<WeaponDistance>(L, weaponPtr);
+			setMetatable(L, -1, "Weapon");
+			weaponPtr->weaponType = type;
 			break;
 		}
 		case WEAPON_WAND: {
-			if (const auto &weaponPtr = g_luaEnvironment().createWeaponObject<WeaponWand>(getScriptEnv()->getScriptInterface())) {
-				pushUserdata<WeaponWand>(L, weaponPtr);
-				setMetatable(L, -1, "Weapon");
-				weaponPtr->weaponType = type;
-			} else {
-				lua_pushnil(L);
-			}
+			auto weaponPtr = std::make_shared<WeaponWand>();
+			pushUserdata<WeaponWand>(L, weaponPtr);
+			setMetatable(L, -1, "Weapon");
+			weaponPtr->weaponType = type;
 			break;
 		}
 		default: {
@@ -122,7 +113,7 @@ int WeaponFunctions::luaWeaponOnUseWeapon(lua_State* L) {
 	// weapon:onUseWeapon(callback)
 	const WeaponShared_ptr &weapon = getUserdataShared<Weapon>(L, 1);
 	if (weapon) {
-		if (!weapon->loadCallback()) {
+		if (!weapon->loadScriptId()) {
 			pushBoolean(L, false);
 			return 1;
 		}

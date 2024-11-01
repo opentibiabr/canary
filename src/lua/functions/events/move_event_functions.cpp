@@ -15,7 +15,7 @@
 
 int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {
 	// MoveEvent()
-	const auto moveevent = std::make_shared<MoveEvent>(getScriptEnv()->getScriptInterface());
+	const auto moveevent = std::make_shared<MoveEvent>();
 	pushUserdata<MoveEvent>(L, moveevent);
 	setMetatable(L, -1, "MoveEvent");
 	return 1;
@@ -64,7 +64,7 @@ int MoveEventFunctions::luaMoveEventRegister(lua_State* L) {
 	if (moveevent) {
 		// If not scripted, register item event
 		// Example: unscripted_equipments.lua
-		if (!moveevent->isLoadedCallback()) {
+		if (!moveevent->isLoadedScriptId()) {
 			pushBoolean(L, g_moveEvents().registerLuaItemEvent(moveevent));
 			return 1;
 		}
@@ -80,7 +80,7 @@ int MoveEventFunctions::luaMoveEventOnCallback(lua_State* L) {
 	// moveevent:onEquip / deEquip / etc. (callback)
 	const auto &moveevent = getUserdataShared<MoveEvent>(L, 1);
 	if (moveevent) {
-		if (!moveevent->loadCallback()) {
+		if (!moveevent->loadScriptId()) {
 			pushBoolean(L, false);
 			return 1;
 		}

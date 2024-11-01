@@ -239,6 +239,14 @@ void LuaFunctionsLoader::pushString(lua_State* L, const std::string &value) {
 	lua_pushlstring(L, value.c_str(), value.length());
 }
 
+void LuaFunctionsLoader::pushNumber(lua_State* L, lua_Number value) {
+	if (validateDispatcherContext(__FUNCTION__)) {
+		return;
+	}
+
+	lua_pushnumber(L, value);
+}
+
 void LuaFunctionsLoader::pushCallback(lua_State* L, int32_t callback) {
 	if (validateDispatcherContext(__FUNCTION__)) {
 		return;

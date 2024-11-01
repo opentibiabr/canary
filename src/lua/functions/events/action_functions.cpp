@@ -15,7 +15,7 @@
 
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
-	const auto action = std::make_shared<Action>(getScriptEnv()->getScriptInterface());
+	const auto action = std::make_shared<Action>();
 	pushUserdata<Action>(L, action);
 	setMetatable(L, -1, "Action");
 	return 1;
@@ -25,11 +25,10 @@ int ActionFunctions::luaActionOnUse(lua_State* L) {
 	// action:onUse(callback)
 	const auto &action = getUserdataShared<Action>(L, 1);
 	if (action) {
-		if (!action->loadCallback()) {
+		if (!action->loadScriptId()) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		action->setLoadedCallback(true);
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
@@ -42,7 +41,7 @@ int ActionFunctions::luaActionRegister(lua_State* L) {
 	// action:register()
 	const auto &action = getUserdataShared<Action>(L, 1);
 	if (action) {
-		if (!action->isLoadedCallback()) {
+		if (!action->isLoadedScriptId()) {
 			pushBoolean(L, false);
 			return 1;
 		}

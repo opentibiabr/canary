@@ -67,13 +67,13 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 	}
 
 	if (spellType == SPELL_INSTANT) {
-		const auto &spell = std::make_shared<InstantSpell>(getScriptEnv()->getScriptInterface());
+		const auto &spell = std::make_shared<InstantSpell>();
 		pushUserdata<Spell>(L, spell);
 		setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_INSTANT;
 		return 1;
 	} else if (spellType == SPELL_RUNE) {
-		const auto &runeSpell = std::make_shared<RuneSpell>(getScriptEnv()->getScriptInterface());
+		const auto &runeSpell = std::make_shared<RuneSpell>();
 		pushUserdata<Spell>(L, runeSpell);
 		setMetatable(L, -1, "Spell");
 		runeSpell->spellType = SPELL_RUNE;
@@ -90,19 +90,17 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 	if (spell) {
 		if (spell->spellType == SPELL_INSTANT) {
 			const auto &instant = std::static_pointer_cast<InstantSpell>(spell);
-			if (!instant->loadCallback()) {
+			if (!instant->loadScriptId()) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			instant->setLoadedCallback(true);
 			pushBoolean(L, true);
 		} else if (spell->spellType == SPELL_RUNE) {
 			const auto &rune = std::static_pointer_cast<RuneSpell>(spell);
-			if (!rune->loadCallback()) {
+			if (!rune->loadScriptId()) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			rune->setLoadedCallback(true);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -123,7 +121,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 	if (spell->spellType == SPELL_INSTANT) {
 		const auto &spellBase = getUserdataShared<Spell>(L, 1);
 		const auto &instant = std::static_pointer_cast<InstantSpell>(spellBase);
-		if (!instant->isLoadedCallback()) {
+		if (!instant->isLoadedScriptId()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -142,7 +140,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			iType.runeLevel = rune->getLevel();
 			iType.charges = rune->getCharges();
 		}
-		if (!rune->isLoadedCallback()) {
+		if (!rune->isLoadedScriptId()) {
 			pushBoolean(L, false);
 			return 1;
 		}

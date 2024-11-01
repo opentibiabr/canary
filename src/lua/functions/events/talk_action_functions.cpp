@@ -22,7 +22,7 @@ int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
 		wordsVector.push_back(getString(L, i));
 	}
 
-	const auto talkactionSharedPtr = std::make_shared<TalkAction>(getScriptEnv()->getScriptInterface());
+	const auto talkactionSharedPtr = std::make_shared<TalkAction>();
 	talkactionSharedPtr->setWords(wordsVector);
 	pushUserdata<TalkAction>(L, talkactionSharedPtr);
 	setMetatable(L, -1, "TalkAction");
@@ -38,7 +38,7 @@ int TalkActionFunctions::luaTalkActionOnSay(lua_State* L) {
 		return 1;
 	}
 
-	if (!talkactionSharedPtr->loadCallback()) {
+	if (!talkactionSharedPtr->loadScriptId()) {
 		pushBoolean(L, false);
 		return 1;
 	}
@@ -100,7 +100,7 @@ int TalkActionFunctions::luaTalkActionRegister(lua_State* L) {
 		return 1;
 	}
 
-	if (!talkactionSharedPtr->isLoadedCallback()) {
+	if (!talkactionSharedPtr->isLoadedScriptId()) {
 		pushBoolean(L, false);
 		return 1;
 	}

@@ -10,7 +10,6 @@
 #pragma once
 
 #include "lua/creature/actions.hpp"
-#include "lua/scripts/scripts.hpp"
 
 enum class WheelSpellBoost_t : uint8_t;
 enum class WheelSpellGrade_t : uint8_t;
@@ -18,12 +17,17 @@ enum class WheelSpellGrade_t : uint8_t;
 class InstantSpell;
 class RuneSpell;
 class Spell;
+class Combat;
+class Player;
+class Creature;
+class LuaScriptInterface;
 
 struct LuaVariant;
+struct Position;
 
 using VocSpellMap = std::map<uint16_t, bool>;
 
-class Spells final : public Scripts {
+class Spells {
 public:
 	Spells();
 	~Spells();
@@ -79,11 +83,19 @@ public:
 	virtual bool castSpell(const std::shared_ptr<Creature> &creature) = 0;
 	virtual bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) = 0;
 
+	LuaScriptInterface* getScriptInterface() const;
+	bool loadScriptId();
+	int32_t getScriptId() const;
+	void setScriptId(int32_t newScriptId);
+	bool isLoadedScriptId() const;
+
+	int32_t m_scriptId {};
+
 	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 	SoundEffect_t soundCastEffect = SoundEffect_t::SPELL_OR_RUNE;
 };
 
-class CombatSpell final : public Script, public BaseSpell, public std::enable_shared_from_this<CombatSpell> {
+class CombatSpell final : public BaseSpell, public std::enable_shared_from_this<CombatSpell> {
 public:
 	// Constructor
 	CombatSpell(const std::shared_ptr<Combat> &newCombat, bool newNeedTarget, bool newNeedDirection);
@@ -98,12 +110,9 @@ public:
 	// Scripting spell
 	bool executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var) const;
 
-	bool loadScriptCombat();
 	std::shared_ptr<Combat> getCombat() const;
 
 private:
-	std::string getScriptTypeName() const override;
-
 	std::shared_ptr<Combat> m_combat;
 
 	bool needDirection;
@@ -112,7 +121,7 @@ private:
 
 class Spell : public BaseSpell {
 public:
-	Spell() = default;
+	Spell();
 
 	[[nodiscard]] const std::string &getName() const;
 	void setName(std::string n);
@@ -268,10 +277,9 @@ private:
 	friend class SpellFunctions;
 };
 
-class InstantSpell final : public Script, public Spell {
+class InstantSpell final : public Spell {
 public:
-	using Script::Script;
-
+	InstantSpell();
 	bool playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const;
 
 	bool castSpell(const std::shared_ptr<Creature> &creature) override;
@@ -295,8 +303,6 @@ public:
 	bool canThrowSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const;
 
 private:
-	[[nodiscard]] std::string getScriptTypeName() const override;
-
 	bool needDirection = false;
 	bool hasParam = false;
 	bool hasPlayerNameParam = false;
@@ -307,6 +313,12 @@ private:
 class RuneSpell final : public Action, public Spell {
 public:
 	using Action::Action;
+
+	LuaScriptInterface* getScriptInterface() const;
+	bool loadScriptId();
+	int32_t getScriptId() const;
+	void setScriptId(int32_t newScriptId);
+	bool isLoadedScriptId() const;
 
 	ReturnValue canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) override;
 	bool hasOwnErrorHandler() override;
@@ -327,9 +339,9 @@ public:
 	void setCharges(uint32_t c);
 
 private:
-	[[nodiscard]] std::string getScriptTypeName() const override;
-
 	bool internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const;
+
+	int32_t m_scriptId {};
 
 	uint16_t runeId = 0;
 	uint32_t charges = 0;

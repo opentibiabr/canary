@@ -32,6 +32,7 @@
 #include "items/containers/rewards/reward.hpp"
 #include "items/item.hpp"
 #include "map/spectators.hpp"
+#include "kv/kv.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"

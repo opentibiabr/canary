@@ -10070,7 +10070,7 @@ bool Player::setAccount(uint32_t accountId) {
 	}
 
 	account = std::make_shared<Account>(accountId);
-	return AccountErrors_t::Ok == enumFromValue<AccountErrors_t>(account->load());
+	return AccountErrors_t::Ok == account->load();
 }
 
 uint8_t Player::getAccountType() const {

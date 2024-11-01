@@ -14,8 +14,13 @@
 #include "utils/definitions.hpp"
 #include "utils/tools.hpp"
 
-AccountRepositoryDB::AccountRepositoryDB() :
-	coinTypeToColumn({ { enumToValue(CoinType::Normal), "coins" }, { enumToValue(CoinType::Tournament), "tournament_coins" }, { enumToValue(CoinType::Transferable), "coins_transferable" } }) { }
+AccountRepositoryDB::AccountRepositoryDB() {
+	coinTypeToColumn = {
+		{ CoinType::Normal, "coins" },
+		{ CoinType::Tournament, "coins_tournament" },
+		{ CoinType::Transferable, "coins_transferable" }
+	};
+}
 
 bool AccountRepositoryDB::loadByID(const uint32_t &id, std::unique_ptr<AccountInfo> &acc) {
 	auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);
@@ -80,15 +85,18 @@ bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password)
 	return true;
 };
 
-bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint32_t &coins) {
-	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
-		g_logger().error("Invalid coin type:[{}]", type);
+bool AccountRepositoryDB::getCoins(const uint32_t &id, CoinType coinType, uint32_t &coins) {
+	auto it = coinTypeToColumn.find(coinType);
+	if (it == coinTypeToColumn.end()) {
+		g_logger().error("[{}] invalid coin type:[{}]", __FUNCTION__, coinType);
 		return false;
 	}
 
-	auto result = g_database().storeQuery(fmt::format(
+	auto column = it->second;
+
+	const auto result = g_database().storeQuery(fmt::format(
 		"SELECT `{}` FROM `accounts` WHERE `id` = {}",
-		coinTypeToColumn.at(type),
+		column,
 		id
 	));
 
@@ -96,20 +104,23 @@ bool AccountRepositoryDB::getCoins(const uint32_t &id, const uint8_t &type, uint
 		return false;
 	}
 
-	coins = result->getNumber<uint32_t>(coinTypeToColumn.at(type));
+	coins = result->getNumber<uint32_t>(column);
 
 	return true;
 };
 
-bool AccountRepositoryDB::setCoins(const uint32_t &id, const uint8_t &type, const uint32_t &amount) {
-	if (coinTypeToColumn.find(type) == coinTypeToColumn.end()) {
-		g_logger().error("Invalid coin type:[{}]", type);
+bool AccountRepositoryDB::setCoins(const uint32_t &id, CoinType coinType, const uint32_t &amount) {
+	auto it = coinTypeToColumn.find(coinType);
+	if (it == coinTypeToColumn.end()) {
+		g_logger().error("[{}]: invalid coin type:[{}]", __FUNCTION__, coinType);
 		return false;
 	}
 
-	bool successful = g_database().executeQuery(fmt::format(
+	auto column = it->second;
+
+	const bool successful = g_database().executeQuery(fmt::format(
 		"UPDATE `accounts` SET `{}` = {} WHERE `id` = {}",
-		coinTypeToColumn.at(type),
+		column,
 		amount,
 		id
 	));
@@ -123,9 +134,9 @@ bool AccountRepositoryDB::setCoins(const uint32_t &id, const uint8_t &type, cons
 
 bool AccountRepositoryDB::registerCoinsTransaction(
 	const uint32_t &id,
-	uint8_t type,
+	CoinTransactionType type,
 	uint32_t coins,
-	const uint8_t &coinType,
+	CoinType coinType,
 	const std::string &description
 ) {
 	bool successful = g_database().executeQuery(
@@ -155,9 +166,9 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 
 bool AccountRepositoryDB::registerStoreTransaction(
 	const uint32_t &id,
-	uint8_t type,
+	CoinTransactionType type,
 	uint32_t amount,
-	const uint8_t &coinType,
+	CoinType coinType,
 	const std::string &description,
 	const time_t &time
 ) {
@@ -189,7 +200,7 @@ bool AccountRepositoryDB::registerStoreTransaction(
 	return successful;
 };
 
-bool AccountRepositoryDB::loadAccountPlayers(std::unique_ptr<AccountInfo> &acc) {
+bool AccountRepositoryDB::loadAccountPlayers(std::unique_ptr<AccountInfo> &acc) const {
 	auto result = g_database().storeQuery(
 		fmt::format("SELECT `name`, `deletion` FROM `players` WHERE `account_id` = {} ORDER BY `name` ASC", acc->id)
 	);
@@ -218,7 +229,7 @@ bool AccountRepositoryDB::load(const std::string &query, std::unique_ptr<Account
 	}
 
 	acc->id = result->getNumber<uint32_t>("id");
-	acc->accountType = result->getNumber<uint16_t>("type");
+	acc->accountType = result->getNumber<AccountType>("type");
 	acc->premiumLastDay = result->getNumber<time_t>("lastday");
 	acc->sessionExpires = result->getNumber<time_t>("expires");
 	acc->premiumDaysPurchased = result->getNumber<uint32_t>("premdays_purchased");

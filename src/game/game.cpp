@@ -1119,7 +1119,7 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<
 
 std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(const std::shared_ptr<Account> &acc, bool allowOffline /* = false */) {
 	auto [accountPlayers, error] = acc->getAccountPlayers();
-	if (error != enumToValue(AccountErrors_t::Ok)) {
+	if (error != AccountErrors_t::Ok) {
 		return {};
 	}
 	std::vector<std::shared_ptr<Player>> ret;
@@ -4125,7 +4125,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 
 		auto it = browseFields.find(tile);
 		if (it == browseFields.end() || it->second.expired()) {
-			parentContainer = Container::create(tile);
+			parentContainer = Container::createBrowseField(tile);
 			browseFields[tile] = parentContainer;
 		} else {
 			parentContainer = it->second.lock();
@@ -4690,7 +4690,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 
 	auto it = browseFields.find(tile);
 	if (it == browseFields.end() || it->second.expired()) {
-		container = Container::create(tile);
+		container = Container::createBrowseField(tile);
 		browseFields[tile] = container;
 	} else {
 		container = it->second.lock();
@@ -9017,7 +9017,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			auto [transferableCoins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+			auto [transferableCoins, result] = player->getAccount()->getCoins(CoinType::Transferable);
 
 			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins for player " << player->getName();
@@ -9025,7 +9025,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			}
 
 			// Do not register a transaction for coins creating an offer
-			player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(amount), "");
+			player->getAccount()->removeCoins(CoinType::Transferable, static_cast<uint32_t>(amount), "");
 
 			player->addStoreHistory(true, player->getName(), createdAt, amount, StoreDetailType::Created, MARKETACTION_SELL, "Sell Offer Placed in The Market", totalPrice);
 			auto description = "Sell Offer Placed in the Market";
@@ -9113,7 +9113,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			// Do not register a transaction for coins upon cancellation
-			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), offer.amount, "");
+			player->getAccount()->addCoins(CoinType::Transferable, offer.amount, "");
 
 			auto description = "Sell Offer Cancelled or Expired";
 			player->addStoreDetail(description, offer.amount, offer.timestamp);
@@ -9230,9 +9230,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			auto [transferableCoins, error] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+			auto [transferableCoins, error] = player->getAccount()->getCoins(CoinType::Transferable);
 
-			if (error != enumToValue(AccountErrors_t::Ok)) {
+			if (error != AccountErrors_t::Ok) {
 				offerStatus << "Failed to load transferable coins for player " << player->getName();
 				return;
 			}
@@ -9243,7 +9243,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			player->getAccount()->removeCoins(
-				enumToValue(CoinType::Transferable),
+				CoinType::Transferable,
 				amount,
 				"Sold on Market"
 			);
@@ -9273,7 +9273,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		g_metrics().addCounter("balance_increase", totalPrice, { { "player", player->getName() }, { "context", "market_sale" } });
 
 		if (it.id == ITEM_STORE_COIN) {
-			buyerPlayer->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
+			buyerPlayer->getAccount()->addCoins(CoinType::Transferable, amount, "Purchased on Market");
 			buyerPlayer->addStoreHistory(true, buyerPlayer->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_BUY, "Purchased via the Market", totalPrice);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
@@ -9345,7 +9345,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		g_metrics().addCounter("balance_decrease", totalPrice, { { "player", player->getName() }, { "context", "market_purchase" } });
 
 		if (it.id == ITEM_STORE_COIN) {
-			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
+			player->getAccount()->addCoins(CoinType::Transferable, amount, "Purchased on Market");
 			player->addStoreHistory(true, player->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_BUY, "Purchased via the Market", totalPrice);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
@@ -9400,9 +9400,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 		g_metrics().addCounter("balance_increase", totalPrice, { { "player", sellerPlayer->getName() }, { "context", "market_sale" } });
 		if (it.id == ITEM_STORE_COIN) {
-			const auto &tranferable = enumToValue(CoinType::Transferable);
-			const auto &removeCoin = enumToValue(CoinTransactionType::Remove);
-			sellerPlayer->getAccount()->registerCoinTransaction(removeCoin, tranferable, amount, "Sold on Market");
+			sellerPlayer->getAccount()->registerCoinTransaction(CoinTransactionType::Remove, CoinType::Transferable, amount, "Sold on Market");
 			sellerPlayer->addStoreHistory(true, sellerPlayer->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_SELL, "Transferred via the Market", totalPrice);
 			// Add store detail for seller
 			auto description = fmt::format("Sold {} Tibia Coins", amount);

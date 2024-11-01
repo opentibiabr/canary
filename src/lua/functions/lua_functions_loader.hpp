@@ -32,7 +32,7 @@ struct LuaVariant;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
-class LuaFunctionsLoader {
+class Lua {
 public:
 	static void load(lua_State* L);
 
@@ -231,7 +231,6 @@ public:
 		new (userData) std::shared_ptr<T>(value);
 	}
 
-protected:
 	static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 	static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 	static void registerMethod(lua_State* L, const std::string &globalName, const std::string &methodName, lua_CFunction func);

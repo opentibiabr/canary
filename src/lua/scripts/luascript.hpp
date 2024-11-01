@@ -12,7 +12,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
 
-class LuaScriptInterface : public LuaFunctionsLoader {
+class LuaScriptInterface : public Lua {
 public:
 	explicit LuaScriptInterface(std::string interfaceName);
 	virtual ~LuaScriptInterface();

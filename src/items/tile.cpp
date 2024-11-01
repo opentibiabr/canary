@@ -1942,3 +1942,16 @@ void Tile::clearZones() {
 		zones.erase(zone);
 	}
 }
+
+void Tile::safeCall(std::function<void(void)> &&action) {
+	if (g_dispatcher().context().isAsync()) {
+		g_dispatcher().addEvent([weak_self = std::weak_ptr<Tile>(getTile()), action = std::move(action)] {
+			if (weak_self.lock()) {
+				action();
+			}
+		},
+		                        g_dispatcher().context().getName());
+	} else {
+		action();
+	}
+}

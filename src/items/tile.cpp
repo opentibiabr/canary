@@ -1944,9 +1944,9 @@ void Tile::clearZones() {
 	}
 }
 
-void Tile::safeCall(std::function<void(void)> &&action) {
+void Tile::safeCall(std::function<void(void)> &&action) const {
 	if (g_dispatcher().context().isAsync()) {
-		g_dispatcher().addEvent([weak_self = std::weak_ptr<Tile>(getTile()), action = std::move(action)] {
+		g_dispatcher().addEvent([weak_self = std::weak_ptr<const SharedObject>(shared_from_this()), action = std::move(action)] {
 			if (weak_self.lock()) {
 				action();
 			}

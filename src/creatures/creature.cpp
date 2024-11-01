@@ -2002,9 +2002,9 @@ void Creature::sendAsyncTasks() {
 	                          TaskGroup::WalkParallel);
 }
 
-void Creature::safeCall(std::function<void(void)> &&action) {
+void Creature::safeCall(std::function<void(void)> &&action) const {
 	if (g_dispatcher().context().isAsync()) {
-		g_dispatcher().addEvent([weak_self = std::weak_ptr<Creature>(getCreature()), action = std::move(action)] {
+		g_dispatcher().addEvent([weak_self = std::weak_ptr<const SharedObject>(shared_from_this()), action = std::move(action)] {
 			if (weak_self.lock()) {
 				action();
 			}

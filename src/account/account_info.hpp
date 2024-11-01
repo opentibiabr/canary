@@ -14,11 +14,15 @@
 	#include <cstdint>
 #endif
 
+#include "enums/account_type.hpp"
+
 struct AccountInfo {
+	~AccountInfo() = default;
+
 	uint32_t id = 0;
 	uint32_t premiumRemainingDays = 0;
 	time_t premiumLastDay = 0;
-	uint8_t accountType = 0;
+	AccountType accountType = ACCOUNT_TYPE_NONE;
 	phmap::flat_hash_map<std::string, uint64_t> players;
 	bool oldProtocol = false;
 	time_t sessionExpires = 0;

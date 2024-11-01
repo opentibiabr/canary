@@ -6,7 +6,7 @@ ironServantTransformation.monsterOnSpawn = function(monster, position)
 	end
 
 	local chance = math.random(100)
-	if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismDiamond) >= 1 and Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismGolden) >= 1 then
+	if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.MechanismDiamond) >= 1 and Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.MechanismGolden) >= 1 then
 		if chance > 30 then
 			local monsterType = math.random(2) == 1 and "diamond servant replica" or "golden servant replica"
 			Game.createMonster(monsterType, monster:getPosition(), false, true)
@@ -15,13 +15,13 @@ ironServantTransformation.monsterOnSpawn = function(monster, position)
 		return
 	end
 
-	if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismDiamond) >= 1 and chance > 30 then
+	if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.MechanismDiamond) >= 1 and chance > 30 then
 		Game.createMonster("diamond servant replica", monster:getPosition(), false, true)
 		monster:remove()
 		return
 	end
 
-	if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismGolden) >= 1 and chance > 30 then
+	if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.MechanismGolden) >= 1 and chance > 30 then
 		Game.createMonster("golden servant replica", monster:getPosition(), false, true)
 		monster:remove()
 	end

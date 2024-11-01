@@ -9,10 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
+class LuaScriptInterface;
 class Event;
-using Event_ptr = std::unique_ptr<Event>;
+using Event_ptr = std::shared_ptr<Event>;
 
 /**
  * @brief Class that describes an event
@@ -84,7 +83,7 @@ public:
 	 *
 	 * @return int32_t
 	 */
-	int32_t getScriptId() {
+	int32_t getScriptId() const {
 		return scriptId;
 	}
 
@@ -147,8 +146,8 @@ private:
 	virtual LuaScriptInterface &getScriptInterface() = 0;
 	virtual std::string getScriptBaseName() const = 0;
 	virtual Event_ptr getEvent(const std::string &nodeName) = 0;
-	virtual bool registerEvent(Event_ptr event, const pugi::xml_node &node) = 0;
-	virtual void clear(bool) = 0;
+	virtual bool registerEvent(const Event_ptr &event, const pugi::xml_node &node) = 0;
+	virtual void clear() = 0;
 
 	bool loaded = false;
 

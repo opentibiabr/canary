@@ -38,7 +38,9 @@ function actions_goldenIdol.onUse(player, item, fromPosition, target, toPosition
 
 				local currentCount = player:getStorageValue(storageIdolCount)
 
-				if currentCount < 0 then currentCount = 0 end
+				if currentCount < 0 then
+					currentCount = 0
+				end
 				player:setStorageValue(storageIdolCount, currentCount + 1)
 
 				if currentCount + 1 == totalAltars then

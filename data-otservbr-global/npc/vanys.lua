@@ -64,21 +64,21 @@ local function creatureSayCallback(npc, creature, type, message)
 	local dreamTalisman = 30132
 
 	if MsgContains(message, "talk") then
-			npcHandler:say("So do you want to learn the {story} behind of this or rather talk about the {task} at hand? ", npc, creature)
-			npcHandler:setTopic(playerId, 2)
+		npcHandler:say("So do you want to learn the {story} behind of this or rather talk about the {task} at hand? ", npc, creature)
+		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "story") then
 		if npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Do you prefer the {long} version or the {short} version?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
 	elseif MsgContains(message, "short") and npcHandler:getTopic(playerId) == 3 then
-			npcHandler:say({
-				"You will have to re-empower several wardstones all over the world, to weaken the beast of nightmares. ...",
-				"The next step would be to enter a place known as dream scar and participate in battles, to gain access to the lower areas. ...",
-				"There the nightmare beast can be challenged and defeated.",
-				"So do you want to learn the story behind of this or rather talk about the {task} at hand?"
-			}, npc, creature)
-			npcHandler:setTopic(playerId, 4)
+		npcHandler:say({
+			"You will have to re-empower several wardstones all over the world, to weaken the beast of nightmares. ...",
+			"The next step would be to enter a place known as dream scar and participate in battles, to gain access to the lower areas. ...",
+			"There the nightmare beast can be challenged and defeated.",
+			"So do you want to learn the story behind of this or rather talk about the {task} at hand?",
+		}, npc, creature)
+		npcHandler:setTopic(playerId, 4)
 	elseif npcHandler:getTopic(playerId) == 4 or npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, "task") then
 			if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.WardStones.Questline) >= 3 and not (player:hasOutfit(1146) or player:hasOutfit(1147)) then
@@ -90,7 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.WardStones.Count) >= 8 and player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.WardStones.Questline) == 1 then
 				npcHandler:say({
 					"You empowered all eight ward stones. Well done! You may now enter the Dream Labyrinth via the portal here in the Court. Beneath it you will find the Nightmare Beast's lair. But the labyrinth is protected by seven so called Dream Doors. ...",
-					"You have to find the Seven {Keys} to unlock the Seven Dream Doors down there. Only then you will be able to enter the Nightmare Beast's lair."
+					"You have to find the Seven {Keys} to unlock the Seven Dream Doors down there. Only then you will be able to enter the Nightmare Beast's lair.",
 				}, npc, creature)
 				player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.WardStones.Questline, 2)
 				player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Questline, 1)
@@ -98,10 +98,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.WardStones.Questline) < 1 then
 				npcHandler:say({
 					"You have to empower eight ward stones. Once charged with arcane energy, they will strengthen the Nightmare Beast's prison and at the same time weaken this terrible creature. We know about the specific location of six of those stones. ...",
-					"You can find them in the mountains of the island Okolnir, in a water elemental cave beneath Folda, in the depths of Calassa, in the forests of Feyrist and on the islands Meriana and Cormaya. ..." ,
-					"The location of the other two ward stones is a bit more obscure, however. We are not completely sure where they are. You should make inquiries at an abandoned house in the Plains of Havoc. You may find it east of an outlaw camp. ..." ,
-					"The other stone seems to be somewhere in Tiquanda. Search for a small stone building south-west of Banuta. Take this talisman to empower the ward stones. It will work with the six stones at the known locations. ..." ,
-					"However, the empowering of the two hidden stones could be a bit more complicated. But you have to find out on yourself what to do with those stones."
+					"You can find them in the mountains of the island Okolnir, in a water elemental cave beneath Folda, in the depths of Calassa, in the forests of Feyrist and on the islands Meriana and Cormaya. ...",
+					"The location of the other two ward stones is a bit more obscure, however. We are not completely sure where they are. You should make inquiries at an abandoned house in the Plains of Havoc. You may find it east of an outlaw camp. ...",
+					"The other stone seems to be somewhere in Tiquanda. Search for a small stone building south-west of Banuta. Take this talisman to empower the ward stones. It will work with the six stones at the known locations. ...",
+					"However, the empowering of the two hidden stones could be a bit more complicated. But you have to find out on yourself what to do with those stones.",
 				}, npc, creature)
 				if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.Main.Questline) < 1 then
 					player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.Main.Questline, 1)

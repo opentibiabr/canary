@@ -73,20 +73,20 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Excellent... I hope they will haaaaaaunt my house no longer. What was your... naaaaaame again, tell me?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline) < 1 then
-				npcHandler:say("Yeeeees... you need to help meeeeeee. I want those ghosts gone... this is my home and I need it to teach my students. Will you take care of the... ghosts?", npc, creature)
-				npcHandler:setTopic(playerId, 2)
+			npcHandler:say("Yeeeees... you need to help meeeeeee. I want those ghosts gone... this is my home and I need it to teach my students. Will you take care of the... ghosts?", npc, creature)
+			npcHandler:setTopic(playerId, 2)
 		end
 	elseif MsgContains(message, playerName) then
 		if npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say({
-				" Ah yeeeeees, ".. playerName .. ". I will remember you. Now, lessons are every day in the morning and once a week in the evening... ...",
+				" Ah yeeeeees, " .. playerName .. ". I will remember you. Now, lessons are every day in the morning and once a week in the evening... ...",
 				"Oh, you're not here for this, are you? So about the ghoooosts, yes. You seeeee, there are 3 secret passages here. ...",
 				"Thiiiiis is no ordinary house... it is a nexus, a gateway to a once hidden cathedral. Sheltering a small and peaceful society of scholars and monks. Secluded from every distraction. ...",
 				"I was one of them and ordered to hold contact to the outside woooorld. But then, something... happened. ...",
 				"Outsiders managed to sneak in, infiltrate and influence the society... for the worse. Who knows for what ends. They chaaaaanged... ...",
 				"Shortly after, contact was lost... the nexus broken and sealed, ghosts appeared... eeeeeeeverywhere. ...",
 				"Find the three passages... one is right here in the cellars, one in the jungles of Tiquanda and one in the deserts of Darama. ...",
-				"Restore their connection and open this nexus to access the buried cathedral and find the cause to this... eliminate all remainders there if you must, "..playerName.."."
+				"Restore their connection and open this nexus to access the buried cathedral and find the cause to this... eliminate all remainders there if you must, " .. playerName .. ".",
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline, 1)
 			npcHandler:setTopic(playerId, 0)

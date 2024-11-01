@@ -71,25 +71,25 @@ local goldenAxe = 29286
 local CompassValue = 10000
 
 local buildCompass = {
-	[1] = {id = 29346, qnt = 15},
-	[2] = {id = 29345, qnt = 50},
-	[3] = {id = 29347, qnt = 5},
-	[4] = {id = 25746, qnt = 1},
+	[1] = { id = 29346, qnt = 15 },
+	[2] = { id = 29345, qnt = 50 },
+	[3] = { id = 29347, qnt = 5 },
+	[4] = { id = 25746, qnt = 1 },
 }
 
 local chargeCompass = {
-	[1] = {id = 29287, qnt = 5},
-	[2] = {id = 29288, qnt = 3},
-	[3] = {id = 29289, qnt = 1},
-	[4] = {id = 29348, qnt = 1},
-	[5] = {id = 29291, qnt = 1},
+	[1] = { id = 29287, qnt = 5 },
+	[2] = { id = 29288, qnt = 3 },
+	[3] = { id = 29289, qnt = 1 },
+	[4] = { id = 29348, qnt = 1 },
+	[5] = { id = 29291, qnt = 1 },
 }
 
 local function removeBait(player)
 	local player = Player(player)
 
 	if player and player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.HasBait) == 1 then
-		player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.HasBait, - 1)
+		player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.HasBait, -1)
 	end
 end
 
@@ -122,7 +122,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({
 			"Well, a while ago powerful magic devices were used all around Tibia. These are chargeable compasses. There was but one problem: they offered the possibility to make people rich in a quite easy way. ...",
 			"Therefore, these instruments were very coveted. People tried to get their hands on them at all costs. And so it happened what everybody feared - bloody battles forged ahead. ...",
-			"To put an end to these cruel escalations, eventually all of the devices were collected and destroyed. The remains were buried {deep} in the earth."
+			"To put an end to these cruel escalations, eventually all of the devices were collected and destroyed. The remains were buried {deep} in the earth.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "deep") and npcHandler:getTopic(playerId) == 2 then
@@ -139,7 +139,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Only in the cave down there you will find the materials you need to repair the {compass}. Now you know why the entrance is sealed. There's the seal, but I have a deal for you: ...",
 				"I can repair the compass for you if you deliver what I need. Besides the broken compass you have to bring me the following materials: 50 blue glas plates, 15 green glas plates and 5 violet glas plates. ...",
-				"They all can be found in this closed cave in front of you. I should have destroyed this seal key but things have changed. The entrance is opened now, go down and do what has to be done."
+				"They all can be found in this closed cave in front of you. I should have destroyed this seal key but things have changed. The entrance is opened now, go down and do what has to be done.",
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.Questline, 1)
 			npcHandler:setTopic(playerId, 0)
@@ -168,7 +168,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 				npcHandler:say({
 					"Alright, I put the glasses into the right pattern and can repair the compass. ...",
-					"There we are! The next step is the charging of the compass. For this you have to dig three different crystals down there: 5 blue, 3 green and one violet crystal. Are you ready to do that?"
+					"There we are! The next step is the charging of the compass. For this you have to dig three different crystals down there: 5 blue, 3 green and one violet crystal. Are you ready to do that?",
 				}, npc, creature)
 				player:addItem(chargeableCompass, 1)
 				player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.Questline, 2)
@@ -180,7 +180,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 12 and player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.GotAxe) < 1 then
 			npcHandler:say({
 				"Nice! To do so, take this golden axe and mine the prominent crystals in the cave. Besides, I need a poison gland of quite rare spiders, they are called lucifuga araneae. ...",
-				"These are quite shy, but I have a {bait} for you to lure them. But take care not to face too many of them at once. And hurry, the effect won't last forever!"
+				"These are quite shy, but I have a {bait} for you to lure them. But take care not to face too many of them at once. And hurry, the effect won't last forever!",
 			}, npc, creature)
 			player:addItem(goldenAxe, 1)
 			player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.GotAxe, 1)
@@ -217,7 +217,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 				npcHandler:say({
 					"I put these crystals onto the top of compass. As you can see, the compass is now pulsating in a warm, violet colour. ...",
-					"Now this compass is ready for usage. It can transfer the bound energy to other inanimate objects to open certain gates or chests."
+					"Now this compass is ready for usage. It can transfer the bound energy to other inanimate objects to open certain gates or chests.",
 				}, npc, creature)
 				player:addItem(chargedCompass, 1)
 				player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.Questline, 3)
@@ -232,7 +232,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.HasBait) < 1 then
 				npcHandler:say("Done. Worry, the effect won't last forever!", npc, creature)
 				player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.HasBait, 1)
-				addEvent(removeBait, 3*60*1000, player:getId())
+				addEvent(removeBait, 3 * 60 * 1000, player:getId())
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("You're already with my bait!", npc, creature)
@@ -251,7 +251,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 51)
 		end
 	elseif MsgContains(message, "no") then
-		npcHandler:say({"Don't waste my time."}, npc, creature)
+		npcHandler:say({ "Don't waste my time." }, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	else
 		npcHandler:say("Sorry, I didn't understand.", npc, creature)
@@ -260,7 +260,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)

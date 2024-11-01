@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS `daily_reward_history` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Tabble Structure `forge_history`
+-- Table Structure `forge_history`
 CREATE TABLE IF NOT EXISTS `forge_history` (
     `id` int NOT NULL AUTO_INCREMENT,
     `player_id` int NOT NULL,
@@ -314,7 +314,8 @@ CREATE TABLE IF NOT EXISTS `forge_history` (
     `done_at_date` datetime DEFAULT NOW(),
     `cost` bigint UNSIGNED NOT NULL DEFAULT '0',
     `gained` bigint UNSIGNED NOT NULL DEFAULT '0',
-    CONSTRAINT `forge_history_pk` PRIMARY KEY (`id`),
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `unique_done_at` (`done_at`),
     FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

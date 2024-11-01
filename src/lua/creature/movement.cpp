@@ -869,7 +869,5 @@ bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const Posit
 
 void MoveEvent::addVocEquipMap(const std::string &vocName) {
 	const uint16_t vocationId = g_vocations().getVocationId(vocName);
-	if (vocationId != 65535) {
-		vocEquipMap[vocationId] = true;
-	}
+	vocEquipMap[vocationId] = true;
 }

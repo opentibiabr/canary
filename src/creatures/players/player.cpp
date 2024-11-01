@@ -9141,8 +9141,6 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		g_logger().error("[Log 8] Failed to remove transfer dusts from player with name {}", getName());
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
-	} else {
-		setForgeDusts(getForgeDusts() - g_configManager().getNumber(configKey));
 	}
 
 	setForgeDusts(getForgeDusts() - g_configManager().getNumber(configKey));
@@ -10311,7 +10309,7 @@ bool Player::setAccount(uint32_t accountId) {
 }
 
 uint8_t Player::getAccountType() const {
-	return account ? account->getAccountType() : static_cast<uint8_t>(AccountType::ACCOUNT_TYPE_NORMAL);
+	return account ? account->getAccountType() : AccountType::ACCOUNT_TYPE_NORMAL;
 }
 
 uint32_t Player::getAccountId() const {

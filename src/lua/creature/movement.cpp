@@ -9,6 +9,7 @@
 
 #include "lua/creature/movement.hpp"
 
+#include "lib/di/container.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
@@ -17,7 +18,9 @@
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/scripts/scripts.hpp"
-#include "lib/di/container.hpp"
+#include "creatures/players/vocations/vocation.hpp"
+#include "items/item.hpp"
+#include "lua/functions/events/move_event_functions.hpp"
 
 MoveEvents &MoveEvents::getInstance() {
 	return inject<MoveEvents>();
@@ -862,4 +865,11 @@ bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const Posit
 	LuaScriptInterface::pushPosition(L, pos);
 
 	return getScriptInterface()->callFunction(2);
+}
+
+void MoveEvent::addVocEquipMap(const std::string &vocName) {
+	const uint16_t vocationId = g_vocations().getVocationId(vocName);
+	if (vocationId != 65535) {
+		vocEquipMap[vocationId] = true;
+	}
 }

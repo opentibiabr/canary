@@ -61,6 +61,7 @@
 #include "lua/creature/events.hpp"
 #include "lua/creature/movement.hpp"
 #include "map/spectators.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 
 MuteCountMap Player::muteCountMap;
 

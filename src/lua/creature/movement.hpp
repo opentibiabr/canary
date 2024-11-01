@@ -10,11 +10,13 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "items/item.hpp"
-#include "lua/functions/events/move_event_functions.hpp"
-#include "creatures/players/vocations/vocation.hpp"
 
 class MoveEvent;
+class LuaScriptInterface;
+class Item;
+class Tile;
+class Creature;
+class Player;
 
 struct MoveEventList {
 	std::list<std::shared_ptr<MoveEvent>> moveEvent[MOVE_EVENT_LAST];
@@ -172,12 +174,7 @@ public:
 	const std::map<uint16_t, bool> &getVocEquipMap() const {
 		return vocEquipMap;
 	}
-	void addVocEquipMap(const std::string &vocName) {
-		const uint16_t vocationId = g_vocations().getVocationId(vocName);
-		if (vocationId != 65535) {
-			vocEquipMap[vocationId] = true;
-		}
-	}
+	void addVocEquipMap(const std::string &vocName);
 	bool getTileItem() const {
 		return tileItem;
 	}

@@ -8,6 +8,8 @@
  */
 
 #include "server/network/protocol/protocollogin.hpp"
+
+#include "config/configmanager.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "account/account.hpp"
@@ -17,8 +19,8 @@
 #include "core.hpp"
 #include "enums/account_errors.hpp"
 
-void ProtocolLogin::disconnectClient(const std::string &message) {
-	auto output = OutputMessagePool::getOutputMessage();
+void ProtocolLogin::disconnectClient(const std::string &message) const {
+	const auto output = OutputMessagePool::getOutputMessage();
 
 	output->addByte(0x0B);
 	output->addString(message);
@@ -27,7 +29,7 @@ void ProtocolLogin::disconnectClient(const std::string &message) {
 	disconnect();
 }
 
-void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const std::string &password) {
+void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const std::string &password) const {
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
@@ -39,7 +41,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		return;
 	}
 
-	if (account.load() != enumToValue(AccountErrors_t::Ok) || !account.authenticate(password)) {
+	if (account.load() != AccountErrors_t::Ok || !account.authenticate(password)) {
 		std::ostringstream ss;
 		ss << (oldProtocol ? "Username" : "Email") << " or password is not correct.";
 		disconnectClient(ss.str());
@@ -64,7 +66,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	// Add char list
 	auto [players, result] = account.getAccountPlayers();
-	if (enumToValue(AccountErrors_t::Ok) != result) {
+	if (AccountErrors_t::Ok != result) {
 		g_logger().warn("Account[{}] failed to load players!", account.getID());
 	}
 
@@ -105,7 +107,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 
 	msg.skipBytes(2); // client OS
 
-	uint16_t version = msg.get<uint16_t>();
+	auto version = msg.get<uint16_t>();
 
 	// Old protocol support
 	oldProtocol = version == 1100;

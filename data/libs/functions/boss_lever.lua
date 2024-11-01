@@ -214,13 +214,13 @@ function BossLever:onUse(player)
 
 	lever:checkPositions()
 	if #lever:getPlayers() < self.minPlayers then
-        lever:executeOnPlayers(function(creature)
-            local message = string.format("You need %d qualified players for this challenge.", self.minPlayers)
-            creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
-            creature:getPosition():sendMagicEffect(CONST_ME_POFF)
-        end)
-        return false
-    end
+		lever:executeOnPlayers(function(creature)
+			local message = string.format("You need %d qualified players for this challenge.", self.minPlayers)
+			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+			creature:getPosition():sendMagicEffect(CONST_ME_POFF)
+		end)
+		return false
+	end
 	if lever:checkConditions() then
 		zone:removeMonsters()
 		for _, monster in pairs(self.monsters) do

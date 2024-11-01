@@ -13,6 +13,12 @@
 
 class GroupFunctions final : LuaScriptInterface {
 public:
+	explicit GroupFunctions(lua_State* L) :
+		LuaScriptInterface("GroupFunctions") {
+		init(L);
+	}
+	~GroupFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Group", "", GroupFunctions::luaGroupCreate);
 		registerMetaMethod(L, "Group", "__eq", GroupFunctions::luaUserdataCompare);

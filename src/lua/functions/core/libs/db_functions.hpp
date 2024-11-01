@@ -13,6 +13,12 @@
 
 class DBFunctions final : LuaScriptInterface {
 public:
+	explicit DBFunctions(lua_State* L) :
+		LuaScriptInterface("DBFunctions") {
+		init(L);
+	}
+	~DBFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerTable(L, "db");
 		registerMethod(L, "db", "query", DBFunctions::luaDatabaseExecute);

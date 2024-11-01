@@ -4,7 +4,7 @@ local config = {
 		position = Position(33483, 31437, 15),
 	},
 	timeToFightAgain = 20 * 60 * 60,
-	--minPlayers = 5,
+	minPlayers = 5,
 	playerPositions = {
 	    { pos = Position(33522, 31465, 15), teleport = Position(33484, 31446, 15) },
 		{ pos = Position(33520, 31465, 15), teleport = Position(33484, 31446, 15) },

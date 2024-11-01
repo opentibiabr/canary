@@ -134,27 +134,41 @@ class Container : public Item, public Cylinder {
 public:
 	explicit Container(uint16_t type);
 	Container(uint16_t type, uint16_t size, bool unlocked = true, bool pagination = false);
-	~Container();
+	~Container() override;
 
 	static std::shared_ptr<Container> create(uint16_t type);
 	static std::shared_ptr<Container> create(uint16_t type, uint16_t size, bool unlocked = true, bool pagination = false);
-	static std::shared_ptr<Container> create(std::shared_ptr<Tile> type);
+
+	/**
+	 * @brief Creates a container for browse field functionality with items from a specified tile.
+	 *
+	 * This function generates a new container specifically for browse field use,
+	 * populating it with items that meet certain criteria from the provided tile. Items
+	 * that can be included must either have an internal container, be movable, or be
+	 * wrapable without blocking path and without a unique ID.
+	 *
+	 * @param tile A shared pointer to the Tile from which items will be sourced.
+	 * @return std::shared_ptr<Container> Returns a shared pointer to the newly created Container if successful; otherwise, returns nullptr.
+	 *
+	 * @note This function will return nullptr if the newContainer could not be created or if the tile pointer is null.
+	 */
+	static std::shared_ptr<Container> createBrowseField(const std::shared_ptr<Tile> &type);
 
 	// non-copyable
 	Container(const Container &) = delete;
 	Container &operator=(const Container &) = delete;
 
-	std::shared_ptr<Item> clone() const override final;
+	std::shared_ptr<Item> clone() const final;
 
-	std::shared_ptr<Container> getContainer() override final {
+	std::shared_ptr<Container> getContainer() final {
 		return static_self_cast<Container>();
 	}
 
-	std::shared_ptr<const Container> getContainer() const override final {
+	std::shared_ptr<const Container> getContainer() const final {
 		return static_self_cast<Container>();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() override final {
+	std::shared_ptr<Cylinder> getCylinder() final {
 		return getContainer();
 	}
 
@@ -207,9 +221,9 @@ public:
 		return itemlist.rend();
 	}
 
-	bool countsToLootAnalyzerBalance();
+	bool countsToLootAnalyzerBalance() const;
 	bool hasParent();
-	void addItem(std::shared_ptr<Item> item);
+	void addItem(const std::shared_ptr<Item> &item);
 	StashContainerList getStowableItems() const;
 	bool isStoreInbox() const;
 	bool isStoreInboxFiltered() const;
@@ -217,13 +231,13 @@ public:
 	std::vector<ContainerCategory_t> getStoreInboxValidCategories() const;
 	std::shared_ptr<Item> getFilteredItemByIndex(size_t index) const;
 	std::shared_ptr<Item> getItemByIndex(size_t index) const;
-	bool isHoldingItem(std::shared_ptr<Item> item);
-	bool isHoldingItemWithId(const uint16_t id);
+	bool isHoldingItem(const std::shared_ptr<Item> &item);
+	bool isHoldingItemWithId(uint16_t id);
 
 	uint32_t getItemHoldingCount();
 	uint32_t getContainerHoldingCount();
-	uint16_t getFreeSlots();
-	uint32_t getWeight() const override final;
+	uint16_t getFreeSlots() const;
+	uint32_t getWeight() const final;
 
 	bool isUnlocked() const {
 		return !this->isCorpse() && unlocked;
@@ -233,62 +247,62 @@ public:
 	}
 
 	// cylinder implementations
-	virtual ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override;
-	ReturnValue queryMaxCount(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) override final;
-	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) override final;
-	std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item>* destItem, uint32_t &flags) override final;
+	virtual ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
+	ReturnValue queryMaxCount(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) final;
+	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
+	std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item> &destItem, uint32_t &flags) final;
 
-	void addThing(std::shared_ptr<Thing> thing) override final;
-	void addThing(int32_t index, std::shared_ptr<Thing> thing) override final;
-	void addItemBack(std::shared_ptr<Item> item);
+	void addThing(const std::shared_ptr<Thing> &thing) final;
+	void addThing(int32_t index, const std::shared_ptr<Thing> &thing) final;
+	void addItemBack(const std::shared_ptr<Item> &item);
 
-	void updateThing(std::shared_ptr<Thing> thing, uint16_t itemId, uint32_t count) override final;
-	void replaceThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
+	void updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId, uint32_t count) final;
+	void replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) final;
 
-	void removeThing(std::shared_ptr<Thing> thing, uint32_t count) override final;
+	void removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) final;
 
-	int32_t getThingIndex(std::shared_ptr<Thing> thing) const override final;
-	size_t getFirstIndex() const override final;
-	size_t getLastIndex() const override final;
-	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;
-	std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override final;
-	std::shared_ptr<Thing> getThing(size_t index) const override final;
+	int32_t getThingIndex(const std::shared_ptr<Thing> &thing) const final;
+	size_t getFirstIndex() const final;
+	size_t getLastIndex() const final;
+	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const final;
+	std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const final;
+	std::shared_ptr<Thing> getThing(size_t index) const final;
 
 	ItemVector getItems(bool recursive = false);
 
-	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
-	void internalAddThing(std::shared_ptr<Thing> thing) override final;
-	void internalAddThing(uint32_t index, std::shared_ptr<Thing> thing) override final;
+	void internalAddThing(const std::shared_ptr<Thing> &thing) final;
+	void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing) final;
 
-	virtual void removeItem(std::shared_ptr<Thing> thing, bool sendUpdateToClient = false);
+	virtual void removeItem(const std::shared_ptr<Thing> &thing, bool sendUpdateToClient = false);
 
-	uint32_t getOwnerId() const override final;
+	uint32_t getOwnerId() const final;
 
 	bool isAnyKindOfRewardChest();
 	bool isAnyKindOfRewardContainer();
 	bool isBrowseFieldAndHoldsRewardChest();
-	bool isInsideContainerWithId(const uint16_t id);
+	bool isInsideContainerWithId(uint16_t id);
 
 protected:
 	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol);
 
-	uint32_t m_maxItems;
-	uint32_t maxSize;
-	uint32_t totalWeight = 0;
+	uint32_t m_maxItems {};
+	uint32_t maxSize {};
+	uint32_t totalWeight {};
 	ItemDeque itemlist;
-	uint32_t serializationCount = 0;
+	uint32_t serializationCount = {};
 
-	bool unlocked;
-	bool pagination;
+	bool unlocked {};
+	bool pagination {};
 
 	friend class MapCache;
 
 private:
-	void onAddContainerItem(std::shared_ptr<Item> item);
-	void onUpdateContainerItem(uint32_t index, std::shared_ptr<Item> oldItem, std::shared_ptr<Item> newItem);
-	void onRemoveContainerItem(uint32_t index, std::shared_ptr<Item> item);
+	void onAddContainerItem(const std::shared_ptr<Item> &item);
+	void onUpdateContainerItem(uint32_t index, const std::shared_ptr<Item> &oldItem, const std::shared_ptr<Item> &newItem);
+	void onRemoveContainerItem(uint32_t index, const std::shared_ptr<Item> &item);
 
 	std::shared_ptr<Container> getParentContainer();
 	std::shared_ptr<Container> getTopParentContainer();

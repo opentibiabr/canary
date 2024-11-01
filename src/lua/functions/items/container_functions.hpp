@@ -12,8 +12,13 @@
 #include "lua/scripts/luascript.hpp"
 
 class ContainerFunctions final : LuaScriptInterface {
-public:
 private:
+	explicit ContainerFunctions(lua_State* L) :
+		LuaScriptInterface("ContainerFunctions") {
+		init(L);
+	}
+	~ContainerFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Container", "Item", ContainerFunctions::luaContainerCreate);
 		registerMetaMethod(L, "Container", "__eq", ContainerFunctions::luaUserdataCompare);

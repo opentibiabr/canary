@@ -16,8 +16,16 @@
 #include "lua/functions/creatures/player/party_functions.hpp"
 #include "lua/functions/creatures/player/vocation_functions.hpp"
 
+enum class PlayerIcon : uint8_t;
+enum class IconBakragore : uint8_t;
+
 class PlayerFunctions final : LuaScriptInterface {
-private:
+	explicit PlayerFunctions(lua_State* L) :
+		LuaScriptInterface("PlayerFunctions") {
+		init(L);
+	}
+	~PlayerFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Player", "Creature", PlayerFunctions::luaPlayerCreate);
 		registerMetaMethod(L, "Player", "__eq", PlayerFunctions::luaUserdataCompare);

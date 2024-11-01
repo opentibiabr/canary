@@ -46,9 +46,9 @@ public:
 
 	virtual bool registerStoreTransaction(
 		const uint32_t &id,
-		uint8_t type,
+		CoinTransactionType type,
 		uint32_t amount,
-		const uint8_t &coinType,
+		CoinType coinType,
 		const std::string &description,
 		const time_t &time
 	) = 0;

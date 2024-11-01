@@ -162,7 +162,7 @@ void Account::registerCoinTransaction(CoinTransactionType transactionType, CoinT
 	}
 }
 
-void Account::registerStoreTransaction(const uint8_t &type, const uint32_t &amount, const uint8_t &coinType, const std::string &description, const time_t &time) {
+void Account::registerStoreTransaction(CoinTransactionType type, const uint32_t &amount, CoinType coinType, const std::string &description, const time_t &time) {
 	if (!m_accLoaded) {
 		return;
 	}

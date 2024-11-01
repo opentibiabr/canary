@@ -10749,7 +10749,7 @@ void Game::playerCoinTransfer(uint32_t playerId, const std::string &receptorName
 		return;
 	}
 
-	auto [transferableCoins, result] = playerDonator->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+	auto [transferableCoins, result] = playerDonator->getAccount()->getCoins(CoinType::Transferable);
 	if (coinAmount > transferableCoins) {
 		playerDonator->sendStoreError(StoreErrors_t::TRANSFER, "You don't have enough coins.");
 		return;
@@ -10757,8 +10757,8 @@ void Game::playerCoinTransfer(uint32_t playerId, const std::string &receptorName
 
 	auto createdAt = getTimeNow();
 	std::string historyDesc = fmt::format("{} gifted to {}", playerDonator->getName(), playerReceptor->getName());
-	playerDonator->getAccount()->removeCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
-	playerReceptor->getAccount()->addCoins(enumToValue(CoinType::Transferable), coinAmount, historyDesc);
+	playerDonator->getAccount()->removeCoins(CoinType::Transferable, coinAmount, historyDesc);
+	playerReceptor->getAccount()->addCoins(CoinType::Transferable, coinAmount, historyDesc);
 
 	playerDonator->addStoreHistory(false, playerDonator->getName(), createdAt, coinAmount, StoreDetailType::Finished, MARKETACTION_SELL, historyDesc);
 	playerReceptor->addStoreHistory(false, playerReceptor->getName(), createdAt, coinAmount, StoreDetailType::Finished, MARKETACTION_BUY, historyDesc);
@@ -10956,7 +10956,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 			int32_t premiumDays = static_cast<int32_t>(offer->getOfferId()) - 3000;
 			player->getAccount()->addPremiumDays(premiumDays);
-			if (player->getAccount()->save() != enumToValue(AccountErrors_t::Ok)) {
+			if (player->getAccount()->save() != AccountErrors_t::Ok) {
 				break;
 			}
 
@@ -11068,8 +11068,8 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		} else {
 			returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getOfferName(), offerPrice);
 		}
-		uint8_t result = player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), offerPrice, returnmessage);
-		if (result == enumToValue(AccountErrors_t::RemoveCoins)) {
+		auto result = player->getAccount()->removeCoins(CoinType::Transferable, offerPrice, returnmessage);
+		if (result == AccountErrors_t::RemoveCoins) {
 			player->sendStoreError(StoreErrors_t::PURCHASE, "You don't have enough coins.");
 			return;
 		}

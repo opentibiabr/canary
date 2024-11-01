@@ -1,4 +1,4 @@
-local storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.facelessTiles
+local storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedralGlobal.FacelessTiles
 
 local function setActionId(itemid, position, aid)
 	local item = Tile(position):getItemById(itemid)

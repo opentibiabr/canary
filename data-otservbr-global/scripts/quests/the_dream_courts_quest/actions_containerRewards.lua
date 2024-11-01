@@ -2,7 +2,7 @@ local containers = {
 	[1] = {
 		uniqueid = 23102,
 		cPosition = Position(32736, 32282, 8),
-		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.skeletonContainer,
+		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.SkeletonContainer,
 		value = 1,
 		reward = 29310,
 		defaultItem = true,
@@ -10,7 +10,7 @@ local containers = {
 	[2] = {
 		uniqueid = 23103,
 		cPosition = Position(33693, 32185, 8),
-		storage = Storage.Quest.U12_00.TheDreamCourts.Main.courtChest,
+		storage = Storage.Quest.U12_00.TheDreamCourts.Main.CourtChest,
 		value = 1,
 		reward = 30146,
 		defaultItem = true,
@@ -18,7 +18,7 @@ local containers = {
 	[3] = {
 		uniqueid = 23104,
 		cPosition = Position(33711, 32108, 4),
-		storage = Storage.Quest.U12_00.TheDreamCourts.Main.courtChest,
+		storage = Storage.Quest.U12_00.TheDreamCourts.Main.CourtChest,
 		value = 1,
 		reward = 30146,
 		defaultItem = true,
@@ -26,7 +26,7 @@ local containers = {
 	[4] = {
 		uniqueid = 23105,
 		cPosition = Position(33578, 32527, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.fishingRod,
+		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.FishingRod,
 		value = 1,
 		reward = 29950,
 		defaultItem = true,
@@ -34,7 +34,7 @@ local containers = {
 	[5] = {
 		uniqueid = 23106,
 		cPosition = Position(33599, 32533, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.barrelWord,
+		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.BarrelWord,
 		value = 1,
 		defaultItem = false,
 		text = "The inside of this barrel's lid has a word written onto it: 'O'kteth'.",
@@ -42,7 +42,7 @@ local containers = {
 	[6] = {
 		uniqueid = 23107,
 		cPosition = Position(33618, 32518, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.estatueWord,
+		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.EstatueWord,
 		value = 1,
 		defaultItem = false,
 		text = "This statue has a word written on her hand: 'N'ogalu'.",
@@ -50,7 +50,7 @@ local containers = {
 	[7] = {
 		uniqueid = 23108,
 		cPosition = Position(33638, 32507, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.bedWord,
+		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.BedWord,
 		value = 1,
 		defaultItem = false,
 		text = "This end of the bed has a stack of notes hidden under it. There is only one word on all of them: 'T'sough'.",
@@ -58,7 +58,7 @@ local containers = {
 	[8] = {
 		uniqueid = 23109,
 		cPosition = Position(33703, 32185, 5),
-		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Rosebush,
+		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.RoseBush,
 		value = 1,
 		reward = 29993,
 		defaultItem = true,
@@ -66,7 +66,7 @@ local containers = {
 	[9] = {
 		uniqueid = 23110,
 		cPosition = Position(33663, 32192, 7),
-		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Mushroom,
+		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.MushRoom,
 		value = 1,
 		reward = 30009,
 		defaultItem = true,
@@ -106,7 +106,7 @@ local containers = {
 	[14] = {
 		uniqueid = 23115,
 		cPosition = Position(32054, 31936, 13),
-		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.trollSkull,
+		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.TrollSkull,
 		value = 1,
 		reward = 29990,
 		defaultItem = true,
@@ -126,11 +126,11 @@ function actions_containerRewards.onUse(player, item, fromPosition, target, toPo
 					player:addItem(k.reward, 1)
 				else
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, k.text)
-					if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount) < 0 then
-						player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount, 0)
+					if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount) < 0 then
+						player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount, 0)
 					end
-					player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount, player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount) + 1)
-					if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount) == 4 then
+					player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount, player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount) + 1)
+					if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount) == 4 then
 						player:addAchievement("Tied the Knot")
 					end
 				end

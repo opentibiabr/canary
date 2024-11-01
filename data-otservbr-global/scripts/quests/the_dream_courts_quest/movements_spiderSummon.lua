@@ -1,4 +1,3 @@
-local storage = Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.Questline
 local spiderName = "Lucifuga Aranea"
 
 local function setActionId(itemid, position, aid)
@@ -18,7 +17,7 @@ function movements_spiderSummon.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.hasBait) == 1 then
+	if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.HasBait) == 1 then
 		local r = math.random(1, 10)
 		Game.createMonster(spiderName, position)
 		item:setActionId(0)

@@ -1,6 +1,6 @@
 local questline = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline
-local wordsCount = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount
-local facelessTime = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.facelessTime
+local wordsCount = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount
+local facelessTime = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.FacelessTime
 
 local actions_bookOnTable = Action()
 
@@ -27,5 +27,5 @@ function actions_bookOnTable.onUse(player, item, fromPosition, target, toPositio
 	return true
 end
 
-actions_bookOnTable:id(29991)
+actions_bookOnTable:id(29954)
 actions_bookOnTable:register()

@@ -26,37 +26,37 @@ local dreamScar = {
 	[1] = {
 		day = "Monday",
 		bossName = "Alptramun",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.AlptramunTimer,
 	},
 	[2] = {
 		day = "Tuesday",
 		bossName = "Izcandar the Banished",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.IzcandarTimer,
 	},
 	[3] = {
 		day = "Wednesday",
 		bossName = "Malofur Mangrinder",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.malofurTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.MalofurTimer,
 	},
 	[4] = {
 		day = "Thursday",
 		bossName = "Maxxenius",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.MaxxeniusTimer,
 	},
 	[5] = {
 		day = "Friday",
 		bossName = "Izcandar the Banished",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.IzcandarTimer,
 	},
 	[6] = {
 		day = "Saturday",
 		bossName = "Plagueroot",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.plaguerootTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.PlaguerootTimer,
 	},
 	[7] = {
 		day = "Sunday",
 		bossName = "Maxxenius",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.MaxxeniusTimer,
 	},
 }
 
@@ -76,8 +76,8 @@ function movements_acessTeleports.onStepIn(creature, item, position, fromPositio
 	local nightmareTeleport = Position(32211, 32081, 15)
 
 	if item:getPosition() == nightmareTeleport then
-		if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.bossCount) >= 5 then
-			if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.nightmareTimer) > os.time() then
+		if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount) >= 5 then
+			if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.NightmareTimer) > os.time() then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait to challenge The Nightmare Beast again!")
 				player:teleportTo(fromPosition)
 			else
@@ -106,7 +106,7 @@ function movements_acessTeleports.onStepIn(creature, item, position, fromPositio
 	if iPos == dreamScarTeleport then
 		if player:getStorageValue(permission) >= 1 then
 			for i = 1, #dreamScar do
-				if os.sdate("%A") == dreamScar[i].day then
+				if os.date("%A") == dreamScar[i].day then
 					if player:getStorageValue(dreamScar[i].storageTimer) > os.time() then
 						player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait to challenge " .. dreamScar[i].bossName .. " again!")
 						player:teleportTo(fromPosition)

@@ -65,10 +65,10 @@ function creaturescripts_Izcandar.onThink(creature, interval)
 
 	if position:isInRange(sides[1].fromPosition, sides[1].toPosition) and not (cName == "izcandar champion of winter") then
 		transformIzcandar(creature:getId(), "izcandar champion of winter", health, position)
-		Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarOutfit, 1)
+		Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.izcandarOutfit, 1)
 	elseif position:isInRange(sides[2].fromPosition, sides[2].toPosition) and not (cName == "izcandar champion of summer") then
 		transformIzcandar(creature:getId(), "izcandar champion of summer", health, position)
-		Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarOutfit, 2)
+		Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.izcandarOutfit, 2)
 	end
 
 	return true

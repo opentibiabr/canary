@@ -131,7 +131,7 @@ LeverAction = {
 	},
 	-- The Dream Courts Quest
 	[23110] = {
-		itemId = 9111,
+		itemId = 9110,
 		itemPos = {
 			{ x = 33637, y = 32562, z = 13 },
 		},

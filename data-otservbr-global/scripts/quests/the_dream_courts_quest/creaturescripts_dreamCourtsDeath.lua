@@ -2,63 +2,63 @@ local questlog = {
 	[1] = {
 		bossName = "Faceless Bane",
 		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.facelessTime,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedralGlobal.FacelessTime,
 		middlePosition = Position(33617, 32563, 13),
 		maxValue = 4,
 	},
 	[2] = {
 		bossName = "Maxxenius",
-		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.bossCount,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
+		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.MaxxeniusTimer,
 		middlePosition = Position(32208, 32048, 14),
 		maxValue = 5,
 	},
 	[3] = {
 		bossName = "Alptramun",
-		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.bossCount,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunTimer,
+		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.AlptramunTimer,
 		middlePosition = Position(32208, 32048, 14),
 		maxValue = 5,
 	},
 	[4] = {
 		bossName = "Izcandar the Banished",
-		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.bossCount,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
+		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.IzcandarTimer,
 		middlePosition = Position(32208, 32048, 14),
 		maxValue = 5,
 	},
 	[5] = {
 		bossName = "Izcandar Champion of Winter",
-		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.bossCount,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
+		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.IzcandarTimer,
 		middlePosition = Position(32208, 32048, 14),
 		maxValue = 5,
 	},
 	[6] = {
 		bossName = "Izcandar Champion of Summer",
-		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.bossCount,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
+		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.IzcandarTimer,
 		middlePosition = Position(32208, 32048, 14),
 		maxValue = 5,
 	},
 	[7] = {
 		bossName = "Plagueroot",
-		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.bossCount,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.plaguerootTimer,
+		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.PlaguerootTimer,
 		middlePosition = Position(32208, 32048, 14),
 		maxValue = 5,
 	},
 	[8] = {
 		bossName = "Malofur Mangrinder",
-		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.bossCount,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.malofurTimer,
+		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.MalofurTimer,
 		middlePosition = Position(32208, 32048, 14),
 		maxValue = 5,
 	},
 	[9] = {
 		bossName = "The Nightmare Beast",
 		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.WardStones.Questline,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.nightmareTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.NightmareTimer,
 		middlePosition = Position(32207, 32045, 15),
 		maxValue = 2,
 	},
@@ -115,17 +115,17 @@ function creaturescripts_dreamCourtsDeath.onDeath(creature, corpse, killer, most
 			end
 
 			if cName:lower() == "alptramun" then
-				Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunSummonsKilled, 0)
+				Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.AlptramunSummonsKilled, 0)
 			end
 		end
 	end
 
-	local summonsKilled = Game.getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunSummonsKilled)
+	local summonsKilled = Game.getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.AlptramunSummonsKilled)
 
 	for _, k in pairs(alptramunSummons) do
 		if cName:lower() == k.name then
 			if summonsKilled >= k.minValue and summonsKilled <= k.maxValue then
-				Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunSummonsKilled, summonsKilled + 1)
+				Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.AlptramunSummonsKilled, summonsKilled + 1)
 			end
 		end
 	end

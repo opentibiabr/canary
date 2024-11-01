@@ -1,5 +1,5 @@
 local Count = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count
-local Storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.doorInvisible
+local Storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.DoorInvisible
 local lanternId = 23738
 
 local actions_doorInvisible = Action()

@@ -1,5 +1,5 @@
 local wardPosition = Position(32769, 32621, 10)
-local storage = Storage.Quest.U12_00.TheDreamCourts.WardStones.porthopeStone
+local storage = Storage.Quest.U12_00.TheDreamCourts.WardStones.PortHopeStone
 local count = Storage.Quest.U12_00.TheDreamCourts.WardStones.Count
 
 local function revertStone(position, on, off)

@@ -19,13 +19,13 @@ local leverInfo = {
 		pushPosition = Position(32208, 32021, 13),
 		leverFromPos = Position(32208, 32021, 13),
 		leverToPos = Position(32208, 32025, 13),
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.AlptramunTimer,
 		roomFromPosition = Position(32198, 32037, 14),
 		roomToPosition = Position(32234, 32054, 14),
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunTimer,
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.AlptramunTimer,
 	},
 	[2] = {
 		byDay = "Tuesday",
@@ -35,13 +35,13 @@ local leverInfo = {
 		pushPosition = Position(32208, 32021, 13),
 		leverFromPos = Position(32208, 32021, 13),
 		leverToPos = Position(32208, 32025, 13),
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.IzcandarTimer,
 		roomFromPosition = Position(32198, 32037, 14),
 		roomToPosition = Position(32234, 32054, 14),
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.IzcandarTimer,
 	},
 	[3] = {
 		byDay = "Wednesday",
@@ -51,13 +51,13 @@ local leverInfo = {
 		pushPosition = Position(32208, 32021, 13),
 		leverFromPos = Position(32208, 32021, 13),
 		leverToPos = Position(32208, 32025, 13),
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.malofurTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.MalofurTimer,
 		roomFromPosition = Position(32198, 32037, 14),
 		roomToPosition = Position(32234, 32054, 14),
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.malofurTimer,
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.MalofurTimer,
 	},
 	[4] = {
 		byDay = "Thursday",
@@ -67,13 +67,13 @@ local leverInfo = {
 		pushPosition = Position(32208, 32021, 13),
 		leverFromPos = Position(32208, 32021, 13),
 		leverToPos = Position(32208, 32025, 13),
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.MaxxeniusTimer,
 		roomFromPosition = Position(32198, 32037, 14),
 		roomToPosition = Position(32234, 32054, 14),
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.MaxxeniusTimer,
 	},
 	[5] = {
 		byDay = "Friday",
@@ -83,13 +83,13 @@ local leverInfo = {
 		pushPosition = Position(32208, 32021, 13),
 		leverFromPos = Position(32208, 32021, 13),
 		leverToPos = Position(32208, 32025, 13),
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.IzcandarTimer,
 		roomFromPosition = Position(32198, 32037, 14),
 		roomToPosition = Position(32234, 32054, 14),
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarTimer,
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.IzcandarTimer,
 	},
 	[6] = {
 		byDay = "Saturday",
@@ -99,13 +99,13 @@ local leverInfo = {
 		pushPosition = Position(32208, 32021, 13),
 		leverFromPos = Position(32208, 32021, 13),
 		leverToPos = Position(32208, 32025, 13),
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.plaguerootTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.PlagueRootTimer,
 		roomFromPosition = Position(32198, 32037, 14),
 		roomToPosition = Position(32234, 32054, 14),
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.plaguerootTimer,
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.PlagueRootTimer,
 	},
 	[7] = {
 		byDay = "Sunday",
@@ -115,13 +115,13 @@ local leverInfo = {
 		pushPosition = Position(32208, 32021, 13),
 		leverFromPos = Position(32208, 32021, 13),
 		leverToPos = Position(32208, 32025, 13),
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.MaxxeniusTimer,
 		roomFromPosition = Position(32198, 32037, 14),
 		roomToPosition = Position(32234, 32054, 14),
 		teleportTo = Position(32224, 32048, 14),
 		typePush = "y",
 		exitPosition = Position(32208, 32035, 13),
-		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.maxxeniusTimer,
+		globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.MaxxeniusTimer,
 	},
 }
 
@@ -212,8 +212,8 @@ local heatOfSummer = {
 local lastBoss = {
 	bossName = "The Nightmare Beast",
 	bossPosition = Position(32209, 32044, 15),
-	storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.nightmareTimer,
-	globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.nightmareTimer,
+	storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScar.NightmareTimer,
+	globalTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.NightmareTimer,
 	fromPositionTeleport = Position(32210, 32070, 15),
 	toPositionTeleport = Position(32214, 32071, 15),
 	fromPositionPush = Position(32211, 32070, 15),
@@ -269,7 +269,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 						monster:registerEvent("dreamCourtsDeath")
 					end
 
-					Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse, 0)
+					Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.LastBossCurse, 0)
 
 					addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, lastBoss.roomFromPosition, lastBoss.roomToPosition, lastBoss.exitPosition)
 				else
@@ -278,7 +278,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 			end
 		else
 			for i = 1, #leverInfo do
-				if iPos == leverInfo[i].leverPosition and os.sdate("%A") == leverInfo[i].byDay then
+				if iPos == leverInfo[i].leverPosition and os.date("%A") == leverInfo[i].byDay then
 					local leverTable = leverInfo[i]
 					if pPos == leverTable.pushPosition then
 						if player:doCheckBossRoom(leverTable.bossName, leverTable.roomFromPosition, leverTable.roomToPosition) then
@@ -327,7 +327,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 										summon:registerEvent("dreamCourtsDeath")
 									end
 
-									Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunSummonsKilled, 0)
+									Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.AlptramunSummonsKilled, 0)
 
 									monster:registerEvent("facelessHealth")
 								elseif leverTable.bossName:lower() == "izcandar the banished" then
@@ -336,7 +336,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 									spawnSummons(1, "the heat of summer", false, 15, heatOfSummer, leverTable.bossPosition)
 									spawnSummons(1, "the cold of winter", false, 15, coldOfWinter, leverTable.bossPosition)
 
-									Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.izcandarOutfit, 0)
+									Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.IzcandarOutfit, 0)
 								elseif leverTable.bossName:lower() == "plagueroot" then
 									spawnSummons(1, "plant attendant", false, 15, plantAttendants, leverTable.bossPosition)
 

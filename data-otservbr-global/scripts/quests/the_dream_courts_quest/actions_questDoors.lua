@@ -32,7 +32,7 @@ local doors = {
 	[7] = {
 		doorPosition = Position(32606, 32629, 9),
 		storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Temple,
-		value = -1,
+		value = 1,
 		help = "Tomb",
 	},
 	[8] = {
@@ -42,22 +42,22 @@ local doors = {
 	},
 	[9] = {
 		doorPosition = Position(33625, 32525, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount,
+		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount,
 		value = 3,
 	},
 	[10] = {
 		doorPosition = Position(33640, 32551, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount,
+		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount,
 		value = 3,
 	},
 	[11] = {
 		doorPosition = Position(33657, 32551, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.wordCount,
+		storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount,
 		value = 3,
 	},
 	[12] = {
 		doorPosition = Position(31983, 31960, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.doorMedusa,
+		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.DoorMedusa,
 		value = 1,
 		help = "Medusa",
 	},
@@ -68,7 +68,7 @@ local doors = {
 	},
 	[14] = {
 		doorPosition = Position(32074, 31974, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.sequenceSkulls,
+		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.SequenceSkulls,
 		value = 3,
 	},
 	[15] = {
@@ -85,65 +85,61 @@ local doors = {
 	},
 }
 
+local function closeDoor(position, closedId)
+	local door = Tile(position):getItemById(closedId + 1)
+	if door then
+		door:transform(closedId)
+	end
+end
+
 local actions_questDoors = Action()
 
 function actions_questDoors.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local door = Door(item.itemid)
-	local usedDoor = item.itemid + 1
-
-	if door then
-		usedDoor = door:use()
-	end
-
 	local iPos = item:getPosition()
 
 	for _, p in pairs(doors) do
-		if (iPos == p.doorPosition) and not (player:getPosition() == p.doorPosition) then
+		if iPos == p.doorPosition and not (player:getPosition() == p.doorPosition) then
 			if p.help == "Tomb" then
 				if player:getStorageValue(p.storage) < p.value then
 					player:teleportTo(toPosition, true)
-					item:transform(usedDoor)
+					item:transform(item.itemid + 1)
+					addEvent(closeDoor, 2000, iPos, item.itemid)
 				else
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The door seems to be sealed against unwanted intruders.")
 				end
 			elseif p.help == "Medusa" then
 				if player:getStorageValue(p.storage) < 1 then
 					player:setStorageValue(p.storage, 1)
-					player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count, player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count) + 1)
-					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "As Medusas's Ointment takes effect the door is unpetrified again. You can use it now.")
+					local count = player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count)
+					player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count, (count < 0 and 1 or count + 1))
+					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "As Medusa's Ointment takes effect, the door is unpetrified. You can use it now.")
 				end
 
-				if iPos.y < player:getPosition().y then
-					player:teleportTo(Position(iPos.x, iPos.y - 3, iPos.z))
-				else
-					player:teleportTo(Position(iPos.x, iPos.y + 3, iPos.z))
-				end
-
+				local newPos = (iPos.y < player:getPosition().y) and Position(iPos.x, iPos.y - 3, iPos.z) or Position(iPos.x, iPos.y + 3, iPos.z)
+				player:teleportTo(newPos)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+				item:transform(item.itemid + 1)
+				addEvent(closeDoor, 2000, iPos, item.itemid)
 			elseif p.help == "Lock" then
 				if player:getStorageValue(p.storage) >= p.value then
-					if iPos.y < player:getPosition().y then
-						player:teleportTo(Position(iPos.x, iPos.y - 1, iPos.z))
-					else
-						player:teleportTo(Position(iPos.x, iPos.y + 1, iPos.z))
-					end
+					local newPos = (iPos.y < player:getPosition().y) and Position(iPos.x, iPos.y - 1, iPos.z) or Position(iPos.x, iPos.y + 1, iPos.z)
+					player:teleportTo(newPos)
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+					item:transform(item.itemid + 1)
+					addEvent(closeDoor, 2000, iPos, item.itemid)
 				else
-					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The lock in this door is missing. Mysteriously, the door is locked nonetheless. Perhaps you can find a matching lock somewhere?")
+					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The lock in this door is missing. Perhaps you can find a matching lock somewhere?")
 					return true
 				end
 			elseif p.help == "Open/Close" then
 				if player:getStorageValue(p.storage) >= p.value then
-					if item.itemid == 30033 then
-						item:transform(30035)
-					elseif item.itemid == 30035 then
-						item:transform(30033)
-					end
+					item:transform((item.itemid == 30033) and 30035 or 30033)
 				end
 			else
 				if player:getStorageValue(p.storage) >= p.value then
 					player:teleportTo(toPosition, true)
-					item:transform(usedDoor)
+					item:transform(item.itemid + 1)
+					addEvent(closeDoor, 2000, iPos, item.itemid)
 				else
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The door seems to be sealed against unwanted intruders.")
 				end

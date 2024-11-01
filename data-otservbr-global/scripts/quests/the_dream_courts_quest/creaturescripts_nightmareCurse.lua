@@ -13,12 +13,12 @@ local function resetArea()
 	for _, p in pairs(spectators) do
 		local player = Player(p:getId())
 		if player then
-			player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse, 0)
+			player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.LastBossCurse, 0)
 		end
 	end
 end
 
-local creaturescripts_nightmareCurse = CreatureEvent(Storage.Quest.U12_00.TheDreamCourts.NightmareCurse)
+local creaturescripts_nightmareCurse = CreatureEvent("nightmareCurse")
 
 function creaturescripts_nightmareCurse.onThink(creature, interval)
 	if not creature:isPlayer() then
@@ -46,10 +46,10 @@ function creaturescripts_nightmareCurse.onThink(creature, interval)
 
 			if p and p:getCondition(CONDITION_OUTFIT, phantasm) then
 				resetArea()
-				Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse, 0)
+				Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.LastBossCurse, 0)
 				p:teleportTo(Position(32213, 32083, 15))
 				p:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.NightmareCurse, -1)
-				p:unregisterEvent(Storage.Quest.U12_00.TheDreamCourts.NightmareCurse)
+				p:unregisterEvent("nightmareCurse")
 			end
 		end, phantasmTime, player:getId())
 	elseif (stage == 1 or stage == 2) and (player:getCondition(CONDITION_OUTFIT, spectre) or player:getCondition(CONDITION_OUTFIT, phantasm)) then

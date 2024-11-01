@@ -16,7 +16,7 @@ local function resetArea()
 		local player = Player(p:getId())
 		if player then
 			playerCount = playerCount + 1
-			if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse) >= 1 then
+			if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.LastBossCurse) >= 1 then
 				infectedCount = infectedCount + 1
 			end
 		end
@@ -45,7 +45,7 @@ function actions_dreamcatcher_curse.onUse(player, item, fromPosition, target, to
 		end
 		addEvent(placeMask, 10 * 1000, item:getPosition(), 29274, 29275)
 	elseif item.itemid == 29276 then
-		if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse) < 1 then
+		if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.LastBossCurse) < 1 then
 			if (target ~= player) and target:isPlayer() then
 				if target:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.NightmareCurse) >= 1 then
 					target:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.NightmareCurse, 0)
@@ -58,7 +58,7 @@ function actions_dreamcatcher_curse.onUse(player, item, fromPosition, target, to
 					item:remove(1)
 					local j = resetArea()
 					if j then
-						Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.lastBossCurse, 0)
+						Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.LastBossCurse, 0)
 					end
 				else
 					return true

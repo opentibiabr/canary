@@ -1,4 +1,4 @@
-local sequenceBooks = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.sequenceBooks
+local sequenceBooks = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.SequenceBooks
 local questline = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline
 
 local sequence = {

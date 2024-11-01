@@ -28,4 +28,5 @@ function actions_acidFishingRod.onUse(player, item, fromPosition, target, toPosi
 end
 
 actions_acidFishingRod:id(29950)
+actions_acidFishingRod:allowFarUse(true)
 actions_acidFishingRod:register()

@@ -20,7 +20,7 @@ function spell.onCastSpell(creature, var)
 	local monsterName = ""
 	local randomName = math.random(1, #config)
 	local randomSummon = math.random(1, 4)
-	local summonsKilled = Game.getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.alptramunSummonsKilled) or -1
+	local summonsKilled = Game.getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.AlptramunSummonsKilled) or -1
 
 	if summonsKilled >= 0 and summonsKilled <= 9 then
 		monsterName = config[1].name

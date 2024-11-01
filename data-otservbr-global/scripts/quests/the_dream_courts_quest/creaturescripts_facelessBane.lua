@@ -1,5 +1,5 @@
 local summons = { "Burster Spectre", "Gazer Spectre", "Ripper Spectre" }
-local storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.facelessLifes
+local storage = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.FacelessLifes
 
 local creaturescripts_facelessBane = CreatureEvent("facelessThink")
 
@@ -24,7 +24,7 @@ function creaturescripts_facelessBane.onThink(creature, interval)
 			end
 
 			creature:setStorageValue(storage, lifes + 1)
-			Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.facelessTiles, 0)
+			Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.FacelessLifes, 0)
 		end
 	end
 

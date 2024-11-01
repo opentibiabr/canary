@@ -1,4 +1,4 @@
-local sequenceSkulls = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.sequenceSkulls
+local sequenceSkulls = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.SequenceSkulls
 local Count = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count
 
 local bookId = 29991

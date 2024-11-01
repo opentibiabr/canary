@@ -50,7 +50,7 @@ local function tryCrystal(player, itemid, position, actionid, message, rewardid)
 	end
 end
 
-local storage = Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.gotAxe
+local storage = Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.GotAxe
 
 local actions_goldenAxe = Action()
 
@@ -66,19 +66,19 @@ function actions_goldenAxe.onUse(player, item, fromPosition, target, toPosition,
 		if target.itemid == 8865 then
 			for _, k in pairs(firstFloor) do
 				if tPos == k.hisPosition then
-					tryCrystal(player:getId(), tId, tPos, 23121, "You got a blue crystal!", 33780)
+					tryCrystal(player:getId(), tId, tPos, 23121, "You got a blue crystal!", 29287)
 				end
 			end
-		elseif target.itemid == 16168 then
+		elseif target.itemid == 14940 then
 			for _, k in pairs(secondFloor) do
 				if tPos == k.hisPosition then
-					tryCrystal(player:getId(), tId, tPos, 23122, "You got a green crystal!", 33781)
+					tryCrystal(player:getId(), tId, tPos, 23122, "You got a green crystal!", 29288)
 				end
 			end
 		elseif target.itemid == 14974 then
 			for _, k in pairs(thirdFloor) do
 				if tPos == k.hisPosition then
-					tryCrystal(player:getId(), tId, tPos, 23123, "You got a purple crystal!", 33782)
+					tryCrystal(player:getId(), tId, tPos, 23123, "You got a purple crystal!", 29289)
 				end
 			end
 		end

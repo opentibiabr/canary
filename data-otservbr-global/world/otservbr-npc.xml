@@ -1353,6 +1353,9 @@
 	<npc centerx="33304" centery="31720" centerz="7" radius="1">
 		<npc name="Cornell" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="33272" centery="31723" centerz="7" radius="4">
+		<npc name="Myzzi" x="0" y="-1" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="32412" centery="31728" centerz="7" radius="1">
 		<npc name="A Fluffy Squirrel" x="0" y="0" z="7" spawntime="60" />
 	</npc>

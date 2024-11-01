@@ -60,9 +60,9 @@ end
 ---@param player Player
 ---@return nil
 function Lever.addPlayer(self, player)
-    if player and player:isPlayer() then
-	    table.insert(self.players, player)
-    end
+	if player and player:isPlayer() then
+		table.insert(self.players, player)
+	end
 end
 
 --[[

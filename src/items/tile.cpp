@@ -23,6 +23,7 @@
 #include "lua/creature/movement.hpp"
 #include "map/spectators.hpp"
 #include "utils/tools.hpp"
+#include "game/scheduling/dispatcher.hpp"
 
 auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);
 const std::shared_ptr<Tile> &Tile::nullptr_tile = real_nullptr_tile;

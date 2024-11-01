@@ -164,12 +164,15 @@ public:
 	static int8_t getInt8FromString(const std::string &string, const std::string &function);
 
 	size_t countResults() const;
+	size_t countColumns() const;
 	bool hasNext() const;
 	bool next();
 
 private:
 	MYSQL_RES* handle;
 	MYSQL_ROW row;
+
+	size_t m_numFields;
 
 	std::map<std::string_view, size_t> listNames;
 

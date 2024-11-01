@@ -12,6 +12,9 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     npcs/npc.cpp
     npcs/npcs.cpp
     npcs/spawns/spawn_npc.cpp
+    players/components/player_forge_history.cpp
+    players/components/player_storage.cpp
+    players/components/player_stash.cpp
     players/grouping/familiars.cpp
     players/grouping/groups.cpp
     players/grouping/guild.cpp

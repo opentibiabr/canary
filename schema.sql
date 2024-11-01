@@ -732,7 +732,8 @@ CREATE TABLE IF NOT EXISTS `player_bosstiary` (
     `bossIdSlotOne` int NOT NULL DEFAULT 0,
     `bossIdSlotTwo` int NOT NULL DEFAULT 0,
     `removeTimes` int NOT NULL DEFAULT 1,
-    `tracker` blob NOT NULL
+    `tracker` blob NOT NULL,
+    PRIMARY KEY (`player_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_rewards`

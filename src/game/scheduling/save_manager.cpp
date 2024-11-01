@@ -16,9 +16,15 @@
 #include "io/iologindata.hpp"
 #include "kv/kv.hpp"
 #include "lib/di/container.hpp"
+#include "game/scheduling/task.hpp"
 
 SaveManager::SaveManager(ThreadPool &threadPool, KVStore &kvStore, Logger &logger, Game &game) :
-	threadPool(threadPool), kv(kvStore), logger(logger), game(game) { }
+	threadPool(threadPool), kv(kvStore), logger(logger), game(game) {
+	m_threads.reserve(threadPool.get_thread_count() + 1);
+	for (uint_fast16_t i = 0; i < m_threads.capacity(); ++i) {
+		m_threads.emplace_back(std::make_unique<ThreadTask>());
+	}
+}
 
 SaveManager &SaveManager::getInstance() {
 	return inject<SaveManager>();
@@ -27,40 +33,49 @@ SaveManager &SaveManager::getInstance() {
 void SaveManager::saveAll() {
 	Benchmark bm_saveAll;
 	logger.info("Saving server...");
-	const auto players = game.getPlayers();
 
+	Benchmark bm_players;
+	const auto &players = game.getPlayers();
+	logger.info("Saving {} players...", players.size());
 	for (const auto &[_, player] : players) {
 		player->loginPosition = player->getPosition();
 		doSavePlayer(player);
 	}
 
-	auto guilds = game.getGuilds();
+	double duration_players = bm_players.duration();
+	if (duration_players > 1000.0) {
+		logger.info("Players saved in {:.2f} seconds.", duration_players / 1000.0);
+	} else {
+		logger.info("Players saved in {} milliseconds.", duration_players);
+	}
+
+	Benchmark bm_guilds;
+	const auto &guilds = game.getGuilds();
 	for (const auto &[_, guild] : guilds) {
 		saveGuild(guild);
+	}
+	double duration_guilds = bm_guilds.duration();
+	if (duration_guilds > 1000.0) {
+		logger.info("Guilds saved in {:.2f} seconds.", duration_guilds / 1000.0);
+	} else {
+		logger.info("Guilds saved in {} milliseconds.", duration_guilds);
 	}
 
 	saveMap();
 	saveKV();
-	logger.info("Server saved in {} milliseconds.", bm_saveAll.duration());
+
+	double duration_saveAll = bm_saveAll.duration();
+	if (duration_saveAll > 1000.0) {
+		logger.info("Server saved in {:.2f} seconds.", duration_saveAll / 1000.0);
+	} else {
+		logger.info("Server saved in {} milliseconds.", duration_saveAll);
+	}
 }
 
 void SaveManager::scheduleAll() {
 	auto scheduledAt = std::chrono::steady_clock::now();
 	m_scheduledAt = scheduledAt;
-
-	// Disable save async if the config is set to false
-	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC)) {
-		saveAll();
-		return;
-	}
-
-	threadPool.detach_task([this, scheduledAt]() {
-		if (m_scheduledAt.load() != scheduledAt) {
-			logger.warn("Skipping save for server because another save has been scheduled.");
-			return;
-		}
-		saveAll();
-	});
+	saveAll();
 }
 
 void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
@@ -70,30 +85,7 @@ void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
 		return;
 	}
 
-	// Disable save async if the config is set to false
-	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC)) {
-		if (g_game().getGameState() == GAME_STATE_NORMAL) {
-			logger.debug("Saving player {}.", playerToSave->getName());
-		}
-		doSavePlayer(playerToSave);
-		return;
-	}
-
-	logger.debug("Scheduling player {} for saving.", playerToSave->getName());
-	auto scheduledAt = std::chrono::steady_clock::now();
-	m_playerMap[playerToSave->getGUID()] = scheduledAt;
-	threadPool.detach_task([this, playerPtr, scheduledAt]() {
-		auto player = playerPtr.lock();
-		if (!player) {
-			logger.debug("Skipping save for player because player is no longer online.");
-			return;
-		}
-		if (m_playerMap[player->getGUID()] != scheduledAt) {
-			logger.warn("Skipping save for player because another save has been scheduled.");
-			return;
-		}
-		doSavePlayer(player);
-	});
+	doSavePlayer(playerToSave);
 }
 
 bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {
@@ -105,13 +97,12 @@ bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {
 	Benchmark bm_savePlayer;
 	Player::PlayerLock lock(player);
 	m_playerMap.erase(player->getGUID());
-	if (g_game().getGameState() == GAME_STATE_NORMAL) {
-		logger.debug("Saving player {}.", player->getName());
-	}
 
 	bool saveSuccess = IOLoginData::savePlayer(player);
 	if (!saveSuccess) {
 		logger.error("Failed to save player {}.", player->getName());
+	} else {
+		executeTasks();
 	}
 
 	auto duration = bm_savePlayer.duration();
@@ -122,6 +113,7 @@ bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {
 bool SaveManager::savePlayer(std::shared_ptr<Player> player) {
 	if (player->isOnline()) {
 		schedulePlayer(player);
+		logger.debug("saving player {}, but is online scheduling....", player->getName());
 		return true;
 	}
 	return doSavePlayer(player);
@@ -132,35 +124,74 @@ void SaveManager::saveGuild(std::shared_ptr<Guild> guild) {
 		logger.debug("Failed to save guild because guild is null.");
 		return;
 	}
-
 	Benchmark bm_saveGuild;
 	logger.debug("Saving guild {}...", guild->getName());
 	IOGuild::saveGuild(guild);
-
 	auto duration = bm_saveGuild.duration();
-	logger.debug("Saving guild {} took {} milliseconds.", guild->getName(), duration);
+	if (duration > 100) {
+		logger.warn("Saving guild {} took {} milliseconds.", guild->getName(), duration);
+	} else {
+		logger.debug("Saving guild {} took {} milliseconds.", guild->getName(), duration);
+	}
 }
 
 void SaveManager::saveMap() {
 	Benchmark bm_saveMap;
-	logger.debug("Saving map...");
+	logger.info("Saving map...");
 	bool saveSuccess = Map::save();
 	if (!saveSuccess) {
 		logger.error("Failed to save map.");
 	}
 
-	auto duration = bm_saveMap.duration();
-	logger.debug("Map saved in {} milliseconds.", duration);
+	double duration_map = bm_saveMap.duration();
+	if (duration_map > 1000.0) {
+		logger.info("Map saved in {:.2f} seconds.", duration_map / 1000.0);
+	} else {
+		logger.info("Map saved in {} milliseconds.", duration_map);
+	}
 }
 
 void SaveManager::saveKV() {
 	Benchmark bm_saveKV;
-	logger.debug("Saving key-value store...");
+	logger.info("Saving key-value store...");
 	bool saveSuccess = kv.saveAll();
 	if (!saveSuccess) {
 		logger.error("Failed to save key-value store.");
 	}
 
-	auto duration = bm_saveKV.duration();
-	logger.debug("Key-value store saved in {} milliseconds.", duration);
+	double duration_kv = bm_saveKV.duration();
+	if (duration_kv > 1000.0) {
+		logger.info("KV store saved in {:.2f} seconds.", duration_kv / 1000.0);
+	} else {
+		logger.info("KV store saved in {} milliseconds.", duration_kv);
+	}
+}
+
+void SaveManager::addTask(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs /* = 0*/) {
+	const auto &thread = getThreadTask();
+	std::scoped_lock lock(thread->mutex);
+	thread->tasks.emplace_back(expiresAfterMs, std::move(f), context);
+}
+
+SaveManager::ThreadTask::ThreadTask() {
+	tasks.reserve(2000);
+}
+
+void SaveManager::executeTasks() {
+	for (const auto &thread : m_threads) {
+		std::scoped_lock lock(thread->mutex);
+		auto &threadTasks = thread->tasks;
+		if (!threadTasks.empty()) {
+			m_tasks.insert(m_tasks.end(), make_move_iterator(thread->tasks.begin()), make_move_iterator(thread->tasks.end()));
+			threadTasks.clear();
+		}
+	}
+
+	threadPool.detach_task([tasks = std::move(m_tasks)] {
+		for (const auto &task : tasks) {
+			task.execute();
+		}
+	});
+
+	m_tasks.clear();
 }

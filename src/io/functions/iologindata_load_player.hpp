@@ -23,7 +23,6 @@ public:
 	static void loadPlayerSkill(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerKills(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerGuild(const std::shared_ptr<Player> &player, DBResult_ptr result);
-	static void loadPlayerStashItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerBestiaryCharms(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerInstantSpellList(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerInventoryItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
@@ -31,11 +30,9 @@ public:
 	static void loadPlayerDepotItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadRewardItems(const std::shared_ptr<Player> &player);
 	static void loadPlayerInboxItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
-	static void loadPlayerStorageMap(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerVip(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerPreyClass(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &player, DBResult_ptr result);
-	static void loadPlayerForgeHistory(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerBosstiary(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerInitializeSystem(const std::shared_ptr<Player> &player);
 	static void loadPlayerUpdateSystem(const std::shared_ptr<Player> &player);

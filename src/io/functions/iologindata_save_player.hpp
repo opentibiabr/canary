@@ -16,7 +16,6 @@ class PropWriteStream;
 class IOLoginDataSave : public IOLoginData {
 public:
 	static bool savePlayerFirst(const std::shared_ptr<Player> &player);
-	static bool savePlayerStash(const std::shared_ptr<Player> &player);
 	static bool savePlayerSpells(const std::shared_ptr<Player> &player);
 	static bool savePlayerKills(const std::shared_ptr<Player> &player);
 	static bool savePlayerBestiarySystem(const std::shared_ptr<Player> &player);
@@ -26,9 +25,7 @@ public:
 	static bool savePlayerInbox(const std::shared_ptr<Player> &player);
 	static bool savePlayerPreyClass(const std::shared_ptr<Player> &player);
 	static bool savePlayerTaskHuntingClass(const std::shared_ptr<Player> &player);
-	static bool savePlayerForgeHistory(const std::shared_ptr<Player> &player);
 	static bool savePlayerBosstiary(const std::shared_ptr<Player> &player);
-	static bool savePlayerStorage(const std::shared_ptr<Player> &player);
 
 protected:
 	using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;

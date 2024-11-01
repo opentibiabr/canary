@@ -13,6 +13,7 @@
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/wheel/wheel_gems.hpp"
 #include "enums/player_wheel.hpp"
@@ -3533,7 +3534,7 @@ uint8_t PlayerWheel::getGiftOfLifeValue() const {
 }
 
 int32_t PlayerWheel::getGiftOfCooldown() const {
-	const int32_t value = m_player.getStorageValue(STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD);
+	const int32_t value = m_player.storage()->get(STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD);
 	if (value <= 0) {
 		return 0;
 	}
@@ -3541,7 +3542,7 @@ int32_t PlayerWheel::getGiftOfCooldown() const {
 }
 
 void PlayerWheel::setGiftOfCooldown(int32_t value, bool isOnThink) {
-	m_player.addStorageValue(STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD, value, true);
+	m_player.storage()->add(STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD, value, true);
 	if (!isOnThink) {
 		setOnThinkTimer(WheelOnThink_t::GIFT_OF_LIFE, OTSYS_TIME() + 1000);
 	}

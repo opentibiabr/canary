@@ -210,6 +210,7 @@ DBResult::DBResult(MYSQL_RES* res) {
 	handle = res;
 
 	int num_fields = mysql_num_fields(handle);
+	m_numFields = num_fields;
 
 	const MYSQL_FIELD* fields = mysql_fetch_fields(handle);
 	for (size_t i = 0; i < num_fields; i++) {
@@ -273,6 +274,10 @@ int8_t DBResult::getInt8FromString(const std::string &string, const std::string 
 
 size_t DBResult::countResults() const {
 	return static_cast<size_t>(mysql_num_rows(handle));
+}
+
+size_t DBResult::countColumns() const {
+	return m_numFields;
 }
 
 bool DBResult::hasNext() const {

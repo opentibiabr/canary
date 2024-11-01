@@ -17,6 +17,7 @@
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/vocations/vocation.hpp"
@@ -1734,7 +1735,7 @@ int PlayerFunctions::luaPlayerGetStorageValue(lua_State* L) {
 	}
 
 	const uint32_t key = getNumber<uint32_t>(L, 2);
-	lua_pushnumber(L, player->getStorageValue(key));
+	lua_pushnumber(L, player->storage()->get(key));
 	return 1;
 }
 
@@ -1757,7 +1758,7 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 	}
 
 	if (player) {
-		player->addStorageValue(key, value);
+		player->storage()->add(key, value);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -1776,7 +1777,7 @@ int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
 
 	g_logger().warn("The function 'player:getStorageValueByName' is deprecated and will be removed in future versions, please use KV system");
 	const auto name = getString(L, 2);
-	lua_pushnumber(L, player->getStorageValueByName(name));
+	lua_pushnumber(L, player->storage()->get(name));
 	return 1;
 }
 
@@ -1793,7 +1794,7 @@ int PlayerFunctions::luaPlayerSetStorageValueByName(lua_State* L) {
 	const auto storageName = getString(L, 2);
 	const int32_t value = getNumber<int32_t>(L, 3);
 
-	player->addStorageValueByName(storageName, value);
+	player->storage()->add(storageName, value);
 	pushBoolean(L, true);
 	return 1;
 }

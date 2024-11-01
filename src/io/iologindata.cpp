@@ -14,6 +14,9 @@
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
+#include "creatures/players/components/player_stash.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "enums/account_type.hpp"
@@ -126,7 +129,7 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		IOLoginDataLoad::loadPlayerGuild(player, result);
 
 		// stash load items
-		IOLoginDataLoad::loadPlayerStashItems(player, result);
+		player->stash()->load();
 
 		// bestiary charms
 		IOLoginDataLoad::loadPlayerBestiaryCharms(player, result);
@@ -147,7 +150,7 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		IOLoginDataLoad::loadPlayerInboxItems(player, result);
 
 		// load storage map
-		IOLoginDataLoad::loadPlayerStorageMap(player, result);
+		player->storage()->load();
 
 		// load vip
 		IOLoginDataLoad::loadPlayerVip(player, result);
@@ -166,7 +169,7 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		}
 
 		// load forge history
-		IOLoginDataLoad::loadPlayerForgeHistory(player, result);
+		player->stash()->load();
 
 		// load bosstiary
 		IOLoginDataLoad::loadPlayerBosstiary(player, result);
@@ -211,7 +214,7 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 		throw DatabaseException("[" + std::string(__FUNCTION__) + "] - Failed to save player first: " + player->getName());
 	}
 
-	if (!IOLoginDataSave::savePlayerStash(player)) {
+	if (!player->stash()->save()) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerFirst] - Failed to save player stash: " + player->getName());
 	}
 
@@ -251,7 +254,7 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerTaskHuntingClass] - Failed to save player task hunting class: " + player->getName());
 	}
 
-	if (!IOLoginDataSave::savePlayerForgeHistory(player)) {
+	if (!player->forgeHistory()->save()) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerForgeHistory] - Failed to save player forge history: " + player->getName());
 	}
 
@@ -263,7 +266,7 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 		throw DatabaseException("[PlayerWheel::saveDBPlayerSlotPointsOnLogout] - Failed to save player wheel info: " + player->getName());
 	}
 
-	if (!IOLoginDataSave::savePlayerStorage(player)) {
+	if (!player->storage()->save()) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());
 	}
 

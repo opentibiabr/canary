@@ -1,0 +1,110 @@
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+ */
+
+#include "creatures/players/components/player_forge_history.hpp"
+
+#include "database/database.hpp"
+#include "creatures/players/player.hpp"
+#include "utils/tools.hpp"
+#include "game/scheduling/save_manager.hpp"
+
+PlayerForgeHistory::PlayerForgeHistory(Player &player) :
+	m_player(player) { }
+
+const std::vector<ForgeHistory> &PlayerForgeHistory::get() const {
+	return m_history;
+}
+
+void PlayerForgeHistory::add(const ForgeHistory &history) {
+	m_history.push_back(history);
+	m_modifiedHistory.push_back(history);
+}
+
+void PlayerForgeHistory::remove(int historyId) {
+	m_removedHistoryIds.push_back(historyId);
+	m_history.erase(
+		std::remove_if(m_history.begin(), m_history.end(), [historyId](const ForgeHistory &h) { return h.id == historyId; }),
+		m_history.end()
+	);
+}
+
+bool PlayerForgeHistory::load() {
+	auto playerGUID = m_player.getGUID();
+	Database &db = Database::getInstance();
+	auto query = fmt::format("SELECT * FROM forge_history WHERE player_id = {}", playerGUID);
+	const DBResult_ptr &result = db.storeQuery(query);
+	if (!result) {
+		g_logger().debug("Failed to load forge history for player with ID: {}", playerGUID);
+		return false;
+	}
+
+	do {
+		ForgeHistory history;
+		history.id = result->getNumber<int>("id");
+		history.actionType = static_cast<ForgeAction_t>(result->getNumber<uint8_t>("action_type"));
+		history.description = result->getString("description");
+		history.createdAt = result->getNumber<uint64_t>("done_at");
+		history.success = result->getNumber<bool>("is_success");
+		m_history.push_back(history);
+	} while (result->next());
+
+	return true;
+}
+
+bool PlayerForgeHistory::save() {
+	if (m_modifiedHistory.empty() && m_removedHistoryIds.empty()) {
+		return true;
+	}
+
+	auto playerGUID = m_player.getGUID();
+	auto removedHistoryIds = m_removedHistoryIds;
+	auto modifiedHistory = m_modifiedHistory;
+
+	auto forgeHistorySaveTask = [playerGUID, removedHistoryIds, modifiedHistory]() mutable {
+		Database &db = Database::getInstance();
+
+		if (!removedHistoryIds.empty()) {
+			std::string idsToDelete = fmt::format("{}", fmt::join(removedHistoryIds, ", "));
+			std::string deleteQuery = fmt::format(
+				"DELETE FROM `forge_history` WHERE `player_id` = {} AND `id` IN ({})",
+				playerGUID, idsToDelete
+			);
+
+			if (!db.executeQuery(deleteQuery)) {
+				g_logger().error("Failed to delete forge history entries for player with ID: {}", playerGUID);
+				return;
+			}
+
+			removedHistoryIds.clear();
+		}
+
+		DBInsert insertQuery("INSERT INTO `forge_history` (`id`, `player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES ");
+		insertQuery.upsert({ "action_type", "description", "done_at", "is_success" });
+
+		for (const auto &history : modifiedHistory) {
+			auto row = fmt::format("{}, {}, {}, {}, {}, {}", history.id, playerGUID, history.actionType, db.escapeString(history.description), history.createdAt, history.success ? 1 : 0);
+
+			if (!insertQuery.addRow(row)) {
+				g_logger().warn("Failed to add forge history entry for player with ID: {}", playerGUID);
+				return;
+			}
+
+			g_logger().debug("Added forge history entry date: {}, for player with ID: {}", formatDate(history.createdAt / 1000), playerGUID);
+		}
+
+		if (!insertQuery.execute()) {
+			g_logger().error("Failed to execute insertion for forge history entries for player with ID: {}", playerGUID);
+			return;
+		}
+	};
+
+	g_saveManager().addTask(forgeHistorySaveTask, "PlayerForgeHistory::save - forgeHistorySaveTask");
+	m_modifiedHistory.clear();
+	return true;
+}

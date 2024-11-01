@@ -48,6 +48,9 @@ class Container;
 class KV;
 class BedItem;
 class Npc;
+class PlayerStorage;
+class PlayerStash;
+class PlayerForgeHistory;
 
 struct ModalWindow;
 struct Achievement;
@@ -76,30 +79,7 @@ using ItemVector = std::vector<std::shared_ptr<Item>>;
 using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
 
-struct ForgeHistory {
-	ForgeAction_t actionType = ForgeAction_t::FUSION;
-	uint8_t tier = 0;
-	uint8_t bonus = 0;
-
-	time_t createdAt;
-
-	uint16_t historyId = 0;
-
-	uint64_t cost = 0;
-	uint64_t dustCost = 0;
-	uint64_t coresCost = 0;
-	uint64_t gained = 0;
-
-	bool success = false;
-	bool tierLoss = false;
-	bool successCore = false;
-	bool tierCore = false;
-	bool convergence = false;
-
-	std::string description;
-	std::string firstItemName;
-	std::string secondItemName;
-};
+struct ForgeHistory;
 
 struct OpenContainer {
 	std::shared_ptr<Container> container;
@@ -366,15 +346,7 @@ public:
 
 	bool canOpenCorpse(uint32_t ownerId) const;
 
-	void addStorageValue(uint32_t key, int32_t value, bool isLogin = false);
-	int32_t getStorageValue(uint32_t key) const;
-
-	int32_t getStorageValueByName(const std::string &storageName) const;
-	void addStorageValueByName(const std::string &storageName, int32_t value, bool isLogin = false);
-
 	std::shared_ptr<KV> kv() const;
-
-	void genReservedStorageRange();
 
 	void setGroup(std::shared_ptr<Group> newGroup) {
 		group = std::move(newGroup);
@@ -1150,10 +1122,6 @@ public:
 	void removeForgeDustLevel(uint64_t amount);
 	uint64_t getForgeDustLevel() const;
 
-	std::vector<ForgeHistory> &getForgeHistory();
-
-	void setForgeHistory(const ForgeHistory &history);
-
 	void registerForgeHistoryDescription(ForgeHistory history);
 
 	void setBossPoints(uint32_t amount);
@@ -1250,6 +1218,18 @@ public:
 	std::unique_ptr<PlayerVIP> &vip();
 	const std::unique_ptr<PlayerVIP> &vip() const;
 
+	// Player stash methods interface
+	std::unique_ptr<PlayerStash> &stash();
+	const std::unique_ptr<PlayerStash> &stash() const;
+
+	// Player stash methods interface
+	std::unique_ptr<PlayerForgeHistory> &forgeHistory();
+	const std::unique_ptr<PlayerForgeHistory> &forgeHistory() const;
+
+	// Player storage methods interface
+	std::unique_ptr<PlayerStorage> &storage();
+	const std::unique_ptr<PlayerStorage> &storage() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -1341,13 +1321,11 @@ private:
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
 	std::map<uint32_t, std::shared_ptr<DepotChest>> depotChests;
 	std::map<uint8_t, int64_t> moduleDelayMap;
-	std::map<uint32_t, int32_t> storageMap;
 	std::map<uint16_t, uint64_t> itemPriceMap;
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
 	std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>> m_managedContainers;
-	std::vector<ForgeHistory> forgeHistoryVector;
 
 	std::vector<uint16_t> quickLootListItemIds;
 
@@ -1614,6 +1592,9 @@ private:
 	friend class PlayerCyclopedia;
 	friend class PlayerTitle;
 	friend class PlayerVIP;
+	friend class PlayerStorage;
+	friend class PlayerStash;
+	friend class PlayerForgeHistory;
 
 	std::unique_ptr<PlayerWheel> m_wheelPlayer;
 	std::unique_ptr<PlayerAchievement> m_playerAchievement;
@@ -1621,6 +1602,9 @@ private:
 	std::unique_ptr<PlayerCyclopedia> m_playerCyclopedia;
 	std::unique_ptr<PlayerTitle> m_playerTitle;
 	std::unique_ptr<PlayerVIP> m_playerVIP;
+	std::unique_ptr<PlayerStash> m_stashPlayer;
+	std::unique_ptr<PlayerForgeHistory> m_forgeHistoryPlayer;
+	std::unique_ptr<PlayerStorage> m_storagePlayer;
 
 	std::mutex quickLootMutex;
 

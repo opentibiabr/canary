@@ -18,6 +18,9 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
+#include "creatures/players/components/player_stash.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/wheel/wheel_gems.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
@@ -75,6 +78,9 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
 	m_playerCyclopedia = std::make_unique<PlayerCyclopedia>(*this);
 	m_playerTitle = std::make_unique<PlayerTitle>(*this);
+	m_stashPlayer = std::make_unique<PlayerStash>(*this);
+	m_forgeHistoryPlayer = std::make_unique<PlayerForgeHistory>(*this);
+	m_storagePlayer = std::make_unique<PlayerStorage>(*this);
 }
 
 Player::~Player() {
@@ -1039,73 +1045,6 @@ uint16_t Player::getLookCorpse() const {
 		return ITEM_FEMALE_CORPSE;
 	}
 	return ITEM_MALE_CORPSE;
-}
-
-void Player::addStorageValue(const uint32_t key, const int32_t value, const bool isLogin /* = false*/) {
-	if (IS_IN_KEYRANGE(key, RESERVED_RANGE)) {
-		if (IS_IN_KEYRANGE(key, OUTFITS_RANGE)) {
-			outfits.emplace_back(
-				value >> 16,
-				value & 0xFF
-			);
-			return;
-		}
-		if (IS_IN_KEYRANGE(key, MOUNTS_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, FAMILIARS_RANGE)) {
-			familiars.emplace_back(
-				value >> 16
-			);
-			return;
-		} else {
-			g_logger().warn("Unknown reserved key: {} for player: {}", key, getName());
-			return;
-		}
-	}
-
-	if (value != -1) {
-		int32_t oldValue = getStorageValue(key);
-		storageMap[key] = value;
-
-		if (!isLogin) {
-			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
-			g_events().eventOnStorageUpdate(static_self_cast<Player>(), key, value, oldValue, currentFrameTime);
-			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, getPlayer(), key, value, oldValue, currentFrameTime);
-		}
-	} else {
-		storageMap.erase(key);
-	}
-}
-
-int32_t Player::getStorageValue(const uint32_t key) const {
-	int32_t value = -1;
-	const auto it = storageMap.find(key);
-	if (it == storageMap.end()) {
-		return value;
-	}
-
-	value = it->second;
-	return value;
-}
-
-int32_t Player::getStorageValueByName(const std::string &storageName) const {
-	const auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		return -1;
-	}
-	const uint32_t key = it->second;
-
-	return getStorageValue(key);
-}
-
-void Player::addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin /* = false*/) {
-	auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		g_logger().error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
-		return;
-	}
-	const uint32_t key = it->second;
-	addStorageValue(key, value, isLogin);
 }
 
 std::shared_ptr<KV> Player::kv() const {
@@ -4845,7 +4784,7 @@ void Player::setHazardSystemPoints(int32_t count) {
 	if (!g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM)) {
 		return;
 	}
-	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, count)), true);
+	storage()->add(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, count)), true);
 	reloadHazardSystemPointsCounter = true;
 	if (count > 0) {
 		setIcon("hazard", CreatureIcon(CreatureIconQuests_t::Hazard, count));
@@ -4855,7 +4794,7 @@ void Player::setHazardSystemPoints(int32_t count) {
 }
 
 uint16_t Player::getHazardSystemPoints() const {
-	const int32_t points = getStorageValue(STORAGEVALUE_HAZARDCOUNT);
+	const int32_t points = storage()->get(STORAGEVALUE_HAZARDCOUNT);
 	if (points <= 0) {
 		return 0;
 	}
@@ -5847,19 +5786,6 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 	return false;
 }
 
-void Player::genReservedStorageRange() {
-	// generate outfits range
-	uint32_t outfits_key = PSTRG_OUTFITS_RANGE_START;
-	for (const auto &entry : outfits) {
-		storageMap[++outfits_key] = (entry.lookType << 16) | entry.addons;
-	}
-	// generate familiars range
-	uint32_t familiar_key = PSTRG_FAMILIARS_RANGE_START;
-	for (const auto &entry : familiars) {
-		storageMap[++familiar_key] = (entry.lookType << 16);
-	}
-}
-
 void Player::setSpecialMenuAvailable(bool supplyStashBool, bool marketMenuBool, bool depotSearchBool) {
 	// Closing depot search when player have special container disabled and it's still open.
 	if (isDepotSearchOpen() && !depotSearchBool && depotSearch) {
@@ -6810,7 +6736,7 @@ void Player::sendUnjustifiedPoints() const {
 }
 
 uint8_t Player::getLastMount() const {
-	const int32_t value = getStorageValue(PSTRG_MOUNTS_CURRENTMOUNT);
+	const int32_t value = storage()->get(PSTRG_MOUNTS_CURRENTMOUNT);
 	if (value > 0) {
 		return value;
 	}
@@ -6818,7 +6744,7 @@ uint8_t Player::getLastMount() const {
 }
 
 uint8_t Player::getCurrentMount() const {
-	const int32_t value = getStorageValue(PSTRG_MOUNTS_CURRENTMOUNT);
+	const int32_t value = storage()->get(PSTRG_MOUNTS_CURRENTMOUNT);
 	if (value > 0) {
 		return value;
 	}
@@ -6826,7 +6752,7 @@ uint8_t Player::getCurrentMount() const {
 }
 
 void Player::setCurrentMount(uint8_t mount) {
-	addStorageValue(PSTRG_MOUNTS_CURRENTMOUNT, mount);
+	storage()->add(PSTRG_MOUNTS_CURRENTMOUNT, mount);
 }
 
 bool Player::hasAnyMount() const {
@@ -6936,14 +6862,14 @@ bool Player::tameMount(uint8_t mountId) {
 	const uint8_t tmpMountId = mountId - 1;
 	const uint32_t key = PSTRG_MOUNTS_RANGE_START + (tmpMountId / 31);
 
-	int32_t value = getStorageValue(key);
+	int32_t value = storage()->get(key);
 	if (value != -1) {
 		value |= (1 << (tmpMountId % 31));
 	} else {
 		value = (1 << (tmpMountId % 31));
 	}
 
-	addStorageValue(key, value);
+	storage()->add(key, value);
 	return true;
 }
 
@@ -6955,13 +6881,13 @@ bool Player::untameMount(uint8_t mountId) {
 	const uint8_t tmpMountId = mountId - 1;
 	const uint32_t key = PSTRG_MOUNTS_RANGE_START + (tmpMountId / 31);
 
-	int32_t value = getStorageValue(key);
+	int32_t value = storage()->get(key);
 	if (value == -1) {
 		return true;
 	}
 
 	value &= ~(1 << (tmpMountId % 31));
-	addStorageValue(key, value);
+	storage()->add(key, value);
 
 	if (getCurrentMount() == mountId) {
 		if (isMounted()) {
@@ -6987,7 +6913,7 @@ bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
 
 	const uint8_t tmpMountId = mount->id - 1;
 
-	const int32_t value = getStorageValue(PSTRG_MOUNTS_RANGE_START + (tmpMountId / 31));
+	const int32_t value = storage()->get(PSTRG_MOUNTS_RANGE_START + (tmpMountId / 31));
 	if (value == -1) {
 		return false;
 	}
@@ -8698,7 +8624,7 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMo
 	for (const auto &spectator : spectators) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
 			if (g_configManager().getBoolean(EMOTE_SPELLS)) {
-				valueEmote = tmpPlayer->getStorageValue(STORAGEVALUE_EMOTE);
+				valueEmote = tmpPlayer->storage()->get(STORAGEVALUE_EMOTE);
 			}
 			if (!isGhostMode || tmpPlayer->canSeeCreature(static_self_cast<Player>())) {
 				if (valueEmote == 1) {
@@ -9366,14 +9292,6 @@ uint64_t Player::getForgeDustLevel() const {
 	return forgeDustLevel;
 }
 
-std::vector<ForgeHistory> &Player::getForgeHistory() {
-	return forgeHistoryVector;
-}
-
-void Player::setForgeHistory(const ForgeHistory &history) {
-	forgeHistoryVector.emplace_back(history);
-}
-
 void Player::registerForgeHistoryDescription(ForgeHistory history) {
 	std::string successfulString = history.success ? "Successful" : "Unsuccessful";
 	std::string historyTierString = history.tier > 0 ? "tier - 1" : "consumed";
@@ -9524,7 +9442,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 
 	history.description = detailsResponse.str();
 
-	setForgeHistory(history);
+	forgeHistory()->add(history);
 }
 
 // Quickloot
@@ -10247,6 +10165,33 @@ const std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() const {
 	return m_playerCyclopedia;
 }
 
+// Stash interface
+std::unique_ptr<PlayerStash> &Player::stash() {
+	return m_stashPlayer;
+}
+
+const std::unique_ptr<PlayerStash> &Player::stash() const {
+	return m_stashPlayer;
+}
+
+// Forge history interface
+std::unique_ptr<PlayerForgeHistory> &Player::forgeHistory() {
+	return m_forgeHistoryPlayer;
+}
+
+const std::unique_ptr<PlayerForgeHistory> &Player::forgeHistory() const {
+	return m_forgeHistoryPlayer;
+}
+
+// Storage interface
+std::unique_ptr<PlayerStorage> &Player::storage() {
+	return m_storagePlayer;
+}
+
+const std::unique_ptr<PlayerStorage> &Player::storage() const {
+	return m_storagePlayer;
+}
+
 void Player::sendLootMessage(const std::string &message) const {
 	const auto &party = getParty();
 	if (!party) {
@@ -10357,12 +10302,12 @@ void Player::BestiarysendCharms() const {
 void Player::addBestiaryKillCount(uint16_t raceid, uint32_t amount) {
 	const uint32_t oldCount = getBestiaryKillCount(raceid);
 	const uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-	addStorageValue(key, static_cast<int32_t>(oldCount + amount), true);
+	storage()->add(key, static_cast<int32_t>(oldCount + amount), true);
 }
 
 uint32_t Player::getBestiaryKillCount(uint16_t raceid) const {
 	const uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-	const auto value = getStorageValue(key);
+	const auto value = storage()->get(key);
 	return value > 0 ? static_cast<uint32_t>(value) : 0;
 }
 

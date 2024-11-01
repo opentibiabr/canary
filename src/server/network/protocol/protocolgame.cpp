@@ -30,6 +30,8 @@
 #include "creatures/players/management/waitlist.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/vip/player_vip.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/player_icons.hpp"
 #include "game/game.hpp"
@@ -5676,7 +5678,7 @@ void ProtocolGame::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId
 
 void ProtocolGame::sendForgeHistory(uint8_t page) {
 	page = page + 1;
-	auto historyVector = player->getForgeHistory();
+	auto historyVector = player->forgeHistory()->get();
 	auto historyVectorLen = getVectorIterationIncreaseCount(historyVector);
 
 	uint16_t lastPage = (1 < std::floor((historyVectorLen - 1) / 9) + 1) ? static_cast<uint16_t>(std::floor((historyVectorLen - 1) / 9) + 1) : 1;
@@ -8312,7 +8314,7 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg) {
 
 void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock) {
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
-	if (shopBlock.itemStorageKey != 0 && player->getStorageValue(shopBlock.itemStorageKey) < shopBlock.itemStorageValue) {
+	if (shopBlock.itemStorageKey != 0 && player->storage()->get(shopBlock.itemStorageKey) < shopBlock.itemStorageValue) {
 		AddHiddenShopItem(msg);
 		return;
 	}

@@ -11,6 +11,7 @@
 
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "game/game.hpp"
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
@@ -196,7 +197,7 @@ void IOBosstiary::addBosstiaryKill(const std::shared_ptr<Player> &player, const 
 	auto pointsForCurrentLevel = infoForCurrentRace[newBossLevel - 1].points;
 	player->addBossPoints(pointsForCurrentLevel);
 
-	int32_t value = player->getStorageValue(STORAGEVALUE_PODIUM);
+	int32_t value = player->storage()->get(STORAGEVALUE_PODIUM);
 	if (value != 1 && newBossLevel == 2) {
 		auto returnValue = g_game().addItemStoreInbox(player, ITEM_PODIUM_OF_VIGOUR);
 		if (!returnValue) {
@@ -209,7 +210,7 @@ void IOBosstiary::addBosstiaryKill(const std::shared_ptr<Player> &player, const 
 									"Use it to display bosses for which you have reached at least the Expertise level.";
 		player->sendTextMessage(MESSAGE_GAME_HIGHLIGHT, podiumMessage);
 
-		player->addStorageValue(STORAGEVALUE_PODIUM, 1);
+		player->storage()->add(STORAGEVALUE_PODIUM, 1);
 	}
 }
 

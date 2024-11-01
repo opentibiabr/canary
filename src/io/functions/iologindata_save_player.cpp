@@ -17,6 +17,7 @@
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
+#include "game/scheduling/save_manager.hpp"
 
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
@@ -144,17 +145,12 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 		queue.pop_front();
 	}
 
-	// Execute query
-	if (!query_insert.execute()) {
-		g_logger().error("Error executing query.");
-		return false;
-	}
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerFirst] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -164,75 +160,84 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	Database &db = Database::getInstance();
 
-	std::ostringstream query;
-	query << "SELECT `save` FROM `players` WHERE `id` = " << player->getGUID();
-	DBResult_ptr result = db.storeQuery(query.str());
+	// Check if `save` flag is set
+	auto result = g_database().storeQuery(fmt::format("SELECT `save` FROM `players` WHERE `id` = {}", player->getGUID()));
 	if (!result) {
-		g_logger().warn("[IOLoginData::savePlayer] - Error for select result query from player: {}", player->getName());
+		g_logger().warn("[IOLoginDataSave::savePlayerFirst] - Error retrieving save flag for player: {}", player->getName());
 		return false;
 	}
 
+	// Quick update if `save` flag is 0
 	if (result->getNumber<uint16_t>("save") == 0) {
-		query.str("");
-		query << "UPDATE `players` SET `lastlogin` = " << player->lastLoginSaved << ", `lastip` = " << player->lastIP << " WHERE `id` = " << player->getGUID();
-		return db.executeQuery(query.str());
+		auto quickUpdateTask = [queryStr = fmt::format(
+									"UPDATE `players` SET `lastlogin` = {}, `lastip` = {} WHERE `id` = {}",
+									player->lastLoginSaved, player->lastIP, player->getGUID()
+								)]() {
+			Database &db = Database::getInstance();
+			if (!g_database().executeQuery(queryStr)) {
+				g_logger().warn("[SaveManager::quickUpdateTask] - Failed to execute quick update for player.");
+				return;
+			}
+		};
+
+		g_saveManager().addTask(quickUpdateTask, "IOLoginDataSave::savePlayerFirst - quickUpdateTask");
+		return true;
 	}
 
-	// First, an UPDATE query to write the player itself
-	query.str("");
-	query << "UPDATE `players` SET ";
-	query << "`name` = " << db.escapeString(player->name) << ",";
-	query << "`level` = " << player->level << ",";
-	query << "`group_id` = " << player->group->id << ",";
-	query << "`vocation` = " << player->getVocationId() << ",";
-	query << "`health` = " << player->health << ",";
-	query << "`healthmax` = " << player->healthMax << ",";
-	query << "`experience` = " << player->experience << ",";
-	query << "`lookbody` = " << static_cast<uint32_t>(player->defaultOutfit.lookBody) << ",";
-	query << "`lookfeet` = " << static_cast<uint32_t>(player->defaultOutfit.lookFeet) << ",";
-	query << "`lookhead` = " << static_cast<uint32_t>(player->defaultOutfit.lookHead) << ",";
-	query << "`looklegs` = " << static_cast<uint32_t>(player->defaultOutfit.lookLegs) << ",";
-	query << "`looktype` = " << player->defaultOutfit.lookType << ",";
-	query << "`lookaddons` = " << static_cast<uint32_t>(player->defaultOutfit.lookAddons) << ",";
-	query << "`lookmountbody` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountBody) << ",";
-	query << "`lookmountfeet` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountFeet) << ",";
-	query << "`lookmounthead` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountHead) << ",";
-	query << "`lookmountlegs` = " << static_cast<uint32_t>(player->defaultOutfit.lookMountLegs) << ",";
-	query << "`lookfamiliarstype` = " << player->defaultOutfit.lookFamiliarsType << ",";
-	query << "`isreward` = " << static_cast<uint16_t>(player->isDailyReward) << ",";
-	query << "`maglevel` = " << player->magLevel << ",";
-	query << "`mana` = " << player->mana << ",";
-	query << "`manamax` = " << player->manaMax << ",";
-	query << "`manaspent` = " << player->manaSpent << ",";
-	query << "`soul` = " << static_cast<uint16_t>(player->soul) << ",";
-	if (player->town) {
-		query << "`town_id` = " << player->town->getID() << ",";
-	}
+	// Build the list of column-value pairs
+	std::vector<std::string> columns;
+	columns.reserve(result->countColumns());
 
-	const Position &loginPosition = player->getLoginPosition();
-	query << "`posx` = " << loginPosition.getX() << ",";
-	query << "`posy` = " << loginPosition.getY() << ",";
-	query << "`posz` = " << loginPosition.getZ() << ",";
+	// Basic Player Information
+	columns.push_back(fmt::format("`name` = {}", g_database().escapeString(player->name)));
+	columns.push_back(fmt::format("`level` = {}", player->level));
+	columns.push_back(fmt::format("`group_id` = {}", player->group->id));
+	columns.push_back(fmt::format("`vocation` = {}", player->getVocationId()));
+	columns.push_back(fmt::format("`health` = {}", player->health));
+	columns.push_back(fmt::format("`healthmax` = {}", player->healthMax));
+	columns.push_back(fmt::format("`experience` = {}", player->experience));
 
-	query << "`prey_wildcard` = " << player->getPreyCards() << ",";
-	query << "`task_points` = " << player->getTaskHuntingPoints() << ",";
-	query << "`boss_points` = " << player->getBossPoints() << ",";
-	query << "`forge_dusts` = " << player->getForgeDusts() << ",";
-	query << "`forge_dust_level` = " << player->getForgeDustLevel() << ",";
-	query << "`randomize_mount` = " << static_cast<uint16_t>(player->isRandomMounted()) << ",";
+	// Appearance Attributes
+	columns.push_back(fmt::format("`lookbody` = {}", static_cast<uint32_t>(player->defaultOutfit.lookBody)));
+	columns.push_back(fmt::format("`lookfeet` = {}", static_cast<uint32_t>(player->defaultOutfit.lookFeet)));
+	columns.push_back(fmt::format("`lookhead` = {}", static_cast<uint32_t>(player->defaultOutfit.lookHead)));
+	columns.push_back(fmt::format("`looklegs` = {}", static_cast<uint32_t>(player->defaultOutfit.lookLegs)));
+	columns.push_back(fmt::format("`looktype` = {}", player->defaultOutfit.lookType));
+	columns.push_back(fmt::format("`lookaddons` = {}", static_cast<uint32_t>(player->defaultOutfit.lookAddons)));
+	columns.push_back(fmt::format("`lookmountbody` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountBody)));
+	columns.push_back(fmt::format("`lookmountfeet` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountFeet)));
+	columns.push_back(fmt::format("`lookmounthead` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountHead)));
+	columns.push_back(fmt::format("`lookmountlegs` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountLegs)));
+	columns.push_back(fmt::format("`lookfamiliarstype` = {}", player->defaultOutfit.lookFamiliarsType));
 
-	query << "`cap` = " << (player->capacity / 100) << ",";
-	query << "`sex` = " << static_cast<uint16_t>(player->sex) << ",";
+	columns.push_back(fmt::format("`isreward` = {}", static_cast<uint16_t>(player->isDailyReward)));
+	columns.push_back(fmt::format("`maglevel` = {}", player->magLevel));
+	columns.push_back(fmt::format("`mana` = {}", player->mana));
 
+	// Gameplay Stats
+	columns.push_back(fmt::format("`manamax` = {}", player->manaMax));
+	columns.push_back(fmt::format("`manaspent` = {}", player->manaSpent));
+	columns.push_back(fmt::format("`soul` = {}", static_cast<uint16_t>(player->soul)));
+	columns.push_back(fmt::format("`town_id` = {}", player->town->getID()));
+	columns.push_back(fmt::format("`posx` = {}", player->getLoginPosition().getX()));
+	columns.push_back(fmt::format("`posy` = {}", player->getLoginPosition().getY()));
+	columns.push_back(fmt::format("`posz` = {}", player->getLoginPosition().getZ()));
+	columns.push_back(fmt::format("`prey_wildcard` = {}", player->getPreyCards()));
+	columns.push_back(fmt::format("`task_points` = {}", player->getTaskHuntingPoints()));
+	columns.push_back(fmt::format("`boss_points` = {}", player->getBossPoints()));
+	columns.push_back(fmt::format("`forge_dusts` = {}", player->getForgeDusts()));
+	columns.push_back(fmt::format("`forge_dust_level` = {}", player->getForgeDustLevel()));
+	columns.push_back(fmt::format("`randomize_mount` = {}", static_cast<uint16_t>(player->isRandomMounted())));
+	columns.push_back(fmt::format("`cap` = {}", (player->capacity / 100)));
+	columns.push_back(fmt::format("`sex` = {}", static_cast<uint16_t>(player->sex)));
 	if (player->lastLoginSaved != 0) {
-		query << "`lastlogin` = " << player->lastLoginSaved << ",";
+		columns.push_back(fmt::format("`lastlogin` = {}", player->lastLoginSaved));
+	}
+	if (player->lastIP) {
+		columns.push_back(fmt::format("`lastip` = {}", player->lastIP));
 	}
 
-	if (player->lastIP != 0) {
-		query << "`lastip` = " << player->lastIP << ",";
-	}
-
-	// serialize conditions
+	// Serialize conditions
 	PropWriteStream propWriteStream;
 	for (const auto &condition : player->conditions) {
 		if (condition->isPersistent()) {
@@ -243,203 +248,149 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	size_t attributesSize;
 	const char* attributes = propWriteStream.getStream(attributesSize);
+	if (attributesSize) {
+		columns.push_back(fmt::format("`conditions` = {}", g_database().escapeBlob(attributes, static_cast<uint32_t>(attributesSize))));
+	}
 
-	query << "`conditions` = " << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize)) << ",";
-
+	// Skull attributes, based on world type
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
 		int64_t skullTime = 0;
-
 		if (player->skullTicks > 0) {
-			auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-			skullTime = now + player->skullTicks;
+			auto now = std::chrono::system_clock::now();
+			skullTime = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count() + player->skullTicks;
 		}
+		columns.push_back(fmt::format("`skulltime` = {}", skullTime));
+		columns.push_back(fmt::format("`skull` = {}", static_cast<int64_t>(player->skull)));
+	}
 
-		query << "`skulltime` = " << skullTime << ",";
+	// Additional fields
+	columns.push_back(fmt::format("`lastlogout` = {}", player->getLastLogout()));
+	columns.push_back(fmt::format("`balance` = {}", player->bankBalance));
+	columns.push_back(fmt::format("`offlinetraining_time` = {}", player->getOfflineTrainingTime() / 1000));
+	columns.push_back(fmt::format("`offlinetraining_skill` = {}", player->getOfflineTrainingSkill()));
+	columns.push_back(fmt::format("`skill_fist` = {}", player->skills[SKILL_FIST].level));
+	columns.push_back(fmt::format("`skill_fist_tries` = {}", player->skills[SKILL_FIST].tries));
+	columns.push_back(fmt::format("`skill_club` = {}", player->skills[SKILL_CLUB].level));
+	columns.push_back(fmt::format("`skill_club_tries` = {}", player->skills[SKILL_CLUB].tries));
+	columns.push_back(fmt::format("`skill_sword` = {}", player->skills[SKILL_SWORD].level));
+	columns.push_back(fmt::format("`skill_sword_tries` = {}", player->skills[SKILL_SWORD].tries));
+	columns.push_back(fmt::format("`skill_axe` = {}", player->skills[SKILL_AXE].level));
+	columns.push_back(fmt::format("`skill_axe_tries` = {}", player->skills[SKILL_AXE].tries));
+	columns.push_back(fmt::format("`skill_dist` = {}", player->skills[SKILL_DISTANCE].level));
+	columns.push_back(fmt::format("`skill_dist_tries` = {}", player->skills[SKILL_DISTANCE].tries));
+	columns.push_back(fmt::format("`skill_shielding` = {}", player->skills[SKILL_SHIELD].level));
+	columns.push_back(fmt::format("`skill_shielding_tries` = {}", player->skills[SKILL_SHIELD].tries));
+	columns.push_back(fmt::format("`skill_fishing` = {}", player->skills[SKILL_FISHING].level));
+	columns.push_back(fmt::format("`skill_fishing_tries` = {}", player->skills[SKILL_FISHING].tries));
+	columns.push_back(fmt::format("`skill_critical_hit_chance` = {}", player->skills[SKILL_CRITICAL_HIT_CHANCE].level));
+	columns.push_back(fmt::format("`skill_critical_hit_chance_tries` = {}", player->skills[SKILL_CRITICAL_HIT_CHANCE].tries));
+	columns.push_back(fmt::format("`skill_critical_hit_damage` = {}", player->skills[SKILL_CRITICAL_HIT_DAMAGE].level));
+	columns.push_back(fmt::format("`skill_critical_hit_damage_tries` = {}", player->skills[SKILL_CRITICAL_HIT_DAMAGE].tries));
+	columns.push_back(fmt::format("`skill_life_leech_chance` = {}", player->skills[SKILL_LIFE_LEECH_CHANCE].level));
+	columns.push_back(fmt::format("`skill_life_leech_chance_tries` = {}", player->skills[SKILL_LIFE_LEECH_CHANCE].tries));
+	columns.push_back(fmt::format("`skill_life_leech_amount` = {}", player->skills[SKILL_LIFE_LEECH_AMOUNT].level));
+	columns.push_back(fmt::format("`skill_life_leech_amount_tries` = {}", player->skills[SKILL_LIFE_LEECH_AMOUNT].tries));
+	columns.push_back(fmt::format("`skill_mana_leech_chance` = {}", player->skills[SKILL_MANA_LEECH_CHANCE].level));
+	columns.push_back(fmt::format("`skill_mana_leech_chance_tries` = {}", player->skills[SKILL_MANA_LEECH_CHANCE].tries));
+	columns.push_back(fmt::format("`skill_mana_leech_amount` = {}", player->skills[SKILL_MANA_LEECH_AMOUNT].level));
+	columns.push_back(fmt::format("`skill_mana_leech_amount_tries` = {}", player->skills[SKILL_MANA_LEECH_AMOUNT].tries));
+	columns.push_back(fmt::format("`stamina` = {}", player->getStaminaMinutes()));
+	columns.push_back(fmt::format("`manashield` = {}", player->getManaShield()));
+	columns.push_back(fmt::format("`max_manashield` = {}", player->getMaxManaShield()));
+	columns.push_back(fmt::format("`xpboost_value` = {}", player->getXpBoostPercent()));
+	columns.push_back(fmt::format("`xpboost_stamina` = {}", player->getXpBoostTime()));
+	columns.push_back(fmt::format("`quickloot_fallback` = {}", player->quickLootFallbackToMainContainer ? 1 : 0));
 
-		Skulls_t skull = SKULL_NONE;
-		if (player->skull == SKULL_RED) {
-			skull = SKULL_RED;
-		} else if (player->skull == SKULL_BLACK) {
-			skull = SKULL_BLACK;
+	// Blessings
+	for (int i = 1; i <= 8; ++i) {
+		columns.push_back(fmt::format("`blessings{}` = {}", i, static_cast<uint32_t>(player->getBlessingCount(static_cast<uint8_t>(i)))));
+	}
+
+	// Create the task for the query execution
+	auto savePlayerTask = [joinColums = std::move(columns), playerName = player->getName(), playerGUID = player->getGUID()]() {
+		// Now join the columns into a single string
+		std::string setClause = fmt::to_string(fmt::join(joinColums, ", "));
+		// Construct the final query
+		std::string queryStr = fmt::format("UPDATE `players` SET {} WHERE `id` = {}", setClause, playerGUID);
+		if (!g_database().executeQuery(queryStr)) {
+			g_logger().warn("[SaveManager::savePlayerTask] - Error executing player first save for player: {}", playerName);
 		}
-		query << "`skull` = " << static_cast<int64_t>(skull) << ",";
-	}
+	};
 
-	query << "`lastlogout` = " << player->getLastLogout() << ",";
-	query << "`balance` = " << player->bankBalance << ",";
-	query << "`offlinetraining_time` = " << player->getOfflineTrainingTime() / 1000 << ",";
-	query << "`offlinetraining_skill` = " << std::to_string(player->getOfflineTrainingSkill()) << ",";
-	query << "`stamina` = " << player->getStaminaMinutes() << ",";
-	query << "`skill_fist` = " << player->skills[SKILL_FIST].level << ",";
-	query << "`skill_fist_tries` = " << player->skills[SKILL_FIST].tries << ",";
-	query << "`skill_club` = " << player->skills[SKILL_CLUB].level << ",";
-	query << "`skill_club_tries` = " << player->skills[SKILL_CLUB].tries << ",";
-	query << "`skill_sword` = " << player->skills[SKILL_SWORD].level << ",";
-	query << "`skill_sword_tries` = " << player->skills[SKILL_SWORD].tries << ",";
-	query << "`skill_axe` = " << player->skills[SKILL_AXE].level << ",";
-	query << "`skill_axe_tries` = " << player->skills[SKILL_AXE].tries << ",";
-	query << "`skill_dist` = " << player->skills[SKILL_DISTANCE].level << ",";
-	query << "`skill_dist_tries` = " << player->skills[SKILL_DISTANCE].tries << ",";
-	query << "`skill_shielding` = " << player->skills[SKILL_SHIELD].level << ",";
-	query << "`skill_shielding_tries` = " << player->skills[SKILL_SHIELD].tries << ",";
-	query << "`skill_fishing` = " << player->skills[SKILL_FISHING].level << ",";
-	query << "`skill_fishing_tries` = " << player->skills[SKILL_FISHING].tries << ",";
-	query << "`skill_critical_hit_chance` = " << player->skills[SKILL_CRITICAL_HIT_CHANCE].level << ",";
-	query << "`skill_critical_hit_chance_tries` = " << player->skills[SKILL_CRITICAL_HIT_CHANCE].tries << ",";
-	query << "`skill_critical_hit_damage` = " << player->skills[SKILL_CRITICAL_HIT_DAMAGE].level << ",";
-	query << "`skill_critical_hit_damage_tries` = " << player->skills[SKILL_CRITICAL_HIT_DAMAGE].tries << ",";
-	query << "`skill_life_leech_chance` = " << player->skills[SKILL_LIFE_LEECH_CHANCE].level << ",";
-	query << "`skill_life_leech_chance_tries` = " << player->skills[SKILL_LIFE_LEECH_CHANCE].tries << ",";
-	query << "`skill_life_leech_amount` = " << player->skills[SKILL_LIFE_LEECH_AMOUNT].level << ",";
-	query << "`skill_life_leech_amount_tries` = " << player->skills[SKILL_LIFE_LEECH_AMOUNT].tries << ",";
-	query << "`skill_mana_leech_chance` = " << player->skills[SKILL_MANA_LEECH_CHANCE].level << ",";
-	query << "`skill_mana_leech_chance_tries` = " << player->skills[SKILL_MANA_LEECH_CHANCE].tries << ",";
-	query << "`skill_mana_leech_amount` = " << player->skills[SKILL_MANA_LEECH_AMOUNT].level << ",";
-	query << "`skill_mana_leech_amount_tries` = " << player->skills[SKILL_MANA_LEECH_AMOUNT].tries << ",";
-	query << "`manashield` = " << player->getManaShield() << ",";
-	query << "`max_manashield` = " << player->getMaxManaShield() << ",";
-	query << "`xpboost_value` = " << player->getXpBoostPercent() << ",";
-	query << "`xpboost_stamina` = " << player->getXpBoostTime() << ",";
-	query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ",";
-
-	if (!player->isOffline()) {
-		auto now = std::chrono::system_clock::now();
-		auto lastLoginSaved = std::chrono::system_clock::from_time_t(player->lastLoginSaved);
-		query << "`onlinetime` = `onlinetime` + " << std::chrono::duration_cast<std::chrono::seconds>(now - lastLoginSaved).count() << ",";
-	}
-
-	for (int i = 1; i <= 8; i++) {
-		query << "`blessings" << i << "`"
-			  << " = " << static_cast<uint32_t>(player->getBlessingCount(static_cast<uint8_t>(i))) << ((i == 8) ? " " : ",");
-	}
-	query << " WHERE `id` = " << player->getGUID();
-
-	if (!db.executeQuery(query.str())) {
-		return false;
-	}
-	return true;
-}
-
-bool IOLoginDataSave::savePlayerStash(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
-		return false;
-	}
-
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "DELETE FROM `player_stash` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
-
-	DBInsert stashQuery("INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES ");
-	for (const auto &[itemId, itemCount] : player->getStashItems()) {
-		query << player->getGUID() << ',' << itemId << ',' << itemCount;
-		if (!stashQuery.addRow(query)) {
-			return false;
-		}
-	}
-
-	if (!stashQuery.execute()) {
-		return false;
-	}
+	// Add the task to the SaveManager
+	g_saveManager().addTask(savePlayerTask, "IOLoginData::savePlayerFirst - savePlayerTask");
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerSpells(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerSpells] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "DELETE FROM `player_spells` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
-
-	DBInsert spellsQuery("INSERT INTO `player_spells` (`player_id`, `name` ) VALUES ");
+	auto deleteQueryStr = fmt::format("DELETE FROM `player_spells` WHERE `player_id` = {}", player->getGUID());
+	DBInsert spellsQuery("INSERT INTO `player_spells` (`player_id`, `name`) VALUES ");
 	for (const std::string &spellName : player->learnedInstantSpellList) {
-		query << player->getGUID() << ',' << db.escapeString(spellName);
-		if (!spellsQuery.addRow(query)) {
+		std::string row = fmt::format("{},{}", player->getGUID(), g_database().escapeString(spellName));
+		if (!spellsQuery.addRow(row)) {
+			g_logger().warn("[IOLoginDataSave::savePlayerSpells] - Failed to add row for player spells");
 			return false;
 		}
 	}
 
-	if (!spellsQuery.execute()) {
-		return false;
-	}
+	auto spellsSaveTask = [deleteQueryStr, spellsQuery]() mutable {
+		if (!g_database().executeQuery(deleteQueryStr)) {
+			g_logger().error("[SaveManager::spellsSaveTask] - Failed to execute delete query for player spells");
+			return;
+		}
+
+		if (!spellsQuery.execute()) {
+			g_logger().warn("[SaveManager::spellsSaveTask] - Failed to execute insert query for player spells");
+		}
+	};
+
+	g_saveManager().addTask(spellsSaveTask, "IOLoginData::savePlayerSpells - spellsSaveTask");
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerKills(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerKills] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "DELETE FROM `player_kills` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
-
+	auto deleteQueryStr = fmt::format("DELETE FROM `player_kills` WHERE `player_id` = {}", player->getGUID());
 	DBInsert killsQuery("INSERT INTO `player_kills` (`player_id`, `target`, `time`, `unavenged`) VALUES");
 	for (const auto &kill : player->unjustifiedKills) {
-		query << player->getGUID() << ',' << kill.target << ',' << kill.time << ',' << kill.unavenged;
-		if (!killsQuery.addRow(query)) {
+		std::string row = fmt::format("{},{},{},{}", player->getGUID(), kill.target, kill.time, kill.unavenged);
+		if (!killsQuery.addRow(row)) {
+			g_logger().warn("[IOLoginDataSave::savePlayerKills] - Failed to add row for player kills");
 			return false;
 		}
 	}
 
-	if (!killsQuery.execute()) {
-		return false;
-	}
+	auto killsSaveTask = [deleteQueryStr, killsQuery]() mutable {
+		if (!g_database().executeQuery(deleteQueryStr)) {
+			g_logger().warn("[SaveManager::killsSaveTask] - Failed to execute delete query for player kills");
+			return;
+		}
+
+		if (!killsQuery.execute()) {
+			g_logger().warn("[SaveManager::killsSaveTask] - Failed to execute insert query for player kills");
+		}
+	};
+
+	g_saveManager().addTask(killsSaveTask, "IOLoginData::savePlayerKills - killsSaveTask");
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerBestiarySystem(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerBestiarySystem] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
 	Database &db = Database::getInstance();
-
-	std::ostringstream query;
-	query << "UPDATE `player_charms` SET ";
-	query << "`charm_points` = " << player->charmPoints << ",";
-	query << "`charm_expansion` = " << ((player->charmExpansion) ? 1 : 0) << ",";
-	query << "`rune_wound` = " << player->charmRuneWound << ",";
-	query << "`rune_enflame` = " << player->charmRuneEnflame << ",";
-	query << "`rune_poison` = " << player->charmRunePoison << ",";
-	query << "`rune_freeze` = " << player->charmRuneFreeze << ",";
-	query << "`rune_zap` = " << player->charmRuneZap << ",";
-	query << "`rune_curse` = " << player->charmRuneCurse << ",";
-	query << "`rune_cripple` = " << player->charmRuneCripple << ",";
-	query << "`rune_parry` = " << player->charmRuneParry << ",";
-	query << "`rune_dodge` = " << player->charmRuneDodge << ",";
-	query << "`rune_adrenaline` = " << player->charmRuneAdrenaline << ",";
-	query << "`rune_numb` = " << player->charmRuneNumb << ",";
-	query << "`rune_cleanse` = " << player->charmRuneCleanse << ",";
-	query << "`rune_bless` = " << player->charmRuneBless << ",";
-	query << "`rune_scavenge` = " << player->charmRuneScavenge << ",";
-	query << "`rune_gut` = " << player->charmRuneGut << ",";
-	query << "`rune_low_blow` = " << player->charmRuneLowBlow << ",";
-	query << "`rune_divine` = " << player->charmRuneDivine << ",";
-	query << "`rune_vamp` = " << player->charmRuneVamp << ",";
-	query << "`rune_void` = " << player->charmRuneVoid << ",";
-	query << "`UsedRunesBit` = " << player->UsedRunesBit << ",";
-	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
 
 	PropWriteStream propBestiaryStream;
 	for (const auto &trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
@@ -447,30 +398,61 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const std::shared_ptr<Player> &pl
 	}
 	size_t trackerSize;
 	const char* trackerList = propBestiaryStream.getStream(trackerSize);
-	query << " `tracker list` = " << db.escapeBlob(trackerList, static_cast<uint32_t>(trackerSize));
-	query << " WHERE `player_guid` = " << player->getGUID();
+	auto escapedTrackerList = g_database().escapeBlob(trackerList, static_cast<uint32_t>(trackerSize));
 
-	if (!db.executeQuery(query.str())) {
-		g_logger().warn("[IOLoginData::savePlayer] - Error saving bestiary data from player: {}", player->getName());
-		return false;
-	}
+	std::string updateQuery = fmt::format(
+		"UPDATE `player_charms` SET `charm_points` = {}, `charm_expansion` = {}, "
+		"`rune_wound` = {}, `rune_enflame` = {}, `rune_poison` = {}, `rune_freeze` = {}, "
+		"`rune_zap` = {}, `rune_curse` = {}, `rune_cripple` = {}, `rune_parry` = {}, "
+		"`rune_dodge` = {}, `rune_adrenaline` = {}, `rune_numb` = {}, `rune_cleanse` = {}, "
+		"`rune_bless` = {}, `rune_scavenge` = {}, `rune_gut` = {}, `rune_low_blow` = {}, "
+		"`rune_divine` = {}, `rune_vamp` = {}, `rune_void` = {}, `UsedRunesBit` = {}, "
+		"`UnlockedRunesBit` = {}, `tracker list` = {} WHERE `player_guid` = {}",
+		player->charmPoints,
+		player->charmExpansion ? 1 : 0,
+		player->charmRuneWound,
+		player->charmRuneEnflame,
+		player->charmRunePoison,
+		player->charmRuneFreeze,
+		player->charmRuneZap,
+		player->charmRuneCurse,
+		player->charmRuneCripple,
+		player->charmRuneParry,
+		player->charmRuneDodge,
+		player->charmRuneAdrenaline,
+		player->charmRuneNumb,
+		player->charmRuneCleanse,
+		player->charmRuneBless,
+		player->charmRuneScavenge,
+		player->charmRuneGut,
+		player->charmRuneLowBlow,
+		player->charmRuneDivine,
+		player->charmRuneVamp,
+		player->charmRuneVoid,
+		player->UsedRunesBit,
+		player->UnlockedRunesBit,
+		escapedTrackerList,
+		player->getGUID()
+	);
+
+	auto bestiarySaveTask = [updateQuery]() {
+		if (!g_database().executeQuery(updateQuery)) {
+			g_logger().warn("[SaveManager::bestiarySaveTask] - Failed to execute bestiary data update query");
+		}
+	};
+
+	g_saveManager().addTask(bestiarySaveTask, "IOLoginData::savePlayerBestiarySystem - bestiarySaveTask");
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerItem(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerItem] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
 	PropWriteStream propWriteStream;
-	std::ostringstream query;
-	query << "DELETE FROM `player_items` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
-		g_logger().warn("[IOLoginData::savePlayer] - Error delete query 'player_items' from player: {}", player->getName());
-		return false;
-	}
+	std::string deleteQueryStr = fmt::format("DELETE FROM `player_items` WHERE `player_id` = {}", player->getGUID());
 
 	DBInsert itemsQuery("INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 
@@ -483,320 +465,273 @@ bool IOLoginDataSave::savePlayerItem(const std::shared_ptr<Player> &player) {
 	}
 
 	if (!saveItems(player, itemList, itemsQuery, propWriteStream)) {
-		g_logger().warn("[IOLoginData::savePlayer] - Failed for save items from player: {}", player->getName());
+		g_logger().warn("[IOLoginDataSave::savePlayerItem] - Failed to save items for player: {}", player->getName());
 		return false;
 	}
+
+	auto itemsSaveTask = [deleteQueryStr, itemsQuery]() mutable {
+		if (!g_database().executeQuery(deleteQueryStr)) {
+			g_logger().warn("[SaveManager::itemsSaveTask] - Failed to execute delete query for player items");
+			return;
+		}
+
+		if (!itemsQuery.execute()) {
+			g_logger().warn("[SaveManager::itemsSaveTask] - Failed to execute insert query for player items");
+		}
+	};
+
+	g_saveManager().addTask(itemsSaveTask, "IOLoginData::savePlayerItem - itemsSaveTask");
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerDepotItems(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerDepotItems] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-	PropWriteStream propWriteStream;
+	auto deleteQueryStr = fmt::format("DELETE FROM `player_depotitems` WHERE `player_id` = {}", player->getGUID());
+	DBInsert depotQuery("INSERT INTO `player_depotitems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
+
 	ItemDepotList depotList;
-	if (player->lastDepotId != -1) {
-		std::ostringstream query;
-		query << "DELETE FROM `player_depotitems` WHERE `player_id` = " << player->getGUID();
-
-		if (!db.executeQuery(query.str())) {
-			return false;
+	for (const auto &[pid, depotChest] : player->depotChests) {
+		for (const std::shared_ptr<Item> &item : depotChest->getItemList()) {
+			depotList.emplace_back(pid, item);
 		}
-
-		query.str("");
-
-		DBInsert depotQuery("INSERT INTO `player_depotitems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
-
-		for (const auto &[pid, depotChest] : player->depotChests) {
-			for (const std::shared_ptr<Item> &item : depotChest->getItemList()) {
-				depotList.emplace_back(pid, item);
-			}
-		}
-
-		if (!saveItems(player, depotList, depotQuery, propWriteStream)) {
-			return false;
-		}
-		return true;
 	}
+
+	PropWriteStream propWriteStream;
+	if (!saveItems(player, depotList, depotQuery, propWriteStream)) {
+		g_logger().warn("[IOLoginDataSave::savePlayerDepotItems] - Failed to save depot items for player: {}", player->getName());
+		return false;
+	}
+
+	auto depotItemsSaveTask = [deleteQueryStr, depotQuery]() mutable {
+		if (!g_database().executeQuery(deleteQueryStr)) {
+			g_logger().warn("[SaveManager::depotItemsSaveTask] - Failed to execute delete query for depot items");
+			return;
+		}
+
+		if (!depotQuery.execute()) {
+			g_logger().warn("[SaveManager::depotItemsSaveTask] - Failed to execute insert query for depot items");
+		}
+	};
+
+	g_saveManager().addTask(depotItemsSaveTask, "IOLoginData::savePlayerDepotItems - depotItemsSaveTask");
 	return true;
 }
 
 bool IOLoginDataSave::saveRewardItems(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::saveRewardItems] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	std::ostringstream query;
-	query << "DELETE FROM `player_rewards` WHERE `player_id` = " << player->getGUID();
+	auto deleteQueryStr = fmt::format("DELETE FROM `player_rewards` WHERE `player_id` = {}", player->getGUID());
+	DBInsert rewardQuery("INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 
-	if (!Database::getInstance().executeQuery(query.str())) {
-		return false;
-	}
-
+	ItemRewardList rewardListItems;
 	std::vector<uint64_t> rewardList;
 	player->getRewardList(rewardList);
 
-	ItemRewardList rewardListItems;
 	if (!rewardList.empty()) {
 		for (const auto &rewardId : rewardList) {
-			auto reward = player->getReward(rewardId, false);
-			if (!reward->empty() && (getTimeMsNow() - rewardId <= 1000 * 60 * 60 * 24 * 7)) {
+			const auto &reward = player->getReward(rewardId, false);
+			if (reward && !reward->empty() && (getTimeMsNow() - rewardId <= 1000 * 60 * 60 * 24 * 7)) {
 				rewardListItems.emplace_back(0, reward);
 			}
 		}
-
-		DBInsert rewardQuery("INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
-		PropWriteStream propWriteStream;
-		if (!saveItems(player, rewardListItems, rewardQuery, propWriteStream)) {
-			return false;
-		}
 	}
+
+	PropWriteStream propWriteStream;
+	if (!saveItems(player, rewardListItems, rewardQuery, propWriteStream)) {
+		g_logger().warn("[IOLoginDataSave::saveRewardItems] - Failed to save reward items for the player: {}", player->getName());
+		return false;
+	}
+
+	auto rewardItemsSaveTask = [deleteQueryStr, rewardQuery]() mutable {
+		if (!g_database().executeQuery(deleteQueryStr)) {
+			g_logger().warn("[SaveManager::rewardItemsSaveTask] - Failed to execute delete query for reward items");
+			return;
+		}
+
+		if (!rewardQuery.execute()) {
+			g_logger().warn("[SaveManager::rewardItemsSaveTask] - Failed to execute insert query for reward items");
+		}
+	};
+
+	g_saveManager().addTask(rewardItemsSaveTask, "IOLoginDataSave::saveRewardItems - rewardItemsSaveTask");
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerInbox(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerInbox] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-	PropWriteStream propWriteStream;
-	ItemInboxList inboxList;
-	std::ostringstream query;
-	query << "DELETE FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
+	auto deleteQueryStr = fmt::format("DELETE FROM `player_inboxitems` WHERE `player_id` = {}", player->getGUID());
 	DBInsert inboxQuery("INSERT INTO `player_inboxitems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 
+	ItemInboxList inboxList;
 	for (const auto &item : player->getInbox()->getItemList()) {
 		inboxList.emplace_back(0, item);
 	}
 
+	PropWriteStream propWriteStream;
 	if (!saveItems(player, inboxList, inboxQuery, propWriteStream)) {
+		g_logger().warn("[IOLoginDataSave::savePlayerInbox] - Failed to save inbox items for player: {}", player->getName());
 		return false;
 	}
+
+	auto inboxSaveTask = [deleteQueryStr, inboxQuery]() mutable {
+		if (!g_database().executeQuery(deleteQueryStr)) {
+			g_logger().warn("[SaveManager::inboxSaveTask] - Failed to execute delete query for inbox items");
+			return;
+		}
+
+		if (!inboxQuery.execute()) {
+			g_logger().warn("[SaveManager::inboxSaveTask] - Failed to execute insert query for inbox items");
+		}
+	};
+
+	g_saveManager().addTask(inboxSaveTask, "IOLoginDataSave::savePlayerInbox - inboxSaveTask");
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerPreyClass] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
 	if (g_configManager().getBoolean(PREY_ENABLED)) {
-		std::ostringstream query;
+		DBInsert preyQuery("INSERT INTO player_prey "
+		                   "(`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, "
+		                   "`bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) VALUES ");
+		preyQuery.upsert({ "state", "raceid", "option", "bonus_type", "bonus_rarity",
+		                   "bonus_percentage", "bonus_time", "free_reroll", "monster_list" });
+
+		auto playerGUID = player->getGUID();
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId))) {
-				query.str(std::string());
-				query << "INSERT INTO player_prey (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) "
-					  << "VALUES (" << player->getGUID() << ", "
-					  << static_cast<uint16_t>(slot->id) << ", "
-					  << static_cast<uint16_t>(slot->state) << ", "
-					  << slot->selectedRaceId << ", "
-					  << static_cast<uint16_t>(slot->option) << ", "
-					  << static_cast<uint16_t>(slot->bonus) << ", "
-					  << static_cast<uint16_t>(slot->bonusRarity) << ", "
-					  << slot->bonusPercentage << ", "
-					  << slot->bonusTimeLeft << ", "
-					  << slot->freeRerollTimeStamp << ", ";
-
 				PropWriteStream propPreyStream;
-				std::ranges::for_each(slot->raceIdList, [&propPreyStream](uint16_t raceId) {
+				for (uint16_t raceId : slot->raceIdList) {
 					propPreyStream.write<uint16_t>(raceId);
-				});
+				}
 
 				size_t preySize;
 				const char* preyList = propPreyStream.getStream(preySize);
-				query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
+				auto escapedPreyList = g_database().escapeBlob(preyList, static_cast<uint32_t>(preySize));
 
-				query << " ON DUPLICATE KEY UPDATE "
-					  << "`state` = VALUES(`state`), "
-					  << "`raceid` = VALUES(`raceid`), "
-					  << "`option` = VALUES(`option`), "
-					  << "`bonus_type` = VALUES(`bonus_type`), "
-					  << "`bonus_rarity` = VALUES(`bonus_rarity`), "
-					  << "`bonus_percentage` = VALUES(`bonus_percentage`), "
-					  << "`bonus_time` = VALUES(`bonus_time`), "
-					  << "`free_reroll` = VALUES(`free_reroll`), "
-					  << "`monster_list` = VALUES(`monster_list`)";
+				// Format row data for batch insert
+				auto row = fmt::format("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}", playerGUID, static_cast<uint16_t>(slot->id), static_cast<uint16_t>(slot->state), slot->selectedRaceId, static_cast<uint16_t>(slot->option), static_cast<uint16_t>(slot->bonus), static_cast<uint16_t>(slot->bonusRarity), slot->bonusPercentage, slot->bonusTimeLeft, slot->freeRerollTimeStamp, escapedPreyList);
 
-				if (!db.executeQuery(query.str())) {
-					g_logger().warn("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
+				if (!preyQuery.addRow(row)) {
+					g_logger().warn("[IOLoginDataSave::savePlayerPreyClass] - Failed to add prey slot data for player: {}", player->getName());
 					return false;
 				}
 			}
 		}
+
+		auto preySaveTask = [preyQuery]() mutable {
+			Database &db = Database::getInstance();
+			if (!preyQuery.execute()) {
+				g_logger().warn("[SaveManager::preySaveTask] - Failed to execute prey slot data insertion");
+			}
+		};
+
+		g_saveManager().addTask(preySaveTask, "IOLoginDataSave::savePlayerPreyClass - preySaveTask");
 	}
+
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerTaskHuntingClass] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
 	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-		std::ostringstream query;
+		DBInsert taskHuntQuery("INSERT INTO `player_taskhunt` "
+		                       "(`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, "
+		                       "`kills`, `disabled_time`, `free_reroll`, `monster_list`) VALUES ");
+		taskHuntQuery.upsert({ "state", "raceid", "upgrade", "rarity", "kills", "disabled_time",
+		                       "free_reroll", "monster_list" });
+
+		auto playerGUID = player->getGUID();
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			if (const auto &slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId))) {
-				query.str("");
-				query << "INSERT INTO `player_taskhunt` (`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, `kills`, `disabled_time`, `free_reroll`, `monster_list`) VALUES (";
-				query << player->getGUID() << ", ";
-				query << static_cast<uint16_t>(slot->id) << ", ";
-				query << static_cast<uint16_t>(slot->state) << ", ";
-				query << slot->selectedRaceId << ", ";
-				query << (slot->upgrade ? 1 : 0) << ", ";
-				query << static_cast<uint16_t>(slot->rarity) << ", ";
-				query << slot->currentKills << ", ";
-				query << slot->disabledUntilTimeStamp << ", ";
-				query << slot->freeRerollTimeStamp << ", ";
-
 				PropWriteStream propTaskHuntingStream;
-				std::ranges::for_each(slot->raceIdList, [&propTaskHuntingStream](uint16_t raceId) {
+				for (uint16_t raceId : slot->raceIdList) {
 					propTaskHuntingStream.write<uint16_t>(raceId);
-				});
+				}
 
 				size_t taskHuntingSize;
 				const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
-				query << db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize)) << ")";
+				auto escapedTaskHuntingList = g_database().escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize));
 
-				query << " ON DUPLICATE KEY UPDATE "
-					  << "`state` = VALUES(`state`), "
-					  << "`raceid` = VALUES(`raceid`), "
-					  << "`upgrade` = VALUES(`upgrade`), "
-					  << "`rarity` = VALUES(`rarity`), "
-					  << "`kills` = VALUES(`kills`), "
-					  << "`disabled_time` = VALUES(`disabled_time`), "
-					  << "`free_reroll` = VALUES(`free_reroll`), "
-					  << "`monster_list` = VALUES(`monster_list`)";
+				// Construct row for batch insert
+				auto row = fmt::format("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}", playerGUID, static_cast<uint16_t>(slot->id), static_cast<uint16_t>(slot->state), slot->selectedRaceId, slot->upgrade ? 1 : 0, static_cast<uint16_t>(slot->rarity), slot->currentKills, slot->disabledUntilTimeStamp, slot->freeRerollTimeStamp, escapedTaskHuntingList);
 
-				if (!db.executeQuery(query.str())) {
-					g_logger().warn("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());
+				if (!taskHuntQuery.addRow(row)) {
+					g_logger().warn("[IOLoginDataSave::savePlayerTaskHuntingClass] - Failed to add task hunting slot data for player: {}", player->getName());
 					return false;
 				}
 			}
 		}
-	}
-	return true;
-}
 
-bool IOLoginDataSave::savePlayerForgeHistory(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
-		return false;
-	}
+		auto taskHuntingSaveTask = [taskHuntQuery]() mutable {
+			Database &db = Database::getInstance();
+			if (!taskHuntQuery.execute()) {
+				g_logger().warn("[SaveManager::taskHuntingSaveTask] - Failed to execute task hunting data insertion");
+			}
+		};
 
-	std::ostringstream query;
-	query << "DELETE FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if (!Database::getInstance().executeQuery(query.str())) {
-		return false;
+		g_saveManager().addTask(taskHuntingSaveTask, "IOLoginDataSave::savePlayerTaskHuntingClass - taskHuntingSaveTask");
 	}
 
-	query.str("");
-	DBInsert insertQuery("INSERT INTO `forge_history` (`player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES");
-	for (const auto &history : player->getForgeHistory()) {
-		const auto stringDescription = Database::getInstance().escapeString(history.description);
-		auto actionString = magic_enum::enum_integer(history.actionType);
-		// Append query informations
-		query << player->getGUID() << ','
-			  << std::to_string(actionString) << ','
-			  << stringDescription << ','
-			  << history.createdAt << ','
-			  << history.success;
-
-		if (!insertQuery.addRow(query)) {
-			return false;
-		}
-	}
-	if (!insertQuery.execute()) {
-		return false;
-	}
 	return true;
 }
 
 bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerBosstiary] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	std::ostringstream query;
-	query << "DELETE FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
-	if (!Database::getInstance().executeQuery(query.str())) {
-		return false;
-	}
+	DBInsert insertQuery("INSERT INTO `player_bosstiary` "
+	                     "(`player_id`, `bossIdSlotOne`, `bossIdSlotTwo`, `removeTimes`, `tracker`) VALUES ");
+	insertQuery.upsert({ "bossIdSlotOne", "bossIdSlotTwo", "removeTimes", "tracker" });
 
-	query.str("");
-	DBInsert insertQuery("INSERT INTO `player_bosstiary` (`player_id`, `bossIdSlotOne`, `bossIdSlotTwo`, `removeTimes`, `tracker`) VALUES");
-
-	// Bosstiary tracker
+	// Prepare tracker data using PropWriteStream
 	PropWriteStream stream;
 	for (const auto &monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
 		if (!monsterType) {
 			continue;
 		}
-
 		stream.write<uint16_t>(monsterType->info.raceid);
 	}
+
 	size_t size;
-	const char* chars = stream.getStream(size);
-	// Append query informations
-	query << player->getGUID() << ','
-		  << player->getSlotBossId(1) << ','
-		  << player->getSlotBossId(2) << ','
-		  << std::to_string(player->getRemoveTimes()) << ','
-		  << Database::getInstance().escapeBlob(chars, static_cast<uint32_t>(size));
+	const char* trackerBlob = stream.getStream(size);
+	auto escapedTrackerBlob = g_database().escapeBlob(trackerBlob, static_cast<uint32_t>(size));
 
-	if (!insertQuery.addRow(query)) {
+	// Construct row for batch insert
+	auto row = fmt::format("{}, {}, {}, {}, {}", player->getGUID(), player->getSlotBossId(1), player->getSlotBossId(2), player->getRemoveTimes(), escapedTrackerBlob);
+
+	if (!insertQuery.addRow(row)) {
+		g_logger().warn("[IOLoginDataSave::savePlayerBosstiary] - Failed to add bosstiary data for player: {}", player->getName());
 		return false;
 	}
 
-	if (!insertQuery.execute()) {
-		return false;
-	}
-
-	return true;
-}
-
-bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
-		return false;
-	}
-
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
-
-	DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
-	player->genReservedStorageRange();
-
-	for (const auto &[key, value] : player->storageMap) {
-		query << player->getGUID() << ',' << key << ',' << value;
-		if (!storageQuery.addRow(query)) {
-			return false;
+	auto bosstiarySaveTask = [insertQuery]() mutable {
+		if (!insertQuery.execute()) {
+			g_logger().warn("[SaveManager::bosstiarySaveTask] - Error executing bosstiary data insertion");
 		}
-	}
+	};
 
-	if (!storageQuery.execute()) {
-		return false;
-	}
+	g_saveManager().addTask(bosstiarySaveTask, "IOLoginDataSave::savePlayerBosstiary - bosstiarySaveTask");
 	return true;
 }

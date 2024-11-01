@@ -11,6 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "items/item.hpp"
 #include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
@@ -356,7 +357,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> 
 		// Parse the storages for each imbuement in imbuements.xml and config.lua (enable/disable storage)
 		if (g_configManager().getBoolean(TOGGLE_IMBUEMENT_SHRINE_STORAGE)
 		    && imbuement->getStorage() != 0
-		    && player->getStorageValue(imbuement->getStorage() == -1)
+		    && player->storage()->get(imbuement->getStorage() == -1)
 		    && imbuement->getBaseID() >= 1 && imbuement->getBaseID() <= 3) {
 			continue;
 		}

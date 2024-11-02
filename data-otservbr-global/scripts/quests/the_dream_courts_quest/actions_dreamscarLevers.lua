@@ -1,6 +1,6 @@
 local transform = {
-	[9110] = 9111,
-	[9111] = 9110,
+	[8911] = 8912,
+	[8912] = 8911,
 }
 
 local bossNames = {
@@ -247,7 +247,7 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 	local pPos = player:getPosition()
 	local nightmareLever = Position(32212, 32069, 15)
 
-	if item.itemid == 9110 then
+	if item.itemid == 8911 then
 		if iPos == nightmareLever then
 			if player:doCheckBossRoom(lastBoss.bossName, lastBoss.roomFromPosition, lastBoss.roomToPosition) then
 				if pPos:isInRange(lastBoss.fromPositionPush, lastBoss.toPositionPush) then
@@ -332,14 +332,11 @@ function actions_dreamscarLevers.onUse(player, item, fromPosition, target, toPos
 									monster:registerEvent("facelessHealth")
 								elseif leverTable.bossName:lower() == "izcandar the banished" then
 									monster:registerEvent("izcandarThink")
-
 									spawnSummons(1, "the heat of summer", false, 15, heatOfSummer, leverTable.bossPosition)
 									spawnSummons(1, "the cold of winter", false, 15, coldOfWinter, leverTable.bossPosition)
-
 									Game.setStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.IzcandarOutfit, 0)
 								elseif leverTable.bossName:lower() == "plagueroot" then
 									spawnSummons(1, "plant attendant", false, 15, plantAttendants, leverTable.bossPosition)
-
 									monster:registerEvent("facelessHealth")
 								elseif leverTable.bossName:lower() == "malofur mangrinder" then
 									for i = 1, #whirlingBlades do

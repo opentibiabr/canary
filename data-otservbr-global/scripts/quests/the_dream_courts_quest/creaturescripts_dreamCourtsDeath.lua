@@ -44,7 +44,7 @@ local questlog = {
 	[7] = {
 		bossName = "Plagueroot",
 		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.PlaguerootTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.PlagueRootTimer,
 		middlePosition = Position(32208, 32048, 14),
 		maxValue = 5,
 	},

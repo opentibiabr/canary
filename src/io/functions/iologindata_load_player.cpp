@@ -179,10 +179,28 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->setOfflineTrainingSkill(skill);
 	const auto &town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
-		g_logger().error("Player {} has town id {} which doesn't exist", player->name, result->getNumber<uint16_t>("town_id"));
-		return false;
+		g_logger().error("Player {} has invalid town id {}. Attempting to set the correct town.", player->name, result->getNumber<uint16_t>("town_id"));
+
+		auto thaisTown = g_game().map.towns.getTown("Thais");
+		if (thaisTown) {
+			player->town = thaisTown;
+			g_logger().warn("Assigned town 'Thais' to player {}", player->name);
+		} else {
+			for (const auto &[townId, currentTown] : g_game().map.towns.getTowns()) {
+				if (townId != 0 && currentTown) {
+					player->town = currentTown;
+					g_logger().warn("Assigned first valid town {} (id: {}) to player {}", currentTown->getName(), townId, player->name);
+				}
+			}
+
+			if (!player->town) {
+				g_logger().error("Player {} has invalid town id {}. No valid town found to assign.", player->name, result->getNumber<uint16_t>("town_id"));
+				return false;
+			}
+		}
+	} else {
+		player->town = town;
 	}
-	player->town = town;
 
 	const Position &loginPos = player->loginPosition;
 	if (loginPos.x == 0 && loginPos.y == 0 && loginPos.z == 0) {

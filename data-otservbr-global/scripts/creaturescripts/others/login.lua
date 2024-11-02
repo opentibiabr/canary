@@ -12,7 +12,7 @@ function playerLogin.onLogin(player)
 		town = table.contains(freeTowns, town:getName()) and town or Town(defaultTown)
 		player:teleportTo(town:getTemplePosition())
 		player:setTown(town)
-		player:sendTextMessage(MESSAGE_FAILURE, "Your premium time has been expired!")
+		player:sendTextMessage(MESSAGE_FAILURE, "Your premium time has expired!")
 
 		if sex == 1 then
 			player:setOutfit({ lookType = 128, lookHead = 114, lookBody = 120, lookLegs = 132, lookFeet = 115, lookAddons = 0 })

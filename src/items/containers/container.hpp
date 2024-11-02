@@ -138,7 +138,21 @@ public:
 
 	static std::shared_ptr<Container> create(uint16_t type);
 	static std::shared_ptr<Container> create(uint16_t type, uint16_t size, bool unlocked = true, bool pagination = false);
-	static std::shared_ptr<Container> create(const std::shared_ptr<Tile> &type);
+
+	/**
+	 * @brief Creates a container for browse field functionality with items from a specified tile.
+	 *
+	 * This function generates a new container specifically for browse field use,
+	 * populating it with items that meet certain criteria from the provided tile. Items
+	 * that can be included must either have an internal container, be movable, or be
+	 * wrapable without blocking path and without a unique ID.
+	 *
+	 * @param tile A shared pointer to the Tile from which items will be sourced.
+	 * @return std::shared_ptr<Container> Returns a shared pointer to the newly created Container if successful; otherwise, returns nullptr.
+	 *
+	 * @note This function will return nullptr if the newContainer could not be created or if the tile pointer is null.
+	 */
+	static std::shared_ptr<Container> createBrowseField(const std::shared_ptr<Tile> &type);
 
 	// non-copyable
 	Container(const Container &) = delete;

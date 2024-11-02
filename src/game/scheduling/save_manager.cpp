@@ -36,7 +36,8 @@ void SaveManager::saveAll() {
 
 	Benchmark bm_players;
 	const auto &players = game.getPlayers();
-	logger.info("Saving {} players...", players.size());
+	const auto async = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
+	logger.info("Saving {} players... (Async: {})", players.size(), async ? "Enabled" : "Disabled");
 	for (const auto &[_, player] : players) {
 		player->loginPosition = player->getPosition();
 		doSavePlayer(player);

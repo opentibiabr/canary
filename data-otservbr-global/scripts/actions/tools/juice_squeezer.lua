@@ -5,10 +5,10 @@ local juiceSqueezer = Action()
 function juiceSqueezer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	-- The Dream Courts Quest
 	if target.itemid == 29995 then
-        target:transform(30003)
-        return true
-    end
-	
+		target:transform(30003)
+		return true
+	end
+
 	if table.contains(fruits, target.itemid) and player:removeItem(2874, 1, 0) then
 		target:remove(1)
 		player:addItem(2874, target.itemid == 3589 and 14 or 21)

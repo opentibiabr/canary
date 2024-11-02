@@ -26,6 +26,7 @@
 #include "creatures/players/highscore_category.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/player_stash.hpp"
 #include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/player_wheel.hpp"
@@ -4807,7 +4808,7 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 
 	player->sendTextMessage(MESSAGE_STATUS, ss.str());
 
-	if (player->withdrawItem(itemId, WithdrawCount)) {
+	if (player->stash()->remove(itemId, WithdrawCount)) {
 		player->addItemFromStash(it.id, WithdrawCount);
 	} else {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
@@ -8472,7 +8473,7 @@ void Game::playerCyclopediaCharacterInfo(const std::shared_ptr<Player> &player, 
 		case CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY: {
 			const ItemsTierCountList &inventoryItems = player->getInventoryItemsId(true);
 			const ItemsTierCountList &storeInboxItems = player->getStoreInboxItemsId();
-			const StashItemList &supplyStashItems = player->getStashItems();
+			const StashItemList &supplyStashItems = player->stash()->getItems();
 			const ItemsTierCountList &depotBoxItems = player->getDepotChestItemsId();
 			const ItemsTierCountList &inboxItems = player->getDepotInboxItemsId();
 
@@ -8851,13 +8852,13 @@ namespace {
 		uint16_t removeAmount = amount;
 		if (
 			// Init-statement
-			auto stashItemCount = player->getStashItemCount(itemType.wareId);
+			auto stashItemCount = player->stash()->getCount(itemType.wareId);
 			// Condition
 			stashItemCount > 0
 		) {
-			if (removeAmount > stashItemCount && player->withdrawItem(itemType.wareId, stashItemCount)) {
+			if (removeAmount > stashItemCount && player->stash()->remove(itemType.wareId, stashItemCount)) {
 				removeAmount -= stashItemCount;
-			} else if (player->withdrawItem(itemType.wareId, removeAmount)) {
+			} else if (player->stash()->remove(itemType.wareId, removeAmount)) {
 				removeAmount = 0;
 			} else {
 				offerStatus << "Failed to remove stash items from player " << player->getName();

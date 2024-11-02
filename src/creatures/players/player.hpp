@@ -490,11 +490,6 @@ public:
 	 */
 	bool removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool removeFromStash = true);
 
-	void addItemOnStash(uint16_t itemId, uint32_t amount);
-	uint32_t getStashItemCount(uint16_t itemId) const;
-	bool withdrawItem(uint16_t itemId, uint32_t amount);
-	StashItemList getStashItems() const;
-
 	uint32_t getBaseCapacity() const;
 
 	uint32_t getCapacity() const;
@@ -1455,7 +1450,6 @@ private:
 	uint16_t xpBoostPercent = 0;
 	uint16_t staminaXpBoost = 100;
 	int16_t lastDepotId = -1;
-	StashItemList stashItems; // [ItemID] = amount
 	uint32_t movedItems = 0;
 
 	// Depot search system

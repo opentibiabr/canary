@@ -81,8 +81,6 @@ bool PlayerStash::save() {
 	auto modifiedItems = m_modifiedItems;
 
 	auto deleteStashItems = [playerGUID, removedItems]() mutable {
-		Database &db = Database::getInstance();
-
 		if (!removedItems.empty()) {
 			std::string removedItemIds = fmt::format("{}", fmt::join(removedItems, ", "));
 			std::string deleteQuery = fmt::format(
@@ -90,7 +88,7 @@ bool PlayerStash::save() {
 				playerGUID, removedItemIds
 			);
 
-			if (!db.executeQuery(deleteQuery)) {
+			if (!g_database().executeQuery(deleteQuery)) {
 				g_logger().error("[PlayerStash::save] - Failed to delete removed items for player: {}", playerGUID);
 				return false;
 			}
@@ -102,7 +100,6 @@ bool PlayerStash::save() {
 	};
 
 	auto insertModifiedStashItems = [playerGUID, modifiedItems]() mutable {
-		Database &db = Database::getInstance();
 		DBInsert insertQuery("INSERT INTO `player_stash` (`player_id`, `item_id`, `item_count`) VALUES ");
 		insertQuery.upsert({ "item_count" });
 
@@ -139,9 +136,8 @@ bool PlayerStash::save() {
 }
 
 bool PlayerStash::load() {
-	Database &db = Database::getInstance();
 	auto query = fmt::format("SELECT `item_count`, `item_id` FROM `player_stash` WHERE `player_id` = {}", m_player.getGUID());
-	const DBResult_ptr &result = db.storeQuery(query);
+	const DBResult_ptr &result = g_database().storeQuery(query);
 	if (!result) {
 		g_logger().debug("[PlayerStash::load] - Failed to load stash items for player: {}", m_player.getName());
 		return false;

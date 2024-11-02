@@ -17,6 +17,7 @@
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/components/player_stash.hpp"
 #include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/vip/player_vip.hpp"
@@ -761,7 +762,7 @@ int PlayerFunctions::luaPlayerGetStashCounter(lua_State* L) {
 	// player:getStashCount()
 	const auto &player = getUserdataShared<Player>(L, 1);
 	if (player) {
-		const uint16_t sizeStash = getStashSize(player->getStashItems());
+		const uint16_t sizeStash = player->stash()->getSize();
 		lua_pushnumber(L, sizeStash);
 	} else {
 		lua_pushnil(L);
@@ -1339,7 +1340,7 @@ int PlayerFunctions::luaPlayerGetStashItemCount(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L, player->getStashItemCount(itemType.id));
+	lua_pushnumber(L, player->stash()->getCount(itemType.id));
 	return 1;
 }
 
@@ -1941,7 +1942,7 @@ int PlayerFunctions::luaPlayerAddItemStash(lua_State* L) {
 	const auto itemId = getNumber<uint16_t>(L, 2);
 	const auto count = getNumber<uint32_t>(L, 3, 1);
 
-	player->addItemOnStash(itemId, count);
+	player->stash()->add(itemId, count);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -1972,7 +1973,7 @@ int PlayerFunctions::luaPlayerRemoveStashItem(lua_State* L) {
 	}
 
 	const uint32_t count = getNumber<uint32_t>(L, 3);
-	pushBoolean(L, player->withdrawItem(itemType.id, count));
+	pushBoolean(L, player->stash()->remove(itemType.id, count));
 	return 1;
 }
 

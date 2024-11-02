@@ -162,9 +162,8 @@ bool PlayerStorage::save() {
 }
 
 bool PlayerStorage::load() {
-	Database &db = Database::getInstance();
 	auto query = fmt::format("SELECT `key`, `value` FROM `player_storage` WHERE `player_id` = {}", m_player.getGUID());
-	const DBResult_ptr &result = db.storeQuery(query);
+	const DBResult_ptr &result = g_database().storeQuery(query);
 	if (!result) {
 		g_logger().debug("[PlayerStorage::load] - Failed to load storage keys for player: {}", m_player.getName());
 		return false;

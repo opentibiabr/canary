@@ -1196,7 +1196,7 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const {
 	}
 
 	// Check items from stash
-	for (const auto &stashToSend = getStashItems();
+	for (const auto &stashToSend = stash()->getItems();
 	     const auto &[itemId, itemCount] : stashToSend) {
 		if (itemId == ITEM_FORGE_SLIVER) {
 			sliverCount += itemCount;
@@ -2220,7 +2220,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	const auto &items = imbuement->getItems();
 	for (auto &[key, value] : items) {
 		const ItemType &itemType = Item::items[key];
-		if (static_self_cast<Player>()->getItemTypeCount(key) + this->getStashItemCount(itemType.id) < value) {
+		if (static_self_cast<Player>()->getItemTypeCount(key) + stash()->getCount(itemType.id) < value) {
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
 		}
@@ -2261,7 +2261,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		const ItemType &itemType = Item::items[key];
 
 		withdrawItemMessage << "Using " << mathItemCount << "x " << itemType.name << " from your supply stash. ";
-		withdrawItem(itemType.id, mathItemCount);
+		stash()->remove(itemType.id, mathItemCount);
 		sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 	}
 
@@ -4402,7 +4402,7 @@ void Player::stashContainer(const StashContainerList &itemDict) {
 		stashItemDict[item->getID()] = itemCount;
 	}
 
-	for (const auto &[itemId, itemCount] : stashItems) {
+	for (const auto &[itemId, itemCount] : stash()->getItems()) {
 		if (!stashItemDict[itemId]) {
 			stashItemDict[itemId] = itemCount;
 		} else {
@@ -4424,7 +4424,7 @@ void Player::stashContainer(const StashContainerList &itemDict) {
 		}
 		const uint16_t iteratorCID = item->getID();
 		if (g_game().internalRemoveItem(item, itemCount) == RETURNVALUE_NOERROR) {
-			addItemOnStash(iteratorCID, itemCount);
+			stash()->add(iteratorCID, itemCount);
 			totalStowed += itemCount;
 			if (isDepotSearchOpenOnItem(iteratorCID)) {
 				refreshDepotSearchOnItem = iteratorCID;
@@ -4516,7 +4516,7 @@ bool Player::hasItemCountById(uint16_t itemId, uint32_t itemAmount, bool checkSt
 	}
 
 	// Check items from stash
-	for (StashItemList stashToSend = getStashItems();
+	for (const auto &stashToSend = stash()->getItems();
 	     const auto &[stashItemId, itemCount] : stashToSend) {
 		if (!checkStash) {
 			break;
@@ -4555,48 +4555,11 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 	}
 
 	// If there are not enough items in the inventory, we will remove the remaining from stash
-	if (removeFromStash && amountToRemove > 0 && withdrawItem(itemId, amountToRemove)) {
+	if (removeFromStash && amountToRemove > 0 && stash()->remove(itemId, amountToRemove)) {
 		return true;
 	}
 
 	return false;
-}
-
-void Player::addItemOnStash(uint16_t itemId, uint32_t amount) {
-	const auto it = stashItems.find(itemId);
-	if (it != stashItems.end()) {
-		stashItems[itemId] += amount;
-		return;
-	}
-
-	stashItems[itemId] = amount;
-}
-
-uint32_t Player::getStashItemCount(uint16_t itemId) const {
-	const auto it = stashItems.find(itemId);
-	if (it != stashItems.end()) {
-		return it->second;
-	}
-	return 0;
-}
-
-bool Player::withdrawItem(uint16_t itemId, uint32_t amount) {
-	const auto it = stashItems.find(itemId);
-	if (it != stashItems.end()) {
-		if (it->second > amount) {
-			stashItems[itemId] -= amount;
-		} else if (it->second == amount) {
-			stashItems.erase(itemId);
-		} else {
-			return false;
-		}
-		return true;
-	}
-	return false;
-}
-
-StashItemList Player::getStashItems() const {
-	return stashItems;
 }
 
 uint32_t Player::getBaseCapacity() const {
@@ -8341,7 +8304,7 @@ void Player::requestDepotItems() {
 		}
 	}
 
-	for (const auto &[itemId, itemCount] : getStashItems()) {
+	for (const auto &[itemId, itemCount] : stash()->getItems()) {
 		auto itemMap_it = itemMap.find(itemId);
 		// Stackable items not have upgrade classification
 		if (Item::items[itemId].upgradeClassification > 0) {
@@ -8375,7 +8338,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier) {
 
 	if (const ItemType &iType = Item::items[itemId];
 	    iType.stackable && iType.wareId > 0) {
-		stashCount = getStashItemCount(itemId);
+		stashCount = stash()->getCount(itemId);
 	}
 
 	const auto &depotLocker = getDepotLocker(getLastDepotId());
@@ -8557,7 +8520,7 @@ std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_
 		}
 	}
 
-	StashItemList stashToSend = getStashItems();
+	const auto &stashToSend = stash()->getItems();
 	for (const auto &[itemId, itemCount] : stashToSend) {
 		const ItemType &itemType = Item::items[itemId];
 		if (itemType.wareId != 0) {

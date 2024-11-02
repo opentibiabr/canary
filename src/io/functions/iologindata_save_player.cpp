@@ -25,9 +25,6 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 		return false;
 	}
 
-	const Database &db = Database::getInstance();
-	std::ostringstream ss;
-
 	// Initialize variables
 	using ContainerBlock = std::pair<std::shared_ptr<Container>, int32_t>;
 	std::list<ContainerBlock> queue;
@@ -79,8 +76,8 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 		const char* attributes = propWriteStream.getStream(attributesSize);
 
 		// Build query string and add row
-		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
-		if (!query_insert.addRow(ss)) {
+		auto row = fmt::format("{},{},{},{},{},{}", player->getGUID(), pid, runningId, item->getID(), item->getSubType(), g_database().escapeBlob(attributes, static_cast<uint32_t>(attributesSize)));
+		if (!query_insert.addRow(row)) {
 			g_logger().error("Error adding row to query.");
 			return false;
 		}
@@ -91,6 +88,7 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 		const ContainerBlock &cb = queue.front();
 		const std::shared_ptr<Container> &container = cb.first;
 		if (!container) {
+			queue.pop_front();
 			continue;
 		}
 
@@ -134,8 +132,8 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 			const char* attributes = propWriteStream.getStream(attributesSize);
 
 			// Build query string and add row
-			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
-			if (!query_insert.addRow(ss)) {
+			auto row = fmt::format("{},{},{},{},{},{}", player->getGUID(), parentId, runningId, item->getID(), item->getSubType(), g_database().escapeBlob(attributes, static_cast<uint32_t>(attributesSize)));
+			if (!query_insert.addRow(row)) {
 				g_logger().error("Error adding row to query for container item.");
 				return false;
 			}
@@ -158,8 +156,6 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 		player->changeHealth(1);
 	}
 
-	Database &db = Database::getInstance();
-
 	// Check if `save` flag is set
 	auto result = g_database().storeQuery(fmt::format("SELECT `save` FROM `players` WHERE `id` = {}", player->getGUID()));
 	if (!result) {
@@ -173,7 +169,6 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 									"UPDATE `players` SET `lastlogin` = {}, `lastip` = {} WHERE `id` = {}",
 									player->lastLoginSaved, player->lastIP, player->getGUID()
 								)]() {
-			Database &db = Database::getInstance();
 			if (!g_database().executeQuery(queryStr)) {
 				g_logger().warn("[SaveManager::quickUpdateTask] - Failed to execute quick update for player.");
 				return;
@@ -389,8 +384,6 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const std::shared_ptr<Player> &pl
 		g_logger().warn("[IOLoginDataSave::savePlayerBestiarySystem] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
-
-	Database &db = Database::getInstance();
 
 	PropWriteStream propBestiaryStream;
 	for (const auto &trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
@@ -635,7 +628,6 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 		}
 
 		auto preySaveTask = [taskPreyQuery = std::move(preyQuery)]() mutable {
-			Database &db = Database::getInstance();
 			if (!taskPreyQuery.execute()) {
 				g_logger().warn("[SaveManager::preySaveTask] - Failed to execute prey slot data insertion");
 			}
@@ -683,7 +675,6 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 		}
 
 		auto taskHuntingSaveTask = [executeTaskHuntQUery = std::move(taskHuntQuery)]() mutable {
-			Database &db = Database::getInstance();
 			if (!executeTaskHuntQUery.execute()) {
 				g_logger().warn("[SaveManager::taskHuntingSaveTask] - Failed to execute task hunting data insertion");
 			}

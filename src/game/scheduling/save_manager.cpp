@@ -114,9 +114,9 @@ bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {
 bool SaveManager::savePlayer(std::shared_ptr<Player> player) {
 	if (player->isOnline()) {
 		schedulePlayer(player);
-		logger.debug("saving player {}, but is online scheduling....", player->getName());
 		return true;
 	}
+
 	return doSavePlayer(player);
 }
 

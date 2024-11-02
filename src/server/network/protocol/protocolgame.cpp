@@ -9412,10 +9412,10 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 	msg.addByte(static_cast<uint8_t>(offersCount)); // Related Offers inside a Base Offer
 	sendOfferDescription(offer);
 	for (const auto &relatedOffer : relatedOffersVector) {
-		msg.add<uint32_t>(relatedOffer.id);
-		msg.add<uint16_t>(relatedOffer.count);
+		msg.add<uint32_t>(relatedOffer.getOfferId());
+		msg.add<uint16_t>(relatedOffer.getOfferCount());
 
-		uint32_t offerPrice = relatedOffer.price;
+		uint32_t offerPrice = relatedOffer.getOfferPrice();
 		if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
 			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
 		}
@@ -9459,7 +9459,7 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 		msg.addByte(playerOutfit.lookFeet);
 		tryOn = 1;
 	} else if (offerConverType == 3) { // Item
-		msg.add<uint16_t>(static_cast<uint16_t>(offer->getOfferId()));
+		msg.add<uint16_t>(static_cast<uint16_t>(offer->getItemId()));
 	} else if (offerConverType == 4) { // Male/Female Outfit
 		auto playerSex = player->getSex();
 		auto offerOutfitIds = offer->getOutfitIds();
@@ -9489,7 +9489,7 @@ void ProtocolGame::sendStoreHome() {
 	msg.addString("Home");
 
 	msg.add<uint32_t>(0x00);
-	msg.addByte(0x00); // Window Type
+	msg.addByte(0x03); // Window Type
 	msg.addByte(0x00); // Collection Size
 	msg.add<uint16_t>(0x00); // Collection Name
 
@@ -9618,6 +9618,7 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
 	const auto* currentOffer = g_ioStore().getOfferById(offerId);
 	if (!currentOffer) {
 		g_logger().error("Offer with id {} was not found returning nullptr", offerId);
+		player->sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
 		return;
 	}
 

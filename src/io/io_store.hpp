@@ -95,6 +95,8 @@ private:
 	IOStore() = default;
 	~IOStore() = default;
 
+	uint32_t dynamicId = std::numeric_limits<uint16_t>::max();
+
 	// Home
 	std::vector<BannerInfo> m_banners;
 	uint8_t m_bannerDelay = 5;
@@ -175,29 +177,32 @@ private:
 
 class Offer {
 public:
-	Offer(const std::string &name, uint32_t id, uint32_t price, OfferTypes_t type, const std::string &icon, States_t state, uint16_t count, uint16_t duration, CoinType coin, const std::string &description, OutfitIds outfitIds, bool movable, const std::string &parentName, const std::vector<RelatedOffer> &relatedOffers) :
-		m_offerName(name), m_offerId(id), m_offerPrice(price), m_offerType(type), m_offerIcon(icon), m_offerState(state), m_offerCount(count), m_validUntil(duration), m_coinType(coin), m_offerDescription(description), m_outfitId(outfitIds), m_movable(movable), m_parentName(parentName), m_relatedOffers(relatedOffers) { }
+	Offer(uint32_t id, const std::string &name) :
+		m_id(id), m_name(std::move(name)) { }
 
 	const std::string &getOfferName() const {
-		return m_offerName;
+		return m_name;
 	}
 	const std::string &getOfferIcon() const {
-		return m_offerIcon;
+		return m_icon;
 	}
 	uint32_t getOfferId() const {
-		return m_offerId;
+		return m_id;
 	}
 	uint32_t getOfferPrice() const {
-		return m_offerPrice;
+		return m_price;
+	}
+	uint32_t getItemId() const {
+		return m_itemId;
 	}
 	OfferTypes_t getOfferType() const {
-		return m_offerType;
+		return m_type;
 	}
 	States_t getOfferState() const {
-		return m_offerState;
+		return m_state;
 	}
 	uint16_t getOfferCount() const {
-		return m_offerCount;
+		return m_count;
 	}
 	uint16_t getValidUntil() const {
 		return m_validUntil;
@@ -206,7 +211,7 @@ public:
 		return m_coinType;
 	}
 	std::string getOfferDescription() const {
-		return m_offerDescription;
+		return m_description;
 	}
 	OutfitIds getOutfitIds() const {
 		return m_outfitId;
@@ -220,29 +225,32 @@ public:
 		return m_movable;
 	}
 
-	const std::vector<RelatedOffer> &getRelatedOffersVector() const;
-	void addRelatedOffer(const RelatedOffer &relatedOffer);
+	const std::vector<Offer> &getRelatedOffersVector() const;
+	void addRelatedOffer(const Offer &relatedOffer);
 
 private:
+	friend class IOStore;
+
 	// Mandatory
-	std::string m_offerName;
-	uint32_t m_offerId; // Any identifier (itemId, mountId, ...)
-	uint32_t m_offerPrice;
-	OfferTypes_t m_offerType = OfferTypes_t::NONE;
+	std::string m_name;
+	uint32_t m_price;
+	OfferTypes_t m_type = OfferTypes_t::NONE;
 
 	// Optional
-	std::string m_offerIcon;
-	States_t m_offerState = States_t::NONE;
-	uint16_t m_offerCount = 0; // Or charges
+	uint32_t m_id;
+	std::string m_icon;
+	States_t m_state = States_t::NONE;
+	uint32_t m_itemId;
+	uint16_t m_count = 1; // Or charges
 	uint16_t m_validUntil;
 	CoinType m_coinType = CoinType::Normal;
-	std::string m_offerDescription;
+	std::string m_description;
 	OutfitIds m_outfitId;
 	bool m_movable;
 
 	// Internal
 	std::string m_parentName;
-	std::vector<RelatedOffer> m_relatedOffers;
+	std::vector<Offer> m_relatedOffers;
 };
 
 constexpr auto g_ioStore = IOStore::getInstance;

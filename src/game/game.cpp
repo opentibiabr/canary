@@ -9099,7 +9099,6 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	}
 
 	uint64_t totalPrice = offer.price * offer.amount;
-	auto createdAt = getTimeNow();
 	if (offer.type == MARKETACTION_BUY) {
 		player->setBankBalance(player->getBankBalance() + totalPrice);
 		g_metrics().addCounter("balance_decrease", totalPrice, { { "player", player->getName() }, { "context", "market_purchase" } });
@@ -10437,6 +10436,11 @@ bool Game::addInfluencedMonster(const std::shared_ptr<Monster> &monster) {
 }
 
 bool Game::processHouseOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t charges /* = 0*/) {
+	const auto &storeInbox = player->getStoreInbox();
+	if (!storeInbox) {
+		return false;
+	}
+
 	const auto &decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
 	if (!decoKit) {
 		return false;
@@ -10454,40 +10458,20 @@ bool Game::processHouseOffer(const std::shared_ptr<Player> &player, uint32_t ite
 
 	decoKit->setAttribute(ItemAttribute_t::STORE, getTimeNow());
 
-	const auto &thing = player->getThing(CONST_SLOT_STORE_INBOX);
-	if (!thing) {
-		return false;
-	}
-
-	const auto &inboxItem = thing->getItem();
-	if (!inboxItem) {
-		return false;
-	}
-
-	const auto &inboxContainer = inboxItem->getContainer();
-	if (!inboxContainer) {
-		return false;
-	}
-
-	if (internalAddItem(inboxContainer, decoKit) != RETURNVALUE_NOERROR) {
+	if (internalAddItem(storeInbox, decoKit) != RETURNVALUE_NOERROR) {
 		return false;
 	}
 
 	return true;
 }
 
-void Game::addPlayerUniqueLogin(const std::shared_ptr<Player> &player) {
-	if (!player) {
-		g_logger().error("Attempted to add null player to unique player names list");
-		return;
+bool Game::processChargesOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t charges /* = 0*/, bool movable /* = false*/) {
+	const auto &storeInbox = player->getStoreInbox();
+	if (!storeInbox) {
+		return false;
 	}
 
-	const std::string &lowercase_name = asLowerCaseString(player->getName());
-	m_uniqueLoginPlayerNames[lowercase_name] = player;
-}
-
-bool Game::processChargesOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t charges /* = 0*/, bool movable /* = false*/) {
-	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, 1);
+	const auto &newItem = Item::CreateItem(itemId, 1);
 	if (!newItem) {
 		return false;
 	}
@@ -10502,22 +10486,7 @@ bool Game::processChargesOffer(const std::shared_ptr<Player> &player, uint32_t i
 
 	newItem->setOwner(player);
 
-	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
-	if (!thing) {
-		return false;
-	}
-
-	std::shared_ptr<Item> inboxItem = thing->getItem();
-	if (!inboxItem) {
-		return false;
-	}
-
-	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
-	if (!inboxContainer) {
-		return false;
-	}
-
-	auto ret = internalAddItem(inboxContainer, newItem);
+	auto ret = internalAddItem(storeInbox, newItem);
 	if (ret != RETURNVALUE_NOERROR) {
 		return false;
 	}
@@ -10526,36 +10495,31 @@ bool Game::processChargesOffer(const std::shared_ptr<Player> &player, uint32_t i
 }
 
 bool Game::processStackableOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t amount /* = 1*/, bool movable /* = false*/) {
-	std::shared_ptr<Item> newItem = Item::CreateItem(itemId, amount);
-	if (!newItem) {
+	const auto &storeInbox = player->getStoreInbox();
+	if (!storeInbox) {
 		return false;
 	}
 
-	if (!movable) {
-		newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
-	}
+	int32_t remainingAmount = amount;
+	do {
+		const auto amountToAdd = (remainingAmount >= 100) ? 100 : remainingAmount;
+		const auto &newItem = Item::CreateItem(itemId, amountToAdd);
+		if (!newItem) {
+			return false;
+		}
 
-	newItem->setOwner(player);
+		if (!movable) {
+			newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+		}
 
-	std::shared_ptr<Thing> thing = player->getThing(CONST_SLOT_STORE_INBOX);
-	if (!thing) {
-		return false;
-	}
+		newItem->setOwner(player);
 
-	std::shared_ptr<Item> inboxItem = thing->getItem();
-	if (!inboxItem) {
-		return false;
-	}
-
-	std::shared_ptr<Container> inboxContainer = inboxItem->getContainer();
-	if (!inboxContainer) {
-		return false;
-	}
-
-	auto ret = internalAddItem(inboxContainer, newItem);
-	if (ret != RETURNVALUE_NOERROR) {
-		return false;
-	}
+		const auto ret = internalAddItem(storeInbox, newItem);
+		if (ret != RETURNVALUE_NOERROR) {
+			return false;
+		}
+		remainingAmount -= amountToAdd;
+	} while (remainingAmount > 0);
 
 	return true;
 }
@@ -10597,6 +10561,16 @@ bool Game::processTempleOffer(const std::shared_ptr<Player> &player) {
 	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have been teleported to your hometown.");
 
 	return true;
+}
+
+void Game::addPlayerUniqueLogin(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		g_logger().error("Attempted to add null player to unique player names list");
+		return;
+	}
+
+	const std::string &lowercase_name = asLowerCaseString(player->getName());
+	m_uniqueLoginPlayerNames[lowercase_name] = player;
 }
 
 std::shared_ptr<Player> Game::getPlayerUniqueLogin(const std::string &playerName) const {
@@ -10797,7 +10771,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 	auto offerType = offer->getOfferType();
 	switch (offerType) {
 		case OfferTypes_t::HOUSE: {
-			auto itemId = offer->getOfferId();
+			auto itemId = offer->getItemId();
 			auto offerAmount = offer->getOfferCount();
 
 			success = processHouseOffer(player, itemId, offerAmount);
@@ -10805,7 +10779,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::CHARGES: {
-			auto itemId = offer->getOfferId();
+			auto itemId = offer->getItemId();
 			auto itemCharges = offer->getOfferCount();
 			auto isMovable = offer->isMovable();
 
@@ -10815,7 +10789,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::ITEM:
 		case OfferTypes_t::STACKABLE: {
-			auto itemId = offer->getOfferId();
+			auto itemId = offer->getItemId();
 			auto itemAmount = offer->getOfferCount();
 			auto isMovable = offer->isMovable();
 
@@ -10824,7 +10798,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::POUCH: {
-			auto itemId = offer->getOfferId();
+			auto itemId = offer->getItemId();
 			auto pouchStorageValue = player->getStorageValue(STORAGEVALUE_POUCH);
 
 			if (pouchStorageValue == 1) {

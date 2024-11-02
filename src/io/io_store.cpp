@@ -10,6 +10,7 @@
 #include "io/io_store.hpp"
 
 #include "config/configmanager.hpp"
+#include "database/databasetasks.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
@@ -138,22 +139,35 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		return false;
 	}
 
-	std::string icon = "";
-	if (offer.attribute("icon")) {
-		icon = std::string(offer.attribute("icon").as_string());
+	uint32_t id = 0;
+	auto offerId = offer.attribute("id");
+	if (offerId) {
+		id = static_cast<uint32_t>(offerId.as_uint());
+	} else {
+		id = dynamicId;
+		dynamicId++;
 	}
 
-	auto id = static_cast<uint32_t>(offer.attribute("offerId").as_uint());
-	if (id == 0) {
-		g_logger().warn("Offer {} id is 0.", name);
-		return false;
-	}
+	Offer newOffer(id, name);
 
 	auto price = static_cast<uint32_t>(offer.attribute("price").as_uint());
 	if (price == 0) {
 		g_logger().warn("Offer {} price is 0.", name);
 		return false;
 	}
+	newOffer.m_price = price;
+
+	uint16_t count = 1;
+	if (offer.attribute("count")) {
+		count = static_cast<uint16_t>(offer.attribute("count").as_uint());
+	}
+	newOffer.m_count = count;
+
+	std::string icon = "";
+	if (offer.attribute("icon")) {
+		icon = std::string(offer.attribute("icon").as_string());
+	}
+	newOffer.m_icon = std::move(icon);
 
 	auto typeString = std::string(offer.attribute("type").as_string());
 	OfferTypes_t type = OfferTypes_t::NONE;
@@ -164,18 +178,20 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		g_logger().warn("Offer {} type is none.", name);
 		return false;
 	}
+	newOffer.m_type = type;
 
 	OutfitIds outfitId;
 	if (type == OfferTypes_t::OUTFIT || type == OfferTypes_t::HIRELING) {
-		auto femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
-		auto maleId = static_cast<uint16_t>(offer.attribute("male").as_uint());
-		if (id != maleId) {
-			g_logger().warn("Offer Id {} should be equal to Male {}.", id, maleId);
-			return false;
-		}
-		outfitId.femaleId = femaleId;
-		outfitId.maleId = maleId;
+		outfitId.femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
+		outfitId.maleId = static_cast<uint16_t>(offer.attribute("male").as_uint());
 	}
+	newOffer.m_outfitId = outfitId;
+
+	uint32_t itemId = 0;
+	if (type == OfferTypes_t::ITEM || type == OfferTypes_t::STACKABLE || type == OfferTypes_t::HOUSE || type == OfferTypes_t::CHARGES || type == OfferTypes_t::POUCH) {
+		itemId = static_cast<uint16_t>(offer.attribute("item").as_uint());
+	}
+	newOffer.m_itemId = itemId;
 
 	auto stateString = std::string(offer.attribute("state").as_string());
 	States_t state = States_t::NONE;
@@ -183,16 +199,13 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	    it != stringToOfferStateMap.end()) {
 		state = it->second;
 	}
-
-	uint16_t count = 1;
-	if (offer.attribute("count")) {
-		count = static_cast<uint16_t>(offer.attribute("count").as_uint());
-	}
+	newOffer.m_state = state;
 
 	uint16_t validUntil = 0;
 	if (offer.attribute("validUntil")) {
 		validUntil = static_cast<uint16_t>(offer.attribute("validUntil").as_uint());
 	}
+	newOffer.m_validUntil = validUntil;
 
 	CoinType coinType = CoinType::Normal;
 	if (offer.attribute("coinType")) {
@@ -204,32 +217,30 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	if (offer.attribute("description")) {
 		desc = std::string(offer.attribute("description").as_string());
 	}
+	newOffer.m_description = std::move(desc);
 
 	bool isMovable = false;
 	if (offer.attribute("movable")) {
 		isMovable = bool(offer.attribute("movable").as_bool());
 	}
+	newOffer.m_movable = isMovable;
 
-	RelatedOffer relatedOffer;
-	relatedOffer.id = id;
-	relatedOffer.price = price;
-	relatedOffer.count = count;
-
+	newOffer.m_parentName = category->getCategoryName();
 	auto baseOffer = getOfferByName(name);
 	if (baseOffer) {
-		baseOffer->addRelatedOffer(relatedOffer);
-	} else {
-		const auto &parentName = category->getCategoryName();
-		Offer newOffer(name, id, price, type, icon, state, count, validUntil, coinType, desc, outfitId, isMovable, parentName, { relatedOffer });
+		baseOffer->addRelatedOffer(newOffer);
 		addOffer(id, newOffer);
-
-		const Offer* foundOffer = getOfferById(id);
-		if (!foundOffer) {
-			g_logger().warn("Offer {} not found.", name);
-			return false;
-		}
-		category->addOffer(foundOffer);
+		return true;
 	}
+	newOffer.m_relatedOffers.push_back(newOffer);
+	addOffer(id, newOffer);
+
+	const Offer* foundOffer = getOfferById(id);
+	if (!foundOffer) {
+		g_logger().warn("Offer {} not found.", name);
+		return false;
+	}
+	category->addOffer(foundOffer);
 
 	return true;
 }
@@ -315,6 +326,7 @@ const Offer* IOStore::getOfferById(uint32_t offerId) const {
 	    it != m_offersMap.end()) {
 		return &it->second;
 	}
+
 	return nullptr;
 }
 
@@ -436,13 +448,13 @@ void Category::addOffer(const Offer* newOffer) {
 }
 
 // Offer Functions
-const std::vector<RelatedOffer> &Offer::getRelatedOffersVector() const {
+const std::vector<Offer> &Offer::getRelatedOffersVector() const {
 	return m_relatedOffers;
 }
-void Offer::addRelatedOffer(const RelatedOffer &relatedOffer) {
+void Offer::addRelatedOffer(const Offer &relatedOffer) {
 	for (const auto &offer : m_relatedOffers) {
-		if (relatedOffer.count == offer.count
-		    && relatedOffer.price == offer.price) {
+		if (relatedOffer.getOfferCount() == offer.getOfferCount()
+		    && relatedOffer.getOfferPrice() == offer.getOfferPrice()) {
 			return;
 		}
 	}
@@ -451,13 +463,13 @@ void Offer::addRelatedOffer(const RelatedOffer &relatedOffer) {
 }
 
 ConverType_t Offer::getConverType() const {
-	if (m_offerType == OfferTypes_t::MOUNT) {
+	if (m_type == OfferTypes_t::MOUNT) {
 		return ConverType_t::MOUNT;
-	} else if (m_offerType == OfferTypes_t::LOOKTYPE) {
+	} else if (m_type == OfferTypes_t::LOOKTYPE) {
 		return ConverType_t::LOOKTYPE;
-	} else if (m_offerType == OfferTypes_t::ITEM || m_offerType == OfferTypes_t::STACKABLE || m_offerType == OfferTypes_t::HOUSE || m_offerType == OfferTypes_t::CHARGES || m_offerType == OfferTypes_t::POUCH) {
+	} else if (m_type == OfferTypes_t::ITEM || m_type == OfferTypes_t::STACKABLE || m_type == OfferTypes_t::HOUSE || m_type == OfferTypes_t::CHARGES || m_type == OfferTypes_t::POUCH) {
 		return ConverType_t::ITEM;
-	} else if (m_offerType == OfferTypes_t::OUTFIT || m_offerType == OfferTypes_t::HIRELING) {
+	} else if (m_type == OfferTypes_t::OUTFIT || m_type == OfferTypes_t::HIRELING) {
 		return ConverType_t::OUTFIT;
 	}
 
@@ -465,7 +477,7 @@ ConverType_t Offer::getConverType() const {
 }
 
 bool Offer::getUseConfigure() const {
-	if (m_offerType == OfferTypes_t::NAMECHANGE || m_offerType == OfferTypes_t::HIRELING || m_offerType == OfferTypes_t::HIRELING_NAMECHANGE) {
+	if (m_type == OfferTypes_t::NAMECHANGE || m_type == OfferTypes_t::HIRELING || m_type == OfferTypes_t::HIRELING_NAMECHANGE) {
 		return true;
 	}
 

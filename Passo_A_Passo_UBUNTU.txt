@@ -265,3 +265,25 @@ pip install lxml
 
 Fix path to folder monster
 
+
+
+====================================================================================================
+
+df -h
+sudo pvs
+sudo pvresize /dev/sda3
+sudo growpart /dev/sda 3
+sudo pvs
+sudo lvextend -r -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+
+or 
+lvm
+lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+exit
+
+
+rm -rf /var/cache/apt/*
+
+
+
+====================================================================================================

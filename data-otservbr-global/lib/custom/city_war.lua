@@ -124,15 +124,18 @@ team_battle = {
 
             blue = team_battle.team_a[player:getName()]
             red = team_battle.team_b[player:getName()]
-            if v and (#v > 0) then
-	        if v and (#v > 0) then
-
+            if blue ~= nil then
+                red = team_battle.team_b[attacker:getName()]
+            elseif red ~= nil then
+                blue = team_battle.team_b[attacker:getName()]
+            end
 
             if (enemy:getMaster() ~= nil) and (enemy:getMaster():isPlayer() ~= nil) then
                 enemy = enemy:getMaster()
             end
             
-            return player:getOutfit().lookFeet ~= enemy:getOutfit().lookFeet        
+            --return player:getOutfit().lookFeet ~= enemy:getOutfit().lookFeet        
+            return blue ~= red
         end,
 
         broadcast = function (msg, type)

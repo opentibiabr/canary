@@ -44,6 +44,7 @@ local enchantedItems = {
 local enchanting = Action()
 
 function enchanting.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	-- The Dream Courts Quest
 	if item.itemid == 675 and target.itemid == 21573 then
 		return onGrindItem(player, item, fromPosition, target, toPosition)
 	end

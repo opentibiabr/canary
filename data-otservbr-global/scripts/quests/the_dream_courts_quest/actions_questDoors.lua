@@ -63,7 +63,7 @@ local doors = {
 	},
 	[13] = {
 		doorPosition = Position(32051, 31998, 14),
-		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Mushroom,
+		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.MushRoom,
 		value = 2,
 	},
 	[14] = {
@@ -114,18 +114,15 @@ function actions_questDoors.onUse(player, item, fromPosition, target, toPosition
 					player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count, (count < 0 and 1 or count + 1))
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "As Medusa's Ointment takes effect, the door is unpetrified. You can use it now.")
 				end
-
 				local newPos = (iPos.y < player:getPosition().y) and Position(iPos.x, iPos.y - 3, iPos.z) or Position(iPos.x, iPos.y + 3, iPos.z)
 				player:teleportTo(newPos)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				item:transform(item.itemid + 1)
 				addEvent(closeDoor, 2000, iPos, item.itemid)
 			elseif p.help == "Lock" then
 				if player:getStorageValue(p.storage) >= p.value then
 					local newPos = (iPos.y < player:getPosition().y) and Position(iPos.x, iPos.y - 1, iPos.z) or Position(iPos.x, iPos.y + 1, iPos.z)
 					player:teleportTo(newPos)
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-					item:transform(item.itemid + 1)
 					addEvent(closeDoor, 2000, iPos, item.itemid)
 				else
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The lock in this door is missing. Perhaps you can find a matching lock somewhere?")

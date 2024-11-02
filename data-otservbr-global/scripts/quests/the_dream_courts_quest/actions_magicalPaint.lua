@@ -41,5 +41,5 @@ function actions_magicalPaint.onUse(player, item, fromPosition, target, toPositi
 	end
 end
 
-actions_magicalPaint:aid(23109)
+actions_magicalPaint:id(29994, 30003, 30004, 30005, 30006)
 actions_magicalPaint:register()

@@ -1,5 +1,5 @@
 local earthPosition = Position(32014, 32035, 13)
-local Rosebush = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Rosebush
+local Rosebush = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.RoseBush
 local keysCount = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count
 
 local actions_rosebushUse = Action()

@@ -100,4 +100,11 @@ LevelDoorAction = {
 			{ x = 33214, y = 31671, z = 13 },
 		},
 	},
+	-- Doors for level 250
+	[1250] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32016, y = 32023, z = 13 },
+		},
+	},
 }

@@ -181,7 +181,7 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	if (!town) {
 		g_logger().error("Player {} has invalid town id {}. Attempting to set the correct town.", player->name, result->getNumber<uint16_t>("town_id"));
 
-		auto thaisTown = g_game().map.towns.getTown("Thais");
+		const auto &thaisTown = g_game().map.towns.getTown("Thais");
 		if (thaisTown) {
 			player->town = thaisTown;
 			g_logger().warn("Assigned town 'Thais' to player {}", player->name);

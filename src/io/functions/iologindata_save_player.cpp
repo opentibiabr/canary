@@ -598,43 +598,45 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 		return false;
 	}
 
-	if (g_configManager().getBoolean(PREY_ENABLED)) {
-		DBInsert preyQuery("INSERT INTO player_prey "
-		                   "(`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, "
-		                   "`bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) VALUES ");
-		preyQuery.upsert({ "state", "raceid", "option", "bonus_type", "bonus_rarity",
-		                   "bonus_percentage", "bonus_time", "free_reroll", "monster_list" });
+	if (!g_configManager().getBoolean(PREY_ENABLED)) {
+		return true;
+	}
 
-		auto playerGUID = player->getGUID();
-		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId))) {
-				PropWriteStream propPreyStream;
-				for (uint16_t raceId : slot->raceIdList) {
-					propPreyStream.write<uint16_t>(raceId);
-				}
+	DBInsert preyQuery("INSERT INTO player_prey "
+	                   "(`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, "
+	                   "`bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) VALUES ");
+	preyQuery.upsert({ "state", "raceid", "option", "bonus_type", "bonus_rarity",
+	                   "bonus_percentage", "bonus_time", "free_reroll", "monster_list" });
 
-				size_t preySize;
-				const char* preyList = propPreyStream.getStream(preySize);
-				auto escapedPreyList = g_database().escapeBlob(preyList, static_cast<uint32_t>(preySize));
+	auto playerGUID = player->getGUID();
+	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+		if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId))) {
+			PropWriteStream propPreyStream;
+			for (uint16_t raceId : slot->raceIdList) {
+				propPreyStream.write<uint16_t>(raceId);
+			}
 
-				// Format row data for batch insert
-				auto row = fmt::format("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}", playerGUID, static_cast<uint16_t>(slot->id), static_cast<uint16_t>(slot->state), slot->selectedRaceId, static_cast<uint16_t>(slot->option), static_cast<uint16_t>(slot->bonus), static_cast<uint16_t>(slot->bonusRarity), slot->bonusPercentage, slot->bonusTimeLeft, slot->freeRerollTimeStamp, escapedPreyList);
+			size_t preySize;
+			const char* preyList = propPreyStream.getStream(preySize);
+			auto escapedPreyList = g_database().escapeBlob(preyList, static_cast<uint32_t>(preySize));
 
-				if (!preyQuery.addRow(row)) {
-					g_logger().warn("[IOLoginDataSave::savePlayerPreyClass] - Failed to add prey slot data for player: {}", player->getName());
-					return false;
-				}
+			// Format row data for batch insert
+			auto row = fmt::format("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}", playerGUID, static_cast<uint16_t>(slot->id), static_cast<uint16_t>(slot->state), slot->selectedRaceId, static_cast<uint16_t>(slot->option), static_cast<uint16_t>(slot->bonus), static_cast<uint16_t>(slot->bonusRarity), slot->bonusPercentage, slot->bonusTimeLeft, slot->freeRerollTimeStamp, escapedPreyList);
+
+			if (!preyQuery.addRow(row)) {
+				g_logger().warn("[IOLoginDataSave::savePlayerPreyClass] - Failed to add prey slot data for player: {}", player->getName());
+				return false;
 			}
 		}
-
-		auto preySaveTask = [taskPreyQuery = std::move(preyQuery)]() mutable {
-			if (!taskPreyQuery.execute()) {
-				g_logger().warn("[SaveManager::preySaveTask] - Failed to execute prey slot data insertion");
-			}
-		};
-
-		g_saveManager().addTask(preySaveTask, "IOLoginDataSave::savePlayerPreyClass - preySaveTask");
 	}
+
+	auto preySaveTask = [taskPreyQuery = std::move(preyQuery)]() mutable {
+		if (!taskPreyQuery.execute()) {
+			g_logger().warn("[SaveManager::preySaveTask] - Failed to execute prey slot data insertion");
+		}
+	};
+
+	g_saveManager().addTask(preySaveTask, "IOLoginDataSave::savePlayerPreyClass - preySaveTask");
 
 	return true;
 }
@@ -645,43 +647,45 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 		return false;
 	}
 
-	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-		DBInsert taskHuntQuery("INSERT INTO `player_taskhunt` "
-		                       "(`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, "
-		                       "`kills`, `disabled_time`, `free_reroll`, `monster_list`) VALUES ");
-		taskHuntQuery.upsert({ "state", "raceid", "upgrade", "rarity", "kills", "disabled_time",
-		                       "free_reroll", "monster_list" });
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+		return true;
+	}
 
-		auto playerGUID = player->getGUID();
-		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			if (const auto &slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId))) {
-				PropWriteStream propTaskHuntingStream;
-				for (uint16_t raceId : slot->raceIdList) {
-					propTaskHuntingStream.write<uint16_t>(raceId);
-				}
+	DBInsert taskHuntQuery("INSERT INTO `player_taskhunt` "
+	                       "(`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, "
+	                       "`kills`, `disabled_time`, `free_reroll`, `monster_list`) VALUES ");
+	taskHuntQuery.upsert({ "state", "raceid", "upgrade", "rarity", "kills", "disabled_time",
+	                       "free_reroll", "monster_list" });
 
-				size_t taskHuntingSize;
-				const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
-				auto escapedTaskHuntingList = g_database().escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize));
+	auto playerGUID = player->getGUID();
+	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+		if (const auto &slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId))) {
+			PropWriteStream propTaskHuntingStream;
+			for (uint16_t raceId : slot->raceIdList) {
+				propTaskHuntingStream.write<uint16_t>(raceId);
+			}
 
-				// Construct row for batch insert
-				auto row = fmt::format("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}", playerGUID, static_cast<uint16_t>(slot->id), static_cast<uint16_t>(slot->state), slot->selectedRaceId, slot->upgrade ? 1 : 0, static_cast<uint16_t>(slot->rarity), slot->currentKills, slot->disabledUntilTimeStamp, slot->freeRerollTimeStamp, escapedTaskHuntingList);
+			size_t taskHuntingSize;
+			const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
+			auto escapedTaskHuntingList = g_database().escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize));
 
-				if (!taskHuntQuery.addRow(row)) {
-					g_logger().warn("[IOLoginDataSave::savePlayerTaskHuntingClass] - Failed to add task hunting slot data for player: {}", player->getName());
-					return false;
-				}
+			// Construct row for batch insert
+			auto row = fmt::format("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}", playerGUID, static_cast<uint16_t>(slot->id), static_cast<uint16_t>(slot->state), slot->selectedRaceId, slot->upgrade ? 1 : 0, static_cast<uint16_t>(slot->rarity), slot->currentKills, slot->disabledUntilTimeStamp, slot->freeRerollTimeStamp, escapedTaskHuntingList);
+
+			if (!taskHuntQuery.addRow(row)) {
+				g_logger().warn("[IOLoginDataSave::savePlayerTaskHuntingClass] - Failed to add task hunting slot data for player: {}", player->getName());
+				return false;
 			}
 		}
-
-		auto taskHuntingSaveTask = [executeTaskHuntQUery = std::move(taskHuntQuery)]() mutable {
-			if (!executeTaskHuntQUery.execute()) {
-				g_logger().warn("[SaveManager::taskHuntingSaveTask] - Failed to execute task hunting data insertion");
-			}
-		};
-
-		g_saveManager().addTask(taskHuntingSaveTask, "IOLoginDataSave::savePlayerTaskHuntingClass - taskHuntingSaveTask");
 	}
+
+	auto taskHuntingSaveTask = [executeTaskHuntQUery = std::move(taskHuntQuery)]() mutable {
+		if (!executeTaskHuntQUery.execute()) {
+			g_logger().warn("[SaveManager::taskHuntingSaveTask] - Failed to execute task hunting data insertion");
+		}
+	};
+
+	g_saveManager().addTask(taskHuntingSaveTask, "IOLoginDataSave::savePlayerTaskHuntingClass - taskHuntingSaveTask");
 
 	return true;
 }

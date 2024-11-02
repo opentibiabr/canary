@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 52 (player forge history unique done_at)")
+	logger.info("Updating database to version 47 (player forge history unique done_at)")
 
 	db.query([[
 		UPDATE forge_history

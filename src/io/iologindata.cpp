@@ -169,7 +169,7 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		}
 
 		// load forge history
-		player->stash()->load();
+		player->forgeHistory()->load();
 
 		// load bosstiary
 		IOLoginDataLoad::loadPlayerBosstiary(player, result);

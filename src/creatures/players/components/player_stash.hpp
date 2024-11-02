@@ -13,7 +13,7 @@ class Player;
 
 class PlayerStash {
 public:
-	PlayerStash(Player &player);
+	explicit PlayerStash(Player &player);
 
 	void add(uint16_t itemId, uint32_t count = 1);
 

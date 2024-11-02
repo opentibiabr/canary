@@ -981,9 +981,9 @@ void Player::closeContainer(uint8_t cid) {
 	if (container && container->isAnyKindOfRewardChest() && !hasOtherRewardContainerOpen(container)) {
 		removeEmptyRewards();
 	}
+
+	// Be careful when using the "container" after this, it may crash since the iterator has been invalidated
 	openContainers.erase(it);
-	if (container && container->getID() == ITEM_BROWSEFIELD) {
-	}
 }
 
 void Player::removeEmptyRewards() {

@@ -104,7 +104,13 @@ bool PlayerStorage::save() {
 		return true;
 	}
 
-	auto saveTask = [removedKeys = m_removedKeys, modifiedKeys = m_modifiedKeys, playerGUID = m_player.getGUID(), playerName = m_player.getName(), storageMap = m_storageMap]() mutable {
+	auto playerGUID = m_player.getGUID();
+	auto playerName = m_player.getName();
+	auto removedKeys = m_removedKeys;
+	auto modifiedKeys = m_modifiedKeys;
+	auto storageMap = m_storageMap;
+
+	auto deleteStorageKeys = [playerGUID, playerName, removedKeys]() mutable {
 		if (!removedKeys.empty()) {
 			std::string keysList = fmt::format("{}", fmt::join(removedKeys, ", "));
 			std::string deleteQuery = fmt::format(
@@ -114,11 +120,13 @@ bool PlayerStorage::save() {
 
 			if (!g_database().executeQuery(deleteQuery)) {
 				g_logger().error("[SaveManager::playerStorageSaveTask] - Failed to delete storage keys for player: {}", playerName);
-				return;
+				return false;
 			}
-			removedKeys.clear();
 		}
+		return true;
+	};
 
+	auto insertModifiedStorageKeys = [playerGUID, playerName, modifiedKeys, storageMap]() mutable {
 		if (!modifiedKeys.empty()) {
 			DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
 			storageQuery.upsert({ "value" });
@@ -127,16 +135,25 @@ bool PlayerStorage::save() {
 				auto row = fmt::format("{}, {}, {}", playerGUID, key, storageMap.at(key));
 				if (!storageQuery.addRow(row)) {
 					g_logger().warn("[SaveManager::playerStorageSaveTask] - Failed to add row for player storage: {}", playerName);
-					return;
+					return false;
 				}
 			}
 
 			if (!storageQuery.execute()) {
 				g_logger().error("[SaveManager::playerStorageSaveTask] - Failed to execute storage insertion for player: {}", playerName);
-				return;
+				return false;
 			}
+		}
+		return true;
+	};
 
-			modifiedKeys.clear();
+	auto saveTask = [deleteStorageKeys, insertModifiedStorageKeys]() mutable {
+		if (!deleteStorageKeys()) {
+			return;
+		}
+
+		if (!insertModifiedStorageKeys()) {
+			return;
 		}
 	};
 
@@ -166,7 +183,8 @@ void PlayerStorage::getReservedRange() {
 	// Generate outfits range
 	uint32_t outfits_key = PSTRG_OUTFITS_RANGE_START;
 	for (const auto &entry : m_player.outfits) {
-		uint32_t key = ++outfits_key;
+		outfits_key++;
+		uint32_t key = outfits_key;
 		m_storageMap[key] = (entry.lookType << 16) | entry.addons;
 		m_modifiedKeys.insert(key); // Track the key for saving
 	}
@@ -174,7 +192,8 @@ void PlayerStorage::getReservedRange() {
 	// Generate familiars range
 	uint32_t familiar_key = PSTRG_FAMILIARS_RANGE_START;
 	for (const auto &entry : m_player.familiars) {
-		uint32_t key = ++familiar_key;
+		familiar_key++;
+		uint32_t key = familiar_key;
 		m_storageMap[key] = (entry.lookType << 16);
 		m_modifiedKeys.insert(key); // Track the key for saving
 	}

@@ -338,13 +338,13 @@ bool IOLoginDataSave::savePlayerSpells(const std::shared_ptr<Player> &player) {
 		}
 	}
 
-	auto spellsSaveTask = [deleteQueryStr, spellsQuery]() mutable {
+	auto spellsSaveTask = [deleteQueryStr, spellsTaskQuery = std::move(spellsQuery)]() mutable {
 		if (!g_database().executeQuery(deleteQueryStr)) {
 			g_logger().error("[SaveManager::spellsSaveTask] - Failed to execute delete query for player spells");
 			return;
 		}
 
-		if (!spellsQuery.execute()) {
+		if (!spellsTaskQuery.execute()) {
 			g_logger().warn("[SaveManager::spellsSaveTask] - Failed to execute insert query for player spells");
 		}
 	};
@@ -369,13 +369,13 @@ bool IOLoginDataSave::savePlayerKills(const std::shared_ptr<Player> &player) {
 		}
 	}
 
-	auto killsSaveTask = [deleteQueryStr, killsQuery]() mutable {
+	auto killsSaveTask = [deleteQueryStr, killsTaskQuery = std::move(killsQuery)]() mutable {
 		if (!g_database().executeQuery(deleteQueryStr)) {
 			g_logger().warn("[SaveManager::killsSaveTask] - Failed to execute delete query for player kills");
 			return;
 		}
 
-		if (!killsQuery.execute()) {
+		if (!killsTaskQuery.execute()) {
 			g_logger().warn("[SaveManager::killsSaveTask] - Failed to execute insert query for player kills");
 		}
 	};
@@ -469,13 +469,13 @@ bool IOLoginDataSave::savePlayerItem(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
-	auto itemsSaveTask = [deleteQueryStr, itemsQuery]() mutable {
+	auto itemsSaveTask = [deleteQueryStr, taskItemsQuery = std::move(itemsQuery)]() mutable {
 		if (!g_database().executeQuery(deleteQueryStr)) {
 			g_logger().warn("[SaveManager::itemsSaveTask] - Failed to execute delete query for player items");
 			return;
 		}
 
-		if (!itemsQuery.execute()) {
+		if (!taskItemsQuery.execute()) {
 			g_logger().warn("[SaveManager::itemsSaveTask] - Failed to execute insert query for player items");
 		}
 	};
@@ -506,13 +506,13 @@ bool IOLoginDataSave::savePlayerDepotItems(const std::shared_ptr<Player> &player
 		return false;
 	}
 
-	auto depotItemsSaveTask = [deleteQueryStr, depotQuery]() mutable {
+	auto depotItemsSaveTask = [deleteQueryStr, taskDepotQuery = std::move(depotQuery)]() mutable {
 		if (!g_database().executeQuery(deleteQueryStr)) {
 			g_logger().warn("[SaveManager::depotItemsSaveTask] - Failed to execute delete query for depot items");
 			return;
 		}
 
-		if (!depotQuery.execute()) {
+		if (!taskDepotQuery.execute()) {
 			g_logger().warn("[SaveManager::depotItemsSaveTask] - Failed to execute insert query for depot items");
 		}
 	};
@@ -549,13 +549,13 @@ bool IOLoginDataSave::saveRewardItems(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
-	auto rewardItemsSaveTask = [deleteQueryStr, rewardQuery]() mutable {
+	auto rewardItemsSaveTask = [deleteQueryStr, taskRewardQuery = std::move(rewardQuery)]() mutable {
 		if (!g_database().executeQuery(deleteQueryStr)) {
 			g_logger().warn("[SaveManager::rewardItemsSaveTask] - Failed to execute delete query for reward items");
 			return;
 		}
 
-		if (!rewardQuery.execute()) {
+		if (!taskRewardQuery.execute()) {
 			g_logger().warn("[SaveManager::rewardItemsSaveTask] - Failed to execute insert query for reward items");
 		}
 	};
@@ -584,13 +584,13 @@ bool IOLoginDataSave::savePlayerInbox(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
-	auto inboxSaveTask = [deleteQueryStr, inboxQuery]() mutable {
+	auto inboxSaveTask = [deleteQueryStr, taskInboxQuery = std::move(inboxQuery)]() mutable {
 		if (!g_database().executeQuery(deleteQueryStr)) {
 			g_logger().warn("[SaveManager::inboxSaveTask] - Failed to execute delete query for inbox items");
 			return;
 		}
 
-		if (!inboxQuery.execute()) {
+		if (!taskInboxQuery.execute()) {
 			g_logger().warn("[SaveManager::inboxSaveTask] - Failed to execute insert query for inbox items");
 		}
 	};
@@ -634,9 +634,9 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 			}
 		}
 
-		auto preySaveTask = [preyQuery]() mutable {
+		auto preySaveTask = [taskPreyQuery = std::move(preyQuery)]() mutable {
 			Database &db = Database::getInstance();
-			if (!preyQuery.execute()) {
+			if (!taskPreyQuery.execute()) {
 				g_logger().warn("[SaveManager::preySaveTask] - Failed to execute prey slot data insertion");
 			}
 		};
@@ -682,9 +682,9 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 			}
 		}
 
-		auto taskHuntingSaveTask = [taskHuntQuery]() mutable {
+		auto taskHuntingSaveTask = [executeTaskHuntQUery = std::move(taskHuntQuery)]() mutable {
 			Database &db = Database::getInstance();
-			if (!taskHuntQuery.execute()) {
+			if (!executeTaskHuntQUery.execute()) {
 				g_logger().warn("[SaveManager::taskHuntingSaveTask] - Failed to execute task hunting data insertion");
 			}
 		};
@@ -726,8 +726,8 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 		return false;
 	}
 
-	auto bosstiarySaveTask = [insertQuery]() mutable {
-		if (!insertQuery.execute()) {
+	auto bosstiarySaveTask = [insertTaskQuery = std::move(insertQuery)]() mutable {
+		if (!insertTaskQuery.execute()) {
 			g_logger().warn("[SaveManager::bosstiarySaveTask] - Error executing bosstiary data insertion");
 		}
 	};

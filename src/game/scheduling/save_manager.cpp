@@ -187,11 +187,17 @@ void SaveManager::executeTasks() {
 		}
 	}
 
-	threadPool.detach_task([tasks = std::move(m_tasks)] {
-		for (const auto &task : tasks) {
+	if (g_configManager().getBoolean(TOGGLE_SAVE_ASYNC)) {
+		threadPool.detach_task([tasks = std::move(m_tasks)] {
+			for (const auto &task : tasks) {
+				task.execute();
+			}
+		});
+	} else {
+		for (const auto &task : m_tasks) {
 			task.execute();
 		}
-	});
+	}
 
 	m_tasks.clear();
 }

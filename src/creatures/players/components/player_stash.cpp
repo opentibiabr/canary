@@ -80,7 +80,7 @@ bool PlayerStash::save() {
 	auto removedItems = m_removedItems;
 	auto modifiedItems = m_modifiedItems;
 
-	auto stashSaveTask = [playerGUID, removedItems, modifiedItems]() mutable {
+	auto deleteStashItems = [playerGUID, removedItems]() mutable {
 		Database &db = Database::getInstance();
 
 		if (!removedItems.empty()) {
@@ -92,12 +92,17 @@ bool PlayerStash::save() {
 
 			if (!db.executeQuery(deleteQuery)) {
 				g_logger().error("[PlayerStash::save] - Failed to delete removed items for player: {}", playerGUID);
-				return;
+				return false;
 			}
 
 			removedItems.clear();
 		}
 
+		return true;
+	};
+
+	auto insertModifiedStashItems = [playerGUID, modifiedItems]() mutable {
+		Database &db = Database::getInstance();
 		DBInsert insertQuery("INSERT INTO `player_stash` (`player_id`, `item_id`, `item_count`) VALUES ");
 		insertQuery.upsert({ "item_count" });
 
@@ -105,12 +110,24 @@ bool PlayerStash::save() {
 			auto row = fmt::format("{}, {}, {}", playerGUID, itemId, itemCount);
 			if (!insertQuery.addRow(row)) {
 				g_logger().warn("[PlayerStash::save] - Failed to add row for stash item: {}", itemId);
-				return;
+				return false;
 			}
 		}
 
 		if (!insertQuery.execute()) {
 			g_logger().error("[PlayerStash::save] - Failed to execute insertion for modified stash items for player: {}", playerGUID);
+			return false;
+		}
+
+		return true;
+	};
+
+	auto stashSaveTask = [deleteStashItems, insertModifiedStashItems]() mutable {
+		if (!deleteStashItems()) {
+			return;
+		}
+
+		if (!insertModifiedStashItems()) {
 			return;
 		}
 	};

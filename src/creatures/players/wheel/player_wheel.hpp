@@ -257,7 +257,7 @@ public:
 	 */
 	void setMajorStat(WheelMajor_t type, int32_t value);
 
-		/**
+	/**
 	 * @brief Sets the value of a specific specialized magic in the Wheel of Destiny.
 	 *
 	 * This function sets the value of the specified specialized magic in the Wheel of Destiny to the provided value.

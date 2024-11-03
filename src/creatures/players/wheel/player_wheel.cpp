@@ -1272,7 +1272,7 @@ void PlayerWheel::toggleGemLock(uint16_t index) const {
 }
 
 void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) const {
-	const auto gem = getGem(index);
+	auto gem = getGem(index);
 	if (gem.uuid.empty()) {
 		g_logger().error("[{}] Failed to load gem with index {}", __FUNCTION__, index);
 		return;

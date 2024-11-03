@@ -152,6 +152,7 @@ public:
 	const Category* getFirstSubCategory() const;
 	const std::vector<Category> &getSubCategoriesVector() const;
 	const std::vector<const Offer*> &getOffersVector() const;
+	const std::vector<std::string> &getCollectionsVector() const;
 
 private:
 	friend class IOStore;
@@ -167,8 +168,10 @@ private:
 
 	// Used when Category class is a Subcategory or a "Special Category"
 	std::vector<const Offer*> m_offers;
+	std::vector<std::string> m_collections;
 
 	void addSubCategory(const Category &newSubCategory);
+	void addCollection(const std::string &newCollection);
 	void addOffer(const Offer* newOffer);
 	void setSpecialCategory(bool state) {
 		m_specialCategory = state;
@@ -216,6 +219,9 @@ public:
 	OutfitIds getOutfitIds() const {
 		return m_outfitId;
 	}
+	std::string getCollection() const {
+		return m_collectionName;
+	}
 	std::string getParentName() const {
 		return m_parentName;
 	}
@@ -246,6 +252,7 @@ private:
 	CoinType m_coinType = CoinType::Normal;
 	std::string m_description;
 	OutfitIds m_outfitId;
+	std::string m_collectionName;
 	bool m_movable;
 
 	// Internal

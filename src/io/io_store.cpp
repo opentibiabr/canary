@@ -214,6 +214,12 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	}
 	newOffer.m_coinType = coinType;
 
+	std::string collection = "";
+	if (offer.attribute("collection")) {
+		collection = std::string(offer.attribute("collection").as_string());
+	}
+	newOffer.m_collectionName = collection;
+
 	std::string desc = "";
 	if (offer.attribute("description")) {
 		desc = std::string(offer.attribute("description").as_string());
@@ -242,6 +248,9 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		return false;
 	}
 	category->addOffer(foundOffer);
+	if (!collection.empty()) {
+		category->addCollection(collection);
+	}
 
 	return true;
 }
@@ -446,6 +455,18 @@ void Category::addOffer(const Offer* newOffer) {
 		}
 	}
 	m_offers.push_back(newOffer);
+}
+
+const std::vector<std::string> &Category::getCollectionsVector() const {
+	return m_collections;
+}
+void Category::addCollection(const std::string &newCollection) {
+	for (const auto &collection : m_collections) {
+		if (newCollection == collection) {
+			return;
+		}
+	}
+	m_collections.push_back(newCollection);
 }
 
 // Offer Functions

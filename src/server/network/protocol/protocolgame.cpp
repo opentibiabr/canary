@@ -9475,7 +9475,7 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 	}
 
 	msg.addByte(tryOn); // Try on Type
-	msg.add<uint16_t>(0x00); // Collection
+	msg.addString(offer->getCollection()); // Collection
 	msg.add<uint16_t>(0x00); // Popularity Score
 	msg.add<uint32_t>(0x00); // State New Until
 
@@ -9522,7 +9522,7 @@ void ProtocolGame::sendStoreHome() {
 
 	for (const auto &banner : bannersVector) {
 		msg.addString(banner.bannerName);
-		msg.addByte(0x04); // Banner Type (0x04 = Offer)
+		msg.addByte(0x04); // Banner Type (0x02 = Collection, 0x04 = Offer)
 		msg.add<uint32_t>(banner.offerId); // Offer Id
 		msg.addByte(0x00); // Unknown
 		msg.addByte(0x00); // Unknown
@@ -9543,8 +9543,17 @@ void ProtocolGame::sendCategoryOffers(const Category* category, uint32_t redirec
 	msg.add<uint32_t>(redirectId);
 
 	msg.addByte(0x00); // Window Type
-	msg.addByte(0x00); // Collection Size
-	msg.add<uint16_t>(0x00); // Collection Name
+
+	const auto &collectionsVector = category->getCollectionsVector();
+	const auto collectionsVectorSize = collectionsVector.size();
+	msg.addByte(collectionsVectorSize); // Collection Size
+	if (collectionsVectorSize > 0) {
+		for (const auto &collectionName : collectionsVector) {
+			msg.addString(collectionName); // Collection Name
+		}
+	}
+
+	msg.add<uint16_t>(0x00); // Display Sub Category (?)
 
 	auto disableReasonVector = g_ioStore().getOffersDisableReasonVector();
 	uint16_t disableReasonVectorLen = disableReasonVector.size();

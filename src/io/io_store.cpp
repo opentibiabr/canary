@@ -15,7 +15,7 @@
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 
-const std::map<std::string, OfferTypes_t> IOStore::stringToOfferTypeMap = {
+const std::map<std::string, OfferTypes_t, std::less<>> IOStore::stringToOfferTypeMap = {
 	{ "none", OfferTypes_t::NONE },
 	{ "item", OfferTypes_t::ITEM },
 	{ "stackable", OfferTypes_t::STACKABLE },
@@ -59,7 +59,7 @@ const std::map<OfferTypes_t, uint16_t> IOStore::offersDisableIndex = {
 	{ OfferTypes_t::TEMPLE, 10 },
 };
 
-const std::map<std::string, States_t> IOStore::stringToOfferStateMap = {
+const std::map<std::string, States_t, std::less<>> IOStore::stringToOfferStateMap = {
 	{ "none", States_t::NONE }, { "new", States_t::NEW }, { "sale", States_t::SALE }, { "timed", States_t::TIMED }
 };
 
@@ -487,21 +487,31 @@ void Offer::addRelatedOffer(const Offer &relatedOffer) {
 }
 
 ConverType_t Offer::getConverType() const {
-	if (m_type == OfferTypes_t::MOUNT) {
-		return ConverType_t::MOUNT;
-	} else if (m_type == OfferTypes_t::LOOKTYPE) {
-		return ConverType_t::LOOKTYPE;
-	} else if (m_type == OfferTypes_t::ITEM || m_type == OfferTypes_t::STACKABLE || m_type == OfferTypes_t::HOUSE || m_type == OfferTypes_t::CHARGES || m_type == OfferTypes_t::POUCH) {
-		return ConverType_t::ITEM;
-	} else if (m_type == OfferTypes_t::OUTFIT || m_type == OfferTypes_t::HIRELING) {
-		return ConverType_t::OUTFIT;
-	}
+	using enum OfferTypes_t;
 
-	return ConverType_t::NONE;
+	switch (m_type) {
+		case MOUNT:
+			return ConverType_t::MOUNT;
+		case LOOKTYPE:
+			return ConverType_t::LOOKTYPE;
+		case ITEM:
+		case STACKABLE:
+		case HOUSE:
+		case CHARGES:
+		case POUCH:
+			return ConverType_t::ITEM;
+		case OUTFIT:
+		case HIRELING:
+			return ConverType_t::OUTFIT;
+
+		default:
+			return ConverType_t::NONE;
+	}
 }
 
 bool Offer::getUseConfigure() const {
-	if (m_type == OfferTypes_t::NAMECHANGE || m_type == OfferTypes_t::HIRELING || m_type == OfferTypes_t::HIRELING_NAMECHANGE) {
+	using enum OfferTypes_t;
+	if (m_type == NAMECHANGE || m_type == HIRELING || m_type == HIRELING_NAMECHANGE) {
 		return true;
 	}
 

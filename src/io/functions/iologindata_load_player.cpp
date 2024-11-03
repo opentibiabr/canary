@@ -870,7 +870,7 @@ void IOLoginDataLoad::loadPlayerStoreHistory(const std::shared_ptr<Player> &play
 	}
 
 	std::string query = fmt::format("SELECT * FROM `store_history` WHERE `account_id` = {}", player->getAccountId());
-	if (result = Database::getInstance().storeQuery(query)) {
+	if ((result = Database::getInstance().storeQuery(query))) {
 		do {
 			StoreHistory history;
 			history.description = result->getString("description");

@@ -68,9 +68,9 @@ public:
 
 	bool loadFromXml();
 
-	static const std::map<std::string, OfferTypes_t> stringToOfferTypeMap;
+	static const std::map<std::string, OfferTypes_t, std::less<>> stringToOfferTypeMap;
 	static const std::map<OfferTypes_t, uint16_t> offersDisableIndex;
-	static const std::map<std::string, States_t> stringToOfferStateMap;
+	static const std::map<std::string, States_t, std::less<>> stringToOfferStateMap;
 
 	const std::vector<Category> &getCategoryVector() const;
 	const Category* getCategoryByName(std::string_view categoryName) const;
@@ -181,7 +181,7 @@ private:
 class Offer {
 public:
 	Offer(uint32_t id, const std::string &name) :
-		m_id(id), m_name(std::move(name)) { }
+		m_id(id), m_name(name) { }
 
 	const std::string &getName() const {
 		return m_name;
@@ -238,12 +238,12 @@ private:
 	friend class IOStore;
 
 	// Mandatory
+	uint32_t m_id;
 	std::string m_name;
 	uint32_t m_price;
 	OfferTypes_t m_type = OfferTypes_t::NONE;
 
 	// Optional
-	uint32_t m_id;
 	std::string m_icon;
 	States_t m_state = States_t::NONE;
 	uint32_t m_itemId;

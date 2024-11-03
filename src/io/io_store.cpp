@@ -212,6 +212,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		auto coinTypeString = std::string(offer.attribute("coinType").as_string());
 		coinType = coinTypeString == "normal" ? CoinType::Normal : CoinType::Transferable;
 	}
+	newOffer.m_coinType = coinType;
 
 	std::string desc = "";
 	if (offer.attribute("description")) {

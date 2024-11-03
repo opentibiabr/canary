@@ -9278,7 +9278,7 @@ void ProtocolGame::parseCoinTransfer(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseOpenStoreHistory(NetworkMessage &msg) {
-	uint8_t entryPages = msg.getByte(); // Always 26?
+	msg.getByte(); // Entry Pages = Always 26?
 	g_game().playerOpenStoreHistory(player->getID(), 1);
 }
 
@@ -9622,7 +9622,7 @@ void ProtocolGame::sendOfferDescription(const Offer* offer) {
 
 void ProtocolGame::parseBuyStoreOffer(NetworkMessage &msg) {
 	auto offerId = msg.get<uint32_t>();
-	auto offerType = msg.getByte();
+	msg.getByte(); // Service Type
 
 	const auto* currentOffer = g_ioStore().getOfferById(offerId);
 	if (!currentOffer) {

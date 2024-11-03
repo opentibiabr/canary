@@ -131,16 +131,16 @@ private:
 class Category { // We're gonna use the same class for Category and Subcategory
 public:
 	Category(const std::string &name, const std::string &icon, bool rookgaard, States_t state = States_t::NONE) :
-		m_categoryName(name), m_categoryIcon(icon), m_canRookgaardAccess(rookgaard), m_categoryState(state) { }
+		m_name(name), m_icon(icon), m_canRookgaardAccess(rookgaard), m_state(state) { }
 
-	const std::string &getCategoryName() const {
-		return m_categoryName;
+	const std::string &getName() const {
+		return m_name;
 	}
-	const std::string &getCategoryIcon() const {
-		return m_categoryIcon;
+	const std::string &getIcon() const {
+		return m_icon;
 	}
-	States_t getCategoryState() const {
-		return m_categoryState;
+	States_t getState() const {
+		return m_state;
 	}
 	bool canRookgaardAccess() const {
 		return m_canRookgaardAccess;
@@ -157,10 +157,10 @@ public:
 private:
 	friend class IOStore;
 
-	std::string m_categoryName;
-	std::string m_categoryIcon;
+	std::string m_name;
+	std::string m_icon;
 	bool m_canRookgaardAccess;
-	States_t m_categoryState = States_t::NONE;
+	States_t m_state = States_t::NONE;
 	bool m_specialCategory = false;
 
 	// Used when Category class is a Category
@@ -183,28 +183,28 @@ public:
 	Offer(uint32_t id, const std::string &name) :
 		m_id(id), m_name(std::move(name)) { }
 
-	const std::string &getOfferName() const {
+	const std::string &getName() const {
 		return m_name;
 	}
-	const std::string &getOfferIcon() const {
+	const std::string &getIcon() const {
 		return m_icon;
 	}
-	uint32_t getOfferId() const {
+	uint32_t getID() const {
 		return m_id;
 	}
-	uint32_t getOfferPrice() const {
+	uint32_t getPrice() const {
 		return m_price;
 	}
 	uint32_t getItemId() const {
 		return m_itemId;
 	}
-	OfferTypes_t getOfferType() const {
+	OfferTypes_t getType() const {
 		return m_type;
 	}
-	States_t getOfferState() const {
+	States_t getState() const {
 		return m_state;
 	}
-	uint16_t getOfferCount() const {
+	uint16_t getCount() const {
 		return m_count;
 	}
 	uint16_t getValidUntil() const {
@@ -213,7 +213,7 @@ public:
 	CoinType getCoinType() const {
 		return m_coinType;
 	}
-	std::string getOfferDescription() const {
+	std::string getDescription() const {
 		return m_description;
 	}
 	OutfitIds getOutfitIds() const {

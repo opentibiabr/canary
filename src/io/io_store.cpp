@@ -160,6 +160,8 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	uint16_t count = 1;
 	if (offer.attribute("count")) {
 		count = static_cast<uint16_t>(offer.attribute("count").as_uint());
+	} else if (offer.attribute("charges")) {
+		count = static_cast<uint16_t>(offer.attribute("charges").as_uint());
 	}
 	newOffer.m_count = count;
 
@@ -232,7 +234,7 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	}
 	newOffer.m_movable = isMovable;
 
-	newOffer.m_parentName = category->getCategoryName();
+	newOffer.m_parentName = category->getName();
 	auto baseOffer = getOfferByName(name);
 	if (baseOffer) {
 		baseOffer->addRelatedOffer(newOffer);
@@ -297,7 +299,7 @@ const std::vector<Category> &IOStore::getCategoryVector() const {
 }
 void IOStore::addCategory(const Category &newCategory) {
 	for (const auto &category : m_categoryVector) {
-		if (newCategory.getCategoryName() == category.getCategoryName()) {
+		if (newCategory.getName() == category.getName()) {
 			return;
 		}
 	}
@@ -306,7 +308,7 @@ void IOStore::addCategory(const Category &newCategory) {
 
 const Category* IOStore::getCategoryByName(std::string_view categoryName) const {
 	for (const auto &category : m_categoryVector) {
-		if (categoryName == category.getCategoryName()) {
+		if (categoryName == category.getName()) {
 			return &category;
 		}
 	}
@@ -315,7 +317,7 @@ const Category* IOStore::getCategoryByName(std::string_view categoryName) const 
 
 const Category* IOStore::getSubCategoryByName(std::string_view subCategoryName) const {
 	for (const auto &subCategory : m_subCategoryVector) {
-		if (subCategoryName == subCategory.getCategoryName()) {
+		if (subCategoryName == subCategory.getName()) {
 			return &subCategory;
 		}
 	}
@@ -345,7 +347,7 @@ std::vector<Offer> IOStore::getOffersContainingSubstring(const std::string &sear
 	auto lowerSearchString = asLowerCaseString(searchString);
 
 	for (const auto &[id, offer] : m_offersMap) {
-		const auto &currentOfferName = offer.getOfferName();
+		const auto &currentOfferName = offer.getName();
 		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
 
 		if (lowerCurrentOfferName.find(lowerSearchString) != std::string::npos) {
@@ -360,7 +362,7 @@ Offer* IOStore::getOfferByName(const std::string &searchString) {
 	auto lowerSearchString = asLowerCaseString(searchString);
 
 	for (auto &[id, offer] : m_offersMap) {
-		auto currentOfferName = offer.getOfferName();
+		auto currentOfferName = offer.getName();
 		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
 
 		if (lowerSearchString == lowerCurrentOfferName) {
@@ -436,7 +438,7 @@ const std::vector<Category> &Category::getSubCategoriesVector() const {
 }
 void Category::addSubCategory(const Category &newSubCategory) {
 	for (const auto &subCategory : m_subCategories) {
-		if (newSubCategory.getCategoryName() == subCategory.getCategoryName()) {
+		if (newSubCategory.getName() == subCategory.getName()) {
 			return;
 		}
 	}
@@ -448,9 +450,9 @@ const std::vector<const Offer*> &Category::getOffersVector() const {
 }
 void Category::addOffer(const Offer* newOffer) {
 	for (const auto &offer : m_offers) {
-		if (newOffer->getOfferId() == offer->getOfferId()
-		    && newOffer->getOfferName() == offer->getOfferName()
-		    && newOffer->getOfferCount() == offer->getOfferCount()) {
+		if (newOffer->getID() == offer->getID()
+		    && newOffer->getName() == offer->getName()
+		    && newOffer->getCount() == offer->getCount()) {
 			return;
 		}
 	}
@@ -475,8 +477,8 @@ const std::vector<Offer> &Offer::getRelatedOffersVector() const {
 }
 void Offer::addRelatedOffer(const Offer &relatedOffer) {
 	for (const auto &offer : m_relatedOffers) {
-		if (relatedOffer.getOfferCount() == offer.getOfferCount()
-		    && relatedOffer.getOfferPrice() == offer.getOfferPrice()) {
+		if (relatedOffer.getCount() == offer.getCount()
+		    && relatedOffer.getPrice() == offer.getPrice()) {
 			return;
 		}
 	}

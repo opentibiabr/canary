@@ -10768,11 +10768,11 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 	std::string errorMessage = "An error has occurred, please contact your administrator.";
 	bool success = false;
-	auto offerType = offer->getOfferType();
+	auto offerType = offer->getType();
 	switch (offerType) {
 		case OfferTypes_t::HOUSE: {
 			auto itemId = offer->getItemId();
-			auto offerAmount = offer->getOfferCount();
+			auto offerAmount = offer->getCount();
 
 			success = processHouseOffer(player, itemId, offerAmount);
 			break;
@@ -10780,7 +10780,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		case OfferTypes_t::CHARGES: {
 			auto itemId = offer->getItemId();
-			auto itemCharges = offer->getOfferCount();
+			auto itemCharges = offer->getCount();
 			auto isMovable = offer->isMovable();
 
 			success = processChargesOffer(player, itemId, itemCharges, isMovable);
@@ -10790,7 +10790,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		case OfferTypes_t::ITEM:
 		case OfferTypes_t::STACKABLE: {
 			auto itemId = offer->getItemId();
-			auto itemAmount = offer->getOfferCount();
+			auto itemAmount = offer->getCount();
 			auto isMovable = offer->isMovable();
 
 			success = processStackableOffer(player, itemId, itemAmount, isMovable);
@@ -10828,7 +10828,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::MOUNT: {
-			auto mount = g_game().mounts->getMountByID(offer->getOfferId());
+			auto mount = g_game().mounts->getMountByID(offer->getID());
 			if (!mount) {
 				break;
 			}
@@ -10897,13 +10897,13 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::BLESSINGS: {
-			auto blessId = offer->getOfferId();
+			auto blessId = offer->getID();
 			if (!magic_enum::enum_contains<Blessings>(blessId)) {
 				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, player->getName());
 				break;
 			}
 
-			player->addBlessing(blessId, offer->getOfferCount());
+			player->addBlessing(blessId, offer->getCount());
 			player->sendBlessStatus();
 
 			success = true;
@@ -10927,7 +10927,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 				break;
 			}
 
-			int32_t premiumDays = static_cast<int32_t>(offer->getOfferId()) - 3000;
+			int32_t premiumDays = static_cast<int32_t>(offer->getID()) - 3000;
 			player->getAccount()->addPremiumDays(premiumDays);
 			if (player->getAccount()->save() != AccountErrors_t::Ok) {
 				break;
@@ -10954,7 +10954,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::PREYBONUS: {
-			auto cardsAmount = offer->getOfferCount();
+			auto cardsAmount = offer->getCount();
 			if (player->getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT)) {
 				break;
 			}
@@ -10994,7 +10994,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		}
 
 		case OfferTypes_t::INSTANT_REWARD_ACCESS: {
-			auto offerInstantAmount = offer->getOfferCount();
+			auto offerInstantAmount = offer->getCount();
 			auto playerInstantAmount = static_cast<uint16_t>(player->getStorageValue(STORAGEVALUE_REWARD_ACCESS));
 
 			auto instantLimit = static_cast<uint16_t>(g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT));
@@ -11029,17 +11029,17 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 	}
 
 	if (success) {
-		uint32_t offerPrice = offer->getOfferPrice();
+		uint32_t offerPrice = offer->getPrice();
 
-		if (offer->getOfferType() == OfferTypes_t::EXPBOOST) {
+		if (offer->getType() == OfferTypes_t::EXPBOOST) {
 			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST) - 1);
 		}
 
 		std::string returnmessage;
-		if (offer->getOfferType() == OfferTypes_t::NAMECHANGE) {
+		if (offer->getType() == OfferTypes_t::NAMECHANGE) {
 			returnmessage = "Thank you for your purchase! To finalise the Character Name Change, please start your client anew. Note that you cannot enter houses or open doors anymore which are still labelled with your old character name until the responsible character invited you with your new name.";
 		} else {
-			returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getOfferName(), offerPrice);
+			returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getName(), offerPrice);
 		}
 		auto result = player->getAccount()->removeCoins(CoinType::Transferable, offerPrice, returnmessage);
 		if (result == AccountErrors_t::RemoveCoins) {
@@ -11049,10 +11049,10 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		player->sendStoreSuccess(returnmessage);
 
-		auto offerAmount = offer->getOfferCount();
+		auto offerAmount = offer->getCount();
 		auto pricePerItem = offerPrice ? offerPrice / offerAmount : 0;
 		g_logger().trace("[{}] offer price {}, offer ammount {}, price per item {}", __METHOD_NAME__, offerPrice, offerAmount, pricePerItem);
-		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, StoreDetailType::Finished, MARKETACTION_SELL, offer->getOfferName());
+		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, StoreDetailType::Finished, MARKETACTION_SELL, offer->getName());
 	} else {
 		player->sendStoreError(StoreErrors_t::PURCHASE, errorMessage);
 	}

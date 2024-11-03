@@ -9674,7 +9674,7 @@ std::shared_ptr<KV> Player::getStoreDetailScope(int32_t createdAt) const {
 
 bool Player::canBuyStoreOffer(const Offer* offer) {
 	auto canBuy = true;
-	auto offerType = offer->getOfferType();
+	auto offerType = offer->getType();
 	switch (offerType) {
 		case OfferTypes_t::OUTFIT: {
 			auto offerOutfitId = offer->getOutfitIds();
@@ -9688,7 +9688,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::MOUNT: {
-			auto mount = g_game().mounts->getMountByID(offer->getOfferId());
+			auto mount = g_game().mounts->getMountByID(offer->getID());
 
 			if (hasMount(mount)) {
 				canBuy = false;
@@ -9716,7 +9716,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::PREYBONUS: {
-			auto cardsAmount = offer->getOfferCount();
+			auto cardsAmount = offer->getCount();
 			if (getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT)) {
 				canBuy = false;
 			}
@@ -9725,7 +9725,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::BLESSINGS: {
-			auto blessId = offer->getOfferId();
+			auto blessId = offer->getID();
 			if (!magic_enum::enum_contains<Blessings>(blessId)) {
 				sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
 				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, getName());
@@ -9761,7 +9761,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::INSTANT_REWARD_ACCESS: {
-			auto offerInstantAmount = offer->getOfferCount();
+			auto offerInstantAmount = offer->getCount();
 			auto playerInstantAmount = getStorageValue(STORAGEVALUE_REWARD_ACCESS);
 
 			if (playerInstantAmount + offerInstantAmount >= g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT)) {

@@ -9,11 +9,6 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <vector>
-#include "lib/di/container.hpp"
-
 enum class BosstiaryRarity_t : uint8_t {
 	RARITY_BANE = 0,
 	RARITY_ARCHFOE = 1,
@@ -39,9 +34,7 @@ public:
 	IOBosstiary(const IOBosstiary &) = delete;
 	void operator=(const IOBosstiary &) = delete;
 
-	static IOBosstiary &getInstance() {
-		return inject<IOBosstiary>();
-	}
+	static IOBosstiary &getInstance();
 
 	void loadBoostedBoss();
 

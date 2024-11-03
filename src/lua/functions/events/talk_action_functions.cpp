@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/events/talk_action_functions.hpp"
+
 #include "account/account.hpp"
 #include "lua/creature/talkaction.hpp"
-#include "lua/functions/events/talk_action_functions.hpp"
 #include "utils/tools.hpp"
 
 #include "enums/account_group_type.hpp"

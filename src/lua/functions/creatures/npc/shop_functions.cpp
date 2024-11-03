@@ -7,8 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/npcs/npcs.hpp"
 #include "lua/functions/creatures/npc/shop_functions.hpp"
+
+#include "creatures/npcs/npcs.hpp"
+
+#include "items/item.hpp"
+#include "utils/tools.hpp"
 
 int ShopFunctions::luaCreateShop(lua_State* L) {
 	// Shop() will create a new shop item

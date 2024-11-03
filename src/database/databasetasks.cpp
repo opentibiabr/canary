@@ -8,6 +8,7 @@
  */
 
 #include "database/databasetasks.hpp"
+
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"

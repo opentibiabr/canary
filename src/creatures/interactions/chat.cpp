@@ -8,9 +8,24 @@
  */
 
 #include "creatures/interactions/chat.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "utils/pugicast.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "lib/di/container.hpp"
+#include "utils/pugicast.hpp"
+
+PrivateChatChannel::PrivateChatChannel(uint16_t channelId, std::string channelName) :
+	ChatChannel(channelId, std::move(channelName)) { }
+
+uint32_t PrivateChatChannel::getOwner() const {
+	return owner;
+}
+
+void PrivateChatChannel::setOwner(uint32_t newOwner) {
+	this->owner = newOwner;
+}
 
 bool PrivateChatChannel::isInvited(uint32_t guid) const {
 	if (guid == getOwner()) {
@@ -77,6 +92,14 @@ void PrivateChatChannel::closeChannel() const {
 		playerUser->sendClosePrivate(id);
 	}
 }
+
+const InvitedMap* PrivateChatChannel::getInvitedUsers() const {
+	return &invites;
+}
+
+ChatChannel::ChatChannel(uint16_t channelId, std::string channelName) :
+	name(std::move(channelName)),
+	id(channelId) { }
 
 bool ChatChannel::addUser(const std::shared_ptr<Player> &player) {
 	if (users.contains(player->getID())) {
@@ -145,6 +168,30 @@ void ChatChannel::sendToAll(const std::string &message, SpeakClasses type) const
 
 		playerUser->sendChannelMessage("", message, type, id);
 	}
+}
+
+const std::string &ChatChannel::getName() const {
+	return name;
+}
+
+uint16_t ChatChannel::getId() const {
+	return id;
+}
+
+const UsersMap &ChatChannel::getUsers() const {
+	return users;
+}
+
+const InvitedMap* ChatChannel::getInvitedUsers() const {
+	return nullptr;
+}
+
+uint32_t ChatChannel::getOwner() const {
+	return 0;
+}
+
+bool ChatChannel::isPublicChannel() const {
+	return publicChannel;
 }
 
 bool ChatChannel::talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses type, const std::string &text) const {
@@ -292,6 +339,10 @@ Chat::Chat() :
 	scriptInterface("Chat Interface"),
 	dummyPrivate(std::make_shared<PrivateChatChannel>(CHANNEL_PRIVATE, "Private Chat Channel")) {
 	scriptInterface.initState();
+}
+
+Chat &Chat::getInstance() {
+	return inject<Chat>();
 }
 
 bool Chat::load() {
@@ -670,4 +721,8 @@ std::shared_ptr<PrivateChatChannel> Chat::getPrivateChannel(const std::shared_pt
 		return it->second;
 	}
 	return nullptr;
+}
+
+LuaScriptInterface* Chat::getScriptInterface() {
+	return &scriptInterface;
 }

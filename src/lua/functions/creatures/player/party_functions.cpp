@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/player/party_functions.hpp"
+
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "lua/functions/creatures/player/party_functions.hpp"
 
 int32_t PartyFunctions::luaPartyCreate(lua_State* L) {
 	// Party(userdata)

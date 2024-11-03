@@ -12,8 +12,12 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
 #include "utils/tools.hpp"
-#include "items/item.hpp"
+
+IOBosstiary &IOBosstiary::getInstance() {
+	return inject<IOBosstiary>();
+}
 
 void IOBosstiary::loadBoostedBoss() {
 	Database &database = Database::getInstance();

@@ -7,8 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/game.hpp"
 #include "game/movement/teleport.hpp"
+
+#include "creatures/creature.hpp"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream &propStream) {

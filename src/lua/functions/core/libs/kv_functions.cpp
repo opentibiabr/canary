@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/core/libs/kv_functions.hpp"
+
 #include <variant>
 
 #include "kv/kv.hpp"
-#include "lua/functions/core/libs/kv_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 
 int KVFunctions::luaKVScoped(lua_State* L) {

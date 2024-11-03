@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/game.hpp"
 #include "lua/functions/map/town_functions.hpp"
+
+#include "game/game.hpp"
 #include "map/town.hpp"
 
 int TownFunctions::luaTownCreate(lua_State* L) {

@@ -11,6 +11,8 @@
 
 #include "game/movement/position.hpp"
 
+enum Direction : uint8_t;
+struct Position;
 class Monster;
 class MonsterType;
 
@@ -36,26 +38,9 @@ public:
 	SpawnMonster &operator=(const SpawnMonster &) = delete;
 
 	// moveable
-	SpawnMonster(SpawnMonster &&rhs) noexcept :
-		spawnedMonsterMap(std::move(rhs.spawnedMonsterMap)),
-		spawnMonsterMap(std::move(rhs.spawnMonsterMap)),
-		centerPos(rhs.centerPos),
-		radius(rhs.radius),
-		interval(rhs.interval),
-		checkSpawnMonsterEvent(rhs.checkSpawnMonsterEvent) { }
+	SpawnMonster(SpawnMonster &&rhs) noexcept;
 
-	SpawnMonster &operator=(SpawnMonster &&rhs) noexcept {
-		if (this != &rhs) {
-			spawnMonsterMap = std::move(rhs.spawnMonsterMap);
-			spawnedMonsterMap = std::move(rhs.spawnedMonsterMap);
-
-			checkSpawnMonsterEvent = rhs.checkSpawnMonsterEvent;
-			centerPos = rhs.centerPos;
-			radius = rhs.radius;
-			interval = rhs.interval;
-		}
-		return *this;
-	}
+	SpawnMonster &operator=(SpawnMonster &&rhs) noexcept;
 
 	bool addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t interval, uint32_t weight = 1);
 	void removeMonster(const std::shared_ptr<Monster> &monster);
@@ -72,9 +57,7 @@ public:
 	bool isInSpawnMonsterZone(const Position &pos) const;
 	void cleanup();
 
-	const Position &getCenterPos() const {
-		return centerPos;
-	}
+	const Position &getCenterPos() const;
 
 	void setMonsterVariant(const std::string &variant);
 
@@ -102,15 +85,9 @@ public:
 	void startup();
 	void clear();
 
-	bool isStarted() const {
-		return started;
-	}
-	bool isLoaded() const {
-		return loaded;
-	}
-	std::vector<std::shared_ptr<SpawnMonster>> &getspawnMonsterList() {
-		return spawnMonsterList;
-	}
+	bool isStarted() const;
+	bool isLoaded() const;
+	std::vector<std::shared_ptr<SpawnMonster>> &getspawnMonsterList();
 
 private:
 	std::vector<std::shared_ptr<SpawnMonster>> spawnMonsterList;

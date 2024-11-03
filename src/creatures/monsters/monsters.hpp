@@ -9,9 +9,13 @@
 
 #pragma once
 
+#include "creatures/creatures_definitions.hpp"
+#include "game/game_definitions.hpp"
 #include "io/io_bosstiary.hpp"
-#include "creatures/creature.hpp"
-#include "declarations.hpp"
+#include "utils/utils_definitions.hpp"
+
+class LuaScriptInterface;
+class ConditionDamage;
 
 class Loot {
 public:
@@ -181,29 +185,17 @@ public:
 
 	MonsterInfo info;
 
-	uint16_t getBaseSpeed() const {
-		return info.baseSpeed;
-	}
+	uint16_t getBaseSpeed() const;
 
-	void setBaseSpeed(const uint16_t initBaseSpeed) {
-		info.baseSpeed = initBaseSpeed;
-	}
+	void setBaseSpeed(const uint16_t initBaseSpeed);
 
-	float getHealthMultiplier() const {
-		return isBoss() ? g_configManager().getFloat(RATE_BOSS_HEALTH) : g_configManager().getFloat(RATE_MONSTER_HEALTH);
-	}
+	float getHealthMultiplier() const;
 
-	float getAttackMultiplier() const {
-		return isBoss() ? g_configManager().getFloat(RATE_BOSS_ATTACK) : g_configManager().getFloat(RATE_MONSTER_ATTACK);
-	}
+	float getAttackMultiplier() const;
 
-	float getDefenseMultiplier() const {
-		return isBoss() ? g_configManager().getFloat(RATE_BOSS_DEFENSE) : g_configManager().getFloat(RATE_MONSTER_DEFENSE);
-	}
+	float getDefenseMultiplier() const;
 
-	bool isBoss() const {
-		return !info.bosstiaryClass.empty();
-	}
+	bool isBoss() const;
 
 	void loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootblock) const;
 
@@ -265,13 +257,9 @@ public:
 	Monsters(const Monsters &) = delete;
 	Monsters &operator=(const Monsters &) = delete;
 
-	static Monsters &getInstance() {
-		return inject<Monsters>();
-	}
+	static Monsters &getInstance();
 
-	void clear() {
-		monsters.clear();
-	}
+	void clear();
 
 	std::shared_ptr<MonsterType> getMonsterType(const std::string &name, bool silent = false) const;
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;

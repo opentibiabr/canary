@@ -9,6 +9,9 @@
 
 #include "lua/callbacks/creaturecallback.hpp"
 
+#include "creatures/creature.hpp"
+#include "lua/scripts/luascript.hpp"
+
 bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 	if (scriptId == -1) {
 		return false;
@@ -47,6 +50,36 @@ void CreatureCallback::pushSpecificCreature(const std::shared_ptr<Creature> &cre
 
 	params++;
 	LuaScriptInterface::setMetatable(L, -1, getCreatureClass(creature));
+}
+
+bool CreatureCallback::persistLuaState() const {
+	return params > 0 && scriptInterface->callFunction(params);
+}
+
+void CreatureCallback::pushCreature(const std::shared_ptr<Creature> &creature) {
+	params++;
+	LuaScriptInterface::pushUserdata<Creature>(L, creature);
+	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+}
+
+void CreatureCallback::pushPosition(const Position &position, int32_t stackpos) {
+	params++;
+	LuaScriptInterface::pushPosition(L, position, stackpos);
+}
+
+void CreatureCallback::pushNumber(int32_t number) {
+	params++;
+	lua_pushnumber(L, number);
+}
+
+void CreatureCallback::pushString(const std::string &str) {
+	params++;
+	LuaScriptInterface::pushString(L, str);
+}
+
+void CreatureCallback::pushBoolean(const bool str) {
+	params++;
+	LuaScriptInterface::pushBoolean(L, str);
 }
 
 std::string CreatureCallback::getCreatureClass(const std::shared_ptr<Creature> &creature) {

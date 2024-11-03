@@ -21,7 +21,7 @@ monster.speed = 175
 monster.manaCost = 0
 
 monster.events = {
-	"DazedLeafGolemDeath",
+	"killingLibrary",
 }
 
 monster.changeTarget = {

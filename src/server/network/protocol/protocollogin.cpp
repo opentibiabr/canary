@@ -8,6 +8,8 @@
  */
 
 #include "server/network/protocol/protocollogin.hpp"
+
+#include "config/configmanager.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "account/account.hpp"
@@ -39,7 +41,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		return;
 	}
 
-	if (account.load() != enumToValue(AccountErrors_t::Ok) || !account.authenticate(password)) {
+	if (account.load() != AccountErrors_t::Ok || !account.authenticate(password)) {
 		std::ostringstream ss;
 		ss << (oldProtocol ? "Username" : "Email") << " or password is not correct.";
 		disconnectClient(ss.str());
@@ -64,7 +66,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	// Add char list
 	auto [players, result] = account.getAccountPlayers();
-	if (enumToValue(AccountErrors_t::Ok) != result) {
+	if (AccountErrors_t::Ok != result) {
 		g_logger().warn("Account[{}] failed to load players!", account.getID());
 	}
 

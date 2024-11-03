@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/monster/charm_functions.hpp"
+
 #include "game/game.hpp"
 #include "io/iobestiary.hpp"
-#include "lua/functions/creatures/monster/charm_functions.hpp"
 
 int CharmFunctions::luaCharmCreate(lua_State* L) {
 	// charm(id)

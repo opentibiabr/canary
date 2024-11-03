@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/items/item_type_functions.hpp"
+
 #include "items/item.hpp"
 #include "items/items.hpp"
-#include "lua/functions/items/item_type_functions.hpp"
 
 int ItemTypeFunctions::luaItemTypeCreate(lua_State* L) {
 	// ItemType(id or name)

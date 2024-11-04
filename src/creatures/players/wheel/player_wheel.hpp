@@ -212,7 +212,7 @@ public:
 	void checkAbilities();
 	void checkGiftOfLife();
 	bool checkBattleInstinct();
-	bool checkPositionalTatics();
+	bool checkPositionalTactics();
 	bool checkBallisticMastery();
 	bool checkCombatMastery();
 	bool checkDivineEmpowerment();

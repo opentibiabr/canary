@@ -1325,30 +1325,32 @@ void PlayerWheel::addSpellBonus(const std::string &spellName, const WheelSpells:
 }
 
 int32_t PlayerWheel::getSpellBonus(const std::string &spellName, WheelSpellBoost_t boost) const {
+	using enum WheelSpellBoost_t;
+
 	if (!m_spellsBonuses.contains(spellName)) {
 		return 0;
 	}
 	const auto &[leech, increase, decrease] = m_spellsBonuses.at(spellName);
 	switch (boost) {
-		case WheelSpellBoost_t::COOLDOWN:
+		case COOLDOWN:
 			return decrease.cooldown;
-		case WheelSpellBoost_t::MANA:
+		case MANA:
 			return decrease.manaCost;
-		case WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN:
+		case SECONDARY_GROUP_COOLDOWN:
 			return decrease.secondaryGroupCooldown;
-		case WheelSpellBoost_t::CRITICAL_CHANCE:
+		case CRITICAL_CHANCE:
 			return increase.criticalChance;
-		case WheelSpellBoost_t::CRITICAL_DAMAGE:
+		case CRITICAL_DAMAGE:
 			return increase.criticalDamage;
-		case WheelSpellBoost_t::DAMAGE:
+		case DAMAGE:
 			return increase.damage;
-		case WheelSpellBoost_t::DAMAGE_REDUCTION:
+		case DAMAGE_REDUCTION:
 			return increase.damageReduction;
-		case WheelSpellBoost_t::HEAL:
+		case HEAL:
 			return increase.heal;
-		case WheelSpellBoost_t::LIFE_LEECH:
+		case LIFE_LEECH:
 			return leech.life;
-		case WheelSpellBoost_t::MANA_LEECH:
+		case MANA_LEECH:
 			return leech.mana;
 		default:
 			return 0;
@@ -1941,7 +1943,7 @@ void PlayerWheel::registerPlayerBonusData() {
 	// Instant
 	setSpellInstant("Battle Instinct", m_playerBonusData.instant.battleInstinct);
 	setSpellInstant("Battle Healing", m_playerBonusData.instant.battleHealing);
-	setSpellInstant("Positional Tatics", m_playerBonusData.instant.positionalTatics);
+	setSpellInstant("Positional Tactics", m_playerBonusData.instant.positionalTactics);
 	setSpellInstant("Ballistic Mastery", m_playerBonusData.instant.ballisticMastery);
 	setSpellInstant("Healing Link", m_playerBonusData.instant.healingLink);
 	setSpellInstant("Runic Mastery", m_playerBonusData.instant.runicMastery);
@@ -2221,8 +2223,8 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	if (bonusData.instant.battleHealing) {
 		g_logger().debug("  battleHealing: {}", bonusData.instant.battleHealing);
 	}
-	if (bonusData.instant.positionalTatics) {
-		g_logger().debug("  positionalTatics: {}", bonusData.instant.positionalTatics);
+	if (bonusData.instant.positionalTactics) {
+		g_logger().debug("  positionalTactics: {}", bonusData.instant.positionalTactics);
 	}
 	if (bonusData.instant.ballisticMastery) {
 		g_logger().debug("  ballisticMastery: {}", bonusData.instant.ballisticMastery);
@@ -2585,7 +2587,7 @@ void PlayerWheel::checkAbilities() {
 	if (getInstant("Battle Instinct") && getOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT) < OTSYS_TIME() && checkBattleInstinct()) {
 		reloadClient = true;
 	}
-	if (getInstant("Positional Tatics") && getOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS) < OTSYS_TIME() && checkPositionalTatics()) {
+	if (getInstant("Positional Tactics") && getOnThinkTimer(WheelOnThink_t::POSITIONAL_TACTICS) < OTSYS_TIME() && checkPositionalTactics()) {
 		reloadClient = true;
 	}
 	if (getInstant("Ballistic Mastery") && getOnThinkTimer(WheelOnThink_t::BALLISTIC_MASTERY) < OTSYS_TIME() && checkBallisticMastery()) {
@@ -2650,8 +2652,8 @@ bool PlayerWheel::checkBattleInstinct() {
 	return updateClient;
 }
 
-bool PlayerWheel::checkPositionalTatics() {
-	setOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS, OTSYS_TIME() + 2000);
+bool PlayerWheel::checkPositionalTactics() {
+	setOnThinkTimer(WheelOnThink_t::POSITIONAL_TACTICS, OTSYS_TIME() + 2000);
 	m_creaturesNearby = 0;
 	bool updateClient = false;
 	uint16_t creaturesNearby = 0;
@@ -3083,7 +3085,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	if (getGiftOfCooldown() > 0 /*getInstant("Gift of Life")*/ && getOnThinkTimer(WheelOnThink_t::GIFT_OF_LIFE) <= OTSYS_TIME()) {
 		decreaseGiftOfCooldown(1);
 	}
-	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
+	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tactics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
 		bool mustReset = false;
 		for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 			if (getMajorStat(static_cast<WheelMajor_t>(i)) != 0) {
@@ -3108,8 +3110,8 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	if (getInstant("Battle Instinct") && (force || getOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT) < OTSYS_TIME()) && checkBattleInstinct()) {
 		updateClient = true;
 	}
-	// Positional Tatics
-	if (getInstant("Positional Tatics") && (force || getOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS) < OTSYS_TIME()) && checkPositionalTatics()) {
+	// Positional Tactics
+	if (getInstant("Positional Tactics") && (force || getOnThinkTimer(WheelOnThink_t::POSITIONAL_TACTICS) < OTSYS_TIME()) && checkPositionalTactics()) {
 		updateClient = true;
 	}
 	// Ballistic Mastery
@@ -3321,9 +3323,9 @@ void PlayerWheel::setSpellInstant(const std::string &name, bool value) {
 		}
 	} else if (name == "Battle Healing") {
 		setInstant(WheelInstant_t::BATTLE_HEALING, value);
-	} else if (name == "Positional Tatics") {
-		setInstant(WheelInstant_t::POSITIONAL_TATICS, value);
-		if (!getInstant(WheelInstant_t::POSITIONAL_TATICS)) {
+	} else if (name == "Positional Tactics") {
+		setInstant(WheelInstant_t::POSITIONAL_TACTICS, value);
+		if (!getInstant(WheelInstant_t::POSITIONAL_TACTICS)) {
 			setMajorStat(WheelMajor_t::MAGIC, 0);
 			setMajorStat(WheelMajor_t::HOLY_RESISTANCE, 0);
 		}
@@ -3456,8 +3458,8 @@ uint8_t PlayerWheel::getStage(std::string_view name) const {
 	if (name == "Battle Healing") {
 		return PlayerWheel::getInstant(BATTLE_HEALING);
 	}
-	if (name == "Positional Tatics") {
-		return PlayerWheel::getInstant(POSITIONAL_TATICS);
+	if (name == "Positional Tactics") {
+		return PlayerWheel::getInstant(POSITIONAL_TACTICS);
 	}
 	if (name == "Ballistic Mastery") {
 		return PlayerWheel::getInstant(BALLISTIC_MASTERY);
@@ -3604,65 +3606,39 @@ int64_t PlayerWheel::getOnThinkTimer(WheelOnThink_t type) const {
 
 bool PlayerWheel::getInstant(std::string_view name) const {
 	using enum WheelInstant_t;
-	if (name == "Battle Instinct") {
-		return PlayerWheel::getInstant(BATTLE_INSTINCT);
+	using enum WheelStage_t;
+
+	static const std::unordered_map<std::string_view, WheelInstant_t> instantMapping = {
+		{ "Battle Instinct", BATTLE_INSTINCT },
+		{ "Battle Healing", BATTLE_HEALING },
+		{ "Positional Tactics", POSITIONAL_TACTICS },
+		{ "Ballistic Mastery", BALLISTIC_MASTERY },
+		{ "Healing Link", HEALING_LINK },
+		{ "Runic Mastery", RUNIC_MASTERY },
+		{ "Focus Mastery", FOCUS_MASTERY }
+	};
+
+	static const std::unordered_map<std::string_view, WheelStage_t> stageMapping = {
+		{ "Beam Mastery", BEAM_MASTERY },
+		{ "Combat Mastery", COMBAT_MASTERY },
+		{ "Gift of Life", GIFT_OF_LIFE },
+		{ "Blessing of the Grove", BLESSING_OF_THE_GROVE },
+		{ "Drain Body", DRAIN_BODY },
+		{ "Divine Empowerment", DIVINE_EMPOWERMENT },
+		{ "Divine Grenade", DIVINE_GRENADE },
+		{ "Twin Burst", TWIN_BURST },
+		{ "Executioner's Throw", EXECUTIONERS_THROW },
+		{ "Avatar of Light", AVATAR_OF_LIGHT },
+		{ "Avatar of Nature", AVATAR_OF_NATURE },
+		{ "Avatar of Steel", AVATAR_OF_STEEL },
+		{ "Avatar of Storm", AVATAR_OF_STORM }
+	};
+
+	if (auto it = instantMapping.find(name); it != instantMapping.end()) {
+		return PlayerWheel::getInstant(it->second);
 	}
-	if (name == "Battle Healing") {
-		return PlayerWheel::getInstant(BATTLE_HEALING);
-	}
-	if (name == "Positional Tatics") {
-		return PlayerWheel::getInstant(POSITIONAL_TATICS);
-	}
-	if (name == "Ballistic Mastery") {
-		return PlayerWheel::getInstant(BALLISTIC_MASTERY);
-	}
-	if (name == "Healing Link") {
-		return PlayerWheel::getInstant(HEALING_LINK);
-	}
-	if (name == "Runic Mastery") {
-		return PlayerWheel::getInstant(RUNIC_MASTERY);
-	}
-	if (name == "Focus Mastery") {
-		return PlayerWheel::getInstant(FOCUS_MASTERY);
-	}
-	if (name == "Beam Mastery") {
-		return PlayerWheel::getStage(WheelStage_t::BEAM_MASTERY);
-	}
-	if (name == "Combat Mastery") {
-		return PlayerWheel::getStage(WheelStage_t::COMBAT_MASTERY);
-	}
-	if (name == "Gift of Life") {
-		return PlayerWheel::getStage(WheelStage_t::GIFT_OF_LIFE);
-	}
-	if (name == "Blessing of the Grove") {
-		return PlayerWheel::getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
-	}
-	if (name == "Drain Body") {
-		return PlayerWheel::getStage(WheelStage_t::DRAIN_BODY);
-	}
-	if (name == "Divine Empowerment") {
-		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
-	}
-	if (name == "Divine Grenade") {
-		return PlayerWheel::getStage(WheelStage_t::DIVINE_GRENADE);
-	}
-	if (name == "Twin Burst") {
-		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
-	}
-	if (name == "Executioner's Throw") {
-		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
-	}
-	if (name == "Avatar of Light") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);
-	}
-	if (name == "Avatar of Nature") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_NATURE);
-	}
-	if (name == "Avatar of Steel") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STEEL);
-	}
-	if (name == "Avatar of Storm") {
-		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STORM);
+	if (auto it = stageMapping.find(name); it != stageMapping.end()) {
+		return PlayerWheel::getStage(it->second);
 	}
 
 	return false;

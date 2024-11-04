@@ -399,7 +399,7 @@ void IOWheel::slotGreen200(const std::shared_ptr<Player> &player, uint16_t point
 		bonusData.stats.health += 2 * points;
 		bonusData.stats.mana += 3 * points;
 		if (pointsInSlot) {
-			bonusData.instant.positionalTatics = true;
+			bonusData.instant.positionalTactics = true;
 		}
 	} else {
 		bonusData.stats.health += 1 * points;

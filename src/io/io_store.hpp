@@ -73,10 +73,10 @@ public:
 
 	bool loadFromXml();
 
-	static const std::map<std::string, OfferTypes_t, std::less<>> stringToOfferTypeMap;
-	static const std::map<OfferTypes_t, uint16_t> offersDisableIndex;
-	static const std::map<std::string, States_t, std::less<>> stringToOfferStateMap;
-	static const std::map<std::string, BannerType, std::less<>> stringToBannerTypeMap;
+	static const std::unordered_map<std::string, OfferTypes_t> stringToOfferTypeMap;
+	static const std::unordered_map<OfferTypes_t, uint16_t> offersDisableIndex;
+	static const std::unordered_map<std::string, States_t> stringToOfferStateMap;
+	static const std::unordered_map<std::string, BannerType> stringToBannerTypeMap;
 
 	const std::vector<Category> &getCategoryVector() const;
 	const Category* getCategoryByName(std::string_view categoryName) const;
@@ -86,9 +86,8 @@ public:
 	const std::vector<BannerInfo> &getBannersVector() const;
 	const std::vector<uint32_t> &getHomeOffersVector() const;
 	uint32_t getBannerDelay() const;
-	void setBannerDelay(uint8_t delay);
 
-	const Category* findCategory(const std::string &categoryName);
+	const Category* findCategory(const std::string &categoryName) const;
 
 	const std::vector<std::string> &getOffersDisableReasonVector() const;
 
@@ -112,9 +111,9 @@ private:
 	std::vector<Category> m_subCategoryVector;
 	std::map<uint32_t, Offer> m_offersMap;
 
-	Category loadCategoryFromXml(pugi::xml_node offer, bool isSubCategory = false);
-	bool loadOfferFromXml(Category* category, pugi::xml_node offer);
-	bool loadStoreHome(pugi::xml_node homeNode);
+	Category loadCategoryFromXml(const pugi::xml_node &offer, bool isSubCategory = false);
+	bool loadOfferFromXml(Category* category, const pugi::xml_node &offer);
+	bool loadStoreHome(const pugi::xml_node &homeNode);
 
 	void addCategory(const Category &newCategory);
 	void addOffer(uint32_t offerId, Offer offer);
@@ -252,7 +251,7 @@ private:
 	// Optional
 	std::string m_icon;
 	States_t m_state = States_t::NONE;
-	uint32_t m_itemId;
+	uint32_t m_itemId = 0;
 	uint16_t m_count = 1; // Or charges
 	uint16_t m_validUntil;
 	CoinType m_coinType = CoinType::Normal;

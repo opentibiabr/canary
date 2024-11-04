@@ -15,7 +15,7 @@
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 
-const std::map<std::string, OfferTypes_t, std::less<>> IOStore::stringToOfferTypeMap = {
+const std::unordered_map<std::string, OfferTypes_t> IOStore::stringToOfferTypeMap = {
 	{ "none", OfferTypes_t::NONE },
 	{ "item", OfferTypes_t::ITEM },
 	{ "stackable", OfferTypes_t::STACKABLE },
@@ -44,7 +44,7 @@ const std::map<std::string, OfferTypes_t, std::less<>> IOStore::stringToOfferTyp
 	{ "hirelingOutfit", OfferTypes_t::HIRELING_OUTFIT }
 };
 
-const std::map<OfferTypes_t, uint16_t> IOStore::offersDisableIndex = {
+const std::unordered_map<OfferTypes_t, uint16_t> IOStore::offersDisableIndex = {
 	{ OfferTypes_t::OUTFIT, 0 },
 	{ OfferTypes_t::MOUNT, 1 },
 	{ OfferTypes_t::EXPBOOST, 2 },
@@ -59,11 +59,11 @@ const std::map<OfferTypes_t, uint16_t> IOStore::offersDisableIndex = {
 	{ OfferTypes_t::TEMPLE, 10 }
 };
 
-const std::map<std::string, States_t, std::less<>> IOStore::stringToOfferStateMap = {
+const std::unordered_map<std::string, States_t> IOStore::stringToOfferStateMap = {
 	{ "none", States_t::NONE }, { "new", States_t::NEW }, { "sale", States_t::SALE }, { "timed", States_t::TIMED }
 };
 
-const std::map<std::string, BannerType, std::less<>> IOStore::stringToBannerTypeMap = {
+const std::unordered_map<std::string, BannerType> IOStore::stringToBannerTypeMap = {
 	{ "collection", BannerType::COLLECTION },
 	{ "offer", BannerType::OFFER }
 };
@@ -114,7 +114,7 @@ bool IOStore::loadFromXml() {
 	return true;
 }
 
-Category IOStore::loadCategoryFromXml(pugi::xml_node category, bool isSubCategory /* = false*/) {
+Category IOStore::loadCategoryFromXml(const pugi::xml_node &category, bool isSubCategory /* = false*/) {
 	auto categoryName = std::string(category.attribute("name").as_string());
 	auto categoryIcon = std::string(category.attribute("icon").as_string());
 	auto categoryRookString = std::string(category.attribute("rookgaard").as_string());
@@ -137,8 +137,8 @@ Category IOStore::loadCategoryFromXml(pugi::xml_node category, bool isSubCategor
 	return newCategory;
 }
 
-bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
-	auto name = std::string(offer.attribute("name").as_string());
+bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) {
+	const std::string &name = offer.attribute("name").as_string();
 	if (name.empty()) {
 		g_logger().warn("Offer name empty.");
 		return false;
@@ -155,28 +155,22 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 
 	Offer newOffer(id, name);
 
-	auto price = static_cast<uint32_t>(offer.attribute("price").as_uint());
+	uint32_t price = offer.attribute("price").as_uint();
 	if (price == 0) {
 		g_logger().warn("Offer {} price is 0.", name);
 		return false;
 	}
 	newOffer.m_price = price;
 
-	uint16_t count = 1;
 	if (offer.attribute("count")) {
-		count = static_cast<uint16_t>(offer.attribute("count").as_uint());
+		newOffer.m_count = static_cast<uint16_t>(offer.attribute("count").as_uint());
 	} else if (offer.attribute("charges")) {
-		count = static_cast<uint16_t>(offer.attribute("charges").as_uint());
+		newOffer.m_count = static_cast<uint16_t>(offer.attribute("charges").as_uint());
 	}
-	newOffer.m_count = count;
 
-	std::string icon = "";
-	if (offer.attribute("icon")) {
-		icon = std::string(offer.attribute("icon").as_string());
-	}
-	newOffer.m_icon = std::move(icon);
+	newOffer.m_icon = offer.attribute("icon").as_string();
 
-	auto typeString = std::string(offer.attribute("type").as_string());
+	const auto &typeString = offer.attribute("type").as_string();
 	OfferTypes_t type = OfferTypes_t::NONE;
 	if (auto it = stringToOfferTypeMap.find(typeString);
 	    it != stringToOfferTypeMap.end()) {
@@ -187,57 +181,35 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	}
 	newOffer.m_type = type;
 
-	OutfitIds outfitId;
 	if (type == OfferTypes_t::OUTFIT || type == OfferTypes_t::HIRELING) {
-		outfitId.femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
-		outfitId.maleId = static_cast<uint16_t>(offer.attribute("male").as_uint());
+		newOffer.m_outfitId.femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
+		newOffer.m_outfitId.maleId = static_cast<uint16_t>(offer.attribute("male").as_uint());
+		id = newOffer.m_outfitId.maleId;
+		dynamicId--;
 	}
-	newOffer.m_outfitId = outfitId;
 
-	uint32_t itemId = 0;
 	if (type == OfferTypes_t::ITEM || type == OfferTypes_t::STACKABLE || type == OfferTypes_t::HOUSE || type == OfferTypes_t::CHARGES || type == OfferTypes_t::POUCH) {
-		itemId = static_cast<uint16_t>(offer.attribute("item").as_uint());
+		newOffer.m_itemId = static_cast<uint16_t>(offer.attribute("item").as_uint());
 	}
-	newOffer.m_itemId = itemId;
 
-	auto stateString = std::string(offer.attribute("state").as_string());
-	States_t state = States_t::NONE;
+	const auto &stateString = offer.attribute("state").as_string("none");
 	if (auto it = stringToOfferStateMap.find(stateString);
 	    it != stringToOfferStateMap.end()) {
-		state = it->second;
+		newOffer.m_state = it->second;
 	}
-	newOffer.m_state = state;
 
-	uint16_t validUntil = 0;
-	if (offer.attribute("validUntil")) {
-		validUntil = static_cast<uint16_t>(offer.attribute("validUntil").as_uint());
-	}
-	newOffer.m_validUntil = validUntil;
+	newOffer.m_validUntil = static_cast<uint16_t>(offer.attribute("validUntil").as_uint());
 
-	CoinType coinType = CoinType::Normal;
 	if (offer.attribute("coinType")) {
-		auto coinTypeString = std::string(offer.attribute("coinType").as_string());
-		coinType = coinTypeString == "normal" ? CoinType::Normal : CoinType::Transferable;
+		const auto &coinTypeString = offer.attribute("coinType").as_string("normal");
+		newOffer.m_coinType = coinTypeString == "normal" ? CoinType::Normal : CoinType::Transferable;
 	}
-	newOffer.m_coinType = coinType;
 
-	std::string collection = "";
-	if (offer.attribute("collection")) {
-		collection = std::string(offer.attribute("collection").as_string());
-	}
+	const std::string &collection = offer.attribute("collection").as_string();
 	newOffer.m_collectionName = collection;
 
-	std::string desc = "";
-	if (offer.attribute("description")) {
-		desc = std::string(offer.attribute("description").as_string());
-	}
-	newOffer.m_description = std::move(desc);
-
-	bool isMovable = false;
-	if (offer.attribute("movable")) {
-		isMovable = bool(offer.attribute("movable").as_bool());
-	}
-	newOffer.m_movable = isMovable;
+	newOffer.m_description = offer.attribute("description").as_string();
+	newOffer.m_movable = offer.attribute("movable").as_bool();
 
 	newOffer.m_parentName = category->getName();
 	auto baseOffer = getOfferByName(name);
@@ -254,7 +226,9 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 		g_logger().warn("Offer {} not found.", name);
 		return false;
 	}
+
 	category->addOffer(foundOffer);
+
 	if (!collection.empty()) {
 		category->addCollection(collection);
 	}
@@ -262,10 +236,9 @@ bool IOStore::loadOfferFromXml(Category* category, pugi::xml_node offer) {
 	return true;
 }
 
-bool IOStore::loadStoreHome(pugi::xml_node homeNode) {
+bool IOStore::loadStoreHome(const pugi::xml_node &homeNode) {
 	auto bannersNode = homeNode.child("banners");
-	auto bannerDelay = static_cast<uint8_t>(bannersNode.attribute("delay").as_uint());
-	setBannerDelay(bannerDelay);
+	m_bannerDelay = static_cast<uint8_t>(bannersNode.attribute("delay").as_uint(5));
 
 	pugi::xml_node bannersChild = bannersNode.first_child();
 	if (bannersChild && std::string(bannersChild.name()) == "banner") {
@@ -372,11 +345,11 @@ const Offer* IOStore::getOfferById(uint32_t offerId) const {
 
 std::vector<Offer> IOStore::getOffersContainingSubstring(const std::string &searchString) {
 	std::vector<Offer> offersVector;
-	auto lowerSearchString = asLowerCaseString(searchString);
+	const auto &lowerSearchString = asLowerCaseString(searchString);
 
 	for (const auto &[id, offer] : m_offersMap) {
 		const auto &currentOfferName = offer.getName();
-		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
+		const auto &lowerCurrentOfferName = asLowerCaseString(currentOfferName);
 
 		if (lowerCurrentOfferName.find(lowerSearchString) != std::string::npos) {
 			offersVector.push_back(offer);
@@ -387,11 +360,11 @@ std::vector<Offer> IOStore::getOffersContainingSubstring(const std::string &sear
 }
 
 Offer* IOStore::getOfferByName(const std::string &searchString) {
-	auto lowerSearchString = asLowerCaseString(searchString);
+	const auto &lowerSearchString = asLowerCaseString(searchString);
 
 	for (auto &[id, offer] : m_offersMap) {
-		auto currentOfferName = offer.getName();
-		auto lowerCurrentOfferName = asLowerCaseString(currentOfferName);
+		const auto &currentOfferName = offer.getName();
+		const auto &lowerCurrentOfferName = asLowerCaseString(currentOfferName);
 
 		if (lowerSearchString == lowerCurrentOfferName) {
 			return &offer;
@@ -410,11 +383,8 @@ const std::vector<uint32_t> &IOStore::getHomeOffersVector() const {
 uint32_t IOStore::getBannerDelay() const {
 	return m_bannerDelay;
 }
-void IOStore::setBannerDelay(uint8_t delay) {
-	m_bannerDelay = delay;
-}
 
-const Category* IOStore::findCategory(const std::string &categoryName) {
+const Category* IOStore::findCategory(const std::string &categoryName) const {
 	auto currentCategory = getCategoryByName(categoryName);
 	if (!currentCategory) {
 		currentCategory = getSubCategoryByName(categoryName);

@@ -9679,7 +9679,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		case OfferTypes_t::OUTFIT: {
 			auto offerOutfitId = offer->getOutfitIds();
 			auto playerLookType = (getSex() == PLAYERSEX_FEMALE ? offerOutfitId.femaleId : offerOutfitId.maleId);
-			uint8_t addons = playerLookType >= 962 && playerLookType <= 975 ? 0u : 3u;
+			uint8_t addons = playerLookType >= 962 && playerLookType <= 975 ? 0 : 3;
 
 			if (canWear(playerLookType, addons)) {
 				canBuy = false;

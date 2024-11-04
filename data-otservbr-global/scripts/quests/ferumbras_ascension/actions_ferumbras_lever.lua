@@ -1,103 +1,90 @@
+local crystals = {
+	[1] = { crystalPosition = Position(33390, 31468, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal1 },
+	[2] = { crystalPosition = Position(33394, 31468, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal2 },
+	[3] = { crystalPosition = Position(33397, 31471, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal3 },
+	[4] = { crystalPosition = Position(33397, 31475, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal4 },
+	[5] = { crystalPosition = Position(33394, 31478, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal5 },
+	[6] = { crystalPosition = Position(33390, 31478, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal6 },
+	[7] = { crystalPosition = Position(33387, 31475, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal7 },
+	[8] = { crystalPosition = Position(33387, 31471, 14), globalStorage = Storage.Quest.U10_90.FerumbrasAscension.Crystals.Crystal8 },
+}
+
 local config = {
-	boss = {
-		name = "Ferumbras Mortal Shell",
-		position = Position(33392, 31473, 14),
-	},
-	playerPositions = {
-		{ pos = Position(33269, 31477, 14), teleport = Position(33390, 31483, 14), effect = CONST_ME_TELEPORT },
-	},
-	specPos = {
-		from = Position(33374, 31458, 14),
-		to = Position(33414, 31498, 14),
-	},
-	exit = Position(33319, 32318, 13),
 	centerRoom = Position(33392, 31473, 14),
-	summonName = "Rift Fragment",
-	maxSummon = 3,
+	BossPosition = Position(33392, 31473, 14),
+	playerPositions = {
+		Position(33269, 31477, 14),
+		Position(33269, 31478, 14),
+		Position(33269, 31479, 14),
+		Position(33269, 31480, 14),
+		Position(33269, 31481, 14),
+		Position(33270, 31477, 14),
+		Position(33270, 31478, 14),
+		Position(33270, 31479, 14),
+		Position(33270, 31480, 14),
+		Position(33270, 31481, 14),
+		Position(33271, 31477, 14),
+		Position(33271, 31478, 14),
+		Position(33271, 31479, 14),
+		Position(33271, 31480, 14),
+		Position(33271, 31481, 14),
+	},
+	newPosition = Position(33392, 31479, 14),
 }
 
 local leverFerumbras = Action()
 
 function leverFerumbras.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local spectators = Game.getSpectators(config.specPos.from, false, false, 0, 0, 0, 0, config.specPos.to)
-	for _, spec in pairs(spectators) do
-		if spec:isPlayer() then
-			player:say("Someone is already inside the room.", TALKTYPE_MONSTER_SAY)
-			return true
-		end
-	end
-
-	if isBossInRoom(config.specPos.from, config.specPos.to, config.boss.name) then
-		player:say("The room is being cleared. Please wait a moment.", TALKTYPE_MONSTER_SAY)
-		return true
-	end
-
-	local players = {}
-	for i = 1, #config.playerPositions do
-		local pos = config.playerPositions[i].pos
-		local creature = Tile(pos):getTopCreature()
-		if not creature or not creature:isPlayer() then
-			player:sendCancelMessage("You need " .. #config.playerPositions .. " players to challenge " .. config.boss.name .. ".")
-			return true
-		end
-		table.insert(players, creature)
-	end
-
-	for i = 1, #players do
-		local playerToTeleport = players[i]
-		local teleportPos = config.playerPositions[i].teleport
-		local effect = config.playerPositions[i].effect
-		playerToTeleport:teleportTo(teleportPos)
-		teleportPos:sendMagicEffect(effect)
-	end
-
-	Game.createMonster(config.boss.name, config.boss.position, true, true)
-	for b = 1, config.maxSummon do
-		local xrand = math.random(-5, 5)
-		local yrand = math.random(-5, 5)
-		local position = Position(config.boss.position.x + xrand, config.boss.position.y + yrand, config.boss.position.z)
-		Game.createMonster(config.summonName, position)
-	end
-
+	local playersTable = {}
 	if item.itemid == 8911 then
-		item:transform(8912)
-	else
-		item:transform(8911)
-	end
-
-	return true
-end
-
-function clearBossRoom(fromPos, toPos, exitPos)
-	local spectators = Game.getSpectators(fromPos, false, false, 0, 0, 0, 0, toPos)
-	for _, spec in pairs(spectators) do
-		if spec:isPlayer() then
-			spec:teleportTo(exitPos)
-			exitPos:sendMagicEffect(CONST_ME_TELEPORT)
-			spec:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You took too long, the battle has ended.")
-		else
-			spec:remove()
+		if player:getPosition() ~= Position(33270, 31477, 14) then
+			item:transform(8912)
+			return true
 		end
 	end
-end
-
-function isBossInRoom(fromPos, toPos, bossName)
-	local monstersRemoved = false
-	for x = fromPos.x, toPos.x do
-		for y = fromPos.y, toPos.y do
-			for z = fromPos.z, toPos.z do
-				local tile = Tile(Position(x, y, z))
-				if tile then
-					local creature = tile:getTopCreature()
-					if creature and creature:isMonster() then
-						creature:remove()
-						monstersRemoved = true
+	if item.itemid == 8911 then
+		if player:doCheckBossRoom("Ascending Ferumbras", Position(33379, 31460, 14), Position(33405, 31485, 14)) then
+			Game.createMonster("Ascending Ferumbras", config.BossPosition, true, true)
+			for b = 1, 10 do
+				local xrand = math.random(-10, 10)
+				local yrand = math.random(-10, 10)
+				local position = Position(33392 + xrand, 31473 + yrand, 14)
+				if Game.createMonster("rift invader", position) then
+				end
+			end
+			for x = 33269, 33271 do
+				for y = 31477, 31481 do
+					local playerTile = Tile(Position(x, y, 14)):getTopCreature()
+					if playerTile and playerTile:isPlayer() then
+						playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
+						playerTile:teleportTo(config.newPosition)
+						playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+						playerTile:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.FerumbrasTimer, os.time() + 60 * 60 * 20 * 24)
+						table.insert(playersTable, playerTile:getId())
 					end
 				end
 			end
+			Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals, 0)
+			Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.FerumbrasEssence, 0)
+			for _, crystal in pairs(crystals) do
+				local pos = crystal.crystalPosition
+				local stg = crystal.globalStorage
+				local sqm = Tile(pos)
+				if sqm then
+					local item = sqm:getItemById(14961)
+					if item then
+						item:transform(14955)
+					end
+				end
+				Game.setStorageValue(stg, 0)
+			end
+			addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, Position(33379, 31460, 14), Position(33405, 31485, 14), Position(33319, 32318, 13))
+			item:transform(8912)
 		end
+	elseif item.itemid == 8912 then
+		item:transform(8911)
 	end
-	return monstersRemoved
+	return true
 end
 
 leverFerumbras:uid(1021)

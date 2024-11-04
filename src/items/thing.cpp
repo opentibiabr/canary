@@ -8,10 +8,11 @@
  */
 
 #include "items/thing.hpp"
+
 #include "items/tile.hpp"
 
 const Position &Thing::getPosition() {
-	std::shared_ptr<Tile> tile = getTile();
+	const auto &tile = getTile();
 	if (!tile) {
 		return Tile::nullptr_tile->getPosition();
 	}

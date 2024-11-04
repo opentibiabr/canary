@@ -11,5 +11,5 @@ function action_water_fountain.onUse(player, item, fromPosition, target, toPosit
 	return true
 end
 
-action_water_fountain:aid(5390)
+action_water_fountain:aid(12105)
 action_water_fountain:register()

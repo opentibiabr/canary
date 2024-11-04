@@ -85,7 +85,7 @@ public:
 			return false;
 		}
 
-		int32_t id = scriptInterface->getEvent();
+		const int32_t id = scriptInterface->getEvent();
 		if (id == -1) {
 			g_logger().error("[Script::loadCallback] Event {} not found for script with name {}", getScriptTypeName(), scriptInterface->getLoadingScriptName());
 			return false;

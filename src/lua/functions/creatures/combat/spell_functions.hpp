@@ -13,6 +13,12 @@
 
 class SpellFunctions final : LuaScriptInterface {
 public:
+	explicit SpellFunctions(lua_State* L) :
+		LuaScriptInterface("SpellFunctions") {
+		init(L);
+	}
+	~SpellFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Spell", "", SpellFunctions::luaSpellCreate);
 		registerMetaMethod(L, "Spell", "__eq", SpellFunctions::luaUserdataCompare);

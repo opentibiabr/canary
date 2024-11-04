@@ -9,12 +9,16 @@
 
 #pragma once
 
-#include "account/account.hpp"
-#include "declarations.hpp"
 #include "lua/scripts/luascript.hpp"
 
 class LuaEnums final : LuaScriptInterface {
 public:
+	explicit LuaEnums(lua_State* L) :
+		LuaScriptInterface("LuaEnums") {
+		init(L);
+	}
+	~LuaEnums() override = default;
+
 	static void init(lua_State* L);
 
 private:

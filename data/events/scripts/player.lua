@@ -371,9 +371,17 @@ end
 
 function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if IsRunningGlobalDatapack() then
+		-- The Secret Library Quest
+		if toPosition == Position(32460, 32928, 7) and item.itemid == 3578 then
+			toPosition:sendMagicEffect(CONST_ME_HEARTS)
+			self:say("You feed the turtle, now you may pass.", TALKTYPE_MONSTER_SAY)
+			Game.setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Turtle, os.time() + 10 * 60)
+			item:remove(1)
+		end
+
 		-- Cults of Tibia begin
-		local frompos = Position(33023, 31904, 14) -- Checagem
-		local topos = Position(33052, 31932, 15) -- Checagem
+		local frompos = Position(33023, 31904, 14)
+		local topos = Position(33052, 31932, 15)
 		local removeItem = false
 		if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
 			local tile = Tile(toPosition)

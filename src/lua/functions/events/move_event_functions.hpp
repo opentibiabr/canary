@@ -13,6 +13,12 @@
 
 class MoveEventFunctions final : LuaScriptInterface {
 public:
+	explicit MoveEventFunctions(lua_State* L) :
+		LuaScriptInterface("MoveEventFunctions") {
+		init(L);
+	}
+	~MoveEventFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "MoveEvent", "", MoveEventFunctions::luaCreateMoveEvent);
 		registerMethod(L, "MoveEvent", "type", MoveEventFunctions::luaMoveEventType);

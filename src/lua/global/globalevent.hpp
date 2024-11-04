@@ -38,7 +38,7 @@ public:
 
 	GlobalEventMap getEventMap(GlobalEvent_t type);
 
-	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEvent);
+	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent);
 	void clear();
 
 private:
@@ -53,7 +53,7 @@ public:
 	explicit GlobalEvent(LuaScriptInterface* interface);
 
 	bool executePeriodChange(LightState_t lightState, LightInfo lightInfo) const;
-	bool executeRecord(uint32_t current, uint32_t old);
+	bool executeRecord(uint32_t current, uint32_t old) const;
 	bool executeEvent() const;
 
 	GlobalEvent_t getEventType() const {
@@ -67,7 +67,7 @@ public:
 		return name;
 	}
 	void setName(std::string eventName) {
-		name = eventName;
+		name = std::move(eventName);
 	}
 	uint32_t getInterval() const {
 		return interval;

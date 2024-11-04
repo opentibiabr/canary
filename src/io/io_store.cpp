@@ -16,7 +16,6 @@
 #include "utils/tools.hpp"
 
 const std::unordered_map<std::string, OfferTypes_t> IOStore::stringToOfferTypeMap = {
-	{ "none", OfferTypes_t::NONE },
 	{ "item", OfferTypes_t::ITEM },
 	{ "stackable", OfferTypes_t::STACKABLE },
 	{ "charges", OfferTypes_t::CHARGES },
@@ -165,14 +164,6 @@ bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) 
 	}
 	newOffer.m_price = price;
 
-	if (offer.attribute("count")) {
-		newOffer.m_count = static_cast<uint16_t>(offer.attribute("count").as_uint());
-	} else if (offer.attribute("charges")) {
-		newOffer.m_count = static_cast<uint16_t>(offer.attribute("charges").as_uint());
-	}
-
-	newOffer.m_icon = offer.attribute("icon").as_string();
-
 	const auto &typeString = offer.attribute("type").as_string();
 	OfferTypes_t type = OfferTypes_t::NONE;
 	if (auto it = stringToOfferTypeMap.find(typeString);
@@ -184,13 +175,31 @@ bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) 
 	}
 	newOffer.m_type = type;
 
-	if (type == OfferTypes_t::OUTFIT || type == OfferTypes_t::HIRELING) {
-		newOffer.m_outfitId.femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
-		newOffer.m_outfitId.maleId = static_cast<uint16_t>(offer.attribute("male").as_uint());
+	switch (type) {
+		case OfferTypes_t::OUTFIT:
+		case OfferTypes_t::HIRELING: {
+			newOffer.m_outfitId.femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
+			newOffer.m_outfitId.maleId = static_cast<uint16_t>(maleOutfitId.as_uint());
+			break;
+		}
+
+		case OfferTypes_t::ITEM:
+		case OfferTypes_t::HOUSE:
+		case OfferTypes_t::POUCH:
+		case OfferTypes_t::CHARGES:
+		case OfferTypes_t::STACKABLE: {
+			newOffer.m_itemId = static_cast<uint16_t>(offer.attribute("item").as_uint());
+			break;
+		}
+
+		default:
+			break;
 	}
 
-	if (type == OfferTypes_t::ITEM || type == OfferTypes_t::STACKABLE || type == OfferTypes_t::HOUSE || type == OfferTypes_t::CHARGES || type == OfferTypes_t::POUCH) {
-		newOffer.m_itemId = static_cast<uint16_t>(offer.attribute("item").as_uint());
+	if (offer.attribute("count")) {
+		newOffer.m_count = static_cast<uint16_t>(offer.attribute("count").as_uint());
+	} else if (offer.attribute("charges")) {
+		newOffer.m_count = static_cast<uint16_t>(offer.attribute("charges").as_uint());
 	}
 
 	const auto &stateString = offer.attribute("state").as_string("none");
@@ -199,20 +208,17 @@ bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) 
 		newOffer.m_state = it->second;
 	}
 
-	newOffer.m_validUntil = static_cast<uint16_t>(offer.attribute("validUntil").as_uint());
-
-	if (offer.attribute("coinType")) {
-		const auto &coinTypeString = offer.attribute("coinType").as_string("normal");
-		newOffer.m_coinType = coinTypeString == "normal" ? CoinType::Normal : CoinType::Transferable;
-	}
-
-	const std::string &collection = offer.attribute("collection").as_string();
-	newOffer.m_collectionName = collection;
-
+	newOffer.m_icon = offer.attribute("icon").as_string();
 	newOffer.m_description = offer.attribute("description").as_string();
 	newOffer.m_movable = offer.attribute("movable").as_bool();
+	newOffer.m_validUntil = static_cast<uint16_t>(offer.attribute("validUntil").as_uint());
+	const std::string &coinTypeString = offer.attribute("coinType").as_string("normal");
+	const std::string &collection = offer.attribute("collection").as_string();
 
+	newOffer.m_collectionName = collection;
+	newOffer.m_coinType = coinTypeString == "normal" ? CoinType::Normal : CoinType::Transferable;
 	newOffer.m_parentName = category->getName();
+
 	auto baseOffer = getOfferByName(name);
 	if (baseOffer) {
 		baseOffer->addRelatedOffer(newOffer);

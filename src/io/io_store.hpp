@@ -84,7 +84,7 @@ public:
 	const Offer* getOfferById(uint32_t offerId) const;
 
 	const std::vector<BannerInfo> &getBannersVector() const;
-	const std::vector<uint32_t> &getHomeOffersVector() const;
+	const std::vector<std::string> &getHomeOffersVector() const;
 	uint32_t getBannerDelay() const;
 
 	const Category* findCategory(const std::string &categoryName) const;
@@ -105,7 +105,7 @@ private:
 	// Home
 	std::vector<BannerInfo> m_banners;
 	uint8_t m_bannerDelay = 5;
-	std::vector<uint32_t> m_homeOffers;
+	std::vector<std::string> m_homeOffers;
 
 	std::vector<Category> m_categoryVector;
 	std::vector<Category> m_subCategoryVector;

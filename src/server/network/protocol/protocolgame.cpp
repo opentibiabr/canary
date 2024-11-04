@@ -9431,17 +9431,14 @@ void ProtocolGame::sendOfferBytes(NetworkMessage &msg, const Offer* offer) {
 		}
 		msg.add<uint32_t>(offerPrice);
 
-		auto offerCoinType = magic_enum::enum_integer<CoinType>(offer->getCoinType());
+		auto offerCoinType = magic_enum::enum_integer<CoinType>(relatedOffer.getCoinType());
 		msg.addByte(offerCoinType); // Coin Type
 
-		auto canBuyOffer = player->canBuyStoreOffer(offer);
+		auto canBuyOffer = player->canBuyStoreOffer(&relatedOffer);
 		msg.addByte(canBuyOffer ? 0x00 : 0x01); // Disabled (Bool)
 		if (!canBuyOffer) {
 			msg.addByte(0x01);
-			auto vectorIndex = g_ioStore().offersDisableIndex.find(offer->getType());
-			if (offer->getType() == OfferTypes_t::EXPBOOST) {
-				offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST));
-			}
+			auto vectorIndex = g_ioStore().offersDisableIndex.find(relatedOffer.getType());
 			msg.add<uint16_t>(vectorIndex->second);
 		}
 
@@ -9517,8 +9514,11 @@ void ProtocolGame::sendStoreHome() {
 	auto homeOffersCount = getVectorIterationIncreaseCount(homeOffersVector);
 	msg.add<uint16_t>(homeOffersCount); // Offers Amount
 	if (homeOffersCount > 0) {
-		for (const auto &homeOfferId : homeOffersVector) {
-			const Offer* offer = g_ioStore().getOfferById(homeOfferId);
+		for (const auto &homeOfferName : homeOffersVector) {
+			const Offer* offer = g_ioStore().getOfferByName(homeOfferName);
+			if (!offer) {
+				continue;
+			}
 			sendOfferBytes(msg, offer);
 		}
 	}

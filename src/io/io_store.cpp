@@ -288,8 +288,8 @@ bool IOStore::loadStoreHome(const pugi::xml_node &homeNode) {
 	pugi::xml_node homeOffersChild = homeOffersNode.first_child();
 	if (homeOffersChild && std::string(homeOffersChild.name()) == "offer") {
 		for (pugi::xml_node offer : homeOffersNode.children("offer")) {
-			auto homeOfferId = static_cast<uint32_t>(offer.attribute("id").as_uint());
-			m_homeOffers.push_back(homeOfferId);
+			const std::string &homeOfferName = offer.attribute("name").as_string();
+			m_homeOffers.push_back(homeOfferName);
 		}
 	}
 
@@ -378,7 +378,7 @@ Offer* IOStore::getOfferByName(const std::string &searchString) {
 const std::vector<BannerInfo> &IOStore::getBannersVector() const {
 	return m_banners;
 }
-const std::vector<uint32_t> &IOStore::getHomeOffersVector() const {
+const std::vector<std::string> &IOStore::getHomeOffersVector() const {
 	return m_homeOffers;
 }
 uint32_t IOStore::getBannerDelay() const {

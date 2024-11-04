@@ -9347,16 +9347,26 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage &msg) {
 		}
 	} else if (actionType == 2) {
 		std::string categoryName = msg.getString();
+		std::string collectionName = msg.getString();
+
 		auto currentCategory = g_ioStore().findCategory(categoryName);
 		if (!currentCategory) {
 			return;
 		}
-		sendCategoryOffers(currentCategory);
+
+		if (!collectionName.empty()) {
+			const auto &collectionsVector = currentCategory->getCollectionsVector();
+			if (std::find(collectionsVector.begin(), collectionsVector.end(), collectionName) == collectionsVector.end()) {
+				collectionName.clear();
+			}
+		}
+
+		sendCategoryOffers(currentCategory, 0, collectionName);
 	} else if (actionType == 3) {
 		uint8_t innerAction = msg.getByte();
 
-		std::string categoryName = "Useful Things";
 		uint32_t offerId = 0;
+		std::string categoryName = "Useful Things";
 
 		if (innerAction >= 4 && innerAction <= 10) {
 			categoryName = "Blessings";
@@ -9516,14 +9526,21 @@ void ProtocolGame::sendStoreHome() {
 
 	// Banner Bytes
 	auto bannersVector = g_ioStore().getBannersVector();
-
 	auto bannersVectorSize = bannersVector.size();
 	msg.addByte(bannersVectorSize); // Banners Amount
-
 	for (const auto &banner : bannersVector) {
-		msg.addString(banner.bannerName);
-		msg.addByte(0x04); // Banner Type (0x02 = Collection, 0x04 = Offer)
-		msg.add<uint32_t>(banner.offerId); // Offer Id
+		msg.addString(banner.path);
+		msg.addByte(enumToValue(banner.type)); // Banner Type (0x02 = Collection, 0x04 = Offer)
+		if (banner.type == BannerType::COLLECTION) {
+			msg.addString(banner.categoryName);
+			msg.addString(banner.collectionName);
+		} else if (banner.type == BannerType::OFFER) {
+			const Offer* offer = g_ioStore().getOfferByName(banner.offerName);
+			if (!offer) {
+				return;
+			}
+			msg.add<uint32_t>(offer->getID()); // Offer Id
+		}
 		msg.addByte(0x00); // Unknown
 		msg.addByte(0x00); // Unknown
 	}
@@ -9534,7 +9551,7 @@ void ProtocolGame::sendStoreHome() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCategoryOffers(const Category* category, uint32_t redirectId /* = 0*/) {
+void ProtocolGame::sendCategoryOffers(const Category* category, uint32_t redirectId /* = 0*/, std::string collectionRedirect /* = ""*/) {
 	NetworkMessage msg;
 	msg.addByte(0xFC);
 
@@ -9553,7 +9570,7 @@ void ProtocolGame::sendCategoryOffers(const Category* category, uint32_t redirec
 		}
 	}
 
-	msg.add<uint16_t>(0x00); // Display Sub Category (?)
+	msg.addString(collectionRedirect);
 
 	auto disableReasonVector = g_ioStore().getOffersDisableReasonVector();
 	uint16_t disableReasonVectorLen = disableReasonVector.size();

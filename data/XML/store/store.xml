@@ -1,9 +1,9 @@
 <store>
 	<home>
 		<banners delay="5">
-			<banner path="home/banner_jousting_horse.png" bannerOfferId="204" />
-			<banner path="home/banner_ghostblade.png" bannerOfferId="199" />
-			<banner path="home/banner_festivemammoth.png" bannerOfferId="178" />
+			<banner path="home/banner_jousting_horse.png" type="collection" category="Blessings" collection="Regulars" />
+			<banner path="home/banner_ghostblade.png" type="offer" offer="Full Ghost Blade Outfit" />
+			<banner path="home/banner_festivemammoth.png" type="offer" offer="Festive Mammoth" />
 		</banners>
 
 		<offers>

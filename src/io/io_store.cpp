@@ -56,11 +56,16 @@ const std::map<OfferTypes_t, uint16_t> IOStore::offersDisableIndex = {
 	{ OfferTypes_t::POUCH, 7 },
 	{ OfferTypes_t::INSTANT_REWARD_ACCESS, 8 },
 	{ OfferTypes_t::CHARM_EXPANSION, 9 },
-	{ OfferTypes_t::TEMPLE, 10 },
+	{ OfferTypes_t::TEMPLE, 10 }
 };
 
 const std::map<std::string, States_t, std::less<>> IOStore::stringToOfferStateMap = {
 	{ "none", States_t::NONE }, { "new", States_t::NEW }, { "sale", States_t::SALE }, { "timed", States_t::TIMED }
+};
+
+const std::map<std::string, BannerType, std::less<>> IOStore::stringToBannerTypeMap = {
+	{ "collection", BannerType::COLLECTION },
+	{ "offer", BannerType::OFFER }
 };
 
 bool IOStore::loadFromXml() {
@@ -266,15 +271,38 @@ bool IOStore::loadStoreHome(pugi::xml_node homeNode) {
 	if (bannersChild && std::string(bannersChild.name()) == "banner") {
 		for (pugi::xml_node banner : bannersNode.children("banner")) {
 			BannerInfo tempBanner;
-			tempBanner.bannerName = std::string(banner.attribute("path").as_string());
-			if (tempBanner.bannerName.empty()) {
-				return false;
-			}
 
-			tempBanner.offerId = static_cast<uint32_t>(banner.attribute("bannerOfferId").as_uint());
-			if (tempBanner.offerId == 0) {
+			std::string bannerPath = std::string(banner.attribute("path").as_string());
+			if (bannerPath.empty()) {
 				return false;
 			}
+			tempBanner.path = bannerPath;
+
+			std::string bannerTypeString = std::string(banner.attribute("type").as_string());
+			auto it = stringToBannerTypeMap.find(bannerTypeString);
+			if (it == stringToBannerTypeMap.end()) {
+				return false;
+			}
+			BannerType bannerType = it->second;
+
+			if (bannerType == BannerType::COLLECTION) {
+				std::string categoryName = std::string(banner.attribute("category").as_string());
+				std::string collectionName = std::string(banner.attribute("collection").as_string());
+				if (categoryName.empty() || collectionName.empty()) {
+					return false;
+				}
+				tempBanner.categoryName = categoryName;
+				tempBanner.collectionName = collectionName;
+			} else if (bannerType == BannerType::OFFER) {
+				std::string offerName = std::string(banner.attribute("offer").as_string());
+				if (offerName.empty()) {
+					return false;
+				}
+				tempBanner.offerName = offerName;
+			} else {
+				return false;
+			}
+			tempBanner.type = bannerType;
 
 			m_banners.push_back(tempBanner);
 		}

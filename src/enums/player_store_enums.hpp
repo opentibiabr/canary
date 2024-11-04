@@ -97,6 +97,11 @@ enum class StoreErrors_t : uint8_t {
 	INFORMATION = 4
 };
 
+enum class BannerType : uint8_t {
+	COLLECTION = 2,
+	OFFER = 4
+};
+
 // Others
 enum class ActionType_t : uint8_t {
 	OPEN_HOME = 0,

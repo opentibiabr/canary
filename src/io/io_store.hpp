@@ -19,8 +19,13 @@ struct OutfitIds {
 };
 
 struct BannerInfo {
-	std::string bannerName;
-	uint32_t offerId {};
+	std::string path;
+	BannerType type;
+
+	std::string categoryName;
+	std::string collectionName;
+
+	std::string offerName;
 };
 
 struct StoreHistoryDetail {
@@ -71,6 +76,7 @@ public:
 	static const std::map<std::string, OfferTypes_t, std::less<>> stringToOfferTypeMap;
 	static const std::map<OfferTypes_t, uint16_t> offersDisableIndex;
 	static const std::map<std::string, States_t, std::less<>> stringToOfferStateMap;
+	static const std::map<std::string, BannerType, std::less<>> stringToBannerTypeMap;
 
 	const std::vector<Category> &getCategoryVector() const;
 	const Category* getCategoryByName(std::string_view categoryName) const;

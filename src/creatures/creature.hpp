@@ -692,6 +692,17 @@ public:
 	void setCharmChanceModifier(int8_t value) {
 		charmChanceModifier = value;
 	}
+	std::string getShader() const {
+		return shader;
+	}
+	void setShader(const std::string &shaderName) {
+		shader = shaderName;
+	}
+	void attachEffectById(uint16_t id);
+	void detachEffectById(uint16_t id);
+	const std::vector<uint16_t> getAttachedEffectList() const {
+		return attachedEffectList;
+	}
 
 protected:
 	enum FlagAsyncClass_t : uint8_t {
@@ -881,4 +892,6 @@ private:
 	}
 
 	uint8_t m_flagAsyncTask = 0;
+	std::vector<uint16_t> attachedEffectList;
+	std::string shader;
 };

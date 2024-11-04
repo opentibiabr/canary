@@ -712,6 +712,9 @@ public:
 	const std::map<uint8_t, std::string> &getBlessingNames();
 	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();
 	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
+	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void updateCreatureShader(const std::shared_ptr<Creature> &creature);
 
 private:
 	std::map<uint16_t, Achievement> m_achievements;

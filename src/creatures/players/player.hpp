@@ -1262,6 +1262,10 @@ public:
 
 	uint16_t getPlayerVocationEnum() const;
 
+	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) const;
+	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) const;
+	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName) const;
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;

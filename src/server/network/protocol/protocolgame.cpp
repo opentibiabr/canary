@@ -7746,6 +7746,13 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const std::shared_ptr<Creatu
 	}
 
 	msg.addByte(player->canWalkthroughEx(creature) ? 0x00 : 0x01);
+	if (isOTC && otclientV8 == 0) {
+		msg.addString(creature->getShader());
+		msg.addByte(static_cast<uint8_t>(creature->getAttachedEffectList().size()));
+		for (const uint16_t id : creature->getAttachedEffectList()) {
+			msg.add<uint16_t>(id);
+		}
+	}
 }
 
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
@@ -9265,5 +9272,40 @@ void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
 	NetworkMessage msg;
 	msg.addByte(0x75);
 	msg.addByte(screenshotType);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) {
+	if (!isOTC || player->getOperatingSystem() >= CLIENTOS_OTCLIENTV8_LINUX) {
+		return;
+	}
+
+	 NetworkMessage msg;
+	msg.addByte(0x34);
+	msg.add<uint32_t>(creature->getID());
+	msg.add<uint16_t>(effectId);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) {
+	if (!isOTC || player->getOperatingSystem() >= CLIENTOS_OTCLIENTV8_LINUX) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x35);
+	msg.add<uint32_t>(creature->getID());
+	msg.add<uint16_t>(effectId);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName) {
+	if (!isOTC || player->getOperatingSystem() >= CLIENTOS_OTCLIENTV8_LINUX) {
+		return;
+	}
+	NetworkMessage msg;
+	msg.addByte(0x36);
+	msg.add<uint32_t>(creature->getID());
+	msg.addString(shaderName);
 	writeToOutputBuffer(msg);
 }

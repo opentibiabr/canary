@@ -2002,3 +2002,20 @@ void Creature::sendAsyncTasks() {
 	},
 	                          TaskGroup::WalkParallel);
 }
+
+void Creature::attachEffectById(uint16_t id) {
+	auto it = std::find(attachedEffectList.begin(), attachedEffectList.end(), id);
+	if (it != attachedEffectList.end()) {
+		return;
+	}
+	attachedEffectList.push_back(id);
+	g_game().sendAttachedEffect(static_self_cast<Creature>(), id);
+}
+void Creature::detachEffectById(uint16_t id) {
+	auto it = std::find(attachedEffectList.begin(), attachedEffectList.end(), id);
+	if (it == attachedEffectList.end()) {
+		return;
+	}
+	attachedEffectList.erase(it);
+	g_game().sendDetachEffect(static_self_cast<Creature>(), id);
+}

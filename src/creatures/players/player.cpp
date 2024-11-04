@@ -9572,6 +9572,41 @@ void Player::sendLootContainers() const {
 	}
 }
 
+// OTCR Features
+
+void Player::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) const {
+	if (!client || !creature) {
+		return;
+	}
+	if (creature->getPlayer()) {
+		if (client) {
+			client->sendAttachedEffect(creature, effectId);
+		}
+	}
+}
+
+void Player::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) const {
+	if (!client || !creature) {
+		return;
+	}
+	if (creature->getPlayer()) {
+		if (client) {
+			client->sendDetachEffect(creature, effectId);
+		}
+	}
+}
+
+void Player::sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName) const {
+	if (!client || !creature) {
+		return;
+	}
+	if (creature->getPlayer()) {
+		if (client) {
+			client->sendShader(creature, shaderName);
+		}
+	}
+}
+
 void Player::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) const {
 	if (client) {
 		client->sendSingleSoundEffect(pos, id, source);

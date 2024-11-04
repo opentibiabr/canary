@@ -10852,3 +10852,31 @@ void Game::updatePlayersOnline() const {
 		g_logger().error("[Game::updatePlayersOnline] Failed to update players online.");
 	}
 }
+
+void Game::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) {
+	auto spectators = Spectators().find<Creature>(creature->getPosition(), true);
+	for (const auto &spectator : spectators) {
+		auto player = spectator->getPlayer();
+		if (player) { // Solo procede si player no es nullptr
+			player->sendAttachedEffect(creature, effectId);
+		}
+	}
+}
+void Game::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) {
+	auto spectators = Spectators().find<Creature>(creature->getPosition(), true);
+	for (const auto &spectator : spectators) {
+		auto player = spectator->getPlayer();
+		if (player) { // Solo procede si player no es nullptr
+			player->sendDetachEffect(creature, effectId);
+		}
+	}
+}
+void Game::updateCreatureShader(const std::shared_ptr<Creature> &creature) {
+	auto spectators = Spectators().find<Creature>(creature->getPosition(), true);
+	for (const auto &spectator : spectators) {
+		auto player = spectator->getPlayer();
+		if (player) { // Solo procede si player no es nullptr
+			player->sendShader(creature, creature->getShader());
+		}
+	}
+}

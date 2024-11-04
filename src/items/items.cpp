@@ -7,12 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "items/functions/item/item_parse.hpp"
 #include "items/items.hpp"
+
+#include "config/configmanager.hpp"
+#include "game/game.hpp"
+#include "items/functions/item/item_parse.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
-#include "game/game.hpp"
 #include "utils/pugicast.hpp"
+#include "creatures/combat/spells.hpp"
+#include "utils/tools.hpp"
 
 #include <appearances.pb.h>
 
@@ -92,7 +96,7 @@ std::string ItemType::parseAugmentDescription(bool inspect /*= false*/) const {
 }
 
 std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const {
-	const std::string augmentName = Items::getAugmentNameByType(augmentInfo->type);
+	const auto augmentName = Items::getAugmentNameByType(augmentInfo->type);
 	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
 	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");
 
@@ -102,8 +106,21 @@ std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<Augme
 		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
 	} else if (augmentInfo->type == Augment_t::Cooldown) {
 		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
+	} else if (augmentInfo->type == Augment_t::Base) {
+		const auto &spell = g_spells().getSpellByName(augmentInfo->spellName);
+		return fmt::format("{} -> {:+}% {} {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName, spell->getGroup() == SPELLGROUP_HEALING ? "healing" : "damage");
 	}
+
 	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
+}
+
+void ItemType::addAugment(std::string spellName, Augment_t augmentType, int32_t value) {
+	auto augmentInfo = std::make_shared<AugmentInfo>(spellName, augmentType, value);
+	augments.emplace_back(augmentInfo);
+}
+
+void ItemType::setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {
+	imbuementTypes[imbuementType] = std::min<uint16_t>(IMBUEMENT_MAX_TIER, slotMaxTier);
 }
 
 bool Items::reload() {
@@ -380,4 +397,20 @@ bool Items::hasItemType(size_t hasId) const {
 		return true;
 	}
 	return false;
+}
+
+uint32_t Abilities::getHealthGain() const {
+	return healthGain * g_configManager().getFloat(RATE_HEALTH_REGEN);
+}
+
+uint32_t Abilities::getHealthTicks() const {
+	return healthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
+}
+
+uint32_t Abilities::getManaGain() const {
+	return manaGain * g_configManager().getFloat(RATE_MANA_REGEN);
+}
+
+uint32_t Abilities::getManaTicks() const {
+	return manaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
 }

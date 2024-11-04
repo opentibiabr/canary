@@ -8,18 +8,21 @@
  */
 
 #include "items/tile.hpp"
-#include "creatures/creature.hpp"
+
+#include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/players/player.hpp"
+#include "enums/account_type.hpp"
 #include "game/game.hpp"
+#include "game/movement/teleport.hpp"
 #include "game/zones/zone.hpp"
 #include "items/containers/mailbox/mailbox.hpp"
-#include "creatures/monsters/monster.hpp"
-#include "lua/creature/movement.hpp"
-#include "game/movement/teleport.hpp"
 #include "items/trashholder.hpp"
-#include "io/iomap.hpp"
+#include "lua/creature/movement.hpp"
 #include "map/spectators.hpp"
-#include "enums/account_type.hpp"
+#include "utils/tools.hpp"
 
 auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);
 const std::shared_ptr<Tile> &Tile::nullptr_tile = real_nullptr_tile;
@@ -80,6 +83,10 @@ bool Tile::hasProperty(const std::shared_ptr<Item> &exclude, ItemProperty prop) 
 	}
 
 	return false;
+}
+
+bool Tile::hasFlag(uint32_t flag) const {
+	return hasBitSet(flag, this->flags);
 }
 
 bool Tile::hasHeight(uint32_t n) const {

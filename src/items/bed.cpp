@@ -8,10 +8,14 @@
  */
 
 #include "items/bed.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/condition.hpp"
 #include "game/game.hpp"
-#include "io/iologindata.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "io/iologindata.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {

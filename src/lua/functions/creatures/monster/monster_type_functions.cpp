@@ -7,13 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/functions/creatures/monster/monster_type_functions.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "game/game.hpp"
 #include "io/io_bosstiary.hpp"
-#include "creatures/combat/spells.hpp"
-#include "creatures/monsters/monsters.hpp"
-#include "creatures/monsters/monster.hpp"
-#include "lua/functions/creatures/monster/monster_type_functions.hpp"
 #include "lua/scripts/scripts.hpp"
+#include "utils/tools.hpp"
 
 void MonsterTypeFunctions::createMonsterTypeLootLuaTable(lua_State* L, const std::vector<LootBlock> &lootList) {
 	lua_createtable(L, lootList.size(), 0);

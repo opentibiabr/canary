@@ -8,6 +8,7 @@
  */
 
 #include "creatures/players/management/ban.hpp"
+
 #include "database/database.hpp"
 #include "database/databasetasks.hpp"
 #include "utils/tools.hpp"

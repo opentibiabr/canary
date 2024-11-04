@@ -7,10 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/game.hpp"
+#include "lua/functions/creatures/npc/npc_functions.hpp"
+
 #include "creatures/creature.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "lua/functions/creatures/npc/npc_functions.hpp"
+#include "creatures/players/player.hpp"
+#include "game/game.hpp"
 #include "map/spectators.hpp"
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {

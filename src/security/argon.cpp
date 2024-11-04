@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "security/argon.hpp"
+
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
-#include "security/argon.hpp"
 
 #include <argon2.h>
 

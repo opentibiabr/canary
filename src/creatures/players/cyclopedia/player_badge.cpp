@@ -7,13 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "player_badge.hpp"
-#include "enums/player_cyclopedia.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
+
+#include "account/account.hpp"
 #include "creatures/players/player.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
-
-#include "enums/account_errors.hpp"
 
 PlayerBadge::PlayerBadge(Player &player) :
 	m_player(player) { }
@@ -117,7 +118,7 @@ bool PlayerBadge::loyalty(uint8_t amount) const {
 
 std::vector<std::shared_ptr<Player>> PlayerBadge::getPlayersInfoByAccount(const std::shared_ptr<Account> &acc) const {
 	const auto [accountPlayers, error] = acc->getAccountPlayers();
-	if (error != enumToValue(AccountErrors_t::Ok) || accountPlayers.empty()) {
+	if (error != AccountErrors_t::Ok || accountPlayers.empty()) {
 		return {};
 	}
 
@@ -126,7 +127,8 @@ std::vector<std::shared_ptr<Player>> PlayerBadge::getPlayersInfoByAccount(const 
 		if (!namesList.empty()) {
 			namesList += ", ";
 		}
-		namesList += fmt::format("'{}'", name);
+		std::string escapedName = g_database().escapeString(name);
+		namesList += fmt::format("{}", escapedName);
 	}
 
 	auto query = fmt::format("SELECT name, level, vocation FROM players WHERE name IN ({})", namesList);

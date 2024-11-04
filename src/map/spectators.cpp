@@ -7,7 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "spectators.hpp"
+#include "map/spectators.hpp"
+
+#include "creatures/creature.hpp"
 #include "game/game.hpp"
 
 phmap::flat_hash_map<Position, SpectatorsCache> Spectators::spectatorsCache;
@@ -211,4 +213,21 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	}
 
 	return *this;
+}
+
+Spectators Spectators::filter(bool onlyPlayers, bool onlyMonsters, bool onlyNpcs) const {
+	auto specs = Spectators();
+	specs.creatures.reserve(creatures.size());
+
+	for (const auto &c : creatures) {
+		if (onlyPlayers && c->getPlayer() != nullptr) {
+			specs.insert(c);
+		} else if (onlyMonsters && c->getMonster() != nullptr) {
+			specs.insert(c);
+		} else if (onlyNpcs && c->getNpc() != nullptr) {
+			specs.insert(c);
+		}
+	}
+
+	return specs;
 }

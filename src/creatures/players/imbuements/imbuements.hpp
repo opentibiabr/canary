@@ -9,9 +9,7 @@
 
 #pragma once
 
-#include "creatures/players/player.hpp"
-#include "declarations.hpp"
-#include "lib/di/container.hpp"
+#include "creatures/creatures_definitions.hpp"
 
 class Player;
 class Item;
@@ -53,9 +51,7 @@ public:
 	Imbuements(const Imbuements &) = delete;
 	Imbuements &operator=(const Imbuements &) = delete;
 
-	static Imbuements &getInstance() {
-		return inject<Imbuements>();
-	}
+	static Imbuements &getInstance();
 
 	Imbuement* getImbuement(uint16_t id);
 
@@ -83,43 +79,23 @@ public:
 	Imbuement(uint16_t initId, uint16_t initBaseId) :
 		id(initId), baseid(initBaseId) { }
 
-	uint16_t getID() const {
-		return id;
-	}
+	uint16_t getID() const;
 
-	uint16_t getBaseID() const {
-		return baseid;
-	}
+	uint16_t getBaseID() const;
 
-	uint32_t getStorage() const {
-		return storage;
-	}
+	uint32_t getStorage() const;
 
-	bool isPremium() const {
-		return premium;
-	}
-	std::string getName() const {
-		return name;
-	}
-	std::string getDescription() const {
-		return description;
-	}
+	bool isPremium() const;
+	std::string getName() const;
+	std::string getDescription() const;
 
-	std::string getSubGroup() const {
-		return subgroup;
-	}
+	std::string getSubGroup() const;
 
-	uint16_t getCategory() const {
-		return category;
-	}
+	uint16_t getCategory() const;
 
-	const std::vector<std::pair<uint16_t, uint16_t>> &getItems() const {
-		return items;
-	}
+	const std::vector<std::pair<uint16_t, uint16_t>> &getItems() const;
 
-	uint16_t getIconID() const {
-		return icon + (baseid - 1);
-	}
+	uint16_t getIconID() const;
 
 	uint16_t icon = 1;
 	int32_t stats[maxSkillOrStatId + 1] = {};
@@ -137,9 +113,11 @@ protected:
 	friend class Item;
 
 private:
-	bool premium = false;
-	uint32_t storage = 0;
-	uint16_t id, baseid, category = 0;
+	bool premium {};
+	uint32_t storage {};
+	uint16_t id {};
+	uint16_t baseid {};
+	uint16_t category {};
 	std::string name;
 	std::string description;
 	std::string subgroup;

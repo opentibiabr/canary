@@ -10,8 +10,11 @@
 #include "utils/tools.hpp"
 
 #include "core.hpp"
-#include "items/item.hpp"
 #include "enums/object_category.hpp"
+#include "items/item.hpp"
+#include "lua/lua_definitions.hpp"
+#include "utils/const.hpp"
+#include "config/configmanager.hpp"
 
 #include "absl/debugging/stacktrace.h"
 #include "absl/debugging/symbolize.h"
@@ -2065,4 +2068,14 @@ void printStackTrace() {
 			g_logger().info("{}: [Unknown function]", i);
 		}
 	}
+}
+
+const std::map<uint8_t, uint16_t> &getMaxValuePerSkill() {
+	static std::map<uint8_t, uint16_t> maxValuePerSkill = {
+		{ SKILL_LIFE_LEECH_CHANCE, 100 },
+		{ SKILL_MANA_LEECH_CHANCE, 100 },
+		{ SKILL_CRITICAL_HIT_CHANCE, 100 * g_configManager().getNumber(CRITICALCHANCE) }
+	};
+
+	return maxValuePerSkill;
 }

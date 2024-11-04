@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "io/ioguild.hpp"
+
 #include "database/database.hpp"
 #include "creatures/players/grouping/guild.hpp"
-#include "io/ioguild.hpp"
 
 std::shared_ptr<Guild> IOGuild::loadGuild(uint32_t guildId) {
 	Database &db = Database::getInstance();

@@ -7,11 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/combat/combat.hpp"
-#include "game/game.hpp"
 #include "lua/functions/creatures/combat/combat_functions.hpp"
-#include "lua/scripts/lua_environment.hpp"
+
+#include "creatures/combat/combat.hpp"
+#include "creatures/combat/condition.hpp"
+#include "game/game.hpp"
 #include "lua/global/lua_variant.hpp"
+#include "lua/scripts/lua_environment.hpp"
 
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()

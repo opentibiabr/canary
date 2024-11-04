@@ -9535,7 +9535,7 @@ void ProtocolGame::sendStoreHome() {
 			msg.addString(banner.categoryName);
 			msg.addString(banner.collectionName);
 		} else if (banner.type == BannerType::OFFER) {
-			const Offer* offer = g_ioStore().getOfferByName(banner.offerName);
+			const auto &offer = g_ioStore().getOfferByName(banner.offerName);
 			if (!offer) {
 				return;
 			}

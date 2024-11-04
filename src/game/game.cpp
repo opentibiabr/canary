@@ -10551,7 +10551,7 @@ bool Game::processNameChangeOffer(const std::shared_ptr<Player> &player, std::st
 }
 
 bool Game::processTempleOffer(const std::shared_ptr<Player> &player) {
-	if (player->canLogout()) {
+	if (!player->canLogout()) {
 		return false;
 	}
 

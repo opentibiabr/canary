@@ -9789,7 +9789,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 		}
 
 		case OfferTypes_t::TEMPLE: {
-			if (canLogout()) {
+			if (!canLogout()) {
 				canBuy = false;
 			}
 

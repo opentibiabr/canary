@@ -25,6 +25,10 @@ monster.corpse = 28635
 monster.speed = 105
 monster.manaCost = 0
 
+monster.events = {
+	"killingLibrary",
+}
+
 monster.changeTarget = {
 	interval = 1000,
 	chance = 10,

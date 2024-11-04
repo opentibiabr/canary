@@ -16,6 +16,9 @@
 #include "lua/functions/creatures/player/party_functions.hpp"
 #include "lua/functions/creatures/player/vocation_functions.hpp"
 
+enum class PlayerIcon : uint8_t;
+enum class IconBakragore : uint8_t;
+
 class PlayerFunctions final : LuaScriptInterface {
 	explicit PlayerFunctions(lua_State* L) :
 		LuaScriptInterface("PlayerFunctions") {

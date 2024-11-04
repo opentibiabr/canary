@@ -8,6 +8,7 @@
  */
 
 #include "lua/functions/core/network/webhook_functions.hpp"
+
 #include "server/network/webhook/webhook.hpp"
 
 int WebhookFunctions::luaWebhookSendMessage(lua_State* L) {

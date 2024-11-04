@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "lua/creature/creatureevent.hpp"
 #include "lua/functions/events/creature_event_functions.hpp"
+
+#include "lua/creature/creatureevent.hpp"
 #include "utils/tools.hpp"
 
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {

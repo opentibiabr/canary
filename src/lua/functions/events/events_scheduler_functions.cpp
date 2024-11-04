@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/scheduling/events_scheduler.hpp"
 #include "lua/functions/events/events_scheduler_functions.hpp"
+
+#include "game/scheduling/events_scheduler.hpp"
 
 int EventsSchedulerFunctions::luaEventsSchedulergetEventSLoot(lua_State* L) {
 	// EventsScheduler.getEventSLoot

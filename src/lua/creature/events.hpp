@@ -9,14 +9,31 @@
 
 #pragma once
 
-#include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/scripts/luascript.hpp"
-#include "creatures/combat/spells.hpp"
 
+enum ReturnValue : uint16_t;
+enum SpeakClasses : uint8_t;
+enum TextColor_t : uint8_t;
+enum CombatType_t : uint8_t;
+enum Direction : uint8_t;
+enum skills_t : int8_t;
+enum Slots_t : uint8_t;
+enum ZoneType_t : uint8_t;
+struct Position;
+struct Outfit_t;
+struct CombatDamage;
 class Party;
 class ItemType;
-class Tile;
 class Imbuements;
+class Monster;
+class Player;
+class Item;
+class Creature;
+class Npc;
+class Tile;
+class Thing;
+class Cylinder;
+class Container;
 
 class Events {
 	struct EventsInfo {
@@ -76,9 +93,7 @@ public:
 	Events(const Events &) = delete;
 	void operator=(const Events &) = delete;
 
-	static Events &getInstance() {
-		return inject<Events>();
-	}
+	static Events &getInstance();
 
 	// Creature
 	bool eventCreatureOnChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit);

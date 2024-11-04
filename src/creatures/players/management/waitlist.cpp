@@ -8,7 +8,12 @@
  */
 
 #include "creatures/players/management/waitlist.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
+#include "utils/tools.hpp"
 
 #include "enums/account_type.hpp"
 

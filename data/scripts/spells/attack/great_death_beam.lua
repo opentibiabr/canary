@@ -34,7 +34,7 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	return combat[grade]:execute(creature, var) 
+	return combat[grade]:execute(creature, var)
 end
 
 spell:group("attack", "greatbeams")

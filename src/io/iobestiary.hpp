@@ -9,12 +9,16 @@
 
 #pragma once
 
-#include "declarations.hpp"
 #include "lib/di/soft_singleton.hpp"
-#include "lua/scripts/luascript.hpp"
-#include "creatures/players/player.hpp"
 
+#include "creatures/creatures_definitions.hpp"
+
+class Player;
 class Game;
+class SoftSingleton;
+class SoftSingletonGuard;
+class MonsterType;
+class Creature;
 
 class Charm {
 public:
@@ -33,7 +37,7 @@ public:
 	std::string logMsg;
 
 	CombatType_t dmgtype = COMBAT_NONE;
-	uint16_t effect = CONST_ME_NONE;
+	uint16_t effect = 0;
 
 	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 	SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
@@ -50,9 +54,7 @@ public:
 	IOBestiary(const IOBestiary &) = delete;
 	void operator=(const IOBestiary &) = delete;
 
-	static IOBestiary &getInstance() {
-		return inject<IOBestiary>();
-	}
+	static IOBestiary &getInstance();
 
 	std::shared_ptr<Charm> getBestiaryCharm(charmRune_t activeCharm, bool force = false) const;
 	void addBestiaryKill(const std::shared_ptr<Player> &player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount = 1);

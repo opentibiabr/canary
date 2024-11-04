@@ -7,11 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "items/tile.hpp"
-#include "creatures/monsters/monster.hpp"
 #include "map/house/housetile.hpp"
-#include "map/house/house.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "items/tile.hpp"
+#include "map/house/house.hpp"
+#include "utils/tools.hpp"
 
 HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, std::shared_ptr<House> initHouse) :
 	DynamicTile(initX, initY, initZ), house(std::move(initHouse)) { }

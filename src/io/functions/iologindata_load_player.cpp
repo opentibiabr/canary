@@ -7,13 +7,28 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
 #include "io/functions/iologindata_load_player.hpp"
-#include "game/game.hpp"
-#include "enums/object_category.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/combat/condition.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "creatures/players/achievement/player_achievement.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/vip/player_vip.hpp"
+#include "creatures/players/vocations/vocation.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
+#include "enums/object_category.hpp"
+#include "game/game.hpp"
+#include "io/ioguild.hpp"
+#include "io/ioprey.hpp"
+#include "items/containers/depot/depotchest.hpp"
+#include "items/containers/inbox/inbox.hpp"
+#include "items/containers/rewards/reward.hpp"
+#include "items/containers/rewards/rewardchest.hpp"
 #include "utils/tools.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
@@ -77,16 +92,16 @@ bool IOLoginDataLoad::preLoadPlayer(const std::shared_ptr<Player> &player, const
 		return false;
 	}
 
-	auto [coins, error] = player->account->getCoins(enumToValue(CoinType::Normal));
-	if (error != enumToValue(AccountErrors_t::Ok)) {
+	auto [coins, error] = player->account->getCoins(CoinType::Normal);
+	if (error != AccountErrors_t::Ok) {
 		g_logger().error("Failed to get coins for player {}, error {}", player->name, static_cast<uint8_t>(error));
 		return false;
 	}
 
 	player->coinBalance = coins;
 
-	auto [transferableCoins, errorT] = player->account->getCoins(enumToValue(CoinType::Transferable));
-	if (errorT != enumToValue(AccountErrors_t::Ok)) {
+	auto [transferableCoins, errorT] = player->account->getCoins(CoinType::Transferable);
+	if (errorT != AccountErrors_t::Ok) {
 		g_logger().error("Failed to get transferable coins for player {}, error {}", player->name, static_cast<uint8_t>(errorT));
 		return false;
 	}
@@ -164,10 +179,28 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->setOfflineTrainingSkill(skill);
 	const auto &town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
-		g_logger().error("Player {} has town id {} which doesn't exist", player->name, result->getNumber<uint16_t>("town_id"));
-		return false;
+		g_logger().error("Player {} has invalid town id {}. Attempting to set the correct town.", player->name, result->getNumber<uint16_t>("town_id"));
+
+		const auto &thaisTown = g_game().map.towns.getTown("Thais");
+		if (thaisTown) {
+			player->town = thaisTown;
+			g_logger().warn("Assigned town 'Thais' to player {}", player->name);
+		} else {
+			for (const auto &[townId, currentTown] : g_game().map.towns.getTowns()) {
+				if (townId != 0 && currentTown) {
+					player->town = currentTown;
+					g_logger().warn("Assigned first valid town {} (id: {}) to player {}", currentTown->getName(), townId, player->name);
+				}
+			}
+
+			if (!player->town) {
+				g_logger().error("Player {} has invalid town id {}. No valid town found to assign.", player->name, result->getNumber<uint16_t>("town_id"));
+				return false;
+			}
+		}
+	} else {
+		player->town = town;
 	}
-	player->town = town;
 
 	const Position &loginPos = player->loginPosition;
 	if (loginPos.x == 0 && loginPos.y == 0 && loginPos.z == 0) {

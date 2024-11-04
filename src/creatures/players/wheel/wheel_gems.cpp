@@ -9,6 +9,7 @@
 
 #include "creatures/players/wheel/wheel_gems.hpp"
 
+#include "creatures/creatures_definitions.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/player_wheel.hpp"
 

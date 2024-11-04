@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "outputmessage.hpp"
+#include "server/network/message/outputmessage.hpp"
 
 #include "lib/di/container.hpp"
 #include "server/network/protocol/protocol.hpp"

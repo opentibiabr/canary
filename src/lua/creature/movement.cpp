@@ -7,11 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/creature/movement.hpp"
+
+#include "creatures/combat/combat.hpp"
+#include "creatures/combat/condition.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "lua/creature/movement.hpp"
+#include "lua/creature/events.hpp"
 
 void MoveEvents::clear() {
 	uniqueIdMap.clear();

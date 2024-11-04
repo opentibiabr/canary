@@ -127,7 +127,6 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 			// Serialize item attributes
 			propWriteStream.clear();
 			item->serializeAttr(propWriteStream);
-			item->stopDecaying();
 
 			size_t attributesSize;
 			const char* attributes = propWriteStream.getStream(attributesSize);

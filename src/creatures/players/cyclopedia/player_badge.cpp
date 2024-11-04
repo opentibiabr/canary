@@ -127,7 +127,8 @@ std::vector<std::shared_ptr<Player>> PlayerBadge::getPlayersInfoByAccount(const 
 		if (!namesList.empty()) {
 			namesList += ", ";
 		}
-		namesList += fmt::format("'{}'", name);
+		std::string escapedName = g_database().escapeString(name);
+		namesList += fmt::format("{}", escapedName);
 	}
 
 	auto query = fmt::format("SELECT name, level, vocation FROM players WHERE name IN ({})", namesList);

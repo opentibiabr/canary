@@ -4462,3 +4462,31 @@ int PlayerFunctions::luaPlayerSendCreatureAppear(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerGetMapShader(lua_State* L) {
+	// player:getMapShader()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushString(L, player->getMapShader());
+	return 1;
+}
+
+
+int PlayerFunctions::luaPlayerSetMapShader(lua_State* L) {
+	// player:setMapShader(shaderName, [temporary])
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+	const auto shaderName = getString(L, 2);
+	player->sendMapShader(shaderName);
+	pushBoolean(L, true);
+	return 1;
+}

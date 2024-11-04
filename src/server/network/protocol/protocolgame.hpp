@@ -545,6 +545,7 @@ private:
 	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName);
+	void sendMapShader( const std::string &shaderName);
 
 	uint8_t m_playerDeathTime = 0;
 

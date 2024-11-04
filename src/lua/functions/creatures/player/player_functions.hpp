@@ -388,6 +388,10 @@ class PlayerFunctions final : LuaScriptInterface {
 		registerMethod(L, "Player", "removeIconBakragore", PlayerFunctions::luaPlayerRemoveIconBakragore);
 		registerMethod(L, "Player", "sendCreatureAppear", PlayerFunctions::luaPlayerSendCreatureAppear);
 
+		// OTCR Features
+		registerMethod(L, "Player", "getMapShader", PlayerFunctions::luaPlayerGetMapShader);
+		registerMethod(L, "Player", "setMapShader", PlayerFunctions::luaPlayerSetMapShader);
+
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
 		MountFunctions::init(L);
@@ -755,6 +759,9 @@ class PlayerFunctions final : LuaScriptInterface {
 	static int luaPlayerRemoveIconBakragore(lua_State* L);
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
+	
+	static int luaPlayerGetMapShader(lua_State* L);
+	static int luaPlayerSetMapShader(lua_State* L);
 
 	friend class CreatureFunctions;
 };

@@ -9309,3 +9309,13 @@ void ProtocolGame::sendShader(const std::shared_ptr<Creature> &creature, const s
 	msg.addString(shaderName);
 	writeToOutputBuffer(msg);
 }
+
+void ProtocolGame::sendMapShader(const std::string &shaderName) {
+	if (!isOTC || player->getOperatingSystem() >= CLIENTOS_OTCLIENTV8_LINUX) {
+		return;
+	}
+	NetworkMessage msg;
+	msg.addByte(0x37);
+	msg.addString(shaderName);
+	writeToOutputBuffer(msg);
+}

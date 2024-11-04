@@ -9607,6 +9607,12 @@ void Player::sendShader(const std::shared_ptr<Creature> &creature, const std::st
 	}
 }
 
+void Player::sendMapShader(const std::string &shaderName) const {
+	if (client) {
+		client->sendMapShader(shaderName);
+	}
+}
+
 void Player::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) const {
 	if (client) {
 		client->sendSingleSoundEffect(pos, id, source);

@@ -1265,6 +1265,13 @@ public:
 	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) const;
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) const;
 	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName) const;
+	void sendMapShader(const std::string &shaderName) const;
+	const std::string &getMapShader() const {
+		return mapShader;
+	}
+	void setMapShader(const std::string &shaderName) {
+		this->mapShader = shaderName;
+	}
 
 private:
 	friend class PlayerLock;
@@ -1375,6 +1382,7 @@ private:
 	std::string name;
 	std::string guildNick;
 	std::string loyaltyTitle;
+	std::string mapShader;
 
 	Skill skills[SKILL_LAST + 1];
 	LightInfo itemsLight;

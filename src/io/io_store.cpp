@@ -146,8 +146,11 @@ bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) 
 
 	uint32_t id = 0;
 	auto offerId = offer.attribute("id");
+	auto maleOutfitId = offer.attribute("male");
 	if (offerId) {
 		id = static_cast<uint32_t>(offerId.as_uint());
+	} else if (maleOutfitId) {
+		id = static_cast<uint32_t>(maleOutfitId.as_uint());
 	} else {
 		id = dynamicId;
 		dynamicId++;
@@ -184,8 +187,6 @@ bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) 
 	if (type == OfferTypes_t::OUTFIT || type == OfferTypes_t::HIRELING) {
 		newOffer.m_outfitId.femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
 		newOffer.m_outfitId.maleId = static_cast<uint16_t>(offer.attribute("male").as_uint());
-		id = newOffer.m_outfitId.maleId;
-		dynamicId--;
 	}
 
 	if (type == OfferTypes_t::ITEM || type == OfferTypes_t::STACKABLE || type == OfferTypes_t::HOUSE || type == OfferTypes_t::CHARGES || type == OfferTypes_t::POUCH) {

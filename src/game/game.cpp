@@ -10816,7 +10816,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 			auto playerLookType = (player->getSex() == PLAYERSEX_FEMALE ? offerOutfitId.femaleId : offerOutfitId.maleId);
 			auto addons = playerLookType >= 962 && playerLookType <= 975 ? 0 : 3;
 
-			if (!player->canWear(playerLookType, addons)) {
+			if (player->canWear(playerLookType, addons)) {
 				errorMessage = "You already own this outfit.";
 				break;
 			}

@@ -9516,7 +9516,6 @@ void ProtocolGame::sendStoreHome() {
 	auto homeOffersVector = g_ioStore().getHomeOffersVector();
 	auto homeOffersCount = getVectorIterationIncreaseCount(homeOffersVector);
 	msg.add<uint16_t>(homeOffersCount); // Offers Amount
-
 	if (homeOffersCount > 0) {
 		for (const auto &homeOfferId : homeOffersVector) {
 			const Offer* offer = g_ioStore().getOfferById(homeOfferId);
@@ -9537,7 +9536,7 @@ void ProtocolGame::sendStoreHome() {
 		} else if (banner.type == BannerType::OFFER) {
 			const auto &offer = g_ioStore().getOfferByName(banner.offerName);
 			if (!offer) {
-				return;
+				continue;
 			}
 			msg.add<uint32_t>(offer->getID()); // Offer Id
 		}

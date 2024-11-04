@@ -29,6 +29,7 @@
 #include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "map/town.hpp"
 #include "utils/tools.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
@@ -177,16 +178,16 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
 	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
 	player->setOfflineTrainingSkill(skill);
-	const auto &town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
+	const auto &town = g_game().map.towns->getTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
 		g_logger().error("Player {} has invalid town id {}. Attempting to set the correct town.", player->name, result->getNumber<uint16_t>("town_id"));
 
-		const auto &thaisTown = g_game().map.towns.getTown("Thais");
+		const auto &thaisTown = g_game().map.towns->getTown("Thais");
 		if (thaisTown) {
 			player->town = thaisTown;
 			g_logger().warn("Assigned town 'Thais' to player {}", player->name);
 		} else {
-			for (const auto &[townId, currentTown] : g_game().map.towns.getTowns()) {
+			for (const auto &[townId, currentTown] : g_game().map.towns->getTowns()) {
 				if (townId != 0 && currentTown) {
 					player->town = currentTown;
 					g_logger().warn("Assigned first valid town {} (id: {}) to player {}", currentTown->getName(), townId, player->name);

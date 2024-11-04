@@ -15,6 +15,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/message/outputmessage.hpp"
+#include "utils/tools.hpp"
 
 std::string ProtocolStatus::SERVER_NAME = "Canary";
 std::string ProtocolStatus::SERVER_VERSION = "3.0";

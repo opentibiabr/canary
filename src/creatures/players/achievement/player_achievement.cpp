@@ -12,6 +12,7 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
+#include "Utils/tools.hpp"
 
 PlayerAchievement::PlayerAchievement(Player &player) :
 	m_player(player) { }

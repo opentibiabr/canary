@@ -14,6 +14,8 @@
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "map/town.hpp"
+#include "utils/tools.hpp"
 
 Bank::Bank(const std::shared_ptr<Bankable> &bankable) :
 	m_bankable(bankable) {

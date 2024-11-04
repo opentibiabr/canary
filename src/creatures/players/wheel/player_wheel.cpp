@@ -20,6 +20,7 @@
 #include "io/io_wheel.hpp"
 #include "kv/kv.hpp"
 #include "kv/kv_definitions.hpp"
+#include "map/town.hpp"
 #include "server/network/message/networkmessage.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 
@@ -1726,7 +1727,7 @@ uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {
 
 	// Check if is in the temple range (we assume the temple is within the range of 10 sqms)
 	if (m_player.getZoneType() == ZONE_PROTECTION) {
-		for (const auto &[townid, town] : g_game().map.towns.getTowns()) {
+		for (const auto &[townid, town] : g_game().map.towns->getTowns()) {
 			if (Position::areInRange<1, 10>(town->getTemplePosition(), m_player.getPosition())) {
 				return 1;
 			}

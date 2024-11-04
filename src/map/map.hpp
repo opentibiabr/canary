@@ -9,21 +9,25 @@
 
 #pragma once
 
+#include "game/movement/position.hpp"
+#include "map/map_const.hpp"
+#include "map/map_definitions.hpp"
 #include "mapcache.hpp"
-#include "map/town.hpp"
-#include "map/house/house.hpp"
-#include "creatures/monsters/spawns/spawn_monster.hpp"
-#include "creatures/npcs/spawns/spawn_npc.hpp"
+
 
 class Creature;
 class Player;
 class Game;
 class Tile;
 class Map;
-
+class SpawnsNpc;
+class SpawnsMonster;
+class Houses;
+class Towns;
+class FrozenPathingConditionCall;
 struct FindPathParams;
 
-class FrozenPathingConditionCall;
+enum Direction : uint8_t;
 
 /**
  * Map class.
@@ -31,6 +35,10 @@ class FrozenPathingConditionCall;
  */
 class Map final : public MapCache {
 public:
+
+	Map();
+	~Map();
+
 	uint32_t clean() const;
 
 	std::filesystem::path getPath() const {
@@ -133,15 +141,15 @@ public:
 	std::map<std::string, Position> waypoints;
 
 	// Storage made by "loadFromXML" of houses, monsters and npcs for main map
-	SpawnsMonster spawnsMonster;
-	SpawnsNpc spawnsNpc;
-	Towns towns;
-	Houses houses;
+	std::unique_ptr<SpawnsMonster> spawnsMonster;
+	std::unique_ptr<SpawnsNpc> spawnsNpc;
+	std::unique_ptr<Towns> towns;
+	std::unique_ptr<Houses> houses;
 
 	// Storage made by "loadFromXML" of houses, monsters and npcs for custom maps
-	SpawnsMonster spawnsMonsterCustomMaps[50];
-	SpawnsNpc spawnsNpcCustomMaps[50];
-	Houses housesCustomMaps[50];
+	std::array<std::unique_ptr<SpawnsMonster>, 50> spawnsMonsterCustomMaps;
+	std::array<std::unique_ptr<SpawnsNpc>, 50> spawnsNpcCustomMaps;
+	std::array<std::unique_ptr<Houses>, 50> housesCustomMaps;
 
 private:
 	/**

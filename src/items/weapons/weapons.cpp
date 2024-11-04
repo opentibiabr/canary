@@ -13,8 +13,8 @@
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
-
 #include "lua/global/lua_variant.hpp"
+#include "Utils/tools.hpp"
 
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;

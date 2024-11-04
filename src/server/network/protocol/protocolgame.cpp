@@ -46,6 +46,7 @@
 #include "lua/creature/creatureevent.hpp"
 #include "lua/modules/modules.hpp"
 #include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/protocol.hpp"
 #include "utils/tools.hpp"
 
 #include "enums/account_coins.hpp"

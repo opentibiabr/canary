@@ -12,13 +12,18 @@
 #include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/npcs/npcs.hpp"
+#include "creatures/npcs/spawns/spawn_npc.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "items/containers/container.hpp"
+#include "items/item.hpp"
+#include "items/tile.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "lua/callbacks/creaturecallback.hpp"
 #include "lua/global/shared_object.hpp"
 #include "map/spectators.hpp"
+#include "utils/tools.hpp"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;

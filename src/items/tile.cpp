@@ -21,7 +21,9 @@
 #include "items/containers/mailbox/mailbox.hpp"
 #include "items/trashholder.hpp"
 #include "lua/creature/movement.hpp"
+#include "map/house/house.hpp"
 #include "map/spectators.hpp"
+#include "map/utils/mapsector.hpp"
 #include "utils/tools.hpp"
 
 auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);

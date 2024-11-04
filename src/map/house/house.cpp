@@ -17,7 +17,9 @@
 #include "items/bed.hpp"
 #include "items/containers/inbox/inbox.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "map/town.hpp"
 #include "utils/pugicast.hpp"
+#include "Utils/tools.hpp"
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -788,7 +790,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 		}
 
 		const uint32_t ownerId = house->getOwner();
-		const auto &town = g_game().map.towns.getTown(house->getTownId());
+		const auto &town = g_game().map.towns->getTown(house->getTownId());
 		if (!town) {
 			continue;
 		}

@@ -13,9 +13,10 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "enums/account_group_type.hpp"
+#include "enums/account_group_type.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
-#include "enums/account_group_type.hpp"
+#include "Utils/tools.hpp"
 
 PlayerTitle::PlayerTitle(Player &player) :
 	m_player(player) { }

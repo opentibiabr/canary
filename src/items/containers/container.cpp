@@ -12,7 +12,9 @@
 #include "config/configmanager.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "map/house/housetile.hpp"
 #include "map/spectators.hpp"
+#include "Utils/tools.hpp"
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {

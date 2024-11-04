@@ -14,9 +14,11 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
+#include "items/item.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
+#include "utils/tools.hpp"
 
 std::shared_ptr<Party> Party::create(const std::shared_ptr<Player> &leader) {
 	auto party = std::make_shared<Party>();

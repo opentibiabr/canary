@@ -17,10 +17,13 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/item.hpp"
 #include "map/map.hpp"
+#include "map/utils/mapsector.hpp"
 #include "utils/hash.hpp"
 
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicItem>> items;
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicTile>> tiles;
+
+std::unordered_map<uint32_t, MapSector> mapSectors;
 
 std::shared_ptr<BasicItem> static_tryGetItemFromCache(const std::shared_ptr<BasicItem> &ref) {
 	return ref ? items.try_emplace(ref->hash(), ref).first->second : nullptr;
@@ -121,7 +124,7 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 	std::shared_ptr<Tile> tile = nullptr;
 
 	if (cachedTile->isHouse()) {
-		const auto &house = map->houses.getHouse(cachedTile->houseId);
+		const auto &house = map->houses->getHouse(cachedTile->houseId);
 		tile = std::make_shared<HouseTile>(x, y, z, house);
 		house->addTile(std::static_pointer_cast<HouseTile>(tile));
 	} else if (cachedTile->isStatic) {
@@ -220,6 +223,21 @@ MapSector* MapCache::getBestMapSector(uint32_t x, uint32_t y) {
 	}
 
 	return sector;
+}
+
+/**
+ * Gets a map sector.
+ * \returns A pointer to that map sector.
+ */
+
+ MapSector* MapCache::getMapSector(const uint32_t x, const uint32_t y) {
+	const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
+	return it != mapSectors.end() ? &it->second : nullptr;
+}
+
+ const MapSector* MapCache::getMapSector(const uint32_t x, const uint32_t y) const {
+	const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
+	return it != mapSectors.end() ? &it->second : nullptr;
 }
 
 void BasicTile::hash(size_t &h) const {

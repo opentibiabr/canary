@@ -21,7 +21,6 @@
 #include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "io/iobestiary.hpp"
@@ -31,7 +30,10 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/item.hpp"
+#include "map/house/house.hpp"
 #include "map/spectators.hpp"
+#include "server/network/protocol/protocolgame.hpp"
+#include "Utils/tools.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
@@ -2961,7 +2963,7 @@ int PlayerFunctions::luaPlayerGetHouse(lua_State* L) {
 		return 1;
 	}
 
-	const auto &house = g_game().map.houses.getHouseByPlayerId(player->getGUID());
+	const auto &house = g_game().map.houses->getHouseByPlayerId(player->getGUID());
 	if (house) {
 		pushUserdata<House>(L, house);
 		setMetatable(L, -1, "House");

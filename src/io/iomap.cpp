@@ -9,9 +9,10 @@
 
 #include "io/iomap.hpp"
 
-#include "game/movement/teleport.hpp"
 #include "game/game.hpp"
+#include "game/movement/teleport.hpp"
 #include "io/filestream.hpp"
+#include "map/town.hpp"
 
 /*
     OTBM_ROOTV1
@@ -139,7 +140,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 			if (tileType == OTBM_HOUSETILE) {
 				tile->houseId = stream.getU32();
-				if (!map.houses.addHouse(tile->houseId)) {
+				if (!map.houses->addHouse(tile->houseId)) {
 					throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not create house id: {}", x, y, z, tile->houseId));
 				}
 			}
@@ -258,7 +259,7 @@ void IOMap::parseTowns(FileStream &stream, Map &map) {
 		const uint16_t y = stream.getU16();
 		const uint8_t z = stream.getU8();
 
-		auto town = map.towns.getOrCreateTown(townId);
+		auto town = map.towns->getOrCreateTown(townId);
 		town->setName(townName);
 		town->setTemplePos(Position(x, y, z));
 

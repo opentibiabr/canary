@@ -9,7 +9,6 @@
 
 #include "utils/counter_pointer.hpp"
 
-#include "lib/di/container.hpp"
 #include "lib/logging/logger.hpp"
 
 SharedPtrManager &SharedPtrManager::getInstance() {

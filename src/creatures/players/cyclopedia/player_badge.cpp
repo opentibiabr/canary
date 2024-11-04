@@ -15,6 +15,7 @@
 #include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
+#include "utils/tools.hpp"
 
 PlayerBadge::PlayerBadge(Player &player) :
 	m_player(player) { }

@@ -9,8 +9,9 @@
 
 #include "lua/functions/core/network/network_message_functions.hpp"
 
-#include "server/network/protocol/protocolgame.hpp"
 #include "creatures/players/player.hpp"
+#include "server/network/message/networkmessage.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 
 int NetworkMessageFunctions::luaNetworkMessageCreate(lua_State* L) {

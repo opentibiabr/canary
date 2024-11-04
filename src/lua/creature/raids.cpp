@@ -15,6 +15,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "utils/pugicast.hpp"
+#include "Utils/tools.hpp"
 
 Raids::Raids() {
 	scriptInterface.initState();

@@ -27,6 +27,7 @@
 #include "items/trashholder.hpp"
 #include "lua/creature/actions.hpp"
 #include "map/house/house.hpp"
+#include "Utils/tools.hpp"
 
 #define ITEM_IMBUEMENT_SLOT 500
 

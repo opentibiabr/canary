@@ -10,10 +10,10 @@
 #include "server/network/protocol/protocol.hpp"
 
 #include "config/configmanager.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "security/rsa.hpp"
 #include "server/network/connection/connection.hpp"
 #include "server/network/message/outputmessage.hpp"
-#include "security/rsa.hpp"
-#include "game/scheduling/dispatcher.hpp"
 #include "utils/tools.hpp"
 
 Protocol::Protocol(const Connection_ptr &initConnection) :

@@ -10,18 +10,20 @@
 #include "creatures/creature.hpp"
 
 #include "config/configmanager.hpp"
-#include "creatures/combat/condition.hpp"
 #include "creatures/combat/combat.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/grouping/party.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
+#include "items/containers/container.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "map/spectators.hpp"
-#include "creatures/players/player.hpp"
 #include "server/network/protocol/protocolgame.hpp"
+#include "utils/tools.hpp"
 
 Creature::Creature() {
 	Creature::onIdleStatus();

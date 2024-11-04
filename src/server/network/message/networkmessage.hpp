@@ -10,7 +10,6 @@
 #pragma once
 
 #include "utils/const.hpp"
-#include "declarations.hpp"
 
 class Item;
 class Creature;

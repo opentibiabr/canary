@@ -11,16 +11,18 @@
 
 #include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
+#include "creatures/creature.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/players/player.hpp"
 #include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/fileloader.hpp"
+#include "items/tile.hpp"
 #include "kv/kv.hpp"
 #include "map/spectators.hpp"
-#include "creatures/creature.hpp"
-#include "creatures/players/player.hpp"
 #include "server/network/protocol/protocolgame.hpp"
+#include "utils/tools.hpp"
 
 /**
  *  Condition

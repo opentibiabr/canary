@@ -15,6 +15,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
+#include "Utils/tools.hpp"
 
 PrivateChatChannel::PrivateChatChannel(uint16_t channelId, std::string channelName) :
 	ChatChannel(channelId, std::move(channelName)) { }

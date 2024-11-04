@@ -29,6 +29,7 @@ enum Slots_t : uint8_t;
 enum CombatType_t : uint8_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
+enum SessionEndInformations : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -59,6 +60,7 @@ struct ShopBlock;
 struct MarketOfferEx;
 struct HistoryMarketOffer;
 struct LightInfo;
+struct HighscoreCharacter;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;

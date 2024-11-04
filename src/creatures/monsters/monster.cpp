@@ -12,14 +12,19 @@
 #include "config/configmanager.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "enums/item_attribute.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "items/containers/container.hpp"
+#include "items/item.hpp"
 #include "items/tile.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
+#include "utils/tools.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;

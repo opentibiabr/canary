@@ -13,6 +13,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/di/container.hpp"
+#include "Utils/tools.hpp"
 
 Decay &Decay::getInstance() {
 	return inject<Decay>();

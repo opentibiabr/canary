@@ -9,10 +9,10 @@
 
 #include "server/server.hpp"
 
-#include "server/network/message/outputmessage.hpp"
 #include "config/configmanager.hpp"
-#include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "lib/di/container.hpp"
 
 ServiceManager::~ServiceManager() {
 	try {

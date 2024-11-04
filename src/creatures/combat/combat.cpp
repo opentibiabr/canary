@@ -21,12 +21,14 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "io/iobestiary.hpp"
 #include "io/ioprey.hpp"
+#include "items/tile.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "map/spectators.hpp"
+#include "utils/tools.hpp"
 
 int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
 	if (!player) {

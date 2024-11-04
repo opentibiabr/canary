@@ -9,9 +9,9 @@
 
 #include "server/network/message/outputmessage.hpp"
 
+#include "game/scheduling/dispatcher.hpp"
 #include "lib/di/container.hpp"
 #include "server/network/protocol/protocol.hpp"
-#include "game/scheduling/dispatcher.hpp"
 #include "utils/lockfree.hpp"
 
 constexpr uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
@@ -60,4 +60,38 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol)
 
 OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());
+}
+
+ uint8_t* OutputMessage::getOutputBuffer() {
+	return buffer.data() + outputBufferStart;
+}
+
+ void OutputMessage::writeMessageLength() {
+	add_header(info.length);
+}
+
+ void OutputMessage::addCryptoHeader(bool addChecksum, uint32_t checksum) {
+	if (addChecksum) {
+		add_header(checksum);
+	}
+
+	writeMessageLength();
+}
+
+ void OutputMessage::append(const NetworkMessage &msg) {
+	auto msgLen = msg.getLength();
+	std::span<const unsigned char> sourceSpan(msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+	std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
+	std::ranges::copy(sourceSpan, destSpan.begin());
+	info.length += msgLen;
+	info.position += msgLen;
+}
+
+ void OutputMessage::append(const OutputMessage_ptr &msg) {
+	auto msgLen = msg->getLength();
+	std::span<const unsigned char> sourceSpan(msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+	std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
+	std::ranges::copy(sourceSpan, destSpan.begin());
+	info.length += msgLen;
+	info.position += msgLen;
 }

@@ -16,6 +16,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
+#include "Utils/tools.hpp"
 
 void MoveEvents::clear() {
 	uniqueIdMap.clear();

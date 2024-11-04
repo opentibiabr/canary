@@ -16,6 +16,7 @@
 #include "game/game.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "map/spectators.hpp"
+#include "Utils/tools.hpp"
 
 int CreatureFunctions::luaCreatureCreate(lua_State* L) {
 	// Creature(id or name or userdata)

@@ -10,13 +10,14 @@
 #pragma once
 
 #include "items/items_definitions.hpp"
-#include "utils/mapsector.hpp"
 
 class Map;
 class Tile;
 class Item;
-struct Position;
 class FileStream;
+class MapSector;
+struct Position;
+struct Floor;
 
 #pragma pack(1)
 struct BasicItem {
@@ -100,20 +101,12 @@ public:
 	 * Gets a map sector.
 	 * \returns A pointer to that map sector.
 	 */
-	MapSector* getMapSector(const uint32_t x, const uint32_t y) {
-		const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
-		return it != mapSectors.end() ? &it->second : nullptr;
-	}
+	MapSector* getMapSector(const uint32_t x, const uint32_t y);
 
-	const MapSector* getMapSector(const uint32_t x, const uint32_t y) const {
-		const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
-		return it != mapSectors.end() ? &it->second : nullptr;
-	}
+	const MapSector* getMapSector(const uint32_t x, const uint32_t y) const;
 
 protected:
 	std::shared_ptr<Tile> getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y);
-
-	std::unordered_map<uint32_t, MapSector> mapSectors;
 
 private:
 	void parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const;

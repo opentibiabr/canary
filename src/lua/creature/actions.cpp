@@ -19,6 +19,8 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "map/house/house.hpp"
+#include "Utils/tools.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;

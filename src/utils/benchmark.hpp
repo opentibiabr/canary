@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include <cstdint>
 #include <chrono>
 
 class Benchmark {

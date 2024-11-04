@@ -16,6 +16,7 @@
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "server/network/message/networkmessage.hpp"
+#include "Utils/tools.hpp"
 
 // Prey class
 PreySlot::PreySlot(PreySlot_t id) :

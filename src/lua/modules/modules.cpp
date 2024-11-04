@@ -11,6 +11,7 @@
 
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "utils/tools.hpp"
 
 Modules::Modules() :
 	scriptInterface("Modules Interface") {

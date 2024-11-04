@@ -16,9 +16,9 @@ int TownFunctions::luaTownCreate(lua_State* L) {
 	// Town(id or name)
 	std::shared_ptr<Town> town;
 	if (isNumber(L, 2)) {
-		town = g_game().map.towns.getTown(getNumber<uint32_t>(L, 2));
+		town = g_game().map.towns->getTown(getNumber<uint32_t>(L, 2));
 	} else if (isString(L, 2)) {
-		town = g_game().map.towns.getTown(getString(L, 2));
+		town = g_game().map.towns->getTown(getString(L, 2));
 	} else {
 		town = nullptr;
 	}

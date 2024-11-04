@@ -10,15 +10,16 @@
 #include "lua/functions/map/house_functions.hpp"
 
 #include "config/configmanager.hpp"
-#include "items/bed.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
 #include "io/iologindata.hpp"
+#include "items/bed.hpp"
 #include "map/house/house.hpp"
+#include "map/town.hpp"
 
 int HouseFunctions::luaHouseCreate(lua_State* L) {
 	// House(id)
-	if (const auto &house = g_game().map.houses.getHouse(getNumber<uint32_t>(L, 2))) {
+	if (const auto &house = g_game().map.houses->getHouse(getNumber<uint32_t>(L, 2))) {
 		pushUserdata<House>(L, house);
 		setMetatable(L, -1, "House");
 	} else {
@@ -55,7 +56,7 @@ int HouseFunctions::luaHouseGetTown(lua_State* L) {
 		return 1;
 	}
 
-	if (const auto &town = g_game().map.towns.getTown(house->getTownId())) {
+	if (const auto &town = g_game().map.towns->getTown(house->getTownId())) {
 		pushUserdata<Town>(L, town);
 		setMetatable(L, -1, "Town");
 	} else {
@@ -194,7 +195,7 @@ int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 		return 1;
 	}
 
-	if (g_game().map.houses.getHouseByPlayerId(tradePartner->getGUID())) {
+	if (g_game().map.houses->getHouseByPlayerId(tradePartner->getGUID())) {
 		lua_pushnumber(L, RETURNVALUE_TRADEPLAYERALREADYOWNSAHOUSE);
 		return 1;
 	}

@@ -10,6 +10,8 @@
 #include "map/map.hpp"
 
 #include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/spawns/spawn_monster.hpp"
+#include "creatures/npcs/spawns/spawn_npc.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -18,8 +20,21 @@
 #include "io/iomapserialize.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "map/house/house.hpp"
 #include "map/spectators.hpp"
+#include "map/town.hpp"
+#include "map/utils/mapsector.hpp"
 #include "utils/astarnodes.hpp"
+#include "Utils/tools.hpp"
+
+Map::Map() {
+	spawnsMonster = std::make_unique<SpawnsMonster>();
+	spawnsNpc = std::make_unique<SpawnsNpc>();
+	houses = std::make_unique<Houses>();
+	towns = std::make_unique<Towns>();
+}
+
+Map::~Map() = default;
 
 void Map::load(const std::string &identifier, const Position &pos) {
 	try {

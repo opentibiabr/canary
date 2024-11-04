@@ -17,7 +17,9 @@
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/npc.hpp"
+#include "creatures/npcs/spawns/spawn_npc.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
@@ -28,8 +30,8 @@
 #include "creatures/players/player.hpp"
 #include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "enums/player_wheel.hpp"
 #include "database/databasetasks.hpp"
+#include "enums/player_wheel.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "game/zones/zone.hpp"
@@ -46,6 +48,7 @@
 #include "items/containers/rewards/rewardchest.hpp"
 #include "items/items.hpp"
 #include "items/items_classification.hpp"
+#include "lib/metrics/metrics.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/actions.hpp"
@@ -54,10 +57,11 @@
 #include "lua/creature/talkaction.hpp"
 #include "lua/global/globalevent.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "map/house/house.hpp"
 #include "map/spectators.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "server/server.hpp"
 #include "utils/tools.hpp"
@@ -610,13 +614,13 @@ void Game::setGameState(GameState_t newState) {
 			g_chat().load();
 
 			// Load monsters and npcs stored by the "loadFromXML" function
-			map.spawnsMonster.startup();
-			map.spawnsNpc.startup();
+			map.spawnsMonster->startup();
+			map.spawnsNpc->startup();
 
 			// Load monsters and npcs custom stored by the "loadFromXML" function
 			for (int i = 0; i < 50; i++) {
-				map.spawnsNpcCustomMaps[i].startup();
-				map.spawnsMonsterCustomMaps[i].startup();
+				map.spawnsNpcCustomMaps[i]->startup();
+				map.spawnsMonsterCustomMaps[i]->startup();
 			}
 
 			raids.loadFromXml();
@@ -8121,8 +8125,8 @@ void Game::shutdown() {
 	g_webhook().sendMessage(":red_circle: Server is shutting down...");
 
 	g_logger().info("Shutting down...");
-	map.spawnsMonster.clear();
-	map.spawnsNpc.clear();
+	map.spawnsMonster->clear();
+	map.spawnsNpc->clear();
 	raids.clear();
 
 	if (serviceManager) {
@@ -10571,7 +10575,7 @@ void Game::transferHouseItemsToDepot() {
 
 	uint16_t transferSuccess = 0;
 	for (const auto &[houseId, playerGuid] : transferHouseItemsToPlayer) {
-		auto house = map.houses.getHouse(houseId);
+		auto house = map.houses->getHouse(houseId);
 		if (house) {
 			auto offlinePlayer = std::make_shared<Player>(nullptr);
 			if (!IOLoginData::loadPlayerById(offlinePlayer, playerGuid)) {

@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include "items/containers/container.hpp"
 #include "declarations.hpp"
-#include "map/house/housetile.hpp"
 #include "game/movement/position.hpp"
+#include "items/containers/container.hpp"
+#include "map/house/housetile.hpp"
 
 class House;
 class BedItem;

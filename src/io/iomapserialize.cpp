@@ -10,9 +10,11 @@
 #include "io/iomapserialize.hpp"
 
 #include "config/configmanager.hpp"
-#include "io/iologindata.hpp"
 #include "game/game.hpp"
+#include "io/iologindata.hpp"
 #include "items/bed.hpp"
+#include "map/house/house.hpp"
+#include "Utils/tools.hpp"
 
 void IOMapSerialize::loadHouseItems(Map* map) {
 	Benchmark bm_context;
@@ -86,7 +88,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	DBInsert stmt("INSERT INTO `tile_store` (`house_id`, `data`) VALUES ");
 
 	PropWriteStream stream;
-	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
+	for (const auto &[key, house] : g_game().map.houses->getHouses()) {
 		// save house items
 		for (const auto &tile : house->getTiles()) {
 			saveTile(stream, tile);
@@ -280,7 +282,7 @@ bool IOMapSerialize::loadHouseInfo() {
 
 	do {
 		auto houseId = result->getNumber<uint32_t>("id");
-		const auto house = g_game().map.houses.getHouse(houseId);
+		const auto house = g_game().map.houses->getHouse(houseId);
 		if (house) {
 			auto owner = result->getNumber<uint32_t>("owner");
 			auto newOwner = result->getNumber<int32_t>("new_owner");
@@ -306,7 +308,7 @@ bool IOMapSerialize::loadHouseInfo() {
 	result = db.storeQuery("SELECT `house_id`, `listid`, `list` FROM `house_lists`");
 	if (result) {
 		do {
-			const auto &house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("house_id"));
+			const auto &house = g_game().map.houses->getHouse(result->getNumber<uint32_t>("house_id"));
 			if (house) {
 				house->setAccessList(result->getNumber<uint32_t>("listid"), result->getString("list"));
 			}
@@ -334,7 +336,7 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 	DBInsert houseUpdate("INSERT INTO `houses` (`id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`) VALUES ");
 	houseUpdate.upsert({ "owner", "paid", "warnings", "name", "town_id", "rent", "size", "beds" });
 
-	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
+	for (const auto &[key, house] : g_game().map.houses->getHouses()) {
 		std::string values = fmt::format("{},{},{},{},{},{},{},{},{}", house->getId(), house->getOwner(), house->getPaidUntil(), house->getPayRentWarnings(), db.escapeString(house->getName()), house->getTownId(), house->getRent(), house->getSize(), house->getBedCount());
 
 		if (!houseUpdate.addRow(values)) {
@@ -350,7 +352,7 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 	listUpdate.upsert({ "list", "version" });
 	auto version = getTimeUsNow();
 
-	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
+	for (const auto &[key, house] : g_game().map.houses->getHouses()) {
 		std::string listText;
 		if (house->getAccessList(GUEST_LIST, listText) && !listText.empty()) {
 			query << house->getId() << ',' << GUEST_LIST << ',' << db.escapeString(listText) << ',' << version;

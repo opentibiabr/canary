@@ -14,8 +14,10 @@
 #include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/grouping/groups.hpp"
+#include "items/containers/container.hpp"
 #include "lua/creature/raids.hpp"
 #include "map/map.hpp"
+#include "map/map_const.hpp"
 #include "modal_window/modal_window.hpp"
 #include "movement/position.hpp"
 
@@ -49,6 +51,8 @@ class ContainerIterator;
 class Item;
 class BedItem;
 class WildcardTreeNode;
+class ItemType;
+class House;
 
 struct Achievement;
 struct HighscoreCategory;

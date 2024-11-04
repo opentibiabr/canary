@@ -9,7 +9,13 @@
 
 #pragma once
 
-#include "map/map.hpp"
+class PropWriteStream;
+class PropStream;
+class Map;
+class Tile;
+class Item;
+class Container;
+class Cylinder;
 
 class IOMapSerialize {
 public:

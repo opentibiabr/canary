@@ -9,7 +9,8 @@
 
 #include "server/network/message/networkmessage.hpp"
 
-#include "items/containers/container.hpp"
+#include "game/movement/position.hpp"
+#include "server/server_definitions.hpp"
 
 int32_t NetworkMessage::decodeHeader() {
 	// Ensure there are enough bytes to read the header (2 bytes)

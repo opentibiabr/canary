@@ -9,12 +9,14 @@
 
 #include "game/zones/zone.hpp"
 
-#include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "creatures/players/player.hpp"
-#include "utils/pugicast.hpp"
+#include "game/game.hpp"
 #include "kv/kv.hpp"
+#include "map/town.hpp"
+#include "utils/pugicast.hpp"
 
 phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Zone>> Zone::zonesByID = {};
@@ -254,7 +256,7 @@ void Zone::refresh() {
 void Zone::setMonsterVariant(const std::string &variant) {
 	monsterVariant = variant;
 	g_logger().debug("Zone {} monster variant set to {}", name, variant);
-	for (const auto &spawnMonster : g_game().map.spawnsMonster.getspawnMonsterList()) {
+	for (const auto &spawnMonster : g_game().map.spawnsMonster->getspawnMonsterList()) {
 		if (!contains(spawnMonster->getCenterPos())) {
 			continue;
 		}

@@ -10,9 +10,12 @@
 #pragma once
 
 #include "server/network/message/networkmessage.hpp"
-#include "server/network/connection/connection.hpp"
 
 class Protocol;
+class OutputMessage;
+
+using Protocol_ptr = std::shared_ptr<Protocol>;
+using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
 
 class OutputMessage : public NetworkMessage {
 public:
@@ -22,39 +25,15 @@ public:
 	OutputMessage(const OutputMessage &) = delete;
 	OutputMessage &operator=(const OutputMessage &) = delete;
 
-	uint8_t* getOutputBuffer() {
-		return buffer.data() + outputBufferStart;
-	}
+	uint8_t* getOutputBuffer();
 
-	void writeMessageLength() {
-		add_header(info.length);
-	}
+	void writeMessageLength();
 
-	void addCryptoHeader(bool addChecksum, uint32_t checksum) {
-		if (addChecksum) {
-			add_header(checksum);
-		}
+	void addCryptoHeader(bool addChecksum, uint32_t checksum);
 
-		writeMessageLength();
-	}
+	void append(const NetworkMessage &msg);
 
-	void append(const NetworkMessage &msg) {
-		auto msgLen = msg.getLength();
-		std::span<const unsigned char> sourceSpan(msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
-		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
-		std::ranges::copy(sourceSpan, destSpan.begin());
-		info.length += msgLen;
-		info.position += msgLen;
-	}
-
-	void append(const OutputMessage_ptr &msg) {
-		auto msgLen = msg->getLength();
-		std::span<const unsigned char> sourceSpan(msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
-		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
-		std::ranges::copy(sourceSpan, destSpan.begin());
-		info.length += msgLen;
-		info.position += msgLen;
-	}
+	void append(const OutputMessage_ptr &msg);
 
 private:
 	template <typename T>

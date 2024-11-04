@@ -9,6 +9,8 @@
 
 #include "utils/wildcardtree.hpp"
 
+#include "items/items_definitions.hpp"
+
 std::shared_ptr<WildcardTreeNode> WildcardTreeNode::getChild(char ch) {
 	const auto it = children.find(ch);
 	if (it == children.end()) {

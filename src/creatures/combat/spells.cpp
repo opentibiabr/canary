@@ -18,9 +18,11 @@
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
 #include "game/game.hpp"
+#include "items/tile.hpp"
 #include "lua/global/lua_variant.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.hpp"
+#include "utils/tools.hpp"
 
 std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyRegularBoost = { 0 };
 std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyUpgradedBoost = { 0 };

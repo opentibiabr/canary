@@ -18,8 +18,6 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/players/wheel/wheel_gems.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
@@ -29,7 +27,7 @@
 #include "creatures/players/storages/storages.hpp"
 #include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "server/network/protocol/protocolgame.hpp"
+#include "creatures/players/wheel/wheel_gems.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
@@ -60,7 +58,10 @@
 #include "lua/creature/creatureevent.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/creature/movement.hpp"
+#include "map/house/house.hpp"
 #include "map/spectators.hpp"
+#include "map/town.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 
 MuteCountMap Player::muteCountMap;
 

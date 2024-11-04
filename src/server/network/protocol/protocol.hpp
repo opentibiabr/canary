@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "server/server_definitions.hpp"
+#include "utils/const.hpp"
 
 class OutputMessage;
 using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
@@ -18,6 +18,8 @@ using Connection_ptr = std::shared_ptr<Connection>;
 using ConnectionWeak_ptr = std::weak_ptr<Connection>;
 
 class NetworkMessage;
+
+enum ChecksumMethods_t : uint8_t;
 
 class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
@@ -97,7 +99,7 @@ private:
 	std::array<uint32_t, 4> key = {};
 	uint32_t serverSequenceNumber = 0;
 	uint32_t clientSequenceNumber = 0;
-	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
+	std::underlying_type_t<ChecksumMethods_t> checksumMethod = 0;
 	bool encryptionEnabled = false;
 	bool rawMessages = false;
 

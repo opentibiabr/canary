@@ -9,9 +9,6 @@
 
 #pragma once
 
-#include <algorithm>
-#include <vector>
-
 // # Mehah
 // Arraylist is a very fast container for adding to the front and back,
 // it uses two vectors to do this juggling and doesn't allow you to remove the front, as it is slow,

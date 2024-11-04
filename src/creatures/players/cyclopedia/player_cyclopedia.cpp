@@ -15,6 +15,7 @@
 #include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
+#include "Utils/tools.hpp"
 
 PlayerCyclopedia::PlayerCyclopedia(Player &player) :
 	m_player(player) { }

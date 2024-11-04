@@ -27,7 +27,9 @@
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/functions/events/event_callback_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "map/house/house.hpp"
 #include "map/spectators.hpp"
+#include "map/town.hpp"
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
@@ -233,7 +235,7 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 
 int GameFunctions::luaGameGetTowns(lua_State* L) {
 	// Game.getTowns()
-	const auto towns = g_game().map.towns.getTowns();
+	const auto towns = g_game().map.towns->getTowns();
 	lua_createtable(L, towns.size(), 0);
 
 	int index = 0;
@@ -247,7 +249,7 @@ int GameFunctions::luaGameGetTowns(lua_State* L) {
 
 int GameFunctions::luaGameGetHouses(lua_State* L) {
 	// Game.getHouses()
-	const auto houses = g_game().map.houses.getHouses();
+	const auto houses = g_game().map.houses->getHouses();
 	lua_createtable(L, houses.size(), 0);
 
 	int index = 0;

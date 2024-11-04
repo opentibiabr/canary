@@ -13,12 +13,12 @@
 
 // TODO: move to .cpp for avoid circular dependencies
 #include "config/configmanager.hpp"
-#include "map/house/house.hpp"
-#include "items/item.hpp"
-#include "map/map.hpp"
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/spawns/spawn_npc.hpp"
 #include "game/zones/zone.hpp"
+#include "items/item.hpp"
+#include "map/house/house.hpp"
+#include "map/map.hpp"
 
 class IOMap {
 public:
@@ -37,7 +37,7 @@ public:
 			map->monsterfile += "-monster.xml";
 		}
 
-		return map->spawnsMonster.loadFromXML(map->monsterfile);
+		return map->spawnsMonster->loadFromXML(map->monsterfile);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public:
 			map->npcfile += "-npc.xml";
 		}
 
-		return map->spawnsNpc.loadFromXml(map->npcfile);
+		return map->spawnsNpc->loadFromXml(map->npcfile);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public:
 			map->housefile += "-house.xml";
 		}
 
-		return map->houses.loadHousesXML(map->housefile);
+		return map->houses->loadHousesXML(map->housefile);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public:
 			map->monsterfile = mapName;
 			map->monsterfile += "-monster.xml";
 		}
-		return map->spawnsMonsterCustomMaps[customMapIndex].loadFromXML(map->monsterfile);
+		return map->spawnsMonsterCustomMaps[customMapIndex]->loadFromXML(map->monsterfile);
 	}
 
 	/**
@@ -131,7 +131,7 @@ public:
 			map->npcfile += "-npc.xml";
 		}
 
-		return map->spawnsNpcCustomMaps[customMapIndex].loadFromXml(map->npcfile);
+		return map->spawnsNpcCustomMaps[customMapIndex]->loadFromXml(map->npcfile);
 	}
 
 	/**
@@ -146,7 +146,7 @@ public:
 			map->housefile = mapName;
 			map->housefile += "-house.xml";
 		}
-		return map->housesCustomMaps[customMapIndex].loadHousesXML(map->housefile);
+		return map->housesCustomMaps[customMapIndex]->loadHousesXML(map->housefile);
 	}
 
 private:

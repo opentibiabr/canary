@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "declarations.hpp"
+enum ReturnValue : uint16_t;
 
 class WildcardTreeNode final : public SharedObject {
 public:

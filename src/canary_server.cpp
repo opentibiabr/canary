@@ -23,11 +23,13 @@
 #include "io/io_bosstiary.hpp"
 #include "io/iomarket.hpp"
 #include "io/ioprey.hpp"
+#include "lib/metrics/metrics.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.hpp"
+#include "map/house/house.hpp"
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
@@ -193,7 +195,7 @@ void CanaryServer::setupHousesRent() {
 		rentPeriod = RENTPERIOD_NEVER;
 	}
 
-	g_game().map.houses.payHouses(rentPeriod);
+	g_game().map.houses->payHouses(rentPeriod);
 }
 
 void CanaryServer::logInfos() {

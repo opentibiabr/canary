@@ -9,15 +9,16 @@
 
 #include "server/network/protocol/protocollogin.hpp"
 
-#include "config/configmanager.hpp"
-#include "server/network/message/outputmessage.hpp"
-#include "game/scheduling/dispatcher.hpp"
 #include "account/account.hpp"
-#include "io/iologindata.hpp"
-#include "creatures/players/management/ban.hpp"
-#include "game/game.hpp"
+#include "config/configmanager.hpp"
 #include "core.hpp"
+#include "creatures/players/management/ban.hpp"
 #include "enums/account_errors.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "server/network/connection/connection.hpp"
+#include "server/network/message/outputmessage.hpp"
+#include "utils/tools.hpp"
 
 void ProtocolLogin::disconnectClient(const std::string &message) const {
 	const auto output = OutputMessagePool::getOutputMessage();

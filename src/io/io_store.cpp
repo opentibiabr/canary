@@ -176,18 +176,19 @@ bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) 
 	newOffer.m_type = type;
 
 	switch (type) {
-		case OfferTypes_t::OUTFIT:
-		case OfferTypes_t::HIRELING: {
+		using enum OfferTypes_t;
+		case OUTFIT:
+		case HIRELING: {
 			newOffer.m_outfitId.femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
 			newOffer.m_outfitId.maleId = static_cast<uint16_t>(maleOutfitId.as_uint());
 			break;
 		}
 
-		case OfferTypes_t::ITEM:
-		case OfferTypes_t::HOUSE:
-		case OfferTypes_t::POUCH:
-		case OfferTypes_t::CHARGES:
-		case OfferTypes_t::STACKABLE: {
+		case ITEM:
+		case HOUSE:
+		case POUCH:
+		case CHARGES:
+		case STACKABLE: {
 			newOffer.m_itemId = static_cast<uint16_t>(offer.attribute("item").as_uint());
 			break;
 		}

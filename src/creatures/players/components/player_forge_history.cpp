@@ -22,7 +22,7 @@ const std::vector<ForgeHistory> &PlayerForgeHistory::get() const {
 }
 
 void PlayerForgeHistory::add(const ForgeHistory &history) {
-	m_history.push_back(history);
+	m_history.emplace_back(history);
 	m_modifiedHistory.push_back(history);
 }
 
@@ -50,7 +50,7 @@ bool PlayerForgeHistory::load() {
 		history.description = result->getString("description");
 		history.createdAt = result->getNumber<uint64_t>("done_at");
 		history.success = result->getNumber<bool>("is_success");
-		m_history.push_back(history);
+		m_history.emplace_back(history);
 	} while (result->next());
 
 	return true;
@@ -74,7 +74,7 @@ bool PlayerForgeHistory::save() {
 			);
 
 			if (!g_database().executeQuery(deleteQuery)) {
-				g_logger().error("Failed to delete forge history entries for player with ID: {}", playerGUID);
+				g_logger().error("[{}] failed to delete forge history entries for player with ID: {}", std::source_location::current().function_name(), playerGUID);
 				return false;
 			}
 
@@ -91,14 +91,14 @@ bool PlayerForgeHistory::save() {
 		for (const auto &history : modifiedHistory) {
 			auto row = fmt::format("{}, {}, {}, {}, {}, {}", history.id, playerGUID, history.actionType, g_database().escapeString(history.description), history.createdAt, history.success ? 1 : 0);
 			if (!insertQuery.addRow(row)) {
-				g_logger().warn("Failed to add forge history entry for player with ID: {}", playerGUID);
+				g_logger().warn("[{}] failed to add forge history entry for player with ID: {}", std::source_location::current().function_name(), playerGUID);
 				return false;
 			}
 			g_logger().debug("Added forge history entry date: {}, for player with ID: {}", formatDate(history.createdAt / 1000), playerGUID);
 		}
 
 		if (!insertQuery.execute()) {
-			g_logger().error("Failed to execute insertion for forge history entries for player with ID: {}", playerGUID);
+			g_logger().error("[{}] failed to execute insertion for forge history entries for player with ID: {}", std::source_location::current().function_name(), playerGUID);
 			return false;
 		}
 

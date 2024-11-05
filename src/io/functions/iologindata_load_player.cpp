@@ -752,11 +752,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(const std::shared_ptr<Player> &player,
 		auto state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
 
 		if (slot->id == PreySlot_Two && state == PreyDataState_Locked) {
-			if (!player->isPremium()) {
-				slot->state = PreyDataState_Locked;
-			} else {
-				slot->state = PreyDataState_Selection;
-			}
+			slot->state = player->isPremium() ? PreyDataState_Selection : PreyDataState_Locked;
 		} else {
 			slot->state = state;
 		}

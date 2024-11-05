@@ -80,7 +80,7 @@ bool PlayerStash::save() {
 	auto removedItems = m_removedItems;
 	auto modifiedItems = m_modifiedItems;
 
-	auto deleteStashItems = [playerGUID, removedItems]() mutable {
+	auto deleteStashItems = [playerGUID, removedItems = std::move(removedItems)]() mutable {
 		if (!removedItems.empty()) {
 			std::string removedItemIds = fmt::format("{}", fmt::join(removedItems, ", "));
 			std::string deleteQuery = fmt::format(
@@ -89,7 +89,7 @@ bool PlayerStash::save() {
 			);
 
 			if (!g_database().executeQuery(deleteQuery)) {
-				g_logger().error("[PlayerStash::save] - Failed to delete removed items for player: {}", playerGUID);
+				g_logger().error("[{}] failed to delete removed items for player: {}", std::source_location::current().function_name(), playerGUID);
 				return false;
 			}
 
@@ -99,20 +99,20 @@ bool PlayerStash::save() {
 		return true;
 	};
 
-	auto insertModifiedStashItems = [playerGUID, modifiedItems]() mutable {
+	auto insertModifiedStashItems = [playerGUID, modifiedItems = std::move(modifiedItems)]() mutable {
 		DBInsert insertQuery("INSERT INTO `player_stash` (`player_id`, `item_id`, `item_count`) VALUES ");
 		insertQuery.upsert({ "item_count" });
 
 		for (const auto &[itemId, itemCount] : modifiedItems) {
 			auto row = fmt::format("{}, {}, {}", playerGUID, itemId, itemCount);
 			if (!insertQuery.addRow(row)) {
-				g_logger().warn("[PlayerStash::save] - Failed to add row for stash item: {}", itemId);
+				g_logger().warn("[{}] - Failed to add row for stash item: {}", std::source_location::current().function_name(), itemId);
 				return false;
 			}
 		}
 
 		if (!insertQuery.execute()) {
-			g_logger().error("[PlayerStash::save] - Failed to execute insertion for modified stash items for player: {}", playerGUID);
+			g_logger().error("[{}] - Failed to execute insertion for modified stash items for player: {}", std::source_location::current().function_name(), playerGUID);
 			return false;
 		}
 
@@ -139,7 +139,7 @@ bool PlayerStash::load() {
 	auto query = fmt::format("SELECT `item_count`, `item_id` FROM `player_stash` WHERE `player_id` = {}", m_player.getGUID());
 	const DBResult_ptr &result = g_database().storeQuery(query);
 	if (!result) {
-		g_logger().debug("[PlayerStash::load] - Failed to load stash items for player: {}", m_player.getName());
+		g_logger().debug("[{}] - Failed to load stash items for player: {}", std::source_location::current().function_name(), m_player.getGUID());
 		return false;
 	}
 

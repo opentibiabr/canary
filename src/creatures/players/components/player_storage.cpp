@@ -39,7 +39,7 @@ void PlayerStorage::add(const uint32_t key, const int32_t value, const bool shou
 			);
 			return;
 		} else {
-			g_logger().warn("Unknown reserved key: {} for player: {}", key, m_player.getName());
+			g_logger().warn("[{}] unknown reserved key: {} for player: {}", std::source_location::current().function_name(), key, m_player.getName());
 			return;
 		}
 	}
@@ -92,7 +92,7 @@ int32_t PlayerStorage::get(const std::string &storageName) const {
 void PlayerStorage::add(const std::string &storageName, const int32_t value) {
 	auto it = g_storages().getStorageMap().find(storageName);
 	if (it == g_storages().getStorageMap().end()) {
-		g_logger().error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
+		g_logger().error("[{}] storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", std::source_location::current().function_name(), storageName);
 		return;
 	}
 	const uint32_t key = it->second;
@@ -119,7 +119,7 @@ bool PlayerStorage::save() {
 			);
 
 			if (!g_database().executeQuery(deleteQuery)) {
-				g_logger().error("[SaveManager::playerStorageSaveTask] - Failed to delete storage keys for player: {}", playerName);
+				g_logger().error("[{}] failed to delete storage keys for player: {}", std::source_location::current().function_name(), playerName);
 				return false;
 			}
 		}
@@ -134,13 +134,13 @@ bool PlayerStorage::save() {
 			for (const auto &key : modifiedKeys) {
 				auto row = fmt::format("{}, {}, {}", playerGUID, key, storageMap.at(key));
 				if (!storageQuery.addRow(row)) {
-					g_logger().warn("[SaveManager::playerStorageSaveTask] - Failed to add row for player storage: {}", playerName);
+					g_logger().warn("[{}] failed to add row for player storage: {}", std::source_location::current().function_name(), playerName);
 					return false;
 				}
 			}
 
 			if (!storageQuery.execute()) {
-				g_logger().error("[SaveManager::playerStorageSaveTask] - Failed to execute storage insertion for player: {}", playerName);
+				g_logger().error("[{}] failed to execute storage insertion for player: {}", std::source_location::current().function_name(), playerName);
 				return false;
 			}
 		}
@@ -165,7 +165,7 @@ bool PlayerStorage::load() {
 	auto query = fmt::format("SELECT `key`, `value` FROM `player_storage` WHERE `player_id` = {}", m_player.getGUID());
 	const DBResult_ptr &result = g_database().storeQuery(query);
 	if (!result) {
-		g_logger().debug("[PlayerStorage::load] - Failed to load storage keys for player: {}", m_player.getName());
+		g_logger().debug("[{}] failed to load storage keys for player: {}", std::source_location::current().function_name(), m_player.getName());
 		return false;
 	}
 

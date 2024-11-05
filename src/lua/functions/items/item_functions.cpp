@@ -1062,7 +1062,7 @@ int ItemFunctions::luaItemGetShader(lua_State* L) {
 		return 1;
 	}
 
-	pushString(L, item->getShader());
+	pushString(L, std::string(item->getShader())); // temp
 	return 1;
 }
 
@@ -1076,6 +1076,7 @@ int ItemFunctions::luaItemSetShader(lua_State* L) {
 	}
 
 	item->setShader(getString(L, 2));
+	g_game().refreshItem(item);
 	pushBoolean(L, true);
 	return 1;
 }

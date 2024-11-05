@@ -2004,7 +2004,7 @@ void Creature::sendAsyncTasks() {
 }
 
 void Creature::attachEffectById(uint16_t id) {
-	auto it = std::find(attachedEffectList.begin(), attachedEffectList.end(), id);
+	auto it = std::ranges::find(attachedEffectList, id);
 	if (it != attachedEffectList.end()) {
 		return;
 	}
@@ -2012,7 +2012,7 @@ void Creature::attachEffectById(uint16_t id) {
 	g_game().sendAttachedEffect(static_self_cast<Creature>(), id);
 }
 void Creature::detachEffectById(uint16_t id) {
-	auto it = std::find(attachedEffectList.begin(), attachedEffectList.end(), id);
+	auto it = std::ranges::find(attachedEffectList, id);
 	if (it == attachedEffectList.end()) {
 		return;
 	}

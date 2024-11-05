@@ -470,7 +470,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &ite
 
 	// OTCR Features
 	if (isOTC && otclientV8 == 0) {
-		msg.addString(item->getShader());
+		msg.addString(std::string(item->getShader())); // temp
 	}
 }
 
@@ -9320,7 +9320,7 @@ void ProtocolGame::sendAttachedEffect(const std::shared_ptr<Creature> &creature,
 		return;
 	}
 
-	 NetworkMessage msg;
+	NetworkMessage msg;
 	msg.addByte(0x34);
 	msg.add<uint32_t>(creature->getID());
 	msg.add<uint16_t>(effectId);
@@ -9339,24 +9339,24 @@ void ProtocolGame::sendDetachEffect(const std::shared_ptr<Creature> &creature, u
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName) {
+void ProtocolGame::sendShader(const std::shared_ptr<Creature> &creature, const std::string_view &shaderName) {
 	if (!isOTC || player->getOperatingSystem() >= CLIENTOS_OTCLIENTV8_LINUX) {
 		return;
 	}
 	NetworkMessage msg;
 	msg.addByte(0x36);
 	msg.add<uint32_t>(creature->getID());
-	msg.addString(shaderName);
+	msg.addString(std::string(shaderName)); // temp
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendMapShader(const std::string &shaderName) {
+void ProtocolGame::sendMapShader(const std::string_view &shaderName) {
 	if (!isOTC || player->getOperatingSystem() >= CLIENTOS_OTCLIENTV8_LINUX) {
 		return;
 	}
 	NetworkMessage msg;
 	msg.addByte(0x37);
-	msg.addString(shaderName);
+	msg.addString(std::string(shaderName)); // temp
 	writeToOutputBuffer(msg);
 }
 

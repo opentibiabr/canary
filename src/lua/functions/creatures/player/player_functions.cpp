@@ -4472,7 +4472,7 @@ int PlayerFunctions::luaPlayerGetMapShader(lua_State* L) {
 		return 0;
 	}
 
-	pushString(L, player->getMapShader());
+	pushString(L, std::string(player->getMapShader())); // temp
 	return 1;
 }
 

@@ -9578,10 +9578,9 @@ void Player::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint1
 	if (!client || !creature) {
 		return;
 	}
+
 	if (creature->getPlayer()) {
-		if (client) {
-			client->sendAttachedEffect(creature, effectId);
-		}
+		client->sendAttachedEffect(creature, effectId);
 	}
 }
 
@@ -9590,33 +9589,33 @@ void Player::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_
 		return;
 	}
 	if (creature->getPlayer()) {
-		if (client) {
-			client->sendDetachEffect(creature, effectId);
-		}
+		client->sendDetachEffect(creature, effectId);
 	}
 }
 
-void Player::sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName) const {
+void Player::sendShader(const std::shared_ptr<Creature> &creature, const std::string_view &shaderName) const {
 	if (!client || !creature) {
 		return;
 	}
 	if (creature->getPlayer()) {
-		if (client) {
 			client->sendShader(creature, shaderName);
-		}
 	}
 }
 
-void Player::sendMapShader(const std::string &shaderName) const {
-	if (client) {
-		client->sendMapShader(shaderName);
+void Player::sendMapShader(const std::string_view &shaderName) const {
+	if (!client) {
+		return;
 	}
+
+	client->sendMapShader(shaderName);
 }
 
 void Player::sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const {
-	if (client) {
-		client->sendPlayerTyping(creature, typing);
+	if (!client) {
+		return;
 	}
+
+	client->sendPlayerTyping(creature, typing);
 }
 
 void Player::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) const {

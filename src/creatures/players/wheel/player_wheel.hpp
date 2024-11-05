@@ -189,8 +189,8 @@ private:
 	 */
 	uint8_t getOptions(uint32_t ownerId) const;
 
-	const std::shared_ptr<KV> &gemsKV() const;
-	const std::shared_ptr<KV> &gemsGradeKV(WheelFragmentType_t quality, uint8_t pos) const;
+	std::shared_ptr<KV> gemsKV() const;
+	std::shared_ptr<KV> gemsGradeKV(WheelFragmentType_t quality, uint8_t pos) const;
 	uint8_t getGemGrade(WheelFragmentType_t quality, uint8_t pos) const;
 
 	std::vector<PlayerWheelGem> getRevealedGems() const;

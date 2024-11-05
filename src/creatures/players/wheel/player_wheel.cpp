@@ -1020,11 +1020,11 @@ void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
 	}
 }
 
-const std::shared_ptr<KV> &PlayerWheel::gemsKV() const {
+std::shared_ptr<KV> PlayerWheel::gemsKV() const {
 	return m_player.kv()->scoped("wheel-of-destiny")->scoped("gems");
 }
 
-const std::shared_ptr<KV> &PlayerWheel::gemsGradeKV(WheelFragmentType_t type, uint8_t pos) const {
+std::shared_ptr<KV> PlayerWheel::gemsGradeKV(WheelFragmentType_t type, uint8_t pos) const {
 	return gemsKV()->scoped(std::string(magic_enum::enum_name(type)))->scoped(std::to_string(pos));
 }
 

@@ -1110,7 +1110,7 @@ int CreatureFunctions::luaCreatureClearIcons(lua_State* L) {
 
 int CreatureFunctions::luaCreatureAttachEffectById(lua_State* L) {
 	// creature:attachEffectById(effectId, [temporary])
-	const auto &creature = getUserdataShared<Creature>(L, 1); 
+	const auto &creature = getUserdataShared<Creature>(L, 1);
 	if (!creature) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		pushBoolean(L, false);

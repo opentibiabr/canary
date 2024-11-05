@@ -146,6 +146,7 @@ public:
 	bool hasShader() const;
 
 	std::string getShader() const;
+
 protected:
 	std::unique_ptr<ItemAttribute> &initAttributePtr() {
 		if (!attributePtr) {

@@ -759,7 +759,7 @@ class PlayerFunctions final : LuaScriptInterface {
 	static int luaPlayerRemoveIconBakragore(lua_State* L);
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
-	
+
 	static int luaPlayerGetMapShader(lua_State* L);
 	static int luaPlayerSetMapShader(lua_State* L);
 

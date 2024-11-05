@@ -495,7 +495,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		isOTC = true;
 		if (isOTC && otclientV8 == 0) {
-			//sendOTCRFeatures(); first I need to make pr in redemption
+			// sendOTCRFeatures(); first I need to make pr in redemption
 		}
 		NetworkMessage opcodeMessage;
 		opcodeMessage.addByte(0x32);
@@ -1047,7 +1047,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 			break; // otclient extended opcode
 		case 0x38:
 			parsePlayerTyping(msg); // player are typing or not
-			break; 
+			break;
 		case 0x60:
 			parseInventoryImbuements(msg);
 			break;

@@ -4476,7 +4476,6 @@ int PlayerFunctions::luaPlayerGetMapShader(lua_State* L) {
 	return 1;
 }
 
-
 int PlayerFunctions::luaPlayerSetMapShader(lua_State* L) {
 	// player:setMapShader(shaderName, [temporary])
 	const auto &player = getUserdataShared<Player>(L, 1);

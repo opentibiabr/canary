@@ -10867,7 +10867,7 @@ void Game::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t 
 	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
 	for (const auto &spectator : spectators) {
 		const auto &player = spectator->getPlayer();
-		if (player) { 
+		if (player) {
 			player->sendDetachEffect(creature, effectId);
 		}
 	}

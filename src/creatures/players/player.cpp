@@ -9598,7 +9598,7 @@ void Player::sendShader(const std::shared_ptr<Creature> &creature, const std::st
 		return;
 	}
 	if (creature->getPlayer()) {
-			client->sendShader(creature, shaderName);
+		client->sendShader(creature, shaderName);
 	}
 }
 

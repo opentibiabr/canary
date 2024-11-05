@@ -164,7 +164,7 @@ bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) 
 	}
 	newOffer.m_price = price;
 
-	const auto &typeString = offer.attribute("type").as_string();
+	const std::string &typeString = offer.attribute("type").as_string();
 	OfferTypes_t type = OfferTypes_t::NONE;
 	if (auto it = stringToOfferTypeMap.find(typeString);
 	    it != stringToOfferTypeMap.end()) {
@@ -177,6 +177,7 @@ bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) 
 
 	switch (type) {
 		using enum OfferTypes_t;
+
 		case OUTFIT:
 		case HIRELING: {
 			newOffer.m_outfitId.femaleId = static_cast<uint16_t>(offer.attribute("female").as_uint());
@@ -203,19 +204,19 @@ bool IOStore::loadOfferFromXml(Category* category, const pugi::xml_node &offer) 
 		newOffer.m_count = static_cast<uint16_t>(offer.attribute("charges").as_uint());
 	}
 
-	const auto &stateString = offer.attribute("state").as_string("none");
+	const std::string &stateString = offer.attribute("state").as_string("none");
 	if (auto it = stringToOfferStateMap.find(stateString);
 	    it != stringToOfferStateMap.end()) {
 		newOffer.m_state = it->second;
 	}
 
+	const std::string &coinTypeString = offer.attribute("coinType").as_string("normal");
+	const std::string &collection = offer.attribute("collection").as_string();
+
 	newOffer.m_icon = offer.attribute("icon").as_string();
 	newOffer.m_description = offer.attribute("description").as_string();
 	newOffer.m_movable = offer.attribute("movable").as_bool();
 	newOffer.m_validUntil = static_cast<uint16_t>(offer.attribute("validUntil").as_uint());
-	const std::string &coinTypeString = offer.attribute("coinType").as_string("normal");
-	const std::string &collection = offer.attribute("collection").as_string();
-
 	newOffer.m_collectionName = collection;
 	newOffer.m_coinType = coinTypeString == "normal" ? CoinType::Normal : CoinType::Transferable;
 	newOffer.m_parentName = category->getName();

@@ -9831,7 +9831,6 @@ void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId) {
 		return;
 	}
 
-	player->wheel()->clearDestroyedGems();
 	player->wheel()->sendOpenWheelWindow(ownerId);
 	player->updateUIExhausted();
 }

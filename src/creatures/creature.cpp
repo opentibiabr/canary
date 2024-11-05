@@ -1592,6 +1592,17 @@ LightInfo Creature::getCreatureLight() const {
 	return internalLight;
 }
 
+uint16_t Creature::getSpeed() const {
+	const auto speed = baseSpeed + varSpeed;
+	if (speed >= 0 && speed <= std::numeric_limits<uint16_t>::max()) {
+		return speed;
+	} else if (speed < 0) {
+		return 0;
+	} else {
+		return std::numeric_limits<uint16_t>::max();
+	}
+}
+
 void Creature::setSpeed(int32_t varSpeedDelta) {
 	// Prevents creatures from not exceeding the maximum allowed speed
 	if (getSpeed() >= PLAYER_MAX_SPEED) {

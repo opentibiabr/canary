@@ -51,9 +51,9 @@ public:
 	template <typename T>
 		requires std::is_base_of_v<Creature, T>
 	Spectators filter() const {
-		bool onlyPlayers = std::is_same_v<T, Player>;
-		bool onlyMonsters = std::is_same_v<T, Monster>;
-		bool onlyNpcs = std::is_same_v<T, Npc>;
+		constexpr bool onlyPlayers = std::is_same_v<T, Player>;
+		constexpr bool onlyMonsters = std::is_same_v<T, Monster>;
+		constexpr bool onlyNpcs = std::is_same_v<T, Npc>;
 		return filter(onlyPlayers, onlyMonsters, onlyNpcs);
 	}
 

@@ -232,12 +232,12 @@ MapSector* MapCache::getBestMapSector(uint32_t x, uint32_t y) {
  * \returns A pointer to that map sector.
  */
 
- MapSector* MapCache::getMapSector(const uint32_t x, const uint32_t y) {
+MapSector* MapCache::getMapSector(const uint32_t x, const uint32_t y) {
 	const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
 	return it != mapSectors.end() ? &it->second : nullptr;
 }
 
- const MapSector* MapCache::getMapSector(const uint32_t x, const uint32_t y) const {
+const MapSector* MapCache::getMapSector(const uint32_t x, const uint32_t y) const {
 	const auto it = mapSectors.find(x / SECTOR_SIZE | y / SECTOR_SIZE << 16);
 	return it != mapSectors.end() ? &it->second : nullptr;
 }

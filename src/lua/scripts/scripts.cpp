@@ -138,40 +138,40 @@ bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
 	return true;
 }
 
- LuaScriptInterface &Scripts::getScriptInterface() {
+LuaScriptInterface &Scripts::getScriptInterface() {
 	return *scriptInterface;
 }
 
- // Load revscriptsys callback
+// Load revscriptsys callback
 
- bool Script::loadCallback() {
-	 if (!scriptInterface) {
-		 g_logger().error("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}", scriptId);
-		 return false;
-	 }
+bool Script::loadCallback() {
+	if (!scriptInterface) {
+		g_logger().error("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}", scriptId);
+		return false;
+	}
 
-	 if (scriptId != 0) {
-		 g_logger().error("[Script::loadCallback] scriptid is not zero, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
-		 return false;
-	 }
+	if (scriptId != 0) {
+		g_logger().error("[Script::loadCallback] scriptid is not zero, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
+		return false;
+	}
 
-	 const int32_t id = scriptInterface->getEvent();
-	 if (id == -1) {
-		 g_logger().error("[Script::loadCallback] Event {} not found for script with name {}", getScriptTypeName(), scriptInterface->getLoadingScriptName());
-		 return false;
-	 }
+	const int32_t id = scriptInterface->getEvent();
+	if (id == -1) {
+		g_logger().error("[Script::loadCallback] Event {} not found for script with name {}", getScriptTypeName(), scriptInterface->getLoadingScriptName());
+		return false;
+	}
 
-	 setLoadedCallback(true);
-	 scriptId = id;
-	 return true;
- }
+	setLoadedCallback(true);
+	scriptId = id;
+	return true;
+}
 
- // Method to access the scriptInterface in derived classes
+// Method to access the scriptInterface in derived classes
 
 LuaScriptInterface* Script::getScriptInterface() const {
-	 return scriptInterface;
- }
+	return scriptInterface;
+}
 
 void Script::setScriptInterface(LuaScriptInterface* newInterface) {
-	 scriptInterface = newInterface;
- }
+	scriptInterface = newInterface;
+}

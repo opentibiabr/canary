@@ -14,7 +14,6 @@
 #include "map/map_definitions.hpp"
 #include "mapcache.hpp"
 
-
 class Creature;
 class Player;
 class Game;
@@ -35,7 +34,6 @@ enum Direction : uint8_t;
  */
 class Map final : public MapCache {
 public:
-
 	Map();
 	~Map();
 

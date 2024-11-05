@@ -135,7 +135,7 @@ void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 	setImbuement(slot, imbuementId, duration);
 }
 
- bool Item::hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) const {
+bool Item::hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) const {
 	const auto it = items[id].imbuementTypes.find(imbuementType);
 	if (it != items[id].imbuementTypes.end()) {
 		return (it->second >= imbuementTier);
@@ -156,7 +156,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	return false;
 }
 
- bool Item::hasImbuements() const {
+bool Item::hasImbuements() const {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
@@ -241,7 +241,7 @@ void Item::setTier(uint8_t tier) {
 	}
 }
 
- uint8_t Item::getClassification() const {
+uint8_t Item::getClassification() const {
 	return items[id].upgradeClassification;
 }
 
@@ -505,15 +505,15 @@ std::shared_ptr<Player> Item::getHoldingPlayer() {
 	return nullptr;
 }
 
- WeaponType_t Item::getWeaponType() const {
+WeaponType_t Item::getWeaponType() const {
 	return items[id].weaponType;
 }
 
- Ammo_t Item::getAmmoType() const {
+Ammo_t Item::getAmmoType() const {
 	return items[id].ammoType;
 }
 
- uint8_t Item::getShootRange() const {
+uint8_t Item::getShootRange() const {
 	if (hasAttribute(ItemAttribute_t::SHOOTRANGE)) {
 		return getAttribute<uint8_t>(ItemAttribute_t::SHOOTRANGE);
 	}
@@ -1231,140 +1231,140 @@ bool Item::hasProperty(ItemProperty prop) const {
 	}
 }
 
- bool Item::isBlocking() const {
+bool Item::isBlocking() const {
 	return items[id].blockSolid;
 }
 
- bool Item::isStackable() const {
+bool Item::isStackable() const {
 	return items[id].stackable;
 }
 
- bool Item::isStowable() const {
+bool Item::isStowable() const {
 	return items[id].stackable && items[id].wareId > 0;
 }
 
- bool Item::isAlwaysOnTop() const {
+bool Item::isAlwaysOnTop() const {
 	return items[id].alwaysOnTopOrder != 0;
 }
 
- bool Item::isGroundTile() const {
+bool Item::isGroundTile() const {
 	return items[id].isGroundTile();
 }
 
- bool Item::isMagicField() const {
+bool Item::isMagicField() const {
 	return items[id].isMagicField();
 }
 
- bool Item::isWrapContainer() const {
+bool Item::isWrapContainer() const {
 	return items[id].wrapContainer;
 }
 
- bool Item::isMovable() const {
+bool Item::isMovable() const {
 	return items[id].movable;
 }
 
- bool Item::isCorpse() const {
+bool Item::isCorpse() const {
 	return items[id].isCorpse;
 }
 
- bool Item::isPickupable() const {
+bool Item::isPickupable() const {
 	return items[id].pickupable;
 }
 
- bool Item::isMultiUse() const {
+bool Item::isMultiUse() const {
 	return items[id].multiUse;
 }
 
- bool Item::isHangable() const {
+bool Item::isHangable() const {
 	return items[id].isHangable;
 }
 
- bool Item::isRotatable() const {
+bool Item::isRotatable() const {
 	return items[id].rotatable && items[id].rotateTo;
 }
 
- bool Item::isPodium() const {
+bool Item::isPodium() const {
 	return items[id].isPodium;
 }
 
- bool Item::isWrapable() const {
+bool Item::isWrapable() const {
 	return items[id].wrapable && items[id].wrapableTo;
 }
 
- bool Item::isRing() const {
+bool Item::isRing() const {
 	return items[id].isRing();
 }
 
- bool Item::isAmulet() const {
+bool Item::isAmulet() const {
 	return items[id].isAmulet();
 }
 
- bool Item::isAmmo() const {
+bool Item::isAmmo() const {
 	return items[id].isAmmo();
 }
 
- bool Item::hasWalkStack() const {
+bool Item::hasWalkStack() const {
 	return items[id].walkStack;
 }
 
- bool Item::isQuiver() const {
+bool Item::isQuiver() const {
 	return items[id].isQuiver();
 }
 
- bool Item::isShield() const {
+bool Item::isShield() const {
 	return items[id].isShield();
 }
 
- bool Item::isWand() const {
+bool Item::isWand() const {
 	return items[id].isWand();
 }
 
- bool Item::isSpellBook() const {
+bool Item::isSpellBook() const {
 	return items[id].isSpellBook();
 }
 
- bool Item::isLadder() const {
+bool Item::isLadder() const {
 	return items[id].isLadder();
 }
 
- bool Item::isDummy() const {
+bool Item::isDummy() const {
 	return items[id].isDummy();
 }
 
- bool Item::isCarpet() const {
+bool Item::isCarpet() const {
 	return items[id].isCarpet();
 }
 
- bool Item::canReceiveAutoCarpet() const {
+bool Item::canReceiveAutoCarpet() const {
 	return isBlocking() && isAlwaysOnTop() && !items[id].hasHeight;
 }
 
- bool Item::canBeUsedByGuests() const {
+bool Item::canBeUsedByGuests() const {
 	return isDummy() || items[id].m_canBeUsedByGuests;
 }
 
- const std::string &Item::getName() const {
+const std::string &Item::getName() const {
 	if (hasAttribute(ItemAttribute_t::NAME)) {
 		return getString(ItemAttribute_t::NAME);
 	}
 	return items[id].name;
 }
 
- std::string Item::getPluralName() const {
+std::string Item::getPluralName() const {
 	if (hasAttribute(ItemAttribute_t::PLURALNAME)) {
 		return getString(ItemAttribute_t::PLURALNAME);
 	}
 	return items[id].getPluralName();
 }
 
- const std::string &Item::getArticle() const {
+const std::string &Item::getArticle() const {
 	if (hasAttribute(ItemAttribute_t::ARTICLE)) {
 		return getString(ItemAttribute_t::ARTICLE);
 	}
 	return items[id].article;
 }
 
- uint8_t Item::getStackSize() const {
+uint8_t Item::getStackSize() const {
 	if (isStackable()) {
 		return items[id].stackSize;
 	}
@@ -1400,22 +1400,22 @@ uint32_t Item::getWeight() const {
 	return baseWeight;
 }
 
- uint32_t Item::getBaseWeight() const {
+uint32_t Item::getBaseWeight() const {
 	if (hasAttribute(ItemAttribute_t::WEIGHT)) {
 		return getAttribute<uint32_t>(ItemAttribute_t::WEIGHT);
 	}
 	return items[id].weight;
 }
 
- int32_t Item::getCleavePercent() const {
+int32_t Item::getCleavePercent() const {
 	return items[id].abilities->cleavePercent;
 }
 
- int32_t Item::getPerfectShotDamage() const {
+int32_t Item::getPerfectShotDamage() const {
 	return items[id].abilities->perfectShotDamage;
 }
 
- uint8_t Item::getPerfectShotRange() const {
+uint8_t Item::getPerfectShotRange() const {
 	return items[id].abilities->perfectShotRange;
 }
 
@@ -1427,11 +1427,11 @@ int32_t Item::getReflectionPercent(CombatType_t combatType) const {
 	return items[id].abilities->reflectPercent[combatTypeToIndex(combatType)];
 }
 
- int16_t Item::getMagicShieldCapacityPercent() const {
+int16_t Item::getMagicShieldCapacityPercent() const {
 	return items[id].abilities->magicShieldCapacityPercent;
 }
 
- int32_t Item::getMagicShieldCapacityFlat() const {
+int32_t Item::getMagicShieldCapacityFlat() const {
 	return items[id].abilities->magicShieldCapacityFlat;
 }
 
@@ -1439,54 +1439,54 @@ int32_t Item::getSpecializedMagicLevel(CombatType_t combat) const {
 	return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
 }
 
- int32_t Item::getSpeed() const {
+int32_t Item::getSpeed() const {
 	const int32_t value = items[id].getSpeed();
 	return value;
 }
 
- int32_t Item::getSkill(skills_t skill) const {
+int32_t Item::getSkill(skills_t skill) const {
 	const int32_t value = items[id].getSkill(skill);
 	return value;
 }
 
- int32_t Item::getStat(stats_t stat) const {
+int32_t Item::getStat(stats_t stat) const {
 	const int32_t value = items[id].getStat(stat);
 	return value;
 }
 
- int32_t Item::getAttack() const {
+int32_t Item::getAttack() const {
 	if (hasAttribute(ItemAttribute_t::ATTACK)) {
 		return getAttribute<int32_t>(ItemAttribute_t::ATTACK);
 	}
 	return items[id].attack;
 }
 
- int32_t Item::getArmor() const {
+int32_t Item::getArmor() const {
 	if (hasAttribute(ItemAttribute_t::ARMOR)) {
 		return getAttribute<int32_t>(ItemAttribute_t::ARMOR);
 	}
 	return items[id].armor;
 }
 
- int32_t Item::getDefense() const {
+int32_t Item::getDefense() const {
 	if (hasAttribute(ItemAttribute_t::DEFENSE)) {
 		return getAttribute<int32_t>(ItemAttribute_t::DEFENSE);
 	}
 	return items[id].defense;
 }
 
- int32_t Item::getExtraDefense() const {
+int32_t Item::getExtraDefense() const {
 	if (hasAttribute(ItemAttribute_t::EXTRADEFENSE)) {
 		return getAttribute<int32_t>(ItemAttribute_t::EXTRADEFENSE);
 	}
 	return items[id].extraDefense;
 }
 
- std::vector<std::shared_ptr<AugmentInfo>> Item::getAugments() const {
+std::vector<std::shared_ptr<AugmentInfo>> Item::getAugments() const {
 	return items[id].augments;
 }
 
- std::vector<std::shared_ptr<AugmentInfo>> Item::getAugmentsBySpellNameAndType(const std::string &spellName, Augment_t augmentType) const {
+std::vector<std::shared_ptr<AugmentInfo>> Item::getAugmentsBySpellNameAndType(const std::string &spellName, Augment_t augmentType) const {
 	std::vector<std::shared_ptr<AugmentInfo>> augments;
 	for (const auto &augment : items[id].augments) {
 		if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0 && augment->type == augmentType) {
@@ -1497,7 +1497,7 @@ int32_t Item::getSpecializedMagicLevel(CombatType_t combat) const {
 	return augments;
 }
 
- std::vector<std::shared_ptr<AugmentInfo>> Item::getAugmentsBySpellName(const std::string &spellName) const {
+std::vector<std::shared_ptr<AugmentInfo>> Item::getAugmentsBySpellName(const std::string &spellName) const {
 	std::vector<std::shared_ptr<AugmentInfo>> augments;
 	for (const auto &augment : items[id].augments) {
 		if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0) {
@@ -1508,18 +1508,18 @@ int32_t Item::getSpecializedMagicLevel(CombatType_t combat) const {
 	return augments;
 }
 
- uint8_t Item::getImbuementSlot() const {
+uint8_t Item::getImbuementSlot() const {
 	if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
 		return getAttribute<uint8_t>(ItemAttribute_t::IMBUEMENT_SLOT);
 	}
 	return items[id].imbuementSlot;
 }
 
- int32_t Item::getSlotPosition() const {
+int32_t Item::getSlotPosition() const {
 	return items[id].slotPosition;
 }
 
- int8_t Item::getHitChance() const {
+int8_t Item::getHitChance() const {
 	if (hasAttribute(ItemAttribute_t::HITCHANCE)) {
 		return getAttribute<int8_t>(ItemAttribute_t::HITCHANCE);
 	}
@@ -2319,7 +2319,7 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 	return descriptions;
 }
 
- std::string Item::parseAugmentDescription(const std::shared_ptr<Item> &item, bool inspect) {
+std::string Item::parseAugmentDescription(const std::shared_ptr<Item> &item, bool inspect) {
 	if (!item) {
 		return "";
 	}
@@ -3593,7 +3593,7 @@ void Item::addUniqueId(uint16_t uniqueId) {
 	}
 }
 
- uint32_t Item::getDefaultDuration() const {
+uint32_t Item::getDefaultDuration() const {
 	return items[id].decayTime * 1000;
 }
 

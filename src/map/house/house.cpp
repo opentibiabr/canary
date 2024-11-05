@@ -229,11 +229,11 @@ bool House::kickPlayer(const std::shared_ptr<Player> &player, const std::shared_
 	return true;
 }
 
- void House::setEntryPos(Position pos) {
+void House::setEntryPos(Position pos) {
 	posEntry = pos;
 }
 
- const Position &House::getEntryPosition() const {
+const Position &House::getEntryPosition() const {
 	return posEntry;
 }
 
@@ -674,11 +674,11 @@ void AccessList::getList(std::string &retList) const {
 Door::Door(uint16_t type) :
 	Item(type) { }
 
- std::shared_ptr<Door> Door::getDoor() {
+std::shared_ptr<Door> Door::getDoor() {
 	return static_self_cast<Door>();
 }
 
- std::shared_ptr<House> Door::getHouse() {
+std::shared_ptr<House> Door::getHouse() {
 	return house;
 }
 
@@ -695,11 +695,11 @@ Attr_ReadValue Door::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	return Item::readAttr(attr, propStream);
 }
 
- void Door::setDoorId(uint32_t doorId) {
+void Door::setDoorId(uint32_t doorId) {
 	setAttribute(ItemAttribute_t::DOORID, doorId);
 }
 
- uint32_t Door::getDoorId() const {
+uint32_t Door::getDoorId() const {
 	return getAttribute<uint32_t>(ItemAttribute_t::DOORID);
 }
 

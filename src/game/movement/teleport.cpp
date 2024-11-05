@@ -35,11 +35,11 @@ void Teleport::serializeAttr(PropWriteStream &propWriteStream) const {
 	propWriteStream.write<uint8_t>(destPos.z);
 }
 
- const Position &Teleport::getDestPos() const {
+const Position &Teleport::getDestPos() const {
 	return destPos;
 }
 
- void Teleport::setDestPos(Position pos) {
+void Teleport::setDestPos(Position pos) {
 	destPos = pos;
 }
 

@@ -62,15 +62,15 @@ OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());
 }
 
- uint8_t* OutputMessage::getOutputBuffer() {
+uint8_t* OutputMessage::getOutputBuffer() {
 	return buffer.data() + outputBufferStart;
 }
 
- void OutputMessage::writeMessageLength() {
+void OutputMessage::writeMessageLength() {
 	add_header(info.length);
 }
 
- void OutputMessage::addCryptoHeader(bool addChecksum, uint32_t checksum) {
+void OutputMessage::addCryptoHeader(bool addChecksum, uint32_t checksum) {
 	if (addChecksum) {
 		add_header(checksum);
 	}
@@ -78,7 +78,7 @@ OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 	writeMessageLength();
 }
 
- void OutputMessage::append(const NetworkMessage &msg) {
+void OutputMessage::append(const NetworkMessage &msg) {
 	auto msgLen = msg.getLength();
 	std::span<const unsigned char> sourceSpan(msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 	std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
@@ -87,7 +87,7 @@ OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 	info.position += msgLen;
 }
 
- void OutputMessage::append(const OutputMessage_ptr &msg) {
+void OutputMessage::append(const OutputMessage_ptr &msg) {
 	auto msgLen = msg->getLength();
 	std::span<const unsigned char> sourceSpan(msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 	std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);

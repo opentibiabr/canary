@@ -13,7 +13,6 @@
 #include "items/item.hpp"
 #include "utils/utils_definitions.hpp"
 
-
 class House;
 class BedItem;
 class Player;

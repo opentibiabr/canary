@@ -1945,5 +1945,3 @@ void Tile::clearZones() {
 		zones.erase(zone);
 	}
 }
-
-

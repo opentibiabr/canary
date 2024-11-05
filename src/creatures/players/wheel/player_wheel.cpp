@@ -23,6 +23,7 @@
 #include "map/town.hpp"
 #include "server/network/message/networkmessage.hpp"
 #include "server/network/protocol/protocolgame.hpp"
+#include "items/tile.hpp"
 
 std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 

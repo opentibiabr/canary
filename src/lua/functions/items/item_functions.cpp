@@ -16,6 +16,7 @@
 #include "items/decay/decay.hpp"
 #include "items/item.hpp"
 #include "utils/tools.hpp"
+#include "items/tile.hpp"
 
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {

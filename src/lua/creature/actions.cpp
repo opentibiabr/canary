@@ -21,6 +21,7 @@
 #include "items/containers/rewards/rewardchest.hpp"
 #include "map/house/house.hpp"
 #include "Utils/tools.hpp"
+#include "items/tile.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;

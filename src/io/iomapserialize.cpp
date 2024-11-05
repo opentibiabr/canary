@@ -15,6 +15,7 @@
 #include "items/bed.hpp"
 #include "map/house/house.hpp"
 #include "Utils/tools.hpp"
+#include "map/house/housetile.hpp"
 
 void IOMapSerialize::loadHouseItems(Map* map) {
 	Benchmark bm_context;

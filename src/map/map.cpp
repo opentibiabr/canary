@@ -26,6 +26,7 @@
 #include "map/utils/mapsector.hpp"
 #include "utils/astarnodes.hpp"
 #include "Utils/tools.hpp"
+#include "items/tile.hpp"
 
 Map::Map() {
 	spawnsMonster = std::make_unique<SpawnsMonster>();

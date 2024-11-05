@@ -34,6 +34,7 @@
 #include "map/spectators.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "Utils/tools.hpp"
+#include "items/tile.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"

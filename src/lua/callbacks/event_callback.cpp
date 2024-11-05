@@ -14,6 +14,7 @@
 #include "game/zones/zone.hpp"
 #include "items/containers/container.hpp"
 #include "items/item.hpp"
+#include "items/tile.hpp"
 
 /**
  * @class EventCallback

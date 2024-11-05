@@ -11,13 +11,17 @@
 
 #include "items/cylinder.hpp"
 #include "items/item.hpp"
-#include "items/tile.hpp"
 
+class Cylinder;
 class Container;
 class DepotChest;
 class DepotLocker;
 class RewardChest;
 class Reward;
+class Item;
+class Tile;
+
+using ItemVector = std::vector<std::shared_ptr<Item>>;
 
 class ContainerIterator {
 public:

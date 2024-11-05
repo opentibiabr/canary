@@ -16,6 +16,7 @@
 #include "server/network/webhook/webhook.hpp"
 #include "utils/pugicast.hpp"
 #include "Utils/tools.hpp"
+#include "items/tile.hpp"
 
 Raids::Raids() {
 	scriptInterface.initState();

@@ -15,6 +15,7 @@
 #include "items/containers/inbox/inbox.hpp"
 #include "map/spectators.hpp"
 #include "Utils/tools.hpp"
+#include "items/tile.hpp"
 
 ReturnValue Mailbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t, const std::shared_ptr<Creature> &) {
 	const auto &item = thing->getItem();

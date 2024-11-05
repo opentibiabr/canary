@@ -62,6 +62,7 @@
 #include "map/spectators.hpp"
 #include "map/town.hpp"
 #include "server/network/protocol/protocolgame.hpp"
+#include "map/house/housetile.hpp"
 
 MuteCountMap Player::muteCountMap;
 

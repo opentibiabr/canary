@@ -30,6 +30,7 @@
 #include "map/house/house.hpp"
 #include "map/spectators.hpp"
 #include "map/town.hpp"
+#include "items/tile.hpp"
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {

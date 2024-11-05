@@ -19,6 +19,7 @@
 #include "map/map.hpp"
 #include "map/utils/mapsector.hpp"
 #include "utils/hash.hpp"
+#include "map/house/housetile.hpp"
 
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicItem>> items;
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicTile>> tiles;

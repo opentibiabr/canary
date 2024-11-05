@@ -18,6 +18,7 @@
 #include "map/house/house.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "Utils/tools.hpp"
+#include "items/tile.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {

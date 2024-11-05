@@ -11,6 +11,7 @@
 
 #include "game/zones/zone.hpp"
 #include "game/game.hpp"
+#include "items/tile.hpp"
 
 // Zone
 int ZoneFunctions::luaZoneCreate(lua_State* L) {

@@ -14,6 +14,7 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "map/spectators.hpp"
+#include "items/tile.hpp"
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {
 	// Npc([id or name or userdata])

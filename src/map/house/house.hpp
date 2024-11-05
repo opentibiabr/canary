@@ -9,14 +9,24 @@
 
 #pragma once
 
-#include "declarations.hpp"
-#include "game/movement/position.hpp"
-#include "items/containers/container.hpp"
-#include "map/house/housetile.hpp"
+#include "items/item.hpp"
 
 class House;
 class BedItem;
 class Player;
+class Item;
+class HouseTile;
+class Container;
+class PropStream;
+class PropWriteStream;
+class HouseTransferItem;
+
+enum AccessHouseLevel_t;
+enum RentPeriod_t;
+
+struct Position;
+
+using ItemList = std::list<std::shared_ptr<Item>>;
 
 class AccessList {
 public:
@@ -44,24 +54,16 @@ public:
 	Door(const Door &) = delete;
 	Door &operator=(const Door &) = delete;
 
-	std::shared_ptr<Door> getDoor() override {
-		return static_self_cast<Door>();
-	}
+	std::shared_ptr<Door> getDoor() override;
 
-	std::shared_ptr<House> getHouse() {
-		return house;
-	}
+	std::shared_ptr<House> getHouse();
 
 	// serialization
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
 	void serializeAttr(PropWriteStream &) const override { }
 
-	void setDoorId(uint32_t doorId) {
-		setAttribute(ItemAttribute_t::DOORID, doorId);
-	}
-	uint32_t getDoorId() const {
-		return getAttribute<uint32_t>(ItemAttribute_t::DOORID);
-	}
+	void setDoorId(uint32_t doorId);
+	uint32_t getDoorId() const;
 
 	bool canUse(const std::shared_ptr<Player> &player) const;
 
@@ -111,19 +113,13 @@ public:
 	void setAccessList(uint32_t listId, const std::string &textlist);
 	bool getAccessList(uint32_t listId, std::string &list) const;
 
-	bool isInvited(const std::shared_ptr<Player> &player) const {
-		return getHouseAccessLevel(player) != HOUSE_NOT_INVITED;
-	}
+	bool isInvited(const std::shared_ptr<Player> &player) const;
 
 	AccessHouseLevel_t getHouseAccessLevel(const std::shared_ptr<Player> &player) const;
 	bool kickPlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &target);
 
-	void setEntryPos(Position pos) {
-		posEntry = pos;
-	}
-	const Position &getEntryPosition() const {
-		return posEntry;
-	}
+	void setEntryPos(Position pos);
+	const Position &getEntryPosition() const;
 
 	void setName(std::string newHouseName) {
 		this->houseName = std::move(newHouseName);

@@ -18,6 +18,7 @@
 #include "items/item.hpp"
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
+#include "items/tile.hpp"
 
 Events::Events() :
 	scriptInterface("Event Interface") {

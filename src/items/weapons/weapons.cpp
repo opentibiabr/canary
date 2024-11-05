@@ -15,6 +15,7 @@
 #include "lua/creature/events.hpp"
 #include "lua/global/lua_variant.hpp"
 #include "Utils/tools.hpp"
+#include "items/tile.hpp"
 
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;

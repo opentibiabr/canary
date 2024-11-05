@@ -20,6 +20,9 @@
 #include "map/town.hpp"
 #include "utils/pugicast.hpp"
 #include "Utils/tools.hpp"
+#include "map/house/housetile.hpp"
+#include "items/containers/container.hpp"
+#include "enums/item_attribute.hpp"
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -225,6 +228,14 @@ bool House::kickPlayer(const std::shared_ptr<Player> &player, const std::shared_
 	return true;
 }
 
+ void House::setEntryPos(Position pos) {
+	posEntry = pos;
+}
+
+ const Position &House::getEntryPosition() const {
+	return posEntry;
+}
+
 void House::setAccessList(uint32_t listId, const std::string &textlist) {
 	if (listId == GUEST_LIST) {
 		guestList.parseList(textlist);
@@ -404,6 +415,10 @@ bool House::getAccessList(uint32_t listId, std::string &list) const {
 	}
 
 	return door->getAccessList(list);
+}
+
+bool House::isInvited(const std::shared_ptr<Player> &player) const {
+	return getHouseAccessLevel(player) != HOUSE_NOT_INVITED;
 }
 
 void House::addDoor(const std::shared_ptr<Door> &door) {
@@ -655,6 +670,14 @@ void AccessList::getList(std::string &retList) const {
 Door::Door(uint16_t type) :
 	Item(type) { }
 
+ std::shared_ptr<Door> Door::getDoor() {
+	return static_self_cast<Door>();
+}
+
+ std::shared_ptr<House> Door::getHouse() {
+	return house;
+}
+
 Attr_ReadValue Door::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_HOUSEDOORID) {
 		uint8_t doorId;
@@ -666,6 +689,14 @@ Attr_ReadValue Door::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		return ATTR_READ_CONTINUE;
 	}
 	return Item::readAttr(attr, propStream);
+}
+
+ void Door::setDoorId(uint32_t doorId) {
+	setAttribute(ItemAttribute_t::DOORID, doorId);
+}
+
+ uint32_t Door::getDoorId() const {
+	return getAttribute<uint32_t>(ItemAttribute_t::DOORID);
 }
 
 void Door::setHouse(std::shared_ptr<House> newHouse) {

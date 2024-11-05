@@ -12,6 +12,7 @@
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
 #include "map/house/house.hpp"
+#include "map/house/housetile.hpp"
 
 int TileFunctions::luaTileCreate(lua_State* L) {
 	// Tile(x, y, z)

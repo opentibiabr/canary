@@ -24,6 +24,7 @@
 #include "map/spectators.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "utils/tools.hpp"
+#include "items/tile.hpp"
 
 Creature::Creature() {
 	Creature::onIdleStatus();

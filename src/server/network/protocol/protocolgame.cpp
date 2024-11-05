@@ -48,6 +48,7 @@
 #include "server/network/message/outputmessage.hpp"
 #include "server/network/protocol/protocol.hpp"
 #include "utils/tools.hpp"
+#include "items/tile.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_group_type.hpp"

@@ -16,6 +16,7 @@
 #include "items/bed.hpp"
 #include "map/house/house.hpp"
 #include "map/town.hpp"
+#include "map/house/housetile.hpp"
 
 int HouseFunctions::luaHouseCreate(lua_State* L) {
 	// House(id)

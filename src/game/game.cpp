@@ -66,6 +66,7 @@
 #include "server/server.hpp"
 #include "utils/tools.hpp"
 #include "utils/wildcardtree.hpp"
+#include "map/house/housetile.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"

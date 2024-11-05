@@ -1,5 +1,7 @@
-dofile(CORE_DIRECTORY .. "/modules/scripts/blessings/blessings.lua")
+dofile(CORE_DIRECTORY .. "/libs/systems/blessing.lua")
+
 local dropLoot = CreatureEvent("DropLoot")
+
 function dropLoot.onDeath(player, corpse, killer, mostDamage, unjustified, mostDamage_unjustified)
 	local town = player:getTown()
 	if town and town:getId() == TOWNS_LIST.DAWNPORT and player:getLevel() < 8 then

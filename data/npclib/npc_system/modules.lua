@@ -175,7 +175,7 @@ if Modules == nil then
 				npc,
 				player
 			)
-		elseif not player:removeMoneyBank(type(parameters.cost) == "string" and npcHandler:parseMessage(parameters.cost, parseInfo) or parameters.cost) then
+		elseif not player:removeMoneyBank(type(parameters.cost) == "string" and tonumber(npcHandler:parseMessage(parameters.cost, parseInfo)) or parameters.cost) then
 			npcHandler:say("Oh. You do not have enough money.", npc, player)
 		else
 			npcHandler:say(parameters.text or "You have been blessed by one of the seven gods!", npc, player)

@@ -6,29 +6,48 @@ Blessings.Credits = {
 	lastUpdate = "08/04/2020",
 	todo = {
 		"Insert & Select query in blessings_history",
-		"Add unfair fight reductio (convert the get killer is pvp fight with getDamageMap of dead player)",
-		"Gamestore buy blessing",
-		"Test ank print text",
+		"Add unfair fight reduction (convert the get killer is pvp fight with getDamageMap of dead player)",
 		"Test all functions",
-		"Test henricus prices/blessings",
 		"Add data \\movements\\scripts\\quests\\cults of tibia\\icedeath.lua blessing information",
 		"WotE data\\movements\\scripts\\quests\\wrath of the emperor\\realmTeleport.lua has line checking if player has bless 1??? wtf",
-		"add blessings module support npc\\lib\\npcsystem\\modules.lua",
-		"Fix store buying bless",
-		"Check if store is inside lua or source...",
 	},
 }
 
 Blessings.Config = {
 	AdventurerBlessingLevel = configManager.getNumber(configKeys.ADVENTURERSBLESSING_LEVEL), -- Free full bless until level
 	HasToF = not configManager.getBoolean(configKeys.TOGGLE_SERVER_IS_RETRO), -- Enables/disables twist of fate
-	InquisitonBlessPriceMultiplier = 1.1, -- Bless price multiplied by henricus
+	InquisitonBlessPriceMultiplier = 1.1, -- Bless price multiplier by henricus
 	SkulledDeathLoseStoreItem = configManager.getBoolean(configKeys.SKULLED_DEATH_LOSE_STORE_ITEM), -- Destroy all items on store when dying with red/blackskull
-	InventoryGlowOnFiveBless = configManager.getBoolean(configKeys.INVENTORY_GLOW), -- Glow in yellow inventory items when the player has 5 or more bless,
-	Debug = false, -- Prin debug messages in console if enabled
 }
 
-dofile(CORE_DIRECTORY .. "/modules/scripts/blessings/assets.lua")
+Blessings.Types = {
+	REGULAR = 1,
+	ENHANCED = 2,
+	PvP = 3,
+}
+
+Blessings.All = {
+	[1] = { id = 1, name = "Twist of Fate", type = Blessings.Types.PvP },
+	[2] = { id = 2, name = "The Wisdom of Solitude", charm = 10345, type = Blessings.Types.REGULAR, losscount = true, inquisition = true },
+	[3] = { id = 3, name = "The Spark of the Phoenix", charm = 10341, type = Blessings.Types.REGULAR, losscount = true, inquisition = true },
+	[4] = { id = 4, name = "The Fire of the Suns", charm = 10344, type = Blessings.Types.REGULAR, losscount = true, inquisition = true },
+	[5] = { id = 5, name = "The Spiritual Shielding", charm = 10343, type = Blessings.Types.REGULAR, losscount = true, inquisition = true },
+	[6] = { id = 6, name = "The Embrace of Tibia", charm = 10342, type = Blessings.Types.REGULAR, losscount = true, inquisition = true },
+	[7] = { id = 7, name = "Heart of the Mountain", charm = 25360, type = Blessings.Types.ENHANCED, losscount = true, inquisition = false },
+	[8] = { id = 8, name = "Blood of the Mountain", charm = 25361, type = Blessings.Types.ENHANCED, losscount = true, inquisition = false },
+}
+
+Blessings.LossPercent = {
+	[0] = { item = 100, skill = 0 },
+	[1] = { item = 70, skill = 8 },
+	[2] = { item = 45, skill = 16 },
+	[3] = { item = 25, skill = 24 },
+	[4] = { item = 10, skill = 32 },
+	[5] = { item = 0, skill = 40 },
+	[6] = { item = 0, skill = 48 },
+	[7] = { item = 0, skill = 56 },
+	[8] = { item = 0, skill = 56 },
+}
 
 --[=====[
 --
@@ -45,9 +64,6 @@ CREATE TABLE IF NOT EXISTS `blessings_history` (
 --]=====]
 
 Blessings.DebugPrint = function(content, pre, pos)
-	if not Blessings.Config.Debug then
-		return
-	end
 	if pre == nil then
 		pre = ""
 	else
@@ -75,119 +91,6 @@ Blessings.S_Packet = {
 	BlessDialog = 0x9B,
 	BlessStatus = 0x9C,
 }
-
-function onRecvbyte(player, msg, byte)
-	if byte == Blessings.C_Packet.OpenWindow then
-		Blessings.sendBlessDialog(player)
-	end
-end
-
-Blessings.sendBlessStatus = function(player, curBless)
-	if player:getClient().version < 1200 then
-		return true
-	end
-
-	-- why not using ProtocolGame::sendBlessStatus ?
-	local msg = NetworkMessage()
-	msg:addByte(Blessings.S_Packet.BlessStatus)
-	callback = function(k)
-		return true
-	end
-	if curBless == nil then
-		curBless = player:getBlessings(callback) -- ex: {1, 2, 5, 7}
-	end
-	Blessings.DebugPrint(#curBless, "sendBlessStatus curBless")
-	local bitWiseCurrentBless = 0
-	local blessCount = 0
-
-	for i = 1, #curBless do
-		if curBless[i].losscount then
-			blessCount = blessCount + 1
-		end
-		if (not curBless[i].losscount and Blessings.Config.HasToF) or curBless[i].losscount then
-			bitWiseCurrentBless = bit.bor(bitWiseCurrentBless, Blessings.BitWiseTable[curBless[i].id])
-		end
-	end
-
-	if blessCount > 5 and Blessings.Config.InventoryGlowOnFiveBless then
-		bitWiseCurrentBless = bit.bor(bitWiseCurrentBless, 1)
-	end
-
-	msg:addU16(bitWiseCurrentBless)
-	msg:addByte(blessCount >= 7 and 3 or (blessCount > 0 and 2 or 1)) -- Bless dialog button colour 1 = Disabled | 2 = normal | 3 = green
-
-	-- if #curBless >= 5 then
-	-- 	msg:addU16(1) -- TODO ?
-	-- else
-	-- 	msg:addU16(0)
-	-- end
-
-	msg:sendToPlayer(player)
-end
-
-Blessings.sendBlessDialog = function(player)
-	-- TODO: Migrate to protocolgame.cpp
-	local msg = NetworkMessage()
-	msg:addByte(Blessings.S_Packet.BlessDialog)
-
-	callback = function(k)
-		return true
-	end
-	local curBless = player:getBlessings()
-
-	msg:addByte(Blessings.Config.HasToF and #Blessings.All or (#Blessings.All - 1)) -- total blessings
-	for k = 1, #Blessings.All do
-		v = Blessings.All[k]
-		if v.type ~= Blessings.Types.PvP or Blessings.Config.HasToF then
-			msg:addU16(Blessings.BitWiseTable[v.id])
-			msg:addByte(player:getBlessingCount(v.id))
-			if player:getClient().version > 1200 then
-				msg:addByte(player:getBlessingCount(v.id, true)) -- Store Blessings Count
-			end
-		end
-	end
-
-	local promotion = (player:isPremium() and player:isPromoted()) and 30 or 0
-	local PvPminXPLoss = Blessings.LossPercent[#curBless].skill + promotion
-	local PvPmaxXPLoss = PvPminXPLoss
-	if Blessings.Config.HasToF then
-		PvPmaxXPLoss = math.floor(PvPminXPLoss * 1.15)
-	end
-	local PvEXPLoss = PvPminXPLoss
-
-	local playerAmulet = player:getSlotItem(CONST_SLOT_NECKLACE)
-	local haveSkull = player:getSkull() >= 4
-	hasAol = (playerAmulet and playerAmulet:getId() == ITEM_AMULETOFLOSS)
-
-	equipLoss = Blessings.LossPercent[#curBless].item
-	if haveSkull then
-		equipLoss = 100
-	elseif hasAol then
-		equipLoss = 0
-	end
-
-	msg:addByte(2) -- BYTE PREMIUM (only work with premium days)
-	msg:addByte(promotion) -- XP Loss Lower POR SER PREMIUM
-	msg:addByte(PvPminXPLoss) -- XP/Skill loss min pvp death
-	msg:addByte(PvPmaxXPLoss) -- XP/Skill loss max pvp death
-	msg:addByte(PvEXPLoss) -- XP/Skill pve death
-	msg:addByte(equipLoss) -- Equip container lose pvp death
-	msg:addByte(equipLoss) -- Equip container pve death
-
-	msg:addByte(haveSkull and 1 or 0) -- is red/black skull
-	msg:addByte(hasAol and 1 or 0)
-
-	-- History
-	local historyAmount = 1
-	msg:addByte(historyAmount) -- History log count
-	for i = 1, historyAmount do
-		msg:addU32(os.time()) -- timestamp
-		msg:addByte(0) -- Color message (1 - Red | 0 = White loss)
-		msg:addString("Blessing Purchased", "Blessings.sendBlessDialog - Blessing Purchased") -- History message
-	end
-
-	msg:sendToPlayer(player)
-end
 
 Blessings.getCommandFee = function(cost)
 	local fee = configManager.getNumber(configKeys.BUY_BLESS_COMMAND_FEE) or 0
@@ -438,5 +341,5 @@ function Player.addMissingBless(self, all, tof)
 			end
 		end
 	end
-	Blessings.sendBlessStatus(self)
+	self:sendBlessStatus()
 end

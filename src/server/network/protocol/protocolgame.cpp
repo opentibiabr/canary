@@ -1011,23 +1011,23 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0x1E:
 			g_game().playerReceivePing(player->getID());
 			break;
-		case 0x2a:
-			parseCyclopediaMonsterTracker(msg);
-			break;
-		case 0x2B:
-			parsePartyAnalyzerAction(msg);
-			break;
-		case 0x2c:
-			parseLeaderFinderWindow(msg);
-			break;
-		case 0x2d:
-			parseMemberFinderWindow(msg);
-			break;
 		case 0x28:
 			parseStashWithdraw(msg);
 			break;
 		case 0x29:
 			parseRetrieveDepotSearch(msg);
+			break;
+		case 0x2A:
+			parseCyclopediaMonsterTracker(msg);
+			break;
+		case 0x2B:
+			parsePartyAnalyzerAction(msg);
+			break;
+		case 0x2C:
+			parseLeaderFinderWindow(msg);
+			break;
+		case 0x2D:
+			parseMemberFinderWindow(msg);
 			break;
 		case 0x32:
 			parseExtendedOpcode(msg);
@@ -1272,6 +1272,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 			break;
 		case 0xCD:
 			parseInspectionObject(msg);
+			break;
+		case 0xCF:
+			sendBlessingWindow();
 			break;
 		case 0xD2:
 			g_game().playerRequestOutfit(player->getID());
@@ -4343,28 +4346,89 @@ void ProtocolGame::sendBasicData() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendBlessStatus() {
+void ProtocolGame::sendBlessingWindow() {
 	if (!player) {
 		return;
 	}
 
 	NetworkMessage msg;
-	// uint8_t maxClientBlessings = (player->operatingSystem == CLIENTOS_NEW_WINDOWS) ? 8 : 6; (compartability for the client 10)
-	// Ignore ToF (bless 1)
+	msg.addByte(0x9B);
+
+	bool isRetro = g_configManager().getBoolean(TOGGLE_SERVER_IS_RETRO);
+
+	msg.addByte(isRetro ? 0x07 : 0x08);
+	for (auto blessing : magic_enum::enum_values<Blessings>()) {
+		const auto blessingValue = enumToValue(blessing);
+		const auto blessingId = 1 << blessingValue;
+		msg.add<uint16_t>(blessingId);
+		msg.addByte(player->getBlessingCount(blessingValue));
+		msg.addByte(player->getBlessingCount(blessingValue, true));
+	}
+
 	uint8_t blessCount = 0;
-	uint16_t flag = 0;
-	uint16_t pow2 = 2;
 	for (int i = 1; i <= 8; i++) {
 		if (player->hasBlessing(i)) {
 			if (i > 1) {
 				blessCount++;
 			}
-
-			flag |= pow2;
 		}
 	}
 
+	const auto isPromoted = player->isPromoted();
+	const auto factor = (isRetro ? 6.31 : 8);
+	const auto skillReduction = factor * blessCount;
+	const auto promotionReduction = (isPromoted ? 30 : 0);
+	const auto minReduction = skillReduction + promotionReduction;
+	const auto maxLossPvpDeath = calculateMaxPvpReduction(blessCount, isPromoted);
+
+	msg.addByte(isPromoted);
+	msg.addByte(30); // Reduction bonus with promotion
+	msg.addByte(minReduction);
+	msg.addByte(isRetro ? minReduction : maxLossPvpDeath);
+	msg.addByte(minReduction);
+
+	const auto playerSkull = player->getSkull();
+	const auto &playerAmulet = player->getThing(CONST_SLOT_NECKLACE);
+	bool hasSkull = (playerSkull == Skulls_t::SKULL_RED || playerSkull == Skulls_t::SKULL_BLACK);
+	bool usingAol = (playerAmulet && playerAmulet->getItem()->getID() == 3057);
+	if (hasSkull) {
+		msg.addByte(100);
+		msg.addByte(100);
+	} else if (usingAol) {
+		msg.addByte(0);
+		msg.addByte(0);
+	} else {
+		msg.addByte(calculateEquipmentLoss(blessCount, true));
+		msg.addByte(calculateEquipmentLoss(blessCount, true));
+	}
+
+	msg.addByte(hasSkull);
+	msg.addByte(usingAol);
+
+	msg.addByte(0x00);
+
+	writeToOutputBuffer(msg);
+}
+
+
+void ProtocolGame::sendBlessStatus() {
+	if (!player) {
+		return;
+	}
+
+	// Ignore Twist of Fate (Id 1)
+	uint8_t blessCount = 0;
+	for (int i = 1; i <= 8; i++) {
+		if (player->hasBlessing(i)) {
+			if (i > 1) {
+				blessCount++;
+			}
+		}
+	}
+
+	NetworkMessage msg;
 	msg.addByte(0x9C);
+
 	if (oldProtocol) {
 		msg.add<uint16_t>(blessCount >= 5 ? 0x01 : 0x00);
 	} else {
@@ -4377,16 +4441,20 @@ void ProtocolGame::sendBlessStatus() {
 }
 
 void ProtocolGame::sendPremiumTrigger() {
-	if (!g_configManager().getBoolean(FREE_PREMIUM) && !g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
-		NetworkMessage msg;
-		msg.addByte(0x9E);
-		msg.addByte(16);
-		for (uint16_t i = 0; i <= 15; i++) {
-			// PREMIUM_TRIGGER_TRAIN_OFFLINE = false, PREMIUM_TRIGGER_XP_BOOST = false, PREMIUM_TRIGGER_MARKET = false, PREMIUM_TRIGGER_VIP_LIST = false, PREMIUM_TRIGGER_DEPOT_SPACE = false, PREMIUM_TRIGGER_INVITE_PRIVCHAT = false
-			msg.addByte(0x01);
-		}
-		writeToOutputBuffer(msg);
+	if (g_configManager().getBoolean(FREE_PREMIUM) || g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
+		return;
 	}
+
+	NetworkMessage msg;
+	msg.addByte(0x9E);
+
+	msg.addByte(16);
+	for (uint16_t i = 0; i <= 15; i++) {
+		// PREMIUM_TRIGGER_TRAIN_OFFLINE = false, PREMIUM_TRIGGER_XP_BOOST = false, PREMIUM_TRIGGER_MARKET = false, PREMIUM_TRIGGER_VIP_LIST = false, PREMIUM_TRIGGER_DEPOT_SPACE = false, PREMIUM_TRIGGER_INVITE_PRIVCHAT = false
+		msg.addByte(0x01);
+	}
+
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendTextMessage(const TextMessage &message) {

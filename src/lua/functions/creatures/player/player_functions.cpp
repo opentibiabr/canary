@@ -2703,6 +2703,20 @@ int PlayerFunctions::luaPlayerRemoveTransferableCoins(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerSendBlessStatus(lua_State* L) {
+	// player:sendBlessStatus()
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->sendBlessStatus();
+	pushBoolean(L, true);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerHasBlessing(lua_State* L) {
 	// player:hasBlessing(blessing)
 	const uint8_t blessing = getNumber<uint8_t>(L, 2);

@@ -235,6 +235,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		registerMethod(L, "Player", "addTransferableCoins", PlayerFunctions::luaPlayerAddTransferableCoins);
 		registerMethod(L, "Player", "removeTransferableCoins", PlayerFunctions::luaPlayerRemoveTransferableCoins);
 
+		registerMethod(L, "Player", "sendBlessStatus", PlayerFunctions::luaPlayerSendBlessStatus);
 		registerMethod(L, "Player", "hasBlessing", PlayerFunctions::luaPlayerHasBlessing);
 		registerMethod(L, "Player", "addBlessing", PlayerFunctions::luaPlayerAddBlessing);
 		registerMethod(L, "Player", "removeBlessing", PlayerFunctions::luaPlayerRemoveBlessing);
@@ -603,6 +604,7 @@ class PlayerFunctions final : LuaScriptInterface {
 	static int luaPlayerAddTransferableCoins(lua_State* L);
 	static int luaPlayerRemoveTransferableCoins(lua_State* L);
 
+	static int luaPlayerSendBlessStatus(lua_State* L);
 	static int luaPlayerHasBlessing(lua_State* L);
 	static int luaPlayerAddBlessing(lua_State* L);
 	static int luaPlayerRemoveBlessing(lua_State* L);

@@ -285,6 +285,10 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint
 			msg.addByte(0xFF);
 		}
 
+		// OTCR Features
+		if (isOTC && otclientV8 == 0) {
+			msg.addString("");
+		}
 		return;
 	}
 
@@ -353,6 +357,10 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &ite
 			msg.addByte(0xFF);
 		}
 
+		// OTCR Features
+		if (isOTC && otclientV8 == 0) {
+			msg.addString(item->getShader());
+		}
 		return;
 	}
 

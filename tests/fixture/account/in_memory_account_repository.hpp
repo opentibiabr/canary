@@ -131,7 +131,7 @@ namespace tests {
 			auto accountCoins = storeTransactions_.find(id);
 
 			if (accountCoins == storeTransactions_.end()) {
-				storeTransactions_[id] = std::vector<std::tuple<uint8_t, uint32_t, uint8_t, std::string, time_t>>();
+				storeTransactions_[id] = std::vector<std::tuple<CoinTransactionType, uint32_t, CoinType, std::string, time_t>>();
 			}
 
 			storeTransactions_[id].emplace_back(type, amount, coinType, description, time);

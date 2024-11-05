@@ -89,7 +89,7 @@ local questTable = {
 	{ storageName = "CultsOfTibia.Misguided.Exorcisms", storage = Storage.Quest.U11_40.CultsOfTibia.Misguided.Exorcisms, storageValue = 1 },
 	{ storageName = "CultsOfTibia.Misguided.Time", storage = Storage.Quest.U11_40.CultsOfTibia.Misguided.Time, storageValue = 1 },
 	{ storageName = "CultsOfTibia.Misguided.BossTimer", storage = Storage.Quest.U11_40.CultsOfTibia.Misguided.BossTimer, storageValue = 1 },
-	{ storageName = "CultsOfTibia.Minotaurs.EntranceAccessDoor", storage = Storage.Quest.U11_40.CultsOfTibia.Minotaurs.EntranceAccessDoor, storageValue = 1 },
+	{ storageName = "CultsOfTibia.Minotaurs.BossAccessDoor", storage = Storage.Quest.U11_40.CultsOfTibia.Minotaurs.BossAccessDoor, storageValue = 1 },
 	{ storageName = "CultsOfTibia.Minotaurs.AccessDoor", storage = Storage.Quest.U11_40.CultsOfTibia.Minotaurs.AccessDoor, storageValue = 1 },
 	{ storageName = "ExplorerSociety.QuestLine", storage = Storage.Quest.U7_6.ExplorerSociety.QuestLine, storageValue = 1 },
 	{ storageName = "ExplorerSociety.QuestLine", storage = Storage.Quest.U7_6.ExplorerSociety.QuestLine, storageValue = 4 },

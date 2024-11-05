@@ -49,6 +49,7 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "items/items.hpp"
 #include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lib/metrics/metrics.hpp"
@@ -59,10 +60,10 @@
 #include "lua/creature/events.hpp"
 #include "lua/creature/movement.hpp"
 #include "map/house/house.hpp"
+#include "map/house/housetile.hpp"
 #include "map/spectators.hpp"
 #include "map/town.hpp"
 #include "server/network/protocol/protocolgame.hpp"
-#include "map/house/housetile.hpp"
 
 MuteCountMap Player::muteCountMap;
 

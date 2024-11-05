@@ -11,6 +11,7 @@
 
 #include "game/game.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "utils/tools.hpp"
 

@@ -9,8 +9,8 @@
 
 #include "lua/functions/core/game/zone_functions.hpp"
 
-#include "game/zones/zone.hpp"
 #include "game/game.hpp"
+#include "game/zones/zone.hpp"
 #include "items/tile.hpp"
 
 // Zone

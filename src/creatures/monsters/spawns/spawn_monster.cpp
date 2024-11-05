@@ -148,7 +148,7 @@ bool SpawnsMonster::isStarted() const {
 }
 
 bool SpawnsMonster::isLoaded() const {
-	return loaded;
+	return this != nullptr && loaded;
 }
 
 std::vector<std::shared_ptr<SpawnMonster>> &SpawnsMonster::getspawnMonsterList() {

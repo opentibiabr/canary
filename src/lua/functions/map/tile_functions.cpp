@@ -11,6 +11,7 @@
 
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
+#include "items/items.hpp"
 #include "map/house/house.hpp"
 #include "map/house/housetile.hpp"
 

@@ -20,6 +20,8 @@
 #include "io/io_bosstiary.hpp"
 #include "io/iobestiary.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
+#include "items/tile.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
@@ -30,7 +32,6 @@
 #include "map/house/house.hpp"
 #include "map/spectators.hpp"
 #include "map/town.hpp"
-#include "items/tile.hpp"
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {

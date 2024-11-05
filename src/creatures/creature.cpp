@@ -19,12 +19,13 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
 #include "items/containers/container.hpp"
+#include "items/items.hpp"
+#include "items/tile.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "map/spectators.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "utils/tools.hpp"
-#include "items/tile.hpp"
 
 Creature::Creature() {
 	Creature::onIdleStatus();

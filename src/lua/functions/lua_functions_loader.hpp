@@ -10,8 +10,8 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "lua/scripts/luajit_sync.hpp"
 #include "game/movement/position.hpp"
+#include "lua/scripts/luajit_sync.hpp"
 #include "lua/scripts/script_environment.hpp"
 
 class Combat;

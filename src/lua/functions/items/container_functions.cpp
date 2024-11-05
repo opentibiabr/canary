@@ -11,6 +11,7 @@
 
 #include "game/game.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
 #include "utils/tools.hpp"
 
 int ContainerFunctions::luaContainerCreate(lua_State* L) {

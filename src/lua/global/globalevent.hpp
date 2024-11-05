@@ -9,10 +9,16 @@
 
 #pragma once
 
-#include "utils/utils_definitions.hpp"
+#include "lua/lua_definitions.hpp"
 #include "lua/scripts/scripts.hpp"
+#include "utils/utils_definitions.hpp"
 
 class GlobalEvent;
+
+enum LightState_t;
+
+struct LightInfo;
+
 using GlobalEventMap = std::map<std::string, std::shared_ptr<GlobalEvent>>;
 
 class GlobalEvents final : public Scripts {
@@ -24,9 +30,7 @@ public:
 	GlobalEvents(const GlobalEvents &) = delete;
 	GlobalEvents &operator=(const GlobalEvents &) = delete;
 
-	static GlobalEvents &getInstance() {
-		return inject<GlobalEvents>();
-	}
+	static GlobalEvents &getInstance();
 
 	void startup() const;
 	void shutdown() const;

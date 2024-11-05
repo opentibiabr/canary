@@ -9,14 +9,14 @@
 
 #pragma once
 
-#include "game/movement/position.hpp"
-
 class Tile;
 class Cylinder;
 class Item;
 class Creature;
 class Container;
 class Player;
+
+struct Position;
 
 class Thing {
 public:

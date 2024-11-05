@@ -12,6 +12,7 @@
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
+#include "database/database.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_group_type.hpp"
 #include "game/game.hpp"

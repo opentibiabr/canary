@@ -16,6 +16,7 @@
 #include "game/scheduling/save_manager.hpp"
 #include "io/iologindata.hpp"
 #include "items/containers/inbox/inbox.hpp"
+#include "items/items.hpp"
 #include "Utils/tools.hpp"
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {

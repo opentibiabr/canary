@@ -12,6 +12,7 @@
 #include "creatures/combat/spells.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
 #include "utils/tools.hpp"
 
 int SpellFunctions::luaSpellCreate(lua_State* L) {

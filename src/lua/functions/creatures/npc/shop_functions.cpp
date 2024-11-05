@@ -12,6 +12,7 @@
 #include "creatures/npcs/npcs.hpp"
 
 #include "items/item.hpp"
+#include "items/items.hpp"
 #include "utils/tools.hpp"
 
 int ShopFunctions::luaCreateShop(lua_State* L) {

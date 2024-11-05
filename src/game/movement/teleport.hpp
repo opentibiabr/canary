@@ -9,6 +9,8 @@
 
 #pragma once
 
+
+#include "game/movement/position.hpp"
 #include "items/cylinder.hpp"
 #include "items/item.hpp"
 
@@ -31,12 +33,8 @@ public:
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
 	void serializeAttr(PropWriteStream &propWriteStream) const override;
 
-	const Position &getDestPos() const {
-		return destPos;
-	}
-	void setDestPos(Position pos) {
-		destPos = pos;
-	}
+	const Position &getDestPos() const;
+	void setDestPos(Position pos);
 
 	bool checkInfinityLoop(const std::shared_ptr<Tile> &destTile);
 

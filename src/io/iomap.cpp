@@ -12,6 +12,7 @@
 #include "game/game.hpp"
 #include "game/movement/teleport.hpp"
 #include "io/filestream.hpp"
+#include "items/items.hpp"
 #include "map/town.hpp"
 
 /*

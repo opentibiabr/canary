@@ -15,10 +15,11 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "io/iologindata.hpp"
+#include "items/items.hpp"
+#include "items/tile.hpp"
 #include "map/house/house.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "Utils/tools.hpp"
-#include "items/tile.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {

@@ -10,11 +10,11 @@
 #pragma once
 
 #include "account/account.hpp"
-#include "lua/global/baseevents.hpp"
-#include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
+#include "lua/global/baseevents.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "lua/scripts/scripts.hpp"
+#include "utils/utils_definitions.hpp"
 
 class TalkAction;
 using TalkAction_ptr = std::shared_ptr<TalkAction>;
@@ -78,9 +78,7 @@ public:
 	TalkActions(const TalkActions &) = delete;
 	TalkActions &operator=(const TalkActions &) = delete;
 
-	static TalkActions &getInstance() {
-		return inject<TalkActions>();
-	}
+	static TalkActions &getInstance();
 
 	bool checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, std::string_view word, const TalkAction_ptr &talkActionPtr) const;
 	TalkActionResult_t checkPlayerCanSayTalkAction(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words) const;

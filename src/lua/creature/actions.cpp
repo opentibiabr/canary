@@ -19,9 +19,11 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "items/items.hpp"
+#include "items/tile.hpp"
+#include "lib/di/container.hpp"
 #include "map/house/house.hpp"
 #include "Utils/tools.hpp"
-#include "items/tile.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;
@@ -391,6 +393,10 @@ ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> &player, cons
 	}
 
 	return RETURNVALUE_CANNOTUSETHISOBJECT;
+}
+
+Actions &Actions::getInstance() {
+	return inject<Actions>();
 }
 
 bool Actions::useItem(const std::shared_ptr<Player> &player, const Position &pos, uint8_t index, const std::shared_ptr<Item> &item, bool isHotkey) {

@@ -10,9 +10,6 @@
 #pragma once
 
 #include "lua/callbacks/callbacks_definitions.hpp"
-#include "creatures/creatures_definitions.hpp"
-#include "items/items_definitions.hpp"
-#include "utils/utils_definitions.hpp"
 #include "lua/scripts/scripts.hpp"
 
 class Creature;
@@ -22,6 +19,24 @@ class Party;
 class ItemType;
 class Monster;
 class Zone;
+class Thing;
+class Cylinder;
+class Container;
+class Item;
+class Npc;
+
+struct Outfit_t;
+struct CombatDamage;
+struct Position;
+
+enum CombatType_t : uint8_t;
+enum Direction : uint8_t;
+enum SpeakClasses : uint8_t;
+enum TextColor_t : uint8_t;
+enum ReturnValue : uint16_t;
+enum ZoneType_t : uint8_t;
+enum skills_t : int8_t;
+enum Slots_t : uint8_t;
 
 /**
  * @class EventCallback

@@ -21,6 +21,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "io/iobestiary.hpp"
 #include "io/ioprey.hpp"
+#include "items/items.hpp"
 #include "items/tile.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lib/metrics/metrics.hpp"

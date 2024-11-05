@@ -13,15 +13,21 @@
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"
+#include "lib/di/container.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/creature/movement.hpp"
 #include "lua/creature/talkaction.hpp"
 #include "lua/global/globalevent.hpp"
+#include "lua/scripts/luascript.hpp"
 
 Scripts::Scripts() :
-	scriptInterface("Scripts Interface") {
-	scriptInterface.initState();
+	scriptInterface(std::make_unique<LuaScriptInterface>("Scripts Interface")) {
+	scriptInterface->initState();
+}
+
+Scripts &Scripts::getInstance() {
+	return inject<Scripts>();
 }
 
 void Scripts::clearAllScripts() const {
@@ -48,9 +54,9 @@ bool Scripts::loadEventSchedulerScripts(const std::string &fileName) {
 	for (std::filesystem::recursive_directory_iterator it(dir); it != endit; ++it) {
 		if (std::filesystem::is_regular_file(*it) && it->path().extension() == ".lua") {
 			if (it->path().filename().string() == fileName) {
-				if (scriptInterface.loadFile(it->path().string(), it->path().filename().string()) == -1) {
+				if (scriptInterface->loadFile(it->path().string(), it->path().filename().string()) == -1) {
 					g_logger().error(it->path().string());
-					g_logger().error(scriptInterface.getLastLuaError());
+					g_logger().error(scriptInterface->getLastLuaError());
 					continue;
 				}
 				return true;
@@ -112,10 +118,10 @@ bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
 			}
 
 			// If the function 'loadFile' returns -1, then there was an error loading the file
-			if (scriptInterface.loadFile(realPath.string(), realPath.filename().string()) == -1) {
+			if (scriptInterface->loadFile(realPath.string(), realPath.filename().string()) == -1) {
 				// Log the error and the file path, and skip to the next iteration of the loop.
 				g_logger().error(realPath.string());
-				g_logger().error(scriptInterface.getLastLuaError());
+				g_logger().error(scriptInterface->getLastLuaError());
 				continue;
 			}
 		}
@@ -131,3 +137,41 @@ bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
 
 	return true;
 }
+
+ LuaScriptInterface &Scripts::getScriptInterface() {
+	return *scriptInterface;
+}
+
+ // Load revscriptsys callback
+
+ bool Script::loadCallback() {
+	 if (!scriptInterface) {
+		 g_logger().error("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}", scriptId);
+		 return false;
+	 }
+
+	 if (scriptId != 0) {
+		 g_logger().error("[Script::loadCallback] scriptid is not zero, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
+		 return false;
+	 }
+
+	 const int32_t id = scriptInterface->getEvent();
+	 if (id == -1) {
+		 g_logger().error("[Script::loadCallback] Event {} not found for script with name {}", getScriptTypeName(), scriptInterface->getLoadingScriptName());
+		 return false;
+	 }
+
+	 setLoadedCallback(true);
+	 scriptId = id;
+	 return true;
+ }
+
+ // Method to access the scriptInterface in derived classes
+
+LuaScriptInterface* Script::getScriptInterface() const {
+	 return scriptInterface;
+ }
+
+void Script::setScriptInterface(LuaScriptInterface* newInterface) {
+	 scriptInterface = newInterface;
+ }

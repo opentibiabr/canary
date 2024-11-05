@@ -23,6 +23,7 @@
 #include "io/io_bosstiary.hpp"
 #include "io/iomarket.hpp"
 #include "io/ioprey.hpp"
+#include "items/items.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"

@@ -11,6 +11,7 @@
 
 #include "account/account.hpp"
 #include "creatures/players/player.hpp"
+#include "database/database.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"

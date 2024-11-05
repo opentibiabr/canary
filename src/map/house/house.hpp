@@ -9,7 +9,10 @@
 
 #pragma once
 
+#include "game/movement/position.hpp"
 #include "items/item.hpp"
+#include "utils/utils_definitions.hpp"
+
 
 class House;
 class BedItem;
@@ -23,8 +26,7 @@ class HouseTransferItem;
 
 enum AccessHouseLevel_t;
 enum RentPeriod_t;
-
-struct Position;
+enum TradeEvents_t;
 
 using ItemList = std::list<std::shared_ptr<Item>>;
 
@@ -87,8 +89,7 @@ class HouseTransferItem final : public Item {
 public:
 	static std::shared_ptr<HouseTransferItem> createHouseTransferItem(const std::shared_ptr<House> &house);
 
-	explicit HouseTransferItem(std::shared_ptr<House> newHouse) :
-		Item(0), house(std::move(newHouse)) { }
+	explicit HouseTransferItem(std::shared_ptr<House> newHouse);
 
 	void onTradeEvent(TradeEvents_t event, const std::shared_ptr<Player> &owner) override;
 	bool canTransform() const override {

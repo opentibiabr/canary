@@ -9,8 +9,11 @@
 
 #pragma once
 
+#include "creatures/creatures_definitions.hpp"
+#include "game/movement/position.hpp"
 #include "items/item.hpp"
 #include "lua/global/baseevents.hpp"
+#include "utils/utils_definitions.hpp"
 
 class Condition;
 class Creature;
@@ -19,6 +22,11 @@ class Player;
 class MatrixArea;
 class Weapon;
 class Tile;
+
+struct Position;
+
+enum CombatType_t : uint8_t;
+enum ReturnValue : uint16_t;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 

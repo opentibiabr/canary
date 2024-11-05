@@ -9,18 +9,17 @@
 
 #pragma once
 
-#include "database/database.hpp"
-#include "declarations.hpp"
-
 class Thing;
 class Creature;
 class Item;
 class Container;
 class Npc;
-
 class LuaScriptInterface;
 class Cylinder;
 class Game;
+class DBResult;
+
+using DBResult_ptr = std::shared_ptr<DBResult>;
 
 class ScriptEnvironment final {
 public:

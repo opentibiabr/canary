@@ -58,6 +58,7 @@
 #include "lua/global/globalevent.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "map/house/house.hpp"
+#include "map/house/housetile.hpp"
 #include "map/spectators.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "server/network/protocol/protocollogin.hpp"
@@ -66,7 +67,6 @@
 #include "server/server.hpp"
 #include "utils/tools.hpp"
 #include "utils/wildcardtree.hpp"
-#include "map/house/housetile.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"

@@ -15,8 +15,9 @@
 #include "game/scheduling/save_manager.hpp"
 #include "items/decay/decay.hpp"
 #include "items/item.hpp"
-#include "utils/tools.hpp"
+#include "items/items.hpp"
 #include "items/tile.hpp"
+#include "utils/tools.hpp"
 
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {

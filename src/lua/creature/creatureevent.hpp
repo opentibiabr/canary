@@ -9,10 +9,20 @@
 
 #pragma once
 
+#include "lua/lua_definitions.hpp"
 #include "lua/scripts/scripts.hpp"
 
 class CreatureEvent;
 class LuaScriptInterface;
+class Player;
+class Npc;
+class Item;
+class Creature;
+
+struct CombatDamage;
+
+enum CreatureEventType_t : uint8_t;
+enum skills_t : int8_t;
 
 class CreatureEvent final : public Script {
 public:

@@ -9,12 +9,12 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-#include "creatures/players/player.hpp"
-#include "lua/scripts/scripts.hpp"
 #include "creatures/combat/combat.hpp"
-#include "utils/utils_definitions.hpp"
+#include "creatures/players/player.hpp"
 #include "creatures/players/vocations/vocation.hpp"
+#include "lua/scripts/luascript.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "utils/utils_definitions.hpp"
 
 class Weapon;
 class WeaponMelee;
@@ -35,9 +35,7 @@ public:
 	Weapons(const Weapons &) = delete;
 	Weapons &operator=(const Weapons &) = delete;
 
-	static Weapons &getInstance() {
-		return inject<Weapons>();
-	}
+	static Weapons &getInstance();
 
 	WeaponShared_ptr getWeapon(const std::shared_ptr<Item> &item) const;
 

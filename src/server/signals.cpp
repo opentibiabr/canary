@@ -15,6 +15,8 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
+#include "items/items.hpp"
+#include "lib/di/container.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/global/globalevent.hpp"

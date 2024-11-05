@@ -16,9 +16,10 @@
 #include "game/movement/position.hpp"
 #include "items/containers/container.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
+#include "items/tile.hpp"
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
-#include "items/tile.hpp"
 
 Events::Events() :
 	scriptInterface("Event Interface") {

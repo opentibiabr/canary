@@ -12,6 +12,7 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "items/items.hpp"
 #include "lib/di/container.hpp"
 #include "Utils/tools.hpp"
 

@@ -11,6 +11,7 @@
 
 #include "creatures/monsters/monsters.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
 #include "utils/tools.hpp"
 
 int LootFunctions::luaCreateLoot(lua_State* L) {

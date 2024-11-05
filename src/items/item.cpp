@@ -24,11 +24,12 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/mailbox/mailbox.hpp"
 #include "items/decay/decay.hpp"
+#include "items/items.hpp"
+#include "items/tile.hpp"
 #include "items/trashholder.hpp"
 #include "lua/creature/actions.hpp"
 #include "map/house/house.hpp"
 #include "Utils/tools.hpp"
-#include "items/tile.hpp"
 
 #define ITEM_IMBUEMENT_SLOT 500
 
@@ -134,6 +135,14 @@ void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 	setImbuement(slot, imbuementId, duration);
 }
 
+ bool Item::hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) const {
+	const auto it = items[id].imbuementTypes.find(imbuementType);
+	if (it != items[id].imbuementTypes.end()) {
+		return (it->second >= imbuementTier);
+	}
+	return false;
+}
+
 bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
@@ -144,6 +153,17 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 			}
 		}
 	}
+	return false;
+}
+
+ bool Item::hasImbuements() const {
+	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
+		ImbuementInfo imbuementInfo;
+		if (getImbuementInfo(slotid, &imbuementInfo)) {
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -219,6 +239,10 @@ void Item::setTier(uint8_t tier) {
 	if (items[id].upgradeClassification) {
 		setAttribute(ItemAttribute_t::TIER, tier);
 	}
+}
+
+ uint8_t Item::getClassification() const {
+	return items[id].upgradeClassification;
 }
 
 std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint16_t size) {
@@ -479,6 +503,21 @@ std::shared_ptr<Player> Item::getHoldingPlayer() {
 		p = p->getParent();
 	}
 	return nullptr;
+}
+
+ WeaponType_t Item::getWeaponType() const {
+	return items[id].weaponType;
+}
+
+ Ammo_t Item::getAmmoType() const {
+	return items[id].ammoType;
+}
+
+ uint8_t Item::getShootRange() const {
+	if (hasAttribute(ItemAttribute_t::SHOOTRANGE)) {
+		return getAttribute<uint8_t>(ItemAttribute_t::SHOOTRANGE);
+	}
+	return items[id].shootRange;
 }
 
 bool Item::isItemStorable() const {
@@ -1192,6 +1231,146 @@ bool Item::hasProperty(ItemProperty prop) const {
 	}
 }
 
+ bool Item::isBlocking() const {
+	return items[id].blockSolid;
+}
+
+ bool Item::isStackable() const {
+	return items[id].stackable;
+}
+
+ bool Item::isStowable() const {
+	return items[id].stackable && items[id].wareId > 0;
+}
+
+ bool Item::isAlwaysOnTop() const {
+	return items[id].alwaysOnTopOrder != 0;
+}
+
+ bool Item::isGroundTile() const {
+	return items[id].isGroundTile();
+}
+
+ bool Item::isMagicField() const {
+	return items[id].isMagicField();
+}
+
+ bool Item::isWrapContainer() const {
+	return items[id].wrapContainer;
+}
+
+ bool Item::isMovable() const {
+	return items[id].movable;
+}
+
+ bool Item::isCorpse() const {
+	return items[id].isCorpse;
+}
+
+ bool Item::isPickupable() const {
+	return items[id].pickupable;
+}
+
+ bool Item::isMultiUse() const {
+	return items[id].multiUse;
+}
+
+ bool Item::isHangable() const {
+	return items[id].isHangable;
+}
+
+ bool Item::isRotatable() const {
+	return items[id].rotatable && items[id].rotateTo;
+}
+
+ bool Item::isPodium() const {
+	return items[id].isPodium;
+}
+
+ bool Item::isWrapable() const {
+	return items[id].wrapable && items[id].wrapableTo;
+}
+
+ bool Item::isRing() const {
+	return items[id].isRing();
+}
+
+ bool Item::isAmulet() const {
+	return items[id].isAmulet();
+}
+
+ bool Item::isAmmo() const {
+	return items[id].isAmmo();
+}
+
+ bool Item::hasWalkStack() const {
+	return items[id].walkStack;
+}
+
+ bool Item::isQuiver() const {
+	return items[id].isQuiver();
+}
+
+ bool Item::isShield() const {
+	return items[id].isShield();
+}
+
+ bool Item::isWand() const {
+	return items[id].isWand();
+}
+
+ bool Item::isSpellBook() const {
+	return items[id].isSpellBook();
+}
+
+ bool Item::isLadder() const {
+	return items[id].isLadder();
+}
+
+ bool Item::isDummy() const {
+	return items[id].isDummy();
+}
+
+ bool Item::isCarpet() const {
+	return items[id].isCarpet();
+}
+
+ bool Item::canReceiveAutoCarpet() const {
+	return isBlocking() && isAlwaysOnTop() && !items[id].hasHeight;
+}
+
+ bool Item::canBeUsedByGuests() const {
+	return isDummy() || items[id].m_canBeUsedByGuests;
+}
+
+ const std::string &Item::getName() const {
+	if (hasAttribute(ItemAttribute_t::NAME)) {
+		return getString(ItemAttribute_t::NAME);
+	}
+	return items[id].name;
+}
+
+ std::string Item::getPluralName() const {
+	if (hasAttribute(ItemAttribute_t::PLURALNAME)) {
+		return getString(ItemAttribute_t::PLURALNAME);
+	}
+	return items[id].getPluralName();
+}
+
+ const std::string &Item::getArticle() const {
+	if (hasAttribute(ItemAttribute_t::ARTICLE)) {
+		return getString(ItemAttribute_t::ARTICLE);
+	}
+	return items[id].article;
+}
+
+ uint8_t Item::getStackSize() const {
+	if (isStackable()) {
+		return items[id].stackSize;
+	}
+	return 1;
+}
+
 bool Item::canBeMoved() const {
 	static std::unordered_set<int32_t> immovableActionIds = {
 		IMMOVABLE_ACTION_ID,
@@ -1221,6 +1400,25 @@ uint32_t Item::getWeight() const {
 	return baseWeight;
 }
 
+ uint32_t Item::getBaseWeight() const {
+	if (hasAttribute(ItemAttribute_t::WEIGHT)) {
+		return getAttribute<uint32_t>(ItemAttribute_t::WEIGHT);
+	}
+	return items[id].weight;
+}
+
+ int32_t Item::getCleavePercent() const {
+	return items[id].abilities->cleavePercent;
+}
+
+ int32_t Item::getPerfectShotDamage() const {
+	return items[id].abilities->perfectShotDamage;
+}
+
+ uint8_t Item::getPerfectShotRange() const {
+	return items[id].abilities->perfectShotRange;
+}
+
 int32_t Item::getReflectionFlat(CombatType_t combatType) const {
 	return items[id].abilities->reflectFlat[combatTypeToIndex(combatType)];
 }
@@ -1229,8 +1427,103 @@ int32_t Item::getReflectionPercent(CombatType_t combatType) const {
 	return items[id].abilities->reflectPercent[combatTypeToIndex(combatType)];
 }
 
+ int16_t Item::getMagicShieldCapacityPercent() const {
+	return items[id].abilities->magicShieldCapacityPercent;
+}
+
+ int32_t Item::getMagicShieldCapacityFlat() const {
+	return items[id].abilities->magicShieldCapacityFlat;
+}
+
 int32_t Item::getSpecializedMagicLevel(CombatType_t combat) const {
 	return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
+}
+
+ int32_t Item::getSpeed() const {
+	const int32_t value = items[id].getSpeed();
+	return value;
+}
+
+ int32_t Item::getSkill(skills_t skill) const {
+	const int32_t value = items[id].getSkill(skill);
+	return value;
+}
+
+ int32_t Item::getStat(stats_t stat) const {
+	const int32_t value = items[id].getStat(stat);
+	return value;
+}
+
+ int32_t Item::getAttack() const {
+	if (hasAttribute(ItemAttribute_t::ATTACK)) {
+		return getAttribute<int32_t>(ItemAttribute_t::ATTACK);
+	}
+	return items[id].attack;
+}
+
+ int32_t Item::getArmor() const {
+	if (hasAttribute(ItemAttribute_t::ARMOR)) {
+		return getAttribute<int32_t>(ItemAttribute_t::ARMOR);
+	}
+	return items[id].armor;
+}
+
+ int32_t Item::getDefense() const {
+	if (hasAttribute(ItemAttribute_t::DEFENSE)) {
+		return getAttribute<int32_t>(ItemAttribute_t::DEFENSE);
+	}
+	return items[id].defense;
+}
+
+ int32_t Item::getExtraDefense() const {
+	if (hasAttribute(ItemAttribute_t::EXTRADEFENSE)) {
+		return getAttribute<int32_t>(ItemAttribute_t::EXTRADEFENSE);
+	}
+	return items[id].extraDefense;
+}
+
+ std::vector<std::shared_ptr<AugmentInfo>> Item::getAugments() const {
+	return items[id].augments;
+}
+
+ std::vector<std::shared_ptr<AugmentInfo>> Item::getAugmentsBySpellNameAndType(const std::string &spellName, Augment_t augmentType) const {
+	std::vector<std::shared_ptr<AugmentInfo>> augments;
+	for (const auto &augment : items[id].augments) {
+		if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0 && augment->type == augmentType) {
+			augments.push_back(augment);
+		}
+	}
+
+	return augments;
+}
+
+ std::vector<std::shared_ptr<AugmentInfo>> Item::getAugmentsBySpellName(const std::string &spellName) const {
+	std::vector<std::shared_ptr<AugmentInfo>> augments;
+	for (const auto &augment : items[id].augments) {
+		if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0) {
+			augments.push_back(augment);
+		}
+	}
+
+	return augments;
+}
+
+ uint8_t Item::getImbuementSlot() const {
+	if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
+		return getAttribute<uint8_t>(ItemAttribute_t::IMBUEMENT_SLOT);
+	}
+	return items[id].imbuementSlot;
+}
+
+ int32_t Item::getSlotPosition() const {
+	return items[id].slotPosition;
+}
+
+ int8_t Item::getHitChance() const {
+	if (hasAttribute(ItemAttribute_t::HITCHANCE)) {
+		return getAttribute<int8_t>(ItemAttribute_t::HITCHANCE);
+	}
+	return items[id].hitChance;
 }
 
 std::vector<std::pair<std::string, std::string>>
@@ -2024,6 +2317,13 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 	}
 	descriptions.shrink_to_fit();
 	return descriptions;
+}
+
+ std::string Item::parseAugmentDescription(const std::shared_ptr<Item> &item, bool inspect) {
+	if (!item) {
+		return "";
+	}
+	return items[item->getID()].parseAugmentDescription(inspect);
 }
 
 std::string Item::parseImbuementDescription(const std::shared_ptr<Item> &item) {
@@ -3291,6 +3591,10 @@ void Item::addUniqueId(uint16_t uniqueId) {
 	if (g_game().addUniqueItem(uniqueId, static_self_cast<Item>())) {
 		setAttribute(ItemAttribute_t::UNIQUEID, uniqueId);
 	}
+}
+
+ uint32_t Item::getDefaultDuration() const {
+	return items[id].decayTime * 1000;
 }
 
 bool Item::canDecay() {

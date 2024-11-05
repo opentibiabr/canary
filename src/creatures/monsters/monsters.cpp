@@ -14,7 +14,9 @@
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "game/game.hpp"
+#include "items/items.hpp"
 #include "items/weapons/weapons.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "Utils/tools.hpp"
 

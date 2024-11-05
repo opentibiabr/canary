@@ -17,6 +17,7 @@
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "game/game.hpp"
 #include "game/zones/zone.hpp"
+#include "items/items.hpp"
 #include "lib/di/container.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"

@@ -11,6 +11,8 @@
 
 #include "config/configmanager.hpp"
 #include "game/game.hpp"
+#include "items/items.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "lua/scripts/scripts.hpp"

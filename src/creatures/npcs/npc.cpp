@@ -18,6 +18,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "items/containers/container.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
 #include "items/tile.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "lua/callbacks/creaturecallback.hpp"

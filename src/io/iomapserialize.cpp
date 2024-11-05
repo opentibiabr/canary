@@ -13,9 +13,10 @@
 #include "game/game.hpp"
 #include "io/iologindata.hpp"
 #include "items/bed.hpp"
+#include "items/items.hpp"
 #include "map/house/house.hpp"
-#include "Utils/tools.hpp"
 #include "map/house/housetile.hpp"
+#include "Utils/tools.hpp"
 
 void IOMapSerialize::loadHouseItems(Map* map) {
 	Benchmark bm_context;

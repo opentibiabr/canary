@@ -10,11 +10,12 @@
 #include "creatures/players/vocations/vocation.hpp"
 
 #include "config/configmanager.hpp"
+#include "enums/player_wheel.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
 #include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
-#include "enums/player_wheel.hpp"
 
 bool Vocations::reload() {
 	vocationsMap.clear();

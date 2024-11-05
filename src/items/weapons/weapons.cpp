@@ -12,13 +12,19 @@
 #include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
+#include "items/items.hpp"
+#include "items/tile.hpp"
+#include "lib/di/container.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/global/lua_variant.hpp"
 #include "Utils/tools.hpp"
-#include "items/tile.hpp"
 
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;
+
+Weapons &Weapons::getInstance() {
+	return inject<Weapons>();
+}
 
 WeaponShared_ptr Weapons::getWeapon(const std::shared_ptr<Item> &item) const {
 	if (!item) {

@@ -19,6 +19,7 @@
 #include "game/movement/teleport.hpp"
 #include "game/zones/zone.hpp"
 #include "items/containers/mailbox/mailbox.hpp"
+#include "items/items.hpp"
 #include "items/trashholder.hpp"
 #include "lua/creature/movement.hpp"
 #include "map/house/house.hpp"
@@ -1944,3 +1945,5 @@ void Tile::clearZones() {
 		zones.erase(zone);
 	}
 }
+
+

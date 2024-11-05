@@ -10,19 +10,20 @@
 #include "map/house/house.hpp"
 
 #include "config/configmanager.hpp"
+#include "enums/item_attribute.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "io/ioguild.hpp"
 #include "io/iologindata.hpp"
 #include "items/bed.hpp"
+#include "items/containers/container.hpp"
 #include "items/containers/inbox/inbox.hpp"
+#include "items/items_definitions.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "map/house/housetile.hpp"
 #include "map/town.hpp"
 #include "utils/pugicast.hpp"
 #include "Utils/tools.hpp"
-#include "map/house/housetile.hpp"
-#include "items/containers/container.hpp"
-#include "enums/item_attribute.hpp"
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -504,6 +505,9 @@ std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(co
 	transferItem->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
 	return transferItem;
 }
+
+HouseTransferItem::HouseTransferItem(std::shared_ptr<House> newHouse) :
+	Item(0), house(std::move(newHouse)) { }
 
 void HouseTransferItem::onTradeEvent(TradeEvents_t event, const std::shared_ptr<Player> &owner) {
 	if (event == ON_TRADE_TRANSFER) {

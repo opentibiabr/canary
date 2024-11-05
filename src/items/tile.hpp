@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "game/movement/position.hpp"
 #include "items/cylinder.hpp"
 
 class Creature;

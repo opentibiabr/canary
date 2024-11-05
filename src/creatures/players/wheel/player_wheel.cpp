@@ -15,15 +15,16 @@
 #include "creatures/players/player.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/wheel/wheel_gems.hpp"
+#include "database/database.hpp"
 #include "enums/player_wheel.hpp"
 #include "game/game.hpp"
 #include "io/io_wheel.hpp"
+#include "items/tile.hpp"
 #include "kv/kv.hpp"
 #include "kv/kv_definitions.hpp"
 #include "map/town.hpp"
 #include "server/network/message/networkmessage.hpp"
 #include "server/network/protocol/protocolgame.hpp"
-#include "items/tile.hpp"
 
 std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 

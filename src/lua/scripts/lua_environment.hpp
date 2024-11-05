@@ -11,16 +11,17 @@
 
 #include "creatures/combat/combat.hpp"
 #include "declarations.hpp"
-#include "lua/scripts/luascript.hpp"
 #include "items/weapons/weapons.hpp"
-
-#include "lua/global/lua_timer_event_descr.hpp"
+#include "lua/scripts/luascript.hpp"
 
 class AreaCombat;
 class Combat;
 class Cylinder;
 class Game;
 class GlobalFunctions;
+class Weapon;
+
+struct LuaTimerEventDesc;
 
 class LuaEnvironment final : public LuaScriptInterface {
 public:
@@ -35,9 +36,7 @@ public:
 	LuaEnvironment(const LuaEnvironment &) = delete;
 	LuaEnvironment &operator=(const LuaEnvironment &) = delete;
 
-	static LuaEnvironment &getInstance() {
-		return inject<LuaEnvironment>();
-	}
+	static LuaEnvironment &getInstance();
 
 	bool initState() override;
 	bool reInitState() override;

@@ -9,8 +9,7 @@
 
 #pragma once
 
-#include "lib/di/container.hpp"
-#include "lua/scripts/luascript.hpp"
+class LuaScriptInterface;
 
 class Scripts {
 public:
@@ -20,17 +19,13 @@ public:
 	Scripts(const Scripts &) = delete;
 	Scripts &operator=(const Scripts &) = delete;
 
-	static Scripts &getInstance() {
-		return inject<Scripts>();
-	}
+	static Scripts &getInstance();
 
 	void clearAllScripts() const;
 
 	bool loadEventSchedulerScripts(const std::string &fileName);
 	bool loadScripts(std::string folderName, bool isLib, bool reload);
-	LuaScriptInterface &getScriptInterface() {
-		return scriptInterface;
-	}
+	LuaScriptInterface &getScriptInterface();
 	/**
 	 * @brief Get the Script Id object
 	 *
@@ -42,7 +37,7 @@ public:
 
 private:
 	int32_t scriptId = 0;
-	LuaScriptInterface scriptInterface;
+	std::unique_ptr<LuaScriptInterface> scriptInterface;
 };
 
 constexpr auto g_scripts = Scripts::getInstance;
@@ -74,40 +69,16 @@ public:
 	}
 
 	// Load revscriptsys callback
-	bool loadCallback() {
-		if (!scriptInterface) {
-			g_logger().error("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}", scriptId);
-			return false;
-		}
-
-		if (scriptId != 0) {
-			g_logger().error("[Script::loadCallback] scriptid is not zero, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
-			return false;
-		}
-
-		const int32_t id = scriptInterface->getEvent();
-		if (id == -1) {
-			g_logger().error("[Script::loadCallback] Event {} not found for script with name {}", getScriptTypeName(), scriptInterface->getLoadingScriptName());
-			return false;
-		}
-
-		setLoadedCallback(true);
-		scriptId = id;
-		return true;
-	}
+	bool loadCallback();
 
 	// NOTE: Pure virtual method ( = 0) that must be implemented in derived classes
 	// Script type (Action, CreatureEvent, GlobalEvent, MoveEvent, Spell, Weapon)
 	virtual std::string getScriptTypeName() const = 0;
 
 	// Method to access the scriptInterface in derived classes
-	virtual LuaScriptInterface* getScriptInterface() const {
-		return scriptInterface;
-	}
+	virtual LuaScriptInterface* getScriptInterface() const;
 
-	virtual void setScriptInterface(LuaScriptInterface* newInterface) {
-		scriptInterface = newInterface;
-	}
+	virtual void setScriptInterface(LuaScriptInterface* newInterface);
 
 	// Method to access the scriptId in derived classes
 	virtual int32_t getScriptId() const {

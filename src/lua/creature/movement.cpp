@@ -13,11 +13,13 @@
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "items/items.hpp"
+#include "items/tile.hpp"
+#include "lib/di/container.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "Utils/tools.hpp"
-#include "items/tile.hpp"
 
 void MoveEvents::clear() {
 	uniqueIdMap.clear();
@@ -278,6 +280,10 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Tile> &til
 		}
 	}
 	return nullptr;
+}
+
+MoveEvents &MoveEvents::getInstance() {
+	return inject<MoveEvents>();
 }
 
 uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, MoveEvent_t eventType) {

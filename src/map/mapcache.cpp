@@ -16,10 +16,11 @@
 #include "io/iomap.hpp"
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
+#include "map/house/housetile.hpp"
 #include "map/map.hpp"
 #include "map/utils/mapsector.hpp"
 #include "utils/hash.hpp"
-#include "map/house/housetile.hpp"
 
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicItem>> items;
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicTile>> tiles;

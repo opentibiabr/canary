@@ -17,6 +17,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "items/containers/depot/depotlocker.hpp"
+#include "items/items.hpp"
 #include "lua/global/globalevent.hpp"
 #include "lua/global/lua_timer_event_descr.hpp"
 #include "lua/scripts/lua_environment.hpp"

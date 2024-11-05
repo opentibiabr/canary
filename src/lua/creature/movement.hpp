@@ -9,11 +9,11 @@
 
 #pragma once
 
+#include "creatures/players/vocations/vocation.hpp"
 #include "declarations.hpp"
 #include "items/item.hpp"
 #include "lua/functions/events/move_event_functions.hpp"
 #include "lua/scripts/scripts.hpp"
-#include "creatures/players/vocations/vocation.hpp"
 
 class MoveEvent;
 
@@ -32,9 +32,7 @@ public:
 	MoveEvents(const MoveEvents &) = delete;
 	MoveEvents &operator=(const MoveEvents &) = delete;
 
-	static MoveEvents &getInstance() {
-		return inject<MoveEvents>();
-	}
+	static MoveEvents &getInstance();
 
 	uint32_t onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, MoveEvent_t eventType);
 	uint32_t onPlayerEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck);

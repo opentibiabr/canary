@@ -9,9 +9,10 @@
 
 #include "lua/global/globalevent.hpp"
 
-#include "utils/tools.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "lib/di/container.hpp"
+#include "utils/tools.hpp"
 
 GlobalEvents::GlobalEvents() = default;
 GlobalEvents::~GlobalEvents() = default;
@@ -59,6 +60,10 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 
 	g_logger().warn("Duplicate registered globalevent with name: {}", globalEvent->getName());
 	return false;
+}
+
+GlobalEvents &GlobalEvents::getInstance() {
+	return inject<GlobalEvents>();
 }
 
 void GlobalEvents::startup() const {

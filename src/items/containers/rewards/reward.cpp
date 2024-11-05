@@ -8,6 +8,7 @@
  */
 
 #include "items/containers/rewards/reward.hpp"
+#include "utils/utils_definitions.hpp"
 
 Reward::Reward() :
 	Container(ITEM_REWARD_CONTAINER) {

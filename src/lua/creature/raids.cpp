@@ -13,10 +13,10 @@
 #include "creatures/monsters/monster.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "items/tile.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "utils/pugicast.hpp"
 #include "Utils/tools.hpp"
-#include "items/tile.hpp"
 
 Raids::Raids() {
 	scriptInterface.initState();

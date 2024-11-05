@@ -18,6 +18,7 @@
 #include "game/zones/zone.hpp"
 #include "io/iomap.hpp"
 #include "io/iomapserialize.hpp"
+#include "items/tile.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/house/house.hpp"
@@ -26,13 +27,22 @@
 #include "map/utils/mapsector.hpp"
 #include "utils/astarnodes.hpp"
 #include "Utils/tools.hpp"
-#include "items/tile.hpp"
 
 Map::Map() {
 	spawnsMonster = std::make_unique<SpawnsMonster>();
 	spawnsNpc = std::make_unique<SpawnsNpc>();
 	houses = std::make_unique<Houses>();
 	towns = std::make_unique<Towns>();
+
+	for (auto &spawnMonster : spawnsMonsterCustomMaps) {
+		spawnMonster = std::make_unique<SpawnsMonster>();
+	}
+	for (auto &spawnNpc : spawnsNpcCustomMaps) {
+		spawnNpc = std::make_unique<SpawnsNpc>();
+	}
+	for (auto &house : housesCustomMaps) {
+		house = std::make_unique<Houses>();
+	}
 }
 
 Map::~Map() = default;

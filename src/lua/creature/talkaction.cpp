@@ -9,10 +9,11 @@
 
 #include "lua/creature/talkaction.hpp"
 
-#include "utils/tools.hpp"
 #include "creatures/players/grouping/groups.hpp"
 #include "creatures/players/player.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/scripts.hpp"
+#include "utils/tools.hpp"
 
 TalkActions::TalkActions() = default;
 TalkActions::~TalkActions() = default;
@@ -24,6 +25,10 @@ void TalkActions::clear() {
 bool TalkActions::registerLuaEvent(const TalkAction_ptr &talkAction) {
 	auto [iterator, inserted] = talkActions.try_emplace(talkAction->getWords(), talkAction);
 	return inserted;
+}
+
+TalkActions &TalkActions::getInstance() {
+	return inject<TalkActions>();
 }
 
 bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, std::string_view word, const TalkAction_ptr &talkActionPtr) const {

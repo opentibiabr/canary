@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "game/movement/position.hpp"
-
 // Enums
 enum {
 	EVENT_ID_LOADING = 1,

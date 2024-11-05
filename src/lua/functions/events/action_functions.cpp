@@ -9,9 +9,10 @@
 
 #include "lua/functions/events/action_functions.hpp"
 
-#include "lua/creature/actions.hpp"
 #include "game/game.hpp"
 #include "items/item.hpp"
+#include "items/items.hpp"
+#include "lua/creature/actions.hpp"
 
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()

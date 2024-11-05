@@ -11,7 +11,9 @@
 
 #include "creatures/creature.hpp"
 #include "game/game.hpp"
+#include "game/movement/position.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "items/items.hpp"
 #include "items/tile.hpp"
 
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream &propStream) {
@@ -31,6 +33,14 @@ void Teleport::serializeAttr(PropWriteStream &propWriteStream) const {
 	propWriteStream.write<uint16_t>(destPos.x);
 	propWriteStream.write<uint16_t>(destPos.y);
 	propWriteStream.write<uint8_t>(destPos.z);
+}
+
+ const Position &Teleport::getDestPos() const {
+	return destPos;
+}
+
+ void Teleport::setDestPos(Position pos) {
+	destPos = pos;
 }
 
 ReturnValue Teleport::queryAdd(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> &) {

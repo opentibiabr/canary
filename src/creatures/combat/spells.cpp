@@ -19,6 +19,7 @@
 #include "enums/account_type.hpp"
 #include "game/game.hpp"
 #include "items/tile.hpp"
+#include "lib/di/container.hpp"
 #include "lua/global/lua_variant.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.hpp"

@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/scripts.hpp"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.hpp"
+#include "lua/scripts/scripts.hpp"
 
 class Action;
 struct Position;
@@ -139,9 +139,7 @@ public:
 	Actions(const Actions &) = delete;
 	Actions &operator=(const Actions &) = delete;
 
-	static Actions &getInstance() {
-		return inject<Actions>();
-	}
+	static Actions &getInstance();
 
 	bool useItem(const std::shared_ptr<Player> &player, const Position &pos, uint8_t index, const std::shared_ptr<Item> &item, bool isHotkey);
 	bool useItemEx(const std::shared_ptr<Player> &player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, const std::shared_ptr<Item> &item, bool isHotkey, const std::shared_ptr<Creature> &creature = nullptr);

@@ -10,9 +10,10 @@
 #include "lua/scripts/lua_environment.hpp"
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
-#include "lua/scripts/script_environment.hpp"
 #include "lua/global/lua_timer_event_descr.hpp"
+#include "lua/scripts/script_environment.hpp"
 
 bool LuaEnvironment::shuttingDown = false;
 
@@ -39,6 +40,10 @@ lua_State* LuaEnvironment::getLuaState() {
 	}
 
 	return luaState;
+}
+
+LuaEnvironment &LuaEnvironment::getInstance() {
+	return inject<LuaEnvironment>();
 }
 
 bool LuaEnvironment::initState() {

@@ -716,7 +716,7 @@ public:
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void updateCreatureShader(const std::shared_ptr<Creature> &creature);
 	void playerSetTyping(uint32_t playerId, uint8_t typing);
-
+	void refreshItem(const std::shared_ptr<Item> &item);
 
 private:
 	std::map<uint16_t, Achievement> m_achievements;

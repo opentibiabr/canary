@@ -588,11 +588,13 @@ metricsPrometheusAddress = "0.0.0.0:9464"
 --- OStream
 metricsEnableOstream = false
 metricsOstreamInterval = 1000
-OTCRFeatures = { -- posible*
+
+--- OTC
+OTCRFeatures = { -- possible*
     ["enable"] = { 
-        102, -- GameCreatureAttachedEffect
-        103  -- GameCreatureShader
+        102, -- g_game.enableFeature(GameCreatureAttachedEffect)
+        103  -- g_game.enableFeature(GameCreatureShader)
     },
-    ["disable"] = { -- for example in 13.10 g_game.enableFeature(GameSequencedPackets)
+    ["disable"] = { -- utility ,for example in 13.10 g_game.disableFeature(GameSequencedPackets)
     }
 }

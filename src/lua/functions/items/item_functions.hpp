@@ -97,6 +97,9 @@ public:
 
 		registerMethod(L, "Item", "canReceiveAutoCarpet", ItemFunctions::luaItemCanReceiveAutoCarpet);
 
+		registerMethod(L, "Item", "setShader", ItemFunctions::luaItemSetShader);
+		registerMethod(L, "Item", "getShader", ItemFunctions::luaItemGetShader);
+		registerMethod(L, "Item", "hasShader", ItemFunctions::luaItemHasShader);
 		ContainerFunctions::init(L);
 		ImbuementFunctions::init(L);
 		ItemTypeFunctions::init(L);
@@ -175,4 +178,8 @@ private:
 	static int luaItemIsOwner(lua_State* L);
 	static int luaItemGetOwnerName(lua_State* L);
 	static int luaItemHasOwner(lua_State* L);
+
+	static int luaItemSetShader(lua_State* L);
+	static int luaItemGetShader(lua_State* L);
+	static int luaItemHasShader(lua_State* L);
 };

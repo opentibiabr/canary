@@ -10894,4 +10894,37 @@ void Game::playerSetTyping(uint32_t playerId, uint8_t typing) {
 	}
 }
 
-
+void Game::refreshItem(const std::shared_ptr<Item> &item) {
+	if (!item || !item->getParent()) {
+		return;
+	}
+	const auto &parent = item->getParent();
+	if (const auto &creature = parent->getCreature()) {
+		if (const auto &player = creature->getPlayer()) {
+			int32_t index = player->getThingIndex(item);
+			if (index > -1) {
+				player->sendInventoryItem(static_cast<Slots_t>(index), item);
+			}
+		}
+		return;
+	}
+	if (const auto &container = parent->getContainer()) {
+		int32_t index = container->getThingIndex(item);
+		if (index > -1 && index <= std::numeric_limits<uint16_t>::max()) {
+			const auto spectators = Spectators().find<Player>(container->getPosition(), false, 2, 2, 2, 2);
+			// send to client
+			for (const auto &spectator : spectators) {
+				spectator->getPlayer()->sendUpdateContainerItem(container, static_cast<uint16_t>(index), item);
+			}
+		}
+		return;
+	}
+	if (const auto &tile = parent->getTile()) {
+		const auto spectators = Spectators().find<Player>(tile->getPosition(), true);
+		// send to client
+		for (const auto &spectator : spectators) {
+			spectator->getPlayer()->sendUpdateTileItem(tile, tile->getPosition(), item);
+		}
+		return;
+	}
+}

@@ -1040,3 +1040,42 @@ int ItemFunctions::luaItemHasOwner(lua_State* L) {
 	pushBoolean(L, item->hasOwner());
 	return 1;
 }
+
+int ItemFunctions::luaItemHasShader(lua_State* L) {
+	// item:hasShader()
+	const auto &item = getUserdataShared<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		return 1;
+	}
+
+	pushBoolean(L, item->hasShader());
+	return 1;
+}
+
+int ItemFunctions::luaItemGetShader(lua_State* L) {
+	// item:getShader()
+	const auto &item = getUserdataShared<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushString(L, item->getShader());
+	return 1;
+}
+
+int ItemFunctions::luaItemSetShader(lua_State* L) {
+	// item:setShader(shaderName)
+	const auto &item = getUserdataShared<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	item->setShader(getString(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}

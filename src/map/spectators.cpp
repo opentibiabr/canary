@@ -229,15 +229,15 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 
 	// It is necessary to create the cache even if no spectators is found, so that there is no future query.
 	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY, .creatures = {}, .monsters = {}, .npcs = {}, .players = {} }).first->second;
-	auto &creaturesCache = cache.creatures;
+	auto* creaturesCache = &cache.creatures;
 	if (onlyPlayers) {
-		creaturesCache = cache.players;
+		creaturesCache = &cache.players;
 	} else if (onlyMonsters) {
-		creaturesCache = cache.monsters;
+		creaturesCache = &cache.monsters;
 	} else if (onlyNpcs) {
-		creaturesCache = cache.npcs;
+		creaturesCache = &cache.npcs;
 	}
-	auto &creatureList = (multifloor ? creaturesCache.multiFloor : creaturesCache.floor);
+	auto &creatureList = (multifloor ? (*creaturesCache).multiFloor : (*creaturesCache).floor);
 	if (creatureList) {
 		creatureList->clear();
 	} else {

@@ -2059,6 +2059,14 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.stages.executionersThrow; ++i) {
 			setSpellInstant("Executioner's Throw", true);
 		}
+		WheelSpells::Bonus bonus;
+		bonus.decrease.cooldown = 4 * 1000;
+		if (m_playerBonusData.stages.executionersThrow >= 2) {
+			addSpellBonus("Executioner's Throw", bonus);
+		}
+		if (m_playerBonusData.stages.executionersThrow >= 3) {
+			addSpellBonus("Executioner's Throw", bonus);
+		}
 	} else {
 		setSpellInstant("Executioner's Throw", false);
 	}

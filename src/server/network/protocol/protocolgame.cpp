@@ -2315,7 +2315,7 @@ void ProtocolGame::parseBestiarysendRaces() {
 	}
 
 	NetworkMessage msg;
-	msg.addByte(0xd5);
+	msg.addByte(0xD5);
 	msg.add<uint16_t>(BESTY_RACE_LAST);
 	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	for (uint8_t i = BESTY_RACE_FIRST; i <= BESTY_RACE_LAST; i++) {
@@ -2347,7 +2347,7 @@ void ProtocolGame::sendBestiaryEntryChanged(uint16_t raceid) {
 	}
 
 	NetworkMessage msg;
-	msg.addByte(0xd9);
+	msg.addByte(0xD9);
 	msg.add<uint16_t>(raceid);
 	writeToOutputBuffer(msg);
 }
@@ -2381,7 +2381,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	uint8_t currentLevel = g_iobestiary().getKillStatus(mtype, killCounter);
 
 	NetworkMessage newmsg;
-	newmsg.addByte(0xd7);
+	newmsg.addByte(0xD7);
 	newmsg.add<uint16_t>(raceId);
 	newmsg.addString(Class);
 
@@ -2443,7 +2443,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		}
 
 		newmsg.addByte(attackmode);
-		newmsg.addByte(0x2);
+		newmsg.addByte(0x02);
 		newmsg.add<uint32_t>(mtype->info.healthMax);
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
@@ -2915,7 +2915,7 @@ void ProtocolGame::BestiarysendCharms() {
 		removeRuneCost = (removeRuneCost * 75) / 100;
 	}
 	NetworkMessage msg;
-	msg.addByte(0xd8);
+	msg.addByte(0xD8);
 	msg.add<uint32_t>(player->getCharmPoints());
 
 	const auto charmList = g_game().getCharmList();
@@ -2994,7 +2994,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		text = raceName;
 	}
 	NetworkMessage newmsg;
-	newmsg.addByte(0xd6);
+	newmsg.addByte(0xD6);
 	newmsg.addString(text);
 	newmsg.add<uint16_t>(race.size());
 	std::map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
@@ -4409,7 +4409,6 @@ void ProtocolGame::sendBlessingWindow() {
 
 	writeToOutputBuffer(msg);
 }
-
 
 void ProtocolGame::sendBlessStatus() {
 	if (!player) {

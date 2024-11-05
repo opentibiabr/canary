@@ -8404,11 +8404,11 @@ void ProtocolGame::sendOTCRFeatures() {
 	msg.addByte(0x43);
 	auto totalFeatures = static_cast<uint16_t>(enabledFeatures.size() + disabledFeatures.size());
 	msg.add<uint16_t>(totalFeatures);
-	for (int32_t feature : enabledFeatures) {
+	for (auto feature : enabledFeatures) {
 		msg.addByte(static_cast<uint8_t>(feature));
 		msg.addByte(0x01);
 	}
-	for (int32_t feature : disabledFeatures) {
+	for (auto feature : disabledFeatures) {
 		msg.addByte(static_cast<uint8_t>(feature));
 		msg.addByte(0x00);
 	}

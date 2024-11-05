@@ -3452,65 +3452,38 @@ bool PlayerWheel::getInstant(WheelInstant_t type) const {
 uint8_t PlayerWheel::getStage(std::string_view name) const {
 	using enum WheelInstant_t;
 	using enum WheelStage_t;
-	if (name == "Battle Instinct") {
-		return PlayerWheel::getInstant(BATTLE_INSTINCT);
+
+	static const std::unordered_map<std::string_view, WheelInstant_t> instantMapping = {
+		{ "Battle Instinct", BATTLE_INSTINCT },
+		{ "Battle Healing", BATTLE_HEALING },
+		{ "Positional Tatics", POSITIONAL_TACTICS },
+		{ "Ballistic Mastery", BALLISTIC_MASTERY },
+		{ "Healing Link", HEALING_LINK },
+		{ "Runic Mastery", RUNIC_MASTERY },
+		{ "Focus Mastery", FOCUS_MASTERY }
+	};
+
+	static const std::unordered_map<std::string_view, WheelStage_t> stageMapping = {
+		{ "Beam Mastery", BEAM_MASTERY },
+		{ "Combat Mastery", COMBAT_MASTERY },
+		{ "Gift of Life", GIFT_OF_LIFE },
+		{ "Blessing of the Grove", BLESSING_OF_THE_GROVE },
+		{ "Drain Body", DRAIN_BODY },
+		{ "Divine Empowerment", DIVINE_EMPOWERMENT },
+		{ "Divine Grenade", DIVINE_GRENADE },
+		{ "Twin Burst", TWIN_BURST },
+		{ "Executioner's Throw", EXECUTIONERS_THROW },
+		{ "Avatar of Light", AVATAR_OF_LIGHT },
+		{ "Avatar of Nature", AVATAR_OF_NATURE },
+		{ "Avatar of Steel", AVATAR_OF_STEEL },
+		{ "Avatar of Storm", AVATAR_OF_STORM }
+	};
+
+	if (auto it = instantMapping.find(name); it != instantMapping.end()) {
+		return PlayerWheel::getInstant(it->second);
 	}
-	if (name == "Battle Healing") {
-		return PlayerWheel::getInstant(BATTLE_HEALING);
-	}
-	if (name == "Positional Tactics") {
-		return PlayerWheel::getInstant(POSITIONAL_TACTICS);
-	}
-	if (name == "Ballistic Mastery") {
-		return PlayerWheel::getInstant(BALLISTIC_MASTERY);
-	}
-	if (name == "Healing Link") {
-		return PlayerWheel::getInstant(HEALING_LINK);
-	}
-	if (name == "Runic Mastery") {
-		return PlayerWheel::getInstant(RUNIC_MASTERY);
-	}
-	if (name == "Focus Mastery") {
-		return PlayerWheel::getInstant(FOCUS_MASTERY);
-	}
-	if (name == "Beam Mastery") {
-		return PlayerWheel::getStage(BEAM_MASTERY);
-	}
-	if (name == "Combat Mastery") {
-		return PlayerWheel::getStage(COMBAT_MASTERY);
-	}
-	if (name == "Gift of Life") {
-		return PlayerWheel::getStage(GIFT_OF_LIFE);
-	}
-	if (name == "Blessing of the Grove") {
-		return PlayerWheel::getStage(BLESSING_OF_THE_GROVE);
-	}
-	if (name == "Drain Body") {
-		return PlayerWheel::getStage(DRAIN_BODY);
-	}
-	if (name == "Divine Empowerment") {
-		return PlayerWheel::getStage(DIVINE_EMPOWERMENT);
-	}
-	if (name == "Divine Grenade") {
-		return PlayerWheel::getStage(DIVINE_GRENADE);
-	}
-	if (name == "Twin Burst") {
-		return PlayerWheel::getStage(TWIN_BURST);
-	}
-	if (name == "Executioner's Throw") {
-		return PlayerWheel::getStage(EXECUTIONERS_THROW);
-	}
-	if (name == "Avatar of Light") {
-		return PlayerWheel::getStage(AVATAR_OF_LIGHT);
-	}
-	if (name == "Avatar of Nature") {
-		return PlayerWheel::getStage(AVATAR_OF_NATURE);
-	}
-	if (name == "Avatar of Steel") {
-		return PlayerWheel::getStage(AVATAR_OF_STEEL);
-	}
-	if (name == "Avatar of Storm") {
-		return PlayerWheel::getStage(AVATAR_OF_STORM);
+	if (auto it = stageMapping.find(name); it != stageMapping.end()) {
+		return PlayerWheel::getStage(it->second);
 	}
 
 	return false;

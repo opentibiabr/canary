@@ -10854,7 +10854,7 @@ void Game::updatePlayersOnline() const {
 }
 
 void Game::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) {
-	auto spectators = Spectators().find<Creature>(creature->getPosition(), true);
+	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
 	for (const auto &spectator : spectators) {
 		auto player = spectator->getPlayer();
 		if (player) {
@@ -10863,7 +10863,7 @@ void Game::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_
 	}
 }
 void Game::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) {
-	auto spectators = Spectators().find<Creature>(creature->getPosition(), true);
+	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
 	for (const auto &spectator : spectators) {
 		auto player = spectator->getPlayer();
 		if (player) { 
@@ -10872,7 +10872,7 @@ void Game::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t 
 	}
 }
 void Game::updateCreatureShader(const std::shared_ptr<Creature> &creature) {
-	auto spectators = Spectators().find<Creature>(creature->getPosition(), true);
+	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
 	for (const auto &spectator : spectators) {
 		auto player = spectator->getPlayer();
 		if (player) {
@@ -10886,9 +10886,8 @@ void Game::playerSetTyping(uint32_t playerId, uint8_t typing) {
 	if (!player) {
 		return;
 	}
-	auto spectators = Spectators().find<Creature>(player->getPosition(), true);
-	auto playersSpectators = spectators.filter<Player>();
-	for (const auto &spectator : spectators) {
+
+	for (const auto &spectator : Spectators().find<Player>(player->getPosition(), true)) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendPlayerTyping(player, typing);
 		}

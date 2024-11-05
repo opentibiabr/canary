@@ -9593,7 +9593,7 @@ void Player::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_
 	}
 }
 
-void Player::sendShader(const std::shared_ptr<Creature> &creature, const std::string_view &shaderName) const {
+void Player::sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName) const {
 	if (!client || !creature) {
 		return;
 	}
@@ -9602,7 +9602,7 @@ void Player::sendShader(const std::shared_ptr<Creature> &creature, const std::st
 	}
 }
 
-void Player::sendMapShader(const std::string_view &shaderName) const {
+void Player::sendMapShader(const std::string &shaderName) const {
 	if (!client) {
 		return;
 	}

@@ -695,7 +695,7 @@ public:
 	std::string getShader() const {
 		return shader;
 	}
-	void setShader(const std::string_view &shaderName) {
+	void setShader(const std::string_view shaderName) {
 		shader = shaderName;
 	}
 	void attachEffectById(uint16_t id);

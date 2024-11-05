@@ -141,24 +141,11 @@ public:
 		return getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max());
 	}
 
-	void setShader(const std::string_view &shaderName) {
-		if (shaderName.empty()) {
-			removeCustomAttribute("shader");
-			return;
-		}
+	void setShader(const std::string &shaderName);
 
-		setCustomAttribute("shader", std::string(shaderName)); // temp
-	}
+	bool hasShader() const;
 
-	bool hasShader() const {
-		return getCustomAttribute("shader") != nullptr;
-	}
-
-	std::string_view getShader() const {
-		const CustomAttribute* shader = getCustomAttribute("shader");
-		return shader ? shader->getString() : "";
-	}
-
+	std::string getShader() const;
 protected:
 	std::unique_ptr<ItemAttribute> &initAttributePtr() {
 		if (!attributePtr) {

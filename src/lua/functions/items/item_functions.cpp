@@ -1062,7 +1062,7 @@ int ItemFunctions::luaItemGetShader(lua_State* L) {
 		return 1;
 	}
 
-	pushString(L, std::string(item->getShader())); // temp
+	pushString(L, item->getShader());
 	return 1;
 }
 

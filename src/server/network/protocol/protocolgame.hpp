@@ -493,8 +493,8 @@ private:
 	void sendOTCRFeatures();
 	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
-	void sendShader(const std::shared_ptr<Creature> &creature, const std::string_view &shaderName);
-	void sendMapShader(const std::string_view &shaderName);
+	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName);
+	void sendMapShader(const std::string &shaderName);
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing);
 	void parsePlayerTyping(NetworkMessage &msg);
 

@@ -1264,12 +1264,12 @@ public:
 
 	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) const;
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) const;
-	void sendShader(const std::shared_ptr<Creature> &creature, const std::string_view &shaderName) const;
-	void sendMapShader(const std::string_view &shaderName) const;
-	const std::string_view &getMapShader() const {
+	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName) const;
+	void sendMapShader(const std::string &shaderName) const;
+	const std::string &getMapShader() const {
 		return mapShader;
 	}
-	void setMapShader(const std::string_view &shaderName) {
+	void setMapShader(const std::string_view shaderName) {
 		this->mapShader = shaderName;
 	}
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
@@ -1383,7 +1383,7 @@ private:
 	std::string name;
 	std::string guildNick;
 	std::string loyaltyTitle;
-	std::string_view mapShader;
+	std::string mapShader;
 
 	Skill skills[SKILL_LAST + 1];
 	LightInfo itemsLight;

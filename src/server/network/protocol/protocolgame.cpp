@@ -494,6 +494,9 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	// Extended opcodes
 	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		isOTC = true;
+		if (isOTC && otclientV8 == 0) {
+			//sendOTCRFeatures(); // need pr in redemption
+		}
 		NetworkMessage opcodeMessage;
 		opcodeMessage.addByte(0x32);
 		opcodeMessage.addByte(0x00);
@@ -8389,6 +8392,25 @@ void ProtocolGame::sendFeatures() {
 	for (const auto &[gameFeature, haveFeature] : features) {
 		msg.addByte(static_cast<uint8_t>(gameFeature));
 		msg.addByte(haveFeature ? 1 : 0);
+	}
+	writeToOutputBuffer(msg);
+}
+
+// OTCR
+void ProtocolGame::sendOTCRFeatures() {
+	const auto &enabledFeatures = g_configManager().getEnabledOTCFeatures();
+	const auto &disabledFeatures = g_configManager().getDisabledOTCFeatures();
+	NetworkMessage msg;
+	msg.addByte(0x43);
+	uint16_t totalFeatures = static_cast<uint16_t>(enabledFeatures.size() + disabledFeatures.size());
+	msg.add<uint16_t>(totalFeatures);
+	for (int32_t feature : enabledFeatures) {
+		msg.addByte(static_cast<uint8_t>(feature));
+		msg.addByte(0x01);
+	}
+	for (int32_t feature : disabledFeatures) {
+		msg.addByte(static_cast<uint8_t>(feature));
+		msg.addByte(0x00);
 	}
 	writeToOutputBuffer(msg);
 }

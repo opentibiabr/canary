@@ -490,6 +490,7 @@ private:
 	// OTCv8
 	void sendFeatures();
 	// OTCR
+	void sendOTCRFeatures();
 	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName);

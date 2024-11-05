@@ -2098,10 +2098,8 @@ float calculateEquipmentLoss(uint8_t blessingAmount, bool isContainer /* = false
 		case 4:
 			lossPercent = 1;
 			break;
-		case 5:
-		case 6:
-		case 7:
 		default:
+			// Blessing Amount >= 5
 			lossPercent = 0;
 			break;
 	}

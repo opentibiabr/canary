@@ -4358,6 +4358,10 @@ void ProtocolGame::sendBlessingWindow() {
 
 	msg.addByte(isRetro ? 0x07 : 0x08);
 	for (auto blessing : magic_enum::enum_values<Blessings>()) {
+		if (isRetro && blessing == Blessings::TwistOfFate) {
+			continue;
+		}
+
 		const auto blessingValue = enumToValue(blessing);
 		const auto blessingId = 1 << blessingValue;
 		msg.add<uint16_t>(blessingId);

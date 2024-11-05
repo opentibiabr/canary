@@ -700,7 +700,7 @@ public:
 	}
 	void attachEffectById(uint16_t id);
 	void detachEffectById(uint16_t id);
-	const std::vector<uint16_t> getAttachedEffectList() const {
+	std::vector<uint16_t> getAttachedEffectList() const {
 		return attachedEffectList;
 	}
 

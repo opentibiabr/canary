@@ -495,7 +495,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		isOTC = true;
 		if (isOTC && otclientV8 == 0) {
-			//sendOTCRFeatures(); // need pr in redemption
+			//sendOTCRFeatures(); first I need to make pr in redemption
 		}
 		NetworkMessage opcodeMessage;
 		opcodeMessage.addByte(0x32);
@@ -8402,7 +8402,7 @@ void ProtocolGame::sendOTCRFeatures() {
 	const auto &disabledFeatures = g_configManager().getDisabledOTCFeatures();
 	NetworkMessage msg;
 	msg.addByte(0x43);
-	uint16_t totalFeatures = static_cast<uint16_t>(enabledFeatures.size() + disabledFeatures.size());
+	auto totalFeatures = static_cast<uint16_t>(enabledFeatures.size() + disabledFeatures.size());
 	msg.add<uint16_t>(totalFeatures);
 	for (int32_t feature : enabledFeatures) {
 		msg.addByte(static_cast<uint8_t>(feature));

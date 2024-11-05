@@ -10857,7 +10857,7 @@ void Game::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_
 	auto spectators = Spectators().find<Creature>(creature->getPosition(), true);
 	for (const auto &spectator : spectators) {
 		auto player = spectator->getPlayer();
-		if (player) { // Solo procede si player no es nullptr
+		if (player) {
 			player->sendAttachedEffect(creature, effectId);
 		}
 	}
@@ -10866,7 +10866,7 @@ void Game::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t 
 	auto spectators = Spectators().find<Creature>(creature->getPosition(), true);
 	for (const auto &spectator : spectators) {
 		auto player = spectator->getPlayer();
-		if (player) { // Solo procede si player no es nullptr
+		if (player) { 
 			player->sendDetachEffect(creature, effectId);
 		}
 	}
@@ -10875,8 +10875,24 @@ void Game::updateCreatureShader(const std::shared_ptr<Creature> &creature) {
 	auto spectators = Spectators().find<Creature>(creature->getPosition(), true);
 	for (const auto &spectator : spectators) {
 		auto player = spectator->getPlayer();
-		if (player) { // Solo procede si player no es nullptr
+		if (player) {
 			player->sendShader(creature, creature->getShader());
 		}
 	}
 }
+
+void Game::playerSetTyping(uint32_t playerId, uint8_t typing) {
+	const auto &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+	auto spectators = Spectators().find<Creature>(player->getPosition(), true);
+	auto playersSpectators = spectators.filter<Player>();
+	for (const auto &spectator : spectators) {
+		if (const auto &tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->sendPlayerTyping(player, typing);
+		}
+	}
+}
+
+

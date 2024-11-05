@@ -489,6 +489,13 @@ private:
 
 	// OTCv8
 	void sendFeatures();
+	// OTCR
+	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName);
+	void sendMapShader(const std::string &shaderName);
+	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing);
+	void parsePlayerTyping(NetworkMessage &msg);
 
 	void parseInventoryImbuements(NetworkMessage &msg);
 	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);
@@ -542,10 +549,6 @@ private:
 	void sendHotkeyPreset();
 	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendDisableLoginMusic();
-	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
-	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
-	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName);
-	void sendMapShader( const std::string &shaderName);
 
 	uint8_t m_playerDeathTime = 0;
 

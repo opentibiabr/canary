@@ -1272,6 +1272,7 @@ public:
 	void setMapShader(const std::string &shaderName) {
 		this->mapShader = shaderName;
 	}
+	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
 
 private:
 	friend class PlayerLock;

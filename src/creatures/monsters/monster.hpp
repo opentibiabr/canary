@@ -47,7 +47,6 @@ public:
 	const std::string &getTypeName() const override;
 	const std::string &getNameDescription() const override;
 	void setNameDescription(std::string_view nameDescription);
-	;
 	std::string getDescription(int32_t) override;
 
 	CreatureType_t getType() const override;

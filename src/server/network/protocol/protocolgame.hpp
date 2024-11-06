@@ -533,9 +533,10 @@ private:
 	bool shouldAddExivaRestrictions = false;
 
 	bool oldProtocol = false;
+	bool isOTC = false;
+	bool isOTCR = false;
 
 	uint16_t otclientV8 = 0;
-	bool isOTC = false;
 
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);

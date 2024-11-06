@@ -2011,6 +2011,7 @@ void Creature::attachEffectById(uint16_t id) {
 	attachedEffectList.push_back(id);
 	g_game().sendAttachedEffect(static_self_cast<Creature>(), id);
 }
+
 void Creature::detachEffectById(uint16_t id) {
 	auto it = std::ranges::find(attachedEffectList, id);
 	if (it == attachedEffectList.end()) {

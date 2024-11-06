@@ -4485,6 +4485,7 @@ int PlayerFunctions::luaPlayerSetMapShader(lua_State* L) {
 		return 0;
 	}
 	const auto shaderName = getString(L, 2);
+	player->setMapShader(shaderName);
 	player->sendMapShader(shaderName);
 	pushBoolean(L, true);
 	return 1;

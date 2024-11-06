@@ -9353,6 +9353,7 @@ void ProtocolGame::sendShader(const std::shared_ptr<Creature> &creature, const s
 	if (!isOTCR) {
 		return;
 	}
+
 	NetworkMessage msg;
 	msg.addByte(0x36);
 	msg.add<uint32_t>(creature->getID());
@@ -9364,6 +9365,7 @@ void ProtocolGame::sendMapShader(const std::string &shaderName) {
 	if (!isOTCR) {
 		return;
 	}
+
 	NetworkMessage msg;
 	msg.addByte(0x37);
 	msg.addString(shaderName);
@@ -9374,6 +9376,7 @@ void ProtocolGame::sendPlayerTyping(const std::shared_ptr<Creature> &creature, u
 	if (!isOTCR) {
 		return;
 	}
+
 	NetworkMessage msg;
 	msg.addByte(0x38);
 	msg.add<uint32_t>(creature->getID());

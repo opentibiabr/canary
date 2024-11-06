@@ -3472,7 +3472,7 @@ void ItemProperties::setShader(const std::string &shaderName) {
 		return;
 	}
 
-	setCustomAttribute("shader", shaderName); // temp
+	setCustomAttribute("shader", shaderName);
 }
 
 bool ItemProperties::hasShader() const {

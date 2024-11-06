@@ -148,13 +148,28 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		else
 			if player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Bosses.KingZelos.Killed) >= 1 then
-				if player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Questline) < 3 then
+				if player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Questline) >= 3 and player:getStorageValue(Storage.Quest.U12_20.HandOfTheInquisitionOutfits.Addon2) < 1 and player:removeItem(31737, 1) then
+					npcHandler:say("Here is your second addon for your efforts!", npc, creature)
+					player:addOutfit(1243, 2)
+					player:addOutfit(1244, 2)
+					player:setStorageValue(Storage.Quest.U12_20.GraveDanger.Stage, 2)
+					player:setStorageValue(Storage.Quest.U12_20.GraveDanger.Questline, 3)
+					player:setStorageValue(Storage.Quest.U12_20.HandOfTheInquisitionOutfits.Addon2, 1)
+				elseif player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Questline) >= 3 and player:getStorageValue(Storage.Quest.U12_20.HandOfTheInquisitionOutfits.Addon1) < 1 and player:removeItem(31738, 1) then
+					npcHandler:say("Here is your first addon for your efforts!", npc, creature)
+					player:addOutfit(1243, 1)
+					player:addOutfit(1244, 1)
+					player:setStorageValue(Storage.Quest.U12_20.GraveDanger.Stage, 2)
+					player:setStorageValue(Storage.Quest.U12_20.GraveDanger.Questline, 3)
+					player:setStorageValue(Storage.Quest.U12_20.HandOfTheInquisitionOutfits.Addon1, 1)
+				elseif player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Questline) < 3 and player:getStorageValue(Storage.Quest.U12_20.HandOfTheInquisitionOutfits.Outfits) < 1 then
 					npcHandler:say("Incredible! You averted a crisis that would have utterly crippled our defences aganist any other threat that is arising. Let me grant you the honor to be one of the hands of the inquisition alongside with the according outfit as a reward.", npc, creature)
 					player:addOutfit(1243, 0)
 					player:addOutfit(1244, 0)
 					player:addAchievement("Inquisition's Hand")
 					player:setStorageValue(Storage.Quest.U12_20.GraveDanger.Stage, 2)
 					player:setStorageValue(Storage.Quest.U12_20.GraveDanger.Questline, 3)
+					player:setStorageValue(Storage.Quest.U12_20.HandOfTheInquisitionOutfits.Outfits, 1)
 				else
 					npcHandler:say("Indeed you averted us a great danger! We will ever be greatful to you hand of the inquisition!", npc, creature)
 				end

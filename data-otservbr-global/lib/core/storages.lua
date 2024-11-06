@@ -2863,7 +2863,11 @@ Storage = {
 					Questline = 52311,
 				},
 			},
-			HandOfTheInquisitionOutfits = {},
+			HandOfTheInquisitionOutfits = {
+				Outfits = 52312,
+				Addon1 = 52313,
+				Addon2 = 52314,
+			},
 			Kilmaresh = {},
 			Orcsoberfest = {},
 		},

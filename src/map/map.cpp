@@ -443,7 +443,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		events();
 	}
 
-	if (teleport) {
+	if (forceTeleport) {
 		if (const auto &player = creature->getPlayer()) {
 			player->sendMagicEffect(oldPos, CONST_ME_TELEPORT);
 			player->sendMagicEffect(newPos, CONST_ME_TELEPORT);

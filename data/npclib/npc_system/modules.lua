@@ -60,7 +60,7 @@ if Modules == nil then
 		local parseInfo = {
 			[TAG_PLAYERNAME] = player:getName(),
 			[TAG_TIME] = getFormattedWorldTime(),
-			[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel(), false, parameters.bless),
+			[TAG_BLESSCOST] = Blessings.getBlessingCost(player:getLevel(), false, (npc:getName() == "Kais" or npc:getName() == "Nomad") and true),
 			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false),
 			[TAG_TRAVELCOST] = costMessage,
 		}
@@ -160,7 +160,7 @@ if Modules == nil then
 		end
 
 		local parseInfo = {
-			[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel(), false, parameters.bless),
+			[TAG_BLESSCOST] = Blessings.getBlessingCost(player:getLevel(), false, (npc:getName() == "Kais" or npc:getName() == "Nomad") and true),
 			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false),
 		}
 		if player:hasBlessing(parameters.bless) then

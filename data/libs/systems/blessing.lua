@@ -146,18 +146,13 @@ Blessings.getCommandFee = function(cost)
 	return cost + cost * (((fee > 100 and 100) or fee) / 100)
 end
 
-Blessings.getBlessingsCost = function(level, byCommand, blessId)
+Blessings.getBlessingCost = function(level, byCommand, enhanced)
 	if byCommand == nil then
 		byCommand = false
 	end
 
-	enhanced = false
-	if blessId == nil then
-		blessId = 0
-	end
-
-	if blessId >= 7 then
-		enhanced = true
+	if enhanced == nil then
+		enhanced = false
 	end
 
 	local cost
@@ -246,7 +241,7 @@ Blessings.getInquisitionPrice = function(player)
 	end
 
 	local missing = #player:getBlessings(inquifilter, donthavefilter)
-	local totalBlessPrice = Blessings.getBlessingsCost(player:getLevel(), false) * missing * Blessings.Config.InquisitonBlessPriceMultiplier
+	local totalBlessPrice = Blessings.getBlessingCost(player:getLevel(), false) * missing * Blessings.Config.InquisitonBlessPriceMultiplier
 	return missing, totalBlessPrice
 end
 
@@ -266,7 +261,7 @@ Blessings.BuyAllBlesses = function(player)
 	local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
 	local totalCost
 	for i, bless in ipairs(missingBless) do
-		totalCost = totalCost + Blessings.getBlessingsCost(player:getLevel(), true, bless.id)
+		totalCost = totalCost + Blessings.getBlessingCost(player:getLevel(), true, bless.id >= 7)
 	end
 
 	if missingBlessAmt == 0 then

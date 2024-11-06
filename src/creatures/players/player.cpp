@@ -3450,7 +3450,6 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 
 	g_game().sendSingleSoundEffect(static_self_cast<Player>()->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, getPlayer());
 	if (skillLoss) {
-		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
 		int othersDmg = 0;
 		uint32_t sumLevels = 0;
@@ -3467,10 +3466,13 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 				}
 			}
 		}
+
 		bool pvpDeath = false;
 		if (playerDmg > 0 || othersDmg > 0) {
 			pvpDeath = (Player::lastHitIsPlayer(lastHitCreature) || playerDmg / (playerDmg + static_cast<double>(othersDmg)) >= 0.05);
 		}
+
+		uint8_t unfairFightReduction = 100;
 		if (pvpDeath && sumLevels > level) {
 			double reduce = level / static_cast<double>(sumLevels);
 			unfairFightReduction = std::max<uint8_t>(20, std::floor((reduce * 100) + 0.5));
@@ -3606,13 +3608,18 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 
 			const auto playerSkull = getSkull();
 			bool hasSkull = (playerSkull == Skulls_t::SKULL_RED || playerSkull == Skulls_t::SKULL_BLACK);
-			// Remove player blessing
 			uint8_t maxBlessing = 8;
 			if (!hasSkull && pvpDeath && hasBlessing(1)) {
 				removeBlessing(1, 1); // Remove TOF only
 			} else {
 				for (int i = 2; i <= maxBlessing; i++) {
 					removeBlessing(i, 1);
+				}
+
+				const auto &playerAmulet = getThing(CONST_SLOT_NECKLACE);
+				bool usingAol = (playerAmulet && playerAmulet->getItem()->getID() == ITEM_AMULETOFLOSS);
+				if (usingAol) {
+					removeItemOfType(ITEM_AMULETOFLOSS, 1, -1);
 				}
 			}
 		}

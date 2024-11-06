@@ -11,6 +11,7 @@ function dropLoot.onDeath(player, corpse, killer, mostDamage, unjustified, mostD
 	if player:hasFlag(PlayerFlag_NotGenerateLoot) then
 		return true
 	end
+
 	Blessings.DebugPrint("onDeath DROPLOOT EVENT DropLoot")
 	return Blessings.PlayerDeath(player, corpse, killer)
 end

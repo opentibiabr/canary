@@ -4393,7 +4393,7 @@ void ProtocolGame::sendBlessingWindow() {
 	const auto playerSkull = player->getSkull();
 	const auto &playerAmulet = player->getThing(CONST_SLOT_NECKLACE);
 	bool hasSkull = (playerSkull == Skulls_t::SKULL_RED || playerSkull == Skulls_t::SKULL_BLACK);
-	bool usingAol = (playerAmulet && playerAmulet->getItem()->getID() == 3057);
+	bool usingAol = (playerAmulet && playerAmulet->getItem()->getID() == ITEM_AMULETOFLOSS);
 	if (hasSkull) {
 		msg.addByte(100);
 		msg.addByte(100);

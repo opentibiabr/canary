@@ -5,18 +5,18 @@ local config = {
 	x = 10,
 	y = 10,
 	summons = {
-		[1] = {summon = 'Dark Sorcerer'},
-		[2] = {summon = 'Dark Druid'},
-		[3] = {summon = 'Dark Paladin'},
-		[4] = {summon = 'Dark Knight'}
+		[1] = { summon = "Dark Sorcerer" },
+		[2] = { summon = "Dark Druid" },
+		[3] = { summon = "Dark Paladin" },
+		[4] = { summon = "Dark Knight" },
 	},
 	timer = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorth.Timer,
-	room = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorth.Room
+	room = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorth.Room,
 }
 
 local function summonDarks()
 	local spectators = Game.getSpectators(config.centerRoom, false, true, config.x, config.x, config.y, config.y)
-	local boss = Creature('Count Vlarkorth')
+	local boss = Creature("Count Vlarkorth")
 	if not boss then
 		return false
 	end
@@ -36,13 +36,13 @@ local function summonDarks()
 				end
 			end
 		end
-		boss:say('Face your own darkness!')
+		boss:say("Face your own darkness!")
 	end
 
 	return true
 end
 
-local count_vlarkorth_transform = CreatureEvent('count_vlarkorth_transform')
+local count_vlarkorth_transform = CreatureEvent("count_vlarkorth_transform")
 
 function count_vlarkorth_transform.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType)
 	local players = Game.getSpectators(config.centerRoom, false, true, config.x, config.x, config.y, config.y)

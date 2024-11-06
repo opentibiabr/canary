@@ -13,24 +13,24 @@ local config = {
 }
 
 local function brothers_play()
-	local baeloc = Creature('Sir Baeloc')
-	local nictros = Creature('Sir Nictros')
+	local baeloc = Creature("Sir Baeloc")
+	local nictros = Creature("Sir Nictros")
 
 	if baeloc then
-		baeloc:say('Ah look my Brother! Challengers! After all this time finally a chance to prove our skills!')
+		baeloc:say("Ah look my Brother! Challengers! After all this time finally a chance to prove our skills!")
 		addEvent(function()
-			local nictros = Creature('Sir Nictros')
+			local nictros = Creature("Sir Nictros")
 			if nictros then
-				nictros:say('Indeed! It has been a while! As the elder one I request the right of the first battle!')
+				nictros:say("Indeed! It has been a while! As the elder one I request the right of the first battle!")
 			end
 		end, 6 * 1000)
 	end
 
 	addEvent(function()
-		local baeloc = Creature('Sir Baeloc')
-		local nictros = Creature('Sir Nictros')
+		local baeloc = Creature("Sir Baeloc")
+		local nictros = Creature("Sir Nictros")
 		if baeloc then
-			baeloc:say('Oh, man! You always get the fun!')
+			baeloc:say("Oh, man! You always get the fun!")
 			if nictros then
 				nictros:teleportTo(Position(33426, 31437, 13))
 				nictros:setMoveLocked(false)
@@ -43,23 +43,23 @@ local baeloc_fight = Action()
 
 function baeloc_fight.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if not player:doCheckBossRoom("Sir Baeloc", config.fromPos, config.toPos) then
-		player:sendCancelMessage('The room is already in use. Please wait.')
+		player:sendCancelMessage("The room is already in use. Please wait.")
 		return true
 	end
 
-	local baeloc = Game.createMonster('Sir Baeloc', config.baelocPos, true, true)
-	local nictros = Game.createMonster('Sir Nictros', config.nictrosPos, true, true)
+	local baeloc = Game.createMonster("Sir Baeloc", config.baelocPos, true, true)
+	local nictros = Game.createMonster("Sir Nictros", config.nictrosPos, true, true)
 
 	if baeloc then
 		baeloc:setMoveLocked(true)
-		baeloc:registerEvent('sir_baeloc_health')
-		baeloc:registerEvent('brothers_summon')
+		baeloc:registerEvent("sir_baeloc_health")
+		baeloc:registerEvent("brothers_summon")
 	end
 
 	if nictros then
 		nictros:setMoveLocked(true)
-		nictros:registerEvent('sir_nictros_health')
-		nictros:registerEvent('brothers_summon')
+		nictros:registerEvent("sir_nictros_health")
+		nictros:registerEvent("brothers_summon")
 	end
 
 	addEvent(brothers_play, 4 * 1000)
@@ -72,7 +72,7 @@ function baeloc_fight.onUse(player, item, fromPosition, target, toPosition, isHo
 			playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			playerTile:setStorageValue(config.timer, os.time() + 20 * 3600)
 			playerTile:setStorageValue(config.room, os.time() + 30 * 60)
-			playerTile:say('You have 30 minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.', TALKTYPE_MONSTER_SAY, false, playerTile)
+			playerTile:say("You have 30 minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.", TALKTYPE_MONSTER_SAY, false, playerTile)
 		end
 	end
 

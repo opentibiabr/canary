@@ -74,9 +74,9 @@ local graveScarlettAid = Action()
 
 function graveScarlettAid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getStorageValue(Storage.Quest.U12_20.GraveDanger.GaffirKilled) ~= 1 and player:getStorageValue(Storage.Quest.U12_20.GraveDanger.CustodianKilled) ~= 1 and player:getStorageValue(Storage.Quest.U12_20.GraveDanger.QuaidKilled) ~= 1 then
-        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are not allowed to use this yet.")
-        return true
-    end
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are not allowed to use this yet.")
+		return true
+	end
 
 	if table.contains(transformTo, item.itemid) then
 		local pilar = transformTo[item.itemid]

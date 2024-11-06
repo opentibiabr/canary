@@ -12,18 +12,18 @@ local config = {
 		Position(33480, 31438, 13),
 		Position(33488, 31430, 13),
 		Position(33496, 31438, 13),
-		Position(33488, 31446, 13)
-	}
+		Position(33488, 31446, 13),
+	},
 }
 
 local function moveSphere()
 	local spectators = Game.getSpectators(config.centerRoom, false, false, config.x, config.x, config.y, config.y)
 	local nextPos = nil
-	local boss = Creature('Earl Osam')
+	local boss = Creature("Earl Osam")
 
 	if boss and boss:getStorageValue(3) > 0 then
 		for _, spheres in pairs(spectators) do
-			if spheres:isMonster() and spheres:getName():lower() == 'magical sphere' then
+			if spheres:isMonster() and spheres:getName():lower() == "magical sphere" then
 				local pos = spheres:getPosition()
 
 				if pos.y == 31438 then
@@ -45,7 +45,7 @@ local function moveSphere()
 					if nextTile then
 						local nextCreature = nextTile:getTopCreature()
 						if nextCreature then
-							if nextPos == config.centerRoom and nextCreature:getName():lower() == 'earl osam' then
+							if nextPos == config.centerRoom and nextCreature:getName():lower() == "earl osam" then
 								spheres:remove()
 								nextCreature:addHealth(80000)
 								nextCreature:setStorageValue(3, nextCreature:getStorageValue(3) - 1)
@@ -72,7 +72,7 @@ local function moveSphere()
 end
 
 local function initMech()
-	local boss = Creature('Earl Osam')
+	local boss = Creature("Earl Osam")
 	if boss then
 		local topCenter = Tile(config.centerRoom):getTopCreature()
 		if topCenter and topCenter ~= boss then
@@ -83,7 +83,7 @@ local function initMech()
 		boss:setMoveLocked(true)
 
 		for _, sphereSpot in pairs(config.spheres) do
-			local sphere = Game.createMonster('Magical Sphere', sphereSpot, false, true)
+			local sphere = Game.createMonster("Magical Sphere", sphereSpot, false, true)
 			if sphere then
 				boss:setStorageValue(3, math.max(0, boss:getStorageValue(3)) + 1)
 			end
@@ -95,7 +95,7 @@ local function initMech()
 	return true
 end
 
-local earl_osam_transform = CreatureEvent('earl_osam_transform')
+local earl_osam_transform = CreatureEvent("earl_osam_transform")
 
 function earl_osam_transform.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType)
 	local players = Game.getSpectators(config.centerRoom, false, true, config.x, config.x, config.y, config.y)
@@ -119,7 +119,7 @@ function earl_osam_transform.onHealthChange(creature, attacker, primaryDamage, p
 	local tile = Tile(position)
 
 	if chance >= 95 and tile and tile:isWalkable() then
-		Game.createMonster('Frozen Soul', position)
+		Game.createMonster("Frozen Soul", position)
 	end
 
 	local healthThreshold = creature:getMaxHealth() * 0.15
@@ -149,7 +149,7 @@ earl_osam_transform:register()
 local sphere_death = CreatureEvent("sphere_death")
 
 function sphere_death.onDeath(creature)
-	local boss = Creature('Earl Osam')
+	local boss = Creature("Earl Osam")
 	if boss then
 		local currentSphereCount = boss:getStorageValue(3)
 		boss:setStorageValue(3, math.max(0, currentSphereCount - 1))

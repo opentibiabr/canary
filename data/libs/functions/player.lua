@@ -907,6 +907,26 @@ function Player:canGetReward(rewardId, questName)
 	return true
 end
 
+function Player.getURL(self)
+	local playerName = self:getName():gsub("%s+", "+")
+	local serverURL = configManager.getString(configKeys.URL)
+	return serverURL .. "/characters/" .. playerName
+end
+
+local emojiMap = {
+	["knight"] = ":crossed_swords:",
+	["paladin"] = ":bow_and_arrow:",
+	["druid"] = ":herb:",
+	["sorcerer"] = ":crystal_ball:",
+}
+
+function Player.getMarkdownLink(self)
+	local vocation = self:vocationAbbrev()
+	local emoji = emojiMap[self:getVocation():getName():lower()] or ":school_satchel:"
+	local playerURL = self:getURL()
+	return string.format("**[%s](%s)** %s [_%s_]", self:getName(), playerURL, emoji, vocation)
+end
+
 function Player.findItemInInbox(self, itemId, name)
 	local inbox = self:getStoreInbox()
 	local items = inbox:getItems()

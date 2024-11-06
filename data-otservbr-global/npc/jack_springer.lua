@@ -243,18 +243,14 @@ keywordHandler:addKeyword(
 		"To summarise what we know, let me tell you this: The Shiron'Fal is an extremely old organisation. It seeks to accumulate power for some unknown but certainly sinister {goal}.",
 	} }
 )
-keywordHandler:addKeyword(
-	{ "goal" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = {
-			"For this purpose, the members gather knowledge, artefacts and powerful individuals. The members are formidable at certain fields of expertise. They are cunning and powerful and act with no regard for others, with no remorse or mercy. ...",
-			"As they are doing this since ages, they must have acquired tremendous powers and knowledge. Their members often operate alone but are usually well funded with the necessary resources. ...",
-			"Whatever their endgame might be, each of their operations pose a grave danger to the whole world and have to be {stopped}.",
-		},
-	}
-)
+keywordHandler:addKeyword({ "goal" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"For this purpose, the members gather knowledge, artefacts and powerful individuals. The members are formidable at certain fields of expertise. They are cunning and powerful and act with no regard for others, with no remorse or mercy. ...",
+		"As they are doing this since ages, they must have acquired tremendous powers and knowledge. Their members often operate alone but are usually well funded with the necessary resources. ...",
+		"Whatever their endgame might be, each of their operations pose a grave danger to the whole world and have to be {stopped}.",
+	},
+})
 keywordHandler:addKeyword({ "stopped" }, StdModule.say, { npcHandler = npcHandler, text = "Here is where you come into play. We could identify the most recent plot of the Shiron'Fal and already had some {clashes}." })
 keywordHandler:addKeyword({ "clashes" }, StdModule.say, { npcHandler = npcHandler, text = "In our efforts to hinder their plot, we achieved mixed results at best. But now things are escalating fast and we have to {hurry}." })
 keywordHandler:addKeyword({ "hurry" }, StdModule.say, { npcHandler = npcHandler, text = "Our resources are already stretched thin, so we need your help with the most recent {problem}." })
@@ -267,29 +263,21 @@ keywordHandler:addKeyword({ "lich" }, StdModule.say, { npcHandler = npcHandler, 
 keywordHandler:addKeyword({ "scheme" }, StdModule.say, { npcHandler = npcHandler, text = "We are still working feverishly to uncover their goals but for now more imminent {threats} are at hand." })
 keywordHandler:addKeyword({ "threats" }, StdModule.say, { npcHandler = npcHandler, text = "Death cultists of the Shiron'Fal are trying to locate the bodies of fallen knights and raise them in blasphemous {rituals}." })
 keywordHandler:addKeyword({ "rituals" }, StdModule.say, { npcHandler = npcHandler, text = "The churches of the gods worked hand in hand to supply us with the means to {purge} the graves of those knights." })
-keywordHandler:addKeyword(
-	{ "purge" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = {
-			"Reaching the graves will not be without danger and if you encounter the death cultists you will have to fight them. Even worse, they might have even succeeded in some cases. ...",
-			"As a newly risen lich-knight is not able to leave the site of its resurrection for some time, you might have to fight some of them. ...",
-			"Let us pray that you never come too {late} or else some of the fiends might be able to leave their crypts.",
-		},
-	}
-)
-keywordHandler:addKeyword(
-	{ "locations" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = {
-			"We have located twelve graves that have to be secured: In the old northern Edron graveyard, in the dark cathedral of the plains of havoc, in the ghostlands, on Cormaya, Somewhere in the Femor Hills, on Vengoth, ...",
-			"in the graveyard of Darashia, in the old temple north of Thais, at the entrance to the orcland, one is on the southern ice islands, in a mountain on Kilmaresh, one on an island north-east of Ankrahmun.",
-		},
-	}
-)
+keywordHandler:addKeyword({ "purge" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"Reaching the graves will not be without danger and if you encounter the death cultists you will have to fight them. Even worse, they might have even succeeded in some cases. ...",
+		"As a newly risen lich-knight is not able to leave the site of its resurrection for some time, you might have to fight some of them. ...",
+		"Let us pray that you never come too {late} or else some of the fiends might be able to leave their crypts.",
+	},
+})
+keywordHandler:addKeyword({ "locations" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"We have located twelve graves that have to be secured: In the old northern Edron graveyard, in the dark cathedral of the plains of havoc, in the ghostlands, on Cormaya, Somewhere in the Femor Hills, on Vengoth, ...",
+		"in the graveyard of Darashia, in the old temple north of Thais, at the entrance to the orcland, one is on the southern ice islands, in a mountain on Kilmaresh, one on an island north-east of Ankrahmun.",
+	},
+})
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

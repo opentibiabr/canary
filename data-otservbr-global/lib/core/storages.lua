@@ -214,8 +214,6 @@ Storage = {
 		-- Until all outfit quests are completed
 		DefaultStart = 50960,
 		Ref = 50961,
-		-- Golden Outfit
-		GoldenOutfit = 51015,
 		RoyalCostumeOutfit = 51026,
 	},
 	TheHuntForTheSeaSerpent = {
@@ -2799,7 +2797,7 @@ Storage = {
 			WinterlightSolstice = {},
 		},
 		U12_15 = { -- update 12.15.8659 - Reserved Storages 46801 - 46850
-			GoldenOutfits = {},
+			GoldenOutfits = 46801,
 		},
 		U12_20 = { -- update 12.20 - Reserved Storages 46851 - 47000
 			GraveDanger = {

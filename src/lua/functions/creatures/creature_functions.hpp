@@ -95,6 +95,7 @@ public:
 		registerMethod(L, "Creature", "clearIcons", CreatureFunctions::luaCreatureClearIcons);
 		registerMethod(L, "Creature", "attachEffectById", CreatureFunctions::luaCreatureAttachEffectById);
 		registerMethod(L, "Creature", "detachEffectById", CreatureFunctions::luaCreatureDetachEffectById);
+		registerMethod(L, "Creature", "getAttachedEffects", CreatureFunctions::luaCreatureGetAttachedEffects);
 		registerMethod(L, "Creature", "getShader", CreatureFunctions::luaCreatureGetShader);
 		registerMethod(L, "Creature", "setShader", CreatureFunctions::luaCreatureSetShader);
 
@@ -202,6 +203,7 @@ private:
 	static int luaCreatureClearIcons(lua_State* L);
 	static int luaCreatureAttachEffectById(lua_State* L);
 	static int luaCreatureDetachEffectById(lua_State* L);
+	static int luaCreatureGetAttachedEffects(lua_State* L);
 	static int luaCreatureGetShader(lua_State* L);
 	static int luaCreatureSetShader(lua_State* L);
 };

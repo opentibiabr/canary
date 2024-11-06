@@ -1139,6 +1139,24 @@ int CreatureFunctions::luaCreatureDetachEffectById(lua_State* L) {
 	return 1;
 }
 
+int CreatureFunctions::luaCreatureGetAttachedEffects(lua_State* L) {
+	// creature:getAttachedEffects()
+	const auto &creature = getUserdataShared<Creature>(L, 1);
+	if (!creature) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &effects = creature->getAttachedEffectList();
+	lua_createtable(L, effects.size(), 0);
+	for (size_t i = 0; i < effects.size(); ++i) {
+		lua_pushnumber(L, effects[i]);
+		lua_rawseti(L, -2, i + 1);
+	}
+	return 1;
+}
+
 int CreatureFunctions::luaCreatureGetShader(lua_State* L) {
 	// creature:getShader()
 	const auto &creature = getUserdataShared<Creature>(L, 1);

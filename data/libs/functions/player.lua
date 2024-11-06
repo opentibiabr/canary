@@ -910,6 +910,7 @@ end
 function Player.getURL(self)
 	local playerName = self:getName():gsub("%s+", "+")
 	local serverURL = configManager.getString(configKeys.URL)
+
 	return serverURL .. "/characters/" .. playerName
 end
 
@@ -924,6 +925,7 @@ function Player.getMarkdownLink(self)
 	local vocation = self:vocationAbbrev()
 	local emoji = emojiMap[self:getVocation():getName():lower()] or ":school_satchel:"
 	local playerURL = self:getURL()
+
 	return string.format("**[%s](%s)** %s [_%s_]", self:getName(), playerURL, emoji, vocation)
 end
 

@@ -3604,7 +3604,6 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 			bless.empty() ? blessOutput << "You weren't protected with any blessings."
 						  : blessOutput << "You were blessed with " << bless;
 
-
 			const auto playerSkull = getSkull();
 			bool hasSkull = (playerSkull == Skulls_t::SKULL_RED || playerSkull == Skulls_t::SKULL_BLACK);
 			// Remove player blessing

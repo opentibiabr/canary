@@ -32,6 +32,20 @@ local config = {
 		},
 		effect = CONST_ME_POFF,
 	},
+	[14172] = { -- gooey mass
+		chances = {
+			{ from = 1, to = 2 },
+			{ from = 3, to = 2167, itemId = 14084, count = 10 },
+			{ from = 2168, to = 4243, itemId = 3035, count = 2 },
+			{ from = 4244, to = 6196, itemId = 3027, count = 2 },
+			{ from = 6197, to = 8149, itemId = 239, count = 2 },
+			{ from = 8150, to = 9823, itemId = 238, count = 2 },
+			{ from = 9824, to = 9923, itemId = 9058 },
+			{ from = 9924, to = 9990, itemId = 14143 },
+			{ from = 9991, to = 10001, itemId = 14089 },
+		},
+		effect = CONST_ME_HITBYPOISON,
+	},
 	[15698] = { -- gnomish supply package
 		chances = {
 			{ from = 1, to = 1440, itemId = 3723, count = 20 },
@@ -155,6 +169,13 @@ local config = {
 			{ from = 9894, to = 9929, itemId = 22737 },
 			{ from = 9930, to = 9958, itemId = 23536 },
 			{ from = 9959, to = 10001, itemId = 22731 },
+		},
+		effect = CONST_ME_CRAPS,
+	},
+	[26186] = { -- mystery box
+		chances = {
+			{ from = 0, to = 5001, itemId = 25361 }, -- blood of the mountain
+			{ from = 5002, to = 10001, itemId = 25360 }, -- heart of the mountain
 		},
 		effect = CONST_ME_CRAPS,
 	},

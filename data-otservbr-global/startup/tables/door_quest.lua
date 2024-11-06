@@ -754,7 +754,8 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 33083, y = 31216, z = 8 } },
 	},
-	[Storage.Quest.U12_20.GraveDanger.QuestLine] = {
+
+	[Storage.Quest.U12_20.GraveDanger.Questline] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33264, y = 31993, z = 7 },
@@ -771,10 +772,11 @@ QuestDoorAction = {
 			{ x = 32012, y = 31565, z = 7 },
 		},
 	},
-	[Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosDoor] = {
+	[Storage.Quest.U12_20.GraveDanger.Bosses.KingZelos.Room] = {
 		itemId = false,
 		itemPos = { { x = 32173, y = 31922, z = 8 } },
 	},
+
 	[Storage.Quest.U12_70.AdventuresOfGalthen.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 32466, y = 32494, z = 8 } },

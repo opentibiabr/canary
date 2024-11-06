@@ -6343,12 +6343,12 @@ if not Quests then
 		},
 		[47] = {
 			name = "Grave Danger",
-			startStorageId = Storage.Quest.U12_20.GraveDanger.QuestLine,
+			startStorageId = Storage.Quest.U12_20.GraveDanger.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "* Grave Danger - The Lich Knights",
-					storageId = Storage.Quest.U12_20.GraveDanger.QuestLine,
+					storageId = Storage.Quest.U12_20.GraveDanger.Questline,
 					missionId = 10437,
 					startValue = 1,
 					endValue = 2,

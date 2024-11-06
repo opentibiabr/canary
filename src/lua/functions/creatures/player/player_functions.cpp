@@ -4490,3 +4490,47 @@ int PlayerFunctions::luaPlayerSetMapShader(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerAddCustomOutfit(lua_State* L) {
+	// player:addCustomOutfit(type, id or name)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	std::string type = getString(L, 2);
+	std::variant<uint16_t, std::string> idOrName;
+
+	if (isNumber(L, 3)) {
+		idOrName = getNumber<uint16_t>(L, 3);
+	} else {
+		idOrName = getString(L, 3);
+	}
+
+	pushBoolean(L, player->addCustomOutfit(type, idOrName));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveCustomOutfit(lua_State* L) {
+	// player:removeCustomOutfit(type, id or name)
+	const auto &player = getUserdataShared<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	std::string type = getString(L, 2);
+	std::variant<uint16_t, std::string> idOrName;
+
+	if (isNumber(L, 3)) {
+		idOrName = getNumber<uint16_t>(L, 3);
+	} else {
+		idOrName = getString(L, 3);
+	}
+
+	pushBoolean(L, player->removeCustomOutfit(type, idOrName));
+	return 1;
+}

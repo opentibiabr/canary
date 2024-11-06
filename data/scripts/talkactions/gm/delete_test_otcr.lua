@@ -1,7 +1,7 @@
 local talkAction = TalkAction("!testOTCR")
 
 local options = {
-	["Creature"] = {
+	Creature = {
 		{
 			name = "set attach Effect 7",
 			action = function(player)
@@ -45,7 +45,7 @@ local options = {
 			end,
 		},
 	},
-	["Map"] = {
+	Map = {
 		{
 			name = "set Shader Map",
 			action = function(player)
@@ -65,7 +65,7 @@ local options = {
 			end,
 		},
 	},
-	["Item"] = { {
+	Items = { {
 		name = "Shader",
 		action = function(player)
 			local item = player:addItem(ITEM_BAG, 1, false, CONST_SLOT_BACKPACK)
@@ -73,6 +73,73 @@ local options = {
 			player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "item have shader : " .. item:getShader())
 		end,
 	} },
+	game_outfit = {
+		{
+			name = "pdump auras",
+			action = function(player)
+				local effects = Game.getAllAttachedeffects("aura")
+				if #effects > 0 then
+					local ids = {}
+					for _, effect in ipairs(effects) do
+						table.insert(ids, effect.id)
+					end
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "aura registered on the server: ".. table.concat(ids, ", "))
+				else
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "the server did not charge aura check .xml")
+					
+				end
+			end,
+		},
+		{
+			name = "pdump wing",
+			action = function(player)
+				local effects = Game.getAllAttachedeffects("wing")
+				if #effects > 0 then
+					local ids = {}
+					for _, effect in ipairs(effects) do
+						table.insert(ids, effect.id)
+					end
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "wing registered on the server: "..table.concat(ids, ", "))
+				else
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "the server did not charge wing check .xml")
+				end
+			end,
+		},
+		{
+			name = "pdump effect",
+			action = function(player)
+
+				local effects = Game.getAllAttachedeffects("effect")
+				if #effects > 0 then
+					local ids = {}
+					for _, effect in ipairs(effects) do
+						table.insert(ids, effect.id)
+					end
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "effect registered on the server: "..table.concat(ids, ", "))
+				else
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "the server did not charge effect check .xml")
+				end
+		
+			end,
+		},
+		{
+			name = "pdump shader",
+			action = function(player)
+
+				local effects = Game.getAllAttachedeffects("shader")
+				if #effects > 0 then
+					local ids = {}
+					for _, effect in ipairs(effects) do
+						table.insert(ids, effect.name)
+					end
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "shader registered on the server: "..table.concat(ids, ", "))
+				else
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "the server did not charge shader check .xml")
+				end
+		
+			end,
+		},
+	},
 }
 
 function talkAction.onSay(player, words, param, type)
@@ -89,21 +156,25 @@ function talkAction.onSay(player, words, param, type)
 			})
 
 			for _, subOption in ipairs(subOptions) do
-				subModalWindow:addChoice(subOption.name, function(player, button, choice)
+				subModalWindow:addChoice(subOption.name, function(plyr, btn, ch)
 					if button.name == "OK" then
-						subOption.action(player)
+						subOption.action(plyr)
 					end
 				end)
 			end
 
 			subModalWindow:addButton("OK")
-			subModalWindow:addButton("Cancel")
+			subModalWindow:addButton("Cancel", function(plyr)
+				subModalWindow:clear()
+			end)
 			subModalWindow:sendToPlayer(player)
 		end)
 	end
 
 	modalWindow:addButton("OK")
-	modalWindow:addButton("Cancel")
+	modalWindow:addButton("Cancel", function(player)
+		modalWindow:clear()
+	end)
 	modalWindow:sendToPlayer(player)
 	return false
 end
@@ -111,3 +182,18 @@ end
 talkAction:groupType("gamemaster")
 talkAction:separator(" ")
 talkAction:register()
+
+
+local playerLoginTestOTCR = CreatureEvent("simpletest")
+
+function playerLoginTestOTCR.onLogin(player)
+	if not player then
+		return false
+	end
+	if player:getClient().os >= 10 and player:getClient().os < 20 then
+		player:say("say !testOTCR", TALKTYPE_SAY)
+	end
+return true
+end
+
+playerLoginTestOTCR:register()

@@ -95,6 +95,8 @@ public:
 		registerMethod(L, "Game", "getSecretAchievements", GameFunctions::luaGameGetSecretAchievements);
 		registerMethod(L, "Game", "getPublicAchievements", GameFunctions::luaGameGetPublicAchievements);
 		registerMethod(L, "Game", "getAchievements", GameFunctions::luaGameGetAchievements);
+
+		registerMethod(L, "Game", "getAllAttachedeffects", GameFunctions::getAllAttachedeffects); // delete before push
 	}
 
 private:
@@ -172,4 +174,5 @@ private:
 	static int luaGameGetSecretAchievements(lua_State* L);
 	static int luaGameGetPublicAchievements(lua_State* L);
 	static int luaGameGetAchievements(lua_State* L);
+	static int getAllAttachedeffects(lua_State* L); // delete before push
 };

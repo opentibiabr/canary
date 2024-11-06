@@ -596,7 +596,8 @@ OTCRFeatures = {
     enableFeature = { 
         101, -- g_game.enableFeature(GameItemShader)
         102, -- g_game.enableFeature(GameCreatureAttachedEffect)
-        103  -- g_game.enableFeature(GameCreatureShader)
+        103, -- g_game.enableFeature(GameCreatureShader)
+        118  -- g_game.enableFeature(GameWingsAurasEffectsShader)
     },
     disableFeature = {
     }

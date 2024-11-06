@@ -48,11 +48,16 @@ class Container;
 class KV;
 class BedItem;
 class Npc;
+class Attachedeffects;
 
 struct ModalWindow;
 struct Achievement;
 struct VIPGroup;
 struct Mount;
+struct Wing;
+struct Effect;
+struct Shader;
+struct Aura;
 struct OutfitEntry;
 struct Outfit;
 struct FamiliarEntry;
@@ -192,6 +197,70 @@ public:
 	bool hasAnyMount() const;
 	uint8_t getRandomMountId() const;
 	void dismount();
+
+	// -- @ wings
+	uint8_t getLastWing() const;
+	uint8_t getCurrentWing() const;
+	void setCurrentWing(uint8_t wingId);
+	bool isWinged() const {
+		return defaultOutfit.lookWing != 0;
+	}
+	bool toggleWing(bool wing);
+	bool tameWing(uint8_t wingId);
+	bool untameWing(uint8_t wingId);
+	bool hasWing(const std::shared_ptr<Wing> &wing) const;
+	bool hasAnyWing() const;
+	uint8_t getRandomWingId() const;
+	void diswing();
+
+	// -- @
+	// -- @ Auras
+	uint8_t getLastAura() const;
+	uint8_t getCurrentAura() const;
+	void setCurrentAura(uint8_t auraId);
+	bool isAuraed() const {
+		return defaultOutfit.lookAura != 0;
+	}
+	bool toggleAura(bool aura);
+	bool tameAura(uint8_t auraId);
+	bool untameAura(uint8_t auraId);
+	bool hasAura(const std::shared_ptr<Aura> &aura) const;
+	bool hasAnyAura() const;
+	uint8_t getRandomAuraId() const;
+	void disaura();
+	// -- @
+	// -- @ Effect
+	uint8_t getLastEffect() const;
+	uint8_t getCurrentEffect() const;
+	void setCurrentEffect(uint8_t effectId);
+	bool isEffected() const {
+		return defaultOutfit.lookEffect != 0;
+	}
+	bool toggleEffect(bool effect);
+	bool tameEffect(uint8_t effectId);
+	bool untameEffect(uint8_t effectId);
+	bool hasEffect(const std::shared_ptr<Effect> &effect) const;
+	bool hasAnyEffect() const;
+	uint8_t getRandomEffectId() const;
+	void diseffect();
+	// -- @
+	// -- @ Shader
+	uint16_t getRandomShader() const;
+	uint16_t getCurrentShader() const;
+	void setCurrentShader(uint16_t shaderId);
+	bool isShadered() const {
+		return defaultOutfit.lookShader != 0;
+	}
+	bool toggleShader(bool shader);
+	bool tameShader(uint16_t shaderId);
+	bool untameShader(uint16_t shaderId);
+	bool hasShader(const Shader* shader) const;
+	bool hasShaders() const;
+	void disshader();
+	std::string getCurrentShader_NAME() const;
+	bool addCustomOutfit(const std::string &type, const std::variant<uint16_t, std::string> &idOrName);
+	bool removeCustomOutfit(const std::string &type, const std::variant<uint16_t, std::string> &idOrName);
+
 	uint16_t getDodgeChance() const;
 
 	uint8_t isRandomMounted() const;
@@ -1364,6 +1433,10 @@ private:
 	std::vector<uint16_t> quickLootListItemIds;
 
 	std::vector<OutfitEntry> outfits;
+	std::unordered_set<uint16_t> wings;
+	std::unordered_set<uint16_t> auras;
+	std::unordered_set<uint16_t> effects;
+	std::unordered_set<uint16_t> shaders;
 	std::vector<FamiliarEntry> familiars;
 
 	std::vector<std::unique_ptr<PreySlot>> preys;
@@ -1416,6 +1489,10 @@ private:
 	int64_t lastPing;
 	int64_t lastPong;
 	int64_t nextAction = 0;
+	int64_t lastToggleWing = 0;
+	int64_t lastToggleEffect = 0;
+	int64_t lastToggleAura = 0;
+	int64_t lastToggleShader = 0;
 	int64_t nextPotionAction = 0;
 	int64_t lastQuickLootNotification = 0;
 	int64_t lastWalking = 0;
@@ -1558,6 +1635,14 @@ private:
 	bool moved = false;
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
+	bool wasWinged = false;
+	bool wasAuraed = false;
+	bool wasEffected = false;
+	bool wasShadered = false;
+	bool randomizeWing = false;
+	bool randomizeAura = false;
+	bool randomizeEffect = false;
+	bool randomizeShader = false;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;

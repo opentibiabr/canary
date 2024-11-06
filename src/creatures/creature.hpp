@@ -778,6 +778,10 @@ protected:
 
 	Outfit_t currentOutfit;
 	Outfit_t defaultOutfit;
+	uint16_t currentWing;
+	uint16_t currentAura;
+	uint16_t currentEffect;
+	uint16_t currentShader;
 
 	Position lastPosition;
 	LightInfo internalLight;

@@ -38,6 +38,7 @@ class IOWheel;
 class ItemClassification;
 class Guild;
 class Mounts;
+class Attachedeffects;
 class Spectators;
 class Player;
 class Account;
@@ -560,6 +561,7 @@ public:
 	Map map;
 	std::unique_ptr<Mounts> mounts;
 	[[no_unique_address]] Outfits outfits;
+	std::unique_ptr<Attachedeffects> attachedeffects;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 

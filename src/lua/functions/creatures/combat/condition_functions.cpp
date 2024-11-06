@@ -198,6 +198,10 @@ int ConditionFunctions::luaConditionSetOutfit(lua_State* L) {
 		outfit.lookHead = getNumber<uint8_t>(L, 4);
 		outfit.lookType = getNumber<uint16_t>(L, 3);
 		outfit.lookTypeEx = getNumber<uint16_t>(L, 2);
+		outfit.lookWing = getNumber<uint16_t>(L, 15);
+		outfit.lookAura = getNumber<uint16_t>(L, 16);
+		outfit.lookEffect = getNumber<uint16_t>(L, 17);
+		outfit.lookShader = getNumber<uint16_t>(L, 18);
 	}
 
 	const std::shared_ptr<ConditionOutfit> &condition = getUserdataShared<Condition>(L, 1)->dynamic_self_cast<ConditionOutfit>();

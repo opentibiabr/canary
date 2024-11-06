@@ -9,6 +9,7 @@
 
 #include "lua/functions/core/game/game_functions.hpp"
 
+#include "creatures/Appearance/attachedeffects/attachedeffects.hpp" // delete before push
 #include "core.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
@@ -915,4 +916,61 @@ int GameFunctions::luaGameGetAchievements(lua_State* L) {
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;
+}
+
+int GameFunctions::getAllAttachedeffects(lua_State* L) { // delete before push
+	// Game.getAllAttachedeffects(type)
+	const std::string type = luaL_checkstring(L, 1); 
+
+	lua_newtable(L); 
+
+	if (type == "aura") {
+		const auto &auras = g_game().attachedeffects->getAuras();
+		int index = 1;
+		for (const auto &aura : auras) {
+			lua_newtable(L); 
+			lua_pushinteger(L, aura->id);
+			lua_setfield(L, -2, "id");
+			lua_pushstring(L, aura->name.c_str()); 
+			lua_setfield(L, -2, "name");
+			lua_rawseti(L, -2, index++); 
+		}
+	} else if (type == "wing") {
+		const auto &wings = g_game().attachedeffects->getWings();
+		int index = 1;
+		for (const auto &wing : wings) {
+			lua_newtable(L); 
+			lua_pushinteger(L, wing->id);
+			lua_setfield(L, -2, "id");
+			lua_pushstring(L, wing->name.c_str()); 
+			lua_setfield(L, -2, "name");
+			lua_rawseti(L, -2, index++); 
+		}
+	} else if (type == "effect") {
+		const auto &wings = g_game().attachedeffects->getEffects();
+		int index = 1;
+		for (const auto &wing : wings) {
+			lua_newtable(L); 
+			lua_pushinteger(L, wing->id); 
+			lua_setfield(L, -2, "id");
+			lua_pushstring(L, wing->name.c_str()); 
+			lua_setfield(L, -2, "name");
+			lua_rawseti(L, -2, index++); 
+		}
+	} else if (type == "shader") {
+		const auto &shaders = g_game().attachedeffects->getShaders();
+		int index = 1;
+		for (const auto &shader : shaders) {
+			lua_newtable(L); 
+			lua_pushinteger(L, shader->id); 
+			lua_setfield(L, -2, "id");
+			lua_pushstring(L, shader->name.c_str()); 
+			lua_setfield(L, -2, "name");
+			lua_rawseti(L, -2, index++); 
+		}
+	} else {
+		lua_pushnil(L);
+	}
+
+	return 1; 
 }

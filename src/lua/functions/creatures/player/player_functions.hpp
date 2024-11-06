@@ -391,6 +391,8 @@ class PlayerFunctions final : LuaScriptInterface {
 		// OTCR Features
 		registerMethod(L, "Player", "getMapShader", PlayerFunctions::luaPlayerGetMapShader);
 		registerMethod(L, "Player", "setMapShader", PlayerFunctions::luaPlayerSetMapShader);
+		registerMethod(L, "Player", "removeCustomOutfit", PlayerFunctions::luaPlayerRemoveCustomOutfit);
+		registerMethod(L, "Player", "addCustomOutfit", PlayerFunctions::luaPlayerAddCustomOutfit);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
@@ -762,6 +764,9 @@ class PlayerFunctions final : LuaScriptInterface {
 
 	static int luaPlayerGetMapShader(lua_State* L);
 	static int luaPlayerSetMapShader(lua_State* L);
+
+	static int luaPlayerAddCustomOutfit(lua_State* L);
+	static int luaPlayerRemoveCustomOutfit(lua_State* L);
 
 	friend class CreatureFunctions;
 };

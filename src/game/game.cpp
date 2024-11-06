@@ -11,6 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/appearance/attachedeffects/attachedeffects.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
@@ -217,6 +218,7 @@ Game::Game() {
 	wildcardTree = std::make_shared<WildcardTreeNode>(false);
 
 	mounts = std::make_unique<Mounts>();
+	attachedeffects = std::make_unique<Attachedeffects>();
 
 	using enum CyclopediaBadge_t;
 	using enum CyclopediaTitle_t;
@@ -623,6 +625,7 @@ void Game::setGameState(GameState_t newState) {
 			raids.startup();
 
 			mounts->loadFromXml();
+			attachedeffects->loadFromXml();
 
 			loadMotdNum();
 			loadPlayersRecord();
@@ -6127,6 +6130,82 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		}
 
 		internalCreatureChangeOutfit(player, outfit);
+	}
+
+		// @  wings
+	if (outfit.lookWing != 0) {
+		const auto wing = attachedeffects->getWingByID(outfit.lookWing);
+		if (!wing) {
+			return;
+		}
+
+		player->detachEffectById(player->getCurrentWing());
+		player->setCurrentWing(wing->id);
+		player->attachEffectById(wing->id);
+	} else {
+		if (player->isWinged()) {
+			player->diswing();
+		}
+		player->detachEffectById(player->getCurrentWing());
+		player->wasWinged = false;
+	}
+	// @
+	// @  Effect
+	if (outfit.lookEffect != 0) {
+		const auto effect = attachedeffects->getEffectByID(outfit.lookEffect);
+		if (!effect) {
+			return;
+		}
+
+		player->detachEffectById(player->getCurrentEffect());
+		player->setCurrentEffect(effect->id);
+		player->attachEffectById(effect->id);
+	} else {
+		if (player->isEffected()) {
+			player->diseffect();
+		}
+		player->detachEffectById(player->getCurrentEffect());
+		player->wasEffected = false;
+	}
+	// @
+	// @  Aura
+	if (outfit.lookAura != 0) {
+		const auto aura = attachedeffects->getAuraByID(outfit.lookAura);
+		if (!aura) {
+			return;
+		}
+		player->detachEffectById(player->getCurrentAura());
+		player->setCurrentAura(aura->id);
+		player->attachEffectById(aura->id);
+	} else {
+		if (player->isAuraed()) {
+			player->disaura();
+		}
+		player->detachEffectById(player->getCurrentAura());
+		player->wasAuraed = false;
+	}
+	// @
+	/// shaders
+	if (outfit.lookShader != 0) {
+		const auto shaderPtr = attachedeffects->getShaderByID(outfit.lookShader);
+		if (!shaderPtr) {
+			return;
+		}
+		Shader* shader = shaderPtr.get();
+
+		if (!player->hasShader(shader)) {
+			return;
+		}
+
+		player->setCurrentShader(shader->id);
+		player->sendShader(player, shader->name);
+
+	} else {
+		if (player->isShadered()) {
+			player->disshader();
+		}
+		player->sendShader(player, "Outfit - Default");
+		player->wasShadered = false;
 	}
 }
 

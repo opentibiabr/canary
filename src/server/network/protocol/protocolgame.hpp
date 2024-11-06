@@ -497,6 +497,8 @@ private:
 	void sendMapShader(const std::string &shaderName);
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing);
 	void parsePlayerTyping(NetworkMessage &msg);
+	void AddOutfitCustomOTCR(NetworkMessage &msg, const Outfit_t &outfit);
+	void sendOutfitWindowCustomOTCR(NetworkMessage &msg);
 
 	void parseInventoryImbuements(NetworkMessage &msg);
 	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);

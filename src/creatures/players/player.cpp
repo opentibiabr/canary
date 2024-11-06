@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/appearance/attachedeffects/attachedeffects.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/interactions/chat.hpp"
@@ -1051,6 +1052,14 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 			return;
 		}
 		if (IS_IN_KEYRANGE(key, MOUNTS_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, WING_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, EFFECT_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, AURA_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, SHADER_RANGE)) {
 			// do nothing
 		} else if (IS_IN_KEYRANGE(key, FAMILIARS_RANGE)) {
 			familiars.emplace_back(
@@ -7002,6 +7011,759 @@ void Player::dismount() {
 	}
 
 	defaultOutfit.lookMount = 0;
+}
+
+// Wings
+
+uint8_t Player::getLastWing() const {
+	const int32_t value = getStorageValue(PSTRG_WING_CURRENTWING);
+	if (value > 0) {
+		return value;
+	}
+	return static_cast<uint8_t>(kv()->get("last-wing")->get<int>());
+}
+
+uint8_t Player::getCurrentWing() const {
+	const int32_t value = getStorageValue(PSTRG_WING_CURRENTWING);
+	if (value > 0) {
+		return value;
+	}
+	return 0;
+}
+
+void Player::setCurrentWing(uint8_t wing) {
+	addStorageValue(PSTRG_WING_CURRENTWING, wing);
+}
+
+bool Player::hasAnyWing() const {
+	const auto &wings = g_game().attachedeffects->getWings();
+	return std::ranges::any_of(wings, [&](const auto &wing) {
+		return hasWing(wing);
+	});
+}
+
+uint8_t Player::getRandomWingId() const {
+	std::vector<uint8_t> playerWings;
+	const auto wings = g_game().attachedeffects->getWings();
+	for (const auto &wing : wings) {
+		if (hasWing(wing)) {
+			playerWings.emplace_back(wing->id);
+		}
+	}
+
+	const auto playerWingsSize = static_cast<int32_t>(playerWings.size() - 1);
+	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerWingsSize));
+	return playerWings.at(randomIndex);
+}
+
+bool Player::toggleWing(bool wing) {
+	if ((OTSYS_TIME() - lastToggleWing) < 3000 && !wasWinged) {
+		sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
+	if (wing) {
+		if (isWinged()) {
+			return false;
+		}
+
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getPlayer(), defaultOutfit.lookType);
+		if (!playerOutfit) {
+			return false;
+		}
+
+		uint8_t currentWingId = getLastWing();
+		if (currentWingId == 0) {
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (isRandomMounted()) {
+			currentWingId = getRandomWingId();
+		}
+
+		const auto &currentWing = g_game().attachedeffects->getWingByID(currentWingId);
+		if (!currentWing) {
+			return false;
+		}
+
+		if (!hasWing(currentWing)) {
+			setCurrentWing(0);
+			kv()->set("last-wing", 0);
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (hasCondition(CONDITION_OUTFIT)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
+		defaultOutfit.lookWing = currentWing->id;
+		setCurrentWing(currentWing->id);
+		kv()->set("last-wing", currentWing->id);
+
+	} else {
+		if (!isWinged()) {
+			return false;
+		}
+
+		diswing();
+	}
+
+	g_game().internalCreatureChangeOutfit(static_self_cast<Player>(), defaultOutfit);
+	lastToggleWing = OTSYS_TIME();
+	return true;
+}
+
+bool Player::tameWing(uint8_t wingId) {
+	if (!g_game().attachedeffects->getWingByID(wingId)) {
+		return false;
+	}
+
+	const uint8_t tmpWingId = wingId - 1;
+	const uint32_t key = PSTRG_WING_RANGE_START + (tmpWingId / 31);
+
+	int32_t value = getStorageValue(key);
+	if (value != -1) {
+		value |= (1 << (tmpWingId % 31));
+	} else {
+		value = (1 << (tmpWingId % 31));
+	}
+
+	addStorageValue(key, value);
+	return true;
+}
+
+bool Player::untameWing(uint8_t wingId) {
+	if (!g_game().attachedeffects->getWingByID(wingId)) {
+		return false;
+	}
+
+	const uint8_t tmpWingId = wingId - 1;
+	const uint32_t key = PSTRG_WING_RANGE_START + (tmpWingId / 31);
+
+	int32_t value = getStorageValue(key);
+	if (value == -1) {
+		return true;
+	}
+
+	value &= ~(1 << (tmpWingId % 31));
+	addStorageValue(key, value);
+
+	if (getCurrentWing() == wingId) {
+		if (isWinged()) {
+			diswing();
+			g_game().internalCreatureChangeOutfit(static_self_cast<Player>(), defaultOutfit);
+		}
+
+		setCurrentWing(0);
+		kv()->set("last-wing", 0);
+	}
+
+	return true;
+}
+
+bool Player::hasWing(const std::shared_ptr<Wing> &wing) const {
+	if (isAccessPlayer()) {
+		return true;
+	}
+
+	const uint8_t tmpWingId = wing->id - 1;
+
+	const int32_t value = getStorageValue(PSTRG_WING_RANGE_START + (tmpWingId / 31));
+	if (value == -1) {
+		return false;
+	}
+
+	return ((1 << (tmpWingId % 31)) & value) != 0;
+}
+
+void Player::diswing() {
+	const auto &wing = g_game().attachedeffects->getWingByID(getCurrentWing());
+	defaultOutfit.lookWing = 0;
+}
+
+
+
+// Auras
+
+uint8_t Player::getLastAura() const {
+	const int32_t value = getStorageValue(PSTRG_AURA_CURRENTAURA);
+	if (value > 0) {
+		return value;
+	}
+	return static_cast<uint8_t>(kv()->get("last-aura")->get<int>());
+}
+
+uint8_t Player::getCurrentAura() const {
+	const int32_t value = getStorageValue(PSTRG_AURA_CURRENTAURA);
+	if (value > 0) {
+		return value;
+	}
+	return 0;
+}
+
+void Player::setCurrentAura(uint8_t aura) {
+	addStorageValue(PSTRG_AURA_CURRENTAURA, aura);
+}
+
+bool Player::hasAnyAura() const {
+	const auto &auras = g_game().attachedeffects->getAuras();
+	return std::ranges::any_of(auras, [&](const auto &aura) {
+		return hasAura(aura);
+	});
+}
+
+uint8_t Player::getRandomAuraId() const {
+	std::vector<uint8_t> playerAuras;
+	const auto auras = g_game().attachedeffects->getAuras();
+	for (const auto &aura : auras) {
+		if (hasAura(aura)) {
+			playerAuras.emplace_back(aura->id);
+		}
+	}
+
+	const auto playerAurasSize = static_cast<int32_t>(playerAuras.size() - 1);
+	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerAurasSize));
+	return playerAuras.at(randomIndex);
+}
+
+bool Player::toggleAura(bool aura) {
+	if ((OTSYS_TIME() - lastToggleAura) < 3000 && !wasAuraed) {
+		sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
+	if (aura) {
+		if (isAuraed()) {
+			return false;
+		}
+
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getPlayer(), defaultOutfit.lookType);
+		if (!playerOutfit) {
+			return false;
+		}
+
+		uint8_t currentAuraId = getLastAura();
+		if (currentAuraId == 0) {
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (isRandomMounted()) {
+			currentAuraId = getRandomAuraId();
+		}
+
+		const auto &currentAura = g_game().attachedeffects->getAuraByID(currentAuraId);
+		if (!currentAura) {
+			return false;
+		}
+
+		if (!hasAura(currentAura)) {
+			setCurrentAura(0);
+			kv()->set("last-aura", 0);
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (hasCondition(CONDITION_OUTFIT)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
+		defaultOutfit.lookAura = currentAura->id;
+		setCurrentAura(currentAura->id);
+		kv()->set("last-aura", currentAura->id);
+
+	} else {
+		if (!isAuraed()) {
+			return false;
+		}
+
+		disaura();
+	}
+
+	g_game().internalCreatureChangeOutfit(static_self_cast<Player>(), defaultOutfit);
+	lastToggleAura = OTSYS_TIME();
+	return true;
+}
+
+bool Player::tameAura(uint8_t auraId) {
+	if (!g_game().attachedeffects->getAuraByID(auraId)) {
+		return false;
+	}
+
+	const uint8_t tmpAuraId = auraId - 1;
+	const uint32_t key = PSTRG_AURA_RANGE_START + (tmpAuraId / 31);
+
+	int32_t value = getStorageValue(key);
+	if (value != -1) {
+		value |= (1 << (tmpAuraId % 31));
+	} else {
+		value = (1 << (tmpAuraId % 31));
+	}
+
+	addStorageValue(key, value);
+	return true;
+}
+
+bool Player::untameAura(uint8_t auraId) {
+	if (!g_game().attachedeffects->getAuraByID(auraId)) {
+		return false;
+	}
+
+	const uint8_t tmpAuraId = auraId - 1;
+	const uint32_t key = PSTRG_AURA_RANGE_START + (tmpAuraId / 31);
+
+	int32_t value = getStorageValue(key);
+	if (value == -1) {
+		return true;
+	}
+
+	value &= ~(1 << (tmpAuraId % 31));
+	addStorageValue(key, value);
+
+	if (getCurrentAura() == auraId) {
+		if (isAuraed()) {
+			disaura();
+			g_game().internalCreatureChangeOutfit(static_self_cast<Player>(), defaultOutfit);
+		}
+
+		setCurrentAura(0);
+		kv()->set("last-aura", 0);
+	}
+
+	return true;
+}
+
+bool Player::hasAura(const std::shared_ptr<Aura> &aura) const {
+	if (isAccessPlayer()) {
+		return true;
+	}
+	const uint8_t tmpAuraId = aura->id - 1;
+
+	const int32_t value = getStorageValue(PSTRG_AURA_RANGE_START + (tmpAuraId / 31));
+	if (value == -1) {
+		return false;
+	}
+
+	return ((1 << (tmpAuraId % 31)) & value) != 0;
+}
+
+void Player::disaura() {
+	const auto &aura = g_game().attachedeffects->getAuraByID(getCurrentAura());
+	defaultOutfit.lookAura = 0;
+}
+
+
+// Effects
+
+uint8_t Player::getLastEffect() const {
+	const int32_t value = getStorageValue(PSTRG_EFFECT_CURRENTEFFECT);
+	if (value > 0) {
+		return value;
+	}
+	return static_cast<uint8_t>(kv()->get("last-effect")->get<int>());
+}
+
+uint8_t Player::getCurrentEffect() const {
+	const int32_t value = getStorageValue(PSTRG_EFFECT_CURRENTEFFECT);
+	if (value > 0) {
+		return value;
+	}
+	return 0;
+}
+
+void Player::setCurrentEffect(uint8_t effect) {
+	addStorageValue(PSTRG_EFFECT_CURRENTEFFECT, effect);
+}
+
+bool Player::hasAnyEffect() const {
+	const auto &effects = g_game().attachedeffects->getEffects();
+	return std::ranges::any_of(effects, [&](const auto &effect) {
+		return hasEffect(effect);
+	});
+}
+
+uint8_t Player::getRandomEffectId() const {
+	std::vector<uint8_t> playerEffects;
+	const auto effects = g_game().attachedeffects->getEffects();
+	for (const auto &effect : effects) {
+		if (hasEffect(effect)) {
+			playerEffects.emplace_back(effect->id);
+		}
+	}
+
+	const auto playerEffectsSize = static_cast<int32_t>(playerEffects.size() - 1);
+	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerEffectsSize));
+	return playerEffects.at(randomIndex);
+}
+
+bool Player::toggleEffect(bool effect) {
+	if ((OTSYS_TIME() - lastToggleEffect) < 3000 && !wasEffected) {
+		sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
+	if (effect) {
+		if (isEffected()) {
+			return false;
+		}
+
+
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getPlayer(), defaultOutfit.lookType);
+		if (!playerOutfit) {
+			return false;
+		}
+
+		uint8_t currentEffectId = getLastEffect();
+		if (currentEffectId == 0) {
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (isRandomMounted()) {
+			currentEffectId = getRandomEffectId();
+		}
+
+		const auto &currentEffect = g_game().attachedeffects->getEffectByID(currentEffectId);
+		if (!currentEffect) {
+			return false;
+		}
+
+		if (!hasEffect(currentEffect)) {
+			setCurrentEffect(0);
+			kv()->set("last-effect", 0);
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (hasCondition(CONDITION_OUTFIT)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
+		defaultOutfit.lookEffect = currentEffect->id;
+		setCurrentEffect(currentEffect->id);
+		kv()->set("last-effect", currentEffect->id);
+
+	} else {
+		if (!isEffected()) {
+			return false;
+		}
+
+		diseffect();
+	}
+
+	g_game().internalCreatureChangeOutfit(static_self_cast<Player>(), defaultOutfit);
+	lastToggleEffect = OTSYS_TIME();
+	return true;
+}
+
+bool Player::tameEffect(uint8_t effectId) {
+	if (!g_game().attachedeffects->getEffectByID(effectId)) {
+		return false;
+	}
+
+	const uint8_t tmpEffectId = effectId - 1;
+	const uint32_t key = PSTRG_EFFECT_RANGE_START + (tmpEffectId / 31);
+
+	int32_t value = getStorageValue(key);
+	if (value != -1) {
+		value |= (1 << (tmpEffectId % 31));
+	} else {
+		value = (1 << (tmpEffectId % 31));
+	}
+
+	addStorageValue(key, value);
+	return true;
+}
+
+bool Player::untameEffect(uint8_t effectId) {
+	if (!g_game().attachedeffects->getEffectByID(effectId)) {
+		return false;
+	}
+
+	const uint8_t tmpEffectId = effectId - 1;
+	const uint32_t key = PSTRG_EFFECT_RANGE_START + (tmpEffectId / 31);
+
+	int32_t value = getStorageValue(key);
+	if (value == -1) {
+		return true;
+	}
+
+	value &= ~(1 << (tmpEffectId % 31));
+	addStorageValue(key, value);
+
+	if (getCurrentEffect() == effectId) {
+		if (isEffected()) {
+			diseffect();
+			g_game().internalCreatureChangeOutfit(static_self_cast<Player>(), defaultOutfit);
+		}
+
+		setCurrentEffect(0);
+		kv()->set("last-effect", 0);
+	}
+
+	return true;
+}
+
+bool Player::hasEffect(const std::shared_ptr<Effect> &effect) const {
+	if (isAccessPlayer()) {
+		return true;
+	}
+
+	const uint8_t tmpEffectId = effect->id - 1;
+
+	const int32_t value = getStorageValue(PSTRG_EFFECT_RANGE_START + (tmpEffectId / 31));
+	if (value == -1) {
+		return false;
+	}
+
+	return ((1 << (tmpEffectId % 31)) & value) != 0;
+}
+
+void Player::diseffect() {
+	const auto &effect = g_game().attachedeffects->getEffectByID(getCurrentEffect());
+	defaultOutfit.lookEffect = 0;
+}
+
+// Shaders
+uint16_t Player::getRandomShader() const {
+	std::vector<uint16_t> shadersId;
+	for (const auto &shader : g_game().attachedeffects->getShaders()) {
+		if (hasShader(shader.get())) {
+			shadersId.push_back(shader->id);
+		}
+	}
+
+	if (shadersId.empty()) {
+		return 0;
+	}
+
+	return shadersId[uniform_random(0, shadersId.size() - 1)];
+}
+
+uint16_t Player::getCurrentShader() const {
+	return currentShader;
+}
+
+void Player::setCurrentShader(uint16_t shaderId) {
+	currentShader = shaderId;
+}
+
+bool Player::toggleShader(bool shader) {
+	if ((OTSYS_TIME() - lastToggleShader) < 3000 && !wasShadered) {
+		sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
+	if (shader) {
+		if (isShadered()) {
+			return false;
+		}
+
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getPlayer(), defaultOutfit.lookType);
+		if (!playerOutfit) {
+			return false;
+		}
+
+		uint16_t currentShaderId = getCurrentShader();
+		if (currentShaderId == 0) {
+			sendOutfitWindow();
+			return false;
+		}
+
+		auto currentShaderPtr = g_game().attachedeffects->getShaderByID(currentShaderId);
+		if (!currentShaderPtr) {
+			return false;
+		}
+
+		Shader* currentShader = currentShaderPtr.get();
+
+		if (!hasShader(currentShader)) {
+			setCurrentShader(0);
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (hasCondition(CONDITION_OUTFIT)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
+		defaultOutfit.lookShader = currentShader->id;
+
+	} else {
+		if (!isShadered()) {
+			return false;
+		}
+
+		disshader();
+	}
+
+	g_game().internalCreatureChangeOutfit(static_self_cast<Player>(), defaultOutfit);
+	lastToggleShader = OTSYS_TIME();
+	return true;
+}
+
+bool Player::tameShader(uint16_t shaderId) {
+	auto shaderPtr = g_game().attachedeffects->getShaderByID(shaderId);
+	if (!shaderPtr) {
+		return false;
+	}
+
+	if (hasShader(shaderPtr.get())) {
+		return false;
+	}
+
+	shaders.insert(shaderId);
+	return true;
+}
+
+bool Player::untameShader(uint16_t shaderId) {
+	auto shaderPtr = g_game().attachedeffects->getShaderByID(shaderId);
+	if (!shaderPtr) {
+		return false;
+	}
+
+	if (!hasShader(shaderPtr.get())) {
+		return false;
+	}
+
+	shaders.erase(shaderId);
+
+	if (getCurrentShader() == shaderId) {
+		if (isShadered()) {
+			disshader();
+			g_game().internalCreatureChangeOutfit(static_self_cast<Player>(), defaultOutfit);
+		}
+
+		setCurrentShader(0);
+	}
+
+	return true;
+}
+
+bool Player::hasShader(const Shader* shader) const {
+	if (isAccessPlayer()) {
+		return true;
+	}
+
+	return shaders.find(shader->id) != shaders.end();
+}
+
+bool Player::hasShaders() const {
+	for (const auto &shader : g_game().attachedeffects->getShaders()) {
+		if (hasShader(shader.get())) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Player::disshader() {
+	defaultOutfit.lookShader = 0;
+}
+
+std::string Player::getCurrentShader_NAME() const {
+	uint16_t currentShaderId = getCurrentShader();
+	const auto &currentShader = g_game().attachedeffects->getShaderByID(static_cast<uint8_t>(currentShaderId));
+
+	if (currentShader != nullptr) {
+		return currentShader->name;
+	} else {
+		return "Outfit - Default";
+	}
+}
+
+bool Player::addCustomOutfit(const std::string &type, const std::variant<uint16_t, std::string> &idOrName) {
+	uint16_t elementId;
+
+	// Get element ID based on variant type
+	if (std::holds_alternative<uint16_t>(idOrName)) {
+		elementId = std::get<uint16_t>(idOrName);
+	} else {
+		const std::string &name = std::get<std::string>(idOrName);
+
+		if (type == "wings") {
+			auto element = g_game().attachedeffects->getWingByName(name);
+			if (!element) {
+				return false;
+			}
+			elementId = element->id;
+		} else if (type == "aura") {
+			auto element = g_game().attachedeffects->getAuraByName(name);
+			if (!element) {
+				return false;
+			}
+			elementId = element->id;
+		} else if (type == "shader") {
+			auto element = g_game().attachedeffects->getShaderByName(name);
+			if (!element) {
+				return false;
+			}
+			elementId = element->id;
+		} else {
+			return false;
+		}
+	}
+
+	// Add element based on type
+	if (type == "wings") {
+		return tameWing(elementId);
+	} else if (type == "aura") {
+		return tameAura(elementId);
+	} else if (type == "shader") {
+		return tameShader(elementId);
+	}
+
+	return false;
+}
+
+bool Player::removeCustomOutfit(const std::string &type, const std::variant<uint16_t, std::string> &idOrName) {
+	uint16_t elementId;
+
+	// Get element ID based on variant type
+	if (std::holds_alternative<uint16_t>(idOrName)) {
+		elementId = std::get<uint16_t>(idOrName);
+	} else {
+		const std::string &name = std::get<std::string>(idOrName);
+
+		if (type == "wings") {
+			auto element = g_game().attachedeffects->getWingByName(name);
+			if (!element) {
+				return false;
+			}
+			elementId = element->id;
+		} else if (type == "aura") {
+			auto element = g_game().attachedeffects->getAuraByName(name);
+			if (!element) {
+				return false;
+			}
+			elementId = element->id;
+		} else if (type == "shader") {
+			auto element = g_game().attachedeffects->getShaderByName(name);
+			if (!element) {
+				return false;
+			}
+			elementId = element->id;
+		} else {
+			return false;
+		}
+	}
+
+	// Remove element based on type
+	if (type == "wings") {
+		return untameWing(elementId);
+	} else if (type == "aura") {
+		return untameAura(elementId);
+	} else if (type == "shader") {
+		return untameShader(elementId);
+	}
+
+	return false;
 }
 
 bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {

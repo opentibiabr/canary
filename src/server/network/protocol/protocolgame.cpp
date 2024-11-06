@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/appearance/attachedeffects/attachedeffects.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/interactions/chat.hpp"
@@ -503,7 +504,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		isOTC = true;
 		if (isOTC && otclientV8 == 0) {
-			// sendOTCRFeatures(); first I need to make pr in redemption
+			 sendOTCRFeatures();
 		}
 		NetworkMessage opcodeMessage;
 		opcodeMessage.addByte(0x32);
@@ -1719,6 +1720,14 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 			}
 
 			uint8_t isMountRandomized = msg.getByte();
+			newOutfit.lookWing = isOTCR ? msg.get<uint16_t>() : 0;
+			newOutfit.lookAura = isOTCR ? msg.get<uint16_t>() : 0;
+			newOutfit.lookEffect = isOTCR ? msg.get<uint16_t>() : 0;
+			std::string shaderName = isOTCR ? msg.getString() : "";
+			if (!shaderName.empty()) {
+				const auto &shader = g_game().attachedeffects->getShaderByName(shaderName);
+				newOutfit.lookShader = shader ? shader->id : 0;
+			}
 			g_game().playerChangeOutfit(player->getID(), newOutfit, isMountRandomized);
 		} else if (outfitType == 1) {
 			// This value probably has something to do with try outfit variable inside outfit window dialog
@@ -7096,6 +7105,24 @@ void ProtocolGame::sendOutfitWindow() {
 		currentOutfit.lookMount = 0;
 	}
 
+	const auto &currentWing = g_game().attachedeffects->getWingByID(player->getCurrentWing());
+	if (currentWing) {
+		currentOutfit.lookWing = currentWing->id;
+	}
+	// @ -- auras
+	const auto &currentAura = g_game().attachedeffects->getAuraByID(player->getCurrentAura());
+	if (currentAura) {
+		currentOutfit.lookAura = currentAura->id;
+	}
+	// @ -- effects
+	const auto &currentEffect = g_game().attachedeffects->getEffectByID(player->getCurrentEffect());
+	if (currentEffect) {
+		currentOutfit.lookEffect = currentEffect->id;
+	}
+	const auto &currentShader = g_game().attachedeffects->getShaderByID(player->getCurrentShader());
+	if (currentShader) {
+		currentOutfit.lookShader = currentShader->id;
+	}
 	AddOutfit(msg, currentOutfit);
 
 	if (oldProtocol) {
@@ -7135,6 +7162,9 @@ void ProtocolGame::sendOutfitWindow() {
 			msg.addString(mount->name);
 		}
 
+		if (isOTCR) {
+			sendOutfitWindowCustomOTCR(msg);
+		}
 		writeToOutputBuffer(msg);
 		return;
 	}
@@ -7277,6 +7307,9 @@ void ProtocolGame::sendOutfitWindow() {
 	// Version 12.81 - Random mount 'bool'
 	msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
 
+	if (isOTCR) {
+		sendOutfitWindowCustomOTCR(msg);
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -7908,6 +7941,9 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 
 	if (addMount) {
 		msg.add<uint16_t>(outfit.lookMount);
+	}
+	if (isOTCR) {
+		AddOutfitCustomOTCR(msg, outfit);
 	}
 }
 
@@ -9382,4 +9418,88 @@ void ProtocolGame::sendPlayerTyping(const std::shared_ptr<Creature> &creature, u
 	msg.add<uint32_t>(creature->getID());
 	msg.addByte(typing);
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::AddOutfitCustomOTCR(NetworkMessage &msg, const Outfit_t &outfit) {
+	if (!isOTCR) {
+		return;
+	}
+
+	msg.add<uint16_t>(outfit.lookWing);
+	msg.add<uint16_t>(outfit.lookAura);
+	msg.add<uint16_t>(outfit.lookEffect);
+	const auto &shader = g_game().attachedeffects->getShaderByID(outfit.lookShader);
+	msg.addString(shader ? shader->name : "");
+}
+
+void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
+	if (!isOTCR) {
+		return;
+	}
+		// wings
+	auto startWings = msg.getBufferPosition();
+	uint16_t limitWings = std::numeric_limits<uint16_t>::max();
+	uint16_t wingSize = 0;
+	msg.skipBytes(1);
+	const auto wings = g_game().attachedeffects->getWings();
+	for (const auto &wing : wings) {
+		if (player->hasWing(wing)) {
+			msg.add<uint16_t>(wing->id);
+			msg.addString(wing->name);
+			++wingSize;
+		}
+		if (wingSize == limitWings) {
+			break;
+		}
+	}
+	auto endWings = msg.getBufferPosition();
+	msg.setBufferPosition(startWings);
+	msg.add<uint8_t>(wingSize);
+	msg.setBufferPosition(endWings);
+	// auras
+	auto startAuras = msg.getBufferPosition();
+	uint16_t limitAuras = std::numeric_limits<uint16_t>::max();
+	uint16_t auraSize = 0;
+	msg.skipBytes(1);
+	const auto auras = g_game().attachedeffects->getAuras();
+	for (const auto &aura : auras) {
+		if (player->hasAura(aura)) {
+			msg.add<uint16_t>(aura->id);
+			msg.addString(aura->name);
+			++auraSize;
+		}
+	}
+	auto endAuras = msg.getBufferPosition();
+	msg.setBufferPosition(startAuras);
+	msg.add<uint8_t>(auraSize);
+	msg.setBufferPosition(endAuras);
+	// effects
+	auto startEffects = msg.getBufferPosition();
+	uint16_t limitEffects = std::numeric_limits<uint16_t>::max();
+	uint16_t effectSize = 0;
+	msg.skipBytes(1);
+	const auto effects = g_game().attachedeffects->getEffects();
+	for (const auto &effect : effects) {
+		if (player->hasEffect(effect)) {
+			msg.add<uint16_t>(effect->id);
+			msg.addString(effect->name);
+			++effectSize;
+		}
+	}
+	auto endEffects = msg.getBufferPosition();
+	msg.setBufferPosition(startEffects);
+	msg.add<uint8_t>(effectSize);
+	msg.setBufferPosition(endEffects);
+	// shader
+	std::vector<const Shader*> shaders;
+	for (const auto &shader : g_game().attachedeffects->getShaders()) {
+		if (player->hasShader(shader.get())) {
+			shaders.push_back(shader.get());
+		}
+	}
+	msg.addByte(static_cast<uint8_t>(shaders.size()));
+	for (const Shader* shader : shaders) {
+		msg.add<uint16_t>(shader->id);
+		msg.addString(shader->name);
+	}
 }

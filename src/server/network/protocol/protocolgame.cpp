@@ -4369,12 +4369,11 @@ void ProtocolGame::sendBlessingWindow() {
 		msg.addByte(player->getBlessingCount(blessingValue, true));
 	}
 
+	// Start at "The Wisdom Of Solitude"
 	uint8_t blessCount = 0;
-	for (int i = 1; i <= 8; i++) {
+	for (int i = 2; i <= 8; i++) {
 		if (player->hasBlessing(i)) {
-			if (i > 1) {
-				blessCount++;
-			}
+			blessCount++;
 		}
 	}
 
@@ -4421,11 +4420,9 @@ void ProtocolGame::sendBlessStatus() {
 
 	// Ignore Twist of Fate (Id 1)
 	uint8_t blessCount = 0;
-	for (int i = 1; i <= 8; i++) {
+	for (int i = 2; i <= 8; i++) {
 		if (player->hasBlessing(i)) {
-			if (i > 1) {
-				blessCount++;
-			}
+			blessCount++;
 		}
 	}
 

@@ -41,8 +41,8 @@ public:
 	[[nodiscard]] int32_t getNumber(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
 	[[nodiscard]] bool getBoolean(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
 	[[nodiscard]] float getFloat(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
-	OTCFeatures getEnabledOTCFeatures() const;
-	OTCFeatures getDisabledOTCFeatures() const;
+	OTCFeatures getEnabledFeaturesOTC() const;
+	OTCFeatures getDisabledFeaturesOTC() const;
 
 private:
 	phmap::flat_hash_map<ConfigKey_t, ConfigValue> configs;
@@ -53,8 +53,8 @@ private:
 
 	std::string configFileLua = { "config.lua" };
 	bool loaded = false;
-	OTCFeatures enabledOTCFeatures = {};
-	OTCFeatures disabledOTCFeatures = {};
+	OTCFeatures enabledFeaturesOTC = {};
+	OTCFeatures disabledFeaturesOTC = {};
 	void loadLuaOTCFeatures(lua_State* L);
 };
 

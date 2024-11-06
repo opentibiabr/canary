@@ -473,25 +473,25 @@ void ConfigManager::loadLuaOTCFeatures(lua_State* L) {
 		return;
 	}
 
-	lua_pushstring(L, "enable");
+	lua_pushstring(L, "enableFeature");
 	lua_gettable(L, -2);
 	if (lua_istable(L, -1)) {
 		lua_pushnil(L);
 		while (lua_next(L, -2) != 0) {
 			const auto feature = static_cast<uint8_t>(lua_tointeger(L, -1));
-			enabledOTCFeatures.push_back(feature);
+			enabledFeaturesOTC.push_back(feature);
 			lua_pop(L, 1);
 		}
 	}
 	lua_pop(L, 1);
 
-	lua_pushstring(L, "disable");
+	lua_pushstring(L, "disableFeature");
 	lua_gettable(L, -2);
 	if (lua_istable(L, -1)) {
 		lua_pushnil(L);
 		while (lua_next(L, -2) != 0) {
 			const auto feature = static_cast<uint8_t>(lua_tointeger(L, -1));
-			disabledOTCFeatures.push_back(feature);
+			disabledFeaturesOTC.push_back(feature);
 			lua_pop(L, 1);
 		}
 	}
@@ -499,10 +499,10 @@ void ConfigManager::loadLuaOTCFeatures(lua_State* L) {
 
 	lua_pop(L, 1);
 }
-OTCFeatures ConfigManager::getEnabledOTCFeatures() const {
-	return enabledOTCFeatures;
+OTCFeatures ConfigManager::getEnabledFeaturesOTC() const {
+	return enabledFeaturesOTC;
 }
 
-OTCFeatures ConfigManager::getDisabledOTCFeatures() const {
-	return disabledOTCFeatures;
+OTCFeatures ConfigManager::getDisabledFeaturesOTC() const {
+	return disabledFeaturesOTC;
 }

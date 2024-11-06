@@ -593,11 +593,11 @@ metricsOstreamInterval = 1000
 -- NOTE: Features added in this list will be forced to be used on the client
 -- These features can be found in "modules/gamelib/const.lua"
 OTCRFeatures = {
-    enable = { 
+    enableFeature = { 
         101, -- g_game.enableFeature(GameItemShader)
         102, -- g_game.enableFeature(GameCreatureAttachedEffect)
         103  -- g_game.enableFeature(GameCreatureShader)
     },
-    disable = { -- utility: for example in 13.10 g_game.disableFeature(GameSequencedPackets)
+    disableFeature = {
     }
 }

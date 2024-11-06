@@ -287,7 +287,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint
 
 		// OTCR Features
 		if (isOTCR) {
-			msg.addString("");
+			msg.addString(""); // g_game.enableFeature(GameItemShader)
 		}
 		return;
 	}
@@ -325,7 +325,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint
 
 	// OTCR Features
 	if (isOTCR) {
-		msg.addString("");
+		msg.addString(""); // g_game.enableFeature(GameItemShader)
 	}
 }
 
@@ -359,7 +359,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &ite
 
 		// OTCR Features
 		if (isOTCR) {
-			msg.addString(item->getShader());
+			msg.addString(item->getShader()); // g_game.enableFeature(GameItemShader)
 		}
 		return;
 	}
@@ -478,7 +478,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &ite
 
 	// OTCR Features
 	if (isOTCR) {
-		msg.addString(item->getShader());
+		msg.addString(item->getShader()); // g_game.enableFeature(GameItemShader)
 	}
 }
 
@@ -7777,10 +7777,10 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const std::shared_ptr<Creatu
 	msg.addByte(player->canWalkthroughEx(creature) ? 0x00 : 0x01);
 
 	if (isOTCR) {
-		msg.addString(creature->getShader());
-		msg.addByte(static_cast<uint8_t>(creature->getAttachedEffectList().size()));
+		msg.addString(creature->getShader()); // g_game.enableFeature(GameCreatureShader)
+		msg.addByte(static_cast<uint8_t>(creature->getAttachedEffectList().size())); // g_game.enableFeature(GameCreatureAttachedEffect)
 		for (const uint16_t id : creature->getAttachedEffectList()) {
-			msg.add<uint16_t>(id);
+			msg.add<uint16_t>(id); // g_game.enableFeature(GameCreatureAttachedEffect)
 		}
 	}
 }
@@ -8408,8 +8408,8 @@ void ProtocolGame::sendFeatures() {
 // OTCR
 void ProtocolGame::sendOTCRFeatures() {
 	isOTCR = true;
-	const auto &enabledFeatures = g_configManager().getEnabledOTCFeatures();
-	const auto &disabledFeatures = g_configManager().getDisabledOTCFeatures();
+	const auto &enabledFeatures = g_configManager().getEnabledFeaturesOTC();
+	const auto &disabledFeatures = g_configManager().getDisabledFeaturesOTC();
 	NetworkMessage msg;
 	msg.addByte(0x43);
 	auto totalFeatures = static_cast<uint16_t>(enabledFeatures.size() + disabledFeatures.size());

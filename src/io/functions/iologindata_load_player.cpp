@@ -679,7 +679,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 			continue;
 		}
 
-		const auto &container = item->getContainer();
+		const auto &container = inboxIt->second.first->getContainer();
 		if (!container) {
 			continue;
 		}

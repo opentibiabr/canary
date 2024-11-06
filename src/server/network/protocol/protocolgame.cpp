@@ -4092,7 +4092,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 					continue;
 				}
 
-				msg.add<uint16_t>(imbuementInfo.imbuement->getID());
+				msg.add<uint16_t>(imbuementInfo.imbuement->getIconID());
 				itemImbuements++;
 			}
 

@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "utils/tools.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {
@@ -58,6 +59,53 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 		maxPacketSize = result->getNumber<uint64_t>("Value");
 	}
 	return true;
+}
+
+void Database::createDatabaseBackup() const {
+	if (!g_configManager().getBoolean(MYSQL_DB_BACKUP)) {
+		return;
+	}
+
+	std::time_t now = getTimeNow();
+	std::string formattedTime = fmt::format("{:%Y-%m-%d_%H-%M-%S}", fmt::localtime(now));
+
+	if (formattedTime.empty()) {
+		g_logger().error("Failed to format time for database backup.");
+		return;
+	}
+
+	std::string backupDir = "database_backup/";
+	std::filesystem::create_directories(backupDir);
+	std::string backupFileName = fmt::format("{}/backup_{}.sql", backupDir, formattedTime);
+
+	std::string tempConfigFile = "database_backup.cnf";
+	std::ofstream configFile(tempConfigFile);
+	if (configFile.is_open()) {
+		configFile << "[client]\n";
+		configFile << "user=" << g_configManager().getString(MYSQL_USER) << "\n";
+		configFile << "password=" << g_configManager().getString(MYSQL_PASS) << "\n";
+		configFile << "host=" << g_configManager().getString(MYSQL_HOST) << "\n";
+		configFile << "port=" << g_configManager().getNumber(SQL_PORT) << "\n";
+		configFile.close();
+	} else {
+		g_logger().error("Failed to create temporary MySQL configuration file.");
+		return;
+	}
+
+	std::string command = fmt::format(
+		"mysqldump --defaults-extra-file={} {} > {}",
+		tempConfigFile, g_configManager().getString(MYSQL_DB), backupFileName
+	);
+
+	int result = std::system(command.c_str());
+
+	std::filesystem::remove(tempConfigFile);
+
+	if (result != 0) {
+		g_logger().error("Failed to create database backup using mysqldump.");
+	} else {
+		g_logger().info("Database backup successfully created at: {}", backupFileName);
+	}
 }
 
 bool Database::beginTransaction() {

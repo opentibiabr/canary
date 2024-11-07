@@ -36,6 +36,7 @@ public:
 	bool connect();
 
 	bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
+	void createDatabaseBackup() const;
 
 	bool retryQuery(std::string_view query, int retries);
 	bool executeQuery(std::string_view query);

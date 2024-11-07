@@ -6519,10 +6519,9 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 
 	creature->inCheckCreaturesVector.store(true);
 
-	g_dispatcher().context().tryAddEvent([creature] {
+	creature->safeCall([this, creature] {
 		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
-	},
-	                                     "addCreatureCheck");
+	});
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
@@ -6536,7 +6535,7 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> &creature) {
+	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
 		if (creature->creatureCheck && creature->isAlive()) {
 			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);

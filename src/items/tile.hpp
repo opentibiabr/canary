@@ -259,6 +259,9 @@ public:
 		}
 	}
 
+	// This method maintains safety in asynchronous calls, avoiding competition between threads.
+	void safeCall(std::function<void(void)> &&action) const;
+
 private:
 	void onAddTileItem(const std::shared_ptr<Item> &item);
 	void onUpdateTileItem(const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType);

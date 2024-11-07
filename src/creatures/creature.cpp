@@ -270,18 +270,17 @@ void Creature::addEventWalk(bool firstStep) {
 		return;
 	}
 
-	g_dispatcher().context().tryAddEvent([ticks, self = getCreature()]() {
+	safeCall([this, ticks]() {
 		// Take first step right away, but still queue the next
 		if (ticks == 1) {
-			g_game().checkCreatureWalk(self->getID());
+			g_game().checkCreatureWalk(getID());
 		}
 
-		self->eventWalk = g_dispatcher().scheduleEvent(
+		eventWalk = g_dispatcher().scheduleEvent(
 			static_cast<uint32_t>(ticks),
-			[creatureId = self->getID()] { g_game().checkCreatureWalk(creatureId); }, "Game::checkCreatureWalk"
+			[creatureId = getID()] { g_game().checkCreatureWalk(creatureId); }, "Game::checkCreatureWalk"
 		);
-	},
-	                                     "addEventWalk");
+	});
 }
 
 void Creature::stopEventWalk() {
@@ -1082,7 +1081,7 @@ void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathPa
 
 void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
 	if (!hasAsyncTaskFlag(Pathfinder) && onComplete) {
-		g_dispatcher().context().addEvent(std::move(onComplete), "goToFollowCreature_async");
+		g_dispatcher().addEvent(std::move(onComplete), "goToFollowCreature_async");
 	}
 
 	setAsyncTaskFlag(Pathfinder, true);
@@ -2001,6 +2000,21 @@ void Creature::sendAsyncTasks() {
 		}
 	},
 	                          TaskGroup::WalkParallel);
+}
+
+void Creature::safeCall(std::function<void(void)> &&action) const {
+	if (g_dispatcher().context().isAsync()) {
+		g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
+			if (const auto self = weak_self.lock()) {
+				if (!self->isInternalRemoved) {
+					action();
+				}
+			}
+		},
+		                        g_dispatcher().context().getName());
+	} else if (!isInternalRemoved) {
+		action();
+	}
 }
 
 void Creature::attachEffectById(uint16_t id) {

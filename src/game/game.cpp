@@ -6456,7 +6456,7 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> &creature) {
+	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
 		if (creature->creatureCheck && creature->isAlive()) {
 			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);

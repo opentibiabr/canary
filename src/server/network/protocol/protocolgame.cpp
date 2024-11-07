@@ -504,7 +504,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		isOTC = true;
 		if (isOTC && otclientV8 == 0) {
-			 sendOTCRFeatures();
+			sendOTCRFeatures();
 		}
 		NetworkMessage opcodeMessage;
 		opcodeMessage.addByte(0x32);
@@ -9432,7 +9432,7 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 	if (!isOTCR) {
 		return;
 	}
-		// wings
+	// wings
 	auto startWings = msg.getBufferPosition();
 	uint16_t limitWings = std::numeric_limits<uint16_t>::max();
 	uint16_t wingSize = 0;

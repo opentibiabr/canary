@@ -209,7 +209,7 @@ void Connection::parseHeader(const std::error_code &error) {
 	}
 
 	uint16_t size = m_msg.getLengthHeader();
-		g_logger().warn("size {}", size);
+	g_logger().warn("size {}", size);
 	if (std::dynamic_pointer_cast<ProtocolGame>(protocol)) {
 		size = (size * 8) + 4;
 		g_logger().warn("size multiplied {}", size);

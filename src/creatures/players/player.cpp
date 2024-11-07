@@ -7043,17 +7043,17 @@ bool Player::hasAnyWing() const {
 }
 
 uint8_t Player::getRandomWingId() const {
-	std::vector<uint8_t> playerWings;
+	std::vector<uint8_t> availableWings;
 	const auto wings = g_game().attachedeffects->getWings();
 	for (const auto &wing : wings) {
 		if (hasWing(wing)) {
-			playerWings.emplace_back(wing->id);
+			availableWings.emplace_back(wing->id);
 		}
 	}
 
-	const auto playerWingsSize = static_cast<int32_t>(playerWings.size() - 1);
-	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerWingsSize));
-	return playerWings.at(randomIndex);
+	const auto availableWingsSize = static_cast<int32_t>(availableWings.size() - 1);
+	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, availableWingsSize));
+	return availableWings.at(randomIndex);
 }
 
 bool Player::toggleWing(bool wing) {

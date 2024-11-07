@@ -35,13 +35,17 @@ void SaveManager::saveAll() {
 	logger.info("Saving server...");
 
 	Benchmark bm_players;
-	const auto &players = game.getPlayers();
 	const auto async = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
+
+	const auto &players = std::vector<std::pair<uint32_t, std::shared_ptr<Player>>>(game.getPlayers().begin(), game.getPlayers().end());
 	logger.info("Saving {} players... (Async: {})", players.size(), async ? "Enabled" : "Disabled");
-	for (const auto &[_, player] : players) {
-		player->loginPosition = player->getPosition();
-		doSavePlayer(player);
-	}
+
+	threadPool.submit_loop(static_cast<int>(0), static_cast<int>(players.size()), [this, &players](const int i) {
+				  const auto &player = players[i].second;
+				  player->loginPosition = player->getPosition();
+				  doSavePlayer(player);
+			  })
+		.wait();
 
 	double duration_players = bm_players.duration();
 	if (duration_players > 1000.0) {
@@ -51,10 +55,12 @@ void SaveManager::saveAll() {
 	}
 
 	Benchmark bm_guilds;
-	const auto &guilds = game.getGuilds();
-	for (const auto &[_, guild] : guilds) {
-		saveGuild(guild);
-	}
+	const auto &guilds = std::vector<std::pair<uint32_t, std::shared_ptr<Guild>>>(game.getGuilds().begin(), game.getGuilds().end());
+	threadPool.submit_loop(static_cast<int>(0), static_cast<int>(guilds.size()), [this, &guilds](const int i) {
+				  saveGuild(guilds[i].second);
+			  })
+		.wait();
+
 	double duration_guilds = bm_guilds.duration();
 	if (duration_guilds > 1000.0) {
 		logger.info("Guilds saved in {:.2f} seconds.", duration_guilds / 1000.0);

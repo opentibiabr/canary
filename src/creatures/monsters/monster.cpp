@@ -602,7 +602,7 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::updateTargetList() {
-	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+	if (!g_dispatcher().context().isAsync()) {
 		setAsyncTaskFlag(UpdateTargetList, true);
 		return;
 	}
@@ -967,7 +967,6 @@ void Monster::setIdle(bool idle) {
 
 	if (!isIdle) {
 		g_game().addCreatureCheck(getMonster());
-
 	} else {
 		onIdleStatus();
 		clearTargetList();
@@ -977,7 +976,7 @@ void Monster::setIdle(bool idle) {
 }
 
 void Monster::updateIdleStatus() {
-	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+	if (!g_dispatcher().context().isAsync()) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
 		return;
 	}

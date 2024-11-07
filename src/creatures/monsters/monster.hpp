@@ -225,6 +225,8 @@ protected:
 	void onExecuteAsyncTasks() override;
 
 private:
+	void onThink_async();
+
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
 		return std::ranges::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
 			const auto &target = ref.lock();

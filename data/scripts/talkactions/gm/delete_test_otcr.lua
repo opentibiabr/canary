@@ -83,10 +83,9 @@ local options = {
 					for _, effect in ipairs(effects) do
 						table.insert(ids, effect.id)
 					end
-					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "aura registered on the server: ".. table.concat(ids, ", "))
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "aura registered on the server: " .. table.concat(ids, ", "))
 				else
 					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "the server did not charge aura check .xml")
-					
 				end
 			end,
 		},
@@ -99,7 +98,7 @@ local options = {
 					for _, effect in ipairs(effects) do
 						table.insert(ids, effect.id)
 					end
-					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "wing registered on the server: "..table.concat(ids, ", "))
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "wing registered on the server: " .. table.concat(ids, ", "))
 				else
 					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "the server did not charge wing check .xml")
 				end
@@ -108,35 +107,31 @@ local options = {
 		{
 			name = "pdump effect",
 			action = function(player)
-
 				local effects = Game.getAllAttachedeffects("effect")
 				if #effects > 0 then
 					local ids = {}
 					for _, effect in ipairs(effects) do
 						table.insert(ids, effect.id)
 					end
-					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "effect registered on the server: "..table.concat(ids, ", "))
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "effect registered on the server: " .. table.concat(ids, ", "))
 				else
 					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "the server did not charge effect check .xml")
 				end
-		
 			end,
 		},
 		{
 			name = "pdump shader",
 			action = function(player)
-
 				local effects = Game.getAllAttachedeffects("shader")
 				if #effects > 0 then
 					local ids = {}
 					for _, effect in ipairs(effects) do
 						table.insert(ids, effect.name)
 					end
-					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "shader registered on the server: "..table.concat(ids, ", "))
+					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "shader registered on the server: " .. table.concat(ids, ", "))
 				else
 					player:sendTextMessage(MESSAGE_GAMEMASTER_CONSOLE, "the server did not charge shader check .xml")
 				end
-		
 			end,
 		},
 	},
@@ -183,7 +178,6 @@ talkAction:groupType("gamemaster")
 talkAction:separator(" ")
 talkAction:register()
 
-
 local playerLoginTestOTCR = CreatureEvent("simpletest")
 
 function playerLoginTestOTCR.onLogin(player)
@@ -193,7 +187,7 @@ function playerLoginTestOTCR.onLogin(player)
 	if player:getClient().os >= 10 and player:getClient().os < 20 then
 		player:say("say !testOTCR", TALKTYPE_SAY)
 	end
-return true
+	return true
 end
 
 playerLoginTestOTCR:register()

@@ -6132,7 +6132,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		internalCreatureChangeOutfit(player, outfit);
 	}
 
-		// @  wings
+	// @  wings
 	if (outfit.lookWing != 0) {
 		const auto wing = attachedeffects->getWingByID(outfit.lookWing);
 		if (!wing) {

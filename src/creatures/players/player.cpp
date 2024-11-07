@@ -7179,8 +7179,6 @@ void Player::diswing() {
 	defaultOutfit.lookWing = 0;
 }
 
-
-
 // Auras
 
 uint8_t Player::getLastAura() const {
@@ -7351,7 +7349,6 @@ void Player::disaura() {
 	defaultOutfit.lookAura = 0;
 }
 
-
 // Effects
 
 uint8_t Player::getLastEffect() const {
@@ -7405,7 +7402,6 @@ bool Player::toggleEffect(bool effect) {
 		if (isEffected()) {
 			return false;
 		}
-
 
 		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getPlayer(), defaultOutfit.lookType);
 		if (!playerOutfit) {

@@ -12,12 +12,15 @@
 #include "declarations.hpp"
 // TODO: Remove circular includes (maybe shared_ptr?)
 #include "server/network/message/networkmessage.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 
 static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;
 static constexpr int32_t CONNECTION_READ_TIMEOUT = 30;
 
 class Protocol;
 using Protocol_ptr = std::shared_ptr<Protocol>;
+class ProtocolGame;
+using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 class OutputMessage;
 using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
 class Connection;

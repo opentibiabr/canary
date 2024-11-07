@@ -476,6 +476,7 @@ void ProtocolGame::release() {
 }
 
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
+	g_logger().warn("ProtocolGame login");
 	// OTCV8 features
 	if (otclientV8 > 0) {
 		sendFeatures();
@@ -711,6 +712,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced) {
 }
 
 void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
+	g_logger().warn("ProtocolGame onRecvFirstMessage");
 	if (g_game().getGameState() == GAME_STATE_SHUTDOWN) {
 		disconnect();
 		return;
@@ -881,15 +883,15 @@ void ProtocolGame::onConnect() {
 	output->skipBytes(sizeof(uint32_t));
 
 	// Packet length & type
-	output->add<uint16_t>(0x0006);
+	output->addByte(0x01);
 	output->addByte(0x1F);
-
 	// Add timestamp & random number
 	challengeTimestamp = static_cast<uint32_t>(time(nullptr));
 	output->add<uint32_t>(challengeTimestamp);
 
 	challengeRandom = randNumber(generator);
 	output->addByte(challengeRandom);
+	output->addByte(0x71);
 
 	// Go back and write checksum
 	output->skipBytes(-12);
@@ -913,10 +915,12 @@ void ProtocolGame::writeToOutputBuffer(const NetworkMessage &msg) {
 }
 
 void ProtocolGame::parsePacket(NetworkMessage &msg) {
+	g_logger().warn("ProtocolGame parsePacket");
 	if (!acceptPackets || g_game().getGameState() == GAME_STATE_SHUTDOWN || msg.getLength() <= 0) {
 		return;
 	}
 
+	uint8_t paddingByte = msg.getByte();
 	uint8_t recvbyte = msg.getByte();
 
 	if (!player || player->isRemoved()) {

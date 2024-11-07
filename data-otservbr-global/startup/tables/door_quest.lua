@@ -785,11 +785,11 @@ QuestDoorAction = {
 	},
 	[Storage.Quest.U12_20.KilmareshQuest.Sixth.GryphonMask] = {
 		itemId = 9558,
-		itemPos = {	{ x = 33884, y = 31536, z = 9 }	},
+		itemPos = { { x = 33884, y = 31536, z = 9 } },
 	},
 	[Storage.Quest.U12_20.KilmareshQuest.Sixth.MirrorMask] = {
 		itemId = 9558,
-		itemPos = {	{ x = 33884, y = 31510, z = 9 } },
+		itemPos = { { x = 33884, y = 31510, z = 9 } },
 	},
 	[Storage.Quest.U12_20.KilmareshQuest.Sixth.IvoryMask] = {
 		itemId = 9558,

@@ -60,7 +60,7 @@ local function greetCallback(npc, creature)
 			"Should you ever find the other three parts, a talented jeweler might be able to combine them and recreate the regalia for you.",
 		})
 		player:addItem(31573, 1)
-        player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Sixth.Favor, 11)
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Sixth.Favor, 11)
 	elseif player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.Memories) == 5 then
 		player:addItem(31414, 1)
 		npcHandler:setMessage(MESSAGE_GREET, {

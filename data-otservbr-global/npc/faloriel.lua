@@ -58,34 +58,33 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local function creatureSayCallback(npc, creature, type, message)
-    local player = Player(creature)
-    local playerId = player:getId()
+	local player = Player(creature)
+	local playerId = player:getId()
 
-    if not npcHandler:checkInteraction(npc, creature) then
-        return false
-    end
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
 
-    if MsgContains(message, "ring") then
-        if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.Memories) == 1 then
-            npcHandler:say("So, the Librarian sent you. Well, yes, I have a vial of the hallucinogen you need. I'll give it to you for 1000 gold. Do you agree?", npc, creature)
-            npcHandler:setTopic(playerId, 1)
-        else
-            npcHandler:say("I don't have anything to offer you regarding a ring.", npc, creature)
-        end
+	if MsgContains(message, "ring") then
+		if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.Memories) == 1 then
+			npcHandler:say("So, the Librarian sent you. Well, yes, I have a vial of the hallucinogen you need. I'll give it to you for 1000 gold. Do you agree?", npc, creature)
+			npcHandler:setTopic(playerId, 1)
+		else
+			npcHandler:say("I don't have anything to offer you regarding a ring.", npc, creature)
+		end
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
+		if player:getMoney() + player:getBankBalance() >= 1000 then
+			npcHandler:say("Great. Here, take it.", npc, creature)
+			player:removeMoneyBank(1000)
+			player:addItem(31350, 1)
+			npcHandler:setTopic(playerId, 0)
+		else
+			npcHandler:say("You do not have enough money.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
+		end
+	end
 
-    elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
-        if player:getMoney() + player:getBankBalance() >= 1000 then
-            npcHandler:say("Great. Here, take it.", npc, creature)
-            player:removeMoneyBank(1000)
-            player:addItem(31350, 1)
-            npcHandler:setTopic(playerId, 0)
-        else
-            npcHandler:say("You do not have enough money.", npc, creature)
-            npcHandler:setTopic(playerId, 0)
-        end
-    end
-
-    return true
+	return true
 end
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, dear guest and welcome to my {potion} shop.")

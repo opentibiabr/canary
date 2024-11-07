@@ -442,7 +442,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 		}
 		bool hasMore = false;
 		uint64_t toSellCount = 0;
-		phmap::flat_hash_map<uint16_t, uint16_t> toSell;
+		std::unordered_map<uint16_t, uint16_t> toSell;
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 			if (toSellCount >= 500) {
 				hasMore = true;

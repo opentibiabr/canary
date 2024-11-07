@@ -509,10 +509,10 @@ public:
 	const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
 		return itemsPriceMap;
 	}
-	const phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> &getGuilds() const {
+	const std::unordered_map<uint32_t, std::shared_ptr<Guild>> &getGuilds() const {
 		return guilds;
 	}
-	const phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> &getPlayers() const {
+	const std::unordered_map<uint32_t, std::shared_ptr<Player>> &getPlayers() const {
 		return players;
 	}
 	const std::map<uint32_t, std::shared_ptr<Monster>> &getMonsters() const {
@@ -540,7 +540,7 @@ public:
 	void addGuild(const std::shared_ptr<Guild> &guild);
 	void removeGuild(uint32_t guildId);
 
-	phmap::flat_hash_map<std::shared_ptr<Tile>, std::weak_ptr<Container>> browseFields;
+	std::unordered_map<std::shared_ptr<Tile>, std::weak_ptr<Container>> browseFields;
 
 	void internalRemoveItems(const std::vector<std::shared_ptr<Item>> &itemVector, uint32_t amount, bool stackable);
 
@@ -814,15 +814,15 @@ private:
 	 */
 	ReturnValue collectRewardChestItems(const std::shared_ptr<Player> &player, uint32_t maxMoveItems = 0);
 
-	phmap::flat_hash_map<std::string, QueryHighscoreCacheEntry> queryCache;
-	phmap::flat_hash_map<std::string, HighscoreCacheEntry> highscoreCache;
+	std::unordered_map<std::string, QueryHighscoreCacheEntry> queryCache;
+	std::unordered_map<std::string, HighscoreCacheEntry> highscoreCache;
 
-	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
-	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
-	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
-	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
-	phmap::flat_hash_map<uint16_t, std::shared_ptr<Item>> uniqueItems;
-	phmap::parallel_flat_hash_map<uint32_t, std::string> m_playerNameCache;
+	std::unordered_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
+	std::unordered_map<uint32_t, std::shared_ptr<Player>> players;
+	std::unordered_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
+	std::unordered_map<uint32_t, std::shared_ptr<Guild>> guilds;
+	std::unordered_map<uint16_t, std::shared_ptr<Item>> uniqueItems;
+	std::unordered_map<uint32_t, std::string> m_playerNameCache;
 
 	/* Items stored from the lua scripts positions
 	 * For example: ActionFunctions::luaActionPosition

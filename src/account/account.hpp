@@ -117,7 +117,7 @@ public:
 
 	void updatePremiumTime();
 
-	std::tuple<phmap::flat_hash_map<std::string, uint64_t>, AccountErrors_t> getAccountPlayers() const;
+	std::tuple<std::unordered_map<std::string, uint64_t>, AccountErrors_t> getAccountPlayers() const;
 
 	// Old protocol compat
 	void setProtocolCompat(bool toggle);

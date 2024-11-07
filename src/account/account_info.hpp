@@ -10,7 +10,6 @@
 #pragma once
 
 #ifndef USE_PRECOMPILED_HEADERS
-	#include <parallel_hashmap/phmap.h>
 	#include <cstdint>
 #endif
 
@@ -23,7 +22,7 @@ struct AccountInfo {
 	uint32_t premiumRemainingDays = 0;
 	time_t premiumLastDay = 0;
 	AccountType accountType = ACCOUNT_TYPE_NONE;
-	phmap::flat_hash_map<std::string, uint64_t> players;
+	std::unordered_map<std::string, uint64_t> players;
 	bool oldProtocol = false;
 	time_t sessionExpires = 0;
 	uint32_t premiumDaysPurchased = 0;

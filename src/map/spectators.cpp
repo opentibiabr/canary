@@ -129,16 +129,12 @@ CreatureVector Spectators::getSpectators(const Position &centerPos, bool multifl
 		const MapSector* sectorE = sectorS;
 		for (int32_t nx = startx1; nx <= endx2; nx += SECTOR_SIZE) {
 			if (sectorE) {
-				const CreatureVector* nodeList = &sectorE->creature_list;
-				if (onlyPlayers) {
-					nodeList = &sectorE->player_list;
-				} else if (onlyMonsters) {
-					nodeList = &sectorE->monster_list;
-				} else if (onlyNpcs) {
-					nodeList = &sectorE->npc_list;
-				}
+				const auto &nodeList = onlyPlayers ? sectorE->player_list
+					: onlyMonsters ? sectorE->monster_list
+					: onlyNpcs ? sectorE->npc_list
+					: sectorE->creature_list;
 
-				for (const auto &creature : *nodeList) {
+				for (const auto &creature : nodeList) {
 					const auto &cpos = creature->getPosition();
 					if (static_cast<uint32_t>(static_cast<int32_t>(cpos.z) - minRangeZ) <= depth) {
 						const int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);
@@ -187,37 +183,23 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 		} else {
 			const bool checkDistance = minRangeX != cache.minRangeX || maxRangeX != cache.maxRangeX || minRangeY != cache.minRangeY || maxRangeY != cache.maxRangeY;
 
-			if (onlyPlayers) {
-				// check players cache
-				if (checkCache(cache.players, true, false, false, centerPos, checkDistance, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
+			if (onlyPlayers || onlyMonsters || onlyNpcs) {
+				static const SpectatorsCache::FloorData EMPTY_FLOOR_DATA;
+
+				const auto &creaturesCache = onlyPlayers ? cache.players
+					: onlyMonsters ? cache.monsters
+					: onlyNpcs ? cache.npcs
+					: EMPTY_FLOOR_DATA;
+
+				// check players/monsters/npcs cache
+				if (checkCache(creaturesCache, onlyPlayers, onlyMonsters, onlyNpcs, centerPos, checkDistance, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
 					return *this;
 				}
 
-				// if there is no player cache, look for players in the creatures cache.
-				if (checkCache(cache.creatures, true, false, false, centerPos, true, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
+				// if there is no players/monsters/npcs cache, look for players/monsters/npcs in the creatures cache.
+				if (checkCache(cache.creatures, onlyPlayers, onlyMonsters, onlyNpcs, centerPos, true, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
 					return *this;
 				}
-			} else if (onlyMonsters) {
-				// check monsters cache
-				if (checkCache(cache.monsters, false, true, false, centerPos, checkDistance, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
-					return *this;
-				}
-
-				// if there is no monsters cache, look for monsters in the creatures cache.
-				if (checkCache(cache.creatures, false, true, false, centerPos, true, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
-					return *this;
-				}
-			} else if (onlyNpcs) {
-				// check npcs cache
-				if (checkCache(cache.npcs, false, false, true, centerPos, checkDistance, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
-					return *this;
-				}
-
-				// if there is no npcs cache, look for npcs in the creatures cache.
-				if (checkCache(cache.creatures, false, false, true, centerPos, true, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
-					return *this;
-				}
-
 				// All Creatures
 			} else if (checkCache(cache.creatures, false, false, false, centerPos, checkDistance, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
 				return *this;
@@ -229,15 +211,11 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 
 	// It is necessary to create the cache even if no spectators is found, so that there is no future query.
 	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY, .creatures = {}, .monsters = {}, .npcs = {}, .players = {} }).first->second;
-	auto* creaturesCache = &cache.creatures;
-	if (onlyPlayers) {
-		creaturesCache = &cache.players;
-	} else if (onlyMonsters) {
-		creaturesCache = &cache.monsters;
-	} else if (onlyNpcs) {
-		creaturesCache = &cache.npcs;
-	}
-	auto &creatureList = (multifloor ? (*creaturesCache).multiFloor : (*creaturesCache).floor);
+	auto &creaturesCache = onlyPlayers ? cache.players
+		: onlyMonsters ? cache.monsters
+		: onlyNpcs ? cache.npcs
+		: cache.creatures;
+	auto &creatureList = (multifloor ? creaturesCache.multiFloor : creaturesCache.floor);
 	if (creatureList) {
 		creatureList->clear();
 	} else {

@@ -14,7 +14,6 @@
 
 int64_t KV::lastTimestamp_ = 0;
 uint64_t KV::counter_ = 0;
-std::mutex KV::mutex_ = {};
 
 KVStore &KVStore::getInstance() {
 	return inject<KVStore>();
@@ -31,7 +30,6 @@ void KVStore::set(const std::string &key, const std::initializer_list<std::pair<
 }
 
 void KVStore::set(const std::string &key, const ValueWrapper &value) {
-	std::scoped_lock lock(mutex_);
 	return setLocked(key, value);
 }
 
@@ -58,7 +56,6 @@ void KVStore::setLocked(const std::string &key, const ValueWrapper &value) {
 
 std::optional<ValueWrapper> KVStore::get(const std::string &key, bool forceLoad /*= false */) {
 	logger.trace("KVStore::get({})", key);
-	std::scoped_lock lock(mutex_);
 	if (forceLoad || !store_.contains(key)) {
 		auto value = load(key);
 		if (value) {
@@ -77,7 +74,6 @@ std::optional<ValueWrapper> KVStore::get(const std::string &key, bool forceLoad 
 }
 
 std::unordered_set<std::string> KVStore::keys(const std::string &prefix /*= ""*/) {
-	std::scoped_lock lock(mutex_);
 	std::unordered_set<std::string> keys;
 	for (const auto &[key, value] : store_) {
 		if (key.find(prefix) == 0) {

@@ -29,7 +29,7 @@ ValueWrapper::ValueWrapper(int value, uint64_t timestamp) :
 ValueWrapper::ValueWrapper(double value, uint64_t timestamp) :
 	data_(value), timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
 
-ValueWrapper::ValueWrapper(const phmap::flat_hash_map<std::string, ValueWrapper> &value, uint64_t timestamp) :
+ValueWrapper::ValueWrapper(const std::unordered_map<std::string, ValueWrapper> &value, uint64_t timestamp) :
 	data_(createMapFromRange(value.begin(), value.end(), timestamp)),
 	timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
 

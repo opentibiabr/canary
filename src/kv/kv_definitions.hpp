@@ -16,7 +16,6 @@ class ValueWrapper;
 	#include <vector>
 	#include <memory>
 	#include <variant>
-	#include <parallel_hashmap/phmap.h>
 #endif
 
 using StringType = std::string;
@@ -24,6 +23,6 @@ using BooleanType = bool;
 using IntType = int;
 using DoubleType = double;
 using ArrayType = std::vector<ValueWrapper>;
-using MapType = phmap::flat_hash_map<std::string, std::shared_ptr<ValueWrapper>>;
+using MapType = std::unordered_map<std::string, std::shared_ptr<ValueWrapper>>;
 
 using ValueVariant = std::variant<StringType, BooleanType, IntType, DoubleType, ArrayType, MapType>;

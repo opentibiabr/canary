@@ -10,8 +10,7 @@
 #pragma once
 
 #include "lua/scripts/luascript.hpp"
-
-class ValueWrapper;
+#include "kv/kv_definitions.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <string>
@@ -20,8 +19,6 @@ class ValueWrapper;
 	#include <memory>
 	#include <parallel_hashmap/phmap.h>
 #endif
-
-using MapType = phmap::flat_hash_map<std::string, std::shared_ptr<ValueWrapper>>;
 
 struct lua_State;
 

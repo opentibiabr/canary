@@ -11,9 +11,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <string>
-	#include <mutex>
 	#include <initializer_list>
-	#include <parallel_hashmap/phmap.h>
 	#include <optional>
 	#include <unordered_set>
 	#include <iomanip>
@@ -47,8 +45,6 @@ public:
 	}
 
 	static std::string generateUUID() {
-		std::lock_guard<std::mutex> lock(mutex_);
-
 		const auto now = std::chrono::system_clock::now().time_since_epoch();
 		const auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
 
@@ -69,7 +65,6 @@ public:
 private:
 	static int64_t lastTimestamp_;
 	static uint64_t counter_;
-	static std::mutex mutex_;
 };
 
 class KVStore : public KV {
@@ -87,7 +82,6 @@ public:
 	std::optional<ValueWrapper> get(const std::string &key, bool forceLoad = false) override;
 
 	void flush() override {
-		std::scoped_lock lock(mutex_);
 		KV::flush();
 		store_.clear();
 	}
@@ -96,13 +90,8 @@ public:
 	std::unordered_set<std::string> keys(const std::string &prefix = "") override;
 
 protected:
-	phmap::parallel_flat_hash_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> getStore() {
-		std::scoped_lock lock(mutex_);
-		phmap::parallel_flat_hash_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> copy;
-		for (const auto &[key, value] : store_) {
-			copy.try_emplace(key, value);
-		}
-		return copy;
+	const std::unordered_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> &getStore() {
+		return store_;
 	}
 
 protected:
@@ -115,9 +104,8 @@ protected:
 private:
 	void setLocked(const std::string &key, const ValueWrapper &value);
 
-	phmap::parallel_flat_hash_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> store_;
+	std::unordered_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> store_;
 	std::list<std::string> lruQueue_;
-	std::mutex mutex_;
 };
 
 class ScopedKV final : public KV {

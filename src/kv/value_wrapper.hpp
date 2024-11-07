@@ -29,7 +29,7 @@ public:
 	explicit(false) ValueWrapper(bool value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(int value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(double value, uint64_t timestamp = 0);
-	explicit(false) ValueWrapper(const phmap::flat_hash_map<std::string, ValueWrapper> &value, uint64_t timestamp = 0);
+	explicit(false) ValueWrapper(const std::unordered_map<std::string, ValueWrapper> &value, uint64_t timestamp = 0);
 	explicit(false) ValueWrapper(const std::initializer_list<std::pair<const std::string, ValueWrapper>> &init_list, uint64_t timestamp = 0);
 
 	static ValueWrapper deleted() {

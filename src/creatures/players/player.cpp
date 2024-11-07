@@ -3783,14 +3783,9 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 
 	updateImbuementTrackerStats();
 
-	// this method can be called asynchronously.
-	g_dispatcher().context().tryAddEvent([self = std::weak_ptr<Player>(getPlayer())] {
-		if (const auto &player = self.lock()) {
-			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0);
-			player->addCondition(condition);
-		}
-	},
-	                                     "Player::addInFightTicks");
+	safeCall([this] {
+		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0));
+	});
 }
 
 void Player::setDailyReward(uint8_t reward) {

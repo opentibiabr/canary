@@ -23,6 +23,7 @@
 #include "lua/creature/movement.hpp"
 #include "map/spectators.hpp"
 #include "utils/tools.hpp"
+#include "game/scheduling/dispatcher.hpp"
 
 auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);
 const std::shared_ptr<Tile> &Tile::nullptr_tile = real_nullptr_tile;
@@ -1940,5 +1941,18 @@ void Tile::clearZones() {
 	}
 	for (const auto &zone : zonesToRemove) {
 		zones.erase(zone);
+	}
+}
+
+void Tile::safeCall(std::function<void(void)> &&action) const {
+	if (g_dispatcher().context().isAsync()) {
+		g_dispatcher().addEvent([weak_self = std::weak_ptr<const SharedObject>(shared_from_this()), action = std::move(action)] {
+			if (weak_self.lock()) {
+				action();
+			}
+		},
+		                        g_dispatcher().context().getName());
+	} else {
+		action();
 	}
 }

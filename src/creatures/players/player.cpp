@@ -7670,15 +7670,15 @@ std::string Player::getCurrentShader_NAME() const {
 }
 
 bool Player::addCustomOutfit(const std::string &type, const std::variant<uint16_t, std::string> &idOrName) {
-	uint16_t elementId;
+	// test proposal
 
-	// Get element ID based on variant type
+	uint16_t elementId;
 	if (std::holds_alternative<uint16_t>(idOrName)) {
 		elementId = std::get<uint16_t>(idOrName);
 	} else {
 		const std::string &name = std::get<std::string>(idOrName);
 
-		if (type == "wings") {
+		if (type == "wing") {
 			auto element = g_game().attachedeffects->getWingByName(name);
 			if (!element) {
 				return false;
@@ -7686,6 +7686,12 @@ bool Player::addCustomOutfit(const std::string &type, const std::variant<uint16_
 			elementId = element->id;
 		} else if (type == "aura") {
 			auto element = g_game().attachedeffects->getAuraByName(name);
+			if (!element) {
+				return false;
+			}
+			elementId = element->id;
+		} else if (type == "effect") {
+			auto element = g_game().attachedeffects->getEffectByName(name);
 			if (!element) {
 				return false;
 			}
@@ -7701,22 +7707,21 @@ bool Player::addCustomOutfit(const std::string &type, const std::variant<uint16_
 		}
 	}
 
-	// Add element based on type
-	if (type == "wings") {
+	if (type == "wing") {
 		return tameWing(elementId);
 	} else if (type == "aura") {
 		return tameAura(elementId);
+	} else if (type == "effect") {
+		return tameEffect(elementId);
 	} else if (type == "shader") {
 		return tameShader(elementId);
 	}
-
 	return false;
 }
 
 bool Player::removeCustomOutfit(const std::string &type, const std::variant<uint16_t, std::string> &idOrName) {
+	// test proposal
 	uint16_t elementId;
-
-	// Get element ID based on variant type
 	if (std::holds_alternative<uint16_t>(idOrName)) {
 		elementId = std::get<uint16_t>(idOrName);
 	} else {
@@ -7734,6 +7739,12 @@ bool Player::removeCustomOutfit(const std::string &type, const std::variant<uint
 				return false;
 			}
 			elementId = element->id;
+		} else if (type == "effect") {
+			auto element = g_game().attachedeffects->getEffectByName(name);
+			if (!element) {
+				return false;
+			}
+			elementId = element->id;
 		} else if (type == "shader") {
 			auto element = g_game().attachedeffects->getShaderByName(name);
 			if (!element) {
@@ -7745,15 +7756,15 @@ bool Player::removeCustomOutfit(const std::string &type, const std::variant<uint
 		}
 	}
 
-	// Remove element based on type
-	if (type == "wings") {
+	if (type == "wing") {
 		return untameWing(elementId);
 	} else if (type == "aura") {
 		return untameAura(elementId);
+	} else if (type == "effect") {
+		return untameEffect(elementId);
 	} else if (type == "shader") {
 		return untameShader(elementId);
 	}
-
 	return false;
 }
 

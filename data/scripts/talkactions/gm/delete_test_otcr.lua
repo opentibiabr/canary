@@ -75,6 +75,36 @@ local options = {
 	} },
 	game_outfit = {
 		{
+			name = "Add permanent aura 8 to first player",
+			action = function(player)
+				local spectators = Game.getSpectators(player:getPosition(), false, false)
+				if #spectators > 0 then
+					for _, spectator in ipairs(spectators) do
+						if spectator:isPlayer() and spectator:getId() ~= player:getId()  then
+							spectator:addCustomOutfit("aura", 8)
+							player:say(spectator:getName().." add aura 8", TALKTYPE_SAY)
+							break
+						end
+					end
+				end
+			end,
+		},
+		{
+			name = "remove permanent aura 8 to first player",
+			action = function(player)
+				local spectators = Game.getSpectators(player:getPosition(), false, false)
+				if #spectators > 0 then
+					for _, spectator in ipairs(spectators) do
+						if spectator:isPlayer() and spectator:getId() ~= player:getId() then
+							spectator:removeCustomOutfit("aura", 8)
+							player:say(spectator:getName().." remove aura 8", TALKTYPE_SAY)
+							break
+						end
+					end
+				end
+			end,
+		},
+		{
 			name = "pdump auras",
 			action = function(player)
 				local effects = Game.getAllAttachedeffects("aura")

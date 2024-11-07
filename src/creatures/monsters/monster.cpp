@@ -976,7 +976,7 @@ void Monster::setIdle(bool idle) {
 }
 
 void Monster::updateIdleStatus() {
-	if (!g_dispatcher().context().isAsync()) {
+	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
 		return;
 	}

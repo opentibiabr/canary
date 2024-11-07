@@ -130,9 +130,9 @@ CreatureVector Spectators::getSpectators(const Position &centerPos, bool multifl
 		for (int32_t nx = startx1; nx <= endx2; nx += SECTOR_SIZE) {
 			if (sectorE) {
 				const auto &nodeList = onlyPlayers ? sectorE->player_list
-					: onlyMonsters ? sectorE->monster_list
-					: onlyNpcs ? sectorE->npc_list
-					: sectorE->creature_list;
+					: onlyMonsters                 ? sectorE->monster_list
+					: onlyNpcs                     ? sectorE->npc_list
+												   : sectorE->creature_list;
 
 				for (const auto &creature : nodeList) {
 					const auto &cpos = creature->getPosition();
@@ -187,9 +187,9 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 				static const SpectatorsCache::FloorData EMPTY_FLOOR_DATA;
 
 				const auto &creaturesCache = onlyPlayers ? cache.players
-					: onlyMonsters ? cache.monsters
-					: onlyNpcs ? cache.npcs
-					: EMPTY_FLOOR_DATA;
+					: onlyMonsters                       ? cache.monsters
+					: onlyNpcs                           ? cache.npcs
+														 : EMPTY_FLOOR_DATA;
 
 				// check players/monsters/npcs cache
 				if (checkCache(creaturesCache, onlyPlayers, onlyMonsters, onlyNpcs, centerPos, checkDistance, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
@@ -212,9 +212,9 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	// It is necessary to create the cache even if no spectators is found, so that there is no future query.
 	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY, .creatures = {}, .monsters = {}, .npcs = {}, .players = {} }).first->second;
 	auto &creaturesCache = onlyPlayers ? cache.players
-		: onlyMonsters ? cache.monsters
-		: onlyNpcs ? cache.npcs
-		: cache.creatures;
+		: onlyMonsters                 ? cache.monsters
+		: onlyNpcs                     ? cache.npcs
+									   : cache.creatures;
 	auto &creatureList = (multifloor ? creaturesCache.multiFloor : creaturesCache.floor);
 	if (creatureList) {
 		creatureList->clear();

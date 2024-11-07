@@ -56,7 +56,7 @@ setmetatable(BossLever, {
 			error("BossLever: boss is required")
 		end
 		return setmetatable({
-			name = boss.name,
+			name = boss.name:lower(),
 			encounter = config.encounter,
 			bossPosition = boss.position,
 			timeToFightAgain = config.timeToFightAgain or configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN),

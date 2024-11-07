@@ -6459,8 +6459,20 @@ void Game::checkCreatures() {
 	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
 		if (creature->creatureCheck && creature->isAlive()) {
 			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
-			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-			creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+
+			if (creature->getMonster()) {
+				// The monster's onThink is executed asynchronously,
+				// so the target is updated later, so we need to postpone the actions below.
+				g_dispatcher().addEvent([creature] {
+					if (creature->isAlive()) {
+						creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+						creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+					} }, __METHOD_NAME__);
+			} else {
+				creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+				creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+			}
+
 			return false;
 		}
 

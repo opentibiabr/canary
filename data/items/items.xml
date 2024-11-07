@@ -18165,8 +18165,9 @@
 			<attribute key="slot" value="head"/>
 		</attribute>
 	</item>
-	<item id="6579" article="a" name="doll">
+	<item id="6579" article="a" name="Hunt Refiller">
 		<attribute key="primarytype" value="dolls and bears"/>
+		<attribute key="description" value="Summons a Hunt Refiller. Active for 2 minutes with 1 hour cooldown."/>
 		<attribute key="weight" value="650"/>
 	</item>
 	<item fromid="6580" toid="6593" name="snow">
@@ -32244,8 +32245,9 @@
 	<item id="14052" article="a" name="flask of chitin dissolver">
 		<attribute key="weight" value="155"/>
 	</item>
-	<item id="14053" article="a" name="flask of dissolved chitin">
-		<attribute key="weight" value="155"/>
+	<item id="14053" article="an" name="small stamina refill potion">
+		<attribute key="description" value="Refills 2 hours of stamina."/>
+		<attribute key="weight" value="10"/>
 	</item>
 	<item id="14054" article="a" name="reagent flask">
 		<attribute key="primarytype" value="quest items"/>

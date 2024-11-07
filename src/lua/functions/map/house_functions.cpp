@@ -7,13 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "lua/functions/map/house_functions.hpp"
 
+#include "config/configmanager.hpp"
 #include "items/bed.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
 #include "io/iologindata.hpp"
-#include "lua/functions/map/house_functions.hpp"
 #include "map/house/house.hpp"
 
 int HouseFunctions::luaHouseCreate(lua_State* L) {
@@ -116,8 +116,8 @@ int HouseFunctions::luaHouseSetHouseOwner(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t guid = getNumber<uint32_t>(L, 2);
-	bool updateDatabase = getBoolean(L, 3, true);
+	const uint32_t guid = getNumber<uint32_t>(L, 2);
+	const bool updateDatabase = getBoolean(L, 3, true);
 	house->setOwner(guid, updateDatabase);
 	pushBoolean(L, true);
 	return 1;
@@ -125,11 +125,11 @@ int HouseFunctions::luaHouseSetHouseOwner(lua_State* L) {
 
 int HouseFunctions::luaHouseSetNewOwnerGuid(lua_State* L) {
 	// house:setNewOwnerGuid(guid[, updateDatabase = true])
-	auto house = getUserdataShared<House>(L, 1);
+	const auto &house = getUserdataShared<House>(L, 1);
 	if (house) {
-		auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+		auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 		if (isTransferOnRestart && house->hasNewOwnership()) {
-			const auto player = g_game().getPlayerByGUID(house->getOwner());
+			const auto &player = g_game().getPlayerByGUID(house->getOwner());
 			if (player) {
 				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot leave this house. Ownership is already scheduled to be transferred upon the next server restart.");
 			}
@@ -137,7 +137,7 @@ int HouseFunctions::luaHouseSetNewOwnerGuid(lua_State* L) {
 			return 1;
 		}
 
-		uint32_t guid = getNumber<uint32_t>(L, 2, 0);
+		const auto guid = getNumber<uint32_t>(L, 2, 0);
 		house->setNewOwnerGuid(guid, false);
 		pushBoolean(L, true);
 	} else {
@@ -148,7 +148,7 @@ int HouseFunctions::luaHouseSetNewOwnerGuid(lua_State* L) {
 
 int HouseFunctions::luaHouseHasItemOnTile(lua_State* L) {
 	// house:hasItemOnTile()
-	auto house = getUserdataShared<House>(L, 1);
+	const auto &house = getUserdataShared<House>(L, 1);
 	if (!house) {
 		reportErrorFunc("House not found");
 		lua_pushnil(L);
@@ -161,14 +161,14 @@ int HouseFunctions::luaHouseHasItemOnTile(lua_State* L) {
 
 int HouseFunctions::luaHouseHasNewOwnership(lua_State* L) {
 	// house:hasNewOwnership(guid)
-	auto house = getUserdataShared<House>(L, 1);
+	const auto &house = getUserdataShared<House>(L, 1);
 	if (!house) {
 		reportErrorFunc("House not found");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 	pushBoolean(L, isTransferOnRestart && house->hasNewOwnership());
 	return 1;
 }
@@ -176,8 +176,8 @@ int HouseFunctions::luaHouseHasNewOwnership(lua_State* L) {
 int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 	// house:startTrade(player, tradePartner)
 	const auto &house = getUserdataShared<House>(L, 1);
-	std::shared_ptr<Player> player = getUserdataShared<Player>(L, 2);
-	std::shared_ptr<Player> tradePartner = getUserdataShared<Player>(L, 3);
+	const auto &player = getUserdataShared<Player>(L, 2);
+	const auto &tradePartner = getUserdataShared<Player>(L, 3);
 
 	if (!player || !tradePartner || !house) {
 		lua_pushnil(L);
@@ -204,13 +204,13 @@ int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Item> transferItem = house->getTransferItem();
+	const auto &transferItem = house->getTransferItem();
 	if (!transferItem) {
 		lua_pushnumber(L, RETURNVALUE_YOUCANNOTTRADETHISHOUSE);
 		return 1;
 	}
 
-	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+	auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 	if (isTransferOnRestart && house->hasNewOwnership()) {
 		tradePartner->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot buy this house. Ownership is already scheduled to be transferred upon the next server restart.");
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot sell this house. Ownership is already scheduled to be transferred upon the next server restart.");
@@ -235,11 +235,11 @@ int HouseFunctions::luaHouseGetBeds(lua_State* L) {
 		return 1;
 	}
 
-	const auto beds = house->getBeds();
+	const auto &beds = house->getBeds();
 	lua_createtable(L, beds.size(), 0);
 
 	int index = 0;
-	for (std::shared_ptr<BedItem> bedItem : beds) {
+	for (const auto &bedItem : beds) {
 		pushUserdata<Item>(L, bedItem);
 		setItemMetatable(L, -1, bedItem);
 		lua_rawseti(L, -2, ++index);
@@ -265,11 +265,11 @@ int HouseFunctions::luaHouseGetDoors(lua_State* L) {
 		return 1;
 	}
 
-	const auto doors = house->getDoors();
+	const auto &doors = house->getDoors();
 	lua_createtable(L, doors.size(), 0);
 
 	int index = 0;
-	for (std::shared_ptr<Door> door : doors) {
+	for (const auto &door : doors) {
 		pushUserdata<Item>(L, door);
 		setItemMetatable(L, -1, door);
 		lua_rawseti(L, -2, ++index);
@@ -295,7 +295,7 @@ int HouseFunctions::luaHouseGetDoorIdByPosition(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Door> door = house->getDoorByPosition(getPosition(L, 2));
+	const auto &door = house->getDoorByPosition(getPosition(L, 2));
 	if (door) {
 		lua_pushnumber(L, door->getDoorId());
 	} else {
@@ -312,11 +312,11 @@ int HouseFunctions::luaHouseGetTiles(lua_State* L) {
 		return 1;
 	}
 
-	const auto tiles = house->getTiles();
+	const auto &tiles = house->getTiles();
 	lua_newtable(L);
 
 	int index = 0;
-	for (std::shared_ptr<Tile> tile : tiles) {
+	for (const auto &tile : tiles) {
 		pushUserdata<Tile>(L, tile);
 		setMetatable(L, -1, "Tile");
 		lua_rawseti(L, -2, ++index);
@@ -332,14 +332,14 @@ int HouseFunctions::luaHouseGetItems(lua_State* L) {
 		return 1;
 	}
 
-	const auto tiles = house->getTiles();
+	const auto &tiles = house->getTiles();
 	lua_newtable(L);
 
 	int index = 0;
-	for (std::shared_ptr<Tile> tile : tiles) {
-		TileItemVector* itemVector = tile->getItemList();
+	for (const auto &tile : tiles) {
+		const TileItemVector* itemVector = tile->getItemList();
 		if (itemVector) {
-			for (auto &item : *itemVector) {
+			for (const auto &item : *itemVector) {
 				pushUserdata<Item>(L, item);
 				setItemMetatable(L, -1, item);
 				lua_rawseti(L, -2, ++index);
@@ -367,7 +367,7 @@ int HouseFunctions::luaHouseCanEditAccessList(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t listId = getNumber<uint32_t>(L, 2);
+	const uint32_t listId = getNumber<uint32_t>(L, 2);
 
 	const auto &player = getPlayer(L, 3);
 	if (!player) {
@@ -388,7 +388,7 @@ int HouseFunctions::luaHouseGetAccessList(lua_State* L) {
 	}
 
 	std::string list;
-	uint32_t listId = getNumber<uint32_t>(L, 2);
+	const uint32_t listId = getNumber<uint32_t>(L, 2);
 	if (house->getAccessList(listId, list)) {
 		pushString(L, list);
 	} else {
@@ -405,7 +405,7 @@ int HouseFunctions::luaHouseSetAccessList(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t listId = getNumber<uint32_t>(L, 2);
+	const uint32_t listId = getNumber<uint32_t>(L, 2);
 	const std::string &list = getString(L, 3);
 	house->setAccessList(listId, list);
 	pushBoolean(L, true);
@@ -426,7 +426,7 @@ int HouseFunctions::luaHouseKickPlayer(lua_State* L) {
 		return 1;
 	}
 
-	auto targetPlayer = getPlayer(L, 3);
+	const auto &targetPlayer = getPlayer(L, 3);
 	if (!targetPlayer) {
 		reportErrorFunc("Target player is nullptr");
 		return 1;

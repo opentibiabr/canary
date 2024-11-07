@@ -1112,9 +1112,9 @@ function MonsterType:calculateBagYouDesireChance(player, itemChance)
 		itemChance = itemChance + (playerTaintLevel * SoulWarQuest.bagYouDesireChancePerTaint)
 	end
 
-	logger.info("Player {} killed {} with {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, itemChance)
+	logger.debug("Player {} killed {} with {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, itemChance)
 
-	if math.random(1, 100000) <= totalChance then
+	if math.random(1, 100000) <= itemChance then
 		logger.debug("Player {} killed {} and got a bag you desire with drop chance {}", player:getName(), monsterName, itemChance)
 		if monsterName == "Goshnar's Megalomania" then
 			-- Reset kill count on successful drop
@@ -1568,22 +1568,4 @@ function Creature:applyZoneEffect(var, combat, zoneName)
 	addEvent(delayedCastSpell, SoulWarQuest.goshnarsCrueltyWaveInterval * 1000, self:getId(), var, combat, target:getId())
 
 	return true
-end
-
-function string.toPosition(str)
-	local patterns = {
-		-- table format
-		"{%s*x%s*=%s*(%d+)%s*,%s*y%s*=%s*(%d+)%s*,%s*z%s*=%s*(%d+)%s*}",
-		-- Position format
-		"Position%s*%((%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*%)",
-		-- x, y, z format
-		"(%d+)%s*,%s*(%d+)%s*,%s*(%d+)",
-	}
-
-	for _, pattern in ipairs(patterns) do
-		local x, y, z = string.match(str, pattern)
-		if x and y and z then
-			return Position(tonumber(x), tonumber(y), tonumber(z))
-		end
-	end
 end

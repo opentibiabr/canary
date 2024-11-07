@@ -33,7 +33,7 @@ enum Attr_ReadValue {
 	ATTR_READ_END,
 };
 
-enum ReturnValue {
+enum ReturnValue : uint16_t {
 	RETURNVALUE_NOERROR,
 	RETURNVALUE_NOTBOUGHTINSTORE,
 	RETURNVALUE_ITEMCANNOTBEMOVEDTHERE,
@@ -272,6 +272,7 @@ enum ImbuementTypes_t : int64_t {
 
 enum class Augment_t : uint8_t {
 	None,
+	Base,
 	PowerfulImpact,
 	StrongImpact,
 	IncreasedDamage,
@@ -458,7 +459,7 @@ enum TileFlags_t : uint32_t {
 	TILESTATE_FLOORCHANGE = TILESTATE_FLOORCHANGE_DOWN | TILESTATE_FLOORCHANGE_NORTH | TILESTATE_FLOORCHANGE_SOUTH | TILESTATE_FLOORCHANGE_EAST | TILESTATE_FLOORCHANGE_WEST | TILESTATE_FLOORCHANGE_SOUTH_ALT | TILESTATE_FLOORCHANGE_EAST_ALT,
 };
 
-enum ZoneType_t {
+enum ZoneType_t : uint8_t {
 	ZONE_PROTECTION,
 	ZONE_NOPVP,
 	ZONE_PVP,
@@ -621,7 +622,7 @@ enum ItemParseAttributes_t {
 };
 
 struct ImbuementInfo {
-	Imbuement* imbuement;
+	Imbuement* imbuement {};
 	uint32_t duration = 0;
 };
 
@@ -629,7 +630,7 @@ struct AugmentInfo {
 	AugmentInfo(std::string spellName, Augment_t type, int32_t value) :
 		spellName(std::move(spellName)), type(type), value(value) { }
 
-	std::string spellName;
+	std::string spellName {};
 	Augment_t type;
-	int32_t value;
+	int32_t value {};
 };

@@ -140,7 +140,7 @@ function Monster.setFiendish(self, position, player)
 	if fiendishMonster then
 		Game.removeFiendishMonster(fiendishMonster:getId())
 	end
-	if Game.makeFiendishMonster(self:getId(), true) ~= 0 then
+	if Game.makeFiendishMonster(self:getId(), false) ~= 0 then
 		success = "set sucessfully a new fiendish monster"
 	else
 		success = "have error to set fiendish monster"

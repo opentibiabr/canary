@@ -7,11 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "lua/functions/items/item_type_functions.hpp"
 
 #include "items/item.hpp"
 #include "items/items.hpp"
-#include "lua/functions/items/item_type_functions.hpp"
 
 int ItemTypeFunctions::luaItemTypeCreate(lua_State* L) {
 	// ItemType(id or name)
@@ -30,7 +29,7 @@ int ItemTypeFunctions::luaItemTypeCreate(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsCorpse(lua_State* L) {
 	// itemType:isCorpse()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isCorpse);
 	} else {
@@ -41,7 +40,7 @@ int ItemTypeFunctions::luaItemTypeIsCorpse(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsDoor(lua_State* L) {
 	// itemType:isDoor()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isDoor());
 	} else {
@@ -52,7 +51,7 @@ int ItemTypeFunctions::luaItemTypeIsDoor(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsContainer(lua_State* L) {
 	// itemType:isContainer()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isContainer());
 	} else {
@@ -63,7 +62,7 @@ int ItemTypeFunctions::luaItemTypeIsContainer(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsFluidContainer(lua_State* L) {
 	// itemType:isFluidContainer()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isFluidContainer());
 	} else {
@@ -74,7 +73,7 @@ int ItemTypeFunctions::luaItemTypeIsFluidContainer(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsMovable(lua_State* L) {
 	// itemType:isMovable()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->movable);
 	} else {
@@ -85,7 +84,7 @@ int ItemTypeFunctions::luaItemTypeIsMovable(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsRune(lua_State* L) {
 	// itemType:isRune()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isRune());
 	} else {
@@ -96,7 +95,7 @@ int ItemTypeFunctions::luaItemTypeIsRune(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsStackable(lua_State* L) {
 	// itemType:isStackable()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->stackable);
 	} else {
@@ -107,7 +106,7 @@ int ItemTypeFunctions::luaItemTypeIsStackable(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsStowable(lua_State* L) {
 	// itemType:isStowable()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->stackable && itemType->wareId > 0);
 	} else {
@@ -118,7 +117,7 @@ int ItemTypeFunctions::luaItemTypeIsStowable(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsReadable(lua_State* L) {
 	// itemType:isReadable()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->canReadText);
 	} else {
@@ -129,7 +128,7 @@ int ItemTypeFunctions::luaItemTypeIsReadable(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsWritable(lua_State* L) {
 	// itemType:isWritable()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->canWriteText);
 	} else {
@@ -140,7 +139,7 @@ int ItemTypeFunctions::luaItemTypeIsWritable(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsBlocking(lua_State* L) {
 	// itemType:isBlocking()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->blockProjectile || itemType->blockSolid);
 	} else {
@@ -151,7 +150,7 @@ int ItemTypeFunctions::luaItemTypeIsBlocking(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsGroundTile(lua_State* L) {
 	// itemType:isGroundTile()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isGroundTile());
 	} else {
@@ -162,7 +161,7 @@ int ItemTypeFunctions::luaItemTypeIsGroundTile(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsMagicField(lua_State* L) {
 	// itemType:isMagicField()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isMagicField());
 	} else {
@@ -173,7 +172,7 @@ int ItemTypeFunctions::luaItemTypeIsMagicField(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsMultiUse(lua_State* L) {
 	// itemType:isMultiUse()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isMultiUse());
 	} else {
@@ -184,7 +183,7 @@ int ItemTypeFunctions::luaItemTypeIsMultiUse(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsPickupable(lua_State* L) {
 	// itemType:isPickupable()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isPickupable());
 	} else {
@@ -195,7 +194,7 @@ int ItemTypeFunctions::luaItemTypeIsPickupable(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsKey(lua_State* L) {
 	// itemType:isKey()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isKey());
 	} else {
@@ -206,7 +205,7 @@ int ItemTypeFunctions::luaItemTypeIsKey(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeIsQuiver(lua_State* L) {
 	// itemType:isQuiver()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->isQuiver());
 	} else {
@@ -217,7 +216,7 @@ int ItemTypeFunctions::luaItemTypeIsQuiver(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetType(lua_State* L) {
 	// itemType:getType()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->type);
 	} else {
@@ -228,7 +227,7 @@ int ItemTypeFunctions::luaItemTypeGetType(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetId(lua_State* L) {
 	// itemType:getId()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->id);
 	} else {
@@ -239,7 +238,7 @@ int ItemTypeFunctions::luaItemTypeGetId(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetName(lua_State* L) {
 	// itemType:getName()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushString(L, itemType->name);
 	} else {
@@ -250,7 +249,7 @@ int ItemTypeFunctions::luaItemTypeGetName(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetPluralName(lua_State* L) {
 	// itemType:getPluralName()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushString(L, itemType->getPluralName());
 	} else {
@@ -261,7 +260,7 @@ int ItemTypeFunctions::luaItemTypeGetPluralName(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetArticle(lua_State* L) {
 	// itemType:getArticle()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushString(L, itemType->article);
 	} else {
@@ -272,10 +271,10 @@ int ItemTypeFunctions::luaItemTypeGetArticle(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetDescription(lua_State* L) {
 	// itemType:getDescription([count])
-	auto itemType = getUserdata<ItemType>(L, 1);
+	const auto &itemType = getUserdata<ItemType>(L, 1);
 	if (itemType) {
-		auto count = getNumber<uint16_t>(L, 2, -1);
-		auto description = Item::getDescription(*itemType, 1, nullptr, count);
+		const auto count = getNumber<uint16_t>(L, 2, -1);
+		const auto description = Item::getDescription(*itemType, 1, nullptr, count);
 		pushString(L, description);
 	} else {
 		lua_pushnil(L);
@@ -285,7 +284,7 @@ int ItemTypeFunctions::luaItemTypeGetDescription(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetSlotPosition(lua_State* L) {
 	// itemType:getSlotPosition()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->slotPosition);
 	} else {
@@ -296,7 +295,7 @@ int ItemTypeFunctions::luaItemTypeGetSlotPosition(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetCharges(lua_State* L) {
 	// itemType:getCharges()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->charges);
 	} else {
@@ -307,7 +306,7 @@ int ItemTypeFunctions::luaItemTypeGetCharges(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetFluidSource(lua_State* L) {
 	// itemType:getFluidSource()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->fluidSource);
 	} else {
@@ -318,7 +317,7 @@ int ItemTypeFunctions::luaItemTypeGetFluidSource(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetCapacity(lua_State* L) {
 	// itemType:getCapacity()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->maxItems);
 	} else {
@@ -329,35 +328,35 @@ int ItemTypeFunctions::luaItemTypeGetCapacity(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetWeight(lua_State* L) {
 	// itemType:getWeight([count = 1])
-	uint16_t count = getNumber<uint16_t>(L, 2, 1);
+	const auto count = getNumber<uint16_t>(L, 2, 1);
 
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (!itemType) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	uint64_t weight = static_cast<uint64_t>(itemType->weight) * std::max<int32_t>(1, count);
+	const uint64_t weight = static_cast<uint64_t>(itemType->weight) * std::max<int32_t>(1, count);
 	lua_pushnumber(L, weight);
 	return 1;
 }
 
 int ItemTypeFunctions::luaItemTypeGetStackSize(lua_State* L) {
 	// itemType:getStackSize()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (!itemType) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	uint64_t stackSize = static_cast<uint64_t>(itemType->stackSize);
+	const auto stackSize = static_cast<uint64_t>(itemType->stackSize);
 	lua_pushnumber(L, stackSize);
 	return 1;
 }
 
 int ItemTypeFunctions::luaItemTypeGetHitChance(lua_State* L) {
 	// itemType:getHitChance()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->hitChance);
 	} else {
@@ -368,7 +367,7 @@ int ItemTypeFunctions::luaItemTypeGetHitChance(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetShootRange(lua_State* L) {
 	// itemType:getShootRange()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->shootRange);
 	} else {
@@ -379,7 +378,7 @@ int ItemTypeFunctions::luaItemTypeGetShootRange(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetAttack(lua_State* L) {
 	// itemType:getAttack()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->attack);
 	} else {
@@ -390,7 +389,7 @@ int ItemTypeFunctions::luaItemTypeGetAttack(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetDefense(lua_State* L) {
 	// itemType:getDefense()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->defense);
 	} else {
@@ -401,7 +400,7 @@ int ItemTypeFunctions::luaItemTypeGetDefense(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetExtraDefense(lua_State* L) {
 	// itemType:getExtraDefense()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->extraDefense);
 	} else {
@@ -412,7 +411,7 @@ int ItemTypeFunctions::luaItemTypeGetExtraDefense(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetImbuementSlot(lua_State* L) {
 	// itemType:getImbuementSlot()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->imbuementSlot);
 	} else {
@@ -423,7 +422,7 @@ int ItemTypeFunctions::luaItemTypeGetImbuementSlot(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetArmor(lua_State* L) {
 	// itemType:getArmor()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->armor);
 	} else {
@@ -434,7 +433,7 @@ int ItemTypeFunctions::luaItemTypeGetArmor(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetWeaponType(lua_State* L) {
 	// itemType:getWeaponType()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->weaponType);
 	} else {
@@ -445,7 +444,7 @@ int ItemTypeFunctions::luaItemTypeGetWeaponType(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetAmmoType(lua_State* L) {
 	// itemType:getAmmoType()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->ammoType);
 	} else {
@@ -456,7 +455,7 @@ int ItemTypeFunctions::luaItemTypeGetAmmoType(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetElementType(lua_State* L) {
 	// itemType:getElementType()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (!itemType) {
 		lua_pushnil(L);
 		return 1;
@@ -473,7 +472,7 @@ int ItemTypeFunctions::luaItemTypeGetElementType(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetElementDamage(lua_State* L) {
 	// itemType:getElementDamage()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (!itemType) {
 		lua_pushnil(L);
 		return 1;
@@ -490,7 +489,7 @@ int ItemTypeFunctions::luaItemTypeGetElementDamage(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetTransformEquipId(lua_State* L) {
 	// itemType:getTransformEquipId()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->transformEquipTo);
 	} else {
@@ -501,7 +500,7 @@ int ItemTypeFunctions::luaItemTypeGetTransformEquipId(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetTransformDeEquipId(lua_State* L) {
 	// itemType:getTransformDeEquipId()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->transformDeEquipTo);
 	} else {
@@ -512,7 +511,7 @@ int ItemTypeFunctions::luaItemTypeGetTransformDeEquipId(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetDestroyId(lua_State* L) {
 	// itemType:getDestroyId()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->destroyTo);
 	} else {
@@ -523,7 +522,7 @@ int ItemTypeFunctions::luaItemTypeGetDestroyId(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetDecayId(lua_State* L) {
 	// itemType:getDecayId()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->decayTo);
 	} else {
@@ -534,7 +533,7 @@ int ItemTypeFunctions::luaItemTypeGetDecayId(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetRequiredLevel(lua_State* L) {
 	// itemType:getRequiredLevel()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->minReqLevel);
 	} else {
@@ -545,7 +544,7 @@ int ItemTypeFunctions::luaItemTypeGetRequiredLevel(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetSpeed(lua_State* L) {
 	// itemType:getSpeed()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (!itemType) {
 		lua_pushnil(L);
 		return 1;
@@ -562,7 +561,7 @@ int ItemTypeFunctions::luaItemTypeGetSpeed(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetBaseSpeed(lua_State* L) {
 	// itemType:getBaseSpeed()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->speed);
 	} else {
@@ -573,7 +572,7 @@ int ItemTypeFunctions::luaItemTypeGetBaseSpeed(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetDecayTime(lua_State* L) {
 	// itemType:getDecayTime()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->decayTime);
 	} else {
@@ -584,7 +583,7 @@ int ItemTypeFunctions::luaItemTypeGetDecayTime(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetShowDuration(lua_State* L) {
 	// itemType:getShowDuration()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushboolean(L, itemType->showDuration);
 	} else {
@@ -594,7 +593,7 @@ int ItemTypeFunctions::luaItemTypeGetShowDuration(lua_State* L) {
 }
 int ItemTypeFunctions::luaItemTypeGetWrapableTo(lua_State* L) {
 	// itemType:getWrapableTo()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->wrapableTo);
 	} else {
@@ -605,7 +604,7 @@ int ItemTypeFunctions::luaItemTypeGetWrapableTo(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeHasSubType(lua_State* L) {
 	// itemType:hasSubType()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushBoolean(L, itemType->hasSubType());
 	} else {
@@ -616,7 +615,7 @@ int ItemTypeFunctions::luaItemTypeHasSubType(lua_State* L) {
 
 int ItemTypeFunctions::luaItemTypeGetVocationString(lua_State* L) {
 	// itemType:getVocationString()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	const auto* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushString(L, itemType->vocationString);
 	} else {

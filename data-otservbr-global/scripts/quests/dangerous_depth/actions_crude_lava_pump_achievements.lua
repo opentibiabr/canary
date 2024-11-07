@@ -32,30 +32,30 @@ function dangerousDepthAchievements.onUse(player, item)
 	local WarzoneVI = Position(33685, 32304, 15)
 
 	if positionItem == WarzoneIV then -- Warzone VI
-		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheBaronFromBelowAchiev) < 1 then
+		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.TheBaronFromBelowAchiev) < 1 then
 			player:addAchievement("Buried the Baron")
-			player:setStorageValue(Storage.DangerousDepths.Bosses.TheBaronFromBelowAchiev, 1)
+			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.TheBaronFromBelowAchiev, 1)
 		end
 	end
 
 	if positionItem == WarzoneV then -- Warzone V
-		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheCountOfTheCoreAchiev) < 1 then
+		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.TheCountOfTheCoreAchiev) < 1 then
 			player:addAchievement("His Days are Counted")
-			player:setStorageValue(Storage.DangerousDepths.Bosses.TheCountOfTheCoreAchiev, 1)
+			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.TheCountOfTheCoreAchiev, 1)
 		end
 	end
 
 	if positionItem == WarzoneVI then -- Warzone IV
-		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheDukeOfTheDepthsAchiev) < 1 then
+		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.TheDukeOfTheDepthsAchiev) < 1 then
 			player:addAchievement("Duked It Out")
-			player:setStorageValue(Storage.DangerousDepths.Bosses.TheDukeOfTheDepthsAchiev, 1)
+			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.TheDukeOfTheDepthsAchiev, 1)
 		end
 	end
 
-	if player:getStorageValue(Storage.DangerousDepths.Bosses.LastAchievement) < 1 then
-		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheDukeOfTheDepthsAchiev) == 1 and player:getStorageValue(Storage.DangerousDepths.Bosses.TheBaronFromBelowAchiev) == 1 and player:getStorageValue(Storage.DangerousDepths.Bosses.TheCountOfTheCoreAchiev) == 1 then
+	if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.LastAchievement) < 1 then
+		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.TheDukeOfTheDepthsAchiev) == 1 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.TheBaronFromBelowAchiev) == 1 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.TheCountOfTheCoreAchiev) == 1 then
 			player:addAchievement("Death in the Depths")
-			player:setStorageValue(Storage.DangerousDepths.Bosses.LastAchievement, 1)
+			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Bosses.LastAchievement, 1)
 		end
 	end
 	return true

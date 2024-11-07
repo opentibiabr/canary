@@ -72,7 +72,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "addon") then
-		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 156 or 152) and player:getStorageValue(Storage.OutfitQuest.AssassinFirstAddon) < 1 and player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.Shipwrecked) == 2 then
+		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 156 or 152) and player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinFirstAddon) < 1 and player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.Shipwrecked) == 2 then
 			npcHandler:say("Vescu gave you an assassin outfit? Haha. Noticed it lacks the head piece? You look a bit silly. Want my old head piece?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end

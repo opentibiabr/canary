@@ -7,15 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "lua/functions/creatures/player/group_functions.hpp"
 
 #include "creatures/players/grouping/groups.hpp"
 #include "game/game.hpp"
-#include "lua/functions/creatures/player/group_functions.hpp"
 
 int GroupFunctions::luaGroupCreate(lua_State* L) {
 	// Group(id)
-	uint32_t id = getNumber<uint32_t>(L, 2);
+	const uint32_t id = getNumber<uint32_t>(L, 2);
 
 	const auto &group = g_game().groups.getGroup(id);
 	if (group) {
@@ -103,7 +102,7 @@ int GroupFunctions::luaGroupHasFlag(lua_State* L) {
 	// group:hasFlag(flag)
 	const auto &group = getUserdataShared<Group>(L, 1);
 	if (group) {
-		auto flag = static_cast<PlayerFlags_t>(getNumber<int>(L, 2));
+		const auto flag = static_cast<PlayerFlags_t>(getNumber<int>(L, 2));
 		pushBoolean(L, group->flags[Groups::getFlagNumber(flag)]);
 	} else {
 		lua_pushnil(L);

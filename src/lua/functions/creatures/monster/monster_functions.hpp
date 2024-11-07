@@ -17,6 +17,12 @@
 
 class MonsterFunctions final : LuaScriptInterface {
 private:
+	explicit MonsterFunctions(lua_State* L) :
+		LuaScriptInterface("MonsterFunctions") {
+		init(L);
+	}
+	~MonsterFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerSharedClass(L, "Monster", "Creature", MonsterFunctions::luaMonsterCreate);
 		registerMetaMethod(L, "Monster", "__eq", MonsterFunctions::luaUserdataCompare);

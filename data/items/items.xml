@@ -22659,7 +22659,7 @@
 		<attribute key="maxtextlen" value="99"/>
 		<attribute key="weight" value="1000"/>
 	</item>
-	<item id="8152" article="the" name="Mexcalibur">
+	<item id="8152" article="the" name="mexcalibur">
 		<attribute key="description" value="Your name is carved on this mighty sword"/>
 		<attribute key="weight" value="1200"/>
 	</item>
@@ -39137,7 +39137,7 @@
 			<attribute key="slot" value="necklace"/>
 		</attribute>
 	</item>
-	<item id="19154" article="the" name="Mexcalibur">
+	<item id="19154" article="the" name="mexcalibur">
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="1200"/>
 	</item>
@@ -42064,7 +42064,12 @@
 		<attribute key="weight" value="400"/>
 	</item>
 	<item fromid="21205" toid="21207" name="RESERVED SPRITE"/>
-	<item fromid="21208" toid="21211" name="active probing device">
+	<item id="21208" article="a" name="strange probing device">
+		<attribute key="primarytype" value="quest items"/>
+		<attribute key="description" value="There is no evidence this thing even works. Even slightest movement may trigger its mechanisms."/>
+		<attribute key="weight" value="800"/>
+	</item>
+	<item fromid="21209" toid="21211" name="active probing device">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="description" value="This thing looks highly instable, you better find a place to deploy it soon"/>
 		<attribute key="weight" value="800"/>
@@ -44200,7 +44205,7 @@ Awarded by TibiaMisterios.com.br"/>
 		<attribute key="primarytype" value="event creatures"/>
 		<attribute key="weight" value="1500"/>
 	</item>
-	<item id="22160" article="the" name="Rite of Eternal Night">
+	<item id="22160" article="the" name="rite of eternal night">
 		<attribute key="description" value="It is a disturbing invocation of dark and heinous powers"/>
 		<attribute key="weight" value="50"/>
 	</item>
@@ -44215,7 +44220,7 @@ Awarded by TibiaMisterios.com.br"/>
 	<item fromid="22166" toid="22169" article="a" name="fountain">
 		<attribute key="primarytype" value="constructions"/>
 	</item>
-	<item id="22170" article="a" name="House Silversun's signet ring">
+	<item id="22170" article="a" name="house silversun's signet ring">
 		<attribute key="description" value="It depicts a small silver sun with many rays of light"/>
 		<attribute key="weight" value="450"/>
 		<attribute key="script" value="moveevent">
@@ -45287,8 +45292,10 @@ Awarded by TibiaMisterios.com.br"/>
 		</attribute>
 	</item>
 	<item id="22761" article="a" name="vortex">
+		<attribute key="primarytype" value="teleporters"/>
 		<attribute key="type" value="teleport"/>
 		<attribute key="description" value="It draws you nearer."/>
+		<attribute key="effect" value="teleport"/>
 	</item>
 	<item id="22762" article="a" name="maimer">
 		<attribute key="primarytype" value="club weapons"/>
@@ -51867,6 +51874,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="27489" article="a" name="silver nugget"/>
 	<item id="27490" article="a" name="unknown corpse (skeleton)"/>
+	<item id="27491" article="an" name="explosive barrel">
+		<attribute key="primarytype" value="containers"/>
+		<attribute key="description" value="This dwarven barrel is highly explosive and instable. It's literally only a matter of time until it goes off."/>
+	</item>
 	<item id="27492" article="an" name="explosive barrel">
 		<attribute key="primarytype" value="containers"/>
 		<attribute key="description" value="This dwarven barrel is highly explosive and instable. It's literally only a matter of time until it goes off."/>
@@ -53143,6 +53154,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="28494" article="a" name="silver chimes">
 		<attribute key="primarytype" value="shields"/>
+		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="280"/>
 	</item>
 	<item id="28495" article="a" name="perfume flacon">
@@ -53193,7 +53205,10 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="It is actually in the active state"/>
 		<attribute key="charges" value="500"/>
 	</item>
-	<item fromid="28527" toid="28534" article="a" name="ritual pedestal"/>
+	<item fromid="28527" toid="28528" article="a" name="altar of ritual sword"/>
+	<item fromid="28529" toid="28530" article="a" name="altar of exultant ritual figurine"/>
+	<item fromid="28531" toid="28532" article="a" name="altar of ritual figurine"/>
+	<item fromid="28533" toid="28534" article="a" name="altar of ritual stone tablet"/>
 	<item id="28535" article="a" name="ritual figurine">
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="weight" value="150"/>
@@ -53987,7 +54002,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="It looks quite fragile"/>
 		<attribute key="weight" value="180"/>
 	</item>
-	<item id="28710" article="the" name="Peacock Ballad">
+	<item id="28710" article="the" name="peacock ballad">
 		<attribute key="weight" value="50"/>
 	</item>
 	<item fromid="28711" toid="28712" name="RESERVED SPRITE"/>
@@ -64905,7 +64920,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="description" value="A fine but practically ancient wine. It's absolutely not advised to actually drink it"/>
 		<attribute key="weight" value="100"/>
 	</item>
-	<item id="34210" article="a" name="Goromaphone">
+	<item id="34210" article="a" name="goromaphone">
 		<attribute key="primarytype" value="fansite items"/>
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="6659"/>
@@ -74917,15 +74932,15 @@ Granted by TibiaGoals.com"/>
 	<item id="43374" name="vine">
 		<attribute key="type" value="ladder"/>
 	</item>
-	<item id="43510" name="tibiora's box replica">
+	<item id="43510" name="tibiora's box">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="4200"/>
 	</item>
-	<item id="43511" article="a" name="citizen doll replica">
+	<item id="43511" article="a" name="citizen doll">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="2200"/>
 	</item>
-	<item id="43517" article="a" name="shield of destiny replica">
+	<item id="43517" article="a" name="shield of destiny">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="6800"/>
 	</item>
@@ -75124,7 +75139,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75150,9 +75167,11 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 			<attribute key="intense wound cleansing" value="cooldown">
-				<attribute key="value" value="120000" />
+				<attribute key="value" value="120000"/>
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
@@ -75179,7 +75198,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75205,7 +75226,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75231,7 +75254,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75257,7 +75282,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75285,7 +75312,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75312,7 +75341,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75339,7 +75370,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75366,7 +75399,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75393,7 +75428,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="strong impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75420,7 +75457,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="powerful impact" />
+			<attribute key="fierce berserk" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75473,7 +75512,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="strong impact" />
+			<attribute key="divine caldera" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75503,7 +75544,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="powerful impact" />
+			<attribute key="divine caldera" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75533,7 +75576,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="strong impact" />
+			<attribute key="divine caldera" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75563,7 +75608,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="powerful impact" />
+			<attribute key="divine caldera" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75612,8 +75659,12 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="hell's core" value="strong impact" />
-			<attribute key="energy wave" value="strong impact" />
+			<attribute key="hell's core" value="base">
+				<attribute key="value" value="3"/>
+			</attribute>
+			<attribute key="energy wave" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75645,8 +75696,12 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="hell's core" value="powerful impact" />
-			<attribute key="energy wave" value="powerful impact" />
+			<attribute key="hell's core" value="base">
+				<attribute key="value" value="6"/>
+			</attribute>
+			<attribute key="energy wave" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75707,8 +75762,12 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="eternal winter" value="strong impact" />
-			<attribute key="terra wave" value="strong impact" />
+			<attribute key="eternal winter" value="base">
+				<attribute key="value" value="3"/>
+			</attribute>
+			<attribute key="terra wave" value="base">
+				<attribute key="value" value="4"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75740,8 +75799,12 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="eternal winter" value="powerful impact" />
-			<attribute key="terra wave" value="powerful impact" />
+			<attribute key="eternal winter" value="base">
+				<attribute key="value" value="6"/>
+			</attribute>
+			<attribute key="terra wave" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="600"/>
@@ -75938,7 +76001,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="elemental protection holy" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="wrath of nature" value="strong impact" />
+			<attribute key="wrath of nature" value="base">
+				<attribute key="value" value="8"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250"/>
@@ -76101,7 +76166,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="2"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine missile" value="strong impact" />
+			<attribute key="divine missile" value="base">
+				<attribute key="value" value="6"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250"/>
@@ -76145,7 +76212,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="absorbpercentenergy" value="2"/>
 		<attribute key="weight" value="5100"/>
 		<attribute key="augments" value="1">
-			<attribute key="intense wound cleansing" value="strong impact" />
+			<attribute key="intense wound cleansing" value="base">
+				<attribute key="value" value="50"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250"/>
@@ -76160,8 +76229,12 @@ Granted by TibiaGoals.com"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="weight" value="3400"/>
 		<attribute key="augments" value="1">
-			<attribute key="great energy beam" value="increased damage" />
-			<attribute key="great death beam" value="increased damage" />
+			<attribute key="great energy beam" value="base">
+				<attribute key="value" value="7"/>
+			</attribute>
+			<attribute key="great death beam" value="base">
+				<attribute key="value" value="7"/>
+			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250"/>
@@ -76343,6 +76416,16 @@ Granted by TibiaGoals.com"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="containersize" value="10"/>
 		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="46627" article="a" name="crusher">
+		<attribute key="loottype" value="tools"/>
+		<attribute key="showCharges" value="1"/>
+		<attribute key="charges" value="10"/>
+		<attribute key="weight" value="30"/>
+	</item>
+	<item id="46628" article="a" name="amber crusher">
+		<attribute key="loottype" value="tools"/>
+		<attribute key="weight" value="30"/>
 	</item>
 </items>
 

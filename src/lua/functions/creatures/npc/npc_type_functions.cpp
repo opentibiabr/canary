@@ -7,12 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
-#include "creatures/npcs/npcs.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
-#include "lua/scripts/scripts.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/npcs/npcs.hpp"
 #include "game/game.hpp"
+#include "lua/scripts/scripts.hpp"
 
 void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector) {
 	lua_createtable(L, shopVector.size(), 0);
@@ -191,7 +191,7 @@ int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
 		return 1;
 	}
 
-	auto shop = getUserdataShared<Shop>(L, 2);
+	const auto &shop = getUserdataShared<Shop>(L, 2);
 	if (shop) {
 		npcType->loadShop(npcType, shop->shopBlock);
 		pushBoolean(L, true);
@@ -308,7 +308,7 @@ int NpcTypeFunctions::luaNpcTypeOutfit(lua_State* L) {
 			pushOutfit(L, npcType->info.outfit);
 		} else {
 			Outfit_t outfit = getOutfit(L, 2);
-			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
 				g_logger().warn("[NpcTypeFunctions::luaNpcTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 				lua_pushnil(L);
 			} else {

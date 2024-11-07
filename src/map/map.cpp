@@ -7,20 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "map/map.hpp"
 
-#include "map.hpp"
-#include "utils/astarnodes.hpp"
-
-#include "lua/callbacks/event_callback.hpp"
-#include "lua/callbacks/events_callbacks.hpp"
 #include "creatures/monsters/monster.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
 #include "io/iomap.hpp"
 #include "io/iomapserialize.hpp"
-#include "game/scheduling/dispatcher.hpp"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
+#include "utils/astarnodes.hpp"
 
 void Map::load(const std::string &identifier, const Position &pos) {
 	try {
@@ -33,14 +32,14 @@ void Map::load(const std::string &identifier, const Position &pos) {
 
 void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool loadHouses /*= false*/, bool loadMonsters /*= false*/, bool loadNpcs /*= false*/, bool loadZones /*= false*/, const Position &pos /*= Position()*/) {
 	// Only download map if is loading the main map and it is not already downloaded
-	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP, __FUNCTION__) && !std::filesystem::exists(identifier)) {
-		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL, __FUNCTION__);
+	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
+		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
 		if (mapDownloadUrl.empty()) {
 			g_logger().warn("Map download URL in config.lua is empty, download disabled");
 		}
 
 		if (CURL* curl = curl_easy_init(); curl && !mapDownloadUrl.empty()) {
-			g_logger().info("Downloading " + g_configManager().getString(MAP_NAME, __FUNCTION__) + ".otbm to world folder");
+			g_logger().info("Downloading " + g_configManager().getString(MAP_NAME) + ".otbm to world folder");
 			FILE* otbm = fopen(identifier.c_str(), "wb");
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
@@ -75,7 +74,7 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		 * If map custom is enabled, then it is load in loadMapCustom function
 		 * NOTE: This will ensure that the information is not duplicated
 		 */
-		if (!g_configManager().getBoolean(TOGGLE_MAP_CUSTOM, __FUNCTION__)) {
+		if (!g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
 			IOMapSerialize::loadHouseInfo();
 			IOMapSerialize::loadHouseItems(this);
 		}
@@ -90,7 +89,7 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 	}
 
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
-	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM, __FUNCTION__)) {
+	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
 		monsterfile.clear();
 		housefile.clear();
 		npcfile.clear();
@@ -103,7 +102,7 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 
 void Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, bool loadZones, int customMapIndex) {
 	// Load the map
-	load(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/world/custom/" + mapName + ".otbm");
+	load(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + mapName + ".otbm");
 
 	if (loadMonsters && !IOMap::loadMonstersCustom(this, mapName, customMapIndex)) {
 		g_logger().warn("Failed to load monster custom data");
@@ -165,7 +164,7 @@ std::shared_ptr<Tile> Map::getLoadedTile(uint16_t x, uint16_t y, uint8_t z) {
 		return nullptr;
 	}
 
-	const auto leaf = getMapSector(x, y);
+	const auto &leaf = getMapSector(x, y);
 	if (!leaf) {
 		return nullptr;
 	}
@@ -175,7 +174,7 @@ std::shared_ptr<Tile> Map::getLoadedTile(uint16_t x, uint16_t y, uint8_t z) {
 		return nullptr;
 	}
 
-	const auto tile = floor->getTile(x, y);
+	const auto &tile = floor->getTile(x, y);
 	return tile;
 }
 
@@ -184,7 +183,7 @@ std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 		return nullptr;
 	}
 
-	const auto sector = getMapSector(x, y);
+	const auto &sector = getMapSector(x, y);
 	if (!sector) {
 		return nullptr;
 	}
@@ -198,7 +197,7 @@ std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 }
 
 void Map::refreshZones(uint16_t x, uint16_t y, uint8_t z) {
-	const auto tile = getLoadedTile(x, y, z);
+	const auto &tile = getLoadedTile(x, y, z);
 	if (!tile) {
 		return;
 	}
@@ -210,21 +209,21 @@ void Map::refreshZones(uint16_t x, uint16_t y, uint8_t z) {
 	}
 }
 
-void Map::setTile(uint16_t x, uint16_t y, uint8_t z, std::shared_ptr<Tile> newTile) {
+void Map::setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile> &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
 		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 
-	if (const auto sector = getMapSector(x, y)) {
+	if (const auto &sector = getMapSector(x, y)) {
 		sector->createFloor(z)->setTile(x, y, newTile);
 	} else {
 		getBestMapSector(x, y)->createFloor(z)->setTile(x, y, newTile);
 	}
 }
 
-bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
-	auto monster = creature->getMonster();
+bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creature> &creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
+	const auto &monster = creature ? creature->getMonster() : nullptr;
 	if (monster) {
 		monster->ignoreFieldDamage = true;
 	}
@@ -232,7 +231,7 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 	bool foundTile;
 	bool placeInPZ;
 
-	std::shared_ptr<Tile> tile = getTile(centerPos.x, centerPos.y, centerPos.z);
+	auto tile = getTile(centerPos.x, centerPos.y, centerPos.z);
 	if (tile) {
 		placeInPZ = tile->hasFlag(TILESTATE_PROTECTIONZONE);
 		ReturnValue ret = tile->queryAdd(0, creature, 1, FLAG_IGNOREBLOCKITEM | FLAG_IGNOREFIELDDAMAGE);
@@ -271,11 +270,11 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 			std::shuffle(relList.begin(), relList.begin() + 4, getRandomGenerator());
 			std::shuffle(relList.begin() + 4, relList.end(), getRandomGenerator());
 		} else {
-			std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
+			std::ranges::shuffle(relList, getRandomGenerator());
 		}
 
-		for (const auto &it : relList) {
-			Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
+		for (const auto &[xOffset, yOffset] : relList) {
+			Position tryPos(centerPos.x + xOffset, centerPos.y + yOffset, centerPos.z);
 
 			tile = getTile(tryPos.x, tryPos.y, tryPos.z);
 			if (!tile || (placeInPZ && !tile->hasFlag(TILESTATE_PROTECTIONZONE))) {
@@ -312,16 +311,18 @@ bool Map::placeCreature(const Position &centerPos, std::shared_ptr<Creature> cre
 	uint32_t flags = 0;
 	std::shared_ptr<Item> toItem = nullptr;
 
-	auto toCylinder = tile->queryDestination(index, creature, &toItem, flags);
-	toCylinder->internalAddThing(creature);
+	if (tile) {
+		const auto toCylinder = tile->queryDestination(index, creature, toItem, flags);
+		toCylinder->internalAddThing(creature);
 
-	const Position &dest = toCylinder->getPosition();
-	getMapSector(dest.x, dest.y)->addCreature(creature);
+		const Position &dest = toCylinder->getPosition();
+		getMapSector(dest.x, dest.y)->addCreature(creature);
+	}
 	return true;
 }
 
 void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport /* = false*/) {
-	if (!creature || !newTile) {
+	if (!creature || creature->isRemoved() || !newTile) {
 		return;
 	}
 
@@ -334,14 +335,18 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	const auto &oldPos = oldTile->getPosition();
 	const auto &newPos = newTile->getPosition();
 
-	const auto &fromZones = oldTile->getZones();
-	const auto &toZones = newTile->getZones();
-
-	if (auto ret = g_game().beforeCreatureZoneChange(creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
+	if (oldPos == newPos) {
 		return;
 	}
 
-	bool teleport = forceTeleport || !newTile->getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
+	const auto &fromZones = oldTile->getZones();
+	const auto &toZones = newTile->getZones();
+
+	if (const auto &ret = g_game().beforeCreatureZoneChange(creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
+		return;
+	}
+
+	const bool teleport = forceTeleport || !newTile->getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
 
 	Spectators spectators;
 	if (!teleport && oldPos.z == newPos.z) {
@@ -362,13 +367,13 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 			++minRangeX;
 		}
 
-		spectators.find<Creature>(oldPos, true, minRangeX, maxRangeX, minRangeY, maxRangeY);
+		spectators.find<Creature>(oldPos, true, minRangeX, maxRangeX, minRangeY, maxRangeY, false);
 	} else {
-		spectators.find<Creature>(oldPos, true);
-		spectators.find<Creature>(newPos, true);
+		spectators.find<Creature>(oldPos, true, 0, 0, 0, 0, false);
+		spectators.find<Creature>(newPos, true, 0, 0, 0, 0, false);
 	}
 
-	auto playersSpectators = spectators.filter<Player>();
+	const auto playersSpectators = spectators.filter<Player>();
 
 	std::vector<int32_t> oldStackPosVector;
 	oldStackPosVector.reserve(playersSpectators.size());
@@ -413,7 +418,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	size_t i = 0;
 	for (const auto &spectator : playersSpectators) {
 		// Use the correct stackpos
-		int32_t stackpos = oldStackPosVector[i++];
+		const int32_t stackpos = oldStackPosVector[i++];
 		if (stackpos != -1) {
 			const auto &player = spectator->getPlayer();
 			player->sendCreatureMove(creature, newPos, newTile->getStackposOfCreature(player, creature), oldPos, stackpos, teleport);
@@ -425,9 +430,18 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	oldTile->postRemoveNotification(creature, newTile, 0);
-	newTile->postAddNotification(creature, oldTile, 0);
-	g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+	auto events = [=] {
+		oldTile->postRemoveNotification(creature, newTile, 0);
+		newTile->postAddNotification(creature, oldTile, 0);
+		g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+	};
+
+	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+		// onCreatureMove for monster is asynchronous, so we need to defer the actions.
+		g_dispatcher().addEvent(std::move(events), "Map::moveCreature");
+	} else {
+		events();
+	}
 }
 
 bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, const SightLines_t lineOfSight /*= SightLine_CheckSightLine*/, const int32_t rangex /*= Map::maxClientViewportX*/, const int32_t rangey /*= Map::maxClientViewportY*/) {
@@ -438,7 +452,7 @@ bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, const
 		return false;
 	}
 
-	int32_t deltaz = Position::getDistanceZ(fromPos, toPos);
+	const int32_t deltaz = Position::getDistanceZ(fromPos, toPos);
 	if (deltaz > MAP_LAYER_VIEW_LIMIT) {
 		return false;
 	}
@@ -640,7 +654,7 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 	return tile;
 }
 
-bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &__targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &_targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 	static int_fast32_t allNeighbors[8][2] = {
 		{ -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { 1, -1 }, { 1, 1 }, { -1, 1 }
 	};
@@ -658,7 +672,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 
 	const bool withoutCreature = creature == nullptr;
 
-	Position pos = withoutCreature ? __targetPos : creature->getPosition();
+	Position pos = withoutCreature ? _targetPos : creature->getPosition();
 	Position endPos;
 
 	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
@@ -666,14 +680,14 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 	int32_t bestMatch = 0;
 
 	const auto &startPos = pos;
-	const auto &targetPos = withoutCreature ? pathCondition.getTargetPos() : __targetPos;
+	const auto &targetPos = withoutCreature ? pathCondition.getTargetPos() : _targetPos;
 
 	const int_fast32_t sX = std::abs(targetPos.getX() - pos.getX());
 	const int_fast32_t sY = std::abs(targetPos.getY() - pos.getY());
 
 	uint_fast16_t cntDirs = 0;
 
-	AStarNode* found = nullptr;
+	const AStarNode* found = nullptr;
 	do {
 		AStarNode* n = nodes.getBestNode();
 		if (!n) {
@@ -787,8 +801,8 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 		pos.x = found->x;
 		pos.y = found->y;
 
-		int_fast32_t dx = pos.getX() - prevx;
-		int_fast32_t dy = pos.getY() - prevy;
+		const int_fast32_t dx = pos.getX() - prevx;
+		const int_fast32_t dy = pos.getY() - prevy;
 
 		prevx = pos.x;
 		prevy = pos.y;
@@ -853,7 +867,7 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 
 	uint_fast16_t cntDirs = 0;
 
-	AStarNode* found = nullptr;
+	const AStarNode* found = nullptr;
 	do {
 		AStarNode* n = nodes.getBestNode();
 		if (!n) {
@@ -975,8 +989,8 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 		pos.x = found->x;
 		pos.y = found->y;
 
-		int_fast32_t dx = pos.getX() - prevx;
-		int_fast32_t dy = pos.getY() - prevy;
+		const int_fast32_t dx = pos.getX() - prevx;
+		const int_fast32_t dy = pos.getY() - prevy;
 
 		prevx = pos.x;
 		prevy = pos.y;
@@ -1007,8 +1021,8 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 	return true;
 }
 
-uint32_t Map::clean() {
-	uint64_t start = OTSYS_TIME();
+uint32_t Map::clean() const {
+	const uint64_t start = OTSYS_TIME();
 	size_t qntTiles = 0;
 
 	if (g_game().getGameState() == GAME_STATE_NORMAL) {
@@ -1023,7 +1037,7 @@ uint32_t Map::clean() {
 			continue;
 		}
 
-		if (const auto items = tile->getItemList()) {
+		if (const auto &items = tile->getItemList()) {
 			++qntTiles;
 			for (const auto &item : *items) {
 				if (item->isCleanable()) {
@@ -1044,7 +1058,7 @@ uint32_t Map::clean() {
 		g_game().setGameState(GAME_STATE_NORMAL);
 	}
 
-	uint64_t end = OTSYS_TIME();
+	const uint64_t end = OTSYS_TIME();
 	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), qntTiles, (qntTiles != 1 ? "s" : ""), (end - start) / (1000.f));
 	return count;
 }

@@ -13,6 +13,12 @@
 
 class ItemClassificationFunctions final : LuaScriptInterface {
 public:
+	explicit ItemClassificationFunctions(lua_State* L) :
+		LuaScriptInterface("ItemClassificationFunctions") {
+		init(L);
+	}
+	~ItemClassificationFunctions() override = default;
+
 	static void init(lua_State* L) {
 		registerClass(L, "ItemClassification", "", ItemClassificationFunctions::luaItemClassificationCreate);
 		registerMetaMethod(L, "ItemClassification", "__eq", ItemClassificationFunctions::luaUserdataCompare);

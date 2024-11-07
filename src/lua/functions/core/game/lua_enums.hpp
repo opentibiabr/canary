@@ -9,12 +9,16 @@
 
 #pragma once
 
-#include "account/account.hpp"
-#include "declarations.hpp"
 #include "lua/scripts/luascript.hpp"
 
 class LuaEnums final : LuaScriptInterface {
 public:
+	explicit LuaEnums(lua_State* L) :
+		LuaScriptInterface("LuaEnums") {
+		init(L);
+	}
+	~LuaEnums() override = default;
+
 	static void init(lua_State* L);
 
 private:
@@ -66,5 +70,8 @@ private:
 	static void initWebhookEnums(lua_State* L);
 	static void initBosstiaryEnums(lua_State* L);
 	static void initSoundEnums(lua_State* L);
+	static void spelltSoundEnums(lua_State* L);
+	static void monsterSoundEnums(lua_State* L);
+	static void effectsSoundEnums(lua_State* L);
 	static void initWheelEnums(lua_State* L);
 };

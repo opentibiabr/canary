@@ -46,6 +46,8 @@
 #include <cmath>
 #include <mutex>
 #include <stack>
+#include <source_location>
+#include <span>
 
 // --------------------
 // System Includes
@@ -81,17 +83,14 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/args.h>
+#include <fmt/ranges.h>
 
 // FMT Custom Formatter for Enums
 template <typename E>
-struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<std::underlying_type_t<E>> {
-	template <typename FormatContext>
-	auto format(E e, FormatContext &ctx) {
-		return formatter<std::underlying_type_t<E>>::format(
-			static_cast<std::underlying_type_t<E>>(e), ctx
-		);
-	}
-};
+std::enable_if_t<std::is_enum_v<E>, std::underlying_type_t<E>>
+format_as(E e) {
+	return static_cast<std::underlying_type_t<E>>(e);
+}
 
 // GMP
 #include <gmp.h>
@@ -172,9 +171,9 @@ struct fmt::formatter<E, std::enable_if_t<std::is_enum_v<E>, char>> : formatter<
 #include "lua/global/shared_object.hpp"
 
 constexpr std::string_view methodName(const char* s) {
-	std::string_view prettyFunction(s);
-	size_t bracket = prettyFunction.rfind('(');
-	size_t space = prettyFunction.rfind(' ', bracket) + 1;
+	const std::string_view prettyFunction(s);
+	const size_t bracket = prettyFunction.rfind('(');
+	const size_t space = prettyFunction.rfind(' ', bracket) + 1;
 	return prettyFunction.substr(space, bracket - space);
 }
 
@@ -185,3 +184,6 @@ constexpr std::string_view methodName(const char* s) {
 #else
 	#error "Compiler not supported"
 #endif
+
+#include "account/account_info.hpp"
+#include "config/config_enums.hpp"

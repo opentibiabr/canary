@@ -674,7 +674,8 @@ function createHirelingType(HirelingName)
 
 			local categoryTable = itemsTable[message:lower()]
 			if categoryTable then
-				npcHandler:say("Here are the items for the category " .. message .. ".", npc, creature)
+				local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+				npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
 				npc:openShopWindowTable(player, categoryTable)
 			end
 		end

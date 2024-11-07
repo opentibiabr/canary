@@ -50,18 +50,6 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 32467, y = 31969, z = 5 } },
 	},
-	-- Edron
-	[Storage.Kilmaresh.Sixth.Favor] = {
-		itemId = false,
-		itemPos = {
-			{ x = 33855, y = 31450, z = 9 },
-			{ x = 33855, y = 31496, z = 9 },
-			{ x = 33884, y = 31510, z = 9 },
-			{ x = 33884, y = 31536, z = 9 },
-			{ x = 33911, y = 31496, z = 9 },
-			{ x = 33912, y = 31466, z = 9 },
-		},
-	},
 	-- Rathleton quest door
 	[Storage.HeroRathleton.AccessDoor] = {
 		itemId = false,
@@ -667,16 +655,6 @@ QuestDoorAction = {
 			{ x = 32169, y = 31933, z = 7 },
 		},
 	},
-	-- Kilmaresh doors
-	-- [Storage.Kilmaresh.First.Title] = {
-	-- itemId = false,
-	-- itemPos = {
-	-- {x = 33959, y = 31501, z = 4},
-	-- {x = 33375, y = 31346, z = 5},
-	-- {x = 33371, y = 31349, z = 4},
-	-- {x = 33376, y = 31335, z = 3}
-	-- }
-	-- },
 	-- The Rookie Guard Quest - Mission 07: Attack!
 	-- The library vault door
 	[Storage.Quest.U9_1.TheRookieGuard.LibraryDoor] = {
@@ -796,19 +774,35 @@ QuestDoorAction = {
 			{ x = 33470, y = 32786, z = 11 },
 		},
 	},
-	[Storage.Kilmaresh.AccessDoor] = {
+	-- Kilmaresh Quest
+	[Storage.Quest.U12_20.KilmareshQuest.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 33886, y = 31476, z = 7 } },
 	},
-	[Storage.Kilmaresh.CatacombDoors] = {
-		itemId = false,
+	[Storage.Quest.U12_20.KilmareshQuest.Second.Investigating] = {
+		itemId = 31568,
+		itemPos = { { x = 33959, y = 31501, z = 4 } },
+	},
+	[Storage.Quest.U12_20.KilmareshQuest.Sixth.GryphonMask] = {
+		itemId = 9558,
+		itemPos = {	{ x = 33884, y = 31536, z = 9 }	},
+	},
+	[Storage.Quest.U12_20.KilmareshQuest.Sixth.MirrorMask] = {
+		itemId = 9558,
+		itemPos = {	{ x = 33884, y = 31510, z = 9 } },
+	},
+	[Storage.Quest.U12_20.KilmareshQuest.Sixth.IvoryMask] = {
+		itemId = 9558,
+		itemPos = {
+			{ x = 33911, y = 31496, z = 9 },
+			{ x = 33855, y = 31496, z = 9 },
+		},
+	},
+	[Storage.Quest.U12_20.KilmareshQuest.Sixth.SilverMask] = {
+		itemId = 9558,
 		itemPos = {
 			{ x = 33855, y = 31450, z = 9 },
 			{ x = 33912, y = 31466, z = 9 },
-			{ x = 33855, y = 31496, z = 9 },
-			{ x = 33911, y = 31496, z = 9 },
-			{ x = 33884, y = 31510, z = 9 },
-			{ x = 33884, y = 31536, z = 9 },
 		},
 	},
 	[Storage.Quest.U12_60.APiratesTail.TentuglyDoor] = {

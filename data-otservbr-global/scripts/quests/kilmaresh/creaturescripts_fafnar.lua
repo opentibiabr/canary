@@ -1,6 +1,6 @@
 local monster = {
-	["burning gladiator"] = Storage.Kilmaresh.Thirteen.Fafnar,
-	["priestess of the wild sun"] = Storage.Kilmaresh.Thirteen.Fafnar,
+	["burning gladiator"] = Storage.Quest.U12_20.KilmareshQuest.Thirteen.Fafnar,
+	["priestess of the wild sun"] = Storage.Quest.U12_20.KilmareshQuest.Thirteen.Fafnar,
 }
 
 local fafnar = CreatureEvent("FafnarMissionsDeath")

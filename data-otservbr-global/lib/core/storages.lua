@@ -127,66 +127,6 @@ Storage = {
 		ThirdStage = 50003,
 		Crystal = 50004,
 	},
-	Kilmaresh = {
-		-- Reserved storage from 50015 - 50049
-		Questline = 50015,
-		First = {
-			Title = 50016,
-		},
-		Second = {
-			Investigating = 50017,
-		},
-		Third = {
-			Recovering = 50018,
-		},
-		Fourth = {
-			Moe = 50019,
-			MoeTimer = 50020,
-		},
-		Fifth = {
-			Memories = 50021,
-			MemoriesShards = 50022,
-		},
-		Sixth = {
-			Favor = 50023,
-			FourMasks = 50024,
-			BlessedStatues = 50025,
-		},
-		Set = {
-			Ritual = 50026,
-		},
-		Eighth = {
-			Yonan = 50027,
-			Narsai = 50028,
-			Shimun = 50029,
-			Tefrit = 50030,
-		},
-		Nine = {
-			Owl = 50031,
-		},
-		Tem = {
-			Bleeds = 50032,
-		},
-		Eleven = {
-			Basin = 50033,
-		},
-		Twelve = {
-			Boss = 50034,
-			Bragrumol = 50035,
-			Mozradek = 50036,
-			Xogixath = 50037,
-		},
-		Thirteen = {
-			Fafnar = 50038,
-			Lyre = 50039,
-			Presente = 50040,
-		},
-		Fourteen = {
-			Remains = 50041,
-		},
-		AccessDoor = 50043,
-		CatacombDoors = 55047,
-	},
 	DeeplingBosses = {
 		-- Reserved storage from 50075 - 50079
 		Jaul = 50075,
@@ -2858,15 +2798,76 @@ Storage = {
 					},
 				},
 				CobraBastion = {
-					Questline = 52311,
+					Questline = 46891,
 				},
 			},
 			HandOfTheInquisitionOutfits = {
-				Outfits = 52312,
-				Addon1 = 52313,
-				Addon2 = 52314,
+				Outfits = 46892,
+				Addon1 = 46893,
+				Addon2 = 46894,
 			},
-			Kilmaresh = {},
+			KilmareshQuest = {
+				Questline = 46895,
+				First = {
+					Title = 46896,
+				},
+				Second = {
+					Investigating = 46897,
+				},
+				Third = {
+					Recovering = 46898,
+				},
+				Fourth = {
+					Moe = 46899,
+					MoeTimer = 46890,
+				},
+				Fifth = {
+					Memories = 46891,
+					MemoriesShards = 46892,
+				},
+				Sixth = {
+					Favor = 46893,
+					FourMasks = 46894,
+					BlessedStatues = 46895,
+					IvoryMask = 46896,
+					MirrorMask = 46897,
+					SilverMask = 46898,
+					GryphonMask = 46899,
+				},
+				Set = {
+					Ritual = 46900,
+				},
+				Eighth = {
+					Yonan = 46901,
+					Narsai = 46903,
+					Shimun = 46904,
+					Tefrit = 46905,
+				},
+				Nine = {
+					Owl = 46906,
+				},
+				Tem = {
+					Bleeds = 46907,
+				},
+				Eleven = {
+					Basin = 46908,
+				},
+				Twelve = {
+					Boss = 46909,
+					Bragrumol = 46910,
+					Mozradek = 46911,
+					Xogixath = 46912,
+				},
+				Thirteen = {
+					Fafnar = 46913,
+					Lyre = 46914,
+					Presente = 46915,
+				},
+				Fourteen = {
+					Remains = 46916,
+				},
+				AccessDoor = 46917,
+			},
 			Orcsoberfest = {},
 		},
 		U12_30 = { -- update 12.30 - Reserved Storages 47001 - 47200

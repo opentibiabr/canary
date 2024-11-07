@@ -3447,4 +3447,17 @@ ItemUnique = {
 		itemId = 9253,
 		itemPos = { x = 33755, y = 32161, z = 14 },
 	},
+	-- Kilmaresh Quest
+	[57505] = {
+		itemId = 31349,
+		itemPos = { x = 33899, y = 31643, z = 9 },
+	},
+	[57506] = {
+		itemId = 31349,
+		itemPos = { x = 33936, y = 31647, z = 9 },
+	},
+	[57507] = {
+		itemId = 31357,
+		itemPos = { x = 33914, y = 31639, z = 9 },
+	},
 }

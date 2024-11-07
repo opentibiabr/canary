@@ -89,8 +89,8 @@ local memoryShardsItemIdsBitmasks = {
 local memoryShards = Action()
 
 function memoryShards.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local memoryStorage = player:getStorageValue(Storage.Kilmaresh.Fifth.Memories)
-	local memoriesShardsStorage = player:getStorageValue(Storage.Kilmaresh.Fifth.MemoriesShards)
+	local memoryStorage = player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.Memories)
+	local memoriesShardsStorage = player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.MemoriesShards)
 	local hasUsedShard = testFlag(memoriesShardsStorage, memoryShardsItemIdsBitmasks[item:getId()])
 
 	if
@@ -99,8 +99,8 @@ function memoryShards.onUse(player, item, fromPosition, target, toPosition, isHo
 		and target.uid == 57507 -- is it the shrine?
 	then
 		player:say(memoriesWords[memoryStorage], TALKTYPE_MONSTER_SAY, false, player, toPosition)
-		player:setStorageValue(Storage.Kilmaresh.Fifth.Memories, memoryStorage + 1)
-		player:setStorageValue(Storage.Kilmaresh.Fifth.MemoriesShards, setFlag(memoriesShardsStorage, memoryShardsItemIdsBitmasks[item:getId()]))
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.Memories, memoryStorage + 1)
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.MemoriesShards, setFlag(memoriesShardsStorage, memoryShardsItemIdsBitmasks[item:getId()]))
 		toPosition:sendMagicEffect(CONST_ME_ENERGYAREA)
 		return true
 	end

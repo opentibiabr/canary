@@ -392,24 +392,24 @@ local questTable = {
 -- from Position: (33201, 31762, 1)
 -- to Position: (33356, 31309, 4)
 local function playerFreeQuestStart(playerId, index)
-    local player = Player(playerId)
-    if not player then
-        return
-    end
+	local player = Player(playerId)
+	if not player then
+		return
+	end
 
-    for i = 1, 5 do
-        index = index + 1
-        if not questTable[index] then
-            player:sendTextMessage(MESSAGE_LOOK, "Adding free quests completed.")
-            player:setStorageValue(Storage.FreeQuests, stage)
-            return
-        end
+	for i = 1, 5 do
+		index = index + 1
+		if not questTable[index] then
+			player:sendTextMessage(MESSAGE_LOOK, "Adding free quests completed.")
+			player:setStorageValue(Storage.FreeQuests, stage)
+			return
+		end
 
-        if questTable[index].storage and player:getStorageValue(questTable[index].storage) ~= questTable[index].storageValue then
-            player:setStorageValue(questTable[index].storage, questTable[index].storageValue)
-        end
-    end
-    addEvent(playerFreeQuestStart, 500, playerId, index)
+		if questTable[index].storage and player:getStorageValue(questTable[index].storage) ~= questTable[index].storageValue then
+			player:setStorageValue(questTable[index].storage, questTable[index].storageValue)
+		end
+	end
+	addEvent(playerFreeQuestStart, 500, playerId, index)
 end
 
 local freeQuests = CreatureEvent("FreeQuests")

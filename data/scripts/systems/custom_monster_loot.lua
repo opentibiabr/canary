@@ -1,6 +1,6 @@
 -- Drops custom loot for all monsters
 local allLootConfig = {
-	{ id = 6526, chance = 100000, minCount = 1, maxCount = 10}, -- Example of loot (100% chance)
+	{ id = 6526, chance = 100000, minCount = 1, maxCount = 10 }, -- Example of loot (100% chance)
 }
 
 -- Custom loot for specific monsters (this has the same usage options as normal monster loot)

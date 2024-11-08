@@ -437,7 +437,6 @@ public:
 	void setGameState(GameState_t newState);
 
 	// Events
-	void checkCreatureWalk(uint32_t creatureId);
 	void updateCreatureWalk(uint32_t creatureId);
 	void checkCreatureAttack(uint32_t creatureId);
 	void checkCreatures();

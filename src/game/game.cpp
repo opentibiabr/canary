@@ -6405,13 +6405,6 @@ bool Game::internalCreatureSay(const std::shared_ptr<Creature> &creature, SpeakC
 	return true;
 }
 
-void Game::checkCreatureWalk(uint32_t creatureId) {
-	const auto &creature = getCreatureByID(creatureId);
-	if (creature && creature->getHealth() > 0) {
-		creature->onCreatureWalk();
-	}
-}
-
 void Game::updateCreatureWalk(uint32_t creatureId) {
 	const auto &creature = getCreatureByID(creatureId);
 	if (creature && creature->getHealth() > 0) {
@@ -6433,12 +6426,10 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 
 	creature->creatureCheck.store(true);
 
-	if (creature->inCheckCreaturesVector.load()) {
+	if (creature->inCheckCreaturesVector.exchange(true)) {
 		// already in a vector
 		return;
 	}
-
-	creature->inCheckCreaturesVector.store(true);
 
 	creature->safeCall([this, creature] {
 		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);

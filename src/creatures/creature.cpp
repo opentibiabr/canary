@@ -166,7 +166,7 @@ void Creature::onIdleStatus() {
 }
 
 void Creature::onCreatureWalk() {
-	if (checkingWalkCreature) {
+	if (checkingWalkCreature || isRemoved() || isDead()) {
 		return;
 	}
 
@@ -174,7 +174,11 @@ void Creature::onCreatureWalk() {
 
 	metrics::method_latency measure(__METHOD_NAME__);
 
-	g_dispatcher().addWalkEvent([self = getCreature(), this] {
+	g_dispatcher().addWalkEvent([self = std::weak_ptr<Creature>(getCreature()), this] {
+		if (!self.lock()) {
+			return;
+		}
+
 		checkingWalkCreature = false;
 		if (isRemoved()) {
 			return;
@@ -273,12 +277,13 @@ void Creature::addEventWalk(bool firstStep) {
 	safeCall([this, ticks]() {
 		// Take first step right away, but still queue the next
 		if (ticks == 1) {
-			g_game().checkCreatureWalk(getID());
+			onCreatureWalk();
 		}
 
-		eventWalk = g_dispatcher().scheduleEvent(
-			static_cast<uint32_t>(ticks),
-			[creatureId = getID()] { g_game().checkCreatureWalk(creatureId); }, "Game::checkCreatureWalk"
+		eventWalk = g_dispatcher().scheduleEvent(static_cast<uint32_t>(ticks), [self = std::weak_ptr<Creature>(getCreature())] {
+				if (const auto &creature = self.lock())
+					creature->onCreatureWalk();
+			}, "Game::checkCreatureWalk"
 		);
 	});
 }

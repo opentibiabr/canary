@@ -6425,7 +6425,7 @@ void Game::checkCreatures() {
 	static size_t index = 0;
 
 	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
-		if (creature->creatureCheck && creature->isAlive()) {
+		if (creature && creature->creatureCheck && creature->isAlive()) {
 			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
 			creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);

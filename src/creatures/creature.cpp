@@ -154,9 +154,7 @@ void Creature::checkCreatureAttack(bool now) {
 
 	g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
 		if (const auto &creature = self.lock()) {
-			if (creature->isAlive()) {
-				creature->onAttacking(0);
-			}
+			creature->checkCreatureAttack(true);
 		} }, "Creature::checkCreatureAttack");
 }
 

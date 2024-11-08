@@ -127,7 +127,7 @@ monster.immunities = {
 }
 
 mType.onSpawn = function(monster)
-	self:handleCobraOnSpawn()
+	monster:handleCobraOnSpawn()
 end
 
 mType:register(monster)

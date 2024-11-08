@@ -6396,13 +6396,6 @@ bool Game::internalCreatureSay(const std::shared_ptr<Creature> &creature, SpeakC
 	return true;
 }
 
-void Game::checkCreatureAttack(uint32_t creatureId) {
-	const auto &creature = getCreatureByID(creatureId);
-	if (creature && creature->getHealth() > 0) {
-		creature->onAttacking(0);
-	}
-}
-
 void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 	if (creature->isRemoved()) {
 		return;

@@ -144,6 +144,22 @@ void Creature::onThink(uint32_t interval) {
 	onThink();
 }
 
+void Creature::checkCreatureAttack(bool now = false) {
+	if (now) {
+		if (isAlive()) {
+			onAttacking(0);
+		}
+		return;
+	}
+
+	g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
+		if (const auto &creature = self.lock()) {
+			if (creature->isAlive()) {
+				creature->onAttacking(0);
+			}
+		} }, "Creature::checkCreatureAttack");
+}
+
 void Creature::onAttacking(uint32_t interval) {
 	const auto &attackedCreature = getAttackedCreature();
 	if (!attackedCreature) {
@@ -650,7 +666,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 		} else {
 			if (hasExtraSwing()) {
 				// our target is moving lets see if we can get in hit
-				g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
+				checkCreatureAttack();
 			}
 
 			if (newTile->getZoneType() != oldTile->getZoneType()) {

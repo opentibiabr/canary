@@ -70,7 +70,7 @@ private:
 		const static std::unordered_set<std::string_view> tasksContext = {
 			"Decay::checkDecay",
 			"Dispatcher::asyncEvent",
-			"Game::checkCreatureAttack",
+			"Creature::checkCreatureAttack",
 			"Game::checkCreatureWalk",
 			"Game::checkCreatures",
 			"Game::checkImbuements",

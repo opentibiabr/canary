@@ -3422,9 +3422,10 @@ void Player::doAttacking(uint32_t interval) {
 		}
 
 		const auto &task = createPlayerTask(
-			std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
-			[playerId = getID()] { g_game().checkCreatureAttack(playerId); },
-			__FUNCTION__
+			std::max<uint32_t>(SCHEDULER_MINTICKS, delay), [self = std::weak_ptr<Creature>(getCreature())] {
+				if (const auto &creature = self.lock()) {
+					creature->checkCreatureAttack(true);
+				} }, __FUNCTION__
 		);
 
 		if (!classicSpeed) {
@@ -5275,7 +5276,7 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
+		checkCreatureAttack();
 	}
 	return true;
 }

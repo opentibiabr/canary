@@ -952,7 +952,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
+			checkCreatureAttack();
 		}
 	}
 	return setFollowCreature(creature);
@@ -967,7 +967,6 @@ void Monster::setIdle(bool idle) {
 
 	if (!isIdle) {
 		g_game().addCreatureCheck(getMonster());
-
 	} else {
 		onIdleStatus();
 		clearTargetList();

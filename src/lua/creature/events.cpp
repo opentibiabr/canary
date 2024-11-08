@@ -62,8 +62,6 @@ bool Events::loadFromXml() {
 				info.creatureOnAreaCombat = event;
 			} else if (methodName == "onTargetCombat") {
 				info.creatureOnTargetCombat = event;
-			} else if (methodName == "onHear") {
-				info.creatureOnHear = event;
 			} else if (methodName == "onDrainHealth") {
 				info.creatureOnDrainHealth = event;
 			} else {
@@ -136,90 +134,14 @@ bool Events::loadFromXml() {
 		} else if (className == "Monster") {
 			if (methodName == "onDropLoot") {
 				info.monsterOnDropLoot = event;
-			} else if (methodName == "onSpawn") {
-				info.monsterOnSpawn = event;
 			} else {
 				g_logger().warn("{} - Unknown monster method: {}", __FUNCTION__, methodName);
-			}
-		} else if (className == "Npc") {
-			if (methodName == "onSpawn") {
-				info.monsterOnSpawn = event;
-			} else {
-				g_logger().warn("{} - Unknown npc method: {}", __FUNCTION__, methodName);
 			}
 		} else {
 			g_logger().warn("{} - Unknown class: {}", __FUNCTION__, className);
 		}
 	}
 	return true;
-}
-
-// Monster
-void Events::eventMonsterOnSpawn(const std::shared_ptr<Monster> &monster, const Position &position) {
-	// Monster:onSpawn(position) or Monster.onSpawn(self, position)
-	if (info.monsterOnSpawn == -1) {
-		return;
-	}
-
-	if (!LuaScriptInterface::reserveScriptEnv()) {
-		g_logger().error("{} - "
-		                 "Position {}"
-		                 ". Call stack overflow. Too many lua script calls being nested.",
-		                 __FUNCTION__, position.toString());
-		return;
-	}
-
-	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
-	env->setScriptId(info.monsterOnSpawn, &scriptInterface);
-
-	lua_State* L = scriptInterface.getLuaState();
-	scriptInterface.pushFunction(info.monsterOnSpawn);
-
-	LuaScriptInterface::pushUserdata<Monster>(L, monster);
-	LuaScriptInterface::setMetatable(L, -1, "Monster");
-	LuaScriptInterface::pushPosition(L, position);
-
-	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
-		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
-	} else {
-		lua_pop(L, 1);
-	}
-
-	LuaScriptInterface::resetScriptEnv();
-}
-
-// Npc
-void Events::eventNpcOnSpawn(const std::shared_ptr<Npc> &npc, const Position &position) {
-	// Npc:onSpawn(position) or Npc.onSpawn(self, position)
-	if (info.npcOnSpawn == -1) {
-		return;
-	}
-
-	if (!LuaScriptInterface::reserveScriptEnv()) {
-		g_logger().error("{} - "
-		                 "Position {}"
-		                 ". Call stack overflow. Too many lua script calls being nested.",
-		                 __FUNCTION__, position.toString());
-		return;
-	}
-
-	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
-	env->setScriptId(info.npcOnSpawn, &scriptInterface);
-
-	lua_State* L = scriptInterface.getLuaState();
-	scriptInterface.pushFunction(info.npcOnSpawn);
-
-	LuaScriptInterface::pushUserdata<Npc>(L, npc);
-	LuaScriptInterface::setMetatable(L, -1, "Npc");
-	LuaScriptInterface::pushPosition(L, position);
-
-	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
-		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
-	} else {
-		lua_pop(L, 1);
-	}
-
-	LuaScriptInterface::resetScriptEnv();
 }
 
 Events &Events::getInstance() {
@@ -340,38 +262,6 @@ ReturnValue Events::eventCreatureOnTargetCombat(const std::shared_ptr<Creature> 
 
 	LuaScriptInterface::resetScriptEnv();
 	return returnValue;
-}
-
-void Events::eventCreatureOnHear(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &speaker, const std::string &words, SpeakClasses type) {
-	// Creature:onHear(speaker, words, type)
-	if (info.creatureOnHear == -1) {
-		return;
-	}
-
-	if (!LuaScriptInterface::reserveScriptEnv()) {
-		g_logger().error("[Events::eventCreatureOnHear - "
-		                 "Creature {} speaker {}] "
-		                 "Call stack overflow. Too many lua script calls being nested.",
-		                 creature->getName(), speaker->getName());
-		return;
-	}
-
-	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
-	env->setScriptId(info.creatureOnHear, &scriptInterface);
-
-	lua_State* L = scriptInterface.getLuaState();
-	scriptInterface.pushFunction(info.creatureOnHear);
-
-	LuaScriptInterface::pushUserdata<Creature>(L, creature);
-	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-
-	LuaScriptInterface::pushUserdata<Creature>(L, speaker);
-	LuaScriptInterface::setCreatureMetatable(L, -1, speaker);
-
-	LuaScriptInterface::pushString(L, words);
-	lua_pushnumber(L, type);
-
-	scriptInterface.callVoidFunction(4);
 }
 
 void Events::eventCreatureOnDrainHealth(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) {

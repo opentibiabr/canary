@@ -26,9 +26,13 @@ public:
 		return buffer.data() + outputBufferStart;
 	}
 
+	void writePaddingAmount() {
+		uint8_t paddingAmount = 8 - (info.length % 8) - 1;
+		addPaddingBytes(paddingAmount);
+		add_header(static_cast<uint8_t>(paddingAmount));
+	}
+
 	void writeMessageLength() {
-		g_logger().warn("before info.length {}", info.length);
-		g_logger().warn("after info.length {}", (info.length - 4) / 8);
 		add_header(static_cast<uint16_t>((info.length - 4) / 8));
 	}
 

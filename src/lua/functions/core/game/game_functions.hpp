@@ -24,6 +24,7 @@ public:
 
 		registerMethod(L, "Game", "createNpcType", GameFunctions::luaGameCreateNpcType);
 		registerMethod(L, "Game", "createMonsterType", GameFunctions::luaGameCreateMonsterType);
+		registerMethod(L, "Game", "getMonsterTypeByName", GameFunctions::luaGameGetMonsterTypeByName);
 
 		registerMethod(L, "Game", "getSpectators", GameFunctions::luaGameGetSpectators);
 
@@ -100,6 +101,7 @@ public:
 private:
 	static int luaGameCreateMonsterType(lua_State* L);
 	static int luaGameCreateNpcType(lua_State* L);
+	static int luaGameGetMonsterTypeByName(lua_State* L);
 
 	static int luaGameGetSpectators(lua_State* L);
 

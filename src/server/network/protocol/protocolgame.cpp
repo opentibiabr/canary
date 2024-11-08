@@ -4089,7 +4089,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 					continue;
 				}
 
-				msg.add<uint16_t>(imbuementInfo.imbuement->getID());
+				msg.add<uint16_t>(imbuementInfo.imbuement->getIconID());
 				itemImbuements++;
 			}
 
@@ -4615,7 +4615,7 @@ void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8
 }
 
 void ProtocolGame::sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) {
-	if (!player) {
+	if (!player || !container) {
 		return;
 	}
 
@@ -5036,8 +5036,8 @@ void ProtocolGame::updateCoinBalance() {
 		[playerId = player->getID()] {
 			const auto &threadPlayer = g_game().getPlayerByID(playerId);
 			if (threadPlayer && threadPlayer->getAccount()) {
-				const auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Normal));
-				const auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+				const auto [coins, errCoin] = threadPlayer->getAccount()->getCoins(CoinType::Normal);
+				const auto [transferCoins, errTCoin] = threadPlayer->getAccount()->getCoins(CoinType::Transferable);
 
 				threadPlayer->coinBalance = coins;
 				threadPlayer->coinTransferableBalance = transferCoins;
@@ -8857,7 +8857,11 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	uint32_t boostedBossId = g_ioBosstiary().getBoostedBossId();
 
 	// Sanity checks
-	std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
+	const std::string &boostedBossName = g_ioBosstiary().getBoostedBossName();
+	if (boostedBossName.empty()) {
+		g_logger().error("[{}] The boosted boss name is empty", __FUNCTION__);
+		return;
+	}
 	const auto mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
 	auto boostedBossRace = mTypeBoosted ? mTypeBoosted->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBoostedBoss = boostedBossId == 0 || (boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS);

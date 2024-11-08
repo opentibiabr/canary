@@ -1117,7 +1117,7 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<
 
 std::vector<std::shared_ptr<Player>> Game::getPlayersByAccount(const std::shared_ptr<Account> &acc, bool allowOffline /* = false */) {
 	auto [accountPlayers, error] = acc->getAccountPlayers();
-	if (error != enumToValue(AccountErrors_t::Ok)) {
+	if (error != AccountErrors_t::Ok) {
 		return {};
 	}
 	std::vector<std::shared_ptr<Player>> ret;
@@ -4123,7 +4123,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 
 		auto it = browseFields.find(tile);
 		if (it == browseFields.end() || it->second.expired()) {
-			parentContainer = Container::create(tile);
+			parentContainer = Container::createBrowseField(tile);
 			browseFields[tile] = parentContainer;
 		} else {
 			parentContainer = it->second.lock();
@@ -4688,7 +4688,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 
 	auto it = browseFields.find(tile);
 	if (it == browseFields.end() || it->second.expired()) {
-		container = Container::create(tile);
+		container = Container::createBrowseField(tile);
 		browseFields[tile] = container;
 	} else {
 		container = it->second.lock();
@@ -6397,10 +6397,6 @@ bool Game::internalCreatureSay(const std::shared_ptr<Creature> &creature, SpeakC
 	// event method
 	for (const auto &spectator : spectators) {
 		spectator->onCreatureSay(creature, type, text);
-		if (creature != spectator) {
-			g_events().eventCreatureOnHear(spectator, creature, text, type);
-			g_callbacks().executeCallback(EventCallback_t::creatureOnHear, &EventCallback::creatureOnHear, spectator, creature, text, type);
-		}
 	}
 	return true;
 }
@@ -6440,10 +6436,9 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 
 	creature->inCheckCreaturesVector.store(true);
 
-	g_dispatcher().context().tryAddEvent([creature] {
+	creature->safeCall([this, creature] {
 		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
-	},
-	                                     "addCreatureCheck");
+	});
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
@@ -6457,7 +6452,7 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> &creature) {
+	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
 		if (creature->creatureCheck && creature->isAlive()) {
 			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
@@ -9010,7 +9005,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			auto [transferableCoins, result] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+			auto [transferableCoins, result] = player->getAccount()->getCoins(CoinType::Transferable);
 
 			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins for player " << player->getName();
@@ -9018,7 +9013,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			}
 
 			// Do not register a transaction for coins creating an offer
-			player->getAccount()->removeCoins(enumToValue(CoinType::Transferable), static_cast<uint32_t>(amount), "");
+			player->getAccount()->removeCoins(CoinType::Transferable, static_cast<uint32_t>(amount), "");
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -9099,7 +9094,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			// Do not register a transaction for coins upon cancellation
-			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), offer.amount, "");
+			player->getAccount()->addCoins(CoinType::Transferable, offer.amount, "");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
@@ -9211,9 +9206,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			auto [transferableCoins, error] = player->getAccount()->getCoins(enumToValue(CoinType::Transferable));
+			auto [transferableCoins, error] = player->getAccount()->getCoins(CoinType::Transferable);
 
-			if (error != enumToValue(AccountErrors_t::Ok)) {
+			if (error != AccountErrors_t::Ok) {
 				offerStatus << "Failed to load transferable coins for player " << player->getName();
 				return;
 			}
@@ -9224,7 +9219,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			player->getAccount()->removeCoins(
-				enumToValue(CoinType::Transferable),
+				CoinType::Transferable,
 				amount,
 				"Sold on Market"
 			);
@@ -9252,7 +9247,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		g_metrics().addCounter("balance_increase", totalPrice, { { "player", player->getName() }, { "context", "market_sale" } });
 
 		if (it.id == ITEM_STORE_COIN) {
-			buyerPlayer->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
+			buyerPlayer->getAccount()->addCoins(CoinType::Transferable, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9323,7 +9318,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		g_metrics().addCounter("balance_decrease", totalPrice, { { "player", player->getName() }, { "context", "market_purchase" } });
 
 		if (it.id == ITEM_STORE_COIN) {
-			player->getAccount()->addCoins(enumToValue(CoinType::Transferable), amount, "Purchased on Market");
+			player->getAccount()->addCoins(CoinType::Transferable, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -9377,7 +9372,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 		g_metrics().addCounter("balance_increase", totalPrice, { { "player", sellerPlayer->getName() }, { "context", "market_sale" } });
 		if (it.id == ITEM_STORE_COIN) {
-			sellerPlayer->getAccount()->registerCoinTransaction(enumToValue(CoinTransactionType::Remove), enumToValue(CoinType::Transferable), amount, "Sold on Market");
+			sellerPlayer->getAccount()->registerCoinTransaction(CoinTransactionType::Remove, CoinType::Transferable, amount, "Sold on Market");
 		}
 
 		if (it.id != ITEM_STORE_COIN) {

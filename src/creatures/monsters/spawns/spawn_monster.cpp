@@ -232,9 +232,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 
 	spawnedMonsterMap[spawnMonsterId] = monster;
 	sb.lastSpawn = OTSYS_TIME();
-	g_events().eventMonsterOnSpawn(monster, sb.pos);
 	monster->onSpawn();
-	g_callbacks().executeCallback(EventCallback_t::monsterOnSpawn, &EventCallback::monsterOnSpawn, monster, sb.pos);
 	return true;
 }
 
@@ -327,7 +325,7 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, cons
 }
 
 void SpawnMonster::cleanup() {
-	for (auto it = spawnedMonsterMap.begin(); it != spawnedMonsterMap.end(); ) {
+	for (auto it = spawnedMonsterMap.begin(); it != spawnedMonsterMap.end();) {
 		const auto &monster = it->second;
 		if (!monster || monster->isRemoved()) {
 			auto spawnIt = spawnMonsterMap.find(it->first);

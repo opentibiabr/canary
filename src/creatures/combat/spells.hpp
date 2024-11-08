@@ -50,7 +50,6 @@ public:
 	std::list<uint16_t> getSpellsByVocation(uint16_t vocationId);
 
 	[[nodiscard]] const std::map<std::string, std::shared_ptr<InstantSpell>> &getInstantSpells() const;
-	;
 
 	[[nodiscard]] bool hasInstantSpell(const std::string &word) const;
 

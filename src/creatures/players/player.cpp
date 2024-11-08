@@ -9482,10 +9482,6 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMo
 		}
 
 		tmpPlayer->onCreatureSay(static_self_cast<Player>(), type, text);
-		if (static_self_cast<Player>() != tmpPlayer) {
-			g_events().eventCreatureOnHear(tmpPlayer, getPlayer(), text, type);
-			g_callbacks().executeCallback(EventCallback_t::creatureOnHear, &EventCallback::creatureOnHear, tmpPlayer, getPlayer(), text, type);
-		}
 	}
 	return true;
 }

@@ -251,22 +251,6 @@ void Dispatcher::stopEvent(uint64_t eventId) {
 	}
 }
 
-void DispatcherContext::addEvent(std::function<void(void)> &&f, std::string_view context) const {
-	g_dispatcher().addEvent(std::move(f), context);
-}
-
-void DispatcherContext::tryAddEvent(std::function<void(void)> &&f, std::string_view context) const {
-	if (!f) {
-		return;
-	}
-
-	if (isAsync()) {
-		g_dispatcher().addEvent(std::move(f), context);
-	} else {
-		f();
-	}
-}
-
 bool DispatcherContext::isOn() {
 	return OTSYS_TIME() != 0;
 }

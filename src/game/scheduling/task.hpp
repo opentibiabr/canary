@@ -77,7 +77,6 @@ private:
 			"Game::checkLight",
 			"Game::createFiendishMonsters",
 			"Game::createInfluencedMonsters",
-			"Game::updateCreatureWalk",
 			"Game::updateForgeableMonsters",
 			"GlobalEvents::think",
 			"LuaEnvironment::executeTimerEvent",

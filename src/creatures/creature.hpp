@@ -314,6 +314,9 @@ public:
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
 
+	void updateCreatureWalk() {
+		goToFollowCreature_async();
+	}
 	void goToFollowCreature_async(std::function<void()> &&onComplete = nullptr);
 	virtual void goToFollowCreature();
 

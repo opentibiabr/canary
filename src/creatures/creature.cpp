@@ -280,10 +280,13 @@ void Creature::addEventWalk(bool firstStep) {
 			onCreatureWalk();
 		}
 
-		eventWalk = g_dispatcher().scheduleEvent(static_cast<uint32_t>(ticks), [self = std::weak_ptr<Creature>(getCreature())] {
-				if (const auto &creature = self.lock())
+		eventWalk = g_dispatcher().scheduleEvent(
+			static_cast<uint32_t>(ticks), [self = std::weak_ptr<Creature>(getCreature())] {
+				if (const auto &creature = self.lock()) {
 					creature->onCreatureWalk();
-			}, "Game::checkCreatureWalk"
+				}
+			},
+			"Game::checkCreatureWalk"
 		);
 	});
 }
@@ -632,7 +635,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 	if (followCreature && (creature.get() == this || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_game().updateCreatureWalk(getID()); // internally uses addEventWalk.
+			updateCreatureWalk();
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -912,7 +915,13 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(static_self_cast<Creature>());
 	}
 	if (health <= 0) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().executeDeath(creatureId); }, "Game::executeDeath");
+		g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
+			if (const auto &creature = self.lock()) {
+				if (!creature->isRemoved()) {
+					g_game().afterCreatureZoneChange(creature, creature->getZones(), {});
+					creature->onDeath();
+				}
+			} }, "Game::executeDeath");
 	}
 }
 
@@ -1085,6 +1094,10 @@ void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathPa
 }
 
 void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
+	if (isDead()) {
+		return;
+	}
+
 	if (!hasAsyncTaskFlag(Pathfinder) && onComplete) {
 		g_dispatcher().addEvent(std::move(onComplete), "goToFollowCreature_async");
 	}
@@ -1988,7 +2001,7 @@ void Creature::sendAsyncTasks() {
 	setAsyncTaskFlag(AsyncTaskRunning, true);
 	g_dispatcher().asyncEvent([self = std::weak_ptr<Creature>(getCreature())] {
 		if (const auto &creature = self.lock()) {
-			if (!creature->isRemoved()) {
+			if (!creature->isRemoved() && creature->isAlive()) {
 				for (const auto &task : creature->asyncTasks) {
 					task();
 				}

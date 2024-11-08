@@ -80,9 +80,9 @@ local options = {
 				local spectators = Game.getSpectators(player:getPosition(), false, false)
 				if #spectators > 0 then
 					for _, spectator in ipairs(spectators) do
-						if spectator:isPlayer() and spectator:getId() ~= player:getId()  then
+						if spectator:isPlayer() and spectator:getId() ~= player:getId() then
 							spectator:addCustomOutfit("aura", 8)
-							player:say(spectator:getName().." add aura 8", TALKTYPE_SAY)
+							player:say(spectator:getName() .. " add aura 8", TALKTYPE_SAY)
 							break
 						end
 					end
@@ -97,7 +97,7 @@ local options = {
 					for _, spectator in ipairs(spectators) do
 						if spectator:isPlayer() and spectator:getId() ~= player:getId() then
 							spectator:removeCustomOutfit("aura", 8)
-							player:say(spectator:getName().." remove aura 8", TALKTYPE_SAY)
+							player:say(spectator:getName() .. " remove aura 8", TALKTYPE_SAY)
 							break
 						end
 					end

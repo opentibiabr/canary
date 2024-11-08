@@ -144,7 +144,7 @@ void Creature::onThink(uint32_t interval) {
 	onThink();
 }
 
-void Creature::checkCreatureAttack(bool now = false) {
+void Creature::checkCreatureAttack(bool now) {
 	if (now) {
 		if (isAlive()) {
 			onAttacking(0);

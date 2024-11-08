@@ -38,6 +38,8 @@ public:
 		return inject<EventsScheduler>();
 	}
 
+	bool loadScheduleEventFromJson();
+
 	// Event schedule xml load
 	bool loadScheduleEventFromXml();
 

@@ -12,6 +12,119 @@
 #include "config/configmanager.hpp"
 #include "lua/scripts/scripts.hpp"
 
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
+bool EventsScheduler::loadScheduleEventFromJson() {
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	auto folder = coreFolder + "/json/events.json";
+	std::ifstream file(folder);
+	if (!file.is_open()) {
+		g_logger().error("{} - Unable to open file '{}'", __FUNCTION__, folder);
+		consoleHandlerExit();
+		return false;
+	}
+
+	json eventsJson;
+	try {
+		file >> eventsJson;
+	} catch (const json::parse_error &e) {
+		g_logger().error("{} - JSON parsing error in file '{}': {}", __FUNCTION__, folder, e.what());
+		consoleHandlerExit();
+		return false;
+	}
+
+	time_t t = time(nullptr);
+	const tm* timePtr = localtime(&t);
+	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
+
+	phmap::flat_hash_set<std::string_view> loadedScripts;
+	std::map<std::string, EventRates> eventsOnSameDay;
+
+	for (const auto &event : eventsJson["events"]) {
+		std::string eventScript = event.value("script", "");
+		std::string eventName = event.value("name", "");
+
+		if (eventScript.empty()) {
+			g_logger().warn("{} - Event script is empty for event '{}'", __FUNCTION__, eventName);
+			continue;
+		}
+
+		int startYear, startMonth, startDay, endYear, endMonth, endDay;
+		sscanf(event["startdate"].get<std::string>().c_str(), "%d/%d/%d", &startMonth, &startDay, &startYear);
+		sscanf(event["enddate"].get<std::string>().c_str(), "%d/%d/%d", &endMonth, &endDay, &endYear);
+
+		int startDays = (startYear * 365) + (startMonth * 30) + startDay;
+		int endDays = (endYear * 365) + (endMonth * 30) + endDay;
+
+		if (daysMath < startDays || daysMath > endDays) {
+			continue;
+		}
+
+		if (!eventScript.empty() && loadedScripts.contains(eventScript)) {
+			g_logger().warn("{} - Script declaration '{}' is duplicated in '{}'", __FUNCTION__, eventScript, folder);
+			continue;
+		}
+
+		loadedScripts.insert(eventScript);
+		std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "json" / "scripts" / eventScript;
+
+		if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
+			g_logger().warn("{} - Cannot find script file '{}'", __FUNCTION__, filePath.string());
+			return false;
+		}
+
+		if (!g_scripts().loadEventSchedulerScripts(filePath)) {
+			g_logger().warn("{} - Cannot load the file '{}' on '{}/scripts/'", __FUNCTION__, eventScript, coreFolder);
+			return false;
+		}
+
+		EventRates currentEventRates = {
+			static_cast<uint16_t>(event["ingame"].value("exprate", 100)),
+			static_cast<uint32_t>(event["ingame"].value("lootrate", 100)),
+			static_cast<uint32_t>(event["ingame"].value("bosslootrate", 100)),
+			static_cast<uint32_t>(event["ingame"].value("spawnrate", 100)),
+			static_cast<uint16_t>(event["ingame"].value("skillrate", 100))
+		};
+
+		for (const auto &[existingEventName, rates] : eventsOnSameDay) {
+			std::vector<std::string> modifiedRates;
+
+			if (rates.exprate != 100 && currentEventRates.exprate != 100 && rates.exprate == currentEventRates.exprate) {
+				modifiedRates.emplace_back("exprate");
+			}
+			if (rates.lootrate != 100 && currentEventRates.lootrate != 100 && rates.lootrate == currentEventRates.lootrate) {
+				modifiedRates.emplace_back("lootrate");
+			}
+			if (rates.bosslootrate != 100 && currentEventRates.bosslootrate != 100 && rates.bosslootrate == currentEventRates.bosslootrate) {
+				modifiedRates.emplace_back("bosslootrate");
+			}
+			if (rates.spawnrate != 100 && currentEventRates.spawnrate != 100 && rates.spawnrate == currentEventRates.spawnrate) {
+				modifiedRates.emplace_back("spawnrate");
+			}
+			if (rates.skillrate != 100 && currentEventRates.skillrate != 100 && rates.skillrate == currentEventRates.skillrate) {
+				modifiedRates.emplace_back("skillrate");
+			}
+
+			if (!modifiedRates.empty()) {
+				std::string ratesString = join(modifiedRates, ", ");
+				g_logger().warn("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventName, existingEventName, ratesString);
+			}
+		}
+
+		eventsOnSameDay[eventName] = currentEventRates;
+		eventScheduler.emplace_back(EventScheduler(eventName, startDays, endDays));
+	}
+
+	for (const auto &event : eventScheduler) {
+		if (daysMath >= event.startDays && daysMath <= event.endDays) {
+			g_logger().info("Active EventScheduler: {}", event.name);
+		}
+	}
+	return true;
+}
+
 bool EventsScheduler::loadScheduleEventFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/events.xml";
@@ -53,8 +166,10 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		}
 
 		loadedScripts.insert(eventScript);
-		if (!eventScript.empty() && !g_scripts().loadEventSchedulerScripts(eventScript)) {
-			g_logger().warn("{} - Can not load the file '{}' on '/events/scripts/scheduler/'", __FUNCTION__, eventScript);
+		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "XML" / "events" / "scheduler" / "scripts" / eventScript;
+		if (!g_scripts().loadEventSchedulerScripts(filePath)) {
+			g_logger().warn("{} - Cannot load the file '{}' on '/events/scripts/scheduler/'", __FUNCTION__, eventScript);
 			return false;
 		}
 

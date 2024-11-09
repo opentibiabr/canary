@@ -958,42 +958,39 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 }
 
 bool PlayerWheel::handleTwinBurstsCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const {
-	bool applyCondition = false;
-	uint16_t spellId = 0;
-	if (spellName == "Terra Burst") {
-		const auto &spell = g_spells().getSpellByName("Ice Burst");
-		spellId = spell->getSpellId();
-		applyCondition = true;
-	} else if (spellName == "Ice Burst") {
-		const auto &spell = g_spells().getSpellByName("Terra Burst");
-		spellId = spell->getSpellId();
-		applyCondition = true;
-	}
+	// Map of spell pairs for Twin Bursts
+	static const std::unordered_map<std::string, std::string> spellPairs = {
+		{"Terra Burst", "Ice Burst"},
+		{"Ice Burst", "Terra Burst"}
+	};
 
-	if (applyCondition) {
-		const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, spellId);
-		return player->addCondition(condition);
+	auto it = spellPairs.find(spellName);
+	if (it != spellPairs.end()) {
+		const auto &spell = g_spells().getSpellByName(it->second);
+		if (spell) {
+			const auto spellId = spell->getSpellId();
+			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, spellId);
+			return player->addCondition(condition);
+		}
 	}
 
 	return false;
 }
 
 bool PlayerWheel::handleBeamMasteryCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const {
-	bool applyCondition = false;
-	uint16_t spellId = 0;
-	if (spellName == "Great Death Beam") {
-		const auto &spell = g_spells().getSpellByName("Great Energy Beam");
-		spellId = spell->getSpellId();
-		applyCondition = true;
-	} else if (spellName == "Great Energy Beam") {
-		const auto &spell = g_spells().getSpellByName("Great Death Beam");
-		spellId = spell->getSpellId();
-		applyCondition = true;
-	}
+	static const std::unordered_map<std::string, std::string> spellPairs = {
+		{"Great Death Beam", "Great Energy Beam"},
+		{"Great Energy Beam", "Great Death Beam"}
+	};
 
-	if (applyCondition) {
-		const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, spellId);
-		return player->addCondition(condition);
+	auto it = spellPairs.find(spellName);
+	if (it != spellPairs.end()) {
+		const auto &spell = g_spells().getSpellByName(it->second);
+		if (spell) {
+			const auto spellId = spell->getSpellId();
+			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, spellId);
+			return player->addCondition(condition);
+		}
 	}
 
 	return false;
@@ -3144,6 +3141,10 @@ void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) const {
 	for (const auto &condition : m_player.getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
 		const auto spellId = condition->getSubId();
 		const auto &spell = g_spells().getInstantSpellById(spellId);
+		if (!spell) {
+			continue;
+		}
+
 		const auto spellSecondaryGroup = spell->getSecondaryGroup();
 		const auto &secondCondition = m_player.getCondition(CONDITION_SPELLGROUPCOOLDOWN, CONDITIONID_DEFAULT, spellSecondaryGroup);
 

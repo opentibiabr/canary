@@ -1014,7 +1014,7 @@ void Monster::onAddCondition(ConditionType_t type) {
 	onConditionStatusChange(type);
 }
 
-void Monster::onConditionStatusChange(ConditionType_t type) {
+void Monster::onConditionStatusChange(ConditionType_t /*type*/) {
 	updateIdleStatus();
 }
 

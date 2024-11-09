@@ -490,7 +490,7 @@ public:
 
 	virtual void turnToCreature(const std::shared_ptr<Creature> &creature);
 
-	void onAddTileItem(const std::shared_ptr<Tile> &tile, const Position &pos) { }
+	void onAddTileItem(const std::shared_ptr<Tile> & /*tile*/, const Position & /*pos*/) { }
 	virtual void onUpdateTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) { }
 	virtual void onRemoveTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) { }
 

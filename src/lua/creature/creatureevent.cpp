@@ -106,7 +106,7 @@ bool CreatureEvents::playerAdvance(
  =======================
 */
 
-CreatureEvent::CreatureEvent() { }
+CreatureEvent::CreatureEvent() = default;
 
 LuaScriptInterface* CreatureEvent::getScriptInterface() const {
 	return &g_scripts().getScriptInterface();

@@ -284,8 +284,8 @@ LuaScriptInterface* BaseSpell::getScriptInterface() const {
 
 bool BaseSpell::loadScriptId() {
 	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
-	m_scriptId = luaInterface.getEvent();
-	if (m_scriptId == -1) {
+	m_spellScriptId = luaInterface.getEvent();
+	if (m_spellScriptId == -1) {
 		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
 		return false;
 	}
@@ -294,15 +294,15 @@ bool BaseSpell::loadScriptId() {
 }
 
 int32_t BaseSpell::getScriptId() const {
-	return m_scriptId;
+	return m_spellScriptId;
 }
 
 void BaseSpell::setScriptId(int32_t newScriptId) {
-	m_scriptId = newScriptId;
+	m_spellScriptId = newScriptId;
 }
 
 bool BaseSpell::isLoadedScriptId() const {
-	return m_scriptId != 0;
+	return m_spellScriptId != 0;
 }
 
 CombatSpell::CombatSpell(const std::shared_ptr<Combat> &newCombat, bool newNeedTarget, bool newNeedDirection) :
@@ -1317,8 +1317,8 @@ LuaScriptInterface* RuneSpell::getScriptInterface() const {
 
 bool RuneSpell::loadScriptId() {
 	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
-	m_scriptId = luaInterface.getEvent();
-	if (m_scriptId == -1) {
+	m_spellScriptId = luaInterface.getEvent();
+	if (m_spellScriptId == -1) {
 		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
 		return false;
 	}
@@ -1327,15 +1327,15 @@ bool RuneSpell::loadScriptId() {
 }
 
 int32_t RuneSpell::getScriptId() const {
-	return m_scriptId;
+	return m_spellScriptId;
 }
 
 void RuneSpell::setScriptId(int32_t newScriptId) {
-	m_scriptId = newScriptId;
+	m_spellScriptId = newScriptId;
 }
 
 bool RuneSpell::isLoadedScriptId() const {
-	return m_scriptId != 0;
+	return m_spellScriptId != 0;
 }
 
 ReturnValue RuneSpell::canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) {

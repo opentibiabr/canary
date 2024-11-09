@@ -5027,8 +5027,8 @@ ItemsTierCountList Player::getDepotChestItemsId() const {
 ItemsTierCountList Player::getDepotInboxItemsId() const {
 	ItemsTierCountList itemMap;
 
-	const auto &inbox = getInbox();
-	const auto &container = inbox->getContainer();
+	const auto &inboxPtr = getInbox();
+	const auto &container = inboxPtr->getContainer();
 	if (container) {
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 			const auto &item = *it;

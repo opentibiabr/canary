@@ -39,7 +39,7 @@ void CombatFunctions::init(lua_State* L) {
 
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
-	std::shared_ptr<Combat> combat = std::make_shared<Combat>();
+	auto combat = std::make_shared<Combat>();
 	Lua::pushUserdata<Combat>(L, combat);
 	Lua::setMetatable(L, -1, "Combat");
 	return 1;
@@ -168,8 +168,9 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	}
 
 	if (Lua::isUserdata(L, 2)) {
+		using enum LuaData_t;
 		const LuaData_t type = Lua::getUserdataType(L, 2);
-		if (type != LuaData_t::Player && type != LuaData_t::Monster && type != LuaData_t::Npc) {
+		if (type != Player && type != Monster && type != Npc) {
 			Lua::pushBoolean(L, false);
 			return 1;
 		}

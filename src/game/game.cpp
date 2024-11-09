@@ -8251,8 +8251,8 @@ void Game::checkPlayersRecord() {
 		uint32_t previousRecord = playersRecord;
 		playersRecord = playersOnline;
 
-		for (auto &[key, it] : g_globalEvents().getEventMap(GLOBALEVENT_RECORD)) {
-			it->executeRecord(playersRecord, previousRecord);
+		for (const auto &[key, globalEvent] : g_globalEvents().getEventMap(GLOBALEVENT_RECORD)) {
+			globalEvent->executeRecord(playersRecord, previousRecord);
 		}
 		updatePlayersRecord();
 	}

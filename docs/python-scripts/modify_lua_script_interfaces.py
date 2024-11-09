@@ -37,9 +37,9 @@ def move_init_function_to_cpp(hpp_content, cpp_content, class_name):
         init_function = match.group()
         init_function = re.sub(r'static void\s+', f'void {class_name}::', init_function)
         # Remove extra indentation
-        init_function = re.sub(r'\n\t\t', r'\n\t', init_function)
+        init_function = init_function.replace(' \n\t\t', '\n\t')
         # Remove the extra tab from the function closure
-        init_function = re.sub(r'\n\t\}', r'\n}', init_function)
+        init_function = init_function.replace('\n\t}', '\n}')
 
         # Add a blank line before and after the function
         init_function = f"\n{init_function}\n"
@@ -179,7 +179,7 @@ def convert_to_static(file_path):
     for function in functions_to_convert:
         # Regex to capture function calls and replace them with Lua::function
         # Skip calls that are part of g_configManager() and handle both regular and template functions
-        pattern = rf'(?<!\w)(?<!g_configManager\(\)\.)' + re.escape(function) + r'(<.*?>)?\('
+        pattern = r'(?<!\w)(?<!g_configManager\(\)\.)' + re.escape(function) + r'(<.*?>)?\('
         replacement = rf'Lua::{function}\1('
         content = re.sub(pattern, replacement, content)
 

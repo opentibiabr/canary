@@ -103,8 +103,9 @@ int CreatureFunctions::luaCreatureCreate(lua_State* L) {
 	} else if (Lua::isString(L, 2)) {
 		creature = g_game().getCreatureByName(Lua::getString(L, 2));
 	} else if (Lua::isUserdata(L, 2)) {
+		using enum LuaData_t;
 		const LuaData_t type = Lua::getUserdataType(L, 2);
-		if (type != LuaData_t::Player && type != LuaData_t::Monster && type != LuaData_t::Npc) {
+		if (type != Player && type != Monster && type != Npc) {
 			lua_pushnil(L);
 			return 1;
 		}

@@ -26,7 +26,7 @@ class Guild;
 class Zone;
 class KV;
 
-typedef double lua_Number;
+using lua_Number = double;
 
 struct LuaVariant;
 
@@ -63,23 +63,29 @@ public:
 	static void setCreatureMetatable(lua_State* L, int32_t index, const std::shared_ptr<Creature> &creature);
 
 	template <typename T>
-	static std::enable_if_t<std::is_enum_v<T>, T>
-	getNumber(lua_State* L, int32_t arg) {
-		return static_cast<T>(static_cast<int64_t>(lua_tonumber(L, arg)));
-	}
-	template <typename T>
-	static std::enable_if_t<std::is_integral_v<T> || std::is_floating_point_v<T>, T> getNumber(lua_State* L, int32_t arg) {
+	static T getNumber(lua_State* L, int32_t arg) {
 		auto number = lua_tonumber(L, arg);
-		// If there is overflow, we return the value 0
-		if constexpr (std::is_integral_v<T> && std::is_unsigned_v<T>) {
-			if (number < 0) {
-				g_logger().debug("[{}] overflow, setting to default signed value (0)", __FUNCTION__);
-				number = T(0);
-			}
+
+		if constexpr (std::is_enum_v<T>) {
+			return static_cast<T>(static_cast<int64_t>(number));
 		}
 
-		return static_cast<T>(number);
+		if constexpr (std::is_integral_v<T>) {
+			if constexpr (std::is_unsigned_v<T>) {
+				if (number < 0) {
+					g_logger().debug("[{}] overflow, setting to default unsigned value (0)", __FUNCTION__);
+					return T(0);
+				}
+			}
+			return static_cast<T>(number);
+		}
+		if constexpr (std::is_floating_point_v<T>) {
+			return static_cast<T>(number);
+		}
+
+		return T{};
 	}
+
 	template <typename T>
 	static T getNumber(lua_State* L, int32_t arg, T defaultValue) {
 		const auto parameters = lua_gettop(L);

@@ -35,6 +35,7 @@ enum SpellGroup_t : uint8_t;
 enum Cipbia_Elementals_t : uint8_t;
 enum PlayerPronoun_t : uint8_t;
 enum PlayerSex_t : uint8_t;
+enum skills_t : int8_t;
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <random>
@@ -212,3 +213,5 @@ bool caseInsensitiveCompare(std::string_view str1, std::string_view str2, size_t
 void printStackTrace();
 
 const std::map<uint8_t, uint16_t> &getMaxValuePerSkill();
+
+const std::unordered_set<skills_t> &getFloatSkills();

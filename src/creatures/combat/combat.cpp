@@ -1211,25 +1211,7 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 
 	CombatDamage tmpDamage;
 	if (data) {
-		tmpDamage.origin = data->origin;
-		tmpDamage.primary.type = data->primary.type;
-		tmpDamage.primary.value = data->primary.value;
-		tmpDamage.secondary.type = data->secondary.type;
-		tmpDamage.secondary.value = data->secondary.value;
-		tmpDamage.critical = data->critical;
-		tmpDamage.fatal = data->fatal;
-		tmpDamage.criticalDamage = data->criticalDamage;
-		tmpDamage.criticalChance = data->criticalChance;
-		tmpDamage.damageMultiplier = data->damageMultiplier;
-		tmpDamage.damageReductionMultiplier = data->damageReductionMultiplier;
-		tmpDamage.healingMultiplier = data->healingMultiplier;
-		tmpDamage.manaLeech = data->manaLeech;
-		tmpDamage.lifeLeech = data->lifeLeech;
-		tmpDamage.healingLink = data->healingLink;
-		tmpDamage.instantSpellName = data->instantSpellName;
-		tmpDamage.runeSpellName = data->runeSpellName;
-		tmpDamage.lifeLeechChance = data->lifeLeechChance;
-		tmpDamage.manaLeechChance = data->manaLeechChance;
+		tmpDamage = *data;
 	}
 
 	// Wheel of destiny get beam affected total
@@ -2256,13 +2238,15 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 	}
 
 	bonus += damage.criticalDamage;
-	double multiplier = 1.0 + static_cast<double>(bonus) / 10000;
+	double multiplier = 1.0 + static_cast<double>(bonus) / 100.0;
 	chance += static_cast<uint16_t>(damage.criticalChance);
-
 	if (chance != 0 && uniform_random(1, 10000) <= chance) {
+		g_logger().debug("[Combat::applyExtensions] {} critical hit on {}. Damage: {}, finalDamage: {}, Multiplier: {}", caster->getName(), target ? target->getName() : "null", damage.primary.value, static_cast<int32_t>(std::round(damage.primary.value * multiplier)), multiplier);
 		damage.critical = true;
 		damage.primary.value *= multiplier;
 		damage.secondary.value *= multiplier;
+	} else {
+		g_logger().debug("[Combat::applyExtensions] - Critical hit did not occur.");
 	}
 
 	if (player) {

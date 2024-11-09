@@ -2908,9 +2908,7 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 			return ret;
 		}
 
-		g_dispatcher().addWalkEvent([=] {
-			g_game().map.moveCreature(creature, toTile, !pushMove);
-		});
+		map.moveCreature(creature, toTile, !pushMove);
 
 		return RETURNVALUE_NOERROR;
 	} else if (const auto &item = thing->getItem()) {
@@ -6398,10 +6396,6 @@ bool Game::internalCreatureSay(const std::shared_ptr<Creature> &creature, SpeakC
 	// event method
 	for (const auto &spectator : spectators) {
 		spectator->onCreatureSay(creature, type, text);
-		if (creature != spectator) {
-			g_events().eventCreatureOnHear(spectator, creature, text, type);
-			g_callbacks().executeCallback(EventCallback_t::creatureOnHear, &EventCallback::creatureOnHear, spectator, creature, text, type);
-		}
 	}
 	return true;
 }
@@ -6441,10 +6435,9 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 
 	creature->inCheckCreaturesVector.store(true);
 
-	g_dispatcher().context().tryAddEvent([creature] {
+	creature->safeCall([this, creature] {
 		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
-	},
-	                                     "addCreatureCheck");
+	});
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
@@ -6458,7 +6451,7 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> &creature) {
+	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
 		if (creature->creatureCheck && creature->isAlive()) {
 			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);

@@ -13,12 +13,11 @@
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
-#include "creatures/players/player.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "lib/di/container.hpp"
 #include "lua/scripts/scripts.hpp"
-
 #include "lua/global/lua_variant.hpp"
+#include "creatures/players/player.hpp"
 
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;

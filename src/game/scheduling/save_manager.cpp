@@ -42,7 +42,7 @@ void SaveManager::saveAll() {
 	logger.info("Saving {} players... (Async: {})", players.size(), async ? "Enabled" : "Disabled");
 
 	g_dispatcher().asyncWait(players.size(), [this, &players](size_t i) {
-		if(const auto& player = players[i].second) {
+		if (const auto &player = players[i].second) {
 			player->loginPosition = player->getPosition();
 			doSavePlayer(player);
 		}
@@ -58,7 +58,7 @@ void SaveManager::saveAll() {
 	Benchmark bm_guilds;
 	const auto &guilds = std::vector<std::pair<uint32_t, std::shared_ptr<Guild>>>(game.getGuilds().begin(), game.getGuilds().end());
 	g_dispatcher().asyncWait(guilds.size(), [this, &guilds](size_t i) {
-		if (const auto& guild = guilds[i].second) {
+		if (const auto &guild = guilds[i].second) {
 			saveGuild(guild);
 		}
 	});

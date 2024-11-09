@@ -126,7 +126,8 @@ bool PlayerStorage::save() {
 		return true;
 	};
 
-	auto insertModifiedStorageKeys = [playerGUID, playerName, modifiedKeys, storageMap]() mutable {
+	auto insertModifiedStorageKeys = [this, playerGUID, playerName, modifiedKeys, storageMap]() mutable {
+		getReservedRange();
 		if (!modifiedKeys.empty()) {
 			DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
 			storageQuery.upsert({ "value" });

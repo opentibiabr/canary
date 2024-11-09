@@ -16,7 +16,7 @@
 #include "io/iologindata.hpp"
 #include "kv/kv.hpp"
 #include "lib/di/container.hpp"
-#include "game/scheduling/task.hpp"
+#include "game/scheduling/dispatcher.hpp"
 
 SaveManager::SaveManager(ThreadPool &threadPool, KVStore &kvStore, Logger &logger, Game &game) :
 	threadPool(threadPool), kv(kvStore), logger(logger), game(game) {
@@ -34,18 +34,19 @@ void SaveManager::saveAll() {
 	Benchmark bm_saveAll;
 	logger.info("Saving server...");
 
-	Benchmark bm_players;
 	const auto async = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
+
+	Benchmark bm_players;
 
 	const auto &players = std::vector<std::pair<uint32_t, std::shared_ptr<Player>>>(game.getPlayers().begin(), game.getPlayers().end());
 	logger.info("Saving {} players... (Async: {})", players.size(), async ? "Enabled" : "Disabled");
 
-	threadPool.submit_loop(static_cast<int>(0), static_cast<int>(players.size()), [this, &players](const int i) {
-				  const auto &player = players[i].second;
-				  player->loginPosition = player->getPosition();
-				  doSavePlayer(player);
-			  })
-		.wait();
+	g_dispatcher().asyncWait(players.size(), [this, &players](size_t i) {
+		if(const auto& player = players[i].second) {
+			player->loginPosition = player->getPosition();
+			doSavePlayer(player);
+		}
+	});
 
 	double duration_players = bm_players.duration();
 	if (duration_players > 1000.0) {
@@ -56,10 +57,11 @@ void SaveManager::saveAll() {
 
 	Benchmark bm_guilds;
 	const auto &guilds = std::vector<std::pair<uint32_t, std::shared_ptr<Guild>>>(game.getGuilds().begin(), game.getGuilds().end());
-	threadPool.submit_loop(static_cast<int>(0), static_cast<int>(guilds.size()), [this, &guilds](const int i) {
-				  saveGuild(guilds[i].second);
-			  })
-		.wait();
+	g_dispatcher().asyncWait(guilds.size(), [this, &guilds](size_t i) {
+		if (const auto& guild = guilds[i].second) {
+			saveGuild(guild);
+		}
+	});
 
 	double duration_guilds = bm_guilds.duration();
 	if (duration_guilds > 1000.0) {

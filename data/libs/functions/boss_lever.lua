@@ -240,12 +240,12 @@ function BossLever:onUse(player)
 			monster:registerEvent("BossLeverOnDeath")
 		end
 		for _, monster in pairs(self.monsters) do
-            if monster.delay then
-                addEvent(Game.createMonster, monster.delay, monster.name, monster.pos, true, true)
-            else
-                Game.createMonster(monster.name, monster.pos, true, true)
-            end
-        end
+			if monster.delay then
+				addEvent(Game.createMonster, monster.delay, monster.name, monster.pos, true, true)
+			else
+				Game.createMonster(monster.name, monster.pos, true, true)
+			end
+		end
 		lever:teleportPlayers()
 		if self.encounter then
 			local encounter = Encounter(self.encounter)

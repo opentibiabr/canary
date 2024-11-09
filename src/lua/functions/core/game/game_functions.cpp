@@ -28,6 +28,7 @@
 #include "lua/functions/events/event_callback_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "map/spectators.hpp"
+#include "creatures/players/player.hpp"
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {

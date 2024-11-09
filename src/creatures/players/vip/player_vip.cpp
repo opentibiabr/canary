@@ -9,6 +9,7 @@
 
 #include "creatures/players/vip/player_vip.hpp"
 
+#include "account/account.hpp"
 #include "creatures/players/grouping/groups.hpp"
 #include "creatures/players/player.hpp"
 #include "io/iologindata.hpp"

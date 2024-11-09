@@ -9,6 +9,7 @@
 
 #include "server/network/protocol/protocolgame.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"

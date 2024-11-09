@@ -66,15 +66,14 @@ Connection::Connection(asio::io_context &initIoService, ConstServicePort_ptr ini
 	socket(initIoService), m_msg() {
 }
 
-void Connection::close(bool force) {
+void Connection::close(const bool force) {
 	const auto self = shared_from_this();
 	ConnectionManager::getInstance().releaseConnection(self);
 	ip = 0;
 
-	if (connectionState.load() == CONNECTION_STATE_CLOSED) {
+	if (connectionState.exchange(CONNECTION_STATE_CLOSED) == CONNECTION_STATE_CLOSED) {
 		return;
 	}
-	connectionState.store(CONNECTION_STATE_CLOSED);
 
 	if (protocol) {
 		auto weakProtocol = std::weak_ptr(protocol);
@@ -155,7 +154,7 @@ void Connection::acceptInternal(bool toggleParseHeader) {
 
 	readTimer.async_wait([weakSelf](const std::error_code &error) {
 		if (const auto self = weakSelf.lock()) {
-			Connection::handleTimeout(self, error);
+			handleTimeout(self, error);
 		}
 	});
 

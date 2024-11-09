@@ -129,11 +129,7 @@ local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 	end
 
 	local vocation = player:getVocation()
-	_G.OnExerciseTraining[playerId].event = addEvent(
-		exerciseTrainingEvent,
-		(vocation:getBaseAttackSpeed() / configManager.getFloat(configKeys.RATE_EXERCISE_TRAINING_SPEED)) * eventSpeedMultiplier,
-		playerId, tilePosition, weaponId, dummyId
-	)
+	_G.OnExerciseTraining[playerId].event = addEvent(exerciseTrainingEvent, (vocation:getBaseAttackSpeed() / configManager.getFloat(configKeys.RATE_EXERCISE_TRAINING_SPEED)) * eventSpeedMultiplier, playerId, tilePosition, weaponId, dummyId)
 	return true
 end
 

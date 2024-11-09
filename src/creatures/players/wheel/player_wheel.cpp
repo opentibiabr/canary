@@ -960,8 +960,8 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 bool PlayerWheel::handleTwinBurstsCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const {
 	// Map of spell pairs for Twin Bursts
 	static const std::unordered_map<std::string, std::string> spellPairs = {
-		{"Terra Burst", "Ice Burst"},
-		{"Ice Burst", "Terra Burst"}
+		{ "Terra Burst", "Ice Burst" },
+		{ "Ice Burst", "Terra Burst" }
 	};
 
 	auto it = spellPairs.find(spellName);
@@ -979,8 +979,8 @@ bool PlayerWheel::handleTwinBurstsCooldown(const std::shared_ptr<Player> &player
 
 bool PlayerWheel::handleBeamMasteryCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const {
 	static const std::unordered_map<std::string, std::string> spellPairs = {
-		{"Great Death Beam", "Great Energy Beam"},
-		{"Great Energy Beam", "Great Death Beam"}
+		{ "Great Death Beam", "Great Energy Beam" },
+		{ "Great Energy Beam", "Great Death Beam" }
 	};
 
 	auto it = spellPairs.find(spellName);

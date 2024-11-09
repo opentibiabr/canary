@@ -22,6 +22,7 @@ monster.manaCost = 0
 
 monster.events = {
 	"dreamCourtsDeath",
+	"facelessHealth"
 }
 
 monster.changeTarget = {

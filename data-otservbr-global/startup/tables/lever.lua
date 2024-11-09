@@ -142,18 +142,6 @@ LeverAction = {
 			{ x = 33515, y = 31444, z = 13 },
 		},
 	},
-	[14559] = {
-		itemId = 8911,
-		itemPos = {
-			{ x = 33423, y = 31413, z = 13 },
-		},
-	},
-	[14560] = {
-		itemId = 8911,
-		itemPos = {
-			{ x = 33454, y = 31493, z = 13 },
-		},
-	},
 	[14561] = {
 		itemId = 8911,
 		itemPos = {
@@ -164,20 +152,6 @@ LeverAction = {
 		itemId = 8911,
 		itemPos = {
 			{ x = 33484, y = 31546, z = 13 },
-		},
-	},
-	-- The Dream Courts Quest
-	[23110] = {
-		itemId = 9110,
-		itemPos = {
-			{ x = 33637, y = 32562, z = 13 },
-		},
-	},
-	[23112] = {
-		itemId = 8911,
-		itemPos = {
-			{ x = 32212, y = 32069, z = 15 },
-			{ x = 32208, y = 32020, z = 13 },
 		},
 	},
 	-- Forgotten Knowledge Quest

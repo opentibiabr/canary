@@ -14,9 +14,13 @@
 
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
-
 bool EventsScheduler::loadScheduleEventFromJson() {
+	g_kv().scoped("eventscheduler")->remove("forge-chance");
+	g_kv().scoped("eventscheduler")->remove("double-bestiary");
+	g_kv().scoped("eventscheduler")->remove("double-bosstiary");
+	g_kv().scoped("eventscheduler")->remove("fast-exercise");
+
+	using json = nlohmann::json;
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	auto folder = coreFolder + "/json/events.json";
 	std::ifstream file(folder);
@@ -43,17 +47,20 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 	std::map<std::string, EventRates> eventsOnSameDay;
 
 	for (const auto &event : eventsJson["events"]) {
-		std::string eventScript = event.value("script", "");
+		std::string eventScript = event.contains("script") && !event["script"].is_null() ? event["script"].get<std::string>() : "";
 		std::string eventName = event.value("name", "");
 
-		if (eventScript.empty()) {
-			g_logger().warn("{} - Event script is empty for event '{}'", __FUNCTION__, eventName);
+		if (!event.contains("startdate") || !event.contains("enddate")) {
+			g_logger().warn("{} - Missing 'startdate' or 'enddate' for event '{}'", __FUNCTION__, eventName);
 			continue;
 		}
 
 		int startYear, startMonth, startDay, endYear, endMonth, endDay;
-		sscanf(event["startdate"].get<std::string>().c_str(), "%d/%d/%d", &startMonth, &startDay, &startYear);
-		sscanf(event["enddate"].get<std::string>().c_str(), "%d/%d/%d", &endMonth, &endDay, &endYear);
+		if (sscanf(event["startdate"].get<std::string>().c_str(), "%d/%d/%d", &startMonth, &startDay, &startYear) != 3 ||
+			sscanf(event["enddate"].get<std::string>().c_str(), "%d/%d/%d", &endMonth, &endDay, &endYear) != 3) {
+			g_logger().warn("{} - Invalid date format for event '{}'", __FUNCTION__, eventName);
+			continue;
+		}
 
 		int startDays = (startYear * 365) + (startMonth * 30) + startDay;
 		int endDays = (endYear * 365) + (endMonth * 30) + endDay;
@@ -62,30 +69,32 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			continue;
 		}
 
-		if (!eventScript.empty() && loadedScripts.contains(eventScript)) {
-			g_logger().warn("{} - Script declaration '{}' is duplicated in '{}'", __FUNCTION__, eventScript, folder);
-			continue;
-		}
+		if (!eventScript.empty()) {
+			if (loadedScripts.contains(eventScript)) {
+				g_logger().warn("{} - Script declaration '{}' is duplicated in '{}'", __FUNCTION__, eventScript, folder);
+				continue;
+			}
 
-		loadedScripts.insert(eventScript);
-		std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "json" / "scripts" / eventScript;
+			loadedScripts.insert(eventScript);
+			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "json" / "scripts" / eventScript;
 
-		if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
-			g_logger().warn("{} - Cannot find script file '{}'", __FUNCTION__, filePath.string());
-			return false;
-		}
+			if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
+				g_logger().warn("{} - Cannot find script file '{}'", __FUNCTION__, filePath.string());
+				return false;
+			}
 
-		if (!g_scripts().loadEventSchedulerScripts(filePath)) {
-			g_logger().warn("{} - Cannot load the file '{}' on '{}/scripts/'", __FUNCTION__, eventScript, coreFolder);
-			return false;
+			if (!g_scripts().loadEventSchedulerScripts(filePath)) {
+				g_logger().warn("{} - Cannot load the file '{}' on '{}/scripts/'", __FUNCTION__, eventScript, coreFolder);
+				return false;
+			}
 		}
 
 		EventRates currentEventRates = {
-			static_cast<uint16_t>(event["ingame"].value("exprate", 100)),
-			static_cast<uint32_t>(event["ingame"].value("lootrate", 100)),
-			static_cast<uint32_t>(event["ingame"].value("bosslootrate", 100)),
-			static_cast<uint32_t>(event["ingame"].value("spawnrate", 100)),
-			static_cast<uint16_t>(event["ingame"].value("skillrate", 100))
+			static_cast<uint16_t>(event.contains("ingame") && event["ingame"].contains("exprate") ? event["ingame"].value("exprate", 100) : 100),
+			static_cast<uint32_t>(event.contains("ingame") && event["ingame"].contains("lootrate") ? event["ingame"].value("lootrate", 100) : 100),
+			static_cast<uint32_t>(event.contains("ingame") && event["ingame"].contains("bosslootrate") ? event["ingame"].value("bosslootrate", 100) : 100),
+			static_cast<uint32_t>(event.contains("ingame") && event["ingame"].contains("spawnrate") ? event["ingame"].value("spawnrate", 100) : 100),
+			static_cast<uint16_t>(event.contains("ingame") && event["ingame"].contains("skillrate") ? event["ingame"].value("skillrate", 100) : 100)
 		};
 
 		for (const auto &[existingEventName, rates] : eventsOnSameDay) {

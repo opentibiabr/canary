@@ -15,6 +15,7 @@
 #include "game/movement/position.hpp"
 #include "io/iologindata.hpp"
 #include "map/house/house.hpp"
+#include "creatures/players/player.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 
 void HouseFunctions::init(lua_State* L) {

@@ -83,7 +83,7 @@ public:
 			return static_cast<T>(number);
 		}
 
-		return T{};
+		return T {};
 	}
 
 	template <typename T>

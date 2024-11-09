@@ -142,8 +142,8 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
-	tile->safeCall([tile, pos, oldCreatureList = std::move(oldCreatureList)]() {
-		for (const auto &creature : oldCreatureList) {
+	tile->safeCall([tile, pos, movedOldCreatureList = std::move(oldCreatureList)]() {
+		for (const auto &creature : movedOldCreatureList) {
 			tile->internalAddThing(creature);
 		}
 

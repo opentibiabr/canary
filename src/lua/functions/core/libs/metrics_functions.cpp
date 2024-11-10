@@ -10,17 +10,18 @@
 #include "lua/functions/core/libs/metrics_functions.hpp"
 
 #include "lib/metrics/metrics.hpp"
+#include "lua/functions/lua_functions_loader.hpp"
 
 void MetricsFunctions::init(lua_State* L) {
-	registerTable(L, "metrics");
-	registerMethod(L, "metrics", "addCounter", MetricsFunctions::luaMetricsAddCounter);
+	Lua::registerTable(L, "metrics");
+	Lua::registerMethod(L, "metrics", "addCounter", MetricsFunctions::luaMetricsAddCounter);
 }
 
 // Metrics
 int MetricsFunctions::luaMetricsAddCounter(lua_State* L) {
 	// metrics.addCounter(name, value, attributes)
-	const auto name = getString(L, 1);
-	const auto value = getNumber<double>(L, 2);
+	const auto name = Lua::getString(L, 1);
+	const auto value = Lua::getNumber<double>(L, 2);
 	const auto attributes = getAttributes(L, 3);
 	g_metrics().addCounter(name, value, attributes);
 	return 1;
@@ -28,10 +29,10 @@ int MetricsFunctions::luaMetricsAddCounter(lua_State* L) {
 
 std::map<std::string, std::string> MetricsFunctions::getAttributes(lua_State* L, int32_t index) {
 	std::map<std::string, std::string> attributes;
-	if (isTable(L, index)) {
+	if (Lua::isTable(L, index)) {
 		lua_pushnil(L);
 		while (lua_next(L, index) != 0) {
-			attributes[getString(L, -2)] = getString(L, -1);
+			attributes[Lua::getString(L, -2)] = Lua::getString(L, -1);
 			lua_pop(L, 1);
 		}
 	}

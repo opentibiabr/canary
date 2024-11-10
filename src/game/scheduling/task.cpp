@@ -15,22 +15,22 @@
 
 std::atomic_uint_fast64_t Task::LAST_EVENT_ID = 0;
 
-Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context, const std::source_location &location) :
-	func(std::move(f)), context(context), functionName(location.function_name()), utime(OTSYS_TIME()),
+Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
+	func(std::move(f)), context(context), utime(OTSYS_TIME()),
 	expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
 	if (this->context.empty()) {
-		g_logger().error("[{}]: task context cannot be empty! Function: {}", __FUNCTION__, functionName);
+		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
 		return;
 	}
 
 	assert(!this->context.empty() && "Context cannot be empty!");
 }
 
-Task::Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle /* = false*/, bool log /*= true*/, const std::source_location &location) :
-	func(std::move(f)), context(context), functionName(location.function_name()), utime(OTSYS_TIME() + delay), delay(delay),
+Task::Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle /* = false*/, bool log /*= true*/) :
+	func(std::move(f)), context(context), utime(OTSYS_TIME() + delay), delay(delay),
 	cycle(cycle), log(log) {
 	if (this->context.empty()) {
-		g_logger().error("[{}]: task context cannot be empty! Function: {}", __FUNCTION__, functionName);
+		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
 		return;
 	}
 
@@ -48,15 +48,15 @@ bool Task::execute() const {
 	}
 
 	if (hasExpired()) {
-		g_logger().info("The task '{}' has expired, it has not been executed in {}. Function: {}", getContext(), expiration - utime, functionName);
+		g_logger().info("The task '{}' has expired, it has not been executed in {}.", getContext(), expiration - utime);
 		return false;
 	}
 
 	if (log) {
 		if (hasTraceableContext()) {
-			g_logger().trace("Executing task {}. Function: {}", getContext(), functionName);
+			g_logger().trace("Executing task {}.", getContext());
 		} else {
-			g_logger().debug("Executing task {}. Function: {}", getContext(), functionName);
+			g_logger().debug("Executing task {}.", getContext());
 		}
 	}
 

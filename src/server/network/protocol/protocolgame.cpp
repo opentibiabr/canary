@@ -9,6 +9,7 @@
 
 #include "server/network/protocol/protocolgame.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
@@ -47,6 +48,7 @@
 #include "lua/modules/modules.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "utils/tools.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_group_type.hpp"

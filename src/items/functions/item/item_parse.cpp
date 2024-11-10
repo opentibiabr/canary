@@ -15,6 +15,7 @@
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
 #include "creatures/combat/combat.hpp"
+#include "lua/scripts/scripts.hpp"
 
 void ItemParse::initParse(const std::string &stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	// Parse all item attributes
@@ -974,7 +975,7 @@ void ItemParse::parseHouseRelated(std::string_view stringValue, pugi::xml_attrib
 void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attributeNode, MoveEvent_t eventType /*= MOVE_EVENT_NONE*/, WeaponType_t weaponType /*= WEAPON_NONE*/) {
 	std::shared_ptr<MoveEvent> moveevent;
 	if (eventType != MOVE_EVENT_NONE) {
-		moveevent = std::make_shared<MoveEvent>(&g_moveEvents().getScriptInterface());
+		moveevent = std::make_shared<MoveEvent>();
 		moveevent->setItemId(itemType.id);
 		moveevent->setEventType(eventType);
 
@@ -996,11 +997,11 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 	std::shared_ptr<Weapon> weapon = nullptr;
 	if (weaponType != WEAPON_NONE) {
 		if (weaponType == WEAPON_DISTANCE || weaponType == WEAPON_AMMO || weaponType == WEAPON_MISSILE) {
-			weapon = std::make_shared<WeaponDistance>(&g_weapons().getScriptInterface());
+			weapon = std::make_shared<WeaponDistance>();
 		} else if (weaponType == WEAPON_WAND) {
-			weapon = std::make_shared<WeaponWand>(&g_weapons().getScriptInterface());
+			weapon = std::make_shared<WeaponWand>();
 		} else {
-			weapon = std::make_shared<WeaponMelee>(&g_weapons().getScriptInterface());
+			weapon = std::make_shared<WeaponMelee>();
 		}
 
 		weapon->weaponType = weaponType;

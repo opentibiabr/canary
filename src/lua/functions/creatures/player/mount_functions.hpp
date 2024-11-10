@@ -9,25 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class MountFunctions final : LuaScriptInterface {
+class MountFunctions {
 public:
-	explicit MountFunctions(lua_State* L) :
-		LuaScriptInterface("MountFunctions") {
-		init(L);
-	}
-	~MountFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Mount", "", MountFunctions::luaCreateMount);
-		registerMetaMethod(L, "Mount", "__eq", MountFunctions::luaUserdataCompare);
-
-		registerMethod(L, "Mount", "getName", MountFunctions::luaMountGetName);
-		registerMethod(L, "Mount", "getId", MountFunctions::luaMountGetId);
-		registerMethod(L, "Mount", "getClientId", MountFunctions::luaMountGetClientId);
-		registerMethod(L, "Mount", "getSpeed", MountFunctions::luaMountGetSpeed);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaCreateMount(lua_State* L);

@@ -16,23 +16,11 @@ LeverAction = {
 		},
 	},
 	-- The Secret Library Quest
-	[4901] = {
-		itemId = 2772,
-		itemPos = {
-			{ x = 33522, y = 31464, z = 15 },
-		},
-	},
 	[4906] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33251, y = 32039, z = 8 },
 			{ x = 33218, y = 32096, z = 10 },
-		},
-	},
-	[4922] = {
-		itemId = 2772,
-		itemPos = {
-			{ x = 33364, y = 31343, z = 9 },
 		},
 	},
 	-- Cults of Tibia Quest
@@ -315,10 +303,6 @@ LeverUnique = {
 		itemPos = { x = 33172, y = 31896, z = 8 },
 	},
 	-- Ferumbras' Ascension Quest
-	[1021] = {
-		itemId = 8911,
-		itemPos = { x = 33270, y = 31476, z = 14 },
-	},
 	[1022] = {
 		itemId = 8911,
 		itemPos = { x = 33229, y = 31499, z = 13 },
@@ -546,12 +530,6 @@ LeverUnique = {
 	[30002] = {
 		itemId = 2773,
 		itemPos = { x = 33582, y = 31844, z = 10 },
-	},
-	-- The first dragon quest lever
-	-- Path: data\scripts\actions\quests\first_dragon\lever.lua
-	[30003] = {
-		itemId = 8911,
-		itemPos = { x = 33583, y = 30992, z = 14 },
 	},
 	-- Thais lighthouse quest
 	-- Path: data\scripts\quests\thais_lighthouse\action-lever.lua

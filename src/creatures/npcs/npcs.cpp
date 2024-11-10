@@ -14,6 +14,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "lua/scripts/scripts.hpp"
+#include "lib/di/container.hpp"
 
 bool NpcType::canSpawn(const Position &pos) const {
 	bool canSpawn = true;

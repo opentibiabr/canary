@@ -9,6 +9,7 @@
 
 #include "server/network/protocol/protocolgame.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
@@ -8857,7 +8858,11 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	uint32_t boostedBossId = g_ioBosstiary().getBoostedBossId();
 
 	// Sanity checks
-	std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
+	const std::string &boostedBossName = g_ioBosstiary().getBoostedBossName();
+	if (boostedBossName.empty()) {
+		g_logger().error("[{}] The boosted boss name is empty", __FUNCTION__);
+		return;
+	}
 	const auto mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
 	auto boostedBossRace = mTypeBoosted ? mTypeBoosted->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBoostedBoss = boostedBossId == 0 || (boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS);

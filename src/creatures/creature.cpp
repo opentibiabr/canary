@@ -1623,6 +1623,10 @@ LightInfo Creature::getCreatureLight() const {
 	return internalLight;
 }
 
+uint16_t Creature::getSpeed() const {
+	return std::clamp(baseSpeed + varSpeed, 0, static_cast<int>(std::numeric_limits<uint16_t>::max()));
+}
+
 void Creature::setSpeed(int32_t varSpeedDelta) {
 	// Prevents creatures from not exceeding the maximum allowed speed
 	if (getSpeed() >= PLAYER_MAX_SPEED) {

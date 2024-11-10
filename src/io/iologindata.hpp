@@ -9,9 +9,12 @@
 
 #pragma once
 
-#include "account/account.hpp"
-#include "creatures/players/player.hpp"
-#include "database/database.hpp"
+class Player;
+class Item;
+class DBResult;
+
+struct VIPEntry;
+struct VIPGroupEntry;
 
 using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 
@@ -21,7 +24,7 @@ public:
 	static uint8_t getAccountType(uint32_t accountId);
 	static bool loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo = true);
 	static bool loadPlayerByName(const std::shared_ptr<Player> &player, const std::string &name, bool disableIrrelevantInfo = true);
-	static bool loadPlayer(const std::shared_ptr<Player> &player, const DBResult_ptr &result, bool disableIrrelevantInfo = false);
+	static bool loadPlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<DBResult> &result, bool disableIrrelevantInfo = false);
 	static bool savePlayer(const std::shared_ptr<Player> &player);
 	static uint32_t getGuidByName(const std::string &name);
 	static bool getGuidByNameEx(uint32_t &guid, bool &specialVip, std::string &name);

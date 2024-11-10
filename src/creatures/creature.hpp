@@ -194,9 +194,7 @@ public:
 	virtual uint16_t getStepSpeed() const {
 		return getSpeed();
 	}
-	uint16_t getSpeed() const {
-		return static_cast<uint16_t>(baseSpeed + varSpeed);
-	}
+	uint16_t getSpeed() const;
 	void setSpeed(int32_t varSpeedDelta);
 
 	void setBaseSpeed(uint16_t newBaseSpeed) {

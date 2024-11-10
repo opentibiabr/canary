@@ -157,7 +157,7 @@ bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
 				"[{}] duplicate registered rune with id: {}, for script: {}",
 				__FUNCTION__,
 				id,
-				rune->getScriptInterface()->getLoadingScriptName()
+				rune->getRuneSpellScriptInterface()->getLoadingScriptName()
 			);
 		}
 		return inserted;
@@ -1311,14 +1311,14 @@ bool InstantSpell::canCast(const std::shared_ptr<Player> &player) const {
 	return false;
 }
 
-LuaScriptInterface* RuneSpell::getScriptInterface() const {
+LuaScriptInterface* RuneSpell::getRuneSpellScriptInterface() const {
 	return &g_scripts().getScriptInterface();
 }
 
-bool RuneSpell::loadScriptId() {
+bool RuneSpell::loadRuneSpellScriptId() {
 	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
-	m_spellScriptId = luaInterface.getEvent();
-	if (m_spellScriptId == -1) {
+	m_runeSpellScriptId = luaInterface.getEvent();
+	if (m_runeSpellScriptId == -1) {
 		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
 		return false;
 	}
@@ -1326,16 +1326,16 @@ bool RuneSpell::loadScriptId() {
 	return true;
 }
 
-int32_t RuneSpell::getScriptId() const {
-	return m_spellScriptId;
+int32_t RuneSpell::getRuneSpellScriptId() const {
+	return m_runeSpellScriptId;
 }
 
-void RuneSpell::setScriptId(int32_t newScriptId) {
-	m_spellScriptId = newScriptId;
+void RuneSpell::setRuneSpellScriptId(int32_t newScriptId) {
+	m_runeSpellScriptId = newScriptId;
 }
 
-bool RuneSpell::isLoadedScriptId() const {
-	return m_spellScriptId != 0;
+bool RuneSpell::isRuneSpellLoadedScriptId() const {
+	return m_runeSpellScriptId != 0;
 }
 
 ReturnValue RuneSpell::canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) {
@@ -1373,7 +1373,7 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 	}
 
 	// If script not loaded correctly, return
-	if (!isLoadedScriptId()) {
+	if (!isRuneSpellLoadedScriptId()) {
 		return false;
 	}
 
@@ -1437,7 +1437,7 @@ bool RuneSpell::castSpell(const std::shared_ptr<Creature> &creature, const std::
 
 bool RuneSpell::internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const {
 	bool result;
-	if (isLoadedScriptId()) {
+	if (isRuneSpellLoadedScriptId()) {
 		result = executeCastSpell(creature, var, isHotkey);
 	} else {
 		result = false;
@@ -1455,11 +1455,11 @@ bool RuneSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, cons
 	}
 
 	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
-	env->setScriptId(getScriptId(), getScriptInterface());
+	env->setScriptId(getRuneSpellScriptId(), getRuneSpellScriptInterface());
 
-	lua_State* L = getScriptInterface()->getLuaState();
+	lua_State* L = getRuneSpellScriptInterface()->getLuaState();
 
-	getScriptInterface()->pushFunction(getScriptId());
+	getRuneSpellScriptInterface()->pushFunction(getRuneSpellScriptId());
 
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
@@ -1468,7 +1468,7 @@ bool RuneSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, cons
 
 	LuaScriptInterface::pushBoolean(L, isHotkey);
 
-	return getScriptInterface()->callFunction(3);
+	return getRuneSpellScriptInterface()->callFunction(3);
 }
 
 bool RuneSpell::isInstant() const {

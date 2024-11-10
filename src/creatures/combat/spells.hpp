@@ -82,11 +82,11 @@ public:
 	virtual bool castSpell(const std::shared_ptr<Creature> &creature) = 0;
 	virtual bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) = 0;
 
-	virtual LuaScriptInterface* getScriptInterface() const;
-	virtual bool loadScriptId();
-	virtual int32_t getScriptId() const;
-	virtual void setScriptId(int32_t newScriptId);
-	virtual bool isLoadedScriptId() const;
+	LuaScriptInterface* getScriptInterface() const;
+	bool loadScriptId();
+	int32_t getScriptId() const;
+	void setScriptId(int32_t newScriptId);
+	bool isLoadedScriptId() const;
 
 	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 	SoundEffect_t soundCastEffect = SoundEffect_t::SPELL_OR_RUNE;
@@ -314,11 +314,11 @@ class RuneSpell final : public Action, public Spell {
 public:
 	using Action::Action;
 
-	LuaScriptInterface* getScriptInterface() const override;
-	bool loadScriptId() override;
-	int32_t getScriptId() const override;
-	void setScriptId(int32_t newScriptId) override;
-	bool isLoadedScriptId() const override;
+	LuaScriptInterface* getRuneSpellScriptInterface() const;
+	bool loadRuneSpellScriptId();
+	int32_t getRuneSpellScriptId() const;
+	void setRuneSpellScriptId(int32_t newScriptId);
+	bool isRuneSpellLoadedScriptId() const;
 
 	ReturnValue canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) override;
 	bool hasOwnErrorHandler() override;
@@ -340,6 +340,8 @@ public:
 
 private:
 	bool internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const;
+
+	int32_t m_runeSpellScriptId = 0;
 
 	uint16_t runeId = 0;
 	uint32_t charges = 0;

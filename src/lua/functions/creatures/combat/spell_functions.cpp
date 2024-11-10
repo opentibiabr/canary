@@ -146,7 +146,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 			Lua::pushBoolean(L, true);
 		} else if (spell->spellType == SPELL_RUNE) {
 			const auto &rune = std::static_pointer_cast<RuneSpell>(spell);
-			if (!rune->loadScriptId()) {
+			if (!rune->loadRuneSpellScriptId()) {
 				Lua::pushBoolean(L, false);
 				return 1;
 			}
@@ -189,7 +189,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			iType.runeLevel = rune->getLevel();
 			iType.charges = rune->getCharges();
 		}
-		if (!rune->isLoadedScriptId()) {
+		if (!rune->isRuneSpellLoadedScriptId()) {
 			Lua::pushBoolean(L, false);
 			return 1;
 		}

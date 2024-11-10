@@ -9,45 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class NetworkMessageFunctions final : LuaScriptInterface {
+class NetworkMessageFunctions {
 public:
-	explicit NetworkMessageFunctions(lua_State* L) :
-		LuaScriptInterface("NetworkMessageFunctions") {
-		init(L);
-	}
-	~NetworkMessageFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "NetworkMessage", "", NetworkMessageFunctions::luaNetworkMessageCreate);
-		registerMetaMethod(L, "NetworkMessage", "__eq", NetworkMessageFunctions::luaUserdataCompare);
-		registerMethod(L, "NetworkMessage", "delete", luaGarbageCollection);
-
-		registerMethod(L, "NetworkMessage", "getByte", NetworkMessageFunctions::luaNetworkMessageGetByte);
-		registerMethod(L, "NetworkMessage", "getU16", NetworkMessageFunctions::luaNetworkMessageGetU16);
-		registerMethod(L, "NetworkMessage", "getU32", NetworkMessageFunctions::luaNetworkMessageGetU32);
-		registerMethod(L, "NetworkMessage", "getU64", NetworkMessageFunctions::luaNetworkMessageGetU64);
-		registerMethod(L, "NetworkMessage", "getString", NetworkMessageFunctions::luaNetworkMessageGetString);
-		registerMethod(L, "NetworkMessage", "getPosition", NetworkMessageFunctions::luaNetworkMessageGetPosition);
-
-		registerMethod(L, "NetworkMessage", "addByte", NetworkMessageFunctions::luaNetworkMessageAddByte);
-		registerMethod(L, "NetworkMessage", "addU16", NetworkMessageFunctions::luaNetworkMessageAddU16);
-		registerMethod(L, "NetworkMessage", "addU32", NetworkMessageFunctions::luaNetworkMessageAddU32);
-		registerMethod(L, "NetworkMessage", "addU64", NetworkMessageFunctions::luaNetworkMessageAddU64);
-		registerMethod(L, "NetworkMessage", "add8", NetworkMessageFunctions::luaNetworkMessageAdd8);
-		registerMethod(L, "NetworkMessage", "add16", NetworkMessageFunctions::luaNetworkMessageAdd16);
-		registerMethod(L, "NetworkMessage", "add32", NetworkMessageFunctions::luaNetworkMessageAdd32);
-		registerMethod(L, "NetworkMessage", "add64", NetworkMessageFunctions::luaNetworkMessageAdd64);
-		registerMethod(L, "NetworkMessage", "addString", NetworkMessageFunctions::luaNetworkMessageAddString);
-		registerMethod(L, "NetworkMessage", "addPosition", NetworkMessageFunctions::luaNetworkMessageAddPosition);
-		registerMethod(L, "NetworkMessage", "addDouble", NetworkMessageFunctions::luaNetworkMessageAddDouble);
-		registerMethod(L, "NetworkMessage", "addItem", NetworkMessageFunctions::luaNetworkMessageAddItem);
-
-		registerMethod(L, "NetworkMessage", "reset", NetworkMessageFunctions::luaNetworkMessageReset);
-		registerMethod(L, "NetworkMessage", "skipBytes", NetworkMessageFunctions::luaNetworkMessageSkipBytes);
-		registerMethod(L, "NetworkMessage", "sendToPlayer", NetworkMessageFunctions::luaNetworkMessageSendToPlayer);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaNetworkMessageCreate(lua_State* L);

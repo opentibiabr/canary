@@ -967,7 +967,6 @@ void Monster::setIdle(bool idle) {
 
 	if (!isIdle) {
 		g_game().addCreatureCheck(getMonster());
-
 	} else {
 		onIdleStatus();
 		clearTargetList();
@@ -1015,10 +1014,7 @@ void Monster::onAddCondition(ConditionType_t type) {
 	onConditionStatusChange(type);
 }
 
-void Monster::onConditionStatusChange(ConditionType_t type) {
-	if (type == CONDITION_FIRE || type == CONDITION_ENERGY || type == CONDITION_POISON) {
-		updateMapCache();
-	}
+void Monster::onConditionStatusChange(ConditionType_t /*type*/) {
 	updateIdleStatus();
 }
 
@@ -1518,7 +1514,6 @@ void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result
 	} else {
 		if (ignoreFieldDamage) {
 			ignoreFieldDamage = false;
-			updateMapCache();
 		}
 
 		int32_t distance = std::max<int32_t>(Position::getDistanceX(position, masterPos), Position::getDistanceY(position, masterPos));
@@ -1544,7 +1539,6 @@ void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &
 	} else {
 		if (ignoreFieldDamage) {
 			ignoreFieldDamage = false;
-			updateMapCache();
 		}
 		// target dancing
 		const auto &attackedCreature = getAttackedCreature();
@@ -2226,10 +2220,6 @@ void Monster::setHazardSystemDefenseBoost(bool value) {
 bool Monster::canWalkTo(Position pos, Direction moveDirection) {
 	pos = getNextPosition(moveDirection, pos);
 	if (isInSpawnRange(pos)) {
-		if (getWalkCache(pos) == 0) {
-			return false;
-		}
-
 		const auto &tile = g_game().map.getTile(pos);
 		if (tile && tile->getTopVisibleCreature(getMonster()) == nullptr && tile->queryAdd(0, getMonster(), 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR) {
 			return true;
@@ -2406,7 +2396,6 @@ void Monster::drainHealth(const std::shared_ptr<Creature> &attacker, int32_t dam
 
 	if (damage > 0 && randomStepping) {
 		ignoreFieldDamage = true;
-		updateMapCache();
 	}
 
 	if (isInvisible()) {

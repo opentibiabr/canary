@@ -9,6 +9,7 @@
 
 #include "creatures/players/player.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
@@ -61,6 +62,7 @@
 #include "lua/creature/events.hpp"
 #include "lua/creature/movement.hpp"
 #include "map/spectators.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -976,8 +978,6 @@ void Player::closeContainer(uint8_t cid) {
 		removeEmptyRewards();
 	}
 	openContainers.erase(it);
-	if (container && container->getID() == ITEM_BROWSEFIELD) {
-	}
 }
 
 void Player::removeEmptyRewards() {
@@ -1773,8 +1773,8 @@ std::shared_ptr<DepotLocker> Player::getDepotLocker(uint32_t depotId) {
 	depotLocker->internalAddThing(marketItem);
 	depotLocker->internalAddThing(inbox);
 	if (createSupplyStash) {
-		const auto &supplyStash = Item::CreateItem(ITEM_SUPPLY_STASH);
-		depotLocker->internalAddThing(supplyStash);
+		const auto &supplyStashPtr = Item::CreateItem(ITEM_SUPPLY_STASH);
+		depotLocker->internalAddThing(supplyStashPtr);
 	}
 	const auto &depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, static_cast<uint16_t>(g_configManager().getNumber(DEPOT_BOXES)));
 	for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES); i > 0; i--) {
@@ -3783,14 +3783,9 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 
 	updateImbuementTrackerStats();
 
-	// this method can be called asynchronously.
-	g_dispatcher().context().tryAddEvent([self = std::weak_ptr<Player>(getPlayer())] {
-		if (const auto &player = self.lock()) {
-			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0);
-			player->addCondition(condition);
-		}
-	},
-	                                     "Player::addInFightTicks");
+	safeCall([this] {
+		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0));
+	});
 }
 
 void Player::setDailyReward(uint8_t reward) {
@@ -5026,8 +5021,8 @@ ItemsTierCountList Player::getDepotChestItemsId() const {
 ItemsTierCountList Player::getDepotInboxItemsId() const {
 	ItemsTierCountList itemMap;
 
-	const auto &inbox = getInbox();
-	const auto &container = inbox->getContainer();
+	const auto &inboxPtr = getInbox();
+	const auto &container = inboxPtr->getContainer();
 	if (container) {
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 			const auto &item = *it;
@@ -8718,10 +8713,6 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMo
 		}
 
 		tmpPlayer->onCreatureSay(static_self_cast<Player>(), type, text);
-		if (static_self_cast<Player>() != tmpPlayer) {
-			g_events().eventCreatureOnHear(tmpPlayer, getPlayer(), text, type);
-			g_callbacks().executeCallback(EventCallback_t::creatureOnHear, &EventCallback::creatureOnHear, tmpPlayer, getPlayer(), text, type);
-		}
 	}
 	return true;
 }

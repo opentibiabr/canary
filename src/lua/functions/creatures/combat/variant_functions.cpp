@@ -11,32 +11,41 @@
 
 #include "items/cylinder.hpp"
 #include "lua/global/lua_variant.hpp"
+#include "lua/functions/lua_functions_loader.hpp"
+
+void VariantFunctions::init(lua_State* L) {
+	Lua::registerClass(L, "Variant", "", VariantFunctions::luaVariantCreate);
+
+	Lua::registerMethod(L, "Variant", "getNumber", VariantFunctions::luaVariantGetNumber);
+	Lua::registerMethod(L, "Variant", "getString", VariantFunctions::luaVariantGetString);
+	Lua::registerMethod(L, "Variant", "getPosition", VariantFunctions::luaVariantGetPosition);
+}
 
 int VariantFunctions::luaVariantCreate(lua_State* L) {
 	// Variant(number or string or position or thing)
 	LuaVariant variant;
-	if (isUserdata(L, 2)) {
-		if (const auto &thing = getThing(L, 2)) {
+	if (Lua::isUserdata(L, 2)) {
+		if (const auto &thing = Lua::getThing(L, 2)) {
 			variant.type = VARIANT_TARGETPOSITION;
 			variant.pos = thing->getPosition();
 		}
-	} else if (isTable(L, 2)) {
+	} else if (Lua::isTable(L, 2)) {
 		variant.type = VARIANT_POSITION;
-		variant.pos = getPosition(L, 2);
-	} else if (isNumber(L, 2)) {
+		variant.pos = Lua::getPosition(L, 2);
+	} else if (Lua::isNumber(L, 2)) {
 		variant.type = VARIANT_NUMBER;
-		variant.number = getNumber<uint32_t>(L, 2);
-	} else if (isString(L, 2)) {
+		variant.number = Lua::getNumber<uint32_t>(L, 2);
+	} else if (Lua::isString(L, 2)) {
 		variant.type = VARIANT_STRING;
-		variant.text = getString(L, 2);
+		variant.text = Lua::getString(L, 2);
 	}
-	pushVariant(L, variant);
+	Lua::pushVariant(L, variant);
 	return 1;
 }
 
 int VariantFunctions::luaVariantGetNumber(lua_State* L) {
-	// Variant:getNumber()
-	const LuaVariant &variant = getVariant(L, 1);
+	// Variant:Lua::getNumber()
+	const LuaVariant &variant = Lua::getVariant(L, 1);
 	if (variant.type == VARIANT_NUMBER) {
 		lua_pushnumber(L, variant.number);
 	} else {
@@ -46,23 +55,23 @@ int VariantFunctions::luaVariantGetNumber(lua_State* L) {
 }
 
 int VariantFunctions::luaVariantGetString(lua_State* L) {
-	// Variant:getString()
-	const LuaVariant &variant = getVariant(L, 1);
+	// Variant:Lua::getString()
+	const LuaVariant &variant = Lua::getVariant(L, 1);
 	if (variant.type == VARIANT_STRING) {
-		pushString(L, variant.text);
+		Lua::pushString(L, variant.text);
 	} else {
-		pushString(L, std::string());
+		Lua::pushString(L, std::string());
 	}
 	return 1;
 }
 
 int VariantFunctions::luaVariantGetPosition(lua_State* L) {
-	// Variant:getPosition()
-	const LuaVariant &variant = getVariant(L, 1);
+	// Variant:Lua::getPosition()
+	const LuaVariant &variant = Lua::getVariant(L, 1);
 	if (variant.type == VARIANT_POSITION || variant.type == VARIANT_TARGETPOSITION) {
-		pushPosition(L, variant.pos);
+		Lua::pushPosition(L, variant.pos);
 	} else {
-		pushPosition(L, Position());
+		Lua::pushPosition(L, Position());
 	}
 	return 1;
 }

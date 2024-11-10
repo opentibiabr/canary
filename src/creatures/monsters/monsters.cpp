@@ -16,6 +16,7 @@
 #include "game/game.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/scripts/luascript.hpp"
+#include "lib/di/container.hpp"
 
 void MonsterType::loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootBlock) const {
 	if (lootBlock.childLoot.empty()) {

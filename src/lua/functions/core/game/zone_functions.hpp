@@ -1,45 +1,10 @@
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
 class Zone;
 
-class ZoneFunctions final : LuaScriptInterface {
+class ZoneFunctions {
 public:
-	explicit ZoneFunctions(lua_State* L) :
-		LuaScriptInterface("ZoneFunctions") {
-		init(L);
-	}
-	~ZoneFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Zone", "", ZoneFunctions::luaZoneCreate);
-		registerMetaMethod(L, "Zone", "__eq", ZoneFunctions::luaZoneCompare);
-
-		registerMethod(L, "Zone", "getName", ZoneFunctions::luaZoneGetName);
-		registerMethod(L, "Zone", "addArea", ZoneFunctions::luaZoneAddArea);
-		registerMethod(L, "Zone", "subtractArea", ZoneFunctions::luaZoneSubtractArea);
-		registerMethod(L, "Zone", "getRemoveDestination", ZoneFunctions::luaZoneGetRemoveDestination);
-		registerMethod(L, "Zone", "setRemoveDestination", ZoneFunctions::luaZoneSetRemoveDestination);
-		registerMethod(L, "Zone", "getPositions", ZoneFunctions::luaZoneGetPositions);
-		registerMethod(L, "Zone", "getCreatures", ZoneFunctions::luaZoneGetCreatures);
-		registerMethod(L, "Zone", "getPlayers", ZoneFunctions::luaZoneGetPlayers);
-		registerMethod(L, "Zone", "getMonsters", ZoneFunctions::luaZoneGetMonsters);
-		registerMethod(L, "Zone", "getNpcs", ZoneFunctions::luaZoneGetNpcs);
-		registerMethod(L, "Zone", "getItems", ZoneFunctions::luaZoneGetItems);
-
-		registerMethod(L, "Zone", "removePlayers", ZoneFunctions::luaZoneRemovePlayers);
-		registerMethod(L, "Zone", "removeMonsters", ZoneFunctions::luaZoneRemoveMonsters);
-		registerMethod(L, "Zone", "removeNpcs", ZoneFunctions::luaZoneRemoveNpcs);
-		registerMethod(L, "Zone", "refresh", ZoneFunctions::luaZoneRefresh);
-
-		registerMethod(L, "Zone", "setMonsterVariant", ZoneFunctions::luaZoneSetMonsterVariant);
-
-		// static methods
-		registerMethod(L, "Zone", "getByPosition", ZoneFunctions::luaZoneGetByPosition);
-		registerMethod(L, "Zone", "getByName", ZoneFunctions::luaZoneGetByName);
-		registerMethod(L, "Zone", "getAll", ZoneFunctions::luaZoneGetAll);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaZoneCreate(lua_State* L);

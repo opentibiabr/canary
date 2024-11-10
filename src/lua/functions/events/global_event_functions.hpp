@@ -9,30 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class GlobalEventFunctions final : LuaScriptInterface {
+class GlobalEventFunctions {
 public:
-	explicit GlobalEventFunctions(lua_State* L) :
-		LuaScriptInterface("GlobalEventFunctions") {
-		init(L);
-	}
-	~GlobalEventFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "GlobalEvent", "", GlobalEventFunctions::luaCreateGlobalEvent);
-		registerMethod(L, "GlobalEvent", "type", GlobalEventFunctions::luaGlobalEventType);
-		registerMethod(L, "GlobalEvent", "register", GlobalEventFunctions::luaGlobalEventRegister);
-		registerMethod(L, "GlobalEvent", "time", GlobalEventFunctions::luaGlobalEventTime);
-		registerMethod(L, "GlobalEvent", "interval", GlobalEventFunctions::luaGlobalEventInterval);
-		registerMethod(L, "GlobalEvent", "onThink", GlobalEventFunctions::luaGlobalEventOnCallback);
-		registerMethod(L, "GlobalEvent", "onTime", GlobalEventFunctions::luaGlobalEventOnCallback);
-		registerMethod(L, "GlobalEvent", "onStartup", GlobalEventFunctions::luaGlobalEventOnCallback);
-		registerMethod(L, "GlobalEvent", "onShutdown", GlobalEventFunctions::luaGlobalEventOnCallback);
-		registerMethod(L, "GlobalEvent", "onRecord", GlobalEventFunctions::luaGlobalEventOnCallback);
-		registerMethod(L, "GlobalEvent", "onPeriodChange", GlobalEventFunctions::luaGlobalEventOnCallback);
-		registerMethod(L, "GlobalEvent", "onSave", GlobalEventFunctions::luaGlobalEventOnCallback);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaCreateGlobalEvent(lua_State* L);

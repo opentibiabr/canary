@@ -9,6 +9,7 @@
 
 #include "creatures/players/player.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
@@ -1773,8 +1774,8 @@ std::shared_ptr<DepotLocker> Player::getDepotLocker(uint32_t depotId) {
 	depotLocker->internalAddThing(marketItem);
 	depotLocker->internalAddThing(inbox);
 	if (createSupplyStash) {
-		const auto &supplyStash = Item::CreateItem(ITEM_SUPPLY_STASH);
-		depotLocker->internalAddThing(supplyStash);
+		const auto &supplyStashPtr = Item::CreateItem(ITEM_SUPPLY_STASH);
+		depotLocker->internalAddThing(supplyStashPtr);
 	}
 	const auto &depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, static_cast<uint16_t>(g_configManager().getNumber(DEPOT_BOXES)));
 	for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES); i > 0; i--) {
@@ -3783,14 +3784,9 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 
 	updateImbuementTrackerStats();
 
-	// this method can be called asynchronously.
-	g_dispatcher().context().tryAddEvent([self = std::weak_ptr<Player>(getPlayer())] {
-		if (const auto &player = self.lock()) {
-			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0);
-			player->addCondition(condition);
-		}
-	},
-	                                     "Player::addInFightTicks");
+	safeCall([this] {
+		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0));
+	});
 }
 
 void Player::setDailyReward(uint8_t reward) {
@@ -8718,10 +8714,6 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMo
 		}
 
 		tmpPlayer->onCreatureSay(static_self_cast<Player>(), type, text);
-		if (static_self_cast<Player>() != tmpPlayer) {
-			g_events().eventCreatureOnHear(tmpPlayer, getPlayer(), text, type);
-			g_callbacks().executeCallback(EventCallback_t::creatureOnHear, &EventCallback::creatureOnHear, tmpPlayer, getPlayer(), text, type);
-		}
 	}
 	return true;
 }

@@ -9,12 +9,15 @@
 
 #include "io/iologindata.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
+#include "database/database.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/player.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "enums/account_type.hpp"
 #include "enums/account_errors.hpp"

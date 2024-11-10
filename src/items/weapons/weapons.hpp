@@ -10,7 +10,6 @@
 #pragma once
 
 #include "lua/scripts/luascript.hpp"
-#include "creatures/players/player.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "creatures/combat/combat.hpp"
 #include "utils/utils_definitions.hpp"

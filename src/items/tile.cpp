@@ -987,7 +987,11 @@ std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_pt
 		const auto &destThing = destTile->getTopDownItem();
 		if (destThing) {
 			destItem = destThing->getItem();
-			if (thing && thing->getItem()) {
+			const auto &thingItem = thing ? thing->getItem() : nullptr;
+			if (thingItem) {
+				if (thingItem->getMailbox() != destItem->getMailbox()) {
+					return destTile;
+				}
 				const auto &destCylinder = destThing->getCylinder();
 				if (destCylinder && !destCylinder->getContainer()) {
 					return destThing->getCylinder();

@@ -22,6 +22,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
+#include "creatures/players/player.hpp"
 
 void GlobalFunctions::init(lua_State* L) {
 	lua_register(L, "addEvent", GlobalFunctions::luaAddEvent);

@@ -14,6 +14,7 @@
 #include "game/game.hpp"
 #include "lua/global/lua_variant.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "creatures/players/player.hpp"
 
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
